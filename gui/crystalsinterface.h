@@ -31,7 +31,8 @@ enum {
 	kChartBase			=	52000,
 	kModelBase			=	53000,
 	kProgressBase		=	54000,
-	kListCtrlBase		=	55000
+        kListCtrlBase           =       55000,
+        kTextOutBase            =       56000
 };
 
 #define	kNoAlignment		0
