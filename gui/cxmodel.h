@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.20  2001/06/18 12:51:40  richard
+//  New variables to track whether the mouse has been captured, and if the
+//  OpenGL context has been initialised (wx only).
+//
 //  Revision 1.19  2001/06/17 14:39:36  richard
 //  Error checking and warning messages on OpenGL window creation in case of error.
 //  Removal of draw_to_bitmap method, instead using compiled GL displaylists, and the
@@ -81,6 +85,20 @@ class CcModelObject;
 #define QATOMLIST     4
 #define QBONDLIST     5
 #define XOBJECTLIST     6
+
+#ifdef __BOTHWX__
+class mywxStaticText : public wxStaticText
+{
+  public:
+    mywxStaticText(wxWindow* s,int i,wxString s,wxPoint p,wxSize ss,int f);
+    wxWindow * m_parent;
+    void OnLButtonUp(wxMouseEvent & event);
+    void OnLButtonDown(wxMouseEvent & event);
+    void OnRButtonUp(wxMouseEvent & event);
+    DECLARE_EVENT_TABLE()
+};
+#endif
+
 
 class CxModel : public BASEMODEL
 {
@@ -202,7 +220,7 @@ class CxModel : public BASEMODEL
     DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-    wxStaticText * m_TextPopup;
+    mywxStaticText * m_TextPopup;
     bool m_DoNotPaint;
     bool m_NotSetupYet;
     bool m_MouseCaught;

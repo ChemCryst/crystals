@@ -18,6 +18,30 @@
 #include "idb_splash.xpm"
 #endif
 
+
+
+
+#ifdef __BOTHWX__
+BEGIN_EVENT_TABLE( mywxStaticText, wxStaticText)
+     EVT_LEFT_UP( mywxStaticText::OnLButtonUp )
+     EVT_LEFT_DOWN( mywxStaticText::OnLButtonDown )
+     EVT_RIGHT_UP( mywxStaticText::OnRButtonUp )
+END_EVENT_TABLE()
+
+mywxStaticText::mywxStaticText(wxWindow* w, int i, wxString s, wxPoint p, wxSize ss, int f):
+                  wxStaticText(w,i,s,p,ss,f)
+{
+    m_parent = w; 
+}
+void mywxStaticText::OnLButtonUp( wxMouseEvent & event ) { event.m_x += GetRect().x; event.m_y += GetRect().y; m_parent->GetEventHandler()->ProcessEvent(event); }
+void mywxStaticText::OnLButtonDown( wxMouseEvent & event){ event.m_x += GetRect().x; event.m_y += GetRect().y; m_parent->GetEventHandler()->ProcessEvent(event); }
+void mywxStaticText::OnRButtonUp( wxMouseEvent & event ) { event.m_x += GetRect().x; event.m_y += GetRect().y; m_parent->GetEventHandler()->ProcessEvent(event); }
+#endif
+
+
+
+
+
 int CxModel::mModelCount = kModelBase;
 
 CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
@@ -1319,6 +1343,7 @@ void CxModel::NeedRedraw(bool needrescale)
   InvalidateRect(NULL,false);
 #endif
 #ifdef __BOTHWX__
+  m_DoNotPaint = false;
   Refresh();
 #endif
 }
@@ -1494,9 +1519,11 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
   int cx,cy;
   GetTextExtent( atomname.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
-  m_TextPopup = new wxStaticText(this, -1, atomname.ToCString(),
+  m_TextPopup = new mywxStaticText(this, -1, atomname.ToCString(),
                                  wxPoint(max(0,point.x-cx-4),max(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
+//  m_TextPopup->SetEvtHandlerEnabled(true);
+
 #endif
 }
