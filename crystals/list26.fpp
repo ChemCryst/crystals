@@ -114,7 +114,7 @@ C
 C--FOR EACH PARAMETER :
 C
 C  0   LINK TO NEXT PARAMETER REL. TO 'LCG' OR 'NOWT'.
-C  1   REL. ADDR. IN LIST 5 (U[ISO]=4, FOR EXAMPLE).
+C  1   REL. ADDR. IN LIST 5 (X=5, FOR EXAMPLE).
 C  2   PARTIAL DERIVATIVE WHEN CALCULATED.
 C  .
 C
@@ -648,7 +648,10 @@ C--U(IJ) RESTRAINT
       JS=ISTORE(JA+16)
       JT=ISTORE(JB+16)
 C--CHECK THAT BOTH ATOMS ARE ANISO
-      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-2.*UISO)3350,3500,3500
+CDJWAPR99 - REMEBER THAT JS+6 IS JUST A FLAG NOW, AND RESULT SHOULD BE 
+C           BE ZERO
+C      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-2.*UISO)3350,3500,3500
+      IF(ABS(STORE(JS+6))+ABS(STORE(JT+6))-UISO)3350,3500,3500
 3350  CONTINUE
       DO 3450 JJ=8,13
       A1(3)=STORE(L22PD+2)
@@ -1240,7 +1243,8 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JC=JA
       DO 1100 I=1,2
       JD=ISTORE(JC+16)
-C--CHECK IF THE ATOM IS ANISO
+C--CHECK IF THE ATOM IS ANISO 
+CDJWAPR99 REMEMBER JD+6 IS JUST A FLAG NOW
       IF(ABS(STORE(JD+6))-UISO)1050,1400,1400
 C--PASS ONTO THE SECOND OF THE PAIR
 1050  CONTINUE
@@ -1330,130 +1334,138 @@ C
 C
       EQUIVALENCE (O,A1(1))
 C
-C--SET UP A FEW CONSTANTS
-      DUMP=STORE(LCG+4)
-      JA=LCA
-      NCA=2
-C--SET UP THE ADDRESSES OF THE ATOMS
-1000  CONTINUE
-      JB=ISTORE(JA)
-      JP=ISTORE(JA+6)
-      JV=ISTORE(JB+6)
-C--SET UP THE ADDRESSES OF THE U(IJ)'S
-      DO 1050 I=1,3
-      JP=ISTORE(JP)
-      JV=ISTORE(JV)
-1050  CONTINUE
-C--CHECK THAT BOTH ATOMS ARE ANISO AND IF NOT MODIFY ACCORDINGLY
-      JX=JP
-      JC=JA
-      DO 1250 I=1,2
-      JD=ISTORE(JC+16)
-C--CHECK IF THE ATOM IS ANISO
-      IF(ABS(STORE(JD+6))-UISO)1200,1100,1100
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION
-1100  CONTINUE
-      ISTORE(JC+5)=4
-      ISTORE(JX)=-1000000
-      ISTORE(JX+1)=4
-C--SET THE ANISO TEMPERATURE FACTORS FOR THE ATOM
-      JE=JD
-      JF=L1C+2
-      DO 1150 J=L1C,JF
-      STORE(JE+14)=STORE(JD+6)
-      STORE(JE+20)=STORE(JD+6)*STORE(J)
-      JE=JE+2
-1150  CONTINUE
-      STORE(JD+6)=0.
-C--PASS ONTO THE SECOND OF THE PAIR
-1200  CONTINUE
-      JX=JV
-      JC=JB
-1250  CONTINUE
-C--CALCULATE THE INTERNUCLEAR DISTANCE
-      JO=JA
-      JS=JB
-      CALL XCD2PD
-      D=SQRT(0.5*(A*F+B*G+C*H))
-C--APPLY THE RECIPROCAL CELL PARAMETERS
-      F=F*STORE(L1P2)
-      G=G*STORE(L1P2+1)
-      H=H*STORE(L1P2+2)
-C--CALCULATE THE COMPONENTS APART FROM A SCALING BY 'D'
-      A1(7)=F*F
-      A1(8)=G*G
-      A1(9)=H*H
-      A1(10)=2.*G*H
-      A1(11)=2.*F*H
-      A1(12)=2.*F*G
-C--CALCULATE THE SCALING CONSTANT FOR THE COMPONENTS SQUARED
-      E=1./(4.*D*D)
-C--CALCULATE THE DERIVATIVES FOR THE U(IJ)
-      DO 1300 I=1,6
-      A1(I)=A1(I+6)*E
-1300  CONTINUE
-      JO=JA
-      JX=JP
-      I=1
-C--STORE THE DERIVATIVES
-1350  CONTINUE
-C--CHECK IF THIS ATOM IS ISO AND NOT ANISO
-      IF(ISTORE(JO+5)-4)1450,1400,1450
-C--'ISO' ATOM
-1400  CONTINUE
+cdjwapr99{
+C--SET UP A FEW CONSTANTS                                               CVC00320
+      DUMP=STORE(LCG+4)                                                 CVC00330
+      JA=LCA                                                            CVC00340
+      NCA=2                                                             CVC00350
+C--SET UP THE ADDRESSES OF THE ATOMS                                    CVC00360
+1000  CONTINUE                                                          CVC00370
+      JB=ISTORE(JA)                                                     CVC00380
+      JP=ISTORE(JA+6)                                                   CVC00390
+      JV=ISTORE(JB+6)                                                   CVC00400
+C--SET UP THE ADDRESSES OF THE U(IJ)'S                                  CVC00410
+      DO 1050 I=1,3                                                     CVC00420
+      JP=ISTORE(JP)                                                     CVC00430
+      JV=ISTORE(JV)                                                     CVC00440
+1050  CONTINUE                                                          CVC00450
+C--CHECK THAT BOTH ATOMS ARE ANISO AND IF NOT MODIFY ACCORDINGLY        CVC00460
+      JX=JP                                                             CVC00470
+      JC=JA                                                             CVC00480
+      DO 1250 I=1,2                                                     CVC00490
+      JD=ISTORE(JC+16)                                                  CVC00500
+C--CHECK IF THE ATOM IS ANISO                                           CVC00510
+c      IF(ABS(STORE(JD+6))-UISO)1200,1100,1100                           CVC0052
+      IF(ABS(STORE(JD+6)) .le. zero) goto 1200
+C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            CVC00530
+1100  CONTINUE                                                          CVC00540
+cdjw99 The number of parameters
+      ISTORE(JC+5)=4                                                    CVC00550
+      ISTORE(JX)=-1000000                                               CVC00560
+cdjw99 Where they start (iso is now same as U11)
+c      ISTORE(JX+1)=4                                                    CVC0057
+      ISTORE(JX+1)=8
+C--SET THE ANISO TEMPERATURE FACTORS FOR THE ATOM                       CVC00580
+      JE=JD                                                             CVC00590
+      JF=L1C+2                                                          CVC00600
+      DO 1150 J=L1C,JF                                                  CVC00610
+cdjw99 Uiso now in same place as U11
+c      STORE(JE+14)=STORE(JD+6)                                          CVC0062
+      STORE(JE+14)=STORE(JD+14)
+      STORE(JE+20)=STORE(JD+14)*STORE(J)                                 CVC0063
+      JE=JE+2                                                           CVC00640
+1150  CONTINUE                                                          CVC00650
+      STORE(JD+6)=0.                                                    CVC00660
+C--PASS ONTO THE SECOND OF THE PAIR                                     CVC00670
+1200  CONTINUE                                                          CVC00680
+      JX=JV                                                             CVC00690
+      JC=JB                                                             CVC00700
+1250  CONTINUE                                                          CVC00710
+C--CALCULATE THE INTERNUCLEAR DISTANCE                                  CVC00720
+      JO=JA                                                             CVC00730
+      JS=JB                                                             CVC00740
+      CALL XCD2PD                                                       CVC00750
+      D=SQRT(0.5*(A*F+B*G+C*H))                                         CVC00760
+C--APPLY THE RECIPROCAL CELL PARAMETERS                                 CVC00770
+      F=F*STORE(L1P2)                                                   CVC00780
+      G=G*STORE(L1P2+1)                                                 CVC00790
+      H=H*STORE(L1P2+2)                                                 CVC00800
+C--CALCULATE THE COMPONENTS APART FROM A SCALING BY 'D'                 CVC00810
+      A1(7)=F*F                                                         CVC00820
+      A1(8)=G*G                                                         CVC00830
+      A1(9)=H*H                                                         CVC00840
+      A1(10)=2.*G*H                                                     CVC00850
+      A1(11)=2.*F*H                                                     CVC00860
+      A1(12)=2.*F*G                                                     CVC00870
+C--CALCULATE THE SCALING CONSTANT FOR THE COMPONENTS SQUARED            CVC00880
+      E=1./(4.*D*D)                                                     CVC00890
+C--CALCULATE THE DERIVATIVES FOR THE U(IJ)                              CVC00900
+      DO 1300 I=1,6                                                     CVC00910
+      A1(I)=A1(I+6)*E                                                   CVC00920
+1300  CONTINUE                                                          CVC00930
+      JO=JA                                                             CVC00940
+      JX=JP                                                             CVC00950
+      I=1                                                               CVC00960
+C--STORE THE DERIVATIVES                                                CVC00970
+1350  CONTINUE                                                          CVC00980
+C--CHECK IF THIS ATOM IS ISO AND NOT ANISO                              CVC00990
+      IF(ISTORE(JO+5)-4)1450,1400,1450                                  CVC01000
+C--'ISO' ATOM                                                           CVC01010
+1400  CONTINUE                                                          CVC01020
       STORE(JX+2)=STORE(JX+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+A1(5)
      2 *STORE(L1C+1)+A1(6)*STORE(L1C+2)
-      IF(I)1600,1600,1500
-C--'ANISO' ATOM
-1450  CONTINUE
-      CALL XADUIJ
-C--CHECK IF THIS THE FIRST OR SECOND ATOM
-      IF(I)1600,1600,1500
-1500  CONTINUE
-      JO=JB
-      JX=JV
-      DO 1550 J=1,6
-      A1(J)=-A1(J)
-1550  CONTINUE
-      I=I-1
-      GOTO 1350
-C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE
-1600  CONTINUE
-      JC=ISTORE(JA+16)
-      JD=ISTORE(JB+16)
-      SUM=0.
-      D=0.
-      DO 1650 I=1,6
-      SUM=SUM+(STORE(JC+14)+STORE(JD+14))*A1(I+6)
-      A1(I)=STORE(JC+14)-STORE(JD+14)
-      D=D+A1(I)*A1(I+6)
-      JC=JC+2
-      JD=JD+2
-1650  CONTINUE
-      STORE(LCG+4)=0.5*(DUMP+SUM*E)
-      D=D*E
-      STORE(L22PD+2)=DUMP-D
-C--CALCULATE THE DERIVATIVES FOR THE POSITIONAL COORDS.
-      E=4.*E
-      V=(F*O+G*T+H*S)*STORE(L1P2)
-      W=(F*T+G*P+H*R)*STORE(L1P2+1)
-      X=(F*S+G*R+H*Q)*STORE(L1P2+2)
-      F=STORE(L1M1)*V+STORE(L1M1+3)*W+STORE(L1M1+6)*X-F*D/STORE(L1P2)
-      G=STORE(L1M1+1)*V+STORE(L1M1+4)*W+STORE(L1M1+7)
-     2 *X-G*D/STORE(L1P2+1)
-      H=STORE(L1M1+2)*V+STORE(L1M1+5)*W+STORE(L1M1+8)
-     2 *X-H*D/STORE(L1P2+2)
-      JO=JA
-      CALL XADXYZ
-      JO=JB
-      E=-E
-      CALL XADXYZ
-      MCA=JA
-      STORE(L22PD+1) = STORE(LCG+3)
-      CALL XFMPDQ
-      JA=ISTORE(JB)
-      IF(JA)1750,1750,1000
-1750  CONTINUE
+      IF(I)1600,1600,1500                                               CVC01050
+C--'ANISO' ATOM                                                         CVC01060
+1450  CONTINUE                                                          CVC01070
+      CALL XADUIJ                                                       CVC01080
+C--CHECK IF THIS THE FIRST OR SECOND ATOM                               CVC01090
+      IF(I)1600,1600,1500                                               CVC01100
+1500  CONTINUE                                                          CVC01110
+      JO=JB                                                             CVC01120
+      JX=JV                                                             CVC01130
+      DO 1550 J=1,6                                                     CVC01140
+      A1(J)=-A1(J)                                                      CVC01150
+1550  CONTINUE                                                          CVC01160
+      I=I-1                                                             CVC01170
+      GOTO 1350                                                         CVC01180
+C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
+1600  CONTINUE                                                          CVC01200
+      JC=ISTORE(JA+16)                                                  CVC01210
+      JD=ISTORE(JB+16)                                                  CVC01220
+      SUM=0.                                                            CVC01230
+      D=0.                                                              CVC01240
+      DO 1650 I=1,6                                                     CVC01250
+      SUM=SUM+(STORE(JC+14)+STORE(JD+14))*A1(I+6)                       CVC01260
+      A1(I)=STORE(JC+14)-STORE(JD+14)                                   CVC01270
+      D=D+A1(I)*A1(I+6)                                                 CVC01280
+      JC=JC+2                                                           CVC01290
+      JD=JD+2                                                           CVC01300
+1650  CONTINUE                                                          CVC01310
+      STORE(LCG+4)=0.5*(DUMP+SUM*E)                                     CVC01320
+      D=D*E                                                             CVC01330
+      STORE(L22PD+2)=DUMP-D                                             CVC01340
+C--CALCULATE THE DERIVATIVES FOR THE POSITIONAL COORDS.                 CVC01350
+      E=4.*E                                                            CVC01360
+      V=(F*O+G*T+H*S)*STORE(L1P2)                                       CVC01370
+      W=(F*T+G*P+H*R)*STORE(L1P2+1)                                     CVC01380
+      X=(F*S+G*R+H*Q)*STORE(L1P2+2)                                     CVC01390
+      F=STORE(L1M1)*V+STORE(L1M1+3)*W+STORE(L1M1+6)*X-F*D/STORE(L1P2)   CVC01400
+      G=STORE(L1M1+1)*V+STORE(L1M1+4)*W+STORE(L1M1+7)                   CVC01410
+     2 *X-G*D/STORE(L1P2+1)                                             CVC01420
+      H=STORE(L1M1+2)*V+STORE(L1M1+5)*W+STORE(L1M1+8)                   CVC01430
+     2 *X-H*D/STORE(L1P2+2)                                             CVC01440
+      JO=JA                                                             CVC01450
+      CALL XADXYZ                                                       CVC01460
+      JO=JB                                                             CVC01470
+      E=-E                                                              CVC01480
+      CALL XADXYZ                                                       CVC01490
+      MCA=JA                                                            CVC01500
+      STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
+      CALL XFMPDQ                                                       CVC01520
+      JA=ISTORE(JB)                                                     CVC01530
+      IF(JA)1750,1750,1000                                              CVC01540
+1750  CONTINUE                                                          CVC01550
+cdjwapr99}
       RETURN
       END
 C
