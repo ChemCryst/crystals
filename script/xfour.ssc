@@ -319,9 +319,13 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       COPY '#GENERALEDIT 10'
 %       COPY 'TRANSHEAD FROM OFFSET=3 TO N10'
 %       COPY 'END'
-%       COPY '#GENERALEDIT 5'
-%       COPY 'TRANSHEAD FROM OFFSET=3 TO N5O'
-%       COPY 'END'
+%       IF ( EXISTS 5 .EQ. 1 ) THEN
+%        COPY '#GENERALEDIT 5'
+%        COPY 'TRANSHEAD FROM OFFSET=3 TO N5O'
+%        COPY 'END'
+%       ELSE
+%        EVALUATE N5O = 0
+%       END IF
 %       EVALUATE NPEAKS = N10 - N5O
 %%      SHOW NPEAKS
 %       IF NPEAKS .LE. 0 THEN
