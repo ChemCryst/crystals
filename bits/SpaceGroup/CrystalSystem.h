@@ -40,7 +40,9 @@
 #include "Collections.h"
 #include "HKLData.h"
 #include <fstream>
+
 using namespace std;
+typedef struct ElemStats;
 
 class Heading:public MyObject
 {
@@ -269,6 +271,7 @@ class RankedSpaceGroups:public MyObject
             float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
             float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
             float iMean;
+            bool iFiltered;
         } RowRating;
         
         LList<RowRating> iRatingList;	//The order list of rows.
@@ -278,7 +281,7 @@ class RankedSpaceGroups:public MyObject
         
         static void calcRowRating(RowRating* pRating, int pRow, Table& pTable, Stats& pStats);
         static void addConditionRatings(RowRating* pRating, Stats& pStats, Indexs* tIndexs,  Index* pHeadingIndex);
-        static void addRating(RowRating* pRating, float pRating1, float pRating2);
+        static void addRating(RowRating* pRating, const ElemStats* pStats);
         void addToList(RowRating* pRating);
     public:
         RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral);
