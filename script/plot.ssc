@@ -17,8 +17,9 @@
 %  VERIFY YES NO
 %  ON ERROR TERMINATE
 %  ON END TERMINATE
-%  GET NOSTORE FINAL ABBREVIATED  -
+-GID%  GET NOSTORE FINAL ABBREVIATED  -
 -GID   'Do You want see the structure?' 'YES'
++GID%  GET NOSTORE FINAL ABBREVIATED  -
 +GID   'Do You want see the structure in Cameron?' 'NO'
 %  IF VALUE .EQ. 2 THEN
 %     FINISH
