@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2001/09/04 14:57:38  ckp2
+C New TRANSFER destination:
+C % TRANSFER 'STUFF' TO PUNCH
+C puts the word STUFF into the PUNCH file. Brilliant!
+C
 C Revision 1.29  2001/03/08 14:37:50  richard
 C  REAL = RANDOM ( 0.0 )  - the 0.0 doesn't do anything, but could be used
 C as a seed in future...
@@ -3008,6 +3013,7 @@ C -- 'FILEEXISTS'
 C
       ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
       LEN1 = MAX ( LEN1, 1 )
+      CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
           ICODE(JVALUE,IARG(1)) = 1
@@ -3024,6 +3030,7 @@ C -- 'FILEDELETE'
 C
       ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
       LEN1 = MAX ( LEN1, 1 )
+      CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
 &GID          CALL XDETCH ('del ' // CWORK1(1:LEN1))
