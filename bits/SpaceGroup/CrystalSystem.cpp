@@ -574,7 +574,7 @@ Index* Indexs::getIndex(int pIndex)
     return iIndexs->get(pIndex);
 }
 
-int Indexs::getValue(int pIndex)
+signed char Indexs::getValue(int pIndex)
 {
     return iIndexs->get(pIndex)->get();
 }
@@ -699,7 +699,7 @@ int ConditionColumn::countHeadings()
     return iHeadingConditions->length();
 }
 
-int ConditionColumn::countCondition()
+int ConditionColumn::length()
 {
     return iConditions->length();
 }
@@ -914,7 +914,7 @@ void Table::addLine(char* pLine, int pColumn)
     char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
     tString[(int)tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
     strncpy(tString, pLine+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//Get the first element in the line
-    int pRow = iColumns->get(0)->countCondition();	//Get the row which we are at.
+    int pRow = iColumns->get(0)->length();	//Get the row which we are at.
     if (pColumn != 0)
     {
         pRow --;
@@ -1097,7 +1097,7 @@ std::ostream& Table::output(std::ostream& pStream)
     pStream << "\n";
     if (tLengthConditions > 0)
     {
-        int tNumOfLines = iColumns->get(0)->countCondition();
+        int tNumOfLines = iColumns->get(0)->length();
         for (int i =0; i < tNumOfLines; i++)
         {
             outputLine(i, pStream);
@@ -1142,6 +1142,76 @@ int Table::chiralPointGroups(int pPointGroupIndeces[])
 	}
 	pPointGroupIndeces[tIndecesPoint] = -1;
 	return tIndecesPoint;
+}
+
+int Table::dataUsed(signed char pIndices[], int pMax)
+{
+    int tNumColumns = iColumns->length();
+    TreeSet<signed char> tIndices;
+    
+    for (int i = 0; i < tNumColumns; i++)
+    {
+        ArrayList<Index>* tIndexs = iColumns->get(i)->getHeadings();
+        int tNumIndex = tIndexs->length();
+        for (int j = 0; j < tNumIndex; j ++)
+        {
+            signed char tIndexValue = tIndexs->get(j)->get();
+            tIndices.add(tIndexValue);
+        }
+    }
+    Iterator<signed char>* tIterator = tIndices.createIterator();
+    int i = 0;
+    tIterator->reset();
+    while (tIterator->hasNext() && i < pMax)
+    {
+        pIndices[i] = *tIterator->next();
+        i++;
+    }
+    if (i < pMax)
+    {
+        pIndices[i] = -1;
+    }
+    delete tIterator;
+    return i; 
+}
+
+int Table::conditionsUsed(signed char pIndices[], int pMax)
+{
+    int tNumColumns = iColumns->length();
+    TreeSet<signed char> tIndices;
+    
+    for (int i = 0; i < tNumColumns; i++)
+    {
+        ConditionColumn* tColumn = iColumns->get(i);
+        int tLength = tColumn->length();
+        for (int j = 0; j < tLength; j++)
+        {
+            Indexs* tIndexs = tColumn->getConditions(j);
+            if (tIndexs)
+            {
+                int tNumIndices = tIndexs->number();
+                for (int k = 0; k < tNumIndices; k++)
+                {
+                    signed char tIndex = tIndexs->getValue(k);
+                    tIndices.add(tIndex);
+                }
+            }
+        }
+    }
+    Iterator<signed char>* tIterator = tIndices.createIterator();
+    int i = 0;
+    tIterator->reset();
+    while (tIterator->hasNext() && i < pMax)
+    {
+        pIndices[i] = *tIterator->next();
+        i++;
+    }
+    if (i < pMax)
+    {
+        pIndices[i] = -1;
+    }
+    delete tIterator;
+    return i;
 }
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable)

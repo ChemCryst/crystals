@@ -144,7 +144,7 @@ class Indexs:public MyObject
         void addIndex(signed char pIndex);
         int number();
         Index* getIndex(int pIndex);
-        int getValue(int pIndex);
+        signed char getValue(int pIndex);
         std::ostream& output(std::ostream& pStream);
 };
 
@@ -154,6 +154,7 @@ class Column:public MyObject
 {
     public:
         void setHeading(char* pHeading);
+        int length();
 };
 
 class ConditionColumn:virtual public Column
@@ -171,7 +172,7 @@ class ConditionColumn:virtual public Column
         void addCondition(signed char pIndex, int pRow);
         void addEmptyCondition(int pRow);
         Indexs* getConditions(int pIndex);
-        int countCondition();
+        int length();
         int countHeadings();
         std::ostream& output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions);
 };
@@ -233,6 +234,8 @@ class Table:public MyObject
         int numberOfColumns();
         int numberOfRows();
         int chiralPointGroups(int pPointGroupIndeces[]);
+        int dataUsed(signed char pIndices[], int pMax);
+        int conditionsUsed(signed char pIndices[], int pMax);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
