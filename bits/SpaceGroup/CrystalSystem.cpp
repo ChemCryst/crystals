@@ -539,6 +539,11 @@ Index* Indexs::getIndex(int pIndex)
     return iIndexs->get(pIndex);
 }
 
+int Indexs::getValue(int pIndex)
+{
+    return iIndexs->get(pIndex)->get();
+}
+
 Indexs::~Indexs()
 {
     int tCount = iIndexs->length();
@@ -591,15 +596,13 @@ void ConditionIndexs::addReflection(Reflection* pReflection, Conditions* pCondit
         
     for (int i = 0; i <  tNumConditions && !tReject;  i++)
     {
-        tConditionM = pConditions->getMatrix(i);
-      //  cout << (*tConditionM) << "\n";
-      //  cout << (*tHKLM) << "\n";
+        tConditionM = pConditions->getMatrix(getValue(i));
         Matrix<float> tMatrix = (*tConditionM)*(*tHKLM);
-        if (((int)tMatrix.getValue(0)) % ((int)pConditions->getMult(i)) != 0)
+        if (((int)tMatrix.getValue(0)) % ((int)pConditions->getMult(getValue(i))) != 0)
         {
             iStats->setValue(iStats->getValue(0) + pReflection->i, 0);	//Add the intensity
             iStats->setValue(iStats->getValue(3) + 1, 3);	//Add to count
-            if (pReflection->i/pReflection->iSE > 3)
+            if (pReflection->i/pReflection->iSE >= 3)
             {
                 iStats->setValue(iStats->getValue(5) + 1, 5);	//Add to count
             }
@@ -634,6 +637,26 @@ ostream& ConditionIndexs::output(ostream& pStream)
     6: Number of Int<3*sigma excepted, */
     return pStream;
 }
+
+ostream& ConditionIndexs::output(ostream& pStream,  Conditions* pConditions)
+{
+    int tNumIndexs = this->number();
+    for (int j = 0; j < tNumIndexs; j++)
+    {
+        pStream << pConditions->getName(this->getValue(j));
+        if (j+1 != tNumIndexs)
+        {
+            pStream << ", ";
+        }
+    }
+    pStream << "\nAverage Excepted Reflections Int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
+    pStream << "Average Rejected Reflections Int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
+    pStream << "Average Intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
+    pStream << "Number of Int<3*sigma excepted: " << iStats->getValue(5) << "\n";
+    pStream << "Number of Int>=3*sigma excepted: " << iStats->getValue(6) << "\n";
+    return pStream;
+}
+        
 
 ostream& operator<<(ostream& pStream, ConditionIndexs& pIndexs)
 {
@@ -768,6 +791,31 @@ void ConditionColumn::addReflection(Reflection* pReflection, Headings* pHeadings
 
 ostream& ConditionColumn::output(ostream& pStream, Headings* pHeadings, Conditions* pConditions)
 {
+    int tNumConditions = iConditions->length();
+    int tNumHeader = iHeadingConditions->length();
+    
+    for (int i = 0; i < tNumHeader; i++)
+    {
+        pStream << pHeadings->getName(getHeading(i));
+        if (i+1 != tNumHeader)
+        {
+            pStream << ", ";
+        }
+    }
+    pStream << "\n\n";
+    for (int i = 0; i <= tNumConditions; i++)
+    {
+       ConditionIndexs*  tConditions = iConditions->get(i);
+        if (tConditions)
+        {
+            tConditions->output(pStream, pConditions);
+        }
+        else
+        {
+            pStream << "-";
+        }
+        pStream << "\n";
+    }
     return pStream;
 }
         
@@ -1101,15 +1149,15 @@ ostream& Table::output(ostream& pStream)
 
 ostream& Table::outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
 {
-    if (pColumn < iColumn->length())
+    if (pColumn < iColumns->length())
     {
         ConditionColumn* tColumn = iColumns->get(pColumn);
         tColumn->output(pStream, pHeadings, pConditions);
     }
     else
     {
-        SpaceGroups* tSpaceGroups = iSpaceGroups->get(pColumn - iColumn->length());
-        tSpaceGroups->output(pStream);
+        SpaceGroups* tSpaceGroups = iSpaceGroups->get(pColumn - iColumns->length());
+        //tSpaceGroups->output(pStream);
     }
     return pStream;
 }
