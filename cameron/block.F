@@ -313,7 +313,8 @@ C     c 63,63,63/
      c 48,48,48,
      c 52,52,52,
      c 56,56,56,
-     c 63,63,63/
+     c 63,63,63,
+     c 36,36,36/
 C DATA FOR THE COLOURS
 C      DATA IVGACL /0,0,0,
 C     c 0,0,63,
@@ -337,7 +338,7 @@ C     c 'CYAN  ','MAGENT','LGREY ','GREY  ','LGREEN', 'LBLUE ',
 C     c 'LRED  ','PINK  ','PURPLE','YELLOW','WHITE '/
       DATA COLGRY /'BLACK ','GREY1 ','GREY2 ','GREY3 ','GREY4 ',
      c 'GREY5 ','GREY6 ','GREY7 ','GREY8 ','GREY9 ' ,'GREY10',
-     c 'GREY11 ','GREY12 ', 'GREY13 ','GREY14 ','WHITE'/
+     c 'GREY11 ','GREY12 ', 'GREY13 ','GREY14 ','WHITE', 'GREY9'/
       DATA IFIRST /0/
 C DATA FOR SOME INITIALISATIONS
       DATA IELTYP /4/
