@@ -13,6 +13,7 @@
 #include "Collections.h"
 #include "Matrices.h"
 #include "BaseTypes.h"
+#include "Symmetry.h"
 
 enum SystemID
 {
@@ -46,28 +47,27 @@ class LaueClassMatrices:protected vector<MatrixReader>
 		static void releaseDefault();
 };
 		
-class LaueGroup//:public MyObject
+class LaueGroup:public CrystSymmetry
 {
 protected:	
 	SystemID iCrystalSystem;
     vector<unsigned short>* iMatIndices;
-    char* iLaueGroup;
 	LaueClassMatrices* iLaueGroupMatrices;
+	vector<CrystSymmetry> iPointGroups;
 public:
 	LaueGroup();
-	LaueGroup(const SystemID pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat);
+	LaueGroup(const SystemID pSys, const string& pLaueGroup, const unsigned short pIndices[], const int pNumMat, const vector<CrystSymmetry>& pPointGroups);
 	LaueGroup(const LaueGroup& pLaueGroup);
 	~LaueGroup();
 	SystemID crystalSystem() const;
 	Matrix<short>& getMatrix(const int i) const;
 	size_t numberOfMatrices() const;
-	char* laueGroup() const;
-	std::ostream& output(std::ostream& pStream) const;
 	Matrix<short> maxEquivilentHKL(const Matrix<short>& pHKL) const;
 	float ratingForUnitCell(const UnitCell& pUnitCell)const;
+	bool contains(const CrystSymmetry& pSymmetry);
 };
 
-std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup);
+//std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup);
 
 class LaueGroups:public vector<LaueGroup*>//:public MyObject
 {
@@ -76,7 +76,7 @@ class LaueGroups:public vector<LaueGroup*>//:public MyObject
 		~LaueGroups();
 		static LaueGroups* defaultInstance();
 		static void releaseDefault();
-		LaueGroup* laueGroupWithSymbol(const char* pSymbol);
+		LaueGroup* laueGroupWithSymbol(const string& pSymbol);
 		LaueGroup* firstLaueGroupFor(const SystemID pCrystalSystem);
 		LaueGroup* laueGroupAfterFirst(const SystemID pCrystalSystem, const int i); //Returns the Laue Group which is i elements after the first of this system
 		size_t numberOfLaueGroupsFor(const SystemID pCrystalSystem);
