@@ -93,7 +93,7 @@
 ^^WI  @ 3,1 GRID VBOTTOM NROWS=2 NCOLS=7
 ^^WI  {
 -GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
--GIL .EQ. TRUE THEN
+-GIL .OR. FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
 +GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' -
 +GIL .EQ. TRUE THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
@@ -318,10 +318,15 @@ view the generated sections.
 %           END BLOCK
 %           BLOCK    %Run marchingcubesELD viewer
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
+-GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' THEN
 -GIL% TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe" ' -
 -GIL    // CFILE TO CRYSTALS
+-GIL% ELSE
+-GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
+-GIL   // CFILE TO CRYSTALS
+-GIL% END IF
 +GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
-+GIL    // CFILE TO CRYSTALS
+-GIL   // CFILE TO CRYSTALS
 %           END BLOCK
 %         END CASE
 %         FINISH
