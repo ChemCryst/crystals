@@ -329,16 +329,6 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 
-void CxEditBox::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-	if(nChar == 38) //Up.
-		((CrEditBox*)mWidget)->Arrow(true);
-	else if (nChar == 40) //Down.
-		((CrEditBox*)mWidget)->Arrow(false);
-	CEdit::OnKeyDown( nChar, nRepCnt, nFlags );
-	return;
-}
-
 void CxEditBox::Disable(Boolean disable)
 {
 	if(disable)               //I call it Disable(TRUE), they call it Enable(FALSE).
@@ -358,3 +348,18 @@ void CxEditBox::ClearBox()
 	SetSel(0,-1);       //Set the selection to the whole of the text buffer.
 	Clear();			//Clears the selection.
 }
+
+void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
+            switch (nChar)
+            {
+                  case VK_UP:
+                  case VK_DOWN:
+                        ((CrEditBox*)mWidget)->SysKey( nChar );
+                        break;
+                  default:
+                        CEdit::OnKeyDown( nChar, nRepCnt, nFlags );
+                        break;
+            }
+}
+
