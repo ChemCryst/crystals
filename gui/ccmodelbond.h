@@ -20,7 +20,7 @@ class CcModelBond : public CcModelObject
                 CcModelDoc* ptr);
     ~CcModelBond();
     void ParseInput(CcTokenList* tokenList);
-    void Render(CcModelStyle *style);
+    void Render(CcModelStyle *style, bool feedback=false);
     void SelfExclude();
     bool m_excluded;
     CcModelAtom *m_atom1, *m_atom2, **m_patms;

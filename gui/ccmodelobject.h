@@ -29,7 +29,7 @@ class CcModelObject
      CcModelObject(CcModelDoc* pointer);
      CcModelObject();
      virtual ~CcModelObject();
-     virtual void Render( CcModelStyle * style ) = 0;
+     virtual void Render( CcModelStyle * style, bool feedback=false ) = 0;
      virtual void ParseInput ( CcTokenList* tokenlist) = 0;
      CcString Label();
      int Type();

@@ -130,7 +130,7 @@ bool CcModelDonut::IsSelected()
 	return m_selected;
 }
 
-void CcModelDonut::Render(CcModelStyle *style)
+void CcModelDonut::Render(CcModelStyle *style, bool feedback)
 {
   glPushMatrix();
 

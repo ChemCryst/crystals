@@ -266,6 +266,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
         m_bNeedReScale = false;
       }
 
+      glRenderMode ( GL_RENDER ); //Switching to render mode.
       glClearColor( 1.0f,1.0f,1.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       glMatrixMode ( GL_PROJECTION );
@@ -312,7 +313,29 @@ void CxModel::OnPaint(wxPaintEvent &event)
         m_bQuickListOk = true;
       }
 
-
+      if ( m_selectionPoints.ListSize() > 0 )
+      {
+//Draw in polygon so far:
+         CcPoint* nextPoint;
+         m_selectionPoints.Reset();
+         nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
+#ifdef __CR_WIN__
+         dc.SetROP2( R2_COPYPEN );
+         dc.MoveTo(nextPoint->x, nextPoint->y);
+         while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+         {
+            dc.LineTo(nextPoint->x,nextPoint->y);
+          }
+#endif
+#ifdef __BOTHWX__
+          dc.SetLogicalFunction( wxCOPY );
+          dc.MoveTo(nextPoint->x, nextPoint->y);
+          while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+          {
+            dc.LineTo(nextPoint->x,nextPoint->y);
+          }  
+#endif
+      }
     }
     else
     {
@@ -516,7 +539,6 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
         {
 // Click within 4 pixels of first point to close, or
 // Click same point twice to auto-close.
-          m_mouseMode= CXROTATE;
 
           CcPoint* newPoint = new CcPoint(*firstPoint);
           m_selectionPoints.AddItem(newPoint);
@@ -1403,7 +1425,6 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 void CxModel::PolyCheck()
 {
 
-
    if ( m_selectionPoints.ListSize() < 3 ) return;
 
    GLint viewport[4];
@@ -1428,8 +1449,9 @@ void CxModel::PolyCheck()
      glLoadIdentity();
      CameraSetup();
      ModelSetup();
+     ((CrModel*)ptr_to_crObject)->RenderModel(true,true);
 
-     glCallList( ATOMLIST );
+//     glCallList( ATOMLIST );
 
      glMatrixMode ( GL_PROJECTION );
      glMatrixMode ( GL_MODELVIEW );

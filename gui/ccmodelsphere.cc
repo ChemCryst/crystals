@@ -124,7 +124,7 @@ bool CcModelSphere::IsSelected()
 	return m_selected;
 }
 
-void CcModelSphere::Render(CcModelStyle *style)
+void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 {
   glPushMatrix();
 

@@ -135,9 +135,8 @@ bool CcModelAtom::IsSelected()
 	return m_selected;
 }
 
-void CcModelAtom::Render(CcModelStyle *style)
+void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 {
-  glPassThrough((float)m_glID);
 
   glPushMatrix();
 
@@ -146,6 +145,8 @@ void CcModelAtom::Render(CcModelStyle *style)
   glTranslated(x,y,z);
   float extra = 0.0;
   int detail = (style->high_res)? style->normal_res  : style->quick_res ;
+
+  if (feedback) glPassThrough((float)m_glID);
 
   if ( m_excluded )
   {
@@ -264,10 +265,10 @@ void CcModelAtom::Render(CcModelStyle *style)
 
   gluDeleteQuadric(sphere);
 
-//  glPopAttrib();
+  if (feedback)  glPassThrough(0.0);
+
   glPopMatrix();
 
-  glPassThrough(0.0);
 
 }
 

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2002/03/13 12:26:26  richard
+//   One new popupmenu for clicking on bonds.
+//
 //   Revision 1.13  2002/02/19 16:34:52  ckp2
 //   Menus for plots.
 //
@@ -76,7 +79,7 @@ class   CrModel : public CrGUIElement
     void    SysKeyUp ( UINT nChar );
 
 // Called from CxModel:
-    Boolean RenderModel(Boolean detailed);
+    Boolean RenderModel(Boolean detailed, bool feedback=false);
     void    MenuSelected(int id);
     void    ContextMenu(int x, int y, CcString atomname = "", int selection = 1, CcString atom2="");
     int     GetSelectionAction();

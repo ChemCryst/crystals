@@ -17,6 +17,12 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2002/07/03 16:44:05  richard
+// Implemented polygon selection in model window.
+//
+// Improved "genericness" of ccmodelobject class to simplify calls to common
+// functions in atom, sphere and donut derived classes.
+//
 // Revision 1.17  2002/06/28 10:09:53  richard
 // Minor gui update enabling vague display of special shapes: ring and sphere.
 //
@@ -524,7 +530,7 @@ void CcModelDoc::InvertSelection()
 
 
 
-Boolean CcModelDoc::RenderModel( CcModelStyle * style )
+Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 {
    if ( mAtomList->ListSize()   || mBondList->ListSize() ||
         mSphereList->ListSize() || mDonutList->ListSize()  )
@@ -551,8 +557,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
         mAtomList->Reset();
         mSphereList->Reset();
         mDonutList->Reset();
-        glDeleteLists(ATOMLIST,1);
-        glNewList( ATOMLIST, GL_COMPILE);
+        if ( !feedback )
+        {
+           glDeleteLists(ATOMLIST,1);
+           glNewList( ATOMLIST, GL_COMPILE);
+        }
         {
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
           glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
@@ -564,7 +573,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->m_glID = glIDCount;
-            aitem->Render(style);
+            aitem->Render(style, feedback);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -574,7 +583,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             sitem->m_glID = glIDCount;
-            sitem->Render(style);
+            sitem->Render(style, feedback);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -584,7 +593,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             ditem->m_glID = glIDCount;
-            ditem->Render(style);
+            ditem->Render(style, feedback);
           }
         }
 
@@ -605,7 +614,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glLoadName ( ++ glIDCount );
             aitem->m_glID = glIDCount;
-            aitem->Render(style);
+            aitem->Render(style, feedback);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -669,10 +678,13 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             ditem->Render(style);
           }
         }
-        glEndList();
+        if ( !feedback )
+        {
+           glEndList();
 //High res normal bonds:
-        glDeleteLists(BONDLIST,1);
-        glNewList( BONDLIST, GL_COMPILE);
+           glDeleteLists(BONDLIST,1);
+           glNewList( BONDLIST, GL_COMPILE);
+        }
         {
           GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
           GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
@@ -691,11 +703,14 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             bitem->Render(style);
           }
         }
-        glEndList();
+        if ( !feedback )
+        {
+           glEndList();
 
 //High res excluded atoms and bonds:
-        glDeleteLists(XOBJECTLIST,1);
-        glNewList( XOBJECTLIST, GL_COMPILE);
+           glDeleteLists(XOBJECTLIST,1);
+           glNewList( XOBJECTLIST, GL_COMPILE);
+        }
         mAtomList->Reset();
         while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
         {
@@ -718,13 +733,19 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             bitem->Render(style);
           }
         }
-        glEndList();
+        if ( !feedback )
+        {
+           glEndList();
+        }
       }
       else
       {
 //Low res (non-excluded) atoms
-        glDeleteLists(QATOMLIST,1);
-        glNewList( QATOMLIST, GL_COMPILE);
+        if ( !feedback )
+        {
+           glDeleteLists(QATOMLIST,1);
+           glNewList( QATOMLIST, GL_COMPILE);
+        }
         mAtomList->Reset();
         mSphereList->Reset();
         mDonutList->Reset();
@@ -840,11 +861,13 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             ditem->Render(style);
           }
         }
-        glEndList();
-
+        if ( !feedback )
+        {
+           glEndList();
 //Low res (non-excluded) bonds
-        glDeleteLists(QBONDLIST,1);
-        glNewList( QBONDLIST, GL_COMPILE);
+           glDeleteLists(QBONDLIST,1);
+           glNewList( QBONDLIST, GL_COMPILE);
+        }
         {
           GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
           GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
@@ -863,7 +886,10 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             bitem->Render(style);
           }
         }
-        glEndList();
+        if ( !feedback )
+        {
+           glEndList();
+        }
       }
 
       return true;

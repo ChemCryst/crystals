@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/06/28 10:09:53  richard
+//   Minor gui update enabling vague display of special shapes: ring and sphere.
+//
 //   Revision 1.11  2002/06/25 11:58:09  richard
 //   Use _F in popup-menu commands to substitute in all atoms in fragment connected
 //   to clicked-on atom.
@@ -66,7 +69,7 @@ class CcModelDoc
 {
     public:
 
-        Boolean RenderModel( CcModelStyle *style );
+        Boolean RenderModel( CcModelStyle *style, bool feedback=false );
         void InvertSelection();
         CcString Compress(CcString atomname);
         void SelectAllAtoms(Boolean select);

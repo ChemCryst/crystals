@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2002/06/28 10:09:53  richard
+//   Minor gui update enabling vague display of special shapes: ring and sphere.
+//
 //   Revision 1.22  2002/03/13 12:26:26  richard
 //   One new popupmenu for clicking on bonds.
 //
@@ -613,11 +616,11 @@ int CrModel::GetSelectionAction()
   return m_AtomSelectAction;
 }
 
-Boolean CrModel::RenderModel(Boolean detailed)
+Boolean CrModel::RenderModel(bool detailed, bool feedback)
 {
 //    TEXTOUT ( "RenderModel" );
     m_style.high_res = detailed;
-    if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style);
+    if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style,feedback);
     return false;
 }
 

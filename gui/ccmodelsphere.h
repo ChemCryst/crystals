@@ -22,7 +22,7 @@ class CcModelSphere : public CcModelObject
     void Init();
     ~CcModelSphere();
 
-    void Render(CcModelStyle *style);
+    void Render(CcModelStyle *style, bool feedback=false);
     void Select(bool select);
     void Disable(bool select);
     void SendAtom(int style, Boolean output=false); 

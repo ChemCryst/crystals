@@ -111,7 +111,7 @@ void CcModelBond::ParseInput(CcTokenList* tokenList)
 
 }
 
-void CcModelBond::Render(CcModelStyle *style)
+void CcModelBond::Render(CcModelStyle *style, bool feedback)
 {
 
    float vecX, vecY, vecZ;

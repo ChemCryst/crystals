@@ -22,7 +22,7 @@ class CcModelDonut : public CcModelObject
     void Init();
     ~CcModelDonut();
 
-    void Render(CcModelStyle *style);
+    void Render(CcModelStyle *style, bool feedback=false);
     void Select(bool select);
     void Disable(bool select);
     void SendAtom(int style, Boolean output=false); 

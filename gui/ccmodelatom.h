@@ -24,7 +24,7 @@ class CcModelAtom : public CcModelObject
     void Init();
     ~CcModelAtom();
 
-    void Render(CcModelStyle *style);
+    void Render(CcModelStyle *style, bool feedback=false);
     void Select(bool select);
     bool Select();
     void Disable(bool select);
