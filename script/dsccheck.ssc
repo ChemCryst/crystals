@@ -131,7 +131,6 @@ automatically reformat LIST 5 for you?' 'YES'
 %  COPY '#GENERALEDIT 30'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 34 TO MD '
-% SHOW MD
 %     IF ( MD .NE. 19 ) THEN
 %         EVALUATE OLDDSC = TRUE
 %     END IF
