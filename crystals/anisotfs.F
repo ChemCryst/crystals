@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2001/02/26 10:24:13  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XPRAXI
       SUBROUTINE XPRAXI (ILIST1,ILIST5,IBASE,ISTART,ISTEP,NATOM,LIST,
@@ -120,15 +123,7 @@ CDJWJAN2000      IF(ABS(STORE(M5B+3))-UISO)1200,1700,1700
          IF (IFLAG.LE.0) THEN
 C-C-C-ANISOTROPIC
 C--PULL OUT THE REQUIRED ELEMENTS
-            STORE(NB)=STORE(M5B+7)
-            STORE(NB+1)=STORE(M5B+12)
-            STORE(NB+2)=STORE(M5B+11)
-            STORE(NB+3)=STORE(M5B+12)
-            STORE(NB+4)=STORE(M5B+8)
-            STORE(NB+5)=STORE(M5B+10)
-            STORE(NB+6)=STORE(M5B+11)
-            STORE(NB+7)=STORE(M5B+10)
-            STORE(NB+8)=STORE(M5B+9)
+      CALL XPANDU (STORE(M5B+7), STORE(NB))
 C--ORHTOGONALIZE THE THERMAL TENSOR
             CALL XMLTTM (STORE(NB),STORE(NA),STORE(NC),3,3,3)
             CALL XMLTTM (STORE(NA),STORE(NC),STORE(ND),3,3,3)
@@ -403,7 +398,7 @@ C--CLEAR THE CORE
 C----- WORKSPACE FOR REPLACEMENT
       IWORK=KSTALL(3)
       JWORK=KSTALL(6)
-      KWORK=KSTALL(21)
+      KWORK=KSTALL(30)
 C----- SPACE FOR ATOM HEADERS
       MQ=KSTALL(100)
 C----- COMMAND BUFFER
@@ -700,7 +695,6 @@ C--PRINT A CAPTION
      1on')
       END IF
 C--CHECK THE CORE AREA
-C--CHECK THE CORE AREA
 C      LFL=LFL-MD5A
 C      IF(NFL + 27 -LFL)3350,3350,8900
 C--ENOUGH CORE
@@ -730,8 +724,8 @@ C----- PRINT THE RESULTS FOR THESE ATOMS
          ISTEP=MD5
          ISAVE=L5
       END IF
-      IF (KTLSPT(ISTART,NUMBER,ISTEP,ISAVE,IWORK,JWORK,IALL,IRPL,IMOD5).
-     1LE.0) GO TO 3450
+      IF (KTLSPT(ISTART,NUMBER,ISTEP,ISAVE,IWORK,JWORK,IALL,IRPL,IMOD5
+     1 ,0) .LE. 0) GO TO 3450
       IF (IALL.LE.0) GO TO 2600
       GO TO 100
 C
@@ -896,7 +890,7 @@ C
       END
 CODE FOR KTLSPT
       FUNCTION KTLSPT (ISTART,NUMBER,ISTEP,ISAVE,IWORK,JWORK,IALL,IRPL,
-     1IMOD5)
+     1IMOD5,IPUNCH)
 C----- PRINT OBSERVED AND CALCULATED U'S
 C
 C----- RETURNS -1 IF FATAL ERROR GENERATED
@@ -908,6 +902,11 @@ C      JWORK, IWORK  WORK SPACE
 C      IALL   1 FOR ALL ATOMS
 C      IRPL   1 FOR REPLACE REQUIRED
 C      IMOD5  1 IF MODIFICATION OCCURS
+C      IPUNCH 1 IF RESTRAINT TO BE PUNCHED
+C
+      CHARACTER *64 CPATH
+      CHARACTER *32 CTEMP
+      DIMENSION JFRN(4)
 C
 \ISTORE
 C
@@ -917,13 +916,24 @@ C
 \XCONST
 \XLST20
 \XLEXIC
-\XRTLSC
 \XIOBUF
+\XAPK
+\XRTLSC
 C
 \QSTORE
 C
+      DATA JFRN /'F', 'R', 'N', '1'/
+C
 C----- NO ERRORS YET
       KTLSPT=+1
+      IF (IPUNCH .GT. 0) THEN
+C----- OPEN A FILE FOR THE TLS RESTRAINTS
+      WRITE (CMON,'(11X,A)') 'Putting TLS restraints in TLSREST.DAT'
+      CALL XPRVDU (NCVDU,1,0)
+      LPATH=KPATH(CPATH)
+      CALL XRDOPN (6,JFRN(1),CPATH(1:LPATH)//'TLSREST.DAT',LPATH+11)
+      WRITE (NCFPU1,'(A)') '# TLS RESTRAINTS'
+      ENDIF
 C
 C--LOOP OVER EACH OF THE ATOMS WE HAVE FOUND
       DO 200 I=1,NUMBER
@@ -944,20 +954,39 @@ C----- COMPUTE U'S
          CALL XMLTMT (WB,UO,WA,3,3,3)
          CALL RSUB09 (WA,WC)
          CALL XMOVE (WC(1),STORE(JWORK),6)
-         IF (IRPL.EQ.0) THEN
 C-----  WRITE DETAILS
 C-C-C-CHECK WHETHER ATOM IS ANISOTROPIC OR ISOTROPIC/SPHERE/LINE/RING
             IF (ABS(STORE(ISTART+3)).LT.UISO) THEN
 C-----    ANISOTROPIC
+C-----    WRITE NEW PARAMETERS
                JJ=ISTART+4
-               JJJ=ISTART+12
-               IF (ISSPRT.EQ.0) THEN
-                  WRITE (NCWU,100) STORE(ISTART),STORE(ISTART+1),
-     1             (STORE(J),J=JJ,JJJ)
-               END IF
-               WRITE (NCAWU,100) STORE(ISTART),STORE(ISTART+1),(STORE(J)
-     1          ,J=JJ,JJJ)
+               WRITE(CMON,100)  STORE(ISTART),STORE(ISTART+1),
+     1         (STORE(J),J=JJ,JJ+8)
+               CALL XPRVDU(NCVDU,1,0)
+               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
+               WRITE (NCAWU,'(A)') CMON(1)(1:)
 100            FORMAT (1X,A4,F4.0,3F8.4,6F8.3)
+               WRITE(CMON,150)  (STORE(J),J=JWORK,JWORK+5)
+150            FORMAT (1X,32X,6F8.3)
+               CALL XPRVDU(NCVDU,1,0)
+               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
+               WRITE (NCAWU,'(A)') CMON(1)(1:)
+               IF (IRPL.EQ.1) THEN
+C-----           REPLACE
+                 CALL XMOVE (STORE(JWORK),STORE(ISAVE+7),6)
+                 STORE(ISAVE+3)=0.0
+                 IMOD5=1
+               ENDIF
+               IF (IPUNCH .GT.0) THEN
+                DO 115 KK=1,6
+                  WRITE(CTEMP,109) STORE(ISTART), 
+     1            NINT(STORE(ISTART+1)),ICOORD(1,KK+7),ICOORD(2,KK+7)
+109               FORMAT(A4,'(',I5,',',A4,A4,')')
+                  CALL XCRAS ( CTEMP, LENNAM )
+                  WRITE(NCFPU1,110)STORE(JWORK+KK-1), CTEMP(1:LENNAM)
+110               FORMAT('RESTRAIN ', F10.4, ',0.01 = ', A)
+115             CONTINUE
+               ENDIF
             ELSE
 C-----    ISOTROPIC
 C-C-C-ISOTROPIC/SPHERE/LINE/RING
@@ -970,19 +999,6 @@ C-C-C-ISOTROPIC/SPHERE/LINE/RING
                WRITE (NCAWU,100) STORE(ISTART),STORE(ISTART+1),(STORE(J)
      1          ,J=JJ,JJJ),STORE(ISTART+7)
             END IF
-C-----  WRITE NEW PARAMETERS
-            JJJ=JWORK+5
-            IF (ISSPRT.EQ.0) THEN
-               WRITE (NCWU,150) (STORE(J),J=JWORK,JJJ)
-            END IF
-            WRITE (NCAWU,150) (STORE(J),J=JWORK,JJJ)
-150         FORMAT (1X,32X,6F8.3)
-         ELSE
-C-----  REPLACE
-            CALL XMOVE (STORE(JWORK),STORE(ISAVE+7),6)
-            STORE(ISAVE+3)=0.0
-            IMOD5=1
-         END IF
          ISAVE=ISAVE+ISTEP
 200   CONTINUE
       GO TO 400
@@ -1014,6 +1030,10 @@ C-----  REPLACE
          CALL XPRVDU (NCVDU,1,0)
 450      FORMAT (/' U''s have been modified'/)
       END IF
+      IF (IPUNCH .GT. 0) THEN
+C----- CLOSE THE TLS RESTRAINT FILE
+      CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'TLSREST.DAT',LPATH+11)
+      ENDIF
       RETURN
       END
 CODE FOR IRTLS
@@ -1037,6 +1057,7 @@ C--
 C
       DIMENSION DUMMYA(420), DUMMYB(420)
       DIMENSION TEMP1(3,3), TEMP2(3,3)
+      dimension djwa(3,3),djwb(3,3)
 C
 \STORE
 \XUNITS
@@ -1054,6 +1075,8 @@ C
       EQUIVALENCE (DUMMYA(1),AA(1,1)), (DUMMYB(1),DV(1,1))
       EQUIVALENCE (TEMP1(1,1),DUMMYA(1)), (TEMP2(1,1),DUMMYA(10))
 C
+C----- USE SYSTEM-WIDE CONVENTION
+      RAD =RTD
       IRTLS=-1
 C--OUTPUT AN INITIAL CAPTION
       IF (IMODE.GT.0) THEN
@@ -1207,10 +1230,16 @@ C---SET UP L-, T-, AND S-TENSORS FROM AR; CALCULATE LIBRATIONAL CORRECTI
       CALL RSUB10 (AT,AR(1))
       CALL RSUB10 (AL,AR(7))
       AR(21)=-AR(13)-AR(17)
+C----- SAVE FOR POSSIBLE USER MODIFICATION
+      CALL XMOVE(AT,SAVET,9)
+      CALL XMOVE(AL,SAVEL,9)
+      CALL XMOVE(AR(13),SAVES,9)
+      CALL XMOVE(CF,SAVEC,3)
+C
 C----- SKIP REST IF ONLY AFTER 'AR'
       IF (IMODE.LE.0) GO TO 2600
       K=13
-      RAD=180./PI
+C--- CONVERT TO DEGREES
       T=0.
       DO 1150 I=1,3
          T=T+AL(I,I)
@@ -1223,9 +1252,8 @@ C----- SKIP REST IF ONLY AFTER 'AR'
       DO 1200 I=1,3
 1200     AQ(I,I)=AQ(I,I)+1.+0.5*T
 C---OUTPUT T, L, S
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,1250)
-      END IF
+      IF (ISSPRT.EQ.0) WRITE (NCWU,1250)
+      WRITE (NCAWU,1250)
 1250  FORMAT (//' Tensors with respect to the above centre',' and orthog
      1onal axes (A*, B'' and C)')
       CALL RSUB11 (1)
@@ -1275,11 +1303,15 @@ C--PRINT THE DATA THUS ACQUIRED
      3m crystal fractions',' w.r.t. libration centre '/,' to axial syste
      4m  defined by L',/,15X,' Angstrom',31X,'Fractions',//,3(4X,3F10.4,
      511X,3F10.5/))
+C----- SAVE EIGENVECTORS
+      CALL XMOVE(WB,STOREE,9)
 C----- COPY MATRICES FOR SAVING IN LIST 20
+      CALL XMOVE(WB,STORE(KWORK+21),9)
       CALL XTRANS (WB(1,1),STORE(KWORK+9),3,3)
       CALL XMLTMT (STORE(KWORK+9),STORE(L1O1),STORE(KWORK),3,3,3)
       I=KINV2(3,STORE(KWORK),STORE(KWORK+9),9,0,STORE(KWORK+18),
      1STORE(KWORK+18),3)
+      CALL XMOVE(WB,SAVEE,9)
       CALL XMOVE (CF(1),STORE(KWORK+18),3)
       CALL XMLTMM (AL,WB,WA,3,3,3)
       CALL XMLTTM (WB,WA,AL,3,3,3)
@@ -1287,6 +1319,14 @@ C----- COPY MATRICES FOR SAVING IN LIST 20
       CALL XMLTTM (WB,WA,AT,3,3,3)
       CALL XMLTMM (AS,WB,WA,3,3,3)
       CALL XMLTTM (WB,WA,AS,3,3,3)
+C---OUTPUT NEW TENSORS
+      IF (ISSPRT.EQ.0) WRITE (NCWU,1750)
+      WRITE (NCAWU,1750)
+      WRITE(CMON,1750)
+      CALL ZMORE(CMON,0)
+1750  FORMAT (' Tensors with respect to principal axes of L')
+      CALL RSUB11 (2)
+C
 C---SHIFT ORIGIN TO MAKE S SYMMETRIC
       WD(1)=RAD*(AS(2,3)-AS(3,2))/(AL(2,2)+AL(3,3))
       WD(2)=RAD*(AS(3,1)-AS(1,3))/(AL(1,1)+AL(3,3))
@@ -1296,13 +1336,11 @@ C---SHIFT ORIGIN TO MAKE S SYMMETRIC
       DO 1650 I=1,3
          CF(I)=CF(I)+WC(I)
 1650     WA(I,I)=0.
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,1700) CF
-      END IF
-      WRITE (NCAWU,1700) CF
       WRITE (CMON,1700) CF
+      WRITE (NCAWU,'(A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
       CALL XPRVDU (NCVDU,1,0)
-1700  FORMAT (' Centre for which s is symmetric :             ',4X,3F8.
+1700  FORMAT (/' Centre for which s is symmetric :             ',4X,3F8.
      14)
 C---TRANSFORM TENSORS TO NEW ORIGIN
       WA(1,2)=WD(3)/RAD
@@ -1320,17 +1358,8 @@ C--- S=S+LP'
 C--- T=T+PS
       CALL XMLTMM (WA,AS,WB,3,3,3)
       CALL RADDMM (AT,WB)
-C---OUTPUT NEW TENSORS
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,1750)
-      END IF
-1750  FORMAT (' Tensors with respect to principal axes of L',' and new c
-     1entre')
-      CALL RSUB11 (1)
 C---CALCULATE AND OUTPUT AXIAL SHIFTS
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,1800)
-      END IF
+      IF (ISSPRT.EQ.0) WRITE (NCWU,1800)
 1800  FORMAT (' Axial displacements for which S becomes diagonal',2X,'(A
      1ngstroms along principal axes of L)'/1X,32X,'Shift directions'/1X,
      229X,'1',9X,'2',9X,'3')
@@ -1340,9 +1369,7 @@ C---CALCULATE AND OUTPUT AXIAL SHIFTS
       D=-AS(2,1)/AL(2,2)
       E=-AS(3,2)/AL(3,3)
       F=AS(3,1)/AL(3,3)
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,1850) A,B,C,D,E,F
-      END IF
+      IF (ISSPRT.EQ.0) WRITE (NCWU,1850) A,B,C,D,E,F
 1850  FORMAT (/1X,16X,'Axis 1',10X,2F10.2//1X,16X,'Axis 2',F10.2,10X,
      1F10.2//1X,16X,'Axis 3',2F10.2)
 C---CALCULATE REDUCED T AND S, AND SCREW PITCHES
@@ -1358,9 +1385,7 @@ C---CALCULATE REDUCED T AND S, AND SCREW PITCHES
 2000     AS(I,J)=0.
 2050  CONTINUE
 C---OUTPUT FINAL REDUCED TENSORS
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,2100)
-      END IF
+      IF (ISSPRT.EQ.0) WRITE (NCWU,2100)
       WRITE (NCAWU,2100)
       WRITE (CMON,2100)
       CALL XPRVDU (NCVDU,1,0)
@@ -1378,7 +1403,6 @@ C---INVERT UO TO GET MATRIX FOR CONVERSION OF U'S BACK TO CRYSTAL AXES
       I=KINV2(3,UO,WA,9,0,WC,WD,3)
       CALL XMOVE (WA,UO,9)
 C---CALCULATE AND OUTPUT OBSERVED AND CALCULATED TEMPERATURE FACTORS
-      CALL XPRTCN
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,2200)
       END IF
@@ -1555,32 +1579,27 @@ C
 \XRTLSC
 \XIOBUF
 C
+      WRITE (NCAWU,50)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,50)
       END IF
-      WRITE (NCAWU,50)
       IF (MON.EQ.2) THEN
          WRITE (CMON,50)
          CALL XPRVDU (NCVDU,3,0)
       END IF
 50    FORMAT (/1X,10X,'L',23X,'T',18X,'S'/)
       DO 100 I=1,3
-         IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),J=
-     1       1,3)
-         END IF
-         WRITE (NCAWU,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),J=1,
-     1    3)
-         IF (MON.EQ.2) THEN
-            WRITE (CMON,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),J=
-     1       1,3)
-            CALL XPRVDU (NCVDU,1,0)
-         END IF
+         WRITE (CMON,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),
+     1   J=1,3)
+         WRITE (NCAWU,'(A)') CMON(1)(:)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         IF (MON.EQ.2) CALL XPRVDU (NCVDU,1,0)
 100   CONTINUE
 150   FORMAT ((3(3F7.2,2X)))
       CALL XLINES
       RETURN
       END
+C
 CODE FOR RADDMM
       SUBROUTINE RADDMM (XX,YY)
 C
@@ -1872,3 +1891,31 @@ C---TRANSFORM BACK TO ORIGINAL PARAMETER SET
       CALL XMLTMM (AI,WE,AR,20,20,1)
       RETURN
       END
+CODE FOR XPANDU
+      SUBROUTINE XPANDU(A,B)
+C      EXPAND THE VECTOR A INTO THE TENSOR B
+      DIMENSION A(6), B(9)
+      B(1) = A(1)
+      B(2) = A(6)
+      B(3) = A(5)
+      B(4) = A(6)
+      B(5) = A(2)
+      B(6) = A(4)
+      B(7) = A(5)
+      B(8) = A(4)
+      B(9) = A(3)
+      RETURN
+      END
+CODE FOR XCOMPU
+      SUBROUTINE XCOMPU(B,A)
+C      COMPRESS THE TENSOR B INTO THE VECTOR A
+      DIMENSION A(6), B(9)
+      A(1) = B(1)
+      A(2) = B(5)
+      A(3) = B(9)
+      A(4) = B(8)
+      A(5) = B(7)
+      A(6) = B(5)
+      RETURN
+      END
+C
