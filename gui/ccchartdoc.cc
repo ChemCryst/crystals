@@ -17,6 +17,9 @@
 //            drawing commands. Note again - it is not a CrGUIElement,
 //            it has no graphical presence, nor a complimentary Cx- class
 
+// $Log: not supported by cvs2svn $
+
+
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"ccchartdoc.h"
@@ -467,7 +470,7 @@ void CcChartDoc::Clear()
 
 extern "C" {
 
-#ifdef __WINDOWS__
+#ifdef __BOTHWIN__
 void fastline  ( int x1, int y1, int x2, int y2 );
 void fastfelli ( int x,  int y,  int w,  int h  );
 void fasteelli ( int x,  int y,  int w,  int h  );
@@ -492,40 +495,70 @@ void fastshow_      ( );
 void complete_      ( );
 #endif
 
+#ifdef __BOTHWIN__
 void fastline  ( int x1, int y1, int x2, int y2 )
+#endif
+#ifdef __LINUX__
+void fastline_  ( int x1, int y1, int x2, int y2 )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->FastLine( x1, y1, x2, y2 );
 }
 
+#ifdef __BOTHWIN__
 void fastfelli  ( int x, int y, int w, int h )
+#endif
+#ifdef __LINUX__
+void fastfelli_  ( int x, int y, int w, int h )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->FastFElli( x, y, w, h );
 }
+#ifdef __BOTHWIN__
 void fasteelli  ( int x, int y, int w, int h )
+#endif
+#ifdef __LINUX__
+void fasteelli_  ( int x, int y, int w, int h )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->FastEElli( x, y, w, h );
 }
 
+#ifdef __BOTHWIN__
 void fastfpoly ( int nv, int * points )
+#endif
+#ifdef __LINUX__
+void fastfpoly_ ( int nv, int * points )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->FastFPoly( nv, points );
 }
+#ifdef __BOTHWIN__
 void fastepoly ( int nv, int * points )
+#endif
+#ifdef __LINUX__
+void fastepoly_ ( int nv, int * points )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->FastEPoly( nv, points );
 }
 
+#ifdef __BOTHWIN__
 void fasttext  ( int x,  int y,  char theText[80] )
+#endif
+#ifdef __LINUX__
+void fasttext_  ( int x,  int y,  char theText[80] )
+#endif
 {
       theText[80] = '\0';
       for ( int i = 80; i >= 0; i-- )
@@ -541,28 +574,48 @@ void fasttext  ( int x,  int y,  char theText[80] )
             doc->FastText( x,y,text );
 }
 
+#ifdef __BOTHWIN__
 void fastcolour( int r, int g, int b )
+#endif
+#ifdef __LINUX__
+void fastcolour_( int r, int g, int b )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->FastColour( r,g,b );
 }
 
+#ifdef __BOTHWIN__
 void fastclear ( )
+#endif
+#ifdef __LINUX__
+void fastclear_ ( )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->Clear( );
 }
 
+#ifdef __BOTHWIN__
 void fastshow ( )
+#endif
+#ifdef __LINUX__
+void fastshow_ ( )
+#endif
 {
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
             doc->DrawView( );
 }
 
+#ifdef __BOTHWIN__
 void complete ( )
+#endif
+#ifdef __LINUX__
+void complete_ ( )
+#endif
 {
 // Make sure the command queue is emptied before returning.
       (CcController::theController)->CompleteProcessing();
