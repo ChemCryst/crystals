@@ -1,5 +1,9 @@
 %SCRIPT ROTAX
 % VARIABLE INTEGER NFOM
+% VARIABLE REAL TWINTOL
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
 ^^WI WINDOW ROTAX 'Rotax' MODAL
 ^^WI POSITION=CENTRED 'MODEL01'
 ^^WI GRID M NROWS=6 NCOLS=3 {
@@ -139,7 +143,7 @@
 %     END LOOP
 ^^WI              'NULL'
 ^^WI     }
-^^WI     @ 2,3 GRID GB NROWS=3 NCOLS=1 {
+^^WI     @ 2,3 GRID GB NROWS=5 NCOLS=1 {
 ^^WI        @ 1,1 GRID GBA NROWS=3 NCOLS=3 {
 ^^WI           @ 1,1 STATIC RT_T3 'Lattice:'
 ^^WI           @ 1,3 STATIC RT_RORD 'Reciprocal'
@@ -158,6 +162,11 @@
 ^^WI           @ 5,1 EDITBOX M31 '0.000' CHARS=9 REAL
 ^^WI           @ 5,3 EDITBOX M32 '0.000' CHARS=9 REAL
 ^^WI           @ 5,5 EDITBOX M33 '1.000' CHARS=9 REAL
+^^WI        }
+^^WI        @ 5,1 GRID GBC NROWS=1 NCOLS=5 {
+^^WI           @ 1,1 STATIC RT_T4 'Overlap tolerance'
+^^WI           @ 1,3 EDITBOX RT_TT '0.01' CHARS=9 REAL
+^^WI           @ 1,5 STATIC RT_T4 'Angstrom**-2'
 ^^WI        }
 ^^WI     }
 ^^WI  }
@@ -349,17 +358,34 @@
 ^^??        M33 TEXT
 %           GET SILENT REAL ' ' '1.0'
 %           SEND
-%           COPY 'END'
+%% Get last bit of info and close window before starting to process.
+^^??        RT_TT TEXT
+%           GET SILENT NOSTORE REAL ' ' '0.01'
+%           EVALUATE TWINTOL = VALUE
 ^^CO        DISPOSE ROTAX2
+%           COPY 'END'
 {S * Adding twin element scales to list 5 (to be refined).
 %           COPY '#SCRIPT addtwin'
 {S *  Converting the reflection list to twinned (FOT) format
 %           COPY '#LIST 6'
 %           COPY 'READ TYPE=TWIN'
+%           CLEAR
+%           INSERT 'MATRIX TWINTOL='
+%           STORE REAL TWINTOL
+%           SEND
 %           COPY 'END'
+%           EVALUATE QTITLE = 'View List 6?'
+%           EVALUATE QLINE1 = 'Do you want to look at the reflection'
+%           EVALUATE QLINE2 = 'file to verify the ELEMENT assignments?'
+%           EVALUATE BUTTOK = '&Yes'
+%           EVALUATE BUTTXX = '&No'
+%           COPY '#SCRIPT XQUESTIO'
+%           IF ANSWER .EQ. TRUE THEN
+%              COPY '#SCRIPT VULIST6' 
+%           END IF
 %           FINISH
 %         END BLOCK
-%         BLOCK
+%         BLOCK        %%RT_RES
 %           GET NOSTORE SILENT INTEGER ' ' ' '
 %         END BLOCK
 %       END CASE
