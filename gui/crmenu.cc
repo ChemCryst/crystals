@@ -248,7 +248,9 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model, CcString atom2)
 {
 //Replace all occurences of _A in the command and text fields with the atomname.
 //Replace all occurences of _S in the command and text fields with atom2.
-//Replace all occurences of _G in the command with a newline seperated list of atom names, followed by END.
+//Replace all occurences of _G in the command with a newline seperated list of selected atom names, followed by END.
+//Replace all occurences of _F in the command with a newline seperated list of fragment atom names, followed by END.
+
     CcMenuItem* menuItem = nil;
     CcString acommand, atext;
     mMenuList.Reset();
@@ -310,6 +312,17 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model, CcString atom2)
                     CcString lastPart  = acommand.Chop(1,i+2);
                     acommand =  firstPart;
                     acommand += model->SelectedAsString("_N");
+                    acommand += lastPart;
+                }
+            }
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
+                if(acommand[i] == '_' && acommand[i+1] == 'F')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand =  firstPart;
+                    acommand += model->FragAsString(atomname,"_N");
                     acommand += lastPart;
                 }
             }

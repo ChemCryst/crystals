@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2002/05/15 17:25:00  richard
+// Bug fix.
+//
 // Revision 1.14  2002/03/13 12:25:45  richard
 // Update variable names. Added FASTBOND and FASTATOM routines which can be called
 // from the Fortran instead of passing data through the text channel.
@@ -650,7 +653,7 @@ void CcModelDoc::ExcludeBonds()
 }
 
 
-void CcModelDoc::SelectFrag(CcString atomname, bool select)
+void CcModelDoc::FlagFrag(CcString atomname)
 {
    CcModelAtom *aitem;
    CcModelBond *bitem;
@@ -700,11 +703,19 @@ void CcModelDoc::SelectFrag(CcString atomname, bool select)
        }
      }
    }
+}
+
+
+void CcModelDoc::SelectFrag(CcString atomname, bool select)
+{
+   CcModelAtom *aitem;
+
+   FlagFrag ( atomname );
 
 // Select or unselect all spare-flagged atoms.
 
    if ( mAtomList->ListSize() )
-   {
+   {                  
       mAtomList->Reset();
       while ((aitem = (CcModelAtom*)mAtomList->GetItemAndMove()))
       {
@@ -713,6 +724,28 @@ void CcModelDoc::SelectFrag(CcString atomname, bool select)
    }
    DrawViews();
 }
+
+
+CcString CcModelDoc::FragAsString( CcString atomname, CcString delimiter )
+{
+  CcString result;
+  CcModelAtom * aitem;
+
+  FlagFrag ( atomname );
+
+
+  if ( mAtomList->ListSize() )
+  {                  
+     mAtomList->Reset();
+     while ((aitem = (CcModelAtom*)mAtomList->GetItemAndMove()))
+     {
+        if ( aitem->spare ) result += aitem->Label() + delimiter;
+     }
+  }
+  return result;
+}
+
+
 
 CcString CcModelDoc::SelectedAsString( CcString delimiter )
 {

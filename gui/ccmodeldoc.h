@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/03/13 12:25:45  richard
+//   Update variable names. Added FASTBOND and FASTATOM routines which can be called
+//   from the Fortran instead of passing data through the text channel.
+//
 //   Revision 1.9  2001/06/17 15:24:20  richard
 //
 //
@@ -80,6 +84,8 @@ class CcModelDoc
         CcModelObject * FindObjectByGLName(GLuint name);
 
         CcString SelectedAsString( CcString delimiter = " " );
+        CcString FragAsString    ( CcString atomname, CcString delimiter = " ");
+        void     FlagFrag ( CcString atomname );
         void SendAtoms( int style, Boolean sendonly=false );
         void ZoomAtoms( Boolean doZoom );
 
