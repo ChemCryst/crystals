@@ -52,4 +52,20 @@ class	CrChart : public CrGUIElement
 
 	// attributes
 };
+
+#define kSChartHighlight	"HIGHLIGHT"
+#define kSGetPolygonArea	"GETAREA"
+#define kSGetCursorKeys         "CURSORKEYS"
+#define kSIsoView		"ISO"
+#define kSNoEdge		"NOEDGE"
+
+enum
+{
+ kTChartHighlight = 700,
+ kTGetPolygonArea,
+ kTGetCursorKeys,
+ kTIsoView,
+ kTNoEdge
+};
+
 #endif
