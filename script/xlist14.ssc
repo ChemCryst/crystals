@@ -92,31 +92,30 @@
 ^^WI {
 ^^WI  @ 1,1 GRID GRIDL NROWS=7 NCOLS=2
 ^^WI  {
-^^WI   @ 2,2 GRID GRIDTL NROWS=2 NCOLS=1
+^^WI   @ 2,2 GRID GRIDML NROWS=1 NCOLS=6
 ^^WI   {
-^^WI    @ 1,1 STATIC    TEXT1 'Enter section limits in'
-^^WI    @ 2,1 STATIC    TEXT1 'fractions of cell edge.'
-^^WI   }
-
-^^WI   @ 4,2 GRID GRIDML NROWS=1 NCOLS=3
-^^WI   {
-^^WI     @1,1 STATIC  RTEXT1 'Resolution,A'
+^^WI     @ 1,1 STATIC  RTEXT1 'Resolution:'
 % CLEAR
 % INSERT !^^WI @ 1,3 EDITBOX R1 '!
 % STORE FORMAT /(F8.3)/ LENGTH 8 REAL R14
 % INSERT !'!
 % OUTPUT
-^^WI CHARS=8 REAL INFORM=YES
-
+^^WI      CHARS=8 REAL INFORM=YES
+^^WI     @ 1,5 STATIC RTEXT2 'angstroms'
+^^WI   }
+^^WI   @ 4,2 GRID GRIDTL NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC    TEXT1 'Enter section limits in'
+^^WI    @ 2,1 STATIC    TEXT1 'fractions of cell edge:'
 ^^WI   }
 ^^WI   @ 6,2 GRID GRIDBL NROWS=3 NCOLS=7
 ^^WI   {
-^^WI    @ 1,1 STATIC    STEXT1 'Xmin'
-^^WI    @ 2,1 STATIC    STEXT2 'Ymin'
-^^WI    @ 3,1 STATIC    STEXT3 'Zmin'
-^^WI    @ 1,5 STATIC    STEXT4 'Xmax'
-^^WI    @ 2,5 STATIC    STEXT5 'Ymax'
-^^WI    @ 3,5 STATIC    STEXT6 'Zmax'
+^^WI    @ 1,1 STATIC    STEXT1 'X from'
+^^WI    @ 2,1 STATIC    STEXT2 'Y from'
+^^WI    @ 3,1 STATIC    STEXT3 'Z from'
+^^WI    @ 1,5 STATIC    STEXT4 'to'
+^^WI    @ 2,5 STATIC    STEXT5 'to'
+^^WI    @ 3,5 STATIC    STEXT6 'to'
 % CLEAR
 % INSERT !^^WI @ 1,3 EDITBOX E1 '!
 % STORE FORMAT /(F8.3)/ LENGTH 8 REAL XFN
@@ -171,36 +170,36 @@
 %   VERIFY R1 E1 E2 E3 E4 E5 E6 BXX BOK
 %%^^WI SET _MAINTEXTOUTPUT NOECHO
 %%^^CR
-%   GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %%^^WI SET _MAINTEXTOUTPUT NOECHO
 %%^^CR
 %   CASE VALUE
 %    BLOCK             %RESOLUTION%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE R14 = VALUE
 %    END BLOCK
 %    BLOCK             %EDIT1%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE XFN = VALUE
 %    END BLOCK
 %    BLOCK             %EDIT2%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE YFN = VALUE
 %    END BLOCK
 %    BLOCK             %EDIT3%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE ZFN = VALUE
 %    END BLOCK
 %    BLOCK             %EDIT4%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE XFM = VALUE
 %    END BLOCK
 %    BLOCK             %EDIT5%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE YFM = VALUE
 %    END BLOCK
 %    BLOCK             %EDIT6%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE ZFM = VALUE
 %    END BLOCK
 %    BLOCK             %BXX%
