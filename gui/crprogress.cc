@@ -19,21 +19,14 @@
 #include	"cccontroller.h"	// for sending commands
 
 
-// OPSignature:  CrProgress:CrProgress( CrGUIElement *:mParentPtr ) 
-	CrProgress::CrProgress( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
+CrProgress::CrProgress( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
 {
-//Insert your own code here.
 	mWidgetPtr = CxProgress::CreateCxProgress( this, (CxGrid *)(mParentPtr->GetWidget()) );
 	mTabStop = false;
-//End of user code.         
 }
-// OPSignature:  CrProgress:~CrProgress() 
 	CrProgress::~CrProgress()
 {
-//Insert your own code here.
 	if ( mWidgetPtr != nil )
 	{
 		delete (CxProgress*) mWidgetPtr;
@@ -45,24 +38,22 @@
 		mControllerPtr->RemoveProgressOutputPlace();
 	}
 
-//End of user code.         
 }
-// OPSignature: Boolean CrProgress:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrProgress::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	
 	// Initialization for the first time
 	if( ! mSelfInitialised )
 	{	
-		LOGSTAT("*** Text *** Initing...");
+            LOGSTAT("*** ProgressBar *** Initing...\n");
 
 		retVal = CrGUIElement::ParseInput( tokenList );
 		mSelfInitialised = true;
 
-		LOGSTAT( "*** Created Text        " + mName );
+            LOGSTAT( "*** Created ProgressBar    " + mName + "\n");
 	}
 	
 	// End of Init, now comes the general parser
