@@ -2,8 +2,8 @@
 %% CRYSTALS script for input of LIST 29 from library file
 %  VARIABLE INTEGER ELEMENTCOUNT RADIATION
 %  EVALUATE ELEMENTCOUNT = 0
-Input details of the elements in the asymmetric unit
------ ------- -- --- -------- -- --- ---------- ----
+ Input details of the elements in the asymmetric unit
+ ----- ------- -- --- -------- -- --- ---------- ----
       If you are going to use SHELXS to solve the structure, remember
       to give C and H first, if present in your compound.
 %

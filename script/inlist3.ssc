@@ -1,8 +1,8 @@
 %SCRIPT INLIST3
 %% CRYSTALS scattering factor input script
 %  VARIABLE INTEGER ELEMENTCOUNT RADIATION
-Input scattering factors
------ ---------- -------
+ Input scattering factors
+ ----- ---------- -------
 %  QUEUE REWIND
 %  EVALUATE ELEMENTCOUNT = 0
 %  IF RADIATION .LE. 0 THEN

@@ -23,8 +23,9 @@
 %     FINISH
 %  END IF
 %  IF GRAPHICS .EQ. TRUE THEN
-%      COPY '#CAMERON'
-%      COPY 'END'
+-GID%      COPY '#CAMERON'
+-GID%      COPY 'END'
++GID%      COPY '#SCRIPT XCAM'
 %      LOOP
 %       ON END TERMINATE
 %       CLEAR

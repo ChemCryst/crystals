@@ -114,10 +114,10 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    BLOCK
 %      ON ERROR REPEAT
 %%     CHECK THAT THE BASIC DATA IS READ IN OK
--------------------------------------------------------------------------
+ -------------------------------------------------------------------------
        NB RC93 creates both LIST30 and LIST31 automatically.
         DO NOT MODIFY THEM or this information will be lost
--------------------------------------------------------------------------
+ -------------------------------------------------------------------------
 %      COPY '#SCRIPT INBASIC'
 %      IF INBASICS .NE. 1 THEN
 %        FINISH

@@ -1,9 +1,9 @@
 %SCRIPT INLIST2
 %% CRYSTALS symmetry input script
 %  VARIABLE INTEGER NSYM
-Input the symmetry operations for your structure
------ --- -------- ---------- --- ---- ---------
-                                                   use  END  to abandon input
+ Input the symmetry operations for your structure
+ ----- --- -------- ---------- --- ---- ---------
+                                            use  END  to abandon input
 %    ON ERROR REPEAT
 %    ON END   TERMINATE
 %    QUEUE REWIND

@@ -3,8 +3,8 @@
 %  BLOCK
 %    ON ERROR REPEAT
 %    ON END   TERMINATE
-Input of general experimental details
------ -- ------- ------------ -------
+ Input of general experimental details
+ ----- -- ------- ------------ -------
                                                    use  END  to abandon input
 %    QUEUE REWIND
 %%

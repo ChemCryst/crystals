@@ -108,7 +108,7 @@
 %    END IF
 %    CLEAR
 
---------------------------------------------------------------------
+ -------------------------------------------------------------------
  It is possible to merge reflections such that rogue /Fo/ values
  are down-weighted. So if one /Fo/ value differs considerably from
  the mean value it's significance is scaled down.  This approach  
@@ -116,7 +116,7 @@
  answer 'YES' to the next question concerning merging with weights.
  Otherwise just answer 'NO' to this question and then you can merge
  with unit weights as before - or not merge at all
-------------------------------------------------------------------pm
+ -------------------------------------------------------------------
 
 %    VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -

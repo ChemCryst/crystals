@@ -1,6 +1,6 @@
 %SCRIPT INITIAL
-General SCRIPT for doing reflection input and data reduction
-------- ------ --- ----- ---------- ----- --- ---- ---------
+ General SCRIPT for doing reflection input and data reduction
+ ------- ------ --- ----- ---------- ----- --- ---- ---------
 %  VARIABLE INTEGER RADIATION INBASICS SOLVEMETHOD
  To proceed you will need to know :-
             Your crystal's unit cell parameters

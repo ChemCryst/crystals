@@ -1,6 +1,6 @@
 %SCRIPT  QUICKST
-SCRIPT to enable input of 'SHELX' type reflection data
------- -- ------ ----- ----- -- ----- ---- ---------- ----
+ SCRIPT to enable input of 'SHELX' type reflection data
+ ------ -- ------ ----- ----- -- ----- ---- ---------- ----
 % VARIABLE INTEGER INBASICS SOLVEMETHOD 
 % BLOCK
 %%  CHECK THAT THE BASIC DATA IS READ IN OK

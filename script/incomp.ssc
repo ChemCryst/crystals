@@ -14,8 +14,8 @@ Some properties depend on wavelength.
 You must have set Lambda in LIST 13, Experimental conditions
 %        COPY '#SCRIPT INLIST13'
 %    END IF
-Input Cell Contents  (symbol, number)
------ ---- --------
+ Input Cell Contents  (symbol, number)
+ ----- ---- --------
                                                  use  END  to abandon input
 %  MESSAGE USER1 'An invalid element name/number was given ( ignored )'
 %  BLOCK

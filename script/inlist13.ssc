@@ -3,9 +3,9 @@
 %  VARIABLE INTEGER ABSORPTION RADIATION ORIENTTYPE
 %  VARIABLE CHARACTER CTYPE
 %  VARIABLE LOGICAL READORIENT
-Input of experimental conditions for your structure
------ -- ------------ ---------- --- ---- ---------
-                                                 use  END  to abandon input
+ Input of experimental conditions for your structure
+ ----- -- ------------ ---------- --- ---- ---------
+                                           use  END  to abandon input
 %  ON ERROR REPEAT
 %  ON END TERMINATE
 %  VERIFY YES NO

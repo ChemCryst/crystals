@@ -1,12 +1,12 @@
 %SCRIPT  DIPIN
-SCRIPT to enable input of 'DIP2000' type reflection data
------- -- ------ ----- ----- -- ----- ---- ---------- ----
+ SCRIPT to enable input of 'DIP2000' type reflection data
+ ------ -- ------ ----- ----- -- ----- ---- ---------- ----
 % VARIABLE INTEGER SOLVEMETHOD
 % VARIABLE INTEGER INBASICS MERGE 
 %  VARIABLE CHARACTER FILENAME SCFNAME HKLNAME 
 
-Input reflection data from a file containing h,k,l Fo, sigma (HKLI file)
------ ---------- ---- ----------- ---------- ----- --- ----- -----------
+ Input reflection data from file containing h,k,l Fo, sigma (HKLI file)
+ ----- ---------- ---- --------- ---------- ----- --- ----- -----------
 %  CLEAR
 %  ON ERROR CONTINUE
 %  COPY  '#CLOSE HKLI'

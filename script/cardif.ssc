@@ -2,7 +2,7 @@
 %  VARIABLE INTEGER MODE DIFFRACT SOURCE
 %  VARIABLE LOGICAL RECOMPUTE
 %  EVALUATE RECOMPUTE = FALSE
------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  This script is MODIFIED from the original one to take into account the 
  local raw data input card format for Nottingham OR THE CARDIFF /Fo/**2
 (3F4.0, 2F8.0) FORMAT (S92.HKL files).  Note that it does not
@@ -17,7 +17,7 @@
  directly or computed by CRYSTALS by the user inputting the setting angles 
  of two or three approximately orthogonal reflections. 
 							       
- ---------------------------------------------------------------------pm
+ ---------------------------------------------------------------------
 
 %%
 %    BLOCK

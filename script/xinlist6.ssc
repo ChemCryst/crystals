@@ -3,8 +3,8 @@
 %  VARIABLE INTEGER INBASICS
 %  VARIABLE INTEGER SHELX FS NCOEF FMT
 %  VARIABLE CHARACTER SWITCH
-Input reflection data from a file containing h,k,l Fo, sigma (HKLI file)
------ ---------- ---- ----------- ---------- ----- --- ----- -----------
+ Input reflection data from  file containing h,k,l Fo, sigma (HKLI file)
+ ----- ---------- ---- ---------- ---------- ----- --- ----- -----------
 %%
 %% Gather information before acting.
 %%

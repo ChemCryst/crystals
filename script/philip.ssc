@@ -1,8 +1,8 @@
 %SCRIPT CADQUICK  %Script for quick input of CAD4 data%
 %  VARIABLE CHARACTER FILENAME SCFNAME HKLNAME ABSNAME
 %  VARIABLE INTEGER INBASICS SOLVEMETHOD
-AUTOMATIC INPUT OF CAD4 DATA
--------   ----- -- ---- ----
+ AUTOMATIC INPUT OF CAD4 DATA
+ -------   ----- -- ---- ----
       You will need to know the crystals Space Group symbol.
   You MUST have used RC85, and have a .HKL, .SCF and .ABS file.
 %  BLOCK

@@ -1,7 +1,7 @@
 %SCRIPT INLIST16
 %  VARIABLE INTEGER SWITCH
-A script to help you set up molecular geometry restraints
-- ------ -- ---- --- --- -- --------- -------- ----------
+ A script to help you set up molecular geometry restraints
+ - ------ -- ---- --- --- -- --------- -------- ----------
 %%
 %  BLOCK
 %  ON ERROR TERMINATE ABANDONED

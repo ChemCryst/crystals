@@ -1,8 +1,8 @@
 %SCRIPT INLIST14
 %% CRYSTALS LIST 14 input script
 %  VARIABLE REAL XMIN XMAX YMIN YMAX ZMIN ZMAX RES A B C
-Define a unique part of the unit cell
------- - ------ ---- -- --- ---- ----
+ Define a unique part of the unit cell
+ ------ - ------ ---- -- --- ---- ----
 %  CLEAR
 %    IF ( EXISTS 1 .EQ. 1 ) THEN
 %      COPY '#GENERALEDIT 1'

@@ -7,8 +7,8 @@
 %  EVALUATE DTRSQ = .000305
 %    ON ERROR REPEAT
 %    ON END   TERMINATE
-Input of cell e.s.d.s (sigma( a, b, c, alpha, beta, gamma ))
------ -- ---- ----------
+ Input of cell e.s.d.s (sigma( a, b, c, alpha, beta, gamma ))
+ ----- -- ---- ----------
                                                    use  END  to abandon input
 %    QUEUE REWIND
 %    CLEAR

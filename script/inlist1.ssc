@@ -3,9 +3,9 @@
 %  BLOCK
 %    ON ERROR REPEAT
 %    ON END   TERMINATE
-Input of cell parameters (  a, b, c, alpha, beta, gamma )
------ -- ---- ----------
-                                                   use  END  to abandon input
+ Input of cell parameters (  a, b, c, alpha, beta, gamma )
+ ----- -- ---- ----------
+                                              use  END  to abandon input
 %    QUEUE REWIND
 %    CLEAR
 %    INSERT 'REAL'

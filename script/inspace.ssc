@@ -10,8 +10,8 @@
 %  BLOCK
 %    ON ERROR REPEAT
 %    ON END TERMINATE
-Input the Space Group for your structure
------ --- ----- ----- -------- ---------
+ Input the Space Group for your structure
+ ----- --- ----- ----- -------- ---------
                                         Separate fields with spaces
                                         use  END  to abandon input
 %    QUEUE REWIND

@@ -1,8 +1,8 @@
 %SCRIPT INY290
 %% Input of Nottingham data
-----------------------------------------------------------------------
+ --------------------------------------------------------------------
  A data reduction script specially for Nottingham diffractometer data
---------------------------------------------------------------------pm
+ --------------------------------------------------------------------
 %  COPY '#PAUSE 3'
 %  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
    + EXISTS 29 .NE. 6 ) THEN

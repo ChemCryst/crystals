@@ -1,8 +1,8 @@
 %SCRIPT INRC93  %Script for quick input of CAD4 data%
 %  VARIABLE CHARACTER FILENAME SCFNAME HKLNAME ABSNAME
 %  VARIABLE INTEGER INBASICS SOLVEMETHOD
-AUTOMATIC INPUT OF CAD4 DATA
--------   ----- -- ---- ----
+ AUTOMATIC INPUT OF CAD4 DATA
+ -------   ----- -- ---- ----
 %  BLOCK
 %    ON ERROR REPEAT
 %    VERIFY YES NO
@@ -42,10 +42,10 @@ ABS file used...
 %    BLOCK
 %      ON ERROR REPEAT
 %%     CHECK THAT THE BASIC DATA IS READ IN OK
--------------------------------------------------------------------------
+ ------------------------------------------------------------------------
        NB RC93 creates both LIST30 and LIST31 automatically.
         DO NOT MODIFY THEM or this information will be lost
--------------------------------------------------------------------------
+ ------------------------------------------------------------------------
 %      COPY '#SCRIPT INBASICS'
 %      IF INBASICS .NE. 1 THEN
 %        FINISH

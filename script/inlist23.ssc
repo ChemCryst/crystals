@@ -6,9 +6,9 @@
 %   ON END TERMINATE
 %   QUEUE REWIND
 %   CLEAR
-Structure factor control list
------------------------------
-                                                   use  END  to abandon input
+ Structure factor control list
+ -----------------------------
+                                             use  END  to abandon input
 %    CLEAR
 %    VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
