@@ -3,7 +3,7 @@
  
  * Ensuring that refinement directives exist and are valid.
  
-%  VARIABLE LOGICAL EXTINCT DOCHECK
+%  VARIABLE LOGICAL EXTINCT DOEXTINC DOCHECK
 %  VARIABLE INTEGER ADP IKEY IOLDS ISER
 %  VARIABLE CHARACTER CLAST CPARAM CPARAM2 CKEY
 %% The variables needed by XQUESTIO
@@ -54,16 +54,16 @@
  
 %%
 %    EVALUATE QTITLE = 'List 12 has changed'
-%    EVALUATE QLINE1 = 'List 12 has changed'
-%    EVALUATE QLINE2 = 'Do you want to keep this refinement list?'
-%    EVALUATE BUTTOK = '&No'
-%    EVALUATE BUTTXX = '&Yes'
+%    EVALUATE QLINE1 = 'This script will overwrite any refinement'
+%    EVALUATE QLINE2 = 'instructions that you have created (List 12)'
+%    EVALUATE BUTTOK = '&Continue'
+%    EVALUATE BUTTXX = '&Do not overwrite'
 %    COPY '#SCRIPT XQUESTIO'
 %    IF ANSWER .EQ. FALSE THEN
  
- As you have chosen to keep your existing list 12,
- you must manually update list 12 if you wish to
- change the parameters which are being refined.
+{4,0 As you have chosen to keep your existing list 12,
+{4,0 you must manually update list 12 if you wish to
+{4,0 change the parameters which are being refined.
  
 %      FINISH
 %    END IF
@@ -76,17 +76,20 @@
  * CRYSTALS is creating a minimum valid LIST 12
 %   IF ADP .LE. 0 THEN
 %     EVALUATE CPARAM = " X'S "
+{4,1 Atomic positions will be refined
 %   ELSE IF ADP .EQ. 1 THEN
 %     EVALUATE CPARAM = " X'S, U[ISO] "
+{4,1 Positions and isotropic temperature factors will be refined
 %   ELSE IF ADP .EQ. 2 THEN
 %     EVALUATE CPARAM = " X'S, U'S "
+{4,1 Positions and anisotropic temperature factors will be refined
 %   END IF
-%   IF EXTINCT .EQ. TRUE THEN
+%   IF DOEXTINC .EQ. TRUE THEN
 %     EVALUATE CPARAM2 = " EXTPARAM "
- EXTINCTION is being refined
+{4,1 EXTINCTION will be refined
 %   ELSE
 %     EVALUATE CPARAM2 = "  "
- EXTINCTION is not being refined
+{4,1 EXTINCTION will not be refined
 %   END IF
 %   QUEUE REWIND
 %   QUEUE COPY #LIST 12
