@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2004/05/12 09:55:38  rich
+C If creating a list7, don't print error message if no reflections are
+C found.
+C
 C Revision 1.19  2003/07/08 10:04:37  rich
 C
 C On input of the twintol parameter, convert it internaly
@@ -380,6 +384,9 @@ C----- load list 25 to find number of twin elements
          CALL XFAL25
          IF (IERFLG.LT.0) GO TO 5450
       END IF
+c----- load list 2 for systematic absence check
+      IF (KHUNTR(2,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL02
+c
 Cdjwoct2000 > moved from lower down
 C--LOAD LIST 13 FOR THE TWIN DATA
       CALL XFAL13
@@ -647,6 +654,8 @@ c----- save the base index
          do 700 i=2,n25
 c----- create a twin index (matrix stored by rows)
             call xmlttm(store(m25), htemp1, store(m6),3,3,1)
+c----- check if computed index is absent
+            if (kcentr(in) .lt. 0) goto 698
 c----- find difference vector
             htemp(1) = float(nint(store(m6)))-store(m6)
             htemp(2) = float(nint(store(m6+1)))-store(m6+1)
