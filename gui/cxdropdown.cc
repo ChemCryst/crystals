@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2001/06/17 14:44:39  richard
+// CxDestroyWindow function.
+//
 // Revision 1.11  2001/03/08 16:44:08  richard
 // General changes - replaced common functions in all GUI classes by macros.
 // Generally tidied up, added logs to top of all source files.
@@ -197,7 +200,7 @@ int CxDropDown::GetIdealWidth()
         GetTextExtent( GetString(i), &cx, &cy );
         maxSiz = max (maxSiz, cx);
     }
-    return ( maxSiz + (2 * wxSystemSettings::GetSystemMetric(wxSYS_VSCROLL_X ) ) ); 
+    return ( maxSiz + (3 * wxSystemSettings::GetSystemMetric(wxSYS_VSCROLL_X ) ) ); 
 #endif
 }
 
@@ -210,9 +213,9 @@ int CxDropDown::GetIdealHeight()
 #ifdef __BOTHWX__
 // May need to base this on font size if it returns the dropped
 // list height rather than the closed list height.
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
+      int cx,cy;
+      GetTextExtent( "Any old string", &cx, &cy );
+      return (cy+10); // nice height for closed list boxes.
 #endif
 
 }
