@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.21  2003/09/16 19:52:38  rich
+c Fixed bug in #MATCH/RENAME. No idea how it worked before. Now fixed.
+c
 c Revision 1.20  2003/09/16 13:30:22  rich
 c Remove unneeded array.
 c
@@ -310,6 +313,7 @@ CDJWNOV99      NATOMP = 14
       MDOLD = 4
       NOLD = 0
       MDNEW = 4
+      MDUIJ = 7
       NNEW = 0
 C -- DEFAULT METHOD IS 1 (ROTATION COMPONENT OF ROTATION-DILATION
 C    MATRIX ONLY)
@@ -902,6 +906,7 @@ C    CHECK MUST BE DONE , IN CASE THE MATRIX WILL LEAVE THE ROTATION OF
 C    SOME ATOMIC COORDINATES UNDEFINED.
 C 
          MNEW=LNEW+(NNEW-1)*MDNEW
+         MUIJ=LUIJ+(NNEW-1)*MDUIJ
          IDEFIN=1
 C 
          DO 700 I=1,3
@@ -928,6 +933,7 @@ Cdjwapr2001
 C 
 C -- MATRIX CHECKED. APPLY MATRIX TO OLD COORDINATES
       CALL XMXRTI (STORE(LNEW),RESULT,MDNEW,NNEW)
+      CALL XMXUIJ (STORE(LUIJ),WSPAC3,MDUIJ,NNEW,STORE(L1P2))
 C 
 Cdjwapr2001
       IF (IMATRIX.LE.-1) THEN
@@ -1050,12 +1056,15 @@ C    SHOULD BE CHANGED.
       GO TO (1500,1750,1500,1500,1740,1741),IFLCMP
 1500  CONTINUE
 C -- COPY COORDINATES BACK TO ATOM DEFINTION BLOCK
-      DO 1550 I=1,NATMD
-       INDATM=LATMD+(I-1)*MDATMD+4
-       INDNEW=LNEW+(I-1)*MDNEW
+      DO I=1,NATMD
 C -- CALCULATE THE POSITIONS TO MOVE THE COORDINATES BETWEEN
+        INDATM=LATMD+(I-1)*MDATMD+4
+        INDNEW=LNEW+(I-1)*MDNEW
+        INDUIJ=LUIJ+(I-1)*MDUIJ
         CALL XMOVE (STORE(INDNEW),STORE(INDATM),3)
-1550  CONTINUE
+        CALL XMOVE (STORE(INDUIJ+1),STORE(INDATM+3),6)
+      END DO
+ 
 C -- FORM NEW LIST 5
 C -- SET COUNT OF ATOMS IN THIS LIST TO 0
       NNEWL5=0
@@ -1475,6 +1484,7 @@ C -- SET UP BLOCKS
       LATMD=KSTALL(NATMD*MDATMD)
       LOLD=KSTALL(NATMD*MDOLD)
       LNEW=KSTALL(NATMD*MDNEW)
+      LUIJ=KSTALL(NATMD*MDUIJ)
 C -- INCREMENT GROUP SERIAL NUMBER
       IF (ICODE .EQ. 1) IGRPNO=IGRPNO+1
 C -- SET REPLACE/COMPARE FLAG TO DEFAULT VALUE
@@ -1508,8 +1518,11 @@ C -- SET (TEMPORARILY) ORIGIN TO ZERO
 C -- CALCULATE WHERE THIS ATOM IS GOING TO GO
       INDATM=LATMD+(NNEW-1)*MDATMD
       INDNEW=LNEW+(NNEW-1)*MDNEW
+      INDUIJ=LUIJ+(NNEW-1)*MDUIJ
 C -- COPY ATOM EXCEPT TYPE AND SERIAL
       CALL XMOVE( PLATOM(3), STORE(INDATM+2), NLATOM-2)
+      CALL XMOVE( PLATOM(4), STORE(INDUIJ), 1)
+      CALL XMOVE( PLATOM(8), STORE(INDUIJ+1), 6)
 C -- APPLY REQUIRED MATRIX TO COORDINATES
       CALL XMLTMM (XMATR(1),PLATOM(5),TEMP(1),3,3,1)
 C -- APPLY OFFSET TO COORDINATES
@@ -1975,7 +1988,7 @@ c     2  I4, 11H, NBATCH = ,I4)
 c        WRITE(NCFPU1,1050) STORE(L5O),STORE(L5O+1),STORE(L5O+2),
 c     1  STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
 c1050    FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
-c        CALL XRDOPN ( 5 , JFRN(1,2) , 'regular.oby', 11)
+c        CALL XRDOPN ( 5 , JFRN(1,2) , 'REGULAR.OBY', 11)
 c        WRITE(NCFPU2,'(''DEFGROUP REG1 ATOMS'')')
 c        DO I=1,NOLD
 c         INDATM=LATMD+MDATMD*(I-1)
@@ -1991,7 +2004,7 @@ c         CALL XCRAS(CAMATM,LCAMA)
 c         WRITE(NCFPU2,'(A)')CAMATM
 c        END DO
 c        WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
-c        CALL XRDOPN ( 7 , JFRN(1,2) , 'regular.oby', 11)
+c        CALL XRDOPN ( 7 , JFRN(1,2) , 'REGULAR.OBY', 11)
 c      ENDIF
 
 
@@ -2540,7 +2553,7 @@ C Write cameron.ini for orthogonal coords:
 C Write regular.oby - may be used in cameron to colour the two
 C overlapping molecules separately.
       CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.dat', 11)
-      CALL XRDOPN ( 5 , JFRN(1,2) , 'regular.oby', 11)
+      CALL XRDOPN ( 5 , JFRN(1,2) , 'REGULAR.OBY', 11)
       WRITE(NCFPU1,'(''Group1 '',I6)') NOLD
       WRITE(NCFPU2,'(''DEFGROUP REG1 ATOMS'')')
       DO I=1,NOLD
@@ -2569,7 +2582,7 @@ C overlapping molecules separately.
       END DO
       WRITE(NCFPU2,'(''COLO GROUP REG1 BLUE COLO GROUP REG2 RED'')')
       WRITE(NCFPU2,'(''VIEW''//)')
-      CALL XRDOPN ( 7 , JFRN(1,2) , 'regular.oby', 11)
+      CALL XRDOPN ( 7 , JFRN(1,2) , 'REGULAR.OBY', 11)
       CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.dat', 11)
 
 C Write header for superimposed orthogonal atom lists:
@@ -3219,12 +3232,15 @@ c      CALL XPRVDU(NCVDU,3,0)
 
 
       MNEW = LNEW
+      MUIJ = LUIJ
       MRENM = LRENM
       MATMD = LATMD
       DO I = 0, NMAP-1
         IF ( ISTORE(4+LMAP+I*MDATVC) .EQ. 1 ) THEN
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
-          CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5+4),STORE(MNEW),3)    ! XYZ
+          CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)    ! Flag
+          CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)  ! Uijs
           CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
@@ -3232,6 +3248,7 @@ c      CALL XPRVDU(NCVDU,3,0)
           MNEW = MNEW + 4
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
+          MUIJ = MUIJ + MDUIJ
         END IF
       END DO
 
@@ -3275,11 +3292,14 @@ C saw to that earlier).
       MNEW = LNEW
       MRENM = LRENM
       MATMD = LATMD
+      MUIJ = LUIJ
       DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
 c          WRITE(CMON,'(2(A,I7))')'I5MAP:',I5,STORE(I5),NINT(STORE(I5+1))
 c          CALL XPRVDU(NCVDU,1,0)
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)
+          CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)
           CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
@@ -3287,6 +3307,7 @@ c          CALL XPRVDU(NCVDU,1,0)
 c          WRITE(CMON,'(A,I10)')'MRENM+5: ',ISTORE(MRENM+5)
 c          CALL XPRVDU(NCVDU,1,0)
           MNEW = MNEW + 4
+          MUIJ = MUIJ + MDUIJ
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
       END DO
@@ -3353,11 +3374,14 @@ C Use the better match to get a better matrix.
         NOLD = NMAP
         NNEW = NMAP
         MNEW = LNEW
+        MUIJ = LUIJ
         MRENM = LRENM
         MATMD = LATMD
         DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)
+          CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)
           CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
@@ -3367,6 +3391,7 @@ c          WRITE(CMON,'(A,3F10.3,I5)')'MAP: ',(STORE(MNEW+K),K=0,2),I5
 c          CALL XPRVDU(NCVDU,1,0)
 
           MNEW = MNEW + 4
+          MUIJ = MUIJ + MDUIJ
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
         END DO
@@ -3401,16 +3426,20 @@ C Use the better matrix to do a final mapping:
         NOLD = NMAP
         NNEW = NMAP
         MNEW = LNEW
+        MUIJ = LUIJ
         MATMD = LATMD
         MRENM = LRENM
         DO I = 0, NMAP-1
           I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
           CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          CALL XMOVE (STORE(I5+3),STORE(MUIJ),1)
+          CALL XMOVE (STORE(I5+7),STORE(MUIJ+1),6)
           CALL XMOVE (STORE(I5),STORE(MATMD),MDATMD)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
           ISTORE(MRENM+5) = I5
           MNEW = MNEW + 4
+          MUIJ = MUIJ + MDUIJ
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
         END DO

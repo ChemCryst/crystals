@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.9  2003/07/08 10:05:25  rich
 C Upon inversion of a matrix in the #MATRIX command,
 C put the determinant in the script variable MATRIX:DET,
@@ -1652,6 +1655,66 @@ C --
       CALL XMLTMT(XMATR(1,1),ATOMS(1,J),RESULT(1),3,3,1)
       CALL XMOVE (RESULT(1),ATOMS(1,J),3)
 2000  CONTINUE
+      RETURN
+      END
+C
+C --
+C
+CODE FOR XMXUIJ
+      SUBROUTINE XMXUIJ (ATOMS,XMATR,MDUIJ,NATM,RCPC)
+C -- APPLIES XMATR TO LIST of Uij
+C -- First variable in each block is the FLAG parameter.
+C -- For now, only apply transform to atoms where flag is zero
+C -- (anisotropic atoms).
+C -- RCPC is the reciprocal cell lengths.
+      DIMENSION ATOMS(MDUIJ,NATM)
+      DIMENSION XMATR(3,3), RTEMP(9), STEMP(9)
+      DIMENSION RCPC(3), RCPM(9), RCPI(9)
+     
+      CALL XZEROF(RCPM,9)
+      RCPM(1) = RCPC(1)
+      RCPM(5) = RCPC(2)
+      RCPM(9) = RCPC(3)
+      CALL XZEROF(RCPI,9)
+      RCPI(1) = 1.0/RCPC(1)
+      RCPI(5) = 1.0/RCPC(2)
+      RCPI(9) = 1.0/RCPC(3)
+
+      DO J=1,NATM
+
+        IF ( NINT(ATOMS(1,J)) .EQ. 0) THEN
+
+
+C Get full tensor from upper diagonal storage:
+          RTEMP(1)=ATOMS(2,J)  !U11
+          RTEMP(2)=ATOMS(7,J)  !U12
+          RTEMP(3)=ATOMS(6,J)  !U13       2 7 6
+          RTEMP(4)=ATOMS(7,J)  !U21       7 3 5
+          RTEMP(5)=ATOMS(3,J)  !U22       6 5 4
+          RTEMP(6)=ATOMS(5,J)  !U23
+          RTEMP(7)=ATOMS(6,J)  !U31
+          RTEMP(8)=ATOMS(5,J)  !U32
+          RTEMP(9)=ATOMS(4,J)  !U33
+
+C Transform = RCPI * R * RCPM * U * trans(RCPM) * trans(R) * trans(RCPI))
+C where RCPN is a matrix with a*, b* and c* on the diagonal,
+C and RCPI is its inverse. Start from the middle to the left:
+          CALL XMLTMM (RCPM,RTEMP,STEMP,3,3,3)  ! RCPM*U
+          CALL XMLTMM (XMATR,STEMP,RTEMP,3,3,3)! R*RESULT
+          CALL XMLTMM (RCPI,RTEMP,STEMP,3,3,3)  ! RCPI*RESULT
+C Now to the right:
+          CALL XMLTMT (STEMP,RCPM,RTEMP,3,3,3)  ! RESULT*RCPM
+          CALL XMLTMT (RTEMP,XMATR,STEMP,3,3,3)! RESULT*R'
+          CALL XMLTMT (STEMP,RCPI,RTEMP,3,3,3)  ! RESULT*RCPI
+C Get upper diagonal form from full tensor:
+          ATOMS(2,J)=RTEMP(1)
+          ATOMS(3,J)=RTEMP(5)
+          ATOMS(4,J)=RTEMP(9)
+          ATOMS(5,J)=RTEMP(6)
+          ATOMS(6,J)=RTEMP(3)
+          ATOMS(7,J)=RTEMP(2)
+        END IF
+      END DO
       RETURN
       END
 C
