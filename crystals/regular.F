@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.9  2001/06/08 15:08:21  ckpgroup
+c reinstate updated re-naming code
+c
 C Revision 1.7  2001/04/30 11:50:31  ckpgroup
 C fix-up omitted rflections when re-indexing matrix has non-integral results' read6.src
 C
@@ -1740,7 +1743,7 @@ C -- RESTORE LIST 5
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
         WRITE (NCAWU,'(A)') CMON(1)
-9861  FORMAT (' An atom with this type and serial already given - '
+9861  FORMAT (' An atom with this type and serial already given - ',
      1 A4,I6)
       CALL XERHND(4)
       RETURN
