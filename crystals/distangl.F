@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2003/07/09 17:02:20  rich
+C Problem: New CIF script includes cell esd's in distance calculation, this
+C makes C-H distances for riding H's have a non-zero esd. (Correctly, I might
+C add). However checkcif cares not for this number, so we must detect riding
+C H's and explicitly set the bond esd to zero after it is computed. Needless
+C to say, this only happens if you explicitly set the \DIST HESD parameter to
+C 'NONFIXED' which you're not likely to do by accident. The only place that
+C does this is the XCIF script.
+C
 C Revision 1.50  2003/07/01 16:43:34  rich
 C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
 C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
@@ -843,7 +852,6 @@ C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
       I29=L29 + (N29-1)*MD29
       I5 = L5 + (N5-1)*MD5
       BMAX = 0.
-      BMIN = 0.
 
       DO M5=L5,I5,MD5
         JZ = L29 + IRDUS    !IF NO MATCH - POINT TO DEFAULT (FIRST) ATOM
@@ -2364,6 +2372,7 @@ C
 \XLST02
 \XLST05
 \XLST12
+\XLST29
 \XERVAL
 \XOPVAL
 \XIOBUF
@@ -2395,14 +2404,49 @@ C--LOAD A FEW PIECES OF DATA
       AC=AMAX1(DISTS(2),D3)
       BT=DISTS(3)
       BC=DISTS(4)
-      CALL XDIST2
-C
-C----- REDUCE SYMMETRY IF NECESSARY
-      CALL KSYMOD (ISYMOD, IC, IL, N2P, L2C, L2, N2, MD2)
+      JFNVC = 0
+      IF ( BC .LT. 0.0 ) THEN
+C----- LOAD THE FUNCTION VECTOR WITH RADIUS 1 (VDW)
+        JFNVC = 1
+        IRDUS = 1
+C----- LOAD LIST 29
+        CALL XFAL29
+        TOLER = - BC
+      END IF
 C--LOAD THE INPUT LIST
       LN1=KTYP05(LN1)
       CALL XLDR05(LN1)
       IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      I29=L29 + (N29-1)*MD29
+      I5 = L5 + (N5-1)*MD5
+
+      IF ( JFNVC .EQ. 1 ) THEN
+C----- ALLOCATE A RADIUS VECTOR
+        MDFNVC = 1
+        NFNVC = N5
+        I=N5*MDFNVC
+        LFNVC = KSTALL (I)
+        CALL XZEROF ( ISTORE(LFNVC) , I )
+        IDEFFN = 0
+        I29=L29 + (N29-1)*MD29
+        BMAX = 0.
+        DO M29= L29,I29,MD29
+          BMAX = AMAX1( BMAX, STORE(M29+IRDUS))
+        END DO
+        BMAX=2.*BMAX + TOLER
+        AT = 0.
+        AC = BMAX
+        BT = 0.
+        BC = BMAX
+        D2 = BMAX
+      END IF
+
+      CALL XDIST2
+
+C----- REDUCE SYMMETRY IF NECESSARY
+      CALL KSYMOD (ISYMOD, IC, IL, N2P, L2C, L2, N2, MD2)
+
 C--FIND THE OUTPUT LIST TYPE
       LN2=KTYP05(LN2)
 C----- FIDDLE THINGS FOR 'AVERAGE'. CHECKED VALUES OF D1 AND D3 ARE
@@ -2438,6 +2482,7 @@ C--CHECK THE STORE AREA
 C--SET UP A FEW CONSTANTS FOR THE PASSAGE THROUGH THE ATOMS
 1350  CONTINUE
       M5A=L5
+      MFNVCA = LFNVC
       JF=N5
       JG=L5+(N5-1)*MD5
       JL=0
@@ -2447,7 +2492,25 @@ cdjwoct2001
       ifrag = 0
 C--SET UP THE CONTROL VARIABLES FOR THIS PASS AND CHECK IF ANY ATOMS ARE
 1400  CONTINUE
+
+      IF ( JFNVC .EQ. 1 ) THEN
+C Reform radius vector every time, as atom list is shifting.
+        MFNVC = LFNVC
+        DO M5=L5,I5,MD5
+          JZ = L29 + IRDUS    !IF NO MATCH - POINT TO DEFAULT (FIRST) ATOM
+          DO M29= L29,I29,MD29
+            IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
+              JZ=M29+IRDUS
+              EXIT
+            END IF
+          END DO
+          STORE(MFNVC) = STORE(JZ)
+          MFNVC = MFNVC + MDFNVC
+        END DO
+      END IF
+
       M5=M5A+MD5
+      MFNVC = MFNVCA+MDFNVC
       JF=JF-1
       IF(JF)3400,3400,1450
 C--CHECK THE REMAINING ATOMS WITH THE CURRENT PIVOT
@@ -2462,7 +2525,7 @@ cdjwoct2001
       NFL=JE
       JJ=M5
 C -- CHECK SPACE AVAILABLE
-      IF (KDIST1(JF, J, JT, 0, TOLER, ITRANS,0,4,0)) 9920, 3350, 1550
+      IF (KDIST1( JF, J, JT, JFNVC, TOLER, ITRANS,0,4,0)) 9920,3350,1550
 C--REMOVE DUPLICATE ENTRIES FOR EACH ATOM, LEAVING THE MIN. CONTACT DIST
 1550  CONTINUE
       NFL=J
@@ -2646,6 +2709,7 @@ C--CHANGE THE SERIAL NUMBER
 C--UPDATE THE POINTER
 3370  CONTINUE
       M5A=M5A+MD5
+      MFNVCA=MFNVCA+MDFNVC
       GOTO 1400
 C
 C--END OF THE CONDENSING LOOP  -  OUTPUT THE NEW LIST
@@ -2831,7 +2895,6 @@ C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
       I29=L29 + (N29-1)*MD29
       I5 = L5 + (N5-1)*MD5
       BMAX = 0.
-      BMIN = 0.
 
       DO M5=L5,I5,MD5
         JZ = L29 + IRDUS    !IF NO MATCH - POINT TO DEFAULT (FIRST) ATOM
