@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  1999/07/21 18:11:06  richard
+C RIC: Remove defunct code. Fix setting of QSINL5 flag. (Don't set FALSE, if
+C not updating list.)
+C
 C Revision 1.17  1999/07/20 17:58:44  richard
 C RIC: There was a problem where any element without a colour assigned
 C in propwin.dat, was getting assigned a default radius aswell as a
@@ -755,7 +759,7 @@ C Get atom type.
              DO 80 K = 1, NATINF * 6, 6
                    IF(IATINF(K).EQ.IATTYP) THEN
                         VDW  = ATINF(K+1)
-                        COV  = ATINF(K+2)
+                        COV  = ABS(ATINF(K+2))
                         IRED = IATINF(K+3)
                         IGRE = IATINF(K+4)
                         IBLU = IATINF(K+5)
@@ -850,15 +854,7 @@ C                  WRITE(99,'(2A)') 'Not Found ', CATTYP
                          GOTO 90
 90           CONTINUE
              CLOSE(NCARU)
-C
-C     WRITE(NCAWU,'(A)')'^^TXProperties OK^^EN'
-C     WRITE(NCAWU,'(A,F15.3)')'^^TXTSTORE(X) ',TSTORE(IPLACE),'^^EN'
-C     WRITE(NCAWU,'(A,F15.3)')'^^TXTSTORE(Y) ',TSTORE(IPLACE+1),'^^EN'
-C     WRITE(NCAWU,'(A,F15.3)')'^^TXTSTORE(Z) ',TSTORE(IPLACE+2),'^^EN'
-C     WRITE(NCAWU,'(A,F15.3)')'^^TXSTORE(J+1) ',STORE(J+1),'^^EN'
-C     WRITE(NCAWU,'(A,F15.3)')'^^TXSTORE(J+2) ',STORE(J+2),'^^EN'
-C     WRITE(NCAWU,'(A,F15.3)')'^^TXSTORE(J+3) ',STORE(J+3),'^^EN'
-C
+
              WRITE(CLAB,'(A)')STORE(J)
              CALL XCTRIM(CLAB,ILEN)
              ISER = NINT(STORE(J+1))
@@ -943,15 +939,19 @@ C
              IPLACE = IPLACE + 3
 100      CONTINUE
  
+
          DO 130 I = 1, N5-1
             IAT1P = L5+((I-1)*MD5)
             NFOUND=ICRDIST1(N5,STACK,L5,IAT1P,MD5,IOFF)
             IAT1P = L5+((I-1)*MD5)
+
+
             DO 120 J = 1, NFOUND
                IAT2P = NINT(STACK((J*5)-4))
                ACTDST= STACK(J*5)
                IAT1 = ISTORE(IAT1P)
                IAT2 = ISTORE(IAT2P)
+
                DO 110 K = 1, NATINF * 6, 6
                   IF(IATINF(K).EQ.IAT1) THEN
                      COV1  = ATINF(K+2)
@@ -960,6 +960,12 @@ C
                      COV2  = ATINF(K+2)
                   ENDIF
 110            CONTINUE
+
+               IF (COV1 .LT. 0.00) GOTO 130
+C First atom is not to be bonded.
+               IF (COV2 .LT. 0.00) GOTO 120
+C Second atom is not to be bonded.
+
                REQDSX = (COV1 + COV2) * 1.3
                REQDSN = (COV1 + COV2) * 0.7
                IF( (ACTDST.LT.REQDSX) .AND.
