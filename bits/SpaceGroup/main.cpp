@@ -67,7 +67,7 @@ using namespace std;
 #define PATH_MAX _MAX_PATH
 #endif
 
-#define kVersion "1.0.1.3(Beta)"
+#define kVersion "1.1(Beta)"
 
 void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRanking, Table& pTable)	//This outputs the ranked spacegroups and the stats table to the file at the path pRunData->iOutputFile
 {
@@ -92,6 +92,7 @@ void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRa
 void runTest(RunParameters& pRunData)
 {
     std::cout << "Reading in tables...";
+    std::cout.flush();
     struct timeval time1;
     struct timeval time2;
     gettimeofday(&time1, NULL);
@@ -110,6 +111,7 @@ void runTest(RunParameters& pRunData)
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nReading in hkl data...";
+    std::cout.flush();
     gettimeofday(&time1, NULL);
     HKLData* tHKL;
     try
@@ -124,28 +126,41 @@ void runTest(RunParameters& pRunData)
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     
-    //This is just testing  
-    std::cout << "Merging...\n";  
-       gettimeofday(&time1, NULL);
-       //getMergeCrystalSys(0);
-    LaueGroups tGroups;
-    SystemRef tSystemRef;
-    unsigned short tNumGroups;
-    for (int i = LaueGroups::kCubicID; i >= 0; i--)
+    if (pRunData.iMerge)
     {
-	tSystemRef = tGroups.getSystemRef(&tNumGroups, i); 
-	cout << "System: " <<  tSystemRef << " " << tNumGroups << "\n";
-	for (int j = 0; j<tNumGroups; j++)
-	{
-	    MergedData tMergedData = tGroups.mergeSystemGroup(*tHKL, tSystemRef, j);
-	    cout << j << ": " << tMergedData << "\n";
-	}
+        char tResult[255];
+        LaueGroups::systemID tResultID;
+        std::cout << "\nMerging..."; 
+        std::cout.flush(); 
+        gettimeofday(&time1, NULL);
+        LaueGroups tLaueGroups;
+        tResultID = tLaueGroups.guessSystem(*tHKL, pRunData);
+        strcpy(tResult, crystalSystemConst(LaueGroups::laueGroupID2UnitCellID(tResultID)));
+        gettimeofday(&time2, NULL);    
+        std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n\n";
+        // ask the user if need be.
+        if (!pRunData.iCrystalSys.empty())
+        {
+                if (pRunData.iCrystalSys.cmp(tResult) != 0)
+                {
+                    if (!pRunData.iCrystalSys.contains(tResult))
+                    {
+                            cout << tLaueGroups << "\n";
+                            cout << "Merging Identifys the system to be " << tResult << "\n";
+                            pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
+                    }
+                }
+        }
+        else
+        {
+            cout << tLaueGroups << "\n";
+            cout << "Merging Identifys the system to be " << tResult << "\n";
+            pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
+        }
     }
-    gettimeofday(&time2, NULL);    
-    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
-// this is the end of testing.
-
+    
     std::cout << "\nCalculating probabilities...";
+    std::cout.flush();
     gettimeofday(&time1, NULL);
     Table* tTable = tTables->findTable(pRunData.iCrystalSys.getCString());
     Stats* tStats = new Stats(tTables->getHeadings(), tTables->getConditions());
@@ -161,7 +176,9 @@ void runTest(RunParameters& pRunData)
     if (pRunData.iVerbose)
 	tStats->output(std::cout, *tTable) << "\n";
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+    std::cout.flush();
     std::cout << "\nRanking space groups...";
+    std::cout.flush();
     gettimeofday(&time1, NULL);
     RankedSpaceGroups* tRankings = new RankedSpaceGroups(*tTable, *tStats, pRunData.iChiral);
     gettimeofday(&time2, NULL);
@@ -198,7 +215,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	 * then the user is prompted.
 	 */
 	tRunStruct.handleArgs(argc, argv);  
-        //tRunStruct.getParamsFromUser();
+        tRunStruct.getParamsFromUser(); // Not all the run parameters have been filled in the user will need to add some more.
         runTest(tRunStruct);
     }
     catch (MyException eE)
