@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/02/28 11:19:04  ckp2
+C RIC: 1st bugfix related to long filenames - output trimmed filename when closing file.
+C
 C Revision 1.34  2002/02/27 19:53:45  ckp2
 C Comment out debugging output.
 C
@@ -2637,9 +2640,14 @@ C^^
 C        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
         IF(IWHAT.EQ.2) GOTO 9999
         INQNAM=NAME(LEVEL)(1:NAMLEN(LEVEL))
-        DO I=NAMLEN(LEVEL)+1,LEN(INQNAM)
+cmar02 - trim back to last hash - allows html files to be opened with
+c anchors specified after filename. e.g. myfile.html#sect1
+        IHASH = INDEX(INQNAM,'#')
+        IF (IHASH.LE.0) IHASH = NAMLEN(LEVEL)+1
+        DO I=MIN(IHASH,NAMLEN(LEVEL)+1),LEN(INQNAM)
           INQNAM(I:I)=' '
         END DO
+
 cnov98        INQUIRE(FILE=INQNAM,EXIST=LEXIST)
         INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
         if( (iotest .eq. 0) .and.
