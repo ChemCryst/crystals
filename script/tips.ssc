@@ -6,7 +6,7 @@
 ^^WI COMMIT='BOK' CANCEL='BOK'
 ^^WI GRID BIGG NROWS=5 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 TEXTOUT XTIPTEXT '' NROWS=10 NCOLS=80
+^^WI   @ 2,2 TEXTOUT XTIPTEXT '' NROWS=10 NCOLS=80 TRANSPARENT
 ^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=9
 ^^WI   {
 ^^WI     @ 1,1 CHECKBOX STAS '&Show tips at startup'
@@ -286,6 +286,7 @@ is running. The autoupdate flag is not used by #DISPLAY, which
 always updates the model.
 %   END BLOCK
 %  END CASE
+^^CO SET XTIPTEXT VIEWTOP
 %  EVALUATE CTIP = CTIP + 1
 %  IF CTIP .GT. NTIPS THEN
 %      EVALUATE CTIP = 1
