@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XRD01
       SUBROUTINE XRD01
 C--READ LIST TYPE 1, THE CELL PARAMETERS

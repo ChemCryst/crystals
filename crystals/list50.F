@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XRDHI
       SUBROUTINE XRDHI(IFIRST)
 C--THIS ROUTINE READS A CARD FILE CONTAINING A SPECIFICATION OF EACH
@@ -1836,7 +1838,7 @@ C
       A = A
       JW = ISTORE(MR61+3)
       JS = ISTORE(MR61) + LR62
- 
+
       WRITE ( CMON, 90) JW
       CALL XPRVDU(NCVDU, 1,0)
 90    FORMAT( ' Expecting ', I4, ' directives' )

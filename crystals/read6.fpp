@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XRD06
       SUBROUTINE XRD06 (IULN)
 C--READ THE PLANES, LIST 6
@@ -82,7 +84,7 @@ C
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1 (2)
-c----- un-set data keys 
+c----- un-set data keys
       irfo = nowt
       irft = nowt
       jnfo = nowt
@@ -267,7 +269,7 @@ C----- set default to untwinned
       IF (ISTORE(KZ+3)) 950,950,1150
 C--NO STORAGE KEYS HAVE BEEN INPUT  -  SET THE DEFAULTS
 950   CONTINUE
-cjan2001 Reset output defaults if twin data input 
+cjan2001 Reset output defaults if twin data input
 c     l6bmp etc (twinned defaults) moved to lodfk
       if (irft .gt. 0) call xmove (icom6a(9),icom6a(29),4)
       MD6DMP=MIN0(MD6DMP,MDODFK)

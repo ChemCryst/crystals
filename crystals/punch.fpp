@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XPCH5S
       SUBROUTINE XPCH5S(IN)
 C--PUNCH LIST 5 IN CRYSTALS FORMAT
@@ -399,7 +401,7 @@ C
       M38GR = M38GR + MD38GR
       M38LK = M38LK + MD38LK
 2000  CONTINUE
- 
+
 C--AND NOW THE 'END'
       CALL XPCHND
       CALL XPCHUS
@@ -990,7 +992,7 @@ C
      1  A1, ' USE LAST')
       RETURN
       END
- 
+
 C
 C
 C
@@ -1045,4 +1047,3 @@ C--CHECK IF THIS IS THE FIRST CARD
       J=1 + J
       GOTO 1000
       END
- 

@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XALTES
       SUBROUTINE XALTES(LN,IV)
 C--ALTER THE ERROR STATUS OF LIST TYPE 'LN'

@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XAPP04
       SUBROUTINE XAPP04
 C--CALCULATE THE WEIGHTS AND STORE THEM
@@ -468,7 +470,7 @@ c      ENDIF
             Q =  1. - Q
       ENDIF
       P = STORE(L4+5) * MAX(0., FO) + (1-STORE(L4+5))*FC
-      AW = Q / 
+      AW = Q /
      1 (SIGMA*SIGMA + (P*STORE(L4))*(P*STORE(L4)) +
      2  STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH)
       write(ncawu,'(3f4.0,4f10.4)')store(l6),store(l6+1),store(l6+2),
@@ -3232,7 +3234,7 @@ cdjwjan01
       if (jaa .le. 0) then
             fff = fo
       else
-            fff = fc      
+            fff = fc
       endif
 C----- COMPUTE THE RANGE IN F
       IF (JA .LE. 0) THEN

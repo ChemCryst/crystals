@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR SMOLAX
       SUBROUTINE SMOLAX
 C--SUBROUTINE TO CALCULATE GENERALISED PLANES/LINES  IN A
@@ -7,7 +9,7 @@ C
 C      VERSION     DATE              BY    CHANGE
 C      -------     ----              --    ------
 C      2.11        JANUARY 2001      DJW   ALSO PUNCH EVALUATE ATOMS
-C      2.10        JANUARY 2000      DJW   ADD OUTPUT OF CENTROID, AND 
+C      2.10        JANUARY 2000      DJW   ADD OUTPUT OF CENTROID, AND
 C                                          PUNCH DIRECTIVE
 C      2.05        FEBRUARY 1989     DJW   ADD 'LINE' DIRECTIVE
 C      2.02        AUGUST 1984       PWB   ONLY LIST COORDINATES OF
@@ -242,7 +244,7 @@ C----- NO PLOTS TO BE DONE
       JJ=-1
       GOTO 2040
 C
-C-----  'PUNCH' 
+C-----  'PUNCH'
 2007  CONTINUE
 C      SET PUNCH 'ON'
       JPUNCH = 1
@@ -553,7 +555,7 @@ C--FIND THE NEXT GROUP OF ATOMS
       IF(KATOMU(LN))4850,4850,3550
 C--LOOP OVER EACH OF THE ATOMS WE HAVE FOUND
 3550  CONTINUE
-      IF (JPUNCH .NE. 0) 
+      IF (JPUNCH .NE. 0)
      1 write(ncpu,'(a)') '# EVALUATED ATOMS'
       DO 3700 J=1,N5A
 C--GENERATE THE TRANSFORMED COORDS.
