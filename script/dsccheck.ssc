@@ -70,7 +70,8 @@
 %  COPY 'LOCATE RECORDTYPE=101'
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %% RIC2003: Only check first twenty atoms for speed.
-%  LOOP 20 TIMES
+%% RIC2004: But the H's are usually at the end - read the lot.
+%  LOOP 
 %     ON EDITERROR TERMINATE
 %     COPY 'TRANSFER FROM OFFSET=3 TO UISOF'
 %     IF ( UISOF .GT. 0.001 ) .AND. ( UISOF .LT. 0.98 ) THEN
