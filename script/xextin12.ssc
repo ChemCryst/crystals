@@ -72,19 +72,19 @@
 %      COPY 'INSERT'
 %      CLEAR
 %      INSERT 'CHANGE 0 REAL REAL ='
-%      GET INTEGER ' ' ' '
+%      GET SILENT INTEGER ' ' ' '
 %      SEND
-%      OUTPUT
+%%      OUTPUT
 %      CLEAR
 %      INSERT 'CHANGE 1 REAL REAL ='
-%      GET INTEGER ' ' ' '
+%      GET SILENT INTEGER ' ' ' '
 %      SEND
-%      OUTPUT
+%%      OUTPUT
 %      CLEAR
 %      INSERT 'CHANGE 2 REAL REAL ='
-%      GET INTEGER ' ' ' '
+%      GET SILENT INTEGER ' ' ' '
 %      SEND
-%      OUTPUT
+%%      OUTPUT
 %      CLEAR
 %      COPY 'WRITE'
 %      COPY 'END'
