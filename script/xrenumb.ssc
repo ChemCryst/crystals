@@ -1,0 +1,16 @@
+%SCRIPT XRENUMB
+%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%   VARIABLE LOGICAL ANSWER
+%%
+%      EVALUATE QTITLE = 'Re-number the atoms'
+%      EVALUATE QLINE1 = 'If the structure looks OK, do you want to '
+%      EVALUATE QLINE2 = 're-number the atoms based on connectivity?'
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%       COPY '#REGROUP'
+%       COPY 'SELECT TYPE=ALL SEQUENCE = YES'
+%       COPY 'END'
+%      END IF
+% END SCRIPT

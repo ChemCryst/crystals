@@ -12,15 +12,7 @@
 %      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
 %        FINISH
 %      END IF
-You are recommended to re-number the atoms to reflect the connectivity
-% VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
-     'Re-number the atoms?' 'YES'
-%    IF VALUE .EQ. 1 THEN
-%      COPY '#REGROUP'
-%      COPY 'SELECT TYPE=ALL SEQUENCE=YES'
-%      COPY 'END'
-%    END IF
+%      COPY '#SCRIPT XRENUMB'
 %%
 %      BLOCK
 %        COPY '#DISTANCES'
