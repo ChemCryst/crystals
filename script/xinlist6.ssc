@@ -262,6 +262,8 @@
 %         COPY '#LIST 6'
 %         COPY 'READ TYPE = COPY'
 %         COPY 'END'
+
+{S * Applying unit/quasi-unit weights
 %         COPY '#LIST 4'
 %         COPY 'END'
 %         COPY '#WEIGHT'
@@ -334,6 +336,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.22  2002/07/08 11:34:08  richard
+%% If user selects F as data format, warn and give option to revert to F^2.
+%%
 %% Revision 1.21  2002/05/15 08:02:56  richard
 %% Little update using new HIDDENSTRING GUI control - the stem of the .ins
 %% filename is remembered and used for the default .hkl filename if the file
