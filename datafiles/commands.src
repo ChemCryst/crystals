@@ -246,12 +246,13 @@ OVERALL PARAMETERS
     .NCELL             31    0    1    0    0         0
     .NPROFILE          35    0    1    0    0         0
     .NEXTINCT          39    0    1    0    0         0
-   3.ATOM              14   -4    0    0   14   -4  101    1    5
+   3.ATOM              16   -4    0    0   16   -4  101    1    5
          1    1    1    1    1    1    0    0    0    0
 ATOMIC PARAMETERS
 (1X,120A1/85X,36A1,12A1)
-(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1)
-         3    2    2    2    2    2    2    2    2    2    2    2    2    2
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/F5.0,1X,A4)
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2    2
+         2
     .TYPE               0   -1    1    0    0
     .SERIAL             0   -1    1    0    0
     .OCC                0    0    1    0    0 1.0
@@ -266,6 +267,8 @@ ATOMIC PARAMETERS
     .U[13]              0    0    1    0    0 0.0
     .U[12]              0    0    1    0    0 0.0
     .SPARE              0    0    1    0    0 0.0
+    .PART               0    0    1    0    0 0.0
+    .NAME               0    0    1    0    0 
    4.INDEX              5    1    0    0    5    1  103    9    5
          1    1    1    1    1    1    0    0    0    0
 THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
@@ -1293,12 +1296,12 @@ LIST 29            2    0
    1.READ               1    1    0    0
          1
     .NELEMENT           4    0    1    0    0         1
-   2.ELEMENT            7    0    0    0    7   -4  101    1   29
+   2.ELEMENT            8    0    0    0    8   -4  101    1   29
          1    1    1    1    1    1    0    0    0    0
 The elements in the asymmetric unit
 (1H ,8(3X,12A1))
-(1H ,3X,A4,7F15.2)
-         3    2    2    2    2    2    2
+(1H ,3X,A4,7F15.2,1X,A4)
+         3    2    2    2    2    2    2    3 
     .TYPE               0    0    1    0    0 NULL
     .COVALENT           0    0    1    0    0 0.8
     .VANDERWAALS        0    0    1    0    0 1.5
@@ -1306,6 +1309,7 @@ The elements in the asymmetric unit
     .NUMBER             0    0    1    0    0 0
     .MUA                0    0    1    0    0 0
     .WEIGHT             0    0    1    0    0 0
+    .COLOUR             0    0    1    0    0 BLACK
 GOODIES   30       9    0
    8   40960 CRYSTALSINPUT
    1.DATRED            13    1    0    0   13    1  101    1   30
@@ -2339,7 +2343,7 @@ REGULARISE        23    3
          3
     .MODE              35    0    1    4    1 COMPARE
      REPLACE        COMPARE        KEEP           AUGMENT
-PERHYDRO           4    3
+PERHYDRO           5    3
    7    4096 CRYSTALSALTER5
     1    2    5
    1.DISTANCE           0 9999    0    0    0    0  101    5  155
@@ -2348,7 +2352,9 @@ PERHYDRO           4    3
          0    0    0    0    0    0    0    0    0    0
    3.U[ISO]             0 9999    0    0    0    0  103    5  155
          0    0    0    0    0    0    0    0    0    0
-   4.PERHYDRO           2    1    0    0
+   4.TYPE               0 9999    0    0    0    0  104    5  155
+         0    0    0    0    0    0    0    0    0    0
+   5.PERHYDRO           2    1    0    0
          1    1
     .INPUTLIST         36    0    1    2    1         5
               5        10
