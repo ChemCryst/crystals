@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2004/02/04 16:58:00  stefan
+C Changes for Mac command line version
+C
 C Revision 1.72  2003/12/05 14:58:33  rich
 C Correct CIF data names for disordered parts.
 C
@@ -4629,6 +4632,11 @@ C RIC2001 New scan types. Use IVAL, not char string.
            END IF
         END IF
 
+C THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
+        TMAX=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
+        TMIN=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
+
+
 C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING: ABSORPTION TYPE
         IPARAM=9
         IDIR=5
@@ -4764,9 +4772,6 @@ C-----   A FIX IN THE ABSENCE OF REAL INFO
            END IF
         END IF
 
-C THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
-        TMAX=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
-        TMIN=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
         IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (CLINE,'(''# Sheldrick geometric definitions'',
      1     T35,2F8.2)')
