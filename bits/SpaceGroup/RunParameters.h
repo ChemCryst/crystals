@@ -16,6 +16,7 @@
 #define PATH_MAX _MAX_PATH
 #endif
 #include "StringClasses.h"
+#include "UnitCell.h"
 
 class RunParameters
 {
@@ -32,7 +33,8 @@ class RunParameters
         
         bool iInteractiveMode;	//If this is set true the program will go into interactive mode at the end.
         bool iVerbose;		//If this is set true the program will output the stats table after it has calculated all it's probabilits.
-        String iCrystalSys;		//Crystal System};
+        String iCrystalSys;	//Crystal System
+        UnitCell iUnitCell;	//The unit cell
         RunParameters();
         void handleArgs(int pArgc, _TCHAR* argv[]);
         void getParamsFromUser();
