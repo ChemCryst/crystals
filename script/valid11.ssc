@@ -1,0 +1,17 @@
+%SCRIPT VALID11
+%% Checks we have a VALID list 11. Returns VALID11 TRUE or FALSE
+%  VARIABLE LOGICAL VALID11
+%  EVALUATE VALID11 = FALSE
+%  BLOCK
+%    ON ERROR TERMINATE
+%    COPY '#DIST'
+%    COPY 'E.S.D YES'
+%    COPY 'OUTPUT MONITOR=OFF'
+%    COPY 'END'
+%    EVALUATE VALID11 = TRUE
+%    FINISH
+%  END BLOCK
+{I Inverted normal matrix for the current parameters does not exist.
+%  EVALUATE VALID11 = FALSE
+%END SCRIPT
+
