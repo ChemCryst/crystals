@@ -1,0 +1,40 @@
+%SCRIPT REFINF
+%%scriptdata
+%% GUIMENU REFINEMENT
+%% Information about the items in the REFINEMENT drop-down
+%%
+%%
+{1,11 REFINEMENT menu. 
+{1,11 The Guide                        {12,11Guided Refinement
+{1,11 Setup directives and constraints {12,11Select parameters to refine 
+{1,11                                  {12,11and set constraints (LIST 12)
+{1,11 Refine                           {12,11Do refinement cycles
+
+{1,11 Edit directives & constraints{12,11Change selection of parameters 
+{1,11                              {12,11to be refined (LIST 12)
+{1,11 F or F2 and advanced options {12,11Swap between F & Fsq refinement,
+{1,11                              {12,11select treatment of special 
+{1,11                              {12,11positions (LIST 23)
+{1,11 Choose weights               {12,11Perform analysis of residuals and
+{1,11                              {12,11select weighting scheme (LIST 4)
+{1,11 Filter reflections           {12,11Set filters on acceptable 
+{1,11                              {12,11reflections. (LIST 28)These can 
+{1,11                              {12,11be changed at any time. 
+{1,11 Edit restraints              {12,11Edit existing restraint list
+
+{1,11                              {12,11(LIST 16)
+{1,11 Add shift limiting restraints{12,11Add shift limiting restraints 
+{1,11                              {12,11(Marquardt factors) These can 
+{1,11                              {12,11be added to any parameter group
+
+{1,11 Calculate Scale factor 
+{1,11 Recalculate phases 
+
+{1,11 PLATON Squeeze               {12,11Prepare data for PLATON, run SQUEEZE
+{1,11                              {12,11and update CRYSTALS reflections.
+{1,11                              {12,11Note that CRYSTALS updates the 
+{1,11                              {12,11reflection flags so that it can store 
+{1,11                              {12,11the returned A nd B parts rather than 
+{1,11                              {12,11modify Fo
+{1,0
+%END SCRIPT
