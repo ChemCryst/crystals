@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2001/06/17 15:14:12  richard
+// Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 // Revision 1.7  2001/03/21 16:59:51  richard
 // Ensure button removes itself from controllers list of disableable buttons, if appropriate,
 // when it is destroyed.
@@ -109,6 +112,12 @@ CcParse CrButton::ParseInput( CcTokenList * tokenList )
                 else
                     LOGSTAT( "CrButton:ParseInput Button enabled ");
                 ((CxButton*)ptr_to_cxObject)->Disable( disabled );
+                break;
+            }
+            case kTLength:
+            {
+                tokenList->GetToken(); // Remove that token!
+                ((CxButton*)ptr_to_cxObject)->SetLength( tokenList->GetToken() );
                 break;
             }
             case kTSetCommitText:

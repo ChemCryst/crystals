@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/06/17 14:46:47  richard
+//   CxDestroyWindow function.
+//   Size wx buttons so the match MFC buttons.
+//
 //   Revision 1.6  2001/03/08 16:44:07  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -53,6 +57,7 @@ class CxButton : public BASEBUTTON
         ~CxButton();
         void CxDestroyWindow();
         void    SetText( char * text );
+        void    SetLength( CcString ltext );
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
         int GetLeft();
@@ -68,6 +73,8 @@ class CxButton : public BASEBUTTON
         // attributes
         CrGUIElement *  ptr_to_crObject;
         static int mButtonCount;
+        bool m_lengthStringUsed;
+        CcString m_lengthString;
 //      LDefaultOutline * mOutlineWidget;
 
 

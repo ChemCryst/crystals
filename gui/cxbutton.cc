@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/17 14:46:47  richard
+//   CxDestroyWindow function.
+//   Size wx buttons so the match MFC buttons.
+//
 //   Revision 1.8  2001/03/08 16:44:07  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -57,6 +61,8 @@ CxButton::CxButton(CrButton* container)
 #endif
 {
      ptr_to_crObject = container;
+     m_lengthStringUsed = false;
+     m_lengthString = "";
 }
 
 CxButton::~CxButton()
@@ -109,14 +115,24 @@ int CxButton::GetIdealWidth()
     CClientDC dc(this);
     CFont* oldFont = dc.SelectObject(CcController::mp_font);
     GetWindowText(text);
+    if ( m_lengthStringUsed )
+    {
+        text = m_lengthString.ToCString();
+    }
     size = dc.GetOutputTextExtent(text);
     dc.SelectObject(oldFont);
     return ( size.cx + 20 );
 #endif
 #ifdef __BOTHWX__
-      int cx,cy;
-      GetTextExtent( GetLabel(), &cx, &cy );
-      return (cx+20); // nice width for buttons
+    int cx,cy;
+    wxString text;
+    text = GetLabel();
+    if ( m_lengthStringUsed )
+    {
+        text = m_lengthString.ToCString();
+    }
+    GetTextExtent( text, &cx, &cy );
+    return (cx+20); // nice width for buttons
 #endif
 
 }
@@ -233,6 +249,12 @@ void CxButton::OnChar( wxKeyEvent & event )
 }
 #endif
 
+
+void CxButton::SetLength(CcString ltext)
+{
+    m_lengthStringUsed = true;
+    m_lengthString = ltext;
+}
 
 void CxButton::Disable(Boolean disabled)
 {
