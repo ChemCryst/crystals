@@ -5,6 +5,23 @@
 % VARIABLE CHARACTER CFILE
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER
 %%
+% VARIABLE LOGICAL TWINNED
+% EVALUATE TWINNED = FALSE
+%  BLOCK
+%    VARIABLE INTEGER ITMP
+%    IF ( EXISTS 13 .NE. 0 ) THEN
+%        COPY '#GENERALEDIT 13'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%        IF ( ITMP .GE. 0 ) THEN
+%         EVALUATE TWINNED = TRUE
+%        ELSE
+%         EVALUATE TWINNED = FALSE
+%        END IF
+%        COPY 'END'
+%    END IF
+%  END BLOCK
+%%
 % COPY '#MOLAX'
 % COPY 'ATOM '
 % BLOCK
@@ -176,12 +193,20 @@ view the generated sections.
 %         ON ERROR TERMINATE
 %         IF DOSCALE .EQ. 1 THEN
 %           COPY '#SFLS'
-%           COPY 'SCALE'
+%           IF TWINNED .EQ. TRUE THEN
+%             COPY 'SCALE /FO/=SCALED-/FOT/'
+%           ELSE
+%             COPY 'SCALE'
+%           END IF
 %           COPY 'END'
 %         END IF
 %         IF DOCALC .EQ. 1 THEN
 %           COPY '#SFLS'
-%           COPY 'CALC'
+%           IF TWINNED .EQ. TRUE THEN
+%             COPY 'CALC /FO/=SCALED-/FOT/'
+%           ELSE
+%             COPY 'CALC'
+%           END IF
 %           COPY 'END'
 %         END IF
 %       END BLOCK
@@ -243,7 +268,25 @@ view the generated sections.
 %            QUEUE PROCESS
 %         COPY 'END'
 
- * Done. Slant fourier complete.
+{R * Done. Slant fourier complete.
+
+%         IF TWINNED .EQ. TRUE THEN
+%           BLOCK
+%           ON ERROR TERMINATE
+%             IF DOSCALE .EQ. 1 THEN
+{S * Twinned data restoring overall scale.
+%               COPY '#SFLS'
+%               COPY 'SCALE'
+%               COPY 'END'
+%             END IF
+%             IF DOCALC .EQ. 1 THEN
+{S * Twinned data restoring phases.
+%               COPY '#SFLS'
+%               COPY 'CALC'
+%               COPY 'END'
+%             END IF
+%           END BLOCK
+%         END IF
 
 ^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.' 
 %         CASE RUNVIEWER + 1

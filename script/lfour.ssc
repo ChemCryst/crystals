@@ -6,6 +6,24 @@
 % VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT
 % VARIABLE REAL PEAKHEIGHT REJLIMIT
 % VARIABLE CHARACTER CDLINE
+%%
+% VARIABLE LOGICAL TWINNED
+% EVALUATE TWINNED = FALSE
+%  BLOCK
+%    VARIABLE INTEGER ITMP
+%    IF ( EXISTS 13 .NE. 0 ) THEN
+%        COPY '#GENERALEDIT 13'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%        IF ( ITMP .GE. 0 ) THEN
+%         EVALUATE TWINNED = TRUE
+%        ELSE
+%         EVALUATE TWINNED = FALSE
+%        END IF
+%        COPY 'END'
+%    END IF
+%  END BLOCK
+%%
 % IF SCRIPTEXT .EQ. TRUE THEN
  This script implements the CRYSTALS command FOURIER, and may be used to    
  compute a variety of real and vector space Fourier syntheses.              
@@ -163,10 +181,18 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%
 %       COPY '#SCRIPT XDELQ'
 %       COPY '#SFLS'
-%       COPY 'SCALE'
+%       IF TWINNED .EQ. TRUE THEN
+%         COPY 'SCALE /FO/=SCALED-/FOT/'
+%       ELSE
+%         COPY 'SCALE'
+%       END IF
 %       COPY 'END'
 %       COPY '#SFLS'
-%       COPY 'CALC'
+%       IF TWINNED .EQ. TRUE THEN
+%         COPY 'CALC /FO/=SCALED-/FOT/'
+%       ELSE
+%         COPY 'CALC'
+%       END IF
 %       COPY 'END'
 %       QUEUE REWIND
 %       CLEAR
