@@ -7,19 +7,21 @@
 @set LDCFLAGS=/SUBSYSTEM:console
 @set LIBS=script1.res opengl32.lib glu32.lib
 @set LDEBUG=/DEBUG /debugtype:cv /pdb:none /incremental:no
+
 @set CC=CL
 @set CDEF=/D"WIN32" /D"_WINDOWS" /D"__CR_WIN__" /D"_MBCS" /D"_AFXDLL"
-@set COPTS=/EHs /W3 /nologo /c /TP /I..\gui
-@set CDEBUG=/O2 /D"NDEBUG" /MD
+@set COPTS=/EHs /W3 /nologo /c /TP /I..\gui /O2 /D"NDEBUG" /MD
+@set CDEBUG=/EHs /W3 /nologo /c /Od /RTC1 /D"_DEBUG" /MDd /Z7 /TP /I..\gui
 @set COUT=/Fo
-@rem set CDEBUG=/Od /RTC1 /D"_DEBUG" /MDd /Z7
+
 @set F77=DF
 @set FDEF=/define:_%COMPCODE%_
 @set FOPTS=/fpp /I..\crystals /MD /optimize:4  /nolink
 @set FNOOPT=/fpp /I..\crystals /MD /optimize:0 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:
-@set FDEBUG=
+@set FDEBUG=/fpp /I..\crystals /MDd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink
+
 goto exit
 
 :DVF
@@ -40,7 +42,7 @@ set FDEF=/define:_%COMPCODE%_
 set FOPTS=/fpp /I..\crystals /ML /optimize:4 /winapp /nolink
 set FNOOPT=/fpp /I..\crystals /ML /optimize:0 /winapp /nolink
 set FOUT=/object:
-set FDEBUG=
+set FDEBUG=/fpp /I..\crystals /MLd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink
 goto exit
 
 :DOS
@@ -62,9 +64,7 @@ set FDEF=/define:_%COMPCODE%_
 set FOPTS=/cfpp /I..\crystals  /no_warn73 /zero
 set FNOOPT=/fpp /I..\crystals  /no_warn73 /zero 
 set FOUT=/binary  
-set FDEBUG=
-rem set FDEBUG=/debug
-
+set FDEBUG=/debug
 
 :exit
 
