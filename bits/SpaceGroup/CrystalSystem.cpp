@@ -548,7 +548,7 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
         {
             throw MyException(kUnknownException, "Table heading has bad format.");
         }
-        iSGColumn->get(tSpaceGroupLen)->setHeading(tString);
+        iSGColumn->get(tSpaceGroupLen)->setPointGroup(tString);
     }
     delete[] tString;
     if (tMatch[2].rm_so==-1)
@@ -999,11 +999,6 @@ Conditions* Tables::getConditions()
     return iConditions;
 }
 
-void Tables::addTable(Table* pTable)
-{
-	add(pTable);
-}
-
 void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, int *pNumOfSGCols)
 {
     const size_t tMatches = 4;
@@ -1064,7 +1059,7 @@ void Tables::readFrom(filebuf& pFile)
                     throw eE;
                 }
             }
-            addTable(tTable);
+            add(tTable);
         }
     }
 }
