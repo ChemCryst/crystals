@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2001/07/11 09:37:36  ckpgroup
+C Move test for outputting absorption details
+C
 C Revision 1.19  2001/06/13 14:47:06  richard
 C Tweak order of calculation so that List 5 always returns exactly the same
 C molecular weight as List 29. (Number of multiplications reduced).
@@ -952,7 +955,8 @@ C----- CAPTIONS FOR CIF FILE
         ENDIF
 C
         WRITE( NCFPU1, 900)
-900     FORMAT ( /'loop_'/'_atom_site_label'/'_atom_site_fract_x'/
+900     FORMAT ( /'loop_'/'_atom_site_label'/'_atom_site_type_symbol'/
+     1 '_atom_site_fract_x'/
      1 '_atom_site_fract_y'/'_atom_site_fract_z')
         IF (ISSUEQ .EQ. 1) THEN
           WRITE(NCFPU1, '(A)') '_atom_site_U_iso_or_equiv'
@@ -1001,6 +1005,8 @@ C-C-C-OUTPUT THE FLAG OF ATOM
 cnov98      CALL SNUM(STORE(M5+3),0.0,1,0,10,LINEA)
 C--UPDATE THE CURRENT POSITION FLAG
       J=IFIR+NSTA
+C--RIC01 Add in atom_site_type_symbol
+      CALL SA41(J,ISTORE(M5),LINEA)
 C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
       MP=M5+4
       MPD=3
@@ -2779,7 +2785,7 @@ C----- IDENTITY
 C
 C----- VALUE AND ESD
       CALL XFILL (IB, IVEC, 20)
-      CALL SNUM ( TERM, ESD, -3, 0, 7, IVEC )
+      CALL SNUM ( TERM, ESD, -3, 0, 8, IVEC )
       WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
       CALL XCRAS ( CBUF, N)
       CLINE(J:J+N-1) = CBUF(1:N)
