@@ -44,6 +44,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <errno.h>
 #include "HKLData.h"
 #include "Exceptions.h"
 #include "CrystalSystem.h"
@@ -59,9 +61,9 @@ using namespace std;
 #if !defined(_WIN32)
 #define _TCHAR const char
 #define TCHAR char
-#define kDefaultTables "/Tables.txt"
+//define kDefaultTables "/Tables.txt"
 #else
-#define kDefaultTables "\\Tables.txt"
+//define kDefaultTables "\\Tables.txt"
 #define PATH_MAX _MAX_PATH
 #endif
 
@@ -100,7 +102,9 @@ void runTest(RunParameters& pRunData)
     }
     catch (MyException& eException)
     {
-        eException.addError("When opening table file:");
+        char tString[100];
+        sprintf(tString, "When opening table file:(%s)", pRunData.iTablesFile.getCString());
+        eException.addError(tString);
         throw eException;
     }
     gettimeofday(&time2, NULL);
@@ -110,7 +114,7 @@ void runTest(RunParameters& pRunData)
     HKLData* tHKL;
     try
     {
-        tHKL = new HKLData(pRunData.iFileName.getCString());
+	tHKL = new HKLData(pRunData.iFileName.getCString());
     }
     catch (MyException& eException)
     {
@@ -121,24 +125,21 @@ void runTest(RunParameters& pRunData)
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     
     //This is just testing  
-    std::cout << "Merging...";  
+    std::cout << "Merging...\n";  
     gettimeofday(&time1, NULL);
-    vector<Matrix<short>*> tMatrices;
-    tMatrices.push_back(new Matrix<short>(3, 3, 0));
-    tMatrices.push_back(new Matrix<short>(3, 3, 0));
-    tMatrices.push_back(new Matrix<short>(3, 3, 0));
-    tMatrices[0]->makeDiagonal((short)1, (short)0);
-    tMatrices[1]->setValue(-1, 0, 0);
-    tMatrices[1]->setValue(1, 1, 1);
-    tMatrices[1]->setValue(-1, 2, 2);
-    tMatrices[2]->setValue(1, 0, 0);
-    tMatrices[2]->setValue(-1, 1, 1);
-    tMatrices[2]->setValue(1, 2, 2);
-    MergedData* tMergedData = new MergedData(*tHKL, tMatrices);
-    delete tMatrices[0];
-    delete tMatrices[1];
-    delete tMatrices[2];
-    //delete tMergedData;
+    LaueGroups tGroups;
+    SystemRef tSystemRef;
+    unsigned short tNumGroups;
+    for (int i = kCubicID; i > 0; i--)
+    {
+	tSystemRef = tGroups.getSystemRef(&tNumGroups, i); 
+	cout << "System: " <<  tSystemRef << " " << tNumGroups << "\n";
+	for (int j = 0; j<tNumGroups; j++)
+	{
+	    MergedData tMergedData = tGroups.mergeSystemGroup(*tHKL, tSystemRef, j);
+	    cout << j << ": " << tMergedData << "\n";
+	}
+    }
     gettimeofday(&time2, NULL);    
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
 // this is the end of testing.
@@ -189,8 +190,12 @@ int _tmain(int argc, _TCHAR* argv[])
     RunParameters tRunStruct;
     try
     {
-        tRunStruct.handleArgs(argc, argv);
-        tRunStruct.getParamsFromUser();
+	/* Handle all the arguments which were passed to the program.
+	 * If there are any parameters needed where where not passed 
+	 * then the user is prompted.
+	 */
+	tRunStruct.handleArgs(argc, argv);  
+        //tRunStruct.getParamsFromUser();
         runTest(tRunStruct);
     }
     catch (MyException eE)
