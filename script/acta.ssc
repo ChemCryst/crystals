@@ -6,9 +6,11 @@
 %  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG IANOMA
 %  VARIABLE CHARACTER CDLINE
 %  VARIABLE REAL WORK1 WORK2 WORK3 ZMAX CENTRO
-%  VARIABLE LOGICAL VALIDPASS VALIDFAIL
+%  VARIABLE LOGICAL VALIDPASS VALIDFAIL VALIDCYCLE VALIDWEIGHT
 %  EVALUATE VALIDFAIL = TRUE
 %  EVALUATE VALIDPASS = FALSE
+%  EVALUATE VALIDCYCLE = FALSE
+%  EVALUATE VALIDWEIGHT = FALSE
 %  EVALUATE ALERTFLAG = 0
 %  EVALUATE WARNFLAG = 0
 %%
@@ -200,13 +202,16 @@
 %    IF WORK3 .GT. 6.0 THEN
 {E *** FAIL:  Goodness of fit greater than 6.0
 %       EVALUATE ERRFLAG = ERRFLAG + 1
+%       EVALUATE VALIDWEIGHT = TRUE
 %    ELSE
 %       IF WORK3 .GT. 4.0 THEN
 {E **  WARN:  Goodness of fit greater than 4.0
+%          EVALUATE VALIDWEIGHT = TRUE
 %          EVALUATE WARNFLAG = WARNFLAG + 1
 %       ELSE
 %          IF WORK3 .GT. 2.0 THEN
 {I *   ALERT: Goodness of fit greater than 2.0
+%             EVALUATE VALIDWEIGHT = TRUE
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
 %          END IF
 %       END IF
@@ -214,14 +219,17 @@
 %    IF WORK3 .LT. 0.4 THEN
 {E *** FAIL:  Goodness of fit less than 0.4
 %       EVALUATE ERRFLAG = ERRFLAG + 1
+%       EVALUATE VALIDWEIGHT = TRUE
 %    ELSE
 %       IF WORK3 .LT. 0.6 THEN
 {E **  WARN:  Goodness of fit less than 0.6
 %          EVALUATE WARNFLAG = WARNFLAG + 1
+%          EVALUATE VALIDWEIGHT = TRUE
 %       ELSE
 %          IF WORK3 .LT. 0.8 THEN
 {I *   ALERT: Goodness of fit less then 0.8
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%             EVALUATE VALIDWEIGHT = TRUE
 %          END IF
 %       END IF
 %    END IF
@@ -239,16 +247,19 @@
 {E *** FAIL:  Shift / esd > 0.20
             Consider carrying out some unconditional cycles of refinement.
 %       EVALUATE ERRFLAG = ERRFLAG + 1
+%       EVALUATE VALIDCYCLE = TRUE
 %    ELSE
 %       IF WORK1 .GE. 0.10 THEN
 {E **  WARN:  Shift / esd > 0.10
             Consider carrying out some unconditional cycles of refinement.
 %          EVALUATE WARNFLAG = WARNFLAG + 1
+%          EVALUATE VALIDCYCLE = TRUE
 %       ELSE
 %          IF WORK1 .GE. 0.05 THEN
 {I *   ALERT: Shift / esd > 0.05
             Consider carrying out some unconditional cycles of refinement.
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%             EVALUATE VALIDCYCLE = TRUE
 %          END IF
 %       END IF
 %    END IF

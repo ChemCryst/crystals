@@ -33,8 +33,7 @@
 %  VARIABLE LOGICAL REFREQD
 %% May be set by calling scripts to recommend publication stage or
 %% further refinement:
-%  VARIABLE LOGICAL VALIDPASS
-%  VARIABLE LOGICAL VALIDFAIL
+%  VARIABLE LOGICAL VALIDPASS VALIDFAIL VALIDCYCLE VALIDWEIGHT
 %%
 %  EVALUATE ISTAGE = 0
 %%
@@ -263,6 +262,11 @@
 %  ELSE IF ( VALIDFAIL ) THEN
 %      EVALUATE KTDEFA = 11
     Recommended:   Fix the problems with the structure. See advice above.
+%      IF ( VALIDCYCLE ) THEN
+%        EVALUATE KTDEFA = 10
+%      ELSE IF ( VALIDWEIGHT ) THEN
+%        EVALUATE KTDEFA = 8
+%      END IF
 %%
 %  ELSE
 %%
@@ -285,7 +289,16 @@
 %  OUTPUT
 % END SCRIPT
 %%
+%%
+%%
+%%
+%%
+%%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.11  2004/10/01 10:31:39  rich
+%%  Removed calls to VALID12 where no longer necessary (SCALE & CALC no longer
+%%  require a valid constraint matrix).
+%%
 %%  Revision 1.10  2002/12/03 13:54:35  rich
 %%  Reduce output during assessment and refinement (GUIDE).
 %%

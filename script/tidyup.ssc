@@ -34,7 +34,7 @@
 %  COPY '#SCRIPT POSTFOUR'
 {I Difference Fourier complete.
 %%                                                                              
-%  VARIABLE REAL NREF NPARAM RHOMAX SOESD
+%  VARIABLE REAL NREF NPARAM RHOMIN RHOMAX SOESD WORK1 ZMAX
 %% The variables needed by XQUESTIO                                             
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
 %  VARIABLE LOGICAL   ANSWER                                                    
@@ -44,12 +44,13 @@
 {I Type #SCRIPT ED30 to input general details.                                  
 %    COPY '#SCRIPT DIRECT'                                                      
 %  END IF                                                                       
-%  COPY '#GENERALEDIT 30'                                                       
-%  COPY 'LOCATE RECORDTYPE = 103'                                               
-%  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'                                   
-%  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX '                                  
+%  COPY '#GENERALEDIT 30'
+%  COPY 'LOCATE RECORDTYPE = 103'
+%  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'
+%  COPY 'TRANSFER FROM OFFSET =  5 TO RHOMIN'
+%  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX'
 %  COPY 'TRANSFER FROM OFFSET =  7 TO SOESD'
-%  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '                                    
+%  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '
 %  COPY 'END'                                                                   
 %%
 %  IF ( NREF / NPARAM )  .LE. 5.0 THEN                                          
@@ -58,12 +59,30 @@
 %    COPY '#SCRIPT DIRECT'                                                      
 %  END IF                                                                       
 %%                                                                              
-%  IF RHOMAX .GE. 0.3 THEN                                                      
+%  EVALUATE ZMAX = 4.0
+%  COPY '#GENERALEDIT 29'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=6 TO WORK1'
+%    IF ( WORK1 .GT. ZMAX ) THEN
+%       EVALUATE ZMAX = WORK1
+%    END IF
+%    COPY 'NEXT'
+%  END LOOP
+%  COPY 'END'
+%  EVALUATE ZMAX = ZMAX / 24.84
+%%
+%  IF ( RHOMIN .LT. ( - ZMAX * 0.75 ) ) .OR.  -
+      ( RHOMAX .GT. (   ZMAX * 0.75 ) ) THEN
+%%
 {R The residual density is rather high. Could you have disorder,                
-{R missing solvent or an absorption problem?                                    
+{R missing solvent or an absorption problem?
 %%                                                                              
 %    EVALUATE QTITLE = 'Residual density high'                                                
-%    EVALUATE QLINE1 = 'Rho max =  ' // CHARACTER ( RHOMAX )
+%    EVALUATE QLINE1 = 'Rho max=' // CHARACTER ( RHOMAX ) // ' min=' // -
+                                     CHARACTER ( RHOMIN )
 %    EVALUATE QLINE2 = 'Do you want to view the residual peaks?'                
 %    EVALUATE BUTTOK = '&Yes'                                                   
 %    EVALUATE BUTTXX = '&No'                                                    
@@ -72,8 +91,6 @@
 %      COPY '#COLL 10 5'                                                        
 %      COPY 'SEL TYPE=PEAK'                                                     
 %      COPY 'END'                                                               
-%%     RUN CAMERON                                                                  
-%      COPY '#SCRIPT PLOT'                                                      
 %%
 %      EVALUATE QTITLE = 'Tidy up'                                                
 %      EVALUATE QLINE1 = 'Do you want to ignore these peaks? (you must'           
