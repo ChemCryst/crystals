@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/11/12 15:14:12  rich
+C Extended plots from #SUM L 6 to include omitted reflections on the Fo vs Fc
+C graph. They appear in blue.
+C
 C Revision 1.35  2002/11/07 17:35:12  rich
 C THLIM upgraded so that it works. (With Friedel unmerged data and data
 C that hasn't been SYSTEMATIC'd). It now also writes things to the listing
@@ -1697,17 +1701,17 @@ C      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 C
 CODE FOR FUNCT - USER FUNCTIONS FOR LEAST-SQUARES FITTING
       FUNCTION FUNCT(K,X)
-	SELECT CASE(K)
-	CASE(:-1)
-	  FUNCT = 0
-	CASE(0)
-	  FUNCT = X**2
-	CASE(1)
-	  FUNCT = X
-	CASE(2)
-	  FUNCT = 0
-	END SELECT
-	END
+      SELECT CASE(K)
+        CASE(:-1)
+          FUNCT = 0
+        CASE(0)
+          FUNCT = X**2
+        CASE(1)
+          FUNCT = X
+        CASE(2)
+          FUNCT = 0
+        END SELECT
+      END
 C
 C
 C
