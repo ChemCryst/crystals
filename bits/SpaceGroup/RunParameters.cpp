@@ -76,12 +76,12 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
         (*pPos)++;
         return true;
     }
-    else if (strcmp(argv[*pPos], "-i")==0)
+ /*   else if (strcmp(argv[*pPos], "-i")==0)
     {
         iInteractiveMode = true;
         (*pPos)++;
         return true;
-    }
+    }*/
     else if (strcmp(argv[*pPos], "-f")==0)
     {
         (*pPos)++;
@@ -165,7 +165,8 @@ void RunParameters::handleArgs(int pArgc, const char* argv[])
             std::cout << "-o outputfile: The path to a file to output the stats table and the raking table.\n";
             std::cout << "[-c| -nc]: -c The structure is chiral. -nc The crystal isn't necessarily chiral.\n";
             std::cout << "-v: verbose output\n";
-            std::cout << "-i: Interactive mode. This allows the user to veiw the stats table.\n";std::cout << "-b batchfile: This supplies a file with all the parameters needed to run the program. The parameters in the file override any other parameters set on the command line.\n";
+           // std::cout << "-i: Interactive mode. This allows the user to veiw the stats table.\n";
+            std::cout << "-b batchfile: This supplies a file with all the parameters needed to run the program. The parameters in the file override any other parameters set on the command line.\n";
 	    std::cout << "-m: Merge the data to try and identify the crystal system.\n";
             std::cout << "-s system#: The crystal system table to use.\n";
             std::cout << "Valid values for system are:\n" <<
@@ -236,12 +237,12 @@ void RunParameters::readParamFile()
         try
         {
 	    // The regular expression for parsing the param file.
-            char tClassRE[] = "CLASS[[:space:]]+([[:alpha:]]+)";
-            char tUniqueRE[] = "UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
-            char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
-            char tOutputRE[] = "OUTPUT[[:space:]]+\"([^\"]+)\"";
-	    char tMergeRE[] = "MERGE[[:space:]]+((YES)|(NO))";
-            char tHKLRE[] = "HKL[[:space:]]+\"([^\"]+)\"";
+            char tClassRE[] = "^[[:space:]]*CLASS[[:space:]]+([[:alpha:]]+)";
+            char tUniqueRE[] = "^[[:space:]]*UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
+            char tChiralRE[] = "^[[:space:]]*CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
+            char tOutputRE[] = "^[[:space:]]*OUTPUT[[:space:]]+\"([^\"]+)\"";
+	    char tMergeRE[] = "^[[:space:]]*MERGE[[:space:]]+((YES)|(NO))";
+            char tHKLRE[] = "^[[:space:]]*HKL[[:space:]]+\"([^\"]+)\"";
             char tCommentRE[] = "(#.+)$";
             filebuf tParamFile;
             if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
