@@ -6,7 +6,8 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
-
+#if !defined(__RUN_PARAMETERS_H__)
+#define __RUN_PARAMETERS_H__
 #if !defined(_WIN32)
 #define _TCHAR const char
 #define TCHAR char
@@ -26,7 +27,7 @@ class RunParameters
         bool handleArg(int *pPos, int pMax, _TCHAR * argv[]);
     public:
         Path iFileName;		//File name for the hkl data.
-        Path iTablesFile;		//The file name of the tables file.
+        Path iTablesFile;               //The file name of the tables file.
         Path iOutputFile;		//The path of the file where the stats and ranking should be output to.
         Path iParamFile;		//A path to the file which contains any further parameters.
         bool iChiral;		//False is not nessaseraly chiral. false chiral -nc, -c
@@ -39,9 +40,7 @@ class RunParameters
         void handleArgs(int pArgc, _TCHAR* argv[]);
         void getParamsFromUser();
 };
-
-
-
+#endif
 
 
 
