@@ -11,6 +11,7 @@
  * RunParameter class stores all the parameters which the program was run with.
  * These could be input through a batch file or the command line.
  */
+
 //#include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -46,6 +47,7 @@ RunParameters::RunParameters()
     iChiral = false;
     iVerbose = false;
     iInteractiveMode = false;
+    iMerge = true;
 }
 
 /* Individule arguments from the command line are passed to 
@@ -137,6 +139,12 @@ bool RunParameters::handleArg(int *pPos, int pMax, _TCHAR * argv[])
             return true;
         }
     }
+    else if (strcmp(argv[*pPos], "-m")==0)
+    {
+	iMerge = false;
+	(*pPos)++;
+	return true;
+    }
     return false;
 }
 
@@ -157,9 +165,9 @@ void RunParameters::handleArgs(int pArgc, _TCHAR* argv[])
             std::cout << "-o outputfile: The path to a file to output the stats table and the raking table.\n";
             std::cout << "[-c| -nc]: -c The structure is chiral. -nc The crystal isn't necessarily chiral.\n";
             std::cout << "-v: verbose output\n";
-            std::cout << "-i: Interactive mode. This allows the user to veiw the stats table.\n";
+            std::cout << "-i: Interactive mode. This allows the user to veiw the stats table.\n";std::cout << "-b batchfile: This supplies a file with all the parameters needed to run the program. The parameters in the file override any other parameters set on the command line.\n";
+	    std::cout << "-m: Merge the data to try and identify the crystal system.\n";
             std::cout << "-s system#: The crystal system table to use.\n";
-            std::cout << "-b batchfile: This supplies a file with all the parameters needed to run the program. The parameters in the file override any other parameters set on the command line.";
             std::cout << "Valid values for system are:\n" <<
             "\t0: Triclinic\n" <<
             "\t1: MonoclinicA\n" <<
@@ -231,6 +239,7 @@ void RunParameters::readParamFile()
             char tUniqueRE[] = "UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
             char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
             char tOutputRE[] = "OUTPUT[[:space:]]+\"([^\"]+)\"";
+	    char tMergeRE[] = "MERGE[[:space:]]+((YES)|(NO))";
             char tHKLRE[] = "HKL[[:space:]]+\"([^\"]+)\"";
             char tCommentRE[] = "^#";
             filebuf tParamFile;
@@ -246,6 +255,7 @@ void RunParameters::readParamFile()
             regex_t* tOutputFSO = new regex_t;
             regex_t* tHKLFSO = new regex_t;
             regex_t* tCommentSO = new regex_t;
+	    regex_t* tMergeSO =  new regex_t;
 	    //Set up all the regular expressions for parsing the param file.
             regcomp(tClassFSO, tClassRE, REG_EXTENDED | REG_ICASE);
             regcomp(tUniqueFSO, tUniqueRE, REG_EXTENDED | REG_ICASE);
@@ -253,7 +263,7 @@ void RunParameters::readParamFile()
             regcomp(tOutputFSO, tOutputRE, REG_EXTENDED | REG_ICASE);
             regcomp(tHKLFSO, tHKLRE, REG_EXTENDED | REG_ICASE);
             regcomp(tCommentSO, tCommentRE, REG_EXTENDED | REG_ICASE);
-
+	    regcomp(tMergeSO, tMergeRE, REG_EXTENDED | REG_ICASE);
             regmatch_t tMatchs[13];
             char tLine[255];
             int tLineNum = 0;
@@ -307,6 +317,13 @@ void RunParameters::readParamFile()
                         iChiral = false;
                     iRequestChirality = false;
                 }
+		else if (regexec(tChiralFSO, tLine, 13, tMatchs, 0) == 0)
+                {
+                    if (tMatchs[2].rm_so > 0)
+                        iMerge = true;
+                    else
+                        iMerge = false;
+                }
                 else if (regexec(tOutputFSO, tLine, 13, tMatchs, 0) == 0)
                 {
                     String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
@@ -349,6 +366,7 @@ void RunParameters::readParamFile()
             delete tChiralFSO;
             delete tOutputFSO;
             delete tHKLFSO;
+	    delete tMergeSO;
         }
         catch(MyException e)
         {
