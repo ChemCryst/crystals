@@ -1,0 +1,17 @@
+%script xterm
+%% Launch first argument in appropriate way...
+% GET SILENT NOSTORE FINAL TEXT ' ' ' '
+%%
+% IF FILEEXISTS ( '/usr/bin/x-terminal-emulator' ) THEN
+%%
+%  TRANSFER '#SPAWN x-terminal-emulator -e ' // CVALUE TO CRYSTALS
+%%
+% ELSE IF FILEEXISTS ( '/usr/bin/X11R6/xterm' ) THEN
+%  TRANSFER '#SPAWN xterm -x ' // CVALUE TO CRYSTALS
+%%
+% ELSE
+
+ Edit /wincrys/script/xterm.scp to provide the path of an xterm program.
+
+% END IF
+%end script
