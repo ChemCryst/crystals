@@ -186,6 +186,12 @@ Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
                         ((CxMultiEdit*)mWidgetPtr)->Spew();
                         break;
                   }
+                  case kTEmpty:
+                  {
+                        tokenList->GetToken(); //Remove kTEmpty tokens.
+                        ((CxMultiEdit*)mWidgetPtr)->Empty();
+                        break;
+                  }
 			default:
 			{
 				hasTokenForMe = false;

@@ -54,6 +54,7 @@ class CxMultiEdit;
 #define kSBackLine		"BACKLINE"
 #define kSNoEcho		"NOECHO"
 #define kSSpew			"SPEW"
+#define kSEmpty                "EMPTY"
 
 enum {
  kTTextColour = 1700,
@@ -63,7 +64,8 @@ enum {
  kTTextFixedFont,
  kTBackLine,	
  kTNoEcho,	
- kTSpew	
+ kTSpew,
+ kTEmpty
 };
 
 
