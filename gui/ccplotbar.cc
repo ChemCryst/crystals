@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2001/11/22 15:33:19  ckpgroup
+// SH: Added different draw-styles (line / area / bar / scatter).
+// Changed graph layout. Changed second series to blue for better contrast.
+//
 // Revision 1.5  2001/11/19 16:32:19  ckpgroup
 // SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
 //
@@ -166,22 +170,18 @@ void CcPlotBar::DrawView()
     if(attachedPlot)
     {
 		// setup variables for scaling / positioning of graphs
-		int xgapright = 160;		// horizontal gap between graph and edge of window
-		int xgapleft = 200;			//		nb: leave enough space for labels
-		int ygaptop = 200;			// and the vertical gap
-		int ygapbottom = 300;		//		nb: lots of space for labels
 
 		// if graph has a title, make top gap bigger
 		if(!(m_Axes.m_PlotTitle == ""))
-			ygaptop = 300;
+			m_YGapTop = 300;
 
 		// if x axis has a title make the bottom gap bigger
 		if(!(m_Axes.m_XTitle == ""))
-			ygapbottom = 500;
+			m_YGapBottom = 500;
 
 		// if y axis has a title make the lhs gap bigger
 		if(!(m_Axes.m_YTitle == ""))
-			xgapleft = 300;
+			m_XGapLeft = 300;
 
 		// variables used for loops
 		int i=0;
@@ -191,8 +191,8 @@ void CcPlotBar::DrawView()
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 
 		// gap between division markers on x and y axes
-		int xdivoffset = (2400-xgapleft-xgapright) / (m_Axes.m_NumDiv[Axis_X]);			
-		int ydivoffset = (2400-ygaptop-ygapbottom) / (m_Axes.m_NumDiv[Axis_Y]);			
+		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_NumDiv[Axis_X]);			
+		int ydivoffset = (2400-m_YGapTop-m_YGapBottom) / (m_Axes.m_NumDiv[Axis_Y]);			
 
 		// axis dimensions after rounding
 		int axisheight = ydivoffset * (m_Axes.m_NumDiv[Axis_Y]);
@@ -201,25 +201,25 @@ void CcPlotBar::DrawView()
 		int xseroffset=0;
 
 		// take the axis height, work out where zero is...
-		int xorigin = 2400 - xgapleft + ((axiswidth * m_Axes.m_Min[Axis_X]) / (m_Axes.m_Max[Axis_X] - m_Axes.m_Min[Axis_X]));
-		int yorigin = 2400 - ygapbottom + (axisheight * (m_Axes.m_AxisMin[Axis_Y] / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
+		int xorigin = 2400 - m_XGapLeft + ((axiswidth * m_Axes.m_Min[Axis_X]) / (m_Axes.m_Max[Axis_X] - m_Axes.m_Min[Axis_X]));
+		int yorigin = 2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisMin[Axis_Y] / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
 		float yoriginvalue = 0;
 		if(m_Axes.m_AxisScaleType == Plot_AxisSpan && m_Axes.m_AxisMin[Axis_Y] > 0) 
 		{
-			yorigin = 2400 - ygapbottom;
+			yorigin = 2400 - m_YGapBottom;
 			yoriginvalue = m_Axes.m_AxisDivisions[Axis_Y][0];
 		}
 		
 		// draw a grey background
 		attachedPlot->SetColour(200,200,200);
-		attachedPlot->DrawRect(xgapleft, ygaptop, 2400-xgapright, 2400-ygapbottom, true);
+		attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
 		
 		// now loop through the data items, drawing each one
 		// if there are 'm_Next' data items, each will use axiswidth/m_Next as an offset
 		// NB draw data bars FIRST, so axes / markers are always visible
-		int offset = (2400-xgapleft-xgapright) / m_NextItem;
+		int offset = (2400-m_XGapLeft-m_XGapRight) / m_NextItem;
 
 		// now work out the number of *bar* graphs
 		int numbars = 0;
@@ -245,7 +245,7 @@ void CcPlotBar::DrawView()
 				{
 					for(i=0; i<m_NextItem; i++)
 					{
-						x1 = xgapleft + i*offset + j*xseroffset + 5;
+						x1 = m_XGapLeft + i*offset + j*xseroffset + 5;
 						x2 = x1 + xseroffset - 5;
 						y1 = yorigin;
 						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
@@ -260,7 +260,7 @@ void CcPlotBar::DrawView()
 				{
 					for(i=0; i<m_NextItem-1; i++)
 					{
-						x1 = xgapleft + (i+0.5)*offset;
+						x1 = m_XGapLeft + (i+0.5)*offset;
 						x2 = x1 + offset;
 						y1 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
 						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i+1] - yoriginvalue) / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
@@ -278,6 +278,40 @@ void CcPlotBar::DrawView()
 		// display all the above
 		attachedPlot->Display();
     }
+}
+
+// create a text string describing the data point at a certain coordinate
+CcString CcPlotBar::GetDataFromPoint(CcPoint point)
+{
+	CcString ret = "error";
+
+	if((point.x < (2400 - m_XGapRight)) && (point.x > m_XGapLeft) && (point.y > m_YGapTop) && (point.y < (2400 - m_YGapBottom)))
+	{
+		// need to : interpolate between xmin,xmax to get the label at that point,
+		int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
+		
+		// work out the width of each label...
+		int width = axiswidth / (m_NextItem);
+
+		// now work out the label which contains point.x
+		int num = (point.x - m_XGapLeft)/width;
+
+		// now work out the specific bar...
+		// this is the lhs of the label...
+		int lowerlimit = num*width;	
+		int bar = m_NumberOfSeries*(point.x - m_XGapLeft - lowerlimit)/width;
+
+		if(num < (m_NextItem))
+		{
+			ret = m_Axes.m_Labels[num];
+			ret += "; ";
+			if(m_Axes.m_AxisLog[Axis_Y])
+				ret += pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
+			else ret += ((CcSeriesBar*)m_Series[bar])->m_Data[num];
+		}
+	}
+
+	return ret;
 }
 
 // create the data series

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/11/22 15:33:20  ckpgroup
+//   SH: Added different draw-styles (line / area / bar / scatter).
+//   Changed graph layout. Changed second series to blue for better contrast.
+//
 //   Revision 1.3  2001/11/19 16:32:20  ckpgroup
 //   SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
 //
@@ -22,6 +26,7 @@
 #define     __CcPlotData_H__
 
 #include "ccstring.h"
+#include "ccpoint.h"
 class CcTokenList;
 class CcList;
 class CrPlot;
@@ -80,6 +85,8 @@ public:
     static CcList  sm_PlotList;
     static CcPlotData* sm_CurrentPlotData;
 
+	virtual CcString GetDataFromPoint(CcPoint point) = 0;
+
 	virtual void CreateSeries(int numser, int* type) = 0;
 	virtual void AllocateMemory(int length) = 0;
 	int FindSeriesType(CcString textstyle);
@@ -92,6 +99,10 @@ public:
 
 	int				m_NumberOfSeries;// number of series in the list
 	int				m_Colour[3][6];	// sequence for colours
+	int				m_XGapLeft;		// the margins around the graph
+	int				m_XGapRight;
+	int				m_YGapTop;
+	int				m_YGapBottom;
 
 protected:
     CcString mName;					// internal name

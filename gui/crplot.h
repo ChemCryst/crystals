@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:31  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -44,6 +47,7 @@ class   CrPlot : public CrGUIElement
         void Clear();
 		int GetMaxFontSize(int width, int height, CcString text, int param);
 		CcPoint GetTextArea(int size, CcString text, int param);
+		CcString GetDataFromPoint(CcPoint point);					// get a description of the data under the mouse
 
 //Creation and adding data:
         void Attach(CcPlotData* doc);

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:30  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -218,8 +221,6 @@ void CrPlot::Attach(CcPlotData * doc)
     attachedPlotData = doc;
 }
 
-
-
 int CrPlot::GetIdealWidth()
 {
     return ((CxPlot*)ptr_to_cxObject)->GetIdealWidth();
@@ -227,5 +228,10 @@ int CrPlot::GetIdealWidth()
 int CrPlot::GetIdealHeight()
 {
     return ((CxPlot*)ptr_to_cxObject)->GetIdealHeight();
+}
+
+CcString CrPlot::GetDataFromPoint(CcPoint point)
+{
+	if(attachedPlotData) return attachedPlotData->GetDataFromPoint(point);
 }
 

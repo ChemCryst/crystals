@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/11/22 15:33:21  ckpgroup
+//   SH: Added different draw-styles (line / area / bar / scatter).
+//   Changed graph layout. Changed second series to blue for better contrast.
+//
 //   Revision 1.3  2001/11/19 16:32:21  ckpgroup
 //   SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
 //
@@ -84,6 +88,7 @@ CxPlot::CxPlot(CrPlot* container)
     :wxControl()
 #endif
 {
+	m_TextPopup = 0;
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
     mfgcolour = PALETTERGB(0,0,0);
@@ -99,7 +104,8 @@ CxPlot::CxPlot(CrPlot* container)
 
 CxPlot::~CxPlot()
 {
-    mPlotCount--;
+	DeletePopup();
+	mPlotCount--;
     delete m_newMemDCBitmap;
 #ifdef __CR_WIN__
     delete m_memDC;
@@ -721,3 +727,95 @@ void CxPlot::Focus()
     SetFocus();
 }
 
+// the mouse-movement code
+#ifdef __CR_WIN__
+// windows stuff goes here
+void CxPlot::OnMouseMove( UINT nFlags, CPoint wpoint )
+{
+ // bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
+ // bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
+  CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+
+#endif
+
+#ifdef __BOTHWX__
+// and now the Linux version
+void CxPlot::OnMouseMove( wxMouseEvent & event )
+{
+  CcPoint point = LogicalToDevice( event.m_x, event.m_y );
+ // int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
+ // nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
+ // bool leftDown = event.m_leftDown;
+ // bool ctrlDown = event.m_controlDown;
+#endif
+
+// now we have the mouse position, get the details of any bar / scatter point below it...
+
+  CcString text = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(point);
+  point = DeviceToLogical(point.x, point.y);
+
+  if(!(text == "error"))
+  {
+	  if(moldMPos.x != point.x)
+	  {
+		  CreatePopup(text, point);
+		  moldMPos = point;
+	  }
+  }
+  // if mouse message is not valid, remove the popup (ie catch mouse leaving window...)
+  else DeletePopup();
+}
+
+// remove the previously created pop-up window
+void CxPlot::DeletePopup()
+{
+  if ( m_TextPopup )
+  {
+#ifdef __CR_WIN__
+    m_TextPopup->DestroyWindow();
+    delete m_TextPopup;
+#endif
+#ifdef __BOTHWX__
+    m_TextPopup->Destroy();
+    m_DoNotPaint = false;
+#endif
+    m_TextPopup=nil;
+  }
+}
+
+// create a pop-up window (contains details of the data-item the mouse is over)
+void CxPlot::CreatePopup(CcString text, CcPoint point)
+{
+#ifdef __BOTHWX__
+  m_DoNotPaint = true;
+#endif
+  if(m_TextPopup) //return;
+	 DeletePopup();
+
+#ifdef __CR_WIN__
+  CClientDC dc(this);
+  CFont* oldFont = dc.SelectObject(CcController::mp_font);
+  SIZE size = dc.GetOutputTextExtent(text.ToCString());
+  dc.SelectObject(oldFont);
+
+  m_TextPopup = new CStatic();
+  m_TextPopup->Create(text.ToCString(), SS_CENTER|WS_BORDER, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
+  m_TextPopup->SetFont(CcController::mp_font);
+  m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
+  m_TextPopup->ShowWindow(SW_SHOW);
+  m_TextPopup->MoveWindow(max(0,point.x-size.cx-4),max(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
+  m_TextPopup->InvalidateRect(NULL,false);
+#endif
+#ifdef __BOTHWX__
+  int cx,cy;
+  GetTextExtent( text.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+                                                   //then can create in one step.
+  m_TextPopup = new mywxStaticText(this, -1, text.ToCString(),
+                                 wxPoint(max(0,point.x-cx-4),max(0,point.y-cy-4)),
+                                 wxSize(cx+4,cy+4),
+                                 wxALIGN_CENTER|wxSIMPLE_BORDER) ;
+//  m_TextPopup->SetEvtHandlerEnabled(true);
+
+#endif
+
+}

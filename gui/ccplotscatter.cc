@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.4  2001/11/22 15:33:20  ckpgroup
+// SH: Added different draw-styles (line / area / bar / scatter).
+// Changed graph layout. Changed second series to blue for better contrast.
+//
 // Revision 1.3  2001/11/19 16:32:20  ckpgroup
 // SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
 //
@@ -144,23 +148,17 @@ void CcPlotScatter::DrawView()
 {
     if(attachedPlot)
     {
-		// setup variables for scaling / positioning of graphs
-		int xgapright = 160;		// horizontal gap between graph and edge of window
-		int xgapleft = 200;			//		nb: leave enough space for labels
-		int ygaptop = 200;			// and the vertical gap
-		int ygapbottom = 300;		//		nb: lots of space for labels
-
 		// if graph has a title, make top gap bigger
 		if(!(m_Axes.m_PlotTitle == ""))
-			ygaptop = 300;
+			m_YGapTop = 300;
 
 		// if x axis has a title make the bottom gap bigger
 		if(!(m_Axes.m_XTitle == ""))
-			ygapbottom = 500;
+			m_YGapBottom = 500;
 
 		// if y axis has a title make the lhs gap bigger
 		if(!(m_Axes.m_YTitle == ""))
-			xgapleft = 300;
+			m_XGapLeft = 300;
 
 		// used in loops
 		int i=0;
@@ -170,8 +168,8 @@ void CcPlotScatter::DrawView()
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 		
 		// gap between division markers on x and y axes
-		int xdivoffset = (2400-xgapleft-xgapright) / (m_Axes.m_NumDiv[Axis_X]);			
-		int ydivoffset = (2400-ygaptop-ygapbottom) / (m_Axes.m_NumDiv[Axis_Y]);
+		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_NumDiv[Axis_X]);			
+		int ydivoffset = (2400-m_YGapTop-m_YGapBottom) / (m_Axes.m_NumDiv[Axis_Y]);
 
 		// axis dimensions after rounding
 		int axisheight = ydivoffset * (m_Axes.m_NumDiv[Axis_Y]);
@@ -181,25 +179,25 @@ void CcPlotScatter::DrawView()
 		int xseroffset = xdivoffset / m_NumberOfSeries;			
 
 		// take the axis height, work out where zero is...
-		int xorigin = xgapleft + (axiswidth * (m_Axes.m_AxisMin[Axis_X] / (m_Axes.m_AxisMax[Axis_X] - m_Axes.m_AxisMin[Axis_X])));
-		int yorigin = 2400 - ygapbottom + (axisheight * (m_Axes.m_AxisMin[Axis_Y] / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
+		int xorigin = m_XGapLeft + (axiswidth * (m_Axes.m_AxisMin[Axis_X] / (m_Axes.m_AxisMax[Axis_X] - m_Axes.m_AxisMin[Axis_X])));
+		int yorigin = 2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisMin[Axis_Y] / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
 		float yoriginvalue = 0;
 		if(m_Axes.m_AxisScaleType == Plot_AxisSpan && m_Axes.m_AxisMin[Axis_Y] > 0) 
 		{
-			yorigin = 2400 - ygapbottom;
+			yorigin = 2400 - m_YGapBottom;
 			yoriginvalue = m_Axes.m_AxisDivisions[Axis_Y][0];
 		}
 		
 		// draw a grey background
 		attachedPlot->SetColour(200,200,200);
-		attachedPlot->DrawRect(xgapleft, ygaptop, 2400-xgapright, 2400-ygapbottom, true);
+		attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
 
 		// now loop through the data items, drawing each one
 		// if there are 'm_Next' data items, each will use 2200/m_Next as an offset
 		// NB draw data bars FIRST, so axes / markers are always visible
-		int offset = (2400-xgapleft-xgapright) / m_NextItem;
+		int offset = (2400-m_XGapLeft-m_XGapRight) / m_NextItem;
 
 		int x1, y1, x2, y2;
 
@@ -269,6 +267,13 @@ void CcPlotScatter::DrawView()
 		// display all the above
 		attachedPlot->Display();
     }
+}
+
+CcString CcPlotScatter::GetDataFromPoint(CcPoint point)
+{
+	// do nothing as yet...
+	CcString text = "error";
+	return text;
 }
 
 // create the data series

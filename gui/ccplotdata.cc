@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2001/11/22 15:33:19  ckpgroup
+// SH: Added different draw-styles (line / area / bar / scatter).
+// Changed graph layout. Changed second series to blue for better contrast.
+//
 // Revision 1.5  2001/11/19 16:32:20  ckpgroup
 // SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
 //
@@ -62,7 +66,12 @@ CcPlotData::CcPlotData( )
 	m_SeriesLength = 0;
 	m_NextItem = 0;
 	
-   // initialise the colours
+	m_XGapRight = 160;		// horizontal gap between graph and edge of window
+	m_XGapLeft = 200;			//		nb: leave enough space for labels
+	m_YGapTop = 200;			// and the vertical gap
+	m_YGapBottom = 300;		//		nb: lots of space for labels
+
+	// initialise the colours
    // nb only for 6 series currently
    for(int i=0; i<6; i++)
    {

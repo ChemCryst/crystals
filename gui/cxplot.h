@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:31  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:51  ckp2
 //   The PLOT classes!
 //
@@ -25,6 +28,20 @@
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 #define BASEPlot wxControl
+#endif
+
+
+#ifdef __BOTHWX__
+class mywxStaticText : public wxStaticText
+{
+  public:
+    mywxStaticText(wxWindow* s,int i,wxString s,wxPoint p,wxSize ss,int f);
+    wxWindow * m_parent;
+    void OnLButtonUp(wxMouseEvent & event);
+    void OnLButtonDown(wxMouseEvent & event);
+    void OnRButtonUp(wxMouseEvent & event);
+    DECLARE_EVENT_TABLE()
+};
 #endif
 
 #ifdef __CR_WIN__
@@ -69,17 +86,21 @@ class CxPlot : public BASEPlot
 		CcPoint GetTextArea(int size, CcString text, int param);
         void Focus();
         void Display();
-
+		
+		void DeletePopup();
+		void CreatePopup(CcString atomname, CcPoint point);
 
         CrGUIElement *  ptr_to_crObject;
         int mIdealHeight;
         int mIdealWidth;
         static int mPlotCount;
         int mPolyMode;
+		CcPoint		moldMPos;
 
 //Machine specific parts:
 #ifdef __CR_WIN__
       public:
+		CStatic* m_TextPopup;
 
         COLORREF mfgcolour;
         CBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
@@ -87,11 +108,13 @@ class CxPlot : public BASEPlot
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
+		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
       public:
-
+    
+		mywxStaticText * m_TextPopup;
         wxColour mfgcolour;
         wxBitmap *oldMemDCBitmap, *newMemDCBitmap;
         wxMemoryDC *memDC;
@@ -100,6 +123,7 @@ class CxPlot : public BASEPlot
 
         void OnChar(wxKeyEvent & event );
         void OnPaint(wxPaintEvent & event );
+		void OnMouseMove(wxMouseEvent & event);
         DECLARE_EVENT_TABLE()
 #endif
 };
