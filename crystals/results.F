@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/03/17 14:53:38  richard
+C RIC: If refine_diff_density min or max are both within 0.000001 of 0.0, then
+C replace with ? in the CIF file.
+C
 C Revision 1.30  2002/03/01 11:33:41  Administrator
 C Correct and improve presntation of weighting scheme in .cif file
 C
@@ -3697,7 +3701,12 @@ C           AREA DETECTOR
      1    CVALUE
 C 
 C
-         IF ((J.GT.0).AND.(STORE(L30AB+1+J).GT.ZERO)) THEN
+         IF (J.GT.0) THEN
+C-----   A FIX IN THE ABSENCE OF REAL INFO
+            IF (STORE(L30AB+1+J) .LE. ZERO) THEN
+              STORE(L30AB+1+J) = TMAX
+              STORE(L30AB+J)  = TMIN
+            ENDIF
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
             CALL XPCIF (CLINE)
