@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.95  2004/12/02 16:55:10  djw
+C Remove esd from H atoms and report angles to one decimal place only
+C
 C Revision 1.94  2004/11/16 16:20:30  rich
 C Oops. Try writing valid FORTRAN.
 C Fix another unescaped backslash in SHELX weight format statement.
@@ -3712,7 +3715,10 @@ C
       J = 1
 C----- NO HYDROGEN YET
       NOH = 0
+c----- number of atoms
+      NATOUT = 0
       DO 2000 JPUB = Itmp, Ktmp, jtmp
+        NATOUT = NATOUT + 1
 C----- ATOM NAME
         WRITE (CBUF, '(A4)') STORE(JPUB)
         CALL XCTRIM (CBUF, N)
@@ -3755,7 +3761,7 @@ c
 C----- VALUE AND ESD
       CALL XFILL (IB, IVEC, 20)
 cdjw021204
-      if ((noh .gt. 0 ) .and. ( esd .le. 0.)) then
+      if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .EQ. 3)) then
         CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
       else
         CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
@@ -3765,7 +3771,7 @@ cdjw021204
       CLINE(J:J+N-1) = CBUF(1:N)
       J = J + N + 1
       if (key .eq. 15) then
-C----- bonds AND ESDs
+C-----H-bonds AND ESDs
       do itmp =ipub+21, ipub+23, 2
         CALL XFILL (IB, IVEC, 20)
         CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
