@@ -1281,7 +1281,7 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
   {
     CHAR sz[80];
     DWORD dw = GetLastError();
-    sprintf (sz, "SetPixelFormat failed: Get LastError returned %u\n",
+    sprintf (sz, "wglCreateContext failed: Get LastError returned %u\n",
       dw);
     MessageBox ( sz, "ERROR", MB_OK);
     return false;
@@ -1291,7 +1291,7 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
   {
     CHAR sz[80];
     DWORD dw = GetLastError();
-    sprintf (sz, "SetPixelFormat failed: Get LastError returned %u\n",
+    sprintf (sz, "wglMakeCurrent failed: Get LastError returned %u\n",
       dw);
     MessageBox ( sz, "ERROR", MB_OK);
     return false;
