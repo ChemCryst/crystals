@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2004/04/21 13:11:45  rich
+C Added "#PUNCH 6 G" command, it outputs a SHELX format reflection
+C file, but using slightly perturbed Fcalc^2 and made-up sigma(F-calc^2).
+C
+C Added a routine ISCNTRC(HKL) to determine if a given reflection is
+C in a centrosymmetric class of reflections (e.g. the h0l class in monoclinic-b
+C ). Used in plot of phase distribution to exclude this class of reflections.
+C Added text to xphase.scp to explain this.
+C
 C Revision 1.57  2004/04/19 15:43:13  rich
 C Added normal probability plot to \SUM L 6 (if LEVEL=NORMPP is specified)
 C For each reflection the value of (w)^.5*DELTA is stored in memory along
@@ -2505,7 +2514,8 @@ C
       DATA (CKEY(I,1),I=1,MAXKEY)/
      1 'Total measured', '*', 'No. merged with Friedel',
      2 'R merged with Friedel',  'No. merged no Friedel',
-     3 'R merged no Friedel', 13*'*'
+     3 'R merged no Friedel', 'Wilson B factor', 'Wilson scale factor',
+     4 11*'*'
      * /
       DATA (CKEY(I,2),I=1,MAXKEY)/
      1 'Smallest dimension', 'Medium dimension', 'Maximum Dimension',

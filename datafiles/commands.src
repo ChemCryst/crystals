@@ -1393,8 +1393,8 @@ Data reduction details
     .RMERGE             0    0    1    0    0 0.
     .NREFFRIED          0    0    1    0    0 0.
     .RMERGFRIED         0    0    1    0    0 0.
-    .ZZ1                0    0    1    0    0.0 
-    .ZZ2                0    0    1    0    0.0
+    .WILSONB            0    0    1    0    0.0 
+    .WILSONSCALE        0    0    1    0    0.0
     .ZZ3                0    0    1    0    0.0
     .ZZ4                0    0    1    0    0.0
     .ZZ5                0    0    1    0    0.0

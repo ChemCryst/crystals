@@ -469,9 +469,12 @@ C
 \XCONST
 \XLST05
 \XLST06
+\XLST30
+\ICOM30
 \STORE
 \XUNITS
 \XIOBUF
+\QLST30
 
       DIMENSION SW(30),SR(30),SI(30),NSUM(30), MHKL(3),
      1          SWC(30),SIC(30)
@@ -606,13 +609,16 @@ C     LEAST SQUARES
 
       IF (ISTATP .EQ. 1) THEN
 
-        WRITE(CMON,'(A,F8.4,/,A,F8.4,/,A)')
-     1  '^^WI SET _MW_BFACTR TEXT ',BT,
-     1  '^^WI SET _MW_BSCALE TEXT ',SC,
-     1  '^^CR'
-        CALL XPRVDU(NCVDU, 3,0)
+        WRITE(CMON,'(A,F8.4,A,F8.4)')
+     1  '^^CO SET _MW_BFACTR TEXT ',BT,
+     1  ' SET _MW_BSCALE TEXT ',SC
+        CALL XPRVDU(NCVDU, 1,0)
       END IF
 
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL30
+         STORE(L30DR+6) = BT
+         STORE(L30DR+7) = SC
+      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 
       RETURN                                                            
       END                                                               
