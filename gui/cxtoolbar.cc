@@ -5,6 +5,16 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2002/07/03 14:23:21  richard
+//   Replace as many old-style stream class header references with new style
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+//   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+//   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+//   Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+//   warning messages.
+//
 //   Revision 1.5  2001/11/14 10:30:41  ckp2
 //   Various changes to the painting of the background of Windows as some of the
 //   dialogs suddenly went white under XP.
@@ -62,11 +72,13 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 
     CxToolBar *theCxToolBar = new CxToolBar( container );
 
+    theCxToolBar->EnableToolTips(TRUE);
+
 #ifdef __CR_WIN__
     theCxToolBar->Create(NULL, NULL, WS_CHILD| WS_VISIBLE, CRect(0,0,5,5), guiParent, ++mToolBarCount);
     theCxToolBar->SetFont(CcController::mp_font);
 
-    theCxToolBar->m_ToolBar->Create(WS_CHILD| WS_VISIBLE|TBSTYLE_FLAT|CCS_NODIVIDER, CRect(0,0,5,5), theCxToolBar, mToolBarCount);
+    theCxToolBar->m_ToolBar->Create(WS_CHILD| WS_VISIBLE|TBSTYLE_FLAT|CCS_NODIVIDER|TBSTYLE_TOOLTIPS, CRect(0,0,5,5), theCxToolBar, mToolBarCount);
     theCxToolBar->m_ToolBar->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
@@ -244,7 +256,7 @@ void    CxToolBar::AddTool( CcTool* newTool )
   m_ToolBar->SetImageList(m_ImageList);
   TBBUTTON tbbutton;
   tbbutton.iBitmap = bitmapIndex;
-  tbbutton.iString = m_ToolBar->AddStrings(newTool->tText.ToCString());
+//  tbbutton.iString = m_ToolBar->AddStrings(newTool->tText.ToCString());
   tbbutton.dwData = 0;
   tbbutton.fsState = TBSTATE_ENABLED;
   tbbutton.fsStyle = TBSTYLE_BUTTON;
@@ -267,6 +279,7 @@ void    CxToolBar::SetGeometry( int top, int left, int bottom, int right )
 #endif
 
 }
+
 
 CXGETGEOMETRIES(CxToolBar)
 
@@ -301,6 +314,7 @@ int CxToolBar::GetIdealHeight()
 #ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CxToolBar, BASETOOLBAR)
     ON_COMMAND_RANGE (kToolButtonBase, kToolButtonBase+5000, OnToolSelected)
+    ON_NOTIFY_EX( TTN_NEEDTEXT, 0, OnToolTipNotify )
     ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
@@ -310,6 +324,36 @@ BEGIN_EVENT_TABLE(CxToolBar, BASETOOLBAR)
       EVT_CHAR( CxToolBar::OnChar )
 END_EVENT_TABLE()
 #endif
+
+
+
+BOOL CxToolBar::OnToolTipNotify( UINT id, NMHDR * pNMHDR, LRESULT * pResult )
+{
+ // need to handle both ANSI and UNICODE versions of the message
+   TOOLTIPTEXTA* pTTTA = (TOOLTIPTEXTA*)pNMHDR;
+   TOOLTIPTEXTW* pTTTW = (TOOLTIPTEXTW*)pNMHDR;
+   CString strTipText;
+   UINT nID = pNMHDR->idFrom;
+   if (pNMHDR->code == TTN_NEEDTEXTA && (pTTTA->uFlags & TTF_IDISHWND) ||
+      pNMHDR->code == TTN_NEEDTEXTW && (pTTTW->uFlags & TTF_IDISHWND))
+   {
+      // idFrom is actually the HWND of the tool
+      nID = ::GetDlgCtrlID((HWND)nID);
+   }
+
+   if (nID != 0) // will be zero on a separator
+   {
+      CcTool* tool = CcController::theController->FindTool(nID);
+      if ( tool )
+        strTipText = tool->tText.ToCString();
+
+   }
+   lstrcpyn(pTTTA->szText, strTipText, sizeof(pTTTA->szText));
+   *pResult = 0;
+
+   return TRUE;    // message was handled
+}
+
 
 void CxToolBar::Focus()
 {
