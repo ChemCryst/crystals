@@ -44,7 +44,7 @@ using namespace std;
 /***	Error codes to identify what 	***/
 /***	type of exception is it is. 	***/
 /******************************************/
-#if defined(_WIN32)
+#if defined(kUnknownException)
     #define kUnknownException 0x00
 #endif
 #define kFileException 0x01
