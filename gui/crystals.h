@@ -1,5 +1,6 @@
 // crystals.h : main header file for the CRYSTALS application
 //
+// $Log: not supported by cvs2svn $
 
 #if !defined(AFX_CRYSTALS_H__DEE5F4C5_D4B0_11D1_B74B_0080C8372E35__INCLUDED_)
 #define AFX_CRYSTALS_H__DEE5F4C5_D4B0_11D1_B74B_0080C8372E35__INCLUDED_
@@ -17,7 +18,7 @@
 #include "resource.h"       // main symbols
 
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 
 #include <wx/app.h>
 
@@ -36,7 +37,7 @@ class CrApp;
 class CCrystalsApp : public CWinApp
 {
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 class CCrystalsApp : public wxApp
 {
 #endif
@@ -63,7 +64,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 	virtual bool OnInit();
 	virtual int OnExit();
       virtual void OnIdle(wxIdleEvent & event);

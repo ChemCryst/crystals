@@ -4,9 +4,27 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 //   Modified:  27.2.1998 14:11 Uhr
+// $Log: not supported by cvs2svn $
 
 #ifndef		__CrystalsInterface_H__
 #define		__CrystalsInterface_H__
+
+#ifdef __LINUX__
+#define __BOTHWX__ 1
+#define __WXGTK__
+#endif
+
+#ifdef __WINDOWS__
+#define __BOTHWIN__ 1
+#endif
+
+#ifdef __WINMSW__
+#define __BOTHWX__ 1
+#define __BOTHWIN__ 1
+#define __WXMSW__
+#endif
+
+
 
 #include	"ccstring.h"
 
@@ -62,7 +80,7 @@ typedef void AppContext;
 #endif
 
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 typedef bool Boolean;
 #define nil 0
 //#define TRUE true
@@ -113,6 +131,11 @@ typedef bool Boolean;
 	#include <afxwin.h> //Needed for TRACE debugger macro.
 	#define new DEBUG_NEW //Needed for debugger to track heap allocations.
 #endif
+#ifdef __BOTHWX__
+        #include <wx/object.h>
+	#define new WXDEBUG_NEW //Needed for debugger to track heap allocations.
+#endif
+
 	#ifdef LOGERRORS
 		#define LOGERR(a) ( (CcController::theController)->LogError(a,0) )
 	#else
