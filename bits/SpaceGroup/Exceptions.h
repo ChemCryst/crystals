@@ -39,6 +39,7 @@
 #define __EXCEPTIONS_H__
 #include <exception>
 #include <iostream>
+
 using namespace std;
 /******************************************/
 /***	Error codes to identify what 	***/
@@ -49,7 +50,7 @@ using namespace std;
 #endif
 #define kFileException 0x01
 
-class MyException : public std::exception
+class MyException : public exception
 {
     public:
         char* iErrStr;
