@@ -2,11 +2,11 @@
 %  VARIABLE INTEGER NTIPS CTIP ICHO
 %% Display a "tip of the day" at start up.
 %%
-^^WI WINDOW XTIP 'Tip of the day' MODAL
+^^WI WINDOW XTIP 'Tip of the day' MODAL SIZE KEEP
 ^^WI COMMIT='BOK' CANCEL='BOK'
 ^^WI GRID BIGG NROWS=5 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 TEXTOUT XTIPTEXT '' NROWS=4 NCOLS=80
+^^WI   @ 2,2 TEXTOUT XTIPTEXT '' NROWS=10 NCOLS=80
 ^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=9
 ^^WI   {
 ^^WI     @ 1,1 CHECKBOX STAS '&Show tips at startup'
