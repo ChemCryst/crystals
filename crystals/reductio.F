@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/03/06 13:50:22  ckp2
+C Updated to check6 stuff.
+C
 C Revision 1.13  2002/03/04 21:57:57  ckp2
 C During #SYST, output all absences to a file, absences.dat
 C
@@ -385,7 +388,7 @@ C----- ACCUMULATORS
 
       CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
       IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
-      WRITE(NCFPU1,'(A)')'   H   K   L     Fobs/Sigma(Fo)     Fobs'
+      WRITE(NCFPU1,'(A)')'   H   K   L   Fobs^2/Sigma      Fobs^2'
 C
 C--MAIN REFLECTION READING LOOP
 1450  CONTINUE
@@ -417,7 +420,7 @@ C--REFLECTION IS NOT ALLOWED  -  CHECK IF IT IS THE FIRST
         SIGRAT = SIGMAS
       END IF
 
-      WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=1,3),
+      WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
      1                                  SIGRAT,FOS
 
       IF (STORE(L6+12) .LE. 2.*ZERO) GOTO 1563
