@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/06/09 11:37:35  rich
+C
+C Two new unary operators for the CRYSTALS scripting language:
+C
+C SPGTOCRY - tries to convert an XPREP H-M space group string into a Larson
+C style one. Ensures at least some of the correct spaces are there and
+C gets rid of parenthesis. This routine could be extended to be more
+C thorough as examples occur. Usage: EVALUATE STRING1 = SPGTOCRY ( STRING2 )
+C
+C COMPRESS - removes all redundant spaces from a script string. Nice for
+C formatting some output. Usage: EVALUATE STRING1 = COMPRESS ( STRING2 )
+C
 C Revision 1.43  2003/05/07 12:18:55  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -7609,6 +7621,7 @@ C
 C
 \XUNITS
 \XSSVAL
+\UFILE
 C
 \XSCGBL
 \XSCCHR
@@ -7677,18 +7690,19 @@ C
 C -- OUTPUT BASIC MESSAGE
 C
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1005 ) CCOMP(ISCCOM),
+      WRITE ( NCWU , 1005 ) IRDREC(IFLIND),CCOMP(ISCCOM),
      2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
      3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
       ENDIF
-      WRITE ( NCAWU , 1005 ) CCOMP(ISCCOM),
+      WRITE ( NCAWU , 1005 )IRDREC(IFLIND),CCOMP(ISCCOM),
      2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
      3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
-      WRITE ( CMON, 1005 ) CCOMP(ISCCOM),
+      WRITE ( CMON, 1005 )  IRDREC(IFLIND),CCOMP(ISCCOM),
      2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
      3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
       CALL XPRVDU(NCVDU, 3,0)
-1005  FORMAT ( / 1X , 'CRYSTALS SCRIPT error - Failing component is ' ,
+1005  FORMAT ( / 1X , 'CRYSTALS SCRIPT error, line ',I4,
+     1 ' - Failing component is ' ,
      2 A , / ,
      3 1X , A , 2X , A )
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2003/06/09 11:38:19  rich
+C Add bond calculation as a recognised error generating routine in XOPMSG.
+C
 C Revision 1.30  2003/05/07 12:18:56  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -667,10 +670,18 @@ C -- RESET CARD SERIAL NUMBER INCREMENT
       NS = 1
 C -- IF A '#USE' FILE IS OPEN, ABANDON IT.
       IF ( IUSFLG .EQ. 2 ) THEN
+C
+C If in a SCRIPT, print line number to help debug.
+C
+        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+         WRITE(CMON,'(A,I6)')'Script abandoned at line ',IRDREC(IFLIND)
+         CALL XPRVDU(NCVDU,1,0)
+        END IF
+
         CALL XFLUNW ( 3 , 2 )
       ENDIF
       RETURN
-C
+
 8300  CONTINUE
 C -- ABORT PROGRAM WITH REPORT
       IF (ISSPRT .EQ. 0) THEN
