@@ -250,7 +250,7 @@ C--NUMBER OF DEGREES IF FREEDOM IS NEGATIVE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)STORE(L11P+16)
       WRITE(NCAWU,1450) STORE(L11P+16)
-      WRITE ( CMON, 1450)
+      WRITE ( CMON, 1450)STORE(L11P+16)
       CALL XPRVDU(NCVDU, 1,0)
 1450  FORMAT(' Ill-conditioned problem  -  number',
      2 ' of degrees of freedom is ',F6.0)
