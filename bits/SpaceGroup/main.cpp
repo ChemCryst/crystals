@@ -57,6 +57,9 @@
 #include "RunParameters.h"
 #include "StringClasses.h"
 #include "ReflectionMerging.h"
+#include "Timer.h"
+#include "LaueGroupGraph.h"
+#include "LaueClasses.h"
 
 using namespace std;
 
@@ -89,12 +92,13 @@ void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRa
 
 void runTest(RunParameters& pRunData)
 {
+	Timer tTimer;
+	
     std::cout << "Reading in tables...";
     std::cout.flush();
-    struct timeval time1;
-    struct timeval time2;
-    gettimeofday(&time1, NULL);
-    Tables* tTables;
+	
+    tTimer.start();
+	Tables* tTables;
     try
     {
         tTables = new Tables(pRunData.iTablesFile.getCString());
@@ -106,15 +110,15 @@ void runTest(RunParameters& pRunData)
         eException.addError(tString);
         throw eException;
     }
-    gettimeofday(&time2, NULL);
-    std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+	tTimer.stop();
+    std::cout << "\n" << tTimer << "\n";
     std::cout << "\nReading in hkl data...";
     std::cout.flush();
-    gettimeofday(&time1, NULL);
+	tTimer.start();
     HKLData* tHKL;
     try
     {
-	tHKL = new HKLData(pRunData.iFileName.getCString());
+		tHKL = new HKLData(pRunData.iFileName.getCString());
     }
     catch (MyException& eException)
     {
@@ -123,72 +127,84 @@ void runTest(RunParameters& pRunData)
         eException.addError(tError);
         throw eException;
     }
-    gettimeofday(&time2, NULL);
-    std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
-    
-    if (pRunData.iMerge)
-    {
-        char tResult[255];
-        LaueGroups::systemID tResultID;
-        std::cout << "\nMerging..."; 
-        std::cout.flush(); 
-        gettimeofday(&time1, NULL);
-        LaueGroups tLaueGroups;
-        tResultID = tLaueGroups.guessSystem(*tHKL, pRunData);
-        gettimeofday(&time2, NULL);    
-        std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n\n";
-        strcpy(tResult, crystalSystemConst(LaueGroups::laueGroupID2UnitCellID(tResultID)));
-        
-        // ask the user if need be.
-        if (!pRunData.iCrystalSys.empty())
-        {
-                if (pRunData.iCrystalSys.cmp(tResult) != 0)
-                {
-                    if (!pRunData.iCrystalSys.contains(tResult))
-                    {
-						std::cout << tLaueGroups << "\n";
-                        std::cout << "Merging identifys the system to be " << tResult << "\n";
-						pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
-                    }
-                }
-        }
-        else
-        {
-			std::cout << tLaueGroups << "\n";
-            std::cout << "Merging Identifys the system to be " << tResult << "\n";
-            pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
-        }
-    }
-    std::cout << "\nCalculating probabilities...";
-    std::cout.flush();
-    gettimeofday(&time1, NULL);
-    Table* tTable = tTables->findTable(pRunData.iCrystalSys.getCString());
-    Stats* tStats = new Stats(tTables->getHeadings(), tTables->getConditions());
-    int tNumRef = tHKL->length();
-    for (int i = 0; i < tNumRef; i++)
-    {
-        Reflection* tReflection = tHKL->get(i);
-        tStats->addReflection(tReflection);
-    }
+	tTimer.stop();
+    std::cout << "\n" << tTimer << "\n";
+	JJLaueGroup *tResult;
+	std::cout << "\nMerging...\n"; 
+	std::cout.flush(); 
+	tTimer.start();
+	LaueGroupGraph* tGraph = new LaueGroupGraph();
+	MergedReflections& tMergedRefl = tGraph->merge(*tHKL);
+	tTimer.stop();    
+	std::cout << tTimer << "\n\n";
+	tResult = tMergedRefl.laueGroup();
+	HKLData *tHKLData; //The resulting merged reflections.
+	std::cout << "From merging the most likly laue symetry is " << tResult->laueGroup() << "\n";
+	
+	JJLaueGroup* tNewResult;
+	if (pRunData.crystalSystem() == kUnknownID) //If the Laue symmetry hasn't already been specified 
+	{
+		tNewResult = getLaueGroup(tResult, std::cout);
+	}
+	else
+	{
+		tNewResult = pRunData.laueGroup();
+	}
+	if (tNewResult != tResult) //If what the merge found and the users choise was don't machine
+	{
+		pRunData.setLaueGroup(tNewResult); //Save the choice
+		if (pRunData.iMerge) //If your using the merged data then
+		{
+			std::cout << "Remerging reflections in " << tNewResult->laueGroup() << "...\n"; 
+			JJMergedData tNewMergedData(*tHKL, *tNewResult); 
+			tHKLData = new HKLData();
+			tNewMergedData.mergeReflections(*tHKLData);
+		}
+	}
+	else
+	{
+		pRunData.setLaueGroup(tResult);
+		tHKLData = new HKLData((HKLData&)tMergedRefl);
+	}
+	
+	delete tGraph;
+	if (pRunData.iMerge)
+	{
+		delete tHKL;
+		tHKL = tHKLData;
+	}
 
+    std::cout << "Calculating probabilities...\n";
+    std::cout.flush();
+    tTimer.start();
+    Table* tTable = tTables->findTable(crystalSystemConst(pRunData.crystalSystem()));
+    Stats* tStats = new Stats(tTables->getRegions(), tTables->getConditions());
+	tStats->addReflections(*tHKL, *pRunData.laueGroup());
     tStats->calProbs();
-    gettimeofday(&time2, NULL);
+    tTimer.stop();
     if (pRunData.iVerbose)
 	tStats->output(std::cout, *tTable) << "\n";
-    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+    std::cout << tTimer << "\n";
     std::cout.flush();
     std::cout << "\nRanking space groups...";
     std::cout.flush();
-    gettimeofday(&time1, NULL);
+    tTimer.start();
     RankedSpaceGroups* tRankings = new RankedSpaceGroups(*tTable, *tStats, pRunData.iChiral);
-    gettimeofday(&time2, NULL);
-    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+    tTimer.stop();
+    std::cout <<"\n" << tTimer << "\n\n";
+	std::cout << "Table for " << crystalSystemConst(pRunData.laueGroup()->crystalSystem()) << "\n";
     std::cout << "\n" << *tRankings << "\n";
     outputToFile(pRunData, tStats, tRankings, *tTable);
     delete tRankings;
     delete tStats;
     delete tHKL;
     delete tTables;
+}
+
+void cleanup()
+{
+	JJLaueGroups::releaseDefault();
+	JJLaueClassMatrices::releaseDefault();
 }
 
 int main(int argc, const char* argv[])
@@ -210,6 +226,7 @@ int main(int argc, const char* argv[])
     {
         std::cout << "\n" << eE.what() << "\n";
     }
+	cleanup();
     std::cout << MyObject::objectCount() << " objects left.\n";
     return 0;
 }
