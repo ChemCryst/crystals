@@ -1,5 +1,21 @@
 %SCRIPT XFOUR
 % VARIABLE CHARACTER FNAME
+% VARIABLE LOGICAL TWINNED
+% EVALUATE TWINNED = FALSE
+%  BLOCK
+%    VARIABLE INTEGER ITMP
+%    IF ( EXISTS 13 .NE. 0 ) THEN
+%        COPY '#GENERALEDIT 13'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%        IF ( ITMP .GE. 0 ) THEN
+%         EVALUATE TWINNED = TRUE
+%        ELSE
+%         EVALUATE TWINNED = FALSE
+%        END IF
+%        COPY 'END'
+%    END IF
+%  END BLOCK
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
 % VARIABLE LOGICAL PEAKCHANGE REDRAW
@@ -204,15 +220,21 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       IF DOSCALE .EQ. 1 THEN
 %           COPY '#XDELQ'
 %           COPY '#SFLS'
-%           COPY 'SCALE'
+%           IF TWINNED .EQ. TRUE THEN
+%             COPY 'SCALE /FO/=SCALED-FOT' 
+%           ELSE
+%             COPY 'SCALE'
+%           END IF
 %           COPY 'END'
 %       END IF
-%       IF DOCALC .EQ. 1 THEN
-%           COPY '#EDIT'
-%           COPY 'SELECT TYPE NE Q'
-%           COPY 'END'
+%       IF DOCALC .EQ. 1 .OR. TWINNED .EQ. TRUE THEN
+%           COPY '#XDELQ'
 %           COPY '#SFLS'
-%           COPY 'CALC'
+%           IF TWINNED .EQ. TRUE THEN
+%             COPY 'SCALE /FO/=SCALED-FOT' 
+%           ELSE
+%             COPY 'SCALE'
+%           END IF
 %           COPY 'END'
 %       END IF
 %       QUEUE REWIND
