@@ -4,6 +4,7 @@ C--PRESETS FOR THE CRYSTALS SYSTEM
 C
 \PLSTHN
 C
+\TLISTC
 \TDVNAM
 \TSSCHR
 C
@@ -76,6 +77,45 @@ C
 \XDRIVE
 C
 \OUTCOL
+C LOAD THE LIST NAMES
+C      
+       DATA CLISTS(1)     /'Cell parameters'/
+       DATA CLISTS(2)     /'Unit cell symmetry'/
+       DATA CLISTS(3)     /'Atomic scattering factors'/
+       DATA CLISTS(4)     /'SLQ Weighting scheme'/
+       DATA CLISTS(5)     /'Atomic parameters'/
+       DATA CLISTS(6)     /'Reflections'/
+       DATA CLISTS(7)     /'Internal use'/
+       DATA CLISTS(8)     /'Internal use'/
+       DATA CLISTS(9)     /'Internal use'/
+       DATA CLISTS(10)    /'Peak coordinates from Fourier'/
+       DATA CLISTS(11)    /'Least squares normal matrix'/
+       DATA CLISTS(12)    /'Refinement directives'/
+       DATA CLISTS(13)    /'Crystal and collection data'/
+       DATA CLISTS(14)    /'Fourier directives'/
+       DATA CLISTS(15)    /'Internal use'/
+       DATA CLISTS(16)    /'General Restraint instructions'/
+       DATA CLISTS(17)    /'Special Restraint instructions'/
+       DATA CLISTS(18)    /'Internal use'/
+       DATA CLISTS(19)    /'Internal use'/
+       DATA CLISTS(20)    /'Rotation and other matrices'/
+       DATA CLISTS(21)    /'Internal use'/
+       DATA CLISTS(22)    /'Refinement directives in internal format'/
+       DATA CLISTS(23)    /'Structure factor calculation control list'/
+       DATA CLISTS(24)    /'Least squares shift list'/
+       DATA CLISTS(25)    /'Twin component operators'/
+       DATA CLISTS(26)    /'Constraints in internal format'/
+       DATA CLISTS(27)    /'Diffractometer batch scales'/
+       DATA CLISTS(28)    /'Reflection exclusion limits'/
+       DATA CLISTS(29)    /'Asymmetric unit and elemental properties'/
+       DATA CLISTS(30)    /'Internal use'/
+       DATA CLISTS(31)    /'Cell parameter E.S.D.s'/
+       DATA CLISTS(32)    /'Internal use'/
+       DATA CLISTS(33)    /'Internal use'/
+       DATA CLISTS(34)    /'Internal use'/
+       DATA CLISTS(35)    /'Internal use'/
+       DATA CLISTS(36)    /'Internal use'/
+C
 C
 C------ INITIALISE THE LINE COUNTER FOR PAGINATED OUTPUT
       DATA LDRV77 /0/, MDRV77 /22/, JNL77 /1/, JPMT77 /0/
