@@ -610,7 +610,7 @@ C
 C--
 \ISTORE
 C
-      PARAMETER (NPROCS = 27)
+      PARAMETER (NPROCS = 28)
       DIMENSION PROCS(NPROCS)
       DIMENSION IPROCS(NPROCS)
       DIMENSION APD(13)
@@ -618,6 +618,7 @@ C
       DIMENSION AMIN(3)
       CHARACTER*16 CMAPTP(5)
       CHARACTER*8  WTED
+      DIMENSION KDEV(4)
 C
 \STORE
 \XCONST
@@ -636,6 +637,12 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+
+C For the name of the fourier.map file:
+\TSSCHR
+\XSSCHR
+\UFILE
+
 cjan99
         REAL START(3), STEPS(3),  TRANS(12)
         INTEGER NUM(3)
@@ -649,6 +656,7 @@ C
       EQUIVALENCE (A1(1),A)
       EQUIVALENCE (PROCS(1), IPROCS(1))
       EQUIVALENCE (IMODE, PROCS(27)), (IOUTAP, PROCS(26))
+      EQUIVALENCE (IOUFIL, PROCS(28))
 C
 C
       DATA NCOL/28/
@@ -742,41 +750,37 @@ C----- FLOAT THE NUMBER  OF POINTS (THE INTEGER IS STILL IN ISTORE)
 C
 C----- WRITE THE M/T HEADER  DETAILS
       IF (IOUTAP .GT. 0) THEN
-       REWIND (MT1)
-       WRITE (MT1) 'INFO  DOWN, ACROSS AND SECTION '
-       WRITE (MT1) 'TRAN', (STORE(I), I=L8R, L8R+8)
-     1 , (PROCS(I), I=14,16)
-       WRITE (MT1) 'CELL', (STORE(I), I = L1P1, L1P1+5)
-       WRITE (MT1) 'L14 ',
-     1 ( STORE(I), STORE(I+2), (STORE(I)+(ISTORE(I+1)-1)*STORE(I+2)),
-     1  1. , I = L8T+3, L8T+9, 3)
-       WRITE (MT1) 'SIZE', ISTORE(L8T+4), ISTORE(L8T+7),
-     1 ISTORE(L8T+10)
-      NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
-cjan99
-        STEPS(1)=STORE(L8T+5)
-        STEPS(2)=STORE(L8T+8)
-        STEPS(3)=STORE(L8T+11)
-        START(1)=STORE(L8T+3)
-        START(2)=STORE(L8T+6)
-        START(3)=STORE(L8T+9)
-        NUM(1) = ISTORE(L8T+4)
-        NUM(2) = ISTORE(L8T+7)
-        NUM(3) = ISTORE(L8T+10)
-        DO 1347 IINX = 0,6,3
-C Transpose the matrix...
-          DO 1346 IINY = 1,3
-                TRANS((IINX/3)+(3*IINY)-2) = STORE(IINX+IINY+L8RI-1)
-1346      CONTINUE
-1347    CONTINUE
-        DO 1348 IINX = 1,3
-                TRANS(IINX+9) = PROCS(IINX+13)
-1348    CONTINUE
-C&GID      if (isstml .eq.4) then
-C&GID      CALL FOUR3DI(TRANS,STORE(L1P1),NUM(1),START(1),
-C&GID     1 STEPS(1),.TRUE.)
-C&GID      endif
-cjan99
+          REWIND (MT1)
+          WRITE (MT1) 'INFO  DOWN, ACROSS AND SECTION '
+          WRITE (MT1) 'TRAN', (STORE(I), I=L8R, L8R+8),
+     1       (PROCS(I), I=14,16)
+          WRITE (MT1) 'CELL', (STORE(I), I = L1P1, L1P1+5)
+          WRITE (MT1) 'L14 ',
+     1       (STORE(I),STORE(I+2),(STORE(I)+(ISTORE(I+1)-1)*STORE(I+2)),
+     1       1. , I = L8T+3, L8T+9, 3)
+          WRITE (MT1) 'SIZE', ISTORE(L8T+4), ISTORE(L8T+7),
+     1       ISTORE(L8T+10)
+           NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
+      END IF
+
+      IF (IOUFIL .GT. 0 ) THEN
+           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+           CALL XRDOPN(6, KDEV , CSSMAP, LSSMAP)
+1651       FORMAT(A)
+1652       FORMAT(F15.8)
+1653       FORMAT(I8)
+           WRITE (NCFPU1,1651) 'INFO  DOWN, ACROSS AND SECTION '
+           WRITE (NCFPU1,1651) 'TRAN'
+           WRITE (NCFPU1,1652) (STORE(I), I=L8R,l8R+8)
+           WRITE (NCFPU1,1651) 'CELL'
+           WRITE (NCFPU1,1652) (STORE(I), I = L1P1, L1P1+5)
+           WRITE (NCFPU1,1651) 'L14 '
+           WRITE (NCFPU1,1652)
+     1     (STORE(I),STORE(I+2),(STORE(I)+(ISTORE(I+1)-1)*STORE(I+2)),
+     1      1. , I = L8T+3, L8T+9, 3)
+           WRITE (NCFPU1,1651) 'SIZE'
+           WRITE (NCFPU1,1653)ISTORE(L8T+4),ISTORE(L8T+7),ISTORE(L8T+10)
+           NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
       ENDIF
 C
 C--CHECK THAT THERE ARE SOME REASONABLE INTERVALS
@@ -970,11 +974,14 @@ C--MAIN MAP PRINTING ROUTINES
 2800  CONTINUE
       IF (IOUTAP .GT. 0) THEN
         WRITE(MT1) NXNY, (STORE(I)*W, I= L8, L8+NXNY-1)
-cjan99
-&GID          if (isstml .eq.4 ) then
-&GID          CALL FOUR3D(NXNY,STORE(L8),W)
-&GID          endif
-cjan99
+      ENDIF
+      IF (IOUFIL .GT. 0) THEN
+2801    FORMAT (A)
+2802    FORMAT (I8)
+2803    FORMAT (F15.8)
+        WRITE(NCFPU1,2801) 'BLOCK'
+        WRITE(NCFPU1,2802) NXNY
+        WRITE(NCFPU1,2803) (STORE(I)*W, I= L8, L8+NXNY-1)
       ENDIF
       JA=MINY
       JB=NY
@@ -1033,6 +1040,9 @@ C----- RESTORE NEW INDEX AREAS
       JA = JADUMP
       JB = JBDUMP
 3300  CONTINUE
+3301  FORMAT(A)
+3302  FORMAT(I8)
+3303  FORMAT(F15.8)
       IF (IOUTAP .GT. 0) THEN
         WRITE(MT1) N5, MD5
         M5 = L5
@@ -1040,6 +1050,21 @@ C----- RESTORE NEW INDEX AREAS
             WRITE(MT1) (STORE(J),J=M5, M5+MD5-1)
             M5 = M5 + MD5
 3310    CONTINUE
+      ENDIF
+      IF (IOUFIL .GT. 0) THEN
+        WRITE(NCFPU1,3301)'LIST5'
+        WRITE(NCFPU1,3302)N5,MD5
+        M5 = L5
+        DO I = 1, N5
+            WRITE(NCFPU1,3301) STORE(M5)
+            DO J = M5+1,M5+MD5-1
+                WRITE(NCFPU1,3303) STORE(J)
+            END DO
+            M5 = M5 + MD5
+        END DO
+C Close the fourier.map file
+        CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+        CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
       ENDIF
 C
 3350  CONTINUE
