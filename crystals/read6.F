@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.17  2002/03/05 15:32:50  ckp2
 C RIC: 2nd bug relating to long file names: Read6 was grabbing too much input
 C when reading compressed input format.
@@ -646,6 +651,7 @@ c--compute the length sq in rlus
      2 *htemp(ii+1)+store(l1s+2)*htemp(ii+2)*htemp(ii+2)+store(l1s+3)
      3 *htemp(ii+1)*htemp(ii+2)+store(l1s+4)*htemp(ii)*htemp(ii+2)
      4 +store(l1s+5)*htemp(ii)*htemp(ii+1)
+      t = t * 4.0 ! Convert from (sint/l)^2 to (1/d)^2
             if (t .gt. twind) goto 698
             elem=10.*elem+float(i)
 698         continue
@@ -924,6 +930,7 @@ c--compute the length sq in rlus
      3 +store(l1s+3)*htemp(ii+1)*htemp(ii+2)
      4 +store(l1s+4)*htemp(ii)*htemp(ii+2)
      5 +store(l1s+5)*htemp(ii)*htemp(ii+1)
+      t = t * 4.0 ! Convert from (sint/l)^2 to (1/d)^2
             if (t .gt. twind) goto 4256
             elem=10.*elem+float(i)
 4256        continue
