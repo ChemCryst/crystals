@@ -24,28 +24,33 @@ class CrMenu;
 class	CrWindow : public CrGUIElement
 {
 	public:
-            int mSafeClose;
-		int m_relativePosition;
 		void SetCommandText(CcString theText);
 		void SendCommand(CcString theText, Boolean jumpQueue = false);
 		void SetCancelText(CcString text);
 		void SetCommitText( CcString text);
 		void FocusToInput(char theChar);
-		Boolean mIsSizeable;
-		Boolean mIsModal;
-                Boolean mSetSize;
 		void MenuSelected(int id);
-		CrMenu* mMenuPtr;
 		void SetMainMenu(CrMenu* menu);
 		void CrFocus();
-		// methods
-			CrWindow( CxApp * mParentPtr );
-			~CrWindow();
-//		void *	GetWidget();
+
+            int mSafeClose;
+		int m_relativePosition;
+            Boolean m_Keep;
+		Boolean mIsSizeable;
+		Boolean mIsModal;
+            Boolean mSetSize;
+		CrMenu* mMenuPtr;
+		int mMinHeight;
+		int mMinWidth;
+
+// methods
+            CrWindow( CxApp * mParentPtr );
+            ~CrWindow();
 		Boolean	ParseInput( CcTokenList * tokenList );
 		void	SetGeometry( const CcRect * rect );
 		CcRect	GetGeometry();
 		void	CalcLayout();
+            void  SetOriginalSizes();
 		void	ResizeWindow(int newWidth, int newHeight);
 		void	SetText( CcString item );
 		void	Show( Boolean show );
@@ -63,14 +68,12 @@ class	CrWindow : public CrGUIElement
 		void Cancelled();
 
             void SysKeyPressed ( UINT nChar );
+            void SysKeyReleased ( UINT nChar );
 
 		// attributes
 		CrGrid *	mGridPtr;
 		CcList *	mTabGroup;
 	
-		int mMinHeight;
-		int mMinWidth;
-
 		static CcList mModalWindowStack;
             CrGUIElement* mWindowWantingSysKeys;
 
@@ -83,4 +86,45 @@ private:
 	CcString mCancelText;
 	CcString mCommandText;
 };
+
+#define kSCreateModelDoc	"MODEL"
+#define kSCreateChartDoc	"CHART"
+#define kSShowWindow		"SHOW"
+#define kSHideWindow		"HIDE"
+#define kSDefineMenu		"DEFINEMENU"
+#define kSModal			"MODAL"
+#define kSZoom			"ZOOM"
+#define kSSize			"SIZE"
+#define kSClose			"CLOSE"
+#define kSPosition	"POSITION"
+#define kSRightOf	"RIGHTOF"
+#define kSLeftOf	"LEFTOF"
+#define kSAbove		"ABOVE"
+#define kSBelow		"BELOW"
+#define kSCascade	"CASCADE"
+#define kSCentred	"CENTRED"
+#define kSKeep                "KEEP"
+
+enum
+{
+ kTCreateModelDoc = 1600,
+ kTCreateChartDoc,
+ kTShowWindow,	
+ kTHideWindow,	
+ kTDefineMenu,	
+ kTModal,	
+ kTZoom,		
+ kTSize,		
+ kTClose,	
+ kTPosition,	
+ kTRightOf,	
+ kTLeftOf,	
+ kTAbove,	
+ kTBelow,	
+ kTCascade,	
+ kTCentred,	
+ kTKeep         
+};
+
+
 #endif
