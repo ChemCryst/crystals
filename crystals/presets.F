@@ -1583,6 +1583,7 @@ c\XLEXIC
 \PSCSTI
 \XSCSTK
 \XFILEC
+\XGUIOV
 
       EQUIVALENCE ( IRIC,ZRIC )
 
@@ -1913,5 +1914,11 @@ C --- XFILEC ---
       LNLST=416
       IACCL=-1
 
+C --- XGUIOV ---
+      ISERIA = 0
+      LGUIL1 = .FALSE.
+      LGUIL2 = .FALSE.
+      LUPDAT = .FALSE.
+      QSINL5 = .FALSE.
       RETURN
       END
