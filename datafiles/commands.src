@@ -249,10 +249,10 @@ OVERALL PARAMETERS
    3.ATOM              18   -4    0    0   18   -4  101    1    5
          1    1    1    1    1    1    0    0    0    0
 ATOMIC PARAMETERS
-(1X,120A1/85X,36A1,12A1)
-(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/4F12.1)
-         3    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-         2    2    2
+(1X,120A1/85X,36A1,12A1,48A1)
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1,4(10X,F2.0))
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2    1
+         1    1    1
     .TYPE               0   -1    1    0    0
     .SERIAL             0   -1    1    0    0
     .OCC                0    0    1    0    0 1.0
@@ -267,10 +267,10 @@ ATOMIC PARAMETERS
     .U[13]              0    0    1    0    0 0.0
     .U[12]              0    0    1    0    0 0.0
     .SPARE              0    0    1    0    0 0.0
-    .PART               0    0    1    0    0 0.0
-    .REF                0    0    1    0    0 0.0
-    .HYBRID             0    0    1    0    0 0.0
-    .NEW                0    0    1    0    0 0.0
+    .PART               0    0    1    0    0         0
+    .REF                0    0    1    0    0         0
+    .HYBRID             0    0    1    0    0         0
+    .NEW                0    0    1    0    0         0
    4.INDEX              5    1    0    0    5    1  103    9    5
          1    1    1    1    1    1    0    0    0    0
 THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
@@ -591,9 +591,9 @@ OVERALL PARAMETERS
          1    1    1    1    1    1    0    0    0    0
 THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP
 (1X,120A1/85X,36A1,12A1)
-(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/4F12.1)
-         3    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-         2    2    2
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/4F12.0)
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2    1
+         1    1    1
     .TYPE               0    0    1    0    0 Q
     .SERIAL             0   -1    1    0    0
     .OCC                0    0    1    0    0 1.0
@@ -608,10 +608,10 @@ THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP
     .U[13]              0    0    1    0    0 0.0
     .U[12]              0    0    1    0    0 0.0
     .HEIGHT             0    0    1    0    0 0.0
-    .PART               0    0    1    0    0 0.0
-    .REF                0    0    1    0    0 0.0
-    .HYBRID             0    0    1    0    0 0.0
-    .NEW                0    0    1    0    0 0.0
+    .PART               0    0    1    0    0         0
+    .REF                0    0    1    0    0         0
+    .HYBRID             0    0    1    0    0         0
+    .NEW                0    0    1    0    0         0
    4.INDEX              5    1    0    0    5    1  103    9   10
          1    1    1    1    1    1    0    0    0    0
 THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
@@ -2225,8 +2225,8 @@ EDIT              38    5
   21.QUIT               0 9999    0    0    0    0  120    5  145
          0    0    0    0    0    0    0    0    0    0
   22.ATOM              18 9999    0    0
-         3    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-         2    2    2
+         3    2    2    2    2    2    2    2    2    2    2    2    2    2    1
+         1    1    1
     .TYPE              12   -1    1    0    0
     .SERIAL            13   -1    1    0    0
     .OCC               14    0    1    0    0 1.0
@@ -2241,10 +2241,10 @@ EDIT              38    5
     .U[13]             23    0    1    0    0 0.0
     .U[12]             24    0    1    0    0 0.0
     .SPARE             25    0    1    0    0 0.0
-    .PART              26    0    1    0    0 0.0
-    .REF               27    0    1    0    0 0.0
-    .HYBRID            28    0    1    0    0 0.0
-    .NEW               29    0    1    0    0 0.0
+    .PART              26    0    1    0    0         0
+    .REF               27    0    1    0    0         0
+    .HYBRID            28    0    1    0    0         0
+    .NEW               29    0    1    0    0         0
   23.SORT               0 9999    0    0    0    0  122    5  145
          0    0    0    0    0    0    0    0    0    0
   24.DSORT              0 9999    0    0    0    0  123    5  145
@@ -2453,7 +2453,7 @@ DISTANCES         10    7
     .DMAXIMUM          10    0    1    0    0 1.7
     .AMINIMUM          11    0    1    0    0 0.0
     .AMAXIMUM          12    0    1    0    0 1.7
-   2.E.S.D.S            2    1   0    0
+   2.E.S.D.S            2    1    0    0
          3    3
     .COMPUTE           15    0    1    2   -1 NO
      NO             YES
@@ -2480,16 +2480,19 @@ DISTANCES         10    7
      OFF            LOW            MEDIUM         HIGH
     .PUNCH             23    0    1    5   -1 NOTHING
      NOTHING        RESTRAIN       PUBLISH        CIF            SCRIPT
-   5.INCLUDE            0 9999    0    0    0    0  104    5  175
+   5.INCLUDE            0 9999    2    0    0    0  104    5  175
          0    0    0    0    0    0    0    0    0    0
+         8    9 
    6.EXCLUDE            0 9999    0    0    0    0  105    5  175
          0    0    0    0    0    0    0    0    0    0
    7.ONLY               0 9999    0    0    0    0  106    5  175
          0    0    0    0    0    0    0    0    0    0
-   8.PIVOT              0 9999    0    0    0    0  107    5  175
+   8.PIVOT              0 9999    1    0    0    0  107    5  175
          0    0    0    0    0    0    0    0    0    0
-   9.BONDED             0 9999    0    0    0    0  108    5  175
+         5
+   9.BONDED             0 9999    1    0    0    0  108    5  175
          0    0    0    0    0    0    0    0    0    0
+         5
   10.DISTANCES          1    1    0    0
          1
     .INPUTLIST         20    0    1    2    1         5
