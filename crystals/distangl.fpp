@@ -1,4 +1,23 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2003/06/20 11:39:53  rich
+C
+C Increase maximum parts per parameter (MXPPP) from 10 to 50.
+C
+C In KDIST4 (analagous to KDIST1, but returns distances from
+C List 41) keep track of the List 12 pointers if required.
+C
+C Made XCOVAR more consistent - the VCV returned for distances
+C or angles is now always pre and postmultiplied by the
+C matrix of constraint for the given atoms. The 'weight' vector
+C that is returned is now always a unit matrix. Previously
+C XCOVAR treated atoms with single part and multi part
+C paramters differently.
+C
+C Also, the diagonal multiplier matrix that was computed for
+C atoms with multipart parameters (XFWM) isn't required since
+C in these cases the multiplier information is already applied
+C to the VCV: a unit matrix is now returned.
+C
 C Revision 1.47  2003/06/09 13:45:34  rich
 C Use correct module ID when generating errors in bond calculation
 C routines. IOPBND.
@@ -38,7 +57,7 @@ C Revision 1.42  2003/03/05 16:30:45  rich
 C Fiddling to make more general.
 C
 C Revision 1.41  2003/02/27 11:24:38  rich
-C Changed regroup, so that fragment number goes into slot 17 of L5 (FRAGMENT)
+C Changed regroup, so that residue number goes into slot 17 of L5 (RESIDUE)
 C
 C Revision 1.40  2003/02/20 15:59:11  rich
 C Output html from distances.
@@ -459,6 +478,7 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XFLAGS
 C
 \QSTORE
 \QSTR11
@@ -1758,6 +1778,15 @@ C--ADD THE THIRD ATOM (C) INTO THE STACK
      1                  (ISTORE(ISTORE(NA)).EQ.KHYD))THEN
                   LHFIXD(3) = .TRUE.
                 ENDIF
+C Check if any of the atoms are hydrogens riding.
+                IZZ = ISTORE(NZ)
+                IXX = ISTORE(NA)
+                IF (  (IAND( ISTORE(M5A+15),KBREFB(3) ).GT.0).AND.
+     1                (ISTORE(M5A).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
+                IF (  (IAND( ISTORE(IXX+15),KBREFB(3) ).GT.0).AND.
+     1                (ISTORE(IXX).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
+                IF (  (IAND( ISTORE(IZZ+15),KBREFB(3) ).GT.0).AND.
+     1                (ISTORE(IZZ).EQ.KHYD)  ) LHFIXD(3) = .TRUE.
 C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
                 CALL XCOVAR( JA, NWA, NWS, JD, JE, IPART, 3)
 C--MOVE THE V/CV MATRIX TO THE FINAL AREA, WHICH CONTAIN THE CELL ERRORS
@@ -2247,7 +2276,7 @@ C
 C
 CODE FOR XCOND
       SUBROUTINE XCOND
-C--CONDENSE A LIST 5 OR LIST 10 AND ASSEMBLE MOLECULAR FRAGMENTS
+C--CONDENSE A LIST 5 OR LIST 10 AND ASSEMBLE MOLECULAR RESIDUES
 C
 C
 C  IACT    OPERATION - SET IN COMMAND FILE
@@ -2939,9 +2968,9 @@ C----- CHECK IF ACCEPTABLE
 C--CHECK IF WE ARE PRINTING THE MOVED ATOMS
             IF (IFRGPT .GT. 0) THEN                             
               IF (ISSPRT .EQ. 0) THEN
-                WRITE(NCWU,'(A)' ) ' Start of a new fragment '
+                WRITE(NCWU,'(A)' ) ' Start of a new residue '
               ENDIF
-              WRITE(NCAWU,'(A)' ) ' Start of a new fragment '
+              WRITE(NCAWU,'(A)' ) ' Start of a new residue '
 C   NOW INHIBIT PRINTING
               IFRGPT = -1
             ENDIF
