@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2003/10/22 10:01:49  djw
+C New routine for decimal numbers in output tables. For H atoms without sus, 1 decimal point for angles, 2 for distances
+C
 C Revision 1.63  2003/09/10 21:18:28  djw
 C Correct mis-formatting of Sheldrick weighting formula in .cifs
 C
@@ -844,6 +847,8 @@ C      LSTAXS      CONTROL PRINTING BY 'XPRAXI'
 C            0      NO PRINT
 C            1      PRINT
 C
+C      IPESD - whether to print ESD's 0=NO, 1=YES
+C
 C
 C
 C--
@@ -884,18 +889,19 @@ cdjwfeb2001
         toler = store(l23sp+5)
         call xprc17 (0, 0, TOLER, -1)
 cdjwfeb2001
-C--FORM THE ABSOLUTE LIST 12
-      JQ=0
-      JS=1
-      CALL XFAL12(JS,JQ,JR,JN)
-      IF ( IERFLG .LT. 0 ) GO TO 2450
+      IF ( IPESD .EQ. 1 ) THEN     !FORM THE ABSOLUTE LIST 12
+        JQ=0
+        JS=1
+        CALL XFAL12(JS,JQ,JR,JN)
+        IF ( IERFLG .LT. 0 ) GO TO 2450
 C--LINK LISTS 5 AND 12
-      I=KSET52(0,-1)
-      IF ( IERFLG .LT. 0 ) GO TO 2450
+        I=KSET52(0,-1)
+        IF ( IERFLG .LT. 0 ) GO TO 2450
 C--BRING DOWN THE MATRIX
-      CALL XFAL11(1,1)
-      IF (IERFLG .LT. 0) GOTO 2450
-      AMULT=STORE(L11P+17)/STORE(L11P+16)
+        CALL XFAL11(1,1)
+        IF (IERFLG .LT. 0) GOTO 2450
+        AMULT=STORE(L11P+17)/STORE(L11P+16)
+      END IF
       IBASE=NFL
       JBASE = IBASE
       K = KCHNFL ( 4 * N5)
@@ -962,7 +968,7 @@ C
 C--
 C
 \TSSCHR
-      PARAMETER (LPROCS = 26)
+      PARAMETER (LPROCS = 27)
       DIMENSION PROCS(LPROCS)
 C
 C
@@ -1218,7 +1224,13 @@ C-C-C-USE OF ISOTROPIC T-FACTOR INSTEAD OF PURE FLAG
 c        BUFF(2)=STORE(M5+7)
 cdjw99]
 C----- J IS DUMMY
-        CALL SAPPLY (J)
+        IF ( IPESD .EQ. 1 ) THEN
+          CALL SAPPLY (J)
+        ELSE
+          DO JXF=1,11
+            BPD(JXF)=0.0
+          END DO
+        END IF
 C--CLEAR THE OUTPUT BUFFER
         CALL XMVSPD(IB,LINEA(1),118)
         J=IFIR
@@ -1410,7 +1422,7 @@ C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
 C
 1585    CONTINUE
 C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
-        M12=ISTORE(M12)
+        IF (IPESD .EQ. 1 ) M12=ISTORE(M12)
         M5=M5+MD5
         M5A=M5A+MD5
       END DO
@@ -1476,7 +1488,7 @@ CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 
       M5=L5
-      M12=L12
+      IF ( IPESD .EQ. 1 ) M12=L12
       M5A=L5+2
 C--INDICATE THAT WE HAVE JUST OUTPUT A PAGE
       NL=LINEU
@@ -1525,7 +1537,13 @@ C
 C--CALCULATE THE E.S.D.'S
 C--CLEAR THE LINE BUFFER
 C----- J IS DUMMY
-      CALL SAPPLY (J)
+      IF ( IPESD .EQ. 1 ) THEN
+        CALL SAPPLY (J)
+      ELSE
+        DO JXF = 1,11
+          BPD(JXF) = 0.0
+        END DO
+      END IF
       CALL XMVSPD(IB,LINEA(1),118)
 C--OUTPUT THE ATOM TYPE AND SERIAL NUMBER
       J=IFIR
@@ -1666,7 +1684,7 @@ C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
 2173  FORMAT ( 1X , A4 , 4X , I6 , 4X , 6 ( F8.4 , 2X ) )
 C
 2200  CONTINUE
-      M12=ISTORE(M12)
+      IF ( IPESD .EQ. 1 ) M12=ISTORE(M12)
       M5=M5+MD5
       M5A=M5A+MD5
 C
@@ -1748,7 +1766,12 @@ C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
       N5A = NKO
 C
       JP = 1
-      CALL XPESD ( 2, JP)
+      IF ( IPESD .EQ. 1 ) THEN
+        CALL XPESD ( 2, JP)
+      ELSE
+        CALL XZEROF (BPD, 11)
+      END IF
+
 C
 C--CLEAR THE OUTPUT BUFFER
       CALL XMVSPD(IB,LINEA(1),118)
