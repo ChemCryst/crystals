@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/12/12 16:02:26  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.7  2001/12/03 14:25:49  ckp2
 //   RIC: Bug fixes. Release version no longer crashes on mouse leave.
 //
@@ -66,7 +70,7 @@ CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
                                     );
 
     CxPlot *theStdPlot = new CxPlot(container);
-    theStdPlot->Create(wndClass,"Plot",WS_CHILD| WS_VISIBLE, CRect(0,0,26,28), guiParent, mPlotCount++);
+    theStdPlot->Create(wndClass,"Plot",WS_CHILD| WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
     theStdPlot->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theStdPlot->SetFont(CcController::mp_font);
 
@@ -211,14 +215,6 @@ void CxPlot::OnPaint()
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     dc.BitBlt(0,0,rect.Width(),rect.Height(),m_memDC,0,0,SRCCOPY);
     m_memDC->SelectObject(m_oldMemDCBitmap);
-	if(m_Key) 
-	{
-//		m_Key->BringWindowToTop();
-//		m_Key->SetFocus();
-//		m_Key->ShowWindow(SW_SHOW);
-//		m_Key->InvalidateRect(NULL,false);
-//		m_Key->OnPaint();
-	}
 }
 
 #endif
@@ -729,12 +725,12 @@ int CxPlot::GetIdealHeight()
 BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_CHAR()
     ON_WM_PAINT()
-//    ON_WM_LBUTTONUP()
+    ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MOUSEMOVE()
 	ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
       ON_WM_KEYDOWN()
-//	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 #endif
 
@@ -877,7 +873,6 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 // col:		the series colours...
 void CxPlot::CreateKey(int numser, CcString* names, int** col)
 {
-//	DeleteKey();
 	if(!m_Key)
 	{
 		m_Key = new CxPlotKey(this, numser, names, col);
@@ -907,9 +902,9 @@ void CxPlot::DeleteKey()
 // Windows message map for the key
 BEGIN_MESSAGE_MAP(CxPlotKey, CWnd)
 	ON_WM_PAINT()
-	ON_WM_LBUTTONUP()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_MOUSEMOVE()
+//	ON_WM_LBUTTONUP()
+//	ON_WM_LBUTTONDOWN()
+//	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 #endif
 
@@ -920,7 +915,6 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 	mDragPos.x = 0;
 	mDragPos.y = 0;
 	mDragging = false;
-	m_memDC = new CDC();
 
 	m_NumberOfSeries = numser;
 	m_Names = new CcString[numser];
@@ -941,16 +935,51 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
 	CcPoint point = mDragPos;
 
-  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
+//  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
 
-  const char* wndClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
+	const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
+	
+  Create(wClass, "Key", SS_CENTER|WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
 
-  Create(wndClass, "Key", SS_CENTER|WS_BORDER|WS_CAPTION|WS_OVERLAPPED, CRect(200,200,400,400), parw,1);
   SetFont(CcController::mp_font);
-//  ModifyStyleEx(NULL,WS_EX_TOPMOST|WS_EX_CLIENTEDGE,0);
   ShowWindow(SW_SHOW);
-  m_memDC = new CClientDC(this);
-//  InvalidateRect(NULL,false);
+
+  CClientDC newDC(this);
+  CFont* oldFont = newDC.SelectObject(CcController::mp_font);  
+
+  SIZE size;
+  size.cx = 0;
+  size.cy = 0;
+
+	for(i=0; i<m_NumberOfSeries; i++)
+	{
+		SIZE ts = newDC.GetOutputTextExtent(m_Names[i].ToCString());
+		size.cx = max(ts.cx, size.cx);
+		size.cy = max(ts.cy, size.cy);
+	}
+
+	// get the client window size, and the total window size
+	RECT clientsize;
+	RECT windowsize;
+	GetClientRect(&clientsize);
+	GetWindowRect(&windowsize);
+
+	// now calculate the required size (including title bar)
+	size.cy *= m_NumberOfSeries;
+	size.cy += windowsize.bottom - windowsize.top - clientsize.bottom;
+	size.cx *= 2;
+	size.cx += windowsize.right - windowsize.left - clientsize.right;
+
+	// set the required size
+	MoveWindow(0,0, size.cx, size.cy, TRUE);
+
+	// get the new client area, and store this.
+	GetClientRect(&clientsize);
+
+	m_WinPosAndSize.left = 0;
+	m_WinPosAndSize.right = clientsize.right;//size.cx;
+	m_WinPosAndSize.top = 0;
+	m_WinPosAndSize.bottom = clientsize.bottom;//size.cy;
 #endif
 }
 
@@ -962,72 +991,51 @@ CxPlotKey::~CxPlotKey()
 void CxPlotKey::OnPaint()
 {
 #ifdef __CR_WIN__
- // CClientDC dc(this);
- // CFont* oldFont = dc.SelectObject(CcController::mp_font);
 
   SIZE size;
+  size.cx = m_WinPosAndSize.right;
+  size.cy = m_WinPosAndSize.bottom;
 
-  CWnd::OnPaint();
+  CClientDC newDC(this);
+  COLORREF col = newDC.GetBkColor();
+  CFont* oldFont = newDC.SelectObject(CcController::mp_font); 
+  newDC.SetBkColor(col);
+
+//  newDC.PatBlt(0,0,size.cx, size.cy, WHITENESS);
   
-//	for(int i=0; i<m_NumberOfSeries; i++)
-//	{
-//		SIZE ts = dc.GetOutputTextExtent(m_Names[i].ToCString());
-//		size.cx = max(ts.cx, size.cx);
-//		size.cy = max(ts.cy, size.cy);
-//		text += " ";
-//		text += m_Names[i];
-//	}
-
-	RECT windowsize;
-	GetClientRect(&windowsize);
-	size.cx = windowsize.right;
-	size.cy = windowsize.bottom;
-
-//	dc.SelectObject(oldFont);
-//	size.cy *= m_NumberOfSeries;
-//	size.cx *= 2;
-  
-  CClientDC newdc(this);
-
-  CFont* oldFont = newdc.SelectObject(CcController::mp_font);
   CcPoint* temp = new CcPoint[5];
-
- // m_Parent->OnPaint();
-
-  BringWindowToTop();
-//m_memDC->PatBlt(0,0, size.cx, size.cy, WHITENESS);
 
   for(int i=0; i<m_NumberOfSeries; i++)
   {
-	  temp[0].x = 4;				temp[0].y = i*size.cy/m_NumberOfSeries + 4;
-	  temp[1].x = 4;				temp[1].y = (i+1)*size.cy/m_NumberOfSeries - 4;
-	  temp[2].x = size.cx/2 - 4;	temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 4;
-	  temp[3].x = size.cx/2 - 4;	temp[3].y = i*size.cy/m_NumberOfSeries + 4;
-	  temp[4].x = 4;				temp[4].y = i*size.cy/m_NumberOfSeries + 4;
+	  temp[0].x = 3;				temp[0].y = i*size.cy/m_NumberOfSeries + 3;
+	  temp[1].x = 3;				temp[1].y = (i+1)*size.cy/m_NumberOfSeries - 3;
+	  temp[2].x = size.cx/2 - 3;	temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 3;
+	  temp[3].x = size.cx/2 - 3;	temp[3].y = i*size.cy/m_NumberOfSeries + 3;
+	  temp[4].x = 3;				temp[4].y = i*size.cy/m_NumberOfSeries + 3;
 
         CBrush      brush;
         brush.CreateSolidBrush(PALETTERGB(m_Colours[0][i],m_Colours[1][i],m_Colours[2][i]));
         CPen   pen(PS_SOLID,1,PALETTERGB(m_Colours[0][i],m_Colours[1][i],m_Colours[2][i]));
 
-        CBrush *oldBrush = m_memDC->SelectObject(&brush);
-        CPen   *oldpen = m_memDC->SelectObject(&pen);
+        CBrush *oldBrush = newDC.SelectObject(&brush);
+        CPen   *oldpen = newDC.SelectObject(&pen);
 
-        m_memDC->Polygon( (LPPOINT) temp, 5);
-        m_memDC->SelectObject(oldBrush);
+        newDC.Polygon( (LPPOINT) temp, 5);
+        newDC.SelectObject(oldBrush);
 		brush.DeleteObject();
-        m_memDC->SelectObject(oldpen);
+        newDC.SelectObject(oldpen);
 		pen.DeleteObject();
 
-	  newdc.TextOut(size.cx/2, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
+	  newDC.TextOut(size.cx/2, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
   }
 
   delete [] temp;
-  newdc.SelectObject(oldFont);
- 
-//  InvalidateRect(NULL,false);
+  newDC.SelectObject(oldFont);
+
 #endif
 }
 
+/*
 void CxPlotKey::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// detect whether mouse was clicked on the m_key window
@@ -1089,3 +1097,4 @@ void CxPlotKey::OnMouseMove(UINT nFlags, CPoint point)
 		mDragPos.y = point.y;
 	}
 }
+*/

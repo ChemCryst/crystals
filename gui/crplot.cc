@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/12/12 16:02:26  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.4  2001/11/26 18:38:49  ckp2
 //
 //   RIC: Ensure that GetDataFromPoint always returns a value, even if there is no attached plot.
@@ -248,9 +252,4 @@ CcString CrPlot::GetDataFromPoint(CcPoint* point)
 void CrPlot::CreateKey(int numser, CcString* names, int** col)
 {
 	((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
-}
-
-void CrPlot::RequestDrawKey()
-{
-	if(attachedPlotData) attachedPlotData->DrawKey();
 }

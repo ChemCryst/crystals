@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/12/12 16:02:26  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.3  2001/11/26 14:02:50  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -54,7 +58,6 @@ class   CrPlot : public CrGUIElement
 		CcPoint GetTextArea(int size, CcString text, int param);
 		CcString GetDataFromPoint(CcPoint *point);					// get a description of the data under the mouse
 		void CreateKey(int numser, CcString* names, int** col);
-		void RequestDrawKey();										// called by CxPlot::OnPaint to get the key sent again
 
 //Creation and adding data:
         void Attach(CcPlotData* doc);

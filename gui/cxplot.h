@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/12/12 16:02:27  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.5  2001/12/03 14:25:50  ckp2
 //   RIC: Bug fixes. Release version no longer crashes on mouse leave.
 //
@@ -69,9 +73,9 @@ public:
 		~CxPlotKey();
 
 		afx_msg void OnPaint();
-		afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-		afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-		afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+//		afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+//		afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+//		afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 		DECLARE_MESSAGE_MAP()
 
 		CDC * m_memDC;
@@ -79,6 +83,9 @@ public:
 		CxPlot* m_Parent;
 		bool mDragging;
 		CcPoint mDragPos;
+
+		CRect m_WinPosAndSize;
+
 		int m_NumberOfSeries;
 		CcString* m_Names;
 		int** m_Colours;
