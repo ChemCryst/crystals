@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2002/09/27 14:43:46  rich
+C Overwrite L5 when updating SCALE factor only.
+C Some placeholder comments for Flack's unplaced e- density stuff.
+C
 C Revision 1.24  2002/07/15 11:58:14  richard
 C Update L30 R and Rw for refinement when doing a CALC. (A calc is done during
 C CIF production which ensures that these values are truly uptodate.)
@@ -71,7 +75,7 @@ CODE FOR XSFLSB
 C--MAIN CONTROL ROUTINE FOR THE S.F.L.S. ROUTINES
 C
 C--
-C      IF MODE EQ -1, DON'T READ DATA STREAM, USE I/u(I)>4 if no value
+C      IF MODE EQ -1, DON'T READ DATA STREAM, USE I/u(I)>2 if no value
 C                                             in L28.
 C      IF MODE EQ 0,  DON'T READ DATA STREAM, USE EXISTING L33 THRESHOLD
 C      IF MODE EQ 1, READ DATA STREAM
@@ -468,7 +472,7 @@ C--READ DOWN SOME LISTS
 
 C----- SIGMA THRESHOLD
          S6SIG = -10.0
-         IF ( MODE.EQ.-1 ) RALL(1) = 4.0
+         IF ( MODE.EQ.-1 ) RALL(1) = 2.0
          IF ( N28MN .GT. 0 ) THEN
             INDNAM = L28CN
             DO I = L28MN , M28MN , MD28MN
@@ -1228,6 +1232,7 @@ C
 \XLST11
 \XLST12
 \XLST25
+\XLST28
 \XERVAL
 \XIOBUF
 C
@@ -1412,7 +1417,25 @@ C
 C--START OF THE LOOP OVER REFLECTIONS
 1830  CONTINUE
       IF(JB+JH .EQ. -2) THEN
-            IF(KLDRNR(1)) 5850,1850,1850
+C Remove I/sigma(I) cutoff, temporarily, leaving all other filters
+C in place.
+            DO I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
+              IF(ISTORE(I28MN)-M6.EQ.20) THEN
+                SAVSIG = STORE(I28MN+1)
+                STORE(I28MN+1) = -99999.0
+              END IF
+            END DO
+C Fetch reflection using all other filters:
+            IFNR = KFNR(1)
+C Put sigma filter back:
+            DO I28MN = L28MN,M28MN,MD28MN
+              IF(ISTORE(I28MN)-M6.EQ.20) THEN
+                STORE(I28MN+1) = SAVSIG
+              END IF
+            END DO
+C Make the leap:
+            IF(IFNR) 5850,1850,1850
+
       ELSE
             IF(KFNR(1))5850,1850,1850
       ENDIF
