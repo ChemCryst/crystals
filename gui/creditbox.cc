@@ -5,6 +5,12 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  1999/05/28 17:53:18  dosuser
+// RIC: Attempted world record for most number of files
+// checked in at once. Most changes are to do with adding
+// support for a LINUX windows library. Nothing has broken
+// in the windows version. As far as I can see.
+//
 // Revision 1.4  1999/05/07 16:03:52  dosuser
 // RIC: Removed Arrow() function. System keys now arrive
 // through SysKey() functions.
@@ -22,7 +28,6 @@
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"creditbox.h"
-//insert your own code here.
 #include	"crgrid.h"
 #include	"cxeditbox.h"
 #include	"ccrect.h"
@@ -37,6 +42,7 @@ CrEditBox::CrEditBox( CrGUIElement * mParentPtr )
 	mXCanResize = true;
 	mTabStop = true;
 	mSendOnReturn = false;
+      m_IsInput = false;
 }
 
 CrEditBox::~CrEditBox()
@@ -46,6 +52,9 @@ CrEditBox::~CrEditBox()
 		delete (CxEditBox*)mWidgetPtr;
 		mWidgetPtr = nil;
 	}
+
+      mControllerPtr->RemoveInputPlace(this);
+
 }
 
 Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
@@ -159,6 +168,13 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken(); // Remove that token!
 				break;
 			}
+                  case kTIsInput:
+			{
+				tokenList->GetToken(); // Remove that token!
+                        m_IsInput = true;
+                        (CcController::theController)->SetInputPlace(this);
+                        break;
+			}
 			default:
 			{
 				hasTokenForMe = false;
@@ -242,7 +258,6 @@ void CrEditBox::GetValue(CcTokenList * tokenList)
 
 void	CrEditBox::BoxChanged()
 {
-//Insert your own code here.
 	if(mCallbackState)
 	{
 		char theText[256];
@@ -250,7 +265,6 @@ void	CrEditBox::BoxChanged()
 		SendCommand(mName);
 		SendCommand( CcString( theText ) );
 	}
-//End of user code.         
 }
 
 int CrEditBox::GetIdealWidth()
@@ -269,12 +283,21 @@ void CrEditBox::ReturnPressed()
 	{
 		char theText[256];
 		int textLen = ((CxEditBox*)mWidgetPtr)->GetText(&theText[0]);
-		SendCommand(mName + " " + CcString( theText ) );
+            if ( m_IsInput )
+            {
+                  SendCommand( CcString ( theText ) );
+                  (CcController::theController)->AddHistory( theText );
+                  ClearBox();
+            }
+            else
+            {
+                  SendCommand(mName + " " + CcString( theText ) );
+            }
 	}
 	else
 	{
 		//FocusToInput, unless this IS the input, of course.
-		if(this != CcController::theController->mInputWindow)
+            if(m_IsInput)
 			FocusToInput( (char)13 );
 	}
 }
@@ -285,13 +308,6 @@ void CrEditBox::AddText(CcString theText)
 	((CxEditBox*)mWidgetPtr)->AddText( (char*) theText.ToCString() );
 }
 
-//void CrEditBox::Arrow(Boolean up)
-//{
-//      //Only send History requests if this is _the_ input window.
-//      if ( (CcController::theController)->mInputWindow == this)
-//            (CcController::theController)->History(up);
-//}
-
 void CrEditBox::ClearBox()
 {
 	((CxEditBox*)mWidgetPtr)->ClearBox();
@@ -300,7 +316,7 @@ void CrEditBox::ClearBox()
 void CrEditBox::SysKey ( UINT nChar )
 {
 //Only send History requests if this is _the_ input window.
-	if ( (CcController::theController)->mInputWindow == this)
+      if ( (CcController::theController)->GetInputPlace() == this)
       {
             switch ( nChar )
             {
@@ -314,4 +330,9 @@ void CrEditBox::SysKey ( UINT nChar )
                         break;
             }
       }
+}
+
+void CrEditBox::SetOriginalSizes()
+{
+      ((CxEditBox*)mWidgetPtr)->SetOriginalSizes();
 }
