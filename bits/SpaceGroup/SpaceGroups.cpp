@@ -166,6 +166,8 @@ std::ostream& SpaceGroups::output(std::ostream& pStream)
     
     if (iBrackets)
         pStream << iBrackets[0];
+    if (tNumber == 0)
+        pStream << "-";
     for (int i = 0; i < tNumber; i++)
     {
         pStream << (*this)[i];
