@@ -1,0 +1,111 @@
+%SCRIPT XRENUM
+
+ * Manual renumbering of structure using mouse.
+
+^^WI WINDOW XRENUM 'Renumber' COMMIT='BOK' CANCEL='BXX'
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID TEXT NROWS=6 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'Atoms will be renmbered from' 
+^^WI     @ 2,1 STATIC T2 '1, in the order that you click'
+^^WI     @ 3,1 STATIC T3 'on them.' 
+^^WI     @ 4,1 STATIC T4 'Click "Done" to apply the new' 
+^^WI     @ 5,1 STATIC T5 'numbering or "Cancel" to ' 
+^^WI     @ 6,1 STATIC T6 'quit without changes.' 
+^^WI   }
+^^WI   @ 2,4 GRID BTNS NROWS=5 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK 'D&one' DEFAULT COMMIT
+^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 5,1 BUTTON BHELP '&Help' 
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%% Remember this list serial number in case of a "Cancel"
+%%
+%  VARIABLE INTEGER OLDSER N5
+%  COPY '#GENERALEDIT 5'
+%  COPY 'GETSERIAL OLDSER'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
+%  COPY 'END'
+%%
+%% Renumber from - 10 * N5. ( Avoids clashes )
+%%
+%  COPY '#EDIT'
+%  CLEAR
+%  INSERT 'KEEP '
+%  STORE FORMAT /(I6)/ LENGTH 6 INTEGER ( - 10 * N5 )
+%  INSERT 'FIRST UNTIL LAST'
+%  SEND
+%  COPY 'EX'
+%%
+%% Make numbers positive. (For the GUI)
+%%
+%  COPY 'MULTIPLY -1 FIRST(SERIAL) UNTIL LAST'
+%  COPY 'END'
+%%
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%%
+%%
+%  VARIABLE INTEGER ICOUNTER
+%  EVALUATE ICOUNTER = 0
+%  COPY '#EDIT'
+%  CLEAR
+%  INSERT 'KEEP 1'
+%  LOOP
+%    ON ERROR TERMINATE
+%    VERIFY BOK BXX ATOM BHELP
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    CASE VALUE
+%      BLOCK      %BOK
+^^CO DISPOSE XRENUM
+ * Applying new numbering order
+%        COPY 'END'
+%        FINISH
+%      END BLOCK
+%      BLOCK      %BXX
+^^CO DISPOSE XRENUM
+ * Keeping old atom numbering scheme.
+%        COPY 'QUIT'
+%        COPY 'END'
+%        COPY '#DISK'
+%        CLEAR
+%        INSERT 'RESET 5 '
+%        STORE FORMAT /(I6)/ LENGTH 6 INTEGER OLDSER
+%        SEND
+%        COPY 'END'
+%        COPY '#DISP'
+%        COPY 'END'
+%        FINISH
+%      END BLOCK
+%      BLOCK      %ATOM
+%        GET SILENT TEXT ' ' ' '
+%        SEND
+%TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CVALUE // ' YES' TO DISPLAY
+%        CLEAR
+%        INSERT 'CONTINUE '
+%        EVALUATE ICOUNTER = ICOUNTER + 1
+%      END BLOCK
+%      BLOCK      %HELP
+%        COPY '#SCRIPT XHELP1'
+  Click on the atoms in the molecule in the order
+  you want them to be numbered. When you are finished
+  click DONE to apply the new numbering scheme, or
+  CANCEL to keep the old numbering scheme.
+%        COPY '#SCRIPT XHELP2'
+%      END BLOCK
+%    END CASE
+%    IF ICOUNTER .EQ. N5 THEN
+%       EVALUATE LOOPEND = LOOPCOUNTER
+^^CO DISPOSE XRENUM
+ * Applying new numbering order
+%        COPY 'END'
+%        FINISH
+%    END IF
+%  END LOOP
+%END SCRIPT
+
