@@ -74,6 +74,7 @@ CxWindow::CxWindow( CrWindow * container, int sizeable )
 	mProgramResizing = true;
 	mDefaultButton = nil;
 	mSizeable = (sizeable==0) ? false : true;
+      mWindowWantsKeys = false;
 
 }
 
@@ -242,6 +243,7 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
 	ON_WM_CHAR()
 	ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
 	ON_UPDATE_COMMAND_UI_RANGE(kMenuBase,kMenuBase+1000,OnUpdateMenuItem)
+      ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 
@@ -433,4 +435,31 @@ void CxWindow::AdjustSize(CcRect * size)
 	size->mRight  = size->Right()  + (2*bT);
 	size->mBottom = size->Bottom() + ((2*bT)+cH+mN);
 	return;
+}
+
+void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
+      if ( mWindowWantsKeys )
+      {
+            switch (nChar) {
+                  case VK_LEFT:
+                  case VK_RIGHT:
+                  case VK_UP:
+                  case VK_DOWN:
+                  case VK_INSERT:
+                  case VK_DELETE:
+                  case VK_END:
+                  case VK_ESCAPE:
+
+                        ((CrWindow*)mWidget)->SysKeyPressed( nChar );
+
+                        break;
+                  default:
+                  //Do nothing
+                        break;
+            }
+      }
+
+// Call the base class to allow normal processing of keystroke stuff.
+      CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }

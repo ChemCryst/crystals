@@ -55,6 +55,7 @@ class	CxWindow : public CFrameWnd
 		CrGUIElement *	mWidget;
 //		LTabGroup	* mTabGroup;
 		CxButton * mDefaultButton;
+            Boolean mWindowWantsKeys;
 
 //PRIVATE MS WINDOWS SPECIFIC FUNCTIONS AND OVERRIDES
 
@@ -71,9 +72,10 @@ class	CxWindow : public CFrameWnd
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnUpdateMenuItem(CCmdUI* pCmdUI);
 	afx_msg LRESULT OnMyNcPaint(WPARAM wparam, LPARAM lparam);
-
-
+      afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+     
 	DECLARE_MESSAGE_MAP()
+
 private:
 	Boolean mSizeable;
 	static int mWindowCount;
