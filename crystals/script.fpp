@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  1999/05/25 16:52:06  dosuser
+C RIC: PATH splitting functions look for / on unix versions.
+C FILEDELETE function calls 'rm' on unix versions.
+C
 C Revision 1.12  1999/05/21 15:40:48  dosuser
 C RIC: Commented out debugging writes to unit 99.
 C
@@ -6388,6 +6392,8 @@ C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C
         ISTAT = KRDLIN ( NCUFU(1) , CLINPB , IINPLN )
+&GID      WRITE(CMON,'(A)') CLINPB(1:IINPLN)
+&GID      CALL XPRVDU(NCVDU,1,0)
         IF ( ISTAT .LE. 0 ) GO TO 1100
 C
 1200    CONTINUE
