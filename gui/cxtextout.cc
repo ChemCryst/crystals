@@ -24,7 +24,7 @@
 #include <wx/settings.h>
 #include <wx/cmndata.h>
 #include <wx/fontdlg.h>
-#define RGB wxColour
+//#define RGB wxColour
 #endif
 
 int CxTextOut::mTextOutCount = kTextOutBase;
@@ -61,6 +61,8 @@ CxTextOut::CxTextOut( CrTextOut * container )
 #endif
 #ifdef __BOTHWX__
     m_BackCol = wxSystemSettings::GetSystemColour( wxSYS_COLOUR_WINDOW );
+    m_pen     = new wxPen(m_BackCol,1,wxSOLID);
+    m_brush   = new wxBrush(m_BackCol,wxSOLID);
 #endif
     m_nHead = -1;
     m_nLinesDone = 0;
@@ -78,7 +80,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_GREEN ]      = RGB( 0, 128, 0 );
     m_ColTable[ COLOUR_LIGHTRED ]   = RGB( 255, 0, 0 );
     m_ColTable[ COLOUR_BROWN ]      = RGB( 128, 0, 0 );      //5
-    m_ColTable[ COLOUR_PURPLE ]     = RGB( 128, 0, 128 );    
+    m_ColTable[ COLOUR_PURPLE ]     = RGB( 128, 0, 128 );
     m_ColTable[ COLOUR_ORANGE ]     = RGB( 128, 128, 0 );
     m_ColTable[ COLOUR_YELLOW ]     = RGB( 255, 255, 0 );
     m_ColTable[ COLOUR_LIGHTGREEN ] = RGB( 0, 255, 0 );
@@ -106,7 +108,22 @@ CxTextOut::~CxTextOut()
         delete( m_pFont );
     }
 #endif
+#ifdef __BOTHWX__
+    delete m_pen;
+    delete m_brush;
+#endif
 }
+
+void CxTextOut::CxDestroyWindow()
+{
+#ifdef __CR_WIN__
+  DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+  Destroy();
+#endif
+}
+
 
 void CxTextOut::Init()
 {
@@ -171,6 +188,7 @@ void CxTextOut::Init()
     SetScrollbar( wxVERTICAL, 0, 0, 0 );
     SetScrollbar( wxHORIZONTAL, 0, 0, 0 );
 #endif
+    mbOkToDraw = true;
 
 }
 
@@ -419,10 +437,11 @@ void CxTextOut::OnPaint()
     CPaintDC dc( this );
     CRect clientRc; GetClientRect( &clientRc );
 #endif
+
 #ifdef __BOTHWX__
 void CxTextOut::OnPaint(wxPaintEvent & event)
 {
-        LOGSTAT("CxTextOut::OnPaint");
+    LOGSTAT("CxTextOut::OnPaint");
     wxPaintDC dc( this );
     wxSize clientRc = GetClientSize( );
 #endif
@@ -436,12 +455,10 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
 
 #ifdef __CR_WIN__
     CFont* pOldFont = dc.SelectObject( m_pFont );
-//    int nUBound = m_Lines.GetUpperBound();
 #endif
 #ifdef __BOTHWX__
     dc.SetFont( *m_pFont );
     m_nFontHeight = dc.GetCharHeight();
-//    int nUBound = m_Lines.GetCount();
 #endif
 
     // Now draw the lines, one by one:
@@ -467,12 +484,12 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
 #endif
 #ifdef __BOTHWX__
             dc.SetBackgroundMode( wxSOLID );
-            wxBrush tBrush(m_BackCol,wxSOLID);
-            wxPen   tPen  (m_BackCol,1,wxSOLID);
+            m_brush->SetColour( m_BackCol );
+            m_pen->SetColour( m_BackCol );
             dc.SetTextBackground( m_BackCol );
             dc.SetTextForeground( m_ColTable[ m_nDefTextCol ] );
-            dc.SetBrush( tBrush );
-            dc.SetPen  ( tPen   );
+            dc.SetBrush( *m_brush );
+            dc.SetPen  ( *m_pen   );
 #endif
 
             if ( nRunner >= GetLineCount()  )
@@ -634,8 +651,8 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
         }
         else
         {
-          wxRect clientRc = GetRect( );
-          int nMax = m_nMaxWidth - clientRc.width;
+          wxSize clientRc = GetClientSize( );
+          int nMax = m_nMaxWidth - clientRc.GetWidth();
           switch( evt.m_eventType )
           {
              case wxEVT_SCROLLWIN_TOP:
@@ -663,7 +680,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  m_nXOffset = evt.GetPosition();
                  break;
           }
-          SetScrollbar( wxHORIZONTAL, m_nXOffset, (int)m_nMaxWidth/clientRc.width , m_nMaxWidth );
+          SetScrollbar( wxHORIZONTAL, m_nXOffset, (int)m_nMaxWidth/clientRc.GetWidth() , m_nMaxWidth );
 //          Refresh();
         }
         LOGSTAT("CxTextOut::OnScroll ends");
@@ -792,8 +809,8 @@ Boolean CxTextOut::IsAHit( CcString & commandString, int x, int y )
         int line = m_nHead - ( ( clientRc.Height() - y ) / m_nFontHeight );
 #endif
 #ifdef __BOTHWX__
-    wxRect clientRc = GetRect( );
-        int line = m_nHead - ( ( clientRc.height - y ) / m_nFontHeight );
+    wxSize clientRc = GetClientSize( );
+        int line = m_nHead - ( ( clientRc.GetHeight() - y ) / m_nFontHeight );
 #endif
 
         CcString strToRender;
@@ -886,8 +903,8 @@ int CxTextOut::GetMaxViewableLines()
     return( clientRc.Height() / m_nFontHeight );
 #endif
 #ifdef __BOTHWX__
-    wxRect clientRc = GetRect();
-    return( clientRc.height / m_nFontHeight );
+    wxSize clientRc = GetClientSize();
+    return( clientRc.GetHeight() / m_nFontHeight );
 #endif
 };
 
@@ -902,11 +919,11 @@ void CxTextOut::UpdateHScroll()
     SetScrollRange( SB_HORZ, 0, nMax );
 #endif
 #ifdef __BOTHWX__
-    wxRect clientRc = GetRect();
-        int nMax = m_nMaxWidth - clientRc.width;
+    wxSize clientRc = GetClientSize();
+        int nMax = m_nMaxWidth - clientRc.GetWidth();
     if( nMax <= 0 )
         m_nXOffset = 0;
-    SetScrollbar( wxHORIZONTAL, 0, (int)m_nMaxWidth/max(clientRc.width,1) , m_nMaxWidth );
+    SetScrollbar( wxHORIZONTAL, 0, (int)m_nMaxWidth/max(clientRc.GetWidth(),1) , m_nMaxWidth );
 #endif
 
 };
@@ -930,7 +947,7 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
     SIZE sz;
 #endif
 #ifdef __BOTHWX__
-    wxRect clientRc = GetRect( );
+    wxSize clientRc = GetClientSize( );
     m_nAvgCharWidth = pDC->GetCharWidth();
 #endif
 
@@ -972,11 +989,11 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
                 {
 
 #ifdef __CR_WIN__
-                                    pDC->MoveTo(nX,nY+m_nFontHeight);
-                                    pDC->LineTo(nX+cx,nY+m_nFontHeight);
+                     pDC->MoveTo(nX,nY+m_nFontHeight);
+                     pDC->LineTo(nX+cx,nY+m_nFontHeight);
 #endif
 #ifdef __BOTHWX__
-                                    pDC->DrawLine(nX,nY+m_nFontHeight,nX+cx,nY+m_nFontHeight);
+                     pDC->DrawLine(nX,nY+m_nFontHeight,nX+cx,nY+m_nFontHeight);
 #endif
                 }
                 nX += cx;
@@ -990,11 +1007,16 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
             if( code.nBack != -1 ) pDC->SetBkColor( m_ColTable[ code.nBack ] );
 #endif
 #ifdef __BOTHWX__
-            if( code.nFore != -1 ) pDC->SetTextForeground( m_ColTable[ code.nFore ] );
+            if( code.nFore != -1 )
+            {
+              pDC->SetTextForeground( m_ColTable[ code.nFore ] );
+              m_pen->SetColour( m_ColTable[ code.nFore ] );
+              pDC->SetPen( *m_pen );
+            }
             if( code.nBack != -1 ) {
               pDC->SetTextBackground( m_ColTable[ code.nBack ] ) ;
-              wxBrush tBrush(m_ColTable[ code.nBack ],wxSOLID);
-              pDC->SetBrush( tBrush );
+              m_brush->SetColour( m_ColTable[ code.nBack ] );
+              pDC->SetBrush( *m_brush );
             }
 #endif
 
@@ -1028,7 +1050,11 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
             pDC->FillSolidRect( &solidRc, m_BackCol );
 #endif
 #ifdef __BOTHWX__
-                        pDC->DrawRectangle( nX,nY, clientRc.width, m_nFontHeight );
+            m_brush->SetColour( m_BackCol );
+            m_pen->SetColour( m_BackCol );
+            pDC->SetPen( *m_pen );
+            pDC->SetBrush( *m_brush );
+            pDC->DrawRectangle( nX,nY, clientRc.GetWidth(), m_nFontHeight );
 #endif
             break;
         }
@@ -1111,7 +1137,7 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
     }
     else if ( strData.Match( STATUS_BYTE ) == 1 )
     {
-        m_bInLink = false;                      
+        m_bInLink = false;
         pColourCode->nFore = 0;                 // white on
         pColourCode->nBack = 6;                 // magenta
         nBytesToSkip = 2;                       // Skip the S
@@ -1121,7 +1147,7 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
     {
         m_bInLink = false;
         pColourCode->nFore = 5;                 // maroon on
-        pColourCode->nBack = 15;                // lgrey      
+        pColourCode->nBack = 15;                // lgrey
         nBytesToSkip = 2;                       // Skip the R
         strData = strData.Sub( 2,-1 ) + " ";    // Remove the R
     }
@@ -1241,7 +1267,8 @@ void CxTextOut::ChooseFont()
      }
 
      data.SetInitialFont(*pFont);
-
+     data.EnableEffects(false);
+     data.SetAllowSymbols(false);
 
      wxFontDialog fd( this, &data );
 

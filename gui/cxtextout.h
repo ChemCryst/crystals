@@ -85,6 +85,7 @@ class CxTextOut : public BASETEXTOUT
     int GetHeight();
     int GetLeft();
     void    SetGeometry(int top, int left, int bottom, int right );
+        void CxDestroyWindow();
 
         // attributes
         static int mTextOutCount;
@@ -134,6 +135,8 @@ protected:
 #ifdef __BOTHWX__
     wxFont*         m_pFont;            // Font we are using
     wxStringList    m_Lines;
+    wxBrush*        m_brush;
+    wxPen*          m_pen;
 #endif
     int             m_nHead;            // Head of the buffer
         int                    m_nMaxLines;            // Maximum buffer size
