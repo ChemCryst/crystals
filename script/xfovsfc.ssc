@@ -19,6 +19,9 @@
 ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
 ^^WI   @ 4,2 PLOTWINDOW _VFOFC NROWS=20 NCOLS=64
+^^WI              DEFINEPOPUPMENU POPUP 'Selection'
+^^WI               ITEM _SDELA '&Delete _D' 'HELLO'
+^^WI              ENDDEFINEMENU
 ^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
 ^^WI   {
 ^^WI    @ 1,1 BUTTON EXT_BOK 'Close' DEFAULT
@@ -31,7 +34,7 @@
 ^^CO SENDPROGRESSTO _FOFCPR
 %  COPY '#sum list 6 level=plot'
 %  COPY 'END'
-%  VERIFY EXT_BOK EXT_BXX
+%  VERIFY EXT_BOK EXT_BXX HELLO
 %  GET SILENT NOSTORE FINAL ABBREVIATED -
  '?' 'EXT_BOK'
 ^^CO DISPOSE xfovsfc
