@@ -12,6 +12,7 @@
 #include "Collections.h"
 #include "StringClasses.h"
 #include <iomanip>
+#include <math.h>
 
 //Average Int
 static float AbsentAIM = 0.00834789f;
@@ -113,22 +114,35 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
 {
     if (pValues < kNumberOfOutputValues)
     {
+        float tValue;
         switch (pValues)
         {
             case 0:	//Condition matched count
                 pStream << setprecision(0) << pStats->tNumM;
             break;
             case 1:	//<I> matched
-                pStream << pStats->tMTotInt/pStats->tNumM;
+                tValue = pStats->tMTotInt/pStats->tNumM;
+                if (__isnanf(tValue))
+                    pStream << "NaN";
+                else
+                    pStream << tValue;
             break;
             case 2:	//Condition not-matched count
                 pStream << pStats->tNumNonM;
             break;
             case 3:	//<I> not matched
-                pStream << pStats->tNonMTotInt/pStats->tNumNonM;
+                tValue =  pStats->tNonMTotInt/pStats->tNumNonM;	
+                if (__isnanf(tValue))
+                    pStream << "NaN";
+                else
+                    pStream << tValue;
             break;
             case 4:	//%I < 3u(I) 
-                pStream << (float)100.0f*((float)pStats->tNumNonMLsInt/(float)(pStats->tNumNonMLsInt+pStats->tNumNonMGrInt));
+                tValue =  (float)100.0f*((float)pStats->tNumNonMLsInt/(float)(pStats->tNumNonMLsInt+pStats->tNumNonMGrInt));
+                if (__isnanf(tValue))
+                    pStream << "NaN";
+                else
+                    pStream << tValue;
             break;
             case 5:	//Score1
                 pStream << pStats->tRating1;
@@ -140,7 +154,16 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
     }
     return pStream;
 }
-        
+ 
+std::ostream& outputFloat(std::ostream& pStream, float pValue, int pOtherColumns)
+{
+    if (__isnanf(pValue))
+        pStream << " " << setw(pOtherColumns) << "NaN";
+    else
+        pStream << " " << setw(pOtherColumns) << setprecision (4) << pValue;
+    return pStream;
+}
+
 void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums,  int pFirstColumnWidth, int pOtherColumns)
 {
     int tCCount = iConditions->length();
@@ -154,7 +177,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     pStream << "\n<I>" << setw(pFirstColumnWidth-3);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;	//Total intensity matched. 
+        outputFloat(pStream, iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM, pOtherColumns);	//Average int of matched refelections
     }
     String tEq("==");
     String tNE("<>");
@@ -167,21 +190,20 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     pStream << "\n<I>" << setw(pFirstColumnWidth-3);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setprecision (4) << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Total intensity non-matched.
+        outputFloat(pStream, iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM, pOtherColumns);	//Ave intensity non-matched.
     }
     pStream << "\n% I < 3u(I)" << setw(pFirstColumnWidth-11);
     for (int i = 0; i < pNumOfColums; i++)
     {
         float tLess = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
         float tGreater = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
-        pStream << " " << setw(pOtherColumns) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
+        outputFloat(pStream, 100*(tLess/(tLess+tGreater)), pOtherColumns);	//Number Int<3*sigma non-matched
     }
     pStream << "\nScore1" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
         pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
     }
-    
     pStream << "\nScore2" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
