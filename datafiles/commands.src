@@ -35,8 +35,9 @@ PUNCH              1    0
    1.PUNCH              2    1    0    0
          1    3
      LIST               1   -1    1    0    0
-     CLASS              2    0    1    5   -1 A
+     CLASS              2    0    1    6   -1 A
      A              B              C              D              E
+     F
 LIST 1             9    2
    1   40960 CRYSTALSINPUT
    20   30

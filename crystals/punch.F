@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.32  2003/01/15 10:57:05  rich
 C \PUNCH 6 E punches a CIF format reflection file with F squared instead of
 C Fs (PUNCH 6 B)
@@ -1052,6 +1057,25 @@ C---- GET SIGMA THRESHOLD FROM L28
 9999  CONTINUE
 CRIGAUG00 - CLOSE CIF
 CDJW02      CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
+      RETURN
+      END
+CODE FOR XPCH6X
+      SUBROUTINE XPCH6X(IULN)
+C----- SHELX FORMAT PUNCH
+\STORE
+\XUNITS
+\XLST06
+      CALL XRSL
+      CALL XCSAE
+      IN = 0
+      CALL XFAL06(IULN, IN)
+      IF (IERFLG .LT. 0) GOTO 9999
+1840  CONTINUE
+        IF ( KLDRNR (IN) .LT. 0 ) GOTO 9999
+        CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
+        WRITE(NCPU,'(3I4,2F8.2)')(NINT(STORE(M6+I)),I=0,2),FOS,SIGMA
+      GOTO 1840
+9999  CONTINUE
       RETURN
       END
 C

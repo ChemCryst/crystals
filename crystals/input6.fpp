@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.6  2003/01/15 10:57:05  rich
 C \PUNCH 6 E punches a CIF format reflection file with F squared instead of
 C Fs (PUNCH 6 B)
@@ -152,7 +157,8 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-      GOTO (7310, 7340, 7320, 7330, 7350 ) ICLASS+2
+C           A     B     C     D     E     F
+      GOTO (7310, 7340, 7320, 7330, 7350, 7360 ) ICLASS+2
       RETURN
 C--NORMAL PUNCH FORMAT
 7310  CONTINUE
@@ -173,6 +179,10 @@ C----- CIF OUTPUT F's
 C----- CIF OUTPUT F^2's
 7350  CONTINUE
       CALL XPCH6C(LSTNO,1)
+      RETURN
+C----- PLAIN SHELX HKL OUTPUT
+7360  CONTINUE
+      CALL XPCH6X(LSTNO)
       RETURN
       END
 
