@@ -16,7 +16,7 @@
 ^^WI     @ 5,1 STATIC SBFC 'FCalc' 
 ^^WI     @ 6,1 STATIC SBSG 'Sigma(Fo)'
 ^^WI     @ 7,1 STATIC SBPH 'Phase' 
-^^WI     @ 8,1 STATIC SBRA 'Fo/Sigma(Fo)'
+^^WI     @ 8,1 STATIC SBRA 'I/Sigma(I)'
 ^^WI     @ 9,1 STATIC SBSQ 'Sqrt(W)' 
 ^^WI     @ 10,1 STATIC SBTH '[Sin theta/lambda]**2'
 ^^WI     @ 1,3 CHECKBOX LBH    'is at least' STATE=OFF INFORM=YES
