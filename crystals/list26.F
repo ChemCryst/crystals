@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/02/26 10:28:01  richard
+C RIC: Added changelog to top of file
+C
 C
 CODE FOR XCHK16
       SUBROUTINE XCHK16
@@ -2757,7 +2760,7 @@ C--CLEAR THE CORE ENTRIES
 C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      JK=ISTORE(M33CD+5)
+      JK=ISTORE(M33CD+6)
 C--RESET THE CORE LIMITS
       CALL XRSL
       CALL XCSAE
