@@ -58,7 +58,7 @@
  XYZ         Coordinate listing
  ANISO       Temperature factor listing
  DISTANCES   Distance-angle listing
- CHIME       Output a CHIME .XYZ file
+ CHIME       Output a CHIME .PDB file
  REFLECTIONS Reflection listing
  SUMMARY     A summary of all data stored
  RESIDUALS   A full analysis of residuals (Fo-Fc)
@@ -100,6 +100,7 @@
 %%      
 %          BLOCK                                         %CHIME%
 %            COPY '#PUNCH 5 D'
+%            COPY 'END'
 %          END BLOCK
 %%      
 %          BLOCK                                         %REFLECTIONS%

@@ -418,7 +418,7 @@ information. This may take some time...
 %   END LOOP
 %   SEND
 %   COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
-%   COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPERTI.DAT'
+%   COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT'
 %   COPY 'END'
 %%
 %% Now, experience shows that the SCPDATA file is closed and

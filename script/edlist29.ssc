@@ -15,8 +15,8 @@
 %  COPY 'GROUP MODE = REAL'
 %  COPY 'RECORD MODE = REAL'
 %  COPY 'FORMAT KEY (6(8X,A4))'
-%  COPY 'FORMAT GROUP ( 4X,A4,6F10.2 )'
-%  COPY 'FORMAT RECORD ( 4X,A4,6F10.2 )'
+%  COPY 'FORMAT GROUP ( 4X,A4,6F10.2,2X,A4 )'
+%  COPY 'FORMAT RECORD ( 4X,A4,6F10.2,2X,A4 )'
 %  COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'
 %
 %  MESSAGE USER1 'No elements are defined at present'
@@ -67,7 +67,7 @@
 %          SEND
 %          COPY 'DISPLAY GROUP'
 %          CLEAR
-%          VERIFY NONE TYPE COVALENT VANDERWAALS IONIC NUMBER MU WEIGHT
+%          VERIFY NONE TYPE COVALENT VANDERWAALS IONIC NUMBER MU WEIGHT COLOUR
 %          GET NOSTORE ABBREV 'Item to change'
 %
 %          EVALUATE OFFSET = VALUE - 2
@@ -75,13 +75,27 @@
 %            CLEAR
 %            INSERT 'CHANGE OFFSET = '
 %            STORE INTEGER OFFSET
-%            CASE VALUE RANGE 2 3
+%            CASE VALUE 
+%              INSERT ' MODE = CHAR CHAR ='
 %              INSERT ' MODE = CHAR CHAR ='
 %              INSERT ' MODE = REAL REAL ='
+%              INSERT ' MODE = REAL REAL ='
+%              INSERT ' MODE = REAL REAL ='
+%              INSERT ' MODE = REAL REAL ='
+%              INSERT ' MODE = REAL REAL ='
+%              INSERT ' MODE = REAL REAL ='
+%              INSERT ' MODE = CHAR CHAR ='
 %            END CASE
-%            CASE VALUE RANGE 2 3
+%            CASE VALUE 
+%              GET FINAL KEYWORD 'New value'
 %              GET FINAL KEYWORD 'New value'
 %              GET FINAL REAL 'New value'
+%              GET FINAL REAL 'New value'
+%              GET FINAL REAL 'New value'
+%              GET FINAL REAL 'New value'
+%              GET FINAL REAL 'New value'
+%              GET FINAL REAL 'New value'
+%              GET FINAL KEYWORD 'New value'
 %            END CASE
 %            SEND
 %            COPY 'DISPLAY GROUP'
@@ -104,8 +118,8 @@
 %          GET NOMESSAGE NOPROMPT TEXT 'Nothing' 'NONE'
 %        ELSE
 %          COPY 'INSERT'
-%          VERIFY CHAR REAL REAL REAL REAL REAL REAL
-%          LOOP 7 TIMES
+%          VERIFY CHAR REAL REAL REAL REAL REAL REAL CHAR
+%          LOOP 8 TIMES
 %            ON ERROR RESTART
 %            CLEAR
 %            INSERT 'CHANGE '
@@ -122,7 +136,8 @@
 %             GET REAL 'Ionic radius' '1.0'
 %     GET REAL 'Number of atoms of this element in the asymmetric unit' '0.0'
 %             GET REAL 'Mu' '0.0'
-%             GET FINAL REAL 'Atomic weight' '0.0'
+%             GET REAL 'Atomic weight' '0.0'
+%             GET FINAL KEYWORD 'Colour' 'black'
 %            END CASE
 %            SEND
 %          END LOOP
