@@ -226,7 +226,6 @@ class Table
         std::ostream& outputLine(int pLineNum, std::ostream& pStream);
         int getNumPointGroups();	//Needs doing
         SpaceGroup* getSpaceGroup(int pLineNum, int pPointGroupNum);
-        std::ostream& outputColumn(std::ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
         int numberOfRows();
