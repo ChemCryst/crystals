@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2002/06/05 15:29:57  richard
+C Serious bug fix: GooF, S, calculation was picking up SIGMACUT rather than
+C NPARAM from L30.
+C
 C Revision 1.15  2002/03/06 15:35:53  Administrator
 C Fix a format statement, enable Extinction and TWINS to be refined together
 C
@@ -793,14 +797,15 @@ C--CONVERT THE MEAN, RMS AND MAX POSN. COORDS. TO ANGSTROM
       JE=JC+3*MW
 C--PRINT THE RESULTS
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4650)STORE(JC+2),(STORE(I+2),I=JE,JC+13*MW,MW),
+      WRITE(NCWU,4650)
+      WRITE(NCWU,4651)STORE(JC+2),(STORE(I+2),I=JE,JC+13*MW,MW),
      2 (A1(I),I=1,3),
      3 STORE(JC+3),(STORE(I+3),I=JE,JC+13*MW,MW),(A1(I),I=4,6)
 4650  FORMAT(
      1 /13X,'Overall',4X,'Occ',5X,'U[iso]',4X,'X',8X,'Y',8X,'Z',
      2 7X,'U[11]',4X,'U[22]',4X,'U[33]',4X,'U[23]',4X,'U[13]',4X,
-     3 'U[12]'
-     4 //' Mean      ',12F9.5
+     3 'U[12]'//)
+4651  FORMAT(' Mean      ',12F9.5
      5 /           38X,3F9.5
      6 //' R.M.S.    ',12F9.5
      7 /           38X,3F9.5)
@@ -817,6 +822,15 @@ C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
 C      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JD,MW),Z
       WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
       ENDIF
+      WRITE(CMON,'(''Shift Reversals'')')
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(CMON,4701)
+4701  FORMAT(' Scale  Occ U[iso]   X     Y     Z   U[11]',
+     1 ' U[22] U[33] U[23] U[13] U[12]')
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(CMON,4702)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
+4702  FORMAT(12F6.2)
+      CALL XPRVDU(NCVDU, 1,0)
 C4750  FORMAT(/10H Reversals,12F9.2///
 C     2 44H Reversals is the percentage of shifts whose,
 C     3 41H signs have changed since the last cycle,,8H and is ,F6.2,
