@@ -1014,6 +1014,10 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
    GLuint selectbuf[400]; //space for 100 hits.
    glSelectBuffer ( 400, selectbuf ); //Allocate space for 100 hit objects
 
+// Correct for strange "3 pixels out in the vertical" effect.
+   yPos += 3;
+
+
    bool repeat = true;
    int tolerance = 0;
    int hits = 0;
