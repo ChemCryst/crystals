@@ -180,7 +180,8 @@ LaueGroupGraph::LaueGroupGraph():iNodes(map<const char*, Node*, ltstr>())
 	JJLaueGroups* tLaueGroups = JJLaueGroups::defaultInstance();
 	//Node* tTempNodePtr; //temp stores for the nodes. Just for conveniance
 	MatrixReader tRotation1("[0 0 1; 1 0 0; 0 1 0]"), tRotation2("[0 1 0; 0 0 1; 1 0 0]"), tInvRotation2("[0  0  1; 1  0  0; 0  1  0]"); //Matrices for rotating the indeces 
-	MatrixReader tTransformation("[1 0 1; -1 1 1; 0 -1 1]"), tTransformToB("[1 0 0; 0 0 -1; 0 1 0]");
+	MatrixReader tTransformation("[1 0 1; -1 1 1; 0 -1 1]");
+	MatrixReader tTransformToB("[1 0 0; 0 0 -1; 0 1 0]");
 	
 	//-1 links. 
 	iRootNode = new Node(tLaueGroups->laueGroupWithSymbol("-1"));
@@ -204,8 +205,8 @@ LaueGroupGraph::LaueGroupGraph():iNodes(map<const char*, Node*, ltstr>())
 	iRootNode->addLink(iNodes["-3"], &tRotation1, NULL);
 	iRootNode->addLink(iNodes["-3"], &tRotation2, NULL);
 	//Link the nodes for 1 2/m 1.
-	iNodes["1 2/m 1"]->addLink(iNodes["4/m"], tTransformToB);
-	iNodes["1 2/m 1"]->addLink(iNodes["2/m 2/m 2/m"], tTransformToB);
+	iNodes["1 2/m 1"]->addLink(iNodes["4/m"], &tTransformToB);
+	iNodes["1 2/m 1"]->addLink(iNodes["2/m 2/m 2/m"], &tTransformToB);
 	//Link the nodes for -3
 	iNodes["-3"]->addLink(iNodes["6/m"]);
 	iNodes["-3"]->addLink(iNodes["-3 m 1"]);
