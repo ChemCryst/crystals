@@ -6,6 +6,10 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  1999/05/11 16:15:27  dosuser
+// RIC: Added token SYSGETDIR and supporting functions for getting a
+//      directory from the user via a common dialog.
+//
 // Revision 1.5  1999/05/07 16:02:29  dosuser
 // RIC: Added GetCursorKeys tokens.
 //
@@ -27,6 +31,8 @@
 #define kSSysOpenFile		"SYSOPENFILE"
 #define kSSysSaveFile		"SYSSAVEFILE"
 #define kSSysGetDir         "SYSGETDIR"
+#define kSSysRestart         "RESTART"
+#define kSRestartFile         "FILE"
 #define	kSRedirectText		"SENDTEXTTO"
 #define	kSRedirectProgress		"SENDPROGRESSTO"
 #define kSCreateListBox		"LISTBOX"
@@ -220,6 +226,8 @@ enum {
 	kTCreateWindow,
 	kTCreateListCtrl,
       kTSysGetDir,
+      kTSysRestart,
+      kTRestartFile,
 	kTSysOpenFile,
 	kTSysSaveFile,
 	kTRedirectText,
