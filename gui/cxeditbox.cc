@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2001/06/18 12:48:25  richard
+//   Exclude windows beep function from linux version, when editbox reaches
+//   its character limit.
+//
 //   Revision 1.14  2001/06/17 14:43:40  richard
 //   CxDestroyWindow function.
 //   Get font from winsizes file. (Can be set via "Appearence" menu.)
@@ -295,22 +299,12 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 
         if( allowedInput != CXE_TEXT_STRING ) //It's not text (it's a number).
         {
-#ifdef __CR_WIN__
-            if (((c < '0') || (c > '9')) && (c != '.')) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
-#endif
-#ifdef __BOTHWX__
-                  if (((c < '0') || (c > '9')) && (c != '.')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
-#endif
+            if ( ((c < '0') || (c > '9')) && (c != '.') && ( c != '-') ) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
             }
 
         if( allowedInput == CXE_INT_NUMBER ) //It's an integer.
         {
-#ifdef __CR_WIN__
             if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
-#endif
-#ifdef __BOTHWX__
-                  if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
-#endif
         }
 
         CEdit::OnChar( nChar, nRepCnt, nFlags );
@@ -349,22 +343,12 @@ void CxEditBox::OnChar( wxKeyEvent & event )
         }
         if( allowedInput != CXE_TEXT_STRING ) //It's not text (it's a number).
         {
-#ifdef __CR_WIN__
-            if (((c < '0') || (c > '9')) && (c != '.')) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
-#endif
-#ifdef __BOTHWX__
-                  if (((c < '0') || (c > '9')) && (c != '.')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
-#endif
+            if (((c < '0') || (c > '9')) && (c != '.') && ( c != '-')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
         }
 
         if( allowedInput == CXE_INT_NUMBER ) //It's an integer.
         {
-#ifdef __CR_WIN__
-            if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
-#endif
-#ifdef __BOTHWX__
-                  if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
-#endif
+            if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
         }
 
             event.Skip();
