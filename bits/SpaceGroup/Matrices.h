@@ -545,6 +545,7 @@ class MatrixReader:public Matrix<float>
         void fillMatrix(char* pLine);
     public:
         MatrixReader(char *pMatrixLine);
+        ~MatrixReader();
 };
 
 #endif
