@@ -610,7 +610,7 @@ C CALCULATE WEIGHTED AVERAGES AND LOGS
         FLGW(I)=ALOG(SW(I)*DIV)
         IF ( E5) FLGWC(I)=ALOG(SWC(I)*DIV)   
 
-        WRITE(95,'(2F15.8)')FLGW(I), FLGWC(I)
+c        WRITE(95,'(2F15.8)')FLGW(I), FLGWC(I)
 
         START=START+ADD
         END=AMIN1(END+ADD,RHOMAX)                                         
