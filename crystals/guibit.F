@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2003/02/20 15:59:51  rich
+C Output list 4 info to the info tab in the GUI.
+C
 C Revision 1.53  2003/01/21 12:54:11  rich
 C Commented out swathes of unused code in order to shrink
 C the executable a bit.
@@ -491,25 +494,27 @@ c         loaded by the calling routine.
 \XLST29
 \XLST30
 \XLST41
+\HEADES 
 \TYPE11
 \XSTR11 
 \QSTR11
 \XDISCB
 
       DIMENSION JDEV(4)
+      DIMENSION CARD(20)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
       CHARACTER*5 CWT 
       CHARACTER*22 CFM, CFMC ! 'Fo**2'
       CHARACTER*35 CMOD
-      CHARACTER CBUF*80
+      CHARACTER CBUF*86
       CHARACTER * 4 CNAME
       LOGICAL WEXIST, LSPARE
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
 
-      DIMENSION LST(8)
+      DIMENSION LST(12)
       DIMENSION ICLINF(400)
       DIMENSION TXYZ(9)
 
@@ -554,7 +559,7 @@ C
       IF ( IULN .EQ. 0 ) THEN ! decide what needs updating
 c         WRITE(CMON,'(a)')' XGUIUP: Setting 7 lists to be updated.'
 c         CALL XPRVDU (NCVDU,1,0)
-         NLST = 7
+         NLST = 9
          LST(1) = 1
          LST(2) = 2
          LST(3) = 5
@@ -562,6 +567,8 @@ c         CALL XPRVDU (NCVDU,1,0)
          LST(5) = 29
          LST(6) = 30
          LST(7) = 4
+         LST(8) = 12
+         LST(9) = 16
       ELSE
          NLST = 1
          LST(1) = ABS(IULN)
@@ -1415,6 +1422,90 @@ c             CALL XPRVDU(NCVDU, 1,0)
      1            STORE(L30RF+7),STORE(L30RF+8)
               CALL XPRVDU(NCVDU, 5, 0)
             ENDIF
+
+
+         ELSE IF ((ILST .EQ. 12).OR.(ILST .EQ. 16)) THEN   ! Directives
+
+           IF ( ILST .EQ. 12 ) THEN
+             IF(KEXIST(12).LE.0) THEN
+               WRITE (CMON,'(''^^CO SAFESET [ _MT_L12 EMPTY ]'')')
+               CALL XPRVDU(NCVDU,1,0)
+               CYCLE
+             END IF
+             CALL XRLIND(12, L12SR, NFW, LL, IOW, NOS, ID)
+             IF ( L12SR.NE.ISERnn(12) ) THEN
+               ISERnn(12)  = L12SR
+             ELSE
+              CYCLE
+             END IF
+           ELSE IF ( ILST .EQ. 16 ) THEN
+             IF(KEXIST(16).LE.0) THEN
+               WRITE (CMON,'(''^^CO SAFESET [ _MT_L16 EMPTY ]'')')
+               CALL XPRVDU(NCVDU,1,0)
+               CYCLE
+             END IF
+             CALL XRLIND(16, L16SR, NFW, LL, IOW, NOS, ID)
+             IF (L16SR.NE.ISERnn(16) ) THEN
+               ISERnn(16)  = L16SR
+             ELSE
+              CYCLE
+             END IF
+           END IF
+
+           WRITE (CMON,'(''^^WI SAFESET [ _MT_L'',I2,'' EMPTY ]'')')ILST
+           CALL XPRVDU(NCVDU,1,0)
+
+
+           LN=ILST
+           IREC=0
+           ISTAT = KLSCHK ( LN , 0 , 0 , ILSAVI, ILSMSG, IADDR, IERERR)
+           IF ( ISTAT .LE. 0 ) THEN
+            WRITE(CMON,'(A,I2)') 'No list to output: ',ILST
+            CALL XPRVDU(NCVDU,1,0)
+            CYCLE
+           END IF
+           CALL XRLIND ( LN, LSN, IADDI, LL, IOW, NOS, ID ) ! READ INDEX
+           LAST=0
+           NUMB=-1
+           DO WHILE (KLDDRH(LAST,IADDI,IBUFF).GE.0) ! LOAD NEXT HEADER BLOCK
+             IF(IBUFF(7).LT.0)THEN         !--CARD IMAGE  -  PRINT IT
+
+               NUMB=NUMB+1
+
+               INNJ=0           ! MARK THIS AS THE FIRST REAL CARD
+
+               INNN=IBUFF(6)    ! FIND THE ADDRESS AND LENGTH POINTERS
+               INNM=IBUFF(5)
+               INNL=IBUFF(4)
+               INNK=MIN0(INNM,20)  ! FIND THE LENGTH TO PRINT
+
+
+600   FORMAT ('^^WI SAFESET [ _MT_L',I2,' TEXT "',A,'" ]')
+                                                            
+               DO WHILE(INNN.GT.0)   ! CHECK IF THERE ARE MORE CARDS TO PRINT
+                 CALL XDOWNF(INNL,CARD(1),INNK)
+                 INNL=INNL+KINCRF(INNM) ! UPDATE THE POINTERS
+                 INNN=INNN-1
+                 IF(INNJ.LE.0)THEN                              ! FIRST CARD
+                   WRITE(CBUF,'(I5,1X,20A4)') NUMB, CARD
+                   INNJ=1
+                 ELSE                                ! NOT THE FIRST CARD
+                   WRITE(CBUF,'(5X,1X,20A4)') CARD
+                 END IF
+                 LBUF = LEN_TRIM(CBUF)
+                 IF ( LBUF .GT. 0 ) THEN
+                   WRITE(CMON,600) ILST,CBUF(1:LBUF)
+                   CALL XPRVDU(NCVDU, 1,0)
+                 END IF
+               END DO
+             END IF
+           END DO
+
+           WRITE (CMON,
+     1      '(''^^WI SET _MT_L'',I2,'' VIEWTOP'',/,''^^CR'')') ILST
+           CALL XPRVDU(NCVDU,2,0)
+
+
          ELSE IF ( ILST .EQ. 4 ) THEN   ! Weighting scheme
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
                IF(KEXIST(4).LE.0) CYCLE
@@ -1661,10 +1752,6 @@ c             CALL XPRVDU(NCVDU, 1,0)
               WRITE (CMON,'(''^^WI SET _MT_WGHT VIEWTOP'',/,''^^CR'')')
               CALL XPRVDU(NCVDU,2,0)
             END IF
-
-
-
-
          END IF
 
       END DO
