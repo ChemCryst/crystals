@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2004/06/29 15:15:30  rich
+//   Remove references to unused kTNoMoreToken. Protect against reading
+//   an empty list of tokens.
+//
 //   Revision 1.8  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -190,7 +194,7 @@ CcParse CrTab::ParseInput( deque<string> & tokenList )
             tabData->tabGrid = gridPtr;
             mTabsList.push_back( gridPtr );
             ((CxTab*)ptr_to_cxObject)->AddTab(tabData) ;
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
 //NB- under Win32 we manage the tabs, under wx the framework manages them.
             if ( m_nTabs )
             {
