@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 16:44:09  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 
 #include    "crystalsinterface.h"
@@ -28,7 +32,7 @@ CxIcon *    CxIcon::CreateCxIcon( CrIcon * container, CxGrid * guiParent )
     theText->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theText->Create(guiParent, -1, "text");
+      theText->Create(guiParent, -1, "");
 #endif
       return theText;
 }
@@ -43,6 +47,16 @@ CxIcon::CxIcon( CrIcon * container )
 CxIcon::~CxIcon()
 {
     RemoveText();
+}
+
+void CxIcon::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 CXSETGEOMETRY(CxIcon)
@@ -113,5 +127,22 @@ void CxIcon::SetIconType( int iIconId )
 
       SetIcon ( icon );
 #endif
-
+#ifdef __BOTHWX__
+      switch ( iIconId )
+      {
+            case kTIconInfo:
+                 SetLabel("INFORMATION:");
+                 break;
+            case kTIconWarn:
+                 SetLabel("WARNING:");
+                 break;
+            case kTIconError:
+                 SetLabel("STOP:");
+                 break;
+            case kTIconQuery:
+            default:
+                 SetLabel("QUESTION:");
+                 break;
+      }
+#endif
 }

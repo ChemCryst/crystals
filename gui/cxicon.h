@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 16:44:09  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef           __CxIcon_H__
 #define           __CxIcon_H__
@@ -25,7 +29,6 @@
 
 class CrIcon;
 class CxGrid;
-//End of user code.
 
 class CxIcon : public BASETEXT
 {
@@ -43,6 +46,7 @@ class CxIcon : public BASETEXT
         int GetIdealHeight();
         static int  AddText();
         static void RemoveText();
+        void CxDestroyWindow();
         void    SetVisibleChars( int count );
             void SetIconType( int iIconId );
 
