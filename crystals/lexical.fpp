@@ -1252,6 +1252,9 @@ C    GIVEN
 C
 C--SEARCH FOR THE ATOMIC PARAMETER
 1200  CONTINUE
+cdjwjan99
+c----- zero the true parameter index from coord
+      lorig = 0
 C----- CHECK FOR SHORT FORM
       N=3
       J=KCOMP(NWXS,STORE(MF+2),MXS,NXS,LXS)
@@ -1276,16 +1279,15 @@ C----- POSITIONS
       I=5
       GOTO 1610
 1610  continue
-      lorig = 1
-      goto 1450
+      lorig = i
+      goto 1430
 C--CHECK IF THIS IS A NORMAL PARAMETER
 1400  CONTINUE
       N=1
-c----- zero the true parameter index from coord
-      lorig = 0
       I=KCOMP(NWKA,STORE(MF+2),ICOORD,NKA,LKA)
 c----- save the true parameter index from coord
       lorig = i
+1430  continue
       if (i .ge. 15) i = i - 7
       IF(I)1000,1000,1450
 C--SET UP A DUMMY ATOM HEADER
