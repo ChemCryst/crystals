@@ -12,7 +12,9 @@
 #include "Collections.h"
 #include "UnitCell.h"
 #include "RunParameters.h"
-#include "PCPort.h"
+#if defined(_WIN32)
+    #include "PCPort.h"
+#endif
 #include <math.h>
 #include <iostream>
 #include <iterator>
@@ -548,7 +550,7 @@ void MergedData::releaseReflections()
     {
         for (size_t i = 0; i < iUpto; i++)
         {
-            delete iReflections[iUpto];
+            delete (iReflections[i]);
         }
         delete[] iReflections;
         iReflections = NULL;
