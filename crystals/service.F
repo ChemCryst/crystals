@@ -797,10 +797,6 @@ C -- FINAL CALL TO THE SPY
       CALL XSPY ( 3 )
       ISTAT = KDUMP ( I )
       CALL XTIME2 ( 0 )
-C----- CLOSE ALL THE FILES
-      DO 2001 I = 1,NFLUSD
-            J = KFLCLS(IFLUNI(I))
-2001  CONTINUE
 C
       GO TO ( 8100 , 8200 , 8300 ) , ICODE
 8100  CONTINUE
@@ -820,12 +816,12 @@ C#PPC      STOP 'OK'
 &PPCCE***
 &PPC      STOP
 #PPC      write(*,*) ' Ending in error'
-#PPC      WRITE ( NCVDU , 8305 ) J/(icode-2)
+&VAX      WRITE ( NCVDU , 8305 ) J/(icode-2)
 C#PPC      STOP 'ERROR'
 #PPC      CALL GUEXIT(1)
 8300  CONTINUE
 C
-C -- CAUSE PROG. TO CRASH TO GET TRACEBACK
+C VAX -- CAUSE PROG. TO CRASH TO GET TRACEBACK
 C----WRITE STATEMENT IS NECESSARY TO FOOL  VAX FORTRAN OPTIMISER.
 C
 &PPCCS***
@@ -835,7 +831,7 @@ C
 &PPCCE***
 &PPC      STOP
 #PPC      write(*,*) ' Ending in serious error'
-#PPC      WRITE ( NCVDU , 8305 ) J/(icode-3)
+&VAX      WRITE ( NCVDU , 8305 ) J/(icode-3)
 #PPC8305  FORMAT ( 1X , I10 )
 #PPCC
 C#PPC      STOP 'SERIOUS ERROR'
