@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2003/11/05 15:48:36  rich
+C Increase maximum field length of distance and angle output in CIF from
+C 10 to 12 characters. Otherwise it truncates to the left.
+C
+C Change the _atom_site_refinement_flags into three separate data items
+C _atom_site_refinement_flags_posn, _atom_site_refinement_flags_adp and
+C _atom_site_refinement_flags_occupancy.
+C
 C Revision 1.68  2003/11/04 16:14:01  rich
 C If F000 is integer, output as integer.
 C
@@ -1127,6 +1135,7 @@ C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
 C                         END OF PAGE.
 C
       CHARACTER CLINE *160, CTEM *4, CHTML*20, CSGRD*4, CTU*2, CP*1
+      CHARACTER CASDA*4, CASDG*4
 \TSSCHR
 \ISTORE
 C
@@ -1203,6 +1212,8 @@ C----- CAPTIONS FOR CIF FILE
      1 '_atom_site_refinement_flags_posn'  /
      1 '_atom_site_refinement_flags_adp'  /
      1 '_atom_site_refinement_flags_occupancy'  /
+     1 '_atom_site_refinement_disorder_assembly'  /
+     1 '_atom_site_refinement_disorder_group'  /
      2 '_atom_site_attached_hydrogens' )
 
       ELSE IF (IPCHCO .EQ. 3) THEN    !HEADERS FOR HTML TABLE
@@ -1432,6 +1443,19 @@ C Work out the _atom_site_refinement_flags_occupancy for this atom.
             IF ( AND (KBREFB(7),ISTORE(M5+15)) .GT. 0 ) THEN
               WRITE(CP(1:1),'(A)') 'P' 
             END IF
+            CALL PRTGRP(ISTORE(M5+14),IPRT,IGRP)
+            WRITE(CASDA(1:1),'(A)') '.' !Atom site disorder assembly
+            NASDA = 1
+            IF ( IGRP .NE. 0 ) THEN
+               WRITE(CASDA,'(I4)') IGRP
+               NASDA = 4
+            END IF
+            WRITE(CASDG(1:1),'(A)') '.' !Atom site disorder group
+            NASDG = 1
+            IF ( IPRT .NE. 0 ) THEN
+               WRITE(CASDG,'(I4)') IPRT
+               NASDG = 4
+            END IF
 C
             WRITE(CLINE,'(160A1)') LINEC
 C Ensure second character of element type is lowercase.
@@ -1444,8 +1468,11 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCTRIM (CLINE,NCHAR)
             CLINE(NCHAR+1:NCHAR+4) = CTEM
             CALL XCREMS( CLINE, CLINE, NCHAR)
-            WRITE(NCFPU1,'(A,4(1X,A))') CLINE(1:NCHAR),
-     1      CSGRD(1:NSGRD),CTU(1:NSGTU),CP,'.'
+            WRITE(CLINE(NCHAR+1:),'(6(1X,A))') 
+     1      CSGRD(1:NSGRD),CTU(1:NSGTU),CP,CASDA(1:NASDA),
+     2      CASDG(1:NASDG),'.'
+            CALL XCREMS( CLINE, CLINE, NCHAR)
+            WRITE(NCFPU1,'(A)') CLINE(1:NCHAR)
         ENDIF
 1550    FORMAT(2X,118A1)
         NL=NL+1
