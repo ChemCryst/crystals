@@ -111,7 +111,7 @@
 %    EVALUATE QLINE1 = 'Warning. Cell contents indicates: ' // -
      CHARACTER ( NH29 ) // 'H atoms'
 %    EVALUATE QLINE2 = 'Model has ' // CHARACTER ( NH5 ) -
-      // ' H atoms. Do not run Mogul with missing H atoms.'
+      // ' H atoms. Make sure either ALL or NONE are present.'
 %    EVALUATE BUTTOK = 'OK'
 %    COPY '#SCRIPT XMESSAGE'
 %END IF
@@ -138,8 +138,8 @@
 {I * Writing instructions for Mogul...
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
-%  TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
-%  TRANSFER 'MOGUL MOLECULE crystals.mol2' TO PUNCH
+%  TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH
+%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
 %  COPY '#RELEASE PUNCH bfile.pch'
 {I * Running Mogul.
 ^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
@@ -184,13 +184,10 @@
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
 %  IF IGUI .EQ. 1 THEN
-%    TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
+%    TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH
 %  END IF
-%  TRANSFER 'MOGUL MOLECULE crystals.mol2' TO PUNCH
-%  TRANSFER 'MOGUL OUTPUT_FILE mogul.stat' TO PUNCH
-%  IF IGUI .EQ. 1 THEN
-%    TRANSFER 'MOGUL AUTO_CLOSE' TO PUNCH
-%  END IF
+%  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH
+%  TRANSFER 'MOGUL OUTPUT FILE mogul.stat' TO PUNCH
 %%
 %% Do distances and angles in blocks - makes mogul go faster as data
 %% are in different libraries.
