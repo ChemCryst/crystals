@@ -42,10 +42,13 @@
 #include <regex.h>
 #endif
 #include <fstream>
+
 #include "StringClasses.h"
 #include "MathFunctions.h"
 #include <iomanip>
 #include "Stats.h"
+#include <fcntl.h>
+#include <errno.h>
 
 using namespace std;
 
@@ -1274,7 +1277,7 @@ void RankedSpaceGroups::RowRating::addRating(const ElemStats* pStats)
     iFiltered |= pStats->iFiltered ;
 }
 
-RankedSpaceGroups::RowRating& RankedSpaceGroups::RowRating::operator=(RowRating& pRowRating)
+RankedSpaceGroups::RowRating& RankedSpaceGroups::RowRating::operator=(const RowRating& pRowRating)
 {
     (Float)(*this) = (Float)pRowRating;
     iRowNum = pRowRating.iRowNum;
