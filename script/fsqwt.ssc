@@ -11,27 +11,34 @@ in the column <Delta**2> in the agreement analysis.
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=5 type=ch wei=1'
 %          COPY 'END'
+ 
+ 
+ 
             Chebychev weighting with 5 parameters
-%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-%          COPY '#PAUSE 5'
+%          COPY '#PAUSE 2'
+%%-GID%          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=4  type=ch wei=1'
 %          COPY 'END'
+ 
+ 
+ 
             Chebychev weighting with 4 parameters
-%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-%          COPY '#PAUSE 5'
+%          COPY '#PAUSE 2'
+%%-GID%          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=3  type=ch wei=1'
 %          COPY 'END'
+ 
+ 
+ 
             Chebychev weighting with 3 parameters
-%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-%          COPY '#PAUSE 5'
 %          LOOP
 %            ON END TERMINATE
 %            VERIFY YES NO
@@ -44,7 +51,7 @@ in the column <Delta**2> in the agreement analysis.
 %             CLEAR
 %              GET NOSTORE INTEGER 'Number of parameters'
 %              IF VALUE .NE. 0 THEN
-%                INSERT 'SCHEME NUMBER=14'
+%                INSERT 'SCHEME NUMBER=14   type=ch wei=1'
 %                INSERT ' NPARAM='
 %                STORE INTEGER VALUE
 %                SEND

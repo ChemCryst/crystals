@@ -1,4 +1,5 @@
 %SCRIPT FINH
+%% Similar to FINDH, but called from XFINDH
 % VARIABLE INTEGER RETURNTO
 % VARIABLE LOGICAL HPOS
 % VERIFY FIND AUTO
@@ -43,9 +44,9 @@
 %   END IF
 %   COPY '#SCRIPT CHECK12'
 %   VERIFY YES NO
-
+ 
  * Remember - the data may not be good enough to reveal all H atoms.
-
+ 
 %   GET NOSTORE FINAL ABBREVIATED -
  'Have all H atoms been located?' 'YES'
 %   IF VALUE .EQ. 1 THEN

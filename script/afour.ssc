@@ -1,17 +1,17 @@
-%SCRIPT AFOUR 
+%SCRIPT AFOUR
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
- This SCRIPT is to assist with Fourier refinement if simple structures.     
- PHASE 1 computes phase angles from the existing model                      
- PHASE 2 computes an Fobs map if R is high, a 2Fo-Fc map if intermediate    
- oterwise a difference map.                                                 
- PHASE 3 performs Fourier refinement or simple elimination of redundant     
- peaks.                                                                     
- PHASE 4 assembles a molecule, reorders the atom list in decreasing         
- rho values, resequences the serial numbers and displays the result         
- PHASE 5 invites you to rename any of the atoms.                            
- PHASES 1 to 5 are repeated until you terminate them, when the atom list    
- may be reorganised to reflect atomic connectivity                          
+ This SCRIPT is to assist with Fourier refinement if simple structures.
+ PHASE 1 computes phase angles from the existing model
+ PHASE 2 computes an Fobs map if R is high, a 2Fo-Fc map if intermediate
+ oterwise a difference map.
+ PHASE 3 performs Fourier refinement or simple elimination of redundant
+ peaks.
+ PHASE 4 assembles a molecule, reorders the atom list in decreasing
+ rho values, resequences the serial numbers and displays the result
+ PHASE 5 invites you to rename any of the atoms.
+ PHASES 1 to 5 are repeated until you terminate them, when the atom list
+ may be reorganised to reflect atomic connectivity
 % ELSE
       a SCRIPT to help with Fourier refinement
 % END IF
@@ -28,9 +28,7 @@
 %%
 %    LOOP
 %      COPY '#SCRIPT RFACTOR'
-%      COPY '#EDIT'
-%      COPY 'SELECT TYPE NE Q'
-%      COPY 'END'
+%      COPY '#SCRIPT XDELQ'
 %      IF RATIO .GE. 1.3 THEN
 %        COPY '#SFLS'
       Recomputing over all scale factor and phases
@@ -133,4 +131,5 @@ and to list the inter atomic distances.
 %      END IF
 %    END LOOP
 % END BLOCK
+% COPY '#SCRIPT XDELQ'
 %END SCRIPT

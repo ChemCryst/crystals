@@ -4,6 +4,15 @@ weighted residual, is approximately constant, and that the final
 value is about unity.
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=16, NPARAM=6'
+%          COPY 'PARAM .01 0 0 0 0 .333'
+%          COPY 'END'
+            Quasi-statistical weighting , P(1)=.01
+%          COPY '#ANALYSE'
+%          COPY 'END'
+%          COPY '#PAUSE 5'
+%%
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'
 %          COPY 'PARAM .1 0 0 0 0 .333'
 %          COPY 'END'
             Quasi-statistical weighting , P(1)=.1
@@ -16,15 +25,6 @@ value is about unity.
 %          COPY 'PARAM 1 0 0 0 0 .333'
 %          COPY 'END'
             Quasi-statistical weighting , P(1)=1
-%          COPY '#ANALYSE'
-%          COPY 'END'
-%          COPY '#PAUSE 5'
-%%
-%          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=6'
-%          COPY 'PARAM 10 0 0 0 0 .333'
-%          COPY 'END'
-            Quasi-statistical weighting , P(1)=10
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'

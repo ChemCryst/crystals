@@ -5,16 +5,39 @@
 %  VARIABLE INTEGER ADP
 %  EVALUATE EXTINCT = FALSE
 %  VARIABLE CHARACTER CLAST CPARAM CPARAM2
-%%BLOCK
-%% ON ERROR TERMINATE
-%% COPY '#LIST 22'
-%% COPY 'END'
-%% * CRYSTALS already has a valid refinement list, LIST 12
-%% * REMEMBER THAT A VALID LIST MAY NOT BE A SUITABLE LIST
-%% FINISH
-%%END BLOCK
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
 %%
+%% This moved up here 11 April to ensure CLAST is initialised
+% EVALUATE CLAST = 'LAST'
 % COPY '#SCRIPT CHECK5'
+%
+%% This block was found commented out 11 April 2000 >>>>>>
+%% For what reason? Presumably because an unsuitable list may lurk
+%% about. However, its removal causes hand-built lists to be trashed.
+%BLOCK
+% ON ERROR TERMINATE
+% COPY '#LIST 22'
+% COPY 'END'
+ * CRYSTALS already has a valid refinement list, LIST 12
+% COPY '#PRINT 12'
+% COPY 'END'
+ * Remember that a valid list may not be a suitable list
+%%
+%    EVALUATE QTITLE = 'REFINEMENT'
+%    EVALUATE QLINE1 = 'Are these the parameters'
+%    EVALUATE QLINE2 = 'you want to refine?'
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%      FINISH
+%    END IF
+%%
+%END BLOCK
+%% This block was found commented out 11 April 2000 <<<<<<
+%%
 %%
 % IF EXISTS 5 .GE. 1 THEN
  * CRYSTALS is creating a minimum valid LIST 12

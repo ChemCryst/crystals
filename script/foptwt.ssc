@@ -1,5 +1,5 @@
 %SCRIPT FOPTWT
-%% WEIGHT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT
+%% SCRIPT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT
 %%
 We will try 5, 4 and 3 parameter schemes, in that order since the 3 parameter
 scheme is most often satisfactory, and will by default be left in force. You
@@ -11,33 +11,31 @@ in the column <Delta**2> in the agreement analysis.
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=5'
 %          COPY 'END'
+ 
+ 
             Chebychev weighting with 5 parameters
-+GID%          COPY '#PAUSE 1'
--GID%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-+GID%          COPY '#PAUSE 2'
--GID%          COPY '#PAUSE 5'
+%          COPY '#PAUSE 2'
+%%-GID%          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=4'
 %          COPY 'END'
+ 
+ 
             Chebychev weighting with 4 parameters
-+GID%          COPY '#PAUSE 1'
--GID%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-+GID%          COPY '#PAUSE 2'
--GID%          COPY '#PAUSE 5'
+%          COPY '#PAUSE 2'
+%%-GID%          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=3'
 %          COPY 'END'
+ 
+ 
             Chebychev weighting with 3 parameters
-+GID%          COPY '#PAUSE 1'
--GID%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-+GID%          COPY '#PAUSE 2'
--GID%          COPY '#PAUSE 5'
 %          LOOP
 %            ON END TERMINATE
 %            VERIFY YES NO

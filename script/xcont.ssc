@@ -255,7 +255,7 @@ view the generated sections.
 %           END BLOCK
 %           BLOCK    %Run marchingcubesELD viewer
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
-%             TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MARCHI~1 ' -
+%             TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe ' -
     // CFILE TO CRYSTALS
 %           END BLOCK
 %         END CASE

@@ -1,5 +1,5 @@
 %SCRIPT AUTO12
-%% SET VERIFY TRUE
+%% SET VERIFY false
 %  VARIABLE LOGICAL HINCELL
 %  VARIABLE LOGICAL SCRIPTEXT
 %  VARIABLE LOGICAL EXTINCT PURGE
@@ -160,7 +160,7 @@
       CRYSTALS cannot guide you futher with this analysis.
       Please consult a professional crystallographer
       _____________________________________________________________
-%           COPY '#PAUSE 2'
+%           COPY '#PAUSE 5'
 ^^WI        DISPOSE XAUTO12
 ^^CR
 %           FINISH
@@ -421,7 +421,7 @@ REFINEMENT
 %      COPY '#SUM LIST 12'
 %      COPY 'END'
 %      IF ( EXTINCT .EQ. TRUE ) .AND. ( PURGE .EQ. FALSE ) THEN
-%        IF EXISTS 11 THEN
+%        IF EXISTS 11 .EQ. 1 THEN
 %          COPY '#DISK'
 %          COPY 'DELETE 11'
 %          COPY 'END'
@@ -447,6 +447,6 @@ REFINEMENT
  The refinement has probably converged.
 %      END IF
 %      EVALUATE RMIN = R
-%    END IF
+%    END IF % ERROR%
 %  END LOOP
 %END SCRIPT
