@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2004/02/27 12:55:06  rich
+C Supress output of dates from \DISK/PRINT if TIME is \SET to SLOW. (For
+C test_suite tests).
+C
 C Revision 1.50  2004/02/25 10:03:24  stefan
 C Removed GUI output for Linux/Unix version
 C
@@ -3244,7 +3248,7 @@ C----- CLOSE ALL THE FILES
 2001  CONTINUE
 &DVF      CALL EXIT(IVAR)
 &LIN      CALL EXIT(IVAR)
-###GIDDVFWXS      STOP
+####GIDGILDVFWXS      STOP
 &GID      CALL CIENDTHREAD(IVAR)
 &GIL      CALL CIENDTHREAD(IVAR)
 &WXS      CALL CIENDTHREAD(IVAR)
