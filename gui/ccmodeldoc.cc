@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.31  2004/06/24 09:12:01  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.30  2004/04/16 12:43:45  rich
 // Speed up for  OpenGL rendering: Use new lighting scheme, drop use of
 // two sets of displaylists for rendering a 'low res' model while rotating -
@@ -310,7 +314,7 @@ void CcModelDoc::Select(bool selected)
 }
 
 
-void CcModelDoc::SelectAtomByLabel(string atomname, bool select)
+void CcModelDoc::SelectAtomByLabel(const string & atomname, bool select)
 {
 
    CcModelObject* item = FindAtomByLabel(atomname);
@@ -321,7 +325,7 @@ void CcModelDoc::SelectAtomByLabel(string atomname, bool select)
    }
 }
 
-void CcModelDoc::DisableAtomByLabel(string atomname, bool select)
+void CcModelDoc::DisableAtomByLabel(const string & atomname, bool select)
 {
     CcModelObject* item = FindAtomByLabel(atomname);
 
@@ -359,7 +363,7 @@ void CcModelDoc::DisableAllAtoms(bool select)
 }
 
 
-CcModelObject* CcModelDoc::FindAtomByLabel(string atomname)
+CcModelObject* CcModelDoc::FindAtomByLabel(const string & atomname)
 {
   CcModelObject* ratom = nil;
   string nAtomname = Compress(atomname);
@@ -417,14 +421,14 @@ int CcModelDoc::NumSelected()
     return nSelected;
 }
 
-string CcModelDoc::Compress(string atomname)
+string CcModelDoc::Compress(const string & atomname)
 {
     string::size_type charstart = 1, charend = 1;
     string::size_type numbstart = 1, numbend = 1;
 //Find first non-space
     charstart = atomname.find_first_not_of(" ");
-//Find next space or number.
-    charend = atomname.find_first_of(" 0123456789",charstart);
+//Find next space, parenthesis, or number.
+    charend = atomname.find_first_of(" 0123456789()",charstart);
 //Find first number.
     numbstart = atomname.find_first_of("0123456789",charend);
 //Find next non-number.
@@ -709,7 +713,7 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
    return false;
 }
 
-void CcModelDoc::FlagFrag(string atomname)
+void CcModelDoc::FlagFrag(const string & atomname)
 {
 // Set spare to false for all atoms
 
@@ -742,7 +746,7 @@ void CcModelDoc::FlagFrag(string atomname)
 
      if ( ! mBondList.empty() )
        for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
-         if ( (*bond).m_patms.size() > 2 )
+         if ( (*bond).m_patms.size() >= 2 )
            if (( (*bond).m_patms[0]->spare ) && ( ! (*bond).m_patms[1]->spare ))
            {
               (*bond).m_patms[1]->spare = true;
@@ -758,7 +762,7 @@ void CcModelDoc::FlagFrag(string atomname)
 }
 
 
-void CcModelDoc::SelectFrag(string atomname, bool select)
+void CcModelDoc::SelectFrag(const string & atomname, bool select)
 {
    m_thread_critical_section.Enter();
    FlagFrag ( atomname );
@@ -776,7 +780,7 @@ void CcModelDoc::SelectFrag(string atomname, bool select)
 }
 
 
-string CcModelDoc::FragAsString( string atomname, string delimiter )
+string CcModelDoc::FragAsString( const string & atomname, string delimiter )
 {
   string result;
   m_thread_critical_section.Enter();
@@ -876,7 +880,7 @@ CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
 
 void CcModelDoc::FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
                           int r, int g, int b,  int rad,int btype,
-                          int np, int * ptrs, string label, string cslabl)
+                          int np, int * ptrs, const string & label, const string & cslabl)
 {
 
         CcModelBond item (x1,y1,z1,x2,y2,z2,
@@ -887,13 +891,13 @@ void CcModelDoc::FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
     m_thread_critical_section.Leave();
 }
 
-void CcModelDoc::FastAtom(string label,int x1,int y1,int z1, 
+void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
                           float u1,float u2,float u3,float u4,float u5,
                           float u6,float u7,float u8,float u9,
                           float frac_x, float frac_y, float frac_z,
-                          string elem, int serial, int refflag,
+                          const string & elem, int serial, int refflag,
                           int assembly, int group, float ueq, float fspare)
 
 {
@@ -910,7 +914,7 @@ void CcModelDoc::FastAtom(string label,int x1,int y1,int z1,
 
 }
 
-void CcModelDoc::FastSphere(string label,int x1,int y1,int z1, 
+void CcModelDoc::FastSphere(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag, int iso, int irad)
 {
@@ -923,7 +927,7 @@ void CcModelDoc::FastSphere(string label,int x1,int y1,int z1,
 
 }
 
-void CcModelDoc::FastDonut(string label,int x1,int y1,int z1,
+void CcModelDoc::FastDonut(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag, int iso, int irad, int idec, int iaz)
 {

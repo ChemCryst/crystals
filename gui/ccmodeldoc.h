@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.20  2003/11/07 10:43:06  rich
 //   Split the 'part' column in the atom list into 'assembly' and 'group'.
 //
@@ -113,31 +117,31 @@ class CcModelDoc
         void DocToList( CrModList* ml );                                // Called by CrModList
         void InvertSelection();                                         // Called by CrModel
         void SelectAllAtoms(bool select);                               // Called by CrModel
-        void SelectAtomByLabel(string atomname, bool select);           // Called by CrModel
+        void SelectAtomByLabel(const string & atomname, bool select);           // Called by CrModel
         void DisableAllAtoms(bool select);                              // Called by CrModel
-        void DisableAtomByLabel(string atomname, bool select);          // Called by CrModel
-        CcModelObject* FindAtomByLabel(string atomname);            // Called by CrModel & CcModelBond
+        void DisableAtomByLabel(const string & atomname, bool select);          // Called by CrModel
+        CcModelObject* FindAtomByLabel(const string & atomname);         // Called by CrModel & CcModelBond
         CcModelAtom* FindAtomByPosn(int posn);          // Called by CrModList & CcModelBond
 
         void FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
                           int r, int g, int b,  int rad,int btype,
-                          int np, int * ptrs, string label, string cslabl);
+                          int np, int * ptrs, const string & label, const string & cslabl);
 
-        void FastAtom(string label,int x1,int y1,int z1, 
+        void FastAtom(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
                           float u1,float u2,float u3,float u4,float u5,
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
-                          string elem, int serial, int refflag,
+                          const string &  elem, int serial, int refflag,
                           int assembly, int group, float ueq, float fspare);
 
-        void FastSphere(string label,int x1,int y1,int z1, 
+        void FastSphere(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
                           int iso, int irad);
 
-        void FastDonut(string label,int x1,int y1,int z1,
+        void FastDonut(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
                           int iso, int irad, int idec, int iaz);
@@ -147,10 +151,10 @@ class CcModelDoc
 
         void Clear();                                               // Called by CrModel
         string SelectedAsString( string delimiter = " " );          // Called by CrMenu
-        string FragAsString    ( string atomname, string delimiter = " "); // Called by CrMenu
+        string FragAsString    ( const string & atomname, string delimiter = " "); // Called by CrMenu
         void SendAtoms( int style, bool sendonly=false );           // Called by CrModel
         void ZoomAtoms( bool doZoom );                              // Called by CrModel
-        void SelectFrag(string atomname, bool select);              // Called by CrModel
+        void SelectFrag(const string & atomname, bool select);              // Called by CrModel
         void RemoveView(CrModel* aView);                            // Called by CrModel
         void DrawViews(bool rescaled = false);                      // Called by CrModList, ModelAtom, ModelBond etc.
         void AddModelView(CrModel* aView);                          // Called by CrModel
@@ -174,8 +178,8 @@ class CcModelDoc
     protected:
 
     private:
-        void     FlagFrag ( string atomname );
-        string Compress(string atomname);
+        void     FlagFrag ( const string & atomname );
+        string Compress(const string & atomname);
         
         int nSelected;
         int m_nAtoms;
