@@ -205,14 +205,50 @@ Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
 	return retVal;
 }
 
-void CrMultiEdit::SetText ( CcString text )
+void CrMultiEdit::SetText ( CcString cText )
 {
 	if(!mNoEcho)
-	{
-		char theText[256];
-		strcpy (theText, text.ToCString() );
-		((CxMultiEdit*)mWidgetPtr)->SetText(theText);
-	}
+      {
+// Scan for @ markup.
+// Format is:               Normal text @Link Text@Link Commands@ normal text
+// e.g  You may @Click here@#SCRIPT ANALYSE@ to see an analysis.
+
+            CcString cLinkText;
+            int iSt = 1;
+            int iCr = 1;
+            int iPosType = INPLAINTEXT;
+
+            for ( iCr = 1; iCr <= cText.Length(); iCr++ )
+            {
+                  if (cText.Sub(iCr,iCr) == '@')
+                  {
+                        if ( iPosType == INPLAINTEXT )
+                        {
+// Flush text as far as the @
+                             ((CxMultiEdit*)mWidgetPtr)->SetText(cText.Sub(iSt,iCr-1));
+                              iSt = iCr+1;
+                              iPosType = INLINKTEXT;
+                        }
+                        else if ( iPosType == INLINKTEXT )
+                        {
+                              cLinkText = cText.Sub(iSt,iCr-1);
+                              iSt = iCr+1;
+                              iPosType = INLINKCOMMAND;
+                        }
+                        else
+                        {
+                             ((CxMultiEdit*)mWidgetPtr)->SetHyperText(cLinkText,cText.Sub(iSt,iCr-1));
+                              iPosType = INPLAINTEXT;
+                              iSt = iCr+1;
+                        }
+                  }
+            }
+
+                  if ( cText.Length() == 0 )
+	            ((CxMultiEdit*)mWidgetPtr)->SetText(cText);
+			else
+	            ((CxMultiEdit*)mWidgetPtr)->SetText(cText.Sub(iSt,iCr-1));
+      }
 }
 
 void CrMultiEdit::SetGeometry( const CcRect * rect )

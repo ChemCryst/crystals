@@ -12,11 +12,13 @@
 #ifndef		__CrMultiEdit_H__
 #define		__CrMultiEdit_H__
 #include	"crguielement.h"
-//insert your own code here.
 #include	"cctokenlist.h"
 #include	"ccrect.h"
 class CxMultiEdit;
-//End of user code.         
+
+#define INPLAINTEXT 1
+#define INLINKTEXT 2
+#define INLINKCOMMAND 3
 
  class	CrMultiEdit : public CrGUIElement
 {
