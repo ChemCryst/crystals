@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2004/05/12 09:56:14  rich
+C Store the Wilson scale and B factors in list 30.
+C
 C Revision 1.58  2004/04/21 13:11:45  rich
 C Added "#PUNCH 6 G" command, it outputs a SHELX format reflection
 C file, but using slightly perturbed Fcalc^2 and made-up sigma(F-calc^2).
@@ -2535,8 +2538,9 @@ C
      2 'Theta max', 11*'*'
      * /
       DATA (CKEY(I,5),I=1,MAXKEY)/
-     1 4*'*', 'empirical min', 'Empirical max', 'refdelf min',
-     2 'refdelf max', 11*'*'
+     1 'Analmin', 'Analmax', 'Thetamin', 'Thetamax',
+     2 'empirical min', 'Empirical max', 'refdelf min',
+     3 'refdelf max', 11*'*'
      * /
       DATA (CKEY(I,6),I=1,MAXKEY)/
      1 'Dobs', 'Dcalc', 'Fooo', 'Mu', 'M', 'Z', 'Flack',
