@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2003/01/10 15:55:35  djw
+C Fix my mistake
+C
 C Revision 1.34  2002/12/17 15:25:07  rich
 C
 C DIST / OUT PUNCH=NONBONDED VALUE=1.5 POWERFACTOR=1.0 / END
@@ -1226,8 +1229,8 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
                 WRITE ( CMON ,2804)
      1          CATOM1(1:LATOM1),STORE(M5P+13),STORE(J+10),CATOM2(1:25)
                 CALL XPRVDU(NCVDU, 1,0)
-2804            FORMAT ('^^WI ''',A,' height:',F8.2,', '
-     1                  F6.3,'A from ',A,'''')
+2804    FORMAT ('^^WI ''',A,' height:',F8.2,', ',
+     1                     F6.3,'A from ',A,'''')
               ENDIF
 
               IF (IDSPDA .EQ. 1  .OR. IDSPDA .EQ. 3 ) THEN
