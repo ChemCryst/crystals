@@ -25,11 +25,11 @@ static float Absent3SSD = 0.00859224f;
 static float Present3SM = 0.63777005f;
 static float Present3SSD = 0.21934966f;
 
-Stats::Stats(Headings* pHeadings, Conditions* pConditions):iHeadings(pHeadings), iConditions(pConditions)
+Stats::Stats(Regions* pRegions, Conditions* pConditions):iRegions(pRegions), iConditions(pConditions)
 {
-    iStats = new ElemStats[pHeadings->length()*pConditions->length()];
-    bzero((void*)iStats, sizeof(ElemStats)*pHeadings->length()*pConditions->length());
-    setShouldDos(pHeadings, pConditions);
+    iStats = new ElemStats[pRegions->size()*pConditions->size()];
+    bzero((void*)iStats, sizeof(ElemStats)*pRegions->size()*pConditions->size());
+    setShouldDos(pRegions, pConditions);
     iTotalNum = 0; 
     iTotalIntensity = 0;
 }
@@ -44,35 +44,35 @@ float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float P
     return 1-cumlNormal(pX, AbsentM, AbsentSD)-cumlNormal(pX, PresentM, PresentSD);
 }
 
-void Stats::setShouldDos(Headings* pHeadings, Conditions* pConditions)
+void Stats::setShouldDos(Regions* pRegions, Conditions* pConditions)
 {
-    int tHeadingCount = pHeadings->length();
-    int tCondCount = pConditions->length();
+    int tRegionCount = pRegions->size();
+    int tCondCount = pConditions->size();
     
     for (int i = 0; i < tCondCount; i++)	//Conditions
     {
         Matrix<short>* tConditionMat = pConditions->getMatrix(i);
-        for (int j = 0; j < tHeadingCount; j++) //Headings.
+        for (int j = 0; j < tRegionCount; j++) //Regions.
         {
-            Matrix<short>* tHeadingMat = pHeadings->getMatrix(j);
+            Matrix<short>* tRegionMat = pRegions->getMatrix(j);
             Matrix<short> tResult(3, 1);
             Matrix<short> tZeros(3, 1, (short)0);
-            tConditionMat->mul(*tHeadingMat, tResult);
+            tConditionMat->mul(*tRegionMat, tResult);
             iStats[(j*tCondCount)+i].iShouldDo = !tZeros.operator==(tResult);
         }
     }
 }
 
-void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>* pHKLM)	//Goes through the rows down the specified Column adding the reflection to the stats.
+void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>& pHKL)	//Goes through the rows down the specified Column adding the reflection to the stats.
 {
     static Matrix<short> tMatrix(1, 1);
     
-    int tCCount = iConditions->length();    //Cache lengths of the table.
+    int tCCount = iConditions->size();    //Cache lengths of the table.
     for (int i= 0; i < tCCount; i++)
     {
         Matrix<short>* tMultiMat = NULL;
         tMultiMat = iConditions->getMatrix(i);
-        tMultiMat->mul(*pHKLM, tMatrix);
+        tMultiMat->mul(pHKL, tMatrix);
         ElemStats* tStats = &(iStats[(pColumn*tCCount)+i]);
         if (((int)tMatrix.getValue(0)) % ((int)iConditions->getMult(i)) != 0)
         {
@@ -97,26 +97,35 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short
 
 ElemStats* Stats::getElem(const int pHeadIndex, const int pCondIndex) const
 {
-    int tCCount = iConditions->length();    //Cache lengths of the table.
+    int tCCount = iConditions->size();    //Cache lengths of the table.
     return &(iStats[(pHeadIndex*tCCount)+pCondIndex]);
 }
 
-void Stats::addReflection(Reflection* pReflection)
+void Stats::addReflection(Reflection* pReflection, JJLaueGroup &pLaueGroup)
 {
     static Matrix<short> tResult(1, 3);
     iTotalNum ++;
     iTotalIntensity += (float)pReflection->i;	
-    int tHCount = iHeadings->length();			//Cache lengths of the table.
+    int tHCount = iRegions->size();			//Cache lengths of the table.
     Matrix<short>* tHKLMat = pReflection->getHKL();	//Get the HKL matrix from the reflection.
-    Matrix<short>* tMultiMat = NULL;			// Matrix pointer to be used generally when needed.
+	
     for (int i = 0; i < tHCount; i++)			//Go through Columns in the table.
     {
-        tMultiMat = iHeadings->getMatrix(i);
-        tMultiMat->mul(*tHKLMat, tResult);	//Multiply the two matrices to see if this reflection satisfy the condition
-        if (tResult == (*tHKLMat))	//if this condition is satisfy then...
-        {
-            addReflectionRows(i, pReflection, tHKLMat);
-        }
+		Matrix<short> tNewHKL;
+		if ((*iRegions)[i]->contains(*tHKLMat, pLaueGroup, tNewHKL))
+		{
+			addReflectionRows(i, pReflection, tNewHKL);
+		}
+    }
+}
+
+void Stats::addReflections(HKLData &pHKLs, JJLaueGroup &pLaueGroup)
+{
+	vector<Reflection*>::iterator tIter;
+
+    for (tIter = pHKLs.begin(); tIter != pHKLs.end(); tIter++)
+    {
+        addReflection((*tIter), pLaueGroup);
     }
 }
 
@@ -168,7 +177,7 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
 
 void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums,  const int pFirstColumnWidth, const int pOtherColumns)
 {
-    int tCCount = iConditions->length();
+    int tCCount = iConditions->size();
     String tName(iConditions->getName(pRow));
     pStream << pRow << "\n";
     pStream << tName << setw(pFirstColumnWidth-tName.length()) ;
@@ -272,19 +281,19 @@ void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumn
     }
 }
 
-void Stats::outputHeadings(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums)
+void Stats::outputRegions(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums)
 {
     pStream << setw(9);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << "" << setw(7) << iHeadings->getName(pColumnsToPrint[i]) << "(" << (int)pColumnsToPrint[i] << ")";
+        pStream << "" << setw(7) << iRegions->getName(pColumnsToPrint[i]) << "(" << (int)pColumnsToPrint[i] << ")";
     }
     pStream << "\n";
 }
 
 void Stats::calProbs()
 {
-    int tTotalNum = iConditions->length() * iHeadings->length();
+    int tTotalNum = iConditions->size() * iRegions->size();
     for (int i = 0; i < tTotalNum; i ++)
     {
         ElemStats* tCurrentStat = &(iStats[i]);
@@ -312,7 +321,7 @@ void Stats::calProbs()
 
 void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an array of which columns to check to see if there data has been filtered.
 {
-    int tCCount = iConditions->length();    //Cache lengths of the table.
+    int tCCount = iConditions->size();    //Cache lengths of the table.
 
     for (int i = 0; i < pNumColumns; i++)
     {
@@ -348,22 +357,22 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
     pStream << "TOTAL " << iTotalNum <<"\n";
     pStream << "AVINT " << iTotalIntensity/iTotalNum << "\n";
     
-    const int tConditionNum = iConditions->length();
+    const int tConditionNum = iConditions->size();
     signed char* tConditions = new signed char[tConditionNum];
     int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
-    const int tColumnsNum = iHeadings->length();
+    const int tColumnsNum = iRegions->size();
     signed char* tColumns = new signed char[tColumnsNum];
     int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
     pStream << "NREGIONS " << tColumnCount << "\n";
     for (int i = 0; i< tColumnCount; i++)
     {
-        ArrayList<Index>* tHeadings = pTable.getHeadings(i);
+        ArrayList<Index>* tRegions = pTable.getRegions(i);
         
-        for (int j = 0; j < tHeadings->length(); j ++)
+        for (int j = 0; j < tRegions->length(); j ++)
         {
-            pStream << iHeadings->getID(tHeadings->get(j)->get()) << " ";
-            outputMatrix(pStream, iHeadings->getMatrix(tHeadings->get(j)->get()));
-            pStream << " " << iHeadings->getName(tHeadings->get(j)->get()) << "\n";
+            pStream << iRegions->getID(tRegions->get(j)->get()) << " ";
+            outputMatrix(pStream, iRegions->getMatrix(tRegions->get(j)->get()));
+            pStream << " " << iRegions->getName(tRegions->get(j)->get()) << "\n";
         }
     }
     pStream << "NTESTS " << tCount << "\n";
@@ -398,13 +407,13 @@ std::ostream& Stats::output(std::ostream& pStream, const Table& pTable)
     pStream << "Total: " << iTotalNum <<"\n";
     pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
     
-    const int tConditionNum = iConditions->length();
+    const int tConditionNum = iConditions->size();
     signed char* tConditions = new signed char[tConditionNum];
     int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
-    const int tColumnsNum = iHeadings->length();
+    const int tColumnsNum = iRegions->size();
     signed char* tColumns = new signed char[tColumnsNum];
     int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
-    outputHeadings(pStream, tColumns, tColumnCount);
+    outputRegions(pStream, tColumns, tColumnCount);
     for (int i = 0; i < tCount; i++)
     {
         outputRow(tConditions[i], pStream, tColumns, tColumnCount);
