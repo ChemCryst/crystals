@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2003/01/21 12:54:11  rich
+C Commented out swathes of unused code in order to shrink
+C the executable a bit.
+C
 C Revision 1.37  2003/01/16 11:42:13  rich
 C Use new SAFESET instruction to update various GUI elements - if they
 C don't exist, the program ignores the instruction. Means you can now
@@ -298,7 +302,11 @@ C
       IF ( LPRMPT ) THEN
         IRDLIN = 0
         IF (ITYPFL .EQ. 1)  THEN
-          CALL XPRMPT ( NCVDU , '!' )
+##GIDGIL          CALL XPRMPT ( NCVDU , '!' )
+&&GIDGIL          WRITE(CMON,'(A)')
+&&GIDGIL     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
+&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
+
 &&GIDGIL          WRITE(CMON,'(A)')
 &&GIDGIL     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
 &&GIDGIL          CALL XPRVDU(NCVDU,1,0)
@@ -306,7 +314,12 @@ C
 &&GILGID          WRITE (CMON,1515) '''Enter Commands'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
         ELSE
-          CALL XPRMPT ( NCVDU , '>' )
+##GIDGIL          CALL XPRMPT ( NCVDU , '>' )
+&&GIDGIL          WRITE(CMON,'(A)')
+&&GIDGIL     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
+&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
+
+
 &&GIDGIL          WRITE(CMON,'(A)')
 &&GIDGIL     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
 &&GIDGIL          CALL XPRVDU(NCVDU,1,0)
