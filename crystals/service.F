@@ -815,9 +815,8 @@ C#PPC      STOP 'OK'
 &PPC      CALL exitthefortran
 &PPCCE***
 &PPC      STOP
-#PPC      write(*,*) ' Ending in error'
+##PPCGID      write(*,*) ' Ending in error'
 &VAX      WRITE ( NCVDU , 8305 ) J/(icode-2)
-C#PPC      STOP 'ERROR'
 #PPC      CALL GUEXIT(1)
 8300  CONTINUE
 C
@@ -830,11 +829,10 @@ C
 &PPC      CALL exitthefortran
 &PPCCE***
 &PPC      STOP
-#PPC      write(*,*) ' Ending in serious error'
+##GIDPPC      write(*,*) ' Ending in serious error'
 &VAX      WRITE ( NCVDU , 8305 ) J/(icode-3)
 #PPC8305  FORMAT ( 1X , I10 )
 #PPCC
-C#PPC      STOP 'SERIOUS ERROR'
 #PPC        CALL GUEXIT(2)
       END
 C
