@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2003/06/27 10:11:33  rich
+C Added "#PUNCH 6 F" - outputs a plain HKLF4 format listing to the
+C punch file with no headers or anything.
+C
 C Revision 1.33  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -593,7 +597,7 @@ C>DJW280896
      2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE /FOT/ ELEMENTS'
      4 ,' SQRTW CORRECT' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
-     4 'F3.0, G12.5, / F10.5)'
+     4 'F10.0, / G12.5, F10.5)'
      5 / 'END')
 c
 1001  FORMAT('READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE' ,
@@ -621,7 +625,7 @@ C--PUNCH THE REFLECTION
       WRITE(NCPU,1200)(ISTORE(I),I=M6,J),STORE(M6+3),STORE(M6+12),
      2 STORE(M6+5),STORE(M6+6),STORE(M6+10),ISTORE(M6+11),
      3 STORE(M6+4), STORE(M6+27)
-1200  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,F10.2,I3,G12.5/F10.5)
+1200  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,F10.2,I10,/G12.5,F10.5)
       else
       WRITE(NCPU,1201)(ISTORE(I),I=M6,J),STORE(M6+3),STORE(M6+12),
      2 STORE(M6+5),STORE(M6+6),STORE(M6+4),STORE(M6+27)
@@ -632,6 +636,9 @@ C--TERMINATE THE LIST
 1250  CONTINUE
       I = -512
       WRITE(NCPU,1200)I
+      if (jnft .ge. 1) then
+        WRITE(NCPU,'(/)')   ! Otherwise read picks up following # as error.
+      end if
       CALL XPCHUS
       RETURN
 C
