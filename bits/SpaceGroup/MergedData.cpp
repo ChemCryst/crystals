@@ -9,6 +9,7 @@
 
 #include "MergedData.h"
 #include "MathFunctions.h"
+#include <math.h>
 #include <iostream>
 #include <iterator>
 
@@ -19,10 +20,10 @@ DataMerger::DataMerger(const HKLData& pData, const float pUnitCellThreshHold, co
 {
 	JJLaueGroups* tLaueGroups = new JJLaueGroups();
 	
-	for (SystemID tCurCrySysID = pLaueGroupRange.location; tCurCrySysID < pLaueGroupRange.length+pLaueGroupRange.location; ((int)tCurCrySysID)++)
+	for (size_t tCurCrySysID = pLaueGroupRange.location; tCurCrySysID < (size_t)pLaueGroupRange.length+pLaueGroupRange.location; tCurCrySysID++)
 	{
 		JJLaueGroup *tCurLaueGroup;
-		for (size_t j = 0; (tCurLaueGroup = tLaueGroups->laueGroupAfterFirst(tCurCrySysID, j)) != NULL; j ++)
+		for (size_t j = 0; (tCurLaueGroup = tLaueGroups->laueGroupAfterFirst((SystemID)tCurCrySysID, j)) != NULL; j ++)
 		{
 			if (tCurLaueGroup->ratingForUnitCell(pUnitCell) < pUnitCellThreshHold) //If the unit cell fits well enough then do the merge
 			{
@@ -78,7 +79,7 @@ SystemID DataMerger::mostLikelyCrysSystem()
 	while (++tIterator != end())
 	{
 		tCurrent = *tIterator;
-		float tTempDifference = abs(tLast->rFactor() - tCurrent->rFactor());
+		float tTempDifference = fabsf(tLast->rFactor() - tCurrent->rFactor());
 		if (tTempDifference > tDifference) //If we have found a larger difference than what we had before...
 		{
 			tDifference = tTempDifference;
@@ -120,7 +121,7 @@ std::ostream& operator<<(std::ostream& pStream, DataMerger& pMergerResults)
 
 JJMergedDataResult::JJMergedDataResult(const HKLData& pData, const JJLaueGroup& pForLaueGroup, const UnitCell& pUnitCell)
 {
-	const unsigned int tStrLen = strlen(pForLaueGroup.laueGroup())+1;
+	const size_t tStrLen = strlen(pForLaueGroup.laueGroup())+1;
 	
 	iLaueGroupSymmetry = new char[tStrLen];
 	strcpy(iLaueGroupSymmetry, pForLaueGroup.laueGroup());
@@ -173,7 +174,7 @@ JJLaueGroup *MergedReflections::laueGroup()
 
 JJMergedData::JJMergedData(const HKLData& pHKLs, const JJLaueGroup& pForLaueGroup, Matrix<short>* pTransformation):iRFactor(-1)
 {
-	int tSize = pHKLs.size();
+	size_t tSize = pHKLs.size();
 	iUnsortedReflections = new Reflection[tSize];
 	iSortedReflections = new multiset<Reflection*, lsreflection>();
 	
@@ -250,7 +251,7 @@ float JJMergedData::rFactor()
 	register float tMeanDiffSum = 0;
 	register float tSum = 0;
 	
-	int tNumMerged = 0, tNumResRef=0;
+	size_t tNumMerged = 0, tNumResRef=0;
 	//cout << gLaueGroup << "\n";
 	tCurHKL = (*tIter)->tHKL; //Save the pointer to the current hkl value
 	do //Run through all the reflections
