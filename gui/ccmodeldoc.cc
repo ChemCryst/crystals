@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2001/03/08 15:12:17  richard
+// Added functions for excluding atoms and bonds, and excluding fragments based on
+// known bonding.
+//
 // Revision 1.10  2001/01/25 17:04:23  richard
 // Commented out unused lists of model objects. Triangles and Cells, actually.
 //
@@ -65,6 +69,7 @@
 //#include  "ccrect.h"
 #include    "cccoord.h"
 #include    "cccontroller.h"    // for sending commands
+#include    "cxmodel.h"
 
 CcModelDoc::CcModelDoc( )
 {
@@ -258,29 +263,6 @@ void CcModelDoc::Select(Boolean selected)
     (CcController::theController)->status.SetNumSelectedAtoms( nSelected );
 }
 
-void CcModelDoc::PrepareToGetAtoms()
-{
-    mAtomList->Reset();
-}
-
-void CcModelDoc::PrepareToGetBonds()
-{
-    mBondList->Reset();
-}
-
-CcModelAtom* CcModelDoc::GetModelAtom()
-{
-    CcModelAtom* item = nil;
-    item = (CcModelAtom*)mAtomList->GetItemAndMove();
-    return item;
-}
-
-CcModelBond* CcModelDoc::GetModelBond()
-{
-    CcModelBond* item = nil;
-    item = (CcModelBond*)mBondList->GetItemAndMove();
-    return item;
-}
 
 void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 {
@@ -414,20 +396,194 @@ void CcModelDoc::InvertSelection()
 
 
 
-Boolean CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
+Boolean CcModelDoc::RenderModel( CcModelStyle * style )
 {
    if ( mAtomList->ListSize() || mBondList->ListSize() )
    {
-      mAtomList->Reset();
-      mBondList->Reset();
       CcModelAtom* aitem;
       CcModelBond* bitem;
+      GLuint glIDCount = 0;
 
-      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
-            aitem->Render(view,detailed);
 
-      while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
-            bitem->Render(view,detailed);
+      if ( style->high_res )
+      {
+//High res normal atoms:
+        mAtomList->Reset();
+        glNewList( ATOMLIST, GL_COMPILE);
+        {
+          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+        }
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+//not excluded, not selected, not disabled:
+          if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            aitem->Render(style);
+            aitem->glID = glIDCount;
+          }
+        }
+        mAtomList->Reset();
+        {
+          GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
+          GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
+          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+        }
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+//not excluded, selected:
+          if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
+          {
+            glLoadName ( ++ glIDCount );
+            aitem->Render(style);
+            aitem->glID = glIDCount;
+          }
+        }
+        mAtomList->Reset();
+        {
+          GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
+          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+          glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+        }
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+//not excluded, not selected, disabled
+          if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            aitem->Render(style);
+            aitem->glID = glIDCount;
+          }
+        }
+        glEndList();
+//High res normal bonds:
+        glNewList( BONDLIST, GL_COMPILE);
+        {
+          GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
+          GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+          GLfloat Shinine[] = {89.6f};
+          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+          glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+        }
+        mBondList->Reset();
+        while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
+        {
+          if ( !(bitem->m_excluded) )
+          {
+            glLoadName ( ++ glIDCount );
+            bitem->Render(style);
+            bitem->glID = glIDCount;
+          }
+        }
+        glEndList();
+
+//High res excluded atoms and bonds:
+        glNewList( XOBJECTLIST, GL_COMPILE);
+        mAtomList->Reset();
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+          if ( aitem->m_excluded )
+          {
+            glPolygonMode(GL_FRONT, GL_POINT);
+            glPolygonMode(GL_BACK, GL_POINT);
+            aitem->Render(style);
+            aitem->glID = 0;
+          }
+        }
+        mBondList->Reset();
+        while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
+        {
+          if ( bitem->m_excluded )
+          {
+            glPolygonMode(GL_FRONT, GL_POINT);
+            glPolygonMode(GL_BACK, GL_POINT);
+            bitem->Render(style);
+            bitem->glID = 0;
+          }
+        }
+        glEndList();
+      }
+      else
+      {
+//Low res (non-excluded) atoms
+        glNewList( QATOMLIST, GL_COMPILE);
+        mAtomList->Reset();
+        {
+          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+        }
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+//not excluded, not selected, not disabled:
+          if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            aitem->Render(style);
+            aitem->glID = glIDCount;
+          }
+        }
+        mAtomList->Reset();
+        {
+          GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
+          GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
+          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+        }
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+//not excluded, selected:
+          if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
+          {
+            glLoadName ( ++ glIDCount );
+            aitem->Render(style);
+            aitem->glID = glIDCount;
+          }
+        }
+        mAtomList->Reset();
+        {
+          GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
+          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+          glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+        }
+        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+        {
+//not excluded, not selected, disabled
+          if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            aitem->Render(style);
+            aitem->glID = glIDCount;
+          }
+        }
+        glEndList();
+
+//Low res (non-excluded) bonds
+        glNewList( QBONDLIST, GL_COMPILE);
+        {
+          GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
+          GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+          GLfloat Shinine[] = {89.6f};
+          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+          glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+        }
+        mBondList->Reset();
+        while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
+        {
+          if ( !(bitem->m_excluded) )
+          {
+            glLoadName ( ++ glIDCount );
+            bitem->Render(style);
+            bitem->glID = glIDCount;
+          }
+        }
+        glEndList();
+      }
 
       return true;
    }
@@ -512,4 +668,85 @@ void CcModelDoc::SelectFrag(CcString atomname, bool select)
    }
    DrawViews();
 }
+
+CcString CcModelDoc::SelectedAsString( CcString delimiter )
+{
+  CcString result;
+  CcModelAtom * anAtom;
+
+  mAtomList->Reset();
+  while ( anAtom = (CcModelAtom*)mAtomList->GetItemAndMove() ) 
+  {
+     if( anAtom->IsSelected() ) result += anAtom->Label() + delimiter;
+  }
+  return result;
+
+}
+
+
+
+void CcModelDoc::SendAtoms( int style, Boolean sendonly )
+{
+   if ( mAtomList->ListSize() )
+   {
+      mAtomList->Reset();
+      CcModelAtom* aitem;
+      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+      {
+        if ( aitem->IsSelected() ) aitem->SendAtom (style, sendonly);
+      }
+   }
+}
+
+void CcModelDoc::ZoomAtoms( Boolean doZoom )
+{
+  if ( mAtomList->ListSize() )
+  {
+     mAtomList->Reset();
+     CcModelAtom* aitem;
+     while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+     {
+        if ( aitem->IsSelected() )
+        {
+          aitem->m_excluded = false;
+        }
+        else
+        {
+          aitem->m_excluded = doZoom;
+        }
+     }
+  }
+  if ( mBondList->ListSize() )
+  {
+     mBondList->Reset();
+     CcModelBond* bitem; 
+     while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
+     {
+       bitem->SelfExclude();
+     }
+  }
+}
+
+CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
+{
+  CcModelObject* aitem;
+  if ( mAtomList->ListSize() )
+  {
+     mAtomList->Reset();
+     while ( (aitem = (CcModelObject*)mAtomList->GetItemAndMove()) )
+     {
+        if ( aitem->glID == name )  return aitem;
+     }
+  }
+  if ( mBondList->ListSize() )
+  {
+     mBondList->Reset();
+     while ( (aitem = (CcModelObject*)mBondList->GetItemAndMove()) )
+     {
+        if ( aitem->glID == name )  return aitem;
+     }
+  }
+  return nil;
+}
+
 

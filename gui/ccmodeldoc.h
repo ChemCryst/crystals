@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/03/08 15:12:17  richard
+//   Added functions for excluding atoms and bonds, and excluding fragments based on
+//   known bonding.
+//
 
 //BIG NOTICE: ModelDoc is not a CrGUIElement, it's more like a list
 //            of drawing commands.
@@ -35,13 +39,14 @@ class CcTokenList;
 class CrModel;
 class CcList;
 class CcModelAtom;
-class CcModelBond;
+class CcModelObject;
+class CcModelStyle;
 
 class CcModelDoc
 {
     public:
 
-        Boolean RenderModel( CrModel* view, Boolean detailed );
+        Boolean RenderModel( CcModelStyle *style );
         void InvertSelection();
         CcString Compress(CcString atomname);
         void SelectAllAtoms(Boolean select);
@@ -49,11 +54,14 @@ class CcModelDoc
         void DisableAtomByLabel(CcString atomname, Boolean select);
         CcModelAtom* FindAtomByLabel(CcString atomname);
 
-        void PrepareToGetAtoms();
-        void PrepareToGetBonds();
         void ExcludeBonds();
-        CcModelAtom* GetModelAtom();
-        CcModelBond* GetModelBond();
+
+        CcModelObject * FindObjectByGLName(GLuint name);
+
+        CcString SelectedAsString( CcString delimiter = " " );
+        void SendAtoms( int style, Boolean sendonly=false );
+        void ZoomAtoms( Boolean doZoom );
+
 
         void SelectFrag(CcString atomname, bool select);
         void Select(Boolean selected);
