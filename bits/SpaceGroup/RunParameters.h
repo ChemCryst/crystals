@@ -9,9 +9,9 @@
 #if !defined(__RUN_PARAMETERS_H__)
 #define __RUN_PARAMETERS_H__
 #if !defined(_WIN32)
-#define kDefaultTables "/Tables.txt"
+#define kDefaultTables "Tables.txt"
 #else
-#define kDefaultTables "\\Tables.txt"
+#define kDefaultTables "Tables.txt"
 #define PATH_MAX _MAX_PATH
 #include "PCPort.h"
 #endif

@@ -13,6 +13,11 @@
 #include "PCPort.h"
 #endif
 
+/*!
+ * @class Timer 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Timer
 {
 	protected:
@@ -21,7 +26,19 @@ class Timer
 		Timer();
 		struct timeval start();
 		struct timeval stop();
+
+		/*!
+		 * @function seconds 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		float seconds() const;
+
+		/*!
+		 * @function timing 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		bool timing() const;
 };
 

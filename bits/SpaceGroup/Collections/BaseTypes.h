@@ -14,10 +14,27 @@
 
 #include "ComClasses.h"
 
+/*!
+ * @class Column 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Column:public MyObject
 {
     public:
+
+        /*!
+         * @function setHeading 
+         * @description Not yet documented.
+         * @abstract
+         */
         void setHeading(char* pHeading);
+
+        /*!
+         * @function length 
+         * @description Not yet documented.
+         * @abstract
+         */
         int length();
 };
 

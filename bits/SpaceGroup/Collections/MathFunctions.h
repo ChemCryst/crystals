@@ -21,10 +21,28 @@
 #define kSmallValue 1e-4f
 #define kVSmallValue 1e-8f
 
+
+/*!
+ * @function cumlNormal 
+ * @description Not yet documented.
+ * @abstract
+ */
 float cumlNormal(float pX, float pMean, float pSD);
+
+/*!
+ * @function variance 
+ * @description Not yet documented.
+ * @abstract
+ */
 float variance(const float pValues[], const size_t pNumValues);
 
 template <class T, class U>
+
+/*!
+ * @function maximum 
+ * @description Not yet documented.
+ * @abstract
+ */
 U maximum(const T& pValues, const U& pInitialValue, const size_t pNumValues)
 {
 	U tMax = pInitialValue;
@@ -36,6 +54,12 @@ U maximum(const T& pValues, const U& pInitialValue, const size_t pNumValues)
 }
 
 template <class T, class U>
+
+/*!
+ * @function sum 
+ * @description Not yet documented.
+ * @abstract
+ */
 U sum(const T& pValues, const U& pInitialValue, const size_t pNumValues)
 {
 	U tSum = pInitialValue;
@@ -47,15 +71,45 @@ U sum(const T& pValues, const U& pInitialValue, const size_t pNumValues)
 }
 
 template <class T, class U>
+
+/*!
+ * @function mean 
+ * @description Not yet documented.
+ * @abstract
+ */
 U mean(const T& pValues, const U& pInitialValue, const size_t pNumValues)
 {
+
+	/*!
+	 * @function sum 
+	 * @description Not yet documented.
+	 * @abstract
+	 */
 	return sum(pValues, pInitialValue, pNumValues)/pNumValues;
 }
 
+
+/*!
+ * @function smallValue 
+ * @description Not yet documented.
+ * @abstract
+ */
 float smallValue(float pValue); //returns 0 if the value is thought of being small and the value otherwise.
+
+/*!
+ * @function vSmallValue 
+ * @description Not yet documented.
+ * @abstract
+ */
 float vSmallValue(float pValue); //returns 0 if the value is thought of being very small and the value otherwise.
 
 template<class type>
+
+/*!
+ * @function length 
+ * @description Not yet documented.
+ * @abstract
+ */
 type length(const type pX, const type pY, const type pZ)
 {
     return (type)sqrt((double)pX*pX+pY*pY+pZ*pZ);

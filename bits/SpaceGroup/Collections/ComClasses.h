@@ -15,20 +15,43 @@
 
 struct ltstr
 {
+
+  /*!
+   * @function operator 
+   * @description Not yet documented.
+   * @abstract
+   */
   bool operator()(const char* s1, const char* s2) const
   {
+
+    /*!
+     * @function strcmp 
+     * @description Not yet documented.
+     * @abstract
+     */
     return strcmp(s1, s2) < 0;
   }
 };
 
 struct ltint
 {
+
+	/*!
+	 * @function operator 
+	 * @description Not yet documented.
+	 * @abstract
+	 */
 	bool operator()(int i1, int i2) const
 	{
 		return i1 < i2;
 	}
 };
 
+/*!
+ * @class MyObject 
+ * @description Not yet documented.
+ * @abstract
+*/
 class MyObject
 {
 private:

@@ -9,6 +9,11 @@
 #if !defined(__WRAPPERS_H__)
 #define __WRAPPERS_H__
 template <class numberType>
+/*!
+ * @class Number 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Number
 {
     protected:
@@ -91,15 +96,31 @@ class Number
         }
 };
         
+/*!
+ * @class Float 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Float:public Number<float>
 {
     public:
         Float(float pValue):Number<float>(pValue)
         {}
         
+
+        /*!
+         * @function float 
+         * @description Not yet documented.
+         * @abstract
+         */
         operator float() const{return this->value();}
 };
 
+/*!
+ * @class Integer 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Integer:public Number<int>
 {
     public:

@@ -13,6 +13,11 @@
 #include "ComClasses.h"
 #include <map>
 
+/*!
+ * @class PointGroups 
+ * @description Not yet documented.
+ * @abstract
+*/
 class PointGroups:public map<const char*, CrystSymmetry, ltstr>
 {
 	public:

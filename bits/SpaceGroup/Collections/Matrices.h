@@ -59,6 +59,11 @@
 #define kInnerDimensionError "Inner matrix dimensions must agree."
 #define kSquareMatrix "Matrix must be square."
 
+/*!
+ * @class MatrixException 
+ * @description Not yet documented.
+ * @abstract
+*/
 class MatrixException:public MyException
 {
     public:
@@ -66,6 +71,11 @@ class MatrixException:public MyException
 };
 
 template <class type>
+/*!
+ * @class Matrix 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Matrix:public MyObject
 {
     protected:
@@ -132,11 +142,23 @@ class Matrix:public MyObject
             delete[] iMatrix;
         }
         
+
+        /*!
+         * @function sizeX 
+         * @description Not yet documented.
+         * @abstract
+         */
         size_t sizeX() const
         {
             return iXSize;
         }
         
+
+        /*!
+         * @function sizeY 
+         * @description Not yet documented.
+         * @abstract
+         */
         size_t sizeY() const
         {
             return iYSize;
@@ -223,6 +245,12 @@ class Matrix:public MyObject
             memcpy(iMatrix, pValues, pLength*sizeof(type));
         }
         
+
+        /*!
+         * @function output 
+         * @description Not yet documented.
+         * @abstract
+         */
         std::ostream& output(std::ostream& pStream)
         {
             for (size_t i = 0; i < iYSize; i++)
@@ -331,6 +359,12 @@ class Matrix:public MyObject
             }
         }
         
+
+        /*!
+         * @function resize 
+         * @description Not yet documented.
+         * @abstract
+         */
         void resize(const size_t pXSize, const size_t pYSize)
         {
             size_t tSize = pXSize*pYSize;
@@ -344,6 +378,12 @@ class Matrix:public MyObject
             iSize = iXSize * iYSize;
         }
         
+
+        /*!
+         * @function fill 
+         * @description Not yet documented.
+         * @abstract
+         */
         void fill(const type& pValue)
         {
             for (size_t i = 0; i < iSize; i++)
@@ -361,6 +401,12 @@ class Matrix:public MyObject
             return false;
         }
         
+
+        /*!
+         * @function transpose 
+         * @description Not yet documented.
+         * @abstract
+         */
         void transpose()
         {
             if (iXSize == iYSize)   
@@ -404,6 +450,12 @@ class Matrix:public MyObject
             return tSum;
         }
         
+
+        /*!
+         * @function makeDiagonal 
+         * @description Not yet documented.
+         * @abstract
+         */
         void makeDiagonal(type pDiag, type pOuter)
         {
             fill(pOuter);
@@ -413,12 +465,24 @@ class Matrix:public MyObject
             }
         }
         
+
+        /*!
+         * @function bytecmp 
+         * @description Not yet documented.
+         * @abstract
+         */
         int bytecmp(const Matrix<type>& pValue2)
         {
             return memcmp(iMatrix, pValue2.iMatrix, sizeof(type)*iSize);
         }
 		
 		
+
+		/*!
+		 * @function determinant 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		type determinant()
 		{
 			if (iSize == 1)
@@ -436,6 +500,12 @@ class Matrix:public MyObject
 			return tDet;
 		}
 		
+
+		/*!
+		 * @function cofactor 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		Matrix<type>& cofactor(size_t x, size_t y, Matrix<type>& pResult)
 		{
 			pResult.resize(iXSize-1, iYSize-1);
@@ -457,6 +527,12 @@ class Matrix:public MyObject
 			return pResult;
 		}
 		
+
+		/*!
+		 * @function inv 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		Matrix<type>& inv()
 		{
 			if (iXSize != iYSize)
@@ -482,6 +558,11 @@ class Matrix:public MyObject
 #if defined (__APPLE__)
 //Specialisation of the matrxi class. This will only work on a Apple PowerMac. This needs Mac OS 10.1 or later
 template<>
+/*!
+ * @class Matrix 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Matrix<float>:public MyObject
 {
     protected:
@@ -548,11 +629,23 @@ class Matrix<float>:public MyObject
             free(iMatrix);
         }
         
+
+        /*!
+         * @function sizeX 
+         * @description Not yet documented.
+         * @abstract
+         */
         short sizeX() const
         {
             return iXSize;
         }
         
+
+        /*!
+         * @function sizeY 
+         * @description Not yet documented.
+         * @abstract
+         */
         short sizeY() const
         {
             return iYSize;
@@ -613,6 +706,12 @@ class Matrix<float>:public MyObject
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
         
+
+        /*!
+         * @function output 
+         * @description Not yet documented.
+         * @abstract
+         */
         std::ostream& output(std::ostream& pStream)
         {
             for (size_t i = 0; i < iYSize; i++)
@@ -698,6 +797,12 @@ class Matrix<float>:public MyObject
             }
         }
         
+
+        /*!
+         * @function resize 
+         * @description Not yet documented.
+         * @abstract
+         */
         void resize(const short pXSize, const short pYSize)
         {
             size_t tSize = pXSize*pYSize;
@@ -711,6 +816,12 @@ class Matrix<float>:public MyObject
             iYSize = pYSize;
         }
         
+
+        /*!
+         * @function fill 
+         * @description Not yet documented.
+         * @abstract
+         */
         void fill(const float pValue)
         {
             for (size_t i = 0; i < iSize; i++)
@@ -728,6 +839,12 @@ class Matrix<float>:public MyObject
             return false;
         }
         
+
+        /*!
+         * @function transpose 
+         * @description Not yet documented.
+         * @abstract
+         */
         void transpose()
         {
             if (iXSize == iYSize)   
@@ -782,6 +899,12 @@ class Matrix<float>:public MyObject
             return tSum;
         }
         
+
+        /*!
+         * @function makeDiagonal 
+         * @description Not yet documented.
+         * @abstract
+         */
         void makeDiagonal(float pDiag = 1.0f, float pOuter = 0.0f)
         {
             fill(pOuter);
@@ -791,11 +914,23 @@ class Matrix<float>:public MyObject
             }
         }
         
+
+        /*!
+         * @function bytecmp 
+         * @description Not yet documented.
+         * @abstract
+         */
         int bytecmp(const Matrix<float>& pValue2)
         {
             return memcmp(iMatrix, pValue2.iMatrix, sizeof(float)*iSize);
         }
 		
+
+		/*!
+		 * @function determinant 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		float determinant()
 		{
 			if (iSize == 1)
@@ -813,6 +948,12 @@ class Matrix<float>:public MyObject
 			return tDet;
 		}
 		
+
+		/*!
+		 * @function cofactor 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		Matrix<float>& cofactor(size_t x, size_t y, Matrix<float>& pResult) const
 		{
 			pResult.resize(iXSize-1, iYSize-1);
@@ -834,6 +975,12 @@ class Matrix<float>:public MyObject
 			return pResult;
 		}
 		
+
+		/*!
+		 * @function inv 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		Matrix<float>& inv()
 		{
 			if (iXSize != iYSize)
@@ -875,35 +1022,50 @@ Matrix<type> operator*(const Matrix<type>& pMatrix1, const Matrix<type>& pMatrix
     return Matrix<type>(pMatrix1) *= pMatrix2;;
 }
 
-/*template <class fromType, class toType>
-Matric<toType> convertTo(Matrix<fromType>& pMatrix)
-{
-
-}*/
-
 template <class type>
 std::ostream& operator<<(std::ostream& pStream, Matrix<type>& pMatrix)
 {
     return pMatrix.output(pStream);
 }
 
-/* This class is used for reading in matrices with a floating point type.
- * The matrix should follow the same form as matrices defined in MatLab
- * e.g. [1.0 2.0 3.0; 4.0 5.0 6.0; 8.0 9.0 10.0] (; define the end of rows)
- * this will later be expanded so that it can handle many diffrent types of
- * matrix.
- */
+/*!
+ * @class MatrixReader 
+ * @description Not yet documented.
+ * @abstract This class is used for reading in matrices with a floating point type.
+  The matrix should follow the same form as matrices defined in MatLab
+  e.g. [1.0 2.0 3.0; 4.0 5.0 6.0; 8.0 9.0 10.0] (; define the end of rows)
+  this will later be expanded so that it can handle many diffrent types of
+  matrix.
+*/
 class MatrixReader:public Matrix<short>
 {
     private:
         static int countMaxNumberOfColumns(char* pString);
         static int countNumberOfRows(char* pString);
         static int countNumberOfColumns(char** pString);
+
+        /*!
+         * @function fillMatrix 
+         * @description Not yet documented.
+         * @abstract
+         */
         void fillMatrix(char* pLine, int pX, int pY);
+
+        /*!
+         * @function fillMatrix 
+         * @description Not yet documented.
+         * @abstract
+         */
         void fillMatrix(char* pLine);
     public:
 		MatrixReader();
         MatrixReader(char *pMatrixLine);
+
+		/*!
+		 * @function initWith 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		MatrixReader& initWith(char *pMatrixLine);
         ~MatrixReader();
 };
