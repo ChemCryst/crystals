@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2002/12/16 18:00:27  rich
+C New Perturb command. Allows per parameter shift multipliers, and a general
+C multiplier to apply to all shifts. The shifts respect weights setup in
+C List 22 so that atoms do not move from special positions, and competing
+C occupancies continue to add up to the same number. By default it creates
+C new list 5s, but can be forced not to by directing: "WRITE OVER=YES".
+C Shifts for XYZ are given in Angstrom, for OCC in natural units, for overall and
+C temperature factors as a fraction of the existing value.
+C
 C Revision 1.3  2001/10/08 12:25:57  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -36,7 +45,7 @@ C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 
 C--BRANCH ON THE TYPE OF OPERATION
-      GO TO ( 200, 300, 400, 800, 810, 820, 500, 600, 700, 9910 ),NUM
+      GO TO ( 200,300,400,800, 810, 820, 500, 600, 700, 830, 9910 ),NUM
       GO TO 9910
 
 C--ROUTINES TO MODIFY LIST 5
@@ -82,6 +91,11 @@ C--'#TITLE' INSTRUCTION
 C -- 'REGULARISE' INSTRUCTION
 820   CONTINUE
       CALL XREGUL
+      RETURN
+
+C -- 'MATCH' INSTRUCTION
+830   CONTINUE
+      CALL XMATCH
       RETURN
 C
 9910  CONTINUE

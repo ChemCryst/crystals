@@ -1,4 +1,28 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.13  2003/01/10 15:39:33  rich
+c Some enhancements to \REGULARISE:
+c 1) When using the RENAME facility, the program can no longer match the same
+c atom twice. Therefore you get unique serials even if the match is horrifically
+c bad.
+c
+c 2) Added "CAMERON" directive: this does the mapping as RENAME, but doesn't
+c rename the atoms, just outputs CAMERON input files showing the two molecules
+c superimposed. Use as follows:
+c   \REGULARISE
+c   target C(10) until C(16)
+c   ideal  C(60) until C(76)
+c   cameron
+c   map    C(51) until C(99)
+c   onto   C(1) until C(49)
+c   end
+c This produces a cameron.ini, regular.l5i and regular.oby which may be viewed
+c by choosing Graphics->Special->Cameron (use existing...) from the menu.
+c Then type "obey regular.oby" in Cameron to colour the molecules nicely.
+c The TARGET and IDEAL are used to obtain the mapping. The atoms in MAP and ONTO
+c are just the ones you want to be included.
+c Don't read the atoms back into CRYSTALS when closing CAMERON - they're in
+c orthogonal coordinates.
+c
 c Revision 1.12  2002/11/06 12:02:49  rich
 c Regularise replace was putting weird values into PART, REFINE, NEW and HYBRID as
 c its new atoms array wasn't big enough.
@@ -347,7 +371,7 @@ C----- 'RENAME'
 CDJWAPR01 - COMPUTE TRANSFORMATION FOR GROUP
       IF (IERFLG.LT.0) GOTO 9250
       IF (NATMD .GT. 0) THEN
-            CALL XRGCLC(IMATRIX)
+            CALL XRGCLC(IMATRIX,0)
             IMATRIX = +1
       ENDIF
 C     RE-INITIALISE THINGS
@@ -368,7 +392,7 @@ C----- 'CAMERON'
 CRICJAN03 - COMPUTE TRANSFORMATION FOR GROUP
       IF (IERFLG.LT.0) GOTO 9250
       IF (NATMD .GT. 0) THEN
-            CALL XRGCLC(IMATRIX)
+            CALL XRGCLC(IMATRIX,0)
             IMATRIX = +2
       ENDIF
 C     RE-INITIALISE THINGS
@@ -387,7 +411,7 @@ C -- 'GROUP' DIRECTIVE
 C -- DO CALCULATION FOR PREVIOUS GROUP IF NECESSARY
 CDJWAPR2001
       IF (NATMD .GT. 0) THEN
-             CALL XRGCLC(IMATRIX)
+             CALL XRGCLC(IMATRIX,0)
       ENDIF
 C     RE-INITIALISE THINGS
       IMATRIX = -1
@@ -533,7 +557,7 @@ C -- END OF DIRECTIVES
 C -- THERE MAY BE A CALCULATION OUTSTANDING WHICH SHOULD BE PERFORMED
 C    IF THERE HAS BEEN NO ERROR
       IF (NATMD .GT. 0) THEN
-        IF (IERFLG.GE.0) CALL XRGCLC(IMATRIX)
+        IF (IERFLG.GE.0) CALL XRGCLC(IMATRIX,0)
       ENDIF
 C -- CHECK IF A NEW LIST 5 IS TO BE PRODUCED
       IF (NEWLIS) 9050,9100,9150
@@ -608,7 +632,7 @@ C
 C --
 C
 CODE FOR XRGCLC
-      SUBROUTINE XRGCLC (IMATRIX)
+      SUBROUTINE XRGCLC (IMATRIX,LSPARE)
 C 
 C -- THIS SUBROUTINE CONTROLS THE ACTUAL CALCULATION PERFORMED BY
 C    REGULARISE.
@@ -616,6 +640,10 @@ C
 C      IMATRIX -1 INITIAL CALL TO COMPUTE MATRICES
 C              +1 SECOND CALL IF RENUMBERING REQUIRED
 C              +2 SECOND CALL REQUIRING CAMERON OUTPUT
+C              +3 SECOND CALL REORDERS ATOMS IN JNEW TO MATCH JOLD
+C
+C      LSPARE   0 Normal operation
+C               1 'Spare' value must be same for matched atoms.
 C 
 C 
 C    DATA SHOULD HAVE BEEN STORED BY THE OTHER ROUTINES, AND THE BEST
@@ -689,7 +717,7 @@ C
       DATA CAXIS/'X','Y','Z'/
       DATA CFUNC/'Replacement','Comparison','Renaming'/
 C 
-C 
+C
 CDJWAPR2001
 C----- CHECK THE NUMBER OF NEW AND OLD ATOMS
       IF (IMATRIX.GE.1) THEN
@@ -706,7 +734,8 @@ C -- CHECK DATA FOR COMPLETENESS.
 C    THE NUMBER OF 'OLD' AND 'NEW' ATOMS SHOULD NOT BE LESS THAN THE
 C    NUMBER STATED TO BE IN THE GROUP. ANY EXCESS WILL ALREADY HAVE
 C    CAUSED AN ERROR.
-C 
+C
+
       IF (NOLD.LT.NATMD) GO TO 1950
       IF (NNEW.LT.NATMD) GO TO 2050
 C----- COPY OLD WEIGHT TO NEW
@@ -771,7 +800,7 @@ C-----
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') (CMON(II)(:),II=1,2)
 300      FORMAT (1X,'Principal moments of inertia of old and new groups'
      1    ,/1X,2(3F8.3,3X))
-C 
+
 C -- CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE
 C    AND BACK
          CALL XMLTMT (VECTO,STORE(L1O1),CFBPOL,3,3,3)
@@ -977,8 +1006,10 @@ C -- PRINT THESE COORDINATES
 Cdjwapr2001
       ELSE IF ( IMATRIX .EQ. 1 ) THEN
             CALL XRGRNM 
-      ELSE
+      ELSE IF ( IMATRIX .EQ. 2 ) THEN
             CALL XRGCAM
+      ELSE
+            CALL XRGMAT(LSPARE)
       END IF
 C -- CHECK REPLACE/COMPARE FLAG, TO DETERMINE WHETHER LIST 5
 C    SHOULD BE CHANGED.
@@ -2277,6 +2308,125 @@ C
       RETURN
       END
 
+CODE FOR XRGMAT
+      SUBROUTINE XRGMAT(LSPARE)
+C 
+C -- MATCH THE 'ONTO' TO 'MAP' ATOMS TO IMPROVE THE ACCURACY OF THE MATCH
+C Reorder LMAP atoms.
+C
+C   LSPARE - 0=nothing, 1=match SPARE values as well.
+C
+C   LNEW, start of new or map atoms:  MDNEW = 4: X Y Z W
+C   LOLD, start of old or onto atoms: MDOLD = 4: X Y Z W
+C   LRENM, start of rename list: 0 onto type
+C                                1 onto serial
+C                                2 map type
+C                                3 map serial
+C                                4 renamed type
+C                                5 renamed serial
+C 
+\ISTORE
+\STORE
+\XUNITS
+\XSSVAL
+\XRGCOM
+\XRGLST
+\XCONST
+\XLST05
+\XERVAL
+\XOPVAL
+\XIOBUF
+\XMATCH
+\XDSTNC
+C
+\QSTORE
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF(SUMDEV .GE. 0.1)THEN
+       NUMDEV =NUMDEV +1
+       WRITE(CMON,'(A)') 'WARNING - poor initial fit' 
+       CALL OUTCOL(9)
+       CALL XPRVDU(NCVDU,1,0)
+       CALL OUTCOL(1)
+
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      ENDIF
+
+      LMBUF = KSTALL ( MDATVC )
+      LNBUF = KSTALL ( MDNEW )
+
+      WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
+     1 'Improving','onto','giving', 'distance'
+      CALL XPRVDU(NCVDU,1,0)
+ 
+      IF (NOLD.LE.0) GO TO 200
+
+C * Optionally only match atoms with matching SPARE values (though
+C   I think this info is lost by now.)
+
+      DO I=0,NOLD-1                     !Loop over old atoms.
+         INDOLD=LOLD+MDOLD*I            !Address of XYZold
+         IOLD5 = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
+         DISMIN=1000000.            !Initialise
+         INDDIS=-1
+         DO J=I,NNEW-1                      !Loop over unmatched new atoms.
+           INDNEW=LNEW+MDNEW*J            !Address of XYZnew
+           INEW5 = L5 + (ISTORE(LMAP+J*MDATVC)) * MD5
+           DISTSQ=0.
+C Only consider atom if spare matches when LSPARE is one.
+           IF ( (LSPARE.EQ.0) .OR. ( (LSPARE.EQ.1) .AND.
+     1          (NINT(STORE(INEW5+13)).EQ.NINT(STORE(IOLD5+13)))))THEN
+             DO K=1,3
+               DELTA=STORE(INDNEW+K-1)-STORE(INDOLD+K-1)
+               DELTSQ=DELTA**2
+               DISTSQ=DISTSQ+DELTSQ
+             END DO
+             IF (DISTSQ.LT.DISMIN) THEN
+               DISMIN=DISTSQ
+               INDDIS=J
+             END IF
+           END IF
+         END DO
+
+         J = INDDIS
+C Swap atoms at LNEW(I) and LNEW(J)
+C Swap atoms at LMAP(I) and LMAP(J)
+
+         IF ( J .GE. 0 ) THEN
+
+          CALL XMOVE(STORE(LNEW+MDNEW*I),STORE(LNBUF),MDNEW)
+          CALL XMOVE(STORE(LNEW+MDNEW*J),STORE(LNEW+MDNEW*I),MDNEW)
+          CALL XMOVE(STORE(LNBUF),STORE(LNEW+MDNEW*J),MDNEW)
+
+          CALL XMOVE(STORE(LMAP+MDATVC*I),STORE(LMBUF),MDATVC)
+          CALL XMOVE(STORE(LMAP+MDATVC*J),STORE(LMAP+MDATVC*I),MDATVC)
+          CALL XMOVE(STORE(LMBUF),STORE(LMAP+MDATVC*J),MDATVC)
+
+          IOLD5 = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
+          INEW5 = L5 + (ISTORE(LMAP+I*MDATVC)) * MD5
+
+          WRITE(CMON,
+     1    '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
+     1    STORE(IOLD5),NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)),
+     2    STORE(INEW5),NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
+          CALL XPRVDU(NCVDU,1,0)
+
+         ELSE
+
+          WRITE(CMON,'(A)') '{E Heinous error. No match found for:'
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE(CMON,'( A4,2F6.1)')
+     1    STORE(IOLD5),STORE(IOLD5+1),STORE(IOLD5+13)
+          CALL XPRVDU(NCVDU,1,0)
+          GOTO 200
+         END IF
+      END DO
+      RETURN
+ 
+200   CONTINUE
+      CALL XOPMSG (IOPREG,IOPINT,0)
+      RETURN
+      END
+
 CODE FOR XRGCAM
       SUBROUTINE XRGCAM
 C 
@@ -2365,12 +2515,11 @@ C Write header for superimposed orthogonal atom lists:
      1STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
 1050  FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
 
-
       DO I=1,NOLD
          INDOLD=LOLD+MDOLD*(I-1)
          INDNEW=LNEW+MDNEW*(I-1)
-         JOLD=ISTORE(LRENM+MDRENM*(I-1)+4)
-         JNEW=ISTORE(LRENM+MDRENM*(I-1)+5)
+         JOLD=ISTORE(LRENM+(MDRENM*(I-1))+4)
+         JNEW=ISTORE(LRENM+(MDRENM*(I-1))+5)
          WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3),
      1      (STORE(J),J=INDOLD,INDOLD+2),
      2      (STORE(J),J=JOLD+7,JOLD+13),
@@ -2396,3 +2545,747 @@ C Don't bother with element, layer scales etc. Punch End:
       CALL XOPMSG (IOPREG,IOPINT,0)
       RETURN
       END
+
+
+
+
+
+CODE FOR XMATCH
+      SUBROUTINE XMATCH
+C-- CALCULATE A MATCH OR MATCHES BETWEEN TWO FRAGMENTS, AND RUN REGU COMPARE
+C-- TO FIND THE BEST ONE.
+\ISTORE
+      DIMENSION PROCS(1)
+      DIMENSION KATV(5)
+\STORE
+\XSTR11
+\XDSTNC
+      COMMON /XPROCM/ILISTL
+\XLEXIC
+\XPDS
+\XLISTI
+\XCONST
+\XCHARS
+\XUNITS
+\XSSVAL
+\XTAPES
+\XLST01
+\XLST02
+\XLST03
+\XLST05
+\XLST41
+\XMATCH
+\XERVAL
+\XOPVAL
+\XIOBUF
+C
+\QSTORE
+C
+      EQUIVALENCE (ILISTL,PROCS(1))
+C
+      DATA IDIMN /2/
+C
+      DATA IVERSN /100/
+
+      CALL XTIME1(2)                       ! SET THE TIMING FUNCTION
+      CALL XCSAE
+
+      MQ = KSTALL ( 100 )         ! ALLOCATE A BUFFER FOR COMMAND PROCESSING
+
+      ICHNG=0
+      CALL XLXINI (INEXTD, ICHNG) ! INITIALISE LEXICAL INPUT
+      JDIMBF = 8                  ! RESERVE COMMAND LINE BUFFER OF 8 ELEMENTS
+      IDIMBF=JDIMBF+IDIMN         ! ADD SPACE FOR ADDRESSED ARGUMENTS
+      ICOMBF=KSTALL(IDIMBF)       ! GET THE SPACE
+      JCOMBF = ICOMBF+JDIMBF      ! START OF ADDRESSED ARGS
+
+      CALL XZEROF( ISTORE(ICOMBF), IDIMBF)  !  ZERO THE BUFFER
+
+C INSTRUCTION READING LOOP
+      DO WHILE (.TRUE.)
+        WRITE (CMON,'(A)') ' Reading instruction '
+        CALL XPRVDU(NCVDU,1,0)
+        IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD) ! READ A DIRECTIVE
+        IF (IDIRNM .LT. 0) CYCLE
+        IF (IDIRNM .EQ. 0) EXIT
+
+        SELECT CASE (IDIRNM)
+
+        CASE(1)     ! 'OUTPUT'
+
+        CASE(4)     ! 'MATCH'
+          WRITE (CMON,'(A)') ' Processing #MATCH optional args '
+          CALL XPRVDU(NCVDU,1,0)
+          IULN= ISTORE(JCOMBF+1)   
+          IULN = KTYP05 (IULN)
+          CALL XLDR05 (IULN)       ! LOAD LIST 5/10
+          IF (IERFLG .LT. 0) GOTO 9900
+          IF (KHUNTR (1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+          IF (KHUNTR (2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
+          IF (KHUNTR (3,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL03
+          IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL29
+          IF (KHUNTR (40,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL40
+          IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL41
+          IF (KHUNTR (5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+          IF (IERFLG .LT. 0) GOTO 9900
+
+          CALL XBCALC(2) ! Force a bondcalc, but don't allow loading of L5
+
+          MDATVC = 5
+          NATVC = N5
+          I=(NATVC+1)*MDATVC   ! WORKSPACE + ONE BUFFER
+          LATVC = KSTALL (I) ! ALLOCATE VECTORS - INDICATE SELECTED ATOMS
+          CALL XZEROF ( ISTORE(LATVC) , I )             !Initialise
+          DO I = 0,N5-1                             !Make first into an index.
+            ISTORE(LATVC+I*MDATVC) = I
+          END DO
+
+        CASE (2)    ! 'MAP' DIRECTIVE
+          WRITE (CMON,'(A)') ' Processing MAP directive '
+          CALL XPRVDU(NCVDU,1,0)
+          KATV(1) = 0
+          KATV(2) = 1
+          KATV(3) = 0
+          KATV(4) = 0
+          KATV(5) = 0
+          CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 1 , KATV)
+
+        CASE (3)    ! 'ONTO' DIRECTIVE
+          WRITE (CMON,'(A)') ' Processing ONTO directive '
+          CALL XPRVDU(NCVDU,1,0)
+          KATV(1) = 0
+          KATV(2) = 0
+          KATV(3) = 1
+          KATV(4) = 0
+          KATV(5) = 0
+          CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 1 , KATV)
+
+        CASE DEFAULT   !ERROR
+          GOTO 9910
+
+        END SELECT
+      END DO              ! COMMAND INPUT COMPLETE. CHECK FOR ERRORS:
+
+
+      IF ( LEF .GT. 0 ) GO TO 9910
+
+      CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN) ! RELOCATE COMMONBLOCK DATA
+
+
+
+      IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
+      CALL XRELAX      ! GET CARDINALITY OF ATOMS BASED ON BONDING NETWORK
+
+c      WRITE (CMON,'(A)') ' Atom Serial  MAP ONTO SPARE'
+c      CALL XPRVDU(NCVDU,1,0)
+
+      DO I = 0, N5-1       ! Copy CARDINALITY to 4th vector.
+
+        ISTORE(3+LATVC+I*MDATVC) = NINT(STORE(13+L5+I*MD5))
+
+c        WRITE(CMON,'(1X,A4,2X,I5,4X,I1,4X,I1,1X,I15)')
+c     1  ISTORE(L5+I*MD5),NINT(STORE(1+L5+I*MD5)),
+c     2  ISTORE(1+LATVC+I*MDATVC),ISTORE(2+LATVC+I*MDATVC),
+c     3  NINT(STORE(13+L5+I*MD5))
+c        CALL XPRVDU(NCVDU,1,0)
+
+      END DO
+
+C Generate a vector for each fragment.
+
+      LMAP = LATVC
+      NMAP = 0
+
+      DO I = 0, N5-1         ! Loop over all the atoms
+        IF ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) THEN  ! MAP fragment
+C Swap with atom at LMAP+NMAP.
+          CALL XMOVEI(ISTORE(LATVC+I    *MDATVC),             ! I to END
+     1                ISTORE(LATVC+NATVC*MDATVC), MDATVC)
+          CALL XMOVEI(ISTORE(LMAP +NMAP *MDATVC),             ! NMAP to I
+     1                ISTORE(LATVC+I    *MDATVC), MDATVC)
+          CALL XMOVEI(ISTORE(LATVC+NATVC*MDATVC),             ! END to NMAP
+     1                ISTORE(LMAP +NMAP *MDATVC), MDATVC)
+          NMAP = NMAP + 1
+        END IF
+      END DO
+          
+      LONTO= LMAP+NMAP*MDATVC
+      NONTO= 0
+
+      DO I = 0, N5-1         ! Loop over all the atoms
+        IF ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) THEN  ! ONTO fragment
+C Swap with atom at LONTO+NONTO.
+          CALL XMOVEI(ISTORE(LATVC+I    *MDATVC),             ! I to END
+     1                ISTORE(LATVC+NATVC*MDATVC), MDATVC)
+          CALL XMOVEI(ISTORE(LONTO+NONTO*MDATVC),             ! NONTO to I
+     1                ISTORE(LATVC+I    *MDATVC), MDATVC)
+          CALL XMOVEI(ISTORE(LATVC+NATVC*MDATVC),             ! END to NONTO
+     1                ISTORE(LONTO+NONTO*MDATVC), MDATVC)
+          NONTO = NONTO + 1
+        END IF
+      END DO
+
+      NATVC = NMAP + NONTO   ! Can still use to address atoms of both frags.
+
+C Sort each set of atoms into order of cardinality.
+      CALL SSORTI(LMAP, NMAP, MDATVC,4)
+      CALL SSORTI(LONTO,NONTO,MDATVC,4)
+
+C Count to work out the uniqueness of each atom and store in 5th vector.
+      ICUR = ISTORE(3+LATVC)
+      INUM = 0
+      IPREV= 0
+      IUNIQ= 0
+      IDOUB= 0
+      ITRIP= 0
+      IQUAD= 0
+
+      DO I = 0, NATVC-1         ! Loop over all the atoms
+        IF ( (I.EQ.NMAP).OR.(ISTORE(3+LATVC+I*MDATVC) .NE. ICUR) )THEN  ! Cardinality changed.
+          DO J = I-1, IPREV, -1            ! Put uniqueness in 5th vector.
+            ISTORE(4+LATVC+J*MDATVC) = INUM
+          END DO
+          IF (( INUM.EQ.1 ).AND.(I.LE.NMAP)) IUNIQ = IUNIQ+1
+          IF (( INUM.EQ.2 ).AND.(I.LE.NMAP)) IDOUB = IDOUB+1
+          IF (( INUM.EQ.3 ).AND.(I.LE.NMAP)) ITRIP = ITRIP+1
+          IF (( INUM.EQ.4 ).AND.(I.LE.NMAP)) IQUAD = IQUAD+1
+          IPREV = I
+          ICUR = ISTORE(3+LATVC+I*MDATVC)
+          INUM = 0
+        END IF
+        INUM = INUM + 1
+      END DO
+
+      DO J = NATVC-1, IPREV, -1            ! Finish off. Put uniqueness in 5th vector.
+        ISTORE(4+LATVC+J*MDATVC) = INUM
+      END DO
+
+C Ensure fragments are 2D identical.
+      IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
+        WRITE (CMON,'(A)') '{E Fragments are different sizes.'
+        CALL XPRVDU(NCVDU,1,0)
+        GOTO 9900
+      END IF
+
+C Further ensure fragments are 2D identical.
+      DO I = 0, NMAP-1
+c        WRITE(CMON,'(7I6)')
+c     2  ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
+c     2  ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
+c     3  ISTORE(4+LMAP+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
+c     4  ISTORE(4+LONTO+I*MDATVC)
+c        CALL XPRVDU(NCVDU,1,0)
+
+        IF ((ISTORE(3+LMAP+I*MDATVC).NE. ISTORE(3+LONTO+I*MDATVC)).OR.
+     1      (ISTORE(4+LMAP+I*MDATVC).NE. ISTORE(4+LONTO+I*MDATVC)))THEN
+          WRITE (CMON,'(A)') '{E Fragment bonding is different.'
+          CALL XPRVDU(NCVDU,1,0)
+          GOTO 9900
+        END IF
+      END DO
+
+      WRITE (CMON,'(/A,I5)') 'Unique matches: ',IUNIQ
+      CALL XPRVDU(NCVDU,2,0)
+
+      JOBDON = 0
+
+      IF ( IUNIQ .GE. 3 ) THEN   ! Need three matches to proceed simply.
+        IF ( KNONLN() .EQ. 1 ) THEN  ! They must be nonlinear?
+          JOBDON = 1
+          CALL XREGQK
+        END IF
+      ELSE IF ( IDOUB .EQ. 1 ) THEN ! Try to break sym. Twice.
+          JOBDON = 0
+
+      ELSE IF ( ITRIP .EQ. 1 ) THEN ! Try to break sym. Three times.
+          JOBDON = 0
+
+      ELSE IF ( IQUAD .EQ. 1 ) THEN ! Try to break sym. Four times.
+          JOBDON = 0
+
+      END IF
+
+
+C--TERMINATION MESSAGES
+6050  CONTINUE
+      CALL XOPMSG ( IOPDIS, IOPEND, IVERSN )
+      CALL XTIME2(2)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPDIS , IOPABN , 0 )
+      GO TO 6050
+9910  CONTINUE
+C -- INPUT ERRORS
+      CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
+      GO TO 9900
+      END
+
+
+CODE FOR KNONLN
+      FUNCTION KNONLN()
+\STORE
+\ISTORE
+\XUNITS
+\XDSTNC 
+\XLST05
+\XMATCH
+\XIOBUF
+\QSTORE
+      KNONLN = -1
+      LMOLAX = KSTALL (28+IUNIQ*4)
+      MMOLAX = LMOLAX+28
+
+      DO I = 0, NMAP-1
+        IF ( ISTORE(4+LMAP+I*MDATVC) .EQ. 1 ) THEN
+          I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)-1) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MMOLAX),3)
+          STORE(MMOLAX+3) = 1.0
+          MMOLAX = MMOLAX + 4
+        END IF
+      END DO
+
+      I=KMOLAX(STORE(LMOLAX+28),IUNIQ,4,
+     1           STORE(LMOLAX),  STORE(LMOLAX+3),
+     1           STORE(LMOLAX+6),STORE(LMOLAX+15),STORE(LMOLAX+24))
+
+      DEV=STORE(LMOLAX+5)
+
+      IF ( DEV .LT. 0.01 ) THEN
+          WRITE (CMON,'(A)') 'Unique substructure is linear.'
+          CALL XPRVDU(NCVDU,1,0)
+          RETURN
+      END IF
+
+      KNONLN = 1
+      RETURN
+      END
+
+
+
+CODE FOR KELECN
+      FUNCTION KELECN()
+C Put the electron count for an element into SPARE.
+\ISTORE
+\STORE
+\XLST03
+\XLST05
+\QSTORE
+      KELECN=-1
+      IF (KHUNTR(3,0,I,K,J,-1).LT.0) RETURN   ! L3 LOADED ?
+      IF (MD5.LE.14)                 RETURN   ! MODERN LIST 5 ?
+      KELECN=1
+      M5=L5
+      DO I=1,N5
+         M3=L3
+         DO J=1,N3
+            IF (ISTORE(M5).EQ.ISTORE(M3)) THEN
+                  STORE(M5+13)=STORE(M3+1)+STORE(M3+3)+
+     1                         STORE(M3+5)+STORE(M3+7)+STORE(M3+9)+
+     1                         STORE(M3+11)
+               GO TO 100
+            END IF
+            M3=M3+MD3
+         END DO
+         STORE(M5+13)=0.0
+100      CONTINUE
+         M5=M5+MD5
+      END DO
+      RETURN
+      END
+
+
+
+CODE FOR XRELAX
+      SUBROUTINE XRELAX
+C GET CARDINALITY OF ATOMS BASED ON BONDING NETWORK
+C  Assign each atom the sum of all its neighbours' values of SPARE +
+C  its original value.
+C  Repeat until number of unique atoms stops increasing.
+C  A good initial value for SPARE would be the electron count.
+\STORE
+\ISTORE
+\XLST05
+\XLST41
+\QSTORE
+\XUNITS
+\XIOBUF
+
+      LTEMP=KSTALL(N5*2)                     ! Get some workspace
+      LORIG=LTEMP+N5
+
+      DO I = 0, N5-1    ! Copy original SPARE into STORE(LORIG)
+        STORE(LORIG+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
+      END DO
+
+      IDOCNT = -1
+      NOIMPR = 0
+      IMAXSP = 0
+
+      DO WHILE ( .TRUE. )
+
+
+
+        DO I = 0, N5-1    ! Copy existing SPARE into STORE(LTEMP)
+          STORE(LTEMP+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
+          IF ( IMAXSP .GT. 9999 ) STORE(LTEMP+I) = STORE(LTEMP+I) / 10.0
+          STORE(L5+13+I*MD5) = STORE(LORIG+I) * 2.0
+        END DO
+
+        DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B ! Propagate values.
+          J51 = ISTORE(M41B)
+          J52 = ISTORE(M41B+6)
+          I51 = L5 + J51 * MD5
+          I52 = L5 + J52 * MD5
+          STORE(I51+13) = REAL(NINT( STORE(I51+13) + STORE(LTEMP+J52) ))
+          STORE(I52+13) = REAL(NINT( STORE(I52+13) + STORE(LTEMP+J51) ))
+c          WRITE(CMON,'(2(I6,F16.2))')J51,STORE(I51+13),J52,STORE(I52+13)
+c          CALL XPRVDU(NCVDU,1,0)
+        END DO
+
+        IMAXSP = 0
+        DO I = 0, N5-1               ! Copy new SPARE into ISTORE(LTEMP)
+          ISTORE(LTEMP+I) = NINT( STORE(L5+13+I*MD5) )
+          IMAXSP = MAX ( IMAXSP, ISTORE(LTEMP+I) )
+        END DO
+        CALL SSORTI(LTEMP,N5,1,1) ! Sort data at LTEMP
+ 
+        LASTID = -1
+        IDCOUN = 0
+        DO I = 0, N5-1       ! Count number of unique ID's.
+          IF ( ISTORE(LTEMP+I) .NE. LASTID) THEN
+            IDCOUN = IDCOUN + 1
+            LASTID = ISTORE(LTEMP+I)
+          END IF
+        END DO
+
+        WRITE(CMON,'(A,I6)') 'Unique count: ',IDCOUN
+        CALL XPRVDU(NCVDU,1,0)
+
+        IF ( IDCOUN .LE. IDOCNT ) THEN
+           NOIMPR = NOIMPR + 1 ! No improvement.
+        ELSE
+           NOIMPR = 0          ! Improvement.
+        END IF
+
+        IF ( NOIMPR .GE. 1 ) EXIT  ! If # unique unimproved twice then break.
+
+        IDOCNT = MAX ( IDOCNT, IDCOUN ) ! Best # unique found so far.
+      END DO
+      CALL XSTRLL (LTEMP)                   ! RETURN WORKSPACE
+      RETURN
+      END
+
+CODE FOR XREGQK
+      SUBROUTINE XREGQK
+C    'REGULARISE' mini implementation, lists already loaded, just do the maths.
+C List 1,2,5/10 must already be loaded.
+C
+C LMAP, LONTO, N..., and IUNIQ are required to be passed in through common.
+
+\ICOM12
+\ISTORE
+C
+\STORE
+\XUNITS
+\XSSVAL
+\XLISTI
+\XCARDS
+\XLST01
+\XLST05
+\XLST12
+\XPDS
+\XCONST
+\XRGCOM
+\XRGLST
+\XMATCH
+\XDSTNC 
+\XRGRP
+\XERVAL
+\XOPVAL
+\XIOBUF
+\XCHARS
+\QSTORE
+\QLST12
+
+      DATA IVERS /100/
+      CALL XTIME1(2)
+
+      NUMDEV = 0      ! INITIALISE THE POOR-FIT COUNTER
+
+\IDIM12
+      DO I = 1,IDIM12     
+        ICOM12(I) = NOWT   ! Don't use L12.
+      END DO
+
+C -- SET INITIAL VALUES IN COMMON
+      MDATMD = MD5
+      NATMD = 0
+      MDOLD = 4
+      NOLD = 0
+      MDNEW = 4
+      NNEW = 0
+
+      IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
+      IGRPNO=0       ! SET GROUP SERIAL NUMBER TO ZERO
+      ICMPDF=2       ! DEFAULT VALUE OF THE 'COMPARE/REPLACE/KEEP' FLAG
+      IFLCMP=ICMPDF  ! SET REPLACE/COMPARE FLAG TO DEFAULT VALUE
+
+      CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
+      CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
+      CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
+      MDRENM = 6
+C -- SET UP BLOCKS
+      LATMD=KSTALL(NMAP*MDATMD)
+      LOLD=KSTALL(NMAP*MDOLD)
+      LNEW=KSTALL(NMAP*MDNEW)
+      LRENM = KSTALL(MDRENM*NMAP)  ! ALLOCATE SPACE FOR RENAMING
+
+C     SAVE NFL and LFL
+      IRNFL = NFL
+      IRLFL = LFL
+
+C Tell it how big the unique group is.
+
+      NATMD = IUNIQ
+      NOLD = IUNIQ
+      NNEW = IUNIQ
+      IGRPNO=IGRPNO+1             ! INCREMENT GROUP SERIAL NUMBER
+      IFLCMP=2                    ! SET REPLACE/COMPARE FLAG TO COMPARE
+
+C LRENM,MDRENM will contain the old atoms (MAP) followed by the
+C new atoms (ONTO). In this routine, the type and serial are set.
+C Form is:  0  TYPE  of old (ONTO) atom       NB. These aren't paired 
+C           1  SERIAL of old (ONTO) atom          yet. Just two lists
+C           2  TYPE of new (MAP) atom             held in the same 
+C           3  SERIAL of new (MAP) atom.          vector.
+C           4  L5 address of OLD, overwritten later if using for RENAME
+C           5  L5 address of NEW, overwritten later if using for RENAME
+
+      WRITE ( CMON,'(A,I5,A)') 'Initially matching ', IUNIQ,' atoms.'
+      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG1:',(STORE(L1O1+I),I=0,8)
+c      CALL XPRVDU(NCVDU,3,0)
+
+
+      MNEW = LNEW
+      MRENM = LRENM
+      DO I = 0, NMAP-1
+        IF ( ISTORE(4+LMAP+I*MDATVC) .EQ. 1 ) THEN
+          I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          STORE(MNEW+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
+          ISTORE(MRENM+5) = I5
+          MNEW = MNEW + 4
+          MRENM = MRENM + 6
+        END IF
+      END DO
+
+      MOLD = LOLD
+      MRENM = LRENM
+      DO I = 0, NONTO-1
+        IF ( ISTORE(4+LONTO+I*MDATVC) .EQ. 1 ) THEN
+          I5 = L5 + ( (ISTORE(LONTO+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MOLD),3)
+          STORE(MOLD+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM),2)
+          ISTORE(MRENM+4) = I5
+          MOLD = MOLD + 4
+          MRENM = MRENM + 6
+        END IF
+      END DO
+
+
+      IMAT = -1
+      CALL XRGCLC(IMAT,0)
+
+C     Restore NFL and LFL
+      NFL = IRNFL
+      LFL = IRLFL
+
+
+      WRITE ( CMON,'(A)') 'Matching the rest.'
+      CALL XPRVDU(NCVDU, 1,0)
+
+c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG2:',(STORE(L1O1+I),I=0,8)
+c      CALL XPRVDU(NCVDU,4,0)
+
+C This time put all atoms in (blocks are already big enough - we
+C saw to that earlier).
+
+      IFLCMP = 6
+      NATMD= NMAP
+      NOLD = NMAP
+      NNEW = NMAP
+
+      MNEW = LNEW
+      MRENM = LRENM
+      DO I = 0, NMAP-1
+          I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+c          WRITE(CMON,'(2(A,I7))')'I5MAP:',I5,STORE(I5),NINT(STORE(I5+1))
+c          CALL XPRVDU(NCVDU,1,0)
+          CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          STORE(MNEW+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
+          ISTORE(MRENM+5) = I5
+c          WRITE(CMON,'(A,I10)')'MRENM+5: ',ISTORE(MRENM+5)
+c          CALL XPRVDU(NCVDU,1,0)
+          MNEW = MNEW + 4
+          MRENM = MRENM + 6
+      END DO
+
+      MOLD = LOLD
+      MRENM = LRENM
+      DO I = 0, NONTO-1
+          I5 = L5 + ( (ISTORE(LONTO+I*MDATVC)) * MD5 )
+c          WRITE(CMON,'(2(A,I7))')'I5MAP:',I5,STORE(I5),NINT(STORE(I5+1))
+c          CALL XPRVDU(NCVDU,1,0)
+          CALL XMOVE (STORE(I5+4),STORE(MOLD),3)
+          STORE(MOLD+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM),2)
+          ISTORE(MRENM+4) = I5
+c          WRITE(CMON,'(A,I10)')'MRENM+5: ',ISTORE(MRENM+5)
+c          CALL XPRVDU(NCVDU,1,0)
+          MOLD = MOLD + 4
+          MRENM = MRENM + 6
+      END DO
+
+
+c      DO I = 0, NMAP-1
+c        MIRN = ISTORE(LRENM+5+I*6)
+c        WRITE(CMON,'(A,I10)')'RENM:',MIRN
+c        CALL XPRVDU(NCVDU,1,0)
+c        WRITE(CMON,'(A4,I5)')ISTORE(MIRN),NINT(STORE(MIRN+1))
+c        CALL XPRVDU(NCVDU,1,0)
+c      END DO                                  
+
+c      WRITE(CMON,'(A,I8)') 'XRGQCK, LRENM: ',LRENM
+c      CALL XPRVDU(NCVDU,1,0)
+
+C Improve the match:
+      IMAT = 3
+      CALL XRGCLC(IMAT,1)
+
+C     Restore NFL and LFL
+      NFL = IRNFL
+      LFL = IRLFL
+
+
+      WRITE ( CMON,'(A)') 'Improving the matrix.'
+      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG3:',(STORE(L1O1+I),I=0,8)
+c      CALL XPRVDU(NCVDU,3,0)
+
+
+
+C Use the better match to get a better matrix.
+      MDATMD = MD5
+      MDOLD = 4
+      MDNEW = 4
+
+      IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
+      CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
+      CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
+      CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
+      MDRENM = 6
+      IFLCMP=2                    ! SET REPLACE/COMPARE FLAG TO COMPARE
+
+
+      NATMD= NMAP
+      NOLD = NMAP
+      NNEW = NMAP
+      MNEW = LNEW
+      MRENM = LRENM
+      DO I = 0, NMAP-1
+          I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          STORE(MNEW+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
+          ISTORE(MRENM+5) = I5
+
+c          WRITE(CMON,'(A,3F10.3,I5)')'MAP: ',(STORE(MNEW+K),K=0,2),I5
+c          CALL XPRVDU(NCVDU,1,0)
+
+          MNEW = MNEW + 4
+          MRENM = MRENM + 6
+      END DO
+
+
+      MOLD = LOLD
+      MRENM = LRENM
+      DO I = 0, NONTO-1
+          I5 = L5 + ( (ISTORE(LONTO+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MOLD),3)
+          STORE(MOLD+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM),2)
+          ISTORE(MRENM+4) = I5
+          MOLD = MOLD + 4
+          MRENM = MRENM + 6
+      END DO
+
+
+      IMAT = -1
+      CALL XRGCLC(IMAT,0)
+
+C     Restore NFL and LFL
+      NFL = IRNFL
+      LFL = IRLFL
+
+      WRITE ( CMON,'(A)') 'Do final mapping.'
+      CALL XPRVDU(NCVDU, 1,0)
+
+C Use the better matrix to do a final mapping:
+      NATMD= NMAP
+      NOLD = NMAP
+      NNEW = NMAP
+      MNEW = LNEW
+      MRENM = LRENM
+      DO I = 0, NMAP-1
+          I5 = L5 + ( (ISTORE(LMAP+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MNEW),3)
+          STORE(MNEW+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
+          ISTORE(MRENM+5) = I5
+          MNEW = MNEW + 4
+          MRENM = MRENM + 6
+      END DO
+      MOLD = LOLD
+      MRENM = LRENM
+      DO I = 0, NONTO-1
+          I5 = L5 + ( (ISTORE(LONTO+I*MDATVC)) * MD5 )
+          CALL XMOVE (STORE(I5+4),STORE(MOLD),3)
+          STORE(MOLD+3) = 1.0
+          CALL XMOVE (STORE(I5),STORE(MRENM),2)
+          ISTORE(MRENM+4) = I5
+          MOLD = MOLD + 4
+          MRENM = MRENM + 6
+      END DO
+      IMAT = 2
+      CALL XRGCLC(IMAT,1)
+
+C     Restore NFL and LFL
+      NFL = IRNFL
+      LFL = IRLFL
+
+9200  CONTINUE
+      IF (NUMDEV .GT. 0) THEN
+       WRITE ( CMON,'(I5,A)') NUMDEV, ' Poorly mapping groups'
+       CALL OUTCOL(9)
+       CALL XPRVDU(NCVDU, 1,0)
+       CALL OUTCOL(1)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      ENDIF
+
+C -- THIS IS THE ONLY WAY OUT OF THE ROUTINE
+C -- WRITE FINAL MESSAGE
+      CALL XOPMSG( IOPREG, IOPEND, IVERS)
+      CALL XTIME2(2)
+      RETURN
+      END
+
+
+
+
+
