@@ -172,9 +172,8 @@ Useful Ideas
      To get the best out of CRYSTALS you need to work with imagination.
 Some useful ideas are:
 
-1) Use #SCRIPT PLOT (or #CAMERON enter, END enter, #USE
-CAMERON.L5) to delete or rename atoms, and to see specific interatomic
-distances in graphics mode.
+1) Use #SCRIPT PLOT to delete or rename atoms, and to see specific
+interatomic distances in graphics mode.
 
 2) Use #REGROUP enter, SELECT SEQUENCE=YES enter, to automatically
 renumber atoms so that adjacent atoms have adjacent serial numbers.
