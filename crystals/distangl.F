@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2004/11/17 08:53:39  djw
+C Spot NH4 and CH4 for H restraints
+C
 C Revision 1.68  2004/11/10 16:43:54  djw
 C Include N-H and O-H restraint generator
 C
@@ -1424,7 +1427,7 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.98)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            error 1'
+                  WRITE(NCPU,'(A)') 'REM     unattached H '
                 ENDIF
 
              ELSE IF (NHY .EQ. 2) THEN
@@ -1439,7 +1442,7 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            error 2'
+                  WRITE(NCPU,'(A)') 'REM     unattached H '
                 ENDIF
 
              ELSE IF (NHY .EQ. 3) THEN
@@ -1450,7 +1453,7 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            error 3'
+                  WRITE(NCPU,'(A)') 'REM     unattached H '
                 ENDIF
              ENDIF        
             ENDIF
@@ -1479,7 +1482,7 @@ C----- N-H
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            error 1'
+                  WRITE(NCPU,'(A)') 'REM     unattached H '
                 ENDIF
 
              ELSE IF (NHY .EQ. 2) THEN
@@ -1494,7 +1497,7 @@ C----- N-H
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            error 2'
+                  WRITE(NCPU,'(A)') 'REM     unattached H '
                 ENDIF
 
              ELSE IF (NHY .EQ. 3) THEN
@@ -1505,7 +1508,7 @@ C----- N-H
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            error 3'
+                  WRITE(NCPU,'(A)') 'REM     unattached H '
                 ENDIF
              ENDIF        
             ENDIF
