@@ -5,10 +5,11 @@
 %%
 %%   Local variables:
 %  VARIABLE INTEGER REFLAG HMODE ISER
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED DOREFINE
 %  VARIABLE CHARACTER CTYPE
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1
 %  EVALUATE TWINNED = FALSE
+%  EVALUATE DOREFINE = TRUE
 %%
 %%   Variables set by ASSESS 5
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT DOTWIN
@@ -96,7 +97,12 @@
 ^^WI {
 ^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
 ^^WI  {
-^^WI   @ 1,1 GRID OR NROWS=6 NCOLS=1 OUTLINE='General'
+%     IF SETADP .EQ. 0 THEN
+^^WI   @ 1,1 CHECKBOX XR_GO '&Setup refinement only, do not refine.'
+^^WI         STATE=ON
+%      EVALUATE DOREFINE = FALSE
+%     END IF
+^^WI   @ 2,1 GRID OR NROWS=6 NCOLS=1 OUTLINE='General'
 ^^WI   {
 ^^WI     @ 1,1 RADIOBUTTON REFPXO 'Refine &positions only' STATE=OFF
 ^^WI     @ 2,1 RADIOBUTTON REFPUI 'Refine positions and U&iso' STATE=OFF
@@ -105,7 +111,7 @@
 %% ^^WI           '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
-^^WI   @ 2,1 GRID HR NROWS=6 NCOLS=1 OUTLINE='Hydrogens'
+^^WI   @ 3,1 GRID HR NROWS=6 NCOLS=1 OUTLINE='Hydrogens'
 ^^WI   {
 ^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix H atoms'
 % IF HRTYP .LE. 0 THEN
@@ -125,7 +131,7 @@
 % END IF
 ^^WI   }
 % END IF
-^^WI   @ 3,1 GRID XP NROWS=6 NCOLS=1 OUTLINE='Other parameters'
+^^WI   @ 4,1 GRID XP NROWS=6 NCOLS=1 OUTLINE='Other parameters'
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF
 % IF ( CENTRO .GT. 0.9 ) THEN
@@ -139,7 +145,7 @@
 ^^WI     STATE = OFF
 % END IF
 ^^WI   }
-^^WI   @ 4,1 GRID RN NROWS=2 NCOLS=1
+^^WI   @ 5,1 GRID RN NROWS=2 NCOLS=1
 ^^WI   {
 ^^WI    @ 2,1 CHECKBOX ALTER
 ^^WI      'Advanced: Edit directives or restraints before proceeding'
@@ -318,6 +324,14 @@
 %    EVALUATE XREFINE = TRUE
 %  END IF
 %%
+%  IF ( .NOT. DOREFINE ) THEN
+^^?? XR_GO STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 2 ) THEN
+%      EVALUATE DOREFINE = TRUE
+%    END IF
+%  END IF
 %%
 ^^CO DISPOSE XRSETUP
 %%
@@ -438,7 +452,7 @@
 %  EVALUATE HRMASK   = TRUE
 %  COPY '#SCRIPT XPUTINFO'
 %%
-%  COPY '#SCRIPT XREFINE'
+%  IF ( DOREFINE ) THEN
+%    COPY '#SCRIPT XREFINE'
+%  END IF
 %END SCRIPT
-
- 
