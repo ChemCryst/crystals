@@ -1,0 +1,990 @@
+%SCRIPT ED30
+%%
+%% Facilitates editing of list 30. There is no other
+%% way of editing L30, it can only be overwritten.
+%%
+% VARIABLE REAL NREFS NREFMG RMERGE NMGFRD RMGFRD
+% VARIABLE INTEGER IREDUC
+% VARIABLE REAL MIN MED MAX NORIEN THOMIN
+% VARIABLE REAL THOMAX TEMP STDS DECAY INTRVL RCOUNT
+% VARIABLE INTEGER SCAN INST
+% VARIABLE REAL HMIN HMAX KMIN KMAX LMIN LMAX THMIN THMAX
+% VARIABLE REAL PSIMIN PSIMAX THETAMIN THETAMAX EMPMIN EMPMAX
+% VARIABLE REAL DIFABSMIN DIFABSMAX ABSMIN ABSMAX
+% VARIABLE INTEGER ABSTYPE
+% VARIABLE REAL DOBS DCALC MU MOLWT CELLZ 
+% VARIABLE INTEGER SOLUTN
+% VARIABLE INTEGER COL1 COL2 COL3 COL4 COL5 COL6 COL7 COL8
+% VARIABLE INTEGER SHA1 SHA2 SHA3 SHA4 SHA5 SHA6 SHA7 SHA8
+% VARIABLE LOGICAL FNREFS  FNREFMG FRMERGE FNMGFRD FRMGFRD
+% VARIABLE LOGICAL FNORIEN FTHOMIN FTHOMAX FSTDS   FDECAY 
+% VARIABLE LOGICAL FINTRVL FRCOUNT FINST FSCAN FHMIN FHMAX 
+% VARIABLE LOGICAL FKMIN FKMAX FLMIN FLMAX FTHMIN FTHMAX 
+% VARIABLE LOGICAL FREDUC FSOLUTN FMIN FMED FMAX FTEMP   
+% VARIABLE LOGICAL FCOLOUR FSHAPE FDOBS FDCALC FMOLWT  
+% VARIABLE LOGICAL FCELLZ FABSMIN FABSMAX FABSTYPE
+%%
+% IF  EXISTS ( 30 ) .EQ. 0 THEN
+%   COPY '#LIST 30'
+%   COPY 'END'
+% END IF
+% COPY '#GENERALEDIT 30'
+% COPY 'LOCATE RECORDTYPE = 101'
+% COPY 'TRANSFER FROM OFFSET = 0 TO NREFS'
+% COPY 'TRANSFER FROM OFFSET = 2 TO NREFMG'
+% COPY 'TRANSFER FROM OFFSET = 3 TO RMERGE'
+% COPY 'TRANSFER FROM OFFSET = 4 TO NMGFRD'
+% COPY 'TRANSFER FROM OFFSET = 5 TO RMGFRD'
+% COPY 'TRANSFER FROM OFFSET = 12 TO IREDUC'
+% COPY 'LOCATE RECORDTYPE = 102'
+% COPY 'TRANSFER FROM OFFSET = 0 TO MIN'
+% COPY 'TRANSFER FROM OFFSET = 1 TO MED'
+% COPY 'TRANSFER FROM OFFSET = 2 TO MAX'
+% COPY 'TRANSFER FROM OFFSET = 3 TO NORIEN'
+% COPY 'TRANSFER FROM OFFSET = 4 TO THOMIN'
+% COPY 'TRANSFER FROM OFFSET = 5 TO THOMAX'
+% COPY 'TRANSFER FROM OFFSET = 6 TO TEMP'
+% COPY 'TRANSFER FROM OFFSET = 7 TO STDS'
+% COPY 'TRANSFER FROM OFFSET = 8 TO DECAY'
+% COPY 'TRANSFER FROM OFFSET = 9 TO SCAN'
+% COPY 'TRANSFER FROM OFFSET = 10 TO INTRVL'
+% COPY 'TRANSFER FROM OFFSET = 11 TO RCOUNT'
+% COPY 'TRANSFER FROM OFFSET = 12 TO INST'
+% COPY 'LOCATE RECORDTYPE = 104'
+% COPY 'TRANSFER FROM OFFSET = 0 TO HMIN'
+% COPY 'TRANSFER FROM OFFSET = 1 TO HMAX'
+% COPY 'TRANSFER FROM OFFSET = 2 TO KMIN'
+% COPY 'TRANSFER FROM OFFSET = 3 TO KMAX'
+% COPY 'TRANSFER FROM OFFSET = 4 TO LMIN'
+% COPY 'TRANSFER FROM OFFSET = 5 TO LMAX'
+% COPY 'TRANSFER FROM OFFSET = 6 TO THMIN'
+% COPY 'TRANSFER FROM OFFSET = 7 TO THMAX'
+% COPY 'LOCATE RECORDTYPE = 105'
+% COPY 'TRANSFER FROM OFFSET = 0 TO PSIMIN'
+% COPY 'TRANSFER FROM OFFSET = 1 TO PSIMAX'
+% COPY 'TRANSFER FROM OFFSET = 2 TO THETAMIN'
+% COPY 'TRANSFER FROM OFFSET = 3 TO THETAMAX'
+% COPY 'TRANSFER FROM OFFSET = 4 TO EMPMIN'
+% COPY 'TRANSFER FROM OFFSET = 5 TO EMPMAX'
+% COPY 'TRANSFER FROM OFFSET = 6 TO DIFABSMIN'
+% COPY 'TRANSFER FROM OFFSET = 7 TO DIFABSMAX'
+% COPY 'TRANSFER FROM OFFSET = 8 TO ABSTYPE'
+% COPY 'LOCATE RECORDTYPE = 106'
+% COPY 'TRANSFER FROM OFFSET = 0 TO DOBS'
+% COPY 'TRANSFER FROM OFFSET = 1 TO DCALC'
+% COPY 'TRANSFER FROM OFFSET = 3 TO MU'
+% COPY 'TRANSFER FROM OFFSET = 4 TO MOLWT'
+% COPY 'TRANSFER FROM OFFSET = 5 TO CELLZ'
+% COPY 'TRANSFER FROM OFFSET = 12 TO SOLUTN'
+% COPY 'LOCATE RECORDTYPE = 107'
+% COPY 'TRANSFER FROM OFFSET = 0 TO COL1'
+% COPY 'TRANSFER FROM OFFSET = 1 TO COL2'
+% COPY 'TRANSFER FROM OFFSET = 2 TO COL3'
+% COPY 'TRANSFER FROM OFFSET = 3 TO COL4'
+% COPY 'TRANSFER FROM OFFSET = 4 TO COL5'
+% COPY 'TRANSFER FROM OFFSET = 5 TO COL6'
+% COPY 'TRANSFER FROM OFFSET = 6 TO COL7'
+% COPY 'TRANSFER FROM OFFSET = 7 TO COL8'
+% COPY 'LOCATE RECORDTYPE = 108'
+% COPY 'TRANSFER FROM OFFSET = 0 TO SHA1'
+% COPY 'TRANSFER FROM OFFSET = 1 TO SHA2'
+% COPY 'TRANSFER FROM OFFSET = 2 TO SHA3'
+% COPY 'TRANSFER FROM OFFSET = 3 TO SHA4'
+% COPY 'TRANSFER FROM OFFSET = 4 TO SHA5'
+% COPY 'TRANSFER FROM OFFSET = 5 TO SHA6'
+% COPY 'TRANSFER FROM OFFSET = 6 TO SHA7'
+% COPY 'TRANSFER FROM OFFSET = 7 TO SHA8'
+% COPY 'END'
+%%
+^^WI WINDOW ED30 'CIF information' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID OUTER NROWS=1 NCOLS=2
+^^WI {
+^^WI  @ 1,2 GRID GRIDB NROWS=7 NCOLS=3
+^^WI  {
+^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT
+^^WI    @ 4,2 BUTTON BXX '&Cancel'
+^^WI    @ 6,2 BUTTON BHELP '&Help'
+^^WI  }
+^^WI  @ 1,1 GRID GRIDA NROWS=9 NCOLS=3
+^^WI  {
+^^WI   @ 2,2 GRID GRIDAA NROWS=4 NCOLS=1  OUTLINE='Observations'
+^^WI   {
+^^WI    @ 1,1 GRID GRIDAAA NROWS=3 NCOLS=11
+^^WI              COMMAND='OBSERVE'
+^^WI    {
+^^WI     @ 1,1 STATIC ED30T 'Reflections measured'
+^^WI     @ 1,3 EDITBOX NREFS '0' CHARS=11 INTEGER INFORM=YES
+^^WI     @ 1,5  STATIC ED30T 'Instrument'
+^^WI     @ 1,7 DROPDOWN INST INFORM=YES ADDTOLIST
+^^WI     'Unknown' 'CAD4' 'Mach3' 'KappaCCD' 'Dip' 'Smart' 'NULL'
+^^WI     @ 1,9  STATIC ED30T 'Scan'
+^^WI     @ 1,11  DROPDOWN SCAN INFORM=YES ADDTOLIST
+^^WI     '2theta/omega' 'Omega' 'unknown' 'NULL'
+^^WI    }
+^^WI    @ 2,1 GRID GRIDAAB NROWS=4 NCOLS=9
+^^WI              COMMAND='OBSERVE'
+^^WI    {
+^^WI     @ 1,1 STATIC ED30T 'Reflections after merge'
+^^WI     @ 1,3 EDITBOX NREFMG '0' CHARS=11 INTEGER INFORM=YES 
+^^WI     @ 1,5 STATIC ED30T 'R merge'
+^^WI     @ 1,7 EDITBOX RMERGE '0' CHARS=11 REAL INFORM=YES 
+^^WI     @ 1,9 STATIC ED30T '(Friedels merged)'
+^^WI     @ 3,1 STATIC ED30T 'Reflections after merge'
+^^WI     @ 3,3 EDITBOX NMGFRD '0' CHARS=11 INTEGER INFORM=YES 
+^^WI     @ 3,5 STATIC ED30T 'R merge'
+^^WI     @ 3,7 EDITBOX RMGFRD '0' CHARS=11 REAL INFORM=YES 
+^^WI     @ 3,9 STATIC ED30T '(Friedels not merged)'
+^^WI    }
+^^WI    @ 3,1 GRID GRIDAAC NROWS=4 NCOLS=15 
+^^WI              COMMAND='INDICES'
+^^WI    {
+^^WI     @ 1,1  STATIC ED30T 'H min'
+^^WI     @ 1,3  EDITBOX HMIN '0' CHARS=8 INTEGER INFORM=YES 
+^^WI     @ 1,5  STATIC ED30T 'L min'
+^^WI     @ 1,7  EDITBOX LMIN '0' CHARS=8 INTEGER INFORM=YES 
+^^WI     @ 1,9  STATIC ED30T 'K min'
+^^WI     @ 1,11 EDITBOX KMIN '0' CHARS=8 INTEGER INFORM=YES 
+^^WI     @ 1,13 STATIC ED30T 'Theta min'
+^^WI     @ 1,15 EDITBOX THMIN '0' CHARS=11 REAL INFORM=YES 
+^^WI     @ 3,1  STATIC ED30T 'H max'
+^^WI     @ 3,3  EDITBOX HMAX '0' CHARS=8 INTEGER INFORM=YES 
+^^WI     @ 3,5  STATIC ED30T 'L max'
+^^WI     @ 3,7  EDITBOX LMAX '0' CHARS=8 INTEGER INFORM=YES 
+^^WI     @ 3,9  STATIC ED30T 'K max'
+^^WI     @ 3,11 EDITBOX KMAX '0' CHARS=8 INTEGER INFORM=YES 
+^^WI     @ 3,13 STATIC ED30T 'Theta max'
+^^WI     @ 3,15 EDITBOX THMAX '0' CHARS=11 REAL INFORM=YES 
+^^WI    }
+^^WI    @ 4,1 GRID GRIDAAD NROWS=3 NCOLS=15 
+^^WI              COMMAND='OBSERVE'
+^^WI    {
+^^WI     @ 1,1  STATIC ED30T 'Cell measurement refls:'
+^^WI     @ 1,3  EDITBOX NORIEN '0' CHARS=7 INTEGER INFORM=YES 
+^^WI     @ 1,5  STATIC ED30T 'Theta min'
+^^WI     @ 1,7  EDITBOX THOMIN '0' CHARS=9 REAL INFORM=YES 
+^^WI     @ 1,9  STATIC ED30T 'Theta max'
+^^WI     @ 1,11 EDITBOX THOMAX '0' CHARS=9 REAL INFORM=YES 
+^^WI     @ 3,1  STATIC ED30T 'Intensity standards:'
+^^WI     @ 3,3  EDITBOX STDS '0' CHARS=7 INTEGER INFORM=YES 
+^^WI     @ 3,5  STATIC ED30T 'Decay (%)'
+^^WI     @ 3,7  EDITBOX DECAY '0' CHARS=9 REAL INFORM=YES 
+^^WI     @ 3,9  STATIC ED30T 'Interval'
+^^WI     @ 3,11 EDITBOX INTRVL '0' CHARS=9 REAL INFORM=YES 
+^^WI     @ 3,13 STATIC ED30T 'Count'
+^^WI     @ 3,15 EDITBOX RCOUNT '0' CHARS=7 REAL INFORM=YES 
+^^WI    }
+^^WI   }
+^^WI   @ 4,2 GRID GRIDAB NROWS=2 NCOLS=7 OUTLINE='Software'
+^^WI              COMMAND='SOFTWARE'
+^^WI   {
+^^WI    @ 1,1 STATIC ED30T 'Data reduction'
+^^WI    @ 1,3 DROPDOWN REDUC INFORM=YES ADDTOLIST
+^^WI    'Unknown' 'RC93' 'Denzo' 'Shelx' 'NULL'
+^^WI    @ 1,5 STATIC ED30T 'Structure solution'
+^^WI    @ 1,7 DROPDOWN SOLUTN INFORM=YES ADDTOLIST
+^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'
+^^WI    'Sir97' 'Dirdif' 'NULL'
+^^WI   }
+^^WI   @ 6,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Crystal'
+^^WI              COMMAND='CRYSTAL'
+^^WI   {
+^^WI    @ 1,1 GRID GRIDACA NROWS=2 NCOLS=15
+^^WI    {
+^^WI      @ 1,1  STATIC ED30T 'Dimensions (mm): Min'
+^^WI      @ 1,3  EDITBOX MIN '0' CHARS=7 REAL INFORM=YES 
+^^WI      @ 1,5  STATIC ED30T 'Med'
+^^WI      @ 1,7  EDITBOX MED '0' CHARS=7 REAL INFORM=YES 
+^^WI      @ 1,9  STATIC ED30T 'Max'
+^^WI      @ 1,11 EDITBOX MAX '0' CHARS=7 REAL INFORM=YES 
+^^WI      @ 1,13 STATIC ED30T 'Temperature (K)'
+^^WI      @ 1,15 EDITBOX TEMP '0' CHARS=9 REAL INFORM=YES 
+^^WI    }
+^^WI    @ 2,1 GRID GRIDACB NROWS=2 NCOLS=7
+^^WI    {
+^^WI      @ 1,1  STATIC ED30T 'Crystal shape'
+^^WI      @ 1,3  EDITBOX SHAPE '0' CHARS=24 INFORM=YES 
+^^WI      @ 1,5  STATIC ED30T 'Crystal colour'
+^^WI      @ 1,7  EDITBOX COLOUR '0' CHARS=24 INFORM=YES 
+^^WI    }
+^^WI    @ 3,1 GRID GRIDACB NROWS=1 NCOLS=15
+^^WI    {
+^^WI      @ 1,1  STATIC ED30T 'Density: Observed'
+^^WI      @ 1,3  EDITBOX DOBS '0' CHARS=7 REAL INFORM=YES 
+^^WI      @ 1,5  STATIC ED30T 'Calculated'
+^^WI      @ 1,7  EDITBOX DCALC '0' CHARS=7 REAL INFORM=YES 
+^^WI      @ 1,9  STATIC ED30T 'Mol. weight'
+^^WI      @ 1,11  EDITBOX MOLWT '0' CHARS=10 REAL INFORM=YES 
+^^WI      @ 1,13  STATIC ED30T 'Z'
+^^WI      @ 1,15  EDITBOX CELLZ '1' CHARS=6 REAL INFORM=YES 
+^^WI    }
+^^WI   }
+^^WI   @ 8,2 GRID GRIDAE NROWS=2 NCOLS=15 OUTLINE='Absorption correction'
+^^WI              COMMAND='ABSORPTION'
+^^WI   {
+^^WI    @ 1,1  STATIC ED30T 'Type'
+^^WI    @ 1,3 DROPDOWN ABSTYPE INFORM=YES ADDTOLIST
+^^WI     'None' 'DifAbs' 'Empirical' 'Multi-scan' 'SadAbs '
+^^WI     'SortAV' 'ShelxA' 'NULL'
+^^WI    @ 1,5  STATIC ABSMINT 'Empirical min'
+^^WI    @ 1,7  EDITBOX ABSMIN '0' CHARS=11 REAL INFORM=YES 
+^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max'
+^^WI    @ 1,11 EDITBOX ABSMAX '0' CHARS=11 REAL INFORM=YES 
+^^WI   }
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%  CLEAR
+%  INSERT '^^CO SET NREFS TEXT '
+%  STORE FORMAT /(F10.0)/ LENGTH 10 REAL NREFS
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET NREFMG TEXT '
+%  STORE FORMAT /(F10.0)/ LENGTH 10 REAL NREFMG
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET RMERGE TEXT '
+%  STORE FORMAT /(F9.6)/ LENGTH 10 REAL RMERGE
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET NMGFRD TEXT '
+%  STORE FORMAT /(F10.0)/ LENGTH 10 REAL NMGFRD
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET RMGFRD TEXT '
+%  STORE FORMAT /(F9.6)/ LENGTH 10 REAL RMGFRD
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET REDUC SELECTION='
+%  STORE FORMAT /(I2)/ LENGTH 2 INTEGER ( IREDUC + 1 )
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET SOLUTN SELECTION='
+%  STORE FORMAT /(I2)/ LENGTH 2 INTEGER ( SOLUTN + 1 )
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET MIN TEXT '
+%  STORE FORMAT /(F9.6)/ LENGTH 9 REAL MIN
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET MED TEXT '
+%  STORE FORMAT /(F9.6)/ LENGTH 9 REAL MED
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET MAX TEXT '
+%  STORE FORMAT /(F9.6)/ LENGTH 9 REAL MAX
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET TEMP TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL TEMP
+%  OUTPUT
+%  CLEAR
+%  INSERT "^^CO SET SHAPE TEXT '"
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA1
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA2
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA3
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA4
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA5
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA6
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA7
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER SHA8
+%  INSERT "'"
+%  OUTPUT
+%  CLEAR
+%  INSERT "^^CO SET COLOUR TEXT '"
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL1
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL2
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL3
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL4
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL5
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL6
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL7
+%  STORE FORMAT /(A4)/ LENGTH 4 INTEGER COL8
+%  INSERT "'"
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET INST SELECTION='
+%  STORE FORMAT /(I2)/ LENGTH 2 INTEGER ( INST + 1 )
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET SCAN SELECTION='
+%  STORE FORMAT /(I2)/ LENGTH 2 INTEGER ( SCAN )
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET INTRVL TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL INTRVL
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET RCOUNT TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL RCOUNT
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET NORIEN TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL NORIEN
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET THOMIN TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL THOMIN
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET THOMAX TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL THOMAX
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET STDS TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL STDS
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET DECAY TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL DECAY
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET HMIN TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL HMIN
+%  INSERT ' SET HMAX TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL HMAX
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET LMIN TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL LMIN
+%  INSERT ' SET LMAX TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL LMAX
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET KMIN TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL KMIN
+%  INSERT ' SET KMAX TEXT '
+%  STORE FORMAT /(F9.0)/ LENGTH 9 REAL KMAX
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET THMIN TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL THMIN
+%  INSERT ' SET THMAX TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL THMAX
+%  OUTPUT
+%  CASE ( ABSTYPE + 1 )
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=1
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=2
+^^CO SET ABSMINT TEXT 'Difabs min' SET ABSMAXT TEXT 'Difabs max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL DIFABSMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL DIFABSMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=3
+^^CO SET ABSMINT TEXT 'Empirical min' SET ABSMAXT TEXT 'Empirical max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=4
+^^CO SET ABSMINT TEXT 'Empirical min' SET ABSMAXT TEXT 'Empirical max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=5
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=6
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=7 
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%  END CASE
+%  CLEAR
+%  INSERT '^^CO SET DOBS TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL DOBS
+%  INSERT ' SET DCALC TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL DCALC
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET MOLWT TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL MOLWT
+%  OUTPUT
+%  CLEAR
+%  INSERT '^^CO SET CELLZ TEXT '
+%  STORE FORMAT /(F9.5)/ LENGTH 9 REAL CELLZ
+%  OUTPUT
+%  LOOP
+%    VERIFY OBSERVE INDICES SOFTWARE CRYSTAL ABSORPTION BXX BHELP BOK
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    CASE VALUE
+%      BLOCK %OBSERVE%
+%        VERIFY NREFS NREFMG RMERGE NMGFRD RMGFRD -
+                NORIEN THOMIN THOMAX STDS -
+                DECAY INTRVL RCOUNT INST SCAN
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%          EVALUATE FNREFS  = TRUE
+%          EVALUATE FNREFMG = TRUE
+%          EVALUATE FRMERGE = TRUE
+%          EVALUATE FNMGFRD = TRUE
+%          EVALUATE FRMGFRD = TRUE
+%          EVALUATE FNORIEN = TRUE
+%          EVALUATE FTHOMIN = TRUE
+%          EVALUATE FTHOMAX = TRUE
+%          EVALUATE FSTDS   = TRUE
+%          EVALUATE FDECAY  = TRUE
+%          EVALUATE FINTRVL = TRUE
+%          EVALUATE FRCOUNT = TRUE
+%          EVALUATE FINST   = TRUE
+%          EVALUATE FSCAN   = TRUE
+%        END CASE
+%        GET NOSTORE SILENT TEXT ' ' ' '
+%      END BLOCK
+%      BLOCK %INDICES%
+%        VERIFY HMIN HMAX KMIN KMAX LMIN LMAX THMIN THMAX
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%          EVALUATE FHMIN  = TRUE
+%          EVALUATE FHMAX = TRUE
+%          EVALUATE FKMIN = TRUE
+%          EVALUATE FKMAX = TRUE
+%          EVALUATE FLMIN = TRUE
+%          EVALUATE FLMAX = TRUE
+%          EVALUATE FTHMIN = TRUE
+%          EVALUATE FTHMAX = TRUE
+%        END CASE
+%        GET NOSTORE SILENT TEXT ' ' ' '
+%      END BLOCK
+%      BLOCK %SOFTWARE%
+%        VERIFY REDUC SOLUTN
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%          EVALUATE FREDUC  = TRUE
+%          EVALUATE FSOLUTN = TRUE
+%        END CASE
+%        GET NOSTORE SILENT INTEGER ' ' ' '
+%      END BLOCK
+%      BLOCK %CRYSTAL%
+%        VERIFY MIN MED MAX TEMP COLOUR SHAPE DOBS DCALC MOLWT CELLZ
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%          EVALUATE FMIN    = TRUE
+%          EVALUATE FMED    = TRUE
+%          EVALUATE FMAX    = TRUE
+%          EVALUATE FTEMP   = TRUE
+%          EVALUATE FCOLOUR = TRUE
+%          EVALUATE FSHAPE  = TRUE
+%          EVALUATE FDOBS   = TRUE
+%          EVALUATE FDCALC  = TRUE
+%          EVALUATE FMOLWT  = TRUE
+%          EVALUATE FCELLZ  = TRUE
+%        END CASE
+%        GET NOSTORE SILENT TEXT ' ' ' '
+%      END BLOCK
+%      BLOCK %ABSORPTION%
+%        VERIFY ABSMIN ABSMAX ABSTYPE 
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%          BLOCK
+%            EVALUATE FABSMIN = TRUE
+%            GET NOSTORE SILENT REAL ' ' ' '
+%          END BLOCK
+%          BLOCK
+%            EVALUATE FABSMAX = TRUE
+%            GET NOSTORE SILENT REAL ' ' ' '
+%          END BLOCK
+%          BLOCK
+%            EVALUATE FABSTYPE = TRUE
+%            GET NOSTORE SILENT INTEGER ' ' ' '
+%            CASE VALUE
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%                OUTPUT
+%              END BLOCK
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Difabs min' SET ABSMAXT TEXT 'Difabs max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL DIFABSMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL DIFABSMAX
+%                OUTPUT
+%              END BLOCK
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Empirical min' SET ABSMAXT TEXT 'Empirical max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL THETAMAX
+%                OUTPUT
+%              END BLOCK
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Empirical min' SET ABSMAXT TEXT 'Empirical max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL EMPMAX
+%                OUTPUT
+%              END BLOCK
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%                OUTPUT
+%              END BLOCK
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%                OUTPUT
+%              END BLOCK
+%              BLOCK
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%                CLEAR
+%                INSERT '^^CO SET ABSMIN TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%                INSERT ' SET ABSMAX TEXT '
+%                STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%                OUTPUT
+%              END BLOCK
+%            END CASE
+%          END BLOCK
+%        END CASE
+%      END BLOCK
+%      BLOCK %BXX%
+
+ * List 30 has not been changed.
+
+^^CO         DISPOSE ED30
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%      BLOCK %BHELP%
+%            COPY '#SCRIPT XHELP1'
+ Reflections measured
+    The number of reflections actually measured in the diffraction
+    experiment.
+ Reflections after merge (Friedels merged)
+    Number of unique reflections remaining after merging equivalents
+    applying Friedels Law. Merging R factor (R int) applying Friedels Law.
+ Reflections after merge (Friedels not merged)
+    Number of unique reflections remaining after merging equivalents
+    without applying Friedels Law. Merging R factor (R int) without
+    applying Friedels Law.
+ Scan
+    Data collection scan method. 
+
+ H min, H max, K min, K max, L min, L max, theta min, theta max
+    Range of reflection limits during data collection.
+
+ Cell measurement refls, theta min and max  
+    Number of orientation checking reflections. Minimum and
+    maximum theta value for orientating reflections.
+
+ Intensity Standards
+    Number of intensity control reflections.
+ Decay
+    Average decay in intensity, %.
+ Interval
+    Intensity control reflection interval time, minutes. Used if
+    standards are measured at a fixed time interval
+ Count
+    Intensity control reflection interval count. Used if standards
+    are measured after a fixed number (count) of general
+    reflections.
+
+ Dimensions Min Med Max (mm)
+    The crystal dimensions, in mm.
+ Temperature
+    Data collection temperature, Kelvin.
+ Colour
+    The crystal colour.
+ Shape
+    The crystal shape.
+
+ Absorption correction:
+ Psi min, psi max
+    Minimum and maximum psi scan corrections
+ Theta min, theta max
+    Minimum and maximum theta dependant corrections
+ Empirical min, empirical max
+    Minimum and maximum empirical corrections (usually combination
+    of theta and psi).
+ Difabs min, difabs max
+    Minimum and maximum DIFABS type correction.
+
+ Density observed and calculated:
+    Observed density and that calculated by CRYSTALS.
+ Mol. weight
+    Molecular weight, calculated bt CRYSTALS.
+ Z
+    Number of molecular entities in the unit cell.
+%            COPY '#SCRIPT XHELP2'
+%      END BLOCK
+%      BLOCK %BOK%
+
+ * List 30 is about to change.
+
+%            COPY '#GENERALEDIT 30'
+%%
+%            COPY 'LOCATE RECORDTYPE = 101'
+%%
+%            IF FNREFS THEN
+ * Updating Number of relections measured.
+^^?? NREFS TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE NREFS = VALUE
+%              COPY 'TRANSFER TO OFFSET = 0 FROM NREFS'
+%            END IF
+%            IF FNREFMG THEN
+ * Updating Number of merged reflections. (Friedels merged).
+^^?? NREFMG TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE NREFMG = VALUE
+%              COPY 'TRANSFER TO OFFSET = 2 FROM NREFMG'
+%            END IF
+%            IF FRMERGE THEN
+ * Updating R merge. (Friedels merged).
+^^?? RMERGE TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE RMERGE = VALUE
+%              COPY 'TRANSFER TO OFFSET = 3 FROM RMERGE'
+%            END IF
+%            IF FNMGFRD THEN
+ * Updating Number of merged reflections. (Friedels not merged).
+^^?? NMGFRD TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE NMGFRD = VALUE
+%              COPY 'TRANSFER TO OFFSET = 4 FROM NMGFRD '
+%            END IF
+%            IF FRMGFRD THEN
+ * Updating R merge. (Friedels not merged).
+^^?? RMGFRD TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE RMGFRD = VALUE
+%              COPY 'TRANSFER TO OFFSET = 5 FROM RMGFRD'
+%            END IF
+%            IF FREDUC THEN
+ * Updating Data Reduction program name. 
+^^?? REDUC SELECTED
+%              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
+%              EVALUATE IREDUC = VALUE - 1
+%              COPY 'TRANSFER TO OFFSET = 12 FROM IREDUC'
+%            END IF
+%%
+%            COPY 'LOCATE RECORDTYPE = 102'
+%%
+%            IF FMIN THEN
+ * Updating minimum crystal size. 
+^^?? MIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE MIN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 0 FROM MIN'
+%            END IF
+%            IF FMED THEN
+ * Updating medium crystal size. 
+^^?? MED TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE MED = VALUE
+%              COPY 'TRANSFER TO OFFSET = 1 FROM MED'
+%            END IF
+%            IF FMAX THEN
+ * Updating maximum crystal size. 
+^^?? MAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE MAX = VALUE
+%              COPY 'TRANSFER TO OFFSET = 2 FROM MAX'
+%            END IF
+%            IF FNORIEN THEN
+ * Updating number cell determining reflections. 
+^^?? NORIEN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE NORIEN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 3 FROM NORIEN'
+%            END IF
+%            IF FTHOMIN THEN
+ * Updating theta min of cell determining reflections. 
+^^?? THOMIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE THOMIN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 4 FROM THOMIN'
+%            END IF
+%            IF FTHOMAX THEN
+ * Updating theta max of cell determining reflections. 
+^^?? THOMAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE THOMAX = VALUE
+%              COPY 'TRANSFER TO OFFSET = 5 FROM THOMAX'
+%            END IF
+%            IF FTEMP THEN
+ * Updating temperature. 
+^^?? TEMP TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE TEMP = VALUE
+%              COPY 'TRANSFER TO OFFSET = 6 FROM TEMP'
+%            END IF
+%            IF FSTDS THEN
+ * Updating number of intensity standards. 
+^^?? STDS TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE STDS = VALUE
+%              COPY 'TRANSFER TO OFFSET = 7 FROM STDS'
+%            END IF
+%            IF FDECAY THEN
+ * Updating average intensity standards decay. 
+^^?? DECAY TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE DECAY = VALUE
+%              COPY 'TRANSFER TO OFFSET = 8 FROM DECAY'
+%            END IF
+%            IF FSCAN THEN
+ * Updating scan type. 
+^^?? SCAN SELECTED
+%              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
+%              EVALUATE SCAN = VALUE 
+%              COPY 'TRANSFER TO OFFSET = 9 FROM SCAN'
+%            END IF
+%            IF FINTRVL THEN
+ * Updating intensity standards interval time. 
+^^?? INTRVL TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE INTRVL = VALUE
+%              COPY 'TRANSFER TO OFFSET = 10 FROM INTRVL'
+%            END IF
+%            IF FRCOUNT THEN
+ * Updating intensity standards interval count. 
+^^?? RCOUNT TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE RCOUNT = VALUE
+%              COPY 'TRANSFER TO OFFSET = 11 FROM RCOUNT'
+%            END IF
+%            IF FINST THEN
+ * Updating instrument type. 
+^^?? INST SELECTED
+%              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
+%              EVALUATE INST = VALUE - 1 
+%              COPY 'TRANSFER TO OFFSET = 12 FROM INST'
+%            END IF
+%%
+%            COPY 'LOCATE RECORDTYPE = 104'
+%%
+%            IF FHMIN THEN
+ * Updating H min. 
+^^?? HMIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE HMIN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 0 FROM HMIN'
+%            END IF
+%            IF FHMAX THEN
+ * Updating H max. 
+^^?? HMAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE HMAX = VALUE
+%              COPY 'TRANSFER TO OFFSET = 1 FROM HMAX'
+%            END IF
+%            IF FKMIN THEN
+ * Updating K min. 
+^^?? KMIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE KMIN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 2 FROM KMIN'
+%            END IF
+%            IF FKMAX THEN
+ * Updating K max. 
+^^?? KMAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE KMAX = VALUE
+%              COPY 'TRANSFER TO OFFSET = 3 FROM KMAX'
+%            END IF
+%            IF FLMIN THEN
+ * Updating L min. 
+^^?? LMIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE LMIN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 4 FROM LMIN'
+%            END IF
+%            IF FLMAX THEN
+ * Updating L max. 
+^^?? LMAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE LMAX = VALUE
+%              COPY 'TRANSFER TO OFFSET = 5 FROM LMAX'
+%            END IF
+%            IF FTHMIN THEN
+ * Updating theta min. 
+^^?? THMIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE THMIN = VALUE
+%              COPY 'TRANSFER TO OFFSET = 6 FROM THMIN'
+%            END IF
+%            IF FTHMAX THEN
+ * Updating theta max. 
+^^?? THMAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE THMAX = VALUE
+%              COPY 'TRANSFER TO OFFSET = 7 FROM THMAX'
+%            END IF
+%%
+%            COPY 'LOCATE RECORDTYPE = 105'
+%%
+%             IF ( FABSTYPE .OR. FABSMIN .OR. FABSMAX ) THEN
+ * Updating absorption infomation. 
+^^?? ABSMIN TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE ABSMIN = VALUE
+^^?? ABSMAX TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE ABSMAX = VALUE
+^^?? ABSTYPE SELECTED
+%              GET NOSTORE SILENT INTEGER ' ' ' '
+%              EVALUATE ABSTYPE = VALUE - 1
+%              COPY 'TRANSFER TO OFFSET = 8 FROM ABSTYPE'
+%              CASE ( ABSTYPE + 1 )
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 6 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 7 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 2 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 3 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 4 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 5 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%              END CASE
+%            END IF
+%%
+%            COPY 'LOCATE RECORDTYPE = 106'
+%%
+%            IF FDOBS THEN
+ * Updating observed (measured) crystal density. 
+^^?? DOBS TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE DOBS = VALUE
+%              COPY 'TRANSFER TO OFFSET = 0 FROM DOBS'
+%            END IF
+%            IF FDCALC THEN
+ * Updating calculated crystal density. 
+^^?? DCALC TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE DCALC = VALUE
+%              COPY 'TRANSFER TO OFFSET = 1 FROM DCALC'
+%            END IF
+%            IF FMOLWT THEN
+ * Updating molecular weight. 
+^^?? MOLWT TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE MOLWT = VALUE
+%              COPY 'TRANSFER TO OFFSET = 4 FROM MOLWT'
+%            END IF
+%            IF FCELLZ THEN
+ * Updating Z. 
+^^?? CELLZ TEXT
+%              GET NOSTORE SILENT FINAL REAL ' ' ' '
+%              EVALUATE CELLZ = VALUE
+%              COPY 'TRANSFER TO OFFSET = 5 FROM CELLZ'
+%            END IF
+%            IF FSOLUTN THEN
+ * Updating structure solution package name. 
+^^?? SOLUTN SELECTED
+%              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
+%              EVALUATE SOLUTN = VALUE - 1 
+%              COPY 'TRANSFER TO OFFSET = 12 FROM SOLUTN'
+%            END IF
+%%
+%            COPY 'LOCATE RECORDTYPE = 107'
+%%
+%            IF FCOLOUR THEN
+ * Updating crystal colour. 
+%              VARIABLE CHARACTER CTEM
+^^?? COLOUR TEXT
+%              GET NOSTORE SILENT FINAL TEXT ' ' ' '
+%              EVALUATE CTEM = CVALUE
+%              COPY 'TRANSFER TO LENGTH = 8 OFFSET = 0 FROM CTEM'
+%            END IF
+%%
+%            COPY 'LOCATE RECORDTYPE = 108'
+%%
+%            IF FSHAPE THEN
+ * Updating crystal shape. 
+%              VARIABLE CHARACTER CTEM
+^^?? SHAPE TEXT
+%              GET NOSTORE SILENT FINAL TEXT ' ' ' '
+%              EVALUATE CTEM = CVALUE
+%              COPY 'TRANSFER TO LENGTH = 8 OFFSET = 0 FROM CTEM'
+%            END IF
+%%
+%%
+%            COPY 'WRITE'
+%            COPY 'END'
+%            EVALUATE LOOPEND = LOOPCOUNTER
+^^CO         DISPOSE ED30
+%      END BLOCK
+%    END CASE
+%  END LOOP
+%END SCRIPT
