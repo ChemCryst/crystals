@@ -931,8 +931,8 @@ C&&GILWXS      character*70 text
       CHARACTER*80 ntext
       
       NTEXT = TEXT
-      WRITE(99,'(2A)')'zmore1:  ',text
-      WRITE(99,'(2A)')'zmore1n: ',ntext
+c      WRITE(99,'(2A)')'zmore1:  ',text
+c      WRITE(99,'(2A)')'zmore1n: ',ntext
 
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
