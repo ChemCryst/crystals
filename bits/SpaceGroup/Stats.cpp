@@ -100,7 +100,7 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short
     }
 }
 
-ElemStats* Stats::getElem(int pHeadIndex, int pCondIndex)
+ElemStats* Stats::getElem(const int pHeadIndex, const int pCondIndex) const
 {
     int tCCount = iConditions->length();    //Cache lengths of the table.
     return &(iStats[(pHeadIndex*tCCount)+pCondIndex]);
@@ -125,7 +125,7 @@ void Stats::addReflection(Reflection* pReflection)
     }
 }
 
-inline int Stats::numberOfOutElementValues()
+inline int Stats::numberOfOutElementValues() const
 {
     return kNumberOfOutputValues;
 }
@@ -180,7 +180,7 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
     return pStream;
 }*/
 
-void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums,  int pFirstColumnWidth, int pOtherColumns)
+void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums,  const int pFirstColumnWidth, const int pOtherColumns)
 {
     int tCCount = iConditions->length();
     String tName(iConditions->getName(pRow));
@@ -286,7 +286,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     }
 }
 
-void Stats::outputHeadings(std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums)
+void Stats::outputHeadings(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums)
 {
     pStream << setw(9);
     for (int i = 0; i < pNumOfColums; i++)
@@ -357,7 +357,7 @@ std::ostream& outputMatrix(std::ostream& pStream, Matrix<short>* pMatrix)
     return pStream;
 }
 
-std::ofstream& Stats::output(std::ofstream& pStream, Table& pTable)
+std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
 {
     pStream << "TOTAL " << iTotalNum <<"\n";
     pStream << "AVINT " << iTotalIntensity/iTotalNum << "\n";
@@ -402,7 +402,7 @@ std::ofstream& Stats::output(std::ofstream& pStream, Table& pTable)
     return pStream;
 }
 
-std::ostream& Stats::output(std::ostream& pStream, Table& pTable)
+std::ostream& Stats::output(std::ostream& pStream, const Table& pTable)
 {
     pStream << "Total: " << iTotalNum <<"\n";
     pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
