@@ -57,6 +57,7 @@ class CxModel : public BASEMODEL
             void NeedRedraw();
             void NewSize(int cx, int cy);
             void ChooseCursor( int cursor );
+            void PaintBannerInstead(CPaintDC *dc);
 
 // The usual functions:
 		static CxModel *	CreateCxModel( CrModel * container, CxGrid * guiParent );
@@ -122,6 +123,10 @@ class CxModel : public BASEMODEL
 		BOOL CreateViewGLContext(HDC hDC);
 		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
 		CDC memDC;
+            CBitmap m_bitmap;
+            Boolean m_bitmapok;
+            CPalette m_pal;
+
 
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnPaint();

@@ -37,10 +37,6 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
       if((theStdModel->SetWindowPixelFormat(hdc))==false) return nil;
       if((theStdModel->CreateViewGLContext(hdc))==false) return nil;
 	theStdModel->Setup();
-//      GLsizei oneList = 1;
-//      theStdModel->mNormal = glGenLists(oneList);
-//      theStdModel->mHighlights = glGenLists(oneList);
-//      theStdModel->mLitatom = glGenLists(oneList);
 #endif
 #ifdef __LINUX__
       theStdModel->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10));
@@ -80,6 +76,7 @@ CxModel::CxModel(CrModel* container)
 
 #ifdef __WINDOWS__
 	m_hGLContext = NULL;
+      m_bitmapok = true;
 #endif
 }
 
@@ -179,6 +176,7 @@ void CxModel::OnPaint()
 
 
     CPaintDC dc(this); // device context for painting
+
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 
@@ -233,18 +231,26 @@ void CxModel::OnPaint()
     glMultMatrixf ( mat );
     glScalef     ( m_xScale, m_xScale, m_xScale );
 
-     if(m_fastrotate)
-     {
-            ((CrModel*)mWidget)->RenderModel(false);
-     }
-     else
-     {
-            ((CrModel*)mWidget)->RenderModel(true);
-     }
 
-     glPopMatrix();
+    Boolean haveRendered = ((CrModel*)mWidget)->RenderModel(!m_fastrotate);
 
-     SwapBuffers(hdc);       
+
+    glPopMatrix();
+
+
+    if ( haveRendered )
+    {
+
+      SwapBuffers(hdc);       
+
+    }
+    else
+    {
+      PaintBannerInstead( &dc );
+    }
+
+
+
 
 }
 
@@ -416,7 +422,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                         if(m_LitAtom != atom) //avoid excesive redrawing, it flickers.
                         {
                               m_LitAtom = atom;
-                              (CcController::theController)->SetProgressText(atomname);
+                              (CcController::theController)->SetProgressText(&atomname);
                               NeedRedraw();
                         }
                         SetCursor( AfxGetApp()->LoadCursor(IDC_POINTER_COPY) );
@@ -424,7 +430,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                   else if (m_LitAtom != nil) //Not over an atom, but one is still lit. Redraw.
                   {
                         m_LitAtom = nil;
-                        (CcController::theController)->SetProgressText("Ready");
+                        (CcController::theController)->SetProgressText(NULL);
                         NeedRedraw();
                         SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
                   }
@@ -508,6 +514,63 @@ void CxModel::Setup()
 
             glEnable(GL_LIGHT0);
             glEnable(GL_LIGHTING);
+
+
+// This is for the PaintBannerInstead() function.
+        LPCTSTR lpszResourceName = (LPCTSTR)IDB_SPLASH;
+
+        HBITMAP hBmp = (HBITMAP)::LoadImage( AfxGetInstanceHandle(), 
+                 lpszResourceName, IMAGE_BITMAP, 0,0, LR_CREATEDIBSECTION );
+
+        if( hBmp == NULL ) 
+        {
+                m_bitmapok = false;
+                return;
+        }
+        m_bitmap.Attach( hBmp );
+
+        // Create a logical palette for the bitmap
+        DIBSECTION ds;
+        BITMAPINFOHEADER &bmInfo = ds.dsBmih;
+        m_bitmap.GetObject( sizeof(ds), &ds );
+
+        int nColors = bmInfo.biClrUsed ? bmInfo.biClrUsed : 1 << bmInfo.biBitCount;
+
+        // Create a halftone palette if colors > 256. 
+        CClientDC dc(NULL);                     // Desktop DC
+        if( nColors > 256 )
+                m_pal.CreateHalftonePalette( &dc );
+        else
+        {
+                // Create the palette
+
+                RGBQUAD *pRGB = new RGBQUAD[nColors];
+                CDC memDC;
+                memDC.CreateCompatibleDC(&dc);
+
+                memDC.SelectObject( &m_bitmap );
+                ::GetDIBColorTable( memDC, 0, nColors, pRGB );
+
+                UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * nColors);
+                LOGPALETTE *pLP = (LOGPALETTE *) new BYTE[nSize];
+
+                pLP->palVersion = 0x300;
+                pLP->palNumEntries = nColors;
+
+                for( int i=0; i < nColors; i++)
+                {
+                        pLP->palPalEntry[i].peRed = pRGB[i].rgbRed;
+                        pLP->palPalEntry[i].peGreen = pRGB[i].rgbGreen;
+                        pLP->palPalEntry[i].peBlue = pRGB[i].rgbBlue;
+                        pLP->palPalEntry[i].peFlags = 0;
+                }
+
+                m_pal.CreatePalette( pLP );
+
+                delete[] pLP;
+                delete[] pRGB;
+        }
+
 }
 
 
@@ -852,6 +915,7 @@ void CxModel::SetIdealHeight(int nCharsHigh)
 {
 #ifdef __WINDOWS__
 	CClientDC cdc(this);
+      cdc.SetBkColor ( RGB ( 255,255,255 ) );
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
@@ -867,6 +931,7 @@ void CxModel::SetIdealWidth(int nCharsWide)
 {
 #ifdef __WINDOWS__
 	CClientDC cdc(this);
+      cdc.SetBkColor ( RGB ( 255,255,255 ) );
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
@@ -1059,3 +1124,53 @@ void CxModel::SetShading( Boolean shade )
       m_Shading = shade;
       NeedRedraw();
 }
+
+
+
+
+
+
+
+
+void CxModel::PaintBannerInstead( CPaintDC * dc )
+{
+
+
+
+        // Create a memory DC compatible with the paint DC
+        CDC memDC;
+        memDC.CreateCompatibleDC( dc );
+
+        CBitmap *pBmpOld = memDC.SelectObject( &m_bitmap );
+
+        // Select and realize the palette
+        if( dc->GetDeviceCaps(RASTERCAPS) & RC_PALETTE && m_pal.m_hObject != NULL )
+        {
+                dc->SelectPalette( &m_pal, FALSE );
+                dc->RealizePalette();
+        }
+
+
+        CRect rcWnd;
+        GetWindowRect( &rcWnd );
+
+
+        BITMAP bm;
+        m_bitmap.GetBitmap(&bm);
+
+        int w = bm.bmWidth;
+        int h = bm.bmHeight;
+
+        dc->StretchBlt(0,0,rcWnd.Width(),rcWnd.Height(),
+                   &memDC,
+                   0, 0, bm.bmWidth, bm.bmHeight,
+                   SRCCOPY);
+
+        // Restore bitmap in memDC
+        memDC.SelectObject( pBmpOld );
+
+
+
+
+}
+
