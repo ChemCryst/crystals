@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2003/09/24 08:40:02  rich
+C Modified XPURGE so that if a list-specific purge is being done in-situ (ie.
+C not a 'PURGE NEW'), the new .dsc is initially built in a direct access
+C scratch file and then copied back over the currently open dsc. This prevents
+C the new index (written before data is shuffled around) from overwriting low
+C lying, unchanging lists in the file. (i.e. 1,2 and 3). For extra safety,
+C the internal disk cache buffer is re-initialised before continuing.
+C
 C Revision 1.15  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -1879,9 +1887,11 @@ C Close new DA file / copy back from scratch.
       ELSE IF ( NEWFIL .EQ. 2 ) THEN  ! Copy back over current dsc
         NRECOR = 1
         IOS = ISSOKF
-        DO WHILE ( IOS .EQ. ISSOKF )          
+        DO WHILE ( IOS .EQ. ISSOKF )
           READ ( NUNEW, REC = NRECOR, ERR = 2740, IOSTAT = IOS ) IRECOR
-          WRITE( NUOLD, REC = NRECOR, ERR = 2735, IOSTAT = IOS ) IRECOR
+          IF ( IOS .EQ. ISSOKF ) THEN
+            WRITE(NUOLD,REC = NRECOR, ERR = 2735, IOSTAT = IOS )IRECOR
+          END IF
           NRECOR = NRECOR + 1
         END DO
         GOTO 2740
