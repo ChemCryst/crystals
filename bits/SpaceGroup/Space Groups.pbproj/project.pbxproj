@@ -19,7 +19,8 @@
 			buildRules = (
 			);
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O3";
 			};
 			isa = PBXBuildStyle;
 			name = Deployment;
@@ -36,11 +37,12 @@
 //024
 		0249A660FF388D4511CA2CEA = {
 			isa = PBXExecutableFileReference;
-			path = "Space Groups";
+			path = TheDeterminator;
 			refType = 3;
 		};
 		0249A662FF388D9811CA2CEA = {
 			children = (
+				3BAB726204AC96BD00011915,
 				F511107803A266DE0101B5AE,
 				0249A663FF388D9811CA2CEA,
 			);
@@ -86,13 +88,16 @@
 		};
 		08FB7794FE84155DC02AAC07 = {
 			children = (
+				3BC3D0A404AA06FB00011915,
+				3BC3D0A304AA06CB00011915,
+				3BC3D0A204AA069500011915,
 				08FB7795FE84155DC02AAC07,
 				C6859E8C029090F304C91782,
 				F8C4E88C03DDB93000011915,
 				0249A662FF388D9811CA2CEA,
 				F5C515740378131B01011915,
 				1AB674ADFE9D54B511CA2CBB,
-				F539574003AF80950101B5AE,
+				F8F1DD7B03F9581F00011915,
 			);
 			isa = PBXGroup;
 			name = "Space Groups";
@@ -100,26 +105,20 @@
 		};
 		08FB7795FE84155DC02AAC07 = {
 			children = (
-				08FB7796FE84155DC02AAC07,
-				F5DE4336036EE5910101B5AE,
-				F5DE4337036EE5910101B5AE,
-				F572E58D036FF8800101B5AE,
-				F572E58E036FF8800101B5AE,
-				F572E591037042B80101B5AE,
-				F8FC943403E68EF400695130,
-				F8FC943503E68EF400695130,
-				F5C51575037815B101011915,
-				F5C51576037815B101011915,
-				F5C5157B03782D6A01011915,
-				F5C5157C03782D6A01011915,
-				F525DE7103853E3301FEE3E3,
-				F525DE7203853E3301FEE3E3,
-				F525DE7D03853F5301FEE3E3,
+				3B637C2F04C43BC4004D5D8B,
 				F51B0C13039FB8840101B5AE,
+				F572E58D036FF8800101B5AE,
+				3BAB4EFA04C56A1800000102,
+				F82DBE460403A9F80001B5AE,
+				3BC3D08D04AA007900011915,
+				F5DE4336036EE5910101B5AE,
+				3B637C3004C43BC4004D5D8B,
 				F51B0C14039FB8840101B5AE,
-				F5838D7903A7871C0101B5AE,
-				F5838D7A03A7871C0101B5AE,
-				F5D3DBDA03CB19200168AFD7,
+				F572E58E036FF8800101B5AE,
+				3BAB4EFB04C56A1800000102,
+				F82DBE470403A9F80001B5AE,
+				3BC3D08E04AA007900011915,
+				F5DE4337036EE5910101B5AE,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -140,16 +139,18 @@
 				C6859E8D0290911004C91782,
 			);
 			buildSettings = {
+				CC = "/usr/bin/gcc-3.3";
+				CPLUSPLUS = "/usr/bin/g++-3.3";
 				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_VERSION = 2.x;
-				HEADER_SEARCH_PATHS = "\"/Users/stefan/Documents/Code Library/Headers\"";
+				GCC_VERSION = 3.x;
+				HEADER_SEARCH_PATHS = /Users/stefanpa/Documents/CodeLibrary/Headers;
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lm";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Space Groups";
+				PRODUCT_NAME = TheDeterminator;
+				PROFILING_CODE = YES;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -157,7 +158,7 @@
 			dependencies = (
 			);
 			isa = PBXToolTarget;
-			name = "Space Groups";
+			name = TheDeterminator;
 			productInstallPath = "$(HOME)/bin";
 			productName = "Space Groups";
 			productReference = 0249A660FF388D4511CA2CEA;
@@ -169,10 +170,22 @@
 				F572E58F036FF8800101B5AE,
 				F572E592037042B80101B5AE,
 				F5C51577037815B101011915,
-				F51B0C03039E351D0101B5AE,
 				F53319BE03A679EE0101B5AE,
 				F5838D7B03A7871C0101B5AE,
 				F8FC943603E68EF400695130,
+				F8CD5A12042A63C40001B5AE,
+				3BAD916F045FEC8000011915,
+				3B5C2A0D04851A1300011915,
+				3B4736AF048BB32F00011915,
+				3BFE29A3048E30470079DC6A,
+				3BA7931404962C9E00011915,
+				3BBE88160497941300011915,
+				3BF0847604A75405002DB875,
+				3BC3D08F04AA007900011915,
+				3BC3D09304AA032800011915,
+				3BC3D0A704AA1CC100011915,
+				3B637C3104C43BC4004D5D8B,
+				3BAB4EFF04C5A4F400000102,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -183,14 +196,24 @@
 				08FB77A2FE84155DC02AAC07,
 				F5DE4339036EE5910101B5AE,
 				F572E590036FF8800101B5AE,
-				F5875532037BF6330101B5AE,
 				F525DE7B03853F2901FEE3E3,
 				F525DE7C03853F2B01FEE3E3,
 				F525DE7E03853F5301FEE3E3,
 				F51B0C04039E351D0101B5AE,
 				F53319BD03A679ED0101B5AE,
-				F5838D7C03A7871C0101B5AE,
 				F8FC943703E68EF400695130,
+				F82DC16B040A307F0001B5AE,
+				F8BF872804165F630001B5AE,
+				F85758960430B8CA00011915,
+				3B5C2A0E04851A1300011915,
+				3BFE29A4048E30470079DC6A,
+				3BA7931504962C9E00011915,
+				3BF084CD04A75C57002DB875,
+				3BC3D09004AA007900011915,
+				3BC3D09404AA032800011915,
+				3BC3D0A804AA1CC100011915,
+				3B637C3204C43BC4004D5D8B,
+				3BAB4EFE04C5A4F400000102,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,6 +266,341 @@
 //1A2
 //1A3
 //1A4
+//3B0
+//3B1
+//3B2
+//3B3
+//3B4
+		3B13F0CB04A346A400011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Wrappers.h;
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/Wrappers.h;
+			refType = 0;
+		};
+		3B13F0CC04A346A400011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Wrappers.cpp;
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/Wrappers.cpp;
+			refType = 0;
+		};
+		3B4736AF048BB32F00011915 = {
+			fileRef = F5C515700378120001011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3B5C2A0B04851A1300011915 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = PCPort.h;
+			refType = 4;
+		};
+		3B5C2A0C04851A1300011915 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = PCPort.cpp;
+			refType = 4;
+		};
+		3B5C2A0D04851A1300011915 = {
+			fileRef = 3B5C2A0B04851A1300011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3B5C2A0E04851A1300011915 = {
+			fileRef = 3B5C2A0C04851A1300011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3B637C2E04C42FA9004D5D8B = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = pseudotranslation.for;
+			refType = 4;
+		};
+		3B637C2F04C43BC4004D5D8B = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = Conditions.h;
+			refType = 4;
+		};
+		3B637C3004C43BC4004D5D8B = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = Conditions.cpp;
+			refType = 4;
+		};
+		3B637C3104C43BC4004D5D8B = {
+			fileRef = 3B637C2F04C43BC4004D5D8B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3B637C3204C43BC4004D5D8B = {
+			fileRef = 3B637C3004C43BC4004D5D8B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BA7931204962C9E00011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = RunParameters.h;
+			refType = 4;
+		};
+		3BA7931304962C9E00011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = RunParameters.cpp;
+			refType = 4;
+		};
+		3BA7931404962C9E00011915 = {
+			fileRef = 3BA7931204962C9E00011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BA7931504962C9E00011915 = {
+			fileRef = 3BA7931304962C9E00011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BAB4EF904C5586700000102 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = merge.for;
+			refType = 4;
+		};
+		3BAB4EFA04C56A1800000102 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = ReflectionMerging.h;
+			refType = 4;
+		};
+		3BAB4EFB04C56A1800000102 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = ReflectionMerging.cpp;
+			refType = 4;
+		};
+		3BAB4EFE04C5A4F400000102 = {
+			fileRef = 3BAB4EFB04C56A1800000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BAB4EFF04C5A4F400000102 = {
+			fileRef = 3BAB4EFA04C56A1800000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BAB726204AC96BD00011915 = {
+			isa = PBXFileReference;
+			name = libMallocDebug.a;
+			path = /usr/lib/libMallocDebug.a;
+			refType = 0;
+		};
+		3BAD916E045FEC8000011915 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = ComClasses.h;
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/ComClasses.h;
+			refType = 0;
+		};
+		3BAD916F045FEC8000011915 = {
+			fileRef = 3BAD916E045FEC8000011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BBE88160497941300011915 = {
+			fileRef = F5C5157B03782D6A01011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC3D08D04AA007900011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SpaceGroups.h;
+			refType = 4;
+		};
+		3BC3D08E04AA007900011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SpaceGroups.cpp;
+			refType = 4;
+		};
+		3BC3D08F04AA007900011915 = {
+			fileRef = 3BC3D08D04AA007900011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC3D09004AA007900011915 = {
+			fileRef = 3BC3D08E04AA007900011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC3D09104AA032800011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = BaseTypes.h;
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/BaseTypes.h;
+			refType = 0;
+		};
+		3BC3D09204AA032800011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = BaseTypes.cpp;
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/BaseTypes.cpp;
+			refType = 0;
+		};
+		3BC3D09304AA032800011915 = {
+			fileRef = 3BC3D09104AA032800011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC3D09404AA032800011915 = {
+			fileRef = 3BC3D09204AA032800011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC3D0A204AA069500011915 = {
+			children = (
+				3BC3D09104AA032800011915,
+				F572E591037042B80101B5AE,
+				3BAD916E045FEC8000011915,
+				F5C51575037815B101011915,
+				F5C5157B03782D6A01011915,
+				F5838D7903A7871C0101B5AE,
+				F5C515700378120001011915,
+				F8FC943403E68EF400695130,
+				3BC3D0A504AA1CC100011915,
+				3B13F0CB04A346A400011915,
+				3BC3D09204AA032800011915,
+				F525DE7D03853F5301FEE3E3,
+				F5C51576037815B101011915,
+				F5C5157C03782D6A01011915,
+				F86CDFC70414E9780001B5AE,
+				F525DE7203853E3301FEE3E3,
+				F8FC943503E68EF400695130,
+				3BC3D0A604AA1CC100011915,
+				3B13F0CC04A346A400011915,
+			);
+			isa = PBXGroup;
+			name = Collections;
+			refType = 4;
+		};
+		3BC3D0A304AA06CB00011915 = {
+			children = (
+				3BFE29A1048E30470079DC6A,
+				3BA7931204962C9E00011915,
+				3BFE29A2048E30470079DC6A,
+				08FB7796FE84155DC02AAC07,
+				3BA7931304962C9E00011915,
+			);
+			isa = PBXGroup;
+			name = IO;
+			refType = 4;
+		};
+		3BC3D0A404AA06FB00011915 = {
+			children = (
+				3B5C2A0B04851A1300011915,
+				F525DE7103853E3301FEE3E3,
+				3B5C2A0C04851A1300011915,
+			);
+			isa = PBXGroup;
+			name = Other;
+			refType = 4;
+		};
+		3BC3D0A504AA1CC100011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Trees.h;
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/Trees.h;
+			refType = 0;
+		};
+		3BC3D0A604AA1CC100011915 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Trees.cpp;
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/Trees.cpp;
+			refType = 0;
+		};
+		3BC3D0A704AA1CC100011915 = {
+			fileRef = 3BC3D0A504AA1CC100011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC3D0A804AA1CC100011915 = {
+			fileRef = 3BC3D0A604AA1CC100011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BC6DAE70469165E00011915 = {
+			includeInIndex = 1;
+			isa = PBXFolderReference;
+			path = Docs;
+			refType = 4;
+		};
+		3BC6DAFA0469165E00011915 = {
+			fileRef = 3BC6DAE70469165E00011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BF0847604A75405002DB875 = {
+			fileRef = 3B13F0CB04A346A400011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BF084CD04A75C57002DB875 = {
+			fileRef = 3B13F0CC04A346A400011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BFE29A1048E30470079DC6A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = InteractiveControl.h;
+			refType = 4;
+		};
+		3BFE29A2048E30470079DC6A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = InteractiveControl.cpp;
+			refType = 4;
+		};
+		3BFE29A3048E30470079DC6A = {
+			fileRef = 3BFE29A1048E30470079DC6A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		3BFE29A4048E30470079DC6A = {
+			fileRef = 3BFE29A2048E30470079DC6A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//3B0
+//3B1
+//3B2
+//3B3
+//3B4
 //C60
 //C61
 //C62
@@ -257,7 +615,7 @@
 		C6859E8C029090F304C91782 = {
 			children = (
 				C6859E8B029090EE04C91782,
-				F502A8130394EF7001011915,
+				3BC6DAE70469165E00011915,
 			);
 			isa = PBXGroup;
 			name = Documentation;
@@ -270,9 +628,7 @@
 			files = (
 				C6859E900290913A04C91782,
 				F5C51573037812A901011915,
-				F502A8140394EF7001011915,
-				F8C4E88F03DDB96000011915,
-				F8C4E89003DDB96100011915,
+				3BC6DAFA0469165E00011915,
 			);
 			isa = PBXCopyFilesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 1;
@@ -293,18 +649,6 @@
 //F52
 //F53
 //F54
-		F502A8130394EF7001011915 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = SpaceGroupTable;
-			refType = 4;
-		};
-		F502A8140394EF7001011915 = {
-			fileRef = F502A8130394EF7001011915;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F511107803A266DE0101B5AE = {
 			isa = PBXFrameworkReference;
 			name = vecLib.framework;
@@ -313,12 +657,6 @@
 		};
 		F511108603A266DE0101B5AE = {
 			fileRef = F511107803A266DE0101B5AE;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F51B0C03039E351D0101B5AE = {
-			fileRef = F5C5157B03782D6A01011915;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -345,14 +683,14 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = ReadWriteLock.cpp;
-			path = "/Users/stefan/Documents/Code Library/CPP/ReadWriteLock.cpp";
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/ReadWriteLock.cpp;
 			refType = 0;
 		};
 		F525DE7203853E3301FEE3E3 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = semaphore.cpp;
-			path = "/Users/stefan/Documents/Code Library/CPP/semaphore.cpp";
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/semaphore.cpp;
 			refType = 0;
 		};
 		F525DE7B03853F2901FEE3E3 = {
@@ -371,7 +709,7 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = ComClasses.cpp;
-			path = "/Users/stefan/Documents/Code Library/CPP/ComClasses.cpp";
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/ComClasses.cpp;
 			refType = 0;
 		};
 		F525DE7E03853F5301FEE3E3 = {
@@ -391,13 +729,6 @@
 			isa = PBXBuildFile;
 			settings = {
 			};
-		};
-		F539574003AF80950101B5AE = {
-			includeInIndex = 1;
-			isa = PBXFolderReference;
-			name = Desktop;
-			path = /Users/stefan/Desktop;
-			refType = 0;
 		};
 		F572E58D036FF8800101B5AE = {
 			fileEncoding = 30;
@@ -427,7 +758,7 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = Collections.h;
-			path = "/Users/stefan/Documents/Code Library/Headers/Collections.h";
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/Collections.h;
 			refType = 0;
 		};
 		F572E592037042B80101B5AE = {
@@ -440,14 +771,7 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = MathFunctions.h;
-			path = "/Users/stefan/Documents/Code Library/Headers/MathFunctions.h";
-			refType = 0;
-		};
-		F5838D7A03A7871C0101B5AE = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			name = MathFunctions.c;
-			path = "/Users/stefan/Documents/Code Library/C/MathFunctions.c";
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/MathFunctions.h;
 			refType = 0;
 		};
 		F5838D7B03A7871C0101B5AE = {
@@ -456,28 +780,16 @@
 			settings = {
 			};
 		};
-		F5838D7C03A7871C0101B5AE = {
-			fileRef = F5838D7A03A7871C0101B5AE;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F5875532037BF6330101B5AE = {
-			fileRef = F5C51576037815B101011915;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F5C515580378103E01011915 = {
 			isa = PBXFileReference;
-			name = semaphore.o;
-			path = "/Users/stefan/Documents/Code Library/Objects/semaphore.o";
+			name = ReadWriteLock.o;
+			path = /Users/stefan/Documents/CodeLibrary/Objects/ReadWriteLock.o;
 			refType = 0;
 		};
 		F5C515590378103E01011915 = {
 			isa = PBXFileReference;
-			name = ReadWriteLock.o;
-			path = "/Users/stefan/Documents/Code Library/Objects/ReadWriteLock.o";
+			name = semaphore.o;
+			path = /Users/stefan/Documents/CodeLibrary/Objects/semaphore.o;
 			refType = 0;
 		};
 		F5C51568037811C101011915 = {
@@ -560,7 +872,7 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = semaphore.h;
-			path = "/Users/stefan/Documents/Code Library/Headers/semaphore.h";
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/semaphore.h;
 			refType = 0;
 		};
 		F5C515720378120201011915 = {
@@ -579,7 +891,6 @@
 			children = (
 				F5C515580378103E01011915,
 				F5C515590378103E01011915,
-				F5C515700378120001011915,
 			);
 			isa = PBXGroup;
 			name = Semaphores;
@@ -615,22 +926,16 @@
 			path = Matrices.cpp;
 			refType = 4;
 		};
-		F5D3DBDA03CB19200168AFD7 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = Temp;
-			refType = 4;
-		};
 		F5DE4336036EE5910101B5AE = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = Determin.h;
+			path = UnitCell.h;
 			refType = 4;
 		};
 		F5DE4337036EE5910101B5AE = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = Determin.cpp;
+			path = UnitCell.cpp;
 			refType = 4;
 		};
 		F5DE4338036EE5910101B5AE = {
@@ -655,10 +960,58 @@
 //F82
 //F83
 //F84
+		F82DBE460403A9F80001B5AE = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = Stats.h;
+			refType = 4;
+		};
+		F82DBE470403A9F80001B5AE = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = Stats.cpp;
+			refType = 4;
+		};
+		F82DC16B040A307F0001B5AE = {
+			fileRef = F82DBE470403A9F80001B5AE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F85758960430B8CA00011915 = {
+			fileRef = F5C51576037815B101011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F86CDFC70414E9780001B5AE = {
+			fileEncoding = 30;
+			indentWidth = 4;
+			isa = PBXFileReference;
+			name = MathFunctions.cpp;
+			path = /Users/stefanpa/Documents/CodeLibrary/C/MathFunctions.cpp;
+			refType = 0;
+			usesTabs = 0;
+		};
+		F8BF872804165F630001B5AE = {
+			fileRef = F86CDFC70414E9780001B5AE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F8C0232803F00EA100011915 = {
+			isa = PBXFileReference;
+			name = co1c.hkl;
+			path = "Test files/co1c.hkl";
+			refType = 4;
+		};
 		F8C4E88C03DDB93000011915 = {
 			children = (
+				F8C0232803F00EA100011915,
 				F8C4E88D03DDB95600011915,
 				F8C4E88E03DDB95600011915,
+				3BAB4EF904C5586700000102,
+				3B637C2E04C42FA9004D5D8B,
 			);
 			isa = PBXGroup;
 			name = Data;
@@ -677,30 +1030,30 @@
 			path = Data/Tables.txt;
 			refType = 4;
 		};
-		F8C4E88F03DDB96000011915 = {
-			fileRef = F8C4E88D03DDB95600011915;
+		F8CD5A12042A63C40001B5AE = {
+			fileRef = F82DBE460403A9F80001B5AE;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		F8C4E89003DDB96100011915 = {
-			fileRef = F8C4E88E03DDB95600011915;
-			isa = PBXBuildFile;
-			settings = {
-			};
+		F8F1DD7B03F9581F00011915 = {
+			includeInIndex = 1;
+			isa = PBXFolderReference;
+			path = Data;
+			refType = 4;
 		};
 		F8FC943403E68EF400695130 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
-			name = StringClassses.h;
-			path = "/Users/stefan/Documents/Code Library/Headers/StringClassses.h";
+			name = StringClasses.h;
+			path = /Users/stefanpa/Documents/CodeLibrary/Headers/StringClasses.h;
 			refType = 0;
 		};
 		F8FC943503E68EF400695130 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
-			name = StringClassses.cpp;
-			path = "/Users/stefan/Documents/Code Library/CPP/StringClassses.cpp";
+			name = StringClasses.cpp;
+			path = /Users/stefanpa/Documents/CodeLibrary/CPP/StringClasses.cpp;
 			refType = 0;
 		};
 		F8FC943603E68EF400695130 = {
