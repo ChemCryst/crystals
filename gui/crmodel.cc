@@ -278,6 +278,16 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 				}
 				break;
 			}
+                        case kTDisableAtoms:
+			{
+                                tokenList->GetToken(); //Remove the kTDisableAtoms token!
+                                CcString atomLabel = tokenList->GetToken();
+                                Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+                                tokenList->GetToken(); //Remove the kTYes/kTNo token
+                                if(mAttachedModelDoc)
+                                        mAttachedModelDoc->DisableAtomByLabel(atomLabel,select);
+				break;
+			}
 			case kTCheckValue:
 			{
 				tokenList->GetToken();
@@ -607,6 +617,8 @@ void CrModel::GetValue()
 void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 {
       int style = (output) ? CR_SENDA : m_AtomSelectAction;
+
+        if (atom->m_disabled) return;
 
 	CcString atomname = atom->Label();
 	switch ( style )
