@@ -133,7 +133,7 @@
 %     INSERT "%EVALUATE CATM = '"
 %     LOOP
 %       ON END TERMINATE
-%       GET SILENT KEYWORD 'atom' 'END'
+%       GET SILENT TEXT 'atom' 'END'
 %     END LOOP
 %     INSERT "'"
 %     EXECUTE
