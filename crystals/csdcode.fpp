@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  1999/04/26 10:59:23  dosuser
+C RIC: Removed unneccesary brackets in I/O list.
+C      Comment starting ! on a line with no Fortran code wasn't liked
+C      by the Salford compiler.
+C      HYBR was zeroed as a scalar, instead of an array.
+C
 C Revision 1.1  1999/03/20 20:30:11  dosuser
 C RIC: 2D searching code provided by CCDC from the PLUTO program,
 C      plus a couple of subroutines to fill in the PLUTO data
@@ -25,16 +31,16 @@ C
 C           BBLK(n,9) Flag. Non-zero indicates that this bond is not to
 C                     be checked, but it is used to generate bond codes.
 C
-C     Things worked out in this subroutine.
-C           BBLK(n,8) (bond length - bond sample mean) / sample stddev
-C           i.e. How many stddev's the bond lies from its CSD average value.
+C Things worked out in this subroutine:
+C     BBLK(n,8) (bond length - bond sample mean) / sample stddev
+C     i.e. How many stddev's the bond lies from its CSD average value.
 C
-C           A unique code for the bond.
-C           Bond mean and stddev are looked up from a file.
-C           If they are not present, they are read from a csd .TAB file
-C           in the current directory.
-C           If this file is not present a csd input file is written which
-C           may be used to generate the csd .TAB file.
+C     A unique code for the bond.
+C     Bond mean and stddev are looked up from a file.
+C     If they are not present, they are read from a csd .TAB file
+C     in the current directory.
+C     If this file is not present a csd input file is written which
+C     may be used to generate the csd .TAB file.
 C
 C
 C Check bond lengths against know bond lengths from CSD
@@ -357,6 +363,318 @@ C Bond type found print out data
 700		CONTINUE
          END IF
 800	CONTINUE
+
+	RETURN
+
+
+C New code which will check angles once written.
+C Remove the RETURN above to activate.
+
+
+C Check each angle once.
+      DO 1800 I = 1, NB18
+C Bonds not to be checked are flagged non zero at offset 9.
+         IF ( IBLK (I,8) .EQ. 0 ) THEN
+            IAT1N = IBLK(I,1)
+		IAT1S = NINT(BBLK(I,2))
+		IAT2N = IBLK(I,3)
+		IAT2S = NINT(BBLK(I,4))
+		BLEN = BBLK(I,5)
+		ITYPE = NINT(BBLK(I,6))
+            IRING = IBLK(I,7)
+
+		ABLK1(1) = BBLK(I,1)
+		ABLK2(1) = BBLK(I,3)
+		ABLK1(2) = 0.0
+		ABLK2(2) = 0.0
+		
+C Search for contacts to AT1.
+            DO 1100 J = 1, NB18
+		  IF(I.NE.J) THEN
+		    IF(       ( IAT1N.EQ.       IBLK(J,1)   ) 
+     1               .AND. ( IAT1S.EQ. NINT( BBLK(J,2) ) ) )THEN
+			  ABLK1(2)=NINT(ABLK1(2)) + 1.0
+			  ABLK1( 2 * NINT(ABLK1(2)) + 1 ) = BBLK(J,3)
+			  ABLK1( 2 * NINT(ABLK1(2)) + 2 ) = BBLK(J,6)
+		    ELSE IF(  ( IAT1N.EQ.       IBLK(J,3)   ) 
+     1               .AND. ( IAT1S.EQ. NINT( BBLK(J,4) ) ) )THEN
+			  ABLK1(2)=NINT(ABLK1(2)) + 1.0
+			  ABLK1( 2 * NINT(ABLK1(2)) + 1 ) = BBLK(J,1)
+			  ABLK1( 2 * NINT(ABLK1(2)) + 2 ) = BBLK(J,6)
+		    END IF
+	      ENDIF
+1100         CONTINUE
+
+C Search for contacts to AT2.
+            DO 1200 J = 1, NB18
+		  IF(I.NE.J) THEN
+		    IF(       ( IAT2N.EQ.       IBLK(J,1)   ) 
+     1               .AND. ( IAT2S.EQ. NINT( BBLK(J,2) ) ) )THEN
+			  ABLK2(2)=NINT(ABLK2(2)) + 1.0
+			  ABLK2( 2 * NINT(ABLK2(2)) + 1 ) = BBLK(J,3)
+			  ABLK2( 2 * NINT(ABLK2(2)) + 2 ) = BBLK(J,6)
+		    ELSE IF(  ( IAT2N.EQ.       IBLK(J,3)   ) 
+     1               .AND. ( IAT2S.EQ. NINT( BBLK(J,4) ) ) )THEN
+			  ABLK2(2)=NINT(ABLK2(2)) + 1.0
+			  ABLK2( 2 * NINT(ABLK2(2)) + 1 ) = BBLK(J,1)
+			  ABLK2( 2 * NINT(ABLK2(2)) + 2 ) = BBLK(J,6)
+		    END IF
+	      ENDIF
+1200         CONTINUE
+
+
+C -- Generate unique name.
+
+C Sort ABLK1 into alphabetical order.
+		IF(NINT(ABLK1(2)).GE.2) THEN
+              DO 1300 J = 2, NINT(ABLK1(2))
+C Pick out an element.
+			WRITE(CTEMP,'(A4)')ABLK1(J*2+1)
+			RTEMP = ABLK1(J*2+1)
+			ITEMP = NINT(ABLK1(J*2+2))
+C Find place to insert.
+                  DO 1280 K = J - 1, 1, -1
+			  WRITE(CCOMP,'(A4)')ABLK1(K*2+1)
+			  ICOMP = KCHCMP(CCOMP,CTEMP)
+			  IF(      ( ICOMP.LT.0 ) 
+     1                 .OR. (       ( ICOMP.EQ.0 ) 
+     1                     .AND. ( ITEMP.LT.(NINT(ABLK1(K*2+1))) )
+     1                          )
+     1                 ) GOTO 1290
+C Otherwise shift the others along.
+			  ABLK1(K*2+3) = ABLK1(K*2+1)
+			  ABLK1(K*2+4) = ABLK1(K*2+2)
+1280               CONTINUE
+			K = 0
+1290               CONTINUE
+			ABLK1(K*2+3) = RTEMP
+			ABLK1(K*2+4) = ITEMP
+1300           CONTINUE
+		END IF
+
+C Sort ABLK2 into alphabetical order.
+		IF(NINT(ABLK2(2)).GE.2) THEN
+              DO 1400 J = 2, NINT(ABLK2(2))
+C Pick out an element.
+			WRITE(CTEMP,'(A4)')ABLK2(J*2+1)
+			RTEMP = ABLK2(J*2+1)
+			ITEMP = NINT(ABLK2(J*2+2))
+C Find place to insert.
+                  DO 1380 K = J - 1, 1, -1
+			  WRITE(CCOMP,'(A4)')ABLK2(K*2+1)
+                    IF( KCHCMP(CCOMP,CTEMP) .LT. 0 ) GOTO 1390 !Insert here
+C Shift the others along.
+			  ABLK2(K*2+3) = ABLK2(K*2+1)
+			  ABLK2(K*2+4) = ABLK2(K*2+2)
+1380               CONTINUE
+			K = 0
+1390               CONTINUE
+			ABLK2(K*2+3) = RTEMP
+			ABLK2(K*2+4) = ITEMP
+1400           CONTINUE
+		END IF
+
+C Work out which element has precedence:
+C  Compare element names
+            WRITE(CCOMP,'(A4)')IAT1N
+            WRITE(CTEMP,'(A4)')IAT2N
+            IF ( KCHCMP(CCOMP,CTEMP) .GT. 0 ) GOTO 1500
+            IF ( KCHCMP(CCOMP,CTEMP) .LT. 0 ) GOTO 1550
+C  Compare number of connections
+            IF ( NINT(ABLK1(2)) .GT. NINT(ABLK2(2)) ) GOTO 1500
+            IF ( NINT(ABLK1(2)) .LT. NINT(ABLK2(2)) ) GOTO 1550
+
+C  Compare each connection by name, and number of connections.
+            DO 1450 K = 1,NINT(ABLK1(2))
+			WRITE(CCOMP,'(A4)')ABLK1(K*2+1)
+			WRITE(CTEMP,'(A4)')ABLK2(K*2+1)
+                  IF ( KCHCMP(CCOMP,CTEMP) .GT. 0 ) GOTO 1500
+                  IF ( KCHCMP(CCOMP,CTEMP) .LT. 0 ) GOTO 1550
+                 IF ( NINT(ABLK1(K*2+2)).GT.NINT(ABLK2(K*2+2)))GOTO 1500
+                 IF ( NINT(ABLK1(K*2+2)).LT.NINT(ABLK2(K*2+2)))GOTO 1550
+1450         CONTINUE
+
+1500         CONTINUE !ATOM 1 has precedence
+		RBLK(1) = ITYPE
+		IPL = 1
+            DO 1510 K = 1, NINT(ABLK1(2)*2)+2
+			IPL=IPL+1				
+			RBLK(IPL)   =  ABLK1(K)
+1510         CONTINUE
+            DO 1520 K = 1, NINT(ABLK2(2)*2)+2
+			IPL=IPL+1
+			RBLK(IPL)   =  ABLK2(K)
+1520         CONTINUE
+            GOTO 1600
+1550         CONTINUE !ATOM 2 has precedence
+		RBLK(1) = ITYPE
+		IPL = 1
+            DO 1560 K = 1, NINT(ABLK2(2)*2)+2
+			IPL=IPL+1
+			RBLK(IPL)   =  ABLK2(K)
+1560         CONTINUE
+            DO 1570 K = 1, NINT(ABLK1(2)*2)+2
+			IPL=IPL+1
+			RBLK(IPL)   =  ABLK1(K)
+1570         CONTINUE
+1600         CONTINUE
+
+            WRITE(CCODE,'(A4,2I2,18(A2,I2))') 'BOND',IRING,
+     1     NINT(RBLK(1)),(RBLK(K),NINT(RBLK(K+1)),K=2,IPL,2)
+C Remove spaces from CCODE.
+		CALL XCRAS(CCODE,NDUM)
+
+C Check for this bond type in the local database.
+C If it is present compare bond length to mean and stddev of data.
+C If it is not present write out a file for obtaining the data.
+            CFILEN = 'CRYSDIR:\SCRIPT\bonddata.cdb'
+            CALL MTRNLG(CFILEN,'OLD',ILENG)
+            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+     1        .LE. -1) GOTO 1650
+		
+C Search for this bond type in that file.	
+1610         CONTINUE
+              READ(NCFPU1,'(A)',END=1650)CLINE
+              IF(CLINE.EQ.CCODE) GOTO 1680
+            GOTO 1610
+
+C Bond type not found in cdb file.
+1650         CONTINUE
+		CLOSE(NCFPU1)
+C Check for a .tab file with information about this bond.
+		CALL XCTRIM(CCODE,NCHAR)
+		NCHAR = NCHAR - 1
+            CFILEN = CCODE(1:NCHAR)//'.tab'
+            CALL MTRNLG(CFILEN,'OLD',ILENG)
+            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
+     1        .LE. -1) GOTO 1670
+C Starting from the 9th line, read value every 4 lines.
+            DO 1660 K=1,8
+                READ(NCFPU1,'(A)',END=9910)CDUM
+1660         CONTINUE
+C Accumulate X and X squared for mean and stddev in one pass.
+		NUMX  = 0
+		SUMX  = 0.0
+		SUMX2 = 0.0
+1661         CONTINUE
+              READ(NCFPU1,'(F8.3)',END=1663,ERR=9910) VAL
+              SUMX  = SUMX  + VAL
+		  SUMX2 = SUMX2 + VAL**2
+		  NUMX  = NUMX + 1
+		  IF(SUMX.GT.MAXNUM) THEN
+			WRITE(CMON,'(A/A,I5,A)')
+     1            'Accumulating values are almost too large.',
+     1            'Abandoning input file after ',NUMX,' data points.'
+                  GOTO 1663
+		  ENDIF
+              DO 1662 K=1,3
+                READ(NCFPU1,'(A)',END=1663)CDUM
+1662           CONTINUE
+            GOTO 1661
+1663         CONTINUE
+            CLOSE (NCFPU1)
+		BMEAN  = SUMX / NUMX
+		BSTDEV = SQRT((NUMX*SUMX2 - SUMX**2)/(NUMX*(NUMX-1)))
+C Write this info to the cdb file for future use.
+            CFILEN = 'CRYSDIR:\SCRIPT\bonddata.cdb'
+            CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
+            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
+     1        .LE. -1) GOTO 9920
+C Read to the end.
+1665       CONTINUE
+                  READ(NCFPU1,'(A)',END=1666) CDUM
+            GOTO 1665
+1666         CONTINUE
+C Add the info.
+		WRITE(NCFPU1,'(A)')CCODE
+		WRITE(NCFPU1,'(2F10.5)')BMEAN,BSTDEV
+		CLOSE (NCFPU1)
+            GOTO 1681 !Carry on with analysis.
+
+C There is no entry in .cdb file and no .tab file.
+C Write a quest input file to generate bond data.
+1670         CONTINUE !No tab file, write out an .if for quest.
+            WRITE(CMON, '(A,/,5A)')'Bond type not found. Run quest.',
+     1   'quest -j ',CCODE(1:NCHAR),' -if ',CCODE(1:NCHAR),'.if'
+            CALL XPRVDU(NCVDU, 2,0)
+		CALL XCTRIM(CCODE,NCHAR)
+		NCHAR=NCHAR-1
+            CFILEN = CCODE(1:NCHAR)//'.if'
+            CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
+            IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
+     1        .LE. -1) GOTO 9920
+		WRITE(NCFPU1,'(A)')'T1 *CONN'
+            WRITE(NCFPU1,'(A)')'ELDEF Q= AA'
+		WRITE(NCFPU1,'(A,A2,I4)')
+     1                             'AT1 ',ABLK1(1),NINT(ABLK1(2)+1.0)
+		WRITE(NCFPU1,'(A,A2,I4)')
+     1                             'AT2 ',ABLK2(1),NINT(ABLK2(2)+1.0)
+		IATM=3
+            DO 1671 K=1,NINT(ABLK1(2))
+              WRITE(CCOMP,'(I4)')IATM
+		  CALL XCRAS(CCOMP,NLEN)
+		  WRITE(NCFPU1,'(A2,A4,2X,A2)')'AT',CCOMP,ABLK1(K*2+1)
+		  IATM = IATM + 1
+1671         CONTINUE
+            DO 1672 K=1,NINT(ABLK2(2))
+              WRITE(CCOMP,'(I4)')IATM
+		  CALL XCRAS(CCOMP,NLEN)
+		  WRITE(NCFPU1,'(A2,A4,2X,A2)')'AT',CCOMP,ABLK2(K*2+1)
+		  IATM = IATM + 1
+1672         CONTINUE
+            IF(IRING.EQ.1) THEN
+             WRITE(NCFPU1,'(A,I2,A)')'BO 1 2 ',NINT(RBLK(1)),' C'
+            ELSE
+             WRITE(NCFPU1,'(A,I2,A)')'BO 1 2 ',NINT(RBLK(1)),' A'
+            ENDIF
+            IATM = 3
+            DO 1673 K=1,NINT(ABLK1(2))
+             WRITE(NCFPU1,'(A,I2,1X,I2)')'BO 1 ',IATM,NINT(ABLK1(K*2+2))
+		  IATM = IATM + 1
+1673         CONTINUE
+            DO 1674 K=1,NINT(ABLK2(2))
+             WRITE(NCFPU1,'(A,I2,1X,I2)')'BO 2 ',IATM,NINT(ABLK2(K*2+2))
+		  IATM = IATM + 1
+1674         CONTINUE
+		WRITE(NCFPU1,'(A)')'GEOM'
+		WRITE(NCFPU1,'(A)')'DEFINE D1 1 2'
+		WRITE(NCFPU1,'(A)')'NFRAG -99'
+		WRITE(NCFPU1,'(A)')'SYMCHK ON'
+		WRITE(NCFPU1,'(A)')'ENANT NOIN'
+		WRITE(NCFPU1,'(A)')'END'
+            WRITE(NCFPU1,'(A)')'STOP 4000'
+		WRITE(NCFPU1,'(A)')'QUEST T1'
+		CLOSE (NCFPU1)
+            GOTO 1700
+
+C Bond type found print out data
+1680         CONTINUE 
+		READ(NCFPU1,'(A)',END=9900) CLINE
+		READ(CLINE,'(F10.0,F10.0)') BMEAN, BSTDEV
+		CLOSE(NCFPU1)
+1681         CONTINUE
+
+            BBLK(I,8) = (BLEN-BMEAN)/BSTDEV
+            BOUT = ABS(BBLK(I,8))
+
+            WRITE ( CMON, '(A,2(A,A2,I4),A,F5.3,A,/,3(A,F5.3))')
+     1      CBONDS(ITYPE),
+     2	 ' bond: ', IAT1N, IAT1S,
+     2       ' to ', IAT2N, IAT2S,
+     4       ' is ', BLEN, 'angstroms. ',
+     5       ' Mean is ', BMEAN,
+     6       ' Stddev is ',BSTDEV,
+     7       ' Devs out: ',BOUT 
+            CALL XPRVDU(NCVDU, 2,0)
+1700         CONTINUE
+         END IF
+1800   CONTINUE
+
+
+
+
+
+
 
 	RETURN
 
