@@ -70,11 +70,18 @@ CrWindow::~CrWindow()
 		delete mMenuPtr;
 		mMenuPtr = nil;
 	}
-	if(mIsModal)
-		if(mModalWindowStack.GetLastItem())
-		{
-			mModalWindowStack.RemoveItem();
-		}
+
+      while ( mModalWindowStack.FindItem((void*) this) )
+      {
+            mModalWindowStack.RemoveItem();
+      }
+
+
+//      if(mIsModal)
+//            if(mModalWindowStack.GetLastItem())
+//            {
+//                  mModalWindowStack.RemoveItem();
+//            }
 	
 	delete mTabGroup;
 }
