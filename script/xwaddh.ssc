@@ -1,0 +1,6 @@
+%SCRIPT XWADDH
+%% Wrapper for XADDH - Add hydrogens to elements.
+% VARIABLE LOGICAL CALLED
+% EVALUATE CALLED = TRUE
+% COPY '#SCRIPT XADDH'
+%END SCRIPT

@@ -1,6 +1,7 @@
 %SCRIPT XADDH2
 % VARIABLE INTEGER LOOPAGAIN HTYPE NARGS
 % VARIABLE CHARACTER CATOM CATOM1 CATOM2 CATOM3 CATOM4 CATOM5 CATOM6
+% VARIABLE LOGICAL CALLED
 % LOOP
 %    EVALUATE LOOPAGAIN = 0
 %    EVALUATE NARGS = 3
@@ -36,7 +37,7 @@
 ^^WI       'h22.bmp'
 %         END BLOCK
 %         BLOCK
-^^WI       'h21.bmp'
+^^WI       'h12.bmp'
 %         END BLOCK
 %         BLOCK
 ^^WI       'h11.bmp'
@@ -85,8 +86,13 @@
 ^^WI         @ 11,3 EDITBOX E6 '' CHARS=6
 %           END BLOCK
 %    END CASE
+%    IF CALLED THEN
+^^WI       @ 1,5 STATIC T1 '< Click atom to go here'
+^^WI       @ 3,5 STATIC T2 ''
+%    ELSE
 ^^WI       @ 1,5 STATIC T1 ''
 ^^WI       @ 3,5 STATIC T2 '< Click atom to go here'
+%    END IF
 ^^WI       @ 5,5 STATIC T3 ''
 ^^WI       @ 7,5 STATIC T4 ''
 ^^WI       @ 9,5 STATIC T5 ''
@@ -104,9 +110,13 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-%    TRANSFER "^^CO SET E1 TEXT '" // CATOM // "'" TO DISPLAY
-%    VARIABLE INTEGER POSN OPOSN 
-%    EVALUATE POSN = 2
+%    VARIABLE INTEGER POSN OPOSN
+%    IF CALLED THEN
+%     EVALUATE POSN = 1
+%    ELSE
+%     EVALUATE POSN = 2
+%     TRANSFER "^^CO SET E1 TEXT '" // CATOM // "'" TO DISPLAY
+%    END IF
 %    EVALUATE OPOSN = 1
 ^^CO SET MODEL01 MOUSEACTION=HEADERATOM
 %    LOOP
