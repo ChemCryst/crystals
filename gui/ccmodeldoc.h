@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2002/07/18 16:44:34  richard
+//   Changes to ensure two CrModels can share the same CcModelDoc happily.
+//
 //   Revision 1.13  2002/07/04 13:04:44  richard
 //
 //   glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
@@ -82,6 +85,7 @@ class CcModelDoc
         CcString Compress(CcString atomname);
         void SelectAllAtoms(Boolean select);
         void SelectAtomByLabel(CcString atomname, Boolean select);
+        void DisableAllAtoms(Boolean select);
         void DisableAtomByLabel(CcString atomname, Boolean select);
         CcModelObject* FindAtomByLabel(CcString atomname);
         CcModelAtom* FindAtomByPosn(int posn);

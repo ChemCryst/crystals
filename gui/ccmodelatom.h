@@ -25,12 +25,8 @@ class CcModelAtom : public CcModelObject
     ~CcModelAtom();
 
     void Render(CcModelStyle *style, bool feedback=false);
-    void Select(bool select);
-    bool Select();
-    void Disable(bool select);
     void SendAtom(int style, Boolean output=false); 
 
-    bool IsSelected();
     int X();
     int Y();
     int Z();
@@ -44,10 +40,7 @@ class CcModelAtom : public CcModelObject
     int occ;
     int covrad, vdwrad, sparerad;
     int x11, x12, x13, x21, x22, x23, x31, x32, x33;
-    bool m_selected;
-    bool m_disabled;
     bool m_IsADP;
-    bool m_excluded;
 };
 
 #endif

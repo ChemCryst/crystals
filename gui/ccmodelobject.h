@@ -33,17 +33,22 @@ class CcModelObject
      virtual void ParseInput ( CcTokenList* tokenlist) = 0;
      CcString Label();
      int Type();
-     virtual void Select(bool select);
-     virtual bool Select();
+     void Select(bool select);
+     void Disable(bool select);
+     bool Select();
      bool spare;
-     virtual bool IsSelected();
+     bool IsSelected();
      virtual void SendAtom(int style, Boolean output=false); 
-
      GLuint m_glID;
+
+     bool m_disabled;
+     bool m_excluded;
+
    protected:
      CcModelDoc * mp_parent;
      CcString m_label;
      int m_type;
+     bool m_selected;
 };
 
 #include	"ccmodelatom.h"

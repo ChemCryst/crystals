@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2002/07/18 16:44:34  richard
+// Changes to ensure two CrModels can share the same CcModelDoc happily.
+//
 // Revision 1.20  2002/07/16 14:09:45  richard
 // Bug in atom selection fixed: if last digit of two or more character number
 // was also last character of the string it would be chopped off by accident.
@@ -382,6 +385,31 @@ void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
       DrawViews();
     }
 }
+
+
+void CcModelDoc::DisableAllAtoms(Boolean select)
+{
+    mAtomList->Reset();
+    mSphereList->Reset();
+    mDonutList->Reset();
+    CcModelObject* item;
+
+    while ( item = (CcModelObject*)mAtomList->GetItemAndMove() )
+    {
+      item->Disable(select);
+    }
+    while ( item = (CcModelObject*)mSphereList->GetItemAndMove() )
+    {
+      item->Disable(select);
+    }
+    while ( item = (CcModelObject*)mDonutList->GetItemAndMove() )
+    {
+      item->Disable(select);
+    }
+    DrawViews();
+
+}
+
 
 CcModelObject* CcModelDoc::FindAtomByLabel(CcString atomname)
 {

@@ -50,9 +50,6 @@ void CcModelDonut::Init()
   dec = 0;
   az = 0;
   m_label = "Err";
-  m_selected = false;
-  m_disabled = false;
-  m_excluded = false;
   spare = false;
   m_glID = 0;
 }
@@ -106,29 +103,6 @@ int CcModelDonut::R()
 	return covrad;
 }
 
-bool CcModelDonut::Select()
-{
-	m_selected = !m_selected;
-        mp_parent->Select(m_selected);
-	return m_selected;
-}
-
-void CcModelDonut::Select(bool select)
-{
-	if(m_selected != select)  //Counter in parent must only find out about change.
-            mp_parent->Select(select); 
-	m_selected = select;
-}
-
-void CcModelDonut::Disable(bool select)
-{
-        m_disabled = select;
-}
-
-bool CcModelDonut::IsSelected()
-{
-	return m_selected;
-}
 
 void CcModelDonut::Render(CcModelStyle *style, bool feedback)
 {

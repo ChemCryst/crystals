@@ -23,12 +23,8 @@ class CcModelSphere : public CcModelObject
     ~CcModelSphere();
 
     void Render(CcModelStyle *style, bool feedback=false);
-    void Select(bool select);
-    void Disable(bool select);
     void SendAtom(int style, Boolean output=false); 
 
-    bool IsSelected();
-    bool Select();
     int X();
     int Y();
     int Z();
@@ -44,9 +40,6 @@ class CcModelSphere : public CcModelObject
     int covrad, vdwrad, sparerad;
     int x11;
     int rad;
-    bool m_selected;
-    bool m_disabled;
-    bool m_excluded;
 };
 
 #endif

@@ -12,6 +12,9 @@ CcModelObject::CcModelObject(CcModelDoc* pointer)
 CcModelObject::CcModelObject()
 {
    m_type = 0;
+   m_disabled = false;
+   m_selected = false;
+   m_excluded = false;
 }
 
 CcModelObject::~CcModelObject()
@@ -28,19 +31,29 @@ int CcModelObject::Type()
   return m_type;
 }
 
-void CcModelObject::Select(bool select)
-{
-  return;
-}
-
 bool CcModelObject::Select()
 {
-  return false;
+	m_selected = !m_selected;
+        mp_parent->Select(m_selected);
+	return m_selected;
+}
+
+void CcModelObject::Select(bool select)
+{
+	if(m_selected != select)  //Counter in parent must only find out about change.
+            mp_parent->Select(select); 
+	m_selected = select;
 }
 
 bool CcModelObject::IsSelected()
 {
-  return false;
+	return m_selected;
+}
+
+void CcModelObject::Disable(bool select)
+{
+  m_disabled = select;
+  return;
 }
 
 void CcModelObject::SendAtom(int style, Boolean output)

@@ -46,9 +46,6 @@ void CcModelSphere::Init()
   x11 = 0;
   rad = 0;
   m_label = "Err";
-  m_selected = false;
-  m_disabled = false;
-  m_excluded = false;
   spare = false;
   m_glID = 0;
 }
@@ -98,30 +95,6 @@ int CcModelSphere::Z()
 int CcModelSphere::R()
 {
 	return covrad;
-}
-
-bool CcModelSphere::Select()
-{
-	m_selected = !m_selected;
-        mp_parent->Select(m_selected);
-	return m_selected;
-}
-
-void CcModelSphere::Select(bool select)
-{
-	if(m_selected != select)  //Counter in parent must only find out about change.
-            mp_parent->Select(select); 
-	m_selected = select;
-}
-
-void CcModelSphere::Disable(bool select)
-{
-        m_disabled = select;
-}
-
-bool CcModelSphere::IsSelected()
-{
-	return m_selected;
 }
 
 void CcModelSphere::Render(CcModelStyle *style, bool feedback)

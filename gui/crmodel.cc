@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2002/07/18 16:48:55  richard
+//   Prevent crash if some popup menus are missing/not defined from the model window.
+//
 //   Revision 1.24  2002/07/04 13:04:44  richard
 //
 //   glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
@@ -329,10 +332,21 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTDisableAtoms:
       {
         tokenList->GetToken(); //Remove the kTDisableAtoms token!
-        CcString atomLabel = tokenList->GetToken();
-        Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-        tokenList->GetToken(); //Remove the kTYes/kTNo token
-        if(m_ModelDoc) m_ModelDoc->DisableAtomByLabel(atomLabel,select);
+
+        if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
+        {
+          tokenList->GetToken(); //Remove the kTAll token!
+          Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+          tokenList->GetToken();
+          if(m_ModelDoc) m_ModelDoc->DisableAllAtoms(select);
+        }
+        else
+        {
+          CcString atomLabel = tokenList->GetToken();
+          Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+          tokenList->GetToken(); //Remove the kTYes/kTNo token
+          if(m_ModelDoc) m_ModelDoc->DisableAtomByLabel(atomLabel,select);
+        }
         break;
       }
       case kTCheckValue:

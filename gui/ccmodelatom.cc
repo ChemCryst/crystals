@@ -47,10 +47,7 @@ void CcModelAtom::Init()
   sparerad = covrad = vdwrad = 1000;
   x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
   m_label = "Err";
-  m_selected = false;
-  m_disabled = false;
   m_IsADP = true;
-  m_excluded = false;
   spare = false;
   m_glID = 0;
 }
@@ -109,30 +106,6 @@ int CcModelAtom::Z()
 int CcModelAtom::R()
 {
 	return covrad;
-}
-
-bool CcModelAtom::Select()
-{
-	m_selected = !m_selected;
-        mp_parent->Select(m_selected);
-	return m_selected;
-}
-
-void CcModelAtom::Select(bool select)
-{
-	if(m_selected != select)  //Counter in parent must only find out about change.
-            mp_parent->Select(select); 
-	m_selected = select;
-}
-
-void CcModelAtom::Disable(bool select)
-{
-        m_disabled = select;
-}
-
-bool CcModelAtom::IsSelected()
-{
-	return m_selected;
 }
 
 void CcModelAtom::Render(CcModelStyle *style, bool feedback)
