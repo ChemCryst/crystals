@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.96  2004/07/02 11:56:01  rich
+// remove unused variables
+//
 // Revision 1.95  2004/07/02 11:38:45  rich
 // Fix command line startup mode. Correct use of putenv under unix - the
 // string passed in should not have its memory freed until the program
@@ -1615,7 +1618,7 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
     if ( line[1] == '^' )
     {
 
-      if ( clen > 5 ) chop = 5;
+      if ( clen >= 5 ) chop = 5;
 
       if ( line[0] == '^' )
       {
@@ -1624,7 +1627,8 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
       if ( chop ) 
       {
         string selector = line.substr(chop-2,2);
-        if ( !internal && ((selector == kSQuerySelector) || (selector == kSWaitControlSelector)))
+        if ( !internal && (( selector.compare(kSQuerySelector)      ==0) || 
+                           ( selector.compare(kSWaitControlSelector)==0)    ) )
         {
           lock = true; // Don't return from here until 
                        // this query is answered.
