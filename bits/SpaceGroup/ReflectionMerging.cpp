@@ -237,7 +237,7 @@ MergedData::MergedData(const HKLData& pData, Array<unsigned short>& pMatIndices)
         {
             if (!(*((*tIter)->tHKL) == tCurHKL))//If the HKL value has changed then 
 	    {
-		if (tValues.size()>0) //As long as there are more then one reflection
+		if (tValues.size()>1) //As long as there are more then one reflection
 		{
 		    float tSum = sum(tValues.getPointer(), tValues.size());
 		    tSumSum += tSum;
