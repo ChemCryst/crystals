@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2003/03/25 14:02:34  rich
+C Move DELRHOMIN/MAX back to their original locations in LIst 30.
+C
 C Revision 1.16  2003/02/17 13:28:43  djw
 C Remove writes to .mon from FOURIER, save Rho and positions in LIST 30 CIFEXTRA (was in REFINEMENT), adjust output of 30
 C
@@ -2506,6 +2509,7 @@ C
 C
       DATA CFOUND / '  Not in the map' /
       DATA LFOUND / 16 /
+      DATA IQNEG/'QN  '/
 C
 C----- GET THE MAP SIGN
       SMAP = FLOAT(NGMAP)
@@ -2682,6 +2686,7 @@ Cnov98> - ZERO THE ANISO, SET U11 AND FLAG
 CNOV <
       L=K+2
       N=ISTORE(M10+4)
+      IF (N .EQ. 4) ISTORE(K)=IQNEG
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1500)STORE(K),STORE(K+1),( STORE(M+4),M=K,L ),
      2 STORE(K+13), CFIT(N)
