@@ -86,7 +86,7 @@ END
  If the scripts get into a tangle then it is probably
  the script-writers fault for not making allowance
  for user error :) Get out of script mode by typing
- direct. If the scripts die and leave a window open
+ DIRECT. If the scripts die and leave a window open
  which appears to be blocking your input, then clicking
  the close button 7 or 8 times in a row will cause
  it to failsafe and close.
@@ -107,8 +107,11 @@ is enclosed in brackets.
 Common probelms:
 If structure factor calculations fail with error messages
 about atoms of type Q, then there are peaks remaining from
-a Fourier search in the atom list. Edit the atom list,
-either with a script, or directly e.g.
+a Fourier search still in the atom list. 
+Edit the atom list:
+1) With the mouse in the MODEL window
+2) From the menu item STRUCTURE / REMOVE FOURIER PEAKS
+3) Directly from the command line e.g.
      #EDIT
      SELECT TYPE NE Q
      END
@@ -132,7 +135,7 @@ multiplied onto the 'chemical' occupancy.
 To force CRYSTALS to use unit crystallographic occupancy
 (and thus only use the term stored as occupancy in LIST 5),
 set the UPDATE parameter in LIST 23 to NO. There is a script,
-INLIST23 to help you). You will then need to take care of all
+(INLIST23) to help you. You will then need to take care of all
 occupation factors manually.
 %   END BLOCK
 %   BLOCK     %TIP16%
@@ -256,8 +259,8 @@ in your structure:
 %   BLOCK     %TIP26%
 If the R factor is sticking at a high value, Use DIFABS in
 analyse mode. (Click Analyse, DIFABS)
-The map shows a functio of the ratio Fo/Fc as a function of
-Crystal orientation. If thre are high peaks or troughs, there
+The map shows a function of the ratio Fo/Fc as a function of
+Crystal orientation. If thEre are high peaks or troughs, there
 may be something wrong with the data, e.g.
 Absorption
 Anisotropic extinction
