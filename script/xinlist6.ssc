@@ -235,9 +235,25 @@
 %         COPY 'END'
 %         COPY '#WEIGHT'
 %         COPY 'END'
-%         COPY '#LIST 28'
-%         COPY 'MINIMA RATIO=0.0'
-%         COPY 'END'
+
+{I Give the minimum I/sigma(i) and [sin(theta)/lambda]^2 to be 
+{I used in refinement. They can be changed at any time later
+{I using the menu item "X-ray Data" -> "Filter Reflections".
+
+{R Recommended settings for F refinement:
+{R   Fo/sigma(Fo)              is at least 3.0    eliminates noise
+{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop
+
+%         COPY '#SCRIPT XLIST28'
+%%
+%         IF ( EXISTS 23 .NE. 1 ) THEN
+%           COPY '#LIST 23'
+%           COPY 'END'
+%         END IF
+%%
+%%
+{R * Done. Reflection data input complete.
+
 %         FINISH
 %       END IF
 %     END BLOCK
@@ -286,6 +302,11 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.17  2001/11/13 09:51:29  ckp2
+%% Fix free format reads of reflections.
+%% Fix bug when no file name given.
+%% Fix default format when reading shelx files.
+%%
 %% Revision 1.16  2001/10/31 13:04:06  ckp2
 %% Option to read in reflection files with HKP extension, as well as normal HKL's.
 %% (HKP's are output by PLATON).
