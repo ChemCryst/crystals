@@ -6,19 +6,19 @@
 %% The outer grid splits the left 'view' area from the right
 ^^WI  @ 1,1 GRID OUTER NROWS=3 NCOLS=5
 ^^WI  {
-^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=90
+^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=45
 ^^WI         INFORM=YES
 %% The inner grid splits the text output from the tools
 ^^WI   @ 2,4 GRID INNER NROWS=4 NCOLS=1
 ^^WI   {
-^^WI    @ 1,1 MULTIEDIT _CAMTEXT '' NROWS=20 NCOLS=20
+^^WI    @ 1,1 MULTIEDIT _CAMTEXT '' NROWS=20 NCOLS=5
 ^^WI          IGNORE FIXEDFONT=YES DISABLED=YES
-^^WI    @ 3,1 EDITBOX _CAMTEXTINPUT '' NCOLS=20
+^^WI    @ 3,1 EDITBOX _CAMTEXTINPUT '' NCOLS=5
 ^^WI          SENDONRETURN=YES INPUT
 ^^WI    @ 4,1 GRID MAIN NROWS=12 NCOLS=3
 ^^WI    {
-^^WI     @ 2,2 GRID MOVE NROWS=7 NCOLS=9 OUTLINE='Rotate'
-^^WI                            COMMAND='#SCRIPT xcrotate'
+^^WI     @ 2,2 GRID MOVE NROWS=7 NCOLS=9
+^^WI                COMMAND='#SCRIPT xcrotate'
 ^^WI     {
 ^^WI      @ 2,2 BUTTON XROTP '+X'
 ^^WI      @ 2,4 BUTTON XROTN '-X'
@@ -33,8 +33,8 @@
 ^^WI      @ 6,6 BUTTON AXISC 'Axis c'
 ^^WI      @ 6,8 BUTTON CURSO 'Cursor'
 ^^WI     }
-^^WI     @ 4,2 GRID STYLE NROWS=3 NCOLS=7 OUTLINE='Style'
-^^WI                            COMMAND='#SCRIPT xcstyle'
+^^WI     @ 4,2 GRID STYLE NROWS=3 NCOLS=7
+^^WI                COMMAND='#SCRIPT xcstyle'
 ^^WI     {
 ^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST
 ^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
@@ -42,23 +42,24 @@
 ^^WI      'Normal' 'Publish' 'NULL'
 ^^WI      @ 2,6 BUTTON BSTYLE 'Apply'
 ^^WI     }
-^^WI     @ 6,2 GRID PACK NROWS=3 NCOLS=5 OUTLINE='Packing'
-^^WI                            COMMAND='#SCRIPT xcpack'
+^^WI     @ 6,2 GRID PACK NROWS=3 NCOLS=5
+^^WI                COMMAND='#SCRIPT xcpack'
 ^^WI     {
 ^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST
 ^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
 ^^WI      @ 2,4 BUTTON BPACK 'Apply'
 ^^WI     }
-^^WI     @ 8,2 GRID STUFF NROWS=9 NCOLS=5 COMMAND='#SCRIPT xcalter'
+^^WI     @ 8,2 GRID STUFF NROWS=11 NCOLS=5 COMMAND='#SCRIPT xcalter'
 ^^WI     {
 ^^WI       @ 2,2 BUTTON SLABEL 'Show labels'
-^^WI       @ 2,4 BUTTON SHYDRO 'Show hydrogen'
+^^WI       @ 2,4 BUTTON HHYDRO 'Hide H'
 ^^WI       @ 4,2 BUTTON MLABEL 'Move labels'
 ^^WI       @ 4,4 BUTTON SCELL  'Show cell'
 ^^WI       @ 6,2 BUTTON INCAR  'Include area'
 ^^WI       @ 6,4 BUTTON INCAL  'Show all'
 ^^WI       @ 8,2 BUTTON EXCAR  'Exclude area'
-^^WI       @ 8,4 BUTTON OHCONT 'Find O--H'
+^^WI       @ 8,4 BUTTON OHCONT 'Find O---H'
+^^WI       @ 10,2 BUTTON HPEAK 'Hide Q'
 ^^WI     }
 ^^WI    }
 ^^WI   }
@@ -86,13 +87,13 @@
 ^^WI   ITEM _FILL '&Empty' 'UNFILL VIEW _N'
 ^^WI  ENDMENU
 ^^WI  MENU VISI '&Visible'
-^^WI   ITEM _EXCH '&Hide hydrogen' 'EXCL H VIEW _N'
-^^WI   ITEM _INCH '&Show hydrogen' 'INCL H VIEW _N'
-^^WI   ITEM _EXCQ '&Hide peaks'    'EXCL Q VIEW _N'
-^^WI   ITEM _INCQ '&Show peaks'    'INCL Q VIEW _N'
+^^WI   ITEM _EXCH '&Hide hydrogen' '#SCRIPT XCALTER_NHHYDRO'
+^^WI   ITEM _INCH '&Show hydrogen' '#SCRIPT XCALTER_NSHYDRO'
+^^WI   ITEM _EXCQ '&Hide peaks'    '#SCRIPT XCALTER_NHPEAK'
+^^WI   ITEM _INCQ '&Show peaks'    '#SCRIPT XCALTER_NSPEAK'
 ^^WI   SPLIT
-^^WI   ITEM _EXCL '&Show labels'    'LABEL ALL VIEW _N'
-^^WI   ITEM _INCL '&Hide labels'    'NOLAB ALL VIEW _N'
+^^WI   ITEM _EXCL '&Show labels'    '#SCRIPT XCALTER_NSLABEL'
+^^WI   ITEM _INCL '&Hide labels'    '#SCRIPT XCALTER_NHLABEL'
 ^^WI  ENDMENU
 ^^WI  ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
 ^^WI  MENU PACK '&Packing'
@@ -116,25 +117,24 @@
 %%
 %% COUNT THE NUMBER OF ATOMS PASSED TO CAMERON.
 %%
-%COPY '#SCRIPT NATOMS'
-%EVALUATE ATOMSIN = ATOMSOUT
-%COPY 'END'
-%COPY '#CAM'
-%COPY 'END'
-%COPY ' '
-%COPY 'BALL ALL PLANE ALL VIEW'
-%COPY ' '
+% COPY '#SCRIPT NATOMS'
+% EVALUATE ATOMSIN = ATOMSOUT
+% COPY 'END'
+% COPY '#CAM'
+% COPY 'END'
+% COPY ' '
+% COPY 'BALL ALL PLANE ALL VIEW'
+% COPY ' '
 % LOOP
-% ON END TERMINATE
-% CLEAR
-% GET SILENT TEXT ' ' ' '
-% TRANSFER CVALUE TO CRYSTALS
+%  ON END TERMINATE
+%  CLEAR
+%  GET SILENT TEXT ' ' ' '
+%  TRANSFER CVALUE TO CRYSTALS
 % END LOOP
 % COPY ' '
 % COPY 'END'
 % COPY ' '
 ^^WI DISPOSE _CAMWINDOW
-^^WI DISPOSE _CAMFLOATER
 ^^CR
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 %   VARIABLE LOGICAL ANSWER
