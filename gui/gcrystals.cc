@@ -3,6 +3,7 @@
 
 #ifdef __WINDOWS__
 #include "stdafx.h"
+#include <stdlib.h>
 #endif
 #ifdef __LINUX__
 #include <wx/event.h>
@@ -78,17 +79,47 @@ BOOL CCrystalsApp::InitInstance()
 //	CCommandLineInfo cmdInfo;
 //	ParseCommandLine(cmdInfo);
 
+	// Parse command line for standard shell commands, DDE, file open
+      CCommandLineInfo cmdInfo;
+      ParseCommandLine(cmdInfo);
+
+      CcString command = CcString (cmdInfo.m_strFileName.GetBuffer(cmdInfo.m_strFileName.GetLength()));
+      CcString directory;
+      CcString dscfile;
+
+        if ( command.Length() > 0 )
+        {
+// we need a directory name.
+// look for last slash
+            int iptr;
+            int ils = -1;
+            for ( iptr = 0; iptr < command.Length(); iptr++ )
+            {
+                  if ( command[iptr] == '\\' ) ils = iptr;
+            }
+//Check: is there a directory name?
+            if ( ils > 0 )
+            {
+                  directory = command.Sub(1,ils);
+            }
+//Check: is there a dscfilename?
+            if ( ils < command.Length()-1 )
+            {
+                  dscfile = command.Sub(ils+2,command.Length());
+            }
+       }
+
 	// Dispatch commands specified on the command line
 //	if (!ProcessShellCommand(cmdInfo))
 //          return false;
 
 
-	theCrApp = new CrApp(NULL,NULL);
+      theCrApp = new CrApp(directory,dscfile);
 
 
 	
 	
-//	CFrameWnd* theMainWindow = new CFrameWnd;
+//    CFrameWnd theMainWindow = new CFrameWnd;
 //	theMainWindow->Create(NULL,"CrystalsII",WS_OVERLAPPEDWINDOW);
 //	m_pMainWnd = (CWnd*)theMainWindow;
 //	m_pMainWnd->ShowWindow(SW_SHOW);
