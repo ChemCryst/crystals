@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  1999/06/03 17:24:43  dosuser
+C RIC: Added Linux graphical interface support.
+C
 C Revision 1.14  1999/05/27 11:35:41  dosuser
 C djw  Echo users input to text window
 C
@@ -6070,6 +6073,7 @@ C            INOREM      IF SET, INPUT TEXT IS NOT REMOVED FROM INPUT
 C                        BUFFER
 C            INOMSG      IF SET, NO MESSAGE IS PRODUCED FOR A 'USER
 C                        ERROR'
+C            ISILNT      IF SET, NO SCREEN OUTPUT IS PRODUCED AT ALL.
 C
 C
 C
@@ -6095,7 +6099,7 @@ C
       DIMENSION IRESTP(NVAL)
       DIMENSION IPRMSG(NVAL)
 C
-      PARAMETER ( NMOD = 7 , LMOD = 12 )
+      PARAMETER ( NMOD = 8 , LMOD = 12 )
       CHARACTER*(LMOD) CMODIF(NMOD)
 C
 C
@@ -6136,7 +6140,7 @@ C
 C
       DATA CMODIF / 'FINAL'        , 'APPEND'       , 'FILL'         ,
      2              'NOSTORE'      , 'NOPROMPT'     , 'NOREMOVE'     ,
-     3              'NOMESSAGE'    /
+     3              'NOMESSAGE'    , 'SILENT' /
      3
 C
 C
@@ -6176,6 +6180,7 @@ C
       INOPMT = 0
       INOREM = 0
       INOMSG = 0
+      ISILNT = 0
 C
 1000  CONTINUE
 C
@@ -6202,6 +6207,8 @@ C
           INOREM = 1
         ELSE IF ( IMODIF .EQ. 7 ) THEN
           INOMSG = 1
+        ELSE IF ( IMODIF .EQ. 8 ) THEN
+          ISILNT = 1
         ENDIF
 C
       GO TO 1000
@@ -6315,6 +6322,8 @@ C
 C
 C -- OUTPUT ALLOWED VALUE LIST IF ANY
 C
+C -- SKIP IF IN SILENT MODE...
+       IF ( ISILNT .EQ. 0 ) THEN
         IF ( ICHECK .GT. 0 ) THEN
 C---- CHECK FOR  TERMINAL TYPE, AND INSTRUCTION VERIFIED OR ABBREVIATED
           IF( ((ISSTML .NE. 1) .AND. (ISSTML .NE. 2))  .OR.
@@ -6389,15 +6398,20 @@ C---- VT52/100       MENU MODE
 C
 C -- PROMPT THE USER
 C
-      CALL OUTCOL(3)
+        CALL OUTCOL(3)
         CALL XPRMPT ( NCVDU , CBUFFR(1:LENTOT) )
-      CALL OUTCOL(1)
+        CALL OUTCOL(1)
+       ENDIF
 C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C
         ISTAT = KRDLIN ( NCUFU(1) , CLINPB , IINPLN )
-&GID      WRITE(CMON,'(A)') CLINPB(1:IINPLN)
-&GID      CALL XPRVDU(NCVDU,1,0)
+C -- IF NOT IN SILENT MODE ECHO THE TEXT TO THE OUTPUT FOR THE 
+C    GUI VERSION
+&GID        IF ( ISILNT .EQ. 0 ) THEN
+&GID         WRITE(CMON,'(A)') CLINPB(1:IINPLN)
+&GID         CALL XPRVDU(NCVDU,1,0)
+&GID        ENDIF
         IF ( ISTAT .LE. 0 ) GO TO 1100
 C
 1200    CONTINUE
