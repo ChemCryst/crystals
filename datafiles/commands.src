@@ -1943,7 +1943,7 @@ BONDS TO BREAK
     .TX2                0    0    1    0    0 0
     .TY2                0    0    1    0    0 0
     .TZ2                0    0    1    0    0 0
-LIST 41            4    0
+LIST 41            5    0
   41   40960 CRYSTALSINPUT
    1.DEPEND             4    1    0    0    4    1  103    9   41
          1    1    1    1    1    1    0    0    0    0
@@ -1955,10 +1955,11 @@ DEPENDENCIES ON LIST 5
     .L5CRC              0    0    1    0    0 0
     .L5SERIAL           0    0    1    0    0 0
     .L40SERIAL          0    0    1    0    0 0
-   2.READ               2    1    0    0
-         1    1    
+   2.READ               3    1    0    0
+         1    1    1
     .NBONDS             4    0    1    0    0         0
     .NATOMS             8    0    1    0    0         0
+    .SPECIALS          12    0    1    0    0         0
    3.BONDS             14   -4    0    0   14   -4  101    1   41
          1    1    1    1    1    1    0    0    0    0
 LIST OF BONDS
@@ -1982,12 +1983,25 @@ LIST OF BONDS
    4.ATOMS              3   -8    0    0    3   -8  102    5   41
          1    1    1    1    1    1    0    0    0    0
 ATOM COORDS (USED TO DETECT MOVEMENT OR CHANGE IN L5)
-(T2,12A1,T7,12A1,T17,12A1,T26,12A1,T35,12A1,T41,12A1)
-(1X,A4,F6.0,1X,3F9.4,F5.0)
+(T4,12A1,T12,12A1,T20,12A1)
+(3(F7.4,1X))
          2    2    2
     .X                  0    0    1    0    0 0.0
     .Y                  0    0    1    0    0 0.0
     .Z                  0    0    1    0    0 0.0
+   5.SPECIAL            7  -12    0    0    7  -12  104   13   41
+         1    1    1    1    1    1    0    0    0    0
+SPECIAL BONDING (CENTROIDS, NORMALS, PI-BONDS, H-BONDS?) 
+(T2,12A1,6(TL4,12A1))
+(1X,F4.0,6(1X,F7.4))
+         1    1    1    1    1    1    1
+    .TYPE               0    0    1    0    0 0
+    .S1                 0    0    1    0    0 0
+    .S2                 0    0    1    0    0 0
+    .S3                 0    0    1    0    0 0
+    .S4                 0    0    1    0    0 0
+    .S5                 0    0    1    0    0 0
+    .S6                 0    0    1    0    0 0
 LIST 42            0    0
   42   40960 CRYSTALSINPUT
 LIST 43            0    0
