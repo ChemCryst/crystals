@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.92  2004/11/16 16:16:02  rich
+C Allow \ instead of # in reftab.dat
+C
 C Revision 1.91  2004/11/03 14:47:10  djw
 C Tidy up SHELX weight text in cif
 C
@@ -4064,7 +4067,8 @@ C
           J=LREFS
 200       CONTINUE
           READ (NCARU,'(a)',ERR=200,END=250) CTEMP
-          IF (CTEMP(1:1).EQ.'\') THEN CTEMP(1:1)='#'
+##LINGIL          IF (CTEMP(1:1).EQ.'\') THEN CTEMP(1:1)='#'
+&&LINGIL          IF (CTEMP(1:1).EQ.'\\') THEN CTEMP(1:1)='#'
           IF (CTEMP(1:1).EQ.'#') THEN
             READ (CTEMP,'(1x,i3,19a4)') (ISTORE(K),K=J+1,J+MDREFS-1)
             J=J+MDREFS
