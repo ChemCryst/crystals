@@ -4,17 +4,12 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-//   Filename:  CxModel.cc
-//   Authors:   Richard Cooper and Ludwig Macko
-//   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 15:22 Uhr
-
 #include	"crystalsinterface.h"
 #include	<gl\gl.h>
 #include	<gl\glu.h>
 #include	<math.h>
 #include	"cxmodel.h"
-//insert your own code here.
+
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"crmodel.h"
@@ -22,13 +17,9 @@
 #include	"ccmodelatom.h"
 #include	"creditbox.h"
 #include	"cccontroller.h"
-//#include	<textutils.h>
-//#include	<LStdControl.h>
 
 int CxModel::mModelCount = kModelBase;
-//End of user code.          
 
-// OPSignature: CxModel * CxModel:CreateCxModel( CrModel *:container  CxGrid *:guiParent ) 
 CxModel *	CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
 	const char* wndClass = AfxRegisterWndClass(
@@ -60,13 +51,10 @@ CxModel *	CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 	theStdModel->Setup();
 
 	return theStdModel;
-//End of user code.         
 }
 
 CxModel::CxModel(CrModel* container)
 	:CWnd()
-//Insert your own initialization here.
-//End of user initialization.         
 {
 	mWidget = container;
 	m_radius = COVALENT;
@@ -81,7 +69,6 @@ CxModel::CxModel(CrModel* container)
 	matrix[12]=0.0f; matrix[13]=0.0f; matrix[14]=0.0f; matrix[15]=1.0f;
 	m_LitAtom = nil;
 	m_drawing = false;
-	mBackBufferReady = 0;
 }
 
 CxModel::~CxModel()
@@ -134,7 +121,7 @@ void	CxModel::SetGeometry( int top, int left, int bottom, int right )
 			newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
 			oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
 			memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
-			mBackBufferReady = 0;
+//                  mBackBufferReady = 0;
 			((CrModel*)mWidget)->ReDrawHighlights();
 		}
 
@@ -181,17 +168,14 @@ int	CxModel::GetHeight()
 	return ( windowRect.Height() );
 }
 
-// OPSignature: int CxModel:GetIdealWidth() 
 int	CxModel::GetIdealWidth()
 {
 	return mIdealWidth;
 }
-// OPSignature: int CxModel:GetIdealHeight() 
 int	CxModel::GetIdealHeight()
 {
 	return mIdealHeight;
 }
-// OPSignature: void CxModel:BroadcastValueMessage() 
 
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxModel, CWnd)
@@ -234,7 +218,6 @@ CPoint CxModel::DeviceToLogical(int x, int y)
 	CPoint		newpoint;
 	CRect		windowext;
 	float		aspectratio, windowratio;
-//	CString		mychar;
 
 	GetClientRect(&windowext);
 	aspectratio = 1;
@@ -269,7 +252,6 @@ CPoint CxModel::LogicalToDevice(CPoint point)
 	CPoint		newpoint;
 	CRect		windowext;
 	float		aspectratio, windowratio;
-//	CString		mychar;
 
 	GetClientRect(&windowext);
 	aspectratio = 1;
@@ -300,43 +282,25 @@ CPoint CxModel::LogicalToDevice(CPoint point)
 
 void CxModel::OnPaint() 
 {
-	HGLRC currentHGLRC = wglGetCurrentContext(); 
-	if(m_hGLContext != currentHGLRC)
-	{
-//		CClientDC dc(this);
-		if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
 
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox( (const char*)lpMsgBuf, "OnPaint() Error", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-
-	}
+    wglMakeCurrent(hDC, m_hGLContext);
 
 	CPaintDC dc(this); // device context for painting
+
 	Setup();
 	PaintBuffer();
+
+
+	if(m_LitAtom != nil)
+		HighlightAtom(m_LitAtom,FALSE);
 
 	CRect rect;
 	GetClientRect (&rect);
 	dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCAND);
 
-	if(m_LitAtom != nil)
-		HighlightAtom(m_LitAtom,FALSE);
 
-// Do not call CFrameWnd::OnPaint() for painting messages
+    wglMakeCurrent(NULL,NULL);
+
 }
 
 void CxModel::SetIdealHeight(int nCharsHigh)
@@ -418,7 +382,7 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 	
 			if(rotate.cy != 0)
 			{
-				mBackBufferReady = 0;
+//                        mBackBufferReady = 0;
 				for (int i = 0; i < 16; i++)
 					oldmatrix[i]=matrix[i];
 	
@@ -431,7 +395,7 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 			}
 			if(rotate.cx != 0)
 			{
-				mBackBufferReady = 0;
+//                        mBackBufferReady = 0;
 				for (int i = 0; i < 16; i++)
 					oldmatrix[i]=matrix[i];
 	
@@ -444,8 +408,9 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 			}
 	
 			delete oldmatrix;
-			Setup();
-			PaintBuffer();
+			InvalidateRect(NULL,FALSE);
+//                  Setup();
+//                  PaintBuffer();
 		}
 		else   //LBUTTONDOWN, but not rotating yet.
 		{
@@ -529,31 +494,7 @@ void CxModel::OnRButtonUp( UINT nFlags, CPoint point )
 
 void CxModel::Start()
 {
-	HGLRC currentHGLRC = wglGetCurrentContext(); 
-	if(m_hGLContext != currentHGLRC)
-	{
-//		CClientDC dc(this);
-	if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
-
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox( (const char*)lpMsgBuf, "Start() Error", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-
-	}
-
+      wglMakeCurrent(hDC, m_hGLContext);
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
@@ -563,32 +504,12 @@ void CxModel::Start()
 	glNewList(mNormal,GL_COMPILE);
 
 	m_drawing = true;
+                             
 }
 
 void CxModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw)
 {
-	if( m_hGLContext != wglGetCurrentContext() )
-	{
-		if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
-
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox( (const char*)lpMsgBuf, "DrawAtom() Error", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-	}	
-	glPushMatrix();
+      glPushMatrix();
 		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
 		GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
 		GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
@@ -604,70 +525,26 @@ void CxModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vd
 			gluSphere(sphere, (float)cov * m_radscale,16,16);
 		else if(m_radius == VDW)
 			gluSphere(sphere, (float)vdw * m_radscale,16,16);
-		glPopMatrix();
+      glPopMatrix();
+
 }
 
 void CxModel::Display()
 {
-	if( m_hGLContext != wglGetCurrentContext() )
-	{
-//		CClientDC dc(this);
-		if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
-
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox(  (const char*)lpMsgBuf, "Display() Error", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-	}	
 	glEndList();
-	mBackBufferReady = 0;
-	InvalidateRect(NULL,FALSE);
+      wglMakeCurrent(NULL,NULL);
+
+      InvalidateRect(NULL,FALSE);
 	m_drawing = false;
 }
 
 void CxModel::Setup()
 {	
-	HGLRC currentHGLRC = wglGetCurrentContext(); 
-	if(m_hGLContext != currentHGLRC)
-	{
-//		CClientDC dc(this);
-		if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
-
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox( (const char*)lpMsgBuf, "Setup() Error", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-	}
-	CRect rect;
+      CRect rect;
 	GetClientRect(&rect);
 
 	GLsizei width  = min (rect.Width(),rect.Height());
 	GLsizei	height = width;
-//	int length;
 
 	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
@@ -684,37 +561,7 @@ void CxModel::Setup()
 
 void CxModel::PaintBuffer() 
 {
-	HGLRC currentHGLRC = wglGetCurrentContext(); 
-	if(m_hGLContext != currentHGLRC)
-	{
-//		CClientDC dc(this);
-		if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
 
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox( (const char*)lpMsgBuf, "PaintBuffer() Error", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-	}
-
-
-
-	if(	mBackBufferReady >= 2)
-		SwapBuffers(hDC);
-	else
-	{
-		mBackBufferReady++;
 		glLoadIdentity();
 		glClearColor( 1.0f,1.0f,1.0f,0.0f); 
 	
@@ -758,8 +605,6 @@ void CxModel::PaintBuffer()
 		GLdouble modelMatrix[16];	// Storage for modelview matrix
 		glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
 		for ( int i = 12; i<16; i++ )  matrix[i] = (float)modelMatrix[i];
-	}
-
 
 }
 
@@ -850,10 +695,6 @@ void CxModel::SetRadiusScale(int scale)
 
 void CxModel::DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int r, int g, int b, Boolean fill)
 {
-	if( m_hGLContext != wglGetCurrentContext() )
-	{
-		wglMakeCurrent(hDC, m_hGLContext);
-	}	
 	glPushMatrix();
 		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
 		glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
@@ -884,10 +725,6 @@ void CxModel::DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, in
 
 void CxModel::DrawBond(int x1, int y1, int z1, int x2, int y2, int z2, int r, int g, int b, int rad)
 {
-	if( m_hGLContext != wglGetCurrentContext() )
-	{
-		wglMakeCurrent(hDC, m_hGLContext);
-	}	
 	double degToRad = 3.1415926535 / 180.0;
 	glPushMatrix();
 		GLUquadricObj* cylinder;
@@ -941,15 +778,15 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 	GLdouble x,y,z,x1,y1,z1;	// Storage for object coordinates
 	GLint viewport[4];			// Storage for viewport coordinates
 
-// Account for difference between Windows (GDI) coordinates
-// and OpenGL coordinates
-
 	if(matrix[15] == 0) //Bad Matrix. Recalculate. (This rarely happens).
 	{
 		Setup();
-		mBackBufferReady = 0; //Otherwise it won't recalculate
+//            mBackBufferReady = 0; //Otherwise it won't recalculate
 		PaintBuffer();
 	}
+
+// Account for difference between Windows (GDI) coordinates
+// and OpenGL coordinates
 
 	CRect rect;
 	GetClientRect(&rect);
@@ -1055,29 +892,12 @@ void CxModel::ClearHighlights()
 
 void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
 {
-	if( m_hGLContext != wglGetCurrentContext() )
-	{
-//		CClientDC dc(this);
-		if(!wglMakeCurrent(hDC, m_hGLContext))
-		{
-			LPVOID lpMsgBuf;
 
-			FormatMessage( 
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL );
-// Display the string.
-			MessageBox( (const char*)lpMsgBuf, "HiLite Atom Error", MB_OK|MB_ICONINFORMATION );
+      if ( ! m_drawing )
+      {
+            wglMakeCurrent(hDC, m_hGLContext);
+      }
 
-// Free the buffer.
-			LocalFree( lpMsgBuf );
-		}
-
-	}	
 	GLdouble modelMatrix[16];	// Storage for modelview matrix
 	GLdouble projMatrix[16];	// Storage for projection matrix
 	GLdouble x,y,z,x1,y1,z1;	// Storeage for object coordinates
@@ -1114,11 +934,13 @@ void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
 	rgn.CreateEllipticRgn((int)x-radius,(int)y-radius,(int)x+radius+1,(int)y+radius+1);
 	if (selected)
 	{
-		brush.CreateSolidBrush(PALETTERGB(192,192,192));
-		memDC.FrameRgn(&rgn,&brush,2,2);
-		CBrush brush2;
-		brush2.CreateSolidBrush(PALETTERGB(0,0,0));
-		memDC.FrameRgn(&rgn,&brush2,1,1);
+            brush.CreateSolidBrush(PALETTERGB(128,0,0));
+//                  FrameRgn(hDC,(HRGN)rgn,(HBRUSH)brush,2,2);
+            memDC.FrameRgn(&rgn,&brush,2,2);
+			CBrush brush2;
+			brush2.CreateSolidBrush(PALETTERGB(0,0,0));
+            memDC.FrameRgn(&rgn,&brush2,1,1);
+//            FrameRgn(hDC,(HRGN)rgn,(HBRUSH)brush2,1,1);
 	}
 	else
 	{
@@ -1130,6 +952,12 @@ void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
 		SetBkMode(hDC,TRANSPARENT);
 		TextOut(hDC,(int)x+radius/2,(int)y-radius/2-tm.tmHeight,theAtom->Label().ToCString(),theAtom->Label().Length());
 	}
+
+      if ( ! m_drawing )
+      {
+            wglMakeCurrent(NULL,NULL);
+      }
+
 
 }
 
