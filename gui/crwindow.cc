@@ -7,7 +7,7 @@
 //   Filename:  CrWindow.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
-//   Modified:  30.3.1998 12:11 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -20,20 +20,18 @@
 #include    "cccontroller.h"
 #include    "cxwindow.h"
 #include    "ccrect.h"
-#include    "cxapp.h"
+#include    "crtoolbar.h"
 
 CcList CrWindow::mModalWindowStack;
 
-CrWindow::CrWindow( CxApp * mParentPtr )
-    :   CrGUIElement( (CrGUIElement *)mParentPtr )
+CrWindow::CrWindow( )
+    :   CrGUIElement((CrGUIElement*)NULL)
 {
-    // For the window we don't generate the GUI equivalent immediately
+    // For the window object we don't generate the on-screen window immediately
     // because we have to find the attributes first
     ptr_to_cxObject = nil;
     mGridPtr = nil;
     mMenuPtr = nil;
-      mOrigWidth = -1;
-      mOrigHeight= -1;
     mTabGroup = new CcList();
     mTabStop = false;
     mIsModal = false;
@@ -44,10 +42,13 @@ CrWindow::CrWindow( CxApp * mParentPtr )
     mCommitText = "";
     mCancelText = "";
     mCommandText= "";
-      m_relativePosition = kTCentred;
+    m_relativePosition = kTCentred;
     m_relativeWinPtr = nil;
-      mSafeClose=0;
-      m_Keep = false;
+    mSafeClose=0;
+    m_Keep = false;
+    m_AddedToDisableAbleWindowList = false;
+    wEnableFlags = 0;
+    wDisableFlags = 0;
 }
 
 
@@ -73,22 +74,32 @@ CrWindow::~CrWindow()
         delete mMenuPtr;
         mMenuPtr = nil;
     }
-    if ( ptr_to_cxObject != nil )
-    {
-        delete (CxWindow*)ptr_to_cxObject;
-    }
 
     while ( mModalWindowStack.FindItem((void*) this) )
     {
         mModalWindowStack.RemoveItem();
     }
 
+    if ( m_AddedToDisableAbleWindowList )
+    {
+      CcController::theController->RemoveDisableableWindow(this);
+    }
+
+    if ( ptr_to_cxObject != nil )
+    {
+          ((CxWindow*)ptr_to_cxObject)->CxPreDestroy();  //my function
+          ((CxWindow*)ptr_to_cxObject)->DestroyWindow(); //MFC function.
+// CxWindow is derived from CFrameWnd which is "auto-cleanup"
+// which means it deletes itself. No need for this next line:
+//        delete (CxWindow*)ptr_to_cxObject;
+    }
+
     delete mTabGroup;
 }
 
-Boolean CrWindow::ParseInput( CcTokenList * tokenList )
+CcParse CrWindow::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = false;
+    CcParse retVal(false, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -169,6 +180,30 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
                         LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+nearWindow);
                     break;
                 }
+                case kTMenuDisableCondition:
+                {
+                  tokenList->GetToken();
+                  wDisableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+                  if ( !m_AddedToDisableAbleWindowList )
+                  {
+                    m_AddedToDisableAbleWindowList = true;
+                    CcController::theController->AddDisableableWindow(this);
+                  }
+                  break;
+                }
+                case kTMenuEnableCondition:
+                {
+                  tokenList->GetToken();
+                  wEnableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+                  if ( !m_AddedToDisableAbleWindowList )
+                  {
+                    m_AddedToDisableAbleWindowList = true;
+                    CcController::theController->AddDisableableWindow(this);
+                  }
+                  break;
+                }
+
+
                 case kTKeep:
                 {
                     tokenList->GetToken();
@@ -224,7 +259,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
                 // ParseInput generates all objects in the window
                 // Of course the token list must be full
                 retVal = mGridPtr->ParseInput( tokenList );
-                if ( ! retVal )
+                if ( ! retVal.OK() )
                 {
                     delete mGridPtr;
                     mGridPtr = nil;
@@ -236,22 +271,19 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
         {
             tokenList->GetToken();
 
-            //First call CalcLayout() on all children. (Should only be one).
+            CcRect gridRect = this->CalcLayout(true); //First call CalcLayout() on all children.
 
-            this->CalcLayout();
-
-            SetOriginalSizes();
-
-            //First call Align() on all children. (Should only be one).
-
-            this->Align();
+            LOGSTAT("CrWindow: " + mName + " Child is set to    " + gridRect.AsString() );
+            mGridPtr->SetGeometry(&gridRect);
+// STEP3 Set the geometry of this window to fit around the child grid.
+            SetGeometry( &gridRect );
 
 
             if (!m_relativeWinPtr)
             {
 // Either no posn specified (in which case centre over _MAIN)
 // or invalid window name given, (in which case position relative to _MAIN)
-                        m_relativeWinPtr = (CcController::theController)->FindObject( "_MAIN" );
+                   m_relativeWinPtr = (CcController::theController)->FindObject( "_MAIN" );
             }
 
             if(m_relativeWinPtr)
@@ -393,7 +425,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
 
 
             LOGSTAT( "Window '" + mName + "' obeys SHOW");
-            retVal = true;
+            retVal.m_ok = true;
             break;
         }
         case kTHideWindow:
@@ -404,7 +436,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
             this->Show(false);
 
             LOGSTAT( "Window '" + mName + "' obeys HIDE");
-            retVal = true;
+            retVal.m_ok = true;
             break;
         }
         case kTDefineMenu:
@@ -418,7 +450,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
                 // ParseInput generates all objects in the menu
                 // Of course the token list must be full
                 retVal = mMenuPtr->ParseInput( tokenList );
-                if ( ! retVal )
+                if ( ! retVal.OK() )
                 {
                     delete mMenuPtr;
                     mMenuPtr = nil;
@@ -431,7 +463,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
         {
             tokenList->GetToken();
             LOGSTAT("Menu Definined.");
-            retVal = true;
+            retVal.m_ok = true;
             break;
         }
 
@@ -439,7 +471,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
             {
             tokenList->GetToken();
                   LOGSTAT("Changing title of window.");
-            retVal = true;
+            retVal.m_ok = true;
                   mText = tokenList->GetToken();
                   SetText( mText );
                   break;
@@ -456,7 +488,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
     return (retVal);
 }
 
-void    CrWindow::SetGeometry( const CcRect * rect )
+void CrWindow::SetGeometry( const CcRect * rect )
 {
     CcRect tempRect;
     tempRect.mTop       = rect->mTop;
@@ -467,21 +499,13 @@ void    CrWindow::SetGeometry( const CcRect * rect )
 //Adjust size adds on the space for menus and borders.
     ((CxWindow*)ptr_to_cxObject)->AdjustSize(&tempRect);
 
-      ((CxWindow*)ptr_to_cxObject)->SetGeometry(tempRect.mTop,
+    ((CxWindow*)ptr_to_cxObject)->SetGeometry(tempRect.mTop,
                                            tempRect.mLeft,
                                            tempRect.mBottom,
                                            tempRect.mRight );
 }
 
-CcRect  CrWindow::GetGeometry()
-{
-    CcRect retVal;
-    retVal.Set( ((CxWindow*)ptr_to_cxObject)->GetTop(),
-                        ((CxWindow*)ptr_to_cxObject)->GetLeft(),
-                        ((CxWindow*)ptr_to_cxObject)->GetTop()+((CxWindow*)ptr_to_cxObject)->GetHeight(),
-                        ((CxWindow*)ptr_to_cxObject)->GetLeft()+((CxWindow*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
+CRGETGEOMETRY(CrWindow,CxWindow)
 
 CcRect  CrWindow::GetScreenGeometry()
 {
@@ -493,34 +517,19 @@ CcRect  CrWindow::GetScreenGeometry()
     return retVal;
 }
 
-void    CrWindow::CalcLayout()
+CcRect CrWindow::CalcLayout(bool recalc)
 {
-    if ( mGridPtr != nil )
-    {
-        // STEP1 Call calclayout for child grid.
-        mGridPtr->CalcLayout();
+  CcRect childRect;
 
-        // STEP2 Set Size to size of child grid.
-        CcRect theRect;
-        theRect = mGridPtr->GetGeometry();
-        SetGeometry( &theRect );
-    }
+  if ( mGridPtr != nil )
+  {
+// Call Calclayout on Child Grid.
+    childRect = mGridPtr->CalcLayout(recalc);
+  }
+
+  return childRect; //NB. This return value ignored by caller.
 }
 
-void  CrWindow::SetOriginalSizes()
-{
-    if ( mGridPtr != nil )
-    {
-            mGridPtr->SetOriginalSizes();
-    }
-
-      CcRect theRect;
-      theRect = mGridPtr->GetGeometry();
-
-      mOrigWidth = theRect.Width();
-      mOrigHeight= theRect.Height();
-
-}
 
 void    CrWindow::SetText( CcString item )
 {
@@ -548,9 +557,10 @@ void    CrWindow::Show( Boolean show )
 
 void    CrWindow::Align()
 {
-
+/*
     if ( mGridPtr != nil )
         mGridPtr->Align();
+*/
 }
 
 CrGUIElement *  CrWindow::FindObject( CcString Name )
@@ -582,17 +592,9 @@ void CrWindow::CloseWindow()
 
 void CrWindow::ResizeWindow(int newWidth, int newHeight)
 {
-
-    if ( mOrigWidth > 0 )
-    {
-
 //Set size of new child grid to this
-    if ( mGridPtr != nil )
-            mGridPtr->Resize(newWidth, newHeight, mOrigWidth, mOrigHeight);
-
-//Finally re-calculate positions and draw the window
-    CalcLayout();
-    }
+    CcRect rect ( 0,0, newHeight, newWidth );
+    if ( mGridPtr != nil ) mGridPtr->SetGeometry(&rect);
 }
 
 void CrWindow::Committed()
@@ -659,6 +661,18 @@ void CrWindow::MenuSelected(int id)
     if ( menuItem )
     {
         CcString theCommand = menuItem->command;
+        SendCommand(theCommand);
+        return;
+    }
+}
+
+void CrWindow::ToolSelected(int id)
+{
+    CcTool* tool = (CcController::theController)->FindTool( id );
+
+    if ( tool )
+    {
+        CcString theCommand = tool->tCommand;
         SendCommand(theCommand);
         return;
     }
@@ -781,5 +795,16 @@ void CrWindow::SysKeyReleased ( UINT nChar )
 
 void CrWindow::NotifyControl()
 {
-      (CcController::theController)->RemoveWindowFromList(this);
+  (CcController::theController)->RemoveWindowFromList(this);
 }
+
+void CrWindow::Redraw()
+{
+  ((CxWindow*)ptr_to_cxObject)->Redraw();
+}
+
+void CrWindow::Enable(bool enable)
+{
+  ((CxWindow*)ptr_to_cxObject)->CxEnable(enable);
+}
+
