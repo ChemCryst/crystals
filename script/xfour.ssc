@@ -419,7 +419,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           EVALUATE CFILE = CVALUE
 %           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
 %             IF FILEEXISTS 'WINGXDIR:\for_prog\mapview.exe' THEN
-^^CO            SETKEY MCEDIR WINGXDIR:\for_prog\mapview.exe
+^^CO            SETKEY MAPVIEWDIR WINGXDIR:\for_prog\mapview.exe
 %               EVALUATE CFILE = "WINGXDIR:\for_prog\mapview.exe"
 %             ELSE
 
