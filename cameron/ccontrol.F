@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2002/06/28 16:20:55  Administrator
+C Enable NEW to be stored in LIST 5, try to fix postscript line thickness and boundingbox
+C
 C Revision 1.16  2002/02/20 14:43:34  Administrator
 C Correct colour translation
 C
@@ -3212,7 +3215,7 @@ CNOV2000 OUTPUT 3 LINES
      1 , T1(1,3), T1(1,2)
 90    FORMAT ('CON U[11]=',6F11.6)
       WRITE(IFSTAR-1,95) RSTORE(I+14),(LSTORE(I+J),J=15,18)
-95    FORMAT ('CON SPARE=',F11.6,3I11,7X,A4)
+95    FORMAT ('CON SPARE=',F11.2,3I11,7X,A4)
 50    CONTINUE
 C NOW LOOP OVER THE FINAL LINES OF THE FILE (IF ANY HAVE BEEN PREVIOUSLY
 C STORED.
