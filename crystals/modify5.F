@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2004/02/26 13:40:56  djw
+C enable maths on he integer fields
+C
 C Revision 1.43  2003/09/16 13:30:08  rich
 C Oops. Don't assume that real cell parameters are inverse of reciprocal. Fixed.
 C
@@ -429,7 +432,7 @@ C-C-C-INTRODUCTION OF ADDITIONAL DIRECTIVE-ADDRESSES FOR "SPECIALS"
      1       3800,1000,1050, 900,1100, 400,5100, 60, 200, 300,
      2        250, 600,2700,2850,2300,1150,6950,6300,6800,3950,
      3       5450,4100,4300,4500,2900,350,15500, 460,1160,2870,
-     4       2300, 150,8250), IDIRNM
+     4       2300,6790, 150,8250), IDIRNM
       GO TO 8250
 C
 150   CONTINUE
@@ -2206,6 +2209,192 @@ C--CHECK FOR MORE ATOMS
       GO TO 6600
 C
 C
+6790  CONTINUE
+C----- 'ROTATE' DIRECTIVE
+C
+      IF (ME.LE.0) GO TO 7300        ! Check there are some arguments
+
+C -- READ ROTATION. POSSIBLE SYNTAX:
+C   1) around vector from point.
+C       ROTATE angle pointX pointY pointZ vectorX vectorY vectorZ <atoms>
+C   2) around vector from atom.
+C       ROTATE angle atom vectorX vectorY vectorZ <atoms>
+C   3) around a bond (vec starts at atom1)
+C     ROTATE angle atom1 atom2 <atoms>
+
+      LTEMP =KSTALL(N5)
+      LPNT  =KSTALL(3)
+      LVEC  =KSTALL(3)
+      LCF2OR=KSTALL(16)
+      LOR2CF=KSTALL(16)
+      LROTAT=KSTALL(16)
+      LWORK =KSTALL(16)
+
+C Get the angle.
+      IF (KSYNUM(ROTATE).NE.0) GO TO 7500
+      ME=ME-1
+      MF=MF+LK2
+      J=KOP(8)
+
+C Get either a single atom, or a point in crys frac (see syntax above)
+
+      IF ( ISTORE(MF) .NE. 0 ) THEN       ! Syntax 2 or 3 (atom,...)
+        IF (ME.LE.0) GO TO 950               !Check for data
+        IF (KATOMU(LN).LT.0) GO TO 7100      !Read atom
+        IF (N5A.NE.1) GO TO 7900             !Check only one atom
+        STORE(LPNT  ) = STORE(M5A+4)
+        STORE(LPNT+1) = STORE(M5A+5)
+        STORE(LPNT+2) = STORE(M5A+6)
+
+C Get either another single atom, or a vector in crys frac  (see syntax above)
+
+        IF ( ISTORE(MF) .NE. 0 ) THEN       ! Syntax 3 (atom,atom)
+          IF (ME.LE.0) GO TO 950               !Check for data
+          IF (KATOMU(LN).LT.0) GO TO 7100      !Read atom
+          IF (N5A.NE.1) GO TO 7900             !Check only one atom
+          STORE(LVEC)   = STORE(M5A+4) - STORE(LPNT)
+          STORE(LVEC+1) = STORE(M5A+5) - STORE(LPNT+1)
+          STORE(LVEC+2) = STORE(M5A+6) - STORE(LPNT+2)
+
+        ELSE                                ! Syntax 2 (atom, vector)
+          DO I = 0,2
+            IF ( KSYNUM(STORE(LVEC+I)).NE.0) GOTO 7500
+            ME=ME-1
+            MF=MF+LK2
+            J=KOP(8)
+          END DO
+        END IF
+
+      ELSE                                ! Syntax 1 (point & vector)
+
+        DO I = 0,2
+          IF ( KSYNUM(STORE(LPNT+I)).NE.0) GOTO 7500
+          ME=ME-1
+          MF=MF+LK2
+          J=KOP(8)
+        END DO
+        DO I = 0,2
+          IF ( KSYNUM(STORE(LVEC+I)).NE.0) GOTO 7500
+          ME=ME-1
+          MF=MF+LK2
+          J=KOP(8)
+        END DO
+      END IF
+
+C -- READ ALL THE ATOMS.
+      CALL XFILL(0,ISTORE(LTEMP),N5)
+      IF (ME.LE.0) GO TO 7500
+      DO WHILE (.TRUE.)
+        IF (KATOMU(LN).LE.0) GO TO 7100
+        IF (ISTORE(MQ+5).NE.0) GO TO 7400
+        DO JW=1,N5A
+C--GENERATE THE MOVED PARAMETERS BY SYMMETRY FIRST
+          IF (KATOMS(MQ,M5A,ITEMP).LT.0) GO TO 7100
+          LIND = (M5A-L5)/MD5
+          ISTORE(LTEMP + LIND) = 1
+        END DO
+        ICHNG=ICHNG+1
+C--CHECK FOR MORE ATOMS
+        IF (KOP(8).LT.0) EXIT
+      END DO
+
+C Transform vector into orthogonal Angstrom space.
+
+      CALL XMLTTM(STORE(L1O1),STORE(LVEC),BPD(1),3,3,1)
+
+c      WRITE(CMON,'(A,3F8.4)')'CF vector: ',(STORE(LVEC+I),I=0,2)
+c      CALL XPRVDU(NCVDU,1,0)
+c      WRITE(CMON,'(A,3F8.4)')'OR vector: ',(BPD(I),I=1,3)
+c      CALL XPRVDU(NCVDU,1,0)
+
+C Normalise the vector, and compute rotation matrix in ortho space.
+C (See matrix.src)
+
+      IF ( NROT(BPD(1),ROTATE,APD(1)) .LT. 0 ) GOTO 7100
+
+c      WRITE(CMON,'(A/3(3F8.4/))')'OR rotation: ',
+c     c  ((APD(I+J),I=1,7,3),J=0,2)
+c      CALL XPRVDU(NCVDU,4,0)
+
+C Expand to 4-D notation.
+
+      CALL XZEROF(STORE(LROTAT),16)
+      DO I = 0,2
+       DO J = 0,2
+        STORE(LROTAT+I*4+J) = APD(I*3+J+1)
+       END DO
+      END DO
+      STORE(LROTAT+15) = 1.0
+
+c      WRITE(CMON,'(A/4(4F8.4/))')'4D version: ',
+c     c  ((STORE(LROTAT+I+J),I=0,12,4),J=0,3)
+c      CALL XPRVDU(NCVDU,5,0)
+
+
+C Get the rotation for going from orthogonal Angstrom to CF (L1O2)
+C and expand it to 4D notation.
+
+      CALL XZEROF(STORE(LOR2CF),16)
+      DO I = 0,2
+       DO J = 0,2
+        STORE(LOR2CF+I*4+J) = STORE(L1O2+I*3+J)
+       END DO
+      END DO
+      STORE(LOR2CF+15) = 1.0
+
+C Tack on the translation to the specified point in CFs.
+      DO I = 0,2
+        STORE(LOR2CF+12+I) = STORE(LPNT+I)
+      END DO
+
+c      WRITE(CMON,'(A/4(4F8.4/))')'4D inv(orth): ',
+c     c  ((STORE(LOR2CF+I+J),I=0,12,4),J=0,3)
+c      CALL XPRVDU(NCVDU,5,0)
+
+C Now work out the inverse, that is the matrix that goes from CF
+C to an orthogonal system with the origin at the point stored in LPNT.
+
+      I=KINV2(4,STORE(LOR2CF),STORE(LCF2OR),16,0,
+     1          STORE(LWORK), STORE(LWORK), 4)
+
+c      WRITE(CMON,'(A/4(4F8.4/))')'4D ORTH: ',
+c     c  ((STORE(LCF2OR+I+J),I=0,12,4),J=0,3)
+c      CALL XPRVDU(NCVDU,5,0)
+
+
+C Pre-multiply rotation matrix by deorthogonalisation matrix,
+C and post multiply by orthogonalisation matrix, so that we can do
+C [ inv(O) . R . O ] . X
+C
+C where X are the CF coords, R is the orthogonal rotation matrix,
+C and O is the transfrom from CF to Orthogonal Angstrom with the
+C specified CF point at the origin.
+     
+      CALL XMLTMM( STORE(LOR2CF), STORE(LROTAT), STORE(LWORK), 4, 4, 4 )
+      CALL XMLTMM( STORE(LWORK),  STORE(LCF2OR), STORE(LROTAT),4, 4, 4 )
+
+c      WRITE(CMON,'(A/4(4F8.4/))')'4D all OP: ',
+c     c  ((STORE(LROTAT+I+J),I=0,12,4),J=0,3)
+c      CALL XPRVDU(NCVDU,5,0)
+
+      DO I = 0,N5-1
+        IF ( ISTORE(LTEMP+I) .GT. 0 ) THEN
+          M5A = L5 + I * MD5
+          CALL XMOVE(STORE(M5A+4),STORE(LWORK),3)
+          STORE(LWORK+3) = 1.0
+          CALL XMLTMM( STORE(LROTAT),STORE(LWORK),STORE(LWORK+4), 4,4,1)
+          CALL XMOVE(STORE(LWORK+4),STORE(M5A+4),3)
+c          WRITE(CMON,'(A,I5,6F8.3)')'Chn: ',I,STORE(M5A+4),
+c     1     STORE(M5A+5),STORE(M5A+6), STORE(LWORK),
+c     2     STORE(LWORK+1),STORE(LWORK+2)
+c          CALL XPRVDU(NCVDU,1,0)
+        END IF
+      END DO
+
+      CALL XSTRLL (LTEMP)
+
+      GOTO 100
+C
 6800  CONTINUE
 C----- 'DEORTHOGINALISE' ATOMS IN-PUT IN A LIST 20 SYSTEM
 C
@@ -2221,7 +2410,7 @@ C -- CHECK IF ANY ATOMS HAVE BEEN GIVEN
       IF (KATOMU(LN).LE.0) GO TO 7100
       IF (ISTORE(MQ+5).NE.0) GO TO 7400
 C--APPLY THE MATRIX
-      DO 6900 JW=1,N5A
+      DO JW=1,N5A
 C--GENERATE THE NEW COORDS. BY ROTATION
          BPD(1)=STORE(M5A+4)
          BPD(2)=STORE(M5A+5)                     
@@ -2234,7 +2423,7 @@ C----- NOW TRANSLATE
          CALL XMDMON (M5A,MD5A,1,1,1,6,3,MONLVL,2,0,ISTORE(IMONBF))
          ICHNG=ICHNG+1
          M5A=M5A+MD5A
-6900  CONTINUE
+      END DO
 C--CHECK FOR MORE ATOMS
       IF (KOP(8).LT.0) GO TO 100
       GO TO 6850

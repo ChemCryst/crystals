@@ -2457,7 +2457,7 @@ ANISO             14    4
          1
     .INPUTLIST         36    0    1    2    1         5
               5        10
-EDIT              42    5
+EDIT              43    5
    1    4096 CRYSTALSALTER5
     1    2    5   10   20
    1.DELETE             0 9999    0    0    0    0  101    5  145
@@ -2573,7 +2573,9 @@ EDIT              42    5
      REPORT         FIXLATTER      FIXFORMER
   41.DRENAME            0 9999    0    0    0    0  136    5  145
          0    0    0    0    0    0    0    0    0    0
-  42.EDIT               2    1    0    0
+  42.ROTATE             0 9999    0    0    0    0  137    5  145
+         0    0    0    0    0    0    0    0    0    0
+  43.EDIT               2    1    0    0
          1    1
     .INPUTLIST         37    0    1    2    1         5
               5        10
