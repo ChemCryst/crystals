@@ -92,11 +92,11 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI   @ 6,2 GRID GRIDAC NROWS=2 NCOLS=3 OUTLINE='Maximum peaks'
 ^^WI   {
 ^^WI    @ 1,2 RADIOBUTTON XDPEAKS 'Calculate based on cell volume.'
-^^WI          STATE=ON INFORM=YES
+^^WI          STATE=ON INFORM
 ^^WI    @ 2,2 GRID GRIDACA NROWS=1 NCOLS=3
 ^^WI    {
 ^^WI     @ 1,1 RADIOBUTTON XNPEAKS 'Number of peaks to keep:'
-^^WI           STATE=OFF INFORM=YES
+^^WI           STATE=OFF INFORM
 ^^WI     @ 1,3 EDITBOX ICPEAKS '0' CHARS=5 INTEGER DISABLED=YES
 ^^WI    }
 ^^WI   }
