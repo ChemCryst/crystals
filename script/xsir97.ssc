@@ -1,0 +1,67 @@
+%SCRIPT XSIR97
+% VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK
+%   IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%       FINISH
+%   END IF
+%%
+%% write a SIR97 data file
+%%
+%   BLOCK
+^^WI WINDOW SIR97 'Sir97 Preparation'
+^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
+^^WI GRID GRIDLR NROWS=1 NCOLS=2
+^^WI {
+^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3
+^^WI   {
+^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir97 parameters'
+^^WI           STATE=ON
+^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Sir97 parameters'
+^^WI           STATE=OFF
+^^WI     @ 3,2 CHECKBOX CED '&Edit Sir97 file'
+^^WI           STATE=OFF
+^^WI   }
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
+^^WI   {
+^^WI     @ 2,1 BUTTON BOK '&Ok'
+^^WI     @ 4,1 BUTTON BXX '&Cancel'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%      VERIFY BOK BXX
+%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'
+%      IF VALUE .EQ. 2 THEN
+^^WI      DISPOSE SIR97
+^^CR
+%         FINISH
+%      END IF
+^^??   RS STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
+%      IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#FOREIGN SIR97 '
+%          COPY 'END'
+%      ELSE
+%          COPY '#FOREIGN SIR97 DIFFICULT'
+%          COPY 'END'
+%      END IF
+^^??   CED STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'On=Edit first'
+^^WI   DISPOSE SIR97
+^^CR
+%      IF ( VALUE .EQ. 1 ) THEN
+%           COPY '#SPAWN start /w notepad.exe sir97.ini'
+%      END IF
+%      EVALUATE QLINE1 = 'A Sir97 job file has been created in the current'
+%      EVALUATE QLINE2 = 'directory. Run Sir97 then input the results.'
+%      EVALUATE QTITLE = 'Solve Sir97'
+%      EVALUATE BUTTOK = '&Ok'
+%      COPY '#SCRIPT XMESSAGE'
+%   END BLOCK
+%END SCRIPT
+
+
+

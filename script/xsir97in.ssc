@@ -1,0 +1,27 @@
+%SCRIPT XSIR97IN
+%%
+%% Get the results back...
+%%
+%      COPY '#USE SIR97.CRY'
+%      COPY '#EDIT'
+%      COPY 'MON OFF'
+%      COPY 'REFORMAT ALL'
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%      COPY 'MON MEDIUM'
+%      COPY 'END'
+%      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
+%        FINISH
+%      END IF
+%      BLOCK
+%        COPY '#DISTANCES'
+%        COPY 'END'
+%      END BLOCK
+%%
+%% SET Solution type
+%%
+%      COPY '#GENERALEDIT 30'
+%      COPY 'LOCATE RECORDTYPE=106'
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=3'
+%      COPY 'WRITE'
+%      COPY 'END'
+%END SCRIPT
