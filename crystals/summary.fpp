@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2002/03/06 13:50:23  ckp2
+C Updated to check6 stuff.
+C
 C Revision 1.21  2002/03/01 11:33:41  Administrator
 C Correct and improve presntation of weighting scheme in .cif file
 C
@@ -2280,6 +2283,8 @@ CODE FOR XSGDST
 \ISTORE
 \STORE
 \XLST06
+\ICOM30
+\XLST30
 \XUNITS
 \XSSVAL
 \XERVAL
@@ -2287,6 +2292,7 @@ CODE FOR XSGDST
 \XCONST
 \XIOBUF
 \QSTORE
+\QLST30
       DATA ICOMSZ / 1 /
       DATA IVERSN /100/
 
@@ -2311,11 +2317,13 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       END DO
 
 
-C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
+C -- SCAN LIST 6 FOR REFLECTIONS
 
       N6ACC = 0
+      NALLOW = 0
 
       ISTAT = KLDRNR(0)
+      NALLOW = NALLOW + 1 + KALLOW(IN)
 
       DO WHILE ( ISTAT .GE. 0 )
         N6ACC = N6ACC + 1
@@ -2324,6 +2332,7 @@ C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
         JSIGS = MAX(JSIGS,1)
         IF ( JSIGS .LE. 100 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
         ISTAT = KLDRNR(0)
+        NALLOW = NALLOW + 1 + KALLOW(IN)
       END DO
 
       NTOT = N6ACC
@@ -2351,6 +2360,11 @@ C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
         CALL XPRVDU(NCVDU, 2,0)
 
       END IF
+
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+      STORE(L30GE +9 ) = NALLOW
+      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+
 
 9000  CONTINUE
 C -- FINAL MESSAGE
