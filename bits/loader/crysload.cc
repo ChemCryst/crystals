@@ -3,6 +3,7 @@
 #include <direct.h> // For the _chdir function.
 #include <conio.h>
 #include <process.h>
+#include <errno.h>
 
 #include <string>
 #include <sstream>
@@ -135,7 +136,7 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
                else if ( (int)ex <= 32 )
                {
 // Some other failure. Try another method of starting external programs.
-                 extern int errno;
+//                 extern int errno;
 
                  int result = _spawnlp(_P_WAIT, helpdoc.c_str(), helpdoc.c_str(), NULL);
 
@@ -216,7 +217,7 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
              else if ( (int)ex <= 32 )
              {
 // Some other failure. Try another method of starting external programs.
-                 extern int errno;
+//                 extern int errno;
                  int result = _spawnlp(_P_WAIT, location.c_str(), locationQ.c_str(), NULL);
 
                  if(result == -1) {
