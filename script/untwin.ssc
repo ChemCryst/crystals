@@ -1,0 +1,48 @@
+%SCRIPT UNTWIN
+
+{I This script removes any twin laws that you may have previously entered.
+{I (Apart from the refinement directives and any restraints) - refinement
+{I directives will be handled automatically if you are using the GUIDE.
+
+%%
+%% Remove LIST 25
+%%
+{S * Removing the twin laws - deleting list 25.
+% COPY '#DISK'
+% COPY 'DELETE 25'
+% COPY 'END'
+{R Done.
+
+{S * Removing FOT and element tags from LIST 6.
+% COPY '#LIST 6'
+% COPY 'READ TYPE=COPY'
+% COPY 'END'
+{R Done.
+
+{S * Removing element scales from list 5.
+%  VARIABLE INTEGER MD5ES
+%  EVALUATE MD5ES = 0
+%  BLOCK
+%   ON EDITERROR TERMINATE
+%   COPY '#GENERALEDIT 5'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'TRANSHEAD TO OFFSET=22 FROM MD5ES'
+%   COPY 'WRITE'
+%   COPY 'END'
+%  END BLOCK
+{R Updated number of elements in L5.
+{S Now punching and altering element values...
+%  BLOCK
+%   VARIABLE CHARACTER CLINE1
+%   EXTRACT CLOSE
+%   COPY '#RELEASE PUNCH untwin5.dat'
+%   COPY '#PUNCH 5'
+%   COPY 'END'
+%   COPY '#RELEASE PUNCH bfile.pch'
+%   COPY '#USE untwin5.dat'
+%   COPY '#SUM L 5'
+%   COPY 'END'
+%  END BLOCK
+{R Done.
+%END SCRIPT
+
