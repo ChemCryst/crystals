@@ -43,9 +43,7 @@ You may get CRYSTALS to compute it for you from the space group symbol,
 ^^WI SHOW
 ^^CR
 %    VERIFY BTNOK BTNXX
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
-%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %        CASE VALUE
 %             BLOCK                %BUTTONOK%
 %                 CLEAR
