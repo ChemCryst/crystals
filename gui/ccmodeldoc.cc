@@ -17,6 +17,10 @@
 //            drawing commands. Note again - it is not a CrGUIElement,
 //            it has no graphical presence, nor a complimentary Cx- class
 
+// $Log: not supported by cvs2svn $
+
+
+
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"ccmodeldoc.h"
@@ -211,6 +215,15 @@ void CcModelDoc::Clear()
 	m_TotX = 0;
 	m_TotY = 0;
 	m_TotZ = 0;
+
+	attachedViews.Reset();
+	CrModel* aView;
+	while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
+	{
+            aView->Reset();
+	}
+
+
 }
 
 void CcModelDoc::AddModelView(CrModel * aView)
