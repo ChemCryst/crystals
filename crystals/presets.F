@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2002/12/04 14:31:11  rich
+C Reformat output during refinement.
+C
+C Allow punching to MATLAB files, including restraints.
+C
+C Tidy some routines.
+C
 C Revision 1.37  2002/11/29 15:25:38  rich
 C Add a variable MATLAB to XSFW common block, and zero it in presets. Keeps
 C track of open files.
@@ -969,7 +976,7 @@ C -- INITIALISE DATA FOR EFFICIENCY STATISTICS
       DATA NCACHE(22) / 0 / ,  NCACHE(23) / 0 / , NCACHE(24) / 0 /
       DATA NCALL / 0 /
 C
-      DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/
+      DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/,IFIRST(3)/'PART'/
 C
 C----- KEYS FOR COEFFICIENTS IN LIST 6
       DATA I14(1) / 14 / , I15(1) / 15 / , I31(1) / 31 /

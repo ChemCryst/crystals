@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/11/06 10:50:57  rich
+C Bug reading ATOM card in REGULARISE. Fixed.
+C
 C Revision 1.13  2001/06/19 08:19:19  richard
 C Increased store limits as two people have now hit the barrier for LIST 16
 C size. A complete recompilation of all fortran sources is required for consitency.
@@ -109,10 +112,13 @@ C
 \STORE
 \XLISTI
 \XLEXIC
+\XLXPRT
 C
 \QSTORE
 C
       IDWZAP = IN
+      NPTTOT = -1
+      NPTCUR = -1
 C--SET AN INITIAL RETURN VALUE
       KLDNLR=-1
 C--LOAD THE NEXT DATA RECORD HEADER
@@ -222,6 +228,7 @@ C
 \XLEXIC
 \XOPVAL
 \XIOBUF
+\XLXPRT
 C
 \QSTORE
 \QCHAR
@@ -237,6 +244,9 @@ C
 C----- SET NO MOUSE INPUT YET
       IMOUSE = 0
 C
+      NPTTOT = -1
+      NPTCUR = -1
+
       IADARG = MD
       NCHRRD = 0
       NXTCDI = KSTALH ( NWCARD )
@@ -754,8 +764,7 @@ C--SET THE ERROR FLAG
       GOTO 1150
 C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
 1400  CONTINUE
-      IF(ME)1450,1450,1500
-C--NOT AN 'UNTIL' SEQUENCE
+      IF(ME)1450,1450,1500   !END OF CARD - NOT AN 'UNTIL' SEQUENCE
 1450  CONTINUE
       N5A=1
       GOTO 1100
@@ -919,55 +928,70 @@ C
 \XSHORT
 \XUNITS
 \XIOBUF
-C
+\XLXPRT
 \QSTORE
-C
+
+100   CONTINUE
+
       IDWZAP = IN
-C--CHECK THAT THE FIRST OPERAND IS A VARIABLE
-C  THIS VARIABLE IS THE ATOM NAME
       KA=0
-      IF(ISTORE(MF))1100,1000,1000
-C--GENERAL ERROR ROUTINE
-1000  CONTINUE
-      KATOMG=-1
-1050  CONTINUE
-      RETURN
+      KB=0
+      IF(ISTORE(MF).GT.0) GOTO 1000 ! CHECK 1st OP IS A VARIABLE (ATOM TYPE)
+
 C--START TO FORM THE ATOM HEADER BLOCK  -  CHECK FOR 'FIRST' OR 'LAST'
 1100  CONTINUE
-      IF(KCOMP(1,ISTORE(MF+2),IFIRST(1),2,1))1200,1200,1150
-C--THIS IS 'FIRST' OR 'LAST'
-1150  CONTINUE
-      KA=-1
-C--SET UP THE HEADER LINK INFORMATION
-1200  CONTINUE
+      II=KCOMP(1,ISTORE(MF+2),IFIRST(1),3,1)
+      IF ( ( II. EQ. 1 ) .OR. ( II .EQ. 2 ) ) THEN !This is First or Last
+        KA = -1
+      END IF
+      IF ( II .EQ. 3 ) THEN  !This is Part.
+        KB = 1
+        OME=ME
+        OMF=MF
+        IF ( NPTCUR .LT. 0 ) THEN   !First time. Initialise.
+           NPTCUR = 0
+           NPTTOT = 1
+        ELSE
+           NPTCUR = NPTCUR + 1
+           IF ( NPTCUR .GT. NPTTOT ) THEN
+             NPTCUR = -1
+             GOTO 1000
+           END IF
+        END IF
+      END IF
+
+C SET UP THE HEADER LINK INFORMATION
       J=MQ+2
       ISTORE(MQ)=NOWT
       ISTORE(MQ+1)=0
-C--SET UP THE ATOM TYPE
-      CALL XMOVE(STORE(MF+2),STORE(J),1)
+
+      CALL XMOVE(STORE(MF+2),STORE(J),1)  ! SET UP THE ATOM TYPE
       ME=ME-1
       MF=MF+LK2
-C--UPDATE THE HEADER POINTER AND INSERT A DUMMY SERIAL NUMBER
-      K=J+1
-      STORE(K)=0.
-C--CHECK THAT AFTER THE ATOM NAME THERE IS A '('
-      IF(KOP(6))1250,1350,1300
-1250  CONTINUE
-C--END OF CARD  -  CHECK IF 'FIRST' OR 'LAST' WHEN THIS IS ALLOWED
-      IF ( KA .LT. 0 ) GO TO 1300
-C -- ERROR. BACKSPACE ONE ARGUMENT AND RETURN
-      ME = ME + 1
-      MF = MF - LK2
-      GO TO 1000
-1300  CONTINUE
+
+      K=J+1                    ! UPDATE THE HEADER POINTER
+      STORE(K)=0.              ! INSERT A DUMMY SERIAL NUMBER
+
+      IF(KOP(6))1250,1350,1300 ! TEST FOR '(' AFTER THE ATOM NAME
+
+1250  CONTINUE                ! END OF CARD. 
+      IF ( KA .GE. 0 ) THEN     ! OK if first or last, otherwise:
+          ME = ME + 1             ! ERROR. BACKSPACE ONE ARGUMENT AND RETURN
+          MF = MF - LK2
+          GO TO 1000
+      END IF
+
+1300  CONTINUE                ! NO '(' FOUND
       KA=-KA
-      IF(KA)1450,1000,1450
-C--A '(' HAS BEEN FOUND  -  CHECK IF A SERIAL NUMBER IS EXPECTED
-1350  CONTINUE
-      IF(KA)1450,1400,1450
-C--READ THE SERIAL NUMBER OF THIS ATOM
-1400  CONTINUE
-      IF(KNUMBR(STORE(K)))1000,1450,1000
+      IF(KA)1450,1000,1450      ! Allowed for first or last
+
+1350  CONTINUE                ! FOUND '('
+
+      IF(KA.EQ.0) THEN                   ! CHECK IF SERIAL EXPECTED
+          IF(KNUMBR(STORE(K)).NE.0) GOTO 1000   ! READ SERIAL NUMBER OF ATOM
+          IF(KB.EQ.1)IPTVAL = NINT(STORE(K))    ! PART NUMBER EXPECTED
+      END IF
+
 C--SET UP THE ATOM HEADER BLOCK
 1450  CONTINUE
       ISTORE(K+1)=NOWT
@@ -1094,6 +1118,13 @@ c----- store the orginal parameter index in the list
       MF=MF+LK2
       ME=ME-1
       GOTO 1950
+
+C--GENERAL ERROR ROUTINE
+1000  CONTINUE
+      KATOMG=-1
+
+1050  CONTINUE
+      RETURN
       END
 C
 CODE FOR KATOMF
@@ -1120,15 +1151,20 @@ C
 \XSSVAL
 \XLST05
 \XFIRST
+\XLXPRT
+\XLEXIC
+\XIOBUF
 C
 \QSTORE
 C
       IATOMF=-1
 C--CHECK IF ANY ATOMS HAVE BEEN GIVEN
       IF(N5F)1200,1200,1450
+
 C--CHECK IF THERE ARE MORE ATOMS TO PROCESS
 1000  CONTINUE
       IF(N5F)1100,1100,1250
+
 C--SUCCESSFUL FIND  -  RESET 'IATOMF'
 1050  CONTINUE
       IATOMF=0
@@ -1141,10 +1177,12 @@ CDJWAPR99      CALL XMOVE(STORE(M5F),ARG(1),2)
       CALL XMOVE(STORE(M5F),ARG(1),3)
 C--UPDATE THE NUMBER OF ATOMS LEFT
       N5F=MAX0(N5F,IATOMF)
+
 C--AND NOW RETURN
 1200  CONTINUE
       KATOMF=MIN0(0,IATOMF)
       RETURN
+
 C--CHECK THE SERIAL NUMBERS
 1250  CONTINUE
       IF(ABS(STORE(M5F+1)-ARG(2))-0.0005)1400,1300,1300
@@ -1162,22 +1200,68 @@ C--CHECK THE ATOM TYPES
 1400  CONTINUE
       IF(KCOMP(1,ARG,STORE(M5F),1,1))1300,1300,1050
 C
-C--ATOMS PROVIDED  -  CHECK FOR 'FIRST' AND 'LAST' INITIALLY
+C--ATOMS PROVIDED  -  CHECK FOR 'FIRST', 'LAST', 'PART' INITIALLY
 1450  CONTINUE
-      J=KCOMP(1,ARG(1),IFIRST(1),2,1)
+      J=KCOMP(1,ARG(1),IFIRST(1),3,1)
 C--CHECK THE REPLY
-      IF(J-1)1250,1500,1550
-C--THE ARGUMENT IS 'FIRST'  -  CHECK THAT WE CAN ACCESS THE FIRST ATOM
-1500  CONTINUE
-      IF(L5-M5F)1200,1050,1200
-C--THE ARGUMENT IS 'LAST'  -  CHECK THE ADDRESSING
-1550  CONTINUE
-      J=L5+(N5-1)*MD5
-      IF(J-M5F)1200,1600,1600
-C--RESET THE REPLY
-1600  CONTINUE
-      IATOMF=1
-      N5F=N5F-1
+      IF(J.LE.0) GOTO 1250 !Process as an element type
+      IF ( J .EQ. 1 ) THEN ! 'FIRST' - CHECK WE CAN ACCESS THE FIRST ATOM
+        IF(L5-M5F)1200,1050,1200
+      ELSE IF ( J .EQ. 2 ) THEN ! 'LAST' - CHECK THE ADDRESSING
+        J=L5+(N5-1)*MD5
+        IF(J.LT.M5F) GOTO 1200
+        IATOMF=1    !RESET THE REPLY
+        N5F=N5F-1
+        GOTO 1000
+      ELSE IF ( J .EQ. 3 ) THEN ! 'PART' - CHECK THE ADDRESSING
+C IPTVAL = requested part. NPTTOT = # matching atoms. NPTCUR = Current atom.
+        IPT = MOD(IPTVAL,1000)
+        IGR = ( IPTVAL - IPT ) / 1000
+        WRITE(CMON,'(2(A,I4))') 'Group: ',IGR,' part: ',IPT
+        CALL XPRVDU(NCVDU,1,0)
+        IF ( NPTCUR .LE. 1 ) THEN   !First time.
+           NPTCUR = 1
+           NPTTOT = 0
+C Count the parts
+           DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
+             JPTVAL = ISTORE(I+14)
+             JPT = MOD(JPTVAL,1000)
+             JGR = ( JPTVAL - IPT ) / 1000
+             IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
+     1      .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) NPTTOT=NPTTOT+1
+           END DO
+           WRITE(CMON,'(A,I4)') 'Npttot: ',NPTTOT
+           CALL XPRVDU(NCVDU,1,0)
+        END IF
+        II = 0
+        DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
+           JPTVAL = ISTORE(I+14)
+           JPT = MOD(JPTVAL,1000)
+           JGR = ( JPTVAL - IPT ) / 1000
+           IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
+     1    .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
+           IF ( II .GE. NPTCUR ) THEN
+              M5F = I
+
+              IF ( NPTCUR .GE. NPTTOT ) THEN
+                WRITE(CMON,'(A,I4)') 'Final Nptcur: ',NPTCUR
+                CALL XPRVDU(NCVDU,1,0)
+                NPTCUR = -1
+              ELSE
+                ME=OME    !Backspace to trick calling routine
+                MF=OMF
+                WRITE(CMON,'(A,I4)') 'Nptcur: ',NPTCUR
+                CALL XPRVDU(NCVDU,1,0)
+              END IF
+
+              GOTO 1050
+           END IF
+           IF ( M12F .GT. 0 ) M12F = ISTORE( M12F )
+        END DO
+        IATOMF=-1    !Not found
+        GOTO 1000
+      END IF
+
       GOTO 1000
       END
 C
