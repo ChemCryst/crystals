@@ -663,7 +663,7 @@ CDJWMAY99 - OUTPUT TO fOREIGN PUNCH UNIT
       IF (IERFLG .LT. 0) GOTO 9900
       SCALE = STORE(L5O)
       WRITE(NCFPU1, '(''# data_CRYSTALS_cif '')')
-      WRITE(NCFPU1, '(''#  '',10A4)') (TITLE(I),I=1,10)
+      WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
       WRITE(NCFPU1,'(''# _audit_creation_date  '',6X, 3(A2,A))')
      1 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
@@ -691,7 +691,7 @@ CDJWMAY99 - OUTPUT TO fOREIGN PUNCH UNIT
 1850  CONTINUE
       GOTO 9999
 9900  CONTINUE
-      WRITE(NCFPU1,'(''#  '',10A4)') (TITLE(I),I=1,10)
+      WRITE(NCFPU1,'(''#  '',10A4)') (KTITL(I),I=1,10)
 9999  RETURN
       END
 C
