@@ -7,6 +7,12 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.26  2003/07/08 09:59:08  rich
+//
+// Fixed bug where x and y axis scales went
+// slightly wrong for graphs with data scaled
+// on a second y-axis.
+//
 // Revision 1.25  2003/05/07 12:18:56  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -231,8 +237,9 @@ void CcPlotBar::ExtendSeriesLength(int ser)
         else prevlabel = true;
 
         // allocate new memory 
-        CcString* templabels = new CcString[(int)(m_Axes.m_NumberOfLabels * 1.5)];
-        
+        int alloc_size = (int)(m_Axes.m_NumberOfLabels * 1.5);
+        CcString* templabels = new CcString[alloc_size];
+      
         // loop through the previous set of bar-labels, copying data to the new one
         // NB: if prevlabel = false (eg this is the first label stored) there are no previous labels to copy, so skip this loop.
         //      (m_NumberOfLabels * false) == 0 ! Yuck.

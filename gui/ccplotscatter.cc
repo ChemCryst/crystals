@@ -11,6 +11,12 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2003/07/08 09:59:08  rich
+//
+// Fixed bug where x and y axis scales went
+// slightly wrong for graphs with data scaled
+// on a second y-axis.
+//
 // Revision 1.20  2003/05/07 12:18:56  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -228,7 +234,8 @@ void CcPlotScatter::ExtendSeriesLength(int ser)
     // allocate some new memory
     tempdata[Axis_X] = new float[(int)(m_Series[i]->m_SeriesLength * 1.5)];
     tempdata[Axis_YL] = new float[(int)(m_Series[i]->m_SeriesLength * 1.5)];
-    templabels = new CcString[(int)(m_Series[i]->m_SeriesLength * 1.5)];
+    int alloc_size = (int)(m_Series[i]->m_SeriesLength * 1.5);
+    templabels = new CcString[alloc_size];
 
     // transfer the data across
     for(int j=0; j<m_Series[i]->m_SeriesLength; j++)
