@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/01/30 15:24:48  ckp2
+C RIC: Calls to MTRNLG in FILEEXISTS and FILEDELETE.
+C
 C Revision 1.30  2001/09/04 14:57:38  ckp2
 C New TRANSFER destination:
 C % TRANSFER 'STUFF' TO PUNCH
@@ -2369,6 +2372,9 @@ C
 C
       PARAMETER ( JVALUE = 1 , JVTYPE = 2 , JCTYPE = 3 )
       PARAMETER ( JPOSTK = 4 )
+CJAN02  1 NEW UNARY OPERATOR
+C       CHAR=GETENV(CHAR)
+C
 CJAN99  2 NEW UNARY OPERATORS
 C       CHAR=FIRSTSTR(CHAR) AND INT=FIRSTINT(CHAR)
 C
@@ -2390,7 +2396,7 @@ C       REAL = REAL ** REAL
 CFEB01  1 NEW UNARY OP:
 C       REAL = RANDOM 
 C
-      PARAMETER ( NOPER = 48 , NUBASE = 25 )
+      PARAMETER ( NOPER = 49 , NUBASE = 25 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2433,7 +2439,7 @@ C
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13 /
+     6          12 ,12 , 13,  12 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -2739,7 +2745,7 @@ C
 CJAN99
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
-     4        5190 , 5200,  5210 , 9940 ) , IUOPER
+     4        5190 , 5200,  5210 , 5220 , 9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3105,7 +3111,23 @@ C
       XCODE(JVALUE,IARG(1)) = FRAND()
       ICODE(JVTYPE,IARG(1)) = 2
       GO TO 8000
-
+C
+5220  CONTINUE
+C
+C -- 'GETENV'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+C Get the value of the environment variable.
+&DOS        CALL DOSPARAM@(CWORK1(1:LEN1),CWORK2)
+&&DVFGID        CALL GETENV(CWORK1(1:LEN1),CWORK2)
+&UNX        CALL GETENV(CWORK1(1:LEN1),CWORK2)
+&&LINGIL        CALL GETENV(CWORK1(1:LEN1),CWORK2)
+      CALL XCTRIM(CWORK2,LEN2)
+      LEN2 = MAX ( 1, LEN2-1 )
+      ISTAT = KSCSCD ( CWORK2(1:LEN2) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
 C
 8000  CONTINUE
 C
@@ -3356,7 +3378,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 23 )
 CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 23 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 24 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3399,7 +3421,8 @@ CJAN99
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!34-37
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !38-41
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !42-44
-     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' /   !45-48
+     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !45-48
+     4                'GETENV'/                                    !49
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3414,8 +3437,9 @@ C
 CJAN99
      *                  180   ,   180   ,   180   ,   180   ,
      1                  180   ,   180   ,   180   ,   180   ,
-     2                  180   ,   180   ,   180   ,   180   ,
-     3                  180   ,   180   ,   200 /
+     2                  180   ,   180   ,   180   ,
+     3                  180   ,   180   ,   180   ,   200   ,
+     4                  180 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
