@@ -18,7 +18,7 @@
 %  END BLOCK
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
-% VARIABLE LOGICAL PEAKCHANGE REDRAW
+% VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
 % VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE
 %%
@@ -44,10 +44,14 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%
 %% This gets a passed in argument so that the menus
 %% can call the same script to do four different map types.
+%% Calling script can set XFCALLED to TRUE and recommend their
+%% own map type. (logicals are false if uninitialised)
 %%
-%  VERIFY FOBS DIFF 2FO-FC FCALC OPT FO-PAT FC-PAT
-%  GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
-%  EVALUATE MTYPE = VALUE
+%  IF ( XFCALLED .EQ. FALSE ) THEN
+%   VERIFY FOBS DIFF 2FO-FC FCALC OPT FO-PAT FC-PAT
+%   GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
+%   EVALUATE MTYPE = VALUE
+%  END IF
 %%
 %%
 %%
@@ -357,11 +361,12 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^CR
 %           VERIFY BTNOK BTNXX
 %           GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-^^WI        DISPOSE NOPEAKS
-^^CR
+^^CO        DISPOSE NOPEAKS
 %           IF VALUE .EQ. 1 THEN
 %% Don't know how wise this is, the stack will run out eventually
+%               EVALUATE XFCALLED = TRUE
 %               COPY '#SCRIPT XFOUR'
+%               FINISH
 %           END IF
 %           FINISH
 %       END IF
