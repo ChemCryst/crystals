@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.87  2004/07/12 15:32:11  stefan
+C Replaces a reference to 'H   ' which Richard added with a constant already declared in the function.
+C This was to fix a type mismatch problem on the mac and Mandrake.
+C
 C Revision 1.86  2004/07/08 15:23:28  rich
 C Added H-treatment options to the end of L30's CIF block. The default is
 C UNKNOWN, and if left unchanged, this will cause the CIF generator to
@@ -5781,13 +5785,30 @@ C------ SIGMA WEIGHTS
                write(ctext(3),'(a)') ' A~i~ are:'
                ival = 38
              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
+c               SHELX type
                 ival = 34
-                write(cline,'(a)') 
-     1          ' p=P(6)*max(Fo^2^,0) + (1-P(6))Fc^2^'
+cdjw090804^
+                if (nint(1000. * store(l4+5)) .ne. 333) then
+                 write(cline,'(a)') 
+     1           ' p=P(6)*max(Fo^2^,0) + (1-P(6))Fc^2^'
+                else
+                 write(cline,'(a)') 
+     1           ' p=(max(Fo^2^,0) + 2Fc^2^)/3'
+                endif
                 call xpcif (cline)
-                write(ctext(3),'(a)') 
-     1          ' P(i) are:'
-              endif
+cdjw090804^
+                if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
+     1          .le. 0.0) then
+                  write(ctext(2),'(a,f5.2,a,f5.2,a)')
+     1            ' w=1/[sigma^2^(F^2^) +', store(l4),' +',
+     2              store(l4+1),'p]'
+                  ctext(3) = ' '
+                  ctext(4) = ' '
+                else
+                  write(ctext(3),'(a)') 
+     1            ' P(i) are:'
+                endif
+             endif
               if (ival .ne. 0 ) then     
                 ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
                 call xctrim (ctemp,nchar)
