@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2003/07/04 16:37:47  rich
+C Solve two problems with punch twinned list6's. (1) The element field
+C was only I3 - changed it to I10 to allow for a full 9 element twin.
+C (2) Added a blank line after the terminating -512: the twin format
+C uses a two line format statement, previouslt the next line was a
+C CRYSTALS comment '#' generating a disconcerting, though harmless, message
+C when reading in the data.
+C
 C Revision 1.34  2003/06/27 10:11:33  rich
 C Added "#PUNCH 6 F" - outputs a plain HKLF4 format listing to the
 C punch file with no headers or anything.
@@ -1077,10 +1085,24 @@ C----- SHELX FORMAT PUNCH
       IN = 0
       CALL XFAL06(IULN, IN)
       IF (IERFLG .LT. 0) GOTO 9999
+
+c      M6DTL=L6DTL+3*MD6DTL
+c      E=STORE(M6DTL+1)       ! FETCH THE MAXIMUM VALUE OF /FO/
+
 1840  CONTINUE
         IF ( KLDRNR (IN) .LT. 0 ) GOTO 9999
         CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
-        WRITE(NCPU,'(3I4,2F8.2)')(NINT(STORE(M6+I)),I=0,2),FOS,SIGMA
+        IF      (FOS.LT.100000.00) THEN
+          WRITE(NCPU,'(3I4,2F8.2)')(NINT(STORE(M6+I)),I=0,2),FOS,SIGMA
+        ELSE IF (FOS.LT.1000000.0) THEN
+          WRITE(NCPU,'(3I4,2F8.1)')(NINT(STORE(M6+I)),I=0,2),FOS,SIGMA
+        ELSE IF (FOS.LT.100000000) THEN
+          WRITE(NCPU,'(3I4,I8,F8.0)')(NINT(STORE(M6+I)),I=0,2),
+     1     NINT(FOS),SIGMA
+        ELSE
+          WRITE(NCPU,'(3I4,G8.3,F8.1)')(NINT(STORE(M6+I)),I=0,2),
+     1     FOS,SIGMA
+        END IF
       GOTO 1840
 9999  CONTINUE
       RETURN
