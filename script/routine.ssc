@@ -4,7 +4,6 @@ a ROUTINE STRUCTURE
 %  EVALUATE EXTINCT = FALSE
 %  EVALUATE OPTIM = FALSE
 %  VARIABLE INTEGER ISER
-%  VARIABLE INTEGER ATOMSOUT
 %% R-FACTOR THRESHOLDS FOR VARIOUS CASES
 %  VARIABLE REAL R1 R2 R3 R4
 %% Fourier might be better
@@ -23,13 +22,11 @@ a ROUTINE STRUCTURE
 %    COPY '#SCRIPT NEWSTART'
 %  END IF
 %%
-%  COPY '#SCRIPT NATOMS'
-%  IF ATOMSOUT .LT. 1 THEN
+%  IF EXISTS 5 .NE. 1 THEN
 %    COPY '#SCRIPT STRUCTUR'
 %  END IF
 %% if there is still no list 5 , goto  direct mode
-%  COPY '#SCRIPT NATOMS'
-%  IF ATOMSOUT .LT. 1 THEN
+%  IF EXISTS 5 .NE. 1 THEN
  You have no model struture. The routine ananlysis cannot continue
 %    COPY '#SCRIPT DIRECT'
 %  END IF
