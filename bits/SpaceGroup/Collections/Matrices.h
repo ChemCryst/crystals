@@ -103,8 +103,21 @@ class Matrix:public MyObject
             iMatrix = new type[pMatrix.iSize];
             memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(type));
         }
-		
-		Matrix(const type pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
+	
+	template <class otherType>
+        Matrix(const Matrix<otherType>& pMatrix)
+        {
+	  iXSize = pMatrix.sizeX();
+	  iYSize = pMatrix.sizeY();
+	  iSize = iXSize*iYSize;
+	  iMatrix = new type[iSize];
+            for (size_t i = 0; i< iSize; i++)
+            {
+                iMatrix[i] = (type)pMatrix.getValue(i);
+            }
+        }
+
+	Matrix(const type pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
         {
             iMatrix = new type[iSize];
             memcpy(iMatrix, pMatrix, iSize*sizeof(type));
