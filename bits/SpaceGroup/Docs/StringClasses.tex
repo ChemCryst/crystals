@@ -6,12 +6,14 @@
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
 \textbf{String}\\ \hline
--iString:char* \\
+\hash iString:char* \\
 \hline
++String():\\
 +String(char* pString): \\
 +String(String\ands \xspace pString): \\
 +String(int tLength):\\
 +\til String():\\
++init(const char* pString):void\\
 +getCString():char*\\
 +operator<(String\ands \xspace pString):bool\\
 +operator>(String\ands \xspace pString):bool\\
@@ -27,12 +29,14 @@
 +token(char* pString, const char* pDelimeter,\\
 char* pToken, int pMaxTokenLength,\\
 int pTokenIndex):void\\
-upcase():void\\
-trim():void\\
-static hex2l(char* pString):long\\
-static trimNumber(char* pString):void\\
-static upcase(char* pString):void\\
-static trim(char* pString ):void\\
++upcase():void\\
++trim():void\\
++initFormated(char* pFmt, ...):int\\
++input(std::istream\ands\xspace pStream):std::istream\ands\\
++static hex2l(char* pString):long\\
++static trimNumber(char* pString):void\\
++static upcase(char* pString):void\\
++static trim(char* pString ):void\\
 \hline
 \end{tabular}
 \end{table}
@@ -44,6 +48,13 @@ The string class was first added to this file for the project RoboSim. This clas
 \begin{table}[h]
 \begin{tabular}{|l|}\hline
 \textbf{Path}\\ \hline
-removeOutterQuotes(char* pString):void\\ \hline
++Path():\\
++Path(char* pString):\\
++Path(Path\ands\xspace pPath):\\
++removeOutterQuotes():void\\
++static removeOutterQuotes(char* pString):void\\ \hline
 \end{tabular}
 \end{table}
+
+This needs to be improved so that it is possible to open a file using this class and also so that it is possible to pass it a partial path and it then will later return a full path.
+
