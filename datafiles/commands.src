@@ -2417,8 +2417,8 @@ ANALYSE            4    5
    1.FO                 3    1    0    0
          2    3    3
     .INTERVAL           1    0    1    0    0 0.0
-    .TYPE               2    0    1    2    0 SQRT(/FO/)
-     SQRT(/FO/)     /FO/
+    .TYPE               2    0    1    4    0 SQRT(/FC/)
+     SQRT(/FO/)     /FO/           SQRT(/FC/)     /FC/
     .SCALE              3    0    1    2    0 /FO/
      /FO/           /FC/
    2.THETA              1    1    0    0
@@ -3278,12 +3278,12 @@ FOREIGN            1    0
 -GIDCAMERON            1    0
 +GIDXCAMERON           1    0
    1    4096 CRYSTALSFOREIGN
-   1.CAMERON            2    1    0    0
+   1.XCAMERON           2    1    0    0
          3    3
-    .RUN                1    0    1    2    1 YES
+    .RUN                1   -1    1    2    1 YES
      NO             YES
-    .MODE               2    0    1    1    1 NORMAL
-     NORMAL         
+    .MODE               2    0    1    2    1 NORMAL
+     NORMAL         SPECIAL
 SPACEGROUP         2    1
    2    4096 CRYSTALSFOREIGN
    14
