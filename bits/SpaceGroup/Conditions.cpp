@@ -38,7 +38,7 @@ void deleteConRegEx()
     }
 }
 
-Condition::Condition(char* pLine)
+Condition::Condition(char* pLine):Matrix<short>(3, 1)
 {
 /* Match Index 	Description
      * 0 	 	Line
@@ -63,30 +63,25 @@ Condition::Condition(char* pLine)
     char* tString = new char[(int)(tMatch[4].rm_eo-tMatch[4].rm_so+1)];	//Get the matrix for the condition
     tString[(int)(tMatch[4].rm_eo-tMatch[4].rm_so)] = 0;
     strncpy(tString, pLine+(int)tMatch[4].rm_so, (int)tMatch[4].rm_eo-tMatch[4].rm_so);  
-    iMatrix = new MatrixReader(tString);
+    MatrixReader tMatrix(tString);  //Make the string into a matrix
+    (*(Matrix<short>*)this) = (Matrix<short>&)tMatrix;
     delete[] tString;
     iName = new char[(int)(tMatch[2].rm_eo-tMatch[2].rm_so+1)];		//Get the name of the condition
     iName[(int)(tMatch[2].rm_eo-tMatch[2].rm_so)] = 0;
     strncpy(iName, pLine+(int)tMatch[2].rm_so, (int)tMatch[2].rm_eo-tMatch[2].rm_so);  
     iID = strtol((const char*)(pLine+tMatch[1].rm_so), NULL, 10);			//Get the id of the condition
-    iMult = (float)strtod((const char*)(pLine+tMatch[12].rm_so), NULL);			//Get the multiplier 
+    iMult = (float)strtod((const char*)(pLine+tMatch[12].rm_so), NULL);			//Get the multiplier
 }
 
 Condition::~Condition()
 {
     deleteConRegEx();
     delete[] iName;
-    delete iMatrix;
 }
 
 char* Condition::getName()
 {
     return iName;
-}
-
-Matrix<short>* Condition::getMatrix()
-{
-    return iMatrix;
 }
 
 float Condition::getMult()
@@ -101,7 +96,7 @@ int Condition::getID()
 
 std::ostream& Condition::output(std::ostream& pStream)
 {
-    pStream << iID << "\t" << iName << "\t" << *iMatrix << " " << iMult << "\n";
+    pStream << iID << "\t" << iName << "\t" << (*(Matrix<short>*)this) << " " << iMult << "\n";
     return pStream;
 }
 
@@ -110,28 +105,24 @@ std::ostream& operator<<(std::ostream& pStream, Condition& pCondition)
     return pCondition.output(pStream);
 }
 
-Conditions::Conditions()
-{
-    iConditions = new ArrayList<Condition>(1);
-}
+Conditions::Conditions():ArrayList<Condition>(4)
+{}
 
 Conditions::~Conditions()
 {
-    int iSize = iConditions->length();
-    for (int i = 0; i < iSize; i++)
+    for (int i = iItemCount-1; i >= 0; i--)
     {
-        Condition* tCondition = iConditions->remove(i);
+        Condition* tCondition = remove(i);
         if (tCondition)
         {
             delete tCondition;
         }
     }
-    delete iConditions;
 }
 
 int Conditions::getID(int pIndex)
 {
-    Condition* tCondition = iConditions->get(pIndex);
+    Condition* tCondition = get(pIndex);
     
     if (!tCondition)
     {
@@ -142,7 +133,7 @@ int Conditions::getID(int pIndex)
 
 char* Conditions::getName(int pIndex)
 {
-    Condition* tCondition = iConditions->get(pIndex);
+    Condition* tCondition = get(pIndex);
     
     if (!tCondition)
     {
@@ -153,18 +144,18 @@ char* Conditions::getName(int pIndex)
 
 Matrix<short>* Conditions::getMatrix(int pIndex)
 {
-    Condition* tCondition = iConditions->get(pIndex);
+    Condition* tCondition = get(pIndex);
     
     if (!tCondition)
     {
         throw MyException(kUnknownException, "Condition with that index doesn't exist.");
     }
-    return tCondition->getMatrix();
+    return tCondition;
 }
 
 float Conditions::getMult(int pIndex)
 {
-    Condition* tCondition = iConditions->get(pIndex);
+    Condition* tCondition = get(pIndex);
     
     if (!tCondition)
     {
@@ -190,7 +181,7 @@ char* Conditions::addCondition(char* pLine)	//Returns the point which the line a
         tNext++;
         delete[] tString;
     }
-    iConditions->setWithAdd(tCondition, tCondition->getID());
+    setWithAdd(tCondition, tCondition->getID());
     return tNext;
 }
 
@@ -227,17 +218,12 @@ void Conditions::readFrom(filebuf& pFile)
     while (!tFile.eof() && strlen(tLine)>0);
 }
 
-int Conditions::length()
-{
-    return iConditions->length();
-}
-
 std::ostream& Conditions::output(std::ostream& pStream)
 {
-    int tSize = iConditions->length();
+    int tSize = length();
     for (int i = 0; i < tSize; i++)
     {
-        Condition* tCondition = iConditions->get(i);
+        Condition* tCondition = get(i);
         if (tCondition)
         {
             std::cout << *tCondition << "\n";
@@ -255,4 +241,5 @@ std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions)
 {
     return pConditions.output(pStream);
 }
+
 
