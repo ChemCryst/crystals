@@ -12,8 +12,8 @@
 #include    "cclock.h"
 
 #ifdef __CR_WIN__
-#include <iostream.h>
-#include <iomanip.h>
+#include <iostream>
+#include <iomanip>
 #include <stdio.h>
 #include <direct.h>
 #include <process.h>

@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2002/04/30 20:14:45  richard
+// Thicken line used for line graphs.
+//
 // Revision 1.18  2002/03/07 10:46:43  DJWgroup
 // SH: Change to fix reversed y axes; realign text labels.
 //
@@ -590,19 +593,19 @@ Boolean CcSeriesBar::ParseInput( CcTokenList * tokenList )
 {
     CcSeries::ParseInput( tokenList );
 
-    Boolean hasTokenForMe = true;
-    while ( hasTokenForMe )
-    {
-        switch ( tokenList->GetDescriptor(kPlotClass) )
-        {
-            default:
-            {
-                hasTokenForMe = false;
-                break; // We leave the token in the list and exit the loop
-            }
-        }
-    }
-
+//    Boolean hasTokenForMe = true;
+//    while ( hasTokenForMe )
+//    {
+//        switch ( tokenList->GetDescriptor(kPlotClass) )
+//        {
+//            default:
+//            {
+//                hasTokenForMe = false;
+//                break; // We leave the token in the list and exit the loop
+//            }
+//        }
+//    }
+//
     return true;
 }
 

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.4  2001/09/07 14:37:22  ckp2
 //   Bug under un-updated versions of Win95 causes the toolbars to be created
 //   with ridiculous dimensions. This fix limits the maximum toolbar size
@@ -394,7 +398,7 @@ void CxToolBar::CheckTool(bool check, int id)
 
 
 #ifdef __CR_WIN__
-void CxToolBar::OnToolSelected(int nID)
+void CxToolBar::OnToolSelected(UINT nID)
 {
 #endif
 #ifdef __BOTHWX__

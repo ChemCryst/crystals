@@ -1380,7 +1380,7 @@ void CxTextOut::ScrollPage(bool up)
 #ifdef __CR_WIN__
 void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
-      CrGUIElement * theElement;
+//      CrGUIElement * theElement;
       switch (nChar) {
            case VK_PRIOR:
                   ScrollPage(true);

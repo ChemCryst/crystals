@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2001/12/12 14:18:40  ckp2
+//   RIC: Mousewheel support! (Guess who's just got a new mouse.)
+//   RIC: Also PGUP and PGDOWN and Mousewheel allow the textoutput to be
+//   scrolled *even* *if* there is a dialog blocking other input. V. useful
+//   as some dialog questions can be better answered after reviewing what
+//   has happened in the text output.
+//
 //   Revision 1.25  2001/11/14 10:30:41  ckp2
 //   Various changes to the painting of the background of Windows as some of the
 //   dialogs suddenly went white under XP.
@@ -442,7 +449,7 @@ void CxWindow::SetMainMenu(CxMenuBar * menu)
 
 
 #ifdef __CR_WIN__
-void CxWindow::OnMenuSelected(int nID)
+void CxWindow::OnMenuSelected(UINT nID)
 {
     TRACE("Menu ID %d\n", nID);
 #endif
@@ -457,7 +464,7 @@ void CxWindow::OnMenuSelected(wxCommandEvent & event)
 
 
 #ifdef __CR_WIN__
-void CxWindow::OnToolSelected(int nID)
+void CxWindow::OnToolSelected(UINT nID)
 {
     TRACE("Tool ID %d\n", nID);
 #endif

@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.45  2002/03/18 15:31:54  richard
+// Removed setting of MT_DIR no longer present.
+//
 // Revision 1.44  2002/03/16 18:08:22  richard
 // Removed old CrGraph class (now obsolete given Steven's work).
 // Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
@@ -259,8 +262,8 @@
 #include    "crprogress.h"
 #include    "ccmenuitem.h"
 #include    "crtoolbar.h"
-#include <iostream.h>
-#include <iomanip.h>
+#include <iostream>
+#include <iomanip>
 
 
 

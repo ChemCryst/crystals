@@ -1376,7 +1376,7 @@ int CxModel::AdjustEnclose( CcRect* enc, GLfloat* buf, int point )
 }
 
 #ifdef __CR_WIN__
-void CxModel::OnMenuSelected(int nID)
+void CxModel::OnMenuSelected(UINT nID)
 {
 
 #endif

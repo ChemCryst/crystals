@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2001/10/10 12:44:50  ckp2
+// The PLOT classes!
+//
 // Revision 1.18  2001/07/16 07:27:52  ckp2
 // Just fiddling.
 //
@@ -125,8 +128,8 @@ typedef unsigned int UINT;
 #include <wx/file.h>
 #include <wx/memory.h>
 #include <stdio.h>
-#include <iostream.h>
-#include <iomanip.h>
+#include <iostream>
+#include <iomanip>
 //#define TRACE WXTRACE
 #endif
 
@@ -140,8 +143,8 @@ typedef bool Boolean;
 
 #ifdef _DEBUG
   #ifdef __CR_WIN__
-    #include <afxwin.h> //Needed for TRACE debugger macro.
-    #define new DEBUG_NEW //Needed for debugger to track heap allocations.
+//    #include <afxwin.h> //Needed for TRACE debugger macro.
+//    #define new DEBUG_NEW //Needed for debugger to track heap allocations.
   #endif
   #ifdef __BOTHWX__
     #include <wx/object.h>

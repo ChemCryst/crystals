@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2002/03/07 10:46:45  DJWgroup
+//   SH: Change to fix reversed y axes; realign text labels.
+//
 //   Revision 1.13  2002/02/21 15:23:14  DJWgroup
 //   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -190,7 +193,7 @@ private:
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
-		afx_msg void OnMenuSelected (int nID);
+                afx_msg void OnMenuSelected (UINT nID);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

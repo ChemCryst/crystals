@@ -18,7 +18,7 @@
 
 #ifdef __CR_WIN__
 #ifdef _DEBUG
-#define new DEBUG_NEW
+//#define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
@@ -32,7 +32,7 @@ BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
     // Standard file based document commands
 //      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 //      ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
+//      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 }
 
 
-LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM lp)
+LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM)
 {
   theControl->DoCommandTransferStuff();
 //  LOGSTAT ( "Stuff To Process" );

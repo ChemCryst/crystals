@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.27  2002/03/13 12:27:24  richard
+//  Detect clicks on bonds.
+//
 //  Revision 1.26  2002/03/04 13:55:15  ckp2
 //  Do something about display of model on 256 colour monitors. (Colours are now weird, instead
 //  of just black on black background.
@@ -248,7 +251,7 @@ class CxModel : public BASEMODEL
     afx_msg void OnMouseMove( UINT nFlags, CPoint point );
     afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
     afx_msg BOOL OnEraseBkgnd( CDC* pDC );
-    afx_msg void OnMenuSelected (int nID);
+    afx_msg void OnMenuSelected (UINT nID);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 #endif

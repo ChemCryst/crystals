@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2002/02/21 15:23:12  DJWgroup
+// SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 // Revision 1.14  2002/02/20 12:05:19  DJWgroup
 // SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -503,18 +506,18 @@ Boolean CcSeriesScatter::ParseInput( CcTokenList * tokenList )
 {
     CcSeries::ParseInput( tokenList );
 
-    Boolean hasTokenForMe = true;
-    while ( hasTokenForMe )
-    {
-        switch ( tokenList->GetDescriptor(kPlotClass) )
-        {
-            default:
-            {
-                hasTokenForMe = false;
-                break; // We leave the token in the list and exit the loop
-            }
-        }
-    }
+//    Boolean hasTokenForMe = true;
+//    while ( hasTokenForMe )
+//    {
+//        switch ( tokenList->GetDescriptor(kPlotClass) )
+//        {
+//            default:
+//            {
+//                hasTokenForMe = false;
+//                break; // We leave the token in the list and exit the loop
+//            }
+//        }
+//    }
 
     return true;
 }

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:50
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/07/16 07:37:19  ckp2
+//   wx: Get better guess at ideal toolbar size. Sub-class native toolbar class in
+//   order to process ON_CHAR messages.
+//
 //   Revision 1.2  2001/06/17 14:27:40  richard
 //   wx Support.
 //   Catch bad bitmaps.
@@ -74,7 +78,7 @@ class CxToolBar : public BASETOOLBAR
      static void ReplaceBackgroundColor(CBitmap & io);
 
      afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-     afx_msg void OnToolSelected(int nID);
+     afx_msg void OnToolSelected(UINT nID);
      DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

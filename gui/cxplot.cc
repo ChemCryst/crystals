@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2002/03/07 14:00:41  DJWgroup
+//   SH: fix menus for inverted graphs.
+//
 //   Revision 1.19  2002/03/07 10:46:45  DJWgroup
 //   SH: Change to fix reversed y axes; realign text labels.
 //
@@ -1010,7 +1013,7 @@ void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
 }
 
 
-void CxPlot::OnMenuSelected(int nID)
+void CxPlot::OnMenuSelected(UINT nID)
 {
     ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
 }

@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2002/04/30 21:57:33  richard
+// Spelling correction.
+//
 // Revision 1.19  2002/04/11 11:08:07  DJWgroup
 // SH: Quick fix for dynamic graph scaling.
 //
@@ -623,14 +626,14 @@ CcSeries::~CcSeries()
 Boolean CcSeries::ParseInput( CcTokenList * tokenList )
 {
 	// nb: series class doesn't handle any messages
-	  switch ( tokenList->GetDescriptor(kPlotClass) )
-	  {
-		default:
-		{  
-			return true; // Failed to initialise. Some sort of error.
-			break; 
-		}
-	  }
+//          switch ( tokenList->GetDescriptor(kPlotClass) )
+//          {
+//                default:
+//                {  
+//                        return true; // Failed to initialise. Some sort of error.
+//                        break; 
+//                }
+//          }
 	  
 	return true;
 }
