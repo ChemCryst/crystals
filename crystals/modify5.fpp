@@ -1,4 +1,36 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2002/07/17 09:29:49  richard
+C
+C In #DISTANCE added option: SEL RANGE=L41
+C This will use the bond list (41) to determine what is connected.
+C
+C In #DISTANCE added option: OUT PUNCH=DELU D1DEV=x D2DEV=y
+C This will output VIBR restraints to the punch file with an esd
+C of x for 1,2 distances and y for 1,3 distances. You probably want an
+C EXCL H if using the DELU option.
+C
+C In #DISTANCE added option: OUT PUNCH=SIMU S1DEV=x S2DEV=y
+C This will output U(IJ) restraints to the punch file with an esd
+C of x for normal bonds and y for terminal bonds. A bond is terminal
+C if it connects to an atom with no other connections except hydrogen.
+C This option uses LIST 41 to determine whether the atom is 'terminal',
+C but the RANGE can still be set at user's discretion. You probably want an
+C EXCL H if using the SIMU option.
+C
+C In #EDIT added option: INSERT NCONN
+C This will put the number of connections to other atoms (according to L41)
+C into the SPARE slot in List 5.
+C
+C In #EDIT added option: INSERT RELAX
+C This will start with the electron count of each atom in SPARE, and
+C keep cycling through the bond list, adding the current value of
+C SPARE to all the neighbouring atoms. It will cycle until the number
+C of unique values of SPARE stops increasing.
+C
+C distangl.src now contains a routine KDIST4, which works like KDIST1 but using
+C the existing L41. It should be noted that the bond lengths stored in L41
+C may be out of date as the bonding is only recalculated every now and again.
+C
 C Revision 1.25  2002/06/28 16:13:09  Administrator
 C ensure that the field NEW can hold characters
 C
@@ -146,6 +178,7 @@ C-C-C-DEFINITION OF VARIABLES FOR CHANGES BY LS
       REAL SUMUIJ,SUMOCC,SUMUISO,SIDI,SUMDI,MAXDI
       INTEGER NUMDISO,NFLSPEC
       character *20 ctemp
+      character *21 CATOM1
       DIMENSION XCF(3), VA(3), ROF(3,3), RCA(3,3), XWORKS(4)
 C-C-C
 C
@@ -441,13 +474,13 @@ C     GET GRAPH TYPE LEVEL
       WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _PARAM BARGRAPH ATTACH _VPARAM',
      1  '^^PL XAXIS TITLE ''Atoms''',
-     1  '^^PL NSERIES=1 LENGTH=20 YAXIS TITLE ''fom'''
+     1  '^^PL NSERIES=1 LENGTH=20'
       CALL XPRVDU(NCVDU, 3,0)
 
       DO IPR = L5, L5+((N5-1)*MD5), MD5
-        WRITE(CMON,'(A,A4,I5,A,F9.3)')
-     1  '^^PL LABEL ''', ISTORE(IPR),NINT(STORE(IPR+1)), 
-     2  ''' DATA ',      STORE(IPR+13)
+        CALL CATSTR(STORE(IPR),STORE(IPR+1),1,1,0,0,0,CATOM1,LATOM1)
+        WRITE(CMON,'(A,A,A,F9.3)')
+     1  '^^PL LABEL ''', CATOM1(1:LATOM1),''' DATA ', STORE(IPR+13)
         CALL XPRVDU(NCVDU, 1,0)
       END DO
 
@@ -2384,11 +2417,13 @@ C
 C
 200   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,250) LB
-      WRITE (NCAWU,250) LB
-      WRITE (CMON,250) LB
-      CALL XPRVDU (NCVDU,1,0)
-250   FORMAT (1X,'No new list ',I3,' will be created')
-      CALL XERHND (IERROR)
+      IF ( MONLVL .GT. 0 ) THEN
+        WRITE (NCAWU,250) LB
+        WRITE (CMON,250) LB
+        CALL XPRVDU (NCVDU,1,0)
+250     FORMAT (1X,'No new list ',I3,' will be created')
+        CALL XERHND (IERROR)
+      END IF
       GO TO 150
 300   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,350) LA
@@ -2409,9 +2444,11 @@ C -- THIS CONDITION IS AN ERROR
 500   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,550) LA
       WRITE (NCAWU,550) LA
-      WRITE (CMON,550) LA
-      CALL XPRVDU (NCVDU,1,0)
-550   FORMAT (1X,'Modification of list ',I3,' abandoned')
+      IF ( MONLVL .GT. 0 ) THEN
+        WRITE (CMON,550) LA
+        CALL XPRVDU (NCVDU,1,0)
+550     FORMAT (1X,'Modification of list ',I3,' abandoned')
+      END IF
       GO TO 200
 C
       END
