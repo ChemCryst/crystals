@@ -11,6 +11,12 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.23  2003/05/07 12:18:56  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.22  2002/07/18 16:47:29  richard
 // Prevent crash if program attempts to plot graph and graph window doesn't exist.
 //
@@ -980,8 +986,8 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
         // if y axis has a title make the lhs gap bigger
         if(!(m_AxisData[Axis_YL].m_Title == ""))
             xgapleft = 300;
-        if(!(m_AxisData[Axis_YR].m_Title == ""))
-            xgapright = 300;
+//        if(!(m_AxisData[Axis_YR].m_Title == ""))
+//            xgapright = 300;
 
         // variables used for loops
         int i=0;

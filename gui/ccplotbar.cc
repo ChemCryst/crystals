@@ -7,6 +7,12 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.25  2003/05/07 12:18:56  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.24  2002/10/16 09:07:31  rich
 // Make the graphs a bit trendier.
 //
@@ -288,8 +294,8 @@ void CcPlotBar::DrawView(bool print)
         // if y axis has a title make the lhs gap bigger
         if(!(m_Axes.m_AxisData[Axis_YL].m_Title == ""))
             m_XGapLeft = 300;
-        if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
-            m_XGapRight = 300;
+//        if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
+//            m_XGapRight = 300;
 
         // variables used for loops
         int i=0;

@@ -11,6 +11,12 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2003/05/07 12:18:56  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.19  2002/11/12 15:16:29  rich
 // Make lines on xy graphs a little thicker.
 // Allow series that are added later (using ADDSERIES) to an xy graph to have their
@@ -268,8 +274,8 @@ void CcPlotScatter::DrawView(bool print)
         // if y axis has a title make the lhs gap bigger
         if(!(m_Axes.m_AxisData[Axis_YL].m_Title == ""))
             m_XGapLeft = 300;
-        if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
-            m_XGapRight = 200;
+//        if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
+//            m_XGapRight = 200;
 
         // used in loops
         int i=0;
@@ -328,6 +334,14 @@ void CcPlotScatter::DrawView(bool print)
             // set to series colour
             attachedPlot->SetColour(m_Colour[0][j],m_Colour[1][j],m_Colour[2][j]);  
 
+            int axis = m_Series[j]->m_YAxis;
+            yorigin = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[axis].m_AxisMin / (m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin))));
+            yoriginvalue = 0;
+            if(m_Axes.m_AxisData[axis].m_AxisScaleType == Plot_AxisSpan && m_Axes.m_AxisData[axis].m_AxisMin > 0) 
+            {
+               yorigin = 2400 - m_YGapBottom;
+               yoriginvalue = m_Axes.m_AxisData[axis].m_AxisDivisions[0];
+            }
             switch(m_Series[j]->m_DrawStyle)
             {
                 // draw this data series as a scatter graph
@@ -338,7 +352,7 @@ void CcPlotScatter::DrawView(bool print)
                     for(i=0; i<m_Series[j]->m_NumberOfItems; i++)
                     {
                         x1 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-                        y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+                        y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax- m_Axes.m_AxisData[axis].m_AxisMin))));
                         attachedPlot->DrawLine(2, x1-10, y1-10, x1+10, y1+10);
                         attachedPlot->DrawLine(2, x1-10, y1+10, x1+10, y1-10);
                     }
@@ -352,9 +366,9 @@ void CcPlotScatter::DrawView(bool print)
                     for(i=0; i<m_Series[j]->m_NumberOfItems-1; i++)
                     {
                         x1 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-                        y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+                        y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax- m_Axes.m_AxisData[axis].m_AxisMin))));
                         x2 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i+1]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-                        y2 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+                        y2 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin))));
 
                                                 attachedPlot->DrawLine(2,x1,y1,x2,y2);
                     }
@@ -369,9 +383,9 @@ void CcPlotScatter::DrawView(bool print)
                     for(i=0; i<m_Series[j]->m_NumberOfItems-1; i++)
                     {
                         vert[0] = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax- m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-                        vert[1] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+                        vert[1] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax- m_Axes.m_AxisData[axis].m_AxisMin))));
                         vert[2] = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i+1]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-                        vert[3] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+                        vert[3] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin))));
 
                         vert[4] = vert[2];
                         vert[5] = yorigin;
@@ -452,7 +466,7 @@ PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
                         pointfound = true;
                         ret.m_Valid = true;
 
-                        point->y = m_YGapTop;
+//                        point->y = m_YGapTop;
                     }
                 }
             }
