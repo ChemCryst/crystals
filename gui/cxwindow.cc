@@ -37,10 +37,10 @@ CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
 	theWindow->mParentWnd = (CWnd*) parentWindow;
 
-	theWindow->Create(	
+	theWindow->Create(
 						wndClass,
 						"Window",
-						WS_CAPTION|/*WS_POPUP|*/WS_SYSMENU,
+        (attributes & kSize)? WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX : WS_CAPTION|WS_SYSMENU,
 						CRect(0,0,10,10),
 						theWindow->mParentWnd);
 #endif
@@ -267,6 +267,7 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
 	ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
 	ON_UPDATE_COMMAND_UI_RANGE(kMenuBase,kMenuBase+1000,OnUpdateMenuItem)
       ON_WM_KEYDOWN()
+      ON_WM_KEYUP()
 END_MESSAGE_MAP()
 #endif
 #ifdef __LINUX__
@@ -590,6 +591,12 @@ void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
            case VK_ESCAPE:
                   key = CRESCAPE;
                   break;
+           case VK_CONTROL:
+                  key = CRCONTROL;
+                  break;
+           case VK_SHIFT:
+                  key = CRSHIFT;
+                  break;
            default:
                   //Do nothing
                   break;
@@ -597,6 +604,52 @@ void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 
       if (key >= 0)
             ((CrWindow*)mWidget)->SysKeyPressed( key );
+
+      CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
+}
+#endif
+#ifdef __WINDOWS__
+void CxWindow::OnKeyUp ( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
+      int key = -1;
+      switch (nChar) {
+           case VK_LEFT:
+                  key = CRLEFT;
+                  break;
+           case VK_RIGHT:
+                  key = CRRIGHT;
+                  break;
+           case VK_UP:
+                  key = CRUP;
+                  break;
+           case VK_DOWN:
+                  key = CRDOWN;
+                  break;
+           case VK_INSERT:
+                  key = CRINSERT;
+                  break;
+           case VK_DELETE:
+                  key = CRDELETE;
+                  break;
+           case VK_END:
+                  key = CREND;
+                  break;
+           case VK_ESCAPE:
+                  key = CRESCAPE;
+                  break;
+           case VK_CONTROL:
+                  key = CRCONTROL;
+                  break;
+           case VK_SHIFT:
+                  key = CRSHIFT;
+                  break;
+           default:
+                  //Do nothing
+                  break;
+      }
+
+      if (key >= 0)
+            ((CrWindow*)mWidget)->SysKeyReleased( key );
 
       CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
