@@ -34,7 +34,7 @@
 %    TRANSFER ' ' TO PUNCH
 %    TRANSFER 'Crystal structure information:' TO PUNCH
 %    TRANSFER '==============================' TO PUNCH
-%    COPY '#CIF '
+%    COPY '#CIF PLAIN'
 %    COPY 'END'
 %    TRANSFER ' ' TO PUNCH
 %    TRANSFER 'Atom coordinates and Uiso or Ueq:' TO PUNCH
