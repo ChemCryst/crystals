@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2001/11/19 16:32:20  ckpgroup
+// SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
+//
 // Revision 1.4  2001/11/14 12:43:20  ckp2
 // RC: Don't assume that x-axis will be at least as long as the LENGTH given.
 // It could be shorter.
@@ -69,10 +72,10 @@ CcPlotData::CcPlotData( )
    }
 
    m_Colour[0][0] = 255;
-   m_Colour[1][1] = 255;
+   m_Colour[2][1] = 255;
+   m_Colour[1][2] = 255;
    m_Colour[0][3] = 255;
    m_Colour[1][3] = 255;
-   m_Colour[2][2] = 255;
    m_Colour[0][4] = 255;
    m_Colour[2][4] = 255;
    m_Colour[1][5] = 255;
@@ -221,18 +224,24 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 			// set the number of data series
 			case kTPlotNSeries:				// number of series specified
 			{
-			    tokenList->GetToken();
-			    CcString nseries = tokenList->GetToken();
+			    tokenList->GetToken();		// "NSERIES"
+			    CcString nseries = tokenList->GetToken();		// number
 				int num = atoi(nseries.ToCString());
 
+				// now use PeekToken to look at the next token in the list. If it is a valid type,
+				//		then grab it, and set the series types
 				int *types = new int[num];
 				for(int i=0; i<num; i++)
-					types[i] = Plot_SeriesBar;
+				{
+					if(FindSeriesType(tokenList->PeekToken()) != -1)
+						types[i] = FindSeriesType(tokenList->GetToken());
+					else types[i] = Plot_SeriesBar;
+				}
 
 				// create series here, 
 				CreateSeries(num, types);
 
-			    break;
+				break;
 			}
 
 			// set the number of data items in each series (semi-optional, since series is extended if necessary)
@@ -275,6 +284,61 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				m_Axes.m_YTitle = tokenList->GetToken();
 				break;
 			}
+
+			// set the drawing style for a series
+			case kTPlotSeriesType:
+			{
+				CcString name;						// the series name (if given)
+				CcString textstyle;					// the drawing style, in text
+				int style = Plot_SeriesBar;			// the style in Plot_SeriesX form
+				bool seriesfound = false;	
+				int series = 0;
+		
+				tokenList->GetToken();				// 'SERIESTYPE'
+
+				// first check that at least one series has a name...
+				int numnames = 0;
+				for(series=0; series<m_NumberOfSeries; series++)
+				{
+					if(!(m_Series[series]->m_SeriesName == ""))
+						numnames++;
+				}
+
+				// if no series are named, set all series to this style
+				if(numnames == 0)
+				{
+					style = FindSeriesType(tokenList->GetToken());
+
+					for(int series=0; series<m_NumberOfSeries; series++)
+						m_Series[series]->m_DrawStyle = style;
+				}
+				// otherwise search for the specified series
+				else
+				{
+					name = tokenList->GetToken();		// the series name (NB: identify by number too?)
+					style = FindSeriesType(tokenList->GetToken());	// the drawing style
+
+					series = 0;					
+
+					while(!seriesfound && series < m_NumberOfSeries)
+					{
+						if(m_Series[series]->m_SeriesName == name)	// compare the names
+						{
+							seriesfound = true;
+							
+							m_Series[series]->m_DrawStyle = style;
+						}
+
+						series++;
+					}
+
+					// if seriesfound is still false, series does not exist
+					if(!seriesfound)
+						LOGWARN("Specified series doesn't exist: " + name);
+				}
+
+				break;
+			}
 			default:
 			{
 				hasTokenForMe = false;
@@ -285,6 +349,22 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 	return true;
 }
 
+int CcPlotData::FindSeriesType(CcString textstyle)
+{
+	int style;
+
+	if(textstyle == "BAR")
+		style = Plot_SeriesBar;
+	else if(textstyle == "SCATTER")
+		style = Plot_SeriesScatter;
+	else if(textstyle == "LINE")
+		style = Plot_SeriesLine;
+	else if(textstyle == "AREA")
+		style = Plot_SeriesArea;
+	else style = -1;	// no style selected	
+
+	return style;
+}
 
 CcPlotData *  CcPlotData::FindObject( CcString Name )
 {
@@ -613,8 +693,22 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 	if(attachedPlot)
 	{
 		// setup variables for scaling / positioning of graphs
-		int xgap = 260;		// horizontal gap between graph and edge of window
-		int ygap = 400;		// and the vertical gap
+		int xgapright = 160;		// horizontal gap between graph and edge of window
+		int xgapleft = 200;			//		nb: leave enough space for labels
+		int ygaptop = 200;			// and the vertical gap
+		int ygapbottom = 300;		//		nb: lots of space for labels
+
+		// if graph has a title, make top gap bigger
+		if(!(m_PlotTitle == ""))
+			ygaptop = 300;
+
+		// if x axis has a title make the bottom gap bigger
+		if(!(m_XTitle == ""))
+			ygapbottom = 500;
+
+		// if y axis has a title make the lhs gap bigger
+		if(!(m_YTitle == ""))
+			xgapleft = 300;
 
 		// variables used for loops
 		int i=0;
@@ -624,29 +718,29 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		CcString ylabel;
 		
 		// gap between division markers on x and y axes
-		int xdivoffset = (2400-2*xgap) / (m_NumDiv[Axis_X]);
-		int ydivoffset = (2400-2*ygap) / (m_NumDiv[Axis_Y]);			
+		int xdivoffset = (2400-xgapleft-xgapright) / (m_NumDiv[Axis_X]);
+		int ydivoffset = (2400-ygaptop-ygapbottom) / (m_NumDiv[Axis_Y]);			
 
 		// axis dimensions after rounding
 		int axisheight = ydivoffset * (m_NumDiv[Axis_Y]);				
 		int axiswidth = xdivoffset * (m_NumDiv[Axis_X]);
 		
 		// take the axis height, work out where zero is...
-		int xorigin = 2400 - xgap + ((axiswidth * m_Min[Axis_X]) / (m_Max[Axis_X] - m_Min[Axis_X]));
-		int yorigin = 2400 - ygap + (axisheight * (m_AxisMin[Axis_Y] / (m_AxisMax[Axis_Y] - m_AxisMin[Axis_Y])));
+		int xorigin = 2400 - xgapleft + ((axiswidth * m_Min[Axis_X]) / (m_Max[Axis_X] - m_Min[Axis_X]));
+		int yorigin = 2400 - ygapbottom + (axisheight * (m_AxisMin[Axis_Y] / (m_AxisMax[Axis_Y] - m_AxisMin[Axis_Y])));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
 		float yoriginvalue = 0;
 		if(m_AxisScaleType == Plot_AxisSpan && m_AxisMin[Axis_Y] > 0) 
 		{
-			yorigin = 2400 - ygap;
+			yorigin = 2400 - ygapbottom;
 			yoriginvalue = m_AxisDivisions[Axis_Y][0];
 		}
 
 		// now draw the axes in black: overwrite bars
 		attachedPlot->SetColour(0,0,0);
-		attachedPlot->DrawLine(3, xgap, 2400-ygap-axisheight, xgap, 2400-ygap);
-		attachedPlot->DrawLine(3, xgap, yorigin, 2400-xgap, yorigin);
+		attachedPlot->DrawLine(3, xgapleft, 2400-ygapbottom-axisheight, xgapleft, 2400-ygapbottom);
+		attachedPlot->DrawLine(3, xgapleft, yorigin, 2400-xgapright, yorigin);
 
 		// the following tries to find an optimal font size
 		int fontsize = 12;			// 14 is the max 
@@ -673,7 +767,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 				{
 					for(i=0; i<m_NumDiv[Axis_X];i++)
 					{
-						attachedPlot->DrawText(xgap+(i+0.5)*xdivoffset,2400-ygap, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_TOP, fontsize);
+						attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset,2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_TOP, fontsize);
 					}
 					textOK = true;
 				}
@@ -690,11 +784,11 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 						if(textextent.y > maxangletextextent.y) maxangletextextent.y = textextent.y;
 					}
 					// if this angled text fits, draw it
-					if(maxangletextextent.y < 3*ygap/4 && maxhorizontaltextextent.y < xdivoffset*2)
+					if(maxangletextextent.y < 3*ygapbottom/4 && maxhorizontaltextextent.y < xdivoffset*2)
 					{
 						for(i=0; i<m_NumDiv[Axis_X]; i++)
 						{
-							attachedPlot->DrawText(xgap+(i+0.5)*xdivoffset, 2400-ygap, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
+							attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset, 2400-ygapbottom, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
 						}
 						textOK = true;
 					}
@@ -710,7 +804,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 			for(i=0; i<m_NumDiv[Axis_X]+1; i++)
 			{
 				ylabel = m_AxisDivisions[Axis_X][i];
-				attachedPlot->DrawText(xgap+i*xdivoffset, yorigin, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
+				attachedPlot->DrawText(xgapleft+i*xdivoffset, 2400-ygapbottom, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
 			}
 		}
 		
@@ -721,15 +815,17 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 
 			for(i=0; i<m_NumDiv[Axis_X]; i+=2)
 			{
-				attachedPlot->DrawText(xgap+(i+0.5)*xdivoffset, 2400-ygap, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
+				attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset, 2400-ygapbottom, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
 			}
 		}
+
+		fontsize = 12;
 
 		// now draw the y axis labels, again without worrying about overlap
 		for(i=0; i<m_NumDiv[Axis_Y]+1; i++)
 		{
 			ylabel = m_AxisDivisions[Axis_Y][i];
-			attachedPlot->DrawText(xgap-10, (2400-ygap)-i*ydivoffset, ylabel.ToCString(), TEXT_VCENTRE|TEXT_RIGHT, 14);//fontsize);
+			attachedPlot->DrawText(xgapleft-10, (2400-ygapbottom)-i*ydivoffset, ylabel.ToCString(), TEXT_VCENTRE|TEXT_RIGHT, fontsize);
 		}		
 		
 		// draw marker lines in grey
@@ -739,18 +835,18 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		// first x axis:
 		for(i=0; i<m_NumDiv[Axis_X]; i++)
 		{
-			attachedPlot->DrawLine(1, xgap+i*xdivoffset, ygap, xgap + i*xdivoffset, 2400-ygap );
+			attachedPlot->DrawLine(1, xgapleft+i*xdivoffset, ygaptop, xgapleft + i*xdivoffset, 2400-ygapbottom );
 		}
 	
 		// and the y axis
 		for(i=0; i<m_NumDiv[Axis_Y]+1; i++)
 		{
-			attachedPlot->DrawLine(1, xgap, (2400-ygap)-i*ydivoffset, 2400-xgap, (2400-ygap)-i*ydivoffset);
+			attachedPlot->DrawLine(1, xgapleft, (2400-ygapbottom)-i*ydivoffset, 2400-xgapright, (2400-ygapbottom)-i*ydivoffset);
 		}
 		
 		// write the labels for each axis, and the graph title
-		attachedPlot->DrawText(1200, ygap/2, m_PlotTitle.ToCString(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
-		attachedPlot->DrawText(1200, 2400-ygap/4, m_XTitle.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
-		attachedPlot->DrawText(xgap/4, 1200, m_YTitle.ToCString(), TEXT_VERTICAL, 16);
+		attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.ToCString(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
+		attachedPlot->DrawText(1200, 2400-ygapbottom/6, m_XTitle.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
+		attachedPlot->DrawText(xgapleft/6, 1200, m_YTitle.ToCString(), TEXT_VERTICAL, 16);
 	}
 }

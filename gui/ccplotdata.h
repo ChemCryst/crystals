@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/11/19 16:32:20  ckpgroup
+//   SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
+//
 //   Revision 1.2  2001/11/12 16:24:29  ckpgroup
 //   SH: Graphical agreement analysis
 //
@@ -79,6 +82,7 @@ public:
 
 	virtual void CreateSeries(int numser, int* type) = 0;
 	virtual void AllocateMemory(int length) = 0;
+	int FindSeriesType(CcString textstyle);
 
     CcSeries**		m_Series;		// array of series
 	int				m_SeriesLength; // length of the data series (NB all the same)
@@ -99,18 +103,19 @@ private:
 // each series holds ONE data set.
 class CcSeries
 {
-    public:
-        CcSeries();
-		virtual ~CcSeries();
-        virtual Boolean ParseInput( CcTokenList * tokenList );
-        CcString mName;
+public:
+    CcSeries();
+	virtual ~CcSeries();
+    virtual Boolean ParseInput( CcTokenList * tokenList );
+ 
+	CcString		mName;			// internal name
+	CcString		m_SeriesName;	// one name per series
+	int				m_DrawStyle;	// how to draw this series (scatter / bar / line / etc)
 
-		CcString	m_SeriesName;					// one name per series
+	virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
 
-		virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
-
-    private:
-		int m_Type;	// type of series - bar / scatter (defined above)
+private:
+	int				m_Type;			// type of series - bar / scatter (defined above)
 };
 
 
@@ -134,6 +139,7 @@ class CcSeries
 #define kSPlotSeriesName   "SERIESNAME"
 #define kSPlotXTitle	   "XTITLE"
 #define kSPlotYTitle	   "YTITLE"
+#define kSPlotSeriesType   "SERIESTYPE"
 
 enum
 {
@@ -154,7 +160,9 @@ enum
  kTPlotTitle,
  kTPlotSeriesName,
  kTPlotXTitle,
- kTPlotYTitle
+ kTPlotYTitle,
+ kTPlotSeriesType
+
 };
 
 
@@ -162,7 +170,9 @@ enum
 enum
 {
 	Plot_SeriesBar,
-	Plot_SeriesScatter
+	Plot_SeriesLine,
+	Plot_SeriesScatter,
+	Plot_SeriesArea
 };
 
 // graph type

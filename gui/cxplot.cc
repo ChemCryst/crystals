@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/11/19 16:32:21  ckpgroup
+//   SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
+//
 //   Revision 1.2  2001/11/12 16:24:31  ckpgroup
 //   SH: Graphical agreement analysis
 //
@@ -341,7 +344,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 			int len = text.Len();
 			CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
 			coord.y = coord.y + temp.cx/2;		// nb swapping of cx and cy - GetTextEntent doesn't handle rotations
-			coord.x = coord.x - temp.cy/2;		//		90 degree so swap axes.
+		//	coord.x = coord.x + temp.cy;		//		90 degree so swap axes.
 		}
 		else
 		{
@@ -419,7 +422,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 		oldFont = m_memDC->SelectObject(&theFont);
 
 		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
-		tsize.x = size.cy;
+		tsize.x = size.cy;			// swap axes cos of the 90 degree rotation
 		tsize.y = size.cx;
 	}
 	else
