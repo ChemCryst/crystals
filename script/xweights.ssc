@@ -25,7 +25,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI     @ 2,1 STATIC T1 'Analyse to see the current'
 ^^WI     @ 3,1 STATIC T2 'agreement analysis.'
 ^^WI   }
-^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
+^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=10 ADDTOLIST
 ^^WI         'Unit' 'Statistical' 'Chebychev' 'Optimal' NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
 ^^WI   {
@@ -37,6 +37,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^CO SET XW_LIST SELECTION=4
 %  LOOP
 %    VERIFY BXX BHH BAA BOK
 %    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'
@@ -87,7 +88,7 @@ routine work.
 %          COPY 'END'
 %      END BLOCK
 %      BLOCK                                          %BOK%
-^^?? AUTOLIST SELECTED
+^^?? XW_LIST SELECTED
 %         GET SILENT NOSTORE INTEGER 'Choice number'
 ^^WI DISPOSE XWEIGHT
 ^^CR
