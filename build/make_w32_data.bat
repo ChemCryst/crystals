@@ -2,6 +2,10 @@
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
 
+@SETLOCAL
+@if not exist ..\editor\cryseditor cd ..\editor&&call make_w32.bat&&cd ..
+@ENDLOCAL
+
 @echo Copying datafiles
 @FOR %%I IN ( ..\datafiles\*.ssr ) DO ..\editor\cryseditor %%I %%~nI.srt code=%COMPCODE% incl=+ excl=- comm=# strip
 
