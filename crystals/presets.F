@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/08/23 11:20:26  richard
+C Increase STR11 and SORT to 32Mb each (8-fold increase), to allow refinement of
+C bigger structures.
+C
 C Revision 1.35  2002/03/15 16:50:01  richard
 C Type #SET BONDTYPE OFF to suppress bond type calculation.
 C
@@ -129,6 +133,7 @@ C
 \XDRIVE
 C
 \OUTCOL
+\XSFWK
 
 
 C LOAD THE LIST NAMES
@@ -1482,6 +1487,7 @@ C
       DATA IOLDC / 0 /
       DATA IOFORE / -1 /
       DATA IOBACK / -1 /
+      DATA MATLAB / 0 /
 C
 C
       END
