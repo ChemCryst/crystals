@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2003/07/09 11:34:39  rich
+C REmove line break in print.
+C
 C Revision 1.38  2003/06/27 11:59:04  rich
 C Globally replace FRAGMENT (slot in L5) and FRAGMENT(...) lexical keyword
 C with RESIDUE. This should reduce confusion about what it is, and as FRAGMENT
@@ -374,12 +377,21 @@ C--INDICATE THAT LIST 12 IS NOT TO BE USED
          ICOM12(I)=NOWT
 50    CONTINUE
 C
+
+60    CONTINUE
+C No point in updating GUI on first run. (It's already there).
+C Or on the directive FOLLOWING an EXEC.
+      IGUIUP =0
 C
 100   CONTINUE
 
       IF (MONGUI.GE.2) THEN
-        CALL XBCALC(2)    ! Re-calculate bonding
-        CALL XGUIUP (-5)  ! Update GUI model     
+        IF ( IGUIUP .EQ. 0 ) THEN
+          IGUIUP = 1
+        ELSE
+          CALL XBCALC(2)    ! Re-calculate bonding
+          CALL XGUIUP (-5)  ! Update GUI model
+        END IF
       END IF
 C
 C -- **** MAIN INSTRUCTION LOOP ****
@@ -395,7 +407,7 @@ C    ( THE LINK TO THE 'MODIFY' DIRECTIVE SHOULD ALWAYS BE LAST )
 C
 C-C-C-INTRODUCTION OF ADDITIONAL DIRECTIVE-ADDRESSES FOR "SPECIALS"
       GO TO (650, 4700, 500,3000,5500,5500,5500,5500,6500,3650,
-     1       3800,1000,1050, 900,1100, 400,5100, 100, 200, 300,
+     1       3800,1000,1050, 900,1100, 400,5100, 60, 200, 300,
      2        250, 600,2700,2850,2300,1150,6950,6300,6800,3950,
      3       5450,4100,4300,4500,2900,350,15500, 460,1160,2870,
      4       2300, 150,8250), IDIRNM
