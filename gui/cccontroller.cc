@@ -9,6 +9,14 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.66  2003/07/01 16:38:21  rich
+// Three small changes. (1) Set flag to indicate CRYSTALS thread exit, and
+// exit from the GUI thread accordingly. (2) Make GETKEY a special case for
+// input queries. This allows the registry to be queried without losing
+// synchronisation of the input queue. (3) In the debug output file "Script.log"
+// prefix every line with the elapsed time in seconds since the program
+// started. Useful for simple profiling info.
+//
 // Revision 1.65  2003/06/30 16:39:28  rich
 // Set thread pointer to NULL before exiting CRYSTALS thread.
 //
@@ -3767,11 +3775,7 @@ extern "C" {
 
         LOGSTAT ("Thread ends. Exit code is: " + CcString ( theExitcode ) );
   
-        if ( theExitcode == 1000 ) //This means crystals wants re-starting
-        {
-        // perhaps empty out the interface queue checking for RESTART command.
-        }
-        else if ( theExitcode != 0 )
+        if ( theExitcode != 0 && theExitcode != 1000 )
         {
            CcController::theController->m_ExitCode = theExitcode;
   #ifdef __CR_WIN__
@@ -3782,7 +3786,11 @@ extern "C" {
   #endif
         }
 
-        (CcController::theController)->mThatThreadisDead = true;
+        if ( theExitcode != 1000 && !CcController::theController->m_restart) //Crystals does not wants re-starting. Shut down.
+        {
+           (CcController::theController)->mThatThreadisDead = true;
+        }
+
   #ifdef __CR_WIN__
         AfxEndThread((UINT) theExitcode);
   #endif
