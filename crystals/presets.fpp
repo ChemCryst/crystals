@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2001/06/19 08:19:19  richard
+C Increased store limits as two people have now hit the barrier for LIST 16
+C size. A complete recompilation of all fortran sources is required for consitency.
+C Do at least a "code fortran", or a "buildall" to be really sure.
+C
 C Revision 1.28  2001/01/17 11:04:11  richard
 C Default to logging everything. Initialisation doesn't log anyway.
 C
@@ -2000,5 +2005,12 @@ C --- XGUIOV ---
       LGUIL2 = .FALSE.
       LUPDAT = .FALSE.
       QSINL5 = .FALSE.
+      KSTAT1 = 0
+      KSTAT2 = 0
+      KSTAT3 = 0
+      KSTAT5 = 0
+      KSTAT6 = 0
+      KSTATQ = 0
+      KSTATI = 0
       RETURN
       END

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2001/07/19 08:01:00  ckp2
+C Changed so that ISSUPD flag only stops the updating of List5, the other
+C lists still update things in the GUI.
+C
 C Revision 1.36  2001/06/18 08:25:21  richard
 C Platform specific file names were being overridden by a following statement which
 C reset file name to the windows specific name.
@@ -375,6 +379,8 @@ CODE FOR GUIBLK
       DATA LGUIL1/.FALSE./
       DATA LGUIL2/.FALSE./
      1 LUPDAT/.FALSE./, QSINL5/.FALSE./
+      DATA KSTAT1 /0/, KSTAT2 /0/, KSTAT3/0/, KSTAT5/0/, KSTAT6/0/,
+     1 KSTATQ/0/, KSTATI/0/
       END
 
 
@@ -382,54 +388,113 @@ CODE FOR MENUUP (Updates the flags for the menus)
       SUBROUTINE MENUUP
 \XUNITS
 \XIOBUF
-      INTEGER FLAG
+      INTEGER LCR
 \XGUIOV
+      LCR = 1
 
-      IF(KEXIST(1).EQ.1) THEN
-          WRITE(CMON(1),'(A)')'^^ST STATSET   L1'
+      IF(KEXIST(1).EQ.1)THEN
+        IF (KSTAT1.LE.0) THEN
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   L1'
+          LCR = LCR + 1
+          KSTAT1 = 1
+        END IF
       ELSE
-          WRITE(CMON(1),'(A)')'^^ST STATUNSET L1'
+        IF (KSTAT1.GE.0) THEN
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET L1'
+          LCR = LCR + 1
+          KSTAT1 = -1
+        END IF
       ENDIF
 
-      IF(KEXIST(2).EQ.1) THEN
-          WRITE(CMON(2),'(A)')'^^ST STATSET   L2'
+      IF(KEXIST(2).EQ.1)THEN
+        IF(KSTAT2.LE.0) THEN
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   L2'
+          LCR = LCR + 1
+          KSTAT2 = 1
+        END IF
       ELSE
-          WRITE(CMON(2),'(A)')'^^ST STATUNSET L2'
+        IF ( KSTAT2.GE.0 ) THEN
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET L2'
+          LCR = LCR + 1
+          KSTAT2 = -1
+        END IF
       ENDIF
 
-      IF(KEXIST(3).EQ.1) THEN
-          WRITE(CMON(3),'(A)')'^^ST STATSET   L3'
+      IF(KEXIST(3).EQ.1)THEN
+        IF (KSTAT3.LE.0) THEN
+          KSTAT3 = 1
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   L3'
+          LCR = LCR + 1
+        END IF
       ELSE
-          WRITE(CMON(3),'(A)')'^^ST STATUNSET L3'
+        IF ( KSTAT3.GE.0 ) THEN
+          KSTAT3 = -1
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET L3'
+          LCR = LCR + 1
+        END IF
       ENDIF
 
-      IF(KEXIST(5).EQ.1) THEN
-          WRITE(CMON(4),'(A)')'^^ST STATSET   L5'
+      IF(KEXIST(5).EQ.1)THEN
+        IF(KSTAT5.LE.0) THEN
+          KSTAT5 = 1
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   L5'
+          LCR = LCR + 1
+        END IF
       ELSE
-          WRITE(CMON(4),'(A)')'^^ST STATUNSET L5'
+        IF ( KSTAT5.GE.0 ) THEN
+          KSTAT5 = -1
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET L5'
+          LCR = LCR + 1
+        END IF
       ENDIF
 
-      IF(KEXIST(6).EQ.1) THEN
-          WRITE(CMON(5),'(A)')'^^ST STATSET   L6'
+      IF(KEXIST(6).EQ.1)THEN
+        IF(KSTAT6.LE.0) THEN
+          KSTAT6 = 1
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   L6'
+          LCR = LCR + 1
+        END IF
       ELSE
-          WRITE(CMON(5),'(A)')'^^ST STATUNSET L6'
+        IF ( KSTAT6.GE.0 ) THEN
+          KSTAT6 = -1
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET L6'
+          LCR = LCR + 1
+        END IF
       ENDIF
 
-      IF(QSINL5) THEN
-          WRITE(CMON(6),'(A)')'^^ST STATSET   QS'
+      IF(QSINL5)THEN
+        IF(KSTATQ.LE.0) THEN
+          KSTATQ = 1
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   QS'
+          LCR = LCR + 1
+        END IF
       ELSE
-          WRITE(CMON(6),'(A)')'^^ST STATUNSET QS'
+        IF ( KSTATQ.GE.0 ) THEN
+          KSTATQ = -1
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET QS'
+          LCR = LCR + 1
+        END IF
       ENDIF
 
-      IF (INSTRC) THEN
-          WRITE(CMON(7),'(A)')'^^ST STATSET   IN'
+      IF (INSTRC)THEN
+        IF (KSTATI.LE.0) THEN
+          KSTATI = 1
+          WRITE(CMON(LCR),'(A)')'^^ST STATSET   IN'
+          LCR = LCR + 1
+        END IF
       ELSE
-          WRITE(CMON(7),'(A)')'^^ST STATUNSET IN'
+        IF ( KSTATI.GE.0 ) THEN
+          KSTATI = -1
+          WRITE(CMON(LCR),'(A)')'^^ST STATUNSET IN'
+          LCR = LCR + 1
+        END IF
       ENDIF
 C
 C
-      WRITE ( CMON(8), '(A)')'^^CR'
-      CALL XPRVDU(NCVDU, 8,0)
+      IF ( LCR .GT. 1 ) THEN
+        WRITE ( CMON(LCR), '(A)')'^^CR'
+        CALL XPRVDU(NCVDU, LCR,0)
+      END IF
 C
       RETURN
       END
