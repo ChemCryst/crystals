@@ -6,6 +6,9 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/03/21 17:00:46  richard
+//   Fixed problem with transparent bitmaps.
+//
 //   Revision 1.4  2001/03/08 15:49:58  richard
 //   Support for transparent bitmaps.
 //   Support for CRYSDIR with more than one path in it i.e. c:\temp\,c:\build\
@@ -46,6 +49,16 @@ CxBitmap::~CxBitmap()
         RemoveBitmap();
 }
 
+void CxBitmap::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
+}
+
 void    CxBitmap::LoadFile( CcString bitmap, bool transp )
 {
 
@@ -55,7 +68,13 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
     cerr << "You must set CRYSDIR before running crystals.\n";
     return;
   }
+#ifdef __BOTHWX__
+
+#endif
+#ifdef __CR_WIN__
   HBITMAP hBmp;
+#endif
+
   int nEnv = (CcController::theController)->EnvVarCount( crysdir );
   int i = 0;
   bool noLuck = true;
@@ -72,7 +91,6 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
 
 #ifdef __CR_WIN__
     hBmp = (HBITMAP)::LoadImage( NULL, file.ToCString(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
-#endif
     if( hBmp )
     {
       noLuck = false;
@@ -82,6 +100,18 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
       LOGERR ( "Bitmap not found " + bitmap );
       return;
     }
+#endif
+#ifdef __BOTHWX__
+    if ( mbitmap.LoadFile(file.ToCString(), wxBITMAP_TYPE_BMP))
+    {
+      noLuck = false;
+    }
+    else if ( i >= nEnv )
+    {
+      LOGERR ( "Bitmap not found " + bitmap );
+      return;
+    }
+#endif
   }
 
 #ifdef __CR_WIN__
@@ -131,15 +161,10 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
 
 #endif
 #ifdef __BOTHWX__
-        if (!mbitmap.LoadFile(file.ToCString(), wxBITMAP_TYPE_BMP))
-        {
-            cerr << "Cannot load bitmap file.";
-            return;
-        }
-        mWidth = mbitmap.GetWidth();
-        mHeight = mbitmap.GetHeight();
-
+    mWidth = mbitmap.GetWidth();
+    mHeight = mbitmap.GetHeight();
 #endif
+
     mbOkToDraw = true;
 }
 
@@ -225,7 +250,7 @@ void CxBitmap::OnPaint(wxPaintEvent & evt)
 }
 #endif
 
-
+#ifdef __CR_WIN__
 void CxBitmap::ReplaceBackgroundColour()
 {
 // figure out how many pixels there are in the bitmap
@@ -285,6 +310,4 @@ void CxBitmap::ReplaceBackgroundColour()
     }
   }
 }
-
-
-
+#endif

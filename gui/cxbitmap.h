@@ -40,22 +40,23 @@ class CxBitmap : public BASEBITMAP
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
-                static int      AddBitmap();
-                static void     RemoveBitmap();
-        void ReplaceBackgroundColour(); 
+        static int      AddBitmap();
+        static void     RemoveBitmap();
+        void CxDestroyWindow();
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
 
     protected:
         // attributes
-                static int      mBitmapCount;
+        static int      mBitmapCount;
         int mCharsWidth;
-                int mWidth;
-                int mHeight;
+        int mWidth;
+        int mHeight;
         bool mbOkToDraw;
 
 #ifdef __CR_WIN__
+        void ReplaceBackgroundColour();
         CBitmap mbitmap;
         CPalette mpal;
 
