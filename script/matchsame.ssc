@@ -3,7 +3,7 @@
 %% Quick script to 'get it working'
 %   VARIABLE CHARACTER KEYBREAK
 %   VARIABLE CHARACTER CATM CELE CCHK
-%   VARIABLE INTEGER ISER IFRAG NAT
+%   VARIABLE INTEGER ISER IFRAG NAT MATCH:ERROR
 %   VARIABLE REAL RCHK
 %% Re-assign fragment numbers.
 %   COPY '#EDIT'
@@ -66,35 +66,41 @@
 %         QUEUE PROCESS
 %         TRANSFER 'ONTO RESI(' // CHARACTER ( IFRAG ) // ')' TO CRYSTALS
 %         COPY 'END'
-%         COPY '#OPEN SCPDATA regular.dat'
-%         COPY '#RELE PUNCH new16bit.pch'
-%         EXTRACT REWIND
-%         EXTRACT NEXT
-%         EXTRACT TRANSFER INPUT
-%         GET SILENT NOSTORE KEYWORD ' ' ' '
-%         GET SILENT NOSTORE INTEGER 'Ngroup1' '-1'
-%         EVALUATE NAT = VALUE
-%         TRANSFER 'SAME ' TO PUNCH
-%         LOOP NAT TIMES
+%         IF ( MATCH:ERROR .NE. 0 ) THEN
+{E An error occured when attempting the match the two fragments, the
+{E most common reasons are:
+{I   1.  The fragments have two- or more-fold symmetry.
+{I   2.  The fragments are different.
+%         ELSE 
+%           COPY '#OPEN SCPDATA regular.dat'
+%           COPY '#RELE PUNCH new16bit.pch'
+%           EXTRACT REWIND
 %           EXTRACT NEXT
 %           EXTRACT TRANSFER INPUT
-%           GET SILENT NOSTORE TEXT ' ' ' '
-%           TRANSFER 'CONT ' // CVALUE TO PUNCH
-%         END LOOP
-%         EXTRACT NEXT
-%         TRANSFER 'CONT AND ' TO PUNCH
-%         LOOP NAT TIMES
+%           GET SILENT NOSTORE KEYWORD ' ' ' '
+%           GET SILENT NOSTORE INTEGER 'Ngroup1' '-1'
+%           EVALUATE NAT = VALUE
+%           TRANSFER 'SAME ' TO PUNCH
+%           LOOP NAT TIMES
+%             EXTRACT NEXT
+%             EXTRACT TRANSFER INPUT
+%             GET SILENT NOSTORE TEXT ' ' ' '
+%             TRANSFER 'CONT ' // CVALUE TO PUNCH
+%           END LOOP
 %           EXTRACT NEXT
-%           EXTRACT TRANSFER INPUT
-%           GET SILENT NOSTORE TEXT ' ' ' '
-%           TRANSFER 'CONT ' // CVALUE TO PUNCH
-%         END LOOP
-%         EXTRACT CLOSE
-%         COPY '#RELE PUNCH bfile.pch'
-%         EVALUATE KEYBREAK = 'SAME'
-%         COPY '#SCRIPT ZADDLI16'
-%%
+%           TRANSFER 'CONT AND ' TO PUNCH
+%           LOOP NAT TIMES
+%             EXTRACT NEXT
+%             EXTRACT TRANSFER INPUT
+%             GET SILENT NOSTORE TEXT ' ' ' '
+%             TRANSFER 'CONT ' // CVALUE TO PUNCH
+%           END LOOP
+%           EXTRACT CLOSE
+%           COPY '#RELE PUNCH bfile.pch'
+%           EVALUATE KEYBREAK = 'SAME'
+%           COPY '#SCRIPT ZADDLI16'
  * Done. Vibrational restraints added.
+%         END IF
 %       END IF
 %   END IF
 ^^CO DISPOSE XMATCH

@@ -2,7 +2,7 @@
 %%
 %% Quick script to 'get it working'
 %   VARIABLE CHARACTER CATM CELE CCHK
-%   VARIABLE INTEGER ISER IFRAG
+%   VARIABLE INTEGER ISER IFRAG MATCH:ERROR
 %   VARIABLE REAL RCHK
 %% Re-assign fragment numbers.
 %   COPY '#EDIT'
@@ -73,6 +73,12 @@
 %         GET TEXT ' ' ' '
 %         SEND
 %         COPY 'END'
+%         IF ( MATCH:ERROR .NE. 0 ) THEN
+{E An error occured when attempting the match the two fragments, the
+{E most common reasons are:
+{I   1.  The fragments have two- or more-fold symmetry.
+{I   2.  The fragments are different.
+%         END IF
 %       END IF
 %   END IF
 ^^CO DISPOSE XMATCH

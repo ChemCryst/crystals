@@ -2,7 +2,7 @@
 %%
 %% Quick script to 'get it working'
 %   VARIABLE CHARACTER CATM CELE CCHK
-%   VARIABLE INTEGER ISER IFRAG
+%   VARIABLE INTEGER ISER IFRAG MATCH:ERROR
 %   VARIABLE REAL RCHK
 %% Re-assign fragment numbers.
 %   COPY '#EDIT'
@@ -68,11 +68,18 @@
 %         QUEUE PROCESS
 %         TRANSFER 'ONTO RESI(' // CHARACTER ( IFRAG ) // ')' TO CRYSTALS
 %         COPY 'END'
+%         IF ( MATCH:ERROR .EQ. 0 ) THEN
 ^^?? OPCAM STATE
-%         VERIFY ON OFF
-%         GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
-%         IF VALUE .EQ. 1 THEN
-%            COPY '#SCRIPT XCAMSPEC'
+%           VERIFY ON OFF
+%           GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%           IF VALUE .EQ. 1 THEN
+%              COPY '#SCRIPT XCAMSPEC'
+%           END IF
+%         ELSE
+{E An error occured when attempting the match the two fragments, the
+{E most common reasons are:
+{I   1.  The fragments have two- or more-fold symmetry.
+{I   2.  The fragments are different.
 %         END IF
 %       END IF
 %   END IF
