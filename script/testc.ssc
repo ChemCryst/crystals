@@ -1,0 +1,38 @@
+%SCRIPT TESTC
+%VARIABLE CHARACTER CTEMP CFILE
+%GET NOSTORE KEYWORD 'Test filename' ' '
+%%
+%% Test all the 'GET...' functions.
+%%
+%EVALUATE CFILE = CVALUE
+%EVALUATE CTEMP = GETPATH ( CFILE )
+%TRANSFER 'Path:  ' // CTEMP TO DISPLAY
+%EVALUATE CTEMP = GETFILE ( CFILE )
+%TRANSFER 'File:  ' // CTEMP TO DISPLAY
+%EVALUATE CTEMP = GETTITLE ( CFILE )
+%TRANSFER 'Title: ' // CTEMP TO DISPLAY
+%EVALUATE CTEMP = GETEXTN ( CFILE )
+%TRANSFER 'Extn:  ' // CTEMP TO DISPLAY
+%%
+%% Test the file handling / checking functions
+%%
+% IF FILEEXISTS ( CFILE ) THEN
+The file exists.
+% ELSE
+The file does not exist
+% END IF
+% IF FILEISOPEN ( CFILE ) THEN
+The file is open.
+% ELSE
+The file is not open by this program.
+% END IF
+% VERIFY YES NO
+% GET NOSTORE FINAL ABBREVIATED 'Attempt delete?' 'NO'
+% IF VALUE .EQ. 1 THEN
+%  IF FILEDELETE ( CFILE ) THEN
+The file was deleted / never existed.
+%  ELSE
+The file could not be deleted.
+%  END IF
+% END IF
+%END SCRIPT
