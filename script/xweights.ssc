@@ -1,5 +1,5 @@
 %SCRIPT XWEIGHTS
-% VARIABLE LOGICAL SCRIPTEXT
+% VARIABLE LOGICAL SCRIPTEXT LED23
 A SCRIPT to assist with the weighting of least squares refinement
 %  IF EXISTS 6 .LT. 1 THEN
  * You have no reflection data stored. You cannot use this script!
@@ -22,9 +22,15 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI {
 ^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1
 ^^WI   {
+% IF ( LED23 ) THEN
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme. When swapping'
+^^WI     @ 2,1 STATIC T1 'to F/F2 refinement, QUASI-UNIT weights are '
+^^WI     @ 3,1 STATIC T2 'essential until after a cycle of refinement.'
+% ELSE
 ^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme, or'
 ^^WI     @ 2,1 STATIC T1 'Analyse to see the current'
 ^^WI     @ 3,1 STATIC T2 'agreement analysis.'
+% END IF
 ^^WI   }
 ^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST
 ^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' 'Auto-statistical' NULL
@@ -38,7 +44,11 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI }
 ^^WI SHOW
 ^^CR
+% IF ( LED23 ) THEN
+^^CO SET XW_LIST SELECTION=1
+% ELSE
 ^^CO SET XW_LIST SELECTION=3
+% END IF
 %  LOOP
 %    VERIFY BXX BHH BAA BOK
 %    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'
