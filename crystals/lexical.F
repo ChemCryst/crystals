@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2003/08/05 11:11:11  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.20  2003/06/27 11:59:04  rich
 C Globally replace FRAGMENT (slot in L5) and FRAGMENT(...) lexical keyword
 C with RESIDUE. This should reduce confusion about what it is, and as FRAGMENT
@@ -1331,8 +1334,7 @@ C--CHECK THE REPLY
         GOTO 1000
       ELSE IF ( J .EQ. 3 ) THEN ! 'PART' - CHECK THE ADDRESSING
 C IPTVAL = requested part. NPTTOT = # matching atoms. NPTCUR = Current atom.
-        IPT = MOD(IPTVAL,1000)
-        IGR = ( IPTVAL - IPT ) / 1000
+        CALL PRTGRP ( IPTVAL, IPT, IGR )
 c        WRITE(CMON,'(2(A,I4))') 'Group: ',IGR,' part: ',IPT
 c        CALL XPRVDU(NCVDU,1,0)
         IF ( NPTCUR .LE. 1 ) THEN   !First time.
@@ -1341,8 +1343,7 @@ c        CALL XPRVDU(NCVDU,1,0)
 C Count the parts
            DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
              JPTVAL = ISTORE(I+14)
-             JPT = MOD(JPTVAL,1000)
-             JGR = ( JPTVAL - IPT ) / 1000
+             CALL PRTGRP ( JPTVAL, JPT, JGR )
              IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
      1      .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) NPTTOT=NPTTOT+1
            END DO
@@ -1352,8 +1353,7 @@ c           CALL XPRVDU(NCVDU,1,0)
         II = 0
         DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
            JPTVAL = ISTORE(I+14)
-           JPT = MOD(JPTVAL,1000)
-           JGR = ( JPTVAL - IPT ) / 1000
+           CALL PRTGRP ( JPTVAL, JPT, JGR )
            IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
      1    .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
            IF ( II .GE. NPTCUR ) THEN

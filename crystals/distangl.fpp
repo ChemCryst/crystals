@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2003/10/31 12:42:18  rich
+C If BONDTYPE is set to OFF, remove list of special bonds from list 41
+C (L41S), since this bit is only ever changed by the BONDTY routine.
+C If bond type in L41 is zero, display 'unassigned' on model, rather
+C than memory access violation.
+C
 C Revision 1.57  2003/10/30 13:36:07  djw
 C Output H-restraints and atom list from DISTANCES
 C
@@ -1158,8 +1164,8 @@ C--CHECK IF ANY DISTANCES OR ANGLES HAVE BEEN FOUND AT THIS ATOM
            JPART = 0
            K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC, 4,0)
          ELSE
-           JPART = 0
-           K = KDIST4( JS, JT, JATVC, 0)
+C           JPART = 0
+           K = KDIST4( JS, JT, JATVC, JPART)
          ENDIF
 
 C Distance stack has this structure:
@@ -3568,6 +3574,7 @@ C
 C--SET UP A FEW INITIAL POINTERS
       NJ=0
       JS=NFL
+      JTRANS = ITRANS
 C--SET DEFAULT DISTANCES
       E=0.
       F=0.
@@ -3589,7 +3596,7 @@ C--SET UP THE OTHER FLAGS
 
 C----- LOOP BACK HERE FOR NEXT ATOM
 
-      IF ( IPART .GE. 1 ) MPIVPR = ISTORE(M5A+14)
+      IF ( IPART .GE. 1 ) CALL PRTGRP(ISTORE(M5A+14), MPIVPR, MPIVGR)
 
       DO ND = 1, IN
 
@@ -3600,13 +3607,33 @@ C----- CHECK IF THIS ATOM IS EXCLUDED from being a BONDED type
         END IF
 
 C--IF NOT BONDING PARTS, then CHECK PART NUMBERS
+        NPTSYM = 0
         IF ( IPART .GE. 1 ) THEN
-            MBONPR = ISTORE(M5+14)
-             IF ( (MPIVPR.NE.0) .AND. (MBONPR.NE.0) .AND.
-     1                 (MPIVPR.NE.MBONPR) ) GOTO 2725
+             CALL PRTGRP(ISTORE(M5+14), MBONPR, MBONGR)
+C 1) Allow bond if one atom is group 0, part 0.
+           IF (( MPIVPR .EQ. 0 .AND. MPIVGR .EQ. 0 ) .OR.
+     1         ( MBONPR .EQ. 0 .AND. MBONGR .EQ. 0 ) ) GOTO 1110
+
+C 2) Don't bond things in same 'group' if 'part' numbers are non-zero
+C    and different.
+           IF (( MPIVGR.EQ.MBONGR ).AND.( MPIVPR.NE.MBONPR ) .AND.
+     1         ( MPIVPR.NE.0)      .AND.( MBONPR.NE.0      ) ) GOTO 2725
+
+C 3) Don't bond things if 'group' numbers non-zero and different
+C    and one of the 'parts' is 0.
+           IF (( MPIVGR.NE.MBONGR ) .AND. ( MIN(MPIVGR,MBONGR).NE.0 )
+     1     .AND. ((MPIVPR.EQ.0).OR.(MBONPR.EQ.0)) ) GOTO 2725
+
+C 4) Later, don't bond to same prt&grp across symops if part number is -ve.
+
+           IF (( MPIVGR.EQ.MBONGR ) .AND. ( MPIVPR.EQ.MBONPR ) .AND.
+     1         ( MPIVPR .LT. 0 )) THEN
+                 NPTSYM = -1   ! Don't apply sym ops
+                 JTRANS = -1  ! Skip cell translations
+           END IF
         END IF
 
-
+1110    CONTINUE
 
 C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
         M2=L2
@@ -3628,7 +3655,7 @@ C--ADD IN THE VARIOUS TRANSLATION PARTS
               END DO
 
 
-              IF (ITRANS .EQ. -1) GOTO 1510
+              IF (JTRANS .EQ. -1) GOTO 1510
 
 C--MOVE THE X COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
               CALL XSHIFT(1)
@@ -3750,9 +3777,10 @@ c          CALL XPRVDU(NCVDU,1,0)
 C When JFNVC .EQ. NOWT then only find one contact at a time. (Voids only?)
               IF ( JFNVC .EQ. NOWT ) GOTO 2800
 
-2570          IF (ITRANS .EQ. 0) GOTO 1500
+2570          IF (JTRANS .EQ. 0) GOTO 1500
 
 2600          CONTINUE
+              IF ( NPTSYM .LT. 0 ) GOTO 2725 !Skip applying any symmetry.
             END DO
             CALL XNEGTR(APD(1),APD(1),3)
           END DO
@@ -4052,9 +4080,10 @@ C Calculate the number of groups, and the number of parts in each:
 
         DO IVC = IUVP,LUVP
           IF ( ISTORE(IVC) .EQ. ICURN) CYCLE
-          NWGR = ISTORE(IVC) - MOD(ISTORE(IVC),1000)
+          CALL PRTGRP( ISTORE(IVC), NWPT, NWGR )
 C Check for group change:
-          IF ( NWGR .NE. (ICURN - MOD(ICURN,1000)) )THEN !Next group
+          CALL PRTGRP( ICURN, MOPT, MOGR )
+          IF ( NWGR .NE. MOGR )THEN !Next group
             MGP = MGP + 1
             ISTORE (MGP) = 1
           ELSE                               !Same group, just increment.
@@ -4088,9 +4117,10 @@ C Make a vector of allowed/not allowed to match unique group/part vector...
         DO IVC = IUVP,LUVP
           MAVC = MAVC + 1
 
-          NWGR = ISTORE(IVC) - MOD(ISTORE(IVC),1000)
+          CALL PRTGRP( ISTORE(IVC), NWPT, NWGR )
 C Check for group change:
-          IF ( NWGR .NE. (ICURN - MOD(ICURN,1000)) )THEN !Next group
+          CALL PRTGRP( ICURN, MOPT, MOGR )
+          IF ( NWGR .NE. MOGR )THEN !Next group
             MGP = MGP + 1
             NGR = ISTORE(MGP)
             IOPROD = PROD
@@ -6925,7 +6955,7 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
         END IF
       END DO
 
-      MPIVPR = ISTORE(MPIV+14)
+      CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR)
 
 C--LOOP OVER ALL THE ATOMS.
       DO I5= L5,L5+(MD5*(N5-1)),MD5
@@ -6951,12 +6981,33 @@ C--Check for this atom pair on a L40 PAIR record.
 
 
 C-- CHECK PART NUMBERS
-        MBONPR = ISTORE(I5+14)
-        IF ( (MPIVPR.NE.0) .AND. (MBONPR.NE.0) .AND.
-     1                 (MPIVPR.NE.MBONPR) ) CYCLE
+        NPTSYM = 0
+        CALL PRTGRP(ISTORE(I5+14), MBONPR, MBONGR)
+C 1) Allow bond if one atom is group 0, part 0.
+        IF (( MPIVPR .EQ. 0 .AND. MPIVGR .EQ. 0 ) .OR.
+     1         ( MBONPR .EQ. 0 .AND. MBONGR .EQ. 0 ) ) GOTO 1110
+
+C 2) Don't bond things in same 'group' if 'part' numbers differ.
+C 2) Don't bond things in same 'group' if 'part' numbers are non-zero
+C    and different.
+           IF (( MPIVGR.EQ.MBONGR ).AND.( MPIVPR.NE.MBONPR ) .AND.
+     1         ( MPIVPR.NE.0)      .AND.( MBONPR.NE.0      ) ) CYCLE
+
+C 3) Don't bond things if 'group' numbers non-zero and different
+C    and one of the 'parts' is 0.
+        IF (( MPIVGR.NE.MBONGR ) .AND. ( MIN(MPIVGR,MBONGR).NE.0 )
+     1     .AND. ((MPIVPR.EQ.0).OR.(MBONPR.EQ.0)) ) CYCLE
+
+C 4) Later, don't bond to same prt&grp across symops if part number is -ve.
+        IF (( MPIVGR.EQ.MBONGR ) .AND. ( MPIVPR.EQ.MBONPR ) .AND.
+     1         ( MPIVPR .LT. 0 )) THEN
+                 NPTSYM = -1   ! Don't apply sym ops
+        END IF
+
+1110    CONTINUE
 
 C--If the NOSYMM flag is set, hide all the symmetry operators:
-        IF ( ISTORE(L40T+3).EQ.1 ) THEN
+        IF (( ISTORE(L40T+3).EQ.1 ).OR.( NPTSYM .LT. 0 )) THEN
             NKSYM = 1
             NKICF = 0
             NKNON = 1
@@ -7447,3 +7498,20 @@ c
       RETURN
       END
 c
+
+CODE FOR PRTGTP
+      SUBROUTINE PRTGRP( IPACKD, IPART, IGROUP)
+C
+C Set IPART to the last 3 digits of IPACKD, signed.
+C Set IGROUP to the rest, positive.
+C
+C E.g. -123456 -> IPART = -456, IGROUP = 123
+
+      IPART = MOD(IPACKD,1000)
+      IGROUP = ABS(IPACKD - IPART) / 1000
+      RETURN
+      END
+
+
+
+
