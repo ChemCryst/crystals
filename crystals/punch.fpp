@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2001/06/18 08:28:49  richard
+C Array names (JFOO & JFOT) used as scalar variable in calls to KCOMP. Fixed.
+C
 C Revision 1.17  2001/03/08 14:33:45  richard
 C Correct punching of the last four items of LIST 5
 C
@@ -201,6 +204,9 @@ C--LINK LISTS 5 AND 3
       M5=L5
       M5A=L5A
       N=99
+      NOOO = 999
+      NOO  = 99
+      NO   = 9
       WRITE(NCPU,1050)
 1050  FORMAT(/1H )
 C--PUNCH EACH ATOM  -  ONE AT A TIME
@@ -210,22 +216,47 @@ C--PUNCH EACH ATOM  -  ONE AT A TIME
       M=M5+6
       J=NINT(STORE(M5+1))
       J=IABS(J)
-      IF(J-100)1200,1100,1100
-1100  CONTINUE
-      J=N
-      N=N-1
-      IF(N)1150,1150,1200
-1150  CONTINUE
-      N=99
-1200  CONTINUE
+
       WRITE(CATNM,'(A)') ISTORE(M5A)
       CALL XCTRIM (CATNM, ITRIM)
+
+      IF (ITRIM .EQ. 2) THEN
+        IF ( J.GT.999 ) THEN
+           J = NOOO
+           NOOO = NOOO - 1
+           IF ( NOOO .LE. 0 ) THEN
+              NOOO = 999
+           END IF
+        END IF
+      ELSE IF (ITRIM .EQ. 3) THEN
+        IF ( J.GT.99 ) THEN
+           J = NOO
+           NOO = NOO - 1
+           IF ( NOO .LE. 0 ) THEN
+              NOO = 99
+           END IF
+        END IF
+      ELSE 
+        IF ( J.GT.9 ) THEN
+           J = NO
+           NO = NO - 1
+           IF ( NO .LE. 0 ) THEN
+              NO = 9
+           END IF
+        END IF
+      END IF
+
       IF ( ISPACE .EQ. 0 ) ITRIM = ITRIM + 1
+
+
       IF (J.LT.10) THEN
         WRITE( CATNM (ITRIM:), '(I1)') J
-      ELSE
+      ELSE IF (J.LT.100) THEN
         WRITE( CATNM (ITRIM:), '(I2)') J
+      ELSE 
+        WRITE( CATNM (ITRIM:), '(I3)') J
       ENDIF
+
 C--CHECK WHETHER ISO OR ANISO
 C-C-C-CHECK WHETHER ANISO OR ISO/SPHERE/LINE/RING
       IF(ABS(STORE(M5+3))-UISO)1250,1350,1350
