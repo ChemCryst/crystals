@@ -1,0 +1,107 @@
+%SCRIPT XREFINE
+%  VARIABLE INTEGER NCYCLE
+^^WI WINDOW XREFINE 'Least Squares Refinement' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=7
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID NCYC NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'Maximum number of cycles of refinement'
+^^WI    @ 1,3 EDITBOX NC ' 5' CHARS=5 INTEGER
+^^WI   }
+^^WI   @ 3,1 CHECKBOX NF
+^^WI         'Stop cycling if convergence is detected' STATE=ON
+^^WI   @ 5,1 GRID LED NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 BUTTON B12 'Edit directives'
+^^WI    @ 1,3 BUTTON B16 'Edit restraints'
+^^WI   }
+^^WI  }
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON BOK '&OK'
+^^WI   @ 3,1 BUTTON BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% LOOP
+%  VERIFY BXX BOK B12 B16
+%  GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%  CASE VALUE
+%   BLOCK
+^^WI  DISPOSE XREFINE
+^^CR
+%     FINISH
+%   END BLOCK
+%   BLOCK
+^^??  NC TEXT
+%     GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
+%     EVALUATE NCYCLE = VALUE
+%     IF NCYCLE .GT.  0 THEN
+^^??   NF STATE
+%      VERIFY ON OFF
+%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+^^WI  DISPOSE XREFINE
+^^CR
+%      CASE VALUE
+%       BLOCK                                        % NORMAL
+%%
+%% Cope with people who insist on more than 5 lsq cycles in one go.
+%% Do them in blocks of 5. Even if convergence is detected, we'll
+%% still have to do one from every block of 5.
+%%
+%         IF NCYCLE .GT. 5 THEN
+%           LOOP
+%             COPY '#SFLS'
+%             LOOP 5 TIMES
+%               COPY 'REFINE'
+%               EVALUATE NCYCLE = NCYCLE - 1
+%               IF ( NCYCLE .LE. 0 ) THEN
+%                 EVALUATE LOOPEND = LOOPCOUNTER
+%               END IF
+%             END LOOP
+%             COPY 'END'
+%             IF ( NCYCLE .LE. 0 ) THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             END IF
+%           END LOOP
+%         ELSE
+%%
+%% Normal less than 5 lsq cycles.
+%%
+%           COPY '#SFLS'
+%           LOOP NCYCLE TIMES
+%             ON ERROR TERMINATE
+%             COPY 'REFINE'
+%           END LOOP
+%           COPY 'END'
+%         END IF
+%       END BLOCK
+%       BLOCK                                        % FORCE
+%%
+%% n forced cycles.
+%%
+%         LOOP NCYCLE TIMES
+%           ON ERROR TERMINATE
+%           COPY '#SFLS'
+%           COPY 'REFINE'
+%           COPY 'END'
+%         END LOOP
+%       END BLOCK
+%      END CASE
+%     END IF
+%     FINISH
+%   END BLOCK
+%   BLOCK         % EDIT 12
+%     COPY '#SCRIPT EDLIST12'
+%   END BLOCK
+%   BLOCK         % EDIT 16
+%     COPY '#SCRIPT EDLIST16'
+%   END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT
+
