@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/01/14 10:20:49  rich
+C Name clash in volume esd function fixed. (A).
+C Escape backslashes in report of phi and omega scans.
+C
 C Revision 1.45  2002/12/03 13:55:48  rich
 C Remove debugging statement.
 C
@@ -357,7 +361,6 @@ C--CHECK THE LINE LENGTH
 C--LINE LENGTH IS TOO LARGE
 1050  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
-      WRITE(NCAWU,1100) IBAR
       WRITE ( CMON,1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
 1100  FORMAT(' More than',I5,'  characters on a line')
@@ -529,7 +532,6 @@ C--PRINT THE ERROR MESSAGE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,1650)IT,F,STORE(M6),STORE(M6+1),STORE(M6+2)
-      WRITE(NCAWU,1650) IT,F,STORE(M6), STORE(M6+1), STORE(M6+2)
       WRITE ( CMON, 1650)IT,F,STORE(M6), STORE(M6+1), STORE(M6+2)
       CALL XPRVDU(NCVDU, 1,0)
 1650  FORMAT(' **** /',A2,'/ Greater then 9999 :',F12.0,
@@ -847,14 +849,15 @@ C
       IF ( IERFLG .LT. 0 ) GO TO 2450
 2270  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      IF(ILSTCO .GT. 0) WRITE(NCWU,'(A)')CHAR(12)
+        IF(ILSTCO .GT. 0) WRITE(NCWU,'(A)')CHAR(12)
       ENDIF
-#GID      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
+##GILGID      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
 C
-2300  CONTINUE
 C----- OUTPUT THE OVERALL PARAMETERS
       MCFUNC = 1
       CALL XPP5OV(MCFUNC)
+CRIC0103 - Exit path - don't output parameters after errors - might be no L12.
+2300  CONTINUE
       CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
       CALL XTIME2 ( 2 )
       RETURN
@@ -906,7 +909,6 @@ C--CHECK THE WIDTH OF A COORD. PAGE
 C--FIELD WIDTH IS WRONG
 1050  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
-      WRITE(NCAWU,1100) IBAR
       WRITE ( CMON, 1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
 1100  FORMAT(' More than',I5,'  characters on a line')
@@ -1256,12 +1258,10 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
 C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
         IF ( IDSPCO .LE. 0 ) GO TO 1585
         IF ( IDSPHD .GT. 0 ) GO TO 1570
-        WRITE ( NCAWU , 1581 )
         WRITE ( CMON  , 1581 )
         CALL XPRVDU(NCVDU, 1,0)
         IDSPHD = 1
 1570    CONTINUE
-        WRITE ( NCAWU , 1582 ) IBUFF , JBUFF , BUFF
         WRITE ( CMON  , 1582 ) IBUFF , JBUFF , BUFF
         CALL XPRVDU(NCVDU, 1,0)
 1581    FORMAT ( 1X , 'Type' , 4X , 'Serial' , 8X , 'Occ' , 5X ,
@@ -1483,14 +1483,11 @@ C--PRINT THE CURRENT LINE
 C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
       IF ( IDSPAN .LE. 0 ) GO TO 2200
       IF ( IDSPHD .GT. 0 ) GO TO 2170
-      WRITE ( NCAWU , 2172 )
       WRITE ( CMON , 2172 )
       CALL XPRVDU(NCVDU, 1,0)
       IDSPHD = 1
 2170  CONTINUE
       JBUFF = NINT ( STORE(M5+1) )
-      WRITE ( NCAWU , 2173 ) STORE(M5) , JBUFF ,
-     2 ( STORE(J) , J =  M5+7 , M5+12 )
       WRITE ( CMON , 2173 ) STORE(M5) , JBUFF ,
      2 ( STORE(J) , J =  M5+7 , M5+12 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -1637,14 +1634,10 @@ C----- CHECK FOR ESD PRESENT, OR NON-INTEGER VALUE
             ENDIF
       ENDIF
 C -- DISPLAY ON MONITOR CHANNEL
-      WRITE ( NCAWU , 2560 )
       WRITE ( CMON , 2560 )
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE ( NCAWU, CFORM) COVER
       WRITE ( CMON , CFORM) COVER
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE ( NCAWU , 2561 )( STORE(I), I = M5A, M5A+N5A-1),
-     1 (BPD(I), I=1,6)
       WRITE ( CMON , 2561 )( STORE(I), I = M5A, M5A+N5A-1),
      1 (BPD(I), I=1,6)
       CALL XPRVDU(NCVDU, 2,0)
@@ -1653,7 +1646,6 @@ C -- DISPLAY ON MONITOR CHANNEL
 C
       RETURN
 9910  CONTINUE
-      WRITE(NCAWU,*) 'ERROR in overall parameter print'
       WRITE ( CMON, '(A)') 'ERROR in overall parameter print'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
@@ -1740,14 +1732,12 @@ C--CALCULATE THE E.S.D.
           IF ( IERFLG .LT. 0 ) GO TO 9900
           IF(BPD(JP) .LT. 0.0 ) THEN
             IF (ITYPE .EQ. 1 ) THEN
-              WRITE(NCAWU,1770) STORE(M5), STORE(M5+1), BPD(JP)
               IF (ISSPRT .EQ. 0)
      1        WRITE(NCWU,1770) STORE(M5), STORE(M5+1), BPD(JP)
               WRITE ( CMON, 1770) STORE(M5), STORE(M5+1), BPD(JP)
               CALL XPRVDU(NCVDU, 1,0)
 1770  FORMAT(1X,' Negative e.s.d for atom ',A4,F6.0,F12.10)
             ELSE
-              WRITE(NCAWU,1771) JP, BPD(JP)
               IF (ISSPRT .EQ. 0)
      1        WRITE(NCWU,1771) JP, BPD(JP)
               WRITE ( CMON, 1771) JP, BPD(JP)
@@ -1769,7 +1759,6 @@ C--CALCULATE THE E.S.D.
 9910  CONTINUE
       WRITE ( CMON,'(A)') ' Error computing parameter e.s.d '
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1)
 9999  CONTINUE
       RETURN
       END
@@ -2142,7 +2131,6 @@ C--CALCULATE THE E.S.D.
 1760        CONTINUE
             WRITE ( CMON, 1770) STORE(M5), STORE(M5+1), BPD(JP)
             CALL XPRVDU(NCVDU, 1,0)
-            WRITE(NCAWU,'(A)') CMON(1)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
 1770        FORMAT(1X,' Negative e.s.d for atom ',A4,F6.0,F12.10)
             BPD(JP) = 0.0
@@ -2452,7 +2440,6 @@ C----- LOAD DATA IF NOT ALREADY IN CORE
 C-----  SET UP OCCUPANCIES
         WRITE ( CMON, '(A)') ' Recomputing density and Mu'
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCAWU,'(A)') CMON(1)(:)
 cdjw feb2001
         iupdat = istore(l23sp+1)
         toler = store(l23sp+5)
@@ -2521,7 +2508,6 @@ C----- COMPUTE MU AND M
         IF (ICHECK .NE. 0 ) THEN
           WRITE ( CMON, 1545) ICHECK, 29
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') CMON(1)(:)
 1545    FORMAT(1X,I6,' atoms exists in LIST 5 without details',
      1    ' in LIST ', I3)
@@ -2531,7 +2517,6 @@ C
         IF (JCHECK .GT. 0 ) THEN
           WRITE ( CMON, 1545) JCHECK, 3
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU,'(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') CMON(1)(:)
           KCPROP = -1
         ENDIF
@@ -2543,9 +2528,6 @@ C----- NUMBER OF ASYMMETRIC UNITS
         ABSN = ABSN  * RVOL * 10.
         DENS = WEIGHT * RVOL / 0.60225
         I=5
-        WRITE (NCAWU,1555)
-        WRITE (NCAWU,1560)
-        WRITE (NCAWU,1570)I,WEIGHT,DENS,ABSN
         WRITE ( CMON, 1555)
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( CMON, 1560)
@@ -2581,7 +2563,6 @@ C
         I = 29
         WRITE ( CMON, 1570) I,WEIGHT,DENS,ABSN
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE (NCAWU,'(A)') CMON(1)(:)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
         A(6) = DENS
         A(7) = F000 * ASYM
@@ -2687,7 +2668,6 @@ C--FIELD WIDTH IS WRONG
       WRITE ( CMON, 1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
-      WRITE(NCAWU,1100)IBAR
 1100  FORMAT(' More than',I5,'  characters on a line')
 C-- ERROR
       GOTO 9920
@@ -3071,8 +3051,7 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
       CALL XCSAE
 
       IF (KEXIST(33) .LE. 0) THEN
-         IF (ISSPRT .EQ. 0) WRITE(NCAWU, 1151)
-         WRITE(NCWU, 1151)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, 1151)
          WRITE ( CMON ,1151)
          CALL XPRVDU(NCVDU, 1,0)
 1151     FORMAT(' Calculation of R values cannot proceed ',
@@ -3150,14 +3129,12 @@ C-----  INDICATE LIST NOT LOADED
 300      CONTINUE
          WRITE (CMON,350) LSTYPE
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)(:)
 350      FORMAT (1X,'List ',I2,' contains errors')
          GO TO 550
 400      CONTINUE
          WRITE (CMON,450) LSTYPE
 450      FORMAT (1X,'List',I2,' does not exist')
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)(:)
          GO TO 550
 500      CONTINUE
 C 
@@ -3246,7 +3223,6 @@ c      call xrefpr (istore(lrefs),nrefs,mdrefs)
       IF (I.LE.0) THEN
          WRITE (CMON,'('' Reference '', i4, '' not available'')') IVAL
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)(:)
       END IF
 C
 C################################################################
@@ -3288,7 +3264,6 @@ C----- GET LIST 30 READY FOR UPDATING
          WRITE (CMON,'(A)') 'List 30 not available - cif output abandone
      1d'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)(:)
          GO TO 2600
       END IF
 C 
@@ -3825,7 +3800,6 @@ C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
          END IF
          IF (CMON(1)(1:1) .NE. ' ') THEN
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(A)') CMON(1)(:)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
             CALL XPCIF('# '//CMON(1)(:))
          ENDIF
@@ -4238,7 +4212,6 @@ C
 2400           FORMAT ('The Flack parameter is greater than 0.5','The st
      1ructure may need inverting')
                CALL XPRVDU (NCVDU,1,0)
-               WRITE (NCAWU,'(A)') CMON(1)(:)
             END IF
 C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             CALL XFILL (IB,IVEC,16)
@@ -4391,7 +4364,6 @@ C
      1expected composition - #SCRIPT INCOMP')
          CALL XPRVDU (NCVDU,2,0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,A)') CMON(1),CMON(2)
-         WRITE (NCAWU,'(A,A)') CMON(1),CMON(2)
       END IF
 C----- CLOSE THE 'CIF' OUTPUT FILE
       CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
@@ -4462,7 +4434,6 @@ C      IVAL IDENTIFIER TO BE MARKED AS USED
       WRITE(CMON,'('' Reference '', i4, '' not found'')')IVAL
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)') CMON(1)(:)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
 980   CONTINUE
       RETURN
       END
