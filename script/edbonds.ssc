@@ -1,30 +1,44 @@
-%SCRIPT EDBONDS
-    This SCRIPT puts you into a system editor to modify the bonding
-    instructions.
-%%
-%  IF ( EXISTS 40 .NE. 1 ) THEN
-%    COPY '#LIST 40'
-%    COPY 'END'
-%  END IF
-%%
-%  COPY '#RELEASE PUNCH SCPLST40.DAT'
-%  ON ERROR CONTINUE
-%  BLOCK
-%    COPY '#PUNCH 40 B'
-%    COPY 'END'
-%  END BLOCK
-%  COPY '#RELEASE PUNCH bfile.pch'
-%%
-%  MESSAGE USER1 'CRYSTALS cannot find a LIST 40 to edit'
-%  ON ERROR TERMINATE USER1
-%  BLOCK
-%    CLEAR
-%    INSERT '#use crysdir:script/edlist40.dat'
-%    SEND
-%    COPY '#USE SCPLST40.DAT'
-%    COPY '#SUMMARY LIST 40'
-%    COPY 'END'
-
- * Done. List 40 updated.
-%  END BLOCK
-%END SCRIPT
+%SCRIPT EDBONDS                                                                 
+    This SCRIPT puts you into a system editor to modify the bonding             
+    instructions.                                                               
+%%                                                                              
+%  IF ( EXISTS 40 .NE. 1 ) THEN                                                 
+%    COPY '#LIST 40'                                                            
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%%                                                                              
+%  COPY '#RELEASE PUNCH SCPLST40.DAT'                                           
+%  ON ERROR CONTINUE                                                            
+%  BLOCK                                                                        
+%    COPY '#PUNCH 40 B'                                                         
+%    COPY 'END'                                                                 
+%  END BLOCK                                                                    
+%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%%                                                                              
+%  MESSAGE USER1 'CRYSTALS cannot find a LIST 40 to edit'                       
+%  ON ERROR TERMINATE USER1                                                     
+%  BLOCK                                                                        
+{1,11\BONDING {12,11ACTION
+{1,11DEFAULTS {12,11TOLTYPE= TOLERANCE= MAXBONDS= NOSYMMETRY= SIGCHANGE=
+{1,11ELEMENT  {12,11TYPE= RADIUS= MAXBONDS=
+{1,11PAIR     {12,11TYPE1= TYPE2= MIN= MAX= BONDTYPE=
+{1,11MAKE     {12,11atom-specification TO atom-specification bondtype
+{1,11BREAK    {12,11atom-specification TO atom-specification
+{1,11END
+{1,11Possible Actions are:
+{1,11         {12,11Replace (default, replaces all previous information)
+{1,11         {12,11Extend (Adds new information to existing)
+{1,11Possible bondtypes are:
+{1,11         {12,11 0 - type undefined
+{1,11         {12,11 1,2,3 - single, double or tripple bond
+{1,0                                                                            
+%    CLEAR                                                                      
+%    INSERT '#use crysdir:script/edlist40.dat'                                  
+%    SEND                                                                       
+%    COPY '#USE SCPLST40.DAT'                                                   
+%    COPY '#SUMMARY LIST 40'                                                    
+%    COPY 'END'                                                                 
+                                                                                
+ * Done. List 40 updated.                                                       
+%  END BLOCK                                                                    
+%END SCRIPT                                                                     

@@ -28,6 +28,8 @@
 ^^WI        DISABLEIF='IN' ENABLEIF='L2 L1 L5'                                  
 ^^WI   ITEM DIST '&Distances' '#DISTANCES_NEND' DISABLEIF='IN'                  
 ^^WI                                            ENABLEIF='L2 L1 L5'             
+^^WI   ITEM XBONDS '&Add and remove bonds'
+^^WI       '#SCRIPT EDBONDS' DISABLEIF='IN' ENABLEIF='L2 L1 L5'
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ADDH 'Add &hydrogen geometrically' '#PERHYDRO_NEND'                 
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'                            

@@ -25,6 +25,7 @@
 {1,11                           {12,11adjacent in space are adjacent in the     
 {1,11                           {12,11list (assemble molecules)                 
 {1,11 Distances                 {12,11List interatomic distances                
+{1,11 Make and Break bonds      {12,11Edit bonding information table                
 {1,11 Add hydrogen geometrically{12,11Add H atoms where ever possible           
 {1,11                           {12,11using geometrical rules                   
 {1,11 Add hydrogen + fourier    {12,11Show peaks from a difference synthesis    
