@@ -3223,6 +3223,13 @@ ROTAX              3    4
          3
     .PUNCH              7    0    1    2    0 NO
      NO             YES
+WILSON             1    2
+   6    4096 CRYSTALSPROCESS6
+    1    6
+   1.OUTPUT             1    1    0    0
+         3
+    .PLOT               1    0    1    2    0 NO
+     NO             YES
 REFLECTIONS        2    1
    1    4096 CRYSTALSPUBLISH
     6
