@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2003/09/16 19:15:37  rich
+//   Code to thin out labels on the x-axis of graphs to prevent overcrowding.
+//   Seems to slow down the linux version - will investigate on Windows.
+//
 //   Revision 1.24  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -567,11 +571,8 @@ void CxChart::DrawText(int x, int y, CcString text)
     CPen        pen(PS_SOLID,1,mfgcolour);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     CPen        *oldpen = memDC->SelectObject(&pen);
-    LOGFONT     theLogfont;
-    (CcController::mp_font)->GetLogFont(&theLogfont);
-    CString face = CString(*(theLogfont.lfFaceName));
     CFont theFont;
-        theFont.CreatePointFont(110, face , memDC);
+        theFont.CreatePointFont(110, "Arial" , memDC);
 
     CFont* oldFont = memDC->SelectObject(&theFont);
     memDC->SetBkMode(TRANSPARENT);
@@ -932,30 +933,21 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
     CPen        pen(PS_SOLID,1,mfgcolour);
     CPen*       oldpen = memDC->SelectObject(&pen);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
-    LOGFONT     theLogfont;
-    (CcController::mp_font)->GetLogFont(&theLogfont);
-    theLogfont.lfHeight = (coord2.y - coord.y) * 2;
-    theLogfont.lfWidth = 0;
-    theLogfont.lfWeight = 0;
-    if(rotated)
-        theLogfont.lfOrientation = 900;
-    char face[32] = "Times New Roman";
-    *(theLogfont.lfFaceName) = *face;
+    int lfHeight = (coord2.y - coord.y) * 2;
 
 
     bool fontIsTooBig = true;
     CSize size;
-//  int sign = theLogfont.lfHeight / abs(theLogfont.lfHeight);
     while (fontIsTooBig)
     {
       CFont  theFont;
-      if ( theFont.CreatePointFontIndirect(&theLogfont, memDC) )
+      if ( theFont.CreatePointFont(lfHeight, "Arial", memDC) )
       {
         CFont* oldFont = memDC->SelectObject(&theFont);
 
         size = memDC->GetOutputTextExtent(theText.ToCString(), theText.Len());
 
-        if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=60))
+        if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(lfHeight<=60))
         {
             //Output the text, and exit.
             fontIsTooBig = false;
@@ -974,8 +966,8 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
         }
         else
         {
-            //Reduced the logfont height, put the oldfont back into the DC and repeat.
-            theLogfont.lfHeight -= 10;
+            //Reduced the font height, put the oldfont back into the DC and repeat.
+            lfHeight -= 10;
             memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
         }
         theFont.DeleteObject(); //Free memory associated with font.
@@ -983,7 +975,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
       else
       {
 //Font creation failed, keep going:
-        theLogfont.lfHeight -= 10;
+        lfHeight -= 10;
       }
     }
     memDC->SelectObject(oldMemDCBitmap);
