@@ -199,15 +199,6 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
       RETURN
       END
  
-CODE FOR ZGTBUT
-      SUBROUTINE ZGTBUT (N,IB)
-      INTEGER IB,N
-&DOS      INTEGER*2 IBB,NN
-&DOS      CALL GET_MOUSE_BUTTON_PRESS_COUNT(N,IB)
-#DOS      CALL ZMORE('Error: ZGTBUT called',0)
-      RETURN
-      END
-
  
 CODE FOR ZPLINE
       SUBROUTINE ZPLINE (IX,IY,N,ICOL)
@@ -321,18 +312,6 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
       END
  
  
-CODE FOR ZRTSBL
-      SUBROUTINE ZRTSBL (IX,IY,IBUFF,IFLAG,ERROR)
-&DOS\CAMWIN
-      INTEGER IX,IY
-&DOS      INTEGER*2 IXX,IYY
-      INTEGER IFLAG,ERROR
-      INTEGER IBUFF
-&DOS      ixx = nint(float(ix)*scale_X)
-&DOS      iyy = nint(float(iy)*scale_Y)
-&DOS      CALL RESTORE_SCREEN_BLOCK@(IXX,IYY,IBUFF,IFLAG,ERROR)
-      RETURN
-      END
  
 CODE FOR ZBEEP
       SUBROUTINE ZBEEP
@@ -341,37 +320,6 @@ CODE FOR ZBEEP
       END
  
  
-CODE FOR ZGTMPS
-      SUBROUTINE ZGTMPS (IMX,IMY)
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-&DOS\CAMWIN
-      INTEGER IMX,IMY
-C cljf
-C      INTEGER*2 IMMX,IMMY,BUTTON_STATUS
-C&DOS      call get_mouse_position (immx,immy)
-C&DOS      imx = nint(float(immx)/scale_X)
-C&DOS      imy = nint(float(immy)/scale_Y)
-      CALL ZMORE('Error: ZGTMPS called',0)
-      RETURN
-      END
  
 CODE FOR ZCOLCH
       SUBROUTINE ZCOLCH (IREG,IR,IG,IB)
@@ -450,38 +398,6 @@ C THIS PRINTS OUT ON THE SCREEN WITHOUT PUTTING A RETURN AT THE END
 CVAX      WRITE (IGOUT,'(A,$)') CTEXT
 &DOS      CALL COUA@(CTEXT)
       RETURN
-      END
- 
-CODE FOR ZGTKY1
-      SUBROUTINE ZGTKY1 (KK)
-      INTEGER KK
-      
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-
-&DOS      integer*2 kkk,get_wkey1@
-&DOS      kkk=0
-&DOS      kkk = get_wkey1@()
-&DOS      KK = KKK
-CDJWNOV98
-&DOS      IF (KK .EQ. ICRET) CALL ZMORE1(' ',0)
-#DOS      KK = 0
-#DOS      CALL ZMORE('Error ZGTKY1 called',0)
       END
  
  
@@ -991,20 +907,20 @@ C          Update the mouse position variables
 &WXS      RETURN
 &WXS      END
 
-&&GILGID      SUBROUTINE FSTSHW()
-&WXS      SUBROUTINE FSTSHW()
-&GID      INTERFACE
-&GID          SUBROUTINE FASTSHOW ()
-C Suits you.
-&GID          !DEC$ ATTRIBUTES C :: fastshow
-&GID          END SUBROUTINE FASTSHOW
-&GID      END INTERFACE
-&&GILGID      CALL FASTSHOW()
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTSHOW()
-&WXS      RETURN
-&WXS      END
+c&&GILGID      SUBROUTINE FSTSHW()
+c&WXS      SUBROUTINE FSTSHW()
+c&GID      INTERFACE
+c&GID          SUBROUTINE FASTSHOW ()
+cC Suits you.
+c&GID          !DEC$ ATTRIBUTES C :: fastshow
+c&GID          END SUBROUTINE FASTSHOW
+c&GID      END INTERFACE
+c&&GILGID      CALL FASTSHOW()
+c&&GILGID      RETURN
+c&&GILGID      END
+c&WXS      CALL FASTSHOW()
+c&WXS      RETURN
+c&WXS      END
 
 
       SUBROUTINE ZMORE1(text,iarg)
@@ -1031,3 +947,35 @@ C&DOS      call window_update@(Status$Text)
 &WXS      CALL ZMORE('^^CR',0)
       end
 
+CODE FOR ZGTKY1
+      SUBROUTINE ZGTKY1 (KK)
+      INTEGER KK
+      
+\CAMPAR
+\CAMCOM
+\CAMANA
+\CAMDAT
+\CAMCAL
+\CAMMSE
+\CAMMEN
+\CAMCHR
+\CAMGRP
+\CAMCOL
+\CAMFLG
+\CAMSHR
+\CAMVER
+\CAMKEY
+\CAMBTN
+\CAMBLK
+\XIOBUF
+
+&DOS      integer*2 kkk,get_wkey1@
+&DOS      kkk=0
+&DOS      kkk = get_wkey1@()
+&DOS      KK = KKK
+CDJWNOV98
+&DOS      IF (KK .EQ. ICRET) CALL ZMORE1(' ',0)
+#DOS      KK = 0
+#DOS      CALL ZMORE('Error ZGTKY1 called',0)
+      END
+ 
