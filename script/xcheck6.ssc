@@ -1,6 +1,6 @@
 %SCRIPT XCHECK6
 % VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE
-% VARIABLE REAL NEWRHO NEWRAT THFULL
+% VARIABLE REAL NEWRHO NEWRAT THFULL MRGR
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP
 % VARIABLE INTEGER ABSPRINT ABSTOTAL
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'
@@ -19,7 +19,7 @@
 % COPY '#SCRIPT XPUTINFO'
 %%
 %%
-^^WI WINDOW XCHECK6 'Initial Analyses' MODAL KEEP SIZE
+^^WI WINDOW XCHECK6 'Initial Analyses' LARGE MODAL KEEP SIZE
 ^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'
 ^^WI GRID MAIN NROWS=3 NCOLS=1
 ^^WI {
@@ -258,12 +258,14 @@
 %%
 % LOOP
 {I Computing completeness.
+^^CO SET PROGOUTPUT TEXT 'Computing completeness'
 %  COPY '#THLIM'
 %  COPY 'OUTPUT PLOT=YES'
 %  COPY 'END'
 {I Done.
 %%
 {I Computing Wilson statistics.
+^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics'
 %  COPY '#WILSON'
 %  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
 %  COPY 'END'
@@ -271,6 +273,7 @@
 %%
 %  IF ( ABSENT .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA absences.dat'
+^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'
 {I About to get absence data.
 %    EVALUATE ABSPRINT = 0
 %    EVALUATE ABSTOTAL = 0
@@ -314,12 +317,14 @@
 {I Done.
 %  END IF
 %%
+^^CO SET PROGOUTPUT TEXT 'Calculating I/u(I) and I/u(I) vs rho distribution'
 {I Calculating I/u(I) distribution.
 %  COPY '#SIGMADIST'
 %  COPY 'OUTPUT PLOT=YES RES=YES'
 %  COPY 'END'
 {I Done.
 %%
+^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'
 %  IF ( MERGER .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA mergingr.dat'
 {I Fetching merging R data.
@@ -338,24 +343,29 @@
 ^^PL SERIES 2 SERIESNAME 'Number contributors' TYPE LINE 
 ^^PL SERIES 3 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS
 %%
-%    LOOP
-%      ON ERROR TERMINATE
-%      ON END TERMINATE
+% LOOP
+%  ON ERROR TERMINATE
+%  ON END TERMINATE
 %%
 %% Get the data for each result
 %%
-%      EXTRACT NEXT
-%      CLEAR
-%      EXTRACT TRANSFER INPUT
-%      CLEAR
-%      INSERT !^^PL LABEL !
-%      GET NOPROMPT REAL ' ' '-1.0'
-%      INSERT ! DATA !
-%      GET NOPROMPT REAL ' ' '-1.0'
-%      GET NOPROMPT INTEGER ' ' '-1'
-%      GET NOPROMPT INTEGER ' ' '-1'
-%      OUTPUT
-%    END LOOP
+%  EXTRACT NEXT
+%  CLEAR
+%  EXTRACT TRANSFER INPUT
+%  CLEAR
+%  INSERT !^^PL LABEL !
+%  GET NOPROMPT REAL ' ' '-1.0'
+%  INSERT ! DATA !
+%  GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%  EVALUATE MRGR = VALUE
+%  IF MRGR .LT. 0.0 THEN
+%   EVALUATE MRGR = - MRGR
+%  END IF
+%  STORE REAL MRGR
+%  GET NOPROMPT INTEGER ' ' '-1'
+%  GET NOPROMPT INTEGER ' ' '-1'
+%  OUTPUT
+% END LOOP
 ^^PL SHOW
 ^^CR
 %    COPY '#CLOSE SCPDATA'
@@ -363,6 +373,7 @@
 %  END IF
 %  EVALUATE LMAONCE = FALSE
 %%
+^^CO SET PROGOUTPUT TEXT 'Calculating data:param ratio. Density etc.'
 %  COPY '#SCRIPT CHECKDENS'
 %%
 %  CLEAR
@@ -412,6 +423,7 @@
 %  STORE FORMAT /(F6.2)/ LENGTH 6 REAL ESTOTP
 %  INSERT "'"
 %  OUTPUT
+^^CO SET PROGOUTPUT TEXT 'Ready'
 %%
 %  LOOP
 %    VERIFY XC_BOK XC_REF RHOMIT SIGCUT ED28 ED02 ED29 SIGFULL
