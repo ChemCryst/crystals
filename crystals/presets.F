@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2001/01/11 17:36:41  richard
+C Initialise IOFORE and IOBACK, or no text appears to start with.
+C
 C Revision 1.26  2000/12/01 17:06:51  richard
 C RIC: Change default release year to 2000
 C
@@ -283,7 +286,7 @@ C
      1  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 /
       DATA IRDCPY / 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0,
      1  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 /
-      DATA IRDLOG / 1 , 0 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1,
+      DATA IRDLOG / 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1,
      1  1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 /
       DATA IRDCAT / 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0,
      1  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 /
