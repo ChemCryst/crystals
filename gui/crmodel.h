@@ -83,6 +83,7 @@ class	CrModel : public CrGUIElement
 #define	kSRadiusScale		"RADSCALE"
 #define	kSVDW			"VDW"
 #define kSThermal               "THERMAL"
+#define kSSpare               "SPARE"
 #define	kSCovalent		"COV"
 #define kSSelectAction		"MOUSEACTION"
 #define kSSelect		"SELECTATOM"
@@ -118,6 +119,7 @@ enum
  kTRadiusScale,	
  kTVDW,	
  kTThermal,      
+ kTSpare,      
  kTCovalent,	
  kTSelectAction,	
  kTSelect,	

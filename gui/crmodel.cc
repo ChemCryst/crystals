@@ -149,6 +149,12 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 						tokenList->GetToken(); // Remove that token!
 						break;
 					}
+                              case kTSpare:
+					{
+                                    ((CxModel*)mWidgetPtr)->SetRadiusType( SPARE );
+						tokenList->GetToken(); // Remove that token!
+						break;
+					}
 				}
 				break;
 			}
