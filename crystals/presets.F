@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/06/09 11:33:09  rich
+C Set value of IOPBND.
+C
 C Revision 1.43  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -230,7 +233,7 @@ C
 C
 \OUTCOL
 \XMTLAB
-
+\XFLAGS
 
 C LOAD THE LIST NAMES
 C      
@@ -1617,7 +1620,27 @@ C
       DATA IOFORE / -1 /
       DATA IOBACK / -1 /
       DATA MATLAB / 0 /
-C
+
+C Bits set in the REF parameter of list 5 depending on refinement.
+C Will be used to set the _atom_site_refinement_flags CIF item.
+      DATA KBREFB(1) / 65536 /   ! S 'special position constraint'
+      DATA KBREFB(2) / 131072 /  ! G 'rigid group'
+      DATA KBREFB(3) / 262144 /  ! R 'riding atom attached to non-riding atom' (?)
+      DATA KBREFB(4) / 524288 /  ! D 'dist or angle restraint'
+      DATA KBREFB(5) / 1048576 / ! T 'thermal displacement constraints'
+      DATA KBREFB(6) / 2097152 / ! U 'Uiso or Uij restraint (rigid bond)'
+      DATA KBREFB(7) / 4194304 / ! P 'partial occupancy constraint'
+      DATA KBCIFF / 'SGRDTUP' /
+
+C Will be used to set the _atom_site_calc_flag and the
+C _refine_ls_hydrogen_treatment CIF items.
+      DATA KBREFX / 8388608 / ! X,Y, or Z refined.
+      DATA KBREFU / 16777216 / ! Any temp factor refined.
+
+C NB cif dictionary makes no allowance for:
+C     Thermal displacement restraints (SIMU, DELU etc.)
+C     Non-distance or angle restraints
+C Implemented so far: G,R,D,U,P   To do: S,T
 C
       END
 C
