@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2001/07/11 10:18:51  ckpgroup
+C Enable -ve Flack Parameter
+C
 C Revision 1.13  2001/06/08 15:03:37  richard
 C Fix: Store F/F2 state from L23 into the correct slot in L30.
 C
@@ -2702,9 +2705,12 @@ C--FETCH THE NEXT ELEMENT
       NL=JX-NK*10
 C--COMPUTE THE INDICES FOR THIS COMPONENT
       M25=L25+(NL-1)*MD25
-      STORE(M6)=STORE(M25)*SH+STORE(M25+1)*SK+STORE(M25+2)*SL
-      STORE(M6+1)=STORE(M25+3)*SH+STORE(M25+4)*SK+STORE(M25+5)*SL
-      STORE(M6+2)=STORE(M25+6)*SH+STORE(M25+7)*SK+STORE(M25+8)*SL
+      STORE(M6)=FLOAT(NINT(STORE(M25)*SH
+     2                    +STORE(M25+1)*SK+STORE(M25+2)*SL))
+      STORE(M6+1)=FLOAT(NINT(STORE(M25+3)*SH
+     2                      +STORE(M25+4)*SK+STORE(M25+5)*SL))
+      STORE(M6+2)=FLOAT(NINT(STORE(M25+6)*SH
+     2                      +STORE(M25+7)*SK+STORE(M25+8)*SL))
 C--CHECK THAT WE HAVE NOT USED TOO MANY ELEMENTS
       IF ( NM .GE. N25 ) GO TO 19920
 C--THIS ELEMENT IS OKAY  -  ENTER THE S.F.L.S MAIN LOOP
