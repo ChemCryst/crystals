@@ -33,7 +33,8 @@ A SCRIPT to assist with the weighting of least squares refinement
 % END IF
 ^^WI   }
 ^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST
-^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' 'Auto-statistical' NULL
+^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' 'Auto-statistical'
+^^WI         'Optimal' NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
@@ -47,7 +48,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 % IF ( LED23 ) THEN
 ^^CO SET XW_LIST SELECTION=1
 % ELSE
-^^CO SET XW_LIST SELECTION=3
+^^CO SET XW_LIST SELECTION=5
 % END IF
 %  LOOP
 %    VERIFY BXX BHH BAA BOK
@@ -87,6 +88,9 @@ AUTO-STATISTICAL
  are determined automatically in order to give a goodness of fit of
  approximately one and a flat analysis of variance across all ranges
  of Fc.
+
+OPTIMAL
+       Another name for Chebychev weights.
 
 ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/
 In the table, examine the weighted residual
@@ -159,6 +163,15 @@ routine work.
 %                COPY 'END'
 %                COPY '#WEIGHT'
 %                COPY 'END'
+%                COPY '#SCRIPT XANAL'
+%            END BLOCK
+%            BLOCK                                    %OPTIMAL (CHEBYCHEV)%
+%                IF FTYPE .NE. 0 THEN
+%% Fo refinement
+%                    COPY '#SCRIPT XFOPTWT'
+%                ELSE
+%                    COPY '#SCRIPT XFSQWT'
+%                END IF
 %            END BLOCK
 %         END CASE
 %         FINISH
