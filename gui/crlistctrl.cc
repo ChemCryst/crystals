@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/06/17 15:14:13  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.6  2001/03/08 16:44:05  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -143,6 +146,13 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
                     delete [] rowOfStrings; //Oops, forgot this first time!
                 }
                 break;
+            }
+            case kTSetSelection:
+            {
+                  tokenList->GetToken(); //Remove that token!
+                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  ((CxListCtrl*)ptr_to_cxObject)->CxSetSelection(select);
+                  break;
             }
             case kTSelectAtoms:
             {

@@ -1057,4 +1057,18 @@ void CxListCtrl::GetSelectedIndices(  int * values )
     return;
 }
 
+void CxListCtrl::CxSetSelection( int select )
+{
+   if ( mItems < 1 ) return;
+
+   if ( select < 1 ) select = mItems+select+1; // reverse indexing is possible
+
+   select = min ( select, mItems );
+   select = max ( select, 1 );
+#ifdef __CR_WIN__
+    SetItemState(select - 1, 0xFFFF, LVIS_SELECTED);
+#endif
+}
+
+
 #endif

@@ -58,7 +58,7 @@ class CxListCtrl : public BASELISTCTRL
 
         enum EHighlight {HIGHLIGHT_NORMAL, HIGHLIGHT_ALLCOLUMNS, HIGHLIGHT_ROW};
 
-
+        void CxSetSelection( int select );
         void RepaintSelectedItems();
         int SetHighlightType(EHighlight hilite);
 
