@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.81  2004/05/13 14:40:51  rich
+C Many, many changes to the CIF. It's better.
+C
 C Revision 1.80  2004/04/29 16:08:19  djw
 C Fix bug intriduced while ifxinh riding H esds
 C
@@ -4215,13 +4218,19 @@ C----- COMPUTE PROPERTIES OF CELL
 C 
       IF (JLOAD(1)*JLOAD(2)*JLOAD(3)*JLOAD(5)*JLOAD(8).NE.0) THEN
 C 
+C IF IEPROP -VE, THEN MIS-MATCH BETWEEN 5 AND 29.
          IEPROP=KCPROP(A)
 C----- SAVE THE GOODIES IN LIST 30
+C      LOAD VALUES FROM LIST 29
          IF (JLOAD(9).GE.1) THEN
-            STORE(L30GE+1)=A(1)
-            STORE(L30GE+2)=A(5)
-            STORE(L30GE+3)=A(3)
-            STORE(L30GE+4)=A(4)
+C            STORE(L30GE+1)=A(1)
+C            STORE(L30GE+2)=A(5)
+C            STORE(L30GE+3)=A(3)
+C            STORE(L30GE+4)=A(4)
+            STORE(L30GE+1)=A(6)
+            STORE(L30GE+2)=A(10)
+            STORE(L30GE+3)=A(8)
+            STORE(L30GE+4)=A(9)
          END IF
       END IF
 C 
@@ -4329,6 +4338,80 @@ Cdjw NOV97
          CALL XCTRIM (CLINE,J)
          CALL XCTRIM (CHLINE,JHTML)
 1700  CONTINUE
+      if (ipunch .eq. 0) then
+       write(ncfpu1,'(a,a)') '# Found Formula =', cline(1:j)
+      endif
+cdjwjun04
+      call xzerof (store(ibase),nterm*nnames)
+      istore(ibase)=icarb
+      store(ibase+1)=0.0
+      istore(ibase+nterm)=ihyd
+      store(ibase+nterm+1)=0.0
+      nbase=2
+      do 1510 m29=l29,l29+(n29-1)*md29,md29
+c-----  get the character form of the name, as a unique code
+         write (ctype,'(a4)') istore(m5)
+         call xcras (ctype,nchar)
+         itext=100*index(upper,ctype(1:1))+index(upper,ctype(2:2))
+c 
+         do j=ibase,ibase+(nbase-1)*nterm,nterm
+            if (istore(j).eq.istore(m29)) then
+               store(j+1)=store(j+1)+store(m29+4)
+               istore(j+2)=j
+               istore(j+3)=itext
+               go to 1510
+            end if
+         end do
+         j=ibase+nbase*nterm
+         istore(j)=istore(m29)
+         store(j+1)=store(m29+4)
+         istore(j+2)=j
+         istore(j+3)=itext
+         nbase=nbase+1
+1510  continue
+c----- now sort on unique code, startting after (possible) h
+      i=ibase+2*nterm
+      j=max(0,nbase-2)
+      k=nterm
+      l=4
+      call ssorti (i,j,k,l)
+      j=1
+      cline=' '
+      jhtml=1
+      chline=' '
+      do 1720 i=ibase,ibase+(nbase-1)*nterm,nterm
+cdjwmar99]
+cDJW nov97
+         if (store(i+1).le.zero) go to 1720
+         itype=istore(i)
+         write (ctype,1550) itype
+         call xcras (ctype,length)
+         if (length.ge.2) then
+            cbuf=ctype(2:length)
+            call xcclwc (cbuf(1:length-1),ctype(2:length))
+         end if
+         sum=store(i+1) / zprime
+         nsum=nint(sum)
+         if (amod(sum,1.0).le.zero) then
+            write (ctemp,1600) nsum
+         else
+            write (ctemp,1650) sum
+         end if
+         call xcras (ctype,nchar)
+         call xcras (ctemp,length)
+         cline(j:)=' '//ctype(1:nchar)//ctemp(1:length)
+         chline(jhtml:)=' '//ctype(1:nchar)//'<SUB>'//
+     1                       ctemp(1:length)//'</SUB>'
+         call xcrems (cline,cline,j)
+         call xcrems (chline,chline,jhtml)
+         call xctrim (cline,j)
+         call xctrim (chline,jhtml)
+1720  continue
+      if (ipunch .eq. 0) then
+       write(ncfpu1,'(a,a)') '# Given Formula =', cline(1:j)
+      endif
+
+cdjwjun04
 C
 
       IF ( IPUNCH .EQ. 0 ) THEN
@@ -4356,6 +4439,9 @@ C----- LIST 30
         IF ( IPUNCH .EQ. 0 ) THEN
           WRITE (NCFPU1,'(''_chemical_formula_weight '',T35,F8.2)')
      1    STORE(L30GE+4) / ZPRIME
+          IF (IEPROP .LT. 0) THEN
+            CALL XPCIF ('# Structure does not match formula')
+          ENDIF
           CALL XPCIF (' ')
           CALL XPCIF (' ')
           CLINE(1:18)='_cell_measurement_'
@@ -4584,12 +4670,25 @@ C           AREA DETECTOR
         END IF
 C 
 C
-        IF (J.GT.0) THEN
-C-----   A FIX IN THE ABSENCE OF REAL INFO
+C-----  A TMAX/TMIN FIX IN THE ABSENCE OF REAL INFO
           IF (STORE(L30AB+1+J) .LE. ZERO) THEN
             STORE(L30AB+1+J) = TMAX
             STORE(L30AB+J)  = TMIN
+            IF ( IPUNCH .EQ. 0 ) THEN
+              WRITE(CLINE,'(A)')
+     1        '# No experimental values of Tmin/max available'
+              CALL XPCIF(CLINE)
+            ENDIF
           ENDIF
+          IF ( IPUNCH .EQ. 0 ) THEN
+              WRITE (CLINE,'(
+     1        ''# Sheldrick geometric approximations'',
+     1        T35,2F8.2)') TMIN,TMAX
+              CALL XPCIF (CLINE)
+              CALL XPCIF (' ')
+          END IF
+C
+        IF (J.GT.0) THEN
           IF ( IPUNCH .EQ. 0 ) THEN
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
@@ -4624,10 +4723,10 @@ C-----   A FIX IN THE ABSENCE OF REAL INFO
           END IF
         ELSE
            IF ( IPUNCH .EQ. 0 ) THEN
-             WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15),
+             WRITE (CLINE,'(A,''correction_T_'', A, F8.4)') CBUF(1:15),
      1        CSIZE(1),TMIN
              CALL XPCIF (CLINE)
-             WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15),
+             WRITE (CLINE,'(A,''correction_T_'', A, F8.4)') CBUF(1:15),
      1        CSIZE(3),TMAX
              CALL XPCIF (CLINE)
            ELSE IF ( IPUNCH .EQ. 1 ) THEN
@@ -4639,13 +4738,6 @@ C-----   A FIX IN THE ABSENCE OF REAL INFO
            END IF
         END IF
 
-        IF ( IPUNCH .EQ. 0 ) THEN
-           WRITE (CLINE,'(''# Sheldrick geometric definitions'',
-     1     T35,2F8.2)')
-     1     TMIN,TMAX
-           CALL XPCIF (CLINE)
-           CALL XPCIF (' ')
-        END IF
 
 
 
