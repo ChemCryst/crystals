@@ -64,11 +64,11 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float
             tStats->tNumNonM ++;	//Number non-matched
             if (pReflection->i/pReflection->iSE >= 3)
             {
-                tStats->tNumNonMLsInt ++;	//Number Int>=3*sigma non-matched
+                tStats->tNumNonMGrInt ++;	//Number Int>=3*sigma non-matched
             }
             else
             {
-                tStats->tNumNonMGrInt ++;
+                tStats->tNumNonMLsInt ++;
             }
         }
         else
@@ -104,59 +104,6 @@ void Stats::addReflection(Reflection* pReflection)
     }
 }
 
-void Stats::outputRow(int pRow, std::ostream& pStream)
-{
-    int tHCount = iHeadings->length();
-    int tCCount = iConditions->length();
-    String tName(iConditions->getName(pRow));
-    
-    pStream << tName << "\n";
-    String tEq("==");
-    String tNE("<>");
-    tName.replace(tEq, tNE);
-    pStream << tName << "\n";
-    pStream << "NMAI:";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setprecision (4) << setw(7) << iStats[i*tCCount+pRow].tNonMTotInt/iStats[i*tCCount+pRow].tNumNonM;	//Total intensity non-matched.
-    }
-    pStream << "\nMAI: ";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setw(7) << iStats[i*tCCount+pRow].tMTotInt/iStats[i*tCCount+pRow].tNumM;	//Total intensity matched. 
-    }
-    pStream << "\nRat1:";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setprecision (4) << setw(7) << (float)iStats[i*tCCount+pRow].tRating1;
-    }
-    pStream << "\nNLI: ";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setw(7) << iStats[i*tCCount+pRow].tNumNonMLsInt;	//Number Int<3*sigma non-matched
-    }
-    pStream << "\nNGEI:";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setw(7) << iStats[i*tCCount+pRow].tNumNonMGrInt;
-    }
-    pStream << "\nNNMa:";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setw(7) << iStats[i*tCCount+pRow].tNumNonM;
-    }
-    pStream << "\nNumM:";
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setw(7) << iStats[i*tCCount+pRow].tNumM;
-    }
-    pStream << "\nRat2:";
-    for (int i = 0; i < tHCount; i++)
-    {
-         pStream << " " << setprecision (4) << setw(7) << (float)iStats[i*tCCount+pRow].tRating2;	
-    }
-}
-
 void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums)
 {
     int tCCount = iConditions->length();
@@ -185,7 +132,7 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     {
         pStream << " " << setprecision (4) << setw(7) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Total intensity non-matched.
     }
-    pStream << "\n% < 3I/u(I)" << setw(1);
+    pStream << "\n% I < 3u(I)" << setw(1);
     for (int i = 0; i < pNumOfColums; i++)
     {
         float tLess = iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
@@ -203,17 +150,6 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     {
          pStream << " " << setprecision (4) << setw(7) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
     }
-}
-
-void Stats::outputHeadings(std::ostream& pStream)
-{
-    int tHCount = iHeadings->length();
-    pStream << setw(12);
-    for (int i = 0; i < tHCount; i++)
-    {
-        pStream << " " << setw(7) << iHeadings->getName(i);
-    }
-    pStream << "\n";
 }
 
 void Stats::outputHeadings(std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums)
@@ -238,7 +174,7 @@ void Stats::calProbs()
         
         tCurrentStat->tRating1 = evaluationFunction(tValue1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD);
         
-        tValue1 = (float)iStats[i].tNumNonMLsInt/((float)iStats[i].tNumNonMGrInt+(float)iStats[i].tNumNonMLsInt);
+        tValue1 = (float)iStats[i].tNumNonMGrInt/((float)iStats[i].tNumNonMGrInt+(float)iStats[i].tNumNonMLsInt);
         
         tCurrentStat->tRating2= evaluationFunction(tValue1, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
     }
@@ -263,7 +199,7 @@ void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an ar
     }
 }
 
-std::ostream& Stats::output(std::ofstream& pStream, Table& pTable)
+std::ostream& Stats::output(std::ostream& pStream, Table& pTable)
 {
     pStream << "Total: " << iTotalNum <<"\n";
     pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
@@ -282,25 +218,3 @@ std::ostream& Stats::output(std::ofstream& pStream, Table& pTable)
     }
     return pStream;
 }
-
-std::ostream& Stats::output(std::ostream& pStream)
-{
-    pStream << "Total: " << iTotalNum <<"\n";
-    pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
-    //Print headings
-    outputHeadings(pStream);
-    //Print rows
-    int tCCount = iConditions->length();
-    for (int i = 0; i < tCCount; i++)
-    {
-        outputRow(i, pStream);
-        pStream << "\n\n";
-    }
-    return pStream;
-}
-
-std::ostream& operator<<(std::ostream& pStream, Stats& pStats)
-{
-    return pStats.output(pStream);	// Change tabs to spaces when outputing to a file.
-}
-
