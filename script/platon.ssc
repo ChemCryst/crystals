@@ -1,0 +1,34 @@
+%SCRIPT TEST
+% VARIABLE CHARACTER CDIR CFILE
+% COPY '#FOREIGN PLATON'
+% COPY 'END'
+% COPY '#RELEASE SCPQUEUE \platon.ini'
+% EVALUATE CDIR = GETCWD 'x'
+% CLEAR
+% TRANSFER CDIR TO BUFFER
+% QUEUE SEND
+% QUEUE COPY platon.res
+% COPY '#RELEASE SCPQUEUE BETACRYS.SPQ'
+%%
+%%
+%%
+^^CO GETKEY PLATONDIR
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    EVALUATE CFILE = CVALUE
+%    IF CFILE .EQ. '1' THEN
+
+  Where is the Platon executable?
+
+^^CO SYSOPENFILE 'Platon*.exe' 'Platon executable'
+%      CLEAR
+%      INSERT '^^CO SETKEY PLATONDIR '
+%      GET SILENT TEXT 'Platon location:'
+%      IF CVALUE .NE. 'CANCEL' THEN
+%        EVALUATE CFILE = CVALUE
+%        OUTPUT
+%      ELSE
+%        FINISH
+%      END IF
+%    END IF
+%    TRANSFER '#SPAWN start ' // CFILE TO CRYSTALS
+%END SCRIPT
