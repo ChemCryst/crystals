@@ -1,4 +1,4 @@
-%SCRIPT SLANT
+%SCRIPT SLANT 
 %%
 % VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
 % VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER
@@ -8,17 +8,15 @@
 % VARIABLE LOGICAL SCRIPTEXT
 %%&VAX% EVALUATE VAX = TRUE
 % EVALUATE VAX = FALSE
-ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT helps with the computation of arbitarily orientated Fourier    บ
-บ sections.                                                                  บ
-บ The orientation of the section is defined by a 3x3 matrix. The extent      บ
-บ of the section is defined in terms of an origin and minimum and maximum    บ
-บ limits in the x' and y' directions.                                        บ
-บ   If the section lies parallel to a molecular plane, a best plane          บ
-บ calculation can be performed to get the necessary matrix and centroid.     บ
-บ   If the section lies perpendicular to a principal axis of libration, a    บ
-บ TLS calculation can be performed to get the necessary matrix and centroid. บ
-ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ This SCRIPT helps with the computation of arbitarily orientated Fourier    
+ sections.                                                                  
+ The orientation of the section is defined by a 3x3 matrix. The extent      
+ of the section is defined in terms of an origin and minimum and maximum    
+ limits in the x' and y' directions.                                        
+   If the section lies parallel to a molecular plane, a best plane          
+ calculation can be performed to get the necessary matrix and centroid.     
+   If the section lies perpendicular to a principal axis of libration, a    
+ TLS calculation can be performed to get the necessary matrix and centroid. 
 % BLOCK
 %   ON ERROR REPEAT
 %   VERIFY YES NO
@@ -43,14 +41,18 @@
       Your current model contains the following atoms.
 %   COPY '#DISP'
 %   COPY 'END'
-%     COPY '#PAUSE 2'
 %     LOOP
 %       ON ERROR REPEAT
 %       ON END TERMINATE
-%       VERIFY PLANE TLS
+%       VERIFY PLANE LINE TLS
 %       GET NOSTORE FINAL ABBREVIATED -
-  'Compute best plane or TLS matrix' 'PLANE'
+  'Compute best plane, line or TLS matrix' 'PLANE'
 %       IF VALUE .EQ. 1 THEN
+%         EVALUATE EXSLANT = TRUE
+%         COPY '#SCRIPT PLANE'
+%         EVALUATE CTYPE = 'MOLAX'
+%         EVALUATE EXSLANT = FALSE
+%       ELSE IF VALUE .EQ. 2 THEN
 %         EVALUATE EXSLANT = TRUE
 %         COPY '#SCRIPT PLANE'
 %         EVALUATE CTYPE = 'MOLAX'
@@ -61,16 +63,18 @@
 %       END IF
 %       VERIFY YES NO
 %       GET NOSTORE ABBREVIATED -
- 'Are you happy with this plane?' 'YES'
+ 'Are you happy with this calculation?' 'YES'
 %       IF VALUE .EQ. 1 THEN
 %       EVALUATE LOOPEND = LOOPCOUNTER
 %       END IF
 %     END LOOP
 % ELSE
-%       VERIFY PLANE TLS
+%       VERIFY PLANE LINE TLS
 %       GET NOSTORE FINAL ABBREVIATED -
-  'Use best plane or TLS matrix' 'PLANE'
+  'Use best plane, line or TLS matrix' 'PLANE'
 %       IF VALUE .EQ. 1 THEN
+%         EVALUATE CTYPE = 'MOLAX'
+%       ELSE IF VALUE .EQ. 2 THEN
 %         EVALUATE CTYPE = 'MOLAX'
 %       ELSE
 %         EVALUATE CTYPE = 'TLS'
@@ -82,7 +86,7 @@
 %   ON ERROR RESTART
 %   CLEAR
   Enter the min. and max. coordinates in the x and y directions,
-  and resolution, all in Angstrom. 
+  and resolution, all in Angstrom.
   The min and max should be divisible by the resolution.
 %%  Round down the minimum values to the next half-integral e.g. -1.612 = -2.0
 %%  Round up the maximum values to the next half-integral   e.g.  0.293 =  0.5
@@ -141,7 +145,7 @@
 %    ELSE
 %      INSERT ' MIN-RHO = 0'
 %    END IF
-%    INSERT ' 10 TAPE=YES'
+%    INSERT ' 10 TAPE=YES file=yes'
 %    QUEUE SEND
 %    CLEAR
 %    STORE CHARACTER 'SAVE ' // CTYPE
@@ -174,6 +178,7 @@
 %    GET FINAL FILENAME 'Filename for map' 'SLANT.MT1'
 %    SEND
 %  END BLOCK
+% TRANSFER "#STORE CSYS MAP 'SLANT.FOU'" TO CRYSTALS
 % COPY '#SLANT'
 % QUEUE PROCESS
 % COPY 'END'
@@ -185,16 +190,21 @@
 %   INSERT '@CRPROC:SPAWNCMD "CONTOUR  "'
 %   EXTERNAL SEND
 % ELSE
- Close down CRYSTALS and type 'CONTOUR' to plot the files
-% COPY '#PAUSE 2'
 % BLOCK
 %   ON ERROR REPEAT
-%   VERIFY YES NO
+%   VERIFY CONTOUR HUSAK
 %   GET NOSTORE ABBREVIATED -
-  'Do you wish to close down CRYSTALS  now ?' 'YES'
-%   IF ( VALUE .EQ. 1 ) THEN
-%     COPY '#FINISH'
-%   END IF
+  'Contour or Husak ?' 'CONTOUR'
+%         CASE VALUE
+%           BLOCK    %Run contour
+%             TRANSFER '#SPAWN CRYSDIR:contour SLANT.FOU'  TO CRYSTALS
+%           END BLOCK
+%           BLOCK    %Run marchingcubesELD viewer
+ * Starting Michal Husak's 3D ELD viewer.
+%             TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MARCHI~1 ' -
+    // ' slant.fou ' TO CRYSTALS
+%           END BLOCK
+%         END CASE
 % END BLOCK
 % END IF
 %END SCRIPT
