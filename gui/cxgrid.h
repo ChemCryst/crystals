@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/03/08 16:44:08  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxGrid_H__
 #define     __CxGrid_H__
@@ -44,6 +48,7 @@ class CxGrid : public BASEGRID
             ~CxGrid();
         void    SetText( char * text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
+        void CxDestroyWindow();
         int GetTop();
         int GetLeft();
         int GetWidth();

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/03/08 16:44:08  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -40,6 +44,16 @@ CxCheckBox::CxCheckBox( CrCheckBox * container)
 CxCheckBox::~CxCheckBox()
 {
     mCheckBoxCount--;
+}
+
+void CxCheckBox::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 void    CxCheckBox::BoxClicked()

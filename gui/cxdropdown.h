@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 16:44:08  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxDropDown_H__
 #define     __CxDropDown_H__
@@ -46,6 +50,7 @@ class CxDropDown : public BASEDROPDOWN
             CxDropDown( CrDropDown * container );
             ~CxDropDown();
         void    AddItem( char * text );
+        void CxDestroyWindow();
             void  CxSetSelection ( int select );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2001/03/08 16:44:08  richard
+// General changes - replaced common functions in all GUI classes by macros.
+// Generally tidied up, added logs to top of all source files.
+//
 // Revision 1.10  2001/01/16 15:35:02  richard
 // wxWindows support.
 // Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
@@ -42,6 +46,9 @@
 #include    "cxgrid.h"
 #include    "crdropdown.h"
 
+#ifdef __BOTHWX__
+#include <wx/settings.h>
+#endif
 
 int CxDropDown::mDropDownCount = kDropDownBase;
 CxDropDown *    CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiParent )
@@ -70,6 +77,16 @@ CxDropDown::~CxDropDown()
     mDropDownCount--;
 }
 
+void CxDropDown::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
+}
+
 void CxDropDown::CxSetSelection(int select)
 {
 #ifdef __CR_WIN__
@@ -92,27 +109,14 @@ void    CxDropDown::Selected()
 
 void    CxDropDown::AddItem( char * text )
 {
-#ifdef __POWERPC__
-    Str255 itemText;
-    MenuHandle mh;
-
-    strcpy( reinterpret_cast<char *>(itemText), text );
-    c2pstr( reinterpret_cast<char *>(itemText) );
-    mh =  GetMacMenuH();
-    ::AppendMenu( mh, itemText );
-    SetMaxValue( GetMaxValue() +1 );
-    SetValue( 1 );
-#endif
 #ifdef __BOTHWX__
-      Append ( text );
-      if( !mItems ) CxSetSelection(0);
-    mItems++;
+    Append ( text );
 #endif
 #ifdef __CR_WIN__
     AddString(text);
-    if( !mItems ) SetCurSel(0);
-    mItems++;
 #endif
+    if( !mItems ) CxSetSelection(1);
+    mItems++;
 }
 
 void    CxDropDown::SetGeometry( const int top, const int left, const int bottom, const int right )
@@ -186,17 +190,15 @@ int CxDropDown::GetIdealWidth()
     return ( maxSiz + (2 * GetSystemMetrics(SM_CXVSCROLL) ));
 #endif
 #ifdef __BOTHWX__
-      wxString text;
+    wxString text;
+    int cx,cy;
     for ( int i=0;i<mItems;i++ )
     {
-            text = GetString(i);
-            int cx,cy;
-            GetTextExtent( GetLabel(), &cx, &cy );
-            if ( maxSiz < cx )
-                    maxSiz = cx;
+        GetTextExtent( GetString(i), &cx, &cy );
+        maxSiz = max (maxSiz, cx);
     }
+    return ( maxSiz + (2 * wxSystemSettings::GetSystemMetric(wxSYS_VSCROLL_X ) ) ); 
 #endif
-    return ( maxSiz + 10 ); //10 pixels spare
 }
 
 
