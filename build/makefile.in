@@ -71,7 +71,7 @@ else
     OPT = -O2
    else
 
-    $(error COMPCODE not specified)
+    $(error COMPCODE not specified. Try 'export COMPCODE=WXS' or 'set COMPCODE=GID')
 
    endif
   endif
