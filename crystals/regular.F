@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.11  2001/10/10 16:05:11  Administrator
+c Remove excessive output from screen
+c
 c Revision 1.10  2001/06/18 12:24:03  richard
 c Missing comma.
 c
@@ -176,6 +179,7 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XCHARS
 C
 \QSTORE
 \QLST12
@@ -278,10 +282,15 @@ C -- OCCUPANCY=1.
 CDJWNOV99
 C----- FLAG
       ATOM(4)=1.0
-C----- U'S ETC
-      CALL XZEROF(ATOM(8), NATOMP-7 )
+C----- U'S and SPARE 
+      CALL XZEROF(ATOM(8), NATOMP-11 )
 C----- SET UISO
       ATOM(8) = 0.05
+C----- SET PART, REF, HYB, NEW
+      IATOM(15) = 0
+      IATOM(16) = 0
+      IATOM(17) = 0
+      IATOM(18) = IB
 C -- PREPARE FOR PROCESSING OF THE LEXICAL SCANNER OUTPUT
       CALL XILEXP(IULN,IFIRST)
 C
