@@ -1,16 +1,54 @@
 %SCRIPT XRENUMB
-%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
-%   VARIABLE LOGICAL ANSWER
 %%
-%      EVALUATE QTITLE = 'Re-number the atoms'
-%      EVALUATE QLINE1 = 'If the structure looks OK, do you want to '
-%      EVALUATE QLINE2 = 're-number the atoms based on connectivity?'
-%      EVALUATE BUTTOK = '&Yes'
-%      EVALUATE BUTTXX = '&No'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. TRUE THEN
-%       COPY '#REGROUP'
-%       COPY 'SELECT TYPE=ALL SEQUENCE = YES'
+%   COPY '#SCRIPT XRETYPE'
+%%
+%%
+^^WI WINDOW XRNB 'Renumber' MODAL COMMIT='BAUTO' CANCEL='BNONE'
+^^WI GRID GRIDM NROWS=5 NCOLS=3
+^^WI {
+^^WI   @ 4,2 GRID GRIDB NROWS=1 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 BUTTON BAUTO '&Automatic' DEFAULT
+^^WI     @ 1,3 BUTTON BMANUAL '&Manual'
+^^WI     @ 1,5 BUTTON BNONE   '&None'
+^^WI   }
+^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''
+^^WI   {
+^^WI     @ 1,1 ICON IM QUERY
+^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 STATIC T1 'Renumber the structure? Automatic attempts to'
+^^WI       @ 2,1 STATIC T2 'number bonded atoms sequentially. Manual lets'
+^^WI       @ 3,1 STATIC T3 'you define your own numbering scheme.'
+^^WI     }
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%   VERIFY BAUTO BMANUAL BNONE
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+^^CO DISPOSE XRNB
+%   CASE VALUE
+%     BLOCK    %AUTO
+%       COPY '#EDIT'
+%       COPY 'MONITOR OFF'
+%       COPY 'SORT'
+%       COPY 'INSERT RELAX'
+%       COPY 'DSORT SPARE'
 %       COPY 'END'
-%      END IF
+%       COPY '#REGROUP'
+%       COPY 'SELECT TYPE=ALL SEQUENCE=YES'
+%       COPY 'END'
+%     END BLOCK
+%     BLOCK    %MANUAL
+%       COPY '#SCRIPT XRENUM'
+%     END BLOCK
+%     BLOCK    %NOTHING
+ Renumbering skipped. Any atom name/serial clashes will be removed.
+%       COPY '#EDIT'
+%       COPY 'CLASH FIXLATTER'
+%       COPY 'END'
+%     END BLOCK
+%   END CASE
 % END SCRIPT
+
