@@ -8,6 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2001/03/08 14:57:19  richard
+//   Moved all CXAPP and CRAPP functions into this class, to try to make the
+//   whole thing more understandable. This one class has one instance, and it
+//   holds all the information about the windows which are open. It also recieves
+//   the commands from CRYSTALS and messages from the GUI.
+//   Also some new classes for updating the toolbar, and buttons, and windows based on the old ENABLEIF, DISABLEIF status flags.
+//   Layout code majorly overhauled.
+//
 
 #ifndef     __CcController_H__
 #define     __CcController_H__
@@ -159,6 +167,7 @@ class   CcController
 
 #ifdef __CR_WIN__
     static CWinThread *mCrystalsThread;
+    static CWinThread *mGUIThread;
 #endif
 #ifdef __BOTHWX__
     static CcThread *mCrystalsThread;

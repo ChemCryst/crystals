@@ -7,7 +7,7 @@
 //   Filename:  CxProgress.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 9:47 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxProgress_H__
 #define     __CxProgress_H__

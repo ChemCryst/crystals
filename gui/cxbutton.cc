@@ -7,7 +7,7 @@
 //   Filename:  CxButton.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 15:22 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -35,7 +35,7 @@ CxButton *  CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
     CxButton    *theStdButton = new CxButton(container);
 #ifdef __CR_WIN__
         theStdButton->Create("Button",WS_CHILD |WS_VISIBLE |BS_PUSHBUTTON, CRect(0,0,10,10), guiParent, mButtonCount++);
-    theStdButton->SetFont(CxGrid::mp_font);
+    theStdButton->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10));
@@ -81,111 +81,27 @@ void    CxButton::SetText( char * text )
 #endif
 }
 
-void    CxButton::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    MoveWindow(left,top,right-left,bottom-top,true);
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-      LOGSTAT ("I am button " + CcString(GetLabel()) );
-      LOGSTAT ("My top coord is set to " + CcString(top) );
-#endif
+CXSETGEOMETRY(CxButton)
 
-}
-int CxButton::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//      cerr << "My uncorrected coord is " << CcString(windowRect.y) << "\n";
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int CxButton::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
+CXGETGEOMETRIES(CxButton)
 
-}
-int CxButton::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int CxButton::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
 
 int CxButton::GetIdealWidth()
 {
 #ifdef __CR_WIN__
     CString text;
     SIZE size;
-    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    CClientDC dc(this);
+    CFont* oldFont = dc.SelectObject(CcController::mp_font);
     GetWindowText(text);
-    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-      return (size.cx+20); // optimum width for Windows buttons (only joking)
+    size = dc.GetOutputTextExtent(text);
+    dc.SelectObject(oldFont);
+    return ( size.cx + 20 );
 #endif
 #ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
-      return (cx+20); // nice width for buttons
+      return (cx+10); // nice width for buttons
 #endif
 
 }
@@ -195,10 +111,12 @@ int CxButton::GetIdealHeight()
 #ifdef __CR_WIN__
     CString text;
     SIZE size;
-    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    CClientDC dc(this);
+    CFont* oldFont = dc.SelectObject(CcController::mp_font);
     GetWindowText(text);
-    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-    return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
+    size = dc.GetOutputTextExtent(text);
+    dc.SelectObject(oldFont);
+    return ( size.cy + 10 );
 #endif
 #ifdef __BOTHWX__
       int cx,cy;

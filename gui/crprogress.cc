@@ -7,7 +7,7 @@
 //   Filename:  CrProgress.cpp
 //   Authors:   Richard Cooper
 //   Created:   22.2.1998 14:43 Hours
-//   Modified:  3.6.1999 16:46 Hours
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -29,16 +29,20 @@ CrProgress::~CrProgress()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxProgress*) ptr_to_cxObject;
+        ((CxProgress*) ptr_to_cxObject)->DestroyWindow(); delete (CxProgress*) ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 
       mControllerPtr->RemoveProgressOutputPlace(this);
 }
 
-Boolean CrProgress::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrProgress,CxProgress)
+CRGETGEOMETRY(CrProgress,CxProgress)
+CRCALCLAYOUT(CrProgress,CxProgress)
+
+CcParse CrProgress::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
 // Initialization for the first time
@@ -103,29 +107,6 @@ void    CrProgress::SetText( CcString text )
     ( (CxProgress *)ptr_to_cxObject)->SetText( theText );
 }
 
-void    CrProgress::SetGeometry( const CcRect * rect )
-{
-    ((CxProgress*)ptr_to_cxObject)->SetGeometry(     rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-}
-CcRect  CrProgress::GetGeometry()
-{
-    CcRect retVal (
-            ((CxProgress*)ptr_to_cxObject)->GetTop(),
-            ((CxProgress*)ptr_to_cxObject)->GetLeft(),
-            ((CxProgress*)ptr_to_cxObject)->GetTop()+((CxProgress*)ptr_to_cxObject)->GetHeight(),
-            ((CxProgress*)ptr_to_cxObject)->GetLeft()+((CxProgress*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-
-void    CrProgress::CalcLayout()
-{
-    int w =  ((CxProgress*)ptr_to_cxObject)->GetIdealWidth();
-    int h =  ((CxProgress*)ptr_to_cxObject)->GetIdealHeight();
-    ((CxProgress*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
-}
 
 void CrProgress::CrFocus()
 {

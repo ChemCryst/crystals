@@ -7,7 +7,7 @@
 //   Filename:  CxProgress.cc
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
-//   Modified:  05.11.1998 14:25 Uhr
+//   $Log: not supported by cvs2svn $
 
 
 #include    "crystalsinterface.h"
@@ -23,7 +23,7 @@ CxProgress *    CxProgress::CreateCxProgress( CrProgress * container, CxGrid * g
     CxProgress  *theProgress = new CxProgress( container );
 #ifdef __CR_WIN__
     theProgress->Create( WS_CHILD|WS_VISIBLE,CRect(0,0,20,20),guiParent,mProgressCount++);
-    theProgress->SetFont(CxGrid::mp_font);
+    theProgress->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
       theProgress->Create( guiParent, -1, 100, wxPoint(0,0), wxSize(10,10));
@@ -44,7 +44,9 @@ CxProgress::~CxProgress()
 {
     RemoveProgress();
     if(m_TextOverlay != nil)
-        delete m_TextOverlay;
+    {
+        m_TextOverlay->DestroyWindow(); delete m_TextOverlay;
+    }
 }
 
 void    CxProgress::SetText( char * text )
@@ -60,7 +62,7 @@ void    CxProgress::SetText( char * text )
         CRect rectangle;
         GetClientRect(&rectangle);
         m_TextOverlay->Create( text, WS_VISIBLE|WS_CHILD, rectangle, this, 54999) ;
-        m_TextOverlay->SetFont(CxGrid::mp_font);
+        m_TextOverlay->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
             LOGERR("NOT Making new static text overlay for the Progress Bar.\n");
@@ -91,7 +93,7 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
     }
 #endif
 #ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
+    SetSize(left,top,right-left,bottom-top);
     if(m_TextOverlay != nil)
     {
             m_TextOverlay->SetSize( GetRect() ) ;
@@ -99,91 +101,14 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
 #endif
 }
 
-int   CxProgress::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int   CxProgress::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxProgress::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxProgress::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
-
+CXGETGEOMETRIES(CxProgress)
 
 
 int CxProgress::GetIdealWidth()
 {
 #ifdef __CR_WIN__
       CClientDC cdc(this);    //Get the device context for this window (edit box).
-    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font); //Select the standard font into the device context, save the old one for later.
+    CFont* oldFont = cdc.SelectObject(CcController::mp_font); //Select the standard font into the device context, save the old one for later.
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
     cdc.SelectObject(oldFont);         //Select the old font back into the DC.
@@ -201,7 +126,7 @@ int CxProgress::GetIdealHeight()
       CString text;
     SIZE size;
     CClientDC dc(this);
-    CFont* oldFont = dc.SelectObject(CxGrid::mp_font);
+    CFont* oldFont = dc.SelectObject(CcController::mp_font);
     GetWindowText(text);
     size = dc.GetOutputTextExtent("ql");
     dc.SelectObject(oldFont);

@@ -7,7 +7,7 @@
 //   Filename:  CxIcon.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 9:47 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef           __CxIcon_H__
 #define           __CxIcon_H__
@@ -34,7 +34,6 @@ class CxIcon : public BASETEXT
             static CxIcon *   CreateCxIcon( CrIcon * container, CxGrid * guiParent );
                   CxIcon( CrIcon * container );
                   ~CxIcon();
-        void    SetText( char * text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();
         int GetLeft();

@@ -7,7 +7,7 @@
 //   Filename:  CrMultiEdit.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
-//   Modified:  06.3.1998 00:04 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include "ccstring.h"
@@ -33,15 +33,20 @@ CrMultiEdit::~CrMultiEdit()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxMultiEdit*)ptr_to_cxObject;
+        ((CxMultiEdit*)ptr_to_cxObject)->DestroyWindow(); delete (CxMultiEdit*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
       mControllerPtr->RemoveTextOutputPlace(this);
 }
 
-Boolean CrMultiEdit::ParseInput( CcTokenList * tokenList )
+
+CRSETGEOMETRY(CrMultiEdit,CxMultiEdit)
+CRGETGEOMETRY(CrMultiEdit,CxMultiEdit)
+CRCALCLAYOUT(CrMultiEdit,CxMultiEdit)
+
+CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -265,31 +270,6 @@ void CrMultiEdit::SetText ( CcString cText )
       }
 }
 
-void CrMultiEdit::SetGeometry( const CcRect * rect )
-{
-    ((CxMultiEdit*)ptr_to_cxObject)->SetGeometry(    rect->mTop,
-                                                rect->mLeft,
-                                                rect->mBottom,
-                                                rect->mRight );
-}
-
-CcRect CrMultiEdit::GetGeometry ()
-{
-    CcRect retVal(
-            ((CxMultiEdit*)ptr_to_cxObject)->GetTop(),
-            ((CxMultiEdit*)ptr_to_cxObject)->GetLeft(),
-            ((CxMultiEdit*)ptr_to_cxObject)->GetTop()+((CxMultiEdit*)ptr_to_cxObject)->GetHeight(),
-            ((CxMultiEdit*)ptr_to_cxObject)->GetLeft()+((CxMultiEdit*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-
-void CrMultiEdit::CalcLayout()
-{
-    int w = int( mWidthFactor * (float)((CxMultiEdit*)ptr_to_cxObject)->GetIdealWidth() );
-    int h = int( mHeightFactor* (float)((CxMultiEdit*)ptr_to_cxObject)->GetIdealHeight() );
-    ((CxMultiEdit*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
-}
-
 void CrMultiEdit::Changed()
 {
     SendCommand(mName+"_NCHANGED");
@@ -318,12 +298,6 @@ void CrMultiEdit::SetColour(int red, int green, int blue)
 void CrMultiEdit::NoEcho(Boolean noEcho)
 {
     mNoEcho = noEcho;
-}
-
-void CrMultiEdit::SetOriginalSizes()
-{
-      ((CxMultiEdit*)ptr_to_cxObject)->SetOriginalSizes();
-      return;
 }
 
 void CrMultiEdit::SetFontHeight(int height)

@@ -7,7 +7,7 @@
 //   Filename:  CxDropDown.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  6.3.1998 10:10 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxDropDown_H__
 #define     __CxDropDown_H__
@@ -54,6 +54,7 @@ class CxDropDown : public BASEDROPDOWN
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
+        int GetDroppedHeight();
         static int  AddDropDown( void ) { mDropDownCount++; return mDropDownCount; };
         static void RemoveDropDown( void ) { mDropDownCount--; };
         void BroadcastValueMessage( void );

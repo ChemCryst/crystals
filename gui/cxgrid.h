@@ -7,7 +7,7 @@
 //   Filename:  CxGrid.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 16:18 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxGrid_H__
 #define     __CxGrid_H__
@@ -55,9 +55,6 @@ class CxGrid : public BASEGRID
         CrGUIElement *  ptr_to_crObject;
         static int mGridCount;
 
-#ifdef __CR_WIN__
-        static CFont* mp_font;
-#endif
 #ifdef __BOTHWX__
             static wxFont* mp_font;
 #endif

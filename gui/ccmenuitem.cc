@@ -13,6 +13,7 @@
 #include "ccmenuitem.h"
 #include "crmenu.h"
 #include "cxmenu.h"
+#include "cccontroller.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -34,7 +35,7 @@ CcMenuItem::CcMenuItem(CrMenu* parentmenu)
 
 CcMenuItem::~CcMenuItem()
 {
-
+	CcController::theController->RemoveMenuItem (this);
 }
 
 void CcMenuItem::SetText(CcString theText)

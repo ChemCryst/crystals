@@ -7,29 +7,29 @@
 //   Filename:  CrIcon.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 10:38 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef           __CrIcon_H__
 #define           __CrIcon_H__
-#include	"crguielement.h"
-#include	"cctokenlist.h"
+#include    "crguielement.h"
+#include    "cctokenlist.h"
 class CxIcon;
 
 class CrIcon : public CrGUIElement
 {
-	public:
-		void CrFocus();
-		// methods
+    public:
+        void CrFocus();
+        // methods
                   CrIcon( CrGUIElement * mParentPtr );
                   ~CrIcon();
-		Boolean	ParseInput( CcTokenList * tokenList );
-		void	SetText( CcString text );
-		void	SetGeometry( const CcRect * rect );
-		CcRect	GetGeometry();
-		void	CalcLayout();
-		
-		// attributes
-		
+        CcParse ParseInput( CcTokenList * tokenList );
+        void    SetText( CcString text );
+        void    SetGeometry( const CcRect * rect );
+        CcRect  GetGeometry();
+        CcRect CalcLayout(bool recalculate=false);
+
+        // attributes
+
 };
 
 #define     kSIconInfo          "INFO"
@@ -37,11 +37,11 @@ class CrIcon : public CrGUIElement
 #define     kSIconWarn          "WARN"
 #define     kSIconQuery         "QUERY"
 
-enum 
+enum
 {
  kTIconInfo = 1200,
  kTIconError,
- kTIconWarn, 
+ kTIconWarn,
  kTIconQuery
 };
 

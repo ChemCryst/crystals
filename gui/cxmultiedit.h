@@ -7,7 +7,7 @@
 //   Filename:  CxMultiEdit.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   5.3.1998 13:51 Uhr
-//   Modified:  5.3.1998 13:51 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxMultiEdit_H__
 #define     __CxMultiEdit_H__
@@ -59,8 +59,7 @@ class CxMultiEdit : public BASEMULTIEDIT
         void    SetGeometry(int top, int left, int bottom, int right );
         static int AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
         static void RemoveMultiEdit( void) { mMultiEditCount--; };
-            void SetOriginalSizes();
-            void SetFontHeight( int height );
+        void SetFontHeight( int height );
 
         // attributes
         static int mMultiEditCount;

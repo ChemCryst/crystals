@@ -1,6 +1,9 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2001/01/25 17:12:28  richard
+// Changed from BOOL to bool!
+//
 // Revision 1.6  2001/01/16 15:35:00  richard
 // wxWindows support.
 // Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
@@ -33,14 +36,12 @@
 
 #endif
 
-
-// #define WM_STUFFTOPROCESS ( WM_USER + 100 )
+class CcController;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp:
 // See gcrystals.cpp for the implementation of this class
 //
-class CrApp;
 
 #ifdef __CR_WIN__
 class CCrystalsApp : public CWinApp
@@ -60,10 +61,10 @@ public:
     public:
 
     CCrystalsApp();
-	virtual BOOL InitInstance();
+    virtual BOOL InitInstance();
     virtual BOOL OnIdle(LONG lCount);
     virtual int ExitInstance();
-
+    afx_msg LRESULT OnStuffToProcess(WPARAM wp, LPARAM lp);
     DECLARE_MESSAGE_MAP()
 
 #endif
@@ -75,13 +76,13 @@ public:
     virtual void OnIdle(wxIdleEvent & event);
     void OnKickTimer(wxTimerEvent & evt);
 
-    
+
     DECLARE_EVENT_TABLE()
 
 #endif
 
-	protected:
-    CrApp* theCrApp;
+    protected:
+    CcController* theControl;
 };
 
 

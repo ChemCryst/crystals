@@ -7,7 +7,7 @@
 //   Filename:  CxCheckBox.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 10:38 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxCheckBox_H__
 #define     __CxCheckBox_H__

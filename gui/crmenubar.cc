@@ -7,7 +7,7 @@
 //   Filename:  CrMenuBar.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   08.6.1998 02:01 Uhr
-//   Modified:  08.6.1998 02:01 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -52,9 +52,9 @@ CrMenuBar::~CrMenuBar()
 
 }
 
-Boolean CrMenuBar::ParseInput( CcTokenList * tokenList )
+CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
     Boolean isMainMenu = false;
 
@@ -84,7 +84,7 @@ Boolean CrMenuBar::ParseInput( CcTokenList * tokenList )
                     // ParseInput generates all objects in the menu
                     // Of course the token list must be full
                     retVal = mMenuPtr->ParseInput( tokenList );
-                    if ( ! retVal )
+                    if ( ! retVal.OK() )
                     {
                         delete mMenuPtr;
                         mMenuPtr = nil;
@@ -126,7 +126,7 @@ Boolean CrMenuBar::ParseInput( CcTokenList * tokenList )
                 (CcController::theController)->AddMenuItem(menuItem);
                 break;
             }
-            case kTMenuItem:
+            case kTItem:
             {
                 tokenList->GetToken();
                 CcMenuItem* menuItem = new CcMenuItem(nil);
@@ -217,9 +217,10 @@ CcRect  CrMenuBar::GetGeometry()
     return retVal;
 }
 
-void    CrMenuBar::CalcLayout()
+CcRect CrMenuBar::CalcLayout(bool recalc)
 {
     LOGWARN("CrMenuBar:CalcLayout Bad Script: Attempt to calc layout of a menu.");
+    return CcRect(0,0,0,0);
 }
 
 void CrMenuBar::CrFocus()

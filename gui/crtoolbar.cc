@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:02:15  richard
+//   New toolbar classes.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -36,6 +39,7 @@ CrToolBar::~CrToolBar()
     CcTool* theItem = (CcTool *)m_ToolList.GetItemAndMove();
     while ( theItem != nil )
     {
+       CcController::theController->RemoveTool(theItem);
        delete theItem;
        theItem = (CcTool*)m_ToolList.GetItemAndMove();
     }

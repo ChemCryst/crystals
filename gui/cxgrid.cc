@@ -7,50 +7,66 @@
 //   Filename:  CxGrid.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 16:18 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
 #include    "cccontroller.h"
+#include    "crtoolbar.h"
+#include    "crwindow.h"
+#include    "crguielement.h"
 #include    "cxgrid.h"
 #include    "crgrid.h"
 
 int     CxGrid::mGridCount = kGridBase;
-#ifdef __CR_WIN__
-      CFont*      CxGrid::mp_font = nil;
-#endif
 
 
 
 CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 {
-    CxGrid  *theGrid = new CxGrid( container );
+  CxGrid  *theGrid = new CxGrid( container );
 #ifdef __CR_WIN__
-    theGrid->Create(NULL, "Window", WS_CHILD|WS_VISIBLE,
-                    CRect(0,0,200,200), guiParent,mGridCount++,NULL);
+  theGrid->Create(NULL, "Window", WS_CHILD|WS_VISIBLE,
+                  CRect(0,0,200,200), guiParent,mGridCount++,NULL);
 
-    if (mp_font == nil)
-    {
-        LOGFONT lf;
-        ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-        mp_font = new CFont();
-        if (mp_font->CreateFontIndirect(&lf))
-            theGrid->SetFont(mp_font);
-        else
-            ASSERT(0);
-    }
-    else
-    {
-        theGrid->SetFont(mp_font);
-    }
+  if (CcController::mp_font == nil)
+  {
+    LOGFONT lf;
+    ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+    CcController::mp_font = new CFont();
+    if (CcController::mp_font->CreateFontIndirect(&lf)) theGrid->SetFont(CcController::mp_font);
+    else                                  ASSERT(0);
+  }
+  else
+  {
+        theGrid->SetFont(CcController::mp_font);
+  }
 #endif
 #ifdef __BOTHWX__
-      theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
-	  theGrid->Show(true);
-      mGridCount++;
-#endif
-    return theGrid;
+  theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
+  theGrid->Show(true);
+  mGridCount++;
 
+
+    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+
+#ifndef _WINNT
+    *pFont = wxSystemSettings::GetSystemFont( wxSYS_ANSI_FIXED_FONT );
+#else
+    *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
+#endif  // !_WINNT
+
+    CcString temp;
+    temp = (CcController::theController)->GetKey( "FontHeight" );
+    if ( temp.Len() )
+          pFont->SetPointSize( max( 2, atoi( temp.ToCString() ) ) );
+    temp = (CcController::theController)->GetKey( "FontFace" );
+          pFont->SetFaceName( temp.ToCString() );
+
+
+
+#endif
+  return theGrid;
 }
 
 CxGrid::CxGrid( CrGrid * container )
@@ -75,101 +91,9 @@ void    CxGrid::SetText( char * text )
 #endif
 }
 
-void    CxGrid::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-      MoveWindow(left,top,right-left,bottom-top,true);
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-      LOGSTAT("I am grid number " + CcString((int)this) );
-      LOGSTAT("My top coord is set to " + CcString(top) );
-#endif
-      LOGSTAT("CxGrid SetGeom to t:" + CcString(top) + " l:" + CcString(left) + " b:" + CcString(bottom-top) + " r:" + CcString(right-left)  );
-}
+CXSETGEOMETRY(CxGrid)
 
-int   CxGrid::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect; //, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      LOGSTAT("I am grid number " + CcString((int)this) );
-      LOGSTAT("My top coord is " + CcString(windowRect.y));
-        return ( windowRect.y );
-#endif
-}
-int   CxGrid::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect;//, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-//  if(parent != nil)
-//  {
-//      parent->GetWindowRect(&parentRect);
-//      windowRect.left -= parentRect.left;
-//  }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-	  if ( ! parent->IsTopLevel() ) 
-	  {
-         if(parent != nil)
-		 {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-		 }
-	  }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxGrid::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxGrid::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
+CXGETGEOMETRIES(CxGrid)
 
 int CxGrid::GetIdealWidth()
 {
@@ -199,3 +123,5 @@ void CxGrid::CxShowWindow(bool state)
       Show(state);
 #endif
 }
+
+

@@ -1,19 +1,17 @@
 ////////////////////////////////////////////////////////////////////////
-
 //   CRYSTALS Interface      Class CxMultiEdit
-
 ////////////////////////////////////////////////////////////////////////
-
 //   Filename:  CxMultiEdit.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  25.2.1998 15:27 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
 
 #include    "cxmultiedit.h"
 #include    "cxgrid.h"
+#include    "cccontroller.h"
 #include    "crmultiedit.h"
 #include    "crgrid.h"
 
@@ -25,7 +23,7 @@ CxMultiEdit *   CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid 
 #ifdef __CR_WIN__
         theMEdit->Create(ES_LEFT| ES_AUTOHSCROLL| ES_AUTOVSCROLL| WS_VSCROLL| WS_HSCROLL| WS_VISIBLE| WS_CHILD| ES_MULTILINE, CRect(0,0,10,10), guiParent, mMultiEditCount++);
     theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-//      theMEdit->SetFont(CxGrid::mp_font);
+//      theMEdit->SetFont(CcController::mp_font);
 //      theMEdit->SetBackgroundColor(false,RGB(255,255,255));
     theMEdit->SetColour(0,0,0);
 #endif
@@ -139,111 +137,10 @@ void CxMultiEdit::SetIdealWidth(int nCharsWide)
 }
 
 
-void  CxMultiEdit::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    if((top<0) || (left<0))
-    {
-        RECT windowRect;
-        RECT parentRect;
-        GetWindowRect(&windowRect);
-        CWnd* parent = GetParent();
-        if(parent != nil)
-        {
-            parent->GetWindowRect(&parentRect);
-            windowRect.top -= parentRect.top;
-            windowRect.left -= parentRect.left;
-        }
-        MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
-    }
-    else
-    {
-        MoveWindow(left,top,right-left,bottom-top,true);
-    }
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-#endif
+CXSETGEOMETRY(CxMultiEdit)
 
-}
+CXGETGEOMETRIES(CxMultiEdit)
 
-int   CxMultiEdit::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int   CxMultiEdit::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxMultiEdit::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxMultiEdit::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
 
 
 void CxMultiEdit::Focus()
@@ -448,12 +345,6 @@ void CxMultiEdit::Spew()
     }
 }
 
-void CxMultiEdit::SetOriginalSizes()
-{
-      mIdealHeight = GetHeight();
-      mIdealWidth  = GetWidth();
-      return;
-}
 
 void CxMultiEdit::Empty()
 {

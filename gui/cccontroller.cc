@@ -9,6 +9,14 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.24  2001/03/08 14:57:19  richard
+// Moved all CXAPP and CRAPP functions into this class, to try to make the
+// whole thing more understandable. This one class has one instance, and it
+// holds all the information about the windows which are open. It also recieves
+// the commands from CRYSTALS and messages from the GUI.
+// Also some new classes for updating the toolbar, and buttons, and windows based on the old ENABLEIF, DISABLEIF status flags.
+// Layout code majorly overhauled.
+//
 // Revision 1.23  2001/01/25 16:49:48  richard
 // Tidied error messages. Introduced debug indent to show structure of
 // windows as the are created and shown.
@@ -176,6 +184,7 @@
   #include <shlobj.h> // For the SHBrowse stuff.
   #include <direct.h> // For the _chdir function.
   CWinThread * CcController::mCrystalsThread = nil;
+  CWinThread * CcController::mGUIThread = nil;
 #endif
 
 #ifdef __LINUX__
@@ -238,6 +247,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     m_next_tool_id_to_try = kToolButtonBase;
 
     mCrystalsThread = nil;
+    mGUIThread = AfxGetThread();
 
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
     mCurrentChartDoc = nil;
@@ -1287,8 +1297,7 @@ void  CcController::AddInterfaceCommand( CcString line )
             }
       }
 
-
-      PostThreadMessage( mCrystalsThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
+      if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
 }
 
 //This is a list of commands for crystals to process

@@ -7,7 +7,7 @@
 //   Filename:  CxMenu.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   09.6.1998 00:03 Uhr
-//   Modified:  09.6.1998 00:03 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxMenu_H__
 #define     __CxMenu_H__

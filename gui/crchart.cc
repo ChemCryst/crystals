@@ -7,12 +7,11 @@
 //   Filename:  CrChart.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:25 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
 #include    "crchart.h"
-//insert your own code here.
 #include    "crgrid.h"
 #include    "cxchart.h"
 #include    "ccchartdoc.h"
@@ -37,7 +36,7 @@ CrChart::~CrChart()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxChart*)ptr_to_cxObject;
+        ((CxChart*)ptr_to_cxObject)->DestroyWindow(); delete (CxChart*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
     if(attachedChartDoc != nil)
@@ -49,10 +48,9 @@ CrChart::~CrChart()
 
 }
 
-Boolean CrChart::ParseInput( CcTokenList * tokenList )
+CcParse CrChart::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -175,29 +173,11 @@ Boolean CrChart::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrChart::SetGeometry( const CcRect * rect )
-{
-    ((CxChart*)ptr_to_cxObject)->SetGeometry(    rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-}
+CRSETGEOMETRY(CrChart,CxChart)
 
-CcRect  CrChart::GetGeometry()
-{
-CcRect retVal ( ((CxChart*)ptr_to_cxObject)->GetTop(),
-                ((CxChart*)ptr_to_cxObject)->GetLeft(),
-                ((CxChart*)ptr_to_cxObject)->GetTop()+ ((CxChart*)ptr_to_cxObject)->GetHeight(),
-                ((CxChart*)ptr_to_cxObject)->GetLeft()+((CxChart*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
+CRGETGEOMETRY(CrChart,CxChart)
 
-void    CrChart::CalcLayout()
-{
-    int w = (int)(mWidthFactor  * (float)((CxChart*)ptr_to_cxObject)->GetIdealWidth() );
-    int h = (int)(mHeightFactor * (float)((CxChart*)ptr_to_cxObject)->GetIdealHeight());
-    ((CxChart*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
-}
+CRCALCLAYOUT(CrChart,CxChart)
 
 void CrChart::CrFocus()
 {

@@ -58,9 +58,9 @@ CrMenu::~CrMenu()
 
 }
 
-Boolean CrMenu::ParseInput( CcTokenList * tokenList )
+CcParse CrMenu::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -88,7 +88,7 @@ Boolean CrMenu::ParseInput( CcTokenList * tokenList )
                     // ParseInput generates all objects in the menu
                     // Of course the token list must be full
                     retVal = mMenuPtr->ParseInput( tokenList );
-                    if ( ! retVal )
+                    if ( ! retVal.OK() )
                     {
                         delete mMenuPtr;
                         mMenuPtr = nil;
@@ -130,7 +130,7 @@ Boolean CrMenu::ParseInput( CcTokenList * tokenList )
                 (CcController::theController)->AddMenuItem(menuItem);
                 break;
             }
-            case kTMenuItem:
+            case kTItem:
             {
                 tokenList->GetToken();
                 CcMenuItem* menuItem = new CcMenuItem(this);
@@ -213,16 +213,16 @@ void    CrMenu::SetGeometry( const CcRect * rect )
     LOGWARN("CrMenu:SetGeometry Bad Script: Attempt to set geometry of a menu.");
 }
 
-CcRect  CrMenu::GetGeometry()
+CcRect CrMenu::GetGeometry()
 {
     LOGWARN("CrMenu:GetGeometry Bad Script: Attempt to get geometry of a menu.");
-    CcRect retVal (0,0,0,0);
-    return retVal;
+    return CcRect(0,0,0,0);
 }
 
-void    CrMenu::CalcLayout()
+CcRect CrMenu::CalcLayout(bool recalc)
 {
     LOGWARN("CrMenu:CalcLayout Bad Script: Attempt to calc layout of a menu.");
+    return CcRect(0,0,0,0);
 }
 
 void CrMenu::CrFocus()

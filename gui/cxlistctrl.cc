@@ -28,7 +28,7 @@ CxListCtrl *    CxListCtrl::CreateCxListCtrl( CrListCtrl * container, CxGrid * g
 #ifdef __CR_WIN__
     theListCtrl->Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_OWNERDRAWFIXED|LVS_SHOWSELALWAYS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListCtrlCount++);
     theListCtrl->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-    theListCtrl->SetFont(CxGrid::mp_font);
+    theListCtrl->SetFont(CcController::mp_font);
 #endif
 #ifdef nnLINUXnn
       theListCtrl->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
@@ -66,110 +66,9 @@ void    CxListCtrl::SetVisibleLines( int lines )
     mVisibleLines = lines;
 }
 
-void    CxListCtrl::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    //If top or left are negative, this is a call from CalcLayout,
-    //therefore don't repaint the window.
-    if((top<0) || (left<0))
-    {
-        RECT windowRect;
-        RECT parentRect;
-        GetWindowRect(&windowRect);
-        CWnd* parent = GetParent();
-        if(parent != nil)
-        {
-            parent->GetWindowRect(&parentRect);
-            windowRect.top -= parentRect.top;
-            windowRect.left -= parentRect.left;
-        }
-        MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
-    }
-    else
-        MoveWindow(left,top,right-left,bottom-top,true);
-#endif
-#ifdef nnLINUXnn
-      SetSize(left,top,right-left,bottom-top);
-#endif
-}
+CXSETGEOMETRY(CxListCtrl)
 
-int   CxListCtrl::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef nnLINUXnn
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-    }
-      return ( windowRect.y );
-#endif
-}
-int   CxListCtrl::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef nnLINUXnn
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxListCtrl::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef nnLINUXnn
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxListCtrl::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef nnLINUXnn
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
+CXGETGEOMETRIES(CxListCtrl)
 
 
 int CxListCtrl::GetIdealWidth()
@@ -187,7 +86,7 @@ int CxListCtrl::GetIdealHeight()
 #ifdef __CR_WIN__
     int lines = mVisibleLines;
     CClientDC cdc(this);
-    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
@@ -238,24 +137,7 @@ void CxListCtrl::Focus()
     SetFocus();
 }
 
-void CxListCtrl::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-    NOTUSED(nRepCnt);
-    NOTUSED(nFlags);
-    switch(nChar)
-    {
-        case 9:
-        {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-            ptr_to_crObject->FocusToInput((char)nChar);
-        }
-    }
-}
+CXONCHAR(CxListCtrl)
 
 
 void CxListCtrl::AddColumn(CcString colHeader)

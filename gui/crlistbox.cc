@@ -7,9 +7,13 @@
 //   Filename:  CrListBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:25 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.8  2001/01/16 15:34:59  richard
+//  wxWindows support.
+//  Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
+//  checked out in conjunction with changes to \bin\
+//
 //  Revision 1.7  2000/12/13 17:57:12  richard
 //  Extra safety check for empty string tokens, to prevent infinite loop.
 //  CxListBox::SetSelection changed to CxListBox::CxSetSelection to avoid name clash.
@@ -28,7 +32,6 @@
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
 #include    "crlistbox.h"
-//insert your own code here.
 #include    "crwindow.h"
 #include    "crgrid.h"
 #include    "cxlistbox.h"
@@ -47,16 +50,22 @@ CrListBox::CrListBox( CrGUIElement * mParentPtr )
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxListBox*)ptr_to_cxObject;
+        ((CxListBox*)ptr_to_cxObject)->DestroyWindow(); delete (CxListBox*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 
 }
 
-Boolean CrListBox::ParseInput( CcTokenList * tokenList )
+
+CRSETGEOMETRY(CrListBox,CxListBox)
+CRGETGEOMETRY(CrListBox,CxListBox)
+CRCALCLAYOUT(CrListBox,CxListBox)
+
+
+CcParse CrListBox::ParseInput( CcTokenList * tokenList )
 {
 
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
     CcString theToken;
 //t
@@ -150,36 +159,6 @@ Boolean CrListBox::ParseInput( CcTokenList * tokenList )
 
 }
 
-void    CrListBox::SetGeometry( const CcRect * rect )
-{
-
-    ((CxListBox*)ptr_to_cxObject)->SetGeometry(  rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-
-}
-
-CcRect  CrListBox::GetGeometry()
-{
-
-    CcRect retVal(
-            ((CxListBox*)ptr_to_cxObject)->GetTop(),
-            ((CxListBox*)ptr_to_cxObject)->GetLeft(),
-            ((CxListBox*)ptr_to_cxObject)->GetTop()+((CxListBox*)ptr_to_cxObject)->GetHeight(),
-            ((CxListBox*)ptr_to_cxObject)->GetLeft()+((CxListBox*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-
-}
-
-void    CrListBox::CalcLayout()
-{
-
-    int w =  ((CxListBox*)ptr_to_cxObject)->GetIdealWidth();
-    int h =  ((CxListBox*)ptr_to_cxObject)->GetIdealHeight();
-    ((CxListBox*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
-
-}
 
 void    CrListBox::SetText( CcString item )
 {

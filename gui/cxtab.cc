@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/01/25 17:17:05  richard
+//   A new control for tabbed property sheets.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -23,11 +26,11 @@ CxTab *    CxTab::CreateCxTab( CrTab * container, CxGrid * guiParent )
 #ifdef __CR_WIN__
     theTabCtrl->Create(TCS_TABS|WS_CHILD|WS_VISIBLE,
                     CRect(0,0,200,200), guiParent,mTabCount++);
-    theTabCtrl->SetFont(CxGrid::mp_font);
+    theTabCtrl->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
       theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
-	  theGrid->Show(true);
+      theGrid->Show(true);
       mGridCount++;
 #endif
     return theTabCtrl;
@@ -50,104 +53,10 @@ BEGIN_MESSAGE_MAP(CxTab, CTabCtrl)
    ON_NOTIFY_REFLECT(TCN_SELCHANGE, OnSelChange)
 END_MESSAGE_MAP()
 
+CXSETGEOMETRY(CxTab)
 
-void    CxTab::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-      CRect work( left, top, right, bottom );
-//      AdjustRect(TRUE,&work);
-//      work.OffsetRect ( work.left, work.top );
-      MoveWindow(work,true);
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-      LOGSTAT("I am grid number " + CcString((int)this) );
-#endif
-      LOGSTAT("CxTab SetGeom to t:" + CcString(work.top) + " l:" + CcString(work.left) + " b:" + CcString(work.Height()) + " r:" + CcString(work.Width())  );
-}
+CXGETGEOMETRIES(CxTab)
 
-int   CxTab::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect; //, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      LOGSTAT("I am grid number " + CcString((int)this) );
-      LOGSTAT("My top coord is " + CcString(windowRect.y));
-        return ( windowRect.y );
-#endif
-}
-int   CxTab::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect;//, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-//  if(parent != nil)
-//  {
-//      parent->GetWindowRect(&parentRect);
-//      windowRect.left -= parentRect.left;
-//  }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-	  if ( ! parent->IsTopLevel() ) 
-	  {
-         if(parent != nil)
-		 {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-		 }
-	  }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxTab::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxTab::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
 
 int CxTab::GetIdealWidth()
 {
@@ -172,6 +81,12 @@ int CxTab::GetTabsHeight()
 {
   CRect work(0,0,0,0);
   AdjustRect(TRUE,&work);
+  LOGSTAT ( "CxTab::GetTabsHeight work t,b,l,r ="
+  +CcString(work.top)
+  +" "+CcString(work.bottom)
+  +" "+CcString(work.left)
+  +" "+CcString(work.right) );
+  LOGSTAT ( "Returning -top + 2");
   return -work.top + 2;
 }
 
@@ -179,6 +94,12 @@ int CxTab::GetTabsExtraVSpace()
 {
   CRect work(0,0,0,0);
   AdjustRect(TRUE,&work);
+  LOGSTAT ( "CxTab::GetTabsExtraVSpace work t,b,l,r ="
+  +CcString(work.top)
+  +" "+CcString(work.bottom)
+  +" "+CcString(work.left)
+  +" "+CcString(work.right) );
+  LOGSTAT ( "Returning bottom + 10");
   return work.bottom + 10; //Good space at bottom.
 }
 

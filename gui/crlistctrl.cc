@@ -8,7 +8,7 @@
 //   Filename:  CrListCtrl.cc
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
-//   Modified:  10.11.1998 16:36
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -33,14 +33,19 @@ CrListCtrl::~CrListCtrl()
 {
     if ( ptr_to_cxObject != nil )
     {
+        ((CxListCtrl*)ptr_to_cxObject)->DestroyWindow();
         delete (CxListCtrl*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 }
 
-Boolean CrListCtrl::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrListCtrl,CxListCtrl)
+CRGETGEOMETRY(CrListCtrl,CxListCtrl)
+CRCALCLAYOUT(CrListCtrl,CxListCtrl)
+
+CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
     CcString theToken;
 
@@ -172,32 +177,6 @@ Boolean CrListCtrl::ParseInput( CcTokenList * tokenList )
     return ( retVal );
 }
 
-void    CrListCtrl::SetGeometry( const CcRect * rect )
-{
-
-    ((CxListCtrl*)ptr_to_cxObject)->SetGeometry( rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-}
-
-CcRect  CrListCtrl::GetGeometry()
-{
-
-    CcRect retVal(
-            ((CxListCtrl*)ptr_to_cxObject)->GetTop(),
-            ((CxListCtrl*)ptr_to_cxObject)->GetLeft(),
-            ((CxListCtrl*)ptr_to_cxObject)->GetTop()+((CxListCtrl*)ptr_to_cxObject)->GetHeight(),
-            ((CxListCtrl*)ptr_to_cxObject)->GetLeft()+((CxListCtrl*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-
-void    CrListCtrl::CalcLayout()
-{
-    int w = (int)(mWidthFactor  * (float)((CxListCtrl*)ptr_to_cxObject)->GetIdealWidth() );
-    int h = (int)(mHeightFactor * (float)((CxListCtrl*)ptr_to_cxObject)->GetIdealHeight());
-    ((CxListCtrl*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
-}
 
 void    CrListCtrl::SetText( CcString item )
 {

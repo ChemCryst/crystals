@@ -7,7 +7,7 @@
 //   Filename:  CxListBox.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  6.3.1998 10:10 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxListBox_H__
 #define     __CxListBox_H__

@@ -7,11 +7,10 @@
 //   Filename:  CxChart.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 15:22 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxChart_H__
 #define     __CxChart_H__
-//Insert your own code here.
 #include    "crguielement.h"
 #include    "ccpoint.h"
 

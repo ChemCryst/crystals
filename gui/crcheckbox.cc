@@ -7,7 +7,7 @@
 //   Filename:  CrCheckBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 10:41 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -24,20 +24,25 @@ CrCheckBox::CrCheckBox( CrGUIElement * mParentPtr )
 {
     ptr_to_cxObject = CxCheckBox::CreateCxCheckBox( this, (CxGrid *)(mParentPtr->GetWidget()) );
     mTabStop = true;
+    mCallbackState = false;
 }
 
 CrCheckBox::~CrCheckBox()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxCheckBox*)ptr_to_cxObject;
+        ((CxCheckBox*)ptr_to_cxObject)->DestroyWindow(); delete (CxCheckBox*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 }
 
-Boolean CrCheckBox::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrCheckBox,CxCheckBox)
+CRGETGEOMETRY(CrCheckBox,CxCheckBox)
+CRCALCLAYOUT(CrCheckBox,CxCheckBox)
+
+CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -108,47 +113,13 @@ Boolean CrCheckBox::ParseInput( CcTokenList * tokenList )
     }
 
     return retVal;
-//End of user code.
 }
-// OPSignature: void CrCheckBox:SetText( CcString:text )
 void    CrCheckBox::SetText( CcString text )
 {
-//Insert your own code here.
     char theText[256];
     strcpy( theText, text.ToCString() );
 
     ( (CxCheckBox *)ptr_to_cxObject)->SetText( theText );
-//End of user code.
-}
-// OPSignature: void CrCheckBox:SetGeometry( const CcRect *:rect )
-void    CrCheckBox::SetGeometry( const CcRect * rect )
-{
-//Insert your own code here.
-    ((CxCheckBox*)ptr_to_cxObject)->SetGeometry( rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-//End of user code.
-}
-// OPSignature: CcRect CrCheckBox:GetGeometry()
-CcRect  CrCheckBox::GetGeometry()
-{
-//Insert your own code here.
-    CcRect retVal   (((CxCheckBox*)ptr_to_cxObject)->GetTop(),
-                     ((CxCheckBox*)ptr_to_cxObject)->GetLeft(),
-                     ((CxCheckBox*)ptr_to_cxObject)->GetTop()+((CxCheckBox*)ptr_to_cxObject)->GetHeight(),
-                     ((CxCheckBox*)ptr_to_cxObject)->GetLeft()+((CxCheckBox*)ptr_to_cxObject)->GetWidth() );
-    return retVal;
-//End of user code.
-}
-// OPSignature: void CrCheckBox:CalcLayout()
-void    CrCheckBox::CalcLayout()
-{
-
-    int w =  ((CxCheckBox*)ptr_to_cxObject)->GetIdealWidth();
-    int h =  ((CxCheckBox*)ptr_to_cxObject)->GetIdealHeight();
-    ((CxCheckBox*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
-
 }
 
 void    CrCheckBox::GetValue()
@@ -194,14 +165,11 @@ void    CrCheckBox::BoxChanged( Boolean state )
             stateString = kSOff;
         SendCommand(mName + "_N" + stateString);
     }
-//End of user code.
 }
-// OPSignature: void CrCheckBox:SetState( Boolean:state )
+
 void    CrCheckBox::SetState( Boolean state )
 {
-//Insert your own code here.
     ((CxCheckBox*)ptr_to_cxObject)->SetBoxState(state);
-//End of user code.
 }
 
 void CrCheckBox::CrFocus()

@@ -7,12 +7,13 @@
 //   Filename:  CxChart.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 15:22 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
 #include    "cxchart.h"
 #include    "cxgrid.h"
+#include    "cccontroller.h"
 #include    "cxwindow.h"
 #include    "crchart.h"
 #include    "ccpoint.h"
@@ -39,9 +40,9 @@ CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
                                     );
 
     CxChart *theStdChart = new CxChart(container);
-        theStdChart->Create(wndClass,"Chart",WS_CHILD| WS_VISIBLE, CRect(0,0,26,28), guiParent, mChartCount++);
+    theStdChart->Create(wndClass,"Chart",WS_CHILD| WS_VISIBLE, CRect(0,0,26,28), guiParent, mChartCount++);
     theStdChart->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-    theStdChart->SetFont(CxGrid::mp_font);
+    theStdChart->SetFont(CcController::mp_font);
 
     CClientDC   dc(theStdChart);
     theStdChart->memDC.CreateCompatibleDC(&dc);
@@ -112,38 +113,18 @@ void    CxChart::SetText( char * text )
 void    CxChart::SetGeometry( int top, int left, int bottom, int right )
 {
 #ifdef __CR_WIN__
-    if((top<0) || (left<0))
-    {
-        RECT windowRect;
-        RECT parentRect;
-        GetWindowRect(&windowRect);
-        CWnd* parent = GetParent();
-        if(parent != nil)
-        {
-            parent->GetWindowRect(&parentRect);
-            windowRect.top -= parentRect.top;
-            windowRect.left -= parentRect.left;
-        }
-        MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
-    }
-    else
-    {
-        MoveWindow(left,top,right-left,bottom-top,true);
-            if(memDC != NULL)
-        {
-            delete newMemDCBitmap;
-
-            CClientDC   dc(this);
-            newMemDCBitmap = new CBitmap;
-            CRect rect;
-            newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
-                  oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-            memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
-            memDC.SelectObject(oldMemDCBitmap);
-        }
-        ((CrChart*)ptr_to_crObject)->ReDrawView();
-
-    }
+  MoveWindow(left,top,right-left,bottom-top,true);
+  if(memDC != NULL)
+  {
+     delete newMemDCBitmap;
+     CClientDC   dc(this);
+     newMemDCBitmap = new CBitmap;
+     newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
+     oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+     memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
+     memDC.SelectObject(oldMemDCBitmap);
+  }
+  ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
@@ -158,84 +139,8 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
 
 }
 
+CXGETGEOMETRIES(CxChart)
 
-int   CxChart::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-    }
-      return ( windowRect.y );
-#endif
-}
-int   CxChart::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxChart::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxChart::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
 
 int CxChart::GetIdealWidth()
 {
@@ -276,47 +181,7 @@ void CxChart::Focus()
 }
 
 
-
-#ifdef __CR_WIN__
-void CxChart::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-    NOTUSED(nRepCnt);
-    NOTUSED(nFlags);
-    switch(nChar)
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-            ptr_to_crObject->FocusToInput((char)nChar);
-            break;
-        }
-    }
-}
-#endif
-#ifdef __BOTHWX__
-void CxChart::OnChar( wxKeyEvent & event )
-{
-      switch(event.KeyCode())
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-                  Boolean shifted = event.m_shiftDown;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
-            break;
-        }
-    }
-}
-#endif
+CXONCHAR(CxChart)
 
 void CxChart::DrawLine(int x1, int y1, int x2, int y2)
 {
@@ -496,7 +361,7 @@ void CxChart::SetIdealHeight(int nCharsHigh)
 {
 #ifdef __CR_WIN__
     CClientDC cdc(this);
-    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
@@ -511,7 +376,7 @@ void CxChart::SetIdealWidth(int nCharsWide)
 {
 #ifdef __CR_WIN__
     CClientDC cdc(this);
-    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
@@ -591,7 +456,7 @@ void CxChart::DrawText(int x, int y, CcString text)
     CPen        pen(PS_SOLID,1,mfgcolour);
     oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
     CPen        *oldpen = memDC.SelectObject(&pen);
-    CFont       *oldFont = memDC.SelectObject(CxGrid::mp_font);
+    CFont       *oldFont = memDC.SelectObject(CcController::mp_font);
     memDC.SetBkMode(TRANSPARENT);
     memDC.TextOut(coord.x,coord.y,text.ToCString());
     memDC.SelectObject(oldpen);
@@ -943,7 +808,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
     CPen*       oldpen = memDC.SelectObject(&pen);
     oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
     LOGFONT     theLogfont;
-    (CxGrid::mp_font)->GetLogFont(&theLogfont);
+    (CcController::mp_font)->GetLogFont(&theLogfont);
     theLogfont.lfHeight = 180;
     theLogfont.lfWidth = 0;
     theLogfont.lfWeight = 0;

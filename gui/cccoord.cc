@@ -7,26 +7,26 @@
 //   Filename:  CcCoord.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
-//   Modified:  11.3.1998 11:36 Uhr
+//   $Log: not supported by cvs2svn $
 
-#include	"crystalsinterface.h"
-#include	"cccoord.h"
+#include    "crystalsinterface.h"
+#include    "cccoord.h"
 
 CcCoord::CcCoord()
 {
-	Set( 0, 0, 0 );
+    Set( 0, 0, 0 );
 }
 
 CcCoord::CcCoord( CcCoord &inCoord )
 {
-	mX	= inCoord.X();
-	mY	= inCoord.Y();
-	mZ	= inCoord.Z();
+    mX  = inCoord.X();
+    mY  = inCoord.Y();
+    mZ  = inCoord.Z();
 }
 
 CcCoord::CcCoord( const int x, const int y, const int z )
 {
-	Set( x,y,z );
+    Set( x,y,z );
 }
 
 CcCoord::~CcCoord()
@@ -35,31 +35,31 @@ CcCoord::~CcCoord()
 
 void CcCoord::Set( const int x, const int y, const int z )
 {
-	mX	= x;
-	mY	= y;
-	mZ	= z;
+    mX  = x;
+    mY  = y;
+    mZ  = z;
 }
 
-const int	CcCoord::X()
+const int   CcCoord::X()
 {
-	return mX;
+    return mX;
 }
-const int	CcCoord::Y()
+const int   CcCoord::Y()
 {
-	return mY;
+    return mY;
 }
-const int	CcCoord::Z()
+const int   CcCoord::Z()
 {
-	return mZ;
+    return mZ;
 }
 CcCoord& CcCoord::operator=( const CcCoord &inCoord )
 {
-	if ( this != &inCoord )
-	{
-		mX	= inCoord.mX;
-		mY	= inCoord.mY;
-		mZ	= inCoord.mZ;
-	}
-	
-	return *this;
+    if ( this != &inCoord )
+    {
+        mX  = inCoord.mX;
+        mY  = inCoord.mY;
+        mZ  = inCoord.mZ;
+    }
+
+    return *this;
 }

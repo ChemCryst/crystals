@@ -1,18 +1,15 @@
 ////////////////////////////////////////////////////////////////////////
-
 //   CRYSTALS Interface      Class CxCheckBox
-
 ////////////////////////////////////////////////////////////////////////
-
 //   Filename:  CxCheckBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 10:38 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
 #include    "cxcheckbox.h"
-
+#include    "cccontroller.h"
 #include    "cxgrid.h"
 #include    "crcheckbox.h"
 
@@ -25,7 +22,7 @@ CxCheckBox *    CxCheckBox::CreateCxCheckBox( CrCheckBox * container, CxGrid * g
 
 #ifdef __CR_WIN__
         theStdButton->Create("CheckBox",WS_CHILD| WS_VISIBLE| BS_AUTOCHECKBOX, CRect(0,0,10,10), guiParent, mCheckBoxCount++);
-    theStdButton->SetFont(CxGrid::mp_font);
+    theStdButton->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"CheckBox",wxPoint(0,0),wxSize(0,0));
@@ -75,94 +72,9 @@ void    CxCheckBox::SetText( char * text )
 #endif
 }
 
+CXSETGEOMETRY(CxCheckBox)
 
-void  CxCheckBox::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    MoveWindow(left,top,right-left,bottom-top,true);
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-#endif
-
-}
-int   CxCheckBox::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-//            parentRect = parent->GetRect();
-//            windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int   CxCheckBox::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxCheckBox::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxCheckBox::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
+CXGETGEOMETRIES(CxCheckBox)
 
 int   CxCheckBox::GetIdealWidth()
 {

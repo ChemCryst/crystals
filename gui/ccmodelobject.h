@@ -5,6 +5,7 @@
 class CrModel;
 class CcTokenList;
 class CcController;
+class CcModelDoc;
 #include "cccoord.h"
 #ifdef __CR_WIN__
 #include <GL/glu.h>
@@ -17,11 +18,15 @@ class CcController;
 
 class CcModelObject
 {
-	public:
-		CcModelObject();
-		virtual ~CcModelObject();
-            virtual void Render( CrModel* view, Boolean detailed ) = 0;
-            virtual void ParseInput ( CcTokenList* tokenlist) = 0;
+   public:
+     CcModelObject(CcModelDoc* pointer);
+     CcModelObject();
+     virtual ~CcModelObject();
+     virtual void Render( CrModel* view, bool detailed ) = 0;
+     virtual void ParseInput ( CcTokenList* tokenlist) = 0;
+   protected:
+     CcModelDoc * mp_parent;
+
 };
 
 #include	"ccmodelatom.h"

@@ -7,7 +7,7 @@
 //   Filename:  CxText.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  12.3.1998 9:47 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxText_H__
 #define     __CxText_H__
@@ -34,7 +34,7 @@ class CxText : public BASETEXT
         static CxText * CreateCxText( CrText * container, CxGrid * guiParent );
             CxText( CrText * container );
             ~CxText();
-        void    SetText( char * text );
+        void    SetText( CcString text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();
         int GetLeft();

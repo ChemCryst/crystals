@@ -7,7 +7,7 @@
 //   Filename:  CxGroupBox.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 16:18 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxGroupBox_H__
 #define     __CxGroupBox_H__
@@ -35,7 +35,7 @@ class CxGroupBox : public BASEGROUPBOX
             CxGroupBox( CrGrid * container );
             ~CxGroupBox();
         void    SetText( char * text );
-        void    SetGeometry( const int top, const int left, const int bottom, const int right );
+        void    SetGeometry( int top, int left, int bottom,  int right );
         static int AddGroupBox( void) { mGroupBoxCount++; return mGroupBoxCount; };
         static void RemoveGroupBox( void) { mGroupBoxCount--; };
 

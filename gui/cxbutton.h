@@ -7,7 +7,7 @@
 //   Filename:  CxButton.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  5.3.1998 15:22 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxButton_H__
 #define     __CxButton_H__

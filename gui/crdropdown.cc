@@ -25,14 +25,18 @@ CrDropDown::~CrDropDown()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxDropDown*)ptr_to_cxObject;
+        ((CxDropDown*)ptr_to_cxObject)->DestroyWindow(); delete (CxDropDown*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 }
 
-Boolean CrDropDown::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrDropDown,CxDropDown)
+CRGETGEOMETRY(CrDropDown,CxDropDown)
+CRCALCLAYOUT(CrDropDown,CxDropDown)
+
+CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
     CcString theToken;
 
@@ -98,32 +102,6 @@ Boolean CrDropDown::ParseInput( CcTokenList * tokenList )
     }
 
     return retVal;
-}
-
-void    CrDropDown::SetGeometry( const CcRect * rect )
-{
-      TEXTOUT( "Drop: " + CcString(rect->mTop) + " " + CcString ( rect->mLeft ) );
-    ((CxDropDown*)ptr_to_cxObject)->SetGeometry( rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-}
-
-CcRect  CrDropDown::GetGeometry()
-{
-    CcRect retVal(
-            ((CxDropDown*)ptr_to_cxObject)->GetTop(),
-            ((CxDropDown*)ptr_to_cxObject)->GetLeft(),
-            ((CxDropDown*)ptr_to_cxObject)->GetTop()+((CxDropDown*)ptr_to_cxObject)->GetHeight(),
-            ((CxDropDown*)ptr_to_cxObject)->GetLeft()+((CxDropDown*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-
-void    CrDropDown::CalcLayout()
-{
-    int w =  ((CxDropDown*)ptr_to_cxObject)->GetIdealWidth();
-    int h =  ((CxDropDown*)ptr_to_cxObject)->GetIdealHeight();
-      ((CxDropDown*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
 }
 
 void    CrDropDown::SetText( CcString item )
