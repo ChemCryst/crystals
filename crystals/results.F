@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/01/14 12:11:45  Administrator
+C Correct format of FLACK parameter output
+C
 C Revision 1.27  2001/12/14 16:56:53  ckp2
 C Put cell volume su into CIF file. SU is based only on cell parameter esd's not full
 C variance-covariance matrix but cifcheck can only use these too, so the results
@@ -2971,12 +2974,8 @@ C
 C----- COPY HEADER INFORMATION FROM .CIF FILE
       CALL XMOVEI (KEYFIL(1,2),JDEV,4)
 Cdjw99      CALL XRDOPN(6, JDEV , 'CRYSDIR:REFCIF.SDA', 18)
-&DOS      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&DVF      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&GID      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&VAX      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&LIN      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
-&GIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
+##LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
+&&LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
       IF (IERFLG.GE.0) THEN
          CLINE=' '
 100      CONTINUE
@@ -2985,12 +2984,8 @@ Cdjw99      CALL XRDOPN(6, JDEV , 'CRYSDIR:REFCIF.SDA', 18)
          GO TO 100
 150      CONTINUE
 C      CLOSE THE FILE
-&DOS       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&DVF       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&GID       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&VAX       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&LIN       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
-&GIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
+##LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
+&&LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
       ELSE
          WRITE (CMON,'('' cif header file not available'')')
          CALL XPRVDU (NCVDU,1,0)
@@ -3058,12 +3053,8 @@ C
 C 
 C################################################################
 c----- LOAD THE AVAILABLE REFERENCE TABLE
-&DOS      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&DVF      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&GID      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&VAX      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&LIN      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
-&GIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+##LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&&LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
       IF (IERFLG.GE.0) THEN
          READ (NCARU,'(i4)') NREFS
          REWIND (NCARU)
@@ -4119,12 +4110,8 @@ C
 C----- CLOSE THE 'CIF' OUTPUT FILE
       CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
 C      CLOSE THE REFERENCES FILE
-&DOS       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&DVF       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&GID       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&VAX       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&LIN       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/reftab.dat', 25)
-&GIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+##LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
+&&LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/reftab.dat', 25)
       RETURN
       END
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2001/10/18 10:02:49  ckp2
+C When mouse hovers over bonds, display the fragment number as well as the length.
+C
 C Revision 1.38  2001/09/11 08:27:43  ckp2
 C Cut down GUI traffic by only sending status updates for flags that have
 C actually changed (Flags: L1, L2, L3, L5, L6, QS, IN)
@@ -806,7 +809,7 @@ C
       LOGICAL LDOFOU, LSPARE, LISNAN
       DIMENSION JDEV(4)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
-      CHARACTER CCOL*6, WCLINE*80, CFILEN*80, CATTYP*4,CLAB*10,CLAB2*10
+      CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*10,CLAB2*10
       LOGICAL WEXIST
       REAL STACK(500)     !Space for 100 contacts.
       CHARACTER*8 CINST(6)
@@ -944,12 +947,8 @@ C Get atom type.
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
-&DOS             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&DVF             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&GID             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&VAX             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&LIN             CFILEN = 'CRYSDIR:/script/propwin.dat'
-&GIL             CFILEN = 'CRYSDIR:/script/propwin.dat'
+##LINGIL             CFILEN = 'CRYSDIR:script\propwin.dat'
+&&LINGIL             CFILEN = 'CRYSDIR:script/propwin.dat'
              CALL MTRNLG(CFILEN,'OLD',ILENG)
              INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
              IF(.NOT.WEXIST) THEN              !use default values

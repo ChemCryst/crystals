@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2002/02/12 12:47:13  Administrator
+C Set the 'PART' flag
+C
 C Revision 1.12  2001/08/23 15:18:43  Administrator
 C Evade singulrities
 C
@@ -512,7 +515,7 @@ C
       CHARACTER *80 CSRQ
       CHARACTER *12 CTEMP
 C----- PATH AND FILENAME FOR RIDING CONSTRAINTS
-      CHARACTER *64 CPATH, CPATH2
+      CHARACTER *256 CPATH, CPATH2
       DIMENSION JFRN(4), KFRN(4)
 C--
 \ISTORE

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2001/11/23 08:58:08  Administrator
+C Patches to facilitate link to SQUEEZE
+C
 C Revision 1.29  2001/10/10 16:03:57  Administrator
 C Add FVAR line to PLATON output to satisfy ORTEP-3 users
 C
@@ -1217,7 +1220,7 @@ C - Could move these to ZCAMER.
         ENDIF
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
-        WRITE(CHRBUF,'(80A1)')LCMAGE
+        WRITE(CHRBUF,'(256A1)')LCMAGE
 &&&GIDDOSGIL         CALL ZCONTR
       GOTO 8025
 
@@ -1268,7 +1271,7 @@ CODE FOR KLNKIO
 C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
-      CHARACTER *64 CPATH
+      CHARACTER *256 CPATH
       PARAMETER (NFILE = 10)
       CHARACTER *16 CFILE(NFILE)
 C

@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/12/14 14:44:28  Administrator
+C
+C DJW Combine TLS amd MOLAX into new module GEOEMTRY. This enables angles
+C beween plane normals (etc) and libration axes to be computed.  Add code
+C to enable TLS restaints to be generated, and to enable the user to
+C modify the T and L tensors
+C
 C Revision 1.7  2001/02/26 10:24:13  richard
 C Added changelog to top of file
 C
@@ -904,7 +911,7 @@ C      IRPL   1 FOR REPLACE REQUIRED
 C      IMOD5  1 IF MODIFICATION OCCURS
 C      IPUNCH 1 IF RESTRAINT TO BE PUNCHED
 C
-      CHARACTER *64 CPATH
+      CHARACTER *256 CPATH
       CHARACTER *32 CTEMP
       DIMENSION JFRN(4)
 C
