@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2002/07/23 15:53:07  richard
+C
+C Only clear ERROR flag on general update call (IULN=0) from crystal.for. If
+C internal call updating list 5, then set the list serial number to a different
+C negative value so that the update goes ahead.
+C
 C Revision 1.45  2002/06/28 10:10:22  richard
 C Minor gui update enabling display of special shapes: ring and sphere.
 C
@@ -880,6 +886,7 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
                END IF
 
         
+               SPAREV = 0.0
 
                IF ( LSPARE .AND. ( NINT(STORE(I5+3)) .LE. 1 )) THEN
                   ISPARE = NINT(1000 * STORE(I5+13) )
@@ -893,8 +900,9 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
                   AXES (2,3) = 0.0
                   AXES (3,1) = 0.0
                   AXES (3,2) = 0.0
-                  STORE(I5+3) = 0.0
+C                  STORE(I5+3) = 0.0
                ELSE
+                   SPAREV = STORE(I5+3)
                    ISPARE = NINT(COV*GSCALE)
                END IF
 
@@ -905,7 +913,7 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
      6           NINT(STR11(IPLACE+2)*GSCALE),
      7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
      8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-     2           NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
      3           NINT(AXES(1,1)),NINT(AXES(2,1)),NINT(AXES(3,1)),
      3           NINT(AXES(1,2)),NINT(AXES(2,2)),NINT(AXES(3,2)),
      3           NINT(AXES(1,3)),NINT(AXES(2,3)),NINT(AXES(3,3)) )
@@ -917,7 +925,7 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
      6           NINT(STR11(IPLACE+2)*GSCALE),
      7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
      8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-     2           NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
      3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
      4           NINT(STORE(I5+8) * GSCALE) )
 
@@ -928,7 +936,7 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
      6           NINT(STR11(IPLACE+2)*GSCALE),
      7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
      8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-     2           NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
      3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
      4           NINT(STORE(I5+8) * GSCALE),
      5           NINT(STORE(I5+9)*100.0), NINT(STORE(I5+10)*100.0) )
