@@ -86,6 +86,7 @@ void initRunStruct(RunStruct *pRunStruct)
     pRunStruct->iFileName = new char[255];
     pRunStruct->iFileName[0] = 0;
     pRunStruct->iCrystalSys = new char[20];
+    pRunStruct->iCrystalSys[0] = 0;
     pRunStruct->iChiral = false;
 }
 
@@ -124,9 +125,14 @@ bool handleArg(int *pPos, int pMax, const char * argv[], RunStruct *pRunData)
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            delete pRunData->iTablesFile;
-            pRunData->iTablesFile = new char[strlen(argv[*pPos])+1];
-            strcpy(pRunData->iTablesFile, argv[*pPos]);
+            char* tEnd;
+            int tValue = strtol(argv[*pPos], &tEnd, 10);
+            char* pSystem = crystalSystemConst(tValue);
+            if (tEnd != argv[*pPos]+strlen(argv[*pPos]) || pSystem == NULL)
+            {
+                return false;
+            }
+            strcpy(pRunData->iCrystalSys, pSystem);
             (*pPos)++;
             return true;
         }
@@ -175,7 +181,10 @@ int main(int argc, const char * argv[])
         std::cout << "Enter hkl file path: ";
         cin >> tRunStruct.iFileName;
     }
-    strcpy(tRunStruct.iCrystalSys, getCrystalSystem());
+    if (tRunStruct.iCrystalSys[0] == 0)
+    {
+        strcpy(tRunStruct.iCrystalSys, getCrystalSystem());
+    }
     try
     {
         runTest(&tRunStruct);
