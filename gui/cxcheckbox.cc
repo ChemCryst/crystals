@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.10  2001/11/16 15:12:01  ckp2
 //   Updated GetIdealWidth routine to be more accurate (use correct DC for calculations).
 //
@@ -127,9 +133,11 @@ int   CxCheckBox::GetIdealHeight()
 #ifdef __CR_WIN__
     CString text;
     SIZE size;
-    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    CDC* cdc = GetDC();
+    HDC hdc= (HDC) (cdc->m_hAttribDC);
     GetWindowText(text);
     GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+    ReleaseDC(cdc);
     return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
 #endif
 #ifdef __BOTHWX__

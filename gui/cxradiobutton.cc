@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2001/06/17 14:32:57  richard
 //   CxDestroyWindow function.
 //
@@ -92,9 +98,11 @@ int   CxRadioButton::GetIdealWidth()
 #ifdef __CR_WIN__
     CString text;
     SIZE size;
-    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    CDC* cdc = GetDC();
+    HDC hdc= (HDC) (cdc->m_hAttribDC);
     GetWindowText(text);
     GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+    ReleaseDC(cdc);
       return (size.cx+20); // optimum width for Windows buttons (only joking)
 #endif
 #ifdef __BOTHWX__
