@@ -139,28 +139,22 @@ C--FIND THE TYPE OF THIS WEIGHTING SCHEME
       IF (JTYPE .EQ. 3) THEN
 C----- RESET JTYPE DEPENDING ON SCHEME NUMBER AND REFINEMENT TYPE
          IF (ISTORE(L23MN+1) .GE. 0) THEN
-C----- FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
+C-----      FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
             IF (  (ITYPE4 .EQ. 10) .OR.
      1            (ITYPE4 .EQ. 11) .OR.
      1            (ITYPE4 .EQ. 14) .OR.
      1            (ITYPE4 .EQ. 15) )    THEN
-      IF (ISSPRT .EQ. 0) THEN
-                  WRITE(NCWU,100) '/FO/ **2'
-      ENDIF
-100    FORMAT( 20X, ' LIST 4 weighting type is ', A)
                JTYPE = 2
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,100) '/FO/ **2'
+100    FORMAT( 20X, ' LIST 4 weighting type is ', A)
             ELSE
-      IF (ISSPRT .EQ. 0) THEN
-                  WRITE(NCWU,100) '1/FO'
-      ENDIF
                JTYPE = 1
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,100) '1/FO'
             ENDIF
          ELSE
-C----- NORMAL REFINEMENT
-      IF (ISSPRT .EQ. 0) THEN
-                  WRITE(NCWU,100) 'NORMAL'
-      ENDIF
+C-----     NORMAL REFINEMENT
             JTYPE = 0
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,100) 'NORMAL'
          ENDIF
       ENDIF
 C----- SET THE MAXIMUM WEIGHT
@@ -198,10 +192,10 @@ C--CHECK IF THIS IS VALID WEIGHTING SCHEME
       IF ( ITYPE4 .LT. MINSCM ) GO TO 9930
       IF ( ITYPE4 .GT. MAXSCM ) GO TO 9930
       IF ((ITYPE4 .EQ. 14) .OR. (ITYPE4 .EQ. 15)) THEN
-C----- WEIGHT ACAINST FC
+C-----      WEIGHT ACAINST FC
             IFTYPE = 1
       ELSE
-C----- WEIGHT ACAINST FO
+C-----      WEIGHT ACAINST FO
             IFTYPE = 0
       ENDIF
 C--SET UP THE DEFAULT SCALE FACTOR
@@ -371,9 +365,9 @@ C--THIS /FO/ IS LARGE ENOUGH  -  COMPUTE ITS INVERSE
       GOTO 2600
 C--/FO/ IS ZERO  -  ASSIGN A SMALL VALUE TO AVOID 0**0
 2550  CONTINUE
-      FO=ZEROSQ
 cdjwaug99
-      rfo = 1. /max(fo, fc, aw)
+      rfo = 1. /max(fo, fc, aw, 2.)
+      FO=ZEROSQ
 C--CHECK THE SIZE OF THE SIGMA TERM
 2600  CONTINUE
       IF(ABS(AW)-ZERO)2700,2700,2650
@@ -386,15 +380,15 @@ C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
 C--WEIGHTS FROM /FO/, BUT MODIFIED TO REFINE AGAINST /FO/ **2
 2750  CONTINUE
 cdjw aug99      AM=0.5*RFO
-      am = 0.5 * 1. / max(fo, fc, aw)
+      am = 0.5 / max(fo, fc, aw, 2.)
       GOTO 2850
 C--WEIGHTS COMPUTED FROM /FO/ **2
 2800  CONTINUE
 cdjw aug99      AW=2.0*AW*FO
       if (fo .le. aw) then
-       AW=2.0*AW*max(FO,fc,aw)
+       AW=2.0*AW*max(FO,fc,aw,2.)
       else
-        AW=2.0*AW*FO
+       AW=2.0*AW*FO
       endif
       FO=FO*FO
       FC=FC*FC

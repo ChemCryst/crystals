@@ -926,7 +926,7 @@ C
       WRITE ( CMON,2015)  0.1*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       CALL XPRVDU(NCVDU, 6,0)
-2015  FORMAT ( // , 10X , 'Version ' , F4.1 , ' for ' , A , ' under '
+2015  FORMAT ( /, 10X , 'Version ' , F5.2 , ' for ' , A , ' under '
      2 , A, 3X , A , / , 10X ,
      3 'Copyright Chemical Crystallogaphy Laboratory, Oxford' , / )
 C
