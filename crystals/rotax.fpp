@@ -24,6 +24,7 @@ C Crystals implementation - blame Richard Cooper.
       REAL P(3,3,3), V, DISAG(3,30)
       CHARACTER*1 dorr
       INTEGER PORI
+      LOGICAL NOTPTG
 
       DATA ICOMSZ / 7 /
       DATA IVERSN /100/
@@ -61,6 +62,7 @@ cC Store the rotation angle
 c      CALL MATS(PHI,PORI,SROT)
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       CALL XFAL06 (IULN6, 0)
@@ -286,17 +288,27 @@ C loop through them all here:
 C Direct vectors
                DORR="d"
                CALL RTXMAT(PHIR,HKL,DORR,STORE(L1M1),STORE(L1M2),MRES,P)
-               IF (PORI .LT. 0) M=-M
-               CALL RTXAPP(MRES,HKL,DISAG,
+               IF (PORI .LT. 0) CALL XNEGTR(MRES,MRES,9)
+
+               IF ( NOTPTG ( MRES ) ) THEN
+
+                  CALL RTXAPP(MRES,HKL,DISAG,
      1                     TOL,PHID,PORI,STORE(L1M2),DORR,ipunch)
+
+               END IF
 
 C Reciprocal vectors
 
                DORR="r"
                CALL RTXMAT(PHIR,HKL,DORR,STORE(L1M1),STORE(L1M2),MRES,P)
-               IF (PORI .LT. 0) M=-M
-               CALL RTXAPP(MRES,HKL,DISAG,
+               IF (PORI .LT. 0) CALL XNEGTR(MRES,MRES,9)
+
+               IF ( NOTPTG ( MRES ) ) THEN
+
+                  CALL RTXAPP(MRES,HKL,DISAG,
      1                     TOL,PHID,PORI,STORE(L1M2),DORR,ipunch)
+
+               END IF
        
             enddo
          enddo
@@ -326,6 +338,50 @@ C -- INPUT ERRORS
       RETURN
       END
 
+
+      LOGICAL FUNCTION NOTPTG(TM)
+C Returns TRUE if the transformation matrix does not belong
+C to the current point group.
+      DIMENSION TM(9),SYM(9),SUB(9)
+
+\XLST02
+\XCONST
+\STORE
+\XUNITS
+\XIOBUF
+
+      NOTPTG = .TRUE.
+
+      NC=2*IC+1
+
+C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
+      M2=L2
+      DO NE=0,N2-1
+        CALL XMOVE(STORE(L2+MD2*NE),SYM(1),9)  !FETCH THE SYMMETRY OPERATOR
+C--LOOP OVER EACH REQUIRED SIGN FOR THE CENTRE OF SYMMETRY FLAG
+        DO NF=1,NC,2
+          CALL XSUBTR(TM(1),SYM(1),SUB(1),9)
+          DO I = 1,9
+            IF ( ABS(SUB(I)) .GT. ZERO ) GOTO 100
+          END DO
+          NOTPTG = .FALSE.
+          WRITE(CMON,'(A)')
+     1'Rejected the following twin law; it is part of the point group:'
+          CALL XPRVDU(NCVDU,1,0)
+          DO I = 1,7,3
+            WRITE(CMON,'(3F7.4,3X)') (TM(I+J),J=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+          RETURN
+
+100       CONTINUE
+          CALL XNEGTR(SYM(1),SYM(1),9)
+        END DO
+      END DO
+
+      RETURN
+
+      END
 
       SUBROUTINE RTXMAT(phir,x,dorr,G,GS,M,p)
 C x = direct or reciprocal lattice direction
