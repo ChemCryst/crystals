@@ -1,5 +1,9 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.36  2004/11/24 11:41:00  rich
+c Improved molecule matching in #MATCH (regularise). Now bonding is considered
+c during the extension to a 3D match forcing a valid 2D match on the structures.
+c
 c Revision 1.35  2004/08/25 08:50:40  rich
 c Just some comments about the maths.
 c
@@ -1455,12 +1459,13 @@ C -- PRINT THESE COORDINATES
 1450     CONTINUE
 Cdjwapr2001
       ELSE IF ( IMATRIX .EQ. 1 ) THEN
-            CALL XRGRNM 
+            CALL XRGRNM
       ELSE IF ( IMATRIX .EQ. 2 ) THEN
             CALL XRGCAM
       ELSE
             CALL XRGMAT(LSPARE)
       END IF
+
 C -- CHECK REPLACE/COMPARE FLAG, TO DETERMINE WHETHER LIST 5
 C    SHOULD BE CHANGED.
       GO TO (1500,1750,1500,1500,1740,1741),IFLCMP
@@ -2712,8 +2717,7 @@ C If angles differ by more than 180, take 360 - diff.
      1                            ISTORE(MNC),NINT(STORE(MNC+1)),
      3                            ISTORE(MNA),NINT(STORE(MNA+1)),
      1                            ISTORE(MNB),NINT(STORE(MNB+1)),
-     3                            ISTORE(MND),NINT(STORE(MND+1)),
-     1                            TP
+     3                            ISTORE(MND),NINT(STORE(MND+1)),TN
               CALL XPRVDU(NCVDU,1,0)
             END DO ATOMBLOOP
           END DO ATOMALOOP
@@ -3034,7 +3038,6 @@ C
 
       LMBUF = KSTALL ( MDATVC )
       LNBUF = KSTALL ( MDNEW )
-c      LRBUF = KSTALL ( MDRENM )
       NMATCHED = 0
 
       WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
@@ -3103,7 +3106,6 @@ C Only consider atom if spare matches when LSPARE is one.
 
 C Swap atoms at LNEW(I) and LNEW(J)
 C Swap atoms at LMAP(I) and LMAP(J)
-C Swap atoms at LRENM(I) and LRENM(J)
 
          IF ( J .GE. 0 ) THEN
 
@@ -3118,8 +3120,10 @@ C Swap atoms at LRENM(I) and LRENM(J)
           IOLD5 = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
           INEW5 = L5 + (ISTORE(LMAP+I*MDATVC)) * MD5
 
-          STORE(LRENM+I*MDRENM+4) = STORE(INEW5)
-          STORE(LRENM+I*MDRENM+5) = STORE(INEW5+1)+ZORIG
+          STORE(LRENM+NMATCHED*MDRENM)   = STORE(IOLD5)
+          STORE(LRENM+NMATCHED*MDRENM+1) = STORE(IOLD5+1)
+          STORE(LRENM+NMATCHED*MDRENM+4) = STORE(INEW5)
+          STORE(LRENM+NMATCHED*MDRENM+5) = STORE(INEW5+1)+ZORIG
 
           NMATCHED = NMATCHED + 1
 
@@ -3147,8 +3151,8 @@ C Swap atoms at LRENM(I) and LRENM(J)
 
       DO WHILE ( NMATCHED .LT. NOLD )   ! Keep on looping.
 
-        WRITE(CMON,'(A)')'Matching rest '
-        CALL XPRVDU(NCVDU,1,0)
+c        WRITE(CMON,'(A)')'Matching rest '
+c        CALL XPRVDU(NCVDU,1,0)
 
 
         UNMLOOP: DO I=NMATCHED-1,0,-1     !Loop over old matched atoms.
@@ -3211,17 +3215,17 @@ C There is a stack at MBSTCK of all the bonded contacts around the atom at M5A.
                     DO LL=NMATCHED,NNEW-1  !  Find the bonded atom in the new list.
                      INEWB = L5 + (ISTORE(LMAP+LL*MDATVC)) * MD5
                      IF ( INEWB .EQ. MNBND ) THEN
-                       WRITE(CMON,'(2(A,A4,I5))')'Matched atom: ',
-     1                   ISTORE(IOLDP), NINT(STORE(IOLDP+1)),
-     1                   ' is bonded to: ',ISTORE(IOLDB),
-     1                   NINT(STORE(IOLDB+1))
-                CALL XPRVDU(NCVDU,1,0)
+c                       WRITE(CMON,'(2(A,A4,I5))')'Matched atom: ',
+c     1                   ISTORE(IOLDP), NINT(STORE(IOLDP+1)),
+c     1                   ' is bonded to: ',ISTORE(IOLDB),
+c     1                   NINT(STORE(IOLDB+1))
+c                CALL XPRVDU(NCVDU,1,0)
 
-                       WRITE(CMON,'(2(A,A4,I5))')'and matches: ',
-     1                  ISTORE(INEWP), NINT(STORE(INEWP+1)),
-     1                  ' which is in turn bonded to: ',
-     1                  ISTORE(INEWB), NINT(STORE(INEWB+1))
-                       CALL XPRVDU(NCVDU,1,0)
+c                       WRITE(CMON,'(2(A,A4,I5))')'and matches: ',
+c     1                  ISTORE(INEWP), NINT(STORE(INEWP+1)),
+c     1                  ' which is in turn bonded to: ',
+c     1                  ISTORE(INEWB), NINT(STORE(INEWB+1))
+c                       CALL XPRVDU(NCVDU,1,0)
                        IF ( NINT( STORE(INEWB+13) ).EQ.
      1                      NINT( STORE(IOLDB+13) )    ) THEN
                          INDNEW=LNEW+MDNEW*LL   !Address of XYZnew
@@ -3232,7 +3236,8 @@ C There is a stack at MBSTCK of all the bonded contacts around the atom at M5A.
                           DISTSQ=DISTSQ+DELTSQ
                          END DO
 
-                         WRITE(CMON,'(A,2(A4,I9),F15.8)')'Match: ',
+                         WRITE(CMON,'(A,2(A4,I6,1x),F8.3)')
+     1                    'Possible match: ',
      1                   ISTORE(INEWB), NINT(STORE(INEWB+1)),
      1                   ISTORE(IOLDB), NINT(STORE(IOLDB+1)), DISTSQ
                          CALL XPRVDU(NCVDU,1,0)
@@ -3241,10 +3246,10 @@ C There is a stack at MBSTCK of all the bonded contacts around the atom at M5A.
                            DISMIN=DISTSQ
                            INDDIS=LL
                          END IF
-                       ELSE
-                         WRITE(CMON,'(A,A4,I5)')
-     1                    'which has different SPARE.'
-                         CALL XPRVDU(NCVDU,1,0)
+c                       ELSE
+c                         WRITE(CMON,'(A,A4,I5)')
+c     1                    'which has different SPARE.'
+c                         CALL XPRVDU(NCVDU,1,0)
                        END IF
                      END IF
                     END DO
@@ -3287,17 +3292,29 @@ C Rearrange the 'old' vectors:
                     IOLD5 = L5 + (ISTORE(LONTO+NMATCHED*MDATVC)) * MD5
                     INEW5 = L5 + (ISTORE(LMAP+NMATCHED*MDATVC)) * MD5
 
+                    STORE(LRENM+NMATCHED*MDRENM)   = STORE(IOLD5)
+                    STORE(LRENM+NMATCHED*MDRENM+1) = STORE(IOLD5+1)
                     STORE(LRENM+NMATCHED*MDRENM+4)=STORE(INEW5)
                     STORE(LRENM+NMATCHED*MDRENM+5)=STORE(INEW5+1)+ZORIG
 
-                    NMATCHED = NMATCHED + 1
 
                     WRITE(CMON,
-     1              '( A4,I4,I10,3X,A4,I4,I10,3X,F7.4)')
+     1              '(A,2(A4,I4,I10,3X),F7.4)'), 'Matched: ',
      1              STORE(IOLD5),NINT(STORE(IOLD5+1)),
      1              NINT(STORE(IOLD5+13)), STORE(INEW5),
      1              NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13)),DISMIN
                     CALL XPRVDU(NCVDU,1,0)
+
+
+c                    WRITE(CMON, '(2(A,A4,I4,3X))'),
+c     1               'Atom ', STORE(LRENM+NMATCHED*MDRENM),
+c     1               NINT(STORE(LRENM+NMATCHED*MDRENM+1)),
+c     1               ' will become ', STORE(LRENM+NMATCHED*MDRENM+4),
+c     1               NINT(STORE(LRENM+NMATCHED*MDRENM+5))
+c                    CALL XPRVDU(NCVDU,1,0)
+
+                    NMATCHED = NMATCHED + 1
+
 
                     EXIT UNMLOOP
 
@@ -4522,8 +4539,6 @@ C           3  SERIAL of new (MAP) atom.          vector.
 C           4  L5 address of OLD, overwritten later if using for RENAME
 C           5  L5 address of NEW, overwritten later if using for RENAME
 
-      WRITE ( CMON,'(A,I5,A)') 'Initially matching ', IUNIQ,' atoms.'
-      CALL XPRVDU(NCVDU, 1,0)
 c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG1:',(STORE(L1O1+I),I=0,8)
 c      CALL XPRVDU(NCVDU,3,0)
 
@@ -4564,6 +4579,8 @@ c      CALL XPRVDU(NCVDU,3,0)
       END DO
 
 
+      WRITE ( CMON,'(A,I5,A)') 'Initially matching ', IUNIQ,' atoms.'
+      CALL XPRVDU(NCVDU, 1,0)
       IMAT = -1
       CALL XRGCLC(IMAT,0)
 
@@ -4572,8 +4589,6 @@ C     Restore NFL and LFL
       LFL = IRLFL
 
 
-      WRITE ( CMON,'(A)') 'Matching the rest.'
-      CALL XPRVDU(NCVDU, 1,0)
 
 c      WRITE(CMON,'(A/3(3F10.3/))')'L1O1 XRG2:',(STORE(L1O1+I),I=0,8)
 c      CALL XPRVDU(NCVDU,4,0)
@@ -4639,6 +4654,10 @@ c      CALL XPRVDU(NCVDU,1,0)
 
 C Improve the match:
       IF ( ZORIG .NE. 0 ) IFLCMP = 5
+
+      WRITE ( CMON,'(A)') 'Matching the rest.'
+      CALL XPRVDU(NCVDU, 1,0)
+
       IMAT = 3
       CALL XRGCLC(IMAT,1)
 
@@ -4761,6 +4780,7 @@ C Use the better matrix to do a final mapping:
         CALL XRGCLC(IMAT,1)
 
       END IF
+
 
 C     Restore NFL and LFL
       NFL = IRNFL
