@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 14:32:25  richard
+//   wx support. CxDestroyWindow function.
+//
 //   Revision 1.1  2001/02/26 12:04:49  richard
 //   New resizebar class. A resize control has two panes and the bar between them
 //   can be dragged to change their relative sizes. If one of the panes is of fixed
@@ -61,6 +64,9 @@ CxResizeBar::CxResizeBar( CrResizeBar * container )
     m_BothNonSize = false;
     m_ButtonDrawn = false;
     m_Collapsed = false;
+#ifdef __BOTHWX__
+    m_MouseCaught = false;
+#endif
 }
 
 CxResizeBar::~CxResizeBar()
@@ -90,6 +96,7 @@ BEGIN_MESSAGE_MAP(CxResizeBar, CWnd)
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
     ON_WM_PAINT()
+    ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -99,9 +106,11 @@ BEGIN_EVENT_TABLE(CxResizeBar, wxWindow)
       EVT_LEFT_UP(CxResizeBar::OnLButtonUp)
       EVT_MOTION(CxResizeBar::OnMouseMove)
       EVT_PAINT( CxResizeBar::OnPaint )
+      EVT_CHAR( CxResizeBar::OnChar )
 END_EVENT_TABLE()
 #endif
 
+CXONCHAR(CxResizeBar)
 
 #ifdef __CR_WIN__
 void CxResizeBar::OnMouseMove( UINT nFlags, CPoint wpoint )
@@ -256,7 +265,7 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
       SetCapture();
 #endif
 #ifdef __BOTHWX__
-      CaptureMouse();
+      if (!m_MouseCaught){CaptureMouse(); m_MouseCaught = true;}
 #endif
 
    }
@@ -318,7 +327,7 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
       ReleaseCapture();
 #endif
 #ifdef __BOTHWX__
-      ReleaseMouse();
+      if(m_MouseCaught){ReleaseMouse();m_MouseCaught=false;}
 #endif
 
 

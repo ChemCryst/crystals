@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.h
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 14:32:25  richard
+//   wx support. CxDestroyWindow function.
+//
 //   Revision 1.1  2001/02/26 12:04:49  richard
 //   New resizebar class. A resize control has two panes and the bar between them
 //   can be dragged to change their relative sizes. If one of the panes is of fixed
@@ -81,6 +84,7 @@ protected:
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove( UINT nFlags, CPoint wpoint );
+    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     DECLARE_MESSAGE_MAP()
 #endif
 
@@ -91,7 +95,11 @@ public:
     void OnLButtonUp(wxMouseEvent & evt);
     void OnMouseMove(wxMouseEvent & evt);
     void OnPaint(wxPaintEvent & event );
+    void OnChar (wxKeyEvent & event );
     DECLARE_EVENT_TABLE()
+
+private:
+    bool m_MouseCaught;
 
 #endif
 
