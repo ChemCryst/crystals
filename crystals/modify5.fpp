@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/12/16 18:00:27  rich
+C New Perturb command. Allows per parameter shift multipliers, and a general
+C multiplier to apply to all shifts. The shifts respect weights setup in
+C List 22 so that atoms do not move from special positions, and competing
+C occupancies continue to add up to the same number. By default it creates
+C new list 5s, but can be forced not to by directing: "WRITE OVER=YES".
+C Shifts for XYZ are given in Angstrom, for OCC in natural units, for overall and
+C temperature factors as a fraction of the existing value.
+C
 C Revision 1.32  2002/10/14 12:33:24  rich
 C Support for DVF command line version.
 C
@@ -224,7 +233,7 @@ C----- THE INVERSE DIAGONAL MATRIX FOR TRANSFORMING UANISO
 C
       DIMENSION ICOND(6)
 C----- KEYS FOR LOADED LISTS ONLY 3 AND 29 FOR NOW
-      DIMENSION KLST(4)
+      DIMENSION KLST(5)
 C
 \STORE
 \XUNITS
@@ -396,6 +405,7 @@ C of creating huge invalid L41s.
       KLST(2)=-1
       KLST(3)=-1
       KLST(4)=-1
+      KLST(5)=-1
       IF (KEXIST(3).GT.0) THEN
          IF (KHUNTR(3,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL03
          KLST(1)=1
@@ -408,6 +418,7 @@ C of creating huge invalid L41s.
          IF (KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
          KLST(3)=41
          KLST(4)=41
+         KLST(5)=41
       END IF
       IF (KEXIST(40).GT.0) THEN
          IF (KHUNTR(40,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL40
@@ -2149,7 +2160,7 @@ C Put number of connections into SPARE
          END DO
          ICHNG=ICHNG+1
          CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
-       ELSE IF ( I .EQ. 4 ) THEN ! RELAXATION ID
+      ELSE IF ( I .EQ. 4 ) THEN ! RELAXATION ID
 C Force a bondcalc, but don't allow loading of L5
          CALL XBCALC(2)
 C Put electron count into SPARE
@@ -2195,6 +2206,131 @@ C If unique number is unchanged or worse(?), then break.
          END DO
 C- RETURN WORKSPACE
          CALL XSTRLL (LTEMP)
+         ICHNG=ICHNG+1
+         CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
+      ELSE IF ( I .EQ. 5 ) THEN ! FRAGMENT
+C Force a bondcalc, but don't allow loading of L5
+         CALL XBCALC(2)
+C Put fragment ID into FRAGMENT slot.
+         IF (KLST(1).LE.0)   GO TO 7100 ! Reqd list failed to load.
+         IF (KMDINS(1).LT.0) GO TO 7100
+C Ensure all FRAGIDs are zero or positive and discover whether
+C all FRAGIDs are zero:
+         IFRGMX = 0
+         DO I = 0,N5-1
+           ISTORE(L5+16+I*MD5) = ABS ( ISTORE(L5+16+I*MD5) )
+           IFRGMX = MAX ( IFRGMX, ISTORE(L5+16+I*MD5) )
+c           write(cmon,'(a,i4)')'FRAGID = ', ISTORE(L5+16+I*MD5)
+c           call xprvdu(ncvdu,1,0)
+         END DO
+
+c         write(cmon,'(a,i4)')'IFRGMX 1 = ',IFRGMX
+c         call xprvdu(ncvdu,1,0)
+
+         IF ( IFRGMX .GE. 1 ) THEN
+C Fragments already have some FRAGID's: Ensure no two fragments contain
+C the same ID. How? Well:
+C  1) Take the first non-negative, non-zero ID, set it negative.
+C  2) Propagate negative numbers through the bonding network, until
+C     no more changes.
+C  3) Search remainder for a matching +ve FRAGID. If found, assign a free ID.
+C  4) Go back to 1, until all frags are zero or negative.
+
+c           write(cmon,'(a)')'Some non-zero frag ids.'
+c           call xprvdu(ncvdu,1,0)
+
+           DO I = 0, N5-1   
+             IF (ISTORE(L5+16+I*MD5).GT.0) THEN     ! Found next +ve FRAGID
+               IFRGID = ISTORE(L5+16+I*MD5)
+               ISTORE(L5+16+I*MD5) = - IFRGID
+               NCHANG = 1
+               DO WHILE ( NCHANG .GT. 0 )
+                 NCHANG = 0
+                 DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+                   I51 = L5 + ISTORE(M41B) * MD5
+                   I52 = L5 + ISTORE(M41B+6) * MD5
+                   IF (ISTORE(I51+16) .LT. 0) THEN
+                     IF ( ISTORE(I51+16) .NE. ISTORE(I52+16) ) NCHANG=1
+                     IF ( ISTORE(I52+16) .LT. 0) THEN
+                       NEWVAL = MAX(ISTORE(I51+16),ISTORE(I52+16))
+                       ISTORE(I51+16)=NEWVAL
+                       ISTORE(I52+16)=NEWVAL
+                     ELSE
+                       ISTORE(I52+16)=ISTORE(I51+16)
+                     END IF
+                   ELSE IF (ISTORE(I52+16) .LT. 0) THEN
+                     IF ( ISTORE(I51+16) .NE. ISTORE(I52+16) ) NCHANG=1
+                     ISTORE(I51+16)=ISTORE(I52+16)
+                   END IF
+                 END DO
+               END DO   ! FragIDs propagated everywhere.
+
+               DO J = I+1, N5-1  ! Check for matching values, and reassign.
+                 IF (ISTORE(L5+16+J*MD5) .EQ. IFRGID) THEN
+                   IFRGMX = IFRGMX + 1
+                   WRITE(CMON,'(2(A,I4))')
+     1 'Duplicate fragment ID found: ',IFRGID,' 2nd set to: ',IFRGMX
+                   CALL XPRVDU(NCVDU,1,0)
+                   ISTORE(L5+16+J*MD5) = IFRGMX
+                 END IF
+               END DO    
+             END IF
+           END DO
+           IFRGMX = 0
+c           write(cmon,'(a)')'End of init check: '
+c           call xprvdu(ncvdu,1,0)
+           DO I = 0,N5-1                      ! Make all FRAGIDs non negative.
+             ISTORE(L5+16+I*MD5) = ABS ( ISTORE(L5+16+I*MD5) )
+             IFRGMX = MAX ( IFRGMX, ISTORE(L5+16+I*MD5) )
+c             write(cmon,'(a,i4)')'FRAGID = ', ISTORE(L5+16+I*MD5)
+c             call xprvdu(ncvdu,1,0)
+           END DO
+         END IF
+
+c         write(cmon,'(a,i4)')'IFRGMX 2 = ',IFRGMX
+c         call xprvdu(ncvdu,1,0)
+
+C Fragments may already have some FRAGID's, but they will be already
+C numbered and propagated.
+C  1) Take the first zero ID, set it to next free ID.
+C  2) Propagate numbers through the bonding network, until no more changes.
+C  4) Go back to 1, until all frags are non zero.
+
+         DO I = 0, N5-1   
+           IF (ISTORE(L5+16+I*MD5).EQ.0) THEN     ! Found next zero FRAGID
+             IFRGMX = IFRGMX + 1
+             ISTORE(L5+16+I*MD5) = IFRGMX
+
+c             write(cmon,'(a,i4)')'Found 0 FRAGID: ', I
+c             call xprvdu(ncvdu,1,0)
+c             write(cmon,'(a,i4)')'Changed to: ', IFRGMX
+c             call xprvdu(ncvdu,1,0)
+
+             NCHANG = 1
+             DO WHILE ( NCHANG .GT. 0 )
+               NCHANG = 0
+               DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+                 I51 = L5 + ISTORE(M41B) * MD5
+                 I52 = L5 + ISTORE(M41B+6) * MD5
+                 IF ( ISTORE(I51+16) .NE. ISTORE(I52+16) ) THEN
+                   NCHANG=1
+                   NEWVAL = MIN(ISTORE(I51+16),ISTORE(I52+16))
+                   IF(NEWVAL.LE.0)
+     1                 NEWVAL = MAX(ISTORE(I51+16),ISTORE(I52+16))
+                   ISTORE(I51+16)=NEWVAL
+                   ISTORE(I52+16)=NEWVAL
+                 END IF
+               END DO
+             END DO   ! FragIDs propagated everywhere.
+           END IF
+         END DO
+
+C Might a script want to know IFRGMX?
+C It is useful to know that the current maximum variable length is 12 chars.
+         ISTAT = KSCTRN ( 1 , 'EDIT:FRAGMAX' , IFRGMX, 1 )
+
+         
+
          ICHNG=ICHNG+1
          CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
       END IF
