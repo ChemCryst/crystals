@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/03/06 09:47:41  ckp2
+C RIC: Changed operatin if the GETENV script function. Now it passes its argument
+C to MTRNLG to expand any environment variables.
+C
 C Revision 1.33  2002/02/27 19:40:10  ckp2
 C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
 C this extra length. In general the program continues to ignore everything beyond
@@ -5911,7 +5915,7 @@ C
      1    WRITE ( NCAWU , 1105 ) CWORK(1:LENWRK)
           WRITE ( CMON, 1105 ) CWORK(1:LENWRK)
           CALL XPRVDU(NCVDU, 1,0)
-1105      FORMAT ( 1X , A )
+1105      FORMAT ( A )
         ELSE
           WRITE ( NCAWU , 1115 )
           WRITE ( CMON, 1115 )
