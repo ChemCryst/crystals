@@ -3,7 +3,7 @@
  *  Space Groups
  *
  *  Created by Stefan Pantos on Wed Oct 30 2002.
- *  Copyright (c) 2002 BeaverSoft. All rights reserved.
+ *  Copyright (c) 2002 Unknown Company. All rights reserved.
  *
  */
  
@@ -41,6 +41,7 @@
 #include <stdio.h>
 #include "vector"
 #include "Matrices.h"
+#include "UnitCell.h"
 
 using namespace std;
 
@@ -77,18 +78,13 @@ struct lsreflection
   }
 };
 
-struct ltstr
-{
-  bool operator()(const char* s1, const char* s2) const
-  {
-    return strcmp(s1, s2) < 0;
-  }
-};
-
 std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection);
 
 class HKLData:public vector<Reflection*>
 {
+	protected:
+		Matrix<float> iUnitCellTensor; //The unit cell for the data
+		Matrix<short> iTransf;
     public:
         /**********************************************/
         /*** HKLData				***/
@@ -98,10 +94,11 @@ class HKLData:public vector<Reflection*>
         /**********************************************/
 		HKLData();
 		HKLData(HKLData& pHKLs);
-        HKLData(char* pPath);	
-        ~HKLData();
+        HKLData(char* pPath, Matrix<float>& pUnitCellTensor);	
+        virtual ~HKLData();
         bool find(const Reflection* pReflection);
-		//Reflection* operator[](size_type __n);
+		Matrix<float>& unitCellTensor();
+		Matrix<short>& transformation();
 };
 
 static const float kMoWL = 1.5418f; //Angstroms
