@@ -12,7 +12,7 @@
 ^^WI     ITEM SCQUAD '&Full size' '^^CO SET MODEL01 RADSCALE=1000'
 ^^WI    ENDMENU
 ^^WI    MENU MOD '&Model'
-^^WI     ITEM _REFR '&Update model' '#SUM L 2_N#SUM L 5_NEND'
+^^WI     ITEM _REFR '&Update model' '#BONDC FORCE_N#SUM L 2_N#SUM L 5_NEND'
 ^^WI                 DISABLEIF='IN' ENABLEIF='L1 L2 L5'
 ^^WI     SPLIT
 ^^WI     ITEM _REFO 'Auto update OFF' '#SCRIPT updtoff'
