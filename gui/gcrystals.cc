@@ -12,7 +12,8 @@
 
 #include "crystalsinterface.h"
 #include "crystals.h"
-#include "crapp.h"
+#include "ccstring.h"
+#include "ccrect.h"
 #include "cccontroller.h"
 
 #ifdef __CR_WIN__
@@ -31,7 +32,7 @@ BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
     // Standard file based document commands
 //      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 //      ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-//      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
+      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -129,7 +130,7 @@ BOOL CCrystalsApp::InitInstance()
 
       LoadStandardCursor(IDC_APPSTARTING);
 
-      theCrApp = new CrApp(directory,dscfile);
+      theControl = new CcController(directory,dscfile);
 
       LoadStandardCursor(IDC_ARROW);
 
@@ -140,50 +141,27 @@ BOOL CCrystalsApp::InitInstance()
 
 BOOL CCrystalsApp::OnIdle(LONG lCount)
 {
-    // TODO: Add your specialized code here and/or call the base class
-    BOOL sysret = CWinApp::OnIdle(lCount);
-    bool appret = false;
 
-    if (lCount > 10)
-    {
+    if ( CWinApp::OnIdle(lCount) ) return TRUE; // Allow system processing first.
 
-        appret = DoCommandTransferStuff();
+    if ( DoCommandTransferStuff() ) return TRUE;
 
-    }
+    return FALSE;
 
-    //Only stop idle processing if:
-    // 1. lCount is high.
-    // 2. appret is false (no more interface commands)
-    // 3. sysret is false (no more idle processing needed by framework).
-    if((lCount > 1000) && (!appret) && (!sysret))
-        return false;
-    else
-        return true;
 }
 
-/*
- *
- *void CCrystalsApp::OnStuffToProcess()
- *{
- *      char theLine[255];
- *      while (theCrApp->mController->GetInterfaceCommand(theLine))
- *      {
- *            int theLength;
- *            if(theLength = strlen( theLine )) //Assignment within conditional (OK)
- *            {
- *                  theLine[theLength+1]='\0';
- *                  theCrApp->mController->Tokenize(theLine);
- *            }
- *      }
- *
- *}
- *
- */
+
+LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM lp)
+{
+  DoCommandTransferStuff();
+  return 0;
+}
+
 
 int CCrystalsApp::ExitInstance()
 {
 
-    delete theCrApp;
+    delete theControl;
     delete (CFrameWnd*)m_pMainWnd;
 
     return CWinApp::ExitInstance();
@@ -209,9 +187,9 @@ END_EVENT_TABLE()
 bool CCrystalsApp::OnInit()
 {
 
-      theCrApp = new CrApp("","crfilev2.dsc");
+      theControl = new CcController("","crfilev2.dsc");
 
-	  kickTimer = new wxTimer(this, 5241);
+      kickTimer = new wxTimer(this, 5241);
       kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
       return true;
 }
@@ -223,11 +201,11 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
     wxApp::OnIdle(event);
     bool sysret = event.MoreRequested();
 
-    
+
 //    bool appret = DoCommandTransferStuff();
 
     for ( int i=0; i<25; i++ )
-    {  
+    {
        if ( ! appret = DoCommandTransferStuff() ) break;
     }
 
@@ -249,7 +227,7 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
 int CCrystalsApp::OnExit()
 {
 
-    delete theCrApp;
+    delete theControl;
     return wxApp::OnExit();
 }
 
@@ -257,7 +235,7 @@ int CCrystalsApp::OnExit()
 void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 {
         for ( int i=0; i<25; i++ )
-        {  
+        {
            if ( ! DoCommandTransferStuff() ) break;
         }
 }
@@ -267,11 +245,11 @@ void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 
 bool CCrystalsApp::DoCommandTransferStuff()
 {
-    char theLine[255];
-    bool appret = false;
+  char theLine[255];
+  bool appret = false;
 
-    if(theCrApp->mController->GetInterfaceCommand(theLine))
-    {
+  if(theControl->GetInterfaceCommand(theLine))
+  {
         appret = true;
 
         int theLength = 0;
@@ -279,10 +257,9 @@ bool CCrystalsApp::DoCommandTransferStuff()
         if(theLength = strlen( theLine )) //Assignment within conditional (OK)
         {
             theLine[theLength+1]='\0';
-            theCrApp->mController->Tokenize(theLine);
+            theControl->Tokenize(theLine);
         }
-    }
+  }
 
-    return appret;
+  return appret;
 }
-
