@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.6  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -1090,11 +1093,11 @@ C----- INSERTION
       MSORT = LSORT
       DO 200 I = 1, NSORT
       IF (ITYPE .LT. 0) THEN
-        IF (STORE(ITEM+IPOS) .LT. STORE(MSORT+IPOS)) IHIT = 1
+        IF (STORE(ITEM+IPOS) .LE. STORE(MSORT+IPOS)) IHIT = 1
       ELSE IF (ITYPE .GT. 0) THEN
-        IF (STORE(ITEM+IPOS) .GT. STORE(MSORT+IPOS)) IHIT = 1
+        IF (STORE(ITEM+IPOS) .GE. STORE(MSORT+IPOS)) IHIT = 1
       ELSE
-        IF (ABS(STORE(ITEM+IPOS)) .GT. ABS(STORE(MSORT+IPOS))) IHIT = 1
+        IF (ABS(STORE(ITEM+IPOS)) .GE. ABS(STORE(MSORT+IPOS))) IHIT = 1
       ENDIF
         IF (IHIT .NE. 0) THEN
           IHIT = 0
