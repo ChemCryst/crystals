@@ -1508,3 +1508,351 @@ CODE FOR MACBLK
 &PPC      END
 &PPCC
 &PPCC
+
+      SUBROUTINE CRESET
+
+\XSSVAL
+\XCARDS
+\UFILE
+\XUNITS
+\XDISCS
+\XTAPES
+\XTAPED
+\XLST50
+\XDAVAL
+\XCBVAL
+\XUNTNM
+\XLEXIC
+\XLISTI
+\XFILE
+\XLISTS
+\XCNTRL
+\PSCSTI
+\XSCSTK
+\XFILEC
+
+C --- XSSVAL ---
+      ISSLSM = 3
+      ISSSPD = 2
+      ISSTIM = 1
+      ISSL11 = 1 
+      ISSLNM = 5
+      ISSINI = 1
+      ISSSTA = 1
+#H-P      ISSBAN = 0 
+&H-P      ISSBAN = 1
+      ISSSFI = 1
+      ISSTML = 0
+      ISSFLC = 2
+      ISSMSG = 1
+      ISSPRT = -1
+      ISSEXP = 1
+      ISSUEQ = 1 
+
+C --- XCARDS ---
+      NC=-1
+      ND=-1
+      LASTCH=80
+      NI=0
+      NILAST=-2
+      NS=1
+      MON=0
+      ICAT=1
+      IEOF=0
+      IHFLAG=-1
+      NUSRQ=63
+      NREC=0
+      IPOSRQ=0
+      ITYPFL=1
+      INSTR=0
+      IDIRFL=-1
+      IPARAM=-1
+      IPARAD=-1
+      NWCHAR=4
+      IMNSRQ=0
+
+C --- UFILE ---
+      IFLIND = 2
+      DO I=1,20
+        IFLCHR(I)=0
+        IRDLOG(I)=1
+        IRDCPY(I)=0
+        IRDCAT(I)=0
+        IRDCMS(I)=0
+        IRDINC(I)=1
+        IRDSCR(I)=0
+        IRDSRQ(I)=0
+        IRDREC(I)=0
+        IRDFND(I)=0
+        IRDHGH(I)=0
+      END DO
+      IFLCHR(1) = 1 
+      IFLCHR(2) = 2
+      IRDLOG(2) = 0
+      IRDCAT(1) = 1
+      IRDCMS(1) = 1
+
+      IRDPAG = 20
+      IRDLIN = 0
+      NCLU = 8
+
+      NFLUSD = 49
+
+
+
+      IFLUNI(1)  =  1  
+      IFLUNI(2)  =  2
+      IFLUNI(3)  =  5  
+&&&DOSGIDDVF      IFLUNI(4)  =  6
+&VAX      IFLUNI(4)  =  9
+      IFLUNI(5) = 7
+      IFLUNI(6) = 8
+      IFLUNI(7) = 6
+      IFLUNI(8) = 11
+      IFLUNI(9) = 12
+      IFLUNI(10)= 14
+      IFLUNI(11)= 15
+      IFLUNI(12)= 20
+      IFLUNI(13)= 21
+      IFLUNI(14)= 22
+      IFLUNI(15)= 23
+      IFLUNI(16)= 52
+      IFLUNI(17)= 53
+      IFLUNI(18)= 48
+      IFLUNI(19)= 49
+      IFLUNI(20)= 50
+      IFLUNI(21)= 51
+      IFLUNI(22)= 63
+      IFLUNI(23)= 71
+      IFLUNI(24)= 72
+      IFLUNI(25)= 88
+      IFLUNI(26)= 89
+      IFLUNI(27)=  4
+      IFLUNI(28)= 24
+      IFLUNI(29)= 25
+      IFLUNI(30)= 26
+      IFLUNI(31)= 27
+      IFLUNI(32)= 28
+      IFLUNI(33)=  6
+      IFLUNI(34)=  6             
+      IFLUNI(35)= 29
+      IFLUNI(36)= 30
+      IFLUNI(37)= 31
+      IFLUNI(38)= 32
+      IFLUNI(39)= 33
+      IFLUNI(40)= 34
+      IFLUNI(41)= 35
+      IFLUNI(42)= 36
+      IFLUNI(43)= 37
+      IFLUNI(44)= 38             
+      IFLUNI(45)= 40
+      IFLUNI(46)= 41
+      IFLUNI(47)= 42
+      IFLUNI(48)= 43
+      IFLUNI(49)= 44
+
+      DO I=1,49
+            IFLOPN(I)=0
+            IFLACC(I)=1
+            IFLFRM(I)=1
+      ENDDO
+
+      IFLACC(1)=2
+      IFLACC(9)=2
+      IFLACC(11)=2
+
+      IFLFRM(1)=2
+      IFLFRM(9)=2
+      IFLFRM(11)=2
+      IFLFRM(16)=2
+      IFLFRM(17)=2
+      IFLFRM(18)=2
+      IFLFRM(19)=2
+      IFLFRM(20)=2
+      IFLFRM(21)=2
+
+
+C --- XUNITS ---
+      NCRU =20
+      NCRRU =1
+&&&DOSDVFGID      NCWU=6
+&VAX      NCWU=9
+      NCPU=7
+      IPAGE(1)=10
+      IPAGE(2)=8
+      IPAGE(3)=120
+      IPAGE(4)=88
+      IPAGE(5)=20
+      NCARU=2
+      NCAWU=3
+&&&DOSDVFGID      IQUN=2
+&&&DOSDVFGID      JQUN=2
+&VAX      IQUN=2
+&VAX      JQUN=0
+      IERFLG = 0
+      IUSFLG = 0 
+      NCSU = 11
+      NCEXTR = 88
+      NCQUE = 89
+      NCCBU = 14
+      NCFPU1 = 71
+      NCFPU2 = 72
+      NUCOM = 4
+      NCVDU = 6
+      NCEROR = 6
+      NCADU = 40
+      NCMU = 41
+      NCCHW = 42
+      NCPDU = 43
+      NCDBU = 44
+
+
+C --- XDISCS ---
+
+      NCDFU =1
+      NCNDU =12
+      NCIFU =15
+      NCLDU =15
+
+C --- XTAPES ---
+
+      MT1 = 48
+      MT2 = 49
+      MT3 = 50
+      MTE = 51
+      MTA = 52
+      MTB = 53
+
+C --- XTAPED ---
+
+      NMTR =0
+
+C --- XLST50 ---
+
+      LCOM=13
+      MCOM=29
+      MDCOM=4
+      NCOM=5
+      MULT50=10000
+      IDIM50=32
+      LSTOFF=3
+
+C --- XDAVAL ---
+
+      IDAINI = 0
+      IDATOT = -1
+      IDAMAX = 0
+      IDAMIN = 5
+      IDAAUT = 1
+      IDAQUA = 5
+      IDATRY = 1
+
+C --- XCBVAL ---
+
+      ICBDIM = 9
+      ICBLDD = -1
+      ICBDAD = 0 
+      ICBNFL = 1
+      ICBMRN = 2
+      ICBFIN = 3
+      ICBDEQ = 4
+      ICBCIN = 5
+      ICBMAX = 6
+      ICBTTL = 7
+      ICBAUT = 8
+      ICBLNF = 9
+
+C --- XUNTNM ---
+
+      IUNITN(1)= 0
+      IUNITN(2)= 1
+      IUNITN(3)= 9
+      IUNITN(4)= 12
+      IUNITN(5)= 15
+
+C --- XLISTI ---
+
+      MD0=8
+      N0=0
+      LN=0
+      LSN=0
+      IREC=0
+      LEF=0
+      LSTLEF=0
+      MAPS=0
+
+C --- XLEXIC ---
+
+      LK=0
+      LK1 = 0
+      LK2 = 0
+      NWCARD = 0
+      LARG = 0
+      MARG = 0
+      MDARG = 0
+      NARG = 0
+      LCRD = 0
+      MCRD = 0
+      MDCRD = 0
+      NCRD = 0
+      MA = 0
+      MB = 0
+      MC = 0
+      MD = 0
+      ME = 0
+      MF = 0
+      MG = 0
+      MH = 0
+      MI = 0
+      MJ = 0
+      MK = 0
+      ML = 0
+      MM = 0
+      MN = 0
+      MO = 0
+      MP = 0
+      MQ = 0
+      MR = 0
+      MS = 0
+      MT = 0
+      MU = 0
+      MV = 0
+      MW = 0
+      MX = 0
+      MY = 0
+      Z  = 0
+
+C --- XFILE  ---
+C --- XLISTS ---
+
+      DO I=1,424
+         INDEXF(I)=0
+         LIST(I)=0
+      ENDDO
+
+C --- XCNTRL ---
+
+      ISTAT2 = 0
+
+C --- XSCSTK ---
+C res PSCSTI
+
+      DO I = 1,NFILVL
+            ILEVEL(I)=0
+      ENDDO
+      DO I = 1,LSTACK
+       DO J = 1,NSTACK
+            ISTACK(I,J)=0
+       ENDDO
+      ENDDO
+
+C --- XFILEC ---
+      IFILE=1000000
+      ILIST=1100000
+      IEND=1111111
+      LNFLE=416
+      LNLST=416
+      IACCL=-1
+
+      RETURN
+      END
