@@ -530,10 +530,11 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 
 }
 
-void CxModel::OnMouseLeave()
+LRESULT CxModel::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
 	DeletePopup();
 	m_bMouseLeaveInitialised = false;
+        return TRUE;
 }
 
 

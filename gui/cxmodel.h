@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.23  2001/11/26 16:46:15  ckpgroup
+//  SH: Added Mouse_Leave messaging to remove labels when mouse leaves the window.
+//
 //  Revision 1.22  2001/09/07 14:39:06  ckp2
 //
 //  New modelwindow function lets the user choose a background bitmap to
@@ -232,7 +235,7 @@ class CxModel : public BASEMODEL
     afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
     afx_msg BOOL OnEraseBkgnd( CDC* pDC );
     afx_msg void OnMenuSelected (int nID);
-	afx_msg void OnMouseLeave();
+    afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/11/26 16:47:36  ckpgroup
+//   SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
+//   Remove labels when mouse leaves window.
+//
 //   Revision 1.3  2001/11/26 14:02:50  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -114,7 +118,8 @@ class CxPlot : public BASEPlot
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
-		afx_msg void OnMouseLeave();
+//                afx_msg void OnMouseLeave();
+        afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/11/26 16:47:36  ckpgroup
+//   SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
+//   Remove labels when mouse leaves window.
+//
 //   Revision 1.5  2001/11/26 14:02:50  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -733,10 +737,11 @@ void CxPlot::Focus()
     SetFocus();
 }
 
-void CxPlot::OnMouseLeave()
+LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
 	DeletePopup();
 	mMouseCaptured = false;
+        return TRUE;
 }
 
 // the mouse-movement code
