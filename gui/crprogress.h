@@ -33,4 +33,13 @@ class	CrProgress : public CrGUIElement
 		// attributes
 		
 };
+
+#define kSComplete	"COMPLETE"
+
+enum
+{
+ kTComplete = 1500
+};
+
+
 #endif
