@@ -1,4 +1,5 @@
 %SCRIPT AUTO12
+%  VARIABLE LOGICAL HINCELL
 %  VARIABLE LOGICAL SCRIPTEXT
 %  VARIABLE LOGICAL EXTINCT PURGE
 %  VARIABLE LOGICAL EXEREFN
@@ -41,6 +42,15 @@
 %% Make sure we have a valid LIST 12 of some sort
 %% and find the last non- hydrogen atom
 %  COPY '#SCRIPT CHECK12'
+%%
+%% Make sure that H is in list 29.
+%%
+%  COPY '#SCRIPT CHECK29'
+%  IF ( HINCELL .EQ. FALSE ) THEN
+%% Set this to true, so that the logic thinks we've already found H's.
+%    EVALUATE HPOS = TRUE
+%  END IF
+%%
 %% Try to guess what stage we are at
 %% ISTAGE 1 - X'S
 %% ISTAGE 2 - X'S, U[ISO]
@@ -74,7 +84,13 @@
 %    CLEAR
 %    ON ERROR TERMINATE
 %%   
+%%
+^^?? EXISTS XAUTO12
+%    VERIFY TRUE FALSE
+%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF VALUE .EQ. 2 THEN
 ^^WI WINDOW XAUTO12 'Supervisor' SIZE
+^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID OUTER NROWS=3 NCOLS=7
 ^^WI {
 ^^WI   @ 2,2 MULTIEDIT AUTO12TEXT '' NROWS=10 NCOLS=80
@@ -93,11 +109,15 @@
 ^^WI     'Add hydrogen'
 ^^WI     'Check extinction'
 ^^WI     'Optimise weights'
+^^WI     'Validate'
 ^^WI     'Publish'
 ^^WI     NULL
 ^^WI }
 ^^WI SHOW
 ^^CR
+%    ELSE
+^^CO    SET AUTO12TEXT EMPTY
+%    END IF
 ^^WI SENDTEXTTO AUTO12TEXT
 ^^CR
 %    CLEAR
@@ -176,6 +196,8 @@
 %    STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA
 %    OUTPUT
 ^^CR
+^^WI SENDTEXTTO _MAINTEXTOUTPUT
+^^CR
 %    CLEAR
 %    EVALUATE EXEREFN = FALSE
 %    VERIFY BOK BXX
@@ -184,8 +206,8 @@
 %      BLOCK  %BOK%
 ^^?? AUTOLIST SELECTED
 %         GET SILENT NOSTORE INTEGER 'Choice number'
-^^WI DISPOSE XAUTO12
-^^CR
+%%^^WI DISPOSE XAUTO12
+%%^^CR
 %         CASE VALUE
 %           BLOCK % KSVIEW 1
 %             COPY '#SCRIPT PLOT'
@@ -250,7 +272,13 @@ Remember - the data may not be good enough to reveal all H atoms
 %             COPY '#SCRIPT WEIGHTS'
 %             EVALUATE OPTIM = TRUE
 %           END BLOCK
-%           BLOCK % PUBLISH 9
+%           BLOCK % VALIDATE 9
+%             COPY '#SCRIPT ACTA'
+%           END BLOCK
+%           BLOCK % PUBLISH 10
+^^WI DISPOSE XAUTO12
+^^CR
+%             COPY '#SCRIPT TIDYUP'
 %             COPY '#SCRIPT PUBLISH'
 %             FINISH
 %           END BLOCK
