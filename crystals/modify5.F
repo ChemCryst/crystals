@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2002/07/18 17:11:58  richard
+C If 'monitor' is set to off, and users 'QUIT's from #EDIT, then don't print
+C the warnings. This allows SCRIPTS to sneakily do things without alarming
+C the user with what looks like error messages.
+C
 C Revision 1.26  2002/07/17 09:29:49  richard
 C
 C In #DISTANCE added option: SEL RANGE=L41
@@ -273,6 +278,7 @@ C -- THESE ARE THE COMMON BLOCK OFFSETS LESS 1
       IMDAT1=9
       IMDAT2=10
       IGTYPE=38
+      ICLASH=39
 C -- NOTE - THE 'ATOM' DIRECTIVE REQUIRES A SPACE OF MD5 (=18) WORDS
 C---- NEXT FREE ADDRESS IS 29.
       IMDATM=11
@@ -328,8 +334,8 @@ C-C-C-INTRODUCTION OF ADDITIONAL DIRECTIVE-ADDRESSES FOR "SPECIALS"
       GO TO (650, 4700, 500,3000,5500,5500,5500,5500,6500,3650,
      1       3800,1000,1050, 900,1100, 400,5100, 100, 200, 300,
      2        250, 600,2700,2850,2300,1150,6950,6300,6800,3950,
-     3       5450,4100,4300,4500,2900,350,15500, 460,1160, 150,
-     4       8250), IDIRNM
+     3       5450,4100,4300,4500,2900,350,15500, 460,1160,2870,
+     4        150,8250), IDIRNM
       GO TO 8250
 C
 150   CONTINUE
@@ -826,6 +832,46 @@ C
       ISTAT=KMDSRT(I)
       GO TO 2750
 C
+C-C-C
+2870  CONTINUE
+C-C-C-'CLASH'-DIRECTIVE CLASHING SERIALS ARE RENAMED.
+C     GET CLASH EXECUTION MODE
+      MCLASH=ISTORE(ICOMBF+ICLASH)
+C - 0, just report any clashes
+C - 1, when clash, change serial of latter atom.
+C - 2, when clash, change serial of former atom.
+
+      K5F = L5
+      K5L = L5 + (N5-1)*MD5
+      K5S = MD5
+      IF ( MCLASH .EQ. 2 ) THEN
+        K5F = K5L
+        K5L = L5
+        K5S = -MD5
+      END IF
+C  Outer loop over all but last atom.
+      DO K5A = K5F,K5L-K5S,K5S
+C  Inner loop over atoms between current and last.
+        DO K5B = K5A+K5S,K5L,K5S
+          IF ( ( ISTORE(K5A)        .EQ. ISTORE(K5B)        ) .AND.
+     1         ( NINT(STORE(K5A+1)) .EQ. NINT(STORE(K5B+1)) ) ) THEN
+           CALL CATSTR(STORE(K5A),STORE(K5A+1),1,1,0,0,0,CATOM1,LATOM1)
+           WRITE (CMON,'('' Clash detected, atom: '',A)')
+     1     CATOM1(1:LATOM1)
+           CALL XPRVDU (NCVDU,1,0)
+           IF ( MCLASH .GT. 0 ) THEN
+C  Fix clash. Find highest serial and add one.
+             IHSER = 1
+             DO K5C = K5F,K5L,K5S
+               IHSER = MAX(IHSER,NINT(STORE(K5C+1)))
+             END DO
+             STORE(K5B+1) = IHSER+1.0
+             ICHNG = ICHNG + 1
+           END IF
+          END IF
+        END DO
+      END DO
+      GO TO 100
 C
 C-C-C
 2900  CONTINUE
