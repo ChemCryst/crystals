@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  1999/05/25 19:10:04  dosuser
+C RIC: Added write to CAMERON.INI for linux version.
+C TITLE changed to KTITL. Only used in write statements.
+C
 C Revision 1.10  1999/04/09 10:37:13  dosuser
 C djw apr99 change format statement for sigma in SIR92
 C
@@ -260,6 +264,7 @@ C--WRITE THE PARAMETER FILE TYPE
 &DOS      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &DVF      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &LIN      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+&GIL      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &GID      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &H-P      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &CYB      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )

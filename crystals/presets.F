@@ -94,8 +94,8 @@ C
 &DOS      DATA IQUN /2/, JQUN/2/
 &&DVFGIDC      SET INTERACTIVE UNDER WINDOWS
 &&DVFGID      DATA IQUN /2/, JQUN/2/
-&LINC      SET INTERACTIVE UNDER LINUX
-&LIN      DATA IQUN /2/, JQUN/2/
+&&GILLINC      SET INTERACTIVE UNDER LINUX
+&&GILLIN      DATA IQUN /2/, JQUN/2/
 &VAXC      INITIALISE THE ENVIRONMENT TO BATCH
 &VAX      DATA IQUN /2/, JQUN/0/
 C
@@ -200,12 +200,13 @@ C       VDU, MONITOR, PRINTER, PUNCH, LOG, ERROR
 &&DVFGIDC      REASSIGN PRINTER IN STARTUP FILE
 &GID      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &DVF      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+&GIL      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &LIN      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &VAXC      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
 &VAX      DATA NCVDU/6/, NCAWU/3/, NCWU/9/, NCPU/7/, NCLU/8/, NCEROR/6/
 &DOS      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &&DVFGID      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-&LIN      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+&&GILLIN      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &VAX      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &PPC      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 C      THE AUXILLIARY INPUT DEVICE (REFLECTIONS)
@@ -284,6 +285,7 @@ C
 &GID      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 &DVF      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 &LIN      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+&GIL      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 &VAX      DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 C----- CHANGE IFLUNI(7) TO 3 LATER
       DATA IFLUNI(7)  /  6 / , IFLUNI(8)  / 11 / , IFLUNI(9)  / 12 /
@@ -975,10 +977,10 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
 &&DVFGID      DATA ISSOPS(1) / ' WIN' / , ISSOPS(2) / '95  ' /
 &&DVFGID      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
 &&DVFGID      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '98  ' /
-&LIN      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
-&LIN      DATA ISSOPS(1) / ' WIN' / , ISSOPS(2) / '95  ' /
-&LIN      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
-&LIN      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '98  ' /
+&&GILLIN      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
+&&GILLIN      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
+&&GILLIN      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
+&&GILLIN      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '99  ' /
 &VAX      DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
 &VAX      DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /
 &VAX      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
@@ -998,7 +1000,7 @@ C
 &DOS      DATA ISSFNF / 128 /
 &&DVFGID      DATA ISSFNF /  29 /
 &VAX      DATA ISSFNF /  29 /
-&LIN      DATA ISSFNF /  2 /
+&&GILLIN      DATA ISSFNF /  2 /
       DATA ISSOKF / 0 /
       DATA ISSEOF /-1 /
       DATA ISSERF / 1 /
@@ -1020,7 +1022,7 @@ C      ON THE HEWLET PACKARD, IT IS IN BYTES, SO THAT
 C                  ISSDAR = 4 * ISSRLI
 &VAX      DATA ISSDAR / 512 /
 &DVF      DATA ISSDAR / 512 /
-&LIN      DATA ISSDAR / 2048 /
+&&GILLIN      DATA ISSDAR / 2048 /
 &GID      DATA ISSDAR / 512 /
 &DOS      DATA ISSDAR /2048 /
 C
@@ -1080,12 +1082,12 @@ C
 &&DVFGID      DATA LSSOPS / 6 /
 &&DVFGID      DATA CSSDAT / 'December 1998' /
 &&DVFGID      DATA LSSDAT / 13 /
-&LIN      DATA CSSMAC / 'Intel Pentium' /
-&LIN      DATA LSSMAC / 13 /
-&LIN      DATA CSSOPS / 'Linux' /
-&LIN      DATA LSSOPS / 5 /
-&LIN      DATA CSSDAT / 'May 1999' /
-&LIN      DATA LSSDAT / 8 /
+&&GILLIN      DATA CSSMAC / 'Intel Pentium' /
+&&GILLIN      DATA LSSMAC / 13 /
+&&GILLIN      DATA CSSOPS / 'Linux' /
+&&GILLIN      DATA LSSOPS / 5 /
+&&GILLIN      DATA CSSDAT / 'May 1999' /
+&&GILLIN      DATA LSSDAT / 8 /
 &VAX      DATA CSSMAC / 'DEC VAX' /
 &VAX      DATA LSSMAC / 7 /
 &VAX      DATA CSSOPS / 'VMS 5' /
@@ -1113,8 +1115,8 @@ C
 &DOS      DATA LSSSCT / 1 /
 &&DVFGID      DATA CSSSCT / ' ' /
 &&DVFGID      DATA LSSSCT / 1 /
-&LIN      DATA CSSSCT / ' ' /
-&LIN      DATA LSSSCT / 1 /
+&&GILLIN      DATA CSSSCT / ' ' /
+&&GILLIN      DATA LSSSCT / 1 /
 &VAX      DATA CSSSCT / 'CRSCP:scatt.dat' /
 &VAX      DATA LSSSCT / 15 /
 C
@@ -1126,8 +1128,8 @@ C
 &DOS      DATA LSSELE / 1 /
 &&DVFGID      DATA CSSELE / ' ' /
 &&DVFGID      DATA LSSELE / 1 /
-&LIN      DATA CSSELE / ' ' /
-&LIN      DATA LSSELE / 1 /
+&&GILLIN      DATA CSSELE / ' ' /
+&&GILLIN      DATA LSSELE / 1 /
 &VAX      DATA CSSELE / 'CRSCP:properties.dat' /
 &VAX      DATA LSSELE / 20 /
 C
@@ -1139,8 +1141,8 @@ C
 &DOS      DATA LSSVDU / 3 /
 &&DVFGID      DATA CSSVDU  / 'CON' /
 &&DVFGID      DATA LSSVDU / 3 /
-&LIN      DATA CSSVDU  / 'CON' /
-&LIN      DATA LSSVDU / 3 /
+&&GILLIN      DATA CSSVDU  / 'CON' /
+&&GILLIN      DATA LSSVDU / 3 /
 &VAX      DATA CSSVDU  / 'SYS$COMMAND' /
 &VAX      DATA LSSVDU / 11 /
 C
@@ -1152,8 +1154,8 @@ C
 &DOS      DATA LSSLPT / 3 /
 &&DVFGID      DATA CSSLPT  / 'PRN' /
 &&DVFGID      DATA LSSLPT / 3 /
-&LIN      DATA CSSLPT  / 'PRN' /
-&LIN      DATA LSSLPT / 3 /
+&&GILLIN      DATA CSSLPT  / 'PRN' /
+&&GILLIN      DATA LSSLPT / 3 /
 &VAX      DATA CSSLPT  / 'SYS$PRINT' /
 &VAX      DATA LSSLPT / 9 /
 C
@@ -1166,8 +1168,8 @@ cdjwmay99
 &DOS      DATA LSSCIF / 11 /
 &&DVFGID      DATA CSSCIF / 'publish.cif' /
 &&DVFGID      DATA LSSCIF / 11 /
-&LIN      DATA CSSCIF / 'publish.cif' /
-&LIN      DATA LSSCIF / 11 /
+&&GILLIN      DATA CSSCIF / 'publish.cif' /
+&&GILLIN      DATA LSSCIF / 11 /
 &VAX      DATA CSSCIF / 'publish.cif' /
 &VAX      DATA LSSCIF / 11 /
 C
@@ -1648,7 +1650,7 @@ C --- UFILE ---
       IFLUNI(2)  =  2
       IFLUNI(3)  =  5  
 &&&DOSGIDDVF      IFLUNI(4)  =  6
-&LIN      IFLUNI(4)  =  6
+&&GILLIN      IFLUNI(4)  =  6
 &VAX      IFLUNI(4)  =  9
       IFLUNI(5) = 7
       IFLUNI(6) = 8
@@ -1721,7 +1723,7 @@ C --- XUNITS ---
       NCRU =20
       NCRRU =1
 &&&DOSDVFGID      NCWU=6
-&LIN      NCWU=6
+&&GILLIN      NCWU=6
 &VAX      NCWU=9
       NCPU=7
       IPAGE(1)=10
@@ -1733,8 +1735,8 @@ C --- XUNITS ---
       NCAWU=3
 &&&DOSDVFGID      IQUN=2
 &&&DOSDVFGID      JQUN=2
-&LIN      IQUN=2
-&LIN      JQUN=2
+&&GILLIN      IQUN=2
+&&GILLIN      JQUN=2
 &VAX      IQUN=2
 &VAX      JQUN=0
       IUSFLG = 0 

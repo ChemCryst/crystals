@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  1999/05/25 17:56:14  dosuser
+C RIC: Expanded all tabs to 6 spaces. g77 doens't like tabs.
+C
 C Revision 1.6  1999/05/25 15:59:31  dosuser
 C RIC: Added LIN and GIL specific UNIX file paths.
 C      Added APPEND hack for LINUX version.
@@ -2452,13 +2455,13 @@ C Read the 'MATCH' line
 &DOS        READ (75,'(A)',END=511)CLINE
 &DOS        GOTO 510
 &DOS511     CONTINUE
-&LIN        OPEN (75,
-&LIN     1         FILE='GUESS.BEST',
-&LIN     1         STATUS='UNKNOWN')
-&LIN510     CONTINUE
-&LIN        READ (75,'(A)',END=511)CLINE
-&LIN        GOTO 510
-&LIN511     CONTINUE
+&&GILLIN        OPEN (75,
+&&GILLIN     1         FILE='GUESS.BEST',
+&&GILLIN     1         STATUS='UNKNOWN')
+&&GILLIN510     CONTINUE
+&&GILLIN        READ (75,'(A)',END=511)CLINE
+&&GILLIN        GOTO 510
+&&GILLIN511     CONTINUE
 
 C Write header
         WRITE(75,'(A)') ' TRY  CFOM  BOND BADFOM NMATCH'
