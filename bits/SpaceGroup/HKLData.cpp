@@ -168,12 +168,12 @@ long fsize(char* pPath)
     return tFileStat.st_size;
 }
 
-HKLData::HKLData():vector<Reflection*>()
+HKLData::HKLData():vector<Reflection*>(), iTransf(Matrix<short>(3, 3))
 {
-
+	iTransf.makeDiagonal(1, 0);
 }
 
-HKLData::HKLData(HKLData& pHKLs):vector<Reflection*>()
+HKLData::HKLData(HKLData& pHKLs):vector<Reflection*>(), iUnitCellTensor(pHKLs.iUnitCellTensor), iTransf(pHKLs.iTransf)
 {
 	vector<Reflection*>::iterator tIter;
 	
@@ -183,12 +183,13 @@ HKLData::HKLData(HKLData& pHKLs):vector<Reflection*>()
 	}
 }
 		
-HKLData::HKLData(char* pPath):vector<Reflection*>()
+HKLData::HKLData(char* pPath, Matrix<float>& pUnitCellTensor):vector<Reflection*>(), iUnitCellTensor(pUnitCellTensor),iTransf(Matrix<short>(3, 3))
 {
     char tLine[255];
 	size_t tNumRef = 0;
     FILE* tFile = fopen(pPath, "r");
     
+	iTransf.makeDiagonal(1, 0);
     if (tFile == NULL)
     {
         throw FileException(errno);
@@ -213,14 +214,19 @@ HKLData::HKLData(char* pPath):vector<Reflection*>()
     fclose(tFile);
 }
 
-/*Reflection* HKLData::operator[](size_type __n)
+Matrix<float>& HKLData::unitCellTensor()
 {
+	return iUnitCellTensor;
+}
 
-}*/
+Matrix<short>& HKLData::transformation()
+{
+	return iTransf;
+}
 
 HKLData::~HKLData()
 {
-	#ifdef __DEBUG__
+	#ifdef __DEBUGGING__
 		std::cout << "Removing " << size() << " reflections\n";
 	#endif
     while (!empty())
