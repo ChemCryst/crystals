@@ -173,14 +173,12 @@
 %%
 %   IF ( SWITCH .LE. 12 ) THEN
 %     GET SILENT NOSTORE REAL ' '
-^^WI    SET BOK DISABLED=NO
-^^CR
+^^CO    SET BOK DISABLED=NO
 %%
 %% This bit responds to BXX (Cancel or escape) and closes the window.
 %%
 %   ELSE IF ( SWITCH .EQ. 13 ) THEN
-^^WI  DISPOSE INLIST1
-^^CR
+^^CO  DISPOSE INLIST1
 %     EVALUATE LCANCEL = TRUE
 %     FINISH
 %%
