@@ -60,15 +60,14 @@ typedef struct RunStruct
 
 void runTest(RunStruct *pRunData)
 {
-    if (tRunStruct.iCrystalSys[0] == 0)
-    {
-        strcpy(tRunStruct.iCrystalSys, getCrystalSystem());
-    }
     std::cout << "Reading in tables...";
     Tables tTables(pRunData->iTablesFile);
+    if (pRunData->iCrystalSys[0] == 0)
+    {
+        strcpy(pRunData->iCrystalSys, getCrystalSystem());
+    }
     std::cout << "\nReading in hkl data...";
     HKLData tHKL(pRunData->iFileName);
-//    std::cout << "\nReading in unit cell...";
     std::cout << "\nCalculating probabilities...";
     Table* tTable = tTables.findTable(pRunData->iCrystalSys);
     Stats tStats(tTables.getHeadings(), tTables.getConditions());
