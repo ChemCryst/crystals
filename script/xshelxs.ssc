@@ -76,7 +76,7 @@
 %           FINISH
 %      END IF
 %      COPY '#SPAWN + "CRYSDIR:SHELXS.EXE"'
-%%%      COPY '#TYPE SHELXS.LIS'
+%      COPY '#TYPE SHELXS.LIS'
 %   END BLOCK
 %   BLOCK
 %      EVALUATE QTITLE = 'Shelxs Results'
