@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2003/09/10 21:18:28  djw
+C Correct mis-formatting of Sheldrick weighting formula in .cifs
+C
 C Revision 1.50  2003/09/03 21:03:09  rich
 C Add key to space group analysis plot. Reduce sig figs on x-axis labels.
 C
@@ -215,7 +218,7 @@ C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
-     5              41 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
+     5              41 , 42 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
       DATA IVERSN / 201 /
 C
@@ -310,7 +313,7 @@ C
       PARAMETER ( NSMTYP = 50 )
       DIMENSION ISMTYP(NSMTYP)
       
-      PARAMETER (NLTYPE = 41)
+      PARAMETER (NLTYPE = 42)
       CHARACTER*32 CLTYPE(NLTYPE)
       DIMENSION LLTYPE(NLTYPE)
       character*80 ctext(4)
@@ -340,12 +343,12 @@ C    WHICH STRING FROM 'CLTYPE' SHOULD BE USED TO DESCRIBE THE DATA
 C
 C      1 - 9 , 10 - 19 , 20 - 29 , 30 - 39 , 40 - 49 , 50
 C
-C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
+C----- SEE ALSO XSMMRY - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  7 ,  0 ,  0 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
-     5              41 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
+     5              41 , 42 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
 C
       DATA CLTYPE / 'Cell parameters', 'Symmetry',
@@ -357,7 +360,8 @@ C
      6 'S.F. modifications', '*', 'Twin Laws', '*',
      7 'Raw data scale factors',
      8 'Reflection selection conditions', 'Elemental properties',
-     9 'General details', 9*'*','Bonding information', 'Bonds' /
+     9 'General details', 9*'*','Bonding information', 'Bonds',
+     1 'Fourier mask' /
 C
       DATA LLTYPE / 15, 8,
      2 18, 16, 10,
@@ -367,7 +371,8 @@ C
      6 18, 1, 9, 1,
      7 22,
      8 31, 20,
-     9 15,1,1,1,1,1,1,1,1,1,19,5 /
+     9 15,1,1,1,1,1,1,1,1,1,19,5,
+     1 12 /
 C
 C
 C
@@ -427,6 +432,8 @@ C
       IF (KHUNTR (40,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL40
         ELSE IF ( LSTYPE .EQ. 41 ) THEN
       IF (KHUNTR (41,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL41
+        ELSE IF ( LSTYPE .EQ. 42 ) THEN
+      IF (KHUNTR (42,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL42
         ENDIF
 C
         IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -484,6 +491,8 @@ C
         CALL XSUM40
       ELSE IF ( LSTYPE .EQ. 41 ) THEN
         CALL XSUM41
+      ELSE IF ( LSTYPE .EQ. 42 ) THEN
+        CALL XSUM42
       ENDIF
 C
 c      IERFLG = 1
@@ -3311,5 +3320,41 @@ C -- INPUT ERRORS
       GO TO 9900
       RETURN
 
+      END
+
+CODE FOR XSUM42
+      SUBROUTINE XSUM42
+C
+C -- ROUTINE TO DISPLAY SUMMARY OF LIST 42
+C
+
+\XUNITS
+\XIOBUF
+\XLST42
+\STORE
+\ISTORE
+\QSTORE
+
+      M42M = L42M
+
+      WRITE(CMON,'(A,3I8)')'Summary of list 42: ',NINT(STORE(L42L+7)),
+     1 NINT(STORE(L42L+4)),NINT(STORE(L42L+1))
+      CALL XPRVDU(NCVDU,1,0)
+
+
+      DO I = 1, NINT(STORE(L42L+7))
+       WRITE(CMON,'(/A,I5)')'Mask section ',I
+       CALL XPRVDU(NCVDU,2,0)
+       DO J = 1, NINT(STORE(L42L+4))
+        CMON = ' '
+        DO K = 1, MIN(80,NINT(STORE(L42L+1)))
+         WRITE(CMON(1)(K:K),'(I1)')ISTORE(M42M+K-1)
+        END DO
+        CALL XPRVDU(NCVDU,1,0)
+        M42M = M42M+NINT(STORE(L42L+1))
+       END DO
+      END DO
+
+      RETURN
       END
 
