@@ -4,10 +4,10 @@
 %  VARIABLE INTEGER SETADP
 %%
 %%   Local variables:
-%  VARIABLE INTEGER REFLAG HMODE ISER
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED DOREFINE
-%  VARIABLE CHARACTER CTYPE
-%  VARIABLE REAL SERIAL HFIRST CENTRO WORK1
+%  VARIABLE INTEGER REFLAG HMODE ISER CURMODE INBLOCK
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED DOREFINE HRIDE 
+%  VARIABLE CHARACTER CTYPE CTYPE2
+%  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2
 %  EVALUATE TWINNED = FALSE
 %  EVALUATE DOREFINE = TRUE
 %%
@@ -107,8 +107,8 @@
 ^^WI     @ 1,1 RADIOBUTTON REFPXO 'Refine &positions only' STATE=OFF
 ^^WI     @ 2,1 RADIOBUTTON REFPUI 'Refine positions and U&iso' STATE=OFF
 ^^WI     @ 3,1 RADIOBUTTON REFPUA 'Refine positions and &Uijs' STATE=OFF
-%% ^^WI     @ 5,1 CHECKBOX OVRD
-%% ^^WI           '&Override sticky settings for atoms' STATE=OFF
+^^WI     @ 5,1 CHECKBOX OVRD
+^^WI           '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
 ^^WI   @ 3,1 GRID HR NROWS=6 NCOLS=1 OUTLINE='Hydrogens'
@@ -118,15 +118,15 @@
 ^^WI           STATE=ON
 % END IF
 ^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ride &H atoms'
-% IF HRTYP .EQ. 1 THEN
+% IF HRTYP .GE. 3 THEN
 ^^WI           STATE=ON
 % END IF
 ^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine H atom positions'
-% IF HRTYP .EQ. 2 THEN
+% IF HRTYP .EQ. 1 THEN
 ^^WI           STATE=ON
 % END IF
 ^^WI     @ 4,1 RADIOBUTTON HREFUI '&Refine H atom posn and Uiso'
-% IF HRTYP .GE. 3 THEN
+% IF HRTYP .EQ. 2 THEN
 ^^WI           STATE=ON
 % END IF
 ^^WI   }
@@ -234,30 +234,30 @@
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 1
+%    EVALUATE HMODE = 10
 %  END IF
 ^^?? HREFN STATE
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 2
+%    EVALUATE HMODE = 1
 %  END IF
 ^^?? HREFUI STATE
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 3
+%    EVALUATE HMODE = 2
 %  END IF
 %%
 % END IF
 %%
 %  EVALUATE OVERRIDE = FALSE
-%%^^?? OVRD STATE
-%%%  VERIFY ON OFF
-%%%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%%%  IF ( VALUE .EQ. 1 ) THEN
+^^?? OVRD STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
 %    EVALUATE OVERRIDE = TRUE
-%%%  END IF
+%  END IF
 %%
 ^^?? FLACK STATE
 %  VERIFY ON OFF
@@ -340,12 +340,19 @@
 %% Set the refinement flags for all the non-sticky atoms.
 %%
 %  EVALUATE STUCK = FALSE
+%  EVALUATE HRIDE = FALSE
+%  IF ( HMODE .EQ. 10 ) THEN
+%    EVALUATE HRIDE = TRUE
+%  END IF
+%  IF ( HMODE .EQ. 1 .OR. HMODE .EQ. 2 ) THEN
+%    EVALUATE STUCK = TRUE
+%  END IF
 %  IF EXISTS 5 .GE. 1 THEN
-%   IF OVERRIDE .EQ. TRUE THEN
+%    IF OVERRIDE .EQ. TRUE THEN
 {S * CRYSTALS is setting refinement modes for all atoms.
-%   ELSE
+%    ELSE
 {S * CRYSTALS is setting refinement modes for non-sticky atoms.
-%   END IF
+%    END IF
 %    IF SETADP .LE. 1 THEN
 {R   Atomic positions will be refined
 %    ELSE IF SETADP .EQ. 2 THEN
@@ -359,29 +366,58 @@
 %    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %    LOOP
 %      ON EDITERROR TERMINATE
-%      COPY 'TRANSFER FROM OFFSET=14 TO REFLAG'
-%      IF ( REFLAG .NE. SETADP ) THEN
-%        IF ( REFLAG .GE.  0     )  THEN
+%      COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
+%      IF ( CTYPE .EQ. 'H' ) THEN
+%        IF ( REFLAG .NE. HMODE ) THEN
+%          IF ( REFLAG .GE.  0 )  THEN
 %% Non-sticky atom, just change the value.
-%          EVALUATE DOWRITE = TRUE
-%          COPY 'TRANSFER TO OFFSET=14 FROM SETADP'
-%        ELSE IF ( OVERRIDE .EQ. TRUE ) THEN
+%            EVALUATE DOWRITE = TRUE
+%            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'
+%          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN
 %% Sticky atom, but override allowed, just change the value.
-%          EVALUATE DOWRITE = TRUE
-%          COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%          COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%          COPY 'TRANSFER TO OFFSET=14 FROM SETADP'
-%          CLEAR
-%          INSERT '{R   Overriding sticky settings for atom: '
-%          STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE
-%          INSERT '('
-%          STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
-%          INSERT ')'
-%          OUTPUT
-%        ELSE IF ( REFLAG .NE. - REFLAG ) THEN
+%            EVALUATE DOWRITE = TRUE
+%            COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'
+%            CLEAR
+%            INSERT '{R   Overriding sticky settings for atom: '
+%            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE
+%            INSERT '('
+%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
+%            INSERT ')'
+%            OUTPUT
+%          ELSE IF ( REFLAG .NE. - HMODE ) THEN
 %% Remember that there are some sticky atoms of different
 %% refinement mode to the default.
-%          EVALUATE STUCK = TRUE
+%            EVALUATE STUCK = TRUE
+%            IF ( REFLAG .EQ. - 10 ) THEN
+%               EVALUATE HRIDE = TRUE
+%            END IF
+%          END IF
+%        END IF
+%      ELSE
+%        IF ( REFLAG .NE. SETADP ) THEN
+%          IF ( REFLAG .GE.  0 )  THEN
+%% Non-sticky atom, just change the value.
+%            EVALUATE DOWRITE = TRUE
+%            COPY 'TRANSFER TO OFFSET=15 FROM SETADP'
+%          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN
+%% Sticky atom, but override allowed, just change the value.
+%            EVALUATE DOWRITE = TRUE
+%            COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%            COPY 'TRANSFER TO OFFSET=15 FROM SETADP'
+%            CLEAR
+%            INSERT '{R   Overriding sticky settings for atom: '
+%            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE
+%            INSERT '('
+%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
+%            INSERT ')'
+%            OUTPUT
+%          ELSE IF ( REFLAG .NE. - SETADP ) THEN
+%% Remember that there are some sticky atoms of different
+%% refinement mode to the default.
+%            EVALUATE STUCK = TRUE
+%          END IF
 %        END IF
 %      END IF
 %      COPY 'NEXT'
@@ -392,24 +428,146 @@
 %    COPY 'END'
 %  END IF
 %%
+%%
+%%
+%%
 %% Write a list 12 from the flags in list 5.
 %%
+%%
+%%
+%%
 %
-%  COPY '#RELEASE PUNCH RIDEDAT.12'
-%  COPY '#DISTANCES'
-%  COPY 'OUTPUT MON=DIST PUNCH=SCRIPT'
-%  COPY 'SELECT SYMMETRY=NONE'
-%  COPY 'BONDED H'
+%  IF ( HRIDE ) THEN
+ Working out RIDES
+%     EVALUATE HRIDE = FALSE
+%     QUEUE REWIND
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
+%       IF REFLAG .LT. 0 THEN
+%         EVALUATE REFLAG = - REFLAG
+%       END IF
+%       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN
+%         EVALUATE HRIDE = TRUE
+%         CLEAR
+%         INSERT 'CONT H('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         INSERT ')'
+%         OUTPUT
+%         QUEUE SEND
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%  END IF
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH BFILE.PCH'
+%  IF ( HRIDE ) THEN
+ Calculating RIDES.
+%     COPY '#RELEASE PUNCH RIDEDAT.12'
+%     COPY '#DISTANCES'
+%     COPY 'OUTPUT MON=DIST PUNCH=SCRIPT'
+%     COPY 'SELECT SYMMETRY=NONE'
+%     COPY 'BONDED'
+%     QUEUE PROCESS
+%     COPY 'END'
+%     COPY '#RELEASE PUNCH BFILE.PCH'
+%  END IF
 %%
 %%
 %  IF ( STUCK ) THEN
 
 {E
-{E Sticky atoms are not implemented yet....
+{I Sticky atoms are being implemented.... This may work, or not.
 {E
 
+%    CLEAR
+%    COPY '#RELEASE SCPQUEUE l12.spq'
+%    QUEUE REWIND
+%    EVALUATE CURMODE = 0
+%    EVALUATE INBLOCK = 0
+%    QUEUE COPY #LIST 12
+%    QUEUE COPY BLOCK
+%    QUEUE COPY CONT SCALE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
+%       IF ( REFLAG .LT. 0 ) THEN
+%         EVALUATE REFLAG = - REFLAG
+%       END IF
+%       IF CURMODE .NE. REFLAG THEN
+%% Finish off current block.
+%         IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN
+%           IF ( INBLOCK .GT. 1 ) THEN
+%             INSERT ' UNTIL '
+%             STORE CHARACTER CTYPE2
+%             INSERT '('
+%             STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2
+%             INSERT ')'
+%           END IF
+%           OUTPUT
+%           QUEUE SEND
+%         END IF
+%         EVALUATE INBLOCK = 0
+%         EVALUATE CURMODE = REFLAG
+%         CLEAR
+%         INSERT 'CONT '
+%         STORE CHARACTER CTYPE
+%         INSERT '('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
+%         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN
+%          CASE REFLAG
+%           INSERT ",X's)"
+%           INSERT ",X's,U[iso])"
+%           INSERT ",X's,U's)"
+%          END CASE
+%         ELSE
+%          CLEAR
+%          EVALUATE CURMODE = 0
+%         END IF
+%       END IF
+%       EVALUATE CTYPE2 = CTYPE
+%       EVALUATE SERIAL2 = SERIAL
+%       EVALUATE INBLOCK = INBLOCK + 1
+%       COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%% Finish off last block.
+%    IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN
+%       IF ( INBLOCK .GT. 1 ) THEN
+%         INSERT ' UNTIL '
+%         STORE CHARACTER CTYPE2
+%         INSERT '('
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2
+%         INSERT ')'
+%       END IF
+%       OUTPUT
+%       QUEUE SEND
+%    END IF
+%    IF ( DOEXTNC ) THEN
+%      QUEUE COPY CONT EXTPARAM
+%    END IF
+%    IF ( DOFLACK ) THEN
+%      QUEUE COPY CONT ENANTIO
+%    END IF
+%    IF ( DOTWIN ) THEN
+%      QUEUE COPY EQUIVALENCE ELEMENT SCALES
+%      QUEUE COPY WEIGHT -1 ELEMENT(1)
+%    END IF
+%    IF ( HRIDE ) THEN
+%      QUEUE COPY #USE RIDEDAT.12
+%    END IF
+%    QUEUE COPY END
+%    COPY '#RELEASE SCPQUEUE bfile.spq'
+%    COPY '#USE l12.spq'
 %  ELSE
 %    COPY '#LIST 12'
 %    CASE SETADP
@@ -427,13 +585,13 @@
 %      COPY 'EQUIVALENCE ELEMENT SCALES'
 %      COPY 'WEIGHT -1 ELEMENT(1)'
 %    END IF
-%    IF ( HMODE .EQ. 1 ) THEN
+%    IF ( HMODE .EQ. 10 ) THEN
 %      COPY '#USE RIDEDAT.12'
-%    ELSE IF ( HMODE .GE. 2 ) THEN
+%    ELSE IF ( HMODE .GE. 1 ) THEN
 %      CLEAR
 %      INSERT "CONT H("
 %      STORE FORMAT /(F5.0)/ LENGTH 5 REAL HFIRST
-%      IF ( HMODE .EQ. 2 ) THEN
+%      IF ( HMODE .EQ. 1 ) THEN
 %        INSERT ",X'S) UNTIL LAST"
 %      ELSE
 %        INSERT ",X'S,U[ISO]) UNTIL LAST"
