@@ -1,4 +1,4 @@
-%SCRIPT INRC93  %Script for quick input of CAD4 data%
+%SCRIPT XINRC93  %Script for quick input of CAD4 data%
 %  VARIABLE CHARACTER FILENAME SCFNAME HKLNAME ABSNAME
 %  VARIABLE INTEGER INBASICS SOLVEMETHOD
 %% AUTOMATIC INPUT OF CAD4 DATA
@@ -7,20 +7,6 @@
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 %  VARIABLE LOGICAL ANSWER
 %  VARIABLE CHARACTER CNULL CDLINE
-%%  EVALUATE QTITLE = 'RC93 Input'
-%%  EVALUATE QLINE1 = 'You will need to know the crystals space group symbol.'
-%%  EVALUATE QLINE2 = 'You MUST have .HKL and .SCF files. Can you continue?'
-%%  EVALUATE BUTTOK = '&Yes'
-%%  EVALUATE BUTTXX = '&No'
-%%  COPY '#SCRIPT XQUESTIO'
-%%
-%%  BLOCK
-%%    ON ERROR REPEAT
-%%    IF ( ANSWER .EQ. FALSE ) THEN
-%%       FINISH
-%%    END IF
-%%  END BLOCK
-%%
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ^^WI WINDOW XINRC93 'Input RC93 data' MODAL
 ^^WI GRID MAIN NROWS=2 NCOLS=1
@@ -118,7 +104,7 @@ Files INITIAL.* will be created in your directory. They may be important.
        NB RC93 creates both LIST30 and LIST31 automatically.
         DO NOT MODIFY THEM or this information will be lost
  -------------------------------------------------------------------------
-%      COPY '#SCRIPT INBASICS'
+%      COPY '#SCRIPT XINBASICS'
 %      IF INBASICS .NE. 1 THEN
 %        FINISH
 %      END IF
@@ -145,16 +131,17 @@ Files INITIAL.* will be created in your directory. They may be important.
 %%
 %  END BLOCK
 %%
-            * Applying Lp corection
+
+ * Applying Lp corection
 %COPY '#LP'
 %COPY 'END'
-            * Checking systematic absences
+ * Checking systematic absences
 %COPY '#SYSTEMATIC'
 %COPY 'END'
-            * Sorting data
+ * Sorting data
 %COPY '#SORT'
 %COPY 'END'
-            * Merging equivalent reflections
+ * Merging equivalent reflections
 %    COPY '#MERGE'
 %    COPY 'WEIGHT SCHEME=2 NPARAM=6'
 %    COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
@@ -176,24 +163,6 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY '#WEIGHT'
 %    COPY 'END'
 %    COPY '#RELEASE PRINT'
+ * Done. RC93 input complete.
 %%
-%%
-%  ON ERROR REPEAT
-%  EVALUATE QTITLE = 'RC93 Input Complete'
-%  EVALUATE QLINE1 = 'Do you want to try to solve the structure?'
-%  EVALUATE QLINE2 = ' '
-%  EVALUATE BUTTOK = '&Yes'
-%  EVALUATE BUTTXX = '&Not yet'
-%  COPY '#SCRIPT XQUESTIO'
-%  BLOCK
-%    ON ERROR REPEAT
-%    IF ( ANSWER .EQ. TRUE ) THEN
-            * Solve the structure
-%           COPY '#SCRIPT XSTRUCTU'
-%    END IF
-%
-%    IF SOLVEMETHOD .NE. 0 THEN
-%      COPY '#SCRIPT MODEL'
-%    END IF
-%  END BLOCK
 %END SCRIPT
