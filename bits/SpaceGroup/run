@@ -1,0 +1,1 @@
+./SpaceGroup -f $1 -t data/tables.txt -nc -s 2
