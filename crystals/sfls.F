@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.29  2003/01/15 15:26:39  rich
 C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
 C anywhere will benefit from less IO, it's here.
@@ -348,7 +353,7 @@ C--THIS U[ISO] VALUE IS OUT OF RANGE
           CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0)
      1    WRITE(NCWU, '(A)') CMON(1)(:)
-3120  FORMAT(/, ' Atom ', A4, I5, ' has U-iso too small, ', F8.4)
+3120  FORMAT( ' Atom ', A4, I5, ' has U-iso too small, ', F8.4)
 C          A=AMIN1(A,STORE(M5+3))
           A=AMIN1(A,STORE(M5+7))
           N=N+1
