@@ -37,7 +37,7 @@
 
 #ifndef __EXCEPTIONS_H__
 #define __EXCEPTIONS_H__
-#include <Exception>
+#include <exception>
 #include <iostream>
 using namespace std;
 /******************************************/
