@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  1999/02/23 20:05:13  dosuser
+C RIC: Stopped the IBM box characters from going to the screen, in DOS
+C      version, if Cameron is running. (They will be printed on a non-
+C      terminal window).
+C
 C Revision 1.5  1999/02/16 11:24:06  dosuser
 C RIC: Added log information to head of file.
 C      Check return value when NSTART is computed. If 0 or -1, set to +1,
@@ -2266,7 +2271,7 @@ C
       PARAMETER ( JVALUE = 1 , JVTYPE = 2 , JCTYPE = 3 )
       PARAMETER ( JPOSTK = 4 )
 CJAN99  2 NEW UNARY OPERATORS
-C       CHAR=FIRSTCTR(CHAR) AND INT=FIRSTINT(CHAR)
+C       CHAR=FIRSTSTR(CHAR) AND INT=FIRSTINT(CHAR)
       PARAMETER ( NOPER = 37 , NUBASE = 24 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 13 )
 C
