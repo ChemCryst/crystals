@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/01/14 12:19:55  ckpgroup
+//   SH: Various changes. Fixed scatter graph memory allocation.
+//   Fixed mouse-over for scatter graphs. Updated graph key.
+//
 //   Revision 1.11  2002/01/08 12:40:35  ckpgroup
 //   SH: Fixed memory leaks, fiddled with key text alignment.
 //
@@ -977,6 +981,8 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 	const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
 	
   Create(wClass, "Key", WS_VISIBLE|WS_CLIPSIBLINGS|WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
+  ModifyStyleEx(NULL,WS_EX_TOOLWINDOW,NULL); //Small title bar effect.
+
 
   SetFont(CcController::mp_font);
   ShowWindow(SW_SHOW);
