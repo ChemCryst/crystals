@@ -26,6 +26,7 @@ class	CrGUIElement
 		virtual void SendCommand(CcString theText, Boolean jumpQueue=false);
 		Boolean mDisabled;
 		virtual void FocusToInput(char theChar);
+            virtual void SysKey ( UINT nChar );
 		Boolean mTabStop;
 		virtual void CrFocus()=0;
 		void NextFocus(BOOL bPrevious);

@@ -183,3 +183,15 @@ void CrGUIElement::SendCommand(CcString theText, Boolean jumpQueue)
 //the text is not passed any further up the heirarchy.
 
 }
+
+
+void CrGUIElement::SysKey( UINT nChar )
+{
+// This should never be called. It means that an Cr object has requested
+// system key messages, but doesn't have an over-riding SysKey routine
+// to handle them!
+
+      LOGERR("SysKey called in CrGUIElement Base Class");
+      LOGERR("Have you tried to get SysKey messages for an object");
+      LOGERR("which has no capability to recieve them?");
+}
