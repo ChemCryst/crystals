@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/03/06 10:57:46  ckp2
+C USe CRYSTART.DAT if present. (Different from CRYSINIT, which gets used before
+C the GUI is initialised). Remove initial space that script puts in output in TRANSFER
+C to DISPLAY or PUNCH.
+C
 C Revision 1.34  2002/03/06 09:47:41  ckp2
 C RIC: Changed operatin if the GETENV script function. Now it passes its argument
 C to MTRNLG to expand any environment variables.
@@ -3056,12 +3061,8 @@ C
       CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
-&GID          CALL XDETCH ('del ' // CWORK1(1:LEN1))
-&DOS          CALL XDETCH ('del ' // CWORK1(1:LEN1))
-&DVF          CALL XDETCH ('del ' // CWORK1(1:LEN1))
-&VAX          CALL XDETCH ('del ' // CWORK1(1:LEN1))
-&LIN          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
-&GIL          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
+          OPEN  (101,FILE=CWORK1(1:LEN1))
+          CLOSE (101,STATUS='DELETE')
       ENDIF
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
