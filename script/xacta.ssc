@@ -532,7 +532,7 @@
 %  EVALUATE VALIDFAIL = FALSE
 {R All checks passed successfully.
  
-{I Select "Checkcif on the web" from the Analyse menu, or email a CIF to
-{I checkcif@iucr.ac.uk for more detailed and up to date checks.
+{I Select "Checkcif on the web" from the Analyse menu, to access
+{I {&http://checkcif.iucr.org/{&
 %  END IF
 %END SCRIPT
