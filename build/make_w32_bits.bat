@@ -21,6 +21,7 @@ DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\rc93\rc93.fpp  /automatic /op
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\reindex\reindex.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\shelxs.fpp /optimize:4 /MD 
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\sxtocry.fpp /optimize:4 /MD
+CL ..\bits\loader\crysload.cc %CDEF% /EHs /W3 /TP /O2 /D"NDEBUG" /ML /link /subsystem:windows shell32.lib advapi32.lib user32.lib 
 copy ..\bits\sir92\form.sda form.dat
 copy ..\bits\rc93\rc93.ssr rc93.src
 @set PATH=%OPATH%
