@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2001/11/13 14:08:47  ckp2
+C RIC: Swapped weak/strong labels in FO graph. Oops.
+C RIC: Increased initial memory allocated to FO and SINt graphs.
+C
 C Revision 1.21  2001/11/13 13:22:16  ckp2
 C New titles for graphs.
 C
@@ -913,6 +917,14 @@ C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
       WRITE(NCAWU,6160) ITL
       WRITE(CMON,6160) ITL
       CALL XPRVDU(NCVDU, 1,0)
+
+      WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _RWGHT',
+     1  '^^PL XTITLE ''Reciprocal weights vs /FO/''',
+     1  '^^PL NSERIES=1 LENGTH=20 YTITLE ''estimated <Fo-Fc>**2'''
+C     1 ,'^^PL ZOOM 0 0 0.01 100'
+      CALL XPRVDU(NCVDU, 3,0)
+
 6160  FORMAT( ' Reciprocal weights versus /FO/' ,A3)
 6150  FORMAT(40H Plot of estimated delta**2 against /FO/,A3///9X,4H/FO/
      2 ,A3,2X,8HDelta**2/)
@@ -986,6 +998,10 @@ C--PRINT THE LINE FOR THIS /FO/
       WRITE(NCAWU,6630)EDW ,WDW, (L,JJ=1,JDW)
       WRITE(CMON,6630)EDW ,WDW, (L,JJ=1,JDW)
       CALL XPRVDU(NCVDU, 1,0)
+      WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
+     2 EDW,' DATA ', WDW
+      CALL XPRVDU(NCVDU, 1,0)
+
 6630  FORMAT(1X,E10.3,E10.3,2X,60A1)
       GOTO 6700
 6650  CONTINUE
@@ -997,6 +1013,8 @@ C--PRINT THE LINE FOR THIS /FO/
       CALL XPRVDU(NCVDU, 1,0)
 6700  CONTINUE
 6750  CONTINUE
+      WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+      CALL XPRVDU(NCVDU, 2,0)
       CALL XLINES
       GOTO 5550
 9900  CONTINUE
