@@ -15,7 +15,8 @@ COPYFILES = $(wildcard ../precomp/all/*.*) $(wildcard ../precomp/$(COMPCODE)/*.*
  $(wildcard ../precomp/all/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*.*)\
  $(wildcard ../precomp/all/*/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*/*.*)
 TEMPTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
-COPYDEST = $(COPYFILES:../precomp/all/%=%)
+COPYTEMP = $(COPYFILES:../precomp/all/%=%)
+COPYDEST = $(COPYTEMP:../precomp/$(COMPCODE)/%=%)
 COPYDIRS = $(filter-out $(COPYFILES) %CVS,$(TEMPTOP))
 
 all : commands.dsc $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
