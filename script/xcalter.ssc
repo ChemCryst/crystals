@@ -1,6 +1,6 @@
 %SCRIPT XCALTER
 %   VERIFY SHYDRO SLABEL HHYDRO HLABEL SCELL HCELL MLABEL -
-           INCAR INCAL EXCAR OHCONT
+           INCAR INCAL EXCAR OHCONT HPEAK SPEAK
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 
 %   CASE VALUE
 %     BLOCK               %SHYDRO%
@@ -65,6 +65,22 @@
 %     END BLOCK
 %     BLOCK                %OHCONT%
 %       COPY 'PACK CELL COMP INCL CELL CONN HBOND O 0.0 3.0 VIEW'
+%     END BLOCK
+%     BLOCK               %HPEAK%
+%       COPY 'EXCL Q VIEW'
+%       COPY ' '
+^^WI    RENAME HPEAK SPEAK
+^^CR
+^^WI    SET SPEAK TEXT 'Show Q'
+^^CR
+%     END BLOCK
+%     BLOCK               %SPEAK%
+%       COPY 'INCL Q VIEW'
+%       COPY ' '
+^^WI    RENAME SPEAK HPEAK
+^^CR
+^^WI    SET HPEAK TEXT 'Hide Q'
+^^CR
 %     END BLOCK
 %   END CASE
 %   COPY ' '
