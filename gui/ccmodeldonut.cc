@@ -133,6 +133,7 @@ bool CcModelDonut::IsSelected()
 void CcModelDonut::Render(CcModelStyle *style, bool feedback)
 {
   glPushMatrix();
+  if (feedback) glPassThrough((float)m_glID);
 
   float extra = 0.0;
 
@@ -231,6 +232,7 @@ void CcModelDonut::Render(CcModelStyle *style, bool feedback)
            glEnd();
         }
 
+  if (feedback)  glPassThrough(0.0);
   glPopMatrix();
 
 }

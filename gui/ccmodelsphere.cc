@@ -128,6 +128,8 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 {
   glPushMatrix();
 
+  if (feedback) glPassThrough((float)m_glID);
+
   float extra = 0.0;
 
   int detail = (style->high_res)? style->normal_res  : style->quick_res ;
@@ -231,7 +233,10 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
         }
       }
      }
-     glPopMatrix();
+
+     if (feedback)  glPassThrough(0.0);
+
+  glPopMatrix();
 
 }
 

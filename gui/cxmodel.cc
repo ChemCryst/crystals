@@ -543,8 +543,6 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
           CcPoint* newPoint = new CcPoint(*firstPoint);
           m_selectionPoints.AddItem(newPoint);
 
-          NeedRedraw();
-
           PolyCheck();
           ModelChanged(false);
 
@@ -1575,11 +1573,8 @@ void CxModel::PolyCheck()
          atom = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( currentGLID );
          if ( atom )
          {
-           if ( atom->Type() == CC_ATOM )
-           {
-              ((CcModelAtom*)atom)->Select(true);
-              lastGLID = currentGLID;
-           }
+           atom->Select(true);
+           lastGLID = currentGLID;
          }
        }
      }
@@ -1945,6 +1940,18 @@ void CxModel::OnEraseBackground( wxEraseEvent& evt )
 
 void CxModel::SelectTool ( int toolType )
 {
+  if (m_mouseMode == CXPOLYSEL)
+  {
+     ModelChanged(false);
+     m_selectionPoints.Reset();
+     CcPoint* nextPoint;
+     while ( nextPoint = (CcPoint *) m_selectionPoints.GetItem() )
+     {
+        m_selectionPoints.RemoveItem();
+        delete nextPoint;
+     }
+  }
+
   m_mouseMode = toolType;
 }
 
