@@ -49,17 +49,10 @@
 #endif
 #include <errno.h>
 #include "HKLData.h"
-#include "Exceptions.h"
-#include "CrystalSystem.h"
 #include "Stats.h"
-#include "UnitCell.h"
-#include "InteractiveControl.h"
 #include "RunParameters.h"
-#include "StringClasses.h"
-#include "ReflectionMerging.h"
 #include "Timer.h"
 #include "LaueGroupGraph.h"
-#include "LaueClasses.h"
 
 using namespace std;
 
