@@ -27,21 +27,23 @@
  * returns whether the HKL pMat1 is greater then HKL pMat2
  * (H1 > H2) || ((H1 == H2) && ((K1 >K2) || ((K1 == K2) && (L1 > L2)))  
  */
-inline bool greaterHKL(Matrix<short> pMat1, Matrix<short> pMat2)
+inline bool greaterHKL(const Matrix<short>& pMat1, const Matrix<short>& pMat2)
 {
-    if (pMat1.getValue(0) < pMat2.getValue(0))
+    
+//      cout << ((int)pMat1.getValue(1)) << "\n";
+    if (pMat1.getValue(2) > pMat2.getValue(2))
         return true;
-    else if (pMat1.getValue(0) > pMat2.getValue(0))
+    else if (pMat1.getValue(2) < pMat2.getValue(2))
         return false;
     else
     {
-        if (pMat1.getValue(1) < pMat2.getValue(1))
+        if (pMat1.getValue(1) > pMat2.getValue(1))
             return true;
-        else if (pMat1.getValue(1) > pMat2.getValue(1))
+        else if (pMat1.getValue(1) < pMat2.getValue(1))
             return false;
         else
         {
-            if (pMat1.getValue(2) < pMat2.getValue(2))
+            if (pMat1.getValue(0) > pMat2.getValue(0))
                 return true;
             else
                 return false;
@@ -181,11 +183,11 @@ public:
     
     void buildMergedData(const HKLData& pHKLs, const RunParameters& pRunPara)
     {        
-        const static short kMin[] = {SHRT_MIN, SHRT_MIN, SHRT_MIN}; 
+       // const static short kMin[] = {SHRT_MIN, SHRT_MIN, SHRT_MIN}; 
         size_t tReflNum = pHKLs.numberOfReflections();
-        static Matrix<short> tCurHKL(1, 3);
-        static Matrix<short> tTempHKL(1, 3);
-        static Matrix<short> tZero(1, 3, 0);
+         Matrix<short> tCurHKL(1, 3);
+         Matrix<short> tTempHKL(1, 3);
+         Matrix<short> tZero(1, 3, 0);
         short tHLimit = 0;
         short tKLimit;
         short tLLimit;
@@ -223,13 +225,13 @@ public:
                     continue;
                 }
             }
-            tCurHKL.setValues(kMin, 3);
+            tCurHKL = (*pHKLs.getReflection(j)->tHKL);
             for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
             {
                 (gLaueMatrices.getMatrix((*iMatIndices)[i]))->mul(*pHKLs.getReflection(j)->tHKL, tTempHKL); //Multiply the hkl value with the current matrix
                 for (int j = 0; j < 2; j++) //Do this twice
                 {
-                    if (!greaterHKL(tTempHKL, tCurHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
+                    if (greaterHKL(tTempHKL, tCurHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
                     {
                         tCurHKL = tTempHKL;
                     }
@@ -588,12 +590,20 @@ float MergedData::calculateRFactor()
         {
             if (!(*((*tIter)->tHKL) == (*tCurHKL)))//If the HKL value has changed then 
 	    {
+                
 		if (tValues.size()>1) //As long as there are more then one reflection
 		{
-		    tSum = sum(tValues.getPointer(), tValues.size());
+		    tSum = fabsf(sum(tValues.getPointer(), tValues.size()));
 		    tSumSum += tSum;
+                        
 		    tMeanDiffSum += sumdiff(tValues, tSum/tValues.size());
 		}
+                /*if (abs((*tCurHKL).getValue(0)) == 2 && abs((*tCurHKL).getValue(1)) == 11 && abs((*tCurHKL).getValue(2)) == 5)
+                {
+                    cout << (*tCurHKL) <<" " << tValues.size() << "\n";
+                    cout << "Sum: " << tSum << "\n";
+                    cout << "Sum Of Sums" << tSumSum << "\n";
+                }*/
 		tCurHKL = (*tIter)->tHKL; //Save the next hkl value
 		tValues.clear();   //Remove all the old intensities
 	    }
