@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2004/08/09 11:23:12  rich
+C Some commented out code for testing List42 Fourier transform.
+C
 C Revision 1.64  2004/07/08 15:23:28  rich
 C Added H-treatment options to the end of L30's CIF block. The default is
 C UNKNOWN, and if left unchanged, this will cause the CIF generator to
@@ -3257,10 +3260,12 @@ CODE FOR XTWINP
       SUBROUTINE XTWINP
       DIMENSION KSIGS(25)
       DIMENSION BAD(3), TEMP(3), RJKL(3)
+      CHARACTER *15 HKLLAB
 \ISTORE
 \STORE
 \XLST06
 \XLST01
+\XLST05
 \ICOM30
 \XLST30
 \XUNITS
@@ -3271,7 +3276,7 @@ CODE FOR XTWINP
 \XIOBUF
 \QSTORE
 \QLST30
-      DATA ICOMSZ / 11 /
+      DATA ICOMSZ / 12 /
       DATA IVERSN /100 /
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -3286,7 +3291,8 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IF ( I .LT. 0 ) GO TO 9910
 
       IPLOT = ISTORE(ICOMBF+9)
-      ITYP06 = ISTORE(ICOMBF+10)
+      IAGREE = ISTORE(ICOMBF+10)
+      ITYP06 = ISTORE(ICOMBF+11)
       IULN = KTYP06(ITYP06)
       CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
@@ -3324,6 +3330,15 @@ C Calculate max distance in A^-2.
       CALL XPRVDU(NCVDU,1,0)
 
 
+      IF (IAGREE .EQ. 1) THEN
+        WRITE(CMON,'(A,2(/A))')
+     1  '^^PL PLOTDATA _XTWAG SCATTER ATTACH _TWAG',
+     1  '^^PL XAXIS TITLE ''Deviation in A^-1'' NSERIES=1 LENGTH=25',
+     1  '^^PL YAXIS TITLE ''Fo-Fc'''
+        CALL XPRVDU(NCVDU, 4,0)
+        SCALE = STORE(L5O)
+      END IF
+
 C SCAN LIST 6 FOR REFLECTIONS
 
 
@@ -3356,6 +3371,18 @@ C SCAN LIST 6 FOR REFLECTIONS
 
         END DO
 
+        IF (IAGREE .EQ. 1) THEN
+          FO = STORE(M6+3)
+          FC = STORE(M6+5)*SCALE
+          WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1       NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+          CALL XCRAS(HKLLAB, IHKLLEN)
+          WRITE(CMON,'(A,A,A,1X,F9.5,1X,F9.5)')
+     1       '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA',DMIN,
+     2        FO-FC
+          CALL XPRVDU(NCVDU,1,0)
+        END IF
+
         JSIGS = 1 + ( 25. * DMIN / DMX )
         JSIGS = MAX(JSIGS,1)
         JSIGS = MIN(JSIGS,25)
@@ -3363,6 +3390,14 @@ C SCAN LIST 6 FOR REFLECTIONS
 
         ISTAT = KLDRNR(0)
       END DO
+
+
+      IF (IAGREE .EQ. 1) THEN
+
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      END IF
+
 
       IF (IPLOT .EQ. 1) THEN
         WRITE(CMON,'(A,3(/A))')
