@@ -171,12 +171,12 @@ SystemID LaueGroup::crystalSystem() const
 	return iCrystalSystem;
 }
 
-Matrix<short>& LaueGroup::getMatrix(const size_t i) const
+Matrix<short>& LaueGroup::matrix(const size_t i) const
 {
 	return iLaueGroupMatrices->getMatrix((*iMatIndices)[i]);
 }
 
-size_t LaueGroup::numberOfMatrices() const
+size_t LaueGroup::matrixCount() const
 {
 	return iMatIndices->size();
 }
@@ -185,19 +185,15 @@ float LaueGroup::ratingForUnitCell(const UnitCell& pUnitCell)const
 {
 	Matrix<float> tMetricTensor;
 	pUnitCell.metricTensor(tMetricTensor);
-	//UnitCell tUnitCell(tMetricTensor);
-	//std::cout << "\n-----------New UnitCell-----------\n" << tUnitCell << "\n";
 	Matrix<float> tDiff(3,3);
 	Matrix<float> tOperator(3, 3);		//The current operator to be applied to the unit cell tensor. This is the inverse of the one used on the refelctions as it's i
 	Matrix<float> tOperatorTrans(3, 3); //Transpose of tOperator.
 	float tMaxElement = maximum(tMetricTensor, 0.0f, tDiff.sizeX()*tDiff.sizeY());
-	//std::cout << "\n-----------Matric tensor-----------\n" << tMetricTensor << "\n";
 	float tScalarDiff = 0;
 	for (size_t i = 1; i < iMatIndices->size(); i++) //Run through all the matrices missing the first as it is the identity
 	{   // D = T-((O'*T)*O) where T :  Metric tensor O : Operators matrix
 		
-		tOperator = getMatrix(i);		//Get the current metrix operator in reciprical space.
-		//std::cout << "\n-----------Operator-----------\n" << tOperator << "\n";
+		tOperator = matrix(i);		//Get the current metrix operator in reciprical space.
 		tOperator.inv();				//Convert it into real space.
 		tOperatorTrans = tOperator; 
 		tOperatorTrans.transpose(); //Transpose the matrix
@@ -205,19 +201,7 @@ float LaueGroup::ratingForUnitCell(const UnitCell& pUnitCell)const
 		tDiff.mul(tOperator, tOperatorTrans); //Multiply the metric tensor by the current matrix
 		
 		tOperatorTrans.sub(tMetricTensor, tDiff);
-		
-	//	tDiff.mul(tDiff, tOperatorTrans);
-		
-		
-		//
-		//std::cout << "\n-----------test-----------\n" << tDiff << "\n";
-		//tMetricTensor.sub(tOperator, tDiff); 
-		//std::cout << "\n-----------Matric tensor differences-----------\n" << tDiff << "\n";
-	//	float tMean = mean(tDiff, 0.0f, tDiff.sizeX()*tDiff.sizeY());
-		//std::cout << "Average difference: " << tMean << "\n";
-	//	tDiff.sub(tMean, tOperator); // D - \D\ = O     \D\ : is the mean of D
-		//std::cout << "differences from mean: \n" << tOperatorTrans << "\n" << tOperatorTrans.abssum();
-		//std::cout << "difference: " << tDiff.abssum() <<"\n";
+	
 		tScalarDiff = max((tDiff.abssum()/tMaxElement), tScalarDiff);
 	}
 	return tScalarDiff;
@@ -229,9 +213,9 @@ Matrix<short> LaueGroup::maxEquivilentHKL(const Matrix<short>& pHKL) const
 	Matrix<short> tZero(1, 3, 0);
 	Matrix<short> tCurHKL = pHKL;
 	
-	for (size_t i = 0; i < this->numberOfMatrices(); i++) //Run through all the matrices.
+	for (size_t i = 0; i < this->matrixCount(); i++) //Run through all the matrices.
 	{
-		getMatrix(i).mul(pHKL, tTempHKL); //Multiply the hkl value with the current matrix
+		matrix(i).mul(pHKL, tTempHKL); //Multiply the hkl value with the current matrix
 		for (int j = 0; j < 2; j++) //Do this twice
 		{
 			if (greaterHKL(tTempHKL, tCurHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
@@ -243,17 +227,6 @@ Matrix<short> LaueGroup::maxEquivilentHKL(const Matrix<short>& pHKL) const
 	}
 	return tCurHKL;
 }
-
-/*std::ostream& LaueGroup::output(std::ostream& pStream) const
-{
-	pStream.width(13);
-	return pStream << (*this);
-}*/
-
-/*std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup)
-{
-	return pLaueGroup.output(pStream);
-}*/
 
 /********************************************************/
 /* LaueGroups										    */
