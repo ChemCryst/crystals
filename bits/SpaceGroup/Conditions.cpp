@@ -105,14 +105,16 @@ std::ostream& operator<<(std::ostream& pStream, Condition& pCondition)
     return pCondition.output(pStream);
 }
 
-Conditions::Conditions():ArrayList<Condition>(4)
+Conditions::Conditions():vector<Condition*>()
 {}
 
 Conditions::~Conditions()
 {
-    for (int i = iItemCount-1; i >= 0; i--)
+	vector<Condition*>::iterator tIter;
+	
+    for (tIter = begin(); tIter != end(); tIter++)
     {
-        Condition* tCondition = remove(i);
+        Condition* tCondition = (*tIter);
         if (tCondition)
         {
             delete tCondition;
@@ -122,7 +124,7 @@ Conditions::~Conditions()
 
 int Conditions::getID(int pIndex)
 {
-    Condition* tCondition = get(pIndex);
+    Condition* tCondition = (*this)[pIndex];
     
     if (!tCondition)
     {
@@ -133,7 +135,7 @@ int Conditions::getID(int pIndex)
 
 char* Conditions::getName(int pIndex)
 {
-    Condition* tCondition = get(pIndex);
+    Condition* tCondition = (*this)[pIndex];
     
     if (!tCondition)
     {
@@ -144,7 +146,7 @@ char* Conditions::getName(int pIndex)
 
 Matrix<short>* Conditions::getMatrix(int pIndex)
 {
-    Condition* tCondition = get(pIndex);
+    Condition* tCondition = (*this)[pIndex];
     
     if (!tCondition)
     {
@@ -155,7 +157,7 @@ Matrix<short>* Conditions::getMatrix(int pIndex)
 
 float Conditions::getMult(int pIndex)
 {
-    Condition* tCondition = get(pIndex);
+    Condition* tCondition = (*this)[pIndex];
     
     if (!tCondition)
     {
@@ -181,7 +183,18 @@ char* Conditions::addCondition(char* pLine)	//Returns the point which the line a
         tNext++;
         delete[] tString;
     }
-    setWithAdd(tCondition, tCondition->getID());
+	if (size() < (size_t)tCondition->getID()+1)
+	{
+		resize(tCondition->getID()+1);
+	}
+	if ((*this)[tCondition->getID()])
+	{
+		delete tCondition;
+	}
+	else
+	{
+		(*this)[tCondition->getID()] = tCondition;
+	}
     return tNext;
 }
 
@@ -220,10 +233,10 @@ void Conditions::readFrom(filebuf& pFile)
 
 std::ostream& Conditions::output(std::ostream& pStream)
 {
-    int tSize = length();
+    int tSize = size();
     for (int i = 0; i < tSize; i++)
     {
-        Condition* tCondition = get(i);
+        Condition* tCondition = (*this)[i];
         if (tCondition)
         {
             std::cout << *tCondition << "\n";

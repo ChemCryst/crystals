@@ -11,6 +11,7 @@
 #define __CONDITIONS_H__
 #include "Collections.h"
 #include "Matrices.h"
+#include <vector>
 
 class Condition:public Matrix<short>
 {
@@ -29,7 +30,7 @@ class Condition:public Matrix<short>
 
 std::ostream& operator<<(std::ostream& pStream, Condition& pCondition);
 
-class Conditions:public ArrayList<Condition>
+class Conditions:public vector<Condition*>
 {
     public:
         Conditions();
