@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  1999/12/23 17:29:31  ckp2
+C djw  fix unwanted output in Monitor file
+C
 C Revision 1.16  1999/12/15 14:54:53  ckp2
 C djw  Add set autoupdate on/off, force ON in summary.
 C
@@ -173,6 +176,8 @@ C
 \XERVAL
 \XIOBUF
 \XGUIOV
+CDJW DEC 99 ADD GLOBAL SCRIPT VARIABLES SO WE CAN GET 'VERIFY'
+\XSCGBL
 C
 C
 C
@@ -314,7 +319,8 @@ C          CALL VGACOL ( 'OFF', 'BLU', 'WHI')
 C-----    SWITCH ON LINE FEEDS
           ICPSTS = 1
         ENDIF
-       if (crdlwc(1:2) .ne. '^^') WRITE (NCAWU,1451 ) CRDLWC(1:IFIN)
+       if ((crdlwc(1:2) .ne. '^^') .OR. (ISCVER .NE. 0))
+     1 WRITE (NCAWU,1451 ) CRDLWC(1:IFIN)
        WRITE ( CMON,1451) CRDLWC(1:IFIN)
        CALL XPRVDU(NCVDU, 1,0)
 1451   FORMAT ( 1X , A )
@@ -4327,12 +4333,16 @@ C
 C   0  DO NOT PRINT THE CARDS AS THEY ARE READ IN.
 C   1  PRINT THE INPUT CARDS WITH LINE NUMBERS AND LEADING ZEROES
 C
+CDJW OUTPUT TO LISTING AND MONITOR FILES IS ENABLED EITHER BY ICAT 'ON'
+C    OR BY SCRIPT VERIFY 'TRUE'
 C--
 \XCARDS
 \XCHARS
 \XUNITS
 \XSSVAL
 \XIOBUF
+CDJW DEC 99  SCRIPT GLOBALS TO ENABLE/DISABLE MONITORING
+\XSCGBL
 C
 C -- CHECK IF THIS CARD HAS BEEN PRINTED BEFORE
       IF ( MON .EQ. NI ) RETURN
@@ -4373,11 +4383,13 @@ cdjwdec99 slightly re-organied
       IF ( ICAT .GT. 0 ) THEN
          CALL XPRVDU(NCVDU, 1, 0)
       ENDIF
+      IF ((ISCVER .GT. 0) .OR. (ICAT .GT. 0)) THEN
          WRITE(NCAWU,'(A)') CMON(1)(:)
          IF (ISSPRT .EQ. 0) 
      1   WRITE(NCWU,1150)NUMB(K+1),NUMB(L+1),NUMB(M+1),NUMB(N+1),
      2   (LCMAGE(I),I=1,IFIN),(IB,I=1,J)
 1150     FORMAT(1X,4A1,'*  ',80A1,2A1,'*** IGNORED/ERROR(S) *** ')
+      ENDIF
 C
       RETURN
       END
