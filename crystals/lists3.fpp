@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/09/11 09:29:16  ckp2
+C New #DISK options. Give a list number to the PRINT directive to only
+C get info for that list.
+C
 C Revision 1.8  2001/09/07 14:21:35  ckp2
 C Fiddled around with #DISK to allow time and date to be stored for each entry.
 C There is a year 2038 problems with the date format, it'll seem like 1970 again.
@@ -1350,10 +1354,12 @@ C
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2815 ) ITYPE , ISER , MINLST , MAXLST
+     1 ,MAXLST-MINLST+1
       ENDIF
       WRITE ( NCAWU , 2815 ) ITYPE , ISER , MINLST , MAXLST
+     1 ,MAXLST-MINLST+1
 2815  FORMAT ( 1X , 'List type ' , I3 , ' serial ' , I3 ,
-     2 ' uses from ' , I10 , ' to ' , I10 )
+     2 ' uses from ' , I10 , ' to ' , I10, I10 )
 2817  CONTINUE
 C
       IF ( MINLST .LT. MINDSC ) GO TO 2890
@@ -1378,10 +1384,12 @@ C
       IF ( IDSPLV .GT. 1 ) GO TO 2827
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2825 ) IRECNM , ISTART , IEND
+     1 ,IEND-ISTART+1
       ENDIF
       WRITE ( NCAWU , 2825 ) IRECNM , ISTART , IEND
+     1 ,IEND-ISTART+1
 2825  FORMAT ( 1X , 'Record type ' , I5 , '  Data from ' , I10 ,
-     2 ' to ' , I10 )
+     2 ' to ' , I10, I10 )
 2827  CONTINUE
 C
       IF ( ISTART .LT. MINLST ) GO TO 2894
