@@ -11,6 +11,14 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2000/07/04 14:41:21  ckp2
+// Gui changes since last year.
+// Mainly chart handling for multiple charts in one window.
+// Some Cx files only changed to split long lines to make inclusion
+// into "the thesis" more automatic.
+// New GUIMENU.SSR has more "right-click" options and swapped panes for model
+// and text output.
+//
 // Revision 1.16  1999/07/30 20:17:59  richard
 // RIC: Added Focus instruction to give the specified window or object
 // the users input focus.
@@ -126,6 +134,7 @@
 #include	"cxapp.h"
 #include	"cxeditbox.h"
 #include	"crmultiedit.h"
+#include        "crtextout.h"
 #include	"ccchartdoc.h"
 #include	"ccmodeldoc.h"
 #include	"ccquickdata.h"
@@ -661,10 +670,10 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
                         break;
 			}
                   case kTFontIncrease:
-			{
-				tokenList->GetToken();
+                        {
+                        tokenList->GetToken();
                         Boolean increase = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-				tokenList->GetToken(); // Remove that token!
+                        tokenList->GetToken(); // Remove that token!
 
                         int size = 100;
                         CcString cgeom = GetKey( "FontSize" );
@@ -672,10 +681,11 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
                             size = atoi( cgeom.ToCString() );
 
                         size = max ( size + ( increase? 10:-10 ), 0 );
-                        CrMultiEdit* theElement = (CrMultiEdit*)GetTextOutputPlace();
-                        if ( theElement !=nil )
-                            theElement->SetFontHeight( size );
-                        StoreKey( "FontSize", CcString ( size ) );
+//                        CrTextOut* theElement = (CrTextOut*)GetTextOutputPlace();
+  //                      if ( theElement !=nil )
+    //                        theElement->SetFontHeight( size );
+      //                  StoreKey( "FontSize", CcString ( size ) );
+
                         break;
 			}
 
@@ -1131,8 +1141,8 @@ Boolean	CcController::GetCrystalsCommand( char * line )
     if (CcString(line) == "#DIENOW") endthread(0);
 
 //Signal the text output that NOECHO has finished. (In case it was ever started.)
-      ((CrMultiEdit*)GetTextOutputPlace())->NoEcho(false);
-      ((CrMultiEdit*)GetBaseTextOutputPlace())->NoEcho(false);
+//      ((CrTextOut*)GetTextOutputPlace())->NoEcho(false);
+//      ((CrTextOut*)GetBaseTextOutputPlace())->NoEcho(false);
 
       m_Wait = true;
 
@@ -1431,6 +1441,21 @@ void CcController::RemoveInputPlace(CrGUIElement* input)
             mInputWindowList.RemoveItem();
       }
 }
+
+void CcController::RemoveWindowFromList(CrWindow* window)
+{
+// CxWindows can be destroyed by the framework, when their parent
+// windows are destroyed. This bypasses our normal destruction
+// method, so to be safe, all dying windows call this function
+// to 'de-register' themselves from the Controller's list.
+
+      while ( mWindowList.FindItem((void*) window) )
+      {
+            mWindowList.RemoveItem();
+      }
+}
+
+
 
 CcModelDoc* CcController::FindModelDoc(CcString name)
 {

@@ -39,6 +39,7 @@ class	CcController
             void RemoveTextOutputPlace(CrGUIElement* output);
             void RemoveProgressOutputPlace(CrGUIElement* output);
             void RemoveInputPlace(CrGUIElement* input);
+            void RemoveWindowFromList(CrWindow* window);
 
 		CrGUIElement* GetTextOutputPlace();
             CrGUIElement* GetInputPlace();
