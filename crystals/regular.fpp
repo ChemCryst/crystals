@@ -1,4 +1,9 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.34  2004/08/09 14:41:08  rich
+c Now EQUALATOM *forces* equal atom types during #MATCH. If not specified,
+c the program will attempt to use atom types unless it discovers Q atoms
+c amongst the fragments, which causes it to switch into EQUALATOM mode.
+c
 c Revision 1.33  2004/08/09 12:06:23  rich
 c Output #MATCH error status to a script variable.
 c
@@ -1121,8 +1126,15 @@ C Store potential new operator in OPN
            END DO
            OPN(4,K2) = 0.0
           END DO
+c
 C Anna: Work out translation part by applying rotation to the NEW centroid
 C (CENTN) and then subtracting from the OLD centroid (CENTO).
+C WSPAC3, or R, transforms from NEW to OLD, but is missing the translation part
+C if we call Co the old centroid and Cn the new centroid, then the transform
+C must be  Xold - Cold = R * ( Xnew - Cnew )
+C thus, Xold = ( R * Xnew ) - ( R * Cnew ) + Cold
+C Co - ( R * Cnew ) 
+
           CALL XMLTMM(WSPAC3,CENTN,ATEMP,3,3,1)
           CALL XSUBTR (CENTO,ATEMP,OPN(1,4),3)
           OPN(4,4) = 1.0
@@ -1651,6 +1663,13 @@ C --
 C --
 C -- CALCULATE ROTATION DILATION MATRIX
 C --
+
+C
+C
+C   Xold = RD * Xnew
+C   Xold * XnewT = RD * Xnew * XnewT
+C   Xold * XnewT * ( Xnew * XnewT )^-1 = RD
+
 C -- W1 = (NEW) * TRANSPOSE (NEW)
       CALL XRGMMT (STORE(LNEW),STORE(LNEW),WSPAC1(1,1),MDOLD,MDOLD,NOLD)
 C -- W3 = (OLD) * TRANSPOSE (NEW)
