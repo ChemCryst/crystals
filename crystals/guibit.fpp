@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2000/02/23 12:22:06  ckp2
+C djw abortive attempt to trap NaN values
+C
 C Revision 1.23  2000/01/20 16:57:58  ckp2
 C ric  fix square root problem
 C
@@ -1071,9 +1074,11 @@ C As deviation goes positive, KB and KG should decrease giving a red colour
 C As deviation goes negative, KR and KG should decrease giving a blue colour
 C i.e. +ve devn. KR 255, KB ->0  KG ->0
 C      -ve devn  KR ->0, KB 255  KG ->0
-                      KR = MAX ( 0, MIN (255, NINT (255+85*DEVN) ) )
-                      KG = MAX ( 0, MIN (255, NINT (255-85*ABS(DEVN))))
-                      KB = MAX ( 0, MIN (255, NINT (255-85*DEVN) )  )
+C But, the deviation starts being coloured from 1.0, rather than 0.0
+C DEVN = DEVN - 1
+                      KR = MAX ( 0, MIN (255, NINT (383+128*DEVN) ) )
+                      KG = MAX ( 0, MIN (255, NINT (383-128*ABS(DEVN))))
+                      KB = MAX ( 0, MIN (255, NINT (383-128*DEVN) )  )
                   ENDIF
                   WRITE ( CMON, '(A,10(1X,I5))')
 
