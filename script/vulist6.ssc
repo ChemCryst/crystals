@@ -1,0 +1,20 @@
+%SCRIPT VULIST6
+%%
+%  IF ( EXISTS 6 .NE. 1 ) THEN
+{E No LIST 6 present. Get some reflections from somewhere first.
+%    FINISH
+%  END IF
+%%
+%  COPY '#RELEASE PUNCH SCPLST6.DAT'
+%  ON ERROR CONTINUE
+%  BLOCK
+%    COPY '#PUNCH 6 C'
+%    COPY 'END'
+%  END BLOCK
+%  COPY '#RELEASE PUNCH bfile.pch'
+%%
+%  CLEAR
+-GIL%    INSERT '#use crysdir:\script\vulist6.dat'
++GIL%    INSERT '#use crysdir:/script/vulist6.dat'
+%  SEND
+%END SCRIPT
