@@ -1,0 +1,20 @@
+%SCRIPT XEXTIN12
+ You will be shown an analysis of residuals.
+%  VARIABLE LOGICAL EDONE EMASK DOEXTNC
+%  EVALUATE EDONE = TRUE
+%  EVALUATE EMASK = TRUE
+%  COPY '#SCRIPT XPUTINFO'
+%  COPY '#ANALYSE'
+%  COPY 'END'
+                 <--->    <--->
+                 Col 3    Col 4
+ If the entries near the bottom of column 3 are generally lower than
+ those in column 4, you need to refine an extinction parameter.
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED -
+ 'Do you want to refine an extinction parameter?' 'YES'
+%  EVALUATE DOEXTNC = FALSE
+%  IF VALUE .EQ. 1 THEN
+%     EVALUATE DOEXTNC = TRUE
+%  END IF
+%END SCRIPT
