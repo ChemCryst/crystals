@@ -1,29 +1,34 @@
 %SCRIPT xfovsfc
 ^^WI WINDOW xfovsfc 'Fo versus Fc' KEEP SIZE MODAL
 ^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'
-^^WI GRID MAIN NROWS=7 NCOLS=3
+^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
+^^WI  {
 ^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI   {
 ^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
 ^^WI    {
 ^^WI     @ 1,1 STATIC XFW1
-^^WI 'You are looking at a scatter plot of Fo versus Fc.'
+^^WI 'You are looking at a scatter plot of Fo versus Fc. There should be'
 ^^WI     @ 2,1 STATIC XFW2
-^^WI 'There should be a good correlation between these'
+^^WI 'a good correlation between them. Investigate any outliers. A general'
 ^^WI     @ 3,1 STATIC XFW3
-^^WI 'two factors.'
+^^WI 'flattening at high values could be a sign of extinction.'
 ^^WI    }
 ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
-^^WI  @ 4,2 PLOTWINDOW _VFOFC NROWS=20 NCOLS=64
-^^WI  @ 6,2 GRID EXBT NROWS=1 NCOLS=1
-^^WI  {
-^^WI   @ 1,1 BUTTON EXT_BOK 'Close' DEFAULT
+^^WI   @ 4,2 PLOTWINDOW _VFOFC NROWS=20 NCOLS=64
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 BUTTON EXT_BOK 'Close' DEFAULT
+^^WI   }
 ^^WI  }
+^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^CO SENDPROGRESSTO _FOFCPR
 %  COPY '#sum list 6 level=plot'
 %  COPY 'END'
 %  VERIFY EXT_BOK EXT_BXX
