@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.48  2003/07/15 09:46:21  rich
 C New SGPLOT instruction. Takes a 3x3 matrix,A, to select reflection classes
 C (if h == Ah, then the reflection is selected). Takes a 3x1 vector, B, and
@@ -3267,15 +3270,16 @@ c          CALL XPRVDU(NCVDU,1,0)
       END DO
 
       IF (IPLOT .EQ. 1) THEN
-        WRITE(CMON,'(A,3(/A))')
-     1  '^^PL PLOTDATA _XSPGA BARGRAPH ATTACH _SPGA',
+        WRITE(CMON,'(A,4(/A))')
+     1  '^^PL PLOTDATA _XSPGA BARGRAPH ATTACH _SPGA KEY',
      1  '^^PL XAXIS TITLE ''Fobs'' NSERIES=2 LENGTH=50',
      1  '^^PL YAXIS TITLE ''Number of observations''',
-     1 '^^PL SERIES 1 SERIESNAME ''Number of reflections with Fo eq'''
-        CALL XPRVDU(NCVDU, 4,0)
+     1 '^^PL SERIES 1 SERIESNAME ''Condition TRUE''',
+     1 '^^PL SERIES 2 SERIESNAME ''Condition FALSE'''
+        CALL XPRVDU(NCVDU, 5,0)
 
         DO I = 1, 50
-          WRITE(CMON,'(A,1X,F9.5,1X,A,1X,I6,1X,I6)')
+          WRITE(CMON,'(A,1X,F9.2,1X,A,1X,I6,1X,I6)')
      1    '^^PL LABEL',(I-6)*RFOMAX/45.0,'DATA',KSIGS(I,1),KSIGS(I,2)
           CALL XPRVDU(NCVDU,1,0)
         END DO
