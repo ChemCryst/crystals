@@ -3360,7 +3360,7 @@ DISPLAY            1    1
      OFF            LOW            MEDIUM         HIGH
     .TYPE               1    0    0    0    0         5
     .OF                 3    0    0    0    0         0
-GENERALEDIT       22    0
+GENERALEDIT       23    0
    4    4096 CRYSTALSPUBLISH
    1.LOCATE             1 9999    0    0
          1
@@ -3456,7 +3456,14 @@ GENERALEDIT       22    0
   21.GETSERIAL          1 9999    0    0
          4
     .VARIABLE           4   -1    1    0
-  22.GENERALEDIT        1    2    0    0
+  22.SORT               3 9999    0    0
+         1    3    3
+    .OFFSET             1   -1    1    0
+    .MODE               2    0    1    2    1 REAL
+     INTEGER        REAL
+    .DIRECTION          3   -1    1    2    1
+     ASCENDING      DESCENDING
+  23.GENERALEDIT        1    2    0    0
          1
     .TYPE               1   -1    1    0
 CIFOUT             0    0    

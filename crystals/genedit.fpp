@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2002/10/01 14:09:12  rich
+C DISPLAY KEYS was causing problems if CMON buffer not emptied first.
+C
 C Revision 1.9  2002/08/29 15:16:07  richard
 C OVERWRITE and NEW parameters added to GeneralEdit's WRITE directive.
 C
@@ -156,13 +159,13 @@ C      LOCATE      KEY         DISPLAY     FORMAT      SEARCH
 C      GROUP       ERROR       INSERT      DELETE      WRITE
 C      TRANSFER    CHANGE      RECORD      CHECK       OPERATE
 C      TOP         NEXT        PREVIOUS    BOTTOM
-C      TRANSHEAD   GETSERIAL   GENERALEDIT
+C      TRANSHEAD   GETSERIAL   SORT        GENERALEDIT
 C
       GO TO ( 2100 , 2200 , 2300 , 2400 , 2500 ,
      2 2600 , 2700 , 2800 , 2900 , 3000 ,
      3 3100 , 3200 , 3300 , 3400 , 3500 ,
      4 2420,  2440 , 2460 , 2480 , 
-     5 3150 , 3160,  1500 , 9920 ) , IDIR
+     5 3150 , 3160,  3170,  1500 , 9920 ) , IDIR
       GO TO 9920
 C
 1500  CONTINUE
@@ -443,6 +446,22 @@ C
 C
       ISTAT = KSCTRN ( IDIREC , CTVARI , ILSERI, 1 )
 C              
+      GO TO 8000
+C RICOCT02 -- Sort the records in the current recordtype
+3170  CONTINUE
+C -- 'SORT' DIRECTIVE
+      IOFF = ISTORE(ICOMBL)
+      IMODE = ISTORE(ICOMBL+1) 
+      IDIREC = 3 - 2 * ISTORE(ICOMBL+2)
+
+      IF ( ( NGRP .LE. 1 ) .OR. ( LDATA .LE. 0 ) ) GOTO 8000
+
+        IF ( IMODE .EQ. 1 ) THEN
+            CALL SSORTI ( LDATA, NGRP, LENGRP, IOFF * IDIREC )
+        ELSE
+            CALL SSORT ( LDATA, NGRP, LENGRP, IOFF * IDIREC )
+        END IF
+
       GO TO 8000
 C
 3200  CONTINUE
