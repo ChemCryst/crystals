@@ -1,4 +1,14 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.18  2003/09/15 17:57:35  rich
+c
+c When outputing #REGULARISE COMPARE diagrams for Cameron, convert
+c the Uij's to the best plane coordinate system, the maths is like
+c this: Unew = inv(M) R N U trans(N) trans(R) trans(inv(M)),
+c where U is the original tensor, N is a diagonal matrix containing the
+c reciprocal unit cell lengths, R is the matrix converting crystal
+c fractions to best plane coordinate system, M is a diagonal matrix
+c containing the reciprocal best plance cell lengths (ie. the unit matrix).
+c
 c Revision 1.17  2003/07/17 01:03:30  rich
 c Character buffer was too short.
 c
@@ -2573,23 +2583,24 @@ C Write header for superimposed orthogonal atom lists:
 1050  FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
 
       DO I=1,NOLD
-         INDOLD=LOLD+MDOLD*(I-1)
-         INDNEW=LNEW+MDNEW*(I-1)
-         JOLD=ISTORE(LRENM+(MDRENM*(I-1))+4)
-         JNEW=ISTORE(LRENM+(MDRENM*(I-1))+5)
+       INDOLD=LOLD+MDOLD*(I-1)
+       INDNEW=LNEW+MDNEW*(I-1)
+       JOLD=ISTORE(LRENM+(MDRENM*(I-1))+4)
+       JNEW=ISTORE(LRENM+(MDRENM*(I-1))+5)
 
 C Get full tensor from upper diagonal storage:
-         J=JOLD+7
-         RTEMP(1)=STORE(J)    !U11
-         RTEMP(2)=STORE(J+5)  !U12
-         RTEMP(3)=STORE(J+4)  !U13
-         RTEMP(4)=STORE(J+5)  !U21
-         RTEMP(5)=STORE(J+1)  !U22
-         RTEMP(6)=STORE(J+3)  !U23
-         RTEMP(7)=STORE(J+4)  !U31
-         RTEMP(8)=STORE(J+3)  !U32
-         RTEMP(9)=STORE(J+2)  !U33
+       J=JOLD+7
+       RTEMP(1)=STORE(J)    !U11
+       RTEMP(2)=STORE(J+5)  !U12
+       RTEMP(3)=STORE(J+4)  !U13
+       RTEMP(4)=STORE(J+5)  !U21
+       RTEMP(5)=STORE(J+1)  !U22
+       RTEMP(6)=STORE(J+3)  !U23
+       RTEMP(7)=STORE(J+4)  !U31
+       RTEMP(8)=STORE(J+3)  !U32
+       RTEMP(9)=STORE(J+2)  !U33
 
+       IF ( NINT(STORE(JOLD+3)) .EQ. 0) THEN
 C Transform = inv(M) * R * N * U * trans(N) * trans(R) * trans(inv(M))
 C where N is a matrix with a*, b* and c* on the diagonal,
 C and M is a matrix with a*, b* and c* of the best plane on
@@ -2601,37 +2612,41 @@ C Start from the middle to the left:
 C Now to the right:
          CALL XMLTMM (RTEMP,RCPD,STEMP,3,3,3)  ! RESULT*N
          CALL XMLTMT (STEMP,CFBPOL,RTEMP,3,3,3)! RESULT*R'
+       END IF
 
-         WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3), !Type,ser,occ,flag
-     1      (STORE(J),J=INDOLD,INDOLD+2),             !X,Y,Z
-     2      RTEMP(1),RTEMP(5),RTEMP(9),RTEMP(6),RTEMP(3),RTEMP(2), !U's
-     2      STORE(JOLD+13),                           !Spare
-     3      1,(ISTORE(J),J=JOLD+15,JOLD+17)           !Extras
+       WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3), !Type,ser,occ,flag
+     1    (STORE(J),J=INDOLD,INDOLD+2),             !X,Y,Z
+     2    RTEMP(1),RTEMP(5),RTEMP(9),RTEMP(6),RTEMP(3),RTEMP(2), !U's
+     2    STORE(JOLD+13),                           !Spare
+     3    1,(ISTORE(J),J=JOLD+15,JOLD+17)           !Extras
 
 
 C Get full tensor from upper diagonal storage:
-         J=JNEW+7
-         RTEMP(1)=STORE(J)    !U11
-         RTEMP(2)=STORE(J+5)  !U12
-         RTEMP(3)=STORE(J+4)  !U13
-         RTEMP(4)=STORE(J+5)  !U21
-         RTEMP(5)=STORE(J+1)  !U22
-         RTEMP(6)=STORE(J+3)  !U23
-         RTEMP(7)=STORE(J+4)  !U31
-         RTEMP(8)=STORE(J+3)  !U32
-         RTEMP(9)=STORE(J+2)  !U33
+       J=JNEW+7
+       RTEMP(1)=STORE(J)    !U11
+       RTEMP(2)=STORE(J+5)  !U12
+       RTEMP(3)=STORE(J+4)  !U13
+       RTEMP(4)=STORE(J+5)  !U21
+       RTEMP(5)=STORE(J+1)  !U22
+       RTEMP(6)=STORE(J+3)  !U23
+       RTEMP(7)=STORE(J+4)  !U31
+       RTEMP(8)=STORE(J+3)  !U32
+       RTEMP(9)=STORE(J+2)  !U33
+
+       IF ( NINT(STORE(JNEW+3)) .EQ. 0) THEN
 C Start from the middle to the left:
          CALL XMLTMM (RCPD,RTEMP,STEMP,3,3,3)  ! N*U
          CALL XMLTMM (CFBPNE,STEMP,RTEMP,3,3,3)! R*RESULT
 C Now to the right:
          CALL XMLTMM (RTEMP,RCPD,STEMP,3,3,3)  ! RESULT*N
          CALL XMLTMT (STEMP,CFBPNE,RTEMP,3,3,3)! RESULT*R'
+       END IF
 
-         WRITE(NCFPU1,2016) (STORE(J),J=JNEW,JNEW+3), 
-     1      (STORE(J),J=INDNEW,INDNEW+2),
-     2      RTEMP(1),RTEMP(5),RTEMP(9),RTEMP(6),RTEMP(3),RTEMP(2),
-     2      STORE(JNEW+13),                     
-     3      2,(ISTORE(J),J=JNEW+15,JNEW+17)
+       WRITE(NCFPU1,2016) (STORE(J),J=JNEW,JNEW+3), 
+     1   (STORE(J),J=INDNEW,INDNEW+2),
+     2   RTEMP(1),RTEMP(5),RTEMP(9),RTEMP(6),RTEMP(3),RTEMP(2),
+     2   STORE(JNEW+13),                     
+     3   2,(ISTORE(J),J=JNEW+15,JNEW+17)
       END DO
 
 2016     FORMAT
