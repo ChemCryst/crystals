@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:02:15  richard
+//   New toolbar classes.
+//
 
 #include    "crystalsinterface.h"
 #include    "crtoolbar.h"
@@ -40,7 +43,8 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
     theCxToolBar->m_ToolBar->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-    theCxToolBar->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL,wxDEFAULT_STYLE);
+    theCxToolBar->Create(guiParent,-1);
+    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount);
 #endif
     return theCxToolBar;
 
@@ -50,17 +54,38 @@ CxToolBar::CxToolBar( CrToolBar * container )
       : BASETOOLBAR()
 {
     ptr_to_crObject = container;
+#ifdef __CR_WIN__
     m_ImageList = new CImageList();
     m_ImageList->Create(16,15,ILC_COLOR24|ILC_MASK,0,2);
-    m_ImageIndex = 0;
     m_ToolBar = new CToolBarCtrl();
+#endif
+#ifdef __BOTHWX__
+    m_ToolBar = new wxToolBar();
+#endif
+    m_ImageIndex = 0;
 }
 
 CxToolBar::~CxToolBar()
 {
   mToolBarCount--;
+#ifdef __CR_WIN__
   delete m_ImageList;
-  m_ToolBar->DestroyWindow(); delete m_ToolBar;
+  m_ToolBar->DestroyWindow();
+  delete m_ToolBar;
+#endif
+#ifdef __BOTHWX__
+  m_ToolBar->Destroy();
+#endif
+}
+
+void CxToolBar::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 void    CxToolBar::AddTool( CcTool* newTool )
@@ -69,6 +94,7 @@ void    CxToolBar::AddTool( CcTool* newTool )
 
   if ( newTool->toolType == CT_SEP )
   {
+#ifdef __CR_WIN__
     TBBUTTON sepButton;
     sepButton.idCommand = 0;
     sepButton.fsStyle = TBSTYLE_SEP;
@@ -77,6 +103,10 @@ void    CxToolBar::AddTool( CcTool* newTool )
     sepButton.iBitmap = 0;
     sepButton.dwData = 0;
     m_ToolBar->AddButtons(1,&sepButton);
+#endif
+#ifdef __BOTHWX__
+    m_ToolBar->AddSeparator();
+#endif
     newTool->CxID = 0;
     return;
   }
@@ -85,11 +115,13 @@ void    CxToolBar::AddTool( CcTool* newTool )
 //Check bitmap type
 
   int bitmapIndex=-1;
-  CBitmap* abitmap = new CBitmap();
+  newTool->CxID = (CcController::theController)->FindFreeToolId();
+
 
   if ( newTool->toolType == CT_APPICON )
   {
     CcString file = newTool->tImage;
+#ifdef __CR_WIN__
     HICON hIcon = ExtractIcon( AfxGetInstanceHandle( ), file.ToCString(), 0 );
     if( hIcon )
     {
@@ -97,16 +129,29 @@ void    CxToolBar::AddTool( CcTool* newTool )
       bitmapIndex = m_ImageIndex++;
       DestroyIcon(hIcon);
     }
+#endif
+#ifdef __BOTHWX__
+    wxIcon mycon( file.ToCString(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
+    if ( mycon.Ok() )
+    {
+      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.ToCString());
+      m_ToolBar->Realize();
+      m_ImageIndex++;
+    }
+#endif
   }
   else
   {
+#ifdef __CR_WIN__
+    CBitmap* abitmap = new CBitmap();
+    HBITMAP hBmp;
+#endif
     CcString crysdir ( getenv("CRYSDIR") );
     if ( crysdir.Length() == 0 )
     {
       cerr << "You must set CRYSDIR before running crystals.\n";
       return;
     }
-    HBITMAP hBmp;
     int nEnv = (CcController::theController)->EnvVarCount( crysdir );
     int i = 0;
     bool noLuck = true;
@@ -121,9 +166,24 @@ void    CxToolBar::AddTool( CcTool* newTool )
       CcString file = dir + "\\script\\" + newTool->tImage;
 #endif
 
+#ifdef __BOTHWX__
+      wxBitmap mymap ( file.ToCString(), wxBITMAP_TYPE_BMP );
+      if( mymap.Ok() )
+      {
+        noLuck = false;
+        m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.ToCString(), "" );
+        m_ToolBar->Realize();
+        m_ImageIndex++;
+      }
+      else if ( i >= nEnv )
+      {
+        LOGERR ( "Bitmap not found " + newTool->tImage );
+        return;
+      }
+    }
+#endif
 #ifdef __CR_WIN__
       hBmp = (HBITMAP)::LoadImage( NULL, file.ToCString(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
-#endif
       if( hBmp )
       {
         noLuck = false;
@@ -134,7 +194,6 @@ void    CxToolBar::AddTool( CcTool* newTool )
         return;
       }
     }
-
     abitmap->Attach( hBmp );
 
     BITMAP bm;
@@ -150,23 +209,22 @@ void    CxToolBar::AddTool( CcTool* newTool )
     {
        LOGERR ("Bitmap, "+newTool->tImage+" is wrong height or width, must be 16 wide and 15 high.");
     }
+    delete abitmap;
+#endif
   }
 
-
+#ifdef __CR_WIN__
   m_ToolBar->SetImageList(m_ImageList);
-
   TBBUTTON tbbutton;
   tbbutton.iBitmap = bitmapIndex;
   tbbutton.iString = m_ToolBar->AddStrings(newTool->tText.ToCString());
   tbbutton.dwData = 0;
   tbbutton.fsState = TBSTATE_ENABLED;
   tbbutton.fsStyle = TBSTYLE_BUTTON;
+  tbbutton.idCommand = newTool->CxID;
   if ( newTool->toggleable ) tbbutton.fsStyle = TBSTYLE_BUTTON|TBSTYLE_CHECK   ;
-  newTool->CxID = tbbutton.idCommand = (CcController::theController)->FindFreeToolId();
-
   m_ToolBar->AddButtons(1,&tbbutton);
-
-  delete abitmap;
+#endif
 
 }
 
@@ -178,6 +236,7 @@ void    CxToolBar::SetGeometry( int top, int left, int bottom, int right )
 #endif
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
+      m_ToolBar->SetSize(0,0,right-left,bottom-top);
 #endif
 
 }
@@ -187,16 +246,29 @@ CXGETGEOMETRIES(CxToolBar)
 
 int CxToolBar::GetIdealWidth()
 {
+#ifdef __CR_WIN__
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
    return tbs.cx;
+#endif
+#ifdef __BOTHWX__
+//   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolSize().GetWidth() ) );
+//   LOGSTAT ( "Toolsep = " + CcString ( m_ToolBar->GetToolSeparation() ) );
+//   LOGSTAT ( "m_ImageIndex = " + CcString ( m_ImageIndex ) );
+   return (( m_ToolBar->GetToolSize().GetWidth() + 5 ) * m_ImageIndex ) ;
+#endif
 }
 
 int CxToolBar::GetIdealHeight()
 {
+#ifdef __CR_WIN__
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
    return tbs.cy+2;
+#endif
+#ifdef __BOTHWX__
+   return m_ToolBar->GetToolSize().GetHeight() + 10;
+#endif
 }
 
 #ifdef __CR_WIN__
@@ -221,7 +293,7 @@ void CxToolBar::Focus()
 CXONCHAR(CxToolBar)
 
 
-
+#ifdef __CR_WIN__
 void CxToolBar::ReplaceBackgroundColor (CBitmap& ioBM)
 {
 // figure out how many pixels there are in the bitmap
@@ -258,27 +330,42 @@ void CxToolBar::ReplaceBackgroundColor (CBitmap& ioBM)
     }
   }
 }
-
+#endif
 
 
 void CxToolBar::CxEnable(bool enable, int id)
 {
+#ifdef __CR_WIN__
   bool invcurrent = ( m_ToolBar->IsButtonEnabled(id) == 0 );
+#endif
+#ifdef __BOTHWX__
+  bool invcurrent = ! (m_ToolBar->GetToolEnabled(id));
+#endif
 
   if  ( invcurrent == enable )
   {
+#ifdef __CR_WIN__
      m_ToolBar->EnableButton(id, enable);
+#endif
+#ifdef __BOTHWX__
+     m_ToolBar->EnableTool(id, enable);
+#endif
   }
 }
 
 void CxToolBar::CheckTool(bool check, int id)
 {
+#ifdef __CR_WIN__
  int cstate = m_ToolBar->GetState(id);
-
  if(check)
    m_ToolBar->SetState ( id, cstate | TBSTATE_CHECKED);
  else
    m_ToolBar->SetState ( id, cstate & ~TBSTATE_CHECKED);
+#endif
+#ifdef __BOTHWX__
+ m_ToolBar->ToggleTool(id, check);
+#endif
+
 
 }
 
