@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2004/05/11 13:15:08  rich
+C If merging or 'syst'ing a list 7, don't write new 'mergingr.dat' and 'absences.dat'
+C
 C Revision 1.18  2004/05/10 11:02:41  rich
 C #SYST 7 FRIEDEL=YES FILTER=YES. The new FILTER option removes reflections
 C which are not allowed by the List 28 filters. This is important for filters
@@ -1065,7 +1068,7 @@ C--AND NOW GENERATE THE OUTPUT FILE IF NECESSARY
 cdjwmay99
       call xswp06(iuln,medium)
 C--PRINT THE REFLECTION STATISTICS PROFILE
-      CALL WSTAT(N3SIG, PC3SIG)
+      IF ( IPRINT .GE. 0 ) CALL WSTAT(N3SIG, PC3SIG)
 C
 C
 C--PRINT THE REFLECTION TOTALS
