@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.57  2003/03/12 13:38:42  rich
+// WHen text output is redirected to a new window, e.g. when Cameron is running,
+// it has traditionally been echoed in the base text output window. I think
+// this is a bit messy, and now the code is more stable, unecessary. This
+// facility has been COMMENTED OUT.
+//
 // Revision 1.56  2003/03/11 15:43:56  rich
 // Avoid printing uneccessary warning in SAFESET code.
 //
@@ -815,12 +821,12 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                 if (name == "TEXTOUTPUT")
                 {
                     theElement = GetTextOutputPlace();
-                    if(theElement != GetBaseTextOutputPlace() )
-                    {
+//                    if(theElement != GetBaseTextOutputPlace() )
+//                    {
 //                        tokenList->Lock(); //Prevents the tokenList from emptying as it is read.
 //                        GetBaseTextOutputPlace()->ParseInput( tokenList );
 //                        tokenList->UnLock(); //Restores the tokenList and allows emptying.
-                    }
+//                    }
                     theElement->ParseInput( tokenList );
                 }
                 else if (name == "PROGOUTPUT")
@@ -874,6 +880,7 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                         break;
                     }
 
+// Not found.
                     if ( safeSet )
                     {
                       //Never mind - scan for closing ], but error if find
@@ -892,6 +899,8 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                             LOGWARN( "CcController:ParseInput:SAFESET ran off end of input.");
                             break;
                          }
+                         tokenList->GetToken();
+
 //                         else
 //                         {
 //                            if ( tokenList->GetToken().Len() == 0 )
