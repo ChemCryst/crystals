@@ -1,5 +1,7 @@
 %SCRIPT PUBLISH
 % VARIABLE LOGICAL SCRIPTEXT
+% VARIABLE LOGICAL CIFDONE
+% EVALUATE CIFDONE = FALSE
 % IF SCRIPTEXT .EQ. TRUE THEN
  This SCRIPT helps with production of tables for publication. The output
  is displayed on the screen and listing file, together with a 'flat'    
@@ -24,8 +26,8 @@ The SCRIPT to help produce tables for publication
 %  LOOP
 %    ON ERROR TERMINATE ABANDONED
 %    CLEAR
-%    VERIFY END HELP XYZ ANISO REFLECTIONS DISTANCES SUMMARY RESIDUALS -
-      GEOMETRY SAVE
+%    VERIFY END HELP CIF XYZ ANISO REFLECTIONS DISTANCES SUMMARY -
+     RESIDUALS GEOMETRY SAVE
 %    GET NOSTORE FINAL ABBREVIATED 'Next step' 'END'
 %    IF VALUE .GE. 3 .AND. PFLAG .LE. 0 THEN
 %      COPY '#RELEASE PUNCH PUBLISH.LIS'
@@ -39,6 +41,7 @@ The SCRIPT to help produce tables for publication
       entries to this SCRIPT will overwrite previous output.
       BACK        End this script
       HELP        Display this help text
+      CIF         Produce a CIF file
       XYZ         Coordinate listing
       ANISO       Temperature factor listing
       REFLECTIONS Reflection listing
@@ -49,6 +52,11 @@ The SCRIPT to help produce tables for publication
       SAVE        A SCRIPT to save the best of the goodies.
       DIRECT      Go to CRYSTALS direct command input.
 %%
+%      END BLOCK
+%%
+%      BLOCK                                         %CIF%
+%        COPY '#SCRIPT CIF'
+%        EVALUATE CIFDONE = TRUE
 %      END BLOCK
 %%
 %      BLOCK                                         %XYZ%
@@ -91,9 +99,13 @@ The SCRIPT to help produce tables for publication
 %%
 %    END CASE
 %%
-%     END LOOP
+%  END LOOP
 %%
-%  VERIFY YES NO
+%  IF CIFDONE .EQ. FALSE THEN
+
+ * You have not saved a CIF file.
+
+%    VERIFY YES NO
 %    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'
 %    IF VALUE .EQ. 2 THEN
 %            FINISH
@@ -103,4 +115,5 @@ The SCRIPT to help produce tables for publication
 %        COPY 'END'
 %      END BLOCK
 %    END IF
+%  END IF
 %END SCRIPT
