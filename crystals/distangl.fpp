@@ -1,5 +1,31 @@
 
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2002/07/18 17:26:04  richard
+C
+C New #DISTANCE directives: NOTBONDED [atoms or types]
+C                           NOTPIVOT [atoms or types]
+C
+C Specifically excludes the specified atoms from being either
+C pivots or bonded atoms. Useful because: if I want all the bonds
+C from peaks to non-peaks, I can now say PIVOT Q / NOTBONDED Q and
+C it will do the trick.
+C
+C New #DISTANCE option: OUTPUT LIST=DEBUG
+C
+C Every time you issue INCLUDE/PIVOT/BONDED/EXCLUDE/NOTBONDED/NOTPIVOT this
+C option prints a list of all the atoms along with the three column vectors
+C which specify where an atom can appear in a distance or angle result.
+C Useful to see what exactly is going on.
+C
+C New #DISTANCE option: OUTPUT MONITOR=PEAKSTOGUI
+C
+C For each pivot atom this option outputs the pivot with its SPARE value,
+C and the distance to the closest of the bonded atoms and its name -
+C (Like this: ^^WI 'Q(1) height: 1.43, 1.243A from C(11)') - allowing
+C it to be added to a listbox in the GUI. You probably want to use the options
+C PIVOT Q and NOTBONDED Q in conjunction with this option. See script XPRUNE
+C for an example.
+C
 C Revision 1.22  2002/07/17 09:29:49  richard
 C
 C In #DISTANCE added option: SEL RANGE=L41
@@ -5625,7 +5651,7 @@ C Read the properties file and extract cov, vdw and colour.
             END IF
             NOTFND = NOTFND + 1
             WRITE(CATTYP,'(A4)')ISTORE(M5)
-            IF ( CATTPY(1:1).NE.'Q' ) THEN
+            IF ( CATTYP(1:1).NE.'Q' ) THEN
               WRITE(CMON,'(2A)')'FYI: Element not in L40 or L29: ',
      1                        ISTORE(M5)
               CALL XPRVDU(NCVDU,1,0)
