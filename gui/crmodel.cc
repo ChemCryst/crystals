@@ -6,6 +6,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2002/07/04 13:04:44  richard
+//
+//   glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
+//   mode, which means that it can't be stuck into the display lists which are used
+//   for drawing aswell. Instead, added feedback logical parameter into all Render calls, when
+//   true it does a "feedback" render rather than a display list render. Will slow down polygon
+//   selection a negligble amount.
+//
 //   Revision 1.23  2002/06/28 10:09:53  richard
 //   Minor gui update enabling vague display of special shapes: ring and sphere.
 //
@@ -572,10 +580,10 @@ void CrModel::ContextMenu(int x, int y, CcString atomname, int selection, CcStri
         theMenu = nil;
     }
 
-    theMenu->Substitute(atomname, m_ModelDoc, atom2);
 
     if(theMenu)
     {
+        theMenu->Substitute(atomname, m_ModelDoc, atom2);
         if ( ptr_to_cxObject ) theMenu->Popup(x,y,(void*)ptr_to_cxObject);
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
     }
