@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2001/06/18 12:23:38  richard
+C Change all script names to lower case before attempting to open the file.
+C This is the one place where mixed case would be very confusing - especially
+C as the exisiting scripts use random case when calling other scripts.
+C
 C Revision 1.26  2001/03/18 10:32:05  richard
 C
 C No longer send info about monitor file to the GUI.
@@ -1108,7 +1113,7 @@ C -- IDENTIFY 2ND ARGUMENT
 C -- CONVERT VALUE READ TO INTEGER NUMBER 
             NREF = NINT ( PAUSE(1))
       ENDIF
-      WRITE(NCAWU,*) LFLD, NFLD, NVAR
+C      WRITE(NCAWU,*) LFLD, NFLD, NVAR
       IF ((LFLD-NFLD) .LT. NVAR*(NVAR+1)) THEN
             WRITE(NCAWU,3050) NVAR, NREF
             WRITE(CMON,3050) NVAR,NREF
@@ -4605,8 +4610,9 @@ C
 C
             WRITE(NCAWU,3060) NVAR, NREF
             WRITE(CMON,3060) NVAR,NREF
-            CALL XPRVDU(NCVDU, 1,0)
-3060  FORMAT (I6, ' variables and', I6, ' reflections')
+            CALL XPRVDU(NCVDU, 2,0)
+3060  FORMAT (I6, ' variables and', I6, ' reflections'/
+     1 'Start')
       KOFFST = NVAR*NVAR
       DO 10 I=1,KOFFST
       A(I)=0.
