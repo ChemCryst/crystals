@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2001/02/06 15:35:09  CKP2
+C Atom-only output in PCH
+C
 C Revision 1.22  2000/10/31 15:20:21  ckp2
 C Added log entries
 C
@@ -1468,24 +1471,20 @@ C     4     SCRIPT MENU       Green       Bold Yellow on Cyan
 C     5     TERM UNKNOWN      Black       White on Black
 C     6     PROCESSING REFS   Black       Bold Yellow on Black
 C     7     SPARE             Green       Bold White on Blue
-C     7     COMMAND ECHO      Green       Black on LGrey
+C     8     COMMAND ECHO      Green       Black on LGrey
+C     9     ERROR             Red         White on Red
+C    10     SCRIPT OUTPUT     Blue        Blue on LGrey
 C
-      CHARACTER*80 GUICOL(6)
-      CHARACTER*16 VGACOL(8)
-      DATA GUICOL(1) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           1 NORM
-      DATA GUICOL(2) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 185'/         2 DIAGRAM
-      DATA GUICOL(3) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 185 0 0'/         3 SCR QUESTION
-      DATA GUICOL(4) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 185 0'/         4 SCR MENU
-      DATA GUICOL(5) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           5 UNKNOWN (NORM)
-      DATA GUICOL(6) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           6 PROCESSING REFLECTIONS
-      INTEGER IGUICL(2,8) /-1,-1, 1,10, 0,2, 8,10, 0,1, 8,1, 3,0, 1,15/
+      CHARACTER*16 VGACOL(10)
+      INTEGER IGUICL(2,10) /-1,-1, 1,10, 0,2, 8,10, 0,1,
+     1                       8, 1,  3,0, 1,15, 0,4, 2,14 /
 C
 100   FORMAT (A)
 101   FORMAT (1X, 7A)
 
       IF (ISSTML .LE. 2) RETURN
 
-      IF ((ICOL .GT. 8).OR.(ICOL.LT.0)) RETURN
+      IF ((ICOL .GT. 10).OR.(ICOL.LT.0)) RETURN
 
       IF (ICOL .EQ. IOLDC) RETURN
 
@@ -1507,6 +1506,10 @@ C
           WRITE(VGACOL(7),101) CHAR(27),'[1m', CHAR(27),'[37m',
      2                         CHAR(27),'[44m',CHAR(13)
           WRITE(VGACOL(8),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(9),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(10),101) CHAR(27),'[1m', CHAR(27),'[37m',
      2                         CHAR(27),'[44m',CHAR(13)
           WRITE(NCVDU,100) VGACOL(ICOL)
       ELSEIF (ISSTML .EQ. 4) THEN
