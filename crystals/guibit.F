@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2002/03/13 12:46:26  richard
+C HUGE change. Re-written XGDBUP as XGUIUP - now called inbetween commands, so can load
+C lists without worrying about use of store. Atoms and bonds now passed through FAST interface.
+C List 41 updated as required. Atom types with UNKNOWN colour will revert to the colour in
+C PROPWIN.DAT.
+C
 C Revision 1.40  2002/02/27 19:30:18  ckp2
 C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
 C RIC: Ensure consistent use of backslash after CRYSDIR:
@@ -480,7 +486,13 @@ C Wait for disk buffers to be allocated, before loading lists.
 
 c      WRITE(CMON,'(a)')' XGUIUP: ENTRY.'
 c      CALL XPRVDU (NCVDU,1,0)
-      
+
+C
+C -- CLEAR ERROR FLAG
+C
+      IERFLG = 1
+
+
 
       IF ( IULN .EQ. 0 ) THEN ! decide what needs updating
 c         WRITE(CMON,'(a)')' XGUIUP: Setting 6 lists to be updated.'
