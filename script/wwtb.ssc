@@ -1,0 +1,429 @@
+%SCRIPT WWTB
+%%
+%% Crystallography Quiz
+%%
+%  VARIABLE INTEGER NQ QN QC P1 P2 P3 P4 CERTAIN POINTS LL
+%  VARIABLE CHARACTER QL1 QL2 QL3 QL4 A1 A2 A3 A4 CBM
+%  VARIABLE LOGICAL LBM FIFTY PHONE ASK WWTBSURE
+%  VARIABLE REAL THRESH
+%  EVALUATE FIFTY = TRUE
+%  EVALUATE PHONE = TRUE
+%  EVALUATE ASK = TRUE
+%  EVALUATE LL = 3
+%  EXTRACT CLOSE
+%%
+%% Outer Loop - Loop 3 times, easy, medium and hard questions.
+%%
+%  LOOP 3 TIMES
+%%
+%% Open the required question file:
+%%
+%    CASE LOOPCOUNTER
+%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb1.dat'
+%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb2.dat'
+%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb3.dat'
+%    END CASE
+%%
+%% Count questions in file.
+%%
+%    EVALUATE NQ = 0
+%    LOOP 
+%      ON ERROR TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      GET SILENT NOSTORE TEXT ' ' ' '
+%      IF ( CVALUE STARTSWITH '!QUESTION' ) THEN
+%        EVALUATE NQ = NQ + 1
+%      END IF
+%    END LOOP
+%    CLEAR
+%    INSERT '{S There are '
+%    STORE FORMAT '(I4)' LENGTH 4 INTEGER NQ
+%    INSERT 'questions in the file.'
+%    OUTPUT
+%    EVALUATE POINTS = ( LOOPCOUNTER - 1 ) * 5
+%%
+%% Question asking loop
+%%
+%    LOOP 5 TIMES
+%    
+%    EVALUATE POINTS = POINTS + 1
+%    IF ( LL .LT. 0 ) THEN
+%      EVALUATE LL = 0
+%    END IF
+%%
+%% Choose a question at random.
+%%
+%     BLOCK
+%      ON ERROR TERMINATE
+%      EVALUATE QN = INTEGER ( REAL ( NQ ) * RANDOM ( 0.0 ) ) + 1
+%      EVALUATE QC = 0
+%      CLEAR
+%      INSERT '{S Looking for question number '
+%      STORE FORMAT '(I4)' LENGTH 4 INTEGER QN
+%      OUTPUT
+%      EXTRACT REWIND
+%      LOOP 
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET SILENT NOSTORE TEXT ' ' ' '
+%        IF ( CVALUE STARTSWITH '!QUESTION' ) THEN
+%          EVALUATE QC = QC + 1
+%          IF ( QC .EQ. QN ) THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END IF
+%      END LOOP
+%%
+%% Get the question (up to 4 lines)
+%%
+%      EVALUATE QL1 = ' '
+%      EVALUATE QL2 = ' '
+%      EVALUATE QL3 = ' '
+%      EVALUATE QL4 = ' '
+%      LOOP 5 TIMES
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET SILENT NOSTORE TEXT ' ' ' '
+%        IF ( CVALUE STARTSWITH '!' ) THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          CASE LOOPCOUNTER
+%            EVALUATE QL1 = CVALUE
+%            EVALUATE QL2 = CVALUE
+%            EVALUATE QL3 = CVALUE
+%            EVALUATE QL4 = CVALUE
+%            TRANSFER '{E ERROR: Question must not exceed 4 lines' TO DISPLAY
+%          END CASE
+%%          TRANSFER 'Q: ' // CVALUE TO DISPLAY
+%        END IF
+%      END LOOP
+%%
+%% Get picture name if present
+%%
+%      EVALUATE LBM = FALSE
+%      IF ( CVALUE STARTSWITH '!PICTURE' ) THEN
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET SILENT NOSTORE TEXT ' ' ' '
+%        EVALUATE CBM = CVALUE
+%        EVALUATE LBM = TRUE
+%%        TRANSFER 'PIC: ' // CVALUE TO DISPLAY
+%        EXTRACT NEXT
+%      END IF
+%%
+%% Get the answers
+%%
+%      EVALUATE A1 = ' '
+%      EVALUATE A2 = ' '
+%      EVALUATE A3 = ' '
+%      EVALUATE A4 = ' '
+%      LOOP 5 TIMES
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET SILENT NOSTORE TEXT ' ' ' '
+%        IF ( CVALUE STARTSWITH '!' ) THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%          IF ( LOOPCOUNTER .NE. 5 ) THEN
+%            TRANSFER '{E ERROR: Must be 4 answers' TO DISPLAY
+%          END IF
+%        ELSE
+%          CASE LOOPCOUNTER
+%            EVALUATE A1 = CVALUE
+%            EVALUATE A2 = CVALUE
+%            EVALUATE A3 = CVALUE
+%            EVALUATE A4 = CVALUE
+%            TRANSFER '{E ERROR: Must be only 4 answers' TO DISPLAY
+%          END CASE
+%%          TRANSFER 'ANS: ' // CVALUE TO DISPLAY
+%        END IF
+%      END LOOP
+%     END BLOCK
+%%
+%% Ask the question
+%%
+^^WI  WINDOW WWTB 'Question' MODAL POSITION CENTRED MODEL01 CANCEL='BXX'
+^^WI  GRID MAIN NROWS=2 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID TOP NROWS=3 NCOLS=3
+^^WI   {
+^^WI    @ 2,2 STATIC SU
+%       CASE POINTS
+% TRANSFER "^^WI 'This question is for 100 points.'" TO DISPLAY
+% TRANSFER "^^WI 'Easy. You have 100 points. This is for 200.'" TO DISPLAY
+% TRANSFER "^^WI 'Ok. And for 300 points:'" TO DISPLAY
+% TRANSFER "^^WI 'Stay calm. This is for 500 points:'" TO DISPLAY
+% TRANSFER "^^WI 'Answer this and you are guaranteed 1000 points'" TO DISPLAY
+% TRANSFER "^^WI 'You might as well try for 2000 points.'" TO DISPLAY
+% TRANSFER "^^WI 'For 4000 points. You lose 3000 for a wrong answer'" -
+ TO DISPLAY
+% TRANSFER "^^WI 'Ok. For 8000 points:'" TO DISPLAY
+% TRANSFER "^^WI 'For 16,000 points:'" TO DISPLAY
+% TRANSFER "^^WI 'If you can get this, you are guaranteed 32,000 points:'" -
+ TO DISPLAY
+% TRANSFER "^^WI 'You might as well have a guess for 64,000 points.'" -
+ TO DISPLAY
+% TRANSFER "^^WI 'Steady. For 125,000 points:'" TO DISPLAY
+% TRANSFER "^^WI 'For 250,000 points:'" TO DISPLAY
+% TRANSFER "^^WI 'This is for 500000 points. Can you tell me:'" TO DISPLAY
+% TRANSFER "^^WI 'Last question. For 1,000,000 points:'" TO DISPLAY
+%       END CASE
+^^WI    @ 3,2 STATIC LL
+%       CASE LL + 1
+% TRANSFER "^^WI 'You have used all your lifelines.'" TO DISPLAY
+% TRANSFER "^^WI 'Remember that you still have one lifeline.'" TO DISPLAY
+% TRANSFER "^^WI 'Remember that you still have two lifelines.'" TO DISPLAY
+% TRANSFER "^^WI 'Remember that you still have all your lifelines.'" -
+ TO DISPLAY
+%       END CASE
+^^WI   }
+^^WI   @ 2,1 GRID BOT NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 GRID PRESNTR NROWS=3 NCOLS=3
+^^WI    {
+^^WI      @ 2,2 BITMAP WWPRES TRANS FILE wwtblogot.bmp
+^^WI      @ 1,2 STRETCH W1 VERTICAL
+^^WI      @ 3,2 STRETCH W1 VERTICAL
+^^WI      @ 2,1 STRETCH W1 HORIZONTAL
+^^WI      @ 2,3 STRETCH W1 HORIZONTAL
+^^WI    }
+%       IF ( LBM ) THEN
+^^WI    @ 1,3 GRID PIC NROWS=3 NCOLS=3
+^^WI    {
+%         TRANSFER '^^WI   @ 2,2 BITMAP WWPIC FILE ' // CBM TO DISPLAY
+^^WI      @ 1,2 STRETCH W1 VERTICAL
+^^WI      @ 3,2 STRETCH W1 VERTICAL
+^^WI      @ 2,1 STRETCH W1 HORIZONTAL
+^^WI      @ 2,3 STRETCH W1 HORIZONTAL
+^^WI    }
+%       END IF
+^^WI    @ 1,2 GRID QUIZ NROWS=10 NCOLS=1
+^^WI    {
+^^WI      @ 2,1 GRID QZ NROWS=1 NCOLS=3 { @ 1,1 STRETCH W2 HORIZONTAL
+^^WI                                      @ 1,2 STATIC Q
+% TRANSFER "^^WI '" // QL1 // "'" TO DISPLAY
+^^WI                                @ 1,3 STRETCH W2 HORIZONTAL }
+^^WI      @ 3,1 GRID QZ NROWS=1 NCOLS=3 { @ 1,1 STRETCH W2 HORIZONTAL
+^^WI                                      @ 1,2 STATIC Q
+% TRANSFER "^^WI '" // QL2 // "'" TO DISPLAY
+^^WI                                @ 1,3 STRETCH W2 HORIZONTAL }
+^^WI      @ 4,1 GRID QZ NROWS=1 NCOLS=3 { @ 1,1 STRETCH W2 HORIZONTAL
+^^WI                                      @ 1,2 STATIC Q
+% TRANSFER "^^WI '" // QL3 // "'" TO DISPLAY
+^^WI                                @ 1,3 STRETCH W2 HORIZONTAL }
+^^WI      @ 5,1 GRID QZ NROWS=1 NCOLS=3 { @ 1,1 STRETCH W2 HORIZONTAL
+^^WI                                      @ 1,2 STATIC Q
+% TRANSFER "^^WI '" // QL4 // "'" TO DISPLAY
+^^WI                                @ 1,3 STRETCH W2 HORIZONTAL }
+^^WI      @ 7,1 GRID BT NROWS=3 NCOLS=5
+^^WI      {
+^^WI        @ 2,1 STRETCH W4 HORIZONTAL @ 2,5 STRETCH W4 HORIZONTAL
+%           EVALUATE P1 = INTEGER ( 4.0 * RANDOM ( 0.0 ) ) + 1
+%           CASE P1
+%            TRANSFER "^^WI @ 1,2 BUTTON B1 '" // A1 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,2 BUTTON B1 '" // A1 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 1,4 BUTTON B1 '" // A1 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,4 BUTTON B1 '" // A1 // "'" TO DISPLAY
+%           END CASE
+%           LOOP 
+%            EVALUATE P2 = INTEGER ( 4.0 * RANDOM ( 0.0 ) ) + 1
+%            IF ( P2 .NE. P1 ) THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%           END LOOP
+%           CASE P2
+%            TRANSFER "^^WI @ 1,2 BUTTON B2 '" // A2 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,2 BUTTON B2 '" // A2 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 1,4 BUTTON B2 '" // A2 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,4 BUTTON B2 '" // A2 // "'" TO DISPLAY
+%           END CASE
+%           LOOP 
+%            EVALUATE P3 = INTEGER ( 4.0 * RANDOM ( 0.0 ) ) + 1
+%            IF ( P3 .NE. P1 ) .AND. ( P3 .NE. P2 ) THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%           END LOOP
+%           CASE P3
+%            TRANSFER "^^WI @ 1,2 BUTTON B3 '" // A3 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,2 BUTTON B3 '" // A3 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 1,4 BUTTON B3 '" // A3 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,4 BUTTON B3 '" // A3 // "'" TO DISPLAY
+%           END CASE
+%           LOOP 
+%            EVALUATE P4 = LOOPCOUNTER
+%            IF ( P4 .NE. P1 ) .AND. ( P4 .NE. P2 ) .AND. ( P4 .NE. P3 ) THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%           END LOOP
+%           CASE P4
+%            TRANSFER "^^WI @ 1,2 BUTTON B4 '" // A4 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,2 BUTTON B4 '" // A4 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 1,4 BUTTON B4 '" // A4 // "'" TO DISPLAY
+%            TRANSFER "^^WI @ 3,4 BUTTON B4 '" // A4 // "'" TO DISPLAY
+%           END CASE
+^^WI      }
+^^WI      @ 9,1 GRID LIFELINE NROWS=1 NCOLS=7
+^^WI      {
+^^WI        @ 1,1 BUTTON BXX 'Take points'
+^^WI        @ 1,2 STRETCH W3 HORIZONTAL
+^^WI        @ 1,3 BUTTON FIFTY '50/50'
+^^WI        @ 1,5 BUTTON PHONE 'Phone friend'
+^^WI        @ 1,7 BUTTON ASK 'Ask audience'
+^^WI      }
+^^WI    }
+^^WI   }
+^^WI  }
+^^WI  SHOW
+^^CR
+%     IF FIFTY .EQ. FALSE THEN
+^^CO    SET FIFTY DISABLED=YES
+%     END IF             
+%     IF PHONE .EQ. FALSE THEN
+^^CO    SET PHONE DISABLED=YES
+%     END IF
+%     IF ASK .EQ. FALSE THEN
+^^CO    SET ASK DISABLED=YES
+%     END IF
+%     GET NOPROMPT NOSTORE TEXT ' ' ' '
+%     LOOP
+%       VERIFY B1 B2 B3 B4 BXX FIFTY PHONE ASK
+%       GET SILENT FINAL NOSTORE ABBREVIATED 'Answer' ' '
+%       CASE VALUE
+%         BLOCK     %B1
+%           EVALUATE WWTBSURE = TRUE
+%           IF ( RANDOM ( 0.0 ) .LT. 0.3 ) .OR. ( POINTS .GE. 13 ) THEN
+%             COPY '#SCRIPT WWTBSURE'
+%           END IF
+%           IF ( WWTBSURE ) THEN
+%             COPY '#SCRIPT WWTBCORR'
+^^CO          DISPOSE WWTB
+%             EVALUATE LOOPEND = LOOPCOUNTER
+%           END IF
+%         END BLOCK
+%         BLOCK     %B2
+%           EVALUATE WWTBSURE = TRUE
+%           IF ( RANDOM ( 0.0 ) .LT. 0.5 ) .OR. ( POINTS .GE. 13 ) THEN
+%             COPY '#SCRIPT WWTBSURE'
+%           END IF
+%           IF ( WWTBSURE ) THEN
+%             COPY '#SCRIPT WWTBWRON'
+^^CO          DISPOSE WWTB
+
+{S Unlucky.
+{S Keep practising and learning to be an expert crystallographer.
+
+%             EXTRACT CLOSE
+%             FINISH
+%           END IF
+%         END BLOCK
+%         BLOCK     %B3
+%           EVALUATE WWTBSURE = TRUE
+%           IF ( RANDOM ( 0.0 ) .LT. 0.5 ) .OR. ( POINTS .GE. 13 ) THEN
+%             COPY '#SCRIPT WWTBSURE'
+%           END IF
+%           IF ( WWTBSURE ) THEN
+%             COPY '#SCRIPT WWTBWRON'
+^^CO          DISPOSE WWTB
+
+{S Unlucky.
+{S Keep practising and learning to be an expert crystallographer.
+
+%             EXTRACT CLOSE
+%             FINISH
+%           END IF
+%         END BLOCK
+%         BLOCK     %B4
+%           EVALUATE WWTBSURE = TRUE
+%           IF ( RANDOM ( 0.0 ) .LT. 0.5 ) .OR. ( POINTS .GE. 13 ) THEN
+%             COPY '#SCRIPT WWTBSURE'
+%           END IF
+%           IF ( WWTBSURE ) THEN
+%             COPY '#SCRIPT WWTBWRON'
+^^CO          DISPOSE WWTB
+
+{S Unlucky.
+{S Keep practising and learning to be an expert crystallographer.
+
+%             EXTRACT CLOSE
+%             FINISH
+%           END IF
+%         END BLOCK
+%         BLOCK     %BXX
+
+{S Well done. Keep practising and learning and one day you'll reach
+{S the 1,000,000 point goal!
+
+^^CO        DISPOSE WWTB
+%           EXTRACT CLOSE
+%           FINISH
+%         END BLOCK
+%         BLOCK     %50/50
+^^CO        SET FIFTY DISABLED=YES
+
+{S Computer: Take away two of the wrong answers...
+%           COPY '#PAUSE 1'
+%           EVALUATE FIFTY = FALSE
+%           EVALUATE LL = LL - 1
+^^CO        SET B3 DISABLED=YES SET B4 DISABLED=YES
+%         END BLOCK
+%         BLOCK     %PHONE
+^^CO        SET PHONE DISABLED=YES
+
+{S Ring, ring. Ring, ring.
+%           COPY '#PAUSE 1'
+{S Hello. It's Who wants to be a Crystallographaire. Can you help us:
+%           COPY '#PAUSE 1'
+%           TRANSFER ' {S ' // QL1 TO DISPLAY
+%           TRANSFER ' {S ' // QL2 TO DISPLAY
+%           TRANSFER ' {S ' // QL3 TO DISPLAY
+%           TRANSFER ' {S ' // QL4 TO DISPLAY
+%           EVALUATE PHONE = FALSE
+%           EVALUATE LL = LL - 1
+%           EVALUATE CERTAIN = INTEGER ( 3.0 * RANDOM ( 0.0 ) ) + 1
+%           CASE CERTAIN
+%             TRANSFER " {R I've no idea, but I know it's not: " TO DISPLAY
+%             TRANSFER " {R If I had to guess, I'd say: " TO DISPLAY
+%             TRANSFER " {R I think that it's: " TO DISPLAY
+%             TRANSFER " {R I'm quite confident that it's: " TO DISPLAY
+%           END CASE
+%% level 1 always gives a wrong answer.
+%% level 2 will give correct answer 65% of time
+%% level 3 will give correct answer 80% of time
+%% level 4 will give correct answer 95% of time
+%           CASE CERTAIN
+%             EVALUATE THRESH = 0.0
+%             EVALUATE THRESH = 0.65
+%             EVALUATE THRESH = 0.80
+%             EVALUATE THRESH = 0.95
+%           END CASE
+%           IF ( THRESH .GT. RANDOM ( 0.0 ) ) THEN
+%             TRANSFER ' {R ' // A1 TO DISPLAY
+%           ELSE
+%             TRANSFER ' {R ' // A2 TO DISPLAY
+%           END IF
+%         END BLOCK
+%         BLOCK     %ASK
+^^CO        SET ASK DISABLED=YES
+%           EVALUATE LL = LL - 1
+%           EVALUATE ASK = FALSE
+{S Audience, will you please vote now....
+%           COPY '#PAUSE 1'
+
+%           TRANSFER ' {S  54% say ' // A1 TO DISPLAY
+%           TRANSFER ' {S  43% say ' // A2 TO DISPLAY
+%           TRANSFER ' {S  2% say ' // A3 TO DISPLAY
+%           TRANSFER ' {S  1% say ' // A4 TO DISPLAY
+%         END BLOCK
+%       END CASE
+%     END LOOP
+%    END LOOP
+%  END LOOP
+%  EXTRACT CLOSE
+
+{S Well done you've scored 1,000,000 points. You truly
+{S are an expert crystallographer.
+
+%END SCRIPT
