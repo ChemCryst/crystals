@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2004/02/05 09:29:50  rich
+C Fix overlong lines.
+C
 C Revision 1.67  2004/02/04 16:58:00  stefan
 C Changes for Mac command line version
 C
@@ -1192,8 +1195,8 @@ c               CALL XPRVDU(NCVDU, 2,0)
                ISTR11(KNF11) = IA1
                ISTR11(KNF11+1) = IA2
 
-               WRITE(CMON(1),'(3A,F6.3,1X,A)')CLAB(1:LLAB),'-',
-     1         CLAB2(1:LLAB2), STORE(M41B+13), CBONDS(ISTORE(M41B+12))
+               WRITE(CMON(1),'(4A,F5.2,1X,A)')CLAB(1:LLAB),'-',
+     1       CLAB2(1:LLAB2),' ~',STORE(M41B+13), CBONDS(ISTORE(M41B+12))
                CALL XCTRIM( CMON(1), LTMN )
 
                IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
