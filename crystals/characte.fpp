@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  1999/05/13 17:54:58  dosuser
+C RIC: Added new function KCLEQL to find the last occurence of
+C      a substring in a string. Complements KCCEQL.
+C
 
 CODE FOR KCCEQL
       FUNCTION KCCEQL ( CDATA , ISTART , CMATCH )
@@ -913,3 +917,49 @@ C
       END
 C
 C
+CODE FOR KCITOF
+      FUNCTION KCITOF (CFORM)
+C----- CHANGE ALL INTEGER REFERENCES TO FLOATING 
+C      RETURN >0 IF ALL OK
+C      IN FORMAT STATEMENTS
+      CHARACTER *(*) CFORM
+      CHARACTER *1 CTERM
+      CHARACTER *10 CNUM
+\XUNITS
+      DATA CNUM/'0123456789'/
+      KCITOF = 1
+      LFORM = LEN(CFORM)
+50    CONTINUE
+      CALL XCRAS(CFORM,LUSED)
+      I = INDEX (CFORM ,'I')
+      K = INDEX (CFORM ,'i')
+      I = 1 + MAX(I,K)
+      IF (I .LE. 1) GOTO 300
+      J = INDEX (CFORM(I:LUSED), ',')      
+      IF (J .LE. 0) THEN
+            J = INDEX (CFORM(I:LUSED), ')')      
+            IF (J .LE. 0) THEN
+                  GOTO 250
+            ENDIF
+      ENDIF
+      J = I + J -1
+      K = KGTNUM( CFORM(I:I+J), CTERM, NCHAR)
+      CFORM(I-1:I-1)='F'
+      IF (LUSED+2 .LE. LFORM) THEN
+       DO 100 N=LUSED+2,J+2,-1
+        CFORM(N:N)=CFORM(N-2:N-2)
+100    CONTINUE
+       CFORM(I+NCHAR:I+NCHAR+1) = '.0'
+      ELSE
+        GOTO 250
+      ENDIF
+200   CONTINUE
+C----- LOOP UNTIL NO MORE INTEGERS
+      GOTO 50
+250   CONTINUE
+C----- ERROR CONDITION
+      KCITOF = -1
+C      WRITE(*,*) 'ERROR CONDITION'
+300   CONTINUE
+      RETURN
+      END
