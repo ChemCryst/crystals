@@ -124,9 +124,9 @@ void	CrButton::SetGeometry( const CcRect * rect )
 {
 
 	((CxButton*)mWidgetPtr)->SetGeometry(	rect->mTop,
-											rect->mLeft,
-											rect->mBottom,
-											rect->mRight );
+                                                rect->mLeft,
+                                                rect->mBottom,
+                                                rect->mRight   );
 
 }
 
