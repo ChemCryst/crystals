@@ -85,8 +85,8 @@ void CcModelBond::Render(CrModel * view, Boolean detailed)
       float xlen = (float)(x2-x1), ylen = (float)(y2-y1), zlen = (float)(z2-z1);
       float length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
       float centerX = (x1 + x2)/2.0f , centerY = (y1 + y2)/2.0f, centerZ = (z1 + z2)/2.0f;
-      float xrot = (float)asin ( -ylen / length );
-      float yrot = (float)acos ( zlen / (length*cos(xrot)) );
+      float xrot = (float)asin (min(1.0f,max(-1.0f,(-ylen/length))));
+      float yrot = (float)acos (min(1.0f,max(-1.0f,(zlen/(length*cos(xrot)) ))));
       if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
 			yrot = -yrot;
 
