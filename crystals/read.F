@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/03/15 11:30:09  richard
+C Fix problem where bond types are not calculated on opening a new structure.
+C
 C Revision 1.31  2002/02/27 19:40:10  ckp2
 C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
 C this extra length. In general the program continues to ignore everything beyond
@@ -1378,6 +1381,7 @@ C     16           PAUSE             'ISSPAS'
 C     17           EXPO(RT)          'ISSEXP'
 C     18           UEQU(IV)          'ISSUEQ'
 C     19           AUTO(UPDATE)      'ISSUPD'
+C     20           BOND(TYPE)        'ISSBND'
 C
 C    THE NAMES OF THE ALLOWED FUNCTIONS ARE STORED IN THE ARRAY
 C    'KEYFNC'. EACH STORED NAME IS 8 'A1' WORDS LONG. ONLY THE FIRST 4
@@ -1399,13 +1403,13 @@ C      IFIRVL      NUMERIC VALUE ASSOCIATED WITH FIRST ALLOWED STRING
 C                  VALUE. SUBSEQUENT STRING VALUES ARE GIVEN INCREASING
 C                  NUMERIC VALUES
 C
-      DIMENSION KEYFNC(8,19)
+      DIMENSION KEYFNC(8,20)
       DIMENSION KEYVAL(4,21)
 C
-      DIMENSION ITPVAL(19)
-      DIMENSION ISTVAL(19)
-      DIMENSION NUMVAL(19)
-      DIMENSION IFIRVL(19)
+      DIMENSION ITPVAL(20)
+      DIMENSION ISTVAL(20)
+      DIMENSION NUMVAL(20)
+      DIMENSION IFIRVL(20)
 C
       DIMENSION VALUE(1)
 C
@@ -1421,12 +1425,12 @@ C
 \XIOBUF
 \XGUIOV
 C
-      DATA LFNC /8/, NFNC /19/, LUFNC /4/
+      DATA LFNC /8/, NFNC /20/, LUFNC /4/
 C
 C      MAPS        MONI(TOR)   LOG         PAGE        LIST(S)
 C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
 C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
-C      PAUS(E)     EXPO(RT)      UEQU(IV)  AUTO(UPDATE)
+C      PAUS(E)     EXPO(RT)      UEQU(IV)  AUTO(UPDATE) BOND(TYPE)
 C
       DATA KEYFNC(1,1) / 'M' / , KEYFNC(2,1) / 'A' /
       DATA KEYFNC(3,1) / 'P' / , KEYFNC(4,1) / 'S' /
@@ -1514,6 +1518,11 @@ C
       DATA KEYFNC(5,19) / 'U' / , KEYFNC(6,19) / 'P' /
       DATA KEYFNC(7,19) / 'D' / , KEYFNC(8,19) / 'T' /
 C
+      DATA KEYFNC(1,20) / 'B' / , KEYFNC(2,20) / 'O' /
+      DATA KEYFNC(3,20) / 'N' / , KEYFNC(4,20) / 'D' /
+      DATA KEYFNC(5,20) / 'T' / , KEYFNC(6,20) / 'Y' /
+      DATA KEYFNC(7,20) / 'P' / , KEYFNC(8,20) / 'E' /
+C
       DATA LVAL / 4 / , NVAL / 21 /
 C
 C      LIST        NONE        CORE        OFF         ON
@@ -1573,7 +1582,7 @@ C
       DATA ITPVAL(10) / 1 / , ITPVAL(11) / 1 /
       DATA ITPVAL(12) / 1 / , ITPVAL(13) / 1 / , ITPVAL(14) / 1 /
       DATA ITPVAL(15) / 1 / , ITPVAL(16) / 2 / , ITPVAL(17) / 1 /
-      DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 /
+      DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 / , ITPVAL(20) / 1 /
 C
 C----- STARTING POSITION IN LIST OF KEYWORDS
 C
@@ -1583,7 +1592,7 @@ C
       DATA ISTVAL(10) /  12 /, ISTVAL(11) / 17 /
       DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) /  4 /
       DATA ISTVAL(15) /   4 /, ISTVAL(16) /  0 / , ISTVAL(17) / 4 /
-      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 /
+      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) /  4 /
 C
 C----- NUMBER OF KEYWORDS PERMITTED
 C
@@ -1593,7 +1602,7 @@ C
       DATA NUMVAL(10) /  5/, NUMVAL(11) / 3/
       DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
       DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /
-      DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/
+      DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/, NUMVAL(20) /  2/
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -1603,7 +1612,7 @@ C
       DATA IFIRVL(10)  /  0 /, IFIRVL(11) / 0 /
       DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14)  /  0 /
       DATA IFIRVL(15)  /  0 /, IFIRVL(16) /0/ , IFIRVL(17) / 0 /
-      DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /
+      DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /, IFIRVL(20)  /  0 /
 C
 C
 C
@@ -1723,6 +1732,8 @@ c              ENDIF
         ISSUEQ = IRQVAL
       ELSE IF ( IRQFNC .EQ. 19 ) THEN
         ISSUPD = IRQVAL
+      ELSE IF ( IRQFNC .EQ. 20 ) THEN
+        ISSBND = IRQVAL
       ELSE
         GO TO 9920
       ENDIF

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2002/03/15 11:30:09  richard
+C Fix problem where bond types are not calculated on opening a new structure.
+C
 C Revision 1.17  2002/03/13 12:48:34  richard
 C Huge overhaul of distances and angles. Improved workings of INCLUDE/EXCLUDE/PIVOT
 C /BONDED. Indented whole distances subroutine so that it is readable.
@@ -5572,7 +5575,9 @@ C TODO -- Include L41A list of atoms, CRC and so on.
 
 C -- Work out bond types:
 
-      CALL BONDTY(1)
+      IF ( ISSBND .NE. 0 ) THEN
+        CALL BONDTY(1)
+      END IF
 
 C -- Write new list back to disk.
 

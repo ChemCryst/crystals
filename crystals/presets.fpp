@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/03/12 18:02:50  ckp2
+C GUIUP stores list serial numbers in a saved array. Moved it into common, clear out
+C every re-start in presets.
+C
 C Revision 1.33  2002/02/27 19:24:55  ckp2
 C RIC: Increase store to 32Mb. (The released versions have had this much store
 C for over a year, I'd just never dared to check it in before.)
@@ -1072,6 +1076,7 @@ C      ISSPAS      PAUSE
 C      ISSEXP      EXPORT
 C      ISSUEQ      UEQUIV
 C      ISSUPD      UPDATE OF MODEL WINDOW
+C      ISSBND      BOND TYPING FOR MODEL WINDOW
 C
 C (THE FOLLOWING 4 DEFINITIONS ARE REDUNDANT, AND ARE REPLACED BY
 C  THE CHARACTER DEFINITIONS 'CSS***)
@@ -1153,7 +1158,7 @@ C
 #H-P      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 0 /
 &H-P      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 1 /
       DATA ISSSFI / 1 /, ISSTML /0/, ISSFLC /2/, ISSMSG /1/
-      DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/
+      DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/, ISSBND/1/
 C
 C
 C -- THE FOLLOWING VARIABLES ARE USED TO STORE IN CHARACTER FORM CERTAIN
