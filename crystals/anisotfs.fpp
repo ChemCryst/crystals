@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2003/08/05 11:11:10  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.11  2003/05/07 12:18:53  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -46,7 +49,7 @@ C
 C -- IF 'LIST' IS SET GREATER THAN ZERO, THE RESULTS ARE PRINTED. IF
 C    NOT, NO RESULTS ARE PRINTED.
 C
-      DOUBLE PRECISION TENS(3,3),ROOTS(3),VECT(3,3),WORK(4)
+      DOUBLE PRECISION TENS(3,3),ROOTS(3),VECT(3,3),WORK(9)
 C
       CHARACTER*12 CSHAPE
       CHARACTER*24 CTEXT
@@ -154,8 +157,17 @@ C--DIAGONALIZE THE TENSOR
                TENS(ITEMP3,ITEMP2)=DBLE(STORE(ITEMP1))
                ITEMP1=ITEMP1+1
 300         CONTINUE
-            I=0
-            CALL F02ABF (TENS,3,3,ROOTS,VECT,3,WORK,I)
+
+C            I=0
+C            CALL F02ABF (TENS,3,3,ROOTS,VECT,3,WORK,I)
+            INFO = 0
+            CALL DSYEV('V','L',3,TENS,3,ROOTS,WORK,9,INFO)
+            DO ITEMP2=1,3
+              DO ITEMP3=1,3
+                VECT(ITEMP2,ITEMP3) = TENS(ITEMP2,ITEMP3)
+              END DO
+            END DO
+
             ITEMP1=NE
             ITEMP2=NG
             DO 350 ITEMP3=1,3
@@ -1088,7 +1100,7 @@ C
 \XWORKA
 C
 \XRTLSC
-      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(21),DAS(20)
+      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
 \XIOBUF
 C
 C
@@ -1273,17 +1285,24 @@ C--- CONVERT TO DEGREES
 1200     AQ(I,I)=AQ(I,I)+1.+0.5*T
 C---OUTPUT T, L, S
       IF (ISSPRT.EQ.0) WRITE (NCWU,1250)
-      WRITE (NCAWU,1250)
 1250  FORMAT (//' Tensors with respect to the above centre',' and orthog
      1onal axes (A*, B'' and C)')
       CALL RSUB11 (1)
 C---TRANSFORM TENSORS TO PRINCIPAL AXES OF L
-      M=0
       DO 1300 I=1,3
          DO 1300 J=1,3
          DAA(J,I)=DBLE(WA(J,I))
 1300  CONTINUE
-      CALL F02ABF (DAA,20,3,DAR,DAI,20,DWE,M)
+C      M=0
+C      CALL F02ABF (DAA,20,3,DAR,DAI,20,DWE,M)
+      INFO = 0
+      CALL DSYEV('V','L',3,DAA,20,DAR,DWE,21,INFO)
+      DO ITEMP2=1,3
+        DO ITEMP3=1,3
+          DAI(ITEMP2,ITEMP3) = DAA(ITEMP2,ITEMP3)
+        END DO
+      END DO
+
       DO 1350 I=1,3
          WD(I)=SNGL(DAR(I))
          DO 1350 J=1,3
@@ -1600,10 +1619,7 @@ C
 \XRTLSC
 \XIOBUF
 C
-      WRITE (NCAWU,50)
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,50)
-      END IF
+      IF (ISSPRT.EQ.0) WRITE (NCWU,50)
       IF (MON.EQ.2) THEN
          WRITE (CMON,50)
          CALL XPRVDU (NCVDU,3,0)
@@ -1612,7 +1628,6 @@ C
       DO 100 I=1,3
          WRITE (CMON,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),
      1   J=1,3)
-         WRITE (NCAWU,'(A)') CMON(1)(:)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (MON.EQ.2) CALL XPRVDU (NCVDU,1,0)
 100   CONTINUE
@@ -1818,7 +1833,7 @@ C
 \XUNITS
 \XSSVAL
 \XRTLSC
-      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(21),DAS(20)
+      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
 \XCHARS
 \XIOBUF
 C
@@ -1828,8 +1843,15 @@ C
 C
       EQUIVALENCE (WE(1),WA(1,1))
 C--EXTRACT THE LATENT ROOTS AND VECTORS OF THE NORMAL MATRIX
-      M=0
-      CALL F02ABF (DAA,20,20,DAR,DAI,20,DWE,M)
+c      M=0
+c      CALL F02ABF (DAA,20,20,DAR,DAI,20,DWE,M)
+      INFO = 0
+      CALL DSYEV('V','L',20,DAA,20,DAR,DWE,60,INFO)
+      DO ITEMP3=1,20
+        DO ITEMP2=1,20
+          DAI(ITEMP2,ITEMP3) = DAA(ITEMP2,ITEMP3)
+        END DO
+      END DO
       DO 100 I=1,20
          AR(I)=SNGL(DAR(I))
          DO 50 J=1,20

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2004/06/18 13:56:51  rich
+C Fix common block length.
+C
 C Revision 1.7  2004/05/27 12:21:12  rich
 C Move DIFABS routines out of the harwell library source.
 C
@@ -1700,6 +1703,7 @@ C
       COMMON /DRVR/ LI,LD,LO,LF,LP,NCY,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
      1 ,IMAP
 \XUNITS
+\XIOBUF
 C   FOLLOWING EQUIVALENCING TO SAVE SOME SPACE
       EQUIVALENCE (WORK(1),RDASH(1)),(WORK(45),SDASH(1))
       EQUIVALENCE (ROWJ(1),EIG(1)),(ROWJ(45),UM1(1))
@@ -1734,7 +1738,29 @@ C
 C
 C Solve normal equations, EA06C returns eigenvectors and eigenvalues
 C
-      CALL EA06C(ANORM,EIG,VEC,NSHAPE,NSIZE,NSIZE,WORK)
+C      CALL EA06C(ANORM,EIG,VEC,NSHAPE,NSIZE,NSIZE,WORK)
+C
+C Replace Harwell routine with LAPACK one. Differences: The LAPACK
+C one overwrites the normal matrix with the eigenvectors. That's OK,
+C ANORM isn't used again, as far as I can tell.
+C
+
+c      DO I = 1,NSHAPE
+c       DO J = 1, NSHAPE          
+c        ANORM(I,J) = ANORM(J,I)
+c        WRITE(NCWU,'(2I4,F12.3)') I,J,ANORM(I,J)
+c       END DO
+c      END DO
+
+      INFO=0
+      CALL SSYEV('V','L', NSHAPE, ANORM, NSIZE, EIG, WORK, 220, INFO)
+
+      DO I = 1,NSHAPE
+       DO J = 1, NSHAPE
+        VEC(I,J) = ANORM(I,J)
+c        WRITE(NCWU,'(2I4,F12.3)') I,J,ANORM(I,J)
+       END DO
+      END DO
 C
 C Write eigenvalues
 C

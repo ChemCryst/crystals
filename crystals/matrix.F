@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2003/09/24 09:44:25  rich
+C Added routine XMXUIJ to matrix.src to apply a transformation to
+C a vector of Uijs. Added new vector to store Uijs for the "new"
+C list of atoms in \REGULARISE, and apply rotation at appropriate
+C point.
+C
 C Revision 1.10  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -824,7 +830,6 @@ C   0  INVERSION ETC. WENT OKAY.
 C  >0  SINGULAR  -  RETURN VALUE INDICATES FIRST SIGNULAR ELEMENT FOUND.
 C
 C--
-      DOUBLE PRECISION  X02ABF,DUMMY
 C
       DIMENSION A(NA),B(NA),C(NC),D(NC)
 C
@@ -841,7 +846,7 @@ C
 C--SET 'EPS', SUCH THAT 'EPS' IS THE SMALLEST NUMBER FOR 1.0+EPS>1.0
       BSING=16.0**(-5)
 C--SET THE SMALLEST NUMBER THAT CAN BE EXACTLY REPRESENTED ON THE MACHIN
-      CSING=SNGL(X02ABF(DUMMY))
+      CSING=SLAMCH( 'S' )
 C--SET THE SINGULARITY CHECK LIMITS
       CSING=CSING/BSING
       BSING=BSING*16.
@@ -1610,11 +1615,14 @@ C --
       DM1(I,J)=DBLE(XM1(I,J))
 1500  CONTINUE
 2000  CONTINUE
-      I=0
-      CALL F02ABF (DM1(1,1),3,3,DM3(1),DM2(1,1),3,DWORK(1),I)
+c      I=0
+c      CALL F02ABF (DM1(1,1),3,3,DM3(1),DM2(1,1),3,DWORK(1),I)
+      INFO = 0
+      CALL DSYEV('V','L',3,DM1,3,DM3,DWORK,10,INFO)
       DO 3000 J=1,3
       DO 2500 I=1,3
-      XM2(I,J)=SNGL(DM2(I,J))
+c      XM2(I,J)=SNGL(DM2(I,J))
+      XM2(I,J)=SNGL(DM1(I,J))
       XM3(I)=SNGL(DM3(I))
 2500  CONTINUE
 3000  CONTINUE

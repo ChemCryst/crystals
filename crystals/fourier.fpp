@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2003/12/02 11:52:33  rich
+C Code for \MASK command.
+C
+C Changed output of Fourier map data, so that the cell is NOT permuted
+C in the output file. This makes the output the same form as the
+C \slant file. The permutation can be recovered from the translation
+C matrix given at the top of the file.
+C
 C Revision 1.19  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -1876,7 +1884,7 @@ CODE FOR XFOURN
 C--SCAN THE REFLECTIONS TO SET UP THE 'KH' TABLE FOR THE NEXT SECTIONS
 C
 C--
-      DOUBLE PRECISION B
+      DOUBLE PRECISION B, BS0, BS1
 \FOURTP
 \ISTORE
 C
@@ -2017,9 +2025,12 @@ C-----  CHECK LE 12 DEGREES ( IN RADIANS)
       ENDIF
       B = 2.* B
       IF (B .GT. 6.) GOTO 1700
-C----- ACCCEPT A SOFT FAILURE
-      IFAIL = 1
-      STORE(M6+4)=S18AFF(B,IFAIL)/S18AEF(B,IFAIL)
+cC----- ACCCEPT A SOFT FAILURE
+c      IFAIL = 1
+c      STORE(M6+4)=S18AFF(B,IFAIL)/S18AEF(B,IFAIL)
+C Replace NAG routines (above) with this polynomial approximation.
+       CALL MDBESL(B,BS0,BS1)
+       STORE(M6+4)=BS1/BS0
 C----- SIMPLER CALC USING FUNCTION STATEMENT FROM MULTAN
 C      STORE(M6+4) = VEC(B)
       GOTO 1700
@@ -3881,3 +3892,34 @@ C-------INSUFFICIENT SPACE
 
       END
 
+CODE FOR MDBESL
+        SUBROUTINE MDBESL(X,BSLI0,BSLI1)
+C Polynomial approximation to modified Bessel functions I0(x), I1(x)
+C BSLI0 - first order modified bessel function I0(x)
+C BSLI1 - second order modified bessel function I1(x)
+      DOUBLE PRECISION BSLI0,BSLI1,T,T2,X
+      IF (X.EQ.0.0D0) THEN
+           BSLI0=1.0D0
+           BSLI1=0.0D0
+           RETURN
+      ELSE IF (X.LE.3.75D0) THEN
+           Y=(X/3.75D0)**2
+           BSLI0=(((((.0045813D0*Y+.0360768D0)*Y+.2659732D0)
+     &               *Y+1.2067492D0)*Y+3.0899424D0)*Y
+     &                              +3.5156229D0)*Y+1.0D0
+           BSLI1=X*((((((.00032411D0*Y+.00301532D0)*Y
+     &        +.02658733D0)*Y+.15084934D0)*Y+.51498869D0)
+     &         *Y+.87890594D0)*Y+.5D0)
+        ELSE
+           Y=3.75D0/X
+           BSLI0=((((((((.00392377D0*Y-.01647633D0)*Y
+     &         +.02635537D0)*Y-.02057706D0)*Y+.916281D-2)*Y
+     &         -.157565D-2)*Y+.225319D-2)*Y+.01328592D0)*Y
+     &         +.39894228D0)*DEXP(X)/DSQRT(X)
+           BSLI1=((((((((-.420059D-2*Y+.01787654D0)*Y
+     &         -.02895312D0)*Y+.02282967D0)*Y-.01031555D0)*Y
+     &         +.163801D-2)*Y-.00362018D0)*Y-.03988024D0)*Y
+     &         +.39894228D0)*DEXP(X)/DSQRT(X)
+        ENDIF
+        RETURN
+        END
