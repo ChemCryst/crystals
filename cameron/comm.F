@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  1999/05/11 11:56:38  dosuser
+C RIC: Calling ZMORE with wrong # of args. Fixed.
+C
 C Revision 1.4  1999/05/07 15:26:19  dosuser
 C RIC: Added support for cursor rotation in the GID version.
 C      Changed label size (ILSIZE) by a factor of ~6 for GID version.
@@ -76,6 +79,7 @@ C        ISCAL = ISCALS
 C        IFONT = 12 (changed from IFSIZE by DJW)
 &DOS        ILSIZE = 8
 &GID        ILSIZE = 60
+&GIL        ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
         DO 1000 I = 1 , ICLMAX
 C          IDEVCL(I) = IDEVCS(I)
@@ -276,6 +280,7 @@ c
       SCALE = SCALE * RES
 &DOS      ILSIZE = NINT (8 * RES)
 &GID      ILSIZE = NINT (60 * RES)
+&GIL      ILSIZE = NINT (60 * RES)
       SCLSAV = SCALE
       IF (ISTREO .EQ. 1) THEN
 C----- SET LEFT VIEW
@@ -617,6 +622,7 @@ C        ISCAL = ISCALS
 C        IFSIZE = 12
 &DOS        ILSIZE = 8
 &GID        ILSIZE = 60
+&GIL        ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
         DO 1152 I = 1 , ICLMAX
           IDEVCL(I) = IDEVCS(I)
@@ -649,44 +655,54 @@ C      CALL ZATMUL(0,0,0)
 
 &GID      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 &GID      IUNIT = 5
+&GIL      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
+&GIL      IUNIT = 5
 1150  CONTINUE
 &DOS      CALL ZGETKY(K)
 &GID      K = KRDLIN ( IUNIT, CLINE, LENUSE )
+&GIL      K = KRDLIN ( IUNIT, CLINE, LENUSE )
 &DOS      IF (K.EQ.0) GOTO 1150
       CALL ZCLARE(0,IDEVCL(IBACK+1))
       ICURS = 1
 &DOS        IF (K.EQ.ICLEFT) THEN
 &GID        IF (CLINE(1:1).EQ.'L') THEN
+&GIL        IF (CLINE(1:1).EQ.'L') THEN
 C LEFT
         ANG = ABS(ANG)
         CALL ZROT(ANG,2)
 &DOS      ELSE IF (K.EQ.ICRGHT) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'R') THEN
+&GIL      ELSE IF (CLINE(1:1).EQ.'R') THEN
 C RIGHT
         ANG = -ABS(ANG)
         CALL ZROT(ANG,2)
 C UP
 &DOS      ELSE IF (K.EQ.ICUP) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'U') THEN
+&GIL      ELSE IF (CLINE(1:1).EQ.'U') THEN
         ANG = ABS(ANG)
         CALL ZROT(ANG,1)
 C DOWN
 &DOS      ELSE IF (K.EQ.ICDOWN) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'D') THEN
+&GIL      ELSE IF (CLINE(1:1).EQ.'D') THEN
         ANG = -ABS(ANG)
         CALL ZROT(ANG,1)
 C ANTICLOCKWISE
 &DOS      ELSE IF (K.EQ.ICANTI) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'A') THEN
+&GIL      ELSE IF (CLINE(1:1).EQ.'A') THEN
         ANG = -ABS(ANG)
         CALL ZROT(ANG,3)
 C CLOCKWISE
 &DOS      ELSE IF (K.EQ.ICCLCK) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'C') THEN
+&GIL      ELSE IF (CLINE(1:1).EQ.'C') THEN
         ANG = ABS(ANG)
         CALL ZROT(ANG,3)
 &DOS      ELSE IF (K.NE.0) THEN
 &GID      ELSE 
+&GIL      ELSE 
         ICURS = 0
         CALL ZATMUL(0,0,0)
         CALL ZDOVI
