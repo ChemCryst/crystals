@@ -25,38 +25,7 @@
 ^^WI  }
 ^^WI  @ 3,2 GRID S NROWS=1 NCOLS=3 {
 ^^WI     @ 1,1 LISTBOX DS_RES VISLINES=15 INFORM=YES
-^^WI           ADDTOLIST
-%%
-%%
-%  EXTRACT REWIND
-%  LOOP
-%    ON ERROR TERMINATE
-%    ON END TERMINATE
-%%
-%% Get the date for each result.
-%% Format is LIST# SERIAL USEFLAG ORIGIN ERRORFLAG DELETEFLAG DATE
-%    EXTRACT NEXT
-%    CLEAR
-%%    EXTRACT TRANSFER COMMAND
-%%    EXECUTE SEND
-%    EXTRACT TRANSFER INPUT
-%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%    IF VALUE .EQ. 5 THEN
-%       CLEAR
-%       INSERT !^^WI '!
-%       GET NOPROMPT INTEGER ' ' '-100'
-%       INSERT ':'
-%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%       GET NOPROMPT TEXT ' ' 'Date'
-%       INSERT !'!
-%       OUTPUT
-%    END IF
-%  END LOOP
-%%
-%%
+^^WI           ADDTOLIST 'Please wait, reading details of old models.'
 ^^WI           NULL
 ^^WI     @ 1,3 GRID E NROWS=7 NCOLS=1
 ^^WI     {
@@ -85,6 +54,41 @@
 ^^WI SHOW
 ^^CR
 %%
+%%
+^^WI SET DS_RES REMOVE 0 ADDTOLIST
+%%
+%  EXTRACT REWIND
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%%
+%% Get the date for each result.
+%% Format is LIST# SERIAL USEFLAG ORIGIN ERRORFLAG DELETEFLAG DATE
+%    EXTRACT NEXT
+%    CLEAR
+%%    EXTRACT TRANSFER COMMAND
+%%    EXECUTE SEND
+%    EXTRACT TRANSFER INPUT
+%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%    IF VALUE .EQ. 5 THEN
+%       CLEAR
+%       INSERT !^^WI '!
+%       GET NOPROMPT INTEGER ' ' '-100'
+%       INSERT ':'
+%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%       GET NOPROMPT TEXT ' ' 'Date'
+%       INSERT !'!
+%       OUTPUT
+%    END IF
+%  END LOOP
+^^WI 'NULL'
+^^CR
+%%
+%%
+
 %%
 %  EVALUATE NTS = 1
 %%
