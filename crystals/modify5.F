@@ -1,4 +1,48 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2004/03/09 09:38:03  rich
+C
+C Added a 'ROTATE' directive to #EDIT. There are three modes of operation:
+C
+C   rotate angle px py pz vx vy vz [atoms]
+C   rotate angle patom vx vy vz [atoms]
+C   rotate angle patom vatom [atoms]
+C
+C The first rotates the specified [atoms], angle degrees around the vector
+C vx,vy,vz keeping point px,py,pz fixed. (px-pz and vx-vz are given in
+C crystal fractions).
+C
+C The rotation is in an orthogonal system so all distances and angles
+C within the moved set of atoms are preserved.
+C
+C The second notation replaces the point to keep fixed with patom, the name
+C of an atom. Its coordinates are used to obtain px py and pz.
+C
+C The third notation uses patom to get px, py and pz, and the vector from patom
+C to vatom to get vx, vy and vz.
+C
+C Examples:
+C
+C 1) Rotate the hydrogens of a methyl group by sixty degrees.
+C
+C     #EDIT
+C     ROTATE 60 C(1) C(2) H(20) H(21) H(22)
+C     END
+C
+C 2) Turn a phenyl ring through 30 degrees around its rotation axis.
+C
+C     #EDIT
+C     ROTATE 30 C(1) C(20) C(21) C(22) C(23) C(24) C(25)
+C     END
+C
+C 3) Flip a residue 90 degrees around the a-axis about its centroid, QC(1)
+C    (see also CENTROID and INSERT RESIDUE directives)
+C
+C     #EDIT
+C     INSERT RESIDUE
+C     CENTROID 1 RESIDUE(1)
+C     ROTATE 90 QC(1) 1 0 0 RESIDUE(1)
+C     END
+C
 C Revision 1.44  2004/02/26 13:40:56  djw
 C enable maths on he integer fields
 C
@@ -2292,6 +2336,7 @@ C--GENERATE THE MOVED PARAMETERS BY SYMMETRY FIRST
           IF (KATOMS(MQ,M5A,ITEMP).LT.0) GO TO 7100
           LIND = (M5A-L5)/MD5
           ISTORE(LTEMP + LIND) = 1
+          M5A=M5A+MD5A
         END DO
         ICHNG=ICHNG+1
 C--CHECK FOR MORE ATOMS
@@ -2310,7 +2355,11 @@ c      CALL XPRVDU(NCVDU,1,0)
 C Normalise the vector, and compute rotation matrix in ortho space.
 C (See matrix.src)
 
-      IF ( NROT(BPD(1),ROTATE,APD(1)) .LT. 0 ) GOTO 7100
+      IF ( NROT(BPD(1),ROTATE,APD(1)) .LT. 0 ) THEN
+         WRITE(CMON,'(A)')'Rotate error: Vector has zero length.'
+         CALL XPRVDU(NCVDU,1,0)
+         GOTO 7100
+      END IF
 
 c      WRITE(CMON,'(A/3(3F8.4/))')'OR rotation: ',
 c     c  ((APD(I+J),I=1,7,3),J=0,2)
@@ -2353,6 +2402,9 @@ c      CALL XPRVDU(NCVDU,5,0)
 
 C Now work out the inverse, that is the matrix that goes from CF
 C to an orthogonal system with the origin at the point stored in LPNT.
+C (This is like L1O1, but by inverting LOR2CF we get the translation
+C part worked out too).
+
 
       I=KINV2(4,STORE(LOR2CF),STORE(LCF2OR),16,0,
      1          STORE(LWORK), STORE(LWORK), 4)
