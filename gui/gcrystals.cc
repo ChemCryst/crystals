@@ -247,7 +247,7 @@ END_EVENT_TABLE()
 bool CCrystalsApp::OnInit()
 {
 
-      XInitThreads();
+//      XInitThreads();
 
       CcString directory;
       CcString dscfile;

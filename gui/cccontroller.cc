@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.77  2003/11/19 15:18:50  rich
+//
+// Rewritten guexec for linux version to use system calls rather than
+// stuff from the wxWindows library. The wxWindows library shouldn't
+// be called from this, the CRYSTALS thread.
+//
 // Revision 1.76  2003/11/05 09:17:21  rich
 // Use 'cerr' function from the 'std' namespace.
 //
@@ -3834,13 +3840,18 @@ extern "C" {
     if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
     {
         line = CcString(command.c_str()) + " " + line;
+        std::cerr << "\nGUEXEC: Found handler app: " << line.ToCString() << "\n";
     }
 
     if ( bWait )
     {
       (CcController::theController)->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
-//      wxEnableTopLevelWindows(FALSE);
     }
+    else
+    {
+      (CcController::theController)->AddInterfaceCommand( "     {0,2 Starting {2,0 " + firstTok + " {0,2 ");
+    }
+
 
     extern int errno;
     char * str = new char[257];
@@ -3859,15 +3870,22 @@ extern "C" {
     pid_t pid = fork();
     
     if ( pid == 0 ) {          //We're in the child process.
-       execvp( args[0], args );
-       exit(-1);
+       std::cerr << "\n\nGUEXEC: Child. Execing...\n";
+       int err = execvp( args[0], args );
+       std::cerr << "\n\nGUEXEC: Something went wrong.\n";
+       _exit(-1);
     }
 // We're in the parent process
 
+    std::cerr << "\n\nGUEXEC: Parent.\n";
+
     if ( bWait )
     {
+        std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
         waitpid(pid,NULL,0);	     
     }
+
+    std::cerr << "\n\nGUEXEC: Done.\n";
 
     return;
 
