@@ -1,5 +1,5 @@
 %SCRIPT XSHIFTL
-% VARIABLE CHARACTER CLINE1
+% VARIABLE CHARACTER CLINE1 KEYBREAK
 % VARIABLE REAL LIMIT
 ^^WI WINDOW XSHIFTL 'Restrain shifts' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
@@ -14,10 +14,7 @@
 ^^WI       @ 3,1 STATIC T3 'E.s.d:'
 ^^WI       @ 3,3 EDITBOX E2 '0.01' CHARS=9 REAL
 ^^WI     }
-^^WI     @ 4,1 GRID LEFT NROWS=3 NCOLS=3
-^^WI     {
-^^WI       @ 2,2 BUTTON BEE '&Edit restraints'
-^^WI     }
+^^WI     @ 4,1 CHECKBOX EDIT16 'Edit/view new restraints.' STATE=ON
 ^^WI   }
 ^^WI   @ 2,4 GRID RIGHT NROWS=5 NCOLS=1
 ^^WI   {
@@ -29,12 +26,11 @@
 ^^WI  SHOW
 ^^CR  
 % LOOP
-%  VERIFY BXX BHH BEE BOK
+%  VERIFY BXX BHH BOK
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  CASE VALUE
 %   BLOCK                      %BXX
-^^WI DISPOSE XSHIFTL
-^^CR
+^^CO DISPOSE XSHIFTL
 %    FINISH
 %   END BLOCK
 %   BLOCK                      %BHH
@@ -53,17 +49,13 @@ have almost no effect unless the parameter involved is almost
 singular with respect to some other parameter.
 %    COPY '#SCRIPT XHELP2'
 %   END BLOCK
-%   BLOCK                      %BEE
-%    COPY '#SCRIPT EDLIST16'
-%   END BLOCK
 %   BLOCK                      %BOK
 ^^?? E2 TEXT
 %    GET NOSTORE SILENT REAL 'Shift' '0.001'
 %    EVALUATE LIMIT = VALUE
-^^WI DISPOSE XSHIFTL
-^^CR
 %    ON ERROR CONTINUE
-%    COPY '#RELEASE SCPQUEUE LIMIT.C16'
+%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE SCPQUEUE new16bit.pch'
 %    VERIFY U[ISO] X Y Z U[11] U[22] U[33] U[12] U[13] U[23] OCC
 %    LOOP 11 TIMES
 %     CLEAR
@@ -72,17 +64,18 @@ singular with respect to some other parameter.
 %     STORE KEYWORD LOOPCOUNTER
 %     QUEUE SEND
 %    END LOOP
-%    CLEAR
-%    INSERT '#USE LAST'
-%    QUEUE SEND
-%    CLEAR
-%    INSERT '#   '
-%    QUEUE SEND
+%%
 %    COPY '#RELEASE SCPQUEUE bfile.spq'
-%    EVALUATE CLINE1 = '#USE LIMIT.C16'
-%    COPY '#SCRIPT YADDLI16'
-
+%    EVALUATE KEYBREAK = 'SHIFTLIMIT'
+%    COPY '#SCRIPT ZADDLI16'
  * Done. Shift limiting restraints added.
+^^?? EDIT16 STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF VALUE .EQ. 1 THEN
+%      COPY '#SCRIPT EDLIST16'
+%    END IF
+^^CO DISPOSE XSHIFTL
 %    FINISH
 %   END BLOCK
 %  END CASE
