@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.18  2003/02/27 12:48:54  rich
 C Oops.
 C
@@ -6,14 +12,14 @@ C Revision 1.17  2003/02/27 11:49:50  rich
 C
 C Two BRAND NEW lexical things:
 C
-C  You can now use, wherever appropriate, FRAG(1,X's) syntax to
-C  select all atoms whose fragment number (slot 17 in L5) matches. This
+C  You can now use, wherever appropriate, RESI(1,X's) syntax to
+C  select all atoms whose residue number (slot 17 in L5) matches. This
 C  works in EDIT, LIST 12, DIST, REGULARISE etc.
 C
 C  You can now use, wherever appropriate, TYPE(H,X's) syntax to
 C  select all atoms whose type matches that given. This
 C  works in EDIT, LIST 12, DIST, REGULARISE etc. Main use I can think
-C  of is to quickly FIX all H positions (especially if using FRAG to specify
+C  of is to quickly FIX all H positions (especially if using RESI to specify
 C  bits to refine) or to special case a few heavy atoms: TYPE(AU,U'S).
 C
 C  If you say FULL U[ISO] TYPE(PB,U's) - it causes an error - this is better
@@ -871,7 +877,7 @@ C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
 
 1600  CONTINUE
       ME=ME-1
-      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs or FRAGs, please.
+      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs or RESIs, please.
       IF(ME)1700,1700,1800        !CHECK FOR AN END OF CARD AFTER 'UNTIL'
 
 1650  CONTINUE                   !ERROR IN AN 'UNTIL' SEQUENCE
@@ -895,7 +901,7 @@ C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
       IF(II)1000,1050,1850 !CHECK THE REPLY
 
 1850  CONTINUE
-      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs or FRAGs, please.
+      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs or RESIs, please.
       IF(ISTORE(MQ+5))1650,1900,1650 !CHECK NO PARAMS READ FOR THIS ATOM
 
 C--LINK THE ATOM HEADERS AND CHECK IF WE MUST SEARCH THROUGH LIST 5
@@ -1033,12 +1039,12 @@ C
       IF(ISTORE(MF).GT.0) GOTO 1000 ! CHECK 1st OP IS A VARIABLE (ATOM TYPE)
 
 C--START TO FORM THE ATOM HEADER BLOCK  -
-C-- CHECK FOR 'FIRST', 'LAST', 'PART', 'FRAG', 'TYPE'
+C-- CHECK FOR 'FIRST', 'LAST', 'PART', 'RESIDUE', 'TYPE'
 1100  CONTINUE
       II=KCOMP(1,ISTORE(MF+2),IFIRST(1),5,1)
       IF ( ( II. EQ. 1 ) .OR. ( II .EQ. 2 ) ) THEN !This is First or Last
         KA = -1
-      ELSE IF ( ( II .GE. 3 ) .AND. ( II .LE. 5 ) ) THEN  !Part,Frag or Type
+      ELSE IF ( ( II .GE. 3 ) .AND. ( II .LE. 5 ) ) THEN  !Part,REsi or Type
         KB = 1
         IF ( II .EQ. 5 ) KBB = 1 ! We are looking for a char.
         OME=ME
@@ -1301,7 +1307,7 @@ C--CHECK THE ATOM TYPES
 1400  CONTINUE
       IF(KCOMP(1,ARG,STORE(M5F),1,1))1300,1300,1050
 C
-C--ATOMS PROVIDED  -  CHECK FOR 'FIRST', 'LAST', 'PART', 'FRAG', 'TYPE'
+C--ATOMS PROVIDED  -  CHECK FOR 'FIRST', 'LAST', 'PART', 'RESIDUE', 'TYPE'
 1450  CONTINUE
       J=KCOMP(1,ARG(1),IFIRST(1),5,1)
 C--CHECK THE REPLY
@@ -1360,7 +1366,7 @@ c                CALL XPRVDU(NCVDU,1,0)
         END DO
         IATOMF=-1    !Not found
         GOTO 1000
-      ELSE IF ( J .EQ. 4 ) THEN ! 'FRAG' - CHECK THE ADDRESSING
+      ELSE IF ( J .EQ. 4 ) THEN ! 'RESIDUE' - CHECK THE ADDRESSING
 C IPTVAL = requested frag. NPTTOT = # matching atoms. NPTCUR = Current atom.
         IF ( NPTCUR .LE. 1 ) THEN   !First time.
            NPTCUR = 1

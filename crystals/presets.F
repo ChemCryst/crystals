@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/06/27 09:19:52  rich
+C Common block XFLAGS to hold bit-masks for information (RIDE,RIGID,DIST/ANGLE
+C RESTRAINT/OCC CONSTRAINT etc) which is to be stored in L5, and later output
+C to CIF to meet Acta requirements.
+C
 C Revision 1.44  2003/06/09 11:33:09  rich
 C Set value of IOPBND.
 C
@@ -15,14 +20,14 @@ C Revision 1.41  2003/02/27 11:49:50  rich
 C
 C Two BRAND NEW lexical things:
 C
-C  You can now use, wherever appropriate, FRAG(1,X's) syntax to
+C  You can now use, wherever appropriate, REISDUE(1,X's) syntax to
 C  select all atoms whose fragment number (slot 17 in L5) matches. This
 C  works in EDIT, LIST 12, DIST, REGULARISE etc.
 C
 C  You can now use, wherever appropriate, TYPE(H,X's) syntax to
 C  select all atoms whose type matches that given. This
 C  works in EDIT, LIST 12, DIST, REGULARISE etc. Main use I can think
-C  of is to quickly FIX all H positions (especially if using FRAG to specify
+C  of is to quickly FIX all H positions (especially if using RESI to specify
 C  bits to refine) or to special case a few heavy atoms: TYPE(AU,U'S).
 C
 C  If you say FULL U[ISO] TYPE(PB,U's) - it causes an error - this is better
@@ -971,7 +976,7 @@ CSEP2000  NEW NAMES
 &HOL      DATA ICOORD(1,15)/4HPART/,ICOORD(2,15)/4H    /
 &HOL      DATA ICOORD(1,16)/4HREF /,ICOORD(2,16)/4H    /
 CNOV2000  MORE NEW NAMES
-&HOL      DATA ICOORD(1,17)/4HFRAG/,ICOORD(2,17)/4HMENT/
+&HOL      DATA ICOORD(1,17)/4HRESI/,ICOORD(2,17)/4HDUE /
 &HOL      DATA ICOORD(1,18)/4HNEW /,ICOORD(2,18)/4H    /
 C
 C----- THE EXTENDED PARAMETER NAMES
@@ -1000,7 +1005,7 @@ CSEP2000  NEW NAMES
 #HOL      DATA ICOORD(1,15)/'PART'/,ICOORD(2,15)/'    '/
 #HOL      DATA ICOORD(1,16)/'REF '/,ICOORD(2,16)/'    '/
 CSEP2000  MORE NEW NAMES
-#HOL      DATA ICOORD(1,17)/'FRAG'/,ICOORD(2,17)/'MENT'/
+#HOL      DATA ICOORD(1,17)/'RESI'/,ICOORD(2,17)/'DUE '/
 #HOL      DATA ICOORD(1,18)/'NEW '/,ICOORD(2,18)/'    '/
 C
 C-C-C-ADDITIONAL KEYWORDS FOR SPHERE, LINE, RING
@@ -1071,7 +1076,7 @@ C -- INITIALISE DATA FOR EFFICIENCY STATISTICS
       DATA NCALL / 0 /
 C
       DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/,IFIRST(3)/'PART'/
-     1     IFIRST(4)/'FRAG'/,IFIRST(5)/'TYPE'/
+     1     IFIRST(4)/'RESI'/,IFIRST(5)/'TYPE'/
 C
 C----- KEYS FOR COEFFICIENTS IN LIST 6
       DATA I14(1) / 14 / , I15(1) / 15 / , I31(1) / 31 /

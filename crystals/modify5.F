@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2003/06/20 13:38:23  rich
+C
+C Fix bug in #EDIT/DELETE when using the new PART,RESIDUE or TYPE
+C keywords to select atoms - the change in size of L5 in between
+C calls to KATOMU was confusing things - as a result only half
+C the atoms requested were being deleted.
+C
 C Revision 1.36  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -6,11 +13,11 @@ C using only free compilers and libraries. Hurrah, but it isn't very stable
 C yet (CRYSTALS, not the compilers...)
 C
 C Revision 1.35  2003/02/27 12:48:35  rich
-C Special case PART, REFINE and FRAGMENT in #EDIT CHANGE, so that values
+C Special case PART, REFINE and RESIDUE in #EDIT CHANGE, so that values
 C get stored as integers.
 C
 C Revision 1.34  2003/02/27 11:39:50  rich
-C Code to INSERT FRAGMENT id into FRAG slot in List 5. The maximum fragment number
+C Code to INSERT RESIDUE id into RESIDUE slot in List 5. The maximum residue number
 C is returned to scripts (if they are listening) in the variable 'EDIT:FRAGMAX'.
 C This is the first of many places that this method will be used.
 C
@@ -1157,7 +1164,7 @@ C-C-C-SET UNUSED U[IJ]'S TO ZERO
          END IF
 C-C-C-APPLY CHANGE OF PARAMETER
          CALL XMOVE (APD(1),STORE(JT),1)
-C Look out for PART, REFINE, FRAGMENT - they are integers.
+C Look out for PART, REFINE, RESIDUE - they are integers.
          IF ((JV .GE. 14) .AND. (JV .LE. 16)) ISTORE(JT) = NINT(APD(1))
 C--UPDATE THE ATOM ADDRESS
 3550     CONTINUE
@@ -2018,13 +2025,13 @@ C -- APPLY SYMMETRY TO ATOMIC COORDINATES
 C--'RESET'
 16000     CONTINUE
          CALL XMOVE(Z, STORE(JU), 1)
-C Look out for PART, REFINE, FRAGMENT - they are integers.
+C Look out for PART, REFINE, RESIDUE - they are integers.
          IF ((JV .GE. 14) .AND. (JV .LE. 16)) ISTORE(JU) = NINT(Z)
          GO TO 16150
 C--'SPARE'
 16050     CONTINUE
          STORE(JU)=Z
-C Look out for PART, REFINE, FRAGMENT - they are integers.
+C Look out for PART, REFINE, RESIDUE - they are integers.
          IF ((JV .GE. 14) .AND. (JV .LE. 16)) ISTORE(JU) = NINT(Z)
          GO TO 16150
 16150     CONTINUE
@@ -2232,19 +2239,19 @@ C- RETURN WORKSPACE
          CALL XSTRLL (LTEMP)
          ICHNG=ICHNG+1
          CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
-      ELSE IF ( I .EQ. 5 ) THEN ! FRAGMENT
+      ELSE IF ( I .EQ. 5 ) THEN ! RESIDUE
 C Force a bondcalc, but don't allow loading of L5
          CALL XBCALC(2)
-C Put fragment ID into FRAGMENT slot.
+C Put residue ID into RESIDUE slot.
          IF (KLST(1).LE.0)   GO TO 7100 ! Reqd list failed to load.
          IF (KMDINS(1).LT.0) GO TO 7100
-C Ensure all FRAGIDs are zero or positive and discover whether
-C all FRAGIDs are zero:
+C Ensure all RESIDs are zero or positive and discover whether
+C all RESIDs are zero:
          IFRGMX = 0
          DO I = 0,N5-1
            ISTORE(L5+16+I*MD5) = ABS ( ISTORE(L5+16+I*MD5) )
            IFRGMX = MAX ( IFRGMX, ISTORE(L5+16+I*MD5) )
-c           write(cmon,'(a,i4)')'FRAGID = ', ISTORE(L5+16+I*MD5)
+c           write(cmon,'(a,i4)')'RESIID = ', ISTORE(L5+16+I*MD5)
 c           call xprvdu(ncvdu,1,0)
          END DO
 
@@ -2252,19 +2259,19 @@ c         write(cmon,'(a,i4)')'IFRGMX 1 = ',IFRGMX
 c         call xprvdu(ncvdu,1,0)
 
          IF ( IFRGMX .GE. 1 ) THEN
-C Fragments already have some FRAGID's: Ensure no two fragments contain
+C Residues already have some RESIID's: Ensure no two residues contain
 C the same ID. How? Well:
 C  1) Take the first non-negative, non-zero ID, set it negative.
 C  2) Propagate negative numbers through the bonding network, until
 C     no more changes.
-C  3) Search remainder for a matching +ve FRAGID. If found, assign a free ID.
-C  4) Go back to 1, until all frags are zero or negative.
+C  3) Search remainder for a matching +ve RESIID. If found, assign a free ID.
+C  4) Go back to 1, until all residues are zero or negative.
 
-c           write(cmon,'(a)')'Some non-zero frag ids.'
+c           write(cmon,'(a)')'Some non-zero residue ids.'
 c           call xprvdu(ncvdu,1,0)
 
            DO I = 0, N5-1   
-             IF (ISTORE(L5+16+I*MD5).GT.0) THEN     ! Found next +ve FRAGID
+             IF (ISTORE(L5+16+I*MD5).GT.0) THEN     ! Found next +ve RESIID
                IFRGID = ISTORE(L5+16+I*MD5)
                ISTORE(L5+16+I*MD5) = - IFRGID
                NCHANG = 1
@@ -2287,13 +2294,13 @@ c           call xprvdu(ncvdu,1,0)
                      ISTORE(I51+16)=ISTORE(I52+16)
                    END IF
                  END DO
-               END DO   ! FragIDs propagated everywhere.
+               END DO   ! RESIIDs propagated everywhere.
 
                DO J = I+1, N5-1  ! Check for matching values, and reassign.
                  IF (ISTORE(L5+16+J*MD5) .EQ. IFRGID) THEN
                    IFRGMX = IFRGMX + 1
                    WRITE(CMON,'(2(A,I4))')
-     1 'Duplicate fragment ID found: ',IFRGID,' 2nd set to: ',IFRGMX
+     1 'Duplicate residue ID found: ',IFRGID,' 2nd set to: ',IFRGMX
                    CALL XPRVDU(NCVDU,1,0)
                    ISTORE(L5+16+J*MD5) = IFRGMX
                  END IF
@@ -2303,10 +2310,10 @@ c           call xprvdu(ncvdu,1,0)
            IFRGMX = 0
 c           write(cmon,'(a)')'End of init check: '
 c           call xprvdu(ncvdu,1,0)
-           DO I = 0,N5-1                      ! Make all FRAGIDs non negative.
+           DO I = 0,N5-1                      ! Make all RESIIDs non negative.
              ISTORE(L5+16+I*MD5) = ABS ( ISTORE(L5+16+I*MD5) )
              IFRGMX = MAX ( IFRGMX, ISTORE(L5+16+I*MD5) )
-c             write(cmon,'(a,i4)')'FRAGID = ', ISTORE(L5+16+I*MD5)
+c             write(cmon,'(a,i4)')'REISID = ', ISTORE(L5+16+I*MD5)
 c             call xprvdu(ncvdu,1,0)
            END DO
          END IF
@@ -2314,18 +2321,18 @@ c             call xprvdu(ncvdu,1,0)
 c         write(cmon,'(a,i4)')'IFRGMX 2 = ',IFRGMX
 c         call xprvdu(ncvdu,1,0)
 
-C Fragments may already have some FRAGID's, but they will be already
+C Residues may already have some RESIID's, but they will be already
 C numbered and propagated.
 C  1) Take the first zero ID, set it to next free ID.
 C  2) Propagate numbers through the bonding network, until no more changes.
-C  4) Go back to 1, until all frags are non zero.
+C  4) Go back to 1, until all residues are non zero.
 
          DO I = 0, N5-1   
-           IF (ISTORE(L5+16+I*MD5).EQ.0) THEN     ! Found next zero FRAGID
+           IF (ISTORE(L5+16+I*MD5).EQ.0) THEN     ! Found next zero RESIID
              IFRGMX = IFRGMX + 1
              ISTORE(L5+16+I*MD5) = IFRGMX
 
-c             write(cmon,'(a,i4)')'Found 0 FRAGID: ', I
+c             write(cmon,'(a,i4)')'Found 0 RESIID: ', I
 c             call xprvdu(ncvdu,1,0)
 c             write(cmon,'(a,i4)')'Changed to: ', IFRGMX
 c             call xprvdu(ncvdu,1,0)
@@ -2345,7 +2352,7 @@ c             call xprvdu(ncvdu,1,0)
                    ISTORE(I52+16)=NEWVAL
                  END IF
                END DO
-             END DO   ! FragIDs propagated everywhere.
+             END DO   ! RESIIDs propagated everywhere.
            END IF
          END DO
 
