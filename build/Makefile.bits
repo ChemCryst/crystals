@@ -9,67 +9,64 @@ VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
 EXECS := cif2cry    convplat    csd2cry    delred \
          dipin      ctwin       kccdin     rc93   \
          reindex    shelxs      sxtocry
-OBJS :=  cif2cry.o  convplat.o  csd2cry.o  delred.o \
-         dipin.o    ctwin.o     kccdin.o   rc93.o  \
-         reindex.o  shelxs.o    sxtocry.o  nobuf.o
 
-ifneq ($(COMPCODE),GID)
+OBJS :=  obj/cif2cry.o  obj/convplat.o  obj/csd2cry.o  obj/delred.o \
+         obj/dipin.o    obj/ctwin.o     obj/kccdin.o   obj/rc93.o  \
+         obj/reindex.o  obj/shelxs.o    obj/sxtocry.o  obj/nobuf.o
+
 ifneq ($(COMPCODE),WXS)
-OBJS := $(OBJS) sir92.o norm92.o sir92X11.o
+OBJS := $(OBJS) obj/sir92.o obj/norm92.o obj/sir92X11.o
 EXECS := $(EXECS) sir92
-endif
 endif
 
 ifeq ($(COMPCODE),WXS)
-OBJS := $(OBJS) crysload.o
-EXECS := $(EXECS) crysload
+OBJS := $(OBJS) obj/crysload.o
+EXECS := $(patsubst %, %.exe, $(EXECS) crysload)
 endif
 
 LD77 = g77
 
-all : $(EXECS) rc93.srt form.dat
+all : obj $(EXECS) rc93.srt form.dat
 
-cif2cry : cif2cry.o nobuf.o
+cif2cry$(SUFFIX) : obj/cif2cry.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-convplat : convplat.o
+convplat$(SUFFIX) : obj/convplat.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-csd2cry : csd2cry.o nobuf.o
+csd2cry$(SUFFIX) : obj/csd2cry.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-delred : delred.o nobuf.o
+delred$(SUFFIX) : obj/delred.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-dipin : dipin.o nobuf.o
+dipin$(SUFFIX) : obj/dipin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-ctwin : ctwin.o nobuf.o
+ctwin$(SUFFIX) : obj/ctwin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-kccdin : kccdin.o nobuf.o
+kccdin$(SUFFIX) : obj/kccdin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-rc93 : rc93.o nobuf.o
+rc93$(SUFFIX) : obj/rc93.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-reindex : reindex.o nobuf.o
+reindex$(SUFFIX) : obj/reindex.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-shelxs : shelxs.o nobuf.o
+shelxs$(SUFFIX) : obj/shelxs.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-sxtocry : sxtocry.o nobuf.o
+sxtocry$(SUFFIX) : obj/sxtocry.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
-crysload : crysload.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+crysload$(SUFFIX) : obj/crysload.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) -mwindows $(OPT) -o $@ $^
 
-ifneq ($(COMPCODE),GID)
 ifneq ($(COMPCODE),WXS)
-sir92 : sir92.o norm92.o sir92X11.o
+sir92 : obj/sir92.o obj/norm92.o obj/sir92X11.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES)  $(NATIVEXLIBS) $(OPT) -o $@ $^
-endif
 endif
 
 form.dat : 
@@ -78,9 +75,12 @@ form.dat :
 rc93.srt:
 	cp ../bits/rc93/rc93.ssr $@
 
+obj :
+	mkdir obj
+
 clean :
 	rm -f $(EXECS) $(OBJS) rc93.src form.dat
+	rm -f $(OBJS)
 
 tidy :
-	rm -f $(OBJS)
 
