@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.75  2003/10/29 12:29:33  rich
+// Add code to CcMenuItem to allow the menu name and command to
+// be redefined 'on the fly' by CRYSTALS.
+//
 // Revision 1.74  2003/09/24 10:40:10  rich
 // Remove obsolete keywords from default window spec when no
 // guimenu.srt is found.
@@ -1904,7 +1908,7 @@ void    CcController::LogError( CcString errString , int level )
     fflush( mErrorLog );
 
     #ifdef __LINUX__
-          cerr << elapse << " " << errString.ToCString() << "\n";
+          std::cerr << elapse << " " << errString.ToCString() << "\n";
     #endif
 }
 
