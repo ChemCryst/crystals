@@ -35,7 +35,7 @@
 ^^WI           {
 ^^WI               @ 2,1 STATIC   TH 'Increment'
 ^^WI               @ 2,3 DROPDOWN XC_BL ADDTOLIST
-^^WI               '.1' '.2' '.5' '1.' '5.' '10.' '45.' 
+^^WI               '.1' '.2' '.5' '1.' '5.' '10.' '45.'
 ^^WI               'NULL'
 ^^WI           }
 ^^WI           @ 2,1 GRID MOVE NROWS=3 NCOLS=5
@@ -92,7 +92,6 @@
 ^^WI   ITEM _CLOSE '&Exit Cameron' 'END'
 ^^WI  ENDMENU
 ^^WI  MENU STYLE '&Style'
-^^WI   ITEM _COLOUR '&Colours...' '#SCRIPT XCOLOUR'
 ^^WI   ITEM _ELLI '&Ellipse' 'ELLIPSE TYPE ALL 3 VIEW _N'
 ^^WI   ITEM _BALL '&Ball' 'BALL ALL VIEW _N'
 ^^WI   ITEM _LINE '&Line' 'LINE ALL VIEW _N'
