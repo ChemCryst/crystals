@@ -223,7 +223,7 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 //        glCallList(TORUS);
 
         float rc = (float)bondrad; // torus thickness
-        int numt = max(5,detail);             // num of cylinders to make torus?
+        int numt = max(10,detail);             // num of cylinders to make torus?
         float rt = m_length ;          // torus radius
         int numc = detail;             // num of sides to cylinder?
         float s, t;
