@@ -224,6 +224,8 @@ class Table
         ArrayList<Index>* getHeadings(int pI);
         ostream& output(ostream& pStream);
         ostream& outputLine(int pLineNum, ostream& pStream);
+        int getNumPointGroups();	//Needs doing
+        SpaceGroup* getSpaceGroup(int pLineNum, int pPointGroupNum);
         ostream& outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
@@ -276,7 +278,7 @@ class RankedSpaceGroups
         static void addRating(RowRating* pRating, float pRating1, float pRating2);
         void addToList(RowRating* pRating);
     public:
-        RankedSpaceGroups(Table& pTable, Stats& pStats);
+        RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral);
         ~RankedSpaceGroups();
         ostream& output(ostream& pStream);
 };
