@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2004/02/02 14:41:00  rich
+C Change Mogul syntax slightly.
+C Fix bug in L41 which missed symmetry related bonds in one
+C direction where the only operation was a cell translation.
+C E.g. Ga(1)-O(1,1,1,1,1,1) would show up, but O(1)-Ga(1,1,-1,-1,-1) would
+C not.
+C
 C Revision 1.62  2003/12/11 13:32:44  rich
 C KDIST4: Loop backwards through L41 (which is constructed upside-down in
 C the first place) so that SEL RAN=L41 doesn't have (much) effect on the
@@ -987,12 +994,10 @@ C----- SKIP THE MOLECULAR PROPERTIES CALCULATION - FOR NOW
 C
       IF (JFNVC .LE. 0) THEN
        IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)AT,AC,BT,BC
-       WRITE(NCAWU,1100) AT,AC,BT,BC
 1100   FORMAT(' Distance limits',F7.3,' to',F7.3/
      2 ' Angles   limits',F7.3,' to',F7.3)
       ELSE
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1130) TOLER, AT
-        WRITE(NCAWU,1130) TOLER, AT
 1130    FORMAT(' Tolerance in determining contacts = ',G10.5,
      1      / ,'        Minimum resolved distance  = ',G10.5)
       ENDIF
@@ -1085,7 +1090,6 @@ C--LOAD LIST 11
         CALL XFAL11(1,1)
         IF ( IERFLG .LT. 0 ) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,1405)
-           WRITE(NCAWU,1405)
            WRITE ( CMON ,1405)
            CALL XPRVDU(NCVDU, 3,0)
 1405       FORMAT(
@@ -1096,7 +1100,6 @@ C--LOAD LIST 11
         ENDIF
         IF(ISTORE(L11P+15).GE.0) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
-           WRITE(NCAWU,1500)
            WRITE ( CMON ,1500)
            CALL XPRVDU(NCVDU, 3,0)
 1500       FORMAT(' Matrix is wrong type for e.s.d.''s')
@@ -1587,7 +1590,6 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
      2           STORE(J+10),(STORE(J+JAR),JAR=7,9)
                 ENDIF
                 CALL XPRVDU(NCVDU, 1,0)
-                WRITE(NCAWU, '(A)') CMON( 1)(:)
 2806            FORMAT (A,A,' - ',A, F6.3, F6.3, 1X, 3F6.3)
 2807            FORMAT (A,A,' - ',A, F6.3, 6X,   1X, 3F6.3)
               ENDIF
@@ -2205,7 +2207,6 @@ C----- WRITE RESTRAINT
      2             CATOM3(1:21), TERM
                 ENDIF
                 CALL XPRVDU(NCVDU, 1,0)
-                WRITE(NCAWU, '(A)') CMON( 1)(:)
               ENDIF
 5348          FORMAT (1X,A, A, ' to ', A, ' to ', A,  F7.2, F5.2)
 
@@ -2304,7 +2305,6 @@ C -- INPUT ERRORS
 9920  CONTINUE
 C -- INSUFF. CORE
       CALL XOPMSG ( IOPDIS , IOPSPC , 0 )
-      WRITE(NCAWU,9921) K
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,9921)  K
       ENDIF
@@ -2444,7 +2444,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 1005 ) XDSESD , IB
       ENDIF
-        WRITE ( NCAWU , 1005 ) XDSESD
         WRITE ( CMON , 1005 ) XDSESD
         CALL XPRVDU(NCVDU, 1,0)
 1005    FORMAT ( 1X , 'Negative e.s.d. output ' , F14.10 , A1 , / ,
@@ -2892,7 +2891,6 @@ C----- UPDATE SERIAL NUMBER OF LAST ATOM
 C--THE LIST MUST BE SHORTENED
 3450  CONTINUE
       N=N5-NATOM
-      WRITE(NCAWU ,3451)NATOM, N5
       WRITE ( CMON ,3451)NATOM, N5
       CALL XPRVDU(NCVDU, 1,0)
 3451  FORMAT(' First', I5, ' atoms kept out of', I6, ' found')
@@ -2916,7 +2914,6 @@ C--PRINT THE NEW ATOM TOTAL
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3650)N5
       ENDIF
-      WRITE(NCAWU ,3650) N5
       WRITE ( CMON ,3650) N5
       CALL XPRVDU(NCVDU, 1,0)
 3650  FORMAT(' List now contains ',I5,' atoms')
@@ -3079,10 +3076,9 @@ C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
 
 
       IF (ILIST .GE. 0) THEN
-        WRITE(NCAWU,7460) TOLER
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU ,7460) TOLER
-      ENDIF
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU ,7460) TOLER
+        ENDIF
 7460    FORMAT(' Tolerance used in determining bonds is ',F4.2)
       ENDIF
 C
@@ -3163,7 +3159,6 @@ C -- COMPUTE DISTANCE STACK
           IF (ITYPE .LT. 0) THEN
             IF (ISTORE(MATVCA) .EQ. 0) THEN
 C----- AN ISOLATED ATOM
-              WRITE(NCAWU,1451) ISTORE(M5A), STORE(M5A+1)
               IF (ISSPRT .EQ. 0) THEN
                 WRITE(NCWU,1451) ISTORE(M5A), STORE(M5A+1)
               ENDIF
@@ -3222,7 +3217,6 @@ C--CHECK IF WE ARE PRINTING THE MOVED ATOMS
               IF (ISSPRT .EQ. 0) THEN
                 WRITE(NCWU,'(A)' ) ' Start of a new residue '
               ENDIF
-              WRITE(NCAWU,'(A)' ) ' Start of a new residue '
 C   NOW INHIBIT PRINTING
               IFRGPT = -1
             ENDIF
@@ -3365,9 +3359,6 @@ C--THIS IS THE FIRST CALL  -  OUTPUT THE HEADING
 1150  FORMAT(///' Current pivot atom',7X,'Atom',3X,'Serial',3X,'S(I)',
      2 2X,'L',2X,'T(X)',1X,'T(Y)',1X,'T(Z)',2X,'Distance',5X,'Action',
      3 6X, 'x/a', 5X, 'y/b', 5X, 'z/c', 5X, 'Rho', /)
-      WRITE ( NCAWU , 1155 )
-1155  FORMAT ( 1X , '  Pivot      Atom   Distance       Action',
-     3 5X, 'x/a', 5X, 'y/b', 5X, 'z/c', 5X, 'Rho', /)
       WRITE(CMON,1156)
       CALL XPRVDU(NCVDU, 1,0)
 1156  FORMAT(3X,'Pivot',4X,'Atom',5X,'Dist',5X,'Rho',6X,'Action')
@@ -3389,10 +3380,6 @@ C--PRINT THE ATOM TO BE ALTERED WITH THE PIVOT ATOM
       ENDIF
 1250  FORMAT (/, 1X,4X,A4,F8.0,9X,A4,F8.0,4X,I3,I4,3I5,F9.3,6X,A8,
      1 3F8.3, F9.1 )
-      WRITE ( NCAWU , 1255 ) STORE(M5A) , STORE(M5A+1)
-1255  FORMAT ( 1X, A4 , F5.0 )
-      WRITE ( NCAWU , 1355 ) STORE(IJ) , STORE(IJ+1) , STORE(II+10),
-     3 MESS,STORE(IJ+4), STORE(IJ+5), STORE(IJ+6), STORE(IJ+13)
       GOTO 1400
 C--PRINT THE ALTERED ATOM WITHOUT THE CURRENT PIVOT
 1300  CONTINUE
@@ -3402,10 +3389,6 @@ C--PRINT THE ALTERED ATOM WITHOUT THE CURRENT PIVOT
      3 STORE(IJ+4), STORE(IJ+5), STORE(IJ+6), STORE(IJ+13)
       ENDIF
 1350  FORMAT ( 26X,A4,F8.0,4X,I3,I4,3I5,F9.3,6X,A8,
-     1 3F8.3, F9.1 )
-      WRITE ( NCAWU , 1355 ) STORE(IJ) , STORE(IJ+1) , STORE(II+10),
-     3 MESS,STORE(IJ+4), STORE(IJ+5), STORE(IJ+6), STORE(IJ+13)
-1355  FORMAT ( 1X , 13X , A4 , F5.0 ,  F8.5 , 4X , A8,
      1 3F8.3, F9.1 )
 C--AND NOW RETURN
 1400  CONTINUE
@@ -4459,10 +4442,9 @@ C
 C
       IF (ISYMOD .EQ. -1) THEN
 C-----  PATTERSON PEAKS - MAKE CENTRIC AND DROP TRANSLATIONS
-        WRITE(NCAWU,7710)
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,7710)
-      ENDIF
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,7710)
+        ENDIF
 7710    FORMAT(//,' Symmetry of the Patterson space group being used')
         IC = 1
         STORE(L2C) = 1.
@@ -4473,10 +4455,7 @@ C-----  PATTERSON PEAKS - MAKE CENTRIC AND DROP TRANSLATIONS
 7700    CONTINUE
       ELSE IF (ISYMOD .EQ. 1) THEN
 C----- NO SYMMETRY OPTION. MAKE NONCENTRO WITHOUT OPERATORS
-        WRITE(NCAWU,7720)
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,7720)
-      ENDIF
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,7720)
 7720    FORMAT(//,' No symmetry operators will be used')
         IC = 0
         STORE(L2C) = 0.
@@ -4895,7 +4874,6 @@ C - Hand back the work area.
 C
 9000  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9100)
-      WRITE(NCAWU,9100)
       WRITE ( CMON ,9100)
       CALL XPRVDU(NCVDU, 1,0)
 9100  FORMAT(' Error allocating space for e.s.d. calculation')
@@ -5304,8 +5282,6 @@ C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
       DATA D13 / 3.0 /, D13S / 9.0 /
       DATA TOLER /0.6/, ITRANS / 0 /
 C
-      WRITE(NCAWU,'(A)') 'This is VOIDS'
-C
 C-------SET THE INITIAL TIMING
 C
       CALL XTIME1(2)
@@ -5396,10 +5372,7 @@ C-------'DISTANCE' INSTRUCTION
       IF(ME)1300,1300,1400
 1300  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1350)
-      ENDIF
-      WRITE(NCAWU,1350)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1350)
 1350  FORMAT(/19H No arguments found)
       GOTO 4200
 C
@@ -5408,10 +5381,7 @@ C-------READ THE DISTANCE FOR NON-BONDED CONTACT
       IF(KSYNUM(Z))1450,1550,1450
 1450  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)ISTORE(MF+1)
-      ENDIF
-      WRITE(NCAWU,1500) ISTORE(MF+1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)ISTORE(MF+1)
 1500  FORMAT(/35H New value of wrong type or missing,
      2 16H at about column,I5)
       GOTO 4200
@@ -6886,7 +6856,6 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
