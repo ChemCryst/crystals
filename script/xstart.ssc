@@ -5,16 +5,16 @@
 
 Running the test files.
 -----------------------
- Change to the CRYSTALS subdirectory \EXAMPLE and issue:
-          CRYSTALS
+On the CRYSTALS toolbar, choose File, New Working DIrectory, and find 
+the drive with WINCRYS on it. 
 
- You will be asked if you want to use scripts. Reply NO, and at the
- CRYSTALS prompt, !, type:
+Highlight the folder \EXAMPLE and click OK. On the command line, type:
 
           #USE HEXAMPLE.DAT
 
- A test deck will be run, exercising various parts of CRYSTALS. If this
- is successful, change to the directory NKET and issue:
+ A test deck will be run, exercising various parts of CRYSTALS.
+
+ If this  is successful, change to the directory NKET and issue:
 
           CRYSTALS
 
@@ -39,8 +39,7 @@ Running the test files.
 
      The tree structure for the menus you have just used is:
 
-     CONTROL
-          NEWSTART
+     #SCRIPT NEWSTART
                title
                QUICKSTART
                     data items
@@ -48,9 +47,9 @@ Running the test files.
                (back)
           (menu)
 
-  After this, try following the scripts. If you get in a mess type DIRECT.
-  This always returns you to the CRYSTALS prompt. You can restart scripts
-  with #SCRIPT CONTROL.
+  When you get the question 'DO you want to solve the structure, answer 
+  NO. Instead, choose SOLVE from the toolbar, and slowly work your way 
+  across the screen.
 
   If you don't like SCRIPT mode, the PRIMER shows you how to prepare
   files for execution. If a file has an error in it, it is possible to 
