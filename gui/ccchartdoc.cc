@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2002/03/16 18:08:22  richard
+// Removed old CrGraph class (now obsolete given Steven's work).
+// Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
+//
 // Revision 1.9  2001/07/16 07:18:27  ckp2
 // Prevent the fast calls from Cameron from directly accessing GUI drawing functions.
 // These should be from the main thread only.
@@ -417,9 +421,13 @@ void CcChartDoc::FastEPoly( int nv, int * points )
       mCommandList->AddItem(item);
 }
 
-void CcChartDoc::FastText( int x, int y, CcString text )
+void CcChartDoc::FastText( int x, int y, CcString text, int fs )
 {
-      CcChartText* item = new CcChartText( x, y, text );
+      int yoffs = fs * 5;
+      int xoffs = yoffs * 10;
+      CcChartText* item = new CcChartText();
+      item->Init(x-xoffs, y-yoffs, x+xoffs, y+yoffs, text );
+
       mCommandList->AddItem(item);
 }
 
@@ -463,7 +471,7 @@ void fastfelli ( int x,  int y,  int w,  int h  );
 void fasteelli ( int x,  int y,  int w,  int h  );
 void fastfpoly ( int nv, int * points );
 void fastepoly ( int nv, int * points );
-void fasttext  ( int x,  int y,  char theText[80] );
+void fasttext  ( int x,  int y,  char theText[80], int fs );
 void fastcolour( int r,  int g, int b );
 void fastclear     ( );
 void fastshow      ( );
@@ -475,7 +483,7 @@ void fastfelli_ ( int x,  int y,  int w,  int h  );
 void fasteelli_ ( int x,  int y,  int w,  int h  );
 void fastfpoly_ ( int nv, int * points );
 void fastepoly_ ( int nv, int * points );
-void fasttext_  ( int x,  int y,  char theText[80] );
+void fasttext_  ( int x,  int y,  char theText[80], int fs );
 void fastcolour_( int r,  int g, int b );
 void fastclear_     ( );
 void fastshow_      ( );
@@ -541,10 +549,10 @@ void fastepoly_ ( int nv, int * points )
 }
 
 #ifdef __BOTHWIN__
-void fasttext  ( int x,  int y,  char theText[80] )
+void fasttext  ( int x,  int y,  char theText[80], int fs )
 #endif
 #ifdef __LINUX__
-void fasttext_  ( int x,  int y,  char theText[80] )
+void fasttext_  ( int x,  int y,  char theText[80], int fs )
 #endif
 {
       theText[80] = '\0';
@@ -558,7 +566,7 @@ void fasttext_  ( int x,  int y,  char theText[80] )
       CcString text = theText;
       CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
       if ( doc )
-            doc->FastText( x,y,text );
+            doc->FastText( x,y,text, fs );
 }
 
 #ifdef __BOTHWIN__

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/03/16 18:08:22  richard
+//   Removed old CrGraph class (now obsolete given Steven's work).
+//   Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
+//
 //   Revision 1.7  2001/03/08 16:44:02  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -43,7 +47,7 @@ class CcChartDoc
         void FastEElli( int x, int y, int w, int h );
         void FastFPoly( int nv, int * points );
         void FastEPoly( int nv, int * points );
-        void FastText( int x, int y, CcString text );
+        void FastText( int x, int y, CcString text, int fs );
         void FastColour( int r, int g, int b );
 
         void Clear();

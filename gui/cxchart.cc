@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2002/02/15 11:25:54  ckp2
+//   Use enhanced metafile for Cam pics - might work better?
+//   Fix text size at 11 points of the current display device, rather
+//   than the screen device. (Bug: Labels tiny in high-res printers)
+//
 //   Revision 1.15  2002/01/30 10:58:43  ckp2
 //   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
 //   be copied to CxPlot to do same thing.
@@ -877,12 +882,15 @@ void CxChart::UseIsotropicCoords(Boolean iso)
 void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated)
 {
 #ifdef __CR_WIN__
+    CcPoint      coord = DeviceToLogical(x1,y1);
+    CcPoint       coord2 =DeviceToLogical(x2,y2);
+
     CPen        pen(PS_SOLID,1,mfgcolour);
     CPen*       oldpen = memDC->SelectObject(&pen);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     LOGFONT     theLogfont;
     (CcController::mp_font)->GetLogFont(&theLogfont);
-    theLogfont.lfHeight = 180;
+    theLogfont.lfHeight = (coord2.y - coord.y) * 2;
     theLogfont.lfWidth = 0;
     theLogfont.lfWeight = 0;
     if(rotated)
@@ -890,8 +898,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
     char face[32] = "Times New Roman";
     *(theLogfont.lfFaceName) = *face;
 
-      CcPoint      coord = DeviceToLogical(x1,y1);
-      CcPoint       coord2 =DeviceToLogical(x2,y2);
+
     Boolean fontIsTooBig = true;
     CSize size;
 //  int sign = theLogfont.lfHeight / abs(theLogfont.lfHeight);
@@ -903,7 +910,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 
         size = memDC->GetOutputTextExtent(theText.ToCString(), theText.Len());
 
-                if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=60))
+        if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=60))
         {
             //Output the text, and exit.
             fontIsTooBig = false;
