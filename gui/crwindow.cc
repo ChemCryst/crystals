@@ -53,16 +53,16 @@ CrWindow::CrWindow( CxApp * mParentPtr )
 
 CrWindow::~CrWindow()
 {
-      if ( m_Keep )
-      {
+    if ( m_Keep )
+    {
 // Store the old size in a file...
-           CcRect currentSize = GetGeometry();
-           if ( ( currentSize.Height() > 30 ) &&
-                ( currentSize.Width()  > 30 ) )
-           {
-               (CcController::theController)->StoreKey( mName, currentSize.AsString() );
-           }
-      }
+        CcRect currentSize = GetGeometry();
+        if ( ( currentSize.Height() > 30 ) &&
+             ( currentSize.Width()  > 30 ) )
+        {
+            (CcController::theController)->StoreKey( mName, currentSize.AsString() );
+        }
+    }
     if ( mGridPtr != nil )
     {
         delete mGridPtr;
@@ -78,17 +78,10 @@ CrWindow::~CrWindow()
         delete (CxWindow*)ptr_to_cxObject;
     }
 
-      while ( mModalWindowStack.FindItem((void*) this) )
-      {
-            mModalWindowStack.RemoveItem();
-      }
-
-
-//      if(mIsModal)
-//            if(mModalWindowStack.GetLastItem())
-//            {
-//                  mModalWindowStack.RemoveItem();
-//            }
+    while ( mModalWindowStack.FindItem((void*) this) )
+    {
+        mModalWindowStack.RemoveItem();
+    }
 
     delete mTabGroup;
 }
@@ -244,20 +237,22 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
             tokenList->GetToken();
 
             //First call CalcLayout() on all children. (Should only be one).
+
             this->CalcLayout();
 
-                  SetOriginalSizes();
+            SetOriginalSizes();
 
             //First call Align() on all children. (Should only be one).
+
             this->Align();
 
 
-                  if (!m_relativeWinPtr)
-                  {
+            if (!m_relativeWinPtr)
+            {
 // Either no posn specified (in which case centre over _MAIN)
 // or invalid window name given, (in which case position relative to _MAIN)
                         m_relativeWinPtr = (CcController::theController)->FindObject( "_MAIN" );
-                  }
+            }
 
             if(m_relativeWinPtr)
             {
@@ -307,8 +302,8 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
                         newPosn.mBottom = newPosn.Top()  + thisRect.Height();
                         break;
                     }
-                                        case kTCentred:
-                                        default:
+                    case kTCentred:
+                    default:
                     {
                         newPosn.mLeft   = winRect.Left() + ( ( winRect.Width()  - thisRect.Width()  ) / 2 );
                         newPosn.mTop    = winRect.Top()  + ( ( winRect.Height() - thisRect.Height() ) / 2 );
@@ -365,35 +360,35 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
                                                                   newPosn.Left(),
                                                                   newPosn.Bottom(),
                                                                   newPosn.Right() );
-                  }
+            }
 
 
-                  if ( m_Keep )
-                  {
+            if ( m_Keep )
+            {
 // Get the old size out of a file...
-                        CcString cgeom = (CcController::theController)->GetKey( mName );
-                        CcRect oldSize(0,0,0,0);
-                        if ( cgeom.Len() )
-                            oldSize = CcRect( cgeom );
+                CcString cgeom = (CcController::theController)->GetKey( mName );
+                CcRect oldSize(0,0,0,0);
+                if ( cgeom.Len() )
+                   oldSize = CcRect( cgeom );
 
-                        if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
-                              ((CxWindow*)ptr_to_cxObject)->SetGeometry(oldSize.mTop,
-                                                                   oldSize.mLeft,
-                                                                   oldSize.mBottom,
-                                                                   oldSize.mRight );
-// Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
+                if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
+                   ((CxWindow*)ptr_to_cxObject)->SetGeometry(oldSize.mTop,
+                                                             oldSize.mLeft,
+                                                             oldSize.mBottom,
+                                                             oldSize.mRight );
+// NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
 // in CrWindow::SetGeometry which adds on height and width for borders and
 // menubars.
 
-                  }
+            }
 
-                  // Lock the original sizes of all resizable windows.
-                  // These are needed to calculate how extra space
-                  // is shared out when the window is resized by the
-                  // user.
+            // Lock the original sizes of all resizable windows.
+            // These are needed to calculate how extra space
+            // is shared out when the window is resized by the
+            // user.
 
 
-                  //For now show self. Children are shown automagically.
+            //For now show self. Children are shown automagically.
             this->Show(true);
 
 

@@ -145,15 +145,13 @@ void    CxWindow::SetGeometry( int top, int left, int bottom, int right )
         MoveWindow(left, top, (right-left), (bottom-top),true);
 #endif
 #ifdef __BOTHWX__
-            SetSize(left,top,right-left,bottom-top);
+        SetSize(left,top,right-left,bottom-top);
 #endif
     }
     else // if the user is resizing, then the window is already the right size.
     {
-#ifdef __CR_WIN__
       TEXTOUT(" Progresizing is FALSE ");
-#endif
-      }
+    }
 }
 
 int   CxWindow::GetTop()
@@ -398,9 +396,11 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
     int cH = GetSystemMetrics(SM_CYCAPTION);
     int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
 #endif
+
 #ifdef __BOTHWX__
 void CxWindow::OnSize(wxSizeEvent & event)
 {
+      TEXTOUT( "OnSize called " + CcString(event.GetSize().x) + " " + CcString(event.GetSize().y) );
       mProgramResizing = false;
       int cx = event.GetSize().x;
       int cy = event.GetSize().y;

@@ -89,9 +89,9 @@ void  CxEditBox::SetText( CcString text )
 #endif
 #ifdef __CR_WIN__
       SetWindowText( text.ToCString() );
-      SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
 #endif
 }
+
 
 void  CxEditBox::AddText( CcString text )
 {

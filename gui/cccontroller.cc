@@ -10,6 +10,11 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2001/01/16 15:34:54  richard
+// wxWindows support.
+// Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
+// checked out in conjunction with changes to \bin\
+//
 // Revision 1.20  2000/12/13 18:52:01  richard
 // Linux support. Optimise instruction parsing (a bit) for a faster GUI.
 //
@@ -1528,15 +1533,17 @@ void CcController::History(Boolean up)
     {
         mCommandHistoryList.GetItemAndMove();
     }
-    CcString *temp = (CcString*) mCommandHistoryList.GetItem();
+    CcString *theCommand = (CcString*) mCommandHistoryList.GetItem();
+    CrEditBox *theEditBox = (CrEditBox*) GetInputPlace();
 
-    if (temp == nil)
+    if (theCommand == nil)
     {
-            GetInputPlace()->SetText("");
+            theEditBox->SetText("");
     }
     else
     {
-            GetInputPlace()->SetText(*temp);
+            theEditBox->SetText("");
+            theEditBox->AddText(*theCommand);
     }
 }
 
@@ -1754,7 +1761,7 @@ CcString CcController::GetKey( CcString key )
 
 void CcController::AddHistory( CcString theText )
 {
-      if ( theText == "" ) return;
+      if ( theText.Len() == 0 ) return;
       CcString *historyCommand = new CcString ( theText );
       mCommandHistoryList.AddItem( (void*) historyCommand);
       mCommandHistoryList.Reset();
