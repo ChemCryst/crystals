@@ -46,7 +46,7 @@
 %     IF ( VALUE .EQ. 1 ) THEN
 %      INSERT '800 600'
 %     ELSE
-^^??   RMED STATE
+^^??   RHIG STATE
 %      VERIFY ON OFF
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %      IF ( VALUE .EQ. 1 ) THEN
@@ -67,8 +67,8 @@
 %     END IF
 %    END IF
 ^^CO DISPOSE XWMF
-%    OUTPUT
 
 {I A free wmf viewer is available from {&http://www.irfanview.com/{&.
 
+%    OUTPUT
 %END SCRIPT
