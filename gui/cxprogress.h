@@ -13,6 +13,7 @@
 #define		__CxProgress_H__
 
 #include	"crguielement.h"
+#include    "ccstring.h"
 
 #ifdef __LINUX__
 #include <wx/gauge.h>
@@ -48,10 +49,13 @@ class CxProgress : public BASEPROGRESS
 		static int	AddProgress();
 		static void	RemoveProgress();
 		void	SetVisibleChars( int count );
-		
+            void  SwitchText ( CcString * text );
+
+
 		// attributes
 		CrGUIElement *	mWidget;
-		
+            CcString m_oldText;
+
 	protected:
 		// methods
 		

@@ -35,6 +35,7 @@ CxProgress::CxProgress( CrProgress * container )
 	mWidget = container;
 	mCharsWidth = 10;
 	m_TextOverlay = nil;
+      m_oldText = "";
 }
 
 CxProgress::~CxProgress()
@@ -237,4 +238,31 @@ void CxProgress::SetProgress(int complete)
 #ifdef __LINUX__
       SetValue( complete );
 #endif
+}
+
+void CxProgress::SwitchText ( CcString * text )
+{
+      if ( text )
+      {
+            if ( m_oldText.Len() == 0 )
+            {
+                  if ( m_TextOverlay )
+                  {
+                        CString temp;
+                        m_TextOverlay->GetWindowText(temp);
+                        m_oldText = (LPCTSTR) temp;
+                  }
+                  else
+                  {
+                        m_oldText = "";
+                  }
+            }
+
+            SetText( (char*)text->ToCString() );
+      }
+      else
+      {
+            SetText( (char*)m_oldText.ToCString() );
+            m_oldText = "";
+      }
 }
