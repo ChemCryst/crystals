@@ -70,7 +70,7 @@ CxModel::CxModel(CrModel* container)
 
       m_DrawStyle = MODELSMOOTH; 
       m_Autosize  = true;  
-      m_Hover     = true;     
+      m_Hover     = false;     
       m_Shading   = true;   
 
 
@@ -398,7 +398,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
 		}
 	}
 //skip if the shift or ctrl is pressed or if Hover is turned off.
-      else if ( !( nFlags & MK_CONTROL) && !( nFlags & MK_SHIFT ) &&  m_Hover )
+      else if ( !( nFlags & MK_CONTROL) && !( nFlags & MK_SHIFT ) )
       {
 
             if( m_fastrotate ) //Was rotating, but now LBUTTON is up. Redraw. (MISSED LBUTTONUP message)
@@ -419,20 +419,22 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                   CcModelAtom* atom;
                   if(IsAtomClicked(point.x, point.y, &atomname, &atom))
                   {
-                        if(m_LitAtom != atom) //avoid excesive redrawing, it flickers.
-                        {
-                              m_LitAtom = atom;
-                              (CcController::theController)->SetProgressText(&atomname);
-                              NeedRedraw();
-                        }
+                     if(m_LitAtom != atom) //avoid excesive redrawing, it flickers.
+                     {
+                        m_LitAtom = atom;
+                        (CcController::theController)->SetProgressText(&atomname);
                         SetCursor( AfxGetApp()->LoadCursor(IDC_POINTER_COPY) );
+                        if ( m_Hover )
+                              NeedRedraw();
+                     }
                   }
                   else if (m_LitAtom != nil) //Not over an atom, but one is still lit. Redraw.
                   {
-                        m_LitAtom = nil;
-                        (CcController::theController)->SetProgressText(NULL);
+                     m_LitAtom = nil;
+                     (CcController::theController)->SetProgressText(NULL);
+                     SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
+                     if ( m_Hover )
                         NeedRedraw();
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
                   }
                   else
                   {
