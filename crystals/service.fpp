@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/06/18 12:24:34  richard
+C Missing comma in format statement
+C
 C Revision 1.24  2001/03/08 14:38:36  richard
 C Two new colours for the rainbow.
 C
@@ -1797,5 +1800,71 @@ C----- CONVERT NAME TO UPPER CASE
       ELSE
         CLCNAM(:) = ' '
       ENDIF
+      RETURN
+      END
+
+CODE FOR KCRCHK
+      FUNCTION KCRCHK( IPTR, ILEN )
+      CHARACTER*1 CBUFF, CRC(2), CREG(4), CIN(4), RCHR(0:255)
+      DIMENSION CBUFF(ILEN)
+      DIMENSION ICRCTB(0:255),IT(0:15)
+\ISTORE
+\STORE
+\UFILE
+\XSSVAL
+\QSTORE
+\XIOBUF
+\XUNITS
+      EQUIVALENCE (CREG,IREG)
+      EQUIVALENCE (CIN,IIN)
+
+      SAVE INICRC
+      DATA INICRC /0/
+
+      IF ( INICRC .EQ. 0 ) THEN
+         INICRC = 1
+         DO J=0,255
+            IREG=J*256
+            ICRCTB(J)=KCRCTB(CREG,CHAR(0))
+            ICH = IT(MOD(J,16))*16+IT(J/16)
+            RCHR(J) = CHAR(ICH)
+         END DO
+      END IF
+
+      CRC(1) = CHAR(0)
+      CRC(2) = CHAR(0)
+
+      DO J = 0,ILEN-1
+         IIN = ISTORE(IPTR+J)
+         DO K = 1,4
+            ICH=ICHAR(CIN(K))
+            IREG = ICRCTB( IEOR( ICH,            ICHAR( CRC(2) ) ) )
+            CRC(2) = CHAR( IEOR( ICHAR(CREG(2)), ICHAR( CRC(1) ) ) )
+            CRC(1) = CREG(1)
+         END DO
+      END DO
+
+      CREG(1) = CRC(1)
+      CREG(2) = CRC(2)
+
+      KCRCHK = IREG
+      RETURN
+      END
+
+CODE FOR KCRCTB
+      FUNCTION KCRCTB( CRC, CH )
+      CHARACTER*1 CH, CRC(4), CREG(4)
+      EQUIVALENCE ( CREG, IREG)
+      IREG = 0
+      CREG(1)=CRC(1)
+      CREG(2)=CHAR( IEOR( ICHAR(CRC(2)), ICHAR(CH) ) )
+
+      DO I = 1,8
+         ICHR = ICHAR(CREG(2))
+         IREG = IREG+IREG
+         CREG(3)=CHAR(0)
+         IF(ICHR.GT.127)IREG=IEOR(IREG,4129)
+      END DO
+      KCRCTB = IREG
       RETURN
       END
