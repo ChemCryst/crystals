@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2002/07/15 13:14:29  richard
+C For F000, use electron in cell count, as this is the SHELX standard, and while
+C the CIF definition allows dispersive terms to be included, it only confuses
+C referees.
+C
 C Revision 1.36  2002/07/15 12:04:36  richard
 C Three things:
 C F000 ignores F' and F'' if anomolous correction is off in L23 - awaiting confirmation
@@ -3304,7 +3309,7 @@ C----- VALUE AND ESD
      5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
 
          CALL XFILL (IB,IVEC,16)
-         CALL SNUM (VOL,CU,-2,0,7,IVEC)
+         CALL SNUM (VOL,CU,-2,0,8,IVEC)
          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
          CALL XCRAS (CBUF,N)
          WRITE (NCFPU1,750) CBUF(1:N)
