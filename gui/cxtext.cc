@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 16:44:11  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 
 #include    "crystalsinterface.h"
@@ -44,14 +48,27 @@ CxText::~CxText()
     RemoveText();
 }
 
+void CxText::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
+}
+
+
 void    CxText::SetText( CcString text )
 {
 #ifdef __BOTHWX__
     SetLabel(text.ToCString());
-    MoveWindow(GetTop(),GetLeft(),GetIdealWidth(),GetHeight(),true); //Naughty but harmless.
+    SetSize(GetLeft(),GetTop(),GetIdealWidth(),GetHeight());
+    Refresh();
 #endif
 #ifdef __CR_WIN__
     SetWindowText(text.ToCString());
+//    MoveWindow(GetLeft(),GetTop(),GetIdealWidth(),GetHeight(),true); //Naughty but harmless.
 #endif
 
 }
