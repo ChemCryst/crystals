@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.42  2002/03/12 17:46:50  ckp2
+// Special case spawing of html files containing #'s. Trim back to before #, find
+// associated application (iexplore, netscape, etc.), and then launch with original
+// filename as argument. Works a treat.
+//
 // Revision 1.41  2002/02/27 20:17:54  ckp2
 // RIC: Increase input line length to 256 chars max, but also trim line back to
 // last non-space.
@@ -310,6 +315,7 @@ static CcLock m_Crystals_Thread_Alive(true);
 static CcLock m_Protect_Completing_CS(true);
 
 static CcLock m_Crystals_Command_Added_CS(false);
+static CcLock m_Complete_Signal(false);
 
 
 #ifdef __BOTHWX__
@@ -339,9 +345,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     mCrystalsThread = nil;
 
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
-//    CcPlotData::sm_CurrentPlotData = nil;
     mCurrentChartDoc = nil;
-    mCurrentModelDoc = nil;
 
 //Current window pointers. Used to direct streams of input to the correct places (if for some reason the stream has been interuppted.)
     mCurrentWindow = nil;   //The current window. GetValue will search in this window first.
@@ -577,11 +581,11 @@ CcController::~CcController()       //The destructor. Delete all the heap object
     delete mModelTokenList;
     delete mStatusTokenList;
 
-    mModelDocList.Reset();
+    CcModelDoc::sm_ModelDocList.Reset();
     CcModelDoc* theItem ;
-    while ( ( theItem = (CcModelDoc *)mModelDocList.GetItem() ) != nil )
+    while ( ( theItem = (CcModelDoc *)CcModelDoc::sm_ModelDocList.GetItem() ) != nil )
     {
-        mModelDocList.RemoveItem();
+        CcModelDoc::sm_ModelDocList.RemoveItem();
         delete theItem;
     }
 
@@ -905,20 +909,22 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
             {
                 tokenList->GetToken(); //remove token
                 CcString modelName = tokenList->GetToken();
-                CcModelDoc* aModelDoc = FindModelDoc(modelName);
-                if (aModelDoc == nil)
-                {
-                    CcModelDoc* cPtr = new CcModelDoc();
-                    mCurrentModelDoc = cPtr;
-                    mCurrentModelDoc->mName = modelName;
-                    mModelDocList.AddItem(mCurrentModelDoc);
-                }
-                else
-                {
-                    mCurrentModelDoc = aModelDoc;
-                    mCurrentModelDoc->Clear();
-                }
-                mCurrentModelDoc->ParseInput( tokenList );
+                CreateModelDoc(modelName);
+
+//                CcModelDoc* aModelDoc = FindModelDoc(modelName);
+//
+//                if (aModelDoc == nil)
+//                {
+//                    CcModelDoc* cPtr = new CcModelDoc();
+//                    cPtr->mName = modelName;
+//                }
+//                else
+//                {
+//                    CcModelDoc::sm_CurrentModelDoc = aModelDoc;
+//                    aModelDoc->Clear();
+//                }
+
+                CcModelDoc::sm_CurrentModelDoc->ParseInput( tokenList );
                 break;
             }
             case kTSysOpenFile: //Display OpenFileDialog and send result back to the Script.
@@ -1068,10 +1074,10 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                 }
                 else if ( tokenList == mModelTokenList )
                 {
-                    if ( mCurrentModelDoc != nil )
+                    if ( CcModelDoc::sm_CurrentModelDoc != nil )
                     {
                         LOGSTAT("CcController:ParseInput:default Passing tokenlist to model");
-                        retVal = mCurrentModelDoc->ParseInput( tokenList );
+                        retVal = CcModelDoc::sm_CurrentModelDoc->ParseInput( tokenList );
                     }
                 }
                 else if ( tokenList == mStatusTokenList )
@@ -1181,21 +1187,24 @@ void    CcController::SendCommand( CcString command , Boolean jumpQueue)
 void    CcController::Tokenize( CcString cText )
 {
 
-//    CcString cText = text;
     int clen = cText.Len();
-    Boolean tagged = false;
     int chop = 0;
 
 // Look out for lines where the ^^ are misplaced.
 
     if ( clen >= 4 )
     {
-        if ( cText[2] == '^' ) { chop = 6; tagged = true; }
-        if ( cText[1] == '^' ) { chop = 5; tagged = true; }
-        if ( cText[0] == '^' ) { chop = 4; tagged = true; }
+        if ( cText[1] == '^' )
+        {
+          chop = 5; 
+          if ( cText[0] == '^' )
+          {
+            chop = 4;
+          }
+        }
     }
 
-    if ( tagged && (clen >= chop) )   // It is definitely tagged text
+    if ( chop && (clen >= chop) )   // It is definitely tagged text
     {
         CcString selector = cText.Sub(chop-1,chop); // Get the selector and determine list to use
         if ( selector == kSWindowSelector )
@@ -1227,6 +1236,13 @@ void    CcController::Tokenize( CcString cText )
         {
             while ( ParseInput( mCurTokenList ) );
         }
+        else if      ( selector == kSWaitControlSelector )
+        {
+            while ( ParseInput( mCurTokenList ) );
+//We must now signal the waiting Crystals thread that we're complete.
+            LOGSTAT ( "CW complete, unlocking output queue.");
+            ProcessingComplete();
+        }
         else if      ( selector == kSOneCommand )
         {                                                                                                                                //Avoids breaking up (and corrupting) the incoming streams from scripts.
             mTempTokenList = mCurTokenList;
@@ -1243,6 +1259,7 @@ void    CcController::Tokenize( CcString cText )
             GetValue( mQuickTokenList ) ;
             mCurTokenList  = mTempTokenList;
 //We must now signal the waiting Crystals thread that it's input is ready.
+            LOGSTAT ( "?? complete, unlocking output queue.");
             ProcessingComplete();
         }
         else                                             // Simple output text or comment
@@ -1277,9 +1294,11 @@ void CcController::ProcessingComplete()
 // processing all pending commands in the command queue.
 
    m_Protect_Completing_CS.Enter();
-   LOGSTAT("-----------Output queue released." );
+   LOGSTAT("Output queue released." );
    m_Completing=false;
    m_Protect_Completing_CS.Leave();
+   m_Complete_Signal.Signal();
+
 }
 
 bool CcController::Completing()
@@ -1349,7 +1368,10 @@ void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
     m_Crystals_Commands_CS.Enter();
 
     mCrystalsCommandQueue.SetCommand( line, jumpQueue);
-    if (jumpQueue) ProcessingComplete();
+    if (jumpQueue) {
+        LOGSTAT ( "Jumpqueue occured, unlocking output queue.");
+        ProcessingComplete();
+    }
 
     m_Crystals_Commands_CS.Leave();
 
@@ -1371,13 +1393,32 @@ void  CcController::AddInterfaceCommand( CcString line )
  *  is placed at the top of the queue.
  */
 
-  for ( int j = 1; j < min ( line.Length()-3, 6 ); j++ )
+  bool lock = false;
+
+
+  int chop = 0;
+  int clen = line.Len();
+
+  if (clen >= 4 )
   {
-    if ( line.Sub(j,j+3).Compare("^^??",4) )
+    if ( line[1] == '^' )
     {
-      CompleteProcessing();
+      chop = max(clen,5); 
+      if ( line[0] == '^' )
+      {
+        chop = 4;
+      }
+      if ( chop ) 
+      {
+        CcString selector = line.Sub(chop-1,chop);
+        if ((selector == kSQuerySelector) || (selector == kSWaitControlSelector))
+        {
+          lock = true;
+          CompleteProcessing();
 // Nothing can be read back from queue until this query is answered.
-      break;
+          LOGSTAT ("-----------Queue will be locked before returning.");
+        }
+      }
     }
   }
 
@@ -1394,6 +1435,24 @@ void  CcController::AddInterfaceCommand( CcString line )
 #ifdef __CR_WIN__
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
 #endif
+
+  bool comp = false;
+
+  while ( Completing() )
+  {
+       comp = true;
+// If ?? or CW, trap CRYSTALS here, while the GUI carries out requested action.
+       LOGSTAT ("-----------Queue locked");
+       m_Complete_Signal.Wait(400); // max of 0.4 secs between retries.
+  }
+
+  if (comp)
+       LOGSTAT ("-----------Queue released");
+  else if ( lock )
+       LOGSTAT ("-----------Queue was released very quickly.");
+
+
+
 }
 
 
@@ -1684,9 +1743,9 @@ void CcController::RemoveWindowFromList(CrWindow* window)
 
 CcModelDoc* CcController::FindModelDoc(CcString name)
 {
-    mModelDocList.Reset();
+    CcModelDoc::sm_ModelDocList.Reset();
     CcModelDoc* aModelDoc = nil;
-    while ( ( aModelDoc = (CcModelDoc*)mModelDocList.GetItemAndMove() ) != nil )
+    while ( ( aModelDoc = (CcModelDoc*)CcModelDoc::sm_ModelDocList.GetItemAndMove() ) != nil )
     {
         if(aModelDoc->mName == name)  return aModelDoc;
     }
@@ -1700,10 +1759,14 @@ CcModelDoc* CcController::CreateModelDoc(CcString name)
     if ( modelDoc == nil )
     {
         modelDoc = new CcModelDoc();
-        mCurrentModelDoc = modelDoc;
-        mCurrentModelDoc->mName = name;
-        mModelDocList.AddItem(mCurrentModelDoc);
+        modelDoc->mName = name;
     }
+    else
+    {
+        modelDoc->Clear();
+    }
+
+    CcModelDoc::sm_CurrentModelDoc = modelDoc;
     return modelDoc;
 }
 
@@ -2660,15 +2723,29 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
 
 }
 
+#ifdef __CR_WIN__
+static int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
+#endif
+
 void CcController::OpenDirDialog(CcString* result)
 {
 #ifdef __CR_WIN__
 
       CString pathname;
 
+      char buffer[MAX_PATH];
+      GetWindowsDirectory( (LPTSTR) &buffer[0], MAX_PATH );
+      CcString inipath = buffer;
+      inipath += "\\WinCrys.ini";
+      ::GetPrivateProfileString ( "Latest",   "Strdir",
+                                  NULL,      (LPTSTR)&buffer[0],
+                                  MAX_PATH,       inipath.ToCString()  );
+      CcString lastPath = buffer;
+
+
+
       BROWSEINFO bi;
       LPITEMIDLIST chosen; //The chosen directory as an IDLIST(?)
-      char buffer[MAX_PATH];
       char title[36] = "Choose a directory to run CRYSTALS";
 
       bi.hwndOwner = NULL;
@@ -2679,6 +2756,11 @@ void CcController::OpenDirDialog(CcString* result)
       bi.lpfn = NULL;
       bi.lParam = NULL;
       bi.iImage = NULL;
+      if ( lastPath.Length() )
+      {
+        bi.lpfn = BrowseCallbackProc;
+        bi.lParam = (LPARAM)(&lastPath);
+      }
 
       chosen = ::SHBrowseForFolder( &bi );
 
@@ -2687,6 +2769,9 @@ void CcController::OpenDirDialog(CcString* result)
           if ( SHGetPathFromIDList(chosen, buffer))
           {
              *result = CcString(buffer);
+             ::WritePrivateProfileString ( "Latest",   "Strdir",
+                                          result->ToCString(),
+                                          inipath.ToCString()   );
           }
           else
           {
@@ -2718,6 +2803,17 @@ void CcController::OpenDirDialog(CcString* result)
 #endif
 }
 
+#ifdef __CR_WIN__
+int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+{
+  CcString* rp = (CcString*)(lpData);
+  if (uMsg == BFFM_INITIALIZED)
+  {
+     (void)SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)(LPCTSTR)rp->ToCString() );
+  }
+  return 0;
+}
+#endif
 
 
 void CcController::ChangeDir (CcString newDir)
@@ -2894,7 +2990,7 @@ extern "C" {
 //      ciflushbuffer(&thelength, str);
       CcString temp = CcString(theLine);
       temp.Trim();
-      LOGSTAT("Temp, trimmed:"+temp);
+//      LOGSTAT("Temp, trimmed:"+temp);
       (CcController::theController)->AddInterfaceCommand( temp );
       delete [] str;
   }

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2001/10/10 12:44:49  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.21  2001/07/16 07:21:42  ckp2
 //   New Completing() function to check if CRYSTALS has requested an immediate answer
 //   to a query (^^?? format).
@@ -178,7 +181,6 @@ class   CcController
 // attributes
 
     CcChartDoc* mCurrentChartDoc;
-    CcModelDoc* mCurrentModelDoc;
     Boolean mThisThreadisDead;
     Boolean m_Completing;
     CcStatus status;
@@ -226,7 +228,6 @@ class   CcController
     CcList  mTextOutputWindowList;
     CcList  mProgressOutputWindowList;
     CcList  mInputWindowList;
-    CcList  mModelDocList;
 
     CcList  mMenuItemList;
     int     m_next_id_to_try;
@@ -292,6 +293,7 @@ extern "C" {
 #define kSModelSelector     "GR"
 #define kSStatusSelector    "ST"
 #define kSQuerySelector     "??"
+#define kSWaitControlSelector "CW"
 
 #define kSFocus               "FOCUS"
 #define kSFontSet             "FONT"
