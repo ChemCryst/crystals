@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.35  2003/02/27 12:48:35  rich
 C Special case PART, REFINE and FRAGMENT in #EDIT CHANGE, so that values
 C get stored as integers.
@@ -262,6 +268,7 @@ C
 \XMDCOM
 \XERVAL
 \XOPVAL
+\XLXPRT
 \XIOBUF
 C
 \QSTORE
@@ -601,6 +608,8 @@ C--MOVE THE ATOMS AFTER THE DELETED ATOMS UP
 C--ADJUST THE NUMBER OF ATOMS IN THE LIST
 800   CONTINUE
       N5=N5-N5A
+      NPTCUR = -1 ! Avoid confusing the lexical scanner when changing
+                  ! size of L5 in middle of loop.
 C--CHECK IF WE HAVE DELETED 'KEPT' ATOMS
       L=(M5A-L5)/MD5A
       IF (L-NKEEP) 850,700,700
@@ -1947,7 +1956,7 @@ C----- ADJUST OFF-SET
       JV = JV -1
 C----- CHECK PARAMETER IN RANGE
       IF (JV .LT. 0) GOTO 7700
-      IF (JV .GT. 12) GOTO 7700
+      IF (JV .GT. 16) GOTO 7700
       IF (JV .EQ. 0) THEN
 C----- 'TYPE' - GET AN ELEMENT NAME
 C--         CHECK FOR AN ALPHA-NUMERIC ARGUMENT
@@ -2009,10 +2018,14 @@ C -- APPLY SYMMETRY TO ATOMIC COORDINATES
 C--'RESET'
 16000     CONTINUE
          CALL XMOVE(Z, STORE(JU), 1)
+C Look out for PART, REFINE, FRAGMENT - they are integers.
+         IF ((JV .GE. 14) .AND. (JV .LE. 16)) ISTORE(JU) = NINT(Z)
          GO TO 16150
 C--'SPARE'
 16050     CONTINUE
          STORE(JU)=Z
+C Look out for PART, REFINE, FRAGMENT - they are integers.
+         IF ((JV .GE. 14) .AND. (JV .LE. 16)) ISTORE(JU) = NINT(Z)
          GO TO 16150
 16150     CONTINUE
          CALL XMDMON (M5A,MD5A,1,IPOSIT,IPARTP,5,3,MONLVL,2,0,
