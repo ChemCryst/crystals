@@ -3,12 +3,13 @@
 
 #include <WinSock.h>
 
-int prog_main(int argc, const char * argv[]);	//The main function
 
-/*struct timeval{
-	long tv_sec;	*//*seconds since Jan. 1, 1970*/
-/*	long tv_usec;
-};*/
+/*!
+ * @function prog_main 
+ * @description Not yet documented.
+ * @abstract
+ */
+int prog_main(int argc, const char * argv[]);	//The main function
 
 struct timezone{
 	int tz_minuteswest; /* of greenwich */
