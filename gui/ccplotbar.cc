@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2001/12/12 16:02:23  ckpgroup
+// SH: Reorganised script to allow right-hand y axes.
+// Added floating key if required, some redraw problems.
+//
 // Revision 1.9  2001/11/29 15:46:08  ckpgroup
 // SH: Update of script commands to support second y axis, general update.
 //
@@ -373,7 +377,7 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 
 						if((y > ((CcSeriesBar*)m_Series[i])->m_Data[j]-0.1) && (y < ((CcSeriesBar*)m_Series[i])->m_Data[j]+0.1))
 						{
-							if((x > (j+0.5)*bar-10) && (x < (j+0.5)*bar+10))
+							if((x > (j+0.5)*bar-20) && (x < (j+0.5)*bar+20))
 							{
 								if(!(m_Series[i]->m_SeriesName == ""))
 								{

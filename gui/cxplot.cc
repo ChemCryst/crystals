@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/12/13 19:55:19  ckp2
+//   Fix: You can't use CClientDC inside an OnPaint handler - symptom continous
+//   flickering window. Use a CPaintDC instead...
+//
 //   Revision 1.9  2001/12/13 16:20:33  ckpgroup
 //   SH: Cleaned up the key code. Now redraws correctly, although far too often.
 //   Some problems with mouse-move when key is enabled. Fine when disabled.
@@ -126,6 +130,7 @@ CxPlot::CxPlot(CrPlot* container)
 CxPlot::~CxPlot()
 {
 	DeletePopup();
+	DeleteKey();
 	mPlotCount--;
     delete m_newMemDCBitmap;
 #ifdef __CR_WIN__
@@ -219,6 +224,11 @@ void CxPlot::OnPaint()
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     dc.BitBlt(0,0,rect.Width(),rect.Height(),m_memDC,0,0,SRCCOPY);
     m_memDC->SelectObject(m_oldMemDCBitmap);
+	if(m_Key) 
+	{
+		m_Key->BringWindowToTop();
+		m_Key->InvalidateRect(NULL, 0);
+	}
 }
 
 #endif
@@ -939,11 +949,11 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
 	CcPoint point = mDragPos;
 
-//  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
+  CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
 
 	const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
 	
-  Create(wClass, "Key", WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
+  Create(wClass, "Key", WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), parw,777);//m_Parent, 777);
 
   SetFont(CcController::mp_font);
   ShowWindow(SW_SHOW);
@@ -971,7 +981,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 	// now calculate the required size (including title bar)
 	size.cy *= m_NumberOfSeries;
 	size.cy += windowsize.bottom - windowsize.top - clientsize.bottom;
-	size.cx *= 2;
+	size.cx += 20;
 	size.cx += windowsize.right - windowsize.left - clientsize.right;
 
 	// set the required size
@@ -992,7 +1002,12 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
 CxPlotKey::~CxPlotKey()
 {
-//        delete m_memDC;
+	delete [] m_Colours[0];
+	delete [] m_Colours[1];
+	delete [] m_Colours[2];
+
+	delete [] m_Names;
+	delete [] m_Colours;
 }
 
 void CxPlotKey::OnPaint()
@@ -1016,8 +1031,8 @@ void CxPlotKey::OnPaint()
   {
 	  temp[0].x = 3;				temp[0].y = i*size.cy/m_NumberOfSeries + 3;
 	  temp[1].x = 3;				temp[1].y = (i+1)*size.cy/m_NumberOfSeries - 3;
-	  temp[2].x = size.cx/2 - 3;	temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 3;
-	  temp[3].x = size.cx/2 - 3;	temp[3].y = i*size.cy/m_NumberOfSeries + 3;
+	  temp[2].x = 12;				temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 3;
+	  temp[3].x = 12;				temp[3].y = i*size.cy/m_NumberOfSeries + 3;
 	  temp[4].x = 3;				temp[4].y = i*size.cy/m_NumberOfSeries + 3;
 
         CBrush      brush;
@@ -1033,7 +1048,7 @@ void CxPlotKey::OnPaint()
         newDC.SelectObject(oldpen);
 		pen.DeleteObject();
 
-	  newDC.TextOut(size.cx/2, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
+	  newDC.TextOut(20, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
   }
 
   delete [] temp;
@@ -1043,6 +1058,7 @@ void CxPlotKey::OnPaint()
 }
 
 /*
+
 void CxPlotKey::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// detect whether mouse was clicked on the m_key window
@@ -1104,4 +1120,5 @@ void CxPlotKey::OnMouseMove(UINT nFlags, CPoint point)
 		mDragPos.y = point.y;
 	}
 }
+
 */

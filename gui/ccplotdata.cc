@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/12/12 16:02:24  ckpgroup
+// SH: Reorganised script to allow right-hand y axes.
+// Added floating key if required, some redraw problems.
+//
 // Revision 1.8  2001/11/29 15:46:09  ckpgroup
 // SH: Update of script commands to support second y axis, general update.
 //
@@ -112,8 +116,15 @@ CcPlotData::~CcPlotData()
 	sm_PlotList.FindItem(this);
 	sm_PlotList.RemoveItem();
 
-	if(m_Series) delete [] m_Series;
-	m_Series = 0;
+	if(m_Series) 
+	{
+		for(int i=0; i<m_NumberOfSeries; i++)
+		{
+			delete m_Series[i];
+		}		
+		delete [] m_Series;
+		m_Series = 0;
+	}
 }
 
 //This static function reads the name of the plotdata and
@@ -289,6 +300,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 
 				// create series here, 
 				CreateSeries(num, types);
+				delete [] types;
 		
 				break;
 			}
