@@ -551,6 +551,8 @@ cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       DIMENSION CFBPOL(3,3) , CFBPNE(3,3)
       DIMENSION BPCFOL(3,3) , BPCFNE(3,3)
 C
+      CHARACTER*6 CELEMT
+      CHARACTER *2 CSYM
       CHARACTER*1 CAXIS(3)
       CHARACTER*12 CFUNC(2)
       CHARACTER *2 CTEMP(3)
@@ -571,6 +573,7 @@ C
 C
 \QSTORE
 C
+      DATA CELEMT /'23461m'/
       DATA CAXIS / 'X' , 'Y' , 'Z' /
       DATA CFUNC / 'Replacement' , 'Comparison' /
 C
@@ -795,6 +798,27 @@ C
      1 / ' in crystal system'/)
       WRITE(NCAWU,3016) ( (WSPAC3(I,J), I = 1,3), J = 1,3)
 3016  FORMAT( 3 ( 6X, 3F10.6,/))
+CDJWMAR2000
+C FIND PSEUDO OPERATOR - GIACOVAZZO, PAGE 43
+C      GET THE DETERMINANT AND TRACE
+      DET = XDETR3(WSPAC3)
+      TRACE= WSPAC3(1,1)+WSPAC3(2,2)+WSPAC3(3,3)
+      DETTRC = DET + TRACE
+      IF (ABS (1.-ABS(DET)) .LE. .05) THEN
+        I = 1 + NINT(ABS(DETTRC))
+        CSYM = ' '
+        CSYM(2:2) = CELEMT(I:I)
+        IF ((NINT(TRACE) .EQ. 1) .AND. (NINT(DET) .EQ. -1)) THEN
+            CSYM=' m'
+        ELSE
+            IF (DET .LT. ZERO) CSYM(1:1) = '-'
+        ENDIF
+       WRITE(CMON,3019) CSYM(1:2)
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(NCAWU, '(//A//)') CMON( 1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A/)') CMON( 1)(:)
+3019  FORMAT (' Pseudo-symmetry element ',A2,' detected')
+      ENDIF
 C
       DO 3025 J = 1, 3
         ITEMP(J) = 0
@@ -817,8 +841,8 @@ C
        WRITE(CMON,3027) (ATEMP(J), CTEMP(J) , J = 1, 3)
        CALL XPRVDU(NCVDU, 1,0)
        WRITE(NCAWU, '(//A//)') CMON( 1)(:)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(//A//)') CMON( 1)(:)
-3027  FORMAT (1X,' Pseudo-symmetry operator of form :-  ',
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A/)') CMON( 1)(:)
+3027  FORMAT (' Pseudo-symmetry operator of form :-  ',
      1  3( F6.2, A2, 2X))
       ENDIF
 C -- ROTATE COORDINATES BACK TO ORTHOGONAL SYSTEM DEFINED BY
