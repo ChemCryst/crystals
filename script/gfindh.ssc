@@ -81,7 +81,7 @@
 ^^WI {
 ^^WI   @ 2,2 GRID L NROWS=5 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 STATIC T0 'Change QH peaks in good positions into'
+^^WI     @ 1,1 STATIC T0 'Rename QH peaks in good positions as'
 ^^WI     @ 2,1 STATIC T1 'H atoms. You may use CAMERON to do this'
 ^^WI     @ 3,1 STATIC T2 'if you prefer. Then click "Continue".'
 ^^WI     @ 4,1 CHECKBOX FOUREF
@@ -89,14 +89,21 @@
 ^^WI     @ 5,1 CHECKBOX AHFOUND
 ^^WI       'All H atoms have been found' STATE=OFF
 ^^WI   }
-% IF ( XGRETURN ) THEN
-^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NAUTO'
-% ELSE
-^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NFIND'
-% END IF
+^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 BUTTON BOK '&Continue'
-^^WI     @ 3,1 BUTTON BXX '&Cancel'
+% IF ( XGRETURN ) THEN
+^^WI     @ 1,1 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NAUTO'
+% ELSE
+^^WI     @ 1,1 GRID RT NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NFIND'
+% END IF
+^^WI     {
+^^WI       @ 1,1 BUTTON BOK '&Continue'
+^^WI       @ 3,1 BUTTON BXX '&Cancel'
+^^WI     }
+^^WI     @ 3,1 GRID RB NROWS=1 NCOLS=1 COMMAND='#SCRIPT XRETYPE'
+^^WI     {
+^^WI       @ 1,1 BUTTON NULL '&Rename'
+^^WI     }
 ^^WI   }
 ^^WI }
 ^^WI SHOW
