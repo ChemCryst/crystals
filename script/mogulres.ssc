@@ -507,6 +507,7 @@
 % EVALUATE CURSEL = 0
 ^^CO DISPOSE XABORT
 %%
+^^CO SET MR_RES SELECTION=1
 %%
 % LOOP
 %% Flush input buffer:
