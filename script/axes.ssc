@@ -1,0 +1,55 @@
+% SCRIPT AXES
+Compute principal axes of all aniso temperature factors
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you want the axes of all atoms?' 'YES'
+%  IF VALUE .EQ. 1 THEN
+%    COPY '#AXES'
+%    COPY 'END'
+%  ELSE
+%      ON ERROR RESTART
+%      COPY '#ANISO'
+%      ON END TERMINATE
+%      VERIFY YES NO
+%      COPY 'ATOM '
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Atoms linked by UNTIL ?' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        LOOP
+%          ON END TERMINATE
+%          CLEAR
+%          INSERT 'CONTINUE '
+%          GET KEYWORD 'First atom type (END to finish)'
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') UNTIL '
+%          GET KEYWORD 'to second atom type'
+%          INSERT '('
+%          GET FINAL INTEGER 'serial'
+%          INSERT ') '
+%          SEND
+%          CLEAR
+%        END LOOP
+%      END IF
+%%
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Individual atoms ?' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'CONTINUE '
+%        LOOP
+%          ON END TERMINATE
+%          GET KEYWORD 'Atom type (END to finish)'
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') '
+%        END LOOP
+%        SEND
+%        CLEAR
+%      END IF
+%    COPY 'EXECUTE'
+%    COPY 'AXES'
+%    COPY 'END'
+%  END IF
+% END SCRIPT

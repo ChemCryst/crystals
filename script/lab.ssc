@@ -1,0 +1,104 @@
+%SCRIPT ZCONTROL %The master controlling script%
+%  BLOCK
+%      COPY '#DISK'
+%      COPY 'EXTEND SIZE = 10 TRIES = 1000'
+%      COPY 'END'
+%  END BLOCK
+%%
+%LOOP
+% ON ERROR REPEAT
+%%
+%%For these general selection scripts we use the 
+%%pre-written XSELECT script, the parameters are
+%%set up below.
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX 
+% VARIABLE INTEGER QNLINES QNITEMS QVLINES
+% VARIABLE LOGICAL ANSWER
+% VARIABLE LOGICAL QANSWER
+% VARIABLE CHARACTER QLINE1 QLINE2 QLINE3
+% VARIABLE CHARACTER QLIST1 QLIST2 QLIST3 QLIST4 QLIST5
+% VARIABLE CHARACTER QLIST6 
+% VARIABLE CHARACTER QHELP1 QHELP2 QHELP3 QHELP4 QHELP5 
+% VARIABLE CHARACTER QHELP6
+% VARIABLE INTEGER   QIANSWER
+%%
+%% The title of the script box
+% EVALUATE QTITLE = 'Undergrad Experiment Script'
+%%
+%% The button text
+% EVALUATE BUTTOK = '&Ok'
+% EVALUATE BUTTXX = '&Cancel'
+%%
+%% The text to appear in the left pane of the box
+% EVALUATE QLINE1 = 'Choose an option'
+% EVALUATE QLINE2 = 'from the list, '
+% EVALUATE QLINE3 = 'then click &Ok.'
+% EVALUATE QNLINES = 3
+%%
+%% The items to appear in the listbox
+% EVALUATE QLIST1 = 'Input Sir92 data'
+% EVALUATE QLIST3 = 'Least-squares refinement'
+% EVALUATE QLIST2 = 'Fourier maps calculation'
+% EVALUATE QLIST4 = 'Publication tables'
+% EVALUATE QLIST5 = 'View the structure'
+% EVALUATE QLIST6 = 'Exit Crystals'
+%%
+%% The help text for each item in the box
+% EVALUATE QHELP1 = 'Get the trial structure that Sir92 generated.          '
+% EVALUATE QHELP3 = 'Refine the structure using least-squares.'
+% EVALUATE QHELP2 = 'Complete the structure using Fourier maps.'
+% EVALUATE QHELP4 = 'Output some tables of structural information.'
+% EVALUATE QHELP5 = 'Look at the structure in a graphics package.'
+% EVALUATE QHELP6 = 'Close down Crystals (why?).'
+%%
+%% The number of visible lines in the box at one time
+% EVALUATE QVLINES = 6
+%%
+%% The total number of items in the list
+% EVALUATE QNITEMS = 6
+%%
+%% Run the script
+% COPY '#SCRIPT XSELECT'
+%%
+%% On return QANSWER is TRUE if BUTTOK or return was pressed
+%% QANSWER is FALSE if BUTTXX or ESC was pressed.
+%% QIANSWER holds the index of the list item selected (NB starting at 1).
+%% QCANSWER holds the text of the button that was selected.
+% IF QANSWER .EQ. TRUE THEN
+%  CASE QIANSWER
+%   BLOCK                            %SIR92IN%
+%    IF ( EXISTS ( 5 ) .EQ. 1 ) THEN
+%     EVALUATE QTITLE = 'Overwrite structure?'
+%     EVALUATE QLINE1 = 'You already have a structure stored. Are'
+%     EVALUATE QLINE2 = 'you sure you want to overwrite it?'
+%     EVALUATE BUTTOK = '&Yes, continue'
+%     EVALUATE BUTTXX = '&No, cancel'
+%     COPY '#SCRIPT XQUESTIO'
+%     IF ANSWER = TRUE THEN
+%      COPY '#USE SIR92.INS'
+%      COPY '#EDIT'
+%      COPY 'MON OFF'
+%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%      COPY 'MON MEDIUM'
+%      COPY 'END'
+%     END IF
+%    ELSE
+%     COPY '#USE SIR92.INS'
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%     COPY 'MON MEDIUM'
+%     COPY 'END'
+%    END IF
+%   END BLOCK
+%           COPY '#SCRIPT LFOUR'
+%           COPY '#SCRIPT LLSQ'
+%           COPY '#SCRIPT LPUBLISH'
+%           COPY '#SCRIPT LVIEW'
+%           COPY '#SCRIPT FINISH'
+%        END CASE
+% ELSE
+%        FINISH
+% END IF
+%END LOOP
+%END SCRIPT

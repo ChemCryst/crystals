@@ -1,0 +1,7 @@
+%SCRIPT LIST13
+  The experimental conditions list, LIST 13
+%    IF ( EXISTS 13 .EQ. 1 ) THEN
+%    ELSE
+%        COPY '#SCRIPT INLIST13'
+%    END IF
+%END SCRIPT

@@ -1,0 +1,192 @@
+%SCRIPT INSHELXS
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ In Oxford, a locally modified version of SHELXS is normally used which     บ
+บ produces an atom list with the atom TYPE separate from the SERIAL.         บ
+บ This file is called SHELXS.CRY to distinguish it from the standard         บ
+บ SHELXS.RES file.                                                           บ
+บ If you have a standard SHELXS atom list, the atom serial numbers be        บ
+บ lost on input to CRYSTALS.                                                 บ
+บ This SCRIPT will NOT process a SHELX76 coordinate list if this contains    บ
+บ anything other than simple atom coordinates. Beware of atoms 'fixed' by    บ
+บ modifying their coordinates by adding 10.                                  บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+Input a coordinate list in SHELX.CRY or SHELXS.RES format.
+% END IF
+%  COPY '#PAUSE 2'
+%  VARIABLE INTEGER ATOMCOUNT SOLVEMETHOD LOOPCOUNT SERIAL EXPECTED
+%% call a script to get the expected number of atoms into EXPECTED
+%  copy '#script getexp'
+%  EVALUATE EXPECTED = INTEGER ( REAL ( EXPECTED ) * 1.1 )
+%%
+%  VARIABLE LOGICAL FILESCAN QUERY
+%  EVALUATE QUERY = FALSE
+%  EVALUATE FILESCAN = FALSE
+%  IF SOLVEMETHOD .LT. 0 THEN
+%    EVALUATE SOLVEMETHOD = 0
+%  END IF
+%
+%  CLEAR
+%    VERIFY YES NO
+%    GET FINAL ABBREVIATED -
+  'Do you want to read data from  an Oxford SHELXS.CRY file' 'YES'
+%    EVALUATE FILESCAN = VALUE .EQ. 1
+%    EVALUATE ATOMCOUNT = 0
+%
+%    QUEUE REWIND
+%    IF FILESCAN THEN
+Reading atoms from a local modification if SHELXS which separates
+the atom type and serial.
+%      COPY '#OPEN SCPDATA SHELXS.CRY'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT TRANSFER COMMAND
+%        EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%%    force an exit from loop on reading a MOLE card
+%        IF CVALUE .EQ. 'MOLE' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%%    make sure buffer is empty
+%          GET NOSTORE NOPROMPT TEXT NULLSTRING
+%        END IF
+%      END LOOP
+%%
+%      CLEAR
+%      insert "% GET INTEGER 'How many atoms do you want to keep' '"
+%      store integer EXPECTED
+%      insert "'"
+%      execute
+%      EVALUATE LOOPCOUNT = VALUE
+%%
+%      LOOP  LOOPCOUNT TIMES
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        CLEAR
+%%       Get the next record
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER COMMAND
+%        EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET  NOSTORE NOREMOVE KEYWORD 'TYPE'
+%%         force an exit from loop on reading an END card
+%          IF CVALUE .EQ. 'END' THEN
+%%       Remove 'END' from buffer
+%            GET NOSTORE KEYWORD 'JUNK'
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          ELSE
+%            IF CVALUE .NE. 'MOLE' THEN
+%              INSERT 'ATOM   '
+%              GET KEYWORD 'TYPE'
+%              INSERT ' '
+%              GET INTEGER 'SERIAL'
+%              GET NOSTORE REAL 'JUNK'
+%              INSERT ' X = '
+%              GET REAL 'X'
+%              GET REAL 'Y'
+%              GET  REAL 'Z'
+%              GET NOSTORE NOPROMPT  TEXT 'END'
+%              QUEUE SEND
+%              EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%            ELSE
+%%             Reset the counter to skip the MOLE card
+%              EVALUATE LOOPCOUNTER = LOOPCOUNTER - 1
+%            END IF
+%          END IF
+%      END LOOP
+%    ELSE
+Reading from a standard SHELXS.RES file
+%      VERIFY YES NO
+%    GET FINAL ABBREVIATED -
+'Do you want to read data from a standard SHELXS.RES' 'YES'
+%      EVALUATE FILESCAN = VALUE .EQ. 1
+%
+%      EVALUATE ATOMCOUNT = 0
+%      QUEUE REWIND
+%      IF FILESCAN THEN
+     All atoms from the SHELXS.RES file will have a TYPE 'Q' and
+     the serial number will be their position in the list.
+%        COPY '#OPEN SCPDATA SHELXS.RES'
+%      LOOP
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%          EXTRACT NEXT
+%          CLEAR
+%          EXTRACT TRANSFER COMMAND
+%          EXECUTE SEND
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%%      force an exit from loop on reading a MOLE card
+%          IF CVALUE .EQ. 'MOLE' THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%%      make sure buffer is empty
+%            GET NOSTORE NOPROMPT TEXT NULLSTRING
+%          END IF
+%        END LOOP
+%%
+%          CLEAR
+%        clear
+%        insert "% GET INTEGER 'How many atoms do you want to keep' '"
+%        store integer EXPECTED
+%        insert "'"
+%        execute
+%        EVALUATE LOOPCOUNT = VALUE
+%%
+%        LOOP  LOOPCOUNT TIMES
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%          CLEAR
+%%       Get the next record
+%          EXTRACT NEXT
+%          EXTRACT TRANSFER COMMAND
+%          EXECUTE SEND
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET NOSTORE KEYWORD 'SERIAL'
+%%         force an exit from loop on reading an END card
+%            IF CVALUE .EQ. 'END' THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            ELSE
+%              IF CVALUE .NE. 'MOLE' THEN
+%                GET NOSTORE REAL 'ATOM'
+%                INSERT 'ATOM  Q '
+%                STORE INTEGER ATOMCOUNT + 1
+%                INSERT ' X = '
+%                GET REAL 'X'
+%                GET REAL 'Y'
+%                GET  REAL 'Z'
+%                GET NOSTORE NOPROMPT  TEXT 'END'
+%                QUEUE SEND
+%                EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%              ELSE
+%%               Reset the counter to skip the MOLE card
+%                EVALUATE LOOPCOUNTER = LOOPCOUNTER - 1
+%              END IF
+%            END IF
+%        END LOOP
+%      END IF
+%    END IF
+%  IF ATOMCOUNT .EQ. 0 THEN
+You have not input any new atoms. No model has been stored
+%    FINISH
+%  ELSE
+%    COPY '#LIST 5'
+%    CLEAR
+%    INSERT 'READ NATOM = '
+%    STORE INTEGER ATOMCOUNT
+%    SEND
+%    QUEUE PROCESS
+%    COPY 'END'
+%    COPY '#CLOSE SCPDATA'
+%  END IF
+%%
+%%
+%END SCRIPT

@@ -1,0 +1,33 @@
+%SCRIPT RENAME
+%%  A SCRIPT TO HELP YOU RENAME ATOMS
+%
+%  COPY '#EDIT'
+%
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to rename any individual atoms? ' 'NO'
+%  IF ( VALUE .EQ. 1 ) THEN
+RENAMING of selected atoms.
+      Enter original and new atom names and serial numbers
+                                        ( use END to end input )
+%    LOOP
+%      ON ERROR REPEAT
+%      ON END TERMINATE
+%      CLEAR
+%      INSERT 'RENAME '
+%        GET KEYWORD 'Old element type'
+%      INSERT  '( '
+%      GET INTEGER 'serial'
+%      INSERT ') '
+%      GET KEYWORD 'New element type'
+%      INSERT  '( '
+%      GET FINAL INTEGER 'serial'
+%      INSERT ') '
+%      SEND
+%      COPY 'EXECUTE'
+%    END LOOP
+%  END IF
+%  CLEAR
+%  COPY 'END'
+%  FINISH
+%END SCRIPT

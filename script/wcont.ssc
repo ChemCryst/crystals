@@ -1,0 +1,166 @@
+%SCRIPT WINCONT
+%%
+% VARIABLE REAL WIDTH XMIN STEPX ZSECT MINZ STEPZ
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This SCRIPT helps with the computation of arbitarily orientated Fourier    บ
+บ sections.                                                                  บ
+บ The orientation of the section is defined by a 3x3 matrix. The extent      บ
+บ of the section is defined in terms of an origin and minimum and maximum    บ
+บ limits in the x' and y' directions.                                        บ
+บ   If the section lies parallel to a molecular plane, a best plane          บ
+บ calculation is performed to get the necessary matrix and centroid.         บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 2'
+% BLOCK
+%   ON ERROR REPEAT
+%   VERIFY YES NO
+%   GET NOSTORE ABBREVIATED -
+  'Do you wish to continue?' 'YES'
+%   IF ( VALUE .NE. 1 ) THEN
+%     FINISH
+%   END IF
+% END BLOCK
+% ELSE
+   This SCRIPT assists with the computation of generalisd Fourier sections
+% END IF
+%  IF EXISTS 5 .NE. 1 THEN
+  You do not have an atom list.
+%  FINISH
+%  END IF
+%%
+%  CLEAR
+%  COPY '#MOLAX'
+   You have the opportunity to compute the best plane through groups of
+   atoms defined by an 'UNTIL' sequence, or the individual atoms.
+
+   DEFINE A NEW PLANE.
+
+%    VERIFY YES NO
+%    ON ERROR TERMINATE
+%    COPY 'ATOM '
+%    GET NOSTORE FINAL ABBREVIATED  -
+           'Atoms linked by UNTIL ?' 'YES'
+%    IF VALUE .EQ. 1 THEN
+%      LOOP
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'CONTINUE '
+%        GET KEYWORD 'First atom type (END to finish)'
+%        IF CVALUE .NE. 'FIRST' THEN
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') '
+%        END IF
+%        INSERT ' UNTIL '
+%        GET KEYWORD 'to second atom type'
+%        IF CVALUE .NE. 'LAST' THEN
+%          INSERT '('
+%          GET FINAL INTEGER 'serial'
+%          INSERT ') '
+%        END IF
+%        SEND
+%        CLEAR
+%      END LOOP
+%    END IF
+%%
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Individual atoms ?' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'CONTINUE '
+%        LOOP
+%          ON END TERMINATE
+%          GET KEYWORD 'Atom type (END to finish)'
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') '
+%        END LOOP
+%        SEND
+Û%        CLEAR
+%      END IF
+%  COPY 'PLANE'
+%  COPY 'SAVE'
+%  COPY 'END'
+
+% CLEAR
+%%
+% BLOCK
+%   CLEAR
+%   ON ERROR REPEAT
+  Enter the width of the fourier section.
+%   GET FINAL REAL 'width, angstroms'
+%   EVALUATE WIDTH = VALUE
+%   EVALUATE STEPX = WIDTH / 67.00
+%   EVALUATE XMIN = 0.00 - ( WIDTH / 2.00 )
+  Sections can be computed above and below the best plane, centred on
+  the plane itself
+% GET FINAL REAL 'How many sections each side' '0'
+% EVALUATE ZSECT = VALUE
+% CLEAR
+%  BLOCK
+%    ON END RESTART
+%    ON ERROR RESTART
+%    QUEUE REWIND
+%    CLEAR
+%    INSERT 'MAP TYPE = '
+%    VERIFY FO FC DIFF
+%    GET FINAL FILL NOSTORE ABBREVIATED 'Map type? ' 'FO'
+%    VERIFY F-O F-C DIFF
+%    STORE KEYWORD VALUE
+%    INSERT ' 0 10 TAPE=YES'
+%    QUEUE SEND
+%    CLEAR
+%    STORE CHARACTER 'SAVE MOLAX'
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'DOWN '
+%    STORE FORMAT /(F6.3)/ LENGTH 6 REAL XMIN
+%    INSERT ' 68 '
+%    STORE FORMAT /(F6.4)/ LENGTH 6 REAL STEPX
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'ACROSS '
+%    STORE FORMAT /(F6.3)/ LENGTH 6 REAL XMIN
+%    INSERT ' 68 '
+%    STORE FORMAT /(F6.4)/ LENGTH 6 REAL STEPX
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'SECTION '
+%    EVALUATE MINZ = - .25 * ZSECT
+%    EVALUATE STEPZ = 1. + 2. * ZSECT
+%    STORE FORMAT /(F5.2)/ LENGTH 5 REAL MINZ
+%    STORE FORMAT /(F5.0)/ LENGTH 5 REAL STEPZ
+%    INSERT ' 0.25'
+%    QUEUE SEND
+%   END BLOCK
+%  BLOCK
+%    ON ERROR RESTART
+%    CLEAR
+%    INSERT '#OPEN MT1'
+%    GET FINAL FILENAME 'Filename for map' 'SLANT.CON'
+%    SEND
+%  END BLOCK
+% COPY '#SLANT'
+% QUEUE PROCESS
+% COPY 'END'
+% END BLOCK
+% COPY '#CLOSE MT1'
+% COPY 'END'
+  The electron density map is in the listing file, and the plotfile
+  in the file you nominated.
+%CLEAR
+ Close down CRYSTALS and run CONTOUR in windows to plot the files
+% BLOCK
+%   ON ERROR REPEAT
+%   VERIFY YES NO
+%   GET NOSTORE ABBREVIATED -
+  'Do you wish to close down CRYSTALS  now ?' 'YES'
+%   IF ( VALUE .EQ. 1 ) THEN
+%     COPY '#FINISH'
+%   END IF
+% END BLOCK
+%%
+%END SCRIPT

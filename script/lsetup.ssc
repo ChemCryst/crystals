@@ -1,0 +1,69 @@
+%SCRIPT AUTO12
+%  VARIABLE CHARACTER CLAST CPARAM CPARAM2
+%  VARIABLE INTEGER LSETUP LEXTINCT
+%% make sure we have a valid LIST 12 of some sort
+%% and find the last non- hydrogen atom
+%  COPY '#SCRIPT CHECK12'
+%  CASE LSETUP
+%   BLOCK           %Refine positions%
+%       COPY '#EDIT'
+%       COPY 'MONITOR OFF'
+%%     Just in case we get here from aniso
+%       COPY 'UEQUIV FIRST UNTIL LAST'
+%       COPY 'MONITOR MEDIUM'
+%       COPY 'END'
+%       EVALUATE CPARAM = " X'S"
+  
+    Least squares is set up to refine the xyz co-ordinates of 
+    all atoms (excluding hydrogen).
+
+%   END BLOCK
+%%
+%   BLOCK           %Refine positions and U[iso]%
+%       COPY '#EDIT'
+%       COPY 'MONITOR OFF'
+%%     Just in case we get here from aniso
+%       COPY 'UEQUIV FIRST UNTIL LAST'
+%       COPY 'MONITOR MEDIUM'
+%       COPY 'END'
+%       EVALUATE CPARAM = " X'S, U[ISO] "
+  
+    Least squares is set up to refine the xyz co-ordinates and 
+    the isotropic temperature factor of all atoms (excluding hydrogen).
+
+%   END BLOCK
+%%
+%   BLOCK           %Refine positions and Uaniso%
+%           EVALUATE CPARAM = " X'S, U'S "
+  
+    Least squares is set up to refine the xyz co-ordinates and 
+    the anisotropic temperature factor of all atoms (excluding hydrogen).
+
+%           IF LEXTINCT .EQ. 1 THEN
+%           EVALUATE CPARAM2 =  ' EXTPARAM'
+
+    An extinction parameter will also be refined.
+
+%       END IF
+%   END BLOCK
+%    END CASE
+%%
+%    QUEUE REWIND
+%    QUEUE COPY #LIST 12
+%    CLEAR
+%    STORE CHARACTER -
+    'FULL ' // cparam2 // ' First(' // CPARAM // ') until '
+%    QUEUE SEND
+%    CLEAR
+%    STORE CHARACTER "CONTINUE " // CLAST
+%    QUEUE SEND 
+%    TRANSFER "END" TO CRYSTALS
+%%
+%    QUEUE COPY END
+%    QUEUE PROCESS
+%   COPY '#SUM LIST 12'
+%   COPY 'END'
+%   COPY '#LIST 22'
+%   COPY 'END'
+%%
+%END SCRIPT

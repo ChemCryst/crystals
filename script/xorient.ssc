@@ -1,0 +1,200 @@
+%SCRIPT XORIENT  %Script for choosing view orientation%
+% VARIABLE INTEGER IFILET ITYPE IH IK IL
+% VARIABLE CHARACTER COMMAND
+^^WI WINDOW XORIENT 'Save Image' MODAL
+^^WI STARTGRID G1 'n' NROWS=3 NCOLS=5
+^^WI  STARTGRID ROW=2 COL=2 GL 'n' NROWS=7 NCOLS=1
+^^WI   RADIOBUTTON ROW=2 COL=1 XA 'Along axis a' STATE=ON INFORM
+^^WI   RADIOBUTTON ROW=3 COL=1 XB 'Along axis b' INFORM
+^^WI   RADIOBUTTON ROW=4 COL=1 XC 'Along axis c' INFORM
+^^WI   RADIOBUTTON ROW=5 COL=1 XP 'Plane all atoms' INFORM
+^^WI   STARTGRID ROW=6 COL=1 GB 'n' NROWS=1 NCOLS=10
+^^WI    RADIOBUTTON  ROW=1 COL=1 XF 'Face' INFORM
+^^WI    STATIC    ROW=1 COL=3 TH 'h:'
+^^WI    STATIC    ROW=1 COL=6 TH 'k:'
+^^WI    STATIC    ROW=1 COL=9 TH 'l:'
+^^WI    EDITBOX   ROW=1 COL=4  EH '1' CHARS=3 INTEGER DISABLED=YES
+^^WI    EDITBOX   ROW=1 COL=7  EK '0' CHARS=3 INTEGER DISABLED=YES
+^^WI    EDITBOX   ROW=1 COL=10 EL '0' CHARS=3 INTEGER DISABLED=YES
+^^WI   ENDGRID
+^^WI  ENDGRID
+^^WI  STARTGRID   ROW=2 COL=4 GR 'n' NROWS=5 NCOLS=3
+^^WI   BUTTON      ROW=1 COL=2  BTOK 'Ok' DEFAULT COMMIT
+^^WI   BUTTON      ROW=3 COL=2  BTPP 'Apply'
+^^WI   BUTTON      ROW=5 COL=2  BTXX 'Cancel' CANCEL
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+% LOOP
+%  VERIFY BTOK BTPP BTXX XA XB XC XP XF
+%  GET NOSTORE FINAL ABBREVIATED ' '
+%  CASE VALUE
+%   BLOCK        %BTNOK%
+^^WI   GETVALUE XA
+^^CR
+%      VERIFY ON OFF
+%      GET NOSTORE FINAL ABBREVIATED ' '
+%      IF VALUE .EQ. 1 THEN
+%         COPY "Along axis A View"
+%         COPY "   "
+%      ELSE
+^^WI      GETVALUE XB
+^^CR      
+%         VERIFY ON OFF
+%         GET NOSTORE FINAL ABBREVIATED ' '
+%         IF VALUE .EQ. 1 THEN
+%            COPY "Along axis B View" 
+%            COPY " "
+%         ELSE
+^^WI         GETVALUE XC
+^^CR          
+%            VERIFY ON OFF
+%            GET NOSTORE FINAL ABBREVIATED ' '
+%            IF VALUE .EQ. 1 THEN
+%               COPY "Along axis C View" 
+%               COPY "   " 
+%            ELSE
+^^WI            GETVALUE XP
+^^CR          
+%               VERIFY ON OFF
+%               GET NOSTORE FINAL ABBREVIATED ' '
+%               IF VALUE .EQ. 1 THEN
+%                  COPY "Plane all View" 
+%                  COPY "   " 
+%               ELSE
+^^??              EH TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IH = VALUE
+^^??              EK TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IK = VALUE
+^^??              EL TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IL = VALUE
+%                 QUEUE REWIND
+%                 CLEAR
+%                 INSERT 'FACE '
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IH
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IK
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IL
+%                 INSERT ' VIEW'
+%                 QUEUE SEND
+%                 QUEUE PROCESS
+%                 COPY ' '
+%              END IF
+%            END IF
+%         END IF
+%      END IF
+^^WI   DISPOSE XORIENT
+^^CR   
+%      FINISH
+%   END BLOCK
+%   BLOCK        %BTNPP%
+^^WI   GETVALUE XA
+^^CR
+%      VERIFY ON OFF
+%      GET NOSTORE FINAL ABBREVIATED ' '
+%      IF VALUE .EQ. 1 THEN
+%         COPY "Along axis A View"
+%         COPY "   "
+%      ELSE
+^^WI      GETVALUE XB
+^^CR      
+%         VERIFY ON OFF
+%         GET NOSTORE FINAL ABBREVIATED ' '
+%         IF VALUE .EQ. 1 THEN
+%            COPY "Along axis B View" 
+%            COPY " "
+%         ELSE
+^^WI         GETVALUE XC
+^^CR          
+%            VERIFY ON OFF
+%            GET NOSTORE FINAL ABBREVIATED ' '
+%            IF VALUE .EQ. 1 THEN
+%               COPY "Along axis C View" 
+%               COPY "   " 
+%            ELSE
+^^WI            GETVALUE XP
+^^CR          
+%               VERIFY ON OFF
+%               GET NOSTORE FINAL ABBREVIATED ' '
+%               IF VALUE .EQ. 1 THEN
+%                  COPY "Plane all View" 
+%                  COPY "   " 
+%               ELSE
+^^??              EH TEXT        
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IH = VALUE
+^^??              EK TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IK = VALUE
+^^??              EL TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IL = VALUE
+%                 QUEUE REWIND
+%                 CLEAR
+%                 INSERT 'FACE '
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IH
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IK
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IL
+%                 INSERT ' VIEW'
+%                 QUEUE SEND
+%                 QUEUE PROCESS
+%                 COPY ' '
+%              END IF
+%            END IF
+%         END IF
+%      END IF
+%   END BLOCK
+%   BLOCK   %XX%
+^^WI   DISPOSE XORIENT
+^^CR   
+%      FINISH
+%   END BLOCK
+%%% Radiobuttons usually work automatically, but in this case they
+%%% don't, as the last one (XF) is in a different grid.
+%%% Thus, any of the first four buttons (XA-XC and XP) must turn off XF
+%%% and disable the three edit controls.
+%%% XF must turn off all of XA, XB, XC and XP and enable the edits.
+%   BLOCK   %XA%
+^^WI    SET XF STATE=OFF
+^^WI    SET EH DISABLED=YES
+^^WI    SET EK DISABLED=YES
+^^WI    SET EL DISABLED=YES
+^^CR
+%   END BLOCK
+%   BLOCK   %XB%
+^^WI    SET XF STATE=OFF
+^^WI    SET EH DISABLED=YES
+^^WI    SET EK DISABLED=YES
+^^WI    SET EL DISABLED=YES
+^^CR
+%   END BLOCK
+%   BLOCK   %XC%
+^^WI    SET XF STATE=OFF
+^^WI    SET EH DISABLED=YES
+^^WI    SET EK DISABLED=YES
+^^WI    SET EL DISABLED=YES
+^^CR
+%   END BLOCK
+%   BLOCK   %XP%
+^^WI    SET XF STATE=OFF
+^^WI    SET EH DISABLED=YES
+^^WI    SET EK DISABLED=YES
+^^WI    SET EL DISABLED=YES
+^^CR
+%   END BLOCK
+%   BLOCK   %XF%
+^^WI    SET XA STATE=OFF
+^^WI    SET XB STATE=OFF
+^^WI    SET XC STATE=OFF
+^^WI    SET XP STATE=OFF
+^^WI    SET EH DISABLED=NO
+^^WI    SET EK DISABLED=NO
+^^WI    SET EL DISABLED=NO
+^^CR
+%   END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT

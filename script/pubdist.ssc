@@ -1,0 +1,32 @@
+%SCRIPT PUBDIST
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ Produce a file of interatomic distances suitable for editing into a        บ
+บ document for publication. No serious attempt has been made to format       บ
+บ the file since it will almost always need hand editing.                    บ
+บ Hydrogen atoms are usually excluded from this listing                      บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+      Prepare a file of distances and angles for publication
+% END IF
+%  BLOCK
+%    ON END TERMINATE
+%    ON ERROR TERMINATE ABANDONED
+%    COPY '#DIST'
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+      'Do you want to exclude hydrogen atoms?' 'YES'
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY 'EXCLUDE H'
+%    END IF
+%    IF ( EXISTS 31 .EQ. 1 ) THEN
+%        COPY 'E.S.D YES CELL = YES'
+%    ELSE
+%        COPY 'E.S.D YES'
+%    END IF
+%    COPY 'OUTPUT MON=DIST PUNCH = PUBLISH'
+%    COPY 'END'
+%  END BLOCK
+%END SCRIPT

@@ -1,0 +1,155 @@
+%SCRIPT FOURIER
+% VARIABLE LOGICAL SCRIPTEXT
+% VARIABLE LOGICAL LCONTOUR
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This script implements the CRYSTALS command FOURIER, and may be used to    บ
+บ compute a variety of real and vector space Fourier syntheses.              บ
+บ  In this script you are only offered a limited selection of syntheses      บ
+บ together with a peak search. The underlying COMMAND includes options       บ
+บ for formatting and printing the map, various weighting schemes, and        บ
+บ special treatment of reflections.                                          บ
+บ After computing the map, this script enables you to process the peak       บ
+บ search into an atoms list.                                                 บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+a SCRIPT to help with the computation and processing of Fourier maps
+% END IF
+%  VARIABLE REAL HEIGHT
+%  VARIABLE CHARACTER MAPTYPE
+%  EVALUATE MAPTYPE = 'UNKNOWN'
+%  IF ( EXISTS 14 .NE. 1 ) THEN
+%    COPY '#SCRIPT SECTION'
+%    IF ( EXISTS 14 .NE. 1 ) THEN
+ You have not stored the asymmetric part of the cell. We cannot compute
+ a Fourier map.
+%    FINISH
+%    END IF
+%  END IF
+ Do you need to compute a new scale factor or phase angles?
+%  VERIFY NOTHING CALCULATE SCALE
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'What do you want to compute ?' 'NOTHING'
+%  IF VALUE .NE. 1 THEN
+%% we need something
+%    COPY '#EDIT'
+%    COPY 'SELECT TYPE NE Q'
+%    COPY 'END'
+%    COPY '#SFLS'
+%    IF VALUE .EQ. 2 THEN
+%      COPY 'CALCULATE'
+%    ELSE
+%      COPY 'SCALE'
+%    END IF
+%    COPY 'END'
+%  END IF
+%  BLOCK
+%    ON ERROR TERMINATE
+%    QUEUE REWIND
+%    CLEAR
+%    INSERT 'MAP TYPE = '
+%    VERIFY FO FC DIFF 2FO-FC
+%    GET FINAL FILL NOSTORE ABBREVIATED 'Map type? ' 'FO'
+%%    STORE KEYWORD VALUE
+%    CASE VALUE
+%     BLOCK
+%     EVALUATE MAPTYPE = 'FO'
+%     INSERT 'F-O'
+%     END BLOCK
+%%    
+%     BLOCK
+%     EVALUATE MAPTYPE = 'FC'
+%     INSERT 'F-C'
+%     END BLOCK
+%%    
+%     BLOCK
+%     EVALUATE MAPTYPE = 'DIF'
+%     INSERT 'DIF'
+%     END BLOCK
+%%    
+%     BLOCK
+%     EVALUATE MAPTYPE = '2FO'
+%     INSERT '2FO'
+%     END BLOCK
+%%    
+%    END CASE
+%    QUEUE SEND
+%    CLEAR
+The default, zero, causes CRYSTALS to choose a minimum height
+%    GET NOSTORE REAL 'Minimum peak height (10x electrons/A3)? ' '0.0'
+%    EVALUATE HEIGHT = VALUE
+%    IF HEIGHT .LE. 0.0 THEN
+%      IF MAPTYPE .EQ. 'DIF' THEN
+%%       DIFFERENCE MAP
+%        EVALUATE HEIGHT = 3.0
+%      ELSE
+%        EVALUATE HEIGHT = 15.0
+%      END IF
+%    END IF    
+%%
+%    INSERT 'PEAKS HEIGHT  = '
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL HEIGHT
+%%
+The default, zero, causes CRYSTALS to use the volume to choose how many peaks
+to keep
+%    INSERT ' NPEAK = '
+%    GET INTEGER 'Number of peaks to keep? ' '0'
+The default, 0.01A, causes CRYSTALS to reject coincident or split peaks
+%    INSERT ' REJECT = '
+%    GET REAL 'Rejection limit, Angstrom? ' '0.01'
+%    QUEUE SEND
+%    CLEAR
+%    VERIFY YES NO
+%    GET NOSTORE FINAL ABBREVIATED  -
+     'Do you want to save a map plotting file?' 'NO'
+%    IF VALUE .EQ. 1 THEN
+%    INSERT 'TAPES OUTPUT=YES'
+%    QUEUE SEND
+%      EVALUATE LCONTOUR = TRUE
+%      BLOCK
+%        VARIABLE CHARACTER FILENAME
+%        ON ERROR REPEAT
+%        CLEAR
+%        GET FINAL FILENAME 'Filename for map' 'MAP.MT1'
+%%       GET FINAL KEYWORD 'Enter  filename'
+%        EVALUATE FILENAME = CVALUE
+%        TRANSFER '#OPEN MT1 ' //  FILENAME  // ' ' TO CRYSTALS
+%      END BLOCK
+%    END IF
+%    CLEAR
+%    COPY '#FOURIER'
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END BLOCK
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED  -
+   'Do you want to convert the peaks list into an atom list?' 'YES'
+%  IF VALUE .EQ. 1 THEN
+%      COPY '#SCRIPT PEAKS'
+  Do you want to use symmetry to bring new found peaks close to existing atoms
+%      GET NOSTORE FINAL ABBREVIATED  -
+   ' ' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SCRIPT COLLECT'
+%      END IF
+%  END IF
+%  IF LCONTOUR .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ    The map has been stored in a file 'MAP.MT1'. To plot this map, close    บ
+บ    down CRYSTALS and type CONTOUR                                          บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%    COPY '#PAUSE 3'
+%    COPY '#CLOSE MT1'
+% BLOCK
+%   ON ERROR REPEAT
+%   VERIFY YES NO
+%   GET NOSTORE ABBREVIATED -
+  'Do you wish to close down CRYSTALS  now ?' 'YES'
+%   IF ( VALUE .EQ. 1 ) THEN
+%     FINISH
+%   END IF
+% END BLOCK
+%%CVAX% INSERT '@CRPROC:SPAWNCMD "CONTOUR  "'
+%%CVAX% EXTERNAL SEND
+%  END IF
+%END SCRIPT

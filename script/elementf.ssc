@@ -1,0 +1,7 @@
+%SCRIPT ELEMENTS
+  The scattering factors, LIST 3, and elemental properties, LIST 29
+%    IF ( EXISTS 3 .EQ. 1 ) .AND. ( EXISTS 29 .EQ. 1 ) THEN
+%    ELSE
+%        COPY '#SCRIPT INCOMP'
+%    END IF
+%END SCRIPT

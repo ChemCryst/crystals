@@ -1,0 +1,231 @@
+%SCRIPT INEMAP
+A SCRIPT to help you input a new trial model
+%  VARIABLE INTEGER ATOMCOUNT SOLVEMETHOD LOOPCOUNT PRINTOUT TYPE SERIAL
+%  VARIABLE LOGICAL FILESCAN QUERY
+%  VARIABLE CHARACTER CRDEVICE CRFILE
+%  CLEAR
+%  EVALUATE QUERY = FALSE
+%  IF EXISTS 6 .LT. 1 THEN
+            You have no reflection data stored.
+%    EVALUATE QUERY = TRUE
+%  END IF
+%  IF ( EXISTS ( 5 ) .EQ. 1 ) THEN
+            You already have a model stored.
+%    EVALUATE QUERY = TRUE
+%  END IF
+%
+%  IF QUERY THEN
+%    VERIFY YES NO
+%    GET NOSTORE FINAL ABBREV -
+  'Are you sure you want to input a model' 'YES'
+%    IF VALUE .EQ. 2 THEN
+%      FINISH
+%    END IF
+%  END IF
+%
+%%
+%% call a script to get the expected number of atoms into EXPECTED
+%   VARIABLE INTEGER EXPECTED
+%   COPY '#SCRIPT GETEXP'
+%   EVALUATE EXPECTED = INTEGER ( REAL ( EXPECTED ) * 1.1 )
+%%
+%  IF SOLVEMETHOD .LE. 0 THEN
+%    VERIFY MULTAN PATTERSON SHELXS SIR OTHER
+%    GET NOSTORE FINAL ABBREV 'How was the structure solved' 'SIR'
+%    EVALUATE SOLVEMETHOD = VALUE
+%  END IF
+%%
+%  IF SOLVEMETHOD .EQ. 2 THEN
+%    VERIFY SHELXS CRYSTALS
+%    GET NOSTORE FINAL ABBREV 'How was the Patterson solved' 'SHELXS'
+%    IF VALUE .EQ. 1 THEN
+%      EVALUATE SOLVEMETHOD = 3
+%    END IF
+%  END IF
+%
+%  EVALUATE FILESCAN = FALSE
+%  IF SOLVEMETHOD .EQ. 1 THEN                                  %MULTAN%
+%    VERIFY YES NO
+%    GET FINAL ABBREVIATED 'Do you want to read data from a SEARCH.PKS' 'YES'
+%    EVALUATE FILESCAN = VALUE .EQ. 1
+%
+%    QUEUE REWIND
+%
+%    EVALUATE ATOMCOUNT = 0
+%
+%    IF FILESCAN THEN
+%      COPY '#OPEN SCPDATA SEARCH.PKS'
+%    END IF
+%
+%    IF FILESCAN THEN
+%%
+%%     SKIP THREE LINES
+%      EXTRACT NEXT
+%      EXTRACT NEXT
+%      EXTRACT NEXT
+%%
+%      CLEAR
+	The default chosen should be correct for the molecular formula which
+	was inputted earlier, with allowance for 10% error.
+%      INSERT "% GET INTEGER 'How many atoms do you want to keep' '"
+%      STORE INTEGER EXPECTED
+%      INSERT "'"
+%      EXECUTE
+%      EVALUATE LOOPCOUNT = VALUE
+%%
+%      LOOP  LOOPCOUNT TIMES
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT TRANSFER COMMAND
+%        EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        INSERT 'ATOM '
+%        GET KEYWORD 'TYPE'
+%%       force an exit from loop on reading an END card
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          STORE INTEGER ATOMCOUNT + 1
+%          INSERT ' X = '
+%          GET REAL 'X'
+%          GET REAL 'Y'
+%          GET REAL 'Z'
+%          GET NOSTORE NOPROMPT  TEXT NULLSTRING
+%          QUEUE SEND
+%          EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%        END IF
+%      END LOOP
+%    END IF
+%    IF ATOMCOUNT .EQ. 0 THEN
+      You have not specified any new atoms. No model has been stored
+%      FINISH
+%    ELSE
+%      COPY '#LIST 5'
+%      CLEAR
+%      INSERT 'READ NATOM = '
+%      STORE INTEGER ATOMCOUNT
+%      SEND
+%      QUEUE PROCESS
+%      COPY 'END'
+%    END IF
+%%
+%  ELSE IF SOLVEMETHOD .EQ. 2 THEN                          %CRYSTALS%
+%      COPY '#SCRIPT INATOMS'
+%  ELSE IF SOLVEMETHOD .EQ. 3 THEN                          %SHELXS%
+%%
+%    COPY '#SCRIPT INSHELXS'
+%    IF ATOMCOUNT .EQ. 0 THEN
+%      FINISH
+%    END IF
+%%   INDICATE THAT WE HAVE ALREADY PROCESSED THE QUEUE
+%    EVALUATE ATOMCOUNT = 0
+%%
+%  ELSE  IF  SOLVEMETHOD .EQ. 5 THEN                         %OTHER%
+%%
+%    COPY '#SCRIPT INXYZ'
+%%
+%  ELSE
+%% SOLVEMETHOD .EQ. 4                                        %SIR%
+%    VERIFY SIR88 SIR92
+%    GET NOSTORE FINAL ABBREV 'Which version of SIR' 'SIR88'
+%    IF VALUE .EQ. 1 THEN
+%      COPY '#USE SIR.CRY'
+%      COPY '#LIST 28'
+%      COPY 'MINIMA RATIO=3'
+%      COPY 'END'
+%    ELSE
+%      COPY '#USE SIR92.INS'
+%    END IF
+%    COPY '#EDIT'
+%    COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%    COPY 'END'
+%  END IF
+%
+%%
+%    IF ( EXISTS ( 5 ) .NE. 1 ) THEN
+%      FINISH
+%    END IF
+%    BLOCK
+    You now have the opportunity to see a 'joined dots' diagram.
+    You may also send a copy to the printer or print file. This is highly
+    recommended for non-globular structures with up to 30 atoms.
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+    'Do you want to send the diagram and distances to the printer ? ' 'NO'
+%    EVALUATE PRINTOUT = VALUE
+%    IF PRINTOUT .EQ. 1 THEN
+      A file containing a 'joined dots' diagram and a distance table will be
+      sent to the line printer or printer file.
+%      EVALUATE CRDEVICE = 'PRINTER'
+%      EVALUATE CRFILE = 'SYS$PRINT'
+%      COPY '#SCRIPT RELEASE'
+%    END IF
+%    COPY '#DISPLAY HIGH '
+%    COPY 'END'
+%    COPY '#MOLAX'
+%    COPY 'ATOM FIRST UNTIL LAST'
+%    COPY 'PLOT'
+%    COPY 'END'
+%    COPY '#PAUSE 2'
+%%
+%      COPY '#DISTANCES'
+%      COPY 'END'
+%    IF PRINTOUT .EQ. 1 THEN
+%      EVALUATE CRFILE = ' '
+%      COPY '#SCRIPT RELEASE'
+%    END IF
+%    END BLOCK
+%%
+%%
+                         EDIT THE PEAK LIST
+%%
+%  ON ERROR REPEAT
+%  BLOCK
+  You now have a chance to edit the input peak list. Remember the the
+  peaks will have a 'TYPE' of either 'PEAK' or 'Q'. You will probably not
+  have scattering factors for theses type, and so need to change the peaks
+  to TYPE 'C'.
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED  -
+    'Do you want to edit the peak list ? ' 'NO'
+%  IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#SCRIPT EDLIST5'
+%  END IF
+%  COPY '#SCRIPT PLOT'
+%  COPY '#DISPLAY'
+%  COPY 'END'
+%  COPY '#LIST 12'
+%  COPY 'FULL'
+%  COPY 'END'
+%  COPY '#LIST 4'
+%  COPY 'END'
+%  COPY '#CLEAR 16'
+%  COPY 'END'
+%  END BLOCK
+%  ON ERROR REPEAT
+%  BLOCK
+%    IF ( SOLVEMETHOD .NE. 4 ) THEN
+%    ON ERROR TERMINATE
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+      'Do you want to compute the overall scale? ' 'NO'
+%      IF ( VALUE .EQ. 1 ) THEN
+%        COPY '#SPECIAL'
+%        COPY 'END'
+%        COPY '#SFLS'
+%        COPY 'SCALE'
+%        COPY 'END'
+%        COPY '#SFLS'
+%        COPY 'CALC'
+%        COPY 'END'
+%      END IF
+%    END IF
+%  END BLOCK
+%%
+~-----------------------------------------------------------------------
+  For routine work, the next script to choose would probably be MAPS
+^-----------------------------------------------------------------------
+%END SCRIPT

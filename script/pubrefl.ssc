@@ -1,0 +1,27 @@
+%SCRIPT PUBREFL
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This script produces publication listings of reflections suitable for      บ
+บ output either on an 80 column printer, or a 120 column printer             บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+    Publication listings of reflections
+% END IF
+%    COPY '#REFLECTIONS'
+%    VERIFY 80 120
+%      GET NOSTORE FINAL ABBREVIATED  -
+    ' Which printer width? ' '80'
+%    IF VALUE .EQ. 1 THEN
+%      COPY 'LAYOUT INSET = 10 NCHAR = 80 NLINE = 60 NCOLUMN = 3'
+%    ELSE
+%      COPY 'LAYOUT INSET = 5 NCHAR = 118 NLINE = 80 NCOLUMN = 5'
+%    END IF
+%    CLEAR
+%    INSERT 'CONT SCALE= '
+%    GET REAL  'Scale factor' '10.0'
+%    SEND
+%    COPY "OUTPUT PRINT = NO, PUNCH = YES"
+%    COPY 'END'
+%END SCRIPT

@@ -1,0 +1,68 @@
+%SCRIPT SIR92
+%%  CRYSTALS link to 'SIR92'
+This script prepares a SIR92 default data file and submits a SIR batch job.
+If the first task fails to solve the structure, you must edit the SIR92
+input files to set up a non-default (i.e. more comprehensive) task.
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%    FINISH
+%  END IF
+%% write a SIR92 data file
+%    BLOCK
+%      VERIFY YES NO
+%      GET NOSTORE YESNO -
+    'Is this your first try on this compound with SIR92' 'YES'
+%%
+%      IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#FOREIGN SIR92 '
+%          COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SIR92, type SIR92
+%            COPY '#PAUSE 5'
+%            COPY '#FINISH'
+%          END IF
+%        VERIFY YES NO
+%        GET NOSTORE YESNO -
+         'Do you want to run SIR92 on - line ' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SPAWN  SIR92'
+%          FINISH
+%        ELSE
+%%         Run a default SIR92 job
+%          EXTERNAL COPY @CRPROC:SCPBATCH SIR92 SIR92 CRFAST
+%
+      A default batch job submitted to FAST queue. You have 5
+      minutes in which to make changes to the batch data file.
+      The output structure, if the job runs to completion, is
+      in the file SIR92.INI
+      The  script MODEL is available to convert this into a LIST 5.
+      If the structure has not solved on these settings, try the
+      script SHELXS again, indicating that the first job failed.
+      Alternatively, you could try SHELXS.
+%        COPY '#FINISH'
+%        END IF
+%      ELSE
+%        COPY '#FOREIGN SIR92 DIFFICULT'
+%        COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SIR92, type SIR92
+%            COPY '#PAUSE 5'
+%            COPY '#FINISH'
+%          END IF
+%        EXTERNAL COPY @CRPROC:SCPBATCH SIR92 SIR92 CRSLOW
+       Non default batch job submitted to SLOW queue.
+      The output structure, if the job runs to completion, is
+      in the file SIR92.INI
+      The  script MODEL is available to convert this into a LIST 5.
+      If the structure has not solved on default settings, you
+      must read the SIR92 manual, modify SIR92.INI, and submit
+      a free standing SIR92 job.
+%        COPY '#FINISH'
+%      END IF
+%      END BLOCK
+%
+%END SCRIPT

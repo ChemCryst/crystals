@@ -1,0 +1,128 @@
+%SCRIPT INLIST14
+%% CRYSTALS LIST 14 input script
+%  VARIABLE REAL XMIN XMAX YMIN YMAX ZMIN ZMAX RES A B C
+Define a unique part of the unit cell
+------ - ------ ---- -- --- ---- ----
+%  CLEAR
+%    IF ( EXISTS 1 .EQ. 1 ) THEN
+%      COPY '#GENERALEDIT 1'
+%      COPY 'LOCATE RECORDTYPE = 101'
+%      COPY 'TRANSFER FROM OFFSET =  0 TO A'
+%      COPY 'TRANSFER FROM OFFSET =  1 TO B '
+%      COPY 'TRANSFER FROM OFFSET =  2 TO C'
+%      COPY 'END'
+%    ELSE
+%      EVALUATE A = 1.
+%      EVALUATE B = 1.
+%      EVALUATE C = 1.
+%    END IF
+%%
+%  BLOCK
+%    ON END   TERMINATE
+%    ON ERROR RESTART
+%    QUEUE REWIND
+%    CLEAR
+%    GET FINAL NOSTORE REAL  'Resoluton, Angstroms' '0.3'
+%    EVALUATE RES = VALUE
+Details for asymmetric part of real cell (Fourier)
+%    INSERT 'X-AXIS STEP='
+%    STORE FORMAT /(F5.3)/ LENGTH 5 REAL RES
+%    INSERT ' MINIMUM='
+%    GET REAL 'X-min ( fractional )' '0.0'
+%    EVALUATE XMIN = VALUE
+%    INSERT ' MAXIMUM='
+%    GET REAL 'X-max ( fractional )' '1.0'
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'Y-AXIS STEP='
+%    STORE FORMAT /(F5.3)/ LENGTH 5 REAL RES
+%    INSERT ' MINIMUM='
+%    GET REAL 'Y-min ( fractional )' '0.0'
+%    EVALUATE YMIN = VALUE
+%    INSERT ' MAXIMUM='
+%    GET REAL 'Y-max ( fractional )' '1.0'
+%    EVALUATE YMAX = VALUE
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'Z-AXIS STEP='
+%    STORE FORMAT /(F5.3)/ LENGTH 5 REAL RES
+%    INSERT ' MINIMUM='
+%    GET REAL 'Z-min ( fractional )' '0.0'
+%    EVALUATE ZMIN = VALUE
+%    INSERT ' MAXIMUM='
+%    GET REAL 'Z-max ( fractional )' '1.0'
+%    EVALUATE ZMAX = VALUE
+%    QUEUE SEND
+%    CLEAR
+Details for asymmetric part of vector space (Patterson)
+%    INSERT 'X-PATT STEP='
+%    STORE FORMAT /(F5.3)/ LENGTH 5 REAL RES
+%    INSERT ' MINIMUM='
+%    GET REAL 'X-min Patterson ( fractional )' '0.0'
+%    EVALUATE XMIN = VALUE
+%    INSERT ' MAXIMUM='
+%    GET REAL 'X-max Patterson ( fractional )' '1.0'
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'Y-PATT STEP='
+%    STORE FORMAT /(F5.3)/ LENGTH 5 REAL RES
+%    INSERT ' MINIMUM='
+%    GET REAL 'Y-min Patterson ( fractional )' '0.0'
+%    EVALUATE YMIN = VALUE
+%    INSERT ' MAXIMUM='
+%    GET REAL 'Y-max Patterson ( fractional )' '1.0'
+%    EVALUATE YMAX = VALUE
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'Z-PATT STEP='
+%    STORE FORMAT /(F5.3)/ LENGTH 5 REAL RES
+%    INSERT ' MINIMUM='
+%    GET REAL 'Z-min Patterson ( fractional )' '0.0'
+%    EVALUATE ZMIN = VALUE
+%    INSERT ' MAXIMUM='
+%    GET REAL 'Z-max Patterson ( fractional )' '1.0'
+%    EVALUATE ZMAX = VALUE
+%    QUEUE SEND
+%    CLEAR
+%% optimise the map orientation
+%    EVALUATE XMAX = ( XMAX - XMIN ) * A
+%    EVALUATE YMAX = ( YMAX - YMIN ) * B
+%    EVALUATE ZMAX = ( ZMAX - ZMIN ) * C
+%    INSERT 'ORIENT '
+%    IF XMAX .GE. YMAX THEN
+%      IF XMAX .GE. ZMAX THEN
+%        INSERT 'X '
+%          IF YMAX .GE. ZMAX THEN
+%            INSERT 'Y Z'
+%          ELSE
+%            INSERT 'Z Y'
+%          END IF
+%      ELSE
+%          INSERT 'Z X Y'
+%      END IF
+%    ELSE
+%      IF YMAX .GE. ZMAX THEN
+%        INSERT 'Y '
+%        IF XMAX .GE. ZMAX THEN
+%          INSERT 'X Z'
+%        ELSE
+%          INSERT 'Z X'
+%        END IF
+%      ELSE
+%        INSERT 'Z Y X'
+%      END IF
+%    END IF
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'SCALE '
+%    GET REAL 'Scale factor' '10.'
+%    QUEUE SEND
+%    CLEAR
+%    COPY '#LIST 14'
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END BLOCK
+%    COPY '#SUM L 14'
+%    COPY 'END'
+%%
+%END SCRIPT

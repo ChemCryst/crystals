@@ -1,0 +1,69 @@
+%SCRIPT FGUIDE
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This SCRIPT guides you through computing Fourier maps, using the           บ
+บ results to refine existing atoms or find new atoms, assigning chemical     บ
+บ types on the basis of electron density, applying symmetry operators to     บ
+บ atoms so that they form a 'molecule', reordering the atom list so that     บ
+บ bonded atoms are adjacent, and resequencing the atom serial numbers.       บ
+บ It makes use only of SCRIPTS which can be selected manually from the       บ
+บ MAPS menu.                                                                 บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+      a SCRIPT to guide you through the computation and processing of
+      Fourier maps
+% END IF
+%  VARIABLE CHARACTER MAPTYPE
+% LOOP
+%
+%    ON ERROR REPEAT
+%    CLEAR
+%    VERIFY HELP INFO START END
+%    GET NOSTORE FINAL ABBREVIATED 'Script required?' 'HELP'
+%    CASE VALUE
+%      BLOCK                                         %HELP%
+  This is the master control SCRIPT
+      HELP          Display this help text
+      INFO          An explanation of the action of this SCRIPT
+      START         Start the Fourier SCRIPT
+      END           Exit from this SCRIPT
+      DIRECT        Go to CRYSTALS direct command input
+%      END BLOCK
+%%
+%      BLOCK                                         %INFO%
+
+PHASE 1
+      Remove any atoms of type 'Q' or 'PEAK' from the atom list, offer
+      the opportunity to recompute phases or the scale factor, compute
+      a map, convert the peaks list into an atom list, bring new found
+      peaks as close as permitted by symmetry to existing atoms.
+%     COPY '#PAUSE 5'
+PHASE 2
+      Sort the atom list by electron density, eliminate atoms or peaks
+      with Rho below a given threshold, rename any atoms and convert
+      any remaining peaks (Q) to carbon.
+      Phases 1 and 2 may be repeated until, sometimes, a full structure
+      is resolved. 
+%     COPY '#PAUSE 5'
+PHASE 3
+      Phase 3 can be used to reorder the atom list so that
+      bonded atoms are adjacent, and resequence the atom serial numbers.
+%     COPY '#PAUSE 5'
+%      END BLOCK
+%%
+%     BLOCK                                          %START%
+PHASE 1
+%      COPY '#SCRIPT FOURIER'
+PHASE 2
+%      COPY '#SCRIPT SORT'
+%      COPY '#SCRIPT EDLIST5'
+PHASE 3
+%      COPY '#SCRIPT REGROUP'
+%     END BLOCK
+%     BLOCK                                          %END%
+%      FINISH
+%     END BLOCK
+%    END CASE
+%    END LOOP
+%END SCRIPT

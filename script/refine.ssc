@@ -1,0 +1,18 @@
+%SCRIPT REFINE
+%% RUN REFINEMENT CYCLES
+%  VARIABLE INTEGER NCYCLE
+% CLEAR
+%          GET FINAL INTEGER ' How many cycles' '5'
+%          EVALUATE NCYCLE = VALUE
+%          IF NCYCLE .GT. 5 THEN
+%            EVALUATE NCYCLE = 5
+%          END IF
+%          IF NCYCLE .GT.  0 THEN
+%            COPY '#SFLS'
+%            LOOP NCYCLE TIMES
+%              ON ERROR TERMINATE
+%              COPY 'REFINE'
+%            END LOOP
+%            COPY 'END'
+%          END IF
+%END SCRIPT

@@ -1,0 +1,60 @@
+%SCRIPT DATA
+LISTS SCRIPT
+The SCRIPT to help with CRYSTALS LIST manipulation
+%%
+%  LOOP
+%
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%    VERIFY BACK HELP INDEX INPUT LOOK MODIFY PERHYDRO DISK USE
+%    GET NOSTORE FINAL ABBREVIATED 'Which choice?' 'BACK'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+        This script assists in the examination, modification
+        and input of CRYSTALS LISTS
+        BACK        End this script
+        HELP        Display this help text
+        INDEX       List the possible CRYSTALS LISTS
+        INPUT       Input new lists
+        LOOK        Print the contents of the current LISTS
+        MODIFY      Modify the contents of some lists
+        PERHYDRO    Perhydrogenate the carbon atoms
+        DISK        Access the CRYSTALS DSC file
+        USE         Single step though a data file
+        DIRECT      Go to CRYSTALS direct command input
+%      END BLOCK
+%%
+%      BLOCK                                         %INDEX%
+%        COPY '#TYPE CRMAN:LISTS.IND'
+%      END BLOCK
+%%
+%      BLOCK                                         %INPUT%
+%        COPY '#SCRIPT INPUT'
+%      END BLOCK
+%%
+%      BLOCK                                         %LOOK%
+%        COPY '#SCRIPT LOOK'
+%      END BLOCK
+%%
+%      BLOCK                                         %MODIFY%
+%        COPY '#SCRIPT MODIFY'
+%      END BLOCK
+%%
+%      BLOCK                                         %PERHYDRO%
+%        COPY '#SCRIPT PERHYDRO'
+%      END BLOCK
+%%
+%      BLOCK                                         %DISK%
+%        COPY '#SCRIPT DISK'
+%      END BLOCK
+%%
+%      BLOCK                                         %USE%
+%        COPY '#SCRIPT USE'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

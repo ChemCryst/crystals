@@ -1,0 +1,174 @@
+%SCRIPT INLIST16
+%  VARIABLE INTEGER SWITCH
+A script to help you set up molecular geometry restraints
+- ------ -- ---- --- --- -- --------- -------- ----------
+%%
+%  BLOCK
+%  ON ERROR TERMINATE ABANDONED
+%  QUEUE REWIND
+%  CLEAR
+%  LOOP
+%
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%    VERIFY END HELP DISTANCE ANGLE MEANDIST MEANANG PLANE TPP CLEAR DIRECT
+%    GET NOSTORE FINAL ABBREVIATED 'Next restraint ' 'HELP'
+%    EVALUATE SWITCH = VALUE
+%%
+%    IF SWITCH .EQ. 1 THEN
+%      BLOCK
+%%
+%%       Stop looping and go to the end
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%%
+%    ELSE IF SWITCH .EQ. 2 THEN
+%      BLOCK
+  END       End this script
+  HELP      Display this help text
+  DISTANCE  Restrain bonds to a give length
+  ANGLE     Restrain angles to a given value
+  MEANDIST  Restrain several bonds to their mean
+  MEANANG   Restrain several angles to their mean
+  PLANE     Restrain atoms to be co-planar
+  PHENYL    Restrain a phenyl group to have 2-fold symmetry
+  TPP       Distance and thermal restraints for triphenyl phosphine
+  CLEAR     Remove all restraints
+  DIRECT    Abandon SCRIPT and return to CRYSTALS direct command input.
+%      END BLOCK
+%%
+%    ELSE IF ( SWITCH .EQ. 3 ) .OR. ( SWITCH .EQ. 5 ) THEN
+%      BLOCK
+%      IF SWITCH .EQ. 3 THEN
+%        BLOCK
+%        ON ERROR REPEAT
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'DISTANCE '
+%        GET REAL 'Enter the required bond length (Angstroms)'
+%        INSERT ',0.05='
+%        QUEUE SEND
+%        CLEAR
+%        END BLOCK
+%      ELSE
+%        INSERT 'DISTANCE 0.0,0.05=MEAN'
+%        QUEUE SEND
+%        CLEAR
+%      END IF
+         Enter the atoms which are bonded (END to finish)
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR REPEAT
+%        CLEAR
+%        INSERT 'CONT '
+%        GET KEYWORD 'First atom type (END to finish)'
+%        INSERT '('
+%        GET INTEGER 'serial'
+%        INSERT ') TO '
+%        GET KEYWORD 'to second atom type'
+%        INSERT '('
+%        GET FINAL INTEGER 'serial'
+%        INSERT ') '
+%        QUEUE SEND
+%        CLEAR
+%      END LOOP
+%      CLEAR
+%      END BLOCK
+%    ELSE IF ( SWITCH .EQ. 4 ) .OR. ( SWITCH .EQ. 6 ) THEN
+%      BLOCK
+%      IF SWITCH .EQ. 4 THEN
+%        BLOCK
+%        ON ERROR REPEAT
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'ANGLE '
+%        GET REAL 'Enter the required bond angle (degrees)'
+%        INSERT ',0.5 ='
+%        QUEUE SEND
+%        CLEAR
+%        END BLOCK
+%      ELSE
+%        INSERT 'ANGLE 0.0,0.5 = MEAN'
+%        QUEUE SEND
+%        CLEAR
+%      END IF
+           Enter the atoms which form the angle
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR REPEAT
+%        CLEAR
+%        INSERT 'CONT '
+%        GET KEYWORD 'First atom type (END to terminate)'
+%        INSERT '('
+%        GET INTEGER 'serial'
+%        INSERT ') TO '
+%        GET KEYWORD 'second atom type i.e. the central atom'
+%        INSERT '('
+%        GET INTEGER 'serial'
+%        INSERT ') TO '
+%        GET KEYWORD 'third atom type'
+%        INSERT '('
+%        GET FINAL INTEGER 'serial'
+%        INSERT ')'
+%        QUEUE SEND
+%        CLEAR
+%      END LOOP
+%      END BLOCK
+%%
+%    ELSE IF SWITCH .EQ. 7 THEN
+%      BLOCK
+%        INSERT 'PLANAR '
+%        QUEUE SEND
+%        CLEAR
+           Enter the atoms which lie in the plane
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR REPEAT
+%        CLEAR
+%        INSERT 'CONT '
+%        GET KEYWORD ' Atom type (END to terminate)'
+%        INSERT '('
+%        GET INTEGER 'serial'
+%        INSERT ') '
+%        QUEUE SEND
+%        CLEAR
+%      END LOOP
+%      END BLOCK
+%%
+%    ELSE IF SWITCH .EQ. 8 THEN
+%      BLOCK
+%        COPY '#SCRIPT TPP16'
+%      END BLOCK
+%%
+%    ELSE IF SWITCH .EQ. 9 THEN
+%      BLOCK
+%        COPY '#SCRIPT PHEN16'
+%      END BLOCK
+%%^
+%    ELSE IF SWITCH .EQ. 10 THEN
+%      BLOCK
+%        QUEUE REWIND
+%        INSERT 'NO '
+%        QUEUE SEND
+%        CLEAR
+%      END BLOCK
+%%
+%    END IF
+%%
+%  END LOOP
+%  CLEAR
+%  COPY '#LIST 16'
+%  COPY 'NO'
+%  QUEUE PROCESS
+%  COPY 'END'
+%  END BLOCK
+%%
+%  IF ( ( EXISTS 1 + EXISTS 2 + EXISTS 5 + EXISTS 12 + EXISTS 23 ) .NE. 5 ) -
+   THEN
+%    COPY '#SUM L 16'
+%    COPY 'END'
+%  ELSE
+%    COPY '#CHECK'
+%    COPY 'END'
+%  END IF
+%END SCRIPT

@@ -1,0 +1,233 @@
+%SCRIPT CADSLOW
+%% NON-STANDARD INPUT OF CAD4 DATA
+%  VARIABLE INTEGER ABSORPTION KEEP NJCODE
+%  VARIABLE INTEGER INBASICS SOLVEMETHOD
+               Input the reflection data (HKLI file)
+               ----- --- ---------- ---- -----------
+    You must have done the raw data processing using the Oxford
+    program RC85 or 93, you will probably have data in  files with
+    names like:
+                        [CAD4]XTLn.HKL
+                        [CAD4]XTLn.SCF
+                        [CAD4]XTLn.ABS
+%
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you have the information necessary to proceed' 'YES'
+%   IF VALUE .EQ. 2 THEN
+Please rerun this SCRIPT when the information is available
+%    COPY 'FINISH'
+%   END IF
+%
+%  COPY '#RELEASE LOG INITIAL.DAT'
+%
+%  BLOCK
+%    ON ERROR REPEAT
+            Input basic crystallographic data
+            ----- ----- ---------------- ----
+      The list containing the cell, scale factors etc should be in a file,
+      probably with a name like:
+                          [CAD4]XTLn.SCF
+%
+%      ON ERROR REPEAT
+%      CLEAR
+%      INSERT '#USE '
+%      GET FINAL FILENAME 'File containing scale factors, etc'
+%      SEND
+%  END BLOCK
+%    CLEAR
+%% now check we have the basic information
+%    COPY '#SCRIPT INBASICS'
+%    IF INBASICS .NE. 1 THEN
+  Basic Cell, Space Group or composition information is missing.
+  This SCRIPT will be abandoned without reading the reflections.
+%      FINISH
+%    END IF
+            Input the reflection data (HKLI file)
+            ----- --- ---------- ---- -----------
+             Probably in a file with a name like:
+                        [CAD4]XTLn.HKL
+%
+%  BLOCK
+%    ON ERROR RESTART
+%    CLEAR
+%    INSERT '#OPEN HKLI'
+%    GET FINAL FILENAME 'HKLI file'
+%    SEND
+%  END BLOCK
+%%
+%  CLEAR
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you want to apply an empirical absorption correction' 'YES'
+%  EVALUATE ABSORPTION = VALUE
+%  IF ABSORPTION .EQ. 1 THEN
+%    CLEAR
+%    INSERT '#USE'
+%    GET FINAL FILE -
+'Instruction file for absorption correction ([CAD4]XTLn.ABS)'
+%    SEND
+%  ELSE
+%    COPY '#HKLI'
+%    COPY 'END'
+%    COPY '#CLOSE HKLI'
+%  END IF
+%
+            * Applying LP correction
+%COPY '#LP'
+%COPY 'END'
+            * Removing systematically absent reflections
+%COPY '#SYSTEMATIC'
+%COPY 'END'
+            * Sorting reflections
+%COPY '#SORT'
+%COPY 'END'
+%
+            * Merging equivalent reflections
+%CLEAR
+%VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+'Do you want ALL reflections kept, whatever their JCODE?' 'NO'
+%EVALUATE KEEP = VALUE
+%
+%  IF KEEP = 1 THEN
+%    COPY '#MERGE'
+%    COPY 'WEIGHT SCHEME=2 NPARAM=6'
+%    COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
+%    COPY 'END'
+%  ELSE
+%    EVALUATE NJCODE = 0
+      Do you want to keep the following classes of reflections?
+%    CLEAR
+%    QUEUE REWIND
+%    VERIFY YES NO
+%    GET NOSTORE FINAL ABBREVIATED 'Those with status D, JCODE = 2' 'YES'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 2 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%    GET NOSTORE FINAL ABBREV 'Those failing non-equal test, JCODE = 3' 'NO'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 3 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%    GET NOSTORE FINAL ABBREV 'Those mis-measured with JCODE = 4' 'NO'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 4 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%    GET NOSTORE FINAL ABBREV 'Those with large absorption, JCODE = 5' 'YES'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 5 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%    GET NOSTORE FINAL ABBREV 'Those with status W (weak), JCODE = 6' 'YES'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 6 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%   GET NOSTORE FINAL ABBREV 'Those with status S but not  D, JCODE = 7' 'YES'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 7 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%    GET NOSTORE FINAL ABBREV 'Those with status T but not D, JCODE = 8' 'NO'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 8 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%  GET NOSTORE FINAL ABBREV 'Those with negative intensities, JCODE = 9' 'YES'
+%    IF VALUE .EQ. 2 THEN
+%      EVALUATE NJCODE = NJCODE + 1
+%      CLEAR
+%      INSERT 'JCODE 9 VALUE = 0.0'
+%      QUEUE SEND
+%    END IF
+%%
+%    COPY '#MERGE'
+%    COPY 'WEIGHT SCHEME=2 NPARAM=6'
+%    COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
+%    IF NJCODE .GT. 0 THEN
+%      CLEAR
+%      INSERT 'REFLECTIONS NJCODE = '
+%      STORE INTEGER NJCODE
+%      SEND
+%      QUEUE PROCESS
+%    END IF
+%    COPY 'END'
+%  END IF
+%
+%%
+%    CLEAR
+%    QUEUE REWIND
+            * Storing reflection data on disc for later use
+%    VERIFY YES NO
+%    GET FINAL YESNO -
+     'Do you wish to store SIGMA(/FO/)?' 'NO'
+%
+%    COPY '#LIST 6'
+%    COPY 'READ TYPE=COPY'
+%    IF  VALUE .EQ. 1  THEN
+%    COPY 'STORE NCOEF=7'
+%  COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ SIGMA(/FO/) BATCH/PHASE RATIO/JCODE'
+%    ELSE
+%    COPY 'END'
+%    END IF
+            * A copy of the reflection data in compressed format
+            will be punched out into your filestore.
+%CLEAR
+%COPY '#RELEASE PUNCH LIST6.DAT'
+%COPY '#PUNCH 6'
+%COPY 'END'
+%    COPY '#PUNCH 6'
+%    COPY 'END'
+%    COPY '#LIST 4'
+%    COPY 'END'
+%    COPY '#WEIGHT'
+%    COPY 'END'
+%COPY '#RELEASE PUNCH'
+%
+%COPY '#SCRIPT INLIST28'
+%
+%COPY '#RELEASE LOG'
+%COPY 'END'
+%
+%  ON ERROR REPEAT
+%  VERIFY YES NO
+%  GET FINAL ABBREVIATED  -
+      'Do you want to try to solve the structure? ' 'YES'
+%  IF ( VALUE .EQ. 1 ) THEN
+            * Solve the structure
+%    IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%      FINISH
+%    END IF
+%    COPY '#SCRIPT STRUCTUR'
+%  END IF
+%
+%  IF SOLVEMETHOD .NE. 0 THEN
+%    COPY '#SCRIPT MODEL'
+%  END IF
+%END SCRIPT

@@ -1,0 +1,48 @@
+%SCRIPT LEXTINC
+%  VARIABLE INTEGER LEXTINCT 
+^^WI WINDOW _EXTINC 'Extinction analysis' SIZE MODAL
+^^WI STARTGRID MAIN 'N' NROWS=6 NCOLS=3
+^^WI  STARTGRID ROW=1 COL=2 TOP 'N' NROWS=2 NCOLS=1
+^^WI   STATIC ROW=2 COL=1 T1 
+^^WI 'Analysis of residuals. Col 3 is FObs and col 4 is FCalc.'
+^^WI  ENDGRID
+^^WI  MULTIEDIT ROW=2 COL=2 _ANALTEXT '' NROWS=10 NCOLS=80 
+^^WI  IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI  STARTGRID ROW=3 COL=2 MID 'N' NROWS=3 NCOLS=1
+^^WI   STATIC ROW=2 COL=1 T3 
+^^WI  'If the last 5 or 6 entries in column 3 are generally lower'
+^^WI   STATIC ROW=3 COL=1 T4 
+^^WI  'than those in column 4, then you need to model extinction.'
+^^WI  ENDGRID
+^^WI  STARTGRID ROW=4 COL=2 LOW 'N' NROWS=3 NCOLS=3
+^^WI   BUTTON  ROW=2 COL=1 AL 'Model &extinction'
+^^WI   BUTTON  ROW=2 COL=3 XX '&Ignore extinction' CANCEL COMMIT DEFAULT
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO _ANALTEXT
+^^CR
+%          COPY '#ANALYSE'
+%          COPY 'END'
+^^WI SET TEXTOUTPUT FIXEDFONT=YES
+^^CR
+                  ^ ^      ^ ^
+                  ^ ^      ^ ^
+^^WI SET _ANALTEXT NOECHO
+^^CR
+%  VERIFY AL XX
+%  GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF VALUE .EQ. 1 THEN
+%    EVALUATE LEXTINCT = 1
+%    COPY '#SCRIPT LSETUP'
+%  ELSE
+%      IF LEXTINCT = 1 THEN
+%         EVALUATE LEXTINCT = 0
+%      END IF
+%      COPY '#SCRIPT LSETUP'
+%  END IF
+^^WI SENDTEXTTO _MAINTEXTOUTPUT
+^^WI DISPOSE _EXTINC
+^^CR
+%END SCRIPT

@@ -1,0 +1,64 @@
+%SCRIPT INLIST31
+%% CRYSTALS cell error input script
+%%
+%  BLOCK
+%  VARIABLE REAL VAR JUNK DTRSQ
+%% DTRSQ = (PI/180)**2
+%  EVALUATE DTRSQ = .000305
+%    ON ERROR REPEAT
+%    ON END   TERMINATE
+Input of cell e.s.d.s (sigma( a, b, c, alpha, beta, gamma ))
+----- -- ---- ----------
+                                                   use  END  to abandon input
+%    QUEUE REWIND
+%    CLEAR
+%    INSERT 'AMULT  1.0'
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'SIGMA (a)' '.001'
+%     EVALUATE VAR = VALUE * VALUE
+%     INSERT 'MATRIX '
+%     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
+%     INSERT ' 0.0 0.0 0.0 0.0 0.0 '
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'SIGMA (b)' '.001'
+%     EVALUATE VAR = VALUE * VALUE
+%     INSERT 'CONTINUE '
+%     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
+%     INSERT ' 0.0 0.0 0.0 0.0 '
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'SIGMA (c)' '.001'
+%     EVALUATE VAR = VALUE * VALUE
+%     INSERT 'CONTINUE '
+%     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
+%     INSERT ' 0.0 0.0 0.0 '
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'SIGMA (alpha)' '.02'
+%     EVALUATE VAR = VALUE * VALUE * DTRSQ
+%     INSERT 'CONTINUE '
+%     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
+%     INSERT ' 0.0 0.0 '
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'SIGMA (beta)' '.02'
+%     EVALUATE VAR = VALUE * VALUE * DTRSQ
+%     INSERT 'CONTINUE '
+%     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
+%     INSERT ' 0.0 '
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE FINAL REAL  'SIGMA (gamma)' '.02'
+%     EVALUATE VAR = VALUE * VALUE * DTRSQ
+%     INSERT 'CONTINUE '
+%     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
+%    QUEUE SEND
+%    CLEAR
+%    COPY '#LIST 31'
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END BLOCK
+%%
+%END SCRIPT

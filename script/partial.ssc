@@ -1,0 +1,179 @@
+%SCRIPT PARTIAL
+%%  This script needs two other script files which it calls during execution.
+%%  Their names are PRINIT.DAT and PRRESET.DAT
+%   VARIABLE INTEGER SETUP SCRIPTDONE RESTRAINT
+%   EVALUATE SETUP = 0
+%   COPY '#GENERALEDIT 23'
+%   COPY 'LOCATE RECORDTYPE=103'
+%   COPY 'TRANSFER FROM OFFSET=2 TO RESTRAINT'
+%   COPY 'END'
+%   IF EXISTS 12 .NE. 1 THEN
+%     COPY '#LIST 12'
+%     COPY 'FULL'
+%     COPY 'END'
+%   END IF
+%   IF EXISTS 16 .NE. 1 THEN
+%     COPY '#LIST 16'
+%     COPY 'END'
+%   END IF
+%%
+    This SCRIPT is intended to help you to do a partial refinement of a
+    structure.
+%%
+%  LOOP
+%%
+%    ON ERROR REPEAT
+%    CLEAR
+%    VERIFY HELP BACK INIT REFINE FOURIER RESET ED5 ED12 ED16 DIRECT
+%    GET NOSTORE FINAL ABBREVIATED 'Which choice?' 'BACK'
+%    CASE VALUE
+%      BLOCK                                         %HELP%
+        HELP          This text
+        BACK          End this script and return to previous script
+        INIT          Set up a partial refinement.
+                      This has to be the first step.
+        REFINE        Refine a part of a structure using fixed
+                      contributions of the other part.
+        FOURIER       Calculate fourier maps.
+        RESET         Prepare all lists for normal refinement again and
+                      return to the previous script.
+        ED5           Change the content of LIST 5 (atomic parameters).
+        ED12          Change the content of LIST 12 (refinement directives).
+        ED16          Change the content of LIST 16 (restraints).
+                      All the EDIT-options use the system editor.
+        DIRECT        Go to CRYSTALS direct command input.
+                      TAKE CARE WITH THIS OPTION! You might leave some lists
+                      in a non defined state.
+%      END BLOCK
+%%
+%      BLOCK                                           %BACK%
+%% First check if reset has been done
+%        IF ( SETUP .EQ. 1 ) THEN
+  You have made the setup for a partial refinement. To reset all changes
+ made in a apropriate way you should use the RESET option.
+%          VERIFY YES NO
+%          GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to use the RESET option before going back?' 'YES'
+%          IF ( VALUE .NE. 1 ) THEN
+%            FINISH
+%          END IF
+%        ELSE
+%          FINISH
+%        END IF
+%      END BLOCK
+%%
+%      BLOCK                                           %INIT%
+%      IF ( SETUP .EQ. 1 ) THEN
+  You have already set up your partial refinement. Before you can execute
+ this step, you have to reset to normal refinement using the RESET option.
+%      ELSE
+%       EVALUATE SCRIPTDONE = 0
+%       COPY '#SCRIPT PRINIT'
+%       IF ( SCRIPTDONE .EQ. 1 ) THEN
+%        EVALUATE SETUP = 1
+%%
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to check your LIST 5 (atomic parameters)?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%         COPY '#SCRIPT EDLIST5'
+%        END IF
+%%
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to check your LIST 12 (refinement directives)?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%         COPY '#SCRIPT EDLIST12'
+%        END IF
+%%
+%        IF ( RESTRAINT .EQ. 0 ) THEN
+%         VERIFY YES NO
+%         GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to check your LIST 16 (restraints)?' 'YES'
+%         IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT EDLIST16'
+%         END IF
+%        END IF
+%       END IF
+%      END IF
+%%
+%      END BLOCK
+%%
+%      BLOCK                                         %REFINE%
+%        COPY '#SCRIPT REFINE'
+%      END BLOCK
+%%
+%      BLOCK                                        %FOURIER%
+%        COPY '#SCRIPT FOURIER'
+%      END BLOCK
+%%
+%      BLOCK                                          %RESET%
+%      IF ( SETUP .EQ. 0 ) THEN
+  You have not yet set up your partial refinement. Before you can execute
+ this step, you have to set up a partial refinement using the INIT option.
+%      ELSE
+%       EVALUATE SCRIPTDONE = 0
+%       COPY '#SCRIPT PRRESET'
+%       IF ( SCRIPTDONE .EQ. 1 ) THEN
+%        EVALUATE SETUP = 0
+%%
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to check your LIST 5 (atomic parameters)?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%         COPY '#SCRIPT EDLIST5'
+%        END IF
+%%
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to check your LIST 12 (refinement directives)?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%         COPY '#SCRIPT EDLIST12'
+%        END IF
+%%
+%        IF ( RESTRAINT .EQ. 0 ) THEN
+%         VERIFY YES NO
+%         GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to check your LIST 16 (restraints)?' 'YES'
+%         IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT EDLIST16'
+%         END IF
+%        END IF
+%       END IF
+%      END IF
+%%
+%      END BLOCK
+%%
+%      BLOCK                                            %ED5%
+%        COPY '#SCRIPT EDLIST5'
+%      END BLOCK
+%%
+%      BLOCK                                           %ED12%
+%        COPY '#SCRIPT EDLIST12'
+%      END BLOCK
+%%
+%      BLOCK                                           %ED16%
+%      IF ( RESTRAINT .EQ. 0 ) THEN
+%        COPY '#SCRIPT EDLIST16'
+%      ELSE
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to use LIST 16 restraints?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#GENERALEDIT 23'
+%          COPY 'LOCATE RECORDTYPE=103'
+%%  SET MINIMISE RESTRAIN=YES
+%          COPY 'CHANGE OFFSET=2 MODE=INTEGER INTEGER=0'
+%          COPY 'WRITE'
+%          COPY 'END'
+%          EVALUATE RESTRAINT = 0
+%          COPY '#SCRIPT EDLIST16'
+%        END IF
+%      END IF
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

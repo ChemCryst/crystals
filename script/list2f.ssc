@@ -1,0 +1,22 @@
+%SCRIPT LIST2
+ The space group symmetry list, LIST 2
+%    VARIABLE INTEGER INLIST2
+%    VERIFY YES NO
+%    IF ( EXISTS 2 .EQ. 1 ) THEN
+%    END IF
+%    VERIFY YES NO
+%    IF ( EXISTS 2 .NE. 1 ) .OR. ( INLIST2 .EQ. 1 ) THEN
+%      GET FINAL ABBREVIATED -
+       'Do you have the space group available?' 'YES'
+%      IF ( VALUE .EQ. 1 ) THEN
+%        COPY '#SCRIPT INSPACE'
+%      ELSE
+%        CLEAR
+%        GET FINAL ABBREVIATED -
+         'Do you have the symmetry operations available?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT INLIST2'
+%        END IF
+%      END IF
+%    END IF
+%END SCRIPT

@@ -1,0 +1,30 @@
+%SCRIPT PUBXYZ
+% VARIABLE LOGICAL SCRIPTEXT
+% VARIABLE INTEGER NLINE
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ Publication listing of positional parameters                               บ
+บ The format is suitable for printing on A4 pages                            บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+      Publication listing of positional parameters
+% END IF
+% ON ERROR TERMINATE
+% VERIFY PAGINATED CONTINUOUS
+% GET NOSTORE ABBREVIATED -
+  'Do you want the lists paginated or continuous?' 'CONTINUOUS'
+% IF ( VALUE .EQ. 1 ) THEN
+%   EVALUATE NLINE = 64
+% ELSE
+%   EVALUATE NLINE = 1000
+% END IF
+%    COPY '#PARAMETERS'
+%    CLEAR
+%    INSERT 'LAYOUT INSET = 5 NCHAR = 80 NLINE= '
+%    STORE FORMAT /(I6)/ LENGTH 6 INTEGER NLINE
+%    SEND
+%    COPY 'COORD SELECT = SEPARATE MONITOR = LOW PRINT = YES PUNCH = YES'
+%    COPY "U'S MONITOR = OFF, PRINT = NO, PUNCH = NO"
+%    COPY 'END'
+%END SCRIPT

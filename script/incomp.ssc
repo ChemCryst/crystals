@@ -1,0 +1,58 @@
+%SCRIPT INCOMP
+%% CRYSTALS scattering factor and properties input script
+%  VARIABLE INTEGER ELEMENTCOUNT
+%%
+%% Get rid of any old list 29
+%  IF EXISTS 29 .GE. 1 THEN
+%      COPY '#DISK'
+%      COPY 'DELETE 29'
+%      COPY 'END'
+%  END IF
+%    CLEAR
+%    IF ( EXISTS 13 .NE. 1 ) THEN
+Some properties depend on wavelength.
+You must have set Lambda in LIST 13, Experimental conditions
+%        COPY '#SCRIPT INLIST13'
+%    END IF
+Input Cell Contents  (symbol, number)
+----- ---- --------
+                                                 use  END  to abandon input
+%  MESSAGE USER1 'An invalid element name/number was given ( ignored )'
+%  BLOCK
+%    ON ERROR RESTART USER1
+%    BLOCK
+%      QUEUE REWIND
+%      EVALUATE ELEMENTCOUNT = 0
+%      ON ERROR REPEAT USER1
+%      CLEAR
+%      INSERT 'CONTENTS '
+%
+%      LOOP
+%        ON END TERMINATE
+%        GET APPEND KEYWORD -
+      'Element symbol ( END to end input )'
+%        INSERT ' '
+%
+%        GET APPEND REAL 'Number in Cell' '1.0'
+%        INSERT ' '
+%        EVALUATE ELEMENTCOUNT = ELEMENTCOUNT + 1
+%      END LOOP
+%    END BLOCK
+%    QUEUE SEND
+%
+%    IF ELEMENTCOUNT .GT. 0 THEN
+%      COPY '#COMPOSITION'
+%      CLEAR
+%      QUEUE PROCESS
+%      COPY 'SCATT  CRSCP:SCATT'
+%      COPY 'PROPER CRSCP:PROPERTIES'
+%      COPY 'END'
+%    ELSE
+You have not specified any elements. No data has been stored
+%    END IF
+%
+%    COPY '#SUMMARY LIST 29'
+%    COPY 'END'
+%  END BLOCK
+%  FINISH
+%END SCRIPT

@@ -1,0 +1,91 @@
+%SCRIPT GENERAL
+The SCRIPT giving general information about CRYSTALS SCRIPTS
+%%
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%    VERIFY BACK HELP VERBOSE PURGE CRYSINIT SCRIPTS CRYSTALS TERMINAL -
+      TYPE VERIFY QUESTIONS
+%    GET NOSTORE FINAL ABBREVIATED 'Next step' 'BACK'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+ This script gives general information about SCRIPTS and CRYSTALS.
+      BACK        End this script
+      HELP        Display this help text
+      VERBOSE     Switch the verbose text display on/off
+      PURGE       Purge the .dsc file of old data.
+      CRYSINIT    A brief description of CRYSINIT.DAT
+      SCRIPTS     A brief description of SCRIPTS
+      CRYSTALS    The CRYSTALS HELP system
+      TERMINAL    Lets you tell CRYSTALS your terminal type
+      TYPE        Displaying a file on the terminal
+      VERIFY      Enable/disable display of SCRIPT execution
+      QUESTIONS   Format of SCRIPT questions
+      DIRECT      Go to CRYSTALS direct command input.
+%      END BLOCK
+%%
+%      BLOCK                                         %VERBOSE%
+%        COPY '#SCRIPT TEXT'
+%      END BLOCK
+%%
+%      BLOCK                                          %PURGE%
+%        COPY '#PURGE'
+%        COPY 'END'
+%      END BLOCK
+%%
+%      BLOCK                                          %CRYSINIT%
+%        COPY '#SCRIPT CRYSINIT'
+%        COPY 'END'
+%      END BLOCK
+%%
+%      BLOCK                                         %SCRIPTS%
+           This is an experimental version of the SCRIPT processor.
+ The SCRIPTS try to guide the user through routine use of CRYSTALS by
+asking questions and then issuing commands to CRYSTALS. They do not make
+use of the more subtle or powerfull features of CRYSTALS, which generally
+require a global understanding of the crystallographic problem.
+%      COPY '#PAUSE 5'
+ The SCRIPTS are arranged like a branching tree.
+ The choice BACK, which is usually available, returns you to the previous
+     branch.
+ The choice DIRECT, or infact responding DIRECT to any question, puts
+     CRYSTALS into command mode, where you must issue CRYSTALS commands
+     directly.
+%      COPY '#PAUSE 5'
+ The SCRIPT processor can be re-entered from command mode by issuing
+      #SCRIPT script_name
+ where script_name is the name of a script.
+ The SCRIPT  'CONTROL' is the master controlling script.
+ Brief descriptions are available for many scripts. These can be
+ displayed or suppressed by setting a switch using VERBOSE in this SCRIPT
+%      COPY '#PAUSE 5'
+%      END BLOCK
+%%
+%      BLOCK                                         %CRYSTALS%
+%        COPY '#SCRIPT CRYSHELP'
+%      END BLOCK
+%%
+%      BLOCK                                         %TERMINAL%
+ Under VAX VMS the terminal type can be set to VT52, VT100 or unknown.
+The VTn terminals have menus with cursor control. VT100 implies VTn00.
+%        COPY '#SCRIPT TERMINAL'
+%      END BLOCK
+%%
+%      BLOCK                                         %TYPE %
+%        COPY '#SCRIPT TYPE'
+%      END BLOCK
+%%
+%      BLOCK                                         %VERIFY%
+%        COPY '#SCRIPT VERIFY'
+%      END BLOCK
+%%
+%      BLOCK                                         %QUESTIONS%
+%        COPY '#SCRIPT QUESTION'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

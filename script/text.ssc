@@ -1,0 +1,13 @@
+%SCRIPT TEXT
+Many SCRIPTS have both brief and extended descriptions of their functions.
+The default text is brief
+%  VARIABLE LOGICAL SCRIPTEXT
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you want to display the extended SCRIPT texts' 'YES'
+%  IF VALUE .EQ. 1 THEN
+%      EVALUATE SCRIPTEXT = TRUE
+%  ELSE
+%      EVALUATE SCRIPTEXT = FALSE
+%  END IF
+%END SCRIPT

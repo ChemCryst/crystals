@@ -1,0 +1,104 @@
+%SCRIPT PATTERSN
+ CRYSTALS script for computing Patterson maps
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  BLOCK
+%    ON END TERMINATE
+%    ON ERROR REPEAT
+%    VERIFY SHELXS CRYSTALS
+%    GET NOSTORE FINAL ABBREVIATED -
+  'Do you want a CRYSTALS or SHELXS Patterson? ' 'SHELXS'
+%%
+%    CASE VALUE
+%     BLOCK                                                  %SHELXS%
+%          COPY '#FOREIGN SHELXS PATTERSON'
+%          COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SHELXS, type SHELXS
+%            COPY '#FINISH'
+%          END IF
+%        VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+    'Do you want to run SHELXS on-line? ' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SPAWN SHELXS SHELXS'
+%          COPY '#SCRIPT MODEL'
+%          FINISH
+%
+%        ELSE
+%         EXTERNAL COPY @CRPROC:SCPBATCH SHELXS  SHELXS  CRFAST
+      Batch job submitted to FAST queue.
+      The output structure, if the job runs to completion, is
+      in the file SHELXS.CRY.
+      The  script MODEL is available to  input this file.
+      If the structure has not solved on default settings, you
+      must read the SHELXS manual, modify SHELXS.INS, and submit
+      a free standing SHELXS job.
+%        COPY '#FINISH '
+%        END IF
+%     END BLOCK
+%%
+%     BLOCK                                                  %CRYSTALS%
+%        IF EXISTS 14 .LE. 0 THEN
+    You have not yet defined the asymmetric unit limits. You must
+provide some guess at the space group
+%          BLOCK
+%            ON ERROR REPEAT
+%            VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+   'Do you know what the Space Group may be? ' 'NO'
+%            IF ( VALUE .EQ. 1 ) THEN
+%              COPY '#SCRIPT INSPACE'
+%            ELSE
+Use Volume 1 of International Tables to help you select a suitable Space
+Group
+%              COPY '#PAUSE 10'
+%              FINISH
+%            END IF
+%          END BLOCK
+%        END IF
+%%
+%        BLOCK
+%        VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to sharpen the Patterson map? ' 'NO'
+%            IF ( VALUE .EQ. 2 ) THEN
+%              COPY '#FOURIER'
+%              COPY 'MAP TYPE = FO-PATT'
+%              COPY 'END'
+%            ELSE
+%%             set up unit weights
+%              COPY '#LIST 4'
+%              COPY 'END'
+%              COPY '#WEIGHT'
+%              COPY 'END'
+         Sharpening the reflection data
+%              COPY '#LIST 4'
+%              COPY 'SCHEME NUMBER=13, NPARAM=2'
+%              COPY 'PARAM 1 10'
+%              COPY 'END'
+%              COPY '#WEIGHT'
+%              COPY 'END'
+        Computing the map
+%              COPY '#FOURIER'
+%              COPY 'MAP TYPE = FO-PATT'
+%              COPY 'REFLECTIONS WEIGHT=LIST-6'
+%              COPY 'END'
+        Restoring  the reflection data
+%              COPY '#LIST 4'
+%              COPY 'END'
+%              COPY '#WEIGHT'
+%              COPY 'END'
+%            END IF
+%        END BLOCK
+%        COPY '#DISTANCE 10'
+%        COPY 'SELECT ALL=YES SYM=PATTERSON RANGE=LIMIT'
+%        COPY 'LIMIT 0.1 4 0 0'
+%        COPY 'INCLUDE Q(1)'
+%        COPY 'OUTPUT MON=DIST'
+%        COPY 'END'
+%     END BLOCK
+%    END CASE
+%  END BLOCK
+%END SCRIPT

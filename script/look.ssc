@@ -1,0 +1,70 @@
+%SCRIPT LOOK
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ The CRYSTALS data base, *.dsc, is in binary format and so cannot be        บ
+บ viewed directly. This SCRIPT permits you to get a brief summary of any     บ
+บ data on te screen or have a full listing sent to a file.                   บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+ CRYSTALS data summary script
+% END IF
+%  VARIABLE INTEGER LIST LEVEL
+%  EVALUATE LEVEL = 1
+%
+%  LOOP
+%  ON ERROR RESTART
+%  CLEAR
+%VERIFY BACK HELP PLOT LEVEL CELL SYMMETRY SCATTER WEIGHTING ATOMS -
+ REFLECTIONS PEAKS REFINEMENT DIFFRACTION GENERAL SECTION RESTRAINTS -
+ SFCONTROL DATASCALE OMIT ELEMENTS
+%GET FINAL ABBREVIATED 'Which sort of data do you want to examine' 'BACK'
+%    CASE VALUE RANGE 1 5
+%      FINISH                     %BACK%
+%      BLOCK                      %HELP%
+      PLOT                  A join the dots plot on screen and printer
+      LEVEL                 Brief (to screen) or full (to file) listings
+      CELL         LIST  1  Cell parameters
+      SYMMETRY     LIST  2  Symmetry operators
+      SCATTER      LIST  3  Scattering factors
+      WEIGHTING    LIST  4  Weighting scheme for least squares
+      ATOMS        LIST  5  Atomic parameters and overall parameters
+      REFLECTIONS  LIST  6  Reflection data
+      PEAKS        LIST 10  Results from peak search
+      REFINEMENT   LIST 12  Instructions for least squares refinement
+      DIFFRACTION  LIST 13  Description of data collection
+      GENERAL      LIST 30  General analysis details
+      SECTION      LIST 14  Assymetric section for Fourier maps
+      RESTRAINTS   LIST 16  Restraints applied during least squares
+      SFCONTROL    LIST 23  Modifications applied to structure factors etc.
+      DATASCALE    LIST 27  Scale factors for raw data
+      OMIT         LIST 28  Conditions for excluding reflections
+      ELEMENTS     LIST 29  Elemental properties
+%     END BLOCK
+%%
+%     BLOCK
+%       COPY '#SCRIPT PLOT'
+%     END BLOCK
+%%
+%     BLOCK
+%     VERIFY SCREEN PRINTER
+%     GET NOSTORE FINAL ABBREVIATED ' Summary to screen or file' 'SCREEN'
+%     EVALUATE LEVEL = VALUE
+%     END BLOCK
+%%
+%     BLOCK                      %SUMMARY OF LIST%
+%       INDEX LIST ( VALUE - 4 ) 1 2 3 4 5 6 10 12 13 30 14 16 23 27 28 29
+% CLEAR
+% IF LEVEL .EQ. 1 THEN
+%   INSERT '#SUMMARY LIST'
+% ELSE
+%    INSERT '#PRINT '
+% END IF
+% STORE INTEGER LIST
+% SEND
+% COPY 'END'
+%      END BLOCK
+%    END CASE
+%  END LOOP
+%END SCRIPT

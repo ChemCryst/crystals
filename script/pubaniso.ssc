@@ -1,0 +1,50 @@
+%SCRIPT PUBANISO
+% VARIABLE INTEGER NLINE NCHAR
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ The anisotropic temperature factor list is a bit cramped on A4 paper       บ
+บ in portrait mode (80 columns). If your printer supports landscape mode     บ
+บ (120) columns, the table can be rotated through 90 degrees.                บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+      Publication tables of anisotropic temperature factors
+% END IF
+%    COPY '#PARAMETERS'
+%    VERIFY PORTRAIT LANDSCAPE
+%      GET NOSTORE FINAL ABBREVIATED  -
+    ' Which printer mode? ' 'PORTRAIT'
+%    IF VALUE .EQ. 1 THEN
+%      ON ERROR REPEAT
+%      VERIFY PAGINATED CONTINUOUS
+%      GET NOSTORE ABBREVIATED -
+  'Do you want the lists paginated or continuous?' 'CONTINUOUS'
+%      IF ( VALUE .EQ. 1 ) THEN
+%        EVALUATE NLINE = 64
+%      ELSE
+%        EVALUATE NLINE = 1000
+%      END IF
+%      EVALUATE NCHAR = 80
+%    ELSE
+%      ON ERROR REPEAT
+%      VERIFY PAGINATED CONTINUOUS
+%      GET NOSTORE ABBREVIATED -
+  'Do you want the lists paginated or continuous?' 'CONTINUOUS'
+%      IF ( VALUE .EQ. 1 ) THEN
+%        EVALUATE NLINE = 44
+%      ELSE
+%        EVALUATE NLINE = 1000
+%      END IF
+%      EVALUATE NCHAR = 118
+%    END IF
+%    CLEAR
+%    INSERT 'LAYOUT INSET = 1 NCHAR = '
+%    STORE FORMAT /(I6)/ LENGTH 6 INTEGER NCHAR
+%    INSERT ' NLINE = '
+%    STORE FORMAT /(I6)/ LENGTH 6 INTEGER NLINE
+%    SEND
+%    COPY "U'S SELECT = SEPARATE MONITOR = MED PRINT = YES  PUNCH = YES"
+%    COPY "COORD MONITOR = OFF, PRINT = NO, PUNCH = NO"
+%    COPY 'END'
+%END SCRIPT

@@ -1,0 +1,66 @@
+%SCRIPT STRUCTURE
+%VARIABLE INTEGER SOLVEMETHOD
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ CRYSTALS can prepare data in a suitable format for the Direct Methods      บ
+บ programs  SHELXS and SIR.                                                  บ
+บ It can also prepare data for a SHELXS Patterson, or compute a Patterson    บ
+บ itself.                                                                    บ
+บ The programs SHELXS and SIR may not all be available in all                บ
+บ implementations of CRYSTALS. In some cases, the 'foreign' program can      บ
+บ run from within CYSTALS, other wise the user must initialise its           บ
+บ execution.                                                                 บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to initiate or input the results of Direct Methods computations
+% END IF
+%  IF EXISTS 6 .LT. 1 THEN
+  You have no reflection data stored. You cannot solve this structure !
+%    FINISH
+%  END IF
+%
+%  IF EXISTS 5 .EQ. 1 THEN
+            You already have a model stored.
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Are you SURE you want to continue? ' -
+         'NO'
+%    IF VALUE .EQ. 2 THEN
+%      FINISH
+%    END IF
+%  END IF
+%  LOOP
+%    VERIFY BACK HELP INEMAP PATTERSON SHELXS SIR88 SIR92 PLOT
+%    GET FINAL FILL ABBREVIATED -
+   'Script required' 'BACK'
+%    EVALUATE SOLVEMETHOD = VALUE - 3
+%    IF SOLVEMETHOD .EQ. 5 THEN
+%      EVALUATE SOLVEMETHOD = 4
+%    END IF
+%    IF SOLVEMETHOD .GT. 5 THEN
+%      EVALUATE SOLVEMETHOD = 0
+%    END IF
+%    CLEAR
+%    CASE VALUE
+%      FINISH                                      %BACK%
+%      BLOCK                                       %HELP%
+      BACK        Finish with this facility
+      HELP        Display this help text
+      INEMAP      Input model found by Direct Methods run
+      PATTERSON   Prepare data for, or compute a Patterson map
+      SHELXS      Prepare data for SHELXS86
+      SIR88       Prepare data for SIR88
+      SIR92       Prepare data for SIR92
+      PLOT        A join the dots plot on screen and printer
+%      END BLOCK
+%      COPY '#SCRIPT INEMAP'
+%      COPY '#SCRIPT PATTERSN'
+%      COPY '#SCRIPT SHELXS'
+%      COPY '#SCRIPT SIR88'
+%      COPY '#SCRIPT SIR92'
+%      COPY '#SCRIPT PLOT'
+%    END CASE
+%  END LOOP
+%
+%END SCRIPT

@@ -1,0 +1,58 @@
+%SCRIPT TIDYUP
+%%
+%% A final difference map
+%  COPY '#FOUR'
+%  COPY 'MAP TYPE=DIFF'
+%  COPY 'PEAK HEIGHT=1 '
+%  COPY 'END'
+%  
+%  VARIABLE REAL NREF NPARAM RHOMAX
+%
+%    IF ( EXISTS 30 .NE. 1 ) THEN
+There in no LIST 30 with the general details available
+%      FINISH
+%    END IF
+%  COPY '#GENERALEDIT 30'
+%  COPY 'LOCATE RECORDTYPE = 103'
+%  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'
+%  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX '
+%  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '
+%  COPY 'END'
+%
+%
+%  IF ( NREF / NPARAM )  .LE. 5.0 THEN
+You have too few X-ray observations for the number of variables
+you are trying to refine. Think again or seek help.
+%     FINISH
+%  END IF
+%%
+%  IF RHOMAX .GE. 0.3 THEN
+The residual density is rather high. Do you have disorder, a missing
+solvent or an absorption problem?
+%%
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to see the residual peaks' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#COLL 10 5'
+%        COPY 'SEL TYPE=PEAK'
+%        COPY 'END'
+%% RUN CAMERON
+%        COPY '#SCRIPT PLOT'
+%      END IF
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Are you sure that the residuals peaks are not important?' 'YES'
+%      IF VALUE .EQ. 2 THEN
+The 'ROUTINE' script cannot handle this problem. Consult an experienced 
+user or the Guide.
+%        COPY '#SCRIPT DIRECT'
+%      END IF
+%  END IF
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to 6 final cycles of refinement' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SCRIPT SIXCYCLE'
+%      END IF
+%END SCRIPT

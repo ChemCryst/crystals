@@ -1,0 +1,200 @@
+%SCRIPT SLANT
+%%
+% VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
+% VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER
+% VARIABLE LOGICAL VAX
+% VARIABLE CHARACTER CTYPE
+% VARIABLE LOGICAL EXSLANT
+% VARIABLE LOGICAL SCRIPTEXT
+%%&VAX% EVALUATE VAX = TRUE
+% EVALUATE VAX = FALSE
+ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This SCRIPT helps with the computation of arbitarily orientated Fourier    บ
+บ sections.                                                                  บ
+บ The orientation of the section is defined by a 3x3 matrix. The extent      บ
+บ of the section is defined in terms of an origin and minimum and maximum    บ
+บ limits in the x' and y' directions.                                        บ
+บ   If the section lies parallel to a molecular plane, a best plane          บ
+บ calculation can be performed to get the necessary matrix and centroid.     บ
+บ   If the section lies perpendicular to a principal axis of libration, a    บ
+บ TLS calculation can be performed to get the necessary matrix and centroid. บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% BLOCK
+%   ON ERROR REPEAT
+%   VERIFY YES NO
+%   GET NOSTORE ABBREVIATED -
+  'Do you wish to continue?' 'YES'
+%   IF ( VALUE .NE. 1 ) THEN
+%     FINISH
+%   END IF
+% END BLOCK
+%%
+%  IF EXISTS 5 .NE. 1 THEN
+  You do not have an atom list.
+%  FINISH
+%  END IF
+%%
+%%
+% VERIFY YES NO
+%  GET NOSTORE ABBREVIATED -
+ 'Do you need to compute the centroid and matrix values?' -
+  'YES'
+% IF ( VALUE .EQ. 1 ) THEN
+      Your current model contains the following atoms.
+%   COPY '#DISP'
+%   COPY 'END'
+%     COPY '#PAUSE 2'
+%     LOOP
+%       ON ERROR REPEAT
+%       ON END TERMINATE
+%       VERIFY PLANE TLS
+%       GET NOSTORE FINAL ABBREVIATED -
+  'Compute best plane or TLS matrix' 'PLANE'
+%       IF VALUE .EQ. 1 THEN
+%         EVALUATE EXSLANT = TRUE
+%         COPY '#SCRIPT PLANE'
+%         EVALUATE CTYPE = 'MOLAX'
+%         EVALUATE EXSLANT = FALSE
+%       ELSE
+%         COPY '#SCRIPT TLS'
+%         EVALUATE CTYPE = 'TLS'
+%       END IF
+%       VERIFY YES NO
+%       GET NOSTORE ABBREVIATED -
+ 'Are you happy with this plane?' 'YES'
+%       IF VALUE .EQ. 1 THEN
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END LOOP
+% ELSE
+%       VERIFY PLANE TLS
+%       GET NOSTORE FINAL ABBREVIATED -
+  'Use best plane or TLS matrix' 'PLANE'
+%       IF VALUE .EQ. 1 THEN
+%         EVALUATE CTYPE = 'MOLAX'
+%       ELSE
+%         EVALUATE CTYPE = 'TLS'
+%       END IF
+% END IF
+% CLEAR
+%%
+% LOOP
+%   ON ERROR RESTART
+%   CLEAR
+  Enter the min. and max. coordinates in the x and y directions,
+  and resolution, all in Angstrom. 
+  The min and max should be divisible by the resolution.
+%%  Round down the minimum values to the next half-integral e.g. -1.612 = -2.0
+%%  Round up the maximum values to the next half-integral   e.g.  0.293 =  0.5
+%   GET REAL 'Xmin,angstroms' '-8'
+%   EVALUATE XMIN = VALUE
+%   CLEAR
+%   GET FINAL REAL 'Xmax,angstroms' '8'
+%   EVALUATE XMAX = VALUE
+%   CLEAR
+%   GET REAL 'Ymin,angstroms' '-8'
+%   EVALUATE YMIN = VALUE
+%   CLEAR
+%   GET REAL 'Ymax,angstroms' '8'
+%   EVALUATE YMAX = VALUE
+%   CLEAR
+%   GET FINAL REAL 'resolution,angstroms' '.25'
+%   EVALUATE RESOL = VALUE
+%   CLEAR
+%%  It is usual to compute a few extra points  along eaxh side of the map.
+%%   GET REAL "How wide do you wish the frame to be (Angstroms)?" -
+%%    '0.5'
+%%   EVALUATE BORDER = VALUE
+%   EVALUATE BORDER = RESOL
+%   EVALUATE MINX = ( XMIN - BORDER )
+%   EVALUATE MINY = ( YMIN - BORDER )
+%   EVALUATE STEPX = ( ( XMAX + BORDER ) - MINX ) / RESOL
+%   EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL
+%   EVALUATE STEPX = 1. + STEPX
+%   EVALUATE STEPY = 1. + STEPY
+%   IF ( STEPX * STEPY ) .GT. 5000. THEN
+ You are computing too many points for the CONTOUR program
+%    TRANSFER CHARACTER ( STEPX * STEPY ) // -
+  ' in use, max = 5000 ' TO DISPLAY
+ Reduce the size or the resolution.
+%   ELSE
+%     EVALUATE LOOPCOUNTER = LOOPEND
+%   END IF
+% END LOOP
+  Sections can be computed above and below the best plane, centred on
+  the plane itself
+%   GET FINAL REAL 'How many sections each side' '0'
+%   EVALUATE ZSECT = VALUE
+% CLEAR
+%  BLOCK
+%    ON END RESTART
+%    ON ERROR RESTART
+%    QUEUE REWIND
+%    CLEAR
+%    INSERT 'MAP TYPE = '
+%    VERIFY F-O F-C DIFF FO-PAT FC-PAT
+%    GET FINAL FILL NOSTORE ABBREVIATED 'Map type? ' 'F-O'
+%    VERIFY F-O F-C DIFF FO-PAT FC-PAT
+%    STORE KEYWORD VALUE
+%    IF VALUE .EQ. 3 THEN
+%      INSERT ' MIN-RHO = -1000'
+%    ELSE
+%      INSERT ' MIN-RHO = 0'
+%    END IF
+%    INSERT ' 10 TAPE=YES'
+%    QUEUE SEND
+%    CLEAR
+%    STORE CHARACTER 'SAVE ' // CTYPE
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'DOWN '
+%    STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX
+%    INSERT ' 0.25'
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'ACROSS '
+%    STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY
+%    INSERT ' 0.25'
+%    QUEUE SEND
+%    CLEAR
+%    INSERT 'SECTION '
+%    EVALUATE MINZ = - .25 * ZSECT
+%    EVALUATE STEPZ = 1. + 2. * ZSECT
+%    STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ
+%    INSERT ' 0.25'
+%    QUEUE SEND
+%  END BLOCK
+%  BLOCK
+%    ON ERROR RESTART
+%    CLEAR
+%    INSERT '#OPEN MT1'
+%    GET FINAL FILENAME 'Filename for map' 'SLANT.MT1'
+%    SEND
+%  END BLOCK
+% COPY '#SLANT'
+% QUEUE PROCESS
+% COPY 'END'
+% COPY  '#RELEASE MT1'
+  The electron density map is in the listing file, and the plotfile
+  in the file you nominated.
+%CLEAR
+% IF VAX .EQ. TRUE THEN
+%   INSERT '@CRPROC:SPAWNCMD "CONTOUR  "'
+%   EXTERNAL SEND
+% ELSE
+ Close down CRYSTALS and type 'CONTOUR' to plot the files
+% COPY '#PAUSE 2'
+% BLOCK
+%   ON ERROR REPEAT
+%   VERIFY YES NO
+%   GET NOSTORE ABBREVIATED -
+  'Do you wish to close down CRYSTALS  now ?' 'YES'
+%   IF ( VALUE .EQ. 1 ) THEN
+%     COPY '#FINISH'
+%   END IF
+% END BLOCK
+% END IF
+%END SCRIPT

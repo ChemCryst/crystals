@@ -1,0 +1,271 @@
+%SCRIPT EDLIST5
+% VARIABLE CHARACTER CTYPE
+% VARIABLE INTEGER KEEP
+%% Test if the system editor should be used
+%   VERIFY YES NO
+%   GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to use the system editor to modify LIST 5' 'NO'
+%   IF ( VALUE .EQ. 1 ) THEN
+      This SCRIPT puts you into a system editor to modify the atomic
+      parameters.
+DOSYOU MUST HAVE SET 'COMSPACE' IN AUTOEXEC SUFFICIENTLY LARGE (500000)
+%%
+%    COPY '#RELEASE PUNCH SCPLST5.DAT'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+%%&VAX%      COPY '#RELEASE PUNCH '
+%      COPY '#RELEASE PUNCH crfile.pch'
+%%
+%    CLEAR
+%%&VAX%      INSERT '@CRPROC:SPAWNCMD "EDIT SCPLST5.DAT"'
+%%&VAX%      EXTERNAL SEND
+%%&DOS%      INSERT '#use crscp:\edlist5.dat'
+%%&DOS%      SEND
+%    TRANSFER '^^MN RUNWAIT notepad.exe scplst5.dat' TO DISPLAY
+%    TRANSFER '^^DI NOECHO' TO DISPLAY
+%    GET NOSTORE TEXT 'Press any key to continue'
+%    COPY '# Inputting new list5'
+%    COPY '#USE SCPLST5.DAT'
+%    COPY '#DISP'
+%    COPY 'END'
+%%
+%   ELSE
+%% Continue with the CRYSTALS editor...
+%     EVALUATE KEEP = 0
+    This SCRIPT is intended to help you convert the results of a structure
+    solution program or Fourier synthesis into an atomic parameter
+    list (LIST 5) in CRYSTALS.
+    It can also be used to modify any LIST 5.
+%%
+%    COPY '#EDIT '
+%    COPY 'MONITOR OFF'
+%    LOOP
+%
+%      ON ERROR TERMINATE ABANDONED
+%      CLEAR
+%      VERIFY HELP BACK QUIT HIGH MEDIUM LOW QTOC DELETE RENAME -
+  GROUPDELETE RETYPE ELIMINATE SORT RESEQUENCE
+%      GET NOSTORE FINAL ABBREVIATED 'Which choice?' 'BACK'
+%      CASE VALUE
+%      BLOCK                                         %HELP%
+        HELP          This text
+        BACK          End edit and return to previous script
+        QUIT          Abandon edit and return to previous script
+        HIGH          High level parameter listing
+        MEDIUM        Medium level parameter listing
+        LOW           Low level parameter listing
+        QTOC          Change all 'Q'  atoms to 'C'
+        DELETE        Deletion of selected atoms
+        RENAME        renaming of selected atoms (TYPE and SERIAL)
+        GROUPDELETE   deletion of groups of selected atoms
+        RETYPE        of groups of selected atoms ( TYPE only)
+        ELIMINATE     elimination of remaining 'Q' type atoms
+        SORT          By atom type or serial
+        RESEQUENCE    Re-sequence atom serial numbers (may only be done once
+                      in a given edit session)
+        DIRECT        Go to CRYSTALS direct command input
+%      END BLOCK
+%%
+%      BLOCK
+%        COPY 'END'
+%        FINISH                                        %BACK%
+%      END BLOCK
+%%
+%      BLOCK
+%        COPY 'QUIT'                                  %QUIT%
+%        COPY 'END'
+%        FINISH
+%      END BLOCK
+%%
+%      BLOCK                                         %HIGH%
+%        COPY 'LIST HIGH'
+%        COPY 'EXECUTE'
+%      END BLOCK
+%%
+%      BLOCK                                         %MEDIUM%
+%        COPY 'LIST MEDIUM'
+%        COPY 'EXECUTE'
+%      END BLOCK
+%%
+%      BLOCK                                         %LOW%
+%        COPY 'LIST LOW'
+%        COPY 'EXECUTE'
+%      END BLOCK
+%%
+%      BLOCK                                         %QtoC%
+%        COPY 'TYPECHANGE TYPE EQ Q C'
+%        COPY 'EXECUTE'
+  If you have changed peaks into C atoms, there is a risk that you may
+  now have two different atoms with the same serial number.
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  ' Do you want to resequence your atoms ?' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY 'KEEP 1 FIRST UNTIL LAST '
+%          EVALUATE KEEP = 1
+%        ELSE
+ WARNING - Your atom list may contain duplicate atom names
+%        END IF
+%      END BLOCK
+%%
+%      BLOCK                                         %DELETE%
+  DELETING named atoms.
+    Enter atom types and serial numbers ( use END to end input )
+%          LOOP
+%            ON ERROR REPEAT
+%            ON END TERMINATE
+%            CLEAR
+%            INSERT 'DELETE '
+%            GET KEYWORD 'Old element type'
+%            INSERT  '( '
+%            GET FINAL INTEGER 'serial'
+%            INSERT ') '
+%            SEND
+%            COPY 'EXECUTE'
+%          END LOOP
+%      END BLOCK
+%%
+%      BLOCK                                         %RENAME%
+%
+  RENAMING of selected atoms.
+               Enter original and new atom names and serial numbers
+                                            ( use END to end input )
+%      LOOP
+%        ON ERROR REPEAT
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'RENAME '
+%        GET KEYWORD 'Old element type'
+%        INSERT  '( '
+%        GET INTEGER 'serial'
+%        INSERT ') '
+%        GET KEYWORD 'New element type'
+%        INSERT  '( '
+%        GET FINAL INTEGER 'serial'
+%        INSERT ') '
+%        SEND
+%        COPY 'EXECUTE'
+%      END LOOP
+%      END BLOCK
+%%
+%      BLOCK                                         %GROUPDELETE%
+                        DELETING groups of atoms
+  Note the FIRST and LAST atoms of each group you want to delete.
+%          COPY '#PAUSE 1'
+%        LOOP
+%          COPY 'LIST LOW'
+%          COPY 'EXECUTE'
+%          ON ERROR REPEAT
+%          ON END TERMINATE
+%          CLEAR
+  Enter atom names and serial numbers of first and last atoms in each group
+%            LOOP
+%              ON ERROR REPEAT
+%              ON END TERMINATE
+%              CLEAR
+%              INSERT 'DELETE '
+         Element type to be Deleted
+%              GET KEYWORD  ' use END to end or see atom list again'
+%              INSERT  '( '
+%              GET INTEGER  'serial'
+%              INSERT ') UNTIL '
+%              GET KEYWORD 'Element type'
+%              INSERT  '( '
+%              GET FINAL INTEGER 'serial'
+%              INSERT ') '
+%              SEND
+%              COPY 'EXECUTE'
+%            END LOOP
+%          VERIFY YES NO
+%          GET NOSTORE FINAL ABBREVIATED  -
+    ' Do you want to delete another group ?' 'YES'
+%          IF ( VALUE .EQ. 2 ) THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%      END BLOCK
+%%
+%      BLOCK                                         %RETYPE%
+                    Changing TYPE of groups of atoms.
+  Make a note the FIRST and LAST atoms of each group you want to change.
+  If all the atoms are of type 'PEAK' or 'Q', it might make sense to convert
+  them all to, say, 'C' first, and then rechange some to other types.
+%          COPY '#PAUSE 1'
+%        LOOP
+%          COPY 'LIST LOW'
+%          COPY 'EXECUTE'
+%          ON ERROR REPEAT
+%          ON END TERMINATE
+%          CLEAR
+%            LOOP
+  Enter atom names and serial numbers of first and last atoms in each group
+%              ON ERROR REPEAT
+%              ON END TERMINATE
+%              CLEAR
+%              INSERT 'CHANGE '
+         First element type changing FROM
+%              GET KEYWORD  ' use END to end or see atom list again'
+%              INSERT  '( '
+%              GET INTEGER  'serial'
+%              INSERT ',TYPE) UNTIL '
+%              GET KEYWORD 'Last element type changing FROM'
+%              INSERT  '( '
+%              GET FINAL INTEGER 'serial'
+%              INSERT ') '
+%              GET FINAL KEYWORD 'Type of element you want to change TO'
+%              SEND
+%              COPY 'EXECUTE'
+%            END LOOP
+%          VERIFY YES NO
+%          GET NOSTORE FINAL ABBREVIATED  -
+    ' Do you want to change another group ?' 'YES'
+%          IF ( VALUE .EQ. 2 ) THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%      END BLOCK
+%%
+%      BLOCK                                         %ELIMINATE%
+%        COPY 'SELECT TYPE NE Q '
+%        COPY 'EXECUTE'
+%      END BLOCK
+%%
+%      BLOCK                                         %SORT%
+%        VERIFY   TYPE SERIAL
+%      GET FINAL NOSTORE ABBREVIATED 'Sort by TYPE or SERIAL only? ' 'SERIAL'
+%        EVALUATE CTYPE = CVALUE
+%        IF ( CTYPE .EQ. 'TYPE' ) THEN
+%          ON ERROR REPEAT
+%          BLOCK
+%            CLEAR
+%            INSERT 'SORT '
+ Give element TYPES (separated by spaces) in the order you want
+ them sorting into.
+%            GET FINAL APPEND TEXT 'Element TYPES' NULLSTRING
+%            SEND
+%            COPY 'EXECUTE'
+%          END BLOCK
+%        ELSE
+%          COPY 'SORT SERIAL'
+%          COPY 'EXECUTE'
+%        END IF
+%      END BLOCK
+%%
+%      BLOCK                                                %RESEQUENCE%
+%        IF KEEP .NE. 0 THEN
+    The atoms have already been re-sequenced. Close this edit and reopen
+    it to re-sequence the atoms again
+%        ELSE
+%          COPY 'KEEP 1 FIRST UNTIL LAST '
+%          COPY 'EXECUTE'
+%        END IF
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%  END IF
+%  COPY '#SCRIPT PLOT'
+%%
+%END SCRIPT

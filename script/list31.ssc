@@ -1,0 +1,11 @@
+%SCRIPT LIST31
+%%   The cell esd's list, LIST 31
+%    IF ( EXISTS 31 .NE. 1 ) THEN
+%        VERIFY YES NO
+%        GET FINAL ABBREVIATED -
+ 'Do you want to input LIST 31 (cell e.s.d.s)' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT INLIST31'
+%        END IF
+%    END IF
+%END SCRIPT

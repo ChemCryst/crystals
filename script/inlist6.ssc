@@ -1,0 +1,142 @@
+%SCRIPT INLIST6
+%% CRYSTALS reflection input script
+%  VARIABLE INTEGER INBASICS
+%  VARIABLE INTEGER SHELX FS NCOEF FMT
+%  VARIABLE CHARACTER SWITCH
+Input reflection data from a file containing h,k,l Fo, sigma (HKLI file)
+----- ---------- ---- ----------- ---------- ----- --- ----- -----------
+%  CLEAR
+%  ON ERROR CONTINUE
+%  COPY  '#CLOSE HKLI'
+%  BLOCK
+%  ON END TERMINATE
+%    BLOCK
+%      ON ERROR REPEAT
+%      QUEUE REWIND
+%      CLEAR
+%      INSERT '#OPEN HKLI'
+%      GET FINAL FILENAME -
+      'Filename of file containing reflections (HKLI file) '
+%      QUEUE SEND
+%    END BLOCK
+%    ON ERROR REPEAT
+%    QUEUE PROCESS
+%  END BLOCK
+%%
+%  VERIFY F  FSQ  I
+%  GET NOSTORE FINAL VERIFIED   'Is the data F, FSQ, I' 'FSQ'
+%  EVALUATE FS = VALUE
+%
+%%
+%%   WE NEED BASIC LISTS FOR DATA REDUCTION
+%    CLEAR
+%    COPY '#SCRIPT INBASICS'
+%    IF INBASICS .NE. 1 THEN
+  Basic Cell, Space Group or composition information is missing.
+  This SCRIPT will be abandoned without reading the reflections.
+%      FINISH
+%    END IF
+%%
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED  -
+   'Is the data in free format?' 'NO'
+%    EVALUATE FMT = VALUE
+%  IF VALUE .EQ. 2 THEN
+%    GET NOSTORE FINAL ABBREVIATED  -
+     'Is the data in a standard SHELX format' 'YES'
+%    EVALUATE SHELX = VALUE
+%    EVALUATE NCOEF = 5
+%  END IF
+%%
+%  IF (  SHELX = 2 .OR.  FMT = 2 ) THEN
+%    GET NOSTORE FINAL ABBREVIATED  -
+     'Do you have sigma values? ' 'YES'
+%    EVALUATE NCOEF = 6 - VALUE
+%  END IF
+%%
+%  BLOCK
+%  QUEUE REWIND
+%  ON ERROR RESTART
+%    CLEAR
+%    INSERT "READ "
+%    IF FS = 1 THEN
+%     INSERT " F'S=FO"
+%    ELSE
+%      INSERT " F'S=FSQ"
+%    END IF
+%    IF NCOEF .EQ. 4 THEN
+%      INSERT ' NCOEF = 4'
+%    ELSE
+%      INSERT ' NCOEF = 5'
+%    END IF
+%    IF FMT .EQ. 1 THEN
+%      INSERT ' TYPE = FREE CHECK = YES'
+%    ELSE
+%      INSERT ' TYPE = FIXED CHECK = NO'
+%    END IF
+%    QUEUE SEND
+%%
+%    CLEAR
+%    IF NCOEF .EQ. 5 THEN
+%      INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '
+%    ELSE
+%      INSERT 'INPUT H K L /FO/ '
+%    END IF
+%    QUEUE SEND
+%%
+%    CLEAR
+%    IF (  SHELX = 2 .OR.  FMT = 2 ) THEN
+%      BLOCK
+   Input the data format e.g. (3F4.0, 2F8.0)
+%      CLEAR
+%      INSERT 'FORMAT '
+%      GET APPEND TEXT 'FORMAT' ' (3F4.0, 2F8.0) '
+%      QUEUE SEND
+%      END BLOCK
+%    END IF
+%%
+%      CLEAR
+%      INSERT 'STORE NCOEF=6'
+%      QUEUE SEND
+%      CLEAR
+%      INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '
+%      QUEUE SEND
+%      CLEAR
+%  END BLOCK
+%  COPY '#HKLI'
+%  QUEUE PROCESS
+%  COPY 'END'
+%  COPY '#CLOSE HKLI'
+%%
+%  IF FS .EQ. 3 THEN
+%    COPY '#LP'
+%    COPY 'END'
+%  END IF
+%  MESSAGE USER1 ' Error during reflection processing'
+%    ON ERROR TERMINATE USER1
+            * Removing systematically absent reflections
+%    COPY '#SYSTEMATIC'
+%    COPY 'END'
+%    CLEAR
+            * Sorting reflections
+%      COPY '#SORT'
+%      COPY 'END'
+%    CLEAR
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you wish to merge reflections?'  'YES'
+%    IF VALUE .EQ. 1 THEN
+%
+            * Merging equivalent reflections
+%      CLEAR
+%      COPY '#MERGE'
+%      COPY 'END'
+%    END IF
+%
+            * Final copy to DSC file
+%      COPY '#LIST 6'
+%      COPY 'READ TYPE = COPY'
+%      COPY 'END'
+%  COPY '#LIST 4'
+%  COPY 'END'
+%%
+%END SCRIPT

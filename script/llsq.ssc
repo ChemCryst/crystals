@@ -1,0 +1,167 @@
+%SCRIPT LLSQ
+%%  
+%%
+%% Internal only...
+%VARIABLE INTEGER N
+%VARIABLE CHARACTER CDLINE
+%VARIABLE REAL RVAL
+%VARIABLE INTEGER LSETUP LEXTINCT
+%EVALUATE LSETUP = 1
+%EVALUATE LEXTINCT = 0
+%%
+%BLOCK
+%VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+^^WI WINDOW SELECTI 'Least-squares' MODAL SIZE
+%%MAIN GRID IS THREE HORIZONTAL CELLS
+^^WI STARTGRID GRMAIN 'N' NROWS=5 NCOLS=3
+%% THIS GRID IS THREE VERTICAL CELLS IN THE MAIN TOP CELL
+^^WI   STARTGRID ROW=2 COL=2 GRLCR  'N' NROWS=1 NCOLS=3
+%% THIS GRID IS THE LEFT VERTICAL CELL it contains QNLINES of text
+^^WI    STARTGRID ROW=1 COL=1 GRTEX  'N' NROWS=7 NCOLS=1
+^^WI      STATIC ROW=1 COL=1 T1 'Choose an option'
+^^WI      STATIC ROW=4 COL=1 RVAL 'R-Factor = 000.000'
+^^WI      STATIC ROW=6 COL=1 METH 'Setting  = X`s,U(iso)  '
+^^WI      STATIC ROW=7 COL=1 EXTI 'Extinction pending.'
+^^WI    ENDGRID
+%% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox with QVLINES visible
+^^WI    STARTGRID ROW=1 COL=2 GRLIST 'N' NROWS=1 NCOLS=3
+^^WI       LISTBOX ROW=1 COL=2 LIST01 VISLINES=4
+^^WI       'Change the refinement settings'
+^^WI       'Carry out some refinement'
+^^WI       'Add hydrogens to the structure'
+^^WI       'View the structure'
+^^WI       'NULL'
+^^WI    ENDGRID
+%% THIS GRID IS THE RIGHT VERTICAL CELL it contains the Ok and Cancel buttons
+^^WI    STARTGRID ROW=1 COL=3 GRBUTT 'N' NROWS=3 NCOLS=3
+^^WI       BUTTON ROW=1 COL=2 BUTTONOK '&Ok' COMMIT
+^^WI       BUTTON ROW=3 COL=2 BUTTONXX '&Back' CANCEL
+^^WI    ENDGRID
+^^WI   ENDGRID
+%% THIS GRID IS THE BOTTOM ROW OF THE MAIN GRID it contains a help text.
+%% The only reason for using a grid is to add the outline to it.
+^^WI   STARTGRID ROW=4 COL=2 GRIDHLP '' NROWS=1 NCOLS=1 OUTLINE
+^^WI     STATIC ROW=1 COL=1 LHELP 
+^^WI     'Define which parameters will be refined.                      ' 
+^^WI   ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+% END BLOCK
+%%
+%%END OF DEFINITION, HERE THE PROCESSING BEGINS:-
+%%
+% BLOCK
+% LOOP
+%  BLOCK
+%     COPY '#GENERALEDIT 30'
+%     COPY 'LOCATE RECORDTYPE=103'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=0 TO RVAL'
+%     CLEAR
+%     INSERT !%EVALUATE CDLINE = "^^WI SET RVAL TEXT='R-Factor = !
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL RVAL
+%     INSERT !'"!
+%     EXECUTE
+%     SHOW CDLINE
+%  END BLOCK
+%     CASE LSETUP
+%      BLOCK
+^^WI SET METH TEXT = 'Setting = X`s only'
+%      END BLOCK
+%      BLOCK
+^^WI SET METH TEXT = 'Setting = X`s, U(iso)'
+%      END BLOCK
+%      BLOCK
+^^WI SET METH TEXT = 'Setting = X`s and U`s'
+%      END BLOCK
+%     END CASE
+^^CR
+%     CASE ( LEXTINCT + 1 )
+%      BLOCK
+^^WI SET EXTI TEXT = ' '
+%      END BLOCK
+%      BLOCK
+^^WI SET EXTI TEXT = 'Extinction pending.'
+%      END BLOCK
+%      BLOCK
+^^WI SET EXTI TEXT = 'Extinction done.'
+%      END BLOCK
+%     END CASE
+^^CR
+^^WI SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%   VERIFY BUTTONOK BUTTONXX LIST01
+%   GET FINAL FILL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%       BLOCK                        %OK BUTTON%
+^^WI       SET _MAINTEXTOUTPUT NOECHO
+^^WI       GETVALUE LIST01
+^^CR
+%          GET NOSTORE INTEGER ' '
+%          CASE VALUE
+%           BLOCK                                         %SETTINGS%
+%            COPY '#SCRIPT SETTINGS'
+%           END BLOCK
+%           BLOCK                                         %REFINE%
+%            COPY '#SCRIPT LREFINE'
+%           END BLOCK
+%           BLOCK                                         %ADDH%
+%            COPY '#PERHYDRO'
+%            COPY 'END'
+%            COPY '#FOURIER'
+%            COPY 'MAP TYPE=DIFF'
+%            COPY 'PEAK HEIGHT=1'
+%            COPY 'END'
+%            COPY '#PEAKS'
+%            COPY 'END'
+%            COPY '#COLL'
+%            COPY 'SEL TYPE=PEAK'
+%            COPY 'END'
+%            COPY '#SUM L 5'
+%            COPY 'END'
+%            COPY '#SCRIPT LVIEW'
+%            COPY '#EDIT'
+%            COPY 'SELECT TYPE NE Q'
+%            COPY 'END'
+
+ Any remaining 'Q' atoms have been removed from the stucture.
+
+%           END BLOCK
+%           BLOCK                                         %VIEW%
+%            COPY '#SCRIPT LVIEW'
+%           END BLOCK
+%          END CASE
+%          
+%       END BLOCK
+%       BLOCK                       %CANCEL BUTTON%
+^^WI       DISPOSE SELECTI
+^^CR
+%          FINISH
+%       END BLOCK
+%       BLOCK                       %LIST CHANGED%
+^^WI            SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%               VERIFY 1 2 3 4
+%               GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%               CASE VALUE
+% BLOCK
+^^WI SET LHELP TEXT='Define which parameters will be refined.' 
+% END BLOCK
+% BLOCK
+^^WI SET LHELP TEXT='Refine the parameters.'
+% END BLOCK
+% BLOCK
+^^WI SET LHELP TEXT='Add hydrogen atoms to the model.' 
+% END BLOCK
+% BLOCK
+^^WI SET LHELP TEXT='View the structure in a graphics package.' 
+% END BLOCK
+%               END CASE
+^^CR
+%       END BLOCK
+%   END CASE
+%END LOOP
+%END BLOCK
+%END SCRIPT

@@ -1,0 +1,64 @@
+%SCRIPT BATCHLSQ  % Submit refinement jobs to the batch queues%
+                              BATCHLSQ.SCP
+         A SCRIPT to submit refinement jobs to the batch queues
+%  VARIABLE INTEGER CYCLES
+%  VARIABLE LOGICAL INPUT12
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  ON END TERMINATE
+%  IF EXISTS 5 .LT. 1 THEN
+            You do not have a model for your structure. Least squares
+            refinement is not appropriate at this stage.
+%    FINISH
+%  END IF
+%
+%  EVALUATE INPUT12 = .NOT. ( EXISTS 12 .EQ. 1 )
+%  IF .NOT. INPUT12 THEN
+            Your refinement directives are currently :-
+%    COPY '#SUMMARY LIST  12'
+%    COPY 'END'
+%    CLEAR
+%    VERIFY YES NO
+%    GET FINAL YESNO 'Do you want to change the refinement directives' 'NO'
+%    EVALUATE INPUT12 = VALUE .EQ. 1
+%  END IF
+%
+%  IF INPUT12 THEN
+%    COPY '#SCRIPT EDLIST12'
+%  END IF
+%
+%  CLEAR
+%  GET FINAL INTEGER 'How many cycles of refinement' '1'
+%
+%  EVALUATE CYCLES = VALUE
+%  IF CYCLES .GT. 0 THEN
+%  COPY '#OPEN SCPQUEUE SCPBATCH'
+%  QUEUE REWIND
+%
+%  QUEUE COPY #SFLS
+%  LOOP CYCLES TIMES
+%    QUEUE COPY REFINE
+%  END LOOP
+%  QUEUE COPY END
+%  IF VAX .EQ. TRUE THEN
+%    QUEUE COPY #END
+%  END IF
+%
+%  COPY '#RELEASE SCPQUEUE SCPQUEUE'
+%  END IF
+%
+%  IF VAX .EQ. FALSE THEN
+%    COPY '#USE SCPBATCH'
+%  ELSE
+%    CLEAR
+%    VERIFY FAST SLOW
+%    GET NOSTORE FINAL ABBREV 'Which queue' 'SLOW'
+%    CASE VALUE
+%      EXTERNAL COPY @CRPROC:SCPBATCH CRYSTALS SCPBATCH CRFAST
+%      EXTERNAL COPY @CRPROC:SCPBATCH CRYSTALS SCPBATCH CRSLOW
+%    END CASE
+%    COPY '#END'
+%  END IF
+%
+%END SCRIPT

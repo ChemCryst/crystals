@@ -1,0 +1,47 @@
+%SCRIPT INBASICS
+%% Input of basic data needed for data reduction
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ     Before you start data reduction, you should have loaded the basic      บ
+บ     data lists for your structure. Your DATA-BASE should contain data      บ
+บ     on the following :-                                                    บ
+บ     LIST  1  The crystal's unit cell parameters                            บ
+บ     LIST  2  The crystal's symmetry                                        บ
+บ     LIST  3  The scattering factors for elements in the structure          บ
+บ     LIST 13  The diffraction conditions used in the experiment             บ
+บ     LIST 23  The refinement conditions                                     บ
+บ     LIST 29  The elemental properties and composition                      บ
+บ     LIST 30  The general experimantal conditions                           บ
+บ     LIST 31  The cell parameter e.s.d.s                                    บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+    Checking the basic data, LISTS 1, 2, 3, 13, 23  and 29
+% END IF
+%  VARIABLE INTEGER INBASICS
+%  CLEAR
+%  LOOP
+%  BLOCK
+%    ON ERROR RESTART
+%    COPY '#SCRIPT LIST1F'
+%    CLEAR
+%    COPY '#SCRIPT LIST2F'
+%    CLEAR
+%    COPY '#SCRIPT LIST13F'
+%    CLEAR
+%    COPY '#SCRIPT LIST23F'
+%    CLEAR
+%    COPY '#SCRIPT ELEMENTF'
+%    CLEAR
+%    IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
+     + EXISTS 29 .NE. 6 ) THEN
+  Something has gone wrong with the initial data input. Try again.
+%      EVALUATE INBASICS = 0
+%    ELSE
+%      EVALUATE INBASICS = 1
+%      EVALUATE  LOOPEND = LOOPCOUNTER
+%    END IF
+%  END BLOCK
+%  END LOOP
+%END SCRIPT

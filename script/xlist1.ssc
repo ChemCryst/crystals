@@ -1,0 +1,188 @@
+%SCRIPT INLIST1
+%% CRYSTALS cell parameter input script
+%  VARIABLE REAL A B C AL BE GA
+%  VARIABLE CHARACTER CDLINE
+%  VARIABLE LOGICAL LDISA
+%  EVALUATE A = 0.0
+%  EVALUATE B = 0.0
+%  EVALUATE C = 0.0
+%  EVALUATE AL = 90.0
+%  EVALUATE BE = 90.0
+%  EVALUATE GA = 90.0
+^^WI WINDOW INLIST1 'Cell parameters' MODAL COMMIT='BOK' CANCEL='BXX'
+%  BLOCK
+%   ON ERROR TERMINATE
+%   COPY '#GENERALEDIT 1'
+%   COPY 'LOCATE RECORD=101'
+%   COPY 'TRANSFER FROM OFFSET=0 TO A'
+%   COPY 'TRANSFER FROM OFFSET=1 TO B'
+%   COPY 'TRANSFER FROM OFFSET=2 TO C'
+%   COPY 'TRANSFER FROM OFFSET=3 TO AL'
+%   COPY 'TRANSFER FROM OFFSET=4 TO BE'
+%   COPY 'TRANSFER FROM OFFSET=5 TO GA'
+%   COPY 'END'
+%   EVALUATE AL = AL * 57.29578
+%   EVALUATE BE = BE * 57.29578
+%   EVALUATE GA = GA * 57.29578
+%  END BLOCK
+^^WI STARTGRID             GRIDM 'N' NROWS=1 NCOLS=2
+^^WI  STARTGRID ROW=1 COL=1 GRIDL 'N' NROWS=5 NCOLS=2
+^^WI   STARTGRID ROW=2 COL=2 GRITL 'N' NROWS=2 NCOLS=1
+^^WI    STATIC    ROW=1 COL=1 TEXT1 'Enter cell lengths in angstroms,'
+^^WI    STATIC    ROW=2 COL=1 TEXT1 'and cell angles in degrees.'
+^^WI   ENDGRID   
+^^WI   STARTGRID ROW=4 COL=2 GRIDBL 'N' NROWS=3 NCOLS=7
+^^WI    STATIC    ROW=1 COL=1 STEXT1 'A:'
+^^WI    STATIC    ROW=2 COL=1 STEXT2 'B:'
+^^WI    STATIC    ROW=3 COL=1 STEXT3 'C:'
+^^WI    STATIC    ROW=1 COL=5 STEXT4 'Alpha:'
+^^WI    STATIC    ROW=2 COL=5 STEXT5 'Beta:'
+^^WI    STATIC    ROW=3 COL=5 STEXT6 'Gamma:'
+% CLEAR
+% INSERT !^^WI EDITBOX ROW=1 COL=3 E1 '!
+% STORE FORMAT /(F8.3)/ LENGTH 8 REAL A
+% INSERT !'!
+% OUTPUT
+^^WI CHARS=8 REAL INFORM=YES  
+% CLEAR
+% INSERT !^^WI EDITBOX ROW=2 COL=3 E2 '!
+% STORE FORMAT /(F8.3)/ LENGTH 8 REAL B
+% INSERT !'!
+% OUTPUT
+^^WI CHARS=8 REAL INFORM=YES 
+% CLEAR
+% INSERT !^^WI EDITBOX ROW=3 COL=3 E3 '!
+% STORE FORMAT /(F8.3)/ LENGTH 8 REAL C
+% INSERT !'!
+% OUTPUT
+^^WI CHARS=8 REAL INFORM=YES 
+% CLEAR
+% INSERT !^^WI EDITBOX ROW=1 COL=7 E4 '!
+% STORE FORMAT /(F8.3)/ LENGTH 8 REAL AL
+% INSERT !'!
+% OUTPUT
+^^WI CHARS=8 REAL INFORM=YES 
+% CLEAR
+% INSERT !^^WI EDITBOX ROW=2 COL=7 E5 '!
+% STORE FORMAT /(F8.3)/ LENGTH 8 REAL BE
+% INSERT !'!
+% OUTPUT
+^^WI CHARS=8 REAL INFORM=YES 
+% CLEAR
+% INSERT !^^WI EDITBOX ROW=3 COL=7 E6 '!
+% STORE FORMAT /(F8.3)/ LENGTH 8 REAL GA
+% INSERT !'!
+% OUTPUT
+^^WI CHARS=8 REAL INFORM=YES
+^^WI   ENDGRID
+^^WI  ENDGRID
+^^WI  STARTGRID ROW=1 COL=2 GRIDR 'N' NROWS=5 NCOLS=3
+^^WI   BUTTON ROW=2 COL=2 BOK '&Ok' DEFAULT DISABLED=YES
+^^WI   BUTTON ROW=4 COL=2 BXX '&Cancel'
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+%%
+%%
+%  LOOP
+%   ON ERROR REPEAT
+%   ON END   TERMINATE
+%   VERIFY E1 E2 E3 E4 E5 E6 BXX BOK
+%%^^WI SET _MAINTEXTOUTPUT NOECHO
+%%^^CR
+%   GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%   EVALUATE LDISA = FALSE
+%%^^WI SET _MAINTEXTOUTPUT NOECHO
+%%^^CR
+%   CASE VALUE
+%    BLOCK             %EDIT1%
+%     GET NOSTORE REAL ' '
+%     EVALUATE A = VALUE
+%     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
+      ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
+%      EVALUATE LDISA = TRUE
+%     END IF
+%    END BLOCK
+%    BLOCK             %EDIT2%
+%     GET NOSTORE REAL ' '
+%     EVALUATE B = VALUE
+%     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
+      ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
+%      EVALUATE LDISA = TRUE
+%     END IF
+%    END BLOCK
+%    BLOCK             %EDIT3%
+%     GET NOSTORE REAL ' '
+%     EVALUATE C = VALUE
+%     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
+      ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
+%      EVALUATE LDISA = TRUE
+%     END IF
+%    END BLOCK
+%    BLOCK             %EDIT4%
+%     GET NOSTORE REAL ' '
+%     EVALUATE AL = VALUE
+%     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
+      ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
+%      EVALUATE LDISA = TRUE
+%     END IF
+%    END BLOCK
+%    BLOCK             %EDIT5%
+%     GET NOSTORE REAL ' '
+%     EVALUATE BE = VALUE
+%     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
+      ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
+%      EVALUATE LDISA = TRUE
+%     END IF
+%    END BLOCK
+%    BLOCK             %EDIT6%
+%     GET NOSTORE REAL ' '
+%     EVALUATE GA = VALUE
+%     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
+      ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
+%      EVALUATE LDISA = TRUE
+%     END IF
+%    END BLOCK
+%    BLOCK             %BXX%
+^^WI  DISPOSE INLIST1
+^^CR
+%     FINISH                  
+%    END BLOCK
+%    BLOCK             %BOK%
+%     CLEAR
+%     COPY '#LIST 1'
+%     INSERT 'REAL '
+^^?? E1 TEXT
+%          INSERT ' '
+%                  GET KEYWORD ' '
+^^?? E2 TEXT
+%          INSERT ' '
+%                  GET KEYWORD ' '
+^^?? E3 TEXT
+%          INSERT ' '
+%                  GET KEYWORD ' '
+^^?? E4 TEXT
+%          INSERT ' '
+%                  GET KEYWORD ' '
+^^?? E5 TEXT
+%          INSERT ' '
+%                  GET KEYWORD ' '
+^^?? E6 TEXT
+%          INSERT ' '
+%                  GET KEYWORD ' '
+%          SEND
+%          COPY 'END'
+^^WI       DISPOSE INLIST1
+^^CR
+%          FINISH                  
+%    END BLOCK
+%   END CASE
+%   IF ( LDISA .EQ. TRUE ) THEN
+^^WI    SET BOK DISABLED=YES
+%   ELSE
+^^WI    SET BOK DISABLED=NO
+%   END IF
+^^CR
+%  END LOOP
+%END SCRIPT

@@ -1,0 +1,103 @@
+%SCRIPT PUBLISH
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This SCRIPT helps with production of tables for publication. The output    บ
+บ is displayed on the screen and listing file, together with a 'flat'        บ
+บ ASCII file suitable for sending to a laser printer or inputting to a       บ
+บ word processor.                                                            บ
+บ The esds of coordinates and distance-angles are derived from the full      บ
+บ least squares matrix. After the final round of least squares, DO NOT       บ
+บ MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise      บ
+บ CRYSTALS will detect a mis match with the matrix and abort the             บ
+บ calculation.                                                               บ
+บ The ASCII data is in the PUBLISH.LIS                                       บ
+บ A full analysis of residuals may reveal remaining deficiencies in the      บ
+บ refinement.                                                                บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+The SCRIPT to help produce tables for publication
+% END IF
+%%
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ         The publication tables are in a file 'PUBLISH.LIS'                 บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%  COPY '#PAUSE 2'
+%  COPY '#RELEASE PUNCH PUBLISH.LIS'
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%    VERIFY BACK HELP XYZ ANISO REFLECTIONS DISTANCES SUMMARY ANALYSE -
+      GEOMETRY CIF ARCHIVE
+%    GET NOSTORE FINAL ABBREVIATED 'Next step' 'BACK'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+      The SCRIPT to help produce tables for publication
+      NOTE that under some operating systems, the output from successive
+      entries to this SCRIPT will overwrite previous output.
+      BACK        End this script
+      HELP        Display this help text
+      XYZ         Coordinate listing
+      ANISO       Temperature factor listing
+      REFLECTIONS Reflection listing
+      DISTANCES   Distance-angle listing
+      SUMMARY     A summary of all data stored
+      ANALYSE     A full analysis of residuals
+      GEOMETRY    The SCRIPT for evaluating molecular parameters.
+      CIF         Prepare a 'cif' format paper submission file
+      ARCHIVE     A SCRIPT to save the best of the goodies.
+      DIRECT      Go to CRYSTALS direct command input.
+%%
+%      END BLOCK
+%%
+%      BLOCK                                         %XYZ%
+%        COPY '#SCRIPT PUBXYZ'
+%      END BLOCK
+%%
+%      BLOCK                                         %ANISO%
+%        COPY '#SCRIPT PUBANISO'
+%      END BLOCK
+%%
+%      BLOCK                                         %REFLECTIONS%
+%        COPY '#SCRIPT PUBREFL'
+%      END BLOCK
+%%
+%      BLOCK                                         %DISTANCES%
+%        COPY '#SCRIPT PUBDIST'
+%      END BLOCK
+%%
+%      BLOCK                                         %SUMMARY%
+%        COPY '#SUMMARY EVERYTHING'
+%        COPY 'END'
+%      END BLOCK
+%%
+%      BLOCK                                         %ANALYSE%
+%        COPY '#ANALYSE'
+%        COPY 'LIST LEVEL=HIGH'
+%        COPY 'END'
+%      END BLOCK
+%%
+%      BLOCK                                         %GEOMETRY%
+%        COPY '#SCRIPT GEOMETRY'
+%        COPY 'END'
+%      END BLOCK
+%%
+%      BLOCK                                         %CIF%
+%        COPY '#SCRIPT CIF'
+%        COPY 'END'
+%      END BLOCK
+%%
+%      BLOCK                                         %ARCHIVE%
+%        COPY '#SCRIPT ARCHIVE'
+%        COPY 'END'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%%&VAX%  COPY '#RELEASE PUNCH '
+%  COPY '#RELEASE PUNCH crfile.pch'
+%END SCRIPT

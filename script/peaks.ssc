@@ -1,0 +1,52 @@
+%SCRIPT PEAKS
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ The script PEAKS uses the CRYSTALS command PEAKS, which combines a         บ
+บ Fourier peaks list with the existing atoms list. Peaks corresponding to    บ
+บ existing atoms may be eliminated, or used as the basis for Fourier         บ
+บ refinement. The electron density at atom or peak sites is stored in the    บ
+บ atom list under the key 'SPARE', so that atom lists can be sorted in       บ
+บ terms of electron density.                                                 บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to help convert a Fourier peak search into an atom list
+% END IF
+%% check we have a peaks list
+%  IF EXISTS 10 .NE. 1 THEN
+  You do not have a peaks list. You must compute a Fourier map
+%  FINISH
+%  END IF
+%  VARIABLE CHARACTER MAPTYPE
+%  BLOCK
+%    VARIABLE INTEGER PEAKREFINE
+%    ON ERROR REPEAT
+%    QUEUE REWIND
+%    CLEAR
+%    IF ( MAPTYPE .NE. 'DIF' ) THEN
+%%      FO or 2FO-FC   -    we might want refinement
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to do Fourier refinement' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        EVALUATE PEAKREFINE = 1
+%        INSERT 'SELECT REJECT = .01'
+%        QUEUE SEND
+%        CLEAR
+%        INSERT 'REFINE DISTANCE = .3'
+%        QUEUE SEND
+%        CLEAR
+%      END IF
+%    END IF
+%
+%    IF PEAKREFINE .NE. 1 THEN
+%        EVALUATE PEAKREFINE = 1
+%        INSERT 'SELECT REJECT = .5'
+%        QUEUE SEND
+%        CLEAR
+%    END IF
+%  END BLOCK
+%  COPY '#PEAKS'
+%  QUEUE PROCESS
+%  COPY 'END'
+%END SCRIPT

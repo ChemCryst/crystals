@@ -1,0 +1,21 @@
+%SCRIPT LIST1
+  The unit cell parameters, LIST 1
+%    VERIFY YES NO
+%    IF ( EXISTS 1 .EQ. 1 ) THEN
+%      VERIFY YES NO
+  Cell parameters - LIST 1
+%      GET FINAL ABBREVIATED  -
+     'Do you want to see or change LIST 1' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SUMMARY LIST 1'
+%        COPY 'END'
+%        VERIFY YES NO
+%        GET FINAL ABBREVIATED  'Do you want to modify LIST 1' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT EDLIST1'
+%        END IF
+%      END IF
+%    ELSE
+%        COPY '#SCRIPT INLIST1'
+%    END IF
+%END SCRIPT

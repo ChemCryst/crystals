@@ -1,0 +1,25 @@
+%SCRIPT RELEASE
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  VARIABLE CHARACTER CRDEVICE CRFILE
+%  VARIABLE CHARACTER CRDEVICE2 CRFILE2 CRELEASE
+%% we need to add a 'space' sinc an uninitialise character variable
+%% has no value we can test against
+%  EVALUATE CRDEVICE2 = CRDEVICE // ' '
+%  EVALUATE CRFILE2 = CRFILE // ' '
+%  IF CRDEVICE2  .EQ. ' '  THEN
+       SCRIPT ERROR - no device given.
+%      FINISH
+%  END IF
+%  IF VAX .EQ. FALSE THEN
+%% watch out for the VAX VMS name for the physical printer
+%    IF CRFILE2 .EQ. 'SYS$PRINT ' .AND. CRDEVICE2 .EQ. 'PRINTER ' THEN
+%    EVALUATE CRFILE2 = 'PRINTER.LIS '
+%    END IF
+%  END IF
+%  EVALUATE CRELEASE = CRDEVICE2 // CRFILE2
+%    CLEAR
+%    TRANSFER '#RELEASE ' // CRELEASE  // ' '  TO CRYSTALS
+% SET VERIFY FALSE
+%  END SCRIPT

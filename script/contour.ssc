@@ -1,0 +1,42 @@
+%SCRIPT CONTOUR
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This script gives access to the basic CRYSTALS commands needed to          บ
+บ compute and plot contoured maps                                            บ
+บ     The external program CONTOUR is available for contouring maps          บ
+บ produced either by the normal Fourier routine, or Slant Fouriers           บ
+บ computed parallel to specified planes.                                     บ
+บ      The routines MOLAX or ANISO & TLS can be used to define a plane       บ
+บ (use the SAVE instruction after the calculation of the molecular           บ
+บ function). The SCRIPT 'SLANT' will help you to run a simple contouring     บ
+บ task.                                                                      บ
+บ      To contour a normal fourier, a file must be associated with the       บ
+บ output channel, and the map stored in this file.                           บ
+บ      Once the Fourier has been computed, the contouring program must be    บ
+บ run. On a PC this is a separate job, on other machines CRYSTALS spawns     บ
+บ to a sub process for you.                                                  บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to help with the computation and processing of contoured maps
+% END IF
+%  LOOP
+%    ON ERROR RESTART
+%    VERIFY BACK HELP FOURIER SLANT SECTION
+%    GET NOSTORE FINAL ABBREVIATED 'Script required' 'BACK'
+%    CASE VALUE
+%      FINISH                                      %BACK%
+%      BLOCK                                       %HELP%
+      BACK        Finish with this facility
+      HELP        Display this help text
+      FOURIER     Compute Fourier map
+      SLANT       Compute a general Fourier section
+      SECTION     Define the asymmetric part of the cell
+      DIRECT      Go direct to command mode
+%      END BLOCK
+%      COPY '#SCRIPT FOURIER'                    % FOURIER%
+%      COPY '#SCRIPT SLANT'                      % SLANT%
+%      COPY '#SCRIPT SECTION'                    % SECTION%
+%    END CASE
+%  END LOOP
+%END SCRIPT

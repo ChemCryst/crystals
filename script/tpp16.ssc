@@ -1,0 +1,116 @@
+%SCRIPT TPP16
+%% ASCRIPT to set up restraints fot tri-phenyl phosphine groups
+%  VARIABLE INTEGER ITPP IPHEN
+%  VARIABLE CHARACTER CLOOP
+%  VARIABLE INTEGER   ISER  ISER1 ISER2 ISER3 ISER4
+%  VARIABLE CHARACTER P_1 C_1 C_2 C_3 C_4 C_5 C_6
+%%
+%%   use 'NOSTORE' so that it isnt saved in the line buffer
+%%  use 'FINAL' to prevent user type-ahead
+%  GET NOSTORE FINAL INTEGER 'How many phosphine groups?'
+%  EVALUATE ITPP = VALUE
+%  LOOP ITPP TIMES
+%    GET NOSTORE FINAL INTEGER 'Phosphorus atom Serial'
+%    EVALUATE ISER1 = VALUE
+%    EVALUATE P_1 =  ' P(' // ( CHARACTER ISER1 ) // ') '
+%%
+%%
+%    GET NOSTORE FINAL INTEGER 'How many phenyl or cylohexyl groups?'
+%    EVALUATE IPHEN = VALUE
+%    LOOP IPHEN TIMES
+%      GET NOSTORE INTEGER 'P-C carbon atom serial number'
+%      EVALUATE ISER = VALUE
+%%
+%      EVALUATE C_1 =  ' C(' // ( CHARACTER ( ISER     ) ) // ') '
+%      EVALUATE C_2 =  ' C(' // ( CHARACTER ( ISER + 1 ) ) // ') '
+%      EVALUATE C_3 =  ' C(' // ( CHARACTER ( ISER + 2 ) ) // ') '
+%      EVALUATE C_4 =  ' C(' // ( CHARACTER ( ISER + 3 ) ) // ') '
+%      EVALUATE C_5 =  ' C(' // ( CHARACTER ( ISER + 4 ) ) // ') '
+%      EVALUATE C_6 =  ' C(' // ( CHARACTER ( ISER + 5 ) ) // ') '
+%
+%%  clear the command buffer
+%      CLEAR
+%% build a line of the form 'PLANAR atom(serial) atom(serial) until atom(serial)
+%      INSERT 'PLANAR '
+%      STORE CHARACTER P_1 // C_1 'UNTIL' // C_6
+%      QUEUE SEND
+%
+%      CLEAR
+%    INSERT 'ANGLE 180.0, .01 = '
+%    STORE CHARACTER P_1 // 'TO' // C_1 // 'TO' // C_4
+%    QUEUE SEND
+%
+%% ***************************DISTANCE SIMILARITY **********************
+%    CLEAR
+%    INSERT 'DIST 0.0,.01 = MEAN '
+%    STORE CHARACTER C_1 // 'TO' // C_2 // C_1 'TO' // C_6
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'DIST 0.0,.01 = MEAN '
+%    STORE CHARACTER C_1 // 'TO' // C_3 // C_1 'TO' // C_5
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'DIST 0.0,.01 = MEAN '
+%    STORE CHARACTER C_2 // 'TO' // C_3 // C_6 'TO' // C_5
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'DIST 0.0,.01 = MEAN '
+%    STORE CHARACTER C_2 // 'TO' // C_4 // C_6 'TO' // C_4
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'DIST 0.0,.01 = MEAN '
+%    STORE CHARACTER C_3 // 'TO' // C_4 // C_5 'TO' // C_4
+%    QUEUE SEND
+%
+%% *************************** ANISO SIMILARITY **********************
+%    CLEAR
+%    INSERT 'U(IJ) 0.0,.02 = '
+%    STORE CHARACTER C_1 // 'TO' // C_2 // C_1 'TO' // C_6
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'CONT '
+%    STORE CHARACTER C_2 // 'TO' // C_3 // C_6 'TO' // C_5
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'CONT '
+%    STORE CHARACTER C_3 // 'TO' // C_4 // C_5 'TO' // C_4
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'U(IJ)  0.0,.03 = '
+%    STORE CHARACTER C_1 // 'TO' // C_3 // C_1 'TO' // C_5
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'CONT '
+%    STORE CHARACTER C_2 // 'TO' // C_4 // C_6 'TO' // C_4
+%    QUEUE SEND
+%
+%% *************************** BOND STRETCHING SIMILARITY ***************
+%    CLEAR
+%    INSERT 'VIBR 0.0,.01 = '
+%    STORE CHARACTER C_1 // 'TO' // C_2 // C_1 'TO' // C_6
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'CONT '
+%    STORE CHARACTER C_2 // 'TO' // C_3 // C_6 'TO' // C_5
+%    QUEUE SEND
+%
+%    CLEAR
+%    INSERT 'CONT '
+%    STORE CHARACTER C_3 // 'TO' // C_4 // C_5 'TO' // C_4
+%    QUEUE SEND
+%
+%%
+%    CLEAR
+%    END LOOP
+%  END LOOP
+%%
+%END SCRIPT

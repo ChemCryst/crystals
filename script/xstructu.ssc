@@ -1,0 +1,103 @@
+%SCRIPT STRUCTURE
+%VARIABLE INTEGER SOLVEMETHOD STRUREDRAW
+%VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+%VARIABLE CHARACTER COMMAND
+%VARIABLE LOGICAL ANSWER
+% VARIABLE INTEGER QNLINES QNITEMS QVLINES
+% VARIABLE LOGICAL QANSWER
+% VARIABLE CHARACTER QLINE3
+% VARIABLE CHARACTER QLIST1 QLIST2 QLIST3 QLIST4 QLIST5
+% VARIABLE CHARACTER QLIST6 
+% VARIABLE CHARACTER QHELP1 QHELP2 QHELP3 QHELP4 QHELP5 
+% VARIABLE CHARACTER QHELP6 
+% VARIABLE INTEGER   QIANSWER
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ CRYSTALS can prepare data in a suitable format for the Direct Methods      บ
+บ programs  SHELXS and SIR.                                                  บ
+บ It can also prepare data for a SHELXS Patterson, or compute a Patterson    บ
+บ itself.                                                                    บ
+บ The programs SHELXS and SIR may not all be available in all                บ
+บ implementations of CRYSTALS. In some cases, the 'foreign' program can      บ
+บ run from within CYSTALS, other wise the user must initialise its           บ
+บ execution.                                                                 บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to initiate or input the results of Direct Methods computations
+% END IF
+%  IF EXISTS 6 .LT. 1 THEN
+  You have no reflection data stored. You cannot solve this structure !
+%    EVALUATE QLINE1 = 'You have no reflection data stored.'  
+%    EVALUATE QLINE2 = 'You can not solve this structure yet!'
+%    EVALUATE QTITLE = 'Structure Solution'
+%    EVALUATE BUTTOK = '&Ok'
+%    COPY '#SCRIPT XMESSAGE'
+%    FINISH
+%  END IF
+%
+%  IF EXISTS 5 .EQ. 1 THEN
+%    EVALUATE QLINE1 = 'You already have a model stored.'  
+%    EVALUATE QLINE2 = 'Are you sure you want to continue?'
+%    EVALUATE QTITLE = 'Structure Solution / Input'
+%    EVALUATE BUTTOK = '&Cancel'
+%    EVALUATE BUTTXX = 'Co&ntinue'
+%    EVALUATE ANSWER = FALSE
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%      FINISH
+%    END IF
+%  END IF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The title of the script box
+% EVALUATE QTITLE = 'Structure Solution'
+%%
+%% The button text
+% EVALUATE BUTTOK = '&Ok'
+% EVALUATE BUTTXX = '&Cancel'
+%%
+%% The text to appear in the left pane of the box
+% EVALUATE QLINE1 = 'Which program would'
+% EVALUATE QLINE2 = 'you like to use?'
+% EVALUATE QNLINES = 2
+%%
+%% The items to appear in the listbox
+% EVALUATE QLIST1 = 'Sir 92'
+% EVALUATE QLIST2 = 'Sir 88'
+% EVALUATE QLIST3 = 'ShelxS'
+% EVALUATE QLIST4 = 'Patterson'
+% EVALUATE QLIST5 = 'Dirdif'
+%%
+%% The help text for each item in the box
+% EVALUATE QHELP1 = 'Prepare data and run Sir 92      '
+% EVALUATE QHELP2 = 'Prepare data and run Sir 88'
+% EVALUATE QHELP3 = 'Prepare data and run ShelxS'
+% EVALUATE QHELP4 = 'Compute a Patterson map'
+% EVALUATE QHELP5 = 'Prepare data and run Dirdif'
+%%
+%% The number of visible lines in the box at one time
+% EVALUATE QVLINES = 5
+%%
+%% The total number of items in the list
+% EVALUATE QNITEMS = 5
+%%
+%% Run the script
+% COPY '#SCRIPT XSELECT'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% On return QANSWER is TRUE if BUTTOK or return was pressed
+%% QANSWER is FALSE if BUTTXX or ESC was pressed.
+%% QIANSWER holds the index of the list item selected (NB starting at 1).
+%% QCANSWER holds the text of the button that was selected.
+% IF QANSWER .EQ. TRUE THEN
+%        CASE QIANSWER
+%               EVALUATE COMMAND = '#SCRIPT XSIR92'
+%               EVALUATE COMMAND = '#SCRIPT SIR88'
+%               EVALUATE COMMAND = '#SCRIPT SHELXS'
+%               EVALUATE COMMAND = '#SCRIPT PATTERSN'
+%               EVALUATE COMMAND = '#SCRIPT DIRDIF'
+%        END CASE
+% ELSE
+%        FINISH
+% END IF
+% TRANSFER COMMAND TO CRYSTALS
+%END SCRIPT

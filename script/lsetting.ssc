@@ -1,0 +1,164 @@
+%SCRIPT LLSQ
+%%
+%% This is a general purpose script for displaying a list of options
+%% to the user.
+%% On the left is some text. ie. "Choose an option". This can be up to 
+%% 20 lines and is held in QLINE1, QLINE2 ... QNLINES holds the total
+%% number.
+%% In the center is a list box with the options. When the user single 
+%% clicks an options, or moves to it with the cursor keys some help
+%% text is displayed at the bottom of the box. The list items are held
+%% in QLIST1, QLIST2 ... QNITEMS holds the total number. The help text
+%% is in QHELP1, QHELP2 ... again QNITEMS holds the total.
+%% On the right are two buttons, their text is in BUTTOK and BUTTXX
+%% The return values for the calling script are in QANSWER which is
+%% TRUE if BUTTOK was clicked, or if the user double-clicked a list
+%% item. QCANSWER contains the text of the list item selected, and 
+%% QIANSWER contains its index. (Starting from 1 for the first item).
+%%  
+%% Inputs...
+%VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QHELP1
+%VARIABLE INTEGER QNITEMS QVLINES QNLINES
+%% Don't forget QHELP1-20, QLINE1-20 and QTEXT1-20. These are declared
+%% on the fly if needed!
+%%
+%% Outputs...
+%VARIABLE LOGICAL   QANSWER
+%VARIABLE CHARACTER QCANSWER
+%VARIABLE INTEGER   QIANSWER
+%%
+%% Internal only...
+%VARIABLE INTEGER N
+%VARIABLE CHARACTER QNAME QTEXT QHELP CDLINE
+%VARIABLE REAL RVAL
+%%
+%BLOCK
+%VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+^^WI WINDOW SELECTI 'Least-squares' MODAL SIZE
+%%MAIN GRID IS THREE HORIZONTAL CELLS
+^^WI STARTGRID GRMAIN 'N' NROWS=5 NCOLS=3
+%% THIS GRID IS THREE VERTICAL CELLS IN THE MAIN TOP CELL
+^^WI   STARTGRID ROW=2 COL=2 GRLCR  'N' NROWS=1 NCOLS=3
+%% THIS GRID IS THE LEFT VERTICAL CELL it contains QNLINES of text
+^^WI    STARTGRID ROW=1 COL=1 GRTEX  'N' NROWS=4 NCOLS=1
+^^WI      STATIC ROW=1 COL=1 T1 'Choose an option'
+^^WI      STATIC ROW=4 COL=1 RVAL 'R-Factor = 000.000'
+^^WI    ENDGRID
+%% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox with QVLINES visible
+^^WI    STARTGRID ROW=1 COL=2 GRLIST 'N' NROWS=1 NCOLS=3
+^^WI       LISTBOX ROW=1 COL=2 LIST01 VISLINES=4
+^^WI       'Change the refinement settings'
+^^WI       'Carry out some refinement'
+^^WI       'Add hydrogens to the structure'
+^^WI       'View the structure'
+^^WI       'NULL'
+^^WI    ENDGRID
+%% THIS GRID IS THE RIGHT VERTICAL CELL it contains the Ok and Cancel buttons
+^^WI    STARTGRID ROW=1 COL=3 GRBUTT 'N' NROWS=3 NCOLS=3
+^^WI       BUTTON ROW=1 COL=2 BUTTONOK '&Ok' COMMIT
+^^WI       BUTTON ROW=3 COL=2 BUTTONXX '&Cancel' CANCEL
+^^WI    ENDGRID
+^^WI   ENDGRID
+%% THIS GRID IS THE BOTTOM ROW OF THE MAIN GRID it contains a help text.
+%% The only reason for using a grid is to add the outline to it.
+^^WI   STARTGRID ROW=4 COL=2 GRIDHLP '' NROWS=1 NCOLS=1 OUTLINE
+^^WI     STATIC ROW=1 COL=1 HELP 
+^^WI     'Define which parameters will be refined.                      ' 
+^^WI   ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+% END BLOCK
+%%
+%%END OF DEFINITION, HERE THE PROCESSING BEGINS:-
+%%
+% BLOCK
+% LOOP
+%  BLOCK
+%     COPY '#GENERALEDIT 30'
+%     COPY 'LOCATE RECORDTYPE=103'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=0 TO RVAL'
+%     CLEAR
+%     INSERT !%EVALUATE CDLINE = "^^WI SET RVAL TEXT='R-Factor = !
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL RVAL
+%     INSERT !'"!
+%     EXECUTE
+%     SHOW CDLINE
+%  END BLOCK
+^^WI SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%   VERIFY BUTTONOK BUTTONXX LIST01
+%   GET FINAL FILL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%       BLOCK                        %OK BUTTON%
+^^WI       SET _MAINTEXTOUTPUT NOECHO
+^^WI       GETVALUE LIST01
+^^CR
+%          GET NOSTORE INTEGER ' '
+%          CASE VALUE
+%           BLOCK                                         %SETTINGS%
+%            COPY '#SCRIPT SETTINGS'
+%           END BLOCK
+%           BLOCK                                         %REFINE%
+%            COPY '#SCRIPT LREFINE'
+%           END BLOCK
+%           BLOCK                                         %ADDH%
+%            COPY '#PERHYDRO'
+%            COPY 'END'
+%            COPY '#FOURIER'
+%            COPY 'MAP TYPE=DIFF'
+%            COPY 'PEAK HEIGHT=1'
+%            COPY 'END'
+%            COPY '#PEAKS'
+%            COPY 'END'
+%            COPY '#COLL'
+%            COPY 'SEL TYPE=PEAK'
+%            COPY 'END'
+%            COPY '#SUM L 5'
+%            COPY 'END'
+%            COPY '#SCRIPT LVIEW'
+%            COPY '#EDIT'
+%            COPY 'SELECT TYPE NE Q'
+%            COPY 'END'
+
+ Any remaining 'Q' atoms have been removed from the stucture.
+
+%           END BLOCK
+%           BLOCK                                         %VIEW%
+%            COPY '#SCRIPT LVIEW'
+%           END BLOCK
+%          END CASE
+%          
+%       END BLOCK
+%       BLOCK                       %CANCEL BUTTON%
+^^WI       DISPOSE SELECTI
+^^CR
+%          FINISH
+%       END BLOCK
+%       BLOCK                       %LIST CHANGED%
+^^WI            SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%               VERIFY 1 2 3 4
+%               GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%               CASE VALUE
+% BLOCK
+^^WI SET HELP TEXT='Define which parameters will be refined.' 
+% END BLOCK
+% BLOCK
+^^WI SET HELP TEXT='Refine the parameters.'
+% END BLOCK
+% BLOCK
+^^WI SET HELP TEXT='Add hydrogen atoms to the model.' 
+% END BLOCK
+% BLOCK
+^^WI SET HELP TEXT='View the structure in a graphics package.' 
+% END BLOCK
+%               END CASE
+^^CR
+%       END BLOCK
+%   END CASE
+%END LOOP
+%END BLOCK
+%END SCRIPT

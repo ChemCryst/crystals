@@ -1,0 +1,162 @@
+%SCRIPT INITPARTIAL
+% VARIABLE INTEGER SCRIPTDONE
+%%
+  This script enables you to divide your LIST 5 into two pieces. One of
+ these pieces (minor) may be refined without affecting the other (major);
+ enabling you to give closer examination to the area concerned and
+ allowing much more rapid refinement.The fragment which you may wish to refine
+ could be a solvent molecule,a disordered ligand or a disordered anion perhaps.
+  Remember that this script changes your LIST 23. Be shure to reset it to its
+ initial state when continuing to refine the whole structure.
+% BLOCK
+%   ON ERROR REPEAT
+%   VERIFY YES NO
+%   GET NOSTORE YESNO 'Do you wish to continue?' 'YES'
+%   IF ( VALUE .NE. 1 ) THEN
+%     FINISH
+%   END IF
+% END BLOCK
+% COPY '#SET WATCH 5'
+% COPY '#SET LISTS BOTH'
+%%
+% BLOCK
+ For security we punch out a copy of the current LIST 5 on the file MODEL.DAT.
+%   COPY '#RELEASE PUNCH MODEL.DAT'
+%   COPY '#PUNCH 5'
+%   COPY 'END'
+ Now we punch out a copy of the current LIST 12 on the file OLDL12.DAT.
+%   COPY '#RELEASE PUNCH OLDL12.DAT'
+%   COPY '#PUNCH 12'
+%   COPY 'END'
+ Now we punch out a copy of the current LIST 16 on the file OLDL16.DAT.
+%   COPY '#RELEASE PUNCH OLDL16.DAT'
+%   COPY '#PUNCH 16'
+%   COPY 'END'
+%%  COPY '#RELEASE PUNCH'
+ LIST 23 can easily be restored in its original state using the SCRIPT
+ INLIST23. If you arrive in the end of this script and your system
+ should crash, you can use the SCRIPT PRRESET to restore your structure.
+% END BLOCK
+%%
+%%   ##########    PREPARE LIST 23 TO ENTER THE    ############
+%%   ##########   FIXED PART OF THE MODEL(MAJOR)   ############
+%%
+% CLEAR
+% COPY '#GENERALEDIT 23'
+% COPY 'LOCATE RECORDTYPE=101'
+%% SET MODIFY PARTIAL=NO
+% COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=-1'
+% COPY 'WRITE'
+%% SET MODIFY UPDATE=YES
+% COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=0'
+% COPY 'WRITE'
+% COPY 'END'
+%%
+%%   ##########    PREPARE LIST 6 TO ENTER THE     ############
+%%   ##########   FIXED PART OF THE MODEL(MAJOR)   ############
+%%
+% COPY '#LIST 6'
+% COPY 'READ TYPE=COPY'
+% COPY 'STORE NCOEFF=8'
+% COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ BATCH/PHASE RATIO/JCODE'
+% COPY 'CONT A-PART B-PART'
+% COPY 'END'
+%%
+% BLOCK
+    Your current model contains the following atoms.
+%   COPY '#EDIT'
+%   COPY 'LIST LOW'
+%   COPY 'EXECUTE'
+     Enter the atom names and serial numbers of the atoms which you wish
+    to examine,(use END to end input).
+%   LOOP
+%     ON ERROR REPEAT
+%     ON END TERMINATE
+%     CLEAR
+%     INSERT 'CHANGE '
+%     GET KEYWORD 'Element type'
+%     INSERT '('
+%     GET FINAL INTEGER 'serial'
+%     INSERT ',OCC) 0.0'
+%     SEND
+%     COPY 'EXECUTE'
+%   END LOOP
+%   COPY 'END'
+% END BLOCK
+%%
+%%     ############  PUNCH OUT MAJOR LIST 5 FRAGMENT   ############
+%%
+% BLOCK
+%   COPY '#EDIT'
+%   COPY 'SELECT OCC GT 0.0'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#RELEASE PUNCH MAJOR.DAT'
+%   COPY '#PUNCH 5'
+%   COPY 'END'
+%   COPY '#DISK'
+%   COPY 'RETAIN 5'
+%%
+%%    ########## PREPARE THE MINOR LIST 5 FRAGMENT ###########
+%%
+%   COPY 'RESET 5 0 -1'
+%   COPY 'END'
+%   COPY '#EDIT'
+%   COPY 'SELECT OCC EQ 0.0'
+%   COPY 'EXECUTE'
+%   COPY 'CHANGE FIRST (OCC) UNTIL LAST 1.0'
+%   COPY 'END'
+%%
+%%    #########  PUNCH OUT MINOR LIST 5 FRAGMENT   ###########
+%%
+%   COPY '#RELEASE PUNCH MINOR.DAT'
+%   COPY '#PUNCH 5'
+%   COPY 'END'
+%   COPY '#DISK'
+%   COPY 'RETAIN 5'
+%   COPY 'END'
+% END BLOCK
+%%
+%% COPY '#PURGE'
+%% COPY 'END'
+%%
+%%   ##########  PREPARE LIST 23 TO ENTER THE PART  ############
+%%   ##########  OF THE MODEL TO BE REFINED(MINOR)  ############
+%%
+% BLOCK
+% COPY '#GENERALEDIT 23'
+% COPY 'LOCATE RECORDTYPE=101'
+%% SET MODIFY PARTIAL=YES
+% COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=0'
+% COPY 'WRITE'
+%% SET MODIFY UPDATE=NO
+% COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
+% COPY 'WRITE'
+% COPY 'END'
+% END BLOCK
+%%
+%%   ##########    CALCULATE STRUCTURE FACTORS     ############
+%%   ##########   OF THE MINOR PART OF THE MODEL   ############
+%%
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%%
+  You now have a LIST 6 with an A- and B-part for your major fragment.
+ This contains all the atoms in your structure apart from those which you
+ currently wish to refine. The smaller part of your structure which you
+ are currently examining has been punched as MINOR.DAT. As you continually
+ refine this fragment of your structure your MINOR.DAT will be adjusted and
+ updated. You may execute refinement in DIRECT mode or you have the option of
+ following a SCRIPT. The remainder of your structure is MAJOR.DAT. Your
+ current LIST 5 contains only those atoms within your small fragment.
+  When you have finished using #SCRIPTS PARTIAL you will need to append the
+ two files, MINOR.DAT and MAJOR.DAT, before you continue to refine your
+ complete structure. You can use the RESET option to do that.
+%%
+% COPY '#PAUSE 10'
+% EVALUATE SCRIPTDONE = 1
+%%
+%END SCRIPT

@@ -1,0 +1,13 @@
+%SCRIPT SCALE
+%% A SCRIPT TO COMPUTE THE OVERALL SCALE
+%  COPY '#SFLS'
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED  -
+   'Do you want to compute the overall scale factor' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%    COPY 'SCALE'
+%  ELSE
+%    COPY 'CALC'
+%  END IF
+%  COPY 'END'
+%END SCRIPT

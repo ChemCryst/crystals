@@ -1,0 +1,30 @@
+%SCRIPT INSPACE
+%% CRYSTALS space group input script
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+%  COPY '#HELP SPACE'
+% ELSE
+ Generation of symmetry operators from space group symbol using code of
+ Larson and Gabe.
+% END IF
+%  BLOCK
+%    ON ERROR REPEAT
+%    ON END TERMINATE
+Input the Space Group for your structure
+----- --- ----- ----- -------- ---------
+                                        Separate fields with spaces
+                                        use  END  to abandon input
+%    QUEUE REWIND
+%    CLEAR
+%    INSERT 'SYMBOL'
+%    GET  TEXT 'Space group symbol, e.g. P 21/C or P n a m '
+%    QUEUE SEND
+%    CLEAR
+%    COPY '#SPACEGROUP'
+%    QUEUE PROCESS
+%    COPY 'END'
+%
+%    COPY '#SUM L 2'
+%    COPY 'END'
+%  END BLOCK
+%END SCRIPT

@@ -1,0 +1,89 @@
+%SCRIPT TLS
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ A SCRIPT to compute the molecular thermal tensors T, L and S               บ
+บ The minimum number of atoms in a group should be 5. The bigger the         บ
+บ group the more stable the computation, provided that the atoms really      บ
+บ do form a rigid group. In any case, the computation is notoriously         บ
+บ unstable. If you get negative values on the diagonals of T, L or S, or     บ
+บ if CRYSTALS warns you it is having difficulties, look at a thermal         บ
+บ ellipsiod plot. If any atoms look suspicious, do not include them in       บ
+บ the group. If the centroid is far from the origin, try centroid            บ
+บ re-cycling.                                                                บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to compute the molecular thermal tensors T, L and S
+% END IF
+%  COPY '#ANISO'
+   You have the opportunity to compute the TLS tensor for all atoms, or
+   for groups defined by an 'UNTIL' sequence plus individual atoms.
+   The units are degrees squared for L, and Angstrom squared for T
+%  LOOP
+ DEFINE A NEW GROUP. Type END to terminate.
+%  VERIFY YES NO
+%  ON ERROR RESTART
+%  ON END TERMINATE
+%      GET NOSTORE FINAL ABBREVIATED  -
+   'Do you want to use all atoms? (END to terminate)' 'YES'
+%  IF VALUE .EQ. 1 THEN
+%      COPY 'ATOM FIRST UNTIL LAST'
+%      COPY 'TLS'
+%  ELSE
+%      ON END TERMINATE
+%      VERIFY YES NO
+%      COPY 'ATOM '
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Atoms linked by UNTIL ?' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        LOOP
+%          ON END TERMINATE
+%          CLEAR
+%          INSERT 'CONTINUE '
+%          GET KEYWORD 'First atom type (END to finish)'
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') UNTIL '
+%          GET KEYWORD 'to second atom type'
+%          INSERT '('
+%          GET FINAL INTEGER 'serial'
+%          INSERT ') '
+%          SEND
+%          CLEAR
+%        END LOOP
+%      END IF
+%%
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Individual atoms ?' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        ON END TERMINATE
+%        CLEAR
+%        INSERT 'CONTINUE '
+^^GR STATUS SENDB
+%        LOOP
+%          ON END TERMINATE
+%          GET TEXT 'Atom (END to finish)'
+%        END LOOP
+%        SEND
+%        CLEAR
+%      END IF
+%  END IF
+%  COPY 'TLS'
+%  COPY 'EXECUTE'
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+   'Do you want centroid re-cycling' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%    COPY 'TLS'
+%    COPY 'EXECUTE'
+%  END IF
+%  CLEAR
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED -
+      'Save this matrix?' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%        COPY 'SAVE'
+%  END IF
+%  END LOOP
+%  COPY 'END'
+%END SCRIPT

@@ -1,0 +1,146 @@
+%SCRIPT INLIST13
+%% CRYSTALS experimental conditions script
+%  VARIABLE INTEGER ABSORPTION RADIATION ORIENTTYPE
+%  VARIABLE CHARACTER CTYPE
+%  VARIABLE LOGICAL READORIENT
+Input of experimental conditions for your structure
+----- -- ------------ ---------- --- ---- ---------
+                                                 use  END  to abandon input
+%  ON ERROR REPEAT
+%  ON END TERMINATE
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you have the information necessary in a file' 'NO'
+%  IF VALUE .EQ. 1 THEN
+The list containing the conditions should be in a file, e.g. ZAP.SCF.
+%
+%    BLOCK
+%      ON END TERMINATE
+%      ON ERROR RESTART
+%      CLEAR
+%      INSERT '#USE '
+%      GET FINAL FILENAME 'File containing LIST 13'
+%      SEND
+%    END BLOCK
+%    FINISH
+%  ELSE
+%    BLOCK
+%      ON END TERMINATE
+%      ON ERROR RESTART
+%      IF RADIATION .LE. 0 THEN
+%        VERIFY CU MO
+%        GET NOSTORE VERIFIED 'Radiation used' 'MO'
+%        EVALUATE RADIATION = VALUE
+%      END IF
+%
+%      QUEUE REWIND
+%      CLEAR
+%        VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+"Do you want to apply Friedel's law?" 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        INSERT 'CRYSTAL FRIEDEL = YES '
+%      ELSE
+%        INSERT 'CRYSTAL FRIEDEL = NO '
+%      END IF
+%      QUEUE SEND
+%      CLEAR
+%        CASE RADIATION
+%      INSERT 'CONDITION 1.5418 13.218 90 0.5871488 0.6425348 0.0001788'  %CU%
+%      INSERT 'CONDITION 0.71073 6.05 90 0.5871488 0.6425348 0.0001788'   %MO%
+%        END CASE
+%        QUEUE SEND
+%        CLEAR
+%      BLOCK
+%      ON END TERMINATE
+%      VERIFY YES NO
+%  GET NOST FIN VER 'Do you want to specify the crystals orientation' -
+         'NO'
+%      IF VALUE .EQ. 1 THEN
+%        ON END TERMINATE
+%        INSERT 'DIFFRACTION GEOMETRY ='
+%        VERIFY CAD4 KAPPA EQUI ROLLETT NONE
+%        GET VERIFIED 'Diffraction geometry' 'ROLLETT'
+NOTE - 'ROLLETT' is a theoretical geometry described in Crystallographic 
+Computing, 1969, and gives approximate corrections for most machines.
+%        EVALUATE CTYPE = CVALUE
+%        QUEUE SEND
+%        CLEAR
+%        IF CTYPE .EQ. 'EQUI' THEN
+Give the zone axis, ( P, Q, R, S)
+%           ON END TERMINATE
+%          CLEAR
+%          INSERT 'AXIS '
+%          GET INTEGER 'P'
+%          GET INTEGER 'Q'
+%          GET INTEGER 'R'
+%          GET FINAL INTEGER 'S'
+%          QUEUE SEND
+%          CLEAR
+%        END IF
+%
+%        VERIFY MATRIX TWO THREE
+%        GET NOSTORE FINAL ABBREV -
+         'How do you want to specify the orientation of your crystal'
+%        EVALUATE ORIENTTYPE = VALUE
+%        CASE ORIENTTYPE RANGE 1 2
+%          BLOCK                                                      %MATRIX%
+You must specify nine elements for the orientation matrix (R11 - R33)
+%            ON END TERMINATE
+%            CLEAR
+%            INSERT 'MATRIX'
+%            GET REAL 'R11'
+%            GET REAL 'R12'
+%            GET REAL 'R13'
+%            QUEUE SEND
+%            CLEAR
+%            INSERT 'CONTINUE'
+%            GET REAL 'R21'
+%            GET REAL 'R22'
+%            GET REAL 'R23'
+%            QUEUE SEND
+%            CLEAR
+%            INSERT 'CONTINUE'
+%            GET REAL 'R31'
+%            GET REAL 'R32'
+%            GET FINAL REAL 'R33'
+%            QUEUE SEND
+%          END BLOCK
+%        BLOCK
+Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
+%        LOOP ORIENTTYPE TIMES                                %TWO AND THREE%
+%            ON END TERMINATE
+%            CLEAR
+%            STORE KEYWORD ORIENTTYPE
+%            GET INTEGER 'H'
+%            GET INTEGER 'K'
+%            GET INTEGER 'L'
+%            QUEUE SEND
+%            CLEAR
+%            INSERT 'CONTINUE'
+%            GET REAL 'THETA'
+%            GET REAL 'OMEGA'
+%            GET REAL 'CHI'
+%            GET REAL 'PHI'
+%            GET REAL 'KAPPA'
+%            GET FINAL REAL 'PSI'
+%            QUEUE SEND
+%            CLEAR
+%          END LOOP
+%          END BLOCK
+%        END CASE
+%%      ELSE
+%%        IF ( CTYPE .NE. "EQUI" ) THEN
+%%          INSERT 'MATRIX'
+%%          QUEUE SEND
+%%          CLEAR
+%%        END IF
+%      END IF
+%      END BLOCK
+%      CLEAR
+%      COPY '#LIST 13'
+%      QUEUE PROCESS
+%      COPY 'END'
+%    END BLOCK
+%  END IF
+%END SCRIPT

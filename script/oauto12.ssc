@@ -1,0 +1,221 @@
+%SCRIPT AUTO12
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บThis SCRIPT leads you through least squares refinement.                     บ
+บIt assumes the structure is small enough for full matrix refinement         บ
+บand that there are no problems with disorder etc.                           บ
+บIt chooses refinement tyes only on the basis of R factor                    บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+     a SCRIPT to help set up refinement directives. It assumes that any 
+Hydrogen atoms come after all other types of atom in the atom list.
+% END IF
+%  VARIABLE LOGICAL EXTINCT OPTIM HPOS
+%  EVALUATE EXTINCT = FALSE
+%  EVALUATE OPTIM = FALSE
+%  EVALUATE HPOS = FALSE
+%  VARIABLE INTEGER ISER ISTAGE
+%  VARIABLE CHARACTER CTYPE CZAP CISER
+%  VARIABLE CHARACTER CPARAM CPARAM2
+%        EVALUATE CPARAM2 =  ' '
+%        EVALUATE ISTAGE = 0
+%%
+%% R-FACTOR THRESHOLDS FOR VARIOUS CASES
+%  VARIABLE REAL R1 R2 R3 R4 RMIN
+%% Fourier might be better
+%  EVALUATE R1 = 40.0
+%% Isotropic refinement
+%  EVALUATE R2 = 20.0
+%% Aniso 
+%  EVALUATE R3 = 10.0
+%% Tidy up
+%  EVALUATE R4 = 6.0
+%%
+%% R, OSCALE, RATIO are set in SCRIPT RFACTOR
+%  VARIABLE REAL R OSCALE RATIO
+%  VARIABLE CHARACTER CRVAL
+%  VARIABLE REAL ELECTRON SERIAL
+%% make sure we have a valid LIST 12 of some sort
+%  COPY '#LIST 12 '
+%  COPY 'FULL'
+%  COPY 'END'
+% LOOP
+%    COPY '#SCRIPT RFACTOR'
+%    IF RATIO .GE. 1.3 THEN
+%% we need the R factor on a good scale
+       Recomputing over-all scale factor and phases
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SCRIPT RFACTOR'
+%    END IF
+%    EVALUATE RMIN = R
+%    CLEAR
+%    ON ERROR TERMINATE
+%%
+%    CLEAR
+%    INSERT 'The current R factor is greater than '
+%    IF R .GT. R1 THEN
+ Large R factor - It might be best to do Fourier refinement, otherwise
+ only refine positions.
+%      STORE FORMAT /(F6.2)/ LENGTH 6 REAL R1
+%      SEND
+%      CLEAR
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to do Fourier refinement' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SCRIPT AFOUR'
+%        EVALUATE CPARAM = "   "
+%      ELSE
+%        EVALUATE CPARAM = " X'S "
+%      END IF
+%      EVALUATE ISTAGE = 1
+%    ELSE IF ( R .GT. R2 ) .OR. ( ISTAGE .LE. 1 ) THEN
+     Medium R factor - Refine positions and U[iso]
+%      STORE FORMAT /(F6.2)/ LENGTH 6 REAL R2
+%      SEND
+%      CLEAR
+%      COPY '#EDIT'
+%      COPY 'MONITOR OFF'
+%%     Just in case we get here from aniso
+%      COPY 'UEQUIV FIRST UNTIL LAST'
+%      COPY 'MONITOR MEDIUM'
+%      COPY 'END'
+%      EVALUATE CPARAM = " X'S, U[ISO] "
+%      EVALUATE ISTAGE = 2
+%%
+%    ELSE IF ( R .GT. R3 ) .AND. ( ISTAGE .LE. 2 ) THEN
+     Low R factor - Refine positions and Uaniso
+%      STORE FORMAT /(F6.2)/ LENGTH 6 REAL R3
+%      SEND
+%      CLEAR
+%      EVALUATE CPARAM = " X'S, U'S "
+%      EVALUATE ISTAGE = 3
+%%
+%    ELSE
+%      IF ( R .GT. R3 ) THEN 
+      R factor is large after aniso refinement. Perhaps there is missing 
+      solvent, disorder or some other problem. CRYSTALS will try an 
+      extinction correction, but it may make matters worse.
+%        EVALUATE CPARAM2 =  ' EXTPARAM'
+%        EVALUATE EXTINCT = TRUE
+%      ELSE
+          Very low R factor - Begin to tidy up
+%      END IF
+%      IF HPOS .EQ. FALSE THEN
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to try to locate Hydrogen atoms?' 'YES'
+%        IF VALUE .EQ. 1 THEN
+%          COPY '#SCRIPT FINDH'
+%          VERIFY YES NO
+%          GET NOSTORE FINAL ABBREVIATED  -
+ 'Have all H atoms been located?' 'YES'
+Remember - the data may not be good enough to reveal all H atoms
+%          IF VALUE .EQ. 1 THEN
+%            EVALUATE HPOS = TRUE
+%          END IF
+%          COPY '#SFLS'
+%          COPY 'CALC'
+%          COPY 'END'
+%          EVALUATE CPARAM = " X'S, U'S "
+%        END IF
+%      ELSE
+%        IF EXTINCT .EQ. FALSE THEN
+ You will be shown an analysis of residuals.
+
+ If the entries near the bottom of column 3 are generally lower than
+    those in column 4, you need to refine an extinction parameter.
+%          COPY '#PAUSE 5'
+%          EVALUATE EXTINCT = TRUE
+%          COPY '#ANALYSE'
+%          COPY 'END'
+%%        refine everything anyway
+%          EVALUATE CPARAM = " X'S, U'S "
+%          VERIFY YES NO
+%          GET NOSTORE FINAL ABBREVIATED  -
+          'Do you want to refine an extinction parameter?' 'YES'
+%          IF VALUE .EQ. 1 THEN
+%            EVALUATE CPARAM2 =  ' EXTPARAM'
+%          END IF
+%        END IF
+%      END IF
+%%
+%    END IF
+%    QUEUE REWIND
+%    QUEUE COPY #LIST 12
+%    CLEAR
+%    STORE CHARACTER 'FULL ' // CPARAM // CPARAM2
+%    QUEUE SEND
+%    CLEAR
+%%
+%% Find the last hydrogen atoms
+%     TRANSFER "#GENERALEDIT 5" TO CRYSTALS
+%     TRANSFER "LOCATE RECORDTYPE=101" TO CRYSTALS
+%     TRANSFER "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" -
+     TO CRYSTALS
+%     TRANSFER "TOP" TO CRYSTALS
+%% get serial and type
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       TRANSFER "NEXT" TO CRYSTALS
+%%    get element type
+%         TRANSFER "TRANSFER FROM OFFSET=0 TO CTYPE" TO CRYSTALS
+%       IF ( ctype  .EQ. "H" ) THEN
+%         TRANSFER "TRANSFER FROM OFFSET=1 TO SERIAL" TO CRYSTALS
+%         EVALUATE ISER = INTEGER SERIAL
+%         EVALUATE CISER = CHARACTER ISER
+%         CLEAR
+%         STORE CHARACTER -
+   "FIX " // CTYPE // "(" // CISER // "," // CPARAM // ") UNTIL LAST"
+%         QUEUE SEND
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END LOOP
+%     TRANSFER "END" TO CRYSTALS
+%%
+%    QUEUE COPY END
+%    QUEUE PROCESS
+%   COPY '#SUM LIST 12'
+%   COPY 'END'
+%   COPY '#LIST 22'
+%   COPY 'END'
+%%
+%   IF ( OPTIM .EQ. FALSE  ) .AND. ( R .LE. R4 ) .AND. -
+    ( EXTINCT .EQ. TRUE ) THEN
+%     VERIFY YES NO
+%     GET NOSTORE FINAL ABBREVIATED  -
+      'Do you want to check the least squares weights?' 'YES'
+%     IF VALUE .EQ. 1 THEN
+%       COPY '#SCRIPT WEIGHTS'
+%       EVALUATE OPTIM = TRUE
+%     END IF
+%   END IF
+%   COPY '#SCRIPT REFINE'
+%   COPY '#SCRIPT RFACTOR'
+ Test for near convergence of the R factor
+%   IF R .GE. RMIN * 0.99 THEN
+%     VERIFY YES NO
+%     GET NOSTORE FINAL ABBREVIATED  -
+      'Do you want to continue refinement?' 'YES'
+%     IF VALUE .EQ. 2 THEN
+ You will be shown your structure again.  If you need to, edit it and 
+ continue refinenent.
+%       COPY '#SCRIPT PLOT'
+
+%       VERIFY YES NO
+%       GET NOSTORE FINAL ABBREVIATED  -
+        'Do you want to continue refinement?' 'YES'
+%       IF VALUE .EQ. 2 THEN
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END IF
+%   END IF
+%   EVALUATE RMIN = R
+% END LOOP
+%END SCRIPT

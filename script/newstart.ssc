@@ -1,0 +1,96 @@
+%SCRIPT NEWSTART
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ CRYSTALS has powerfull reflection processing instructions, able to use     บ
+บ data in many formats, from more than one crystal, suffering from decay     บ
+บ and from twinned crystals. To make use of these facilities, you must       บ
+บ read the printed manual.                                                   บ
+บ This SCRIPT processes data prepared by the CAD4 data preprocessor RC85     บ
+บ in the 'standard' SHELX format, and most other formats that contain h,k    บ
+บ l and structure factor information. It handles F, F**2 and I data.         บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 5'
+% ELSE
+Script for starting on a new structure
+% END IF
+%
+%  BLOCK
+%  COPY '#DISK'
+%  COPY 'EXTEND SIZE=10 TRIES=1000'
+%  COPY 'END'
+%  END BLOCK
+Files INITIAL.* will be created in your directory. They may be important.
+%  COPY '#RELEASE PRINT INITIAL.LIS'
+%  COPY '#RELEASE LOG INITIAL.DAT'
+%  COPY '#LIST 28'
+%  COPY 'END'
+%  COPY '#LIST 4'
+%  COPY 'END'
+%%
+     Input a title for your structure
+%      CLEAR
+%      INSERT '#TITLE'
+%      GET TEXT 'Title'
+%      SEND
+%
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%  VERIFY BACK HELP INCAD4 DIPIN QUICKSTART Y290 INITIAL DATA MODIFY -
+   LOOK
+%    GET NOSTORE FINAL ABBREVIATED 'Which operation?' 'HELP'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+      This script helps you get in the basic data for a new structure
+      BACK        End this script
+      HELP        Display this help text
+      INCAD4      Input CAD4 data from the RC85 or RC93 program
+      DIPIN       Input data from DIP2000
+      QUICKSTART  Simplified startup using reflections in SHELX format
+      Y290        Input format for Hilger & Watts Y290 'Nottingham' format
+      INITIAL     Generalised startup for non-RC85 data formats
+      DATA        General data input script
+      MODIFY      Modify existing lists
+      LOOK        Examine existing lists
+      DIRECT      Return to command mode
+%      END BLOCK
+%%
+%      BLOCK                                         %INCAD4%
+%        COPY '#SCRIPT INCAD4'
+%      END BLOCK
+%%
+%      BLOCK                                         %DIPIN%
+%        COPY '#SCRIPT DIPIN'
+%      END BLOCK
+%%
+%      BLOCK                                         %QUICKSTART%
+%        COPY '#SCRIPT QUICKST'
+%      END BLOCK
+%%
+%      BLOCK                                         %INY290%
+%        COPY '#SCRIPT INY290'
+%      END BLOCK
+%%
+%      BLOCK                                         %INITIAL%
+%        COPY '#SCRIPT INITIAL'
+%      END BLOCK
+%%
+%      BLOCK                                         %DATA%
+%        COPY '#SCRIPT DATA'
+%      END BLOCK
+%%
+%      BLOCK                                         %MODIFY%
+%        COPY '#SCRIPT MODIFY'
+%      END BLOCK
+%%
+%      BLOCK                                         %LOOK%
+%        COPY '#SCRIPT LOOK'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

@@ -1,0 +1,72 @@
+%SCRIPT INLIST23
+% VARIABLE INTEGER FSQ
+% CLEAR
+% BLOCK
+%   ON ERROR REPEAT
+%   ON END TERMINATE
+%   QUEUE REWIND
+%   CLEAR
+Structure factor control list
+-----------------------------
+                                                   use  END  to abandon input
+%    CLEAR
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Should /FC/ be modified for anomalous scattering' 'NO'
+%    INSERT 'MODIFY ANOMALOUS='
+%    STORE KEYWORD VALUE
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Will you refine the Flack enantiopole parameter ' 'NO'
+%    INSERT ' ENANTIO='
+%    STORE KEYWORD VALUE
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you wish to allow for the effects of extinction' 'NO'
+%    INSERT ' EXTINCTION='
+%    STORE KEYWORD VALUE
+%    QUEUE SEND
+%    CLEAR
+%%
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you wish to use LIST 6 reflections? ' 'YES'
+%    INSERT 'MINIMISE REFLECTION='
+%    STORE KEYWORD VALUE
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you wish to use LIST 16 restraints? ' 'YES'
+%    INSERT ' RESTRAIN='
+%    STORE KEYWORD VALUE
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you wish to refine against F squared? ' 'NO'
+%    EVALUATE FSQ = VALUE
+%    INSERT ' F-SQ='
+%    STORE KEYWORD VALUE
+%    QUEUE SEND
+%    CLEAR
+%%
+%    VERIFY NO TEST ORIGIN RESTRAIN CONSTRAIN
+%GET NOSTORE VERIFIED 'How shall we treat space group symmetry? ' 'CONSTRAIN'
+%    INSERT 'REFINE SPECIAL = '
+%    STORE KEYWORD VALUE
+%    VERIFY NO OCC PARAM
+%    GET NOSTORE VERIFIED 'Shall we update atoms on special positions? ' 'OCC'
+%    INSERT ' UPDATE ='
+%    STORE KEYWORD VALUE
+%    GET NOSTORE REAL 'Tolerance for coincidence? ' '.6'
+%    INSERT ' TOLER ='
+%    STORE REAL VALUE
+%    QUEUE SEND
+%    COPY '#LIST 23'
+%    QUEUE PROCESS
+%    COPY  'END'
+%%
+%   IF FSQ .EQ. 1 THEN
+    The weights have been adjusted for F sq refinement.
+    Check the manual for details
+%     COPY '#LIST 4'
+%     COPY 'SCHEME 9 TYPE=1/2F'
+%     COPY 'END'
+%   END IF
+%%
+% END BLOCK
+%%
+%END SCRIPT

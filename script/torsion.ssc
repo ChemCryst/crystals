@@ -1,0 +1,58 @@
+%SCRIPT TORSION
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This SCRIPT computes the torsion angles defined by groups of four atoms    บ
+บ A positive angle rotates the plane defined by atoms 1,2 amd 3 into the     บ
+บ plane defined by atoms 3,4 and 4 in a clockwise direction about the        บ
+บ vector defined by atoms 2 and 3 in that order.                             บ
+บ Atoms 1,2 amd 3 must be given explicitly. Atom 4 can either be a single    บ
+บ atom or a series of atoms defined by an until sequence                     บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to compute torsion angles
+% END IF
+%  VARIABLE LOGICAL LATOM
+%  QUEUE REWIND
+%  LOOP
+%    VERIFY YES NO
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    CLEAR
+   Enter atoms to define a torsion angle - use END to terminate input
+%    INSERT 'ATOM '
+%    GET KEYWORD 'First atom type (END to finish)'
+%    INSERT '('
+%    GET INTEGER 'serial'
+%    INSERT ')  '
+%    GET KEYWORD 'to second atom type'
+%    INSERT '('
+%    GET INTEGER 'serial'
+%    INSERT ') '
+%    GET KEYWORD 'to third atom type'
+%    INSERT '('
+%    GET FINAL INTEGER 'serial'
+%    INSERT ') '
+%    QUEUE SEND
+%    CLEAR
+ The fourth atom may be a single atom, or a string of atoms.
+%        CLEAR
+%        INSERT 'CONTINUE '
+%        LOOP
+%          ON END TERMINATE
+%          GET KEYWORD 'Atom type (END to finish)'
+%          EVALUATE LATOM = TRUE
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') '
+%        END LOOP
+%        QUEUE SEND
+%        CLEAR
+%  END LOOP
+%  IF LATOM THEN
+%    COPY '#TORSION'
+%    COPY 'PUBLICATION PRINT=CIF'
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END IF
+%END SCRIPT

@@ -1,0 +1,137 @@
+%SCRIPT XSELECT
+%%
+%% This is a general purpose script for displaying a list of options
+%% to the user.
+%% On the left is some text. ie. "Choose an option". This can be up to 
+%% 20 lines and is held in QLINE1, QLINE2 ... QNLINES holds the total
+%% number.
+%% In the center is a list box with the options. When the user single 
+%% clicks an options, or moves to it with the cursor keys some help
+%% text is displayed at the bottom of the box. The list items are held
+%% in QLIST1, QLIST2 ... QNITEMS holds the total number. The help text
+%% is in QHELP1, QHELP2 ... again QNITEMS holds the total.
+%% On the right are two buttons, their text is in BUTTOK and BUTTXX
+%% The return values for the calling script are in QANSWER which is
+%% TRUE if BUTTOK was clicked, or if the user double-clicked a list
+%% item. QCANSWER contains the text of the list item selected, and 
+%% QIANSWER contains its index. (Starting from 1 for the first item).
+%%  
+%% Inputs...
+%VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QHELP1
+%VARIABLE INTEGER QNITEMS QVLINES QNLINES
+%% Don't forget QHELP1-20, QLINE1-20 and QTEXT1-20. These are declared
+%% on the fly if needed!
+%%
+%% Outputs...
+%VARIABLE LOGICAL   QANSWER
+%VARIABLE CHARACTER QCANSWER
+%VARIABLE INTEGER   QIANSWER
+%%
+%% Internal only...
+%VARIABLE INTEGER N
+%VARIABLE CHARACTER QNAME QTEXT QHELP
+%%
+%BLOCK
+%VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+%    TRANSFER "^^WI WINDOW SELECTI '" // QTITLE // "' MODAL " TO DISPLAY 
+%%MAIN GRID IS THREE HORIZONTAL CELLS
+^^WI STARTGRID GRMAIN 'N' NROWS=5 NCOLS=3
+%% THIS GRID IS THREE VERTICAL CELLS IN THE MAIN TOP CELL
+^^WI   STARTGRID ROW=2 COL=2 GRLCR  'N' NROWS=1 NCOLS=3
+%% THIS GRID IS THE LEFT VERTICAL CELL it contains QNLINES of text
+%        TRANSFER "^^WI   STARTGRID ROW=1 COL=1 GRTEX  'N' NROWS=" -
+         // KEYWORD QNLINES // " NCOLS=1" TO DISPLAY 
+%        LOOP
+%          ON ERROR TERMINATE
+%          EVALUATE LOOPEND = QNLINES
+%          EVALUATE N = LOOPCOUNTER
+%          TRANSFER '%EVALUATE QNAME = "QLINE' // KEYWORD N // '"' TO SCRIPT
+%          TRANSFER '%VARIABLE CHARACTER ' // QNAME // ' ' TO SCRIPT
+%          TRANSFER '%EVALUATE QTEXT = ' // QNAME // ' ' TO SCRIPT
+%          TRANSFER "^^WI STATIC ROW=" // KEYWORD N // " COL=1 " // QNAME // - 
+           " '" // QTEXT // "'" TO DISPLAY
+%        END LOOP
+^^WI     ENDGRID
+%% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox with QVLINES visible
+^^WI     STARTGRID ROW=1 COL=2 GRLIST 'N' NROWS=1 NCOLS=3
+%          TRANSFER "^^WI LISTBOX ROW=1 COL=2 LIST01 VISLINES=" // - 
+           KEYWORD QVLINES TO DISPLAY
+%          LOOP
+%          ON ERROR TERMINATE
+%            EVALUATE LOOPEND = QNITEMS
+%            EVALUATE N = LOOPCOUNTER
+%            TRANSFER '%EVALUATE QNAME = "QLIST' // KEYWORD N // '"' TO SCRIPT
+%            TRANSFER '%VARIABLE CHARACTER ' // QNAME // ' ' TO SCRIPT
+%            TRANSFER '%EVALUATE QTEXT = ' // QNAME // ' ' TO SCRIPT
+%            TRANSFER "^^WI '" // QTEXT // "'" TO DISPLAY
+%          END LOOP
+%%Finish off the list with an NULL - or there'll be trouble.
+^^WI     'NULL'
+^^WI     ENDGRID
+%% THIS GRID IS THE RIGHT VERTICAL CELL it contains the Ok and Cancel buttons
+^^WI     STARTGRID ROW=1 COL=3 GRBUTT 'N' NROWS=3 NCOLS=3
+%          TRANSFER '^^WI BUTTON ROW=1 COL=2 BUTTONOK ' // BUTTOK // -
+           ' COMMIT' TO DISPLAY
+%          TRANSFER '^^WI BUTTON ROW=3 COL=2 BUTTONXX ' // BUTTXX // - 
+           ' CANCEL' TO DISPLAY
+^^WI     ENDGRID
+^^WI   ENDGRID
+%% THIS GRID IS THE BOTTOM ROW OF THE MAIN GRID it contains a help text.
+%% The only reason for using a grid is to add the outline to it.
+^^WI   STARTGRID ROW=4 COL=2 GRIDHLP '' NROWS=1 NCOLS=1 OUTLINE
+%        TRANSFER "^^WI STATIC ROW=1 COL=1 HELP " TO DISPLAY
+%        TRANSFER "^^WI '" // QHELP1 // "'" TO DISPLAY
+^^WI   ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+% END BLOCK
+%%
+%%END OF DEFINITION, HERE THE PROCESSING BEGINS:-
+%%
+% BLOCK
+% LOOP
+^^WI SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%   VERIFY BUTTONOK BUTTONXX LIST01
+%   GET FINAL FILL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%       BLOCK                        %OK BUTTON%
+%          EVALUATE QANSWER = TRUE
+^^WI       SET _MAINTEXTOUTPUT NOECHO
+^^WI       GETVALUE LIST01
+^^CR
+%          GET NOSTORE INTEGER ' '
+%          EVALUATE N = VALUE
+%          EVALUATE QIANSWER = N
+%    VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+%    TRANSFER '%EVALUATE QNAME = "QLIST' // KEYWORD N // '"' TO SCRIPT
+%    TRANSFER '%VARIABLE CHARACTER ' // QNAME TO SCRIPT
+%    TRANSFER '%EVALUATE QCANSWER = ' // QNAME TO SCRIPT
+^^WI 	   DISPOSE SELECTI
+^^CR
+%    FINISH
+%       END BLOCK
+%       BLOCK                       %CANCEL BUTTON%
+%          EVALUATE QANSWER = FALSE
+^^WI       DISPOSE SELECTI
+^^CR
+%          FINISH
+%       END BLOCK
+%       BLOCK                       %LIST CHANGED%
+^^WI            SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%               GET NOSTORE INTEGER ' '
+%               EVALUATE N = VALUE
+%    VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+%    TRANSFER '%EVALUATE QNAME = "QHELP' // KEYWORD N // '"' TO SCRIPT
+%    TRANSFER '%VARIABLE CHARACTER ' // QNAME TO SCRIPT
+%    TRANSFER '%EVALUATE QTEXT = ' // QNAME TO SCRIPT
+%    TRANSFER "^^WI SET HELP TEXT="    TO DISPLAY
+%    TRANSFER "^^WI '" // QTEXT // "'" TO DISPLAY
+^^CR
+%       END BLOCK
+%   END CASE
+%END LOOP
+%END BLOCK
+%END SCRIPT

@@ -1,0 +1,120 @@
+%SCRIPT PLANE
+% VARIABLE LOGICAL EXSLANT
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ The script PLANE uses the CRYSTALS command MOLAX, which computes the       บ
+บ best planes and lines (molecular axes) through groups of atoms, and the    บ
+บ angles between these important molecular parameters.                       บ
+บ Each plane normal and best line is given a serial number as it is          บ
+บ computed. If you want to compute the angle between any of these vectors    บ
+บ make a note  of their serial numbers                                       บ
+บ The angle between two plane normals is the dihedral angle of the planes    บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to compute best lines and planes
+% END IF
+%  VARIABLE INTEGER NPLANE
+%  COPY '#MOLAX'
+   You have the opportunity to compute the best plane/line through all
+   atoms, or through groups defined by an 'UNTIL' sequence plus
+   individual atoms.
+%  LOOP
+%  VERIFY YES NO
+%  ON ERROR TERMINATE
+%  ON END TERMINATE
+ DEFINE A NEW PLANE. Type END to terminate.
+%      GET NOSTORE FINAL ABBREVIATED  -
+   'Do you want to use all atoms? (END to terminate)' 'YES'
+%  IF VALUE .EQ. 1 THEN
+%      COPY 'ATOM FIRST UNTIL LAST'
+%  ELSE
+%      ON END TERMINATE
+%      VERIFY YES NO
+%      COPY 'ATOM '
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Atoms linked by UNTIL ?' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        LOOP
+%          ON END TERMINATE
+%          CLEAR
+%          INSERT 'CONTINUE '
+%          GET KEYWORD 'First atom type (END to finish)'
+%          IF CVALUE .NE. 'FIRST' THEN
+%            INSERT '('
+%            GET INTEGER 'serial'
+%            INSERT ') '
+%          END IF
+%          INSERT ' UNTIL '
+%          GET KEYWORD 'to second atom type'
+%          IF CVALUE .NE. 'LAST' THEN
+%            INSERT '('
+%            GET FINAL INTEGER 'serial'
+%            INSERT ') '
+%          END IF
+%          SEND
+%          CLEAR
+%        END LOOP
+%      END IF
+%%
+%      GET NOSTORE FINAL ABBREVIATED  -
+           'Individual atoms ?' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        ON END TERMINATE
+%        LOOP
+%          CLEAR
+%          INSERT 'CONTINUE '
+%          ON END TERMINATE
+%          GET KEYWORD 'Atom type (END to finish)'
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') '
+%          SEND
+%        END LOOP
+%        CLEAR
+%      END IF
+%  END IF
+%  COPY 'EXECUTE'
+%      CLEAR
+%      VERIFY PLANE LINE
+%      GET FINAL APPEND FILL ABBREVIATED  -
+      'Best plane or line?' 'PLANE'
+%      SEND
+%      COPY 'EXECUTE'
+%      IF EXSLANT .EQ. TRUE THEN
+%        CLEAR
+%        VERIFY YES NO
+%        GET NOSTORE FINAL ABBREVIATED -
+        'Save this matrix?' 'YES'
+%        IF VALUE .EQ. 1 THEN
+%          COPY 'SAVE'
+%        END IF
+%        COPY 'EXECUTE'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE NPLANE = NPLANE + 1
+%      END IF
+%  END LOOP
+%  IF NPLANE .GT. 1 THEN
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+     'Do you want to compute any inter vector angles?' 'NO'
+%      IF VALUE .EQ. 2 THEN
+%            COPY 'END'
+%            FINISH
+%      END IF
+%    LOOP
+%      ON ERROR RESTART
+%      ON END TERMINATE
+     Give the serial numbers of the pairs of vectors (END to exit)
+%      CLEAR
+%      INSERT 'ANGLE '
+%      GET INTEGER 'First serial number'
+%      INSERT ' AND '
+%      GET FINAL INTEGER 'second serial number'
+%      SEND
+%      COPY 'EXECUTE'
+%    END LOOP
+%  END IF
+%  COPY 'END'
+%END SCRIPT

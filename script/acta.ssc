@@ -1,0 +1,47 @@
+%SCRIPT ACTA
+%%
+%% A Script to check some constants against some of the ACTA
+%% submission requirements.
+%%
+%    VARIABLE INTEGER ERRFLAG
+%    VARIABLE CHARACTER CDLINE
+%    EVALUATE ERRFLAG = 0
+ Checking data against some IUCr submission requirements...
+%    VARIABLE REAL MINSIZE MIDSIZE MAXSIZE
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO MINSIZE'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO MIDSIZE'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO MAXSIZE'
+%    COPY 'END'
+%    IF MINSIZE .GT. 0.6 THEN
+ FAIL: Minimum crystal dimension greater then 0.6mm
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    END IF
+%    IF MIDSIZE .GT. 0.8 THEN
+ FAIL: Medium crystal dimension greater then 0.8mm
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    END IF
+%    IF MAXSIZE .GT. 1.0 THEN
+ FAIL: Maximum crystal dimension greater then 1.0mm
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    END IF
+%    IF ERRFLAG .GT. 0 THEN
+%    CLEAR
+%    INSERT !%EVALUATE CDLINE = "Failed !
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ERRFLAG
+%    IF ERRFLAG .EQ. 1 THEN
+%       INSERT ! check. "!
+%    ELSE
+%       INSERT ! checks. "!
+%    END IF
+%    EXECUTE
+
+%    TRANSFER CDLINE TO DISPLAY
+%    ELSE
+
+All checks passed successfully. 
+Email a CIF to checkcif@iucr.ac.uk for more 
+detailed and up to date checks.
+%END IF
+%END SCRIPT

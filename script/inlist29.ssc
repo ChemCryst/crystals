@@ -1,0 +1,70 @@
+%SCRIPT INLIST29
+%% CRYSTALS script for input of LIST 29 from library file
+%  VARIABLE INTEGER ELEMENTCOUNT RADIATION
+%  EVALUATE ELEMENTCOUNT = 0
+Input details of the elements in the asymmetric unit
+----- ------- -- --- -------- -- --- ---------- ----
+      If you are going to use SHELXS to solve the structure, remember
+      to give C and H first, if present in your compound.
+%
+%  IF RADIATION .LE. 0 THEN
+%    VERIFY CU MO
+%    GET FINAL VERIFIED 'Radiation' 'MO'
+%    EVALUATE RADIATION = VALUE
+%  END IF
+%  EVALUATE ELEMENTCOUNT = 0
+%    COPY '#OPEN SCPDATA CRSCP:PROPERTIES'
+%
+%  MESSAGE USER1 'An invalid element name was given ( ignored )'
+%
+%  QUEUE REWIND
+%  LOOP
+%    ON END TERMINATE
+%    ON ERROR REPEAT USER1
+%
+%    CLEAR
+%    INSERT '%EXTRACT FIND STRING "'
+%    GET APPEND KEYWORD -
+      'Element name ( Use END, on a line by itself, to end input )'
+%    INSERT '"'
+%    EXECUTE SEND
+%
+%    CLEAR
+%    INSERT 'ELEM '
+%    EXTRACT TRANSFER COMMAND
+%    QUEUE SEND
+%
+%    EXTRACT NEXT
+%    IF RADIATION .EQ. 2 THEN
+%      EXTRACT NEXT
+%    END IF
+%    CLEAR
+%    EXTRACT TRANSFER COMMAND
+%    QUEUE SEND
+%
+%    BLOCK
+%      ON ERROR REPEAT
+%      CLEAR
+%      INSERT 'CONTINUE NUMBER = '
+%      GET REAL 'Number of this element in the asymmetric unit'
+%      QUEUE SEND
+%    END BLOCK
+%
+%    EVALUATE ELEMENTCOUNT = ELEMENTCOUNT + 1
+%
+%  END LOOP
+%
+%  IF ELEMENTCOUNT .GT. 0 THEN
+%    COPY '#LIST 29'
+%    CLEAR
+%    INSERT 'READ NELEMENT = '
+%    STORE INTEGER ELEMENTCOUNT
+%    SEND
+%    QUEUE PROCESS
+%    COPY 'END'
+%  ELSE
+      You have not specified any elements. No data has been stored
+%  END IF
+%
+%  FINISH
+%END SCRIPT

@@ -1,0 +1,68 @@
+%SCRIPT SHELXS
+%%  CRYSTALS link to 'SHELXS'
+This script prepares a SHELXS default data file and submits a SHELXS batch job.
+If the first task fails to solve the structure, you can rerun this SCRIPT
+to set up a non-default (i.e. more comprehensive) task.
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%    FINISH
+%  END IF
+%% write a SHELXS data file
+%    BLOCK
+%      VERIFY YES NO
+%      GET NOSTORE YESNO -
+    'Is this your first try on this compound with SHELXS' 'YES'
+%%
+%      IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#FOREIGN SHELXS '
+%          COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SHELXS, type SHELXS
+%            COPY '#PAUSE 5'
+%            COPY '#FINISH'
+%          END IF
+%        VERIFY YES NO
+%        GET NOSTORE YESNO -
+         'Do you want to run SHELXS on - line ' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SPAWN SHELXS SHELXS'
+%          FINISH
+%        ELSE
+%%         Run a default SHELXS job
+%          EXTERNAL COPY @CRPROC:SCPBATCH SHELXS SHELXS CRFAST
+%
+      A default batch job submitted to FAST queue. You have 5
+      minutes in which to make changes to the batch data file.
+      The output structure, if the job runs to completion, is
+      in the file SHELXS.CRY
+      The  script MODEL is available to convert this into a LIST 5.
+      If the structure has not solved on these settings, try the
+      script SHELXS again, indicating that the first job failed.
+      Alternatively, you could try SIR or MULTAN.
+%        COPY '#FINISH'
+%        END IF
+%      ELSE
+%        COPY '#FOREIGN SHELXS DIFFICULT'
+%        COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SHELXS, type SHELXS
+%            COPY '#PAUSE 5'
+%            COPY '#FINISH'
+%          END IF
+%        EXTERNAL COPY @CRPROC:SCPBATCH SHELXS SHELXS CRSLOW
+       Non default batch job submitted to SLOW queue.
+      The output structure, if the job runs to completion, is
+      in the file SHELXS.CRY
+      The  script MODEL is available to convert this into a LIST 5.
+      If the structure has not solved on default settings, you
+      must read the SHELXS manual, modify SHELXS.INS, and submit
+      a free standing SHELXS job.
+%        COPY '#FINISH'
+%      END IF
+%      END BLOCK
+%
+%END SCRIPT

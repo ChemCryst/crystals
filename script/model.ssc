@@ -1,0 +1,57 @@
+%SCRIPT TEST
+% BLOCK
+% COPY '#SUM L 5'
+% COPY 'END'
+^^WI WINDOW MODEL 'Structure' SIZE POSITION=RIGHTOF _MAIN
+^^WI CANCEL='^^CO DISPOSE MODEL'
+^^WI STARTGRID                GRID01 'MainGrid' NROWS=3 NCOLS=3
+%%%%%^^WI  PROGRESS ROW=3 COL=2 PROGM 'Ready'
+^^WI  MODELWINDOW ROW=2 COL=2  MODEL01 'N'
+^^WI   NROWS=30 NCOLS=75
+^^WI   ATTACH L5 RADSCALE=500 RADTYPE=COV
+^^WI   DEFINEPOPUPMENU 1 POPUP1 'Not selected'
+^^WI    ITEM _SELEC '&Select All' '^^CO SET MODEL01 SELECT ALL=YES'
+^^WI    ITEM _UNSEL '&Unselect All' '^^CO SET MODEL01 SELECT ALL=NO'
+^^WI    SPLIT
+^^WI    ITEM _LIST5 '&List atoms' '#SUM L 5_NEND' DISABLEIF='IN'
+^^WI   ENDDEFINEMENU
+^^WI   DEFINEPOPUPMENU 2 POPUP2 'Selection'
+^^WI    ITEM _SDELA 
+^^WI           '&Delete _A' 
+^^WI           '#EDIT_NDELETE _A_NEND' 
+^^WI            DISABLEIF='IN'
+^^WI    ITEM _SENVN 
+^^WI           '&Environment' 
+^^WI           '#DIST_NEXCL ALL_NINCL _A_NEND' 
+^^WI            DISABLEIF='IN'
+^^WI    SPLIT
+^^WI    ITEM _GDELA 'Dele&te group' '#SCRIPT DELGRP_N_G' 
+^^WI                                       DISABLEIF='IN'
+^^WI    ITEM _GDELA 'Slant Fourier map' '#SCRIPT XSLANT_N_G' 
+^^WI                             DISABLEIF='SEL1 SEL2 IN'
+^^WI   ENDDEFINEMENU
+^^WI   DEFINEPOPUPMENU 3 POPUP3 'Single'
+^^WI    ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND' 
+^^WI                                                DISABLEIF='IN'
+^^WI    ITEM _ENVN '&Environment of _A' 
+^^WI                '#DIST_NEXCL ALL_NINCL _A_NEND' DISABLEIF='IN'
+^^WI   ENDDEFINEMENU
+^^WI ENDGRID
+^^WI DEFINEMENU MAIN 'NULL'
+^^WI  MENU _FILE '&File'
+^^WI   ITEM _CLOSE '&Close' '^^CO DISPOSE MODEL'
+^^WI  ENDMENU
+^^WI  MENU _VIEW '&View'
+^^WI   ITEM _VDW '&VDW' '^^CO SET MODEL01 RADTYPE=VDW' 
+^^WI   ITEM _COV '&Covalent' '^^CO SET MODEL01 RADTYPE=COV' 
+^^WI   SPLIT
+^^WI   ITEM _1 '&Full radius' '^^CO SET MODEL01 RADSCALE=1000' 
+^^WI   ITEM _2 '&Half radius' '^^CO SET MODEL01 RADSCALE=500' 
+^^WI   ITEM _3 '&Quarter radius' '^^CO SET MODEL01 RADSCALE=250' 
+^^WI  ENDMENU
+^^WI ENDDEFINEMENU
+^^WI SHOW
+^^CR
+%%%%%^^WI SENDPROGRESSTO PROGM
+%%%%%^^CR
+%END SCRIPT

@@ -1,0 +1,190 @@
+%SCRIPT INLIST30
+%% CRYSTALS general data input script
+%  BLOCK
+%    ON ERROR REPEAT
+%    ON END   TERMINATE
+Input of general experimental details
+----- -- ------- ------------ -------
+                                                   use  END  to abandon input
+%    QUEUE REWIND
+%%
+%    CLEAR
+   Data reduction details
+%     INSERT 'DATRED '
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Total number of reflections measured' '0'
+%     INSERT 'CONTINUE NREFMES= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Number of merged reflections ' '0'
+%     INSERT 'CONTINUE NREFMERG= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Merging R factor (Rint, %) ' '0'
+%     INSERT 'CONTINUE RMERGE= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL -
+'Number of merged reflections, keeping Friedel pairs ' '0'
+%     INSERT 'CONTINUE NREFFRIED= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Merging R factor, keeping Friedel pairs ' '0'
+%     INSERT 'CONTINUE RMERGFRIED= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+   Dat collection details
+%     INSERT 'CONDITIONS '
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Minimum crystal dimension (mm) ' '.5'
+%     INSERT 'CONTINUE MINSIZE= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Intermediate crystal dimension (mm) ' '.5'
+%     INSERT 'CONTINUE MEDSIZE= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Maximum crystal dimension (mm) ' '.5'
+%     INSERT 'CONTINUE MAXSIZE= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Number of orientating reflections ' '0'
+%     INSERT 'CONTINUE NORIENT= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Theta min for orientating reflections ' '0.0'
+%     INSERT 'CONTINUE THORIENTMIN= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Theta max for orientating reflections ' '0.0'
+%     INSERT 'CONTINUE THORIENTMAX= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Temperature, K ' '293'
+%     INSERT 'CONTINUE TEMPERATURE= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'number of intensity standards ' '0'
+%     INSERT 'CONTINUE STANDARDS= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Decay, % ' '0'
+%     INSERT 'CONTINUE DECAY= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%%
+%    CLEAR
+   Data collection ranges
+%     INSERT 'INDEXRANGE '
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'h min' '0'
+%     INSERT 'CONTINUE HMIN= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'h max' '0'
+%     INSERT 'CONTINUE HMAX= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'k min' '0'
+%     INSERT 'CONTINUE KMIN= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'k max' '0'
+%     INSERT 'CONTINUE KMAX= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'l min' '0'
+%     INSERT 'CONTINUE LMIN= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'l max' '0'
+%     INSERT 'CONTINUE LMAX= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'theta min' '0'
+%     INSERT 'CONTINUE THETAMIN= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%    CLEAR
+%     GET NOSTORE REAL 'Theta max' '0'
+%     INSERT 'CONTINUE THETAMAX= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+   General information
+%     INSERT 'GENERAL '
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'observed density ' '0'
+%     INSERT 'CONTINUE DOBS= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%     GET NOSTORE REAL 'Number of formula units in cell (Z) '
+%     INSERT 'CONTINUE Z= '
+%     STORE REAL VALUE
+%    QUEUE SEND
+%%
+%    CLEAR
+%    INSERT 'COLOUR '
+%    GET TEXT 'Crytal colour'
+%    QUEUE SEND
+%%
+%    CLEAR
+%    INSERT 'SHAPE '
+%    GET TEXT 'Crystal shape'
+%    QUEUE SEND
+%%
+%%
+%    COPY '#LIST 30'
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END BLOCK
+%%
+%END SCRIPT

@@ -1,0 +1,129 @@
+%SCRIPT SETTINGS
+%%
+%% Internal only...
+%VARIABLE INTEGER N LSETUP LEXTINCT
+%VARIABLE CHARACTER QNAME QTEXT CDLINE
+%VARIABLE REAL RVAL
+%%
+%BLOCK
+^^WI WINDOW SETUP 'Least-squares setup' MODAL SIZE
+%%MAIN GRID IS THREE HORIZONTAL CELLS
+^^WI STARTGRID GRMAIN 'N' NROWS=5 NCOLS=3
+%% THIS GRID IS THREE VERTICAL CELLS IN THE MAIN TOP CELL
+^^WI   STARTGRID ROW=2 COL=2 GRLCR  'N' NROWS=1 NCOLS=3
+%% THIS GRID IS THE LEFT VERTICAL CELL it contains QNLINES of text
+^^WI    STARTGRID ROW=1 COL=1 GRTEX  'N' NROWS=4 NCOLS=1
+^^WI      STATIC ROW=1 COL=1 T1 'Choose an option'
+^^WI    ENDGRID
+%% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox
+^^WI    STARTGRID ROW=1 COL=2 GRLIST 'N' NROWS=1 NCOLS=3
+^^WI       LISTBOX ROW=1 COL=2 LIST01 VISLINES=5
+^^WI       'Refine X`s'
+^^WI       'Refine X`s and U[iso]'
+^^WI       'Refine X`s and U`s'
+^^WI       'Weight reflection data'
+^^WI       'Refine extinction parameter'
+^^WI       'NULL'
+^^WI    ENDGRID
+%% THIS GRID IS THE RIGHT VERTICAL CELL it contains the Ok and Cancel buttons
+^^WI    STARTGRID ROW=1 COL=3 GRBUTT 'N' NROWS=3 NCOLS=3
+^^WI       BUTTON ROW=1 COL=2 BUTTONOK '&Ok' COMMIT
+^^WI       BUTTON ROW=3 COL=2 BUTTONXX '&Back' CANCEL
+^^WI    ENDGRID
+^^WI   ENDGRID
+%% THIS GRID IS THE BOTTOM ROW OF THE MAIN GRID it contains a help text.
+%% The only reason for using a grid is to add the outline to it.
+^^WI   STARTGRID ROW=4 COL=2 GRIDHLP '' NROWS=1 NCOLS=1 OUTLINE
+^^WI     STATIC ROW=1 COL=1 SHELP 
+^^WI     'Refine the co-ordinates of all atoms.                      ' 
+^^WI   ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+% END BLOCK
+%%
+%%END OF DEFINITION, HERE THE PROCESSING BEGINS:-
+%%
+% BLOCK
+% LOOP
+^^WI SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%   VERIFY BUTTONOK BUTTONXX LIST01
+%   GET FINAL FILL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%       BLOCK                        %OK BUTTON%
+^^WI       SET _MAINTEXTOUTPUT NOECHO
+^^WI       GETVALUE LIST01
+^^CR
+%          GET NOSTORE INTEGER ' '
+%          CASE VALUE
+%           BLOCK                                         %SETTINGS%
+%             EVALUATE LSETUP = 1
+%             COPY '#SCRIPT LSETUP'
+^^WI DISPOSE SETUP
+^^CR
+%             FINISH
+%           END BLOCK
+%           BLOCK                                         %SETTINGS%
+%             EVALUATE LSETUP = 2
+%             COPY '#SCRIPT LSETUP'
+^^WI DISPOSE SETUP
+^^CR
+%             FINISH
+%           END BLOCK
+%           BLOCK                                         %SETTINGS%
+%             EVALUATE LSETUP = 3
+%             COPY '#SCRIPT LSETUP'
+^^WI DISPOSE SETUP
+^^CR
+%             FINISH
+%           END BLOCK
+%           BLOCK                                         %SETTINGS%
+%             COPY '#SCRIPT LWEIGHT'
+^^WI DISPOSE SETUP
+^^CR
+%             FINISH
+%           END BLOCK
+%           BLOCK                                         %SETTINGS%
+%             COPY '#SCRIPT LEXTINC'
+^^WI DISPOSE SETUP
+^^CR
+%             FINISH
+%           END BLOCK
+%          END CASE
+%          
+%       END BLOCK
+%       BLOCK                       %CANCEL BUTTON%
+^^WI       DISPOSE SETUP
+^^CR
+%          FINISH
+%       END BLOCK
+%       BLOCK                       %LIST CHANGED%
+^^WI            SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%               VERIFY 1 2 3 4 5
+%               GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%               CASE VALUE
+% BLOCK
+^^WI SET SHELP TEXT='Refine the co-ordinates of all atoms.' 
+% END BLOCK
+% BLOCK
+^^WI SET SHELP TEXT='Refine co-ordinates and isotropic temperature factor.' 
+% END BLOCK
+% BLOCK
+^^WI SET SHELP TEXT=
+^^WI 'Refine co-ordinates and anisotropic temperature factor.' 
+% END BLOCK
+% BLOCK
+^^WI SET SHELP TEXT='Weight the observations to remove systematic errors.'
+% END BLOCK
+% BLOCK
+^^WI SET SHELP TEXT='Model extinction effects in the reflection data.'
+% END BLOCK
+%               END CASE
+^^CR
+%       END BLOCK
+%   END CASE
+%END LOOP
+%END BLOCK
+%END SCRIPT

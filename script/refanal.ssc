@@ -1,0 +1,944 @@
+%SCRIPT RUNPERT
+%%
+%% Runs a series of pertubations for studying esd anomolies
+%%
+%    VARIABLE REAL STEP PSTART PEND DIVISOR
+%    VARIABLE REAL PERT RCOUNT1 RCOUNT2 R T C 
+%    VARIABLE INTEGER PREPT IHRS IMIN
+%    VARIABLE CHARACTER CDLINE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Pertubation increases by STEP each time.
+%    EVALUATE STEP = 0.001
+%    EVALUATE DIVISOR = 1.0 / STEP
+%%
+%% Pertubation starts at PSTART and ends before PEND
+%    EVALUATE PSTART = 0.000
+%    EVALUATE PEND   = 0.140
+%%
+%% Repeat each pertubation PREPT times for averaging / stats.
+%    EVALUATE PREPT  = 2
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Scratch variable used to match atom serial numbers,
+%% and hold generaledit data.
+%    VARIABLE REAL RTN
+%%
+%% This little lot holds the inverse normal matrix for the four atoms.
+%% NB Reusing some variables saves space.
+%% The matrix is arranged in the file as follows.
+%%1  X X
+%%2  X X      1,1
+%%3  X X      2,1   2,2
+%%4  X X      3,1   3,2   3,3
+%%5  X X      4,1   4,2   4,3   4,4
+%%6  X X      5,1   5,2   5,3   5,4
+%%7          5,5
+%%8  X X      6,1   6,2   6,3   6,4
+%%9          6,5   6,6
+%%10 X X      7,1   7,2   7,3   7,4
+%%11          7,5   7,6   7,7
+%%12 X X      8,1   8,2   8,3   8,4
+%%13          8,5   8,6   8,7
+%%14 X X      9,1   9,2   9,3   9,4
+%%15          9,5   9,6   9,7
+%%16 X X     10,1  10,2  10,3  10,4
+%%17         10,5  10,6  10,7
+%%18 X X     11,1  11,2  11,3  11,4
+%%19         11,5  11,6  11,7
+%%20 X X     12,1  12,2  12,3  12,4
+%%21         12,5  12,6  12,7
+%%
+%%32 X  8,8
+%%33 X  9,8   9,9
+%%34 X 10,8  10,9  10,10
+%%35 X 11,8  11,9  11,10 11,11
+%%36 X 12,8  12,9  12,10 12,11 12,12
+%%
+%% 71-77 are used for the rows 1-11 as they are processed.
+%% The next 5 partial rows 12-21 are stored in 71-77,91-97,101-107,111-117,121-127
+%% 128-1212 hold the end of the corresponding 5 rows 32-36 as they are processed.
+% VARIABLE REAL V71  V72  V73  V74  V75  V76  V77 
+% VARIABLE REAL V91  V92  V93  V94  V95  V96  V97  
+% VARIABLE REAL V101 V102 V103 V104 V105 V106 V107 
+% VARIABLE REAL V111 V112 V113 V114 V115 V116 V117 
+% VARIABLE REAL V121 V122 V123 V124 V125 V126 V127 V128 V129 V1210 V1211 V1212
+ File atoms.dat overwritten / created.
+% COPY '#SET COMM SLOW'
+% COPY '#SET LIST NONE'
+% COPY '#SET LOG OFF'
+% COPY '#SET MONI OFF'
+% COPY '#LIST 30'
+% COPY 'end'
+% COPY '#SPAWN echo # >atoms.dat'
+% COPY '#SPAWN del eta.ini'
+% COPY '#SPAWN del eta.dat'
+% COPY '#SPAWN eta'
+% COPY '#USE atomorig.dat'
+% COPY '#rele print metric.dat'
+% COPY '#print 1'
+% COPY 'end'
+% COPY '#rele print crfile.lis'
+% COPY '#OPEN SCPDATA metric.dat'
+% LOOP
+%   EVALUATE LOOPEND = 32
+%   EXTRACT NEXT
+% END LOOP
+% LOOP
+%   EVALUATE LOOPEND = 3
+%   CLEAR
+%   INSERT 'echo '
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER COMMAND
+%   INSERT ' >>atoms.dat'
+%   EXTERNAL SEND
+% END LOOP
+% EXTRACT CLOSE
+Metric tensor written to top of ATOMS.DAT
+% BLOCK
+%% This makes sure list30 exists when we get to the bottom.
+%  COPY '#GENERALEDIT 30'
+%  COPY 'LOCATE RECORDTYPE=103'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  ON EDITERROR TERMINATE
+%  COPY 'TRANSFER FROM OFFSET=2 TO RTN'
+% END BLOCK
+% COPY 'END'
+%%
+%%
+%% Progress window
+^^WI WINDOW PROGRESS 'Progress' CANCEL='^^CO DISPOSE PROGRESS'
+^^WI STARTGRID  MAIN 'N' NROWS=7 NCOLS=3
+^^WI  STARTGRID ROW=2 COL=2 TOP 'N' NROWS=1 NCOLS=3
+^^WI   STATIC ROW=1 COL=1 T1 'Experiment is '
+^^WI   STATIC ROW=1 COL=2 T2 '99.99'
+^^WI   STATIC ROW=1 COL=3 T3 '% complete.'
+^^WI  ENDGRID
+^^WI  STARTGRID ROW=4 COL=2 MID 'N' NROWS=1 NCOLS=2
+^^WI   STATIC ROW=1 COL=1 T4 'Current perturbation = '
+^^WI   STATIC ROW=1 COL=2 T5 '0.001'
+^^WI  ENDGRID
+^^WI  STARTGRID ROW=6 COL=2 BOT 'N' NROWS=1 NCOLS=2
+^^WI   STATIC ROW=1 COL=1 T6 'Time remaining '
+^^WI   STATIC ROW=1 COL=2 T7 '99.99'
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+%%
+%%
+%%
+%%
+%%
+%%
+% LOOP
+%%
+%% This loop steps from PSTART TO PEND.
+%%
+%  EVALUATE RCOUNT1 = ( PEND - PSTART ) / STEP
+%  EVALUATE LOOPEND = INTEGER ( RCOUNT1 )
+%  EVALUATE RCOUNT2 = REAL ( LOOPCOUNTER )
+%  EVALUATE PERT = PSTART + ( RCOUNT2 * STEP ) - STEP
+%%
+%%
+%%
+%%
+%  LOOP
+%%
+%%  This loop repeats PREPT times.
+%%
+%   EVALUATE LOOPEND = PREPT
+%   COPY '#PURGE'
+%   COPY 'END'
+%%
+%% Calculate % complete
+%%
+%   EVALUATE R = REAL ( PREPT )
+%   EVALUATE T = REAL ( LOOPCOUNTER )
+%   EVALUATE C = ( 100.0 * ( RCOUNT2 * R ) + T ) / ( RCOUNT1 * R )
+%   CLEAR
+%   INSERT !%EVALUATE CDLINE = "^^WI SET T2 TEXT '!
+%   STORE FORMAT /(F4.1)/ LENGTH 4 REAL C
+%   INSERT !' "!
+%   EXECUTE
+%   SHOW CDLINE
+^^CR
+%   CLEAR
+%   INSERT !%EVALUATE CDLINE = "^^WI SET T5 TEXT '!
+%   STORE FORMAT /(F5.3)/ LENGTH 5 REAL PERT
+%   INSERT !' "!
+%   EXECUTE
+%   SHOW CDLINE
+^^CR
+%   CLEAR
+%   INSERT !%EVALUATE CDLINE = "^^WI SET T7 TEXT '!
+%   STORE FORMAT /(I2)/ LENGTH 2 INTEGER IHRS
+%   INSERT !:!
+%   STORE FORMAT /(I2.2)/ LENGTH 2 INTEGER IMIN
+%   INSERT !' "!
+%   EXECUTE
+%   SHOW CDLINE
+^^CR
+%%
+%% Read in the orignal model (with additional symmetry)
+%%
+%   COPY '#USE ATOMORIG.DAT'
+%%
+%% Read in a list of reflections. (Values not important).
+%%
+%   COPY '#USE L6ORIG.DAT'
+%%
+%% Perturb the structure by the requested amount.
+%%
+%   COPY '#EDIT'
+%   CLEAR
+%   INSERT "%COPY 'PERTURB "
+%   STORE FORMAT /(F4.2)/ LENGTH 4 REAL PERT
+%   INSERT "first(X) until C(12)' "
+%   EXECUTE
+%   CLEAR
+%   INSERT "%COPY 'PERTURB "
+%   STORE FORMAT /(F4.2)/ LENGTH 4 REAL PERT
+%   INSERT "first(Y) until C(12)' "
+%   EXECUTE
+%   CLEAR
+%   INSERT "%COPY 'PERTURB "
+%   STORE FORMAT /(F4.2)/ LENGTH 4 REAL PERT
+%   INSERT "first(Z) until C(12)' "
+%   EXECUTE
+%   COPY 'END'
+%%
+%% Calculate structure factors for the perturbed structure.
+%%
+%   COPY '#SUM L 6'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'SCALE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'SCALE'
+%   COPY 'END'
+%%
+%% Punch the list out.
+%%
+%   COPY '#RELEASE PUNCH L6.IN'
+%   COPY '#PUNCH 6 C'
+%   COPY 'END'
+%   COPY '#RELEASE PUNCH CRFILE.PCH'
+%%%%%%   COPY '#SPAWN DEL L6.OUT'
+%%
+%% Add random variations to the Fobs.
+%%
+%   COPY '#SPAWN ADDSIG'
+%%
+%% Read the reflections back in.
+%%
+%   COPY '#USE L6.OUT'
+%%
+%% Initial scaling and phases.
+%%
+%   COPY '#SFLS'
+%   COPY 'SCALE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SFLS' 
+%   COPY 'SCALE'
+%   COPY 'END'
+%%
+%% Perturb, so that the structure can refine a bit.
+%%
+%   COPY '#EDIT'
+%   COPY 'PERTURB 0.05 FIRST(X) UNTIL LAST'
+%   COPY 'PERTURB 0.05 FIRST(Y) UNTIL LAST'
+%   COPY 'PERTURB 0.05 FIRST(Z) UNTIL LAST'
+%   COPY 'END'
+%%
+%% Set up the refinement
+%% 
+%   COPY '#LIST 12'
+%   COPY "FULL FIRST(X'S) UNTIL LAST"
+%   COPY 'END'
+%%
+%% 12 rounds of refinement
+%% 
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%%
+%% Add in calculated weights.
+%%
+%   COPY '#LIST 4'
+%   COPY 'SCHEME NUMBER=14, NPARAM=3'
+%   COPY 'END'
+%   COPY '#ANALYSE'
+%   COPY 'END'
+%%
+%% 12 more rounds of refinement
+%% 
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%%
+%% Re-calculate weights.
+%%
+%   COPY '#LIST 4'
+%   COPY 'SCHEME NUMBER=14, NPARAM=3'
+%   COPY 'END'
+%   COPY '#ANALYSE'
+%   COPY 'END'
+%%
+%% 12 more rounds of refinement
+%% 
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%%
+%% Set up the refinement
+%% 
+%   COPY '#LIST 12'
+%   COPY "FULL C(4,X'S) C(5,X'S) C(14,X'S) C(15,X'S)"
+%   COPY 'END'
+%%
+%% 12 short rounds of refinement
+%%
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+%   COPY '#SFLS'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'REFINE'
+%   COPY 'END'
+  Finished refinement stage.
+  Storing perturbation + atom coordinates in file.
+%   COPY '#RELEASE SCPQUEUE crfile.bat'
+%   CLEAR
+%   INSERT "echo "
+%   STORE FORMAT /(F5.3)/ LENGTH 5 REAL PERT
+%   INSERT " >>atoms.dat"
+%   QUEUE SEND
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'TOP'
+%   LOOP
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=1 TO RTN'
+%     IF ( ( RTN .EQ. 4.0  ) .OR. ( RTN .EQ. 5.0  ) .OR. -
+           ( RTN .EQ. 15.0 ) .OR. ( RTN .EQ. 14.0 ) ) THEN
+%       CLEAR
+%       INSERT 'echo '
+%       COPY 'TRANSFER FROM OFFSET=4 TO RTN'
+%       STORE FORMAT /(F15.6)/ LENGTH 15 REAL RTN
+%       COPY 'TRANSFER FROM OFFSET=5 TO RTN'
+%       STORE FORMAT /(F15.6)/ LENGTH 15 REAL RTN
+%       COPY 'TRANSFER FROM OFFSET=6 TO RTN'
+%       STORE FORMAT /(F15.6)/ LENGTH 15 REAL RTN
+%       INSERT ' >>atoms.dat'
+%       QUEUE SEND
+%     END IF
+%     COPY 'NEXT'
+%   END LOOP
+%   COPY 'END'
+  Storing #parameters, #reflections, sigma w squared, R and Rw
+%   BLOCK
+%     COPY '#GENERALEDIT 30'
+%     COPY 'LOCATE RECORDTYPE=103'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     ON EDITERROR TERMINATE
+%     CLEAR
+%     INSERT 'echo '
+%     COPY 'TRANSFER FROM OFFSET=2 TO RTN'
+%     STORE FORMAT /(G14.5)/ LENGTH 15 REAL RTN
+%     COPY 'TRANSFER FROM OFFSET=8 TO RTN'
+%     STORE FORMAT /(G14.5)/ LENGTH 15 REAL RTN
+%     COPY 'TRANSFER FROM OFFSET=11 TO RTN'
+%     STORE FORMAT /(G14.5)/ LENGTH 15 REAL RTN
+%     COPY 'TRANSFER FROM OFFSET=0 TO RTN'
+%     STORE FORMAT /(G14.5)/ LENGTH 15 REAL RTN
+%     COPY 'TRANSFER FROM OFFSET=1 TO RTN'
+%     STORE FORMAT /(G14.5)/ LENGTH 15 REAL RTN
+%     INSERT ' >>atoms.dat'
+%     QUEUE SEND
+%   END BLOCK
+%   COPY 'END'
+%   CLEAR
+%%%%%   COPY '#SPAWN del wrap.in'
+%   COPY '#release print wrap.in'
+%   COPY '#print 11 c'
+%   COPY 'end'
+%   COPY '#rele print crfile.lis'
+%   COPY '#PAUSE 1'
+%   COPY '#SPAWN WRAP'
+ Please wait. Re-formatting file for script processor.
+ Storing inverted normal matrix.
+%   COPY '#PAUSE 4'
+ Continuing...
+%   COPY '#OPEN SCPDATA wrap.out'
+%   LOOP
+%     EVALUATE LOOPEND = 32
+%     ON ERROR TERMINATE
+%     CLEAR
+%     EXTRACT NEXT
+%   END LOOP
+%%
+%% To have any clue what happens next look at the output of PRINT 11 c,
+%% for a 4 atom + scale refinement. To make things even more confusing
+%% V71 - V77 are used for the first 7 lines to save variables.
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V73 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V73
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V73 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V74 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V73
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V74
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V73 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V74 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V75 = VALUE
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V73
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V74
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V75
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V73 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V74 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V75 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V76 = VALUE
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V73
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V74
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V75
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V76
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V73 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V74 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V75 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V76 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V77 = VALUE
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V73
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V74
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V75
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V76
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V77
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V71 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V72 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V73 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V74 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V75 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V76 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V77 = VALUE
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V91 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V92 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V93 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V94 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V95 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V96 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V97 = VALUE
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V101 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V102 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V103 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V104 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V105 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V106 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V107 = VALUE
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V111 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V112 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V113 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V114 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V115 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V116 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V117 = VALUE
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V121 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V122 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V123 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V124 = VALUE
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V125 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V126 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V127 = VALUE
+%%
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%   EXTRACT NEXT
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V128 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V71
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V72
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V73
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V74
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V75
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V76
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V77
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V128
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V128 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V129 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V91
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V92
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V93
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V94
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V95
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V96
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V97
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V128
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V129
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V128 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V129 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V1210 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V101
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V102
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V103
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V104
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V105
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V106
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V107
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V128
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V129
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V1210
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V128 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V129 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V1210 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V1211 = VALUE
+%   EXTRACT NEXT
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V111
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V112
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V113
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V114
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V115
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V116
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V117
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V128
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V129
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V1210
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V1211
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%%
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V128 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V129 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V1210 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V1211 = VALUE
+%   GET NOSTORE REAL    ' '
+%   EVALUATE V1212 = VALUE
+%%
+%%
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V121
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V122
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V123
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V124
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V125
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V126
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V127
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V128
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'echo '
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V129
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V1210
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V1211
+%   STORE FORMAT /(G14.5)/ LENGTH 14 REAL V1212
+%   INSERT ' >>atoms.dat'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'del c:\windows\temp\for*.tmp'
+%   QUEUE SEND
+%   CLEAR
+%   INSERT 'eta'
+%   QUEUE SEND
+%   COPY '#RELEASE SCPQUEUE eta.dat'
+%   CLEAR
+%   STORE FORMAT /(F6.3)/ LENGTH 6 REAL C
+%   QUEUE SEND
+%   COPY '#RELEASE SCPQUEUE temp.spq'
+%   COPY '#SPAWN crfile.bat'
+%   EXTRACT CLOSE
+%   COPY '#OPEN SCPDATA eta.out'
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET NOSTORE INTEGER ' '
+%   EVALUATE IHRS = VALUE
+%   GET NOSTORE INTEGER ' '
+%   EVALUATE IMIN = VALUE
+%   EXTRACT CLOSE
+ Inverse normal matrix transferred. Thankyou.
+%   COPY '#RELEASE MONITOR FILE1.MON'
+%   COPY '#RELEASE MONITOR FILE2.MON'
+%  END LOOP
+% END LOOP
+%END SCRIPT

@@ -1,0 +1,71 @@
+%SCRIPT  QUICKST
+SCRIPT to enable input of 'SHELX' type reflection data
+------ -- ------ ----- ----- -- ----- ---- ---------- ----
+% VARIABLE INTEGER INBASICS SOLVEMETHOD 
+% BLOCK
+%%  CHECK THAT THE BASIC DATA IS READ IN OK
+CRYSTALS will help you to input the basic data needed for structure 
+analysis and creation of publicatio lists
+%    COPY '#SCRIPT INBASICS'
+%    IF INBASICS .NE. 1 THEN
+Some basic data is missing. We cannot process the reflections
+%      FINISH
+%    END IF
+% END BLOCK
+% CLEAR
+% COPY '#SCRIPT INLIST6'
+
+Give the minimum I/sigma(i) to be used in refinement. It can be changed later
+% COPY '#LIST 28'
+% INSERT 'MINIMA RATIO='
+% GET FINAL REAL  'I/sigma(I) ' '3.0'
+% SEND
+% COPY 'END'
+%%
+%    BLOCK
+%      ON ERROR REPEAT
+%      IF ( EXISTS 14 .NE. 1 ) THEN
+%        VERIFY YES NO
+%      GET FINAL ABBREVIATED  -
+  'Do you know the asymmetric part of the unit cell?' 'YES'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT INLIST14'
+%        ELSE
+  You will need this information later when you do Fourier maps. Look in
+  International Tables before then.
+%        END IF
+%      END IF
+%    END BLOCK
+%%
+%  COPY '#LIST 4'
+%  COPY 'END'
+%  IF ( EXISTS 23 .NE. 1 ) THEN
+%    COPY '#LIST 23'
+%    COPY 'END'
+%  END IF
+%%
+%%
+%  ON ERROR TERMINATE ABANDONED
+%  BLOCK
+%  VERIFY YES NO
+%  GET FINAL ABBREVIATED  -
+     'Do you have a file with trial atoms in?' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%    COPY '#SCRIPT INEMAP'
+%  ELSE
+%    BLOCK
+%    VERIFY YES NO
+%    GET FINAL ABBREVIATED  -
+     'Do you want to try to solve the structure? ' 'YES'
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#SCRIPT STRUCTUR'
+%    END IF
+%
+%    IF SOLVEMETHOD .NE. 0 THEN
+%      COPY '#SCRIPT INEMAP'
+%    END IF
+%    END BLOCK
+%  END IF
+%  END BLOCK
+%%
+%END SCRIPT

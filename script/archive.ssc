@@ -1,0 +1,49 @@
+%SCRIPT ARCHIVE  ! A SCRIPT TO WRITE AN ARCHIVE ASCII FILE
+%  COPY '#RELE PUNCH   ARCHIVE.PCH'
+%  COPY '#PUNCH 5'
+%  COPY 'END'
+%  COPY '#PUNCH 6 C'
+%  COPY 'END'
+%  COPY '#PUNCH 12'
+%  COPY 'END'
+%  COPY '#PUNCH 16'
+%  COPY 'END'
+%  COPY '#RELE PRINTER ARCHIVE.LIS'
+%  COPY '#SUMMARY EVERYTHING'
+%  COPY 'END'
+%  COPY '#DISK'
+%  COPY 'PRINT'
+%  COPY 'END'
+%  COPY '#ANALYSE'
+%  COPY 'END'
+%  COPY '#AXES'
+%  COPY 'END'
+%  COPY '#CHECK'
+%  COPY 'END'
+%  COPY '#REFLECTIONS'
+%  COPY 'END'
+%  COPY '#CIF'
+%  COPY 'END'
+%  BLOCK
+The next stage produces output with e.s.d.s. It will only be successful if
+you have recently done least-squares refinement, and not subsequently edited
+your parameter list, LIST 5.
+%    VERIFY YES NO
+%    GET NOSTORE YESNO 'Do you want produce tables with e.s.d.s?' 'YES'
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#DIST'
+%      COPY 'E.S.D YES'
+%      COPY 'OUT PUNCH = PUB'
+%      COPY 'END'
+%    ELSE
+%      COPY '#DIST'
+%      COPY 'OUT PUNCH = PUB'
+%      COPY 'END'
+%    END IF
+%    COPY '#PARAM'
+%    COPY 'END'
+%  END BLOCK
+%  COPY '#RELE PUNCH'
+%  COPY '#RELE PRINTER'
+%  FINISH
+%END SCRIPT

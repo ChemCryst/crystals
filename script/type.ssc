@@ -1,0 +1,15 @@
+%SCRIPT TYPE
+%% CRYSTALS TYPE script
+%  LOOP
+%    CLEAR
+%    INSERT '#TYPE'
+%    GET FINAL FILENAME 'File name'
+%    SEND
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Another file?' 'NO'
+%    IF VALUE .EQ. 2 THEN
+%      FINISH
+%    END IF
+%  END LOOP
+%END SCRIPT

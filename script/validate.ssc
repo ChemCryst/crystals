@@ -1,0 +1,505 @@
+%SCRIPT VALIDATE
+%%
+%%
+%% Script to validate correct operation of SCRIPT system version 2.50
+%%
+%% The following instructions are NOT tested by this script :-
+%%
+%%      EXTERNAL
+%%      EXTRACT
+%%      QUEUE
+%%
+%%
+%%
+  Test identification : IDENTIFY
+%  IDENTIFY
+%%
+  Test variable definition/display : VARIABLE , SHOW
+%%
+%  VARIABLE INTEGER A B C
+%  SHOW A B C
+%  VARIABLE REAL D E F
+%  SHOW D E F
+%  VARIABLE LOGICAL G H I
+%  SHOW G H I
+%  VARIABLE CHARACTER J K L
+%  SHOW J K L
+%%
+  Test basic structure forming elements : BLOCK , LOOP , IF , CASE
+1) BLOCK
+%  BLOCK
+    In a BLOCK
+%  END BLOCK
+%%
+2) LOOP n TIMES
+%  LOOP 3 TIMES
+    In a LOOP, executed 3 times
+%  END LOOP
+%%
+3) IF true THEN ... ELSE
+%  IF 2 > 1 THEN
+    In IF, output if 2 > 1
+%  ELSE
+    In IF...ELSE, output if not 2 > 1
+%  END IF
+%%
+4) IF false THEN ... ELSE
+%  IF 1 > 2 THEN
+    In IF, output if 1 > 2
+%  ELSE
+    In IF...ELSE, output if not 1 > 2
+%  END IF
+%%
+5) CASE n
+%  CASE 3
+%    TRANSFER 'Line 1, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 2, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 3, should be output' TO DISPLAY
+%    TRANSFER 'Line 4, shouldn't be output' TO DISPLAY
+%  END CASE
+%%
+6) CASE n RANGE n1 n2
+%  CASE 7 RANGE 4 7
+%    TRANSFER 'Line 1, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 2, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 3, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 4, should be output' TO DISPLAY
+%  END CASE
+%%
+7) CASE real AMONG real1 real2 real3 ...
+%  CASE 3. AMONG 378. 3. 383. 892. 3892. 392373.
+%    TRANSFER 'Line 1, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 2, should be output' TO DISPLAY
+%    TRANSFER 'Line 3, shouldn't be output' TO DISPLAY
+%    TRANSFER 'Line 4, shouldn't be output' TO DISPLAY
+%  END CASE
+%%
+  Test TRANSFER with strings
+1) TRANSFER string TO DISPLAY
+%  TRANSFER 'This string is being displayed' TO DISPLAY
+2) TRANSFER string TO CRYSTALS, using '#HELP HELP'
+%  TRANSFER '#HELP HELP' TO CRYSTALS
+3) TRANSFER string TO SCRIPT, using '%  SHOW A D G J'
+%  TRANSFER '%  SHOW A D G J' TO SCRIPT
+%%
+  Test contingencies and messages : ON , ACTIVATE , MESSAGE
+1) Define contingencies with ON
+%  ON C_CONTINUE CONTINUE
+%  ON C_TERMINATE TERMINATE
+%  ON C_RESTART RESTART
+%  ON C_REPEAT REPEAT
+%%
+2) Test CONTINUE
+%  BLOCK
+%    ON C_CONTINUE CONTINUE
+%    ACTIVATE C_CONTINUE
+    After ACTIVATE
+%  END BLOCK
+3) Test TERMINATE
+%  BLOCK
+%    ON C_TERMINATE TERMINATE
+%    ACTIVATE C_TERMINATE
+    After ACTIVATE
+%  END BLOCK
+4) Test REPEAT
+%  LOOP
+%    ON C_REPEAT REPEAT
+%    ON END TERMINATE
+%    TRANSFER 'Loop counter is ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
+%    GET TEXT 'Enter END to finish' 'go on'
+%    ACTIVATE C_REPEAT
+%  END LOOP
+5) Test RESTART
+%  LOOP
+%    ON C_RESTART RESTART
+%    ON END TERMINATE
+%    TRANSFER 'Loop counter is ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
+%    GET TEXT 'Enter END to finish' 'go on'
+%    ACTIVATE C_RESTART
+%  END LOOP
+6) Use each of the contingency messages
+%  ON C_ABANDONED CONTINUE ABANDONED
+%  ON C_USER1 CONTINUE USER1
+%  ON C_USER2 CONTINUE USER2
+%  ON C_USER3 CONTINUE USER3
+%  ON C_USER4 CONTINUE USER4
+%%
+%  ACTIVATE C_ABANDONED
+%  ACTIVATE C_USER1
+%  ACTIVATE C_USER2
+%  ACTIVATE C_USER3
+%  ACTIVATE C_USER4
+7) Redefine and use contingency messages
+%  MESSAGE ABANDONED 'This replaces the default ABANDONED message'
+%  MESSAGE USER1 'This replaces the default USER1 message'
+%  MESSAGE USER2 'This replaces the default USER2 message'
+%  MESSAGE USER3 'This replaces the default USER3 message'
+%  MESSAGE USER4 'This replaces the default USER4 message'
+%%
+%  ACTIVATE C_ABANDONED
+%  ACTIVATE C_USER1
+%  ACTIVATE C_USER2
+%  ACTIVATE C_USER3
+%  ACTIVATE C_USER4
+%%
+  Test verification and other control functions : SET
+1) Verify SCRIPT command lines, with SET VERIFY
+%  SET VERIFY TRUE
+%  SHOW A D G J
+%  SET VERIFY FALSE
+2) Verify identifier operations, with SET IDENT
+%  SET IDENT TRUE
+%  VARIABLE INTEGER I_A I_B I_C
+%  SHOW I_A I_B I_C
+%  ON C_CONTINUE2 CONTINUE
+%  ACTIVATE C_CONTINUE2
+%  LOOP 2 TIMES
+%  END LOOP
+%  SET IDENT FALSE
+3) Verify STACK operations, with SET STACK
+%  SET STACK TRUE
+%  BLOCK
+%  END BLOCK
+%  SET STACK FALSE
+4) Verify expression evaluation, with SET EVALUATE
+  Expression is CHARACTER ( 1 + ( 3 * 4 + 4 ) * 2 ) // ' - A'
+%  SET EVALUATE TRUE
+%  TRANSFER CHARACTER ( 1 + ( 3 * 4 + 4 ) * 2 ) // ' - A' TO DISPLAY
+%  SET EVALUATE FALSE
+5) Control script messages, with SET MESSAGE
+  'SHOW ABCDEFGHIJKL' will be attempted 3 times; only 2 messages expected
+%  SHOW ABCDEFGHIJKL
+%  SET MESSAGE FALSE
+%  SHOW ABCDEFGHIJKL
+%  SET MESSAGE TRUE
+%  SHOW ABCDEFGHIJKL
+  Note that SET FAST cannot be tested
+%%
+  Test assignment : EVALUATE
+%  EVALUATE A = 1
+%  EVALUATE D = 1.0
+%  EVALUATE G = 1 = 1
+%  EVALUATE J = '1'
+%  SHOW A D G J
+%%
+  Test expressions
+1) Integer, real, and character constants were tested by tests on EVALUATE
+2) Logical and character 'standard values'
+   H is TRUE, I is FALSE, K is NULLSTRING
+%  EVALUATE H = TRUE
+%  EVALUATE I = FALSE
+%  EVALUATE K = NULLSTRING
+%  SHOW H I K
+3) Variables
+%  EVALUATE B = A
+%  EVALUATE E = D
+%  EVALUATE H = G
+%  EVALUATE K = J
+%  SHOW A B
+%  SHOW D E
+%  SHOW G H
+%  SHOW J K
+4) Unary operators
+4a) CHARACTER on integer, real, logical, and character
+%  TRANSFER CHARACTER ( 1 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 1.0 ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' ) TO DISPLAY
+ All remaining expression tests use CHARACTER to format non-character output
+4b) UPPERCASE on character
+  output is 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+%  TRANSFER UPPERCASE 'abcdefghijklmnopqrstuvwxyz' to DISPLAY
+4c) KEYWORD on integer
+  output is 'KEY2'
+%  VERIFY KEY1 KEY2 KEY3
+%  TRANSFER KEYWORD 2 TO DISPLAY
+4d) .NOT. on logical
+  output is 'false' and 'true'
+%  TRANSFER CHARACTER ( .NOT. TRUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( .NOT. FALSE ) TO DISPLAY
+4e) + on integer and real
+  output is 2 and 2.00000
+%  TRANSFER CHARACTER ( + 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( + 2. ) TO DISPLAY
+4f) - on integer and real
+  output is -2 and -2.00000
+%  TRANSFER CHARACTER ( - 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( - 2. ) TO DISPLAY
+4g) EXISTS on integer
+  output is EXISTS on 1 and 49
+%  TRANSFER CHARACTER ( EXISTS 1 ) TO DISPLAY
+%  TRANSFER CHARACTER ( EXISTS 49 ) TO DISPLAY
+4h) INTEGER on real
+  output is integer part of 2.5
+%  TRANSFER CHARACTER ( INTEGER 2.5 ) TO DISPLAY
+4i) REAL on integer
+  output is REAL 2
+%  TRANSFER CHARACTER ( REAL 2 ) TO DISPLAY
+4j) .IF.  .THEN.  .ELSE.
+  output is IF 1 > 2 THEN 'value 1' ELSE 'value 2'
+  output is IF 2 > 1 THEN 'value 1' ELSE 'value 2'
+%  TRANSFER .IF. 1 > 2 .THEN. 'value 1' .ELSE. 'value 2' TO DISPLAY
+%  TRANSFER .IF. 2 > 1 .THEN. 'value 1' .ELSE. 'value 2' TO DISPLAY
+4k) .VALUE.
+  output is value of variable A
+%  TRANSFER CHARACTER ( .VALUE. 'A' ) TO DISPLAY
+5) Binary operators
+  Integer operands are 2 and 3 then 2 and 2 then 3 and 2
+  Real operands are 2. and 3. then 2. and 2. then 3. and 2.
+  Logical operands are TRUE and FALSE then TRUE and TRUE
+  Character operands are ABC and DEF then ABC and ABC then DEF and ABC
+5a) + on integer and real
+%  TRANSFER CHARACTER ( 2 + 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. + 3. ) TO DISPLAY
+5b) - on integer and real
+%  TRANSFER CHARACTER ( 2 - 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. - 3. ) TO DISPLAY
+5c) * on integer and real
+%  TRANSFER CHARACTER ( 2 * 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. * 3. ) TO DISPLAY
+5d) / on integer and real
+%  TRANSFER CHARACTER ( 2 / 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 / 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 / 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. / 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. / 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. / 2. ) TO DISPLAY
+5e) .EQ. and = on integer, real, logical and character
+%  TRANSFER CHARACTER ( 2 .EQ. 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 = 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 .EQ. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 = 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .EQ. 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. = 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .EQ. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. = 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE .EQ. FALSE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE = FALSE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE .EQ. TRUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE = TRUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' .EQ. 'DEF' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' = 'DEF' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' .EQ. 'ABC' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' = 'ABC' ) TO DISPLAY
+5f) .NE. and <> on integer, real, logical and character
+%  TRANSFER CHARACTER ( 2 .NE. 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 <> 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 .NE. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 <> 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .NE. 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. <> 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .NE. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. <> 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE .NE. FALSE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE <> FALSE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE .NE. TRUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE <> TRUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' .NE. 'DEF' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' <> 'DEF' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' .NE. 'ABC' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' <> 'ABC' ) TO DISPLAY
+5g) .LE. and =< on integer and real
+%  TRANSFER CHARACTER ( 2 .LE. 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 =< 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 .LE. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 =< 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 .LE. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 =< 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .LE. 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. =< 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .LE. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. =< 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. .LE. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. =< 2. ) TO DISPLAY
+5h) .GE. and >= on integer and real
+%  TRANSFER CHARACTER ( 2 .GE. 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 >= 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 .GE. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 >= 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 .GE. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 >= 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .GE. 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. >= 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .GE. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. >= 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. .GE. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. >= 2. ) TO DISPLAY
+5i) .LT. and < on integer and real
+%  TRANSFER CHARACTER ( 2 .LT. 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 < 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 .LT. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 < 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 .LT. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 < 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .LT. 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. < 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .LT. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. < 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. .LT. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. < 2. ) TO DISPLAY
+5j) .GT. and > on integer and real
+%  TRANSFER CHARACTER ( 2 .GT. 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 > 3 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 .GT. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 > 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 .GT. 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3 > 2 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .GT. 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. > 3. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. .GT. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. > 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. .GT. 2. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 3. > 2. ) TO DISPLAY
+5k) .OR. on logical
+%  TRANSFER CHARACTER ( TRUE .OR. FALSE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE .OR. TRUE ) TO DISPLAY
+5l) .AND. on logical
+%  TRANSFER CHARACTER ( TRUE .AND. FALSE ) TO DISPLAY
+%  TRANSFER CHARACTER ( TRUE .AND. TRUE ) TO DISPLAY
+5m) // on character
+%  TRANSFER 'ABC' // 'DEF' TO DISPLAY
+5n) STARTSWITH on character
+%  TRANSFER CHARACTER ( 'ABC' STARTSWITH 'DEF' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'ABC' STARTSWITH 'ABC' ) TO DISPLAY
+%  TRANSFER CHARACTER ( 'DEF' STARTSWITH 'ABC' ) TO DISPLAY
+6) '()'
+6a) Test precedence of + - * /
+2 + 3 * 4     ,  2 * 3 + 4     ,  2 - 3 * 4     ,  2 * 3 - 4
+2. + 3. / 4.  ,  2. / 3. + 4.  ,  2. - 3. / 4.  ,  2. / 3. - 4.
+%  TRANSFER CHARACTER ( 2 + 3 * 4 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 * 3 + 4 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 - 3 * 4 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 * 3 - 4 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. + 3. / 4. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. / 3. + 4. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. - 3. / 4. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. / 3. - 4. ) TO DISPLAY
+6a) Test (), same calculations, but + - before * /
+%  TRANSFER CHARACTER ( ( 2 + 3 ) * 4 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 * ( 3 + 4 ) ) TO DISPLAY
+%  TRANSFER CHARACTER ( ( 2 - 3 ) * 4 ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2 * ( 3 - 4 ) ) TO DISPLAY
+%  TRANSFER CHARACTER ( ( 2. + 3. ) / 4. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. / ( 3. + 4. ) ) TO DISPLAY
+%  TRANSFER CHARACTER ( ( 2. - 3. ) / 4. ) TO DISPLAY
+%  TRANSFER CHARACTER ( 2. / ( 3. - 4. ) ) TO DISPLAY
+%%
+  Test user input : GET , VERIFY , and associated 'standard values'
+%  VERIFY ABC DEF GHI JKL
+1) Test data types
+1a) VERIFIED
+%  CLEAR
+%  GET VERIFIED 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+1b) ABBREVIATED
+%  CLEAR
+%  GET ABBREVIATED 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+1c) TEXT
+%  CLEAR
+%  GET TEXT 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+1d) KEYWORD
+%  CLEAR
+%  GET KEYWORD 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+1e) FILENAME
+%  CLEAR
+%  GET FILENAME 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+1f) INTEGER
+%  CLEAR
+%  GET INTEGER 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+1g) REAL NUMBER
+%  CLEAR
+%  GET REAL 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+2) Test control over GET
+2a) FINAL
+%  CLEAR
+%  GET FINAL INTEGER 'Answer'
+2b) NOMESSAGE
+%  CLEAR
+%  GET NOMESSAGE INTEGER 'Answer'
+2c) FILL
+%  CLEAR
+%  GET FILL ABBREVIATED 'Answer'
+%  TRANSFER CHARACTER ( CVALUE ) TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+2d) NOREMOVE
+%  CLEAR
+%  GET NOREMOVE INTEGER 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+%  GET INTEGER 'Answer'
+%  TRANSFER CVALUE TO DISPLAY
+2e) NOPROMPT
+%  CLEAR
+%  BLOCK
+%    MESSAGE USER1 'Error detected during input'
+%    ON ERROR CONTINUE USER1
+%    GET NOPROMPT INTEGER 'Answer'
+%    TRANSFER 'Value is ' // CHARACTER ( VALUE ) TO DISPLAY
+%  END BLOCK
+%
+APPEND and NOSTORE will be tested with COPY, INSERT etc.
+3) Default value
+%  CLEAR
+%  GET INTEGER 'Answer' '100'
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+4) Validation expressions
+  Answer must be greater than 1000
+%  CLEAR
+%  GET INTEGER 'Answer' '999' VALUE > 1000
+%  TRANSFER CVALUE TO DISPLAY
+%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+  Test communications with main CRYSTALS program : CLEAR , COPY , EXECUTE ,
+                                                   INSERT , SEND , STORE
+1) CLEAR and COPY '#HELP HELP'
+%  CLEAR
+%  COPY '#HELP HELP'
+2) INSERT '#HELP HELP' and SEND, CLEAR and repeat INSERT and SEND
+%  INSERT '#HELP HELP'
+%  SEND
+%  CLEAR
+%  INSERT '#HELP HELP'
+%  SEND
+3) CLEAR , INSERT '%SHOW A D G J' , EXECUTE
+%  CLEAR
+%  INSERT '%SHOW A D G J'
+%  EXECUTE
+4) CLEAR, INSERT '#HELP', GET, SEND
+%  CLEAR
+%  INSERT '#HELP'
+%  VERIFY HELP NEWS ERRORS
+%  GET FILL ABBREVIATED 'Topic' 'HELP'
+%  SEND
+5) CLEAR, INSERT, GET NOSTORE, STORE, SEND
+%  CLEAR
+%  INSERT '#HELP '
+%  VERIFY HELP NEWS ERRORS
+%  GET NOSTORE VERIFIED 'Topic' 'HELP'
+%  STORE KEYWORD VALUE
+%  SEND
+6) CLEAR, INSERT '#TYPE CRSCP:', GET APPEND, SEND
+%  CLEAR
+%  INSERT '#TYPE CRSCP:'
+%  GET APPEND FILENAME 'Script'
+%  SEND
+  Test selection function : INDEX
+%  VARIABLE INTEGER INDEX_TEST
+%  GET INTEGER 'Select item' '2' ( VALUE > 0 .AND. VALUE < 11 )
+%  INDEX INDEX_TEST VALUE 99 98 97 96 95 94 93 92 91 90
+%  SHOW INDEX_TEST
+  Final test : FINISH
+%  FINISH
+%%
+%END SCRIPT

@@ -1,0 +1,23 @@
+%SCRIPT INCAD4
+%% CRYSTALS CAD4 reflection input script
+%%
+%  VERIFY YES NO BACK
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want the simple default input mode?' 'YES'
+%  IF VALUE .EQ. 1 THEN
+%    VERIFY RC85 RC93 BACK
+%        GET NOSTORE FINAL ABBREVIATED  -
+     'Did you use RC85 or RC93?' 'RC93'
+%    IF VALUE .EQ. 1 THEN
+%      COPY '#SCRIPT CADQUICK'
+%    ELSE IF VALUE .EQ. 2 THEN
+%      COPY '#SCRIPT INRC93'
+%    ELSE
+%      FINISH
+%    END IF
+%  ELSE IF VALUE .EQ. 2 THEN
+%    COPY '#SCRIPT CADSLOW'
+%  ELSE
+%    FINISH
+%  END IF
+%END SCRIPT

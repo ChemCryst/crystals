@@ -1,0 +1,26 @@
+%SCRIPT TERMINAL
+                            TERMINAL.SCP
+                A SCRIPT to set your terminal type
+%  BLOCK
+%
+%    ON ERROR REPEAT
+%    CLEAR
+%    VERIFY UNKNOWN VT52 VT100 VGA
+%    GET NOSTORE FINAL ABBREVIATED 'Terminal type?' 'UNKNOWN'
+%    CASE VALUE
+%      BLOCK                                         %UNKNOWN%
+%        COPY '#SET TERMINAL UNKNOWN'
+%      END BLOCK
+%      BLOCK                                         %VT52%
+%        COPY '#SET TERMINAL VT52'
+%      END BLOCK
+%      BLOCK                                         %VT100%
+%        COPY '#SET TERMINAL VT100'
+%      END BLOCK
+%      BLOCK                                         %VGA%
+%        COPY '#SET TERMINAL VGA'
+%      END BLOCK
+%%
+%    END CASE
+%  END BLOCK
+%END SCRIPT

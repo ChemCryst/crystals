@@ -1,0 +1,99 @@
+%SCRIPT EDLIST1 %Cell parameter editor script%
+%  VARIABLE INTEGER SELECT
+%  VARIABLE REAL A B C ALPHA BETA GAMMA OLDVALUE NEWVALUE
+%
+%    IF ( EXISTS 1 .NE. 1 ) THEN
+%      COPY '#SCRIPT INLIST1'
+%      FINISH
+%    END IF
+                      Edit cell parameters
+                      ---- ---- ----------
+                                                    djw
+%  COPY '#GENERALEDIT 1'
+%  COPY 'LOCATE RECORDTYPE = 101'
+%  COPY 'OPERATE MULTIPLY OFFSET = 3 REAL REAL = 57.2957795'
+%  COPY 'OPERATE MULTIPLY OFFSET = 4 REAL REAL = 57.2957795'
+%  COPY 'OPERATE MULTIPLY OFFSET = 5 REAL REAL = 57.2957795'
+%  COPY 'TRANSFER FROM OFFSET =  0 TO A'
+%  COPY 'TRANSFER FROM OFFSET =  1 TO B '
+%  COPY 'TRANSFER FROM OFFSET =  2 TO C'
+%  COPY 'TRANSFER FROM OFFSET =  3 TO ALPHA'
+%  COPY 'TRANSFER FROM OFFSET =  4 TO BETA'
+%  COPY 'TRANSFER FROM OFFSET =  5 TO GAMMA'
+%  COPY 'END'
+%
+%  LOOP
+%    ON ERROR REPEAT
+%    VERIFY END QUIT HELP LIST CHANGE
+%    GET FINAL NOSTORE ABBREVIATED 'Operation' 'HELP'
+%
+%    CASE VALUE
+%
+%      BLOCK                                    %END%
+%
+%        COPY '#LIST 1'
+%        CLEAR
+%        INSERT 'REAL'
+%        STORE FORMAT "(F12.4)" REAL A B C
+%        SEND
+%        CLEAR
+%        INSERT 'CONT'
+%        STORE FORMAT "(F12.4)" REAL ALPHA BETA GAMMA
+%        SEND
+%        COPY 'END'
+%        FINISH
+%      END BLOCK
+%
+%      BLOCK                                    %QUIT%
+%        FINISH
+%      END BLOCK
+%
+%      BLOCK                                    %HELP%
+            END               End edit and save new parameters
+            QUIT              End edit without saving parameters
+            HELP              Type this text
+            LIST              Display current cell parameters
+            CHANGE            Change one cell parameter
+%      END BLOCK
+%
+%      BLOCK                                    %LIST%
+%
+%        CLEAR
+%        STORE FORMAT "(F9.4,3X)" LENGTH 12 REAL A B C ALPHA BETA GAMMA
+    a           b           c           alpha       beta        gamma
+%        EXECUTE SEND
+%
+%      END BLOCK
+%
+%
+%      BLOCK                                    %CHANGE%
+%
+%        BLOCK
+%          ON END TERMINATE
+%          CLEAR
+%          INSERT '%EVALUATE OLDVALUE = '
+%          VERIFY A B C ALPHA BETA GAMMA
+%          GET VERIFIED 'Parameter to change'
+%          EVALUATE SELECT = VALUE
+%          EXECUTE SEND
+%          ON ERROR RESTART
+%
+%          CLEAR
+%          INSERT '%GET FINAL REAL "New value" '
+%          STORE FORMAT /('"',F9.4,'"')/ REAL OLDVALUE
+%          EXECUTE SEND
+%
+%          CLEAR
+%          INSERT '%EVALUATE '
+%          STORE KEYWORD SELECT
+%          INSERT ' = VALUE'
+%          EXECUTE SEND
+%        END BLOCK
+%%
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

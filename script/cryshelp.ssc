@@ -1,0 +1,79 @@
+%SCRIPT CRYSHELP  %Script to allow access to CRYSTALS HELP facility%
+%  VARIABLE LOGICAL DISPLAYLIST
+%  VARIABLE CHARACTER SWITCH
+The CRYSTALS HELP system
+%  LOOP
+%  VERIFY BACK HELP GENERAL BASIC REFINEMENT FOREIGN
+%  GET NOSTORE ABBREV 'Help topic' 'BACK'
+%    EVALUATE SWITCH = CVALUE
+%    EVALUATE DISPLAYLIST = USERLENGTH .LE. 0
+%
+%    CASE VALUE
+%      FINISH                                         %BACK%
+%%
+%      BLOCK                                          %HELP%
+%        IF DISPLAYLIST THEN
+                    The CRYSTALS HELP system
+      This gives HELP for CRYSTALS in the DIRECT COMMAND mode of
+      operation.
+      The help topics have been divided into 4 classes
+      GENERAL     General help on using CRYSTALS
+      BASIC       Help on initial data input, data reduction,
+                  and fourier methods
+      REFINEMENT  Help on least squares refinement
+      FOREIGN     Help on 'foreign' utilities available through CRYSTALS
+%        END IF
+%      END BLOCK
+%%
+%      BLOCK                                          %GENERAL%
+%        IF DISPLAYLIST THEN
+      NEW          New facilities and news
+      ERRORS       Known errors and facilities withdrawn
+      PAGING       Influence of paging on cpu time
+      CONTROLC     Control-c handling ( VAX only )
+      QUERY        The command file inquiry facility
+%        END IF
+%        VERIFY BACK NEW ERRORS PAGING CONTROLC QUERY
+%      END BLOCK
+%%
+%      BLOCK                                         %BASIC%
+%        IF DISPLAYLIST THEN
+      BASICS       The set-up at Oxford.
+      STARTUP      Crystal data needed for most tasks.
+      REDUCTION    Data reduction procedures.
+      TWIN         Reduction for twinned data.
+      PATTERSON    Patterson calculations.
+      FOURIER      Fourier calculations.
+%        END IF
+%        VERIFY BACK BASICS STARTUP REDUCTION TWIN PATTERSON FOURIER
+%      END BLOCK
+%      BLOCK                                         %REFINEMENT%
+%        IF DISPLAYLIST THEN
+      SFLS         Least squares.
+      RIDING       Reduced parameter refinement.
+      WEIGHTS      Weighting the refinement.
+      REFINE       A practical scheme for refinement.
+      TIPS         Some helpful advice for refinement.
+%        END IF
+%        VERIFY BACK SFLS RIDING WEIGHTS REFINE TIPS
+%      END BLOCK
+%      BLOCK                                         %FOREIGN%
+%        IF DISPLAYLIST THEN
+      CONTOUR      The fourier contouring facility
+      SNOOPI       An example on using SNOOPI
+%        END IF
+%        VERIFY BACK CONTOUR SNOOPI
+%      END BLOCK
+%    END CASE
+%
+%    IF SWITCH .NE. 'HELP' THEN
+%      CLEAR
+%      INSERT '#HELP'
+%      GET FINAL FILL ABBREV 'Topic' 'BACK'
+%        IF VALUE .NE. 1 THEN
+%          SEND
+%        END IF
+%    END IF
+%  END LOOP
+%%
+%END SCRIPT

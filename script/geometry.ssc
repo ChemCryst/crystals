@@ -1,0 +1,71 @@
+%SCRIPT GEOMETRY
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ  A SCRIPT to help with the calculation of molecular parameters.            บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+The SCRIPT to help with the calculation of molecular parameters.
+% END IF
+%%
+%  LOOP
+%    ON ERROR TERMINATE ABANDONED
+%    CLEAR
+%    VERIFY BACK HELP LOOK DISK DISTANCE PLOT PLANE TORSION TLS AXES
+%    GET NOSTORE FINAL ABBREVIATED 'Next step' 'BACK'
+%    CASE VALUE
+%      FINISH                                        %BACK%
+%      BLOCK                                         %HELP%
+      The SCRIPT to help produce tables for publication
+      BACK        End this script
+      HELP        Display this help text
+      LOOK        List the contents of the active lists
+      DISK        Examine the disk file
+      DISTANCE    Compute distances and angles
+      PLOT        Join-the-dots plots on the vdu
+      PLANE       Best plane and best line computations
+      TORSION     Compute torsion angles
+      TLS         Analyse rigid body thermal motion
+      AXES        Compute principal axes of temperature factors
+      DIRECT      Go to CRYSTALS direct command input.
+%%
+%      END BLOCK
+%%
+%      BLOCK                                         %LOOK%
+%        COPY '#SCRIPT LOOK'
+%      END BLOCK
+%%
+%      BLOCK                                         %DISK%
+%        COPY '#SCRIPT DISK'
+%      END BLOCK
+%%
+%      BLOCK                                         %DISTANCE%
+%        COPY '#SCRIPT DISTANCE'
+%      END BLOCK
+%%
+%      BLOCK                                         %PLOT%
+%        COPY '#SCRIPT PLOT'
+%      END BLOCK
+%%
+%      BLOCK                                         %PLANE%
+%        COPY '#SCRIPT PLANE'
+%      END BLOCK
+%%
+%      BLOCK                                         %TORSION%
+%        COPY '#SCRIPT TORSION'
+%      END BLOCK
+%%
+%      BLOCK                                         %TLS%
+%        COPY '#SCRIPT TLS'
+%      END BLOCK
+%%
+%      BLOCK                                         %AXES%
+%        COPY '#SCRIPT AXES'
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

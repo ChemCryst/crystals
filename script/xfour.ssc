@@ -1,0 +1,377 @@
+%SCRIPT FOURIER
+% VARIABLE LOGICAL SCRIPTEXT
+% VARIABLE LOGICAL LCONTOUR
+% VARIABLE LOGICAL PEAKCHANGE REDRAW
+% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
+% VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT
+% VARIABLE REAL PEAKHEIGHT REJLIMIT
+% VARIABLE CHARACTER CDLINE
+% IF SCRIPTEXT .EQ. TRUE THEN
+ This script implements the CRYSTALS command FOURIER, and may be used to    
+ compute a variety of real and vector space Fourier syntheses.              
+ In this script you are only offered a limited selection of syntheses      
+ together with a peak search. The underlying COMMAND includes options       
+ for formatting and printing the map, various weighting schemes, and        
+ special treatment of reflections.                                          
+ After computing the map, this script enables you to process the peak       
+ search into an atoms list.                                                 
+% ELSE
+a SCRIPT to help with the computation and processing of Fourier maps
+% END IF
+%  VARIABLE REAL HEIGHT
+%  VARIABLE CHARACTER MAPTYPE
+%  EVALUATE MAPTYPE = 'UNKNOWN'
+%  IF ( EXISTS 14 .NE. 1 ) THEN
+%    COPY '#SCRIPT SECTION'
+%    IF ( EXISTS 14 .NE. 1 ) THEN
+ You have not stored the asymmetric part of the cell. We cannot compute
+ a Fourier map.
+%    FINISH
+%    END IF
+%  END IF
+%%Set up dialog
+% EVALUATE PEAKCHANGE = FALSE
+% EVALUATE REDRAW = TRUE
+% LOOP
+% IF REDRAW .EQ. TRUE THEN
+%    EVALUATE REDRAW = FALSE
+%%
+^^WI WINDOW FOURIER 'Fourier' MODAL COMMIT='BUTTONOK' CANCEL='BUTTONXX'
+%%
+^^WI STARTGRID     GRIDM 'N' NROWS=1 NCOLS=2
+^^WI  STARTGRID ROW=1 COL=2 GRIDB 'N' NROWS=5 NCOLS=3
+^^WI   BUTTON ROW=2 COL=2 BUTTONOK '&Ok' DEFAULT
+^^WI   BUTTON ROW=4 COL=2 BUTTONXX '&Cancel'
+^^WI  ENDGRID
+^^WI  STARTGRID ROW=1 COL=1 GRIDA 'N' NROWS=11 NCOLS=3
+^^WI   STARTGRID ROW=2 COL=2 GRIDAA 'Pre calc' NROWS=2 NCOLS=3 OUTLINE
+^^WI    CHECKBOX ROW=1 COL=2 XSCALE 'Recalculate scale factor' INFORM=NO
+^^WI    CHECKBOX ROW=2 COL=2 XCALC 'Recalculate phases' INFORM=NO
+^^WI   ENDGRID
+^^WI   STARTGRID ROW=4 COL=2 GRIDAB 'Fourier map' NROWS=3 NCOLS=3 OUTLINE
+^^WI    STARTGRID ROW=1 COL=2 GRIDABA 'N' NROWS=2 NCOLS=3
+^^WI     STATIC ROW=1 COL=1 TEXT1 'Map type:'
+^^WI     DROPDOWN ROW=1 COL=3 XFLIST INFORM=YES
+^^WI     ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc' 'F-Calc' 'NULL'
+^^WI    ENDGRID
+^^WI    STARTGRID ROW=3 COL=2 GRIDABB 'N' NROWS=1 NCOLS=5
+^^WI     STATIC ROW=1 COL=1 TEXT2 'Min. peak height:'
+^^WI     EDITBOX ROW=1 COL=3 XFEDIT '1.5' CHARS=5 REAL INFORM=YES
+^^WI     STATIC ROW=1 COL=5 TEXT3 'electrons per cubic angstrom'
+^^WI    ENDGRID
+^^WI   ENDGRID
+^^WI   STARTGRID ROW=6 COL=2 GRIDAC 'Maximum peaks' NROWS=2 NCOLS=3 OUTLINE
+^^WI    CHECKBOX ROW=1 COL=2 XDPEAKS 'Calculate based on cell volume.' STATE=ON
+^^WI                                                                 INFORM=YES
+^^WI    STARTGRID ROW=2 COL=2 GRIDACA 'N' NROWS=1 NCOLS=3
+^^WI   CHECKBOX ROW=1 COL=1 XNPEAKS 'Number of peaks to keep:' STATE=OFF 
+^^WI                                                          INFORM=YES
+^^WI     EDITBOX ROW=1 COL=3  ICPEAKS '0' CHARS=5 INTEGER DISABLED=YES
+^^WI    ENDGRID
+^^WI   ENDGRID
+^^WI   STARTGRID ROW=8 COL=2 GRIDAD 'Filter' NROWS=1 NCOLS=7 OUTLINE
+^^WI    STATIC ROW=1 COL=2 TEXT4 'Rejection limit for co-incident peaks'
+^^WI    EDITBOX ROW=1 COL=4 FCREJECT '0.01' REAL CHARS=6 
+^^WI   ENDGRID
+^^WI   CHECKBOX ROW=10 COL=2 XMAP 'Save a map plotting file' INFORM=NO
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+% END IF
+% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT BUTTONOK BUTTONXX
+^^WI SET _MAINTEXTOUTPUT NOECHO
+^^CR
+% GET NOSTORE FINAL ABBREVIATED ' ' ' '
+% CASE VALUE
+%   BLOCK           %XFLIST Change default peak height?%
+%       VERIFY 1 2 3 4
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%       GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF PEAKCHANGE .EQ. FALSE THEN
+%           IF VALUE .EQ. 2 THEN
+^^WI            SET XFEDIT TEXT '0.3'
+^^CR
+%           ELSE
+^^WI            SET XFEDIT TEXT '1.5'
+^^CR
+%           END IF
+%       END IF
+%   END BLOCK
+%   BLOCK           %XDPEAKS%
+%       VERIFY ON OFF
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%       GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%       CASE VALUE
+%           BLOCK       %ON%
+^^WI            SET XNPEAKS STATE=OFF 
+^^WI            SET ICPEAKS DISABLED=YES
+^^CR
+%           END BLOCK
+%           BLOCK       %OFF%
+^^WI            SET XNPEAKS STATE=ON
+^^WI            SET ICPEAKS DISABLED=NO
+^^CR
+%           END BLOCK
+%       END CASE
+%   END BLOCK
+%   BLOCK           %XNPEAKS%
+%       VERIFY ON OFF
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%       GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%       CASE VALUE
+%           BLOCK       %ON%
+^^WI            SET XDPEAKS STATE=OFF
+^^WI            SET ICPEAKS DISABLED=NO
+^^CR
+%           END BLOCK
+%           BLOCK       %OFF%
+^^WI            SET XDPEAKS STATE=ON
+^^WI            SET ICPEAKS DISABLED=YES
+^^CR
+%           END BLOCK
+%       END CASE
+%   END BLOCK
+%   BLOCK           %XFEDIT%
+%%If the user sets a value, turn off automatic value change.
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%       GET NOSTORE KEYWORD ' ' ' '
+%       EVALUATE PEAKCHANGE = TRUE
+%   END BLOCK
+%   BLOCK           %BUTTONOK%
+%% recalc scale factor
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    XSCALE STATE
+%       VERIFY ON OFF
+%       GET NOSTORE FINAL ABBREVIATED ' '
+%       EVALUATE DOSCALE = VALUE
+%% recalc phases
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    XCALC STATE
+%       VERIFY ON OFF
+%       GET NOSTORE FINAL ABBREVIATED ' '
+%       EVALUATE DOCALC = VALUE
+%% map type
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    XFLIST SELECTED
+%       VERIFY 1 2 3 4
+%       GET FINAL NOSTORE ABBREVIATED ' '
+%       EVALUATE IMAP = VALUE
+%% min peak height
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    XFEDIT TEXT
+%       GET NOSTORE REAL ' '
+%       EVALUATE PEAKHEIGHT = 10.0 * VALUE
+%% default or specified npeaks to keep
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    XDPEAKS STATE
+%       VERIFY ON OFF
+%       GET NOSTORE FINAL ABBREVIATED ' '
+%       CASE VALUE
+%           BLOCK %ON%
+%               EVALUATE NPEAKS = 0
+%           END BLOCK
+%           BLOCK %OFF%
+^^WI            SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??            ICPEAKS TEXT
+%               GET NOSTORE INTEGER ' '
+%               EVALUATE NPEAKS = VALUE
+%           END BLOCK
+%       END CASE
+%% rejection limit
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    FCREJECT TEXT
+%       GET NOSTORE REAL ' '
+%       EVALUATE REJLIMIT = VALUE
+%% map file
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??    XMAP STATE
+%       VERIFY ON OFF
+%       GET NOSTORE FINAL ABBREVIATED ' '
+%       EVALUATE DOMAP = VALUE
+^^WI    DISPOSE FOURIER
+^^CR
+%%
+%       IF DOSCALE .EQ. 1 THEN
+%           COPY '#EDIT'
+%           COPY 'SELECT TYPE NE Q'
+%           COPY 'END'
+%           COPY '#SFLS'
+%           COPY 'SCALE'
+%           COPY 'END'
+%       END IF
+%       IF DOCALC .EQ. 1 THEN
+%           COPY '#EDIT'
+%           COPY 'SELECT TYPE NE Q'
+%           COPY 'END'
+%           COPY '#SFLS'
+%           COPY 'CALC'
+%           COPY 'END'
+%       END IF
+%       QUEUE REWIND
+%       CLEAR
+%       INSERT 'MAP TYPE = '
+%       IF IMAP .EQ. 1 THEN
+%           EVALUATE MAPTYPE = 'FO'
+%           INSERT 'F-O'
+%       ELSE IF IMAP .EQ. 2 THEN
+%           EVALUATE MAPTYPE = 'DIF'
+%           INSERT 'DIF'
+%       ELSE IF IMAP .EQ. 3 THEN
+%             EVALUATE MAPTYPE = '2FO'
+%           INSERT '2FO'
+%       ELSE
+%           EVALUATE MAPTYPE = 'FC'
+%           INSERT 'F-C'
+%       END IF
+%       QUEUE SEND
+%       CLEAR
+%       INSERT 'PEAKS HEIGHT  = '
+%       STORE FORMAT /(F7.2)/ LENGTH 7 REAL PEAKHEIGHT
+%       INSERT ' NPEAK = '
+%       STORE FORMAT /(I6)/ LENGTH 6 INTEGER NPEAKS
+%       INSERT ' REJECT = '
+%       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT
+%       QUEUE SEND
+%       CLEAR
+%       IF DOMAP .EQ. 1 THEN
+%           INSERT 'TAPES OUTPUT=YES'
+%           QUEUE SEND
+%           EVALUATE LCONTOUR = TRUE
+%           BLOCK
+%               VARIABLE CHARACTER FILENAME
+%               ON ERROR REPEAT
+%               CLEAR
+%% ^^DI GETFILENAME SAVE fourier.map Fourier map plot^^EN^^ER
+^^WI SYSSAVEFILE 'Map.mt1' '*.mt1' 'Fourier map binary file (*.mt1)'
+^^CR
+%               GET FINAL FILENAME 'Filename for map' 'MAP.MT1'
+%        EVALUATE FILENAME = CVALUE
+%        TRANSFER '#OPEN MT1 ' //  FILENAME  // ' ' TO CRYSTALS
+%           END BLOCK
+%       END IF
+%       COPY '#FOURIER'
+%       QUEUE PROCESS
+%       COPY 'END'
+%% See if any atoms were found
+%       COPY '#GENERALEDIT 10'
+%       COPY 'LOCATE RECORDTYPE=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       EVALUATE PEAKS = 0
+%       LOOP
+%           ON EDITERROR TERMINATE
+%           COPY 'NEXT'
+%           EVALUATE PEAKS = LOOPCOUNTER
+%       END LOOP
+%       COPY 'END'
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDTYPE=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       EVALUATE ATOMS = 0
+%       LOOP
+%           ON EDITERROR TERMINATE
+%           COPY 'NEXT'
+%           EVALUATE ATOMS = LOOPCOUNTER
+%       END LOOP
+%       COPY 'END'
+%       EVALUATE NPEAKS = PEAKS - ATOMS
+%%      SHOW NPEAKS
+%       IF NPEAKS .LE. 0 THEN
+^^WI    WINDOW NOPEAKS 'No peaks' MODAL
+^^WI    STARTGRID MYMAIN ' ' NROWS=1 NCOLS=2
+^^WI     STARTGRID ROW=1 COL=1 GRIDL ' ' NROWS=8 NCOLS=3
+^^WI      STATIC ROW=2 COL=2 TEXT1 'No peaks were found.'
+^^WI      STATIC ROW=3 COL=2 TEXT2 'Try increasing the'
+^^WI      STATIC ROW=4 COL=2 TEXT3 'number of peaks to'
+^^WI      STATIC ROW=5 COL=2 TEXT4 'keep or decreasing'
+^^WI      STATIC ROW=6 COL=2 TEXT5 'the minimum peak '
+^^WI      STATIC ROW=7 COL=2 TEXT6 'height.'
+^^WI     ENDGRID
+^^WI     STARTGRID ROW=1 COL=2 GRIDR ' ' NROWS=5 NCOLS=3
+^^WI      BUTTON ROW=2 COL=2 BTNOK '&Try Again' DEFAULT
+^^WI      BUTTON ROW=4 COL=2 BTNXX '&Abort'
+^^WI     ENDGRID
+^^WI    ENDGRID
+^^WI    SHOW
+^^CR
+%           VERIFY BTNOK BTNXX
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%           GET NOSTORE FINAL ABBREVIATED ' ' ' '
+^^WI        DISPOSE NOPEAKS
+^^CR
+%           IF VALUE .EQ. 1 THEN
+%% Don't know how wise this is, the stack will run out eventually
+%               COPY '#SCRIPT XFOUR'
+%           END IF
+%           FINISH
+%       END IF
+^^WI WINDOW PEAKS 'Peaks found' MODAL
+^^WI STARTGRID MYMAIN ' ' NROWS=1 NCOLS=2
+^^WI  STARTGRID ROW=1 COL=1 GRIDL ' ' NROWS=7 NCOLS=3
+% CLEAR
+% INSERT !^^WI STATIC ROW=2 COL=2 TEXT1 'Found !
+% STORE FORMAT /(I4)/ LENGTH 4 INTEGER NPEAKS
+% INSERT ! peaks.' !
+% OUTPUT
+^^WI   STATIC ROW=3 COL=2 XPEAKS 'Convert them into an atom list?'
+^^WI   CHECKBOX ROW=5 COL=2 XCOLLECT 'Collect the peaks into fragments.' 
+^^WI                                                   INFORM=NO
+^^WI  ENDGRID
+^^WI  STARTGRID ROW=1 COL=2 GRIDR ' ' NROWS=5 NCOLS=3
+^^WI   BUTTON ROW=2 COL=2 BTNOK '&Ok' DEFAULT
+^^WI   BUTTON ROW=4 COL=2 BTNXX '&Cancel'
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+%    VERIFY BTNOK BTNXX
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%             BLOCK                %BUTTONOK%
+%                 QUEUE REWIND
+%                 CLEAR
+^^WI              SET _MAINTEXTOUTPUT NOECHO
+^^CR
+^^??              XCOLLECT STATE
+%                 VERIFY ON OFF
+%                 GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%                 EVALUATE DOCOLLECT = VALUE
+^^WI              DISPOSE PEAKS
+^^CR
+%                 COPY '#SCRIPT PEAKS'
+%                 IF DOCOLLECT .EQ. 1 THEN
+%                     COPY '#SCRIPT COLLECT'
+%                 END IF
+%                 FINISH
+%             END BLOCK
+%             BLOCK                %BUTTONXX%
+^^WI              DISPOSE PEAKS
+^^CR
+%                 FINISH
+%             END BLOCK
+%        END CASE
+%   END BLOCK
+%%
+%   BLOCK                   %BUTTONXX%
+^^WI    DISPOSE FOURIER
+^^CR
+%       FINISH
+%   END BLOCK
+% END CASE
+% END LOOP
+%END SCRIPT

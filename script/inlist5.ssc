@@ -1,0 +1,61 @@
+%SCRIPT INLIST5
+Input LIST 5, the coordinates of a model
+%  VARIABLE INTEGER ATOMCOUNT
+%  VARIABLE REAL UISO
+%  EVALUATE ATOMCOUNT = 0
+Enter element symbol, serial, x, y, z, occ, Uiso
+Set Uiso to zero and enter Uijs for anisotropic atoms
+                                            use  END  to terminate input
+%      QUEUE REWIND
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR REPEAT
+%        CLEAR
+%%       read the element type without storing to check for an 'END'
+%        GET NOSTORE NOREMOVE KEYWORD 'Element ( END to end input) '
+%        BLOCK
+%          CLEAR
+%          INSERT 'ATOM '
+%%         now re-read the element and store it in its proper place
+%          GET NOPROMPT KEYWORD 'no-prompt'
+%          INSERT ' '
+%          GET REAL 'Serial'
+%          INSERT ' X = '
+%          GET REAL 'x coordinate'
+%          GET REAL 'y coordinate'
+%          GET REAL 'z coordinate'
+%          INSERT ' Occ = '
+%          GET REAL 'Occupation factor' '1.0'
+%          INSERT ' U[iso] = '
+%          GET FINAL REAL 'U[iso]' '.05'
+%          QUEUE SEND
+%          CLEAR
+%          EVALUATE UISO = VALUE
+%          IF UISO .LE. .00001 THEN
+%            CLEAR
+%            INSERT 'CONT U[11] = '
+%            GET REAL 'U[11]' '.05'
+%            GET REAL 'U[22]' '.05'
+%            GET REAL 'U[33]' '.05'
+%            GET REAL 'U[23]' '0.0'
+%            GET REAL 'U[13]' '0.0'
+%            GET FINAL REAL 'U[12]' '0.0'
+%          QUEUE SEND
+%          END IF
+%          EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%        END BLOCK
+%      END LOOP
+%  IF ATOMCOUNT .EQ. 0 THEN
+      You have not specified any new atoms. No model has been stored
+%    FINISH
+%  ELSE
+%    COPY '#LIST 5'
+%    CLEAR
+%    INSERT 'READ NATOM = '
+%    STORE INTEGER ATOMCOUNT
+%    SEND
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END IF
+%%
+%END SCRIPT

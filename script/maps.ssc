@@ -1,0 +1,77 @@
+%SCRIPT MAPS
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This script gives access to the basic CRYSTALS commands needed to          บ
+บ compute and interpret Fourier syntheses.                                   บ
+บ  To compute a Fourier map, you must have some atoms from an E-map or       บ
+บ an an earlier Fouroer or least squares cycle. These must be used to        บ
+บ compute structure factors (to get new phase angles), which are in turn     บ
+บ used with the observed structure amplitudes to compute the new map. The    บ
+บ map is normally only computed for one asymmetric unit of the cell, as      บ
+บ defined in LIST14. This is set up automatically when you input the         บ
+บ space  group, but can be changed for special purposes. Because a           บ
+บ chemical molecule may lie across the boundaries of the asymmetric unit,    บ
+บ the molecule will appear as fragments in the fourier map. The fragments    บ
+บ can be assembled into a single molecuule using REGROUP or COLLECT. The     บ
+บ electron density figure fields caan be examined by hand if required,       บ
+บ but for most purposes the automatic peak search finds suitable local       บ
+บ maxima, corresponding to atomic sites. The command PEAKS converts the      บ
+บ peaks list into atoms.                                                     บ
+บ     Slant Fouriers are sections lying in arbitary orientations, often      บ
+บ chosen to correspond to molecular planes. There are no peak search         บ
+บ facilities for slant Fouriers                                              บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% ELSE
+A SCRIPT to help with the computation and processing of Fourier maps
+% END IF
+%  VARIABLE CHARACTER MAPTYPE
+%  LOOP
+%    ON ERROR RESTART
+%    VERIFY BACK HELP INEMAP AUTO GUIDE SF FOURIER CONVERT COLLECT REGROUP -
+     PLOT EDIT DISTANCE SLANT SECTION RFACTOR CONTOUR
+%    GET NOSTORE FINAL ABBREVIATED 'Script required' 'BACK'
+%    CASE VALUE
+%      FINISH                                      %BACK%
+%      BLOCK                                       %HELP%
+      BACK        Finish with this facility
+      HELP        Display this help text
+      INEMAP      Input the results of a Direct methods run
+      AUTO        A cyclic procedure for Fourier refinement
+      GUIDE       A SCRIPT to guide you through Fourier calculations
+      SF          Compute structure factors and phases
+      FOURIER     Compute Fourier map
+      CONVERT     Convert peaks list to atoms list
+      COLLECT     Collect atoms and peaks together
+      REGROUP     Reorder atoms to form molecules
+      PLOT        A join the dots plot on screen and printer
+      EDIT        Delete or rename groups of atoms and peaks
+      DISTANCE    Compute interatomic distances.
+      SLANT       Compute a general Fourier section
+      SECTION     Define the asymmetric part of the cell
+      RFACTOR     Show the current R factor
+      CONTOUR     Produce contouring files
+      DIRECT      Go direct to command mode
+%      END BLOCK
+%      COPY '#SCRIPT INEMAP'                    % INEMAP%
+%      COPY '#SCRIPT AFOUR'                     % AUTO%
+%      COPY '#SCRIPT FGUIDE'                    % GUIDE%
+%      COPY '#SCRIPT SCALE'                     % SF%
+%      COPY '#SCRIPT FOURIER'                    % FOURIER%
+%      COPY '#SCRIPT PEAKS'                      % CONVERT%
+%      COPY '#SCRIPT COLLECT'                    % COLLECT%
+%      COPY '#SCRIPT REGROUP'                    % REGROUP%
+%      COPY '#SCRIPT PLOT'                       % PLOT%
+%      COPY '#SCRIPT EDLIST5'                    % EDIT%
+%      BLOCK
+       The peaks list should have been converted to an atom list before
+       using this option.
+%        COPY '#SCRIPT DISTANCE'                   % DISTANCE%
+%      END BLOCK
+%      COPY '#SCRIPT SLANT'                      % SLANT%
+%      COPY '#SCRIPT SECTION'                    % SECTION%
+%      COPY '#SCRIPT RFACTOR'                    % RFACTOR%
+%      COPY '#SCRIPT CONTOUR'                    % CONTOUR%
+%    END CASE
+%  END LOOP
+%END SCRIPT

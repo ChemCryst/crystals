@@ -1,0 +1,159 @@
+%SCRIPT EDLIST29  %Editor for list 29%
+%  VARIABLE INTEGER SELECT OFFSET
+%  VARIABLE LOGICAL ALREADYPRES
+                      Edit elemental properties
+                      ---- --------- ----------
+%  IF EXISTS 29 .NE. 1 THEN
+%    COPY '#LIST 29'
+%    COPY 'READ NELEMENT = 0'
+%    COPY 'END'
+%  END IF
+%
+%  COPY '#GENERALEDIT 29'
+%  COPY 'LOCATE RECORDTYPE = 101'
+%  COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'
+%  COPY 'GROUP MODE = REAL'
+%  COPY 'RECORD MODE = REAL'
+%  COPY 'FORMAT KEY (6(8X,A4))'
+%  COPY 'FORMAT GROUP ( 4X,A4,6F10.2 )'
+%  COPY 'FORMAT RECORD ( 4X,A4,6F10.2 )'
+%  COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'
+%
+%  MESSAGE USER1 'No elements are defined at present'
+%  MESSAGE USER2 'There is no such element'
+%
+%  LOOP
+%    ON ERROR REPEAT
+%    VERIFY END QUIT HELP LIST CHANGE INSERT DELETE
+%    GET FINAL NOSTORE ABBREVIATED 'Operation' 'HELP'
+%
+%    CASE VALUE
+%      BLOCK                                          %END%
+%        COPY 'WRITE'
+%        COPY 'END'
+%        FINISH
+%      END BLOCK
+%      BLOCK                                          %QUIT%
+%        COPY 'END'
+%        FINISH
+%      END BLOCK
+%      BLOCK                                          %HELP%
+            END               End edit and save data
+            QUIT              End edit without saving data
+            HELP              Type this text
+            LIST              Display data for all elements
+            CHANGE            Change data for one element
+            INSERT            Insert a new element
+            DELETE            Delete an element
+%      END BLOCK
+%      BLOCK                                          %LIST%
+%        ON EDITERROR TERMINATE USER1
+%        COPY 'CHECK'
+%
+    Type              Radii            Number in        Mu    Atomic
+          Covalent    V.D.W.     Ionic asym unit              weight
+%        COPY 'DISPLAY RECORD'
+%      END BLOCK
+%      BLOCK                                          %CHANGE%
+%        ON EDITERROR TERMINATE USER1
+%        COPY 'CHECK'
+      The following element(s) are defined at present :-
+%        COPY 'DISPLAY KEYS'
+%        CLEAR
+%        INSERT 'SEARCH CHAR = '
+%        GET FINAL KEYWORD 'Element to change'
+%        BLOCK
+%          ON EDITERROR TERMINATE USER2
+%          SEND
+%          COPY 'DISPLAY GROUP'
+%          CLEAR
+%          VERIFY NONE TYPE COVALENT VANDERWAALS IONIC NUMBER MU WEIGHT
+%          GET NOSTORE ABBREV 'Item to change'
+%
+%          EVALUATE OFFSET = VALUE - 2
+%          IF VALUE .GT. 1 THEN
+%            CLEAR
+%            INSERT 'CHANGE OFFSET = '
+%            STORE INTEGER OFFSET
+%            CASE VALUE RANGE 2 3
+%              INSERT ' MODE = CHAR CHAR ='
+%              INSERT ' MODE = REAL REAL ='
+%            END CASE
+%            CASE VALUE RANGE 2 3
+%              GET FINAL KEYWORD 'New value'
+%              GET FINAL REAL 'New value'
+%            END CASE
+%            SEND
+%            COPY 'DISPLAY GROUP'
+%          END IF
+%        END BLOCK
+%      END BLOCK
+%      BLOCK                                          %INSERT%
+%        BLOCK
+%          EVALUATE ALREADYPRES = FALSE
+%          ON EDITERROR TERMINATE
+%          COPY 'CHECK'
+%          CLEAR
+%          INSERT 'SEARCH CHAR = '
+%          GET NOREMOVE KEYWORD 'Element type'
+%          SEND
+%          EVALUATE ALREADYPRES = TRUE
+%        END BLOCK
+%        IF ALREADYPRES THEN
+      This element is already defined. Use CHANGE to change the definition.
+%          GET NOMESSAGE NOPROMPT TEXT 'Nothing' 'NONE'
+%        ELSE
+%          COPY 'INSERT'
+%          VERIFY CHAR REAL REAL REAL REAL REAL REAL
+%          LOOP 7 TIMES
+%            ON ERROR RESTART
+%            CLEAR
+%            INSERT 'CHANGE '
+%            STORE INTEGER LOOPCOUNTER - 1
+%            INSERT ' '
+%            STORE KEYWORD LOOPCOUNTER
+%            INSERT ' '
+%            STORE KEYWORD LOOPCOUNTER
+%            INSERT ' = '
+%            CASE LOOPCOUNTER
+%             GET KEYWORD 'Element type'
+%             GET REAL 'Covalent radius' '0.8'
+%             GET REAL 'Van der Waals radius' '1.5'
+%             GET REAL 'Ionic radius' '1.0'
+%     GET REAL 'Number of atoms of this element in the asymmetric unit' '0.0'
+%             GET REAL 'Mu' '0.0'
+%             GET FINAL REAL 'Atomic weight' '0.0'
+%            END CASE
+%            SEND
+%          END LOOP
+%          COPY 'DISPLAY GROUP'
+%        END IF
+%      END BLOCK
+%
+%
+%      BLOCK                                          %DELETE%
+%    BLOCK
+%    ON EDITERROR TERMINATE USER1
+%    COPY 'CHECK'
+      The following element(s) are defined at present :-
+%    COPY 'DISPLAY KEYS'
+%    BLOCK
+%      ON EDITERROR TERMINATE USER2
+%      CLEAR
+%      INSERT 'SEARCH CHAR = '
+%      GET FINAL KEYWORD 'Element to delete'
+%      SEND
+      The following element has been deleted
+%      COPY 'DISPLAY GROUP'
+%      COPY 'DELETE'
+%    END BLOCK
+%%
+%  END BLOCK
+%%
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

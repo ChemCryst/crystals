@@ -1,0 +1,97 @@
+%SCRIPT XXDISTANCES
+%% CRYSTALS cell parameter input script
+%  VARIABLE CHARACTER AT1 AT2
+%  EVALUATE AT1 = ' ' 
+%  EVALUATE AT2 = ' '
+%  VARIABLE INTEGER AT1OK AT2OK ATNEXT
+%  EVALUATE ATNEXT = 1
+%  EVALUATE AT1OK = 0
+%  EVALUATE AT2OK = 0
+%  COPY '#SUM L 5'
+%  COPY 'END'
+^^WI WINDOW DIST 'Distance Calculation' SIZE
+^^WI STARTGRID MAIN 'N' NROWS=3 NCOLS=3
+^^WI  STARTGRID ROW=1 COL=2 UPPR 'N' NROWS=2 NCOLS=2
+^^WI   STARTGRID ROW=1 COL=1 LEFT 'L' NROWS=2 NCOLS=1
+^^WI    STARTGRID ROW=1 COL=1 TLFT 'T' NROWS=3 NCOLS=9
+^^WI     STATIC  ROW=2 COL=2  T1 'Atom 1:'
+^^WI     EDITBOX ROW=2 COL=4  E1 ' ' CHARS=6 READONLY
+^^WI     STATIC  ROW=2 COL=6  T2 'Atom 2:'
+^^WI     EDITBOX ROW=2 COL=8  E2 ' ' CHARS=6 READONLY
+^^WI    ENDGRID
+^^WI    STARTGRID ROW=2 COL=1 BLFT 'B' NROWS=4 NCOLS=3
+^^WI     STATIC  ROW=1 COL=2 T4 
+^^WI     'Click the atoms required, or &All for a full listing'
+^^WI     MODELWINDOW ROW=3 COL=2  MODELDD 'N' IGNORE 
+^^WI     NROWS=20 NCOLS=50
+^^WI     ATTACH L5 RADSCALE=500 RADTYPE=COV MOUSEACTION=HEADERATOM
+^^WI    ENDGRID
+^^WI   ENDGRID
+^^WI   STARTGRID ROW=1 COL=2 RGHT 'R' NROWS=5 NCOLS=3
+^^WI    BUTTON  ROW=2 COL=2 AL '&All'
+^^WI    BUTTON  ROW=4 COL=2 XX '&Close' CANCEL COMMIT DEFAULT
+^^WI   ENDGRID
+^^WI  ENDGRID
+^^WI  MULTIEDIT ROW=2 COL=2 _DISTTEXT '' NROWS=10 NCOLS=80 
+^^WI  IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO _DISTTEXT
+^^CR
+%%
+%  LOOP
+%      ON ERROR REPEAT
+%      ON END   TERMINATE
+^^WI SET TEXTOUTPUT NOECHO
+^^CR
+%      VERIFY AL XX ATOM
+%      GET FINAL NOSTORE ABBREVIATED ' '
+%      CASE VALUE
+%         BLOCK             %ALL%
+^^WI         DISPOSE DIST
+^^CR
+%            COPY '#DISTANCE'
+%            COPY 'OUTPUT MONITOR = DISTANCES'
+%            COPY 'SELECT ALL=YES, COORD=YES, SORT=YES, RANGE=LIMITS'
+%            COPY 'LIMITS DMAX=2.5'
+%            COPY 'END'
+%            FINISH
+%         END BLOCK
+%         BLOCK             %CLOSE%
+^^WI         DISPOSE DIST
+^^CR
+%            FINISH
+%         END BLOCK
+%         BLOCK             %ATOM%
+%%^^WI SET TEXTOUTPUT NOECHO
+%%^^CR
+%            GET NOSTORE TEXT ' '
+%            IF ATNEXT .EQ. 1 THEN
+%               EVALUATE AT1 = CVALUE
+%               TRANSFER "^^WI SET E1 TEXT '" // AT1 // "'" TO DISPLAY
+%               TRANSFER "^^WI SET E2 TEXT ' '" TO DISPLAY
+%               EVALUATE ATNEXT = 2
+%               EVALUATE AT1OK = 1
+%            ELSE
+%               EVALUATE AT2 = CVALUE
+%               TRANSFER "^^WI SET E2 TEXT '" // AT2 // "'" TO DISPLAY
+%               EVALUATE ATNEXT = 1
+%               EVALUATE AT2OK = 1
+%            END IF
+^^CR
+%            IF ( AT1OK .EQ. 1 ) .AND. ( AT2OK .EQ. 1 ) THEN 
+%               TRANSFER 'Distance calculation for ' // AT1 // ' - ' -
+                                 // AT2 TO DISPLAY
+%               COPY '#DISTANCES'
+%               COPY 'OUTPUT MONITOR=DIST'
+%               COPY 'EXCLUDE ALL'
+%               TRANSFER 'INCLUDE ' // AT1 // ' ' // AT2 TO CRYSTALS
+%               COPY 'END'
+%               EVALUATE AT1OK = 0
+%               EVALUATE AT2OK = 0
+%            END IF
+%         END BLOCK
+%      END CASE
+%  END LOOP
+%END SCRIPT

@@ -1,0 +1,45 @@
+%SCRIPT RFACTOR
+%% The variables R, OSCALE and RATIO may be needed in other scripts
+%  VARIABLE REAL R OSCALE RATIO
+%%       A dummy in case we have no Fc
+%      EVALUATE R = 100.
+%      EVALUATE RATIO = 100.
+%      VARIABLE CHARACTER CR
+%      VARIABLE REAL  FO FC
+%      ON END TERMINATE
+%      ON ERROR TERMINATE
+%% get the overall scale factor
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE = 102'
+%      COPY 'TRANSFER FROM OFFSET = 0 TO OSCALE'
+%      COPY 'END'
+%      BLOCK
+%        ON ERROR TERMINATE
+%        COPY "#GENERALEDIT 6"
+%        COPY "LOCATE RECORDTYPE=106"
+%        COPY "TRANSFER FROM OFFSET=1 TO R"
+%% get the rms Fo and Fc
+%        COPY "LOCATE RECORDTYPE=107"
+%        COPY "NEXT"
+%        COPY "NEXT"
+%        COPY "NEXT"
+%% rms Fo
+%        COPY "TRANSFER FROM OFFSET=3 TO FO"
+%        COPY 'NEXT'
+%        COPY 'NEXT'
+%        COPY "TRANSFER FROM OFFSET=3 TO FC"
+%        COPY "END"
+%        IF FC .GT. 0.0 THEN
+%          EVALUATE RATIO = FO / ( FC * OSCALE )
+%          IF RATIO .LT. 1.0 THEN
+%            EVALUATE RATIO = 1.0 / RATIO
+%          END IF
+%        END IF
+%      END BLOCK
+%      BLOCK
+%        EVALUATE CR = CHARACTER R
+%        TRANSFER "      The R factor is :== " // CR TO DISPLAY
+%        EVALUATE CR = CHARACTER RATIO
+%        TRANSFER "   The Ratio Fo/Fc is :== " // CR TO DISPLAY
+%      END BLOCK
+%END SCRIPT

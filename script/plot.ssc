@@ -1,0 +1,124 @@
+%SCRIPT PLOT
+% VARIABLE LOGICAL SCRIPTEXT GRAPHICS
+% VARIABLE INTEGER PRINTOUT
+% VARIABLE CHARACTER CRDEVICE CRFILE
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ The script PLOT uses the CRYSTALS command MOLAX, which computes the        บ
+บ best planes and lines (molecular axes) through groups of atoms, and the    บ
+บ angles between these important molecular parameters.                       บ
+บ MOLAX may additionally, as in this script, produce simple join-the-dots    บ
+บ type diagrams on the screen and the printer file.                          บ
+บ In some implementations (DOS, VAX), a full graphics mode may be available  บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+% END IF
+%%&VAX%  EVALUATE GRAPHICS = FALSE
+%  EVALUATE GRAPHICS = TRUE
+%  VERIFY YES NO
+%  ON ERROR TERMINATE
+%  ON END TERMINATE
+%  GET NOSTORE FINAL ABBREVIATED  -
+   'Do You want see the structure?' 'YES'
+%  IF VALUE .EQ. 2 THEN
+%     FINISH
+%  END IF
+%  IF GRAPHICS .EQ. TRUE THEN
+%      COPY '#CAMERON'
+%      COPY 'END'
+%      LOOP
+%       ON END TERMINATE
+%       CLEAR
+%       GET TEXT 'Enter Commands >' ' '
+%       TRANSFER CVALUE TO CRYSTALS
+%      END LOOP
+%      COPY ' '
+%      COPY 'END'
+%      COPY ' '
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+       'Do You want to save any changes made in CAMERON ' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#USE CAMERON.L5'
+%      END IF
+%  ELSE
+    You now have the opportunity to see a 'joined dots' diagram.
+    You may also send a copy to the printer or print file. This is highly
+    recommended for non-globular structures with up to 30 atoms.
+%     VERIFY YES NO
+%     GET NOSTORE FINAL ABBREVIATED  -
+    'Do you want to send the diagram and distances to the printer ? ' 'NO'
+%     EVALUATE PRINTOUT = VALUE
+%     IF PRINTOUT .EQ. 1 THEN
+      A file containing a 'joined dots' diagram and a distance table will be
+      sent to the line printer or printer file.
+%       EVALUATE CRDEVICE = 'PRINTER'
+%       EVALUATE CRFILE = 'SYS$PRINT'
+%       COPY '#SCRIPT RELEASE'
+%     END IF
+%    COPY '# SCRIPT NULL'
+%%&VAX%      COPY '#RELEASE MONITOR'
+%    COPY '#MOLAX'
+%    LOOP
+%    VERIFY YES NO
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    GET NOSTORE FINAL ABBREVIATED  -
+     'Do you want to plot all atoms? (END to terminate)' 'YES'
+%    IF VALUE .EQ. 1 THEN
+%        COPY 'ATOM FIRST UNTIL LAST'
+%    ELSE
+%        COPY 'ATOM '
+%        GET NOSTORE FINAL ABBREVIATED  -
+             'Atoms linked by UNTIL ?' 'YES'
+%        IF VALUE .EQ. 1 THEN
+%          LOOP
+%            ON END TERMINATE
+%            CLEAR
+%            INSERT 'CONTINUE '
+%            GET KEYWORD 'First atom type (END to finish)'
+%            IF CVALUE .NE. 'FIRST' THEN
+%              INSERT '('
+%              GET INTEGER 'serial'
+%              INSERT ') '
+%            END IF
+%            INSERT ' UNTIL '
+%            GET KEYWORD 'to second atom type'
+%            IF CVALUE .NE. 'LAST' THEN
+%              INSERT '('
+%              GET FINAL INTEGER 'serial'
+%              INSERT ') '
+%            END IF
+%            SEND
+%            CLEAR
+%          END LOOP
+%        END IF
+%%
+%        GET NOSTORE FINAL ABBREVIATED  -
+             'Individual atoms ?' 'NO'
+%        IF VALUE .EQ. 1 THEN
+%          CLEAR
+%          INSERT 'CONTINUE '
+%          LOOP
+%            ON END TERMINATE
+%            GET KEYWORD 'Atom type (END to finish)'
+%            INSERT '('
+%            GET INTEGER 'serial'
+%            INSERT ') '
+%          END LOOP
+%          SEND
+%          CLEAR
+%        END IF
+%    END IF
+%    COPY 'EXECUTE'
+%    COPY 'PLOT'
+%    COPY 'EXECUTE'
+%    END LOOP
+%    COPY 'END'
+%    COPY '#DISTANCES'
+%    COPY 'END'
+%    IF PRINTOUT .EQ. 1 THEN
+%            EVALUATE CRFILE = ' '
+%            COPY '#SCRIPT RELEASE'
+%    END IF
+%  END IF
+%END SCRIPT

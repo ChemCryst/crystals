@@ -1,0 +1,9 @@
+%SCRIPT LIST30
+%%   The general properties list, LIST 30
+%        VERIFY YES NO
+%        GET FINAL ABBREVIATED -
+ 'Do you want to input LIST 30 (general experimental details)' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT INLIST30'
+%        END IF
+%END SCRIPT

@@ -1,0 +1,68 @@
+%SCRIPT SIR88
+%%  CRYSTALS link to 'SIR88'
+This script prepares a SIR default data file and submits a SIR batch job.
+If the first task fails to solve the structure, you can rerun this SCRIPT
+to set up a non-default (i.e. more comprehensive) task.
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%    FINISH
+%  END IF
+%% write a SIR data file
+%    BLOCK
+%      VERIFY YES NO
+%      GET NOSTORE YESNO -
+    'Is this your first try on this compound with SIR88' 'YES'
+%%
+%      IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#FOREIGN SIR88 '
+%          COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SIR88, type SIR88
+%            COPY '#PAUSE 5'
+%            COPY '#FINISH'
+%          END IF
+%        VERIFY YES NO
+%        GET NOSTORE YESNO -
+         'Do you want to run SIR88 on - line ' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SPAWN SIR88'
+%          FINISH
+%        ELSE
+%%         Run a default SIR job
+%          EXTERNAL COPY @CRPROC:SCPBATCH SIR88 SIR88 CRFAST
+%
+      A default batch job submitted to FAST queue. You have 5
+      minutes in which to make changes to the batch data file.
+      The output structure, if the job runs to completion, is
+      in the file SIR.CRY
+      The  script MODEL is available to convert this into a LIST 5.
+      If the structure has not solved on these settings, try the
+      script SIR again, indicating that the first job failed.
+      Alternatively, you could try SHELXS or MULTAN.
+%          COPY '#FINISH'
+%        END IF
+%      ELSE
+%        COPY '#FOREIGN SIR88 DIFFICULT'
+%        COPY 'END'
+%          IF VAX .EQ. FALSE THEN
+            CRYSTALS will now close down. To run SIR88 type SIR88
+%            COPY '#PAUSE 5'
+%            COPY '#FINISH'
+%          END IF
+%        EXTERNAL COPY @CRPROC:SCPBATCH SIR88 SIR88 CRSLOW
+       Non default batch job submitted to SLOW queue.
+      The output structure, if the job runs to completion, is
+      in the file SIR.CRY
+      The  script MODEL is available to convert this into a LIST 5.
+      If the structure has not solved on default settings, you
+      must read the SIR manual, modify SIR***.DAT, and submit
+      a free standing SIR job.
+%        COPY '#FINISH'
+%      END IF
+%      END BLOCK
+%
+%END SCRIPT

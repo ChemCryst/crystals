@@ -1,0 +1,37 @@
+%SCRIPT INLIST2
+%% CRYSTALS symmetry input script
+%  VARIABLE INTEGER NSYM
+Input the symmetry operations for your structure
+----- --- -------- ---------- --- ---- ---------
+                                                   use  END  to abandon input
+%    ON ERROR REPEAT
+%    ON END   TERMINATE
+%    QUEUE REWIND
+%    CLEAR
+%    COPY '#LIST 2'
+%    CLEAR
+%     INSERT 'CELL NSYM = '
+%  GET FINAL INTEGER 'Number of symmetry operations' NULLSTRING ( VALUE > 0 )
+%     EVALUATE NSYM = VALUE
+%     INSERT ' LATTICE ='
+%     VERIFY P F I R A B C
+%     GET VERIFIED 'Lattice type' 'P'
+%     INSERT ' CENTRIC = '
+%     VERIFY YES NO
+%     GET FINAL VERIFIED 'Is the structure centric' 'YES'
+%    QUEUE SEND
+%
+Type in the symmetry operators in the form :-   X,Y,Z  or X+1/2,Y,Z-.5
+%    LOOP NSYM TIMES
+%      CLEAR
+%      INSERT 'SYMMETRY '
+%      GET TEXT 'Symmetry operator'
+%      QUEUE SEND
+%    END LOOP
+%
+%    CLEAR
+%    QUEUE PROCESS
+%    COPY 'END'
+%    COPY '#SUM LIST 2'
+%    COPY 'END'
+%END SCRIPT

@@ -1,0 +1,23 @@
+%SCRIPT PERHYDRO
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ This SCRIPT computes the positions of hydrogen atoms on carbon atoms       บ
+บ It permits you to remove all existing hydrogen atoms before starting       บ
+บ the placement.                                                             บ
+ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+      Perhydrogenation of the carbom atoms
+% END IF
+% VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you want to delete all existing hydrogen atoms?' 'YES'
+% IF VALUE .EQ. 1 THEN
+%    COPY '#EDIT'
+%    COPY 'SELECT TYPE NE H'
+%    COPY 'END'
+% END IF
+% COPY '#PERHYDRO'
+% COPY 'END'
+%END SCRIPT

@@ -1,0 +1,35 @@
+%SCRIPT ERR
+^^WI WINDOW HINT 'Least squares refinement' MODAL SIZE
+^^WI STARTGRID MAIN 'N' NROWS=5 NCOLS=3
+^^WI  MULTIEDIT ROW=2 COL=2 Q1E1 ' ' NROWS=12 NCOLS=40
+^^WI  STARTGRID ROW=4 COL=2 BTNS 'N' NROWS=1 NCOLS=1
+^^WI   BUTTON ROW=1 COL=1 BTOK '&Close' DEFAULT COMMIT
+^^WI  ENDGRID
+^^WI ENDGRID
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO Q1E1
+^^CR
+
+Refinement is an inappropriate option at this stage.
+Progress:
+     Crystal information stored.
+     Intensities stored.
+     Absorption correction applied.
+     Lp correction applied.
+
+Suggested next step:
+     Solve the structure using a direct methods program. 
+     Choose 'Direct methods' from the list of options.
+
+Alternatives:
+     Input a previously solved structure or known set
+     of co-ordinates. Choose 'Input information' from
+     the list, and then choose 'Other data'.
+
+^^WI       SET Q1E1 NOECHO
+^^CR
+%          GET NOSTORE TEXT ' ' ' '
+^^WI       DISPOSE HINT
+^^CR
+%END SCRIPT
