@@ -50,8 +50,9 @@
 %                 GET SILENT REAL ' '
 ^^??              CX TEXT
 %                 GET SILENT REAL ' '
-%                 INSERT 'CUT VIEW'
+%                 INSERT 'CUT '
 %                 SEND
+%                 COPY 'VIEW '
 %                 COPY ' '
 ^^WI              DISPOSE XORIENT
 ^^CR   
@@ -72,8 +73,9 @@
 %                 GET SILENT REAL ' '
 ^^??              CX TEXT
 %                 GET SILENT REAL ' '
-%                 INSERT 'CUT VIEW'
+%                 INSERT 'CUT '
 %                 SEND
+%                 COPY 'VIEW '
 %                 COPY ' '
 %   END BLOCK
 %   BLOCK   %XX%
