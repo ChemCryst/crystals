@@ -132,8 +132,9 @@ void CxMultiEdit::SetIdealWidth(int nCharsWide)
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
       int owidth = textMetric.tmAveCharWidth;
-      int oheight= textMetric.tmHeight;
-      mIdealWidth = (int)(nCharsWide * owidth * mHeight / (float)oheight);
+//      int oheight= textMetric.tmHeight;
+//      mIdealWidth = (int)(nCharsWide * owidth * mHeight / (float)oheight);
+      mIdealWidth = nCharsWide * owidth;
 #endif
 #ifdef __LINUX__
       mIdealWidth = nCharsWide * GetCharWidth();
