@@ -233,19 +233,19 @@ void CxModel::OnPaint(wxPaintEvent &event)
     SetCurrent();
     if ( m_DoNotPaint )
     {
-      TEXTOUT ( "OnPaint: Not painting" );
+//      TEXTOUT ( "OnPaint: Not painting" );
       m_DoNotPaint = false;
       return;
     }
 #endif
 
-    TEXTOUT ( "OnPaint" );
+//    TEXTOUT ( "OnPaint" );
     Boolean ok_to_draw = true;
 
     if (m_bModelChanged)
     {
 // re-render the full detail model.
-      TEXTOUT ( "Redrawing model from scratch" );
+//      TEXTOUT ( "Redrawing model from scratch" );
       DoDrawingLists();
       ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(true);
       m_bFullListOk = true;
@@ -253,7 +253,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
     if ( ok_to_draw )
     {
-      TEXTOUT ( "Displaying model" );
+//      TEXTOUT ( "Displaying model" );
       if ( m_Autosize && m_bNeedReScale )
       {
         AutoScale();
@@ -299,7 +299,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       {
 // Now that the display is out of the way, render the quick
 // model to the quick display lists.
-        TEXTOUT ( "Redrawing quick model from scratch" );
+//        TEXTOUT ( "Redrawing quick model from scratch" );
         ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(false);
         m_bModelChanged = false;
         m_bQuickListOk = true;
@@ -309,7 +309,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
     }
     else
     {
-      TEXTOUT ( "No model. Displaying banner instead" );
+//      TEXTOUT ( "No model. Displaying banner instead" );
       PaintBannerInstead ( &dc );
     }
 }
@@ -1337,8 +1337,8 @@ int   CxModel::GetIdealHeight()
 void CxModel::NeedRedraw(bool needrescale)
 {
   m_bNeedReScale = m_bNeedReScale || needrescale;
-  if ( needrescale) TEXTOUT ( "Need Redraw with Rescale" );
-  else TEXTOUT ( "Need Redraw without Rescale" );
+//  if ( needrescale) TEXTOUT ( "Need Redraw with Rescale" );
+//  else TEXTOUT ( "Need Redraw without Rescale" );
 #ifdef __CR_WIN__
   InvalidateRect(NULL,false);
 #endif
