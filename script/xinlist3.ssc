@@ -1,43 +1,26 @@
 %SCRIPT XINLIST3
-%CLEAR
-^^WI WINDOW INLIST3 'InList3' MODAL
-^^WI GRID             G1 NROWS=5 NCOLS=5
+% VARIABLE REAL MULT NUMBER
+% VARIABLE CHARACTER CLTYPE
+% VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE
+% VARIABLE LOGICAL LCANCEL
+% VARIABLE CHARACTER SPACEHOOK
+% VARIABLE CHARACTER CTYPE
+% EVALUATE LCANCEL = FALSE
+% CLEAR
+^^WI WINDOW INLIST3 'InList3' MODAL SIZE
+^^WI GRID             G1 NROWS=9 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 GRID G2 NROWS=3 NCOLS=1 OUTLINE='Radiation'
+^^WI  @ 2,2 GRID G2 NROWS=2 NCOLS=3 OUTLINE='Experimental'
 ^^WI  {
-^^WI   @ 2,1 RADIOBUTTON COP 'Copper' STATE=ON IGNORE
-^^WI   @ 3,1 RADIOBUTTON MOL 'Molybdenum' STATE=OFF IGNORE
+^^WI   @ 1,1 RADIOBUTTON COP 'Copper' STATE=OFF IGNORE
+^^WI   @ 1,3 RADIOBUTTON MOL 'Molybdenum' STATE=ON IGNORE
+^^WI   @ 2,1 CHECKBOX FRIE 'Apply Friedels Law' STATE=ON
+^^WI   @ 2,2 CHECKBOX MATR 'Specify orientation' STATE=OFF
 ^^WI  }
-^^WI  @ 4,2 GRID G3 NROWS=2 NCOLS=7 OUTLINE='Elements' 
-^^WI  {
-^^WI   @ 2,2 LISTCTRL LE VISLINES=7 NCOLS=1 ' ' IGNORE
-^^WI    ADDTOLIST
-%  COPY '#GENERALEDIT 3'
-%  COPY 'LOCATE RECORDTYPE=101'
-%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%  LOOP
-%       VARIABLE CHARACTER CLTYPE
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%       TRANSFER "^^WI " // CLTYPE TO DISPLAY
-%       COPY 'NEXT'
-%  END LOOP
-%  COPY 'END'
-^^WI   NULL
-^^WI   @ 2,4 GRID B1 NROWS=3 NCOLS=1
-^^WI   {
-^^WI    @ 1,1 BUTTON    BADD '<< Add elements'
-^^WI    @ 3,1 BUTTON    BDEL '>> Remove elements'
-^^WI   }
-^^WI   @ 2,6 LISTCTRL  LA VISLINES=7 NCOLS=1 ' ' IGNORE
-^^WI    ADDTOLIST
-^^WI    C N O H Si P S Ac Ag Al Am As Au B Ba Be Bi Br C C 
-^^WI    Ca Cd Ce Cl Co Cr Cs Cu D Dy Er Eu F Fe Ga Gd Ge H
-^^WI    Hf Hg Ho I In Ir K La Li Lu Mg Mn Mo N Na Nb
-^^WI    Nd Ni Np O Os P Pa Pb Pd Pm Po Pr Pt Pu Ra Rb Re
-^^WI    Rh Ru S Sb Sc Se Si Sm Sn Sr Ta Tb Tc Te Th Ti
-^^WI    Tl Tm U V W Y Yb Zn Zr NULL
-^^WI  }
+^^WI  @ 4,2 STATIC T1 'Enter the cell contents here:'
+^^WI  @ 5,2 EDITBOX LE ' ' NCOLS=80 IGNORE
+^^WI  @ 7,2 STATIC T2 'Enter element symbol followed by number in cell,'
+^^WI  @ 8,2 STATIC T3 'e.g. C   8   N   1   O   4   H   24'
 ^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1
 ^^WI  {
 ^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT
@@ -47,93 +30,180 @@
 ^^CR
 ^^WI SHOW
 ^^CR
-%   GET NOSTORE FINAL ABBREVIATED 'Press return' ' '
-^^CO DISPOSE INLIST3
-%   FINISH
-
-
-%   CASE VALUE
-%       BLOCK                   %BUTTONXX%
-                ^^DI HIDEDIALOG
-%               FINISH
-%       END BLOCK
-%       BLOCK                   %XCOPPER%
-%               VERIFY CHECKED UNCHECKED
-%               GET NOSTORE FINAL ABBREVIATED ' ' ' '
-%               IF VALUE .EQ. 1 THEN
-        ^^DI UPDATEITEM XMOLY UNCHECKED
-%               ELSE
-        ^^DI UPDATEITEM XMOLY UNCHECKED
-%               END IF
-%       END BLOCK
-%       BLOCK                   %XMOLY%
-%               VERIFY CHECKED UNCHECKED
-%               GET NOSTORE FINAL ABBREVIATED ' ' ' '
-%               IF VALUE .EQ. 1 THEN
-        ^^DI UPDATEITEM XCOPPER UNCHECKED
-%               ELSE
-        ^^DI UPDATEITEM XCOPPER UNCHECKED
-%               END IF
-%       END BLOCK
-%       BLOCK                   %BUTTONOK%
-%               EVALUATE LOOPEND = LOOPCOUNTER
-                ^^DI HIDEDIALOG
-%       END BLOCK
-%   END CASE
-% END LOOP
-% VARIABLE INTEGER ELEMENTCOUNT
-^^DI GETITEM XCOPPER
-% VERIFY CHECKED UNCHECKED
-% GET NOSTORE FINAL ABBREVIATED ' ' ' '
-% CASE VALUE
-%    COPY '#OPEN SCPDATA CRSCP:SCATCU'
-%    COPY '#OPEN SCPDATA CRSCP:SCATMO'
-% END CASE
-%
-%  MESSAGE USER1 'An invalid element name was given ( ignored )'
-^^DI GETITEM EDATOM
-% GET NOSTORE TEXT ' ' ' '
-% TRANSFER '^^MN COPYBACK ' // CVALUE // '_nEND' TO DISPLAY
-% QUEUE REWIND
-% LOOP
-% ON END TERMINATE
-% ON ERROR REPEAT USER1
-%    EXTRACT REWIND
-%    CLEAR
-%    INSERT '%EXTRACT FIND STRING "'
-%    GET APPEND KEYWORD -
-      'Element name ( Use END, on a line by itself, to end input )'
-%    INSERT '"'
-%    EXECUTE SEND
-%
-%    CLEAR
-%    INSERT 'SCATT '
-%    EXTRACT TRANSFER COMMAND
-%    QUEUE SEND
-%
-%    CLEAR
-%    EXTRACT NEXT
-%    EXTRACT TRANSFER COMMAND
-%    QUEUE SEND
-%
-%    EVALUATE ELEMENTCOUNT = ELEMENTCOUNT + 1
-%
-%  END LOOP
-%%  EXTRACT CLOSE
-%  COPY '#CLOSE SCPDATA'
+% IF ( EXISTS 2 .NE. 1 ) THEN
+%    EVALUATE SPACEHOOK = 'Space group required before Cell Contents:'
+%    COPY '#SCRIPT XSPACE'
+%    IF ( LCANCEL .EQ. TRUE ) THEN
+^^WI    DISPOSE INLIST3
+^^CR
+%       FINISH
+%    END IF
+% END IF
+% BLOCK
+%   ON ERROR TERMINATE
+%   ON EDITERROR TERMINATE
+%   COPY '#GENERALEDIT 2'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'TRANSFER FROM OFFSET=3 TO MULT'
+%   COPY 'END'
+% END BLOCK
+% IF ( EXISTS 29 .NE. 1 ) THEN
+^^WI SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
+^^CR
+% ELSE
+%   COPY '#GENERALEDIT 29'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   CLEAR
+%   INSERT "^^WI '"
+%   EVALUATE ECOUNT = 0
+%   LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
+%       TRANSFER CLTYPE TO BUFFER
+%       COPY 'TRANSFER FROM OFFSET=4 TO NUMBER'
+%       STORE FORMAT /(F6.2)/ LENGTH 7 REAL ( MULT * NUMBER )
+%       EVALUATE ECOUNT = ECOUNT + 1
+%       COPY 'NEXT'
+%   END LOOP
+%   INSERT "'"
+%   IF ECOUNT .GT. 0 THEN
+^^WI   SET LE TEXT=
+%      OUTPUT
+^^CR
+%   ELSE
+^^WI   SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
+^^CR
+%   END IF
+%   COPY 'END'
+% END IF
 %%
-%  IF ELEMENTCOUNT .GT. 0 THEN
-%    COPY '#LIST 3'
-%    CLEAR
-%    INSERT 'READ NSCATTER = '
-%    STORE INTEGER ELEMENTCOUNT
-%    SEND
-%    QUEUE PROCESS
-%    COPY 'END'
-%    COPY '#SUMMARY LIST 3'
-%    COPY 'END'
-%  ELSE
-      You have not specified any elements. No data has been changed
-%  END IF
+% VERIFY BXX BOK
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% CASE VALUE
+%    BLOCK        %BXX%
+^^WI   DISPOSE INLIST3
+^^CR
+%      EVALUATE LCANCEL = FALSE
+%      FINISH
+%    END BLOCK
+%    BLOCK        %BOK%
+^^??   LE TEXT
+%      GET NOSTORE TEXT ' ' ' '
+%      EVALUATE CLTYPE = CVALUE
+^^??   COP STATE
+%      VERIFY ON OFF
+%      GET NOSTORE VERIFIED 'ON or Off' ' '
+%      EVALUATE RADIATION = VALUE
+%      QUEUE REWIND
+^^??   FRIE STATE
+%      VERIFY ON OFF
+%      GET NOSTORE VERIFIED 'ON or Off' ' '
+%      IF VALUE .EQ. 1 THEN
+%        INSERT 'CRYSTAL FRIEDEL = YES '
+%      ELSE
+%        INSERT 'CRYSTAL FRIEDEL = NO '
+%      END IF
+%      QUEUE SEND
+%      CLEAR
+%      CASE RADIATION
+%     INSERT 'CONDITION 1.5418 13.218 90 0.5871488 0.6425348 0.0001788'  %CU%
+%     INSERT 'CONDITION 0.71073 6.05  90 0.5871488 0.6425348 0.0001788'  %MO%
+%      END CASE
+%      QUEUE SEND
+%      CLEAR
+^^??   MATR STATE
+%      VERIFY ON OFF
+%      GET NOSTORE VERIFIED 'On or Off' ' '
+^^WI   DISPOSE INLIST3
+^^CR
+%      IF ( VALUE .EQ. 1 ) THEN
+%        ON END TERMINATE
+%        INSERT 'DIFFRACTION GEOMETRY ='
+%        VERIFY CAD4 KAPPA EQUI ROLLETT NONE
+%        GET VERIFIED 'Diffraction geometry' 'ROLLETT'
+NOTE - 'ROLLETT' is a theoretical geometry described in Crystallographic 
+Computing, 1969, and gives approximate corrections for most machines.
+%        EVALUATE CTYPE = CVALUE
+%        QUEUE SEND
+%        CLEAR
+%        IF CTYPE .EQ. 'EQUI' THEN
+Give the zone axis, ( P, Q, R, S)
+%           ON END TERMINATE
+%          CLEAR
+%          INSERT 'AXIS '
+%          GET INTEGER 'P'
+%          GET INTEGER 'Q'
+%          GET INTEGER 'R'
+%          GET FINAL INTEGER 'S'
+%          QUEUE SEND
+%          CLEAR
+%        END IF
+%        VERIFY MATRIX TWO THREE
+%        GET NOSTORE FINAL ABBREV -
+         'How do you want to specify the orientation of your crystal'
+%        EVALUATE ORIENTTYPE = VALUE
+%        CASE ORIENTTYPE RANGE 1 2
+%          BLOCK                                                      %MATRIX%
+You must specify nine elements for the orientation matrix (R11 - R33)
+%            ON END TERMINATE
+%            CLEAR
+%            INSERT 'MATRIX'
+%            GET REAL 'R11'
+%            GET REAL 'R12'
+%            GET REAL 'R13'
+%            QUEUE SEND
+%            CLEAR
+%            INSERT 'CONTINUE'
+%            GET REAL 'R21'
+%            GET REAL 'R22'
+%            GET REAL 'R23'
+%            QUEUE SEND
+%            CLEAR
+%            INSERT 'CONTINUE'
+%            GET REAL 'R31'
+%            GET REAL 'R32'
+%            GET FINAL REAL 'R33'
+%            QUEUE SEND
+%          END BLOCK
+%          BLOCK
+Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
+%            LOOP ORIENTTYPE TIMES               %TWO AND THREE%
+%              ON END TERMINATE
+%              CLEAR
+%              STORE KEYWORD ORIENTTYPE
+%              GET INTEGER 'H'
+%              GET INTEGER 'K'
+%              GET INTEGER 'L'
+%              QUEUE SEND
+%              CLEAR
+%              INSERT 'CONTINUE'
+%              GET REAL 'THETA'
+%              GET REAL 'OMEGA'
+%              GET REAL 'CHI'
+%              GET REAL 'PHI'
+%              GET REAL 'KAPPA'
+%              GET FINAL REAL 'PSI'
+%              QUEUE SEND
+%              CLEAR
+%            END LOOP
+%          END BLOCK
+%        END CASE
+%      END IF
+%      CLEAR
+%      COPY '#LIST 13'
+%      QUEUE PROCESS
+%      COPY 'END'
+%%
+%      COPY '#COMPOSITION'
+%      TRANSFER 'CONTENTS ' // CLTYPE TO CRYSTALS
+%      COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
+%      COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPERTI.DAT'
+%      COPY 'END'
+%%
+%      FINISH
 %
+%    END BLOCK
+% END CASE
 %END SCRIPT
