@@ -330,20 +330,9 @@ char* crystalSystemConst(const UnitCell::systemID pIndex)
     return NULL;
 }
 
-UnitCell::UnitCell()
+UnitCell::UnitCell():iA(0), iB(0), iC(0), iAlpha(0), iBeta(0), iGamma(0),
+    iSEA(0), iSEB(0), iSEC(0), iSEAlpha(0), iSEBeta(0), iSEGamma(0)
 {
-    iAlpha = 0;
-    iBeta = 0;
-    iGamma = 0;
-    iA = 0;
-    iB = 0;
-    iC = 0;
-    iSEA = 0;
-    iSEB = 0;
-    iSEC = 0;
-    iSEAlpha = 0;
-    iSEBeta = 0;
-    iSEGamma = 0;
 }
 
 bool UnitCell::init(char* pLine)	//This parases the line which it is passed. Initalising the feilds of the unit cell with it. If the line is not formated correctly then an false is returned.
