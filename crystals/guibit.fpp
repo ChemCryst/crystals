@@ -764,7 +764,7 @@ C Get atom type.
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
-             CFILEN = 'CRSCP:PROP.WIN'
+             CFILEN = 'CRSCP:PROPWIN.DAT'
              CALL MTRNLG(CFILEN,'OLD',ILENG)
              INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
              IF(.NOT.WEXIST) THEN              !use default values
