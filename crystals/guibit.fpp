@@ -1,4 +1,15 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  1999/05/10 19:48:44  dosuser
+C RIC: It turns out that LGUIL1 and LGUIL5 were a bit useless as they
+C     were only set when you call XWININ() from #SET TERM WIN. So I changed
+C     things around a bit:
+C     There is now no LGUIL5 because XGDBUP can only be called from places
+C     which are altering list 5 anyway. Instead there is now an LGUIL2
+C     instead, which was a bit overdue. LGUIL1 and LGUIL2 are set in
+C     XFAL01 and XFAL02 respectively as the XGUIOV and PERM02 common blocks
+C     are filled in. The result: Structure appears when it is supposed to
+C     and no crashes in the mean time.
+C
 C Revision 1.8  1999/05/10 16:53:58  dosuser
 C RIC: Removed unused routine GUI()
 C
@@ -965,6 +976,29 @@ C
                   XZ   = GUMTRX(7) * STACK((J*5)-3)
      1                 + GUMTRX(8) * STACK((J*5)-2)
      2                 + GUMTRX(9) * STACK((J*5)-1)
+
+C See if this bond is in LIST 18. If so, use it's deviation to colour it.
+
+                  JELE1 = ISTORE(IAT1P)
+                  JSER1 = ISTORE(IAT1P+1)
+                  JELE2 = ISTORE(IAT1P)
+                  JSER2 = ISTORE(IAT1P)
+                  KR = 0
+                  KG = 0
+                  KB = 0
+                  IF ( KBDDEV(IAT1P,IAT2P,DEVN) .GT. 0 )THEN
+
+C As deviation goes positive, KB and KG should decrease giving a red colour
+C As deviation goes negative, KR and KG should decrease giving a blue colour
+C i.e. +ve devn. KR 255, KB ->0  KG ->0
+C      -ve devn  KR ->0, KB 255  KG ->0
+                      KR = MAX ( 0, MIN (255, NINT (255+85*DEVN) ) )
+                      KG = MAX ( 0, MIN (255, NINT (255-85*ABS(DEVN))))
+                      KB = MAX ( 0, MIN (255, NINT (255-85*DEVN) )  )
+                  ENDIF
+                  WRITE ( CMON, '(A,10(1X,I5))')
+
+
                   WRITE ( CMON, '(A,10(1X,I5))')
      1                  '^^GR BOND ',
      1                  NINT(TSTORE((I*3)-2)*GSCALE),
@@ -973,7 +1007,7 @@ C
      1                  NINT(XX*GSCALE),
      1                  NINT(XY*GSCALE),
      1                  NINT(XZ*GSCALE),
-     3                  0,0,0,
+     3                  KR,KG,KB,
      1                  NINT(GSCALE*0.25)
                   CALL XPRVDU(NCVDU, 1,0)
                ENDIF
@@ -1014,3 +1048,47 @@ C of its own. It *must* then send ^^GR SHOW then ^^CR.
       CALL XPRVDU(NCVDU, 2,0)
       RETURN
       END
+
+
+
+CODE FOR KBDDEV
+      FUNCTION KBDDEV ( IAT1P, IAT2P, DEVN )
+
+C Return bond type (1-9) if it is found in the list.
+C Return number of stdev's of actual value from mean.
+
+\STORE
+\ISTORE
+\QSTORE
+\TLST18                           
+
+      KBDDEV = 0
+      DEVN = 0.0
+
+      IAT1N = ISTORE(IAT1P)     
+      IAT1S = NINT(STORE(IAT1P+1))     
+      IAT2N = ISTORE(IAT2P)     
+      IAT2S = NINT(STORE(IAT2P+1))     
+      
+        DO 800 I = 1, NB18
+                        
+            JAT1N = IBLK(I,1)
+            JAT1S = NINT(BBLK(I,2))
+            JAT2N = IBLK(I,3)
+            JAT2S = NINT(BBLK(I,4))
+
+            IF( ( (IAT1N.EQ.JAT1N) .AND. (IAT1S.EQ.JAT1S) .AND.
+     1            (IAT2N.EQ.JAT2N) .AND. (IAT2S.EQ.JAT2S) ) .OR.
+     2          ( (IAT1N.EQ.JAT2N) .AND. (IAT1S.EQ.JAT2S) .AND.
+     3            (IAT2N.EQ.JAT1N) .AND. (IAT2S.EQ.JAT1S) ) ) THEN
+
+               BLEN = BBLK(I,5)
+               KBDDEV = NINT(BBLK(I,6))
+               DEVN = BBLK(I,8)
+               RETURN
+            END IF
+800   CONTINUE
+
+      RETURN
+      END
+
