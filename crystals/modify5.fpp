@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/10/14 12:33:24  rich
+C Support for DVF command line version.
+C
 C Revision 1.31  2002/07/25 15:58:05  richard
 C New DRENAME directive for #EDIT, renames an atom, but moves any existing clashes
 C out of the way. (Next unused serial for that atom type.)
@@ -3573,4 +3576,264 @@ C                 SPECIAL CASE, SUM OF FORMFACTOR F', A AND C TERMS
       ICHNG=ICHNG+1
       CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
       RETURN
+      END
+
+CODE FOR PRTB12
+      SUBROUTINE PRTB12
+\ISTORE
+C
+\STORE
+\XLISTI
+\XLST01
+\XLST05
+\XLST12
+\XUNITS
+\XIOBUF
+\XSSVAL
+\XCONST
+\XOPVAL
+\XAPK 
+\XOPK 
+\XSCALE 
+      DIMENSION SHF(23)
+\ICOM12
+C
+\QSTORE
+C
+
+C--SET THE TIMING
+      CALL XTIME1 (2)
+C--READ THE REMAINING DATA
+      IF (KRDDPV(ISTORE(NFL),24).LT.0) GO TO 550
+      CALL XMOVE(STORE(NFL),SHF(1),23)
+C The 23rd position of SHF is the multiplier, multiply it onto the shifts.
+      DO I = 1,22
+         SHF(I) = SHF(I) * SHF(23)
+      END DO
+
+      IOWL5 = ISTORE(NFL+23)
+
+C--CLEAR THE STORE
+      CALL XCSAE
+      CALL XRSL
+C--LOAD THE LISTS
+      CALL XFAL01
+      CALL XFAL02
+      CALL XFAL05
+c      LA=5
+c      CALL XLDRO5 (LA)
+C Form the relative list 12
+      JQ=2
+      JS=1
+      CALL XFAL12(JS,JQ,JR,JN)
+
+      IDX12 = KSTALL(N12)      
+      DO I = 0,N12
+        STORE(IDX12+I)=-1000000
+      END DO
+
+      M5 = L5 - MD5
+      M12 = L12O
+      L12A = NOWT
+      JS = 0
+      DO WHILE ( M12 .GT. 0 )
+        IF ( ISTORE(M12+1) .GT. 0 ) THEN
+          L12A=ISTORE(M12+1)
+          DO WHILE ( L12A .GE. 0 )
+            IF ( ISTORE(L12A+3).GE.0 ) THEN
+              MD12A=ISTORE(L12A+1)
+              JU=ISTORE(L12A+2)
+              JV=ISTORE(L12A+3)
+              JS=ISTORE(L12A+4)
+C-- Scan through this part
+              INLOOP: DO JW=JU,JV,MD12A
+                JS=JS+1
+                JT = ISTORE(JW)     !Parameter number
+                IF ( JT .LE. 0 ) CYCLE
+
+                M5G = 0
+                IF ( M12 .EQ. L12O ) THEN                 !Overall parameter
+                     M5G = L5O
+                ELSE IF (M12 .EQ. L12LS) THEN             !LAYER SCALE
+                     M5G = L5LS
+                ELSE IF (M12 .EQ. L12ES) THEN             !ELEMENT SCALES
+                     M5G = L5ES
+                ELSE IF (M12 .EQ. L12BS) THEN             !BATCH SCALE
+                     M5G = L5BS                           
+                ELSE IF (M12 .EQ. L12CL) THEN             !CELL PARAM
+                     M5G = L5CL
+                ELSE IF (M12 .EQ. L12PR) THEN             !PROFILE PARAM
+                     M5G = L5PR
+                ELSE IF (M12 .EQ. L12EX) THEN             !EXTINCTION PARAM
+                     M5G = L5EX
+                ENDIF
+
+                IF ( M5G .GT. 0 ) THEN
+C The shift is given as a fraction of the scale factors.
+                   Z = XRAND( (SHF(1)*STORE(M5G-1+JS))**2, 1 )
+                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) ) ! Convert to ESD
+                   STORE(IDX12+JT-1) = Z
+
+                   WRITE(CMON,2750)'Scale ',JT,JS,(KVP(JRR,JS),JRR=1,2),
+     1             STORE(M5G),STORE(M5G-1+JS)
+2750               FORMAT(1X,A6,I5,I12,26X,2A4,2F12.7)
+                   CALL XPRVDU(NCVDU,1,0)
+                   CYCLE
+                END IF
+
+
+C Assume it's an atom
+               WEIGHT = 1.0
+               IF ( JS .EQ. 3 ) THEN                  !Occupancy
+                  Z = XRAND( SHF(2)**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
+               ELSE IF ( ( JS .GE. 5 ) .AND. ( JS .LE. 7 ) ) THEN !Coords
+                  Z = XRAND( SHF(JS-2)**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) ) 
+                  Z=Z/STORE(L1P1+JS-5)
+               ELSE IF ( (NINT(STORE(M5+3)) .EQ. 0) .AND.
+     1                   (JS.GE.8) .AND. (JS.LE.13)) THEN   ! Anisotropic atom
+C The shift is given as a fraction of the temperature factors.
+                  Z = XRAND( (SHF(JS-2)*STORE(M5-1+JS))**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
+               ELSE IF ( (NINT(STORE(M5+3)) .EQ. 1) .AND.
+     1                                   (JS.EQ.8)) THEN    ! Isotropic atom
+C The shift is given as a fraction of the temperature factors.
+                  Z = XRAND( (SHF(12)*STORE(M5+7))**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
+               ELSE IF ( (NINT(STORE(M5+3)) .EQ. 2) .AND.
+     1                   (JS.GE.8) .AND. (JS.LE.9)) THEN    ! Shell
+                  IF ( JS.EQ.8 ) WEIGHT = STORE(M5+7)
+C The shift is given as a fraction of the temperature factors.
+                  Z = XRAND( (SHF(JS+5)*WEIGHT)**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
+               ELSE IF ( (NINT(STORE(M5+3)) .EQ. 3) .AND.
+     1                   (JS.GE.8) .AND. (JS.LE.11)) THEN   ! Line
+                  IF ( JS.EQ.8 ) WEIGHT = STORE(M5+7)
+C The shift is given as a fraction of the temperature factors.
+                  Z = XRAND( (SHF(JS+7)*WEIGHT)**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
+               ELSE IF ( (NINT(STORE(M5+3)) .EQ. 4) .AND.
+     1                   (JS.GE.8) .AND. (JS.LE.11)) THEN   ! Annulus
+                  IF ( JS.EQ.8 ) WEIGHT = STORE(M5+7)
+C The shift is given as a fraction of the temperature factors.
+                  Z = XRAND( (SHF(JS+11)*WEIGHT)**2, 1 )
+                  Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
+               ELSE
+                  Z = 0
+                  STORE(IDX12+JT-1) = Z
+                  WRITE(CMON,'(A,3I7)')'Odd parameter: ',JT,JS,M12
+                  CALL XPRVDU(NCVDU,1,0)
+                  CYCLE
+               END IF
+
+               STORE(IDX12+JT-1) = Z
+3050  FORMAT(1X,A6,I5,I12,8X,A4,I4,1X,F12.5,1X,3A4)
+               IF((STORE(M5+3) .GE. 1.0) .AND. (JS .GE. 8)) THEN
+                 WRITE(CMON,3050)'Iso   ',JT,JS,STORE(M5),
+     2           NINT(STORE(M5+1)),Z,(ICOORD(JRR,JS+NKAO),JRR=1,NWKA)
+               ELSE
+                 WRITE(CMON,3050)'Aniso ',JT,JS,STORE(M5),
+     2           NINT(STORE(M5+1)),Z,(ICOORD(JRR,JS),JRR=1,NWKA)
+               ENDIF
+               CALL XPRVDU(NCVDU,1,0)
+
+              END DO INLOOP
+            END IF
+            L12A=ISTORE(L12A)
+          END DO 
+
+        END IF
+
+        M5=M5+MD5
+        M12=ISTORE(M12)
+      END DO 
+
+C Loop again, this time - apply the shifts from the IDX12 vector.
+
+      M5 = L5 - MD5
+      M12 = L12O
+      L12A = NOWT
+      JS = 0
+      DO WHILE ( M12 .GT. 0 )
+        IF ( ISTORE(M12+1) .GT. 0 ) THEN
+          L12A=ISTORE(M12+1)
+          DO WHILE ( L12A .GE. 0 )
+            IF ( ISTORE(L12A+3).GE.0 ) THEN
+              MD12A=ISTORE(L12A+1)
+              JU=ISTORE(L12A+2)
+              JV=ISTORE(L12A+3)
+              JS=ISTORE(L12A+4)
+C-- Scan through this part
+              DO JW=JU,JV,MD12A
+                JS=JS+1
+                JT = ISTORE(JW)     !Parameter number
+                IF ( JT .LE. 0 ) CYCLE
+
+                IF ( MD12A .GT. 1 ) THEN
+                  WEIGHT = STORE(JW+1)
+                ELSE
+                  WEIGHT = 1.0
+                END IF
+
+                M5G = 0
+                IF ( M12 .EQ. L12O ) THEN                 !Overall parameter
+                     M5G = L5O
+                ELSE IF (M12 .EQ. L12LS) THEN             !LAYER SCALE
+                     M5G = L5LS
+                ELSE IF (M12 .EQ. L12ES) THEN             !ELEMENT SCALES
+                     M5G = L5ES
+                ELSE IF (M12 .EQ. L12BS) THEN             !BATCH SCALE
+                     M5G = L5BS                           
+                ELSE IF (M12 .EQ. L12CL) THEN             !CELL PARAM
+                     M5G = L5CL
+                ELSE IF (M12 .EQ. L12PR) THEN             !PROFILE PARAM
+                     M5G = L5PR
+                ELSE IF (M12 .EQ. L12EX) THEN             !EXTINCTION PARAM
+                     M5G = L5EX
+                ENDIF
+                IF ( M5G .GT. 0 ) THEN
+                   STORE(M5G-1+JS) = STORE(M5G-1+JS)+STORE(IDX12+JT-1)
+                   CYCLE
+                END IF
+C Assume it's an atom
+                Z=STORE(M5-1+JS)
+                STORE(M5-1+JS) = STORE(M5-1+JS)+WEIGHT*STORE(IDX12+JT-1)
+
+                WRITE(CMON,'(A,3F15.8)') 'Rand, weight, shift:',
+     1          STORE(IDX12+JT-1), WEIGHT, STORE(IDX12+JT-1)*WEIGHT
+                CALL XPRVDU(NCVDU,1,0)
+
+                IF((STORE(M5+3) .GE. 1.0) .AND. (JS .GE. 8)) THEN
+                 WRITE(CMON,3050)'Iso   ',JT,JS,STORE(M5),
+     2           NINT(STORE(M5+1)),Z,(ICOORD(JRR,JS+NKAO),JRR=1,NWKA)
+                ELSE
+                 WRITE(CMON,3050)'Aniso ',JT,JS,STORE(M5),
+     2           NINT(STORE(M5+1)),Z,(ICOORD(JRR,JS),JRR=1,NWKA)
+                ENDIF
+                CALL XPRVDU(NCVDU,1,0)
+              END DO
+            END IF
+            L12A=ISTORE(L12A)
+          END DO 
+        END IF
+        M5=M5+MD5
+        M12=ISTORE(M12)
+      END DO 
+
+      CALL XSTR05 (5,IOWL5,-1)
+
+C--FINAL TERMINATION MESSAGES
+450   CONTINUE
+      CALL XOPMSG (IOPTFC,IOPEND,410)
+      CALL XTIME2 (2)
+      RETURN
+C
+500   CONTINUE
+      CALL XOPMSG (IOPTFC,IOPABN,0)
+      GO TO 450
+550   CONTINUE
+C -- COMMAND INPUT ERRORS
+      CALL XOPMSG (IOPTFC,IOPCMI,0)
+      GO TO 500
       END
