@@ -27,14 +27,7 @@ PROBLEMS:
                    Neighbourhood etc)
              Close My Computer
 
-      It is essential that the path to the folder containing your data
-      does not contain any spaces:
-       i.e. c:\my documents\structures\str1\        BAD
-            d:\work\crystal structures\cooper\      BAD
-            e:\structures\str1\                     GOOD
-            f:\crystalstructures\structurenumber1\  GOOD
-
-      On the CRYSTALS toolbar, choose File, New Working DIrectory, and find 
+      On the CRYSTALS toolbar, choose File, New Working directory, and find 
       the drive with your folder on it. Highlight the folder and click OK. 
 
  2 The wrong molecule appears in the window, or no molecule appears when 

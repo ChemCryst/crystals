@@ -12,8 +12,7 @@
 %  END IF
 %
 %%  CASE RADIATION
--GIL%    COPY '#OPEN SCPDATA CRYSDIR:SCRIPT\SCATT.DAT'
-+GIL%    COPY '#OPEN SCPDATA CRYSDIR:SCRIPT/SCATT.DAT'
+%    COPY '#OPEN SCPDATA CRYSDIR:script/scatt.dat'
 %%  END CASE
 %
 %  MESSAGE USER1 'An invalid element name was given ( ignored )'

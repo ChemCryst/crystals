@@ -21,7 +21,6 @@
 %  COPY '#RELEASE PUNCH bfile.pch'
 %%
 %  CLEAR
--GIL%    INSERT '#use crysdir:script\vulist6.dat'
-+GIL%    INSERT '#use crysdir:script/vulist6.dat'
+%    INSERT '#use crysdir:script/vulist6.dat'
 %  SEND
 %END SCRIPT

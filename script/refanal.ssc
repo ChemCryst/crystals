@@ -920,7 +920,7 @@ Metric tensor written to top of ATOMS.DAT
 %   INSERT ' >>atoms.dat'
 %   QUEUE SEND
 %   CLEAR
-%   INSERT 'del c:\windows\temp\for*.tmp'
+%%   INSERT 'del c:/windows/temp/for*.tmp'
 %   QUEUE SEND
 %   CLEAR
 %   INSERT 'eta'

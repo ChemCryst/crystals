@@ -1,12 +1,10 @@
 %SCRIPT NEWGUI
 %% SET VERIFY TRUE
  For help getting started with CRYSTALS see the primer.
--GIL    click here:          {&"crysdir:manual\primer-1.html"{&
-+GIL    click here:          {&"crysdir:manual/primer-1.html"{&
+    click here:          {&"crysdir:manual/primer-1.html"{&
     or here:      {&http://www.xtl.ox.ac.uk/primer-1.html{&
  Additional help may be available in the list of FAQs:
--GIL                            {&"crysdir:manual\faq-1.html"{&
-+GIL                            {&"crysdir:manual/faq-1.html"{&
+                            {&"crysdir:manual/faq-1.html"{&
     or here:         {&http://www.xtl.ox.ac.uk/faq-1.html{&
 
  Problems using or installing crystals? Click to email either:

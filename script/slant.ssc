@@ -200,8 +200,8 @@
 %      END BLOCK
 %      BLOCK    %Run marchingcubesELD viewer
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads up.
--GIL% IF FILEEXISTS 'CRYSDIR:mce\mce.exe' THEN
--GIL%   TRANSFER '#SPAWN "CRYSDIR:mce\mce.exe" ' // CFILE // '.fou' -
+-GIL% IF FILEEXISTS 'CRYSDIR:mce/mce.exe' THEN
+-GIL%   TRANSFER '#SPAWN "CRYSDIR:mce/mce.exe" ' // CFILE // '.fou' -
 -GIL    TO CRYSTALS
 -GIL% ELSE
 MCE not found. See wincrys/script/slant.scp

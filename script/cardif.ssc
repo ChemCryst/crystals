@@ -46,7 +46,7 @@
  -----------------------------------------------------------------------
 
 %    CLEAR
-%    INSERT '#USE C:\CRYSTALS\SCRIPT\PAUSE.DAT'
+%    INSERT '#PAUSE 4'
 %    SEND
 %    CLEAR
 %%

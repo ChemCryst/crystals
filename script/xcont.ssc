@@ -38,13 +38,13 @@
 % COPY 'END'
 %%
 %     EVALUATE LMCE = FALSE
--GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
--GIL .OR. FILEEXISTS 'crysdir:mce\mce.exe' THEN
+-GIL% IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' -
+-GIL .OR. FILEEXISTS 'crysdir:mce/mce.exe' THEN
 +GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
 %       EVALUATE LMCE = TRUE
 %     END IF
 %     EVALUATE LMAPV = FALSE
--GIL% IF FILEEXISTS 'WINGXDIR:\for_prog\mapview.exe' THEN
+-GIL% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN
 +GIL% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview' THEN
 %       EVALUATE LMAPV = TRUE
 %     END IF
@@ -441,10 +441,10 @@ view the generated sections.
 %                EVALUATE CFILE = CFILE // ' void.fou'
 %             END IF
  * Starting MCE Fourier viewer by Michal Husak. Please wait while it loads ...
--GIL% IF FILEEXISTS 'CRYSDIR:mce\mce.exe' THEN
--GIL%   TRANSFER '#SPAWN "CRYSDIR:mce\mce.exe" ' // CFILE TO CRYSTALS
+-GIL% IF FILEEXISTS 'CRYSDIR:mce/mce.exe' THEN
+-GIL%   TRANSFER '#SPAWN "CRYSDIR:mce/mce.exe" ' // CFILE TO CRYSTALS
 -GIL% ELSE
--GIL%   TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe" ' -
+-GIL%   TRANSFER '#SPAWN "C:/PROGRA~1/MARCHI~1/MarchingCubeELD.exe" ' -
 -GIL    // CFILE TO CRYSTALS
 -GIL% END IF
 %%
@@ -452,7 +452,7 @@ view the generated sections.
 +GIL   // CFILE TO CRYSTALS
 %           END BLOCK
 %           BLOCK    %Run MapView
-%             TRANSFER '#SPAWN "WINGXDIR:\for_prog\mapview.exe" Mapfile' -
+%             TRANSFER '#SPAWN "WINGXDIR:/for_prog/mapview.exe" Mapfile' -
  TO CRYSTALS
 %           END BLOCK
 %         END CASE

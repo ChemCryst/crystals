@@ -39,8 +39,7 @@
 %    EVALUATE ISERR = TRUE
 %    BLOCK
 %      ON ERROR TERMINATE
--GIL%    COPY '#use crysdir:script\edlist16.dat'
-+GIL%    COPY '#use crysdir:script/edlist16.dat'
+%    COPY '#use crysdir:script/edlist16.dat'
 %%
 %      EVALUATE ISERR = FALSE
 %%
@@ -49,7 +48,7 @@
 ^^CO DISPOSE BLOCK16
 %%
 %    IF ( ISERR ) THEN
-{E Missing script file (crysdir:script\edlist16.dat).
+{E Missing script file (crysdir:script/edlist16.dat).
 {I Cannot edit restraints. Maybe a reinstall of CRYSTALS would help.
 %      FINISH
 %    END IF

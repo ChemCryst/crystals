@@ -52,7 +52,7 @@
 %      FINISH
 %   END BLOCK
 %   BLOCK
-%      COPY '#SPAWN CRYSDIR:manual\crystalsmanual-sfls.html'
+%      COPY '#SPAWN CRYSDIR:manual/crystalsmanual-sfls.html'
 %   END BLOCK
 %   END CASE
 %  END LOOP

@@ -90,12 +90,12 @@
 %       END IF
 ^^CO    DISPOSE WORKS
 %       CASE CHOICE
-%          EVALUATE CDIR = 'CRYSDIR:demo\cyclo\'
-%          EVALUATE CDIR = 'CRYSDIR:demo\ylid\'
-%          EVALUATE CDIR = 'CRYSDIR:demo\peach\'
-%          EVALUATE CDIR = 'CRYSDIR:demo\keen\'
-%          EVALUATE CDIR = 'CRYSDIR:nket\'
-%          EVALUATE CDIR = 'CRYSDIR:example\'
+%          EVALUATE CDIR = 'CRYSDIR:demo/cyclo/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/ylid/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/peach/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/keen/'
+%          EVALUATE CDIR = 'CRYSDIR:nket/'
+%          EVALUATE CDIR = 'CRYSDIR:example/'
 %       END CASE
 %       EVALUATE CFDIR = GETENV ( CDIR ) 
 %       IF ( .NOT. ( FILEEXISTS CFDIR ) ) THEN

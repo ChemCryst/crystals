@@ -424,10 +424,8 @@
 %           END LOOP
 %           SEND
 %           OUTPUT
--GIL%   COPY 'SCATT CRYSDIR:SCRIPT\SCATT.DAT'
--GIL%   COPY 'PROPERTIES CRYSDIR:SCRIPT\PROPWIN.DAT'
-+GIL%   COPY 'SCATT CRYSDIR:script/scatt.dat'
-+GIL%   COPY 'PROPERTIES CRYSDIR:script/propwin.dat'
+%           COPY 'SCATT CRYSDIR:script/scatt.dat'
+%           COPY 'PROPERTIES CRYSDIR:script/propwin.dat'
 %           COPY 'END'
 %%
 %% Now, experience shows that the SCPDATA file is closed and

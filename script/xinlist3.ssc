@@ -137,10 +137,8 @@
 %        END IF
 %      END LOOP
 %%
--GIL%      QUEUE COPY SCATT CRYSDIR:SCRIPT\SCATT.DAT
--GIL%      QUEUE COPY PROPERTIES CRYSDIR:SCRIPT\PROPWIN.DAT
-+GIL%      QUEUE COPY SCATT CRYSDIR:script/scatt.dat
-+GIL%      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat
+%      QUEUE COPY SCATT CRYSDIR:script/scatt.dat
+%      QUEUE COPY PROPERTIES CRYSDIR:script/propwin.dat
 
 {I * Updating List 13 info
 

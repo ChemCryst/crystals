@@ -33,8 +33,7 @@
 %    EVALUATE ISERR = TRUE
 %    BLOCK
 %      ON ERROR TERMINATE
--GIL%    COPY '#use crysdir:script\edlist12.dat'
-+GIL%    COPY '#use crysdir:script/edlist12.dat'
+%    COPY '#use crysdir:script/edlist12.dat'
 %%
 %      EVALUATE ISERR = FALSE
 %%
@@ -42,7 +41,7 @@
 %%
 ^^CO DISPOSE BLOCK12
 %    IF ( ISERR ) THEN
-{E Missing script file (crysdir:script\edlist12.dat).
+{E Missing script file (crysdir:script/edlist12.dat).
 {I Cannot edit constraints. Maybe a reinstall of CRYSTALS would help.
 %      FINISH
 %    END IF

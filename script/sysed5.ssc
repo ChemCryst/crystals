@@ -36,8 +36,7 @@
 %    EVALUATE ISERR = TRUE
 %    BLOCK
 %      ON ERROR TERMINATE
--GIL%    COPY '#use crysdir:script\edlist5.dat'
-+GIL%    COPY '#use crysdir:script/edlist5.dat'
+%    COPY '#use crysdir:script/edlist5.dat'
 %%
 %      EVALUATE ISERR = FALSE
 %%

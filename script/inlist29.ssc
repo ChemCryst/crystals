@@ -26,8 +26,7 @@
 %    EVALUATE RADIATION = VALUE
 %  END IF
 %  EVALUATE ELEMENTCOUNT = 0
-+GIL%    COPY '#OPEN SCPDATA CRYSDIR:script/propwin.dat'
--GIL%    COPY '#OPEN SCPDATA CRYSDIR:SCRIPT\PROPWIN.DAT'
+%    COPY '#OPEN SCPDATA CRYSDIR:script/propwin.dat'
 %
 %  MESSAGE USER1 'An invalid element name was given ( ignored )'
 %

@@ -15,8 +15,7 @@
 %    COPY '#RELEASE PUNCH bfile.pch'
 %%
 %    CLEAR
--GIL%    INSERT '#use crysdir:script\edlist5.dat'
-+GIL%    INSERT '#use crysdir:script/edlist5.dat'
+%    INSERT '#use crysdir:script/edlist5.dat'
 %    SEND
 %    COPY '# Inputting new list5'
 %    COPY '#USE scplst5.dat'

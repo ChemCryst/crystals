@@ -373,12 +373,12 @@
 %           GET SILENT NOSTORE FINAL TEXT '1' '1'
 %           EVALUATE CFILE = CVALUE
 %           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
-%             IF FILEEXISTS 'crysdir:mce\mce.exe' THEN
-^^CO            SETKEY MCEDIR crysdir:mce\mce.exe
-%               EVALUATE CFILE = "crysdir:mce\mce.exe"
-%          ELSE IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' THEN
-^^CO            SETKEY MCEDIR c:\progra~1\marchi~1\MarchingCubeELD.exe
-%               EVALUATE CFILE = "c:\progra~1\marchi~1\MarchingCubeELD.exe"
+%             IF FILEEXISTS 'crysdir:mce/mce.exe' THEN
+^^CO            SETKEY MCEDIR crysdir:mce/mce.exe
+%               EVALUATE CFILE = "crysdir:mce/mce.exe"
+%          ELSE IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' THEN
+^^CO            SETKEY MCEDIR c:/progra~1/marchi~1/MarchingCubeELD.exe
+%               EVALUATE CFILE = "c:/progra~1/marchi~1/MarchingCubeELD.exe"
 %             ELSE
 
   Where is the MCE executable?
@@ -417,9 +417,9 @@
 %           GET SILENT NOSTORE FINAL TEXT '1' '1'
 %           EVALUATE CFILE = CVALUE
 %           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
-%             IF FILEEXISTS 'WINGXDIR:\for_prog\mapview.exe' THEN
-^^CO            SETKEY MAPVIEWDIR WINGXDIR:\for_prog\mapview.exe
-%               EVALUATE CFILE = "WINGXDIR:\for_prog\mapview.exe"
+%             IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN
+^^CO            SETKEY MAPVIEWDIR WINGXDIR:/for_prog/mapview.exe
+%               EVALUATE CFILE = "WINGXDIR:/for_prog/mapview.exe"
 %             ELSE
 
   Where is the Mapview executable?

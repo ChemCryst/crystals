@@ -94,7 +94,9 @@
 ^^WI   ITEM _EXCL '&Show labels'    '#SCRIPT XCALTER_NSLABEL'
 ^^WI   ITEM _INCL '&Hide labels'    '#SCRIPT XCALTER_NHLABEL'
 ^^WI  ENDMENU
-^^WI  ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
+^^WI  MENU ORIENT '&Orientation'
+^^WI    ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
+^^WI  ENDMENU
 ^^WI  MENU PACK '&Packing'
 ^^WI   ITEM _COMP 'Com&plete' 'PACK CELL COMP VIEW _N'
 ^^WI   ITEM _CENT '&Centroid' 'PACK CELL CENT VIEW _N'
