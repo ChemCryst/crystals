@@ -5,10 +5,9 @@
 %%    Extinction has been checked (EDONE)
 %%    Weights have been chosen    (WDONE)
 %%
-%  VARIABLE LOGICAL HMASK EMASK WMASK PMASK HRMASK L12SMASK
-%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE
-%  VARIABLE INTEGER HRTYP L12SER
-%  VARIABLE INTEGER IKEY
+%  VARIABLE LOGICAL HMASK EMASK WMASK PMASK HRMASK L12SMASK I6MASK
+%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE                 I6DONE
+%  VARIABLE INTEGER                         HRTYP  L12SER
 %%
 
  * Storing info in L39.
@@ -88,6 +87,15 @@
 %    STORE FORMAT /(I6)/ LENGTH 6 INTEGER L12SER
 %    SEND
   Storing: Refinement directive list serial number.
+%  END IF
+%  IF ( I6MASK .EQ. TRUE ) THEN
+%    IF ( I6DONE .EQ. TRUE ) THEN
+%      COPY 'CHANGE 8 INTEGER INTEGER = 1'
+  Storing: Done initial data inspection.
+%    ELSE
+%      COPY 'CHANGE 8 INTEGER INTEGER = 0'
+  Storing: Have not done initial data inspection.
+%    END IF
 %  END IF
 %%
 %  COPY 'WRITE'

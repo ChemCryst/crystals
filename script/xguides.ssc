@@ -5,6 +5,7 @@
 %% Exit. - The window will callback XGUIDESC.SCP with events.
 %%
 %  VARIABLE INTEGER KTDEFA
+%  VARIABLE LOGICAL I6DONE
 %% KTDEFA  = 
 %%  1 Run SIR92
 %%  2 Run SHELXS
@@ -13,6 +14,7 @@
 %%  5 Import Sir97 data.
 %%  6 Shelx file.
 %%  7 Cameron file.
+%%  8 Initial analysis.
 %%%
 %%
 %% Check for windows already open
@@ -51,6 +53,7 @@
 ^^WI     'Use Sir97 output'
 ^^WI     'Use Shelx file'
 ^^WI     'Use a Cameron file'
+^^WI     'Initial analysis'
 ^^WI     NULL
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4
 ^^WI   {
@@ -65,12 +68,28 @@
 ^^CR
 %  END IF
 
-{I   Choose a method of structure solution, or a source to import
+{I   Carry out an initial inspection of the reflection data.
+{I   then choose a method of structure solution, or a source to import
 {I   an existing trial model.
 
-% END SCRIPT
+%  COPY '#SCRIPT XGETINFO'
+%  IF ( I6DONE ) THEN
+%    EVALUATE KTDEFA = 1
+%  ELSE
+%    EVALUATE KTDEFA = 8
+%  END IF
+%%
+%%
+%  CLEAR
+%  INSERT '^^CO SET _XG_LIST SELECTION='
+%  STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA
+%  OUTPUT
+%END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.5  2001/04/03 09:52:17  richard
+%%  Changed name from 'Supervisor' to 'The GUIDE' for consistency.
+%%
 %%  Revision 1.4  2001/03/21 17:07:17  richard
 %%  Changed window layout and bitmap.
 %%

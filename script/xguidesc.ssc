@@ -7,6 +7,7 @@
 %%  5 Import Sir97 data.
 %%  6 Shelx file.
 %%  7 Cameron file.
+%%  8 Initial analysis.
 %%
 %  VERIFY GS_BOK GS_BXX GS_BHELP
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GS_BXX'
@@ -42,6 +43,10 @@
 %%
 %        BLOCK % 7
 %          COPY '#USE cameron.l5'
+%        END BLOCK
+%%
+%        BLOCK % 8
+%          COPY '#SCRIPT XCHECK6'
 %        END BLOCK
 %%
 %      END CASE
