@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2001/09/19 08:50:09  ckp2
+C Template #VISUALISE command for Steven's project.
+C
 C Revision 1.13  2001/07/19 08:02:23  ckp2
 C Output /FO/ and Delta**2 headers above the weights analysis.
 C
@@ -2653,6 +2656,11 @@ C--AGREEEMNT ANALYSIS ON REFLECTION CLASSES
 4300  FORMAT(///' Agreement analysis on reflection classes')
       WRITE(NCWU,1000)(NOPE(J,30),J=1,4),KM
       ENDIF
+
+      WRITE(CMON,'(A,/,A)') '^^PL PLOTDATA _CLASS ATTACH _VCLASS',
+     1                      '^^PL NSERIES=2 LENGTH=16'
+      CALL XPRVDU(NCVDU, 2,0)
+
       L=ICLS
 C**   ASSIGN 4400 TO K3 ! MARKUS NEUBURGER
       CALL XSUFS(CFY,CFN,CFC)
@@ -2676,6 +2684,11 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       WRITE(NCWU,CFY)(NOPE(J,I+5),J=1,4),ISTORE(L+1),
      2 (STORE(K+2),K=L,M),IOUT
       ENDIF
+
+      WRITE(CMON,'(A,4A4,A,2F15.7)')'^^PL LABEL ''',
+     2 (NOPE(J,I+5),J=1,4),''' DATA ', STORE(L+5), STORE(L+4)
+      CALL XPRVDU(NCVDU, 1,0)
+
 4450  CONTINUE
       L=L+NW
 4500  CONTINUE
@@ -2685,6 +2698,8 @@ C--PRINT THE FINAL CAPTION FOR THIS GROUP
 4550  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1050)
+      WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR',
+      CALL XPRVDU(NCVDU, 2,0)
 C
 C--AGREEEMNT ANALYSIS ON PARITY GROUPS
       WRITE(NCWU,4600)
@@ -2741,6 +2756,11 @@ C--- OUTPUT TO SCREEN
       WRITE(CMON,4910)
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
+
+      WRITE(CMON,'(A,/,A)') '^^PL PLOTDATA _FO ATTACH _VFO',
+     1                      '^^PL NSERIES=2 LENGTH=16'
+      CALL XPRVDU(NCVDU, 2,0)
+
 4910  FORMAT ( 1X , '  Range  Number  <FO>     <FC>    ' ,
      2 ' <delsq>  <wdelsq>  R    RW Log<wdelsq>' )
 4920  FORMAT(1H ,F7.0,I6,2F9.0,2E10.2,2F5.0,13A1)
@@ -2782,6 +2802,8 @@ C--- OUTPUT TO SCREEN
       WRITE(CMON,4920)ACI,ISTORE(L+1)
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
+      WRITE(CMON,'(A,F7.0,1X,A)')'^^PL LABEL ',ACI,' DATA  0.0'
+      CALL XPRVDU(NCVDU, 1,0)
       GOTO 5250
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 5200  CONTINUE
@@ -2796,6 +2818,9 @@ C--- OUTPUT TO SCREEN
      2 (STORE(K+2),K=L+2,M) , IOUT
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
+      WRITE(CMON,'(A,F7.0,A,2(1X,F15.7))')'^^PL LABEL ',ACI,
+     1                                  ' DATA ',STORE(L+5),STORE(L+4)
+      CALL XPRVDU(NCVDU, 1,0)
       NZ=0
 5250  CONTINUE
       AC=AC+VV
@@ -2818,6 +2843,8 @@ C--PRINT THE LAST CAPTION FOR THIS GROUP
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1050)
       ENDIF
+      WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR',
+      CALL XPRVDU(NCVDU, 2,0)
 C----- WRITE TOTALS TO MONITOR
       WRITE(NCAWU,4921)N,(APD(N2),N2=1,6)
 C--- OUTPUT TO SCREEN
