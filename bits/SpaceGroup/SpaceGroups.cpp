@@ -86,7 +86,8 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups)
     if (gSpaceGroupsFSO == NULL)
     {//(([^\\[\\{].+[^\\]\\}]))
         #if defined(_WIN32)
-		char tSGBraketsRE[] = "^(([^\[{].*[^\]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-))$";
+			char tSGBraketsRE[] = "(^([^\\[\\{].*[^]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-)$)";
+				//char tSGBraketsRE[] = "^(([^\\[{].*[^\]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-))$";
         #else
                 char tSGBraketsRE[] = "(^([^\\[\\{].*[^]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-)$)";
         #endif
