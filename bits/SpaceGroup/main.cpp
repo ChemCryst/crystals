@@ -48,8 +48,6 @@
 #include <fstream>
 using namespace std;
 
-
-
 void readInTable(filebuf& pFile, Table* pTable);
 
 int main (int argc, const char * argv[]) 
