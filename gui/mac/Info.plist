@@ -4,6 +4,21 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>dsc</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>DSCFile</string>
+			<key>CFBundleTypeName</key>
+			<string>CRYSTALS DSC file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>crystals</string>
 	<key>CFBundleGetInfoString</key>
@@ -32,8 +47,6 @@
 	<dict>
 		<key>CRYSBUILD</key>
 		<string>/Users/stefanpa/Documents/Programming</string>
-		<key>CRYSDIR</key>
-		<string>/Users/stefanpa/Documents/Programming/</string>
 		<key>FINDER</key>
 		<string>YES</string>
 	</dict>
