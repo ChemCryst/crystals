@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.34  2004/07/02 09:21:18  rich
+// Prevent thread deadlock.
+//
 // Revision 1.33  2004/06/25 12:49:38  rich
 // Avoid deadlocks in mutex.
 //
@@ -183,7 +186,7 @@ CcModelDoc::CcModelDoc( )
     sm_ModelDocList.push_back(this);
     sm_CurrentModelDoc = this;
     m_glIDsok = false;
-
+    m_glIDCount = 0;
 }
 
 CcModelDoc::~CcModelDoc()
@@ -293,6 +296,7 @@ void CcModelDoc::AddModelView(CrModList * aView)
 void CcModelDoc::DrawViews(bool rescaled)
 {
     m_glIDsok = false;
+    m_glIDCount = 0;
     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
             (*aview)->Update(rescaled);
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
@@ -516,209 +520,215 @@ void CcModelDoc::DocToList( CrModList* ml )
 bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 {
 
-//   if ( m_glIDsok ) { LOGERR ( "Rendering: glIDs OK" ); }
-//   else { LOGERR ( "Rendering: glIDs need reset" ); }
+   bool retval = false;
 
-   m_thread_critical_section.Enter();
-   if ( ! ( mAtomList.empty() && mBondList.empty() && mSphereList.empty() && mDonutList.empty() ) )
-   {
-        GLuint glIDCount = 0;
+   int nRes = (int) ( 1250.0 / mAtomList.size() );
+   nRes = CRMIN ( 15, nRes );
+   nRes = CRMAX ( 4,  nRes );
+   style->normal_res = nRes;
 
-        int nRes = (int) ( 1250.0 / mAtomList.size() );
-        nRes = CRMIN ( 15, nRes );
-        nRes = CRMAX ( 4,  nRes );
-
-        style->normal_res = nRes;
-
-        if ( !feedback )
-        {
-           glDeleteLists(ATOMLIST,1);
-           glNewList( ATOMLIST, GL_COMPILE);
-        }
-
-        for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
-        {
-//not excluded, not selected, not disabled:
-          if ( !((*atom).m_excluded) && !((*atom).IsSelected()) && !((*atom).m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*atom).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*atom).m_glID );
-            (*atom).Render(style, feedback);
-          }
-        }
-        for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
-        {
-//not excluded, not selected, not disabled:
-          if ( !((*sphere).m_excluded) && !((*sphere).IsSelected()) && !((*sphere).m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*sphere).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*sphere).m_glID );
-            (*sphere).Render(style, feedback);
-          }
-        }
-        for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
-        {
-//not excluded, not selected, not disabled:
-          if ( !((*donut).m_excluded) && !((*donut).IsSelected()) && !((*donut).m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*donut).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*donut).m_glID );
-            (*donut).Render(style, feedback);
-          }
-        }
-
-
-        for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
-        {
-//not excluded, selected:
-          if ( !((*atom).m_excluded) && ((*atom).IsSelected()) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*atom).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*atom).m_glID );
-            (*atom).Render(style, feedback);
-          }
-        }
-        for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
-        {
-//not excluded, selected:
-          if ( !((*sphere).m_excluded) && ((*sphere).IsSelected()) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*sphere).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*sphere).m_glID );
-            (*sphere).Render(style);
-          }
-        }
-        for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
-        {
-//not excluded, selected:
-          if ( !((*donut).m_excluded) && ((*donut).IsSelected()) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*donut).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*donut).m_glID );
-            (*donut).Render(style);
-          }
-        }
-
-
-        for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
-        {
-//not excluded, not selected, disabled
-          if ( !((*atom).m_excluded) && !((*atom).IsSelected()) && ((*atom).m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*atom).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*atom).m_glID );
-            (*atom).Render(style);
-          }
-        }
-        for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
-        {
-//not excluded, not selected, disabled
-          if ( !((*sphere).m_excluded) && !((*sphere).IsSelected()) && ((*sphere).m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*sphere).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*sphere).m_glID );
-            (*sphere).Render(style);
-          }
-        }
-        for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
-        {
-//not excluded, not selected, disabled
-          if ( !((*donut).m_excluded) && !((*donut).IsSelected()) && ((*donut).m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*donut).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*donut).m_glID );
-            (*donut).Render(style);
-          }
-        }
-        if ( !feedback )
-        {
-           glEndList();
-//High res normal bonds:
-           glDeleteLists(BONDLIST,1);
-           glNewList( BONDLIST, GL_COMPILE);
-        }
-
-
-
-        for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
-        {
-          if ( !((*bond).m_excluded) )
-          {
-            if ( !m_glIDsok )
-            {
-              (*bond).m_glID = ++ glIDCount;
-            }
-            glLoadName ( (*bond).m_glID );
-            (*bond).Render(style);
-          }
-        }
-        if ( !feedback )
-        {
-           glEndList();
-
-//High res excluded atoms and bonds:
-           glDeleteLists(XOBJECTLIST,1);
-           glNewList( XOBJECTLIST, GL_COMPILE);
-        }
-        for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
-        {
-          if ( (*atom).m_excluded )
-          {
-            glPolygonMode(GL_FRONT, GL_POINT);
-            glPolygonMode(GL_BACK, GL_POINT);
-            (*atom).m_glID = 0;
-            (*atom).Render(style);
-          }
-        }
-        for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
-        {
-          if ( (*bond).m_excluded )
-          {
-            glPolygonMode(GL_FRONT, GL_POINT);
-            glPolygonMode(GL_BACK, GL_POINT);
-            (*bond).m_glID = 0;
-            (*bond).Render(style);
-          }
-        }
-        if ( !feedback )
-        {
-           glEndList();
-        }
-
-        m_glIDsok = true;
-        m_thread_critical_section.Leave();
-        return true;
+   if ( !feedback ) {
+      glDeleteLists(ATOMLIST,1);
+      glNewList( ATOMLIST, GL_COMPILE);
    }
-   m_thread_critical_section.Leave();
-   return false;
+
+   retval |= RenderAtoms(style, feedback);
+
+   if ( !feedback )
+   {
+      glEndList();
+      glDeleteLists(BONDLIST,1);
+      glNewList( BONDLIST, GL_COMPILE);
+   }
+
+   retval |= RenderBonds(style, feedback);
+
+   if ( !feedback )
+   {
+      glEndList();
+      glDeleteLists(XOBJECTLIST,1);
+      glNewList( XOBJECTLIST, GL_COMPILE);
+   }
+
+   retval |= RenderExcluded(style, feedback);
+
+   if ( !feedback )
+   {
+      glEndList();
+   }
+
+   return retval;
 }
+
+bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
+{
+   m_thread_critical_section.Enter();
+
+   if ( mAtomList.empty() && mSphereList.empty() && mDonutList.empty() ) {
+      m_thread_critical_section.Leave();
+      return false;
+   }
+
+   for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
+   {
+//not excluded, not selected, not disabled:
+     if ( !((*atom).m_excluded) && !((*atom).IsSelected()) && !((*atom).m_disabled) )
+     {
+       if ( !m_glIDsok ) (*atom).m_glID = ++ m_glIDCount;
+       glLoadName ( (*atom).m_glID );
+       (*atom).Render(style, feedback);
+     }
+   }
+   for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
+   {
+//not excluded, not selected, not disabled:
+     if ( !((*sphere).m_excluded) && !((*sphere).IsSelected()) && !((*sphere).m_disabled) )
+     {
+       if ( !m_glIDsok ) (*sphere).m_glID = ++ m_glIDCount;
+       glLoadName ( (*sphere).m_glID );
+       (*sphere).Render(style, feedback);
+     }
+   }
+   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
+   {
+//not excluded, not selected, not disabled:
+     if ( !((*donut).m_excluded) && !((*donut).IsSelected()) && !((*donut).m_disabled) )
+     {
+       if ( !m_glIDsok ) (*donut).m_glID = ++ m_glIDCount;
+       glLoadName ( (*donut).m_glID );
+       (*donut).Render(style, feedback);
+     }
+   }
+
+
+   for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
+   {
+//not excluded, selected:
+     if ( !((*atom).m_excluded) && ((*atom).IsSelected()) )
+     {
+       if ( !m_glIDsok ) (*atom).m_glID = ++ m_glIDCount;
+       glLoadName ( (*atom).m_glID );
+       (*atom).Render(style, feedback);
+     }
+   }
+   for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
+   {
+//not excluded, selected:
+     if ( !((*sphere).m_excluded) && ((*sphere).IsSelected()) )
+     {
+       if ( !m_glIDsok ) (*sphere).m_glID = ++ m_glIDCount;
+       glLoadName ( (*sphere).m_glID );
+       (*sphere).Render(style);
+     }
+   }
+   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
+   {
+//not excluded, selected:
+     if ( !((*donut).m_excluded) && ((*donut).IsSelected()) )
+     {
+       if ( !m_glIDsok ) (*donut).m_glID = ++ m_glIDCount;
+       glLoadName ( (*donut).m_glID );
+       (*donut).Render(style);
+     }
+   }
+
+
+   for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
+   {
+//not excluded, not selected, disabled
+     if ( !((*atom).m_excluded) && !((*atom).IsSelected()) && ((*atom).m_disabled) )
+     {
+       if ( !m_glIDsok ) (*atom).m_glID = ++ m_glIDCount;
+       glLoadName ( (*atom).m_glID );
+       (*atom).Render(style);
+     }
+   }
+   for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
+   {
+//not excluded, not selected, disabled
+     if ( !((*sphere).m_excluded) && !((*sphere).IsSelected()) && ((*sphere).m_disabled) )
+     {
+       if ( !m_glIDsok ) (*sphere).m_glID = ++ m_glIDCount;
+       glLoadName ( (*sphere).m_glID );
+       (*sphere).Render(style);
+     }
+   }
+   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
+   {
+//not excluded, not selected, disabled
+     if ( !((*donut).m_excluded) && !((*donut).IsSelected()) && ((*donut).m_disabled) )
+     {
+       if ( !m_glIDsok ) (*donut).m_glID = ++ m_glIDCount;
+       glLoadName ( (*donut).m_glID );
+       (*donut).Render(style);
+     }
+   }
+
+   m_glIDsok = true;
+   m_thread_critical_section.Leave();
+   return true;
+}
+
+
+
+bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )
+{
+   m_thread_critical_section.Enter();
+
+   if ( mBondList.empty() )
+   {
+     m_thread_critical_section.Leave();
+     return false;
+   }
+      
+   for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
+   {
+     if ( !((*bond).m_excluded) )
+     {
+       if ( !m_glIDsok ) (*bond).m_glID = ++ m_glIDCount;
+       glLoadName ( (*bond).m_glID );
+       (*bond).Render(style);
+     }
+   }
+   m_glIDsok = true;
+   m_thread_critical_section.Leave();
+   return true;
+}
+
+bool CcModelDoc::RenderExcluded( CcModelStyle * style, bool feedback )
+{
+   m_thread_critical_section.Enter();
+   if ( mAtomList.empty() && mBondList.empty() && mSphereList.empty() && mDonutList.empty() )
+   {
+     m_thread_critical_section.Leave();
+     return false;
+   }
+       
+   for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
+   {
+     if ( (*atom).m_excluded )
+     {
+       glPolygonMode(GL_FRONT, GL_POINT);
+       glPolygonMode(GL_BACK, GL_POINT);
+       (*atom).m_glID = 0;
+       (*atom).Render(style);
+     }
+   }
+   for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
+   {
+     if ( (*bond).m_excluded )
+     {
+       glPolygonMode(GL_FRONT, GL_POINT);
+       glPolygonMode(GL_BACK, GL_POINT);
+       (*bond).m_glID = 0;
+       (*bond).Render(style);
+     }
+   }
+   m_glIDsok = true;
+   m_thread_critical_section.Leave();
+   return true;
+}
+
 
 void CcModelDoc::FlagFrag(const string & atomname)
 {

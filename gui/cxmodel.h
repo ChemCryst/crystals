@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.35  2004/06/24 09:12:02  rich
+//  Replaced home-made strings and lists with Standard
+//  Template Library versions.
+//
 //  Revision 1.34  2004/04/16 12:43:44  rich
 //  Speed up for  OpenGL rendering: Use new lighting scheme, drop use of
 //  two sets of displaylists for rendering a 'low res' model while rotating -
@@ -170,7 +174,7 @@ class CxModel : public BASEMODEL
 {
   public:
     void Update(bool rescale=true);
-    void DoDrawingLists();
+    void GLDrawStyle();
     int IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly=false);
     void SelectBoxedAtoms(CcRect rectangle, bool select);
     void Setup();

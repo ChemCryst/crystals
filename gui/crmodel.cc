@@ -6,6 +6,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.33  2004/06/29 15:15:30  rich
+//   Remove references to unused kTNoMoreToken. Protect against reading
+//   an empty list of tokens.
+//
 //   Revision 1.32  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -109,7 +113,6 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   ptr_to_cxObject = CxModel::CreateCxModel( this,(CxGrid *)(mParentPtr->GetWidget()) );
   ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this );
   m_style.normal_res = 15;
-  m_style.quick_res = 5;
   m_style.radius_type = COVALENT;
   m_style.radius_scale = 0.25;
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
@@ -413,13 +416,6 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         tokenList.pop_front();
         break;
       }
-      case kTQRes:
-      {
-        tokenList.pop_front();
-        m_style.quick_res = atoi( tokenList.front().c_str() );
-        tokenList.pop_front();
-        break;
-      }
       case kTStyle:
       {
         tokenList.pop_front();
@@ -668,11 +664,19 @@ int CrModel::GetSelectionAction()
   return m_AtomSelectAction;
 }
 
-bool CrModel::RenderModel(bool detailed, bool feedback)
+bool CrModel::RenderModel(bool feedback)
 {
-//    TEXTOUT ( "RenderModel" );
-    m_style.high_res = true;
     if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style,feedback);
+    return false;
+}
+bool CrModel::RenderAtoms()
+{
+    if(m_ModelDoc) return m_ModelDoc->RenderAtoms(&m_style,false);
+    return false;
+}
+bool CrModel::RenderBonds()
+{
+    if(m_ModelDoc) return m_ModelDoc->RenderBonds(&m_style,false);
     return false;
 }
 

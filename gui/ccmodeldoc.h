@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2004/06/25 09:29:18  rich
+//   Pass strings more efficiently. Fix bug in FlagFrag.
+//
 //   Revision 1.21  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -114,6 +117,9 @@ class CcModelDoc
     public:
 
         bool RenderModel( CcModelStyle *style, bool feedback=false );   // Called by CrModel
+        bool RenderAtoms( CcModelStyle * style, bool feedback );
+        bool RenderBonds( CcModelStyle * style, bool feedback );
+        bool RenderExcluded( CcModelStyle * style, bool feedback );
         void DocToList( CrModList* ml );                                // Called by CrModList
         void InvertSelection();                                         // Called by CrModel
         void SelectAllAtoms(bool select);                               // Called by CrModel
@@ -187,6 +193,7 @@ class CcModelDoc
         int m_TotY;
         int m_TotZ;
         bool m_glIDsok;
+        int m_glIDCount;
   
         list<CcModelAtom> mAtomList;
         list<CcModelBond> mBondList;

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.17  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -71,8 +75,6 @@ public:
    int radius_type;
    float radius_scale;
    int normal_res;
-   int quick_res;
-   bool high_res;
    CxModel* m_modview;
 };
 
@@ -95,7 +97,9 @@ class   CrModel : public CrGUIElement
     void    SysKeyUp ( UINT nChar );
 
 // Called from CxModel:
-    bool RenderModel(bool detailed, bool feedback=false);
+    bool RenderModel(bool feedback=false);
+    bool RenderAtoms();
+    bool RenderBonds();
     void    MenuSelected(int id);
     void    ContextMenu(int x, int y, string atomname = "", int selection = 1, string atom2="");
     int     GetSelectionAction();
@@ -147,7 +151,6 @@ class   CrModel : public CrGUIElement
 #define kSSendCAndSelect    "SENDANDSELECT"
 #define kSCheckValue        "CHECKVALUE"
 #define kSNRes              "NRES"
-#define kSQRes              "QRES"
 #define kSStyle             "STYLE"
 #define kSStyleSmooth       "SMOOTH"
 #define kSStyleLine         "LINE"
@@ -187,7 +190,6 @@ enum
  kTSendCAndSelect,
  kTCheckValue,
  kTNRes,
- kTQRes,
  kTStyle,
  kTStyleSmooth,
  kTStyleLine,

@@ -180,7 +180,7 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
   gluQuadricDrawStyle(sphere,GLU_FILL);
   glTranslated(x,y,z);
   float extra = 0.0f;
-  int detail = (style->high_res)? style->normal_res  : style->quick_res ;
+  int detail = style->normal_res ;
 
   if (feedback) glPassThrough((float)m_glID);
 

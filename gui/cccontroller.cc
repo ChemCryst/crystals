@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.101  2004/11/08 16:48:36  stefan
+// 1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
+//
 // Revision 1.100  2004/10/08 09:01:16  rich
 // Fix window being deleted from list bug.
 //
@@ -2947,7 +2950,6 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(IconWarn)
                else DESCRIPTOR(IconQuery)
                else DESCRIPTOR(NRes)
-               else DESCRIPTOR(QRes)
                else DESCRIPTOR(Style)
                else DESCRIPTOR(StyleSmooth)
                else DESCRIPTOR(StyleLine)

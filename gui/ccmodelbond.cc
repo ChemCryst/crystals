@@ -134,7 +134,7 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
          vecZ = vecZ / vecLeng;
    }
 
-   int detail = (style->high_res)? style->normal_res : style->quick_res ;
+   int detail = style->normal_res;
 
    GLUquadricObj* cylinder;
    if ( m_excluded )

@@ -253,13 +253,16 @@ void CxModel::OnPaint(wxPaintEvent &event)
 //    TEXTOUT ( string((int)this) + " OnPaint" );
     bool ok_to_draw = true;
 
+#ifndef __WXMAC__
     if (m_bModelChanged)
     {
 // re-render the full detail model.
 //      TEXTOUT ( "Redrawing model from scratch" );
-      DoDrawingLists();
-      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(true);
+      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
     }
+#else
+    ok_to_draw = true;
+#endif
 
     if ( ok_to_draw )
     {
@@ -295,14 +298,18 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glLoadIdentity();
       CameraSetup();
 
-      glCallList( STYLIST );
+      GLDrawStyle();
 
       ModelSetup();
       ModelBackground();
 
+#ifndef __WXMAC__
       glCallList( ATOMLIST );
       glCallList( BONDLIST );
       glCallList( XOBJECTLIST );
+#else
+      ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel();
+#endif
 
       glMatrixMode ( GL_PROJECTION );
       glPopMatrix();
@@ -360,11 +367,8 @@ void CxModel::OnPaint(wxPaintEvent &event)
 }
 
 
-void CxModel::DoDrawingLists()
+void CxModel::GLDrawStyle()
 {
-    glDeleteLists(STYLIST,1);
-    glNewList( STYLIST, GL_COMPILE);
-
     if ( m_DrawStyle == MODELSMOOTH )
     {
           glPolygonMode(GL_FRONT, GL_FILL);
@@ -382,9 +386,6 @@ void CxModel::DoDrawingLists()
     }
 
     glEnable(GL_DEPTH_TEST);
-
-    glEndList();
-
 }
 
 
@@ -685,7 +686,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
           ChooseCursor(CURSORNORMAL);
           if ( m_ptLDown.x - point.x )             // if non-zero
           {
-            float rot = (float)(m_ptLDown.x - point.x ) * 0.5 * 3.14f / 180.0f;
+            float rot = (float)(m_ptLDown.x - point.x ) * 0.5f * 3.14f / 180.0f;
             float * cMat = new float[16];
             for ( int i=0; i < 16; i++) cMat[i]=mat[i];
             float cosr = (float)cos(rot);
@@ -700,7 +701,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
           }
           if ( m_ptLDown.y - point.y )
           {
-            float rot = (float)(m_ptLDown.y - point.y ) * 0.5 * 3.14f / 180.0f;
+            float rot = (float)(m_ptLDown.y - point.y ) * 0.5f * 3.14f / 180.0f;
             float * cMat = new float[16];
             for ( int i=0; i < 16; i++) cMat[i]=mat[i];
             float cosr = (float)cos(rot);
@@ -1304,11 +1305,16 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
      gluPickMatrix ( xPos, viewport[3] - yPos, tolerance+1, tolerance+1, viewport );
      CameraSetup();
      ModelSetup();
+
+#ifndef __WXMAC__
      glCallList( ATOMLIST );
-     if ( tolerance == 0 && !atomsOnly ) glCallList( BONDLIST ); // Only select bonds if right over them.
-//     glMatrixMode ( GL_PROJECTION );
-//     glPopMatrix();
-//     glMatrixMode ( GL_MODELVIEW );
+     if ( tolerance == 0 && !atomsOnly )
+        glCallList( BONDLIST ); // Only select bonds if right over them.
+#else
+     bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
+     if ( tolerance == 0 && !atomsOnly )
+        o = ((CrModel*)ptr_to_crObject)->RenderBonds();
+#endif
 
 #ifdef __CR_WIN__
 //For debug uncomment next line and comment the glRenderMode line above.
@@ -1388,8 +1394,6 @@ void CxModel::AutoScale()
   
      glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
 
-//     glClearColor( 1.0f,1.0f,1.0f,0.0f);
-//     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
      glMatrixMode ( GL_PROJECTION );
      glLoadIdentity();
      CameraSetup();
@@ -1397,8 +1401,13 @@ void CxModel::AutoScale()
      glMatrixMode ( GL_MODELVIEW );
      glLoadIdentity();
      glMultMatrixf ( mat );
+#ifndef __WXMAC__
      glCallList( ATOMLIST );
      glCallList( BONDLIST );
+#else
+     bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
+     o = ((CrModel*)ptr_to_crObject)->RenderBonds();
+#endif
      glMatrixMode ( GL_PROJECTION );
      glMatrixMode ( GL_MODELVIEW );
 
@@ -1921,14 +1930,11 @@ void CxModel::PolyCheck()
   
      glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
 
-
      glMatrixMode ( GL_PROJECTION );
      glLoadIdentity();
      CameraSetup();
      ModelSetup();
-     ((CrModel*)ptr_to_crObject)->RenderModel(true,true);
-
-//     glCallList( ATOMLIST );
+     ((CrModel*)ptr_to_crObject)->RenderModel(true);
 
      glMatrixMode ( GL_PROJECTION );
      glMatrixMode ( GL_MODELVIEW );
@@ -2112,7 +2118,11 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
      gluPickMatrix ( rectangle.MidX(), viewport[3] - rectangle.MidY(), rectangle.Sort().Width(), rectangle.Sort().Height(), viewport );
      CameraSetup();
      ModelSetup();
+#ifndef __WXMAC__
      glCallList( ATOMLIST );
+#else
+     bool o = ((CrModel*)ptr_to_crObject)->RenderAtoms();
+#endif
      glMatrixMode ( GL_PROJECTION );
      glPopMatrix();
      glMatrixMode ( GL_MODELVIEW );

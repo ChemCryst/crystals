@@ -108,7 +108,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 
   float extra = 0.0;
 
-  int detail = (style->high_res)? style->normal_res  : style->quick_res ;
+  int detail = style->normal_res;
 
   if ( m_excluded )
   {
