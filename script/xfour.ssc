@@ -18,9 +18,9 @@
 %  END BLOCK
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
-% VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED
-% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
-% VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE DOALL DOXPR
+% VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED 
+% VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP N5O N10 N5N
+% VARIABLE INTEGER DOPEAKS DOCOLLECT MTYPE DOALL DOXPR
 %%
 %% The variables needed by XQUESTIO
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
@@ -317,26 +317,12 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %% See if any atoms were found
 %       copy '#set moni off'
 %       COPY '#GENERALEDIT 10'
-%       COPY 'LOCATE RECORDTYPE=101'
-%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%       EVALUATE PEAKS = 0
-%       LOOP
-%           ON EDITERROR TERMINATE
-%           COPY 'NEXT'
-%           EVALUATE PEAKS = LOOPCOUNTER
-%       END LOOP
+%       COPY 'TRANSHEAD FROM OFFSET=3 TO N10'
 %       COPY 'END'
 %       COPY '#GENERALEDIT 5'
-%       COPY 'LOCATE RECORDTYPE=101'
-%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%       EVALUATE ATOMS = 0
-%       LOOP
-%           ON EDITERROR TERMINATE
-%           COPY 'NEXT'
-%           EVALUATE ATOMS = LOOPCOUNTER
-%       END LOOP
+%       COPY 'TRANSHEAD FROM OFFSET=3 TO N5O'
 %       COPY 'END'
-%       EVALUATE NPEAKS = PEAKS - ATOMS
+%       EVALUATE NPEAKS = N10 - N5O
 %%      SHOW NPEAKS
 %       IF NPEAKS .LE. 0 THEN
 ^^WI    WINDOW NOPEAKS 'No peaks' MODAL
@@ -379,14 +365,15 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI   @ 2,2 GRID GRIDT NROWS=1 NCOLS=5
 ^^WI   {
 ^^WI     @ 1,1 ICON IM INFO
-^^WI     @ 1,3 GRID GRIDI NROWS=2 NCOLS=1
+^^WI     @ 1,3 GRID GRIDI NROWS=3 NCOLS=1
 ^^WI     {
 % CLEAR
 % INSERT   !^^WI @ 1,1 STATIC TEXT1 'Found !
 % STORE   FORMAT /(I4)/ LENGTH 4 INTEGER NPEAKS
-% INSERT   ! peaks.' !
+% INSERT   ! peaks. Some may be' !
 % OUTPUT
-^^WI       @ 2,1 STATIC XPEAKS 'Transfer peaks to model?'
+^^WI       @ 2,1 STATIC XPEAKS 'coincident with existing atoms.'
+^^WI       @ 3,1 STATIC XPEAK2 'Transfer peaks to model?'
 ^^WI     }
 ^^WI     @ 1,4 STRETCH _H HORIZONTAL
 ^^WI     @ 1,5 GRID GRIDR NROWS=1 NCOLS=3
@@ -443,6 +430,20 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %                     COPY 'SELECT TYPE=PEAKS'
 %                   END IF 
 %                   COPY 'END'
+%                 END IF
+%                 COPY '#GENERALEDIT 5'
+%                 COPY 'TRANSHEAD FROM OFFSET=3 TO N5N'
+%                 COPY 'END'
+%                 IF ( N5N .LE. N5O ) THEN
+%                    EVALUATE DOXPR = 2
+
+
+{I
+{I   All peaks have been rejected as they were coincident with
+{I                 existing atoms in the model.
+{I
+
+
 %                 END IF
 %                 IF DOXPR .EQ. 1 THEN
 %                   COPY '#SCRIPT XPRUNE'
