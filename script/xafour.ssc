@@ -1,0 +1,117 @@
+%SCRIPT XAFOUR
+%% R, OSCALE, RATIO are set in SCRIPT RFACTOR
+%% The variables needed by XQUESTIO
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+%  VARIABLE LOGICAL   ANSWER
+%%
+%  VARIABLE REAL R OSCALE RATIO
+%  VARIABLE CHARACTER MAPTYPE
+%  EVALUATE MAPTYPE = 'UNKNOWN'
+%  VARIABLE REAL RFO R2FO RDIF
+%  EVALUATE RFO = 25.0
+%  EVALUATE R2FO = 15.0
+%  EVALUATE RDIF = 8.0
+% BLOCK
+% ON ERROR TERMINATE
+%%
+%    LOOP
+%      COPY '#SCRIPT RFACTOR'
+%      COPY '#SCRIPT XDELQ'
+%      IF RATIO .GE. 1.3 THEN
+%        COPY '#SFLS'
+      Recomputing over all scale factor and phases
+%        COPY 'SCALE'
+%        COPY 'END'
+%      ELSE
+%        COPY '#SFLS'
+      Computing new phases and Fc
+%        COPY 'CALC'
+%        COPY 'END'
+%      END IF
+%      COPY '#SCRIPT RFACTOR'
+%%     ON ERROR REPEAT
+%%                                                      FOURIER SECTION
+%     BLOCK
+%      QUEUE REWIND
+%      QUEUE COPY #FOURIER
+%      IF R .GE. RFO THEN
+      Large R factor - compute Fo map
+%        QUEUE COPY MAP TYPE = F-O
+%        EVALUATE MAPTYPE = 'FO'
+%      ELSE
+%        IF R .GT. R2FO THEN
+      Medium R factor - compute 2Fo- Fc map
+%          QUEUE COPY MAP TYPE = 2FO-FC
+%          EVALUATE MAPTYPE = '2FO'
+%        ELSE
+      Low R factor - compute difference map
+%          QUEUE COPY MAP TYPE = DIFF
+%          EVALUATE MAPTYPE = 'DIF'
+%        END IF
+%      END IF
+%      IF MAPTYPE .EQ. 'DIF' THEN
+%        IF R .GT. RDIF THEN
+%          QUEUE COPY PEAKS HEIGHT = 15., REJECT = .01
+%        ELSE
+%          QUEUE COPY PEAKS HEIGHT = 1., REJECT = .01
+%        END IF
+%      ELSE
+%        QUEUE COPY PEAKS HEIGHT = 30, REJECT = .01
+%      END IF
+%      QUEUE COPY END
+%      QUEUE PROCESS
+%     END BLOCK
+%%                                                          PEAKS SECTION
+%      QUEUE REWIND
+%      QUEUE COPY #PEAKS
+%      IF R .GT. R2FO .OR. MAPTYPE .EQ. '2FO' THEN
+%        QUEUE COPY SELECT REJECT = .01
+%        QUEUE COPY REFINE DISTANCE = .3
+%      ELSE
+%        QUEUE COPY SELECT REJECT = .3
+%      END IF
+%      QUEUE COPY END
+%      QUEUE PROCESS
+%%
+%      IF MAPTYPE .NE. 'DIF' THEN
+%        COPY '#EDIT'
+%        COPY 'EXECUTE'
+ The atom list will now be displayed. The rightmost column is the
+electron density (x10). If you want to rename any of the atoms make a
+note of their type and serial number
+      You will also have a chance to see later a plot of the structure,
+and to list the inter atomic distances.
+%        COPY '#PAUSE 4'
+%        COPY 'LIST HIGH'
+%        COPY 'EXECUTE'
+%        COPY '#PAUSE 5'
+%        VERIFY   YES NO
+%        GET FINAL FILL NOSTORE ABBREVIATED -
+ 'Do you want to reject all atoms below a minimum rho? '  'NO'
+%        IF VALUE .EQ. 1 THEN
+%          ON ERROR RESTART
+%          CLEAR
+%          INSERT 'SELECT SPARE GE '
+  Minimun acceptable density, x10.
+%          GET real 'Limiting value ' '30.0'
+%          SEND
+%        END IF
+%        COPY 'END'
+%      END IF
+%%
+%      COPY '#COLLECT'
+%      COPY 'END'
+%      COPY '#SCRIPT XRETYPE'
+%      EVALUATE QTITLE = 'Fourier refinement'
+%      EVALUATE QLINE1 = 'Do you want to repeat or end'
+%      EVALUATE QLINE2 = 'the Fourier cycle?'
+%      EVALUATE BUTTOK = '&Repeat'
+%      EVALUATE BUTTXX = '&End'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. FALSE THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END IF
+%    END LOOP
+% END BLOCK
+% COPY '#SCRIPT XDELQ'
+%END SCRIPT

@@ -53,6 +53,7 @@
 ^^WI     '14. Keen (twin)'
 ^^WI     '15. Hex (old test)'
 ^^WI     '16. Mogul (validations)'
+^^WI     '17. Zoltan (BaSiN2)'
 ^^WI      NULL
 ^^WI   @ 4,1 GRID BT NROWS=1 NCOLS=3
 ^^WI   {
@@ -131,6 +132,7 @@
 %          EVALUATE CDIR = 'CRYSDIR:demo/keen/'
 %          EVALUATE CDIR = 'CRYSDIR:example/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/mogul/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/zoltan/'
 %     END CASE
 %     EVALUATE CFDIR = GETENV ( CDIR ) 
 %     IF ( .NOT. ( FILEEXISTS CFDIR ) ) THEN

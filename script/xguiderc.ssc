@@ -18,7 +18,7 @@
 %        END BLOCK
 %%
 %        BLOCK % KSFOUR 2
-%          COPY '#SCRIPT AFOUR'
+%          COPY '#SCRIPT XAFOUR'
 %        END BLOCK
 %%
 %        BLOCK % KSLSQ1 3
