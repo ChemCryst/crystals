@@ -1,0 +1,30 @@
+%SCRIPT xphase
+^^WI WINDOW XPHASE 'Distribution of phase' MODAL KEEP SIZE
+^^WI COMMIT='PHA_BOK' CANCEL='^^CO DISPOSE XPHASE'
+^^WI GRID MAIN NROWS=2 NCOLS=1
+^^WI {
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
+^^WI  {
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI   {
+^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI    {
+^^WI     @ 1,1 STATIC XFW1
+^^WI 'You are looking at the distribution of phase angles.'
+^^WI     @ 2,1 STATIC XFW2 ' '
+^^WI     @ 3,1 STATIC XFW3 ' '
+^^WI    }
+^^WI    @ 1,1 ICON IM INFO
+^^WI   }
+^^WI   @ 4,2 PLOTWINDOW _VPHASED NROWS=20 NCOLS=64
+^^WI  }
+^^WI  @ 2,1 PROGRESS _PHASEPR 'Please wait'
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDPROGRESSTO _PHASEPR
+% COPY '#SIGMADIST'
+% COPY 'OUTPUT PHASE=YES'
+% COPY 'END'
+%END SCRIPT
+
