@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2001/01/17 11:06:02  richard
+C Fixed logging of everything.
+C Things which aren't logged: #SCRIPT, #USE, $, #SPAWN. This should
+C make the log file entirely self-contained with no dependency on external
+C files or programs.
+C
 C Revision 1.23  2000/12/01 17:08:55  richard
 C RIC: Removed calls to experimental CSD code #EMAP and #EMAP2
 C
@@ -333,7 +339,6 @@ C
 C----- CHANGE COLOUR UNDER DOS
         IF (ICPSTS .EQ. 0 ) THEN
 C----- CHANGE COLOUR TO BLUE  ON WHITE FOR COPIED TEXT
-C          CALL VGACOL ( 'OFF', 'BLU', 'WHI')
           CALL OUTCOL(1)
 C-----    SWITCH ON LINE FEEDS
           ICPSTS = 1
@@ -2179,28 +2184,27 @@ C
 C
       IF ( IACCSS .EQ. 1 ) THEN
 C----- GENERATE NAME IF NECESSARY - NOT FOR D/A FILES
-      IF (ISSGEN .GE. 1)
-     1 CALL XGENNM ( IDEV, NEWFIL, OLDFIL, IRDWRI, ISTTUS )
-CDJWMAR99        ISTAT = KFLOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI , IFORMT )
-        ISTAT = KFLOPN ( IDEV, NEWFIL, ISTTUS, IRWOPN, IFORMT, ISSSEQ )
-        IF ( ISTAT .LE. 0 ) GO TO 9980
+       IF (ISSGEN .GE. 1)
+     1   CALL XGENNM ( IDEV, NEWFIL, OLDFIL, IRDWRI, ISTTUS )
+       ISTAT = KFLOPN ( IDEV, NEWFIL, ISTTUS, IRWOPN, IFORMT, ISSSEQ )
+       IF ( ISTAT .LE. 0 ) GO TO 9980
       ELSE IF ( IACCSS .EQ. 2 ) THEN
-&PPC        IF ( IDEV .EQ. NCDFU ) THEN
-&PPC             CALL transferdiscname( %loc(theName) , theLength )
-&PPC             MYLENGTH = theLength
-&PPC             CALL SETNAM ( theName, MYLENGTH )
-&PPC        ENDIF
-        ISTAT = KDAOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI )
-#PPC             IF ( ISTAT .LT. 0 ) GO TO 9980
-&PPCCS***
-&PPC        IF ( ISTAT .LT. 0 ) THEN
-&PPC             GO TO 9980
-&PPC        ELSE
-&PPC             IF ( IDEV .EQ. NCDFU ) DISKOP = 1
-&PPC        ENDIF
-&PPCCE***
+&PPC      IF ( IDEV .EQ. NCDFU ) THEN
+&PPC       CALL transferdiscname( %loc(theName) , theLength )
+&PPC       MYLENGTH = theLength
+&PPC       CALL SETNAM ( theName, MYLENGTH )
+&PPC      ENDIF
+       ISTAT = KDAOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI )
+
+#PPC      IF ( ISTAT .LT. 0 ) GO TO 9980
+&PPC      IF ( ISTAT .LT. 0 ) THEN
+&PPC        GO TO 9980
+&PPC      ELSE
+&PPC        IF ( IDEV .EQ. NCDFU ) DISKOP = 1
+&PPC      ENDIF
       ENDIF
 C
+
       I = KFLNAM ( IDEV , NEWFIL )
       IF ( I .LE. 0 ) GO TO 9900
 C
@@ -2210,9 +2214,9 @@ CDJWMAR99[
 C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       IF (LENNAM .EQ. 0) LENNAM = 1
       IF (( ISSFLM .GT. 0 ) .AND. ( JFUNC .LE. MAXFNC)) THEN
-      WRITE ( CMON,2345) (KEYFIL(I,IFIND),I=1,LNAM),
+        WRITE ( CMON,2345) (KEYFIL(I,IFIND),I=1,LNAM),
      2                          COPER(KFUNC), NEWFIL(1:LENNAM)
-      CALL XPRVDU(NCVDU, 1,0)
+        CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
      2    COPER(KFUNC), NEWFIL(:LENNAM)
@@ -2221,6 +2225,24 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
      2  COPER(KFUNC), NEWFIL(:LENNAM)
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
       ENDIF
+CRICFEB01[
+      IF ( ISSUPD .NE. 0 ) THEN
+2346    FORMAT ( '^^CO SET ', A , ' TEXT ''', A , '''' )
+        IF ( IDEV .EQ. NCPU ) THEN
+          WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
+          CALL XPRVDU ( NCVDU, 1, 0 )
+        ELSE IF ( IDEV .EQ. NCWU ) THEN
+          WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
+          CALL XPRVDU ( NCVDU, 1, 0 )
+        ELSE IF ( IDEV .EQ. NCLU ) THEN
+          WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
+          CALL XPRVDU ( NCVDU, 1, 0 )
+        ELSE IF ( IDEV .EQ. NCAWU ) THEN
+          WRITE ( CMON,2346) '_MT_MON', NEWFIL(1:LENNAM)
+          CALL XPRVDU ( NCVDU, 1, 0 )
+        ENDIF
+      END IF
+CRICFEB01]
 CDJWMAR99]
 C
 C
@@ -4445,15 +4467,19 @@ C
       IF ( J .GT. 1 ) J = J + IFILL
 C
 C--PRINT THE CARD AND ITS NUMBER
-         WRITE ( CMON,1151) NUMB(K+1),NUMB(L+1),NUMB(M+1),
-     2   NUMB(N+1),(LCMAGE(I),I=1,MIN(72,IFIN))
-1151     FORMAT(1X,4A1,1X,80A1,2A1)
-         IF (IND .GE. 0) CMON(1)(60:) = ' IGNORED/ERRORS'
+      WRITE ( CMON,1151) NUMB(K+1),NUMB(L+1),NUMB(M+1),
+     2  NUMB(N+1),(LCMAGE(I),I=1,MIN(72,IFIN))
+1151  FORMAT(1X,4A1,1X,80A1,2A1)
+      IF (IND .GE. 0) CMON(1)(60:) = ' IGNORED/ERRORS'
 cdjwdec99 slightly re-organied
       IF ( ICAT .GT. 0 ) THEN
-         CALL OUTCOL(8)
-         CALL XPRVDU(NCVDU, 1, 0)
-         CALL OUTCOL(1)
+        IF (IND .GE. 0) THEN
+          CALL OUTCOL(9)
+        ELSE
+          CALL OUTCOL(8)
+        END IF
+          CALL XPRVDU(NCVDU, 1, 0)
+          CALL OUTCOL(1)
       ENDIF
       IF ((ISCVER .GT. 0) .OR. (ICAT .GT. 0)) THEN
          WRITE(NCAWU,'(A)') CMON(1)(:)
