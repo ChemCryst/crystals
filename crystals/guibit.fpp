@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  1999/12/15 14:54:49  ckp2
+C djw  Add set autoupdate on/off, force ON in summary.
+C
 C Revision 1.21  1999/09/22 16:11:37  ckp2
 C RIC: Modified bond length tolerances to match Cameron, except that
 C bonds shorter than 0.5*(sum of cov radii) will not be drawn.
@@ -763,17 +766,17 @@ C Centre the molecule on 0,0,0 at the same time!
              TSTORE(IPLACE)   = TSTORE(IPLACE)   - GCENTX
              TSTORE(IPLACE+1) = TSTORE(IPLACE+1) - GCENTY
              TSTORE(IPLACE+2) = TSTORE(IPLACE+2) - GCENTZ
-             TMPLEN = SQRT ( (TSTORE(IPLACE  )**2)
-     1                     + (TSTORE(IPLACE+1)**2)
-     2                     + (TSTORE(IPLACE+2)**2) )
-             RLENTH = MAX (TMPLEN + 2,RLENTH)
+             TMPLEN =  ( (TSTORE(IPLACE  )**2)
+     1                 + (TSTORE(IPLACE+1)**2)
+     2                 + (TSTORE(IPLACE+2)**2) )
+             RLENTH = MAX (TMPLEN,RLENTH)
              IPLACE = IPLACE + 3
 40       CONTINUE
 C
          IF (RLENTH.LT.0.1)THEN
             GSCALE = 5000.0
          ELSE
-            GSCALE = 5000.0 / RLENTH
+            GSCALE = 5000.0 / (SQRT (RLENTH) + 2)
          ENDIF
 C
 C         WRITE(6,'(A,F15.3,A)')'^^TXScale is ',GSCALE,'^^EN'
