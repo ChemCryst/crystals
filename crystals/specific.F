@@ -694,17 +694,19 @@ C
       CHARACTER*(*) TEXT
 \XUNITS
 \XIOBUF
+\CAMBLK
 C
 C>DJWOCT96
       IF (IUNIT .EQ. NCVDU) THEN
-&&DVFGID        WRITE ( CMON,1005) TEXT
-&&DVFGID        CALL XPRVDU(NCVDU, 1, 0)
-##DVFGID        WRITE ( NCVDU,1005) TEXT
+        WRITE ( CMON,1005) TEXT
+        CALL XPRVDU(NCVDU, 1, 0)
+&DOS       IF(.NOT.LCLOSE) CALL ZPRMPT(TEXT)
+C        WRITE ( NCVDU,1005) TEXT
       ELSE
          WRITE ( IUNIT , 1005 ) TEXT
       ENDIF
-##DVFGID1005  FORMAT ( 1X, A , $)
-&&DVFGID1005  FORMAT ( 1X, A )
+C1005  FORMAT ( 1X, A , $)
+1005  FORMAT ( 1X, A )
 C
 C<DJWOCT96
 C
@@ -2788,18 +2790,29 @@ CODE FOR GETCOM
 &GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
 &GID                    END SUBROUTINE CINEXTCOMMAND
 &GID            END INTERFACE
-C
-      INTEGER ISTAT
-      CHARACTER*200 CALINE
+&GID      INTEGER ISTAT
+&GID      CHARACTER*200 CALINE
 \XSSVAL
+\UFILE
+\CAMPAR
+\CAMBLK
+\CAMGRP
       CHARACTER *(*) CLINE
-C      !Padded for safety!#
-      DATA CALINE(1:40) /'                                        '/
-      DATA CALINE(41:80)/'                                        '/
-      ISTAT = 0
-#GID            call dumio(cline)
-&GID            CALL CINEXTCOMMAND(ISTAT,CALINE)
-&GID            READ(CALINE,'(A80)') CLINE
+&GID      DATA CALINE(1:40) /'                                        '/
+&GID      DATA CALINE(41:80)/'                                        '/
+&GID      ISTAT = 0
+&GID      CALL CINEXTCOMMAND(ISTAT,CALINE)
+&GID      READ(CALINE,'(A80)') CLINE
+##GIDDOS      READ( NCUFU(1), 1) CLINE
+#GID1     FORMAT ( A )
+&DOS      IF ( LCLOSE ) THEN
+&DOS         READ( NCUFU(1), 1) CLINE
+&DOS      ELSE
+C&DOS         IMESSG = -1
+C&DOS         IYPOS = 2.0*YCENS + 5
+C&DOS         CALL ZTXT (10,IYPOS,CLINE,IMESSG)
+&DOS         CALL ZTXT (CLINE)
+&DOS      ENDIF
       RETURN
       END
 C
@@ -2856,7 +2869,6 @@ code for dumio (keep the program going while we test it)
       subroutine dumio(cline)
       CHARACTER *(*) CLINE
 \XUNITS
-      write(NCVDU,'(a)')'WE SHOULD BE READING FROM THE GUI >'
       cline = ' '
       read(5,'(a)')cline
       return
@@ -3101,6 +3113,7 @@ C---- MACHINE SPECIFIC WRITE TO THE SCREEN
 &GIDC}
 \XDRIVE
 \XSSVAL
+\CAMBLK
 &GID      CHARACTER *80 CTEMP
       CHARACTER*(*) CBUF(LINBUF)
       CHARACTER*1 CFIRST, CLAST
@@ -3134,6 +3147,7 @@ C                       N = LENBUF
 #GID                    CFRMAT = '(1X,A)'
 &VAX                    N = N - 1
 &VAX                    CFRMAT = '(''+'',A)'
+&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 #GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
 &GID                        CALL CALLCCODE ( CBUF(J)(1:N))
 &DOSC------             SWITCH ON LINE FEEDS
@@ -3143,6 +3157,7 @@ C-----------------FORTRAN CARRIAGE RETURN WITHOUT LINE FEED
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
                         CFRMAT = '(A)'
+&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 Cdjw[      enable thermometer etc in non-vga mode
 #GID                WRITE(NCDEV ,'(A,$)') char(13)
 #GID                WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
@@ -3150,38 +3165,31 @@ C#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 Cdjw99]
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
-&GIDC{
 &GID                              CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
 &GID                              CALL CALLCCODE ( CTEMP )
-&GIDC                             CTEMP = '^^CR'
-&GIDC                             CALL CALLCCODE ( CTEMP )
 &GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF) )
-&GIDC}
                   ELSEIF (CLAST .EQ. '$') THEN
 C-----------------LEAVE CURSOR AT CURRENT POSITION
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
                     CFRMAT = '(A,A1)'
+&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 &DOS                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
-&GIDC{
 &GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
-&GIDC}
 &VAX                    CFRMAT = '(A,$)'
 &VAX                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
                   ELSEIF ( CFIRST .EQ. '0' ) THEN
                         CFRMAT = '(/,A)'
+&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 #GID                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&GIDC{
 &GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
-&GIDC}
                   ELSE
                         CFRMAT = '(A)'
 #GID                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&GIDC{
+&DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 &GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
-&GIDC}
                   ENDIF
 C
             CBUF(J) = ' '
