@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.19  2003/09/15 18:13:02  rich
+c Oops. Don't meddle with the Uij's if this isn't an anisotropic atom.
+c
 c Revision 1.18  2003/09/15 17:57:35  rich
 c
 c When outputing #REGULARISE COMPARE diagrams for Cameron, convert
@@ -2502,19 +2505,15 @@ C
 
       CHARACTER*21 CAMATM
       DIMENSION JFRN(4,2)
-      DIMENSION RCPD(9), RCPDI(9), RTEMP(9), STEMP(9)
+      DIMENSION RCPD(9), RTEMP(9), STEMP(9)
 C 
 \QSTORE
       DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
 
       CALL XZEROF(RCPD,9)   
-      CALL XZEROF(RCPDI,9)
       RCPD(1) = STORE(L1P2)
       RCPD(5) = STORE(L1P2+1)
       RCPD(9) = STORE(L1P2+2)
-      RCPDI(1) = STORE(L1P1)
-      RCPDI(5) = STORE(L1P1+1)
-      RCPDI(9) = STORE(L1P1+2)
 
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
@@ -2605,7 +2604,7 @@ C Transform = inv(M) * R * N * U * trans(N) * trans(R) * trans(inv(M))
 C where N is a matrix with a*, b* and c* on the diagonal,
 C and M is a matrix with a*, b* and c* of the best plane on
 C the diagonal (ie. unit matrix).
-C N == RCPD, inv(N) == RCPDI
+C N == RCPD
 C Start from the middle to the left:
          CALL XMLTMM (RCPD,RTEMP,STEMP,3,3,3)  ! N*U
          CALL XMLTMM (CFBPOL,STEMP,RTEMP,3,3,3)! R*RESULT
