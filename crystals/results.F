@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.96  2004/12/03 15:01:24  djw
+C Fix number of decimal places for H geometry in CIF.  Still working on H-bonds!
+C
 C Revision 1.95  2004/12/02 16:55:10  djw
 C Remove esd from H atoms and report angles to one decimal place only
 C
@@ -3658,6 +3661,9 @@ c
         call xcras ( cline, n)
         write (ncfpu1, '(1x,a)') cline(1:n)
        enddo
+        write(cline,'(4A)') ctext(1),cgeom(4),ctext(2),'_DA'
+        call xcras ( cline, n)
+        write (ncfpu1, '(1x,a)') cline(1:n)
       endif
       WRITE(CLINE, 540) CGEOM(LKEY)
 540   FORMAT ('_geom', A, '_publ_flag')
@@ -3761,7 +3767,8 @@ c
 C----- VALUE AND ESD
       CALL XFILL (IB, IVEC, 20)
 cdjw021204
-      if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .EQ. 3)) then
+      if (key .eq. 15) esd = 0.
+      if ((noh .gt. 0 ).and.( esd .le. 0.).AND.(NATOUT .GE. 3)) then
         CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
       else
         CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
@@ -3774,12 +3781,23 @@ cdjw021204
 C-----H-bonds AND ESDs
       do itmp =ipub+21, ipub+23, 2
         CALL XFILL (IB, IVEC, 20)
-        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+        CALL SNUM ( store(itmp), 0.,  -3, 0, 10, IVEC )
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
         CLINE(J:J+N-1) = CBUF(1:N)
         J = J + N + 1
       enddo
+cdjw071204 - calculate D-A distance
+        dadist = sqrt(
+     1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23) 
+     2  -2.*store(ipub+21)*store(Ipub+23)*cos(term*dtr))
+        call xfill (ib, ivec, 20)
+        call snum ( dadist, 0.,  -3, 0, 10, ivec )
+        write( cbuf, '(20a1)') (ivec(i), i=1, 20)
+        call xcras ( cbuf, n)
+        cline(j:j+n-1) = cbuf(1:n)
+        j = j + n + 1
 c----- force printing
        noh = 0
       endif
