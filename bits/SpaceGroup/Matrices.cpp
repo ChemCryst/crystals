@@ -40,10 +40,11 @@
 #include <stdlib.h>
 #if defined(_WIN32)
 #include <Boost/regex.h>
+#include "PCPort.h"
 #else
 #include <regex.h>
 #endif
-#include "PCPort.h"
+
 
 static regex_t* iFirstLineRE = NULL;
 static regex_t* iMatFormRE = NULL;
