@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2001/03/08 14:33:45  richard
+C Correct punching of the last four items of LIST 5
+C
 C Revision 1.16  2001/02/26 10:28:03  richard
 C RIC: Added changelog to top of file
 C
@@ -456,8 +459,8 @@ c
 cdjwjan2001
 C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
 c
-      JNFO=KCOMP(1,JFOO+l6,ISTORE(L6DMP),MD6DMP,1)
-      JNFT=KCOMP(1,JFOT+l6,ISTORE(L6DMP),MD6DMP,1)
+      JNFO=KCOMP(1,JFOO(1)+l6,ISTORE(L6DMP),MD6DMP,1)
+      JNFT=KCOMP(1,JFOT(1)+l6,ISTORE(L6DMP),MD6DMP,1)
 c
 c      DO 1900 I=L6DMP,M6DMP
 C---- SET POINTERS TO INFORMATION ON DISK
