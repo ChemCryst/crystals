@@ -1492,6 +1492,8 @@ C
 C----- 8M - THE BIGGEST DISK ADDRESS WE CAN EXPECT (1995). WAS 1M
       PARAMETER (MADRES = 8 000 000)
 C
+cdjwapr99
+      character*4 cexten, cold
 C--
 C
 \TSSCHR
@@ -1511,6 +1513,8 @@ C
 C
 \QSTORE
 C
+cdjwapr99
+      data cold /'OLD '/
       DATA ICOMSZ / 3 /
       DATA MINSIZ / 5 /
 C
@@ -1526,9 +1530,15 @@ CMAR98
       I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF ( I .LT. 0 ) GO TO 9920
 C
+cdjwapr99
 C
+      write (cexten,'(a4)') istore(icombf)
 C -- CREATE NEW FILE FLAG -- NEWFIL = 0  >>> NO NEW FILE
-      NEWFIL = ISTORE(ICOMBF)
+      if (cexten .eq. cold) then
+            newfil = 0
+      else
+            newfil = 1
+      endif
 C -- INITIAL SIZE REQUESTED
       IRQSIZ = ISTORE(ICOMBF+1)
 C -- SET LOG FLAG
@@ -1645,6 +1655,24 @@ C -- CREATE NEW FILE IF REQUIRED
 C
       IF ( NEWFIL .LE. 0 ) GO TO 1740
 C -- CREATE NEW FILE
+cdjwapr99{
+      istat = len(cssnda)
+      call xctrim(cssnda(1:lssnda), jlen)
+      cssnda(jlen:istat) = ' '
+      do 1710 istat = jlen,1,-1
+        if (cssnda(istat:istat) .eq. '.') goto 1715
+1710  continue
+      istat = 0
+1715  continue
+      if (jlen - istat .gt. 4) then
+       write(cmon,'(a)') 'File extension limited to 4 characters'       
+       CALL XPRVDU(NCEROR, 1,0)
+       write(ncawu,'(a)') cmon(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      endif
+      cssnda(istat+1:) = cexten
+      call xctrim(cssnda,lssnda)
+cdjwapr99}
       ISTAT = KDAOPN ( NUNEW , CSSNDA(1:LSSNDA) , ISSNEW , ISSWRI )
 C -- CALCULATE THE SPACE REQUIRED FOR THE NEW FILE. THIS IS THE MAXIMUM
 C    OF 0 , ( 'IRQSIZ'- 'MINSIZ' ) , AND 'LSTLEN'
@@ -1803,6 +1831,10 @@ C--RELOAD ITS INDICES
 C--WRITE THE INDEX DATA FOR LIST 50 INTO THIS INDEX
       CALL XWCLI(LN50,LSN50,NFW50,NLW50,IOWF50,NOS50,ISTORE(NFL))
 C -- FINAL MESSAGE
+cdjwapr99 close a new DA file
+      if (newfil .ge. 1) then
+            ISTAT = KFLCLS(NUNEW)
+      endif
       CALL XOPMSG ( IOPPUR , IOPEND , 610 )
       CALL XTIME2(2)
       CALL XRSL
@@ -1819,6 +1851,11 @@ C -- NEGATIVE INITIAL SIZE
       GO TO 9900
 9920  CONTINUE
 C -- INPUT ERRORS
+cdjwapr99
+      write(cmon,'(a)') 'File extension limited to 4 characters'       
+      CALL XPRVDU(NCEROR, 1,0)
+      write(ncawu,'(a)') cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
       CALL XOPMSG ( IOPPUR , IOPCMI , 0 )
       GO TO 9900
 C
@@ -1974,9 +2011,7 @@ C
 C
 2010  CONTINUE
 C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2015 )
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2015 )
       WRITE ( NCAWU , 2015 )
       WRITE ( CMON, 2015)
       CALL XPRVDU(NCEROR, 2,0)
