@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/03/01 11:33:42  Administrator
+C Correct and improve presntation of weighting scheme in .cif file
+C
 C Revision 1.31  2002/02/19 16:45:17  ckp2
 C Fix _FO graph output when no data in given bin.
 C
@@ -2736,8 +2739,8 @@ c--PLCLS IS EITHER 0 (OFF), 1 (ON) OR 2 (KEY). PLOT GRAPH IF 1 OR 2.
      1  '^^PL XAXIS TITLE ''HKL Class''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
-     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL ZOOM 0.01 100 SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2805,8 +2808,8 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2884,8 +2887,8 @@ C--- OUTPUT TO SCREEN
      1 '^^PL  ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 9,0)
@@ -3033,8 +3036,8 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
      1'^^PL  <Fo-Fc>**2 LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 9,0)
