@@ -5,7 +5,6 @@
 % VARIABLE LOGICAL   ANSWER
  * Peaks corresponding to existing atoms may be eliminated,
    or used as the basis for Fourier refinement. 
-% END IF
 %% check we have a peaks list
 %  IF EXISTS 10 .NE. 1 THEN
  * You do not have a peaks list. You must compute a Fourier map.
