@@ -1,4 +1,5 @@
 CRYSTALS CODE FOR VANDER.FOR                                                    
+C $Log: not supported by cvs2svn $
 CODE FOR ZVAND
       SUBROUTINE ZVAND(IATNO)
 C THIS IS THE DRAWING ROUTINE FOR THE VAN DER WAALS ATOMS.
