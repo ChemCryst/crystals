@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2004/05/18 14:16:32  rich
+C Create empty L40 structure if one doesn't exist.
+C
 C Revision 1.46  2004/03/10 13:10:46  rich
 C 1) Do lexical scanning properly - UNTIL wasn't working.
 C 2) Report error if vector has zero length.
@@ -321,7 +324,7 @@ C-C-C
 C-C-C-DEFINITION OF VARIABLES FOR CHANGES BY LS
       REAL SUMUIJ,SUMOCC,SUMUISO,SIDI,SUMDI,MAXDI
       INTEGER NUMDISO,NFLSPEC
-      character *20 ctemp
+c      character *20 ctemp
       character *21 CATOM1
       DIMENSION XCF(3), VA(3), ROF(3,3), RCA(3,3), XWORKS(4)
 C - Matrices to hold real and reciprocal unit cell lengths on diagonal:
@@ -1122,8 +1125,8 @@ CDJW JAN2000 JVO IS THE EXTENDED PARAMETER NUMBER
       JV = JVO-1
 C--CHECK THE TYPE
 cdjwjun02
-      write(ctemp,'(a,i9)')' jvo = ', jvo
-&&&GIDGILWXS      call zmore(ctemp,0)
+c      write(ctemp,'(a,i9)')' jvo = ', jvo
+c&&&GIDGILWXS      call zmore(ctemp,0)
 c      IF (JV) 3250,3250,3300
       if ((jv .eq. 0) .or.(jv.eq.17)) then
 C--ALPHA-NUMERIC VALUE EXPECTED
