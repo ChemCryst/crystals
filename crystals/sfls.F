@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2002/06/07 16:06:06  richard
+C New MODE parameter for SFLSB, set to -1, when called from the CIF code, it
+C recalculates R-factors at either the L28 cutoff sigma value, or if there is no
+C cutoff in L28, the at I>4u(I). These R-factors are store in L30 (CALC-R, etc).
+C
+C Also indented and simplified some of the code a bit.
+C
 C Revision 1.22  2002/03/18 10:01:22  richard
 C Minor bug in CALC THRESHOLD fixed.
 C
@@ -797,6 +804,12 @@ C----- REFINEMENT TYPE
       ENDIF
 C----- 'CALC' ONLY
       IF(JB+JH .EQ. -2) THEN
+
+          STORE(L30RF +0 ) = R
+          STORE(L30GE +10 ) = R
+          STORE(L30RF +1 ) = RW
+          STORE(L30GE +11 ) = RW
+
           STORE(L30CF)=RALL(1)
           STORE(L30CF+1)=RALL(2)
 
