@@ -125,10 +125,14 @@ typedef bool Boolean;
 	#else
 		#define LOGSTAT(a)
 	#endif
+
+      #define TEXTOUT(a) ( (CcController::theController)->Tokenize((char*)CcString(a).ToCString()) )
 #else
 	#define LOGERR(a)
 	#define LOGWARN(a)
 	#define LOGSTAT(a)
+      #define TEXTOUT(a)
 #endif
+
 
 #endif
