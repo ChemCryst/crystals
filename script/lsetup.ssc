@@ -3,6 +3,7 @@
 %  VARIABLE INTEGER LSETUP LEXTINCT
 %% make sure we have a valid LIST 12 of some sort
 %% and find the last non- hydrogen atom
+%  COPY '#SCRIPT CHECK5'
 %  COPY '#SCRIPT CHECK12'
 %  CASE LSETUP
 %   BLOCK           %Refine positions%
