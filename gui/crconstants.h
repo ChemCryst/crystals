@@ -3,9 +3,11 @@
 //   Filename:  CrConstants.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.7.1998 10:41 Uhr
-//   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2000/09/28 17:17:17  ckp2
+// New constant for DISABLING atoms
+//
 // Revision 1.11  2000/09/20 12:53:03  ckp2
 // Moved kS and kTEmpty defs into here, as they are also used by TEXTOUT
 //
@@ -44,110 +46,129 @@
 // RIC: Added kT/kSSetSelection for CrListBox to use.
 //
 
-#ifndef		__CrConstants_H__
-#define		__CrConstants_H__
+#ifndef     __CrConstants_H__
+#define     __CrConstants_H__
 
 // General purpose
-#define kSState		"STATE"
-#define kSOn		"ON"
-#define kSOff		"OFF"
-#define kSEndDefineMenu	"ENDDEFINEMENU"
-#define kSSetCommitText	"COMMIT"
-#define kSSetCancelText	"CANCEL"
-#define kSSelectAtoms	"SELECT"
+#define kSState     "STATE"
+#define kSOn        "ON"
+#define kSOff       "OFF"
+#define kSEndDefineMenu "ENDDEFINEMENU"
+#define kSSetCommitText "COMMIT"
+#define kSSetCancelText "CANCEL"
+#define kSSelectAtoms   "SELECT"
 #define kSDisableAtoms  "DISABLEATOM"
-#define kSInvert	"INVERT"
-#define kSInform	"INFORM"
-#define kSIgnore	"IGNORE"
-#define	kSDisabled	"DISABLED"
-#define kSChars		"CHARS"
-#define kSSetCommandText	"COMMAND"
-#define kSAddToList	"ADDTOLIST"
-#define kSSetSelection	"SELECTION"
-#define kSNumberOfColumns	"NCOLS"
-#define kSNumberOfRows	"NROWS"
-#define kSVisibleLines	"VISLINES"
-#define kSAlign		"ALIGN"
-#define	kSTextSelector	"TEXT"
-#define kSNull		"NULL"
-#define	kSYes		"YES"
-#define	kSNo		"NO"
-#define kSAll		"ALL"
-#define	kSRow		"ROW"
-#define	kSColumn	"COL"
+#define kSInvert    "INVERT"
+#define kSInform    "INFORM"
+#define kSIgnore    "IGNORE"
+#define kSDisabled  "DISABLED"
+#define kSChars     "CHARS"
+#define kSSetCommandText    "COMMAND"
+#define kSAddToList "ADDTOLIST"
+#define kSSetSelection  "SELECTION"
+#define kSNumberOfColumns   "NCOLS"
+#define kSNumberOfRows  "NROWS"
+#define kSVisibleLines  "VISLINES"
+#define kSAlign     "ALIGN"
+#define kSTextSelector  "TEXT"
+#define kSNull      "NULL"
+#define kSYes       "YES"
+#define kSNo        "NO"
+#define kSAll       "ALL"
+#define kSRow       "ROW"
+#define kSColumn    "COL"
 #define kSCreateGrid            "GRID"
 #define kSEmpty                "EMPTY"
+#define kSMenuDisableCondition  "DISABLEIF"
+#define kSMenuEnableCondition   "ENABLEIF"
+#define kSMenuSplit     "SPLIT"
+#define kSItem          "ITEM"
+#define kSEndGrid             "}"
+#define kSOpenGrid            "{"
 
 // Query types:
-#define kSQExists	"EXISTS"
-#define kSQListtext	"LISTTEXT"
-#define kSQText		"TEXT"
-#define kSQListrow	"LISTROW"
-#define kSQListitem	"LISTITEM"
-#define kSQNselected	"NSELECTED"
-#define kSQSelected	"SELECTED"
-#define kSQState	"STATE"
+#define kSQExists   "EXISTS"
+#define kSQListtext "LISTTEXT"
+#define kSQText     "TEXT"
+#define kSQListrow  "LISTROW"
+#define kSQListitem "LISTITEM"
+#define kSQNselected    "NSELECTED"
+#define kSQSelected "SELECTED"
+#define kSQState    "STATE"
+#define kSHorizontal  "HORIZONTAL"
+#define kSVertical    "VERTICAL"
+#define kSBoth    "BOTH"
+
 
 
 enum
 {
  kTState = 200,
- kTOn,		
- kTOff,		
+ kTOn,
+ kTOff,
  kTEndDefineMenu,
  kTSetCommitText,
  kTSetCancelText,
- kTSelectAtoms,	
- kTDisableAtoms, 
- kTInvert,	
- kTInform,	
- kTIgnore,	
- kTDisabled,	
- kTChars,	
+ kTSelectAtoms,
+ kTDisableAtoms,
+ kTInvert,
+ kTInform,
+ kTIgnore,
+ kTDisabled,
+ kTChars,
  kTSetCommandText,
- kTAddToList,	
- kTSetSelection,	
+ kTAddToList,
+ kTSetSelection,
  kTNumberOfColumns,
- kTNumberOfRows,	
- kTVisibleLines,	
- kTAlign,	
+ kTNumberOfRows,
+ kTVisibleLines,
+ kTAlign,
  kTTextSelector,
- kTNull,		
- kTYes,		
- kTNo,		
- kTAll,		
- kTRow,		
- kTColumn,	
- kTQExists,	
- kTQListtext,	
- kTQText,	
- kTQListrow,	
- kTQListitem,	
- kTQNselected,	
- kTQSelected,	
- kTQState, 
+ kTNull,
+ kTYes,
+ kTNo,
+ kTAll,
+ kTRow,
+ kTColumn,
+ kTQExists,
+ kTQListtext,
+ kTQText,
+ kTQListrow,
+ kTQListitem,
+ kTQNselected,
+ kTQSelected,
+ kTQState,
  kTCreateGrid,
- kTEmpty
+ kTEmpty,
+ kTMenuDisableCondition,
+ kTMenuEnableCondition,
+ kTMenuSplit,
+ kTItem,
+ kTEndGrid,
+ kTOpenGrid,
+ kTHorizontal,
+ kTVertical,
+ kTBoth
 };
 
 
 
 
 enum {
-	kLogicalClass	=	1,
-	kInstructionClass,
-	kAttributeClass,
-	kPositionClass,
-	kChartClass,
-	kModelClass,
-	kStatusClass,
-	kGraphClass,
-	kPositionalClass,
-	kQueryClass
+    kLogicalClass   =   1,
+    kInstructionClass,
+    kAttributeClass,
+    kPositionClass,
+    kChartClass,
+    kModelClass,
+    kStatusClass,
+    kGraphClass,
+    kPositionalClass,
+    kQueryClass
 };
 
 
-enum 
+enum
 {
  kTUnknown = 0,
  kTNoMoreToken
