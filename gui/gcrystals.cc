@@ -29,8 +29,9 @@ BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
 	//{{AFX_MSG_MAP(CCrystalsApp)
 	//}}AFX_MSG_MAP
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+//      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
+//      ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+//      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -174,6 +175,24 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 		return true;
 }
 
+/*
+ *
+ *void CCrystalsApp::OnStuffToProcess()
+ *{
+ *      char theLine[255];
+ *      while (theCrApp->mController->GetInterfaceCommand(theLine))
+ *      {
+ *            int theLength;
+ *            if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+ *            {
+ *                  theLine[theLength+1]='\0';
+ *                  theCrApp->mController->Tokenize(theLine);
+ *            }
+ *      }
+ *
+ *}
+ *
+ */
 
 int CCrystalsApp::ExitInstance() 
 {
