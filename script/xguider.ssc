@@ -108,7 +108,6 @@
 %    ON ERROR TERMINATE
 %%
 ^^WI WINDOW XGUIDER 'Supervisor' POSITION CENTRED 'MODEL01'
-^^WI COMMIT='GR_BOK' CANCEL='GR_BXX'
 ^^WI COMMAND='#SCRIPT XGUIDERC' DISABLEIF='IN'
 ^^WI GRID HO NROWS=5 NCOLS=3
 ^^WI {
@@ -131,8 +130,8 @@
 ^^WI     NULL
 ^^WI   @ 1,5 GRID BTNS NROWS=9 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 BUTTON GR_BOK '&Ok' DEFAULT COMMIT
-^^WI     @ 4,1 BUTTON GR_BXX '&Hide' CANCEL
+^^WI     @ 1,1 BUTTON GR_BOK '&Ok'
+^^WI     @ 4,1 BUTTON GR_BXX '&Hide'
 ^^WI     @ 6,1 BUTTON GR_BHELP '&Help'
 ^^WI     @ 9,1 BUTTON GR_BRESET '&Known facts'
 ^^WI   }
@@ -289,6 +288,9 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.2  2001/03/08 22:40:09  richard
+%%  Syntax errors.
+%%
 %%  Revision 1.1  2001/03/08 14:00:23  richard
 %%  New GUIDE scripts. The main script, xguide, decides on the overall stage
 %%  and calls one of xguidei - for data import, xguides - for solving or

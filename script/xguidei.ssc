@@ -43,7 +43,6 @@
 %    ON ERROR TERMINATE
 %%
 ^^WI WINDOW XGUIDEI 'Supervisor' POSITION CENTRED 'MODEL01'
-^^WI COMMIT='GI_BOK' CANCEL='GI_BXX'
 ^^WI COMMAND='#SCRIPT XGUIDEIC' DISABLEIF='IN'
 ^^WI GRID HO NROWS=5 NCOLS=3
 ^^WI {
@@ -67,8 +66,8 @@
 ^^WI     NULL
 ^^WI   @ 1,5 GRID BTNS NROWS=6 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 BUTTON GI_BOK '&Ok' DEFAULT COMMIT
-^^WI     @ 4,1 BUTTON GI_BXX '&Hide' CANCEL
+^^WI     @ 1,1 BUTTON GI_BOK '&Ok'
+^^WI     @ 4,1 BUTTON GI_BXX '&Hide' 
 ^^WI     @ 6,1 BUTTON GI_BHELP '&Help'
 ^^WI   }
 ^^WI  }
@@ -94,3 +93,11 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.1  2001/03/08 14:00:22  richard
+%%  New GUIDE scripts. The main script, xguide, decides on the overall stage
+%%  and calls one of xguidei - for data import, xguides - for solving or
+%%  xguider - for refinement. These display a window recommending a course of
+%%  action and exit - thus allowing the user access to the full range of CRYSTALS
+%%  commands even while being guided. The window knows to call one of xguideic, xguidesc,
+%%  or xguiderc respectively when the user does something to it e.g. pushes a button.
+%%
