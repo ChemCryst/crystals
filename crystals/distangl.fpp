@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2004/08/17 15:56:47  djw
+C Append H bonds to cif
+C
 C Revision 1.64  2004/06/01 08:01:57  rich
 C Remove all writes to NCAWU
 C
@@ -7198,8 +7201,7 @@ C -- Checks whether list 41 needs updating.
 
 C-- If there is no L41, we need to update.
       IF ( KEXIST(41) .LE. 0 ) THEN
-         WRITE(CMON,'(a)')'Bonds: Update required - There is no list 41'
-         CALL XPRVDU(NCVDU,1,0)
+         WRITE(NCWU,'(a)')'Bonds: Update required - There is no list 41'
          RETURN
       ENDIF
 
@@ -7215,26 +7217,20 @@ C-- If there is no L41, we need to update.
 C-- If the number of atoms in L5 has changed, we need to update.
 
       IF ( N5 .NE. ISTORE(L41D) ) THEN
-         WRITE(CMON,'(a)')'Bonds: Update required - List5 length change'
-         CALL XPRVDU(NCVDU,1,0)
+         WRITE(NCWU,'(a)')'Bonds: Update required - List5 length change'
          RETURN
       ENDIF
 
 C-- If the serial of L40 has changed, we need to update.
 
       IF ( IL40SR .NE. ISTORE(L41D+3) ) THEN
-         WRITE(CMON,'(a)')'Bonds: Update required - List 40 has changed'
-         CALL XPRVDU(NCVDU,1,0)
+         WRITE(NCWU,'(a)')'Bonds: Update required - List 40 has changed'
          RETURN
       ENDIF
 
 C-- If the original serial of List 5 has changed, we need to update.
 
       IF ( IL05SR .NE. ISTORE(L41D+2) ) THEN
-C This is so common, it's boring to print.
-c         WRITE(CMON,'(a)')
-c     1  'Bonds: Update required - List 5 base serial changed'
-c         CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
 
@@ -7245,9 +7241,8 @@ C -- Calculate a 16-bit CRC for List 5:
 C -- See if the CRC has changed.
 
       IF ( L5CRC .NE. ISTORE(L41D+1) ) THEN
-         WRITE(CMON,'(a)')
+         WRITE(NCWU,'(a)')
      + 'Bonds: Update required - List 5 checksum changed'
-         CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
 
@@ -7264,10 +7259,9 @@ C -- to look for a 'significant' change in co-ordinates.
 
 C Significant Shift ( F is dist squared ):
          IF ( F .GT. STORE(L40T+4)**2 ) THEN
-           WRITE(CMON,'(a/a,I4,2F15.8)')
+           WRITE(NCWU,'(a/a,I4,2F15.8)')
      + 'Bonds: Update required - Significant change in L5',
      + 'Atom#, tol^2, F^2 = ',I+1,STORE(L40T+4)**2,F
-           CALL XPRVDU(NCVDU,2,0)
          RETURN
       ENDIF
          
