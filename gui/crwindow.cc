@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2001/06/17 14:51:29  richard
+//   New stayopen property for windows.
+//
 //   Revision 1.24  2001/03/27 15:15:00  richard
 //   Added a timer to the main window that is activated as the main window is
 //   created.
@@ -61,6 +64,7 @@ CrWindow::CrWindow( )
     m_relativeWinPtr = nil;
     mSafeClose=0;
     m_Keep = false;
+    m_Shown = false;
     m_AddedToDisableAbleWindowList = false;
     wEnableFlags = 0;
     wDisableFlags = 0;
@@ -268,6 +272,20 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
     {
         case kTCreateGrid:
         {
+            if( mGridPtr != nil )
+            {
+               LOGERR("Attempt to recreate main window GRID. Not allowed.");
+               tokenList->GetToken();  //remove GRID token
+               tokenList->GetToken();  //remove GRID name
+               tokenList->GetToken();  //remove GRID nrows keyword
+               tokenList->GetToken();  //remove GRID nrows value
+               tokenList->GetToken();  //remove GRID ncols keyword
+               tokenList->GetToken();  //remove GRID ncols value
+               retVal.m_ok = true; //Set to true, or we will be destroyed.
+               break;
+            }
+
+
             LOGSTAT("Creating Grid...");
 
             mGridPtr = new CrGrid( this );
@@ -290,6 +308,19 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         case kTShowWindow:
         {
             tokenList->GetToken();
+
+// Never re-show the main window - it looks messy, and can easily happen
+// in error if a script bombs while setting up another window as the
+// SHOW token will end up here.
+
+            if ( m_Shown && ( mName == "_MAIN" ))
+            {
+               LOGERR("Attempt to re-show main window. Not allowed.");
+               retVal.m_ok = true;
+               break;
+            }
+
+            m_Shown = true;
 
             CcRect gridRect = this->CalcLayout(true); //First call CalcLayout() on all children.
 
@@ -487,17 +518,15 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
             break;
         }
 
-            case kTTextSelector:
-            {
+        case kTTextSelector:
+        {
             tokenList->GetToken();
-                  LOGSTAT("Changing title of window.");
+            LOGSTAT("Changing title of window.");
             retVal.m_ok = true;
-                  mText = tokenList->GetToken();
-                  SetText( mText );
-                  break;
-            }
-
-
+            mText = tokenList->GetToken();
+            SetText( mText );
+            break;
+        }
         default:
         {
             LOGWARN("CrWindow:ParseInput:default Window cannot recognize token:" + tokenList->PeekToken());

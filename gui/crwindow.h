@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2001/10/10 12:44:50  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.14  2001/06/17 14:51:29  richard
 //   New stayopen property for windows.
 //
@@ -88,6 +91,7 @@ class   CrWindow : public CrGUIElement
     int mSafeClose;
     int m_relativePosition;
     Boolean m_Keep;
+    Boolean m_Shown;
     Boolean mIsSizeable;
     Boolean mIsModal;
     Boolean mStayOpen;

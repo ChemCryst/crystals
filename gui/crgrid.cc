@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.20  2002/10/02 13:43:17  rich
 //   New ModList class added.
 //
@@ -296,6 +299,15 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
         int ypos = atoi( theString.ToCString() );
         theString = tokenList->GetToken();              // the next must be the col number
         int xpos = atoi( theString.ToCString() );
+
+        if ( m_GridComplete )  //There shouldn't be any stuff being added now.
+        {
+           LOGERR("Attempt to add to a completed grid. Ignoring.");
+           tokenList->GetToken();  //Remove the next instruction
+           tokenList->GetToken();  //and at least two
+           tokenList->GetToken();  //of its arguments.
+           break;
+        }
         switch ( tokenList->GetDescriptor( kInstructionClass ) )
         {
           case kTCreateGrid:                                      // Create a sub grid.
@@ -817,6 +829,12 @@ bool CrGrid::SetPointer( int xpos, int ypos, CrGUIElement * ptr )
     LOGERR("Position of element out of range of grid size");
     return false;
   }
+  if ( *( m_TheGrid + ((xpos-1)+(ypos-1)*m_Columns) ) != nil )
+  {
+    LOGERR("Position of element clashes with existing element");
+    return false;
+  }
+
   *(m_TheGrid + ( (xpos-1) + (ypos-1) * m_Columns)) = ptr;
   return true;
 }
