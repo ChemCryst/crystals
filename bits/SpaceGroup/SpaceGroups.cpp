@@ -45,7 +45,7 @@ std::ostream& SpaceGroup::output(std::ostream& pStream)
 
 std::ostream& SpaceGroup::crystalsOutput(std::ostream& pStream)
 {
-    const long tSize = strlen(iSymbols);
+    const long tSize = (long)strlen(iSymbols);
     char* tSymbol = new char[tSize*2];	//The end result shouldn't be any begger than double the original
     long tUpto = 0;
     char tPrevChar = ' ';
@@ -162,7 +162,7 @@ long SpaceGroups::count()
 
 std::ostream& SpaceGroups::output(std::ostream& pStream)
 {
-    long tNumber = this->size();
+    long tNumber = (long)this->size();
     
     if (iBrackets)
         pStream << iBrackets[0];
@@ -179,7 +179,7 @@ std::ostream& SpaceGroups::output(std::ostream& pStream)
 
 std::ofstream& SpaceGroups::output(std::ofstream& pStream)
 {
-    long tNumber = this->size();
+    long tNumber = (long)this->size();
     
     for (int i = 0; i < tNumber; i++)
     {
