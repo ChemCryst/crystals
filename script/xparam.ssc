@@ -46,9 +46,9 @@
 ^^WI     @ 7,11  EDITBOX XPEU12 ' ' REAL    INFORM=YES
 ^^WI     @ 9,1   STATIC XPTD 'Spare'
 ^^WI     @ 9,3   EDITBOX XPED ' '   REAL    INFORM=YES
-^^WI     @ 9,5   STATIC XPTG 'Group'
+^^WI     @ 9,5   STATIC XPTG 'Assembly'
 ^^WI     @ 9,7   EDITBOX XPEG ' '   INTEGER    INFORM=YES
-^^WI     @ 9,9   STATIC XPTP 'Part'
+^^WI     @ 9,9   STATIC XPTP 'Group'
 ^^WI     @ 9,11  EDITBOX XPEP ' '   INTEGER    INFORM=YES
 ^^WI     @ 10,7  STATIC XEPEG '(0-999)'
 ^^WI     @ 10,11  STATIC XEPEG '(0-999)'
@@ -98,8 +98,11 @@
 %    END LOOP
 %  END BLOCK
 %
-%  EVALUATE IPEG = IPRT IDECMASK 111000
+%  EVALUATE IPEG = ( IPRT IDECMASK 111000 ) / 1000
 %  EVALUATE IPEP = IPRT IDECMASK 000111
+%  IF IPRT .LT. 0 THEN
+%    EVALUATE IPEP = - IPEP
+%  END IF
 %
 %  IF ( NINDEX .EQ. 0 ) THEN
 %   TRANSFER '{E Atom not found. ' // CATM TO DISPLAY
@@ -368,16 +371,20 @@
 %          GET SILENT NOSTORE INTEGER ' ' ' '
 %          EVALUATE IPEP = VALUE
 %          IF IPEP .GT. 999 THEN
-{E Part number should not exceed 999: setting to 999
+{E Group number should not exceed 999: setting to 999
 %             EVALUATE IPEP = 999
 %          END IF
 %          IF IPEG .GT. 999 THEN
-{E Group number should not exceed 999: setting to 999
+{E Assembly number should not exceed 999: setting to 999
 %             EVALUATE IPEG = 999
 %          END IF
-%          EVALUATE IPEG = IPEG * 1000 + IPEP
+%          IF ( IPEP .GE. 0 ) THEN
+%            EVALUATE IPEG = IPEG * 1000 + IPEP
+%          ELSE
+%            EVALUATE IPEG = - IPEG * 1000 + IPEP
+%          END IF
 %          COPY 'TRANSFER TO OFFSET=14 FROM IPEG'
- * Updated group / part number.
+ * Updated assembly / group number.
 %        END IF
 %        COPY 'WRITE OVERWRITE=OVERWRITE'
 %        COPY 'END'
