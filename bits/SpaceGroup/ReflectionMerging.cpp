@@ -12,9 +12,10 @@
 #include "Collections.h"
 #include "UnitCell.h"
 #include "RunParameters.h"
+#include "PCPort.h"
 #include <math.h>
 #include <iostream>
-#include <iterator.h>
+#include <iterator>
 
 #define kGuessThreshHold 30
 #define kRFactorAcceptValue 0.1
@@ -148,7 +149,7 @@ public:
         return *iMatIndices;
     }
     
-    std::ostream& output(std::ostream& pStream)
+    std::ostream& output(std::ostream& pStream) const
     {
         pStream.width(13);
         pStream << iLaueGroup;
@@ -184,9 +185,8 @@ public:
     }
     
     void buildMergedData(const HKLData& pHKLs, const RunParameters& pRunPara)
-    {
-        
-        const static short kMin[] = {0x8000, 0x8000, 0x8000}; 
+    {        
+        const static short kMin[] = {SHRT_MIN, SHRT_MIN, SHRT_MIN}; 
         size_t tReflNum = pHKLs.numberOfReflections();
         static Matrix<short> tCurHKL(1, 3);
         static Matrix<short> tTempHKL(1, 3);
@@ -197,9 +197,9 @@ public:
         
         if (pRunPara.iUnitCell.getA() != 0)
         {
-            tHLimit = lrintf(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getA()));
-            tKLimit = lrintf(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getB()));
-            tLLimit = lrintf(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getC()));
+            tHLimit = (short)rint(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getA()));
+            tKLimit = (short)rint(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getB()));
+            tLLimit = (short)rint(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getC()));
         }
         if (iMergedData != NULL)
         {
@@ -424,7 +424,7 @@ void LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const 
 
 LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
 {
-    unsigned int tBest = 0;
+    size_t tBest = 0;
     float tLowestRF;
     LaueGroups::mergeForAll(pHKLs, true, pRunParam);
     
@@ -479,7 +479,7 @@ void LaueGroups::releaseMemoryFor(const SystemRef pSystemRef, const unsigned sho
 std::ostream& LaueGroups::output(std::ostream& pStream)
 {
     pStream.width(15);
-    cout << "  Laue Group   |    R-Factor   \n";
+	std::cout << "  Laue Group   |    R-Factor   \n";
     for (size_t i = 0; i < iGroups->size(); i++)
     {
         if ((*iGroups)[i]->getRFactor() >= 0)
@@ -499,7 +499,7 @@ float sumdiff(Array<float>& pValues, float pMean)
     
     for (size_t i = 0; i < pValues.size(); i++)
     {
-        tTotal += fabs(pMean - pValues[i]);
+        tTotal += fabsf(pMean - pValues[i]);
     }
     return tTotal;
 }
@@ -562,7 +562,9 @@ float MergedData::calculateRFactor()
         static Array<float> tValues(23); //I don't think that this should need to be any greater then 23 elements long.
         tCurHKL = (*(iSortedReflections->begin()))->tHKL;
         tValues.add((*iSortedReflections->begin())->i);
-        set<Reflection*>::iterator tIter = iSortedReflections->begin(); 
+		multiset<Reflection*, lsreflection>::iterator tIter = iSortedReflections->begin();
+
+			//set<Reflection*, lsreflection, std::allocator<Reflection *>, false>::iterator tIter = iSortedReflections->begin(); 
         float tSumSum = 0;
         float tMeanDiffSum = 0;
         float tSum;
@@ -588,17 +590,17 @@ float MergedData::calculateRFactor()
         return iRFactor;
 }
 
-std::ostream& MergedData::output(std::ostream& pStream)
+std::ostream& MergedData::output(std::ostream& pStream) const
 {
     return pStream << "R-Factor: " << iRFactor;
 }
 
-std::ostream& operator<<(std::ostream& pStream, MergedData& tData)
+std::ostream& operator<<(std::ostream& pStream, const MergedData& tData)
 {
     return tData.output(pStream);
 }
 
-std::ostream& operator<<(std::ostream& pStream,  LaueGroups& tData)
+std::ostream& operator<<(std::ostream& pStream, LaueGroups& tData)
 {
     return tData.output(pStream);
 }
