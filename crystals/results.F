@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2001/09/26 11:36:50  Administrator
+C No atom site type in summary file. CIF only.
+C
 C Revision 1.25  2001/09/11 11:19:16  ckp2
 C In the Windows version, stop the CHAR(12) from printing in the PUNCH file.
 C
@@ -2903,6 +2906,8 @@ C
 \QLST30
 \QLST31
 \QSTORE
+      V(A,B,C,AL,BE,GA)=A*B*C * SQRT(1-COS(AL)**2-COS(BE)**2-COS(GA)**2
+     1         + 2 * COS(AL) * COS(BE) * COS(GA))
 C 
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
@@ -3144,6 +3149,14 @@ C----- LIST 1 AND 31
 C 
       IF (JLOAD(1).GE.1) THEN
 C --  CONVERT ANGLES TO DEGREES.
+
+         CIFA = STORE(L1P1)
+         CIFB = STORE(L1P1+1)
+         CIFC = STORE(L1P1+2)
+         CIFAL = STORE(L1P1+3)
+         CIFBE = STORE(L1P1+4)
+         CIFGA = STORE(L1P1+5)
+
          STORE(L1P1+3)=RTD*STORE(L1P1+3)
          STORE(L1P1+4)=RTD*STORE(L1P1+4)
          STORE(L1P1+5)=RTD*STORE(L1P1+5)
@@ -3182,9 +3195,22 @@ C----- VALUE AND ESD
             WRITE (CPAGE(3+I,2)(:),'(A,16X,A)') CANG(I)(1:5),CBUF(1:N)
             M1P1=M1P1+1
 700      CONTINUE
-         WRITE (NCFPU1,750) STORE(L1P1+6)
-750      FORMAT ('_cell_volume ',T35,F8.1)
-         WRITE (CPAGE(7,1)(:),'(A,10X,F8.1)') 'Volume',STORE(L1P1+6)
+
+         VOL = V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA)
+         CU=SQRT((VOL-V(CIFA+ESD(1),CIFB,CIFC,CIFAL,CIFBE,CIFGA))**2
+     1        + (VOL-V(CIFA,CIFB+ESD(2),CIFC,CIFAL,CIFBE,CIFGA))**2
+     2        + (VOL-V(CIFA,CIFB,CIFC+ESD(3),CIFAL,CIFBE,CIFGA))**2
+     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
+     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
+     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
+
+         CALL XFILL (IB,IVEC,16)
+         CALL SNUM (VOL,CU,-2,0,7,IVEC)
+         WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+         CALL XCRAS (CBUF,N)
+         WRITE (NCFPU1,750) CBUF(1:N)
+750      FORMAT ('_cell_volume ',T35,A)
+         WRITE (CPAGE(7,1)(:),'(A,10X,A)') 'Volume',CBUF(1:N)
       END IF
 C 
 C----- LIST 2
