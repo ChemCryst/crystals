@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2002/01/24 15:44:57  Administrator
+C OPEN/CLOSE file for publish.fcf in script
+C
 C Revision 1.26  2001/12/18 17:55:09  Administrator
 C put SCALEi cards into CHIME output
 C
@@ -859,8 +862,9 @@ CODE FOR XPCH6C
       SUBROUTINE XPCH6C
 C----- CIF FORMAT PUNCH
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
-      CHARACTER*8 CBUF
+      CHARACTER*80 CBUF
       DIMENSION KDEV(4)
+      DIMENSION IVEC(20), ESD(6)
 \ISTORE
 \STORE
 \UFILE
@@ -875,9 +879,20 @@ CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
 \XLST01
 \XLST05
 \XLST06
+\XLST28
+\XLST31
 \XLST13
 \XOPVAL
 \QSTORE
+\ICOM31
+\QLST31
+      CHARACTER*12 CTEMP
+      CHARACTER*1 CALW(3)
+      CHARACTER CCELL(3)*1,CANG(3)*5
+      DATA CCELL/'a','b','c'/
+      DATA CANG/'alpha','beta','gamma'/
+      DATA CALW /'o','<','x'/
+\IDIM31
       CALL XRSL
       CALL XCSAE
 CRICAUG00 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
@@ -889,32 +904,107 @@ CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       IN = 0
       CALL XFAL06(IN)
       IF (IERFLG .LT. 0) GOTO 9900
-      SCALE = STORE(L5O)
+
+      IF ( KEXIST(31) .GE. 1 ) THEN
+        CALL XLDLST (31,ICOM31,IDIM31,0)
+      ELSE
+        L31 = -1
+      END IF
+
+      SCALE6 = STORE(L5O)
       WRITE(NCFPU1, '(''# data_CRYSTALS_cif '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
       WRITE(NCFPU1,'(''# _audit_creation_date  '',6X, 3(A2,A))')
      1 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
-      WRITE(NCFPU1, '(''# _audit_creation_method      CRYSTALS '')')
-      WRITE(NCFPU1, '(''# NOTE Fc on scale of Fo, '', F12.5)')SCALE
+      WRITE(NCFPU1, '(''# _audit_creation_method      CRYSTALS '',/)')
+
+C --  CONVERT ANGLES TO DEGREES.
+      STORE(L1P1+3)=RTD*STORE(L1P1+3)
+      STORE(L1P1+4)=RTD*STORE(L1P1+4)
+      STORE(L1P1+5)=RTD*STORE(L1P1+5)
+      CALL XZEROF (ESD,6)
+      IF (L31.GE.1) THEN
+C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
+        SCALE=STORE(L31K)
+        M31=L31
+        ESD(1)=SQRT(STORE(M31)*SCALE)
+        ESD(2)=SQRT(STORE(M31+6)*SCALE)
+        ESD(3)=SQRT(STORE(M31+11)*SCALE)
+        ESD(4)=SQRT(STORE(M31+15)*SCALE)*RTD
+        ESD(5)=SQRT(STORE(M31+18)*SCALE)*RTD
+        ESD(6)=SQRT(STORE(M31+20)*SCALE)*RTD
+      END IF
+
+      M1P1 = L1P1
+      DO I=1,3
+          CALL XFILL (IB,IVEC,16)
+          CALL SNUM (STORE(M1P1),ESD(I),-3,0,7,IVEC)
+          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+          CALL XCRAS (CBUF,N)
+          WRITE (NCFPU1,600) CCELL(I)(1:1),CBUF(1:N)
+600       FORMAT ('_cell_length_',A,T35,A)
+          CALL XFILL (IB,IVEC,16)
+          CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,7,IVEC)
+          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+          CALL XCRAS (CBUF,N)
+          J=INDEX(CBUF(1:N),'.')
+          IF (J.EQ.0) J=MAX(1,N)
+          TEMP=STORE(M1P1+3)-INT(STORE(M1P1+3))
+          IF (TEMP.LE.ZERO) N=MAX(1,J-1)
+          WRITE (NCFPU1,650) CANG(I)(1:5),CBUF(1:N)
+650       FORMAT ('_cell_angle_',A,T35,A)
+          M1P1=M1P1+1
+      END DO
+
+
+      WRITE(NCFPU1,'(/''# NOTE Fc on scale of Fo, '', F12.5)')SCALE6
+      WRITE(NCFPU1,'(''# Status flags: '')')
+      WRITE(NCFPU1,'(''#    o - used in refinement '')')
+      WRITE(NCFPU1,'(''#    < - excluded by I/sigmaI cutoff '')')
+      WRITE(NCFPU1,'(''#    x - excluded for another reason  '')')
+
       WRITE(NCFPU1,1000)
-1000  FORMAT ( 'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
+1000  FORMAT ( /,'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
      1 '_refln_index_l'/,'_refln_F_meas'/,'_refln_F_calc'/,
-     2 '_refln_F_sigma' )
+     2 '_refln_F_sigma'/,'_refln_observed_status')
+
+
+
+C---- GET SIGMA THRESHOLD FROM L28
+      S6SIG = -200.0
+      IF ( N28MN .GT. 0 ) THEN
+        INDNAM = L28CN
+        DO I = L28MN , M28MN , MD28MN
+            WRITE ( CTEMP , '(3A4)') (ISTORE(J), J=INDNAM,INDNAM+2)
+            IF (INDEX(CTEMP,'RATIO') .GT. 0) THEN
+              S6SIG = STORE(I+1)
+            ENDIF
+            INDNAM = INDNAM + MD28CN
+        END DO
+      ENDIF
+ 
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 1850
+
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
       FO = STORE(M6+3)
-      FC = STORE(M6+5) * SCALE
-      IF (STORE(M6+12) .LT. ZERO) THEN
-      S = 0.0
+      FC = STORE(M6+5) * SCALE6
+      S =  MAX(0.0,STORE(M6+12))
+      CALL XSQRF(FOS, FO, FABS, SIGMA, STORE(M6+12))
+      SIGRAT = FOS / MAX(0.0001,SIGMA)
+      IF (SIGRAT .LT. S6SIG) THEN
+        IALW = 2                    !Rejected by sigma cutoff.
+      ELSE IF (KALLOW(IN).LT.0) THEN
+        IALW = 3                    !Rejected by something else.
       ELSE
-      S =  STORE(M6+12)
-      ENDIF
-      WRITE(NCFPU1, '(3I4, 3F12.2)') I, J, K, FO, FC, S
+        IALW = 1                    !Used.
+      END IF
+
+      WRITE(NCFPU1,'(3I4,3F12.2,1X,A1)') I, J, K, FO, FC, S, CALW(IALW)
       GOTO 1840
 1850  CONTINUE
       GOTO 9999
