@@ -10,6 +10,10 @@
 //   Modified:  30.3.1998 11:25 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.4  1999/04/26 12:21:03  dosuser
+//  RIC: Added a kTSetSelection section in ParseInput to allow the current
+//       selection to be changed from SCRIPTS
+//
 
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
@@ -119,7 +123,8 @@ Boolean	CrListBox::ParseInput( CcTokenList * tokenList )
                   {
                         tokenList->GetToken(); //Remove that token!
                         int select = atoi ( tokenList->GetToken().ToCString() );
-                        ((CxListBox*)mWidgetPtr)->SetSelection(select); 
+                        ((CxListBox*)mWidgetPtr)->SetSelection(select);
+                        break;
                   }
 			default:
 			{
