@@ -41,6 +41,8 @@ private:
     float iA, iB, iC, iAlpha, iBeta, iGamma;
     float iSEA, iSEB, iSEC, iSEAlpha, iSEBeta, iSEGamma;    
 public:
+    UnitCell(float a, float b, float c, float alpha, float beta, float gamma);
+    UnitCell(char* pPath);
     void setA(float pA);
     void setB(float pB);
     void setC(float pC);
@@ -66,6 +68,8 @@ public:
     float getSEBeta();
     float getSEGamma();
     char* guessCrystalSystem();
+    void readInUnitCell(char* tPath);
 };
 
 char* getCrystalSystem();
+char* crystalSystemConst(int pIndex);
