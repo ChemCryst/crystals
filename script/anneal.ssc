@@ -1,0 +1,332 @@
+%SCRIPT ANNEAL
+%%%
+%%% ==============
+%%%
+%%% INITIALISATION
+%%%
+%%% ==============
+%%%
+%%
+%%   Define some variables
+%%
+% VARIABLE REAL R R1 LOWR TEMP CHANGE SHIFT PROB COOL SIGC MAXSHIFT
+% VARIABLE LOGICAL ACCEPT F
+% VARIABLE INTEGER LOWC MODP NOCHANGE STEPS STOP
+% VARIABLE CHARACTER LAST
+%%
+% EVALUATE MODP = 1
+% EVALUATE F = FILEDELETE ( 'stopanneal' )
+
+{I
+{I            Create a file named 'stopanneal' in the
+{I            working directory to stop this script.
+{I 
+
+%%
+%%   Get some parameters from the user.
+%%
+
+{I This script will move a whole molecule or part of a molecule around
+{I the unit cell in random movements trying to find the lowest R-factor.
+{I It uses a simulated annealing technique, so moves that lower the R-factor
+{I are accepted, moves which raise it are accepted based on a probability
+{I calculated from the amount of the increase and the current 'temperature'.
+
+{I To move part of a molecule you will need to organise your LIST 5 so that
+{I the atoms of the molecule you want to move are at the beginning, and
+{I you know the type and serial of the last atom of that molecule.
+{I To break out of this script now, type 'direct'.
+
+{I Higher temp allows more up-hill shifts to get out of local minima.
+{I Prob of an up-hill shift is exp( -K / T ), where K is the change
+{I in R factor and T is the temperature. You can see that these need to
+{I be same order of magnitude to begin with to allow lots of uphill shifts
+{I to 'melt' the structure.
+
+%  GET NOSTORE REAL 'Starting temp?' '100.0'
+%  EVALUATE TEMP = VALUE
+
+{I Each cycle the temperature is multiplied by the cooling factor to
+{I give the new temperature. Cool slowly for best results.
+
+%  GET NOSTORE REAL 'Cooling factor (per cycle)' '0.98'
+%  EVALUATE COOL = VALUE
+
+{I You can stop the annealing if there is no significant change in R for
+{I a while. 
+
+%  GET NOSTORE INTEGER 'Stop if no significant change for (cycles)' '50'
+%  EVALUATE STOP = VALUE
+%  GET NOSTORE REAL 'Significant change is (R%)' '0.5'
+%  EVALUATE SIGC = VALUE
+%  GET NOSTORE INTEGER 'Max no. of cycles' '4000'
+%  EVALUATE STEPS = VALUE
+
+{I The max shift should be 1.0 for moving a whole molecule around the cell,
+{I however, if you are only moving part of a structure , which you know to
+{I be in roughly the right position, then a smaller value may provide
+{I quicker results. BUT, if you make the value too small, you risk
+{I trapping the structure in a local minima, something which this
+{I technique aims to avoid!
+
+%  GET NOSTORE INTEGER 'Maximum parameter shift (crystal fraction)' '1.0'
+%  EVALUATE MAXSHIFT = VALUE
+
+{I If you want to move just part of the structure, make sure that part
+{I is at the beginning of your atom list - (#SCRIPT EDLIST5).
+{I Either give the last atom of that structure now, or use the default
+{I 'LAST' option to move the whole structure.
+{I To break out of this script now, type 'direct'.
+
+%  GET NOSTORE TEXT 'Last atom in list 5 to move?' 'LAST'
+%  EVALUATE LAST = CVALUE
+%%
+%% Ensure that refinement diretives are legal so that R-factor
+%% calculation can proceed.
+%%
+%  COPY '#script valid12'
+%%
+%% Calculate initial R-factor
+%%
+%  COPY '#script quickr'
+%  EVALUATE R1 = R
+%  EVALUATE LOWR = R
+%  EVALUATE LOWC = 0
+%  EVALUATE NOCHANGE = 0
+%%
+%% Store model corresponding to this R in three files
+%% original, previous and lowest.
+%%
+%  COPY '#release punch sa_orig.dat'
+%  COPY '#punch 5'
+%  COPY 'end'
+%  COPY '#release punch sa_prev.dat'
+%  COPY '#punch 5'
+%  COPY 'end'
+%  COPY '#release punch sa_lowest.dat'
+%  COPY '#punch 5'
+%  COPY 'end'
+%  COPY '#release punch bfile.pch'
+%  COPY '#release scpqueue sa_stat.dat'
+%  QUEUE REWIND
+%%
+%% Prevent GUI from updating while the loop runs (for speed).
+%%
+%  COPY '#script updtoff'
+%  COPY '#set term unknown'
+%  COPY '#set open off'
+%%
+%%%
+%%% ========================
+%%%
+%%% SIMULATED ANNEALING LOOP
+%%%
+%%% ========================
+%%%
+%  LOOP STEPS TIMES
+%%
+%%
+%% Perturb the model by a random amounts in x,y or z.
+%% Uses MODP to select which paramter is varied.
+%% MODP chooses x,y or z, and is then updated to point to the next.
+%%
+%% Get a coordinate of the first atom, (x,y or z) depending on MODP.
+%%
+%    COPY '#generaledit 5'
+%    COPY 'locate recordtype=101'
+%    CASE MODP
+%      COPY 'transfer from offset=4 to SHIFT'
+%      COPY 'transfer from offset=5 to SHIFT'
+%      COPY 'transfer from offset=6 to SHIFT'
+%    END CASE
+%    COPY 'end'
+%%
+%% Make the trial change:
+%%
+%    COPY '#edit'
+%    COPY 'monitor off'
+%    CLEAR
+%%
+%% Use coordinate of first atom in list to decide on direction of shift.
+%%
+%    IF ( SHIFT .GT. 0.0 ) THEN
+%      INSERT 'subtract '
+%    ELSE
+%      INSERT 'add '
+%    END IF
+%%
+%% Insert a random shift:
+%%
+%    STORE FORMAT '(F7.5)' LENGTH 7 REAL ( MAXSHIFT * RANDOM ( 0.0 ) )
+%%
+%% Insert the paramter to shift:
+%%
+%    CASE MODP
+%      BLOCK
+%        INSERT 'first (x) until '
+%        EVALUATE MODP = 2
+%      END BLOCK
+%      BLOCK
+%        INSERT 'first (y) until '
+%        EVALUATE MODP = 3
+%      END BLOCK
+%      BLOCK
+%        INSERT 'first (z) until '
+%        EVALUATE MODP = 1
+%      END BLOCK
+%%
+%% Insert the name of the last atom to move:
+%%
+%      TRANSFER LAST TO BUFFER
+%    END CASE
+%    SEND
+%    COPY 'END'
+%%
+%% Calculate new r-factor:
+%%
+%    COPY '#SCRIPT quickr'
+%    EVALUATE CHANGE =  R - R1
+%%
+%% Accept or reject new model?
+%%
+%    IF ( CHANGE .LT. 0.0 ) THEN
+%%
+%% Decrease in R: accept regardless.
+%%
+%      CLEAR
+%      INSERT '{I Decrease in R; new model accepted. New R = '
+%      STORE FORMAT '(F6.3)' LENGTH 6 REAL R
+%      OUTPUT
+%%
+%% Check for lowest ever R and store model if appropriate.
+%%
+%      IF ( R .LT. LOWR ) THEN
+%        EVALUATE LOWR = R
+%        EVALUATE LOWC = LOOPCOUNTER
+%        COPY '#release punch sa_lowest.dat'
+%        COPY '#punch 5'
+%        COPY 'end'
+%        COPY '#release punch bfile.pch'
+%      END IF
+%      EVALUATE ACCEPT = TRUE
+%%
+%    ELSE
+%%
+%%    Prob of acceptance is EXP(-CHANGE/TEMP)
+%%
+%      EVALUATE PROB = 2.718 ** ( - CHANGE / TEMP )
+%%
+%      CLEAR
+%      INSERT '{S Increase in R of '
+%      STORE FORMAT '(F8.3)' LENGTH 8 REAL CHANGE
+%      INSERT ' P(accept) = '
+%      STORE FORMAT '(F7.4)' LENGTH 7 REAL PROB
+%      OUTPUT
+%%
+%%    If a random no. is less than prob, then accept.
+%%
+%      IF ( RANDOM ( 0.0 ) .LT. PROB ) THEN
+%        CLEAR
+%        INSERT '{I New model accepted. New R ='
+%        STORE FORMAT '(F6.3)' LENGTH 6 REAL R
+%        OUTPUT
+%        EVALUATE ACCEPT = TRUE
+%      ELSE
+%        CLEAR
+%        INSERT '{I New model rejected. New R was ='
+%        STORE FORMAT '(F6.3)' LENGTH 6 REAL R
+%        OUTPUT
+%        EVALUATE ACCEPT = FALSE
+%      END IF
+%    END IF
+%%
+%% Change has been accepted or rejected. Carry out appropriate action:
+%%
+%    IF ( ACCEPT ) THEN
+%%
+%% Store the new co-ordinates and R-factor:
+%%
+%      COPY '#release punch sa_prev.dat'
+%      COPY '#punch 5'
+%      COPY 'end'
+%      COPY '#release punch bfile.pch'
+%      EVALUATE R1 = R
+%%
+%% Reset the NOCHANGE counter to zero if appropriate:
+%%
+%      IF ( ( CHANGE .GT. SIGC ) .OR.  ( - CHANGE .GT. SIGC ) ) THEN
+%        EVALUATE NOCHANGE = 0
+%      END IF
+%%
+%    ELSE  
+%%
+%% Revert to previous model. Set R to previous R, and increase NOCHANGE count.
+%%
+%      COPY '#use sa_prev.dat'
+%      EVALUATE R = R1
+%      EVALUATE NOCHANGE = NOCHANGE + 1
+%    END IF
+%%
+%% Report cycle info to screen (OUTPUT) and script queue (QUEUE SEND)
+%%
+{R  Temp  Cycle  No change R-factor  Best ever
+%    CLEAR
+%    INSERT '{R'
+%    STORE FORMAT '(F6.3)' LENGTH 8 REAL TEMP
+%    STORE FORMAT '(I4)' LENGTH 6 INTEGER LOOPCOUNTER
+%    STORE FORMAT '(I4)' LENGTH 11 INTEGER NOCHANGE
+%    STORE FORMAT '(F6.2)' LENGTH 8 REAL R
+%    STORE FORMAT '(F6.2)' LENGTH 8 REAL LOWR
+%    QUEUE SEND
+%    OUTPUT
+%%
+%%    Decrease temperature
+%%
+%    EVALUATE TEMP = TEMP * COOL
+%    IF ( TEMP .LT. 0.0 ) THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%%
+%%    Check for no change for ages.
+%%
+%    IF ( NOCHANGE .GE. STOP ) THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%%
+%% Check for stop.
+%%
+%    IF ( FILEEXISTS ( 'stopanneal' ) ) THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%%
+%  END LOOP
+%%%
+%%% ===============
+%%%
+%%% FINAL ANALYSIS.
+%%%
+%%% ===============
+%%%
+%%
+%%    Turn GUI updating back on.
+%%
+%  COPY '#script updton'
+%  COPY '#set term win'
+%  COPY '#set open on'
+%  COPY '#release scpqueue bfile.spq'
+%%
+%%    Present result.
+%%
+% CLEAR
+%  INSERT '{I Finished. The lowest R-factor was'
+%  STORE FORMAT '(F8.4)' LENGTH 8 REAL LOWR
+%  INSERT 'in cycle'
+%  STORE FORMAT '(I7)' LENGTH 7 INTEGER LOWC
+%  OUTPUT
+%  VERIFY Yes No
+%  GET NOSTORE FINAL ABBREVIATED 'Use this structure?' 'Yes'
+%  IF ( VALUE .EQ. 1 ) THEN
+%    COPY '#USE sa_lowest.dat'
+%  END IF
+%%
+%END SCRIPT
