@@ -162,8 +162,9 @@ C
 C --------- Functions called ---------
       integer param_list_pair_all
       integer param_list_add_pair
+      integer param_list_count
 
-      param_list_make = n12+md12o ! set the param list to the number of parameters there are
+      param_list_make = n12 ! set the param list to the number of parameters there are
 
       call XZEROF(atom_links(1), N5+md12o) ! zero all the links.
       call XZEROF(results, results_size) ! zero all the results.
@@ -172,6 +173,7 @@ C --------- Functions called ---------
 C
 C--------------------set up the atom links------------------------
 c      
+
       I = 1
       M12 = L12
       do while (M12 .ge. 0)
@@ -231,7 +233,6 @@ C     Loop though the parameters for this part of atom_two
      3                       size_of_parameter+1, 
      4                       (istore(curr_param2)-der_stack_add)/
      5                       size_of_parameter+1, n12+md12o)
-                        
                      end do
                   end if
                   atom_two = istore(atom_two) ! Move to next part or atom 2
@@ -240,7 +241,6 @@ C     Loop though the parameters for this part of atom_two
             atom_one = istore(atom_one) ! Move to next part of atom 1
          end do
       end do
-C      call param_list_print(results, param_list_make)
       return 
       end
 
@@ -326,14 +326,6 @@ C   and time probably will never happen
             end if
          end if
          
-
-c         call xmove(results(results(cur_loc)+cur_loc+1), 
-c     1        results(results(cur_loc)+cur_loc+2), 
-c     2        results_length-(results(cur_loc)+cur_loc))
-c         results(cur_loc) = results(cur_loc) + 1
-c         results(results(cur_loc)+cur_loc) = param_two
-c         param_list_add_pair = max(results_length + 1, results(cur_loc)+
-c     1        cur_loc)
       else
          param_list_add_pair = results_length   
       end if
@@ -364,7 +356,7 @@ C --------- Functions called ---------
       results(cur_pos) = -1
       if (old_size .gt. 0) 
      1     call xmove(results(cur_pos+old_size+1), results(cur_pos+1), 
-     2     results_size-cur_pos-old_size)
+     2     results_length-cur_pos-old_size)
       param_list_pair_all = results_length - old_size
       return 
       end
@@ -395,4 +387,30 @@ C
       return 
       end
       
-
+code for param_list_count
+      integer function  param_list_count(param_list, param_list_len)
+C
+C     Count the number of parameters which are a in the list param_list
+C
+C     Returns the number of list for parameters which are in the list param_list
+C
+      implicit none
+            
+      integer param_list_len
+      integer param_list(param_list_len)
+      integer param_count
+      integer curr_pos
+      
+      curr_pos = 1
+      param_count = 0
+      do while (curr_pos .le. param_list_len)
+            param_count = param_count + 1
+            if (param_list(curr_pos) .gt. 0) then
+                  curr_pos = curr_pos + param_list(curr_pos) + 1
+            else
+                  curr_pos = curr_pos + 1
+            end if
+      end do
+      param_list_count =param_count
+      return
+      end
