@@ -1,0 +1,8 @@
+%SCRIPT SWRITE5
+% VARIABLE INTEGER SETADP
+% EVALUATE SETADP = - 1
+% COPY '#SCRIPT XWRITE5'
+%END SCRIPT
+%%
+%% Short, but sweet. Setting SETADP negative causes XWRITE5
+%% to do a setup AND then proceed automatically to refinement.

@@ -165,7 +165,7 @@
 ^^WI SHOW
 ^^CR
 %%
-%  IF ( SETADP .EQ. 0 ) THEN
+%  IF ( SETADP .LE. 0 ) THEN
 {S * Direct call of XWRITE5 - setting default refinement
 {S   mode to current assessment by ASSESS5.
 %    EVALUATE SETADP = ADP
