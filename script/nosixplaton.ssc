@@ -1,0 +1,81 @@
+%SCRIPT NOSIXPLATON
+% VARIABLE CHARACTER CFILE
+%%
+%%
+%% Check for reflections. Make dummy list 6 if none found.
+%%
+%%
+% IF ( EXISTS 6 .NE. 1 ) THEN
+{I Creating a dummy list 6 (reflections) to keep the CIF routines happy.
+%  COPY '#LIST 6'
+%  COPY 'READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE, CHECK=NO'
+%  COPY 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE SQRTW CORRECT'
+%  COPY 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5)'
+%  COPY 'END'
+%  COPY '-512'
+% END IF
+% IF ( EXISTS 23 .NE. 1 ) THEN
+{I Creating dummy list 23 (refinement control) to keep the CIF routines happy.
+%  COPY '#LIST 23'
+%  COPY 'END'
+% END IF
+% IF ( EXISTS 31 .NE. 1 ) THEN
+{I Creating dummy list 31 (cell esds) to keep the CIF PLATON happy.
+%  COPY '#LIST 31'
+%  COPY 'END'
+% END IF
+%%
+%%
+%% CIF listing of all data
+%%
+%%
+{I Creating a CIF
+% COPY "#STORE CSYS CIF 'platon.cif'"
+% COPY '#APPEND PUNCH '
+% COPY '#CIF '
+% COPY 'END'
+% COPY '#PARAMETERS'
+% COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'
+% COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
+% COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
+% COPY 'END'
+% COPY '#DIST'
+% COPY 'SELECT RANGE=L41'
+% COPY 'OUTPUT MON=DIST PUNCH=CIF'
+% COPY 'END'
+{I Parameters saved in {&publish.cif{&
+%%
+%%
+%% Find the PLATON executable, or ask where it is.
+%%
+%%
+^^CO GETKEY PLATONDIR
+%%
+%%
+% GET SILENT NOSTORE FINAL TEXT '1' '1'
+% EVALUATE CFILE = CVALUE
+% IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
+
+  Where is the Platon executable?
+%%
+^^CO SYSOPENFILE 'Platon*.exe' 'Platon executable'
+%    CLEAR
+%    INSERT '^^CO SETKEY PLATONDIR "'
+%    GET SILENT TEXT 'Platon location:'
+%    IF CVALUE .NE. 'CANCEL' THEN
+%      EVALUATE CFILE = CVALUE
+%      INSERT '"'
+%      OUTPUT
+%    ELSE
+%      FINISH
+%    END IF
+% END IF
+%%
+%%
+%% Start PLATON.
+%%
+%%
+% TRANSFER '#SPAWN + "' // CFILE // '" platon.cif' TO DISPLAY
+% TRANSFER '#SPAWN + "' // CFILE // '" platon.cif' TO CRYSTALS
+%%
+%END SCRIPT
