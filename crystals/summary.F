@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/04/11 15:27:28  CKP2
+C Fix xsymop so that .CIF entries tally
+C
 C Revision 1.7  2001/03/08 14:47:22  richard
 C Changed style of call to XGDBUP.
 C
@@ -1408,14 +1411,25 @@ C
 C
         IF ( N28RC .GT. 0 ) THEN
           DO 1600 I = L28RC , M28RC , MD28RC
-            IF (ISSPRT .EQ. 0) THEN
-            WRITE ( NCWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 1)
-            ENDIF
-            WRITE ( NCAWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 1)
-            WRITE ( CMON , 1505 ) ( STORE(J) , J = I , I + MD28RC - 1)
-            CALL XPRVDU(NCVDU, 1,0)
-1505        FORMAT ( 2X , F6.2 , ' h + ' , F6.2 , ' k + ' ,
-     2 F6.2 , ' l must lie in range ' , F6.2 , ' to ' , F6.2 )
+            IF ( STORE(I+MD28RC-1) .EQ. 0 ) THEN
+             IF (ISSPRT .EQ. 0) THEN
+              WRITE ( NCWU , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
+             ENDIF
+             WRITE ( NCAWU , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
+             WRITE ( CMON , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
+             CALL XPRVDU(NCVDU, 1,0)
+            ELSE
+             IF (ISSPRT .EQ. 0) THEN
+              WRITE ( NCWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
+             ENDIF
+             WRITE ( NCAWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
+             WRITE ( CMON , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
+             CALL XPRVDU(NCVDU, 1,0)
+            END IF
+1504        FORMAT ( 2X , F6.2 , '*h + ' , F6.2 , '*k + ' ,
+     2 F6.2 , '*l must not lie in range ' , F6.2 , ' to ' , F6.2 )
+1505        FORMAT ( 2X , F6.2 , '*h + ' , F6.2 , '*k + ' ,
+     2 F6.2 , '*l must lie in range     ' , F6.2 , ' to ' , F6.2 )
 1600      CONTINUE
         ENDIF
 C
