@@ -65,31 +65,36 @@ BOOL CCrystalsApp::InitInstance()
 	Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
 
-	// Change the registry key under which our settings are stored.
-	// You should modify this string to be something appropriate
-	// such as the name of your company or organization.
-//      SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-//      LoadStdProfileSettings(0);  // Load standard INI file options (including MRU)
 
-//First free the string allocated by MFC at CWinApp startup.
-//The string is allocated before InitInstance is called.
-      free((void*)m_pszProfileName);
-//Change the name of the .INI file.
-//The CWinApp destructor will free the memory.
 
-      char buffer[255];
-      GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
-      CcString inipath = buffer;
-      inipath += "\\WinCrys.ini";
+// The user can override the ini file settings by setting
+// CRYSDIR to the crystals directory, and USECRYSDIR to anything.
 
-      m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
+      if ( getenv("USECRYSDIR") == nil )
+      {
+         char buffer[255];
+         GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
+         CcString inipath = buffer;
+         inipath += "\\WinCrys.ini";
 
-      CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Location", NULL );
+// First free the string
+// allocated by MFC at
+// CWinApp startup.
+// The string is allocated
+// before InitInstance is
+// called.
+         free((void*)m_pszProfileName);
 
-      _putenv( ("CRYSDIR="+location+"\\").ToCString() );
-      
+// Change the name of the
+// .INI file. The CWinApp destructor
+// will free the memory.
 
+         m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
+         CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Location", NULL );
+         _putenv( ("CRYSDIR="+location+"\\").ToCString() );
+
+      }
 
 	// Parse command line for standard shell commands, DDE, file open
       CCommandLineInfo cmdInfo;
@@ -121,21 +126,7 @@ BOOL CCrystalsApp::InitInstance()
             }
        }
 
-	// Dispatch commands specified on the command line
-//	if (!ProcessShellCommand(cmdInfo))
-//          return false;
-
-
       theCrApp = new CrApp(directory,dscfile);
-
-
-	
-	
-//    CFrameWnd theMainWindow = new CFrameWnd;
-//	theMainWindow->Create(NULL,"CrystalsII",WS_OVERLAPPEDWINDOW);
-//	m_pMainWnd = (CWnd*)theMainWindow;
-//	m_pMainWnd->ShowWindow(SW_SHOW);
-//	m_pMainWnd->UpdateWindow();
 
       return true;
 }
