@@ -1,31 +1,20 @@
 %SCRIPT NEWGUI
 %% SET VERIFY TRUE
-
- For help getting started with CRYSTALS see the primer:
-
--GIL                {&"crysdir:manual\primer-1.html"{&
--GILor         {&http://www.xtl.ox.ac.uk/primer-1.html{&
-+GIL                {&"crysdir:manual/primer-1.html"{&
-+GILor         {&http://www.xtl.ox.ac.uk/primer-1.html{&
-
+ For help getting started with CRYSTALS see the primer.
+-GIL    click here:          {&"crysdir:manual\primer-1.html"{&
++GIL    click here:          {&"crysdir:manual/primer-1.html"{&
+    or here:      {&http://www.xtl.ox.ac.uk/primer-1.html{&
  Additional help may be available in the list of FAQs:
+-GIL                            {&"crysdir:manual\faq-2.html"{&
++GIL                            {&"crysdir:manual/faq-2.html"{&
+    or here:         {&http://www.xtl.ox.ac.uk/faq-2.html{&
 
--GIL                 {&"crysdir:manual\faq-2.html"{&
--GILor           {&http://www.xtl.ox.ac.uk/faq-2.html{&
-+GIL                 {&"crysdir:manual/faq-2.html"{&
-+GILor           {&http://www.xtl.ox.ac.uk/faq-2.html{&
-
- If you are encountering problems using or installing crystals please
- don't give up yet. Email {&mailto:richard.cooper@chem.ox.ac.uk{& or
- {&mailto:david.watkin@chem.ox.ac.uk{& and quickly explain the problem.
- There may be a simple remedy. Feedback also helps us to improve the
- ease of use of the software and maintain the FAQ list.
-
-{R       Bugs may be reported through the CRYSTALS web site at
-                {&http://www.xtl.ox.ac.uk/bug.html{&
-
+ Problems using or installing crystals? Click to email either:
+{&mailto:richard.cooper@chem.ox.ac.uk{& {&mailto:david.watkin@chem.ox.ac.uk{&
+ and quickly explain the problem. Feedback helps us to improve the
+ software and maintain the FAQ list.
+ Report bugs by clicking here: {&http://www.xtl.ox.ac.uk/bug.html{&
 ________________________________________________________________________
-
 % IF ( EXISTS  5 .NE. 1 ) THEN
 %% Make the model disappear in case we are restarting in a new directory.
 ^^GR MODEL L5
