@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.102  2004/11/09 09:45:02  rich
+// Removed some old stuff. Don't use displaylists on the Mac version.
+//
 // Revision 1.101  2004/11/08 16:48:36  stefan
 // 1. Replaces some #ifdef (__WXGTK__) with #if defined(__WXGTK__) || defined(__WXMAC) to make the code compile correctly on the mac version.
 //
@@ -2151,15 +2154,23 @@ void CcController::ScriptsExited()
   //have the STAYOPEN property. (This means that the script
   //has terminated incorrectly without closing the window).
 
-  list<CrWindow*>::iterator mw;
-  for ( mw = mWindowList.begin(); mw != mWindowList.end();  )
+  //Iterate in reverse, so that children of earlier windows are
+  //deleted first.
+
+  list<CrWindow*>::reverse_iterator mw;
+  list<CrWindow*>::iterator temp;
+
+  for ( mw = mWindowList.rbegin(); mw != mWindowList.rend();  )
   {
      if ( (*mw)->mIsModal && !(*mw)->mStayOpen )
      {
         if ( (*mw) == mCurrentWindow ) mCurrentWindow = nil;
         LOGSTAT("CcController: ScriptsExited, destroying: " + (*mw)->mName );
         delete *mw;
-        mw = mWindowList.erase(mw);
+        mw++;
+        temp = mw.base();
+        mWindowList.erase(temp);
+        mw = mWindowList.rbegin(); //start again
      }
      else
        mw++;
@@ -3163,86 +3174,58 @@ extern "C" {
     memcpy(tempstr,theLine,262);
     *(tempstr+262) = '\0';
     string line = string(tempstr);
-//Remove trailing spaces:
-    string::size_type strim = line.find_last_not_of(" ");
+
+
+    string::size_type strim = line.find_last_not_of(" "); //Remove trailing spaces
     if ( strim != string::npos )
         line = line.substr(0,strim+1);
     delete [] tempstr;
     tempstr = NULL;
+
 //    (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
 
     bool bWait = false;
     bool bRest = false;
     string::size_type sFirst,eFirst,sRest,eRest;
 
-// Find first non-space.
+    sFirst = line.find_first_not_of(" ");     // Find first non-space.
+    if ( sFirst == string::npos ) sFirst = 0;
 
-    for ( sFirst = 0; sFirst < line.length(); sFirst++ )
-    {
-      if ( line[sFirst] != ' ' ) break;
-    }
-
-// Check for + symbol (signifies 'wait')
-
-    if ( line[sFirst] == '+' )
+    if ( line[sFirst] == '+' )                // Check for + symbol (signifies 'wait')
     {
        bWait = true;
-
 // Find next non space ( in case + is seperated from first word ).
-
-       for ( sFirst++ ; sFirst < line.length(); sFirst++ )
-       {
-          if ( line [sFirst] != ' ' ) break;
-       }
+       sFirst = line.find_first_not_of(" ",sFirst+1);
+       if ( sFirst == string::npos ) sFirst = 0;
     }
-
 // sFirst now points to the beginning of the command.
 
-    if ( line[sFirst] == '"' )  // Find next quote.
+    if ( line[sFirst] == '"' ) 
     {
        sFirst++; //Move to after 1st quote.
-       for ( eFirst = sFirst; eFirst < line.length(); eFirst++ )
-       {
-                if ( line [eFirst] == '"' ) break;
-       }
+       eFirst = line.find_first_of('"',sFirst);   // Find next quote.
+       if ( eFirst == string::npos ) eFirst = line.length();
     }
     else                        // Find next space ( after the first word )
     {
-       for ( eFirst = sFirst; eFirst < line.length(); eFirst++ )
-       {
-        if ( line [eFirst] == ' ' ) break;
-       }
+       eFirst = line.find_first_of(' ',sFirst);
+       if ( eFirst == string::npos ) eFirst = line.length();
     }
-
-// Find next non space 
-    for ( sRest = eFirst+1; sRest < line.length(); sRest++ )
-    {
-       if ( line [sRest] != ' ' ) break;
-    }
-
-// Find last non space
-    for ( eRest = line.length()-1; eRest > eFirst; eRest-- )
-    {
-       if ( line [eRest] != ' ' ) break;
-    }
-
 
     string firstTok = line.substr(sFirst,eFirst-sFirst);
     string restLine = "";
 
-    if ( sRest <= eRest )
+// Find next non space and last non space 
+    sRest = line.find_first_not_of(" ",eFirst+1);
+    eRest = line.find_last_not_of(" ");
+
+
+    if ( sRest != string::npos )
     {
       bRest = true;
-      eRest = CRMAX ( eRest, sRest );          // ensure positive length
-      sRest = CRMIN ( sRest+1, line.length()); // convert to valid 1-based index.
-      eRest = CRMIN ( eRest+1, line.length()); // convert to valid 1-based index.
-      restLine = line.substr(sRest-1,1+eRest-sRest);
-    }
-    else
-    {
-      eRest = CRMAX ( eRest, sRest );          // ensure positive length
-      sRest = CRMIN ( sRest+1, line.length()); // convert to valid 1-based index.
-      eRest = CRMIN ( eRest+1, line.length()); // convert to valid 1-based index.
+      eRest = eRest - sRest + 1;
+      eRest = CRMAX ( 1, eRest );  // ensure positive length
+      restLine = line.substr(sRest, eRest);
     }
 
 #ifdef __BOTHWIN__
@@ -3332,12 +3315,7 @@ extern "C" {
              args[ij+2] = args[ij];
           }
 
-          OSVERSIONINFO o;
-          o.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-          GetVersionEx(&o);
-  
-          if (o.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) args[0] = "command.com";
-          else  args[0] = "cmd.exe";
+          args[0] = IsWinNT() ? "cmd.exe" : "command.com" ;
 
           args[1] = "/c";
           result = _spawnvp(_P_WAIT, args[0], args);
@@ -3431,12 +3409,8 @@ extern "C" {
              args[ij+2] = args[ij];
           }
 
-          OSVERSIONINFO o;
-          o.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-          GetVersionEx(&o);
-  
-          if (o.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) args[0] = "command.com";
-          else  args[0] = "cmd.exe";
+          args[0] = IsWinNT() ? "cmd.exe" : "command.com" ;
+
 
           args[1] = "/c";
           result = _spawnvp(_P_WAIT, args[0], args);
@@ -3562,6 +3536,18 @@ extern "C" {
        CcController::theController->endthread ( theExitcode );
   }
 
+
+#ifdef __CR_WIN__
+  bool IsWinNT()
+  {
+    OSVERSIONINFO o;
+    o.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&o);
+    return ( o.dwPlatformId == VER_PLATFORM_WIN32_NT );
+  }
+#endif
+
+
 } // end of C functions
 
 
@@ -3595,3 +3581,5 @@ bool CcController::GetCrystalsCommand( char * line )
   if (mThisThreadisDead) return false;
   return (true);
 }
+
+

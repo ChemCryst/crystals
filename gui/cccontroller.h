@@ -188,6 +188,9 @@ extern "C" {
   void  FORCALL(datain)         ( int id, int *data, int offset, int nwords );
   void  FORCALL(callccode)      (  char *theLine                     );
   void  FORCALL(guexec)         (  char *theLine                     );
+#ifdef __CR_WIN__
+  bool  IsWinNT();
+#endif
 
   void crystals( void );
 
@@ -262,6 +265,9 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.42  2004/10/06 13:57:26  rich
+//   Fixes for WXS version.
+//
 //   Revision 1.41  2004/09/17 14:03:54  rich
 //   Better support for accessing text in Multiline edit control from scripts.
 //
