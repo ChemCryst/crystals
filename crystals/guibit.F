@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2003/01/14 10:14:26  rich
+C g77 spots undeclared logical and doesn't support dynamic character arrays.
+C
 C Revision 1.50  2002/10/21 15:13:50  rich
 C Fixed some compiler errors introduced by recent DVF version.
 C
@@ -1228,12 +1231,12 @@ c             CALL XPRVDU(NCVDU, 1,0)
             IF ( L01SR.NE.ISERnn(1) )THEN
               ISERnn(1)  = L01SR
 
-211           FORMAT ('^^WI SET _MT_CELL_A TEXT ',F8.4,/,
-     1                '^^WI SET _MT_CELL_B TEXT ',F8.4,/,
-     1                '^^WI SET _MT_CELL_C TEXT ',F8.4,/,
-     1                '^^WI SET _MT_CELL_AL TEXT  ',F7.3,/,
-     1                '^^WI SET _MT_CELL_BE TEXT  ',F7.3,/,
-     1                '^^WI SET _MT_CELL_GA TEXT ',F7.3,/,
+211           FORMAT ('^^WI SAFESET [ _MT_CELL_A TEXT ',F8.4,' ]',/,
+     1                '^^WI SAFESET [ _MT_CELL_B TEXT ',F8.4,' ]',/,
+     1                '^^WI SAFESET [ _MT_CELL_C TEXT ',F8.4,' ]',/,
+     1                '^^WI SAFESET [ _MT_CELL_AL TEXT  ',F7.3,' ]',/,
+     1                '^^WI SAFESET [ _MT_CELL_BE TEXT  ',F7.3,' ]',/,
+     1                '^^WI SAFESET [ _MT_CELL_GA TEXT ',F7.3,' ]',/,
      1                '^^CR')
               WRITE ( CMON, 211 ) (STORE(L1P1+J),J=0,2),
      1                          (STORE(L1P1+J)*RTD,J=3,5)
@@ -1252,7 +1255,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
             CALL XRLIND(2, L02SR, NFW, LL, IOW, NOS, ID)
             IF ( L02SR.NE.ISERnn(2) )THEN
               ISERnn(2)  = L02SR
-221           FORMAT ('^^CO SET _MT_SPACEGROUP TEXT ''',4(A4,1X),'''')
+221         FORMAT ('^^CO SAFESET [ _MT_SPACEGROUP TEXT ''',
+     1              4(A4,1X),''' ]')
               WRITE ( CMON, 221 ) (STORE(L2SG+J),J=0,MD2SG-1)
               CALL XPRVDU(NCVDU, 1,0)
             ENDIF
@@ -1270,11 +1274,13 @@ c             CALL XPRVDU(NCVDU, 1,0)
             IF ( L23SR.NE.ISERnn(23) )THEN
               ISERnn(23)  = L23SR
               IF ( ISTORE ( L23MN + 1 ) .EQ. -1 ) THEN
-               WRITE (CMON,2) '^^CO SET _MT_REF_COEF TEXT ''F'''
+               WRITE (CMON,2) '^^CO SAFESET [ _MT_REF_COEF TEXT ''F'' ]'
               ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
-               WRITE (CMON,2) '^^CO SET _MT_REF_COEF TEXT ''F squared'''
+               WRITE (CMON,2)
+     1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''F squared'' ]'
               ELSE
-               WRITE (CMON,2) '^^CO SET _MT_REF_COEF TEXT ''Unknown'''
+               WRITE(CMON,2)
+     1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''Unknown'' ]'
               END IF
               CALL XPRVDU(NCVDU, 1, 0)
             ENDIF
@@ -1291,9 +1297,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
             IF ( L29SR.NE.ISERnn(29) )THEN
               ISERnn(29)  = L29SR
 
-              WRITE( CMON(1),'(A)')'^^WI SET _MT_FORMULA TEXT'
+              WRITE( CMON(1),'(A)')'^^WI SAFESET [ _MT_FORMULA TEXT'
               WRITE( CMON(2),'(A)')'^^WI'''
-              WRITE( CMON(3),'(A)')'^^CR'
+              WRITE( CMON(3),'(A)')'^^WI ]'
+              WRITE( CMON(4),'(A)')'^^CR'
 231           FORMAT (A4,F7.3,'-')
               K = 6
               DO M29=L29,L29+(N29-1)*MD29,MD29
@@ -1313,7 +1320,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
               DO J = 1,K
                 IF (CMON(2)(J:J).EQ.'-') CMON(2)(J:J)=' '
               END DO
-              CALL XPRVDU(NCVDU, 3, 0)
+              CALL XPRVDU(NCVDU, 4, 0)
             END IF
          ELSE IF ( ILST .EQ. 30 ) THEN   ! goodies - update info tab.
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
@@ -1327,45 +1334,45 @@ c             CALL XPRVDU(NCVDU, 1,0)
             IF ( L30SR.NE.ISERnn(30) )THEN
               ISERnn(30)  = L30SR
 
-241           FORMAT ('^^WI SET _MT_CR_MIN TEXT ',F8.4,
-     1                ' SET _MT_CR_MED TEXT ',F8.4,/,
-     1                '^^WI SET _MT_CR_MAX TEXT ',F8.4,
-     1                ' SET _MT_CR_TEMP TEXT  ',F5.1,/,
-     1                '^^WI SET _MT_CR_DCALC TEXT ',F7.3,
-     1                ' SET _MT_CR_MOLWT TEXT  ',F7.2,/,
-     1                '^^WI SET _MT_CR_CELLZ TEXT ',F4.0,/,
+241           FORMAT ('^^WI SAFESET [ _MT_CR_MIN TEXT ',F8.4,' ]',
+     1                ' SAFESET [ _MT_CR_MED TEXT ',F8.4,' ]',/,
+     1                '^^WI SAFESET [ _MT_CR_MAX TEXT ',F8.4,' ]',
+     1                ' SAFESET [ _MT_CR_TEMP TEXT  ',F5.1,' ]',/,
+     1                '^^WI SAFESET [ _MT_CR_DCALC TEXT ',F7.3,' ]',
+     1                ' SAFESET [ _MT_CR_MOLWT TEXT  ',F7.2,' ]',/,
+     1                '^^WI SAFESET [ _MT_CR_CELLZ TEXT ',F4.0,' ]',/,
      1                '^^CR')
               WRITE ( CMON,241 ) STORE(L30CD), STORE(L30CD+1),
      1           STORE(L30CD+2), STORE(L30CD+6), STORE(L30GE+1),
      1           STORE(L30GE+4), STORE(L30GE+5)
               CALL XPRVDU(NCVDU, 5, 0)
-242           FORMAT ('^^WI SET _MT_CR_SHAPE TEXT ''',8A4,'''',/,
-     1                '^^WI SET _MT_CR_COLOUR TEXT ''',8A4,'''',/,
+242           FORMAT('^^WI SAFESET [ _MT_CR_SHAPE TEXT ''',8A4,''' ]',/,
+     1              '^^WI SAFESET [ _MT_CR_COLOUR TEXT ''',8A4,''' ]',/,
      1                '^^CR')
               WRITE ( CMON, 242 ) (ISTORE(K),K=L30SH,L30SH+MD30SH-1),
      1                            (ISTORE(K),K=L30CL,L30CL+MD30CL-1)
               CALL XPRVDU(NCVDU, 3, 0)
-243           FORMAT ('^^WI SET _MT_OBS_MEAS TEXT ',F7.0,
-     1                    ' SET _MT_OBS_NMRG TEXT ',F7.0,/,
-     1               '^^WI SET _MT_OBS_RMRG TEXT ',F8.5,
-     1                    ' SET _MT_OBS_NFMRG TEXT ',F7.0,/,
-     1                '^^WI SET _MT_OBS_RFMRG TEXT ',F8.5,/,
+243           FORMAT ('^^WI SAFESET [ _MT_OBS_MEAS TEXT ',F7.0,' ]',
+     1                    ' SAFESET [ _MT_OBS_NMRG TEXT ',F7.0,' ]',/,
+     1                '^^WI SAFESET [ _MT_OBS_RMRG TEXT ',F8.5,' ]',
+     1                    ' SAFESET [ _MT_OBS_NFMRG TEXT ',F7.0,' ]',/,
+     1                '^^WI SAFESET [ _MT_OBS_RFMRG TEXT ',F8.5,' ]',/,
      1                '^^CR')
               WRITE ( CMON,243 ) STORE(L30DR), STORE(L30DR+2),
      1           STORE(L30DR+3), STORE(L30DR+4), STORE(L30DR+5)
               CALL XPRVDU(NCVDU, 4, 0)
-244           FORMAT ('^^WI SET _MT_OBS_HMIN TEXT ',F4.0,
-     1                    ' SET _MT_OBS_HMAX TEXT ',F4.0,/,
-     1                '^^WI SET _MT_OBS_KMIN TEXT ',F4.0,
-     1                    ' SET _MT_OBS_KMAX TEXT ',F4.0,/,
-     1                '^^WI SET _MT_OBS_LMIN TEXT ',F4.0,
-     1                    ' SET _MT_OBS_LMAX TEXT ',F4.0,/,
-     1                '^^WI SET _MT_OBS_THMIN TEXT ',F4.0,
-     1                    ' SET _MT_OBS_THMAX TEXT ',F4.0,/,
+244           FORMAT ('^^WI SAFESET [ _MT_OBS_HMIN TEXT ',F4.0,' ]',
+     1                    ' SAFESET [ _MT_OBS_HMAX TEXT ',F4.0,' ]',/,
+     1                '^^WI SAFESET [ _MT_OBS_KMIN TEXT ',F4.0,' ]',
+     1                    ' SAFESET [ _MT_OBS_KMAX TEXT ',F4.0,' ]',/,
+     1                '^^WI SAFESET [ _MT_OBS_LMIN TEXT ',F4.0,' ]',
+     1                    ' SAFESET [ _MT_OBS_LMAX TEXT ',F4.0,' ]',/,
+     1                '^^WI SAFESET [ _MT_OBS_THMIN TEXT ',F4.0,' ]',
+     1                    ' SAFESET [ _MT_OBS_THMAX TEXT ',F4.0,' ]',/,
      1                '^^CR')
               WRITE ( CMON, 244 ) ( STORE(L30IX+J), J=0,7)
               CALL XPRVDU(NCVDU, 5, 0)
-245           FORMAT ('^^CO SET _MT_OBS_INST TEXT ''',A8,'''')
+245           FORMAT ('^^CO SAFESET [ _MT_OBS_INST TEXT ''',A8,''' ]')
               INS = ISTORE(L30CD+12) + 1
               IF (( INS .GT. 0 ) .AND. (INS. LE. 6)) THEN
                 WRITE ( CMON, 245 ) CINST(INS)
@@ -1378,13 +1385,13 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF (STORE(L30RF+3).GT.-9.9)
      1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
 
-246           FORMAT ('^^WI SET _MT_REF_R TEXT ',F8.5,
-     1                    ' SET _MT_REF_RW TEXT ',F8.5,/,
-     1                '^^WI SET _MT_REF_NPAR TEXT ',F5.0,
-     1                    ' SET _MT_REF_SCUT TEXT ',A,/,
-     1                  '^^WI SET _MT_REF_GOOF TEXT ',F6.3,
-     1                    ' SET _MT_REF_MAXRMS TEXT ',F8.4,/,
-     1                '^^WI SET _MT_REF_NREF TEXT ',F7.0,/,
+246           FORMAT ('^^WI SAFESET [ _MT_REF_R TEXT ',F8.5,' ]',
+     1                    ' SAFESET [ _MT_REF_RW TEXT ',F8.5,' ]',/,
+     1                '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F5.0,' ]',
+     1                    ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
+     1                  '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F6.3,' ]',
+     1                    ' SAFESET [ _MT_REF_MAXRMS TEXT ',F8.4,' ]',/,
+     1                '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
      1                '^^CR')
               WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
      1            STORE(L30RF+2), CCOL,  STORE(L30RF+4),

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2003/01/15 15:26:38  rich
+C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
+C anywhere will benefit from less IO, it's here.
+C
 C Revision 1.35  2002/10/14 12:33:24  rich
 C Support for DVF command line version.
 C
@@ -289,19 +293,17 @@ C
         IRDLIN = 0
         IF (ITYPFL .EQ. 1)  THEN
           CALL XPRMPT ( NCVDU , '!' )
-&GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=SELECTATOM'
-&GID          CALL XPRVDU(NCVDU,1,0)
-&GIL          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=SELECTATOM'
-&GIL          CALL XPRVDU(NCVDU,1,0)
+&&GIDGIL          WRITE(CMON,'(A)')
+&&GIDGIL     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
+&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
 &&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
 &&GILGID          WRITE (CMON,1515) '''Enter Commands'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
         ELSE
           CALL XPRMPT ( NCVDU , '>' )
-&GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
-&GID          CALL XPRVDU(NCVDU,1,0)
-&GIL          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
-&GIL          CALL XPRVDU(NCVDU,1,0)
+&&GIDGIL          WRITE(CMON,'(A)')
+&&GIDGIL     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
+&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
 &&GILGID          WRITE (CMON,1515) '''Enter Directives'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
         ENDIF
@@ -2275,7 +2277,7 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
       ENDIF
 CRICFEB01[
-2346    FORMAT ( '^^CO SET ', A , ' TEXT ''', A , '''' )
+2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
 &&GIDGIL      IF ( IDEV .EQ. NCPU ) THEN
 &&GIDGIL        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
 &&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
