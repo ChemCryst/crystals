@@ -138,47 +138,7 @@
 %%
 %% Get the results back...
 %%
-%      COPY '#USE SIR9X.INS'
-%      COPY '#EDIT'
-%      COPY 'MON OFF'
-%      COPY 'REFORMAT ALL'
-%      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
-%      COPY 'MON MEDIUM'
-%      COPY 'END'
-%      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
-%        FINISH
-%      END IF
-%%
-%      BLOCK
-%      EVALUATE QTITLE = 'Use Cameron?'
-%      EVALUATE QLINE1 = 'Do you want to use CAMERON '
-%      EVALUATE QLINE2 = 'to examine the model '
-%      EVALUATE BUTTOK = '&Yes'
-%      EVALUATE BUTTXX = '&No'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. TRUE THEN
-%       VARIABLE LOGICAL NOXCAMQ
-%       EVALUATE NOXCAMQ = TRUE
-%       COPY '#SCRIPT XCAM'
-%      END IF
-%      END BLOCK
-%%
-%      BLOCK
-%       COPY '#SCRIPT XRENUMB'
-%      END BLOCK
-%%
-%      BLOCK
-%        COPY '#DISTANCES'
-%        COPY 'END'
-%      END BLOCK
-%%
-%% SET Solution type
-%%
-%      COPY '#GENERALEDIT 30'
-%      COPY 'LOCATE RECORDTYPE=106'
-%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=3'
-%      COPY 'WRITE'
-%      COPY 'END'
+%      COPY '#SCRIPT XSIR92IN'
 %   END BLOCK
 %END SCRIPT
  
