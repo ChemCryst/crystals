@@ -26,6 +26,7 @@
 %       COPY 'END'
 %       COPY '#EDIT'
 %       COPY 'SEL TYPE NE QH'
+%       COPY 'SEL TYPE NE Q'
 %       COPY 'END'
 %   ELSE
 %       COPY '#EDIT'
