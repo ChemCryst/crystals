@@ -3,9 +3,8 @@
  
 {S * Ensuring that refinement directives exist and are valid.
 %%
-%  VARIABLE LOGICAL EXTINCT DOEXTINC DOCHECK
-%  VARIABLE INTEGER ADP IKEY IOLDS ISER
-%  VARIABLE CHARACTER CLAST CPARAM CPARAM2 CKEY
+%  VARIABLE LOGICAL L12SMASK
+%  VARIABLE INTEGER L12SER
 %%
 %  BLOCK
 %    ON ERROR TERMINATE
@@ -13,17 +12,22 @@
 %    COPY 'END'
 %% 
 
-{R  CRYSTALS has a valid refinement list, LIST 12
+{R  CRYSTALS has valid refinement directives  (LIST 12)
 %% 
 %    COPY '#PRINT 12'
 %    COPY 'END'
-{R  Remember that a 'valid' list may not be a 'suitable' list
-%%
-%      FINISH
-%    END IF
+{R  Remember that 'valid' does not necessarily mean 'suitable'!
+
+%    FINISH
 %  END BLOCK
 
-{E  CRYSTALS DOES NOT have a valid refinement list, LIST 12
+{E  CRYSTALS DOES NOT have valid refinement directives (LIST 12)
+{S  * Backing up existing refinement directives. (LIST 12)
+%  COPY '#RELEASE PUNCH bad12.pch'
+%  COPY '#PUNCH 12'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH bfile.pch'
+{I  Bad refinement directives saved to: {&bad12.pch{&
 
 {S  * Creating a minimum valid refinement list.
 %  COPY '#LIST 12'
@@ -32,6 +36,11 @@
 %  COPY '#PRINT 12'
 %  COPY 'END'
 {R  This 'valid' list may not be suitable for refinement, but
-{R  will be fine for calculating scale factor and R-factor.
+{R  will be fine for Fourier and calculation of scale and R-factor.
+%  COPY '#GENERALEDIT 12'
+%  COPY 'GETSERIAL L12SER'
+%  COPY 'END'
+%  EVALUATE L12SMASK = TRUE
+%  COPY '#SCRIPT XPUTINFO'
 %END SCRIPT
  
