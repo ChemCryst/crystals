@@ -1,0 +1,122 @@
+%SCRIPT XINBASIC
+%% Input of basic data needed for data reduction
+% VARIABLE LOGICAL SCRIPTEXT LCANCEL
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+% VARIABLE LOGICAL ANSWER
+% IF SCRIPTEXT .EQ. TRUE THEN
+ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ     Before you start data reduction, you should have loaded the basic      บ
+บ     data lists for your structure. Your DATA-BASE should contain data      บ
+บ     on the following :-                                                    บ
+บ     LIST  1  The crystal's unit cell parameters                            บ
+บ     LIST  2  The crystal's symmetry                                        บ
+บ     LIST  3  The scattering factors for elements in the structure          บ
+บ     LIST 13  The diffraction conditions used in the experiment             บ
+บ     LIST 23  The refinement conditions                                     บ
+บ     LIST 29  The elemental properties and composition                      บ
+บ     LIST 30  The general experimantal conditions                           บ
+บ     LIST 31  The cell parameter e.s.d.s                                    บ
+ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+%   COPY '#PAUSE 10'
+% ELSE
+    Checking the basic data, LISTS 1, 2, 3, 13, 23, 29, 30  and 31
+% END IF
+%  VARIABLE INTEGER INBASICS
+%  EVALUATE INBASICS = 0
+%% note that LISTS 30 & 31 are not mandatory.
+%  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
+     + EXISTS 29 + EXISTS 30 + EXISTS 31 .EQ. 8 ) THEN
+   Mandatory LISTs are present.
+%    ON ERROR REPEAT
+%    VERIFY YES NO
+%    GET FINAL ABBREVIATED  -
+      'Do you want to change any mandatory LISTS ? ' 'NO'
+%    IF ( VALUE .EQ. 2 ) THEN
+%        EVALUATE INBASICS = 1
+%        FINISH
+%    ELSE
+%        COPY '#SCRIPT INPUT'
+%    END IF
+%  END IF
+%  CLEAR
+%  BLOCK
+%   LOOP
+%    IF ( EXISTS 30 .NE. 1 ) THEN 
+     General Information  (LIST 30) is missing
+%     COPY '#SCRIPT LIST30'
+%    END IF
+%%
+%    IF ( EXISTS 1 .NE. 1 ) THEN 
+     Cell parameters (LIST 1)  are missing
+%     COPY '#SCRIPT XCELLIN'
+%     IF ( LCANCEL .EQ. TRUE ) THEN
+%        FINISH
+%     END IF
+%    END IF
+%%
+%% XINLIST3 requires space group, and will call XSPACE if
+%% necessary. XINLIST3 also gets LIST13 info.
+%%
+%%
+%    IF ( EXISTS 3 .NE. 1 ) THEN
+     Scattering Factors (LIST 3)  are missing
+%     COPY '#SCRIPT XINLIST3'
+%     IF ( LCANCEL .EQ. TRUE ) THEN
+%        FINISH
+%     END IF
+%    END IF
+%%
+%    IF ( EXISTS 2 .NE. 1 ) THEN 
+     Symmetry information  (LIST 2)  is missing
+%     COPY '#SCRIPT XSPACE'
+%     IF ( LCANCEL .EQ. TRUE ) THEN
+%        FINISH
+%     END IF
+%    END IF
+%%
+%    IF ( EXISTS 13 .NE. 1 ) THEN
+     Experimental details (LIST 13) are missing
+%     COPY '#SCRIPT XINLIST3'
+%    END IF
+%%
+%    IF ( EXISTS 23 .NE. 1 ) THEN 
+     Structure Factor control list (LIST 23)  is missing
+%%     Put in a default LIST 23
+%      COPY '#LIST 23'
+%%
+%      EVALUATE QTITLE = 'Structure Factor Control List'
+%      EVALUATE QLINE1 = 'Do you want to refine against F-squared?'
+%      EVALUATE QLINE2 = ' '
+%      EVALUATE BUTTOK = '&No'
+%      EVALUATE BUTTXX = '&Yes'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%         COPY 'MINIMISE F-SQ=NO'
+%      ELSE
+%         COPY 'MINIMISE F-SQ=YES'
+%      END IF
+%      COPY 'END'
+%    END IF
+%%
+%    IF ( EXISTS 29 .NE. 1 ) THEN 
+     Elemental properties (LIST 29)  is missing
+%     COPY '#SCRIPT INCOMP'
+%    END IF
+%%
+%    IF ( EXISTS 31 .NE. 1 ) THEN 
+     Cell parameter esds (LIST 31)  is missing
+%     COPY '#SCRIPT LIST31'
+%    END IF
+%    CLEAR
+%% note that LISTS 30 & 31 are not mandatory.
+%    IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
+     + EXISTS 29 .NE. 6 ) THEN
+  Something has gone wrong with the initial data input. Try again.
+%      EVALUATE INBASICS = 0
+%    ELSE
+%      EVALUATE INBASICS = 1
+%      EVALUATE  LOOPEND = LOOPCOUNTER
+%    END IF
+%  END LOOP
+%  END BLOCK
+%END SCRIPT

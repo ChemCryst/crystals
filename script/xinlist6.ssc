@@ -8,7 +8,7 @@
  ----- ---------- ---- ---------- ---------- ----- --- ----- -----------
 %%
 %% Initial checks. Is there any point proceeding.
-%  COPY '#SCRIPT XINBASICS'
+%  COPY '#SCRIPT XINBASIC'
 %  IF INBASICS .NE. 1 THEN
 
   Basic Cell, Space Group or composition information is missing.
