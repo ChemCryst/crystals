@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2000/02/23 12:18:05  ckp2
+C djw  Add .XYZ (Chime) output, fix bug with setunit
+C
 C Revision 1.6  2000/01/13 14:38:24  ckp2
 C djw Jan 2000 Reduce amount of output going to status window
 C
@@ -3316,7 +3319,11 @@ C          CLAB = ' '//CSTORE(KK)
 C        ELSE
 C          CLAB = CSTORE(KK)
 C        ENDIF
-        CLAB = ' '//CSTORE(KK)
+        if (cstore(kk)(2:2) .eq. ' ') then
+         CLAB = ' '//CSTORE(KK)(1:1)
+        else
+         CLAB = CSTORE(KK)(1:2)
+        endif
         IF (IORTH .GE. 0) THEN
           WRITE (IFSTAR-1 , 104) I-IRLAST+1, CLAB ,
      c  X , BONDS
