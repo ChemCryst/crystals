@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.28  2004/02/24 14:41:14  rich
+c Anna: Bug fix. Compute correct translation vector for transformations during #MATCH.
+c
 c Revision 1.27  2004/02/23 19:16:13  rich
 c Change CMPMAT function from cross-correlation to 1 - rmsdeviation.
 c
@@ -1134,7 +1137,7 @@ C Get the matrix.
                 CALL XMOVE(OPM(1,1),STORE(MSGT),16)
                 CALL XADDR(STORE(MSGT+12),STORE(M2P),STORE(MSGT+12),3)
 C Multiply new op by old one, and store in 2nd half of LSGT array.
-                CALL XMLTMM(OPM(1,1),OPN(1,1),STORE(NMSGT),4,4,4)
+                CALL XMLTMM(STORE(MSGT),OPN(1,1),STORE(NMSGT),4,4,4)
                 MSGT =  MSGT + 16  ! Advance to next matrix.
                 NMSGT = NMSGT + 16 ! Advance to next matrix.
               END DO
