@@ -889,7 +889,7 @@ C We now have an orthogonal tensor in TENSOR(3,3).
 
 C             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
-             CALL ZEIGEN(TENSOR,ROTN)
+#DVF             CALL ZEIGEN(TENSOR,ROTN)
 
 C Filter out tiny axes
              TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
