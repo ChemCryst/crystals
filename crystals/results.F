@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.65  2003/10/31 09:22:14  rich
+C New #PARAM/LAYOUT parameter, 'ESD'. Yes by default, no causes esd
+C calcs to be skipped, and L11 is not required.
+C
 C Revision 1.64  2003/10/22 10:01:49  djw
 C New routine for decimal numbers in output tables. For H atoms without sus, 1 decimal point for angles, 2 for distances
 C
@@ -941,6 +945,8 @@ C
 C----- OUTPUT THE OVERALL PARAMETERS
       MCFUNC = 1
       CALL XPP5OV(MCFUNC)
+C----- OUTPUT THE TWIN SCALE PARAMETERS
+      CALL XPP5TW(MCFUNC)
 CRIC0103 - Exit path - don't output parameters after errors - might be no L12.
 2300  CONTINUE
       CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
@@ -1791,7 +1797,6 @@ C--LOOP OVER THE PARAMETERS
       WRITE (CLINE,2055) (LINEA(L), L=1,78)
 2055  FORMAT(2X,78A1)
       CALL XCTRIM (CLINE, NLINE)
-2300  CONTINUE
 C----- BUILD UP A FORMAT STATEMENT
       WRITE (CFORM, 2410) NOF, NOF
 2410  FORMAT( '(' ,I4, 'X, 6A',I4, ')' )
@@ -1841,6 +1846,131 @@ C
       RETURN
 9910  CONTINUE
       WRITE ( CMON, '(A)') 'ERROR in overall parameter print'
+      CALL XPRVDU(NCVDU, 1,0)
+      RETURN
+      END
+
+CODE FOR XPP5TW
+      SUBROUTINE XPP5TW ( IFUNC )
+C -- PUBLICATION PRINT OF OVERALL PARAM SELECTED FROM LIST 5
+C    ON THE BASIS OF 'IFUNC'
+C
+C      IFUNC : -
+C      1      TWIN SCALE PARAMETERS
+C      2      NOT YET USED
+C
+C      IDSPHD      0      NO HEADING PRINTED ON MONITOR CHANNEL
+C                  1      HAS BEEN PRINTED
+C
+C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
+C                         END OF PAGE.
+C
+      DIMENSION KDEV(4)
+      CHARACTER *80 CLINE
+      CHARACTER *80 CFORM, CBUF
+\TSSCHR
+C
+\ISTORE
+C
+\STORE
+C
+\XPTCL
+\XWORKA
+\XCONST
+\XCHARS
+\XLST01
+\XLST05
+\XLST11
+\XLST12
+\XUNITS
+\XSSVAL
+\XOPK
+\XIOBUF
+\UFILE
+\XSSCHR
+C
+\QSTORE
+C
+C
+C
+####LINGILGIDWXS      IFUNC = IFUNC
+
+      IF ( MD5ES .EQ. 0 ) RETURN
+
+CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
+      CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+      CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
+C -- SET INITIAL VALUES.
+      NOD = -3
+
+      NOF = MIN( 76 / MD5ES, 10 )
+
+      M5 = L5ES
+      M5A = L5ES
+      M12 = L12ES
+      MD5A = MD5ES
+      N5A = N5ES
+
+      NL = LINEX
+
+C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
+
+      JP = 1
+      IF ( IPESD .EQ. 1 ) THEN
+        CALL XPESD ( 2, JP)
+      ELSE
+        CALL XZEROF (BPD, 11)
+      END IF
+
+C
+C--CLEAR THE OUTPUT BUFFER
+      CALL XMVSPD(IB,LINEA(1),118)
+      J=4
+C--SET UP THE FLAGS FOR THE PASS OVER THE PARAMETERS
+      MP=M5A
+      MPD=1
+      IP=1
+
+C--LOOP OVER THE PARAMETERS
+      DO L=1,MD5A
+        J = J + NOF
+        CALL SNUM(STORE(MP), BPD(MPD), NOD, 0, J, LINEA)
+        IP=IP+1
+        MP=MP+1
+        MPD=MPD+1
+      END DO
+
+      WRITE (CLINE,2055) (LINEA(L), L=1,78)
+2055  FORMAT(2X,78A1)
+
+      CALL XCTRIM (CLINE, NLINE)
+2410  FORMAT (1X,'Twin element scales')
+
+      IF (ISSPRT .EQ. 0) THEN
+        IF ( ILSTCO .GT. 0 )  THEN
+            WRITE( NCWU, 2410)
+            WRITE( NCWU , '(A)') CLINE(1:NLINE)
+        ENDIF
+      ENDIF
+
+      IF ( IPCHCO .EQ. 1 )  THEN
+            WRITE(NCPU, 2410)
+            WRITE( NCPU , '(A)') CLINE(1:NLINE)
+      ELSE IF (IPCHCO .EQ. 2) THEN
+C-TODO---- CIF OUTPUT OF TWIN LAWS
+            WRITE(NCFPU1,2557)
+2557        FORMAT(/,'loop_',/,4X,'_oxford_twin_element_scale_factors')
+            WRITE( NCFPU1 , '(A/)') CLINE(1:NLINE)
+      ENDIF
+
+      WRITE ( CMON , 2410 )
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE ( CMON , '(A)' ) CLINE(1:NLINE)
+      CALL XPRVDU(NCVDU, 1,0)
+
+      RETURN
+9910  CONTINUE
+      WRITE ( CMON, '(A)') 'ERROR in twin scale parameter print'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
       END
