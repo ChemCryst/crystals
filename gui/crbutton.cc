@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/09/07 14:35:19  ckp2
+// LENGTH='a string' option lets the button length be based on a string other
+// than the one actually displayed. Useful for making professional looking
+// buttons in a given row, e.g.
+//
+// @ 1,1 BUTTON BOK '&OK' LENGTH='Cancel'
+// @ 1,3 BUTTON BXX '&Cancel'
+//
+// makes both buttons equal width.
+//
 // Revision 1.8  2001/06/17 15:14:12  richard
 // Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -102,6 +112,22 @@ CcParse CrButton::ParseInput( CcTokenList * tokenList )
                 LOGSTAT( "CrButton:ParseInput Setting Button Text: " + mText );
                 break;
             }
+            case kTInform:
+            {
+                tokenList->GetToken(); // Remove that token!
+                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                tokenList->GetToken(); // Remove that token!
+                if(inform) {
+                    LOGSTAT( "CrButton:ParseInput INFORM on (default)");
+                }
+                else {
+                    LOGSTAT( "CrCheckBox:ParseInput INFORM off (reset)");
+                    ((CxButton*)ptr_to_cxObject)->SetState(false);
+                }
+                mCallbackState = inform;
+                m_ButtonWasPressed=false;
+                break;
+            }
             case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
@@ -181,7 +207,15 @@ void    CrButton::SetText( CcString text )
 
 void    CrButton::ButtonClicked()
 {
-    SendCommand(mName);
+    if ( mCallbackState )
+    {
+        SendCommand(mName);
+    }
+    else
+    {
+        m_ButtonWasPressed = true;
+        ((CxButton*)ptr_to_cxObject)->SetState(true);
+    }
 }
 
 void CrButton::CrFocus()
@@ -193,3 +227,25 @@ void CrButton::Enable(bool enabled)
 {
     ((CxButton*)ptr_to_cxObject)->Disable( !enabled );
 }
+
+void CrButton::GetValue(CcTokenList * tokenList)
+{
+    CcString stateString;
+    if( tokenList->GetDescriptor(kQueryClass) == kTQState )
+    {
+        tokenList->GetToken();
+        if ( m_ButtonWasPressed )
+            stateString = kSOn;
+        else
+            stateString = kSOff;
+        SendCommand( stateString,true);
+    }
+    else
+    {
+        SendCommand( "ERROR",true );
+        stateString = tokenList->GetToken();
+        LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + stateString);
+    }
+}
+
+
