@@ -7,13 +7,13 @@
 //   Filename:  CrRadioButton.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 10:29 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
 #include    "crradiobutton.h"
-//insert your own code here.
 #include    "crgrid.h"
+#include    "cxgrid.h"
 #include    "cxradiobutton.h"
 #include    "ccrect.h"
 #include    "cccontroller.h"    // for sending commands
@@ -30,14 +30,19 @@ CrRadioButton::~CrRadioButton()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxRadioButton*)ptr_to_cxObject;
+        ((CxRadioButton*)ptr_to_cxObject)->DestroyWindow(); delete (CxRadioButton*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 }
 
-Boolean CrRadioButton::ParseInput( CcTokenList * tokenList )
+
+CRSETGEOMETRY(CrRadioButton,CxRadioButton)
+CRGETGEOMETRY(CrRadioButton,CxRadioButton)
+CRCALCLAYOUT(CrRadioButton,CxRadioButton)
+
+CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -77,6 +82,18 @@ Boolean CrRadioButton::ParseInput( CcTokenList * tokenList )
                 LOGSTAT( "Disabling RadioButton callback" );
                 break;
             }
+            case kTDisabled:
+            {
+                tokenList->GetToken(); // Remove that token!
+                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                tokenList->GetToken(); // Remove that token!
+                if(disabled)
+                    LOGSTAT( "CrRadiobutton:ParseInput "+mName+" disabled ");
+                else
+                    LOGSTAT( "CrRadiobutton:ParseInput "+mName+" enabled ");
+                ((CxRadioButton*)ptr_to_cxObject)->Disable( disabled );
+                break;
+            }
             case kTState:
             {
                 tokenList->GetToken(); // Remove that token!
@@ -113,31 +130,6 @@ void    CrRadioButton::SetText( CcString text )
     strcpy( theText, text.ToCString() );
 
     ( (CxRadioButton *)ptr_to_cxObject)->SetText( theText );
-}
-
-void    CrRadioButton::SetGeometry( const CcRect * rect )
-{
-    ((CxRadioButton*)ptr_to_cxObject)->SetGeometry(  rect->mTop,
-                                                rect->mLeft,
-                                                rect->mBottom,
-                                                rect->mRight );
-}
-
-CcRect  CrRadioButton::GetGeometry()
-{
-     CcRect retVal(
-            ((CxRadioButton*)ptr_to_cxObject)->GetTop(),
-            ((CxRadioButton*)ptr_to_cxObject)->GetLeft(),
-            ((CxRadioButton*)ptr_to_cxObject)->GetTop()+((CxRadioButton*)ptr_to_cxObject)->GetHeight(),
-            ((CxRadioButton*)ptr_to_cxObject)->GetLeft()+((CxRadioButton*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-
-void    CrRadioButton::CalcLayout()
-{
-    int w =  ((CxRadioButton*)ptr_to_cxObject)->GetIdealWidth();
-    int h =  ((CxRadioButton*)ptr_to_cxObject)->GetIdealHeight();
-    ((CxRadioButton*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
 }
 
 void    CrRadioButton::GetValue()
