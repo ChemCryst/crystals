@@ -2582,7 +2582,9 @@ C
      1 ' Structure Factor cycle ', I5, 10X, I10, ' reflections',/
      1 , ' R-value=',F7.3, 34X, ' Rw=', F7.3,/
      1 ' (Sum Fo)/(Sum Fc)=', F7.2,' Minimisation function=', F12.0)
+      CALL OUTCOL(6)
       CALL XPRVDU(NCVDU, 3, 0)
+      CALL OUTCOL(1)
 C
       RETURN
 C^
