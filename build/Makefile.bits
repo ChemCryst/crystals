@@ -60,4 +60,8 @@ rc93.srt:
 	cp ../bits/rc93/rc93.ssr $@
 
 clean :
-	rm -f $(EXECS) $(OBJS)
+	rm -f $(EXECS) $(OBJS) rc93.src form.dat
+
+tidy :
+	rm -f $(OBJS)
+

@@ -26,8 +26,11 @@ lapack.o : lapack.f
 clean :
 	rm -f $(FOBJ) $(COBJ) crystals $(DEP)
 
-
+tidy :
+	rm -f $(FOBJ) $(COBJ) $(DEP)
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(DEP)
+ ifneq ($(MAKECMDGOALS),tidy) 
+  include $(DEP)
+ endif
 endif

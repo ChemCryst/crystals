@@ -33,3 +33,6 @@ install : $(INSTALLDIR)
 clean :
 	rm -f $(SSCOUT) $(SDAOUT)
 	rm -Rf $(SCPDIR)
+
+tidy :
+

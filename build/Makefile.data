@@ -47,4 +47,7 @@ clean :
 	rm -f $(SRTFILES)
 	rm -Rf $(COPYDEST) demo
 
+tidy :
+	rm -Rf $(BUILDDIR)
+
 
