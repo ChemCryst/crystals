@@ -11,24 +11,32 @@
 
 #ifndef		__CxRadioButton_H__
 #define		__CxRadioButton_H__
-//Insert your own code here.
 #include	"crguielement.h"
 
+#ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASERADIOBUTTON CButton
+#endif
 
+#ifdef __LINUX__
+#include <wx/button.h>
+#define BASERADIOBUTTON wxButton
+#endif
 
 class CrRadioButton;
 class CxGrid;
-//End of user code.         
  
-class	CxRadioButton : public CButton
+class CxRadioButton : public BASERADIOBUTTON
 {
+
+// The interface exposed to the CrClass
+
 	public:
 		void Focus();
 		// methods
 		static CxRadioButton *	CreateCxRadioButton( CrRadioButton * container, CxGrid * guiParent );
-			CxRadioButton( CrRadioButton * container);
-			~CxRadioButton();
+            CxRadioButton( CrRadioButton * container);
+            ~CxRadioButton();
 //		void	ButtonChanged();
 		void	SetText( char * text );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
@@ -44,19 +52,22 @@ class	CxRadioButton : public CButton
 		void	SetRadioState( Boolean inValue );
 		Boolean	GetRadioState();
 
+// The private parts.
+		CrGUIElement *	mWidget;
+		
+	protected:
+		static int	mRadioButtonCount;
+
+// The private platform specific parts.
+
+#ifdef __WINDOWS__
+      public:
 		afx_msg void ButtonChanged();
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 		DECLARE_MESSAGE_MAP()
+#endif
 
-		// attributes
-		CrGUIElement *	mWidget;
-		
-	protected:
-		// methods
-		
-		// attributes
-		static int	mRadioButtonCount;
 		
 };
 #endif

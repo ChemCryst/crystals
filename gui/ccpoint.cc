@@ -13,14 +13,16 @@
 
 CcPoint::CcPoint()
 {
-      Set( 0, 0 );
+      x = 0;
+      y = 0;
 }
 
-CcPoint::CcPoint( const CcPoint &inPoint )
+CcPoint::CcPoint( const CcPoint& inPoint )
 {
       x = inPoint.x;
       y = inPoint.y;
 }
+
 CcPoint::CcPoint( const int inX, const int inY )
 {
       x = inX;
@@ -36,12 +38,12 @@ void  CcPoint::Set( const int inX, const int inY )
       x  = inX;
       y  = inY;
 }
-const int   CcPoint::X()
+int   CcPoint::X()
 {
       return x;
 }
 
-const int   CcPoint::Y()
+int   CcPoint::Y()
 {
       return y;
 }

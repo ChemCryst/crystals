@@ -16,20 +16,20 @@
 #include	"crwindow.h"
 #include	"cxbutton.h"
 
-#ifdef __POWERPC__
-#include	<LWindow.h>
-#include	<LTabGroup.h>
+#ifdef __LINUX__
+#include <wx/frame.h>
+#include <wx/window.h>
+#define BASEWINDOW wxFrame
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEWINDOW CFrameWnd
 #endif
 
-//End of user code.         
 class CxMenu; 
-//class	CxWindow : public CDialog
-class	CxWindow : public CFrameWnd
-//class	CxWindow : public CWnd
+
+class CxWindow : public BASEWINDOW
 {
 	public:
 		void AdjustSize( CcRect * clientSize );
@@ -58,12 +58,7 @@ class	CxWindow : public CFrameWnd
             Boolean mWindowWantsKeys;
 
 //PRIVATE MS WINDOWS SPECIFIC FUNCTIONS AND OVERRIDES
-
-//Overrides
-/*	void OnOK();
-	void OnCancel();
-	CWnd* GetNextDlgTabItem(CWnd* pWndCtl, BOOL bPrevious = FALSE) const;
-*/
+#ifdef __WINDOWS__
 	BOOL PreCreateWindow(CREATESTRUCT& cs);
 //Message handlers
 	afx_msg void OnClose();
@@ -76,11 +71,19 @@ class	CxWindow : public CFrameWnd
      
 	DECLARE_MESSAGE_MAP()
 
+protected:
+	CWnd* mParentWnd;
+#endif
+
+#ifdef __LINUX__
+      protected:
+      wxWindow* mParentWnd;
+#endif
+
 private:
 	Boolean mSizeable;
 	static int mWindowCount;
 protected:
-	CWnd* mParentWnd;
 	Boolean mProgramResizing;
 };
 #endif

@@ -16,7 +16,8 @@
 #include	"cccommandqueue.h"
 #include	"ccstatus.h"
 #include "ccrect.h"	// added by ClassView
-//End of user code.         
+#include <stdio.h> //For FILE definition
+//End of user code.
 class CcChartDoc;
 class CcModelDoc;
 class CrWindow; 

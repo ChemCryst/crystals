@@ -4,7 +4,11 @@
 
 #include "crystalsinterface.h"
 #include	"crconstants.h"
+
+#ifdef __WINDOWS__
 #include "crystals.h"
+#endif
+
 #include "ccmenuitem.h"
 #include "crmenu.h"
 #include "cxmenu.h"

@@ -17,15 +17,20 @@ int CxGroupBox::mGroupBoxCount = kGroupBoxBase;
 
 CxGroupBox *	CxGroupBox::CreateCxGroupBox( CrGrid * container, CxGrid * guiParent )
 {
-	char * defaultName = (char *)"Group";
+//      char * defaultName = (char *)"Group";
 	CxGroupBox	*theGrid = new CxGroupBox( container );
+#ifdef __WINDOWS__
 	theGrid->Create("GroupBox",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,CRect(0,0,10,10),guiParent,mGroupBoxCount++);
 	theGrid->SetFont(CxGrid::mp_font);
-	return theGrid;
+#endif
+#ifdef __LINUX__
+      theGrid->Create(guiParent,-1,"GroupBox",wxPoint(0,0),wxSize(0,0));
+#endif
+      return theGrid;
 }
 
 CxGroupBox::CxGroupBox( CrGrid * container )
-:CButton()
+:BASEGROUPBOX()
 {
 	NOTUSED(container);
 }
@@ -37,11 +42,21 @@ CxGroupBox::~CxGroupBox()
 
 void	CxGroupBox::SetText( char * text )
 {
+#ifdef __WINDOWS__
 	SetWindowText(text);
+#endif
+#ifdef __LINUX__
+      SetLabel(text);
+#endif
 }
 
 void	CxGroupBox::SetGeometry( const int top, const int left, const int bottom, const int right )
 {
-	MoveWindow(left,top,right-left,bottom-top,true);
+#ifdef __WINDOWS__
+      MoveWindow(left,top,right-left,bottom-top,true);
+#endif
+#ifdef __LINUX__
+      SetSize(left,top,right-left,bottom-top);
+#endif
 }
 

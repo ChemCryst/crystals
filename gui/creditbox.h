@@ -20,15 +20,14 @@ class	CrEditBox : public CrGUIElement
 {
 	public:
 		void ClearBox();
-//            void Arrow(Boolean up);
             void SysKey ( UINT nChar );
 		void AddText(CcString theText);
 		void ReturnPressed();
 		void CrFocus();
 		int GetIdealWidth();
 		// methods
-			CrEditBox( CrGUIElement * mParentPtr );
-			~CrEditBox();
+            CrEditBox( CrGUIElement * mParentPtr );
+            ~CrEditBox();
 		Boolean	ParseInput( CcTokenList * tokenList );
 		void	SetText( CcString text );
 		void	SetGeometry( const CcRect * rect );

@@ -290,7 +290,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 					if ( radioButtPtr != nil )
 					{
 						retVal = InitElement( radioButtPtr, tokenList, xpos, ypos );
-						( (CxGrid *)mWidgetPtr )->AddRadioButton( (CxRadioButton *)radioButtPtr->GetWidget() );
+//                                    ( (CxGrid *)mWidgetPtr )->AddRadioButton( (CxRadioButton *)radioButtPtr->GetWidget() );
 					}
 					break;
 				}

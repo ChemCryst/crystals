@@ -22,28 +22,22 @@
 #include	"cccontroller.h"	// for sending commands
 
 
-// OPSignature:  CrMenu:CrMenu( CrGUIElement *:mParentPtr ) 
 CrMenu::CrMenu( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
-	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
+   : CrGUIElement( mParentPtr )
 {
-//Insert your own code here.
-	mWidgetPtr = CxMenu::CreateCxMenu( this, (CxMenu *)(mParentPtr->GetWidget()) );
+      mWidgetPtr = CxMenu::CreateCxMenu( this, (CxMenu *)(mParentPtr->GetWidget()) );
 	mTabStop = true;
-//End of user code.         
 }
 
 CrMenu::CrMenu( CrGUIElement * mParentPtr, Boolean isAPopupMenu )
-	:	CrGUIElement( mParentPtr )
+ :CrGUIElement( mParentPtr )
 {
 	mWidgetPtr = CxMenu::CreateCxMenu( this, (CxMenu *)(mParentPtr->GetWidget()), true );
 	mTabStop = true;
 }
-// OPSignature:  CrMenu:~CrMenu() 
-	CrMenu::~CrMenu()
+
+CrMenu::~CrMenu()
 {
-//Insert your own code here.
 	if ( mWidgetPtr != nil )
 	{
 		delete (CxMenu*)mWidgetPtr;
@@ -64,12 +58,10 @@ CrMenu::CrMenu( CrGUIElement * mParentPtr, Boolean isAPopupMenu )
 		theItem = (CcMenuItem*)mMenuList.GetItem();
 	}
 	
-//End of user code.         
 }
-// OPSignature: Boolean CrMenu:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrMenu::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	Boolean isMainMenu = false;
@@ -143,8 +135,8 @@ Boolean	CrMenu::ParseInput( CcTokenList * tokenList )
 				menuItem->id = ((CxMenu*)mWidgetPtr)->AddMenu((CxMenu*)menuItem->ptr->GetWidget(),(char*)menuItem->text.ToCString());
 				mMenuList.AddItem(menuItem);
 
-				TRACE("Created Sub Menu (type %d), Name = %s, Command = nil, Pointer = %d, DisableCondition = %d\n",
-					menuItem->type, menuItem->name.ToCString(), (int)menuItem->ptr, menuItem->disable);
+//                        TRACE("Created Sub Menu (type %d), Name = %s, Command = nil, Pointer = %d, DisableCondition = %d\n",
+//                              menuItem->type, menuItem->name.ToCString(), (int)menuItem->ptr, menuItem->disable);
 				break;
 			}
 			case kTMenuItem:
@@ -182,8 +174,8 @@ Boolean	CrMenu::ParseInput( CcTokenList * tokenList )
 				}
 				menuItem->id = ((CxMenu*)mWidgetPtr)->AddItem((char*)menuItem->text.ToCString());
 				mMenuList.AddItem(menuItem);
-				TRACE("Created MenuItem (type %d), Name = %s, Command = %s, Pointer = nil, DisableCondition = %d\n",
-					menuItem->type, menuItem->text.ToCString(), menuItem->command.ToCString(), menuItem->disable);
+//                        TRACE("Created MenuItem (type %d), Name = %s, Command = %s, Pointer = nil, DisableCondition = %d\n",
+//                              menuItem->type, menuItem->text.ToCString(), menuItem->command.ToCString(), menuItem->disable);
 				break;
 			}
 			case kTMenuSplit:
@@ -198,7 +190,7 @@ Boolean	CrMenu::ParseInput( CcTokenList * tokenList )
 				menuItem->disable = nil;
 				mMenuList.AddItem(menuItem);
 				((CxMenu*)mWidgetPtr)->AddItem();
-				TRACE("Created Menu splitter (type %d)\n", menuItem->type);
+//                        TRACE("Created Menu splitter (type %d)\n", menuItem->type);
 				break;
 			}
 			case kTEndMenu:
@@ -295,10 +287,12 @@ CcMenuItem* CrMenu::FindItembyID(int id)
 
 void CrMenu::Popup(int x, int y, void * window)
 {
-	((CxMenu*)mWidgetPtr)->TrackPopupMenu(
-							TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
-							x, y, (CWnd*)window); 
+      ((CxMenu*)mWidgetPtr)->PopupMenuHere(x,y,window);
+//      ((CxMenu*)mWidgetPtr)->TrackPopupMenu(
+//                                          TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
+//                                          x, y, (CWnd*)window); 
 //To do: hide the base class call above in the CxMenu class.
+//DONE.
 }
 
 void CrMenu::Substitute(CcString atomname, int nSelected, CcString* atomNames)
@@ -368,9 +362,9 @@ void CrMenu::Substitute(CcString atomname, int nSelected, CcString* atomNames)
 			menuItem->command = acommand;
 			menuItem->SetText(atext);
 			if ( (CcController::theController)->status.ShouldBeEnabled( menuItem->enable, menuItem->disable ) )
-				((CxMenu*)mWidgetPtr)->EnableMenuItem( menuItem->id, MF_ENABLED|MF_BYCOMMAND);
+                        ((CxMenu*)mWidgetPtr)->EnableItem( menuItem->id, true);
 			else
-				((CxMenu*)mWidgetPtr)->EnableMenuItem( menuItem->id, MF_GRAYED|MF_BYCOMMAND);
+                        ((CxMenu*)mWidgetPtr)->EnableItem( menuItem->id, false);
 		}
 	}
 

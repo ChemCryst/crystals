@@ -13,6 +13,7 @@
 #define		__CxChart_H__
 //Insert your own code here.
 #include	"crguielement.h"
+#include    "ccpoint.h"
 
 #ifdef __POWERPC__
 class LStdChart;
@@ -23,26 +24,31 @@ class LStdChart;
 #endif
 
 #ifdef __LINUX__
-#include <qpushbt.h>
-#include <qobject.h>
+#include <wx/control.h>
+#include <wx/colour.h>
+#include <wx/bitmap.h>
+#include <wx/dcmemory.h>
+#define BASECHART wxControl
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASECHART CWnd
 #endif
 
 class CrChart;
 class CxGrid;
-//End of user code.         
- 
-class	CxChart : public CWnd
+class CcPoint;
+//End of user code.
+
+class CxChart : public BASECHART
 {
+// Public interface exposed to the CrClass:
 	public:
 		void NoEdge();
 		void Invert(Boolean inverted);
 		void FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated);
 		void UseIsotropicCoords(Boolean iso);
-		int mPolyMode;
 		void SetPolygonDrawMode(Boolean on);
 		void SetColour(int r, int g, int b);
 		void DrawPoly(int nVertices, int* vertices, Boolean fill);
@@ -54,14 +60,10 @@ class	CxChart : public CWnd
 		void SetIdealWidth(int nCharsWide);
 		void SetIdealHeight(int nCharsHigh);
 		void Display();
-		CPoint DeviceToLogical(int x, int y);
-		CPoint LogicalToDevice(CPoint point);
-		COLORREF mfgcolour;
-		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
-		CDC memDC;
+            CcPoint DeviceToLogical(int x, int y);
+            CcPoint LogicalToDevice(CcPoint point);
 		void DrawLine (int x1, int y1, int x2, int y2);
 		void Focus();
-		// methods
 		static CxChart *	CreateCxChart( CrChart * container, CxGrid * guiParent );
 		CxChart(CrChart* container);
 		~CxChart();
@@ -77,30 +79,48 @@ class	CxChart : public CWnd
 		static void RemoveChart( void ) { mChartCount--; };
 		void	BroadcastValueMessage( void );
 		
-		// attributes
 		CrGUIElement *	mWidget;
 		static int mChartCount;
-//		LDefaultOutline * mOutlineWidget;
+		int mPolyMode;
 
-//		afx_msg void ChartClicked();
+private:
+            Boolean m_inverted;
+            Boolean m_IsoCoords;
+            Boolean m_SendCursorKeys;
+            CcPoint mLastPolyModePoint;
+            CcPoint mStartPolyModePoint;
+            CcPoint mCurrentPolyModeLineEndPoint;
+
+// Private machine specific parts:
+#ifdef __WINDOWS__
+      public:
+
+		COLORREF mfgcolour;
+		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
+		CDC memDC;
+
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnPaint();
 		afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
 		afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
             afx_msg void OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags );
-	
-
-
-
 		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+      public:
 
-private:
-	Boolean m_inverted;
-	Boolean m_IsoCoords;
-        Boolean m_SendCursorKeys;
-	CPoint mLastPolyModePoint;
-	CPoint mStartPolyModePoint;
-	CPoint mCurrentPolyModeLineEndPoint;
+            wxColour mfgcolour;
+            wxBitmap *oldMemDCBitmap, *newMemDCBitmap;
+            wxMemoryDC memDC;
+
+            void OnLButtonUp(wxMouseEvent & event);
+            void OnRButtonUp(wxMouseEvent & event);
+            void OnMouseMove(wxMouseEvent & event);
+            void OnChar(wxKeyEvent & event );
+            void OnKeyDown( wxKeyEvent & event );
+            void OnPaint(wxPaintEvent & event );
+            DECLARE_EVENT_TABLE()
+#endif
 };
 #endif

@@ -23,20 +23,23 @@ class LStdButton;
 #endif
 
 #ifdef __LINUX__
-#include <qpushbt.h>
-#include <qobject.h>
+#include <wx/button.h>
+#include <wx/event.h>
+#define BASEBUTTON wxButton
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEBUTTON CButton
 #endif
 
 class CrButton;
 class CxGrid;
 //End of user code.         
  
-class	CxButton : public CButton
+class CxButton : public BASEBUTTON
 {
+// The interface exposed to the CrClass
 	public:
 		void Disable(Boolean disabled);
 		void Focus();
@@ -62,11 +65,18 @@ class	CxButton : public CButton
 		static int mButtonCount;
 //		LDefaultOutline * mOutlineWidget;
 
+
+// Private machine specific parts:
+#ifdef __WINDOWS__
 		afx_msg void ButtonClicked();
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-
-
 		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+            void ButtonClicked();
+            void OnChar(wxKeyEvent & event );
+            DECLARE_EVENT_TABLE()
+#endif
 
 };
 #endif

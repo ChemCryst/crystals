@@ -23,12 +23,13 @@ class LEditField;
 #endif
 
 #ifdef __LINUX__
-#include <qpushbt.h>
-#include <qobject.h>
+#include <wx/textctrl.h>
+#define BASEEDITBOX wxTextCtrl
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEEDITBOX CEdit
 #endif
 
 class CrEditBox;
@@ -40,8 +41,9 @@ class CxGrid;
 #define CXE_REAL_NUMBER 2
 #define CXE_READ_ONLY	3
 
-class	CxEditBox : public CEdit
+class CxEditBox : public BASEEDITBOX
 {
+// The interface exposed to the CrClass:
 	public:
 		void ClearBox();
 		void SetInputType( int type );
@@ -51,8 +53,8 @@ class	CxEditBox : public CEdit
 		static CxEditBox *	CreateCxEditBox( CrEditBox * container, CxGrid * guiParent );
 			CxEditBox( CrEditBox * container);
 			~CxEditBox();
-		void	AddText( char * text );
-		void	SetText( char * text );
+            void  AddText( CcString text );
+            void  SetText( CcString text );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
 		int	GetTop();
 		int	GetLeft();
@@ -63,21 +65,34 @@ class	CxEditBox : public CEdit
 		static int AddEditBox( void ) { mEditBoxCount++; return mEditBoxCount; };
 		static void RemoveEditBox( void ) { mEditBoxCount--; };
 		int GetText(char* theText, int maxlen = 256);
+            CcString GetText();
 		void	SetVisibleChars( int count );
 
-		afx_msg void EditChanged();
-		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-		afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-
-		DECLARE_MESSAGE_MAP()
-
-
-		// attributes
-		static int mEditBoxCount;
+// The private parts:
+      public:
+            static int mEditBoxCount;
 		CrGUIElement *	mWidget;
 		int mCharsWidth;
-		
-private:
-	int allowedInput;
+      
+      private:
+            int allowedInput;
+
+
+// The private machine specific parts:
+            void EditChanged();
+
+
+#ifdef __WINDOWS__
+		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+		afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+            void OnChar(wxKeyEvent & event);
+            void OnKeyDown(wxKeyEvent & event);
+            DECLARE_EVENT_TABLE()
+#endif
+
+
 };
 #endif

@@ -10,6 +10,13 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  1999/05/13 17:46:00  dosuser
+// RIC: Fixed argument passing to ciendthread( long )
+//      Added SysRestart token and a member variable to store the
+//      path of the directory to restart in.
+//      Moved Mutex to after the thread status check otherwise it is never
+//      released when the function returns.
+//
 // Revision 1.5  1999/05/11 16:15:10  dosuser
 // RIC: Added token SYSGETDIR and supporting functions for getting a
 //      directory from the user via a common dialog.
@@ -39,11 +46,21 @@
 #include	"ccchartobject.h"
 //End of user code.
 
+#ifdef __WINDOWS__
 HANDLE mInterfaceCommandQueueMutex;
 HANDLE mCrystalsCommandQueueMutex;
 HANDLE mCrystalsCommandQueueEmptyEvent;
 HANDLE mLockCrystalsQueueDuringQueryMutex;
 HANDLE mCrystalsThreadIsLocked;
+#endif
+#ifdef __LINUX__
+#include <wx/thread.h>
+static wxMutex mInterfaceCommandQueueMutex;
+static wxMutex mCrystalsCommandQueueMutex;
+static wxMutex mCrystalsCommandQueueEmptyEvent;
+static wxMutex mLockCrystalsQueueDuringQueryMutex;
+static wxMutex mCrystalsThreadIsLocked;
+#endif
 
 CcController* CcController::theController = nil;	
 
@@ -90,6 +107,7 @@ CcController::CcController( CxApp * appContext )
 	CrGUIElement::mControllerPtr = this;
 	CcController::theController = this;	
 	
+#ifdef __WINDOWS__
 // Win32 specific: Set up MUTEXES for synchronising threads.
 // ie. Only one thread at a time can access the command and interface queues to prevent corruption.
 // (as long as they use them!) See {Add/Get}InterfaceCommand and {Add/Get}CrystalsCommand.
@@ -97,10 +115,15 @@ CcController::CcController( CxApp * appContext )
 	mCrystalsCommandQueueMutex         = CreateMutex(NULL, FALSE, NULL);
 	mLockCrystalsQueueDuringQueryMutex = CreateMutex(NULL, FALSE, NULL);
 	mCrystalsThreadIsLocked            = CreateMutex(NULL, FALSE, NULL);
-
 	WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); //We want this all the time.
 
 	mCrystalsCommandQueueEmptyEvent    = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+#endif
+
+#ifdef __LINUX__
+
+#endif
 
 	mCrystalsCommandQueue.AddNewLines(true); //Make the crystals queue interpret _N as a new line.
 
@@ -291,6 +314,23 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				}
 				break;
 			}
+                  case kTRenameObject:
+			{
+				// remove that token
+				tokenList->GetToken();
+				
+				CcString name = tokenList->GetToken();	// Get the name of the object
+                        LOGSTAT("CcController: About to rename: " + name);
+				CrGUIElement* theElement = nil;
+
+                        // Look for the item
+                        theElement = FindObject( name );
+                        if(theElement)
+                              theElement->Rename( tokenList->GetToken() );
+                        else
+                              LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
+				break;
+			}
 			case kTCreateChartDoc:
 			{
 				tokenList->GetToken(); //remove token
@@ -366,7 +406,12 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
                         {
                               tokenList->GetToken();    // remove that token
                               CcString newdsc = "CRDSC=" + tokenList->GetToken();
+#ifdef __WINDOWS__
                               _putenv( (LPCTSTR) newdsc.ToCString() );
+#endif
+#ifdef __LINUX__
+                              putenv(  newdsc.ToCString() );
+#endif
                         }
                         break;
 			}
@@ -526,7 +571,7 @@ Boolean	CcController::ParseLine( char * text )
 void	CcController::SendCommand( CcString command , Boolean jumpQueue)
 {
 	LOGSTAT("CcController:SendCommand received command '" + command + "'");
-	TRACE("Sending command %s ",command.ToCString());
+//      TRACE("Sending command %s ",command.ToCString());
 	char* theLine = (char*)command.ToCString();
 	AddCrystalsCommand(theLine, jumpQueue);
 }
@@ -599,11 +644,13 @@ void	CcController::Tokenize( char * text )
 			GetValue( mQuickTokenList ) ;
 			mCurTokenList  = mTempTokenList;
 			//We must now signal the waiting Crystals thread that it's input is ready.
+#ifdef __WINDOWS__
 			ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //We always hold this. Crystals thread is waiting for it.
 			WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE ); //Crystals thread gets the mLCQDQMutex, releases it, then releases this one.
 			WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); //We want this back.
 			ReleaseMutex( mCrystalsThreadIsLocked ); //Crystals thread needs this next time.
-		}	
+#endif
+		}
 	}
 	else                                             // Simple output text or comment
 	{
@@ -701,11 +748,14 @@ void	CcController::AddCrystalsCommand( char * line, Boolean jumpQueue)
 */
 
 //Add this command to the queue to crystals.
+#ifdef __WINDOWS__
 	WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
+#endif
 	mCrystalsCommandQueue.SetCommand( CcString(line), jumpQueue);
+#ifdef __WINDOWS__
 	ReleaseMutex( mCrystalsCommandQueueMutex );
 	PulseEvent(mCrystalsCommandQueueEmptyEvent );
-//End of user code.         
+#endif
 }
 
 void	CcController::AddInterfaceCommand( char * line )
@@ -720,14 +770,16 @@ void	CcController::AddInterfaceCommand( char * line )
 // is placed at the top of the queue.
 
 	
+#ifdef __WINDOWS__
 	WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
-
+#endif
 	if(mThisThreadisDead) ciendthread(0);
 
 	mInterfaceCommandQueue.SetCommand( CcString(line) );
 	
+#ifdef __WINDOWS__
 	ReleaseMutex( mInterfaceCommandQueueMutex );
-
+#endif
 	LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Adding: "+CcString(line));
 
 	Boolean stop = false;
@@ -738,22 +790,28 @@ void	CcController::AddInterfaceCommand( char * line )
 		{
 			stop = true;
 			LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
+#ifdef __WINDOWS__
 			WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE );
+#endif
 //This MUTEX is not normally owned. It stops the interface thread from
 //reclaiming the LockCrystalsQueue...Mutex before this thread gets it.
 			if(mThisThreadisDead) ciendthread(0);
 
 //We (CRYSTALS) must wait here until the answer to this query has been put at the front
 //of the command queue.
+#ifdef __WINDOWS__
 			WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE );
+#endif
 //This MUTEX is always held by the interface thread. It is released
 //temporarily by the interface thread after processing a ^^?? instruction.
 //It is reclaimed once the mCrystalsThreadIsLocked mutex is released by this thread.
 			if(mThisThreadisDead) ciendthread(0);
 
+#ifdef __WINDOWS__
 			ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //Release and continue
 			ReleaseMutex( mCrystalsThreadIsLocked );            //Release to allow the interface thread to continue.
-			LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
+#endif
+                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
 		}
 	}
 
@@ -768,23 +826,29 @@ Boolean	CcController::GetCrystalsCommand( char * line )
 //Waiting for the user to do something.
 
 //Wait until the list is free for reading.
-	WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE ); 
-
+#ifdef __WINDOWS__
+      WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
+#endif
 	if (mThisThreadisDead) return false;
 
 	while ( ! mCrystalsCommandQueue.GetCommand( line ) )
 	{
 //The queue is empty, so wait efficiently. Release the mutex first, so that someone else can write to the queue!
+#ifdef __WINDOWS__
 		ReleaseMutex( mCrystalsCommandQueueMutex );
-
 	    //WaitForSingleObject( mCrystalsCommandQueueEmptyEvent, INFINITE ); //Sometimes we miss the pulseevent, so don't wait forever (just wait efficiently).
 		WaitForSingleObject( mCrystalsCommandQueueEmptyEvent, 500 ); //Wait for event, or for 500ms, whichever is sooner.
-		if (mThisThreadisDead) return false;
+#endif
+            if (mThisThreadisDead) return false;
 //The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
+#ifdef __WINDOWS__
 		WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
-		if (mThisThreadisDead) return false;
+#endif
+            if (mThisThreadisDead) return false;
 	}
+#ifdef __WINDOWS__
 	ReleaseMutex( mCrystalsCommandQueueMutex );
+#endif
 
 	if (mThisThreadisDead) return false;
 
@@ -802,13 +866,24 @@ Boolean	CcController::GetInterfaceCommand( char * line )
 	//It needn't be highly optimised even though it is high on
 	//the profile count list.
 
+#ifdef __WINDOWS__
 	DWORD threadStatus;
 	CWinThread *temp = CxApp::mCrystalsThread;
+#endif
+#ifdef __LINUX__
+      int threadStatus;
+      wxThread *temp = CxApp::mCrystalsThread;
+#endif
+
 	if(temp != nil)
 
+#ifdef __WINDOWS__
 	GetExitCodeThread(temp->m_hThread,&threadStatus);
-
       if(threadStatus != STILL_ACTIVE)
+#endif
+#ifdef __LINUX__
+      if ( temp->IsAlive() )
+#endif
       {
             if ( m_restart )
             {
@@ -824,21 +899,26 @@ Boolean	CcController::GetInterfaceCommand( char * line )
 	}
 
 	
-	WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
-	
+#ifdef __WINDOWS__
+      WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
+#endif 
 	
 	if ( ! mInterfaceCommandQueue.GetCommand( line ) )
 	{
 		strcpy( line, "" );
+#ifdef __WINDOWS__
 		ReleaseMutex( mInterfaceCommandQueueMutex );
-		return (false);
+#endif
+            return (false);
 	}
 	else
 	{
 		CcString temp = CcString(line);
 		LOGSTAT("CcController:GetInterfaceCommand Getting this command: "+temp);
+#ifdef __WINDOWS__
 		ReleaseMutex( mInterfaceCommandQueueMutex );
-		return (true);
+#endif
+            return (true);
 	}
 }
 
@@ -988,15 +1068,16 @@ CcModelDoc* CcController::CreateModelDoc(CcString name)
 
 CcRect CcController::GetScreenArea()
 {
+	CcRect retVal;
+#ifdef __WINDOWS__
 	RECT screenRect;
 	SystemParametersInfo( SPI_GETWORKAREA, 0, &screenRect, 0 );
 
-	CcRect retVal;
 	retVal.Set( screenRect.top,
 				screenRect.left,
 				screenRect.bottom,
 				screenRect.right);
-
+#endif
 	return retVal;
 }
 

@@ -21,9 +21,9 @@ typedef float   REAL;             // REAL                 4 bytes
 typedef double  DOUBLE_PRECISION; // DOUBLE PRECISION     8 bytes
 typedef int     LOGICAL;          // LOGICAL              4 bytes 
 
-#include  <f77char.h>             // character            n bytes 
-#include  <f77cmplx.h>            // complex              8 bytes
-#include  <f77matrx.h>            // fmatrix class
+#include  "f77char.h"             // character            n bytes 
+#include  "f77cmplx.h"            // complex              8 bytes
+#include  "f77matrx.h"            // fmatrix class
 
 // values for LOGICAL
 #define FALSE 0

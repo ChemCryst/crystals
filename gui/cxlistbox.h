@@ -26,17 +26,20 @@ class LListBox;
 #endif
 
 #ifdef __LINUX__
+#include <wx/listbox.h>
+#define BASELISTBOX wxListBox
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASELISTBOX CListBox
 #endif
 
 class CrListBox;
 class CxGrid;
 //End of user code.         
  
-class	CxListBox : public CListBox
+class CxListBox : public BASELISTBOX
 {
 	public:
 		void Focus();
@@ -60,18 +63,26 @@ class	CxListBox : public CListBox
 		static void	RemoveListBox( void ) { mListBoxCount--; };
 //		void	ClickSelf( const SMouseDownEvent &inMouseDown);
 		int	GetBoxValue();
-
-		afx_msg void DoubleClicked();
-		afx_msg void Selected();
-		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-
-		DECLARE_MESSAGE_MAP()
-
-		
+            CcString GetListBoxText(int index);
 		// attributes
 		CrGUIElement *	mWidget;
 		static int	mListBoxCount;
 		int mItems;
 		int mVisibleLines;
+
+#ifdef __WINDOWS__
+		afx_msg void DoubleClicked();
+		afx_msg void Selected();
+		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+
+		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+            void DoubleClicked();
+            void Selected();
+            void OnChar(wxKeyEvent & event );
+            DECLARE_EVENT_TABLE()
+#endif
+		
 };
 #endif

@@ -15,8 +15,8 @@
 #include "crystalsinterface.h"
 
 #ifdef __LINUX__
-#include <qmlined.h>
-#include <qobject.h>
+#include <wx/textctrl.h>
+#define BASEMULTIEDIT wxTextCtrl
 #endif
 
 #ifdef __MOTO__
@@ -25,6 +25,7 @@
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEMULTIEDIT CRichEditCtrl
 #endif
 
 class CrMultiEdit;
@@ -32,7 +33,7 @@ class CxGrid;
 class CrGUIElement;
 //End of user code.         
 
-class	CxMultiEdit : public CRichEditCtrl
+class CxMultiEdit : public BASEMULTIEDIT
 {
 	public:
 		void BackALine();
@@ -74,11 +75,12 @@ class	CxMultiEdit : public CRichEditCtrl
 		int		mIdealHeight;
 		int		mIdealWidth;
 
+#ifdef __WINDOWS__
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
             afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
 
 		DECLARE_MESSAGE_MAP()
-
+#endif
 };
 #endif

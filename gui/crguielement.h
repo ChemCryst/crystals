@@ -29,7 +29,7 @@ class	CrGUIElement
             virtual void SysKey ( UINT nChar );
 		Boolean mTabStop;
 		virtual void CrFocus()=0;
-		void NextFocus(BOOL bPrevious);
+            void NextFocus(Boolean bPrevious);
 		virtual void Resize(int newColWidth, int newRowHeight, int origColWidth, int origRowHeight);
 		virtual int GetIdealWidth();
 		virtual int GetIdealHeight();
@@ -52,7 +52,8 @@ class	CrGUIElement
 		virtual CcRect	GetGeometry() = 0;
 		virtual void	SetGeometry( const CcRect * objectRect ) = 0;
 		static void	SetController( CcController * controller );
-		
+            void Rename ( CcString newName );
+
 		// attributes
 		static CcController *	mControllerPtr;
 		float mHeightFactor;

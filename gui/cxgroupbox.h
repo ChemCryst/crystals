@@ -11,17 +11,23 @@
 
 #ifndef		__CxGroupBox_H__
 #define		__CxGroupBox_H__
-//Insert your own code here.
 #include	"crguielement.h"
 
+#ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEGROUPBOX CButton
+#endif
+
+#ifdef __LINUX__
+#include <wx/statbox.h>
+#define BASEGROUPBOX wxStaticBox
+#endif
 
 class CrGrid;
 class CxGrid;
 class CxGroupBox;
-//End of user code.         
  
-class	CxGroupBox : public CButton
+class CxGroupBox : public BASEGROUPBOX
 {
 	public:
 		// methods

@@ -5,6 +5,10 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  1999/05/07 16:03:52  dosuser
+// RIC: Removed Arrow() function. System keys now arrive
+// through SysKey() functions.
+//
 // Revision 1.3  1999/03/05 17:07:10  dosuser
 // RIC: Standardising syntax. Main window definition moved to external
 //      ASCII file for user flexibility.
@@ -144,12 +148,8 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 			case kTAppend:
 			{
 				tokenList->GetToken(); // Remove that token!
-				char theText[256];
-				int textLen = ((CxEditBox*)mWidgetPtr)->GetText(&theText[0]);
-				mText= CcString ( theText ) ;
-				mText += tokenList->GetToken(); // Get and Remove that token!
-				((CxEditBox*)mWidgetPtr)->Focus();
-				//NB Text gets updated at the end of this loop anyway, so no need to do it now.
+                        ((CxEditBox*)mWidgetPtr)->AddText(tokenList->GetToken());
+                        mText = ((CxEditBox*)mWidgetPtr)->GetText();
 				break;
 			}
 			case kTWantReturn:
@@ -304,10 +304,10 @@ void CrEditBox::SysKey ( UINT nChar )
       {
             switch ( nChar )
             {
-                  case VK_UP:
+                  case CRUP:
                         (CcController::theController)->History(true);
                         break;      
-                  case VK_DOWN:
+                  case CRDOWN:
                         (CcController::theController)->History(false);
                         break;
                   default:

@@ -11,14 +11,22 @@
 #define		__CxListCtrl_H__
 #include	"crguielement.h"
 
-
+#ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASELISTCTRL CListCtrl
+#endif
+
+#ifdef __LINUX__
+#include <wx/listctrl.h>
+#define BASELISTCTRL wxListCtrl
+#endif
+
 #include "ccstring.h"	// added by ClassView
 
 class CrListCtrl;
 class CxGrid;
  
-class	CxListCtrl : public CListCtrl
+class CxListCtrl : public BASELISTCTRL
 {
 	public:
 		int GetNumberSelected();
@@ -54,6 +62,7 @@ class	CxListCtrl : public CListCtrl
 		void RepaintSelectedItems();
 		int SetHighlightType(EHighlight hilite);
 
+#ifdef __WINDOWS__
 
 		afx_msg void OnKillFocus(CWnd* pNewWnd); 
 		afx_msg void OnSetFocus(CWnd* pOldWnd);
@@ -67,7 +76,7 @@ class	CxListCtrl : public CListCtrl
 
 		DECLARE_MESSAGE_MAP()
 
-
+#endif
 		
 		// attributes
 		CrGUIElement *	mWidget;
@@ -90,7 +99,7 @@ protected:
 
     int nSortedCol; 
     Boolean bSortAscending; 
-	BOOL SortTextItems( int colType, int nCol, BOOL bAscending);
+    Boolean SortTextItems( int colType, int nCol, Boolean bAscending);
 
 };
 #endif

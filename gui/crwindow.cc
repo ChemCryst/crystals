@@ -537,7 +537,9 @@ void CrWindow::Cancelled()
 // the modal window?
       if (mSafeClose > 6)
       {
+#ifdef __WINDOWS__
             MessageBox(NULL,"Script not responding","Closing window",MB_OK);
+#endif
             SendCommand( "^^CO DISPOSE " + mName );
       }
 	SendCommand(mCancelText);

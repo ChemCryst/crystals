@@ -11,94 +11,59 @@
 
 #include	"crystalsinterface.h"
 #include	"cxeditbox.h"
-//insert your own code here.
+
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"creditbox.h"
-//#include	<TextUtils.h>
-//#include	<LEditField.h>
-//#include	<LWindow.h>
-//#include "CcController.h"
-//#include	<UKeyFilters.h>
-//#include	<UTextTraits.h>
+#ifdef __LINUX__
+#include <ctype.h> //for proto of iscntrl()
+#include <wx/utils.h> //for wxBell!
+#endif
+
 
 int CxEditBox::mEditBoxCount = kEditBoxBase;
 
-//End of user code.          
 
-// OPSignature: CxEditBox * CxEditBox:CreateCxEditBox( CrEditBox *:container  CxGrid *:guiParent ) 
 CxEditBox *	CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParent )
 {
 //As with all these Cx classes, this is a static funtion. Call it to create an editbox,
 //and it will do the initialisation for you.
 	
-//Insert your own code here.
-/*	SPaneInfo	thePaneInfo;	// Info for Pane
-	thePaneInfo.visible = true;
-	thePaneInfo.enabled = true;
-	thePaneInfo.bindings.left = false;
-	thePaneInfo.bindings.right = false;
-	thePaneInfo.bindings.top = false;
-	thePaneInfo.bindings.bottom = false;
-	thePaneInfo.userCon = 0;
-	thePaneInfo.superView = reinterpret_cast<LView *>(guiParent);
-	thePaneInfo.paneID = AddEditBox();		// Dynamic Pane determination
-	thePaneInfo.width = 80;
-	thePaneInfo.height = 20;
-	thePaneInfo.left = 10;
-	thePaneInfo.top = 50;
-*/	
-//	char * defaultName = (char *)"EditBox";
 	CxEditBox	*theEditBox = new CxEditBox( container );
+#ifdef __WINDOWS__
 	theEditBox->Create(ES_LEFT|ES_AUTOHSCROLL|WS_VISIBLE|WS_CHILD|ES_WANTRETURN,CRect(0,0,10,10),guiParent,mEditBoxCount++);
 	theEditBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);  //Sink it into the window.
 	theEditBox->SetFont(CxGrid::mp_font);
-
+#endif
+#ifdef __LINUX__
+      theEditBox->Create(guiParent, -1, "EditBox", wxPoint(0,0), wxSize(10,10));
+#endif
 	return theEditBox;
-//End of user code.         
 }
-// OPSignature:  CxEditBox:CxEditBox( CrEditBox *:container  SPaneInfo:&inPaneInfo char *:defaultName ) 
-	CxEditBox::CxEditBox( CrEditBox * container )
-//Insert your own initialization here.
-	:CEdit()
-//End of user initialization.         
+CxEditBox::CxEditBox( CrEditBox * container )
+      :BASEEDITBOX()
 {
-//Insert your own code here.
 	mWidget = container;      //This is the container (CrEditBox)
 	mCharsWidth = 5;          //This is the default width if none is specified.
 	allowedInput = CXE_TEXT_STRING;  //This is the default allowed input. See header file for other types.
-//End of user code.         
 }
-// OPSignature:  CxEditBox:~CxEditBox() 
-	CxEditBox::~CxEditBox()
+
+CxEditBox::~CxEditBox()
 {
-//Insert your own code here.
 	RemoveEditBox();
-//End of user code.         
 }
-// OPSignature: void CxEditBox:SetText( char *:text ) 
-void	CxEditBox::SetText( char * text )
+
+void  CxEditBox::SetText( CcString text )
 {
-//Insert your own code here.
-#ifdef __POWERPC__
-	Str255 descriptor;
-	
-	strcpy( reinterpret_cast<char *>(descriptor), text );
-	c2pstr( reinterpret_cast<char *>(descriptor) );
-	SetDescriptor( descriptor );
-#endif
-#ifdef __LINUX__
-	setText(text);
-#endif
-#ifdef __WINDOWS__
 
 //If we have an integer, read it in then write it out again to check.
 	if(allowedInput == CXE_INT_NUMBER)
 	{
-		int number = atoi(text);
-		sprintf(text,"%-d",number);
+            int number = atoi(text.ToCString());
+//            sprintf(text.ToCString(),"%-d",number);
+            text = CcString ( number );
 		//Remove spaces.
-		for ( int i = strlen(text) - 1; i > 0; i-- )
+            for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
 			if ( text[i] == ' ' )
 				text[i] = '\0';
 			else
@@ -107,41 +72,54 @@ void	CxEditBox::SetText( char * text )
 //If we have an real, read it in then write it out again to check.
 	else if( allowedInput == CXE_REAL_NUMBER)
 	{
-		double number = atof(text);
-		sprintf(text,"%-8.5g",number);     //LOOK OUT. Precision limited to 5 places. (Width will probably not truncate though.)
+            double number = atof(text.ToCString());
+//            sprintf(text.ToCString(),"%-8.5g",number);     //LOOK OUT. Precision limited to 5 places. (Width will probably not truncate though.)
+            text = CcString ( number );
 		//Remove spaces.
-		for ( int i = strlen(text) - 1; i > 0; i-- )
+            for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
 			if ( text[i] == ' ' )
 				text[i] = '\0';
 			else
 				i = 0;
 	}
 
-	
-	SetWindowText( text );
+#ifdef __LINUX__
+      SetValue( text.ToCString() );
 #endif
-//End of user code.         
+#ifdef __WINDOWS__
+      SetWindowText( text.ToCString() );
+#endif
 }
 
-void	CxEditBox::AddText( char * text )
+void  CxEditBox::AddText( CcString text )
 {
-	SetSel(-1,-1);       //Set the selection at the end of the text buffer.
-	ReplaceSel(text);    //Replace the selection (nothing) with the text to add.
-	SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
-	//This is notmally nt necessary, as the box will have the focus anyway if the user
-	//is typing in to it. It does matter for the floating input box, which gets sent
-	//all characters that other windows don't want, in order to make it easier for
-	//the user to type things.
+#ifdef __WINDOWS__
+      SetSel(-1,-1);       //Set the selection at the end of the text buffer.
+      ReplaceSel(text.ToCString());    //Replace the selection (nothing) with the text to add.
+      SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
+      SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
+#endif
+#ifdef __LINUX__
+      AppendText(text.ToCString());
+      SetFocus();
+#endif
 }
 
 void	CxEditBox::SetGeometry( int top, int left, int bottom, int right )
 {
+#ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true); //Move the edit box
+#endif
+#ifdef __LINUX__
+      SetSize(left,top,right-left,bottom-top);
+#endif
+
 }
-int	CxEditBox::GetTop()
+
+int   CxEditBox::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -150,11 +128,23 @@ int	CxEditBox::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
-int	CxEditBox::GetLeft()
+int   CxEditBox::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -163,81 +153,88 @@ int	CxEditBox::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
+
 }
-int	CxEditBox::GetWidth()
+int   CxEditBox::GetWidth()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
-int	CxEditBox::GetHeight()
+int   CxEditBox::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
 
-// OPSignature: int CxEditBox:GetIdealWidth() 
 int	CxEditBox::GetIdealWidth()
 {
-//Insert your own code here.
-/*	Str255 descriptor, str, dummy = "\p0";
-	Int16 strSize, requestSize;
-	
-	GetDescriptor( descriptor );
-	GetDescriptor( str );
-	p2cstr( str );
-	
-	// take a dummy size
-	requestSize = ::StringWidth(dummy) * mCharsWidth + 5;
-	
-	// Check for empty strings
-	if ( strlen( (char *)str ) == 0 )
-		strSize = 30;
-	else
-		strSize = ::StringWidth(descriptor) + 5;	// 5 pixels slop on the sides
-
-	if ( requestSize > strSize )
-		strSize = requestSize;
-*/
-/*	CString text;
-	SIZE size;
-	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
-	GetWindowText(text);
-	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-	return ( size.cx + 10);
-*/
+#ifdef __WINDOWS__
 	CClientDC cdc(this);	//Get the device context for this window (edit box).
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font); //Select the standard font into the device context, save the old one for later.
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
 	cdc.SelectObject(oldFont);         //Select the old font back into the DC.
 	return mCharsWidth * textMetric.tmAveCharWidth;  //Work out the ideal width.
-
-	//End of user code.         
+#endif
+#ifdef __LINUX__
+      return mCharsWidth * GetCharWidth();
+#endif
 }
-// OPSignature: int CxEditBox:GetIdealHeight() 
+
 int	CxEditBox::GetIdealHeight()
 {
-//Insert your own code here.
-//	Int16 just = UTextTraits::SetPortTextTraits(mTextTraitsID);
-
-//	FontInfo fInfo;
-//	::GetFontInfo(&fInfo);
+#ifdef __WINDOWS__
 	CClientDC cdc(this);   //See GetIdealWidth for how this works.
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
 	return textMetric.tmHeight + 5;
-//End of user code.         
+#endif
+#ifdef __LINUX__
+      return GetCharHeight() + 5;
+#endif
 }
-// OPSignature: int CxEditBox:GetText() 
+
 int CxEditBox::GetText(char* theText, int maxlen)
 {
-//Insert your own code here.
+#ifdef __WINDOWS__
 	int textlen = GetWindowText(theText,maxlen);
-	
+#endif
+#ifdef __LINUX__
+      wxString wtext = GetValue();
+      int textlen = wtext.Length();
+      strcpy(theText, wtext.c_str());
+#endif
+
 //If the allowed input is a number, check it before returning.
 //It should be a number, if it isn't 0 or 0.0 will be returned.
 	if(allowedInput == CXE_INT_NUMBER)
@@ -252,41 +249,76 @@ int CxEditBox::GetText(char* theText, int maxlen)
 	}
 
 	return textlen;
-
-//	GetDescriptor( descriptor );
-	
-//	if ( theRetVal != nil )
-//	{
-//		strcpy( theRetVal, reinterpret_cast<char *>(descriptor) );
-//		p2cstr( reinterpret_cast<StringPtr>(theRetVal) );
-//	}
-//	return ( theRetVal );
-//End of user code.         
 }
-// OPSignature: void CxEditBox:SetVisibleChars( int:count ) 
+
+CcString CxEditBox::GetText()
+{
+      char theText[255];
+      int maxlen = 255;
+#ifdef __WINDOWS__
+      int textlen = GetWindowText((char*)&theText,maxlen);
+#endif
+#ifdef __LINUX__
+      wxString wtext = GetValue();
+      int textlen = wtext.Length();
+      strcpy(theText, wtext.c_str());
+#endif
+
+//If the allowed input is a number, check it before returning.
+//It should be a number, if it isn't 0 or 0.0 will be returned.
+	if(allowedInput == CXE_INT_NUMBER)
+	{
+		int number = atoi(theText);
+		sprintf(theText,"%-d",number);
+	}
+	else if( allowedInput == CXE_REAL_NUMBER)
+	{
+		double number = atof(theText);
+		sprintf(theText,"%-f",number);
+	}
+
+      return CcString( theText );
+}
+
 void	CxEditBox::SetVisibleChars( int count )
 {
-//Insert your own code here.
 	mCharsWidth = count;   //Set the ideal width in characters.
-//End of user code.         
 }
+
 void	CxEditBox::EditChanged()
 {
 	((CrEditBox*)mWidget)->BoxChanged();  //Inform container that the text has changed.
 }
 
-
+#ifdef __WINDOWS__
 BEGIN_MESSAGE_MAP(CxEditBox, CEdit)
 	ON_WM_CHAR()
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+//wx Message Table
+BEGIN_EVENT_TABLE(CxEditBox, BASEEDITBOX)
+      EVT_CHAR( CxEditBox::OnChar )
+      EVT_KEY_DOWN( CxEditBox::OnKeyDown )
+END_EVENT_TABLE()
+#endif
+
 
 void CxEditBox::Focus()
 {
 	SetFocus();
-	SetSel(GetWindowTextLength(),GetWindowTextLength()); 	//Place caret at end of text.
+#ifdef __WINDOWS__
+      SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
+#endif
+#ifdef __LINUX__
+      SetInsertionPoint( GetLineLength(0) );  //Place caret at end of text.
+#endif
+
 }
 
+
+#ifdef __WINDOWS__
 void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	if( nChar == 9 )   //TAB. Move focus to next UI object.
@@ -315,12 +347,22 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 
 		if( allowedInput != CXE_TEXT_STRING ) //It's not text (it's a number).
 		{
+#ifdef __WINDOWS__
 			if (((c < '0') || (c > '9')) && (c != '.')) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
-		}
+#endif
+#ifdef __LINUX__
+                  if (((c < '0') || (c > '9')) && (c != '.')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
+#endif
+            }
 		
 		if( allowedInput == CXE_INT_NUMBER ) //It's an integer.
 		{
+#ifdef __WINDOWS__
 			if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
+#endif
+#ifdef __LINUX__
+                  if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
+#endif
 		}
 
 		CEdit::OnChar( nChar, nRepCnt, nFlags );
@@ -328,13 +370,78 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 		return;
 	}
 }
+#endif
+#ifdef __LINUX__
+void CxEditBox::OnChar( wxKeyEvent & event )
+{
+      int nChar = event.KeyCode();
+
+      if ( nChar == 9 )
+	{
+             Boolean shifted = event.m_shiftDown;
+             mWidget->NextFocus(shifted);
+      }
+	else if ( allowedInput == CXE_READ_ONLY )
+	{
+		return;
+	}
+      else if ( nChar == 13 ) //RETURN.
+	{
+		((CrEditBox*)mWidget)->ReturnPressed();
+	}
+	else
+	{
+//Block unwanted keypresses...
+		char c = (char) nChar;
+		if(iscntrl( nChar )) //It it a control char (delete, arrow keys), let it through
+		{
+                  event.Skip();
+			EditChanged();
+			return;
+		}
+		if( allowedInput != CXE_TEXT_STRING ) //It's not text (it's a number).
+		{
+#ifdef __WINDOWS__
+			if (((c < '0') || (c > '9')) && (c != '.')) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
+#endif
+#ifdef __LINUX__
+                  if (((c < '0') || (c > '9')) && (c != '.')) {wxBell(); return;} //If it is non numeric, and not '.', then ignore.
+#endif
+		}
+		
+		if( allowedInput == CXE_INT_NUMBER ) //It's an integer.
+		{
+#ifdef __WINDOWS__
+			if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
+#endif
+#ifdef __LINUX__
+                  if ( c == '.' ) {wxBell(); return;} //If it's a dot, ignore.
+#endif
+		}
+
+            event.Skip();
+		EditChanged();
+		return;
+	}
+}
+#endif
+
+
 
 void CxEditBox::Disable(Boolean disable)
 {
-	if(disable)               //I call it Disable(TRUE), they call it Enable(FALSE).
+#ifdef __WINDOWS__
+      if(disable)
 		EnableWindow(FALSE);
 	else
 		EnableWindow(TRUE);
+#endif
+#ifdef __LINUX__
+      if(disable)
+            Enable(false);
+	else
+            Enable(true);
+#endif
 }
 
 void CxEditBox::SetInputType(int type)
@@ -345,21 +452,46 @@ void CxEditBox::SetInputType(int type)
 
 void CxEditBox::ClearBox()
 {
+#ifdef __WINDOWS__
 	SetSel(0,-1);       //Set the selection to the whole of the text buffer.
 	Clear();			//Clears the selection.
+#endif
+#ifdef __LINUX__
+      Clear();
+#endif
 }
 
+#ifdef __WINDOWS__
 void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
             switch (nChar)
             {
                   case VK_UP:
+                        ((CrEditBox*)mWidget)->SysKey( CRUP );
+                        break;
                   case VK_DOWN:
-                        ((CrEditBox*)mWidget)->SysKey( nChar );
+                        ((CrEditBox*)mWidget)->SysKey( CRDOWN );
                         break;
                   default:
                         CEdit::OnKeyDown( nChar, nRepCnt, nFlags );
                         break;
             }
 }
-
+#endif
+#ifdef __LINUX__
+void CxEditBox::OnKeyDown ( wxKeyEvent & event )
+{
+            switch (event.KeyCode())
+            {
+                  case WXK_UP:
+                        ((CrEditBox*)mWidget)->SysKey( CRUP );
+                        break;
+                  case WXK_DOWN:
+                        ((CrEditBox*)mWidget)->SysKey( CRDOWN );
+                        break;
+                  default:
+                        event.Skip();
+                        break;
+            }
+}
+#endif

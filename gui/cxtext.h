@@ -23,17 +23,20 @@ class LCaption;
 #endif
 
 #ifdef __LINUX__
+#include <wx/stattext.h>
+#define BASETEXT wxStaticText
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASETEXT CStatic
 #endif
 
 class CrText;
 class CxGrid;
 //End of user code.         
  
-class	CxText : public CStatic
+class CxText : public BASETEXT
 {
 	public:
 		// methods

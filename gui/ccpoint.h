@@ -16,12 +16,12 @@ class CcPoint
 	public:
 		// methods
             CcPoint();
-            CcPoint( const CcPoint &inPoint );
+            CcPoint(const CcPoint& inPoint);
             CcPoint( const int x, const int y );
             ~CcPoint();
             void  Set( const int x, const int y );
-            const int   X();
-            const int   Y();
+            int   X();
+            int   Y();
             CcPoint&     operator=( const CcPoint &inPoint );
 		
 		// attributes

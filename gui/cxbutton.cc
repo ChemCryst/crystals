@@ -15,79 +15,84 @@
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"crbutton.h"
+
+
+#ifdef __WINDOWS__
 #include	<afxwin.h>
-//#include	<TextUtils.h>
-//#include	<LStdControl.h>
+#endif
+
+#ifdef __LINUX__
+#include    <wx/gdicmn.h>
+#include    <wx/event.h>
+#endif
 
 int CxButton::mButtonCount = kButtonBase;
-//End of user code.          
 
-// OPSignature: CxButton * CxButton:CreateCxButton( CrButton *:container  CxGrid *:guiParent ) 
 CxButton *	CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
 {
 	CxButton	*theStdButton = new CxButton(container);
+#ifdef __WINDOWS__
 	theStdButton->Create("Button",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(0,0,10,10),guiParent,mButtonCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
+#endif
+#ifdef __LINUX__
+      theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10));
+#endif
 
 	return theStdButton;
-//End of user code.         
 }
 
 CxButton::CxButton(CrButton* container)
+#ifdef __WINDOWS__
 	:CButton()
-//Insert your own initialization here.
-//End of user initialization.         
+#endif
+#ifdef __LINUX__
+      :wxButton()
+#endif
 {
-	mWidget = container;
-//Insert your own code here.
-//End of user code.         
+     mWidget = container;
+}
 
-}
-// OPSignature:  CxButton:~CxButton() 
-	CxButton::~CxButton()
+CxButton::~CxButton()
 {
-//Insert your own code here.
 	mButtonCount--;
-/*	if ( mOutlineWidget != nil )
-	{
-		delete mOutlineWidget;
-	}		*/
-//End of user code.         
 }
-// OPSignature: void CxButton:ButtonClicked() 
+
 void	CxButton::ButtonClicked()
 {
-//Insert your own code here.
 	( (CrButton *)mWidget)->ButtonClicked();
-//End of user code.         
 }
-// OPSignature: void CxButton:SetText( char *:text ) 
+
 void	CxButton::SetText( char * text )
 {
-//Insert your own code here.
 #ifdef __POWERPC__
 	Str255 descriptor;
-	
 	strcpy( reinterpret_cast<char *>(descriptor), text );
 	c2pstr( reinterpret_cast<char *>(descriptor) );
 	SetDescriptor( descriptor );
 #endif
 #ifdef __LINUX__
-	setText(text);
+      SetLabel(text);
 #endif
 #ifdef __WINDOWS__
 	SetWindowText(text);
 #endif
-//End of user code.         
 }
+
 void	CxButton::SetGeometry( int top, int left, int bottom, int right )
 {
+#ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true);
+#endif
+#ifdef __LINUX__
+      SetSize(left,top,right-left,bottom-top);
+#endif
+
 }
 int	CxButton::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -96,11 +101,23 @@ int	CxButton::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
 int	CxButton::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -109,97 +126,127 @@ int	CxButton::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
+
 }
 int	CxButton::GetWidth()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
 int	CxButton::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
 
-// OPSignature: int CxButton:GetIdealWidth() 
 int	CxButton::GetIdealWidth()
 {
-//Insert your own code here.
-//	Str255 descriptor, str;
-//	Int16 strSize;
-	
-//	GetDescriptor( descriptor );
-//	GetDescriptor( str );
-//	p2cstr( str );
-	
-	// Check for empty strings
-//	if ( strlen( (char *)str ) == 0 )
-//		strSize = 18;
-//	else
-//		strSize = ::StringWidth(descriptor) + 18;	// 9 pixels slop on either side
-//
-//	return ( strSize );
+#ifdef __WINDOWS__
 	CString text;
 	SIZE size;
 	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
 	GetWindowText(text);
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-	return (size.cx+20); //*** optimum width for Windows buttons (only joking)
-//End of user code.         
+      return (size.cx+20); // optimum width for Windows buttons (only joking)
+#endif
+#ifdef __LINUX__
+      int cx,cy;
+      GetTextExtent( GetLabel(), &cx, &cy );
+      return (cx+20); // nice width for buttons
+#endif
+
 }
-// OPSignature: int CxButton:GetIdealHeight() 
+
 int	CxButton::GetIdealHeight()
 {
-//Insert your own code here.
+#ifdef __WINDOWS__
 	CString text;
 	SIZE size;
 	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
 	GetWindowText(text);
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 	return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
-//End of user code.         
+#endif
+#ifdef __LINUX__
+      int cx,cy;
+      GetTextExtent( GetLabel(), &cx, &cy );
+      return (cy+5); // nice height for buttons
+#endif
+
 }
-// OPSignature: void CxButton:BroadcastValueMessage() 
+
 void CxButton::BroadcastValueMessage()
 {
-//Insert your own code here.
-	// call the CxClass callback
 	ButtonClicked();
-	
-	// call the framework callback
-//	LControl::BroadcastValueMessage();
-//End of user code.         
 }
-// OPSignature: void CxButton:SetDefault() 
+
 void CxButton::SetDefault()
 {
-//Insert your own code here.
-	// create the default outline
-//	mOutlineWidget = new LDefaultOutline( this );
-//	mValueMessage = msg_OK;
-	ModifyStyle(NULL,BS_DEFPUSHBUTTON,0);
+// create the default outline
+#ifdef __WINDOWS__
+       ModifyStyle(NULL,BS_DEFPUSHBUTTON,0);
+#endif
+#ifdef __LINUX__
+       SetDefault();
+#endif
 
 // Store the default button in the responsible window
 	CxWindow * window = (CxWindow *) (mWidget->GetRootWidget()->GetWidget());
-	
 	if ( window != nil )
 		window->SetDefaultButton( this );
-//End of user code.         
 }
 
+
+#ifdef __WINDOWS__
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxButton, CButton)
 	ON_CONTROL_REFLECT(BN_CLICKED, ButtonClicked)
 	ON_WM_CHAR()
 END_MESSAGE_MAP()
+#endif
+
+#ifdef __LINUX__
+//wx Message Map
+BEGIN_EVENT_TABLE(CxButton, wxButton)
+      EVT_BUTTON( -1, CxButton::ButtonClicked ) 
+      EVT_CHAR( CxButton::OnChar )
+END_EVENT_TABLE()
+#endif
 
 void CxButton::Focus()
 {
 	SetFocus();
 }
 
+#ifdef __WINDOWS__
 void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	NOTUSED(nRepCnt);
@@ -223,12 +270,45 @@ void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 		}
 	}
 }
+#endif
+#ifdef __LINUX__
+void CxButton::OnChar( wxKeyEvent & event )
+{
+      switch(event.KeyCode())
+	{
+		case 9:     //TAB. Shift focus back or forwards.
+		{
+                  Boolean shifted = event.m_shiftDown;
+			mWidget->NextFocus(shifted);
+			break;
+		}
+		case 32:    //SPACE. Activates button. Don't focus to the input line.
+		{
+			break;
+		}
+		default:
+		{
+                  mWidget->FocusToInput((char)event.KeyCode());
+			break;
+		}
+	}
+}
+#endif
+
 
 void CxButton::Disable(Boolean disabled)
 {
+#ifdef __WINDOWS__
 	if(disabled)
 		EnableWindow(FALSE);
 	else
 		EnableWindow(TRUE);
+#endif
+#ifdef __LINUX__
+	if(disabled)
+            Enable(false);
+	else
+            Enable(true);
+#endif
 
 }

@@ -443,29 +443,90 @@ void CxWindow::AdjustSize(CcRect * size)
 	return;
 }
 
+#ifdef __WINDOWS__
 void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
-      if ( mWindowWantsKeys )
-      {
-            switch (nChar) {
-                  case VK_LEFT:
-                  case VK_RIGHT:
-                  case VK_UP:
-                  case VK_DOWN:
-                  case VK_INSERT:
-                  case VK_DELETE:
-                  case VK_END:
-                  case VK_ESCAPE:
-
-                        ((CrWindow*)mWidget)->SysKeyPressed( nChar );
-
-                        break;
-                  default:
+      int key = -1;
+      switch (nChar) {
+           case VK_LEFT:
+                  key = CRLEFT;
+                  break;
+           case VK_RIGHT:
+                  key = CRRIGHT;
+                  break;
+           case VK_UP:
+                  key = CRUP;
+                  break;
+           case VK_DOWN:
+                  key = CRDOWN;
+                  break;
+           case VK_INSERT:
+                  key = CRINSERT;
+                  break;
+           case VK_DELETE:
+                  key = CRDELETE;
+                  break;
+           case VK_END:
+                  key = CREND;
+                  break;
+           case VK_ESCAPE:
+                  key = CRESCAPE;
+                  break;
+           default:
                   //Do nothing
-                        break;
-            }
+                  break;
       }
 
-// Call the base class to allow normal processing of keystroke stuff.
+      if (key >= 0)
+            ((CrWindow*)mWidget)->SysKeyPressed( key );
+
       CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
+#endif
+
+#ifdef __LINUX__
+void CxWindow::OnKeyDown( wxKeyEvent & event )
+{
+      int key = -1;
+
+      switch(event.KeyCode())
+	{
+           case WXK_LEFT:
+                  key = CRLEFT;
+                  break;
+           case WXK_RIGHT:
+                  key = CRRIGHT;
+                  break;
+           case WXK_UP:
+                  key = CRUP;
+                  break;
+           case WXK_DOWN:
+                  key = CRDOWN;
+                  break;
+           case WXK_INSERT:
+                  key = CRINSERT;
+                  break;
+           case WXK_DELETE:
+                  key = CRDELETE;
+                  break;
+           case WXK_END:
+                  key = CREND;
+                  break;
+           case WXK_ESCAPE:
+                  key = CRESCAPE;
+                  break;
+           default:
+                  //Do nothing
+                  break;
+      }
+
+      if (key >= 0)
+            ((CrWindow*)mWidget)->SysKeyPressed( key );
+
+
+// Carry on processing this event.
+      event.Skip();
+
+}
+#endif
+

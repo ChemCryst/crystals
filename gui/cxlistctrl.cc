@@ -1,3 +1,7 @@
+// This class is being temporarily removed from the LINUX version,
+// as it is far too complicated and not even used in SCRIPTS yet.
+#ifndef __LINUX__
+
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CxListCtrl
@@ -21,16 +25,20 @@ int	CxListCtrl::mListCtrlCount = kListCtrlBase;
 CxListCtrl *	CxListCtrl::CreateCxListCtrl( CrListCtrl * container, CxGrid * guiParent )
 {
 	CxListCtrl	*theListCtrl = new CxListCtrl( container );
+#ifdef __WINDOWS__
 	theListCtrl->Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_OWNERDRAWFIXED|LVS_SHOWSELALWAYS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListCtrlCount++);
 	theListCtrl->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theListCtrl->SetFont(CxGrid::mp_font);
-
-
+#endif
+#ifdef nnLINUXnn
+      theListCtrl->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
+                          wxLC_REPORT);
+#endif
 	return theListCtrl;
 }
 
 CxListCtrl::CxListCtrl( CrListCtrl * container )
-	: CListCtrl()
+      : BASELISTCTRL()
 {
 	mWidget = container;
 
@@ -60,6 +68,7 @@ void	CxListCtrl::SetVisibleLines( int lines )
 
 void	CxListCtrl::SetGeometry( int top, int left, int bottom, int right )
 {
+#ifdef __WINDOWS__
 	//If top or left are negative, this is a call from CalcLayout,
 	//therefore don't repaint the window.
 	if((top<0) || (left<0))
@@ -78,12 +87,16 @@ void	CxListCtrl::SetGeometry( int top, int left, int bottom, int right )
 	}
 	else
 		MoveWindow(left,top,right-left,bottom-top,true);
+#endif
+#ifdef nnLINUXnn
+      SetSize(left,top,right-left,bottom-top);
+#endif
 }
 
-int	CxListCtrl::GetTop()
+int   CxListCtrl::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -92,12 +105,23 @@ int	CxListCtrl::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef nnLINUXnn
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
-
-int	CxListCtrl::GetLeft()
+int   CxListCtrl::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -106,19 +130,47 @@ int	CxListCtrl::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
+#endif
+#ifdef nnLINUXnn
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
+
 }
-int	CxListCtrl::GetWidth()
+int   CxListCtrl::GetWidth()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef nnLINUXnn
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
-int	CxListCtrl::GetHeight()
+int   CxListCtrl::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef nnLINUXnn
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
+
 
 int	CxListCtrl::GetIdealWidth()
 {
@@ -132,38 +184,51 @@ int	CxListCtrl::GetIdealWidth()
 
 int	CxListCtrl::GetIdealHeight()
 {
+#ifdef __WINDOWS__
 	int lines = mVisibleLines;
-
 	CClientDC cdc(this);
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
 	return lines * ( textMetric.tmHeight + 2 );
-		
+#endif
+#ifdef nnLINUXnn
+      return mVisibleLines * ( GetCharHeight() + 2 );
+#endif
 }
 
 int	CxListCtrl::GetValue()
 {
-//	return ( GetCurSel() + 1 );
 	return 0;
 }
 
 
 
+#ifdef __WINDOWS__
 BEGIN_MESSAGE_MAP(CxListCtrl, CListCtrl)
-//	ON_CONTROL_REFLECT(LBN_DBLCLK, DoubleClicked)
-//	ON_CONTROL_REFLECT(LBN_SELCHANGE, Selected)
 	ON_WM_CHAR()
 	ON_WM_DRAWITEM() 
 	ON_WM_PAINT()
 	ON_WM_KILLFOCUS()
 	ON_WM_SETFOCUS()
 	ON_NOTIFY(HDN_ITEMCLICKA, 0, OnHeaderClicked) 
-    ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
+      ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
 	ON_NOTIFY_REFLECT( LVN_ITEMCHANGED, ItemChanged )
- 
 END_MESSAGE_MAP()
+#endif
+#ifdef nnLINUXnn
+//wx Message Map
+BEGIN_EVENT_TABLE(CxButton, wxButton)
+      EVT_CHAR( CxButton::OnChar )
+      EVT...
+      EVT...
+      EVT...
+      ECT...
+      EVT...
+      EVT_LIST_COL_CLICK
+END_EVENT_TABLE()
+#endif
 
 
 
@@ -255,7 +320,7 @@ void CxListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
         GetItem(&lvi);
 
         // Should the item be highlighted
-        BOOL bHighlight =((lvi.state & LVIS_DROPHILITED)
+        Boolean bHighlight =((lvi.state & LVIS_DROPHILITED)
                                 || ( (lvi.state & LVIS_SELECTED)
                                         && ((GetFocus() == this)
                                                 || (GetStyle() & LVS_SHOWSELALWAYS)
@@ -596,7 +661,7 @@ void CxListCtrl::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 // colType				- INT, REAL or TEXT. Makes sure correct sort is done.
 // nCol                 - column that contains the text to be sorted
 // bAscending           - indicate sort order
-BOOL CxListCtrl::SortTextItems( int colType, int nCol, BOOL bAscending)
+Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
 {
 	int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
 	if( nCol >= nColCount)
@@ -659,7 +724,7 @@ BOOL CxListCtrl::SortTextItems( int colType, int nCol, BOOL bAscending)
 			break;
 		}
 		int hold = index[element];
-		bool repeat = true;
+            Boolean repeat = true;
 		int place;
 		for ( place = element - 1; repeat; place-- )
 		{
@@ -740,7 +805,7 @@ BOOL CxListCtrl::SortTextItems( int colType, int nCol, BOOL bAscending)
 	CStringArray rowText;
 	rowText.SetSize( nColCount );
 
-	bool *sorted = new bool[size+1];
+      Boolean *sorted = new Boolean[size+1];
 	for (i = 0; i <= size; i++)
 		sorted[i] = false;
 	
@@ -1089,3 +1154,5 @@ void CxListCtrl::GetSelectedIndices(  int * values )
 	}
 	return;
 }
+
+#endif

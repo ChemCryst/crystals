@@ -23,17 +23,20 @@ class LStdCheckBox;
 #endif
 
 #ifdef __LINUX__
+#include <wx/checkbox.h>
+#define BASECHECKBOX wxCheckBox
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASECHECKBOX CButton
 #endif
 
 class CrCheckBox;
 class CxGrid;
 //End of user code.         
  
-class	CxCheckBox : public CButton
+class CxCheckBox : public BASECHECKBOX
 {
 	public:
 		void Focus();
@@ -50,27 +53,28 @@ class	CxCheckBox : public CButton
 		int	GetHeight();
 		int	GetIdealWidth();
 		int	GetIdealHeight();
-		static int	AddCheckBox();
-		static void	RemoveCheckBox();
-		void	BroadcastValueMessage();
 		void	SetBoxState( Boolean inValue );
 		void	Disable(Boolean disabled);
 		Boolean	GetBoxState();
 		
 		// attributes
 		CrGUIElement *	mWidget;
+	protected:
+		static int	mCheckBoxCount;
 
+
+#ifdef __WINDOWS__
 		afx_msg void BoxClicked();
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 		DECLARE_MESSAGE_MAP()
-
+#endif
+#ifdef __LINUX__
+            void BoxClicked();
+            void OnChar(wxKeyEvent & event );
+            DECLARE_EVENT_TABLE()
+#endif
 		
-	protected:
-		// methods
-		
-		// attributes
-		static int	mCheckBoxCount;
 		
 };
 #endif

@@ -14,7 +14,17 @@
 //Insert your own code here.
 #include	"crguielement.h"
 
-#include	<afxwin.h>
+#ifdef __WINDOWS__
+#include    <afxwin.h>
+#define BASEGRID CWnd
+#endif
+
+#ifdef __LINUX__
+#include <wx/control.h>
+#include <wx/font.h>
+#define BASEGRID wxControl
+#endif
+
 #include	"cxradiobutton.h"
 
 class CrGrid;
@@ -22,14 +32,15 @@ class CxGrid;
 
 //End of user code.         
  
-class	CxGrid : public CWnd
+class CxGrid : public BASEGRID
 {
-	public:
-		// methods
-		static CFont* mp_font;
+
+// The interface exposed to the CrClass:
+
+      public:
 		static CxGrid *	CreateCxGrid( CrGrid * container, CxGrid * guiParent );
-			CxGrid( CrGrid * container );
-			~CxGrid();
+            CxGrid( CrGrid * container );
+            ~CxGrid();
 		void	SetText( char * text );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
 		int	GetTop();
@@ -38,13 +49,15 @@ class	CxGrid : public CWnd
 		int	GetHeight();
 		int	GetIdealWidth();
 		int	GetIdealHeight();
-//		static int AddGrid( void) { mGridCount++; return mGridCount; };
-//		static void RemoveGrid( void) { mGridCount--; };
-		void	AddRadioButton( CxRadioButton * theRadio );
-		
-		// attributes
-		CrGUIElement *	mWidget;
+
+      	CrGUIElement *	mWidget;
 		static int mGridCount;
-//		QButtonGroup * mRadioGroup;
+
+#ifdef __WINDOWS__
+		static CFont* mp_font;
+#endif
+#ifdef __LINUX__
+            static wxFont* mp_font;
+#endif
 };
 #endif

@@ -1,10 +1,12 @@
 // crystals.cpp : Defines the class behaviors for the application.
 //
 
+#ifdef __WINDOWS__
 #include "stdafx.h"
 #include "crystals.h"
+#endif
+
 #include "crystalsinterface.h"
-#include <afxwin.h>
 #include "crapp.h"
 #include "cccontroller.h"
 

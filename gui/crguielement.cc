@@ -146,7 +146,7 @@ void CrGUIElement::Resize(int newColWidth, int newRowHeight, int origColWidth, i
 }
 
 
-void CrGUIElement::NextFocus(BOOL bPrevious)
+void CrGUIElement::NextFocus(Boolean bPrevious)
 {
 	CrGUIElement* nextWindow;
 	CrWindow* rootWindow = (CrWindow*)GetRootWidget();
@@ -192,4 +192,10 @@ void CrGUIElement::SysKey( UINT nChar )
       LOGERR("SysKey called in CrGUIElement Base Class");
       LOGERR("Have you tried to get SysKey messages for an object");
       LOGERR("which has no capability to recieve them?");
+}
+
+void CrGUIElement::Rename( CcString newName )
+{
+      LOGSTAT("Renameing object: " + mName + " to " + newName );
+      mName = newName;
 }

@@ -23,27 +23,28 @@ class LStdPopupMenu;
 #endif
 
 #ifdef __LINUX__
+#include <wx/choice.h>
+#define BASEDROPDOWN wxChoice
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEDROPDOWN CComboBox
 #endif
 
 class CrDropDown;
 class CxGrid;
 //End of user code.         
  
-class	CxDropDown : public CComboBox
+class CxDropDown : public BASEDROPDOWN
 {
 	public:
 		CcString GetDropDownText(int index);
 		int mItems;
 		void Focus();
-            // methods
 		static CxDropDown *	CreateCxDropDown( CrDropDown * container, CxGrid * guiParent );
 			CxDropDown( CrDropDown * container );
 			~CxDropDown();
-		void	Selected();
 		void	AddItem( char * text );
             void  SetSelection ( int select );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
@@ -62,9 +63,17 @@ class	CxDropDown : public CComboBox
 		CrGUIElement *	mWidget;
 		static int	mDropDownCount;
 
+#ifdef __WINDOWS__
+		void	Selected();
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-
 		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+            void Selected();
+            void OnChar(wxKeyEvent & event );
+            DECLARE_EVENT_TABLE()
+#endif
+
 
 };
 #endif

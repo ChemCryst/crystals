@@ -8,6 +8,9 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  1999/04/26 13:14:32  dosuser
+// RIC: Added void SetSelection ( int select ) function.
+//
 
 #include	"crystalsinterface.h"
 #include	"cxlistbox.h"
@@ -16,7 +19,9 @@
 #include	"cxwindow.h"
 #include	"crlistbox.h"
 
-
+#ifdef __LINUX__
+#include <wx/settings.h>
+#endif
 
 int	CxListBox::mListBoxCount = kListBoxBase;
 
@@ -24,17 +29,20 @@ int	CxListBox::mListBoxCount = kListBoxBase;
 CxListBox *	CxListBox::CreateCxListBox( CrListBox * container, CxGrid * guiParent )
 {
 	CxListBox	*theListBox = new CxListBox( container );
-//		theListBox->Create(WS_CHILD|WS_VISIBLE|LBS_NOTIFY|LBS_MULTIPLESEL|LBS_HASSTRINGS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
+#ifdef __WINDOWS__
 	theListBox->Create(WS_CHILD|WS_VISIBLE|LBS_NOTIFY|LBS_HASSTRINGS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
 	theListBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theListBox->SetFont(CxGrid::mp_font);
-
+#endif
+#ifdef __LINUX__
+      theListBox->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL,wxLB_SINGLE|wxLB_NEEDED_SB);
+#endif
 	return theListBox;
 
 }
 
 CxListBox::CxListBox( CrListBox * container )
-	: CListBox()
+      : BASELISTBOX()
 {
 	mWidget = container;
 	mItems = 0;
@@ -48,13 +56,23 @@ CxListBox::~CxListBox()
 
 void	CxListBox::DoubleClicked()
 {
-		int itemIndex = GetCurSel();
-		((CrListBox *)mWidget)->Committed( itemIndex + 1 );
+#ifdef __WINDOWS__
+            int itemIndex = GetCurSel();
+#endif
+#ifdef __LINUX__
+            int itemIndex = GetSelection();
+#endif
+            ((CrListBox *)mWidget)->Committed( itemIndex + 1 );
 }
 
 void	CxListBox::Selected()
 {
-		int itemIndex = GetCurSel();
+#ifdef __WINDOWS__
+            int itemIndex = GetCurSel();
+#endif
+#ifdef __LINUX__
+            int itemIndex = GetSelection();
+#endif
 		((CrListBox *)mWidget)->Selected( itemIndex + 1 );
 }
 
@@ -70,6 +88,9 @@ void	CxListBox::AddItem( char * text )
 	LSetCell( text, strlen( text ), theCell, macListH);
 #endif
 #ifdef __LINUX__
+      Append (text);
+      if( !mItems ) SetSelection(0);
+	mItems++;
 #endif
 #ifdef __WINDOWS__
 	AddString(text);
@@ -86,6 +107,7 @@ void	CxListBox::SetVisibleLines( int lines )
 
 void	CxListBox::SetGeometry( int top, int left, int bottom, int right )
 {
+#ifdef __WINDOWS__
 	//If top or left are negative, this is a call from CalcLayout,
 	//therefore don't repaint the window.
 	if((top<0) || (left<0))
@@ -104,12 +126,17 @@ void	CxListBox::SetGeometry( int top, int left, int bottom, int right )
 	}
 	else
 		MoveWindow(left,top,right-left,bottom-top,true);
+#endif
+#ifdef __LINUX__
+      SetSize(left,top,right-left,bottom-top);
+#endif
+
 }
 
-int	CxListBox::GetTop()
+int   CxListBox::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -118,12 +145,23 @@ int	CxListBox::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
-
-int	CxListBox::GetLeft()
+int   CxListBox::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -132,62 +170,83 @@ int	CxListBox::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
-}
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
 
-int	CxListBox::GetWidth()
+}
+int   CxListBox::GetWidth()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
-
-int	CxListBox::GetHeight()
+int   CxListBox::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
 
 
 int	CxListBox::GetIdealWidth()
 {
-//Insert your own code here.
-//	ListHandle	macListH;
-	CString text;
-//	Str255 descriptor;
-//	Cell	theCell = {0, 0};
 	int maxSiz = 10; //At least you can see it if it's empty!
-//	Int16 strSize;
-//	
-//	macListH = GetMacListH();					// Get control handle
-	SIZE size;
+#ifdef __WINDOWS__
+	CString text;
+      SIZE size;
 	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
-
 	for ( int i=0;i<mItems;i++ )
 	{
-//		theCell.v = i;							// Set cell and get text
 		GetText(i, text);
 		GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-
-//		LGetCell( buffer, &len, theCell, macListH);
-//		buffer[len]='\0';
-//	
-//		strcpy( reinterpret_cast<char *>(descriptor), buffer );
-//		c2pstr( reinterpret_cast<char *>(descriptor) );
-//
-//		// Check for empty strings
-//		if ( strlen( buffer ) == 0 )
-//			strSize = 26;
-//		else
-//			strSize = ::StringWidth(descriptor) + 26;	// 26 pixels slop on either side
-//
 		if ( maxSiz < size.cx )
 				maxSiz = size.cx;
 	}
-
 	if(mItems > mVisibleLines)
 		maxSiz += GetSystemMetrics(SM_CXVSCROLL);
+#endif
+#ifdef __LINUX__
+      wxString text;
+	for ( int i=0;i<mItems;i++ )
+	{
+            text = GetString(i);
+            int cx,cy;
+            GetTextExtent( GetLabel(), &cx, &cy );
+            if ( maxSiz < cx )
+                    maxSiz = cx;
+	}
 
+	if(mItems > mVisibleLines)
+      {
+            wxSystemSettings ss;
+            maxSiz += ss.GetSystemMetric(wxSYS_VSCROLL_X);
+      }
+
+#endif
 
 	return ( maxSiz + 10 ); //10 pixels spare
 
@@ -195,53 +254,63 @@ int	CxListBox::GetIdealWidth()
 
 int	CxListBox::GetIdealHeight()
 {
-
-	int lines = mVisibleLines;
-
+#ifdef __WINDOWS__
 	CClientDC cdc(this);
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
-	return lines * ( textMetric.tmHeight + 2 );
-
-//	FontInfo fInfo;
-//	::GetFontInfo(&fInfo);
-//	if ( mVisibleLines != 0 )
-//		lines = mVisibleLines;
-		
-//	return ( lines * (fInfo.ascent + fInfo.descent + fInfo.leading) + 2 );
-					// slop of 2 pixels
+      return mVisibleLines * ( textMetric.tmHeight + 2 );
+#endif
+#ifdef __LINUX__
+      int cx,cy;
+      GetTextExtent( "Any old string", &cx, &cy );
+      return mVisibleLines * ( cy + 2 );
+#endif
 
 }
 
 int	CxListBox::GetBoxValue()
 {
 
-//	Cell	theCell = {0, 0};	
-//	::LGetSelect ( true, &theCell, mMacListH );
-	return ( GetCurSel() + 1 );
+#ifdef __WINDOWS__
+      return ( GetCurSel() + 1 );
+#endif
+#ifdef __LINUX__
+      return ( GetSelection() + 1 );
+#endif
 
 }
 
+#ifdef __WINDOWS__
 BEGIN_MESSAGE_MAP(CxListBox, CListBox)
 	ON_CONTROL_REFLECT(LBN_DBLCLK, DoubleClicked)
 	ON_CONTROL_REFLECT(LBN_SELCHANGE, Selected)
 	ON_WM_CHAR()
 END_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+//wx Message Map
+BEGIN_EVENT_TABLE(CxListBox, BASELISTBOX)
+      EVT_LISTBOX_DCLICK(-1, CxListBox::DoubleClicked )
+      EVT_LISTBOX(-1, CxListBox::Selected )
+      EVT_CHAR( CxListBox::OnChar )
+END_EVENT_TABLE()
+#endif
 
 void CxListBox::Focus()
 {
 	SetFocus();
 }
 
+#ifdef __WINDOWS__
 void CxListBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	NOTUSED(nRepCnt);
 	NOTUSED(nFlags);
 	switch(nChar)
 	{
-		case 9:
+		case 9:     //TAB. Shift focus back or forwards.
 		{
 			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
 			mWidget->NextFocus(shifted);
@@ -250,15 +319,56 @@ void CxListBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 		default:
 		{
 			mWidget->FocusToInput((char)nChar);
+			break;
 		}
 	}
 }
+#endif
+#ifdef __LINUX__
+void CxListBox::OnChar( wxKeyEvent & event )
+{
+      switch(event.KeyCode())
+	{
+		case 9:     //TAB. Shift focus back or forwards.
+		{
+                  Boolean shifted = event.m_shiftDown;
+			mWidget->NextFocus(shifted);
+			break;
+		}
+		default:
+		{
+                  mWidget->FocusToInput((char)event.KeyCode());
+			break;
+		}
+	}
+}
+#endif
+
 
 
 void CxListBox::SetSelection( int select )
 {
-
+#ifdef __WINDOWS__
     SetCurSel ( select - 1 );
+#endif
+#ifdef __LINUX__
+    SetSelection ( select - 1 );
+#endif
 
 }
 
+CcString CxListBox::GetListBoxText(int index)
+{
+#ifdef __WINDOWS__
+	CString temp;
+      GetText(index-1, temp);
+	CcString result = temp.GetBuffer(temp.GetLength());
+	return result;
+#endif
+#ifdef __LINUX__
+      wxString temp = GetString( index -1 );
+      CcString result ( temp.c_str() );
+	return result;
+#endif
+
+}

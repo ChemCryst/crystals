@@ -63,6 +63,12 @@ typedef void AppContext;
 #ifdef __LINUX__
 typedef bool Boolean;
 #define nil 0
+#define TRUE true
+#define FALSE false
+#define UINT uint
+#include <wx/file.h>
+#include <wx/memory.h>
+#define TRACE WXTRACE 
 #endif
 
 #ifdef __WINDOWS__
@@ -71,6 +77,18 @@ typedef bool Boolean;
 typedef bool Boolean;
 #define nil NULL
 #endif
+
+
+#define CRLEFT   0
+#define CRRIGHT  1
+#define CRUP     2
+#define CRDOWN   3
+#define CRINSERT 4
+#define CRDELETE 5
+#define CREND    6
+#define CRESCAPE 7
+
+
 
 #define LOGERRORS    //        Log errors         (LOGERR macro)
 #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)

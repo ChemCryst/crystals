@@ -5,14 +5,21 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include	"crystalsinterface.h"
-#include	<gl\gl.h>
-#include	<gl\glu.h>
+#ifdef __WINDOWS__
+#include    <GL\gl.h>
+#include    <GL\glu.h>
+#include	<afxwin.h>
+#endif
+#ifdef __LINUX__
+#include    <GL/gl.h>
+#include    <GL/glu.h>
+#endif
+
 #include	<math.h>
 #include	"cxmodel.h"
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"crmodel.h"
-#include	<afxwin.h>
 #include	"ccmodelatom.h"
 #include	"creditbox.h"
 #include	"cccontroller.h"
@@ -190,9 +197,9 @@ void CxModel::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 }
 
 
-CPoint CxModel::DeviceToLogical(int x, int y)
+CcPoint CxModel::DeviceToLogical(int x, int y)
 {
-	CPoint		newpoint;
+      CcPoint            newpoint;
 	CRect		windowext;
 	float		aspectratio, windowratio;
 
@@ -224,9 +231,9 @@ CPoint CxModel::DeviceToLogical(int x, int y)
 	return newpoint;
 }
 
-CPoint CxModel::LogicalToDevice(CPoint point)
+CcPoint CxModel::LogicalToDevice(CcPoint point)
 {
-	CPoint		newpoint;
+      CcPoint            newpoint;
 	CRect		windowext;
 	float		aspectratio, windowratio;
 
@@ -295,6 +302,7 @@ void CxModel::SetIdealWidth(int nCharsWide)
 void CxModel::OnLButtonUp( UINT nFlags, CPoint point )
 {
 	NOTUSED(nFlags);
+      NOTUSED(point);
 	if(m_fastrotate)
 	{
 		m_fastrotate = FALSE;
@@ -304,8 +312,9 @@ void CxModel::OnLButtonUp( UINT nFlags, CPoint point )
 
 }
 
-void CxModel::OnLButtonDown( UINT nFlags, CPoint point )
+void CxModel::OnLButtonDown( UINT nFlags, CPoint wpoint )
 {	
+      CcPoint point(wpoint.x,wpoint.y);
 	CcString atomname;
 	CcModelAtom* atom;
 	if(IsAtomClicked(point.x, point.y, &atomname, &atom))
@@ -325,13 +334,14 @@ void CxModel::OnLButtonDown( UINT nFlags, CPoint point )
 }
 
 
-void CxModel::OnMouseMove( UINT nFlags, CPoint point )
+void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
-	float degToRad = 3.1415926535f / 180.0f;
-	CRect rect;
+
+      CcPoint point;
+      point.Set(wpoint.x,wpoint.y);
+
+      CRect rect;
 	GetWindowRect(&rect);
-	float xFactor = 300.0f / (float)rect.Width();
-	float yFactor = 300.0f / (float)rect.Height();
 
 	if(nFlags & MK_LBUTTON) 
 	{
@@ -339,12 +349,29 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 		{
 			float *oldmatrix;
 			oldmatrix = new float[16];
-			CSize rotate = m_ptLDown - point;
+
+                  int xrotate = m_ptLDown.x - point.x;
+                  int yrotate = m_ptLDown.y - point.y;
+
 			m_ptLDown = point;
-			float m_angle1 = degToRad*rotate.cx*xFactor;
-			float m_angle2 = degToRad*rotate.cy*yFactor;
+
+// 5.236 is 300 * PI / 180. The 300 part is to balance the divide by rect.Width() or Height().
+
+                  float m_angle1 = 5.236f * (float)xrotate / (float)rect.Width();
+                  float m_angle2 = 5.236f * (float)yrotate / (float)rect.Height();
 	
-			if(rotate.cy != 0)
+//            (CcController::theController)->SetProgressText(
+//                                           CcString(m_ptLDown.x) + " " 
+//                                         + CcString(m_ptLDown.y)   + " " +
+//                                           CcString(xrotate)   + " " 
+//                                         +  CcString(yrotate)   + " " +
+//                                           CcString(point.x)   + " "  
+//                                         +  CcString(point.y)
+//                                           CcString(m_angle1)   + " "  
+//                                         +  CcString(m_angle2)
+//                                       );
+
+            if(yrotate != 0)
 			{
 				for (int i = 0; i < 16; i++)
 					oldmatrix[i]=matrix[i];
@@ -356,7 +383,7 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 				matrix[6] = (float)-sin(m_angle2) * oldmatrix[5] + (float)cos(m_angle2) * oldmatrix [6];
 				matrix[10] =(float)-sin(m_angle2) * oldmatrix[9] + (float)cos(m_angle2) * oldmatrix [10];
 			}
-			if(rotate.cx != 0)
+                  if(xrotate != 0)
 			{
 				for (int i = 0; i < 16; i++)
 					oldmatrix[i]=matrix[i];
@@ -432,8 +459,9 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 	}
 }
 
-void CxModel::OnRButtonUp( UINT nFlags, CPoint point )
+void CxModel::OnRButtonUp( UINT nFlags, CPoint wpoint )
 {
+      CcPoint point(wpoint.x,wpoint.y);
 	CcString atomname;
 	CcModelAtom* atom;
 	CrModel* crModel = (CrModel*)mWidget;
@@ -443,8 +471,10 @@ void CxModel::OnRButtonUp( UINT nFlags, CPoint point )
 	//decide which menu to show
 	if(IsAtomClicked(point.x, point.y, &atomname, &atom))
 	{
-		ClientToScreen(&point); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
-
+#ifdef __WINDOWS__
+            ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
+            point = CcPoint(wpoint.x,wpoint.y);
+#endif
 		if (atom->IsSelected()) // If it's selected pass the atom-clicked, and all the selected atoms.
 		{
 			int nSelected;
@@ -462,7 +492,10 @@ void CxModel::OnRButtonUp( UINT nFlags, CPoint point )
 	}
 	else
 	{
-		ClientToScreen(&point); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
+#ifdef __WINDOWS__
+            ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
+            point = CcPoint(wpoint.x,wpoint.y);
+#endif
 		((CrModel*)mWidget)->ContextMenu(point.x,point.y);
 	}
 }

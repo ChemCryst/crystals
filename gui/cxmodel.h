@@ -13,8 +13,6 @@
 #define		__CxModel_H__
 //Insert your own code here.
 #include	"crguielement.h"
-#include	<GL\gl.h>
-#include	<GL\glu.h>
 
 #ifdef __POWERPC__
 class LStdModel;
@@ -25,13 +23,20 @@ class LStdModel;
 #endif
 
 #ifdef __LINUX__
-#include <qpushbt.h>
-#include <qobject.h>
+#include    <GL/gl.h>
+#include    <GL/glu.h>
+#include <wx/control.h>
+#define BASEMODEL wxControl
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#include	<GL\gl.h>
+#include	<GL\glu.h>
+#define BASEMODEL CWnd
 #endif
+
+#include "ccpoint.h"
 
 class CrModel;
 class CxGrid;
@@ -42,18 +47,14 @@ class CcModelAtom;
 #define VDW			2
 #define THERMAL  3
 
-class	CxModel : public CWnd
+class CxModel : public BASEMODEL
 {
 	public:
             void Reset();
-                float ScaleToWindow();
-                float m_projratio;
+            float ScaleToWindow();
+            float m_projratio;
             Boolean m_moved;
 		void UpdateHighlights();
-		HDC hDC;
-		GLuint mNormal;
-		GLuint mHighlights;
-		GLuint mLitatom;
 		Boolean m_drawing;
 		void OnMenuSelected (int nID);
 
@@ -67,33 +68,23 @@ class	CxModel : public CWnd
 		void SetRadiusScale(int scale);
 		void SetRadiusType(int radtype);
 		void Start();
-//            void Clear();
 		void Setup();
 		void PaintBuffer();
             void DrawAtom(CcModelAtom* anAtom, int style = 0);
-		BOOL SetWindowPixelFormat(HDC hDC);
-		BOOL CreateViewGLContext(HDC hDC);
-//		enum GLDisplayListNames { mNormal = 1, mFast = 2, mHighlights = 3, mLitatom = 4 };  //Normal are the atoms and bonds normally rendered. Fast consists of much cruder bonds for fast drawing during rotation.
-		HGLRC m_hGLContext;									 //The rendering context handle.
 		int m_GLPixelIndex;									 //The pixel index member?
 		int m_radius;
 		Boolean m_fastrotate;
 		float*	matrix;								//Pointer to a rotation matrix used to rotate the coords before rendering. Set by dragging the mouse in the window.
-		CPoint m_ptLDown;
+            CcPoint m_ptLDown;
 
 		int mIdealHeight;
 		int mIdealWidth;
 		void SetIdealWidth(int nCharsWide);
 		void SetIdealHeight(int nCharsHigh);
-//		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
-		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
-		CDC memDC;
 		void Display();
-		CPoint DeviceToLogical(int x, int y);
-		CPoint LogicalToDevice(CPoint point);
-//		CDC memDC;
+            CcPoint DeviceToLogical(int x, int y);
+            CcPoint LogicalToDevice(CcPoint point);
 		void Focus();
-		// methods
 		static CxModel *	CreateCxModel( CrModel * container, CxGrid * guiParent );
 		CxModel(CrModel* container);
 		~CxModel();
@@ -108,10 +99,21 @@ class	CxModel : public CWnd
 		static int AddModel( void ) { mModelCount++; return mModelCount; };
 		static void RemoveModel( void ) { mModelCount--; };
 		
-		// attributes
 		CrGUIElement *	mWidget;
 		static int mModelCount;
-//		LDefaultOutline * mOutlineWidget;
+
+		GLuint mNormal;
+		GLuint mHighlights;
+		GLuint mLitatom;
+		HGLRC m_hGLContext;									 //The rendering context handle.
+
+#ifdef __WINDOWS__
+		HDC hDC;
+
+		BOOL SetWindowPixelFormat(HDC hDC);
+		BOOL CreateViewGLContext(HDC hDC);
+		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
+		CDC memDC;
 
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnPaint();
@@ -121,8 +123,9 @@ class	CxModel : public CWnd
 		afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
 	
 		DECLARE_MESSAGE_MAP()
+#endif
+
 private:
-	int mBackBufferReady;
-	CcModelAtom* m_LitAtom;
+            CcModelAtom* m_LitAtom;
 };
 #endif

@@ -23,17 +23,21 @@ class LCaption;
 #endif
 
 #ifdef __LINUX__
+#include <wx/gauge.h>
+#include <wx/stattext.h>
+#define BASEPROGRESS wxGauge
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEPROGRESS CProgressCtrl
 #endif
 
 class CrProgress;
 class CxGrid;
 //End of user code.         
  
-class	CxProgress : public CProgressCtrl
+class CxProgress : public BASEPROGRESS
 {
 	public:
 		void SetProgress (int complete);
@@ -63,6 +67,12 @@ class	CxProgress : public CProgressCtrl
 		static int	mProgressCount;
 		int mCharsWidth;		
 private:
-	CStatic* m_TextOverlay;
+#ifdef __WINDOWS__
+            CStatic* m_TextOverlay;
+#endif
+#ifdef __LINUX__
+            wxStaticText* m_TextOverlay;
+#endif
+
 };
 #endif

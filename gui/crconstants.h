@@ -6,6 +6,9 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  1999/05/13 17:53:06  dosuser
+// RIC: Added kSSysRestart=RESTART and kSRestartFile=FILE
+//
 // Revision 1.6  1999/05/11 16:15:27  dosuser
 // RIC: Added token SYSGETDIR and supporting functions for getting a
 //      directory from the user via a common dialog.
@@ -53,6 +56,7 @@
 #define kSEndGrid             "}"
 #define kSOpenGrid            "{"
 #define kSSet				"SET"
+#define kSRenameObject              "RENAME"
 #define kSGetValue			"GETVALUE"
 #define kSSendValue			"SENDVALUE"
 #define kSState				"STATE"
@@ -248,6 +252,7 @@ enum {
 	kTDisposeWindow,
 	kTEndGrid,
 	kTSet,
+      kTRenameObject,
 	kTGetValue,
 	kTNoMoreToken,
 	kTTextColour,

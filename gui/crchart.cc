@@ -331,25 +331,25 @@ void CrChart::SysKey ( UINT nChar )
    {
       switch (nChar)
       {
-            case VK_LEFT:
+            case CRLEFT:
                   SendCommand( CcString( "L" ) );
                   break;
-            case VK_RIGHT:
+            case CRRIGHT:
                   SendCommand( CcString( "R" ) );
                   break;
-            case VK_UP:
+            case CRUP:
                   SendCommand( CcString( "U" ) );
                   break;
-            case VK_DOWN:
+            case CRDOWN:
                   SendCommand( CcString( "D" ) );
                   break;
-            case VK_DELETE:
+            case CRDELETE:
                   SendCommand( CcString( "A" ) );
                   break;
-            case VK_END:
+            case CREND:
                   SendCommand( CcString( "C" ) );
                   break;
-            case VK_ESCAPE:
+            case CRESCAPE:
                   SendCommand( CcString( "E" ) );
                   break;
             default:

@@ -23,15 +23,18 @@ class LCaption;
 #endif
 
 #ifdef __LINUX__
+#include <wx/menu.h>
+#define BASEMENU wxMenu
 #endif
 
 #ifdef __WINDOWS__
 #include <afxwin.h>
+#define BASEMENU CMenu
 #endif
 
 //End of user code.         
  
-class	CxMenu : public CMenu
+class CxMenu : public BASEMENU
 {
 	public:
 		void SetText(CcString theText, int id);
@@ -42,7 +45,10 @@ class	CxMenu : public CMenu
 		static CxMenu *	CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup = FALSE );
 			CxMenu( CrMenu * container );
 			~CxMenu();
-		
+            void PopupMenuHere(int x, int y, void *window);
+            void EnableItem( int id, Boolean enable );
+
+
 		// attributes
 		CrGUIElement *	mWidget;
 		

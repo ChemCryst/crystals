@@ -31,6 +31,5 @@ class	CrButton : public CrGUIElement
 		void	ButtonClicked();
 		
 		// attributes
-		
 };
 #endif
