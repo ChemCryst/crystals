@@ -5,8 +5,9 @@
 %  EVALUATE ELEMENTCOUNT = 0
  Input details of the elements in the asymmetric unit
  ----- ------- -- --- -------- -- --- ---------- ----
-      If you are going to use SHELXS to solve the structure, remember
-      to give C and H first, if present in your compound.
+{I   If you are going to use SHELXS to solve the structure, or publish
+{I   in a journal, remember to give C and H first, if present in your
+{I   compound.
 %
 %    IF ( EXISTS 13 .NE. 0 ) THEN
 %        COPY '#GENERALEDIT 13'
@@ -74,8 +75,10 @@
 %    SEND
 %    QUEUE PROCESS
 %    COPY 'END'
+%    COPY '#SUM L 29'
+%    COPY 'END'
 %  ELSE
-      You have not specified any elements. No data has been stored
+{E You have not specified any elements. No data has been stored
 %  END IF
 %
 %  FINISH
