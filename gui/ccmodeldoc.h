@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.16  2002/10/02 13:42:00  rich
 //   Support for more info from GUIBIT (e.g. UEQUIV).
 //   Ability to act as a source of data for either a MODELWINDOW
@@ -71,7 +77,7 @@
 #endif
 #ifdef __BOTHWX__
 #include <wx/glcanvas.h>
-#include <windows.h>
+//#include <windows.h>
 #include <GL/glu.h>
 #endif
 
