@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/01/12 15:06:43  CKP2
+C Make slant callable
+C
 C Revision 1.9  2000/12/05 12:44:43  CKP2
 C make SLANT into subroutine
 C
@@ -662,6 +665,7 @@ cjan99
         REAL START(3), STEPS(3),  TRANS(12)
         INTEGER NUM(3)
 cjan99
+        REAL MAT(3)
 C
 \QSTORE
 C
@@ -1087,6 +1091,40 @@ C----- RESTORE NEW INDEX AREAS
             END DO
             M5 = M5 + MD5
         END DO
+        WRITE ( NCFPU1 ,' ( ''SYMM'' )' )
+C--FIND OUT IF THE STRUCTURE IS CENTRIC
+        IF ( STORE(L2C) .LT. 0.5 ) THEN
+          WRITE ( NCFPU1 , '(''NONC'')' )
+        ELSE
+          WRITE ( NCFPU1 , '(''CENT'')' )
+        END IF
+        DO IND1=L2P,M2P,3
+          DO IND2=L2,M2,MD2
+C--COMBINE T(I) & P(K) VECTORS
+            MAT(1)=STORE(IND2+9)+STORE(IND1)
+            MAT(2)=STORE(IND2+10)+STORE(IND1+1)
+            MAT(3)=STORE(IND2+11)+STORE(IND1+2)
+            DO N = 1 , 3
+              MAT(N) = MAT(N) - INT(MAT(N))
+            END DO
+C--DO NOT PRINT UNIT MATRIX.
+            IF ( (STORE(IND2) .NE. 1.0 )   .OR.
+     1           (STORE(IND2+4) .NE. 1.0 ) .OR.
+     1           (STORE(IND2+8) .NE. 1.0 ) .OR.
+     1           ( ( MAT(1) + MAT(2) + MAT(3) )  .NE.  0.0 ) ) THEN
+              WRITE ( NCFPU1 , '( ''MATR'' )')
+              IND4=0
+              DO IND3=IND2,IND2+6,3
+                IND4=IND4+1
+                WRITE (NCFPU1,3340) STORE(IND3),STORE(IND3+1),
+     1                               STORE(IND3+2),MAT(IND4)
+3340            FORMAT (4(F7.3,1X))
+              END DO
+            END IF
+          END DO
+        END DO
+        WRITE ( NCFPU1 , '(''END'')' )
+
 C Close the fourier.map file
         CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
         CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
