@@ -134,7 +134,8 @@ class CxModel : public BASEMODEL
 		afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
-            afx_msg void OnMenuSelected (int nID);
+                afx_msg BOOL OnEraseBkgnd( CDC* pDC );
+                afx_msg void OnMenuSelected (int nID);
 	
 		DECLARE_MESSAGE_MAP()
 #endif
