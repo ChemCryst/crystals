@@ -47,6 +47,8 @@
 %       EVALUATE Z = ( IDEAL - ACTUAL ) / DEV
 %       IF Z .GT. 100.0 THEN
 %         INSERT '>100.0'
+%       ELSE IF Z .LT. - 100.0 THEN
+%         INSERT '>-100.0'
 %       ELSE
 %         TRANSFER CHARACTER ( Z ) TO BUFFER
 %       END IF
