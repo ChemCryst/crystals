@@ -21,9 +21,9 @@ You may get CRYSTALS to compute it for you from the space group symbol,
 %  VERIFY YES NO ABANDON
 %  GET NOSTORE FINAL ABBREVIATED  -
   'Do you want to input the Space group symbol' 'YES'
-%  IF VALUE .EQ. 1 THEN
+% SHOW VALUE
+%  CASE VALUE 
 %    COPY '#SCRIPT INSPACE'
-%  ELSE IF VALUE .EQ. 2 THEN
 %    COPY '#SCRIPT INLIST14'
-%  END IF
+%  END CASE
 %END SCRIPT
