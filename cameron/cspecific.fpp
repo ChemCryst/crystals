@@ -203,16 +203,12 @@ C &&GILGID      CHARACTER*80 CHARTC
 
       IF (N.GT.1000) N = 1000
 
-C &&GILGID      ID = KQUICKDATA(N*2)    
-
       ICOL1 = MIN ( ICOL, 15 )
 
       DO 10 I = 1 , N
 
 &DOS        ixx2(i) = nint(float(ix(i))*scale_X)
 &DOS        iyy2(i) = nint(float(iy(i))*scale_Y)
-C &&GILGID        CALL ADDDATA(ID,IX(I))
-C &&GILGID        CALL ADDDATA(ID,IY(I))
 &&GILGID        IPTS(I*2 - 1) = IX(I)
 &&GILGID        IPTS(I*2    ) = IY(I)
 
@@ -591,15 +587,11 @@ C &&GILGID      CHARACTER*80 CHARTC
 
 &GIL      WRITE(6,*) 'ZPOLGN, N: ', N
 
-C &&GILGID      ID = KQUICKDATA(N*2)
-
 &GIL      WRITE(6,*) 'ZPOLGN2, N: ', N
 
       DO 10 I = 1 , N
 &DOS        ixx2(i) = nint(float(ix(i))*scale_X)
 &DOS        iyy2(i) = nint(float(iy(i))*scale_Y)
-C &&GILGID        CALL ADDDATA(ID,IX(I))
-C &&GILGID        CALL ADDDATA(ID,IY(I))
 &&GILGID        IPTS(I*2 - 1) = IX(I)
 &&GILGID        IPTS(I*2    ) = IY(I)
 10    CONTINUE
@@ -774,40 +766,6 @@ C          Update the mouse position variables
 &&GILGID      ENDIF
 &&GILGID      GOTO 100
       END
-
-&&GILGID      INTEGER FUNCTION KQUICKDATA(ISIZ)
-&GID      INTERFACE
-&GID          SUBROUTINE NEWDATA (ISIZE, ID)
-&GID          !DEC$ ATTRIBUTES C :: newdata
-&GID          !DEC$ ATTRIBUTES VALUE :: ISIZE
-&GID          !DEC$ ATTRIBUTES REFERENCE :: ID
-&GID          INTEGER ISIZE, ID
-&GID          END SUBROUTINE NEWDATA
-&GID      END INTERFACE
-&&GILGID      INTEGER ISIZ,IRES
-&&GILGID      IRES = 0
-&GID      CALL NEWDATA(ISIZ, IRES)
-&GIL      CALL NEWDATA(%VAL(ISIZ), IRES)
-&&GILGID      KQUICKDATA = IRES
-&&GILGID      RETURN
-&&GILGID      END
-
-&&GILGID      SUBROUTINE ADDDATA(ID, IDATA, IOFF, ILEN)
-&GID      INTERFACE
-&GID          SUBROUTINE DATAIN (IDENT, IDATUM, IOFFSET, ILENGTH)
-&GID          !DEC$ ATTRIBUTES C :: datain
-&GID          !DEC$ ATTRIBUTES VALUE :: IDENT
-&GID          !DEC$ ATTRIBUTES REFERENCE :: IDATUM
-&GID          !DEC$ ATTRIBUTES VALUE :: IOFFSET
-&GID          !DEC$ ATTRIBUTES VALUE :: ILENGTH
-&GID          INTEGER IDENT, IDATUM, IOFFSET, ILENGTH
-&GID          END SUBROUTINE DATAIN
-&GID      END INTERFACE
-&&GILGID      INTEGER ID, IDATA, IOFF, ILEN
-&GID      CALL DATAIN(ID, IDATA, IOFF, ILEN)
-&GIL      CALL DATAIN(%VAL(ID), IDATA, %VAL(IOFF), %VAL(ILEN))
-&&GILGID      RETURN
-&&GILGID      END
 
 &&GILGID      SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
 &GID      INTERFACE
