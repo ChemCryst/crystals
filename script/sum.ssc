@@ -1,0 +1,57 @@
+%SCRIPT CIF
+% VARIABLE LOGICAL SCRIPTEXT
+      Summary file of all data
+%    COPY '#RELEASE PUNCH summary.lis'
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER 'Crystal structure information:' TO PUNCH
+%    TRANSFER '==============================' TO PUNCH
+%    COPY '#CIF '
+%    COPY 'END'
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER 'Atom coordinates and Uiso or Ueq:' TO PUNCH
+%    TRANSFER '=================================' TO PUNCH
+%    COPY '#PARAMETERS'
+%    COPY 'LAYOUT INSET = 1 NCHAR = 120'
+%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=YES NCHAR=14'
+%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
+%    COPY 'END'
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER 'Thermal parameters:' TO PUNCH
+%    TRANSFER '===================' TO PUNCH
+%    COPY '#PARAMETERS'
+%    COPY 'LAYOUT INSET = 1 NCHAR = 120'
+%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=NO NCHAR=14'
+%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=YES, NCHAR=14"
+%    COPY 'END'
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
+%    TRANSFER 'Distances and angles:' TO PUNCH
+%    TRANSFER '=====================' TO PUNCH
+%    COPY '#DIST'
+%    COPY 'E.S.D YES'
+%    COPY 'OUTPUT MON=OFF PUNCH=PUB HESD=NONFIXED'
+%    COPY 'END'
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Include reflection listing?' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%      TRANSFER ' ' TO PUNCH
+%      TRANSFER ' ' TO PUNCH
+%      TRANSFER ' ' TO PUNCH
+%      TRANSFER ' ' TO PUNCH
+%      TRANSFER ' ' TO PUNCH
+%      TRANSFER 'Reflections:' TO PUNCH
+%      TRANSFER '============' TO PUNCH
+%      TRANSFER ' ' TO PUNCH
+%      COPY '#PUNCH 6 C'
+%      COPY 'END'
+%  END IF
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#SPAWN summary.lis'
+%END SCRIPT
