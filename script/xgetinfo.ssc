@@ -1,0 +1,55 @@
+%SCRIPT XGETINFO
+%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE
+%  VARIABLE INTEGER HRTYP L12SER
+%  VARIABLE INTEGER HKEY  EKEY  WKEY  PKEY HRKEY L12KEY
+%  VARIABLE CHARACTER CKEY
+%%
+%% Extract relevant info from L39 about whether:
+%%    H have all been found       (HDONE)
+%%    Extinction has been checked (EDONE)
+%%    Weights have been chosen    (WDONE)
+%%    A purge of list 11 is done  (PDONE)
+%%    Preferred H treatment       (HRTYP)
+%%    Last list 12 written        (L12SER)
+%%
+
+{S * Checking info stored in L39.
+%  IF EXISTS 39 .GE. 1 THEN
+%   COPY '#GENERALEDIT 39'
+%   COPY 'LOCATE RECORDTYPE = 101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CKEY'
+%    COPY 'TRANSFER FROM OFFSET=2 TO HKEY'
+%    COPY 'TRANSFER FROM OFFSET=3 TO EKEY'
+%    COPY 'TRANSFER FROM OFFSET=4 TO WKEY'
+%    COPY 'TRANSFER FROM OFFSET=5 TO PKEY'
+%    COPY 'TRANSFER FROM OFFSET=6 TO HRKEY'
+%    COPY 'TRANSFER FROM OFFSET=7 TO L12KEY'
+%    IF CKEY .EQ. 'INFO' THEN
+%      IF HKEY .GT. 0 THEN
+%        EVALUATE HDONE = TRUE
+{R   All hydrogen atoms have been placed in the model.
+%      END IF
+%      IF EKEY .GT. 0 THEN
+%        EVALUATE EDONE = TRUE
+{R   Extinction has been checked.
+%      END IF
+%      IF WKEY .GT. 0 THEN
+%        EVALUATE WDONE = TRUE
+{R   Weights have been applied.
+%      END IF
+%      IF PKEY .GT. 0 THEN
+%        EVALUATE PDONE = TRUE
+{R   Old list 11 has been purged to save space.
+%      END IF
+%      EVALUATE HRTYP  = HRKEY
+%      EVALUATE L12SER = L12KEY
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%    COPY 'NEXT'
+%   END LOOP
+%   COPY 'END'
+%  END IF
+%END SCRIPT
