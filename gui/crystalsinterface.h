@@ -82,14 +82,20 @@ typedef bool Boolean;
 #endif
 
 
-#define CRLEFT   0
-#define CRRIGHT  1
-#define CRUP     2
-#define CRDOWN   3
-#define CRINSERT 4
-#define CRDELETE 5
-#define CREND    6
-#define CRESCAPE 7
+#define CRLEFT    0
+#define CRRIGHT   1
+#define CRUP      2
+#define CRDOWN    3
+#define CRINSERT  4
+#define CRDELETE  5
+#define CREND     6
+#define CRESCAPE  7
+#define CRCONTROL 8
+#define CRSHIFT   9
+
+#define COVALENT	1
+#define VDW       2
+#define THERMAL   3
 
 
 
