@@ -21,6 +21,14 @@ C
       call no_stdout_buffer()
 #endif
 
+C Is CRYSDIR set on command line?
+      CDLEN = 0
+#if defined(_GID_) || defined(_DVF_)
+      if ( NARGS() .gt. 0 ) then
+         CALL GetArg(N,CRYSDIR,CDLEN)
+      END IF
+#endif
+
 C*******  THE SUBROUTINES TIME@ AND DATE@ ARE NON-STANDARD  ***********
 C     Initialise the variables contained in RC93.SRT
       ISTORE(1)=0
@@ -2186,6 +2194,12 @@ C&DOSC      SET CPARAM=CVALUE
         CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #else
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+#if defined(_GID_) || defined(_DVF_)
+      IF ( ( CDLEN .gt. 0 ) .AND.
+     1     ( NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRYSDIR' ) ) THEN
+         LIST(LEVEL) = CRYSDIR(1:CDLEN)
+      END IF
+#endif
 #endif
 C#VAX        CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 C&UNX        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
@@ -5308,5 +5322,4 @@ C                  +VE     POSITION IN 'CDATA' OF CMATCH
       RETURN
       END
 #endif
-
 
