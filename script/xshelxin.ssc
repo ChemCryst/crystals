@@ -19,7 +19,8 @@
 % VARIABLE CHARACTER SPACEHOOK
 % VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND
 % VARIABLE LOGICAL SFILERR LCANCEL LCRY
-% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE
+% VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA
+% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ
 % VARIABLE REAL SXU33 SXU23 SXU13 SXU12
 %% variables used by the question box below
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
@@ -92,10 +93,10 @@
 %% Cell card is the first thing to look for.
 %%
  
-Please be patient while the SHELX file is scanned for
-information. This may take some time...
+{I * Please be patient while the SHELX file is scanned for
+{I   information. This may take some time...
  
- Looking for CELL instruction.
+{I Looking for CELL instruction.
 % EVALUATE SFILERR = TRUE
 % LOOP
 %   ON ERROR TERMINATE
@@ -108,7 +109,7 @@ information. This may take some time...
 %   CLEAR
 %   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
 %   IF CVALUE .EQ. 'CELL' THEN
- CELL card found .
+{R CELL card found .
 %      GET NOSTORE NOPROMPT REAL NULLSTRING '-0.5'
 %      EVALUATE WAVE = VALUE
 %      IF ( WAVE .GT. 0.0 ) THEN
@@ -131,180 +132,105 @@ information. This may take some time...
 %   END IF
 % END LOOP
 % IF SFILERR .EQ. TRUE THEN
- *** No valid "CELL" card found in SHELX file.
+{E *** No valid "CELL" card found in SHELX file.
 %    FINISH
 % END IF
  
- CELL card processed.
- Now give the spacegroup...
+{R CELL card processed.
+
+{I * Rewinding SHELX file.
+%   EXTRACT REWIND
+{I * Looking for ZERR instruction.
+% EVALUATE SFILERR = TRUE
+% LOOP
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%   IF CVALUE .EQ. 'ZERR' THEN
+{R ZERR card found .
+%      GET NOSTORE NOPROMPT REAL NULLSTRING '-1.0'
+%      EVALUATE CELLZ = VALUE
+%      IF ( CELLZ .GT. 0.0 ) THEN
+%         IF ( EXISTS ( 30 ) .NE. 1 ) THEN
+%            COPY '#LIST 30'
+%            COPY 'END'
+%         END IF
+%         COPY '#GENERALEDIT 30'
+%            COPY 'LOCATE RECORDTYPE = 106'
+%         COPY 'TRANSFER TO OFFSET=5 FROM CELLZ'
+%         COPY 'WRITE'
+%         COPY 'END'
+%      END IF
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE SUA = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE SUB = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE SUC = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE SUAL = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE SUBE = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE SUGA = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )
+%      COPY '#LIST 31'
+%      COPY 'AMULT 0.000001'
+%      COPY 'MATRIX'
+%      CLEAR
+%      INSERT 'CONT V(11)='
+%      STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUA
+%      SEND
+%      CLEAR
+%      INSERT 'CONT V(22)='
+%      STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUB
+%      SEND
+%      CLEAR
+%      INSERT 'CONT V(33)='
+%      STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUC
+%      SEND
+%      CLEAR
+%      INSERT 'CONT V(44)='
+%      STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUAL
+%      SEND
+%      CLEAR
+%      INSERT 'CONT V(55)='
+%      STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUBE
+%      SEND
+%      CLEAR
+%      INSERT 'CONT V(66)='
+%      STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUGA
+%      SEND
+%      COPY 'END'
+%      EVALUATE SFILERR = FALSE
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+% END LOOP
+% IF SFILERR .EQ. TRUE THEN
+{E No ZERR card found - not very important. Continuing anyway.
+% END IF
  
+{R CELL card processed.
+
+{I Now give the spacegroup...
 %%
 %  EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'
 %  COPY '#SCRIPT XSPACE'
 %  IF LCANCEL .EQ. TRUE THEN
- Shelx files do not contain the space group symbol, therefore
- it must be entered separately.
+{E Shelx files do not contain the space group symbol, therefore
+{E it must be entered separately.
 %      FINISH
 %  END IF
 %%
-%%
-%%%% Symmetry bit removed. Instead the user is forced to give a
-%%%% space group symbol, otherwise things can go wrong later.
-%%%%
-%%%% Now look for the LATT card. If not there default to P and centric.
-%%%%
-%%%%
-%%
-%% Looking for LATT instruction.
-%%
-%%% EVALUATE SFILERR = TRUE
-%%% EVALUATE CENTRO = 'YES'
-%%% LOOP
-%%%   ON ERROR TERMINATE
-%%%   ON END TERMINATE
-%%%   EXTRACT NEXT
-%%%   CLEAR
-%%%   EXTRACT TRANSFER COMMAND
-%%%   EXECUTE SEND
-%%%   EXTRACT TRANSFER INPUT
-%%%   CLEAR
-%%%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%%%   IF CVALUE .EQ. 'LATT' THEN
-%% LATT card found.
-%%%      GET NOSTORE NOPROMPT INTEGER 'LATT?' ' '
-%%%      EVALUATE ILATT = VALUE
-%%%      IF ILATT .LT. 0 THEN
-%%%         EVALUATE ILATT = 0 - ILATT
-%%%         EVALUATE CENTRO = 'NO'
-%%%      END IF
-%%%      CASE ILATT
-%%%         EVALUATE CLATYP = 'P'
-%%%         EVALUATE CLATYP = 'I'
-%%%         EVALUATE CLATYP = 'R'
-%%%         EVALUATE CLATYP = 'F'
-%%%         EVALUATE CLATYP = 'A'
-%%%         EVALUATE CLATYP = 'B'
-%%%         EVALUATE CLATYP = 'C'
-%%%      END CASE
-%%%      EVALUATE SFILERR = FALSE
-%%%      EVALUATE LOOPEND = LOOPCOUNTER
-%%%   END IF
-%%% END LOOP
-%%%%
-%%% IF SFILERR .EQ. TRUE THEN
-%%
-%% No LATT card found. Defaulting to primitive centosymmetric lattice.
-%%
-%%%   EVALUATE CLATYP = 'P'
-%%
-%% Rewinding SHELX file.
-%%
-%%%   EXTRACT REWIND
-%%% END IF
-%%%%
-%%%%
-%%%% Now look for those SYMM cards.
-%%%%
-%%%%
-%%
-%% Looking for SYMM instructions.
-%%
-%%% EVALUATE SFILERR = TRUE
-%%% LOOP
-%%%   ON ERROR TERMINATE
-%%%   ON END TERMINATE
-%%%   EXTRACT NEXT
-%%%   CLEAR
-%%%   EXTRACT TRANSFER COMMAND
-%%%   EXECUTE SEND
-%%%   EXTRACT TRANSFER INPUT
-%%%   CLEAR
-%%%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%%%   IF CVALUE .EQ. 'SYMM' THEN
-%%
-%% First SYMM card found.
-%%
-%%%%
-%%%% Find out how many SYMM cards there are.
-%%%%
-%%%%%      EVALUATE NSYMS = 1
-%%%      LOOP
-%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING
-%%%         ON ERROR TERMINATE
-%%%         ON END TERMINATE
-%%%         EXTRACT NEXT
-%%%         CLEAR
-%%%         EXTRACT TRANSFER COMMAND
-%%%         EXECUTE SEND
-%%%         EXTRACT TRANSFER INPUT
-%%%         CLEAR
-%%%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%%%         IF CVALUE .NE. 'SYMM' THEN
-%%%            EVALUATE LOOPEND = LOOPCOUNTER
-%%%            CLEAR
-%%%            INSERT ' A total of '
-%%%            STORE FORMAT /(I4)/ LENGTH 4 INTEGER NSYMS
-%%%            INSERT ' SYMM card(s) were found.'
-%%%            OUTPUT
-%%%            CLEAR
-%%%            EXTRACT REWIND
-%%
-%% Rewinding SHELX file.
-%%
-%%%         ELSE
-%%%            EVALUATE NSYMS = NSYMS + 1
-%%%         END IF
-%%%      END LOOP
-%%%      COPY '#LIST 2'
-%%%      INSERT 'CELL   NSYM='
-%%%      STORE FORMAT /(I3)/ LENGTH 3 INTEGER NSYMS + 1
-%%%      TRANSFER ' LATTICE=' // CLATYP TO BUFFER
-%%%      TRANSFER ' CENTRIC=' // CENTRO TO BUFFER
-%%%      SEND
-%%%% ShelX assumes identity operation. Crystals doesn't.
-%%%      COPY 'SYM X,Y,Z'
-%%%      EVALUATE SCOUNT = 0
-%%%      LOOP
-%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING
-%%%         ON ERROR TERMINATE
-%%%         ON END TERMINATE
-%%%         EXTRACT NEXT
-%%%         CLEAR
-%%%         EXTRACT TRANSFER COMMAND
-%%%         EXECUTE SEND
-%%%         EXTRACT TRANSFER INPUT
-%%%         CLEAR
-%%%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%%%         IF CVALUE .EQ. 'SYMM' THEN
-%%%            CLEAR
-%%%            INSERT 'SYM '
-%%%            GET NOPROMPT TEXT 'SYM OP'
-%%%            SEND
-%%%            EVALUATE SCOUNT = SCOUNT + 1
-%%%            IF SCOUNT .EQ. NSYMS THEN
-%%%               EVALUATE LOOPEND = LOOPCOUNTER
-%%%            END IF
-%%%         END IF
-%%%      END LOOP
-%%%      COPY 'END'
-%%%      EVALUATE SFILERR = FALSE
-%%%      EVALUATE LOOPEND = LOOPCOUNTER
-%%%   END IF
-%%% END LOOP
-%%% IF SFILERR .EQ. TRUE THEN
-%%
-%% No SYMM cards found. Defaulting to P -1.
-%%
-%%% COPY '#SPACE'
-%%% COPY 'SYMBOL P -1'
-%%% COPY 'END'
-%%
-%% End of the symmetry bit, which is commented out.
  
- Rewinding SHELX file.
+{I * Rewinding SHELX file.
  
 %   EXTRACT REWIND
-%%% END IF
  
 %%
 %%
@@ -314,7 +240,7 @@ information. This may take some time...
 %%
 %%
  
- Looking for cell contents.
+{I * Looking for cell contents.
  
 %%
 %%
@@ -335,7 +261,7 @@ information. This may take some time...
 %   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
 %   IF CVALUE .EQ. 'SFAC' THEN
  
-{I * SFAC card found.
+{R SFAC card found.
 
 %% First token is always an element.
 %      GET NOSTORE KEYWORD ' ' ' '
@@ -362,7 +288,7 @@ information. This may take some time...
 %   END IF
 %   IF CVALUE .EQ. 'UNIT' THEN
  
-{I * UNIT card found.
+{R UNIT card found.
  
 %      GET NOSTORE TEXT ' ' ' '
 %      EVALUATE CUNIT = CVALUE
@@ -374,8 +300,8 @@ information. This may take some time...
 % END LOOP
 % IF LEND .LT. 1001 THEN
  
- *** No valid "SFAC and UNIT" card pair found in SHELX file.
-     You must enter your own LIST3 and LIST29.
+{E *** No valid "SFAC and UNIT" card pair found in SHELX file.
+{E     You must enter your own LIST3 and LIST29.
  
 % ELSE
 %%
@@ -449,8 +375,8 @@ information. This may take some time...
 %   END LOOP
 %   SEND
 %   OUTPUT
-{R SCATT CRYSDIR:\SCRIPT\SCATT.DAT
-{R PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT
+SCATT CRYSDIR:\SCRIPT\SCATT.DAT
+PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT
 {R END
 %   COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
 %   COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT'
@@ -463,7 +389,7 @@ information. This may take some time...
 %   TRANSFER '#OPEN SCPDATA ' // CFILE TO CRYSTALS
 % END IF
  
- Rewinding SHELX file.
+{I * Rewinding SHELX file.
 %   EXTRACT REWIND
 %%
 %%
@@ -475,7 +401,7 @@ information. This may take some time...
 %%
 %  COPY '#SCRIPT ZSHELXIN'
 
-{I Shelx file processed.
+{R Shelx file processed.
 %  COPY '#CLOSE SCPDATA'
 %      BLOCK
 %      EVALUATE QTITLE = 'Change Q atoms?'
