@@ -5,7 +5,7 @@ all : crysexe data scripts bits documentation
 	@echo .
 	@echo .
 	@echo .     To test this build of CRYSTALS: 
-	@echo .       export CRYSDIR=$(CURDIR) 
+	@echo .       export CRYSDIR=$(CURDIR)/
 	@echo .     and then start CRYSTALS from a command prompt:
 	@echo .       $(CURDIR)/crystals.exe
 	@echo .
