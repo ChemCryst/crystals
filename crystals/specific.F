@@ -413,6 +413,12 @@ C -- IF REQUEST IS 'CIF' SET STATUS TO 'OLD'
 C
       IF ( ACSTAT .EQ. 'CIF' ) ACSTAT = 'OLD'
 C
+C
+2000  CONTINUE
+C
+cRICmay99{ moved checks inside the loop as MTRNLG
+c          will fail when called with 'OLD' if the
+c          file does not exist.
 cdjwapr99 move to here  - done for PPC anyway
       CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
 cdjwapr99{
@@ -423,9 +429,7 @@ c      if a 'new' file already exists, return a proper message
        if (lexist ) goto 9920
       endif
 cdjwapr99}
-C
-2000  CONTINUE
-C
+cRICmay99}
       IF ( IFMODE .EQ. ISSREA ) GO TO 2500
 C
 &PPCC**** We better check on the variable CLCNAM, because MTRNLG might
