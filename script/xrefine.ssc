@@ -112,6 +112,8 @@
 %  COPY 'END'
 %%
 %  COPY '#SCRIPT XDELQ'
+%%
+%%
 %  IF NCYCLE .GT. 0 THEN
 %    CASE NFORCE
 %      BLOCK                                        % NORMAL (not forced)
@@ -121,6 +123,10 @@
 %% still have to do one from every block of 5.
 %%
 %        IF NCYCLE .GT. 5 THEN
+^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
+^^WI { @ 2,2 STATIC T1 'Click to abort (after at most 5 more cycles).'
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT } SHOW
+^^CR
 %          LOOP
 %            COPY '#SFLS'
 %            LOOP 5 TIMES
@@ -131,6 +137,13 @@
 %              END IF
 %            END LOOP
 %            COPY 'END'
+^^??         RF_BAB STATE
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%            IF VALUE .EQ. 1 THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+{I Further refinement cycles abandoned at users request.
+%            END IF
 %            IF ( NCYCLE .LE. 0 ) THEN
 %              EVALUATE LOOPEND = LOOPCOUNTER
 %            END IF
@@ -139,6 +152,9 @@
 %%
 %% Normal less than or eq 5 lsq cycles.
 %%
+^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=3
+^^WI { @ 2,2 STATIC T1 'Please wait. Refinement in progress' } SHOW
+^^CR
 %          COPY '#SFLS'
 %          LOOP NCYCLE TIMES
 %            COPY 'REFINE'
@@ -150,14 +166,28 @@
 %%
 %% n forced cycles.
 %%
+^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
+^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT } SHOW
+^^CR
 %        LOOP NCYCLE TIMES
 %          COPY '#SFLS'
 %          COPY 'REFINE'
 %          COPY 'END'
+^^??       RF_BAB STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF VALUE .EQ. 1 THEN
+{I Further refinement cycles abandoned at users request.
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
 %        END LOOP
 %      END BLOCK
 %    END CASE
 %  END IF
+
+^^CO DISPOSE XABORT
+
 %%
 %  COPY '#SCRIPT RFACTOR'
 {S * Test for near convergence of the R factor...
