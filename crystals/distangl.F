@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2003/10/23 08:23:26  rich
+C Load list 1 and 2 early, in case using L41.
+C
 C Revision 1.55  2003/08/13 12:29:38  rich
 C Mogul punch requires a list 41 before it is generally loaded (to grow
 C the fragment by symmetry). Load it.
@@ -377,6 +380,7 @@ C             6 DELU RESTRAINTS
 C             7 SIMU RESTRAINTS
 C             8 NONBONDED RESTRAINTS
 C             9 HTML OUTPUT
+C            10 HYDROGEN RESTRAINTS
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -471,7 +475,7 @@ C
       CHARACTER *4 RESTR, RESTR1, RESTR2
       CHARACTER *12 CBUFF
       CHARACTER *32 CATOM1, CATOM2, CATOM3, CBLANK
-C
+c
       LOGICAL LDISTI, LDISTE, LDISTP, LDISTB ! Directives given.
       LOGICAL PIVINI, BONINI !Atom vector initialised by directive.
       LOGICAL LHFIXD(3)
@@ -479,6 +483,11 @@ C
 \TYPE11
 \ISTORE
 C
+c----- to hold h/nh flag, length of atom names
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+      character *32 cbonda(nbonda)
+      character *80 cline
       DIMENSION B(3), PROCS(24)
       DIMENSION CC(4),TT(2)
       DIMENSION IS(9),ANGLE(3),DIST(3),DISTSQ(3)
@@ -547,7 +556,7 @@ C
 C----- MAXIMUM PARTS PER PARAMETER
       DATA MXPPP /50/
 
-      DATA KHYD /'H   '/
+      DATA KHYD /'H   '/, KCARB /'C   '/
 
       PIVINI = .FALSE.
       BONINI = .FALSE.
@@ -1283,6 +1292,112 @@ C----- SCRIPT DATA PUBLICATION
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
           WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
      1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+         ELSE IF (IPUNCH .EQ. 10) THEN
+C
+C---- FIND HYDROGEN RESTRAINTS  ^^^
+C
+C----- THE ATOMS BONDED TO A PIVOT ARE PUT INTO A STACK 'CBONDA'
+C      TOGETER WITH A FLAG IN IHY TO MARK H ATOMS.  tHE HYBRIDISATION
+C      IS DETECTED AND RESTRAINTS WRITTEN TO THE PUNCH FILE
+C
+          CALL XZEROF (IHY,NBONDA)
+          NHY = 0
+          NNHY = 0
+          KHY = 0
+          IF (ISTORE(M5P) .NE. KHYD) THEN
+           WRITE(CATOM1,'(A4''('',I6,'')'')')STORE(M5P),
+     1     NINT(STORE(M5P+1))
+           LOOP16: DO  J = NFLBAS, JS, NW 
+C-----  FORM ATOM NAME INTO CHARACTERS
+            L=ISTORE(J)
+            KHY = KHY + 1
+            IF (KHY .GT. NBONDA) CYCLE
+C
+            CALL CATSTR (STORE(L), STORE(L+1),
+     1  ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2  ISTORE(J+6), CATOM2, LATOM2)
+            IF (ISTORE(ISTORE(J)) .EQ. KHYD) THEN
+                NHY = NHY + 1
+                IHY(KHY) = 1
+            ELSE
+                NNHY = NNHY + 1
+                IHY(KHY) = 2
+            ENDIF
+            IPARTH(KHY)=ISTORE(L+14)
+            CBONDA(KHY)(:) = CATOM2(1:LATOM2)
+           END DO LOOP16
+C
+C
+           IF ((ISTORE(M5P) .EQ. KCARB) .AND. 
+     1                (NHY .GE. 1)) THEN
+C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
+
+        do idjw=1,khy
+         if (ihy(idjw) .eq. 1) then
+          write(cline,'(a,a,a,a,a,a )') 
+     2    cbonda(idjw)
+          j = index(cline,')')
+          write(cline(j:),'(a)') ,',x''s)'
+          call xcrems( cline, cline, nch)
+          write(ncque,'(a)') cline(1:nch)
+         endif
+        enddo
+
+            
+            IF (KHY .GT. 4) THEN
+             WRITE(NCPU,'(A,I6)')
+     1      'REM Probably disordered, No of H atoms=', NHY
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCC109(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
+            ELSE
+             IF      (NHY .EQ. 1) THEN
+                IF       (NNHY .EQ. 1) THEN
+                  WRITE(NCPU,'(A)') 'REM            1 H on sp 1'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL ANG180(KHY, IHY, CATOM1, CBONDA)
+                ELSE IF (NNHY .EQ. 2) THEN
+                  WRITE(NCPU,'(A)') 'REM            1 H on sp 2'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
+                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
+                ELSE IF (NNHY .EQ. 3) THEN
+                  WRITE(NCPU,'(A)') 'REM            1 H on sp 3'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
+                ELSE
+                  WRITE(NCPU,'(A)') 'REM            error 1'
+                ENDIF
+
+             ELSE IF (NHY .EQ. 2) THEN
+                IF       (NNHY .EQ. 1) THEN
+                  WRITE(NCPU,'(A)') 'REM            2 H on sp 2'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCC120(KHY, IHY, CATOM1, CBONDA)
+                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
+                ELSE IF (NNHY .EQ. 2) THEN
+                  WRITE(NCPU,'(A)') 'REM            2 H on sp 3'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
+                ELSE
+                  WRITE(NCPU,'(A)') 'REM            error 2'
+                ENDIF
+
+             ELSE IF (NHY .EQ. 3) THEN
+                IF       (NNHY .EQ. 1) THEN
+                  WRITE(NCPU,'(A)') 'REM            3 H on sp 3'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCC109(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
+                ELSE
+                  WRITE(NCPU,'(A)') 'REM            error 3'
+                ENDIF
+             ENDIF        
+            ENDIF
+           ENDIF
+          ENDIF
+c
          ENDIF
 
          IF ( IDSPDA .EQ. -1 ) JS = NFLBAS
@@ -7094,3 +7209,233 @@ C - Returns a CRC checksum for the TYPE, SERIAL and PART# of all L5 atoms.
       KL5CRC = KCRCHK( L5VEC, N5*3 )
       RETURN
       END
+CODE FOR DIS11
+      SUBROUTINE DIS11(khy, ihy, catom1, cbonda)
+c----- set c-h distance to 0.98
+c
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      write(cline,'(a,f5.2,a )') 'dist ', 0.98, ', 0.02 = '
+      call xcrems( cline, cline, nch)
+      write(ncpu,'(a)') cline(1:nch)
+
+      do j=1,khy
+       if (ihy(j) .eq. 1) then        
+        write(cline,'(a,a,a,a,a )') 
+     1  'cont ', catom1, ' to ', cbonda(j)
+        call xcrems( cline, cline, nch)
+        write(ncpu,'(a)') cline(1:nch)
+       endif
+      enddo
+      RETURN
+      END
+c
+CODE FOR ANG180
+      SUBROUTINE ANG180(khy, ihy, catom1, cbonda)
+c----- set h-c-c angle to 180.0
+c
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      do j=1,khy
+       if (ihy(j) .eq. 1) then
+        i = j
+       else if (ihy(j) .eq. 2) then
+        k = j
+       endif
+      enddo
+        write(cline,'(a,a,a,a,a,a )') 
+     1  'angle 180., 2.0 = ', cbonda(i), ' to ', catom1, ' to ', 
+     2  cbonda(k)
+        call xcrems( cline, cline, nch)
+        write(ncpu,'(a)') cline(1:nch)
+      RETURN
+      END
+c
+CODE FOR hccav
+      SUBROUTINE hccav(khy, ihy, catom1, cbonda)
+c----- set h-c-c angle to mean of group
+c
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      write(cline,'(a )') 'angle 0.0, 2.0 = mean'
+      call xcrems( cline, cline, nch)
+      write(ncpu,'(a)') cline(1:nch)
+
+      do i=1,khy
+       if (ihy(i) .eq. 1) then
+        do j=1,khy
+         if (ihy(j) .eq. 2) then
+          write(cline,'(a,a,a,a,a,a )') 'cont ',
+     1    cbonda(i), ' to ', catom1, ' to ', 
+     2    cbonda(j)
+          call xcrems( cline, cline, nch)
+          write(ncpu,'(a)') cline(1:nch)
+         endif
+        enddo
+       endif
+      enddo
+      RETURN
+      END
+c
+CODE FOR hcc109
+      SUBROUTINE hcc109(khy, ihy, catom1, cbonda)
+c--- set h-c-c angle to 109.54
+c
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      write(cline,'(a )') 'angle 109.54, 5.0 = '
+      call xcrems( cline, cline, nch)
+      write(ncpu,'(a)') cline(1:nch)
+
+      do i=1,khy
+       if (ihy(i) .eq. 2) then
+        do j=1,khy
+         if (ihy(j) .eq. 1) then
+          write(cline,'(a,a,a,a,a,a )') 'cont ',
+     1    cbonda(i), ' to ', catom1, ' to ', 
+     2    cbonda(j)
+          call xcrems( cline, cline, nch)
+          write(ncpu,'(a)') cline(1:nch)
+         endif
+        enddo
+       endif
+      enddo
+      RETURN
+      END
+CODE FOR hcc120
+      SUBROUTINE hcc120(khy, ihy, catom1, cbonda)
+c--- set h-c-c angle to 109.54
+c
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      write(cline,'(a )') 'angle 120.0, 2.0 = '
+      call xcrems( cline, cline, nch)
+      write(ncpu,'(a)') cline(1:nch)
+
+      do i=1,khy
+       if (ihy(i) .eq. 2) then
+        do j=1,khy
+         if (ihy(j) .eq. 1) then
+          write(cline,'(a,a,a,a,a,a )') 'cont ',
+     1    cbonda(i), ' to ', catom1, ' to ', 
+     2    cbonda(j)
+          call xcrems( cline, cline, nch)
+          write(ncpu,'(a)') cline(1:nch)
+         endif
+        enddo
+       endif
+      enddo
+      RETURN
+      END
+c
+CODE FOR hch109
+      SUBROUTINE hch109(khy, ihy, catom1, cbonda, iparth)
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      write(cline,'(a )') 'angle 109.54, 2.0 = '
+      call xcrems( cline, cline, nch)
+      write(ncpu,'(a)') cline(1:nch)
+c
+c---- type flag negated once used, but reset before exit
+c
+      do i=1,khy
+       if (ihy(i) .eq. 1) then
+        ihy(i) =-ihy(i)
+        do j=i+1,khy
+         if (ihy(j) .eq. 1) then
+          if(iparth(i).eq.iparth(j)) then
+c           ihy(j)=-ihy(j)
+           write(cline,'(a,a,a,a,a,a )') 'cont ',
+     1     cbonda(i), ' to ', catom1, ' to ', 
+     2     cbonda(j)
+           call xcrems( cline, cline, nch)
+           write(ncpu,'(a)') cline(1:nch)
+          endif
+         endif
+        enddo
+       endif
+      enddo
+c----- reset flags
+      do i=1,khy
+       ihy(i)=abs(ihy(i))
+      enddo
+      RETURN
+      END
+c
+CODE FOR hchav
+      SUBROUTINE hchav(khy, ihy, catom1, cbonda, iparth)
+\XUNITS
+      character*132 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+      write(cline,'(a )') 'angle 0.0, 2.0 = mean '
+      call xcrems( cline, cline, nch)
+      write(ncpu,'(a)') cline(1:nch)
+c
+c---- type flag negated once used, but reset before exit
+c
+      do i=1,khy
+       if (ihy(i) .eq. 1) then
+        ihy(i) =-ihy(i)
+        do j=i+1,khy
+         if (ihy(j) .eq. 1) then
+          if(iparth(i).eq.iparth(j)) then
+c           ihy(j)=-ihy(j)
+           write(cline,'(a,a,a,a,a,a )') 'cont ',
+     1     cbonda(i), ' to ', catom1, ' to ', 
+     2     cbonda(j)
+           call xcrems( cline, cline, nch)
+           write(ncpu,'(a)') cline(1:nch)
+          endif
+         endif
+        enddo
+       endif
+      enddo
+c----- reset flags
+      do i=1,khy
+       ihy(i)=abs(ihy(i))
+      enddo
+      RETURN
+      END
+c
+CODE FOR PLANH
+      SUBROUTINE PLANH(khy, ihy, catom1, cbonda)
+\XUNITS
+      character*240 cline
+      CHARACTER catom1*(*), cbonda(4)*(*)
+      parameter (nbonda=12)
+      dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
+c
+        write(cline,'(a,a,a,a,a,a )') 
+     1  'planar ',  catom1,  (cbonda(j),j=1,khy)
+        call xcrems( cline, cline, nch)
+        write(ncpu,'(a)') cline(1:nch)
+      RETURN
+      END
+c

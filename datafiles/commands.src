@@ -2800,10 +2800,10 @@ DISTANCES         12    7
      PEAKSTOGUI     OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    5   -1 HIGH
      OFF            LOW            MEDIUM         HIGH           DEBUG
-    .PUNCH             23    0    1   11   -1 NOTHING
+    .PUNCH             23    0    1   12   -1 NOTHING
      NOTHING        RESTRAIN       PUBLISH        CIF            SCRIPT
      MOGUL          SIMPLE         DELU           SIMU           NONBONDED
-     HTML
+     HTML           H-RESTRAIN
     .HESD              26    0    1    2    0 ALL
      ALL            NONFIXED
     .D1DEV             27    0    1    0    0 0.002
