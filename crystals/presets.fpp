@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/01/09 14:59:47  Administrator
+C bound shifts, abandon ill-conditioned problem
+C
 C Revision 1.31  2001/10/05 13:31:52  ckp2
 C
 C Implementation of Lists 40 and 41.
@@ -161,7 +164,7 @@ C----- INITIALISE THE VMS SCREEN MANAGER
 C
       DATA IACC/-1/,MLSS/15/
 C
-      DATA ISIZST / 262144 /, ISIZ11 / 1048576 /
+      DATA ISIZST / 8388608 /, ISIZ11 / 1048576 /
 C
 &PPCC      SET INTERACTIVE UNDER MAC OS
 &PPC      DATA IQUN /2/, JQUN/2/
@@ -1210,10 +1213,14 @@ C
       DATA CSSNDA / ' ' /
       DATA LSSNDA / 1 /
 C
-      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+&&DVFDOS      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+&&VAXGID      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+&&LINGIL      DATA CSSCST / 'CRYSDIR:crystals.srt' /
       DATA LSSCST / 20 /
 C
-      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+&&DVFDOS      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+&&VAXGID      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+&&LINGIL      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
       DATA LSSDST / ' 19 ' /
 C
 &PPC      DATA CSSSCT / 'CRSCP:scatt.dat' /
@@ -1288,7 +1295,7 @@ cRICjul99
 &&&DVFGIDVAX      DATA LSSMAP / 11 /
 &&GILLIN      DATA CSSMAP / 'fourier.map' /
 &&GILLIN      DATA LSSMAP / 11 /
-C
+C          q
 C -- 'DEVICE' AND 'EXTENSION' REQUIRED FOR 'HELP' , 'MANUAL' , AND
 C    'SCRIPT' INSTRUCTIONS
 C
