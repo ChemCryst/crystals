@@ -86,8 +86,8 @@ void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRa
 void runTest(RunParameters& pRunData)
 {
 	Timer tTimer;
-    std::cout << "Reading in tables...";
-    std::cout.flush();
+    cout << "Reading in tables...";
+    cout.flush();
 	
     tTimer.start();
 	Tables* tTables;
@@ -102,19 +102,18 @@ void runTest(RunParameters& pRunData)
         eException.addError(tString);
         throw eException;
     }
-	tTimer.stop();
-    std::cout << "\n" << tTimer << "\n";
-    std::cout << "\nReading in hkl data...";
-    std::cout.flush();
+    tTimer.stop();
+    cout << "\n" << tTimer << "\n";
+    cout << "\nReading in hkl data...";
+    cout.flush();
 	tTimer.start();
     HKLData* tHKL;
 	
-	Matrix<float> tMetricTensor;
-	pRunData.unitCell().metricTensor(tMetricTensor);
-	
+    Matrix<float> tMetricTensor;
+    pRunData.unitCell().metricTensor(tMetricTensor);
     try
     {
-		tHKL = new HKLData(pRunData.iFileName.getCString(), tMetricTensor);
+	tHKL = new HKLData(pRunData.iFileName.getCString(), tMetricTensor);
     }
     catch (MyException& eException)
     {
@@ -124,23 +123,23 @@ void runTest(RunParameters& pRunData)
         throw eException;
     }
 	tTimer.stop();
-    std::cout << "\n" << tTimer << "\n";
+    cout << "\n" << tTimer << "\n";
 	LaueGroup *tResult;
-	std::cout << "\nMerging...\n"; 
-	std::cout.flush(); 
+	cout << "\nMerging...\n"; 
+	cout.flush(); 
 	tTimer.start();
 	LaueGroupGraph* tGraph = new LaueGroupGraph();
 	MergedReflections& tMergedRefl = tGraph->merge(*tHKL);
 	tTimer.stop();    
-	std::cout << tTimer << "\n\n";
+	cout << tTimer << "\n\n";
 	tResult = tMergedRefl.laueGroup();
 	HKLData *tHKLData; //The resulting merged reflections.
-	std::cout << "From merging the most likly laue symetry is " << (*tResult) << "\n";
+	cout << "From merging the most likly laue symetry is " << (*tResult) << "\n";
 	
 	LaueGroup* tNewResult;
 	if (pRunData.crystalSystem() == kUnknownID) //If the Laue symmetry hasn't already been specified 
 	{
-		tNewResult = getLaueGroup(tResult, std::cout);
+		tNewResult = getLaueGroup(tResult, cout);
 	}
 	else
 	{
@@ -151,7 +150,7 @@ void runTest(RunParameters& pRunData)
 		pRunData.setLaueGroup(tNewResult); //Save the choice
 		if (pRunData.iMerge) //If your using the merged data then
 		{
-			std::cout << "Remerging reflections in " << (*tNewResult) << "...\n"; 
+			cout << "Remerging reflections in " << (*tNewResult) << "...\n"; 
 			MergedData tNewMergedData(*tHKL, *tNewResult); 
 			tHKLData = new HKLData();
 			tNewMergedData.mergeReflections(*tHKLData);
@@ -170,8 +169,8 @@ void runTest(RunParameters& pRunData)
 		tHKL = tHKLData;
 	}
 
-    std::cout << "Calculating probabilities...\n";
-    std::cout.flush();
+    cout << "Calculating probabilities...\n";
+    cout.flush();
     tTimer.start();
     Table* tTable = tTables->findTable(crystalSystemConst(pRunData.crystalSystem()));
     Stats* tStats = new Stats(tTables->getRegions(), tTables->getConditions());
@@ -179,23 +178,23 @@ void runTest(RunParameters& pRunData)
     tStats->calProbs();
     tTimer.stop();
     if (pRunData.iVerbose)
-		tStats->output(std::cout, *tTable) << "\n";
-    std::cout << tTimer << "\n";
-    std::cout.flush();
-    std::cout << "\nRanking space groups...";
-    std::cout.flush();
+		tStats->output(cout, *tTable) << "\n";
+    cout << tTimer << "\n";
+    cout.flush();
+    cout << "\nRanking space groups...";
+    cout.flush();
     tTimer.start();
     RankedSpaceGroups* tRankings = new RankedSpaceGroups(*tTable, *tStats, pRunData.iChiral, *pRunData.laueGroup());
     tTimer.stop();
-    std::cout <<"\n" << tTimer << "\n\n";
-	std::cout << "Table for " << crystalSystemConst(pRunData.laueGroup()->crystalSystem()) << "\n";
-    std::cout << "\n" << *tRankings << "\n";
-	if (maximum(tHKL->unitCellTensor(), -1000000.0f, tHKL->unitCellTensor().sizeX()*tHKL->unitCellTensor().sizeY()) > 0) //if we where given a unit cell output the new values.
-	{
-		UnitCell tUnitCell(tHKL->unitCellTensor());
-		std::cout << "Unit cell:\n" << tUnitCell << "\n";
-	}
-	std::cout << "Transformation matrix is: \n" << tHKL->transformation() << "\n"; //Output the transformation matrix which was used.
+    cout <<"\n" << tTimer << "\n\n";
+	cout << "Table for " << crystalSystemConst(pRunData.laueGroup()->crystalSystem()) << "\n";
+    cout << "\n" << *tRankings << "\n";
+    if (smallValue(maximum(tHKL->unitCellTensor(), -1000000.0f, tHKL->unitCellTensor().sizeX()*tHKL->unitCellTensor().sizeY())) > 0) //if we where given a unit cell output the new values.
+    {
+       	UnitCell tUnitCell(tHKL->unitCellTensor());
+       	cout << "Unit cell:\n" << tUnitCell << "\n\n";
+    }
+    cout << "Transformation matrix is: \n" << tHKL->transformation() << "\n"; //Output the transformation matrix which was used.
 	
 	/* Used for output stats to be read into octave for analysis*/
     /*outputToFile(pRunData, tStats, tRankings, *tTable);
@@ -214,8 +213,8 @@ void cleanup()
 
 int main(int argc, const char* argv[])
 { 
-    std::cout << "The Determinator Version " << kVersion << "\n";
-    std::cout << "Written by Stefan Pantos\n";
+    cout << "The Determinator Version " << kVersion << "\n";
+    cout << "Written by Stefan Pantos\n";
     try
     {
         RunParameters tRunStruct;
@@ -229,16 +228,16 @@ int main(int argc, const char* argv[])
     }
 	catch (MyException eE)
     {
-        std::cout << "\n" << eE.what() << "\n";
+        cout << "\n" << eE.what() << "\n";
     }
     catch (exception eE)
     {
-        std::cout << "\n" << eE.what() << "\n";
+        cout << "\n" << eE.what() << "\n";
     }
 	
 	cleanup();
 	#ifdef __DEBUGGING__
-    std::cout << MyObject::objectCount() << " objects left.\n";
+    cout << MyObject::objectCount() << " objects left.\n";
 	#endif
     return 0;
 }
@@ -301,7 +300,7 @@ void outputScoresForRow(signed char pRow, Stats& pStats, Table& pTable, set<Elem
 						
 						if ((tValue2+tValue1) != 0 && (tElemStat->tNumNonMGrInt+tElemStat->tNumNonMLsInt) != 0 
 							&& (tElemStat->tNumMGrInt+tElemStat->tNumMLsInt) != 0)
-								std::cerr << Stats::evaluationFunction(tRating1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD) << "\t" << tRating1 << "\t" << tRating2 << "\t" << tRating3 << "\t" << tRating4 << "\n";
+								cerr << Stats::evaluationFunction(tRating1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD) << "\t" << tRating1 << "\t" << tRating2 << "\t" << tRating3 << "\t" << tRating4 << "\n";
 					}
 				}
 			}
@@ -314,12 +313,12 @@ void outputScores(RankedSpaceGroups& pRankedSGs, Stats& pStats, Table& pTable)
 	multiset<RowRating, RRlt>::iterator tRow; //Get the highest ranked row.
 	set<ElemLocation, ELlt> tUsedElements;
 	
-	std::cerr << "- " << "\n";
+	cerr << "- " << "\n";
 	for (tRow = pRankedSGs.begin(); tRow != pRankedSGs.end(); tRow++)
 	{
 		outputScoresForRow(tRow->iRowNum, pStats, pTable, tUsedElements);
 		if (tRow == pRankedSGs.begin())
-			std::cerr << "+" << "\n";
+			cerr << "+" << "\n";
 	}
 }
 	
