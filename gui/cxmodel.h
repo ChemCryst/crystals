@@ -40,6 +40,7 @@ class CcModelAtom;
  
 #define COVALENT	1
 #define VDW			2
+#define THERMAL  3
 
 class	CxModel : public CWnd
 {
@@ -62,7 +63,7 @@ class	CxModel : public CWnd
 		void Clear();
 		void Setup();
 		void PaintBuffer();
-		void DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw);
+            void DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw, int x11, int x12, int x13, int x21, int x22, int x23, int x31, int x32, int x33 );
 		BOOL SetWindowPixelFormat(HDC hDC);
 		BOOL CreateViewGLContext(HDC hDC);
 //		enum GLDisplayListNames { mNormal = 1, mFast = 2 };  //Normal are the atoms and bonds normally rendered. Fast consists of much cruder bonds for fast drawing during rotation.

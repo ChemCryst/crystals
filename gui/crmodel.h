@@ -49,7 +49,7 @@ class	CrModel : public CrGUIElement
 		void DrawBond(int x1,int y1,int z1,int x2,int y2,int z2,int r,int g,int b,int rad);
 		void DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int r, int g, int b, Boolean fill);
 		void Start();
-		void DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw);
+            void DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw, int x11, int x12, int x13, int x21, int x22, int x23, int x31, int x32, int x33 );
 		void DocRemoved();
 		void LMouseClick(int x, int y);
 		void Clear();
