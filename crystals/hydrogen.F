@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2003/08/05 11:11:11  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.19  2003/01/14 10:16:06  rich
 C Use XPROCC common block from macro file.
 C
@@ -607,6 +610,7 @@ C
 C
 C----- SET THE DEFAULT TEMPERATURE FACTOR OR MULTIPLIER
       UFACT=1.2
+      CHECK = VALUE + ZERO
 cdjwjan01 -make default 'both'
       JACT=2
       JNEXT=INEXT(1)
@@ -840,9 +844,58 @@ C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
          GO TO 2250
       END IF
 
-C Check for bonding to more than one non-zero part. If this happens,
+C TODO: Check for bonding to more than one non-zero part. If this happens,
 C each part should be treated independently.
 
+      WRITE(CMON,'(A,I4,1X,A4,I4)')'Bonds found: ',NDIST,
+     1   ISTORE(M5A),NINT(STORE(M5A+1))
+      DO MMMI=JE,JE+JT*(NDIST-1),JT
+         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
+     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
+         CALL XPRVDU(NCVDU,1,0)
+      END DO
+
+
+      IF (NDIST .GE. 2) THEN   !If there are more than two atoms found:
+        L = JE     ! 1st atom
+1960    CONTINUE
+        LV = L+JT  ! Next atom
+        NREJ = 0
+        DO M =  LV, JK, JT !Go from atom after L, to the end of the stack:
+C ARE ATOM ADDRESSES SAME?
+          IF   (ISTORE(L) .EQ. ISTORE(M))  THEN
+C ARE DISTANCES SAME?
+            IF (ABS(STORE(L+10) - STORE(M+10)) .LE. CHECK) THEN
+C ARE ATOMS COINCIDENT?
+              IF ( XDSTN2 (STORE(L+7), STORE(M+7)) .LE. CHECK) THEN
+                NREJ = NREJ + 1
+                CYCLE
+              ENDIF
+            ENDIF
+          ENDIF
+          IF (LV .NE. M) THEN
+C SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
+             CALL XMOVE (STORE(M), STORE(LV), JT)
+          ENDIF
+          LV = LV + JT
+        END DO
+        L = L + JT        !Increment L atom pointer (pivot).
+        JL = JL - NREJ*JT !Shorten stack if atoms were rejected.
+        NDIST = NDIST - NREJ      !Reduce number of finds.
+        IF (L .LT. JL-JT) GOTO 1960
+
+        JK=JL-JT
+
+      ENDIF
+
+      WRITE(CMON,'(A,I4,1X,A4,I4)')'Filtered bonds found: ',NDIST,
+     1   ISTORE(M5A),NINT(STORE(M5A+1))
+      CALL XPRVDU(NCVDU,1,0)
+      DO MMMI=JE,JE+JT*(NDIST-1),JT
+         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
+     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
+         CALL XPRVDU(NCVDU,1,0)
+      END DO
 
 
 C
