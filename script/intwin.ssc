@@ -1,58 +1,69 @@
 %SCRIPT INTWIN
-{4,0 CRYSTALS has no special difficulty in refining twins - your 
-{4,0 problem will be to collect and index the data, and solve the
-{4,0 the structure.
+% VARIABLE INTEGER NELEM
+%%
+{I CRYSTALS has no special difficulty in refining twins - your
+{I problem will be to collect and index the data, and solve the
+{I the structure.
 
-{0,2 This SCRIPT assumes that you have a recognisable structure 
-{0,2 either already in CRYSTALS, or available in SHELX format files. 
+{R This SCRIPT assumes that you have a recognisable structure 
+{R either already in CRYSTALS, or available in SHELX format files. 
 
+{I For a two element twin:
+{R You will be asked for the twin law.
+{R The reflection file will be converted automatically.
+{R The twin element scales will be added to list 5, and the guided
+{R refinement will allow you to refine the two elements along with
+{R the rest of the structure.
 
-{0,2 It will prompt for the twin law and convert the reflection file
-{0,2 You will need to edit the atom list (list 5) to include the twin
-{0,2 elements. you will need to edit the refinement list (LIST 12)
-{0,2 to refine the twin elements
+{I For three or more element twins:
+{R You will need to edit list 5 for yourself (instructions are provided),
+{R and create appropriate restraints for the refinement.
 
-%    VERIFY YES NO
-%    GET FINAL ABBREVIATED  -
-      'Do you want to continue? ' 'NO'
-%    IF ( VALUE .EQ. 2 ) THEN
-%        FINISH
-%    END IF
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want to continue? ' 'NO'
+%  IF ( VALUE .EQ. 2 ) THEN
+%    FINISH
+%  END IF
 %  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
      + EXISTS 29 + EXISTS 5 + EXISTS 6 .ne. 8 ) THEN
-{0,2 You have not loaded the basic data. 
-{0,2 You MUST have an intial structure to proceed
-{0,2 If you have a trial structure from SHELX, you can import it
-{0,2 now, otherwise return to the main menu and start as normal
+{E   You have not loaded the basic data. 
+{I   You MUST have an intial structure to proceed
+{I   If you have a trial structure from SHELX, you can import it
+{I   now, otherwise return to the main menu and start as normal
 %    ON ERROR REPEAT
 %    VERIFY YES NO
-%    GET FINAL ABBREVIATED  -
-      'Do you want to import SHELX structure files? ' 'NO'
+%    GET FINAL ABBREVIATED -
+                   'Do you want to import SHELX structure files? ' 'NO'
 %    IF ( VALUE .EQ. 1 ) THEN
-% COPY '#SCRIPT XSHELXIN'
-% COPY '#SCRIPT XINLIST6'
+%      COPY '#SCRIPT XSHELXIN'
+%      COPY '#SCRIPT XINLIST6'
 %    ELSE
-%        FINISH
+%      FINISH
 %    END IF
 %  END IF
-% copy '#script inlist25'
+%  COPY '#script inlist25'
+%  IF ( NELEM .EQ. 2 ) THEN
+%    COPY '#SCRIPT addtwin'
+%  ELSE
+{I Edit the head of the reflection list to include the number of
+{I twin elements, and their starting values
+{I e.g.
 
-{0,3 Edit the head of the reflection list to include the number of
-{0,3 twin elements, and their starting values
-{0,3 e.g.
+{R #LIST      5                                                                    
+{R READ NATOM =   39, NLAYER =  0, {1,4NELEMENT =  3,{R NBATCH =  0
+{R {1,4element 0.5 0.25 0.25{R
 
-{1,0 #LIST      5                                                                    
-{1,0 READ NATOM =   39, NLAYER =  0, {1,4NELEMENT =  2,{1,0 NBATCH =  0
-{1,4element .5 .5
-
-% COPY '#SCRIPT SYSED5'
+%    COPY '#SCRIPT sysed5'
+%  END IF
 %%
-**  Converting the reflection list format
+{S *  Converting the reflection list format
 % COPY '#LIST 6'
 % COPY 'READ TYPE=TWIN'
 % COPY 'END'
-{0,2 A minimal LIST 12 will be created to refine only the 
-{0,2 twin elements. You can edit it to add other parameters
+{R A minimal LIST 12 will be created to refine only the
+{R twin elements. You can edit it to add other parameters
+{R {Ior{R choose guided refinement for automatic inclusion of
+{R two element twin scales.
 % copy '#list 12'
 % copy 'block scale'
 % copy '#use crysdir:\script\2twin12.dat'
