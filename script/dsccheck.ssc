@@ -3,11 +3,60 @@
 %%
 %  VARIABLE INTEGER MD
 %  VARIABLE REAL UISOF
-%  VARIABLE LOGICAL OLDDSC1 OLDDSC2
+%  VARIABLE LOGICAL OLDDSC1 OLDDSC2 SLOWDSC
 %  EVALUATE OLDDSC1 = FALSE
 %  EVALUATE OLDDSC2 = FALSE
 %%
-%% LOOK FOR OLD DEFINTION OF U[ISO]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                    %%
+%% LOOK FOR FAR TOO MANY ATOMS        %%
+%%                                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+% IF ( EXISTS  5 .EQ. 1 ) THEN
+%  COPY '#GENERALEDIT 5'
+%  CLEAR
+%  COPY 'TRANSHEAD FROM OFFSET = 3 TO MD'
+%  IF ( MD .GT. 150 ) THEN
+%     EVALUATE SLOWDSC = TRUE
+%  END IF
+%  COPY 'END'
+%  IF ( SLOWDSC ) THEN
+
+{E                   W A R N I N G
+
+{E                                                  
+%CLEAR
+%INSERT '{E    You are opening a DSC file with'
+%STORE FORMAT /(I10)/ LENGTH 10 INTEGER MD
+%INSERT 'atoms.'
+%OUTPUT
+{E                                                  
+ 
+% VERIFY NO YES
+  You have two options:
+ 
+  Ignore this warning - Carry on working with this number of atoms,
+                        your model window may take a very long time
+                        to update.
+  Turn off updating   - The model will only be updated when you type
+                        #SUM L 5
+                        END
+ 
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want to -
+disable auto updating of the model?' 'YES'
+%   IF VALUE .EQ. 2 THEN
+%     COPY '#SCRIPT UPDTOFF'
+%   END IF
+%  END IF
+% END IF
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                    %%
+%% LOOK FOR OLD DEFINTION OF U[ISO]   %%
+%%                                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 % IF ( EXISTS  5 .EQ. 1 ) THEN
 %  COPY '#GENERALEDIT 5'
 %  COPY 'LOCATE RECORDTYPE=101'
@@ -22,7 +71,12 @@
 %  END LOOP
 %  COPY 'END'
 %%
-%%  LOOK FOR SHORT ATOM RECORDS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                    %%
+%% LOOK FOR SHORT ATOM RECORDS        %%
+%%                                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 %  COPY '#GENERALEDIT 5'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
@@ -93,8 +147,13 @@ automatically reformat LIST 5 for you?' 'YES'
 %   END IF
 %  END IF
 % END IF
-%% NOW CHECK LIST 29!
-%%  LOOK FOR SHORT ATOM RECORDS
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                    %%
+%% LOOK FOR SHORT L29 RECORDS         %%
+%%                                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 % IF ( EXISTS  29 .EQ. 1 ) THEN
 %  EVALUATE OLDDSC1 = FALSE
 %  COPY '#GENERALEDIT 29'
@@ -133,8 +192,12 @@ automatically reformat LIST 5 for you?' 'YES'
 %  END IF
 % END IF
 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                    %%
+%% LOOK FOR SHORT L30 RECORDS         %%
+%%                                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-%%  CHECK LIST 30
 %%  LOOK FOR SHORT CIF RECORDS
 % IF ( EXISTS  30 .EQ. 1 ) THEN
 %  EVALUATE OLDDSC1 = FALSE
@@ -162,7 +225,6 @@ automatically reformat LIST 5 for you?' 'YES'
 2  Delete the existing LIST 30, re-input any LIST 30 created by an
    X-ray data pre-processor (DIPIN, KCCDIN, RC93), manually update
    LIST 30 and then continue.
- 
  
 %  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input list -
 30?' 'YES'

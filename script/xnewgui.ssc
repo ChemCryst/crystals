@@ -34,10 +34,7 @@ ________________________________________________________________________
 % ELSE
 {S * The Space Group is not available for the Model window
 % END IF
-% IF ( EXISTS  5 .EQ. 1 ) THEN
-%            COPY '#SUM L 5 LOW'
-%            COPY 'END'
-% ELSE
+% IF ( EXISTS  5 .NE. 1 ) THEN
 %% Make the model disappear in case we are restarting in a new directory.
 ^^GR MODEL L5
 ^^GR SHOW
