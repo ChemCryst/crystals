@@ -1,15 +1,15 @@
 %SCRIPT AUTO12
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บThis SCRIPT leads you through least squares refinement.                    บ
-บIt assumes the structure is small enough for full matrix refinement        บ
-บand that there are no problems with disorder etc.                          บ
-บIt chooses refinement types only on the basis of R factor                  บ
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+ This SCRIPT leads you through least squares refinement.
+ It assumes the structure is small enough for full matrix refinement
+ and that there are no problems with disorder etc.
+ It chooses refinement types only on the basis of R factor
+ 
 % ELSE
-            a SCRIPT to help set up refinement directives. 
-It may sort LIST 5 so that hydrogen atoms come after all other types of 
+            a SCRIPT to help set up refinement directives.
+It may sort LIST 5 so that hydrogen atoms come after all other types of
                    atom in the atom list.
 % END IF
 %  VARIABLE LOGICAL EXTINCT PURGE
@@ -30,7 +30,7 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
 %  EVALUATE R1 = 40.0
 %% Isotropic refinement
 %  EVALUATE R2 = 20.0
-%% Aniso 
+%% Aniso
 %  EVALUATE R3 = 10.0
 %% Tidy up
 %  EVALUATE R4 = 6.0
@@ -39,7 +39,7 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
 %% R, OSCALE, RATIO are set in SCRIPT RFACTOR
 %  VARIABLE REAL R OSCALE RATIO
 %  VARIABLE CHARACTER CRVAL
-%  VARIABLE REAL ELECTRON 
+%  VARIABLE REAL ELECTRON
 %% make sure we have a valid LIST 12 of some sort
 %% and find the last non- hydrogen atom
 %  COPY '#SCRIPT CHECK12'
@@ -94,9 +94,9 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
 %      EVALUATE ISTAGE = 3
 %%
 %    ELSE
-%      IF ( R .GT. R3 ) THEN 
-      R factor is large after aniso refinement. Perhaps there is missing 
-      solvent, disorder or some other problem. CRYSTALS will try an 
+%      IF ( R .GT. R3 ) THEN
+      R factor is large after aniso refinement. Perhaps there is missing
+      solvent, disorder or some other problem. CRYSTALS will try an
       extinction correction, but it may make matters worse.
 %        EVALUATE CPARAM2 =  ' EXTPARAM'
 %        EVALUATE CPARAM = " X'S, U'S "
@@ -126,7 +126,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %      ELSE
 %        IF EXTINCT .EQ. FALSE THEN
  You will be shown an analysis of residuals.
-
+ 
  If the entries near the bottom of column 3 are generally lower than
     those in column 4, you need to refine an extinction parameter.
 %          COPY '#PAUSE 5'
@@ -153,7 +153,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %    QUEUE SEND
 %    CLEAR
 %    STORE CHARACTER "CONTINUE " // CLAST
-%    QUEUE SEND 
+%    QUEUE SEND
 %    TRANSFER "END" TO CRYSTALS
 %%
 %    QUEUE COPY END
@@ -189,10 +189,10 @@ Remember - the data may not be good enough to reveal all H atoms
 %     GET NOSTORE FINAL ABBREVIATED  -
       'Do you want to continue refinement?' 'YES'
 %     IF VALUE .EQ. 2 THEN
- You will be shown your structure again.  If you need to, edit it and 
+ You will be shown your structure again.  If you need to, edit it and
  continue refinement.
 %       COPY '#SCRIPT PLOT'
-
+ 
 %       VERIFY YES NO
 %       GET NOSTORE FINAL ABBREVIATED  -
         'Do you want to continue refinement?' 'YES'
