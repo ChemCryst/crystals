@@ -460,7 +460,7 @@ view the generated sections.
 %       END BLOCK
 %     END BLOCK
 %     BLOCK                        % MCE help
-%       COPY '#SPAWN http://makeashorterlink.com/?U2D6224B3'
+%       COPY '#SPAWN http://makeashorterlink.com/?E15F244E7'
 %     END BLOCK
 %   END CASE
 % END LOOP
