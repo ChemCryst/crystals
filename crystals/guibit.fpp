@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2000/01/20 16:57:58  ckp2
+C ric  fix square root problem
+C
 C Revision 1.22  1999/12/15 14:54:49  ckp2
 C djw  Add set autoupdate on/off, force ON in summary.
 C
@@ -652,7 +655,7 @@ CODE FOR XGDBUP
 C----- UPDATE THE GRAPHICS DATA BASE
 C      PREPARE FOR GUI
       CHARACTER CTXT*(*)
-      LOGICAL LDOFOU, LSPARE
+      LOGICAL LDOFOU, LSPARE, LISNAN
       DIMENSION JDEV(4)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
 \ISTORE
@@ -727,6 +730,20 @@ C Calculate sum of x, y and z as we go.
          IPLACE = 1
          J = L5
          DO 30 I = 1, N5
+cdjwfeb2000 - check for silly values
+c***** the function isnan (checks is Not_a_Number)
+c***** generates an addressing error. Feb2000
+c           DO 12345 IDJW = 0,8
+c           LISNAN = isnan(store(j+ioff+IDJW))
+c           if (LISNAN.eqv..true.) then
+c             write(cmon,11) store(j), nint(store(j+1))
+c11      format('Atom ',a4,i5,' has an impossible parameter') 
+c             CALL XPRVDU(NCVDU, 1,0)
+c             IF (ISSPRT .EQ. 0)WRITE(NCWU, '(A)') CMON(1)(:)
+c             WRITE(NCAWU, '(A)') CMON(1)(:)
+c             return
+c           endif
+c12345      CONTINUE
              TSTORE(IPLACE)   = GUMTRX(1) * STORE(J+IOFF)
      1                       + GUMTRX(2) * STORE(J+IOFF+1)
      2                       + GUMTRX(3) * STORE(J+IOFF+2)
@@ -736,7 +753,6 @@ C Calculate sum of x, y and z as we go.
              TSTORE(IPLACE+2) = GUMTRX(7) * STORE(J+IOFF)
      1                       + GUMTRX(8) * STORE(J+IOFF+1)
      2                       + GUMTRX(9) * STORE(J+IOFF+2)
-
 C
 C            WRITE(6,'(A,3F8.3,A)')'^^TXOrtho coords ',TSTORE(IPLACE),
 C     1      TSTORE(IPLACE+1),TSTORE(IPLACE+2),'^^EN'
@@ -957,7 +973,7 @@ C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 C           WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
             IF ( LSPARE ) THEN
-                  ISPARE = NINT(GSCALE*STORE(J+IOFF+9)/50.0)
+                  ISPARE = NINT(GSCALE* STORE(J+IOFF+9) /50.0)
             ELSE
                   ISPARE = NINT(COV*GSCALE)
             END IF
@@ -1154,4 +1170,3 @@ C Return number of stdev's of actual value from mean.
 
       RETURN
       END
-
