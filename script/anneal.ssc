@@ -12,10 +12,9 @@
 % VARIABLE REAL R R1 LOWR TEMP CHANGE SHIFT PROB COOL SIGC MAXSHIFT
 % VARIABLE LOGICAL ACCEPT F
 % VARIABLE INTEGER LOWC MODP NOCHANGE STEPS STOP
-% VARIABLE CHARACTER LAST
+% VARIABLE CHARACTER CLAST
 %%
 % EVALUATE MODP = 1
-% EVALUATE F = FILEDELETE ( 'stopanneal' )
 
 {I
 {I            Create a file named 'stopanneal' in the
@@ -69,7 +68,7 @@
 {I trapping the structure in a local minima, something which this
 {I technique aims to avoid!
 
-%  GET NOSTORE INTEGER 'Maximum parameter shift (crystal fraction)' '1.0'
+%  GET NOSTORE REAL 'Maximum parameter shift (crystal fraction)' '1.0'
 %  EVALUATE MAXSHIFT = VALUE
 
 {I If you want to move just part of the structure, make sure that part
@@ -78,8 +77,8 @@
 {I 'LAST' option to move the whole structure.
 {I To break out of this script now, type 'direct'.
 
-%  GET NOSTORE TEXT 'Last atom in list 5 to move?' 'LAST'
-%  EVALUATE LAST = CVALUE
+%  GET NOSTORE KEYWORD 'Last atom in list 5 to move?' 'LAST'
+%  EVALUATE CLAST = CVALUE
 %%
 %% Ensure that refinement diretives are legal so that R-factor
 %% calculation can proceed.
@@ -174,11 +173,11 @@
 %        INSERT 'first (z) until '
 %        EVALUATE MODP = 1
 %      END BLOCK
+%    END CASE
 %%
 %% Insert the name of the last atom to move:
 %%
-%      TRANSFER LAST TO BUFFER
-%    END CASE
+%    STORE FORMAT '(A10)' LENGTH 10 CHARACTER CLAST
 %    SEND
 %    COPY 'END'
 %%
@@ -272,10 +271,10 @@
 {R  Temp  Cycle  No change R-factor  Best ever
 %    CLEAR
 %    INSERT '{R'
-%    STORE FORMAT '(F6.3)' LENGTH 8 REAL TEMP
-%    STORE FORMAT '(I4)' LENGTH 6 INTEGER LOOPCOUNTER
-%    STORE FORMAT '(I4)' LENGTH 11 INTEGER NOCHANGE
-%    STORE FORMAT '(F6.2)' LENGTH 8 REAL R
+%    STORE FORMAT '(F8.3)' LENGTH 9 REAL TEMP
+%    STORE FORMAT '(I4)' LENGTH 9 INTEGER LOOPCOUNTER
+%    STORE FORMAT '(I4)' LENGTH 9 INTEGER NOCHANGE
+%    STORE FORMAT '(F6.2)' LENGTH 9 REAL R
 %    STORE FORMAT '(F6.2)' LENGTH 8 REAL LOWR
 %    QUEUE SEND
 %    OUTPUT
@@ -296,6 +295,7 @@
 %% Check for stop.
 %%
 %    IF ( FILEEXISTS ( 'stopanneal' ) ) THEN
+{S Found file "stopanneal": Stopping cycles now.
 %      EVALUATE LOOPEND = LOOPCOUNTER
 %    END IF
 %%
@@ -323,8 +323,8 @@
 %  INSERT 'in cycle'
 %  STORE FORMAT '(I7)' LENGTH 7 INTEGER LOWC
 %  OUTPUT
-%  VERIFY Yes No
-%  GET NOSTORE FINAL ABBREVIATED 'Use this structure?' 'Yes'
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED 'Use this structure?' 'YES'
 %  IF ( VALUE .EQ. 1 ) THEN
 %    COPY '#USE sa_lowest.dat'
 %  END IF
