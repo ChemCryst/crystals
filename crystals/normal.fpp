@@ -171,7 +171,7 @@ C MAXIMUM OF 30 POINTS ON WILSON PLOT
 
 
 C OBTAIN SUMS FOR WILSON PLOT AND FIT LEAST SQUARES STRAIGHT LINE
-      CALL SUM(PTS,ISTATP)   
+      CALL WILSUM(PTS,ISTATP)   
 
 
 C PLOT WILSON CURVE AND LEAST SQUARES STRAIGHT LINE
@@ -503,7 +503,7 @@ C 'WILSON' STRUCTURE FACTOR
 
 C ------------------------------------------------------------------
 C     LEAST SQUARES PLOT, INCLUDING SUMMATION OVER NB RANGES OF RHO     
-      SUBROUTINE SUM(PTS,ISTATP)  
+      SUBROUTINE WILSUM(PTS,ISTATP)  
 \XWMISC
 \XWILSO
 \XCONST
@@ -772,9 +772,9 @@ C STORE K-CURVE
   170   FORMAT(100A1)
   190   FORMAT(100A1,2X,3HRHO)                                              
         IF ( I.EQ.25 ) THEN
-          WRITE(NCWU,190)M(18:)
+          WRITE(NCWU,190)(M(I),I=18,117)
         ELSE
-          WRITE(NCWU,170)M(18:)
+          WRITE(NCWU,170)(M(I),I=18,117)
         ENDIF
 
         DO L=1,117
@@ -784,12 +784,19 @@ C STORE K-CURVE
 
       IF ( IPLOTW .EQ. 1 ) THEN
 C Round down XMIN to nearest .1:
-        XMIN = FLOOR ( XMIN * 10. ) / 10.
+        XRX = XMIN * 10.
+        XMIN = NINT (XRX)
+        IF ( XRX.LT.XMIN ) XMIN = XMIN - 1
+        XMIN = XMIN / 10.0
 C Round XMAX up:
-        XMAX = CEILING ( XMAX * 10. ) / 10.
+        XRX = XMAX*10.0
+        XMAX = NINT(XRX)
+        IF ( XRX.GT.XMAX ) XMAX = XMAX + 1
+        XMAX = XMAX / 10.
 C Round RX up:
-        XRX = CEILING ( RX * 10. ) / 10.
-
+        XRX = NINT(RX * 10.0)
+        IF ( RX*10.0 .GT. XRX ) XRX = XRX + 1
+        XRX = XRX / 10.
         WRITE(CMON,'(A,2(F5.1,1X),A,F4.1,A/A/A)')
      1  '^^PL XAXIS ZOOM ',XMIN,XMAX+.1,'YAXIS ZOOM ',XRX,' 0.0',
      2  '^^PL SHOW','^^CR'
