@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.16  2002/11/29 15:28:37  rich
 C Tidied XRD33 code (indents only, don't worry: no END DOs)
 C
@@ -1589,6 +1594,7 @@ C
 C
       DATA INO(1)/'NO  '/
 C
+C
 C--'END' DIRECTIVE
       DATA NWEND/2/
       DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
@@ -1668,8 +1674,17 @@ C--INDICATE THAT NO CYCLES HAVE BEEN FOUND YET
       NCYCLE=0
 C--INDICATE NO CURRENT DIRECTIVE
       IDIR=-1
-
-
+C
+C
+CDJWMAY03
+C      MAXIMUM NUMBER OF CYCLES IS SET BY STORAGE RESERVED IN COMMANDS
+C      NGROUP IN REFINE, SHIFT AND TYPEOFSHIFT (ETC) IS MAXIMUM+1
+C      LENGRP IN INSTR-BLOCK IS 12*MAXIMUM
+C      MAXIMUM IS CURRENTLY 10
+C
+      MCYCLE = N33CD-1
+C
+C
 C--READ THE NEXT DIRECTIVE CARD
 1100  CONTINUE
       LAST=IDIR
@@ -1684,6 +1699,7 @@ C--CHECK THE MAXMIMUM POSSIBLE VALUE
 C--A CYCLE TYPE OF DIRECTIVE  -  UPDATE THE NUMBER OF CYCLES
 1250  CONTINUE
       NCYCLE=NCYCLE+1
+      IF (NCYCLE .GT. MCYCLE) GOTO 9940
 C--MAKE ALL THE CYCLE DIRECTIVES HAVE THE SAME COUNT
       DO 1300 I=NREFNE,NVECTR
          J=LR61+(I-1)*MDR61
@@ -1965,6 +1981,18 @@ C -- NO CALCULATIONS INDICATED
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X , 'No SFLS calculations indicated' )
+      CALL XERHND ( IERERR )
+      GO TO 9900
+9940  CONTINUE
+C -- TOO MANY CALCULATIONS INDICATED
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9945 ) MCYCLE
+      ENDIF
+      WRITE ( NCAWU , 9945 ) MCYCLE
+      WRITE ( CMON, 9945 ) MCYCLE
+      CALL XPRVDU(NCVDU, 1,0)
+9945  FORMAT ( 1X , 'Too many SFLS cycles indicated, ',
+     1 'Maximum = ',I3 )
       CALL XERHND ( IERERR )
       GO TO 9900
 9930  CONTINUE
