@@ -9,6 +9,14 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.87  2004/05/18 13:51:33  rich
+// Fixed shut down of Fortran thread in Linux - but requires the use
+// of exceptions. To exit properly the thread must return from the
+// function that started it ie. CRYSTL(). This would require extensive
+// modification of the Fortran to get from XFINAL() back to the top, but
+// instead we can throw a C++ exception from XFINAL() and catch it in
+// the routine that called CRYSTL(). Seems to work fine.
+//
 // Revision 1.86  2004/04/16 12:50:16  rich
 // Fix compilation on Linux.
 //
@@ -477,6 +485,7 @@
   #include <sys/time.h>
   #define F77_STUB_REQUIRED
   #include "ccthread.h"
+  #include <wx/config.h>
   #include <wx/thread.h>
   #include <wx/cmndata.h>
   #include <wx/fontdlg.h>
@@ -494,6 +503,7 @@
 //  #include <math.h>
   #include <wx/fontdlg.h>
   #include <wx/cmndata.h>
+  #include <wx/config.h>
   #include <wx/filedlg.h>
   #include <wx/dirdlg.h>
   #include <wx/mimetype.h>
@@ -1336,7 +1346,6 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                               LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + inputWindow + "'");
                 break;
             }
-#ifdef __CR_WIN__
             case kTGetRegValue:
             {
                 tokenList->GetToken();
@@ -1346,7 +1355,6 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                 SendCommand(val);
                 break;
             }
-#endif
             case kTGetKeyValue:
             {
                 tokenList->GetToken();
@@ -2299,198 +2307,10 @@ void CcController::StoreKey( CcString key, CcString value )
  }
 
 #else
-  FILE * szfile;
-  FILE * tempf;
-  char * tempn;
-  char buffer[256];
-//  char filen[256];
-  CcString readFile;
-  CcString writeFile;
 
-
-  CcString crysdir ( getenv("CRYSDIR") );
-  if ( crysdir.Length() == 0 )
-     std::cerr << "You must set CRYSDIR before running crystals.\n";
-  else
-  {
-    int nEnv = EnvVarCount( crysdir );
-
-    int i = 0;
-    bool noLuck = true;
-
-    while ( noLuck )
-    {
-      CcString dir = EnvVarExtract( crysdir, i );
-      i++;
-
-#ifdef __CR_WIN__
-      HANDLE hDir;
-// Check directory exists, if not, create it.
-      hDir = CreateFile( dir.ToCString(),
-            FILE_LIST_DIRECTORY, FILE_SHARE_READ|FILE_SHARE_DELETE,
-            NULL,OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL );
-      if ( hDir == INVALID_HANDLE_VALUE )
-      {
-        CreateDirectory( dir.ToCString() , NULL );
-      }
-#endif
-
-#ifdef __BOTHWIN__
-      dir += "script\\";
-#endif
-#ifdef __LINUX__
-      dir += "script/";
-#endif
-
-#ifdef __CR_WIN__
-// Check directory exists, if not, create it.
-      hDir = CreateFile( dir.ToCString(),
-    FILE_LIST_DIRECTORY, FILE_SHARE_READ|FILE_SHARE_DELETE, NULL,OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL );
-
-      if ( hDir == INVALID_HANDLE_VALUE )
-      {
-        CreateDirectory( dir.ToCString() , NULL );
-      }
-#endif
-
-#ifdef __BOTHWIN__
-      dir += "winsizes.ini";
-#endif
-#ifdef __LINUX__
-      dir += "winsizes.ini";
-#endif
-      szfile = fopen( dir.ToCString(), "r" );
-      if ( szfile != NULL )
-      {
-        noLuck = false;
-        readFile = dir;
-        fclose ( szfile );
-      }
-      else if ( i >= nEnv )
-      {
-        readFile = ""; //Assume doesn't exist.
-        noLuck = false;
-      }
-    }
-
-    i = 0;
-    noLuck = true;
-    while ( noLuck )
-    {
-      CcString dir = EnvVarExtract( crysdir, i );
-      i++;
-#ifdef __BOTHWIN__
-      dir += "script\\winsizes.ini";
-#endif
-#ifdef __LINUX__
-      dir += "script/winsizes.ini";
-#endif
-      szfile = fopen( dir.ToCString(), "a+" ); //Use "a+" as "w+" would empty file, and "r+" fails in no file.
-      if ( szfile != NULL )
-      {
-        noLuck = false;
-        writeFile = dir;
-        fclose ( szfile );
-      }
-      else if ( i >= nEnv )
-      {
-        LOGERR ( "Could not open "+dir+" for writing: "+CcString(strerror( errno ))+" No more CRYSDIRs to try. ");
-        return;
-      }
-      else
-      {
-        LOGSTAT ( "Couldn't open "+dir+" for writing: "+CcString(strerror( errno ))+" - Retrying with next CRYSDIR directory"   );
-      }
-    }
-
-  }
-
-
-
-  if ( readFile.Length() )
-  {
-
-// Get a name for a temp file.
-
-/*
-    if ( ( tempn = tmpnam( NULL ) ) == NULL )
-    {
-      LOGERR ( "Could not get name for temp file." );
-      return;
-    }
-*/
-
-// Open the temp file.
-
-    if ( ( tempf = tmpfile() ) == NULL )
-    {
-      LOGERR ( "Could not get an open temp file." );
-      return;
-    }
-
-// Open winsizes for reading.
-    if( (szfile = fopen( readFile.ToCString(), "r" )) == NULL ) //Assignment witin conditional - OK
-    {
-      LOGERR ( "(second) Could not open "+readFile+" for reading." );
-      return;
-    }
-
-
-// Copy winsizes to the temp file.
-
-    while ( ! feof( szfile ) )
-    {
-      if ( fgets( buffer, 256, szfile ) )
-      {
-        CcString ccbuf = buffer;
-        if ( ccbuf.Length() > key.Length() )
-        {
-          if (!(key == ccbuf.Sub( 1, key.Length() )))
-          {
-            fputs ( buffer, tempf);
-          }
-        }
-        else
-        {
-          fputs ( buffer, tempf);
-        }
-      }
-    }
-    fclose( szfile );
-    rewind( tempf );
-  }
-
-// Open winsizes for writing.
-
-  if( (szfile = fopen( writeFile.ToCString(), "w" )) == NULL ) //Assignment witin conditional - OK
-  {
-    LOGERR ( "(second) Could not open "+writeFile+" for writing" );
-    return;
-  }
-
-  if ( readFile.Length() )
-  {
-
-// Copy the file back
-
-    int doBreak = 0;
-    while ( ! feof( tempf ) )
-    {
-      if ( fgets( buffer, 256, tempf ))  fputs ( buffer, szfile );
-      else if ( doBreak > 10 )           break;
-      else                               doBreak++;
-    }
-    fclose ( tempf );
-//  remove ( tempn );
-
-  }
-
-// Add this key on to the end.
-
-  sprintf(buffer, "%s %s", key.ToCString(), value.ToCString());
-  fputs ( buffer, szfile );
-  fputs ( "\n", szfile );
-  fclose ( szfile );
+ wxConfig * config = new wxConfig("Chem Cryst");
+ config->Write( ("Crystals/"+key).ToCString(), value.ToCString() );
+ delete config;
 
 #endif
 
@@ -2504,12 +2324,10 @@ CcString CcController::GetKey( CcString key )
 
 #ifdef __CR_WIN__
  // Use the registry to fetch keys.
-
  CcString subkey = "Software\\Chem Cryst\\Crystals\\";
 
  HKEY hkey;
  DWORD dwdisposition, dwtype, dwsize;
-
 
  int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
                               0, NULL,  0, KEY_READ, NULL,
@@ -2533,65 +2351,19 @@ CcString CcController::GetKey( CcString key )
 
 #else
 
-  FILE * szfile;
-  char buffer[256];
-
-  key += " "; //ensure a space at the end of the key.
-
-  CcString crysdir ( getenv("CRYSDIR") );
-  if ( crysdir.Length() == 0 )
-     std::cerr << "You must set CRYSDIR before running crystals.\n";
-  else
-  {
-    int nEnv = EnvVarCount( crysdir );
-    int i = 0;
-    bool noLuck = true;
-    while ( noLuck )
-    {
-      CcString dir = EnvVarExtract( crysdir, i );
-      i++;
-#ifdef __BOTHWIN__
-      dir += "script\\winsizes.ini";
-#endif
-#ifdef __LINUX__
-      dir += "script/winsizes.ini";
-#endif
-      szfile = fopen( dir.ToCString(), "r" );
-      if ( szfile != NULL )
-      {
-        noLuck = false;
-      }
-      else if ( i >= nEnv )
-      {
-        return value;
-      }
-    }
-
-    while ( ! feof( szfile ) )
-    {
-      if ( fgets( buffer, 256, szfile ) != NULL )
-      {
-        CcString ccbuf = buffer;
-        if ( key.Length() < ccbuf.Length() )
-        {
-          if ( key == ccbuf.Sub( 1, key.Length() ) )
-          {
-            value = ccbuf.Chop(1,key.Length());
-// NB value includes the new line, chop it off.
-            value = value.Chop( value.Length(), value.Length() );
-          }
-        }
-      }
-    }
-    fclose( szfile );
-  }
+ wxString str;
+ wxConfig * config = new wxConfig("Chem Cryst");
+ if ( config->Read(("Crystals/"+key).ToCString(), &str ) ) {
+   value = str.c_str();
+ }
+ delete config;
 
 #endif
-  return value;
+
+ return value;
 
 }
 
-#ifdef __CR_WIN__
 CcString CcController::GetRegKey( CcString key, CcString name )
 {
 
@@ -2601,6 +2373,7 @@ CcString CcController::GetRegKey( CcString key, CcString name )
 
  CcString data;
 
+#ifdef __CR_WIN__
  HKEY hkey;
  DWORD dwtype, dwsize;
 
@@ -2632,9 +2405,18 @@ CcString CcController::GetRegKey( CcString key, CcString name )
        RegCloseKey(hkey);
     }
  }
+#endif
+
+#ifdef __BOTHWX__
+ wxString str;
+ wxConfig *config = new wxConfig("Chem Cryst");
+ data = (config->Read(name.ToCString(),_T(""))).c_str();
+ delete config;
+#endif
+
+
  return data;
 }
-#endif
 
 void CcController::AddHistory( CcString theText )
 {
@@ -3298,7 +3080,6 @@ void CcController::OpenDirDialog(CcString* result)
       CcString lastPath;
       char buffer[MAX_PATH];
 
-#ifdef __CR_WIN__
  // Use the registry to fetch keys.
       CcString subkey = "Software\\Chem Cryst\\Crystals\\";
       HKEY hkey;
@@ -3315,16 +3096,6 @@ void CcController::OpenDirDialog(CcString* result)
          if ( dwresult == ERROR_SUCCESS )  lastPath = CcString(buf);
          RegCloseKey(hkey);
       }
-#else
-
-      GetWindowsDirectory( (LPTSTR) &buffer[0], MAX_PATH );
-      CcString inipath = buffer;
-      inipath += "\\WinCrys.ini";
-      ::GetPrivateProfileString ( "Latest",   "Strdir",
-                                  NULL,      (LPTSTR)&buffer[0],
-                                  MAX_PATH,       inipath.ToCString()  );
-      lastPath = buffer;
-#endif
 
       BROWSEINFO bi;
       LPITEMIDLIST chosen; //The chosen directory as an IDLIST(?)
@@ -3357,7 +3128,6 @@ void CcController::OpenDirDialog(CcString* result)
                                         0, NULL,  0, KEY_WRITE, NULL,
                                         &hkey, &dwdisposition );
                                
-#ifdef __CR_WIN__
              if ( dwresult == ERROR_SUCCESS )
              {
                 dwtype=REG_SZ;
@@ -3366,11 +3136,6 @@ void CcController::OpenDirDialog(CcString* result)
                           (PBYTE)result->ToCString(), dwsize);
                 RegCloseKey(hkey);
              }
-#else
-             ::WritePrivateProfileString ( "Latest",   "Strdir",
-                                          result->ToCString(),
-                                          inipath.ToCString()   );
-#endif
           }
           else
           {
@@ -3383,20 +3148,32 @@ void CcController::OpenDirDialog(CcString* result)
             *result = "CANCEL";
       }
 #endif
+
 #ifdef __BOTHWX__
+    wxConfig * config = new wxConfig("Chem Cryst");
     wxString pathname;
     wxString cwd = wxGetCwd(); //This dir dialog changes the working dir. Save it.
+    if ( ! config->Read("Crystals/Strdir",&pathname) ) {
+      pathname = cwd;
+    }
 
-    wxDirDialog dirDialog ( wxGetApp().GetTopWindow(),"Choose a directory");
+    wxDirDialog dirDialog ( wxGetApp().GetTopWindow(),
+                            "Choose a directory",
+                             pathname,
+                             wxDD_NEW_DIR_BUTTON);
 
     if (dirDialog.ShowModal() == wxID_OK )
     {
         pathname = dirDialog.GetPath();
+        config->Write("Crystals/Strdir",pathname);
     }
     else
     {
         pathname = "CANCEL";
     }
+
+    delete config;
+
     wxSetWorkingDirectory(cwd);
     *result = CcString(pathname.c_str());
 #endif
