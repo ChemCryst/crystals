@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2001/01/19 12:55:07  richard
+C Fixed call to KSCMSG when GET buffer overflows.
+C
 C Revision 1.25  2001/01/09 18:48:27  richard
 C RIC: GET KEYWORD no longer resets from the end to the beginning of the line when used in
 C conjunction with NOPROMPT, instead, the default value is used. If no default value, error.
@@ -2834,6 +2837,8 @@ C Returns a string up to the first number bracket or space.
 C For example 'C1', 'C(1)', 'C 1', or ' C(1)' will return 'C'
  
         IECF = KCCNEQ(CWORK1(1:LEN1),1,' ') !Skip initial spaces
+        IEC = 1
+        IF ( IECF .EQ. -1 ) GOTO 5103 !No chars found
         DO 5102 IEC = IECF, LEN1
                 READ(CWORK1(IEC:IEC),'(A1)') CECT
                 IF((CECT .EQ. '(') .OR. (CECT .EQ. ' ')) GOTO 5103
@@ -2867,8 +2872,10 @@ C Skip till we find not an integer
                 READ(CWORK1(IEC2:IEC2),'(I1)',ERR=5115) IECT
 5114    CONTINUE
 5115    CONTINUE
+        ICODE(JVTYPE,IARG(1)) = 1
+        ICODE(JVALUE,IARG(1)) = -9999
+        IF ( IEC2-1 .LT. IEC ) GOTO 8000
         READ(CWORK1(IEC:IEC2-1),'(I4)')ICODE(JVALUE,IARG(1))
-      ICODE(JVTYPE,IARG(1)) = 1
       GO TO 8000
 C
 C
