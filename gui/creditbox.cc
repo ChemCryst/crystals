@@ -5,6 +5,11 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/01/16 15:34:57  richard
+// wxWindows support.
+// Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
+// checked out in conjunction with changes to \bin\
+//
 // Revision 1.8  2000/12/11 09:26:36  richard
 // RIC: Modified way EDITBOX sends notify commands, so that when it is in
 // a GRID with a COMMAND modifier, it will not send the COMMAND twice.
@@ -41,7 +46,6 @@
 //   Filename:  CrEditBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:15 Uhr
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -60,14 +64,14 @@ CrEditBox::CrEditBox( CrGUIElement * mParentPtr )
     mXCanResize = true;
     mTabStop = true;
     mSendOnReturn = false;
-      m_IsInput = false;
+    m_IsInput = false;
 }
 
 CrEditBox::~CrEditBox()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxEditBox*)ptr_to_cxObject;
+        ((CxEditBox*)ptr_to_cxObject)->DestroyWindow(); delete (CxEditBox*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 
@@ -75,9 +79,25 @@ CrEditBox::~CrEditBox()
 
 }
 
-Boolean CrEditBox::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrEditBox,CxEditBox)
+CRGETGEOMETRY(CrEditBox,CxEditBox)
+
+CcRect CrEditBox::CalcLayout(bool recalc)                                                            \
+{                                                                          \
+  if(!recalc) return CcRect(0,0,m_InitHeight,m_InitWidth);                 \
+  if (m_IsInput)
+  {
+    ((CxEditBox*)ptr_to_cxObject)->UpdateFont();
+  }
+  return CcRect(0,0,(int)(m_InitHeight=((CxEditBox*)ptr_to_cxObject)->GetIdealHeight()),  \
+                          m_InitWidth =((CxEditBox*)ptr_to_cxObject)->GetIdealWidth());   \
+};
+
+
+
+CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -100,7 +120,7 @@ Boolean CrEditBox::ParseInput( CcTokenList * tokenList )
                     tokenList->GetToken(); // Remove that token!
                     CcString theString = tokenList->GetToken();
                     int chars = atoi( theString.ToCString() );
-                        ((CxEditBox*)ptr_to_cxObject)->SetVisibleChars( chars );
+                    ((CxEditBox*)ptr_to_cxObject)->SetVisibleChars( chars );
                     LOGSTAT( "Setting EditBox Chars Width: " + theString );
                     break;
                 }
@@ -120,6 +140,15 @@ Boolean CrEditBox::ParseInput( CcTokenList * tokenList )
                 {
                     tokenList->GetToken(); // Remove that token!
                     ((CxEditBox*)ptr_to_cxObject)->SetInputType( CXE_READ_ONLY );
+                    break;
+                }
+                case kTLimit:
+                {
+                    tokenList->GetToken(); // Remove that token!
+                    CcString theString = tokenList->GetToken();
+                    int chars = atoi( theString.ToCString() );
+                    ((CxEditBox*)ptr_to_cxObject)->LimitChars( chars );
+                    LOGSTAT( "Limiting EditBox characters: " + theString );
                     break;
                 }
                 default:
@@ -183,13 +212,14 @@ Boolean CrEditBox::ParseInput( CcTokenList * tokenList )
                 tokenList->GetToken(); // Remove that token!
                 break;
             }
-                  case kTIsInput:
+            case kTIsInput:
             {
                 tokenList->GetToken(); // Remove that token!
-                        m_IsInput = true;
-                        (CcController::theController)->SetInputPlace(this);
+                m_IsInput = true;
+                (CcController::theController)->SetInputPlace(this);
+                ((CxEditBox*)ptr_to_cxObject)->IsInputPlace();
 //                        ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this);
-                        break;
+                break;
             }
             default:
             {
@@ -211,37 +241,6 @@ void CrEditBox::SetText( CcString text )
     strcpy( theText, text.ToCString() );
 
     ( (CxEditBox *)ptr_to_cxObject)->SetText( theText );
-
-}
-
-void CrEditBox::SetGeometry( const CcRect * rect )
-{
-
-    ((CxEditBox*)ptr_to_cxObject)->SetGeometry(  rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-
-}
-
-CcRect CrEditBox::GetGeometry()
-{
-
-    CcRect retVal(
-            ((CxEditBox*)ptr_to_cxObject)->GetTop(),
-            ((CxEditBox*)ptr_to_cxObject)->GetLeft(),
-            ((CxEditBox*)ptr_to_cxObject)->GetTop()+((CxEditBox*)ptr_to_cxObject)->GetHeight(),
-            ((CxEditBox*)ptr_to_cxObject)->GetLeft()+((CxEditBox*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-
-}
-
-void CrEditBox::CalcLayout()
-{
-
-    int w = (int)( mWidthFactor * (float) ((CxEditBox*)ptr_to_cxObject)->GetIdealWidth() ) ;
-    int h =  ((CxEditBox*)ptr_to_cxObject)->GetIdealHeight();
-    ((CxEditBox*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
 
 }
 
@@ -344,9 +343,4 @@ void CrEditBox::SysKey ( UINT nChar )
                         break;
             }
       }
-}
-
-void CrEditBox::SetOriginalSizes()
-{
-      ((CxEditBox*)ptr_to_cxObject)->SetOriginalSizes();
 }

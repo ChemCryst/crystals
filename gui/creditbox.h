@@ -7,58 +7,58 @@
 //   Filename:  CrEditBox.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:15 Uhr
+//   $Log: not supported by cvs2svn $
 
-#ifndef		__CrEditBox_H__
-#define		__CrEditBox_H__
-#include	"crguielement.h"
-//Insert your own code here.
+#ifndef     __CrEditBox_H__
+#define     __CrEditBox_H__
+#include    "crguielement.h"
+
 class CcTokenList;
-//End of user code.         
- 
-class	CrEditBox : public CrGUIElement
+
+class   CrEditBox : public CrGUIElement
 {
-	public:
-		void ClearBox();
+    public:
+        void ClearBox();
             void SysKey ( UINT nChar );
-		void AddText(CcString theText);
-		void ReturnPressed();
-		void CrFocus();
-		int GetIdealWidth();
-		// methods
+        void AddText(CcString theText);
+        void ReturnPressed();
+        void CrFocus();
+        int GetIdealWidth();
+        // methods
             CrEditBox( CrGUIElement * mParentPtr );
             ~CrEditBox();
-		Boolean	ParseInput( CcTokenList * tokenList );
-		void	SetText( CcString text );
-		void	SetGeometry( const CcRect * rect );
-		CcRect	GetGeometry();
-		void	CalcLayout();
-		void	GetValue();
-		void	GetValue(CcTokenList* tokenList);
-		void	BoxChanged();
-            void  SetOriginalSizes();       
-		// attributes
-		
+        CcParse ParseInput( CcTokenList * tokenList );
+        void    SetText( CcString text );
+        void    SetGeometry( const CcRect * rect );
+        CcRect  GetGeometry();
+        CcRect CalcLayout(bool recalculate=false);
+        void    GetValue();
+        void    GetValue(CcTokenList* tokenList);
+        void    BoxChanged();
+        // attributes
+
 private:
-	Boolean mSendOnReturn;
+    Boolean mSendOnReturn;
       Boolean m_IsInput;
 };
 
-#define kSIsInput	"INPUT"
-#define kSWantReturn	"SENDONRETURN"
-#define kSIntegerInput	"INTEGER"
-#define kSRealInput	"REAL"
-#define kSNoInput	"READONLY"
-#define kSAppend	"APPEND"
+#define kSIsInput   "INPUT"
+#define kSWantReturn    "SENDONRETURN"
+#define kSIntegerInput  "INTEGER"
+#define kSRealInput "REAL"
+#define kSNoInput   "READONLY"
+#define kSAppend    "APPEND"
+#define kSLimit     "LIMIT"
 
 enum
 {
- kTIsInput = 800, 
- kTWantReturn,	
- kTIntegerInput,	
- kTRealInput,	
- kTNoInput,	
- kTAppend	
+ kTIsInput = 800,
+ kTWantReturn,
+ kTIntegerInput,
+ kTRealInput,
+ kTNoInput,
+ kTAppend,
+ kTLimit
 };
 
 
