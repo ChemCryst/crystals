@@ -7,7 +7,8 @@
 ^^WI  @ 2,2 GRID GL NROWS=9 NCOLS=1
 ^^WI  {
 ^^WI   @ 1,1 CHECKBOX    XCOLOUR 'Colour' STATE=ON INFORM=NO
-^^WI   @ 8,1 CHECKBOX    XPRINT 'Print now?' STATE=ON INFORM=NO
+^^WI   @ 8,1 CHECKBOX    XPRINT 
+^^WI     'Print now (only for Postscript Printer)?' STATE=OFF INFORM=NO
 ^^WI   @ 3,1 RADIOBUTTON RPOST 'Postscript' STATE=ON IGNORE
 ^^WI   @ 4,1 RADIOBUTTON RENCA 'Encapsulated Postscript' IGNORE
 ^^WI   @ 6,1 GRID GB NROWS=1 NCOLS=3
