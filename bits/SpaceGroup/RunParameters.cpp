@@ -31,8 +31,10 @@
 #include <sys/param.h>
 #endif
 #include <stdlib.h>
+#include "LaueClasses.h"
+#include <string>
 
-RunParameters::RunParameters()
+RunParameters::RunParameters():iLaueGroup(NULL)
 {
 #if defined(_WIN32)
 	char * tWorkingPath = (char*)malloc(PATH_MAX);
@@ -46,7 +48,6 @@ RunParameters::RunParameters()
     iRequestChirality = true;
     iChiral = false;
     iVerbose = false;
-   // iInteractiveMode = false;
     iMerge = true;
 }
 
@@ -56,21 +57,21 @@ RunParameters::RunParameters()
  */
 bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
 {
-    if (strcmp(argv[(*pPos)], "-c") == 0)
+    if (strcmp(argv[(*pPos)], "-c") == 0) // chiral
     {
         iChiral = true;
         iRequestChirality = false;
         (*pPos)++;
         return true;
     }
-    else if (strcmp(argv[(*pPos)], "-nc") == 0)
+    else if (strcmp(argv[(*pPos)], "-nc") == 0) //not chiral
     {
         iChiral = false;
         iRequestChirality = false;
         (*pPos)++;
         return true;
     }
-    else if (strcmp(argv[*pPos], "-v")==0)
+    else if (strcmp(argv[*pPos], "-v")==0) //verbose mode
     {
         iVerbose = true;
         (*pPos)++;
@@ -82,7 +83,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
         (*pPos)++;
         return true;
     }*/
-    else if (strcmp(argv[*pPos], "-f")==0)
+    else if (strcmp(argv[*pPos], "-f")==0) //hkl file name
     {
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
@@ -102,7 +103,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
             return true;
         }
     }
-    else if (strcmp(argv[*pPos], "-t")==0)
+    else if (strcmp(argv[*pPos], "-t")==0) //table file
     {
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
@@ -112,7 +113,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
             return true;
         }
     }
-    else if (strcmp(argv[*pPos], "-b")==0)
+    else if (strcmp(argv[*pPos], "-b")==0) //Param file
     {
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
@@ -122,19 +123,19 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
             return true;
         }
     }
-    else if (strcmp(argv[*pPos], "-s")==0)
+    else if (strcmp(argv[*pPos], "-s")==0) //Crystal system
     {
+		JJLaueGroups* tDefaultLaueGroups = JJLaueGroups::defaultInstance();
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
             char* tEnd;
-            int tValue = strtol(argv[*pPos], &tEnd, 10);
-            char* pSystem = crystalSystemConst((UnitCell::systemID)tValue);
-            if (tEnd != argv[*pPos]+strlen(argv[*pPos]) || pSystem == NULL)
+            unsigned int tValue = strtol(argv[*pPos], &tEnd, 10);
+            if (tEnd != argv[*pPos]+strlen(argv[*pPos]) || tValue >= (*tDefaultLaueGroups).size())
             {
                 return false;
             }
-            iCrystalSys.init(pSystem);
+			setLaueGroup((*tDefaultLaueGroups)[tValue]);
             (*pPos)++;
             return true;
         }
@@ -159,7 +160,7 @@ void RunParameters::handleArgs(int pArgc, const char* argv[])
 	{
 	  if (!handleArg(&tCount, pArgc, argv)) //if the argument is not recognised then error.
 		{
-            std::cout << "Usage: " << argv[0] << "[-f hklfile] [-t tablefile] [-e extradatafile] [-c|-nc] [-s system]\n";
+            std::cout << "Usage: " << argv[0] << "[-f hklfile] [-t tablefile] [-e extradatafile] [-c|-nc] [-s symetry#]\n";
             std::cout << "-f hklfile: The path of the hkl file to read in.\n";
             std::cout << "-t tablefile: The path of the table file.\n";
             std::cout << "-o outputfile: The path to a file to output the stats table and the raking table.\n";
@@ -167,19 +168,10 @@ void RunParameters::handleArgs(int pArgc, const char* argv[])
             std::cout << "-v: verbose output\n";
            // std::cout << "-i: Interactive mode. This allows the user to veiw the stats table.\n";
             std::cout << "-b batchfile: This supplies a file with all the parameters needed to run the program. The parameters in the file override any other parameters set on the command line.\n";
-	    std::cout << "-m: Merge the data to try and identify the crystal system.\n";
-            std::cout << "-s system#: The crystal system table to use.\n";
-            std::cout << "Valid values for system are:\n" <<
-            "\t0: Triclinic\n" <<
-            "\t1: MonoclinicA\n" <<
-            "\t2: MonoclinicB\n" <<
-            "\t3: MonoclinicC\n" <<
-            "\t4: Orthorhombic\n" <<
-            "\t5: Tetragonal\n" <<
-            "\t6: Trigonal\n" <<
-            "\t7: Trigonal(rhom)\n" <<
-            "\t8: Hexagonal\n" <<
-            "\t9: Cubic\n";
+			std::cout << "-m: Merge the data before predicting the Space Group.\n";
+            std::cout << "-s symetry#: The symetry to use.\n";
+            std::cout << "Valid values for system are:\n";
+			laueGroupOptions(std::cout);
             throw exception();
         }
     }
@@ -195,18 +187,22 @@ void RunParameters::getParamsFromUser()
 {
     if (iFileName.empty()) //Get the path of the hkl file from the user.
     {
-	char tString[255];
-	std::cout << "Enter hkl file path: ";
-	std::cin >> tString;
-	
-	iFileName.init(tString);
-	iFileName.removeOutterQuotes();
+		char tString[PATH_MAX];
+		
+		std::cin.clear();
+		std::cout << "Enter hkl file path: ";
+		std::cin.getline(tString, 255, '\n');
+		
+		iFileName.init(tString);
+		iFileName.removeOutterQuotes();
     }
     char tReply[10];
     while (iRequestChirality)
     {
-	std::cout << "Is the crystal chiral? [y/n]";
-        std::cin >> tReply;
+		//std::cin.ignore();
+		std::cin.clear();
+		std::cout << "Is the crystal chiral? [y/n]";
+		std::cin.getline(tReply, 10, '\n');
         
         String::upcase(tReply);
         
@@ -221,13 +217,6 @@ void RunParameters::getParamsFromUser()
             iRequestChirality = false;
         }
     }
-    if (iCrystalSys.empty())
-    {
-        if (!iMerge)
-        {
-            iCrystalSys.init(getCrystalSystem());
-        }
-    }
 }
 
 void RunParameters::readParamFile()
@@ -237,13 +226,14 @@ void RunParameters::readParamFile()
         try
         {
 	    // The regular expression for parsing the param file.
-            char tClassRE[] = "^[[:space:]]*CLASS[[:space:]]+([[:alpha:]]+)";
-            char tUniqueRE[] = "^[[:space:]]*UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
-            char tChiralRE[] = "^[[:space:]]*CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
-            char tOutputRE[] = "^[[:space:]]*OUTPUT[[:space:]]+\"([^\"]+)\"";
-	    char tMergeRE[] = "^[[:space:]]*MERGE[[:space:]]+((YES)|(NO))";
-            char tHKLRE[] = "^[[:space:]]*HKL[[:space:]]+\"([^\"]+)\"";
+        //    char tClassRE[] = "^[[:space:]]*CLASS[[:space:]]+([[:alpha:]]+)";
+         //   char tUniqueRE[] = "^[[:space:]]*UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
+            char tChiralRE[] = "^[[:space:]]*CHIRAL[[:space:]]+((YES)|(UNKNOWN))[[:space:]]*(#.*)?$";
+            char tOutputRE[] = "^[[:space:]]*OUTPUT[[:space:]]+\"([^\"]+)\"[[:space:]]*(#.*)?$";
+			char tMergeRE[] = "^[[:space:]]*MERGE[[:space:]]+((YES)|(NO))[[:space:]]*(#.*)?$";
+            char tHKLRE[] = "^[[:space:]]*HKL[[:space:]]+\"([^\"]+)\"[[:space:]]*(#.*)?$";
             char tCommentRE[] = "(#.+)$";
+			char tSymmetryRE[] = "^[[:space:]]*SYMMETRY[[:space:]]+(([12346/M-]|[[:space:]])+(RHOM)?)[[:space:]]*(#.*)?$";
             filebuf tParamFile;
             if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
             {
@@ -251,21 +241,23 @@ void RunParameters::readParamFile()
             }
             std::istream tFileStream(&tParamFile);
 	    //Allocate space for all the regular expressions
-            regex_t* tClassFSO = new regex_t;
-            regex_t* tUniqueFSO = new regex_t;
+            //regex_t* tClassFSO = new regex_t;
+           // regex_t* tUniqueFSO = new regex_t;
             regex_t* tChiralFSO = new regex_t;
             regex_t* tOutputFSO = new regex_t;
             regex_t* tHKLFSO = new regex_t;
             regex_t* tCommentSO = new regex_t;
-	    regex_t* tMergeSO =  new regex_t;
+			regex_t* tMergeSO =  new regex_t;
+			regex_t* tSymmetryFSO = new regex_t;
 	    //Set up all the regular expressions for parsing the param file.
-            regcomp(tClassFSO, tClassRE, REG_EXTENDED | REG_ICASE);
-            regcomp(tUniqueFSO, tUniqueRE, REG_EXTENDED | REG_ICASE);
+           // regcomp(tClassFSO, tClassRE, REG_EXTENDED | REG_ICASE);
+			regcomp(tSymmetryFSO, tSymmetryRE, REG_EXTENDED | REG_ICASE);
+           // regcomp(tUniqueFSO, tUniqueRE, REG_EXTENDED | REG_ICASE);
             regcomp(tChiralFSO, tChiralRE, REG_EXTENDED | REG_ICASE);
             regcomp(tOutputFSO, tOutputRE, REG_EXTENDED | REG_ICASE);
             regcomp(tHKLFSO, tHKLRE, REG_EXTENDED | REG_ICASE);
             regcomp(tCommentSO, tCommentRE, REG_EXTENDED | REG_ICASE);
-	    regcomp(tMergeSO, tMergeRE, REG_EXTENDED | REG_ICASE);
+			regcomp(tMergeSO, tMergeRE, REG_EXTENDED | REG_ICASE);
             regmatch_t tMatchs[13];
             char tLine[255];
             int tLineNum = 0;
@@ -285,7 +277,14 @@ void RunParameters::readParamFile()
                 
                 if (strlen(tLine) == 0) //Ignore an empty line
                 {}
-                else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0) 
+				else if (regexec(tSymmetryFSO, tLine, 13, tMatchs, 0) == 0) //Crystal System
+                {
+					JJLaueGroups* tDefaultLaueGroups = JJLaueGroups::defaultInstance();
+					string tLaueGroup(tLine+tMatchs[1].rm_so, tMatchs[1].rm_eo-tMatchs[1].rm_so);
+					do_tolower(tLaueGroup.begin(), tLaueGroup.end());
+					setLaueGroup(tDefaultLaueGroups->laueGroupWithSymbol(tLaueGroup.c_str()));
+                }
+               /* else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0) //Crystal System
                 {
                     tClass = new String(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     if (tUniqueAxis)
@@ -297,7 +296,7 @@ void RunParameters::readParamFile()
                         {
                             throw MyException(kUnknownException, "Unknown crystal class.");
                         }
-                        iCrystalSys = crystalSystemConst((UnitCell::systemID)tClassIndex);
+                        iCrystalSystem = (SystemID)tClassIndex;
                     }
                 }
                 else if (regexec(tUniqueFSO, tLine, 13, tMatchs, 0) == 0)
@@ -308,14 +307,13 @@ void RunParameters::readParamFile()
                     {	
                         if (tUniqueAxis->cmp("NONE/UNKNOWN")==0)
                             tUniqueAxis->init("B");
-                        int tClassIndex = indexOfSystem(*tClass, *tUniqueAxis);
-                        if (tClassIndex < 0)
+                        iCrystalSystem = indexOfSystem(*tClass, *tUniqueAxis);
+                        if (iCrystalSystem < kUnknownID)
                         {
-                            throw MyException(kUnknownException, "Unknown crystal class.");
+                            throw MyException(kUnknownException, "Unknown crystal system.");
                         }
-                        iCrystalSys = crystalSystemConst((UnitCell::systemID)tClassIndex);
                     }
-                }
+                }*/
                 else if (regexec(tChiralFSO, tLine, 13, tMatchs, 0) == 0)
                 {
                     if (tMatchs[2].rm_so > 0)
@@ -324,7 +322,7 @@ void RunParameters::readParamFile()
                         iChiral = false;
                     iRequestChirality = false;
                 }
-		else if (regexec(tMergeSO, tLine, 13, tMatchs, 0) == 0)
+		else if (regexec(tMergeSO, tLine, 13, tMatchs, 0) == 0) //Merge
                 {
                     if (tMatchs[2].rm_so > 0)
                         iMerge = true;
@@ -348,7 +346,7 @@ void RunParameters::readParamFile()
                 {
                     tParamFile.close();
                     String tMyString;
-                    tMyString.initFormated("Baddly formated param file at line %d", tLineNum);
+                    tMyString.initFormated("Badly formated parameter file at line %d", tLineNum);
                     throw MyException(kUnknownException, tMyString.getCString());
                 }
             }
@@ -363,8 +361,9 @@ void RunParameters::readParamFile()
             }
             tParamFile.close(); //Close the file.
 	    //Get ride of all the memory for the regex I allocated.
-            delete tClassFSO;
-            delete tUniqueFSO;
+        //    delete tClassFSO;
+        //    delete tUniqueFSO;
+			delete tSymmetryFSO;
             delete tChiralFSO;
             delete tOutputFSO;
             delete tHKLFSO;
@@ -376,4 +375,49 @@ void RunParameters::readParamFile()
             throw e;
         }
     }
+}
+
+void RunParameters::setLaueGroup(JJLaueGroup *pLaueGroup)
+{
+	iLaueGroup = pLaueGroup;
+}
+
+JJLaueGroup* RunParameters::laueGroup()
+{
+	return iLaueGroup;
+}
+
+SystemID RunParameters::crystalSystem()
+{
+	if (iLaueGroup)
+	{
+		return iLaueGroup->crystalSystem();
+	}
+	return kUnknownID;
+}
+
+unsigned int getUserNumResponse(const char* pQuestion, const uint pDefault, const Range pAnswerRange)
+{
+    char* iSelect = new char[255];
+    char* tEnd = NULL;
+	unsigned int tResult = pDefault;
+	bool tGotResult =false;
+    
+    do
+    {
+		std::cout << pQuestion << "[" << pDefault << "]:";
+		std::cin.clear();
+        std::cin.getline(iSelect, 255);
+		if (iSelect[0] != '\0')
+        { 
+            tResult = strtol(iSelect, &tEnd, 10);
+			if (tResult >= pAnswerRange.location  && tResult < pAnswerRange.length+pAnswerRange.location && tEnd[0] == '\0')
+				tGotResult = true;
+			else
+				std::cout << "Invalid value.\n";
+        }
+    }
+    while (!tGotResult && (iSelect[0] != '\0' || pDefault == UINT_MAX));
+    delete[] iSelect;
+    return tResult;
 }
