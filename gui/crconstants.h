@@ -9,6 +9,7 @@
 #define		__CrConstants_H__
 
 
+#define kSAt				"@"
 #define	kSCreateButton		"BUTTON"
 #define kSCreateWindow		"WINDOW"
 #define kSSysOpenFile		"SYSOPENFILE"
@@ -19,7 +20,7 @@
 #define kSCreateListCtrl	"LISTCTRL"
 #define kSCreateDropDown	"DROPDOWN"
 #define kSCreateEditBox		"EDITBOX"
-#define kSCreateGrid		"STARTGRID"
+#define kSCreateGrid          "GRID"
 #define kSCreateMultiEdit	"MULTIEDIT"
 #define kSCreateText		"STATIC"
 #define kSCreateProgress	"PROGRESS"
@@ -30,7 +31,8 @@
 #define kSShowWindow		"SHOW"
 #define kSHideWindow		"HIDE"
 #define kSDisposeWindow		"DISPOSE"
-#define kSEndGrid			"ENDGRID"
+#define kSEndGrid             "}"
+#define kSOpenGrid            "{"
 #define kSSet				"SET"
 #define kSGetValue			"GETVALUE"
 #define kSSendValue			"SENDVALUE"
@@ -307,7 +309,9 @@ enum {
 	kTCheckValue,
 	kTInvert,
 	kTSendLine,
-	kTSendIndex
+	kTSendIndex,
+      kTAt,
+      kTOpenGrid
 };
 
 enum {

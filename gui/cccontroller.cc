@@ -585,14 +585,15 @@ Boolean	CcController::IsSpace( char c )
 			|| c == '\t'
 			|| c == '\r'
 			|| c == '\n'
-			|| c == '=' );
+			|| c == '=' 
+			|| c == ',' );
 }
 
 Boolean	CcController::IsDelimiter( char c )
 {
 	//   ' is the delimiter.
 #define kQuoteChar 39
-	return ( c == kQuoteChar );
+	return ( c == kQuoteChar ) ;
 }
 
 void	CcController::AppendToken( char * text, int start, int stop )

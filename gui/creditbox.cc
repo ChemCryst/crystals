@@ -4,6 +4,8 @@
 
 ////////////////////////////////////////////////////////////////////////
 
+// $Log: not supported by cvs2svn $
+
 //   Filename:  CrEditBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
@@ -20,34 +22,26 @@
 #include	"cccontroller.h"	// for sending commands
 
 
-// OPSignature:  CrEditBox:CrEditBox( CrGUIElement *:mParentPtr ) 
-	CrEditBox::CrEditBox( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
-	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
+CrEditBox::CrEditBox( CrGUIElement * mParentPtr )
+:	CrGUIElement( mParentPtr )
 {
-//Insert your own code here.
 	mWidgetPtr = CxEditBox::CreateCxEditBox( this, (CxGrid *)(mParentPtr->GetWidget()) );
 	mXCanResize = true;
 	mTabStop = true;
 	mSendOnReturn = false;
-	//End of user code.         
 }
-// OPSignature:  CrEditBox:~CrEditBox() 
-	CrEditBox::~CrEditBox()
+
+CrEditBox::~CrEditBox()
 {
-//Insert your own code here.
 	if ( mWidgetPtr != nil )
 	{
 		delete (CxEditBox*)mWidgetPtr;
 		mWidgetPtr = nil;
 	}
-//End of user code.         
 }
-// OPSignature: Boolean CrEditBox:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	
@@ -65,6 +59,7 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 		{
 			switch ( tokenList->GetDescriptor(kAttributeClass) )
 			{
+				case kTNumberOfColumns:
 				case kTChars:
 				{
 					tokenList->GetToken(); // Remove that token!
@@ -140,6 +135,9 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 			case kTAppend:
 			{
 				tokenList->GetToken(); // Remove that token!
+				char theText[256];
+				int textLen = ((CxEditBox*)mWidgetPtr)->GetText(&theText[0]);
+				mText= CcString ( theText ) ;
 				mText += tokenList->GetToken(); // Get and Remove that token!
 				((CxEditBox*)mWidgetPtr)->Focus();
 				//NB Text gets updated at the end of this loop anyway, so no need to do it now.
@@ -209,18 +207,15 @@ void CrEditBox::CalcLayout()
 
 void CrEditBox::GetValue()
 {
-
 	char theText[256];
+//TODO: Oops. Get text is a base class call. Wrap it.
 	int textLen = ((CxEditBox*)mWidgetPtr)->GetText(&theText[0]);
 	SendCommand( CcString( theText ) );
-
 }
 
 void CrEditBox::GetValue(CcTokenList * tokenList)
 {
-
 	int desc = tokenList->GetDescriptor(kQueryClass);
-
 	if( desc == kTQText )
 	{
 		tokenList->GetToken();
@@ -234,8 +229,6 @@ void CrEditBox::GetValue(CcTokenList * tokenList)
 		CcString error = tokenList->GetToken();
 		LOGWARN( "CrEditBox:GetValue Error unrecognised token." + error);
 	}
-
-
 }
 
 void	CrEditBox::BoxChanged()

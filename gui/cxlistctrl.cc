@@ -43,7 +43,6 @@ CxListCtrl::CxListCtrl( CrListCtrl * container )
     nSortedCol = -1; 
     bSortAscending = TRUE; 
 	m_ProgSelecting = 0;  
-	m_SendIndex = TRUE;
 }
 
 CxListCtrl::~CxListCtrl()
@@ -548,24 +547,18 @@ void CxListCtrl::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 	
 		if (pnmv->uNewState <= 1 && pnmv->uOldState >= 2) //Unselect Item.
 		{
-			if(m_SendIndex)
-				((CrListCtrl*)mWidget)->SendValue("ITEMCHANGE_NUNSELECTED_N" + CcString((int)pnmv->iItem) ); //Send the index
-			else
-				((CrListCtrl*)mWidget)->SendValue("ITEMCHANGE_NUNSELECTED_N" + GetListItem((int)pnmv->iItem) ); //Send the whole line.
+                        ((CrListCtrl*)mWidget)->SendValue("UNSELECTED_N" + CcString((int)pnmv->iItem + 1) ); //Send the index
 		}
 		else if (pnmv->uNewState >= 2 && pnmv->uOldState <= 1) //Select Item
 		{
-			if(m_SendIndex)
-				((CrListCtrl*)mWidget)->SendValue("ITEMCHANGE_NSELECTED_N" + CcString((int)pnmv->iItem) ); //Send the index only.
-			else
-				((CrListCtrl*)mWidget)->SendValue("ITEMCHANGE_NSELECTED_N" + GetListItem((int)pnmv->iItem) ); //Send the whole line.
+                        ((CrListCtrl*)mWidget)->SendValue("SELECTED_N" + CcString((int)pnmv->iItem + 1) ); //Send the index only.
 		}
 
 	}
 }
 
 
-//         © Copyright 1997-1998 CodeGuru 
+//         Copyright 1997-1998 CodeGuru 
 //         Contact : webmaster@codeguru.com 
 
 //		   Modified to sort based on REAL, INT or TEXT. R.Cooper Nov 98.
@@ -1048,4 +1041,51 @@ void	CxListCtrl::InvertSelection()
 		SetItem( &moveItem );
 	}
 
+}
+
+
+
+int CxListCtrl::GetNumberSelected()
+{
+	int size = GetItemCount();
+	LV_ITEM moveItem;
+	int count = 0;
+
+	for ( int i = 0; i < size; i++ )
+	{
+		moveItem.mask = LVIF_IMAGE | LVIF_PARAM | LVIF_STATE;
+		moveItem.iItem = i;
+		moveItem.iSubItem = 0;
+		moveItem.stateMask = LVIS_CUT | LVIS_DROPHILITED | 
+							LVIS_FOCUSED |  LVIS_SELECTED | 
+							LVIS_OVERLAYMASK | LVIS_STATEIMAGEMASK;
+		GetItem( &moveItem );
+		if (( moveItem.state & LVIS_SELECTED ) != 0) count++;
+		
+	}
+	return count;
+}
+
+void CxListCtrl::GetSelectedIndices(  int * values )
+{
+	int size = GetItemCount();
+	int count = 0;
+	LV_ITEM moveItem;
+
+	for ( int i = 0; i < size; i++ )
+	{
+		moveItem.mask = LVIF_IMAGE | LVIF_PARAM | LVIF_STATE;
+		moveItem.iItem = i;
+		moveItem.iSubItem = 0;
+		moveItem.stateMask = LVIS_CUT | LVIS_DROPHILITED | 
+							LVIS_FOCUSED |  LVIS_SELECTED | 
+							LVIS_OVERLAYMASK | LVIS_STATEIMAGEMASK;
+		GetItem( &moveItem );
+		if (( moveItem.state & LVIS_SELECTED ) != 0) 
+		{
+			values[count] = i;
+			count ++;
+		}		
+	}
+	return;
 }

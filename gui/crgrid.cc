@@ -13,7 +13,6 @@
 #include	"crconstants.h"
 #include	"crgrid.h"
 #include	"cxgrid.h"
-//insert your own code here.
 #include	"cctokenlist.h"
 #include	"cccontroller.h"
 #include	"crbutton.h"
@@ -33,13 +32,10 @@
 #include	"cxgroupbox.h"
 
 
-// OPSignature:  CrGrid:CrGrid( CrGUIElement *:mParentPtr ) 
-	CrGrid::CrGrid( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
+
+CrGrid::CrGrid( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
 {
-//Insert your own code here.
 	mGridComplete = false;
 	mActiveSubGrid = nil;
 	mOutlineWidget = nil;
@@ -50,13 +46,12 @@
 	mTabStop = false;
 	mRows = 0;
 	mColumns = 0;
-
-//End of user code.         
+	mCommandSet = false;
+      mCommandText = "";
 }
-// OPSignature:  CrGrid:~CrGrid() 
-	CrGrid::~CrGrid()
+
+CrGrid::~CrGrid()
 {
-//Insert your own code here.
 	CrGUIElement * theItem;
 	
 	mItemList.Reset();
@@ -82,12 +77,10 @@
 
 
 	delete [] mTheGrid;
-//End of user code.         
 }
-// OPSignature: Boolean CrGrid:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = false;
 	Boolean hasTokenForMe = true;
 	CcString theString;
@@ -97,8 +90,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 	{	
 		LOGSTAT("*** Grid *** Initing...");
 
-		retVal = CrGUIElement::ParseInput( tokenList );
-		mSelfInitialised = true;
+		retVal = CrGUIElement::ParseInputNoText( tokenList );
 
 		LOGSTAT( "*** Created Grid        " + mName );
 
@@ -122,10 +114,17 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 					LOGSTAT( "Setting Grid Columns: " + theString );
 					break;
 				}
+				case kTSetCommandText:
+				{
+					tokenList->GetToken(); // Remove that token!
+					SetCommandText( tokenList->GetToken() );
+					break;
+				}
 				case kTOutline:
 				{
 					tokenList->GetToken(); // Remove that token!
 					mOutlineWidget = CxGroupBox::CreateCxGroupBox( this, (CxGrid *)GetWidget() );
+					mText = tokenList->GetToken();
 					SetText( mText );
 					LOGSTAT( "Setting Grid outline" );
 					break;
@@ -169,6 +168,10 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 	// End of Init, now comes the general parser
 
 	// If a child grid is incomplete pass the tokenlist straight down.
+	//(This is rare, but it is possible for tokenLists to become fragmented
+	//if some other command accidentally causes them to be processed before
+	//they are complete.)
+
 	if(mActiveSubGrid != nil)
 	{
 		// Sub Grid exists, testing for completeness...
@@ -199,104 +202,126 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 			retVal = true;
 			break;
 		}
-		case kTCreateGrid:					// Create a sub grid.
+		case kTAt:
 		{
-			CrGrid * gridPtr = new CrGrid( this );
-			if ( gridPtr != nil )
+			tokenList->GetToken();	
+			CcString theString;
+			theString = tokenList->GetToken();		// the next must be the row number
+                  int ypos = atoi( theString.ToCString() );
+			theString = tokenList->GetToken();		// the next must be the col number
+                  int xpos = atoi( theString.ToCString() );
+			switch ( tokenList->GetDescriptor( kInstructionClass ) )
 			{
-				mActiveSubGrid = gridPtr;
-				retVal = InitElement( gridPtr, tokenList );
+				case kTCreateGrid:					// Create a sub grid.
+				{
+					CrGrid * gridPtr = new CrGrid( this );
+					if ( gridPtr != nil )
+					{
+						mActiveSubGrid = gridPtr;
+						retVal = InitElement( gridPtr, tokenList, xpos, ypos );
+					}
+					break;
+				}
+				case kTCreateButton:				// Create a button
+				{
+					CrButton * buttPtr = new CrButton( this );
+					if ( buttPtr != nil )
+						retVal = InitElement( buttPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateListBox:				// Create a ListBox
+				{
+					CrListBox * listPtr = new CrListBox( this );
+					if ( listPtr != nil )
+						retVal = InitElement( listPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateListCtrl:				// Create a List Control
+				{
+					CrListCtrl * listPtr = new CrListCtrl( this );
+					if ( listPtr != nil )
+						retVal = InitElement( listPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateDropDown:				// Create a DropDown
+				{
+					CrDropDown * dropDownPtr = new CrDropDown( this );
+					if ( dropDownPtr != nil )
+						retVal = InitElement( dropDownPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateMultiEdit:				// Create a MultiEdit field
+				{
+					CrMultiEdit * multiEditPtr = new CrMultiEdit( this );
+					if ( multiEditPtr != nil )
+						retVal = InitElement( multiEditPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateEditBox:				// Create an edit box
+				{
+					CrEditBox * editBoxPtr = new CrEditBox( this );
+					if ( editBoxPtr != nil )
+						retVal = InitElement( editBoxPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateText:					// Create a caption
+				{
+					CrText * texttPtr = new CrText( this );
+					if ( texttPtr != nil )
+						retVal = InitElement( texttPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateProgress:					// Create a progress bar
+				{
+					CrProgress * progressPtr = new CrProgress( this );
+					if ( progressPtr != nil )
+						retVal = InitElement( progressPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateRadioButton:			// Create a Radio button
+				{
+					CrRadioButton * radioButtPtr = new CrRadioButton( this );
+					if ( radioButtPtr != nil )
+					{
+						retVal = InitElement( radioButtPtr, tokenList, xpos, ypos );
+						( (CxGrid *)mWidgetPtr )->AddRadioButton( (CxRadioButton *)radioButtPtr->GetWidget() );
+					}
+					break;
+				}
+				case kTCreateCheckBox:				// Create a CheckBox
+				{
+					CrCheckBox * checkBoxPtr = new CrCheckBox( this );
+					if ( checkBoxPtr != nil )
+						retVal = InitElement( checkBoxPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateChart:				    // Create a Chart
+				{
+					CrChart * chartPtr = new CrChart( this );
+					if ( chartPtr != nil )
+						retVal = InitElement( chartPtr, tokenList, xpos, ypos );
+					break;
+				}
+				case kTCreateModel:				    // Create a Chart
+				{
+					CrModel * modelPtr = new CrModel( this );
+					if ( modelPtr != nil )
+						retVal = InitElement( modelPtr, tokenList, xpos, ypos );
+					break;
+				}
+				default:
+				{
+					// No instruction following @ location
+					// Remove the token for safety.
+					CcString badtoken = tokenList->GetToken();
+					//Moan
+					LOGWARN("CrGrid:ParseInput:default No command after @location in grid:" + badtoken );
+				}
 			}
-			break;
-		}
-		case kTCreateButton:				// Create a button
-		{
-			CrButton * buttPtr = new CrButton( this );
-			if ( buttPtr != nil )
-				retVal = InitElement( buttPtr, tokenList );
-			break;
-		}
-		case kTCreateListBox:				// Create a ListBox
-		{
-			CrListBox * listPtr = new CrListBox( this );
-			if ( listPtr != nil )
-				retVal = InitElement( listPtr, tokenList );
-			break;
-		}
-		case kTCreateListCtrl:				// Create a List Control
-		{
-			CrListCtrl * listPtr = new CrListCtrl( this );
-			if ( listPtr != nil )
-				retVal = InitElement( listPtr, tokenList );
-			break;
-		}
-		case kTCreateDropDown:				// Create a DropDown
-		{
-			CrDropDown * dropDownPtr = new CrDropDown( this );
-			if ( dropDownPtr != nil )
-				retVal = InitElement( dropDownPtr, tokenList );
-			break;
-		}
-		case kTCreateMultiEdit:				// Create a MultiEdit field
-		{
-			CrMultiEdit * multiEditPtr = new CrMultiEdit( this );
-			if ( multiEditPtr != nil )
-				retVal = InitElement( multiEditPtr, tokenList );
-			break;
-		}
-		case kTCreateEditBox:				// Create an edit box
-		{
-			CrEditBox * editBoxPtr = new CrEditBox( this );
-			if ( editBoxPtr != nil )
-				retVal = InitElement( editBoxPtr, tokenList );
-			break;
-		}
-		case kTCreateText:					// Create a caption
-		{
-			CrText * texttPtr = new CrText( this );
-			if ( texttPtr != nil )
-				retVal = InitElement( texttPtr, tokenList );
-			break;
-		}
-		case kTCreateProgress:					// Create a progress bar
-		{
-			CrProgress * progressPtr = new CrProgress( this );
-			if ( progressPtr != nil )
-				retVal = InitElement( progressPtr, tokenList );
-			break;
-		}
-		case kTCreateRadioButton:			// Create a Radio button
-		{
-			CrRadioButton * radioButtPtr = new CrRadioButton( this );
-			if ( radioButtPtr != nil )
-			{
-				retVal = InitElement( radioButtPtr, tokenList );
-				( (CxGrid *)mWidgetPtr )->AddRadioButton( (CxRadioButton *)radioButtPtr->GetWidget() );
-			}
-			break;
-		}
-		case kTCreateCheckBox:				// Create a CheckBox
-		{
-			CrCheckBox * checkBoxPtr = new CrCheckBox( this );
-			if ( checkBoxPtr != nil )
-				retVal = InitElement( checkBoxPtr, tokenList );
-			break;
-		}
-		case kTCreateChart:				    // Create a Chart
-		{
-			CrChart * chartPtr = new CrChart( this );
-			if ( chartPtr != nil )
-				retVal = InitElement( chartPtr, tokenList );
-			break;
-		}
-		case kTCreateModel:				    // Create a Chart
-		{
-			CrModel * modelPtr = new CrModel( this );
-			if ( modelPtr != nil )
-				retVal = InitElement( modelPtr, tokenList );
-			break;
-		}
 
+			break;		
+		}
+		
 		default:
 		{
 			// No handler
@@ -304,7 +329,6 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 			CcString badtoken = tokenList->GetToken();
 			//Moan
 			LOGWARN("CrGrid:ParseInput:default No Handler for current command:" + badtoken );
-
 		}
 	}
 	return (retVal);
@@ -443,80 +467,33 @@ Boolean	CrGrid::GridComplete()
 //End of user code.         
 }
 // OPSignature: Boolean CrGrid:InitElement( CrGUIElement *:element  CcTokenList *:tokenList ) 
-Boolean	CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList )
+Boolean	CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos)
 {
-//Insert your own code here.
-	Boolean retVal = true;
-	int xpos = -1;
-	int ypos = -1;
-	CcString theString;
-	
-	tokenList->GetToken();			// remove that token, it's the element type
+	tokenList->GetToken(); //This is the element type (e.g. BUTTON). Remove it.
 	
 	if(!mXCanResize) mXCanResize = element->mXCanResize; // if an element in the grid can
 	if(!mYCanResize) mYCanResize = element->mYCanResize; // resize, then the grid can aswell.
 //BUT if the element is a grid, it doesn't yet know if it can resize!!!!
+
 	if(element->mTabStop)
 		( (CrWindow*)GetRootWidget() )->AddToTabGroup(element);
 
+	this->SetPointer ( xpos, ypos, element );
 
-	for ( int i=0;i<2;i++ )
-	{	
-		switch	( tokenList->GetDescriptor( kPositionClass) )
-		{
-			case kTRow:
-			{
-				tokenList->GetToken();			// remove that token, it's the position keyword
-
-				theString = tokenList->GetToken();	// the next must be the pos number
-				ypos = atoi( theString.ToCString() );
-				break;
-			}
-			case kTColumn:					// column keyword
-			{
-				tokenList->GetToken();					// remove the keyword
-
-				theString = tokenList->GetToken();		// the next must be the pos number
-				xpos = atoi( theString.ToCString() );
-				break;
-			}
-			case kTUnknown:					// It is an unknown token, try to interpret as int
-			{
-				theString = tokenList->GetToken();
-				int pos = atoi( theString.ToCString() );
-				if ( i == 0 )
-					xpos = pos;
-				else
-					ypos = pos;
-				break;
-			}
-			default:
-			{
-				retVal = false;
-				break;
-			}
-		}
-	}
-	
+	// Parse the item specific stuff
+	Boolean retVal = element->ParseInput( tokenList );
 	if ( retVal )
-	{
-		this->SetPointer ( xpos, ypos, element );
-
-		// Parse the item specific stuff
-		retVal = element->ParseInput( tokenList );
-		if ( retVal )
-			mItemList.AddItem( element );
-		else
-			delete element;
-	}
+		mItemList.AddItem( element );
+	else
+		delete element;
 	
 	return retVal;
-//End of user code.         
+
 }
-// OPSignature: void CrGrid:Align() 
+
 void	CrGrid::Align()
 {
-//Insert your own code here.
+
 	CcRect rect, newrect, gridRect;
 	Boolean done = false;
 	CrGUIElement * vtemp;
@@ -653,12 +630,10 @@ int	CrGrid::GetWidthOfColumn( int col )
 				maxWidth = rect.Width();
 	}
 	return maxWidth;
-//End of user code.         
 }
-// OPSignature: CrGUIElement * CrGrid:FindObject( CcString:Name ) 
+
 CrGUIElement *	CrGrid::FindObject( CcString Name )
 {
-//Insert your own code here.
 	CrGUIElement * theElement = nil, * theItem;
 	
 	mItemList.Reset();
@@ -671,22 +646,22 @@ CrGUIElement *	CrGrid::FindObject( CcString Name )
 	}
 		
 	return ( theElement );
-//End of user code.         
 }
-// OPSignature: Boolean CrGrid:SetPointer( int:xpos  int:ypos  CrGUIElement *:ptr ) 
+
 Boolean	CrGrid::SetPointer( int xpos, int ypos, CrGUIElement * ptr )
 {
-//Insert your own code here.
+      if ((xpos > mColumns) || (ypos > mRows))
+      {
+            LOGWARN("Position of element out of range of grid size");
+            return false;
+      }
 	*(mTheGrid + ( (xpos-1) + (ypos-1) * mColumns)) = ptr;
 	return true;
-//End of user code.         
 }
-// OPSignature: CrGUIElement * CrGrid:GetPointer( int:xpos  int:ypos ) 
+
 CrGUIElement *	CrGrid::GetPointer( int xpos, int ypos )
 {
-//Insert your own code here.
 	return *(mTheGrid + (xpos-1 + (ypos-1) * mColumns));
-//End of user code.         
 }
 
 void CrGrid::Resize(int newWidth, int newHeight, int origWidth, int origHeight)
@@ -819,4 +794,40 @@ int CrGrid::GetIdealHeight()
 void CrGrid::CrFocus()
 {
 
+}
+
+
+void CrGrid::SendCommand(CcString theText, Boolean jumpQueue)
+{
+//If there is a COMMAND= set for this window
+//send this first, unless the text begins with
+//a # or ^ symbol.
+
+//Usually the command is set to a script which
+//will handle any events generated by the window.
+// e.g. in xmodel.scp COMMAND='xmodelhand.scp'
+
+//For certain commands it is useful to bypass this
+//mechanism and pass the command straigt to 
+//CRYSTALS (#) or to GUI (^).
+
+	if (
+		     ( mCommandSet )
+		 &&  (!( theText.Sub(1,1) == '#' ))
+		 &&  (!( theText.Sub(1,1) == '^' ))
+	   )
+      {                                 //Apply prefix and send command.
+		mControllerPtr->SendCommand(mCommandText);
+      	mControllerPtr->SendCommand(theText);
+      }
+      else
+            mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
+
+
+}
+
+void CrGrid::SetCommandText(CcString theText)
+{
+	mCommandText = theText;
+	mCommandSet = true;
 }

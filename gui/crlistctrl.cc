@@ -93,19 +93,16 @@ Boolean	CrListCtrl::ParseInput( CcTokenList * tokenList )
 	{
 		switch ( tokenList->GetDescriptor(kAttributeClass) )
 		{
-
-			case kTCallback:
-		 	{
-				mCallbackState = true;
-				tokenList->GetToken(); // Remove that token!
-				LOGSTAT("Enabling ListCtrl callback");
-				break;
-			}
-			case kTIgnore:
+			case kTInform:
 			{
-				mCallbackState = false;
 				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "Disabling EditBox callback" );
+				Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+				tokenList->GetToken(); // Remove that token!
+				mCallbackState = inform;
+				if (mCallbackState)
+					LOGSTAT( "Enabling ListCtrl callback" );
+				else
+					LOGSTAT( "Disabling ListCtrl callback" );
 				break;
 			}
 			case kTAddToList:
@@ -163,31 +160,6 @@ Boolean	CrListCtrl::ParseInput( CcTokenList * tokenList )
 				}
 				break;
 			}
-			case kTGetItem:
-			{
-				tokenList->GetToken();
-				CcString theString = tokenList->GetToken();
-				int itemNo = atoi( theString.ToCString() );
-				CcString result = ((CxListCtrl*)mWidgetPtr)->GetListItem(itemNo);
-				(CcController::theController)->SendCommand(result, true);
-				break;
-			}
-			case kTSelectAction:
-			{
-				tokenList->GetToken(); // Remove that token!
-				switch ( tokenList->GetDescriptor(kAttributeClass) )
-				{
-					case kTSendIndex:
-						tokenList->GetToken();
-						((CxListCtrl*)mWidgetPtr)->m_SendIndex = true;
-						break;
-					case kTSendLine:
-						tokenList->GetToken();
-						((CxListCtrl*)mWidgetPtr)->m_SendIndex = false;
-						break;
-				}
-				break;
-			}
 			default:
 			{
 				hasTokenForMe = false;
@@ -237,6 +209,64 @@ void	CrListCtrl::GetValue()
 	SendCommand( CcString( value ) );
 }
 
+void CrListCtrl::GetValue(CcTokenList * tokenList)
+{
+
+	int desc = tokenList->GetDescriptor(kQueryClass);
+
+	switch (desc) 
+	{
+		case kTQListitem:
+		{
+			tokenList->GetToken();
+			int i = atoi ((tokenList->GetToken()).ToCString()) - 1;
+			int j = atoi ((tokenList->GetToken()).ToCString()) - 1;
+			CcString theItem = ((CxListCtrl*)mWidgetPtr)->GetCell(i,j);
+			SendCommand( theItem , true );
+			break;
+		}
+		case kTQListrow:
+		{
+			tokenList->GetToken();
+			CcString theString = tokenList->GetToken();
+			int itemNo = atoi( theString.ToCString() );
+			CcString result = ((CxListCtrl*)mWidgetPtr)->GetListItem(itemNo);
+			(CcController::theController)->SendCommand(result, true);
+			break;
+		}
+		case kTQSelected:
+		{
+			tokenList->GetToken();
+			int nv = ( (CxListCtrl *)mWidgetPtr)->GetNumberSelected();
+			int * values = new int [nv];
+			( (CxListCtrl *)mWidgetPtr)->GetSelectedIndices(values);
+			for ( int i = 0; i < nv; i++ )
+			{
+				SendCommand( CcString( values[i] ) , true );
+			}
+			SendCommand( "END" , true );
+			break;
+		}
+		case kTQNselected:
+		{
+			tokenList->GetToken();
+			int value = ( (CxListCtrl *)mWidgetPtr)->GetNumberSelected();
+			SendCommand( CcString( value ) , true );
+			break;
+		}
+		default:
+		{
+			SendCommand( "ERROR",true );
+			CcString error = tokenList->GetToken();
+			LOGWARN( "CrEditCtrl:GetValue Error unrecognised token." + error);
+			break;
+		}
+	}
+}
+
+
+
+
 void CrListCtrl::CrFocus()
 {
 	((CxListCtrl*)mWidgetPtr)->Focus();	
@@ -255,5 +285,7 @@ int CrListCtrl::GetIdealHeight()
 void CrListCtrl::SendValue(CcString message)
 {
 	if(mCallbackState)
-		SendCommand(message);
+	{
+            SendCommand(mName + " " + message);
+	}
 }

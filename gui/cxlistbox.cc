@@ -1,7 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-
 //   CRYSTALS Interface      Class CxListBox
-
 ////////////////////////////////////////////////////////////////////////
 
 //   Filename:  CxListBox.cc
@@ -11,40 +9,18 @@
 
 #include	"crystalsinterface.h"
 #include	"cxlistbox.h"
-//insert your own code here.
+
 #include	"cxgrid.h"
 #include	"cxwindow.h"
 #include	"crlistbox.h"
 
-//#include	<LWindow.h>
-//#include	<LStdControl.h>
-//#include	<LTabGroup.h>
 
-//End of user code.          
 
 int	CxListBox::mListBoxCount = kListBoxBase;
 
-// OPSignature: CxListBox * CxListBox:CreateCxListBox( CrListBox *:container  CxGrid *:guiParent ) 
+
 CxListBox *	CxListBox::CreateCxListBox( CrListBox * container, CxGrid * guiParent )
 {
-//Insert your own code here.
-/*	SPaneInfo	thePaneInfo;	// Info for Pane
-	
-	thePaneInfo.visible = true;
-	thePaneInfo.enabled = true;
-	thePaneInfo.bindings.left = false;
-	thePaneInfo.bindings.right = false;
-	thePaneInfo.bindings.top = false;
-	thePaneInfo.bindings.bottom = false;
-	thePaneInfo.userCon = 0;
-	thePaneInfo.superView = reinterpret_cast<LView *>(guiParent);
-
-	thePaneInfo.paneID = AddListBox();		// Push Button Pane - do this dynamically
-	thePaneInfo.width = 80;
-	thePaneInfo.height = 20;
-	thePaneInfo.left = 10;
-	thePaneInfo.top = 50;
-*/	
 	CxListBox	*theListBox = new CxListBox( container );
 //		theListBox->Create(WS_CHILD|WS_VISIBLE|LBS_NOTIFY|LBS_MULTIPLESEL|LBS_HASSTRINGS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
 	theListBox->Create(WS_CHILD|WS_VISIBLE|LBS_NOTIFY|LBS_HASSTRINGS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
@@ -52,20 +28,13 @@ CxListBox *	CxListBox::CreateCxListBox( CrListBox * container, CxGrid * guiParen
 	theListBox->SetFont(CxGrid::mp_font);
 
 	return theListBox;
-//End of user code.         
-}
-// OPSignature:  CxListBox:CxListBox( CrListBox *:container  SPaneInfo:&inPaneInfo ) 
-	CxListBox::CxListBox( CrListBox * container )
-//Insert your own initialization here.
-	: CListBox()
-//End of user initialization.         
-{
-//Insert your own code here.
-	mWidget = container;
 
-//	ListHandle	macListH = GetMacListH();
-//	LAddColumn(1, 0, macListH);
-	
+}
+
+CxListBox::CxListBox( CrListBox * container )
+	: CListBox()
+{
+	mWidget = container;
 	mItems = 0;
 	mVisibleLines = 0;
 }
@@ -105,16 +74,14 @@ void	CxListBox::AddItem( char * text )
 	if( !mItems ) SetCurSel(0);
 	mItems++;
 #endif
-//End of user code.         
+
 }
-// OPSignature: void CxListBox:SetVisibleLines( int:lines ) 
+
 void	CxListBox::SetVisibleLines( int lines )
 {
-//Insert your own code here.
 	mVisibleLines = lines;
-//End of user code.         
 }
-// OPSignature: void CxListBox:SetGeometry( int:top  int:left  int:bottom  int:right ) 
+
 void	CxListBox::SetGeometry( int top, int left, int bottom, int right )
 {
 	//If top or left are negative, this is a call from CalcLayout,
@@ -136,6 +103,7 @@ void	CxListBox::SetGeometry( int top, int left, int bottom, int right )
 	else
 		MoveWindow(left,top,right-left,bottom-top,true);
 }
+
 int	CxListBox::GetTop()
 {
 	RECT windowRect;
@@ -149,6 +117,7 @@ int	CxListBox::GetTop()
 	}
 	return ( windowRect.top );
 }
+
 int	CxListBox::GetLeft()
 {
 	RECT windowRect;
@@ -162,12 +131,14 @@ int	CxListBox::GetLeft()
 	}
 	return ( windowRect.left );
 }
+
 int	CxListBox::GetWidth()
 {
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 }
+
 int	CxListBox::GetHeight()
 {
 	CRect windowRect;
@@ -175,7 +146,7 @@ int	CxListBox::GetHeight()
 	return ( windowRect.Height() );
 }
 
-// OPSignature: int CxListBox:GetIdealWidth() 
+
 int	CxListBox::GetIdealWidth()
 {
 //Insert your own code here.
@@ -217,12 +188,12 @@ int	CxListBox::GetIdealWidth()
 
 
 	return ( maxSiz + 10 ); //10 pixels spare
-//End of user code.         
+
 }
-// OPSignature: int CxListBox:GetIdealHeight() 
+
 int	CxListBox::GetIdealHeight()
 {
-//Insert your own code here.
+
 	int lines = mVisibleLines;
 
 	CClientDC cdc(this);
@@ -239,50 +210,17 @@ int	CxListBox::GetIdealHeight()
 		
 //	return ( lines * (fInfo.ascent + fInfo.descent + fInfo.leading) + 2 );
 					// slop of 2 pixels
-//End of user code.         
+
 }
-// OPSignature: int CxListBox:GetBoxValue() 
+
 int	CxListBox::GetBoxValue()
 {
-//Insert your own code here.
+
 //	Cell	theCell = {0, 0};	
 //	::LGetSelect ( true, &theCell, mMacListH );
 	return ( GetCurSel() + 1 );
-//End of user code.         
+
 }
-
-
-// ---------------------------------------------------------------------------
-//		€ ClickSelf
-// ---------------------------------------------------------------------------
-//	Respond to Click inside an ListBox
-
-/*//void
-//CxListBox::ClickSelf(
-//	const SMouseDownEvent	&inMouseDown)
-//{
-//	if (SwitchTarget(this)) {
-		FocusDraw();
-		
-		Cell	theCell = {0, 0};	
-		::LGetSelect ( true, &theCell, mMacListH );
-		int theItem = theCell.v;
-                            
-		if (::LClick(inMouseDown.whereLocal, inMouseDown.macEvent.modifiers,
-					mMacListH)) {
-					
-			BroadcastMessage(mDoubleClickMessage, this);
-		}
-		else
-		{
-			theCell.v = 0;
-			::LGetSelect ( true, &theCell, mMacListH );
-			if ( theItem != theCell.v )
-				Selected( theCell.v );
-		}
-	}
-}
-*/
 
 BEGIN_MESSAGE_MAP(CxListBox, CListBox)
 	ON_CONTROL_REFLECT(LBN_DBLCLK, DoubleClicked)

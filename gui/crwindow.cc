@@ -50,12 +50,10 @@ CcList CrWindow::mModalWindowStack;
 	m_relativePosition = 0;
 	m_relativeWinPtr = nil;
 
-//End of user code.         
 }
-// OPSignature:  CrWindow:~CrWindow() 
-	CrWindow::~CrWindow()
+
+CrWindow::~CrWindow()
 {
-//Insert your own code here.
 	if ( mGridPtr != nil )
 	{
 		delete mGridPtr;
@@ -77,13 +75,10 @@ CcList CrWindow::mModalWindowStack;
 		}
 	
 	delete mTabGroup;
-
-//End of user code.         
 }
-// OPSignature: Boolean CrWindow:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = false;
 	Boolean hasTokenForMe = true;
 

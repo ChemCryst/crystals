@@ -12,7 +12,6 @@
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"crmodel.h"
-//insert your own code here.
 #include	"crgrid.h"
 #include	"crmenu.h"
 #include	"ccmenuitem.h"
@@ -25,13 +24,9 @@
 #include	"ccmodelatom.h"
 
 
-// OPSignature:  CrModel:CrModel( CrGUIElement *:mParentPtr ) 
-	CrModel::CrModel( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
-	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
+CrModel::CrModel( CrGUIElement * mParentPtr )
+ :     CrGUIElement( mParentPtr )
 {
-//Insert your own code here.
 	mWidgetPtr = CxModel::CreateCxModel( this,
 								(CxGrid *)(mParentPtr->GetWidget()) );
 	mTabStop = true;
@@ -42,14 +37,11 @@
 	popupMenu2 = nil;
 	popupMenu3 = nil;
 	m_AtomSelectAction = CR_SELECT;
-	m_AtomGetAction = CR_SENDA;
 
-//End of user code.         
 }
-// OPSignature:  CrModel:~CrModel() 
-	CrModel::~CrModel()
+
+CrModel::~CrModel()
 {
-//Insert your own code here.
 	if(mAttachedModelDoc)
 		mAttachedModelDoc->RemoveView(this);
 
@@ -63,13 +55,10 @@
 	delete popupMenu2;
 	delete popupMenu3;
 
-
-//End of user code.         
 }
-// OPSignature: Boolean CrModel:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	
@@ -82,56 +71,56 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 		mSelfInitialised = true;
 
 		LOGSTAT( "*** Created Model      " + mName );
+
+
+            hasTokenForMe = true;
+            while ( hasTokenForMe )
+            {
+                  switch ( tokenList->GetDescriptor(kAttributeClass) )
+                  {
+                        case kTNumberOfRows:
+                        {
+                              tokenList->GetToken(); // Remove that token!
+                              CcString theString = tokenList->GetToken();
+                              int chars = atoi( theString.ToCString() );
+                              ((CxModel*)mWidgetPtr)->SetIdealHeight( chars );
+                              LOGSTAT( "Setting Model Lines Height: " + theString );
+                              break;
+                        }
+                        case kTNumberOfColumns:
+                        {
+                              tokenList->GetToken(); // Remove that token!
+                              CcString theString = tokenList->GetToken();
+                              int chars = atoi( theString.ToCString() );
+                              ((CxModel*)mWidgetPtr)->SetIdealWidth( chars );
+                              LOGSTAT( "Setting Model Chars Width: " + theString );
+                              break;
+                        }
+                        default:
+                        {
+                              hasTokenForMe = false;
+                              break;
+                        }
+                  }
+            }
 	}
 	// End of Init, now comes the general parser
 	
+      hasTokenForMe = true;
 	while ( hasTokenForMe )
 	{
 		switch ( tokenList->GetDescriptor(kAttributeClass) )
 		{
-			case kTTextSelector:
-			{
-				tokenList->GetToken(); // Remove that token!
-				mText = tokenList->GetToken();
-				SetText( mText );
-				LOGSTAT( "Setting Model Text: " + mText );
-				break;
-			}
-			case kTCallback:
-			{
-				tokenList->GetToken(); // Remove that token!
-				break;
-			}
 			case kTInform:
 			{
-				mCallbackState = true;
 				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "Enabling Model callback" );
-				break;
-			}
-			case kTIgnore:
-			{
-				mCallbackState = false;
+				Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
 				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "Disabling Model callback" );
-				break;
-			}
-			case kTNumberOfRows:
-			{
-				tokenList->GetToken(); // Remove that token!
-				CcString theString = tokenList->GetToken();
-				int chars = atoi( theString.ToCString() );
-				((CxModel*)mWidgetPtr)->SetIdealHeight( chars );
-				LOGSTAT( "Setting Model Lines Height: " + theString );
-				break;
-			}
-			case kTNumberOfColumns:
-			{
-				tokenList->GetToken(); // Remove that token!
-				CcString theString = tokenList->GetToken();
-				int chars = atoi( theString.ToCString() );
-				((CxModel*)mWidgetPtr)->SetIdealWidth( chars );
-				LOGSTAT( "Setting Model Chars Width: " + theString );
+				mCallbackState = inform;
+				if (mCallbackState)
+					LOGSTAT( "Enabling ListCtrl callback" );
+				else
+					LOGSTAT( "Disabling ListCtrl callback" );
 				break;
 			}
 			case kTRadiusType:
@@ -203,30 +192,6 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 					case kTSendCAndSelect:
 						tokenList->GetToken();
 						m_AtomSelectAction = CR_SENDC_AND_SELECT;
-						break;
-				}
-				break;
-			}
-			case kTGetAction:
-			{
-				tokenList->GetToken(); // Remove that token!
-				switch ( tokenList->GetDescriptor(kAttributeClass) )
-				{
-					case kTSendA:
-						tokenList->GetToken();
-						m_AtomGetAction = CR_SENDA;
-						break;
-					case kTSendB:
-						tokenList->GetToken();
-						m_AtomGetAction = CR_SENDB;
-						break;
-					case kTSendC:
-						tokenList->GetToken();
-						m_AtomGetAction = CR_SENDC;
-						break;
-					case kTSendCAndSelect:
-						tokenList->GetToken();
-						m_AtomGetAction = CR_SENDC_AND_SELECT;
 						break;
 				}
 				break;
@@ -584,7 +549,7 @@ void CrModel::GetValue()
 
 void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 {
-	int style = (output) ? m_AtomGetAction : m_AtomSelectAction;
+      int style = (output) ? CR_SENDA : m_AtomSelectAction;
 
 	CcString atomname = atom->Label();
 	switch ( style )

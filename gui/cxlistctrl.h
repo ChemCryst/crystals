@@ -21,7 +21,8 @@ class CxGrid;
 class	CxListCtrl : public CListCtrl
 {
 	public:
-		Boolean m_SendIndex;
+		int GetNumberSelected();
+		void GetSelectedIndices( int * values );
 		void InvertSelection();
 		int m_ProgSelecting;
 		CcString GetListItem(int item);

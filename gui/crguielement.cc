@@ -21,13 +21,9 @@
 //End of user code.          
 
 CcController *	CrGUIElement::mControllerPtr;
-// OPSignature:  CrGUIElement:CrGUIElement( CrGUIElement *:mParentPtr ) 
-	CrGUIElement::CrGUIElement( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
 
-//End of user initialization.         
+CrGUIElement::CrGUIElement( CrGUIElement * mParentPtr )
 {
-//Insert your own code here.
 	mParentElementPtr = mParentPtr;
 	mWidgetPtr = nil;
 	mSelfInitialised = false;
@@ -39,73 +35,56 @@ CcController *	CrGUIElement::mControllerPtr;
 	mYCanResize = false;
 	mTabStop = true;
 	mDisabled = true;
-//End of user code.         
 }
-// OPSignature:  CrGUIElement:~CrGUIElement() 
-	CrGUIElement::~CrGUIElement()
-{
-//Insert your own code here.
 
-//End of user code.         
+CrGUIElement::~CrGUIElement()
+{
 }
-// OPSignature: CrGUIElement * CrGUIElement:FindObject( CcString:Name ) 
+
 CrGUIElement *	CrGUIElement::FindObject( CcString Name )
 {
-//Insert your own code here.
 	if ( Name == mName )
 		return this;
 	else
 		return nil;
-//End of user code.         
 }
-// OPSignature: void * CrGUIElement:GetWidget() 
+
 void *	CrGUIElement::GetWidget()
 {
-//Insert your own code here.
 	if ( mWidgetPtr == nil )
 		return mParentElementPtr->GetWidget();
 	else
 		return mWidgetPtr;
-//End of user code.         
 }
-// OPSignature: CrGUIElement * CrGUIElement:GetRootWidget() 
+
 CrGUIElement *	CrGUIElement::GetRootWidget()
 {
-//Insert your own code here.
 	return mParentElementPtr->GetRootWidget();
-//End of user code.         
 }
-// OPSignature: void CrGUIElement:Show( Boolean:show ) 
+
+
 void	CrGUIElement::Show( Boolean show )
 {
-//Insert your own code here.
-//#pragma unused ( show )
 	NOTUSED(show);
-//End of user code.         
 }
-// OPSignature: void CrGUIElement:Align() 
+
 void	CrGUIElement::Align()
 {
-//Insert your own code here.
 
-//End of user code.         
 }
-// OPSignature: void CrGUIElement:GetValue() 
 void	CrGUIElement::GetValue()
 {
-//Insert your own code here.
-	//For all elements that don't return a value, return the text TRUE,
-	//so the programmer can test their existence.
+//For all elements that don't return a value, return the text TRUE,
+//so the programmer can test their existence.
 	(CcController::theController)->SendCommand("TRUE",true);
-	//(If the element can't be found, FALSE is returned from CcController)
-//End of user code.         
+//(If the element can't be found, FALSE is returned from CcController)
 }
 
 void	CrGUIElement::GetValue(CcTokenList * tokenList)
 {
-	//For all elements that don't return a value, return the text ERROR,
-	//The only valid query for an object that doesn't override this function
-	//is EXISTS, and that is handled in the CcController::GetValue routine.
+//For all elements that don't return a value, return the text ERROR,
+//The only valid query for an object that doesn't override this function
+//is EXISTS, and that is handled in the CcController::GetValue routine.
 	(CcController::theController)->SendCommand("ERROR",true);
 }
 
@@ -144,12 +123,9 @@ Boolean	CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
 
  
  
-// OPSignature: void CrGUIElement:SetController( CcController *:controller ) 
 void	CrGUIElement::SetController( CcController * controller )
 {
-//Insert your own code here.
 	mControllerPtr = controller;
-//End of user code.         
 }
 
 
@@ -158,6 +134,7 @@ int CrGUIElement::GetIdealWidth()
 //This just returns zero. It is overridden for elements which can resize.
 	return 0;
 }
+
 int CrGUIElement::GetIdealHeight()
 {
 //This just returns zero. It is overridden for elements which can resize.
@@ -198,6 +175,11 @@ void CrGUIElement::SendCommand(CcString theText, Boolean jumpQueue)
 	if(jumpQueue)
 		CcController::theController->SendCommand(theText,true);
 	else
-		GetRootWidget()->SendCommand(theText); //Give the window a chance to handle the
+            mParentElementPtr->SendCommand(theText); //Give the parent objects a chance to handle the
 											   //output first.
+//NB For Grid and Window, this function is overridden, to allow commands
+//to be prefixed to the output.
+//If a command is prefixed, the CcController implementation is called and
+//the text is not passed any further up the heirarchy.
+
 }

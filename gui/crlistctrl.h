@@ -27,6 +27,7 @@ class	CrListCtrl : public CrGUIElement
 		void	CalcLayout();
 		void	SetText( CcString item );
 		void	GetValue();
+		void	GetValue( CcTokenList * tokenList );
 		void CrFocus();
 };
 #endif

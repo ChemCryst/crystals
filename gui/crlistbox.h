@@ -29,6 +29,7 @@ class	CrListBox : public CrGUIElement
 		void	CalcLayout();
 		void	SetText( CcString item );
 		void	GetValue();
+		void	GetValue(CcTokenList * tokenlist);
 		void	Selected ( int item );
 		void	Committed( int item );
 		

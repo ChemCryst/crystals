@@ -34,11 +34,13 @@ class	CrGrid : public CrGUIElement
 		void	CalcLayout();
 		void	SetText( CcString item );
 		Boolean	GridComplete();
-		Boolean	InitElement( CrGUIElement * element, CcTokenList * tokenList );
+		Boolean	InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos );
 		void	Align();
 		int	GetHeightOfRow( int row );
 		int	GetWidthOfColumn( int col );
 		CrGUIElement *	FindObject( CcString Name );
+            void SendCommand(CcString theText, Boolean jumpQueue);
+            void SetCommandText(CcString theText);
 		
 		// attributes
 		int	mColumns;
@@ -55,6 +57,10 @@ class	CrGrid : public CrGUIElement
 		CrGrid *	mActiveSubGrid;
 		CrGUIElement **	mTheGrid;
 		CxGroupBox *	mOutlineWidget;
-		
+
+            Boolean mCommandSet;
+            CcString mCommandText;
+
+
 };
 #endif
