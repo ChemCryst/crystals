@@ -88,10 +88,12 @@ obj/%.o : %.fpp
 obj/%.o: %.cc
 	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
 
-obj/%.d: %.cc
+obj/%.d: obj %.cc
 	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
 	| sed "s/$*\.o/& obj\/$*.d/g" ' > $@
 
 %.o : %.c
 	$(CC) -c $(CFLAGS) -D_$(COMPCODE)_ $(OPT) -o $@ $<
 
+obj :
+	mkdir obj
