@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2002/02/19 16:34:52  ckp2
+//   Menus for plots.
+//
 //   Revision 1.12  2001/09/07 14:39:06  ckp2
 //
 //   New modelwindow function lets the user choose a background bitmap to
@@ -41,6 +44,7 @@ class CrMenu;
 #define CR_APPEND   6
 #define CR_SENDC_AND_SELECT 7
 
+class CxModel;
 
 class   CcModelStyle
 {
@@ -50,6 +54,7 @@ public:
    int normal_res;
    int quick_res;
    Boolean high_res;
+   CxModel* m_modview;
 };
 
 class   CrModel : public CrGUIElement
@@ -73,12 +78,12 @@ class   CrModel : public CrGUIElement
 // Called from CxModel:
     Boolean RenderModel(Boolean detailed);
     void    MenuSelected(int id);
-    void    ContextMenu(int x, int y, CcString atomname = "", bool selection = false);
+    void    ContextMenu(int x, int y, CcString atomname = "", int selection = 1, CcString atom2="");
     int     GetSelectionAction();
     CcModelObject * FindObjectByGLName(GLuint name);
 
 // General purpose:
-    void    Update();
+    void    Update(bool rescale);
     void    SelectFrag(CcString atomname, bool select);
 
 // Called from CcModelDoc:
@@ -92,9 +97,8 @@ class   CrModel : public CrGUIElement
 
 // Attributes:
     CcModelDoc* m_ModelDoc;
-    CrMenu*     m_popupMenu1;
-    CrMenu*     m_popupMenu2;
-    CrMenu*     m_popupMenu3;
+    CrMenu     *m_popupMenu1, *m_popupMenu2, *m_popupMenu3,
+               *m_popupMenu4;
     int         m_AtomSelectAction;
 };
 

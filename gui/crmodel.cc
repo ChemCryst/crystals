@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2001/09/07 14:39:06  ckp2
+//
+//   New modelwindow function lets the user choose a background bitmap to
+//   display behind the model. David is correct; I've been to too many
+//   conferences. But it's too late now, I've done it.
+//
 //   Revision 1.20  2001/06/18 12:32:19  richard
 //   FindObjectByGLName had wrong return type for failure (bool rather than null).
 //
@@ -54,6 +60,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_popupMenu1 = nil;
   m_popupMenu2 = nil;
   m_popupMenu3 = nil;
+  m_popupMenu4 = nil;
   m_AtomSelectAction = CR_SELECT;
   ptr_to_cxObject = CxModel::CreateCxModel( this,(CxGrid *)(mParentPtr->GetWidget()) );
   ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this );
@@ -61,6 +68,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.quick_res = 5;
   m_style.radius_type = COVALENT;
   m_style.radius_scale = 0.25;
+  m_style.m_modview = (CxModel*)ptr_to_cxObject;
 }
 
 CrModel::~CrModel()
@@ -79,6 +87,7 @@ CrModel::~CrModel()
   delete m_popupMenu1;
   delete m_popupMenu2;
   delete m_popupMenu3;
+  delete m_popupMenu4;
 
 }
 
@@ -181,7 +190,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
             break;
           }
         }
-        Update();
+        Update(true);
         tokenList->GetToken(); // Remove that token!
         break;
       }
@@ -190,7 +199,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken(); // Remove that token!
         CcString theString = tokenList->GetToken();
         m_style.radius_scale = float(atoi(theString.ToCString()))/1000.0f;
-        Update();
+        Update(true);
         break;
       }
       case kTAttachModel:
@@ -264,6 +273,9 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
                break;
              case 3:
                m_popupMenu3 = mMenuPtr;
+               break;
+             case 4:
+               m_popupMenu4 = mMenuPtr;
                break;
           }
         }
@@ -428,19 +440,19 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
           tokenList->GetToken();
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(true);
           (CcController::theController)->status.SetZoomedFlag(true);
-          Update();
+          Update(true);
         }
         else if (tokenList->GetDescriptor(kLogicalClass) == kTNo)
         {
           tokenList->GetToken();
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(false);
           (CcController::theController)->status.SetZoomedFlag(false);
-          Update();
+          Update(true);
         }
         else
         {
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(false);
-          Update();
+          Update(true);
         }
         break;
       }
@@ -507,28 +519,43 @@ void CrModel::DocRemoved()
 }
 
 
-void CrModel::ContextMenu(int x, int y, CcString atomname, bool selection)
+void CrModel::ContextMenu(int x, int y, CcString atomname, int selection, CcString atom2)
 {
     if ( m_ModelDoc == nil ) return;
 
     CcString nameOfMenuToUse;
     CrMenu* theMenu = nil;
-    if ( atomname == "" )      // The user has clicked on nothing. Display general menu.
-    {
+
+    switch ( selection ) {
+      case 1:  // The user has clicked on nothing. Display general menu.
         theMenu = m_popupMenu1;
-    }
-    else if ( selection ) // The user has clicked on a set of selected atoms.
-    {
+        break;
+      case 2:  // The user has clicked on a set of selected atoms.
         theMenu = m_popupMenu2;
-    }
-    else                       // The user has clicked on a single atom.
-    {
+        break;
+      case 3: // The user has clicked on a single atom
         theMenu = m_popupMenu3;
+        break;
+      case 4: // The user has clicked on a normal bond
+        theMenu = m_popupMenu4;
+        (CcController::theController)->status.SetBondType(BOND_NORM);
+        break;
+      case 5: // The user has clicked on a bond to a symm atom
+        theMenu = m_popupMenu4;
+        (CcController::theController)->status.SetBondType(BOND_SYMM);
+        break;
+      case 6: // The user has clicked on an aromatic bond.
+        theMenu = m_popupMenu4;
+        (CcController::theController)->status.SetBondType(BOND_AROMATIC);
+        break;
+      default:
+        theMenu = nil;
     }
 
-    if(theMenu !=nil)
+    theMenu->Substitute(atomname, m_ModelDoc, atom2);
+
+    if(theMenu)
     {
-        theMenu->Substitute(atomname, m_ModelDoc);
         if ( ptr_to_cxObject ) theMenu->Popup(x,y,(void*)ptr_to_cxObject);
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
     }
@@ -550,9 +577,9 @@ void CrModel::MenuSelected(int id)
 }
 
 
-void CrModel::Update()
+void CrModel::Update(bool rescale)
 {
-  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->Update();
+  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->Update(rescale);
   else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
 }
 
