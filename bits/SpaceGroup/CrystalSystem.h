@@ -226,8 +226,10 @@ class Table:public MyObject
         char* getName();
         ArrayList<Index>* getHeadings(int pI);
         std::ostream& output(std::ostream& pStream);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[]);
+        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
+        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[]);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnCount=8);
         int getNumPointGroups();	//Needs doing
         SpaceGroup* getSpaceGroup(int pLineNum, int pPointGroupNum);
         Indexs* getConditions(int pRow, int pColumn);
@@ -289,8 +291,10 @@ class RankedSpaceGroups:public MyObject
     public:
         RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral);
         ~RankedSpaceGroups();
+        std::ofstream& output(std::ofstream& pStream);
         std::ostream& output(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, RankedSpaceGroups& pRank);
+std::ofstream& operator<<(std::ofstream& pStream, RankedSpaceGroups& pRank);
 #endif
