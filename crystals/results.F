@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2001/07/19 11:57:25  ckp2
+C Add an _atom_site_type_symbol to CIF output.
+C
+C Make number format longer for torsion angle CIF output
+C so that 3 digit negative numbers will not crash the program.
+C
 C Revision 1.20  2001/07/11 09:37:36  ckpgroup
 C Move test for outputting absorption details
 C
@@ -1111,7 +1117,11 @@ C----- ORDINARY PUNCH LISTING
       ELSE IF (IPCHCO .EQ. 2) THEN
 C----- CIF PUNCH LISTING
             WRITE(CLINE,'(160A1)') LINEC
-            IST = KCCNEQ (CLINE, 1, ' ')+1
+C RIC01 Find second space in string:
+            ISTRIC = MAX(1,KCCEQL(CLINE,1,' '))+1
+            ISTRIC = MAX(1,KCCNEQ(CLINE,ISTRIC,' '))+1
+            IST    = MAX(1,KCCEQL(CLINE,ISTRIC,' '))
+C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCCLWC (CLINE(IST:), CLINE(IST:))
             CALL XCTRIM (CLINE,NCHAR)
             CLINE(NCHAR+1:NCHAR+4) = CTEM
