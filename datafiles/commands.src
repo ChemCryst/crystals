@@ -3464,8 +3464,8 @@ PARAMETERS         3    4
     .NLINES            26    0    1    0    0        64
     .LISTAXES          21    0    1    2    0 NO
      NO             YES
-    .ESDS              27    0    1    2    0 YES
-     NO             YES
+    .ESDS              27    0    1    3    0 YES
+     NO             YES            EXCLRH
    2.COORDINATES        7    1    0    0
          1    1    3    3    3    3    3
     .NCHARACTER         7    0    1    0    0        14

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.78  2004/04/20 11:16:42  rich
+C One extra dp on the R_int value for anyone trying to publish in Acta E.
+C
 C Revision 1.77  2004/02/18 14:20:21  rich
 C In XDATER, change order from American to UK (reqd to get CIF audit_creation_date
 C in the correct order).
@@ -1197,10 +1200,16 @@ C
 C
 \QSTORE
 C
+      LOGICAL LHFIXD(3)
+C
       EQUIVALENCE (IALATM,ALLATM)
       SAVE IALATM
 #HOL      DATA IALATM / '    ' /
 &HOL      DATA IALATM /4H     /
+      SAVE KHYD 
+#HOL      DATA KHYD /'H   '/
+&HOL      DATA KHYD /4HH   /
+C
 C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
@@ -1232,6 +1241,19 @@ C----- CAPTIONS FOR CIF FILE
         WRITE(NCFPU1,903)
 903     FORMAT(/'# Replace trailing . with the number of unfound',
      1 /'# hydrogen atoms attaced to relavent atom')
+
+        WRITE(NCFPU1,904)
+904     FORMAT(/'# Refinement flags',/
+
+     1 '# . no refinement constraints' ,/
+     2 '# S special position constraint on site' ,/
+     3 '# G rigid group refinement of site' ,/
+     4 '# R riding-atom site attached to non-riding atom' ,/
+     5 '# D distance or angle restraint on site' ,/
+     6 '# T thermal displacement constraints' ,/
+     7 '# U Uiso or Uij restraint (rigid bond)' ,/
+     8 '# P partial occupancy constraint'/)
+
 
         WRITE( NCFPU1, 900)
 900     FORMAT ( /'loop_'/'_atom_site_label'/'_atom_site_type_symbol'/
@@ -1334,6 +1356,14 @@ C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
         IP=3
 C--LOOP OVER THE COORDS.
         DO L=1,3
+C-DJW-APR-04
+C Check if riding H ESD to be omitted                      
+        IF ( ( AND(ISTORE(M5+15),KBREFB(3)).GT.0 ) .AND.                 
+     1                   (ISTORE(M5).EQ.KHYD) )THEN              
+          IF (IPESD .eq. 2) BPD(MPD) = 0.0                                               
+        ENDIF                                                          
+C         IF (ISTORE(M5) .EQ. KHYD) BPD(MPD) = 0.0
+C
           LOJ = J+6
           J=J+NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
