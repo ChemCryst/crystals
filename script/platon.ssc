@@ -16,10 +16,11 @@
 ^^CO SYSOPENFILE 'Platon*.exe' 'Platon executable'
 
 %    CLEAR
-%    INSERT '^^CO SETKEY PLATONDIR '
+%    INSERT '^^CO SETKEY PLATONDIR "'
 %    GET SILENT TEXT 'Platon location:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 %      EVALUATE CFILE = CVALUE
+%      INSERT '"'
 %      OUTPUT
 %    ELSE
 %      FINISH
