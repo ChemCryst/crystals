@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2001/07/03 08:58:09  ckp2
+C Read in Fc^2, if flag for F^2 is set.
+C
 C Revision 1.15  2001/05/23 14:25:36  ckpgroup
 C Store number of raw reflectons read in
 C
@@ -1259,7 +1262,7 @@ C--CHECK FOR END OF CARD
 C--END OF THE CARD  -  READ THE NEXT
 100      CONTINUE
          READ (IUNIT,150,END=500) IMAGE
-150      FORMAT (80A1)
+150      FORMAT (256A1)
          NCARDS=NCARDS+INCREM
          NC=1
          GO TO 50
