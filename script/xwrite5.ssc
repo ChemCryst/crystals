@@ -139,7 +139,7 @@
 ^^WI           DISABLED=YES
 % END IF
 ^^WI    @ 2,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF
-^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales (2 component)'
+^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales'
 % IF ( DOTWIN ) THEN
 ^^WI     STATE = ON
 % ELSE
@@ -603,8 +603,7 @@
 %      QUEUE COPY CONT ENANTIO
 %    END IF
 %    IF ( DOTWIN ) THEN
-%      QUEUE COPY EQUIVALENCE ELEMENT SCALES
-%      QUEUE COPY WEIGHT -1 ELEMENT(1)
+%      QUEUE COPY SUMFIX ELEMENT SCALES
 %    END IF
 %    IF ( HRIDE ) THEN
 %      QUEUE COPY #USE RIDEDAT.12
@@ -627,8 +626,7 @@
 %      COPY 'CONT ENANTIO'
 %    END IF
 %    IF ( DOTWIN ) THEN
-%      COPY 'EQUIVALENCE ELEMENT SCALES'
-%      COPY 'WEIGHT -1 ELEMENT(1)'
+%      COPY 'SUMFIX ELEMENT SCALES'
 %    END IF
 %    IF ( HMODE .EQ. 10 ) THEN
 %      COPY '#USE RIDEDAT.12'

@@ -111,7 +111,7 @@
 %  END IF
 %  IF ( DOTWIN .EQ. TRUE ) THEN
 %    CLEAR
-%    INSERT '{R   There are two element parameters '
+%    INSERT '{R   There are twin element parameters '
 %    OUTPUT
 %  END IF
 %  IF ( DOSORT .EQ. TRUE ) THEN
