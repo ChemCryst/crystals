@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2003/06/20 09:04:29  rich
+C
+C The implementation of the SUMFIX constraint. Debugging left in place, commented
+C out, for now.
+C
 C Revision 1.9  2002/12/03 13:59:34  rich
 C Compress output message when forming L22.
 C
@@ -224,6 +229,7 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XFLAGS
 C
 \QSTORE
 \QCOMLX
@@ -327,6 +333,12 @@ C------ FORM DERIVATIVE MATRICES FOR ALL AXES  L(-1) .R. L
       CALL XFRBDM (0., 0., 0.)
 C----- LOAD LIST 5
       CALL XFAL05
+C - Clear all the bits that L22 could possibly set.
+      IMASK = INOT( KBREFB(1) +KBREFB(2) +KBREFB(3) +KBREFB(5)
+     1             +KBREFB(7) +KBREFX    +KBREFU )
+      DO I = 0, N5-1
+          ISTORE(L5+MD5*I+15) = IAND ( ISTORE(L5+MD5*I+15), IMASK )
+      END DO
 C
 C-----  LOAD LIST 2 AND INITIALISE SPECIAL POSITION CODE
         CALL XFAL02
@@ -950,6 +962,8 @@ C--END OF THE GROUP CHAIN  -  UPDATE THE RECORD POINTERS IN LIST 22
       CALL XUDRH(KE,101,0,N22)
 C--WRITE THE PART LIST TO THE DISC
       CALL XWLSTD(KE,ICOM22,IDIM22,-1,0)
+CRICJUN03 - store the list 5, with modified Spare values.
+      CALL XSTR05 (5,-1,-1)
 C
 C--FIND THE POINTERS FOR THE MAIN LIST 22 RECORD
       I=KFNDRI(KE,101,IADDR,IBUFF)
@@ -1301,6 +1315,7 @@ C
 \XSPECC
 \XOPVAL
 \XIOBUF
+\XFLAGS
 C
 \QSTORE
 C
@@ -1308,8 +1323,8 @@ C
       DATA COORD /'*    ', 'x    ', 'y    ', 'z    ',
      1  'U[11]', 'U[22]', 'U[33]', 'U[23]', 'U[13]', 'U[12]'/
       DATA CCST/' constraint'/, CRST /' restraint '/
-C
-C
+
+
       IF (N12B .LE. 0) RETURN
 C--LOOP OVER ALL THE GROUPS
 C---- SET THE FIRST GROUP ADDRESS, OVERALL PARAM
@@ -1320,62 +1335,56 @@ C---- SET THE FIRST GROUP ADDRESS, OVERALL PARAM
       NATOM = IATOM + N5
       MO = MO + 1
       MP = MO
-C
-C
-C
+
+
 1000  CONTINUE
-C-    SET THE INITIAL PART ADDRESS
+C- SET THE INITIAL PART ADDRESS
       IPA = ISTORE(NGA+1)
-C-    NOW UPDATE  THE GROUP ADDRESS FOR THE NEXT GROUP
+C- NOW UPDATE  THE GROUP ADDRESS FOR THE NEXT GROUP
       NGA = ISTORE(NGA)
       IGROUP = IGROUP + 1
       IPART = 0
-C
-C
+
       IPART = IPART + 1
-C-    NO. WORDS PER PARAMETER ENTRY
+C- NO. WORDS PER PARAMETER ENTRY
       NWE = ISTORE(IPA+1)
-C-    FIRST PARAMETER ADDRESS
+C- FIRST PARAMETER ADDRESS
       IFP = ISTORE(IPA+2)
-C-    INDEX (0-9) OF LAST PARAMETER
+C- INDEX (0-9) OF LAST PARAMETER
       JLP = ISTORE(IPA+3)
-C-    INDEX OF FIRST PARAMETER. X = 4
+C- INDEX OF FIRST PARAMETER. X = 4
       JFP = ISTORE(IPA+4)
-C-    SET THE NEXT PART ADDRESS
+C- SET THE NEXT PART ADDRESS
       IPA = ISTORE(IPA)
-C
-      IF ((IGROUP .GT. 1) .AND. (IGROUP .LE. NATOM)) THEN
-C       WE HAVE A REAL ATOM
+
+      IF ((IGROUP .GT. 1) .AND. (IGROUP .LE. NATOM)) THEN ! WE HAVE A REAL ATOM
 C----- GET SPECIAL POSITION INFORMATION
-      IF ( KSPGET(X, XO, KEY, COEF, MGM, M5S, -1, JUNK)
-     1    .GT. 0 ) GOTO 3100
-      MPOS = NGMULT / MGM
-C
-C-        LOOP OVER ALL THE SET PARAMETERS
-C-        NOTE THAT THERE ARE SLOTS EVEN FOR UNSET PARAMETERS.
+        IF (KSPGET(X, XO, KEY, COEF, MGM, M5S, -1, JUNK).GT.0) GOTO 3100
+        MPOS = NGMULT / MGM
+C- LOOP OVER ALL THE SET PARAMETERS
+C- NOTE THAT THERE ARE SLOTS EVEN FOR UNSET PARAMETERS.
 C
         DO 3000 K = JFP, JLP
-C         CHECK WE START AT X OR HIGHER
+C CHECK WE START AT X OR HIGHER
           IF (K .GE. 4) THEN
             KS = K - 3
             KK = KEY(KS)
-C           HAVE WE SEEN THIS KEY BEFORE?
+C HAVE WE SEEN THIS KEY BEFORE?
             IF (KK .EQ. NOWT) GOTO 3000
-C           INITIALISE NO. OF RELATED PARAMETERS
+C INITIALISE NO. OF RELATED PARAMETERS
             NRELP = 0
-C           THIS IS A FIRST TIME- GET THE LIST 12 DETAILS
+C THIS IS A FIRST TIME- GET THE LIST 12 DETAILS
             KPA = IFP + NWE*K
             KBLK = KBLOCK( ISTORE(KPA))
             KFIX = KBITS( ISTORE(KPA+2), IO(2) )
             KEQV = KBITS( ISTORE(KPA+2), IO(1) )
             WTK  = STORE(KPA +1)
-C------ IS PARAMETER TO BE FIXED?
-C            AND DEFINED  IN CURRENT BLOCK?
+C------ IS PARAMETER TO BE FIXED? AND DEFINED IN CURRENT BLOCK?
             IF ((KK .EQ. 0) .AND. (KBLK .EQ. N12B)) THEN
-C           SHOULD NOT BE REFINED
-C             IS IT ALREADY REFERENCED?
-C             (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
-C
+C SHOULD NOT BE REFINED
+C IS IT ALREADY REFERENCED?
+C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
+
               IF((KEQV .EQ. 1).OR.(IPA .GT. 0).OR.(WTK .GT. ZEROSQ))
      1          THEN
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
@@ -1386,80 +1395,80 @@ C
                 NRESTR = NRESTR + 1
                 CALL XRESTF (KS, XO(KS), M5S )
               ELSE
-C
+
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CCST
                 WRITE(NCAWU,'(A)') CMON(1)(:)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
-C               SET 'FIX' AND 'EXPLICIT'
+C SET 'FIX' AND 'EXPLICIT'
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IO(2))
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IE(2))
                 STORE(KPA+1) = 0.
-C
+
               ENDIF
-C
-C
+
+              IF ( KS .GE. 1 .AND. KS .LE. 3 ) THEN
+C Set REF flag to indicate special position constraint (even if
+C it ends up being a restraint)
+                ISTORE(M5S+15) = IOR ( ISTORE(M5S+15), KBREFB(1) )
+              ELSE IF ( KS. GT. 3 ) THEN
+C Set REF flag to indicate thermal displacement constraint (even if
+C it ends up being a restraint)
+                ISTORE(M5S+15) = IOR ( ISTORE(M5S+15), KBREFB(5) )
+              END IF
+
+
             ELSE
 C
 C----- COORDINATE NOT FIXED, BUT MAY BE RELATED
-C
-C             WE DONT NEED TO CHECK U'S IF K POINT TO X'S
+
+C WE DONT NEED TO CHECK U'S IF K POINT TO X'S
               IF (K .LE. 5) THEN
                 JMX = MIN0(6,JLP)
               ELSE
                 JMX = JLP
               ENDIF
-C
-              IF (K .LT. JMX) THEN
-C               LOOP OVER REMAINING PARAMETERS
-C
-                DO 4000 J = K+1, JMX
-                    JS = J - 3
-C                   CAN WE PROCESS THIS PARAMETER?
-                    IF (KEY(JS) .LE. 0) GOTO 4000
-C
-                    IF (KK .EQ. KEY(JS)) THEN
-C-----              RELATED PARAMETER - IN CURRENT BLOCK?
-C
-                      JPA = IFP + NWE*J
-                      JBLK = KBLOCK( ISTORE(JPA))
-                      IF ( JBLK .EQ. N12B) THEN
-                        JFIX = KBITS( ISTORE(JPA+2), IO(2) )
-                        JEQV = KBITS( ISTORE(JPA+2), IO(1) )
-                        WTJ  = STORE(JPA +1)
-C
-                        IF ( (KBLK .EQ. JBLK) .AND.
-C                       IN SAME BLOCK, SO OK SO FAR
-     1                  ((KEQV.EQ.0) .AND. (JEQV.EQ.0)) .AND.
-C                       NO EQUIVALENCES SET, SO STILL OK
-     1                  ((KFIX.EQ.0) .AND. (JFIX.EQ.0)) .AND.
-C                       NO FIXES SET SO STILL OK
-     1                  ((WTK.LE.ZEROSQ) .AND. (WTJ.LE.ZEROSQ)) ) THEN
-C                       NO WEIGHT SET SO STILL OK
-C                         PARAMETERS KS AND JS WERE NOT SUBJECT TO ANY
-C                         USER DEFINED RESTRICTIONS, SO WE CAN SET UP
-C                         CONSTRAINTS
-C
-C                         SET THE EQUIVALENCE NO
-C                         SET THE 'EQUIV' AND 'EXPLICIT'
-                          ISTORE(JPA) = ISTORE(JPA) + MP
-                          ISTORE(JPA+2) = KOR(ISTORE(JPA+2), IO(1))
-                          ISTORE(JPA+2) = KOR(ISTORE(JPA+2), IE(2))
-                          STORE(JPA+1) = COEF(JS)/COEF(KS)
-                          KEY(JS) = NOWT
-C                         INCREMENT THE RELATED PARAMETER COUNT
-                          NRELP = NRELP + 1
-                          WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
-     1                    ,COORD(KS+1), CCST
-                          WRITE(NCAWU,'(A)') CMON(1)(:)
+
+              IF (K .LT. JMX) THEN     
+
+                DO 4000 J = K+1, JMX   ! LOOP OVER REMAINING PARAMETERS
+                  JS = J - 3
+                  IF (KEY(JS) .LE. 0) GOTO 4000 ! CAN WE PROCESS THIS PARAMETER?
+
+                  IF (KK .EQ. KEY(JS)) THEN
+C----- RELATED PARAMETER - IN CURRENT BLOCK?
+
+                    JPA = IFP + NWE*J
+                    JBLK = KBLOCK( ISTORE(JPA))
+                    IF ( JBLK .EQ. N12B) THEN
+                      JFIX = KBITS( ISTORE(JPA+2), IO(2) )
+                      JEQV = KBITS( ISTORE(JPA+2), IO(1) )
+                      WTJ  = STORE(JPA +1)
+
+                      IF ( (KBLK .EQ. JBLK) .AND. !  IN SAME BLOCK, SO OK 
+     1                  ((KEQV.EQ.0) .AND. (JEQV.EQ.0)) .AND. ! NO EQUIVALENCES SET, SO STILL OK
+     1                  ((KFIX.EQ.0) .AND. (JFIX.EQ.0)) .AND. ! NO FIXES SET SO STILL OK
+     1                  ((WTK.LE.ZEROSQ) .AND. (WTJ.LE.ZEROSQ)) ) THEN ! NO WEIGHT SET SO STILL OK
+C PARAMETERS KS AND JS WERE NOT SUBJECT TO ANY
+C USER DEFINED RESTRICTIONS, SO WE CAN SET UP CONSTRAINTS
+C SET THE EQUIVALENCE NO
+C SET THE 'EQUIV' AND 'EXPLICIT'
+                        ISTORE(JPA) = ISTORE(JPA) + MP
+                        ISTORE(JPA+2) = KOR(ISTORE(JPA+2), IO(1))
+                        ISTORE(JPA+2) = KOR(ISTORE(JPA+2), IE(2))
+                        STORE(JPA+1) = COEF(JS)/COEF(KS)
+                        KEY(JS) = NOWT
+C INCREMENT THE RELATED PARAMETER COUNT
+                        NRELP = NRELP + 1
+                        WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
+     1                  ,COORD(KS+1), CCST
+                        WRITE(NCAWU,'(A)') CMON(1)(:)
                         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 528                     FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
      1                  ' related by ', A)
-C
-                        ELSE
-C
-C                       RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
-                          WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
+                      ELSE
+C RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
+                        WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                    ,COORD(KS+1), CRST
                           WRITE(NCAWU,'(A)') CMON(1)(:)
                         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
@@ -1467,51 +1476,61 @@ C                       RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
      1                   JS, COEF(JS), XO(JS), M5S)
                           NRESTR = NRESTR + 1
                           KEY(JS) = NOWT
-C
-                        ENDIF
-C
+
                       ENDIF
-C
+
+                      IF ( KS .GE. 1 .AND. KS .LE. 3 ) THEN
+C Set REF flag to indicate special position constraint (even if
+C it ends up being a restraint)
+                        ISTORE(M5S+15) = IOR (ISTORE(M5S+15), KBREFB(1))
+                      ELSE IF ( KS. GT. 3 ) THEN
+C Set REF flag to indicate thermal displacement constraint (even if
+C it ends up being a restraint)
+                        ISTORE(M5S+15) = IOR (ISTORE(M5S+15), KBREFB(5))
+                      END IF
+
+
                     ENDIF
-C
+
+                  ENDIF
+
 4000            CONTINUE
-C
+
                 IF (NRELP.GT.0) THEN
-C                 SET THE EQUIVALENCE NO, WEIGHT FOR CONSTRAINED PARAM
+C SET THE EQUIVALENCE NO, WEIGHT FOR CONSTRAINED PARAM
                   ISTORE(KPA) = ISTORE(KPA) + MP
                   ISTORE(KPA+2) = KOR(ISTORE(KPA+2), IO(1))
                   ISTORE(KPA+2) = KOR(ISTORE(KPA+2), IE(2))
                   STORE(KPA+1) = 1.
-C                 INCREMENT THE EQUIVALENCE BASE AND NO
+C INCREMENT THE EQUIVALENCE BASE AND NO
                   MO = MO + 1
                   MP = MO
                 ENDIF
-C
+
               ENDIF
-C
+
             ENDIF
-C           MARK IT AS PROCESSED
+C MARK IT AS PROCESSED
             KEY(KS) = NOWT
-C
+
           ENDIF
-C
+
 3000    CONTINUE
-C
+
 3100    CONTINUE
-C
-C-      ANY MORE PARTS TO FIND?
+
+C- ANY MORE PARTS TO FIND?
 C        IF (IPA .GT. 0) GOTO 2000
         M5S = M5S + MD5
-C
+
       ENDIF
-C
-C
-C-      ANY MORE GROUPS TO FIND?
+
+
+C- ANY MORE GROUPS TO FIND?
       IF (NGA .GT. 0) GOTO 1000
-C
-C
+
 C -- END OF ROUTINE
-C
+
       RETURN
       END
 C
@@ -1573,6 +1592,7 @@ C
 C
 \XIOBUF
 \QSTORE
+\XFLAGS
 C
       DATA IHYD /'H   '/
       DATA IDELIM(1)/'AND '/
@@ -1597,6 +1617,8 @@ C----- SET NO OF ATOMS PROCESSED FROM THIS CARD
 C--  SET NUMBER OF PARAMETERS FOUND SO FAR ON SUMFIX CARD:
       NSMFXP = 0
 
+      IF ( ML .EQ. 5 ) THEN ! SUMFIX
+
 C SUMFIX: Need to know number of parameters in advance of
 C processing. We must make our way to the end of the card
 C now, then skip back and reprocess it:
@@ -1611,7 +1633,6 @@ C 2) SUMFIX p1 p2 p3 p4
 C
 C   Assumes you forgot ANDs:  shift (p1+p2+p3+p4)=0
 
-      IF ( ML .EQ. 5 ) THEN
         OME = ME                ! SAVE LEXICAL ADDRESSES
         OMF = MF
 
@@ -1660,6 +1681,10 @@ C----- PARAMETERS SHOULD BE SPECIFIED
           CALL XPRVDU(NCVDU, 1,0)
           LEF=LEF+1
           GOTO 2050
+        END IF
+C If it is an occupancy parameter, set the spare flag accordingly:
+        IF(ISTORE(ISTORE(MQ+6)+MQ+1).EQ.3)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(7) )
         END IF
 895     CONTINUE
 C----- CHECK FOR END OF CARD
@@ -1926,12 +1951,32 @@ C----- SKIP H FOR IMPLICIT PARAMETERS
 CDJWOCT2000>
       MR=ISTORE(MQ+5)
       MS=ISTORE(MQ+6)+MQ
+CRICJUN03 If it is an occupancy, X or U parameter, set the ref flags accordingly.
+      IF ( MG .NE. 2 ) THEN
+        IF(ISTORE(MS+1).EQ.3)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(7) )
+        ELSE IF(ISTORE(MS+1).GE.7)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFU )
+        ELSE IF(ISTORE(MS+1).GE.4)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFX )
+        END IF
+      ELSE
+C 'FIX' If it is an occupancy, X or U parameter, set the ref flags accordingly.
+        IF(ISTORE(MS+1).EQ.3)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(7) )
+        ELSE IF(ISTORE(MS+1).GE.7)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFU )
+        ELSE IF(ISTORE(MS+1).GE.4)THEN
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFX )
+        END IF
+      END IF
+
 c----- checking for extended parameter index
 coct98
       if (mr .gt. 0) then
 c----- some parameters to process
        iflag = nint(store(m5a+3))
-c
+
 c       if (istore(mq+6) .eq. nowt) goto 12
        idjw1 = istore(mq+6) + mq
        liso = 0
@@ -1994,6 +2039,10 @@ C----- RIDING MODEL - CHECK WE HAVE CORRECT NO OF PARAMETERS
 1762  FORMAT(' Parameter incompatibility on RIDE card')
                GOTO 1550
             ENDIF
+CRICJUN03 Set the riding group flag if appropriate. (Hydrogen only).
+            if (istore(m5a) .eq. ihyd) then
+               ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(3) )
+            end if
 C----- SET INCREMENT FOR RIDE CARD
             IMR = MR
       ELSE IF ( ML .EQ. 2) THEN
@@ -2003,6 +2052,8 @@ C----- SET INCREMENT FOR LINK CARD
 C----- SET INCREMENT FOR COMBINE CARD
             IMR = IMR + MR +MR
       ELSE IF (ML .EQ. 4) THEN
+C Set the rigid group flag accordingly.
+          ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(2) )
 C----- GROUP CARD
 C----- PHI,CHI,OMEGA,X0,Y0,Z0
             IMR = 6
