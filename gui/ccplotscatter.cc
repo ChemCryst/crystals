@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2002/01/14 12:19:54  ckpgroup
+// SH: Various changes. Fixed scatter graph memory allocation.
+// Fixed mouse-over for scatter graphs. Updated graph key.
+//
 // Revision 1.8  2001/12/12 16:02:24  ckpgroup
 // SH: Reorganised script to allow right-hand y axes.
 // Added floating key if required, some redraw problems.
@@ -75,6 +79,25 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
     {
         switch ( tokenList->GetDescriptor(kPlotClass) )
         {
+			// get a label associated with this data item
+			case kTPlotLabel:
+			{
+				tokenList->GetToken(); // "LABEL"
+
+				// check there is enough space for this data item
+				if(m_NextItem >= m_SeriesLength)
+				{
+					LOGWARN("Series length needs extending: reallocating memory");
+
+					ExtendSeriesLength();
+				}
+
+				CcString nlabel = tokenList->GetToken();
+				((CcSeriesScatter*)m_Series[0])->m_Label[m_NextItem] = nlabel;
+
+				break;
+			}
+
 			// get a data item (x,y pair)
 			case kTPlotData:
 			{
@@ -87,37 +110,7 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 				{
 					LOGWARN("Series length needs extending: reallocating memory");
 
-					float *  tempdata[2];
-					tempdata[0] = 0;
-					tempdata[1] = 0;
-					
-					for(int i=0; i< m_NumberOfSeries; i++)
-					{
-						// check series length is non-zero
-						if(m_SeriesLength == 0) m_SeriesLength = 10;
-
-						// allocate some new memory
-						tempdata[Axis_X] = new float[(int)(m_SeriesLength * 1.5)];
-						tempdata[Axis_YL] = new float[(int)(m_SeriesLength * 1.5)];
-
-						// transfer the data across
-						for(int j=0; j<m_SeriesLength; j++)
-						{
-							tempdata[Axis_X][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X][j];
-							tempdata[Axis_YL][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL][j];
-						}
-
-						// free the old memory
-						delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X];
-						delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL];
-
-						// and point to the new memory
-						((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X] = tempdata[Axis_X];
-						((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL] = tempdata[Axis_YL];
-					}
-
-					// series has been extended...
-					m_SeriesLength = (int)(m_SeriesLength*1.5);
+					ExtendSeriesLength();
 				}
 
 				// now save the data (x1 y1 x2 y2 ...)
@@ -158,6 +151,47 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
     }
 
     return true;
+}
+
+// reallocate memory if data overruns estimated length
+void CcPlotScatter::ExtendSeriesLength()
+{
+	float *  tempdata[2];
+	tempdata[0] = 0;
+	tempdata[1] = 0;
+	CcString* templabels = 0;
+	
+	for(int i=0; i< m_NumberOfSeries; i++)
+	{
+		// check series length is non-zero
+		if(m_SeriesLength == 0) m_SeriesLength = 10;
+
+		// allocate some new memory
+		tempdata[Axis_X] = new float[(int)(m_SeriesLength * 1.5)];
+		tempdata[Axis_YL] = new float[(int)(m_SeriesLength * 1.5)];
+		templabels = new CcString[(int)(m_SeriesLength * 1.5)];
+
+		// transfer the data across
+		for(int j=0; j<m_SeriesLength; j++)
+		{
+			tempdata[Axis_X][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X][j];
+			tempdata[Axis_YL][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL][j];
+			templabels[j] = ((CcSeriesScatter*)m_Series[i])->m_Label[j];
+		}
+
+		// free the old memory
+		delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X];
+		delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL];
+		delete [] ((CcSeriesScatter*)m_Series[i])->m_Label;
+
+		// and point to the new memory
+		((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X] = tempdata[Axis_X];
+		((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL] = tempdata[Axis_YL];
+		((CcSeriesScatter*)m_Series[i])->m_Label = templabels;
+	}
+
+	// series has been extended...
+	m_SeriesLength = (int)(m_SeriesLength*1.5);
 }
 
 // draw scatter-graph specific stuff
@@ -341,9 +375,16 @@ CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 							ret += "; ";
 						}
 						else ret = "";
+						if(!(((CcSeriesScatter*)m_Series[i])->m_Label[j] == ""))
+						{
+							ret += ((CcSeriesScatter*)m_Series[i])->m_Label[j];
+							ret += "; ";
+						}
+						ret += "(";
 						ret += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
-						ret += "; ";
+						ret += ", ";
 						ret += ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
+						ret += ")";
 						
 						pointfound = true;
 
@@ -422,9 +463,11 @@ CcSeriesScatter::~CcSeriesScatter()
 {
 	if(m_Data[Axis_X]) delete [] m_Data[Axis_X];
 	if(m_Data[Axis_YL]) delete [] m_Data[Axis_YL];
+	if(m_Label) delete [] m_Label;
 
 	m_Data[Axis_X] = 0;
 	m_Data[Axis_YL] = 0;
+	m_Label = 0;
 }
 
 // parse any series input (not used at present)
@@ -453,10 +496,12 @@ void CcSeriesScatter::AllocateMemory(int length)
 {
 	m_Data[Axis_X] = new float[length];
 	m_Data[Axis_YL] = new float[length];
+	m_Label = new CcString[length];
 
 	for(int j=0; j<length; j++)
 	{
 		m_Data[Axis_X][j] = 0;
 		m_Data[Axis_YL][j] = 0;
+		m_Label[j] = "";
 	}
 }

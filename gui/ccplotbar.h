@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/12/12 16:02:24  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.6  2001/11/29 15:46:08  ckpgroup
 //   SH: Update of script commands to support second y axis, general update.
 //
@@ -51,6 +55,7 @@ class CcPlotBar : public CcPlotData
 		void CreateSeries(int numser, int* type);		// creates all data series (type is a block of numser series types)
 		void AllocateMemory(int length);				// calls AllocateMemory for each series.
 		void AddSeries(int type);						// add a series to the graph
+		void ExtendSeriesLength();
 
 		int m_NumberOfBarSeries;						// bar-series are drawn next to one another, others overlap.
 };

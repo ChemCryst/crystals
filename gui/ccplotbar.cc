@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2002/01/14 12:19:52  ckpgroup
+// SH: Various changes. Fixed scatter graph memory allocation.
+// Fixed mouse-over for scatter graphs. Updated graph key.
+//
 // Revision 1.11  2002/01/08 12:40:33  ckpgroup
 // SH: Fixed memory leaks, fiddled with key text alignment.
 //
@@ -97,40 +101,7 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 				{
 					LOGWARN("Series length needs extending: reallocating memory");
 
-					// check m_SeriesLength is non-zero
-					if(m_SeriesLength == 0) m_SeriesLength = 10;
-
-					// allocate new memory 
-					CcString* templabels = new CcString[(int)(m_SeriesLength * 1.5)];
-					float *   tempdata = 0;
-					
-					// loop through the previous set of bar-labels, copying data to the new one
-					for(int j=0; j<m_SeriesLength; j++)		
-					{
-						templabels[j] = m_Axes.m_Labels[j].ToCString();
-					}
-
-					// free the previously allocated memory, point to the new area
-					delete [] m_Axes.m_Labels;					
-					m_Axes.m_Labels = templabels;
-
-					// loop through the series, copy data to newly allocated memory
-					for(int i=0; i< m_NumberOfSeries; i++)
-					{
-						tempdata = new float[(int)(m_SeriesLength * 1.5)];
-
-						for(j=0; j<m_SeriesLength; j++)
-						{
-							tempdata[j] = ((CcSeriesBar*)m_Series[i])->m_Data[j];
-						}
-
-						// delete the previous memory area, point to the new one.
-						delete [] ((CcSeriesBar*)m_Series[i])->m_Data;
-						((CcSeriesBar*)m_Series[i])->m_Data = tempdata;
-					}
-
-				// the series has now been extended
-				m_SeriesLength = (int)(m_SeriesLength*1.5);
+					ExtendSeriesLength();
 				}
 				
 				// copy this label to m_Label[n]
@@ -191,6 +162,44 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
     }
 
     return true;
+}
+
+// reallocate memory if series overruns estimated length
+void CcPlotBar::ExtendSeriesLength()
+{
+	// check m_SeriesLength is non-zero
+	if(m_SeriesLength == 0) m_SeriesLength = 10;
+
+	// allocate new memory 
+	CcString* templabels = new CcString[(int)(m_SeriesLength * 1.5)];
+	float *   tempdata = 0;
+	
+	// loop through the previous set of bar-labels, copying data to the new one
+	for(int j=0; j<m_SeriesLength; j++)		
+	{
+		templabels[j] = m_Axes.m_Labels[j].ToCString();
+	}
+
+	// free the previously allocated memory, point to the new area
+	delete [] m_Axes.m_Labels;					
+	m_Axes.m_Labels = templabels;
+
+	// loop through the series, copy data to newly allocated memory
+	for(int i=0; i< m_NumberOfSeries; i++)
+	{
+		tempdata = new float[(int)(m_SeriesLength * 1.5)];
+
+		for(j=0; j<m_SeriesLength; j++)
+		{
+			tempdata[j] = ((CcSeriesBar*)m_Series[i])->m_Data[j];
+		}
+
+		// delete the previous memory area, point to the new one.
+		delete [] ((CcSeriesBar*)m_Series[i])->m_Data;
+		((CcSeriesBar*)m_Series[i])->m_Data = tempdata;
+	}
+	// the series has now been extended
+	m_SeriesLength = (int)(m_SeriesLength*1.5);
 }
 
 // draw all the bar-graph specific stuff

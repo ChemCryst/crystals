@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/12/12 16:02:25  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.5  2001/11/29 15:46:10  ckpgroup
 //   SH: Update of script commands to support second y axis, general update.
 //
@@ -48,6 +52,7 @@ class CcPlotScatter : public CcPlotData
 		void CreateSeries(int numser, int* type);
 		void AllocateMemory(int length);
 		void AddSeries(int type);
+		void ExtendSeriesLength();
 };
 
 class CcSeriesScatter : public CcSeries
@@ -60,6 +65,7 @@ public:
 	void AllocateMemory(int length);
 
 	float *		m_Data[2];					// pointer to a this series' data (x and y)
+	CcString*	m_Label;					// pointer to the label for each data point
 };
 
 #endif

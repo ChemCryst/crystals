@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/12/12 16:02:24  ckpgroup
+//   SH: Reorganised script to allow right-hand y axes.
+//   Added floating key if required, some redraw problems.
+//
 //   Revision 1.6  2001/11/29 15:46:09  ckpgroup
 //   SH: Update of script commands to support second y axis, general update.
 //
@@ -105,6 +109,7 @@ public:
 	virtual void CreateSeries(int numser, int* type) = 0;
 	virtual void AllocateMemory(int length) = 0;
 	virtual void AddSeries(int type) = 0;
+	virtual void ExtendSeriesLength() = 0;
 
 	void DrawKey();
 	int FindSeriesType(CcString textstyle);
