@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2001/01/11 15:56:43  CKP2
+C Enable CAMERON to use old files
+C
 C Revision 1.22  2000/11/01 09:19:05  ckp2
 C RIC: Changes to compile with DVF6.5
 C
@@ -83,11 +86,6 @@ CMAR98
 C
       ISTAT = KRDDPV( ISTORE(ICOMBF), ICOMSZ)
       IF ( ISTAT .LT. 0 ) GO TO 9910
-c^
-          WRITE ( CMON, '(a,2i5)' )'Input values=', 
-     1    istore(icombf),istore(icombf+1)
-          CALL XPRVDU(NCEROR, 1,0)
-c^
       ITYPE = ISTORE(ICOMBF + 1)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
@@ -301,7 +299,6 @@ C************* THIS IS ONLY A PATCH ***********************************
 C----- LINK TO CAMERON -------------------------------------
 C
 cdjwjan2000
-          WRITE ( CMON, '(a,i)' ) 'iefort =', iefort
           CALL XPRVDU(NCEROR, 1,0)
       if (iefort .ne. 1) goto 8000
 C
