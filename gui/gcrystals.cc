@@ -154,6 +154,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM lp)
 {
   theControl->DoCommandTransferStuff();
+  LOGSTAT ( "Stuff To Process" );
   return 0;
 }
 
@@ -202,11 +203,11 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
     bool sysret = event.MoreRequested();
 
 
-//    bool appret = DoCommandTransferStuff();
+    bool appret;
 
     for ( int i=0; i<25; i++ )
     {
-       if ( ! appret = theControl->DoCommandTransferStuff() ) break;
+       if ( ! (appret = theControl->DoCommandTransferStuff()) ) break;
     }
 
 
