@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.6  2002/11/29 15:26:26  rich
 C Remove unecessary blank line during SFLS output.
 C
@@ -29,7 +35,9 @@ C   9.EIG
 C  10.ACC2A    
 C  11.ACC2B    
 C  12.EXECUTE  
-C  13.MATRIX   
+C  13.SCR2A    
+C  14.SCR2B    
+C  15.MATRIX   
 C
       DIMENSION A(3,3),B(3,3),C(3,3),TEMP(3,3),ROW(9)
       DIMENSION ACC(3,3)
@@ -80,7 +88,7 @@ C
       IF (IDIRNM .EQ. 0) GOTO 4910
 C--NEXT RECORD HAS BEEN LOADED  -  BRANCH ON THE TYPE
       GOTO (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 
-     1  1100, 1210, 1200), IDIRNM
+     1  1100, 13, 14, 1210, 1200), IDIRNM
 1200  CONTINUE
       GOTO 9910
 C
@@ -220,10 +228,44 @@ C-----ACC2B
 11     CONTINUE
       CALL XMOVE (ACC,B,9)
       GOTO 1100
+C-----SCR2A 
+13     CONTINUE
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A11' ,A(1,1), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A12' ,A(1,2), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A13' ,A(1,3), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A21' ,A(2,1), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A22' ,A(2,2), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A23' ,A(2,3), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A31' ,A(3,1), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A32' ,A(3,2), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:A33' ,A(3,3), 2 )
+      GOTO 1100
+C-----SCR2B 
+14     CONTINUE
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B11' ,B(1,1), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B12' ,B(1,2), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B13' ,B(1,3), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B21' ,B(2,1), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B22' ,B(2,2), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B23' ,B(2,3), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B31' ,B(3,1), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B32' ,B(3,2), 2 )
+      ISTAT = KSCTRN ( 2 , 'MATRIX:B33' ,B(3,3), 2 )
+      GOTO 1100
 C
 101    CONTINUE
       WRITE(CMON,'(9F8.3)') ACC
 &&&GIDGILWXS      CALL ZMORE(CMON,0)
+C Keep script up-to-date with what's going on, if it cares.
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M11' ,ACC(1,1), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M12' ,ACC(1,2), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M13' ,ACC(1,3), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M21' ,ACC(2,1), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M22' ,ACC(2,2), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M23' ,ACC(2,3), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M31' ,ACC(3,1), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M32' ,ACC(3,2), 1 )
+      ISTAT = KSCTRN ( 1 , 'MATRIX:M33' ,ACC(3,3), 1 )
       GOTO 1100
 C
 C--MAIN TERMINATION ROUTINES

@@ -3890,7 +3890,7 @@ BONDCALC           1    4
          3
     .UPDATE             1    0    1    2    0 IFREQUIRED
      IFREQUIRED     FORCE
-MATRIX            13    
+MATRIX            15    
    9    4096 CRYSTALSINPUT
    1.A                  0 9999    0    0    0    0  101    5  115
          0    0    0    0    0    0    0    0    0    0
@@ -3916,7 +3916,11 @@ MATRIX            13
          0    0    0    0    0    0    0    0    0    0
   12.EXECUTE            0 9999    0    0    0    0  112    5  115
          0    0    0    0    0    0    0    0    0    0
-  13.MATRIX             0    1    0    0
+  13.SCR2A              0 9999    0    0    0    0  110    5  115
+         0    0    0    0    0    0    0    0    0    0
+  14.SCR2B              0 9999    0    0    0    0  111    5  115
+         0    0    0    0    0    0    0    0    0    0
+  15.MATRIX             0    1    0    0
 COPY               1    5
    5    4096 CRYSTALSINPUT6
     1    6    7   23   28
