@@ -8,38 +8,49 @@ class CcModelDoc;
 //#include "crystalsinterface.h"
 #include "ccmodelobject.h"
 
+
 class CcModelAtom : public CcModelObject
 {
-	public:
-            void Render(CrModel* view, Boolean detailed);
-		void Select(Boolean select);
-                void Disable(Boolean select);
-		Boolean IsSelected();
-		Boolean Select();
-		int X();
-		int Y();
-		int Z();
-		int R();
-		CcString Label();
-		CcModelAtom(CcModelDoc* parentptr);
-		CcModelAtom();
-		~CcModelAtom();
-            void ParseInput(CcTokenList* tokenList);
-		CcModelDoc* parent;
+  public:
+    CcModelAtom(CcModelDoc* parentptr);
+    void Init();
+    ~CcModelAtom();
 
-		int mIndex;
-		int ox, oy, oz;
-		int x, y, z;
-		int r, g, b;
-		int id;
-		int occ;
-            int covrad, vdwrad, sparerad;
-		int uflag;
-            int x11, x12, x13, x21, x22, x23, x31, x32, x33;
-		CcString label;
-		Boolean m_selected;
-                Boolean m_disabled;
-                Boolean m_IsADP;
+    void Render(CrModel* view, bool detailed);
+    void Select(bool select);
+    void Disable(bool select);
+
+    bool IsSelected();
+    bool Select();
+    int X();
+    int Y();
+    int Z();
+    int R();
+    CcString Label();
+    void ParseInput(CcTokenList* tokenList);
+  public:
+    bool spare;
+
+//    int mIndex;
+//    int ox, oy, oz;
+    int x, y, z;
+    int r, g, b;
+    int id;
+    int occ;
+    int covrad, vdwrad, sparerad;
+//    int uflag;
+    int x11, x12, x13, x21, x22, x23, x31, x32, x33;
+    CcString label;
+    bool m_selected;
+    bool m_disabled;
+    bool m_IsADP;
+    bool m_excluded;
+};
+
+class CcModelAtomPtr
+{
+  public:
+    CcModelAtom* atom;
 };
 
 #endif
