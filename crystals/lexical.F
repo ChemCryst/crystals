@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2004/03/10 13:10:05  rich
+C Don't crash if "ALL" is too near the end of the command line during lexical
+C scanning.
+C
 C Revision 1.22  2003/11/06 15:48:01  rich
 C Improved part numbering rules. The group bit of the number (digits > 1000)
 C should now be called the assembly number. The number may now be negative,
@@ -2766,6 +2770,8 @@ C
 \XCONST
 C
       CALL XPCLNN(LN)
+      IN = MIN ( IN, 88 ) ! Calls for some continued L16 
+      IN = MAX ( IN, 0  ) ! records will otherwise fail.
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
