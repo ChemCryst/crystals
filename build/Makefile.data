@@ -55,6 +55,5 @@ clean :
 	rm -Rf $(COPYDEST) demo
 
 tidy :
-	rm -Rf $(BUILDDIR)
 
 
