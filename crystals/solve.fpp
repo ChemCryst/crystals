@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2002/03/06 15:35:53  Administrator
+C Fix a format statement, enable Extinction and TWINS to be refined together
+C
 C Revision 1.14  2002/03/05 11:30:44  Administrator
 C FInal rendering of LIST 23 conditions
 C
@@ -752,9 +755,9 @@ C----- Rw
 C----- NO. PARAM
       STORE(L30RF +2 ) = STORE(L11P+23)
 C----- S GOONDNESS OF FIT - ONLY IF SOME OBSERVATIONS
-      IF (STORE(L11P+24)+STORE(L11P+27) .GT. STORE(L30RF+3)) THEN
+      IF (STORE(L11P+24)+STORE(L11P+27) .GT. STORE(L30RF+2)) THEN
             STORE(L30RF +4 ) = SQRT(STORE(L11P+17) /
-     1      (STORE(L11P+24)+ STORE(L11P+27)- STORE(L30RF+3)))
+     1      (STORE(L11P+24)+ STORE(L11P+27)- STORE(L30RF+2)))
       ENDIF
 C----- MAXIMUM SHIFT/ESD
       STORE(L30RF +7 ) = SMAX
