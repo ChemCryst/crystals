@@ -26,13 +26,44 @@
 %%
 %% Choose between demog (rolling), demop (pausing) or neither.
 %%
-^^WI WINDOW QUERY 'CRYSTALS Demo / Workshop' MODAL
+^^WI WINDOW QUERY 'CRYSTALS Workshop and Demo Mode' MODAL
 ^^WI COMMIT='BXX'  CANCEL='BXX' POSITION=CENTRED '_MAIN'
-^^WI GRID GTB NROWS=7 NCOLS=3
+^^WI GRID GTB NROWS=5 NCOLS=3
 ^^WI {
-^^WI  @ 4,2 GRID GDEM NROWS=3 NCOLS=1 OUTLINE='Demo'
+^^WI @ 2,2 TABCTRL _WORKORDEMO
+^^WI {
+^^WI  TAB _WOD0 'Workshop structures' GRID _WODG0 NROWS=6 NCOLS=1
 ^^WI  {
-^^WI   @ 1,1 GRID GINF NROWS=1 NCOLS=3
+^^WI   @ 1,1 STATIC SP1 'Choose a workshop structure:'
+^^WI   @ 2,1 LISTBOX CHSTR VISLINES=12
+^^WI         ADDTOLIST
+^^WI     '1. Nket'
+^^WI     '2. Cyclo'
+^^WI     '3. Quick (fast data)'
+^^WI     '4. Edit examples'
+^^WI     '5. Tin (twin)'
+^^WI     '6. As19a2 (twin)'
+^^WI     '7. B10F12 (twin)'
+^^WI     '8. TLS example (Cp* and PF6)'
+^^WI     '9. Ru structure (disorder)'
+^^WI     '10. ZnGaPO (disorder)'
+^^WI     '11. Zurich (disorder)'
+^^WI     '12. Ylid (test)'
+^^WI     '13. Peach (large organic)'
+^^WI     '14. Keen (twin)'
+^^WI     '15. Hex (old test)'
+^^WI     '16. Mogul (validations)'
+^^WI      NULL
+^^WI   @ 4,1 GRID BT NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 CHECKBOX XWIP 'Clean start' STATE=ON
+^^WI    @ 1,2 STRETCH SX HORIZONTAL
+^^WI    @ 1,3 BUTTON WKOK 'Open workshop structure'
+^^WI   }
+^^WI  }
+^^WI  TAB _WOD1 'Demo Mode' GRID _WODG1 NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 GRID GINF NROWS=1 NCOLS=3
 ^^WI   {
 ^^WI     @ 1,1 ICON MYICON QUERY
 ^^WI     @ 1,3 GRID TL NROWS=4 NCOLS=5
@@ -43,7 +74,7 @@
 ^^WI      @ 4,3 STATIC T2 'Interactive will wait between each section.'
 ^^WI     }
 ^^WI   }
-^^WI   @ 3,1 GRID GBTN NROWS=1 NCOLS=5
+^^WI   @ 4,1 GRID GBTN NROWS=1 NCOLS=5
 ^^WI   {
 ^^WI     @ 1,1 STRETCH XQ_S1 HORIZONTAL
 ^^WI     @ 1,2 BUTTON B1 'Continuous'
@@ -51,34 +82,7 @@
 ^^WI     @ 1,5 STRETCH XQ_S2 HORIZONTAL
 ^^WI   }
 ^^WI  }
-^^WI  @ 2,2 GRID GWORK NROWS=6 NCOLS=1 OUTLINE='Workshops'
-^^WI  {
-^^WI   @ 1,1 STATIC SP1 'Choose a workshop structure:'
-^^WI   @ 2,1 LISTBOX CHSTR VISLINES=7
-^^WI         ADDTOLIST
-^^WI     'Nket'
-^^WI     'Cyclo'
-^^WI     'Quick'
-^^WI     'Edit examples'
-^^WI     'Tin Twin'
-^^WI     'As19a2 Twin'
-^^WI     'B10F12 Twin'
-^^WI     'Ru structure (disorder)'
-^^WI     'ZnGaPO (disorder)'
-^^WI     'Ylid'
-^^WI     'Peach'
-^^WI     'Keen'
-^^WI     'Hex'
-^^WI     'Mogul'       NULL
-^^WI   @ 4,1 CHECKBOX XWIP 'Clean start' STATE=ON
-^^WI   @ 6,1 GRID BT NROWS=1 NCOLS=3
-^^WI   {
-^^WI    @ 1,1 STRETCH SX HORIZONTAL
-^^WI    @ 1,2 BUTTON WKOK 'Open workshop structure'
-^^WI    @ 1,3 STRETCH SY HORIZONTAL
-^^WI   }
-^^WI  }
-^^WI  @ 6,2 GRID GCAN NROWS=1 NCOLS=2
+^^WI  @ 4,2 GRID GCAN NROWS=1 NCOLS=2
 ^^WI  {
 ^^WI    @ 1,1 STRETCH SX HORIZONTAL
 ^^WI    @ 1,2 BUTTON BXX '&Cancel' DEFAULT
@@ -119,7 +123,9 @@
 %          EVALUATE CDIR = 'CRYSDIR:demo/twin2/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/twin3/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/shape/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/shape/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/shape2/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/disorder/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/ylid/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/peach/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/keen/'
@@ -140,6 +146,10 @@
 %TRANSFER '#SPAWN copy "' // CFDIR // 'nket.dsc" "' // CFDIR // -
 'crfilev2.dsc"' TO CRYSTALS
 %         END IF
+%         IF CHOICE .EQ. 8 THEN
+%TRANSFER '#SPAWN copy "' // CFDIR // 'orig.dsc" "' // CFDIR // -
+'crfilev2.dsc"' TO CRYSTALS
+%         END IF
 %     END IF
 ^^WI  SET _MAIN TEXT=
 %     TRANSFER "^^WI 'Crystals - " // CFDIR // "'" TO DISPLAY
@@ -156,6 +166,7 @@
 %     GET NOSTORE TEXT 'About to restart in new directory...' ' '
 ^^CO  SET _MAINTEXTOUTPUT EMPTY
 %     COPY '#END'
+%% Possibly redundant:
 %     FINISH
 %   END BLOCK
 %   BLOCK
