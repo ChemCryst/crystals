@@ -1,15 +1,14 @@
 %SCRIPT xpolar
-^^WI WINDOW PICTURE 'Polaroid'
-^^WI GRID  GRIDM NROWS=3 NCOLS=5
+^^WI WINDOW PICTURE 'Simulated Polaroid'
+^^WI GRID  GRIDM NROWS=5 NCOLS=3
 ^^WI {
-^^WI  @ 2,4 BITMAP WATKIN FILE 'polaroid.bmp'
-^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI  @ 2,2 BITMAP WATKIN FILE 'polaroid.bmp'
+^^WI  @ 4,2 GRID L NROWS=5 NCOLS=3
 ^^WI  {
-^^WI    @ 1,1 STATIC T1 'Notice that for a'
-^^WI    @ 2,1 STATIC T1 'strong diffractor'
-^^WI    @ 3,1 STATIC T1 'the absences are '
-^^WI    @ 4,1 STATIC T1 'weakly present'
-^^WI    @ 5,1 BUTTON BOK 'Close' COMMIT CANCEL DEFAULT
+^^WI    @ 1,1 STATIC T1 'There is a pseudo-halving along c.'
+^^WI    @ 2,1 STATIC T1 'h00 h-odd are weakly present, but are'
+^^WI    @ 3,1 STATIC T1 'probably really systematic absences'
+^^WI    @ 4,3 BUTTON BOK 'Close' COMMIT CANCEL DEFAULT
 ^^WI  }
 ^^WI }
 ^^WI SHOW

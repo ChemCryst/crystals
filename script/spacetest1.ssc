@@ -1,0 +1,158 @@
+%SCRIPT SPACETEST
+%  VARIABLE INTEGER SERR NWRONG
+^^WI WINDOW SPACETEST 'Systematic Absence Test'
+^^WI MODAL COMMIT='BOK' CANCEL='BXX'
+^^WI GRID GRIDM NROWS=7 NCOLS=3
+^^WI {
+^^WI   @ 2,2 GRID GRIDT NROWS=5 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'Below is a list of reflection conditions'
+^^WI     @ 2,1 STATIC T1 'for some tetragonal spacegroups.'
+^^WI     @ 3,1 STATIC T1 'Choose the spacegroups from the pull-down'
+^^WI     @ 4,1 STATIC T1 'lists on the right-hand side, given that'
+^^WI     @ 5,1 STATIC T1 'the structure is chiral.'
+^^WI   }
+^^WI   @ 4,2 GRID GRIDC NROWS=11 NCOLS=17 OUTLINE='Reflection Conditions'
+^^WI   {
+^^WI     @ 1,1  STATIC T1 hkl
+^^WI     @ 1,3  STATIC T1 hk0
+^^WI     @ 1,5  STATIC T1 0kl
+^^WI     @ 1,7  STATIC T1 hhl
+^^WI     @ 1,9  STATIC T1 00l
+^^WI     @ 1,11 STATIC T1 0k0
+^^WI     @ 1,13 STATIC T1 hh0
+^^WI     @ 3,15   DROPDOWN D1 ADDTOLIST P4 'P42   ' P41 I4 I41 NULL
+^^WI     @ 5,1    STATIC T4 h+k+l
+^^WI     @ 5,3    STATIC T4 h+k
+^^WI     @ 5,5    STATIC T4 k+l
+^^WI     @ 5,7    STATIC T4 l
+^^WI     @ 5,9    STATIC T4 l
+^^WI     @ 5,11   STATIC T4 k
+^^WI     @ 5,15   DROPDOWN D4 ADDTOLIST P4 'P42   ' P41 I4 I41 NULL
+^^WI     @ 9,1    STATIC T5 h+k+l
+^^WI     @ 9,3    STATIC T5 h+k
+^^WI     @ 9,5    STATIC T5 k+l
+^^WI     @ 9,7    STATIC T5 l
+^^WI     @ 9,9    STATIC T5 'l=4n'
+^^WI     @ 9,11   STATIC T5 k
+^^WI     @ 9,15   DROPDOWN D5 ADDTOLIST P4 'P42   ' P41 I4 I41 NULL
+^^WI     @ 7,9    STATIC T3 'l=4n'
+^^WI     @ 7,15   DROPDOWN D3 ADDTOLIST P4 'P42   ' P41 I4 I41 NULL
+^^WI     @ 11,9   STATIC T2 l
+^^WI     @ 11,15  DROPDOWN D2 ADDTOLIST P4 'P42   ' P41 I4 I41 NULL
+^^WI   }
+^^WI   @ 6,2 GRID GRIDB NROWS=1 NCOLS=7
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK 'Submit &Answer' DEFAULT
+^^WI     @ 1,3 BUTTON BHH 'Help'
+^^WI     @ 1,5 BUTTON BXX '&Cancel'
+^^WI     @ 1,7 BUTTON BIT 'Int Tab'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+% LOOP
+%   VERIFY BOK BHH BXX BIT
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK         %BOK
+%       VERIFY 1 2 3 4 5 6 7
+%       EVALUATE SERR = 0
+^^??    D1 SELECTED
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .NE. 1  THEN
+%         EVALUATE SERR = SERR + 1
+%       END IF
+^^??    D2 SELECTED
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .NE. 2  THEN
+%         EVALUATE SERR = SERR + 1
+%       END IF
+^^??    D3 SELECTED
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .NE. 3  THEN
+%         EVALUATE SERR = SERR + 1
+%       END IF
+^^??    D4 SELECTED
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .NE. 4  THEN
+%         EVALUATE SERR = SERR + 1
+%       END IF
+^^??    D5 SELECTED
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .NE. 5  THEN
+%         EVALUATE SERR = SERR + 1
+%       END IF
+%       IF SERR .GT. 0 THEN
+%         EVALUATE NWRONG = SERR
+%         COPY '#SCRIPT XWRONG'
+%       ELSE
+%         COPY '#SCRIPT XRIGHT'
+^^CO      DISPOSE SPACETEST
+%         FINISH
+%       END IF
+%     END BLOCK
+%     BLOCK         %BHH
+%       COPY '#SCRIPT XHELP1'
+ The space-group of a crystal is determined by looking for patterns of
+ systematically absent reflections in the diffraction data -  the
+{0,12'systematic absences' {1,0.
+ 
+For the common space-groups, there are 5 steps to follow:
+ 
+1 Look for patterns of absences involving all reflections with no zero
+  indices, e.g 3,2,5. These {0,12general{1,0reflections determine the lattice
+  type. A typical patterns might be: reflections with h+k odd are all
+  absent.
+2 Look for patterns of absences in those reflections with one index
+  zero. These {0,12zones{1,0 identify glide planes. Keep the okl, hol, and hko
+  reflections separate since these will identify glides perpendicular
+  to a, b and c. A typical pattern might be: In the hol reflections, those
+  with l odd are all absent.
+3 Look for patterns of absences in those reflections with two indices
+  zero. These {0,12axes{1,0  identify screw axes. Keep the hoo, oko, and ool
+  reflections separate since these will identify screws parallel to a,
+  b and c.A typical pattern might be: In the oko reflections, those
+  with k odd are all absent.
+4 Invert the 'absence' conditions to get the 'presence' conditions, e.g.
+  h+k odd absent implies h+k even present
+5 Turn to table 3.2 in International Tables, Volume A, pp 40-47. Locate
+  the part appropriate for your crystal class, and work from left to
+  right to locate the line which corresponds to your reflection
+  conditions. The space group or groups are given for the actual
+  indexing you have chosen for your crystal. These may be non-standard
+  settings.
+ 
+NOTE. In tetragonal and trigonal and hexagonal crystals, reflections of
+  type hhl and h-hl may also have systematic absences.
+ 
+
+{1,9   A condition such as l=4n in the column 00l indicates that      |
+{1,9   reflections only occur in the 00l row when l is a multiple     |
+{1,9   of 4.                                                          |
+{1,9                                                                  |
+{1,9   A condition such as l is shorthand for l=2n.                   |
+{1,9                                                                  |
+{1,9   A condition such as h+k indicates that the sum of h and k must |
+{1,9   equal 2n for reflection to occur.                              |
+{1,9                                                                  |
+{1,9   A condition such as h,k means that h=2n and k=2n for reflection.
+ 
+{0,4 Space-group determination and diffraction symbols are explained
+{0,4 fully in International Tables, Vol A, pp 40-47.
+%       COPY '#SCRIPT XPOLAR'
+%       COPY '#SCRIPT XHELP2'
+%       GET NOSTORE SILENT TEXT ' ' ' '
+%     END BLOCK
+%     BLOCK         %BXX
+^^CO    DISPOSE SPACETEST
+%       FINISH
+%     END BLOCK
+%     BLOCK         %BIT
+%       COPY '#SCRIPT XTETRAGONAL'
+%       GET NOSTORE SILENT TEXT ' ' ' '
+%     END BLOCK
+%   END CASE
+% END LOOP
+%END SCRIPT
+ 

@@ -2,7 +2,7 @@
 %%
 %% Crystallography Quiz
 %%
-%  VARIABLE INTEGER NQ QN QC P1 P2 P3 P4 CERTAIN POINTS LL
+%  VARIABLE INTEGER NQ QN QO QC P1 P2 P3 P4 CERTAIN POINTS LL
 %  VARIABLE CHARACTER QL1 QL2 QL3 QL4 A1 A2 A3 A4 CBM
 %  VARIABLE LOGICAL LBM FIFTY PHONE ASK WWTBSURE
 %  VARIABLE REAL THRESH
@@ -19,18 +19,18 @@
 %% Open the required question file:
 %%
 %    CASE LOOPCOUNTER
--GIL%      COPY '#OPEN SCPDATA CRYSDIR:script\wwtb1.dat'
--GIL%      COPY '#OPEN SCPDATA CRYSDIR:script\wwtb2.dat'
--GIL%      COPY '#OPEN SCPDATA CRYSDIR:script\wwtb3.dat'
-+GIL%      COPY '#OPEN SCPDATA CRYSDIR:script/wwtb1.dat'
-+GIL%      COPY '#OPEN SCPDATA CRYSDIR:script/wwtb2.dat'
-+GIL%      COPY '#OPEN SCPDATA CRYSDIR:script/wwtb3.dat'
+%      COPY '#OPEN SCPDATA CRYSDIR:script\wwtb1.dat'
+%      COPY '#OPEN SCPDATA CRYSDIR:script\wwtb2.dat'
+%      COPY '#OPEN SCPDATA CRYSDIR:script\wwtb3.dat'
+%%+GIL%      COPY '#OPEN SCPDATA CRYSDIR:script/wwtb1.dat'
+%%+GIL%      COPY '#OPEN SCPDATA CRYSDIR:script/wwtb2.dat'
+%%+GIL%      COPY '#OPEN SCPDATA CRYSDIR:script/wwtb3.dat'
 %    END CASE
 %%
 %% Count questions in file.
 %%
 %    EVALUATE NQ = 0
-%    LOOP 
+%    LOOP
 %      ON ERROR TERMINATE
 %      EXTRACT NEXT
 %      EXTRACT TRANSFER INPUT
@@ -48,8 +48,10 @@
 %%
 %% Question asking loop
 %%
+%%   Iinitialise OLD QUESTION recorder
+%    EVALUATE QO = 0
 %    LOOP 5 TIMES
-%    
+%
 %    EVALUATE POINTS = POINTS + 1
 %    IF ( LL .LT. 0 ) THEN
 %      EVALUATE LL = 0
@@ -59,14 +61,20 @@
 %%
 %     BLOCK
 %      ON ERROR TERMINATE
-%      EVALUATE QN = INTEGER ( REAL ( NQ ) * RANDOM ( 0.0 ) ) + 1
+%      LOOP ( NQ + 5 ) TIMES
+%        EVALUATE QN = INTEGER ( REAL ( NQ ) * RANDOM ( 0.0 ) ) + 1
+%        IF QN .NE. QO THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        END IF
+%      END LOOP
+%      EVALUATE QO = QN
 %      EVALUATE QC = 0
 %      CLEAR
 %      INSERT '{S Looking for question number '
 %      STORE FORMAT '(I4)' LENGTH 4 INTEGER QN
 %      OUTPUT
 %      EXTRACT REWIND
-%      LOOP 
+%      LOOP
 %        ON ERROR TERMINATE
 %        EXTRACT NEXT
 %        EXTRACT TRANSFER INPUT
@@ -231,7 +239,7 @@
 %            TRANSFER "^^WI @ 1,4 BUTTON B1 '" // A1 // "'" TO DISPLAY
 %            TRANSFER "^^WI @ 3,4 BUTTON B1 '" // A1 // "'" TO DISPLAY
 %           END CASE
-%           LOOP 
+%           LOOP
 %            EVALUATE P2 = INTEGER ( 4.0 * RANDOM ( 0.0 ) ) + 1
 %            IF ( P2 .NE. P1 ) THEN
 %              EVALUATE LOOPEND = LOOPCOUNTER
@@ -243,7 +251,7 @@
 %            TRANSFER "^^WI @ 1,4 BUTTON B2 '" // A2 // "'" TO DISPLAY
 %            TRANSFER "^^WI @ 3,4 BUTTON B2 '" // A2 // "'" TO DISPLAY
 %           END CASE
-%           LOOP 
+%           LOOP
 %            EVALUATE P3 = INTEGER ( 4.0 * RANDOM ( 0.0 ) ) + 1
 %            IF ( P3 .NE. P1 ) .AND. ( P3 .NE. P2 ) THEN
 %              EVALUATE LOOPEND = LOOPCOUNTER
@@ -255,7 +263,7 @@
 %            TRANSFER "^^WI @ 1,4 BUTTON B3 '" // A3 // "'" TO DISPLAY
 %            TRANSFER "^^WI @ 3,4 BUTTON B3 '" // A3 // "'" TO DISPLAY
 %           END CASE
-%           LOOP 
+%           LOOP
 %            EVALUATE P4 = LOOPCOUNTER
 %            IF ( P4 .NE. P1 ) .AND. ( P4 .NE. P2 ) .AND. ( P4 .NE. P3 ) THEN
 %              EVALUATE LOOPEND = LOOPCOUNTER
@@ -283,7 +291,7 @@
 ^^CR
 %     IF FIFTY .EQ. FALSE THEN
 ^^CO    SET FIFTY DISABLED=YES
-%     END IF             
+%     END IF
 %     IF PHONE .EQ. FALSE THEN
 ^^CO    SET PHONE DISABLED=YES
 %     END IF
@@ -314,10 +322,10 @@
 %           IF ( WWTBSURE ) THEN
 %             COPY '#SCRIPT WWTBWRON'
 ^^CO          DISPOSE WWTB
-
+ 
 {S Unlucky.
 {S Keep practising and learning to be an expert crystallographer.
-
+ 
 %             EXTRACT CLOSE
 %             FINISH
 %           END IF
@@ -330,10 +338,10 @@
 %           IF ( WWTBSURE ) THEN
 %             COPY '#SCRIPT WWTBWRON'
 ^^CO          DISPOSE WWTB
-
+ 
 {S Unlucky.
 {S Keep practising and learning to be an expert crystallographer.
-
+ 
 %             EXTRACT CLOSE
 %             FINISH
 %           END IF
@@ -346,26 +354,26 @@
 %           IF ( WWTBSURE ) THEN
 %             COPY '#SCRIPT WWTBWRON'
 ^^CO          DISPOSE WWTB
-
+ 
 {S Unlucky.
 {S Keep practising and learning to be an expert crystallographer.
-
+ 
 %             EXTRACT CLOSE
 %             FINISH
 %           END IF
 %         END BLOCK
 %         BLOCK     %BXX
-
+ 
 {S Well done. Keep practising and learning and one day you'll reach
 {S the 1,000,000 point goal!
-
+ 
 ^^CO        DISPOSE WWTB
 %           EXTRACT CLOSE
 %           FINISH
 %         END BLOCK
 %         BLOCK     %50/50
 ^^CO        SET FIFTY DISABLED=YES
-
+ 
 {S Computer: Take away two of the wrong answers...
 %           COPY '#PAUSE 1'
 %           EVALUATE FIFTY = FALSE
@@ -374,7 +382,7 @@
 %         END BLOCK
 %         BLOCK     %PHONE
 ^^CO        SET PHONE DISABLED=YES
-
+ 
 {S Ring, ring. Ring, ring.
 %           COPY '#PAUSE 1'
 {S Hello. It's Who wants to be a Crystallographaire. Can you help us:
@@ -414,7 +422,7 @@
 %           EVALUATE ASK = FALSE
 {S Audience, will you please vote now....
 %           COPY '#PAUSE 1'
-
+ 
 %           TRANSFER ' {S  54% say ' // A1 TO DISPLAY
 %           TRANSFER ' {S  43% say ' // A2 TO DISPLAY
 %           TRANSFER ' {S  2% say ' // A3 TO DISPLAY
@@ -425,8 +433,8 @@
 %    END LOOP
 %  END LOOP
 %  EXTRACT CLOSE
-
+ 
 {S Well done you've scored 1,000,000 points. You truly
 {S are an expert crystallographer.
-
+ 
 %END SCRIPT
