@@ -11,6 +11,10 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.11  1999/06/07 19:51:00  dosuser
+// RIC: The ChangeDir function that used to be a member function of CxApp,
+// is now a global function.
+//
 // Revision 1.10  1999/06/06 19:43:48  dosuser
 // RIC: Added new method of adding chart objects to the chartdoc. Objects
 // can be added by direct function calls rather than by passing ^^CH
@@ -51,12 +55,10 @@
 //      display atom names in the current progress/status bar.
 //
 
-#include <iostream.h>
-#include <iomanip.h>
 #include    "crystalsinterface.h"
 #include	"crconstants.h"
 #include	"cccontroller.h"
-//insert your own code here.
+
 #include	"crwindow.h"
 #include	"crgrid.h"
 #include	"cxgrid.h" //to delete its static font pointer.
@@ -71,7 +73,8 @@
 #include	"ccmodeldoc.h"
 #include	"ccquickdata.h"
 #include	"ccchartobject.h"
-//End of user code.
+#include <iostream.h>
+#include <iomanip.h>
 
 #ifdef __WINDOWS__
 HANDLE mInterfaceCommandQueueMutex;
@@ -339,6 +342,11 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 					theElement = GetProgressOutputPlace();
 					theElement->ParseInput( tokenList );
 				}
+                        else if (name == "TEXTINPUT")
+				{
+                              theElement = GetInputPlace();
+					theElement->ParseInput( tokenList );
+				}
 				else                // if ( mCurrentWindow != nil ) No search all windows.
 				{
 					// Look for the item
@@ -473,6 +481,17 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 					LOGWARN( "CcController:ParseInput:RedirectProgress couldn't find object with name '" + progressWindow + "'");
 				break;
 			}
+                  case kTRedirectInput:
+			{
+				tokenList->GetToken();
+                        CcString inputWindow = tokenList->GetToken();
+                        CrGUIElement * theElement = FindObject( inputWindow );
+				if ( theElement != nil )
+                              SetInputPlace(theElement);
+				else
+                              LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + inputWindow + "'");
+				break;
+			}
 			case kTSetStatus:
 			{
 				tokenList->GetToken();
@@ -480,15 +499,16 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 			}
 
 /*			case kTUnknown:
-			{
-				//Something has gone wrong.
-
-				//Remove this token so that we don't loop forever. Hopefully we will
-				//find our way to a sensible token eventually.
-				break;
-
-			}*/
-			default:
+ *                 {
+ *                       //Something has gone wrong.
+ *
+ *                       //Remove this token so that we don't loop forever. Hopefully we will
+ *                       //find our way to a sensible token eventually.
+ *                       break;
+ *
+ *                 }
+ */
+                  default:
 			{
 				// This is not a known instruction for Controller.
 				// Pass it on to the current window.
@@ -628,36 +648,22 @@ void	CcController::Tokenize( char * text )
 
       CcString cText = text;
 
-//This is a considerable overhead for intensive bits of code, let's
-//leave it out for now { 
       int j = 1;
       int clen = cText.Len();
+      Boolean tagged = false;
 
+// Look out for lines where the ^^ are misplaced.
       for ( j = 1; ( j < clen-1 ); j++ )
 	{
             if ( cText.Sub(j,j+1) == "^^" )
             {
                   cText = cText.Sub(j,clen);
                   j = clen;
+                  tagged = true;
             }
       }
 
-//      // First preflight for misplaced selectors
-//      for ( int j=0; (stop != true) && (j < (int)strlen(text)-1); j++ )
-//      {
-//            if ( strncmp( text + j, "^^", 2) == 0 )
-//            {
-//                  char buf [256];
-//                  strcpy( buf, (char *)(text + j) );
-//                  strcpy( text, buf );
-//                  stop = true;
-//            }
-//      }
-//
-
-//	TRACE("This is the text after first flight %s \n",text);
-	
-      if ( cText.Len() >= 4 && cText.Sub(1,2) == "^^" )
+      if ( cText.Len() >= 4 && tagged )
 	// It is definitely tagged text
 	{
 		// Get the selector and determine list to use
@@ -703,15 +709,15 @@ void	CcController::Tokenize( char * text )
 			//We must now signal the waiting Crystals thread that it's input is ready.
                   ProcessingComplete();
 		}
+            else                                             // Simple output text or comment
+            {
+                        mAppContext->ProcessOutput( cText ); // Useful to see mistakes in ^^ format.
+            }
 	}
 	else                                             // Simple output text or comment
 	{
                   mAppContext->ProcessOutput( cText );
 	}
-
-#ifdef __LINUX__
-            cerr << "Exiting Tokenize\n";
-#endif
 }
 
 void CcController::CompleteProcessing()
@@ -814,13 +820,6 @@ Boolean	CcController::IsDelimiter( char c )
 
 void  CcController::AppendToken( CcString text  )
 {
-
-//      char s[255];
-//      strncpy( s, &text[start-1], stop - start );
-	
-	// *** TODO uppercase ? //This will uppercase all button text etc. Not pleasing. Do it in CcTokenList instead.
-//      s[stop - start] = '\0';
-	
 // Copy the string onto the heap, so that it will hang around.
 
       CcString * theString = new CcString( text );
@@ -828,122 +827,104 @@ void  CcController::AppendToken( CcString text  )
 // Add it to the tokenlist.
 
 	mCurTokenList->AddItem( theString );
-
-//DEBUG!
-//      if ( *theString == "XHELP" ) abort();
-
 }
 
-void	CcController::AddCrystalsCommand( char * line, Boolean jumpQueue)
+void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
 {
+      CrEditBox * theInput = ( CrEditBox * ) GetInputPlace();
+      CcString inpName = theInput->mName;
 
 //Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
 // 1. Close the main window. (Close the program).
-	if(strncmp(line,"_MAIN CLOSE",11) == 0)
-	{
+      if( line.Length() > 10 )
+      {
+         if( line.Sub(1,11) == "_MAIN CLOSE")
+         {
 		AddInterfaceCommand("^^CO DISPOSE _MAIN ");
             mThisThreadisDead = true;
 		return; //Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
-	}	
-// 2. Input text from the user to crystals (send text and clear the edit box).
-	if(strncmp(line,"_MAINTEXTINPUT",14) == 0)
-	{
-//		AddInterfaceCommand("^^CO SET _MAINTEXTINPUT TEXT '' ");
-		((CrEditBox*)mInputWindow)->ClearBox();
+         }
+      }
+// 2. Allow GUIelements to send commands directly to the interface. Trap them here.
+      if( line.Length() >= 4 )
+      {
+         if( line.Sub(1,2) == "^^")
+         {
+              AddInterfaceCommand(line);
+              return;
+         }
+      }
 
-//Command history stuff:
-		CcString *historyCommand = new CcString ( line + 15 );
-		mCommandHistoryList.AddItem( (void*) historyCommand);
-		mCommandHistoryList.Reset();
-		while ( mCommandHistoryList.ListSize() > 100 ) //Limit the history to 100 items.
-		{
-			CcString *temp = (CcString*) mCommandHistoryList.GetItem();
-			delete temp;
-			mCommandHistoryList.RemoveItem();
-		}
-		mCommandHistoryPosition = 0;
-//Send command again, but with the first bit of text removed. (_MAINTEXTINPUT )
-		AddCrystalsCommand(line+15); //Ooh, recursion.
-		return;
-	}
-// 3. Allow GUIelements to send commands directly to the interface. Trap them here.
-	if(strncmp(line,"^^",2) == 0)
-	{
-		AddInterfaceCommand(line);
-		return;
-	}
-
-// 4. Everything else.
-
-/*//Check for _N and insert a new line instead.
-//This is now done in SetCommand.
-  for ( int j=0; j < (int)strlen( line )-1; j++ )
-	{
-		if ( *(line + j) == '_' && *(line+j+1) == 'N')
-		{
-			char buf [256];
-			strcpy( buf, (char *)(line + j + 2) ); //buf now contains the text after the _N
-			*(line+j) = '\0'; //Null character to end the string.
-			AddCrystalsCommand(line); //Ooh, more recursion.
-			strcpy( line, buf ); //replace line with buf
-			j=0; //reset place counter
-		}
-	}
-*/
+// 3. Everything else.
 
 //Add this command to the queue to crystals.
 #ifdef __WINDOWS__
 	WaitForSingleObject( mCrystalsCommandQueueMutex, INFINITE );
 #endif
-	mCrystalsCommandQueue.SetCommand( CcString(line), jumpQueue);
+
+      mCrystalsCommandQueue.SetCommand( line, jumpQueue);
+
 #ifdef __WINDOWS__
 	ReleaseMutex( mCrystalsCommandQueueMutex );
 	PulseEvent(mCrystalsCommandQueueEmptyEvent );
 #endif
 }
 
-void	CcController::AddInterfaceCommand( char * line )
+void  CcController::AddInterfaceCommand( CcString line )
 {
-// This is a critical section between the threads.
-// If the interface thread has a lock on the section, then we
-// have to wait (using a mutex sync object).
+/*  This is a critical section between the threads.
+ *  If the interface thread has a lock on the section, then we
+ *  have to wait (using a mutex sync object).
 
-// If the command is a query from the CRYSTALS program ( ^^?? ), then
-// we must get a lock on the Crystals Command Queue, so that
-// nothing can be read from it, until the answer to the query
-// is placed at the top of the queue.
-
+ *  If the command is a query from the CRYSTALS program ( ^^?? ), then
+ *  we must get a lock on the Crystals Command Queue, so that
+ *  nothing can be read from it, until the answer to the query
+ *  is placed at the top of the queue.
+ */
 	
 #ifdef __WINDOWS__
 	WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
 #endif
       if(mThisThreadisDead) endthread(0);
 
-	mInterfaceCommandQueue.SetCommand( CcString(line) );
+      mInterfaceCommandQueue.SetCommand( line );
 	
 #ifdef __WINDOWS__
 	ReleaseMutex( mInterfaceCommandQueueMutex );
 #endif
-	LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Adding: "+CcString(line));
+      LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Adding: " + line );
 
-	Boolean stop = false;
-	int leng = (int)strlen ( line );
-	for ( int j=0; (stop != true) && (j < leng-3); j++ )
-	{
-		if ( strncmp ( line + j, "^^??", 4 ) == 0 )
-		{
-			stop = true;
+
+      for ( int j = 1; j < line.Length()-3; j++ )
+      {
+            if ( line.Sub(j,j+3) == "^^??" )
+            {
+                  j = line.Length();
 			LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
                   CompleteProcessing();
                   LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
-		}
-	}
+            }
+      }
 
+/*      Boolean stop = false;
+ *      int leng = (int)strlen ( line );
+ *      for ( int j=0; (stop != true) && (j < leng-3); j++ )
+ *      {
+ *            if ( strncmp ( line + j, "^^??", 4 ) == 0 )
+ *            {
+ *                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
+ *                  CompleteProcessing();
+ *                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
+ *                  stop = true;
+ *            }
+ *      }
+ */
 
 
 }
 
 //This is a list of commands for crystals to process
+
 Boolean	CcController::GetCrystalsCommand( char * line )
 {
 //This is where the Crystals thread will spend most of its time.
@@ -1164,17 +1145,17 @@ void CcController::FocusToInput(char theChar)
 	int nChar = (int) theChar;
 	if( nChar == 13) //Return key, process input.
 	{
-		((CrEditBox*)mInputWindow)->ReturnPressed();
-		mInputWindow->CrFocus();
+            ((CrEditBox*)GetInputPlace())->ReturnPressed();
+            GetInputPlace()->CrFocus();
 	}
 	else if ( nChar > 31 && nChar < 127 ) //Some keyboard text. Append to command line.
 	{
 		char theText[256];
-		int theLen = ((CxEditBox*)mInputWindow->GetWidget())->GetText(&theText[0]);
+            int theLen = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText(&theText[0]);
 		theText[theLen] = theChar;
 		theText[theLen+1] = '\0';
-		mInputWindow->SetText(CcString(theText));
-		mInputWindow->CrFocus();
+            GetInputPlace()->SetText(CcString(theText));
+            GetInputPlace()->CrFocus();
 	}
 }
 
@@ -1182,7 +1163,6 @@ void CcController::SetTextOutputPlace(CrGUIElement * outputPane)
 {
 	mTextOutputWindowList.AddItem((void*)outputPane);
 	mTextWindow = outputPane;
-
 }
 
 CrGUIElement* CcController::GetTextOutputPlace()
@@ -1229,16 +1209,51 @@ CrGUIElement* CcController::GetProgressOutputPlace()
 	return retVal;
 }
 
-void CcController::RemoveTextOutputPlace()
+void CcController::SetInputPlace(CrGUIElement * inputPane)
 {
-	mTextOutputWindowList.GetLastItem();
-	mTextOutputWindowList.RemoveItem();
+      mInputWindowList.AddItem((void*)inputPane);
+      mInputWindow = inputPane;
+
 }
 
-void CcController::RemoveProgressOutputPlace()
+CrGUIElement* CcController::GetInputPlace()
 {
-	mProgressOutputWindowList.GetLastItem();
-	mProgressOutputWindowList.RemoveItem();
+	CrGUIElement* retVal;
+      while ((retVal = (CrGUIElement*) mInputWindowList.GetLastItem()) == nil)
+	{
+            mInputWindowList.RemoveItem();
+            if (mInputWindowList.ListSize() <= 0)
+			return nil;
+	}
+      mInputWindow = retVal;
+	return retVal;
+}
+
+
+
+
+void CcController::RemoveTextOutputPlace(CrGUIElement* output)
+{
+      while ( mTextOutputWindowList.FindItem((void*) output) )
+      {
+            mTextOutputWindowList.RemoveItem();
+      }
+}
+
+void CcController::RemoveProgressOutputPlace(CrGUIElement* output)
+{
+      while ( mProgressOutputWindowList.FindItem((void*) output) )
+      {
+            mProgressOutputWindowList.RemoveItem();
+      }
+}
+
+void CcController::RemoveInputPlace(CrGUIElement* input)
+{
+      while ( mInputWindowList.FindItem((void*) input) )
+      {
+            mInputWindowList.RemoveItem();
+      }
 }
 
 CcModelDoc* CcController::FindModelDoc(CcString name)
@@ -1311,21 +1326,12 @@ void CcController::History(Boolean up)
 
 	if (temp == nil)
 	{
-		CcString comm = "^^CO SET _MAINTEXTINPUT TEXT ''";
-		AddInterfaceCommand( (char*) comm.ToCString() );
+            GetInputPlace()->SetText("");
 	}
 	else
 	{
-		CcString comm = "^^CO SET _MAINTEXTINPUT TEXT '";
-		comm += *temp;
-		comm += "'";
-		AddInterfaceCommand( (char*) comm.ToCString() );
+            GetInputPlace()->SetText(*temp);
 	}
-}
-
-void CcController::OutputToScreen(CcString text)
-{
-                  mAppContext->ProcessOutput( text );
 }
 
 void CcController::GetValue(CcTokenList * tokenList)
@@ -1385,4 +1391,179 @@ void  CcController::SetProgressText(CcString theText)
 }
 
 
+void CcController::StoreSize( CcString key, CcRect size )
+{
+	FILE * file;
+      FILE * tempf;
+      char * tempn;
+      char buffer[256];
+      char filen[256];
 
+      char* crysdir = getenv("CRYSDIR") ;
+      if ( crysdir == nil )
+            cerr << "You must set CRYSDIR before running crystals.\n";
+      else
+      {
+         int icrysdir = strlen( crysdir ) ;
+         strcpy ( &filen[0], crysdir ) ;
+#ifdef __WINDOWS__
+         strcpy ( &filen[0]+icrysdir, "\\script\\winsizes.ini" ) ;
+#endif
+#ifdef __LINUX__
+         strcpy ( &filen[0]+icrysdir, "/guimenu.srt/winsizes.ini" ) ;
+#endif
+      }
+
+// Open the
+// winsizes file
+// for reading.
+      if( (file = fopen( filen, "r" )) == NULL ) //Assignment witin conditional - OK
+	{
+            LOGERR ( "Could not open winsizes.ini for reading. Assume does not exist." );
+            if( (file = fopen( filen, "w" )) == NULL ) //Assignment witin conditional - OK
+            {
+                  LOGERR ( "Could not open winsizes.ini for writing." );
+                  return;
+            }
+            // We open it for writing, assuming it doesn't exist,
+            // and simply write this key and size into it.
+      }
+      else
+      {
+// Get a name
+// for a temp
+// file.
+            if ( ( tempn = tmpnam( NULL )) == NULL )
+            {
+                  LOGERR ( "Could not get name for temp file." );
+                  return;
+            }
+// Open the
+// temp file.
+            if ( ( tempf = fopen ( tempn, "a+" ) ) == NULL )
+            {
+                  LOGERR ( "Could not get open temp file: " + CcString ( tempn )  );
+                  return;
+            }
+            CcTokenList * old  = mCurTokenList;
+// Copy winsizes
+// to the temp
+// file.
+            while ( ! feof( file ) )
+            {
+                  CcTokenList * temp = new CcTokenList();
+                  mCurTokenList = temp;
+                  if ( fgets( buffer, 256, file ) != NULL )
+                  {
+                        ParseLine(buffer);
+                        CcString rkey = temp->GetToken();
+                        if  ( (!( rkey == key)) && ( rkey.Length() > 0 ) )
+                        {
+                              fputs ( buffer, tempf);
+                        }
+                  }
+                  mCurTokenList = old;
+                  delete temp;
+            }
+            fclose( file );
+            rewind( tempf );
+// Re-open 
+// winsizes for
+// writing.
+            if( (file = fopen( filen, "w" )) == NULL ) //Assignment witin conditional - OK
+            {
+                  LOGERR ( "Could not open winsizes.ini for writing" );
+                  return;
+            }
+// Copy the
+// file back
+            while ( ! feof( tempf ) )
+            {
+                  if ( fgets( buffer, 256, tempf ) != NULL )
+                  {
+                        fputs ( buffer, file );
+                  }
+            }
+            fclose ( tempf );
+      }
+// Add this key
+// on to the
+// end.
+      sprintf(buffer, "%s %d %d %d %d",
+                      key.ToCString(),
+                      size.mTop,
+                      size.mLeft,
+                      size.mBottom,
+                      size.mRight );
+      fputs ( buffer, file );
+      fputs ( "\n", file );
+      fclose ( file );
+
+      return;
+
+}
+
+CcRect CcController::GetSize( CcString key )
+{
+      CcRect size(0,0,0,0);
+	FILE * file;
+      char buffer[256];
+
+      char* crysdir = getenv("CRYSDIR") ;
+      if ( crysdir == nil )
+      {
+            cerr << "You must set CRYSDIR before running crystals.\n";
+      }
+      else
+      {
+         int icrysdir = strlen( crysdir ) ;
+         strcpy ( &buffer[0], crysdir ) ;
+#ifdef __WINDOWS__
+         strcpy ( &buffer[0]+icrysdir, "\\script\\winsizes.ini" ) ;
+#endif
+#ifdef __LINUX__
+         strcpy ( &buffer[0]+icrysdir, "/guimenu.srt/winsizes.ini" ) ;
+#endif
+      }
+
+      if( file = fopen( buffer, "r" ) ) //Assignment witin conditional - OK
+	{
+            CcTokenList * old  = mCurTokenList;
+		while ( ! feof( file ) )
+		{
+                  CcTokenList * temp = new CcTokenList();
+                  mCurTokenList = temp;
+			if ( fgets( buffer, 256, file ) != NULL )
+                  {
+                        ParseLine(buffer);
+                        if ( temp->GetToken() == key )
+                        {
+                              size.mTop   = atoi ( temp->GetToken().ToCString() ) ;
+                              size.mLeft  = atoi ( temp->GetToken().ToCString() ) ;
+                              size.mBottom= atoi ( temp->GetToken().ToCString() ) ;
+                              size.mRight = atoi ( temp->GetToken().ToCString() ) ;
+                        }
+                  }
+                  mCurTokenList = old;
+                  delete temp;
+		}
+		fclose( file );
+	}
+
+      return size;
+
+}
+
+void CcController::AddHistory( CcString theText )
+{
+      CcString *historyCommand = new CcString ( theText );
+      mCommandHistoryList.AddItem( (void*) historyCommand);
+      mCommandHistoryList.Reset();
+      while ( (CcController::theController)->mCommandHistoryList.ListSize() > 100 ) //Limit the history to 100 items.
+      {
+            CcString *temp = (CcString*) mCommandHistoryList.GetItem();
+            delete temp;
+            mCommandHistoryList.RemoveItem();
+      }
+      mCommandHistoryPosition = 0;
+}

@@ -11,13 +11,13 @@
 
 #ifndef		__CcController_H__
 #define		__CcController_H__
-//Insert your own code here.
+
 #include	"cclist.h"
 #include	"cccommandqueue.h"
 #include	"ccstatus.h"
-#include "ccrect.h"	// added by ClassView
-#include <stdio.h> //For FILE definition
-//End of user code.
+#include    "ccrect.h"     // added by ClassView
+#include    <stdio.h> //For FILE definition
+
 class CcChartDoc;
 class CcModelDoc;
 class CrWindow; 
@@ -30,18 +30,27 @@ class	CcController
 {
 	public:
 		void GetValue (CcTokenList * tokenlist);
-		void OutputToScreen(CcString text);
 		void History(Boolean up);
 		CcRect GetScreenArea();
+
 		CcModelDoc* CreateModelDoc(CcString name);
 		CcModelDoc* FindModelDoc(CcString name);
-		void RemoveTextOutputPlace();
-		void RemoveProgressOutputPlace();
+
+            void RemoveTextOutputPlace(CrGUIElement* output);
+            void RemoveProgressOutputPlace(CrGUIElement* output);
+            void RemoveInputPlace(CrGUIElement* input);
+
 		CrGUIElement* GetTextOutputPlace();
+            CrGUIElement* GetInputPlace();
 		CrGUIElement* GetBaseTextOutputPlace();
-		void SetTextOutputPlace(CrGUIElement* outputPane);
 		CrGUIElement* GetProgressOutputPlace();
+
+		void SetTextOutputPlace(CrGUIElement* outputPane);
+            void SetInputPlace(CrGUIElement* inputPane);
 		void SetProgressOutputPlace(CrGUIElement* outputPane);
+
+            void AddHistory( CcString theText );
+
 		CcChartDoc* mCurrentChartDoc;
 		CcModelDoc* mCurrentModelDoc;
 		CcQuickData* mQuickData;
@@ -63,15 +72,18 @@ class	CcController
 		Boolean	IsSpace( char c );
 		Boolean	IsDelimiter( char c );
             void  AppendToken( CcString text );
-		void	AddCrystalsCommand( char * line , Boolean jumpQueue = false);
+            void  AddCrystalsCommand( CcString line , Boolean jumpQueue = false);
 		Boolean	GetCrystalsCommand( char * line );
-		void	AddInterfaceCommand( char * line );
+            void  AddInterfaceCommand( CcString line );
 		Boolean	GetInterfaceCommand( char * line );
             Boolean     GetInterfaceCommand( CcString * line );
 		void	LogError( CcString errString , int level);
             void  SetProgressText(CcString theText);       
             void CompleteProcessing();
             void ProcessingComplete();
+
+            void StoreSize( CcString key, CcRect size );
+            CcRect GetSize( CcString key );
 
 		// attributes
 		
@@ -102,6 +114,7 @@ class	CcController
 		CcList	mWindowList;
 		CcList  mTextOutputWindowList;
 		CcList  mProgressOutputWindowList;
+            CcList  mInputWindowList;
 		CcList  mModelDocList;
 
 		CcList mCommandHistoryList;
@@ -111,4 +124,55 @@ class	CcController
 		CcCommandQueue  mInterfaceCommandQueue;
 
 };
+
+#define kSSysOpenFile	   "SYSOPENFILE"
+#define kSSysSaveFile	   "SYSSAVEFILE"
+#define kSSysGetDir        "SYSGETDIR"
+#define kSSysRestart       "RESTART"
+#define kSRestartFile      "FILE"
+#define	kSRedirectText	   "SENDTEXTTO"
+#define	kSRedirectProgress "SENDPROGRESSTO"
+#define kSRedirectInput    "GETINPUTFROM"
+#define kSCreateWindow	   "WINDOW"
+#define kSDisposeWindow	   "DISPOSE"
+#define kSSet		   "SET"
+#define kSRenameObject     "RENAME"
+#define kSGetValue	   "GETVALUE"
+#define	kSTitleOnly	   "TITLEONLY"
+#define kSWindowSelector	"WI"
+#define kSChartSelector		"CH"
+#define kSOneCommand		"CO"
+#define kSControlSelector	"CR"
+#define kSModelSelector		"GR"
+#define kSStatusSelector	"ST"
+#define kSQuerySelector		"??"
+
+enum
+{
+ kTSysOpenFile = 400,
+ kTSysSaveFile,	   
+ kTSysGetDir,       
+ kTSysRestart,       
+ kTRestartFile,     
+ kTRedirectText,	   
+ kTRedirectProgress, 
+ kTRedirectInput,    
+ kTCreateWindow,	   
+ kTDisposeWindow,	   
+ kTSet,		   
+ kTRenameObject,     
+ kTGetValue,	   
+ kTTitleOnly,	   
+ kTWindowSelector,	
+ kTChartSelector,		
+ kTOneCommand,		
+ kTControlSelector,	
+ kTModelSelector,		
+ kTStatusSelector,	
+ kTQuerySelector
+};		
+
+
+
+
 #endif
