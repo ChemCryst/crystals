@@ -44,12 +44,12 @@
 ^^WI   {
 ^^WI    @ 1,2 RADIOBUTTON RST 'Hand typed:' STATE=ON INFORM
 ^^WI    @ 3,2 RADIOBUTTON RSL 'From list:'  INFORM
-^^WI    @ 1,4 EDITBOX SPT ' ' CHARS=24
+^^WI    @ 1,4 EDITBOX SPT ' ' CHARS=24 LIMIT=20
 ^^WI    @ 3,4 LISTBOX SPL VISLINES=9 DISABLED=YES ADDTOLIST
 ^^WI     'P 1' 'P -1' 'P 2' 'P 21' 'C 2' 'I 2' 'A 2' 'B 2' 'P m'
 ^^WI     'P c' 'P n' 'P a' 'P b' 'C m' 'A m' 'I m' 'B m' 
 ^^WI     'C c' 'A n' 'I a' 'A a' 'B n' 'I b' 'P 2/m' 'P 21/m' 'C 2/m' 
-^^WI     'I 2/m' 'A 2/m' 'B 2/m' 'P 2/c' 'P2/n' 'P2/a' 'P2/b' 'P21/c' 
+^^WI     'I 2/m' 'A 2/m' 'B 2/m' 'P 2/c' 'P 2/n' 'P 2/a' 'P 2/b' 'P 21/c' 
 ^^WI     'P 21/n' 'P 21/a' 'P 21/b' 'C 2/c' 
 ^^WI     'A 2/n' 'I 2/a' 'B 2/n' 'I 2/b'
 ^^WI     'P 2 2 2' 'P 2 2 21' 'P 21 21 2' 'P 21 21 21'
@@ -106,11 +106,10 @@
 % CLEAR
 % INSERT !^^CO SET SPT TEXT '!
 % STORE FORMAT /(A4)/ LENGTH 4 CHARACTER L2
-% INSERT ' '
 % STORE FORMAT /(A4)/ LENGTH 4 CHARACTER A2
-% INSERT ' '
+% INSERT ! !
 % STORE FORMAT /(A4)/ LENGTH 4 CHARACTER B2
-% INSERT ' '
+% INSERT ! !
 % STORE FORMAT /(A4)/ LENGTH 4 CHARACTER C2
 % INSERT !'!
 % OUTPUT
