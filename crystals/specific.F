@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2001/09/07 14:21:36  ckp2
+C Fiddled around with #DISK to allow time and date to be stored for each entry.
+C There is a year 2038 problems with the date format, it'll seem like 1970 again.
+C Also added a punch directive which will allow scripts to get hold of the DSC
+C info in a script readable format. Will write some scripts soon.
+C
 C Revision 1.30  2001/06/18 13:01:03  richard
 C Removed SNGL(x) function in RAND() because it now gets its value from FRAND
 C which returns a single anyway.
@@ -125,6 +131,7 @@ C
 \XUNITS
 \XSSVAL
 \XOPVAL
+\XIOBUF
 C
 C
       DATA FLSTAT(1) / 'OLD    ' / , FLSTAT(2) / 'NEW    ' /
@@ -138,6 +145,7 @@ C
 C
 C
 C -- CHECK DATA TO SOME EXTENT
+
       IF ( IFSTAT .GT. NFLSTT) GOTO 9910
 CDJWMAR99
       IF ( IFMODE .GT. ISSAPP ) GO TO 9910
@@ -155,7 +163,8 @@ C------ MAKE SURE THE UNIT IS CLOSED IF A FILE NAME IS GIVEN
       ENDIF
 1000    CONTINUE
 C
-      NAMLEN = MAX (INDEX( FILNAM, ' ')-1, 0)
+c      NAMLEN = MAX (INDEX( FILNAM, ' ')-1, 0)
+      NAMLEN = KCLNEQ(FILNAM,-1,' ')
 C----- SET FILE NAME LOWER/UPPER/MIXED CASE
       IF (NAMLEN .GT. 0) THEN
         IF (ISSFLC .EQ. 0) THEN
@@ -168,6 +177,7 @@ C----- CONVERT NAME TO UPPER CASE
            CLCNAM(1:NAMLEN) = FILNAM(1:NAMLEN)
         ENDIF
       ENDIF
+
 C
 C -- SET REQUIRED STATUS TO THAT SPECIFIED
       CFORM = FLFORM(IFFORM)
@@ -217,6 +227,7 @@ C
 &PPC           TESTAT = ACSTAT
 &PPC        ENDIF
 &PPCCE***
+
 #PPC      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
@@ -1907,18 +1918,20 @@ C to check for environment labels.
 C Add the returned string onto ACTUAL.
 C ICS keeps track of position in COMMND, and ICA the position in ACTUAL
 
+#VAX      ICL = KCLNEQ ( COMMND, -1, ' ' )
 #VAX      ICS = 1
 #VAX      IAS = 1
 #VAX34    CONTINUE
-#VAX         ICE = INDEX ( COMMND(ICS:) , ' ' )
+#VAX         ICE = KCCEQL ( COMMND, ICS, ' ' )
 #VAX         IF (ICE.LE.0) GOTO 35
-#VAX         CTEMP = COMMND(ICS:ICS+ICE-1)
-#VAX         ICS = ICS + ICE
+#VAX         CTEMP = COMMND(ICS:ICE-1)
+#VAX         ICS = ICE + 1
 #VAX         CALL MTRNLG(CTEMP,'UNKNOWN',ILENG)
-#VAX         ICE = INDEX ( CTEMP, ' ' )
-#VAX         IF (ICE.LE.0) GOTO 35
+#VAX         ITM = INDEX ( CTEMP, ' ' )
+#VAX         IF (ITM.LE.0) GOTO 35
 #VAX         ACTUAL (IAS:) = CTEMP
-#VAX         IAS = IAS + ICE
+#VAX         IF ( ICS.GT.ICL ) GOTO 35
+#VAX         IAS = IAS + ITM
 #VAX      GOTO 34
 #VAX35    CONTINUE
 #VAX      COMMND = ACTUAL
@@ -1981,10 +1994,7 @@ C
 C
 &DOS      CALL CISSUE (COMMND, IFAIL)
 &DOS      IF (IFAIL .EQ. 0) RETURN
-C&&DVFGID      IFAIL = SYSTEMQQ(COMMND)
 
-C&GID      IFAIL = SYSTEM(COMMND)
-C&GID      IF (IFAIL .EQ. 0 ) RETURN
 &GID      CALL GDETCH(COMMND)
 &GID      RETURN
 &DVF      IFAIL = SYSTEM(COMMND)
@@ -2537,13 +2547,17 @@ C
 #PPCC      WRITE(6,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
 #PPCC     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
 #PPC      LEVEL=1
-#PPC      J=0
-#PPC      DO 1 I=1,LEN(FILNAM)
-#PPC        IF(FILNAM(I:I).NE.' ') THEN
-#PPC          J=J+1
-#PPC          IF(J.LE.LEN(NAME(1))) NAME(1)(J:J)=FILNAM(I:I)
-#PPC        ENDIF
-#PPC1     CONTINUE
+c#PPC      J=0
+c#PPC      DO 1 I=1,LEN(FILNAM)
+c#PPC        IF(FILNAM(I:I).NE.' ') THEN
+c#PPC          J=J+1
+c#PPC          IF(J.LE.LEN(NAME(1))) NAME(1)(J:J)=FILNAM(I:I)
+c#PPC        ENDIF
+c#PPC1     CONTINUE
+
+          J = MIN(LEN(NAME(1)),MAX(1,KCLNEQ(FILNAM,-1,' ')))
+          NAME(1)(1:J)=FILNAM(1:J)
+
 #PPC      NAMLEN(1)=J
 #PPC      LSTPOS(1)=0
 #PPC      LSTLEN(1)=-1
