@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2004/03/02 15:13:03  rich
+C Remove trailing zeroes after decimal point when converting floating point
+C numbers to character strings, using script's CHARACTER unary operator.
+C
 C Revision 1.51  2004/02/24 15:49:09  rich
 C Don't crash if FILEDELETE function fails.
 C
@@ -6364,7 +6368,7 @@ C
       DIMENSION IVALUE(ILGTH)
 
       CHARACTER*(*) CVARIB
-      CHARACTER *64 CBUFF
+      CHARACTER *64 CBUFF, CUPPER
 
 
 
@@ -6375,15 +6379,17 @@ C
 
 C -- FIND IDENTIFIER
 
-      ISTAT = KSCIDN ( 2 , 3 , CVARIB , 1 , ITYPE , IDENT , ICVAL , -1 )
+      CALL XCCUPC (CVARIB, CUPPER)
+
+      ISTAT = KSCIDN ( 2 , 3 , CUPPER , 1 , ITYPE , IDENT , ICVAL , -1 )
       IF ( ISTAT .LE. 0 ) THEN
-c        WRITE(CMON,'(2A)')'Variable not found: ',CVARIB
+c        WRITE(CMON,'(2A)')'Variable not found: ',CUPPER
 c        CALL XPRVDU(NCVDU,1,0)
         GO TO 9900
       END IF
 
 c      WRITE(CMON,'(A,I4,1X,A,2I5)')
-c     1     'Val,C,IDIR,ITYP: ',IVALUE,CVARIB,IDIREC,ITYPE
+c     1     'Val,C,IDIR,ITYP: ',IVALUE,CUPPER,IDIREC,ITYPE
 c          CALL XPRVDU(NCVDU,1,0)
 
 
@@ -6398,11 +6404,11 @@ C          WRITE (CBUFF, '(A4)') IVALUE
 CDJW JUL 98 REPLACE CALL TO KSCSCD WITH CALL TO REPLACEMENT ROUTINE
          ISTAT = KSCREP (ICVAL, CBUFF(1:(ILGTH*4)), 4)
          JVALUE = ICVAL
-         ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, JVALUE , -1)
+         ISTAT = KSCIDN ( 1, 3, CUPPER, 1, ITYPE, IDENT, JVALUE , -1)
         ELSE
-          ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, IVALUE(1), -1)
+          ISTAT = KSCIDN ( 1, 3, CUPPER, 1, ITYPE, IDENT, IVALUE(1), -1)
 c          WRITE(CMON,'(A,I4,1X,A)')
-c     1     'Variable transferred: ',IVALUE,CVARIB
+c     1     'Variable transferred: ',IVALUE,CUPPER
 c          CALL XPRVDU(NCVDU,1,0)
         END IF
       ELSE
