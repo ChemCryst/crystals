@@ -98,7 +98,7 @@
 %          COPY 'END'
 %          COPY '#ANALYSE'
 %          COPY 'LIST LEVEL=HIGH'
-%          COPY 'PLOT FO=KEY'
+%          COPY 'PLOTFO DELTA ON'
 {I   Agreement analysis:
 %          COPY 'END'
 ^^CO RENAME _VFO _VF1      RENAME _VF2 _VFO
@@ -113,7 +113,7 @@
 %          COPY 'END'
 %          COPY '#ANALYSE'
 %          COPY 'LIST LEVEL=HIGH'
-%          COPY 'PLOT FO=ON'
+%          COPY 'PLOTFO DELTA'
 {I   Agreement analysis:
 %          COPY 'END'
 ^^CO RENAME _VFO _VF2       RENAME _VF3 _VFO
@@ -128,7 +128,7 @@
 %          COPY 'END'
 %          COPY '#ANALYSE'
 %          COPY 'LIST LEVEL=HIGH'
-%          COPY 'PLOT FO=ON'
+%          COPY 'PLOTFO DELTA'
 {I   Agreement analysis:
 %          COPY 'END'
 %%
