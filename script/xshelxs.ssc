@@ -1,6 +1,6 @@
 %SCRIPT XSHELXS
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
-%   VARIABLE LOGICAL ANSWER
+%   VARIABLE LOGICAL ANSWER LCRY
 %   VARIABLE INTEGER IRUN
 %   IF EXISTS 6 .LT. 1 THEN
             You do not have any reflections stored.
@@ -94,8 +94,23 @@
 %          COPY '#SCRIPT XHELP2'
 %          FINISH
 %      END IF
-%      COPY '#SCRIPT XSHELXIN'
+%      EVALUATE LCRY = TRUE
+%      COPY '#OPEN SCPDATA SHELXS.CRY'
+%      COPY '#SCRIPT ZSHELXIN'
+%      COPY '#CLOSE SCPDATA'
+%      COPY '#EDIT'
+%      COPY 'TYPECHANGE TYPE EQ Q C'
+%      COPY 'END'
+%%
+%% SET Solution type
+%%
+%      COPY '#GENERALEDIT 30'
+%      COPY 'LOCATE RECORDTYPE=106'
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
+%      COPY 'WRITE'
+%      COPY 'END'
 %   END BLOCK
+ * Done. Shelxs input complete.
 %END SCRIPT
 
 
