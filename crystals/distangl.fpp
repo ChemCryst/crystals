@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2003/08/13 12:29:38  rich
+C Mogul punch requires a list 41 before it is generally loaded (to grow
+C the fragment by symmetry). Load it.
+C
 C Revision 1.54  2003/08/12 19:14:05  rich
 C KDIST4: SEL RAN=L41 - recompute distance, don't rely on stored value.
 C
@@ -613,6 +617,8 @@ C---- In MOGUL mode, grow the fragment to allow polymeric structures.
         IPUNCH = ISTORE(JCOMBF+14)
         IF ( IPUNCH .EQ. 4 ) THEN
          NORIG5 = N5
+         IF (KHUNTR (1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+         IF (KHUNTR (2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
          IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL41
          CALL GROWFR
          WRITE (CMON,'(A4,2I6)') 'Grown: ',NORIG5,N5
@@ -4171,8 +4177,8 @@ C
 C
       ISTAT2=0
 C--LOAD LIST 1 AND LIST 2
-      CALL XFAL01
-      CALL XFAL02
+      IF (KHUNTR (1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+      IF (KHUNTR (2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET UP THE SHIFT DATA
       DO 1050 I=1,3
