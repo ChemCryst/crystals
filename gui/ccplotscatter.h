@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2002/01/16 10:28:39  ckpgroup
+//   SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
+//
 //   Revision 1.6  2001/12/12 16:02:25  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -53,6 +56,9 @@ class CcPlotScatter : public CcPlotData
 		void AllocateMemory(int length);
 		void AddSeries(int type);
 		void ExtendSeriesLength();
+		void CalculateRegression();
+
+		bool m_RecalculateRegression;		// does regression line need calculating?
 };
 
 class CcSeriesScatter : public CcSeries
@@ -66,6 +72,10 @@ public:
 
 	float *		m_Data[2];					// pointer to a this series' data (x and y)
 	CcString*	m_Label;					// pointer to the label for each data point
+	bool		m_PlotRegressionLine;		// whether to use regression or not
+
+	float		m_RegressionA;				// coefficients of regression (y = a + bx)
+	float		m_RegressionB;
 };
 
 #endif

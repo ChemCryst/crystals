@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/01/16 10:28:38  ckpgroup
+//   SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
+//
 //   Revision 1.7  2001/12/12 16:02:24  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -121,6 +124,7 @@ public:
 	Boolean			m_AxesOK;
 
 	Boolean			m_DrawKey;		// draw a key of the series names / colours?
+	Boolean			m_DrawRegression;// draw a regression line? (scatter plots only)
 
 	int				m_CurrentSeries;// currently selected series (init as -1 = all)
 	int				m_CurrentAxis;	// currently selected axis (init as -1 = all)
@@ -156,6 +160,8 @@ public:
 	int				m_DrawStyle;	// how to draw this series (scatter / bar / line / etc)
 	int				m_YAxis;		// which y axis is this series attached to (left or right)
 
+	Boolean			m_PlotRegressionLine; // whether to calculate and plot a linear regression line or not
+
 	virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
 
 private:
@@ -189,6 +195,7 @@ private:
 #define kSPlotYAxisRight   "YAXISRIGHT"
 #define kSPlotUseRightAxis "USERIGHTAXIS"
 #define kSPlotKey		   "KEY"
+#define kSPlotBestFitLine  "REGRESSION"
 enum
 {
  kTPlotAttach = 300,
@@ -214,7 +221,8 @@ enum
  kTPlotYAxis,
  kTPlotYAxisRight,
  kTPlotUseRightAxis,
- kTPlotKey
+ kTPlotKey,
+ kTPlotBestFitLine
 };
 
 

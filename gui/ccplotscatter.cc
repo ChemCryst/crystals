@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2002/01/16 10:28:38  ckpgroup
+// SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
+//
 // Revision 1.9  2002/01/14 12:19:54  ckpgroup
 // SH: Various changes. Fixed scatter graph memory allocation.
 // Fixed mouse-over for scatter graphs. Updated graph key.
@@ -63,6 +66,7 @@
 CcPlotScatter::CcPlotScatter( )
 {
 	m_Axes.m_GraphType = Plot_GraphScatter;
+	m_RecalculateRegression = true;
 }
 
 CcPlotScatter::~CcPlotScatter()
@@ -226,6 +230,9 @@ void CcPlotScatter::DrawView()
 		// check the axis divisions have been calculated
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 
+//		// check if regression line needs calculating
+//		if(m_DrawRegression && m_RecalculateRegression) CalculateRegression();
+
 		// don't draw the graph if no data is present
 		if(m_NextItem == 0)
 			return;
@@ -288,6 +295,7 @@ void CcPlotScatter::DrawView()
 						attachedPlot->DrawLine(2, x1-10, y1+10, x1+10, y1-10);
 					}
 					break;
+
 				}
 
 				// draw this data series as a connected line of points
@@ -443,6 +451,42 @@ void CcPlotScatter::AllocateMemory(int length)
 	{
 		m_Series[i]->AllocateMemory(length);
 	}
+}
+
+// calculate a regression line for the specified series
+void CcPlotScatter::CalculateRegression()
+{
+//	LOGWARN("Calculate regression line...");
+
+	// regression calculates a line of equation y = a + bx
+	// where a = ymean - b.xmean
+	// b = ( sum(xy) - (sum x)(sum y)/n ) / (sum(x**2) - (sum x)**2/n)
+	
+/*	for(int i=0; i<m_NumberOfSeries; i++)
+	{
+		float xmean = 0;
+		float ymean = 0;
+		float sumxy = 0;
+		float sumx  = 0;
+		float sumy  = 0;
+		float sumxq = 0;
+
+		for(int j=0; j<m_NextItem; j++)
+		{
+			sumx += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
+			sumy += ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
+			
+			sumxq += (((CcSeriesScatter*)m_Series[i])->m_Data[0][j])*(((CcSeriesScatter*)m_Series[i])->m_Data[0][j]);
+			sumxy += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j] * ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
+		}
+
+		xmean = sumx / m_NextItem;
+		ymean = sumy / m_NextItem;
+
+//		m_RegressionB = (sumxy - sumx*sumy/m_NextItem) / (sumxq - sumx^^2/m_NextItem);
+//		m_RegressionA = ymean - m_RegressionB*xmean;
+	}
+	*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2002/01/14 12:19:53  ckpgroup
+// SH: Various changes. Fixed scatter graph memory allocation.
+// Fixed mouse-over for scatter graphs. Updated graph key.
+//
 // Revision 1.10  2002/01/08 12:40:34  ckpgroup
 // SH: Fixed memory leaks, fiddled with key text alignment.
 //
@@ -85,6 +89,7 @@ CcPlotData::CcPlotData( )
 	m_NewSeries = false;
 	m_CurrentSeries = -1;	// all series selected
 	m_CurrentAxis = -1;		// also all axes selected
+	m_DrawRegression = false;
 	
 	m_XGapRight = 160;		// horizontal gap between graph and edge of window
 	m_XGapLeft = 200;		//		nb: leave enough space for labels
@@ -263,7 +268,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 
 				if(m_CurrentAxis != -1)
 				{
-					m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisSpan;
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisZoom;
 
 					m_Axes.m_AxisData[m_CurrentAxis].m_AxisMin = min;
 					m_Axes.m_AxisData[m_CurrentAxis].m_AxisMax = max;
@@ -272,7 +277,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				{
 					for(int i=0; i<3; i++)
 					{
-						m_Axes.m_AxisData[i].m_AxisScaleType = Plot_AxisSpan;
+						m_Axes.m_AxisData[i].m_AxisScaleType = Plot_AxisZoom;
 
 						m_Axes.m_AxisData[i].m_AxisMin = min;
 						m_Axes.m_AxisData[i].m_AxisMax = max;
@@ -454,7 +459,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 			{
 				tokenList->GetToken();	// "USERIGHTAXIS"
 
-				if(m_CurrentAxis == (-1))
+				if(m_CurrentSeries == (-1))
 				{
 					for(int i=0; i<m_NumberOfSeries; i++)
 					{
@@ -473,6 +478,24 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken();	// "KEY"
 
 				m_DrawKey = true;
+				break;
+			}
+
+			// tells this graph to use linear regression
+			case kTPlotBestFitLine:
+			{
+				tokenList->GetToken();	// "REGRESSION"
+
+				if(m_CurrentSeries == (-1))
+				{
+					for(int i=0; i<m_NumberOfSeries; i++)
+					{
+						m_Series[i]->m_PlotRegressionLine = true;
+					}
+				}
+				else m_Series[m_CurrentSeries]->m_PlotRegressionLine = true;
+				
+				m_DrawRegression = true;
 				break;
 			}
 
@@ -611,6 +634,10 @@ Boolean CcAxisData::CalculateLinearDivisions()
 {
 	// initial delta value - too high? Can be reduced if any lower is needed, but use either ...1, ...2 or ...5
 	m_Delta = 0.001f;
+
+	// support for reversed axes (eg 4 -> 0)
+	if(m_AxisMax < m_AxisMin) m_Delta = -m_Delta;
+
 	m_NumDiv = (float)((m_AxisMax - m_AxisMin) / m_Delta);	// initial number of divisions based on delta
 
 	int numinc = 0;							// number of increments of delta
@@ -636,7 +663,7 @@ Boolean CcAxisData::CalculateLinearDivisions()
 	float absmin = m_AxisMin;
 	if(absmin < 0) absmin = -absmin;
 
-	while(!smallerthan)
+	while((!smallerthan) && (m_Delta > 0))
 	{
 		if(absdelta < absmin)
 			absdelta += m_Delta;
