@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/11/12 16:24:28  ckpgroup
+// SH: Graphical agreement analysis
+//
 // Revision 1.1  2001/10/10 12:44:49  ckp2
 // The PLOT classes!
 //
@@ -147,10 +150,10 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				m_Axes->m_AxisScaleType = Plot_AxisZoom;
 				
 				// next four tokens should be: xmin, xmax, ymin, ymax
-				int xmin = atoi(tokenList->GetToken().ToCString());
-				int xmax = atoi(tokenList->GetToken().ToCString());
-				int ymin = atoi(tokenList->GetToken().ToCString());
-				int ymax = atoi(tokenList->GetToken().ToCString());
+				float xmin = atof(tokenList->GetToken().ToCString());
+				float xmax = atof(tokenList->GetToken().ToCString());
+				float ymin = atof(tokenList->GetToken().ToCString());
+				float ymax = atof(tokenList->GetToken().ToCString());
 
 				// check bounds: if min/max pair both zero don't change limits for that axis
 				if(ymin != 0 && ymax != 0)
@@ -411,7 +414,7 @@ Boolean CcPlotAxes::CalculateLogDivisions(int axis)
 	}
 
 	// make sure there are enough divisions
-	if((log10(m_AxisMin[axis]) + (m_NumDiv[axis] * m_Delta[axis]) < log10(m_Max[axis])) && m_AxisScaleType != Plot_AxisZoom)
+	if((log10(m_AxisMin[axis]) + (m_NumDiv[axis] * m_Delta[axis]) < log10(m_Max[axis])))
 		(m_NumDiv[axis])++;
 
 	// allocate space for data (changed to new)
@@ -420,7 +423,7 @@ Boolean CcPlotAxes::CalculateLogDivisions(int axis)
 	// loop through points, fill with data
 	for(int i=0; i<(m_NumDiv[axis]+1); i++)
 	{
-		m_AxisDivisions[axis][i] = pow(10,(int)(log10(m_AxisMin[axis]) + m_Delta[axis]*i));
+		m_AxisDivisions[axis][i] = pow(10,(log10(m_AxisMin[axis]) + m_Delta[axis]*i));
 
 		if(m_AxisDivisions[axis][i] > -0.000001 && m_AxisDivisions[axis][i] < 0.000001)
 			m_AxisDivisions[axis][i] = 0;

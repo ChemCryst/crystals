@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2001/11/12 16:24:28  ckpgroup
+// SH: Graphical agreement analysis
+//
 // Revision 1.1  2001/10/10 12:44:49  ckp2
 // The PLOT classes!
 //
@@ -410,7 +413,7 @@ Boolean CcPlotAxesBar::CalculateDivisions()
 {
 	if(m_AxisScaleType == Plot_AxisAuto)
 	{
-		if(m_Min[Axis_Y] > 0)
+		if((m_Min[Axis_Y] > 0) && !m_AxisLog[Axis_Y])
 			m_AxisMin[Axis_Y] = 0;
 		else m_AxisMin[Axis_Y] = m_Min[Axis_Y];
 
