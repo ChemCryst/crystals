@@ -9,6 +9,8 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:25 Uhr
 
+//  $Log: not supported by cvs2svn $
+
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"crlistbox.h"
@@ -91,9 +93,9 @@ Boolean	CrListBox::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken(); // Remove that token!
 				mCallbackState = inform;
 				if (mCallbackState)
-					LOGSTAT( "Enabling EditBox callback" );
+                              LOGSTAT( "Enabling ListBox callback" );
 				else
-					LOGSTAT( "Disabling EditBox callback" );
+                              LOGSTAT( "Disabling ListBox callback" );
 				break;
 			}
 			case kTAddToList:
@@ -113,6 +115,12 @@ Boolean	CrListBox::ParseInput( CcTokenList * tokenList )
 				}
 				break;
 			}
+                  case kTSetSelection:
+                  {
+                        tokenList->GetToken(); //Remove that token!
+                        int select = atoi ( tokenList->GetToken().ToCString() );
+                        ((CxListBox*)mWidgetPtr)->SetSelection(select); 
+                  }
 			default:
 			{
 				hasTokenForMe = false;
