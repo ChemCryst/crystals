@@ -34,7 +34,7 @@
 ^^WI   @ 2,1 LISTBOX CHSTR VISLINES=7
 ^^WI         ADDTOLIST
 ^^WI     'Cyclo'
-^^WI     'Very fast'
+^^WI     'Quick'
 ^^WI     'Edit examples'
 ^^WI     'Tin Twin'
 ^^WI     'Ylid'
