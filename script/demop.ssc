@@ -23,7 +23,7 @@ Input basic crystallographic information
 % COPY '#SCRIPT NTEXT'
 % EVALUATE QLINE = 'Input basic information'
 % COPY '#SCRIPT XPAUSE'
-% copy '#use crysdir:\script\demo1.sda'
+% copy '#use crysdir:\script\demo1.dat'
 % COPY '#SCRIPT BTEXT'
 
 Note that the mean value for the systematic absences is +ve
@@ -37,7 +37,7 @@ Now input the structure from SIR92
 % EVALUATE QLINE = 'Input structure from Sir92'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo2.sda'
+% copy '#use crysdir:\script\demo2.dat'
 % COPY '#SCRIPT BTEXT'
 
 
@@ -56,8 +56,8 @@ we will:
 % EVALUATE QLINE = 'Perturb the structure'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo3.sda'
-% copy '#use crysdir:\script\demo4.sda'
+% copy '#use crysdir:\script\demo3.dat'
+% copy '#use crysdir:\script\demo4.dat'
 
 % COPY '#SCRIPT BTEXT'
 
@@ -77,11 +77,11 @@ Leave the ADPs alone for the moment.
 
 Do Fourier Refinement. Try a 2Fo-Fc map
 
-% COPY '#SCRIPT NTEXT'
 % EVALUATE QLINE = 'Do Fourier Map'
+% COPY '#SCRIPT NTEXT'
 % COPY '#SCRIPT XPAUSE'
 
-%%copy '#use crysdir:\script\demo5.sda'
+%%copy '#use crysdir:\script\demo5.dat'
 % copy '#four'
 % copy 'map type=2fo'
 % copy 'end'
@@ -107,37 +107,42 @@ them around the existing fragment.
 The atoms and peaks can be ranked on peak height
 using the 'crystallographic' editor.
 
-Atoms and peaks with lerge serial numbers will have 
+Atoms and peaks with large serial numbers will have 
 small peak heights, so are suspect.
 % COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = 'Sort out spurious atoms'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo6.sda'
+% copy '#use crysdir:\script\demo6.dat'
 % COPY '#SCRIPT BTEXT'
 
 Now some ADP refinement. First iso, then aniso.
 
 % COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = 'Refinement'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo7.sda'
+% copy '#use crysdir:\script\demo7.dat'
 % COPY '#SCRIPT BTEXT'
 
 The structure looks OK, but the numbering is
 erratic. Let CRYSTALS sort it out
 
 % COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = 'Relabel'
 % COPY '#SCRIPT XPAUSE'
-%copy '#use crysdir:\script\demo8.sda'
+%copy '#use crysdir:\script\demo8.dat'
 % COPY '#SCRIPT BTEXT'
 
-Compute Hydrogen atoms based on geometry, and compare
-them with the difference Fourier
+Compute Hydrogen atoms based on geometry (WHITE)
+and compare them with the difference Fourier (PINK)
+
 
 % COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = 'Find H atoms'
 % COPY '#SCRIPT XPAUSE'
 
-% copy '#use crysdir:\script\demo9.sda'
+% copy '#use crysdir:\script\demo9.dat'
 % copy '#list 12'
 % copy "full first(x's, u's) until o(20)"
 % copy 'end'
@@ -152,10 +157,11 @@ them with the difference Fourier
 The analysis of variance may reveal need for an
 extinction correction and optimisation of the
 weights
+% COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = 'Agreement analysis'
+% COPY '#SCRIPT XPAUSE'
 % copy '#analyse'
 % copy 'end'
-% COPY '#SCRIPT NTEXT'
-% COPY '#SCRIPT XPAUSE'
 
 % copy '#list 12'
 % copy "full extparam first(x's, u's) until o(20)"
@@ -170,10 +176,12 @@ weights
 
 The weighted residual still has a 'trend'
 Optimise the weights
+
+% COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = 'Optimise weights'
+% COPY '#SCRIPT XPAUSE'
 % copy '#analyse'
 % copy 'end'
-% COPY '#SCRIPT NTEXT'
-% COPY '#SCRIPT XPAUSE'
 
 % copy '#list 4'
 % copy 'sch 14 2'
@@ -181,6 +189,7 @@ Optimise the weights
 % copy '#anal'
 % copy 'end'
 % COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = ' '
 % COPY '#SCRIPT XPAUSE'
 
 % copy '#sfls'
@@ -189,15 +198,22 @@ Optimise the weights
 % copy 'ref'
 % copy 'ref'
 % copy 'end'
+% copy '#script btext'
 
 
+Look at packing diagrams
+
+% copy '#script ntext'
+% EVALUATE QLINE = 'Graphics'
+% copy '#script xpause'
 % copy '#script democ'
 % copy '#script btext'
 Create a 'cif' file 
+% copy '#script ntext'
+% EVALUATE QLINE = ' Create cif '
+% copy '#script xpause'
 % copy '#cif'
 % copy 'end'
-% copy '#script ntext'
-% copy '#script xpause'
 
 
 % COPY '#SCRIPT BTEXT'
@@ -207,8 +223,11 @@ of molecular packing
 
 
 % COPY '#SCRIPT NTEXT'
+% EVALUATE QLINE = ' Space filling'
 % COPY '#SCRIPT XPAUSE'
 
 
-% COPY '#use crysdir:\script\demo10.sda'
+% COPY '#use crysdir:\script\demo10.dat'
+% copy '#finish'
+
 % END SCRIPT
