@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2004/04/21 13:11:45  rich
+C Added "#PUNCH 6 G" command, it outputs a SHELX format reflection
+C file, but using slightly perturbed Fcalc^2 and made-up sigma(F-calc^2).
+C
+C Added a routine ISCNTRC(HKL) to determine if a given reflection is
+C in a centrosymmetric class of reflections (e.g. the h0l class in monoclinic-b
+C ). Used in plot of phase distribution to exclude this class of reflections.
+C Added text to xphase.scp to explain this.
+C
 C Revision 1.38  2004/03/01 11:39:41  rich
 C Put data_ block header on .fcf file.
 C
@@ -1539,3 +1548,139 @@ C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
+
+
+CODE FOR XPCH22
+      SUBROUTINE XPCH22(ICLASS)
+C--PUNCH LIST 22 IN SIMPLE TO READ FORMAT
+C
+C--
+\ISTORE
+C
+\STORE
+\XUNITS
+\XSSVAL
+\XUSLST
+\XOPVAL
+\ICOM12
+\XLST05
+\XLST12
+\XLST24
+\XSTR11
+\XCONST
+\XCHARS
+\XAPK
+\XOPK
+\XSCALE
+\XIOBUF
+\QSTORE
+\QLST12
+      CHARACTER *6 FLAG, IBLANK
+      DATA IBLANK /'      '/
+
+
+      WRITE(CMON,'(A)') 'Punch list 22'
+      CALL XPRVDU(NCVDU,1,0)
+
+C--LOAD LIST 5 FROM THE DISC
+      CALL XFAL05
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+      JQ=2
+      JS=1
+      CALL XFAL12(JS,JQ,JR,JN)
+
+C--PUNCH OUT THE LIST HEADING
+      LN22 = 22
+      CALL XPCHLH (LN22)
+
+C      JT            ABSOLUTE L.S. PARAMETER NO.
+C      JS            PHYSICAL PARAMETER NO FROM WHICH TO START SEARCH
+C      JX            RELATIVE PARAMETER NO
+
+      JX = 12
+      M5 = L5 - MD5
+      M12 = L12O
+      L12A = NOWT
+      JS = 0
+
+      FLAG = IBLANK
+
+      DO WHILE(1)   ! More stuff in L12
+        IF(ISTORE(M12+1).GT.0) THEN ! Any refined params
+C--COMPUTE THE ADDRESS OF THE FIRST PART FOR THIS GROUP
+          L12A=ISTORE(M12+1)
+C--CHECK IF THIS PART CONTAINS ANY REFINABLE PARAMETERS
+2250  CONTINUE
+          DO WHILE(1) ! More parts in this param.
+            IF(ISTORE(L12A+3).LT.0) EXIT
+C--SET UP THE CONSTANTS TO PASS THROUGH THIS PART
+            MD12A=ISTORE(L12A+1)
+            JU=ISTORE(L12A+2) 
+            JV=ISTORE(L12A+3)
+            JS=ISTORE(L12A+4)+1
+C--SEARCH THIS PART OF THIS ATOM
+            DO JW=JU,JV,MD12A
+              JT=ISTORE(JW)
+
+c1950    FORMAT(/' Block',I4/8X,'Param.',4X,'Rel. param.',4X,
+c     2  'Calc. shift',4X,'Shift ratio',4X,'E.S.D.',5X,'Shift/E.S.D.',
+c     3  4X,'Type',3X,'Serial',4X,'Coordinate'/)
+
+              NB=17
+              ILEBP = 0
+              DO NA=1,NSC
+                IF(ICOM12(NB).EQ.M12) THEN
+C--LAYER OR ELEMENT BATCH OR PARAMETER PRINT
+                   ILEBP = 1
+                   EXIT
+                END IF
+                NB=NB+4
+              END DO
+
+              IF ( ILEBP .EQ. 1 ) THEN
+                WRITE(NCPU,2750)FLAG,JT,
+     2          (KSCAL(NC,NA+2),NC=1,2),JS
+
+
+C--CHECK IF THIS IS AN OVERALL PARAMETER
+              ELSE IF (M12.EQ.L12O) THEN
+                WRITE(NCPU,2750)JT,(KVP(JRR,JS),JRR=1,2)
+2750   FORMAT(1X,I12,26X,2A4,I3)
+              ELSE  
+C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
+                IF((STORE(M5+3) .GE. 1.0) .AND. (JS .GE. 8)) THEN
+                 WRITE(NCPU,3050)JT,STORE(M5),
+     2           NINT(STORE(M5+1)),(ICOORD(JRR,JS+NKAO),JRR=1,NWKA)
+                ELSE
+                 WRITE(NCPU,3050)JT,STORE(M5),
+     2           NINT(STORE(M5+1)),(ICOORD(JRR,JS),JRR=1,NWKA)
+                ENDIF
+              ENDIF
+3050  FORMAT(1X,I12,8X,A4,I4,1X,3A4)
+C
+C--INCREMENT TO THE NEXT PARAMETER OF THIS PART
+              JS=JS+1
+            END DO
+C--CHANGE PARTS FOR THIS ATOM OR GROUP
+            L12A=ISTORE(L12A)
+C--CHECK IF THERE ARE ANY MORE PARTS FOR THIS ATOM OR GROUP
+            IF(L12A.LE.0)EXIT
+          END DO
+        END IF
+C--MOVE TO THE NEXT GROUP OR ATOM
+        M5=M5+MD5
+        M12=ISTORE(M12)
+        IF (M12 .LE. 0) EXIT
+      END DO
+
+C--AND NOW THE 'END'
+      CALL XPCHND
+      CALL XPCHUS
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
+      RETURN
+      END
+

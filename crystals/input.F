@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2003/05/13 17:03:55  rich
+C Corrected slightly illegal comment from 3 years ago.
+C
 C Revision 1.10  2001/12/12 17:49:01  Administrator
 C matrix calculator
 C
@@ -307,10 +310,17 @@ C----- 'CHIME' XYZ FORMAT
 
 7400  CONTINUE
 C----- CHECK IF LIST 12, 16 OR 17
-      IF ((LSTNO .EQ. 12) .OR. (LSTNO .EQ. 16) .OR. (LSTNO .EQ. 17) )
-     1 THEN
+      IF ((LSTNO .EQ. 16) .OR. (LSTNO .EQ. 17) ) THEN
             CALL XPRTLX (LSTNO, 1)
             RETURN
+      ENDIF
+      IF (LSTNO .EQ. 12) THEN
+         IF ( ICLASS .EQ. -1 ) THEN
+            CALL XPRTLX (LSTNO, 1)
+         ELSE
+            CALL XPCH22 (ICLASS+2)
+         END IF
+         RETURN
       ENDIF
 C----- CHECK IF LIST 41
       IF (LSTNO.EQ.41) THEN
