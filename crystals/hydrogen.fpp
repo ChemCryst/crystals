@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/03/26 16:40:26  richard
+C Increased possible path length from 32 to 64 for RIDEH.DAT output.
+C
 C Revision 1.8  2001/02/26 10:24:13  richard
 C Added changelog to top of file
 C
@@ -1252,7 +1255,7 @@ C    THE START OF THE NEW STACK
         JJE=JL
         M5=L5
 C
-        NDTEMP = KDIST1(N5, JJJE, JT, O, TOLER, ITRANS)
+        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS)
         WRITE (NCAWU,3) NDTEMP
 3       FORMAT ('NDTEMP=', I10)
         IF (NDTEMP .LT. 2) GOTO 1631
