@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/06/12 15:44:23  richard
+C Code to inhibit printing of SU's of bond lengths and angles to non-refined
+C H atoms to the CIF (if requested).
+C
 C Revision 1.10  2001/03/28 13:34:21  richard
 C Update Andy Brown's code to generate dummy atoms compatible with the new list 5 format.
 C
@@ -2503,7 +2507,7 @@ C--THIS IS THE FIRST CALL  -  OUTPUT THE HEADING
      3 5X, 'x/a', 5X, 'y/b', 5X, 'z/c', 5X, 'Rho', /)
       WRITE(CMON,1156)
       CALL XPRVDU(NCVDU, 1,0)
-1156  FORMAT(3X,'Pivot', 4X'Atom',5X,'Dist',5X,'Rho',6X,'Action')
+1156  FORMAT(3X,'Pivot',4X,'Atom',5X,'Dist',5X,'Rho',6X,'Action')
 C
 1160  CONTINUE
       WRITE ( CMON , 1256 )  STORE(M5A), NINT(STORE(M5A+1)),
