@@ -12,7 +12,7 @@
 %   QUEUE REWIND
 %   QUEUE COPY #MATCH
 %% Need this to be able map onto Q's
-%   QUEUE COPY EQUALATOM
+%%%%   QUEUE COPY EQUALATOM
 %%
 %   QUEUE COPY MAP
 %%

@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.33  2004/08/09 12:06:23  rich
+c Output #MATCH error status to a script variable.
+c
 c Revision 1.32  2004/03/16 12:02:06  rich
 c Latest pseudo-symm code for Anna.
 c
@@ -3142,6 +3145,7 @@ C
 c      EQUIVALENCE (ILISTL,PROCS(1))
 C
       DATA IDIMN /3/
+      DATA IPEAK/'Q   '/
 C
       DATA IVERSN /100/
 
@@ -3239,7 +3243,20 @@ C          CALL XPRVDU(NCVDU,1,0)
 
       IF ( IEQATM .EQ. 0 ) THEN
         IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
-      ELSE
+C Check for Q atoms amongst the fragments, if present, the use
+C the EQUALATOM approach.
+        DO I = 0, N5-1         ! Loop over all the atoms, check for Q
+          IF ( ( ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) .OR.  
+     1           ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) ) .AND.
+     2         (  ISTORE(L5+I*MD5) .EQ. IPEAK        ) ) THEN
+            IEQATM = 1
+            EXIT
+          END IF
+        END DO
+      END IF
+
+C EQUALATOM. Don't use element types.
+      IF ( IEQATM .NE. 0 ) THEN
         DO I = 0,N5-1
           STORE(L5+13+I*MD5) = 10
         END DO
