@@ -26,7 +26,7 @@ C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
       DATA CLETT/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA KSP/1H /
 
-      DATA ICOMSZ / 1 /
+      DATA ICOMSZ / 2 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -42,7 +42,8 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IF ( I .LT. 0 ) GO TO 9910
        
 C Store tolerance (only show fom's below this limit)
-      IPLOT = ISTORE(ICOMBF)
+      IPLOTW = ISTORE(ICOMBF)
+      IPLOTN = ISTORE(ICOMBF+1)
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06 (0)
@@ -173,14 +174,14 @@ C OBTAIN SUMS FOR WILSON PLOT AND FIT LEAST SQUARES STRAIGHT LINE
 
 
 C PLOT WILSON CURVE AND LEAST SQUARES STRAIGHT LINE
-      CALL GRAPH80(0)                                                   
+      CALL GRAPH80(0,IPLOTW) 
   450 BT=2.0*BT                                                         
 
 C CALCULATE SCALE FACTORS FOR APPROPRIATE REFLEXION GROUPS
       CALL RESCA(KSYS)                                         
 
 C CALCULATE FINAL E'S AND OUTPUT REFLEXION STATISTICS
-      CALL ECAL(KSYS)
+      CALL ECAL(KSYS,IPLOTN)
 
 9000  CONTINUE
 C -- FINAL MESSAGE
@@ -643,7 +644,7 @@ C     LEAST SQUARES
       END                                                               
 C     ------------------------------------------------------------------
 C     LINE PRINTER PLOT AT 50 VALUES OF RHO                             
-      SUBROUTINE GRAPH80(NGP)                                             
+      SUBROUTINE GRAPH80(NGP,IPLOTW)
 \XWMISC
 \XWILSO
 \XIOBUF
@@ -674,15 +675,16 @@ C TOP FRAME
       J=1                                                               
       IR=2
 
-      WRITE(CMON,'(A,5(/A))')
+      IF ( IPLOTW .EQ. 1 ) THEN
+        WRITE(CMON,'(A,5(/A))')
      1  '^^PL PLOTDATA _WILSON SCATTER ATTACH _VWILSON KEY',
      1  '^^PL XAXIS TITLE LN(F(OBS)**2/SIGFSQ)',
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE Rho',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson'' TYPE LINE',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'' TYPE LINE'
-
-      CALL XPRVDU(NCVDU, 6,0)
+        CALL XPRVDU(NCVDU, 6,0)
+      END IF
 
       XMIN = +1000.
       XMAX = -1000.
@@ -731,10 +733,12 @@ C STORE K-CURVE
             WCVAL = 0.0
           END IF
 
-          WRITE(CMON,'(A,6F10.5)')
-     1    '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX, WVAL,
-     2    0.02*FLOAT(I-1)*RX, WCVAL , 0.02*FLOAT(I-1)*RX
-          CALL XPRVDU(NCVDU, 1,0)
+          IF ( IPLOTW .EQ. 1 ) THEN
+            WRITE(CMON,'(A,6F10.5)')
+     1      '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX, WVAL,
+     2      0.02*FLOAT(I-1)*RX, WCVAL , 0.02*FLOAT(I-1)*RX
+            CALL XPRVDU(NCVDU, 1,0)
+          END IF
 
           XMIN = MIN(XMIN, SVAL,WVAL)
           XMAX = MAX(XMAX, SVAL,WVAL)
@@ -764,19 +768,19 @@ C STORE K-CURVE
         END DO
       END DO
 
+      IF ( IPLOTW .EQ. 1 ) THEN
 C Round down XMIN to nearest .1:
-      XMIN = FLOOR ( XMIN * 10. ) / 10.
+        XMIN = FLOOR ( XMIN * 10. ) / 10.
 C Round XMAX up:
-      XMAX = CEILING ( XMAX * 10. ) / 10.
+        XMAX = CEILING ( XMAX * 10. ) / 10.
 C Round RX up:
-      XRX = CEILING ( RX * 10. ) / 10.
+        XRX = CEILING ( RX * 10. ) / 10.
 
-      WRITE(CMON,'(A,2(F5.1,1X),A,F4.1,A/A/A)')
-     1 '^^PL XAXIS ZOOM ',XMIN,XMAX+.1,'YAXIS ZOOM ',XRX,' 0.0',
-     2 '^^PL SHOW','^^CR'
-     
-      CALL XPRVDU(NCVDU, 3,0)
-
+        WRITE(CMON,'(A,2(F5.1,1X),A,F4.1,A/A/A)')
+     1  '^^PL XAXIS ZOOM ',XMIN,XMAX+.1,'YAXIS ZOOM ',XRX,' 0.0',
+     2  '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
 
 C     K-CURVE PARAMETERS
       DEL=50.0/AVR(NB)                                                  
@@ -915,17 +919,23 @@ C CALCULATE FINAL E-VALUES AND RESCALED F'S
 C CREATE NEW IF REQUIRED                                      
 C OUTPUT REFLEXIONS FOR MULTAN                                      
 C PREPARE TABLES OF STATISTICS                                      
-      SUBROUTINE ECAL(KSYS)                                             
+      SUBROUTINE ECAL(KSYS,IPLOTN) 
 \XWMISC
 \XWILSO
 \XESTAT
 \XLST06
 \STORE
 \XUNITS
+\XIOBUF
       DIMENSION IX(1000),EX(1000),FX(1000)                             
       DIMENSION RHR(10),NHR(10),NU(25),STL(10),MHKL(3)
 C TABLES OF THEORETICAL DISTRIBUTIONS                               
-      DIMENSION AVA(10),AVC(10),AVH(10),CPH(25)                         
+      DIMENSION AVA(10),AVC(10),AVH(10),CPH(25)
+      CHARACTER*8 CBIT1(2),CBIT3(2)
+      CHARACTER*3 CBIT2(2)
+      DATA CBIT1/'0KL     ','H,K,2K-H'/
+      DATA CBIT2/'H0L','HHL'/
+      DATA CBIT3/'HK0     ','H,K,-H-K'/
       DATA AVA/0.886,1.0,1.329,2.0,3.323,6.0,0.736,1.0,2.0,2.415/       
       DATA AVC/0.798,1.0,1.596,3.0,6.383,15.0,0.968,2.0,8.0,8.691/      
       DATA AVH/0.718,1.0,1.916,4.5,12.26,37.5,1.145,3.5,26.0,26.903/    
@@ -1130,7 +1140,27 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
       IF(KSYS.LE.3) WRITE(NCWU,390)                                       
       IF(KSYS.GE.4) WRITE(NCWU,400)                                       
       IF(KSYS.LE.6) WRITE(NCWU,410)                                       
-      IF(KSYS.GE.7) WRITE(NCWU,420)                                       
+      IF(KSYS.GE.7) WRITE(NCWU,420)
+
+      IF ( IPLOTN .EQ. 1 ) THEN
+        WRITE(CMON,'(A/A/A/A/3A/3A/3A/A/A/A)')
+     1  '^^PL PLOTDATA _NZDIST SCATTER ATTACH _VNZDIST KEY',
+     1  '^^PL XAXIS TITLE Z',
+     1  '^^PL NSERIES=7 LENGTH=25 YAXIS TITLE N(Z)',
+     1  '^^PL SERIES 1 SERIESNAME ''All Data''',
+     1  '^^PL SERIES 2 SERIESNAME ''',
+     1  CBIT1(MAX(1,KSYS-5)),'''',
+     1  '^^PL SERIES 3 SERIESNAME ''',
+     1  CBIT2(MIN(2,MAX(1,KSYS-2))),'''',
+     1  '^^PL SERIES 4 SERIESNAME ''',
+     1  CBIT3(MAX(1,KSYS-5)),'''',
+     1  '^^PL SERIES 5 SERIESNAME ''Acentric'' TYPE LINE',
+     1  '^^PL SERIES 6 SERIESNAME ''Centric'' TYPE LINE',
+     1  '^^PL SERIES 7 SERIESNAME ''Hypercentric'' TYPE LINE'
+        CALL XPRVDU(NCVDU, 10,0)
+      END IF
+      
+
       DO 500 I=1,25                                                     
       DO 470 J=1,5                                                      
       IF(NST(J).GT.0) ZT(I,J)=ZT(I,J)/FLOAT(NST(J))                     
@@ -1146,8 +1176,21 @@ C     CENTRIC
       T=1.0/(1.0+0.47047*XX)                                            
       CPC=1.0-((0.74786*T-0.09588)*T+0.34802)*T*EXP(-0.5*ZZ)            
       WRITE(NCWU,480) ZZ,(ZT(I,J),J=1,5),CPA,CPC,CPH(I)                   
-  480 FORMAT(1H ,F7.1,11X,5F12.3,2X,3F12.3)                             
-  500 CONTINUE                                                          
+  480 FORMAT(1H ,F7.1,11X,5F12.3,2X,3F12.3)
+
+      IF ( IPLOTN .EQ. 1 ) THEN
+        WRITE(CMON,'(A,4(1X,F3.1,1X,F8.3)/A,3(1X,F3.1,1X,F8.3))')
+     1 '^^PL DATA ', ZZ, ZT(I,1), ZZ, ZT(I,3), ZZ, ZT(I,4), ZZ, ZT(I,5),
+     3 '^^PL ',      ZZ, CPA,     ZZ, CPC,     ZZ, CPH(I)
+       CALL XPRVDU(NCVDU, 2,0)
+      END IF
+      
+  500 CONTINUE
+      IF ( IPLOTN .EQ. 1 ) THEN
+        WRITE(CMON,'(A/A)')'^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      END IF
+
       WRITE(NCWU,440) NST                                                 
       DO 510 I=1,24                                                     
       J=25-I                                                            
