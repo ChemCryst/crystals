@@ -6,15 +6,16 @@ class CrModel;
 class CcTokenList;
 class CcController;
 #include "cccoord.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 class CcModelObject
 {
 	public:
-		virtual void Centre(int x, int y, int z);
 		CcModelObject();
 		virtual ~CcModelObject();
-		virtual void Draw(CrModel* ModelToDrawOn) = 0;
-		virtual CcCoord ParseInput(CcTokenList* tokenList) = 0;
+            virtual void Render( CrModel* view, Boolean detailed ) = 0;
+            virtual void ParseInput ( CcTokenList* tokenlist) = 0;
 };
 
 #include	"ccmodelatom.h"
