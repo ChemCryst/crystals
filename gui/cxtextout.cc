@@ -1070,7 +1070,7 @@ void CxTextOut::UpdateHScroll()
         int nMax = m_nMaxWidth - clientRc.width;
     if( nMax <= 0 )
         m_nXOffset = 0;
-    SetScrollbar( wxHORIZONTAL, 0, (int)m_nMaxWidth/clientRc.width , m_nMaxWidth );
+    SetScrollbar( wxHORIZONTAL, 0, (int)m_nMaxWidth/max(clientRc.width,1) , m_nMaxWidth );
 #endif
 
 };
