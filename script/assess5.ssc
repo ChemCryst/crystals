@@ -2,7 +2,7 @@
 %% A Script to determine the current state of the list 5 refinement.
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DOTWIN
 %  VARIABLE INTEGER ADP ISER HCOUNT NES
-%  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST 
+%  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST
 %  VARIABLE CHARACTER CTYPE
 %% Return values:
 %%    ADP      0 NO LIST 5
@@ -20,7 +20,7 @@
 %%             ( a simple two component twin ).
 %%
 %%    HFIRST   serial number of first H found, or -1 if no H
-%% 
+%%
 %  EVALUATE ADP     = 0
 %  EVALUATE DOFLACK = FALSE
 %  EVALUATE DOEXTNC = FALSE
@@ -29,16 +29,16 @@
 %%
 %  IF EXISTS 5 .LE. 0 THEN
 {R   WARNING - You have no atoms to refine
-{S * Done. 
+{S * Done.
 %    FINISH
 %  END IF
 %%
 %  EVALUATE ISER = - 1
 %  EVALUATE DOSORT = FALSE
 %  COPY "#GENERALEDIT 5"
-%  COPY "LOCATE RECORDTYPE=101" 
-%  COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" 
-%  COPY "TOP" 
+%  COPY "LOCATE RECORDTYPE=101"
+%  COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"
+%  COPY "TOP"
 %  COPY 'LOCATE RECORDTYPE=102'
 %  COPY 'TOP'
 %  COPY 'TRANSFER FROM OFFSET=4 TO FLACKP'
@@ -99,23 +99,23 @@
 %  END CASE
 %  IF ( DOEXTNC .EQ. TRUE ) THEN
 %    CLEAR
-%    INSERT ' {R   Extinction  has been refined to '
+%    INSERT '{R   Extinction  has been refined to '
 %    STORE FORMAT /(F15.5)/ LENGTH 15 REAL EXTP
 %    OUTPUT
 %  END IF
 %  IF ( DOFLACK .EQ. TRUE ) THEN
 %    CLEAR
-%    INSERT '  {R   Flack param has been refined to '
+%    INSERT '{R   Flack param has been refined to '
 %    STORE FORMAT /(F15.5)/ LENGTH 15 REAL FLACKP
 %    OUTPUT
 %  END IF
 %  IF ( DOTWIN .EQ. TRUE ) THEN
 %    CLEAR
-%    INSERT '  {R   There are two element parameters '
+%    INSERT '{R   There are two element parameters '
 %    OUTPUT
 %  END IF
 %  IF ( DOSORT .EQ. TRUE ) THEN
-  {R The hydrogens in the list are not at the end. They may
-  {R be resorted in a moment.
+{R The hydrogens in the list are not at the end. They may
+{R be resorted in a moment.
 %  END IF
 %END SCRIPT
