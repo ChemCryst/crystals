@@ -1999,7 +1999,7 @@ DEPENDENCIES ON LIST 5
          1    1    1
     .NBONDS             4    0    1    0    0         0
     .NATOMS             8    0    1    0    0         0
-    .SPECIALS          12    0    1    0    0         0
+    .SPECIALS          16    0    1    0    0         0
    3.BONDS             14   -4    0    0   14   -4  101    1   41
          1    1    1    1    1    1    0    0    0    0
 LIST OF BONDS
@@ -2029,11 +2029,11 @@ ATOM COORDS (USED TO DETECT MOVEMENT OR CHANGE IN L5)
     .X                  0    0    1    0    0 0.0
     .Y                  0    0    1    0    0 0.0
     .Z                  0    0    1    0    0 0.0
-   5.SPECIAL            7  -12    0    0    7  -12  104   13   41
+   5.SPECIAL            7  -12    0    0    7  -16  104   13   41
          1    1    1    1    1    1    0    0    0    0
 SPECIAL BONDING (CENTROIDS, NORMALS, PI-BONDS, H-BONDS?) 
 (T2,12A1,6(TL4,12A1))
-(1X,F4.0,6(1X,F7.4))
+(1X,I4,6(1X,I7))
          1    1    1    1    1    1    1
     .TYPE               0    0    1    0    0 0
     .S1                 0    0    1    0    0 0
@@ -3948,3 +3948,18 @@ PERTURB            2    3
          3    
     .OVERWRITE         24    0    1    2   -1 NO
      YES            NO
+MATCH              4    4
+  10    4096 CRYSTALSALTER5
+    1    2    5   41
+   1.OUTPUT             1    1    0    0
+         3 
+    .LIST               9    0    1    5   -1 HIGH
+     OFF            LOW            MEDIUM         HIGH           DEBUG
+   2.MAP                0 9999    0    0    0    0  101    5  175
+         0    0    0    0    0    0    0    0    0    0
+   3.ONTO               0 9999    0    0    0    0  102    5  175
+         0    0    0    0    0    0    0    0    0    0
+   4.MATCH              1    1    0    0
+         1
+    .INPUTLIST         10    0    1    2    1         5
+              5        10
