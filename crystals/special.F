@@ -173,7 +173,7 @@ C----- SET THE TIMER AND LOAD THE LISTS
       IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02
       IF ((KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .NE. 0) .AND.
      1  (KHUNTR (10,0, IADDL,IADDR,IADDD, -1) .NE. 0))CALL XFAL05
-      IF (IERFLG .LE. 0) THEN
+      IF (IERFLG .LT. 0) THEN
             WRITE ( CMON, '(A)' ) ' LIST 1, 2 or 5 not available '
             CALL XPRVDU(NCVDU, 1,0)
             WRITE(NCAWU, '(A)') CMON( 1)(:)
