@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2002/03/12 18:03:55  ckp2
+C Only print "unwise" warning when twinned data, if user actually attempts extinction
+C calculation.
+C
 C Revision 1.20  2002/03/11 12:06:11  Administrator
 C enable axtinction and twinning, hightlight warning about inadvisability
 C
@@ -211,6 +215,7 @@ C----- SAVE SOME SPACE FOR THE U AXES
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
+      if (jb+jh.eq.-2)      RALL(1)=STORE(L33CD+5)
       NF=-1
       JG=-1
 C----- READ DOWN SOME LISTS
