@@ -1155,9 +1155,12 @@ SPECIAL REFINEMENT CONDITIONS
     .COMPOSITE          0    0    1    2   -1 NO
      NO             YES
     .TOLERANCE          0    0    1    0    0 0.6
-LIST 24            2    0
+LIST 24            3    0
   24   40960 CRYSTALSINPUT
-   1.SHIFTS             2    0    0    0    2   -4  101    1   24
+   1.READ               1    1    0    0
+         1    
+    .NSHIFT             4    0    1    0    0         0
+   2.SHIFTS             2    0    0    0    2   -4  101    1   24
          1    1    1    1    1    1    0    0    0    0
 THE CALCULATED AND APPLIED SHIFT FACTORS
 (1H ,8(3X,12A1))
@@ -1165,7 +1168,7 @@ THE CALCULATED AND APPLIED SHIFT FACTORS
          2    2
     .CALCULATED         0    0    1    0    0 0.0
     .APPLIED            0    0    1    0    0 0.0
-   2.DEPENDENCIES       2    0    0    0    2    2    1    5   24
+   3.DEPENDENCIES       2    0    0    0    2    2    1    5   24
          0    0    0    0    0    0    0    0    0    0
          1    1    
     .LIST 5             0    0    0    0    0         5
