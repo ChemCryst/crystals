@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2003/05/21 11:23:34  rich
+//   Logging.
+//
 //   Revision 1.29  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -337,6 +340,8 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         }
         case kTShowWindow:
         {
+            LOGSTAT("Show window token found");
+
             CcRect newPosn;
             tokenList->GetToken();
 
@@ -353,23 +358,100 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
 
             m_Shown = true;
 
+            LOGSTAT("Calculating layout.");
+
             CcRect gridRect = this->CalcLayout(true); //First call CalcLayout() on all children.
 
             LOGSTAT("CrWindow: " + mName + " Child is set to    " + gridRect.AsString() );
-            mGridPtr->SetGeometry(&gridRect);
+
+// This is called automatically when the window is resized in STEP3.
+//            mGridPtr->SetGeometry(&gridRect);
+
 // STEP3 Set the geometry of this window to fit around the child grid.
-            SetGeometry( &gridRect );
+
+            if ( !m_Keep && !m_Large )
+            {
+               LOGSTAT("No KEEP or LARGE properties. Setting size.");
+               SetGeometry( &gridRect );
+            }
+
+            bool keep_no_info = true;
+
+            if ( m_Keep )
+            {
+// Get the old size out of a file...
+                CcString cgeom = (CcController::theController)->GetKey( mName );
+                CcRect oldSize(0,0,0,0);
+                if ( cgeom.Len() )
+                   oldSize = CcRect( cgeom );
+
+                if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
+                {
+                   ((CxWindow*)ptr_to_cxObject)->SetGeometry(oldSize.mTop,
+                                                             oldSize.mLeft,
+                                                             oldSize.mBottom,
+                                                             oldSize.mRight );
+                   keep_no_info = false;
+                }
+                else
+                {
+                   SetGeometry( &gridRect );
+                }
+// NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
+// in CrWindow::SetGeometry which adds on height and width for borders and
+// menubars.
+
+            }
 
 
-            if (!m_relativeWinPtr)
+// Only go large if there is no previous kept size in effect.
+            if ( m_Large && keep_no_info ) 
+            {
+// Make the size large - take up about 80% of the main CRYSTALS window.
+// (or 80% of screen if main window isn't found)
+
+               CcRect mainSize(0,0,0,0);
+               mainSize = (CcController::theController)->GetScreenArea();
+               CrGUIElement *main = (CcController::theController)->FindObject("_MAIN");
+
+               if ( main && ( main != this ))
+                  mainSize = main->GetGeometry();
+
+               if ( newPosn.Width() < (int)(0.8 * mainSize.Width()) )
+               {
+                 mainSize.mLeft  += (int)(mainSize.Width() * 0.1);
+                 mainSize.mRight -= (int)(mainSize.Width() * 0.1);
+               }
+               if ( newPosn.Height() < (int)(0.8 * mainSize.Height()) )
+               {
+                 mainSize.mTop    += (int)(mainSize.Height() * 0.1);
+                 mainSize.mBottom -= (int)(mainSize.Height() * 0.1);
+               }
+
+                  
+               if (( mainSize.Height() > 10) && ( mainSize.Width() > 10 ))
+                ((CxWindow*)ptr_to_cxObject)->SetGeometry(mainSize.mTop,
+                                                          mainSize.mLeft,
+                                                          mainSize.mBottom,
+                                                          mainSize.mRight );
+// NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
+// in CrWindow::SetGeometry which adds on height and width for borders and
+// menubars.
+               else
+                 SetGeometry( &gridRect );
+            }
+
+
+            if (!m_relativeWinPtr && keep_no_info && ! m_Large)
             {
 // Either no posn specified (in which case centre over _MAIN)
 // or invalid window name given, (in which case position relative to _MAIN)
                    m_relativeWinPtr = (CcController::theController)->FindObject( "_MAIN" );
             }
 
-            if(m_relativeWinPtr)
+            if(m_relativeWinPtr && keep_no_info)
             {
+                LOGSTAT("Positioning window relative to another.");
                 CcRect winRect(m_relativeWinPtr->GetGeometry());
                 CcRect workRect((CcController::theController)->GetScreenArea());
                 CcRect thisRect(GetGeometry());
@@ -475,75 +557,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                                                                   newPosn.Right() );
             }
 
-            bool keep_no_info = true;
-
-            if ( m_Keep )
-            {
-// Get the old size out of a file...
-                CcString cgeom = (CcController::theController)->GetKey( mName );
-                CcRect oldSize(0,0,0,0);
-                if ( cgeom.Len() )
-                   oldSize = CcRect( cgeom );
-
-                if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
-                {
-                   ((CxWindow*)ptr_to_cxObject)->SetGeometry(oldSize.mTop,
-                                                             oldSize.mLeft,
-                                                             oldSize.mBottom,
-                                                             oldSize.mRight );
-                   keep_no_info = false;
-                }
-// NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
-// in CrWindow::SetGeometry which adds on height and width for borders and
-// menubars.
-
-            }
-
-// Only go large if there is no previous kept size in effect.
-            if ( m_Large && keep_no_info ) 
-            {
-// Make the size large - take up about 80% of the main CRYSTALS window.
-// (or 80% of screen if main window isn't found)
-
-               CcRect mainSize(0,0,0,0);
-               mainSize = (CcController::theController)->GetScreenArea();
-               CrGUIElement *main = (CcController::theController)->FindObject("_MAIN");
-
-               if ( main && ( main != this ))
-                  mainSize = main->GetGeometry();
-
-               if ( newPosn.Width() < (int)(0.8 * mainSize.Width()) )
-               {
-                 mainSize.mLeft  += (int)(mainSize.Width() * 0.1);
-                 mainSize.mRight -= (int)(mainSize.Width() * 0.1);
-               }
-               if ( newPosn.Height() < (int)(0.8 * mainSize.Height()) )
-               {
-                 mainSize.mTop    += (int)(mainSize.Height() * 0.1);
-                 mainSize.mBottom -= (int)(mainSize.Height() * 0.1);
-               }
-
-                  
-               if (( mainSize.Height() > 10) && ( mainSize.Width() > 10 ))
-                ((CxWindow*)ptr_to_cxObject)->SetGeometry(mainSize.mTop,
-                                                          mainSize.mLeft,
-                                                          mainSize.mBottom,
-                                                          mainSize.mRight );
-// NB Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
-// in CrWindow::SetGeometry which adds on height and width for borders and
-// menubars.
-
-            }
-
-            // Lock the original sizes of all resizable windows.
-            // These are needed to calculate how extra space
-            // is shared out when the window is resized by the
-            // user.
-
-
-            //For now show self. Children are shown automagically.
-            this->Show(true);
-
+            this->Show(true); //Show self. Children are shown automatically.
 
             LOGSTAT( "Window '" + mName + "' obeys SHOW");
             retVal.m_ok = true;
@@ -552,6 +566,8 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         case kTHideWindow:
         {
             tokenList->GetToken();
+
+            m_Shown = false;
 
             // Hide self
             this->Show(false);
@@ -711,6 +727,7 @@ void CrWindow::CloseWindow()
 
 void CrWindow::ResizeWindow(int newWidth, int newHeight)
 {
+    if ( ! m_Shown ) return;
 //Set size of new child grid to this
     CcRect rect ( 0,0, newHeight, newWidth );
     if ( mGridPtr != nil ) mGridPtr->SetGeometry(&rect);
