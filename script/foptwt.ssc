@@ -1,13 +1,15 @@
 %SCRIPT FOPTWT
 %% SCRIPT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT
 %%
-We will try 5, 4 and 3 parameter schemes, in that order since the 3 parameter
-scheme is most often satisfactory, and will by default be left in force. You
-will be given a chance to over-ride the choice.
-  First you will be shown a curve of the estimated delta(F)**2 as a function
-of F. This should be smoothly varying, and normally not showing any pronounced
-local maxima. The values in the column headed Delta**2 should parallel those
-in the column <Delta**2> in the agreement analysis.
+{I We will try 5, 4 and 3 parameter schemes, in that order since the 3
+{I parameter scheme is most often satisfactory, and will by default be
+{I left in force. You will be given a chance to over-ride the choice.
+
+{I First you will be shown a curve of the estimated delta(F)**2 as a function
+{I of F. This should be smoothly varying, and normally not showing any
+{I pronounced local maxima. The values in the column headed Delta**2 should
+{I parallel those in the column <Delta**2> in the agreement analysis.
+%          COPY '#PAUSE 2'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=5'
 %          COPY 'END'
