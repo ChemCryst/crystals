@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.53  2003/01/16 11:44:14  rich
+// New "SAFESET [ objectname instructions ]" syntax introduced. If objectname
+// doesn't exist, it ignores all the tokens between the square brackets, without
+// raising an error. Can be used for updating GUI objects that don't have to
+// be there.
+//
 // Revision 1.52  2003/01/14 10:27:18  rich
 // Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -510,6 +516,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 #ifdef __CR_WIN__
       MessageBox(NULL,"Failed to create and find main Window","CcController",MB_OK);
       ASSERT(0);
+      return;
 #endif
     }
     ((CrWindow*)theElement)->SetTimer(); //Start timer events - a sort of
@@ -533,6 +540,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 #ifdef __CR_WIN__
       MessageBox(NULL,"Failed to create main text output Window","CcController",MB_OK);
       ASSERT(0);
+      return;
 #endif
     }
 
@@ -549,6 +557,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 #ifdef __CR_WIN__
       MessageBox(NULL,"Failed to create progress Window","CcController",MB_OK);
       ASSERT(0);
+      return;
 #endif
     }
 
