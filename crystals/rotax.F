@@ -20,13 +20,11 @@ C Crystals implementation - blame Richard Cooper.
 \XIOBUF
 \QSTORE
       DIMENSION HKL(3)
-      REAL INVM(9), INVM2(9), MRES(9), SROT(9)
-      CHARACTER*5 CODDEV(2)
+      REAL INVM(9), INVM2(9), MRES(9), SROT(9), REJ(3)
 
-      DATA ICOMSZ / 1 /
+      DATA ICOMSZ / 4 /
       DATA IVERSN /100/
       DATA SROT /1.,0.,0., 0.,-1.,0., 0.,0.,-1./
-      DATA CODDEV /' even',' odd '/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
@@ -41,7 +39,14 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
 
 C -- SET LIST TYPE AND LISTING LEVEL FLAG
 
+C Store tolerance (only show fom's below this limit)
       TOL = STORE(ICOMBF)
+C Store sigma multiplier for rejecting outlying reflections
+      REJ(1) = STORE(ICOMBF+1)
+C Store minimum number of reflections to throw away anyway.
+      REJ(2) = ISTORE(ICOMBF+2)
+C Store maximum limit on number of reflections to throw away.
+      REJ(3) = ISTORE(ICOMBF+3)
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
@@ -59,12 +64,22 @@ C -- SET LIST TYPE AND LISTING LEVEL FLAG
      2 ' Version 15th May, 2001'
 
       WRITE ( CMON , 2) TOL
-      CALL XPRVDU(NCVDU, 2,0)
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE ( CMON , 3) NINT(REJ(2)),NINT(REJ(3)),REJ(1)
+      CALL XPRVDU(NCVDU, 4,0)
+
+      WRITE ( NCWU , 2) TOL
+      WRITE ( NCWU , 3) NINT(REJ(2)),NINT(REJ(3)),REJ(1)
 
 
 
 1     FORMAT (3/,A,/,A,2/)
-2     FORMAT (' Figures of merit < ',f5.3,' will be listed.',/)
+2     FORMAT (' Figures of merit < ',f5.3,' will be listed.')
+3     FORMAT (1X,I2,' worst fitting reflections will be rejected.',/,
+     1        1X,I2,' reflections will be rejected at most.',/,
+     2        ' Within these limits, transformed reflections > ',
+     3        f5.3,'sigma ',/,
+     4        ' from nearest lattice point will be rejected.',/)
 
 C-- A BUFFER FOR ONE REFELCTION AND ITS Q VALUE
       LTEMPR = NFL
@@ -173,15 +188,16 @@ C -- PRINT THE R VALUE ETC.
       WRITE(CMON,11)
       CALL XPRVDU(NCVDU, 1,0)
 13    FORMAT(/,' Reflections with greatest unexpected extra intensity:')
-11    FORMAT('   h   k   l                ',
+11    FORMAT('   h   k   l ',
      1                   '(Fo2-Fc2)/s     Fo^2        Fc^2       Sigma')
       DO MSORT = LSORT, LSORT+(MDSORT*(NSORT-1)), MDSORT
-        WRITE ( CMON , '(3I4,3A5,4(F11.3,1X))' ) 
+        WRITE ( CMON , '(3I4,F11.3,1X,3(F11.1,1X))' ) 
      1                    (NINT(STORE(MSORT+IXAP)),     IXAP=0,2),
-     2 ( CODDEV(1+MOD(ABS(NINT(STORE(MSORT+IXAP))),2)), IXAP=0,2),
      3 (                        STORE(MSORT+IXAP) ,     IXAP=3,6)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCWU, '(A)') CMON(1)(:)
+        WRITE ( NCWU , '(3I4,F11.3,1X,3(F11.1,1X))' ) 
+     1                    (NINT(STORE(MSORT+IXAP)),     IXAP=0,2),
+     3 (                        STORE(MSORT+IXAP) ,     IXAP=3,6)
       END DO
 
 
@@ -219,14 +235,14 @@ C Direct vectors
                CALL MATINV(MRES,INVM,D)
                CALL XMLTMM(SROT,INVM,INVM2,3,3,3)
                CALL XMLTMM(MRES,INVM2,INVM,3,3,3)
-               CALL GMATD(INVM,HKL,LSORT,NSORT,MDSORT,TOL)
+               CALL GMATD(INVM,HKL,LSORT,NSORT,MDSORT,TOL,REJ)
 
 C Reciprocal vectors
                CALL MAKEM(STORE(L1M2),STORE(L1M1),HKL,MRES)
                CALL MATINV(MRES,INVM,D)
                CALL XMLTMM(SROT,INVM,INVM2,3,3,3)
                CALL XMLTMM(MRES,INVM2,INVM,3,3,3)
-               CALL GMATR(INVM,HKL,LSORT,NSORT,MDSORT,TOL)
+               CALL GMATR(INVM,HKL,LSORT,NSORT,MDSORT,TOL,REJ)
        
             enddo
          enddo
@@ -346,15 +362,15 @@ C Works out the matrix M which converts cartesian to crystallographic axes
       END
 
 
-      subroutine gmatd(M2,x,LSORT,NSORT,MDSORT,tol)
+      subroutine gmatd(M2,x,LSORT,NSORT,MDSORT,tol,rej)
 C works out the rotation matrices (m2) for direct vectors & tests bad refs
 \STORE
 \XUNITS
 \XIOBUF
 
-      real x(3)
+      real x(3), rej(3)
       real M(3,3), INVM(3,3), s(3,3), m2(3,3)
-      real  mdisag(3,30),fom,bad(30),tol
+      real  mdisag(3,30),fom,bad(30),tol, oldbad(30)
       integer i
 
 
@@ -370,7 +386,10 @@ C works out the rotation matrices (m2) for direct vectors & tests bad refs
          bad(i)= bad(i) + ( nint(mdisag(2,i)) - mdisag(2,i) )**2
          bad(i)= bad(i) + ( nint(mdisag(3,i)) - mdisag(3,i) )**2
       enddo
-      iout = ibaddv(bad)
+
+      oldbad=bad
+
+      iout = ibaddv(bad,rej)
       fom=sum(bad)
 
       rleft = nsort-iout
@@ -383,23 +402,27 @@ C works out the rotation matrices (m2) for direct vectors & tests bad refs
         write (NCWU,1) (x(i),i=1,3),((m2(j,k),k=1,3),j=1,3),fom,iout
         write (CMON,1) (x(i),i=1,3),((m2(j,k),k=1,3),j=1,3),fom,iout
         call xprvdu(NCVDU,7,0)
-      endif 
+
+        write(NCWU,2) 'Deviations:', (oldbad(i),i=1,30)
+2       format(A,/,30(1X,F10.8))
+
+      endif
       END
 
 
-      subroutine gmatr(minv,x,LSORT,NSORT,MDSORT,tol)
-! works out the rotation matrices (m2) for recip. vectors & tests bad refs
+      subroutine gmatr(minv,x,LSORT,NSORT,MDSORT,tol,rej)
+c works out the rotation matrices (m2) for recip. vectors & tests bad refs
 
 \STORE
 \XUNITS
 \XIOBUF
 
-      real x(3)
+      real x(3), rej(3)
       real minv(3,3), m2(3,3)
-      real  mdisag(3,30),fom,bad(30),tol
+      real  mdisag(3,30),fom,bad(30),tol,oldbad(30)
       integer i
 
-       m2 =transpose(minv)
+      m2 =transpose(minv)
 
       DO I = 1,NSORT
          MSORT = LSORT + MDSORT*(I-1)
@@ -412,7 +435,10 @@ C works out the rotation matrices (m2) for direct vectors & tests bad refs
          bad(i)= bad(i) + ( nint(mdisag(2,i)) - mdisag(2,i) )**2
          bad(i)= bad(i) + ( nint(mdisag(3,i)) - mdisag(3,i) )**2
       enddo
-      iout = ibaddv(bad)
+
+      oldbad=bad
+
+      iout = ibaddv(bad,rej)
       fom=sum(bad)
 
       rleft = nsort-iout
@@ -427,27 +453,44 @@ C works out the rotation matrices (m2) for direct vectors & tests bad refs
         write (CMON,1) (x(i),i=1,3),((m2(j,k),k=1,3),j=1,3),fom,iout
         call xprvdu(NCVDU,7,0)
 
+        write(NCWU,2) 'Deviations:', (oldbad(i),i=1,30)
+2       format(A,/,30(1X,F10.8))
+
       endif 
 
       END
 
 
-      integer function ibaddv(bad)
+      integer function ibaddv(bad,rej)
+\STORE
+\XUNITS
+\XIOBUF
       real bad(30), bad2(30)
       integer jp(1)
-      real sigma
+      real sigma, rej(3)
+
+
 
       bad2 = bad**2
       
-      sigma = sqrt ( ( (30.*(sum(bad2))) - ((sum(bad))**2) ) /(30.*29.))
+
+      sigma = sqrt ( (sum(bad)) / 29. )
 
       ibaddv = 0
 
-C Reject up to 15 values more than 4sigma from zero.
+C Throw away at least REJ(2) reflections anyway.
 
-      do i=1,15
+      do i=1,NINT(REJ(2))
+        jp = maxloc(bad)
+        bad(jp(1)) = 0.
+        ibaddv = ibaddv + 1
+      enddo
+
+C Reject up to rej(3) values more than rej(1) * sigma from zero.
+
+      do i=nint(rej(2))+1,nint(rej(3))
          jp = maxloc(bad)
-         if ( bad(jp(1)) .GT. (sigma * 2.)) then
+         if ( bad(jp(1)) .gt. ( (sigma**2) * rej(1) ) ) then
             ibaddv = ibaddv + 1
             bad(jp(1)) = 0.
          endif
