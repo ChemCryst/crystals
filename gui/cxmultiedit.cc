@@ -28,7 +28,7 @@ CxMultiEdit * 	CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid *
 #ifdef __WINDOWS__
         theMEdit->Create(ES_LEFT|ES_AUTOHSCROLL|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL|WS_VISIBLE|WS_CHILD|ES_MULTILINE,CRect(0,0,10,10),guiParent,mMultiEditCount++);
 	theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-	theMEdit->SetFont(CxGrid::mp_font);
+//      theMEdit->SetFont(CxGrid::mp_font);
 //      theMEdit->SetBackgroundColor(false,RGB(255,255,255));
 	theMEdit->SetColour(0,0,0);
 #endif
@@ -44,6 +44,7 @@ CxMultiEdit::CxMultiEdit( CrMultiEdit * container )
 	mWidget = container;
 	mIdealHeight = 30;
 	mIdealWidth  = 70;
+      mHeight = 40;
 }
 
 CxMultiEdit::~CxMultiEdit()
@@ -64,24 +65,9 @@ void  CxMultiEdit::SetText( CcString cText )
       AppendText(cText.ToCString());
 #endif
 
-// Get CharHeight.
-      int charheight;
-      int ll;
+      int charheight = mHeight;
+      int ll = GetLineCount();
 
-#ifdef __WINDOWS__
-      CClientDC cdc(this);
-	TEXTMETRIC textMetric;
-      CFont * oldFont = cdc.SelectObject(CxGrid::mp_font);
-	cdc.GetTextMetrics(&textMetric);
-      charheight = (textMetric.tmHeight + textMetric.tmExternalLeading);
-      cdc.SelectObject(oldFont);
-
-      CSize convert( 10, charheight );
-      cdc.LPtoDP ( & convert );
-      charheight = convert.cy;
-
-      ll = GetLineCount();
-#endif
 #ifdef __LINUX__
       int charheight = GetCharHeight();
 
@@ -103,68 +89,15 @@ void  CxMultiEdit::SetText( CcString cText )
             int li = XYToPosition(0,500);
             Remove( 0, li );
 #endif
-      //Now inform the mHyperLinks list of how many characters we've chopped.
-            mHyperLinks.Reset();
-            CcLink* alink;
-            while ( ( alink = (CcLink*)mHyperLinks.GetItem() ) != nil  )
-            {
-                  if ( alink->ReIndex(li))
-                  {
-                        delete alink;
-                        mHyperLinks.RemoveItem();
-                  }
-
-                  mHyperLinks.GetItemAndMove();
-            }
-
 	}
 
 	//Now scroll the text so that the last line is at the bottom of the screen.
 	//i.e. so that the line at lastline-firstvisline is the first visible line.
 #ifdef __WINDOWS__
-      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)( (float)GetHeight() / (float)charheight ) + 5 );
+      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)( (float)GetHeight() / (float)charheight ) );
 #endif
 #ifdef __LINUX__
       ShowPosition ( GetLastPosition () );
-#endif
-
-}
-
-void  CxMultiEdit::SetHyperText( CcString cText, CcString cCommand  )
-{
-#ifdef __WINDOWS__
-      int oldend = GetWindowTextLength();
-      SetSel( oldend, oldend );
-      ReplaceSel(cText.ToCString());
-
-      CHARFORMAT cf, ocf;
-
-      GetSelectionCharFormat( ocf );
-
-      cf.dwMask = CFM_COLOR|CFM_UNDERLINE;
-      cf.crTextColor= RGB(0,0,200);
-      cf.dwEffects = CFE_UNDERLINE;
-      int newend = GetWindowTextLength();
-      SetSel( oldend, newend );
-      SetSelectionCharFormat ( cf );
-
-      SetSel(GetTextLength(),-1);
-      SetSelectionCharFormat( ocf );
-
-
-      CClientDC cdc(this);
-	TEXTMETRIC textMetric;
-	cdc.GetTextMetrics(&textMetric);
-      int charheight = textMetric.tmHeight;
-
-
-      CcLink * newLink = new CcLink( oldend, cText.Length(), cCommand );
-
-      mHyperLinks.AddItem(newLink);
-
-	//Now scroll the text so that the last line is at the bottom of the screen.
-	//i.e. so that the line at lastline-firstvisline is the first visible line.
-      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)((float)GetHeight() / (float)charheight) + 1 );
 #endif
 }
 
@@ -181,12 +114,11 @@ int	CxMultiEdit::GetIdealHeight()
 void CxMultiEdit::SetIdealHeight(int nCharsHigh)
 {
 #ifdef __WINDOWS__
-	CClientDC cdc(this);
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
-	TEXTMETRIC textMetric;
-	cdc.GetTextMetrics(&textMetric);
-	cdc.SelectObject(oldFont);
-	mIdealHeight = nCharsHigh * textMetric.tmHeight;
+//      CClientDC cdc(this);
+//      TEXTMETRIC textMetric;
+//      cdc.GetTextMetrics(&textMetric);
+//      mIdealHeight = nCharsHigh * textMetric.tmHeight;
+      mIdealHeight = nCharsHigh * mHeight;
 #endif
 #ifdef __LINUX__
       mIdealHeight = nCharsHigh * GetCharHeight();
@@ -197,11 +129,11 @@ void CxMultiEdit::SetIdealWidth(int nCharsWide)
 {
 #ifdef __WINDOWS__
 	CClientDC cdc(this);
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
-	cdc.SelectObject(oldFont);
-	mIdealWidth = nCharsWide * textMetric.tmAveCharWidth;
+      int owidth = textMetric.tmAveCharWidth;
+      int oheight= textMetric.tmHeight;
+      mIdealWidth = (int)(nCharsWide * owidth * mHeight / (float)oheight);
 #endif
 #ifdef __LINUX__
       mIdealWidth = nCharsWide * GetCharWidth();
@@ -426,7 +358,6 @@ void CxMultiEdit::SetColour(int red, int green, int blue)
 
 	SetSel(GetTextLength() ,-1);
 	SetSelectionCharFormat( cf );
-//	SetDefaultCharFormat( cf );
 #endif
 }
 
@@ -562,4 +493,20 @@ void CxMultiEdit::Empty()
 {
       SetSel( 0, GetWindowTextLength() );
       Clear();
+}
+
+void CxMultiEdit::SetFontHeight( int height )
+{
+      
+#ifdef __WINDOWS__
+      CHARFORMAT cf;
+      cf.dwMask = ( CFM_SIZE ) ; //Use the CFM_SIZE attribute
+        mHeight = (int)((height + 10) / 10.0);
+      cf.yHeight = height; 
+
+      SetSel(0, -1);
+	SetSelectionCharFormat( cf );
+      SetSel(GetTextLength(),-1);
+#endif
+
 }

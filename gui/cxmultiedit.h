@@ -47,7 +47,7 @@ class CxMultiEdit : public BASEMULTIEDIT
             CxMultiEdit( CrMultiEdit * container );
             ~CxMultiEdit();
             void  SetText( CcString cText );
-            void  SetHyperText( CcString cText, CcString cCommand  );
+//            void  SetHyperText( CcString cText, CcString cCommand  );
 		void	SetIdealWidth(int nCharsWide);
 		void	SetIdealHeight(int nCharsHigh);
 		int	GetIdealWidth();
@@ -60,6 +60,7 @@ class CxMultiEdit : public BASEMULTIEDIT
 		static int AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
 		static void RemoveMultiEdit( void) { mMultiEditCount--; };
             void SetOriginalSizes();
+            void SetFontHeight( int height );
 		
 		// attributes
 		static int mMultiEditCount;
@@ -71,6 +72,7 @@ class CxMultiEdit : public BASEMULTIEDIT
 		CrMultiEdit *	mWidget;
 		int		mIdealHeight;
 		int		mIdealWidth;
+		int    mHeight;
 
 #ifdef __WINDOWS__
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
