@@ -22,7 +22,6 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %% This gets a passed in argument so that the menus
 %% can call the same script to do four different map types.
 %%
-aHHHHHHHHHHHHHHHHHHHHHHHHHHHH!
 %  VERIFY FO DIFF 2FO-FC FC
 %  GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
 %  EVALUATE MTYPE = VALUE
@@ -60,7 +59,7 @@ aHHHHHHHHHHHHHHHHHHHHHHHHHHHH!
 ^^WI   {
 ^^WI    @ 1,2 CHECKBOX XSCALE 'Recalculate scale factor' INFORM=NO
 ^^WI    @ 2,2 CHECKBOX XCALC 'Recalculate phases' INFORM=NO
-^^WI    @ 3,2 CHECKBOX XSECT 'Set map ranges' INFORM = NO 
+^^WI    @ 3,2 CHECKBOX XSECT 'Set map ranges' INFORM = NO
 %      IF LSECTION .EQ. TRUE THEN
 ^^WI      STATE = OFF
 %      ELSE
@@ -249,7 +248,7 @@ aHHHHHHHHHHHHHHHHHHHHHHHHHHHH!
 ^^CR
 %%
 %       IF LSECT .EQ. 1 THEN
-%        COPY '#SCRIPT SECTION'
+%        COPY '#SCRIPT XSECTION'
 %       END IF
 %       IF DOSCALE .EQ. 1 THEN
 %           COPY '#EDIT'
