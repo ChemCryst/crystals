@@ -51,6 +51,9 @@
 #include "CrystalSystem.h"
 #include "Stats.h"
 #include "UnitCell.h"
+
+#include "StringClassses.h"
+
 using namespace std;
 
 #if !defined(_WIN32)
@@ -75,14 +78,23 @@ typedef struct RunStruct
 void runTest(RunStruct *pRunData)
 {
     std::cout << "Reading in tables...";
+    struct timeval time1;
+    struct timeval time2;
+    gettimeofday(&time1, NULL);
     Tables tTables(pRunData->iTablesFile);
+    gettimeofday(&time2, NULL);
+    std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     if (pRunData->iCrystalSys[0] == 0)
     {
         strcpy(pRunData->iCrystalSys, getCrystalSystem());
     }
     std::cout << "\nReading in hkl data...";
+    gettimeofday(&time1, NULL);
     HKLData tHKL(pRunData->iFileName);
+    gettimeofday(&time2, NULL);
+    std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nCalculating probabilities...";
+    gettimeofday(&time1, NULL);
     Table* tTable = tTables.findTable(pRunData->iCrystalSys);
     Stats tStats(tTables.getHeadings(), tTables.getConditions());
     int tNumRef = tHKL.numberOfReflections();
@@ -91,9 +103,17 @@ void runTest(RunStruct *pRunData)
         Reflection* tReflection = tHKL.getReflection(i);
         tStats.addReflection(tReflection);
     }
+    gettimeofday(&time2, NULL);
+    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+    gettimeofday(&time1, NULL);
     tStats.calProbs();
+    gettimeofday(&time2, NULL);
+    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nRanking space groups...";
+    gettimeofday(&time1, NULL);
     RankedSpaceGroups tRankings(*tTable, tStats, pRunData->iChiral);
+    gettimeofday(&time2, NULL);
+    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\n" << tRankings << "\n";
 }
 
@@ -186,27 +206,13 @@ bool handleArgs(int pArgc, _TCHAR* argv[], RunStruct *pRunData)
             "\t4: Orthorhombic\n" <<
             "\t5: Tetragonal\n" <<
             "\t6: Trigonal\n" <<
-            "\t7: Hexagonal\n" <<
-            "\t8: Cubic\n";
+            "\t7: Trigonal(rhom)\n" <<
+            "\t8: Hexagonal\n" <<
+            "\t9: Cubic\n";
             return false;
         }
     }
     return true;
-}
-
-void removeOutterQuotes(char* tPath)
-{
-	if (tPath[0] != 0)
-	{
-		if (tPath[0] = '\"')
-		{
-			strcpy(tPath, tPath+1);
-		}
-		if (tPath[strlen(tPath)-1] = '\"')
-		{
-			tPath[strlen(tPath)-1] = '\0';
-		}
-	}
 }
 
 #if !defined(_WIN32)
@@ -215,7 +221,7 @@ int main(int argc, const char * argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-	std::cout << argv[0] << "\n";
+    std::cout << argv[0] << "\n";   
     RunStruct tRunStruct;
     initRunStruct(&tRunStruct);
     if (!handleArgs(argc, argv, &tRunStruct))
@@ -225,8 +231,8 @@ int _tmain(int argc, _TCHAR* argv[])
     if (tRunStruct.iFileName[0] == 0)
     {
         std::cout << "Enter hkl file path: ";
-		std::cin.getline(tRunStruct.iFileName, PATH_MAX);
-		removeOutterQuotes(tRunStruct.iFileName);
+        std::cin >> tRunStruct.iFileName;
+        removeOutterQuotes(tRunStruct.iFileName);
     }
     try
     {
