@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2004/09/30 15:52:57  rich
+C Uh-oh. SFLS reorganised quite a lot.
+C
 C Revision 1.34  2004/06/17 10:31:25  rich
 C Add computation and plotting of Prince t^2/(1+Pii) values to the SFLS
 C routine. (Only called if REFINE LEV=n where n>0 is specified).
@@ -1412,7 +1415,7 @@ C--CHECK IF A PRINT IS REQUIRED
       NO=JO
       NP=JP
 
-      DO WHILE (1)  ! START OF THE LOOP OVER REFLECTIONS
+      DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
 C Remove I/sigma(I) cutoff, temporarily, leaving all other filters
@@ -2710,7 +2713,7 @@ C--SEARCH FOR THIS REFLECTION IN THE REFLECTION HOLDING STACK
       JREF_STACK_PTR=JREF_STACK_START
       LJX=NM
 C--FETCH THE INFORMATION FOR THE NEXT REFLECTION IN THE STACK
-      STACKSEARCH: DO WHILE(1)
+      STACKSEARCH: DO WHILE(.TRUE.)
         NI=ISTORE(JREF_STACK_PTR)
         LJU=ISTORE(NI+9)
         LJV=ISTORE(NI+10)
@@ -3293,7 +3296,7 @@ C----- LARGE ENANTIOMER DIFFERENCES
         SINPN = BCN * TEMP
         ACE  = 0.5 * (FNSQ-FCSQ) * TEMP
 
-        IF ( CENTRO .EQ. ANOMAL ) THEN ! NON-CENTRO WITHOUT ANOMALOUS DISPERSION
+        IF ( CENTRO .EQV. ANOMAL ) THEN ! NON-CENTRO WITHOUT ANOMALOUS DISPERSION
                                        ! OR CENTRO WITH ANOMALOUS
 
           IF ( .NOT. CENTRO ) SINP=SINP*FRIED ! NON-CENTRO WITHOUT AD
