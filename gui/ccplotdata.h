@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2003/12/09 09:51:54  rich
+//   Fix colours of data series in plots if > 6 series.
+//
 //   Revision 1.15  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -163,7 +166,7 @@ protected:
     int             m_CurrentAxis;  // currently selected axis (init as -1 = all)
 
     int             m_NumberOfSeries;// number of series in the list
-    int             m_Colour[3][6]; // sequence for colours
+    int             m_Colour[3][NCOLS]; // sequence for colours
     int             m_XGapLeft;     // the margins around the graph
     int             m_XGapRight;
     int             m_YGapTop;
