@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2003/08/05 11:11:10  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.4  2003/05/15 17:26:28  rich
 C Addition of one extra ENDFILE statement seems to
 C make the system request queue work properly under g77.
@@ -1556,6 +1559,7 @@ C--CHECK FOR SOME PARAMETERS TO SEARCH FOR
       IF(NR62D)1300,1300,1000
 C--FIND THE NEXT NON-BLANK CHARACTER
 1000  CONTINUE
+      IONC = NC
       NC=KNEQUL(NC,IB)
 C--CHECK FOR THE END OF THE CARD
       ND=NC
@@ -1612,6 +1616,11 @@ C--ANOTHER CHARACTER  -  CHECK IT
 C--CHARACTER FOUND THAT CANNOT BE PART OF A KEYWORD  -  THUS NO KEYWORD
 1500  CONTINUE
       IPARAM=MIN0(IPARAM+1,NR62D)
+C If type is 5, then this may be a series of values of type 5's.
+C Try to avoid omiting spaces that occur at posn. 5,9,13 etc.
+      IF ((IPARAM.GT.1).AND.(ISTORE(LR62D+(IPARAM-1)*MDR62D).EQ.5)) THEN
+        NC = IONC
+      END IF
 C--SET UP THE POINTERS IN LIST 50
 1550  CONTINUE
       I=(IPARAM-1)*MDR62D
