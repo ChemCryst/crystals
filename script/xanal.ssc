@@ -1,9 +1,88 @@
 %SCRIPT XANAL
-^^WI WINDOW A1 'Agreement' SIZE CANCEL='^^CO DISPOSE A1'
-^^WI GRID OUTER NROWS=3 NCOLS=3
-^^WI { @ 2,2 CHARTWINDOW _CHARTOUT NROWS=10 NCOLS=25 ISO=NO }
+^^WI WINDOW A1 'Agreement analysis' SIZE KEEP MODAL 
+^^WI GRID BOSS NROWS=6 NCOLS=3
+^^WI @ 2,2 GRID GRAPHS NROWS=3 NCOLS=3
+^^WI {
+^^WI   @ 1,1 GRID GRAPH NROWS=2 NCOLS=2 OUTLINE='Weighted residual'
+^^WI   {  
+^^WI      @ 1,1 STATIC YAX1 '<wFo-Fc>**2' 
+^^WI      @ 2,1 CHARTWINDOW _CH1 NROWS=20 NCOLS=48 ISO=NO 
+^^WI      @ 2,2 GRID WORDS NROWS=2 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC t1 'Fo' 
+^^WI       @ 2,1 STATIC t2 'range' 
+^^WI      }
+^^WI   }
+^^WI   @ 3,1 GRID GRAPH2 NROWS=2 NCOLS=2 OUTLINE='Weighted residual'
+^^WI   {  
+^^WI      @ 1,1 STATIC YAX1 '<wFo-Fc>**2' 
+^^WI      @ 2,1 CHARTWINDOW _CH2 NROWS=20 NCOLS=48 ISO=NO 
+^^WI      @ 2,2 GRID WORDS NROWS=4 NCOLS=1
+^^WI      {
+^^WI       @ 1,1 STATIC t1 'Sin' 
+^^WI       @ 2,1 STATIC t2 'theta/' 
+^^WI       @ 3,1 STATIC t3 'lambda'
+^^WI       @ 4,1 STATIC t4 'range'
+^^WI      }
+^^WI   }
+^^WI   @ 1,3 GRID GRAPH NROWS=2 NCOLS=2 OUTLINE='Residual'
+^^WI   {  
+^^WI      @ 1,1 STATIC YAX1 '<Fo-Fc>**2' 
+^^WI      @ 2,1 CHARTWINDOW _CHHKLUW NROWS=20 NCOLS=64 ISO=NO 
+^^WI      @ 2,2 STATIC t 'HKL class' 
+^^WI   }
+^^WI   @ 3,3 GRID GRAPH2 NROWS=2 NCOLS=2 OUTLINE='Weighted residual'
+^^WI   {  
+^^WI      @ 1,1 STATIC YAX1 '<wFo-Fc>**2' 
+^^WI      @ 2,1 CHARTWINDOW _CHHKLW NROWS=20 NCOLS=64 ISO=NO 
+^^WI      @ 2,2 STATIC t 'HKL Class'
+^^WI   }
+^^WI  }
+^^WI  @ 4,2 GRID STUFF NROWS=1 NCOLS=3
+^^WI  {
+^^WI   @ 1,1 MULTIEDIT atext ' ' NROWS=5 NCOLS=78 IGNORE
+^^WI                  FIXEDFONT=YES DISABLED=YES
+^^WI   @ 1,3 GRID BTNS NROWS=1 NCOLS=3
+^^WI   {
+^^WI      @ 1,1 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT
+^^WI      @ 1,3 BUTTON HELP '&Help'
+^^WI   }
+^^WI  }
+^^WI }
 ^^WI SHOW
 ^^CR
+^^WI SENDTEXTTO atext
+^^CR
 % COPY '#ANALYSE'
+% COPY 'LIST LEVEL=HIGH'
 % COPY 'END'
+^^WI SENDTEXTTO _MAINTEXTOUTPUT
+^^CR
+% LOOP
+%   VERIFY CLOSE HELP
+%   GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK  %CLOSE%
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%     END BLOCK
+%     BLOCK  %HELP%
+%        COPY '#SCRIPT XHELP1'
+
+The residual, Fo-Fc, is analysed for systematic trends, which 
+might indicate an incomplete model, or an unsatisfactory 
+weighting scheme. There are more details in the chapter "Structure 
+Factors and Least Squares" in the CRYSTALS manual.
+
+The two graphs provide a comparison between Fo and Fc as a function of 
+the ranges of Fo, and the ranges of sin(theta)/lambda. For a well 
+refined structure with suitable weights, Fo/Fc should be about unity 
+for all Fo ranges and also for all sin(theta)/lambda ranges. A serious 
+imbalance in Fo/Fc may mean the structure is incomplete, or unsuitable 
+data reduction. A systemstic trend in Fo/Fc may mean unsuitable weights 
+are being used. 
+%        COPY '#SCRIPT XHELP2'
+%     END BLOCK
+%   END CASE
+% END LOOP
+^^CO DISPOSE A1
 %END SCRIPT
