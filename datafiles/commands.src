@@ -2619,9 +2619,11 @@ VOIDS              4    3
 WEIGHT             1    6
    1    4096 CRYSTALSWEIGHT
     1    4    5    6   13   23
-   1.GUI                1    1    0    0
-         3
+   1.GUI                2    1    0    0
+         3    3
     .GRAPH              1    0    1    2    0 OFF
+     OFF            ON
+    .OUTLIERS           2    0    1    2    0 OFF
      OFF            ON
 ANALYSE           11    5
    2    4096 CRYSTALSWEIGHT
@@ -2660,12 +2662,14 @@ ANALYSE           11    5
      NOTHING        DELTA          RFACTOR
     .KEY               13    0    1    2    1 OFF
      OFF            ON
-   7.PLOTFO            2    1    0    0
-         3    3                        
+   7.PLOTFO            3    1    0    0
+         3    3    3                    
     .VALUE             14    0    1    3    0 NOTHING
      NOTHING        DELTA          RFACTOR
     .KEY               15    0    1    2    1 OFF
      OFF            ON
+    .OUTPUT            22    0    1    2    0 NOTHING
+     NOTHING        WDELSQ
    8.PLOTTHETA         2    1    0    0
          3    3
     .VALUE             16    0    1    3    0 NOTHING

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2002/06/24 15:32:44  richard
+C Add new auto-statistical weighting (Scheme 17).
+C Removed old XNAP04 subroutine. (17&18).
+C
 C Revision 1.39  2002/06/19 10:44:19  richard
 C Reformatted most of XAPP04 - go rid of most computed gotos and other such nonsense.
 C This version has been thoroughly tested so I'm checking it in before committing some
@@ -162,6 +166,7 @@ C
       CHARACTER*16 IFMT1
       CHARACTER*12 IFMT2
       CHARACTER*4 ITL,  CSQUAR, IBL
+      DIMENSION IGUI4(2)
 C
 \STORE
 \XSTR11
@@ -223,7 +228,7 @@ C--CLEAR THE TIME
       CALL XTIME1(2)
 
 C--READ ANY DIRECTIVES THAT OFFER THEMSELVES
-      I=KRDDPV(IGUI4,1)
+      I=KRDDPV(IGUI4,2)
       IF ( I .LT. 0 ) GO TO 9970
 
 C--CLEAR THE CORE
@@ -436,11 +441,12 @@ C to Fc range.
 
   
            DO I = 1, N6ACC
- 
+
+              FRACC = MAX(.0000001, SHFC(I)/FCMAX )
               IF (IFSQ .GE. 0) THEN
-                 KDIV = MIN(20,INT(20.*SQRT(SQRT(SHFC(I)/FCMAX)))+1)
+                 KDIV = MIN(20,INT(20.*SQRT(SQRT(FRACC)))+1)
               ELSE
-                 KDIV = MIN(20,INT(20.*SQRT(SHFC(I)/FCMAX))+1)
+                 KDIV = MIN(20,INT(20.*SQRT(FRACC))+1)
               END IF
 
               RWD(KDIV) = RWD(KDIV) + 1.0
@@ -475,12 +481,13 @@ c           END DO
               DO K = -4,4
                  SUMGF = 0.0
                  DO I = 1,20
+                    AWD = WD(J,K,I) * (REAL(N6ACC)/(REAL(N6ACC)-RPARS))
+                    AWD = MAX ( 0.000001, AWD )
                     SUMGF = SUMGF + RWD(I) * (
      1                               LOG  (
      2                                  MAX( .0001,
      3                                  SQRT(
-     3      WD(J,K,I) * (REAL(N6ACC)/(REAL(N6ACC)-RPARS)) /
-     4                                      MAX( 0.01, RWD(I) )
+     4                                       AWD / MAX( 0.01, RWD(I) )
      5                                   ))))**2
                  END DO
 
@@ -1190,6 +1197,11 @@ C----- WARN OF OUTLIERS
             IF (ISSPRT .EQ. 0) WRITE(NCWU ,'(/A/) ') CMON(1)(:)
 5585  FORMAT(1X,/, I6, ' Reflections down-weighted as Outliers',/)
       ENDIF
+      IF (IGUI4(2) .EQ. 1 ) THEN
+            WRITE(CMON,'(''^^CO SET _COUT TEXT '',I6)') JPRINT
+            CALL XPRVDU(NCVDU, 1,0)
+      END IF
+
 5590  CONTINUE
 C----- IF THE TYPE WAS TO TAKE ROOT W, CHANGE TO SAVE W
 9000  CONTINUE
@@ -1271,7 +1283,7 @@ C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
       WRITE(CMON,6160) ITL
       CALL XPRVDU(NCVDU, 1,0)
 
-      IF ( IGUI4 .EQ. 1 ) THEN
+      IF ( IGUI4(1) .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _RWGHT',
      1  '^^PL XAXIS TITLE ''Reciprocal weights vs /FO/''',
@@ -1353,7 +1365,7 @@ C--PRINT THE LINE FOR THIS /FO/
       WRITE(NCAWU,6630)EDW ,WDW, (L,JJ=1,JDW)
       WRITE(CMON,6630)EDW ,WDW, (L,JJ=1,JDW)
       CALL XPRVDU(NCVDU, 1,0)
-      IF ( IGUI4 .EQ. 1 ) THEN
+      IF ( IGUI4(1) .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
      2   EDW,' DATA ', WDW
         CALL XPRVDU(NCVDU, 1,0)
@@ -1367,14 +1379,14 @@ C--PRINT THE LINE FOR THIS /FO/
       WRITE(NCAWU,6630) EDW,WDW
       WRITE(CMON,6630) EDW,WDW
       CALL XPRVDU(NCVDU, 1,0)
-      IF ( IGUI4 .EQ. 1 ) THEN
+      IF ( IGUI4(1) .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
      2   EDW,' DATA ', WDW
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 6700  CONTINUE
 6750  CONTINUE
-      IF ( IGUI4 .EQ. 1 ) THEN
+      IF ( IGUI4(1) .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
@@ -1978,7 +1990,7 @@ C--A FEW COMMONLY USED FORMAT STATEMENTS
 C
 C--CLEAR THE CLOCK CONTROL AND FETCH THE INPUT PARAMETERS
       CALL XTIME1(2)
-      IF (  KRDDPV ( ISTORE(NFL) , 21 )  .LT.  0  ) GO TO 9930
+      IF (  KRDDPV ( ISTORE(NFL) , 22 )  .LT.  0  ) GO TO 9930
 C--SET THE ORIGINAL VARIABLES FROM THE NEW INPUT ROUTINE
       DVF=STORE(NFL)
       DVS=STORE(NFL+3)
@@ -2001,6 +2013,7 @@ C--SET THE ORIGINAL VARIABLES FROM THE NEW INPUT ROUTINE
       PKEXT=ISTORE(NFL+18)
       PLHKL=ISTORE(NFL+19)
       PKHKL=ISTORE(NFL+20)
+      PWDSQ=ISTORE(NFL+21)
 C      CLEAR THE LIST 30 VARIABLES
       CALL XZEROF(TEMP30,4)
 C--SET UP THE PLOT CONSTANTS
@@ -2733,6 +2746,7 @@ C--- OUTPUT TO SCREEN
      2 (STORE(K+2),K=L+2,M) , IOUT
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
+
       IF ( PLFOR .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8)')'^^PL SET _FO LABEL ',
      1    ACI,' DATA ',STORE(L+4),STORE(L+5),ISTORE(L+1)
@@ -2784,9 +2798,13 @@ C----- WRITE TOTALS TO MONITOR
       WRITE(NCAWU,4921)N,(APD(N2),N2=1,6)
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
-      WRITE(CMON,4921)N,(APD(N2),N2=1,6)
-      CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,4921)N,(APD(N2),N2=1,6)
+        CALL XPRVDU(NCVDU, 1,0)
       ENDIF
+      IF ( PWDSQ .EQ. 1 ) THEN
+        WRITE(CMON,'(''^^CO SET _WDSQ TEXT '',F7.3)') APD(4)
+        CALL XPRVDU(NCVDU, 1,0)
+      END IF
 C----- NOV98 - UPDATE LIST 30 TEMP VARIABLES
       TEMP30(1) = FLOAT(N)
       TEMP30(2) = APD(5)
@@ -2794,9 +2812,9 @@ C----- NOV98 - UPDATE LIST 30 TEMP VARIABLES
 C
 C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5450)
-5450  FORMAT(///,' Agreement analysis on [sin(theta)/lambda]sq')
-      WRITE(NCWU,1000)(NOPE(J,2),J=1,4),KM
+        WRITE(NCWU,5450)
+5450    FORMAT(///,' Agreement analysis on [sin(theta)/lambda]sq')
+        WRITE(NCWU,1000)(NOPE(J,2),J=1,4),KM
       ENDIF
 
       IF ( PLTHE .EQ. 1 ) THEN
