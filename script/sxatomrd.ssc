@@ -9,7 +9,7 @@
 %     VARIABLE CHARACTER CLINE
 %%
 %% shared with ZSHELXSIN
-%     VARIABLE INTEGER ATOMCOUNT EXPECTED
+%     VARIABLE INTEGER ATOMCOUNT 
 %%
 %% If this is the first atom to be found, start adding atoms.
 %%
