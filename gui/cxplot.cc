@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.29  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.28  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -469,6 +473,8 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 
 void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 {
+    if ( text.length() == 0 ) return;
+
     if(m_FlippedPlot)
     {
         y = 2400-y;
@@ -1165,7 +1171,7 @@ void CxPlot::OnRButtonUp( wxMouseEvent & event )
     CcPoint point = LogicalToDevice(event.m_x,event.m_y);
     
     if(m_FlippedPlot) point.y = 2400-point.y;
-    ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,point.x,point.y);
+    ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,event.m_x,event.m_y);
 }
 #endif
 #ifdef __CR_WIN__
