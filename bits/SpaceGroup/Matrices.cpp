@@ -37,6 +37,7 @@
 //#include "stdafx.h"
 #include "Matrices.h"
 #include "MathFunctions.h"
+#include <stdlib.h>
 #if defined(_WIN32)
 #include <Boost/regex.h>
 #else
