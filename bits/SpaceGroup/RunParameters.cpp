@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "RunParameters.h"
 #include "UnitCell.h"
 #if defined(__APPLE__)
@@ -42,7 +43,8 @@ RunParameters::RunParameters(const string& pProgramName):iLaueGroup(NULL), iProg
 	char * tWorkingPath = NULL;
 	tWorkingPath = getcwd(NULL, PATH_MAX);
 #endif
-    iTablesFile.initFormated("%s%s", tWorkingPath, kDefaultTables);
+    iTablesFile = tWorkingPath;
+	iTablesFile.addPathComponent(kDefaultTables);
     free(tWorkingPath);
     iRequestChirality = true;
     iChiral = false;
@@ -81,7 +83,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            iFileName.init(argv[*pPos]);
+            iFileName = argv[*pPos];
             (*pPos)++;
             return true;
         }
@@ -91,7 +93,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            iOutputFile.init(argv[*pPos]);
+            iOutputFile = argv[*pPos];
             (*pPos)++;
             return true;
         }
@@ -101,7 +103,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            iTablesFile.init(argv[*pPos]);
+            iTablesFile = argv[*pPos];
             (*pPos)++;
             return true;
         }
@@ -111,7 +113,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, const char * argv[])
         (*pPos)++;
         if (*pPos < pMax && argv[*pPos][0] != '-')
         {
-            iParamFile.init(argv[*pPos]);
+            iParamFile = argv[*pPos];
             (*pPos)++;
             return true;
         }
@@ -175,7 +177,7 @@ void RunParameters::getParamsFromUser()
 		std::cout << "Enter hkl file path: ";
 		std::cin.getline(tString, 255, '\n');
 		
-		iFileName.init(tString);
+		iFileName = tString;
 		iFileName.removeOutterQuotes();
     }
     char tReply[10];
@@ -215,24 +217,35 @@ void RunParameters::readParamFile()
             char tCommentRE[] = "(#.+)$";
 			char tSymmetryRE[] = "^[[:space:]]*SYMMETRY[[:space:]]+(([12346/M-]|[[:space:]])+(RHOM)?)[[:space:]]*(#.*)?$";
             filebuf tParamFile;
-            if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
+            if (tParamFile.open(iParamFile.c_str(), std::ios::in) == NULL)
             {
                 throw FileException(errno); //Throw the exception if the files couldn't be opened.
             }
             std::istream tFileStream(&tParamFile);
+			
+			
+//			Regex tSymmetryFSO("^[[:space:]]*SYMMETRY[[:space:]]+(([12346/M-]|[[:space:]])+(RHOM)?)[[:space:]]*(#.*)?$", REG_EXTENDED | REG_ICASE);
+//			Regex tChiralFSO("^[[:space:]]*CHIRAL[[:space:]]+((YES)|(UNKNOWN))[[:space:]]*(#.*)?$", REG_EXTENDED | REG_ICASE);
+//            Regex tOutputFSO("^[[:space:]]*OUTPUT[[:space:]]+\"([^\"]+)\"[[:space:]]*(#.*)?$", REG_EXTENDED | REG_ICASE);
+//            Regex tHKLFSO("^[[:space:]]*HKL[[:space:]]+\"([^\"]+)\"[[:space:]]*(#.*)?$", REG_EXTENDED | REG_ICASE);
+//            Regex tCommentSO("(#.+)$", REG_EXTENDED | REG_ICASE);
+//			Regex tMergeSO("^[[:space:]]*USE_MERGED[[:space:]]+((YES)|(NO))[[:space:]]*(#.*)?$", REG_EXTENDED | REG_ICASE);
+			
 			//Allocate space for all the regular expressions
+			regex_t* tSymmetryFSO = new regex_t;
             regex_t* tChiralFSO = new regex_t;
             regex_t* tOutputFSO = new regex_t;
             regex_t* tHKLFSO = new regex_t;
             regex_t* tCommentSO = new regex_t;
 			regex_t* tMergeSO =  new regex_t;
-			regex_t* tSymmetryFSO = new regex_t;
+			
 			regcomp(tSymmetryFSO, tSymmetryRE, REG_EXTENDED | REG_ICASE);
             regcomp(tChiralFSO, tChiralRE, REG_EXTENDED | REG_ICASE);
             regcomp(tOutputFSO, tOutputRE, REG_EXTENDED | REG_ICASE);
             regcomp(tHKLFSO, tHKLRE, REG_EXTENDED | REG_ICASE);
             regcomp(tCommentSO, tCommentRE, REG_EXTENDED | REG_ICASE);
 			regcomp(tMergeSO, tMergeRE, REG_EXTENDED | REG_ICASE);
+			
             regmatch_t tMatchs[13];
             char tLine[255];
             int tLineNum = 0;
@@ -244,6 +257,7 @@ void RunParameters::readParamFile()
                 tFileStream.getline(tLine, 255);
                 tLineNum ++;
                 //Look for comments
+//				if (tCommentSO.exec(tLine, 13, tMatchs) == 0)
                 if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
                 {
                     tLine[tMatchs[1].rm_so] = '\0';
@@ -276,13 +290,13 @@ void RunParameters::readParamFile()
                 }
                 else if (regexec(tOutputFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
-                    iOutputFile.copy(tTemp);
+					string tTemp(tLine+tMatchs[1].rm_so, tLine+tMatchs[1].rm_eo);
+                    iOutputFile = tTemp.c_str();
                 }
                 else if (regexec(tHKLFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
-                    iFileName.copy(tTemp);
+					string tTemp(tLine+tMatchs[1].rm_so, tLine+tMatchs[1].rm_eo);
+                    iFileName = tTemp.c_str();
                 }
                 else if (iUnitCell.init(tLine))
                 {
@@ -290,10 +304,10 @@ void RunParameters::readParamFile()
                 else
                 {
                     tParamFile.close();
-                    String tMyString;
-                    tMyString.initFormated("Badly formated parameter file at line %d", tLineNum);
-                    throw MyException(kUnknownException, tMyString.getCString());
-                }
+					MyException eException(kUnknownException, "");
+					(ostream&)eException << "Badly formatted parameter file at line " << tLineNum;
+                    throw eException;                
+				}
             }
             if (tUniqueAxis)
             {
@@ -316,10 +330,10 @@ void RunParameters::readParamFile()
 			regfree(tMergeSO);
 			delete tMergeSO;
         }
-        catch(MyException e)
+        catch(MyException& eException)
         {
-            e.addError("Error in reading the parameter file.");
-            throw e;
+            (ostream&)eException << "Error in reading the parameter file.";
+            throw;
         }
     }
 }
