@@ -64,42 +64,76 @@ bool containsOnly(char* pString, char* pChars)
     return tValid;
 }
 
-    Reflection::Reflection(char* pString)
-    {
-        char* tEndPointer;
-        char tempString[10];
-        
-        tHKL = new Matrix<short>(1, 3);
-        if (!containsOnly(pString, " 0123456789.-+\n"))
-        {
-            throw MyException(kBadlyFormatedStringN, kBadlyFormatedString);
-        }
-        strncpy(tempString, pString, 4);
-        tempString[4] = 0;
-        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 0); // H == 0
-        strncpy(tempString, pString+4, 4);
-        tempString[4] = 0;
-        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 1); //K == 1
-        strncpy(tempString, pString+8, 4);
-        tempString[4] = 0;
-        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 2); //L == 2
-        strncpy(tempString, pString+12, 8);
-        tempString[8] = 0;
-        i = (float)strtod(tempString, &tEndPointer);
-        strncpy(tempString, pString+20, 8);
-        tempString[8] = 0;
-        iSE = (float)strtod(tempString, &tEndPointer);
-    }
+Reflection::Reflection(char* pString)
+{
+    char* tEndPointer;
+    char tempString[10];
     
-    Matrix<short>* Reflection::getHKL()
+    tHKL = new Matrix<short>(1, 3);
+    if (!containsOnly(pString, " 0123456789.-+\n"))
     {
-        return tHKL;
+        throw MyException(kBadlyFormatedStringN, kBadlyFormatedString);
     }
-    
-    Reflection::~Reflection()
-    {
-        delete tHKL;
-    }
+    strncpy(tempString, pString, 4);
+    tempString[4] = 0;
+    tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 0); // H == 0
+    strncpy(tempString, pString+4, 4);
+    tempString[4] = 0;
+    tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 1); //K == 1
+    strncpy(tempString, pString+8, 4);
+    tempString[4] = 0;
+    tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 2); //L == 2
+    strncpy(tempString, pString+12, 8);
+    tempString[8] = 0;
+    i = (float)strtod(tempString, &tEndPointer);
+    strncpy(tempString, pString+20, 8);
+    tempString[8] = 0;
+    iSE = (float)strtod(tempString, &tEndPointer);
+}
+
+Reflection::Reflection(const Reflection& pReflection)
+{
+    tHKL = new Matrix<short>(*pReflection.tHKL);
+    i = pReflection.i;
+    iSE = pReflection.iSE;
+}
+
+Reflection::Reflection()
+{
+    tHKL = new Matrix<short>();
+    i = 0;
+    iSE = 0;
+}
+
+Reflection& Reflection::operator=(const Reflection& pReflection)
+{
+    delete tHKL;
+    tHKL = new Matrix<short>(*pReflection.tHKL);
+    i = pReflection.i;
+    iSE = pReflection.iSE;
+    return *this;
+}
+
+Matrix<short>* Reflection::getHKL() const
+{
+    return tHKL;
+}
+
+void Reflection::setHKL(const Matrix<short> pMatrix)
+{
+   (*tHKL) = pMatrix; 
+}
+
+Reflection::~Reflection()
+{
+    delete tHKL;
+}
+
+std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection)
+{
+    pStream << "[" << pReflection.tHKL->getValue(0) << ", " << pReflection.tHKL->getValue(1) << ", " << pReflection.tHKL->getValue(2) << "] ";
+    return pStream << pReflection.i << ", " << pReflection.iSE;
+}
 
 long fsize(char* pPath)
 {
@@ -179,12 +213,12 @@ void addReflection(CenteringType* pInfo, float pIntensity, int pSum1, int pSum2,
     }
 }
 
-Reflection* HKLData::getReflection(int pIndex)
+Reflection* HKLData::getReflection(const int pIndex) const
 {
     return iReflectionList->get(pIndex);
 }
 
-int HKLData::numberOfReflections()
+int HKLData::numberOfReflections() const
 {
     return iReflectionList->length();
 }
