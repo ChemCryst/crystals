@@ -556,6 +556,8 @@ c works out the figure of merit
       real mdisag(3,30),fom,bad(3), d(30,5), dcopy(30),q(15), dmin, d1
       integer i,bc, i1, i2, i3, i1min, i2min, i3min
       integer jp(1)
+\XIOBUF
+\XUNITS
 
 
       do i=1,15
@@ -563,6 +565,16 @@ c works out the figure of merit
       end do
       fom=0
       bc=0
+
+c      bad(1)=  0.5
+c      bad(2)=  0.5
+c      bad(3)=  0.5
+c      CALL XMLTMM(GS,BAD,TEMP,3,3,1)
+c      CALL VPROD(BAD,TEMP,D1)
+c      D1 = SQRT(D1)
+c      WRITE(CMON,'(A,G15.8)')'Rotax high dist = ',D1
+c      CALL XPRVDU(NCVDU,1,0)
+
       do i=1,30
         dmin=100.
         do i1=-1,1
@@ -686,7 +698,7 @@ c prints the results to rotax.out
          write(NCWU,7) (disag(j,i),j=1,3),
      1 (d(i,j),j=2,4),abs(d(i,1)),d(i,5),' Omitted from fom calculation'
         endif
-        BINMAX = MAX(BINMAX,ABS(D(I,1))**2)
+        BINMAX = MAX(BINMAX,ABS(D(I,1)))
       enddo
 
       IF ( ipunch .ge. 1 ) then
@@ -696,7 +708,7 @@ c prints the results to rotax.out
         END DO
 
         DO I = 1,30
-          N = 1 + (12.0 * abs(d(i,1)**2) / BINMAX)
+          N = 1 + (12.0 * abs(d(i,1)) / BINMAX)
           N = MAX(1,N)
           N = MIN(12,N)
           if (d(i,1)>0) then
@@ -705,18 +717,27 @@ c prints the results to rotax.out
              BINREJ(N) = BINREJ(N) + 1
           end if
         END DO
-        IF ( BINMAX .GE. 1.0 ) THEN
-         write(NCPU,11)BINMAX*1000,(BININC(I),BINREJ(I),I=1,12)
-        ELSE IF ( BINMAX .GE. 0.1 ) THEN
-         write(NCPU,10)BINMAX*1000,(BININC(I),BINREJ(I),I=1,12)
+
+        BINMAX = BINMAX * 1000.0
+
+        IF ( BINMAX .GE. 10000.0 ) THEN
+         write(NCPU,13)BINMAX,(BININC(I),BINREJ(I),I=1,12)
+        ELSE IF ( BINMAX .GE. 1000.0 ) THEN
+         write(NCPU,12)BINMAX,(BININC(I),BINREJ(I),I=1,12)
+        ELSE IF ( BINMAX .GE. 100.0 ) THEN
+         write(NCPU,11)BINMAX,(BININC(I),BINREJ(I),I=1,12)
+        ELSE IF ( BINMAX .GE. 10.0 ) THEN
+         write(NCPU,10)BINMAX,(BININC(I),BINREJ(I),I=1,12)
         ELSE
-         write(NCPU,9)BINMAX*1000,(BININC(I),BINREJ(I),I=1,12)
+         write(NCPU,9)BINMAX,(BININC(I),BINREJ(I),I=1,12)
         END IF
       END IF
 
 9     FORMAT(F6.4,24I3)
 10    FORMAT(F6.3,24I3)
 11    FORMAT(F6.2,24I3)
+12    FORMAT(F6.1,24I3)
+13    FORMAT(F6.0,24I3)
 
       write(NCWU,8)
 8     FORMAT('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
