@@ -178,14 +178,6 @@ public:
         return iLaueGroup;
     }
     
-    void releaseMReflectionMem()	//This release any of the reflections sored my the MergedData object if there are any to release.
-    {
-        if (iMergedData != NULL)
-        {
-            iMergedData->releaseReflections();
-        }
-    }
-    
     void buildMergedData(const HKLData& pHKLs, const RunParameters& pRunPara)
     {        
         const static short kMin[] = {SHRT_MIN, SHRT_MIN, SHRT_MIN}; 
@@ -416,12 +408,10 @@ void LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const 
         if ((*iGroups)[i]->unitCellGuessRating(pRunParam) < kGuessThreshHold)
         {
             (*iGroups)[i]->buildMergedData(pHKLs, pRunParam);
-            if (pThrowRefl)
-            {
-                (*iGroups)[i]->releaseMReflectionMem();
-            }
+            (*iGroups)[i]->getRFactor();
         }
     }
+    MergedData::releaseReflections();
 }
 
 LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
@@ -473,11 +463,6 @@ void LaueGroups::mergeSystemGroup(const HKLData& pHKLData, const SystemRef pSyst
     (*iGroups)[pSystemRef+pGroupID]->buildMergedData(pHKLData, pRunPara);
 }
 
-void LaueGroups::releaseMemoryFor(const SystemRef pSystemRef, const unsigned short pGroupID)
-{
-    (*iGroups)[pSystemRef+pGroupID]->releaseMReflectionMem();
-}
-
 std::ostream& LaueGroups::output(std::ostream& pStream)
 {
     pStream.width(15);
@@ -506,55 +491,60 @@ float sumdiff(Array<float>& pValues, float pMean)
     return tTotal;
 }
 
-MergedData::MergedData(const size_t pNumRefl):iNumRefl(pNumRefl), iUpto(0), iReflections(NULL), iRFactor(-1)
+static multiset<Reflection*, lsreflection>* gSortedReflections = NULL;
+static size_t gNumRefl = 0;
+static Reflection* gReflections = NULL;
+
+MergedData::MergedData(const size_t pNumRefl):iUpto(0), iRFactor(-1)
 {
-    iSortedReflections = new multiset<Reflection*, lsreflection>();
+    if (gNumRefl < pNumRefl)
+    {
+        gNumRefl = pNumRefl;
+        if (gReflections != NULL)
+        {
+            delete[] gReflections;
+            gReflections = NULL;
+        }
+    }
+    if (gReflections == NULL)
+    {
+        cout << "!!!!!!!!!!!Allocated memory " << gNumRefl << " !!!!!!\n";
+        gReflections = new Reflection[gNumRefl];
+    }
+    if (gSortedReflections == NULL)
+    {
+        gSortedReflections = new multiset<Reflection*, lsreflection>();
+    }
+    gSortedReflections->clear();
 }
 
 MergedData::~MergedData()
 {
-    if (iReflections != NULL)
-    {
-        for (size_t i = 0; i < iUpto; i++)
-        {
-            delete iReflections[iUpto];
-        }
-        delete[] iReflections;
-        iReflections = NULL;
-    }
-    delete iSortedReflections;
-    iSortedReflections = NULL;
 }
 
 void MergedData::add(const Matrix<short>& pHKL, const Reflection& pRefl)
 {
-    if (iReflections == NULL)
+   /* if (iReflections == NULL)
     {
         iReflections = new Reflection*[iNumRefl];
         iRFactor = -1;
-    }
-    iReflections[iUpto] = new Reflection();
-    iReflections[iUpto]->setHKL(pHKL);
-    iReflections[iUpto]->i = pRefl.i;
-    iReflections[iUpto]->iSE = pRefl.iSE;
-    iSortedReflections->insert(iReflections[iUpto++]);
+    }*/
+//    iReflections[iUpto] = new Reflection();
+    gReflections[iUpto].setHKL(pHKL);
+    gReflections[iUpto].i = pRefl.i;
+    gReflections[iUpto].iSE = pRefl.iSE;
+    gSortedReflections->insert(&(gReflections[iUpto++]));
 }
 
 void MergedData::releaseReflections()
 {
-    if (iRFactor == -1)
+    if (gReflections != NULL)
     {
-        calculateRFactor();
-    }
-    if (iReflections != NULL)
-    {
-        for (size_t i = 0; i < iUpto; i++)
-        {
-            delete (iReflections[i]);
-        }
-        delete[] iReflections;
-        iReflections = NULL;
-        iSortedReflections->clear();
+        delete[] gReflections;
+        gReflections = NULL;
+        gSortedReflections->clear();
+        delete gSortedReflections;
+        gSortedReflections = NULL;
     }
 }
 
@@ -562,16 +552,14 @@ float MergedData::calculateRFactor()
 {
 	static Matrix<short>* tCurHKL;
         static Array<float> tValues(23); //I don't think that this should need to be any greater then 23 elements long.
-        tCurHKL = (*(iSortedReflections->begin()))->tHKL;
-        tValues.add((*iSortedReflections->begin())->i);
-		multiset<Reflection*, lsreflection>::iterator tIter = iSortedReflections->begin();
-
-			//set<Reflection*, lsreflection, std::allocator<Reflection *>, false>::iterator tIter = iSortedReflections->begin(); 
+        tCurHKL = (*(gSortedReflections->begin()))->tHKL;
+        tValues.add((*gSortedReflections->begin())->i);
+        multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin();
         float tSumSum = 0;
         float tMeanDiffSum = 0;
         float tSum;
         
-        while (tIter != iSortedReflections->end()) //Run through all the reflections
+        while (tIter != gSortedReflections->end()) //Run through all the reflections
         {
             if (!(*((*tIter)->tHKL) == (*tCurHKL)))//If the HKL value has changed then 
 	    {
