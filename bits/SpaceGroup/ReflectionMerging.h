@@ -9,40 +9,33 @@
 
 #include "HKLData.h"
 #include <set>
+#include <vector>
+
+using namespace std;
 
 struct lsreflection
 {
-    bool operator()(const Reflection& pReflection1, const Reflection& pReflection2) const
+    bool operator()(const Reflection* pReflection1, const Reflection* pReflection2) const
     {
-        Matrix<short>* tHKL1 = pReflection1.getHKL();
-        Matrix<short>* tHKL2 = pReflection2.getHKL();
-        if (tHKL1->getValue(0) < tHKL2->getValue(0))
-            return true;
-        else if (tHKL1->getValue(0) > tHKL2->getValue(0))
-            return false;
-        else
+        Matrix<short>* tHKL1 = pReflection1->getHKL();
+        Matrix<short>* tHKL2 = pReflection2->getHKL();
+        int tValue = tHKL1->bytecmp(*tHKL2);
+        if (tValue > 0)
         {
-            if (tHKL1->getValue(1) < tHKL2->getValue(1))
-                return true;
-            else if (tHKL1->getValue(1) > tHKL2->getValue(1))
-                return false;
-            else
-            {
-                if (tHKL1->getValue(2) < tHKL2->getValue(2))
-                    return true;
-                else
-                    return false;
-            }
+            return true;
         }
+        return false;
     }
 };
 
 class MergedData
 {
     private:
-        multiset<Reflection, lsreflection>* tSortedReflections;
-        Reflection equivalentise(const Reflection& pReflection, const Matrix<float>* pMatrice[], const int pNumOfMat);
+        void equivalentise(const Reflection& pReflection, vector<Matrix<short>*>& pMatrice, Reflection* pResult);
+        float iRFactor;
     public:
-        MergedData(const HKLData& pData, const Matrix<float>* pMatrice[], const int pNumOfMat);
-        ~MergedData();
+        MergedData(const HKLData& pData, vector<Matrix<short>*>& pMatrice);
+        std::ostream& output(std::ostream& pStream);
 };
+
+std::ostream& operator<<(std::ostream& pStream, MergedData& tData);
