@@ -49,7 +49,7 @@
 %   ELSE IF ( WAVE .LT. 0.7107 ) .OR. ( WAVE .GT. 0.7108 ) THEN
 ^^CO   SET OTH STATE=ON SET MOL STATE=OFF SET WAVEL DISABLED=NO
 %      IF ( .NOT. EDLIST3 ) THEN
-%       EVALUATE QTITLE = 'Warning'
+%       EVALUATE QTITLE = 'Warning - non-standard wavelength'
 %       EVALUATE QLINE1 = 'Any anomalous scattering values that you have'
 %       EVALUATE QLINE2 = 'already entered will be overwritten. Continue?'
 %       EVALUATE BUTTOK = '&Yes'
@@ -105,7 +105,7 @@
 %       END IF
 %       COPY 'NEXT'
 %   END LOOP
-%   TRANSFER '^^WI SET LE TEXT="' // CTEST // '"' TO DISPLAY
+%   TRANSFER '^^CO SET LE TEXT="' // CTEST // '"' TO DISPLAY
 %   IF ECOUNT .EQ. 0 THEN
 ^^CO   SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
 %   END IF
