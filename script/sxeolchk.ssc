@@ -1,0 +1,21 @@
+%SCRIPT SXEOLCHK
+%%
+%% Checks for EOL (=) in Shelx record and if it finds one, extracts
+%% the next record.
+% VARIABLE LOGICAL SXEOL
+% EVALUATE SXEOL = FALSE
+%%
+% GET NOPROMPT NOREMOVE KEYWORD ' ' 'NOTHINGATALL'
+% IF ( CVALUE .EQ. 'NOTHINGATALL' ) THEN
+%   EVALUATE SXEOL = TRUE
+{I * Found end of atom card.
+% ELSE IF ( CVALUE .EQ. '=' ) THEN
+{I * Found SHELX continuation character (=). Getting next line.
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+% END IF
+%END SCRIPT
