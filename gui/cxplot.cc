@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2002/03/07 10:46:45  DJWgroup
+//   SH: Change to fix reversed y axes; realign text labels.
+//
 //   Revision 1.18  2002/02/21 15:23:13  DJWgroup
 //   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -205,8 +208,6 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
 {
      CcPoint      newpoint;
 
-//	 if(m_FlippedPlot) y = 2400 - y;
-
 #ifdef __CR_WIN__
 //     CRect       swindowext;
 //     GetClientRect(&swindowext);
@@ -240,8 +241,6 @@ CcPoint CxPlot::LogicalToDevice(int x, int y)
 
 	newpoint.x = (int)(2400*x / (windowext.mRight - windowext.mLeft));
 	newpoint.y = (int)(2400*y / (windowext.mBottom - windowext.mTop));
-
-//	if(m_FlippedPlot) newpoint.y = 2400-newpoint.y;
 
 	return newpoint;
 }
@@ -1003,6 +1002,9 @@ void CxPlot::PrintPicture()
 void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
 {
     CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+	
+	if(m_FlippedPlot) point.y = 2400-point.y;
+
     ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
     ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,wpoint.x,wpoint.y);
 }
