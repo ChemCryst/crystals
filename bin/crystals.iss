@@ -1,54 +1,39 @@
 [Dirs]
-Name: {app}\Example
-Name: {app}\Nket
 Name: {app}\Manual
 Name: {app}\Script
 Name: {app}\user
 Name: {app}\user\Script
-Name: {app}\demo\demo
-Name: {app}\demo\cyclo
-Name: {app}\demo\ylid
-Name: {app}\demo\disorder
-Name: {app}\demo\kpenv
-Name: {app}\demo\peach
-Name: {app}\demo\editor
-Name: {app}\demo\twin
-Name: {app}\demo\quick
-Name: {app}\demo\keen
-Name: {app}\demo\mogul
+Name: {app}\demo
 
-[Messages]
-SelectDirLabel=Select a folder for [name] to be installed in.
 
 [Setup]
-
-MinVersion=4.0,4.0
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 12.40 (July 2004)
-AppVersion=12.40
+AppVerName=CRYSTALS 12.80 (Jan 2005)
+AppVersion=12.80
+OutputBaseFilename=crystals-b1280-jan05-setup
+
 AppName=CRYSTALS
+OutputDir=..\installer
 AppCopyright=Copyright ¸ Chemical Crystallography Laboratory, Oxford
 AppPublisher=Chemical Crystallography Laboratory, University of Oxford
 AppPublisherURL=http://www.xtl.ox.ac.uk/
-Bits=32
 BackSolid=0
 ChangesAssociations=Yes
+
+SolidCompression=yes
 Compression=bzip
-DisableDirExistsWarning=0
+
 DisableDirPage=0
 DisableStartupPrompt=yes
 CreateAppDir=1
 DisableProgramGroupPage=yes
-OverwriteUninstRegEntries=1
 Uninstallable=1
 AllowNoIcons=0
-AlwaysRestart=0
 DefaultDirName={sd}\Wincrys
 DefaultGroupName=Crystals
 ;These files display during the installation:
-MessagesFile=compiler:default.isl
 DiskSpanning=0
 WizardImageFile=..\bin\instimage.bmp
 LicenseFile=..\bin\licence.txt
@@ -58,24 +43,8 @@ InfoAfterFile=..\bin\postinst.txt
 Source: ..\build\*.*; DestDir: {app}\;                      
 Source: ..\build\script\*.*; DestDir: {app}\script\;        
 Source: ..\build\mce\*.*; DestDir: {app}\mce\;              
-Source: ..\build\nket\*.*; DestDir: {app}\nket\;            
-Source: ..\build\example\*.*; DestDir: {app}\example\;      
-Source: ..\build\manual\*.*; DestDir: {app}\manual\;        
-Source: ..\build\demo\cyclo\*.*; DestDir: {app}\demo\cyclo\;
-Source: ..\build\demo\demo\*.*; DestDir: {app}\demo\demo\;  
-Source: ..\build\demo\editor\*.*; DestDir: {app}\demo\editor\;
-Source: ..\build\demo\keen\*.*; DestDir: {app}\demo\keen\;  
-Source: ..\build\demo\peach\*.*; DestDir: {app}\demo\peach\;
-Source: ..\build\demo\quick\*.*; DestDir: {app}\demo\quick\;
-Source: ..\build\demo\shape\*.*; DestDir: {app}\demo\shape\;
-Source: ..\build\demo\shape2\*.*; DestDir: {app}\demo\shape2\;
-Source: ..\build\demo\twin\*.*; DestDir: {app}\demo\twin\;
-Source: ..\build\demo\twin2\*.*; DestDir: {app}\demo\twin2\;
-Source: ..\build\demo\twin3\*.*; DestDir: {app}\demo\twin3\;
-Source: ..\build\demo\ylid\*.*; DestDir: {app}\demo\ylid\;
-Source: ..\build\demo\disorder\*.*; DestDir: {app}\demo\disorder\;
-Source: ..\build\demo\kpenv\*.*; DestDir: {app}\demo\kpenv\;
-Source: ..\build\demo\mogul\*.*; DestDir: {app}\demo\mogul\;
+Source: ..\build\manual\*.*; DestDir: {app}\manual\;
+Source: ..\build\demo\*; DestDir: {app}\demo\; Flags: recursesubdirs;
 
 [Icons]
 Name: {userdesktop}\Crystals; Filename: {app}\crysload.exe; WorkingDir: {app}; IconFilename: {app}\crystals.exe; IconIndex: 0
