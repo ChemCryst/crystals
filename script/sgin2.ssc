@@ -1,0 +1,113 @@
+%SCRIPT SGIN2
+% VARIABLE INTEGER NRES NTEST NREG NTEST NGLEN NSG 
+% VARIABLE INTEGER CURSG CSG SGOFF CTEST CREG FTEST FREG
+% VARIABLE REAL SCORE
+% VARIABLE CHARACTER CLINE
+%%
+^^CO SET SGCLASS REMOVE 0 SET SGCOND REMOVE 0
+%%      Skip to current space group. Remember where it is.
+% EXTRACT REWIND
+%% '6' accounts for TOTAL, AVINT, NREGIONS, NTESTS, DATA and RESULTS lines
+% EVALUATE CSG = 0
+% EVALUATE SGOFF = 6 + NREG + NTEST + ( NREG * NTEST * NGLEN )
+% LOOP ( SGOFF ) TIMES
+%   EXTRACT NEXT
+% END LOOP
+% LOOP NRES TIMES
+%% The SCORE line
+%   EXTRACT NEXT
+%% The Tests used for each region
+%   LOOP ( NREG + 1 ) TIMES
+%     EXTRACT NEXT
+%   END LOOP
+%% The spacegroups line
+%   EXTRACT NEXT
+%   EXTRACT TRANSFER INPUT
+%   GET SILENT NOSTORE KEYWORD 'Space '
+%   GET SILENT NOSTORE INTEGER 'N SpGr'
+%   EVALUATE NSG = VALUE
+%   EVALUATE CSG = CSG + NSG
+%   IF CSG .GE. CURSG THEN
+%     EVALUATE LOOPEND = LOOPCOUNTER
+%   ELSE
+%     LOOP NSG TIMES
+%       EXTRACT NEXT
+%     END LOOP
+%     EVALUATE SGOFF = SGOFF + NREG + NSG + 3
+%   END IF
+% END LOOP
+%%Found SG place.
+% EVALUATE FREG = 0
+% LOOP NREG TIMES
+%   EVALUATE CREG = LOOPCOUNTER
+%   EXTRACT REWIND
+%   LOOP SGOFF + CREG + 2 TIMES
+%     EXTRACT NEXT
+%   END LOOP
+%%Back there.
+%   EXTRACT TRANSFER INPUT
+%   GET  NOSTORE TEXT ' ' '-'
+%   EVALUATE CLINE = CVALUE
+%   IF CLINE STARTSWITH '-' THEN
+%%Changing CLINE.
+%     EVALUATE CLINE = '-1'
+%   END IF
+%   EVALUATE FTEST = 0
+%%Getting line of regions.
+%   LOOP       40 TIMES
+%     TRANSFER CLINE TO INPUT
+%     GET NOSTORE NOPROMPT INTEGER ' ' '-1'
+%     EVALUATE CTEST = VALUE
+%     IF ( CTEST .LT. 0 ) THEN
+%%No more tests for this region.
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%     ELSE
+%%Getting rest of line for safekeeping.
+%       GET NOPROMPT NOSTORE TEXT ' ' '-1'
+%       EVALUATE CLINE = CVALUE
+%       EXTRACT REWIND
+%       IF ( FTEST .EQ. 0 ) THEN
+%%First time this region, getting info.
+%         EVALUATE FTEST = 1
+%         LOOP ( 3 + CREG ) TIMES
+%           EXTRACT NEXT
+%         END LOOP
+%         EXTRACT TRANSFER INPUT
+%         LOOP 10 TIMES
+%           GET NOSTORE INTEGER ' ' '0'
+%         END LOOP
+%         CLEAR
+%         INSERT '^^CO SET SGCLASS ADDTOLIST "'
+%         GET TEXT ' ' '-'
+%         INSERT '" NULL'
+%         OUTPUT
+%         EXTRACT REWIND
+%       END IF
+%       IF ( FREG .EQ. 0 ) THEN
+%         EVALUATE FREG = 1
+%%Getting tests for first region.
+%         LOOP ( 5 + NREG + CTEST ) TIMES
+%           EXTRACT NEXT
+%         END LOOP
+%         EXTRACT TRANSFER INPUT
+%         LOOP 5 TIMES
+%           GET NOSTORE INTEGER ' ' '0'
+%         END LOOP
+%         CLEAR
+%         INSERT '^^CO SET SGCOND ADDTOLIST "'
+%         GET TEXT ' ' '-'
+%         INSERT '" NULL'
+%         OUTPUT
+%         EXTRACT REWIND
+%       END IF
+%     END IF
+%%End of test line.
+%   END LOOP
+%%End of regions. The end.
+% END LOOP
+% COPY '#SGPLOT'
+% COPY 'OUTPUT PLOT=YES'
+% COPY 'CLASS 1 0 0 0 0 0 0 0 1'
+% COPY 'CONDITION 1 0 1 2'
+% COPY 'END'
+%END SCRIPT
