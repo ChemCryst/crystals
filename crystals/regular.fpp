@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.26  2004/02/13 12:15:35  rich
+c Re-written closed set symmetry testing for Anna's project.
+c
 c Revision 1.25  2004/02/11 09:04:14  rich
 c Output of stuff for anna. (Closed set testing).
 c
@@ -4152,43 +4155,59 @@ CODE FOR CMPMAT(A,B,N)
       FUNCTION CMPMAT(A,B,N)
       DIMENSION A(N)
       DIMENSION B(N)
-C Compare how close two matrices are. For now use cross-correlation:
+
+
+CC Compare how close two matrices are. For now use cross-correlation:
+CC
+CC r = SUMi [(Ai-<A>)(Bi-<B>)] / sqrt(SUMi[(Ai-<A>)^2]*SUMi[(Bi-<B>)^2])
 C
-C r = SUMi [(Ai-<A>)(Bi-<B>)] / sqrt(SUMi[(Ai-<A>)^2]*SUMi[(Bi-<B>)^2])
+C FEB04: Change this to a simple RMS deviation type calculation, 
+C subtract answer from 1 to get same sense of answer.
 C
 C 1 = perfect match, less for non-perfect matches.
 
-
 C Get averages
-      AVA = 0.0
-      AVB = 0.0
+c      AVA = 0.0
+c      AVB = 0.0
+c      DO I = 1,N
+c        AVA = AVA + A(I)
+c        AVB = AVB + B(I)
+c      END DO
+c      AVA = AVA / N
+c      AVB = AVB / N
+c
+cC Do sum of prod of diffs
+c      SUMAB = 0.0
+cC and sum of diffs squared
+c      SUMAA = 0.0
+c      SUMBB = 0.0
+c
+c      DO I = 1,N
+c        SUMAB = SUMAB + (A(I)-AVA) * (B(I)-AVB)
+c        SUMAA = SUMAA + (A(I)-AVA)**2
+c        SUMBB = SUMBB + (B(I)-AVB)**2
+c      END DO
+c
+c      IF ( ABS(SUMAB) + ABS(SUMAA) + ABS(SUMBB) .LT. 0.00001 ) THEN
+cC Perfect match. Answer tends to 1 as these numbers all tend to zero.
+c        CMPMAT = 1.0
+c      ELSE
+cC Do the maths, but be mindful of divide by zero.
+c        DENOM = MAX(0.00001,SQRT(SUMAA*SUMBB)) ! Ensure non-zero denominator
+c        CMPMAT = SUMAB/DENOM
+c      END IF
+
+
+C R = 1 - SQRT( { SUMi ( [Ai-Bi]**2 ) } / N )
+
+      DEVS = 0.0
+
       DO I = 1,N
-        AVA = AVA + A(I)
-        AVB = AVB + B(I)
-      END DO
-      AVA = AVA / N
-      AVB = AVB / N
-
-C Do sum of prod of diffs
-      SUMAB = 0.0
-C and sum of diffs squared
-      SUMAA = 0.0
-      SUMBB = 0.0
-
-      DO I = 1,N
-        SUMAB = SUMAB + (A(I)-AVA) * (B(I)-AVB)
-        SUMAA = SUMAA + (A(I)-AVA)**2
-        SUMBB = SUMBB + (B(I)-AVB)**2
+        DEVS = DEVS + ( A(I)-B(I) )**2
       END DO
 
-      IF ( ABS(SUMAB) + ABS(SUMAA) + ABS(SUMBB) .LT. 0.00001 ) THEN
-C Perfect match. Answer tends to 1 as these numbers all tend to zero.
-        CMPMAT = 1.0
-      ELSE
-C Do the maths, but be mindful of divide by zero.
-        DENOM = MAX(0.00001,SQRT(SUMAA*SUMBB)) ! Ensure non-zero denominator
-        CMPMAT = SUMAB/DENOM
-      END IF
+      CMPMAT = 1.0 - SQRT ( ABS ( DEVS / FLOAT(N) ) )
+
       RETURN
       END
 
