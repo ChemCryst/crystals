@@ -201,17 +201,28 @@ using namespace std;
   list<char*> stringlist;
 
 	DEFINE_EVENT_TYPE(ccEVT_COMMAND_ADDED)
+#define wxID_ANY -1
 
+#if wxCHECK_VERSION(2, 5, 3)
 #define EVT_CC_COMMAND_ADDED(id, fn) \
     DECLARE_EVENT_TABLE_ENTRY( \
         ccEVT_COMMAND_ADDED, id, wxID_ANY, \
         (wxObjectEventFunction)(wxEventFunction) wxStaticCastEvent( wxCommandEventFunction, &fn ), \
         (wxObject *) NULL \
     ),
+#else
+#define wxID_ANY -1
+#define EVT_CC_COMMAND_ADDED(id, fn) \
+    DECLARE_EVENT_TABLE_ENTRY( \
+        ccEVT_COMMAND_ADDED, id, -1, \
+        (wxObjectEventFunction)(wxEventFunction) (wxCommandEventFunction)&fn, \
+        (wxObject *) NULL \
+    ),
+#endif
 	
   // CCrystalsApp initialization
 //  EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
-  BEGIN_EVENT_TABLE( CCrystalsApp, wxApp ) 
+  BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
 	  EVT_CC_COMMAND_ADDED (wxID_ANY, CCrystalsApp::OnCrystCommand )
   END_EVENT_TABLE()
 
