@@ -1,6 +1,7 @@
 %SCRIPT MOGULRES
 %     VARIABLE REAL IDEAL ACTUAL DEV Z MINSAM MAXSAM RCHK EFOM
 %     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ISER NINDEX
+%     VARIABLE INTEGER DPVCOUNT
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
 %     VARIABLE CHARACTER CELE CCHK CAT
 %     COPY '#RELEASE PUNCH bfile.pch'
@@ -22,6 +23,7 @@
 %%
 {I About to get all the FOM's
 %     EXTRACT REWIND
+%     EVALUATE DPVCOUNT = 0
 %     COPY '#GENERALEDIT 5'
 %     COPY 'LOCATE RECORDTYPE=101'
 %     COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
@@ -30,8 +32,18 @@ Top of outer loop. Getting a result.
 %       ON EDITERROR REPEAT
 %       ON ERROR TERMINATE
 %       ON END TERMINATE
+%       IF ( DPVCOUNT .GT. 5000 ) THEN
+%         COPY 'WRITE'
+%         COPY 'END'
+{S Directive count limitation: Starting a new command.
+%         COPY '#GENERALEDIT 5'
+%         COPY 'LOCATE RECORDTYPE=101'
+%         COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%         EVALUATE DPVCOUNT = 0
+%       END IF
 %%
 %       COPY 'TOP'
+%       EVALUATE DPVCOUNT = DPVCOUNT + 1
 %%
 %%  Get the atom names
 %%
@@ -113,8 +125,13 @@ Top of outer loop. Getting a result.
 %%
 %       IF ( DEV .LT. 0.000001 ) THEN
 %         EVALUATE DEV = 0.000001
+%         EVALUATE Z = 1.0
+%       ELSE
+%         EVALUATE Z = ( IDEAL - ACTUAL ) / DEV
 %       END IF
-%       EVALUATE Z = ( IDEAL - ACTUAL ) / DEV
+%       IF NUMOBS .LT. 4 THEN
+%         EVALUATE Z = 1.0
+%       END IF
 %%
 %       IF Z .LT. 0.0 THEN
 %         EVALUATE Z = - Z
@@ -142,10 +159,12 @@ About to find involved atoms
 %         EVALUATE NINDEX = 0
 %         ON EDITERROR TERMINATE
 %         COPY 'TOP'
+%         EVALUATE DPVCOUNT = DPVCOUNT + 1
 %         LOOP 
 %           ON EDITERROR TERMINATE
 %           COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
 %           COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%           EVALUATE DPVCOUNT = DPVCOUNT + 2
 %           IF ( ( CELE .EQ. CCHK ) .AND. -
                  ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
 %             COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
@@ -153,9 +172,11 @@ About to find involved atoms
 %             COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
 %             EVALUATE LOOPEND = LOOPCOUNTER
 %             EVALUATE NINDEX = LOOPCOUNTER
+%             EVALUATE DPVCOUNT = DPVCOUNT + 2
 %  TRANSFER CAT // CHARACTER ( EFOM ) TO DISPLAY
 %           END IF
 %           COPY 'NEXT'
+%           EVALUATE DPVCOUNT = DPVCOUNT + 1
 %         END LOOP
 %         IF ( NINDEX .EQ. 0 ) THEN
 %           TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
@@ -165,5 +186,6 @@ About to find involved atoms
 %     COPY 'WRITE'
 %     COPY 'END'
 End of script.
+%     COPY '#SCRIPT XFOMAN'
 %END SCRIPT
                                   

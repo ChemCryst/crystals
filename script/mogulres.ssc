@@ -1,7 +1,12 @@
 %SCRIPT MOGULRES
+%     VARIABLE REAL ZMAX ZSUM ZNUM ZTOT ZAVE
 %     VARIABLE REAL IDEAL ACTUAL DEV Z
-%     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4
+%     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ZMISS
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
+%     EVALUATE ZMAX = 0.0
+%     EVALUATE ZSUM = 0.0
+%     EVALUATE ZTOT = 0.0
+%     EVALUATE ZNUM = 0.0
 %     COPY '#RELEASE PUNCH bfile.pch'
 %     COPY '#CLOSE SCPDATA'
 %     COPY '#OPEN SCPDATA mogul.stat'
@@ -37,6 +42,7 @@
 %       EXTRACT NEXT
 %       EXTRACT TRANSFER INPUT
 %       GET SILENT NOSTORE INTEGER ' '
+%       EVALUATE NUMOBS = VALUE
 %       GET SILENT NOSTORE REAL ' '
 %       EVALUATE IDEAL = VALUE
 %       GET SILENT NOSTORE REAL ' '
@@ -54,16 +60,34 @@
 %       END IF
 %       INSERT !'!
 %       OUTPUT
+%       EVALUATE ZTOT = ZTOT + 1.0
+%       IF NUMOBS .GE. 4 THEN
+%%
+%          IF Z .GT. 0.0 THEN
+%            EVALUATE ZSUM = ZSUM + Z
+%          ELSE
+%            EVALUATE ZSUM = ZSUM - Z
+%          END IF
+%%
+%          EVALUATE ZNUM = ZNUM + 1.0
+%%
+%          IF Z .GT. ZMAX THEN
+%             EVALUATE ZMAX = Z
+%          END IF
+%          IF ( - Z ) .GT. ZMAX THEN
+%             EVALUATE ZMAX = - Z
+%          END IF
+%%
+%       END IF
 %     END LOOP
 ^^WI              'NULL'
 ^^WI     }
 ^^WI     @ 2,3 GRID GB NROWS=5 NCOLS=1 {
-^^WI        @ 1,1 GRID GBA NROWS=9 NCOLS=3 {
+^^WI        @ 1,1 GRID GBA NROWS=14 NCOLS=3 {
 ^^WI           @ 1,1 STATIC RT_T3 'Fragment:'
 ^^WI           @ 1,3 STATIC MR_TYPE 'none yet'
 ^^WI           @ 2,1 STATIC RT_T3 'Actual:'
 ^^WI           @ 2,3 STATIC MR_ACTU '0000.0000'
-
 ^^WI           @ 4,1 STATIC RT_T3 'Num obs:'
 ^^WI           @ 4,3 STATIC MR_NUMO '000000'
 ^^WI           @ 5,1 STATIC RT_T3 'Median:'
@@ -76,6 +100,14 @@
 ^^WI           @ 8,3 STATIC MR_SIGM '0000.0000'
 ^^WI           @ 9,1 STATIC RT_T3 'Z-score:'
 ^^WI           @ 9,3 STATIC MR_ZSCO '0000.0000'
+^^WI           @ 11,1 STATIC RT_T3 'Mean Z:'
+^^WI           @ 11,3 STATIC MR_ZAVE '0000.0000'
+^^WI           @ 12,1 STATIC RT_T3 'Max Z:'
+^^WI           @ 12,3 STATIC MR_ZMAX '0000.0000'
+^^WI           @ 13,1 STATIC RT_T3 '< 4 obs:'
+^^WI           @ 13,3 STATIC MR_ZMIS '0000.0000'
+^^WI           @ 14,1 STATIC RT_T3 'N res:'
+^^WI           @ 14,3 STATIC MR_ZTOT '0000.0000'
 ^^WI        }
 ^^WI     }
 ^^WI  }
@@ -88,6 +120,17 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
+%     EVALUATE ZMISS = INTEGER ( ZTOT - ZNUM )
+%     IF ZNUM .LE. 0.1 THEN
+%      EVALUATE ZNUM = 1.0
+%     END IF
+%     EVALUATE ZAVE = ZSUM / ZNUM
+%%
+%     TRANSFER '^^CO SET MR_ZMIS TEXT ' // CHARACTER ( ZMISS ) TO DISPLAY
+%     TRANSFER '^^CO SET MR_ZTOT TEXT ' // CHARACTER ( ZTOT ) TO DISPLAY
+%     TRANSFER '^^CO SET MR_ZMAX TEXT ' // CHARACTER ( ZMAX ) TO DISPLAY
+%     TRANSFER '^^CO SET MR_ZAVE TEXT ' // CHARACTER ( ZAVE ) TO DISPLAY
+%%
 %     LOOP
 %%
 %% Flush input buffer:
