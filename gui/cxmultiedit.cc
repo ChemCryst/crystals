@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2004/05/13 09:14:49  rich
+//   Re-invigorate the MULTIEDIT control. Currently not used, but I have
+//   something in mind for it.
+//
 //   Revision 1.19  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -346,7 +350,9 @@ DWORD CALLBACK CxMultiEdit::MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, L
 }
 #endif
 
+/*
 void CxMultiEdit::Open(CcString filename)
 {
 
 }
+*/
