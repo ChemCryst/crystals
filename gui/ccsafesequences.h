@@ -7,6 +7,10 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.1  2005/02/04 17:21:40  stefan
+ //   1. A set of classes to extent CcSafeDeque to allow easy change notification.
+ //   2. A set of classese to more generalise CcSafeDeques uses.
+ //
  
 /*
  *	Class for the thread safe access of a front and back sequance modeled class C.
@@ -14,19 +18,23 @@
  
  #if !defined(ccsafesequences_H__)
  #define ccsafesequences_H__
- 
-template <typename T, template<typename T> class C>
+
+#include "ccthreading.h"
+
+//using namespace ccthreading; for future use.
+
+template <typename T, template<typename T, typename T2> class C, typename T2 = std::allocator<T> >
 class CcSafeSequence
 {
 	protected:
 		CcMutex iLock;			     // The write lock. Garrentees mutual exclution between methods.
 		CcSemaphore iEmptySemaphore; // Indicates whether the queue us empty or not.
-		C<T> iSequence;
+		C<T, T2> iSequence;
 	public:
 		CcSafeSequence():iSequence()
 		{}
 		
-		CcSafeSequence(const C<T>& pSequence):iSequence(pSequence)
+		CcSafeSequence(const C<T, T2>& pSequence):iSequence(pSequence)
 		{}
 		
 		virtual void push_front(const T& pItem) throw(mutex_error, semaphore_error)	//Put the passed item on the front of the list.
