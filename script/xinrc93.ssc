@@ -118,7 +118,7 @@ Files INITIAL.* will be created in your directory. They may be important.
        NB RC93 creates both LIST30 and LIST31 automatically.
         DO NOT MODIFY THEM or this information will be lost
  -------------------------------------------------------------------------
-%      COPY '#SCRIPT INBASIC'
+%      COPY '#SCRIPT INBASICS'
 %      IF INBASICS .NE. 1 THEN
 %        FINISH
 %      END IF
