@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2003/07/01 16:43:34  rich
+C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
+C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
+C data from CRYSTALS' store. The unprefixed versions take any type and return
+C the same type.
+C
 C Revision 1.60  2003/06/27 11:56:17  rich
 C Add an atom_site_refinement_flags item to the atom list in the CIF. Use
 C the data in the REF slot of list 5 to fill in the details.
@@ -365,7 +371,7 @@ C--END OF THE REFLECTIONS  -  EXIT
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTRF .GT. 0 ) WRITE ( NCWU,'(A)' ) CHAR(12)
       ENDIF
-##GIDWXS      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
+###GILGIDWXS      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
 1720  CONTINUE
       CALL XOPMSG ( IOPPPR , IOPLSE , 6 )
       CALL XTIME2(2)
@@ -631,7 +637,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       IF( ILSTRF .GT. 0) WRITE(NCWU, '(A)') CHAR(12)
       ENDIF
-##GIDWXS      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
+###GILGIDWXS      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
 C--CLEAR THE PRINT LINE TO BLANKS
       CALL XMVSPD(IB,LINEA(1),LSTX)
       JD=0
@@ -1242,8 +1248,8 @@ C--LOOP OVER THE COORDS.
           J=J+NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
-#WXS            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&WXS            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+##GILWXS            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&&GILWXS            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c            CALL XCRAS(CHTML,NHTML)
             WRITE(NCPU,913)CHTML(1:)
 913         FORMAT('<TD>',A,'</TD>')
@@ -1276,8 +1282,8 @@ C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
         CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
         IF (IPCHCO .EQ. 3) THEN  
-#WXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&WXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+##GILWXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&&GILWXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
           WRITE(NCPU,913)CHTML(1:)
         END IF
@@ -1296,8 +1302,8 @@ c            w = store(m5+2)*store(m5+13)
         endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
         IF (IPCHCO .EQ. 3) THEN  
-#WXS          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
-&WXS          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
+##GILWXS          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
+&&GILWXS          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
           WRITE(NCPU,913)CHTML(1:)//'</TR>'
         END IF
@@ -1327,7 +1333,7 @@ C--END OF THE PAGE  -  START A NEW PAGE
         IF (ISSPRT .EQ. 0) THEN
           IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
         ENDIF
-##GIDWXS      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+###GILGIDWXS      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
         CALL STATX(LINEB)
         CALL STXYZ(LINEB)
         IF (ISSPRT .EQ. 0) THEN
@@ -1544,8 +1550,8 @@ C--LOOP OVER THE PARAMETERS
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
 
       IF (IPCHCO .EQ. 3) THEN  
-#WXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&WXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+##GILWXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&&GILWXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
           WRITE(NCPU,913)CHTML(1:)
 913       FORMAT('<TD>',A,'</TD>')
       END IF
@@ -1572,7 +1578,7 @@ C--NEW PAGE
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTAN .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
       ENDIF
-##GIDWXS      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+###GILGIDWXS      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
       CALL STATX(LINEB)
       CALL STUIJ(LINEB)
       IF(MINX-MINU)2000,2100,2000
@@ -5132,7 +5138,7 @@ C - NOW LIST THE REFERENCES
 2550  CONTINUE
 
       IF ( IPUNCH .EQ. 1 ) THEN
-##GIDWXS      WRITE (NCPU,'(A)') CHAR(12)
+###GILGIDWXS      WRITE (NCPU,'(A)') CHAR(12)
         WRITE (NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
 C----- ONLY 29 LINES USED IN PAGE  - CMON IS CURRENLTY 24
         WRITE (CMON,'(X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,24)
