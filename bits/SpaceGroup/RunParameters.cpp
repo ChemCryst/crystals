@@ -129,7 +129,7 @@ bool RunParameters::handleArg(int *pPos, int pMax, _TCHAR * argv[])
         {
             char* tEnd;
             int tValue = strtol(argv[*pPos], &tEnd, 10);
-            char* pSystem = crystalSystemConst(tValue);
+            char* pSystem = crystalSystemConst((UnitCell::systemID)tValue);
             if (tEnd != argv[*pPos]+strlen(argv[*pPos]) || pSystem == NULL)
             {
                 return false;
@@ -183,7 +183,6 @@ void RunParameters::handleArgs(int pArgc, _TCHAR* argv[])
         }
     }
     readParamFile(); //If there was a parameter files specifed then read it and over right any of the comman line arguments.
-    getParamsFromUser(); //If not all the prameters needed where supplied prompt the user.
 }
 
 /*
@@ -223,10 +222,12 @@ void RunParameters::getParamsFromUser()
     }
     if (iCrystalSys.empty())
     {
-        iCrystalSys.init(getCrystalSystem());
+        if (!iMerge)
+        {
+            iCrystalSys.init(getCrystalSystem());
+        }
     }
 }
-
 
 void RunParameters::readParamFile()
 {
@@ -290,7 +291,7 @@ void RunParameters::readParamFile()
                         {
                             throw MyException(kUnknownException, "Unknown crystal class.");
                         }
-                        iCrystalSys = crystalSystemConst(tClassIndex);
+                        iCrystalSys = crystalSystemConst((UnitCell::systemID)tClassIndex);
                     }
                 }
                 else if (regexec(tUniqueFSO, tLine, 13, tMatchs, 0) == 0)
@@ -306,7 +307,7 @@ void RunParameters::readParamFile()
                         {
                             throw MyException(kUnknownException, "Unknown crystal class.");
                         }
-                        iCrystalSys = crystalSystemConst(tClassIndex);
+                        iCrystalSys = crystalSystemConst((UnitCell::systemID)tClassIndex);
                     }
                 }
                 else if (regexec(tChiralFSO, tLine, 13, tMatchs, 0) == 0)
@@ -317,7 +318,7 @@ void RunParameters::readParamFile()
                         iChiral = false;
                     iRequestChirality = false;
                 }
-		else if (regexec(tChiralFSO, tLine, 13, tMatchs, 0) == 0)
+		else if (regexec(tMergeSO, tLine, 13, tMatchs, 0) == 0)
                 {
                     if (tMatchs[2].rm_so > 0)
                         iMerge = true;
@@ -334,14 +335,11 @@ void RunParameters::readParamFile()
                     String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     iFileName.copy(tTemp);
                 }
-
                 else if (iUnitCell.init(tLine))
                 {
-		    // iUnitCell.guessCrystalSystem();
                 }
                 else if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
                 {
-
                 }
                 else
                 {
