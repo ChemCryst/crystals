@@ -1,11 +1,12 @@
 %SCRIPT XLIST28
 % VARIABLE LOGICAL LNEWRAT LNEWRHO
-% VARIABLE REAL    NEWRAT  NEWRHO
+% VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT
 % VARIABLE INTEGER NOMITS  NCONDS
 % VARIABLE CHARACTER CW
 % VARIABLE REAL RW OMH OMK OML
 % EVALUATE NOMITS = 0
 % EVALUATE NCONDS = 0
+% EVALUATE SIGMACUT = - 10.0
 %%
 %%
 % IF ( EXISTS 28 .NE. 1 ) THEN
@@ -457,6 +458,7 @@ or uncheck all the boxes in the dialog.
 %      INSERT 'CONT RATIO = '
 ^^??   BRATI TEXT
 %      GET SILENT REAL ' ' '0.0'
+%      EVALUATE SIGMACUT = VALUE
 %      SEND
 %    END IF
 %%    
@@ -613,6 +615,12 @@ or uncheck all the boxes in the dialog.
 ^^CR
 {S * Done. New List 28 (reflection filter conditions) created:
 %    COPY '#SUM L 28'
+%    COPY 'END'
+%%
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE=103'
+%    COPY 'TRANSFER TO OFFSET = 3 FROM SIGMACUT'
+%    COPY 'WRITE'
 %    COPY 'END'
 %    FINISH
 %   END BLOCK
