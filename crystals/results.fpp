@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.90  2004/10/20 10:28:14  rich
+C Minor patch: HBONDS: If no h-bonds found put 10 dots on the next line so that the CIF syntax
+C is correct.
+C
 C Revision 1.89  2004/08/17 15:56:47  djw
 C Append H bonds to cif
 C
@@ -5897,12 +5901,14 @@ cdjw090804^
                  write(cline,'(a)') 
      1           ' p=(max(Fo^2^,0) + 2Fc^2^)/3'
                 endif
-                call xpcif (cline)
+c                call xpcif (cline)
+cdjw011104
+                 ctext(1) = cline
 cdjw090804^
                 if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
      1          .le. 0.0) then
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
-     1            ' w=1/[sigma^2^(F^2^) +', store(l4),' +',
+     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
      2              store(l4+1),'p]'
                   ctext(3) = ' '
                   ctext(4) = ' '
@@ -5916,6 +5922,8 @@ cdjw090804^
                 call xctrim (ctemp,nchar)
                 write (cline,'(a,a )') ' Method = ', ctemp(1:nchar)
                 call xpcif (cline)
+cdjw011104
+                if (ival .eq. 34) call xpcif(ctext(1))
               else
                 call xpcif(ctext(1))
               endif
