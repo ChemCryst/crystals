@@ -86,15 +86,16 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups)
     if (gSpaceGroupsFSO == NULL)
     {//(([^\\[\\{].+[^\\]\\}]))
         #if defined(_WIN32)
-			char tSGBraketsRE[] = "(^([^\\[\\{].*[^]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-)$)";
-				//char tSGBraketsRE[] = "^(([^\\[{].*[^\]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-))$";
+				char tSGBraketsRE[] = "^(([^[{].*[^]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-))$";
         #else
                 char tSGBraketsRE[] = "(^([^\\[\\{].*[^]}])|(\\[(.+)\\])|(\\{(.+)\\})|(-)$)";
         #endif
         char tSpaceGroupsRE[] = "([PABCIRF][-123456abcdnm_/]+)(,[[:space:]]+([PABCIRF][-123456abcnm_/]+))?";
         gSGBraketsFSO = new regex_t;
         gSpaceGroupsFSO = new regex_t;
-        regcomp(gSGBraketsFSO, tSGBraketsRE, REG_EXTENDED);
+		char tString[255];
+		regerror(regcomp(gSGBraketsFSO, tSGBraketsRE, REG_EXTENDED), gSGBraketsFSO, tString, 255);
+		std::cout << "\n" << tString << "\n";
         regcomp(gSpaceGroupsFSO, tSpaceGroupsRE, REG_EXTENDED);
     }
     
@@ -102,7 +103,7 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups)
     {
         throw MyException(kUnknownException, "SpaceGroups where in bad format.");
     }
-    if (gMatch[2].rm_so > -1)
+    if (gMatch[2].rm_so > 0 && gMatch[2].rm_eo)
     {
         char * tSubString = new char[(long)(gMatch[2].rm_eo - gMatch[2].rm_so)+1];
         tSubString[(long)(gMatch[2].rm_eo - gMatch[2].rm_so)] = '\0';
