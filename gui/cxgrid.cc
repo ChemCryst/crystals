@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.13  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -60,7 +64,8 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
                                       AfxGetApp()->LoadIcon(IDI_ICON1));
 
 //  theGrid->Create(wndClass, "Window", WS_CHILD|WS_VISIBLE,
-  theGrid->Create(wndClass, "Window", WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,
+//  theGrid->Create(wndClass, "Window", WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,
+  theGrid->Create(_T("STATIC"), _T(""), WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,
                   CRect(0,0,200,200), guiParent,mGridCount++,NULL);
 
   if (CcController::mp_font == nil)
@@ -118,6 +123,7 @@ void CxGrid::CxDestroyWindow()
 {
   #ifdef __CR_WIN__
 DestroyWindow();
+TEXTOUT("Destroyed grid. " + CcString((int)this));
 #endif
 #ifdef __BOTHWX__
 Destroy();
