@@ -12,26 +12,32 @@ in the column <Delta**2> in the agreement analysis.
 %          COPY 'SCHEME NUMBER=14, NPARAM=5'
 %          COPY 'END'
             Chebychev weighting with 5 parameters
-%          COPY '#PAUSE 2'
++GID%          COPY '#PAUSE 1'
+-GID%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-%          COPY '#PAUSE 5'
++GID%          COPY '#PAUSE 2'
+-GID%          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=4'
 %          COPY 'END'
             Chebychev weighting with 4 parameters
-%          COPY '#PAUSE 2'
++GID%          COPY '#PAUSE 1'
+-GID%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-%          COPY '#PAUSE 5'
++GID%          COPY '#PAUSE 2'
+-GID%          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=3'
 %          COPY 'END'
             Chebychev weighting with 3 parameters
-%          COPY '#PAUSE 2'
++GID%          COPY '#PAUSE 1'
+-GID%          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
-%          COPY '#PAUSE 5'
++GID%          COPY '#PAUSE 2'
+-GID%          COPY '#PAUSE 5'
 %          LOOP
 %            ON END TERMINATE
 %            VERIFY YES NO
