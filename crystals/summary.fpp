@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2004/06/18 15:27:56  rich
+C Fix completeness calculation so that theta_full is always > 25 provided
+C that theta_max is > 25. No account is currently made of radiation type
+C or wavelength.
+C
 C Revision 1.61  2004/06/17 10:29:06  rich
 C Swap axes on the normal probability plot so that they are consistent with,
 C and labelled like the plots in Abrahams & Keve (Acta A27, 157).
@@ -1902,8 +1907,8 @@ C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
 C Unpack HKL
            D=FLOAT(NINT(STR11(I*2)/256.))
            MH=STR11(I*2)-D*256.
-           MK=FLOAT(NINT(D/256.))
-           ML=D-MK*256.
+           ML=FLOAT(NINT(D/256.))
+           MK=D-ML*256.
 
            if (I.LE.N6ACC/2) Z=-Z
 c debug          WRITE(CMON,'(I5,2F15.2)') I,STR11(I*2-1),Z
