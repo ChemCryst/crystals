@@ -38,8 +38,8 @@ CxTextOut * CxTextOut::CreateCxTextOut( CrTextOut * container, CxGrid * guiParen
     theMEdit->Init();
 #endif
 #ifdef __BOTHWX__
-      theMEdit->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER);
-	  theMEdit->Show(true);
+    theMEdit->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER);
+    theMEdit->Show(true);
     theMEdit->Init();
 #endif
     return theMEdit;
@@ -186,15 +186,14 @@ void  CxTextOut::Empty( )
 #ifdef __CR_WIN__
         m_Lines.RemoveAll();
         m_nHead=-1;
-    UpdateVScroll();
+        UpdateVScroll();
         Invalidate();
 #endif
 #ifdef __BOTHWX__
         m_Lines.Clear();
         m_nHead=-1;
-    UpdateVScroll();
-        if ( mbOkToDraw )
-            Refresh();
+        UpdateVScroll();
+        if ( mbOkToDraw )  Refresh();
 #endif
 }
 
@@ -353,7 +352,7 @@ BEGIN_MESSAGE_MAP(CxTextOut, CWnd)
     ON_WM_HSCROLL()
     ON_WM_SETCURSOR()
     ON_WM_LBUTTONUP()
-        ON_WM_MOUSEMOVE()
+    ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -440,7 +439,7 @@ void CxTextOut::AddLine( CcString& strLine )
         m_Lines.RemoveAt( 0 );
 #endif
 #ifdef __BOTHWX__
-                m_Lines.DeleteNode(m_Lines.GetFirst());
+        m_Lines.DeleteNode(m_Lines.GetFirst());
 #endif
 
         m_nHead--;
@@ -795,41 +794,37 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
         }
         else
         {
-        wxRect clientRc = GetRect( );
-            int nMax = m_nMaxWidth - clientRc.width;
-        switch( evt.m_eventType )
-            {
-          case wxEVT_SCROLLWIN_TOP:
-        m_nXOffset = 0;
-        break;
+          wxRect clientRc = GetRect( );
+          int nMax = m_nMaxWidth - clientRc.width;
+          switch( evt.m_eventType )
+          {
+             case wxEVT_SCROLLWIN_TOP:
+                 m_nXOffset = 0;
+                 break;
 
-          case wxEVT_SCROLLWIN_BOTTOM:
-        m_nXOffset = nMax;
-        break;
+             case wxEVT_SCROLLWIN_BOTTOM:
+                 m_nXOffset = nMax;
+                 break;
 
-          case wxEVT_SCROLLWIN_PAGEUP:
-          case wxEVT_SCROLLWIN_LINEUP:
-        {
-            m_nXOffset -= m_nAvgCharWidth;
-            if( m_nXOffset < 0 ) m_nXOffset = 0;
-            break;
-        };
+             case wxEVT_SCROLLWIN_PAGEUP:
+             case wxEVT_SCROLLWIN_LINEUP:
+                 m_nXOffset -= m_nAvgCharWidth;
+                 if( m_nXOffset < 0 ) m_nXOffset = 0;
+                 break;
 
-          case wxEVT_SCROLLWIN_PAGEDOWN:
-          case wxEVT_SCROLLWIN_LINEDOWN:
-        {
-            m_nXOffset += m_nAvgCharWidth;
-            if( m_nXOffset > nMax ) m_nXOffset = nMax;
-            break;
-        };
+             case wxEVT_SCROLLWIN_PAGEDOWN:
+             case wxEVT_SCROLLWIN_LINEDOWN:
+                 m_nXOffset += m_nAvgCharWidth;
+                 if( m_nXOffset > nMax ) m_nXOffset = nMax;
+                 break;
 
-        case wxEVT_SCROLLWIN_THUMBRELEASE:
-        case wxEVT_SCROLLWIN_THUMBTRACK:
-        m_nXOffset = evt.GetPosition();
-        break;
-        };
-        SetScrollbar( wxHORIZONTAL, m_nXOffset, (int)m_nMaxWidth/clientRc.width , m_nMaxWidth );
-        Refresh();
+             case wxEVT_SCROLLWIN_THUMBRELEASE:
+             case wxEVT_SCROLLWIN_THUMBTRACK:
+                 m_nXOffset = evt.GetPosition();
+                 break;
+          }
+          SetScrollbar( wxHORIZONTAL, m_nXOffset, (int)m_nMaxWidth/clientRc.width , m_nMaxWidth );
+//          Refresh();
         }
         LOGSTAT("CxTextOut::OnScroll ends");
 }
