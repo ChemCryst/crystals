@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2001/03/15 11:05:41  richard
+//   Error checking. Ensure that if ptr_to_cxObject is NULL then we don't call
+//   any of the Cx object's functions. (This allows CxModel to fail gracefully, and
+//   the application to continue working). NB. BECAUSE OF CHANGE TO CRYSTALSINTERFACE.H
+//   I'D RECOMMEND AT LEAST A 'code gui', IF NOT A 'code' or 'buildall'.
+//
 //   Revision 1.17  2001/03/08 15:41:48  richard
 //   Can switch between rotate mode, selection (box) mode. Can also select a fragment
 //   based on a single atom name, and you can zoom in on selected atoms (exclude unselected).
@@ -15,7 +21,6 @@
 #include    "crconstants.h"
 #include    "ccstring.h"
 #include    "ccrect.h"
-#include    "crmodel.h"
 #include    "crgrid.h"
 #include    "crmenu.h"
 #include    "ccmenuitem.h"
@@ -27,6 +32,8 @@
 #include    "ccmodelatom.h"
 #include    "ccmodelbond.h"
 #include        "crwindow.h"      // for getting syskeys
+#include    <GL/glu.h>
+#include    "crmodel.h"
 
 CrModel::CrModel( CrGUIElement * mParentPtr )
  :     CrGUIElement( mParentPtr )
@@ -34,30 +41,35 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   mTabStop = true;
   mXCanResize = true;
   mYCanResize = true;
-  mAttachedModelDoc = nil;
-  popupMenu1 = nil;
-  popupMenu2 = nil;
-  popupMenu3 = nil;
+  m_ModelDoc = nil;
+  m_popupMenu1 = nil;
+  m_popupMenu2 = nil;
+  m_popupMenu3 = nil;
   m_AtomSelectAction = CR_SELECT;
   ptr_to_cxObject = CxModel::CreateCxModel( this,(CxGrid *)(mParentPtr->GetWidget()) );
   ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this );
-  m_NormalRes = 15;
-  m_QuickRes = 5;
+  m_style.normal_res = 15;
+  m_style.quick_res = 5;
+  m_style.radius_type = COVALENT;
+  m_style.radius_scale = 0.25;
 }
 
 CrModel::~CrModel()
 {
-  if(mAttachedModelDoc) mAttachedModelDoc->RemoveView(this);
+  if(m_ModelDoc) m_ModelDoc->RemoveView(this);
 
   if ( ptr_to_cxObject )
   {
-    ((CxModel*)ptr_to_cxObject)->DestroyWindow(); delete (CxModel*)ptr_to_cxObject;
+    ((CxModel*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+    delete (CxModel*)ptr_to_cxObject;
+#endif
     ptr_to_cxObject = nil;
   }
 
-  delete popupMenu1;
-  delete popupMenu2;
-  delete popupMenu3;
+  delete m_popupMenu1;
+  delete m_popupMenu2;
+  delete m_popupMenu3;
 
 }
 
@@ -137,54 +149,47 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         {
           case kTCovalent:
           {
-            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( COVALENT );
-            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken(); // Remove that token!
+            m_style.radius_type = COVALENT;
             break;
           }
           case kTVDW:
           {
-            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( VDW );
-            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken(); // Remove that token!
+            m_style.radius_type = VDW;
             break;
           }
           case kTThermal:
           {
-            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( THERMAL );
-            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken(); // Remove that token!
+            m_style.radius_type = THERMAL;
             break;
           }
           case kTSpare:
           {
-            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( SPARE );
-            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken(); // Remove that token!
+            m_style.radius_type = SPARE;
             break;
           }
         }
+        Update();
+        tokenList->GetToken(); // Remove that token!
         break;
       }
       case kTRadiusScale:
       {
         tokenList->GetToken(); // Remove that token!
         CcString theString = tokenList->GetToken();
-        int chars = atoi( theString.ToCString() );
-        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusScale( chars );
-        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
+        m_style.radius_scale = float(atoi(theString.ToCString()))/1000.0f;
+        Update();
         break;
       }
       case kTAttachModel:
       {
         tokenList->GetToken();
         CcString name = tokenList->GetToken();
-        if( ( mAttachedModelDoc = (CcController::theController)->FindModelDoc(name) ) != nil )
-            mAttachedModelDoc->AddModelView(this);
+        if( ( m_ModelDoc = (CcController::theController)->FindModelDoc(name) ) != nil )
+            m_ModelDoc->AddModelView(this);
         else
         {
-          mAttachedModelDoc = (CcController::theController)->CreateModelDoc(name);
-          mAttachedModelDoc->AddModelView(this);
+          m_ModelDoc = (CcController::theController)->CreateModelDoc(name);
+          m_ModelDoc->AddModelView(this);
         }
         break;
       }
@@ -239,13 +244,13 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
            switch (menuNumber)
            {
              case 1:
-               popupMenu1 = mMenuPtr;
+               m_popupMenu1 = mMenuPtr;
                break;
              case 2:
-               popupMenu2 = mMenuPtr;
+               m_popupMenu2 = mMenuPtr;
                break;
              case 3:
-               popupMenu3 = mMenuPtr;
+               m_popupMenu3 = mMenuPtr;
                break;
           }
         }
@@ -266,19 +271,19 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
           tokenList->GetToken(); //Remove the kTAll token!
           Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
           tokenList->GetToken();
-          if(mAttachedModelDoc) mAttachedModelDoc->SelectAllAtoms(select);
+          if(m_ModelDoc) m_ModelDoc->SelectAllAtoms(select);
         }
         else if( tokenList->GetDescriptor(kLogicalClass) == kTInvert)
         {
           tokenList->GetToken(); //Remove the kTInvert token!
-          if(mAttachedModelDoc) mAttachedModelDoc->InvertSelection();
+          if(m_ModelDoc) m_ModelDoc->InvertSelection();
         }
         else
         {
           CcString atomLabel = tokenList->GetToken();
           Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
           tokenList->GetToken(); //Remove the kTYes/kTNo token
-          if(mAttachedModelDoc) mAttachedModelDoc->SelectAtomByLabel(atomLabel,select);
+          if(m_ModelDoc) m_ModelDoc->SelectAtomByLabel(atomLabel,select);
         }
         break;
       }
@@ -288,16 +293,16 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         CcString atomLabel = tokenList->GetToken();
         Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
         tokenList->GetToken(); //Remove the kTYes/kTNo token
-        if(mAttachedModelDoc) mAttachedModelDoc->DisableAtomByLabel(atomLabel,select);
+        if(m_ModelDoc) m_ModelDoc->DisableAtomByLabel(atomLabel,select);
         break;
       }
       case kTCheckValue:
       {
         tokenList->GetToken();
         CcString atomLabel = tokenList->GetToken();
-        if(mAttachedModelDoc)
+        if(m_ModelDoc)
         {
-          CcModelAtom* atom = mAttachedModelDoc->FindAtomByLabel(atomLabel);
+          CcModelAtom* atom = m_ModelDoc->FindAtomByLabel(atomLabel);
           if (atom)
           {
             if (atom->IsSelected()) (CcController::theController)->SendCommand("SET");
@@ -312,14 +317,14 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       {
         tokenList->GetToken();
         CcString theString = tokenList->GetToken();
-        m_NormalRes = atoi( theString.ToCString() );
+        m_style.normal_res = atoi( theString.ToCString() );
         break;
       }
       case kTQRes:
       {
         tokenList->GetToken();
         CcString theString = tokenList->GetToken();
-        m_QuickRes = atoi( theString.ToCString() );
+        m_style.quick_res = atoi( theString.ToCString() );
         break;
       }
       case kTStyle:
@@ -408,16 +413,21 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         if (tokenList->GetDescriptor(kLogicalClass) == kTYes)
         {
           tokenList->GetToken();
-          ZoomSelected(true);
+          if(m_ModelDoc) m_ModelDoc->ZoomAtoms(true);
+          (CcController::theController)->status.SetZoomedFlag(true);
+          Update();
         }
         else if (tokenList->GetDescriptor(kLogicalClass) == kTNo)
         {
           tokenList->GetToken();
-          ZoomSelected(false);
+          if(m_ModelDoc) m_ModelDoc->ZoomAtoms(false);
+          (CcController::theController)->status.SetZoomedFlag(false);
+          Update();
         }
         else
         {
-          ZoomSelected(false);
+          if(m_ModelDoc) m_ModelDoc->ZoomAtoms(false);
+          Update();
         }
         break;
       }
@@ -470,40 +480,34 @@ int CrModel::GetIdealHeight()
   return 0;
 }
 
-void CrModel::LMouseClick(int x, int y)
-{
-  CcString command = "LCLICK ";
-  CcString cx = CcString(x);
-  CcString cy = CcString(y);
-  SendCommand(command + cx + " " + cy);
-}
-
 void CrModel::DocRemoved()
 {
-  mAttachedModelDoc = nil;
+  m_ModelDoc = nil;
 }
 
 
-void CrModel::ContextMenu(int x, int y, CcString atomname, int nSelected, CcString* atomNames)
+void CrModel::ContextMenu(int x, int y, CcString atomname, bool selection)
 {
+    if ( m_ModelDoc == nil ) return;
+
     CcString nameOfMenuToUse;
     CrMenu* theMenu = nil;
     if ( atomname == "" )      // The user has clicked on nothing. Display general menu.
     {
-        theMenu = popupMenu1;
+        theMenu = m_popupMenu1;
     }
-    else if ( nSelected != 0 ) // The user has clicked on a set of selected atoms.
+    else if ( selection ) // The user has clicked on a set of selected atoms.
     {
-        theMenu = popupMenu2;
+        theMenu = m_popupMenu2;
     }
     else                       // The user has clicked on a single atom.
     {
-        theMenu = popupMenu3;
+        theMenu = m_popupMenu3;
     }
 
     if(theMenu !=nil)
     {
-        theMenu->Substitute(atomname, nSelected, atomNames);
+        theMenu->Substitute(atomname, m_ModelDoc);
         if ( ptr_to_cxObject ) theMenu->Popup(x,y,(void*)ptr_to_cxObject);
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
     }
@@ -525,248 +529,33 @@ void CrModel::MenuSelected(int id)
 }
 
 
-void CrModel::PrepareToGetAtoms()
-{
-  if(mAttachedModelDoc) mAttachedModelDoc->PrepareToGetAtoms();
-}
-
-void CrModel::PrepareToGetBonds()
-{
-  if(mAttachedModelDoc) mAttachedModelDoc->PrepareToGetBonds();
-}
-
-void CrModel::ExcludeBonds()
-{
-  if(mAttachedModelDoc) mAttachedModelDoc->ExcludeBonds();
-}
-
-CcModelAtom* CrModel::GetModelAtom()
-{
-  if(mAttachedModelDoc) return mAttachedModelDoc->GetModelAtom();
-  return nil;
-}
-
-CcModelBond* CrModel::GetModelBond()
-{
-  if(mAttachedModelDoc) return mAttachedModelDoc->GetModelBond();
-  return nil;
-}
-
-
 void CrModel::Update()
 {
   if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->Update();
   else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
 }
 
-CcModelAtomPtr * CrModel::GetAllAtoms(int * nAtoms)
-{
-  CcModelAtom * anAtom;
-  int i=0;
-
-  *nAtoms = 0;
-//Count the number of selected atoms.
-   PrepareToGetAtoms();
-   while ( (anAtom = GetModelAtom()) != nil ) { (*nAtoms)++; };
-
-   CcModelAtomPtr * atoms;
-
-   atoms = new CcModelAtomPtr[*nAtoms];
-
-//Get all the  atoms. Store pointers to them.
-   PrepareToGetAtoms();
-   while ( (anAtom = GetModelAtom()) != nil ) { atoms[i++].atom = anAtom; };
-   return atoms;
-}
-
-CcModelAtomPtr* CrModel::GetSelectedAtoms(int * nSelected)
-{
-  CcModelAtom *anAtom;
-  int i=0;
-
-  *nSelected = 0;
-//Count the number of selected atoms.
-   PrepareToGetAtoms();
-   while ( (anAtom = GetModelAtom()) != nil )
-   {
-     if(anAtom->IsSelected()) (*nSelected)++;
-   }
-
-   CcModelAtomPtr *atoms = new CcModelAtomPtr[*nSelected];
-
-//Get all the selected atoms. Store pointers to them.
-   PrepareToGetAtoms();
-   while ( (anAtom = GetModelAtom()) != nil )
-   {
-     if(anAtom->IsSelected()) atoms[i++].atom = anAtom;
-   }
-   return atoms;
-}
 
 void CrModel::GetValue()
 {
 //Return all the selected atoms in the current format, followed by END.
-  CcModelAtomPtr* atoms;
-  int nAtoms, i;
-
-  atoms = GetSelectedAtoms(&nAtoms);
-
-  for (i = 0; i < nAtoms; i++)
-  {
-    SendAtom(atoms[i].atom,true); //True ensures that if the action is SELECT or APPEND, then SENDA is used instead.
-  }
-  SendCommand("END");
-
-  delete [] atoms;
+  if(m_ModelDoc) m_ModelDoc->SendAtoms(m_AtomSelectAction,true);
+  SendCommand ( "END" );
 }
 
-
-void CrModel::ZoomSelected(bool doZoom)
+int CrModel::GetSelectionAction()
 {
-
-  (CcController::theController)->status.SetZoomedFlag(doZoom);
-
-  CcModelAtomPtr * atoms;
-
-  int nAtoms, i;
-
-  if ( doZoom )
-  {
-    atoms = GetAllAtoms(&nAtoms);
-    for (i=0; i<nAtoms; i++) { atoms[i].atom->m_excluded=true; }
-
-    atoms = GetSelectedAtoms(&nAtoms);
-    for (i=0; i<nAtoms; i++) { atoms[i].atom->m_excluded=false;}
-  }
-  else
-  {
-    atoms = GetAllAtoms(&nAtoms);
-    for (i=0; i<nAtoms; i++) { atoms[i].atom->m_excluded=false; }
-  }
-
-  ExcludeBonds();
-
-  Update();
-
-  delete [] atoms;
-}
-
-
-void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
-{
-  int style = (output) ? CR_SENDA : m_AtomSelectAction;
-
-  if (atom->m_disabled) return;
-
-  CcString atomname = atom->Label();
-  switch ( style )
-  {
-    case CR_SELECT:
-    {
-      atom->Select();
-      Update();
-      break;
-    }
-    case CR_APPEND:
-    {
-      ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+atomname+" ");
-      break;
-    }
-    case CR_SENDA:
-    {
-      SendCommand(atomname);
-      break;
-    }
-    case CR_SENDB:
-    {
-      CcString element, number;
-      int pos1 = 1, pos2 = 1;
-      for (int i = 1; i < atomname.Length(); i++)
-      {
-        if ( atomname[i] == '(' )
-        {
-          pos1 = i+1;
-          element = atomname.Sub(1,pos1-1);
-        }
-        if ( atomname[i] == ')' )
-        {
-          pos2 = i+1;
-          number = atomname.Sub(pos1+1, pos2-1);
-        }
-      }
-      if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
-      {
-        SendCommand(element + "_N" + number);
-      }
-      break;
-    }
-    case CR_SENDC:
-    {
-      SendCommand("ATOM_N" + atomname);
-      break;
-    }
-    case CR_SENDD:
-    {
-      CcString element, number;
-      int pos1 = 1, pos2 = 1;
-      for (int i = 1; i < atomname.Length(); i++)
-      {
-        if ( atomname[i] == '(' )
-        {
-          pos1 = i+1;
-          element = atomname.Sub(1,pos1-1);
-        }
-        if ( atomname[i] == ')' )
-        {
-          pos2 = i+1;
-          number = atomname.Sub(pos1+1, pos2-1);
-        }
-      }
-      if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
-      {
-        SendCommand("ATOM_N" + element + "_N" + number);
-      }
-      break;
-    }
-    case CR_SENDC_AND_SELECT:
-    {
-      CcString cSet = (atom->Select()) ? "SET" : "UNSET" ;
-      Update();
-      SendCommand("ATOM_N" + atomname + "_N" + cSet);
-      break;
-    }
-  }
+  return m_AtomSelectAction;
 }
 
 Boolean CrModel::RenderModel(Boolean detailed)
 {
 //    TEXTOUT ( "RenderModel" );
-    if(mAttachedModelDoc) return mAttachedModelDoc->RenderModel(this,detailed);
-
+    m_style.high_res = detailed;
+    if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style);
     return false;
 }
 
-
-CcModelAtom* CrModel::LitAtom()
-{
-  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->m_LitAtom;
-  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-  return nil;
-}
-
-int CrModel::RadiusType()
-{
-  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->m_radius;
-  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-  return nil;
-}
-
-float CrModel::RadiusScale()
-{
-  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->m_radscale;
-  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-  return nil;
-}
 
 void CrModel::SysKey ( UINT nChar )
 {
@@ -796,12 +585,19 @@ void CrModel::SysKeyUp ( UINT nChar )
 }
 
 
-void    CrModel::SetText( CcString text )
+void CrModel::SetText( CcString text )
 {
 
 }
 
-void    CrModel::SelectFrag(CcString atomname, bool select)
+void CrModel::SelectFrag(CcString atomname, bool select)
 {
-  if(mAttachedModelDoc) mAttachedModelDoc->SelectFrag(atomname,select);
+  if(m_ModelDoc) m_ModelDoc->SelectFrag(atomname,select);
 }
+
+CcModelObject * CrModel::FindObjectByGLName(GLuint name)
+{
+  if(m_ModelDoc) return m_ModelDoc->FindObjectByGLName(name);
+  return false;
+}
+
