@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.32  2004/03/16 12:02:06  rich
+c Latest pseudo-symm code for Anna.
+c
 c Revision 1.31  2004/03/09 13:28:17  rich
 c New pseudo-op space group deviation measure.
 c
@@ -3333,6 +3336,7 @@ C Ensure fragments are 2D identical.
          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Residues_different_sizes'
         END IF
+        ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 1, 1 )
         GOTO 9900
       END IF
 
@@ -3353,6 +3357,7 @@ c        CALL XPRVDU(NCVDU,1,0)
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Residues_bonding_different'
           END IF
+          ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 2, 1 )
           GOTO 9900
         END IF
       END DO
@@ -3366,8 +3371,8 @@ c        CALL XPRVDU(NCVDU,1,0)
         IF ( KNONLN() .EQ. 1 ) THEN  ! They must be nonlinear?
           JOBDON = 1
           CALL XREGQK
+          ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 0, 1 )
         ELSE IF (IPCHRE.GE.0)THEN
-           JOBDON = 1
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Linear_matching_fragments'
         END IF
@@ -3409,6 +3414,7 @@ C Find first atom in residue 1 with uniqueness of 2.
          IF ( IRS1AT .EQ. -1 ) THEN
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Uniqueness 2 in residue 1 not found'
+           ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 3, 1 )
            GOTO 9900
          END IF
 
@@ -3450,11 +3456,13 @@ C as IRS1AT
          IF ( IRS2A1 .EQ. -1 ) THEN
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Uniqueness 2 in residue 2 not found'
+           ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 4, 1 )
            GOTO 9900
          END IF
          IF ( IRS2A2 .EQ. -1 ) THEN
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Second Uniqueness 2 in residue 2 not found'
+           ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 5, 1 )
            GOTO 9900
          END IF
 
@@ -3468,7 +3476,10 @@ C Sort each set of atoms into index order.
 
 
            IF ( IEQATM .EQ. 0 ) THEN
-             IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
+             IF (KELECN().LT.0) THEN ! Put electron count into SPARE
+               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 6, 1 )
+               GO TO 9900    
+             END IF
            ELSE
              DO I = 0,N5-1
                STORE(L5+13+I*MD5) = 10
@@ -3616,6 +3627,7 @@ C Ensure fragments are 2D identical.
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1       CHAR(9)//'Residues_different_sizes'
             END IF
+            ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 7, 1 )
             GOTO 9900
            END IF
 
@@ -3627,6 +3639,7 @@ C Further ensure fragments are 2D identical.
               CALL XPRVDU(NCVDU,1,0)
               IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'Residues_bonding_different'
+              ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 8, 1 )
               GOTO 9900
             END IF
            END DO
@@ -3640,29 +3653,36 @@ C Further ensure fragments are 2D identical.
             IF ( KNONLN() .EQ. 1 ) THEN  ! They must be nonlinear?
               JOBDON = 1
               CALL XREGQK
+              ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 0, 1 )
             ELSE IF (IPCHRE.GE.0)THEN
               WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1        CHAR(9)//'Linear_matching_fragments'
+              ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 10, 1 )
               JOBDON = 1
             END IF
            ELSE IF (IPCHRE.GE.0)THEN
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1       CHAR(9)//'Still_not_enough_unique_matches'
+             ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 11, 1 )
            END IF
 
            IF (JOBDON.EQ.0) THEN
             IF ( IDOUB .GE. 1 ) THEN 
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_2'
+               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 12, 1 )
             ELSE IF ( ITRIP .GE. 1 ) THEN 
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_3'
+               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 13, 1 )
             ELSE IF ( IQUAD .GE. 1 ) THEN
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_4'
+               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 14, 1 )
             ELSE
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'Internal_symmetry_lots'
+               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 15, 1 )
             END IF
            END IF
          END DO
@@ -3670,14 +3690,17 @@ C Further ensure fragments are 2D identical.
        ELSE IF ( ITRIP .GE. 1 ) THEN ! Try to break sym. Three times.
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_3'
+        ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 16, 1 )
 
        ELSE IF ( IQUAD .GE. 1 ) THEN ! Try to break sym. Four times.
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_4'
+        ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 17, 1 )
 
        ELSE
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_lots'
+        ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 18, 1 )
 
        END IF
       END IF
@@ -3716,6 +3739,7 @@ C -- INPUT ERRORS
       CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'command_input_error'
+      ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 9, 1 )
       GO TO 9900
       END
 
