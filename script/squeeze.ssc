@@ -1,5 +1,6 @@
 %SCRIPT SQUEEZE
 %  VARIABLE CHARACTER CDIR CFILE
+%  VARIABLE LOGICAL T
 %  COPY '#FOREIGN PLATON'
 %  COPY 'END'
 %  COPY '#RELE PUNCH PLATON6'
@@ -31,7 +32,7 @@
 %  END IF
 %%
 %%
-%  TRANSFER '#SPAWN "' // CFILE // '" -q  platon.res' TO CRYSTALS
+%  TRANSFER '#SPAWN + "' // CFILE // '" -q  platon.res' TO CRYSTALS
 %%
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 %   VARIABLE LOGICAL ANSWER
@@ -49,10 +50,10 @@
 %% use the results
 %  IF FILEEXISTS ( 'LIST6.ABC' ) .EQ. TRUE THEN
 Trying to delete old Squeeze files
-%     COPY '#SPAWN +DEL LIST6.ABC'
+%     EVALUATE T = FILEDELETE ( 'LIST6.ABC' )
 Deleted old Squeeze files
 %  END IF
-%  COPY '#SPAWN "CRYSDIR:CONVPLAT.EXE"'
+%  COPY '#SPAWN + "CRYSDIR:CONVPLAT.EXE"'
 %  COPY '#USE LIST6.ABC'
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit
