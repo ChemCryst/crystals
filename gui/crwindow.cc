@@ -460,11 +460,7 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 			break;
 		}
 	}
-
-#ifdef __LINUX__
-      cerr << "Exiting CrWindow::ParseInput";
-#endif
-
+      LOGSTAT ("Exiting CrWindow::ParseInput");
 	return (retVal);
 }
 
