@@ -39,7 +39,7 @@
 % COPY '#SCRIPT DPAIR'
 % IF NPAIR .LE. 3 THEN
 %   EVALUATE CTEXT1 = 'Insufficient pairs of atoms selected'
-%   COPY '#SCRIPT DMESAGE'
+%   COPY '#SCRIPT DMESSAGE'
 %   COPY 'TERMINATE'
 %   COPY 'END'
 % END IF
