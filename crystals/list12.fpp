@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/02/26 10:26:48  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XPRC12
       SUBROUTINE XPRC12
@@ -1120,10 +1123,9 @@ C
       WRITE ( NCAWU , 5670 ) N12 , N22B , N
       WRITE ( NCAWU , 5671 ) NRECS , NBLKS , NKBYTS
       WRITE(CMON,5670) N12, N22B, N
-      CALL XPRVDU(NCVDU, 2,0)
-5670  FORMAT ('Refinement of ', I5 , ' parameters in ', I4 ,
-     2 ' block :'/, I9 ,
-     3 ' elements in the least squares matrix ')
+      CALL XPRVDU(NCVDU, 1,0)
+5670  FORMAT ('Refining ',I5,' parameters in ',I4,' block :',I9,
+     2' elements in the LS matrix.')
 5671  FORMAT(
      4 ' Space required on DISK is ' , I4 , ' records, ' ,1X,I4,
      5 '  Blocks, ' , I5 , ' Kbytes. ')
