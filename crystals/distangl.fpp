@@ -1,5 +1,9 @@
-
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2002/07/23 15:51:33  richard
+C If XBCALC is called internally, with MODE 2 (i.e. from #EDIT), then don't
+C even think about trying to write L41 back to disk - bad things will happen
+C due to #EDIT claiming bits of store without asking.
+C
 C Revision 1.25  2002/07/23 10:02:09  richard
 C
 C INSERT NCONN and INSERT RELAX use L41 to work out bonding. L41 is dangerously
@@ -5486,6 +5490,7 @@ C--
 \XLIMIT
 
       EQUIVALENCE (PROCS(1), IPROCS(1))
+      DATA    IUNKN /'UNKN'/
 \IDIM40
 \IDIM41
 
@@ -5605,6 +5610,7 @@ C -- Add this extra element in L29 style at NEWL29.
             NEWM29 = NEWL29 + NOTFND*MD29
             CALL XZEROF(STORE(NEWM29),MD29)
             CALL XMOVE (STORE(M40E),STORE(NEWM29),3)
+            STORE(NEWM29+7)=IUNKN !Set colour unknown.
             NOTFND = NOTFND + 1
             WRITE(CMON,'(2A)')'FYI: Element in L40, but not in L29: ',
      1                        ISTORE(M40E)
@@ -5648,13 +5654,16 @@ C -- Have to get proper covalent radii from file if possible.
               CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
               IF ( IERFLG .LT. 0) GOTO 9900
 C Read the properties file and extract cov, vdw and colour.
+              ICOL=IUNKN
               DO WHILE ( .TRUE. )
                  READ(NCARU,'(A80)',END=89) WCLINE
                  IF((WCLINE(1:3).NE.'CON').AND.
      1              (WCLINE(1:3).NE.'   ').AND.
      1              (WCLINE(1:4).EQ.CATTYP)) THEN
                     READ(WCLINE(13:16),'(F4.2)') COV
+                    READ(WCLINE(62:65),'(A4)') ICOL
                     STORE(NEWM29+1) = COV
+                    STORE(NEWM29+7) = ICOL
                     EXIT
                  END IF
               END DO
@@ -5663,11 +5672,11 @@ C Read the properties file and extract cov, vdw and colour.
             END IF
             NOTFND = NOTFND + 1
             WRITE(CATTYP,'(A4)')ISTORE(M5)
-            IF ( CATTYP(1:1).NE.'Q' ) THEN
-              WRITE(CMON,'(2A)')'FYI: Element not in L40 or L29: ',
-     1                        ISTORE(M5)
+C            IF ( CATTYP(1:1).NE.'Q' ) THEN
+              WRITE(CMON,'(3A)')'FYI: Element not in L40 or L29: ',
+     1                        ISTORE(M5),ICOL
               CALL XPRVDU(NCVDU,1,0)
-            END IF
+C            END IF
          END IF
       END DO
 
