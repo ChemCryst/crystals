@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1  1999/03/20 20:30:11  dosuser
+C RIC: 2D searching code provided by CCDC from the PLUTO program,
+C      plus a couple of subroutines to fill in the PLUTO data
+C      structure using CRYSTALS list 5 info.
+C      Also a couple of subroutines for doing bond fragment validation
+C      against CSD data. None of this code is linked with the current
+C      repository version of CRYSTALS. (Yet).
+C
 
 
 CODE FOR BNDCHK
@@ -200,7 +208,7 @@ C  Compare each connection by name, and number of connections.
 600		CONTINUE
 
             WRITE(CCODE,'(A4,2I2,18(A2,I2))') 'BOND',IRING,
-     1     NINT(RBLK(1)),((RBLK(K),NINT(RBLK(K+1))),K=2,IPL,2)
+     1     NINT(RBLK(1)),(RBLK(K),NINT(RBLK(K+1)),K=2,IPL,2)
 C Remove spaces from CCODE.
 		CALL XCRAS(CCODE,NDUM)
 
@@ -598,7 +606,7 @@ C
 
 	INTEGER IOFF
 	DATA IOFF /4/    !Offset of positional parameters in LIST 5.
-					 !Needed when using a compressed L5 during FOURIER.
+C                      !Needed when using a compressed L5 during FOURIER.
 
       DATA EL/'C ','H ','AC','AG','AL','AM','AR','AS','AT','AU','B ',
      +     'BA','BE','BI','BK','BR','CA','CD','CE','CF','CL','CM','CO',
@@ -626,7 +634,7 @@ C
 		AXYZO(I,1) = 0.0
 		AXYZO(I,2) = 0.0
 		AXYZO(I,3) = 0.0
-		HYBR = 0
+            HYBR(I) = 0
 	END DO
 	DO I = 1, MAXBND
 		BOND(I,1) = 0
