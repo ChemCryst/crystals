@@ -1,20 +1,20 @@
 %SCRIPT VALID12
 %% Ensures that we have at least a minimum valid LIST12 
-%% REMEMBER THAT A VALID LIST MAY NOT BE A SUITABLE LIST
-
  * Ensuring that refinement directives exist and are valid.
 %  VARIABLE LOGICAL EXTINCT
 %  VARIABLE INTEGER ADP
 %  EVALUATE EXTINCT = FALSE
 %  VARIABLE CHARACTER CLAST CPARAM CPARAM2
-% COPY '#SCRIPT CHECK5'
 %%BLOCK
 %% ON ERROR TERMINATE
 %% COPY '#LIST 22'
 %% COPY 'END'
-%% CRYSTALS has a valid refinement list, LIST 12
+%% * CRYSTALS already has a valid refinement list, LIST 12
+%% * REMEMBER THAT A VALID LIST MAY NOT BE A SUITABLE LIST
 %% FINISH
 %%END BLOCK
+%%
+% COPY '#SCRIPT CHECK5'
 %%
 % IF EXISTS 5 .GE. 1 THEN
  * CRYSTALS is creating a minimum valid LIST 12

@@ -1,4 +1,5 @@
 %SCRIPT AUTO12
+%% SET VERIFY TRUE
 %  VARIABLE LOGICAL HINCELL
 %  VARIABLE LOGICAL SCRIPTEXT
 %  VARIABLE LOGICAL EXTINCT PURGE
@@ -82,9 +83,12 @@
 %      COPY '#SCRIPT RFACTOR'
 %    END IF
 %    EVALUATE RMIN = R
+%    IF RMIN .LE. R4 THEN
+%      EVALUATE ISTAGE = 3
+%    END IF
+%%   
 %    CLEAR
 %    ON ERROR TERMINATE
-%%   
 %%
 ^^WI WINDOW XAUTO12 'Supervisor' SIZE MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
@@ -92,12 +96,13 @@
 ^^WI {
 ^^WI   @ 2,2 MULTIEDIT AUTO12TEXT '' NROWS=10 NCOLS=80
 ^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
-^^WI   @ 2,6 GRID BTNS NROWS=3 NCOLS=1
+^^WI   @ 2,6 GRID BTNS NROWS=5 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
 ^^WI     @ 3,1 BUTTON BXX '&Close' CANCEL
+^^WI     @ 5,1 BUTTON BHELP '&Help' 
 ^^WI   }
-^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
+^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=13 ADDTOLIST
 ^^WI     'View structure'
 ^^WI     'Fourier refinement'
 ^^WI     'Refine positions'
@@ -106,8 +111,11 @@
 ^^WI     'Add hydrogen'
 ^^WI     'Check extinction'
 ^^WI     'Optimise weights'
+^^WI     'n-Cycles'
+^^WI     '6-Cycles'
 ^^WI     'Validate'
 ^^WI     'Publish'
+^^WI     'Help'
 ^^WI     NULL
 ^^WI }
 ^^WI SHOW
@@ -146,6 +154,17 @@
                       Extinction.
    Recommended:       Try extinction correction.
    Other options:     View the structure.
+%        IF KTDEFA .EQ. KSEXTN THEN
+      _____________________________________________________________
+
+      CRYSTALS cannot guide you futher with this analysis.
+      Please consult a professional crystallographer
+      _____________________________________________________________
+%           COPY '#PAUSE 2'
+^^WI        DISPOSE XAUTO12
+^^CR
+%           FINISH
+%        END IF
 %        EVALUATE KTDEFA = KSEXTN
 %      ELSE
  Very low R factor - Begin to tidy up
@@ -192,7 +211,7 @@
 ^^CR
 %    CLEAR
 %    EVALUATE EXEREFN = FALSE
-%    VERIFY BOK BXX
+%    VERIFY BOK BXX BHELP
 %    GET FINAL SILENT NOSTORE ABBREVIATED 'Continue?' ' '
 %    CASE VALUE
 %      BLOCK  %BOK%
@@ -264,20 +283,125 @@ Remember - the data may not be good enough to reveal all H atoms
 %             COPY '#SCRIPT XWEIGHTS'
 %             EVALUATE OPTIM = TRUE
 %           END BLOCK
-%           BLOCK % VALIDATE 9
+%           BLOCK % n-CYCLES 9
+%             COPY '#SCRIPT NCYCLES'
+%           END BLOCK
+%           BLOCK % 6-CYCLES 10
+%             COPY '#SCRIPT SIXCYCLE'
+%           END BLOCK
+%           BLOCK % VALIDATE 11
 %             COPY '#SCRIPT ACTA'
 %           END BLOCK
-%           BLOCK % PUBLISH 10
+%           BLOCK % PUBLISH 12
 %             COPY '#SCRIPT TIDYUP'
 %             COPY '#SCRIPT XPUBLISH'
 %             FINISH
 %           END BLOCK
+%           BLOCK % HELP 13
+----------------------------
+^^WI WINDOW HELP12 'Helper' SIZE MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID OUTER NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 MULTIEDIT HELPTEXT '' NROWS=10 NCOLS=80
+^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI   @ 2,4 GRID HBTNS NROWS=1 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON HBOK '&Ok' DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO HELPTEXT
+^^CR
+View structure
+      This activates the display module, CAMERON
+Fourier refinement
+      By the method of Lipson & Cochran
+Refinement
+      WARNING. IF YOU HAVE CARFULLY BUILT A REFINEMENT LIST,
+      LIST 12, THESE AUTOMATIC PROCEDURES WILL DESTROY IT!
+Refine positions
+      Refine x,y,z of all non-H atoms
+Refine posn and iso
+      Refine x,y,z,Uiso of all non-H atoms
+Refine posn and aniso
+      Refine x,y,z,Uaniso of all non-H atoms
+Add hydrogen
+      Produce an editable model containing observed (from
+      difference map) and computed H positions
+Check extinction
+      Produce an analysis of variance listing which may reveal
+      the necessity for an extinction correction
+Optimise weights
+      Towards the end of refinement, once all parameters have been
+      partially refined, optimise the LS weights
+n-Cycles
+      Do up-to n cycles of refinement. CRYSTALS will stop refinement
+      once convergence slows down, or if divergence occurs.
+6-Cycles
+      Do six cycles, even if everything converges or blows up. Usually 
+      the last operation before 'validation'
+Validate
+      Check that the structure meets the Acta Cryst requirements.
+Publish
+      Produce cif and tabular listsings.
+%              CLEAR
+%              EVALUATE EXEREFN = FALSE
+%              VERIFY HBOK HBXX
+%              GET FINAL SILENT NOSTORE ABBREVIATED 'Continue?' ' '
+%              CASE VALUE
+%                BLOCK  %BOK%
+^^WI              DISPOSE HELP12
+^^CR
+%                END BLOCK
+%              END CASE
+%           END BLOCK %%13
 %         END CASE
 %      END BLOCK
 %      BLOCK  %BXX%
 ^^WI     DISPOSE XAUTO12
 ^^CR
 %        FINISH
+%      END BLOCK
+%      BLOCK  %BHELP%
+%       COPY '#SCRIPT XHELP1'
+VIEW STRUCTURE
+      This activates the display module, CAMERON
+FOURIER REFINEMENT
+      By the method of Lipson & Cochran
+REFINE POSITIONS
+      Refine x,y,z of all non-H atoms
+Refine posn and iso
+      Refine x,y,z,Uiso of all non-H atoms
+REFINE POSN AND ANISO
+      Refine x,y,z,Uaniso of all non-H atoms
+ADD HYDROGEN
+      Produce an editable model containing observed (from
+      difference map) and computed H positions
+CHECK EXTINCTION
+      Produce an analysis of variance listing which may reveal
+      the necessity for an extinction correction
+OPTIMISE WEIGHTS
+      Towards the end of refinement, once all parameters have been
+      partially refined, optimise the LS weights
+N-CYCLES
+      Do up-to n cycles of refinement. CRYSTALS will stop refinement
+      once convergence slows down, or if divergence occurs.
+6-CYCLES
+      Do six cycles, even if everything converges or blows up. Usually 
+      the last operation before 'validation'
+VALIDATE
+      Check that the structure meets the Acta Cryst requirements.
+PUBLISH
+      Produce cif and tabular listsings.
+
+REFINEMENT
+      WARNING. IF YOU HAVE CARFULLY BUILT A REFINEMENT LIST,
+      LIST 12, THESE AUTOMATIC PROCEDURES WILL DESTROY IT!
+%       COPY '#SCRIPT XHELP2'
+^^WI     DISPOSE XAUTO12
+^^CR
 %      END BLOCK
 %    END CASE
 %    IF ( EXEREFN .EQ. TRUE ) THEN
@@ -297,9 +421,11 @@ Remember - the data may not be good enough to reveal all H atoms
 %      COPY '#SUM LIST 12'
 %      COPY 'END'
 %      IF ( EXTINCT .EQ. TRUE ) .AND. ( PURGE .EQ. FALSE ) THEN
-%        COPY '#DISK'
-%        COPY 'DELETE 11'
-%        COPY 'END'
+%        IF EXISTS 11 THEN
+%          COPY '#DISK'
+%          COPY 'DELETE 11'
+%          COPY 'END'
+%        END IF
 %        COPY '#PURGE'
 %        COPY 'END'
 %        EVALUATE PURGE = TRUE
