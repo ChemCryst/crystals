@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2001/09/11 08:27:43  ckp2
+C Cut down GUI traffic by only sending status updates for flags that have
+C actually changed (Flags: L1, L2, L3, L5, L6, QS, IN)
+C
 C Revision 1.37  2001/07/19 08:01:00  ckp2
 C Changed so that ISSUPD flag only stops the updating of List5, the other
 C lists still update things in the GUI.
@@ -1241,7 +1245,8 @@ C Include Atom Labels in this info.
                      WRITE(CLAB2(ILEN:),'(A1,I4,A1)')'(',ISER,')'
                   ENDIF
 
-                  WRITE ( CMON,'(A,10(1X,I5),/,A,2(1X,A10),1X,F6.3)')
+                  WRITE ( CMON,
+     1             '(A,10(1X,I5),/,A,2(1X,A10),1X,A,F6.3,A,I2,A)')
      1                  '^^GR BOND ',
      1                  NINT(TSTORE((I*3)-2)*GSCALE),
      1                  NINT(TSTORE((I*3)-1)*GSCALE),
@@ -1251,7 +1256,8 @@ C Include Atom Labels in this info.
      1                  NINT(XZ*GSCALE),
      3                  KR,KG,KB,
      1                  NINT(GSCALE*0.25),
-     1                  '^^GR ',CLAB, CLAB2, ACTDST
+     1                  '^^GR ',CLAB, CLAB2,'''',ACTDST,' fr:',
+     1                  ISTORE(IAT1P+14),''''
                   CALL XPRVDU(NCVDU, 2,0)
                ENDIF
 120         CONTINUE
