@@ -18,7 +18,8 @@
 %  ON ERROR TERMINATE
 %  ON END TERMINATE
 %  GET NOSTORE FINAL ABBREVIATED  -
-   'Do You want see the structure?' 'YES'
+-GID   'Do You want see the structure?' 'YES'
++GID   'Do You want see the structure in Cameron?' 'NO'
 %  IF VALUE .EQ. 2 THEN
 %     FINISH
 %  END IF
