@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/08/30 14:36:15  richard
+C Added pressure to L30. Only appears in CIF if non-zero.
+C
 C Revision 1.32  2002/07/29 13:01:41  richard
 C #THLIM calls completeness code, which inserts values into L30.
 C
@@ -1253,15 +1256,32 @@ C See if there is a lower possible IMINL
 
       ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
 
-      CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
+
+C If THBEST is -ve, its absolute value will be used, and it
+C will not be optimised.
+
+      IF(STORE(L30CF+10).LT.0.0) THEN
+         STORE(L30CF+10)=MAX(STORE(L30CF+10),-THMAX)
+         THBEST = -STORE(L30CF+10)
+         CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
+     1            THBEST, THBCMP, THDUM,THDUM2)
+         STORE(L30CF+11)=THBCMP
+         CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
+     1            THMAX, THMCMP, THDUM,THDUM2)
+
+      ELSE
+
+         CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
      1            THMAX, THMCMP, THBEST,THBCMP)
+         STORE(L30CF+10)=THBEST
+         STORE(L30CF+11)=THBCMP
+
+      END IF
 
       STORE(L30IX+6)=THMIN
       STORE(L30IX+7)=THMAX
 
       STORE(L30CF+9)=THMCMP
-      STORE(L30CF+10)=THBEST
-      STORE(L30CF+11)=THBCMP
 
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 

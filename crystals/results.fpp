@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2002/10/31 13:22:58  rich
+C Some indenting to try to work out esd code.
+C A DVF fix to fix compiler moan (consant passed as subroutine arg, then
+C modified in subroutine).
+C No calls to ZMORE allowed in DVF version.
+C
 C Revision 1.41  2002/10/07 11:03:06  rich
 C EnCIFer compatibility.
 C
@@ -4005,7 +4011,7 @@ C
          CALL XPCIF (' ')
 
          CBUF(9:21)='reflns_theta_'
-         WRITE (CLINE,'(A,''full '', F10.3)') CBUF(1:21), THBEST
+         WRITE (CLINE,'(A,''full '', F10.3)') CBUF(1:21), ABS(THBEST)
          CALL XPCIF (CLINE)
          CBUF(9:32)='measured_fraction_theta_'
          WRITE (CLINE,'(A,''full '',F10.3)') CBUF(1:32), THBCMP
