@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2003/06/30 17:58:38  rich
+C On abandoning script due to CRYSTALS error, or due to a script syntax error,
+C print out the script source file line number where the failure occurred.
+C
 C Revision 1.31  2003/06/09 11:38:19  rich
 C Add bond calculation as a recognised error generating routine in XOPMSG.
 C
@@ -985,8 +989,8 @@ C
 C
       WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
-      CALL XPRVDU(NCVDU, 6,0)
-2015  FORMAT ( /, 9X , 'Version' , F7.2 , ' for ' , A , ' under '
+      CALL XPRVDU(NCVDU, 3,0)
+2015  FORMAT (  9X , 'Version' , F7.2 , ' for ' , A , ' under '
      2 , A, 3X , A , / , 10X ,
      3 'Copyright Chemical Crystallogaphy Laboratory, Oxford' , / )
 C
