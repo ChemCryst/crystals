@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2002/03/11 12:06:11  Administrator
+C enable axtinction and twinning, hightlight warning about inadvisability
+C
 C Revision 1.19  2002/03/06 15:35:53  Administrator
 C Fix a format statement, enable Extinction and TWINS to be refined together
 C
@@ -477,14 +480,16 @@ C--UPDATE  -  INITIALISE THE COLLECTION
 c
 2000  CONTINUE
 C--THIS IS A TWINNED REFINEMENT  -  SUPPRESS EXTINCTION CORRECTIONS
-      CALL OUTCOL(9)
-      WRITE(CMON,'(6X,A)') 
-     1'It is unwise to refine extinction for twinned data'
-      CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-      WRITE(NCAWU,'(A)') CMON(1)
-      CALL OUTCOL(1)
+      IF ( NA .EQ. 0 ) THEN
+        CALL OUTCOL(9)
+        WRITE(CMON,'(6X,A)') 
+     1  'It is unwise to refine extinction for twinned data'
+        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        WRITE(NCAWU,'(A)') CMON(1)
+        CALL OUTCOL(1)
 cdjw0302      NA=-1
+      END IF
 C--SUPPRESS PARTIAL CONTRIBUTIONS
       NC=-1
       ND=-1
