@@ -1,0 +1,51 @@
+@echo This script builds crystals using the Digital Fortran and Microsoft
+@echo Visual C++ compilers. All other compilers and environments use make
+@echo instead.
+@echo -------------------------------------------------------------------
+@if "%COMPCODE%" == "" goto edcodeerror
+@if "%1" == "dist" goto dist
+
+@call make_w32_crystals.bat %1
+@call make_w32_data.bat %1
+@call make_w32_script.bat %1
+@call make_w32_manual.bat %1
+@call make_w32_bits.bat %1
+
+@if "%1" == "clean" goto clean
+@goto exit
+
+:edcodeerror
+@echo ----------------------------------------------------------------
+@echo Set COMPCODE environment variable before running make.
+@echo type   SET COMPCODE=DOS    for FTN77 version.
+@echo type   SET COMPCODE=DVF    for text-only Digital Fortran version.
+@echo type   SET COMPCODE=F95    for FTN95 version.
+@echo type   SET COMPCODE=GID    for GUI version [Digital and Microsoft]
+@echo ----------------------------------------------------------------
+@goto exit
+
+:dist
+@call make_w32_crystals.bat tidy
+@call make_w32_data.bat tidy
+@call make_w32_script.bat tidy
+@call make_w32_manual.bat tidy
+@call make_w32_bits.bat tidy
+@del crystals.pst
+@del cameron.pst
+@mkdir ..\installer
+@cd ..\installer
+@echo Running the setup compiler...
+c:\progra~1\innose~1\iscc.exe ../bin/crystals.iss
+@echo Setup.exe will be in the ..\installer folder if it
+@echo was successful.
+@echo If unsuccessful take out the ECHO OFF statement from the batch file
+@echo "%0" to find out what's going wrong...
+@cd ..\build
+goto exit
+
+:clean
+rmdir /q /s ..\installer
+goto exit
+
+:exit
+@time /t
