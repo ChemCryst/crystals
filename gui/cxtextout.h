@@ -14,6 +14,7 @@
 #include <wx/window.h>
 #include <wx/dcclient.h>
 #include <wx/font.h>
+#include <wx/colour.h>
 #define BASETEXTOUT wxWindow
 #endif
 
@@ -109,49 +110,42 @@ class CxTextOut : public BASETEXTOUT
     void SetBackColour( COLORREF col ); // Set the background Colour
     void SetHead( int nHead );          // Set the Head
     int GetHead() const { return( m_nHead ); }; // Return the Head
-        int GetMaxViewableLines();     // Return viewable lines
+    int GetMaxViewableLines();     // Return viewable lines
 
-        Boolean IsAHit( CcString & commandString, int x, int y );
+    Boolean IsAHit( CcString & commandString, int x, int y );
 
-protected:
-
-
-
-
-    private:
-        // attributes
+  private:
+// attributes
     CrTextOut * ptr_to_crObject;
     int     mIdealHeight;
     int     mIdealWidth;
-//    int    mHeight;
-    COLORREF        m_BackCol;          // Background Colour
-        bool mbOkToDraw;
+    bool mbOkToDraw;
 
 #ifdef __CR_WIN__
     CFont*          m_pFont;            // Font we are using
     LOGFONT         m_lfFont;           // Font as a LOGFONT
     CStringArray    m_Lines;            // Lines
+    COLORREF        m_BackCol;          // Background Colour
+    HCURSOR         m_hCursor;          // Cursor for the window
+    COLORREF        m_ColTable[ 16 ];   // Colour Table
 #endif
 #ifdef __BOTHWX__
     wxFont*         m_pFont;            // Font we are using
     wxStringList    m_Lines;
     wxBrush*        m_brush;
     wxPen*          m_pen;
+    wxColour        m_BackCol;
+    wxColour        m_ColTable[16];
 #endif
     int             m_nHead;            // Head of the buffer
-        int                    m_nMaxLines;            // Maximum buffer size
-        int                    m_nDefTextCol;          // Default Text Colour Index
-        int                     m_nXOffset;                     // X Offset for drawing
-        int                    m_nMaxWidth;            // Maximum Written so far
-        int                    m_nAvgCharWidth;        // Average Char Width
-        bool                    m_bInLink;            // Word wrapping?
-#ifdef __CR_WIN__
-    HCURSOR         m_hCursor;          // Cursor for the window
-#endif
-        int                    m_nFontHeight;          // Height of the font
-    COLORREF        m_ColTable[ 16 ];   // Colour Table
-        int                    m_nLinesDone;           // Actual number of lines we drew last-time
-
+    int             m_nMaxLines;            // Maximum buffer size
+    int             m_nDefTextCol;          // Default Text Colour Index
+    int             m_nXOffset;                     // X Offset for drawing
+    int             m_nMaxWidth;            // Maximum Written so far
+    int             m_nAvgCharWidth;        // Average Char Width
+    bool            m_bInLink;            // Word wrapping?
+    int             m_nFontHeight;          // Height of the font
+    int             m_nLinesDone;           // Actual number of lines we drew last-time
     void UpdateHScroll();
     void UpdateVScroll();
 
@@ -166,31 +160,31 @@ protected:
     int  GetColourCodes( CcString&, COLOURCODE* );      // Remains the same
 
 #ifdef __CR_WIN__
-        protected:
+  protected:
     afx_msg void OnPaint();
-        afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-        afx_msg void OnMouseMove( UINT nFlags, CPoint wpoint );
+    afx_msg void OnMouseMove( UINT nFlags, CPoint wpoint );
     //}}AFX_MSG
-        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-        DECLARE_MESSAGE_MAP()
+    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+    DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-      public:
-     void OnPaint(wxPaintEvent & evt);
-     void OnEraseBackground(wxEraseEvent & evt);
-     void OnScroll(wxScrollWinEvent & evt);
-     void OnSize(wxSizeEvent & evt);
-     void OnLButtonUp(wxMouseEvent & evt);
-     void OnRButtonDown(wxMouseEvent & evt);
-         void OnMouseMove(wxMouseEvent & evt);
-         void OnChar(wxKeyEvent & event );
-         DECLARE_EVENT_TABLE()
+  public:
+    void OnPaint(wxPaintEvent & evt);
+    void OnEraseBackground(wxEraseEvent & evt);
+    void OnScroll(wxScrollWinEvent & evt);
+    void OnSize(wxSizeEvent & evt);
+    void OnLButtonUp(wxMouseEvent & evt);
+    void OnRButtonDown(wxMouseEvent & evt);
+    void OnMouseMove(wxMouseEvent & evt);
+    void OnChar(wxKeyEvent & event );
+    DECLARE_EVENT_TABLE()
 #endif
 
 };

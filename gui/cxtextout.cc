@@ -24,7 +24,9 @@
 #include <wx/settings.h>
 #include <wx/cmndata.h>
 #include <wx/fontdlg.h>
-//#define RGB wxColour
+#endif
+#ifdef __LINUX__
+#define RGB wxColour
 #endif
 
 int CxTextOut::mTextOutCount = kTextOutBase;
@@ -92,9 +94,6 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_LIGHTGREY ]  = RGB( 192, 192, 192 );  //15
 #ifdef __CR_WIN__
     m_hCursor = AfxGetApp()->LoadStandardCursor( IDC_IBEAM );
-#endif
-#ifdef __BOTHWX__
-          SetCursor( wxCursor(wxCURSOR_IBEAM) );
 #endif
 }
 
@@ -189,6 +188,10 @@ void CxTextOut::Init()
     SetScrollbar( wxHORIZONTAL, 0, 0, 0 );
 #endif
     mbOkToDraw = true;
+
+#ifdef __BOTHWX__
+    SetCursor( wxCursor(wxCURSOR_IBEAM) );
+#endif
 
 }
 
