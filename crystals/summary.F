@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2002/01/14 12:21:40  ckpgroup
+C SH: Added Fo vs. Fc scatter graph (use xfovsfc.ssc).
+C
 C Revision 1.11  2001/12/17 16:29:43  Administrator
 C Fix translational components 9/4 -> 5/4. An old but forgotten errror may be re-introduced
 C
@@ -833,6 +836,7 @@ C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
       CHARACTER *8 CNAME(35)
+      CHARACTER *15 HKLLAB
 \ICOM30
       DIMENSION KEY(35)
 \ISTORE
@@ -924,9 +928,13 @@ C
         N6ACC = N6ACC + 1
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
-
       IF ( LEVEL .EQ. 4 ) THEN
-        WRITE(CMON,'(A,2F15.7)')'^^PL DATA ', FC ,FO
+        WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1  NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+        CALL XCREMS(HKLLAB, HKLLAB, IHKLLEN)
+
+        WRITE(CMON,'(A,3A,A,2F15.7)')
+     1 '^^PL LABEL ', '''', HKLLAB(1:IHKLLEN-1), '''',' DATA ', FC ,FO
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
