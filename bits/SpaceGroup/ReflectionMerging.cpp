@@ -575,7 +575,7 @@ float sumdiff(Array<float>& pValues, float pMean)
     return tTotal;
 }
 
-static multiset<Reflection*, lsreflection>* gSortedReflections = NULL;
+//static multiset<Reflection*, lsreflection>* gSortedReflections = NULL;
 static size_t gNumRefl = 0;
 static Reflection* gReflections = NULL;
 
@@ -594,11 +594,11 @@ MergedData::MergedData(const size_t pNumRefl):iUpto(0), iRFactor(-1)
     {
         gReflections = new Reflection[gNumRefl];
     }
-    if (gSortedReflections == NULL)
+/*    if (gSortedReflections == NULL)
     {
         gSortedReflections = new multiset<Reflection*, lsreflection>();
     }
-    gSortedReflections->clear();
+    gSortedReflections->clear();*/
 }
 
 MergedData::~MergedData()
@@ -611,7 +611,8 @@ void MergedData::add(const Matrix<short>& pHKL, const Reflection& pRefl)
     gReflections[iUpto].setHKL(pHKL);
     gReflections[iUpto].i = pRefl.i;
     gReflections[iUpto].iSE = pRefl.iSE;
-    gSortedReflections->insert(&(gReflections[iUpto++]));
+	iUpto ++;
+    //gSortedReflections->insert(&(gReflections[iUpto++]));
 }
 
 /*
@@ -623,9 +624,9 @@ void MergedData::releaseReflections()
     {
         delete[] gReflections; //Release all the global reflections used.
         gReflections = NULL;    //Make sure that we know that this is need.
-        gSortedReflections->clear(); //Clear all the reflections which where in the sorted list because they no longer exist
-        delete gSortedReflections;  //Release the memory
-        gSortedReflections = NULL; 
+      //  gSortedReflections->clear(); //Clear all the reflections which where in the sorted list because they no longer exist
+        //delete gSortedReflections;  //Release the memory
+        //gSortedReflections = NULL; 
     }
 }
 
@@ -634,35 +635,40 @@ float MergedData::calculateRFactor()
 	static Matrix<short>* tCurHKL;
         static Array<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
         tValues.clear();                                //Clear the values from the last time they were used.
-        multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin(); //Start at the first 
+       // multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin(); //Start at the first 
         register float tSumSum = 0;                              //Make sure that every thing is set to 0
         register float tMeanDiffSum = 0;
         register float tSum = 0;
         
+		unsigned int i = 0;
+		
         int tNumMerged = 0, tNumResRef=0;
-        
-        cout << gLaueGroup << "\n";
-        tCurHKL = (*(gSortedReflections->begin()))->tHKL; //Save the pointer to the current hkl value
-        while (tIter != gSortedReflections->end()) //Run through all the reflections
+		//const int N =  gNumRefl / sizeof(Reflection);
+        sort(gReflections, gReflections+gNumRefl);
+        cout << gLaueGroup ;//<< "\n";
+        tCurHKL = gReflections[i].tHKL;// (*(gSortedReflections->begin()))->tHKL; //Save the pointer to the current hkl value
+        while (i < gNumRefl) 
+		//tIter != gSortedReflections->end()) //Run through all the reflections
         {
-            if (  !((*(*tIter)->tHKL) == (*tCurHKL))) //If the HKL value has changed then 
-	    {
-		if (tValues.size()>1) //As long as there are more then one reflection
-		{
-                   // cout << tCurHKL->getValue(0) << " " << tCurHKL->getValue(1) << " " << tCurHKL->getValue(2) << "\n";
-                    tNumMerged += tValues.size();
-                    
-		    tSum = fabsf(sum(tValues.getPointer(), tValues.size()));
-		    tSumSum += tSum;
-                        
-		    tMeanDiffSum += sumdiff(tValues, tSum/tValues.size());
-		}
-		tCurHKL = (*tIter)->tHKL; //Save the next hkl value
-		tValues.clear();   //Remove all the old intensities
-                tNumResRef  ++;
-	    }
-            tValues.add((*tIter)->i);  //Save the intensity
-            tIter++; //Move on to the next reflection in the list.
+            if (  !((*(gReflections[i].tHKL)) == (*tCurHKL))) //If the HKL value has changed then 
+			{
+				if (tValues.size()>1) //As long as there are more then one reflection
+				{
+					// cout << tCurHKL->getValue(0) << " " << tCurHKL->getValue(1) << " " << tCurHKL->getValue(2) << "\n";
+					tNumMerged += tValues.size();
+							
+					tSum = fabsf(sum(tValues.getPointer(), tValues.size()));
+					tSumSum += tSum;
+								
+					tMeanDiffSum += sumdiff(tValues, tSum/tValues.size());
+				}
+				tCurHKL = gReflections[i].tHKL; //(*tIter)->tHKL; //Save the next hkl value
+				tValues.clear();   //Remove all the old intensities
+				tNumResRef  ++;
+			}
+			tValues.add(gReflections[i].i);
+           // tValues.add((*tIter)->i);  //Save the intensity 
+            i++; //tIter++; //Move on to the next reflection in the list.
         }
       //  cout << "\n\tNumber of reflections merged: " << (tNumMerged) << "\n";
         //cout << "\tNumber of merged reflections: " << (tNumResRef) << "\n";
@@ -672,6 +678,7 @@ float MergedData::calculateRFactor()
         else
             iRFactor = tMeanDiffSum/tSumSum; //In the desciption this is multiplied by
 	//But as these values are for comparison there isn't much point
+	cout << iRFactor << "\n";
         return iRFactor;
 }
 
