@@ -212,7 +212,7 @@ bool CCrystalsApp::OnInit()
       theCrApp = new CrApp("","crfilev2.dsc");
 
 	  kickTimer = new wxTimer(this, 5241);
-      kickTimer->Start(1000);      //Call OnKickTimer every second while idle.
+      kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
       return true;
 }
 
@@ -245,15 +245,16 @@ int CCrystalsApp::OnExit()
 {
 
     delete theCrApp;
-//  delete (CFrameWnd*)m_pMainWnd;
-
     return wxApp::OnExit();
 }
 
 
 void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 {
-	DoCommandTransferStuff();
+        for ( int i=0; i<50; i++ )
+        {  
+           if ( ! DoCommandTransferStuff() ) break;
+        }
 }
 
 #endif
@@ -278,6 +279,6 @@ BOOL CCrystalsApp::DoCommandTransferStuff()
     }
 
 
-	return appret;
+    return appret;
 }
 
