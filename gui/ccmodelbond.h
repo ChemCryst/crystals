@@ -8,6 +8,7 @@ class CcTokenList;
 #include "ccmodelobject.h"
 
 class CcModelAtom;
+class CcModelStyle;
 
 class CcModelBond : public CcModelObject
 {
@@ -15,9 +16,8 @@ class CcModelBond : public CcModelObject
     CcModelBond(CcModelDoc* pointer);
     ~CcModelBond();
     void ParseInput(CcTokenList* tokenList);
-    void Render(CrModel* view, bool detailed);
+    void Render(CcModelStyle *style);
     void SelfExclude();
-
     bool m_excluded;
     CcModelAtom *atom1, *atom2;
 
@@ -28,7 +28,6 @@ class CcModelBond : public CcModelObject
     int rad;
     float length;
     float xrot, yrot;
-    CcString label;
 };
 
 

@@ -24,6 +24,8 @@ CcModelBond::CcModelBond(CcModelDoc * pointer)
     atom1 = nil; atom2 = nil;
     mp_parent = pointer;
     m_excluded = false;
+    glID = 0;
+    type = CC_BOND;
 }
 
 CcModelBond::~CcModelBond()
@@ -64,20 +66,16 @@ void CcModelBond::ParseInput(CcTokenList* tokenList)
 
 }
 
-void CcModelBond::Render(CrModel * view, bool detailed)
+void CcModelBond::Render(CcModelStyle *style)
 {
 
 
-   int detail = (detailed)? view->m_NormalRes : view->m_QuickRes ;
+   int detail = (style->high_res)? style->normal_res : style->quick_res ;
    glPushMatrix();
-   glPushAttrib(GL_POLYGON_BIT);
-
 
       GLUquadricObj* cylinder;
       if ( m_excluded )
       {
-        glPolygonMode(GL_FRONT, GL_POINT);
-        glPolygonMode(GL_BACK, GL_POINT);
         GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
         GLfloat Diffuse[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
         glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
@@ -86,16 +84,10 @@ void CcModelBond::Render(CrModel * view, bool detailed)
       else
       {
         GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-        GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
-        GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
-        GLfloat Shinine[] = {89.6f};
         glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
       }
 
-      int bondrad = (int)((float)rad* view->RadiusScale());
+      int bondrad = (int)((float)rad * style->radius_scale);
 
 // Remember that these commands appear backwards if you think of them
 // operating on the bond, instead think of them operating on the whole
@@ -110,7 +102,7 @@ void CcModelBond::Render(CrModel * view, bool detailed)
       gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
       gluDeleteQuadric(cylinder);
 
-   glPopAttrib();
+//   glPopAttrib();
    glPopMatrix();
 
 
