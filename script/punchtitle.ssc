@@ -1,0 +1,6 @@
+%SCRIPT PUNCHTITLE
+%%
+%% Write the current TITLE to the current PUNCH file
+%%
+% TRANSFER CTITLE TO PUNCH
+%END SCRIPT
