@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2002/07/29 12:59:25  richard
+C When adding new items to L29 either set colour to 'UNKN', or find the correct
+C colour. (This L29 remains loaded and will be used by XGUIUP).
+C
 C Revision 1.26  2002/07/23 15:51:33  richard
 C If XBCALC is called internally, with MODE 2 (i.e. from #EDIT), then don't
 C even think about trying to write L41 back to disk - bad things will happen
@@ -5512,6 +5516,15 @@ C--READ THE DATA
 
       END IF
 
+ 
+      IF ( INTERN .EQ. 2 ) THEN  ! Call from #EDIT, potentially messy.
+C #EDIT reserves the right to add atoms on to the end of its L5, which
+C is loaded so that the next potential atom belongs at NFL.
+C This is my work aroudn:
+         KBNFL = NFL
+         NFL = NFL + 10*N5*MD5
+      END IF
+
 C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
 
 
@@ -5520,44 +5533,52 @@ C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
       IF ( KEXIST(5) .LT. 1 ) GOTO 9900
       IF ( KEXIST(29) .LT. 1 ) GOTO 9900
       
-      IF (KHUNTR ( 1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
-      IF (KHUNTR ( 2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
       IF ( INTERN .NE. 2 ) THEN
-         IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
-      END IF
-      IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
-      IF ( IERFLG .LT. 0 ) GO TO 9900
 
-      IF ( KEXIST(40) .GE. 1 ) THEN
+        IF (KHUNTR ( 1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+        IF (KHUNTR ( 2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
+        IF ( INTERN .NE. 2 ) THEN
+          IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+        END IF
+        IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+
+        IF ( KEXIST(40) .GE. 1 ) THEN
 C -- Load existing list forty:
-         IF (KHUNTR (40,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL40
-         IF ( IERFLG .LT. 0 ) GO TO 9900
-      ELSE
+          IF (KHUNTR (40,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL40
+          IF ( IERFLG .LT. 0 ) GO TO 9900
+        ELSE
 C -- C R E A T E   A   N E W   ( N U L L )   L I S T   4 0:
-         IDWZAP = 0
-         CALL XFILL (IDWZAP, ICOM40, IDIM40)
-         N40T = 1
-         N40E = 0
-         N40P = 0
-         N40M = 0
-         N40B = 0
-         CALL XCELST ( 40, ICOM40, IDIM40 )
+          IDWZAP = 0
+          CALL XFILL (IDWZAP, ICOM40, IDIM40)
+          N40T = 1
+          N40E = 0
+          N40P = 0
+          N40M = 0
+          N40B = 0
+          CALL XCELST ( 40, ICOM40, IDIM40 )
           CALL XWLSTD ( 40, ICOM40, IDIM40, 0, 1)
-      ENDIF
+        ENDIF
 
-      IF ( KEXIST(41) .GE. 1 ) THEN
+        IF ( KEXIST(41) .GE. 1 ) THEN
 C -- Load existing list forty-one (ready for overwriting):
-         CALL XLDLST ( 41, ICOM41, IDIM41, -1 )
-         IF ( IERFLG .LT. 0 ) GO TO 9900
-      ELSE
+          CALL XLDLST ( 41, ICOM41, IDIM41, -1 )
+          IF ( IERFLG .LT. 0 ) GO TO 9900
+        ELSE
 C -- C R E A T E   A   N E W   L I S T   4 1:
-         IDWZAP = 0
-         CALL XFILL (IDWZAP, ICOM41, IDIM41)
-         N41B = 0 !Bond list, no entries
-         N41A = 0 !Atom list, no entries
-         N41D = 1 !Dependencies, one record.
-         CALL XCELST ( 41, ICOM41, IDIM41 )
+          IDWZAP = 0
+          CALL XFILL (IDWZAP, ICOM41, IDIM41)
+          N41B = 0 !Bond list, no entries
+          N41A = 0 !Atom list, no entries
+          N41D = 1 !Dependencies, one record.
+          CALL XCELST ( 41, ICOM41, IDIM41 )
+        END IF
       END IF
+
+C Remeber a few pointers
+
+      KBL29 = L29
+      KBN29 = N29
 
 
       IF ( ( IPROCS(1) .EQ. 0 ) .AND. ( K41DEP() .GE. 1 ) ) THEN
@@ -5595,7 +5616,7 @@ C -- Overwrite vdw with maxbonds info
          END DO
 C If not it L29, check if we have found already.
          IF ( KFOUND .EQ. 0 ) THEN
-           DO M29= NEWL29,NEWL29 + NOTFND*MD29,MD29
+           DO M29= NEWL29,NEWL29 + (NOTFND-1)*MD29,MD29
              IF ( STORE(M40E) .EQ. STORE(M29) ) THEN
                 KFOUND = 1
                 WRITE(CMON,'(2A)')
@@ -5627,7 +5648,7 @@ C -- Add this extra element in L29 style at NEWL29.
          END DO
 C If not in L29, check if we have found already.
          IF ( KFOUND .EQ. 0 ) THEN
-           DO M29= NEWL29,NEWL29 + NOTFND*MD29,MD29
+           DO M29= NEWL29,NEWL29 + (NOTFND-1)*MD29,MD29
              IF ( STORE(M5) .EQ. STORE(M29) ) THEN
                 KFOUND = 1
                 EXIT
@@ -5663,7 +5684,7 @@ C Read the properties file and extract cov, vdw and colour.
                     READ(WCLINE(13:16),'(F4.2)') COV
                     READ(WCLINE(62:65),'(A4)') ICOL
                     STORE(NEWM29+1) = COV
-                    STORE(NEWM29+7) = ICOL
+                    ISTORE(NEWM29+7) = ICOL
                     EXIT
                  END IF
               END DO
@@ -5672,11 +5693,11 @@ C Read the properties file and extract cov, vdw and colour.
             END IF
             NOTFND = NOTFND + 1
             WRITE(CATTYP,'(A4)')ISTORE(M5)
-C            IF ( CATTYP(1:1).NE.'Q' ) THEN
+            IF ( CATTYP(1:1).NE.'Q' ) THEN
               WRITE(CMON,'(3A)')'FYI: Element not in L40 or L29: ',
      1                        ISTORE(M5),ICOL
               CALL XPRVDU(NCVDU,1,0)
-C            END IF
+            END IF
          END IF
       END DO
 
@@ -5711,6 +5732,7 @@ C -- Allocate a N5 length vector to hold: { maxbonds, bondssofar }
          ISTORE(LATVEC+(I5*2))   = NINT(STORE(M29+2))
          ISTORE(LATVEC+(I5*2)+1) = 0
       ENDDO
+
 
 C -- There are two parts of list 40 that must be used within the
 C -- MAKE41 routine to determine bonding. Firstly, the DEFAULTS
@@ -6025,6 +6047,15 @@ C -- the list can be used as is.
 
 
 3350  CONTINUE
+
+      IF ( INTERN .EQ. 2 ) THEN  ! Call from #EDIT, potentially messy.
+C This is my work around:
+         NFL = KBNFL
+      END IF
+C Restore those old pointers
+      L29 = KBL29
+      N29 = KBN29
+
       CALL XOPMSG (IOPSLA, IOPEND, 201)
       CALL XTIME2(1)
       RETURN
