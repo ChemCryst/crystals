@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2004/06/08 14:15:22  djw
+C Output all L30 info in summary
+C
 C Revision 1.59  2004/05/12 09:56:14  rich
 C Store the Wilson scale and B factors in list 30.
 C
@@ -1694,11 +1697,11 @@ C--SETUP A GRAPH HERE
       IF ( LEVEL .EQ. 5 ) THEN                 ! Normal probability plot
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
-     1  '^^PL XAXIS TITLE ''w^.5(Fo-Fc)'' NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE ''Z-score'' SERIES 1 TYPE SCATTER'
+     1  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''w^.5(Fo-Fc)'' SERIES 1 TYPE SCATTER'
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
           WRITE(CMON(2),'(A)')
-     1      '^^PL XAXIS TITLE ''w^.5(Fo^2-Fc^2)'' NSERIES=1 LENGTH=2000'
+     1      '^^PL YAXIS TITLE ''w^.5(Fo^2-Fc^2)'' NSERIES=1 LENGTH=2000'
         END IF
         CALL XPRVDU(NCVDU, 3,0)
       END IF
@@ -1894,7 +1897,7 @@ c debug          CALL XPRVDU(NCVDU,1,0)
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
            CALL XCRAS(HKLLAB, IHKLLEN)
            WRITE(CMON,'(3A,2F11.3)')
-     1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',STR11(I*2-1), Z
+     1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
             CALL XPRVDU(NCVDU, 1,0)
 
         END DO
