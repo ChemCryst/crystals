@@ -4,13 +4,10 @@
 %%
 %%
 % VERIFY DIST ANGLE PLANE VIB SIM
-% GET NOSTORE SILENT FINAL ABBREVIATED 'Restraint type?' 'DIST'
+% GET SILENT NOSTORE FINAL ABBREVIATED 'Restraint type?' 'DIST'
 % CASE VALUE
 %   BLOCK %DIST%
 %% Get two values and an END.
-^^WI WINDOW XRESTRD 'Restrain Distance' MODAL
-^^WI GRID RESMAIN NROWS=5 NCOLS=5
-^^WI {
 %     CLEAR
 %     INSERT "^^WI @ 2,2 STATIC T0 'Restrain "
 %     GET SILENT TEXT 'Atom 1'
@@ -20,6 +17,9 @@
 %     EVALUATE CAT2 = CVALUE
 %     INSERT "'"
 %     GET SILENT NOSTORE TEXT 'type end...'
+^^WI WINDOW XRESTRD 'Restrain Distance' MODAL
+^^WI GRID RESMAIN NROWS=5 NCOLS=5
+^^WI {
 %     OUTPUT
 %     CLEAR
 ^^WI   @ 4,2 GRID LEFT NROWS=3 NCOLS=5
@@ -64,9 +64,6 @@
 %   END BLOCK
 %   BLOCK %ANGLES%
 %% Get three values and an END.
-^^WI WINDOW XRESTRD 'Restrain Angle' MODAL
-^^WI GRID RESMAIN NROWS=5 NCOLS=5
-^^WI {
 %     CLEAR
 %     INSERT "^^WI @ 2,2 STATIC T0 'Restrain "
 %     GET NOSTORE SILENT TEXT 'Middle atom'
@@ -85,6 +82,9 @@
 %     EVALUATE CAT2 = CATM
 %     TRANSFER CAT1 // "-" // CAT2 // "-" // CAT3 // "'" TO BUFFER
 %     GET SILENT NOSTORE TEXT 'type end...'
+^^WI WINDOW XRESTRD 'Restrain Angle' MODAL
+^^WI GRID RESMAIN NROWS=5 NCOLS=5
+^^WI {
 %     OUTPUT
 %     CLEAR
 ^^WI   @ 4,2 GRID LEFT NROWS=3 NCOLS=5
@@ -129,9 +129,6 @@
 %   END BLOCK
 %   BLOCK %PLANE%
 %% Get some values and an END.
-^^WI WINDOW XRESTRD 'Restrain Angle' MODAL
-^^WI GRID RESMAIN NROWS=6 NCOLS=5
-^^WI {
 %     CLEAR
 %     INSERT "%EVALUATE CATM = '"
 %     LOOP
@@ -140,11 +137,12 @@
 %     END LOOP
 %     INSERT "'"
 %     EXECUTE
-%     CLEAR
+^^WI WINDOW XRESTRD 'Restrain Plane' MODAL
+^^WI GRID RESMAIN NROWS=6 NCOLS=5
+^^WI {
 ^^WI   @ 2,2 STATIC T0
 %     TRANSFER "^^WI 'Restrain " // CATM // "'" TO DISPLAY
 ^^WI   @ 3,2 STATIC T2 'to be planar.'
-%     CLEAR
 ^^WI   @ 5,2 GRID LEFT NROWS=1 NCOLS=5
 ^^WI   {
 ^^WI     @ 1,1 STATIC T3 'E.s.d.'
@@ -181,11 +179,7 @@
 %   END BLOCK
 %   BLOCK %VIB%
 %% Get two values and an END.
-^^WI WINDOW XRESTRD 'Restrain Vibration' MODAL
-^^WI GRID RESMAIN NROWS=6 NCOLS=5
-^^WI {
 %     CLEAR
-^^WI  @ 2,2 STATIC Tx 'Restrain mean square displacement'
 %     INSERT "^^WI @ 3,2 STATIC T0 'along "
 %     GET SILENT TEXT 'Atom 1'
 %     EVALUATE CAT1 = CVALUE
@@ -194,6 +188,10 @@
 %     EVALUATE CAT2 = CVALUE
 %     INSERT "'"
 %     GET SILENT NOSTORE TEXT 'type end...'
+^^WI WINDOW XRESTRD 'Restrain Vibration' MODAL
+^^WI GRID RESMAIN NROWS=6 NCOLS=5
+^^WI {
+^^WI  @ 2,2 STATIC Tx 'Restrain mean square displacement'
 %     OUTPUT
 %     CLEAR
 ^^WI   @ 5,2 GRID LEFT NROWS=3 NCOLS=5
@@ -232,12 +230,7 @@
 %   END BLOCK
 %   BLOCK %SIM%
 %% Get two values and an END.
-^^WI WINDOW XRESTRD 'Thermal similarity' MODAL
-^^WI GRID RESMAIN NROWS=7 NCOLS=5
-^^WI {
 %     CLEAR
-^^WI  @ 2,2 STATIC Tx 'Restrain difference between'
-^^WI  @ 3,2 STATIC Tx 'corresponding u[ii] and u[ij] parameters'
 %     INSERT "^^WI @ 4,2 STATIC T0 'on atoms "
 %     GET SILENT TEXT 'Atom 1'
 %     EVALUATE CAT1 = CVALUE
@@ -246,6 +239,11 @@
 %     EVALUATE CAT2 = CVALUE
 %     INSERT "'"
 %     GET SILENT NOSTORE TEXT 'type end...'
+^^WI WINDOW XRESTRD 'Thermal similarity' MODAL
+^^WI GRID RESMAIN NROWS=7 NCOLS=5
+^^WI {
+^^WI  @ 2,2 STATIC Tx 'Restrain difference between'
+^^WI  @ 3,2 STATIC Tx 'corresponding u[ii] and u[ij] parameters'
 %     OUTPUT
 %     CLEAR
 ^^WI   @ 6,2 GRID LEFT NROWS=3 NCOLS=5
