@@ -1276,7 +1276,8 @@ C
 #GID          WRITE(NCVDU,1505)
 1505      FORMAT ( 15X , '0', 12X, 'Processing reflections ',
      2    11X , '100%')
-          IF (ISSTML .EQ. 3 ) CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
+C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
+           CALL OUTCOL(6)
 #GID          WRITE(NCVDU,'(15X,''^'',$)')
           NSTAR = 1
           NXTLVL = ( NSTAR * N6D ) / NINTER
@@ -1306,7 +1307,8 @@ C
       RETURN
 C
 1550  CONTINUE
-      IF ( ISSTML .EQ. 3)  CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
+C      CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
+      CALL OUTCOL(1)
 C------ SWITCH ON LINE FEEDS FOR DOS
           JNL77 = 1
       WRITE(NCAWU,1560)

@@ -242,7 +242,8 @@ C
 C----- CHANGE COLOUR UNDER DOS
         IF (ICPSTS .EQ. 0 ) THEN
 C----- CHANGE COLOUR TO BLUE  ON WHITE FOR COPIED TEXT
-          CALL VGACOL ( 'OFF', 'BLU', 'WHI')
+C          CALL VGACOL ( 'OFF', 'BLU', 'WHI')
+          CALL OUTCOL(1)
 C-----    SWITCH ON LINE FEEDS
           ICPSTS = 1
         ENDIF
@@ -254,7 +255,8 @@ C-----    SWITCH ON LINE FEEDS
       ELSE
          IF (ICPSTS .EQ. 1 ) THEN
 C----- RESTORE COLOUR TO WHITE ON BLUE
-          CALL VGACOL ( 'BOL', 'WHI', 'BLU')
+C          CALL VGACOL ( 'BOL', 'WHI', 'BLU')
+          CALL OUTCOL(1)
 C-----    COPY STATUS 'OFF'
           ICPSTS = 0
          ENDIF
@@ -329,7 +331,8 @@ C
         CALL XFLUNW ( 2 , 1 )
          IF (ICPSTS .EQ. 1 ) THEN
 C----- RESTORE COLOUR TO WHITE ON BLUE
-          CALL VGACOL ( 'BOL', 'WHI', 'BLU')
+C          CALL VGACOL ( 'BOL', 'WHI', 'BLU')
+          CALL OUTCOL(1)
 C-----    COPY STATUS 'OFF'
           ICPSTS = 0
          ENDIF
@@ -1390,7 +1393,8 @@ C
       ELSE IF ( IRQFNC .EQ. 10 ) THEN
         IF (ISSTML .EQ. 3 ) THEN
 C             IF TERMINAL CURRENTLY VGA, SWITCH TO BLACK AND WHITE
-              CALL VGACOL ( 'OFF', 'WHI', 'BLA' )
+C              CALL VGACOL ( 'OFF', 'WHI', 'BLA' )
+              CALL OUTCOL(5)
               WRITE ( CMON,'(80X)')
               CALL XPRVDU(NCVDU, 1,0)
         END IF
@@ -1402,10 +1406,12 @@ C-----  INITIALISE MENU AREAS AND SET TERMINAL TYPE ON VAX/NOVAX SYSTEMS
               LUPDAT = .FALSE.
         ELSE IF (ISSTML .EQ. 3 ) THEN
 C             VGA COLOURS
-              CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
+C              CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
+              CALL OUTCOL(1)
               LUPDAT = .FALSE.
         ELSE IF (ISSTML .EQ. 4) THEN
 C         WINDOWED OUTPUT
+              CALL OUTCOL(1)
               CALL XWININ (IWNFLG)
               IF (IWNFLG .EQ. 0) THEN
                   LUPDAT = .FALSE.

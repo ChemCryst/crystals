@@ -711,7 +711,8 @@ C--STANDARD TERMINATION SUBROUTINE
 CDJW99 SET TERMINAL UNKNOWN
 C       IF TERMINAL CURRENTLY VGA, SWITCH TO BLACK AND WHITE
         IF (ISSTML .EQ. 3 ) THEN
-              CALL VGACOL ( 'OFF', 'WHI', 'BLA' )
+C              CALL VGACOL ( 'OFF', 'WHI', 'BLA' )
+              CALL OUTCOL(5)
               WRITE ( CMON,'(80X)')
               CALL XPRVDU(NCVDU, 1,0)
               ISSTML = 0
@@ -872,7 +873,8 @@ C
 C
 C----- SET SCREEN ATRIBUTES UNDER DOS - BOLD
       IF (ISSTML .EQ. 3) THEN
-      CALL VGACOL ( 'BOL', 'BLU', 'BLA' )
+C      CALL VGACOL ( 'BOL', 'BLU', 'BLA' )
+      CALL OUTCOL(1)
       WRITE ( NCVDU, '(/,79A1)') (CHAR(42),I=1,79)
       ENDIF
 C
@@ -941,8 +943,9 @@ C -- THIS NEXT HEADER IS ONLY APPROPRIATE FOR INTERACTIVE JOBS
      6 9X , 'To end, type      ' , A1 , 'FINISH' , / )
 C
 C
+      CALL OUTCOL(1)
       IF ( ISSTML .EQ. 3) THEN
-            CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
+C            CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
             WRITE ( NCVDU, '(79A1)') (CHAR(42),I=1,79)
             WRITE ( NCVDU, '(79A1)') (' ' ,I=1,79)
             WRITE ( NCVDU, '(/)')
@@ -1388,14 +1391,14 @@ C----- SET THE ATTRIBUTES AND COLOURS FOR VGA SCREENS
 &DVFCGUI{
         CHARACTER*80 GUICOL(8)
         CHARACTER*80 GUIFUN(3)
-      DATA GUICOL(1) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 128 255 255'/
-      DATA GUICOL(2) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 128  64'/
-      DATA GUICOL(3) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0   255 0'/
-      DATA GUICOL(4) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0   255 255'/
-      DATA GUICOL(5) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 128 255 255'/
-      DATA GUICOL(6) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0   255'/
-      DATA GUICOL(7) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 255 0'/
-      DATA GUICOL(8) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 255 255'/
+      DATA GUICOL(1) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 128 255 255'/     BLA
+      DATA GUICOL(2) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 128  64'/     RED
+      DATA GUICOL(3) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0   255 0'/       GRE
+      DATA GUICOL(4) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0   255 0'/       YEL
+      DATA GUICOL(5) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0   0   0  '/     BLU
+      DATA GUICOL(6) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0   255'/     MAG
+      DATA GUICOL(7) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 255 0'/       CYA
+      DATA GUICOL(8) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0   0'/       WHI
       DATA GUIFUN(1) /'^^CO SET TEXTOUTPUT TEXTBOLD=NO TEXTUNDERLINE=NO
      1TEXTITALIC=NO'/
       DATA GUIFUN(2) /'^^CO SET TEXTOUTPUT TEXTBOLD=YES'/
@@ -1463,6 +1466,65 @@ C------ SWITCH ON LINE FEEDS
         WRITE ( CMON,'(A)') GUIFUN(IFUN)
         CALL XPRVDU(NCVDU,1,0)
         RETURN
+      ENDIF
+      RETURN
+      END
+
+CODE FOR OUTCOL
+      SUBROUTINE  OUTCOL( ICOL )
+C----- SET THE ATTRIBUTES AND COLOURS FOR TEXT OUTPUT
+\XUNITS
+\XSSVAL
+\XIOBUF
+\OUTCOL
+C     ICOL  Meaning           WinColour   VGAColour
+C     ----  -------           ---------   ---------
+C     1     NORMAL            Black       Bold White on Blue
+C     2     DIAGRAM           Blue        Black on Cyan
+C     3     SCRIPT QUESTION   Red         Bold White on Blue
+C     4     SCRIPT MENU       Green       Bold Yellow on Cyan
+C     5     TERM UNKNOWN      Black       White on Black
+C     6     PROCESSING REFS   Black       Bold Yellow on Black
+
+      CHARACTER*80 GUICOL(6)
+      CHARACTER*16 VGACOL(6)
+      DATA GUICOL(1) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           1 NORM
+      DATA GUICOL(2) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 255'/         2 DIAGRAM
+      DATA GUICOL(3) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0 0'/         3 SCR QUESTION
+      DATA GUICOL(4) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 255 0'/         4 SCR MENU
+      DATA GUICOL(5) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           5 UNKNOWN (NORM)
+      DATA GUICOL(6) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           6 PROCESSING REFLECTIONS
+
+100   FORMAT (A)
+101   FORMAT (1X, 7A)
+
+      IF (ISSTML .LE. 2) RETURN
+
+      IF ((ICOL .GT. 6).OR.(ICOL.LT.0)) RETURN
+
+      IF (ICOL .EQ. IOLDC) RETURN
+
+      IOLDC = ICOL
+
+      IF (ISSTML .EQ.3) THEN
+          WRITE(VGACOL(1),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(2),101) CHAR(27),'[0m', CHAR(27),'[30m',
+     2                         CHAR(27),'[46m',CHAR(13)
+          WRITE(VGACOL(3),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(4),101) CHAR(27),'[1m', CHAR(27),'[33m',
+     2                         CHAR(27),'[46m',CHAR(13)
+          WRITE(VGACOL(5),101) CHAR(27),'[0m', CHAR(27),'[37m',
+     2                         CHAR(27),'[40m',CHAR(13)
+          WRITE(VGACOL(6),101) CHAR(27),'[1m', CHAR(27),'[33m',
+     2                         CHAR(27),'[40m',CHAR(13)
+          WRITE(NCVDU,100) VGACOL(ICOL)
+          RETURN
+      ELSEIF (ISSTML .EQ. 4) THEN
+          WRITE ( CMON,100) GUICOL(ICOL)
+          CALL XPRVDU(NCVDU, 1,0)
+          RETURN
       ENDIF
       RETURN
       END

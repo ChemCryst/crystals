@@ -75,6 +75,8 @@ C
 C
 \XDRIVE
 C
+\OUTCOL
+C
 C------ INITIALISE THE LINE COUNTER FOR PAGINATED OUTPUT
       DATA LDRV77 /0/, MDRV77 /22/, JNL77 /1/, JPMT77 /0/
 C----- INITIALISE THE VMS SCREEN MANAGER
@@ -1288,6 +1290,7 @@ C
      5              6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 /
 C
 C
+      DATA IOLDC / 0 /
 C
 C
       END

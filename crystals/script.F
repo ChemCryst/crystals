@@ -6089,9 +6089,10 @@ C---- CHECK FOR  TERMINAL TYPE, AND INSTRUCTION VERIFIED OR ABBREVIATED
           IF( ((ISSTML .NE. 1) .AND. (ISSTML .NE. 2))  .OR.
      1      ((IVALTP .NE. 5) .AND.(IVALTP .NE. 7)) ) THEN
 C----- NOT MENU MODE
+C            CALL VGACOL ('BOL', 'YEL', 'CYA' )
+            CALL OUTCOL(4)
             IF (ISSTML .EQ. 3) THEN
 C---- SPECIAL  DOS PROMPT - YELLOW ON CYAN
-              CALL VGACOL ('BOL', 'YEL', 'CYA' )
               WRITE ( CMON, 1102) CTOP(1:MLNLEN)
               CALL XPRVDU(NCVDU, 1,0)
               J = 1
@@ -6115,7 +6116,6 @@ C---- SPECIAL  DOS PROMPT - YELLOW ON CYAN
               WRITE ( CMON, 1102) CBTM(1:MLNLEN)
               CALL XPRVDU(NCVDU, 1,0)
 C----       NORMAL DOS PROMPT - RED ON WHITE
-              CALL VGACOL ('BOL', 'WHI', 'BLU' )
             ELSE
 C----- NORMAL TEXT TERMINAL
               J = 1
@@ -6137,6 +6137,8 @@ C----- NORMAL TEXT TERMINAL
 1105          CONTINUE
 1106          CONTINUE
             ENDIF
+C            CALL VGACOL ('BOL', 'WHI', 'BLU' )
+             CALL OUTCOL(1)
           ELSE
 C---- VT52/100       MENU MODE
             CALL XMENUR (CPRMPT, MENPMT, CLINPB, LENLIN, CDEFLT,
@@ -6147,7 +6149,9 @@ C---- VT52/100       MENU MODE
 C
 C -- PROMPT THE USER
 C
+      CALL OUTCOL(3)
         CALL XPRMPT ( NCVDU , CBUFFR(1:LENTOT) )
+      CALL OUTCOL(1)
 C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C
