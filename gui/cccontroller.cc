@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.65  2003/06/30 16:39:28  rich
+// Set thread pointer to NULL before exiting CRYSTALS thread.
+//
 // Revision 1.64  2003/05/21 11:22:18  rich
 // Log some comments as the CRYSTALS thread dies.
 //
@@ -451,10 +454,12 @@ int CcController::debugIndent = 0;
 
 CcController::CcController( CcString directory, CcString dscfile )
 {
+    m_start_ticks = GetTickCount();
 
 //Things
     mErrorLog = nil;
     mThisThreadisDead = false;
+    mThatThreadisDead = false;
     m_Completing = false;
 
     m_restart = false;
@@ -728,7 +733,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
       delete (CcController::mp_inputfont);
 #endif
 
-    if(mCrystalsThread != nil)
+    if(mCrystalsThread && !mThatThreadisDead)
     {
 #ifdef __CR_WIN__
       DWORD threadStatus;
@@ -1187,9 +1192,9 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             case kTGetKeyValue:
             {
                 tokenList->GetToken();
-                        CcString val = GetKey( tokenList->GetToken() );
-                        SendCommand(val);
-                        break;
+                CcString val = GetKey( tokenList->GetToken() );
+                SendCommand(val);
+                break;
             }
             case kTSetKeyValue:
             {
@@ -1538,7 +1543,7 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
       {
          if( line.Sub(1,2) == "^^")
          {
-              AddInterfaceCommand(line);
+              AddInterfaceCommand(line,true);
               return;
          }
       }
@@ -1562,7 +1567,7 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
 
 }
 
-void  CcController::AddInterfaceCommand( CcString line )
+void  CcController::AddInterfaceCommand( CcString line, bool internal )
 //------------------------------------------------------
 {
 /*  This is a critical section between the threads.
@@ -1596,7 +1601,7 @@ void  CcController::AddInterfaceCommand( CcString line )
       if ( chop ) 
       {
         CcString selector = line.Sub(chop-1,chop);
-        if ((selector == kSQuerySelector) || (selector == kSWaitControlSelector))
+        if ( !internal && ((selector == kSQuerySelector) || (selector == kSWaitControlSelector)))
         {
           lock = true;
           CompleteProcessing();
@@ -1692,7 +1697,7 @@ bool CcController::GetInterfaceCommand( char * line )
     //It needn't be highly optimised even though it is high on
     //the profile count list.
 
-  if( mCrystalsThread )
+  if( mCrystalsThread && !mThatThreadisDead)
   {
 #ifdef __CR_WIN__
     DWORD threadStatus;
@@ -1717,6 +1722,14 @@ bool CcController::GetInterfaceCommand( char * line )
       strcpy(line,"^^CO DISPOSE _MAIN ");
       return (true);
     }
+  }
+  else
+  {
+      LOGSTAT("The CRYSTALS thread has ended.");
+      mThisThreadisDead = true;
+      LOGSTAT("Shutting down this (GUI) thread.");
+      strcpy(line,"^^CO DISPOSE _MAIN ");
+      return (true);
   }
 
   m_Interface_Commands_CS.Enter();
@@ -1763,7 +1776,9 @@ void    CcController::LogError( CcString errString , int level )
       fprintf( mErrorLog, "  ");
     }
 
-    fprintf( mErrorLog, "%s\n", errString.ToCString() );
+    int elapse = GetTickCount() - m_start_ticks; // may go negative- GetTickCount wraps every 47 days.
+
+    fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.ToCString() );
     fflush( mErrorLog );
 
       #ifdef __LINUX__
@@ -2029,7 +2044,6 @@ void CcController::GetValue(CcTokenList * tokenList)
     }
 
 //If this is an EXISTS query, then send either TRUE or FALSE
-//If this is another query pass control to object, or if it doesn't exist, return ERROR.
 
     if( tokenList->GetDescriptor(kQueryClass) == kTQExists )
     {
@@ -2040,6 +2054,17 @@ void CcController::GetValue(CcTokenList * tokenList)
         else
             SendCommand("FALSE",true); //This is used to check if an object exists.
     }
+
+//If this is a GETKEY query, then process it at once.
+
+    else if( name.Compare(kSGetKeyValue) )
+    {
+        CcString val = GetKey( tokenList->GetToken() );
+        SendCommand(val,true);
+    }
+
+//If this is another query pass control to object, or if it doesn't exist, return ERROR.
+
     else
     {
         if ( theElement != nil )
@@ -3560,7 +3585,7 @@ extern "C" {
          }
       }
 
-      CcController::theController->ProcessOutput( "{I Starting " + firstTok + ", with args:" + restLine );
+//      CcController::theController->ProcessOutput( "{I Starting " + firstTok + ", with args:" + restLine );
 
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    "open",
@@ -3699,7 +3724,7 @@ extern "C" {
 
   }
 
-
+/*
   void ciflushbuffer( long *theLength, char * theLine )
   {
       *(theLine + *theLength) = '\0';
@@ -3708,6 +3733,7 @@ extern "C" {
 //      AfxGetMainWnd()->PostMessage(WM_TIMER); //Force idle processing to (re)start so
 //  #endif                                          //that the GetInterfaceCommand is called.
   }
+*/
 
   void FORCALL(cinextcommand) ( long *theStatus, char *theLine )
   {
@@ -3756,8 +3782,8 @@ extern "C" {
   #endif
         }
 
+        (CcController::theController)->mThatThreadisDead = true;
   #ifdef __CR_WIN__
-       (CcController::theController)->mCrystalsThread = nil;
         AfxEndThread((UINT) theExitcode);
   #endif
   #ifdef __BOTHWX__

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.33  2003/05/12 11:55:50  rich
+//   Remove Boolean type.
+//
 //   Revision 1.32  2003/05/12 11:13:20  rich
 //
 //   RIC: Introduce a "batch" mode which can be set as an attribute of the main CRYSTALS
@@ -197,7 +200,7 @@ class   CcController
 
     void  AddCrystalsCommand( CcString line , bool jumpQueue = false);
     bool GetCrystalsCommand( char * line );
-    void  AddInterfaceCommand( CcString line );
+    void  AddInterfaceCommand( CcString line, bool internal = false );
     bool GetInterfaceCommand( char * line );
 //    bool GetInterfaceCommand( CcString * line );
 
@@ -235,8 +238,11 @@ class   CcController
 
     CcChartDoc* mCurrentChartDoc;
     bool mThisThreadisDead;
+    bool mThatThreadisDead;
     bool m_Completing;
     CcStatus status;
+
+    int m_start_ticks;
 
     static CcController* theController;
     static int debugIndent;
@@ -305,7 +311,7 @@ extern "C" {
   // new style API for FORTRAN
   // FORCALL() macro adds on _ to end of word for linux version.
 
-  void  ciflushbuffer  (    long *theLength,    char * theLine  );
+//  void  ciflushbuffer  (    long *theLength,    char * theLine  );
   void  endthread      (  long theExitcode                  );
 
   void  FORCALL(cinextcommand)  (    long *theStatus,    char theLine[80]);
