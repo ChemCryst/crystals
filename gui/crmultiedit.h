@@ -57,7 +57,7 @@ class CxMultiEdit;
 #define kSSpew			"SPEW"
 
 enum {
- kTTextColour = 1700,
+ kTTextColour = 1900,
  kTTextBold,	
  kTTextItalic,	
  kTTextUnderline,
