@@ -1,5 +1,8 @@
 
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2002/07/19 08:56:25  Administrator
+C Typo.
+C
 C Revision 1.23  2002/07/18 17:26:04  richard
 C
 C New #DISTANCE directives: NOTBONDED [atoms or types]
@@ -5507,7 +5510,9 @@ C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
       
       IF (KHUNTR ( 1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
-      IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      IF ( INTERN .NE. 2 ) THEN
+         IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      END IF
       IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
       IF ( IERFLG .LT. 0 ) GO TO 9900
 

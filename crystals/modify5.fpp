@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/07/22 08:11:15  richard
+C
+C Added new #EDIT directive: CLASH. MODE=REPORT, FIXLATTER or FIXFORMER. Either
+C just reports clashes, or fixes them (FIXLATTER changing serials lower down
+C the list, and FIXFORMER changing those higher up the list.) The new serial is
+C chosen to be one higher than ANY existing serial in L5.
+C
 C Revision 1.27  2002/07/18 17:11:58  richard
 C If 'monitor' is set to off, and users 'QUIT's from #EDIT, then don't print
 C the warnings. This allows SCRIPTS to sneakily do things without alarming
@@ -2061,7 +2068,7 @@ C--APPLY THE MATRIX
       DO 6900 JW=1,N5A
 C--GENERATE THE NEW COORDS. BY ROTATION
          BPD(1)=STORE(M5A+4)
-         BPD(2)=STORE(M5A+5)
+         BPD(2)=STORE(M5A+5)                     
          BPD(3)=STORE(M5A+6)
          CALL XMLTMM (STORE(L20I+9),BPD,STORE(M5A+4),3,3,1)
 C----- NOW TRANSLATE
@@ -2087,6 +2094,8 @@ C----- 'INSERT' - INSERT A VALUE FROM LIST 3 OR 29 INTO 'SPARE'
       IF ( I .LE. 2 ) THEN    ! ELECTRON or WEIGHT
          IF (KMDINS(I).LT.0) GO TO 7100
       ELSE IF ( I .EQ. 3 ) THEN ! NCONNECTIONS
+C Force a bondcalc, but don't allow loading of L5
+         CALL XBCALC(2)
 C Put number of connections into SPARE
          DO I = 0,N5-1
            STORE(L5+13+I*MD5) = 0.0
@@ -2102,9 +2111,11 @@ C Put number of connections into SPARE
          ICHNG=ICHNG+1
          CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
        ELSE IF ( I .EQ. 4 ) THEN ! RELAXATION ID
+C Force a bondcalc, but don't allow loading of L5
+         CALL XBCALC(2)
 C Put electron count into SPARE
          IF (KLST(1).LE.0)   GO TO 7100 ! Reqd list failed to load.
-         IF (KMDINS(I).LT.0) GO TO 7100
+         IF (KMDINS(1).LT.0) GO TO 7100
 C Get some workspace
          LTEMP=KSTALL(N5)
 C Relax.
@@ -2123,6 +2134,7 @@ C Propagate values through the bonding network.
                STORE(I51+13)=REAL(NINT(STORE(I51+13)+STORE(LTEMP+J52)))
                STORE(I52+13)=REAL(NINT(STORE(I52+13)+STORE(LTEMP+J51)))
             END DO
+
 C Copy new SPARE into ISTORE(LTEMP)
             DO I = 0, N5-1
                ISTORE(LTEMP+I) = NINT( STORE(L5+13+I*MD5) )
