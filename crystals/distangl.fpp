@@ -1,4 +1,21 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/05/22 11:21:57  rich
+C In function MAKE41 (constructs a list of bonds from atom coords), add extra
+C logic so that any symmetry operation that is not I, and does not move an
+C atom is ignored. This prevents two bonds being formed to atoms on
+C special positions. This mattered not for display, but it matters much to
+C Mogul.
+C
+C The BREAK directive in L40 breaks bonds that would otherwise form and be
+C stored in L41. If you explicitly give a symmetry operator,S, of zero,
+C then all bonds between the pair of atoms will be broken, even if related
+C by symmetry. For example: Imagine a Zn(1) on a 2-fold axis. Imagine it
+C is coordinated by a carboxylate anion. Imagine that the C(1) atom is
+C accidentally bonding to the Zn(1) - it shouldn't only the O's should
+C bond. You say "BREAK ZN(1) TO C(1)", but the ZN(1) TO C(1,2) remains.
+C Now you can say "BREAK ZN(1,0) TO C(1,0)" and all ZN(1)-C(1) bonds are
+C broken, hurrah.
+C
 C Revision 1.45  2003/05/14 13:01:19  rich
 C Typo.
 C
@@ -6451,17 +6468,17 @@ C Restore those old pointers
       L29 = KBL29
       N29 = KBN29
 
-      CALL XOPMSG (IOPSLA, IOPEND, 201)
+      CALL XOPMSG (IOPBND, IOPEND, 201)
       CALL XTIME2(1)
       RETURN
 C
 9900  CONTINUE
 C -- ERRORS
-      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
+      CALL XOPMSG ( IOPBND , IOPABN , 0 )
       GOTO 3350
 9910  CONTINUE
 C -- INPUT ERROR
-      CALL XOPMSG ( IOPSLA , IOPCMI , 0 )
+      CALL XOPMSG ( IOPBND , IOPCMI , 0 )
       GO TO 9900
 9920  CONTINUE
 C -- SINGULAR MATRIX
