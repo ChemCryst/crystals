@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/04/30 20:24:07  richard
+C RIC: Reverse colours of weighted and unweighted agreement plots. (Only
+C done for Fc and rho plots so far - the others should be changed for consistency.)
+C
 C Revision 1.35  2002/03/16 19:07:47  richard
 C Removed #VISUALISE command - originally present as prototype for Steve, but
 C now graphs are built into other commands.
@@ -2680,8 +2684,8 @@ C--PRINT THE CURRENT INDEX TYPE
      1  '^^PL XAXIS TITLE ''Layers by ',CH(I),' index ''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE <Fo-Fc>**2',
-     1  '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2694,8 +2698,8 @@ C--PRINT THE CURRENT INDEX TYPE
      1  '^^PL XAXIS TITLE ''Layers by ',CH(I),' index ''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL NSERIES=3 LENGTH=30 YAXIS TITLE ''R factor %''',
-     1  '^^PL SERIES 1 SERIESNAME ''Rw %''',
-     1  '^^PL SERIES 2 SERIESNAME ''R %''',
+     1  '^^PL SERIES 1 SERIESNAME ''R %''',
+     1  '^^PL SERIES 2 SERIESNAME ''Rw %''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2754,12 +2758,12 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 
       IF ( PLHKL .EQ. 1 ) THEN
         WRITE(CMON,'(A,I4,A,2F15.7,I8)')'^^PL LABEL ',NX,
-     2   ' DATA ', STORE(L+5), STORE(L+4), ISTORE(L+1)
+     2   ' DATA ', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
         HKLMX = MAX (HKLMX, STORE(L+5), STORE(L+6) )
       ELSE IF ( PLHKL .EQ. 2 ) THEN
         WRITE(CMON,'(A,I4,A,2F15.7,I8)')'^^PL LABEL ',NX,
-     2   ' DATA ', STORE(L+7), STORE(L+6), ISTORE(L+1)
+     2   ' DATA ', STORE(L+6), STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
@@ -2824,8 +2828,8 @@ c--PLCLS IS EITHER 0 (OFF), 1 (DELTA) OR 2 (RFAC). PLOT GRAPH IF 1 OR 2.
      1  '^^PL XAXIS TITLE ''HKL Class''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
-     1  '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL ZOOM 0.01 100 SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2835,8 +2839,8 @@ c--PLCLS IS EITHER 0 (OFF), 1 (DELTA) OR 2 (RFAC). PLOT GRAPH IF 1 OR 2.
      1  '^^PL XAXIS TITLE ''HKL Class''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL NSERIES=3 LENGTH=16 YAXIS TITLE ''R factor %''',
-     1  '^^PL SERIES 1 SERIESNAME ''wR %''',
-     1  '^^PL SERIES 2 SERIESNAME ''R % ''',
+     1  '^^PL SERIES 1 SERIESNAME ''R % ''',
+     1  '^^PL SERIES 2 SERIESNAME ''Rw %''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2871,11 +2875,11 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 
       IF ( PLCLS .EQ. 1 ) THEN
         WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+5), STORE(L+4), ISTORE(L+1)
+     2   COUT(2:LNNN-1),''' DATA ', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLCLS .EQ. 2 ) THEN
         WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+7), STORE(L+6), ISTORE(L+1)
+     2   COUT(2:LNNN-1),''' DATA ', STORE(L+6), STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
@@ -2908,8 +2912,8 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL SERIES 1 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2919,8 +2923,8 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
      1 '^^PL YAXIS TITLE ''R factor %''',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''Rw %''',
-     1 '^^PL SERIES 2 SERIESNAME ''R %''',
+     1 '^^PL SERIES 1 SERIESNAME ''R %''',
+     1 '^^PL SERIES 2 SERIESNAME ''Rw %''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2955,11 +2959,11 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 
       IF ( PLPAR .EQ. 1 ) THEN
         WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+5), STORE(L+4), ISTORE(L+1)
+     2   COUT(2:LNNN-1),''' DATA ', STORE(L+4), STORE(L+5), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLPAR .EQ. 2 ) THEN
         WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
-     2   COUT(2:LNNN-1),''' DATA ', STORE(L+7), STORE(L+6), ISTORE(L+1)
+     2   COUT(2:LNNN-1),''' DATA ',STORE(L+6),  STORE(L+7), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
