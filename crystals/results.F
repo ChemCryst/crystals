@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.79  2004/04/27 16:16:56  djw
+C add switch to Parameters to inhibit printing esds on riding H atoms
+C
 C Revision 1.78  2004/04/20 11:16:42  rich
 C One extra dp on the R_int value for anyone trying to publish in Acta E.
 C
@@ -914,7 +917,7 @@ C      LSTAXS      CONTROL PRINTING BY 'XPRAXI'
 C            0      NO PRINT
 C            1      PRINT
 C
-C      IPESD - whether to print ESD's 0=NO, 1=YES
+C      IPESD - whether to print ESD's 0=NO, 1=YES, 2=EXCLUDING RIDING H
 C
 C
 C
@@ -956,7 +959,7 @@ cdjwfeb2001
         toler = store(l23sp+5)
         call xprc17 (0, 0, TOLER, -1)
 cdjwfeb2001
-      IF ( IPESD .EQ. 1 ) THEN     !FORM THE ABSOLUTE LIST 12
+      IF ( IPESD .NE. 0 ) THEN     !FORM THE ABSOLUTE LIST 12
         JQ=0
         JS=1
         CALL XFAL12(JS,JQ,JR,JN)
@@ -1317,7 +1320,7 @@ C-C-C-USE OF ISOTROPIC T-FACTOR INSTEAD OF PURE FLAG
 c        BUFF(2)=STORE(M5+7)
 cdjw99]
 C----- J IS DUMMY
-        IF ( IPESD .EQ. 1 ) THEN
+        IF ( IPESD .NE. 0 ) THEN
           CALL SAPPLY (J)
         ELSE
           DO JXF=1,11
@@ -1362,7 +1365,6 @@ C Check if riding H ESD to be omitted
      1                   (ISTORE(M5).EQ.KHYD) )THEN              
           IF (IPESD .eq. 2) BPD(MPD) = 0.0                                               
         ENDIF                                                          
-C         IF (ISTORE(M5) .EQ. KHYD) BPD(MPD) = 0.0
 C
           LOJ = J+6
           J=J+NXF
@@ -1559,7 +1561,7 @@ C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
 C
 1585    CONTINUE
 C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
-        IF (IPESD .EQ. 1 ) M12=ISTORE(M12)
+        IF (IPESD .NE. 0 ) M12=ISTORE(M12)
         M5=M5+MD5
         M5A=M5A+MD5
       END DO
@@ -1625,7 +1627,7 @@ CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 
       M5=L5
-      IF ( IPESD .EQ. 1 ) M12=L12
+      IF ( IPESD .NE. 0 ) M12=L12
       M5A=L5+2
 C--INDICATE THAT WE HAVE JUST OUTPUT A PAGE
       NL=LINEU
@@ -1674,7 +1676,7 @@ C
 C--CALCULATE THE E.S.D.'S
 C--CLEAR THE LINE BUFFER
 C----- J IS DUMMY
-      IF ( IPESD .EQ. 1 ) THEN
+      IF ( IPESD .NE. 0 ) THEN
         CALL SAPPLY (J)
       ELSE
         DO JXF = 1,11
@@ -1821,7 +1823,7 @@ C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
 2173  FORMAT ( 1X , A4 , 4X , I6 , 4X , 6 ( F8.4 , 2X ) )
 C
 2200  CONTINUE
-      IF ( IPESD .EQ. 1 ) M12=ISTORE(M12)
+      IF ( IPESD .NE. 0 ) M12=ISTORE(M12)
       M5=M5+MD5
       M5A=M5A+MD5
 C
@@ -1903,7 +1905,7 @@ C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
       N5A = NKO
 C
       JP = 1
-      IF ( IPESD .EQ. 1 ) THEN
+      IF ( IPESD .NE. 0 ) THEN
         CALL XPESD ( 2, JP)
       ELSE
         CALL XZEROF (BPD, 11)
@@ -2047,7 +2049,7 @@ C -- SET INITIAL VALUES.
 C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
 
       JP = 1
-      IF ( IPESD .EQ. 1 ) THEN
+      IF ( IPESD .NE. 0 ) THEN
         CALL XPESD ( 2, JP)
       ELSE
         CALL XZEROF (BPD, 11)
