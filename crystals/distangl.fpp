@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2003/01/29 11:46:10  rich
+C Lesson of the day: Don't use stack pointers as implied do loop variables in
+C write statements.
+C
 C Revision 1.38  2003/01/15 15:26:38  rich
 C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
 C anywhere will benefit from less IO, it's here.
@@ -271,6 +275,8 @@ C             4 MOGUL query file.
 C             5 SIMPLE SCRIPT READ-ABLE DATA
 C             6 DELU RESTRAINTS
 C             7 SIMU RESTRAINTS
+C             8 NONBONDED RESTRAINTS
+C             9 HTML OUTPUT
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -1281,8 +1287,8 @@ C----- WRITE RESTRAINT
                 WRITE (NCPU,
      1  '(''NONBONDED '',F7.4,'', '',F7.4,'' = '',A,'' to '',A)')
      1          SNBVAL,SNBPOW,CATOM1(1:LATOM1),CATOM2(1:LATOM2)
-              END IF
-              IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
+              ELSE IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2).OR.
+     1                 (IPUNCH .EQ. 9) ) THEN
 C----- CIF AND FORMATTED PUBLICATION
                 IF ((IHFIXD.EQ.1).AND.(LHFIXD(1).OR.LHFIXD(2))) THEN
                   STORE(JF) = 0.0
@@ -1295,15 +1301,13 @@ C--- ATOM 2
 C----- DUMMY WRITES AT END FOR COMPATIBILITY WITH TORSION
      4          IB, ZERO, 1,1,0,0,0,
      5          IB, ZERO, 1,1,0,0,0
-              ENDIF
-              IF (IPUNCH.EQ.4 .AND.(IDSPDA.EQ.1.OR.IDSPDA.EQ.3)) THEN
+              ELSE IF(IPUNCH.EQ.4.AND.(IDSPDA.EQ.1.OR.IDSPDA.EQ.3))THEN
                 INH1 = 1+ (M5P-L5)/MD5 
                 INH2 = 1+ (L-L5)/MD5
                   WRITE(NCPU,'(A,2(1X,I4),A,F7.4,2(1X,A))')
      1            'DIST ',INH1,INH2,' # ',STORE(J+10),CATOM1(1:LATOM1),
      2            CATOM2(1:LATOM2)
-              END IF
-              IF (IPUNCH .EQ. 5) THEN
+              ELSE IF (IPUNCH .EQ. 5) THEN
 C----- WRITE SIMPLE FORM
                 WRITE (NCPU,'(F7.3,2(1X,A))')
      1          STORE(J+10), CATOM1(1:LATOM1), CATOM2(1:LATOM2)
@@ -1813,7 +1817,8 @@ C----- STRIP AND PACK ATOM NAMES
               CALL CATSTR (STORE(M5A), STORE(M5A+1),
      1         1,1,0,0,0, CATOM2, LATOM2)
 
-              IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
+              IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2).OR.
+     1            (IPUNCH .EQ. 9)      ) THEN
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
                 IF ((IHFIXD.EQ.1).AND.
      1                (LHFIXD(1).OR.LHFIXD(2).OR.LHFIXD(3))) ESD = 0.0
@@ -1939,6 +1944,9 @@ C----- FINISH RESTRAINT LIST
       ELSE IF (IPUNCH .EQ. 2) THEN
 C----- CIF
         CALL XPRTDA(13,IESD,NCPU)
+      ELSE IF (IPUNCH .EQ. 9) THEN
+C----- HTML
+        CALL XPRTDA(23,IESD,NCPU)
       ENDIF
 C
 C--TERMINATION MESSAGES
