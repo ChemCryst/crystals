@@ -1,5 +1,7 @@
 %SCRIPT XRENUMB
 %%
+%   COPY '#COLLECT'
+%   COPY 'END'
 %   COPY '#SCRIPT XRETYPE'
 %%
 %%
@@ -40,7 +42,7 @@
 %       COPY 'INSERT ELECTRON'
 %       COPY 'END'
 %       COPY '#REGROUP'
-%       COPY 'SELECT TYPE=ALL SEQUENCE=YES'
+%       COPY 'SELECT TYPE=ALL SEQUENCE=YES MOVE=0.0'
 %       COPY 'END'
 %     END BLOCK
 %     BLOCK    %MANUAL
