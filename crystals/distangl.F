@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/05/14 13:01:19  rich
+C Typo.
+C
 C Revision 1.44  2003/05/07 12:18:53  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -5806,6 +5809,7 @@ C      11  DISTANCE SQUARED
 C
 C  INTERN = 0 -> #BONDCALC command issued (use procs)
 C         = 1 -> internal call. Don't read commands, force update.
+C         = 2 -> internal call. Don't load lists. Don't write out 41.
 C
 C--
       PARAMETER (NPROCS = 1)
@@ -5813,7 +5817,7 @@ C--
       DIMENSION IPROCS(NPROCS)
       DIMENSION TXYZ(6)
       DIMENSION ID(2), JDEV(4)
-      LOGICAL WEXIST
+      LOGICAL WEXIST, MATC11, MATC22, MATC12, MATC21
       CHARACTER WCLINE*80, CFILEN*80, CATTYP*4
 
 
@@ -6141,6 +6145,7 @@ C Sort bonds on ETOL.
 C Throw out any that are rejected.
             NFOUND = NFOUND - NREJ
 C Limit rest to best MAXBND bonds.
+
             NFOUND = MIN(NFOUND,MAXBND)
 
             DO J = 0,(NFOUND-1)*JT,JT
@@ -6204,39 +6209,50 @@ C If one of the atoms not found, we can't make this bond.
         LBEX = 0
 C -- Search L41B records for this bond to see if already found.
         DO M41B = NWL41B, NWL41B+(NWN41B-1)*MD41B, MD41B
-          IF (((ISTORE(M41B).EQ.KAT1).AND.(ISTORE(M41B+6) .EQ.KAT2)
-     1 .AND.(ISTORE(M41B+1).EQ.ISTORE(M40M+2)).AND.(ISTORE(M41B+2).EQ.
-     2 ISTORE(M40M+3)).AND.(ISTORE(M41B+3).EQ.ISTORE(M40M+4)).AND.
-     3 (ISTORE(M41B+4).EQ.ISTORE(M40M+5)).AND.(ISTORE(M41B+5).EQ.
-     4 ISTORE(M40M+6)).AND.(ISTORE(M41B+7).EQ.ISTORE(M40M+9))
-     5 .AND.(ISTORE(M41B+8).EQ.ISTORE(M40M+10)).AND.(ISTORE(M41B+9).EQ.
-     6 ISTORE(M40M+11)).AND.(ISTORE(M41B+10).EQ.ISTORE(M40M+12))
-     7 .AND.(ISTORE(M41B+11).EQ.ISTORE(M40M+13)))
-     8    .OR.((ISTORE(M41B).EQ.KAT2).AND.(ISTORE(M41B+6).EQ.KAT1)
-     9     .AND.(ISTORE(M41B+7).EQ.ISTORE(M40M+2))
-     1     .AND.(ISTORE(M41B+8).EQ.ISTORE(M40M+3))
-     2     .AND.(ISTORE(M41B+9).EQ.ISTORE(M40M+4))
-     3     .AND.(ISTORE(M41B+10).EQ.ISTORE(M40M+5))
-     4     .AND.(ISTORE(M41B+11).EQ.ISTORE(M40M+6))
-     5     .AND.(ISTORE(M41B+1).EQ.ISTORE(M40M+9))
-     6     .AND.(ISTORE(M41B+2).EQ.ISTORE(M40M+10))
-     7     .AND.(ISTORE(M41B+3).EQ.ISTORE(M40M+11))
-     8     .AND.(ISTORE(M41B+4).EQ.ISTORE(M40M+12))
-     9     .AND.(ISTORE(M41B+5).EQ.ISTORE(M40M+13))))THEN
+
+          MATC11 =  ( (ISTORE(M41B)   .EQ. KAT1) .AND.
+     1                (ISTORE(M41B+6) .EQ. KAT2) )
+          MATC12 =  ( (ISTORE(M41B)   .EQ. KAT2) .AND.
+     1                (ISTORE(M41B+6) .EQ. KAT1) )
+
+          MATC22 =  ( (ISTORE(M41B+1) .EQ. ISTORE(M40M+2)) .AND.
+     3                (ISTORE(M41B+2) .EQ. ISTORE(M40M+3)) .AND.
+     4                (ISTORE(M41B+3) .EQ. ISTORE(M40M+4)) .AND.
+     5                (ISTORE(M41B+4) .EQ. ISTORE(M40M+5)) .AND.
+     6                (ISTORE(M41B+5) .EQ. ISTORE(M40M+6)) .AND.
+     7                (ISTORE(M41B+7) .EQ. ISTORE(M40M+9)) .AND.
+     8                (ISTORE(M41B+8) .EQ. ISTORE(M40M+10)).AND.
+     9                (ISTORE(M41B+9) .EQ. ISTORE(M40M+11)).AND.
+     1                (ISTORE(M41B+10).EQ. ISTORE(M40M+12)).AND.
+     2                (ISTORE(M41B+11).EQ. ISTORE(M40M+13))     )
+
+          MATC21 =  ( (ISTORE(M41B+7) .EQ. ISTORE(M40M+2))
+     1           .AND.(ISTORE(M41B+8) .EQ. ISTORE(M40M+3))
+     2           .AND.(ISTORE(M41B+9) .EQ. ISTORE(M40M+4))
+     3           .AND.(ISTORE(M41B+10).EQ. ISTORE(M40M+5))
+     4           .AND.(ISTORE(M41B+11).EQ. ISTORE(M40M+6))
+     5           .AND.(ISTORE(M41B+1) .EQ. ISTORE(M40M+9))
+     6           .AND.(ISTORE(M41B+2) .EQ. ISTORE(M40M+10))
+     7           .AND.(ISTORE(M41B+3) .EQ. ISTORE(M40M+11))
+     8           .AND.(ISTORE(M41B+4) .EQ. ISTORE(M40M+12))
+     9           .AND.(ISTORE(M41B+5) .EQ. ISTORE(M40M+13))  )
+
+          IF ( ( MATC11 .AND. MATC22  ) .OR.
+     1         ( MATC12 .AND. MATC21  ) ) THEN
 
 C -- We have a match. No need to make this bond.
 C -- But, set the type:
 
-          ISTORE(M41B+12) = ISTORE(M40M+14)
+            ISTORE(M41B+12) = ISTORE(M40M+14)
 
-c          WRITE(CMON,'(2(A,A4,I4))')
-c     1    'No need to make    ',ISTORE(M40M  ),ISTORE(M40M+1),
+c           WRITE(CMON,'(2(A,A4,I4))')
+c     1     'No need to make    ',ISTORE(M40M  ),ISTORE(M40M+1),
 c     1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
-c            CALL XPRVDU(NCVDU, 1,0)
+c           CALL XPRVDU(NCVDU, 1,0)
 
-              LBEX = 1
-              EXIT
-            END IF
+            LBEX = 1
+            EXIT
+          END IF
         ENDDO
         IF ( LBEX .EQ. 0 ) THEN
 
@@ -6319,25 +6335,37 @@ C -- Find this atom in the NWL41B list:
 
           INFO51 = L5 + ISTORE(M41B) * MD5
           INFO52 = L5 + ISTORE(M41B+6) * MD5
-          IF (((ISTORE(M41B).EQ.KAT1).AND.(ISTORE(M41B+6) .EQ.KAT2)
-     1 .AND.(ISTORE(M41B+1).EQ.ISTORE(M40B+2)).AND.(ISTORE(M41B+2).EQ.
-     2 ISTORE(M40B+3)).AND.(ISTORE(M41B+3).EQ.ISTORE(M40B+4)).AND.
-     3 (ISTORE(M41B+4).EQ.ISTORE(M40B+5)).AND.(ISTORE(M41B+5).EQ.
-     4 ISTORE(M40B+6)).AND.(ISTORE(M41B+7).EQ.ISTORE(M40B+9))
-     5 .AND.(ISTORE(M41B+8).EQ.ISTORE(M40B+10)).AND.(ISTORE(M41B+9).EQ.
-     6 ISTORE(M40B+11)).AND.(ISTORE(M41B+10).EQ.ISTORE(M40B+12))
-     7 .AND.(ISTORE(M41B+11).EQ.ISTORE(M40B+13)))
-     8    .OR.((ISTORE(M41B).EQ.KAT2).AND.(ISTORE(M41B+6).EQ.KAT1)
-     9     .AND.(ISTORE(M41B+7).EQ.ISTORE(M40B+2))
-     1     .AND.(ISTORE(M41B+8).EQ.ISTORE(M40B+3))
-     2     .AND.(ISTORE(M41B+9).EQ.ISTORE(M40B+4))
-     3     .AND.(ISTORE(M41B+10).EQ.ISTORE(M40B+5))
-     4     .AND.(ISTORE(M41B+11).EQ.ISTORE(M40B+6))
-     5     .AND.(ISTORE(M41B+1).EQ.ISTORE(M40B+9))
-     6     .AND.(ISTORE(M41B+2).EQ.ISTORE(M40B+10))
-     7     .AND.(ISTORE(M41B+3).EQ.ISTORE(M40B+11))
-     8     .AND.(ISTORE(M41B+4).EQ.ISTORE(M40B+12))
-     9     .AND.(ISTORE(M41B+5).EQ.ISTORE(M40B+13))))THEN
+          ICPDTD = 1
+
+          MATC11 =  ( (ISTORE(M41B)   .EQ. KAT1) .AND.
+     1                (ISTORE(M41B+6) .EQ. KAT2) )
+          MATC12 =  ( (ISTORE(M41B)   .EQ. KAT2) .AND.
+     1                (ISTORE(M41B+6) .EQ. KAT1) )
+
+          MATC22 =  ( (ISTORE(M41B+1) .EQ. ISTORE(M40B+2)) .AND.
+     3                (ISTORE(M41B+2) .EQ. ISTORE(M40B+3)) .AND.
+     4                (ISTORE(M41B+3) .EQ. ISTORE(M40B+4)) .AND.
+     5                (ISTORE(M41B+4) .EQ. ISTORE(M40B+5)) .AND.
+     6                (ISTORE(M41B+5) .EQ. ISTORE(M40B+6)) .AND.
+     7                (ISTORE(M41B+7) .EQ. ISTORE(M40B+9)) .AND.
+     8                (ISTORE(M41B+8) .EQ. ISTORE(M40B+10)).AND.
+     9                (ISTORE(M41B+9) .EQ. ISTORE(M40B+11)).AND.
+     1                (ISTORE(M41B+10).EQ. ISTORE(M40B+12)).AND.
+     2                (ISTORE(M41B+11).EQ. ISTORE(M40B+13))     )
+
+          MATC21 =  ( (ISTORE(M41B+7) .EQ. ISTORE(M40B+2))
+     1           .AND.(ISTORE(M41B+8) .EQ. ISTORE(M40B+3))
+     2           .AND.(ISTORE(M41B+9) .EQ. ISTORE(M40B+4))
+     3           .AND.(ISTORE(M41B+10).EQ. ISTORE(M40B+5))
+     4           .AND.(ISTORE(M41B+11).EQ. ISTORE(M40B+6))
+     5           .AND.(ISTORE(M41B+1) .EQ. ISTORE(M40B+9))
+     6           .AND.(ISTORE(M41B+2) .EQ. ISTORE(M40B+10))
+     7           .AND.(ISTORE(M41B+3) .EQ. ISTORE(M40B+11))
+     8           .AND.(ISTORE(M41B+4) .EQ. ISTORE(M40B+12))
+     9           .AND.(ISTORE(M41B+5) .EQ. ISTORE(M40B+13))  )
+
+          IF ( ( MATC11 .AND. ( MATC22 .OR. ISTORE(M40B+2).EQ.0) ) .OR.
+     1         ( MATC12 .AND. ( MATC21 .OR. ISTORE(M40B+9).EQ.0) ) )THEN
 
 C -- We have a match. Need to break this bond.
 C -- Copy data down.
@@ -6350,9 +6378,10 @@ C -- Copy data down.
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF
 C -- Keep K pointers same. Data will be overwritten next time.
-            KN41B = KN41B 
-            KM41B = KM41B 
-          ELSE
+            ICPDTD = 0
+          END IF
+
+          IF ( ICPDTD .EQ. 1 ) THEN
 C -- Copy data down.
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
@@ -6572,7 +6601,8 @@ C--If the NOSYMM flag is set, hide all the symmetry operators:
             NKICF = ICFLAG
             NKNON = NNONP
         END IF
-                                      
+
+
 C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
         M2=LSYM
         DO NE=1,NKSYM
@@ -6612,6 +6642,25 @@ C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS.
 C--We want A->B and not B->A, however we want both A->B' and B->A'.
                       IF ((MPIV.GT.I5).OR.(NE.NE.1).OR.(NF.NE.1)
      1                                       .OR.(NG.NE.1)) THEN
+
+C Check that this atom has not just been duplicated by symmetry
+C because it is on a special position.
+
+c      WRITE(CMON,'(3I4,2I4/6F10.4)')
+c     1 NINT(APD(7)-APD(4)),NINT(APD(8)-APD(5)),NINT(APD(9)-APD(6)),
+c     2 NF, NG,
+c     3 APD(7),STORE(I5+4),APD(8),STORE(I5+5),APD(9),STORE(I5+6)
+c      CALL XPRVDU(NCVDU,3,0)
+
+
+                       IF ( ( ( NINT(APD(7)-APD(4)) .EQ. 0 ) .AND.
+     1                        ( NINT(APD(8)-APD(5)) .EQ. 0 ) .AND.
+     2                        ( NINT(APD(9)-APD(6)) .EQ. 0 ) .AND.
+     2                        ( NE .EQ. 1 ) .AND. 
+     3                        ( NF .EQ. 1 )  .AND. ( NG. EQ. 1 ) ) .OR.
+     4                      ( (ABS(APD(7)-STORE(I5+4)).GT.ZERO) .OR.
+     5                        (ABS(APD(8)-STORE(I5+5)).GT.ZERO) .OR.
+     6                        (ABS(APD(9)-STORE(I5+6)).GT.ZERO) ) ) THEN
 
                         F=XDSTNCR(STORE(MPIV+4),APD(7)) !Calculate distance
                         DPMIN = 0.0
@@ -6669,6 +6718,7 @@ C -- pair AND range.
                               MAKE41=MAKE41-1
                           END IF
                         END IF
+                       END IF
                       END IF
                     END IF
                   END DO
