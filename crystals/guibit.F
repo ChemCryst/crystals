@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  1999/07/01 18:09:41  dosuser
+C RIC: Changed the largest possible bonding distance of two atoms
+C to (COVALENT(1) + COVALENT(2)) * 1.1 to
+C    (COVALENT(1) + COVALENT(2)) * 1.3. Should solve problems with
+C    metal atoms not bonding to anything.
+C
 C Revision 1.14  1999/06/22 13:51:27  dosuser
 C RIC: Temporarily commented out the eigen vector and axes calculation as
 C it doesn't seem to work.
@@ -996,8 +1002,10 @@ C
                      COV2  = ATINF(K+2)
                   ENDIF
 110            CONTINUE
-               REQDST = (COV1 + COV2) * 1.3
-               IF(ACTDST.LT.REQDST) THEN
+               REQDSX = (COV1 + COV2) * 1.3
+               REQDSN = (COV1 + COV2) * 0.7
+               IF( (ACTDST.LT.REQDSX) .AND.
+     1             (ACTDST.GT.REQDSN) ) THEN
                   XX   = GUMTRX(1) * STACK((J*5)-3)
      1                 + GUMTRX(2) * STACK((J*5)-2)
      2                 + GUMTRX(3) * STACK((J*5)-1)
@@ -1013,7 +1021,7 @@ C
 
 CCDEBUG{
 c                  WRITE ( 99, '(A,2F8.4,2(A4,I4,3F8.5))')
-c     1                  'BOND FOUND ',ACTDST, REQDST,
+c     1                  'BOND FOUND ',ACTDST, REQDSX,
 c     1                  ISTORE(IAT1P),NINT(STORE(IAT1P+1)),
 c     1                  STORE(IAT1P+4),STORE(IAT1P+5),STORE(IAT1P+6),
 c     1                  ISTORE(IAT2P),NINT(STORE(IAT2P+1)),
