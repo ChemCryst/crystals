@@ -197,17 +197,9 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       EVALUATE DOMAP = VALUE
-%%%% FIND OUT ABOUT LIST 14
-%%%^^??    XSECT STATE
-%%%       VERIFY ON OFF
-%%%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%%%       EVALUATE LSECT = VALUE
 ^^WI    DISPOSE FOURIER
 ^^CR
 %%
-%%%       IF LSECT .EQ. 1 THEN
-%%%        COPY '#SCRIPT XSECTION'
-%%%       END IF
 %       IF DOSCALE .EQ. 1 THEN
 %           COPY '#EDIT'
 %           COPY 'SELECT TYPE NE Q'
@@ -249,6 +241,20 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           EVALUATE MAPTYPE = 'FC-PAT'
 %           INSERT 'FC-PAT'
 %       END IF
+%       IF DOMAP .EQ. 1 THEN
+%           INSERT ' FILE=YES'
+%           EVALUATE LCONTOUR = TRUE
+%           BLOCK
+%               VARIABLE CHARACTER FILENAME
+%               ON ERROR REPEAT
+^^WI SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'
+^^CR
+%               GET SILENT NOSTORE FILENAME 'Save as' 'MAP.FOU'
+%               EVALUATE FILENAME = CVALUE
+%               TRANSFER "#STORE CSYS MAP '" //  FILENAME  // -
+                "'" TO CRYSTALS
+%           END BLOCK
+%       END IF
 %       QUEUE SEND
 %       CLEAR
 %       INSERT 'PEAKS HEIGHT  = '
@@ -259,21 +265,6 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT
 %       QUEUE SEND
 %       CLEAR
-%       IF DOMAP .EQ. 1 THEN
-%           INSERT 'TAPES OUTPUT=YES'
-%           QUEUE SEND
-%           EVALUATE LCONTOUR = TRUE
-%           BLOCK
-%               VARIABLE CHARACTER FILENAME
-%               ON ERROR REPEAT
-%               CLEAR
-^^WI SYSSAVEFILE 'Map.mt1' '*.mt1' 'Fourier map binary file (*.mt1)'
-^^CR
-%               GET SILENT FINAL FILENAME 'Filename for map' 'MAP.MT1'
-%        EVALUATE FILENAME = CVALUE
-%        TRANSFER '#OPEN MT1 ' //  FILENAME  // ' ' TO CRYSTALS
-%           END BLOCK
-%       END IF
 %       COPY '#FOURIER'
 %       QUEUE PROCESS
 %       COPY 'END'
