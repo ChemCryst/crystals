@@ -178,7 +178,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %%
 %% Call space group determining code
 %%
-%  COPY '#SCRIPT SG'
+%%  COPY '#SCRIPT SG'
 %%
 %  COPY '#SCRIPT XFRIEDEL'
 %%
