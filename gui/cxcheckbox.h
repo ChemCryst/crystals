@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.7  2001/06/17 14:45:02  richard
 //   CxDestroyWindow function.
 //
@@ -21,9 +27,9 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
+/*#ifdef __POWERPC__
 class LStdCheckBox;
-#endif
+#endif*/
 
 #ifdef __MOTO__
 #include    <LStdControl.h>;
@@ -52,7 +58,7 @@ class CxCheckBox : public BASECHECKBOX
             CxCheckBox( CrCheckBox * container);
             ~CxCheckBox();
 //      void    BoxClicked();
-        void    SetText( char * text );
+        void    SetText( const string & text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         void CxDestroyWindow();
         int GetTop();
@@ -78,7 +84,7 @@ class CxCheckBox : public BASECHECKBOX
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            void BoxClicked();
+            void BoxClicked(wxCommandEvent & e);
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
 #endif

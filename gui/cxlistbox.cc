@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2003/11/28 10:29:11  rich
+// Replace min and max macros with CRMIN and CRMAX. These names are
+// less likely to confuse gcc.
+//
 // Revision 1.16  2003/05/07 12:18:58  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -67,6 +71,8 @@
 #include    "cccontroller.h"
 #include    "cxwindow.h"
 #include    "crlistbox.h"
+#include    <string>
+#include    <sstream>
 
 #ifdef __BOTHWX__
 #include <wx/settings.h>
@@ -113,46 +119,41 @@ Destroy();
 #endif
 }
 
+#ifdef __CR_WIN__
 void    CxListBox::DoubleClicked()
 {
-#ifdef __CR_WIN__
             int itemIndex = GetCurSel();
 #endif
 #ifdef __BOTHWX__
+void    CxListBox::DoubleClicked(wxCommandEvent & e)
+{
             int itemIndex = GetSelection();
 #endif
             ((CrListBox *)ptr_to_crObject)->Committed( itemIndex + 1 );
 }
 
+#ifdef __CR_WIN__
 void    CxListBox::Selected()
 {
-#ifdef __CR_WIN__
             int itemIndex = GetCurSel();
 #endif
 #ifdef __BOTHWX__
+void    CxListBox::Selected(wxCommandEvent & e)
+{
             int itemIndex = GetSelection();
 #endif
         ((CrListBox *)ptr_to_crObject)->Selected( itemIndex + 1 );
 }
 
-void    CxListBox::AddItem( char * text )
+void    CxListBox::AddItem( const string &  text )
 {
-#ifdef __POWERPC__
-    ListHandle  macListH;
-    Cell    theCell = {0, 0};
-    macListH = GetMacListH();                   // Get control handle
-    LAddRow(1, mItems, macListH);               // Add a row
-    mItems++;
-    theCell.v = mItems -1;                      // Set cell
-    LSetCell( text, strlen( text ), theCell, macListH);
-#endif
 #ifdef __BOTHWX__
-      Append (text);
+      Append (text.c_str());
       if( !mItems ) SetSelection(0);
     mItems++;
 #endif
 #ifdef __CR_WIN__
-    AddString(text);
+    AddString(text.c_str());
     if( !mItems ) SetCurSel(0);
     mItems++;
 #endif
@@ -298,20 +299,20 @@ void CxListBox::CxRemoveItem ( int item )
 
 
 
-CcString CxListBox::GetListBoxText(int index)
+string CxListBox::GetListBoxText(int index)
 {
-   if ( mItems < 1 ) return CcString(' ');
+   if ( mItems < 1 ) return string(" ");
    index = CRMIN ( index, mItems );
    index = CRMAX ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
     GetText(index-1, temp);
-    CcString result = temp.GetBuffer(temp.GetLength());
+    string result = temp.GetBuffer(temp.GetLength());
     return result;
 #endif
 #ifdef __BOTHWX__
       wxString temp = GetString( index -1 );
-      CcString result ( temp.c_str() );
+      string result ( temp.c_str() );
     return result;
 #endif
 

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2004/05/13 09:16:12  rich
+//   I must release the device context after 'get'ting it during GetIdealHeight
+//   and width calls.
+//
 //   Revision 1.11  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -23,7 +27,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cxcheckbox.h"
 #include    "cccontroller.h"
 #include    "cxgrid.h"
@@ -32,10 +37,7 @@
 int CxCheckBox::mCheckBoxCount = kCheckBoxBase;
 CxCheckBox *    CxCheckBox::CreateCxCheckBox( CrCheckBox * container, CxGrid * guiParent )
 {
-
-    char * defaultName = (char *)"StdButton" ;
     CxCheckBox  *theStdButton = new CxCheckBox(container);
-
 #ifdef __CR_WIN__
         theStdButton->Create("CheckBox",WS_CHILD| WS_VISIBLE| BS_AUTOCHECKBOX, CRect(0,0,10,10), guiParent, mCheckBoxCount++);
     theStdButton->SetFont(CcController::mp_font);
@@ -68,33 +70,27 @@ Destroy();
 #endif
 }
 
+#ifdef __CR_WIN__
 void    CxCheckBox::BoxClicked()
 {
-#ifdef __CR_WIN__
       bool state = GetBoxState() == 1 ? true : false;
 #endif
 #ifdef __BOTHWX__
+void    CxCheckBox::BoxClicked(wxCommandEvent & e)
+{
       bool state = GetValue();
 #endif
 
     ( (CrCheckBox *)ptr_to_crObject)->BoxChanged( state );
 }
 
-void    CxCheckBox::SetText( char * text )
+void    CxCheckBox::SetText( const string & text )
 {
-//Insert your own code here.
-#ifdef __POWERPC__
-    Str255 descriptor;
-
-    strcpy( reinterpret_cast<char *>(descriptor), text );
-    c2pstr( reinterpret_cast<char *>(descriptor) );
-    SetDescriptor( descriptor );
-#endif
 #ifdef __BOTHWX__
-      SetLabel(text);
+      SetLabel(text.c_str());
 #endif
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 }
 
@@ -224,7 +220,7 @@ void CxCheckBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxCheckBox::OnChar( wxKeyEvent & event )
 {
-      switch(event.KeyCode())
+      switch(event.GetKeyCode())
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
@@ -234,12 +230,13 @@ void CxCheckBox::OnChar( wxKeyEvent & event )
         }
         case 32:    //SPACE. Activates button. Don't focus to the input line.
         {
-                  BoxClicked();
+           bool state = GetValue();
+    		( (CrCheckBox *)ptr_to_crObject)->BoxChanged( state );
             break;
         }
         default:
         {
-                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
+                  ptr_to_crObject->FocusToInput((char)event.GetKeyCode());
             break;
         }
     }

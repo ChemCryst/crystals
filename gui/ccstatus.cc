@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CcStatus
 
@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2002/01/31 14:39:36  ckp2
 //   RIC: SetBondType function for ccstatus. Allows popup-menus to vary depending on
 //   the bond type that has been clicked on.
@@ -30,11 +36,13 @@
 //
 
 #include    "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+#include <deque>
+using namespace std;
+
 #include "cccontroller.h"
 #include        "crconstants.h"
 #include    "ccstatus.h"
-#include    "cctokenlist.h"
 
 CcStatus::CcStatus()
 {
@@ -127,52 +135,29 @@ void CcStatus::UnSetBit(int i, int * theFlag)
 
 
 
-int CcStatus::CreateFlag(CcString text)
+int CcStatus::CreateFlag(string text)
 {
     int returnFlag = 0;
+    int bit;
+    deque<string> tokens;
+    deque<string>::iterator stri, end;
 
-    int start = 0, i;
-    bool inSpace = true;
+    CcController::MakeTokens(text,tokens);
 
-    for (i=1; i < text.Len()+1; i++ )
+    end = tokens.end();
+    for ( stri = tokens.begin(); stri < end; stri++ )
     {
-        if ( text[i-1] == ' ' || text[i-1] == '\t' || text[i-1] == '\r' || text[i-1] == '\n' )
-        {
-            if ( ! inSpace )                  // end of item
-            {
-                // Set the appropriate flag bit
-                int bit = GetBitByToken(text.Sub(start,i-1));
-                if(bit >= 0)
-                   SetBit(bit,&returnFlag);
-                // init values
-                start = 0;
-                inSpace = true;
-            }
-        }
-        else if ( inSpace )                   // start of item
-        {
-            start = i;
-            inSpace = false;
-        }
+       bit = GetBitByToken( *stri );
+       if(bit >= 0)  SetBit(bit,&returnFlag);
     }
-
-    // Check for last item
-    if ( ! inSpace && start != 0 )
-    {
-        // add item to token list
-        int bit = GetBitByToken(text.Sub(start,i-1));
-        if(bit >= 0)
-            SetBit(bit,&returnFlag);
-    }
-
     return returnFlag;
 }
 
-int CcStatus::GetBitByToken(CcString token)
+int CcStatus::GetBitByToken(string token)
 {
-//   newway           if(token==CcString(bS0))  return 0;
-//   oldway           if(token==CcString(bS1))  {SetBit(1,flag);return;}
-#define CHECKTOKEN(a) if(token==CcString(bS##a))return a;
+//   newway           if(token==string(bS0))  return 0;
+//   oldway           if(token==string(bS1))  {SetBit(1,flag);return;}
+#define CHECKTOKEN(a) if(token==string(bS##a))return a;
     CHECKTOKEN(0)
     CHECKTOKEN(1)
     CHECKTOKEN(2)
@@ -209,38 +194,39 @@ int CcStatus::GetBitByToken(CcString token)
 }
 
 
-void CcStatus::ParseInput(CcTokenList * tokenList)
+void CcStatus::ParseInput(deque<string> &  tokenList)
 {
     bool moreTokens = true;
-    while (moreTokens)
+    while (moreTokens && ! tokenList.empty())
     {
-        switch(tokenList->GetDescriptor(kStatusClass))
+        switch(CcController::GetDescriptor( tokenList.front(), kStatusClass ))
         {
             case kTSetStatus:
             {
-                tokenList->GetToken();
-                int setFlags = CreateFlag(tokenList->GetToken());
+                tokenList.pop_front();
+                int setFlags = CreateFlag(tokenList.front());
+                tokenList.pop_front();
                 statusFlags |= setFlags;
                 break;
             }
             case kTUnSetStatus:
             {
-                tokenList->GetToken();
-                int unSetFlags = CreateFlag(tokenList->GetToken());
+                tokenList.pop_front();
+                int unSetFlags = CreateFlag(tokenList.front());
+                tokenList.pop_front();
                 if (( unSetFlags & 32 ) && ( statusFlags & 32 )) ScriptsExited();
                 statusFlags &= (~unSetFlags);
                 break;
             }
             default:
             {
-                UpdateToolBars();
                 moreTokens = false;
                 break;
             }
 
         }
     }
-
+    UpdateToolBars();
 }
 
 void CcStatus::UpdateToolBars()

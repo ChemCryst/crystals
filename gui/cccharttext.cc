@@ -2,7 +2,6 @@
 #include "crystalsinterface.h"
 #include    "crconstants.h"
 #include "cccharttext.h"
-#include "cctokenlist.h"
 #include "crchart.h"
 
 #ifdef __BOTHWX__
@@ -26,7 +25,7 @@ CcChartText::CcChartText()
     text = " ";
 }
 
-CcChartText::CcChartText(int ix, int iy, CcString itext )
+CcChartText::CcChartText(int ix, int iy, string itext )
 {
       x=ix;
       y=iy;
@@ -39,15 +38,14 @@ CcChartText::~CcChartText()
 {
 }
 
-bool CcChartText::ParseInput(CcTokenList* tokenList)
+bool CcChartText::ParseInput(deque<string> &  tokenList)
 {
-    CcString theString;
-
-    theString = tokenList->GetToken();
-    x = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    y = atoi( theString.ToCString() );
-    text = tokenList->GetToken();
+    x = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    y = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    text = string(tokenList.front());
+    tokenList.pop_front();
     return true;
 }
 
@@ -60,14 +58,14 @@ void CcChartText::Draw(CrChart* chartToDrawOn)
 }
 
 
-void CcChartText::Init(int xp, int yp, CcString theText)
+void CcChartText::Init(int xp, int yp, string theText)
 {
     x    = xp;
     y    = yp;
     text = theText;
 }
 
-void CcChartText::Init(int x1, int y1, int x2, int y2, CcString theText, bool centred)
+void CcChartText::Init(int x1, int y1, int x2, int y2, string theText, bool centred)
 {
 // Must fit the text inside the box.
     x = x1;

@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2003/01/14 10:27:19  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.6  2001/11/14 10:30:41  ckp2
 //   Various changes to the painting of the background of Windows as some of the
 //   dialogs suddenly went white under XP.
@@ -32,7 +35,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cxtab.h"
 #include    "cccontroller.h"
 #include    "crtab.h"
@@ -115,11 +119,11 @@ void CxTab::AddTab(CcTabData * tab)
 #ifdef __CR_WIN__
   TC_ITEM tctab;
   tctab.mask = TCIF_TEXT;
-  tctab.pszText = (char*) tab->tabText.ToCString();
+  tctab.pszText = (char*) tab->tabText.c_str();
   InsertItem( m_tab++, &tctab );
 #endif
 #ifdef __BOTHWX__
-  AddPage ( (wxWindow*)tab->tabGrid->GetWidget(), tab->tabText.ToCString() );
+  AddPage ( (wxWindow*)tab->tabGrid->GetWidget(), tab->tabText.c_str() );
   LOGSTAT ( "$$$$$$ Adding a page to notebook" );
 #endif
   return;
@@ -130,12 +134,12 @@ int CxTab::GetTabsHeight()
 #ifdef __CR_WIN__
   CRect work(0,0,0,0);
   AdjustRect(TRUE,&work);
-  LOGSTAT ( "CxTab::GetTabsHeight work t,b,l,r ="
-  +CcString(work.top)
-  +" "+CcString(work.bottom)
-  +" "+CcString(work.left)
-  +" "+CcString(work.right) );
-  LOGSTAT ( "Returning -top + 2");
+//  LOGSTAT ( "CxTab::GetTabsHeight work t,b,l,r ="
+//  +string(work.top)
+//  +" "+string(work.bottom)
+// +" "+string(work.left)
+//  +" "+string(work.right) );
+//  LOGSTAT ( "Returning -top + 2");
   return -work.top + 2;
 #endif
 #ifdef __BOTHWX__
@@ -150,12 +154,12 @@ int CxTab::GetTabsExtraVSpace()
 #ifdef __CR_WIN__
   CRect work(0,0,0,0);
   AdjustRect(TRUE,&work);
-  LOGSTAT ( "CxTab::GetTabsExtraVSpace work t,b,l,r ="
-  +CcString(work.top)
-  +" "+CcString(work.bottom)
-  +" "+CcString(work.left)
-  +" "+CcString(work.right) );
-  LOGSTAT ( "Returning bottom + 10");
+//  LOGSTAT ( "CxTab::GetTabsExtraVSpace work t,b,l,r ="
+//  +string(work.top)
+//  +" "+string(work.bottom)
+//  +" "+string(work.left)
+//  +" "+string(work.right) );
+//  LOGSTAT ( "Returning bottom + 10");
   return work.bottom + 10; //Good space at bottom.
 #endif
 #ifdef __BOTHWX__

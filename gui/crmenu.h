@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/03/13 12:20:55  richard
+//   Update menus to allow context menus for clicked on bonds.
+//
 //   Revision 1.9  2002/02/20 12:05:20  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -29,9 +32,10 @@
 #ifndef     __CrMenu_H__
 #define     __CrMenu_H__
 #include    "crguielement.h"
-#include    "cctokenlist.h"
-#include "cclist.h" // added by ClassView
 #include "crplot.h"
+#include <list>
+using namespace std;
+
 class CxMenu;
 class CcMenuItem;
 class CxWindow;
@@ -40,7 +44,6 @@ class CcModelDoc;
 #define NORMAL_MENU 0
 #define POPUP_MENU  1
 #define MENU_BAR    2
-
 #define CR_MENUITEM 0
 #define CR_SUBMENU  1
 #define CR_SPLIT    2
@@ -49,26 +52,36 @@ class CcModelDoc;
 class   CrMenu : public CrGUIElement
 {
     public:
-                CrMenu( CrGUIElement * mParentPtr , int menuType = NORMAL_MENU );
-                ~CrMenu();
+        CrMenu( CrGUIElement * mParentPtr , int menuType = NORMAL_MENU );
+        ~CrMenu();
 
           // methods
-        CcParse ParseInput( CcTokenList * tokenList );
+        CcParse ParseInput( deque<string> & tokenList );
 
-        void Substitute(CcString atomname, CcModelDoc* model, CcString atom2);
+        void Substitute(string atomname, CcModelDoc* model, string atom2);
         void Substitute(PlotDataPopup data);
         void Popup(int x, int y, void* window);
-        int Condition(CcString conditions);
+        int Condition(string conditions);
 
-                void    CrFocus();
-        void    SetText( CcString text );
+        void    CrFocus();
+        void    SetText( const string &text );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry();
         CcRect CalcLayout(bool recalculate=false);
 
+
+
+        static int FindFreeMenuId();
+        static void AddMenuItem( CcMenuItem * menuitem );
+        static void RemoveMenuItem( CcMenuItem * menuitem );
+//        static void RemoveMenuItem ( const string & menuitemname );
+        static CcMenuItem* FindMenuItem( int id );
+        static CcMenuItem* FindMenuItem( const string & name );
+
+
           // attributes
                 int mMenuType;
-        CcList mMenuList;
+        list<CcMenuItem*> mMenuList;
 
 };
 

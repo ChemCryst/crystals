@@ -6,6 +6,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.31  2004/04/16 12:43:44  rich
+//   Speed up for  OpenGL rendering: Use new lighting scheme, drop use of
+//   two sets of displaylists for rendering a 'low res' model while rotating -
+//   it's faster not too.
+//
 //   Revision 1.30  2003/05/12 12:01:19  rich
 //   RIC: Oops; roll back some unintentional check-ins.
 //
@@ -68,14 +73,15 @@
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "ccrect.h"
 #include    "crgrid.h"
 #include    "crmenu.h"
 #include    "ccmenuitem.h"
 #include    "cxmodel.h"
 #include    "ccmodeldoc.h"
-#include    "cctokenlist.h"
 #include    "cccontroller.h"    // for sending commands
 #include    "creditbox.h"      //appends could be done through cccontroller for better separation.
 #include    "ccmodelatom.h"
@@ -130,7 +136,7 @@ CRGETGEOMETRY(CrModel,CxModel)
 CRCALCLAYOUT(CrModel,CxModel)
 
 
-CcParse CrModel::ParseInput( CcTokenList * tokenList )
+CcParse CrModel::ParseInput( deque<string> &  tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
   bool hasTokenForMe = true;
@@ -143,35 +149,32 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
     LOGSTAT( "*** Created Model      " + mName );
 
     hasTokenForMe = true;
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-      switch ( tokenList->GetDescriptor(kAttributeClass) )
+      switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
       {
         case kTNumberOfRows:
         {
-          tokenList->GetToken(); // Remove that token!
-          CcString theString = tokenList->GetToken();
-          int chars = atoi( theString.ToCString() );
-          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetIdealHeight( chars );
+          tokenList.pop_front(); // Remove that token!
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetIdealHeight( atoi( tokenList.front().c_str() ) );
           else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-          LOGSTAT( "Setting Model Lines Height: " + theString );
+          LOGSTAT( "Setting Model Lines Height: " + tokenList.front() );
+          tokenList.pop_front(); // Remove that token!
           break;
         }
         case kTNumberOfColumns:
         {
-          tokenList->GetToken(); // Remove that token!
-          CcString theString = tokenList->GetToken();
-          int chars = atoi( theString.ToCString() );
-          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetIdealWidth( chars );
+          tokenList.pop_front(); // Remove that token!
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetIdealWidth( atoi( tokenList.front().c_str() ) );
           else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-          LOGSTAT( "Setting Model Chars Width: " + theString );
+          LOGSTAT( "Setting Model Chars Width: " + tokenList.front() );
+          tokenList.pop_front();
           break;
         }
         default:
         {
           hasTokenForMe = false;
-
-          CcString bitmap = (CcController::theController)->GetKey( mName );
+          string bitmap = (CcController::theController)->GetKey( mName );
           ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(bitmap);
 
           break;
@@ -182,15 +185,15 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
 // End of Init, now comes the general parser
 
   hasTokenForMe = true;
-  while ( hasTokenForMe )
+  while ( hasTokenForMe && ! tokenList.empty() )
   {
-    switch ( tokenList->GetDescriptor(kAttributeClass) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
     {
       case kTInform:
       {
-        tokenList->GetToken(); // Remove that token!
-        bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
+        bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+        tokenList.pop_front(); // Remove that token!
         mCallbackState = inform;
         if (mCallbackState)
             LOGSTAT( "Enabling Model callback" );
@@ -200,8 +203,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       }
       case kTRadiusType:
       {
-        tokenList->GetToken(); // Remove that token!
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        tokenList.pop_front(); // Remove that token!
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
           case kTCovalent:
           {
@@ -225,57 +228,57 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
           }
         }
         Update(true);
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
         break;
       }
       case kTRadiusScale:
       {
-        tokenList->GetToken(); // Remove that token!
-        CcString theString = tokenList->GetToken();
-        m_style.radius_scale = float(atoi(theString.ToCString()))/1000.0f;
+        tokenList.pop_front(); // Remove that token!
+        m_style.radius_scale = float(atoi(tokenList.front().c_str()))/1000.0f;
+        tokenList.pop_front();
         Update(true);
         break;
       }
       case kTAttachModel:
       {
-        tokenList->GetToken();
-        CcString name = tokenList->GetToken();
-        if( ( m_ModelDoc = (CcController::theController)->FindModelDoc(name) ) != nil )
+        tokenList.pop_front();
+        if( ( m_ModelDoc = (CcController::theController)->FindModelDoc(tokenList.front()) ) != nil )
             m_ModelDoc->AddModelView(this);
         else
         {
-          m_ModelDoc = (CcController::theController)->CreateModelDoc(name);
+          m_ModelDoc = (CcController::theController)->CreateModelDoc(tokenList.front());
           m_ModelDoc->AddModelView(this);
         }
+        tokenList.pop_front();
         break;
       }
       case kTSelectAction:
       {
-        tokenList->GetToken(); // Remove that token!
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        tokenList.pop_front(); // Remove that token!
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
           case kTSelect:
-            tokenList->GetToken();
+            tokenList.pop_front();
             m_AtomSelectAction = CR_SELECT;
             break;
           case kTAppendTo:
-            tokenList->GetToken();
+            tokenList.pop_front();
             m_AtomSelectAction = CR_APPEND;
             break;
           case kTSendA:
-            tokenList->GetToken();
+            tokenList.pop_front();
             m_AtomSelectAction = CR_SENDA;
             break;
           case kTSendB:
-            tokenList->GetToken();
+            tokenList.pop_front();
             m_AtomSelectAction = CR_SENDB;
             break;
           case kTSendC:
-            tokenList->GetToken();
+            tokenList.pop_front();
             m_AtomSelectAction = CR_SENDC;
             break;
           case kTSendCAndSelect:
-            tokenList->GetToken();
+            tokenList.pop_front();
             m_AtomSelectAction = CR_SENDC_AND_SELECT;
             break;
         }
@@ -283,10 +286,10 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       }
       case kTDefinePopupMenu:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         LOGSTAT("Defining Popup Model Menu...");
-        CcString theString = tokenList->GetToken();
-        int menuNumber = atoi( theString.ToCString() );
+        int menuNumber = atoi( tokenList.front().c_str() );
+        tokenList.pop_front();
         CrMenu* mMenuPtr = new CrMenu( this, POPUP_MENU );
         if ( mMenuPtr != nil )
         {
@@ -318,61 +321,62 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       }
       case kTEndDefineMenu:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         LOGSTAT("Popup Model Menu Definined.");
         break;
       }
       case kTSelectAtoms:
       {
-        tokenList->GetToken(); //Remove the kTSelectAtoms token!
-        if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
+        tokenList.pop_front(); //Remove the kTSelectAtoms token!
+        if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
         {
-          tokenList->GetToken(); //Remove the kTAll token!
-          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-          tokenList->GetToken();
+          tokenList.pop_front(); //Remove the kTAll token!
+          bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+          tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->SelectAllAtoms(select);
         }
-        else if( tokenList->GetDescriptor(kLogicalClass) == kTInvert)
+        else if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTInvert)
         {
-          tokenList->GetToken(); //Remove the kTInvert token!
+          tokenList.pop_front(); //Remove the kTInvert token!
           if(m_ModelDoc) m_ModelDoc->InvertSelection();
         }
         else
         {
-          CcString atomLabel = tokenList->GetToken();
-          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-          tokenList->GetToken(); //Remove the kTYes/kTNo token
+          string atomLabel = string(tokenList.front());
+          tokenList.pop_front();
+          bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+          tokenList.pop_front(); //Remove the kTYes/kTNo token
           if(m_ModelDoc) m_ModelDoc->SelectAtomByLabel(atomLabel,select);
         }
         break;
       }
       case kTDisableAtoms:
       {
-        tokenList->GetToken(); //Remove the kTDisableAtoms token!
+        tokenList.pop_front(); //Remove the kTDisableAtoms token!
 
-        if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
+        if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
         {
-          tokenList->GetToken(); //Remove the kTAll token!
-          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-          tokenList->GetToken();
+          tokenList.pop_front(); //Remove the kTAll token!
+          bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+          tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->DisableAllAtoms(select);
         }
         else
         {
-          CcString atomLabel = tokenList->GetToken();
-          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-          tokenList->GetToken(); //Remove the kTYes/kTNo token
+          string atomLabel = tokenList.front();
+          tokenList.pop_front();
+          bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+          tokenList.pop_front(); //Remove the kTYes/kTNo token
           if(m_ModelDoc) m_ModelDoc->DisableAtomByLabel(atomLabel,select);
         }
         break;
       }
       case kTCheckValue:
       {
-        tokenList->GetToken();
-        CcString atomLabel = tokenList->GetToken();
+        tokenList.pop_front();
         if(m_ModelDoc)
         {
-          CcModelObject* oitem = m_ModelDoc->FindAtomByLabel(atomLabel);
+          CcModelObject* oitem = m_ModelDoc->FindAtomByLabel(tokenList.front());
           if (oitem)
           {
             if ( oitem->Type()==CC_ATOM )
@@ -392,88 +396,89 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
             }
 
           }
-          else LOGERR("CrModel:ParseInput:kTCheckValue No such atom");
+          else LOGERR("CrModel:ParseInput:kTCheckValue No such atom:" + tokenList.front());
         }
         else LOGERR("CrModel:ParseInput:kTCheckValue Sent a CheckValue request, but there is no attached ModelDoc");
+        tokenList.pop_front();
         break;
       }
       case kTNRes:
       {
-        tokenList->GetToken();
-        CcString theString = tokenList->GetToken();
-        m_style.normal_res = atoi( theString.ToCString() );
+        tokenList.pop_front();
+        m_style.normal_res = atoi( tokenList.front().c_str() );
+        tokenList.pop_front();
         break;
       }
       case kTQRes:
       {
-        tokenList->GetToken();
-        CcString theString = tokenList->GetToken();
-        m_style.quick_res = atoi( theString.ToCString() );
+        tokenList.pop_front();
+        m_style.quick_res = atoi( tokenList.front().c_str() );
+        tokenList.pop_front();
         break;
       }
       case kTStyle:
       {
-        tokenList->GetToken();
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        tokenList.pop_front();
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
           case kTStyleSmooth:
             if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetDrawStyle( MODELSMOOTH );
             else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken();
+            tokenList.pop_front();
             break;
           case kTStyleLine:
             if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetDrawStyle( MODELLINE );
             else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken();
+            tokenList.pop_front();
             break;
           case kTStylePoint:
             if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetDrawStyle( MODELPOINT );
             else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
-            tokenList->GetToken();
+            tokenList.pop_front();
             break;
         }
         break;
       }
       case kTAutoSize:
       {
-        tokenList->GetToken();
-        bool size = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front();
+        bool size = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+        tokenList.pop_front(); // Remove that token!
         if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetAutoSize( size );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTHover:
       {
-        tokenList->GetToken();
-        bool hover = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front();
+        bool hover = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+        tokenList.pop_front(); // Remove that token!
         if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetHover( hover );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTShading:
       {
-        tokenList->GetToken();
-        bool shading = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front();
+        bool shading = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+        tokenList.pop_front(); // Remove that token!
         if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetShading( shading );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTSelectTool:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         bool bRect = true;
-        if (tokenList->GetDescriptor(kLogicalClass) == kTSelectRect)
+        if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectRect)
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXRECTSEL);
           else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         }
-        else if (tokenList->GetDescriptor(kLogicalClass) == kTSelectPoly)
+        else if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectPoly)
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXPOLYSEL);
           else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         }
@@ -486,24 +491,24 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       }
       case kTRotateTool:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXROTATE);
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTZoomSelected:
       {
-        tokenList->GetToken();
-        if (tokenList->GetDescriptor(kLogicalClass) == kTYes)
+        tokenList.pop_front();
+        if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(true);
           (CcController::theController)->status.SetZoomedFlag(true);
           Update(true);
         }
-        else if (tokenList->GetDescriptor(kLogicalClass) == kTNo)
+        else if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTNo)
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(false);
           (CcController::theController)->status.SetZoomedFlag(false);
           Update(true);
@@ -517,16 +522,17 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       }
       case kTSelectFrag:
       {
-        tokenList->GetToken();
-        CcString atomname = tokenList->GetToken();
-        if (tokenList->GetDescriptor(kLogicalClass) == kTYes)
+        tokenList.pop_front();
+        string atomname = string(tokenList.front());
+        tokenList.pop_front();
+        if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           SelectFrag(atomname,true);
         }
-        else if (tokenList->GetDescriptor(kLogicalClass) == kTNo)
+        else if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTNo)
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           SelectFrag(atomname,false);
         }
         else
@@ -537,10 +543,10 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       }
       case kTLoadBitmap:
       {
-        tokenList->GetToken();
-        CcString filename = tokenList->GetToken();
-        if ( ptr_to_cxObject) ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(filename);
-        (CcController::theController)->StoreKey( mName, filename );
+        tokenList.pop_front();
+        if ( ptr_to_cxObject) ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(tokenList.front());
+        (CcController::theController)->StoreKey( mName, tokenList.front() );
+        tokenList.pop_front();
         break;
       }
       default:
@@ -578,11 +584,11 @@ void CrModel::DocRemoved()
 }
 
 
-void CrModel::ContextMenu(int x, int y, CcString atomname, int selection, CcString atom2)
+void CrModel::ContextMenu(int x, int y, string atomname, int selection, string atom2)
 {
     if ( m_ModelDoc == nil ) return;
 
-//    CcString nameOfMenuToUse;
+//    string nameOfMenuToUse;
     CrMenu* theMenu = nil;
 
     switch ( selection ) {
@@ -622,16 +628,19 @@ void CrModel::ContextMenu(int x, int y, CcString atomname, int selection, CcStri
 
 void CrModel::MenuSelected(int id)
 {
-    CcMenuItem* menuItem = (CcController::theController)->FindMenuItem( id );
+    CcMenuItem* menuItem = CrMenu::FindMenuItem( id );
 
     if ( menuItem )
     {
-        CcString theCommand = menuItem->command;
+        string theCommand = menuItem->command;
         SendCommand(theCommand);
         return;
     }
 
-    LOGERR("CrModel:MenuSelected Model cannot find menu item id = " + CcString(id));
+
+    ostringstream strm;
+    strm << "CrModel:MenuSelected Model cannot find menu item id = " << id ;
+    LOGERR(strm.str());
     return;
 }
 
@@ -692,12 +701,12 @@ void CrModel::SysKeyUp ( UINT nChar )
 }
 
 
-void CrModel::SetText( CcString text )
+void CrModel::SetText( const string &text )
 {
 
 }
 
-void CrModel::SelectFrag(CcString atomname, bool select)
+void CrModel::SelectFrag(string atomname, bool select)
 {
   if(m_ModelDoc) m_ModelDoc->SelectFrag(atomname,select);
 }

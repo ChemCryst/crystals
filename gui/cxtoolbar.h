@@ -5,13 +5,16 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:50
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2003/09/11 17:50:50  rich
+//   AddTool now returns a value so we can tell if it fails.
+//
 //   Revision 1.5  2002/07/08 11:37:36  richard
 //   Remove text from toolbars to save screen space, instead added "tooltips"
 //   to say what each button does.
 //
 //   Revision 1.4  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
-//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -36,7 +39,7 @@
 #define     __CxToolBar_H__
 
 #include    "crguielement.h"
-
+#include <list>
 
 #ifdef __BOTHWX__
 #include <wx/toolbar.h>
@@ -83,10 +86,10 @@ class CxToolBar : public BASETOOLBAR
 // attributes
      CrGUIElement *  ptr_to_crObject;
      static int  mToolBarCount;
-     CcList m_bitmapList;
      int m_ImageIndex;
 
 #ifdef __CR_WIN__
+//     list<CBitmap*> m_bitmapList;
      CImageList* m_ImageList;
      CToolBarCtrl * m_ToolBar;
      static void ReplaceBackgroundColor(CBitmap & io);
@@ -97,6 +100,7 @@ class CxToolBar : public BASETOOLBAR
      DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
+//     list<wxBitmap*> m_bitmapList;
      mywxToolBar * m_ToolBar;
      void OnChar(wxKeyEvent & event );
      void OnToolSelected(wxCommandEvent & event);

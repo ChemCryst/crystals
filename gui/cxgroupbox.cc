@@ -6,7 +6,8 @@
 //and therefore doesn't fit into the heirachy properly.
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cxgroupbox.h"
 #include    "crgrid.h"
 #include    "cxgrid.h"
@@ -16,7 +17,6 @@ int CxGroupBox::mGroupBoxCount = kGroupBoxBase;
 
 CxGroupBox *    CxGroupBox::CreateCxGroupBox( CrGrid * container, CxGrid * guiParent )
 {
-//      char * defaultName = (char *)"Group";
     CxGroupBox  *theGrid = new CxGroupBox( container );
 #ifdef __CR_WIN__
         theGrid->Create("GroupBox",WS_CHILD| WS_CLIPCHILDREN|WS_VISIBLE| BS_GROUPBOX, CRect(0,0,10,10), guiParent, mGroupBoxCount++);
@@ -47,13 +47,13 @@ END_MESSAGE_MAP()
 #endif
 
 
-void    CxGroupBox::SetText( char * text )
+void    CxGroupBox::SetText( const string & text )
 {
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 #ifdef __BOTHWX__
-      SetLabel(text);
+      SetLabel(text.c_str());
 #endif
 }
 

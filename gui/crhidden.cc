@@ -11,6 +11,12 @@
 //   Cx equivalent class.
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.1  2002/05/14 17:07:11  richard
 //   New GUI control CrHidden (HIDDENSTRING) is completely transparent and small, but
 //   will store a text string, so that, for example you can pass data from one script
@@ -53,7 +59,7 @@ void CrHidden::SetGeometry(const CcRect * rect)
   return;
 }
 
-CcParse CrHidden::ParseInput( CcTokenList * tokenList )
+CcParse CrHidden::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -65,12 +71,13 @@ CcParse CrHidden::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created Hidden  " + mName + mText );
     }
 
-    switch ( tokenList->GetDescriptor(kAttributeClass) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
     {
        case kTTextSelector:
        {
-           tokenList->GetToken(); // Remove that token!
-           mText = tokenList->GetToken();
+           tokenList.pop_front(); // Remove that token!
+           mText = string(tokenList.front());
+           tokenList.pop_front();
            LOGSTAT( "Set Hidden Text String to '" + mText );
            break;
        }
@@ -85,7 +92,7 @@ CcParse CrHidden::ParseInput( CcTokenList * tokenList )
     return CcParse(true,mXCanResize,mYCanResize);
 }
 
-void    CrHidden::SetText( CcString text )
+void    CrHidden::SetText( const string &text )
 {
 }
 
@@ -94,18 +101,18 @@ void CrHidden::CrFocus()
 }
 
 
-void CrHidden::GetValue(CcTokenList * tokenList)
+void CrHidden::GetValue(deque<string> &  tokenList)
 {
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
     if( desc == kTQText )
     {
-        tokenList->GetToken();
+        tokenList.pop_front();
         SendCommand( mText, true );
     }
     else
     {
         SendCommand( "ERROR",true );
-        CcString error = tokenList->GetToken();
-        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + error);
+        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
     }
 }

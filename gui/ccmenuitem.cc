@@ -3,7 +3,9 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+using namespace std;
+
 #include "crconstants.h"
 
 #ifdef __CR_WIN__
@@ -35,17 +37,21 @@ CcMenuItem::CcMenuItem(CrMenu* parentmenu)
 
 CcMenuItem::~CcMenuItem()
 {
-	CcController::theController->RemoveMenuItem (this);
+    if(type == CR_SUBMENU)
+    {
+      delete ptr;
+    }
+    CrMenu::RemoveMenuItem (this);
 }
 
-void CcMenuItem::SetText(CcString theText)
+void CcMenuItem::SetText(string theText)
 {
     if( parent != nil)
         ((CxMenu*)parent->ptr_to_cxObject)->SetText(theText,id);
     text = theText;
 }
 
-void CcMenuItem::SetTitle(CcString theText)
+void CcMenuItem::SetTitle(string theText)
 {
     if( parent != nil) {
         CxMenu* xp = (CxMenu*)ptr->ptr_to_cxObject;
@@ -55,26 +61,28 @@ void CcMenuItem::SetTitle(CcString theText)
 }
 
 
-bool CcMenuItem::ParseInput( CcTokenList * tokenList )
+bool CcMenuItem::ParseInput( deque<string> &  tokenList )
 {
     bool retVal = true;
     bool hasTokenForMe = true;
 
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                SetText(tokenList->GetToken());
+                tokenList.pop_front(); // Remove that token!
+                SetText(tokenList.front());
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
             
             case kTSetCommandText:
             {
-                tokenList->GetToken(); // Remove that token!
-                originalcommand = command = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                originalcommand = command = string(tokenList.front());
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
             default:

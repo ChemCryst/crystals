@@ -1,5 +1,7 @@
 #include "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+using namespace std;
+
 #include "cccontroller.h"
 #include "ccmodelobject.h"
 #include "ccmodeldoc.h"
@@ -21,7 +23,7 @@ CcModelObject::~CcModelObject()
 {
 }
 
-CcString CcModelObject::Label()
+string CcModelObject::Label()
 {
   return m_label;
 }

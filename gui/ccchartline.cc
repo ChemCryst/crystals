@@ -2,7 +2,6 @@
 #include "crystalsinterface.h"
 #include    "crconstants.h"
 #include "ccchartline.h"
-#include "cctokenlist.h"
 #include "crchart.h"
 
 CcChartLine::CcChartLine()
@@ -25,18 +24,17 @@ CcChartLine::~CcChartLine()
 {
 }
 
-bool CcChartLine::ParseInput(CcTokenList* tokenList)
+bool CcChartLine::ParseInput(deque<string> &  tokenList)
 {
-    CcString theString;
 //Just read four integers.
-    theString = tokenList->GetToken();
-    int xa = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    int ya = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    int xb = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    int yb = atoi( theString.ToCString() );
+    int xa = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    int ya = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    int xb = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    int yb = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
     Init(xa,ya, xb,yb);
     return true;
 }

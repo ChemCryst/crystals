@@ -1,10 +1,10 @@
 
-#ifndef		__CcModelBond_H__
-#define		__CcModelBond_H__
+#ifndef     __CcModelBond_H__
+#define     __CcModelBond_H__
 
 class CrModel;
-class CcTokenList;
-//#include "crystalsinterface.h"
+#include <vector>
+using namespace std;
 #include "ccmodelobject.h"
 
 class CcModelAtom;
@@ -16,20 +16,20 @@ class CcModelBond : public CcModelObject
     CcModelBond(CcModelDoc* pointer);
     CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
-                int np, int * ptrs, CcString label, CcString cslabl,
+                int np, int * ptrs, string label, string cslabl,
                 CcModelDoc* ptr);
     ~CcModelBond();
-    void ParseInput(CcTokenList* tokenList);
+    void ParseInput(deque<string> & tokenList);
     void Render(CcModelStyle *style, bool feedback=false);
     void SelfExclude();
     bool m_excluded;
-    CcModelAtom *m_atom1, *m_atom2, **m_patms;
-    void SendAtom(int style, bool output=false); 
+    vector<CcModelAtom*> m_patms;
+    void SendAtom(int style, bool output=false);
 
     int m_bondtype;
     int m_np;
     bool m_bsym;
-    CcString m_slabel;
+    string m_slabel;
 
   private:
     int m_x1,m_y1,m_z1;

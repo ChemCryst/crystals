@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/02/20 14:08:04  rich
+//   New option of making buttoms "SLIM" they fit into text more easily.
+//
 //   Revision 1.7  2001/12/12 14:06:36  ckp2
 //   RIC: Give buttons the "INFORM=NO" attribute and they'll not inform you that
 //   they've been pressed. Instead you can query them using ^^?? BTNNAME STATE and
@@ -34,7 +37,6 @@
 #define     __CrButton_H__
 #include    "crguielement.h"
 
-class CcTokenList;
 
 class   CrButton : public CrGUIElement
 {
@@ -43,14 +45,14 @@ class   CrButton : public CrGUIElement
         // methods
             CrButton( CrGUIElement * mParentPtr );
             ~CrButton();
-        CcParse ParseInput( CcTokenList * tokenList );
-        void    SetText( CcString text );
+        CcParse ParseInput( deque<string> & tokenList );
+        void    SetText( const string &text );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry();
         CcRect CalcLayout(bool recalculate=false);
         void    ButtonClicked();
         void    Enable(bool enabled);
-        void    GetValue(CcTokenList * tokenList);
+        void    GetValue(deque<string> & tokenList);
 
         // attributes
         int bEnableFlags;

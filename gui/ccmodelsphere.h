@@ -3,7 +3,6 @@
 #define         __CcModelSphere_H__
 
 class CrModel;
-class CcTokenList;
 class CcModelDoc;
 #include "ccmodelobject.h"
 
@@ -14,7 +13,7 @@ class CcModelSphere : public CcModelObject
 {
   public:
     CcModelSphere(CcModelDoc* parentptr);
-    CcModelSphere(CcString label,int x1,int y1,int z1, 
+    CcModelSphere(string label,int x1,int y1,int z1, 
                     int r, int g, int b, int occ,int cov, int vdw,
                     int spare, int flag,
                     int iso, int irad, CcModelDoc* parentptr);
@@ -29,7 +28,7 @@ class CcModelSphere : public CcModelObject
     int Y();
     int Z();
     int R();
-    void ParseInput(CcTokenList* tokenList);
+    void ParseInput(deque<string> & tokenList);
 
   public:
 

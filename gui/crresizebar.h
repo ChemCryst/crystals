@@ -7,6 +7,14 @@
 //   Filename:  CrResizeBar.h
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/08/14 10:20:36  ckp2
+//   Quirky new feature: Hold down CTRL and click on a resize-bar and the panes
+//   will swap sides. Hold down SHIFT and click, and the panes will rotate by 90
+//   degrees. Gives more control over screen layout, but is not intuitive as the
+//   user can't SEE which panes belong to a given resize bar. Try it and see.
+//   The new layout is not stored and will revert to original layout when window
+//   is reopened (for the time being).
+//
 //   Revision 1.1  2001/02/26 12:04:49  richard
 //   New resizebar class. A resize control has two panes and the bar between them
 //   can be dragged to change their relative sizes. If one of the panes is of fixed
@@ -19,7 +27,6 @@
 
 #include    "crguielement.h"
 
-class CcTokenList;
 
 class  CrResizeBar : public CrGUIElement
 {
@@ -30,12 +37,12 @@ class  CrResizeBar : public CrGUIElement
     void CrFocus();
     int GetIdealWidth();
     int GetIdealHeight();
-    CcParse ParseInput( CcTokenList * tokenList );
-    void    SetText ( CcString text );
+    CcParse ParseInput( deque<string> & tokenList );
+    void    SetText ( const string &text );
     void    SetGeometry( const CcRect * rect );
     CcRect  GetGeometry ();
     CcRect CalcLayout(bool recalculate=false);
-    CrGUIElement *  FindObject( CcString Name );
+    CrGUIElement *  FindObject( const string & Name );
     void MoveResizeBar( int offset );
     void Collapse ( bool collapse );
     void SwapPanes();

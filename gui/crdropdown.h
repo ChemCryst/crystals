@@ -8,11 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/03/08 16:44:05  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CrDropDown_H__
 #define     __CrDropDown_H__
 #include    "crguielement.h"
-class CcTokenList;
 
 class   CrDropDown : public CrGUIElement
 {
@@ -21,13 +24,13 @@ class   CrDropDown : public CrGUIElement
         // methods
             CrDropDown( CrGUIElement * mParentPtr );
             ~CrDropDown();
-        CcParse ParseInput( CcTokenList * tokenList );
+        CcParse ParseInput( deque<string> & tokenList );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry();
         CcRect CalcLayout(bool recalculate=false);
-        void    SetText( CcString item );
+        void    SetText( const string &item );
         void    GetValue();
-        void    GetValue(CcTokenList* tokenList);
+        void    GetValue(deque<string> & tokenList);
         void    Selected( int item );
 
         // attributes

@@ -3,7 +3,6 @@
 #define     __CcModelAtom_H__
 
 class CrModel;
-class CcTokenList;
 class CcModelDoc;
 #include "ccmodelobject.h"
 
@@ -14,13 +13,13 @@ class CcModelAtom : public CcModelObject
 {
   public:
     CcModelAtom(CcModelDoc* parentptr);
-    CcModelAtom(CcString label,int x1,int y1,int z1, 
+    CcModelAtom(string label,int x1,int y1,int z1, 
                     int r, int g, int b, int occ,float cov, int vdw,
                     int spare, int flag,
                     float u1,float u2,float u3,float u4,float u5,
                     float u6,float u7,float u8,float u9,
                     float fx, float fy, float fz,
-                    CcString elem, int serial, int refflag,
+                    string elem, int serial, int refflag,
                     int assembly, int group, float ueq, float fspare,
                     CcModelDoc* parentptr);
 
@@ -34,7 +33,7 @@ class CcModelAtom : public CcModelObject
     int Y();
     int Z();
     float R();
-    void ParseInput(CcTokenList* tokenList);
+    void ParseInput(deque<string> &  tokenList);
 
   public:
     int x, y, z;
@@ -53,7 +52,7 @@ class CcModelAtom : public CcModelObject
     int m_refflag;
     int m_assembly;
     int m_group;
-    CcString m_elem;
+    string m_elem;
 };
 
 #endif

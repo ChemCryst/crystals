@@ -5,7 +5,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "cccontroller.h"
 #include    "crmenu.h"
 #include    "cxmenu.h"
@@ -37,30 +39,32 @@ CxMenuBar::~CxMenuBar()
 
 //To do: Add by position
 
-int CxMenuBar::AddMenu(CxMenu * menuToAdd, char * text, int position)
+int CxMenuBar::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 {
-      int id = (CcController::theController)->FindFreeMenuId();
+      int id = CrMenu::FindFreeMenuId();
 #ifdef __CR_WIN__
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text);
+      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text.c_str());
 #endif
 #ifdef __BOTHWX__
-      if ( Append( menuToAdd, text) )
-          LOGSTAT ( "cxmenubar " + CcString((int)this) + " adding menu called " + CcString(text) + CcString((int)menuToAdd));
+      ostringstream strm;
+      strm << "cxmenubar " << (int)this << " adding menu called " << text << (int)menuToAdd;
+      if ( Append( menuToAdd, text.c_str()) )
+          LOGSTAT ( strm.str() );
       else
-          LOGERR ( "FAIL: cxmenubar " + CcString((int)this) + " adding menu called " + CcString(text) + CcString((int)menuToAdd) );
+          LOGERR ( "FAIL: "+strm.str() );
 #endif
       return id;
 }
 
-int CxMenuBar::AddItem(char * text, int position)
+int CxMenuBar::AddItem(const string & text, int position)
 {
 #ifdef __CR_WIN__
-//      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text);
+//      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text.c_str());
 #endif
 #ifdef __BOTHWX__
-//      Append(  text );
+//      Append(  text.c_str() );
 #endif
-      LOGERR ( "cxmenubar - ERROR - Can't add items to top level menu bar - " + CcString(text) );
+      LOGERR ( "cxmenubar - ERROR - Can't add items to top level menu bar - " + text );
       return mMenuCount;
 }
 
@@ -77,13 +81,13 @@ int CxMenuBar::AddItem(int position)
 }
 
 
-void CxMenuBar::SetText(CcString theText, int id)
+void CxMenuBar::SetText(const string & theText, int id)
 {
 #ifdef __CR_WIN__
-    ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.ToCString());
+    ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.c_str());
 #endif
 #ifdef __BOTHWX__
-      SetLabel( id, theText.ToCString() );
+      SetLabel( id, theText.c_str() );
 #endif
 
 }

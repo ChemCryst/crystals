@@ -12,9 +12,13 @@
 
 #include "crystalsinterface.h"
 #include "crystals.h"
-#include "ccstring.h"
+#include <string>
+using namespace std;
+
 #include "ccrect.h"
 #include "cccontroller.h"
+
+//#include "Stackwalker.h"
 
 #ifdef __CR_WIN__
 
@@ -23,6 +27,22 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+/*
+static struct _test
+{
+  _test()
+  {
+    InitAllocCheck(ACOutput_XML);
+  }
+
+  ~_test()
+  {
+    DeInitAllocCheck();
+  }
+} _myLeakFinder;
+*/
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp
@@ -70,11 +90,11 @@ BOOL CCrystalsApp::InitInstance()
 
 #ifdef __CR_WIN__
  // Use the registry to fetch keys.
-      CcString location;
-      CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+      string location;
+      string subkey = "Software\\Chem Cryst\\Crystals\\";
       HKEY hkey;
       DWORD dwdisposition, dwtype, dwsize;
-      int dwresult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, subkey.ToCString(),
+      int dwresult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, subkey.c_str(),
                      0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
       if ( dwresult == ERROR_SUCCESS )
       {
@@ -83,13 +103,13 @@ BOOL CCrystalsApp::InitInstance()
          char buf [ 1024];
          dwresult = RegQueryValueEx( hkey, TEXT("Crysdir"), 0, &dwtype,
                                      (PBYTE)buf,&dwsize);
-         if ( dwresult == ERROR_SUCCESS )  location = CcString(buf);
+         if ( dwresult == ERROR_SUCCESS )  location = string(buf);
          RegCloseKey(hkey);
       }
 
       if ( dwresult != ERROR_SUCCESS )  // Try HK_CURRENT_USER instead
       {
-         dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+         dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                      0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
          if ( dwresult == ERROR_SUCCESS )
          {
@@ -98,7 +118,7 @@ BOOL CCrystalsApp::InitInstance()
             char buf [ 1024];
             dwresult = RegQueryValueEx( hkey, TEXT("Crysdir"), 0, &dwtype,
                                      (PBYTE)buf,&dwsize);
-            if ( dwresult == ERROR_SUCCESS )  location = CcString(buf);
+            if ( dwresult == ERROR_SUCCESS )  location = string(buf);
             RegCloseKey(hkey);
          }
       }
@@ -106,7 +126,7 @@ BOOL CCrystalsApp::InitInstance()
 #else
          char buffer[255];
          GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
-         CcString inipath = buffer;
+         string inipath = buffer;
          inipath += "\\WinCrys.ini";
 
 // First free the string
@@ -121,11 +141,11 @@ BOOL CCrystalsApp::InitInstance()
 // .INI file. The CWinApp destructor
 // will free the memory.
 
-         m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
-         CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Crysdir", NULL );
+         m_pszProfileName=_tcsdup(_T(inipath.c_str()));
+         string location =  (LPCTSTR)GetProfileString ( "Setup", "Crysdir", NULL );
 #endif
-
-         _putenv( ("CRYSDIR="+location).ToCString() );
+         location = location.insert( 0, "CRYSDIR=" );
+         _putenv( location.c_str() );
 
       }
 
@@ -133,13 +153,13 @@ BOOL CCrystalsApp::InitInstance()
 //      CCommandLineInfo cmdInfo;
 //      ParseCommandLine(cmdInfo);
 
-      CcString directory;
-      CcString dscfile;
+      string directory;
+      string dscfile;
 
 
       for ( int i = 1; i < __argc; i++ )
       {
-         CcString command = __argv[i];
+         string command = __argv[i];
 
          if ( command == "/d" )
          {
@@ -149,35 +169,36 @@ BOOL CCrystalsApp::InitInstance()
            }
            else
            {
-             CcString envvar = __argv[i+1];
-             CcString value  = __argv[i+2];
-             _putenv( (envvar+"="+value).ToCString() );
+             string envvar = __argv[i+1];
+             string value  = __argv[i+2];
+             _putenv( (envvar+"="+value).c_str() );
              i = i + 2;
            }
          }
          else
          {
-//           CcString command = CcString (cmdInfo.m_strFileName.GetBuffer(cmdInfo.m_strFileName.GetLength()));
-           CcString command = __argv[i];
+//           string command = string (cmdInfo.m_strFileName.GetBuffer(cmdInfo.m_strFileName.GetLength()));
+           string command = __argv[i];
 
-           if ( command.Length() > 0 )
+           if ( command.length() > 0 )
            {
 // we need a directory name. Look for last slash
-             int iptr;
-             int ils = -1;
-             for ( iptr = 0; iptr < command.Length(); iptr++ )
+             string::size_type iptr;
+             string::size_type ils = -1;
+             for ( iptr = 0; iptr < command.length(); iptr++ )
              {
                   if ( command[iptr] == '\\' ) ils = iptr;
              }
 //Check: is there a directory name?
              if ( ils > 0 )
              {
-                  directory = command.Sub(1,ils);
+                  directory = command.substr(0,ils);
              }
 //Check: is there a dscfilename?
-             if ( ils < command.Length()-1 )
+             if ( ils < command.length()-1 )
              {
-                  dscfile = command.Sub(ils+2,command.Length());
+                  dscfile = command;
+                  dscfile.erase(0,ils+1);
              }
            }
 
@@ -249,13 +270,13 @@ bool CCrystalsApp::OnInit()
 
 //      XInitThreads();
 
-      CcString directory;
-      CcString dscfile;
+      string directory;
+      string dscfile;
 
 
       for ( int i = 1; i < argc; i++ )
       {
-         CcString command = argv[i];
+         string command = argv[i];
 
          if ( command == "/d" )
          {
@@ -265,33 +286,34 @@ bool CCrystalsApp::OnInit()
            }
            else
            {
-             CcString envvar = argv[i+1];
-             CcString value  = argv[i+2];
-             putenv( (char*) (envvar+"="+value).ToCString() );
+             string envvar = argv[i+1];
+             string value  = argv[i+2];
+             putenv( (char*) (envvar+"="+value).c_str() );
              i = i + 2;
            }
          }
          else
          {
-           CcString command = argv[i];
-           if ( command.Length() > 0 )
+           string command = argv[i];
+           if ( command.length() > 0 )
            {
 // we need a directory name. Look for last slash
              int iptr;
              int ils = -1;
-             for ( iptr = 0; iptr < command.Length(); iptr++ )
+             for ( iptr = 0; iptr < command.length(); iptr++ )
              {
-                  if ( command[iptr] == '\\' ) ils = iptr;
+                  if ( command[iptr] == '/' ) ils = iptr;
              }
 //Check: is there a directory name?
              if ( ils > 0 )
              {
-                  directory = command.Sub(1,ils);
+                  directory = command.substr(0,ils);
              }
 //Check: is there a dscfilename?
-             if ( ils < command.Length()-1 )
+             if ( ils < command.length()-1 )
              {
-                  dscfile = command.Sub(ils+2,command.Length());
+                  dscfile = command;
+                  dscfile.erase(0,ils+1);
              }
            }
 
@@ -352,30 +374,6 @@ void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 }
 
 #endif
-
-/*
-bool CCrystalsApp::DoCommandTransferStuff()
-{
-  char theLine[255];
-  bool appret = false;
-
-  if(theControl->GetInterfaceCommand(theLine))
-  {
-        appret = true;
-
-        int theLength = 0;
-
-        if(theLength = strlen( theLine )) //Assignment within conditional (OK)
-        {
-            theLine[theLength+1]='\0';
-            theControl->Tokenize(theLine);
-        }
-  }
-
-  return appret;
-}
-*/
-
 
 #ifdef __CR_WIN__
 

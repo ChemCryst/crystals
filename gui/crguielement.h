@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -21,10 +27,11 @@
 #ifndef     __CrGUIElement_H__
 #define     __CrGUIElement_H__
 
-#include "cctokenlist.h"
-#include "ccstring.h"
+#include <string>
+#include <deque>
+using namespace std;
 
-class CcList;
+
 class CcRect;
 class CcController;
 
@@ -49,27 +56,27 @@ class   CrGUIElement
 
 //Virtual functions, may be overridden in derived classes if reqd.
 //Overridden function can then be called using a pointer to the base class.
-    virtual void SendCommand(CcString theText, bool jumpQueue=false);
+    virtual void SendCommand(string theText, bool jumpQueue=false);
     virtual void FocusToInput(char theChar);
     virtual void SysKeyUp ( UINT nChar );
     virtual void SysKey ( UINT nChar );
     virtual int GetIdealWidth();
     virtual int GetIdealHeight();
-    virtual CrGUIElement *  FindObject( CcString Name );
+    virtual CrGUIElement *  FindObject( const string & Name );
     virtual void *  GetWidget();
     virtual CrGUIElement *  GetRootWidget();
     virtual void Show( bool show );
     virtual void Align();
     virtual void GetValue();
-    virtual void GetValue(CcTokenList * tokenList);
-    virtual CcParse ParseInput( CcTokenList * tokenList );
-    virtual CcParse ParseInputNoText( CcTokenList * tokenList );
+    virtual void GetValue(deque<string> &  tokenList);
+    virtual CcParse ParseInput( deque<string> &  tokenList );
+    virtual CcParse ParseInputNoText( deque<string> &  tokenList );
 
 //Pure virtual functions, MUST be implemented in derived classes.
     virtual CcRect CalcLayout(bool recalc=false) = 0;
     virtual void CrFocus()=0;
     virtual CcRect  GetGeometry() = 0;
-    virtual void SetText( CcString text ) = 0;
+    virtual void SetText( const string &text ) = 0;
     virtual void SetGeometry( const CcRect * objectRect ) = 0;
 
 //Static functions can only act on static variables of the CLASS,
@@ -77,15 +84,15 @@ class   CrGUIElement
 
     static void SetController( CcController * controller );
 
-    void Rename ( CcString newName );
+    void Rename ( string newName );
     void NextFocus(bool bPrevious);
 
 // attributes
     static CcController *   mControllerPtr;
 
     void *  ptr_to_cxObject;
-    CcString    mText;
-    CcString    mName;
+    string    mText;
+    string    mName;
     CrGUIElement *  mParentElementPtr;
 
     bool mXCanResize;

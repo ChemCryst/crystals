@@ -5,7 +5,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "cccontroller.h"
 #include    "crmenu.h"
 #include    "cxmenu.h"
@@ -36,35 +38,39 @@ CxMenu::~CxMenu()
 
 //To do: Add by position
 
-int CxMenu::AddMenu(CxMenu * menuToAdd, char * text, int position)
+int CxMenu::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 {
-      int id = (CcController::theController)->FindFreeMenuId();
+      int id = CrMenu::FindFreeMenuId();
 #ifdef __CR_WIN__
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text);
+      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text.c_str());
 #endif
 #ifdef __BOTHWX__
-      Append( id, text, menuToAdd);
-          LOGSTAT ( "cxmenu " + CcString((int)this) + " adding submenu called " + CcString(text) );
+      Append( id, text.c_str(), menuToAdd);
+      ostringstream strm;
+      strm <<  "cxmenu " << (int)this << " adding submenu called " << text;
+      LOGSTAT ( strm.str() );
 #endif
       return id;
 }
 
-int CxMenu::AddItem(char * text, int position)
+int CxMenu::AddItem(const string & text, int position)
 {
-      int id = (CcController::theController)->FindFreeMenuId();
+      int id = CrMenu::FindFreeMenuId();
 #ifdef __CR_WIN__
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text);
+      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text.c_str());
 #endif
 #ifdef __BOTHWX__
-      Append( id, wxString(text), wxString("") );
-      LOGSTAT ("cxmenu " + CcString((int)this) + " adding item called " + CcString(text) );
+      Append( id, wxString(text.c_str()), wxString("") );
+      ostringstream strm;
+      strm << "cxmenu " << (int)this << " adding item called " << text ;
+      LOGSTAT (strm.str());
 #endif
     return id;
 }
 
 int CxMenu::AddItem(int position)
 {
-      int id = (CcController::theController)->FindFreeMenuId();
+      int id = CrMenu::FindFreeMenuId();
 #ifdef __CR_WIN__
       InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR, (UINT)id);
 #endif
@@ -75,17 +81,17 @@ int CxMenu::AddItem(int position)
 }
 
 
-void CxMenu::SetText(CcString theText, int id)
+void CxMenu::SetText(const string & theText, int id)
 {
 #ifdef __CR_WIN__
-    ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.ToCString());
+    ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.c_str());
 #endif
 #ifdef __BOTHWX__
-      SetLabel( id, theText.ToCString() );
+      SetLabel( id, theText.c_str() );
 #endif
 }
 
-void CxMenu::SetTitle(CcString theText, CxMenu* ptr)
+void CxMenu::SetTitle(const string & theText, CxMenu* ptr)
 {
 #ifdef __CR_WIN__
     for ( int i = 0; i < (int)GetMenuItemCount() ; i++ )
@@ -95,13 +101,13 @@ void CxMenu::SetTitle(CcString theText, CxMenu* ptr)
        if (!subm->m_hMenu) continue;
 
        if ( subm == ptr ) {
-          ModifyMenu(i, MF_BYPOSITION|MF_STRING, i, theText.ToCString());
+          ModifyMenu(i, MF_BYPOSITION|MF_STRING, i, theText.c_str());
           break;
        }
     }
 #endif
 #ifdef __BOTHWX__
-      wxMenu::SetTitle( theText.ToCString() );
+      wxMenu::SetTitle( theText.c_str() );
 #endif
 }
 

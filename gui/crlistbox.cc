@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 14:43 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.14  2003/05/07 12:18:57  rich
+//
+//  RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//  using only free compilers and libraries. Hurrah, but it isn't very stable
+//  yet (CRYSTALS, not the compilers...)
+//
 //  Revision 1.13  2002/03/05 12:12:58  ckp2
 //  Enhancements to listbox for my List 28 project.
 //
@@ -53,6 +59,8 @@
 #include    "cxlistbox.h"
 #include    "ccrect.h"
 #include    "cccontroller.h"    // for sending commands
+#include    <string>
+#include    <sstream>
 
 
 CrListBox::CrListBox( CrGUIElement * mParentPtr )
@@ -81,34 +89,33 @@ CRGETGEOMETRY(CrListBox,CxListBox)
 CRCALCLAYOUT(CrListBox,CxListBox)
 
 
-CcParse CrListBox::ParseInput( CcTokenList * tokenList )
+CcParse CrListBox::ParseInput(deque<string> &  tokenList )
 {
 
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
-    CcString theToken;
+    string theToken;
 //t
     // Initialization for the first time
     if( ! mSelfInitialised )
     {
         LOGSTAT("*** ListBox *** Initing...");
 
-        mName = tokenList->GetToken();
+        mName = string(tokenList.front());
+        tokenList.pop_front();
         mSelfInitialised = true;
 
         hasTokenForMe = true;
-        while ( hasTokenForMe )
+        while ( hasTokenForMe && ! tokenList.empty() )
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTVisibleLines:
                 {
-                    tokenList->GetToken(); // Remove the keyword
-                    int lines;
-                    CcString theToken = tokenList->GetToken();
-                    lines = atoi( theToken.ToCString() );
-                    ( (CxListBox *)ptr_to_cxObject)->SetVisibleLines( lines );
-                    LOGSTAT("Setting ListBox visible lines to " + theToken);
+                    tokenList.pop_front(); // Remove the keyword
+                    ( (CxListBox *)ptr_to_cxObject)->SetVisibleLines( atoi( tokenList.front().c_str() )) ;
+                    LOGSTAT("Setting ListBox visible lines to " + tokenList.front());
+                    tokenList.pop_front();
                     break;
                 }
                 default:
@@ -124,15 +131,15 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
     // End of Init, now comes the general parser
 
     hasTokenForMe = true;
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
                               LOGSTAT( "Enabling ListBox callback" );
@@ -142,43 +149,43 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                CcString temp = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "ListBox disabled = " + temp);
+                tokenList.pop_front(); // Remove that token!
+                bool disabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                LOGSTAT( "ListBox disabled = " + tokenList.front());
+                tokenList.pop_front(); // Remove YES or NO.
                 ((CxListBox*)ptr_to_cxObject)->Disable( disabled );
                 break;
             }
             case kTAddToList:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove AddToList token!
                 bool stop = false;
                 while ( ! stop )
                 {
-                    theToken = tokenList->GetToken();
-                    if (    ( strcmp( kSNull, theToken.ToCString() ) == 0 )
-                         || ( theToken.Length() == 0 ) )
+                    if (    ( strcmp( kSNull, tokenList.front().c_str() ) == 0 )
+                         || ( tokenList.front().length() == 0 ) )
                                                                       stop = true;
                     else
                     {
-                        SetText( theToken );
-                        LOGSTAT("Adding ListBox text '" + theToken + "'");
+                        SetText( tokenList.front() );
+                        LOGSTAT("Adding ListBox text '" + tokenList.front() + "'");
                     }
+                    tokenList.pop_front(); // Remove token
                 }
                 break;
             }
             case kTSetSelection:
             {
-                  tokenList->GetToken(); //Remove that token!
-                  int select = atoi ( tokenList->GetToken().ToCString() );
-                  ((CxListBox*)ptr_to_cxObject)->CxSetSelection(select);
+                  tokenList.pop_front(); //Remove that token!
+                  ((CxListBox*)ptr_to_cxObject)->CxSetSelection(atoi ( tokenList.front().c_str() ));
+                  tokenList.pop_front();
                   break;
             }
             case kTRemove:
             {
-                  tokenList->GetToken(); //Remove that token!
-                  int select = atoi ( tokenList->GetToken().ToCString() );
-                  ((CxListBox*)ptr_to_cxObject)->CxRemoveItem(select);
+                  tokenList.pop_front(); //Remove that token!
+                  ((CxListBox*)ptr_to_cxObject)->CxRemoveItem(atoi ( tokenList.front().c_str() ));
+                  tokenList.pop_front();
                   break;
             }
             default:
@@ -195,11 +202,11 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
 }
 
 
-void    CrListBox::SetText( CcString item )
+void    CrListBox::SetText( const string &item )
 {
 
     char theText[256];
-    strcpy( theText, item.ToCString() );
+    strcpy( theText, item.c_str() );
 
     ( (CxListBox *)ptr_to_cxObject)->AddItem( theText );
     LOGSTAT( "Adding Item '" + item + "'");
@@ -208,34 +215,35 @@ void    CrListBox::SetText( CcString item )
 
 void    CrListBox::GetValue()
 {
-    int value = ( (CxListBox *)ptr_to_cxObject)->GetBoxValue();
-    SendCommand( CcString( value ) );
+    ostringstream strm;
+    strm << ( (CxListBox *)ptr_to_cxObject)->GetBoxValue();
+    SendCommand( strm.str() );
 }
 
 
-void CrListBox::GetValue(CcTokenList * tokenList)
+void CrListBox::GetValue(deque<string> &  tokenList)
 {
 
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
 
     if( desc == kTQListtext )
     {
-        tokenList->GetToken();
-            int index = atoi ((tokenList->GetToken()).ToCString());
-            CcString theText = ((CxListBox*)ptr_to_cxObject)->GetListBoxText(index);
-            SendCommand( theText, true );
+        tokenList.pop_front();
+        SendCommand( ((CxListBox*)ptr_to_cxObject)->GetListBoxText(atoi (tokenList.front().c_str())), true );
+        tokenList.pop_front();
     }
     else if (desc == kTQSelected )
     {
-        tokenList->GetToken();
-        int value = ( (CxListBox *)ptr_to_cxObject)->GetBoxValue();
-        SendCommand( CcString( value ) , true );
+        tokenList.pop_front();
+        ostringstream strm;
+        strm << ( (CxListBox *)ptr_to_cxObject)->GetBoxValue();
+        SendCommand( strm.str() , true );
     }
     else
     {
         SendCommand( "ERROR",true );
-        CcString error = tokenList->GetToken();
-        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + error);
+        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
     }
 
 
@@ -248,11 +256,10 @@ void    CrListBox::Selected( int item )
 
     if (mCallbackState)
     {
-        CcString theCommand;
-        theCommand = mName;
-        SendCommand(theCommand);
-        theCommand = CcString( item );
-        SendCommand(theCommand);
+        SendCommand(mName);
+        ostringstream strm;
+        strm << item;
+        SendCommand(strm.str());
     }
 }
 
@@ -260,11 +267,10 @@ void    CrListBox::Committed( int item )
 {
     if (mCallbackState)
     {
-        CcString theCommand;
-        theCommand = mName;
-        SendCommand(theCommand);
-        theCommand = CcString( item );
-        SendCommand(theCommand);
+        SendCommand(mName);
+        ostringstream strm;
+        strm << item;
+        SendCommand(strm.str());
         ((CrWindow*)GetRootWidget())->Committed();
     }
 }

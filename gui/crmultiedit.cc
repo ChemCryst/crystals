@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2004/05/13 09:14:49  rich
+//   Re-invigorate the MULTIEDIT control. Currently not used, but I have
+//   something in mind for it.
+//
 //   Revision 1.13  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -23,7 +27,9 @@
 //
 
 #include    "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+using namespace std;
+
 #include    "crconstants.h"
 #include    "ccrect.h"
 #include    "crmultiedit.h"
@@ -52,7 +58,6 @@ CrMultiEdit::~CrMultiEdit()
 #endif
         ptr_to_cxObject = nil;
     }
-      mControllerPtr->RemoveTextOutputPlace(this);
 }
 
 
@@ -60,7 +65,7 @@ CRSETGEOMETRY(CrMultiEdit,CxMultiEdit)
 CRGETGEOMETRY(CrMultiEdit,CxMultiEdit)
 CRCALCLAYOUT(CrMultiEdit,CxMultiEdit)
 
-CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
+CcParse CrMultiEdit::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -76,87 +81,86 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created MulitEdit    " + mName );
 
             int size = 200;
-            CcString cgeom = (CcController::theController)->GetKey( "FontSize" );
-            if ( cgeom.Len() )
-                size = atoi( cgeom.ToCString() );
+            string cgeom = (CcController::theController)->GetKey( "FontSize" );
+            if ( cgeom.length() )
+                size = atoi( cgeom.c_str() );
             ((CxMultiEdit*)ptr_to_cxObject)->SetFontHeight(size);
     }
     // End of Init, now comes the general parser
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting MultiEdit Text: " + mText );
                 break;
             }
             case kTNumberOfRows:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int chars = atoi( theString.ToCString() );
-                ((CxMultiEdit*)ptr_to_cxObject)->SetIdealHeight( chars );
-                LOGSTAT( "Setting MultiEdit Lines Height: " + theString );
+                tokenList.pop_front(); // Remove that token!
+                ((CxMultiEdit*)ptr_to_cxObject)->SetIdealHeight( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting MultiEdit Lines Height: " + tokenList.front() );
+                tokenList.pop_front();
                 break;
             }
             case kTNumberOfColumns:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int chars = atoi( theString.ToCString() );
-                ((CxMultiEdit*)ptr_to_cxObject)->SetIdealWidth( chars );
-                LOGSTAT( "Setting MultiEdit Chars Width: " + theString );
+                tokenList.pop_front(); // Remove that token!
+                ((CxMultiEdit*)ptr_to_cxObject)->SetIdealWidth( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting MultiEdit Chars Width: " + tokenList.front() );
+                tokenList.pop_front();
                 break;
             }
             case kTInform:
             {
                 mCallbackState = true;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "Enabling EditBox callback" );
                 break;
             }
             case kTIgnore:
             {
                 mCallbackState = false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "Disabling EditBox callback " );
                 break;
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                mDisabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                mDisabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
             case kTSave:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString filename = tokenList->GetToken();
-                ((CxMultiEdit*)ptr_to_cxObject)->SaveAs( filename );
-                LOGSTAT( "Saving MultiEdit contents as: " + filename );
+                tokenList.pop_front(); // Remove that token!
+                ((CxMultiEdit*)ptr_to_cxObject)->SaveAs( tokenList.front() );
+                LOGSTAT( "Saving MultiEdit contents as: " + tokenList.front() );
+                tokenList.pop_front();
                 break;
             }
             case kTNoEcho:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 mNoEcho = true;
                 break;
             }
                   case kTSpew:
                   {
-                        tokenList->GetToken(); //Remove kTSpew tokens.
+                        tokenList.pop_front(); //Remove kTSpew tokens.
                         // Dump whole text window to Crystals input.
                         ((CxMultiEdit*)ptr_to_cxObject)->Spew();
                         break;
                   }
                   case kTEmpty:
                   {
-                        tokenList->GetToken(); //Remove kTEmpty tokens.
+                        tokenList.pop_front(); //Remove kTEmpty tokens.
                         ((CxMultiEdit*)ptr_to_cxObject)->Empty();
                         break;
                   }
@@ -171,58 +175,13 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void CrMultiEdit::SetText ( CcString cText )
+void CrMultiEdit::SetText ( const string &cText )
 {
     if(!mNoEcho)
       {
 
 
                    ((CxMultiEdit*)ptr_to_cxObject)->SetText(cText+"\r\n");
-
-
-/*
-// Scan for @ markup.
-// Format is:               Normal text @Link Text@Link Commands@ normal text
-// e.g  You may @Click here@#SCRIPT ANALYSE@ to see an analysis.
-
-            CcString cLinkText;
-            int iSt = 1;
-            int iCr = 1;
-            int iPosType = INPLAINTEXT;
-
-            for ( iCr = 1; iCr <= cText.Length(); iCr++ )
-            {
-                  if (cText.Sub(iCr,iCr) == '@')
-                  {
-                        if ( iPosType == INPLAINTEXT )
-                        {
-// Flush text as far as the @
-                             ((CxMultiEdit*)ptr_to_cxObject)->SetText(cText.Sub(iSt,iCr-1));
-                              iSt = iCr+1;
-                              iPosType = INLINKTEXT;
-                        }
-                        else if ( iPosType == INLINKTEXT )
-                        {
-                              cLinkText = cText.Sub(iSt,iCr-1);
-                              iSt = iCr+1;
-                              iPosType = INLINKCOMMAND;
-                        }
-                        else
-                        {
-                             ((CxMultiEdit*)ptr_to_cxObject)->SetHyperText(cLinkText,cText.Sub(iSt,iCr-1));
-                              iPosType = INPLAINTEXT;
-                              iSt = iCr+1;
-                        }
-                  }
-            }
-
-                  if ( cText.Length() == 0 )
-                   ((CxMultiEdit*)ptr_to_cxObject)->SetText(cText);
-            else
-                   ((CxMultiEdit*)ptr_to_cxObject)->SetText(cText.Sub(iSt,iCr-1));
-*/
-
-
       }
 }
 

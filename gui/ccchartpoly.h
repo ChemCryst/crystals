@@ -3,7 +3,6 @@
 #define     __CcChartPoly_H__
 
 class CrChart;
-class CcTokenList;
 #include "ccchartobject.h"
 
 class CcChartPoly : public CcChartObject
@@ -13,7 +12,7 @@ class CcChartPoly : public CcChartObject
             CcChartPoly(bool filled, int iv, int* points );
         ~CcChartPoly();
         void Draw(CrChart* chartToDrawOn);
-        bool ParseInput(CcTokenList* tokenList);
+        bool ParseInput(deque<string> & tokenList);
     private:
         int nVerts;
         int* verts;

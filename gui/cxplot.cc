@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.27  2003/09/16 19:15:37  rich
 //   Code to thin out labels on the x-axis of graphs to prevent overcrowding.
 //   Seems to slow down the linux version - will investigate on Windows.
@@ -33,7 +37,7 @@
 //
 //   Revision 1.21  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
-//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -111,7 +115,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cxplot.h"
 #include    "cxgrid.h"
 #include    "cccontroller.h"
@@ -237,14 +242,13 @@ void CxPlot::CxDestroyWindow()
 #endif
 }
 
-void CxPlot::SetText( char * text )
+void CxPlot::SetText( const string & text )
 {
-
 #ifdef __BOTHWX__
-      SetLabel(text);
+      SetLabel(text.c_str());
 #endif
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 
 }
@@ -463,7 +467,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 //                  TEXT_ANGLE      text is drawn at an angle (for crowded axes...)
 //  All coordinates in the range 0 - 2400
 
-void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
+void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 {
     if(m_FlippedPlot)
     {
@@ -489,7 +493,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
     {
         theFont.CreateFont(fontsize, 0, 450, 450, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
         oldFont = m_memDC->SelectObject(&theFont);
-        CSize temp = m_memDC->GetTextExtent(text.ToCString(), text.Len());
+        CSize temp = m_memDC->GetTextExtent(text.c_str(), text.length());
         CSize move;
 
         move.cx = (long)(temp.cx/sqrt(2));          // must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
@@ -509,8 +513,8 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
         {
             theFont.CreateFont(fontsize, 0, down*900,down*900, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
             oldFont = m_memDC->SelectObject(&theFont);
-            int len = text.Len();
-            CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
+            int len = text.length();
+            CSize temp = m_memDC->GetTextExtent(text.c_str(), len);
             coord.y = coord.y + down*temp.cx/2;     // nb swapping of cx and cy - GetTextEntent doesn't handle rotations
             coord.x = coord.x - down*temp.cy/2;
         }
@@ -521,7 +525,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
         }
     }
 
-    CSize size = m_memDC->GetTextExtent(text.ToCString(), strlen(text.ToCString()));
+    CSize size = m_memDC->GetTextExtent(text.c_str(), strlen(text.c_str()));
 
     if(param & TEXT_VCENTRE)
     {
@@ -545,7 +549,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
     }
 
     m_memDC->SetBkMode(TRANSPARENT);
-    m_memDC->TextOut(coord.x,coord.y,text.ToCString());
+    m_memDC->TextOut(coord.x,coord.y,text.c_str());
 
     m_memDC->SelectObject(oldpen);
     pen.DeleteObject();
@@ -555,7 +559,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 
 #endif
 #ifdef __BOTHWX__
-      wxString wtext = wxString(text.ToCString());
+      wxString wtext = wxString(text.c_str());
       m_memDC->SetBrush( *m_brush );
       m_memDC->SetPen( *m_pen );
       m_memDC->SetBackgroundMode( wxTRANSPARENT );
@@ -621,7 +625,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 // get the size of a text string on screen
 // NB param is same as above - only TEXT_ANGLE, TEXT_VERTICAL currently dealt with / needed
 #ifdef __CR_WIN__
-CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
+CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
 {
     CcPoint tsize;
     CSize size;
@@ -634,7 +638,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
         theFont.CreateFont(fontsize,0,450,450, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
         oldFont = m_memDC->SelectObject(&theFont);
 
-        size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+        size = m_memDC->GetOutputTextExtent(text.c_str(), text.length());
 
         tsize.x = (int)(size.cx/sqrt(2));
         tsize.y = (int)(size.cx/sqrt(2));
@@ -644,7 +648,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
         theFont.CreateFont(fontsize,0,900,900, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
         oldFont = m_memDC->SelectObject(&theFont);
 
-        size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+        size = m_memDC->GetOutputTextExtent(text.c_str(), text.length());
         tsize.x = size.cy;          // swap axes cos of the 90 degree rotation
         tsize.y = size.cx;
     }
@@ -653,7 +657,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
         theFont.CreateFont(fontsize,0,0,0, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
         oldFont = m_memDC->SelectObject(&theFont);
 
-        size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+        size = m_memDC->GetOutputTextExtent(text.c_str(), text.length());
         tsize.x = size.cx;
         tsize.y = size.cy;
     }
@@ -665,7 +669,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 }
 #endif
 #ifdef __BOTHWX__
-CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
+CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
 {
 
     int cx,cy,cs;
@@ -673,7 +677,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
     wxFont aFont = m_memDC->GetFont();
     aFont.SetPointSize(fontsize);
     m_memDC->SetFont(aFont);
-    m_memDC->GetTextExtent( text.ToCString(), &cx, &cy );
+    m_memDC->GetTextExtent( text.c_str(), &cx, &cy );
     
     if(param & TEXT_ANGLE)
     {
@@ -974,7 +978,7 @@ void CxPlot::DeletePopup()
 }
 
 // create a pop-up window (contains details of the data-item the mouse is over)
-void CxPlot::CreatePopup(CcString text, CcPoint point)
+void CxPlot::CreatePopup(string text, CcPoint point)
 {
 #ifdef __BOTHWX__
 //  m_DoNotPaint = true;
@@ -985,11 +989,11 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 #ifdef __CR_WIN__
   CClientDC dc(this);
   CFont* oldFont = dc.SelectObject(CcController::mp_font);
-  SIZE size = dc.GetOutputTextExtent(text.ToCString());
+  SIZE size = dc.GetOutputTextExtent(text.c_str());
   dc.SelectObject(oldFont);
 
   m_TextPopup = new CStatic();
-  m_TextPopup->Create(text.ToCString(), SS_CENTER|WS_BORDER|WS_CLIPSIBLINGS, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
+  m_TextPopup->Create(text.c_str(), SS_CENTER|WS_BORDER|WS_CLIPSIBLINGS, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
   m_TextPopup->SetFont(CcController::mp_font);
   m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
   m_TextPopup->ShowWindow(SW_SHOW);
@@ -998,9 +1002,9 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 #endif
 #ifdef __BOTHWX__
   int cx,cy;
-  GetTextExtent( text.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+  GetTextExtent( text.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
-  m_TextPopup = new mywxStaticText(this, -1, text.ToCString(),
+  m_TextPopup = new mywxStaticText(this, -1, text.c_str(),
                                  wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
@@ -1014,7 +1018,7 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 // numser : number of series
 // names:   the series names (array of numser elements)
 // col:     the series colours...
-void CxPlot::CreateKey(int numser, CcString* names, int** col)
+void CxPlot::CreateKey(int numser, string* names, int** col)
 {
     if(!m_Key)
     {
@@ -1058,17 +1062,17 @@ void CxPlot::MakeMetaFile(int w, int h)
     CDC * backup_memDC = m_memDC;
     CcRect backup_m_client = m_client;
 
-    CcString result;
-    CcString defName = "plot1.emf";
-    CcString extension = "*.emf";
-    CcString description = "Windows Enhanced MetaFile (*.emf)";
+    string result;
+    string defName = "plot1.emf";
+    string extension = "*.emf";
+    string description = "Windows Enhanced MetaFile (*.emf)";
     CcController::theController->SaveFileDialog(&result, defName, extension, description);
 
     if ( ! ( result == "CANCEL" ) )
     {
         CMetaFileDC mdc;
 
-        mdc.CreateEnhanced(m_memDC, (LPCTSTR)result.ToCString(), NULL, "Plot\0");
+        mdc.CreateEnhanced(m_memDC, (LPCTSTR)result.c_str(), NULL, "Plot\0");
 
         mdc.SetAttribDC( m_memDC->m_hAttribDC );
 
@@ -1211,7 +1215,7 @@ END_EVENT_TABLE()
 #endif
 
 
-CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
+CxPlotKey::CxPlotKey(CxPlot* parent, int numser, string* names, int** col)
 {
 #ifdef __CR_WIN__
     m_Parent = parent;
@@ -1220,7 +1224,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
     mDragging = false;
 
     m_NumberOfSeries = numser;
-    m_Names = new CcString[numser];
+    m_Names = new string[numser];
 
     m_Colours = new int*[3];
 
@@ -1258,7 +1262,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
     for(i=0; i<m_NumberOfSeries; i++)
     {
-        SIZE ts = newDC.GetOutputTextExtent(m_Names[i].ToCString());
+        SIZE ts = newDC.GetOutputTextExtent(m_Names[i].c_str());
         size.cx = CRMAX(ts.cx, size.cx);
         size.cy = CRMAX(ts.cy, size.cy);
     }
@@ -1347,7 +1351,7 @@ void CxPlotKey::OnPaint()
         newDC.SelectObject(oldpen);
         pen.DeleteObject();
 
-      newDC.TextOut(20, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
+      newDC.TextOut(20, i*size.cy/m_NumberOfSeries, m_Names[i].c_str());
   }
 
   delete [] temp;

@@ -3,7 +3,6 @@
 #define     __CcChartLine_H__
 
 class CrChart;
-class CcTokenList;
 #include "ccchartobject.h"
 
 class CcChartLine : public CcChartObject
@@ -14,7 +13,7 @@ class CcChartLine : public CcChartObject
             CcChartLine(int ix1, int iy1, int ix2, int iy2);
         ~CcChartLine();
         void Draw(CrChart* chartToDrawOn);
-        bool ParseInput(CcTokenList* tokenList);
+        bool ParseInput(deque<string> & tokenList);
     private:
         int x1, y1, x2, y2;
 };

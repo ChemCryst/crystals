@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   5.3.1998 13:51 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2004/05/13 09:14:49  rich
+//   Re-invigorate the MULTIEDIT control. Currently not used, but I have
+//   something in mind for it.
+//
 //   Revision 1.15  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -55,7 +59,7 @@ class CxMultiEdit : public BASEMULTIEDIT
                         CxMultiEdit( CrMultiEdit * container );
                         ~CxMultiEdit();
 
-        void            SetText( CcString cText );
+        void            SetText( const string & cText );
         void            SetIdealWidth(int nCharsWide);
         void            SetIdealHeight(int nCharsHigh);
         void            SetFontHeight( int height );
@@ -68,7 +72,7 @@ class CxMultiEdit : public BASEMULTIEDIT
         int             GetLeft();
         void            SetGeometry(int top, int left, int bottom, int right );
 
-        void            SaveAs(CcString filename);
+        void            SaveAs(string filename);
 
 
     private:

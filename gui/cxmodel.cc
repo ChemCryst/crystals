@@ -4,6 +4,8 @@
 
 #include    "crystalsinterface.h"
 #include    <math.h>
+#include    <string>
+#include    <sstream>
 #include    "cxgrid.h"
 #include    "cxwindow.h"
 #include    "ccrect.h"
@@ -242,13 +244,13 @@ void CxModel::OnPaint(wxPaintEvent &event)
     SetCurrent();
     if ( m_DoNotPaint )
     {
-//      TEXTOUT ( CcString((int)this) + " OnPaint: Not painting" );
+//      TEXTOUT ( string((int)this) + " OnPaint: Not painting" );
       m_DoNotPaint = false;
       return;
     }
 #endif
 
-//    TEXTOUT ( CcString((int)this) + " OnPaint" );
+//    TEXTOUT ( string((int)this) + " OnPaint" );
     bool ok_to_draw = true;
 
     if (m_bModelChanged)
@@ -263,7 +265,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
     {
         m_bFullListOk = true;
         m_bModelChanged = false;
-//      TEXTOUT ( CcString((int)this) + " Displaying model" );
+//      TEXTOUT ( string((int)this) + " Displaying model" );
       if ( m_Autosize && m_bNeedReScale )
       {
         AutoScale();
@@ -316,32 +318,31 @@ void CxModel::OnPaint(wxPaintEvent &event)
 #endif
 
 
-      if ( m_selectionPoints.ListSize() > 0 )
+      if ( ! m_selectionPoints.empty() )
       {
 //Draw in polygon so far:
-         CcPoint* nextPoint;
-#ifdef __BOTHWX__
-         CcPoint *fromPoint;
-#endif
-         m_selectionPoints.Reset();
-         nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
+         list<CcPoint>::iterator ccpi = m_selectionPoints.begin();
 #ifdef __CR_WIN__
          dc.SetROP2( R2_COPYPEN );
-         dc.MoveTo(nextPoint->x, nextPoint->y);
-         while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
-         {
-            dc.LineTo(nextPoint->x,nextPoint->y);
-          }
-#endif
+         dc.MoveTo((*ccpi).x, (*ccpi).y);
+#endif         
 #ifdef __BOTHWX__
           dc.SetLogicalFunction( wxCOPY );
-          fromPoint = nextPoint;
-          while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
-          {
-            dc.DrawLine(fromPoint->x,fromPoint->y,nextPoint->x,nextPoint->y);
-            fromPoint = nextPoint;
-          }  
+          list<CcPoint>::iterator ccpi2 = ccpi;
 #endif
+
+         ccpi++;
+         while ( ccpi != m_selectionPoints.end() )
+         {
+#ifdef __BOTHWX__
+            dc.DrawLine((*ccpi2).x,(*ccpi2).y,(*ccpi).x,(*ccpi).y);
+            ccpi2 = ccpi;
+#endif
+#ifdef __CR_WIN__
+            dc.LineTo((*ccpi).x,(*ccpi).y);
+#endif
+            ccpi++;
+         }
       }
     }
     else
@@ -490,12 +491,12 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 #ifdef __BOTHWX__
       if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
 #endif
-      CcString atomname;
+      string atomname;
       CcModelObject* object;
       int type = 0;
       if( type = IsAtomClicked(point.x, point.y, &atomname, &object, false))
       {
-//        LOGERR( CcString(point.x) + ", " + CcString(point.y) + " " + atomname);
+//        LOGERR( string(point.x) + ", " + string(point.y) + " " + atomname);
         if ( type == CC_ATOM )
          ((CcModelAtom*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         else if ( type == CC_SPHERE )
@@ -521,88 +522,73 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
     }
     case CXPOLYSEL:
     {
-//Get first point for closure testing in a min:
-      m_selectionPoints.Reset();
-      CcPoint* firstPoint = (CcPoint*) m_selectionPoints.GetItem();
-//Get last point for drawing purposes in a min:
-      CcPoint* oldPoint = (CcPoint*) m_selectionPoints.GetLastItem();
       m_movingPoint.Set(point.x,point.y);
 
-      if ( oldPoint )
+      if ( !m_selectionPoints.empty() )
       {
 
-        if ( (  ( abs ( firstPoint->x - point.x ) < 4  )  &&
-                ( abs ( firstPoint->y - point.y ) < 4  ) ) ||
-             (  ( oldPoint->x   == point.x )  &&
-                ( oldPoint->y   == point.y )     )     )
+        if ( (  ( abs ( m_selectionPoints.front().x - point.x ) < 4  )  &&
+                ( abs ( m_selectionPoints.front().y - point.y ) < 4  ) ) ||
+             (  ( m_selectionPoints.back().x   == point.x )  &&
+                ( m_selectionPoints.back().y   == point.y )     )     )
         {
 // Click within 4 pixels of first point to close, or
 // Click same point twice to auto-close.
 
-          CcPoint* newPoint = new CcPoint(*firstPoint);
-          m_selectionPoints.AddItem(newPoint);
-
-          CxModel::PolyCheck();
+          m_selectionPoints.push_back(m_selectionPoints.front()); // close loop
+          CxModel::PolyCheck();   //Do selection
           ModelChanged(false);
-
-          m_selectionPoints.Reset();
-          CcPoint* nextPoint;
-          while ( nextPoint = (CcPoint *) m_selectionPoints.GetItem() )
-          {
-             m_selectionPoints.RemoveItem();
-             delete nextPoint;
-          }
+          m_selectionPoints.clear();   // Empty container
         }
         else
         {
 
 //Add point to list of selected points.
-          CcPoint* newPoint = new CcPoint(point);
-          m_selectionPoints.AddItem(newPoint);
+          m_selectionPoints.push_back(point);
 
 
 #ifdef __CR_WIN__
 //Erase previous line
           CClientDC dc(this);
           dc.SetROP2( R2_NOTXORPEN );
-          dc.MoveTo(oldPoint->x,oldPoint->y);
+          dc.MoveTo(m_selectionPoints.back().x,m_selectionPoints.back().y);
           dc.LineTo(m_movingPoint.x,m_movingPoint.y);
 #endif
 #ifdef __BOTHWX__
           wxClientDC dc(this);
           dc.SetLogicalFunction( wxINVERT );
-          dc.DrawLine(oldPoint->x,oldPoint->y,m_movingPoint.x,m_movingPoint.y);
+          dc.DrawLine(m_selectionPoints.back().x,m_selectionPoints.back().y,m_movingPoint.x,m_movingPoint.y);
 #endif
 
 //Draw in polygon so far:
-          CcPoint* nextPoint, *fromPoint;
-          m_selectionPoints.Reset();
-          nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
+          list<CcPoint>::iterator ccpi = m_selectionPoints.begin();
+
 #ifdef __CR_WIN__
           dc.SetROP2( R2_COPYPEN );
-          dc.MoveTo(nextPoint->x, nextPoint->y);
-          while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
-          {
-            dc.LineTo(nextPoint->x,nextPoint->y);
-          }
-#endif
+          dc.MoveTo((*ccpi).x, (*ccpi).y);
+#endif         
 #ifdef __BOTHWX__
           dc.SetLogicalFunction( wxCOPY );
-          fromPoint = nextPoint;
-          while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
-          {
-            dc.DrawLine(fromPoint->x,fromPoint->y,nextPoint->x,nextPoint->y);
-            fromPoint = nextPoint;
-          }  
+          list<CcPoint>::iterator ccpi2 = ccpi;
 #endif
+          ccpi++;
+          while ( ccpi != m_selectionPoints.end() )
+          {
+#ifdef __BOTHWX__
+            dc.DrawLine((*ccpi2).x,(*ccpi2).y,(*ccpi).x,(*ccpi).y);
+            ccpi2 = ccpi;
+#endif
+#ifdef __CR_WIN__
+            dc.LineTo((*ccpi).x,(*ccpi).y);
+#endif
+            ccpi++;
+          }
         }
-
       }
       else
       {
 //First point: Add point to list of selected points.
-        CcPoint* newPoint = new CcPoint(point);
-        m_selectionPoints.AddItem(newPoint);
+        m_selectionPoints.push_back(point);
       }
 
 
@@ -750,7 +736,8 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
 // repeatedly when the ProgressBar is updated, for example.)
         if ( ( m_ptMMove.x - point.x ) || ( m_ptMMove.y - point.y ) )
         {
-          CcString labelstring;
+          string labelstring;
+          ostringstream labelstrm;
           CcModelObject* object;
           int objectType = IsAtomClicked(point.x, point.y, &labelstring, &object);
           if(objectType)
@@ -758,37 +745,39 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
             if(m_LitObject != object) //avoid excesive redrawing, it flickers.
             {
               m_LitObject = object;
-              if ( objectType == CC_ATOM && labelstring.Length() && ( labelstring.Sub(1,1) == "Q" ) )
+              if ( objectType == CC_ATOM && labelstring.length() && ( labelstring[0] == 'Q' ) )
               {
-                labelstring += "  " + CcString ((float)((CcModelAtom*)object)->sparerad/1000.0);
+                labelstrm << " " << (float)((CcModelAtom*)object)->sparerad/1000.0;
               }
               if ( objectType == CC_ATOM )
               {
                 if ( ((CcModelAtom*)object)->occ != 1000 )
-                   labelstring += " occ:" + CcString ((float)((CcModelAtom*)object)->occ/1000.0);
+                   labelstrm << " occ:" << (float)((CcModelAtom*)object)->occ/1000.0;
               }
               else if ( objectType == CC_SPHERE )
               {
-                labelstring += " shell occ:" + CcString ((float)((CcModelSphere*)object)->occ/1000.0);
+                labelstrm << " shell occ:" << (float)((CcModelSphere*)object)->occ/1000.0;
               }
               else if ( objectType == CC_DONUT )
               {
-                labelstring += " annulus occ:" + CcString ((float)((CcModelDonut*)object)->occ/1000.0);
+                labelstrm << " annulus occ:" << (float)((CcModelDonut*)object)->occ/1000.0;
               }
-              CreatePopup(labelstring, point);
+
+
+              CreatePopup(labelstring + string(labelstrm.str()), point);
               if ( objectType != CC_BOND )
                  ChooseCursor(CURSORCOPY);
               else
                  ChooseCursor(CURSORNORMAL);
 
-              (CcController::theController)->SetProgressText(&labelstring);
+              (CcController::theController)->SetProgressText(labelstring);
               if ( m_Hover ) NeedRedraw();
             }
           }
           else if (m_LitObject) //Not over an atom anymore.
           {
             m_LitObject = nil;
-            (CcController::theController)->SetProgressText(NULL);
+            (CcController::theController)->SetProgressText("");
             ChooseCursor(CURSORNORMAL);
             DeletePopup();
             if ( m_Hover ) NeedRedraw();
@@ -830,15 +819,8 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
     }
     case CXPOLYSEL:
     {
-//Get first point for testing closure approach:
-      m_selectionPoints.Reset();
-      CcPoint* firstPoint = (CcPoint*) m_selectionPoints.GetItem();
-//Get last point for drawing purposes in a min:
-      CcPoint* oldPoint = (CcPoint*) m_selectionPoints.GetLastItem();
-
- 
-      if ( firstPoint &&  ( abs ( firstPoint->x - point.x ) < 4  )  &&
-            ( abs ( firstPoint->y - point.y ) < 4  ) )
+      if ( !m_selectionPoints.empty() && ( abs ( m_selectionPoints.front().x - point.x ) < 4  )  &&
+            ( abs ( m_selectionPoints.front().y - point.y ) < 4  ) )
       {
           ChooseCursor(CURSORCROSS);
       }
@@ -847,7 +829,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
           ChooseCursor(CURSORCOPY);
       }
 
-      if ( oldPoint )
+      if ( !m_selectionPoints.empty() )
       {
 //Erase previous line
 #ifdef __CR_WIN__
@@ -855,24 +837,26 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
         CPen pen(PS_SOLID,1,PALETTERGB(0,0,0)), *oldpen;  
         oldpen = dc.SelectObject(&pen);
         dc.SetROP2( R2_NOTXORPEN );
-        dc.MoveTo(oldPoint->x,oldPoint->y);
+        dc.MoveTo(m_selectionPoints.back().x,m_selectionPoints.back().y);
         dc.LineTo(m_movingPoint.x,m_movingPoint.y);
 #endif
 #ifdef __BOTHWX__
         wxClientDC dc(this);
         dc.SetLogicalFunction( wxINVERT );
-        dc.DrawLine(m_movingPoint.x,m_movingPoint.y,oldPoint->x,oldPoint->y);
+        dc.DrawLine(m_movingPoint.x,m_movingPoint.y,
+                    m_selectionPoints.back().x,m_selectionPoints.back().y);
 #endif
         m_movingPoint.Set(point.x,point.y);
 //Draw new line
 #ifdef __CR_WIN__
-        dc.MoveTo(oldPoint->x,oldPoint->y);
+        dc.MoveTo(m_selectionPoints.back().x,m_selectionPoints.back().y);
         dc.LineTo(m_movingPoint.x,m_movingPoint.y);
         dc.SelectObject(oldpen);
         dc.SetROP2( R2_COPYPEN );
 #endif
 #ifdef __BOTHWX__
-        dc.DrawLine(oldPoint->x,oldPoint->y,m_movingPoint.x,m_movingPoint.y);
+        dc.DrawLine(m_selectionPoints.back().x,m_selectionPoints.back().y,
+                     m_movingPoint.x,m_movingPoint.y);
 #endif
       }
       break;
@@ -919,25 +903,14 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 
   if ( m_mouseMode == CXPOLYSEL )
   {
-
 // Cancel polygon selection: Remove points, redraw model, reset mousemode.
-     m_selectionPoints.Reset();
-     CcPoint* aP;
-     while ( aP = (CcPoint *) m_selectionPoints.GetItem() )
-     {
-        m_selectionPoints.RemoveItem();
-        delete aP;
-     }
-
+     m_selectionPoints.clear();
      NeedRedraw();
-
      m_mouseMode = CXROTATE;
-
      return;
-
   }
 
-  CcString atomname;
+  string atomname;
 
 //Some pointers:
   CcModelObject* object;
@@ -980,13 +953,13 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
     }
     else if (bond->m_bsym) //the bond crosses a symmetry element:
     {
-      atomname = bond->m_atom1->Label() + " " + bond->m_slabel;
-      CcString atom2 = bond->m_slabel;
+      atomname = bond->m_patms[0]->Label() + " " + bond->m_slabel;
+      string atom2 = bond->m_slabel;
       ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, 5, atom2);
     }
     else //a normal bond:
     {
-      atomname = bond->m_atom1->Label() + " " + bond->m_atom2->Label();
+      atomname = bond->m_patms[0]->Label() + " " + bond->m_patms[1]->Label();
       ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, 4);
     }
   }
@@ -1283,7 +1256,7 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 }
 #endif
 
-int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, bool atomsOnly)
+int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly)
 {
 #ifdef __CR_WIN__
 //   HDC hOldDC = wglGetCurrentDC();
@@ -1306,8 +1279,8 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 //   yPos += 3;
 
 /*   if (atomsOnly) {
-      LOGERR( CcString((int)this) + "IAC? " + CcString(xPos) + " " + CcString (yPos)+
-      CcString(viewport[0])+" "+CcString(viewport[1])+" "+CcString(viewport[2])+" "+CcString(viewport[3])+" " );
+      LOGERR( string((int)this) + "IAC? " + string(xPos) + " " + string (yPos)+
+      string(viewport[0])+" "+string(viewport[1])+" "+string(viewport[2])+" "+string(viewport[3])+" " );
    }*/
 
    bool repeat = true;
@@ -1366,7 +1339,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
    if ( hits )
    {
-//     TEXTOUT ( CcString ( hits ) + " hits" );
+//     TEXTOUT ( string ( hits ) + " hits" );
      GLuint highest_point = selectbuf[1];
      GLuint highest_name = selectbuf[3];
      for ( int i = 1; i<hits; i++ )
@@ -1378,7 +1351,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
        }
      }
 
-//     if (atomsOnly) { LOGERR( "HitGLID: " + CcString((int)highest_name) ); }
+//     if (atomsOnly) { LOGERR( "HitGLID: " + string((int)highest_name) ); }
 
      *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
 
@@ -1433,7 +1406,9 @@ void CxModel::AutoScale()
      {
        delete [] feedbuf;
        m_fbsize = m_fbsize * 2;
-       LOGSTAT ( "Feedback buffer overflows, doubling size to " + CcString (m_fbsize) );
+       ostringstream message;
+       message << "Feedback buffer overflows, doubling size to " << m_fbsize;
+       LOGSTAT ( message.str() );
        bigger_buf_needed = true;
      }
      else
@@ -1613,7 +1588,7 @@ void CxModel::NeedRedraw(bool needrescale)
 
 void CxModel::ModelChanged(bool needrescale) 
 {
-//  TEXTOUT ( "Model " + CcString((int)this) + "changed" );
+//  TEXTOUT ( "Model " + string((int)this) + "changed" );
   m_bModelChanged = true;
   m_bFullListOk = false;
   NeedRedraw(needrescale);
@@ -1740,13 +1715,7 @@ void CxModel::SelectTool ( int toolType )
   if (m_mouseMode == CXPOLYSEL)
   {
      ModelChanged(false);
-     m_selectionPoints.Reset();
-     CcPoint* nextPoint;
-     while ( nextPoint = (CcPoint *) m_selectionPoints.GetItem() )
-     {
-        m_selectionPoints.RemoveItem();
-        delete nextPoint;
-     }
+     m_selectionPoints.clear();
   }
 
   m_mouseMode = toolType;
@@ -1769,7 +1738,7 @@ void CxModel::DeletePopup()
   }
 }
 
-void CxModel::CreatePopup(CcString atomname, CcPoint point)
+void CxModel::CreatePopup(string atomname, CcPoint point)
 {
 #ifdef __BOTHWX__
   m_DoNotPaint = true;
@@ -1778,16 +1747,16 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
   DeletePopup();
 
 #ifdef __CR_WIN__
-  CcString n = CcString(" ") + atomname + CcString(" ");
+  string n = string(" ") + atomname + string(" ");
 
   m_TextPopup = new CStatic();
-  m_TextPopup->Create(n.ToCString(), SS_SIMPLE|SS_CENTER|WS_BORDER, CRect(0,0,0,0), this);
+  m_TextPopup->Create(n.c_str(), SS_SIMPLE|SS_CENTER|WS_BORDER, CRect(0,0,0,0), this);
   m_TextPopup->SetFont(CcController::mp_font);
 
   CClientDC dc(m_TextPopup);
   CFont* oldFont = dc.SelectObject(CcController::mp_font);
 
-  SIZE size = dc.GetOutputTextExtent(n.ToCString(),n.Len());
+  SIZE size = dc.GetOutputTextExtent(n.c_str(),n.length());
   size.cx += 3;
   size.cy += 2;
 
@@ -1803,9 +1772,9 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
 #endif
 #ifdef __BOTHWX__
   int cx,cy;
-  GetTextExtent( atomname.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+  GetTextExtent( atomname.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
-  m_TextPopup = new mywxStaticText(this, -1, atomname.ToCString(),
+  m_TextPopup = new mywxStaticText(this, -1, atomname.c_str(),
                                  wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
@@ -1815,7 +1784,7 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
 }
 
 
-void CxModel::LoadDIBitmap(CcString filename)
+void CxModel::LoadDIBitmap(string filename)
 {
 #ifdef __CR_WIN__
     if ( m_bitmapbits ) delete [] m_bitmapbits;
@@ -1832,7 +1801,7 @@ void CxModel::LoadDIBitmap(CcString filename)
     int nTextureHeight;
 
 // Open the Bitmap file
-    hFileHandle = CreateFile(filename.ToCString(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_SEQUENTIAL_SCAN,NULL);
+    hFileHandle = CreateFile(filename.c_str(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_SEQUENTIAL_SCAN,NULL);
 
 // Check for open failure (most likely file does not exist).
     if(hFileHandle == INVALID_HANDLE_VALUE) return;
@@ -1918,7 +1887,7 @@ void CxModel::LoadDIBitmap(CcString filename)
 
 void CxModel::PolyCheck()
 {
-   if ( m_selectionPoints.ListSize() < 3 ) return;
+   if ( m_selectionPoints.size() < 3 ) return;
 
 #ifdef __CR_WIN__
 //   HDC hOldDC = wglGetCurrentDC();
@@ -1965,7 +1934,9 @@ void CxModel::PolyCheck()
      {
        delete [] feedbuf;
        m_fbsize = m_fbsize * 2;
-       LOGSTAT ( "Feedback buffer overflows, doubling size to " + CcString (m_fbsize) );
+       ostringstream message;
+       message << "Feedback buffer overflows, doubling size to " << m_fbsize;
+       LOGSTAT ( message.str() );
        bigger_buf_needed = true;
      }
      else
@@ -2047,29 +2018,30 @@ void CxModel::PolyCheck()
        curY = viewport[3] - curY; // Correct for sense of OpenGL coord system.
 
        int crossings = 0;
-       CcPoint *p1, *p2;
 
-       m_selectionPoints.Reset();
-       p1 = (CcPoint*)m_selectionPoints.GetItemAndMove();
-
-       while ( p2 = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+       list<CcPoint>::iterator p1, p2;
+       p1 = p2 = m_selectionPoints.begin();
+       p2++;
+       
+       while ( p2 != m_selectionPoints.end() )
        {
-         if (  ( ( p1->y < curY ) && ( p2->y > curY ) ) ||
-               ( ( p1->y > curY ) && ( p2->y < curY ) )    )
+         if (  ( ( (*p1).y < curY ) && ( (*p2).y > curY ) ) ||
+               ( ( (*p1).y > curY ) && ( (*p2).y < curY ) )    )
          {
             float invgrad = 1000000.0f; // Avoid divide by zero:
-            if ( p2->y - p1->y != 0 ) invgrad = (float)(p2->x - p1->x) / (float)(p2->y - p1->y);
+            if ( (*p2).y - (*p1).y != 0 ) invgrad = (float)((*p2).x - (*p1).x) / (float)((*p2).y - (*p1).y);
 
-            float xCut = ( p1->x + ( (curY - p1->y) * invgrad ) );
+            float xCut = ( (*p1).x + ( (curY - (*p1).y) * invgrad ) );
 
-            if ( ( ( ( p1->x < xCut ) && ( p2->x > xCut ) ) ||
-                   ( ( p1->x > xCut ) && ( p2->x < xCut ) )    ) &&
+            if ( ( ( ( (*p1).x < xCut ) && ( (*p2).x > xCut ) ) ||
+                   ( ( (*p1).x > xCut ) && ( (*p2).x < xCut ) )    ) &&
                  ( curX < xCut ) )
             {
               crossings++;
             }
          }
-         p1 = p2;
+         p1++;
+         p2++;
        }
 
        if ( crossings % 2 != 0 )
@@ -2151,7 +2123,9 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
        repeat = true;
        delete [] selectbuf;
        m_sbsize = m_sbsize * 2;
-       LOGSTAT ( "Select buffer overflows, doubling size to " + CcString (m_sbsize) );
+       ostringstream message;
+       message << "Select buffer overflows, doubling size to " << m_sbsize;
+       LOGSTAT ( message.str() );
      }
    }
 

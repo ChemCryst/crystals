@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/17 14:33:30  richard
+//   CxDestroyWindow function. wx support.
+//
 //   Revision 1.8  2001/03/08 16:44:10  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -17,7 +20,8 @@
 #define     __CxProgress_H__
 
 #include    "crguielement.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 
 #ifdef __BOTHWX__
 #include <wx/gauge.h>
@@ -42,7 +46,7 @@ class CxProgress : public BASEPROGRESS
         static CxProgress * CreateCxProgress( CrProgress * container, CxGrid * guiParent );
             CxProgress( CrProgress * container );
             ~CxProgress();
-        void    SetText( char * text );
+        void    SetText( const string & text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();
         int GetLeft();
@@ -53,13 +57,13 @@ class CxProgress : public BASEPROGRESS
         static int  AddProgress();
         static void RemoveProgress();
         void    SetVisibleChars( int count );
-            void  SwitchText ( CcString * text );
+        void  SwitchText ( const string & text );
         void CxDestroyWindow();
 
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
-        CcString m_oldText;
+        string m_oldText;
 
     protected:
         // methods

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.12  2003/02/20 14:08:04  rich
 //   New option of making buttoms "SLIM" they fit into text more easily.
 //
@@ -34,7 +40,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cccontroller.h"
 #include    "cxbutton.h"
 //insert your own code here.
@@ -98,24 +105,26 @@ Destroy();
 }
 
 
+#ifdef __CR_WIN__
 void    CxButton::ButtonClicked()
 {
     ( (CrButton *)ptr_to_crObject)->ButtonClicked();
 }
-
-void    CxButton::SetText( char * text )
-{
-#ifdef __POWERPC__
-    Str255 descriptor;
-    strcpy( reinterpret_cast<char *>(descriptor), text );
-    c2pstr( reinterpret_cast<char *>(descriptor) );
-    SetDescriptor( descriptor );
 #endif
 #ifdef __BOTHWX__
-      SetLabel(text);
+void    CxButton::ButtonClicked(wxCommandEvent& e)
+{
+    ( (CrButton *)ptr_to_crObject)->ButtonClicked();
+}
+#endif
+
+void    CxButton::SetText( const string &text )
+{
+#ifdef __BOTHWX__
+      SetLabel(text.c_str());
 #endif
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 }
 
@@ -134,7 +143,7 @@ int CxButton::GetIdealWidth()
     GetWindowText(text);
     if ( m_lengthStringUsed )
     {
-        text = m_lengthString.ToCString();
+        text = m_lengthString.c_str();
     }
     size = dc.GetOutputTextExtent(text);
     dc.SelectObject(oldFont);
@@ -146,7 +155,7 @@ int CxButton::GetIdealWidth()
     text = GetLabel();
     if ( m_lengthStringUsed )
     {
-        text = m_lengthString.ToCString();
+        text = m_lengthString.c_str();
     }
     GetTextExtent( text, &cx, &cy );
     return (cx+20); // nice width for buttons
@@ -178,11 +187,6 @@ int CxButton::GetIdealHeight()
         return (cy+10); // nice height for buttons
 #endif
 
-}
-
-void CxButton::BroadcastValueMessage()
-{
-    ButtonClicked();
 }
 
 void CxButton::SetDef()
@@ -251,7 +255,7 @@ void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxButton::OnChar( wxKeyEvent & event )
 {
-      switch(event.KeyCode())
+      switch(event.GetKeyCode())
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
@@ -265,7 +269,7 @@ void CxButton::OnChar( wxKeyEvent & event )
         }
         default:
         {
-                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
+                  ptr_to_crObject->FocusToInput((char)event.GetKeyCode());
             break;
         }
     }
@@ -273,7 +277,7 @@ void CxButton::OnChar( wxKeyEvent & event )
 #endif
 
 
-void CxButton::SetLength(CcString ltext)
+void CxButton::SetLength(string ltext)
 {
     m_lengthStringUsed = true;
     m_lengthString = ltext;

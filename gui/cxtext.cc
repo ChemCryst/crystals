@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/06/17 14:29:33  richard
+//   Destroy window function. Fix resize bug in wx version.
+//
 //   Revision 1.7  2001/03/08 16:44:11  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -18,7 +21,8 @@
 #include    "cxtext.h"
 #include    "cxgrid.h"
 #include    "cccontroller.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "crtext.h"
 
 
@@ -59,15 +63,15 @@ Destroy();
 }
 
 
-void    CxText::SetText( CcString text )
+void    CxText::SetText( const string & text )
 {
 #ifdef __BOTHWX__
-    SetLabel(text.ToCString());
+    SetLabel(text.c_str());
     SetSize(GetLeft(),GetTop(),GetIdealWidth(),GetHeight());
     Refresh();
 #endif
 #ifdef __CR_WIN__
-    SetWindowText(text.ToCString());
+    SetWindowText(text.c_str());
 //    MoveWindow(GetLeft(),GetTop(),GetIdealWidth(),GetHeight(),true); //Naughty but harmless.
 #endif
 

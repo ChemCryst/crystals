@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2003/09/16 14:47:47  rich
+//   If toolbar item fails to create, finish parsing any remaining options anyway.
+//
 //   Revision 1.5  2003/09/11 13:18:17  rich
 //   If toolbar buttons fail to initialise delete containers.
 //
@@ -32,8 +35,11 @@
 #include    "crgrid.h"
 #include    "cxtoolbar.h"
 #include    "ccrect.h"
+#include    "ccstatus.h"
 #include    "cccontroller.h"    // for sending commands
 
+static list<CcTool*>  m_AllToolsList;   // All tools in all toolbars.
+static int m_next_tool_id_to_try = kToolButtonBase;
 
 
 CrToolBar::CrToolBar( CrGUIElement * mParentPtr )
@@ -54,56 +60,56 @@ CrToolBar::~CrToolBar()
         ptr_to_cxObject = nil;
     }
 
-    m_ToolList.Reset();
-    CcTool* theItem = (CcTool *)m_ToolList.GetItemAndMove();
-    while ( theItem != nil )
+    list<CcTool*>::iterator cti = m_ToolList.begin();
+    for ( ; cti != m_ToolList.end(); cti++ )
     {
-       CcController::theController->RemoveTool(theItem);
-       delete theItem;
-       theItem = (CcTool*)m_ToolList.GetItemAndMove();
+       RemoveTool(*cti);
+       delete *cti;
     }
+    m_ToolList.clear();
 }
 
 CRSETGEOMETRY(CrToolBar,CxToolBar)
 CRGETGEOMETRY(CrToolBar,CxToolBar)
 CRCALCLAYOUT(CrToolBar,CxToolBar)
 
-CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
+CcParse CrToolBar::ParseInput( deque<string> & tokenList )
 {
 
   CcParse retVal(true, mXCanResize, mYCanResize);
   bool hasTokenForMe = true;
-  CcString theToken;
+  string theToken;
 
 // Initialization for the first time
   if( ! mSelfInitialised )
   {
-    mName = tokenList->GetToken();
+    mName = string(tokenList.front());
+    tokenList.pop_front();
     mSelfInitialised = true;
     LOGSTAT( "Created ToolBar " + mName );
   }
 
   hasTokenForMe = true;
 
-  while ( hasTokenForMe )
+  while ( hasTokenForMe && ! tokenList.empty() )
   {
-    switch ( tokenList->GetDescriptor(kAttributeClass) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
     {
       case kTOpenGrid: //Really just here to make things line
       {                //up nicely in the scripts.
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
         break;
       }
       case kTAddTool:
       {
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
         CcTool * newTool = new CcTool();
-        m_ToolList.AddItem(newTool);
-        (CcController::theController)->AddTool(newTool);
-        newTool->tName = tokenList->GetToken();
-        newTool->tImage = tokenList->GetToken();
-        newTool->tText = tokenList->GetToken();
-        newTool->tCommand = tokenList->GetToken();
+        m_ToolList.push_back(newTool);
+        AddTool(newTool);
+        newTool->tName = string(tokenList.front()); tokenList.pop_front();
+        newTool->tImage = string(tokenList.front()); tokenList.pop_front();
+        newTool->tText = string(tokenList.front()); tokenList.pop_front();
+        newTool->tCommand = string(tokenList.front()); tokenList.pop_front();
         newTool->tDisableFlags = 0;
         newTool->tEnableFlags = 0;
         newTool->toolType = CT_NORMAL;
@@ -111,31 +117,33 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
         newTool->tTool = this;
 
         bool moreTokens = true;
-        while ( moreTokens )
+        while ( moreTokens && !tokenList.empty() )
         {
-          switch ( tokenList->GetDescriptor(kAttributeClass) )
+          switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
           {
             case kTMenuDisableCondition:
             {
-              tokenList->GetToken();
-              newTool->tDisableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+              tokenList.pop_front();
+              newTool->tDisableFlags = (CcController::theController)->status.CreateFlag(tokenList.front());
+              tokenList.pop_front();
               break;
             }
             case kTMenuEnableCondition:
             {
-              tokenList->GetToken();
-              newTool->tEnableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+              tokenList.pop_front();
+              newTool->tEnableFlags = (CcController::theController)->status.CreateFlag(tokenList.front());
+              tokenList.pop_front();
               break;
             }
             case kTToggle:
             {
-              tokenList->GetToken();
+              tokenList.pop_front();
               newTool->toggleable = true;
               break;
             }
             case kTAppIcon:
             {
-              tokenList->GetToken();
+              tokenList.pop_front();
               newTool->toolType = CT_APPICON;
               break;
             }
@@ -150,17 +158,17 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
         {
            //Remove tool
            LOGSTAT("Failed to create toolbar item: " + newTool->tName);
-           (CcController::theController)->RemoveTool(newTool);
-           if ( m_ToolList.FindItem( (void*) newTool ) ) m_ToolList.RemoveItem();
+           RemoveTool(newTool);
+           m_ToolList.remove( newTool );
            delete newTool;
         }
         break;
       }
       case kTMenuSplit:
       {
-        tokenList->GetToken();             // Remove that token!
+        tokenList.pop_front();             // Remove that token!
         CcTool * newTool = new CcTool();
-        m_ToolList.AddItem(newTool);
+        m_ToolList.push_back(newTool);
         newTool->toolType = CT_SEP;
         newTool->tName = "";
         newTool->tImage = "";
@@ -175,20 +183,20 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
       }
       case kTItem:
       {
-        tokenList->GetToken();                 // Remove that token!
-        CcString item = tokenList->GetToken(); // Get Item Name.
-        CcTool* nt = (CcController::theController)->FindTool(item);
+        tokenList.pop_front();                 // Remove that token!
+        CcTool* nt = FindAnyTool(tokenList.front());
+        tokenList.pop_front();
 
         bool moreTokens = true;
-        while ( moreTokens )
+        while ( moreTokens && !tokenList.empty() )
         {
-          switch ( tokenList->GetDescriptor(kAttributeClass) )
+          switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
           {
             case kTState:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool on = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool on = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTOn) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if ( nt ) ((CxToolBar*)ptr_to_cxObject)->CheckTool(on,nt->CxID);
                 break;
             }
@@ -203,7 +211,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
       }
       case kTEndGrid:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
       }                       //run on into default...
       default:
       {
@@ -221,21 +229,18 @@ void CrToolBar::CrFocus()
 }
 
 
-void CrToolBar::SetText( CcString text )
+void CrToolBar::SetText( const string &text )
 {
 
 }
 
 CcTool* CrToolBar::FindTool(int ID)
 {
-  m_ToolList.Reset();
-  CcTool* theItem = (CcTool *)m_ToolList.GetItemAndMove();
-  while ( theItem != nil )
+  list<CcTool*>::iterator cti = m_ToolList.begin();
+  for ( ; cti != m_ToolList.end(); cti++ )
   {
-    if ( theItem->CxID == ID ) return theItem;
-    theItem = (CcTool*)m_ToolList.GetItemAndMove();
+    if ( (*cti)->CxID == ID ) return *cti;
   }
-
   return nil;
 
 }
@@ -244,4 +249,112 @@ CcTool* CrToolBar::FindTool(int ID)
 void CrToolBar::CxEnable(bool enable, int id)
 {
    ((CxToolBar*)ptr_to_cxObject)->CxEnable( enable, id );
+}
+
+
+int CrToolBar::FindFreeToolId()
+{
+
+    m_next_tool_id_to_try++;
+    int starting_try = m_next_tool_id_to_try;
+    list<CcTool*>::iterator ti;
+
+    while (1)
+    {
+       bool pointerfree = true;
+
+       for ( ti = m_AllToolsList.begin(); ti != m_AllToolsList.end(); ti++ )
+       {
+          if ( (*ti)->CxID  == m_next_tool_id_to_try )
+          {
+             pointerfree = false;
+             m_next_tool_id_to_try++;
+
+             if ( m_next_tool_id_to_try > ( kToolButtonBase + 5000 ) )
+             {
+//Reset id pointer to start:
+                m_next_tool_id_to_try = kToolButtonBase;
+             }
+             if ( m_next_tool_id_to_try == starting_try )
+             {
+//No more free id's:
+                 return -1;
+             }
+             break;
+          }
+       }
+
+       if ( pointerfree ) return m_next_tool_id_to_try;
+
+    }
+
+}
+
+void CrToolBar::AddTool( CcTool * tool )
+{
+      m_AllToolsList.push_back( tool );
+      if ( m_AllToolsList.size() > 5000 )
+      {
+         //error
+//         std::cerr << "More than 5000 toolbar items. Rethink or recompile.\n";
+      //   ASSERT(0);
+      }
+}
+
+CcTool* CrToolBar::FindAnyTool ( int id )
+{
+
+   list<CcTool*>::iterator ti;
+   for ( ti = m_AllToolsList.begin(); ti != m_AllToolsList.end(); ti++ )
+   {
+      if ( (*ti)->CxID  == id )
+      {
+         return *ti;
+      }
+   }
+  return nil;
+}
+
+CcTool* CrToolBar::FindAnyTool ( const string & name )
+{
+
+   list<CcTool*>::iterator ti;
+   for ( ti = m_AllToolsList.begin(); ti != m_AllToolsList.end(); ti++ )
+   {
+      if ( (*ti)->tName  == name )
+      {
+         return *ti;
+      }
+   }
+  return nil;
+}
+
+void CrToolBar::RemoveTool ( CcTool * tool )
+{
+   m_AllToolsList.remove(tool);
+}
+
+/*
+void CrToolBar::RemoveTool ( const string & toolname )
+{
+
+   list<CcTool*>::iterator ti;
+   for ( ti = m_AllToolsList.begin(); ti != m_AllToolsList.end(); )
+   {
+      if ( (*ti)->tName  == toolname )
+      {
+         m_AllToolsList.erase(ti);
+         break;
+      }
+   }
+}
+*/
+
+void CrToolBar::UpdateToolBars(CcStatus & status)
+{
+   list<CcTool*>::iterator ti;
+   for ( ti = m_AllToolsList.begin(); ti != m_AllToolsList.end(); ti++ )
+   {
+        (*ti)->tTool->CxEnable(status.ShouldBeEnabled((*ti)->tEnableFlags,(*ti)->tDisableFlags), (*ti)->CxID);
+   }
 }

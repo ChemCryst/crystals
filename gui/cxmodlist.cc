@@ -16,6 +16,8 @@
 #include    "ccmodelatom.h"
 #include    "cccontroller.h"
 #include    <math.h>
+#include    <string>
+#include    <sstream>
 
 int CxModList::mModListCount = kModListBase;
 
@@ -41,22 +43,17 @@ CxModList::CxModList( CrModList * container )
 {
     ptr_to_crObject = container;
 
-    mItems = 0;
     mVisibleLines = 0;
     m_numcols = 0;
-    m_colWidths = nil;
-    m_colTypes = nil;
     nSortedCol = -1;
     bSortAscending = true;
     m_ProgSelecting = 0;
-    IDlist = nil;
-    m_IDlist_size = 0;
 }
 
 void CxModList::AddCols()
 {
     m_numcols=13;
-    CcString colHeader[13];
+    string colHeader[13];
     colHeader[0]  = "Id";
     colHeader[1]  = "Type";
     colHeader[2]  = "Serial";
@@ -71,21 +68,18 @@ void CxModList::AddCols()
     colHeader[11] = "Assembly";
     colHeader[12] = "Group";
 
-    m_colWidths = new int[m_numcols];
-    m_colTypes  = new int[m_numcols];
-
     for ( int i = 0; i < m_numcols ; i++ )
     {
-      m_colTypes[i] = COL_INT; //Always start with INT. This will fail to REAL, and then to TEXT.
+      m_colTypes.push_back(COL_INT); //Always start with INT. This will fail to REAL, and then to TEXT.
 #ifdef __CR_WIN__
-      m_colWidths[i] = CRMAX(10,GetStringWidth(colHeader[i].ToCString())+5);
-      InsertColumn( i, colHeader[i].ToCString(), LVCFMT_LEFT, 10, i );
+      m_colWidths.push_back(CRMAX(10,GetStringWidth(colHeader[i].c_str())+5));
+      InsertColumn( i, colHeader[i].c_str(), LVCFMT_LEFT, 10, i );
 #endif
 #ifdef __BOTHWX__
       int w,h;
-      GetTextExtent(colHeader[i].ToCString(),&w,&h);
-      m_colWidths[i] = CRMAX(10,w);
-      InsertColumn( i, colHeader[i].ToCString(), wxLIST_FORMAT_LEFT, 10 );
+      GetTextExtent(colHeader[i].c_str(),&w,&h);
+      m_colWidths.push_back(CRMAX(10,w));
+      InsertColumn( i, colHeader[i].c_str(), wxLIST_FORMAT_LEFT, 10 );
 #endif
       SetColumnWidth( i, m_colWidths[i]);
     }
@@ -95,8 +89,6 @@ void CxModList::AddCols()
 CxModList::~CxModList()
 {
     RemoveModList();
-    delete [] m_colWidths;
-    delete [] m_colTypes;
 }
 
 
@@ -174,22 +166,22 @@ CXONCHAR(CxModList)
 
 
 
-void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
+void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
                                bool disabled)
 {
-    if ( id <= mItems )
+    if ( id <= (int)IDlist.size() )
     {
 //Find ID in existing list.
-      for ( int i=0; i<mItems; i++ )
+      for ( int i=0; i<(int)IDlist.size(); i++ )
       {
         if ( IDlist[i] == id )
         {
             for( int j=0; j<m_numcols; j++)
 #ifdef __CR_WIN__
-                SetItemText( i, j, rowOfStrings[j].ToCString());
+                SetItemText( i, j, rowOfStrings[j].c_str());
 #endif
 #ifdef __BOTHWX__
-                SetItem( i, j, rowOfStrings[j].ToCString());
+                SetItem( i, j, rowOfStrings[j].c_str());
 #endif
 
             if ( selected )
@@ -208,43 +200,28 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
 #endif
             return;
         }
-
       }
-
     }
 
-    int i = mItems;
 
 // A new item. Extend id list.
-    if ( id > m_IDlist_size )
-    {
-       m_IDlist_size = CRMAX(m_IDlist_size,id) * 2;
-       int * newIDlist = new int[m_IDlist_size];
-       for ( i = 0; i < mItems; i++ )
-       {
-          newIDlist[i] = IDlist[i];
-       }
-       if ( IDlist ) delete [] IDlist;
-       IDlist = newIDlist;
-    }
 
-    IDlist[id-1] = id;
-    mItems = id;
+    IDlist.push_back(IDlist.size()+1);
 
 #ifdef __CR_WIN__
-    int nItem = InsertItem(mItems, _T(""));
+    int nItem = InsertItem(IDlist.size(), _T(""));
     for (int j = 0; j < m_numcols; j++)
     {
-        SetItemText(nItem, j, rowOfStrings[j].ToCString());
-        int width = GetStringWidth(rowOfStrings[j].ToCString());
+        SetItemText(nItem, j, rowOfStrings[j].c_str());
+        int width = GetStringWidth(rowOfStrings[j].c_str());
 #endif
 #ifdef __BOTHWX__
-    int nItem = InsertItem(mItems-1, _T(""));
+    int nItem = InsertItem(IDlist.size()-1, _T(""));
     for (int j = 0; j < m_numcols; j++)
     {
-        SetItem( nItem, j, rowOfStrings[j].ToCString());
+        SetItem( nItem, j, rowOfStrings[j].c_str());
         int width,h;
-        GetTextExtent(rowOfStrings[j].ToCString(),&width,&h);
+        GetTextExtent(rowOfStrings[j].c_str(),&width,&h);
 #endif
         if ( width + 15 > m_colWidths[j] ) // if no change, don't set width.
         {
@@ -259,17 +236,17 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
     }
     if ( selected )
 #ifdef __CR_WIN__
-       SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
+       SetItemState(nItem, LVIS_SELECTED, LVIS_SELECTED);
 #endif
 #ifdef __BOTHWX__
-       SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+       SetItemState(nItem, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 #endif
     else
 #ifdef __CR_WIN__
-       SetItemState(i, 0, LVIS_SELECTED);
+       SetItemState(nItem, 0, LVIS_SELECTED);
 #endif
 #ifdef __BOTHWX__
-       SetItemState(i, 0, wxLIST_STATE_SELECTED);
+       SetItemState(nItem, 0, wxLIST_STATE_SELECTED);
 #endif
 
     return;
@@ -532,18 +509,21 @@ void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
     {
 
         int item = (int)pnmv->iItem;
+        ostringstream strm;
         if (pnmv->uNewState <= 1 && pnmv->uOldState >= 2) //Unselect Item.
         {
-           ((CrModList*)ptr_to_crObject)->SendValue("UNSELECTED_N" + CcString((int)pnmv->iItem + 1) ); //Send the index
+           strm << "UNSELECTED_N" + (int)pnmv->iItem + 1;
+           ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index
            int id = IDlist[item]-1;
-//           TEXTOUT ( "Unselect. item=" + CcString(item) + ", id=" + CcString(id) );
+//           TEXTOUT ( "Unselect. item=" + string(item) + ", id=" + string(id) );
            ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,false);
         }
         else if (pnmv->uNewState >= 2 && pnmv->uOldState <= 1) //Select Item
         {
-           ((CrModList*)ptr_to_crObject)->SendValue("SELECTED_N" + CcString((int)pnmv->iItem + 1) ); //Send the index only.
+           strm << "SELECTED_N" + (int)pnmv->iItem + 1;
+           ((CrModList*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
            int id = IDlist[item]-1;
-//           TEXTOUT ( "Select. item=" + CcString(item) + ", id=" + CcString(id) );
+//           TEXTOUT ( "Select. item=" + string(item) + ", id=" + string(id) );
            ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,true);
         }
 
@@ -638,7 +618,7 @@ bool CxModList::SortItems( int colType, int nCol, bool bAscending)
         }
     }
 
-// Sort the items along with the index. This is a straight insertion sort
+// Sort the items along with the index. This is a stable sort
 // so that previous sorts remain in effect for a given value of this sort.
     for ( int element = 2; element <= size; element++)
     {
@@ -745,7 +725,7 @@ bool CxModList::SortItems( int colType, int nCol, bool bAscending)
     rowText.SetSize( nColCount );
 
     bool *sorted = new bool[size+1];
-    for (i = 0; i <= size; i++)
+    for (int i = 0; i <= size; i++)
         sorted[i] = false;
 
     for ( int j = 1; j <= size; j++)
@@ -817,11 +797,11 @@ bool CxModList::SortItems( int colType, int nCol, bool bAscending)
 
 //Work out whether a string is REAL, INT or TEXT.
 
-int CxModList::WhichType(CcString text)
+int CxModList::WhichType(string text)
 {
-    int i;
+    string::size_type i;
 //Test one: Any characters other than space, number or point.
-    for (i = 0; i < text.Length(); i++)
+    for (i = 0; i < text.length(); i++)
     {
         if (   text[i] != ' '
             && text[i] != '1'
@@ -842,7 +822,7 @@ int CxModList::WhichType(CcString text)
 //Test two(b): Minus sign in correct place if present.
     bool inLeadingSpace = true;
     bool inFinalSpace = false;
-    for (i = 0; i < text.Length(); i++)
+    for (i = 0; i < text.length(); i++)
     {
         if(inLeadingSpace)
         {
@@ -876,7 +856,7 @@ int CxModList::WhichType(CcString text)
 
 //Test three: One point symbol in the text.
     bool pointFound = false;
-    for (i = 0; i < text.Length(); i++)
+    for (i = 0; i < text.length(); i++)
     {
         if ( text[i] == '.' )
         {
@@ -930,104 +910,30 @@ void CxModList::SelectAll(bool select)
 #endif
 
 #ifdef __CR_WIN__
-CcString CxModList::GetCell(int row, int col)
+string CxModList::GetCell(int row, int col)
 {
     CString temp = GetItemText(row, col);
-    CcString retVal = temp.GetBuffer(temp.GetLength());
+    string retVal = temp.GetBuffer(temp.GetLength());
     return retVal;
 }
 #endif
 #ifdef __BOTHWX__
-CcString CxModList::GetCell(int row, int col)
+string CxModList::GetCell(int row, int col)
 {
- return CcString("Unimplemented");
+ return string("Unimplemented");
 }
 #endif
 
-#ifdef __CR_WIN__
-void CxModList::SelectPattern(CcString * strings, bool select)
-{
-    int size = GetItemCount();
-    bool match = true;
-    for ( int i = 0; i < size; i++ )
-    {
-        match = true;
-        for ( int j = 0; ( ( j < m_numcols ) && match ); j++ )
-        {
-            if (  ! ( strings[j] == "*" ) )
-            {
-                switch ( m_colTypes[j] )
-                {
-                case COL_INT:
-                    if ( strings[j].Sub(1,1) == ">" )
-                    {
-                        if( atoi(strings[j].Sub(2,-1).ToCString()) >= atoi(GetCell(i,j).ToCString()) )
-                            match = false;
-                    }
-                    else if ( strings[j].Sub(1,1) == "<" )
-                    {
-                        if( atoi(strings[j].Sub(2,-1).ToCString()) <= atoi(GetCell(i,j).ToCString()) )
-                            match = false;
-                    }
-                    else
-                    {
-                        if( atoi(strings[j].ToCString()) != atoi(GetCell(i,j).ToCString()) )
-                            match = false;
-                    }
-                    break;
-                case COL_REAL:
-                    if ( strings[j].Sub(1,1) == ">" )
-                    {
-                        if( atof(strings[j].Sub(2,-1).ToCString()) >= atof(GetCell(i,j).ToCString()) )
-                            match = false;
-                    }
-                    else if ( strings[j].Sub(1,1) == "<" )
-                    {
-                        if( atof(strings[j].Sub(2,-1).ToCString()) <= atof(GetCell(i,j).ToCString()) )
-                            match = false;
-                    }
-                    else
-                    {
-                        if( atof(strings[j].ToCString()) != atof(GetCell(i,j).ToCString()) )
-                            match = false;
-                    }
-                    break;
-                case COL_TEXT:
-                    if( ! ( strings[j] == GetCell(i,j) ) ) match = false;
-                    break;
-                }
-            }
-        }
-        if (match)
-        {
-            m_ProgSelecting++;
-            LV_ITEM setItem;
-            setItem.mask = LVIF_IMAGE | LVIF_PARAM | LVIF_STATE;
-            setItem.iItem = i;
-            setItem.iSubItem = 0;
-            setItem.stateMask = LVIS_CUT | LVIS_DROPHILITED |
-                                LVIS_FOCUSED |  LVIS_SELECTED |
-                                LVIS_OVERLAYMASK | LVIS_STATEIMAGEMASK;
-            GetItem( &setItem );
-            if(select)
-                setItem.state |= LVIS_SELECTED;
-            else
-                setItem.state &= (~LVIS_SELECTED);
-            SetItem( &setItem );
-        }
-    }
-}
-#endif
 
 #ifdef __BOTHWX__
-CcString CxModList::GetListItem(int item)
+string CxModList::GetListItem(int item)
 {
- return CcString("unimplemented");
+ return string("unimplemented");
 }
 #endif
 
 #ifdef __CR_WIN__
-CcString CxModList::GetListItem(int item)
+string CxModList::GetListItem(int item)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     CString textresult = "";
@@ -1035,7 +941,7 @@ CcString CxModList::GetListItem(int item)
     for( int i=0; i<nColCount; i++)
         textresult += GetItemText(item, i) + " ";
 
-    CcString result = textresult.GetBuffer(textresult.GetLength());
+    string result = textresult.GetBuffer(textresult.GetLength());
     return result;
 }
 #endif
@@ -1134,16 +1040,13 @@ void CxModList::GetSelectedIndices(  int * values )
 
 void CxModList::Update(int newsize) 
 {
-//  TEXTOUT ( "Model " + CcString((int)this) + "changed" );
+//  TEXTOUT ( "Model " + string((int)this) + "changed" );
 // Fetch new atom info from ModelDoc.
 
-       if (newsize != mItems)
+       if (newsize != IDlist.size())
        {
           DeleteAllItems();
-          mItems = 0;
-          delete [] IDlist;
-          m_IDlist_size = 0;
-          IDlist =  nil;
+          IDlist.clear();
        }
 
 //       m_listboxparent->LockWindowUpdate();
@@ -1171,7 +1074,7 @@ void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
 {
  NMITEMACTIVATE* lpnmitem = (LPNMITEMACTIVATE) pNMHDR;
 
-// TEXTOUT("Right click! "+CcString(lpnmitem->iItem));
+// TEXTOUT("Right click! "+string(lpnmitem->iItem));
 
  int iitem = lpnmitem->iItem;
 
@@ -1229,7 +1132,7 @@ void CxModList::CxEnsureVisible(CcModelAtom* va)
 {
 //Find atom id in list
        int id;
-       for ( id = 0; id < mItems; id++ )
+       for ( id = 0; id < (int)IDlist.size(); id++ )
        {
           if ( IDlist[id] == va->id ) break;
        }
@@ -1240,4 +1143,3 @@ void CxModList::CxEnsureVisible(CcModelAtom* va)
        EnsureVisible(id); //Call library function to ensure it is shown.
 #endif
 }
-

@@ -9,6 +9,12 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.9  2002/03/07 10:46:44  DJWgroup
 //   SH: Change to fix reversed y axes; realign text labels.
 //
@@ -44,7 +50,8 @@
 #ifndef     __CrPlot_H__
 #define     __CrPlot_H__
 #include    "crguielement.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 
 
 #ifdef __BOTHWX__
@@ -60,7 +67,6 @@
 #endif
 
 
-class CcTokenList;
 class CcPoint;
 class CrMenu;
 class CcPlotData;
@@ -81,11 +87,11 @@ public:
     PlotDataPopup() {m_Valid = false;};
     ~PlotDataPopup(){};
 
-    CcString    m_PopupText;        // all the popup text
-    CcString    m_SeriesName;       // series name only
-    CcString    m_XValue;           // x value (or the x label for bargraphs)
-    CcString    m_YValue;           // y value
-    CcString    m_Label;            // point label
+    string    m_PopupText;        // all the popup text
+    string    m_SeriesName;       // series name only
+    string    m_XValue;           // x value (or the x label for bargraphs)
+    string    m_YValue;           // y value
+    string    m_Label;            // point label
 
     bool     m_Valid;            // is this a valid point?
 };
@@ -95,15 +101,15 @@ class CrPlot : public CrGUIElement
     public:
 //Functions for drawing on the window:
         void DrawLine(int thickness, int x1, int y1, int x2, int y2); // STEVE added thickness parameter
-        void DrawText(int x, int y, CcString text, int param, int fontsize);// STEVE added justification parameter
+        void DrawText(int x, int y, string text, int param, int fontsize);// STEVE added justification parameter
         void DrawRect(int x1, int y1, int x2, int y2, bool fill);
         void DrawPoly(int nVertices, int* vertices, bool fill);
         void DrawEllipse(int x, int y, int w, int h, bool fill);
         void SetColour(int r, int g, int b);                            // STEVE added this - set colour in cxplot class
         void Clear();
-        CcPoint GetTextArea(int size, CcString text, int param);
+        CcPoint GetTextArea(int size, string text, int param);
         PlotDataPopup GetDataFromPoint(CcPoint *point);                 // get a description of the data under the mouse
-        void CreateKey(int numser, CcString* names, int** col);
+        void CreateKey(int numser, string* names, int** col);
 
 //Creation and adding data:
         void Attach(CcPlotData* doc);
@@ -114,12 +120,12 @@ class CrPlot : public CrGUIElement
         void ReDrawView(bool print);
         void Display();
         void CrFocus();
-        CcParse ParseInput( CcTokenList * tokenList );
+        CcParse ParseInput( deque<string> & tokenList );
         void    SetGeometry( const CcRect * rect );
         void    MenuSelected(int id);
         CcRect  GetGeometry();
         CcRect  CalcLayout(bool recalculate=false);
-        void    SetText( CcString text );
+        void    SetText( const string &text );
         int GetIdealWidth();
         int GetIdealHeight();
         void FlipGraph(bool flip);

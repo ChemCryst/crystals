@@ -1,4 +1,5 @@
-#include <string.h>
+#include <string>
+using namespace std;
 
 /*
   class CHARACTER
@@ -108,4 +109,3 @@ inline CHARACTER::operator char*()
 {
     return rep;
 }
-

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.9  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -29,7 +33,9 @@
 #include    "crystalsinterface.h"
 
 
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 
 
 #include        "ccrect.h"
@@ -49,11 +55,11 @@ CcRect::CcRect( const CcRect &inRect )
       mRight      = inRect.mRight;
 }
 
-CcRect::CcRect( CcString geomString )
+CcRect::CcRect( string geomString )
 {
-      int len = geomString.Len();
+      int len = geomString.length();
       char str[] = "                                                                                ";
-      strcpy(&str[0], geomString.ToCString());
+      strcpy(&str[0], geomString.c_str());
       char delim[] = " ";
       char * top = strtok( str , delim);
       char * lef = strtok( NULL, delim);
@@ -76,14 +82,11 @@ CcRect::CcRect( CcString geomString )
 
 
 
-CcString CcRect::AsString()
+string CcRect::AsString()
 {
-      CcString cgeom = CcString ( mTop )    + " "
-                     + CcString ( mLeft )   + " "
-                     + CcString ( mBottom ) + " "
-                     + CcString ( mRight );
-
-      return cgeom;
+      ostringstream strm;
+      strm << mTop << " " << mLeft << " " << mBottom << " " << mRight;
+      return strm.str();
 }
 
 

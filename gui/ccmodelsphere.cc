@@ -1,9 +1,10 @@
 
 #include "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+using namespace std;
+
 #include "crconstants.h"
 #include "ccmodelsphere.h"
-#include "cctokenlist.h"
 #include "ccmodeldoc.h"
 #include <math.h>
 #include "crmodel.h"
@@ -16,7 +17,7 @@ CcModelSphere::CcModelSphere(CcModelDoc* parentptr)
   Init();
 }
 
-CcModelSphere::CcModelSphere(CcString llabel,int lx1,int ly1,int lz1, 
+CcModelSphere::CcModelSphere(string llabel,int lx1,int ly1,int lz1, 
                           int lr, int lg, int lb, int locc,int lcov, int lvdw,
                           int lspare, int lflag,
                           int iso, int irad, CcModelDoc* parentptr)
@@ -54,9 +55,9 @@ CcModelSphere::~CcModelSphere()
 {
 }
 
-void CcModelSphere::ParseInput(CcTokenList* tokenList)
+void CcModelSphere::ParseInput(deque<string> &  tokenList)
 {
-//        CcString theString;
+//        string theString;
 //Just read ID, LABEL,
 // IX, IY, IZ,
 // RED, GREEN, BLUE,
@@ -64,20 +65,22 @@ void CcModelSphere::ParseInput(CcTokenList* tokenList)
 // COVRAD, VDWRAD, SPARERAD
 // FLAG,
 // UISO or X11
-      id        = atoi ( tokenList->GetToken().ToCString() );
-      m_label     =        tokenList->GetToken();    //LABEL
-      x         = atoi ( tokenList->GetToken().ToCString() );
-      y         = atoi ( tokenList->GetToken().ToCString() );
-      z         = atoi ( tokenList->GetToken().ToCString() );
-      r         = atoi ( tokenList->GetToken().ToCString() );
-      g         = atoi ( tokenList->GetToken().ToCString() );
-      b         = atoi ( tokenList->GetToken().ToCString() );
-      occ       = atoi ( tokenList->GetToken().ToCString() );
-      covrad    = atoi ( tokenList->GetToken().ToCString() );
-      vdwrad    = atoi ( tokenList->GetToken().ToCString() );
-      sparerad  = atoi ( tokenList->GetToken().ToCString() );
-      x11       = atoi ( tokenList->GetToken().ToCString() );
-      rad       = atoi ( tokenList->GetToken().ToCString() );
+      id        = atoi ( tokenList[0].c_str() );
+      m_label   = string( tokenList[1]);    //LABEL
+      x         = atoi ( tokenList[2].c_str() );
+      y         = atoi ( tokenList[3].c_str() );
+      z         = atoi ( tokenList[4].c_str() );
+      r         = atoi ( tokenList[5].c_str() );
+      g         = atoi ( tokenList[6].c_str() );
+      b         = atoi ( tokenList[7].c_str() );
+      occ       = atoi ( tokenList[8].c_str() );
+      covrad    = atoi ( tokenList[9].c_str() );
+      vdwrad    = atoi ( tokenList[10].c_str() );
+      sparerad  = atoi ( tokenList[11].c_str() );
+      x11       = atoi ( tokenList[12].c_str() );
+      rad       = atoi ( tokenList[13].c_str() );
+      for ( int i = 0; i<14; i++ ) tokenList.pop_front();
+
 }
 
 int CcModelSphere::X()
@@ -147,7 +150,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
   }
   else if(style->radius_type == SPARE)
   {
-    if ( m_label.Length() && ( m_label.Sub(1,1) == "Q" ) )
+    if ( m_label.length() && ( m_label[0] == 'Q' ) )
     {
       innerrad = ( (float) rad - (float) sparerad ) * style->radius_scale;
       outerrad = ( (float) rad + (float) sparerad ) * style->radius_scale;
@@ -233,23 +236,13 @@ void CcModelSphere::SendAtom(int style, bool output)
     }
     case CR_SENDB:
     {
-      CcString element, number;
-      int pos1 = 1, pos2 = 1;
-      for (int i = 1; i < m_label.Length(); i++)
+      string element, number;
+      string::size_type pos1 = m_label.find('(');
+      string::size_type pos2 = m_label.find(')');
+      if ( (pos1 != string::npos ) && ( pos2 != string::npos ) )
       {
-        if ( m_label[i] == '(' )
-        {
-          pos1 = i+1;
-          element = m_label.Sub(1,pos1-1);
-        }
-        if ( m_label[i] == ')' )
-        {
-          pos2 = i+1;
-          number = m_label.Sub(pos1+1, pos2-1);
-        }
-      }
-      if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
-      {
+        element = m_label.substr(0,pos1);
+        number = m_label.substr(pos1+1,pos2-pos1-1);
         (CcController::theController)->SendCommand(element + "_N" + number);
       }
       break;
@@ -261,30 +254,20 @@ void CcModelSphere::SendAtom(int style, bool output)
     }
     case CR_SENDD:
     {
-      CcString element, number;
-      int pos1 = 1, pos2 = 1;
-      for (int i = 1; i < m_label.Length(); i++)
+      string element, number;
+      string::size_type pos1 = m_label.find('(');
+      string::size_type pos2 = m_label.find(')');
+      if ( (pos1 != string::npos ) && ( pos2 != string::npos ) )
       {
-        if ( m_label[i] == '(' )
-        {
-          pos1 = i+1;
-          element = m_label.Sub(1,pos1-1);
-        }
-        if ( m_label[i] == ')' )
-        {
-          pos2 = i+1;
-          number = m_label.Sub(pos1+1, pos2-1);
-        }
-      }
-      if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
-      {
+        element = m_label.substr(0,pos1);
+        number = m_label.substr(pos1+1,pos2-pos1-1);
         (CcController::theController)->SendCommand("ATOM_N" + element + "_N" + number);
       }
       break;
     }
     case CR_SENDC_AND_SELECT:
     {
-      CcString cSet = (Select()) ? "SET" : "UNSET" ;
+      string cSet = (Select()) ? "SET" : "UNSET" ;
       mp_parent->DrawViews();
       (CcController::theController)->SendCommand("ATOM_N" + m_label + "_N" + cSet);
       break;

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper
 //   Created:   22.2.1998 14:43 Hours
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.9  2001/06/17 15:14:14  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -50,7 +56,7 @@ CRSETGEOMETRY(CrProgress,CxProgress)
 CRGETGEOMETRY(CrProgress,CxProgress)
 CRCALCLAYOUT(CrProgress,CxProgress)
 
-CcParse CrProgress::ParseInput( CcTokenList * tokenList )
+CcParse CrProgress::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -67,34 +73,33 @@ CcParse CrProgress::ParseInput( CcTokenList * tokenList )
     }
 
 // End of Init, now comes the general parser
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting Text to '" + mText);
                 break;
             }
             case kTChars:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int chars = atoi( theString.ToCString() );
-                ((CxProgress*)ptr_to_cxObject)->SetVisibleChars( chars );
-                LOGSTAT( "Setting Text Chars Width: " + theString );
+                tokenList.pop_front(); // Remove that token!
+                ((CxProgress*)ptr_to_cxObject)->SetVisibleChars( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting Text Chars Width: " + tokenList.front() );
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
             case kTComplete:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int complete = atoi( theString.ToCString() );
-                ((CxProgress*)ptr_to_cxObject)->SetProgress( complete );
-                LOGSTAT( "Setting Progress: " + theString + "% ");
+                tokenList.pop_front(); // Remove that token!
+                ((CxProgress*)ptr_to_cxObject)->SetProgress( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting Progress: " + tokenList.front() + "% ");
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
 
@@ -109,10 +114,10 @@ CcParse CrProgress::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrProgress::SetText( CcString text )
+void    CrProgress::SetText( const string &text )
 {
     char theText[256];
-    strcpy( theText, text.ToCString() );
+    strcpy( theText, text.c_str() );
 
     ( (CxProgress *)ptr_to_cxObject)->SetText( theText );
 }
@@ -123,7 +128,7 @@ void CrProgress::CrFocus()
 
 }
 
-void CrProgress::SwitchText ( CcString * text )
+void CrProgress::SwitchText ( const string & text )
 {
       ((CxProgress*)ptr_to_cxObject)->SwitchText( text );
 }

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2001/06/17 14:43:40  richard
 //   CxDestroyWindow function.
 //   Get font from winsizes file. (Can be set via "Appearence" menu.)
@@ -21,9 +27,9 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
+/*#ifdef __POWERPC__
 class LEditField;
-#endif
+#endif*/
 
 #ifdef __MOTO__
 #include    <LEditField.h>;
@@ -60,8 +66,8 @@ class CxEditBox : public BASEEDITBOX
         static CxEditBox *  CreateCxEditBox( CrEditBox * container, CxGrid * guiParent );
             CxEditBox( CrEditBox * container);
             ~CxEditBox();
-            void  AddText( CcString text );
-            void  SetText( CcString text );
+            void  AddText( const string & text );
+            void  SetText( const string & text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         void CxDestroyWindow();
         int GetTop();
@@ -73,8 +79,8 @@ class CxEditBox : public BASEEDITBOX
         static int AddEditBox( void ) { mEditBoxCount++; return mEditBoxCount; };
         static void RemoveEditBox( void ) { mEditBoxCount--; };
         int GetText(char* theText, int maxlen = 256);
-            CcString GetText();
-        void    LimitChars(int nChars);
+            string GetText();
+        void    LimitChars(string::size_type nChars);
         void    SetVisibleChars( int count );
         void    IsInputPlace();
         void    UpdateFont();
@@ -84,7 +90,7 @@ class CxEditBox : public BASEEDITBOX
         static int mEditBoxCount;
         CrGUIElement *  ptr_to_crObject;
         int mCharsWidth;
-        int m_Limit;
+        string::size_type m_Limit;
 
       private:
         int allowedInput;

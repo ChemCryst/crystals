@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   09.6.1998 00:03 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.4  2001/03/08 16:44:09  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -16,9 +22,9 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
-class LCaption;
-#endif
+//#ifdef __POWERPC__
+//class LCaption;
+//#endif
 
 #ifdef __MOTO__
 #include    <LCaption.h>
@@ -42,10 +48,10 @@ class CrMenuBar;
 class CxMenuBar : public BASEMENUBAR
 {
     public:
-        void SetText(CcString theText, int id);
+        void SetText(const string & theText, int id);
         int AddItem(int position = -1);
-        int AddItem(char* text, int position = -1);
-        int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
+        int AddItem(const string &  text, int position = -1);
+        int AddMenu(CxMenu* menuToAdd, const string &  text, int position = -1);
 
         // methods
         static CxMenuBar *   CreateCxMenu( CrMenuBar * container, CxWindow * guiParent );

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.10  2001/07/16 07:31:45  ckp2
 //   Process ON_CHAR messages - result in passing keypress to current input editbox. Now
 //   whole interface is much easier to start typing from.
@@ -53,7 +57,7 @@ class CxGrid : public BASEGRID
         static CxGrid * CreateCxGrid( CrGrid * container, CxGrid * guiParent );
             CxGrid( CrGrid * container );
             ~CxGrid();
-        void    SetText( char * text );
+        void    SetText( const string & text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         void CxDestroyWindow();
         int GetTop();
@@ -87,4 +91,3 @@ class CxGrid : public BASEGRID
 
 };
 #endif
-

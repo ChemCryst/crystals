@@ -7,6 +7,10 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.8  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -47,7 +51,9 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "crconstants.h"
 #include    "ccrect.h"
 #include    "crresizebar.h"
@@ -79,7 +85,9 @@ CrResizeBar::~CrResizeBar()
 
   if ( m_firstitem ) delete m_firstitem;
   if ( m_seconditem ) delete m_seconditem;
-  (CcController::theController)->StoreKey( mName, CcString ( m_offset ) );
+  ostringstream strm;
+  strm << m_offset;
+  (CcController::theController)->StoreKey( mName, strm.str() );
   if ( ptr_to_cxObject )
   {
     ((CxResizeBar*)ptr_to_cxObject)->CxDestroyWindow();
@@ -165,7 +173,7 @@ void CrResizeBar::SetGeometry( const CcRect * rect )
 
 
 
-CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
+CcParse CrResizeBar::ParseInput( deque<string> & tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
   bool hasTokenForMe = true;
@@ -176,10 +184,10 @@ CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
     retVal = CrGUIElement::ParseInputNoText( tokenList );
     mSelfInitialised = true;
     LOGSTAT( "Created ResizeBar " + mName );
-    CcString coffset = (CcController::theController)->GetKey( mName );
-    if ( coffset.Len() )
+    string coffset = (CcController::theController)->GetKey( mName );
+    if ( coffset.length() )
     {
-      m_offset = atoi( coffset.ToCString() );
+      m_offset = atoi( coffset.c_str() );
       m_offset = CRMIN ( m_offset, 1000 );
       m_offset = CRMAX ( m_offset, 0 );
       if ( ( m_offset == 0 ) || ( m_offset == 1000) ) ((CxResizeBar*)ptr_to_cxObject)->AlreadyCollapsed();
@@ -189,11 +197,11 @@ CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
       m_offset = -1; //Set later in calclayout.
     }
 
-    switch ( tokenList->GetDescriptor(kAttributeClass) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
     {
       case kTHorizontal:
       {
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
         ((CxResizeBar*)ptr_to_cxObject)->SetType( kTHorizontal );
         m_type = kTHorizontal;
         LOGSTAT( "Setting ResizeBar type: Horizontal" );
@@ -201,7 +209,7 @@ CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
       }
       case kTVertical:
       {
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
                                // Run on into default case...
       }
       default:
@@ -214,23 +222,23 @@ CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
     }
 
 // Optional startgrid token used to line up syntax in scripts nicely.
-    if (tokenList->GetDescriptor(kAttributeClass) == kTOpenGrid)
-                            tokenList->GetToken();
+    if (CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTOpenGrid)
+                            tokenList.pop_front();
     CcParse* parseVal = new CcParse[2];
 
     for ( int i = 0; i<2; i++ )
     {
-     switch ( tokenList->GetDescriptor(kAttributeClass) )
+     switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
      {
       case kTItem:
       {
-        tokenList->GetToken(); // Remove that token!
+        tokenList.pop_front(); // Remove that token!
 
         LOGSTAT("Adding Item to resize control. ");
         CrGrid* gridPtr = new CrGrid( this );
         if ( gridPtr != nil )
         {
-          tokenList->GetToken();      // remove that token
+          tokenList.pop_front();      // remove that token
           parseVal[i] = gridPtr->ParseInput( tokenList );
           if ( i==0 ) m_firstitem = gridPtr;
           else        m_seconditem= gridPtr;
@@ -271,8 +279,8 @@ CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
   }
 
 // Optional endgrid token used to line up syntax in scripts nicely.
-  if (tokenList->GetDescriptor(kAttributeClass) == kTEndGrid)
-                            tokenList->GetToken();
+  if (CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTEndGrid)
+                            tokenList.pop_front();
 
   return retVal;
 }
@@ -354,7 +362,7 @@ CcRect CrResizeBar::CalcLayout(bool recalc)
 }
 
 
-void CrResizeBar::SetText ( CcString cText )
+void CrResizeBar::SetText ( const string &cText )
 {
   LOGERR ( "Resizebar doesn't have TEXT in it: " + cText);
 }
@@ -402,7 +410,7 @@ void CrResizeBar::MoveResizeBar(int offset)
 }
 
 
-CrGUIElement *  CrResizeBar::FindObject( CcString Name )
+CrGUIElement *  CrResizeBar::FindObject( const string & Name )
 {
   CrGUIElement * theElement = nil;
 

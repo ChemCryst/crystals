@@ -8,9 +8,15 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.15  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
-//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -90,7 +96,7 @@ class CxWindow : public BASEWINDOW
 
      void AdjustSize( CcRect * clientSize );
      void SetMainMenu(CxMenuBar* menu);
-     void SetText( char * text );
+     void SetText( const string &text );
      void SetDefaultButton( CxButton * inButton );
 
      void Focus();

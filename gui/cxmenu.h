@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   09.6.1998 00:03 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.7  2002/01/31 14:58:56  ckp2
 //   RIC: SetTitle function allows substitution of atom names into menuitems which
 //   open submenus.
@@ -22,9 +28,9 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
-class LCaption;
-#endif
+//#ifdef __POWERPC__
+//class LCaption;
+//#endif
 
 #ifdef __MOTO__
 #include    <LCaption.h>
@@ -47,11 +53,11 @@ class CxMenu;
 class CxMenu : public BASEMENU
 {
     public:
-        void SetText(CcString theText, int id);
-        void SetTitle(CcString theText, CxMenu* ptr);
+        void SetText(const string & theText, int id);
+        void SetTitle(const string & theText, CxMenu* ptr);
         int AddItem(int position = -1);
-        int AddItem(char* text, int position = -1);
-        int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
+        int AddItem(const string & text, int position = -1);
+        int AddMenu(CxMenu* menuToAdd, const string & text, int position = -1);
         // methods
         static CxMenu * CreateCxMenu( CrMenu * container, CxMenu * guiParent, bool popup = FALSE );
             CxMenu( CrMenu * container );

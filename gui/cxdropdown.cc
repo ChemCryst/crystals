@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2003/11/28 10:29:11  rich
+// Replace min and max macros with CRMIN and CRMAX. These names are
+// less likely to confuse gcc.
+//
 // Revision 1.17  2003/06/19 16:40:30  rich
 // Allow DropDown listboxes to be disabled from SCRIPT.
 //
@@ -63,7 +67,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cxdropdown.h"
 #include    "cccontroller.h"
 #include    "cxgrid.h"
@@ -137,23 +142,25 @@ void CxDropDown::CxRemoveItem ( int item )
 }
 
 
+#ifdef __CR_WIN__
 void    CxDropDown::Selected()
 {
-#ifdef __CR_WIN__
     ((CrDropDown *)ptr_to_crObject)->Selected( GetCurSel() + 1 );
 #endif
 #ifdef __BOTHWX__
+void    CxDropDown::Selected(wxCommandEvent & e)
+{
       ((CrDropDown *)ptr_to_crObject)->Selected( GetSelection() + 1 );
 #endif
 }
 
-void    CxDropDown::AddItem( char * text )
+void    CxDropDown::AddItem( const string & text )
 {
 #ifdef __BOTHWX__
-    Append ( text );
+    Append ( text.c_str() );
 #endif
 #ifdef __CR_WIN__
-    AddString(text);
+    AddString(text.c_str() );
 #endif
     if( !mItems ) CxSetSelection(1);
     mItems++;
@@ -315,19 +322,19 @@ void CxDropDown::Focus()
     SetFocus();
 }
 
-CcString CxDropDown::GetDropDownText(int index)
+string CxDropDown::GetDropDownText(int index)
 {
    index = CRMIN ( index, mItems );
    index = CRMAX ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
     GetLBText(index-1,temp);
-    CcString result = temp.GetBuffer(temp.GetLength());
+    string result = temp.GetBuffer(temp.GetLength());
     return result;
 #endif
 #ifdef __BOTHWX__
       wxString temp = GetString( index-1 );
-      CcString result ( temp.c_str() );
+      string result ( temp.c_str() );
     return result;
 #endif
 }
@@ -347,4 +354,3 @@ void CxDropDown::Disable(bool disable)
             Enable(true);
 #endif
 }
-

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2002/01/31 14:39:36  ckp2
+//   RIC: SetBondType function for ccstatus. Allows popup-menus to vary depending on
+//   the bond type that has been clicked on.
+//
 //   Revision 1.4  2001/06/17 15:18:26  richard
 //   Notice when scripts exit (status bit 5 changes) and call ScriptsExited to
 //   close any modal windows that have been accidentally left open. Windows with
@@ -65,7 +69,10 @@
 #define BOND_SYMM 2
 #define BOND_AROMATIC 3
 
-class CcTokenList;
+#include <string>
+#include <deque>
+using namespace std;
+
 
 //There is only one CcStatus object, it belongs to CcController.
 
@@ -80,7 +87,7 @@ class   CcStatus
 
 // sets and unsets flags as notified by CRYSTALS.
 
-    void ParseInput(CcTokenList* tokenList);
+    void ParseInput(deque<string> & tokenList);
 
 
 // sets and unsets flags as notified by the MODEL VIEW.
@@ -93,7 +100,7 @@ class   CcStatus
 // Creates a bit flag for menu items/toolbars based on the
 // ENABLEIF and DISABLEIF strings they are passed.
 
-    int CreateFlag(CcString theFlags);
+    int CreateFlag(string theFlags);
 
 // Checks a menu/toolbar item against the current status to determine
 // whether it should be enabled.
@@ -103,7 +110,7 @@ class   CcStatus
   private:
 
 //methods
-    int GetBitByToken(CcString token);
+    int GetBitByToken(string token);
     void UnSetBit(int i, int* theFlags);
     void SetBit(int i, int* theFlag);
     void UpdateToolBars();

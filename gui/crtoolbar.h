@@ -7,22 +7,26 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:44
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:02:14  richard
+//   New toolbar classes.
+//
 
 #ifndef         __CrToolBar_H__
 #define         __CrToolBar_H__
 #include    "crguielement.h"
-#include    "cctokenlist.h"
-#include        "cclist.h"
+#include   <list>
+using namespace std;
 
 class CrToolBar;
+class CcStatus;
 
 class CcTool
 {
 public:
-  CcString tName;
-  CcString tImage;
-  CcString tText;
-  CcString tCommand;
+  string tName;
+  string tImage;
+  string tText;
+  string tCommand;
   int tEnableFlags;
   int tDisableFlags;
   int toolType;
@@ -43,18 +47,28 @@ class   CrToolBar : public CrGUIElement
 // methods
    CrToolBar( CrGUIElement * mParentPtr );
    ~CrToolBar();
-   CcParse ParseInput( CcTokenList * tokenList );
+   CcParse ParseInput( deque<string> &  tokenList );
    void    SetGeometry( const CcRect * rect );
    CcRect  GetGeometry();
    CcRect CalcLayout(bool recalculate=false);
    void    CrFocus();
-   void    SetText( CcString text );
+   void    SetText( const string &text );
    CcTool* FindTool(int ID);
    void    CxEnable(bool enable, int id);
 
-// attributes
 
-   CcList  m_ToolList;
+   static int FindFreeToolId();
+   static void AddTool( CcTool * tool );
+   static void RemoveTool( CcTool * tool );
+//    static void RemoveTool ( const string & toolname );
+   static CcTool* FindAnyTool( int id );
+   static CcTool* FindAnyTool( const string & name );
+   static void UpdateToolBars(CcStatus& status);
+
+// attributes
+   list<CcTool*>  m_ToolList;   // The tools in this toolbar
+//   static list<CcTool*>  m_AllToolsList;   // All tools in all toolbars.
+//   static int     m_next_tool_id_to_try;
 
 };
 

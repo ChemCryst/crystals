@@ -10,7 +10,6 @@
 #ifndef     __CrTextOut_H__
 #define     __CrTextOut_H__
 #include    "crguielement.h"
-#include    "cctokenlist.h"
 #include    "ccrect.h"
 class CxTextOut;
 
@@ -27,14 +26,14 @@ class CxTextOut;
         // methods
             CrTextOut( CrGUIElement * mParentPtr );
             ~CrTextOut();
-        CcParse ParseInput( CcTokenList * tokenList );
-        void    SetText ( CcString text );
+        CcParse ParseInput( deque<string> &  tokenList );
+        void    SetText ( const string & text );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry ();
         CcRect CalcLayout(bool recalculate=false);
         void   ScrollPage(bool up);
 
-                void ProcessLink( CcString aString );
+                void ProcessLink( string aString );
         // attributes
 };
 

@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.89  2004/05/19 15:37:55  rich
+// Remove debugging output.
+//
 // Revision 1.88  2004/05/19 14:03:59  rich
 // On Unix, use wxConfig routines to store 'user' data rather than the old
 // winsizes.ini file. Winsizes.ini is now officially not used anywhere.
@@ -199,7 +202,7 @@
 //
 // Revision 1.46  2002/07/03 14:23:21  richard
 // Replace as many old-style stream class header references with new style
-// e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+// e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 // Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 // stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -376,7 +379,7 @@
 // Added RedirectInput token, to change the input object. Probably
 // not needed though, as the token INPUT on an EDITBOX command will
 // do the trick.
-// Changed char * to CcString for AddCrystalsCommand and AddInterfaceCommand.
+// Changed char * to string for AddCrystalsCommand and AddInterfaceCommand.
 // No longer necessary to check for _MAINTEXTINPUT in AddCrystalsCommand,
 // since the CrEditBox now knows if it is the input source and will send
 // text and clear itself as appropriate.
@@ -412,7 +415,7 @@
 // any Interface command before it was processed.
 //
 // Revision 1.8  1999/06/03 14:35:49  dosuser
-// RIC: Changed ParseLine and ParseInput to use CcStrings rather than
+// RIC: Changed ParseLine and ParseInput to use strings rather than
 // char*'s. Same for ProcessOutput. Changed TRUE and FALSE to
 // true and false.
 //
@@ -434,7 +437,7 @@
 //      directory from the user via a common dialog.
 //
 // Revision 1.4  1999/04/30 16:56:49  dosuser
-// RIC: Added SetProgressText(CcString Text) to allow the model window to
+// RIC: Added SetProgressText(string Text) to allow the model window to
 //      display atom names in the current progress/status bar.
 //
 
@@ -444,7 +447,14 @@
 #ifdef __BOTHWX__
 #include <wx/app.h>
 #endif
-#include    "ccstring.h"
+#include    <string>
+#include    <vector>
+#include    <iostream>
+#include    <iomanip>
+#include    <sstream>
+#include    <deque>
+#include    <algorithm>
+using namespace std;
 #include    "crconstants.h"
 
 #include    "crgrid.h"
@@ -454,8 +464,26 @@
 #include    "cxgrid.h" //to delete its static font pointer.
 #include    "crbutton.h"
 #include    "creditbox.h"
-#include    "cctokenlist.h"
-#include    "cccommandqueue.h"
+
+// Get all the kT and kS defines for now: TODO - move all into crconstants.
+
+#include    "crwindow.h"
+#include    "crmenu.h"
+#include    <GL/glu.h>
+#include    "crmodel.h"
+#include    "crchart.h"
+#include    "crbutton.h"
+#include    "ccstatus.h"
+#include    "cricon.h"
+#include    "crbitmap.h"
+#include    "crlistbox.h"
+#include    "crtab.h"
+#include    "crresizebar.h"
+#include    "crstretch.h"
+#include    "crlistctrl.h"
+
+
+
 #include    "cxeditbox.h"
 #include    "crmultiedit.h"
 #include    "crtextout.h"
@@ -469,8 +497,6 @@
 
 
 
-#include <iostream>
-#include <iomanip>
 
 
 
@@ -524,13 +550,6 @@
 #ifdef __CR_WIN__
 CFont* CcController::mp_font = nil;
 CFont* CcController::mp_inputfont = nil;
-/*
-HANDLE mInterfaceCommandQueueMutex;
-HANDLE mCrystalsCommandQueueMutex;
-HANDLE mCrystalsCommandQueueEmptyEvent;
-HANDLE mLockCrystalsQueueDuringQueryMutex;
-HANDLE mCrystalsThreadIsLocked;
-*/
 #include <process.h>
 #endif
 
@@ -540,7 +559,7 @@ static CcLock m_Interface_Commands_CS(true);
 static CcLock m_Crystals_Thread_Alive(true);
 static CcLock m_Protect_Completing_CS(true);
 
-static CcLock m_Crystals_Command_Added_CS(false);
+static CcLock m_Crystals_Command_Added(false);
 static CcLock m_Complete_Signal(false);
 
 static CcLock m_wait_for_thread_start(false);
@@ -557,7 +576,7 @@ wxFont* CcController::mp_inputfont = nil;
 CcController* CcController::theController = nil;
 int CcController::debugIndent = 0;
 
-CcController::CcController( CcString directory, CcString dscfile )
+CcController::CcController( const string & directory, const string & dscfile )
 {
 #ifdef __CR_WIN__
     m_start_ticks = GetTickCount();
@@ -574,41 +593,24 @@ CcController::CcController( CcString directory, CcString dscfile )
 //Things
     mErrorLog = nil;
     mThisThreadisDead = false;
-//    mThatThreadisDead = false;
     m_Completing = false;
 
     m_restart = false;
 
     m_Wait = false;
 
-    m_next_id_to_try = kMenuBase;
-    m_next_tool_id_to_try = kToolButtonBase;
 
     mCrystalsThread = nil;
 
     m_BatchMode = false;
     m_ExitCode = 0;
 
-//Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
-    mCurrentChartDoc = nil;
-
 //Current window pointers. Used to direct streams of input to the correct places (if for some reason the stream has been interuppted.)
     mCurrentWindow = nil;   //The current window. GetValue will search in this window first.
-    mInputWindow = nil;     //The users input window. Focus goes here when keys are pressed.
-    mTextWindow = nil;      //The current place for normal text to be sent. The routine that writes checks this first, and sends elsewhere if the window has gone.
-    mProgressWindow = nil;
 
 //Token list pointers.
-    mCurTokenList = nil;    //The current token list, could be for charts, model, windows etc.
-    mTempTokenList = nil;   //Stores the current token list when 'quick' commands are jumping the input queue.
-
-//Lists
-    mModelTokenList = new CcTokenList(); //Tokens for a model window.
-    mChartTokenList = new CcTokenList(); //Tokens for a chart (graphics) window.
-    mPlotTokenList = new CcTokenList(); //Tokens for a plot window.
-    mStatusTokenList = new CcTokenList(); //Tokens for the status object.
-    mQuickTokenList = new CcTokenList();  //Tokens for immediate processing.
-    mWindowTokenList = new CcTokenList(); //Tokens for defining or changing windows.
+//    mCurTokenList = nil;    //The current token list, could be for charts, model, windows etc.
+//    mTempTokenList = nil;   //Stores the current token list when 'quick' commands are jumping the input queue.
 
 
 // Initialize the static pointers in classes for accessing this controller object.
@@ -616,27 +618,16 @@ CcController::CcController( CcString directory, CcString dscfile )
     CcController::theController = this;
     CcController::debugIndent = 0;
 
-// Win32 specific: Set up MUTEXES for synchronising threads.
-// ie. Only one thread at a time can access the command and interface queues to prevent corruption.
-// (as long as they use them!) See {Add/Get}InterfaceCommand and {Add/Get}CrystalsCommand.
 #ifdef __CR_WIN__
-/*
-      mInterfaceCommandQueueMutex        = CreateMutex(NULL, false, NULL);
-      mCrystalsCommandQueueMutex         = CreateMutex(NULL, false, NULL);
-      mLockCrystalsQueueDuringQueryMutex = CreateMutex(NULL, false, NULL);
-      mCrystalsThreadIsLocked            = CreateMutex(NULL, false, NULL);
-      WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); //We want this all the time.
-      mCrystalsCommandQueueEmptyEvent    = CreateEvent(NULL, true, false, NULL);
-*/
       mGUIThread = AfxGetThread();
 #endif
-    mCrystalsCommandQueue.AddNewLines(true); //Make the crystals queue interpret _N as a new line.
-    mCommandHistoryPosition = 0;
+//    mCrystalsCommandQueue.AddNewLines(true); //Make the crystals queue interpret _N as a new line.
 
-    if ( directory.Length() )
+    if ( directory.length() )
     {
-      if ( directory.Sub(1,1) == """" ) directory.Chop(1,1);
-      ChangeDir( directory );
+      string dirtemp = directory;
+      if ( dirtemp[0] == '\"' ) dirtemp = dirtemp.substr(1,dirtemp.length()-1);
+      ChangeDir( dirtemp );
     }
 
  // Setup initial windows
@@ -649,8 +640,8 @@ CcController::CcController( CcString directory, CcString dscfile )
 
     FILE * file;
 //    char charline[256];
-    CcString crysdir ( getenv("CRYSDIR") );
-    if ( crysdir.Length() == 0 )
+    string crysdir ( getenv("CRYSDIR") );
+    if ( crysdir.length() == 0 )
     {
       std::cerr << "You must set CRYSDIR before running crystals.\n";
       return;
@@ -662,12 +653,12 @@ CcController::CcController( CcString directory, CcString dscfile )
 
     while ( noLuck )
     {
-      CcString dir = EnvVarExtract( crysdir, i );
+      string dir = EnvVarExtract( crysdir, i );
       i++;
 
-      CcString buffer = dir + "guimenu.srt" ;
+      string buffer = dir + "guimenu.srt" ;
 
-      if( file = fopen( buffer.ToCString(), "r" ) ) //Assignment witin conditional - OK
+      if( file = fopen( buffer.c_str(), "r" ) ) //Assignment witin conditional - OK
       {
         ReadStartUp(file,crysdir);
         noLuck = false;
@@ -682,7 +673,7 @@ CcController::CcController( CcString directory, CcString dscfile )
           Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
           Tokenize("^^WI NROWS=20 } @ 3,1 PROGRESS ");
           Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
-          Tokenize("^^WI _MAINTEXTINPUT '' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
+          Tokenize("^^WI _MAINTEXTINPUT ' ' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
           Tokenize("^^CR  ");
           LOGSTAT ( "Back from tokenizing all \n") ;
           noLuck = false;
@@ -715,9 +706,9 @@ CcController::CcController( CcString directory, CcString dscfile )
     LOGSTAT ( "Main window found\n") ;
 
 //Find the output window. Needed by CcController so that text can be sent to it.
-    CrGUIElement* outputWindow;
-    theElement = FindObject( "_MAINTEXTOUTPUT" );
-    if ( theElement == nil )
+    CrTextOut* outputWindow;
+    outputWindow = (CrTextOut*) FindObject( "_MAINTEXTOUTPUT" );
+    if ( outputWindow == nil )
     {
       LOGERR("Failed to get main text output");
 #ifdef __CR_WIN__
@@ -727,14 +718,13 @@ CcController::CcController( CcString directory, CcString dscfile )
 #endif
     }
 
-    outputWindow = theElement;
     SetTextOutputPlace(outputWindow);
     LOGSTAT ( "Text Output window found\n") ;
 
 //Find the progress window. Needed by CcController so that messages can be sent to it.
-    CrGUIElement* progressWindow;
-    theElement = FindObject( "_MAINPROGRESS" );
-    if ( theElement == nil )
+    CrProgress* progressWindow;
+    progressWindow = (CrProgress*)FindObject( "_MAINPROGRESS" );
+    if ( progressWindow == nil )
     {
       LOGERR("Failed to get progress window");
 #ifdef __CR_WIN__
@@ -744,7 +734,6 @@ CcController::CcController( CcString directory, CcString dscfile )
 #endif
     }
 
-    progressWindow = theElement;
     SetProgressOutputPlace(progressWindow);
     LOGSTAT ( "Progress/status window found\n") ;
 
@@ -753,10 +742,11 @@ CcController::CcController( CcString directory, CcString dscfile )
 
 #ifdef __CR_WIN__
     LOGSTAT ( "Setting CRDSC to " + dscfile + "\n") ;
-    if ( dscfile.Length() > 1 )
+    if ( dscfile.length() > 1 )
     {
-      if ( dscfile.Sub(dscfile.Length(),dscfile.Length()) == """" ) dscfile.Chop(dscfile.Length(),dscfile.Length());
-      _putenv( ("CRDSC="+dscfile).ToCString() );
+      string dsctemp = "CRDSC=" + dscfile;
+      if ( dsctemp[dsctemp.length()-1] == '""' ) dsctemp = dsctemp.substr(0,dsctemp.length()-1);
+      _putenv( dsctemp.c_str() );
 
 //For info, put DSC name in the title bar.
       Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + dscfile + "'");
@@ -795,7 +785,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 }
 
 
-void CcController::ReadStartUp( FILE * file, CcString crysdir )
+void CcController::ReadStartUp( FILE * file, string & crysdir )
 {
   char charline[256];
   int nEnv = EnvVarCount( crysdir );
@@ -806,29 +796,30 @@ void CcController::ReadStartUp( FILE * file, CcString crysdir )
   {
     if ( fgets( charline, 256, file ) )
     {
-      CcString inputline = charline;
-      if ( inputline.Compare("!",1) )
+      string inputline = charline;
+      if ( inputline[0] == '!' )
       {
-        inputline = inputline.Chop(1,1); // Remove that shriek.
-        int newl = inputline.Find("\n");
-        if ( newl ) inputline = inputline.Chop(newl,newl);
+        inputline = inputline.substr(1,inputline.length()-1); // Remove that shriek.
+        int newl = inputline.find("\n");
+        if ( newl ) inputline = inputline.substr(0,newl);
         FILE * newfile;
-        //Remove trailing spaces:
-        inputline.Trim();
-        //Remove leading spaces:
-        while ( inputline.Sub(1,1) == ' ' )
-        {
-          inputline = inputline.Chop(1,1);
-        }
+//Remove trailing spaces:
+        string::size_type strim = inputline.find_last_not_of(" ");
+        if ( strim != string::npos )
+            inputline = inputline.substr(0,strim+1);
+//Remove leading spaces:
+        strim = inputline.find_first_not_of(" ");
+        if ( strim != string::npos )
+            inputline = inputline.substr(strim,inputline.length()-strim);
         LOGSTAT("Trimmed: "+inputline);
         int i = 0;
         bool noLuck = true;
         while ( noLuck && i < nEnv )
         {
-          CcString dir = EnvVarExtract( crysdir, i++ );
-          CcString buffer = dir + inputline ;
+          string dir = EnvVarExtract( crysdir, i++ );
+          string buffer = dir + inputline ;
           LOGSTAT("Trying: "+buffer);
-          if( newfile = fopen( buffer.ToCString(), "r" ) ) //Assignment witin conditional - OK
+          if( newfile = fopen( buffer.c_str(), "r" ) ) //Assignment witin conditional - OK
           {
             LOGSTAT("Success, reading file");
             ReadStartUp( newfile, crysdir );
@@ -840,7 +831,7 @@ void CcController::ReadStartUp( FILE * file, CcString crysdir )
           }
         }
       }
-      else if ( ! (inputline.Compare("%",1) ))  // Not a comment
+      else if ( ! (inputline[0]=='%'))  // Line is not a comment
       {
         Tokenize(inputline);
       }
@@ -854,63 +845,74 @@ void CcController::ReadStartUp( FILE * file, CcString crysdir )
 
 CcController::~CcController()       //The destructor. Delete all the heap objects.
 {
-    CrWindow * theWindow;
+    int i = 0;
+    ostringstream aaarg;
 
-    mWindowList.Reset();
-    theWindow = (CrWindow *)mWindowList.GetItem();
-
-    while ( theWindow != nil )
+    list<CcModelDoc*>::iterator moddoc;
+    while( ! CcModelDoc::sm_ModelDocList.empty() )
     {
-        delete theWindow;
-        mWindowList.RemoveItem();
-        theWindow = (CrWindow *)mWindowList.GetItem();
+        i++;
+        moddoc = CcModelDoc::sm_ModelDocList.begin();    // Get first item
+        delete *moddoc;              //It will remove itself from the list
     }
 
-    delete mWindowTokenList;
-    delete mPlotTokenList;
-    delete mChartTokenList;
-    delete mQuickTokenList;
-    delete mModelTokenList;
-    delete mStatusTokenList;
+    aaarg << i;
 
-    CcModelDoc::sm_ModelDocList.Reset();
-    CcModelDoc* theItem ;
-    while ( ( theItem = (CcModelDoc *)CcModelDoc::sm_ModelDocList.GetItem() ) != nil )
-    {
-        CcModelDoc::sm_ModelDocList.RemoveItem();
-        delete theItem;
-    }
+    LOGSTAT ( "Deleted " + aaarg.str() + " CcModelDocs from the stack." );
 
-    CcString *temp;
-    while ( mCommandHistoryList.ListSize() > 0 ) //Delete the history items.
+    i = 0;
+    list<CcChartDoc*>::iterator chartdoc;
+    while ( ! CcChartDoc::sm_ChartDocList.empty() )
     {
-        temp = (CcString*) mCommandHistoryList.GetItem();
-        delete temp;
-        mCommandHistoryList.RemoveItem();
-    }
+        i++;
+        chartdoc = CcChartDoc::sm_ChartDocList.begin();  // Get first item
+        delete *chartdoc;            //It will remove itself from the list
+    }        
+
+    aaarg.str(""); 
+    aaarg << i;
+
+    LOGSTAT ( "Deleted " + aaarg.str() + " CcChartDocs from the stack." );
+
+    i = 0;
+    list<CcPlotData*>::iterator plotdata;
+    while ( ! CcPlotData::sm_PlotList.empty() )
+    {
+        i++;
+        plotdata = CcPlotData::sm_PlotList.begin();  // Get first item
+        delete *plotdata;            //It will remove itself from the list
+    }        
+
+    aaarg.str(""); 
+    aaarg << i;
+
+    LOGSTAT ( "Deleted " + aaarg.str() + " CcPlotDatas from the stack." );
+
+    list<CrWindow*>::iterator mw;
+    for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
+        delete *mw;
+
+    mWindowList.clear();
+    mQuickTokenList.clear();
+    mWindowTokenList.clear();
+    mPlotTokenList.clear();
+    mChartTokenList.clear();
+    mModelTokenList.clear();
+    mStatusTokenList.clear();
+
 
 #ifdef __CR_WIN__
       delete (CcController::mp_font);
       delete (CcController::mp_inputfont);
 #endif
 
-    if(mCrystalsThread ) //&& !mThatThreadisDead)
-    {
-#ifdef __CR_WIN__
-      DWORD threadStatus;
-      GetExitCodeThread(mCrystalsThread->m_hThread,&threadStatus);
-      if(threadStatus == STILL_ACTIVE)
-      {
-         //Its a bit messy, deleting a thread which is still running,
-         //but its too late now anyway...
-         delete mCrystalsThread;
-      }
-#endif
-   }
+// If the thread isn't dead yet, then kill it.
+    if( mCrystalsThread && m_Crystals_Thread_Alive.IsLocked() )
+		 delete mCrystalsThread;
 
 }
 
-bool CcController::ParseInput( CcTokenList * tokenList )
+bool CcController::ParseInput( deque<string> & tokenList )
 {
     CcController::debugIndent = 0;
 
@@ -918,18 +920,19 @@ bool CcController::ParseInput( CcTokenList * tokenList )
     int infiniteLoopCheck = 0;
     int infiniteLoopCheck2 = -999999;
 
-    while (tokenList->ListSize() > 0) //don't return until the list is empty
+    while (! tokenList.empty()) //don't return until the list is empty
     {
-        infiniteLoopCheck = tokenList->ListSize();
+        infiniteLoopCheck = tokenList.size();
         if(infiniteLoopCheck == infiniteLoopCheck2) //if the list size has remained the same during one iteration of this loop...
         {
-            CcString badToken = tokenList->GetToken(); //remove the unrecognised token.
-            LOGWARN("CcController::ParseInput:infiniteLoopCheck Getting nowhere with this token: " + badToken);
+            LOGWARN("CcController::ParseInput:infiniteLoopCheck Getting nowhere with this token: " + tokenList.front());
+            tokenList.pop_front();
+            if ( tokenList.empty() ) break;
         }
         infiniteLoopCheck2 = infiniteLoopCheck;
         bool safeSet = false;
 
-        switch ( tokenList->GetDescriptor( kInstructionClass ) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )
         {
             case kTCreateWindow:
             {
@@ -937,11 +940,11 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                 CrWindow * wPtr = new CrWindow();
                 if ( wPtr != nil )
                 {
-                    tokenList->GetToken(); //remove token.
+                    tokenList.pop_front(); //remove token.
                     retVal = wPtr->ParseInput( tokenList );
                     if ( retVal.OK() )
                     {
-                        mWindowList.AddItem( wPtr );
+                        mWindowList.push_back( wPtr );
                         mCurrentWindow = wPtr;
                     }
                     else
@@ -951,79 +954,59 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             }
             case kTDisposeWindow:
             {
-                tokenList->GetToken();              // remove that token
-                CcString theWindow = tokenList->GetToken();
-                LOGSTAT("CcController: Disposing window " + theWindow);
-                CrGUIElement* mWindowToClose = FindObject(theWindow); //Find window by name.
-
-                CrWindow * wPtr = nil;
-                if ( mWindowToClose != nil )
-                {
-                    mWindowList.Reset();
-
-                    // Find window in the list
-                    while ( ( wPtr = ( CrWindow *)mWindowList.GetItem() ) != nil
-                            && wPtr != mWindowToClose )
-                    {
-                        mWindowList.GetItemAndMove();
-                    }
-
-                    // Remove it
-                    if ( wPtr == mWindowToClose )
-                    {
-                        mWindowList.RemoveItem();
-                        mWindowList.Reset();
-
-                        // Set current - we want stack behaviour, so take tha last
-                        mCurrentWindow = (CrWindow *)mWindowList.GetLastItem();
-                        delete wPtr;
-                    }
-                }
+                tokenList.pop_front();
+                LOGSTAT("CcController: Disposing window " + tokenList.front());
+                CrWindow* mWindowToClose = (CrWindow*)FindObject(tokenList.front()); //Find window by name.
+                tokenList.pop_front();
+                mWindowList.remove(mWindowToClose);
+                delete mWindowToClose;
+                mCurrentWindow = mWindowList.back();
                 break;
-
             }
             case kTGetValue:
             {
                 LOGSTAT("CcController: Getting Value");
                 // remove that token
-                tokenList->GetToken();
+                tokenList.pop_front();
 
-                CcString name = tokenList->GetToken();  // Get the name of the object
                 CrGUIElement * theElement;
                 if ( mCurrentWindow )
                 {
                     // Look for the item in current window first.
-                     theElement = mCurrentWindow->FindObject( name );
+                     theElement = mCurrentWindow->FindObject( tokenList.front() );
                 }
 
                 if ( theElement == nil )
                 {
                     // Look for the element everywhere.
-                    theElement = FindObject ( name );
+                    theElement = FindObject ( tokenList.front() );
                 }
-
+                
+                
                 if ( theElement != nil )
                 {
                     theElement->GetValue();
                 }
                 else
                 {
-                              SendCommand("FALSE",true); //This can be used to check if an object exists.
-                    LOGWARN( "CcController:ParseInput:GetValue couldn't find object with name '" + name + "'");
+                    SendCommand("FALSE",true); //This can be used to check if an object exists.
+                    LOGWARN( "CcController:ParseInput:GetValue couldn't find object with name '" + tokenList.front() + "'");
                 }
+                tokenList.pop_front();
+
                 break;
 
             }
             case kTCloseGroup:
             {
-                tokenList->GetToken(); // ]
+                tokenList.pop_front(); // ]
                 break;
             }
             case kTSafeSet:
             {
                 safeSet = true;
-                tokenList->GetToken(); // SAFESET
-                if ( tokenList->GetDescriptor( kInstructionClass ) != kTOpenGroup )
+                tokenList.pop_front(); // SAFESET
+                if ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) != kTOpenGroup )
                 {
                     LOGWARN( "CcController:ParseInput:SAFESET must be followed by opening and closing []");
                     break;
@@ -1034,21 +1017,16 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             {
               
                 // remove that token
-                tokenList->GetToken();
+                tokenList.pop_front();
 
-                CcString name = tokenList->GetToken();  // Get the name of the object
+                string name = string(tokenList.front());  // Get the name of the object
+                tokenList.pop_front();
                 LOGSTAT("CcController: Setting Value of " + name);
                 CrGUIElement* theElement = nil;
 
                 if (name == "TEXTOUTPUT")
                 {
                     theElement = GetTextOutputPlace();
-//                    if(theElement != GetBaseTextOutputPlace() )
-//                    {
-//                        tokenList->Lock(); //Prevents the tokenList from emptying as it is read.
-//                        GetBaseTextOutputPlace()->ParseInput( tokenList );
-//                        tokenList->UnLock(); //Restores the tokenList and allows emptying.
-//                    }
                     theElement->ParseInput( tokenList );
                 }
                 else if (name == "PROGOUTPUT")
@@ -1058,7 +1036,7 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                 }
                 else if (name == "TEXTINPUT")
                 {
-                                        theElement = GetInputPlace();
+                    theElement = GetInputPlace();
                     theElement->ParseInput( tokenList );
                 }
                 else
@@ -1071,45 +1049,39 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                         break;
                     }
 
-                    CcChartDoc * theChart = nil, * theCItem;
-                    mChartList.Reset();
-                    theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                    while ( theCItem != nil && theChart == nil )
+                    list<CcChartDoc*>::iterator doc
+                          =  find( CcChartDoc::sm_ChartDocList.begin(),
+                                   CcChartDoc::sm_ChartDocList.end(), name );
+   
+                    if ( doc != CcChartDoc::sm_ChartDocList.end() )
                     {
-                        theChart = theCItem->FindObject( name );
-                        theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                    }
-                    if ( theChart )
-                    {
-                        theChart->ParseInput( tokenList );
+                        (*doc)->ParseInput( tokenList );
                         break;
                     }
 
                     CcMenuItem * theMenuItem = nil;
 
-                    theMenuItem = FindMenuItem ( name );
+                    theMenuItem = CrMenu::FindMenuItem ( name );
                     if ( theMenuItem )
                     {
                         theMenuItem->ParseInput( tokenList );
                         break;
                     }
 
-                    CcPlotData * thePlot = nil, * thePItem;
-                    CcPlotData::sm_PlotList.Reset();
-
-                    thePItem = (CcPlotData *)CcPlotData::sm_PlotList.GetItemAndMove();
+                    list<CcPlotData*>::reverse_iterator rpd = CcPlotData::sm_PlotList.rbegin();
 //This loop finds the LAST item with a given name in the plotlist.
-                    while ( thePItem != nil )
+                    for ( ; rpd != CcPlotData::sm_PlotList.rend(); rpd++ )
                     {
-                        if ( thePItem->FindObject( name ) )
-                           thePlot = thePItem;
-                        thePItem = (CcPlotData *)CcPlotData::sm_PlotList.GetItemAndMove();
+                        if ( (*rpd)->FindObject( name ) )
+                        {
+                            break;
+                        }
                     }
-                    if ( thePlot )
-                    {
-                        thePlot->ParseInput( tokenList );
+                    if ( rpd != CcPlotData::sm_PlotList.rend())
+					{
+						(*rpd)->ParseInput( tokenList );
                         break;
-                    }
+					}
 
 // Not found.
                     if ( safeSet )
@@ -1119,10 +1091,10 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                       int tok;
                       while (true)
                       {
-                         tok = tokenList->GetDescriptor( kInstructionClass );
+                         tok = CcController::GetDescriptor( tokenList.front(), kInstructionClass );
                          if ( tok == kTCloseGroup )
                          {
-                            tokenList->GetToken();
+                            tokenList.pop_front();
                             break;
                          }
                          else if ( tok == kTNoMoreToken )
@@ -1130,16 +1102,7 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                             LOGWARN( "CcController:ParseInput:SAFESET ran off end of input.");
                             break;
                          }
-                         tokenList->GetToken();
-
-//                         else
-//                         {
-//                            if ( tokenList->GetToken().Len() == 0 )
-//                            {
-//                               LOGWARN( "CcController:ParseInput:SAFESET ran out of tokens.");
-//                               break;
-//                            }
-//                         }
+                         tokenList.pop_front();
                       }
                     }
                     else
@@ -1152,9 +1115,10 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             case kTFocus:
             {
                 // remove that token
-                tokenList->GetToken();
+                tokenList.pop_front();
 
-                CcString name = tokenList->GetToken();  // Get the name of the object
+                string name = string(tokenList.front());  // Get the name of the object
+                tokenList.pop_front();
                 LOGSTAT("CcController: Setting Value of " + name);
                 CrGUIElement* theElement = nil;
 
@@ -1187,53 +1151,53 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             case kTBatch:
             {
                 // remove that token
-                tokenList->GetToken();
+                tokenList.pop_front();
                 m_BatchMode = true;   //Stops blocking dialogs on error.
                 break;
             }
             case kTRenameObject:
             {
                 // remove that token
-                tokenList->GetToken();
+                tokenList.pop_front();
 
-                CcString name = tokenList->GetToken();  // Get the name of the object
-                                LOGSTAT("CcController: About to rename: " + name);
+                string name = string(tokenList.front());  // Get the name of the object
+                tokenList.pop_front();
+                LOGSTAT("CcController: About to rename: " + name);
                 CrGUIElement* theElement = nil;
 
-                        // Look for the item
-                                theElement = FindObject( name );
-                                if(theElement)
-                                      theElement->Rename( tokenList->GetToken() );
-                                else
-                                {
-                                      CcChartDoc * theChart = nil, * theCItem;
-                                      mChartList.Reset();
-                                      theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                                      while ( theCItem != nil && theChart == nil )
-                                      {
-                                            theChart = theCItem->FindObject( name );
-                                            theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                                      }
-                                      if ( theChart )
-                                            theChart->Rename( tokenList->GetToken() );
-                                      else
-                                      {
-                                          LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
-                                      }
-                                }
-                                break;
+        // Look for the item
+                theElement = FindObject( name );
+                if(theElement)
+                    theElement->Rename( tokenList.front() ); 
+                else
+                {
+
+                    list<CcChartDoc*>::iterator doc
+                          =  find( CcChartDoc::sm_ChartDocList.begin(),
+                                   CcChartDoc::sm_ChartDocList.end(), name );
+   
+                    if ( doc != CcChartDoc::sm_ChartDocList.end() )
+                    {
+                        (*doc)->Rename( tokenList.front() );
+                    }
+                    else
+                    {
+                       LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
+                    }
+                }
+                tokenList.pop_front();  // Remove the new name.
+                break;
             }
             case kTCreateChartDoc:
             {
-                tokenList->GetToken(); //remove token
+                tokenList.pop_front(); //remove token
                 CcChartDoc* cPtr = new CcChartDoc();
                 cPtr->ParseInput( tokenList );
-                mCurrentChartDoc = cPtr;
                 break;
             }
             case kTCreatePlotData:
             {
-                tokenList->GetToken(); //remove token
+                tokenList.pop_front(); //remove token
                 CcPlotData* pPtr = CcPlotData::CreatePlotData( tokenList );
                 pPtr->ParseInput( tokenList );
                 CcPlotData::sm_CurrentPlotData = pPtr;
@@ -1241,36 +1205,24 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             }
             case kTCreateModelDoc:
             {
-                tokenList->GetToken(); //remove token
-                CcString modelName = tokenList->GetToken();
-                CreateModelDoc(modelName);
-
-//                CcModelDoc* aModelDoc = FindModelDoc(modelName);
-//
-//                if (aModelDoc == nil)
-//                {
-//                    CcModelDoc* cPtr = new CcModelDoc();
-//                    cPtr->mName = modelName;
-//                }
-//                else
-//                {
-//                    CcModelDoc::sm_CurrentModelDoc = aModelDoc;
-//                    aModelDoc->Clear();
-//                }
-
+                tokenList.pop_front(); //remove token
+                CreateModelDoc(tokenList.front()); 
+                tokenList.pop_front();
                 CcModelDoc::sm_CurrentModelDoc->ParseInput( tokenList );
                 break;
             }
             case kTSysOpenFile: //Display OpenFileDialog and send result back to the Script.
             {
-                tokenList->GetToken();    // remove that token
-                CcString result;
-                CcString extension = tokenList->GetToken(); // Get the extension
-                CcString description = tokenList->GetToken();   // Get the extension description
-                if ( tokenList->GetDescriptor(kAttributeClass) == kTTitleOnly)
+                tokenList.pop_front();    // remove that token
+                string result;
+                string extension = string(tokenList.front()); // Get the extension
+                tokenList.pop_front();
+                string description = string(tokenList.front());   // Get the extension description
+                tokenList.pop_front();
+                if ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
                 {
                     OpenFileDialog(&result, extension, description, true);
-                    tokenList->GetToken(); //Remove token
+                    tokenList.pop_front(); //Remove TitleOnly token
                 }
                 else
                 {
@@ -1281,11 +1233,14 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             }
             case kTSysSaveFile: //Display SaveFileDialog and send result back to the Script.
             {
-                tokenList->GetToken();    // remove that token
-                CcString result;
-                CcString defName = tokenList->GetToken();   // Get the default file name.
-                CcString extension = tokenList->GetToken(); // Get the extension.
-                CcString description = tokenList->GetToken();   // Get the extension description.
+                tokenList.pop_front();    // remove that token
+                string result;
+                string defName = string(tokenList.front());   // Get the default file name.
+                tokenList.pop_front();    // remove that token
+                string extension = string(tokenList.front()); // Get the extension.
+                tokenList.pop_front();    // remove that token
+                string description = string(tokenList.front());   // Get the extension description.
+                tokenList.pop_front();    // remove that token
 
                 SaveFileDialog(&result, defName, extension, description);
                 SendCommand(result);
@@ -1293,96 +1248,99 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             }
             case kTSysGetDir: //Display GetDirDialog and send result back to the Script.
             {
-                tokenList->GetToken();    // remove that token
-                CcString result;
+                tokenList.pop_front();    // remove that token
+                string result;
                 OpenDirDialog(&result);
                 SendCommand(result);
                 break;
             }
             case kTSysRestart: //Crystals has closed down, restart in specified directory.
             {
-                tokenList->GetToken();    // remove that token
-                        m_newdir = tokenList->GetToken();
-                        m_restart = true;
-                        if (tokenList->GetDescriptor( kAttributeClass )==kTRestartFile)
-                        {
-                              tokenList->GetToken();    // remove that token
-                              CcString newdsc = "CRDSC=" + tokenList->GetToken();
+                tokenList.pop_front();    // remove that token
+                m_newdir = string (tokenList.front());
+                tokenList.pop_front();
+                m_restart = true;
+                if (CcController::GetDescriptor( tokenList.front(),  kAttributeClass  )==kTRestartFile)
+                {
+                              tokenList.pop_front();    // remove that token
+                              string newdsc = "CRDSC=" + tokenList.front();
+                              tokenList.pop_front();    // remove that token
 #ifdef __CR_WIN__
-                              _putenv( (LPCTSTR) newdsc.ToCString() );
+                              _putenv( (LPCTSTR) newdsc.c_str() );
 #endif
 #ifdef __BOTHWX__
-                              putenv( (char *) newdsc.ToCString() );
+                              putenv( (char *) newdsc.c_str() );
 #endif
                         }
                         break;
             }
             case kTRedirectText:
             {
-                tokenList->GetToken();
-                CcString textWindow = tokenList->GetToken();
-                CrGUIElement * theElement = FindObject( textWindow );
-                if ( theElement != nil )
-                    SetTextOutputPlace(theElement);
+                tokenList.pop_front();
+                CrTextOut * theTO = (CrTextOut*) FindObject( tokenList.front() );
+                if ( theTO != nil )
+                    SetTextOutputPlace(theTO);
                 else
-                    LOGWARN( "CcController:ParseInput:RedirectText couldn't find object with name '" + textWindow + "'");
+                    LOGWARN( "CcController:ParseInput:RedirectText couldn't find object with name '" + tokenList.front() + "'");
+                tokenList.pop_front();
                 break;
             }
             case kTRedirectProgress:
             {
-                tokenList->GetToken();
-                CcString progressWindow = tokenList->GetToken();
-                CrGUIElement * theElement = FindObject( progressWindow );
-                if ( theElement != nil )
-                    SetProgressOutputPlace(theElement);
+                tokenList.pop_front();
+                CrProgress * thePB = (CrProgress*)FindObject( tokenList.front() );
+                if ( thePB != nil )
+                    SetProgressOutputPlace(thePB);
                 else
-                    LOGWARN( "CcController:ParseInput:RedirectProgress couldn't find object with name '" + progressWindow + "'");
+                    LOGWARN( "CcController:ParseInput:RedirectProgress couldn't find object with name '" + tokenList.front() + "'");
+                tokenList.pop_front();
                 break;
             }
             case kTRedirectInput:
             {
-                tokenList->GetToken();
-                        CcString inputWindow = tokenList->GetToken();
-                        CrGUIElement * theElement = FindObject( inputWindow );
-                if ( theElement != nil )
-                              SetInputPlace(theElement);
+                tokenList.pop_front();
+                CrEditBox * theEB = (CrEditBox*)FindObject( tokenList.front() );
+                if ( theEB != nil )
+                         SetInputPlace(theEB);
                 else
-                              LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + inputWindow + "'");
+                         LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + tokenList.front() + "'");
+                tokenList.pop_front();
                 break;
             }
             case kTGetRegValue:
             {
-                tokenList->GetToken();
-                CcString key = tokenList->GetToken();
-                CcString name = tokenList->GetToken();
-                CcString val = GetRegKey( key, name );
+                tokenList.pop_front();
+                string val = GetRegKey( tokenList[0], tokenList[1] );
+                tokenList.pop_front();
+                tokenList.pop_front();
                 SendCommand(val);
                 break;
             }
             case kTGetKeyValue:
             {
-                tokenList->GetToken();
-                CcString val = GetKey( tokenList->GetToken() );
+                tokenList.pop_front();
+                string val = GetKey( tokenList.front() );
+                tokenList.pop_front();
                 SendCommand(val);
                 break;
             }
             case kTSetKeyValue:
             {
-                tokenList->GetToken();
-                        CcString key = tokenList->GetToken();
-                        CcString val = tokenList->GetToken();
-                        StoreKey( key, val );
-                        break;
+                tokenList.pop_front();
+                StoreKey( tokenList[0], tokenList[1] );
+                tokenList.pop_front();
+                tokenList.pop_front();
+                break;
             }
             case kTSetStatus:
             {
-                tokenList->GetToken();
-                status.ParseInput(mCurTokenList);
-                        break;
+                tokenList.pop_front();
+                status.ParseInput( tokenList );
+                break;
             }
             case kTFontSet:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 ChooseFont();
                 break;
             }
@@ -1391,7 +1349,7 @@ bool CcController::ParseInput( CcTokenList * tokenList )
             {
                 // This is not a known instruction for Controller.
                 // Pass it on to the current window.
-                if ( tokenList == mWindowTokenList )
+                if ( &tokenList == &mWindowTokenList )
                 {
                     if ( mCurrentWindow )
                     {
@@ -1399,15 +1357,15 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                         retVal = mCurrentWindow->ParseInput( tokenList );
                     }
                 }
-                else if ( tokenList == mChartTokenList )
+                else if ( &tokenList == &mChartTokenList )
                 {
-                    if ( mCurrentChartDoc != nil )
+                    if ( CcChartDoc::sm_CurrentChartDoc != nil )
                     {
                         LOGSTAT("CcController:ParseInput:default Passing tokenlist to chart");
-                        retVal = mCurrentChartDoc->ParseInput( tokenList );
+                        retVal = CcChartDoc::sm_CurrentChartDoc->ParseInput( tokenList );
                     }
                 }
-                else if ( tokenList == mPlotTokenList )
+                else if ( &tokenList == &mPlotTokenList )
                 {
                     if ( CcPlotData::sm_CurrentPlotData != nil )
                     {
@@ -1415,7 +1373,7 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                         retVal = CcPlotData::sm_CurrentPlotData->ParseInput( tokenList );
                     }
                 }
-                else if ( tokenList == mModelTokenList )
+                else if ( &tokenList == &mModelTokenList )
                 {
                     if ( CcModelDoc::sm_CurrentModelDoc != nil )
                     {
@@ -1423,16 +1381,16 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                         retVal = CcModelDoc::sm_CurrentModelDoc->ParseInput( tokenList );
                     }
                 }
-                else if ( tokenList == mStatusTokenList )
+                else if ( &tokenList == &mStatusTokenList )
                 {
                         LOGSTAT("CcController:ParseInput:default Passing tokenlist to status handler");
                         status.ParseInput( tokenList );
                 }
                 else
                 {
-                    CcString theToken = tokenList->GetToken();
-                    LOGWARN("CcController:ParseInput:default found an unknown command = '" + theToken +
+                    LOGWARN("CcController:ParseInput:default found an unknown command = '" + tokenList.front() +
                          "', attempting to continue");
+                    tokenList.pop_front();
                 }
                 break;
             }
@@ -1444,92 +1402,18 @@ bool CcController::ParseInput( CcTokenList * tokenList )
 
 }
 
-bool     CcController::ParseLine( CcString text )
-{
-
-    int start = 1, stop = 1, i;
-    bool inSpace = true;
-    bool inDelimiter = false;
-    char closer = 0;
-
-      int clen = text.Len();
-
-      for (i=1; i <= clen; i++ )
-      {
-        if ( inDelimiter )
-        {
-            if ( IsDelimiter( text[i-1], closer ) )  // end of item
-            {
-                stop = i-1;
-// we could have an empty string ie. '' so check before crashing the program.
-                if ( stop < start )
-                {
-                    AppendToken("") ;// add item to token list
-                }
-                else
-                {
-                    AppendToken(text.Sub(start,stop) ) ;// add item to token list
-                }
-// Reset values
-                start = stop = 0;
-                inDelimiter = false;
-                inSpace = true;
-                closer = 0;
-            }
-        }
-        else
-        {
-            if ( IsSpace( text[i-1] ) )
-            {
-                if ( ! inSpace )           // end of item
-                {
-                    stop = i-1;
-                    AppendToken(text.Sub(start,stop) ); // add item to token list
-
-                    // init values
-                    start = stop = 0;
-                    inSpace = true;
-                }
-            }
-            else if ( closer = IsDelimiter( text[i-1] ) )
-            {
-                start = i+1;
-                stop = 0;
-                inDelimiter = true;
-            }
-            else if ( inSpace )            // start of item
-            {
-                start = i;
-                stop = 0;
-                inSpace = false;
-            }
-        }
-    }
-
-    // Check for last item
-    if ( ! inSpace && start != 0 )
-    {
-//      stop = i-1;
-        stop = i-1;
-
-        // add item to token list
-            AppendToken(text.Sub(start,stop) );
-
-    }
-    return true; // *** for now
-}
-
-void    CcController::SendCommand( CcString command , bool jumpQueue)
+void    CcController::SendCommand( string command , bool jumpQueue)
 {
     LOGSTAT("CcController:SendCommand received command '" + command + "'");
-    char* theLine = (char*)command.ToCString();
-    AddCrystalsCommand(theLine, jumpQueue);
+//    char* theLine = (char*)command.c_str();
+    AddCrystalsCommand( command, jumpQueue );
 }
 
-void    CcController::Tokenize( CcString cText )
+
+void    CcController::Tokenize( const string & cText )
 {
 
-    int clen = cText.Len();
+    int clen = cText.length();
     int chop = 0;
 
 // Look out for lines where the ^^ are misplaced.
@@ -1548,56 +1432,56 @@ void    CcController::Tokenize( CcString cText )
 
     if ( chop && (clen >= chop) )   // It is definitely tagged text
     {
-        CcString selector = cText.Sub(chop-1,chop); // Get the selector and determine list to use
-        if ( selector == kSWindowSelector )
+        string selector = cText.substr(chop-2,2); // Get the selector and determine list to use
+        if ( selector.compare(kSWindowSelector) == 0 )
         {
-            mCurTokenList = mWindowTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList = &mWindowTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
         }
-        else if      ( selector == kSChartSelector )
+        else if ( selector.compare(kSChartSelector) == 0 )
         {
-            mCurTokenList = mChartTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList = &mChartTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
         }
-        else if      ( selector == kSPlotSelector )
+        else if ( selector.compare(kSPlotSelector) == 0 )
         {
-            mCurTokenList = mPlotTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList = &mPlotTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
         }
-        else if      ( selector == kSModelSelector )
+        else if ( selector.compare(kSModelSelector) == 0 )
         {
-            mCurTokenList = mModelTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList = &mModelTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
         }
-        else if      ( selector == kSStatusSelector )
+        else if ( selector.compare(kSStatusSelector) == 0 )
         {
-            mCurTokenList = mStatusTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList = &mStatusTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
         }
-        else if      ( selector == kSControlSelector )
+        else if ( selector.compare(kSControlSelector) == 0 )
         {
-            while ( ParseInput( mCurTokenList ) );
+            while ( ParseInput( *mCurTokenList ) );
         }
-        else if      ( selector == kSWaitControlSelector )
+        else if ( selector.compare(kSWaitControlSelector) == 0 )
         {
-            while ( ParseInput( mCurTokenList ) );
+            while ( ParseInput( *mCurTokenList ) );
 //We must now signal the waiting Crystals thread that we're complete.
             LOGSTAT ( "CW complete, unlocking output queue.");
             ProcessingComplete();
         }
-        else if      ( selector == kSOneCommand )
+        else if ( selector.compare(kSOneCommand) == 0 )
         {                                                                                                                                //Avoids breaking up (and corrupting) the incoming streams from scripts.
             mTempTokenList = mCurTokenList;
-            mCurTokenList  = mQuickTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList  = &mQuickTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
             while ( ParseInput( mQuickTokenList ) );
             mCurTokenList  = mTempTokenList;
         }
-        else if      ( selector == kSQuerySelector )
+        else if ( selector.compare(kSQuerySelector) == 0 )
         {
             mTempTokenList = mCurTokenList;
-            mCurTokenList  = mQuickTokenList;
-            ParseLine( cText.Chop(1,chop) );
+            mCurTokenList  = &mQuickTokenList;
+            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
             GetValue( mQuickTokenList ) ;
             mCurTokenList  = mTempTokenList;
 //We must now signal the waiting Crystals thread that it's input is ready.
@@ -1651,56 +1535,14 @@ bool CcController::Completing()
    return temp;
 }    
 
-bool CcController::IsSpace( char c )
-{
-    return (   c == ' '
-            || c == '\t'
-            || c == '\r'
-            || c == '\n'
-            || c == '='
-            || c == ',' );
-}
-
-char CcController::IsDelimiter( char c, char delim )
-{
-    //   ' or " or ! or < is the delimiter.
-#define kQuoteChar 39
-#define kDoubleQuoteChar 34
-#define kShriekChar 33
-#define kLeftAngle 60
-#define kRightAngle 62
-
-// If delim is non-zero we are looking for a closing quote, so it
-// must match 'delim', otherwise it can be any of the 4 quoting chars.
-
-    if ( delim ) return ( c == delim ? c : 0 ) ;
-
-    if ( c == kQuoteChar ) return kQuoteChar;
-    if ( c == kDoubleQuoteChar ) return kDoubleQuoteChar;
-    if ( c == kShriekChar ) return kShriekChar;
-    if ( c == kLeftAngle ) return kRightAngle;
-    return ( 0 ) ;
-}
-
-void  CcController::AppendToken( CcString text  )
-{
-// Copy the string onto the heap, so that it will hang around.
-
-      CcString * theString = new CcString( text );
-
-// Add it to the tokenlist.
-
-    mCurTokenList->AddItem( theString );
-}
-
-void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
+void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 {
 
 //Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
 // 1. Close the main window. (Close the program).
-      if( line.Length() > 10 )
+      if( line.length() > 10 )
       {
-         if( line.Sub(1,11) == "_MAIN CLOSE")
+         if( line.substr(0,11) == "_MAIN CLOSE")
          {
            LOGSTAT("---Closing main window.");
            AddInterfaceCommand("^^CO DISPOSE _MAIN ");
@@ -1709,9 +1551,9 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
          }
       }
 // 2. Allow GUIelements to send commands directly to the interface. Trap them here.
-      if( line.Length() >= 4 )
+      if( line.length() >= 4 )
       {
-         if( line.Sub(1,2) == "^^")
+         if( line.substr(0,2) == "^^")
          {
               AddInterfaceCommand(line,true);
               return;
@@ -1724,7 +1566,35 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
 
     m_Crystals_Commands_CS.Enter();
 
-         mCrystalsCommandQueue.SetCommand( line, jumpQueue);
+//         mCrystalsCommandQueue.SetCommand( line, jumpQueue);
+
+      string::size_type stp;
+
+      string temp = line;
+	  
+      if ( jumpQueue )
+      {
+         stp = temp.rfind("_N");
+         while ( stp != string::npos )
+         {
+            mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );
+            temp = temp.substr(0,stp);
+            stp = temp.rfind("_N");
+         }
+         mCrystalsCommandDeq.push_front ( temp );
+      }
+      else
+      {
+         stp = temp.find("_N");
+         while ( stp != string::npos )
+         {
+            mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );
+            temp.erase(0,stp+2);
+            stp = temp.find("_N");
+         }
+         mCrystalsCommandDeq.push_back ( temp );
+      }
+
 //    if (jumpQueue) {
 //        LOGSTAT ( "Jumpqueue occured, unlocking output queue.");
 //        ProcessingComplete();
@@ -1732,12 +1602,12 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
 
     m_Crystals_Commands_CS.Leave();
 
-    m_Crystals_Command_Added_CS.Signal();
+    m_Crystals_Command_Added.Signal();
 
 
 }
 
-void  CcController::AddInterfaceCommand( CcString line, bool internal )
+void  CcController::AddInterfaceCommand( const string &line, bool internal )
 //------------------------------------------------------
 {
 /*  This is a critical section between the threads.
@@ -1754,7 +1624,7 @@ void  CcController::AddInterfaceCommand( CcString line, bool internal )
 
 
   int chop = 0;
-  int clen = line.Len();
+  int clen = line.length();
 
   if (clen >= 4 )
   {
@@ -1769,7 +1639,7 @@ void  CcController::AddInterfaceCommand( CcString line, bool internal )
       }
       if ( chop ) 
       {
-        CcString selector = line.Sub(chop-1,chop);
+        string selector = line.substr(chop-2,2);
         if ( !internal && ((selector == kSQuerySelector) || (selector == kSWaitControlSelector)))
         {
           lock = true;
@@ -1784,7 +1654,8 @@ void  CcController::AddInterfaceCommand( CcString line, bool internal )
   m_Interface_Commands_CS.Enter();
 
        if(mThisThreadisDead) endthread(0);
-       mInterfaceCommandQueue.SetCommand( line );
+//       mInterfaceCommandQueue.SetCommand( line );
+         mInterfaceCommandDeq.push_back(line);
        LOGSTAT("-----------CRYSTALS has put: " + line );
 
   m_Interface_Commands_CS.Leave();
@@ -1800,14 +1671,17 @@ void  CcController::AddInterfaceCommand( CcString line, bool internal )
        comp = true;
 // If ?? or CW, trap CRYSTALS here, while the GUI carries out requested action.
        LOGSTAT ("-----------Queue locked");
-       m_Complete_Signal.Wait(400); // max of 0.4 secs between retries.
+       m_Complete_Signal.Wait(); // max of 0.4 secs between retries.
   }
 
   if (comp)
+  {
        LOGSTAT ("-----------Queue released");
+  }
   else if ( lock )
+  {
        LOGSTAT ("-----------Queue was released very quickly.");
-
+  }
 
 
 }
@@ -1816,50 +1690,9 @@ void  CcController::AddInterfaceCommand( CcString line, bool internal )
 
 
 
-bool CcController::GetCrystalsCommand( char * line )
-//-----------------------------------------------------
-{
-//This is where the Crystals thread will spend most of its time.
-//Waiting for the user to do somethine.
-
-//Wait until the list is free for reading.
-
-    m_Crystals_Commands_CS.Enter();
-
-       if (mThisThreadisDead) return false;
-
-       while ( Completing() || !mCrystalsCommandQueue.GetCommand( line ) )
-       {
-// The queue is empty or locked so wait efficiently. 
-// Release the mutex for a while, so that someone else can write to the queue!
-           m_Wait = false;
-//           LOGSTAT ("-----------Queue locked or empty..");
-         m_Crystals_Commands_CS.Leave();
-         if (mThisThreadisDead) return false;
-
-         m_Crystals_Command_Added_CS.Wait(1000);
-
-//The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
-         m_Crystals_Commands_CS.Enter();
-       }
-
-       LOGSTAT("-----------Crystals thread: Got command: "+ CcString(line));
-
-    m_Crystals_Commands_CS.Leave();
-
-    if (mThisThreadisDead) return false;
-
-    if (CcString(line) == "#DIENOW") endthread(0);
-
-    m_Wait = true;
-
-    return (true);
-}
 
 
-
-
-bool CcController::GetInterfaceCommand( char * line )
+bool CcController::GetInterfaceCommand( string &line )
 //------------------------------------------------------
 {
     //This routine gets called repeatedly by the Idle loop.
@@ -1867,16 +1700,9 @@ bool CcController::GetInterfaceCommand( char * line )
     //the profile count list.
 //  LOGSTAT("GtIfCmd.");
 
-  if( mCrystalsThread ) // && !mThatThreadisDead)
+  if( mCrystalsThread ) 
   {
-#ifdef __CR_WIN__
-    DWORD threadStatus;
-    GetExitCodeThread(mCrystalsThread->m_hThread,&threadStatus);
-    if(threadStatus != STILL_ACTIVE)
-#endif
-#ifdef __BOTHWX__
     if ( ! (m_Crystals_Thread_Alive.IsLocked()) )
-#endif
     {
       LOGSTAT("The CRYSTALS thread has died.");
 //      delete mCrystalsThread;
@@ -1891,7 +1717,7 @@ bool CcController::GetInterfaceCommand( char * line )
 
       mThisThreadisDead = true;
       LOGSTAT("Shutting down the main window of this (GUI) thread.");
-      strcpy(line,"^^CO DISPOSE _MAIN ");
+      line = "^^CO DISPOSE _MAIN ";
       return (true);
     }
   }
@@ -1905,16 +1731,16 @@ bool CcController::GetInterfaceCommand( char * line )
       LOGSTAT("App did not exit...");
 #endif
 #ifdef __CR_WIN__
-      strcpy(line,"^^CO DISPOSE _MAIN ");
+      line = "^^CO DISPOSE _MAIN ";
       return (true);
 #endif
   }
 
   m_Interface_Commands_CS.Enter();
 
-  if ( ! mInterfaceCommandQueue.GetCommand( line ) )
+  if ( mInterfaceCommandDeq.empty() )
   {
-    strcpy( line, "" );
+    line = "" ;
 // If CRYSTALS has nothing more to say, the we'd better make sure that the
 // queue of commands for CRYSTALS isn't locked:
     if ( Completing() ) {
@@ -1926,14 +1752,15 @@ bool CcController::GetInterfaceCommand( char * line )
   }
   else
   {
-    CcString temp = CcString(line);
-    LOGSTAT("GUI gets: "+temp);
+    line = string(mInterfaceCommandDeq.front());
+    mInterfaceCommandDeq.pop_front();
+    LOGSTAT("GUI gets: "+line);
     m_Interface_Commands_CS.Leave();
     return (true);
   }
 }
 
-void    CcController::LogError( CcString errString , int level )
+void    CcController::LogError( string errString , int level )
 {
     if ( mErrorLog == nil )
     {
@@ -1970,31 +1797,24 @@ void    CcController::LogError( CcString errString , int level )
 
     int elapse = now_ticks - m_start_ticks; // may go negative- GetTickCount wraps every 47 days.
 
-    fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.ToCString() );
+    fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.c_str() );
     fflush( mErrorLog );
 
     #ifdef __LINUX__
-          std::cerr << elapse << " " << errString.ToCString() << "\n";
+          std::cerr << elapse << " " << errString.c_str() << "\n";
     #endif
 }
 
 
-CrGUIElement* CcController::FindObject(CcString Name)
+CrGUIElement* CcController::FindObject(const string & Name)
 {
-
-    CrGUIElement * theElement = nil, * theItem;
-
-    mWindowList.Reset();
-    theItem = (CrGUIElement *)mWindowList.GetItemAndMove();
-
-    while ( theItem != nil && theElement == nil )
+    CrGUIElement * theElement = nil;
+    list<CrWindow*>::iterator mw;
+    for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
     {
-        theElement = theItem->FindObject( Name );
-        theItem = (CrGUIElement *)mWindowList.GetItemAndMove();
+      if ( theElement = (*mw)->FindObject(Name) ) return theElement;
     }
-
-
-    return ( theElement );
+    return nil;
 }
 
 void CcController::FocusToInput(char theChar)
@@ -2002,117 +1822,71 @@ void CcController::FocusToInput(char theChar)
     int nChar = (int) theChar;
     if( nChar == 13) //Return key, process input.
     {
-            ((CrEditBox*)GetInputPlace())->ReturnPressed();
+            GetInputPlace()->ReturnPressed();
             GetInputPlace()->CrFocus();
     }
     else if ( nChar > 31 && nChar < 127 ) //Some keyboard text. Append to command line.
     {
         char theText[256];
-            int theLen = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText(&theText[0]);
+        int theLen = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText(&theText[0]);
         theText[theLen] = theChar;
         theText[theLen+1] = '\0';
-            GetInputPlace()->SetText(CcString(theText));
-            GetInputPlace()->CrFocus();
+        GetInputPlace()->SetText(string(theText));
+        GetInputPlace()->CrFocus();
     }
 }
 
-void CcController::SetTextOutputPlace(CrGUIElement * outputPane)
+void CcController::SetTextOutputPlace(CrTextOut * outputPane)
 {
-    mTextOutputWindowList.AddItem((void*)outputPane);
-    mTextWindow = outputPane;
+    mTextOutputWindowList.push_back(outputPane);
 }
 
 CrGUIElement* CcController::GetTextOutputPlace()
 {
-    CrGUIElement* retVal;
-
-    while ((retVal = (CrGUIElement*) mTextOutputWindowList.GetLastItem()) == nil)
-    {
-        mTextOutputWindowList.RemoveItem();
-        if (mTextOutputWindowList.ListSize() <= 0)
-            return nil;
-    }
-    mTextWindow = retVal;
-    return retVal;
+    if (mTextOutputWindowList.empty()) return nil;
+    return mTextOutputWindowList.back();
 }
 
-CrGUIElement* CcController::GetBaseTextOutputPlace()
+void CcController::SetProgressOutputPlace(CrProgress * outputPane)
 {
-    mTextOutputWindowList.Reset();
-    CrGUIElement* retVal = (CrGUIElement*) mTextOutputWindowList.GetItem();
-    return retVal;
-}
-
-void CcController::SetProgressOutputPlace(CrGUIElement * outputPane)
-{
-    mProgressOutputWindowList.AddItem((void*)outputPane);
-    if(mProgressWindow != nil)
-        mProgressWindow->SetText(" ");
-    mProgressWindow = outputPane;
-
+    if ( !mProgressOutputWindowList.empty() )
+             mProgressOutputWindowList.back()->SetText(" ");
+    mProgressOutputWindowList.push_back(outputPane);
 }
 
 CrGUIElement* CcController::GetProgressOutputPlace()
 {
-    CrGUIElement* retVal;
-
-    while ((retVal = (CrGUIElement*) mProgressOutputWindowList.GetLastItem()) == nil)
-    {
-        mProgressOutputWindowList.RemoveItem();
-        if (mProgressOutputWindowList.ListSize() <= 0)
-            return nil;
-    }
-    mProgressWindow = retVal;
-    return retVal;
+    if (mProgressOutputWindowList.empty()) return nil;
+    return mProgressOutputWindowList.back();
 }
 
-void CcController::SetInputPlace(CrGUIElement * inputPane)
+void CcController::SetInputPlace(CrEditBox * inputPane)
 {
-      mInputWindowList.AddItem((void*)inputPane);
-      mInputWindow = inputPane;
-
+      mInputWindowList.push_back(inputPane);
 }
 
-CrGUIElement* CcController::GetInputPlace()
+CrEditBox* CcController::GetInputPlace()
 {
-    CrGUIElement* retVal;
-      while ((retVal = (CrGUIElement*) mInputWindowList.GetLastItem()) == nil)
-    {
-            mInputWindowList.RemoveItem();
-            if (mInputWindowList.ListSize() <= 0)
-            return nil;
-    }
-      mInputWindow = retVal;
-    return retVal;
+    if (mInputWindowList.empty()) return nil;
+    return mInputWindowList.back();
 }
 
 
 
 
-void CcController::RemoveTextOutputPlace(CrGUIElement* output)
+void CcController::RemoveTextOutputPlace(CrTextOut* output)
 {
-      while ( mTextOutputWindowList.FindItem((void*) output) )
-      {
-            mTextOutputWindowList.RemoveItem();
-      }
+      mTextOutputWindowList.remove(output);
 }
 
-void CcController::RemoveProgressOutputPlace(CrGUIElement* output)
+void CcController::RemoveProgressOutputPlace(CrProgress* output)
 {
-      while ( mProgressOutputWindowList.FindItem((void*) output) )
-      {
-            mProgressOutputWindowList.RemoveItem();
-      }
-      mProgressWindow = nil;
-
+      mProgressOutputWindowList.remove(output);
 }
 
-void CcController::RemoveInputPlace(CrGUIElement* input)
+void CcController::RemoveInputPlace(CrEditBox* input)
 {
-      while ( mInputWindowList.FindItem((void*) input) )
-      {
-            mInputWindowList.RemoveItem();
-      }
+      mInputWindowList.remove(input);
 }
 
 void CcController::RemoveWindowFromList(CrWindow* window)
@@ -2121,27 +1895,25 @@ void CcController::RemoveWindowFromList(CrWindow* window)
 // windows are destroyed. This bypasses our normal destruction
 // method, so to be safe, all dying windows call this function
 // to 'de-register' themselves from the Controller's list.
-
-      while ( mWindowList.FindItem((void*) window) )
-      {
-            mWindowList.RemoveItem();
-      }
+      mWindowList.remove(window);
 }
 
 
 
-CcModelDoc* CcController::FindModelDoc(CcString name)
+CcModelDoc* CcController::FindModelDoc(const string & name)
 {
-    CcModelDoc::sm_ModelDocList.Reset();
-    CcModelDoc* aModelDoc = nil;
-    while ( ( aModelDoc = (CcModelDoc*)CcModelDoc::sm_ModelDocList.GetItemAndMove() ) != nil )
-    {
-        if(aModelDoc->mName == name)  return aModelDoc;
-    }
-    return nil;
+    if ( CcModelDoc::sm_ModelDocList.empty() ) return nil;
+
+    list<CcModelDoc*>::iterator doc = 
+              find( CcModelDoc::sm_ModelDocList.begin(), CcModelDoc::sm_ModelDocList.end(), name );
+   
+    if ( doc == CcModelDoc::sm_ModelDocList.end() ) 
+                return nil;
+    else 
+                return *doc;
 }
 
-CcModelDoc* CcController::CreateModelDoc(CcString name)
+CcModelDoc* CcController::CreateModelDoc(const string & name)
 {
     CcModelDoc* modelDoc;
     modelDoc = FindModelDoc(name);
@@ -2159,68 +1931,14 @@ CcModelDoc* CcController::CreateModelDoc(CcString name)
     return modelDoc;
 }
 
-CcRect CcController::GetScreenArea()
-{
-    CcRect retVal;
-#ifdef __CR_WIN__
-    RECT screenRect;
-    SystemParametersInfo( SPI_GETWORKAREA, 0, &screenRect, 0 );
 
-    retVal.Set( screenRect.top,
-                screenRect.left,
-                screenRect.bottom,
-                screenRect.right);
-#endif
-#ifdef __BOTHWX__
-      retVal.mTop = 0;
-      retVal.mLeft = 0;
-      retVal.mBottom = wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_Y);
-      retVal.mRight =  wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_X);
 
-//      cerr << "Screen Area: " << retVal.mRight << "," << retVal.mBottom << "\n";
-#endif
-    return retVal;
-}
-
-void CcController::History(bool up)
-{
-    if (up)
-        mCommandHistoryPosition ++;
-    else
-        mCommandHistoryPosition --;
-
-    int listSize = mCommandHistoryList.ListSize();
-
-//    mCommandHistoryPosition = CRMIN ( mCommandHistoryPosition, listSize );
-    if ( mCommandHistoryPosition > listSize ) mCommandHistoryPosition = listSize;
-
-//    mCommandHistoryPosition = CRMAX ( mCommandHistoryPosition, 0 );
-    if ( mCommandHistoryPosition < 0 ) mCommandHistoryPosition = 0;
-
-    mCommandHistoryList.Reset();
-    for ( int i = 0; i < listSize - mCommandHistoryPosition; i++ )
-    {
-        mCommandHistoryList.GetItemAndMove();
-    }
-    CcString *theCommand = (CcString*) mCommandHistoryList.GetItem();
-    CrEditBox *theEditBox = (CrEditBox*) GetInputPlace();
-
-    if (theCommand == nil)
-    {
-            theEditBox->SetText("");
-    }
-    else
-    {
-            theEditBox->SetText("");
-            theEditBox->AddText(*theCommand);
-    }
-}
-
-void CcController::GetValue(CcTokenList * tokenList)
+void CcController::GetValue(deque<string> &  tokenList)
 {
     LOGSTAT("CcController: Getting Value");
 
-    CcString name = tokenList->GetToken();  // Get the name of the object
+    string name = string(tokenList.front());  // Get the name of the object
+    tokenList.pop_front();
     CrGUIElement * theElement = nil;
 
     if ( mCurrentWindow )
@@ -2237,9 +1955,9 @@ void CcController::GetValue(CcTokenList * tokenList)
 
 //If this is an EXISTS query, then send either TRUE or FALSE
 
-    if( tokenList->GetDescriptor(kQueryClass) == kTQExists )
+    if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQExists )
     {
-        tokenList->GetToken(); //Remove token.
+        tokenList.pop_front(); //Remove token.
 
         if ( theElement != nil )
             SendCommand("TRUE",true); //This is used to check if an object exists.
@@ -2249,9 +1967,10 @@ void CcController::GetValue(CcTokenList * tokenList)
 
 //If this is a GETKEY query, then process it at once.
 
-    else if( name.Compare(kSGetKeyValue) )
+    else if( name.find(kSGetKeyValue) == 0 )
     {
-        CcString val = GetKey( tokenList->GetToken() );
+        string val = GetKey( tokenList.front() );
+        tokenList.pop_front();
         SendCommand(val,true);
     }
 
@@ -2271,41 +1990,37 @@ void CcController::GetValue(CcTokenList * tokenList)
 }
 
 
-void  CcController::SetProgressText(CcString * theText)
+void  CcController::SetProgressText(const string& theText)
 {
-      CrProgress* theElement = nil;
-      theElement = (CrProgress*) GetProgressOutputPlace();
+      CrProgress* theElement = (CrProgress*) GetProgressOutputPlace();
       if (theElement != nil)
-      {
             theElement->SwitchText( theText );
-      }
-
 }
 
 
-void CcController::StoreKey( CcString key, CcString value )
+void CcController::StoreKey( string key, string value )
 {
 
 #ifdef __CR_WIN__
  // Use the registry to store keys.
 
- CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+ string subkey = "Software\\Chem Cryst\\Crystals\\";
 
  HKEY hkey;
  DWORD dwdisposition, dwtype, dwsize;
 
 
- int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+ int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                               0, NULL,  0, KEY_WRITE, NULL,
                               &hkey, &dwdisposition );
                               
  if ( result == ERROR_SUCCESS )
  {
     dwtype = REG_SZ;
-    dwsize = ( _tcslen(value.ToCString()) + 1) * sizeof(TCHAR);
+    dwsize = ( _tcslen(value.c_str()) + 1) * sizeof(TCHAR);
 
-    RegSetValueEx(hkey, key.ToCString(), 0, dwtype,
-                  (PBYTE)value.ToCString(), dwsize);
+    RegSetValueEx(hkey, key.c_str(), 0, dwtype,
+                  (PBYTE)value.c_str(), dwsize);
 
     RegCloseKey(hkey);
  }
@@ -2313,7 +2028,7 @@ void CcController::StoreKey( CcString key, CcString value )
 #else
 
  wxConfig * config = new wxConfig("Chem Cryst");
- config->Write( ("Crystals/"+key).ToCString(), value.ToCString() );
+ config->Write( ("Crystals/"+key).c_str(), value.c_str() );
  delete config;
 
 #endif
@@ -2322,18 +2037,18 @@ void CcController::StoreKey( CcString key, CcString value )
 
 }
 
-CcString CcController::GetKey( CcString key )
+string CcController::GetKey( string key )
 {
-  CcString value;
+  string value;
 
 #ifdef __CR_WIN__
  // Use the registry to fetch keys.
- CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+ string subkey = "Software\\Chem Cryst\\Crystals\\";
 
  HKEY hkey;
  DWORD dwdisposition, dwtype, dwsize;
 
- int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+ int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                               0, NULL,  0, KEY_READ, NULL,
                               &hkey, &dwdisposition );
                               
@@ -2344,11 +2059,11 @@ CcString CcController::GetKey( CcString key )
     dwsize = 1024; // NB limits max key size to 1K of text.
     char buf [ 1024];
 
-    result = RegQueryValueEx( hkey, key.ToCString(), 0, &dwtype,
+    result = RegQueryValueEx( hkey, key.c_str(), 0, &dwtype,
                              (PBYTE)buf,&dwsize);
     if ( result == ERROR_SUCCESS )
     {
-      value = CcString(buf);
+      value = string(buf);
     }
     RegCloseKey(hkey);
  }
@@ -2357,7 +2072,7 @@ CcString CcController::GetKey( CcString key )
 
  wxString str;
  wxConfig * config = new wxConfig("Chem Cryst");
- if ( config->Read(("Crystals/"+key).ToCString(), &str ) ) {
+ if ( config->Read(("Crystals/"+key).c_str(), &str ) ) {
    value = str.c_str();
  }
  delete config;
@@ -2368,20 +2083,20 @@ CcString CcController::GetKey( CcString key )
 
 }
 
-CcString CcController::GetRegKey( CcString key, CcString name )
+string CcController::GetRegKey( string key, string name )
 {
 
 // Fetch any key from the registry. It first looks in HKCU/key for name,
 // if not found, then it falls back to HKLM/key. The return value is
 // empty if the key isn't found.
 
- CcString data;
+ string data;
 
 #ifdef __CR_WIN__
  HKEY hkey;
  DWORD dwtype, dwsize;
 
- int result = RegOpenKeyEx( HKEY_CURRENT_USER, key.ToCString(),
+ int result = RegOpenKeyEx( HKEY_CURRENT_USER, key.c_str(),
                               0, KEY_READ, &hkey );
                               
  if ( result == ERROR_SUCCESS )
@@ -2389,14 +2104,14 @@ CcString CcController::GetRegKey( CcString key, CcString name )
     dwtype=REG_SZ;
     dwsize = 1024; // NB limits max key size to 1K of text.
     char buf [ 1024];
-    result = RegQueryValueEx( hkey, name.ToCString(), 0, &dwtype, (PBYTE)buf,&dwsize);
-    if ( result == ERROR_SUCCESS ) data = CcString(buf);
+    result = RegQueryValueEx( hkey, name.c_str(), 0, &dwtype, (PBYTE)buf,&dwsize);
+    if ( result == ERROR_SUCCESS ) data = string(buf);
     RegCloseKey(hkey);
  }
 
  if ( result != ERROR_SUCCESS )
  {
-    result = RegOpenKeyEx( HKEY_LOCAL_MACHINE, key.ToCString(),
+    result = RegOpenKeyEx( HKEY_LOCAL_MACHINE, key.c_str(),
                               0, KEY_READ, &hkey );
                               
     if ( result == ERROR_SUCCESS )
@@ -2404,8 +2119,8 @@ CcString CcController::GetRegKey( CcString key, CcString name )
        dwtype=REG_SZ;
        dwsize = 1024; // NB limits max key size to 1K of text.
        char buf [ 1024];
-       result = RegQueryValueEx( hkey, name.ToCString(), 0, &dwtype, (PBYTE)buf,&dwsize);
-       if ( result == ERROR_SUCCESS ) data = CcString(buf);
+       result = RegQueryValueEx( hkey, name.c_str(), 0, &dwtype, (PBYTE)buf,&dwsize);
+       if ( result == ERROR_SUCCESS ) data = string(buf);
        RegCloseKey(hkey);
     }
  }
@@ -2414,7 +2129,7 @@ CcString CcController::GetRegKey( CcString key, CcString name )
 #ifdef __BOTHWX__
  wxString str;
  wxConfig *config = new wxConfig("Chem Cryst");
- data = (config->Read(name.ToCString(),_T(""))).c_str();
+ data = (config->Read(name.c_str(),_T(""))).c_str();
  delete config;
 #endif
 
@@ -2422,293 +2137,22 @@ CcString CcController::GetRegKey( CcString key, CcString name )
  return data;
 }
 
-void CcController::AddHistory( CcString theText )
-{
-      if ( theText.Len() == 0 ) return;
-      CcString *historyCommand = new CcString ( theText );
-      mCommandHistoryList.AddItem( (void*) historyCommand);
-      mCommandHistoryList.Reset();
-      while ( mCommandHistoryList.ListSize() > 100 ) //Limit the history to 100 items.
-      {
-            CcString *temp = (CcString*) mCommandHistoryList.GetItem();
-            delete temp;
-            mCommandHistoryList.RemoveItem();
-      }
-      mCommandHistoryPosition = 0;
-}
-
-//
-// The controller keeps a list (mMenuItemList) of all the items
-// that are in the menus. This finds the next free id.
-// m_next_id_to_try is the next id to check if is free. It gets reset to
-// kMenuBase when it reaches 5000.
-// If the number of menu items reaches 5000, the program aborts
-// with an error message.
-
-int CcController::FindFreeMenuId()
-{
-
-    m_next_id_to_try++;
-    int starting_try = m_next_id_to_try;
-
-    while (1)
-    {
-
-       bool pointerfree = true;
-       mMenuItemList.Reset();     //To the beginning
-       CcMenuItem* theItem;
-
-       while ( ( theItem = (CcMenuItem *)mMenuItemList.GetItemAndMove() ) != nil )
-       {
-
-          if ( theItem->id  == m_next_id_to_try )
-          {
-             pointerfree = false;
-             m_next_id_to_try++;
-
-             if ( m_next_id_to_try > ( kMenuBase + 5000 ) )
-             {
-//Reset id pointer to start:
-                m_next_id_to_try = kMenuBase;
-             }
-             if ( m_next_id_to_try == starting_try )
-             {
-//No more free id's:
-                 return -1;
-             }
-             break;
-          }
-       }
-
-       if ( pointerfree ) return m_next_id_to_try;
-
-    }
-
-}
-
-void CcController::AddMenuItem( CcMenuItem * menuitem )
-{
-      mMenuItemList.AddItem( (void*) menuitem );
-      if ( mMenuItemList.ListSize() > 5000 )
-      {
-         //error
-         std::cerr << "More than 5000 menu items. Rethink or recompile.\n";
-      }
-}
-
-CcMenuItem* CcController::FindMenuItem ( int id )
-{
-
-   mMenuItemList.Reset();     //To the beginning
-   CcMenuItem* theItem;
-   while ( ( theItem = (CcMenuItem *)mMenuItemList.GetItemAndMove() ) != nil )
-   {
-      if ( theItem->id  == id )
-      {
-         return theItem;
-      }
-   }
-  return nil;
-}
-
-CcMenuItem* CcController::FindMenuItem ( CcString name )
-{
-
-   mMenuItemList.Reset();     //To the beginning
-   CcMenuItem* theItem;
-   while ( ( theItem = (CcMenuItem *)mMenuItemList.GetItemAndMove() ) != nil )
-   {
-      if ( theItem->name  == name )
-      {
-         return theItem;
-      }
-   }
-  return nil;
-}
-
-void CcController::RemoveMenuItem ( CcMenuItem * menuitem )
-{
-   mMenuItemList.Reset();     //To the beginning
-   CcMenuItem* theItem = (CcMenuItem *)mMenuItemList.GetItem();
-   while ( theItem != nil )
-   {
-      if ( theItem  == menuitem )
-      {
-         mMenuItemList.RemoveItem();
-//         delete theItem;
-         break;
-      }
-      theItem = (CcMenuItem *)mMenuItemList.MoveAndGetItem();
-   }
-}
-
-void CcController::RemoveMenuItem ( CcString menuitemname )
-{
-   mMenuItemList.Reset();     //To the beginning
-   CcMenuItem* theItem = (CcMenuItem *)mMenuItemList.GetItem();
-   while ( theItem != nil )
-   {
-      if ( theItem->name  == menuitemname )
-      {
-         mMenuItemList.RemoveItem();
-  //       delete theItem;
-         break;
-      }
-      theItem = (CcMenuItem *)mMenuItemList.MoveAndGetItem();
-   }
-}
-
-
-
-//
-// The controller keeps a list (mToolList) of all the items
-// that are in the toolbars. This finds the next free id.
-// m_next_tool_id_to_try is the next id to check if is free. It
-// gets reset to kToolButtonBase when it reaches 5000.
-// If the number of toolss reaches 5000, the program aborts
-// with an error message.
-
-int CcController::FindFreeToolId()
-{
-
-    m_next_tool_id_to_try++;
-    int starting_try = m_next_tool_id_to_try;
-
-    while (1)
-    {
-
-       bool pointerfree = true;
-       mToolList.Reset();     //To the beginning
-       CcTool* theItem;
-
-       while ( ( theItem = (CcTool *)mToolList.GetItemAndMove() ) != nil )
-       {
-
-          if ( theItem->CxID  == m_next_tool_id_to_try )
-          {
-             pointerfree = false;
-             m_next_tool_id_to_try++;
-
-             if ( m_next_tool_id_to_try > ( kToolButtonBase + 5000 ) )
-             {
-//Reset id pointer to start:
-                m_next_tool_id_to_try = kToolButtonBase;
-             }
-             if ( m_next_tool_id_to_try == starting_try )
-             {
-//No more free id's:
-                 return -1;
-             }
-             break;
-          }
-       }
-
-       if ( pointerfree ) return m_next_tool_id_to_try;
-
-    }
-
-}
-
-void CcController::AddTool( CcTool * tool )
-{
-      mToolList.AddItem( (void*) tool );
-      if ( mToolList.ListSize() > 5000 )
-      {
-         //error
-         std::cerr << "More than 5000 toolbar items. Rethink or recompile.\n";
-      }
-}
-
-CcTool* CcController::FindTool ( int id )
-{
-
-   mToolList.Reset();     //To the beginning
-   CcTool* theItem;
-   while ( ( theItem = (CcTool *)mToolList.GetItemAndMove() ) != nil )
-   {
-      if ( theItem->CxID  == id )
-      {
-         return theItem;
-      }
-   }
-  return nil;
-}
-
-CcTool* CcController::FindTool ( CcString name )
-{
-
-   mToolList.Reset();     //To the beginning
-   CcTool* theItem;
-   while ( ( theItem = (CcTool *)mToolList.GetItemAndMove() ) != nil )
-   {
-      if ( theItem->tName  == name )
-      {
-         return theItem;
-      }
-   }
-  return nil;
-}
-
-void CcController::RemoveTool ( CcTool * tool )
-{
-   mToolList.Reset();     //To the beginning
-   CcTool* theItem = (CcTool *)mToolList.GetItem();
-   while ( theItem != nil )
-   {
-      if ( theItem  == tool )
-      {
-         mToolList.RemoveItem();
-//         delete theItem;
-         break;
-      }
-      theItem = (CcTool *)mToolList.MoveAndGetItem();
-   }
-}
-
-void CcController::RemoveTool ( CcString toolname )
-{
-   mToolList.Reset();     //To the beginning
-   CcTool* theItem = (CcTool *)mToolList.GetItem();
-   while ( theItem != nil )
-   {
-      if ( theItem->tName  == toolname )
-      {
-         mToolList.RemoveItem();
-  //       delete theItem;
-         break;
-      }
-      theItem = (CcTool *)mToolList.MoveAndGetItem();
-   }
-}
-
-
 void CcController::UpdateToolBars()
 {
   // Unlike menus, the toolbars don't recieve events telling them
   // to update during idle time.
   // So we'll do it from here.
 
-   mToolList.Reset();     //To the beginning
-   CcTool* theItem;
-   while ( ( theItem = (CcTool *)mToolList.GetItemAndMove() ) != nil )
-   {
-     if ( theItem->tTool )
-        theItem->tTool->CxEnable(status.ShouldBeEnabled(theItem->tEnableFlags,theItem->tDisableFlags), theItem->CxID);
-   }
+   CrToolBar::UpdateToolBars(status);
 
-   mDisableableWindowsList.Reset();
-   CrWindow* aWindow;
-   while ( ( aWindow = (CrWindow* )mDisableableWindowsList.GetItemAndMove() ))
-   {
-     aWindow->Enable(status.ShouldBeEnabled(aWindow->wEnableFlags,aWindow->wDisableFlags));
-   }
 
-   mDisableableButtonsList.Reset();
-   CrButton* aButton;
-   while ( ( aButton = (CrButton* )mDisableableButtonsList.GetItemAndMove() ))
-   {
-     aButton->Enable(status.ShouldBeEnabled(aButton->bEnableFlags,aButton->bDisableFlags));
-   }
+   list<CrWindow*>::iterator mdwl;
+   for ( mdwl = mDisableableWindowsList.begin(); mdwl != mDisableableWindowsList.end(); mdwl++ )
+              (*mdwl)->Enable(status.ShouldBeEnabled((*mdwl)->wEnableFlags,(*mdwl)->wDisableFlags));
+
+   list<CrButton*>::iterator mdbl;
+   for ( mdbl = mDisableableButtonsList.begin(); mdbl != mDisableableButtonsList.end(); mdbl++ )
+              (*mdbl)->Enable(status.ShouldBeEnabled((*mdbl)->bEnableFlags,(*mdbl)->bDisableFlags));
 
 }
 
@@ -2718,96 +2162,52 @@ void CcController::ScriptsExited()
   //have the STAYOPEN property. (This means that the script
   //has terminated incorrectly without closing the window).
 
-  CrWindow * theWindow;
-
-  mWindowList.Reset();
-  theWindow = (CrWindow *)mWindowList.GetItemAndMove();
-
-  while ( theWindow != nil )
+  list<CrWindow*>::iterator mw;
+  for ( mw = mWindowList.begin(); mw != mWindowList.end();  )
   {
-      if ( theWindow->mIsModal && !theWindow->mStayOpen )
-      {
-         if ( theWindow == mCurrentWindow ) mCurrentWindow=nil;
-         delete theWindow;
-         mWindowList.RemoveItem();
-      }
-      theWindow = (CrWindow *)mWindowList.GetItemAndMove();
+     if ( (*mw)->mIsModal && !(*mw)->mStayOpen )
+     {
+        if ( (*mw) == mCurrentWindow ) mCurrentWindow = nil;
+        delete *mw;
+        mw = mWindowList.erase(mw);
+     }
+     else
+       mw++;
   }
-
 }
 
 
 void CcController::AddDisableableWindow( CrWindow * aWindow )
 {
-      mDisableableWindowsList.AddItem( (void*) aWindow );
-      if ( mDisableableWindowsList.ListSize() > 5000 )
-      {
-         //error
-         LOGERR ( "mDisableableWindowsList (CcController) has exceeded 5000 items - possible memory leak...");
-      }
+      mDisableableWindowsList.push_back( aWindow );
 }
 
 void CcController::RemoveDisableableWindow ( CrWindow * aWindow )
 {
-   mDisableableWindowsList.Reset();     //To the beginning
-   CrWindow* theItem = (CrWindow *)mDisableableWindowsList.GetItem();
-   while ( theItem != nil )
-   {
-      if ( theItem  == aWindow )
-      {
-         mDisableableWindowsList.RemoveItem();
-         break;
-      }
-      theItem = (CrWindow *)mDisableableWindowsList.MoveAndGetItem();
-   }
+   mDisableableWindowsList.remove( aWindow );
 }
-
-
-
 
 void CcController::AddDisableableButton( CrButton * aButton )
 {
-      mDisableableButtonsList.AddItem( (void*) aButton );
-      if ( mDisableableButtonsList.ListSize() > 5000 )
-      {
-         //error
-         LOGERR ( "mDisableableButtonsList (CcController) has exceeded 5000 items - possible memory leak...");
-      }
+      mDisableableButtonsList.push_back( aButton );
 }
 
 void CcController::RemoveDisableableButton ( CrButton * aButton )
 {
-   mDisableableButtonsList.Reset();     //To the beginning
-   CrButton* theItem = (CrButton *)mDisableableButtonsList.GetItem();
-   while ( theItem != nil )
-   {
-      if ( theItem  == aButton )
-      {
-         mDisableableButtonsList.RemoveItem();
-//         delete theItem;
-         break;
-      }
-      theItem = (CrButton *)mDisableableButtonsList.MoveAndGetItem();
-   }
+   mDisableableButtonsList.remove( aButton );
 }
-
-
-
-
-
 
 void CcController::ReLayout()
 {
   CcRect gridRect;
-  mWindowList.Reset();
-  CrWindow * theItem = (CrWindow *)mWindowList.GetItemAndMove();
-  while ( theItem != nil )
+  list<CrWindow*>::iterator mw;
+
+  for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
   {
-    gridRect = theItem -> mGridPtr -> GetGeometry();
-    theItem -> CalcLayout(true);
-    theItem -> ResizeWindow(gridRect.Width(),gridRect.Height());
-    theItem -> Redraw();
-    theItem = (CrWindow *)mWindowList.GetItemAndMove();
+    gridRect = (*mw) -> mGridPtr -> GetGeometry();
+    (*mw) -> CalcLayout(true);
+    (*mw) -> ResizeWindow(gridRect.Width(),gridRect.Height());
+    (*mw) -> Redraw();
   }
   return;
 }
@@ -2816,49 +2216,45 @@ void CcController::ReLayout()
 
 
 #ifdef __CR_WIN__
-UINT CrystalsThreadProc( LPVOID arg );
-SUBROUTINE CRYSTL();
-UINT CrystalsThreadProc( LPVOID arg )
-{
- 
-
-    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
-    CRYSTL();
-    return 0;
-}
+  UINT CrystalsThreadProc( LPVOID arg );
+  SUBROUTINE CRYSTL();
+  UINT CrystalsThreadProc( LPVOID arg )
 #endif
-
 #ifdef __BOTHWX__
-int CrystalsThreadProc( void* arg );
-SUBROUTINE_F77 crystl_();
-int CrystalsThreadProc( void * arg )
+  int CrystalsThreadProc( void* arg );
+  SUBROUTINE_F77 crystl_();
+  int CrystalsThreadProc( void * arg )
+#endif
 {
-
     LOGSTAT("FORTRAN: Grabbing Crystals_Thread_Alive mutex");
     m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
-
     LOGSTAT("FORTRAN: Grabbing wait_for_thread_start mutex");
-    m_wait_for_thread_start.Enter();
-
-    LOGSTAT("FORTRAN: Signalling wait_for_thread_start condition");
-    m_wait_for_thread_start.Signal(true);
-
-    m_wait_for_thread_start.Leave();
+	LOGSTAT("FORTRAN: Signalling wait_for_thread_start condition");
+    m_wait_for_thread_start.Signal(true);  //Does nothing on Win32
 
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
     {
+#ifdef __CR_WIN__
+        CRYSTL();
+#endif
+#ifdef __BOTHWX__
        crystl_();
+#endif
+       LOGSTAT ("Exited CRYSTL() without exception. Surely some mistake?");
     }
-    catch (CcController::MyException)
+    catch (CcController::MyException ccme )
     {
         LOGSTAT ("Exception caught. Thread ends. Releasing mutex. Goodbye. " );
     }
+    catch ( ... )
+    {
+        LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
+    }
     m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
+    LOGSTAT ("Final word from the CRYSTALS thread: Bye." );
     return 0;
 }
-#endif
-
 
 void CcController::StartCrystalsThread()
 {
@@ -2876,10 +2272,6 @@ void CcController::StartCrystalsThread()
    mCrystalsThread = AfxBeginThread(CrystalsThreadProc,&arg);
 #endif
 #ifdef __BOTHWX__
- 
-   LOGSTAT("GUI: Grabbing wait_for_thread_start mutex");
-   m_wait_for_thread_start.Enter();
-
    mCrystalsThread = new CcThread();
    wxThreadError a =  mCrystalsThread->Create();
    if ( a == wxTHREAD_NO_ERROR ) 
@@ -2892,13 +2284,10 @@ void CcController::StartCrystalsThread()
      LOGSTAT("No run error");
    else
      LOGSTAT("Thread run error");
-
+#endif
    LOGSTAT("GUI: Releasing and waiting for wait_for_thread_start signal");
    m_wait_for_thread_start.Wait(0);
    LOGSTAT("GUI: Continuing.");
-   m_wait_for_thread_start.Leave();
-
-#endif
 
 //                                                            //
 //                                                            //
@@ -2911,25 +2300,19 @@ void CcController::StartCrystalsThread()
 
 //  Append the contents of the buffer to the output
 
-void CcController::ProcessOutput( CcString line )
+void CcController::ProcessOutput( const string & line )
 {
     CrGUIElement* element = GetTextOutputPlace();
     if( element != nil ) element->SetText(line);
-// No longer log everything to the base window. IT'S MESSY.
-//    if( element != GetBaseTextOutputPlace() )
-//    {
-//        //Always log text to the base window. It is the only permanent visible record.
-//        (CcController::theController)->GetBaseTextOutputPlace()->SetText(line);
-//    }
 }
 
 
-void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, CcString extensionDescription, bool titleOnly)
+void CcController::OpenFileDialog(string* result, string extensionFilter, string extensionDescription, bool titleOnly)
 {
 #ifdef __CR_WIN__
     CString pathname, filename, filetitle;
 
-    CString extension = CString(extensionDescription.ToCString()) + "|" + CString(extensionFilter.ToCString()) + "||" ;
+    CString extension = CString(extensionDescription.c_str()) + "|" + CString(extensionFilter.c_str()) + "||" ;
 
     CFileDialog fileDialog (      true,                   //TRUE for open, FALSE for save
                                 NULL,               //The default extension for the filename
@@ -2962,12 +2345,12 @@ void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, Cc
         pathname = "CANCEL";
     }
 
-    *result = CcString(pathname.GetBuffer(256));
+    *result = string(pathname.GetBuffer(256));
 #endif
 #ifdef __BOTHWX__
     wxString pathname, filename, filetitle;
 
-    wxString extension = wxString(extensionDescription.ToCString()) + "|" + wxString(extensionFilter.ToCString())  ;
+    wxString extension = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
 
     wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
 
@@ -2999,18 +2382,18 @@ void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, Cc
 
     wxSetWorkingDirectory(cwd);
 
-    *result = CcString(pathname.c_str());
+    *result = string(pathname.c_str());
 #endif
 }
 
-void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcString extensionFilter, CcString extensionDescription)
+void CcController::SaveFileDialog(string* result, string defaultName, string extensionFilter, string extensionDescription)
 {
 
 #ifdef __CR_WIN__
     CString pathname, filename, filetitle;
 
-    CString extension = CString(extensionDescription.ToCString()) + "|" + CString(extensionFilter.ToCString()) + "||" ;
-    CString initName  = CString(defaultName.ToCString());
+    CString extension = CString(extensionDescription.c_str()) + "|" + CString(extensionFilter.c_str()) + "||" ;
+    CString initName  = CString(defaultName.c_str());
 
 
     CFileDialog fileDialog (      false,                        //TRUE for open, FALSE for save
@@ -3036,13 +2419,13 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
         pathname = "CANCEL";
     }
 
-    *result = CcString(pathname.GetBuffer(256));
+    *result = string(pathname.GetBuffer(256));
 #endif
 
 #ifdef __BOTHWX__
     wxString pathname, filename, filetitle;
-    wxString extension = wxString(extensionDescription.ToCString()) + "|" + wxString(extensionFilter.ToCString())  ;
-    wxString initName = wxString(defaultName.ToCString());
+    wxString extension = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
+    wxString initName = wxString(defaultName.c_str());
 
     wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
 
@@ -3068,7 +2451,7 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
 
     wxSetWorkingDirectory(cwd);
 
-    *result = CcString(pathname.c_str());
+    *result = string(pathname.c_str());
 #endif
 
 }
@@ -3077,18 +2460,18 @@ void CcController::SaveFileDialog(CcString* result, CcString defaultName, CcStri
 static int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 #endif
 
-void CcController::OpenDirDialog(CcString* result)
+void CcController::OpenDirDialog(string* result)
 {
 #ifdef __CR_WIN__
 
-      CcString lastPath;
+      string lastPath;
       char buffer[MAX_PATH];
 
  // Use the registry to fetch keys.
-      CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+      string subkey = "Software\\Chem Cryst\\Crystals\\";
       HKEY hkey;
       DWORD dwdisposition, dwtype, dwsize;
-      int dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+      int dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                      0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
       if ( dwresult == ERROR_SUCCESS )
       {
@@ -3097,7 +2480,7 @@ void CcController::OpenDirDialog(CcString* result)
          char buf [ 1024];
          dwresult = RegQueryValueEx( hkey, TEXT("Strdir"), 0, &dwtype,
                                      (PBYTE)buf,&dwsize);
-         if ( dwresult == ERROR_SUCCESS )  lastPath = CcString(buf);
+         if ( dwresult == ERROR_SUCCESS )  lastPath = string(buf);
          RegCloseKey(hkey);
       }
 
@@ -3113,7 +2496,7 @@ void CcController::OpenDirDialog(CcString* result)
       bi.lpfn = NULL;
       bi.lParam = NULL;
       bi.iImage = NULL;
-      if ( lastPath.Length() )
+      if ( lastPath.length() )
       {
         bi.lpfn = BrowseCallbackProc;
         bi.lParam = (LPARAM)(&lastPath);
@@ -3125,19 +2508,19 @@ void CcController::OpenDirDialog(CcString* result)
       {
           if ( SHGetPathFromIDList(chosen, buffer))
           {
-             *result = CcString(buffer);
+             *result = string(buffer);
 
 
-             dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+             dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                                         0, NULL,  0, KEY_WRITE, NULL,
                                         &hkey, &dwdisposition );
                                
              if ( dwresult == ERROR_SUCCESS )
              {
                 dwtype=REG_SZ;
-                dwsize = ( _tcslen(result->ToCString()) + 1) * sizeof(TCHAR);
+                dwsize = ( _tcslen(result->c_str()) + 1) * sizeof(TCHAR);
                 RegSetValueEx(hkey, TEXT("Strdir"), 0, dwtype,
-                          (PBYTE)result->ToCString(), dwsize);
+                          (PBYTE)result->c_str(), dwsize);
                 RegCloseKey(hkey);
              }
           }
@@ -3179,39 +2562,39 @@ void CcController::OpenDirDialog(CcString* result)
     delete config;
 
     wxSetWorkingDirectory(cwd);
-    *result = CcString(pathname.c_str());
+    *result = string(pathname.c_str());
 #endif
 }
 
 #ifdef __CR_WIN__
 int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
-  CcString* rp = (CcString*)(lpData);
+  string* rp = (string*)(lpData);
   if (uMsg == BFFM_INITIALIZED)
   {
-     (void)SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)(LPCTSTR)rp->ToCString() );
+     (void)SendMessage(hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)(LPCTSTR)rp->c_str() );
   }
   return 0;
 }
 #endif
 
 
-void CcController::ChangeDir (CcString newDir)
+void CcController::ChangeDir (string newDir)
 {
 #ifdef __CR_WIN__
-//      _chdir ( newDir.ToCString());
+//      _chdir ( newDir.c_str());
 
-  if( _chdir( newDir.ToCString() )   )
+  if( _chdir( newDir.c_str() )   )
   {
       char buffer[256];
-      sprintf( buffer, "Unable to locate the directory: %s\n", newDir.ToCString() );
+      sprintf( buffer, "Unable to locate the directory: %s\n", newDir.c_str() );
       AfxGetApp()->m_pMainWnd->MessageBox(buffer,"Change dir failed",MB_OK);
   }
 
 
 #endif
 #ifdef __BOTHWX__
-      chdir ( newDir.ToCString());
+      chdir ( newDir.c_str());
 #endif
 }
 
@@ -3239,15 +2622,19 @@ void CcController::ChooseFont()
 
   if ( fd.DoModal() == IDOK )
   {
-
-    if( CcController::mp_inputfont ) delete( CcController::mp_inputfont );
+    if( mp_inputfont ) delete( mp_inputfont );
     CcController::mp_inputfont = new CFont;
     CcController::mp_inputfont->CreateFontIndirect( &lf );
-    (CcController::theController)->StoreKey( "MainFontHeight", CcString(lf.lfHeight) );
-    (CcController::theController)->StoreKey( "MainFontWidth", CcString(lf.lfWidth) );
-    (CcController::theController)->StoreKey( "MainFontFace", CcString(lf.lfFaceName) );
-
-    (CcController::theController)->ReLayout();
+    ostringstream strstrm;
+    strstrm << lf.lfHeight;
+    StoreKey( "MainFontHeight", strstrm.str() );
+    strstrm.str("");
+    strstrm << lf.lfWidth;
+    StoreKey( "MainFontWidth", strstrm.str() );
+    strstrm.str("");
+    strstrm << lf.lfFaceName;
+    StoreKey( "MainFontFace", strstrm.str() );
+    ReLayout();
   }
 #endif
 #ifdef __BOTHWX__
@@ -3278,56 +2665,61 @@ void CcController::ChooseFont()
    {
      wxFontData newdata = fd.GetFontData();
      *pFont = newdata.GetChosenFont();
-     (CcController::theController)->StoreKey( "InputFontHeight", CcString(CcController::mp_inputfont->GetPointSize()) );
-     (CcController::theController)->StoreKey( "InputFontFace", CcString(CcController::mp_inputfont->GetFaceName()) );
+     ostringstream strstrm;
+     strstrm << mp_inputfont->GetPointSize();
+     StoreKey( "InputFontHeight", strstrm.str() );
+     strstrm.str("");
+     strstrm << mp_inputfont->GetFaceName();
+     StoreKey( "InputFontFace", strstrm.str() );
    }
 #endif
 
 }
 
 
-int CcController::EnvVarCount( CcString dir )
+int CcController::EnvVarCount( string & dir )
 {
 // Find the number of commas + 1 in the string.
 
    int nCommas = 1;
-   for ( int i = 0; i < dir.Length(); i++ )
+   for ( string::size_type i = 0; i < dir.length(); i++ )
    {
      if ( dir[i] == ',' ) nCommas++;
    }
    return nCommas;
 }
-CcString CcController::EnvVarExtract ( CcString dir, int i )
+string CcController::EnvVarExtract ( string & dir, int i )
 {
 // Find string following the i th comma.
 
-   int j;
+   string::size_type j;
    int nCommas = 0;
 
 // Find posn of ith comma.
 
-   for ( j = 0; j < dir.Length(); j++ )
+   for ( j = 0; j < dir.length(); j++ )
    {
      if ( nCommas == i ) break;
      if ( dir[j] == ',' ) nCommas++;
    }
 
-   int firstPos = CRMAX(1,j+1);
+   string::size_type firstPos = CRMAX(1,j+1);
 
 // Find posn of ith+1 comma.
 
-   for ( j = j+1; j < dir.Length(); j++ )
+   for ( j = j+1; j < dir.length(); j++ )
    {
      if ( dir[j] == ',' ) break;
    }
 
-   int lastPos = CRMIN(dir.Length(),j);
+   string::size_type lastPos = CRMIN(dir.length(),j);
 
    firstPos = CRMIN (firstPos,lastPos);
    lastPos = CRMAX (firstPos,lastPos);
 
-   CcString retS =  dir.Sub(firstPos,lastPos);
+   string retS =  dir.substr(firstPos-1,1+lastPos-firstPos);
 
+/*  Not used.
 // Search for allowed env variables to expand:
 // USERPROFILE
 
@@ -3335,9 +2727,10 @@ CcString CcController::EnvVarExtract ( CcString dir, int i )
 
    if (up)
    {
-      CcString userp ( getenv("USERPROFILE") );
+      string userp ( getenv("USERPROFILE") );
       retS = retS.Sub(1,up-1) + userp + retS.Sub(up+12,-1);
    }
+*/
 
    return retS;
 
@@ -3352,17 +2745,19 @@ void CcController::TimerFired()
 
 bool CcController::DoCommandTransferStuff()
 {
-  char theLine[255];
+  //char theLine[255];
   bool appret = false;
+  string theLine;
 
   if( GetInterfaceCommand(theLine) )
   {
     appret = true;
-    int theLength = 0;
+//    int theLength = 0;
 
-    if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+//    if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+    if(theLine.length() > 0) //Assignment within conditional (OK)
     {
-      theLine[theLength+1]='\0';
+//      theLine[theLength+1]='\0';
       Tokenize(theLine);
     }
   }
@@ -3372,8 +2767,10 @@ bool CcController::DoCommandTransferStuff()
 
   void CcController::endthread ( long theExitcode )
   {
+        ostringstream strstrm;
+        strstrm << "Thread ends2. Exit code is: " << theExitcode ;
 
-        LOGSTAT ("Thread ends2. Exit code is: " + CcString ( theExitcode) );
+        LOGSTAT (strstrm.str());
   
         if ( theExitcode != 0 && theExitcode != 1000 )
         {
@@ -3392,26 +2789,358 @@ bool CcController::DoCommandTransferStuff()
 //  #endif
         }
 
-        if ( theExitcode != 1000 && !CcController::theController->m_restart) //Crystals does not wants re-starting. Shut down.
-        {
-//           (CcController::theController)->mThatThreadisDead = true;
-        }
-
         LOGSTAT ("Really going now. Bye. " );
 
-  #ifdef __CR_WIN__
-        AfxEndThread((UINT) theExitcode, FALSE);
-  #endif
-  #ifdef __BOTHWX__
         throw CcController::MyException();   // Leap right out of the Fortran
                                              // to the top of the call stack. 
-//        (CcController::theController)->mCrystalsThread->CcEndThread(0);
-//      Never get to here
         LOGSTAT ("Thread ends. Execution should never get here. Odd. ");
-//        (CcController::theController)->mCrystalsThread = nil;
-  #endif
   }
 
+
+
+
+void CcController::MakeTokens(const string& str,
+                deque<string>& tokens,
+                const string& delimiters,
+                const string& pairopen  ,
+                const string& pairclose  )
+{
+
+// Find start of first token
+   string::size_type nextTokenStart = str.find_first_not_of(delimiters, 0);
+
+// Find next delimiter.
+   string::size_type nextDelimStart = str.find_first_of(delimiters, nextTokenStart);
+
+   while (string::npos != nextDelimStart || string::npos != nextTokenStart)
+   {
+// Found a token, check for pair opener, then add it to the vector.
+     string::size_type pTStart = str.substr(nextTokenStart, nextDelimStart - nextTokenStart).find_first_of(pairopen);
+     if ( pTStart != string::npos )
+     {
+		 pTStart += nextTokenStart;
+// Find out what pair closer is
+       string::size_type pTCloser = pairclose.find( str[pTStart] );
+// Find closer in the string
+       string::size_type pTEnd = str.find_first_of(pairclose[pTCloser],pTStart+1);
+       if ( pTEnd == string::npos )
+       {
+// No closer found, continue as normal
+         tokens.push_back(str.substr(nextTokenStart, nextDelimStart - nextTokenStart));
+         LOGSTAT("No closer found. Token added: " + tokens.back() );
+       }
+       else
+       {
+         tokens.push_back(str.substr(pTStart+1, pTEnd - pTStart - 1));
+         LOGSTAT("Quoted token added: " + tokens.back() );
+         nextDelimStart = pTEnd + 1;
+       }
+     }
+     else
+     {
+       tokens.push_back(str.substr(nextTokenStart, nextDelimStart - nextTokenStart));
+       LOGSTAT("Token added: " + tokens.back() );
+     }
+
+// Find start of next token
+     nextTokenStart = str.find_first_not_of(delimiters, nextDelimStart);
+
+// Find next delimiter
+     nextDelimStart = str.find_first_of(delimiters, nextTokenStart);
+   }
+
+}
+
+
+int CcController::GetDescriptor( string &token, int descriptorClass )
+{
+  #define DESCRIPTOR(a) if(token.compare(kS##a)==0)retVal=kT##a;
+  
+  int retVal = kTUnknown;
+  switch (descriptorClass)
+  {
+      case kLogicalClass:
+               DESCRIPTOR(Yes)
+               else DESCRIPTOR(No)
+               else DESCRIPTOR(All)
+               else DESCRIPTOR(Invert)
+               else DESCRIPTOR(On)
+               else DESCRIPTOR(Off)
+               else DESCRIPTOR(SelectRect)
+               else DESCRIPTOR(SelectPoly)
+             break;
+            
+      case kAttributeClass:
+               DESCRIPTOR(Default)
+               else DESCRIPTOR(TextSelector)
+               else DESCRIPTOR(Select)
+               else DESCRIPTOR(SelectAtoms)
+               else DESCRIPTOR(DisableAtoms)
+               else DESCRIPTOR(NumberOfColumns)
+               else DESCRIPTOR(NumberOfRows)
+               else DESCRIPTOR(OpenGrid)
+               else DESCRIPTOR(EndGrid)
+               else DESCRIPTOR(VisibleLines)
+               else DESCRIPTOR(Inform)
+               else DESCRIPTOR(Ignore)
+               else DESCRIPTOR(Disabled)
+               else DESCRIPTOR(State)
+               else DESCRIPTOR(On)
+               else DESCRIPTOR(Off)
+               else DESCRIPTOR(Outline)
+               else DESCRIPTOR(AlignIsolate)
+               else DESCRIPTOR(AlignRight)
+               else DESCRIPTOR(AlignBottom)
+               else DESCRIPTOR(Modal)
+               else DESCRIPTOR(Zoom)
+               else DESCRIPTOR(Close)
+               else DESCRIPTOR(Size)
+               else DESCRIPTOR(Chars)
+               else DESCRIPTOR(Complete)
+               else DESCRIPTOR(NoEcho)
+               else DESCRIPTOR(Menu)
+               else DESCRIPTOR(EndMenu)
+               else DESCRIPTOR(Item)
+               else DESCRIPTOR(MenuSplit)
+               else DESCRIPTOR(MenuDisableCondition)
+               else DESCRIPTOR(MenuEnableCondition)
+               else DESCRIPTOR(TitleOnly)
+               else DESCRIPTOR(Append)
+               else DESCRIPTOR(Limit)
+               else DESCRIPTOR(GetPolygonArea)
+               else DESCRIPTOR(Transparent)
+               else DESCRIPTOR(BitmapFile)
+               else DESCRIPTOR(GetCursorKeys)
+               else DESCRIPTOR(IsoView)
+               else DESCRIPTOR(WantReturn)
+               else DESCRIPTOR(IsInput)
+               else DESCRIPTOR(IntegerInput)
+               else DESCRIPTOR(RealInput)
+               else DESCRIPTOR(NoInput)
+               else DESCRIPTOR(SetCommitText)
+               else DESCRIPTOR(SetCancelText)
+               else DESCRIPTOR(AttachModel)
+               else DESCRIPTOR(RadiusType)
+               else DESCRIPTOR(RadiusScale)
+               else DESCRIPTOR(VDW)
+               else DESCRIPTOR(Covalent)
+               else DESCRIPTOR(Thermal)
+               else DESCRIPTOR(Spare)
+               else DESCRIPTOR(SelectAction)
+               else DESCRIPTOR(AppendTo)
+               else DESCRIPTOR(SendA)
+               else DESCRIPTOR(SendB)
+               else DESCRIPTOR(SendC)
+               else DESCRIPTOR(SendD)
+               else DESCRIPTOR(SendCAndSelect)
+               else DESCRIPTOR(SetCommandText)
+               else DESCRIPTOR(DefinePopupMenu)
+               else DESCRIPTOR(ChartHighlight)
+               else DESCRIPTOR(EndDefineMenu)
+               else DESCRIPTOR(NoEdge)
+               else DESCRIPTOR(ChartSave)
+               else DESCRIPTOR(ChartSaveEnh)
+               else DESCRIPTOR(ChartPrint)
+               else DESCRIPTOR(Position)
+               else DESCRIPTOR(AddToList)
+               else DESCRIPTOR(SetSelection)
+               else DESCRIPTOR(SortColumn)
+               else DESCRIPTOR(CheckValue)
+               else DESCRIPTOR(Spew)
+               else DESCRIPTOR(Empty)
+               else DESCRIPTOR(Remove)
+               else DESCRIPTOR(RestartFile)
+               else DESCRIPTOR(IconInfo)
+               else DESCRIPTOR(IconError)
+               else DESCRIPTOR(IconWarn)
+               else DESCRIPTOR(IconQuery)
+               else DESCRIPTOR(NRes)
+               else DESCRIPTOR(QRes)
+               else DESCRIPTOR(Style)
+               else DESCRIPTOR(StyleSmooth)
+               else DESCRIPTOR(StyleLine)
+               else DESCRIPTOR(StylePoint)
+               else DESCRIPTOR(AutoSize)
+               else DESCRIPTOR(Hover)
+               else DESCRIPTOR(Shading)
+               else DESCRIPTOR(SelectTool)
+               else DESCRIPTOR(RotateTool)
+               else DESCRIPTOR(ZoomSelected)
+               else DESCRIPTOR(SelectFrag)
+               else DESCRIPTOR(LoadBitmap)
+               else DESCRIPTOR(Keep)
+               else DESCRIPTOR(Large)
+               else DESCRIPTOR(StayOpen)
+               else DESCRIPTOR(FontSelect)
+               else DESCRIPTOR(TextTransparent)
+               else DESCRIPTOR(ViewTop)
+               else DESCRIPTOR(Toggle)
+               else DESCRIPTOR(AppIcon)
+               else DESCRIPTOR(AddTool)
+               else DESCRIPTOR(Horizontal)
+               else DESCRIPTOR(Vertical)
+               else DESCRIPTOR(Both)
+               else DESCRIPTOR(Length)
+               else DESCRIPTOR(Slim)
+               else DESCRIPTOR(PlotPrint)
+               else DESCRIPTOR(PlotSave)
+               else DESCRIPTOR(Save)
+             break;
+
+      case kChartClass:
+               DESCRIPTOR(ChartAttach)
+               else DESCRIPTOR(ChartShow)
+               else DESCRIPTOR(ChartLine)
+               else DESCRIPTOR(ChartEllipseE)
+               else DESCRIPTOR(ChartEllipseF)
+               else DESCRIPTOR(ChartClear)
+               else DESCRIPTOR(ChartText)
+               else DESCRIPTOR(ChartPolyE)
+               else DESCRIPTOR(ChartPolyF)
+               else DESCRIPTOR(ChartColour)
+               else DESCRIPTOR(ChartFlow)
+               else DESCRIPTOR(ChartChoice)
+               else DESCRIPTOR(ChartLink)
+               else DESCRIPTOR(ChartAction)
+               else DESCRIPTOR(ChartN)
+               else DESCRIPTOR(ChartS)
+               else DESCRIPTOR(ChartE)
+               else DESCRIPTOR(ChartW)
+
+             break;
+
+      case kPlotClass:
+               DESCRIPTOR(PlotAttach)
+               else DESCRIPTOR(PlotShow)
+               else DESCRIPTOR(PlotBarGraph)
+               else DESCRIPTOR(PlotScatter)
+               else DESCRIPTOR(PlotSeries)
+               else DESCRIPTOR(PlotNSeries)
+               else DESCRIPTOR(PlotLength)
+               else DESCRIPTOR(PlotLabel)
+               else DESCRIPTOR(PlotData)
+               else DESCRIPTOR(PlotAuto)
+               else DESCRIPTOR(PlotSpan)
+               else DESCRIPTOR(PlotZoom)
+               else DESCRIPTOR(PlotLinear)
+               else DESCRIPTOR(PlotLog)
+               else DESCRIPTOR(PlotTitle)
+               else DESCRIPTOR(PlotSeriesName)
+               else DESCRIPTOR(PlotAxisTitle)
+               else DESCRIPTOR(PlotSeriesType)
+               else DESCRIPTOR(PlotAddSeries)
+               else DESCRIPTOR(PlotXAxis)
+               else DESCRIPTOR(PlotYAxis)
+               else DESCRIPTOR(PlotYAxisRight)
+               else DESCRIPTOR(PlotUseRightAxis)
+               else DESCRIPTOR(PlotKey)
+             break;
+
+      case kModelClass:
+               DESCRIPTOR(ModelAtom)
+               else DESCRIPTOR(ModelBond)
+               else DESCRIPTOR(ModelShow)
+               else DESCRIPTOR(ModelCell)
+               else DESCRIPTOR(ModelTri)
+               else DESCRIPTOR(ModelClear)
+             break;
+            
+      case kInstructionClass:
+               DESCRIPTOR(CreateButton)
+               else DESCRIPTOR(At)
+               else DESCRIPTOR(CreateWindow)
+               else DESCRIPTOR(SysRestart)
+               else DESCRIPTOR(SysGetDir)
+               else DESCRIPTOR(SysOpenFile)
+               else DESCRIPTOR(SysSaveFile)
+               else DESCRIPTOR(CreateListBox)
+               else DESCRIPTOR(CreateDropDown)
+               else DESCRIPTOR(CreateEditBox)
+               else DESCRIPTOR(CreateGrid)
+               else DESCRIPTOR(CreateMultiEdit)
+               else DESCRIPTOR(CreateTextOut)
+               else DESCRIPTOR(CreateText)
+               else DESCRIPTOR(CreateIcon)
+               else DESCRIPTOR(CreateProgress)
+               else DESCRIPTOR(CreateRadioButton)
+               else DESCRIPTOR(CreateCheckBox)
+               else DESCRIPTOR(CreateChart)
+               else DESCRIPTOR(CreatePlot)
+               else DESCRIPTOR(CreateModel)
+               else DESCRIPTOR(CreateBitmap)
+               else DESCRIPTOR(ShowWindow)
+               else DESCRIPTOR(HideWindow)
+               else DESCRIPTOR(DisposeWindow)
+               else DESCRIPTOR(EndGrid)
+               else DESCRIPTOR(Set)
+               else DESCRIPTOR(RenameObject)
+               else DESCRIPTOR(GetValue)
+               else DESCRIPTOR(DefineMenu)
+               else DESCRIPTOR(EndDefineMenu)
+               else DESCRIPTOR(CreateChartDoc)
+               else DESCRIPTOR(CreateModelDoc)
+               else DESCRIPTOR(RedirectText)
+               else DESCRIPTOR(RedirectInput)
+               else DESCRIPTOR(RedirectProgress)
+               else DESCRIPTOR(CreateListCtrl)
+               else DESCRIPTOR(CreateModList)
+               else DESCRIPTOR(SetKeyValue)
+               else DESCRIPTOR(GetKeyValue)
+               else DESCRIPTOR(GetRegValue)
+               else DESCRIPTOR(TextSelector)
+               else DESCRIPTOR(Focus)
+               else DESCRIPTOR(Batch)
+               else DESCRIPTOR(FontSet)
+               else DESCRIPTOR(CreateTab)
+               else DESCRIPTOR(CreateTabCtrl)
+               else DESCRIPTOR(CreateToolBar)
+               else DESCRIPTOR(CreateResize)
+               else DESCRIPTOR(CreateStretch)
+               else DESCRIPTOR(CreateHidden)
+               else DESCRIPTOR(CreatePlotData)
+               else DESCRIPTOR(SafeSet)
+               else DESCRIPTOR(OpenGroup)
+               else DESCRIPTOR(CloseGroup)
+             break;
+            
+      case kStatusClass:
+               DESCRIPTOR(UnSetStatus)
+               else DESCRIPTOR(SetStatus)
+             break;
+
+            
+      case kPositionClass:
+               DESCRIPTOR(Row)
+               else DESCRIPTOR(Column)
+               else DESCRIPTOR(Column)
+             break;
+
+      case kPositionalClass:
+               DESCRIPTOR(RightOf)
+               else DESCRIPTOR(LeftOf)
+               else DESCRIPTOR(Above)
+               else DESCRIPTOR(Below)
+               else DESCRIPTOR(Cascade)
+               else DESCRIPTOR(Centred)
+             break;
+            
+
+      case kQueryClass:
+               DESCRIPTOR(QExists)
+               else DESCRIPTOR(QListtext)
+               else DESCRIPTOR(QText)
+               else DESCRIPTOR(QListrow)
+               else DESCRIPTOR(QListitem)
+               else DESCRIPTOR(QNselected)
+               else DESCRIPTOR(QSelected)
+               else DESCRIPTOR(QState)
+
+      default:
+               DESCRIPTOR(Null)
+             break;
+  }
+  return retVal;
+}
 
 
 //////////////////////////////
@@ -3427,15 +3156,10 @@ extern "C" {
 
   void FORCALL(callccode) ( char* theLine)
   {
-      char * tempstr = new char[263];
-      memcpy(tempstr,theLine,262);
-      *(tempstr+262) = '\0';
-      CcString temp = CcString(tempstr);
-//      LOGSTAT("Tempuntrimmed:\""+temp+"\"");
-      temp.Trim();
-//      LOGSTAT("Temp, trimmed:\""+temp+"\"");
+      string temp =  theLine ;    // To be deleted later by the queue.
+      string::size_type strim = temp.find_last_not_of(" ");
+      if ( strim != string::npos ) temp = temp.substr(0,strim+1);
       (CcController::theController)->AddInterfaceCommand( temp );
-      delete [] tempstr;
   }
 
   void FORCALL(guexec) ( char* theLine)
@@ -3443,19 +3167,22 @@ extern "C" {
     char * tempstr = new char[263];
     memcpy(tempstr,theLine,262);
     *(tempstr+262) = '\0';
-    CcString line = CcString(tempstr);
-    line.Trim();
+    string line = string(tempstr);
+//Remove trailing spaces:
+    string::size_type strim = line.find_last_not_of(" ");
+    if ( strim != string::npos )
+        line = line.substr(0,strim+1);
     delete [] tempstr;
     tempstr = NULL;
 //    (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
 
     bool bWait = false;
     bool bRest = false;
-    int sFirst,eFirst,sRest,eRest;
+    string::size_type sFirst,eFirst,sRest,eRest;
 
 // Find first non-space.
 
-    for ( sFirst = 0; sFirst < line.Length(); sFirst++ )
+    for ( sFirst = 0; sFirst < line.length(); sFirst++ )
     {
       if ( line[sFirst] != ' ' ) break;
     }
@@ -3468,7 +3195,7 @@ extern "C" {
 
 // Find next non space ( in case + is seperated from first word ).
 
-       for ( sFirst++ ; sFirst < line.Length(); sFirst++ )
+       for ( sFirst++ ; sFirst < line.length(); sFirst++ )
        {
           if ( line [sFirst] != ' ' ) break;
        }
@@ -3479,50 +3206,48 @@ extern "C" {
     if ( line[sFirst] == '"' )  // Find next quote.
     {
        sFirst++; //Move to after 1st quote.
-       for ( eFirst = sFirst; eFirst < line.Length(); eFirst++ )
+       for ( eFirst = sFirst; eFirst < line.length(); eFirst++ )
        {
                 if ( line [eFirst] == '"' ) break;
        }
     }
     else                        // Find next space ( after the first word )
     {
-       for ( eFirst = sFirst; eFirst < line.Length(); eFirst++ )
+       for ( eFirst = sFirst; eFirst < line.length(); eFirst++ )
        {
         if ( line [eFirst] == ' ' ) break;
        }
     }
 
 // Find next non space 
-    for ( sRest = eFirst+1; sRest < line.Length(); sRest++ )
+    for ( sRest = eFirst+1; sRest < line.length(); sRest++ )
     {
        if ( line [sRest] != ' ' ) break;
     }
 
 // Find last non space
-    for ( eRest = line.Length()-1; eRest > eFirst; eRest-- )
+    for ( eRest = line.length()-1; eRest > eFirst; eRest-- )
     {
        if ( line [eRest] != ' ' ) break;
     }
 
 
-//NB [] notation is zero based; Sub(a,b) call is one based.
-
-    CcString firstTok = line.Sub(sFirst+1,eFirst);
-    CcString restLine = "";
+    string firstTok = line.substr(sFirst,eFirst-sFirst);
+    string restLine = "";
 
     if ( sRest <= eRest )
     {
       bRest = true;
       eRest = CRMAX ( eRest, sRest );          // ensure positive length
-      sRest = CRMIN ( sRest+1, line.Length()); // convert to valid 1-based index.
-      eRest = CRMIN ( eRest+1, line.Length()); // convert to valid 1-based index.
-      restLine = line.Sub(sRest,eRest);
+      sRest = CRMIN ( sRest+1, line.length()); // convert to valid 1-based index.
+      eRest = CRMIN ( eRest+1, line.length()); // convert to valid 1-based index.
+      restLine = line.substr(sRest-1,1+eRest-sRest);
     }
     else
     {
       eRest = CRMAX ( eRest, sRest );          // ensure positive length
-      sRest = CRMIN ( sRest+1, line.Length()); // convert to valid 1-based index.
-      eRest = CRMIN ( eRest+1, line.Length()); // convert to valid 1-based index.
+      sRest = CRMIN ( sRest+1, line.length()); // convert to valid 1-based index.
+      eRest = CRMIN ( eRest+1, line.length()); // convert to valid 1-based index.
     }
 
 #ifdef __CR_WIN__
@@ -3531,11 +3256,11 @@ extern "C" {
     {
 // Launch with ShellExecute function. Then wait for app.
 //Special case html files with a # anchor reference after file name:
-      int match = firstTok.Match('#');
-      if ( match ) {
+      string::size_type match = firstTok.find('#');
+      if ( match != string::npos ) {
          char buf[MAX_PATH];
-         CcString tempfile = firstTok.Sub(1,match-1);
-         if ( (int)FindExecutable(tempfile.ToCString(),NULL,buf) >= 32) {
+         string tempfile = firstTok.substr(0,match);
+         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3549,8 +3274,8 @@ extern "C" {
       si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
       si.hwnd         = GetDesktopWindow();
       si.lpVerb       = "open";
-      si.lpFile       = firstTok.ToCString();
-      si.lpParameters = ( (bRest)? restLine.ToCString() : NULL );
+      si.lpFile       = firstTok.c_str();
+      si.lpParameters = ( (bRest)? restLine.c_str() : NULL );
       si.lpDirectory  = NULL;
       si.nShow        = SW_SHOWNORMAL;
 
@@ -3558,9 +3283,9 @@ extern "C" {
 
       if ( (int)si.hInstApp == SE_ERR_NOASSOC )
       {
-        CcString newparam = CcString("shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? CcString(" ")+restLine : CcString("") ) ;
+        string newparam = string("shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? string(" ")+restLine : string("") ) ;
         si.lpFile       = "rundll32.exe";
-        si.lpParameters = newparam.ToCString();
+        si.lpParameters = newparam.c_str();
         si.fMask        = SEE_MASK_NOCLOSEPROCESS; //Don't mask errors for this call.
         ShellExecuteEx ( & si );
 // It is not possible to wait for rundll32's spawned process, so
@@ -3584,7 +3309,7 @@ extern "C" {
         CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[257];
-        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),256);
+        memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
         *(str+256) = '\0';
 
         char* args[10];       // This allows a maximum of 9 command line arguments
@@ -3602,7 +3327,9 @@ extern "C" {
   
         if ( result == -1 )  //Start failed
         {
-          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+          ostringstream strstrm;
+          strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
+          CcController::theController->ProcessOutput(strstrm.str());
           for (i = 7; i>=0; i--)
           {
              args[i+2] = args[i];
@@ -3617,13 +3344,16 @@ extern "C" {
 
           args[1] = "/c";
           result = _spawnvp(_P_WAIT, args[0], args);
-          TEXTOUT(CcString(args[0])+" "+
-                  CcString(args[1])+" "+
-                  CcString(args[2])+" "+
-                  CcString(args[3])+" "+
-                  CcString(args[4])+" ...etc...");
+          TEXTOUT(string(args[0])+" "+
+                  string(args[1])+" "+
+                  string(args[2])+" "+
+                  string(args[3])+" "+
+                  string(args[4])+" ...etc...");
 
-          if ( result != 0 ) TEXTOUT ( "{I Failed yet again. Errno is:" + CcString(errno) + ". Giving up.");
+          strstrm.str("");
+          strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
+
+          if ( result != 0 ) TEXTOUT ( strstrm.str() );
           else TEXTOUT("Might have worked.");
         }
         delete [] str;
@@ -3646,11 +3376,11 @@ extern "C" {
 // Launch with ShellExecute function. There is no waiting for apps to finish.
 
 //Special case html files with a # anchor reference after file name:
-      int match = firstTok.Match('#');
-      if ( match ) {
+      string::size_type match = firstTok.find('#');
+      if ( match != string::npos ) {
          char buf[MAX_PATH];
-         CcString tempfile = firstTok.Sub(1,match-1);
-         if ( (int)FindExecutable(tempfile.ToCString(),NULL,buf) >= 32) {
+         string tempfile = firstTok.substr(0,match);
+         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3661,8 +3391,8 @@ extern "C" {
 
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    "open",
-                                   firstTok.ToCString(),
-                                   ( (bRest)? restLine.ToCString() : NULL ),
+                                   firstTok.c_str(),
+                                   ( (bRest)? restLine.c_str() : NULL ),
                                    NULL,
                                    SW_SHOWNORMAL);
       if ( (int)ex == SE_ERR_NOASSOC )
@@ -3670,7 +3400,7 @@ extern "C" {
          ShellExecute( GetDesktopWindow(),
                        "open",
                        "rundll32.exe",
-                       CcString(CcString("shell32.dll,OpenAs_RunDLL ")+firstTok).ToCString(),
+                       string(string("shell32.dll,OpenAs_RunDLL ")+firstTok).c_str(),
                        NULL,
                        SW_SHOWNORMAL);
       }
@@ -3680,7 +3410,7 @@ extern "C" {
 //        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[257];
-        memcpy(str,line.Sub(sFirst+1,-1).ToCString(),256);
+        memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
         *(str+256) = '\0';
 
         char* args[10];       // This allows a maximum of 9 command line arguments
@@ -3698,7 +3428,7 @@ extern "C" {
   
         if ( result == -1 )  //Start failed
         {
-//          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+//          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + string(errno)+" trying a command shell.");
           for (i = 7; i>=0; i--)
           {
              args[i+2] = args[i];
@@ -3713,7 +3443,10 @@ extern "C" {
 
           args[1] = "/c";
           result = _spawnvp(_P_WAIT, args[0], args);
-          if ( result != 0 ) TEXTOUT ( "{I Failed yet again. Errno is:" + CcString(errno) + ". Giving up.");
+
+          ostringstream strstrm;
+          strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
+          if ( result != 0 ) { TEXTOUT ( strstrm.str() ); }
         }
         delete [] str;
 
@@ -3727,15 +3460,15 @@ extern "C" {
 // Check if this might be a filename, and if so find application to
 // open it with.
 
-    wxString fullname(firstTok.ToCString());
+    wxString fullname(firstTok.c_str());
     wxString path, name, extension, command;
-    ::wxSplitPath(firstTok.ToCString(),&path,&name,&extension);
+    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
     wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 
     if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
     {
-        line = CcString(command.c_str()) + " " + line;
-        std::cerr << "\nGUEXEC: Found handler app: " << line.ToCString() << "\n";
+        line = string(command.c_str()) + " " + line;
+        std::cerr << "\nGUEXEC: Found handler app: " << line.c_str() << "\n";
     }
 
     if ( bWait )
@@ -3751,8 +3484,8 @@ extern "C" {
     extern int errno;
     char * cmd = new char[257];
     char * str = new char[257];
-    memcpy(cmd,firstTok.ToCString(),256);
-    memcpy(str,restLine.ToCString(),256);
+    memcpy(cmd,firstTok.c_str(),256);
+    memcpy(str,restLine.c_str(),256);
     *(str+256) = '\0';
     *(cmd+256) = '\0';
     char* args[10];       // This allows a maximum of 9 command line arguments
@@ -3788,6 +3521,9 @@ extern "C" {
 
     }
 
+    delete [] str;
+    delete [] cmd;
+
     std::cerr << "\n\nGUEXEC: Done.\n";
 
     return;
@@ -3795,17 +3531,6 @@ extern "C" {
 #endif
 
   }
-
-/*
-  void ciflushbuffer( long *theLength, char * theLine )
-  {
-      *(theLine + *theLength) = '\0';
-      (CcController::theController)->AddInterfaceCommand( theLine );
-//  #ifdef __CR_WIN__
-//      AfxGetMainWnd()->PostMessage(WM_TIMER); //Force idle processing to (re)start so
-//  #endif                                          //that the GetInterfaceCommand is called.
-  }
-*/
 
   void FORCALL(cinextcommand) ( long *theStatus, char *theLine )
   {
@@ -3830,10 +3555,65 @@ extern "C" {
 
   void    FORCALL(ciendthread) (long theExitcode )
   {
-        LOGSTAT ("Thread ends1. Exit code is: " + CcString ( theExitcode) );
+// Scope this bit or it appears to leak a tiny bit of memory.
+       {
+         ostringstream strstrm;
+         strstrm << "Thread ends1. Exit code is: " << theExitcode ;
+         LOGSTAT (strstrm.str());
+       }
 
-        CcController::theController->endthread ( theExitcode );
+       CcController::theController->endthread ( theExitcode );
   }
 
 } // end of C functions
 
+
+
+// Functions that are called from the CRYSTALS thread:
+
+
+
+bool CcController::GetCrystalsCommand( char * line )
+//-----------------------------------------------------
+{
+//This is where the Crystals thread will spend most of its time.
+//Waiting for the user to do somethine.
+
+//Wait until the list is free for reading.
+
+    m_Crystals_Commands_CS.Enter();
+
+       if (mThisThreadisDead) return false;
+
+//       while ( Completing() || !mCrystalsCommandQueue.GetCommand( line ) )
+       while ( Completing() || mCrystalsCommandDeq.empty() )
+       {
+// The queue is empty or locked so wait efficiently. 
+// Release the mutex for a while, so that someone else can write to the queue!
+           m_Wait = false;
+//           LOGSTAT ("-----------Queue locked or empty..");
+         m_Crystals_Commands_CS.Leave();
+         if (mThisThreadisDead) return false;
+
+         m_Crystals_Command_Added.Wait(1000);
+
+//The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
+         m_Crystals_Commands_CS.Enter();
+       }
+
+       string temp = mCrystalsCommandDeq.front();
+       strcpy( line, temp.c_str() );
+       mCrystalsCommandDeq.pop_front();
+
+       LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
+
+    m_Crystals_Commands_CS.Leave();
+
+    if (mThisThreadisDead) return false;
+
+    if (string(line) == "#DIENOW") endthread(0);
+
+    m_Wait = true;
+
+    return (true);
+}

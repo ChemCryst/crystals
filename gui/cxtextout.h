@@ -10,6 +10,10 @@
 #ifndef     __CxTextOut_H__
 #define     __CxTextOut_H__
 
+#include   <string>
+#include   <vector>
+using namespace std;
+
 #ifdef __BOTHWX__
 #include <wx/window.h>
 #include <wx/dcclient.h>
@@ -74,8 +78,8 @@ class CxTextOut : public BASETEXTOUT
     static int AddTextOut( void) { mTextOutCount++; return mTextOutCount; };
     static void RemoveTextOut( void) { mTextOutCount--; };
 
-        CxTextOut( CrTextOut * container );
-        ~CxTextOut();
+    CxTextOut( CrTextOut * container );
+    ~CxTextOut();
     void Init();
     void Focus();
     void    SetIdealWidth(int nCharsWide);
@@ -87,37 +91,37 @@ class CxTextOut : public BASETEXTOUT
     int GetHeight();
     int GetLeft();
     void    SetGeometry(int top, int left, int bottom, int right );
-        void CxDestroyWindow();
+    void CxDestroyWindow();
 
     void SetTransparent();
 
         // attributes
-        static int mTextOutCount;
+    static int mTextOutCount;
 
-        void  SetText( CcString cText );
-        void  Empty();                      // Set the Head
-        void  ViewTop();                    // Set the Head
-        void  ChooseFont();
-    void ScrollPage(bool up);
+    void  SetText( const string &cText );
+    void  Empty();                      // Set the Head
+    void  ViewTop();                    // Set the Head
+    void  ChooseFont();
+    void  ScrollPage(bool up);
+
+    unsigned int GetLineCount() const { return m_Lines.size(); };
 
 #ifdef __BOTHWX__
 #define COLORREF wxColour
-    int GetLineCount() const { return( m_Lines.GetCount() ); }; // Get Line Count
     void CxSetFont( wxFont* lf );        // Set the Font
 #endif
 
-    void AddLine( CcString& strLine );  // Add a Line
+    void AddLine( const string& strLine );  // Add a Line
 #ifdef __CR_WIN__
     void CxSetFont( LOGFONT& lf );        // Set the Font
     void SetColourTable( COLORREF* pColTable ) { memcpy( &m_ColTable, pColTable, sizeof( COLORREF ) * 16 ); if( GetSafeHwnd() ) Invalidate(); };
-    int GetLineCount() const { return( m_Lines.GetUpperBound() + 1 ); };    // Get Line Count
 #endif
     void SetBackColour( COLORREF col ); // Set the background Colour
     void SetHead( int nHead );          // Set the Head
     int GetHead() const { return( m_nHead ); }; // Return the Head
-    int GetMaxViewableLines();     // Return viewable lines
+    unsigned int GetMaxViewableLines();     // Return viewable lines
 
-    bool IsAHit( CcString & commandString, int x, int y );
+    bool IsAHit( string & commandString, int x, int y );
 
   private:
 // attributes
@@ -126,31 +130,31 @@ class CxTextOut : public BASETEXTOUT
     int     mIdealWidth;
     bool mbOkToDraw;
 
+    vector<string> m_Lines;
+
 #ifdef __CR_WIN__
     CFont*          m_pFont;            // Font we are using
     LOGFONT         m_lfFont;           // Font as a LOGFONT
-    CStringArray    m_Lines;            // Lines
     COLORREF        m_BackCol;          // Background Colour
     HCURSOR         m_hCursor;          // Cursor for the window
     COLORREF        m_ColTable[ 16 ];   // Colour Table
 #endif
 #ifdef __BOTHWX__
     wxFont*         m_pFont;            // Font we are using
-    wxStringList    m_Lines;
     wxBrush*        m_brush;
     wxPen*          m_pen;
     wxColour        m_BackCol;
     wxColour        m_ColTable[16];
 #endif
     int             m_nHead;            // Head of the buffer
-    int             m_nMaxLines;            // Maximum buffer size
+    unsigned int    m_nMaxLines;            // Maximum buffer size
     int             m_nDefTextCol;          // Default Text Colour Index
     int             m_nXOffset;                     // X Offset for drawing
-    int             m_nMaxWidth;            // Maximum Written so far
-    int             m_nAvgCharWidth;        // Average Char Width
+    unsigned int    m_nMaxWidth;            // Maximum Written so far
+    unsigned int    m_nAvgCharWidth;        // Average Char Width
     bool            m_bInLink;            // Word wrapping?
-    int             m_nFontHeight;          // Height of the font
-    int             m_nLinesDone;           // Actual number of lines we drew last-time
+    unsigned int    m_nFontHeight;          // Height of the font
+    unsigned int    m_nLinesDone;           // Actual number of lines we drew last-time
     void UpdateHScroll();
     void UpdateVScroll();
     int             m_zDelta;
@@ -162,8 +166,8 @@ class CxTextOut : public BASETEXTOUT
 #define PlatformDC wxDC
 #endif
 
-    void RenderSingleLine( CcString&, PlatformDC*, int, int );
-    int  GetColourCodes( CcString&, COLOURCODE* );      // Remains the same
+    void RenderSingleLine( string&, PlatformDC*, int, int );
+    int  GetColourCodes( string&, COLOURCODE* );      // Remains the same
 
 #ifdef __CR_WIN__
   protected:

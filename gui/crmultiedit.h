@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   6.3.1998 00:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2004/05/13 09:14:49  rich
+//   Re-invigorate the MULTIEDIT control. Currently not used, but I have
+//   something in mind for it.
+//
 //   Revision 1.10  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -22,7 +26,6 @@
 #ifndef     __CrMultiEdit_H__
 #define     __CrMultiEdit_H__
 #include    "crguielement.h"
-#include    "cctokenlist.h"
 #include    "ccrect.h"
 class CxMultiEdit;
 
@@ -41,8 +44,8 @@ class CxMultiEdit;
         // methods
             CrMultiEdit( CrGUIElement * mParentPtr );
             ~CrMultiEdit();
-        CcParse ParseInput( CcTokenList * tokenList );
-        void    SetText ( CcString text );
+        CcParse ParseInput( deque<string> & tokenList );
+        void    SetText ( const string &text );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry ();
         CcRect CalcLayout(bool recalculate=false);

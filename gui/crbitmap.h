@@ -11,7 +11,6 @@
 #define         __CrBitmap_H__
 #include    "crguielement.h"
 
-#include    "cctokenlist.h"
 class CxBitmap;
 
 class   CrBitmap : public CrGUIElement
@@ -21,8 +20,8 @@ class   CrBitmap : public CrGUIElement
         // methods
                         CrBitmap( CrGUIElement * mParentPtr );
                         ~CrBitmap();
-        CcParse ParseInput( CcTokenList * tokenList );
-                void    SetText( CcString text );
+        CcParse ParseInput( deque<string> & tokenList );
+                void    SetText( const string &text );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry();
         CcRect CalcLayout(bool recalculate=false);

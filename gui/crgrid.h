@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.12  2002/10/02 13:43:17  rich
 //   New ModList class added.
 //
@@ -34,10 +40,9 @@
 #ifndef     __CrGrid_H__
 #define     __CrGrid_H__
 #include    "crguielement.h"
-#include    "cclist.h"
+#include   <list>
 
 class CxGroupBox;
-class CcTokenList;
 
 class   CrGrid : public CrGUIElement
 {
@@ -45,7 +50,7 @@ class   CrGrid : public CrGUIElement
     CrGrid( CrGUIElement * mParentPtr );
     ~CrGrid();
 
-    CcParse ParseInput( CcTokenList * tokenList );
+    CcParse ParseInput( deque<string> &  tokenList );
     void CrFocus();
     int GetIdealHeight();
     int GetIdealWidth();
@@ -53,15 +58,15 @@ class   CrGrid : public CrGUIElement
     CcRect  GetGeometry();
     CcRect CalcLayout(bool recalculate=false);
 
-    void    SetText( CcString item );
+    void    SetText( const string &item );
     bool    GridComplete() {  return m_GridComplete; } ;
-    CcParse InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos );
+    CcParse InitElement( CrGUIElement * element, deque<string> & tokenList, int xpos, int ypos );
     void    Align();
     int     GetHeightOfRow( int row );
     int     GetWidthOfColumn( int col );
-    CrGUIElement *  FindObject( CcString Name );
-    void    SendCommand(CcString theText, bool jumpQueue);
-    void    SetCommandText(CcString theText);
+    CrGUIElement *  FindObject( const string & Name );
+    void    SendCommand(string theText, bool jumpQueue);
+    void    SetCommandText(string theText);
     void    CrShowGrid(bool state);
     CrGUIElement *  GetPointer( int xpos, int ypos );
 
@@ -72,13 +77,13 @@ class   CrGrid : public CrGUIElement
   protected:
     bool SetPointer( int xpos, int ypos, CrGUIElement * ptr );
 
-    CcList  m_ItemList;
+    list<CrGUIElement*> m_ItemList;
     bool m_GridComplete;
     CrGrid *        m_ActiveSubGrid;
     CrGUIElement ** m_TheGrid;
     CxGroupBox *    m_OutlineWidget;
     bool m_CommandSet;
-    CcString m_CommandText;
+    string m_CommandText;
     int * m_InitialColWidths;
     int * m_InitialRowHeights;
     bool * m_ColCanResize;

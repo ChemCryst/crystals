@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2003/10/31 10:44:16  rich
+//   When an atom is selected in the model window, it is scrolled
+//   into view in the atom list, if not already in view.
+//
 //   Revision 1.4  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -43,6 +47,8 @@
 #include    "ccmenuitem.h"
 #include    "ccmodelatom.h"
 #include    "cccontroller.h"    // for sending commands
+#include    <string>
+#include    <sstream>
 
 CrModList::CrModList( CrGUIElement * mParentPtr )
     :   CrGUIElement( mParentPtr )
@@ -76,33 +82,32 @@ CRSETGEOMETRY(CrModList,CxModList)
 CRGETGEOMETRY(CrModList,CxModList)
 CRCALCLAYOUT(CrModList,CxModList)
 
-CcParse CrModList::ParseInput( CcTokenList * tokenList )
+CcParse CrModList::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
-    CcString theToken;
+    string theToken;
 
     if( ! mSelfInitialised ) //Once Only.
     {
         LOGSTAT("*** ModList *** Initing...");
 
-        mName = tokenList->GetToken();
+        mName = string(tokenList.front());
+        tokenList.pop_front();
         mSelfInitialised = true;
 
         LOGSTAT( "*** Created ModList     " + mName );
 
-        while ( hasTokenForMe )
+        while ( hasTokenForMe && ! tokenList.empty() )
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTVisibleLines:
                 {
-                    int lines;
-                    tokenList->GetToken(); // Remove the keyword
-                    CcString theToken = tokenList->GetToken();
-                    lines = atoi( theToken.ToCString() );
-                    ( (CxModList *)ptr_to_cxObject)->SetVisibleLines( lines );
-                    LOGSTAT("Setting ModList visible lines to " + theToken);
+                    tokenList.pop_front(); // Remove the keyword
+                    ( (CxModList *)ptr_to_cxObject)->SetVisibleLines( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT("Setting ModList visible lines to " + tokenList.front());
+                    tokenList.pop_front();
                     break;
                 }
                 default:
@@ -115,15 +120,15 @@ CcParse CrModList::ParseInput( CcTokenList * tokenList )
 
     }
     hasTokenForMe = true;
-    while ( hasTokenForMe ) //Every time
+    while ( hasTokenForMe && ! tokenList.empty() ) //Every time
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
                     LOGSTAT( "Enabling ModList callback" );
@@ -133,23 +138,23 @@ CcParse CrModList::ParseInput( CcTokenList * tokenList )
             }
             case kTAttachModel:
             {
-                tokenList->GetToken();
-                CcString name = tokenList->GetToken();
-                if( ( m_ModelDoc = (CcController::theController)->FindModelDoc(name) ) != nil )
+                tokenList.pop_front();
+                if( ( m_ModelDoc = (CcController::theController)->FindModelDoc(tokenList.front()) ) != nil )
                     m_ModelDoc->AddModelView(this);
                 else
                 {
-                  m_ModelDoc = (CcController::theController)->CreateModelDoc(name);
+                  m_ModelDoc = (CcController::theController)->CreateModelDoc(tokenList.front());
                   m_ModelDoc->AddModelView(this);
                 }
+                tokenList.pop_front();
                 break;
             }
             case kTDefinePopupMenu:
             {
-              tokenList->GetToken();
+              tokenList.pop_front();
               LOGSTAT("Defining Popup Model Menu...");
-              CcString theString = tokenList->GetToken();
-              int menuNumber = atoi( theString.ToCString() );
+              int menuNumber = atoi( tokenList.front().c_str() );
+              tokenList.pop_front();
               CrMenu* mMenuPtr = new CrMenu( this, POPUP_MENU );
               if ( mMenuPtr != nil )
               {
@@ -178,7 +183,7 @@ CcParse CrModList::ParseInput( CcTokenList * tokenList )
             }
             case kTEndDefineMenu:
             {
-              tokenList->GetToken();
+              tokenList.pop_front();
               LOGSTAT("Popup Model Menu Definined.");
               break;
             }
@@ -194,67 +199,71 @@ CcParse CrModList::ParseInput( CcTokenList * tokenList )
 }
 
 
-void    CrModList::SetText( CcString item )
+void    CrModList::SetText( const string &item )
 {
     LOGWARN( "CrModList:SetText Don't add text to a ModList.");
 }
 
 void    CrModList::GetValue()
 {
-    int value = ( (CxModList *)ptr_to_cxObject)->GetValue();
-    SendCommand( CcString( value ) );
+    ostringstream strm;
+    strm << ( (CxModList *)ptr_to_cxObject)->GetValue();
+    SendCommand( strm.str() );
 }
 
-void CrModList::GetValue(CcTokenList * tokenList)
+void CrModList::GetValue(deque<string> &  tokenList)
 {
 
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
 
     switch (desc)
     {
         case kTQListitem:
         {
-            tokenList->GetToken();
-            int i = atoi ((tokenList->GetToken()).ToCString()) - 1;
-            int j = atoi ((tokenList->GetToken()).ToCString()) - 1;
-            CcString theItem = ((CxModList*)ptr_to_cxObject)->GetCell(i,j);
-            SendCommand( theItem , true );
+            tokenList.pop_front();
+            int i = atoi (tokenList.front().c_str()) - 1;
+            tokenList.pop_front();
+            int j = atoi (tokenList.front().c_str()) - 1;
+            tokenList.pop_front();
+            SendCommand( ((CxModList*)ptr_to_cxObject)->GetCell(i,j) , true );
             break;
         }
         case kTQListrow:
         {
-            tokenList->GetToken();
-            CcString theString = tokenList->GetToken();
-            int itemNo = atoi( theString.ToCString() );
-            CcString result = ((CxModList*)ptr_to_cxObject)->GetListItem(itemNo);
-            (CcController::theController)->SendCommand(result, true);
+            tokenList.pop_front();
+            (CcController::theController)->SendCommand(((CxModList*)ptr_to_cxObject)->GetListItem(atoi( tokenList.front().c_str() )), true);
+            tokenList.pop_front();
             break;
         }
         case kTQSelected:
         {
-            tokenList->GetToken();
+            tokenList.pop_front();
             int nv = ( (CxModList *)ptr_to_cxObject)->GetNumberSelected();
             int * values = new int [nv];
             ( (CxModList *)ptr_to_cxObject)->GetSelectedIndices(values);
+            ostringstream strm;
             for ( int i = 0; i < nv; i++ )
             {
-                SendCommand( CcString( values[i] ) , true );
+                strm.str("");
+                strm << values[i];
+                SendCommand( strm.str() , true );
             }
             SendCommand( "END" , true );
             break;
         }
         case kTQNselected:
         {
-            tokenList->GetToken();
-            int value = ( (CxModList *)ptr_to_cxObject)->GetNumberSelected();
-            SendCommand( CcString( value ) , true );
+            tokenList.pop_front();
+            ostringstream strm;
+            strm << ( (CxModList *)ptr_to_cxObject)->GetNumberSelected();
+            SendCommand( strm.str() , true );
             break;
         }
         default:
         {
             SendCommand( "ERROR",true );
-            CcString error = tokenList->GetToken();
-            LOGWARN( "CrEditCtrl:GetValue Error unrecognised token." + error);
+            LOGWARN( "CrEditCtrl:GetValue Error unrecognised token." + tokenList.front());
+            tokenList.pop_front();
             break;
         }
     }
@@ -278,7 +287,7 @@ int CrModList::GetIdealHeight()
     return ((CxModList*)ptr_to_cxObject)->GetIdealHeight();
 }
 
-void CrModList::SendValue(CcString message)
+void CrModList::SendValue(string message)
 {
     if(mCallbackState)
     {
@@ -307,7 +316,7 @@ void CrModList::DocRemoved()
   m_ModelDoc = nil;
 }
 
-void CrModList::AddRow( int id, CcString* rowOfStrings, bool s, bool d )
+void CrModList::AddRow( int id, vector<string> & rowOfStrings, bool s, bool d )
 {
   ((CxModList*)ptr_to_cxObject)->AddRow( id, rowOfStrings, s, d);
    LOGSTAT("Added row: " + rowOfStrings[0] + rowOfStrings[1] + rowOfStrings[2]);
@@ -333,7 +342,7 @@ void CrModList::ContextMenu(int x, int y, int iitem, int mtype)
 
   if ( !atom ) return;
 
-  CcString atomname = atom->Label();
+  string atomname = atom->Label();
   CrMenu* theMenu = nil;
 
   switch ( mtype ) {
@@ -356,7 +365,7 @@ void CrModList::ContextMenu(int x, int y, int iitem, int mtype)
 
     if(theMenu)
     {
-        CcString atom2 = "";
+        string atom2 = "";
         theMenu->Substitute(atomname, m_ModelDoc, atom2);
         if ( ptr_to_cxObject ) theMenu->Popup(x,y,(void*)ptr_to_cxObject);
         else LOGERR ( "Unusable ModelList " + mName + ": failed to create.");
@@ -367,15 +376,16 @@ void CrModList::ContextMenu(int x, int y, int iitem, int mtype)
 
 void CrModList::MenuSelected(int id)
 {
-    CcMenuItem* menuItem = (CcController::theController)->FindMenuItem( id );
+    CcMenuItem* menuItem = CrMenu::FindMenuItem( id );
 
     if ( menuItem )
     {
-        CcString theCommand = menuItem->command;
+        string theCommand = menuItem->command;
         SendCommand(theCommand);
         return;
     }
-
-    LOGERR("CrModList:MenuSelected Model cannot find menu item id = " + CcString(id));
+    ostringstream strm;
+    strm << "CrModList:MenuSelected Model cannot find menu item id = " << id;
+    LOGERR(strm.str());
     return;
 }

@@ -8,7 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "crconstants.h"
 #include    "crmenu.h"
 #include    "ccmenuitem.h"
@@ -18,6 +20,9 @@
 #include    "cccontroller.h"    // for sending commands
 #include    "ccmodeldoc.h"
 
+
+static list<CcMenuItem*>  mMenuItemList;
+static int m_next_id_to_try = kMenuBase;
 
 CrMenu::CrMenu( CrGUIElement * mParentPtr, int menuType )
  :CrGUIElement( mParentPtr )
@@ -36,20 +41,13 @@ CrMenu::CrMenu( CrGUIElement * mParentPtr, int menuType )
 
 CrMenu::~CrMenu()
 {
-
-    mMenuList.Reset();
-    CcMenuItem* theItem = (CcMenuItem*)mMenuList.GetItem();
-
-    while ( theItem != nil )
+    list<CcMenuItem*>::iterator mili = mMenuList.begin();
+    for ( ; mili != mMenuList.end(); mili++ )
     {
-        if(theItem->type == CR_SUBMENU)
-        {
-            delete (CrMenu*)theItem->ptr;
-        }
-        delete theItem;
-        mMenuList.RemoveItem();
-        theItem = (CcMenuItem*)mMenuList.GetItem();
+       delete *mili;
     }
+    mMenuList.clear();
+
 
 #ifdef __CR_WIN__
 //for wx version, only delete the top level menu bar.
@@ -62,7 +60,7 @@ CrMenu::~CrMenu()
 
 }
 
-CcParse CrMenu::ParseInput( CcTokenList * tokenList )
+CcParse CrMenu::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -71,24 +69,26 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
     if( ! mSelfInitialised )
     {
         LOGSTAT("*** Menu *** Initing...");
-        mName = tokenList->GetToken();
-        mText = tokenList->GetToken();
-//        SetText(mText);
+        mName = string(tokenList.front());
+        tokenList.pop_front();
+        mText = string(tokenList.front());
+        tokenList.pop_front();
+
         mSelfInitialised = true;
         LOGSTAT( "*** Created Menu      " + mName );
     }
     // End of Init, now comes the general parser
 
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTMenu:
             {
                 CrMenu* mMenuPtr = new CrMenu( this );
                 if ( mMenuPtr != nil )
                 {
-                    tokenList->GetToken();
+                    tokenList.pop_front();
                     // ParseInput generates all objects in the menu
                     // Of course the token list must be full
                     retVal = mMenuPtr->ParseInput( tokenList );
@@ -98,27 +98,29 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
                         mMenuPtr = nil;
                     }
                 }
-                CcMenuItem* menuItem = new CcMenuItem(this);
+                CcMenuItem * menuItem = new CcMenuItem(this);
                 menuItem->type = CR_SUBMENU;
                 menuItem->text = menuItem->originaltext = mMenuPtr->mText;
                 menuItem->name = mMenuPtr->mName;
-                menuItem->command = nil;
+                menuItem->command = "";
                 menuItem->ptr = mMenuPtr;
                 bool moreTokens = true;
-                while ( moreTokens )
+                while ( moreTokens && !tokenList.empty() )
                 {
-                    switch ( tokenList->GetDescriptor(kAttributeClass) )
+                    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
                     {
                         case kTMenuDisableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->disable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->disable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         case kTMenuEnableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->enable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->enable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         default:
@@ -129,35 +131,40 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
                     }
                 }
 
-                menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddMenu((CxMenu*)menuItem->ptr->GetWidget(),(char*)menuItem->text.ToCString());
-                mMenuList.AddItem(menuItem);
-                (CcController::theController)->AddMenuItem(menuItem);
+                menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddMenu((CxMenu*)menuItem->ptr->GetWidget(),(char*)menuItem->text.c_str());
+                mMenuList.push_back(menuItem);
+                AddMenuItem(menuItem);
                 break;
             }
             case kTItem:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 CcMenuItem* menuItem = new CcMenuItem(this);
                 menuItem->type = CR_MENUITEM;
-                menuItem->name = tokenList->GetToken();
-                menuItem->text    = menuItem->originaltext    = tokenList->GetToken();
-                menuItem->command = menuItem->originalcommand = tokenList->GetToken();
+                menuItem->name = string(tokenList.front());
+                tokenList.pop_front();
+                menuItem->text    = menuItem->originaltext    = string(tokenList.front());
+                tokenList.pop_front();
+                menuItem->command = menuItem->originalcommand = string(tokenList.front());
+                tokenList.pop_front();
                 menuItem->ptr = nil;
                 bool moreTokens = true;
-                while ( moreTokens )
+                while ( moreTokens && !tokenList.empty() )
                 {
-                    switch ( tokenList->GetDescriptor(kAttributeClass) )
+                    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
                     {
                         case kTMenuDisableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->disable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->disable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         case kTMenuEnableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->enable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->enable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         default:
@@ -167,39 +174,40 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
                         }
                     }
                 }
-                menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddItem((char*)menuItem->text.ToCString());
-                mMenuList.AddItem(menuItem);
-                (CcController::theController)->AddMenuItem(menuItem);
+                menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddItem((char*)menuItem->text.c_str());
+                mMenuList.push_back(menuItem);
+                AddMenuItem(menuItem);
 
-                LOGSTAT( "Menu item id: " + CcString(menuItem->id) );
+                ostringstream strstrm;
+                strstrm << "Menu item id: " << menuItem->id;
+                LOGSTAT( strstrm.str() );
 
                 break;
             }
             case kTMenuSplit:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 CcMenuItem* menuItem = new CcMenuItem(this);
                 menuItem->type = CR_SPLIT;
-                menuItem->name = nil;
-                menuItem->text = nil;
-                menuItem->command = nil;
+                menuItem->name = "";
+                menuItem->text = "";
+                menuItem->command = "";
                 menuItem->ptr = nil;
-                menuItem->disable = nil;
-                mMenuList.AddItem(menuItem);
+                menuItem->disable = 0;
+                mMenuList.push_back(menuItem);
                 menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddItem();
-                (CcController::theController)->AddMenuItem(menuItem);
+                AddMenuItem(menuItem);
                 break;
             }
             case kTEndMenu:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 hasTokenForMe = false;
                 break; // We leave the token in the list and exit the loop
             }
             default:
             {
                 hasTokenForMe = false;
-//              TRACE("Unknown token %s\n", tokenList->GetToken().ToCString());
                 break; // We leave the token in the list and exit the loop
             }
         }
@@ -209,7 +217,7 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrMenu::SetText( CcString text )
+void    CrMenu::SetText( const string &text )
 {
 //     ((CxMenu*)ptr_to_cxObject)->SetText(text);
 }
@@ -237,7 +245,7 @@ void CrMenu::CrFocus()
     LOGWARN("CrMenu:CrFocus Bad Script: Attempt to set focus on a menu. ");
 }
 
-int CrMenu::Condition(CcString conditions)
+int CrMenu::Condition(string conditions)
 {
     return (CcController::theController)->status.CreateFlag(conditions);
 }
@@ -247,116 +255,56 @@ void CrMenu::Popup(int x, int y, void * window)
       ((CxMenu*)ptr_to_cxObject)->PopupMenuHere(x,y,window);
 }
 
-void CrMenu::Substitute(CcString atomname, CcModelDoc* model, CcString atom2)
+void CrMenu::Substitute(string atomname, CcModelDoc* model, string atom2)
 {
 //Replace all occurences of _A in the command and text fields with the atomname.
 //Replace all occurences of _S in the command and text fields with atom2.
 //Replace all occurences of _G in the command with a newline seperated list of selected atom names, followed by END.
 //Replace all occurences of _F in the command with a newline seperated list of fragment atom names, followed by END.
 
-    CcMenuItem* menuItem = nil;
-    CcString acommand, atext;
-    mMenuList.Reset();
-    while( menuItem = (CcMenuItem*)mMenuList.GetItemAndMove() )  //Assignment inside conditional (OK)
+    string acommand, atext;
+    list<CcMenuItem*>::iterator mili = mMenuList.begin();
+    for ( ; mili != mMenuList.end(); mili ++ )
     {
-        if (menuItem->type == CR_SUBMENU)
+        string::size_type i;
+        if ((*mili)->type == CR_SUBMENU)
         {
-            menuItem->ptr->Substitute(atomname, model, atom2);
-            atext    = menuItem->originaltext;
-            int i;
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'A')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + atomname + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'S')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + atom2 + lastPart;
-                }
-            }
-            menuItem->SetTitle(atext);
+            (*mili)->ptr->Substitute(atomname, model, atom2);
+            atext    = (*mili)->originaltext;
+
+            i = atext.find("_A");
+            if ( i != string::npos ) atext.replace( i, 2, atomname );
+            i = atext.find("_S");
+            if ( i != string::npos ) atext.replace( i, 2, atom2 );
+
+            (*mili)->SetTitle(atext);
         }
-        else if (menuItem->type == CR_MENUITEM)
+        else if ((*mili)->type == CR_MENUITEM)
         {
-            acommand = menuItem->originalcommand;
-            atext    = menuItem->originaltext;
+            acommand = (*mili)->originalcommand;
+            atext    = (*mili)->originaltext;
             int i;
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'A')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + atomname + lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'S')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + atom2 + lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'G')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand =  firstPart;
-                    acommand += model->SelectedAsString("_N");
-                    acommand += lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'F')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand =  firstPart;
-                    acommand += model->FragAsString(atomname,"_N");
-                    acommand += lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'A')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + atomname + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'S')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + atom2 + lastPart;
-                }
-            }
-            menuItem->command = acommand;
-            menuItem->SetText(atext);
-            if ( (CcController::theController)->status.ShouldBeEnabled( menuItem->enable, menuItem->disable ) )
-            {
-                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, true);
-            }
+
+            i = acommand.find("_A");
+            if ( i != string::npos ) acommand.replace( i, 2, atomname );
+            i = acommand.find("_S");
+            if ( i != string::npos ) acommand.replace( i, 2, atom2 );
+            i = acommand.find("_G");
+            if ( i != string::npos ) acommand.replace( i, 2, model->SelectedAsString("_N") );
+            i = acommand.find("_F");
+            if ( i != string::npos ) acommand.replace( i, 2, model->FragAsString(atomname,"_N") );
+
+            i = atext.find("_A");
+            if ( i != string::npos ) atext.replace( i, 2, atomname );
+            i = atext.find("_S");
+            if ( i != string::npos ) atext.replace( i, 2, atom2 );
+
+            (*mili)->command = acommand;
+            (*mili)->SetText(atext);
+            if ( (CcController::theController)->status.ShouldBeEnabled( (*mili)->enable, (*mili)->disable ) )
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( (*mili)->id, true);
             else
-            {
-                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, false);
-            }
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( (*mili)->id, false);
         }
     }
 
@@ -373,168 +321,165 @@ void CrMenu::Substitute(PlotDataPopup data)
 
     if(data.m_Valid == false) return;
 
-    CcMenuItem* menuItem = nil;
-    CcString acommand, atext;
-    mMenuList.Reset();
-    while( menuItem = (CcMenuItem*)mMenuList.GetItemAndMove() )  //Assignment inside conditional (OK)
+    string acommand, atext;
+    string::size_type i;
+    list<CcMenuItem*>::iterator mili = mMenuList.begin();
+    for ( ; mili != mMenuList.end(); mili ++ )
     {
-        if (menuItem->type == CR_SUBMENU)
+        if ((*mili)->type == CR_SUBMENU)
         {
-            menuItem->ptr->Substitute(data);
-            atext    = menuItem->originaltext;
-            int i;
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'D')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_PopupText + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'S')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_SeriesName + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'X')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_XValue + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'Y')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_YValue + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'L')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_Label + lastPart;
-                }
-            }
-            menuItem->SetText(atext);
+            (*mili)->ptr->Substitute(data);
+            atext    = (*mili)->originaltext;
+
+            i = atext.find("_D");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_PopupText );
+            i = atext.find("_S");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_SeriesName );
+            i = atext.find("_X");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_XValue );
+            i = atext.find("_Y");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_YValue );
+            i = atext.find("_L");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_Label );
+
+            (*mili)->SetText(atext);
         }
-        else if (menuItem->type == CR_MENUITEM)
+        else if ((*mili)->type == CR_MENUITEM)
         {
-            acommand = menuItem->originalcommand;
-            atext    = menuItem->originaltext;
-            int i;
-            for (i = 0; i < acommand.Len()-1; i++)
+            acommand = (*mili)->originalcommand;
+            atext    = (*mili)->originaltext;
+
+            i = acommand.find("_D");
+            if ( i != string::npos ) acommand.replace( i, 2, data.m_PopupText );
+            i = acommand.find("_S");
+            if ( i != string::npos ) acommand.replace( i, 2, data.m_SeriesName );
+            i = acommand.find("_X");
+            if ( i != string::npos ) acommand.replace( i, 2, data.m_XValue );
+            i = acommand.find("_Y");
+            if ( i != string::npos ) acommand.replace( i, 2, data.m_YValue );
+            i = acommand.find("_L");
+            if ( i != string::npos ) acommand.replace( i, 2, data.m_Label );
+
+            i = atext.find("_D");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_PopupText );
+            i = atext.find("_S");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_SeriesName );
+            i = atext.find("_X");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_XValue );
+            i = atext.find("_Y");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_YValue );
+            i = atext.find("_L");
+            if ( i != string::npos ) atext.replace( i, 2, data.m_Label );
+
+            (*mili)->command = acommand;
+            (*mili)->SetText(atext);
+            if ( (CcController::theController)->status.ShouldBeEnabled( (*mili)->enable, (*mili)->disable ) )
             {
-                if(acommand[i] == '_' && acommand[i+1] == 'D')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + data.m_PopupText + lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'S')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + data.m_SeriesName + lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'X')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + data.m_XValue + lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'Y')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + data.m_YValue + lastPart;
-                }
-            }
-            for (i = 0; i < acommand.Len()-1; i++)
-            {
-                if(acommand[i] == '_' && acommand[i+1] == 'L')
-                {
-                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
-                    CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + data.m_Label + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'D')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_PopupText + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'S')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_SeriesName + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'X')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_XValue + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'Y')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_YValue + lastPart;
-                }
-            }
-            for (i = 0; i < atext.Len()-1; i++)
-            {
-                if(atext[i] == '_' && atext[i+1] == 'L')
-                {
-                    CcString firstPart = atext.Chop(i+1,atext.Len());
-                    CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data.m_Label + lastPart;
-                }
-            }
-            menuItem->command = acommand;
-            menuItem->SetText(atext);
-            if ( (CcController::theController)->status.ShouldBeEnabled( menuItem->enable, menuItem->disable ) )
-            {
-                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, true);
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( (*mili)->id, true);
             }
             else
             {
-                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, false);
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( (*mili)->id, false);
             }
         }
     }
 }
+
+
+
+int CrMenu::FindFreeMenuId()
+{
+
+    m_next_id_to_try++;
+    int starting_try = m_next_id_to_try;
+    list<CcMenuItem*>::iterator mi;
+
+    while (1)
+    {
+       bool pointerfree = true;
+
+       for ( mi = mMenuItemList.begin(); mi != mMenuItemList.end(); mi++ )
+       {
+          if ( (*mi)->id  == m_next_id_to_try )
+          {
+             pointerfree = false;
+             m_next_id_to_try++;
+
+             if ( m_next_id_to_try > ( kMenuBase + 5000 ) )
+             {
+//Reset id pointer to start:
+                m_next_id_to_try = kMenuBase;
+             }
+             if ( m_next_id_to_try == starting_try )
+             {
+//No more free id's:
+                 return -1;
+             }
+             break;
+          }
+       }
+
+       if ( pointerfree ) return m_next_id_to_try;
+
+    }
+
+}
+
+void CrMenu::AddMenuItem( CcMenuItem * menuitem )
+{
+      mMenuItemList.push_back( menuitem );
+      if ( mMenuItemList.size() > 5000 )
+      {
+         //error
+//         std::cerr << "More than 5000 menu items. Rethink or recompile.\n";
+         //ASSERT(0);
+      }
+}
+
+CcMenuItem* CrMenu::FindMenuItem ( int id )
+{
+   list<CcMenuItem*>::iterator mi;
+   for ( mi = mMenuItemList.begin(); mi != mMenuItemList.end(); mi++ )
+   {
+      if ( (*mi)->id  == id )
+      {
+         return *mi;
+      }
+   }
+  return nil;
+}
+
+CcMenuItem* CrMenu::FindMenuItem ( const string & name )
+{
+   list<CcMenuItem*>::iterator mi;
+   for ( mi = mMenuItemList.begin(); mi != mMenuItemList.end(); mi++ )
+   {
+      if ( (*mi)->name  == name )
+      {
+         return *mi;
+      }
+   }
+  return nil;
+}
+
+void CrMenu::RemoveMenuItem ( CcMenuItem * menuitem )
+{
+   mMenuItemList.remove(menuitem);
+}
+
+/*
+void CrMenu::RemoveMenuItem ( const string & menuitemname )
+{
+   list<CcMenuItem*>::iterator mi;
+   for ( mi = mMenuItemList.begin(); mi != mMenuItemList.end(); )
+   {
+      if ( (*mi)->name  == menuitemname )
+      {
+         mMenuItemList.erase(mi);
+         break;
+      }
+   }
+}
+*/
+
+

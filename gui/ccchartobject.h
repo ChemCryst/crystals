@@ -2,8 +2,11 @@
 #ifndef     __CcChartObject_H__
 #define     __CcChartObject_H__
 
+#include <string>
+#include <deque>
+using namespace std;
+
 class CrChart;
-class CcTokenList;
 class CcController;
 
 class CcChartObject
@@ -11,8 +14,8 @@ class CcChartObject
     public:
         CcChartObject();
         virtual ~CcChartObject();
-        virtual void Draw(CrChart* chartToDrawOn) = 0;
-        virtual bool ParseInput(CcTokenList* tokenList) = 0;
+        virtual void Draw(CrChart* chartToDrawOn) ;
+        virtual bool ParseInput(deque<string> & tokenList) ;
 };
 
 #include    "ccchartline.h"

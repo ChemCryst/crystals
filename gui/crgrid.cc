@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2004/05/21 14:00:18  rich
+//   Implement LISTCTRL on Linux. Some extra functionality still missing,
+//   such as clicking column headers to sort.
+//
 //   Revision 1.24  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -59,7 +63,6 @@
 #include        "crconstants.h"
 #include        "crgrid.h"
 #include        "cxgrid.h"
-#include        "cctokenlist.h"
 #include        "cccontroller.h"
 #include        "crbutton.h"
 #include        "crlistbox.h"
@@ -87,6 +90,9 @@
 #include        "crstretch.h"
 #include        "crresizebar.h"
 #include        "crhidden.h"
+
+#include <string>
+#include <sstream>
 
 
 CrGrid::CrGrid( CrGUIElement * mParentPtr )
@@ -122,14 +128,15 @@ CrGrid::CrGrid( CrGUIElement * mParentPtr )
 
 CrGrid::~CrGrid()
 {
-  m_ItemList.Reset();
-  CrGUIElement * theItem = (CrGUIElement *)m_ItemList.GetItem();
-  while ( theItem != nil )
+  list<CrGUIElement*>::iterator crgi = m_ItemList.begin();
+
+  for ( ; crgi != m_ItemList.end(); crgi++ )
   {
-    delete theItem;
-    m_ItemList.RemoveItem();
-    theItem = (CrGUIElement *)m_ItemList.GetItem();
+     delete *crgi;
   }
+
+  m_ItemList.clear();
+
   if ( m_OutlineWidget != nil )
   {
     delete (CxGroupBox*)m_OutlineWidget;
@@ -154,11 +161,11 @@ CrGrid::~CrGrid()
 
 }
 
-CcParse CrGrid::ParseInput( CcTokenList * tokenList )
+CcParse CrGrid::ParseInput( deque<string> & tokenList )
 {
   CcParse retVal(false, mXCanResize, mYCanResize);
   bool hasTokenForMe = true;
-  CcString theString;
+  string theString;
 
 // Initialization for the first time
 
@@ -168,58 +175,60 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
     retVal = CrGUIElement::ParseInputNoText( tokenList );
     LOGSTAT( "Created Grid " + mName );
 
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-      switch ( tokenList->GetDescriptor(kAttributeClass) )
+      switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
       {
         case kTNumberOfRows:
         {
-          tokenList->GetToken(); // Remove the keyword
-          theString = tokenList->GetToken();
-          m_Rows = atoi( theString.ToCString() );
-          LOGSTAT( "Setting Grid Rows: " + theString );
+          tokenList.pop_front(); // Remove the keyword
+          m_Rows = atoi( tokenList.front().c_str() );
+          LOGSTAT( "Setting Grid Rows: " + tokenList.front() );
+          tokenList.pop_front();
           break;
         }
         case kTNumberOfColumns:
         {
-          tokenList->GetToken(); // Remove the keyword
-          theString = tokenList->GetToken();
-          m_Columns = atoi( theString.ToCString() );
-          LOGSTAT( "Setting Grid Columns: " + theString );
+          tokenList.pop_front(); // Remove the keyword
+          m_Columns = atoi( tokenList.front().c_str() );
+          LOGSTAT( "Setting Grid Columns: " + tokenList.front() );
+          tokenList.pop_front();
           break;
         }
         case kTSetCommandText:
         {
-          tokenList->GetToken(); // Remove that token!
-          SetCommandText( tokenList->GetToken() );
+          tokenList.pop_front(); // Remove SetCommandText token!
+          SetCommandText( tokenList.front() );
+          tokenList.pop_front(); // Remove text token
           break;
         }
         case kTOutline:
         {
-          tokenList->GetToken(); // Remove that token!
+          tokenList.pop_front(); // Remove that token!
           m_OutlineWidget = CxGroupBox::CreateCxGroupBox( this, (CxGrid *)GetWidget() );
-          mText = tokenList->GetToken();
+          mText = string(tokenList.front());
+          tokenList.pop_front();
           SetText( mText );
           LOGSTAT( "Setting Grid outline" );
           break;
         }
         case kTAlignIsolate:
         {
-          tokenList->GetToken(); // Remove that token!
+          tokenList.pop_front(); // Remove that token!
           mAlignment += kIsolate;
           LOGSTAT( "Setting Grid alignment ISOLATE" );
           break;
         }
         case kTAlignRight:
         {
-          tokenList->GetToken(); // Remove that token!
+          tokenList.pop_front(); // Remove that token!
           mAlignment += kRightAlign;
           LOGSTAT( "Setting Grid alignment RIGHT" );
           break;
         }
         case kTAlignBottom:
         {
-          tokenList->GetToken(); // Remove that token!
+          tokenList.pop_front(); // Remove that token!
           mAlignment += kBottomAlign;
           LOGSTAT( "Setting Grid alignment BOTTOM" );
           break;
@@ -227,7 +236,7 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
 
         case kTOpenGrid:
         {
-          tokenList->GetToken();
+          tokenList.pop_front();
           //No break,
           //end of initialsing token input for this grid.
         }
@@ -281,20 +290,20 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
     }
   }
 
-  if( tokenList->GetDescriptor( kInstructionClass ) == kTNoMoreToken ) return true;
+  if ( tokenList.empty() || ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTNoMoreToken ) ) return true;
 
 // This is either the end of this grid, the start of a new sub grid or
 // a sub element.
 
   hasTokenForMe = true;
 
-  while ( hasTokenForMe )
+  while ( hasTokenForMe && ! tokenList.empty() )
   {
-    switch ( tokenList->GetDescriptor( kInstructionClass ) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )
     {
       case kTEndGrid:                                         // End this grid.
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         m_GridComplete = true;
         LOGSTAT("CrGrid:ParseInput:EndGrid Grid closed");
         if ( mAlignment &  kIsolate )
@@ -307,22 +316,21 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
       }
       case kTAt:
       {
-        tokenList->GetToken();
-        CcString theString;
-        theString = tokenList->GetToken();              // the next must be the row number
-        int ypos = atoi( theString.ToCString() );
-        theString = tokenList->GetToken();              // the next must be the col number
-        int xpos = atoi( theString.ToCString() );
+        tokenList.pop_front();
+        int ypos = atoi( tokenList.front().c_str() );
+        tokenList.pop_front();
+        int xpos = atoi( tokenList.front().c_str() );
+        tokenList.pop_front();
 
         if ( m_GridComplete )  //There shouldn't be any stuff being added now.
         {
            LOGERR("Attempt to add to a completed grid. Ignoring.");
-           tokenList->GetToken();  //Remove the next instruction
-           tokenList->GetToken();  //and at least two
-           tokenList->GetToken();  //of its arguments.
+           tokenList.pop_front();  //Remove the next instruction
+           tokenList.pop_front();  //and at least two
+           tokenList.pop_front();  //of its arguments.
            break;
         }
-        switch ( tokenList->GetDescriptor( kInstructionClass ) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )
         {
           case kTCreateGrid:                                      // Create a sub grid.
           {
@@ -495,10 +503,9 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
           default:
           {
             // No valid instruction following @ location
-            // Remove the token for safety.
-            CcString badtoken = tokenList->GetToken();
-            //Moan
-            LOGWARN("CrGrid:ParseInput:default No command after @location in grid:" + badtoken );
+            // Remove the token for safety. //Moan
+            LOGWARN("CrGrid:ParseInput:default No command after @location in grid:" + tokenList.front() );
+            tokenList.pop_front();
           }
         }
         break;
@@ -507,9 +514,9 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
       {
         // No handler
         // Remove the token for safety.
-        CcString badtoken = tokenList->GetToken();
         //Moan
-        LOGWARN("CrGrid:ParseInput:default No Handler for current command:" + badtoken );
+        LOGWARN("CrGrid:ParseInput:default No Handler for current command:" + tokenList.front() );
+        tokenList.pop_front();
         CcController::debugIndent --;
         hasTokenForMe = false;
       }
@@ -617,7 +624,9 @@ CcRect CrGrid::CalcLayout(bool recalc)
 // If there is an outline, add some space for it.
   if(m_OutlineWidget) { totHeight += 3*EMPTY_CELL; totWidth += 2*EMPTY_CELL; }
 
-  LOGSTAT("CrGrid: " + mName + " Total size, h: "+CcString(totHeight)+" w: "+CcString(totWidth) );
+  ostringstream strm;
+  strm << "CrGrid: " << mName << " Total size, h: "<< totHeight <<" w: " << totWidth;
+  LOGSTAT( strm.str() );
   CcController::debugIndent--;
 
   if ( recalc )
@@ -647,17 +656,17 @@ CcRect CrGrid::CalcLayout(bool recalc)
 }
 
 
-void    CrGrid::SetText( CcString item )
+void    CrGrid::SetText( const string &item )
 {
   char theText[256];
-  strcpy( theText, item.ToCString() );
+  strcpy( theText, item.c_str() );
 
   if (m_OutlineWidget != nil ) m_OutlineWidget->SetText( theText );
 }
 
-CcParse CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos)
+CcParse CrGrid::InitElement( CrGUIElement * element, deque<string> & tokenList, int xpos, int ypos)
 {
-  tokenList->GetToken(); //This is the element type (e.g. BUTTON). Remove it.
+  tokenList.pop_front(); //This is the element type (e.g. BUTTON). Remove it.
 
   if(element->mTabStop) ((CrWindow*)GetRootWidget())->AddToTabGroup(element);
 
@@ -671,7 +680,7 @@ CcParse CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, in
 
   if ( retVal.OK() )
   {
-    m_ItemList.AddItem( element );
+    m_ItemList.push_back( element );
     m_ColCanResize[xpos-1] = m_ColCanResize[xpos-1] || retVal.CanXResize();
     m_RowCanResize[ypos-1] = m_RowCanResize[ypos-1] || retVal.CanYResize();
     mXCanResize = mXCanResize || retVal.CanXResize();
@@ -819,17 +828,17 @@ int CrGrid::GetWidthOfColumn( int col )
   return maxWidth;
 }
 
-CrGUIElement *  CrGrid::FindObject( CcString Name )
+CrGUIElement *  CrGrid::FindObject( const string & Name )
 {
-  CrGUIElement * theElement = nil, * theItem;
-  m_ItemList.Reset();
-  theItem = (CrGUIElement *)m_ItemList.GetItemAndMove();
-  while ( theItem != nil && theElement == nil )
+  CrGUIElement* theElement;
+
+  list<CrGUIElement*>::iterator crgi = m_ItemList.begin();
+  for ( ; crgi != m_ItemList.end(); crgi++ )
   {
-    theElement = theItem->FindObject( Name );
-    theItem = (CrGUIElement *)m_ItemList.GetItemAndMove();
+    theElement = (*crgi)->FindObject( Name );
+    if ( theElement ) return theElement;
   }
-  return ( theElement );
+  return nil;
 }
 
 bool CrGrid::SetPointer( int xpos, int ypos, CrGUIElement * ptr )
@@ -880,7 +889,7 @@ void CrGrid::CrFocus()
 }
 
 
-void CrGrid::SendCommand(CcString theText, bool jumpQueue)
+void CrGrid::SendCommand(string theText, bool jumpQueue)
 {
 //If there is a COMMAND= set for this window
 //send this first, unless the text begins with
@@ -894,7 +903,7 @@ void CrGrid::SendCommand(CcString theText, bool jumpQueue)
 //mechanism and pass the command straight to
 //CRYSTALS (#) or to GUI (^).
 
- if ( theText.Len() == 0 ) //It may be that objects or commands have empty strings.
+ if ( theText.length() == 0 ) //It may be that objects or commands have empty strings.
  {                         //in which case it would be bad to check the text at position(1).
    if ( m_CommandSet )
    {
@@ -906,7 +915,7 @@ void CrGrid::SendCommand(CcString theText, bool jumpQueue)
      mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
    }
  }
- else if ((m_CommandSet)&&(!(theText.Sub(1,1)=='#'))&&(!(theText.Sub(1,1)=='^'))   )
+ else if ((m_CommandSet)&&(!(theText[0]=='#'))&&(!(theText[0]=='^'))   )
  {
      mControllerPtr->SendCommand(m_CommandText);
      mControllerPtr->SendCommand(theText);
@@ -917,7 +926,7 @@ void CrGrid::SendCommand(CcString theText, bool jumpQueue)
  }
 }
 
-void CrGrid::SetCommandText(CcString theText)
+void CrGrid::SetCommandText(string theText)
 {
   m_CommandText = theText;
   m_CommandSet = true;

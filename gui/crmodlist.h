@@ -10,7 +10,10 @@
 #ifndef     __CrModList_H__
 #define     __CrModList_H__
 #include    "crguielement.h"
-#include    "cctokenlist.h"
+
+#include <vector>
+#include <string>
+using namespace std;
 
 class CcModelDoc;
 class CrMenu;
@@ -19,22 +22,22 @@ class CcModelAtom;
 class   CrModList : public CrGUIElement
 {
     public:
-        void SendValue(CcString message);
+        void SendValue(string message);
         int GetIdealHeight();
         int GetIdealWidth();
         int m_cols;
         CrModList( CrGUIElement * mParentPtr );
         ~CrModList();
-        CcParse ParseInput( CcTokenList * tokenList );
+        CcParse ParseInput( deque<string> & tokenList );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry();
         CcRect CalcLayout(bool recalculate=false);
-        void    SetText( CcString item );
+        void    SetText( const string &item );
         void    GetValue();
-        void    GetValue( CcTokenList * tokenList );
+        void    GetValue( deque<string> & tokenList );
         void CrFocus();
         void DocToList();
-        void AddRow ( int id, CcString * rowOfStrings, bool s, bool d);
+        void AddRow ( int id, vector<string> & rowOfStrings, bool s, bool d);
         void DocRemoved();
         void Update(int newsize);
         void    MenuSelected(int id);

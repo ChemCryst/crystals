@@ -41,7 +41,7 @@ CRSETGEOMETRY(CrBitmap,CxBitmap)
 CRGETGEOMETRY(CrBitmap,CxBitmap)
 CRCALCLAYOUT(CrBitmap,CxBitmap)
 
-CcParse CrBitmap::ParseInput( CcTokenList * tokenList )
+CcParse CrBitmap::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -52,24 +52,25 @@ CcParse CrBitmap::ParseInput( CcTokenList * tokenList )
        retVal = CrGUIElement::ParseInputNoText( tokenList );
        mSelfInitialised = true;
        LOGSTAT( "Created Bitmap " + mName );
-       if ( tokenList->GetDescriptor(kAttributeClass) == kTTransparent )
+       if ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTransparent )
        {
          m_Trans = true;
-         tokenList->GetToken(); // Remove that token!
+         tokenList.pop_front(); // Remove that token!
        }
     }
 
     // End of Init, now comes the general parser
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTBitmapFile:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
-                                ((CxBitmap*)ptr_to_cxObject)->LoadFile(mText,m_Trans);
-                                LOGSTAT( "Loading bitmap " + mText );
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
+               ((CxBitmap*)ptr_to_cxObject)->LoadFile(mText,m_Trans);
+                LOGSTAT( "Loading bitmap " + mText );
                 break;
             }
             default:
@@ -83,7 +84,7 @@ CcParse CrBitmap::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrBitmap::SetText( CcString text )
+void    CrBitmap::SetText( const string &text )
 {
 // Do nothing - just overriding virtual void...
 }

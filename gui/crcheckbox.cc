@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.5  2001/06/17 15:14:12  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -23,7 +29,6 @@
 #include    "crgrid.h"
 #include    "cxcheckbox.h"
 #include    "ccrect.h"
-#include    "cctokenlist.h"
 #include    "cccontroller.h"    // for sending commands
 
 CrCheckBox::CrCheckBox( CrGUIElement * mParentPtr )
@@ -50,7 +55,7 @@ CRSETGEOMETRY(CrCheckBox,CxCheckBox)
 CRGETGEOMETRY(CrCheckBox,CxCheckBox)
 CRCALCLAYOUT(CrCheckBox,CxCheckBox)
 
-CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
+CcParse CrCheckBox::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -66,23 +71,24 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created CheckBox    " + mName );
     }
     // End of Init, now comes the general parser
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting CheckBox Text: " + mText );
                 break;
             }
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if(inform)
                     LOGSTAT( "CrCheckBox:ParseInput Checkbox INFORM on ");
                 else
@@ -92,9 +98,9 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool disabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if(disabled)
                     LOGSTAT( "CrCheckBox:ParseInput Checkbox disabled ");
                 else
@@ -104,9 +110,9 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
             }
             case kTState:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool state = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTOn) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if(state)
                     LOGSTAT( "CrCheckBox:ParseInput Checkbox STATE on ");
                 else
@@ -124,43 +130,37 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
 
     return retVal;
 }
-void    CrCheckBox::SetText( CcString text )
+void    CrCheckBox::SetText( const string &text )
 {
     char theText[256];
-    strcpy( theText, text.ToCString() );
+    strcpy( theText, text.c_str() );
 
     ( (CxCheckBox *)ptr_to_cxObject)->SetText( theText );
 }
 
 void    CrCheckBox::GetValue()
 {
-
-    CcString stateString;
     if ( ((CxCheckBox*)ptr_to_cxObject)->GetBoxState() )
-        stateString = kSOn;
+        SendCommand( kSOn );
     else
-        stateString = kSOff;
-    SendCommand( stateString );
-
+        SendCommand( kSOff );
 }
 
-void    CrCheckBox::GetValue(CcTokenList * tokenList)
+void    CrCheckBox::GetValue(deque<string> & tokenList)
 {
-    CcString stateString;
-    if( tokenList->GetDescriptor(kQueryClass) == kTQState )
+    if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQState )
     {
-        tokenList->GetToken();
+        tokenList.pop_front();
         if ( ((CxCheckBox*)ptr_to_cxObject)->GetBoxState() )
-            stateString = kSOn;
+            SendCommand( kSOn,true);
         else
-            stateString = kSOff;
-        SendCommand( stateString,true);
+            SendCommand( kSOff,true);
     }
     else
     {
         SendCommand( "ERROR",true );
-        stateString = tokenList->GetToken();
-        LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + stateString);
+        LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
     }
 }
 
@@ -168,12 +168,10 @@ void    CrCheckBox::BoxChanged( bool state )
 {
     if(mCallbackState)
     {
-        CcString stateString;
         if ( state )
-            stateString = kSOn;
+            SendCommand(mName + "_N" + kSOn);
         else
-            stateString = kSOff;
-        SendCommand(mName + "_N" + stateString);
+            SendCommand(mName + "_N" + kSOff);
     }
 }
 

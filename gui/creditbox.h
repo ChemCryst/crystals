@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.6  2001/03/08 15:32:43  richard
 //   Limit=n token prevents user entering more than n characters.
 //
@@ -15,34 +21,39 @@
 #ifndef     __CrEditBox_H__
 #define     __CrEditBox_H__
 #include    "crguielement.h"
-
-class CcTokenList;
+#include    <deque>
+using namespace std;
 
 class   CrEditBox : public CrGUIElement
 {
     public:
         void ClearBox();
-            void SysKey ( UINT nChar );
-        void AddText(CcString theText);
+        void SysKey ( UINT nChar );
+        void AddText(string theText);
         void ReturnPressed();
         void CrFocus();
         int GetIdealWidth();
         // methods
             CrEditBox( CrGUIElement * mParentPtr );
             ~CrEditBox();
-        CcParse ParseInput( CcTokenList * tokenList );
-        void    SetText( CcString text );
+        CcParse ParseInput( deque<string> & tokenList );
+        void    SetText( const string &text );
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry();
         CcRect CalcLayout(bool recalculate=false);
         void    GetValue();
-        void    GetValue(CcTokenList* tokenList);
+        void    GetValue( deque<string> & tokenList);
         void    BoxChanged();
         // attributes
 
 private:
+    void AddHistory( const string & theText );
+    void History(bool up);
+//    static deque<string> mCommandHistoryDeq;
+//    static int mCommandHistoryPosition;
+
     bool mSendOnReturn;
-      bool m_IsInput;
+    bool m_IsInput;
 };
 
 #define kSIsInput   "INPUT"

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.7  2001/06/17 15:14:14  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -49,7 +55,7 @@ CRSETGEOMETRY(CrRadioButton,CxRadioButton)
 CRGETGEOMETRY(CrRadioButton,CxRadioButton)
 CRCALCLAYOUT(CrRadioButton,CxRadioButton)
 
-CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
+CcParse CrRadioButton::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -65,14 +71,15 @@ CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "Created RadioButton " + mName );
     }
     // End of Init, now comes the general parser
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting RadioButton Text: " + mText );
                 break;
@@ -80,22 +87,22 @@ CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 mCallbackState = true;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "Enabling RadioButton callback" );
                 break;
             }
             case kTIgnore:
             {
                 mCallbackState = false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "Disabling RadioButton callback" );
                 break;
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool disabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if(disabled)
                     LOGSTAT( "CrRadiobutton:ParseInput "+mName+" disabled ");
                 else
@@ -105,20 +112,20 @@ CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
             }
             case kTState:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
             case kTOn:
             {
                 SetState( true );
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "RadioButton State turned on" );
                 break;
             }
             case kTOff:
             {
                 SetState( false );
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "RadioButton State turned off" );
                 break;
             }
@@ -133,42 +140,37 @@ CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrRadioButton::SetText( CcString text )
+void    CrRadioButton::SetText( const string &text )
 {
     char theText[256];
-    strcpy( theText, text.ToCString() );
+    strcpy( theText, text.c_str() );
 
     ( (CxRadioButton *)ptr_to_cxObject)->SetText( theText );
 }
 
 void    CrRadioButton::GetValue()
 {
-    CcString stateString;
     if ( ((CxRadioButton*)ptr_to_cxObject)->GetRadioState() )
-        stateString = kSOn;
+        SendCommand( kSOn );
     else
-        stateString = kSOff;
-    SendCommand( stateString );
+        SendCommand( kSOff );
 }
 
-void  CrRadioButton::GetValue( CcTokenList * tokenList )
+void  CrRadioButton::GetValue( deque<string> &  tokenList )
 {
-    CcString stateString;
-
-      if( tokenList->GetDescriptor(kQueryClass) == kTQState )
+      if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQState )
       {
-            tokenList->GetToken();
+            tokenList.pop_front();
             if ( ((CxRadioButton*)ptr_to_cxObject)->GetRadioState() )
-                  stateString = kSOn;
+                SendCommand( kSOn,true);
             else
-                  stateString = kSOff;
-            SendCommand( stateString,true);
+                SendCommand( kSOff,true);
       }
       else
       {
             SendCommand( "ERROR",true );
-            stateString = tokenList->GetToken();
-            LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + stateString );
+            LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + tokenList.front() );
+            tokenList.pop_front();
       }
 }
 

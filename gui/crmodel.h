@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.16  2002/09/27 14:51:36  rich
 //   Move definition of ATTACH token into crconstants.
 //
@@ -46,7 +52,6 @@
 #define     __CrModel_H__
 #include    "crguielement.h"
 class CcModelDoc;
-class CcTokenList;
 class CcModelAtom;
 class CcModelObject;
 class CrMenu;
@@ -81,24 +86,24 @@ class   CrModel : public CrGUIElement
     int     GetIdealWidth();
     int     GetIdealHeight();
     void    CrFocus();
-    CcParse ParseInput( CcTokenList * tokenList );
+    CcParse ParseInput( deque<string> & tokenList );
     void    SetGeometry( const CcRect * rect );
     CcRect  GetGeometry();
     CcRect  CalcLayout(bool recalculate=false);
-    void    SetText( CcString text );
+    void    SetText( const string &text );
     void    SysKey ( UINT nChar );
     void    SysKeyUp ( UINT nChar );
 
 // Called from CxModel:
     bool RenderModel(bool detailed, bool feedback=false);
     void    MenuSelected(int id);
-    void    ContextMenu(int x, int y, CcString atomname = "", int selection = 1, CcString atom2="");
+    void    ContextMenu(int x, int y, string atomname = "", int selection = 1, string atom2="");
     int     GetSelectionAction();
     CcModelObject * FindObjectByGLName(GLuint name);
 
 // General purpose:
     void    Update(bool rescale);
-    void    SelectFrag(CcString atomname, bool select);
+    void    SelectFrag(string atomname, bool select);
 
 // Called from CcModelDoc:
     void    DocRemoved();

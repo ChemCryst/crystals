@@ -5,6 +5,12 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2003/05/07 12:18:57  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.12  2001/06/18 12:29:36  richard
 // Removed \ chars which must have been copied in from macro version of this
 // function.
@@ -63,9 +69,11 @@
 #include    "crgrid.h"
 #include    "cxeditbox.h"
 #include    "ccrect.h"
-#include    "cctokenlist.h"
 #include    "cccontroller.h"    // for sending commands
 #include    "crwindow.h"  // for getting cursor keys
+
+static deque<string> mCommandHistoryDeq;
+static int mCommandHistoryPosition = 0;
 
 CrEditBox::CrEditBox( CrGUIElement * mParentPtr )
 :   CrGUIElement( mParentPtr )
@@ -108,7 +116,7 @@ CcRect CrEditBox::CalcLayout(bool recalc)
 
 
 
-CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
+CcParse CrEditBox::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -123,45 +131,43 @@ CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
 
         LOGSTAT( "*** Created EditBox     " + mName );
 
-        while ( hasTokenForMe )
+        while ( hasTokenForMe && ! tokenList.empty() )
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTNumberOfColumns:
                 case kTChars:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    CcString theString = tokenList->GetToken();
-                    int chars = atoi( theString.ToCString() );
-                    ((CxEditBox*)ptr_to_cxObject)->SetVisibleChars( chars );
-                    LOGSTAT( "Setting EditBox Chars Width: " + theString );
+                    tokenList.pop_front(); // Remove that token!
+                    ((CxEditBox*)ptr_to_cxObject)->SetVisibleChars( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT( "Setting EditBox Chars Width: " + tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 case kTIntegerInput:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     ((CxEditBox*)ptr_to_cxObject)->SetInputType( CXE_INT_NUMBER );
                     break;
                 }
                 case kTRealInput:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     ((CxEditBox*)ptr_to_cxObject)->SetInputType( CXE_REAL_NUMBER );
                     break;
                 }
                 case kTNoInput:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     ((CxEditBox*)ptr_to_cxObject)->SetInputType( CXE_READ_ONLY );
                     break;
                 }
                 case kTLimit:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    CcString theString = tokenList->GetToken();
-                    int chars = atoi( theString.ToCString() );
-                    ((CxEditBox*)ptr_to_cxObject)->LimitChars( chars );
-                    LOGSTAT( "Limiting EditBox characters: " + theString );
+                    tokenList.pop_front(); // Remove that token!
+                    ((CxEditBox*)ptr_to_cxObject)->LimitChars( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT( "Limiting EditBox characters: " + tokenList.front() );
+                    tokenList.pop_front(); // Remove that token!
                     break;
                 }
                 default:
@@ -178,23 +184,24 @@ CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
     // End of Init, now comes the general parser
 
     hasTokenForMe = true;
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting EditBox Text: " + mText );
                 break;
             }
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
                     LOGSTAT( "Enabling EditBox callback" );
@@ -204,30 +211,31 @@ CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                CcString temp = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "EditBox disabled = " + temp);
+                tokenList.pop_front(); // Remove that token!
+                bool disabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                LOGSTAT( "EditBox disabled = " + tokenList.front());
+                tokenList.pop_front();
                 ((CxEditBox*)ptr_to_cxObject)->Disable( disabled );
                 break;
             }
             case kTAppend:
             {
-                tokenList->GetToken(); // Remove that token!
-                        ((CxEditBox*)ptr_to_cxObject)->AddText(tokenList->GetToken());
-                        mText = ((CxEditBox*)ptr_to_cxObject)->GetText();
+                tokenList.pop_front(); // Remove that token!
+                ((CxEditBox*)ptr_to_cxObject)->AddText(tokenList.front());
+                tokenList.pop_front();
+                mText = ((CxEditBox*)ptr_to_cxObject)->GetText();
                 break;
             }
             case kTWantReturn:
             {
-                tokenList->GetToken(); // Remove that token!
-                mSendOnReturn = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                mSendOnReturn = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
             case kTIsInput:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 m_IsInput = true;
                 (CcController::theController)->SetInputPlace(this);
                 ((CxEditBox*)ptr_to_cxObject)->IsInputPlace();
@@ -247,11 +255,11 @@ CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
 
 }
 
-void CrEditBox::SetText( CcString text )
+void CrEditBox::SetText( const string &text )
 {
 
     char theText[256];
-    strcpy( theText, text.ToCString() );
+    strcpy( theText, text.c_str() );
 
     ( (CxEditBox *)ptr_to_cxObject)->SetText( theText );
 
@@ -262,24 +270,24 @@ void CrEditBox::GetValue()
     char theText[256];
 //TODO: Oops. Get text is a base class call. Wrap it.
     int textLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-    SendCommand( CcString( theText ) );
+    SendCommand( string( theText ) );
 }
 
-void CrEditBox::GetValue(CcTokenList * tokenList)
+void CrEditBox::GetValue(deque<string> & tokenList)
 {
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
     if( desc == kTQText )
     {
-        tokenList->GetToken();
+        tokenList.pop_front();
         char theText[256];
         int textLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-        SendCommand( CcString( theText ), true );
+        SendCommand( string( theText ), true );
     }
     else
     {
         SendCommand( "ERROR",true );
-        CcString error = tokenList->GetToken();
-        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + error);
+        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
     }
 }
 
@@ -289,7 +297,7 @@ void    CrEditBox::BoxChanged()
     {
         char theText[256];
         int theTextLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-                SendCommand(mName + "_N" + CcString( theText ) );
+                SendCommand(mName + "_N" + string( theText ) );
     }
 }
 
@@ -311,13 +319,13 @@ void CrEditBox::ReturnPressed()
         int textLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
             if ( m_IsInput )
             {
-                  SendCommand( CcString ( theText ) );
-                  (CcController::theController)->AddHistory( theText );
+                  SendCommand( string ( theText ) );
+                  AddHistory( theText );
                   ClearBox();
             }
             else
             {
-                  SendCommand(mName + " " + CcString( theText ) );
+                  SendCommand(mName + " " + string( theText ) );
             }
     }
     else
@@ -329,9 +337,9 @@ void CrEditBox::ReturnPressed()
 }
 
 
-void CrEditBox::AddText(CcString theText)
+void CrEditBox::AddText(string theText)
 {
-    ((CxEditBox*)ptr_to_cxObject)->AddText( (char*) theText.ToCString() );
+    ((CxEditBox*)ptr_to_cxObject)->AddText( (char*) theText.c_str() );
 }
 
 void CrEditBox::ClearBox()
@@ -347,13 +355,46 @@ void CrEditBox::SysKey ( UINT nChar )
             switch ( nChar )
             {
                   case CRUP:
-                        (CcController::theController)->History(true);
+                        History(true);
                         break;
                   case CRDOWN:
-                        (CcController::theController)->History(false);
+                        History(false);
                         break;
                   default:
                         break;
             }
       }
 }
+
+void CrEditBox::AddHistory( const string & theText )
+{
+      if ( theText.length() == 0 ) return;
+
+      mCommandHistoryDeq.push_back(theText);
+
+      if ( mCommandHistoryDeq.size() > 1000 )
+          mCommandHistoryDeq.erase(mCommandHistoryDeq.begin());
+
+	  mCommandHistoryPosition = -1;
+}
+
+
+void CrEditBox::History(bool up)
+{
+    if (up)
+        mCommandHistoryPosition ++;
+    else
+        mCommandHistoryPosition --;
+
+    if ( mCommandHistoryPosition > (int)mCommandHistoryDeq.size()) mCommandHistoryPosition = (int)mCommandHistoryDeq.size();
+    if ( mCommandHistoryPosition <= 0 ) mCommandHistoryPosition = 1;
+
+    if ( mCommandHistoryDeq.empty() )
+        SetText("");
+    else
+    {
+        SetText("");
+        AddText( mCommandHistoryDeq[mCommandHistoryDeq.size()-mCommandHistoryPosition] );
+    }
+}
+

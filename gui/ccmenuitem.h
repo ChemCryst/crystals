@@ -9,25 +9,29 @@
 #pragma once
 #endif
 
-class CrMenu; class CcTokenList;
+#include <string>
+#include <deque>
+using namespace std;
+
+class CrMenu; 
 class CcMenuItem  
 {
 public:
         CrMenu* parent;
-        void SetText(CcString theText);
-        void SetTitle(CcString theText);
+        void SetText(string theText);
+        void SetTitle(string theText);
         CcMenuItem(CrMenu* parentptr);
         virtual ~CcMenuItem();
         int type;
         int id;
-        CcString name;
-        CcString text;
-        CcString originaltext;
-        CcString command;
-        CcString originalcommand;
+        string name;
+        string text;
+        string originaltext;
+        string command;
+        string originalcommand;
         CrMenu* ptr;
         int disable;
         int enable;
-        bool ParseInput( CcTokenList * tokenList );
+        bool ParseInput( deque<string> & tokenList );
 };
 #endif 

@@ -2,7 +2,6 @@
 #include "crystalsinterface.h"
 #include "crconstants.h"
 #include "ccchartcolour.h"
-#include "cctokenlist.h"
 #include "crchart.h"
 
 CcChartColour::CcChartColour()
@@ -23,16 +22,15 @@ CcChartColour::~CcChartColour()
 {
 }
 
-bool CcChartColour::ParseInput(CcTokenList* tokenList)
+bool CcChartColour::ParseInput(deque<string> & tokenList)
 {
-    CcString theString;
 //Just read three integers.
-    theString = tokenList->GetToken();
-    r = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    g = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    b = atoi( theString.ToCString() );
+    r = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    g = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    b = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
     return true;
 }
 

@@ -3,6 +3,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.29  2004/02/09 22:05:55  rich
+// Fix token pasting warnings in preprocessor - these have been upgraded
+// to errors in gcc 3.3
+//
 // Revision 1.28  2003/11/28 10:29:11  rich
 // Replace min and max macros with CRMIN and CRMAX. These names are
 // less likely to confuse gcc.
@@ -35,7 +39,7 @@
 //
 // Revision 1.20  2002/07/03 14:23:21  richard
 // Replace as many old-style stream class header references with new style
-// e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+// e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 // Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 // stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -145,10 +149,6 @@ enum {
 
 #define NOTUSED(a) //Compares a to itself, optimiser will remove this.(?)
 
-#ifdef __POWERPC__
-typedef void AppContext;
-#endif
-
 #ifdef __MOTO__
 #include <Types.h>
 typedef void AppContext;
@@ -232,11 +232,9 @@ typedef unsigned int UINT;
 
 #ifdef LOGSTATUS
         #define LOGSTAT(a) ( (CcController::theController)->LogError(a,2) )
-        #define LOGGEOM(a) ( (CcController::theController)->LogError( CcString(a)+" "+ptr_to_crObject->mName+" SetGeom to t:"+CcString(top)+" l:"+CcString(left)+" h:"+CcString(bottom-top)+" w:"+CcString(right-left), 2) )
         #define TEXTOUT(a) ( (CcController::theController)->Tokenize(a) )
 #else
         #define LOGSTAT(a)
-        #define LOGGEOM(a)
        #define TEXTOUT(a)
 #endif
 
@@ -308,8 +306,8 @@ void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
 
 #define CXONCHAR(a)  \
 void a ::OnChar(wxKeyEvent &event){ \
-if(event.KeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}  \
-else {ptr_to_crObject->FocusToInput((char)event.KeyCode());}}
+if(event.GetKeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}  \
+else {ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 
 #endif
 

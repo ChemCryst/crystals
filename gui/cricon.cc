@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.4  2001/06/17 15:14:13  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -48,7 +54,7 @@ CRSETGEOMETRY(CrIcon,CxIcon)
 CRGETGEOMETRY(CrIcon,CxIcon)
 CRCALCLAYOUT(CrIcon,CxIcon)
 
-CcParse     CrIcon::ParseInput( CcTokenList * tokenList )
+CcParse     CrIcon::ParseInput( deque<string> & tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
   bool hasTokenForMe = true;
@@ -64,14 +70,14 @@ CcParse     CrIcon::ParseInput( CcTokenList * tokenList )
     mSelfInitialised = true;
 
     LOGSTAT( "*** Created Icon        " + mName );
-    ((CxIcon *)ptr_to_cxObject)->SetIconType( tokenList->GetDescriptor(kAttributeClass) );
-    tokenList->GetToken();
+    ((CxIcon *)ptr_to_cxObject)->SetIconType( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) );
+    tokenList.pop_front();
     LOGSTAT( "Setting Icon");
   }
   return retVal;
 }
 
-void  CrIcon::SetText( CcString text )
+void  CrIcon::SetText( const string &text )
 {
 }
 

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.12  2003/09/16 16:40:48  rich
 //   Always return a value in AddTool
 //
@@ -31,7 +35,7 @@
 //
 //   Revision 1.6  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
-//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -72,6 +76,7 @@
 
 #ifdef __BOTHWX__
 #include <wx/settings.h>
+#include <iostream>
 #endif
 
 
@@ -80,7 +85,7 @@ BEGIN_EVENT_TABLE(mywxToolBar, wxToolBar)
       EVT_CHAR( mywxToolBar::OnChar )
 END_EVENT_TABLE()
 
-void mywxToolBar::OnChar(wxKeyEvent &event){CcController::theController->FocusToInput((char)event.KeyCode());}
+void mywxToolBar::OnChar(wxKeyEvent &event){CcController::theController->FocusToInput((char)event.GetKeyCode());}
 #endif
 
 
@@ -181,13 +186,13 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //Check bitmap type
 
   int bitmapIndex=-1;
-  newTool->CxID = (CcController::theController)->FindFreeToolId();
+  newTool->CxID = CrToolBar::FindFreeToolId();
 
   if ( newTool->toolType == CT_APPICON )
   {
-    CcString file = newTool->tImage;
+    string file = newTool->tImage;
 #ifdef __CR_WIN__
-    HICON hIcon = ExtractIcon( AfxGetInstanceHandle( ), file.ToCString(), 0 );
+    HICON hIcon = ExtractIcon( AfxGetInstanceHandle( ), file.c_str(), 0 );
     if( hIcon )
     {
       m_ImageList->Add( hIcon );
@@ -196,10 +201,10 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     }
 #endif
 #ifdef __BOTHWX__
-    wxIcon mycon( file.ToCString(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
+    wxIcon mycon( file.c_str(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
     if ( mycon.Ok() )
     {
-      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.ToCString());
+      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str());
       m_ToolBar->Realize();
       m_ImageIndex++;
       m_totWidth += 23;
@@ -217,10 +222,12 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     CBitmap* abitmap = new CBitmap();
     HBITMAP hBmp;
 #endif
-    CcString crysdir ( getenv("CRYSDIR") );
-    if ( crysdir.Length() == 0 )
+    string crysdir ( getenv("CRYSDIR") );
+    if ( crysdir.length() == 0 )
     {
-      std::cerr << "You must set CRYSDIR before running crystals.\n";
+#ifdef __LINUX__
+	std::cerr << "You must set CRYSDIR before running crystals.\n";
+#endif
       return false;
     }
     int nEnv = (CcController::theController)->EnvVarCount( crysdir );
@@ -228,21 +235,21 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     bool noLuck = true;
     while ( noLuck )
     {
-      CcString dir = (CcController::theController)->EnvVarExtract( crysdir, i );
+      string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
       i++;
 #ifdef __LINUX__
-      CcString file = dir + "/script/" + newTool->tImage;
+      string file = dir + "/script/" + newTool->tImage;
 #endif
 #ifdef __BOTHWIN__
-      CcString file = dir + "\\script\\" + newTool->tImage;
+      string file = dir + "\\script\\" + newTool->tImage;
 #endif
 
 #ifdef __BOTHWX__
-      wxBitmap mymap ( file.ToCString(), wxBITMAP_TYPE_BMP );
+      wxBitmap mymap ( file.c_str(), wxBITMAP_TYPE_BMP );
       if( mymap.Ok() )
       {
         noLuck = false;
-        m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.ToCString(), "" );
+        m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.c_str(), "" );
         m_ToolBar->Realize();
         m_ImageIndex++;
         m_totWidth += 23;
@@ -255,7 +262,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     }
 #endif
 #ifdef __CR_WIN__
-      hBmp = (HBITMAP)::LoadImage( NULL, file.ToCString(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+      hBmp = (HBITMAP)::LoadImage( NULL, file.c_str(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
       if( hBmp )
       {
         noLuck = false;
@@ -273,7 +280,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     if ( bm.bmWidth == 16 && bm.bmHeight == 15)
     {
       ReplaceBackgroundColor ( *abitmap );
-      m_bitmapList.AddItem( abitmap );
+//      m_bitmapList.push_back( abitmap );
       m_ImageList->Add( abitmap,  ::GetSysColor (COLOR_3DFACE));
       bitmapIndex = m_ImageIndex++;
     }
@@ -290,7 +297,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
   m_ToolBar->SetImageList(m_ImageList);
   TBBUTTON tbbutton;
   tbbutton.iBitmap = bitmapIndex;
-//  tbbutton.iString = m_ToolBar->AddStrings(newTool->tText.ToCString());
+//  tbbutton.iString = m_ToolBar->AddStrings(newTool->tText.c_str());
   tbbutton.iString = 0;
   tbbutton.dwData = 0;
   tbbutton.fsState = TBSTATE_ENABLED;
@@ -313,7 +320,7 @@ void    CxToolBar::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
       m_ToolBar->SetSize(0,0,right-left,bottom-top);
- LOGSTAT ("CxToolbar: Setting width: " + CcString(right-left) );
+// LOGSTAT ("CxToolbar: Setting width: " + string(right-left) );
 
 #endif
 
@@ -331,11 +338,11 @@ int CxToolBar::GetIdealWidth()
    return CRMIN(1600,tbs.cx);
 #endif
 #ifdef __BOTHWX__
-//   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
-//   LOGSTAT ( "Toolsep = " + CcString ( m_ToolBar->GetToolSeparation() ) );
-//   LOGSTAT ( "m_ImageIndex = " + CcString ( m_ImageIndex ) );
+//   LOGSTAT ( "Toolsize = " + string ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
+//   LOGSTAT ( "Toolsep = " + string ( m_ToolBar->GetToolSeparation() ) );
+//   LOGSTAT ( "m_ImageIndex = " + string ( m_ImageIndex ) );
 //   return (( 18 + 5 ) * m_ImageIndex ) ;
-   LOGSTAT ("CxToolbar: Returning ideal width: " + CcString(m_totWidth) );
+//   LOGSTAT ("CxToolbar: Returning ideal width: " + string(m_totWidth) );
    return ( m_totWidth ) ;
 #endif
 }
@@ -385,9 +392,9 @@ BOOL CxToolBar::OnToolTipNotify( UINT id, NMHDR * pNMHDR, LRESULT * pResult )
 
    if (nID != 0) // will be zero on a separator
    {
-      CcTool* tool = CcController::theController->FindTool(nID);
+      CcTool* tool = CrToolBar::FindAnyTool(nID);
       if ( tool )
-        strTipText = tool->tText.ToCString();
+        strTipText = tool->tText.c_str();
 
    }
    lstrcpyn(pTTTA->szText, strTipText, sizeof(pTTTA->szText));

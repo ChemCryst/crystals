@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2004/05/21 14:00:18  rich
+//   Implement LISTCTRL on Linux. Some extra functionality still missing,
+//   such as clicking column headers to sort.
+//
 //   Revision 1.11  2003/08/22 21:40:20  rich
 //   Change misleading error message.
 //
@@ -40,6 +44,8 @@
 #include    "cxlistctrl.h"
 #include    "ccrect.h"
 #include    "cccontroller.h"    // for sending commands
+#include    <string>
+#include    <sstream>
 
 CrListCtrl::CrListCtrl( CrGUIElement * mParentPtr )
     :   CrGUIElement( mParentPtr )
@@ -67,45 +73,44 @@ CRSETGEOMETRY(CrListCtrl,CxListCtrl)
 CRGETGEOMETRY(CrListCtrl,CxListCtrl)
 CRCALCLAYOUT(CrListCtrl,CxListCtrl)
 
-CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
+CcParse CrListCtrl::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
-    CcString theToken;
+    string theToken;
 
     if( ! mSelfInitialised ) //Once Only.
     {
         LOGSTAT("*** ListCtrl *** Initing...");
 
-        mName = tokenList->GetToken();
+        mName = string(tokenList.front());
+        tokenList.pop_front();
         mSelfInitialised = true;
 
         LOGSTAT( "*** Created ListCtrl     " + mName );
 
-        while ( hasTokenForMe )
+        while ( hasTokenForMe && ! tokenList.empty() )
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTVisibleLines:
                 {
-                    int lines;
-                    tokenList->GetToken(); // Remove the keyword
-                    CcString theToken = tokenList->GetToken();
-                    lines = atoi( theToken.ToCString() );
-                    ( (CxListCtrl *)ptr_to_cxObject)->SetVisibleLines( lines );
-                    LOGSTAT("Setting ListCtrl visible lines to " + theToken);
+                    tokenList.pop_front(); // Remove the keyword
+                    ( (CxListCtrl *)ptr_to_cxObject)->SetVisibleLines( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT("Setting ListCtrl visible lines to " + tokenList.front());
+                    tokenList.pop_front();
                     break;
                 }
                 case kTNumberOfColumns:
                 {
-                    tokenList->GetToken(); // Remove the keyword
-                    CcString theToken = tokenList->GetToken();
-                    m_cols = atoi( theToken.ToCString() );
-                    LOGSTAT("Setting ListCtrl columns to " + theToken);
+                    tokenList.pop_front(); // Remove the keyword
+                    m_cols = atoi( tokenList.front().c_str() );
+                    LOGSTAT("Setting ListCtrl columns to " + tokenList.front());
+                    tokenList.pop_front();
                     for (int k = 0; k < m_cols; k++)
                     {
-                        theToken = tokenList->GetToken();
-                        ((CxListCtrl *)ptr_to_cxObject)->AddColumn( theToken );
+                        ((CxListCtrl *)ptr_to_cxObject)->AddColumn( tokenList.front() );
+                        tokenList.pop_front();
                     }
                     break;
                 }
@@ -119,15 +124,15 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
 
     }
     hasTokenForMe = true;
-    while ( hasTokenForMe ) //Every time
+    while ( hasTokenForMe && ! tokenList.empty() ) //Every time
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
                     LOGSTAT( "Enabling ListCtrl callback" );
@@ -137,25 +142,24 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
             }
             case kTAddToList:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 bool stop = false;
                 while ( ! stop )
                 {
-                    CcString* rowOfStrings = new CcString[m_cols];
+                    string* rowOfStrings = new string[m_cols];
 
                     for (int k = 0; k < m_cols; k++)
                     {
-                        theToken = tokenList->GetToken();
-
-                        if ( strcmp( kSNull, theToken.ToCString() ) == 0 )
+                        if ( strcmp( kSNull, tokenList.front().c_str() ) == 0 )
                         {
                             stop = true;
                             k = m_cols;
                         }
                         else
                         {
-                            rowOfStrings[k] = theToken;
+                            rowOfStrings[k] = tokenList.front();
                         }
+                        tokenList.pop_front();
                     }
                     if( ! stop ) ((CxListCtrl *)ptr_to_cxObject)->AddRow( rowOfStrings );
                     delete [] rowOfStrings; //Oops, forgot this first time!
@@ -164,19 +168,20 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
             }
             case kTSetSelection:
             {
-                  tokenList->GetToken(); //Remove that token!
-                  int select = atoi ( tokenList->GetToken().ToCString() );
-                  ((CxListCtrl*)ptr_to_cxObject)->CxSetSelection(select);
+                  tokenList.pop_front(); //Remove SetSelection token!
+                  ((CxListCtrl*)ptr_to_cxObject)->CxSetSelection(atoi ( tokenList.front().c_str() ));
+                  tokenList.pop_front(); //Remove number token!
                   break;
             }
             case kTSortColumn:
             {
                   bool bSort = true;
-                  tokenList->GetToken(); //Remove that token!
-                  int column = atoi ( tokenList->GetToken().ToCString() );
-                  if( tokenList->GetDescriptor(kLogicalClass) == kTYes)
+                  tokenList.pop_front(); //Remove that token!
+                  int column = atoi ( tokenList.front().c_str() );
+                  tokenList.pop_front();
+                  if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)  //Check for 'YES'
                   {
-                    tokenList->GetToken(); //Remove the kTYes token!
+                    tokenList.pop_front(); //If there, remove the kTYes token!
                     bSort = false;
                   }
                   ((CxListCtrl*)ptr_to_cxObject)->SortCol(column,bSort);
@@ -188,27 +193,29 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
 
             case kTSelectAtoms:
             {
-                tokenList->GetToken(); //Remove the kTSelectAtoms token!
-                if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
+                tokenList.pop_front(); //Remove the kTSelectAtoms token!
+                if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
                 {
-                    tokenList->GetToken(); //Remove the kTAll token!
-                    bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-                    tokenList->GetToken(); //Remove the kTYes/No token!
+                    tokenList.pop_front(); //Remove the kTAll token!
+                    bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+                    tokenList.pop_front(); //Remove the kTYes/No token!
                     ((CxListCtrl *)ptr_to_cxObject)->SelectAll(select);
                 }
-                else if( tokenList->GetDescriptor(kLogicalClass) == kTInvert)
+                else if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTInvert)
                 {
-                    tokenList->GetToken(); //Remove the kTInvert token!
+                    tokenList.pop_front(); //Remove the kTInvert token!
                     ((CxListCtrl *)ptr_to_cxObject)->InvertSelection();
                 }
                 else
                 {
-                    CcString* rowOfStrings = new CcString[m_cols];
-                    for (int k = 0; k < m_cols; k++)
-                        rowOfStrings[k] = tokenList->GetToken();
+                    string* rowOfStrings = new string[m_cols];
+                    for (int k = 0; k < m_cols; k++) {
+                        rowOfStrings[k] = string( tokenList.front() ); 
+                        tokenList.pop_front();
+                    }
 
-                    bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
-                    tokenList->GetToken();
+                    bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
+                    tokenList.pop_front();
                     ((CxListCtrl*)ptr_to_cxObject)->SelectPattern(rowOfStrings,select);
                     delete [] rowOfStrings;
                 }
@@ -226,67 +233,71 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
 }
 
 
-void    CrListCtrl::SetText( CcString item )
+void    CrListCtrl::SetText( const string &item )
 {
     LOGWARN( "CrListCtrl:SetText Don't add text to a ListCtrl.");
 }
 
 void    CrListCtrl::GetValue()
 {
-    int value = ( (CxListCtrl *)ptr_to_cxObject)->GetValue();
-    SendCommand( CcString( value ) );
+    ostringstream strm;
+    strm << ( (CxListCtrl *)ptr_to_cxObject)->GetValue();
+    SendCommand( strm.str() );
 }
 
-void CrListCtrl::GetValue(CcTokenList * tokenList)
+void CrListCtrl::GetValue(deque<string> &  tokenList)
 {
 
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
 
     switch (desc)
     {
         case kTQListitem:
         {
-            tokenList->GetToken();
-            int i = atoi ((tokenList->GetToken()).ToCString()) - 1;
-            int j = atoi ((tokenList->GetToken()).ToCString()) - 1;
-            CcString theItem = ((CxListCtrl*)ptr_to_cxObject)->GetCell(i,j);
-            SendCommand( theItem , true );
+            tokenList.pop_front();
+            int i = atoi (tokenList.front().c_str()) - 1;
+            tokenList.pop_front();
+            int j = atoi (tokenList.front().c_str()) - 1;
+            tokenList.pop_front();
+            SendCommand( ((CxListCtrl*)ptr_to_cxObject)->GetCell(i,j) , true );
             break;
         }
         case kTQListrow:
         {
-            tokenList->GetToken();
-            CcString theString = tokenList->GetToken();
-            int itemNo = atoi( theString.ToCString() );
-            CcString result = ((CxListCtrl*)ptr_to_cxObject)->GetListItem(itemNo);
-            (CcController::theController)->SendCommand(result, true);
+            tokenList.pop_front();
+            (CcController::theController)->SendCommand(((CxListCtrl*)ptr_to_cxObject)->GetListItem(atoi( tokenList.front().c_str() )), true);
+            tokenList.pop_front();
             break;
         }
         case kTQSelected:
         {
-            tokenList->GetToken();
+            tokenList.pop_front();
             int nv = ( (CxListCtrl *)ptr_to_cxObject)->GetNumberSelected();
             int * values = new int [nv];
             ( (CxListCtrl *)ptr_to_cxObject)->GetSelectedIndices(values);
+            ostringstream strm;
             for ( int i = 0; i < nv; i++ )
             {
-                SendCommand( CcString( values[i] ) , true );
+                strm.str("");
+                strm << values[i];
+                SendCommand( strm.str() , true );
             }
             SendCommand( "END" , true );
             break;
         }
         case kTQNselected:
         {
-            tokenList->GetToken();
-            int value = ( (CxListCtrl *)ptr_to_cxObject)->GetNumberSelected();
-            SendCommand( CcString( value ) , true );
+            tokenList.pop_front();
+            ostringstream strm;
+            strm << ( (CxListCtrl *)ptr_to_cxObject)->GetNumberSelected();
+            SendCommand( strm.str() , true );
             break;
         }
         default:
         {
             SendCommand( "ERROR",true );
-            CcString error = tokenList->GetToken();
-            LOGWARN( "CrListCtrl:GetValue Error unrecognised token." + error);
+            LOGWARN( "CrListCtrl:GetValue Error unrecognised token." + tokenList.front());
+            tokenList.pop_front();
             break;
         }
     }
@@ -310,11 +321,10 @@ int CrListCtrl::GetIdealHeight()
     return ((CxListCtrl*)ptr_to_cxObject)->GetIdealHeight();
 }
 
-void CrListCtrl::SendValue(CcString message)
+void CrListCtrl::SendValue(string message)
 {
     if(mCallbackState)
     {
             SendCommand(mName + " " + message);
     }
 }
-

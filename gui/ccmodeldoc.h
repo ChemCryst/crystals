@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2003/11/07 10:43:06  rich
+//   Split the 'part' column in the atom list into 'assembly' and 'group'.
+//
 //   Revision 1.19  2003/10/31 10:44:16  rich
 //   When an atom is selected in the model window, it is scrolled
 //   into view in the atom list, if not already in view.
@@ -88,16 +91,17 @@
 #include <GL/glu.h>
 #endif
 
-#include "ccstring.h"   // added by classview
-#include "cclist.h" // added by classView                      
-class CcTokenList;
+#include <string>
+#include <list>
+using namespace std;
+
+#include "ccmodelatom.h"
+#include "ccmodelbond.h"
+#include "ccmodelsphere.h"
+#include "ccmodeldonut.h"
+
 class CrModel;
 class CrModList;
-class CcList;
-class CcModelAtom;
-class CcModelSphere;
-class CcModelDonut;
-class CcModelObject;
 class CcModelStyle;
 class CcModelDoc;
 
@@ -105,88 +109,85 @@ class CcModelDoc
 {
     public:
 
-        bool RenderModel( CcModelStyle *style, bool feedback=false );
-        void DocToList( CrModList* ml );
-        void InvertSelection();
-        CcString Compress(CcString atomname);
-        void SelectAllAtoms(bool select);
-        void SelectAtomByLabel(CcString atomname, bool select);
-        void DisableAllAtoms(bool select);
-        void DisableAtomByLabel(CcString atomname, bool select);
-        CcModelObject* FindAtomByLabel(CcString atomname);
-        CcModelAtom* FindAtomByPosn(int posn);
+        bool RenderModel( CcModelStyle *style, bool feedback=false );   // Called by CrModel
+        void DocToList( CrModList* ml );                                // Called by CrModList
+        void InvertSelection();                                         // Called by CrModel
+        void SelectAllAtoms(bool select);                               // Called by CrModel
+        void SelectAtomByLabel(string atomname, bool select);           // Called by CrModel
+        void DisableAllAtoms(bool select);                              // Called by CrModel
+        void DisableAtomByLabel(string atomname, bool select);          // Called by CrModel
+        CcModelObject* FindAtomByLabel(string atomname);            // Called by CrModel & CcModelBond
+        CcModelAtom* FindAtomByPosn(int posn);          // Called by CrModList & CcModelBond
 
         void FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
                           int r, int g, int b,  int rad,int btype,
-                          int np, int * ptrs, CcString label, CcString cslabl);
+                          int np, int * ptrs, string label, string cslabl);
 
-        void FastAtom(CcString label,int x1,int y1,int z1, 
+        void FastAtom(string label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
                           float u1,float u2,float u3,float u4,float u5,
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
-                          CcString elem, int serial, int refflag,
+                          string elem, int serial, int refflag,
                           int assembly, int group, float ueq, float fspare);
 
-        void FastSphere(CcString label,int x1,int y1,int z1, 
+        void FastSphere(string label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
                           int iso, int irad);
 
-        void FastDonut(CcString label,int x1,int y1,int z1,
+        void FastDonut(string label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
                           int iso, int irad, int idec, int iaz);
 
-        void ExcludeBonds();
 
-        CcModelObject * FindObjectByGLName(GLuint name);
+        CcModelObject * FindObjectByGLName(GLuint name);            // Called by CrModel
 
-        CcString SelectedAsString( CcString delimiter = " " );
-        CcString FragAsString    ( CcString atomname, CcString delimiter = " ");
-        void     FlagFrag ( CcString atomname );
-        void SendAtoms( int style, bool sendonly=false );
-        void ZoomAtoms( bool doZoom );
-
-
-        void SelectFrag(CcString atomname, bool select);
-        void Select(bool selected);
-        void HighlightView(CrModel* aView);
-        void RemoveView(CrModel* aView);
-        void DrawViews(bool rescaled = false);
-        void EnsureVisible(CcModelAtom* va);
-        void AddModelView(CrModel* aView);
-        void AddModelView(CrModList* aView);
-        void Clear();
+        void Clear();                                               // Called by CrModel
+        string SelectedAsString( string delimiter = " " );          // Called by CrMenu
+        string FragAsString    ( string atomname, string delimiter = " "); // Called by CrMenu
+        void SendAtoms( int style, bool sendonly=false );           // Called by CrModel
+        void ZoomAtoms( bool doZoom );                              // Called by CrModel
+        void SelectFrag(string atomname, bool select);              // Called by CrModel
+        void RemoveView(CrModel* aView);                            // Called by CrModel
+        void DrawViews(bool rescaled = false);                      // Called by CrModList, ModelAtom, ModelBond etc.
+        void AddModelView(CrModel* aView);                          // Called by CrModel
+        void AddModelView(CrModList* aView);                        // Called by CrModList
         CcModelDoc();
         ~CcModelDoc();
-        bool ParseInput( CcTokenList * tokenList );
+        bool ParseInput( deque<string> & tokenList );                 // Called by CcController
 
+        friend bool operator==(CcModelDoc* doc, const string& st0); // Called by CcController
 
-        int NumSelected();
+        int NumSelected();                                          // Called by CrModList
+        void EnsureVisible(CcModelAtom* va);                        // Called by CcModelAtom, Bond etc.
+        void Select(bool selected);                                 // Called by CcModelAtom, Donut etc.
 
-        CcString mName;
-        CcList attachedViews;
-        CcList attachedLists;
-
-        static CcList  sm_ModelDocList;
+        list <CrModel*> attachedViews;          
+        list <CrModList*> attachedLists;
+        static list<CcModelDoc*> sm_ModelDocList;
         static CcModelDoc* sm_CurrentModelDoc;
+        string mName;
 
+    protected:
 
     private:
+        void     FlagFrag ( string atomname );
+        string Compress(string atomname);
+        
         int nSelected;
         int m_nAtoms;
         int m_TotX;
         int m_TotY;
         int m_TotZ;
         bool m_glIDsok;
-        CcList* mAtomList;
-        CcList* mBondList;
-        CcList* mSphereList;
-        CcList* mDonutList;
-//                CcList* mCellList;
-//                CcList* mTriList;
+  
+        list<CcModelAtom> mAtomList;
+        list<CcModelBond> mBondList;
+        list<CcModelSphere> mSphereList;
+        list<CcModelDonut> mDonutList;
 };
 
 #endif

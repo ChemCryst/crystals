@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2003/11/13 17:13:48  rich
+//   Change font code in cxchart (for Cameron). Use arial. Simpler design.
+//   Might fix JCD's problems.
+//
 //   Revision 1.25  2003/09/16 19:15:37  rich
 //   Code to thin out labels on the x-axis of graphs to prevent overcrowding.
 //   Seems to slow down the linux version - will investigate on Windows.
@@ -77,7 +81,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cxchart.h"
 #include    "cxgrid.h"
 #include    "cccontroller.h"
@@ -196,21 +201,13 @@ Destroy();
 #endif
 }
 
-void    CxChart::SetText( char * text )
+void    CxChart::SetText( const string & text )
 {
-
-#ifdef __POWERPC__
-    Str255 descriptor;
-
-    strcpy( reinterpret_cast<char *>(descriptor), text );
-    c2pstr( reinterpret_cast<char *>(descriptor) );
-    SetDescriptor( descriptor );
-#endif
 #ifdef __BOTHWX__
-      SetLabel(text);
+      SetLabel(text.c_str());
 #endif
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 
 }
@@ -564,7 +561,7 @@ void CxChart::DrawEllipse(int x, int y, int w, int h, bool fill)
 }
 
 
-void CxChart::DrawText(int x, int y, CcString text)
+void CxChart::DrawText(int x, int y, string text)
 {
       CcPoint      coord = DeviceToLogical(x,y);
 #ifdef __CR_WIN__
@@ -577,14 +574,14 @@ void CxChart::DrawText(int x, int y, CcString text)
     CFont* oldFont = memDC->SelectObject(&theFont);
     memDC->SetBkMode(TRANSPARENT);
 
-    memDC->TextOut(coord.x,coord.y,text.ToCString());
+    memDC->TextOut(coord.x,coord.y,text.c_str());
 
     memDC->SelectObject(oldpen);
     memDC->SelectObject(oldFont);
     memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-      wxString wtext = wxString(text.ToCString());
+      wxString wtext = wxString(text.c_str());
       memDC->SetBrush( *m_brush );
       memDC->SetPen( *m_pen );
       memDC->SetBackgroundMode( wxTRANSPARENT );
@@ -920,7 +917,7 @@ void CxChart::UseIsotropicCoords(bool iso)
     m_IsoCoords = iso;
 }
 
-void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rotated)
+void CxChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotated)
 {
 
     bool centred = ( x2>0 );
@@ -945,7 +942,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
       {
         CFont* oldFont = memDC->SelectObject(&theFont);
 
-        size = memDC->GetOutputTextExtent(theText.ToCString(), theText.Len());
+        size = memDC->GetOutputTextExtent(theText.c_str(), theText.length());
 
         if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(lfHeight<=60))
         {
@@ -960,7 +957,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
                   ycrd = ( coord2.y + coord.y - size.cy ) / 2;
             }
             memDC->SetBkMode(TRANSPARENT);
-            memDC->TextOut(xcrd,ycrd,theText.ToCString(),theText.Len());
+            memDC->TextOut(xcrd,ycrd,theText.c_str(),theText.length());
             memDC->SelectObject(oldpen);
             memDC->SelectObject(oldFont);
         }
@@ -984,7 +981,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
     memDC->SetBrush( *m_brush );
     memDC->SetPen( *m_pen );
     wxFont theFont = memDC->GetFont();
-    wxString wtext (theText.ToCString());
+    wxString wtext (theText.c_str());
 
     theFont.SetPointSize(48);
 
@@ -1098,7 +1095,7 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 {
       int key = -1;
 
-      switch(event.KeyCode())
+      switch(event.GetKeyCode())
     {
            case WXK_LEFT:
                   key = CRLEFT;
@@ -1153,14 +1150,14 @@ void CxChart::MakeMetaFile(int w, int h, bool enhanced)
     CDC * backup_memDC = memDC;
     CcRect backup_m_client = m_client;
 
-    CcString result;
-    CcString defName = "cam_pic1.wmf";
+    string result;
+    string defName = "cam_pic1.wmf";
     if ( enhanced ) defName = "cam_pic1.emf";
 
-    CcString extension = "*.2mf";
+    string extension = "*.2mf";
     if ( enhanced ) extension = "*.emf";
 
-    CcString description = "Windows MetaFile (*.wmf)";
+    string description = "Windows MetaFile (*.wmf)";
     if ( enhanced ) description = "Windows Enhanced MetaFile (*.emf)";
 
     CcController::theController->SaveFileDialog(&result, defName, extension, description);
@@ -1172,12 +1169,12 @@ void CxChart::MakeMetaFile(int w, int h, bool enhanced)
         if ( enhanced )
         {
 
-          mdc.CreateEnhanced( memDC, (LPCTSTR)result.ToCString(),
+          mdc.CreateEnhanced( memDC, (LPCTSTR)result.c_str(),
                               NULL, "Cameron\0Crystal Structure\0\0");
         }
         else
         {
-          mdc.Create((LPCTSTR)result.ToCString());
+          mdc.Create((LPCTSTR)result.c_str());
         }
 
         mdc.SetAttribDC( memDC->m_hAttribDC );

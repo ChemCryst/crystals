@@ -23,7 +23,9 @@
 #define BASEMODLIST wxListCtrl
 #endif
 
-#include "ccstring.h"   // added by ClassView
+#include <string>
+#include <vector>
+using namespace std;
 
 class CrModList;
 class CxGrid;
@@ -36,17 +38,16 @@ class CxModList : public BASEMODLIST
         void GetSelectedIndices( int * values );
         void InvertSelection();
         int m_ProgSelecting;
-        CcString GetListItem(int item);
-        void SelectPattern(CcString* strings, bool select);
-        CcString GetCell(int row, int col);
+        string GetListItem(int item);
+        string GetCell(int row, int col);
         void SelectAll(bool select);
-        void AddRow ( int id, CcString * rowOfStrings, bool sel, bool dis);
-        void AddColumn( CcString colHeader);
+        void AddRow ( int id, vector<string> & rowOfStrings, bool sel, bool dis);
+        void AddColumn( string colHeader);
         void Focus();
         static CxModList * CreateCxModList( CrModList * container, CxGrid * guiParent);
             CxModList( CrModList * container );
             ~CxModList();
-        void    AddItem( char * text );
+        void    AddItem( const string &  text );
         void    SetVisibleLines( int lines );
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
@@ -95,15 +96,15 @@ class CxModList : public BASEMODLIST
         void AddCols() ;
         int m_numcols;
         int  m_nHighlight;              // Indicate type of selection highlighting
-        int * IDlist;
-        int m_IDlist_size;
+        vector<int> IDlist;
 protected:
-    int * m_colWidths;
+    vector<int> m_colWidths;
 #define COL_INT 1
 #define COL_REAL 2
 #define COL_TEXT 3
-    int* m_colTypes;
-    int WhichType(CcString text);
+    vector<int> m_colTypes;
+
+    int WhichType(string text);
 
 
     int nSortedCol;

@@ -3,7 +3,6 @@
 #define         __CcModelDonut_H__
 
 class CrModel;
-class CcTokenList;
 class CcModelDoc;
 #include "ccmodelobject.h"
 
@@ -14,7 +13,7 @@ class CcModelDonut : public CcModelObject
 {
   public:
     CcModelDonut(CcModelDoc* parentptr);
-    CcModelDonut(CcString label,int x1,int y1,int z1, 
+    CcModelDonut(string label,int x1,int y1,int z1, 
                     int r, int g, int b, int occ,int cov, int vdw,
                     int spare, int flag,
                     int iso, int irad, int idec, int iaz, CcModelDoc* parentptr);
@@ -29,7 +28,7 @@ class CcModelDonut : public CcModelObject
     int Y();
     int Z();
     int R();
-    void ParseInput(CcTokenList* tokenList);
+    void ParseInput(deque<string> & tokenList);
 
   public:
 

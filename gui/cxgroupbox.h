@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.7  2001/11/14 10:30:41  ckp2
 //   Various changes to the painting of the background of Windows as some of the
 //   dialogs suddenly went white under XP.
@@ -42,7 +45,7 @@ class CxGroupBox : public BASEGROUPBOX
         static CxGroupBox * CreateCxGroupBox( CrGrid * container, CxGrid * guiParent );
             CxGroupBox( CrGrid * container );
             ~CxGroupBox();
-        void    SetText( char * text );
+        void    SetText( const string & text );
         void    SetGeometry( int top, int left, int bottom,  int right );
         static int AddGroupBox( void) { mGroupBoxCount++; return mGroupBoxCount; };
         static void RemoveGroupBox( void) { mGroupBoxCount--; };

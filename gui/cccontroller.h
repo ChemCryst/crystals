@@ -8,6 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.36  2004/05/18 13:51:33  rich
+//   Fixed shut down of Fortran thread in Linux - but requires the use
+//   of exceptions. To exit properly the thread must return from the
+//   function that started it ie. CRYSTL(). This would require extensive
+//   modification of the Fortran to get from XFINAL() back to the top, but
+//   instead we can throw a C++ exception from XFINAL() and catch it in
+//   the routine that called CRYSTL(). Seems to work fine.
+//
 //   Revision 1.35  2003/09/19 18:02:27  rich
 //   Add code to allow inclusion of subsiduary files from the guimenu.srt
 //   startup file. (Allows clear separation and structure of the GUI).
@@ -119,9 +127,6 @@
 #include "ccthread.h"
 #endif
 
-
-#include    "cclist.h"
-#include    "cccommandqueue.h"
 #include    "ccstatus.h"
 #include    "ccrect.h"
 #include    "crystals.h"
@@ -132,95 +137,80 @@
 #include <afxwin.h>
 #endif
 
-
+#include <vector>
+#include <deque>
+#include <list>
 
 class CcPlotData;
 class CcChartDoc;
 class CcModelDoc;
 class CrWindow;
-class CcTokenList;
 class CrGUIElement;
 class CcMenuItem;
 class CcTool;
 class CrButton;
+class CrEditBox;
+class CrTextOut;
+class CrProgress;
 
 
 
 class   CcController
 {
   public:
-    CcController( CcString directory, CcString dscfile );
+    CcController( const string & directory, const string & dscfile );
     ~CcController();
      
-    class MyException { };
+    class MyException {
+     public:
+      MyException(){};
+      ~MyException(){};
+    };
 
-    void GetValue (CcTokenList * tokenlist);
+    void SendCommand( string command , bool jumpQueue = false);
+    bool GetCrystalsCommand( char * line );
+    void AddInterfaceCommand(const string &line, bool internal = false );
 
-    CcRect GetScreenArea();
+    void Tokenize( const string & text );  // Called after GetInterfaceCommand
+    bool ParseInput( deque<string> & tokenList );  //Called by tokenize when input is complete.
 
-    CcModelDoc* CreateModelDoc(CcString name);
-    CcModelDoc* FindModelDoc(CcString name);
-
-    int FindFreeMenuId();
-    void AddMenuItem( CcMenuItem * menuitem );
-    void RemoveMenuItem( CcMenuItem * menuitem );
-    void RemoveMenuItem ( CcString menuitemname );
-    CcMenuItem* FindMenuItem( int id );
-    CcMenuItem* FindMenuItem( CcString name );
-
-    int FindFreeToolId();
-    void AddTool( CcTool * tool );
-    void RemoveTool( CcTool * tool );
-    void RemoveTool ( CcString toolname );
-    CcTool* FindTool( int id );
-    CcTool* FindTool( CcString name );
+    CcModelDoc* CreateModelDoc(const string & name);  // Creates or clears a CcModelDoc object.
+    CcModelDoc* FindModelDoc(const string & name);
 
     void AddDisableableWindow( CrWindow * aWindow );
     void RemoveDisableableWindow ( CrWindow * aWindow );
-
     void AddDisableableButton( CrButton * aButton );
     void RemoveDisableableButton ( CrButton * aButton );
 
-
     CrGUIElement* GetTextOutputPlace();
-    CrGUIElement* GetBaseTextOutputPlace();
-    void SetTextOutputPlace(CrGUIElement* outputPane);
-    void RemoveTextOutputPlace(CrGUIElement* output);
+    void SetTextOutputPlace(CrTextOut* outputPane);
+    void RemoveTextOutputPlace(CrTextOut* output);
 
     CrGUIElement* GetProgressOutputPlace();
-    void RemoveProgressOutputPlace(CrGUIElement* output);
-    void SetProgressOutputPlace(CrGUIElement* outputPane);
-    void SetProgressText(CcString * theText);
+    void RemoveProgressOutputPlace(CrProgress* output);
+    void SetProgressOutputPlace(CrProgress* outputPane);
+    void SetProgressText(const string & theText);
 
-    CrGUIElement* GetInputPlace();
-    void RemoveInputPlace(CrGUIElement* input);
-    void SetInputPlace(CrGUIElement* inputPane);
+    CrEditBox* GetInputPlace();
+    void RemoveInputPlace(CrEditBox* input);
+    void SetInputPlace(CrEditBox* inputPane);
 
     void RemoveWindowFromList(CrWindow* window);
 
-    CrGUIElement* FindObject( CcString Name );
-
-    void AddHistory( CcString theText );
+    CrGUIElement* FindObject( const string & Name );
 
     void ReLayout();
-    void History(bool up);
     void FocusToInput(char theChar);
 
-    bool ParseInput( CcTokenList * tokenList );
-    bool ParseLine( CcString text );
-    void    SendCommand( CcString command , bool jumpQueue = false);
-    void    Tokenize( CcString text );
-    bool IsSpace( char c );
-    char IsDelimiter( char c, char delim = 0 );
-    void  AppendToken( CcString text );
+    void LogError( string errString , int level);
 
-    void  AddCrystalsCommand( CcString line , bool jumpQueue = false);
-    bool GetCrystalsCommand( char * line );
-    void  AddInterfaceCommand( CcString line, bool internal = false );
-    bool GetInterfaceCommand( char * line );
-//    bool GetInterfaceCommand( CcString * line );
+    static void MakeTokens( const string& str,
+                deque<string>& tokens,
+                const string& delimiters = " ,=\t\r\n",
+                const string& pairopen  = "<!\"'",
+                const string& pairclose = ">!\"'"  );
 
-    void LogError( CcString errString , int level);
+    static int CcController::GetDescriptor( string &token, int descriptorClass );
 
     bool Completing();
     void CompleteProcessing();
@@ -229,54 +219,37 @@ class   CcController
     void UpdateToolBars();
     void ScriptsExited();
 
-    void StoreKey( CcString key, CcString value );
-    CcString GetKey( CcString key );
-    CcString GetRegKey( CcString key, CcString name );
+    void StoreKey( string key, string value );
+    string GetKey( string key );
+    string GetRegKey( string key, string name );
 
-
-    void OpenFileDialog(CcString* filename, CcString extensionFilter, CcString extensionDescription, bool titleOnly);
-    void SaveFileDialog(CcString* filename, CcString defaultName, CcString extensionFilter, CcString extensionDescription);
-    void OpenDirDialog(CcString* result);
+    void OpenFileDialog(string* filename, string extensionFilter, string extensionDescription, bool titleOnly);
+    void SaveFileDialog(string* filename, string defaultName, string extensionFilter, string extensionDescription);
+    void OpenDirDialog(string* result);
     void ChooseFont();
 
     void StartCrystalsThread();
-    void  ProcessOutput(CcString theLine);
+    void ProcessOutput(const string & theLine);
 
-    void     ChangeDir (CcString newDir);
+    void ChangeDir (string newDir);
 
-    void     ReadStartUp( FILE * file, CcString crysdir );
-    int      EnvVarCount( CcString dir );
-    CcString EnvVarExtract ( CcString dir, int i );
+    void   ReadStartUp( FILE * file, string & crysdir );
+    int    EnvVarCount( string & dir );
+    string EnvVarExtract ( string & dir, int i );
 
     void TimerFired();
     bool DoCommandTransferStuff();
 
     void  endthread ( long theExitcode  );
 
-
 // attributes
 
-    CcChartDoc* mCurrentChartDoc;
-    bool mThisThreadisDead;
-    bool mThatThreadisDead;
-    bool m_Completing;
     CcStatus status;
-
-    int m_start_ticks;
-
     static CcController* theController;
     static int debugIndent;
 
     CrWindow *      mCurrentWindow;
-    CrGUIElement *  mInputWindow;
-    CrGUIElement *  mTextWindow;
-    CrGUIElement *  mProgressWindow;
-    CcString m_newdir;
-    bool m_restart;
-    bool m_Wait;
-    bool m_BatchMode;
     int m_ExitCode;
-    CcList  mChartList;
 
 #ifdef __CR_WIN__
     static CWinThread *mCrystalsThread;
@@ -291,38 +264,42 @@ class   CcController
 
 
 
-  protected:
-    CcTokenList *   mQuickTokenList;
-    CcTokenList *   mWindowTokenList;
-    CcTokenList *   mPlotTokenList;
-    CcTokenList *   mChartTokenList;
-    CcTokenList *   mModelTokenList;
-    CcTokenList *   mStatusTokenList;
-    CcTokenList *   mTempTokenList;
-    CcTokenList *   mCurTokenList;
+  private:
 
-    CrWindow *      mModelWindow;
+    void AddCrystalsCommand(const string &line , bool jumpQueue = false); // Called by SendCommand
+    bool GetInterfaceCommand( string & line );                    // Called by DoCommandTransferStuff
+    void GetValue (deque<string> & tokenlist);
+
+    deque<string>    mQuickTokenList;
+    deque<string>    mWindowTokenList;
+    deque<string>    mPlotTokenList;
+    deque<string>    mChartTokenList;
+    deque<string>    mModelTokenList;
+    deque<string>    mStatusTokenList;
+// Some pointers to those deqs:
+    deque<string> *  mTempTokenList;
+    deque<string> *  mCurTokenList;
+
+    bool mThisThreadisDead;
+    bool m_Completing;
+    bool m_restart;
+    string m_newdir;
+    bool m_Wait;
+    bool m_BatchMode;
+    int m_start_ticks;
     FILE *  mErrorLog;
 
-    CcList  mWindowList;
-    CcList  mTextOutputWindowList;
-    CcList  mProgressOutputWindowList;
-    CcList  mInputWindowList;
+    list<CrWindow*>  mWindowList;
+    list<CrTextOut*>  mTextOutputWindowList;
+    list<CrProgress*>  mProgressOutputWindowList;
+    list<CrEditBox*>  mInputWindowList;
 
-    CcList  mMenuItemList;
-    int     m_next_id_to_try;
+    list<CrWindow*> mDisableableWindowsList;
+    list<CrButton*> mDisableableButtonsList;
 
-    CcList  mToolList;
-    int     m_next_tool_id_to_try;
+    deque<string> mCrystalsCommandDeq;
+    deque<string> mInterfaceCommandDeq;
 
-    CcList  mDisableableWindowsList;
-    CcList  mDisableableButtonsList;
-
-    CcList mCommandHistoryList;
-    int mCommandHistoryPosition;
-
-    CcCommandQueue  mCrystalsCommandQueue;
-    CcCommandQueue  mInterfaceCommandQueue;
 };
 
 
@@ -331,7 +308,6 @@ extern "C" {
   // new style API for FORTRAN
   // FORCALL() macro adds on _ to end of word for linux version.
 
-//  void  ciflushbuffer  (    long *theLength,    char * theLine  );
 
   void  FORCALL(cinextcommand)  (    long *theStatus,    char theLine[80]);
   void  FORCALL(ciendthread)    (  long theExitcode                  );

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2001/06/17 14:32:57  richard
 //   CxDestroyWindow function.
 //
@@ -44,7 +50,7 @@ class CxRadioButton : public BASERADIOBUTTON
             CxRadioButton( CrRadioButton * container);
             ~CxRadioButton();
 //      void    ButtonChanged();
-        void    SetText( char * text );
+        void    SetText( const string & text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();
         int GetLeft();
@@ -76,7 +82,7 @@ class CxRadioButton : public BASERADIOBUTTON
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            void ButtonChanged();
+            void ButtonChanged(wxCommandEvent& e);
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
 #endif

@@ -10,9 +10,11 @@
 #ifndef         __CrMenuBar_H__
 #define         __CrMenuBar_H__
 #include "crguielement.h"
-#include "cctokenlist.h"
-#include "cclist.h"
 
+#include <list>
+using namespace std;
+
+class CcMenuItem;
 
 class   CrMenuBar : public CrGUIElement
 {
@@ -22,17 +24,17 @@ class   CrMenuBar : public CrGUIElement
            ~CrMenuBar();
 // methods
 
-           int Condition(CcString conditions);
+           int Condition(string conditions);
            void CrFocus();
-           CcParse ParseInput( CcTokenList * tokenList );
-           void    SetText( CcString text );
+           CcParse ParseInput( deque<string> & tokenList );
+           void    SetText( const string &text );
            void    SetGeometry( const CcRect * rect );
            CcRect  GetGeometry();
            CcRect CalcLayout(bool recalculate=false);
 
 // attributes
             int mMenuType;
-            CcList mMenuList;
+            list<CcMenuItem*> mMenuList;
 
 };
 

@@ -8,7 +8,9 @@
 //   Authors:   Richard Cooper
 
 #include    "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+using namespace std;
+
 #include    "crconstants.h"
 #include    "ccrect.h"
 #include    "crtextout.h"
@@ -43,7 +45,7 @@ CRSETGEOMETRY(CrTextOut,CxTextOut)
 CRGETGEOMETRY(CrTextOut,CxTextOut)
 CRCALCLAYOUT(CrTextOut,CxTextOut)
 
-CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
+CcParse CrTextOut::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -59,46 +61,47 @@ CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created MulitEdit    " + mName );
 
             int size = 200;
-            CcString cgeom = (CcController::theController)->GetKey( "FontSize" );
-            if ( cgeom.Len() )
-                size = atoi( cgeom.ToCString() );
+            string cgeom = (CcController::theController)->GetKey( "FontSize" );
+            if ( cgeom.length() )
+                size = atoi( cgeom.c_str() );
 //            ((CxTextOut*)ptr_to_cxObject)->SetFontHeight(size);
     }
     // End of Init, now comes the general parser
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && !tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting TextOut Text: " + mText );
                 break;
             }
             case kTEmpty:
             {
-                    tokenList->GetToken(); //Remove kTEmpty tokens.
+                    tokenList.pop_front(); //Remove kTEmpty tokens.
                     ((CxTextOut*)ptr_to_cxObject)->Empty();
                     break;
             }
             case kTViewTop:
             {
-                    tokenList->GetToken(); //Remove token.
+                    tokenList.pop_front(); //Remove token.
                     ((CxTextOut*)ptr_to_cxObject)->ViewTop();
                     break;
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                mDisabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                mDisabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 break;
             }
                         case kTFontSelect:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                                 ((CxTextOut*)ptr_to_cxObject)->ChooseFont();
                                 break;
             }
@@ -106,25 +109,23 @@ CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
 
             case kTNumberOfRows:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int chars = atoi( theString.ToCString() );
-                ((CxTextOut*)ptr_to_cxObject)->SetIdealHeight( chars );
-                LOGSTAT( "Setting TextOut Lines Height: " + theString );
+                tokenList.pop_front(); // Remove that token!
+                ((CxTextOut*)ptr_to_cxObject)->SetIdealHeight( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting TextOut Lines Height: " + tokenList.front() );
+                tokenList.pop_front();
                 break;
             }
             case kTNumberOfColumns:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int chars = atoi( theString.ToCString() );
-                ((CxTextOut*)ptr_to_cxObject)->SetIdealWidth( chars );
-                LOGSTAT( "Setting TextOut Chars Width: " + theString );
+                tokenList.pop_front(); // Remove that token!
+                ((CxTextOut*)ptr_to_cxObject)->SetIdealWidth( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting TextOut Chars Width: " + tokenList.front() );
+                tokenList.pop_front();
                 break;
             }
             case kTTextTransparent:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 LOGSTAT( "Setting TextOut Transparent " );
                 ((CxTextOut*)ptr_to_cxObject)->SetTransparent();
                 break;
@@ -140,7 +141,7 @@ CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void CrTextOut::SetText ( CcString cText )
+void CrTextOut::SetText ( const string & cText )
 {
    ((CxTextOut*)ptr_to_cxObject)->SetText(cText);
 }
@@ -160,7 +161,7 @@ void CrTextOut::CrFocus()
     ((CxTextOut*)ptr_to_cxObject)->Focus();
 }
 
-void CrTextOut::ProcessLink( CcString aString )
+void CrTextOut::ProcessLink( string aString )
 {
       SendCommand("$ " + aString,TRUE);
 }

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2004/06/07 12:05:03  rich
+//   Fix annoying bug: Close CRYSTALS while minimized and it would re-start
+//   in that same minimized state. Not any more.
+//
 //   Revision 1.31  2003/07/01 16:40:45  rich
 //   Tidy window sizing/display code to speed up initialisation of
 //   windows. Each window should now have its size set only once regardless of
@@ -67,8 +71,10 @@
 #include    "cxwindow.h"
 #include    "ccrect.h"
 #include    "crtoolbar.h"
+#include   <algorithm>
+using namespace std;
 
-CcList CrWindow::mModalWindowStack;
+list<CrWindow*> CrWindow::mModalWindowStack;
 
 CrWindow::CrWindow( )
     :   CrGUIElement((CrGUIElement*)NULL)
@@ -78,7 +84,6 @@ CrWindow::CrWindow( )
     ptr_to_cxObject = nil;
     mGridPtr = nil;
     mMenuPtr = nil;
-    mTabGroup = new CcList();
     mTabStop = false;
     mIsModal = false;
     mStayOpen = false;
@@ -129,10 +134,7 @@ CrWindow::~CrWindow()
         mMenuPtr = nil;
     }
 
-    while ( mModalWindowStack.FindItem((void*) this) )
-    {
-        mModalWindowStack.RemoveItem();
-    }
+    mModalWindowStack.remove(this);
 
     if ( m_AddedToDisableAbleWindowList )
     {
@@ -148,10 +150,9 @@ CrWindow::~CrWindow()
 //        delete (CxWindow*)ptr_to_cxObject;
     }
 
-    delete mTabGroup;
 }
 
-CcParse CrWindow::ParseInput( CcTokenList * tokenList )
+CcParse CrWindow::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(false, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -167,40 +168,40 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         mSelfInitialised = true;
 
         void* modalParent = nil;
-                if (void* modalParentWindow = mModalWindowStack.GetLastItem()) //NB: Assignment(=), not comparison(==)
-                        modalParent = ((CrWindow*)modalParentWindow)->GetWidget();
+        if (!mModalWindowStack.empty())
+             modalParent = (mModalWindowStack.back())->GetWidget();
 
         // Get attributes
-        while ( hasTokenForMe )
+        while ( hasTokenForMe && ! tokenList.empty() )
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTModal:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     attributes += kModal;
                     mIsModal = true;
-                    mModalWindowStack.AddItem((void*)this);
+                    mModalWindowStack.push_back(this);
                     LOGSTAT( "Setting Window modal" );
                     break;
                 }
                 case kTClose:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     attributes += kClose;
                     LOGSTAT( "Setting Window hideable" );
                     break;
                 }
                 case kTZoom:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     attributes += kZoom;
                     LOGSTAT( "Setting Window zoomable" );
                     break;
                 }
                 case kTSize:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     attributes += kSize;
                     mIsSizeable = true;
                     LOGSTAT( "Setting Window sizeable" );
@@ -208,36 +209,41 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                 }
                 case kTSetCommitText:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    SetCommitText( tokenList->GetToken() );
+                    tokenList.pop_front(); // Remove that token!
+                    SetCommitText( tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 case kTSetCancelText:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    SetCancelText( tokenList->GetToken() );
+                    tokenList.pop_front(); // Remove that token!
+                    SetCancelText( tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 case kTSetCommandText:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    SetCommandText( tokenList->GetToken() );
+                    tokenList.pop_front(); // Remove that token!
+                    SetCommandText( tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 case kTPosition:
                 {
-                    tokenList->GetToken();
-                    m_relativePosition = tokenList->GetDescriptor(kPositionalClass);
-                    tokenList->GetToken();
-                    CcString nearWindow = tokenList->GetToken();
-                    if(!(m_relativeWinPtr = (CcController::theController)->FindObject(nearWindow)))
-                        LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+nearWindow);
+                    tokenList.pop_front();
+                    m_relativePosition = CcController::GetDescriptor( tokenList.front(), kPositionalClass );
+                    tokenList.pop_front();
+                    if(!(m_relativeWinPtr = (CcController::theController)->FindObject(tokenList.front())))
+                        LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+tokenList.front());
+                    tokenList.pop_front();
                     break;
+                    
                 }
                 case kTMenuDisableCondition:
                 {
-                  tokenList->GetToken();
-                  wDisableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+                  tokenList.pop_front();
+                  wDisableFlags = (CcController::theController)->status.CreateFlag(tokenList.front());
+                  tokenList.pop_front();
                   if ( !m_AddedToDisableAbleWindowList )
                   {
                     m_AddedToDisableAbleWindowList = true;
@@ -247,8 +253,9 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                 }
                 case kTMenuEnableCondition:
                 {
-                  tokenList->GetToken();
-                  wEnableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+                  tokenList.pop_front();
+                  wEnableFlags = (CcController::theController)->status.CreateFlag(tokenList.front());
+                  tokenList.pop_front();
                   if ( !m_AddedToDisableAbleWindowList )
                   {
                     m_AddedToDisableAbleWindowList = true;
@@ -258,19 +265,19 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
                 }
                 case kTKeep:
                 {
-                    tokenList->GetToken();
+                    tokenList.pop_front();
                     m_Keep = true;
                     break;
                 }
                 case kTLarge:
                 {
-                    tokenList->GetToken();
+                    tokenList.pop_front();
                     m_Large = true;
                     break;
                 }
                 case kTStayOpen:
                 {
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front(); // Remove that token!
                     mStayOpen = true;
                     LOGSTAT( "Setting Window to stay open on script exit" );
                     break;
@@ -305,23 +312,23 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
     }
 
     // *** This check must be enhanced
-    if( tokenList->GetDescriptor( kInstructionClass ) == kTNoMoreToken)
-        return true;
+   
+    if( tokenList.empty() || ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTNoMoreToken))  return true;
 
     // This is a creategrid instruction, or some window operation, or nothing.
-    switch ( tokenList->GetDescriptor( kInstructionClass ) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )
     {
         case kTCreateGrid:
         {
             if( mGridPtr != nil )
             {
                LOGERR("Attempt to recreate main window GRID. Not allowed.");
-               tokenList->GetToken();  //remove GRID token
-               tokenList->GetToken();  //remove GRID name
-               tokenList->GetToken();  //remove GRID nrows keyword
-               tokenList->GetToken();  //remove GRID nrows value
-               tokenList->GetToken();  //remove GRID ncols keyword
-               tokenList->GetToken();  //remove GRID ncols value
+               tokenList.pop_front();  //remove GRID token
+               tokenList.pop_front();  //remove GRID name
+               tokenList.pop_front();  //remove GRID nrows keyword
+               tokenList.pop_front();  //remove GRID nrows value
+               tokenList.pop_front();  //remove GRID ncols keyword
+               tokenList.pop_front();  //remove GRID ncols value
                retVal.m_ok = true; //Set to true, or we will be destroyed.
                break;
             }
@@ -333,7 +340,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
             if ( mGridPtr != nil )
             {
                 // remove that token
-                tokenList->GetToken();
+                tokenList.pop_front();
 
                 // ParseInput generates all objects in the window
                 // Of course the token list must be full
@@ -351,7 +358,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
             LOGSTAT("Show window token found");
 
             CcRect newPosn;
-            tokenList->GetToken();
+            tokenList.pop_front();
 
 // Never re-show the main window - it looks messy, and can easily happen
 // in error if a script bombs while setting up another window as the
@@ -388,9 +395,9 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
             if ( m_Keep )
             {
 // Get the old size out of a file...
-                CcString cgeom = (CcController::theController)->GetKey( mName );
+                string cgeom = (CcController::theController)->GetKey( mName );
                 CcRect oldSize(0,0,0,0);
-                if ( cgeom.Len() )
+                if ( cgeom.length() )
                    oldSize = CcRect( cgeom );
 
                 if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
@@ -419,7 +426,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
 // (or 80% of screen if main window isn't found)
 
                CcRect mainSize(0,0,0,0);
-               mainSize = (CcController::theController)->GetScreenArea();
+               mainSize = GetScreenArea();
                CrGUIElement *main = (CcController::theController)->FindObject("_MAIN");
 
                if ( main && ( main != this ))
@@ -461,7 +468,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
             {
                 LOGSTAT("Positioning window relative to another.");
                 CcRect winRect(m_relativeWinPtr->GetGeometry());
-                CcRect workRect((CcController::theController)->GetScreenArea());
+                CcRect workRect(GetScreenArea());
                 CcRect thisRect(GetGeometry());
                 switch (m_relativePosition)
                 {
@@ -573,7 +580,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         }
         case kTHideWindow:
         {
-            tokenList->GetToken();
+            tokenList.pop_front();
 
             m_Shown = false;
 
@@ -586,7 +593,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         }
         case kTDefineMenu:
         {
-            tokenList->GetToken();
+            tokenList.pop_front();
             LOGSTAT("Defining Menu...");
 
             mMenuPtr = new CrMenuBar( this );
@@ -606,7 +613,7 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
         }
         case kTEndDefineMenu:
         {
-            tokenList->GetToken();
+            tokenList.pop_front();
             LOGSTAT("Menu Definined.");
             retVal.m_ok = true;
             break;
@@ -614,16 +621,17 @@ CcParse CrWindow::ParseInput( CcTokenList * tokenList )
 
         case kTTextSelector:
         {
-            tokenList->GetToken();
+            tokenList.pop_front();
             LOGSTAT("Changing title of window.");
             retVal.m_ok = true;
-            mText = tokenList->GetToken();
+            mText = string(tokenList.front());
+            tokenList.pop_front();
             SetText( mText );
             break;
         }
         default:
         {
-            LOGWARN("CrWindow:ParseInput:default Window cannot recognize token:" + tokenList->PeekToken());
+            LOGWARN("CrWindow:ParseInput:default Window cannot recognize token:" + tokenList.front()); //Leave in TokenList
             break;
         }
     }
@@ -674,10 +682,10 @@ CcRect CrWindow::CalcLayout(bool recalc)
 }
 
 
-void    CrWindow::SetText( CcString item )
+void    CrWindow::SetText( const string & item )
 {
     char theText[256];
-    strcpy (theText, item.ToCString() );
+    strcpy (theText, item.c_str() );
     if ( ptr_to_cxObject != nil )
     {
         ((CxWindow*)ptr_to_cxObject)->SetText(theText);
@@ -706,7 +714,7 @@ void    CrWindow::Align()
 */
 }
 
-CrGUIElement *  CrWindow::FindObject( CcString Name )
+CrGUIElement *  CrWindow::FindObject( const string & Name )
 {
     CrGUIElement * theElement = nil;
 
@@ -762,29 +770,41 @@ void CrWindow::Cancelled()
 
 void CrWindow::AddToTabGroup(CrGUIElement* tElement)
 {
-    mTabGroup->AddItem( (void*) tElement );
+    mTabGroup.push_back( tElement );
 }
 
 void* CrWindow::GetPrevTabItem(void* pElement)
 {
-    if( mTabGroup->FindItem(pElement) )
-        return mTabGroup->GetNextLoopItem(true);
-    else
+    list<CrGUIElement*>::iterator tabi =
+         find ( mTabGroup.begin(), mTabGroup.end(), pElement );
+    if ( tabi == mTabGroup.begin() )
     {
-        mTabGroup->Reset();
-        return mTabGroup->GetNextLoopItem(true);
+       tabi = mTabGroup.end();
+       tabi--;
+       return *tabi;
     }
+    else if ( tabi != mTabGroup.end() )
+    {
+       tabi--;
+       return *tabi;
+    }
+    return nil;
 }
 
 void* CrWindow::GetNextTabItem(void* pElement)
 {
-    if( mTabGroup->FindItem(pElement) )
-        return mTabGroup->GetNextLoopItem(false);
-    else
+    list<CrGUIElement*>::iterator tabi =
+         find ( mTabGroup.begin(), mTabGroup.end(), pElement );
+    if ( tabi != mTabGroup.end() )
     {
-        mTabGroup->Reset();
-        return mTabGroup->GetNextLoopItem(false);
+       tabi++;
+       if ( tabi == mTabGroup.end() )
+       {
+          tabi = mTabGroup.begin();
+       }
+       return *tabi;
     }
+    return nil;
 }
 
 
@@ -800,11 +820,11 @@ void CrWindow::SetMainMenu(CrMenuBar * menu)
 
 void CrWindow::MenuSelected(int id)
 {
-    CcMenuItem* menuItem = (CcController::theController)->FindMenuItem( id );
+    CcMenuItem* menuItem = CrMenu::FindMenuItem( id );
 
     if ( menuItem )
     {
-        CcString theCommand = menuItem->command;
+        string theCommand = menuItem->command;
         SendCommand(theCommand);
         return;
     }
@@ -812,11 +832,11 @@ void CrWindow::MenuSelected(int id)
 
 void CrWindow::ToolSelected(int id)
 {
-    CcTool* tool = (CcController::theController)->FindTool( id );
+    CcTool* tool = CrToolBar::FindAnyTool( id );
 
     if ( tool )
     {
-        CcString theCommand = tool->tCommand;
+        string theCommand = tool->tCommand;
         SendCommand(theCommand);
         return;
     }
@@ -839,19 +859,19 @@ void CrWindow::FocusToInput(char theChar)
     }
 }
 
-void CrWindow::SetCommitText(CcString text)
+void CrWindow::SetCommitText(string text)
 {
     mCommitText = text;
     mCommitSet = true;
 }
 
-void CrWindow::SetCancelText(CcString text)
+void CrWindow::SetCancelText(string text)
 {
     mCancelText = text;
     mCancelSet = true;
 }
 
-void CrWindow::SendCommand(CcString theText, bool jumpQueue)
+void CrWindow::SendCommand(string theText, bool jumpQueue)
 {
 //If there is a COMMAND= set for this window
 //send this first, unless the text begins with
@@ -865,7 +885,7 @@ void CrWindow::SendCommand(CcString theText, bool jumpQueue)
 //mechanism and pass the command straigt to
 //CRYSTALS (#) or to GUI (^).
 
-      if ( theText.Len() == 0 ) //It may be that objects or commands have empty strings.
+      if ( theText.length() == 0 ) //It may be that objects or commands have empty strings.
       {
             if ( mCommandSet )
             {
@@ -876,8 +896,8 @@ void CrWindow::SendCommand(CcString theText, bool jumpQueue)
       else
       {
             if (       ( mCommandSet                )
-                   &&  (!( theText.Sub(1,1) == '#' ))
-                   &&  (!( theText.Sub(1,1) == '^' ))   )
+                   &&  (!( theText[0] == '#' ))
+                   &&  (!( theText[0] == '^' ))   )
             {
                   mControllerPtr->SendCommand(mCommandText);
             }
@@ -885,7 +905,7 @@ void CrWindow::SendCommand(CcString theText, bool jumpQueue)
       }
 }
 
-void CrWindow::SetCommandText(CcString theText)
+void CrWindow::SetCommandText(string theText)
 {
     mCommandText = theText;
     mCommandSet = true;
@@ -900,7 +920,7 @@ void CrWindow::SetCommandText(CcString theText)
 
 void CrWindow::SendMeSysKeys( CrGUIElement* interestedWindow )
 {
-      mWindowsWantingSysKeys.AddItem((void*)interestedWindow);
+      mWindowsWantingSysKeys.push_back(interestedWindow);
       if ( interestedWindow != nil )
       {
 // Make sure the CxWindow is listening for us.
@@ -918,21 +938,21 @@ void CrWindow::SendMeSysKeys( CrGUIElement* interestedWindow )
 
 void CrWindow::SysKeyPressed ( UINT nChar )
 {
-      mWindowsWantingSysKeys.Reset();
-      CrGUIElement * elem;
-      while ( ( elem = (CrGUIElement*)mWindowsWantingSysKeys.GetItemAndMove() ) != nil )
+      list<CrGUIElement*>::iterator crgi;
+      for ( crgi =  mWindowsWantingSysKeys.begin();
+            crgi != mWindowsWantingSysKeys.end();   crgi++ )
       {
-            elem->SysKey ( nChar );
+            (*crgi)->SysKey ( nChar );
       }
 }
 
 void CrWindow::SysKeyReleased ( UINT nChar )
 {
-      mWindowsWantingSysKeys.Reset();
-      CrGUIElement * elem;
-      while ( ( elem = (CrGUIElement*)mWindowsWantingSysKeys.GetItemAndMove() ) != nil )
+      list<CrGUIElement*>::iterator crgi;
+      for ( crgi =  mWindowsWantingSysKeys.begin();
+            crgi != mWindowsWantingSysKeys.end();   crgi++ )
       {
-            elem->SysKeyUp ( nChar );
+            (*crgi)->SysKeyUp ( nChar );
       }
 }
 
@@ -961,3 +981,27 @@ void CrWindow::TimerFired()
 {
   CcController::theController->TimerFired();
 }
+
+CcRect CrWindow::GetScreenArea()
+{
+    CcRect retVal;
+#ifdef __CR_WIN__
+    RECT screenRect;
+    SystemParametersInfo( SPI_GETWORKAREA, 0, &screenRect, 0 );
+
+    retVal.Set( screenRect.top,
+                screenRect.left,
+                screenRect.bottom,
+                screenRect.right);
+#endif
+#ifdef __BOTHWX__
+      retVal.mTop = 0;
+      retVal.mLeft = 0;
+      retVal.mBottom = wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_Y);
+      retVal.mRight =  wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_X);
+
+//      cerr << "Screen Area: " << retVal.mRight << "," << retVal.mBottom << "\n";
+#endif
+    return retVal;
+}
+

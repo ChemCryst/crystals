@@ -6,6 +6,11 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2002/07/15 12:19:13  richard
+//   Reorder headers to improve ease of linking.
+//   Update program to use new standard C++ io libraries.
+//   Update to use new version of MFC (5.0 with .NET.)
+//
 //   Revision 1.6  2001/06/17 14:47:36  richard
 //   CxDestroyWindow function.
 //   wx support.
@@ -23,7 +28,7 @@
 #include    "cxgrid.h"
 #include    "cccontroller.h"
 #include    "crbitmap.h"
-
+#include    <iostream>
 
 int     CxBitmap::mBitmapCount = kBitmapBase;
 CxBitmap *        CxBitmap::CreateCxBitmap( CrBitmap * container, CxGrid * guiParent )
@@ -63,11 +68,11 @@ Destroy();
 #endif
 }
 
-void    CxBitmap::LoadFile( CcString bitmap, bool transp )
+void    CxBitmap::LoadFile( string bitmap, bool transp )
 {
 
-  CcString crysdir ( getenv("CRYSDIR") );
-  if ( crysdir.Length() == 0 )
+  string crysdir ( getenv("CRYSDIR") );
+  if ( crysdir.length() == 0 )
   {
     std::cerr << "You must set CRYSDIR before running crystals.\n";
     return;
@@ -84,17 +89,17 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
   bool noLuck = true;
   while ( noLuck )
   {
-    CcString dir = (CcController::theController)->EnvVarExtract( crysdir, i );
+    string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
     i++;
 #ifdef __BOTHWIN__
-    CcString file = dir + "\\script\\" + bitmap;
+    string file = dir + "\\script\\" + bitmap;
 #endif
 #ifdef __LINUX__
-    CcString file = dir + "/script/" + bitmap;
+    string file = dir + "/script/" + bitmap;
 #endif
 
 #ifdef __CR_WIN__
-    hBmp = (HBITMAP)::LoadImage( NULL, file.ToCString(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+    hBmp = (HBITMAP)::LoadImage( NULL, file.c_str(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
     if( hBmp )
     {
       noLuck = false;
@@ -106,7 +111,7 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
     }
 #endif
 #ifdef __BOTHWX__
-    if ( mbitmap.LoadFile(file.ToCString(), wxBITMAP_TYPE_BMP))
+    if ( mbitmap.LoadFile(file.c_str(), wxBITMAP_TYPE_BMP))
     {
       noLuck = false;
     }

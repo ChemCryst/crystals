@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2004/05/17 13:44:56  rich
+//   Fixed Linux build.
+//
 //   Revision 1.21  2004/05/13 17:21:43  rich
 //   Fix build problem following today's checkins.
 //
@@ -32,7 +35,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 
 #include    "cxmultiedit.h"
 #include    "cxgrid.h"
@@ -93,17 +97,16 @@ void CxMultiEdit::CxDestroyWindow()
 }
 
 
-void  CxMultiEdit::SetText( CcString cText )
+void  CxMultiEdit::SetText( const string & cText )
 {
 // Add the text.
-
 #ifdef __CR_WIN__
       int oldend = GetWindowTextLength();
       SetSel( oldend, oldend );
-      ReplaceSel(cText.ToCString());
+      ReplaceSel(cText.c_str());
 #endif
 #ifdef __BOTHWX__
-      AppendText(cText.ToCString());
+      AppendText(cText.c_str());
 #endif
 
 //Now scroll the text so that the last line is at the bottom of the screen.
@@ -217,7 +220,7 @@ void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxMultiEdit::OnChar( wxKeyEvent & event )
 {
-      switch(event.KeyCode())
+      switch(event.GetKeyCode())
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
@@ -228,7 +231,7 @@ void CxMultiEdit::OnChar( wxKeyEvent & event )
         default:
         {
             if(ptr_to_crObject->mDisabled)
-                        ptr_to_crObject->FocusToInput((char)event.KeyCode());
+                        ptr_to_crObject->FocusToInput((char)event.GetKeyCode());
             else
                         event.Skip();
                   break;
@@ -253,11 +256,11 @@ void CxMultiEdit::Spew()
     for (int i=0; i<GetNumberOfLines(); i++)
     {
        wxString aline = GetLineText(i);
-       int cp = CRMIN ( aline.Length(), 80 );
+       int cp = CRMIN ( aline.length(), 80 );
        strcpy ( (char*)&theLine, aline.c_str() );
 #endif
        theLine[cp]='\0';
-       ((CrMultiEdit*)ptr_to_crObject)->SendCommand( CcString( theLine ));
+       ((CrMultiEdit*)ptr_to_crObject)->SendCommand( string( theLine ));
        line++;
     }
 }
@@ -295,10 +298,10 @@ void CxMultiEdit::Init()
 #ifdef __CR_WIN__
     CHARFORMAT cf;
     GetDefaultCharFormat( cf );
-    CcString face = (CcController::theController)->GetKey( "FontFace" );
-    for (int i=0;i<LF_FACESIZE;i++)
+    string face = (CcController::theController)->GetKey( "FontFace" );
+    for (string::size_type i=0;i<LF_FACESIZE;i++)
     {
-      if ( i < face.Len() )
+      if ( i < face.length() )
           cf.szFaceName[i] = face[i];
       else
           cf.szFaceName[i] = 0;
@@ -317,29 +320,29 @@ void CxMultiEdit::Init()
     *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
 
-    CcString temp;
+    string temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.Len() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
+    if ( temp.length() )
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
-          pFont->SetFaceName( temp.ToCString() );
+          pFont->SetFaceName( temp.c_str() );
     SetFont ( *pFont );
 #endif
 
 }
 
 #ifdef __BOTHWX__
-void CxMultiEdit::SaveAs(CcString filename)
+void CxMultiEdit::SaveAs(string filename)
 {
-    SaveFile( filename.ToCString() );
+    SaveFile( filename.c_str() );
 }
 #endif
 
 #ifdef __CR_WIN__
-void CxMultiEdit::SaveAs(CcString filename)
+void CxMultiEdit::SaveAs(string filename)
 {
     CFile file;
-    file.Open(filename.ToCString(), CFile::modeCreate | CFile::modeWrite);
+    file.Open(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
     
     EDITSTREAM es;
     es.dwCookie = (DWORD) &file;
@@ -361,7 +364,7 @@ DWORD CALLBACK CxMultiEdit::MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, L
 #endif
 
 /*
-void CxMultiEdit::Open(CcString filename)
+void CxMultiEdit::Open(string filename)
 {
 
 }

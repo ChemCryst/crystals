@@ -10,7 +10,9 @@
 
 #include    "crystalsinterface.h"
 #include    "cclock.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "cccontroller.h"
 
 #ifdef __CR_WIN__
@@ -44,7 +46,8 @@ CcLock::CcLock(bool isMutex )   //true for CS, false for signal.
   {
     m_Locked = 0;
 #ifdef __CR_WIN__
-    m_Mutex = CreateMutex(NULL, false, NULL);
+    m_EvMutex = nil;
+    m_CSMutex = CreateMutex(NULL, false, NULL);
 #endif
 #ifdef __BOTHWX__
     m_EvMutex = nil;
@@ -54,11 +57,12 @@ CcLock::CcLock(bool isMutex )   //true for CS, false for signal.
   else
   {
 #ifdef __CR_WIN__
-    m_Mutex = CreateEvent(NULL, true, false, NULL);
+    m_CSMutex = CreateMutex(NULL, false, NULL);
+    m_EvMutex = CreateEvent(NULL, true, false, NULL);
 #endif
 #ifdef __BOTHWX__
     m_CSMutex = new wxMutex();
-    m_EvMutex = new wxCondition(*m_CSMutex);
+    m_EvMutex = new wxSemaphore();
 #endif
   }
 
@@ -72,51 +76,56 @@ CcLock::~CcLock()
 
 void CcLock::Enter()
 {
-    m_Locked ++;
-//    LOGSTAT ("++++Entering critical section: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Entering critical section: " + string(m_Locked)  + " " + string((int)this) + "\n");
 #ifdef __CR_WIN__
-    WaitForSingleObject( m_Mutex, INFINITE );
+    WaitForSingleObject( m_CSMutex, INFINITE );
 #endif
 #ifdef __BOTHWX__
     if (!( m_CSMutex -> Lock() == wxMUTEX_NO_ERROR) )
     {
-       LOGSTAT ("----Failed to lock mutex " + CcString((int)this) + "\n");
+       ostringstream strm;
+       strm << "----Failed to lock mutex " << (int)this << "\n";
+       LOGSTAT (strm.str());
     }
+    m_Locked ++;
+    wxASSERT ( m_Locked == 1 );
 #endif
-//    LOGSTAT ("++++Critical section entered: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Critical section entered: " + string(m_Locked)  + " " + string((int)this) + "\n");
 }
 
 void CcLock::Leave()
 {
     if ( m_Locked > 0 ) m_Locked --;
-//    LOGSTAT ("++++Leaving critical section: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Leaving critical section: " + string(m_Locked)  + " " + string((int)this) + "\n");
 #ifdef __CR_WIN__
-    ReleaseMutex( m_Mutex );
+    ReleaseMutex( m_CSMutex );
 #endif
 #ifdef __BOTHWX__
     m_CSMutex -> Unlock();
 #endif
-//    LOGSTAT ("++++Critical section left: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Critical section left: " + string(m_Locked)  + " " + string((int)this) + "\n");
 }
 
 bool CcLock::IsLocked()
 {          
-//    LOGSTAT ("++++Is Locked: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Is Locked: " + string(m_Locked)  + " " + string((int)this) + "\n");
     return ( m_Locked > 0 );
 }
 
 bool CcLock::Wait(int timeout_ms)
 {
-//    LOGSTAT ("++++Waiting for object." + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Waiting for object." + string((int)this) + "\n");
+    if ( m_Locked > 0 ) m_Locked --;
 #ifdef __CR_WIN__
-    if ( timeout_ms ) return ( WaitForSingleObject( m_Mutex, timeout_ms) == WAIT_OBJECT_0 );
-    return ( WaitForSingleObject( m_Mutex, INFINITE ) == WAIT_OBJECT_0 );
+    Leave();  // This is done automatically under wx.
+    bool ret = (WaitForSingleObject( m_EvMutex, timeout_ms?timeout_ms:INFINITE ) == WAIT_OBJECT_0 ) ;
+    ResetEvent ( m_EvMutex );
+    return ret;
 #endif
 #ifdef __BOTHWX__
-    if ( m_Locked > 0 ) m_Locked --;
     if ( timeout_ms ) return m_EvMutex -> WaitTimeout( timeout_ms );
     m_EvMutex -> Wait();
-//    LOGSTAT ("++++Object was signalled." + CcString((int)this) + "\n");
+//    LOGSTAT ("++++Object was signalled." + string((int)this) + "\n");
     return true;
 #endif
 
@@ -124,18 +133,13 @@ bool CcLock::Wait(int timeout_ms)
 
 void CcLock::Signal(bool all)
 {
-//  LOGSTAT ("++++Signalling object." + CcString(all?"True ":"False ") +  CcString((int)this) + "\n");
+//  LOGSTAT ("++++Signalling object." + string(all?"True ":"False ") +  string((int)this) + "\n");
 
 #ifdef __CR_WIN__
-    PulseEvent(m_Mutex);
+    SetEvent(m_EvMutex);
 #endif
 #ifdef __BOTHWX__
-    if ( all )
-        m_EvMutex -> Broadcast();
-    else
-        m_EvMutex -> Signal();
+        m_EvMutex -> Post();
 #endif
 
 }
-
-

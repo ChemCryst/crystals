@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2003/09/16 14:48:17  rich
+//   Changes for linux.
+//
 //   Revision 1.31  2003/09/03 20:55:38  rich
 //   Fix border of non-modal windows under Linux.
 //
@@ -25,7 +28,7 @@
 //
 //   Revision 1.27  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
-//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -81,6 +84,8 @@
 #include    "crtoolbar.h"
 #include    "cccontroller.h"
 #include    "crtextout.h"
+#include    <string>
+#include    <sstream>
 
 #ifdef __LINUX__
 #include "wincrys.xpm"
@@ -92,7 +97,9 @@ int CxWindow::mWindowCount = kWindowBase;
 CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, int attributes )
 {
 
-  LOGSTAT ( CcString("CxWindow created. Parent = ") + CcString ( (int)parentWindow ) );
+  ostringstream strm;
+  strm << "CxWindow created. Parent = " << (int)parentWindow;
+  LOGSTAT ( strm.str() );
 
   CxWindow *theWindow = new CxWindow( container, attributes & kSize );
 
@@ -206,14 +213,13 @@ Destroy();
 #endif
 }
 
-void    CxWindow::SetText( char * text )
+void    CxWindow::SetText( const string & text )
 {
-
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 #ifdef __BOTHWX__
-      SetTitle(text);
+      SetTitle(text.c_str());
 #endif
 }
 
@@ -230,7 +236,9 @@ void    CxWindow::CxShowWindow()
 
 void    CxWindow::SetGeometry( int top, int left, int bottom, int right )
 {
-  LOGSTAT( "CxWindow::SetGeom called " + CcString(top) + " " + CcString(left)+ " " + CcString(bottom) + " " + CcString(right) );
+  ostringstream strm;
+  strm << "CxWindow::SetGeom called "  << top << " " << left << " " << bottom << " " << right;
+  LOGSTAT( strm.str() );
 
   if(mProgramResizing)  //Only move the window, if the program is resizing it.
   {
@@ -346,8 +354,7 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
                         wxEVT_COMMAND_MENU_SELECTED,
                         CxWindow::OnMenuSelected )
-      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
-                        wxEVT_UPDATE_UI,
+      EVT_UPDATE_UI_RANGE(kMenuBase, kMenuBase+1000,
                         CxWindow::OnUpdateMenuItem )
       EVT_COMMAND_RANGE(kToolButtonBase, kToolButtonBase+5000,
                         wxEVT_COMMAND_MENU_SELECTED,
@@ -360,7 +367,7 @@ END_EVENT_TABLE()
 #ifdef __CR_WIN__
 void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
 {
-    CcMenuItem* theItem = (CcController::theController)->FindMenuItem(pCmdUI->m_nID);
+    CcMenuItem* theItem = CrMenu::FindMenuItem(pCmdUI->m_nID);
     if(theItem == nil) return;
 
     if ( (CcController::theController)->status.ShouldBeEnabled( theItem->enable, theItem->disable ) )
@@ -370,7 +377,7 @@ void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
 }
 void CxWindow::OnUpdateTools(CCmdUI* pCmdUI)
 {
-    CcTool* theItem = (CcController::theController)->FindTool(pCmdUI->m_nID);
+    CcTool* theItem = CrToolBar::FindAnyTool(pCmdUI->m_nID);
     if(theItem == nil) return;
 
     if ( (CcController::theController)->status.ShouldBeEnabled( theItem->tEnableFlags, theItem->tDisableFlags ) )
@@ -382,7 +389,7 @@ void CxWindow::OnUpdateTools(CCmdUI* pCmdUI)
 #ifdef __BOTHWX__
 void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
 {
-    CcMenuItem* theItem = (CcController::theController)->FindMenuItem(pCmdUI.m_id);
+    CcMenuItem* theItem = CrMenu::FindMenuItem(pCmdUI.m_id);
     if(theItem == nil) return;
 
     if ( (CcController::theController)->status.ShouldBeEnabled( theItem->enable, theItem->disable ) )
@@ -419,7 +426,9 @@ void CxWindow::OnClose(wxCloseEvent & event)
 #ifdef __CR_WIN__
 void CxWindow::OnSize(UINT nType, int cx, int cy)
 {
-    LOGSTAT( "OnSize called " + CcString(cx) + " " + CcString(cy) );
+    ostringstream strm;
+    strm << "OnSize called " << cx << " " << cy;
+    LOGSTAT( strm.str() );
     CFrameWnd::OnSize(nType, cx, cy);
     mProgramResizing = false;
     if ( nType == SIZE_MINIMIZED ) return;
@@ -428,7 +437,9 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
 #ifdef __BOTHWX__
 void CxWindow::OnSize(wxSizeEvent & event)
 {
-      LOGSTAT( "OnSize called " + CcString(event.GetSize().x) + " " + CcString(event.GetSize().y) );
+      ostringstream strm;
+      strm << "OnSize called " << event.GetSize().x <<  " " << event.GetSize().y;
+      LOGSTAT( strm.str() );
       int cx,cy;
       mProgramResizing = false;
       GetClientSize(&cx,&cy); //Onsize is whole window - we only want this bit.
@@ -477,7 +488,7 @@ void CxWindow::SetMainMenu(CxMenuBar * menu)
 #ifdef __CR_WIN__
 void CxWindow::OnMenuSelected(UINT nID)
 {
-    LOGSTAT("Menu Selected: ID: " + CcString((int) nID ));
+ //   LOGSTAT("Menu Selected: ID: " + string((int) nID ));
 #endif
 #ifdef __BOTHWX__
 void CxWindow::OnMenuSelected(wxCommandEvent & event)
@@ -724,7 +735,7 @@ void CxWindow::OnKeyDown( wxKeyEvent & event )
 {
       int key = -1;
 
-      switch(event.KeyCode())
+      switch(event.GetKeyCode())
     {
            case WXK_LEFT:
                   key = CRLEFT;
@@ -826,6 +837,3 @@ BOOL CxWindow::PreTranslateMessage(MSG* pMsg)
   // call the base class here
 }
 #endif
-
-
-

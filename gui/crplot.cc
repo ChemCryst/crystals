@@ -9,6 +9,12 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.12  2002/07/18 16:49:49  richard
 //   Clear plot window if empty graph (no data points) is created.
 //
@@ -57,12 +63,12 @@
 #include    "cxplot.h"
 #include    "ccplotdata.h"
 #include    "ccrect.h"
-#include    "cctokenlist.h"
 #include    "crmenu.h"
 #include    "ccmenuitem.h"
 #include    "cccontroller.h"    // for sending commands
 #include    "crwindow.h" // for getting cursor keys
-
+#include <string>
+#include <sstream>
 
 
 #ifdef __BOTHWX__
@@ -115,7 +121,7 @@ CrPlot::~CrPlot()
     }
 }
 
-CcParse CrPlot::ParseInput( CcTokenList * tokenList )
+CcParse CrPlot::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
 
@@ -131,26 +137,24 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
 
         //Init only parsing
         bool hasTokenForMe = true;
-        while (hasTokenForMe)
+        while (hasTokenForMe && ! tokenList.empty())
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTNumberOfRows:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    CcString theString = tokenList->GetToken();
-                    int chars = atoi( theString.ToCString() );
-                    ((CxPlot*)ptr_to_cxObject)->SetIdealHeight( chars );
-                    LOGSTAT( "Setting Plot Lines Height: " + theString );
+                    tokenList.pop_front(); // Remove that token!
+                    ((CxPlot*)ptr_to_cxObject)->SetIdealHeight( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT( "Setting Plot Lines Height: " + tokenList.front() );
+                    tokenList.pop_front(); // Remove that token!
                     break;
                 }
                 case kTNumberOfColumns:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    CcString theString = tokenList->GetToken();
-                    int chars = atoi( theString.ToCString() );
-                    ((CxPlot*)ptr_to_cxObject)->SetIdealWidth( chars );
-                    LOGSTAT( "Setting Plot Chars Width: " + theString );
+                    tokenList.pop_front(); // Remove that token!
+                    ((CxPlot*)ptr_to_cxObject)->SetIdealWidth( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT( "Setting Plot Chars Width: " + tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 default:
@@ -164,14 +168,15 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
     // End of Init, now comes the general parser
 
     bool hasTokenForMe = true;
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting Plot Text: " + mText );
                 break;
@@ -179,22 +184,24 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
 
             case kTPlotPrint:
             { 
-                tokenList->GetToken(); 
+                tokenList.pop_front(); 
                 ((CxPlot*)ptr_to_cxObject)->PrintPicture(); 
                 break; 
             } 
 
             case kTPlotSave:
             {
-                tokenList->GetToken();  // "PLOTSAVE"
-                int w = atoi( tokenList->GetToken().ToCString() );
-                int h = atoi( tokenList->GetToken().ToCString() );
+                tokenList.pop_front();  // "PLOTSAVE"
+                int w = atoi( tokenList.front().c_str() );
+                tokenList.pop_front();
+                int h = atoi( tokenList.front().c_str() );
+                tokenList.pop_front();
                 ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h);
                 break;
             }
       case kTDefinePopupMenu:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         LOGSTAT("Defining Popup Plot Menu...");
         m_cmenu = new CrMenu( this, POPUP_MENU );
         if ( m_cmenu != nil )
@@ -211,7 +218,7 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
       }
       case kTEndDefineMenu:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         LOGSTAT("Popup Plot Menu Defined.");
         break;
       }
@@ -236,10 +243,10 @@ void CrPlot::CrFocus()
     ((CxPlot*)ptr_to_cxObject)->Focus();
 }
 
-void CrPlot::SetText( CcString text )
+void CrPlot::SetText( const string &text )
 {
     char theText[256];
-    strcpy( theText, text.ToCString() );
+    strcpy( theText, text.c_str() );
     ( (CxPlot *)ptr_to_cxObject)->SetText( theText );
 }
 
@@ -267,12 +274,12 @@ void CrPlot::DrawPoly(int nVertices, int * vertices, bool fill)
 
 //STEVE added a justification parameter
 //RICHARD added a fontsize
-void CrPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
+void CrPlot::DrawText(int x, int y, string text, int param, int fontsize)
 {
     ((CxPlot*)ptr_to_cxObject)->DrawText(x, y, text, param, fontsize);
 }
 
-CcPoint CrPlot::GetTextArea(int size, CcString text, int param)
+CcPoint CrPlot::GetTextArea(int size, string text, int param)
 {
     return ((CxPlot*)ptr_to_cxObject)->GetTextArea(size,text,param);
 }
@@ -334,7 +341,7 @@ PlotDataPopup CrPlot::GetDataFromPoint(CcPoint* point)
     }
 }
 
-void CrPlot::CreateKey(int numser, CcString* names, int** col)
+void CrPlot::CreateKey(int numser, string* names, int** col)
 {
     ((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
 }
@@ -355,16 +362,18 @@ void CrPlot::ContextMenu(CcPoint * xy, int x1, int y1)
 
 void CrPlot::MenuSelected(int id)
 {
-    CcMenuItem* menuItem = (CcController::theController)->FindMenuItem( id );
+    CcMenuItem* menuItem = CrMenu::FindMenuItem( id );
 
     if ( menuItem )
     {
-        CcString theCommand = menuItem->command;
+        string theCommand = menuItem->command;
         SendCommand(theCommand);
         return;
     }
 
-    LOGERR("CrPlot:MenuSelected Plot cannot find menu item id = " + CcString(id));
+    ostringstream strm;
+    strm << "CrPlot:MenuSelected Plot cannot find menu item id = " << id ;
+    LOGERR(strm.str());
     return;
 }
 

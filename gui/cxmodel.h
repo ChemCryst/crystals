@@ -7,6 +7,11 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.34  2004/04/16 12:43:44  rich
+//  Speed up for  OpenGL rendering: Use new lighting scheme, drop use of
+//  two sets of displaylists for rendering a 'low res' model while rotating -
+//  it's faster not too.
+//
 //  Revision 1.33  2003/05/12 12:01:19  rich
 //  RIC: Oops; roll back some unintentional check-ins.
 //
@@ -27,7 +32,7 @@
 //
 //  Revision 1.28  2002/07/03 14:23:21  richard
 //  Replace as many old-style stream class header references with new style
-//  e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//  e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //  Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //  stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -117,6 +122,7 @@
 #define RC_NEXT_LINE_TOKEN 0x0790
 
 #include "ccpoint.h"
+#include <list>
 
 class CrModel;
 class CxGrid;
@@ -165,7 +171,7 @@ class CxModel : public BASEMODEL
   public:
     void Update(bool rescale=true);
     void DoDrawingLists();
-    int IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, bool atomsOnly=false);
+    int IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly=false);
     void SelectBoxedAtoms(CcRect rectangle, bool select);
     void Setup();
     void NeedRedraw(bool needrescale = false);
@@ -231,7 +237,7 @@ class CxModel : public BASEMODEL
     CcPoint m_ptLDown;       //  Last mouse position when rotating
     CcPoint m_ptMMove;       //  Last mouse position
 
-    CcList m_selectionPoints;
+    list<CcPoint> m_selectionPoints;
     CcRect m_selectRect;
     CcPoint m_movingPoint;
 
@@ -245,9 +251,9 @@ class CxModel : public BASEMODEL
     void SelectTool( int toolType );
 
     void DeletePopup();
-    void CreatePopup(CcString atomname, CcPoint point);
+    void CreatePopup(string atomname, CcPoint point);
 
-    void LoadDIBitmap(CcString filename);
+    void LoadDIBitmap(string filename);
 
 #ifdef __CR_WIN__
     BYTE * m_bitmapbits;

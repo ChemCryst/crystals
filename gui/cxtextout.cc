@@ -8,10 +8,12 @@
 //   Authors:   Richard Cooper
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cccontroller.h"
-#include    "ccstring.h"
-#include    "cclist.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 
 
 #include    "cxtextout.h"
@@ -107,11 +109,13 @@ CxTextOut::CxTextOut( CrTextOut * container )
 #ifdef __CR_WIN__
     m_hCursor = AfxGetApp()->LoadStandardCursor( IDC_IBEAM );
 #endif
+    m_Lines.reserve(m_nMaxLines);
 }
 
 CxTextOut::~CxTextOut()
 {
     RemoveTextOut();
+	m_Lines.clear();
 #ifdef __CR_WIN__
     if( m_pFont != NULL )
     {
@@ -150,17 +154,17 @@ void CxTextOut::Init()
     LOGFONT lf;
     CFont* pFont = CFont::FromHandle( hSysFont );
     pFont->GetLogFont( &lf );
-        CcString temp;
+        string temp;
         temp = (CcController::theController)->GetKey( "FontHeight" );
-        if ( temp.Len() )
-          lf.lfHeight = atoi( temp.ToCString() ) ;
+        if ( temp.length() )
+          lf.lfHeight = atoi( temp.c_str() ) ;
         temp = (CcController::theController)->GetKey( "FontWidth" );
-        if ( temp.Len() )
-          lf.lfWidth = atoi( temp.ToCString() ) ;
+        if ( temp.length() )
+          lf.lfWidth = atoi( temp.c_str() ) ;
         temp = (CcController::theController)->GetKey( "FontFace" );
-        for (int i=0;i<32;i++)
+        for (string::size_type i=0;i<32;i++)
         {
-              if ( i < temp.Len() )
+              if ( i < temp.length() )
                   lf.lfFaceName[i] = temp[i];
               else
                   lf.lfFaceName[i] = 0;
@@ -178,12 +182,12 @@ void CxTextOut::Init()
     *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
 
-    CcString temp;
+    string temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.Len() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
+    if ( temp.length() )
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
-          pFont->SetFaceName( temp.ToCString() );
+          pFont->SetFaceName( temp.c_str() );
     CxSetFont( pFont );
 #endif
 
@@ -209,7 +213,7 @@ void CxTextOut::Init()
 
 
 
-void  CxTextOut::SetText( CcString cText )
+void  CxTextOut::SetText( const string &cText )
 {
     AddLine( cText );
 }
@@ -228,15 +232,17 @@ void  CxTextOut::ViewTop()
 
 void  CxTextOut::Empty( )
 {
-#ifdef __CR_WIN__
-        m_Lines.RemoveAll();
+    m_Lines.clear();
         SetHead(-1);
+#ifdef __CR_WIN__
+//        m_Lines.RemoveAll();
+//        SetHead(-1);
 //        UpdateVScroll();
         Invalidate();
 #endif
 #ifdef __BOTHWX__
-        m_Lines.Clear();
-        SetHead(-1);
+//        m_Lines.Clear();
+//        SetHead(-1);
 //        UpdateVScroll();
         if ( mbOkToDraw )  Refresh();
 #endif
@@ -313,27 +319,19 @@ END_EVENT_TABLE()
 CXONCHAR(CxTextOut)
 
 
-void CxTextOut::AddLine( CcString& strLine )
+void CxTextOut::AddLine( const string& strLine )
 {
     // Add to the buffer, cutting off the first ( top ) line if
     // necessary.
 
-    m_Lines.Add( strLine.ToCString() );
-    if( GetLineCount() > m_nMaxLines )
-    {
 
-#ifdef __CR_WIN__
-        m_Lines.RemoveAt( 0 );
-#endif
-#ifdef __BOTHWX__
-        m_Lines.DeleteNode(m_Lines.GetFirst());
-#endif
+    if( GetLineCount() >= m_nMaxLines )
+               m_Lines.erase(m_Lines.begin());
 
-        m_nHead--;
-    };
+    m_Lines.push_back (strLine);
 
         // Automatically jump to the bottom...
-    m_nHead = CRMAX(GetLineCount(),GetMaxViewableLines());
+    m_nHead = (int) CRMAX(GetLineCount(),GetMaxViewableLines());
 
         // Automatically jump to the left...
     m_nXOffset = 0;
@@ -445,7 +443,7 @@ void CxTextOut::SetBackColour( COLORREF col )
 void CxTextOut::SetHead( int nPos )
 {
     if( nPos < -1 ) nPos = -1;
-    if( nPos > GetLineCount() - 1 ) nPos = CRMAX( GetLineCount() - 1, GetMaxViewableLines() -1 );
+    if( nPos > (int) GetLineCount() - 1 ) nPos = (int) CRMAX( GetLineCount() - 1, GetMaxViewableLines() -1 );
     m_nHead = nPos;
 #ifdef __CR_WIN__
     if( GetSafeHwnd() )
@@ -482,7 +480,7 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
 
     // Initialize the draw:
 
-    int nMaxLines = GetMaxViewableLines();                  // Max number of lines in view
+    unsigned int nMaxLines = GetMaxViewableLines();         // Max number of lines in view
     m_nLinesDone = 0;                                       // No Lines drawn
 
     // Initialize colours and font:
@@ -498,7 +496,7 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
     // Now draw the lines, one by one:
     if( m_nHead != -1 )
     {
-        int nRunner = m_nHead;
+        unsigned int nRunner = (unsigned int) m_nHead;
 #ifdef __CR_WIN__
         int nX = clientRc.left - m_nXOffset;
         int nMasterY = clientRc.bottom;
@@ -507,7 +505,7 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
         int nX = - m_nXOffset;
         int nMasterY = clientRc.GetHeight();
 #endif
-        CcString strTemp;
+        string strTemp;
         int nPos = -1;
         do
         {
@@ -541,18 +539,20 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
             else
             {
 
-#ifdef __CR_WIN__
-                           strTemp = CcString(m_Lines[ nRunner ]);
-#endif
-#ifdef __BOTHWX__
-                           strTemp = CcString(m_Lines.ListToArray()[nRunner] );
-#endif
+               strTemp = m_Lines[ nRunner ];
+//#ifdef __CR_WIN__
+//                           strTemp = string(m_Lines[ nRunner ]);
+//#endif
+//#ifdef __BOTHWX__
+//                           strTemp = string(m_Lines.ListToArray()[nRunner] );
+//#endif
 
             }
             nMasterY -= m_nFontHeight;
             RenderSingleLine( strTemp, &dc, nX, nMasterY );
+			if ( nRunner == 0 ) break;
             nRunner--;
-        }while( nRunner > -1 && nMasterY >= 0 );
+        }while( nMasterY >= 0 );
 
         // Pad out any remaining area...
 
@@ -607,7 +607,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
                             UINT nPos,
                             CScrollBar* pScrollBar )
 {
-    int nUBound = CRMAX(GetLineCount() - 1, GetMaxViewableLines() - 1);
+    int nUBound = (int) CRMAX(GetLineCount() - 1, GetMaxViewableLines() - 1);
     switch( nSBCode )
     {
     case SB_TOP:
@@ -617,7 +617,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
         SetHead( nUBound );
         break;
     case SB_PAGEUP:
-        if( m_nHead > GetMaxViewableLines() - 1 )
+        if( m_nHead > (int) GetMaxViewableLines() - 1 )
         {
             m_nHead -= GetMaxViewableLines()/2;
             m_nHead = CRMAX(0,m_nHead);
@@ -625,7 +625,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
         }
         break;
     case SB_LINEUP:
-        if( m_nHead > GetMaxViewableLines() - 1 )
+        if( m_nHead > (int) GetMaxViewableLines() - 1 )
         {
             m_nHead--;
             SetHead( m_nHead );
@@ -634,7 +634,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
     case SB_PAGEDOWN:
         if( m_nHead < nUBound )
         {
-            m_nHead += GetMaxViewableLines()/2;
+            m_nHead += (int) GetMaxViewableLines()/2;
             m_nHead = CRMIN (m_nHead, nUBound);
             SetHead( m_nHead );
          };
@@ -687,7 +687,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
           else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEDOWN ) {
                  if( m_nHead < nUBound )
                  {
-                   m_nHead += GetMaxViewableLines()/2;
+                   m_nHead += (int) GetMaxViewableLines()/2;
                    m_nHead = CRMIN (m_nHead, nUBound);
                    SetHead( m_nHead );
                  };
@@ -824,7 +824,7 @@ BOOL CxTextOut::OnSetCursor( CWnd* pWnd,
 void CxTextOut::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
 
-      CcString dummy;
+      string dummy;
       if ( IsAHit ( dummy, wpoint.x, wpoint.y ) )
       {
           SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR4) );
@@ -841,7 +841,7 @@ void CxTextOut::OnMouseMove( UINT nFlags, CPoint wpoint )
 void CxTextOut::OnMouseMove( wxMouseEvent & evt )
 {
 
-      CcString dummy;
+      string dummy;
       if ( IsAHit ( dummy, evt.GetX(), evt.GetY() ) )
       {
           SetCursor( wxCursor(wxCURSOR_HAND) );
@@ -855,7 +855,7 @@ void CxTextOut::OnMouseMove( wxMouseEvent & evt )
 #endif
 
 
-bool CxTextOut::IsAHit( CcString & commandString, int x, int y )
+bool CxTextOut::IsAHit( string & commandString, int x, int y )
 {
 
 #ifdef __CR_WIN__
@@ -867,56 +867,57 @@ bool CxTextOut::IsAHit( CcString & commandString, int x, int y )
      int line = m_nHead - ( ( clientRc.GetHeight() - y ) / m_nFontHeight );
 #endif
 
-        CcString strToRender;
-        CcString strTemp;
+        string strToRender;
+        string strTemp;
         if ( line < 0 ) line = 0;
-        if ( line < GetLineCount() )
+        if ( line < (int)GetLineCount() )
         {
-#ifdef __CR_WIN__
-            strTemp = CcString(m_Lines[ line ]);
-#endif
-#ifdef __BOTHWX__
-            strTemp = CcString(m_Lines.ListToArray()[line] );
-#endif
+            strTemp = m_Lines[ line ];
+//#ifdef __CR_WIN__
+//            strTemp = string(m_Lines[ line ]);
+//#endif
+//#ifdef __BOTHWX__
+//            strTemp = string(m_Lines.ListToArray()[line] );
+//#endif
         }
-        int nPos;
+        string::size_type nPos;
         int cx=0, nWidth=0, oldnX=0, cy=0;
         int nX = - m_nXOffset;
 
         m_bInLink = false; //Beginning new line.
         bool wasInLink = false;
-        CcString commandText;
+        string commandText;
 
         do
         {
-            nPos = strTemp.Match( CONTROL_BYTE );
-            if( nPos > 1 )
+            nPos = strTemp.find( CONTROL_BYTE );
+            if( nPos != string::npos )
             {
-                strToRender = strTemp.Sub( 1, nPos-1 );
+                strToRender = strTemp.substr( 0, nPos );
                 commandText = strToRender;
-                if( strToRender.Length() > 0 )
+                if( strToRender.length() > 0 )
                 {
 #ifdef __CR_WIN__
-                    cx = strToRender.Length() * m_nAvgCharWidth;
+                    cx = strToRender.length() * m_nAvgCharWidth;
 #endif
 #ifdef __BOTHWX__
-                    GetTextExtent( strToRender.ToCString(), &cx, &cy );
+                    GetTextExtent( strToRender.c_str(), &cx, &cy );
 #endif
                     nX += cx;
                     nWidth += cx;
                 };
                 COLOURCODE code;
-                strTemp = strTemp.Sub( nPos,-1 );
+                strTemp.erase( 0, nPos );
                 GetColourCodes( strTemp, &code );
             }
             else
             { 
                 commandText = strTemp;
 #ifdef __CR_WIN__
-                cx = strTemp.Length() * m_nAvgCharWidth;
+                cx = strTemp.length() * m_nAvgCharWidth;
 #endif
 #ifdef __BOTHWX__
-                GetTextExtent( strTemp.ToCString(), &cx, &cy );
+                GetTextExtent( strTemp.c_str(), &cx, &cy );
 #endif
                 nWidth += cx;
                 nX += cx;
@@ -945,10 +946,10 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
         int x = event.m_x;
         int y = event.m_y;
 #endif
-        CcString temp;
+        string temp;
         if ( IsAHit ( temp, x, y ) )
         {
-//          TEXTOUT ( CcString ( "Opening link: " + temp ) );
+//          TEXTOUT ( string ( "Opening link: " + temp ) );
           ((CrTextOut*)ptr_to_crObject)->ProcessLink( temp );
         }
 
@@ -959,10 +960,9 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
 
 
 
-int CxTextOut::GetMaxViewableLines()
+unsigned int CxTextOut::GetMaxViewableLines()
 {
 #ifdef __CR_WIN__
-
     ASSERT( GetSafeHwnd() != NULL );    // Must have been created
     CRect clientRc; GetClientRect( &clientRc );
     return( clientRc.Height() / m_nFontHeight );
@@ -1009,54 +1009,55 @@ void CxTextOut::UpdateVScroll()
 };
 
 
-void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, int nY )
+void CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int nY )
 {
         COLORREF lastcol = m_BackCol;
 #ifdef __CR_WIN__
     CRect clientRc; GetClientRect( &clientRc );
     SIZE sz;
+    unsigned int cx,cy;
 #endif
 #ifdef __BOTHWX__
     wxSize clientRc = GetClientSize( );
     m_nAvgCharWidth = pDC->GetCharWidth();
+    int cx,cy;
 #endif
 
-    CcString strTemp = strLine;
-    CcString strToRender;
+    string strTemp = strLine;
+    string strToRender;
 
-    int cx,cy;
-    int nPos;
-    int nWidth = 0;
+    string::size_type nPos;
+    unsigned int nWidth = 0;
     bool bUnderline = false;
     m_bInLink = false; //Beginning new line.
 
     do
     {
-        nPos = strTemp.Match( CONTROL_BYTE );
-        if( nPos > 0 )
+        nPos = strTemp.find( CONTROL_BYTE );
+        if( nPos != string::npos )
         {
-            if ( nPos > 1 ) strToRender = strTemp.Sub( 1, nPos-1 );    //String up to the CONTROL BYTE
-            if( strToRender.Length() > 0 )
+            strToRender = strTemp.substr( 0, nPos );  //String up to the CONTROL BYTE
+            if( strToRender.length() > 0 )
             {
 #ifdef __CR_WIN__
                 if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
                 {
-                    ::GetTextExtentPoint32( pDC->GetSafeHdc(), strToRender.ToCString(), strToRender.Length(), &sz );
+                    ::GetTextExtentPoint32( pDC->GetSafeHdc(), strToRender.c_str(), strToRender.length(), &sz );
                     cx = sz.cx;
                 }
                 else
-                    cx = strToRender.Length() * m_nAvgCharWidth;
+                    cx = strToRender.length() * m_nAvgCharWidth;
 #endif
 #ifdef __BOTHWX__
-                GetTextExtent( strToRender.ToCString(), &cx, &cy );
+                GetTextExtent( strToRender.c_str(), &cx, &cy );
 #endif
 
 
 #ifdef __CR_WIN__
-                pDC->TextOut( nX, nY, strToRender.ToCString() );
+                pDC->TextOut( nX, nY, strToRender.c_str() );
 #endif
 #ifdef __BOTHWX__
-                pDC->DrawText( strToRender.ToCString(), nX, nY );
+                pDC->DrawText( strToRender.c_str(), nX, nY );
 #endif
 
                 if (bUnderline)
@@ -1077,7 +1078,7 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
                 nWidth += cx;
             };
             COLOURCODE code;
-            strTemp = strTemp.Sub(nPos,-1);        // Rest of string, including CONTROL BYTE
+            strTemp.erase(0,nPos);        // Rest of string, including CONTROL BYTE
             GetColourCodes( strTemp, &code );
 #ifdef __CR_WIN__
             if( code.nFore != -1 ) pDC->SetTextColor( m_ColTable[ code.nFore ] );
@@ -1108,21 +1109,21 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
 #ifdef __CR_WIN__
             if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
             {
-                                ::GetTextExtentPoint32( pDC->GetSafeHdc(), strTemp.ToCString(), strTemp.Length(), &sz );
+                                ::GetTextExtentPoint32( pDC->GetSafeHdc(), strTemp.c_str(), strTemp.length(), &sz );
                 cx = sz.cx;
             }
             else
-                cx = strTemp.Length() * m_nAvgCharWidth;
+                cx = strTemp.length() * m_nAvgCharWidth;
 #endif
 #ifdef __BOTHWX__
-            GetTextExtent( strTemp.ToCString(), &cx, &cy );
+            GetTextExtent( strTemp.c_str(), &cx, &cy );
 #endif
             nWidth += cx;
 #ifdef __CR_WIN__
-            pDC->TextOut( nX, nY, strTemp.ToCString() );
+            pDC->TextOut( nX, nY, strTemp.c_str() );
 #endif
 #ifdef __BOTHWX__
-            pDC->DrawText( strTemp.ToCString(), nX, nY );
+            pDC->DrawText( strTemp.c_str(), nX, nY );
 #endif
             nX += cx;
 
@@ -1157,33 +1158,34 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
 }
 
 
-int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
+int CxTextOut::GetColourCodes( string& strData, COLOURCODE* pColourCode )
 {
 
 #ifdef __CR_WIN__
     ASSERT( pColourCode != NULL );
-    ASSERT( strData.Sub( 1,1 ) == CONTROL_BYTE );
+    ASSERT( strData[0] == CONTROL_BYTE );
 #endif
 
-    if   (strData.Length() > 1 )
+    if   (strData.length() > 1 )
     {
-       strData = strData.Sub( 2,-1 ) + " "; // Truncate control byte
-                                            //Pad end of string with space for every removed byte.
+       strData.erase(0,1); // Truncate control byte
+       strData += " ";     //Pad end of string with space for every removed byte.
     }
-    else                         strData = "";
+    else
+       strData = "";
 
     int nBytesToSkip = 1;
     pColourCode->nUnder = false;
 
  // Jump out if strData is now empty...
 
-    if( strData.Length() == 0 )
+    if( strData.length() == 0 )
     {
       pColourCode->nFore = -1;    // No foreground colour
       pColourCode->nBack = -1;    // No background colour
       m_bInLink = false;
     }
-    else if ( strData.Match( LINK_BYTE ) == 1 )
+    else if ( strData[0] == LINK_BYTE )
     {
 
 // A link code {& - if in a link go back to normal, otherwise start a link.
@@ -1202,47 +1204,53 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
         m_bInLink = true;
       }
       nBytesToSkip = 2;                       // Skip the &
-      strData = strData.Sub( 2,-1 ) + " ";    // Remove the &
+      strData.erase(0,1);
+      strData += " ";                         // Remove the &
     }
-    else if ( strData.Match( ERROR_BYTE ) == 1 )
+    else if ( strData[0] == ERROR_BYTE )
     {
         m_bInLink = false;
         pColourCode->nFore = 0;                 //white on
         pColourCode->nBack = 4;                 //red
         nBytesToSkip = 2;                       // Skip the E
-        strData = strData.Sub( 2,-1 ) + " ";    // Remove the E
+        strData.erase(0,1);
+        strData += " ";                         // Remove the E
     }
-    else if ( strData.Match( INFO_BYTE ) == 1 )
+    else if ( strData[0] == INFO_BYTE )
     {
         m_bInLink = false;
         pColourCode->nFore = 12;                // lblue on
         pColourCode->nBack = 15;                // lgrey
         nBytesToSkip = 2;                       // Skip the I
-        strData = strData.Sub( 2,-1 ) + " ";    // Remove the I
+        strData.erase(0,1);
+        strData += " ";                         // Remove the I
     }
-    else if ( strData.Match( STATUS_BYTE ) == 1 )
+    else if ( strData[0] == STATUS_BYTE )
     {
         m_bInLink = false;
         pColourCode->nFore = 0;                 // white on
         pColourCode->nBack = 6;                 // magenta
         nBytesToSkip = 2;                       // Skip the S
-        strData = strData.Sub( 2,-1 ) + " ";    // Remove the S
+        strData.erase(0,1);
+        strData += " ";                         // Remove the S
     }
-    else if ( strData.Match( RESULT_BYTE ) == 1 )
+    else if ( strData[0] == RESULT_BYTE )
     {
         m_bInLink = false;
         pColourCode->nFore = 5;                 // maroon on
         pColourCode->nBack = 15;                // lgrey
         nBytesToSkip = 2;                       // Skip the R
-        strData = strData.Sub( 2,-1 ) + " ";    // Remove the R
+        strData.erase(0,1);
+        strData += " ";                         // Remove the R
     }
-    else if ( strData.Match( NORMAL_BYTE ) == 1 )
+    else if ( strData[0] == NORMAL_BYTE )
     {
         m_bInLink = false;
         pColourCode->nFore = 1;                 // black on
         pColourCode->nBack = 0;                 // white
         nBytesToSkip = 2;                       // Skip the N
-        strData = strData.Sub( 2,-1 ) + " ";    // Remove the N
+        strData.erase(0,1);
+        strData += " ";                         // Remove the N
     }
     else
     {
@@ -1253,51 +1261,54 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
 
 // Handle foreground and background colours:
 
-      int nComma = strData.Match( ',' );   // Position of comma.  Only present if background colour present
+      string::size_type nComma = strData.find( ',' );   // Position of comma.  Only present if background colour present
 
-// Proceed if the comma is at pos 2,                      i.e. {x,yy
-//         OR the comma is at pos 3 and pos 2 is a digit, i.e. {xx,yy
+// Proceed if the comma is at pos 1,                      i.e. {x,yy
+//         OR the comma is at pos 2 and pos 1 is a digit, i.e. {xx,yy
+//                                                              0123
 
-      if ( ( nComma == 2 ) || ( nComma == 3 && isdigit(strData[1]) ) )
+      if ( ( nComma == 1 ) || ( nComma == 2 && isdigit(strData[1]) ) )
       {
-        CcString strFore = strData.Sub( 1,nComma-1 );           // Get the foreground string xx or x
-        nBytesToSkip += strFore.Length() + 1;                   // Skip fore code and comma
-        pColourCode->nFore = atoi( strFore.ToCString() );       // Get Foreground Code
-        strData = strData.Sub( nComma+1 ,-1 );                  // Truncate string
+        string strFore = strData.substr(0,nComma);    // Get the foreground string xx or x
+        nBytesToSkip += strFore.length() + 1;         // Skip fore code and comma
+        pColourCode->nFore = atoi( strFore.c_str() ); // Get Foreground Code
+        strData.erase(0,nComma+1);                    // Truncate string
 
         // Now look for backcolour:
 
-        CcString strBack;
+        string strBack;
         int nCodeLength = 1;             //  assume one digit background code
-        if ( strData.Length() >= 2 )
+        if ( strData.length() >= 2 )
         {
           if( isdigit( strData[1] ) )  nCodeLength++;  // no, two digit background code.
         }
 
         nBytesToSkip+= nCodeLength;
-        strBack = strData.Sub( 1,nCodeLength );          // Get the background string yy or y
-        strData = strData.Sub( CRMIN(strData.Length(),nCodeLength+1),-1 );       // Leave the rest of the string in strData.
-        for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
-        pColourCode->nBack = atoi( strBack.ToCString() ); // Get the colour code.
+        strBack = strData.substr( 0,nCodeLength );        // Get the background string yy or y
+        strData.erase(0,nCodeLength) ;                    // Leave the rest of the string in strData.
+        strData += string(nBytesToSkip,' ');
+//        for(int j=1;j<nBytesToSkip;j++){strData += " ";}  // Pad end.
+        pColourCode->nBack = atoi( strBack.c_str() );     // Get the colour code.
       }
       else
       {
          // No background colour present, the delimiter for this code
          // is the next non-numeric character...
 
-        CcString strFore;
+        string strFore;
         int nCodeLength = 1;          // assume one digit foreground code
-        if( strData.Length() >= 2 )
+        if( strData.length() >= 2 )
         {
           if( isdigit( strData[ 1 ] ) ) nCodeLength++;  // no, two digit code.
         }
 
         nBytesToSkip += nCodeLength;
-        strFore = strData.Sub( 1,nCodeLength );
-        strData = strData.Sub( CRMIN(nCodeLength+1,strData.Length()),-1 ); // Leave rest of text in strData,
-        for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
+        strFore = strData.substr( 0,nCodeLength );
+        strData.erase(0,nCodeLength);                    // Leave rest of text in strData,
+        strData += string(nBytesToSkip,' ');
+//        for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
                                                                             // but avoid calling Sub with out of bound positions.
-        pColourCode->nFore = atoi( strFore.ToCString() );                // Get colourcode
+        pColourCode->nFore = atoi( strFore.c_str() );                // Get colourcode
         pColourCode->nBack = -1;                                         // Default background colour
       }
   }
@@ -1334,9 +1345,15 @@ void CxTextOut::ChooseFont()
         if ( fd.DoModal() == IDOK )
         {
            CxSetFont( lf );
-           (CcController::theController)->StoreKey( "FontHeight", CcString(lf.lfHeight) );
-           (CcController::theController)->StoreKey( "FontWidth", CcString(lf.lfWidth) );
-           (CcController::theController)->StoreKey( "FontFace", CcString(lf.lfFaceName) );
+           ostringstream strm;
+           strm << lf.lfHeight;
+           (CcController::theController)->StoreKey( "FontHeight", strm.str() );
+           strm.str("");
+           strm << lf.lfWidth;
+           (CcController::theController)->StoreKey( "FontWidth", strm.str() );
+           strm.str("");
+           strm << lf.lfFaceName;
+           (CcController::theController)->StoreKey( "FontFace", strm.str() );
         }
 #endif
 
@@ -1371,9 +1388,12 @@ void CxTextOut::ChooseFont()
 
             *pFont = newdata.GetChosenFont();
             CxSetFont( pFont );
-
-           (CcController::theController)->StoreKey( "FontHeight", CcString(m_pFont->GetPointSize()) );
-           (CcController::theController)->StoreKey( "FontFace", CcString(m_pFont->GetFaceName()) );
+         ostringstream strstrm;
+         strstrm << m_pFont->GetPointSize();
+          (CcController::theController)->StoreKey( "FontHeight", strstrm.str() );
+         strstrm.str("");
+          strstrm << m_pFont->GetFaceName();
+         (CcController::theController)->StoreKey( "FontFace", strstrm.str() );
 
      }
 
@@ -1409,7 +1429,7 @@ void CxTextOut::ScrollPage(bool up)
 {
    if ( up )
    {
-     if( m_nHead > GetMaxViewableLines() - 1 )
+     if( m_nHead > (int) GetMaxViewableLines() - 1 )
      {
         m_nHead -= GetMaxViewableLines()/2;
         m_nHead = CRMAX(0,m_nHead);

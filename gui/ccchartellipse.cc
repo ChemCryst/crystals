@@ -2,7 +2,6 @@
 #include "crystalsinterface.h"
 #include    "crconstants.h"
 #include "ccchartellipse.h"
-#include "cctokenlist.h"
 #include "crchart.h"
 
 CcChartEllipse::CcChartEllipse(bool filled)
@@ -27,18 +26,17 @@ CcChartEllipse::~CcChartEllipse()
 {
 }
 
-bool CcChartEllipse::ParseInput(CcTokenList* tokenList)
+bool CcChartEllipse::ParseInput(deque<string> &  tokenList)
 {
-    CcString theString;
 //Just read four integers.
-    theString = tokenList->GetToken();
-    x = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    y = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    w = atoi( theString.ToCString() );
-    theString = tokenList->GetToken();
-    h = atoi( theString.ToCString() );
+    x = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    y = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    w = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
+    h = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
     return true;
 }
 

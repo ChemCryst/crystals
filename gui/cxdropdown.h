@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/06/19 16:40:30  rich
+//   Allow DropDown listboxes to be disabled from SCRIPT.
+//
+//   Increase minimum height of dropdown listbox on Windows, as
+//   it wasn't quite high enough.
+//
 //   Revision 1.9  2002/07/25 16:00:13  richard
 //
 //   Resize dropdown listbox if number of items changes.
@@ -25,9 +31,9 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
+/*#ifdef __POWERPC__
 class LStdPopupMenu;
-#endif
+#endif*/
 
 #ifdef __MOTO__
 #include    <LStdControl.h>
@@ -50,13 +56,13 @@ class CxGrid;
 class CxDropDown : public BASEDROPDOWN
 {
     public:
-        CcString GetDropDownText(int index);
+        string GetDropDownText(int index);
         int mItems;
         void Focus();
         static CxDropDown * CreateCxDropDown( CrDropDown * container, CxGrid * guiParent );
             CxDropDown( CrDropDown * container );
             ~CxDropDown();
-        void    AddItem( char * text );
+        void    AddItem( const string & text );
         void CxDestroyWindow();
             void  CxSetSelection ( int select );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
@@ -86,8 +92,8 @@ class CxDropDown : public BASEDROPDOWN
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            void Selected();
-            void OnChar(wxKeyEvent & event );
+			void Selected(wxCommandEvent & e);
+			void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
 #endif
 

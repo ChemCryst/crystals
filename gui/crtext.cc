@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.5  2001/06/17 15:14:14  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -45,7 +51,7 @@ CRSETGEOMETRY(CrText,CxText)
 CRGETGEOMETRY(CrText,CxText)
 CRCALCLAYOUT(CrText,CxText)
 
-CcParse CrText::ParseInput( CcTokenList * tokenList )
+CcParse CrText::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -58,25 +64,25 @@ CcParse CrText::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "Created Static Text " + mName );
     }
 
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting Text to '" + mText + "'");
                 break;
             }
             case kTChars:
             {
-                tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                int chars = atoi( theString.ToCString() );
-                ((CxText*)ptr_to_cxObject)->SetVisibleChars( chars );
-                LOGSTAT( "Setting Text Chars Width: " + theString );
+                tokenList.pop_front(); // Remove that token!
+                ((CxText*)ptr_to_cxObject)->SetVisibleChars( atoi( tokenList.front().c_str() ) );
+                LOGSTAT( "Setting Text Chars Width: " + tokenList.front() );
+                tokenList.pop_front();
                 break;
             }
             default:
@@ -90,26 +96,26 @@ CcParse CrText::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void CrText::GetValue(CcTokenList * tokenList)
+void CrText::GetValue( deque<string> &  tokenList)
 {
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
     if( desc == kTQText )
     {
-        tokenList->GetToken();
+        tokenList.pop_front();
         SendCommand( mText, true );
     }
     else
     {
         SendCommand( "ERROR",true );
-        CcString error = tokenList->GetToken();
-        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + error);
+        LOGWARN( "CrEditBox:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
     }
 }
 
 
 
 
-void CrText::SetText( CcString text )
+void CrText::SetText( const string &text )
 {
     ( (CxText *)ptr_to_cxObject)->SetText( text );
 }

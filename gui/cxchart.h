@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.13  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -41,9 +47,9 @@
 #include    "crguielement.h"
 #include    "ccpoint.h"
 
-#ifdef __POWERPC__
-class LStdChart;
-#endif
+//#ifdef __POWERPC__
+//class LStdChart;
+//#endif
 
 #ifdef __MOTO__
 #include    <LStdControl.h>
@@ -83,13 +89,13 @@ class CxChart : public BASECHART
     public:
         void NoEdge();
         void Invert(bool inverted);
-        void FitText(int x1, int y1, int x2, int y2, CcString theText, bool rotated);
+        void FitText(int x1, int y1, int x2, int y2, string theText, bool rotated);
         void UseIsotropicCoords(bool iso);
         void SetPolygonDrawMode(bool on);
         void SetColour(int r, int g, int b);
         void CxDestroyWindow();
         void DrawPoly(int nVertices, int* vertices, bool fill);
-        void DrawText(int x, int y, CcString text);
+        void DrawText(int x, int y, string text);
         void DrawEllipse(int x, int y, int w, int h, bool fill);
         void Clear();
         int mIdealHeight;
@@ -104,7 +110,7 @@ class CxChart : public BASECHART
         static CxChart *    CreateCxChart( CrChart * container, CxGrid * guiParent );
         CxChart(CrChart* container);
         ~CxChart();
-        void    SetText( char * text );
+        void    SetText( const string & text );
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
         int GetLeft();

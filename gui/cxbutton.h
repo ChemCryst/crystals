@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.10  2003/02/20 14:08:04  rich
 //   New option of making buttoms "SLIM" they fit into text more easily.
 //
@@ -38,9 +44,9 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
-class LStdButton;
-#endif
+//#ifdef __POWERPC__
+//class LStdButton;
+//#endif
 
 #ifdef __MOTO__
 #include    <LStdControl.h>
@@ -73,8 +79,8 @@ class CxButton : public BASEBUTTON
         CxButton(CrButton* container);
         ~CxButton();
         void CxDestroyWindow();
-        void    SetText( char * text );
-        void    SetLength( CcString ltext );
+        void    SetText( const string &text );
+        void    SetLength( string ltext );
         void    SetSlim();
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
@@ -85,14 +91,13 @@ class CxButton : public BASEBUTTON
         int GetIdealHeight();
         static int AddButton( void ) { mButtonCount++; return mButtonCount; };
         static void RemoveButton( void ) { mButtonCount--; };
-        void    BroadcastValueMessage( void );
         void SetDef();
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
         static int mButtonCount;
         bool m_lengthStringUsed;
-        CcString m_lengthString;
+        string m_lengthString;
         bool m_Slim;
 //      LDefaultOutline * mOutlineWidget;
 
@@ -104,7 +109,7 @@ class CxButton : public BASEBUTTON
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            void ButtonClicked();
+            void ButtonClicked(wxCommandEvent & e);
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
 #endif

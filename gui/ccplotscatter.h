@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.12  2002/02/21 15:23:12  DJWgroup
 //   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -50,12 +56,11 @@
 #ifndef     __CcPlotScatter_H__
 #define     __CcPlotScatter_H__
 
-#include "ccstring.h"
-class CcTokenList;
-class CcList;
+#include <string>
+using namespace std;
+
 class CrPlot;
 class CcSeriesScatter;
-class CcString;
 class CcPlotAxes;
 class PlotDataPopup;
 
@@ -63,28 +68,15 @@ class CcPlotScatter : public CcPlotData
 {
     public:
         void DrawView(bool print);
-        bool ParseInput( CcTokenList * tokenList );
+        bool ParseInput( deque<string> & tokenList );
         CcPlotScatter();
         virtual ~CcPlotScatter();
 
         PlotDataPopup GetDataFromPoint(CcPoint *point);
-        void CreateSeries(int numser, int* type);
-        void AllocateMemory();
+        void CreateSeries(int numser, vector<int> & type);
         void AddSeries(int type, int length);
         void ExtendSeriesLength(int ser);
 };
 
-class CcSeriesScatter : public CcSeries
-{
-public:
-    bool ParseInput(CcTokenList * tokenList);
-    CcSeriesScatter();
-    virtual ~CcSeriesScatter();
-
-    void AllocateMemory();
-
-    float *     m_Data[2];                  // pointer to a this series' data (x and y)
-    CcString*   m_Label;                    // pointer to the label for each data point
-};
 
 #endif

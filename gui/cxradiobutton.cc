@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2004/05/13 09:16:12  rich
+//   I must release the device context after 'get'ting it during GetIdealHeight
+//   and width calls.
+//
 //   Revision 1.9  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -64,26 +68,29 @@ Destroy();
 #endif
 }
 
+#ifdef __CR_WIN__
 void    CxRadioButton::ButtonChanged()
 {
-#ifdef __CR_WIN__
     bool state = ( GetRadioState() == 1 ) ? true : false;
     if (state)
         ((CrRadioButton*)ptr_to_crObject)->ButtonOn();
+}
 #endif
 #ifdef __BOTHWX__
+void    CxRadioButton::ButtonChanged(wxCommandEvent& e)
+{
       if ( GetValue() )
         ((CrRadioButton*)ptr_to_crObject)->ButtonOn();
-#endif
 }
+#endif
 
-void    CxRadioButton::SetText( char * text )
+void    CxRadioButton::SetText( const string & text )
 {
 #ifdef __BOTHWX__
-      SetLabel(text);
+      SetLabel(text.c_str());
 #endif
 #ifdef __CR_WIN__
-    SetWindowText(text);
+    SetWindowText(text.c_str());
 #endif
 
 }
@@ -219,7 +226,7 @@ void CxRadioButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxRadioButton::OnChar( wxKeyEvent & event )
 {
-      switch(event.KeyCode())
+      switch(event.GetKeyCode())
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
@@ -233,7 +240,7 @@ void CxRadioButton::OnChar( wxKeyEvent & event )
         }
         default:
         {
-                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
+                  ptr_to_crObject->FocusToInput((char)event.GetKeyCode());
             break;
         }
     }

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2003/11/28 10:29:11  rich
+//   Replace min and max macros with CRMIN and CRMAX. These names are
+//   less likely to confuse gcc.
+//
 //   Revision 1.19  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -15,7 +19,7 @@
 //   yet (CRYSTALS, not the compilers...)
 //
 //   Revision 1.18  2002/11/06 10:59:09  rich
-//   New function in CcString to return a double with a specified precision (sig figs)
+//   New function in string to return a double with a specified precision (sig figs)
 //   Called from editbox to allow 7 digits of precision.
 //
 //   Revision 1.17  2001/12/12 14:18:40  ckp2
@@ -41,7 +45,9 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+#include    <sstream>
+using namespace std;
 #include    "cxeditbox.h"
 #include    "cccontroller.h"
 #include    "cxgrid.h"
@@ -78,7 +84,7 @@ CxEditBox * CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
     theEditBox->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theEditBox->Create(guiParent, -1, "EditBox", wxPoint(0,0), wxSize(10,10));
+      theEditBox->Create(guiParent, -1, "edit");
 #endif
     return theEditBox;
 }
@@ -107,64 +113,62 @@ Destroy();
 #endif
 }
 
-void  CxEditBox::SetText( CcString text )
+void  CxEditBox::SetText( const string & text )
 {
+    ostringstream strm;
+    string temp;
 
     if(allowedInput == CXE_INT_NUMBER)        //If we have an integer, read it in then write it out again to check.
     {
-      int number = atoi(text.ToCString());
-      text = CcString ( number );
+      strm << atoi(text.c_str());
+      temp = strm.str();
     }
     else if( allowedInput == CXE_REAL_NUMBER) //If we have an real, read it in then write it out again to check.
     {
-            double number = atof(text.ToCString());
-            text = CcString ( number, 8 );
+      strm << atof(text.c_str());
+      temp = strm.str();
+    }
+    else
+    {
+      temp = text;
     }
 
-    int j=0;
-    for ( int i = 0; i < text.Len(); i++ )
-    {
-      if ( text[i] != ' ' ) j=i;
-    }
-    if (text.Len()) text = text.Sub(1,j+1); //Don't try this on zero length strings.
+    string::size_type j = temp.find_last_not_of(' ');
+    if ( j != string::npos ) temp.erase(j+1);
 
-    if ( (text.Len()) &&( text.Len() > m_Limit) )
+    if ( temp.length() > m_Limit )
     {
-      text = text.Sub(1,m_Limit);
+       temp.erase(m_Limit);
 #ifdef __BOTHWIN__
       MessageBeep(MB_ICONASTERISK);
 #endif
     }
-//    for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
-//    if ( text[i] == ' ' )    text[i] = '\0';
-//    else                     i = 0;
-
 #ifdef __BOTHWX__
-      SetValue( text.ToCString() );
+      SetValue( temp.c_str() );
 #endif
 #ifdef __CR_WIN__
-      SetWindowText( text.ToCString() );
+      SetWindowText( temp.c_str() );
 #endif
 }
 
 
-void  CxEditBox::AddText( CcString text )
+void  CxEditBox::AddText( const string & text )
 {
 #ifdef __CR_WIN__
-  if (GetWindowTextLength() + text.Len() > m_Limit)
+  if (GetWindowTextLength() + text.length() > m_Limit)
   {
     MessageBeep(MB_ICONASTERISK);
   }
   else
   {
     SetSel(GetWindowTextLength(),GetWindowTextLength());       //Set the selection at the end of the text buffer.
-    ReplaceSel(text.ToCString());    //Replace the selection (nothing) with the text to add.
+    ReplaceSel(text.c_str());    //Replace the selection (nothing) with the text to add.
     SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
     SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
   }
 #endif
 #ifdef __BOTHWX__
-      AppendText(text.ToCString());
+      AppendText(text.c_str());
       SetFocus();
 #endif
 }
@@ -203,7 +207,7 @@ int CxEditBox::GetText(char* theText, int maxlen)
 #endif
 #ifdef __BOTHWX__
       wxString wtext = GetValue();
-      int textlen = wtext.Length();
+      int textlen = wtext.length();
       strcpy(theText, wtext.c_str());
 #endif
 
@@ -223,7 +227,7 @@ int CxEditBox::GetText(char* theText, int maxlen)
     return textlen;
 }
 
-CcString CxEditBox::GetText()
+string CxEditBox::GetText()
 {
       char theText[255];
       int maxlen = 255;
@@ -232,7 +236,7 @@ CcString CxEditBox::GetText()
 #endif
 #ifdef __BOTHWX__
       wxString wtext = GetValue();
-      int textlen = wtext.Length();
+      int textlen = wtext.length();
       strcpy(theText, wtext.c_str());
 #endif
 
@@ -249,7 +253,7 @@ CcString CxEditBox::GetText()
         sprintf(theText,"%-f",number);
     }
 
-      return CcString( theText );
+      return string( theText );
 }
 
 void    CxEditBox::SetVisibleChars( int count )
@@ -346,7 +350,7 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxEditBox::OnChar( wxKeyEvent & event )
 {
-      int nChar = event.KeyCode();
+      int nChar = event.GetKeyCode();
 
       if ( nChar == 9 )
     {
@@ -454,7 +458,7 @@ void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 {
-            switch (event.KeyCode())
+            switch (event.GetKeyCode())
             {
                   case WXK_UP:
                         ((CrEditBox*)ptr_to_crObject)->SysKey( CRUP );
@@ -469,7 +473,7 @@ void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 }
 #endif
 
-void CxEditBox::LimitChars(int limit)
+void CxEditBox::LimitChars(string::size_type limit)
 {
    m_Limit = limit;
 #ifdef __CR_WIN__
@@ -492,27 +496,27 @@ void CxEditBox::IsInputPlace()
 #else
     *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
-    CcString temp;
+    string temp;
     temp = (CcController::theController)->GetKey( "MainFontHeight" );
-    if ( temp.Len() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
+    if ( temp.length() )
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "MainFontFace" );
-          pFont->SetFaceName( temp.ToCString() );
+          pFont->SetFaceName( temp.c_str() );
 
     CcController::mp_inputfont = pFont;
 #endif
 #ifdef __CR_WIN__
      LOGFONT lf;
      ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-     CcString temp;
+     string temp;
      temp = (CcController::theController)->GetKey( "MainFontHeight" );
-     if ( temp.Len() )  lf.lfHeight = atoi( temp.ToCString() ) ;
+     if ( temp.length() )  lf.lfHeight = atoi( temp.c_str() ) ;
      temp = (CcController::theController)->GetKey( "MainFontWidth" );
-     if ( temp.Len() )  lf.lfWidth = atoi( temp.ToCString() ) ;
+     if ( temp.length() )  lf.lfWidth = atoi( temp.c_str() ) ;
      temp = (CcController::theController)->GetKey( "MainFontFace" );
-     for (int i=0;i<32;i++)
+     for (string::size_type i=0;i<32;i++)
      {
-       if ( i < temp.Len() )   lf.lfFaceName[i] = temp[i];
+       if ( i < temp.length() )   lf.lfFaceName[i] = temp[i];
        else                    lf.lfFaceName[i] = 0;
      }
      CcController::mp_inputfont = new CFont();

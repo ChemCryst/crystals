@@ -32,12 +32,13 @@ class CcLock
     int m_Locked;
 
 #ifdef __CR_WIN__
-    HANDLE m_Mutex;
+    HANDLE m_CSMutex;
+    HANDLE m_EvMutex;
 #endif
 
 #ifdef __BOTHWX__
     wxMutex * m_CSMutex;
-    wxCondition * m_EvMutex;
+    wxSemaphore * m_EvMutex;
 
 #endif
 

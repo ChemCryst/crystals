@@ -1,17 +1,18 @@
 
 #include "crystalsinterface.h"
-#include "ccstring.h"
+#include <string>
+#include <vector>
+using namespace std;
+
 #include "crconstants.h"
 #include "ccmodeldoc.h"
 #include "ccmodelbond.h"
-#include "cctokenlist.h"
 #include <math.h>
 #include "ccrect.h"
 #include "crmodel.h"
 #include "cxmodel.h"
 #include "creditbox.h"
 #include "cccontroller.h"
-#include "ccstring.h"
 
 CcModelBond::CcModelBond(CcModelDoc * pointer)
 {
@@ -22,7 +23,6 @@ CcModelBond::CcModelBond(CcModelDoc * pointer)
     m_xrot = 0;
     m_yrot = 0;
     m_length = 1;
-    m_atom1 = nil; m_atom2 = nil;
     mp_parent = pointer;
     m_excluded = false;
     m_glID = 0;
@@ -31,7 +31,7 @@ CcModelBond::CcModelBond(CcModelDoc * pointer)
 
 CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
             int r, int g, int b,  int rad,int btype,
-            int np, int * ptrs, CcString label, CcString cslabl,
+            int np, int * ptrs, string label, string cslabl,
             CcModelDoc* ptr)
 {
   mp_parent = ptr;
@@ -42,12 +42,8 @@ CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
   m_bondtype = abs(btype);
   m_bsym = ( btype < 0 );
   m_np = np;
-  m_patms = new CcModelAtom*[np];
-  for (int i = 0; i < np; i++ ) {
-    m_patms[i] = mp_parent->FindAtomByPosn( ptrs[i] );
-  }
-  m_atom1 = m_patms[0];
-  m_atom2 = m_patms[1];
+  for (int i = 0; i < np; i++ ) 
+      m_patms.push_back( mp_parent->FindAtomByPosn( ptrs[i] ) );
   m_label = label;
   m_slabel = cslabl;
   m_xrot = 0;
@@ -56,15 +52,15 @@ CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
   m_excluded = false;
   m_glID = 0;
   m_type = CC_BOND;
-    float xlen = (float)(m_x2-m_x1);
-    float ylen = (float)(m_y2-m_y1);
-    float zlen = (float)(m_z2-m_z1);
-    float xzlen =  (float)sqrt ( xlen*xlen + zlen*zlen );
+  float xlen = (float)(m_x2-m_x1);
+  float ylen = (float)(m_y2-m_y1);
+  float zlen = (float)(m_z2-m_z1);
+  float xzlen =  (float)sqrt ( xlen*xlen + zlen*zlen );
 
-    float degToRad = (float) (3.1415926535 / 180.0);
-    m_xrot = (float) -atan2( ylen, xzlen ) / (float) degToRad;
-    m_yrot =  (float) atan2( xlen , zlen ) / (float) degToRad;
-    m_length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
+  float degToRad = (float) (3.1415926535 / 180.0);
+  m_xrot = (float) -atan2( ylen, xzlen ) / (float) degToRad;
+  m_yrot =  (float) atan2( xlen , zlen ) / (float) degToRad;
+  m_length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
 
 
 }
@@ -73,31 +69,34 @@ CcModelBond::~CcModelBond()
 {
 }
 
-void CcModelBond::ParseInput(CcTokenList* tokenList)
+void CcModelBond::ParseInput(deque<string> &  tokenList)
 {
     float degToRad = (float) (3.1415926535 / 180.0);
 //Just read 10 integers.
-    m_x1 =  atoi( tokenList->GetToken().ToCString() );
-    m_y1 =  atoi( tokenList->GetToken().ToCString() );
-    m_z1 =  atoi( tokenList->GetToken().ToCString() );
-    m_x2 =  atoi( tokenList->GetToken().ToCString() );
-    m_y2 =  atoi( tokenList->GetToken().ToCString() );
-    m_z2 =  atoi( tokenList->GetToken().ToCString() );
-    m_r =   atoi( tokenList->GetToken().ToCString() );
-    m_g =   atoi( tokenList->GetToken().ToCString() );
-    m_b =   atoi( tokenList->GetToken().ToCString() );
-    m_rad = atoi( tokenList->GetToken().ToCString() );
-    CcString catom1 = tokenList->GetToken();
-    CcString catom2 = tokenList->GetToken();
-    m_label = catom1 + "-" + catom2 + " " + tokenList->GetToken();
-    m_bondtype = atoi( tokenList->GetToken().ToCString() );
+    m_x1 =  atoi( tokenList[0].c_str() );
+    m_y1 =  atoi( tokenList[1].c_str() );
+    m_z1 =  atoi( tokenList[2].c_str() );
+    m_x2 =  atoi( tokenList[3].c_str() );
+    m_y2 =  atoi( tokenList[4].c_str() );
+    m_z2 =  atoi( tokenList[5].c_str() );
+    m_r =   atoi( tokenList[6].c_str() );
+    m_g =   atoi( tokenList[7].c_str() );
+    m_b =   atoi( tokenList[8].c_str() );
+    m_rad = atoi( tokenList[9].c_str() );
+    string catom1 = string(tokenList[10]);
+    string catom2 = string(tokenList[11]);
+    m_label = catom1 + "-" + catom2 + " " + tokenList[12];
+    m_bondtype = atoi( tokenList[13].c_str() );
+    
+    for ( int i = 0; i<14; i++ ) tokenList.pop_front();
+    
     CcModelObject *oitem;
     oitem = mp_parent->FindAtomByLabel( catom1 );
     if ( oitem && oitem->Type()==CC_ATOM )
-       m_atom1 = (CcModelAtom*)oitem;
+       m_patms.push_back((CcModelAtom*)oitem);
     oitem = mp_parent->FindAtomByLabel( catom2 );
     if ( oitem && oitem->Type()==CC_ATOM )
-       m_atom2 = (CcModelAtom*)oitem;
+       m_patms.push_back((CcModelAtom*)oitem);
 
 // Do these calculations now. Uses 3 bytes more memory per bond, but saves a lot of time later,
 // as they were re-calculated every time the model is rotated.
@@ -242,12 +241,12 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
                  x = (float)(cos(t*twopi/numt) * cos(s*twopi/numc));
                  y = (float)(sin(t*twopi/numt) * cos(s*twopi/numc));
                  z = (float)sin(s*twopi/numc);
-//                 LOGWARN ( "xyz:"+CcString(x)+" "+CcString(y)+" "+CcString(z) );
+//                 LOGWARN ( "xyz:"+string(x)+" "+string(y)+" "+string(z) );
                  glNormal3f(x, y, z);
                  x = (float)((rt + rc * cos(s*twopi/numc)) * cos(t*twopi/numt));
                  y = (float)((rt + rc * cos(s*twopi/numc)) * sin(t*twopi/numt));
                  z = (float)(rc * sin(s*twopi/numc));
-//                 LOGWARN ( "xyz:"+CcString(x)+" "+CcString(y)+" "+CcString(z));
+//                 LOGWARN ( "xyz:"+string(x)+" "+string(y)+" "+string(z));
                  glVertex3f(x, y, z);
               }
            }
@@ -281,8 +280,10 @@ void CcModelBond::SelfExclude()
 {
  //Called after atoms have been excluded from the picture.
 
- if (m_atom1) m_excluded = m_atom1->m_excluded;
- if (m_atom2) m_excluded = m_atom2->m_excluded || m_excluded;
+ if (m_patms.size() > 1 ) {
+    m_excluded = m_patms[0]->m_excluded;
+    m_excluded = m_patms[1]->m_excluded || m_excluded;
+ }
 
 }
 

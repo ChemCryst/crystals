@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.10  2001/03/08 15:38:29  richard
 //   ParseInput now defined to return a CcParse object, which contains three boolean
 //   values , success, xCanResize and yCanResize. This means that resize info filters
@@ -18,10 +24,8 @@
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
 #include    "crguielement.h"
-#include    "cclist.h"
 #include    "ccrect.h"
 #include    "cccontroller.h"
-#include    "cctokenlist.h"
 #include    "crwindow.h"
 
 CcController *  CrGUIElement::mControllerPtr;
@@ -45,7 +49,7 @@ CrGUIElement::~CrGUIElement()
 {
 }
 
-CrGUIElement *  CrGUIElement::FindObject( CcString Name )
+CrGUIElement *  CrGUIElement::FindObject( const string & Name )
 {
     if ( Name == mName )
         return this;
@@ -84,7 +88,7 @@ void    CrGUIElement::GetValue()
 //(If the element can't be found, FALSE is returned from CcController)
 }
 
-void    CrGUIElement::GetValue(CcTokenList * tokenList)
+void    CrGUIElement::GetValue(deque<string> & tokenList)
 {
 //For all elements that don't return a value, return the text ERROR,
 //The only valid query for an object that doesn't override this function
@@ -92,16 +96,18 @@ void    CrGUIElement::GetValue(CcTokenList * tokenList)
     (CcController::theController)->SendCommand("ERROR",true);
 }
 
-CcParse CrGUIElement::ParseInput( CcTokenList * tokenList )
+CcParse CrGUIElement::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(false, mXCanResize, mYCanResize);
 
-    mName = tokenList->GetToken();
-    mText = tokenList->GetToken();
+    mName = string(tokenList.front());
+    tokenList.pop_front();
+    mText = string(tokenList.front());
+    tokenList.pop_front();
 
     SetText(mText);
 
-    if ( mText.Length() != 0 || mName.Length() != 0 )
+    if ( mText.length() != 0 || mName.length() != 0 )
         retVal = CcParse( true, mXCanResize, mYCanResize ) ;
 
     LOGSTAT( "Identifier = " + mName +
@@ -110,13 +116,14 @@ CcParse CrGUIElement::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-CcParse CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
+CcParse CrGUIElement::ParseInputNoText( deque<string> & tokenList )
 {
     CcParse retVal (false, mXCanResize, mYCanResize);
 
-    mName = tokenList->GetToken();
+    mName = string(tokenList.front());
+    tokenList.pop_front();
 
-    if ( mName.Length() != 0 )
+    if ( mName.length() != 0 )
         retVal = CcParse(true, mXCanResize, mYCanResize);
 
     LOGSTAT( "Identifier = " + mName );
@@ -167,7 +174,7 @@ void CrGUIElement::FocusToInput(char theChar)
 }
 
 
-void CrGUIElement::SendCommand(CcString theText, bool jumpQueue)
+void CrGUIElement::SendCommand(string theText, bool jumpQueue)
 {
     if(jumpQueue)
         CcController::theController->SendCommand(theText,true);
@@ -197,7 +204,7 @@ void CrGUIElement::SysKeyUp( UINT nChar )
 // to handle them!
 }
 
-void CrGUIElement::Rename( CcString newName )
+void CrGUIElement::Rename( string newName )
 {
       LOGSTAT("Renameing object: " + mName + " to " + newName );
       mName = newName;

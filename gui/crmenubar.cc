@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   08.6.1998 02:01 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.3  2001/06/17 15:14:14  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -17,10 +23,11 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "crconstants.h"
-#include    "crmenubar.h"
 #include    "ccmenuitem.h"
+#include    "crmenubar.h"
 #include    "crmenu.h"
 #include    "cxmenu.h"
 #include    "cxmenubar.h"
@@ -37,19 +44,13 @@ CrMenuBar::CrMenuBar( CrGUIElement * mParentPtr )
 
 CrMenuBar::~CrMenuBar()
 {
-    mMenuList.Reset();
-    CcMenuItem* theItem = (CcMenuItem*) mMenuList.GetItem();
-
-    while ( theItem != nil )
+    list<CcMenuItem*>::iterator mili = mMenuList.begin();
+    for ( ; mili != mMenuList.end(); mili++ )
     {
-        if(theItem->type == CR_SUBMENU)
-        {
-            delete (CrMenu*)theItem->ptr;
-        }
-        delete theItem;
-        mMenuList.RemoveItem();
-        theItem = (CcMenuItem*)mMenuList.GetItem();
+       delete *mili;
     }
+    mMenuList.clear();
+
 
 #ifdef __CR_WIN__
     if ( ptr_to_cxObject != nil )
@@ -61,7 +62,7 @@ CrMenuBar::~CrMenuBar()
 
 }
 
-CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
+CcParse CrMenuBar::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -71,25 +72,27 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
     if( ! mSelfInitialised )
     {
         LOGSTAT("*** Menu *** Initing...");
-        mName = tokenList->GetToken();
+        mName = string(tokenList.front());
+        tokenList.pop_front();
         isMainMenu = true;
-        mText = tokenList->GetToken();
+        mText = string(tokenList.front());
+        tokenList.pop_front();
         SetText(mText);
         mSelfInitialised = true;
         LOGSTAT( "*** Created Menu      " + mName );
     }
     // End of Init, now comes the general parser
 
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTMenu:
             {
                 CrMenu* mMenuPtr = new CrMenu( this );
                 if ( mMenuPtr != nil )
                 {
-                    tokenList->GetToken();
+                    tokenList.pop_front();
                     // ParseInput generates all objects in the menu
                     // Of course the token list must be full
                     retVal = mMenuPtr->ParseInput( tokenList );
@@ -103,23 +106,25 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
                 menuItem->type = CR_SUBMENU;
                 menuItem->text = menuItem->originaltext = mMenuPtr->mText;
                 menuItem->name = mMenuPtr->mName;
-                menuItem->command = nil;
+                menuItem->command = "";
                 menuItem->ptr = mMenuPtr;
                 bool moreTokens = true;
-                while ( moreTokens )
+                while ( moreTokens && !tokenList.empty() )
                 {
-                    switch ( tokenList->GetDescriptor(kAttributeClass) )
+                    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
                     {
                         case kTMenuDisableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->disable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->disable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         case kTMenuEnableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->enable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->enable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         default:
@@ -130,35 +135,40 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
                     }
                 }
 
-                menuItem->id = ((CxMenuBar*)ptr_to_cxObject)->AddMenu((CxMenu*)menuItem->ptr->GetWidget(),(char*)menuItem->text.ToCString());
-                mMenuList.AddItem(menuItem);
-                (CcController::theController)->AddMenuItem(menuItem);
+                menuItem->id = ((CxMenuBar*)ptr_to_cxObject)->AddMenu((CxMenu*)menuItem->ptr->GetWidget(),(char*)menuItem->text.c_str());
+                mMenuList.push_back(menuItem);
+                CrMenu::AddMenuItem(menuItem);
                 break;
             }
             case kTItem:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 CcMenuItem* menuItem = new CcMenuItem(nil);
                 menuItem->type = CR_MENUITEM;
-                menuItem->name = tokenList->GetToken();
-                menuItem->text    = menuItem->originaltext    = tokenList->GetToken();
-                menuItem->command = menuItem->originalcommand = tokenList->GetToken();
+                menuItem->name = string(tokenList.front());
+                tokenList.pop_front();
+                menuItem->text    = menuItem->originaltext    = string(tokenList.front());
+                tokenList.pop_front();
+                menuItem->command = menuItem->originalcommand = string(tokenList.front());
+                tokenList.pop_front();
                 menuItem->ptr = nil;
                 bool moreTokens = true;
-                while ( moreTokens )
+                while ( moreTokens && !tokenList.empty() )
                 {
-                    switch ( tokenList->GetDescriptor(kAttributeClass) )
+                    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
                     {
                         case kTMenuDisableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->disable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->disable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         case kTMenuEnableCondition:
                         {
-                            tokenList->GetToken();
-                            menuItem->enable = Condition( tokenList->GetToken() );
+                            tokenList.pop_front();
+                            menuItem->enable = Condition( tokenList.front() );
+                            tokenList.pop_front();
                             break;
                         }
                         default:
@@ -168,29 +178,29 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
                         }
                     }
                 }
-                menuItem->id = ((CxMenuBar*)ptr_to_cxObject)->AddItem((char*)menuItem->text.ToCString());
-                mMenuList.AddItem(menuItem);
-                (CcController::theController)->AddMenuItem(menuItem);
+                menuItem->id = ((CxMenuBar*)ptr_to_cxObject)->AddItem((char*)menuItem->text.c_str());
+                mMenuList.push_back(menuItem);
+                CrMenu::AddMenuItem(menuItem);
                 break;
             }
             case kTMenuSplit:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 CcMenuItem* menuItem = new CcMenuItem(nil);
                 menuItem->type = CR_SPLIT;
-                menuItem->name = nil;
-                menuItem->text = nil;
-                menuItem->command = nil;
+                menuItem->name = "";
+                menuItem->text = "";
+                menuItem->command = "";
                 menuItem->ptr = nil;
                 menuItem->disable = nil;
-                mMenuList.AddItem(menuItem);
+                mMenuList.push_back(menuItem);
                 menuItem->id = ((CxMenuBar*)ptr_to_cxObject)->AddItem();
-                (CcController::theController)->AddMenuItem(menuItem);
+                CrMenu::AddMenuItem(menuItem);
                 break;
             }
             case kTEndMenu:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 hasTokenForMe = false;
                 break; // We leave the token in the list and exit the loop
             }
@@ -208,7 +218,7 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrMenuBar::SetText( CcString text )
+void    CrMenuBar::SetText( const string &text )
 {
 
 }
@@ -237,7 +247,7 @@ void CrMenuBar::CrFocus()
     LOGWARN("CrMenuBar:CrFocus Bad Script: Attempt to set focus on a menu. ");
 }
 
-int CrMenuBar::Condition(CcString conditions)
+int CrMenuBar::Condition(string conditions)
 {
     return (CcController::theController)->status.CreateFlag(conditions);
 }

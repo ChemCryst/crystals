@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.11  2002/02/21 15:23:11  DJWgroup
 //   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -47,42 +53,26 @@
 
 #ifndef     __CcPlotBar_H__
 #define     __CcPlotBar_H__
+#include <string>
+#include <vector>
+using namespace std;
 
-class CcTokenList;
-class CcList;
 class CrPlot;
-class CcSeriesBar;
 class CcPlotAxes;
-class CcString;
 class PlotDataPopup;
 
 class CcPlotBar : public CcPlotData
 {
     public:
         void DrawView(bool print);
-        bool ParseInput( CcTokenList * tokenList );
+        bool ParseInput( deque<string> &  tokenList );
         CcPlotBar();
         virtual ~CcPlotBar();
 
         PlotDataPopup GetDataFromPoint(CcPoint *point); 
-        void CreateSeries(int numser, int* type);       // creates all data series (type is a block of numser series types)
-        void AllocateMemory();                          // calls AllocateMemory for each series.
+        void CreateSeries(int numser, vector<int> & type);       // creates all data series (type is a block of numser series types)
         void AddSeries(int type, int length);           // add a series to the graph
-        void ExtendSeriesLength(int ser);               // extend a specific series' length
-
         int m_NumberOfBarSeries;                        // bar-series are drawn next to one another, others overlap.
-};
-
-class CcSeriesBar : public CcSeries
-{
-    public:
-        bool ParseInput( CcTokenList * tokenList );
-        CcSeriesBar();
-        virtual ~CcSeriesBar();
-
-        void AllocateMemory();
-
-        float *     m_Data;                         // one number per data item
 };
 
 #endif

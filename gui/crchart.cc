@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.10  2002/05/08 08:56:13  richard
 //   Added support for wmf AND emf file output to Chart objects (Cameron). Reason:
 //   emf doesn't work on Windows 95. Bah.
@@ -31,9 +37,11 @@
 #include    "cxchart.h"
 #include    "ccchartdoc.h"
 #include    "ccrect.h"
-#include    "cctokenlist.h"
 #include    "cccontroller.h"    // for sending commands
 #include    "crwindow.h" // for getting cursor keys
+
+#include <string>
+#include <sstream>
 
 #ifdef __BOTHWX__
 // These macros are being defined somewhere. They shouldn't be.
@@ -71,14 +79,14 @@ CrChart::~CrChart()
     }
     if(attachedChartDoc != nil)
     {
-        if (attachedChartDoc==(CcController::theController)->mCurrentChartDoc)
-            (CcController::theController)->mCurrentChartDoc = nil;
+        if (attachedChartDoc==CcChartDoc::sm_CurrentChartDoc)
+            CcChartDoc::sm_CurrentChartDoc= nil;
         delete attachedChartDoc;
     }
 
 }
 
-CcParse CrChart::ParseInput( CcTokenList * tokenList )
+CcParse CrChart::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
 
@@ -94,39 +102,37 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
 
         //Init only parsing
         bool hasTokenForMe = true;
-        while (hasTokenForMe)
+        while (hasTokenForMe && ! tokenList.empty())
         {
-            switch ( tokenList->GetDescriptor(kAttributeClass) )
+            switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
             {
                 case kTNumberOfRows:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    CcString theString = tokenList->GetToken();
-                    int chars = atoi( theString.ToCString() );
-                    ((CxChart*)ptr_to_cxObject)->SetIdealHeight( chars );
-                    LOGSTAT( "Setting Chart Lines Height: " + theString );
+                    tokenList.pop_front(); // Remove that token!
+                    ((CxChart*)ptr_to_cxObject)->SetIdealHeight( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT( "Setting Chart Lines Height: " + tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 case kTNumberOfColumns:
                 {
-                    tokenList->GetToken(); // Remove that token!
-                    CcString theString = tokenList->GetToken();
-                    int chars = atoi( theString.ToCString() );
-                    ((CxChart*)ptr_to_cxObject)->SetIdealWidth( chars );
-                    LOGSTAT( "Setting Chart Chars Width: " + theString );
+                    tokenList.pop_front(); // Remove that token!
+                    ((CxChart*)ptr_to_cxObject)->SetIdealWidth( atoi( tokenList.front().c_str() ) );
+                    LOGSTAT( "Setting Chart Chars Width: " + tokenList.front() );
+                    tokenList.pop_front();
                     break;
                 }
                 case kTNoEdge:
                 {
-                    tokenList->GetToken();
+                    tokenList.pop_front();
                     ((CxChart*)ptr_to_cxObject)->NoEdge();
                     break;
                 }
                 case kTIsoView:
                 {
-                    tokenList->GetToken();
-                    bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                    tokenList->GetToken(); // Remove that token!
+                    tokenList.pop_front();
+                    bool state = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                    tokenList.pop_front(); // Remove that token!
                     ((CxChart*)ptr_to_cxObject)->UseIsotropicCoords(state);
                     break;
                 }
@@ -141,23 +147,24 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
     // End of Init, now comes the general parser
 
     bool hasTokenForMe = true;
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTTextSelector:
             {
-                tokenList->GetToken(); // Remove that token!
-                mText = tokenList->GetToken();
+                tokenList.pop_front(); // Remove that token!
+                mText = string(tokenList.front());
+                tokenList.pop_front();
                 SetText( mText );
                 LOGSTAT( "Setting Chart Text: " + mText );
                 break;
             }
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if(inform)
                     LOGSTAT( "CrButton:ParseInput Chart INFORM on ");
                 else
@@ -167,50 +174,54 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
             }
             case kTGetPolygonArea:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                CcString theString = tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool state = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front();
                 ((CxChart*)ptr_to_cxObject)->SetPolygonDrawMode(state);
                 break;
             }
                   case kTGetCursorKeys:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                CcString theString = tokenList->GetToken(); // Remove that token!
-                        ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) ((state)?this:nil) );
-                        mWantSysKeys=true;
-                        GetRootWidget()->CrFocus();
+                tokenList.pop_front(); // Remove that token!
+                bool state = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
+                ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) ((state)?this:nil) );
+                 mWantSysKeys=true;
+                GetRootWidget()->CrFocus();
                 break;
             }
             case kTChartHighlight:
             {
-                tokenList->GetToken();
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken();
+                tokenList.pop_front();
+                bool state = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front();
                 Highlight(state);
                 ReDrawView();
                 break;
             }
             case kTChartSave:
             {
-                tokenList->GetToken();
-                int w = atoi( tokenList->GetToken().ToCString() );
-                int h = atoi( tokenList->GetToken().ToCString() );
+                tokenList.pop_front();
+                int w = atoi( tokenList.front().c_str() );
+                tokenList.pop_front();
+                int h = atoi( tokenList.front().c_str() );
+                tokenList.pop_front();
                 ((CxChart*)ptr_to_cxObject)->MakeMetaFile(w,h,false);
                 break;
             }
             case kTChartSaveEnh:
             {
-                tokenList->GetToken();
-                int w = atoi( tokenList->GetToken().ToCString() );
-                int h = atoi( tokenList->GetToken().ToCString() );
+                tokenList.pop_front();
+                int w = atoi( tokenList.front().c_str() );
+                tokenList.pop_front();
+                int h = atoi( tokenList.front().c_str() );
+                tokenList.pop_front();
                 ((CxChart*)ptr_to_cxObject)->MakeMetaFile(w,h,true);
                 break;
             }
             case kTChartPrint:
             {
-                tokenList->GetToken();
+                tokenList.pop_front();
                 ((CxChart*)ptr_to_cxObject)->PrintPicture();
                 break;
             }
@@ -236,10 +247,10 @@ void CrChart::CrFocus()
     ((CxChart*)ptr_to_cxObject)->Focus();
 }
 
-void    CrChart::SetText( CcString text )
+void    CrChart::SetText( const string &text )
 {
     char theText[256];
-    strcpy( theText, text.ToCString() );
+    strcpy( theText, text.c_str() );
 
     ( (CxChart *)ptr_to_cxObject)->SetText( theText );
 }
@@ -308,7 +319,7 @@ void CrChart::DrawPoly(int nVertices, int * vertices, bool fill)
     ((CxChart*)ptr_to_cxObject)->DrawPoly(nVertices, vertices, fill);
 }
 
-void CrChart::DrawText(int x, int y, CcString text)
+void CrChart::DrawText(int x, int y, string text)
 {
     ((CxChart*)ptr_to_cxObject)->DrawText(x, y, text);
 }
@@ -321,24 +332,24 @@ void CrChart::SetColour(int r, int g, int b)
 void CrChart::LMouseClick(int x, int y)
 {
     if(mCallbackState)
-    {   CcString command = "LCLICK ";
-        CcString cx = CcString(x);
-        CcString cy = CcString(y);
-        SendCommand(command + cx + " " + cy);
+    {   
+        ostringstream strm;
+        strm << "LCLICK " << x << " " << y;
+        SendCommand(strm.str());
     }
 }
 
 void CrChart::PolygonCancelled()
 {
-    SendCommand( CcString( "CANCEL" ) );
+    SendCommand( "CANCEL" );
 }
 
 void CrChart::PolygonClosed()
 {
-    SendCommand( CcString( "CLOSED" ) );
+    SendCommand( "CLOSED" ) ;
 }
 
-void CrChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rotated)
+void CrChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotated)
 {
     ((CxChart*)ptr_to_cxObject)->FitText(x1, y1, x2, y2, theText, rotated);
 }
@@ -355,25 +366,25 @@ void CrChart::SysKey ( UINT nChar )
       switch (nChar)
       {
             case CRLEFT:
-                  SendCommand( CcString( "L" ) );
+                  SendCommand( string( "L" ) );
                   break;
             case CRRIGHT:
-                  SendCommand( CcString( "R" ) );
+                  SendCommand( string( "R" ) );
                   break;
             case CRUP:
-                  SendCommand( CcString( "U" ) );
+                  SendCommand( string( "U" ) );
                   break;
             case CRDOWN:
-                  SendCommand( CcString( "D" ) );
+                  SendCommand( string( "D" ) );
                   break;
             case CRDELETE:
-                  SendCommand( CcString( "A" ) );
+                  SendCommand( string( "A" ) );
                   break;
             case CREND:
-                  SendCommand( CcString( "C" ) );
+                  SendCommand( string( "C" ) );
                   break;
             case CRESCAPE:
-                  SendCommand( CcString( "E" ) );
+                  SendCommand( string( "E" ) );
                   break;
             default:
                   break;

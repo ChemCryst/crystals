@@ -10,8 +10,9 @@
 #include    "crgrid.h"
 #include    "cxdropdown.h"
 #include    "ccrect.h"
-#include    "cctokenlist.h"
 #include    "cccontroller.h"    // for sending commands
+#include    <string>
+#include    <sstream>
 
 
 CrDropDown::CrDropDown( CrGUIElement * mParentPtr )
@@ -37,11 +38,11 @@ CRSETGEOMETRY(CrDropDown,CxDropDown)
 CRGETGEOMETRY(CrDropDown,CxDropDown)
 CRCALCLAYOUT(CrDropDown,CxDropDown)
 
-CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
+CcParse CrDropDown::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
-    CcString theToken;
+    string theToken;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -55,15 +56,15 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
     }
     // End of Init, now comes the general parser
 
-    while ( hasTokenForMe )
+    while ( hasTokenForMe && ! tokenList.empty() )
     {
-        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
         {
             case kTInform:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
+                bool inform = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                tokenList.pop_front(); // Remove that token!
                 if(inform)
                     LOGSTAT( "CrDropDown:ParseInput Dropdown INFORM on ");
                 else
@@ -73,43 +74,44 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
             }
             case kTDisabled:
             {
-                tokenList->GetToken(); // Remove that token!
-                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                CcString temp = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "Dropdown disabled = " + temp);
+                tokenList.pop_front(); // Remove that token!
+                bool disabled = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes) ? true : false;
+                LOGSTAT( "Dropdown disabled = " + tokenList.front());
+                tokenList.pop_front();
                 ((CxDropDown*)ptr_to_cxObject)->Disable( disabled );
                 break;
             }
             case kTAddToList:
             {
-                tokenList->GetToken(); // Remove that token!
+                tokenList.pop_front(); // Remove that token!
                 bool stop = false;
                 while ( ! stop )
                 {
-                    theToken = tokenList->GetToken();
-
-                    if ( strcmp( kSNull, theToken.ToCString() ) == 0 )
+                    if ( strcmp( kSNull, tokenList.front().c_str() ) == 0 )
                         stop = true;
                     else
                     {
-                        SetText( theToken );
-                        LOGSTAT("Adding DropDown text '" + theToken + "'");
+                        SetText( tokenList.front() );
+                        LOGSTAT("Adding DropDown text '" + tokenList.front() + "'");
                     }
+                    tokenList.pop_front();
                 }
                 ((CxDropDown*)ptr_to_cxObject)->ResetHeight();
                 break;
             }
             case kTSetSelection:
             {
-                  tokenList->GetToken(); //Remove that token!
-                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  tokenList.pop_front(); //Remove that token!
+                  int select = atoi ( tokenList.front().c_str() );
+                  tokenList.pop_front();
                   ((CxDropDown*)ptr_to_cxObject)->CxSetSelection(select);
                   break;
             }
             case kTRemove:
             {
-                  tokenList->GetToken(); //Remove that token!
-                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  tokenList.pop_front(); //Remove that token!
+                  int select = atoi ( tokenList.front().c_str() );
+                  tokenList.pop_front();
                   ((CxDropDown*)ptr_to_cxObject)->CxRemoveItem(select);
                   break;
             }
@@ -124,46 +126,45 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
     return retVal;
 }
 
-void    CrDropDown::SetText( CcString item )
+void    CrDropDown::SetText( const string &item )
 {
     char theText[256];
-    strcpy( theText, item.ToCString() );
+    strcpy( theText, item.c_str() );
 
     ( (CxDropDown *)ptr_to_cxObject)->AddItem( theText );
 }
 
 void    CrDropDown::GetValue()
 {
-    int value = ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
-
-    SendCommand( CcString( value ) );
+    ostringstream strm;
+    strm << ((CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
+    SendCommand( strm.str() );
 }
 
 
 
-void    CrDropDown::GetValue(CcTokenList * tokenList)
+void    CrDropDown::GetValue(deque<string> &  tokenList)
 {
-    int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = CcController::GetDescriptor( tokenList.front(), kQueryClass );
 
     if( desc == kTQListtext )
     {
-        tokenList->GetToken();
-        CcString theString = tokenList->GetToken();
-        int index = atoi( theString.ToCString() );
-        CcString text = ( ( CxDropDown*)ptr_to_cxObject)->GetDropDownText(index);
-        SendCommand( text,true );
+        tokenList.pop_front();
+        SendCommand( ((CxDropDown*)ptr_to_cxObject)->GetDropDownText(atoi( tokenList.front().c_str() )),true );
+        tokenList.pop_front();
     }
     else if (desc == kTQSelected )
     {
-        tokenList->GetToken();
-        int value = ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
-        SendCommand( CcString( value ), true );
+        tokenList.pop_front();
+        ostringstream strm;
+        strm << ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
+        SendCommand( strm.str() , true );
     }
     else
     {
         SendCommand( "ERROR",true );
-        CcString error = tokenList->GetToken();
-        LOGWARN( "CrDropDown:GetValue Error unrecognised token." + error);
+        LOGWARN( "CrDropDown:GetValue Error unrecognised token." + tokenList.front());
+        tokenList.pop_front();
     }
 }
 
@@ -171,9 +172,9 @@ void    CrDropDown::Selected( int item )
 {
     if(mCallbackState)
     {
-        CcString theItem;
-        theItem = CcString( item );
-        SendCommand(mName + "_N" + theItem);
+        ostringstream strm;
+        strm << mName << "_N" << item;
+        SendCommand( strm.str() );
 
     }
 }

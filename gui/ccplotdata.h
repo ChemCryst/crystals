@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2003/12/15 11:10:52  rich
+//   Fix an array size following last weeks fixes to the plot colour schemes.
+//
 //   Revision 1.16  2003/12/09 09:51:54  rich
 //   Fix colours of data series in plots if > 6 series.
 //
@@ -69,15 +72,36 @@
 
 #define NCOLS 7
 
-#include "ccstring.h"
+#include <string>
+#include <vector>
+#include <deque>
+#include <list>
+using namespace std;
+
 #include "ccpoint.h"
 #include "crplot.h"
 
-class CcTokenList;
-class CcList;
+// each series holds ONE data set.
+class CcSeries
+{
+public:
+    CcSeries();
+    virtual ~CcSeries();
+    virtual bool ParseInput( deque<string> & tokenList );
+ 
+    string        mName;          // internal name
+    string        m_SeriesName;   // one name per series
+    int           m_DrawStyle;    // how to draw this series (scatter / bar / line / etc)
+    int           m_YAxis;        // which y axis is this series attached to (left or right)
+    vector<float> m_Data;
+    vector< vector<float> > m_DataXY;
+    vector<string> m_Label;
+};
+
+
+
 class CrPlot;
 class CcPlotdata;
-class CcSeries;
 
 class CcAxisData
 {
@@ -101,7 +125,7 @@ public:
     int   m_AxisScaleType;          // auto / span / zoom
     bool  m_AxisLog;                // log if true, linear if false
 
-    CcString m_Title;               // the title of this axis
+    string m_Title;               // the title of this axis
 };  
 
 class CcPlotAxes
@@ -115,13 +139,13 @@ public:
     void CheckData(int axis, float data);   // check data against min/max, alter graph bounds if necessary
     void DrawAxes(CrPlot* attachedPlot);    // draw lines, markers and text
 
-    CcString*       m_Labels;               // one label per data item (only for bar graphs)
-    int             m_NumberOfLabels;       // amount of memory allocated for the labels
-    CcString        m_PlotTitle;            // graph title
+    vector<string> m_Labels;               // one label per data item (only for bar graphs)
+    int            m_NumberOfLabels;       // amount of memory allocated for the labels
+    string         m_PlotTitle;            // graph title
 
-    CcAxisData      m_AxisData[3];          // the axes themselves
+    CcAxisData     m_AxisData[3];          // the axes themselves
 
-    bool         m_Flipped;      // draw graph upsidedown?
+    bool           m_Flipped;      // draw graph upsidedown?
 
     int     m_NumberOfYAxes;                // graph can have either one or two y axes (left and right sides)
     int     m_GraphType;                    //  bargraphs - only calculate axis divisions for y axis
@@ -133,30 +157,27 @@ class CcPlotData
 public:
     virtual void DrawView(bool print) =0;       // draw the actual graphical data
     void Clear();
-    virtual bool ParseInput( CcTokenList * tokenList );
+    virtual bool ParseInput( deque<string> & tokenList );
     CcPlotData();
     virtual ~CcPlotData();
-    CcPlotData * FindObject( CcString Name );
-    static CcPlotData* CreatePlotData( CcTokenList * tokenList );
+    CcPlotData * FindObject( const string & Name );
+    static CcPlotData* CreatePlotData( deque<string> & tokenList );
 
-    static CcList  sm_PlotList;
+    static list<CcPlotData*>  sm_PlotList;
     static CcPlotData* sm_CurrentPlotData;
 
     virtual PlotDataPopup GetDataFromPoint(CcPoint* point) = 0; // returns data from a point, for mouse-over messages.
                                                                 // NB: PlotDataPopup defined in CrPlot.h
 
-    virtual void CreateSeries(int numser, int* type) = 0;   // controls memory allocation for a series
-    virtual void AllocateMemory() = 0;                      // this one allocates the memory
+    virtual void CreateSeries(int numser, vector<int> & type) = 0;   // controls memory allocation for a series
     virtual void AddSeries(int type, int length) = 0;       // add a series (after data transfer for previous ones complete)
-    virtual void ExtendSeriesLength(int ser) = 0;           // reallocate memory to hold more data
 
     void DrawKey();                                         // get the key redrawn.
-    int FindSeriesType(CcString textstyle);
+    int FindSeriesType(string textstyle);
 
 protected:
-    CcSeries**      m_Series;       // array of series
-    int             m_NextItem;     // number of data items added so far to the current series
-    int             m_MaxItem;      // the maximum number of data items present in any one series
+//    CcSeries**      m_Series;       // array of series
+    deque<CcSeries>  m_Series;
     CcPlotAxes      m_Axes;         // the graph axes
     bool         m_AxesOK;       // do graph axes need recalculating? (only if changed)
 
@@ -174,30 +195,14 @@ protected:
 
     int             m_CompleteSeries;// number of series with all data present (eg to let ADDSERIES work...)
 
+
 protected:
-    CcString mName;                 // internal name
+    string mName;                 // internal name
     CrPlot* attachedPlot;
 private:
     bool mSelfInitialised;
 };
 
-// each series holds ONE data set.
-class CcSeries
-{
-public:
-    CcSeries();
-    virtual ~CcSeries();
-    virtual bool ParseInput( CcTokenList * tokenList );
- 
-    CcString        mName;          // internal name
-    CcString        m_SeriesName;   // one name per series
-    int             m_DrawStyle;    // how to draw this series (scatter / bar / line / etc)
-    int             m_YAxis;        // which y axis is this series attached to (left or right)
-    int             m_NumberOfItems;// how many data items there are in this series
-    int             m_SeriesLength; // how much memory has been allocated to this series
-
-    virtual void AllocateMemory()=0;// allocate space
-};
 
 
 // These are the script commands handled by the plot classes.

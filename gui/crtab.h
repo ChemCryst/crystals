@@ -11,16 +11,16 @@
 #ifndef         __CrTab_H__
 #define         __CrTab_H__
 #include    "crguielement.h"
-#include    "cclist.h"
+#include <list>
+using namespace std;
 
-class CcTokenList;
 class CrGrid;
 
 class CcTabData
 {
   public:
-    CcString tabName;
-    CcString tabText;
+    string tabName;
+    string tabText;
     CrGrid*  tabGrid;
 };
 
@@ -32,20 +32,20 @@ class   CrTab : public CrGUIElement
     CrTab( CrGUIElement * mParentPtr );
     ~CrTab();
 
-    CcParse ParseInput( CcTokenList * tokenList );
+    CcParse ParseInput( deque<string> & tokenList );
     CcRect  GetGeometry();
     CcRect CalcLayout(bool recalculate=false);
     void SetGeometry( const CcRect * rect );
-    void SetText( CcString item );
+    void SetText( const string &item );
     void CrFocus();
     void ChangeTab(int tab);
     int GetIdealHeight();
     int GetIdealWidth();
-    CrGUIElement *  FindObject( CcString Name );
+    CrGUIElement *  FindObject( const string & Name );
 
   private:
 
-    CcList mTabsList;
+    list<CrGrid*> mTabsList;
     int m_nTabs;
     CrGrid* m_currentTab;
 };

@@ -9,12 +9,18 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.16  2003/01/14 10:27:19  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
 //   Revision 1.15  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
-//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in string however, yet.
 //
 //   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
 //   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
@@ -118,7 +124,7 @@ class CxPlot;
 class CxPlotKey : public BASEPlot
 {
 public:
-        CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col);
+        CxPlotKey(CxPlot* parent, int numser, string* names, int** col);
         ~CxPlotKey();
         int GetNumberOfSeries() {return m_NumberOfSeries;};
 #ifdef __CR_WIN__
@@ -137,7 +143,7 @@ public:
         CcRect m_WinPosAndSize;
 
         int m_NumberOfSeries;
-        CcString* m_Names;
+        string* m_Names;
         int** m_Colours;
 
 #ifdef __CR_WIN__
@@ -157,7 +163,7 @@ class CxPlot : public BASEPlot
 
         void DrawLine (int thickness, int x1, int y1, int x2, int y2); // STEVE added a line thickness parameter
         void DrawPoly(int nVertices, int* vertices, bool fill);
-        void DrawText(int x, int y, CcString text, int param, int fontsize);// STEVE added a parameter (justification of text)
+        void DrawText(int x, int y, string text, int param, int fontsize);// STEVE added a parameter (justification of text)
         void DrawEllipse(int x, int y, int w, int h, bool fill);
         void SetColour(int r, int g, int b);                            // STEVE added this function
         void Clear();
@@ -167,7 +173,7 @@ class CxPlot : public BASEPlot
         ~CxPlot();
         void CxDestroyWindow();
 
-        void SetText( char * text );
+        void SetText( const string & text );
         void SetIdealWidth(int nCharsWide);
         void SetIdealHeight(int nCharsHigh);
         CcPoint DeviceToLogical(int x, int y);
@@ -180,14 +186,14 @@ class CxPlot : public BASEPlot
         int GetIdealWidth();
         int GetIdealHeight();
 
-        CcPoint GetTextArea(int size, CcString text, int param);
+        CcPoint GetTextArea(int size, string text, int param);
         void Focus();
         void Display();
         
         void DeletePopup();
-        void CreatePopup(CcString atomname, CcPoint point);
+        void CreatePopup(string atomname, CcPoint point);
         void DeleteKey();
-        void CreateKey(int numser, CcString* names, int** col);
+        void CreateKey(int numser, string* names, int** col);
         void CreateKeyWindow(int x, int y);
         void FlipGraph(bool flipped);
         void MakeMetaFile(int w, int h);
@@ -203,7 +209,7 @@ private:
         int mPolyMode;
         CcPoint     moldMPos;   // mouse pointer position in last frame
         CcPoint     moldPPos;   // popup position in last frame
-        CcString    moldText;   // popup text in the last frame
+        string    moldText;   // popup text in the last frame
         bool        mMouseCaptured;
         bool     m_FlippedPlot;  // if the plot is flipped upside down (eg by ZOOM 4 0), change the LogicalToDevice() and vv. functions
 

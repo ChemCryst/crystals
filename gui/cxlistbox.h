@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.10  2002/03/05 12:12:59  ckp2
 //   Enhancements to listbox for my List 28 project.
 //
@@ -27,11 +33,11 @@
 //Insert your own code here.
 #include    "crguielement.h"
 
-#ifdef __POWERPC__
+/*#ifdef __POWERPC__
 class LListBox;
 
 #include    <LTabGroup.h>
-#endif
+#endif*/
 
 #ifdef __MOTO__
 #include    <LListBox.h>
@@ -64,7 +70,7 @@ class CxListBox : public BASELISTBOX
         void CxRemoveItem ( int select );
 //      void    DoubleClicked( int itemIndex );
 //      void    Selected( int itemIndex );
-        void    AddItem( char * text );
+        void    AddItem( const string &  text );
         void    SetVisibleLines( int lines );
         void    SetGeometry( int top, int left, int bottom, int right );
         void    Disable (bool disable);
@@ -79,7 +85,7 @@ class CxListBox : public BASELISTBOX
         static void RemoveListBox( void ) { mListBoxCount--; };
 //      void    ClickSelf( const SMouseDownEvent &inMouseDown);
         int GetBoxValue();
-            CcString GetListBoxText(int index);
+            string GetListBoxText(int index);
         // attributes
         CrGUIElement *  ptr_to_crObject;
         static int  mListBoxCount;
@@ -94,8 +100,8 @@ class CxListBox : public BASELISTBOX
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            void DoubleClicked();
-            void Selected();
+           void DoubleClicked(wxCommandEvent & e);
+            void Selected(wxCommandEvent & e);
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
 #endif

@@ -2,7 +2,6 @@
 #include "crystalsinterface.h"
 #include    "crconstants.h"
 #include "ccchartpoly.h"
-#include "cctokenlist.h"
 #include "crchart.h"
 #include "cccontroller.h"
 
@@ -30,18 +29,17 @@ CcChartPoly::~CcChartPoly()
         delete [] verts;
 }
 
-bool CcChartPoly::ParseInput(CcTokenList* tokenList)
+bool CcChartPoly::ParseInput(deque<string> &  tokenList)
 {
-    CcString theString;
 //read the number of vertices.
-    theString = tokenList->GetToken();
-    nVerts = atoi( theString.ToCString() );
+    nVerts = atoi( tokenList.front().c_str() );
+    tokenList.pop_front();
 
     verts = new int[nVerts*2];
     for ( int i = 0; i<nVerts*2; i++)
     {
-        theString = tokenList->GetToken();
-        verts[i] = atoi( theString.ToCString() );
+        verts[i] = atoi( tokenList.front().c_str() );
+        tokenList.pop_front();
     }
     return true;
 }

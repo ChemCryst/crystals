@@ -22,7 +22,10 @@
 #define BASELISTCTRL wxListCtrl
 #endif
 
-#include "ccstring.h"   // added by ClassView
+#include <string>
+#include <vector>
+using namespace std;
+   // added by ClassView
 
 class CrListCtrl;
 class CxGrid;
@@ -33,19 +36,19 @@ class CxListCtrl : public BASELISTCTRL
         int GetNumberSelected();
         void GetSelectedIndices( int * values );
         int m_ProgSelecting;
-        CcString GetListItem(int item);
-        CcString GetCell(int row, int col);
+        string GetListItem(int item);
+        string GetCell(int row, int col);
         void InvertSelection();
         void SelectAll(bool select);
-        void SelectPattern(CcString* strings, bool select);
+        void SelectPattern(string* strings, bool select);
         void SortCol(int col, bool sort);
-        void AddRow ( CcString * rowOfStrings );
-        void AddColumn( CcString colHeader);
+        void AddRow ( string * rowOfStrings );
+        void AddColumn( string colHeader);
         void Focus();
         static CxListCtrl * CreateCxListCtrl( CrListCtrl * container, CxGrid * guiParent);
             CxListCtrl( CrListCtrl * container );
             ~CxListCtrl();
-        void    AddItem( char * text );
+        void    AddItem( const string & text );
         void    SetVisibleLines( int lines );
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
@@ -96,14 +99,19 @@ class CxListCtrl : public BASELISTCTRL
         int  m_nHighlight;              // Indicate type of selection highlighting
 
 protected:
-    int * m_colWidths;
 #define COL_INT 1
 #define COL_REAL 2
 #define COL_TEXT 3
-    int* m_colTypes;
-    int WhichType(CcString text);
+//    int* m_colTypes;
+//    int * m_colWidths;
+    vector<int> m_colTypes;
+    vector<int> m_colWidths;
 
-    int * m_originalIndex;
+    int WhichType(string text);
+
+//    int * m_originalIndex;
+    vector<int> m_originalIndex;
+
 
     int nSortedCol;
     bool bSortAscending;

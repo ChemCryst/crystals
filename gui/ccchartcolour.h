@@ -3,7 +3,6 @@
 #define     __CcChartColour_H__
 
 class CrChart;
-class CcTokenList;
 #include "ccchartobject.h"
 
 class CcChartColour : public CcChartObject
@@ -13,7 +12,7 @@ class CcChartColour : public CcChartObject
             CcChartColour(int ir, int ig, int ib);
         ~CcChartColour();
         void Draw(CrChart* chartToDrawOn);
-        bool ParseInput(CcTokenList* tokenList);
+        bool ParseInput(deque<string> & tokenList);
     private:
         int r,g,b;
 };

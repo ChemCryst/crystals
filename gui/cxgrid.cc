@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2004/05/13 14:51:47  rich
+//   Removed debug print.
+//
 //   Revision 1.15  2004/05/13 09:18:19  rich
 //   AfxRegisterWndClass was leaking resources. Use a predefined WNDCLASS instead.
 //
@@ -38,7 +41,8 @@
 //
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cccontroller.h"
 #include    "crtoolbar.h"
 #include    "crwindow.h"
@@ -98,12 +102,12 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
     *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
 
-    CcString temp;
+    string temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.Len() )
-          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
+    if ( temp.length() )
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
-          pFont->SetFaceName( temp.ToCString() );
+          pFont->SetFaceName( temp.c_str() );
 
 
 
@@ -132,15 +136,9 @@ Destroy();
 #endif
 }
 
-void    CxGrid::SetText( char * text )
+void    CxGrid::SetText( const string & text )
 {
     NOTUSED(text);
-#ifdef __POWERPC__
-    Str255 descriptor;
-    strcpy( reinterpret_cast<char *>(descriptor), text );
-    c2pstr( reinterpret_cast<char *>(descriptor) );
-    SetDescriptor( descriptor );
-#endif
 }
 
 #ifdef __CR_WIN__

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.11  2002/01/31 14:36:42  ckp2
 //   Delete text overlay in progress bar properly.
 //
@@ -29,7 +35,8 @@
 
 
 #include    "crystalsinterface.h"
-#include    "ccstring.h"
+#include    <string>
+using namespace std;
 #include    "cccontroller.h"
 #include    "cxprogress.h"
 #include    "cxgrid.h"
@@ -95,7 +102,7 @@ Destroy();
 }
 
 
-void    CxProgress::SetText( char * text )
+void    CxProgress::SetText( const string & text )
 {
 // Every time we're told to set the text we check if m_textoverlay is present
 // If not: create one and set its text; if so: set its text.
@@ -106,22 +113,22 @@ void    CxProgress::SetText( char * text )
         m_TextOverlay = new CStatic();
         CRect rectangle;
         GetClientRect(&rectangle);
-        m_TextOverlay->Create( text, WS_VISIBLE|WS_CHILD, rectangle, this, 54999) ;
+        m_TextOverlay->Create( text.c_str(), WS_VISIBLE|WS_CHILD, rectangle, this, 54999) ;
         m_TextOverlay->SetFont(CcController::mp_font);
 #endif
 #ifdef __WINMSW__
         m_TextOverlay = new wxStaticText();
 //        cerr << "Creating new static text overlay for the Progress Bar.\n";
-        m_TextOverlay->Create( (wxWindow*)this, -1, text, wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
+        m_TextOverlay->Create( (wxWindow*)this, -1, text.c_str(), wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
 #endif
     }
 #ifdef __CR_WIN__
     else
-        m_TextOverlay->SetWindowText(text);
+        m_TextOverlay->SetWindowText(text.c_str());
 #endif
 #ifdef __WINMSW__
     else
-        m_TextOverlay->SetLabel(text);
+        m_TextOverlay->SetLabel(text.c_str());
 #endif
 }
 
@@ -221,11 +228,11 @@ void CxProgress::SetProgress(int complete)
 #endif
 }
 
-void CxProgress::SwitchText ( CcString * text )
+void CxProgress::SwitchText ( const string & text )
 {
-      if ( text )
+      if ( ! text.empty() )
       {
-            if ( m_oldText.Len() == 0 )
+            if ( m_oldText.length() == 0 )
             {
                   if ( m_TextOverlay )
                   {
@@ -235,7 +242,7 @@ void CxProgress::SwitchText ( CcString * text )
                         m_oldText = (LPCTSTR) temp;
 #endif
 #ifdef __WINMSW__
-                        m_oldText = CcString( m_TextOverlay->GetLabel() );
+                        m_oldText = string( m_TextOverlay->GetLabel() );
 #endif
 
                   }
@@ -245,11 +252,11 @@ void CxProgress::SwitchText ( CcString * text )
                   }
             }
 
-            SetText( (char*)text->ToCString() );
+            SetText( text );
       }
       else
       {
-            SetText( (char*)m_oldText.ToCString() );
+            SetText( m_oldText );
             m_oldText = "";
       }
 }

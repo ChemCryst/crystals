@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.2  2001/06/17 15:14:14  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -49,7 +55,7 @@ CRSETGEOMETRY(CrStretch,CxStretch)
 CRGETGEOMETRY(CrStretch,CxStretch)
 CRCALCLAYOUT(CrStretch,CxStretch)
 
-CcParse CrStretch::ParseInput( CcTokenList * tokenList )
+CcParse CrStretch::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
@@ -61,25 +67,25 @@ CcParse CrStretch::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created Stretch  " + mName );
     }
 
-    switch ( tokenList->GetDescriptor(kAttributeClass) )
+    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
     {
       case kTHorizontal:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         mXCanResize = true;
         mYCanResize = false;
         break;
       }
       case kTVertical:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         mXCanResize = false;
         mYCanResize = true;
         break;
       }
       case kTBoth:
       {
-        tokenList->GetToken();
+        tokenList.pop_front();
         // don't break - default is both.
       }
       default:
@@ -93,7 +99,7 @@ CcParse CrStretch::ParseInput( CcTokenList * tokenList )
     return CcParse(true,mXCanResize,mYCanResize);
 }
 
-void    CrStretch::SetText( CcString text )
+void    CrStretch::SetText( const string &text )
 {
 }
 

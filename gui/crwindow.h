@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.17  2003/02/25 15:36:48  rich
 //   New WINDOW modifer "LARGE" makes the given window take up 64% of the area
 //   of the Main CRYSTALS window, provided the window doesn't already have a
@@ -42,9 +48,11 @@
 #ifndef     __CrWindow_H__
 #define     __CrWindow_H__
 #include    "crguielement.h"
-#include    "cctokenlist.h"
 #include    "crgrid.h"
-#include "ccstring.h"   // added by classview
+#include <string>
+#include <list>
+using namespace std;
+   // added by classview
 
 class CxApp;
 class CrMenuBar;
@@ -55,17 +63,17 @@ class   CrWindow : public CrGUIElement
     CrWindow( );
     ~CrWindow();
 
-    CcParse ParseInput( CcTokenList * tokenList );
+    CcParse ParseInput( deque<string> &  tokenList );
     void    SetGeometry( const CcRect * rect );
     CcRect  GetGeometry();
     CcRect  GetScreenGeometry();
     CcRect  CalcLayout(bool recalculate=false);
     void    ResizeWindow(int newWidth, int newHeight);
-    void    SetText( CcString item );
+    void    SetText( const string &item );
     void    Show( bool show );
     void    Align();
     void    CrFocus();
-    CrGUIElement *  FindObject( CcString Name );
+    CrGUIElement *  FindObject( const string & Name );
     CrGUIElement *  GetRootWidget();
 
     void  AddToTabGroup(CrGUIElement* tElement);
@@ -73,10 +81,10 @@ class   CrWindow : public CrGUIElement
     void* GetNextTabItem(void* pElement);
     void* FindTabItem(void* pElement);
     void  SendMeSysKeys( CrGUIElement* interestedWindow );
-    void  SetCommandText(CcString theText);
-    void  SetCancelText(CcString text);
+    void  SetCommandText(string theText);
+    void  SetCancelText(string text);
     void  FocusToInput(char theChar);
-    void  SetCommitText( CcString text);
+    void  SetCommitText( string text);
     void  SetMainMenu(CrMenuBar* menu);
     void  Redraw();
     void  Enable ( bool enable );
@@ -92,12 +100,12 @@ class   CrWindow : public CrGUIElement
     void SysKeyReleased ( UINT nChar );
     void MenuSelected(int id);
     void ToolSelected(int id);
-    void SendCommand(CcString theText, bool jumpQueue = false);
+    void SendCommand(string theText, bool jumpQueue = false);
     void TimerFired();
 
 // attributes
     CrGrid *    mGridPtr;
-    CcList *    mTabGroup;
+    list<CrGUIElement*>    mTabGroup;
     int mSafeClose;
     int m_relativePosition;
     bool m_Keep;
@@ -107,19 +115,22 @@ class   CrWindow : public CrGUIElement
     bool mIsModal;
     bool mStayOpen;
     CrMenuBar* mMenuPtr;
-    CcList mWindowsWantingSysKeys;
+    list<CrGUIElement*> mWindowsWantingSysKeys;
     int    wEnableFlags, wDisableFlags;
 
-    static CcList mModalWindowStack;
+    static list<CrWindow*> mModalWindowStack;
 
 private:
+
+    CcRect GetScreenArea();
+
     CrGUIElement* m_relativeWinPtr;
     bool mCommitSet;
     bool mCancelSet;
     bool mCommandSet;
-    CcString mCommitText;
-    CcString mCancelText;
-    CcString mCommandText;
+    string mCommitText;
+    string mCancelText;
+    string mCommandText;
     bool m_AddedToDisableAbleWindowList;
 };
 

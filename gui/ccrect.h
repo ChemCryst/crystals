@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/06/17 15:19:09  richard
+//   MidX() and MidY() return midpoints of rectangle.
+//
 //   Revision 1.4  2001/03/08 15:20:51  richard
 //   New function .Contains(x,y) true if point is within rectangle.
 //   New function .Native() returns GUI specific rectangle - CRect or wxRect.
@@ -27,7 +30,7 @@ class   CcRect
         // methods
             CcRect();
                   CcRect( const CcRect & inRect );
-                  CcRect( CcString inGeom );
+                  CcRect( string inGeom );
             CcRect( const int top, const int left, const int bottom, const int right );
             ~CcRect();
         void    Set( const int top, const int left, const int bottom, const int right );
@@ -41,7 +44,7 @@ class   CcRect
         const int   MidX();
         const int   MidY();
         CcRect& operator=( const CcRect &inRect );
-            CcString AsString();
+            string AsString();
 
 #ifdef __CR_WIN__
                 CRect Native();

@@ -15,6 +15,8 @@
 #include    "crlistctrl.h"
 #include    "cccontroller.h"
 #include    <math.h>
+#include    <string>
+#include    <sstream>
 
 int CxListCtrl::mListCtrlCount = kListCtrlBase;
 
@@ -41,20 +43,15 @@ CxListCtrl::CxListCtrl( CrListCtrl * container )
     mItems = 0;
     mVisibleLines = 0;
     m_numcols = 0;
-    m_colWidths = nil;
-    m_colTypes = nil;
     m_nHighlight = HIGHLIGHT_ROW;
     nSortedCol = -1;
     bSortAscending = true;
     m_ProgSelecting = 0;
-    m_originalIndex = nil;
 }
 
 CxListCtrl::~CxListCtrl()
 {
     RemoveListCtrl();
-    delete [] m_colWidths;
-    delete [] m_colTypes;
 }
 
 
@@ -130,38 +127,29 @@ void CxListCtrl::Focus()
 CXONCHAR(CxListCtrl)
 
 
-void CxListCtrl::AddColumn(CcString colHeader)
+void CxListCtrl::AddColumn(string colHeader)
 {
     m_numcols++;
-    int *newcolWidths = new int[m_numcols];
-    int *newcolTypes  = new int[m_numcols];
 
-    for ( int i = 0; i < (m_numcols - 1); i++ )
-    {
-        newcolWidths[i] = m_colWidths[i];
-        newcolTypes[i]  = m_colTypes[i];
-    }
-    newcolTypes[m_numcols-1] = COL_INT; //Always start with INT. This will fail to REAL, and then to TEXT.
+//Always start with INT. This will fail to REAL, and then to TEXT as data is input
+    m_colTypes.push_back(COL_INT);
+
 
 #ifdef __CR_WIN__
-    newcolWidths[m_numcols-1] = CRMAX(10,GetStringWidth(colHeader.ToCString())+15);
-    InsertColumn( m_numcols, colHeader.ToCString(), LVCFMT_LEFT, 10, m_numcols );
+    m_colWidths.push_back( CRMAX(10,GetStringWidth(colHeader.c_str())+15) );
+    InsertColumn( m_numcols, colHeader.c_str(), LVCFMT_LEFT, 10, m_numcols );
 #endif
 #ifdef __BOTHWX__
     int w,h;
-    GetTextExtent(colHeader.ToCString(),&w,&h);
-    newcolWidths[m_numcols-1] = CRMAX(10,w);
-    InsertColumn(m_numcols-1, colHeader.ToCString(),wxLIST_FORMAT_LEFT, 10 );
+    GetTextExtent(colHeader.c_str(),&w,&h);
+    m_colWidths.push_back( CRMAX(10,w) );
+    InsertColumn(m_numcols-1, colHeader.c_str(),wxLIST_FORMAT_LEFT, 10 );
 #endif
-    SetColumnWidth(m_numcols-1,newcolWidths[m_numcols-1]);
+    SetColumnWidth(m_numcols-1,m_colWidths.back());
 
-    delete [] m_colWidths;      //delete the old list of widths.
-    m_colWidths = newcolWidths; //re-assign pointer, to the new list.
-    delete [] m_colTypes;
-    m_colTypes = newcolTypes;
 }
 
-void CxListCtrl::AddRow(CcString * rowOfStrings)
+void CxListCtrl::AddRow(string * rowOfStrings)
 {
 
 #ifdef __CR_WIN__
@@ -171,27 +159,20 @@ void CxListCtrl::AddRow(CcString * rowOfStrings)
     int nItem = InsertItem(mItems++, _T(""));
 #endif
 
-    int *newIndex = new int[mItems+1];
-    for ( int i=1; i < (mItems); i++ )
-    {
-        newIndex[i] = m_originalIndex[i];
-    }
-    newIndex[mItems] = mItems;
-    delete [] m_originalIndex;
-    m_originalIndex = newIndex;
+    m_originalIndex.push_back(m_originalIndex.size()); // 0=0,2=2 etc.
 
     for (int j = 0; j < m_numcols; j++)
     {
 #ifdef __CR_WIN__
-	SetItemText(nItem, j, rowOfStrings[j].ToCString());
-        int width = GetStringWidth(rowOfStrings[j].ToCString());
+        SetItemText(nItem, j, rowOfStrings[j].c_str());
+        int width = GetStringWidth(rowOfStrings[j].c_str());
 #endif
 #ifdef __BOTHWX__
-	SetItem(nItem, j, rowOfStrings[j].ToCString());
+        SetItem(nItem, j, rowOfStrings[j].c_str());
         int width,h;
-	GetTextExtent(rowOfStrings[j].ToCString(),&width,&h);
+        GetTextExtent(rowOfStrings[j].c_str(),&width,&h);
 #endif
-	m_colWidths[j] = CRMAX(m_colWidths[j],width + 15);
+        m_colWidths[j] = CRMAX(m_colWidths[j],width + 15);
         SetColumnWidth(j,m_colWidths[j]);
         int type = WhichType(rowOfStrings[j]);
         m_colTypes[j] = CRMAX(m_colTypes[j], type);
@@ -513,14 +494,18 @@ void CxListCtrl::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
     }
     else
     {
+       
+       ostringstream strm;
 
         if (pnmv->uNewState <= 1 && pnmv->uOldState >= 2) //Unselect Item.
         {
-                        ((CrListCtrl*)ptr_to_crObject)->SendValue("UNSELECTED_N" + CcString( m_originalIndex[(int)pnmv->iItem+1]) ); //Send the index
+          strm << "UNSELECTED_N" << m_originalIndex[(int)pnmv->iItem+1];
+          ((CrListCtrl*)ptr_to_crObject)->SendValue(strm.str() ); //Send the index
         }
         else if (pnmv->uNewState >= 2 && pnmv->uOldState <= 1) //Select Item
         {
-                        ((CrListCtrl*)ptr_to_crObject)->SendValue("SELECTED_N" + CcString( m_originalIndex[(int)pnmv->iItem+1]) ); //Send the index only.
+           strm << "SELECTED_N" << m_originalIndex[(int)pnmv->iItem+1];
+           ((CrListCtrl*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
         }
 
     }
@@ -799,11 +784,11 @@ void CxListCtrl::SortCol(int col, bool sort)
 
 //Work out whether a string is REAL, INT or TEXT.
 
-int CxListCtrl::WhichType(CcString text)
+int CxListCtrl::WhichType(string text)
 {
-    int i;
+    string::size_type i;
 //Test one: Any characters other than space, number or point.
-    for (i = 0; i < text.Length(); i++)
+    for (i = 0; i < text.length(); i++)
     {
         if (   text[i] != ' '
             && text[i] != '1'
@@ -824,7 +809,7 @@ int CxListCtrl::WhichType(CcString text)
 //Test two(b): Minus sign in correct place if present.
     bool inLeadingSpace = true;
     bool inFinalSpace = false;
-    for (i = 0; i < text.Length(); i++)
+    for (i = 0; i < text.length(); i++)
     {
         if(inLeadingSpace)
         {
@@ -858,7 +843,7 @@ int CxListCtrl::WhichType(CcString text)
 
 //Test three: One point symbol in the text.
     bool pointFound = false;
-    for (i = 0; i < text.Length(); i++)
+    for (i = 0; i < text.length(); i++)
     {
         if ( text[i] == '.' )
         {
@@ -912,21 +897,21 @@ void CxListCtrl::SelectAll(bool select)
 }
 
 #ifdef __CR_WIN__
-CcString CxListCtrl::GetCell(int row, int col)
+string CxListCtrl::GetCell(int row, int col)
 {
     CString temp = GetItemText(row, col);
-    CcString retVal = temp.GetBuffer(temp.GetLength());
+    string retVal = temp.GetBuffer(temp.GetLength());
     return retVal;
 }
 #endif
 #ifdef __BOTHWX__
-CcString CxListCtrl::GetCell(int row, int col)
+string CxListCtrl::GetCell(int row, int col)
 {
- return CcString("Unimplemented");
+ return string("Unimplemented");
 }
 #endif
 
-void CxListCtrl::SelectPattern(CcString * strings, bool select)
+void CxListCtrl::SelectPattern(string * strings, bool select)
 {
 #ifdef __CR_WIN__
     int size = GetItemCount();
@@ -941,36 +926,36 @@ void CxListCtrl::SelectPattern(CcString * strings, bool select)
                 switch ( m_colTypes[j] )
                 {
                 case COL_INT:
-                    if ( strings[j].Sub(1,1) == ">" )
+                    if ( strings[j][0] == '>' )
                     {
-                        if( atoi(strings[j].Sub(2,-1).ToCString()) >= atoi(GetCell(i,j).ToCString()) )
+                        if( atoi(strings[j].substr(1,strings[j].length()-1).c_str()) >= atoi(GetCell(i,j).c_str()) )
                             match = false;
                     }
-                    else if ( strings[j].Sub(1,1) == "<" )
+                    else if ( strings[j][0] == '<' )
                     {
-                        if( atoi(strings[j].Sub(2,-1).ToCString()) <= atoi(GetCell(i,j).ToCString()) )
+                        if( atoi(strings[j].substr(1,strings[j].length()-1).c_str()) <= atoi(GetCell(i,j).c_str()) )
                             match = false;
                     }
                     else
                     {
-                        if( atoi(strings[j].ToCString()) != atoi(GetCell(i,j).ToCString()) )
+                        if( atoi(strings[j].c_str()) != atoi(GetCell(i,j).c_str()) )
                             match = false;
                     }
                     break;
                 case COL_REAL:
-                    if ( strings[j].Sub(1,1) == ">" )
+                    if ( strings[j][0] == '>' )
                     {
-                        if( atof(strings[j].Sub(2,-1).ToCString()) >= atof(GetCell(i,j).ToCString()) )
+                        if( atof(strings[j].substr(1,strings[j].length()-1).c_str()) >= atof(GetCell(i,j).c_str()) )
                             match = false;
                     }
-                    else if ( strings[j].Sub(1,1) == "<" )
+                    else if ( strings[j][0] == '<' )
                     {
-                        if( atof(strings[j].Sub(2,-1).ToCString()) <= atof(GetCell(i,j).ToCString()) )
+                        if( atof(strings[j].substr(1,strings[j].length()-1).c_str()) <= atof(GetCell(i,j).c_str()) )
                             match = false;
                     }
                     else
                     {
-                        if( atof(strings[j].ToCString()) != atof(GetCell(i,j).ToCString()) )
+                        if( atof(strings[j].c_str()) != atof(GetCell(i,j).c_str()) )
                             match = false;
                     }
                     break;
@@ -1001,10 +986,10 @@ void CxListCtrl::SelectPattern(CcString * strings, bool select)
 #endif
 }
 
-CcString CxListCtrl::GetListItem(int item)
+string CxListCtrl::GetListItem(int item)
 {
 #ifdef __BOTHWX__
-  return CcString("Unimplemented");
+  return string("Unimplemented");
 #endif
 #ifdef __CR_WIN__
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
@@ -1013,7 +998,7 @@ CcString CxListCtrl::GetListItem(int item)
     for( int i=0; i<nColCount; i++)
         textresult += GetItemText(item, i) + " ";
 
-    CcString result = textresult.GetBuffer(textresult.GetLength());
+    string result = textresult.GetBuffer(textresult.GetLength());
     return result;
 #endif
 }
