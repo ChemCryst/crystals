@@ -26,7 +26,7 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 {
     CxGrid  *theGrid = new CxGrid( container );
 #ifdef __CR_WIN__
-    theGrid->Create(NULL, "Window", WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,
+    theGrid->Create(NULL, "Window", WS_CHILD|WS_VISIBLE,
                     CRect(0,0,200,200), guiParent,mGridCount++,NULL);
 
     if (mp_font == nil)
