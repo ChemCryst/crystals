@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2002/02/27 19:30:18  ckp2
+C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
+C RIC: Ensure consistent use of backslash after CRYSDIR:
+C
 C Revision 1.39  2001/10/18 10:02:49  ckp2
 C When mouse hovers over bonds, display the fragment number as well as the length.
 C
@@ -134,251 +138,6 @@ C
 C Revision 1.8  1999/05/10 16:53:58  dosuser
 C RIC: Removed unused routine GUI()
 C
-CODE FOR CHINIT
-      SUBROUTINE CHINIT(N,M,IR,IG,IB)
-\XCHTAP
-\XUNITS
-\XIOBUF
-            NCHART = N
-            MCHART = M
-            IBGRED = IR
-            IBGGRE = IG
-            IBGBLU = IB
-            WRITE ( CMON, '(A)')'^^CH NEWCHART ANISO ^^EN'
-            CALL XPRVDU(NCVDU, 1,0)
-            RETURN
-      END
-C
-C
-CODE FOR CHPLOT
-      SUBROUTINE CHPLOT(IREGX,IREGY,X,Y,CLAB,IEND,IR,IG,IB,LLAB,
-     1                                LJOIN,N,M,CXAX,CYAX,CTITL)
-\XCHTAP
-\XUNITS
-\XIOBUF
-      INTEGER*4 IREGX,IREGY          !The chart region to draw to.
-      REAL*4 X(N,M), Y(N,M)          !The data in M series.
-      INTEGER*4 IEND(M)              !The end of the data in each series
-      CHARACTER*10 CLAB(N,M)         !Labels in M series.
-      INTEGER*4 IR(M), IG(M), IB(M)  !Series colours
-      INTEGER*4 LLAB(M), LJOIN(M)    !Series label and style flags
-      INTEGER*4 N,M                  !The size of the data
-      CHARACTER*32 CXAX,CYAX,CTITL   !Labelling
-      INTEGER*4 X1,X2,Y1,Y2
-      INTEGER*4 XAXISY, XAXISX1, XAXISX2
-      INTEGER*4 YAXISX, YAXISY1, YAXISY2
-      INTEGER*4 XLABX,XLABY, YLABX,YLABY, TLABX,TLABY
-C
-C
-C Get coords for this chart region.
-C
-      X1 = (10000/NCHART) * (IREGX-1)
-      X2 = (10000/NCHART) * IREGX
-      Y1 = (10000/MCHART) * (IREGY-1)
-      Y2 = (10000/MCHART) * IREGY
-C
-C Calculate where the axes should be.
-C
-      XAXISY = Y2 - 0.1*(Y2-Y1)
-      XAXISX1= X1 + 0.1*(X2-X1)
-      XAXISX2= X2 - 0.1*(X2-X1)
-C
-      YAXISX = X1 + 0.1*(X2-X1)
-      YAXISY1= Y1 + 0.1*(Y2-Y1)
-      YAXISY2= Y2 - 0.1*(Y2-Y1)
-C
-C      WRITE(NCAWU,'(A,I6)')'N = ',N
-C      WRITE(NCAWU,'(A,I6)')'M = ',M
-C      WRITE(NCAWU,'(A,I6)')'IEND(1) = ',IEND(1)
-C      WRITE(NCAWU,'(A,I6)')'IEND(2) = ',IEND(2)
-C
-C
-C Draw the axes.
-C
-      WRITE ( CMON, '(A)')'^^CH PENCOLOUR 0 0 0 ^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE ( CMON, '(A,4I6,A)')'^^CHLINE', XAXISX1, XAXISY,
-     1 XAXISX2, XAXISY, '^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE ( CMON, '(A,4I6,A)')'^^CHLINE', YAXISX, YAXISY1,
-     1 YAXISX, YAXISY2, '^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-C
-C Label the chart.
-      XLABX = XAXISX1+(X2-X1)/3
-      XLABY = XAXISY -(Y2-Y1)/20
-      YLABX = YAXISX -(X2-X1)/10
-      YLABY = YAXISY1+(Y2-Y1)/10
-      TLABX = X1+(X2-X1)/3
-      TLABY = Y1+(Y2-Y1)/20
-C
-C
-      WRITE (CMON,'(A,2I6,1X,2A)') '^^CHTEXT',XLABX,XLABY,CXAX,'^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE (CMON,'(A,2I6,1X,2A)') '^^CHTEXT',YLABX,YLABY,CYAX,'^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE (CMON,'(A,2I6,1X,2A)') '^^CHTEXT',TLABX,TLABY,CTITL,'^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-C
-C
-C Find min and max X and Y data.
-C
-      XMAX = -100000.
-      YMAX = -100000.
-      XMIN = 100000.
-      YMIN = 100000.
-C
-      DO 100 ISER = 1,M
-         DO 90 IDAT = 1,IEND(ISER)
-            XMAX = MAX ( XMAX, X(IDAT,ISER) )
-            XMIN = MIN ( XMIN, X(IDAT,ISER) )
-C            WRITE(NCAWU,'(A,F15.2,A)')'^^TXX=',X(IDAT,ISER),'^^EN'
-C            IF(ISER.EQ.1)
-C     1      WRITE(NCAWU,'(3(A,F15.2),A,I4,A)')
-C     1                               '^^TX X=',X(IDAT,ISER),
-C     2                               ' Y(1)=',Y(IDAT,1),
-C     3                               ' Y(2)=',Y(IDAT,2),
-C     4                               ' IDAT=',IDAT,'^^EN'
-            YMAX = MAX ( YMAX, Y(IDAT,ISER) )
-            YMIN = MIN ( YMIN, Y(IDAT,ISER) )
-90       CONTINUE
-100   CONTINUE
-C
-C Work out scaling for axes
-C
-      XRANGE = XMAX - XMIN
-      YRANGE = YMAX - YMIN
-C
-      XMIN = XMIN - XRANGE/10
-      YMIN = YMIN - YRANGE/10
-      XMAX = XMAX + XRANGE/10
-      YMAX = YMAX + YRANGE/10
-C
-      DO 120 ISER = 1,M
-            WRITE ( CMON, '(A,3I4,A)')    '^^CH PENCOLOUR ',
-     1      IR(ISER),IG(ISER),IB(ISER),'^^EN'
-            CALL XPRVDU(NCVDU, 1,0)
-            IF (LJOIN(ISER).EQ.0) THEN
-                  DO 110 IDAT = 1,IEND(ISER)
-                        IXOUT = XAXISX1+ (XAXISX2-XAXISX1)
-     1                  *(X(IDAT,ISER)-XMIN)/MAX(0.01,(XMAX-XMIN))
-                        IYOUT = YAXISY2- (YAXISY2-YAXISY1)
-     1                  *(Y(IDAT,ISER)-YMIN)/MAX(0.01,(YMAX-YMIN))
-                        WRITE ( CMON, '(A,4I6,A)')'^^CH FCIRCLE',
-     1                  IXOUT-30,IYOUT-30,IXOUT+30,IYOUT+30,'^^EN'
-                        CALL XPRVDU(NCVDU, 1,0)
-110               CONTINUE
-            ELSEIF(LJOIN(ISER).EQ.1) THEN
-                  IOXOUT = -1
-                  IOYOUT = -1
-                  DO 115 IDAT = 1,IEND(ISER)
-C            WRITE(NCAWU,'(A)')'Entered loop'
-C            WRITE(NCAWU,'(A,I4)')'XAXISX1 = ',XAXISX1
-C            WRITE(NCAWU,'(A,I4)')'XAXISX2 = ',XAXISX2
-C            WRITE(NCAWU,'(A,I4)')'IDAT = ',IDAT
-C            WRITE(NCAWU,'(A,I4)')'ISER = ',ISER
-C            WRITE(NCAWU,'(A,F12.3)')'X(IDAT,ISER) = ',X(IDAT,ISER)
-C            WRITE(NCAWU,'(A,F12.3)')'XMIN = ',XMIN
-C            WRITE(NCAWU,'(A,F12.3)')'XMAX = ',XMAX
-                        IXOUT = XAXISX1+ (XAXISX2-XAXISX1)
-     1                  *(X(IDAT,ISER)-XMIN)/MAX(0.01,(XMAX-XMIN))
-C            WRITE(NCAWU,'(A)')'Calced points'
-                        IYOUT = YAXISY2- (YAXISY2-YAXISY1)
-     1                  *(Y(IDAT,ISER)-YMIN)/MAX(0.01,(YMAX-YMIN))
-C            WRITE(NCAWU,'(A)')'Calced points2'
-                        IF(IOXOUT.GT.0) THEN
-                              WRITE ( CMON, '(A,4I6,A)')'^^CH LINE',
-     1                        IOXOUT,IOYOUT,IXOUT,IYOUT,'^^EN'
-                              CALL XPRVDU(NCVDU, 1,0)
-                        ENDIF
-                        IOXOUT = IXOUT
-                        IOYOUT = IYOUT
-115               CONTINUE
-            ENDIF
-120   CONTINUE
-C
-      WRITE ( CMON, '(A)')'^^CHUPDATE^^EN'
-      CALL XPRVDU(NCVDU, 1,0)
-C
-      RETURN
-      END
-C
-CODE FOR CHANAL
-      SUBROUTINE CHANAL(IR, N, IFO, IFC, delsq, wdelsq, R, RW)
-C
-      COMMON /CHDATA/ X, YFOFC, YDELS, YRS, NSOFAR, NUMS
-      REAL X(100,2),YFOFC(100,2),YDELS(100,2),YRS(100,2),NUMS(100)
-      REAL IR, IFO, IFC
-      INTEGER IRD(2), IGR(2), IBL(2),LLAB(2),LJOIN(2),IEND(2)
-      CHARACTER*10 CLAB(100,2)
-      CHARACTER*32 CXAX,CYAX,CTITL   !Labelling
-\XUNITS
-\XIOBUF
-      IF((IR.EQ.0.).AND.(N.EQ.0).AND.(IFO.EQ.0.).AND.(R.EQ.0.))THEN
-C Update the chart
-         IRD(1) = 255
-         IGR(1) = 0
-         IBL(1) = 0
-         IRD(2) = 0
-         IGR(2) = 0
-         IBL(2) = 255
-         LLAB(1) = 0
-         LLAB(2) = 0
-         LJOIN(1)= 1
-         LJOIN(2)= 1
-         IEND(1) = NSOFAR
-         IEND(2) = NSOFAR
-C
-         CALL CHINIT(2,2,255,255,255)
-C
-         CXAX = 'Sqrt Range'
-         CYAX = 'FO, FC'
-         CTITL = 'Fo and Fc'
-         CALL CHPLOT(1,1,X,YFOFC,CLAB,IEND,IRD,IGR,IBL,LLAB,LJOIN,
-     1   100,2,CXAX,CYAX,CTITL)
-C      SUBROUTINE CHPLOT(IREGX,IREGY,X,Y,CLAB,IEND,IR,IG,IB,LLAB,
-C     1                                LJOIN,N,M,CXAX,CYAX,CTITL)
-C
-         CXAX = 'Sqrt Range'
-         CYAX = 'delsq, wdelsq'
-         CTITL = 'delsquared'
-         CALL CHPLOT(1,2,X,YDELS,CLAB,IEND,IRD,IGR,IBL,LLAB,LJOIN,
-     1   100,2,CXAX,CYAX,CTITL)
-C
-         CXAX = 'Sqrt Range'
-         CYAX = 'R, Rw'
-         CTITL = 'R and weighted R'
-         CALL CHPLOT(2,1,X,YRS,CLAB,IEND,IRD,IGR,IBL,LLAB,LJOIN,
-     1   100,2,CXAX,CYAX,CTITL)
-C
-         CXAX = 'Sqrt Range'
-         CYAX = 'n'
-         CTITL = 'Number of reflections'
-         LJOIN(1) = 0
-         CALL CHPLOT(2,2,X,NUMS,CLAB,IEND,IRD,IGR,IBL,LLAB,LJOIN,
-     1   100,1,CXAX,CYAX,CTITL)
-C
-         NSOFAR = 0
-C
-      ELSE
-         IF (N.EQ.0) RETURN
-C
-         NSOFAR = NSOFAR+1
-         X(NSOFAR,1) = SQRT(IR)
-         X(NSOFAR,2) = X(NSOFAR,1)
-         YFOFC(NSOFAR,1) = IFO
-         YFOFC(NSOFAR,2) = IFC
-C         WRITE(NCAWU,'(A,2I7,2F18.3,A)')'^^TX',IFO,IFC,
-C     1           YFOFC(NSOFAR,1),YFOFC(NSOFAR,2),'^^EN'
-         YDELS(NSOFAR,1) = LOG(MAX(0.00000001,DELSQ))
-         YDELS(NSOFAR,2) = LOG(MAX(0.00000001,WDELSQ))
-         YRS  (NSOFAR,1) = R
-         YRS  (NSOFAR,2) = RW
-         NUMS(NSOFAR) = N
-      ENDIF
-      RETURN
-      END
-
 CODE FOR GUIBLK
       BLOCK DATA GUIBLK
 \XGUIOV
@@ -512,161 +271,6 @@ C
  
  
  
-CODE FOR ICRDIST1
-      FUNCTION ICRDIST1( IN, STACK, M5X, M5A, MD5, IOFF)
-C
-C   IN     THE NUMBER OF ATOMS TO BE MOVED AROUND.
-C   STACK THE STACK TO PUT THE ATOMS ON. CURRENTLY 500 WORDS. ie. 100 at
-C   M5X     ADDRESS OF THE FIRST ATOM TO MOVE AROUND IN LIST 5
-C   M5A    ADDRESS OF THE CURRENT PIVOT ATOM IN LIST 5
-C   MD5    STEP SIZE OF ATOM ENTRY IN LIST 5
-C   IOFF   OFFSET of X-coord from L5. (Normally 4, but 2 during fourier
-C
-C--THE RETURN VALUES OF 'ICRDIST1' ARE :
-C   0  NO SUITABLE CONTACTS HAVE BEEN FOUND.
-C  >0  THE NUMBER OF ENTRIES IN THE DISTANCES STACK.
-C
-C--THE FOLLOWING VARIABLES MAY BE ADJUSTED
-C  AP     MAXIMUM ALLOWED DISTANCES SQUARED OVERALL
-C  BP     MINIMUM ALLOWED DISTANCE SQUARED OVERALL
-C
-C--ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
-C  WHICH HAS THE FOLLOWING FORMAT :
-C   0  ADDRESS OF THE ATOM IN LIST 5
-C   1  TRANSFORMED X
-C   2  TRANSFORMED Y
-C   3  TRANSFORMED Z
-C   4  DISTANCE
-C
-C--THE COMMON BLOCK /XAPD/ IS USED AS :
-C  APD(1-3)  SYMMETRY RELATED X, Y AND Z, WITH TRANSLATION PART OMITTED.
-C  APD(4-6)  INITIAL SYMMETRY RELATED X, Y AND Z.
-C  APD(7-9)  FINAL SYMMETRY RELATED X, Y AND Z AFTER A SUCCESSFUL FIND.
-C
-C--
-\ISTORE
-\STORE
-\XCONST
-\XPDS
-        REAL STACK(500)
-        COMMON /PERM02/ RLIST2(1000),ICFLAG,LSYM,NSYM,MDSYM,LNONP,NNONP
-      EQUIVALENCE (STORE(1),ISTORE(1))
-C
-        CALL CRDIST2     !Set up BPD.
-        JT= 5            !Size of atom info on stack
-        AO = 3.0
-        AP = AO * AO   !Max dist squared
-        BP = 0.5 * 0.5   !Min dist squared
-C
-C--SET UP A FEW INITIAL POINTERS
-      NJ=0             !Return value. Number of atoms found
-      JS=1             !Stack pointer in STACK(n). Starts at 1.
-        I5A=M5A
-C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
-      DO 1050 J=1,3
-        BPD(J+3)=STORE(I5A+IOFF)-AO/BPD(J)
-        BPD(J+6)=STORE(I5A+IOFF)+AO/BPD(J)
-        I5A=I5A+1
-1050  CONTINUE
-C
-C--LOOP OVER THE ATOMS FROM CURRENT PIVOT TO CURRENT + IN.
-        DO 2800 M5= M5X,M5X+(MD5*(IN-1)),MD5
-C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
-        M2=LSYM
-        DO 2700 NE=1,NSYM
-C--APPLY THIS SYMMETRY OPERATOR
-          CALL XMLTTM(RLIST2(M2),STORE(M5+IOFF),APD(1),3,3,1)
-C--LOOP OVER EACH REQUIRED SIGN FOR THE CENTRE OF SYMMETRY FLAG
-          DO 2650 NF=1,2*ICFLAG+1,2
-            M2P=LNONP
-C--LOOP OVER EACH OF THE NON-PRIMITIVE LATTICE TRANSLATIONS
-            DO 2600 NG=1,NNONP
-              NH=M2
-C--ADD IN THE VARIOUS TRANSLATION PARTS
-              DO 1250 NI=1,3
-                APD(NI+3)=APD(NI)+RLIST2(M2P)+RLIST2(NH+9)
-                APD(NI+6)=APD(NI+3)
-                M2P=M2P+1
-                NH=NH+1
-1250          CONTINUE
-
-C--MOVE THE X COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
-
-              CALL XSHIFT2(1)
-
-C--ADVANCE THE X COORDINATE BY ONE OR MORE UNIT CELLS
-
-1300          CONTINUE
-              IF(KDIST2(1).GE.0) THEN
-
-C--MOVE THE Y COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
-
-                CALL XSHIFT2(2)
-
-C--ADVANCE THE Y COORDINATE BY ONE OR MORE UNIT CELLS
-
-1400            CONTINUE
-                IF(KDIST2(2).LT.0) GOTO 1300
-
-C--MOVE THE Z COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
-
-                CALL XSHIFT2(3)
-
-C--ADVANCE THE Z COORDINATE BY ONE OR MORE UNIT CELLS
-
-                IF(KDIST2(3).LT.0) GOTO 1400
-
-C--A SUCCESSFUL FIND
-C----- CHECK FOR SELF-SELF CONTACT
-
-                IF (     (M5-M5A .NE. 0)
-     1              .OR. (ABS(STORE(M5A+IOFF)-APD(7))-ZERO .GT. 0)
-     2              .OR. (ABS(STORE(M5A+IOFF+1)-APD(8))-ZERO .GT. 0)
-     3            .OR. (ABS(STORE(M5A+IOFF+2)-APD(9))-ZERO .GT. 0) )THEN
-
-C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS  -  CALC. DIST.
-
-                  F=XDSTNCR(STORE(M5A+IOFF),APD(7))
-                  IF(F .GE. BP) THEN
-
-C--CHECK THE DISTANCE AGAINST THE MAXIMUM ALLOWED VALUE SQUARED
-
-                    IF(F .LE. AP) THEN
-
-C--COMPUTE THE DISTANCE
-
-                      E=SQRT(F)
-
-C----- SET THE FLAGS
-
-                      STACK(JS)=M5             !0 = Pointer to atom
-                      NJ=NJ+1                   !Atom Counter.
-                      J=JS+4
-                      DO 2550 I=1,3             !1,2,3 = transformed x,y
-                        STACK(I+JS)=APD(I+6)
-2550                  CONTINUE                  !
-                      STACK(JS+4)=E             !4 = Dist
-                      JS=JS+JT
-                      IF (JS.GT.500) THEN
-                          JS=JS-JT
-C                          CALL ZMORE('Too many contacts in ICRDIST1',0)
-                          NJ=NJ-1
-                          J=JS-4
-                      END IF
-                    END IF
-                  END IF
-                END IF
-              END IF
-2600        CONTINUE
-            CALL XNEGTR(APD(1),APD(1),3)        !Centre of symmetry.
-2650      CONTINUE
-          M2=M2+MDSYM
-2700    CONTINUE
-2800  CONTINUE
-      ICRDIST1=NJ
-      RETURN
-      END
-C
 C
 CODE FOR CRDIST2
       SUBROUTINE CRDIST2
@@ -686,8 +290,10 @@ C--SET UP THE SHIFT DATA
 1050  CONTINUE
       RETURN
       END
-C
-CODE FOR XDSTNCR2
+
+
+
+CODE FOR XDSTNCR
       FUNCTION XDSTNCR(A,B)
 C--COMPUTE THE DISTANCE SQUARED BETWEEN TWO POINTS
 C
@@ -713,6 +319,8 @@ C
       RETURN
       END
  
+
+
 CODE FOR KDIST2
       FUNCTION KDIST2(NOC)
 C--MOVES AN ATOM POSITIVELY FORWARD ONE UNIT CELL, AND CHECKS IF
@@ -755,7 +363,9 @@ C--WE ARE IN THE REQUIRED VOLUME
 1150  CONTINUE
       RETURN
       END
-C
+
+
+
 CODE FOR XSHIFT2
       SUBROUTINE XSHIFT2(NOC)
 C--SHIFTS THE ATOM OUT OF RANGE SO THAT IT CAN START COMING BACK
@@ -782,15 +392,28 @@ C--MOVE BACK ONE MORE UNIT CELL
       APD(NOC+6)=APD(NOC+6)-1.
       GOTO 1000
       END
+
+
+
+
+
+
+CODE FOR XGUIUP
+      SUBROUTINE XGUIUP ( IULN )
+C----- UPDATE THE GUI
 C
-CODE FOR XGDBUP
-      SUBROUTINE XGDBUP(CTXT,IULN,LSN,ICOMMN,IDIMN)
-C----- UPDATE THE GRAPHICS DATA BASE
-C      PREPARE FOR GUI
+C Unlike earlier versions of this subroutine, we can now sometimes claim store
+C to load lists and update the GUI.
 C
-C Can't claim any store as some calling routines have claimed it all
-C (They are using buffers to copy data to or from disk).
+C Updating lists 5 updates the whole model, so lists 1,2,29,40 and 41
+C are also loaded or required.
 C
+C IULN
+C   0 - process all list information that needs updating.
+C   +ve - update list IULN
+C   -ve - update list -IULN, but don't touch store. ( We may use STR11 )
+C         for list 5, this means that 1, 2, 5, 29 and 41 must have been
+c         loaded by the calling routine.
 
 \ISTORE
 \STORE
@@ -803,96 +426,191 @@ C
 \QSTORE
 \QGUIOV
 \XCONST 
+\XLST05
+\XLST01
+\XLST02
+\XLST23
+\XLST29
+\XLST30
+\XLST41
+\TYPE11
+\XSTR11 
+\QSTR11
+\XDISCB
 
-      CHARACTER CTXT*(*)
-      DIMENSION ICOMMN(IDIMN)
-      LOGICAL LDOFOU, LSPARE, LISNAN
       DIMENSION JDEV(4)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
-      CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*10,CLAB2*10
+      CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       LOGICAL WEXIST
-      REAL STACK(500)     !Space for 100 contacts.
       CHARACTER*8 CINST(6)
+      INTEGER IUNKN
+
+      DIMENSION LST(7)
+      DIMENSION ICLINF(400)
+      DIMENSION TXYZ(9)
+
+
+      SAVE NCLINF, ICLINF
+
+      DATA ISERnn /50*0/
+      DATA NCLINF /0/
+
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
+      DATA    IUNKN /'UNKN'/
 
 C
 C The QSINl5 flag is set here, if there are Q atoms in list 5.
 C It is used by the menu update routine.
 C
 C LUPDAT flag prevents the data from being sent to the GUI.
-C LGUIL1 IS SET IF LIST 1 IS AVAILABLE
-C LGUIL2 IS SET IF LIST 2 IS AVAILABLE
-C LUPDAT IS SET WHEN MTRX IS INITIALISED AND GUI IS ENABLED
-C MTRX IS INITIALISED
-C      1 WHEN LIST 1 IS FORMED
-C      2 WHEN THE GUI IS INITIALISED
-C (For example, the graphics window may be closed or even unimplemented)
 C
-CDJWDEC99 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
-C
-C
-C      IF ( ISSUPD .EQ. 0 ) RETURN
 
-      IF (.NOT.LUPDAT) RETURN
- 
-
-C Branch on type of list that has been sent:
-
-      IF ( IULN .EQ. 5 ) THEN   ! atom coordinates - update model
-
-        IF ( ISSUPD .EQ. 0 ) RETURN
+2     FORMAT(A)
 
 
-C NB. L5 common block is not present, this just substitutes the
-C     values into familiar looking variables.
-        L5 = ICOMMN(1)
-        MD5= ICOMMN(3)
-        N5 = ICOMMN(4)
+C Wait for disk buffers to be allocated, before loading lists.
+      IF ( IACC .LT. 0 ) RETURN
 
-C If the current list is is the same as one sent before the
-C don't update the GUI... (unless LSN is zero).
+      IF ( .NOT. LUPDAT ) RETURN
 
-        IF((LSN.EQ.ISERIA).AND.(LSN.NE.0)) RETURN
+      IF ( IULN .GE. 0 ) THEN
+        CALL XRSL
+        CALL XCSAE
+      END IF
 
-C Check for valid pointers to lists.
+c      WRITE(CMON,'(a)')' XGUIUP: ENTRY.'
+c      CALL XPRVDU (NCVDU,1,0)
+      
 
-        IF ((.NOT.LGUIL1).OR.(.NOT.LGUIL2)) RETURN
+      IF ( IULN .EQ. 0 ) THEN ! decide what needs updating
+c         WRITE(CMON,'(a)')' XGUIUP: Setting 6 lists to be updated.'
+c         CALL XPRVDU (NCVDU,1,0)
+         NLST = 6
+         LST(1) = 1
+         LST(2) = 2
+         LST(3) = 5
+         LST(4) = 23
+         LST(5) = 29
+         LST(6) = 30
+      ELSE
+         NLST = 1
+         LST(1) = ABS(IULN)
+         IF ( LST(1) .EQ. 41 ) LST(1) = 5  !Use 5 it will include 41.
+      ENDIF
+
+      DO MLST = 1,NLST       !Loop over the lists to be sent up.
+         ILST = LST(MLST)
+
+C Branch on type of list that needs sending:
+
+         IF ( ILST .EQ. 5 ) THEN   ! atom coordinates - update model
+
+C 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
+            IF ( ISSUPD .EQ. 0 ) THEN
+c      WRITE(CMON,'(a)')' XGUIUP: Model update suppressed by user.'
+c      CALL XPRVDU (NCVDU,1,0)
+             ISERnn(5)  = 0         ! Ensure update if/when ISSUPD is 
+             ISERnn(41) = 0         ! switched back on.
+             CYCLE ! The model may be switched off for speed reasons.
+            ENDIF
+
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure
+                                    ! already loaded.
+
+c               WRITE(CMON,'(a)')' XGUIUP: L5: Sneaky update.'
+c               CALL XPRVDU (NCVDU,1,0)
+
+               IF(KEXIST(1).LE.0) GOTO 9910
+               IF(KEXIST(2).LE.0) GOTO 9910
+               IF(KEXIST(5).LE.0) GOTO 9910
+               IF(KEXIST(29).LE.0) GOTO 9910
+               IF(KEXIST(41).LE.0) GOTO 9910
+               IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+               IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+               IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+C In this mode, we can't run XBCALC so the existing 41 will have to do.
+               IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+
+            ELSE
+
+c               WRITE(CMON,'(a)')' XGUIUP: L5: Full update.'
+c               CALL XPRVDU (NCVDU,1,0)
+
+               IF(KEXIST(1).LE.0) GOTO 9915
+               IF(KEXIST(2).LE.0) GOTO 9915
+               IF(KEXIST(5).LE.0) GOTO 9915
+               IF(KEXIST(29).LE.0) GOTO 9915
+
+C Ensure list 41 dependencies are up to date:
+               IF ( K41DEP() .LT. 0 ) THEN
+                 CALL XRSL
+                 CALL XCSAE
+                 CALL XBCALC(1)
+                 CALL XRSL
+                 CALL XCSAE
+               ENDIF
+
+               IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+               IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
+               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0)  CALL XFAL05
+               IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
+               IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
+               IF ( IERFLG .LT. 0 ) GO TO 9920
+            END IF
+
+            CALL XRLIND(5, L05SR, NFW, LL, IOW, NOS, ID)
+            CALL XRLIND(41,L41SR, NFW, LL, IOW, NOS, ID)
+
+C If the current list is is the same as one sent before then
+C don't update the GUI.
+
+            IF ( (L05SR.EQ.ISERnn(5)).AND.(L41SR.EQ.ISERnn(41)) ) THEN
+c      WRITE(CMON,'(a)')' XGUIUP: Model serial unchanged.'
+c      CALL XPRVDU (NCVDU,1,0)
+
+              CYCLE
+            ENDIF
 
 C Set old list number to current list number.
-        ISERIA = LSN
-        QSINL5 = .FALSE.
-        LSPARE = .FALSE.
-C
+            ISERnn(5)  = L05SR
+            ISERnn(41) = L41SR
+
+            QSINL5 = .FALSE.
+            LSPARE = .FALSE.
+
+
 C Calculate and store orthogonal coords....
 C Calculate sum of x, y and z as we go.
-        XTOT = 0
-        YTOT = 0
-        ZTOT = 0
-        IPLACE = 1
-        J = L5
-        DO I = 1, N5
-             TSTORE(IPLACE)  = GUMTRX(1) * STORE(J+4)
-     1                       + GUMTRX(2) * STORE(J+5)
-     2                       + GUMTRX(3) * STORE(J+6)
-             TSTORE(IPLACE+1) = GUMTRX(4) * STORE(J+4)
-     1                       + GUMTRX(5) * STORE(J+5)
-     2                       + GUMTRX(6) * STORE(J+6)
-             TSTORE(IPLACE+2) = GUMTRX(7) * STORE(J+4)
-     1                       + GUMTRX(8) * STORE(J+5)
-     2                       + GUMTRX(9) * STORE(J+6)
-             XTOT = XTOT + TSTORE(IPLACE)
-             YTOT = YTOT + TSTORE(IPLACE+1)
-             ZTOT = ZTOT + TSTORE(IPLACE+2)
-             IF ( STORE ( J + 13 ) .GT. 0.0001 ) LSPARE = .TRUE.
-             IPLACE = IPLACE + 3
-             J = J + MD5
-        END DO
-C
+            XMAX = -100000.0
+            XMIN =  100000.0 
+            YMAX = -100000.0
+            YMIN =  100000.0
+            ZMAX = -100000.0
+            ZMIN =  100000.0
+            IPLACE = 1
+            J = L5
+            KNF11 = 1
+
+            DO I = L5, L5+(N5-1)*MD5, MD5
+              CALL XMLTTM(STORE(L1O1),STORE(I+4),STR11(IPLACE),3,3,1)
+              XMIN = MIN(XMIN,STR11(IPLACE))
+              YMIN = MIN(YMIN,STR11(IPLACE+1))
+              ZMIN = MIN(ZMIN,STR11(IPLACE+2))
+              XMAX = MAX(XMAX,STR11(IPLACE))
+              YMAX = MAX(YMAX,STR11(IPLACE+1))
+              ZMAX = MAX(ZMAX,STR11(IPLACE+2))
+              IF ( STORE ( I + 13 ) .GT. 0.0001 ) LSPARE = .TRUE.
+              IPLACE = IPLACE + 3
+            END DO
+
+            KNF11 = IPLACE
+
 C Calculate the centre of the molecule
-        GCENTX = XTOT / N5
-        GCENTY = YTOT / N5
-        GCENTZ = ZTOT / N5
-C
+            GCENTX = (XMIN + XMAX) / 2.0
+            GCENTY = (YMIN + YMAX) / 2.0
+            GCENTZ = (ZMIN + ZMAX) / 2.0
+
 C Find atom furthest from the center to set scaling.
 C NB, it is quicker to find the center and longest distance from it
 C (two loops through the list), than to find the longest distance
@@ -900,312 +618,358 @@ C between all pairs of atoms (n squared / 2 loops through the list...)
 C
 C Centre the molecule on 0,0,0 at the same time!
 
-        IPLACE = 1
-        RLENTH = 0
-        DO I = 1, N5
-             TSTORE(IPLACE)   = TSTORE(IPLACE)   - GCENTX
-             TSTORE(IPLACE+1) = TSTORE(IPLACE+1) - GCENTY
-             TSTORE(IPLACE+2) = TSTORE(IPLACE+2) - GCENTZ
-             TMPLEN =  ( (TSTORE(IPLACE  )**2)
-     1                 + (TSTORE(IPLACE+1)**2)
-     2                 + (TSTORE(IPLACE+2)**2) )
-             RLENTH = MAX (TMPLEN,RLENTH)
-             IPLACE = IPLACE + 3
-        END DO
+            RLENTH = 0
+            DO I = 1, 3*N5,3
+              STR11(I)   = STR11(I)   - GCENTX
+              STR11(I+1) = STR11(I+1) - GCENTY
+              STR11(I+2) = STR11(I+2) - GCENTZ
+              TMPLEN =  ( (STR11(I  )**2)
+     1                 + (STR11(I+1)**2)
+     2                 + (STR11(I+2)**2) )
+              RLENTH = MAX (TMPLEN,RLENTH)
+            END DO
 
-        IF (RLENTH.LT.0.1)THEN
-          GSCALE = 5000.0
-        ELSE
-           GSCALE = 5000.0 / (SQRT (RLENTH) + 2)
-        ENDIF
+            IF (RLENTH.LT.0.1)THEN
+              GSCALE = 5000.0
+            ELSE
+              GSCALE = 5000.0 / (SQRT (RLENTH) + 2)
+            ENDIF
 
-        WRITE ( CMON, '(A)')'^^GR MODEL L5'
-        CALL XPRVDU(NCVDU, 1,0)
+c      WRITE ( CMON, '(A,I5)')'GUI-UP: L5: Updating N atoms:', N5
+c      CALL XPRVDU(NCVDU, 1,0)
 
-        IPLACE = 1
-        J = L5
+            IF ( N5 .GT. 0 ) THEN     !Only do if there are some atoms.
 
-        DO 100 I = 1, N5
+             WRITE ( CMON, '(A/A)')'^^GR MODEL L5','^^CW'
+             CALL XPRVDU(NCVDU, 2,0)
+
+
+             IPLACE = 1
+             DO I5 = L5,L5+(N5-1)*MD5, MD5
 
 C Get atom type.
 
-             IATTYP = ISTORE(J)
-             WRITE(CATTYP,'(A4)')IATTYP
-             IF((.NOT.QSINL5).AND.(CATTYP(1:1).EQ.'Q')) THEN
-                       QSINL5 = .TRUE.
-             END IF
-             DO 80 K = 1, NATINF * 6, 6
-                   IF(IATINF(K).EQ.IATTYP) THEN
-                        VDW  = ATINF(K+1)
-                        COV  = ABS(ATINF(K+2))
-                        IRED = IATINF(K+3)
-                        IGRE = IATINF(K+4)
-                        IBLU = IATINF(K+5)
-                        GOTO 90
+               IATTYP = ISTORE(I5)
+               WRITE(CATTYP,'(A4)')IATTYP
+               IF(CATTYP(1:1).EQ.'Q') QSINL5 = .TRUE.
+
+               KFNDPR = 0
+
+C Look for properties in L29:
+               DO M29 = L29, L29+(N29-1)*MD29, MD29
+                 IF ( ISTORE(M29) .EQ. ISTORE(I5) ) THEN
+                    COV = STORE(M29+1)
+                    VDW = STORE(M29+2)
+                    ICOL = ISTORE(M29+7)
+                    KFNDPR = 1
+                    EXIT
+                 ENDIF
+               END DO
+
+               IF ( ICOL .EQ. IUNKN ) KFNDPR = 0 !UNKNOWN colour. (L29 default)
+
+C Look for properties in our cache: (things like Q, which are not in 29).
+               IF ( KFNDPR .EQ. 0 ) THEN
+                 DO K = 1, NATINF * 4, 4
+                   IF(IATINF(K).EQ.ISTORE(I5)) THEN
+                      VDW =  ATINF(K+1)
+                      COV =  ATINF(K+2)
+                     ICOL = IATINF(K+3)
+                     KFNDPR = 1
+                     EXIT
                    ENDIF
-80           CONTINUE
+                 ENDDO
+               ENDIF
+
+               IF ( KFNDPR .EQ. 0 ) THEN
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
-C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
+
 ##LINGIL             CFILEN = 'CRYSDIR:script\propwin.dat'
 &&LINGIL             CFILEN = 'CRYSDIR:script/propwin.dat'
-             CALL MTRNLG(CFILEN,'OLD',ILENG)
-             INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
-             IF(.NOT.WEXIST) THEN              !use default values
-                 IATINF((NATINF*6)+1) = IATTYP
-                 ATINF((NATINF*6)+2)  = 1
-                 ATINF((NATINF*6)+3)  = 1
-                 IATINF((NATINF*6)+4) = 0
-                 IATINF((NATINF*6)+5) = 0
-                 IATINF((NATINF*6)+6) = 0
-                 NATINF = NATINF + 6
-                 GOTO 90
-             ENDIF
-             CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
-             CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
-             IF ( IERFLG .LT. 0) GOTO 9900
+                  CALL MTRNLG(CFILEN,'OLD',ILENG)
+                  INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
+                  IF(WEXIST) THEN
+                    CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
+                    CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
+                    IF ( IERFLG .LT. 0) GOTO 9900
 C Read the properties file and extract cov, vdw and colour.
-85           CONTINUE
-             READ(NCARU,'(A80)',END=89) WCLINE
-             IF((WCLINE(1:3).EQ.'CON').OR.(WCLINE(1:3).EQ.'   '))
-     1                                                    GOTO 85
-               IF(WCLINE(1:2).EQ.CATTYP) THEN
-                  CCOL = WCLINE(62:67)
-                  READ(WCLINE(35:38),'(F4.2)') VDW
-                  READ(WCLINE(13:16),'(F4.2)') COV
-                  CLOSE(NCARU)
-C Now get the colour definition for this colour from colour.cmn
+                    DO WHILE ( KFNDPR .EQ. 0 )
+                      READ(NCARU,'(A80)',END=89) WCLINE
+                      IF((WCLINE(1:3).NE.'CON').AND.
+     1                   (WCLINE(1:3).NE.'   ')) THEN
+
+                        IF(WCLINE(1:2).EQ.CATTYP) THEN
+                          CCOL = WCLINE(62:67)
+                          READ(WCLINE(13:16),'(F4.2)') COV
+                          READ(WCLINE(35:38),'(F4.2)') VDW
+                          READ(WCLINE(62:65),'(A4)') ICOL
+                          IATINF((NATINF*4)+1) = IATTYP
+                          ATINF((NATINF*4)+2)  = VDW
+                          ATINF((NATINF*4)+3)  = COV
+                          IATINF((NATINF*4)+4) = ICOL
+                          NATINF = NATINF + 1
+                          KFNDPR = 1
+                          EXIT
+                        END IF
+                      ENDIF
+                    END DO
+89                  CONTINUE !End of file
+                    CLOSE(NCARU)
+                  END IF
+               END IF
+
+               IF ( KFNDPR .EQ. 0 ) THEN
+C Atom info still not found. Store default values in cache.
+                  IATINF((NATINF*4)+1) = IATTYP
+                  ATINF((NATINF*4)+2)  = 1.8
+                  ATINF((NATINF*4)+3)  = 0.8
+                  IATINF((NATINF*4)+4) = 0
+                  NATINF = NATINF + 1
+                  COV = 0.8
+                  VDW = 1.8
+                  ICOL = 0
+                  KFNDPR = 1
+               END IF
+
+
+C Get colour definition from our cache:
+               KFNDPR = 0
+               DO K = 1, NCLINF * 4, 4
+                 IF(ICLINF(K).EQ.ICOL) THEN
+                   IRED  = ICLINF(K+1)
+                   IGRE  = ICLINF(K+2)
+                   IBLU  = ICLINF(K+3)
+                   KFNDPR = 1
+                   EXIT
+                 ENDIF
+               ENDDO
+
+               IF ( KFNDPR .EQ. 0 ) THEN
+
+C Get the colour definition for this colour from colour.cmn and cache it.
 ##GILLIN                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
 &&GILLIN                  CFILEN = 'CRYSDIR:script/colour.cmn'
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
-                  IF(.NOT.WEXIST) GOTO 88
-                  IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-     1            1, ISSSEQ) .EQ. -1) GOTO 9900
-95                CONTINUE
-                  READ(NCARU,'(A21)',END=88) WCLINE
-                        IF(CCOL.EQ.WCLINE(1:6))THEN
-                              READ(WCLINE(7:21),'(3I5)')IRED,IGRE,IBLU
-                              IATINF((NATINF*6)+1) = IATTYP
-                              ATINF((NATINF*6)+2)  = VDW
-                              ATINF((NATINF*6)+3)  = COV
-                              IATINF((NATINF*6)+4) = IRED
-                              IATINF((NATINF*6)+5) = IGRE
-                              IATINF((NATINF*6)+6) = IBLU
-                              NATINF = NATINF + 6
-                              GOTO 90
-                        ENDIF
-                  GOTO 95
+                  IF(WEXIST) THEN
+                    IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
+     1                  1, ISSSEQ) .EQ. -1) GOTO 9900
+                    DO WHILE ( KFNDPR .EQ. 0 )
+                      READ(NCARU,'(A4,3X,A21)',END=88) IICOL, WCLINE
+                      IF(IICOL.EQ.ICOL)THEN
+                         READ(WCLINE(1:15),'(3I5)')IRED,IGRE,IBLU
+                         ICLINF((NCLINF*4)+1) = ICOL
+                         ICLINF((NCLINF*4)+2) = IRED
+                         ICLINF((NCLINF*4)+3) = IGRE
+                         ICLINF((NCLINF*4)+4) = IBLU
+                         NCLINF = NCLINF + 1
+                         KFNDPR = 1
+                         EXIT
+                      ENDIF
+                    END DO
+88                  CONTINUE !End of file
+                    CLOSE(NCARU)
+                  ENDIF
                ENDIF
-               GOTO 85
 
-88           CONTINUE !Reached end of colour file with no success.
-                         IRED = 0
-                         IGRE = 0
-                         IBLU = 0
-                         IATINF((NATINF*6)+1) = IATTYP
-                         ATINF((NATINF*6)+2)  = VDW
-                         ATINF((NATINF*6)+3)  = COV
-                         IATINF((NATINF*6)+4) = IRED
-                         IATINF((NATINF*6)+5) = IGRE
-                         IATINF((NATINF*6)+6) = IBLU
-                         NATINF = NATINF + 1
-                         GOTO 90
-89           CONTINUE !Reached end of properties file with no success
-C Add a black atom...
-C                  WRITE(99,'(2A)') 'Not Found ', CATTYP
-                         IRED = 0
-                         IGRE = 0
-                         IBLU = 0
-                         COV = 0.8
-                         VDW = 1.8
-                         IATINF((NATINF*6)+1) = IATTYP
-                         ATINF((NATINF*6)+2)  = VDW
-                         ATINF((NATINF*6)+3)  = COV
-                         IATINF((NATINF*6)+4) = IRED
-                         IATINF((NATINF*6)+5) = IGRE
-                         IATINF((NATINF*6)+6) = IBLU
-                         NATINF = NATINF + 1
-                         GOTO 90
-90           CONTINUE
-             CLOSE(NCARU)
+               IF ( KFNDPR .EQ. 0 ) THEN
+C Colour info still not found, use and cache default values:
+                  IRED = 0
+                  IGRE = 0
+                  IBLU = 0
+                  ICLINF((NCLINF*4)+1) = ICOL
+                  ICLINF((NCLINF*4)+2) = IRED
+                  ICLINF((NCLINF*4)+3) = IGRE
+                  ICLINF((NCLINF*4)+4) = IBLU
+                  NCLINF = NCLINF + 1
+               END IF
 
-             WRITE(CLAB,'(A)')STORE(J)
-             CALL XCTRIM(CLAB,ILEN)
-             ISER = NINT(STORE(J+1))
-             IF(ISER.LT.10) THEN
-                 WRITE(CLAB(ILEN:),'(A1,I1,A1)')
-     1           '(', NINT(STORE(J+1)), ')'
-             ELSEIF(ISER.LT.100)THEN
-                 WRITE(CLAB(ILEN:),'(A1,I2,A1)')
-     1           '(', NINT(STORE(J+1)), ')'
-             ELSEIF(ISER.LT.1000)THEN
-                 WRITE(CLAB(ILEN:),'(A1,I3,A1)')
-     1           '(', NINT(STORE(J+1)), ')'
-             ELSE
-                 WRITE(CLAB(ILEN:),'(A1,I4,A1)')
-     1           '(', NINT(STORE(J+1)), ')'
-             ENDIF
+               CALL CATSTR (STORE(I5),STORE(I5+1),1,1,0,0,0,CLAB,LLAB)
 
+               IF ( NINT(STORE(I5+3)) .EQ. 0 ) THEN
 
-             IF ( NINT(STORE(J+3)) .EQ. 0 ) THEN
-
-               TENSOR(1,1) = STORE(J+7)
-               TENSOR(2,2) = STORE(J+8)
-               TENSOR(3,3) = STORE(J+9)
-               TENSOR(2,3) = STORE(J+10)
-               TENSOR(1,3) = STORE(J+11)
-               TENSOR(1,2) = STORE(J+12)
-               TENSOR(3,2) = TENSOR(2,3)
-               TENSOR(3,1) = TENSOR(1,3)
-               TENSOR(2,1) = TENSOR(1,2)
+                 TENSOR(1,1) = STORE(I5+7)
+                 TENSOR(2,2) = STORE(I5+8)
+                 TENSOR(3,3) = STORE(I5+9)
+                 TENSOR(2,3) = STORE(I5+10)
+                 TENSOR(1,3) = STORE(I5+11)
+                 TENSOR(1,2) = STORE(I5+12)
+                 TENSOR(3,2) = TENSOR(2,3)
+                 TENSOR(3,1) = TENSOR(1,3)
+                 TENSOR(2,1) = TENSOR(1,2)
       
-c             WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
-c             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+c                WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
+c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
                      
-               CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
-               CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
+                 CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
+                 CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
+
 C We now have an orthogonal tensor in TENSOR(3,3).
 
-c             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
-##DVFLIN               CALL ZEIGEN(TENSOR,ROTN)
+##DVFLIN         CALL ZEIGEN(TENSOR,ROTN)
 
 C Filter out tiny axes
-               TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
-               TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
-               TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
-               TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
-               TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
-               TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
+                 TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
+                 TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
+                 TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
+                 TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
+                 TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
+                 TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
             
-               DO KI=1,3
-                DO KJ=1,3
-                 AXES(KI,KJ) =   ROTN(KJ,KI)
-     1                         * SQRT(ABS(TENSOR(KJ,KJ)))
-     2                         * GSCALE
-     3                         * 1.5
-                END DO
-               END DO
+                 DO KI=1,3
+                   DO KJ=1,3
+                     AXES(KI,KJ) =   ROTN(KJ,KI)
+     1                             * SQRT(ABS(TENSOR(KJ,KJ)))
+     2                             * GSCALE
+     3                             * 1.5
+                   END DO
+                 END DO
 
-C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
-C               WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
+C                WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
-            ELSE
-               DO KI=1,3
-                DO KJ=1,3
-                 AXES(KI,KJ) = 0
-                END DO
-               END DO
-               AXES(1,1) = SQRT(ABS(STORE(J+7))) * GSCALE
-            END IF
-
-
-            IF ( LSPARE ) THEN
-                  ISPARE = NINT(1000 * STORE(J+13))
-            ELSE
-                  ISPARE = NINT(COV*GSCALE)
-            END IF
-
-96           FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,3(1X,I6),/,A,9(1X,I6))
-             WRITE ( CMON,96 )
-     1       '^^GR ATOM ',
-     2       1,  CLAB,
-     3       '^^GR ',
-     4       NINT(TSTORE(IPLACE)*GSCALE),
-     5       NINT(TSTORE(IPLACE+1)*GSCALE),
-     6       NINT(TSTORE(IPLACE+2)*GSCALE),
-     7       NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-     8       NINT(1000*STORE(J+2)), NINT(COV*GSCALE),
-     1       '^^GR',
-     2       NINT(VDW*GSCALE),ISPARE,NINT(STORE(J+3)),
-     1       '^^GR',
-     3       ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
-C#SOO     3       0,0,0, 0,0,0, 0,0,0
-
-             CALL XPRVDU(NCVDU, 4,0)
-C       WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
-C
-             J = J + MD5
-             IPLACE = IPLACE + 3
-100     CONTINUE
+               ELSE
+                 DO KI=1,3
+                   DO KJ=1,3
+                     AXES(KI,KJ) = 0
+                   END DO
+                 END DO
+                 AXES(1,1) = SQRT(ABS(STORE(I5+7))) * GSCALE
+               END IF
 
 
-C Find bonds:
+               IF ( LSPARE ) THEN
+                   ISPARE = NINT(1000 * STORE(I5+13))
+               ELSE
+                   ISPARE = NINT(COV*GSCALE)
+               END IF
 
-        DO 130 I = 1, N5-1
-            IAT1P = L5+((I-1)*MD5)
-            NFOUND=ICRDIST1(N5,STACK,L5,IAT1P,MD5,4)
-            IAT1P = L5+((I-1)*MD5)
-
-
-            DO 120 J = 1, NFOUND
-               IAT2P = NINT(STACK((J*5)-4))
-               ACTDST= STACK(J*5)
-               IAT1 = ISTORE(IAT1P)
-               IAT2 = ISTORE(IAT2P)
-
-               DO K = 1, NATINF * 6, 6
-                  IF(IATINF(K).EQ.IAT1) THEN
-                     COV1  = ATINF(K+2)
-                  ENDIF
-                  IF(IATINF(K).EQ.IAT2) THEN
-                     COV2  = ATINF(K+2)
-                  ENDIF
-               ENDDO
-
-               IF (COV1 .LT. 0.00) GOTO 130
-C First atom is not to be bonded.
-               IF (COV2 .LT. 0.00) GOTO 120
-C Second atom is not to be bonded.
-
-C NB 1.21 (1.1)^2 is the tolerance used by Lisa.
-C Cameron has no lower limit. I do. It is 0.5 * sum of cov.
-               REQDSX = (COV1 + COV2) * 1.21
-               REQDSN = (COV1 + COV2) * 0.5
-               IF ( ACTDST.LT.REQDSX ) THEN
+96             FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,3(1X,I6),/,A,9(1X,I6))
+c               WRITE ( CMON,96 )
+c     1         '$$GR ATOM ',
+c     2         1,  CLAB(1:LLAB),
+c     3         '$$GR ',
+c     4         NINT(STR11(IPLACE)*GSCALE),
+c     5         NINT(STR11(IPLACE+1)*GSCALE),
+c     6         NINT(STR11(IPLACE+2)*GSCALE),
+c     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+c     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+c     1         '$$GR',
+c     2         NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+c     1         '$$GR',
+c     3         ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
+c               CALL XPRVDU(NCVDU, 4,0)
+C              WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
 
 
-                  XX   = GUMTRX(1) * STACK((J*5)-3)
-     1                 + GUMTRX(2) * STACK((J*5)-2)
-     2                 + GUMTRX(3) * STACK((J*5)-1)
-     3                 - GCENTX
-                  XY   = GUMTRX(4) * STACK((J*5)-3)
-     1                 + GUMTRX(5) * STACK((J*5)-2)
-     2                 + GUMTRX(6) * STACK((J*5)-1)
-     3                 - GCENTY
-                  XZ   = GUMTRX(7) * STACK((J*5)-3)
-     1                 + GUMTRX(8) * STACK((J*5)-2)
-     2                 + GUMTRX(9) * STACK((J*5)-1)
-     3                 - GCENTZ
+               CALL FSTATM( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5         NINT(STR11(IPLACE+1)*GSCALE),
+     6         NINT(STR11(IPLACE+2)*GSCALE),
+     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2         NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     3         NINT(AXES(1,1)),NINT(AXES(2,1)),NINT(AXES(3,1)),
+     3         NINT(AXES(1,2)),NINT(AXES(2,2)),NINT(AXES(3,2)),
+     3         NINT(AXES(1,3)),NINT(AXES(2,3)),NINT(AXES(3,3)) )
 
-CCDEBUG{
-c                  WRITE ( 99, '(A,2F8.4,2(A4,I4,3F8.5))')
-c     1                  'BOND FOUND ',ACTDST, REQDSX,
-c     1                  ISTORE(IAT1P),NINT(STORE(IAT1P+1)),
-c     1                  STORE(IAT1P+4),STORE(IAT1P+5),STORE(IAT1P+6),
-c     1                  ISTORE(IAT2P),NINT(STORE(IAT2P+1)),
-c     1                  STORE(IAT2P+4),STORE(IAT2P+5),STORE(IAT2P+6)
-cCDEBUG}      
+
+
+               IPLACE = IPLACE + 3
+             END DO
+
+
+C Output bonds:
+
+c       WRITE ( CMON, '(A,I4)')'GUI-UP: L5: Updating N Bonds: ',N41B
+c       CALL XPRVDU(NCVDU, 1,0)
+
+             DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+
+               IA1 = ISTORE(M41B)
+               IA2 = ISTORE(M41B+6)
+
+               IAT1P = L5 + IA1 * MD5
+               IAT2P = L5 + IA2 * MD5
 
 C Set colour to black:
-                  KR = 0
-                  KG = 0
-                  KB = 0
-C If far too short, colour RED.
-                  IF (ACTDST.LT.REQDSN) KR = 255
+               KR = 0
+               KG = 0
+               KB = 0
 
-C If a symm related atom, colour bond grey.
-                  IF ((ABS(STORE(IAT2P+4)-STACK(J*5-3)).GT.0.001).OR.
-     1                (ABS(STORE(IAT2P+5)-STACK(J*5-2)).GT.0.001).OR.
-     2                (ABS(STORE(IAT2P+6)-STACK(J*5-1)).GT.0.001))THEN
-                    KR = 128
-                    KG = 128
-                    KB = 128
-                  END IF
+C If a symm related atom, colour bond bright white, and calculate real
+C co-ordinates for bond end.
+               ISSYM = 0
+               DO I = 1,2
+                  IF ((ISTORE(M41B+I).NE.1).OR.
+     1                (ISTORE(M41B+I+6).NE.1)) ISSYM=1
+               END DO
+               DO I = 3,5
+                  IF ((ISTORE(M41B+I).NE.0).OR.
+     1                (ISTORE(M41B+I+6).NE.0)) ISSYM=1
+               END DO
+C Should be 1,1,0,0,0 and 1,1,0,0,0
+               IF ( ISSYM .NE. 0 ) THEN
+                  KR = 230
+                  KG = 230
+                  KB = 230
+C -- Apply symmetry to atom 1:
+                  M2 = L2 + ( MIN(N2,ABS(ISTORE(M41B+1))) - 1) * MD2
+                  M2P =L2P+ ( MIN(N2P,ISTORE(M41B+2))     - 1) * MD2P
 
-C See if this bond is in LIST 18. If so, use it's deviation to colour it.
-                  IF ( KBDDEV(IAT1P,IAT2P,DEVN) .GT. 0 )THEN
+c              WRITE(CMON,'(A,3F9.3)')'Atom1:',(STORE(IAT1P+L),L=4,6)
+c              CALL XPRVDU(NCVDU,1,0)
+
+                  CALL XMLTTM(STORE(M2),STORE(4+IAT1P),TXYZ(1),3,3,1)
+c              WRITE(CMON,'(A,3F9.3)')'symm:',(TXYZ(L),L=1,3)
+c              CALL XPRVDU(NCVDU,1,0)
+                  IF (ISTORE(M41B+1).LT.0)CALL XNEGTR(TXYZ(1),TXYZ(1),3)
+c              WRITE(CMON,'(A,3F9.3)')'negt:',(TXYZ(L),L=1,3)
+c              CALL XPRVDU(NCVDU,1,0)
+C -- Translate
+                  DO L = 0,2
+                     TXYZ(7+L) = TXYZ(1+L) +STORE(M2P+L) +STORE(M2+9+L)
+     1                          +ISTORE(M41B+3+L)
+                  END DO
+c              WRITE(CMON,'(A,3F9.3)')'trans:',(TXYZ(L),L=7,9)
+c              CALL XPRVDU(NCVDU,1,0)
+
+C -- Orthogonalise
+                  CALL XMLTTM(STORE(L1O1),TXYZ(7),TXYZ(1),3,3,1)
+c              WRITE(CMON,'(A,3F9.3)')'ortho:',(TXYZ(L),L=1,3)
+c              CALL XPRVDU(NCVDU,1,0)
+
+C -- Centre with the rest of the molecule.
+                  TXYZ(1)   = TXYZ(1) - GCENTX
+                  TXYZ(2)   = TXYZ(2) - GCENTY
+                  TXYZ(3)   = TXYZ(3) - GCENTZ
+
+C -- Apply symmetry to atom 2:
+                  M2 =  L2 + (MIN(N2,ABS(ISTORE(M41B+7))) - 1) * MD2 
+                  M2P = L2P+ (MIN(N2P,ISTORE(M41B+8))    - 1) * MD2P
+                  CALL XMLTTM(STORE(M2),STORE(4+IAT2P),TXYZ(4),3,3,1)
+                  IF(ISTORE(M41B+7).LT.0)CALL XNEGTR(TXYZ(4),TXYZ(4),3)
+C -- Translate
+                  DO L = 0,2
+                     TXYZ(7+L) = TXYZ(4+L) +STORE(M2P+L) +STORE(M2+9+L)
+     1                          +ISTORE(M41B+9+L)
+                  END DO
+C -- Orthogonalise
+                  CALL XMLTTM(STORE(L1O1),TXYZ(7),TXYZ(4),3,3,1)
+C -- Centre with the rest of the molecule.
+                  TXYZ(4) = TXYZ(4) - GCENTX
+                  TXYZ(5) = TXYZ(5) - GCENTY
+                  TXYZ(6) = TXYZ(6) - GCENTZ
+
+               ELSE
+                  CALL XMOVE ( STR11((IA1*3)+1), TXYZ(1), 3)
+                  CALL XMOVE ( STR11((IA2*3)+1), TXYZ(4), 3)
+               END IF
+
+C See if this bond is in CSD list. If so, use it's deviation to colour it.
+               IF ( KBDDEV(IAT1P,IAT2P,DEVN) .GT. 0 )THEN
 
 C As deviation goes positive, KB and KG should decrease giving a red colour
 C As deviation goes negative, KR and KG should decrease giving a blue colour
@@ -1213,192 +977,347 @@ C i.e. +ve devn. KR 255, KB ->0  KG ->0
 C      -ve devn  KR ->0, KB 255  KG ->0
 C But, the deviation starts being coloured from 1.0, rather than 0.0
 C DEVN = DEVN - 1
-                      KR = MAX ( 0, MIN (255, NINT (383+128*DEVN) ) )
-                      KG = MAX ( 0, MIN (255, NINT (383-128*ABS(DEVN))))
-                      KB = MAX ( 0, MIN (255, NINT (383-128*DEVN) )  )
-                  ENDIF
-
-C Include Atom Labels in this info.
-                  WRITE(CLAB,'(A)')STORE(IAT1P)
-                  CALL XCTRIM(CLAB,ILEN)
-                  ISER = NINT(STORE(IAT1P+1))
-                  IF(ISER.LT.10) THEN
-                     WRITE(CLAB(ILEN:),'(A1,I1,A1)')'(',ISER,')'
-                  ELSEIF(ISER.LT.100)THEN
-                     WRITE(CLAB(ILEN:),'(A1,I2,A1)')'(',ISER,')'
-                  ELSEIF(ISER.LT.1000)THEN
-                     WRITE(CLAB(ILEN:),'(A1,I3,A1)')'(',ISER,')'
-                  ELSE
-                     WRITE(CLAB(ILEN:),'(A1,I4,A1)')'(',ISER,')'
-                  ENDIF
-                  WRITE(CLAB2,'(A)')STORE(IAT2P)
-                  CALL XCTRIM(CLAB2,ILEN)
-                  ISER = NINT(STORE(IAT2P+1))
-                  IF(ISER.LT.10) THEN
-                     WRITE(CLAB2(ILEN:),'(A1,I1,A1)')'(',ISER,')'
-                  ELSEIF(ISER.LT.100)THEN
-                     WRITE(CLAB2(ILEN:),'(A1,I2,A1)')'(',ISER,')'
-                  ELSEIF(ISER.LT.1000)THEN
-                     WRITE(CLAB2(ILEN:),'(A1,I3,A1)')'(',ISER,')'
-                  ELSE
-                     WRITE(CLAB2(ILEN:),'(A1,I4,A1)')'(',ISER,')'
-                  ENDIF
-
-                  WRITE ( CMON,
-     1             '(A,10(1X,I5),/,A,2(1X,A10),1X,A,F6.3,A,I2,A)')
-     1                  '^^GR BOND ',
-     1                  NINT(TSTORE((I*3)-2)*GSCALE),
-     1                  NINT(TSTORE((I*3)-1)*GSCALE),
-     1                  NINT(TSTORE(I*3)*GSCALE),
-     1                  NINT(XX*GSCALE),
-     1                  NINT(XY*GSCALE),
-     1                  NINT(XZ*GSCALE),
-     3                  KR,KG,KB,
-     1                  NINT(GSCALE*0.25),
-     1                  '^^GR ',CLAB, CLAB2,'''',ACTDST,' fr:',
-     1                  ISTORE(IAT1P+14),''''
-                  CALL XPRVDU(NCVDU, 2,0)
+                  KR = MAX ( 0, MIN (255, NINT (383+128*DEVN) ) )
+                  KG = MAX ( 0, MIN (255, NINT (383-128*ABS(DEVN))))
+                  KB = MAX ( 0, MIN (255, NINT (383-128*DEVN) )  )
                ENDIF
-120         CONTINUE
-130     CONTINUE
- 
-        WRITE ( CMON, '(A,/,A)')'^^GR SHOW','^^CR'
-        CALL XPRVDU(NCVDU, 2,0)
 
-      ELSE IF ( IULN .EQ. 1 ) THEN   ! cell params - update info tab.
-        L1P1 = ICOMMN(1)
-211     FORMAT ('^^WI SET _MT_CELL_A TEXT ',F8.4,/,
-     1          '^^WI SET _MT_CELL_B TEXT ',F8.4,/,
-     1          '^^WI SET _MT_CELL_C TEXT ',F8.4,/,
-     1          '^^WI SET _MT_CELL_AL TEXT  ',F7.3,/,
-     1          '^^WI SET _MT_CELL_BE TEXT  ',F7.3,/,
-     1          '^^WI SET _MT_CELL_GA TEXT ',F7.3,/,
-     1          '^^CR')
-        WRITE ( CMON, 211 ) (STORE(L1P1+J),J=0,2),
-     1                      (STORE(L1P1+J)*RTD,J=3,5)
-        CALL XPRVDU(NCVDU, 7,0)
-
-      ELSE IF ( IULN .EQ. 2 ) THEN   ! space group - update info tab.
-        L2SG = ICOMMN(25)
-        MD2SG = ICOMMN(27)
-221     FORMAT ('^^CO SET _MT_SPACEGROUP TEXT ''',4(A4,1X),'''')
-        WRITE ( CMON, 221 ) (STORE(L2SG+J),J=0,MD2SG-1)
-        CALL XPRVDU(NCVDU, 1,0)
-      ELSE IF ( IULN .EQ. 23 ) THEN   ! SFLS control - get F or F2.
-        L23MN = ICOMMN(9)
-
-        IF ( ISTORE ( L23MN + 1 ) .EQ. -1 ) THEN
-          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''F'''
-        ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
-          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''F squared'''
-        ELSE
-          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''Unknown'''
-        END IF
-        CALL XPRVDU(NCVDU, 1, 0)
-
-      ELSE IF ( IULN .EQ. 29 ) THEN   ! asymm unit - update info tab.
-        L29 = ICOMMN(1)
-        M29 = ICOMMN(2)
-        MD29 = ICOMMN(3)
-        WRITE( CMON(1),'(A)')'^^WI SET _MT_FORMULA TEXT'
-        WRITE( CMON(2),'(A)')'^^WI'''
-        WRITE( CMON(3),'(A)')'^^CR'
-231     FORMAT (A4,F7.3,'-')
-        K = 6
-        DO J=L29,M29,MD29
-         WRITE (CMON(2)(K:),231) STORE(J), STORE(J+4)
-         CALL XCRAS ( CMON(2),K )
-         DO L = K-1,K-6,-1              !Remove trailing zeroes.
-           IF (CMON(2)(L:L).EQ.'0') THEN
-             CMON(2)(L:L)=' '
-           ELSE
-             EXIT
-           END IF
-         END DO
-         K = K + 1
-         IF ( K .GT. 70 ) EXIT
-        END DO
-        WRITE(CMON(2)(K:K),'(A)') ''''
-        DO J = 1,K
-          IF (CMON(2)(J:J).EQ.'-') CMON(2)(J:J)=' '
-        END DO
-        CALL XPRVDU(NCVDU, 3, 0)
-      ELSE IF ( IULN .EQ. 30 ) THEN   ! goodies - update info tab.
-        L30O   = ICOMMN(1)
-        L30C   = ICOMMN(5)
-        L30R   = ICOMMN(9)
-        L30I   = ICOMMN(13)
-        L30G   = ICOMMN(21)
-        L30T1  = ICOMMN(25)
-        MD30T1 = ICOMMN(27)
-        L30T2  = ICOMMN(29)
-        MD30T2 = ICOMMN(31)
-241     FORMAT ('^^WI SET _MT_CR_MIN TEXT ',F8.4,
-     1              ' SET _MT_CR_MED TEXT ',F8.4,/,
-     1          '^^WI SET _MT_CR_MAX TEXT ',F8.4,
-     1              ' SET _MT_CR_TEMP TEXT  ',F5.1,/,
-     1          '^^WI SET _MT_CR_DCALC TEXT ',F7.3,
-     1              ' SET _MT_CR_MOLWT TEXT  ',F7.2,/,
-     1          '^^WI SET _MT_CR_CELLZ TEXT ',F4.0,/,
-     1          '^^CR')
-        WRITE ( CMON, 241 ) STORE(L30C), STORE(L30C+1), STORE(L30C+2),
-     1       STORE(L30C+6), STORE(L30G+1),STORE(L30G+4), STORE(L30G+5)
-        CALL XPRVDU(NCVDU, 5, 0)
-242     FORMAT ('^^WI SET _MT_CR_SHAPE TEXT ''',8A4,'''',/,
-     1          '^^WI SET _MT_CR_COLOUR TEXT ''',8A4,'''',/,
-     1          '^^CR')
-        WRITE ( CMON, 242 ) (ISTORE(K),K=L30T2,L30T2+MD30T2-1),
-     1                      (ISTORE(K),K=L30T1,L30T1+MD30T1-1)
-        CALL XPRVDU(NCVDU, 3, 0)
-243     FORMAT ('^^WI SET _MT_OBS_MEAS TEXT ',F7.0,
-     1              ' SET _MT_OBS_NMRG TEXT ',F7.0,/,
-     1          '^^WI SET _MT_OBS_RMRG TEXT ',F8.5,
-     1              ' SET _MT_OBS_NFMRG TEXT ',F7.0,/,
-     1          '^^WI SET _MT_OBS_RFMRG TEXT ',F8.5,/,
-     1          '^^CR')
-        WRITE ( CMON, 243 ) STORE(L30O), STORE(L30O+2), STORE(L30O+3),
-     1                                   STORE(L30O+4), STORE(L30O+5)
-        CALL XPRVDU(NCVDU, 4, 0)
-244     FORMAT ('^^WI SET _MT_OBS_HMIN TEXT ',F4.0,
-     1              ' SET _MT_OBS_HMAX TEXT ',F4.0,/,
-     1          '^^WI SET _MT_OBS_KMIN TEXT ',F4.0,
-     1              ' SET _MT_OBS_KMAX TEXT ',F4.0,/,
-     1          '^^WI SET _MT_OBS_LMIN TEXT ',F4.0,
-     1              ' SET _MT_OBS_LMAX TEXT ',F4.0,/,
-     1          '^^WI SET _MT_OBS_THMIN TEXT ',F4.0,
-     1              ' SET _MT_OBS_THMAX TEXT ',F4.0,/,
-     1          '^^CR')
-        WRITE ( CMON, 244 ) ( STORE(L30I+J), J=0,7)
-        CALL XPRVDU(NCVDU, 5, 0)
-245     FORMAT ('^^CO SET _MT_OBS_INST TEXT ',A8)
-        INS = ISTORE(L30C+12) + 1
-        IF (( INS .GT. 0 ) .AND. (INS. LE. 6)) THEN
-          WRITE ( CMON, 245 ) CINST(INS)
-        ELSE
-          WRITE ( CMON, 245 ) 'New Type'
-        END IF
-        CALL XPRVDU ( NCVDU, 1, 0 )
-246     FORMAT ('^^WI SET _MT_REF_R TEXT ',F8.5,
-     1              ' SET _MT_REF_RW TEXT ',F8.5,/,
-     1          '^^WI SET _MT_REF_NPAR TEXT ',F5.0,
-     1              ' SET _MT_REF_SCUT TEXT ',F5.2,/,
-     1          '^^WI SET _MT_REF_GOOF TEXT ',F6.3,
-     1              ' SET _MT_REF_MAXRMS TEXT ',F8.4,/,
-     1          '^^WI SET _MT_REF_NREF TEXT ',F7.0,/,
-     1          '^^CR')
-        WRITE ( CMON, 246 ) STORE(L30R),   STORE(L30R+1), STORE(L30R+2),
-     1      STORE(L30R+3),  STORE(L30R+4), STORE(L30R+7), STORE(L30R+8)
-        CALL XPRVDU(NCVDU, 5, 0)
-      ENDIF
+               CALL CATSTR (STORE(IAT1P),STORE(IAT1P+1),
+     1                       ISTORE(M41B+1),ISTORE(M41B+2),
+     1                       ISTORE(M41B+3),ISTORE(M41B+4),
+     1                       ISTORE(M41B+5), CLAB, LLAB )
+               CALL CATSTR (STORE(IAT2P),STORE(IAT2P+1),
+     1                       ISTORE(M41B+7),ISTORE(M41B+8),
+     1                       ISTORE(M41B+9),ISTORE(M41B+10),
+     1                       ISTORE(M41B+11), CLAB2, LLAB2 )
 
 
+c               WRITE ( CMON,'(A,10(1X,I5),/,5A,1X,F6.3,1X,I4)')
+c     1                 '$$GR BOND ',
+c     1                  (NINT(TXYZ(KJ)*GSCALE),KJ=1,6),
+c     3                  KR,KG,KB,
+c     1                  NINT(GSCALE*0.25),
+c     1                  '$$GR ''',CLAB(1:LLAB),''' ''',
+c     1                            CLAB2(1:LLAB2),'''',
+c     1                  STORE(M41B+13), ISTORE(M41B+12)
+c               CALL XPRVDU(NCVDU, 2,0)
+
+               ISTR11(KNF11) = IA1
+               ISTR11(KNF11+1) = IA2
+
+               WRITE(CMON(1),'(3A,F6.3)')CLAB(1:LLAB),'-',
+     1                                  CLAB2(1:LLAB2), STORE(M41B+13)
+               CALL XCTRIM( CMON(1), LTMN )
+
+               IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
+                 CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+     1             KR,KG,KB,NINT(GSCALE*0.25),ISTORE(M41B+12),
+     1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
+               ELSE                       !Bond across symm op.
+                 CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+     1             KR,KG,KB,NINT(GSCALE*0.25),-ISTORE(M41B+12),
+     1             2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
+               END IF
+             END DO
+
+             IF ( MD41S .EQ. 0 ) MD41S = 1 !Catch old List 41's (during development only).
+             DO M41S = L41S, L41S+(N41S-1)*MD41S, MD41S
+
+               KNF11 = 1
+               DO I = 1,ISTORE(M41S)
+                 IA  = ISTORE(M41S+I)
+                 IAP = L5 + IA * MD5
+c                 WRITE(CMON,'(A4,I4)')ISTORE(IAP),NINT(STORE(IAP+1))
+c                 CALL XPRVDU(NCVDU,1,0)
+                 CALL XMOVE(STORE(IAP+4),STR11(KNF11),4)
+                 STR11(KNF11+3) = 1.0
+                 KNF11 = KNF11 + 4
+               ENDDO
+               IA1 = ISTORE(M41S+1)
+               IA2 = ISTORE(M41S+MIN(4,ISTORE(M41S)))
+               IAT1P = L5 + IA1 * MD5
+               IAT2P = L5 + IA2 * MD5
+               CALL CATSTR (STORE(IAT1P),STORE(IAT1P+1),1,1,0,0,0,
+     1                      CLAB,LLAB)
+               CALL CATSTR (STORE(IAT2P),STORE(IAT2P+1),1,1,0,0,0,
+     1                      CLAB2,LLAB2)
+
+               ICENT = KNF11     
+               IROOT = KNF11 + 3 
+               IVECT = KNF11 + 6 
+               ICSNE = KNF11 + 15
+               IWORK = KNF11 + 24
+               KNF11 = KNF11 + 28
+
+               I = KMOLAX(STR11(1),ISTORE(M41S),4,STR11(ICENT),
+     1             STR11(IROOT),STR11(IVECT),STR11(ICSNE),STR11(IWORK))
+
+C Transform centroid into orthogonal (gui) coords.
+               CALL XMLTTM(STORE(L1O1),STR11(ICENT),  TXYZ(1),3,3,1)
+
+C Work out matrix for best-plane -> crystal fractions (wrt centroid).
+               CALL XMLTMT(STR11(IVECT),STORE(L1O1),STR11(ICSNE),3,3,3)
+               I=KINV2(3,STR11(ICSNE),STR11(KNF11),9,0,
+     1                   STR11(IROOT),STR11(IROOT),3)
+C The orientation of the torus is defined by the centroid and a normal
+C vector. The length of this vector is interpreted as the radius of the
+C ring. Take 0.7* the distance from centroid to any of the ring atoms.
+               STR11(KNF11+9) =0.0
+               STR11(KNF11+10)=0.0
+               STR11(KNF11+11)=0.7*SQRT(XDSTN2(STR11(ICENT),
+     +                                         STORE(IAT1P+4)))
+C Transform {0,0,1} bp coords to crystal fractions.
+               CALL XMLTMT(STR11(KNF11),STR11(KNF11+9),
+     +                                     STR11(KNF11+12),3,3,1)
+C Convert crystal fractions into orthogonal.
+               CALL XMLTTM (STORE(L1O1),STR11(KNF11+12),TXYZ(4),3,3,1)
+               TXYZ(1)   = TXYZ(1) - GCENTX
+               TXYZ(2)   = TXYZ(2) - GCENTY
+               TXYZ(3)   = TXYZ(3) - GCENTZ
+C TXYZ(4-6) is relative to TXYZ(1-3)
+               TXYZ(4)   = TXYZ(1) + TXYZ(4)
+               TXYZ(5)   = TXYZ(2) + TXYZ(5)
+               TXYZ(6)   = TXYZ(3) + TXYZ(6)
+
+c               WRITE ( CMON,'(A,10(1X,I5),/,5A,1X,A,1X,I4)')
+c     1                 '^^GR BOND ',
+c     1                  (NINT(TXYZ(KJ)*GSCALE),KJ=1,6),
+c     3                  0,0,0,
+c     1                  NINT(GSCALE*0.25),
+c     1                  '^^GR ''',CLAB(1:LLAB),''' ''',
+c     1                            CLAB2(1:LLAB2),'''',
+c     1                  ' ''et al. Aromatic Ring'' ', 101
+c               CALL XPRVDU(NCVDU, 2,0)
+
+               CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+     1             0,0,0,NINT(GSCALE*0.25),101,
+     1             ISTORE(M41S),ISTORE(M41S+1),13,
+     1             'Aromatic Ring',0,'' )
+
+
+c               WRITE ( CMON,'(A,6F8.5)')
+c     1                 '  AROMATIC RING: ',
+c     1                  (STR11(ICENT+KJ),KJ=0,2),
+c     1                  (STR11(IVECT+KJ),KJ=6,8)
+c               CALL XPRVDU(NCVDU, 1,0)
+             ENDDO
+
+             WRITE (CMON,'(A/A)')'^^GR SHOW','^^CW'
+             CALL XPRVDU(NCVDU, 2,0)
+
+
+            ELSE
+
+             WRITE (CMON,'(A,2(/A))')'^^GR MODEL L5','^^GR SHOW','^^CW'
+             CALL XPRVDU(NCVDU, 3,0)
+c             WRITE ( CMON, '(A)')'GUI-UP: Empty L5'
+c             CALL XPRVDU(NCVDU, 1,0)
+
+
+            END IF
+
+         ELSE IF ( ILST .EQ. 1 ) THEN   ! cell params - update info tab.
+
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+               IF(KEXIST(1).LE.0) GOTO 9910
+               IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+            ELSE
+               IF(KEXIST(1).LE.0) GOTO 9910
+               IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+            END IF
+            CALL XRLIND(1, L01SR, NFW, LL, IOW, NOS, ID)
+            IF ( L01SR.NE.ISERnn(1) )THEN
+              ISERnn(1)  = L01SR
+
+211           FORMAT ('^^WI SET _MT_CELL_A TEXT ',F8.4,/,
+     1                '^^WI SET _MT_CELL_B TEXT ',F8.4,/,
+     1                '^^WI SET _MT_CELL_C TEXT ',F8.4,/,
+     1                '^^WI SET _MT_CELL_AL TEXT  ',F7.3,/,
+     1                '^^WI SET _MT_CELL_BE TEXT  ',F7.3,/,
+     1                '^^WI SET _MT_CELL_GA TEXT ',F7.3,/,
+     1                '^^CR')
+              WRITE ( CMON, 211 ) (STORE(L1P1+J),J=0,2),
+     1                          (STORE(L1P1+J)*RTD,J=3,5)
+              CALL XPRVDU(NCVDU, 7,0)
+            ENDIF
+
+         ELSE IF ( ILST .EQ. 2 ) THEN   ! space group - update info tab.
+
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+               IF(KEXIST(2).LE.0) GOTO 9910
+               IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+            ELSE
+               IF(KEXIST(2).LE.0) GOTO 9910
+               IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
+            END IF
+            CALL XRLIND(2, L02SR, NFW, LL, IOW, NOS, ID)
+            IF ( L02SR.NE.ISERnn(2) )THEN
+              ISERnn(2)  = L02SR
+221           FORMAT ('^^CO SET _MT_SPACEGROUP TEXT ''',4(A4,1X),'''')
+              WRITE ( CMON, 221 ) (STORE(L2SG+J),J=0,MD2SG-1)
+              CALL XPRVDU(NCVDU, 1,0)
+            ENDIF
+
+         ELSE IF ( ILST .EQ. 23 ) THEN   ! SFLS control - get F or F2.
+
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+               IF(KEXIST(23).LE.0) GOTO 9910
+               IF(KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+            ELSE
+               IF(KEXIST(23).LE.0) GOTO 9910
+               IF(KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL23
+            END IF
+            CALL XRLIND(23, L23SR, NFW, LL, IOW, NOS, ID)
+            IF ( L23SR.NE.ISERnn(23) )THEN
+              ISERnn(23)  = L23SR
+              IF ( ISTORE ( L23MN + 1 ) .EQ. -1 ) THEN
+               WRITE (CMON,2) '^^CO SET _MT_REF_COEF TEXT ''F'''
+              ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
+               WRITE (CMON,2) '^^CO SET _MT_REF_COEF TEXT ''F squared'''
+              ELSE
+               WRITE (CMON,2) '^^CO SET _MT_REF_COEF TEXT ''Unknown'''
+              END IF
+              CALL XPRVDU(NCVDU, 1, 0)
+            ENDIF
+
+         ELSE IF ( ILST .EQ. 29 ) THEN   ! asymm unit - update info tab.
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+               IF(KEXIST(29).LE.0) GOTO 9910
+               IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+            ELSE
+               IF(KEXIST(29).LE.0) GOTO 9910
+               IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
+            END IF
+            CALL XRLIND(29, L29SR, NFW, LL, IOW, NOS, ID)
+            IF ( L29SR.NE.ISERnn(29) )THEN
+              ISERnn(29)  = L29SR
+
+              WRITE( CMON(1),'(A)')'^^WI SET _MT_FORMULA TEXT'
+              WRITE( CMON(2),'(A)')'^^WI'''
+              WRITE( CMON(3),'(A)')'^^CR'
+231           FORMAT (A4,F7.3,'-')
+              K = 6
+              DO M29=L29,L29+(N29-1)*MD29,MD29
+                WRITE (CMON(2)(K:),231) STORE(M29), STORE(M29+4)
+                CALL XCRAS ( CMON(2),K )
+                DO L = K-1,K-6,-1              !Remove trailing zeroes.
+                  IF (CMON(2)(L:L).EQ.'0') THEN
+                    CMON(2)(L:L)=' '
+                  ELSE
+                     EXIT
+                  END IF
+                END DO
+                K = K + 1
+                IF ( K .GT. 70 ) EXIT
+              END DO
+              WRITE(CMON(2)(K:K),'(A)') ''''
+              DO J = 1,K
+                IF (CMON(2)(J:J).EQ.'-') CMON(2)(J:J)=' '
+              END DO
+              CALL XPRVDU(NCVDU, 3, 0)
+            END IF
+         ELSE IF ( ILST .EQ. 30 ) THEN   ! goodies - update info tab.
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+               IF(KEXIST(30).LE.0) GOTO 9910
+               IF(KHUNTR(30,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+            ELSE
+               IF(KEXIST(30).LE.0) GOTO 9910
+               IF(KHUNTR(30,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL30
+            END IF
+            CALL XRLIND(30, L30SR, NFW, LL, IOW, NOS, ID)
+            IF ( L30SR.NE.ISERnn(30) )THEN
+              ISERnn(30)  = L30SR
+
+241           FORMAT ('^^WI SET _MT_CR_MIN TEXT ',F8.4,
+     1                ' SET _MT_CR_MED TEXT ',F8.4,/,
+     1                '^^WI SET _MT_CR_MAX TEXT ',F8.4,
+     1                ' SET _MT_CR_TEMP TEXT  ',F5.1,/,
+     1                '^^WI SET _MT_CR_DCALC TEXT ',F7.3,
+     1                ' SET _MT_CR_MOLWT TEXT  ',F7.2,/,
+     1                '^^WI SET _MT_CR_CELLZ TEXT ',F4.0,/,
+     1                '^^CR')
+              WRITE ( CMON,241 ) STORE(L30CD), STORE(L30CD+1),
+     1           STORE(L30CD+2), STORE(L30CD+6), STORE(L30GE+1),
+     1           STORE(L30GE+4), STORE(L30GE+5)
+              CALL XPRVDU(NCVDU, 5, 0)
+242           FORMAT ('^^WI SET _MT_CR_SHAPE TEXT ''',8A4,'''',/,
+     1                '^^WI SET _MT_CR_COLOUR TEXT ''',8A4,'''',/,
+     1                '^^CR')
+              WRITE ( CMON, 242 ) (ISTORE(K),K=L30SH,L30SH+MD30SH-1),
+     1                            (ISTORE(K),K=L30CL,L30CL+MD30CL-1)
+              CALL XPRVDU(NCVDU, 3, 0)
+243           FORMAT ('^^WI SET _MT_OBS_MEAS TEXT ',F7.0,
+     1                    ' SET _MT_OBS_NMRG TEXT ',F7.0,/,
+     1               '^^WI SET _MT_OBS_RMRG TEXT ',F8.5,
+     1                    ' SET _MT_OBS_NFMRG TEXT ',F7.0,/,
+     1                '^^WI SET _MT_OBS_RFMRG TEXT ',F8.5,/,
+     1                '^^CR')
+              WRITE ( CMON,243 ) STORE(L30DR), STORE(L30DR+2),
+     1           STORE(L30DR+3), STORE(L30DR+4), STORE(L30DR+5)
+              CALL XPRVDU(NCVDU, 4, 0)
+244           FORMAT ('^^WI SET _MT_OBS_HMIN TEXT ',F4.0,
+     1                    ' SET _MT_OBS_HMAX TEXT ',F4.0,/,
+     1                '^^WI SET _MT_OBS_KMIN TEXT ',F4.0,
+     1                    ' SET _MT_OBS_KMAX TEXT ',F4.0,/,
+     1                '^^WI SET _MT_OBS_LMIN TEXT ',F4.0,
+     1                    ' SET _MT_OBS_LMAX TEXT ',F4.0,/,
+     1                '^^WI SET _MT_OBS_THMIN TEXT ',F4.0,
+     1                    ' SET _MT_OBS_THMAX TEXT ',F4.0,/,
+     1                '^^CR')
+              WRITE ( CMON, 244 ) ( STORE(L30IX+J), J=0,7)
+              CALL XPRVDU(NCVDU, 5, 0)
+245           FORMAT ('^^CO SET _MT_OBS_INST TEXT ''',A8,'''')
+              INS = ISTORE(L30CD+12) + 1
+              IF (( INS .GT. 0 ) .AND. (INS. LE. 6)) THEN
+                WRITE ( CMON, 245 ) CINST(INS)
+              ELSE
+                WRITE ( CMON, 245 ) 'New Type'
+              END IF
+              CALL XPRVDU ( NCVDU, 1, 0 )
+246           FORMAT ('^^WI SET _MT_REF_R TEXT ',F8.5,
+     1                    ' SET _MT_REF_RW TEXT ',F8.5,/,
+     1                '^^WI SET _MT_REF_NPAR TEXT ',F5.0,
+     1                    ' SET _MT_REF_SCUT TEXT ',F5.2,/,
+     1                  '^^WI SET _MT_REF_GOOF TEXT ',F6.3,
+     1                    ' SET _MT_REF_MAXRMS TEXT ',F8.4,/,
+     1                '^^WI SET _MT_REF_NREF TEXT ',F7.0,/,
+     1                '^^CR')
+              WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
+     1            STORE(L30RF+2), STORE(L30RF+3),  STORE(L30RF+4),
+     1            STORE(L30RF+7),STORE(L30RF+8)
+              CALL XPRVDU(NCVDU, 5, 0)
+            ENDIF
+         ENDIF
+      END DO
 
       RETURN
+
 9900  CONTINUE
       WRITE ( CMON, '(A,/,A)')'Failed to open file : ',CFILEN(1:ILENG)
       CALL XPRVDU(NCVDU, 2,0)
       RETURN
+9910  CONTINUE
+c      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not loaded.'
+c      CALL XPRVDU(NCVDU, 1,0)
+      RETURN
+9915  CONTINUE
+c      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not present.'
+c      CALL XPRVDU(NCVDU, 1,0)
+      RETURN
+9920  CONTINUE
+      WRITE ( CMON, '(A)')'GUI-UP: Error loading list 41.'
+      CALL XPRVDU(NCVDU, 1,0)
+      RETURN
+
       END
+
+
 
 
 
@@ -1442,3 +1361,103 @@ C Return number of stdev's of actual value from mean.
 
       RETURN
       END
+
+
+
+
+
+&&GILGID      SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
+&&GILGID     1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
+C
+&GID      INTERFACE
+&GID          SUBROUTINE FASTBOND (JX1, JY1, JZ1, JX2, JY2, JZ2,
+&GID     1 JR,JG,JB,JRAD,JBT,JNP,KPTS,DLABL,DSLABL)
+&GID          !DEC$ ATTRIBUTES C :: fastbond
+&GID          !DEC$ ATTRIBUTES VALUE :: JX1
+&GID          !DEC$ ATTRIBUTES VALUE :: JY1
+&GID          !DEC$ ATTRIBUTES VALUE :: JZ1
+&GID          !DEC$ ATTRIBUTES VALUE :: JX2
+&GID          !DEC$ ATTRIBUTES VALUE :: JY2
+&GID          !DEC$ ATTRIBUTES VALUE :: JZ2
+&GID          !DEC$ ATTRIBUTES VALUE :: JR
+&GID          !DEC$ ATTRIBUTES VALUE :: JG
+&GID          !DEC$ ATTRIBUTES VALUE :: JB
+&GID          !DEC$ ATTRIBUTES VALUE :: JRAD
+&GID          !DEC$ ATTRIBUTES VALUE :: JBT
+&GID          !DEC$ ATTRIBUTES VALUE :: JNP
+&GID          !DEC$ ATTRIBUTES REFERENCE :: KPTS
+&GID          !DEC$ ATTRIBUTES REFERENCE :: DLABL
+&GID          !DEC$ ATTRIBUTES REFERENCE :: DSLABL
+&GID          INTEGER JX1, JY1, JZ1, JX2, JY2, JZ2
+&GID          INTEGER JR, JG, JB, JRAD, JBT, JNP, KPTS(*)
+&GID          CHARACTER DLABL, DSLABL
+&GID          END SUBROUTINE FASTBOND
+&GID      END INTERFACE
+C
+&&GILGID      INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
+&&GILGID      INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
+&&GILGID      CHARACTER*(*) CLABL
+&&GILGID      CHARACTER*(ILLEN+1) BLABL
+&&GILGID      CHARACTER*(*) CSLABL
+&&GILGID      CHARACTER*(ISLEN+1) BSLABL
+C
+&&GILGID      BLABL = CLABL(1:ILLEN)  // CHAR(0)
+&&GILGID      BSLABL= CSLABL(1:ISLEN) // CHAR(0)
+&GID      CALL FASTBOND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
+&GID     1 IBT,INP,LPTS,BLABL,BSLABL)
+&GIL      CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
+&GIL     1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
+&GIL     1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
+&&GILGID      RETURN
+&&GILGID      END
+
+
+&&GILGID      SUBROUTINE FSTATM(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+&&GILGID     1 ISP,IFL,IU1,IU2,IU3,IU4,IU5,IU6,IU7,IU8,IU9)
+C
+&GID      INTERFACE
+&GID          SUBROUTINE FASTATOM (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
+&&GILGID     1 JSP,JFL,JU1,JU2,JU3,JU4,JU5,JU6,JU7,JU8,JU9)
+&GID          !DEC$ ATTRIBUTES C :: fastatom
+&GID          !DEC$ ATTRIBUTES VALUE :: JX
+&GID          !DEC$ ATTRIBUTES VALUE :: JY
+&GID          !DEC$ ATTRIBUTES VALUE :: JZ
+&GID          !DEC$ ATTRIBUTES VALUE :: JR
+&GID          !DEC$ ATTRIBUTES VALUE :: JG
+&GID          !DEC$ ATTRIBUTES VALUE :: JB
+&GID          !DEC$ ATTRIBUTES VALUE :: JOC
+&GID          !DEC$ ATTRIBUTES VALUE :: JCO
+&GID          !DEC$ ATTRIBUTES VALUE :: JVD
+&GID          !DEC$ ATTRIBUTES VALUE :: JSP
+&GID          !DEC$ ATTRIBUTES VALUE :: JFL
+&GID          !DEC$ ATTRIBUTES VALUE :: JU1
+&GID          !DEC$ ATTRIBUTES VALUE :: JU2
+&GID          !DEC$ ATTRIBUTES VALUE :: JU3
+&GID          !DEC$ ATTRIBUTES VALUE :: JU4
+&GID          !DEC$ ATTRIBUTES VALUE :: JU5
+&GID          !DEC$ ATTRIBUTES VALUE :: JU6
+&GID          !DEC$ ATTRIBUTES VALUE :: JU7
+&GID          !DEC$ ATTRIBUTES VALUE :: JU8
+&GID          !DEC$ ATTRIBUTES VALUE :: JU9
+&GID          !DEC$ ATTRIBUTES REFERENCE :: DL
+&GID          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
+&GID          INTEGER JSP,JFL,JU1,JU2,JU3,JU4,JU5,JU6,JU7,JU8,JU9
+&GID          CHARACTER DL
+&GID          END SUBROUTINE FASTATOM
+&GID      END INTERFACE
+C
+&&GILGID      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+&&GILGID      INTEGER ISP,IFL,IU1,IU2,IU3,IU4,IU5,IU6,IU7,IU8,IU9
+&&GILGID      CHARACTER*(*) CL
+&&GILGID      CHARACTER*(LL+1) BL
+C
+&&GILGID      BL = CL(1:LL)  // CHAR(0)
+&GID      CALL FASTATOM(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+&GID     1 ISP,IFL,IU1,IU2,IU3,IU4,IU5,IU6,IU7,IU8,IU9)
+&GIL      CALL FASTATOM(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),%VAL(IG),
+&GIL     1 %VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
+&GIL     1 %VAL(IU1),%VAL(IU2),%VAL(IU3),%VAL(IU4),%VAL(IU5),%VAL(IU6),
+&GIL     1 %VAL(IU7),%VAL(IU8),%VAL(IU9))
+&&GILGID      RETURN
+&&GILGID      END
+
