@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2003/10/31 17:21:27  rich
+C Remove debugging prints.
+C
+C Pass the OUTPUTLIST parameter of \PERHYDRO onto the command-line of
+C the generated \HYDROGEN commands.
+C
 C Revision 1.21  2003/08/18 12:26:00  rich
 C Filter list of distances returned by KDIST1 to prevent 2nd and 3rd atom
 C being on the same site when it is a special position. Still to be done:
@@ -2260,11 +2266,16 @@ C----- EVADE OCCASIONAL INEXPLICABLE SINGULARITIES
 C
 CODE FOR SH13
       SUBROUTINE SH13
+c----- mostly re-written by DJW May 2004 in response to 
+c      problems noted by Alison Edwards
+c
+      dimension ACC(3,3)
 C
 \ISTORE
 C
 \STORE
 \XWORKA
+\XCONST
 \XLISTI
 \XLST01
 \XLST05
@@ -2294,43 +2305,35 @@ C--WE USE THE T.F. OF THE BONDED ATOM
       KPR = ISTORE(JB+14)
       SY = STORE(JU) * STORE(JU+4)
 1050  CONTINUE
-C----- NORMALISE THE ATOMIC DISTANCES
+c----- find the vectors
       DO 100 I = 0,2
-                  STORE(JE+3+I) = STORE(JE+3+I) - STORE(JE+I)
-                  STORE(JE+6+I) = STORE(JE+6+I) - STORE(JE+I)
-                  STORE(JE+9+I) = STORE(JE+9+I) - STORE(JE+I)
+                  STORE(JE+3+I) = STORE(JE+I) - STORE(JE+3+I)
+                  STORE(JE+6+I) = STORE(JE+I) - STORE(JE+6+I)
+                  STORE(JE+9+I) = STORE(JE+I) - STORE(JE+9+I)
 100   CONTINUE
+C----- NORMALISE THE ATOMIC DISTANCES
       I = NORM3(STORE(JE+3))
       I = NORM3(STORE(JE+6))
       I = NORM3(STORE(JE+9))
-      CALL SETV(STORE(JP),0.0)
-C----- FIND THE CENTROID
-      DO 210 N = 3,9,3
-        DO 200 I = 0,2
-          STORE(JP+I) = STORE(JP+I) + STORE(JE+N+I)
-200     CONTINUE
-210   CONTINUE
-      I = NORM3(STORE(JP))
-      IF (I .LT. 0) THEN
+c----- invert the matrix of coordinates
+      call matinv(store(je+3), acc, det)
+      IF (abs(det) .Le. zero) THEN
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1150)
         WRITE(NCAWU,1150)
         WRITE ( CMON, 1150)
         CALL XPRVDU(NCVDU, 1,0)
 1150    FORMAT(' The 4 atoms are co-planar')
-C----- TRY TO FORM A CROSS PRODUCT
-        I = NCROP3(STORE(JE+3), STORE(JE+6), STORE(JP))
-        IF (I .LT. 0) THEN
-C         TRY ANOTHER PAIR
-          I = NCROP3(STORE(JE+3), STORE(JE+9), STORE(JP))
-            IF (I .LT. 0) THEN
-                  LEF=LEF+1
-                  JS=0
-                  RETURN
-            ENDIF
-        ENDIF
-      ENDIF
+        LEF=LEF+1
+        JS=0
+        RETURN
+      endif
+c----- mutliply matrix onto unit vector
+      store(jp  )= acc(1,1)+acc(2,1)+acc(3,1)
+      store(jp+1)= acc(1,2)+acc(2,2)+acc(3,2)
+      store(jp+2)= acc(1,3)+acc(2,3)+acc(3,3)
+      i = norm3(store(jp))
       DO 1200 N=0,2
-        STORE(JQ+N)=STORE(JE+n)-STORE(JP+N)*SX
+        STORE(JQ+N)=STORE(JE+n)+STORE(JP+N)*SX
 1200  CONTINUE
       CALL XMLTMM(STORE(L1O2),STORE(JQ),STORE(JG),3,3,1)
       CALL SAPR
