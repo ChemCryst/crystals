@@ -432,7 +432,7 @@ RegexException::~RegexException() throw()
   delete iMessage;
 }
 
-char* RegexException::what() const throw()
+const char* RegexException::what() const throw()
 {
   return iMessage;
 }
@@ -464,8 +464,10 @@ void Regex::exec(string& pString, size_t pNumMatches, regmatch_t tMatch[], int p
 
 	#ifdef __NO_REG_STARTEND_SUPPORT__
 	string tSubString;
+	ptrdiff_t tOffset = 0; 
 	if ((pFlags & REG_STARTEND) == REG_STARTEND)
 	{
+	  tOffset = tMatch[0].rm_so;
 	  tSubString = pString.substr(tMatch[0].rm_so, tMatch[0].rm_eo - tMatch[0].rm_so);
 	  tSearchString = tSubString.c_str(); 
 	}
@@ -474,4 +476,14 @@ void Regex::exec(string& pString, size_t pNumMatches, regmatch_t tMatch[], int p
 	{
 		throw RegexException(pError, &iRegExFSO);
 	}
+	#ifdef __NO_REG_STARTEND_SUPPORT__
+	for (int i = 0; i< pNumMatches; i++)
+	{
+		if (tMatch[i].rm_so > -1)
+		{
+			tMatch[i].rm_so += tOffset;
+			tMatch[i].rm_eo += tOffset;
+		}
+	}
+	#endif
 }	

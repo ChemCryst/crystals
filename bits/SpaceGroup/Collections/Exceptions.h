@@ -55,8 +55,9 @@ class MyException : public exception
     public:
         char* iErrStr;
         int iErrNum;
-        
-        MyException(int pErrNum, char* iErrStr);
+
+        MyException(int pErrNum, const char* iErrStr);
+//		MyException(int pErrNum, const char* iErrFormat, ...);
         MyException(const MyException& pException);
         virtual ~MyException() throw();
         virtual void addError(char* pErrMsg);

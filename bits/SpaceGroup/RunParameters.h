@@ -13,6 +13,7 @@
 #else
 #define kDefaultTables "\\Tables.txt"
 #define PATH_MAX _MAX_PATH
+#include "PCPort.h"
 #endif
 #include "StringClasses.h"
 #include "UnitCell.h"

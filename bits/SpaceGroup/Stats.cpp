@@ -24,7 +24,7 @@ static float Absent3SSD = 0.00859224f;
 static float Present3SM = 0.63777005f;
 static float Present3SSD = 0.21934966f;*/
 //Num Matched Int > 3sigma + Num Not Matched Int <= 3sigma
-static float Absent3SM = 0.11234;
+static float Absent3SM = 0.11234f;
 static float Absent3SSD = 0.079361f;
 static float Present3SM = 0.46642f;
 static float Present3SSD = 0.079361f;
@@ -50,13 +50,13 @@ float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float P
 
 void Stats::setShouldDos(Regions* pRegions, Conditions* pConditions)
 {
-    int tRegionCount = pRegions->size();
-    int tCondCount = pConditions->size();
+    size_t tRegionCount = pRegions->size();
+    size_t tCondCount = pConditions->size();
     
-    for (int i = 0; i < tCondCount; i++)	//Conditions
+    for (size_t i = 0; i < tCondCount; i++)	//Conditions
     {
         Matrix<short>* tConditionMat = pConditions->getMatrix(i);
-        for (int j = 0; j < tRegionCount; j++) //Regions.
+        for (size_t j = 0; j < tRegionCount; j++) //Regions.
         {
             Matrix<short>* tRegionMat = pRegions->getMatrix(j);
             Matrix<short> tResult(3, 1);
@@ -67,12 +67,12 @@ void Stats::setShouldDos(Regions* pRegions, Conditions* pConditions)
     }
 }
 
-void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>& pHKL)	//Goes through the rows down the specified Column adding the reflection to the stats.
+void Stats::addReflectionRows(const size_t pColumn, Reflection* pReflection, Matrix<short>& pHKL)	//Goes through the rows down the specified Column adding the reflection to the stats.
 {
     static Matrix<short> tMatrix(1, 1);
     
-    int tCCount = iConditions->size();    //Cache lengths of the table.
-    for (int i= 0; i < tCCount; i++)
+    size_t tCCount = iConditions->size();    //Cache lengths of the table.
+    for (size_t i= 0; i < tCCount; i++)
     {
         Matrix<short>* tMultiMat = NULL;
         tMultiMat = iConditions->getMatrix(i);
@@ -107,9 +107,9 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short
     }
 }
 
-ElemStats* Stats::getElem(const int pHeadIndex, const int pCondIndex) const
+ElemStats* Stats::getElem(const size_t pHeadIndex, const size_t pCondIndex) const
 {
-    int tCCount = iConditions->size();    //Cache lengths of the table.
+    size_t tCCount = iConditions->size();    //Cache lengths of the table.
     return &(iStats[(pHeadIndex*tCCount)+pCondIndex]);
 }
 
@@ -118,10 +118,10 @@ void Stats::addReflection(Reflection* pReflection, LaueGroup &pLaueGroup)
     static Matrix<short> tResult(1, 3);
     iTotalNum ++;
     iTotalIntensity += (float)pReflection->i;	
-    int tHCount = iRegions->size();			//Cache lengths of the table.
+    size_t tHCount = iRegions->size();			//Cache lengths of the table.
     Matrix<short>* tHKLMat = pReflection->getHKL();	//Get the HKL matrix from the reflection.
 	
-    for (int i = 0; i < tHCount; i++)			//Go through Columns in the table.
+    for (size_t i = 0; i < tHCount; i++)			//Go through Columns in the table.
     {
 		Matrix<short> tNewHKL;
 		if ((*iRegions)[i]->contains(*tHKLMat, pLaueGroup, tNewHKL))
@@ -189,164 +189,164 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
     return pStream;
 }
 
-void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums,  const int pFirstColumnWidth, const int pOtherColumns)
+void Stats::outputRow(const size_t pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const size_t pNumOfColums,  const size_t pFirstColumnWidth, const size_t pOtherColumns)
 {
-    int tCCount = iConditions->size();
+    size_t tCCount = iConditions->size();
     String tName(iConditions->getName(pRow));
-    pStream << pRow << "\n";
-    pStream << tName << setw(pFirstColumnWidth-tName.length()) ;
-    for (int i = 0; i < pNumOfColums; i++)
+    pStream << (uint)pRow << "\n";
+    pStream << tName << setw((uint)pFirstColumnWidth-tName.length()) ;
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+            pStream << " " << setw((uint)pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-    pStream << "\n<I>" << setw(pFirstColumnWidth-3);
-    for (int i = 0; i < pNumOfColums; i++)
+    pStream << "\n<I>" << setw((uint)pFirstColumnWidth-3);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
       //Average int of matched refelections
                 if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
                 {
                     if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM == 0)
-                            pStream << " " << setw(pOtherColumns) << "NaN";
+                            pStream << " " << setw((uint)pOtherColumns) << "NaN";
                     else
-                            pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+                            pStream << " " << setw((uint)pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
                 }
                 else
                 {
-                    pStream << " " << setw(pOtherColumns) << " ";
+                    pStream << " " << setw((uint)pOtherColumns) << " ";
                 }
     }
     String tEq("==");
     String tNE("<>");
     tName.replace(tEq, tNE);
-    pStream << "\n" << tName << setw(pFirstColumnWidth-tName.length());
-    for (int i = 0; i < pNumOfColums; i++)
+    pStream << "\n" << tName << setw((uint)pFirstColumnWidth-tName.length());
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;
+            pStream << " " << setw((uint)pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-    pStream << "\n<I>" << setw(pFirstColumnWidth-3);
-    for (int i = 0; i < pNumOfColums; i++)
+    pStream << "\n<I>" << setw((uint)pFirstColumnWidth-3);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {	
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
             if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM == 0)
-				pStream << " " << setw(pOtherColumns) << "NaN";
+				pStream << " " << setw((uint)pOtherColumns) << "NaN";
             else
-				pStream << " " << setw(pOtherColumns) << setprecision (4) << (iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM);	//Ave intensity non-matched.
+				pStream << " " << setw((uint)pOtherColumns) << setprecision (4) << (iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM);	//Ave intensity non-matched.
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-    pStream << "\n% I < 3u(I)" << setw(pFirstColumnWidth-11);
-    for (int i = 0; i < pNumOfColums; i++)
+    pStream << "\n% I < 3u(I)" << setw((uint)pFirstColumnWidth-11);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
             float tLess = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
             float tGreater = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
             if (tLess+tGreater == 0)
-                    pStream << " " << setw(pOtherColumns) << "NaN";
+                    pStream << " " << setw((uint)pOtherColumns) << "NaN";
             else
-                    pStream << " " << setw(pOtherColumns) << setprecision (4) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
+                    pStream << " " << setw((uint)pOtherColumns) << setprecision (4) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-    pStream << "\nScore1" << setw(pFirstColumnWidth-6);
-    for (int i = 0; i < pNumOfColums; i++)
+    pStream << "\nScore1" << setw((uint)pFirstColumnWidth-6);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
+            pStream << " " << setprecision (4) << setw((uint)pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-	pStream << "\nMatch >=" << setw(pFirstColumnWidth-8);
-    for (int i = 0; i < pNumOfColums; i++)
+	pStream << "\nMatch >=" << setw((uint)pFirstColumnWidth-8);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumMGrInt;	
+            pStream << " " << setprecision (4) << setw((uint)pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumMGrInt;	
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-	pStream << "\nMatch <" << setw(pFirstColumnWidth-7);
-    for (int i = 0; i < pNumOfColums; i++)
+	pStream << "\nMatch <" << setw((uint)pFirstColumnWidth-7);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumMLsInt;	
+            pStream << " " << setprecision (4) << setw((uint)pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumMLsInt;	
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-	pStream << "\nNot Match >=" << setw(pFirstColumnWidth-12);
-    for (int i = 0; i < pNumOfColums; i++)
+	pStream << "\nNot Match >=" << setw((uint)pFirstColumnWidth-12);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;	
+            pStream << " " << setprecision (4) << setw((uint)pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;	
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-	pStream << "\nNot Match <" << setw(pFirstColumnWidth-11);
-    for (int i = 0; i < pNumOfColums; i++)
+	pStream << "\nNot Match <" << setw((uint)pFirstColumnWidth-11);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;	
+            pStream << " " << setprecision (4) << setw((uint)pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;	
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
-	pStream << "\nScore2" << setw(pFirstColumnWidth-6);
-    for (int i = 0; i < pNumOfColums; i++)
+	pStream << "\nScore2" << setw((uint)pFirstColumnWidth-6);
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
-            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
+            pStream << " " << setprecision (4) << setw((uint)pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
         }
         else
         {
-            pStream << " " << setw(pOtherColumns) << " ";
+            pStream << " " << setw((uint)pOtherColumns) << " ";
         }
     }
 }
 
-void Stats::outputRegions(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums)
+void Stats::outputRegions(std::ostream& pStream, const signed char pColumnsToPrint[], const size_t pNumOfColums)
 {
     pStream << setw(9);
-    for (int i = 0; i < pNumOfColums; i++)
+    for (size_t i = 0; i < pNumOfColums; i++)
     {
         pStream << "" << setw(7) << iRegions->getName(pColumnsToPrint[i]) << "(" << (int)pColumnsToPrint[i] << ")";
     }
@@ -355,8 +355,8 @@ void Stats::outputRegions(std::ostream& pStream, const signed char pColumnsToPri
 
 void Stats::calProbs()
 {
-    int tTotalNum = iConditions->size() * iRegions->size();
-    for (int i = 0; i < tTotalNum; i ++)
+    size_t tTotalNum = iConditions->size() * iRegions->size();
+    for (size_t i = 0; i < tTotalNum; i ++)
     {
         ElemStats* tCurrentStat = &(iStats[i]);
         if (tCurrentStat->iShouldDo)
@@ -388,14 +388,14 @@ void Stats::calProbs()
     handleFilteredData(tColumns, 1);
 }
 
-void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an array of which columns to check to see if there data has been filtered.
+void Stats::handleFilteredData(int pColumns[], size_t pNumColumns)	//pColumns an array of which columns to check to see if there data has been filtered.
 {
-    int tCCount = iConditions->size();    //Cache lengths of the table.
+    size_t tCCount = iConditions->size();    //Cache lengths of the table.
 
-    for (int i = 0; i < pNumColumns; i++)
+    for (size_t i = 0; i < pNumColumns; i++)
     {
-        int tOffset = pColumns[i]*tCCount;
-        for (int j = 0; j < tCCount; j++)
+        size_t tOffset = pColumns[i]*tCCount;
+        for (size_t j = 0; j < tCCount; j++)
         {
             if (iStats[tOffset+j].tNumNonM == 0)
             {
@@ -426,14 +426,14 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
     pStream << "TOTAL " << iTotalNum <<"\n";
     pStream << "AVINT " << iTotalIntensity/iTotalNum << "\n";
     
-    const int tConditionNum = iConditions->size();
+    const size_t tConditionNum = iConditions->size();
     signed char* tConditions = new signed char[tConditionNum];
-    int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
-    const int tColumnsNum = iRegions->size();
+    size_t tCount = pTable.conditionsUsed(tConditions, tConditionNum);
+    const size_t tColumnsNum = iRegions->size();
     signed char* tColumns = new signed char[tColumnsNum];
-    int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
-    pStream << "NREGIONS " << tColumnCount << "\n";
-    for (int i = 0; i< tColumnCount; i++)
+    size_t tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
+    pStream << "NREGIONS " << (uint)tColumnCount << "\n";
+    for (size_t i = 0; i< tColumnCount; i++)
     {
         vector<Index>* tRegions = pTable.getRegions(i);
         
@@ -445,23 +445,23 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
             pStream << " " << iRegions->getName(tIndex) << "\n";
         }
     }
-    pStream << "NTESTS " << tCount << "\n";
-    for (int i = 0; i < tCount; i++)
+    pStream << "NTESTS " << (uint)tCount << "\n";
+    for (size_t i = 0; i < tCount; i++)
     {
         pStream << iConditions->getID(tConditions[i]) << " ";
         outputMatrix(pStream, iConditions->getMatrix(tConditions[i]));
         pStream << " " << iConditions->getMult(tConditions[i]) << " " << iConditions->getName(tConditions[i]) << "\n";
     }
-    pStream << "DATA " << tCount*tColumnCount << " " << numberOfOutElementValues() << "\n";
-    int tNumOfElemsValues = numberOfOutElementValues();
-    for (int i = 0; i < tColumnCount; i++)
+    pStream << "DATA " << (uint)tCount*tColumnCount << " " << (uint)numberOfOutElementValues() << "\n";
+    size_t tNumOfElemsValues = numberOfOutElementValues();
+    for (size_t i = 0; i < tColumnCount; i++)
     {
-        for (int j = 0; j < tCount; j++)
+        for (size_t j = 0; j < tCount; j++)
         {
             ElemStats* tElement = &(iStats[tColumns[i]*tConditionNum+tConditions[j]]);
-            for (int k=0; k < tNumOfElemsValues; k++)
+            for (size_t k=0; k < tNumOfElemsValues; k++)
             {
-                outputElementValue(pStream, tElement, k);
+                outputElementValue(pStream, tElement, (int)k);
                 if (i+1 < tColumnCount || j+1 < tCount || k+1 < tNumOfElemsValues)
                     pStream << "\n";
             }
@@ -477,14 +477,14 @@ std::ostream& Stats::output(std::ostream& pStream, const Table& pTable)
     pStream << "Total: " << iTotalNum <<"\n";
     pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
     
-    const int tConditionNum = iConditions->size();
+    const size_t tConditionNum = iConditions->size();
     signed char* tConditions = new signed char[tConditionNum];
-    int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
-    const int tColumnsNum = iRegions->size();
+    size_t tCount = pTable.conditionsUsed(tConditions, tConditionNum);
+    const size_t tColumnsNum = iRegions->size();
     signed char* tColumns = new signed char[tColumnsNum];
-    int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
+    size_t tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
     outputRegions(pStream, tColumns, tColumnCount);
-    for (int i = 0; i < tCount; i++)
+    for (size_t i = 0; i < tCount; i++)
     {
         outputRow(tConditions[i], pStream, tColumns, tColumnCount);
         pStream << "\n\n";

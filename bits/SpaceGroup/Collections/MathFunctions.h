@@ -16,8 +16,8 @@
 #define min(A, B) A<B?A:B	/*returns the min of two numbers*/
 #endif
 #define sqr(A) A*A	/*Squares a number*/
-#define deg2rad(A) A/57.2957795130823  /*Converts degrees to radians*/
-#define rad2deg(A) A/0.0174532925199433  /*Converts radians to degrees*/
+#define deg2rad(A) A/57.2957795130823f  /*Converts degrees to radians*/
+#define rad2deg(A) A/0.0174532925199433f  /*Converts radians to degrees*/
 #define kSmallValue 1e-4f
 #define kVSmallValue 1e-8f
 

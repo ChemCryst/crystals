@@ -43,9 +43,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#if !defined(_WIN32)
-#include <sys/time.h>
-#endif
 #include <errno.h>
 #include "HKLData.h"
 #include "Stats.h"
@@ -113,7 +110,7 @@ void runTest(RunParameters& pRunData)
     pRunData.unitCell().metricTensor(tMetricTensor);
     try
     {
-	tHKL = new HKLData(pRunData.iFileName.getCString(), tMetricTensor);
+			tHKL = new HKLData(pRunData.iFileName.getCString(), tMetricTensor);
     }
     catch (MyException& eException)
     {
@@ -226,13 +223,15 @@ int main(int argc, const char* argv[])
         tRunStruct.getParamsFromUser(); // Not all the run parameters have been filled in the user will need to add some more.
         runTest(tRunStruct);
     }
-	catch (MyException eE)
+	catch (MyException& eE)
     {
         cout << "\n" << eE.what() << "\n";
+		cout.flush();
     }
-    catch (exception eE)
+    catch (exception& eE)
     {
         cout << "\n" << eE.what() << "\n";
+		cout.flush();
     }
 	
 	cleanup();

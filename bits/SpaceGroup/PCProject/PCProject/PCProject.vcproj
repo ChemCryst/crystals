@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\cygwin\home\Administrator\regexpp3;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\CodeLibrary\Headers&quot;;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\SpaceGroup&quot;"
+				AdditionalIncludeDirectories="C:\cygwin\home\Administrator\regexpp3;&quot;C:\Documents and Settings\stefanpa\My Documents\Visual Studio Projects\SpaceGroup\Collections&quot;;&quot;C:\Documents and Settings\stefanpa\My Documents\Visual Studio Projects\SpaceGroup&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 				Optimization="3"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="C:\cygwin\home\Administrator\regexpp3;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\CodeLibrary\Headers&quot;;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\SpaceGroup&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Documents and Settings\stefanpa\My Documents\Visual Studio Projects\SpaceGroup\Collections&quot;;C:\cygwin\home\Administrator\regexpp3;&quot;C:\Documents and Settings\stefanpa\My Documents\Visual Studio Projects\SpaceGroup&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
@@ -77,7 +77,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/PCProject.exe"
+				OutputFile="$(OutDir)/SpaceGroup.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
@@ -108,10 +108,10 @@
 				RelativePath="..\..\Conditions.cpp">
 			</File>
 			<File
-				RelativePath="..\..\CrystalSystem.cpp">
+				RelativePath="..\..\CrystSymmetry.cpp">
 			</File>
 			<File
-				RelativePath="..\..\Exceptions.cpp">
+				RelativePath="..\..\CrystalSystem.cpp">
 			</File>
 			<File
 				RelativePath="..\..\HKLData.cpp">
@@ -123,13 +123,13 @@
 				RelativePath="..\..\LaueGroupGraph.cpp">
 			</File>
 			<File
-				RelativePath="..\..\Matrices.cpp">
-			</File>
-			<File
 				RelativePath="..\..\MergedData.cpp">
 			</File>
 			<File
 				RelativePath="..\..\PCPort.cpp">
+			</File>
+			<File
+				RelativePath="..\..\PointGroups.cpp">
 			</File>
 			<File
 				RelativePath="..\..\RunParameters.cpp">
@@ -139,6 +139,9 @@
 			</File>
 			<File
 				RelativePath="..\..\Stats.cpp">
+			</File>
+			<File
+				RelativePath="..\..\Symmetry.cpp">
 			</File>
 			<File
 				RelativePath="..\..\UnitCell.cpp">
@@ -154,25 +157,19 @@
 				RelativePath="..\..\Conditions.h">
 			</File>
 			<File
+				RelativePath="..\..\CrystSymmetry.h">
+			</File>
+			<File
 				RelativePath="..\..\CrystalSystem.h">
 			</File>
 			<File
-				RelativePath="..\..\Exceptions.h">
-			</File>
-			<File
 				RelativePath="..\..\HKLData.h">
-			</File>
-			<File
-				RelativePath="..\..\InteractiveControl.h">
 			</File>
 			<File
 				RelativePath="..\..\LaueClasses.h">
 			</File>
 			<File
 				RelativePath="..\..\LaueGroupGraph.h">
-			</File>
-			<File
-				RelativePath="..\..\Matrices.h">
 			</File>
 			<File
 				RelativePath="..\..\MergedData.h">
@@ -184,6 +181,9 @@
 				RelativePath="..\..\PCPort.h">
 			</File>
 			<File
+				RelativePath="..\..\PointGroups.h">
+			</File>
+			<File
 				RelativePath="..\..\RunParameters.h">
 			</File>
 			<File
@@ -191,6 +191,9 @@
 			</File>
 			<File
 				RelativePath="..\..\Stats.h">
+			</File>
+			<File
+				RelativePath="..\..\Symmetry.h">
 			</File>
 			<File
 				RelativePath="..\..\UnitCell.h">
@@ -201,63 +204,62 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 		<Filter
-			Name="Code Library"
+			Name="Collections"
 			Filter="">
 			<Filter
 				Name="Headers"
 				Filter="">
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\BaseTypes.h">
+					RelativePath="..\..\Collections\BaseTypes.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\Collections.h">
+					RelativePath="..\..\Collections\ComClasses.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\ComClasses.h">
+					RelativePath="..\..\Collections\Exceptions.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\MathFunctions.h">
+					RelativePath="..\..\Collections\MathFunctions.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\Stack.h">
+					RelativePath="..\..\Collections\Matrices.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\StringClasses.h">
+					RelativePath="..\..\Collections\StringClasses.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\Threads.h">
+					RelativePath="..\..\Collections\Timer.h">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\Trees.h">
-				</File>
-				<File
-					RelativePath="..\..\..\CodeLibrary\Headers\Wrappers.h">
-				</File>
-			</Filter>
-			<Filter
-				Name="C"
-				Filter="">
-				<File
-					RelativePath="..\..\..\CodeLibrary\C\MathFunctions.cpp">
+					RelativePath="..\..\Collections\Wrappers.h">
 				</File>
 			</Filter>
 			<Filter
 				Name="C++"
 				Filter="">
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\BaseTypes.cpp">
+					RelativePath="..\..\Collections\BaseTypes.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\ComClasses.cpp">
+					RelativePath="..\..\Collections\ComClasses.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\StringClasses.cpp">
+					RelativePath="..\..\Collections\Exceptions.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\Timer.cpp">
+					RelativePath="..\..\Collections\MathFunctions.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\Wrappers.cpp">
+					RelativePath="..\..\Collections\Matrices.cpp">
+				</File>
+				<File
+					RelativePath="..\..\Collections\StringClasses.cpp">
+				</File>
+				<File
+					RelativePath="..\..\Collections\Timer.cpp">
+				</File>
+				<File
+					RelativePath="..\..\Collections\Wrappers.cpp">
 				</File>
 			</Filter>
 		</Filter>

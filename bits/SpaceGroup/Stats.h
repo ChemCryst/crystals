@@ -40,10 +40,10 @@ class Stats:public MyObject
         float iTotalIntensity;
         ElemStats* iStats;	//Cells of the stats.
         bool iFiltered;
-        void outputRegions(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums);
-        void outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums, const int pColumnWidth=13, const int pOtherColumns=8);
+        void outputRegions(std::ostream& pStream, const signed char pColumnsToPrint[], const size_t pNumOfColums);
+        void outputRow(const size_t pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const size_t pNumOfColums, const size_t pColumnWidth=13, const size_t pOtherColumns=8);
         
-        void handleFilteredData(int pColumns[], int pNumColumns);
+        void handleFilteredData(int pColumns[], size_t pNumColumns);
         int numberOfOutElementValues() const;
         std::ostream& outputElementValue(std::ostream& pStream, ElemStats* pStats , int pValues);
         void setShouldDos(Regions* pRegions, Conditions* pConditions);
@@ -51,11 +51,11 @@ class Stats:public MyObject
         Stats(Regions* pRegions, Conditions* pConditions);
         ~Stats();
       //  bool filtered() const;
-        void addReflectionRows(const int pColumn, Reflection* pReflection, Matrix<short> &pHKL);
+        void addReflectionRows(const size_t pColumn, Reflection* pReflection, Matrix<short> &pHKL);
         void addReflection(Reflection* tReflection, LaueGroup &pLaueGroup);
 		void addReflections(HKLData &pHKLs, LaueGroup &pLaueGroup);
         void calProbs();			//Calculates all the probabilites for all the cells.
-        ElemStats* getElem(const int pHeadIndex, const int pCondIndex) const;
+        ElemStats* getElem(const size_t pHeadIndex, const size_t pCondIndex) const;
         std::ostream& output(std::ostream& pStream, const Table& pTable);
         std::ofstream& output(std::ofstream& pStream, const Table& pTable);
 		static float evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD);

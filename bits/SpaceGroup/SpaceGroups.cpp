@@ -95,7 +95,7 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups):iBrackets(NULL)
     {
         throw MyException(kUnknownException, "SpaceGroups where in bad format.");
     }
-    if (gMatch[2].rm_so > -1)
+    if (gMatch[2].rm_so > -1)  //Matches the cases where there aren't any []'s or {}'s
     {
         char * tSubString = new char[(long)(gMatch[2].rm_eo - gMatch[2].rm_so)+1];
         tSubString[(long)(gMatch[2].rm_eo - gMatch[2].rm_so)] = '\0';
@@ -103,7 +103,7 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups):iBrackets(NULL)
         addSpaceGroups(tSubString);
         delete[] tSubString;
     }
-    else if (gMatch[3].rm_so > -1)
+    else if (gMatch[3].rm_so > -1)  //Matches where there are [] brakets
     {
         iBrackets = new char[3];
         strcpy(iBrackets, "[]");
@@ -204,7 +204,7 @@ SGColumn::~SGColumn()
 	}
 }
 
-void SGColumn::add(char* pSpaceGroup,  int pRow)
+void SGColumn::add(char* pSpaceGroup, const size_t pRow)
 {
 	if (size() <= (unsigned int)pRow)
 	{
@@ -215,7 +215,7 @@ void SGColumn::add(char* pSpaceGroup,  int pRow)
 
 void SGColumn::setPointGroup(char* pHeading)
 {	
-	Regex tPoinGroupRE("[[:space:]]*([^,]*)([[:space:]]*,[[:space:]]*(.*)[[:space:]]*)?"); //Reg exp for pulling the point groups apart
+	Regex tPoinGroupRE("[[:space:]]*([^\\,]*)([[:space:]]*,[[:space:]]+(.*)[[:space:]]*)?"); //Reg exp for pulling the point groups apart
 	string tPointGroups = pHeading;
 	regmatch_t tMatches[4];
 	

@@ -44,6 +44,10 @@
 #if defined(__APPLE__)
 #include <vecLib/vDSP.h>
 #endif
+#ifdef _WIN32
+#include "PCPort.h"
+#endif
+
 #include "Exceptions.h"
 //Error codes
 #define kDimensionErrorN -1
@@ -204,12 +208,12 @@ class Matrix:public MyObject
             return iMatrix[pXIndex*iYSize+pYIndex];
         }
         
-        inline void setValue(const type pValue, const short pIndex)
+        inline void setValue(const type pValue, const size_t pIndex)
         {
             iMatrix[pIndex] = pValue;
         }
         
-        inline void setValue(const type pValue, const short pXIndex, const short pYIndex)
+        inline void setValue(const type pValue, const size_t pXIndex, const size_t pYIndex)
         {
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
@@ -723,23 +727,6 @@ class Matrix<float>:public MyObject
             }
             return false;
         }
-        
-      /*  void transpose()
-        {
-            size_t tXSize = iYSize, tYSize = iXSize;
-             
-            for (size_t x = 0; x < iXSize; x++)
-            {
-                for (size_t y = 0; y < iYSize-(iXSize-x); y++)
-                {
-                    float tTemp = iMatrix[y*tYSize+x];
-                    iMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
-                    iMatrix[x*iYSize+y] = tTemp;
-                }
-            }
-            iYSize = tXSize;
-            iXSize = tYSize;
-        }*/
         
         void transpose()
         {

@@ -8,7 +8,9 @@
  */
 
 #include "Timer.h"
+#if !defined(_WIN32)
 #include <sys/time.h>
+#endif
 
 Timer::Timer()
 {

@@ -179,12 +179,12 @@ float UnitCell::getSEGamma() const
 Matrix<float>& UnitCell::metricTensor(Matrix<float>& pResult)const
 {
 	pResult.resize(3, 3);
-	pResult.setValue(iA*iA, 0, 0);
-	pResult.setValue(iA*iB*cos(deg2rad(iGamma)), 0, 1);
-	pResult.setValue(iA*iC*cos(deg2rad(iBeta)), 0, 2);
-	pResult.setValue(iB*iB, 1, 1);
-	pResult.setValue(iB*iC*cos(deg2rad(iAlpha)), 1, 2);
-	pResult.setValue(iC*iC, 2, 2);
+	pResult.setValue((float)iA*iA, 0, 0);
+	pResult.setValue(iA*iB*(float)cos(deg2rad(iGamma)), 0, 1);
+	pResult.setValue(iA*iC*(float)cos(deg2rad(iBeta)), 0, 2);
+	pResult.setValue((float)iB*iB, 1, 1);
+	pResult.setValue(iB*iC*(float)cos(deg2rad(iAlpha)), 1, 2);
+	pResult.setValue((float)iC*iC, 2, 2);
 	
 	pResult.setValue(pResult.getValue(0, 1), 1, 0);
 	pResult.setValue(pResult.getValue(0, 2), 2, 0);
@@ -379,12 +379,12 @@ UnitCell::UnitCell(const UnitCell& pUnitCell):iA(pUnitCell.iA), iB(pUnitCell.iB)
 UnitCell::UnitCell(const Matrix<float> &pT):iA(0), iB(0), iC(0), iAlpha(0), iBeta(0), iGamma(0),
     iSEA(0), iSEB(0), iSEC(0), iSEAlpha(0), iSEBeta(0), iSEGamma(0)
 {
-	iA = sqrt(pT.getValue(0, 0));
-	iB = sqrt(pT.getValue(1, 1));
-	iC = sqrt(pT.getValue(2, 2));
-	iAlpha = rad2deg(acos(pT.getValue(2, 1)/(iB*iC)));
-	iBeta = rad2deg(acos(pT.getValue(2, 0)/(iA*iC)));
-	iGamma = rad2deg(acos(pT.getValue(1, 0)/(iB*iA)));
+	iA = (float)sqrt(pT.getValue(0, 0));
+	iB = (float)sqrt(pT.getValue(1, 1));
+	iC = (float)sqrt(pT.getValue(2, 2));
+	iAlpha = (float)rad2deg((float)acos(pT.getValue(2, 1)/(iB*iC)));
+	iBeta = (float)rad2deg((float)acos(pT.getValue(2, 0)/(iA*iC)));
+	iGamma = (float)rad2deg((float)acos(pT.getValue(1, 0)/(iB*iA)));
 }
 
 bool UnitCell::init(char* pLine)	//This parases the line which it is passed. Initalising the feilds of the unit cell with it. If the line is not formated correctly then an false is returned.

@@ -53,7 +53,7 @@ class SGColumn:public vector<SpaceGroups*>
     public:
         SGColumn();
         ~SGColumn();
-        void add(char* pSpaceGroup, int pRow);
+        void add(char* pSpaceGroup, const size_t pRow);
         void setPointGroup(char* pHeading);
         vector<CrystSymmetry>& getPointGroup();
 };

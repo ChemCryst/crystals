@@ -48,6 +48,10 @@
 #include <map>
 #include <set>
 
+#ifdef _WIN32
+#include "PCPort.h"
+#endif
+
 using namespace std;
 struct ElemStats;
 
@@ -70,8 +74,8 @@ class Regions:public vector<Region*>
     public:
         Regions();
         ~Regions();
-        Matrix<short>* getMatrix(int pIndex);
-        char* getName(int pIndex);
+        Matrix<short>* getMatrix(const size_t pIndex);
+        char* getName(const size_t pIndex);
         int getID(int pIndex);
         std::ostream& output(std::ostream& pStream);
         char* addRegion(char* pLine);
@@ -122,8 +126,8 @@ class ConditionColumn:virtual public Column
         void addCondition(signed char pIndex, size_t pRow);
         void addEmptyCondition(size_t pRow);
         Indexs* getConditions(size_t pIndex);
-        int length();
-        int countRegions();
+        size_t length();
+        size_t countRegions();
         std::ostream& output(std::ostream& pStream, Regions* pRegions, Conditions* pConditions);
 };
 
@@ -146,23 +150,23 @@ class Table:public MyObject
 	void readColumnRegions(char* pRegions);
         void readFrom(filebuf& pFile);
         char* getName();
-        vector<Index>* getRegions(int pI) const;
+        vector<Index>* getRegions(const size_t  pI) const;
 		size_t numSGColumns();
 //        int getNumPointGroups();	
-        SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
-        Indexs* getConditions(int pRow, size_t pColumn);
-        int numberOfColumns();
-        int numberOfRows();
+        SpaceGroups* getSpaceGroup(const size_t  pLineNum, const size_t  pPointGroupNum);
+        Indexs* getConditions(const size_t  pRow, const size_t pColumn);
+        size_t numberOfColumns();
+        size_t numberOfRows();
 		set<int, ltint>& chiralColumns(set<int, ltint>& pColumnIndeces);
 		set<int, ltint>& columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pColumnIndeces);
-        int dataUsed(signed char pIndices[], const size_t pMax) const;
-        int conditionsUsed(signed char pIndices[], const size_t pMax) const;
+        size_t dataUsed(signed char pIndices[], const size_t pMax) const;
+        size_t conditionsUsed(signed char pIndices[], const size_t pMax) const;
 		bool hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber);
         std::ostream& output(std::ostream& pStream);
-        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
-		std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, set<int, ltint>& tPointGroups);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
-		std::ostream& outputLine(int pLineNum, std::ostream& pStream, set<int, ltint>& tPointGroups, int pColumnSize);
+        std::ofstream& outputLine(const size_t pLineNum, std::ofstream& pStream);
+		std::ofstream& outputLine(const size_t pLineNum, std::ofstream& pStream, set<int, ltint>& tPointGroups);
+        std::ostream& outputLine(const size_t pLineNum, std::ostream& pStream, const size_t pColumnCount=8);
+		std::ostream& outputLine(const size_t pLineNum, std::ostream& pStream, set<int, ltint>& tPointGroups, const size_t pColumnSize);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);

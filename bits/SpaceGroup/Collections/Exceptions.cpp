@@ -40,14 +40,46 @@
 #include <stdio.h>
 #include <string>
 #include <errno.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
-MyException::MyException(int pErrNum, char* pErrStr)
+
+MyException::MyException(int pErrNum, const char* pErrStr)
 {
     iErrStr = NULL;	//Make sure that it's null. Not needed but makes me feel better doing this.
     iErrStr = new char[strlen(pErrStr)+1];	//Allocate the memory for the  string.
     iErrNum = pErrNum;	//Set the error number which was passed to the exception.
     strcpy(iErrStr, pErrStr);	//Copy the error sting into the objects memory.
 }
+
+/*MyException::MyException(int pErrNum, const char* pErrFormat, ...)
+{
+    va_list argp;
+	
+    iErrNum = pErrNum;	//Set the error number which was passed to the exception.
+#if !defined(_WIN32)
+	char tTempString;
+#else
+    char tTempString[1000];
+#endif
+    
+    va_start(argp, pErrFormat);
+#if !defined(_WIN32)
+    int tLength = vsnprintf(&tTempString, 1, pErrFormat, argp);
+#else
+	int tLength = vsprintf((char*)tTempString, pErrFormat, argp);
+#endif
+    va_end(argp);
+
+	iErrStr = new char[tLength+1];	//Allocate the memory for the  string.
+    va_start(argp, pErrFormat);
+#if !defined(_WIN32)
+    tLength = vsnprintf(iErrStr, tLength+1, pErrFormat, argp);
+#else
+	tLength = vsprintf(iErrStr, pErrFormat, argp);
+#endif
+	va_end(argp);
+}*/
 
 MyException::MyException(const MyException& pException)
 {

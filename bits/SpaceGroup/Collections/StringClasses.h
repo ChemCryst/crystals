@@ -12,7 +12,11 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#if defined(_WIN32)
+#include <Boost/regex.h>
+#else
 #include <regex.h>
+#endif
 
 using namespace std;
  
@@ -95,7 +99,7 @@ class RegexException:public exception
 	public:
 		RegexException(int pError, const regex_t* pRegEx);
 		~RegexException() throw();
-		char* what() const throw();
+		const char* what() const throw();
 };
 
 class Regex:public string

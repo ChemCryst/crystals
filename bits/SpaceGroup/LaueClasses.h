@@ -59,7 +59,7 @@ public:
 	LaueGroup(const LaueGroup& pLaueGroup);
 	~LaueGroup();
 	SystemID crystalSystem() const;
-	Matrix<short>& getMatrix(const int i) const;
+	Matrix<short>& getMatrix(const size_t i) const;
 	size_t numberOfMatrices() const;
 	Matrix<short> maxEquivilentHKL(const Matrix<short>& pHKL) const;
 	float ratingForUnitCell(const UnitCell& pUnitCell)const;
@@ -77,7 +77,7 @@ class LaueGroups:public vector<LaueGroup*>//:public MyObject
 		static void releaseDefault();
 		LaueGroup* laueGroupWithSymbol(const string& pSymbol);
 		LaueGroup* firstLaueGroupFor(const SystemID pCrystalSystem);
-		LaueGroup* laueGroupAfterFirst(const SystemID pCrystalSystem, const int i); //Returns the Laue Group which is i elements after the first of this system
+		LaueGroup* laueGroupAfterFirst(const SystemID pCrystalSystem, const size_t i); //Returns the Laue Group which is i elements after the first of this system
 		size_t numberOfLaueGroupsFor(const SystemID pCrystalSystem);
 		size_t indexOf(LaueGroup* pLaueGroup);
 };

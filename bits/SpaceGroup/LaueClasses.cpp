@@ -171,7 +171,7 @@ SystemID LaueGroup::crystalSystem() const
 	return iCrystalSystem;
 }
 
-Matrix<short>& LaueGroup::getMatrix(const int i) const
+Matrix<short>& LaueGroup::getMatrix(const size_t i) const
 {
 	return iLaueGroupMatrices->getMatrix((*iMatIndices)[i]);
 }
@@ -403,10 +403,10 @@ LaueGroup* LaueGroups::firstLaueGroupFor(const SystemID pCrystalSystem)
 	return laueGroupAfterFirst(pCrystalSystem, 0);
 }
 
-LaueGroup* LaueGroups::laueGroupAfterFirst(const SystemID pCrystalSystem, const int i)//Returns the Laue Group which is i elements after the first of this system
+LaueGroup* LaueGroups::laueGroupAfterFirst(const SystemID pCrystalSystem, const size_t i)//Returns the Laue Group which is i elements after the first of this system
 {
 	vector<LaueGroup*>::iterator tIterator = begin();
-	int tCount = 0;
+	size_t tCount = 0;
 	
 	do
 	{
@@ -487,5 +487,5 @@ LaueGroup* getLaueGroup(LaueGroup* pDefault, std::ostream& pOutputStream)
 	
 	laueGroupOptions(pOutputStream);
 	tAnswerRange.length = tDefault->size();
-	return (*tDefault)[getUserNumResponse("Please choose the correct laue symmetry", tDefault->indexOf(pDefault), tAnswerRange)];
+	return (*tDefault)[getUserNumResponse("Please choose the correct laue symmetry", (int)tDefault->indexOf(pDefault), tAnswerRange)];
 }

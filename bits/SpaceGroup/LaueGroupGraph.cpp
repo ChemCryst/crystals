@@ -303,7 +303,7 @@ LaueGroupGraph::LaueGroupGraph():iNodes(map<const char*, Node*, ltstr>())
 
 MergedReflections& LaueGroupGraph::merge(HKLData& tData)
 {
-	return (iRootNode->follow((*iRootNode->merge(tData)), 0.2/*0.3 old value*/));
+	return (iRootNode->follow((*iRootNode->merge(tData)), 0.2f/*0.3 old value*/));
 }
 
 LaueGroupGraph::~LaueGroupGraph()
