@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/05/15 17:26:28  rich
+C Addition of one extra ENDFILE statement seems to
+C make the system request queue work properly under g77.
+C
 C Revision 1.41  2003/05/07 12:18:55  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -314,52 +318,27 @@ C
      2 ( ISSSTA .LE. 0 )
       IF ( LPRMPT ) THEN
         IRDLIN = 0
-        IF (ITYPFL .EQ. 1)  THEN
+        IF (ITYPFL .EQ. 1 .AND. NCRU .EQ. 5)  THEN
 ###GIDGILWXS          CALL XPRMPT ( NCVDU , '!' )
-&&GIDGIL          WRITE(CMON,'(A)')
-&&GIDGIL     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
-&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
-
-&&GIDGIL          WRITE(CMON,'(A)')
-&&GIDGIL     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
-&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
-&&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&&GILGID          WRITE (CMON,1515) '''Enter Commands'''
-&&GILGID          CALL XPRVDU (NCVDU,1,0)
-
-&WXS          WRITE(CMON,'(A)')
-&WXS     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
-&WXS          CALL XPRVDU(NCVDU,1,0)
-
-&WXS          WRITE(CMON,'(A)')
-&WXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
-&WXS          CALL XPRVDU(NCVDU,1,0)
-&WXS1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&WXS          WRITE (CMON,1515) '''Enter Commands'''
-&WXS          CALL XPRVDU (NCVDU,1,0)
+&&&GIDGILWXS          WRITE(CMON,'(A)')
+&&&GIDGILWXS     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
+&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
+&&&GIDGILWXS          WRITE(CMON,'(A)')
+&&&GIDGILWXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
+&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
+&&&GILGIDWXS1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&&&GILGIDWXS          WRITE (CMON,1515) '''Enter Commands'''
+&&&GILGIDWXS          CALL XPRVDU (NCVDU,1,0)
         ELSE
 ###GIDGILWXS          CALL XPRMPT ( NCVDU , '>' )
-&&GIDGIL          WRITE(CMON,'(A)')
-&&GIDGIL     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
-&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
-
-
-&&GIDGIL          WRITE(CMON,'(A)')
-&&GIDGIL     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
-&&GIDGIL          CALL XPRVDU(NCVDU,1,0)
-&&GILGID          WRITE (CMON,1515) '''Enter Directives'''
-&&GILGID          CALL XPRVDU (NCVDU,1,0)
-
-&WXS          WRITE(CMON,'(A)')
-&WXS     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
-&WXS          CALL XPRVDU(NCVDU,1,0)
-
-
-&WXS          WRITE(CMON,'(A)')
-&WXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
-&WXS          CALL XPRVDU(NCVDU,1,0)
-&WXS          WRITE (CMON,1515) '''Enter Directives'''
-&WXS          CALL XPRVDU (NCVDU,1,0)
+&&&GIDGILWXS          WRITE(CMON,'(A)')
+&&&GIDGILWXS     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
+&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
+&&&GIDGILWXS          WRITE(CMON,'(A)')
+&&&GIDGILWXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
+&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
+&&&GILGIDWXS          WRITE (CMON,1515) '''Enter Directives'''
+&&&GILGIDWXS          CALL XPRVDU (NCVDU,1,0)
         ENDIF
 C If in script mode, set flag.
         INSTRC = .FALSE.
@@ -376,10 +355,10 @@ C Update status information for GUI.
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
 
-&&GIDGIL      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
-&&GIDGIL      CALL XPRVDU(NCVDU,1,0)
-&WXS      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
-&WXS      CALL XPRVDU(NCVDU,1,0)
+      IF ( NCRU .EQ. 5 ) THEN
+&&&GIDGILWXS      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
+&&&GIDGILWXS      CALL XPRVDU(NCVDU,1,0)
+      END IF
 
 C
       IF ( ISTAT .LT. 0 ) GO TO 9910
