@@ -1171,16 +1171,19 @@ void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
 // Is item highlighted?
    bool bHighlight = (lvi.state & LVIS_SELECTED) != 0;
 
+   int id = IDlist[iitem]-1;
+
+
    if ( bHighlight )
    {
 //item is selected, but only one: show SINGLE menu.
 //item is selected, more than one: show GROUP menu. Let Cr decide.
-    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, iitem, 2);
+    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, id, 2);
    }
    else
    {
 //item is not selected: show SINGLE menu.
-    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, iitem, 3);
+    ((CrModList*)ptr_to_crObject)->ContextMenu(px, py, id, 3);
    }
   }
   else
