@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2003/12/03 08:24:58  djw
+C Change VIB to REST for hydrogen U[iso] restraints.  Enables a scale factor to be used
+C
 C Revision 1.60  2003/11/24 12:51:40  rich
 C If a directive name is not defined uniquely on input the command
 C common block is emptied. This caused a crash when the instruction
@@ -3908,10 +3911,10 @@ C--SET UP A FEW INITIAL POINTERS
       NJ=0
       JS=NFL
 
-C---- LOOP THRU LIST 41
-24      FORMAT (2A, ' to ', A, I4,1x,F10.3)
+C---- LOOP BACKWARDS THRU LIST 41
+c24      FORMAT (2A, ' to ', A, I4,1x,F10.3)
 
-      DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+      DO M41B = L41B+(N41B-1)*MD41B, L41B, -MD41B
 
           I51 = L5 + ISTORE(M41B) * MD5
           I52 = L5 + ISTORE(M41B+6) * MD5
