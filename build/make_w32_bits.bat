@@ -2,6 +2,11 @@
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
 
+SETLOCAL
+@set OPATH=%PATH%
+@set OLIB=%LIB%
+call "c:\program files\microsoft visual studio\df98\bin\dfvars.bat"
+
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\sir92.fpp /Fosir92.o /static /libs:qwin /optimize:4 /nolink
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\norm92.fpp /Fonorm92.o /nostatic /libs:qwin /optimize:4 /nolink
 DF sir92.o norm92.o /libs:qwin
@@ -16,6 +21,10 @@ DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\rc93\rc93.fpp  /automatic /op
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\reindex\reindex.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\shelxs.fpp /optimize:4 /MD 
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\sxtocry.fpp /optimize:4 /MD
+@set PATH=%OPATH%
+@set LIB=%OLIB%
+ENDLOCAL
+
 CL ..\bits\loader\crysload.cc %CDEF% /EHs /W3 /TP /O2 /D"NDEBUG" /MD /link shell32.lib advapi32.lib user32.lib
 del crysload.obj
 
