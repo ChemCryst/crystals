@@ -1216,6 +1216,10 @@ CODE FOR XDUIJ
       SUBROUTINE XDUIJ
 C--CALCULATE RESTRAINTS ON THE INDIVIDUAL U(IJ)'S
 C
+CDJWAPR99
+C      The Uij entries for both atoms seem to get swapped, though
+c      the sign also seems to get inverted. 'Effect' is in the 1984
+c      VAX version.
 \ISTORE
 C
       DIMENSION A1(6)
