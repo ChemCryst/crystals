@@ -1,0 +1,94 @@
+%SCRIPT GFINDH
+% VARIABLE LOGICAL XGRETURN
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+%%
+ 
+ * This SCRIPT permits you to remove all existing hydrogen atoms before
+   starting the placement.
+ * It computes the positions of hydrogen atoms on carbon atoms but does
+   not include them in the structure factor calculation.
+ * It then searches to confirm them in a difference map. Calculated (H)
+   and found (QH) atoms are displayed, and the model may be edited.
+ * Finally, any peaks close to a calculated H atom are eliminated, and
+   any remaining peaks deleted.
+ 
+% EVALUATE QTITLE = 'Delete Hydrogen'
+% EVALUATE QLINE1 = 'Do you want to delete'
+% EVALUATE QLINE2 = 'existing hydrogen atoms?'
+% EVALUATE BUTTOK = '&No'
+% EVALUATE BUTTXX = '&Yes'
+% COPY '#SCRIPT XQUESTIO'
+% IF ANSWER .EQ. FALSE THEN
+%    COPY '#EDIT'
+%    COPY 'SELECT TYPE NE H'
+%    COPY 'END'
+% END IF
+%% COPY '#SCRIPT CHECK5'
+% COPY '#SCRIPT VALID12'
+% COPY '#SFLS'
+% COPY 'CALC'
+% COPY 'END'
+% COPY '#PERHYDRO'
+% COPY 'ACTION BOTH'
+% COPY 'END'
+%%
+% COPY '#FOUR'
+% COPY 'MAP TYPE=DIFF'
+% COPY 'PEAK HEIGHT=1'
+% COPY 'END'
+% COPY '#COLL 10 5'
+% COPY 'SEL TYPE=PEAK'
+% COPY 'END'
+%%
+% COPY '#EDIT'
+% COPY 'TYPECHANGE TYPE EQ Q QH'
+% COPY 'END'
+%%
+^^WI WINDOW CONTINUE 'Continue' POSITION CENTRED 'MODEL01'
+^^WI COMMIT='BOK' CANCEL='BXX' DISABLEIF='IN'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID L NROWS=4 NCOLS=1
+^^WI   {
+% IF ( XGRETURN ) THEN
+^^WI     @ 1,1 STATIC T0 'Choose "Continue" to carry on'
+^^WI     @ 2,1 STATIC T1 'with the guided refinement.'
+^^WI     @ 3,1 STATIC T2 '(You can still choose CAMERON'
+^^WI     @ 4,1 STATIC T3 ' and return here later)'
+^^WI   }
+^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NAUTO'
+% ELSE
+^^WI     @ 1,1 STATIC T0 'Choose "Continue" to complete'
+^^WI     @ 2,1 STATIC T1 'the H positioning script.'
+^^WI   }
+^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT GFINH_NFIND'
+% END IF
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&Continue'
+^^WI     @ 3,1 BUTTON BXX '&Cancel'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+ 
+ * Rename any QH peaks that you wish to keep to 'H'.
+
+ {2,15 Move the floating window out of the way of the model. The
+ {2,15 WHITE atoms are geometrically placed on the carbon and nitrogen
+ {2,15 skeleton, and the PINK atoms have been found in a Fourier map.
+
+ {2,15 Where the atoms almost co-incide, you can get a qualitative idea
+ {2,15 of the quality of your data.
+
+ {2,15 Where hydrogens have not been geometrically placed, you can
+ {2,15 change the PINK atom to a WHITE hydrogen, by clicking on it
+ {2,15 with the RIGHT mouse button and choosing "Change Type" from
+ {2,15 the menu.
+
+ {2,15 When you are finished, click "Continue" in the floating window
+ {2,15 and when asked, keep the Geometrically placed H's (WHITE).
+
+% COPY '#SCRIPT DIRECT'
+%END SCRIPT
