@@ -1,7 +1,7 @@
 %SCRIPT XINLIST6
 %% CRYSTALS reflection input script
 %  VARIABLE INTEGER INBASICS
-%  VARIABLE INTEGER SHELX FS NCOEF FMT
+%  VARIABLE INTEGER FS NCOEF FMT
 %  VARIABLE LOGICAL LCANCEL
 %  VARIABLE LOGICAL XQMERGE
 %  EVALUATE LCANCEL = FALSE
@@ -99,149 +99,147 @@
 %     BLOCK                         %BOK%
 %%
 %% First get the filename.
-%%
-%       BLOCK     %OPEN THE FILE%
-%         ON ERROR TERMINATE
-%         CLEAR
-%         QUEUE REWIND
-%         INSERT '#CLOSE HKLI'
-%         QUEUE SEND
-%         CLEAR
-%         INSERT '#OPEN HKLI'
-^^??      L6FILE TEXT
-%         GET SILENT FINAL FILENAME -
-          'Reflection File (HKLI file) '
-%         IF ( .NOT. ( FILEEXISTS CVALUE ) ) THEN
+%       CLEAR
+%       QUEUE REWIND
+%       INSERT '#CLOSE HKLI'
+%       QUEUE SEND
+%       CLEAR
+%       INSERT '#OPEN HKLI'
+^^??    L6FILE TEXT
+%       GET SILENT FINAL FILENAME -
+        'Reflection File (HKLI file) '
+%       IF ( .NOT. ( FILEEXISTS CVALUE ) ) THEN
  Error: Filename given does not exist.
-^^WI        DISPOSE XINLIST6
-^^CR
-%           FINISH
-%         END IF
+%       ELSE
 %         QUEUE SEND
 %         QUEUE PROCESS
-%       END BLOCK
-%       BLOCK   %REFLECTION TYPE%
-%         VERIFY ON OFF
-^^??      RFS1 STATE
-%         GET SILENT NOSTORE FINAL ABBREVIATED 'Fs?' 'OFF'
-%         IF VALUE .EQ. 1 THEN
-%           EVALUATE FS = 1
-%         ELSE
-^^??        RFS2 STATE
-%           GET SILENT NOSTORE FINAL ABBREVIATED 'Fsq?' 'ON'
+%         BLOCK   %REFLECTION TYPE%
+%           VERIFY ON OFF
+^^??        RFS1 STATE
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Fs?' 'OFF'
 %           IF VALUE .EQ. 1 THEN
-%             EVALUATE FS = 2
+%             EVALUATE FS = 1
 %           ELSE
-%             EVALUATE FS = 3
+^^??          RFS2 STATE
+%             GET SILENT NOSTORE FINAL ABBREVIATED 'Fsq?' 'ON'
+%             IF VALUE .EQ. 1 THEN
+%               EVALUATE FS = 2
+%             ELSE
+%               EVALUATE FS = 3
+%             END IF
 %           END IF
-%         END IF
-^^??      RDF1 STATE
-%         GET SILENT NOSTORE FINAL ABBREVIATED 'Free format?' 'OFF'
-%         EVALUATE FMT = VALUE
-%         IF VALUE .EQ. 2 THEN
-^^??        RDF2 STATE
-%           GET SILENT NOSTORE FINAL ABBREVIATED 'Shelx format?' 'ON'
-%           EVALUATE SHELX = VALUE
-%           EVALUATE NCOEF = 5
-%         END IF
-%         IF ( FMT .EQ. 2 ) THEN
+^^??        RDF1 STATE
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Free format?' 'OFF'
+%%
+%% FMT : 1 = free format, 2 = fixed, 3 = fixed shelx
+%%
+%           EVALUATE FMT = VALUE
+%%
+%           IF ( FMT .EQ. 2 ) THEN
+^^??          RDF2 STATE
+%             GET SILENT NOSTORE FINAL ABBREVIATED 'Shelx format?' 'ON'
+%             IF ( VALUE .EQ. 1 ) THEN
+%                EVALUATE FMT = 3
+%             END IF
+%             EVALUATE NCOEF = 5
+%           END IF
 ^^??        CS STATE
 %           GET SILENT NOSTORE FINAL ABBREVIATED 'sigmas? ' 'ON'
 %           EVALUATE NCOEF = 6 - VALUE
-%         END IF
-%       END BLOCK
-%       BLOCK
-%         QUEUE REWIND
-%         ON ERROR RESTART
-%         CLEAR
-%         INSERT "READ "
-%         IF FS = 1 THEN
-%           INSERT " F'S=FO"
-%         ELSE
-%           INSERT " F'S=FSQ"
-%         END IF
-%         IF NCOEF .EQ. 4 THEN
-%           INSERT ' NCOEF = 4'
-%         ELSE
-%           INSERT ' NCOEF = 5'
-%         END IF
-%         IF FMT .EQ. 1 THEN
-%           INSERT ' TYPE = FREE CHECK = YES'
-%         ELSE
-%           INSERT ' TYPE = FIXED CHECK = NO'
-%         END IF
-%         QUEUE SEND
-%%
-%         CLEAR
-%         IF NCOEF .EQ. 5 THEN
-%           INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '
-%         ELSE
-%           INSERT 'INPUT H K L /FO/ '
-%         END IF
-%         QUEUE SEND
-%%
-%         CLEAR
-%         IF (  SHELX = 2 .OR.  FMT = 2 ) THEN
-%           BLOCK
+%         END BLOCK
+%         BLOCK
+%           QUEUE REWIND
+%           ON ERROR RESTART
 %           CLEAR
+%           INSERT "READ "
+%           IF FS = 1 THEN
+%             INSERT " F'S=FO"
+%           ELSE
+%             INSERT " F'S=FSQ"
+%           END IF
+%           IF NCOEF .EQ. 4 THEN
+%             INSERT ' NCOEF = 4'
+%           ELSE
+%             INSERT ' NCOEF = 5'
+%           END IF
+%           IF FMT .EQ. 1 THEN
+%             INSERT ' TYPE = FREE CHECK = NO'
+%           ELSE
+%             INSERT ' TYPE = FIXED CHECK = NO'
+%           END IF
+%           QUEUE SEND
+%%
+%           CLEAR
+%           IF NCOEF .EQ. 5 THEN
+%             INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '
+%           ELSE
+%             INSERT 'INPUT H K L /FO/ '
+%           END IF
+%           QUEUE SEND
+%%
+%           CLEAR
+%           IF ( FMT .EQ. 2 ) THEN
 %             INSERT 'FORMAT '
 ^^?? L6FORM TEXT
 %             GET SILENT APPEND TEXT 'FORMAT' ' (3F4.0, 2F8.0) '
 %             QUEUE SEND
-%           END BLOCK
-%         END IF
+%           ELSE IF ( FMT .EQ. 3 ) THEN
+%             INSERT 'FORMAT (3F4.0, 2F8.0)'
+%             QUEUE SEND
+%           END IF
 %%
-%         CLEAR
-%         INSERT 'STORE NCOEF=6'
-%         QUEUE SEND
-%         CLEAR
+%           CLEAR
+%           INSERT 'STORE NCOEF=6'
+%           QUEUE SEND
+%           CLEAR
 %  INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '
-%         QUEUE SEND
-%         CLEAR
-%       END BLOCK
-^^WI    DISPOSE XINLIST6
-^^CR
-%       COPY '#HKLI'
-%       QUEUE PROCESS
-%       COPY 'END'
-%       COPY '#CLOSE HKLI'
+%           QUEUE SEND
+%           CLEAR
+%         END BLOCK
+^^WI      DISPOSE XINLIST6
+^^CR     
+%         COPY '#HKLI'
+%         QUEUE PROCESS
+%         COPY 'END'
+%         COPY '#CLOSE HKLI'
 %%
-%       IF FS .EQ. 3 THEN
-%         COPY '#LP'
-%         COPY 'END'
-%       END IF
-%       COPY '#SCRIPT XFRIEDEL'
-%       MESSAGE USER1 ' Error during reflection processing'
-%       ON ERROR TERMINATE USER1
+%         IF FS .EQ. 3 THEN
+%           COPY '#LP'
+%           COPY 'END'
+%         END IF
+%         COPY '#SCRIPT XFRIEDEL'
+%         MESSAGE USER1 ' Error during reflection processing'
+%         ON ERROR TERMINATE USER1
 {S * Removing systematically absent reflections
-%       COPY '#SYSTEMATIC'
-%       COPY 'END'
-%       CLEAR
-{S * Sorting reflections
-%       COPY '#SORT'
-%       COPY 'END'
-%       CLEAR
-%% Ask user if they want to merge reflections:
-%       COPY '#SCRIPT XQMERGE'
-%       IF ( XQMERGE ) THEN
-{S * Merging equivalent reflections
-%         CLEAR
-%         COPY '#MERGE'
+%         COPY '#SYSTEMATIC'
 %         COPY 'END'
-%       END IF
+%         CLEAR
+{S * Sorting reflections
+%         COPY '#SORT'
+%         COPY 'END'
+%         CLEAR
+%% Ask user if they want to merge reflections:
+%         COPY '#SCRIPT XQMERGE'
+%         IF ( XQMERGE ) THEN
+{S * Merging equivalent reflections
+%           CLEAR
+%           COPY '#MERGE'
+%           COPY 'END'
+%         END IF
 %
 {S * Final copy to DSC file
-%       COPY '#LIST 6'
-%       COPY 'READ TYPE = COPY'
-%       COPY 'END'
-%       COPY '#LIST 4'
-%       COPY 'END'
-%       COPY '#WEIGHT'
-%       COPY 'END'
-%       COPY '#LIST 28'
-%       COPY 'MINIMA RATIO=0.0'
-%       COPY 'END'
-%       FINISH
+%         COPY '#LIST 6'
+%         COPY 'READ TYPE = COPY'
+%         COPY 'END'
+%         COPY '#LIST 4'
+%         COPY 'END'
+%         COPY '#WEIGHT'
+%         COPY 'END'
+%         COPY '#LIST 28'
+%         COPY 'MINIMA RATIO=0.0'
+%         COPY 'END'
+%         FINISH
+%       END IF
 %     END BLOCK
 %     BLOCK                         %BXX%
 ^^WI    DISPOSE XINLIST6
@@ -288,6 +286,10 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.16  2001/10/31 13:04:06  ckp2
+%% Option to read in reflection files with HKP extension, as well as normal HKL's.
+%% (HKP's are output by PLATON).
+%%
 %% Revision 1.15  2001/09/11 11:18:07  ckp2
 %% Option not to merge friedel pairs.
 %%
