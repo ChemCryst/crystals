@@ -49,6 +49,7 @@ CxModList::CxModList( CrModList * container )
     bSortAscending = true;
     m_ProgSelecting = 0;
     IDlist = nil;
+    m_IDlist_size = 0;
 }
 
 void CxModList::AddCols()
@@ -210,16 +211,22 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
 
     }
 
+    int i = mItems;
+
 // A new item. Extend id list.
-    int * newIDlist = new int[id];
-    int i;
-    for ( i = 0; i < mItems; i++ )
+    if ( id > m_IDlist_size )
     {
-       newIDlist[i] = IDlist[i];
+       m_IDlist_size = max(m_IDlist_size,id) * 2;
+       int * newIDlist = new int[m_IDlist_size];
+       for ( i = 0; i < mItems; i++ )
+       {
+          newIDlist[i] = IDlist[i];
+       }
+       if ( IDlist ) delete [] IDlist;
+       IDlist = newIDlist;
     }
-    newIDlist[id-1] = id;
-    if ( IDlist ) delete [] IDlist;
-    IDlist = newIDlist;
+
+    IDlist[id-1] = id;
     mItems = id;
 
     int nItem = InsertItem(mItems, _T(""));
@@ -234,10 +241,16 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
         int width,h;
         GetTextExtent(rowOfStrings[j].ToCString(),&width,&h);
 #endif
-        m_colWidths[j] = max(m_colWidths[j],width + 15);
-        SetColumnWidth(j,m_colWidths[j]);
-        int type = WhichType(rowOfStrings[j]);
-        m_colTypes[j] = max(m_colTypes[j], type);
+        if ( width + 15 > m_colWidths[j] ) // if no change, don't set width.
+        {
+           m_colWidths[j] = width + 15;
+           SetColumnWidth(j,m_colWidths[j]);
+        }
+        if ( m_colTypes[j] != COL_TEXT )   // if already text, don't bother testing.
+        {
+          int type = WhichType(rowOfStrings[j]);
+          m_colTypes[j] = max(m_colTypes[j], type);
+        }
     }
     if ( selected )
 #ifdef __CR_WIN__
@@ -1124,15 +1137,18 @@ void CxModList::Update(int newsize)
           DeleteAllItems();
           mItems = 0;
           delete [] IDlist;
+		  m_IDlist_size = 0;
           IDlist =  nil;
        }
 
 //       m_listboxparent->LockWindowUpdate();
 
 #ifdef __CR_WIN__
-       SendMessage(WM_SETREDRAW,FALSE,0);
+       SetRedraw(FALSE);
+//       SendMessage(WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
-       SendMessage(WM_SETREDRAW,TRUE,0);
+       SetRedraw(TRUE);
+//       SendMessage(WM_SETREDRAW,TRUE,0);
        Invalidate(FALSE);
 #endif
 #ifdef __BOTHWX__

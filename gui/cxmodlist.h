@@ -94,7 +94,7 @@ class CxModList : public BASEMODLIST
         int m_numcols;
         int  m_nHighlight;              // Indicate type of selection highlighting
         int * IDlist;
-
+        int m_IDlist_size;
 protected:
     int * m_colWidths;
 #define COL_INT 1
