@@ -1226,6 +1226,7 @@ C
       CHARACTER *(*) CNAME
       CHARACTER *10 CDIGIT
 \XUNITS
+\XSSVAL
       DATA CDIGIT /'0123456789'/
       LEXIST = .FALSE.
 #PPC            CALL MTRNLG(CNAME,'OLD',LENNAM)
@@ -1268,28 +1269,19 @@ C----- MAKE SPACE FOR #NM IF POSSIBLE
             CNAME(I-3:I-1) = '#00'
       ENDIF
       K = I-2
-C      IF (INDEX(CDIGIT,CNAME(K:K)) * INDEX(CDIGIT,CNAME(K+1:K+1))
-C     1 .LE. 0) CNAME(K:K+1) = '00'
-C      READ(CNAME(K:K=1),'(I2)') I
-C      IF (I .LE. 98) THEN 
-C            I = I + 1
-C      ELSE
-C            I = 99
-C      ENDIF
-C      WRITE(CNAME(K:K=1),'(I2.2)') I
 C       LOOK FOR THE HIGHEST GENERATION. IF GENERATION 99 EXISTS,
-C       RESET STATUS TO UNKNOWN
-      DO 100 J = 98, 0, -1
+C       RESET STATUS TO UNKNOWN TO ENABLE FUTURE OVERWRITES
+      DO 100 J = 0, 98
             WRITE(CNAME(K:K+1),'(I2.2)') J
             INQUIRE (FILE = CNAME(1:IEND), EXIST = LEXIST)
-            IF (LEXIST ) THEN
-                  I = J + 1
-                  ISTTUS = 5
+            IF (.not. LEXIST ) THEN
+                  I = J
                   GOTO 200
             ENDIF
 100     CONTINUE
-C----- DROPPED OFF BOTTOM  - SET ZEROTH GENERATION
-      I = 0
+C----- RUN OFF TOP - SET MAXIMUM
+      I = 99
+      ISTTUS = ISSUNK
 200   CONTINUE
       WRITE(CNAME(K:K+1),'(I2.2)') I
       RETURN
