@@ -1802,17 +1802,21 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
   DeletePopup();
 
 #ifdef __CR_WIN__
-  CClientDC dc(this);
-  CFont* oldFont = dc.SelectObject(CcController::mp_font);
-  SIZE size = dc.GetOutputTextExtent(atomname.ToCString());
-  dc.SelectObject(oldFont);
 
   m_TextPopup = new CStatic();
-  m_TextPopup->Create(atomname.ToCString(), SS_CENTER|WS_BORDER, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
+  m_TextPopup->Create(atomname.ToCString(), SS_SIMPLE|SS_CENTER|WS_BORDER, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(10,10), this);
   m_TextPopup->SetFont(CcController::mp_font);
+
+  CClientDC dc(m_TextPopup);
+  SIZE size = dc.GetOutputTextExtent(atomname.ToCString());
+
   m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
   m_TextPopup->ShowWindow(SW_SHOW);
-  m_TextPopup->MoveWindow(CRMAX(0,point.x-size.cx-4),CRMAX(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
+  int x = CRMIN(GetWidth() - size.cx, point.x + 20) ;
+  x = CRMAX(0,x);
+  int y = CRMIN(GetHeight() - size.cy,point.y);
+  y = CRMAX(0,y);
+  m_TextPopup->MoveWindow(x,y,size.cx,size.cy, FALSE);
   m_TextPopup->InvalidateRect(NULL,false);
 #endif
 #ifdef __BOTHWX__
