@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 15:42:39  richard
+//   Included a DISABLED= token for radiobutton (at last).
+//
 
 #ifndef     __CrRadioButton_H__
 #define     __CrRadioButton_H__
@@ -30,7 +33,7 @@ class   CrRadioButton : public CrGUIElement
         void    GetValue();
             void  GetValue(CcTokenList * tokenList);
         void    ButtonOn();
-        void    SetState( Boolean state );
+        void    SetState( bool state );
 
         // attributes
 

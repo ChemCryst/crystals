@@ -222,8 +222,8 @@ void CxModel::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
 
-	HDC hOldDC = wglGetCurrentDC();
-	HGLRC hOldRC = wglGetCurrentContext();
+    HDC hOldDC = wglGetCurrentDC();
+    HGLRC hOldRC = wglGetCurrentContext();
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -249,7 +249,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 #endif
 
 //    TEXTOUT ( CcString((int)this) + " OnPaint" );
-    Boolean ok_to_draw = true;
+    bool ok_to_draw = true;
 
     if (m_bModelChanged)
     {
@@ -667,8 +667,8 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 #ifdef __CR_WIN__
 LRESULT CxModel::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
-	DeletePopup();
-	m_bMouseLeaveInitialised = false;
+    DeletePopup();
+    m_bMouseLeaveInitialised = false;
         return TRUE;
 }
 
@@ -695,12 +695,12 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
     // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
   if(!m_bMouseLeaveInitialised)
   {
-	TRACKMOUSEEVENT tme;
-	tme.cbSize = sizeof(tme);
-	tme.hwndTrack = m_hWnd;
-	tme.dwFlags = TME_LEAVE;
-	_TrackMouseEvent(&tme);
-	m_bMouseLeaveInitialised = true;
+    TRACKMOUSEEVENT tme;
+    tme.cbSize = sizeof(tme);
+    tme.hwndTrack = m_hWnd;
+    tme.dwFlags = TME_LEAVE;
+    _TrackMouseEvent(&tme);
+    m_bMouseLeaveInitialised = true;
   }
 #endif
 
@@ -1118,8 +1118,8 @@ void CxModel::Setup()
 void CxModel::NewSize(int cx, int cy)
 {
 #ifdef __CR_WIN__
-	HDC hOldDC = wglGetCurrentDC();
-	HGLRC hOldRC = wglGetCurrentContext();
+    HDC hOldDC = wglGetCurrentDC();
+    HGLRC hOldRC = wglGetCurrentContext();
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -1224,41 +1224,41 @@ BOOL CxModel::SetWindowPixelFormat(HDC hdc)
     DescribePixelFormat(hdc, GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc);
 
     if (pixelDesc.dwFlags & PFD_NEED_PALETTE) {
-	n = 1 << pixelDesc.cColorBits;
-	if (n > 256) n = 256;
+    n = 1 << pixelDesc.cColorBits;
+    if (n > 256) n = 256;
 
-	lpPal = (LOGPALETTE*)malloc(sizeof(LOGPALETTE) +
-				    sizeof(PALETTEENTRY) * n);
-	memset(lpPal, 0, sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * n);
-	lpPal->palVersion = 0x300;
-	lpPal->palNumEntries = n;
+    lpPal = (LOGPALETTE*)malloc(sizeof(LOGPALETTE) +
+                    sizeof(PALETTEENTRY) * n);
+    memset(lpPal, 0, sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * n);
+    lpPal->palVersion = 0x300;
+    lpPal->palNumEntries = n;
 
-	GetSystemPaletteEntries(hdc, 0, n, &lpPal->palPalEntry[0]);
+    GetSystemPaletteEntries(hdc, 0, n, &lpPal->palPalEntry[0]);
     
-	/* The pixel type is RGBA, so we want to make an RGB ramp */
+    /* The pixel type is RGBA, so we want to make an RGB ramp */
         int redMask = (1 << pixelDesc.cRedBits) - 1;
-	int greenMask = (1 << pixelDesc.cGreenBits) - 1;
-	int blueMask = (1 << pixelDesc.cBlueBits) - 1;
-	int i;
+    int greenMask = (1 << pixelDesc.cGreenBits) - 1;
+    int blueMask = (1 << pixelDesc.cBlueBits) - 1;
+    int i;
 
         /* fill in the entries with an RGB color ramp. */
-	for (i = 0; i < n; ++i) {
-	  lpPal->palPalEntry[i].peRed = 
-	    (((i >> pixelDesc.cRedShift)   & redMask)   * 255) / redMask;
-	  lpPal->palPalEntry[i].peGreen = 
-	    (((i >> pixelDesc.cGreenShift) & greenMask) * 255) / greenMask;
-	  lpPal->palPalEntry[i].peBlue = 
-	    (((i >> pixelDesc.cBlueShift)  & blueMask)  * 255) / blueMask;
-	  lpPal->palPalEntry[i].peFlags = 0;
-	}
+    for (i = 0; i < n; ++i) {
+      lpPal->palPalEntry[i].peRed = 
+        (((i >> pixelDesc.cRedShift)   & redMask)   * 255) / redMask;
+      lpPal->palPalEntry[i].peGreen = 
+        (((i >> pixelDesc.cGreenShift) & greenMask) * 255) / greenMask;
+      lpPal->palPalEntry[i].peBlue = 
+        (((i >> pixelDesc.cBlueShift)  & blueMask)  * 255) / blueMask;
+      lpPal->palPalEntry[i].peFlags = 0;
+    }
 
-	m_hPalette = CreatePalette(lpPal);
-	if (m_hPalette) {
-	    SelectPalette(hdc, m_hPalette, FALSE);
-	    RealizePalette(hdc);
-	}
+    m_hPalette = CreatePalette(lpPal);
+    if (m_hPalette) {
+        SelectPalette(hdc, m_hPalette, FALSE);
+        RealizePalette(hdc);
+    }
 
-	free(lpPal);
+    free(lpPal);
     }
 
     return true;
@@ -1291,7 +1291,7 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 }
 #endif
 
-int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly)
+int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, bool atomsOnly)
 {
 #ifdef __CR_WIN__
    HDC hOldDC = wglGetCurrentDC();
@@ -1406,7 +1406,7 @@ void CxModel::AutoScale()
 
    GLfloat *feedbuf;
 
-   Boolean bigger_buf_needed = true;
+   bool bigger_buf_needed = true;
    int hits = 0;
 
    while ( bigger_buf_needed )
@@ -1890,7 +1890,7 @@ void CxModel::LoadDIBitmap(CcString filename)
     nTextureHeight = m_bitmapinfo->bmiHeader.biHeight;
     lBitSize = m_bitmapinfo->bmiHeader.biSizeImage;
     if(lBitSize == 0) lBitSize = (nTextureWidth * m_bitmapinfo->bmiHeader.biBitCount + 7) / 8 * abs(nTextureHeight);
-	
+    
 // Allocate space for the actual bitmap
     m_bitmapbits = new BYTE[lBitSize];
 
@@ -1939,7 +1939,7 @@ void CxModel::PolyCheck()
 
    GLfloat *feedbuf;
 
-   Boolean bigger_buf_needed = true;
+   bool bigger_buf_needed = true;
    int hits = 0;
 
    while ( bigger_buf_needed )
@@ -2024,10 +2024,10 @@ void CxModel::PolyCheck()
        nVert--;
        curX = (int) feedbuf [ hits - point ];
        if ( nVert > 0 ) feedbuf [ hits - point ] = (float) GL_POLYGON_TOKEN;
-	   else point--;
+       else point--;
        curY = (int) feedbuf [ 1 + hits - point ];
        if ( nVert > 0 ) feedbuf [ 1 + hits - point ] = (float) nVert;
-	   else point--;
+       else point--;
        break;
      default:
        LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
@@ -2176,7 +2176,3 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
    wglMakeCurrent( hOldDC, hOldRC );
 #endif
 }
-
-
-
-

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2003/02/27 12:48:35  rich
+C Special case PART, REFINE and FRAGMENT in #EDIT CHANGE, so that values
+C get stored as integers.
+C
 C Revision 1.34  2003/02/27 11:39:50  rich
 C Code to INSERT FRAGMENT id into FRAG slot in List 5. The maximum fragment number
 C is returned to scripts (if they are listening) in the variable 'EDIT:FRAGMAX'.
@@ -1001,7 +1005,7 @@ CDJW JAN2000 JVO IS THE EXTENDED PARAMETER NUMBER
 C--CHECK THE TYPE
 cdjwjun02
       write(ctemp,'(a,i9)')' jvo = ', jvo
-&&GIDGIL      call zmore(ctemp,0)
+&&&GIDGILWXS      call zmore(ctemp,0)
 c      IF (JV) 3250,3250,3300
       if ((jv .eq. 0) .or.(jv.eq.17)) then
 C--ALPHA-NUMERIC VALUE EXPECTED

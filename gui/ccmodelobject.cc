@@ -33,21 +33,21 @@ int CcModelObject::Type()
 
 bool CcModelObject::Select()
 {
-	m_selected = !m_selected;
+    m_selected = !m_selected;
         mp_parent->Select(m_selected);
-	return m_selected;
+    return m_selected;
 }
 
 void CcModelObject::Select(bool select)
 {
-	if(m_selected != select)  //Counter in parent must only find out about change.
+    if(m_selected != select)  //Counter in parent must only find out about change.
             mp_parent->Select(select); 
-	m_selected = select;
+    m_selected = select;
 }
 
 bool CcModelObject::IsSelected()
 {
-	return m_selected;
+    return m_selected;
 }
 
 void CcModelObject::Disable(bool select)
@@ -56,7 +56,7 @@ void CcModelObject::Disable(bool select)
   return;
 }
 
-void CcModelObject::SendAtom(int style, Boolean output)
+void CcModelObject::SendAtom(int style, bool output)
 {
   return;
 }

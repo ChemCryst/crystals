@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2003/01/14 10:27:19  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.15  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
 //   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -72,7 +75,7 @@
 #define     __CxPlot_H__
 #include    "crguielement.h"
 #include    "ccpoint.h"
-#include	"ccrect.h"
+#include    "ccrect.h"
 
 #ifdef __BOTHWX__
 #include <wx/control.h>
@@ -81,6 +84,15 @@
 #include <wx/dcmemory.h>
 #include <wx/stattext.h>
 #define BASEPlot wxControl
+
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
 #endif
 
 #ifdef __BOTHWX__
@@ -106,30 +118,30 @@ class CxPlot;
 class CxPlotKey : public BASEPlot
 {
 public:
-		CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col);
-		~CxPlotKey();
-		int GetNumberOfSeries() {return m_NumberOfSeries;};
+        CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col);
+        ~CxPlotKey();
+        int GetNumberOfSeries() {return m_NumberOfSeries;};
 #ifdef __CR_WIN__
-		afx_msg void OnPaint();
-		DECLARE_MESSAGE_MAP()
+        afx_msg void OnPaint();
+        DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
                 void OnPaint(wxPaintEvent & event );
                 DECLARE_EVENT_TABLE()
 #endif
 
-		CxPlot* m_Parent;
-		bool mDragging;
-		CcPoint mDragPos;
+        CxPlot* m_Parent;
+        bool mDragging;
+        CcPoint mDragPos;
 
-		CcRect m_WinPosAndSize;
+        CcRect m_WinPosAndSize;
 
-		int m_NumberOfSeries;
-		CcString* m_Names;
-		int** m_Colours;
+        int m_NumberOfSeries;
+        CcString* m_Names;
+        int** m_Colours;
 
 #ifdef __CR_WIN__
-		CDC * m_memDC;
+        CDC * m_memDC;
 #endif
 
 };
@@ -144,10 +156,10 @@ class CxPlot : public BASEPlot
     public:
 
         void DrawLine (int thickness, int x1, int y1, int x2, int y2); // STEVE added a line thickness parameter
-        void DrawPoly(int nVertices, int* vertices, Boolean fill);
+        void DrawPoly(int nVertices, int* vertices, bool fill);
         void DrawText(int x, int y, CcString text, int param, int fontsize);// STEVE added a parameter (justification of text)
-        void DrawEllipse(int x, int y, int w, int h, Boolean fill);
-		void SetColour(int r, int g, int b);							// STEVE added this function
+        void DrawEllipse(int x, int y, int w, int h, bool fill);
+        void SetColour(int r, int g, int b);                            // STEVE added this function
         void Clear();
 
         static CxPlot *    CreateCxPlot( CrPlot * container, CxGrid * guiParent );
@@ -159,7 +171,7 @@ class CxPlot : public BASEPlot
         void SetIdealWidth(int nCharsWide);
         void SetIdealHeight(int nCharsHigh);
         CcPoint DeviceToLogical(int x, int y);
-		CcPoint LogicalToDevice(int x, int y);
+        CcPoint LogicalToDevice(int x, int y);
         void SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
         int GetLeft();
@@ -168,57 +180,57 @@ class CxPlot : public BASEPlot
         int GetIdealWidth();
         int GetIdealHeight();
 
-		CcPoint GetTextArea(int size, CcString text, int param);
+        CcPoint GetTextArea(int size, CcString text, int param);
         void Focus();
         void Display();
-		
-		void DeletePopup();
-		void CreatePopup(CcString atomname, CcPoint point);
-		void DeleteKey();
-		void CreateKey(int numser, CcString* names, int** col);
-		void CreateKeyWindow(int x, int y);
-		void FlipGraph(bool flipped);
-		void MakeMetaFile(int w, int h);
-		void PrintPicture();
+        
+        void DeletePopup();
+        void CreatePopup(CcString atomname, CcPoint point);
+        void DeleteKey();
+        void CreateKey(int numser, CcString* names, int** col);
+        void CreateKeyWindow(int x, int y);
+        void FlipGraph(bool flipped);
+        void MakeMetaFile(int w, int h);
+        void PrintPicture();
 
-		CcRect m_client;
+        CcRect m_client;
         CrGUIElement *  ptr_to_crObject;
 
 private:
-		int mIdealHeight;
+        int mIdealHeight;
         int mIdealWidth;
         static int mPlotCount;
         int mPolyMode;
-		CcPoint		moldMPos;	// mouse pointer position in last frame
-		CcPoint		moldPPos;	// popup position in last frame
-		CcString	moldText;	// popup text in the last frame
-		bool		mMouseCaptured;
-		Boolean		m_FlippedPlot;	// if the plot is flipped upside down (eg by ZOOM 4 0), change the LogicalToDevice() and vv. functions
+        CcPoint     moldMPos;   // mouse pointer position in last frame
+        CcPoint     moldPPos;   // popup position in last frame
+        CcString    moldText;   // popup text in the last frame
+        bool        mMouseCaptured;
+        bool     m_FlippedPlot;  // if the plot is flipped upside down (eg by ZOOM 4 0), change the LogicalToDevice() and vv. functions
 
-		CxPlotKey*	m_Key;
+        CxPlotKey*  m_Key;
 
 //Machine specific parts:
 #ifdef __CR_WIN__
       public:
-		CStatic* m_TextPopup;
+        CStatic* m_TextPopup;
 
         COLORREF mfgcolour;
         CBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
         CDC * m_memDC;
-	
+    
 
         afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
-	afx_msg void OnMouseMove( UINT nFlags, CPoint point );
-	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnMouseMove( UINT nFlags, CPoint point );
+    afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
         afx_msg void OnMenuSelected (UINT nID);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
       public:
     
-	mywxStaticText * m_TextPopup;
+    mywxStaticText * m_TextPopup;
         wxColour mfgcolour;
         wxBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
         wxMemoryDC *m_memDC;
@@ -227,8 +239,8 @@ private:
 
         void OnChar(wxKeyEvent & event );
         void OnPaint(wxPaintEvent & event );
-	void OnMouseMove(wxMouseEvent & event);
-	void OnMouseLeave();
+    void OnMouseMove(wxMouseEvent & event);
+    void OnMouseLeave();
         void OnMenuSelected(wxCommandEvent &event );
         void OnRButtonUp(wxMouseEvent & event);
         DECLARE_EVENT_TABLE()

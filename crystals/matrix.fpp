@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2002/11/29 15:26:26  rich
+C Remove unecessary blank line during SFLS output.
+C
 C Revision 1.5  2002/10/14 12:33:24  rich
 C Support for DVF command line version.
 C
@@ -122,7 +125,7 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-&&GIDGIL      CALL ZMORE(CMON,0)
+&&&GIDGILWXS      CALL ZMORE(CMON,0)
       GOTO 1100
 C
 C
@@ -156,7 +159,7 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-&&GIDGIL      CALL ZMORE(CMON,0)
+&&&GIDGILWXS      CALL ZMORE(CMON,0)
       GOTO 1100
 C
 C--ERROR IN THE INPUT NUMBER
@@ -203,11 +206,11 @@ C-----INV
 8     CONTINUE
       CALL MATINV(A,ACC,D)
       WRITE(CMON,'(A, F12.5)') 'Determinant = ', D
-&&GIDGIL      CALL ZMORE(CMON,0)
+&&&GIDGILWXS      CALL ZMORE(CMON,0)
       GOTO 101
 C-----EIG     
 9     CONTINUE
-&&GIDGIL      call zmore('Not yet implemented',0)
+&&&GIDGILWXS      call zmore('Not yet implemented',0)
       GOTO 101
 C-----ACC2A 
 10     CONTINUE
@@ -220,7 +223,7 @@ C-----ACC2B
 C
 101    CONTINUE
       WRITE(CMON,'(9F8.3)') ACC
-&&GIDGIL      CALL ZMORE(CMON,0)
+&&&GIDGILWXS      CALL ZMORE(CMON,0)
       GOTO 1100
 C
 C--MAIN TERMINATION ROUTINES

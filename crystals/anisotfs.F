@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2002/10/14 12:33:24  rich
+C Support for DVF command line version.
+C
 C Revision 1.9  2002/02/27 19:30:18  ckp2
 C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
 C RIC: Ensure consistent use of backslash after CRYSDIR:
@@ -1335,6 +1338,7 @@ C---OUTPUT NEW TENSORS
       WRITE (NCAWU,1750)
       WRITE(CMON,1750)
 &&GIDGIL      CALL ZMORE(CMON,0)
+&WXS      CALL ZMORE(CMON,0)
 1750  FORMAT (' Tensors with respect to principal axes of L')
       CALL RSUB11 (2)
 C

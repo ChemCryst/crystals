@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/07/18 16:49:49  richard
+//   Clear plot window if empty graph (no data points) is created.
+//
 //   Revision 1.11  2002/03/07 10:46:44  DJWgroup
 //   SH: Change to fix reversed y axes; realign text labels.
 //
@@ -60,6 +63,21 @@
 #include    "cccontroller.h"    // for sending commands
 #include    "crwindow.h" // for getting cursor keys
 
+
+
+#ifdef __BOTHWX__
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
+
+#endif
+
+
 CrPlot::CrPlot( CrGUIElement * mParentPtr )
     :   CrGUIElement( mParentPtr )
 {
@@ -90,11 +108,11 @@ CrPlot::~CrPlot()
         delete attachedPlotData;
     }
 
-	if(m_cmenu != nil)
-	{
-		delete m_cmenu;
-		m_cmenu = nil;
-	}
+    if(m_cmenu != nil)
+    {
+        delete m_cmenu;
+        m_cmenu = nil;
+    }
 }
 
 CcParse CrPlot::ParseInput( CcTokenList * tokenList )
@@ -112,7 +130,7 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created Plot      " + mName );
 
         //Init only parsing
-        Boolean hasTokenForMe = true;
+        bool hasTokenForMe = true;
         while (hasTokenForMe)
         {
             switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -145,7 +163,7 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
     }
     // End of Init, now comes the general parser
 
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
     while ( hasTokenForMe )
     {
         switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -159,16 +177,16 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
                 break;
             }
 
-			case kTPlotPrint:
+            case kTPlotPrint:
             { 
                 tokenList->GetToken(); 
                 ((CxPlot*)ptr_to_cxObject)->PrintPicture(); 
                 break; 
             } 
 
-			case kTPlotSave:
+            case kTPlotSave:
             {
-                tokenList->GetToken();	// "PLOTSAVE"
+                tokenList->GetToken();  // "PLOTSAVE"
                 int w = atoi( tokenList->GetToken().ToCString() );
                 int h = atoi( tokenList->GetToken().ToCString() );
                 ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h);
@@ -226,12 +244,12 @@ void CrPlot::SetText( CcString text )
 }
 
 
-void CrPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
+void CrPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 {
     ((CxPlot*)ptr_to_cxObject)->DrawEllipse(x,y,w,h,fill);
 }
 
-void CrPlot::DrawRect(int x1, int y1, int x2, int y2, Boolean fill)
+void CrPlot::DrawRect(int x1, int y1, int x2, int y2, bool fill)
 {
     int temp[10];
     temp[0] = x1; temp[1] = y1;
@@ -242,7 +260,7 @@ void CrPlot::DrawRect(int x1, int y1, int x2, int y2, Boolean fill)
     DrawPoly(5,&temp[0],fill);
 }
 
-void CrPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
+void CrPlot::DrawPoly(int nVertices, int * vertices, bool fill)
 {
     ((CxPlot*)ptr_to_cxObject)->DrawPoly(nVertices, vertices, fill);
 }
@@ -256,7 +274,7 @@ void CrPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 
 CcPoint CrPlot::GetTextArea(int size, CcString text, int param)
 {
-	return ((CxPlot*)ptr_to_cxObject)->GetTextArea(size,text,param);
+    return ((CxPlot*)ptr_to_cxObject)->GetTextArea(size,text,param);
 }
 
 // STEVE changed cx plot to accept a line thickness
@@ -274,7 +292,7 @@ void CrPlot::Clear()
 // STEVE added this function
 void CrPlot::SetColour(int r, int g, int b)
 {
-	((CxPlot*)ptr_to_cxObject)->SetColour(r,g,b);
+    ((CxPlot*)ptr_to_cxObject)->SetColour(r,g,b);
 }
 
 void CrPlot::Display()
@@ -308,17 +326,17 @@ int CrPlot::GetIdealHeight()
 
 PlotDataPopup CrPlot::GetDataFromPoint(CcPoint* point)
 {
-	if(attachedPlotData) return attachedPlotData->GetDataFromPoint(point);
-	else
-	{
-		PlotDataPopup null;
-		return null;
-	}
+    if(attachedPlotData) return attachedPlotData->GetDataFromPoint(point);
+    else
+    {
+        PlotDataPopup null;
+        return null;
+    }
 }
 
 void CrPlot::CreateKey(int numser, CcString* names, int** col)
 {
-	((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
+    ((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
 }
 
 void CrPlot::ContextMenu(CcPoint * xy, int x1, int y1)
@@ -329,7 +347,7 @@ void CrPlot::ContextMenu(CcPoint * xy, int x1, int y1)
     PlotDataPopup data = attachedPlotData->GetDataFromPoint(xy);
 
     if (data.m_Valid == true)
-	{
+    {
         m_cmenu->Substitute(data);
         if ( ptr_to_cxObject ) m_cmenu->Popup(x1,y1,(void*)ptr_to_cxObject);
     }
@@ -352,5 +370,5 @@ void CrPlot::MenuSelected(int id)
 
 void CrPlot::FlipGraph(bool flip)
 {
-	((CxPlot*)ptr_to_cxObject)->FlipGraph(flip);
+    ((CxPlot*)ptr_to_cxObject)->FlipGraph(flip);
 }

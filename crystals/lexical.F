@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2003/02/27 12:48:54  rich
+C Oops.
+C
 C Revision 1.17  2003/02/27 11:49:50  rich
 C
 C Two BRAND NEW lexical things:
@@ -413,7 +416,7 @@ C----- LOOK FOR BLANK AFTER 'ALL'
               CALL XFILL (IB, IMAGE(J), 80-J+1)
               CALL XMOVEI ( IMAGE, LCMAGE, 80)
               NMOUSE = 0
-###DVFGIDLIN             CALL XRDMSE (CMOUSE, NMOUSE)
+####DVFGIDLINWXS             CALL XRDMSE (CMOUSE, NMOUSE)
               IMOUSE = 1
           ENDIF
         ENDIF

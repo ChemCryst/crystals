@@ -17,6 +17,11 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.23  2002/10/02 13:42:00  rich
+// Support for more info from GUIBIT (e.g. UEQUIV).
+// Ability to act as a source of data for either a MODELWINDOW
+// or a MODLIST.
+//
 // Revision 1.22  2002/07/23 08:25:43  richard
 //
 // Moved selected, disabled and excluded variables and functions into the base class.
@@ -96,7 +101,7 @@
 // a Paint event is recieved by CxModel. It calls Render() for each
 // of the modelobjects stored in its lists. The argument view lets
 // the modelobjects access global settings from the CrModel such as
-// RadiusType and Scale. The Boolean detailed tells the model object
+// RadiusType and Scale. The bool detailed tells the model object
 // whether to draw at high or low resolution depending on whether the
 // view is currently rotating.
 //
@@ -205,10 +210,10 @@ CcModelDoc::~CcModelDoc()
 
 }
 
-Boolean CcModelDoc::ParseInput( CcTokenList * tokenList )
+bool CcModelDoc::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
-    Boolean hasTokenForMe = true;
+    bool retVal = true;
+    bool hasTokenForMe = true;
 
     while ( hasTokenForMe )
     {
@@ -361,7 +366,7 @@ void CcModelDoc::RemoveView(CrModel * aView)
     }
 }
 
-void CcModelDoc::Select(Boolean selected)
+void CcModelDoc::Select(bool selected)
 {
     if (selected)
         nSelected++;
@@ -372,7 +377,7 @@ void CcModelDoc::Select(Boolean selected)
 }
 
 
-void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
+void CcModelDoc::SelectAtomByLabel(CcString atomname, bool select)
 {
 
    CcModelObject* item = FindAtomByLabel(atomname);
@@ -383,7 +388,7 @@ void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
    }
 }
 
-void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
+void CcModelDoc::DisableAtomByLabel(CcString atomname, bool select)
 {
     CcModelObject* item = FindAtomByLabel(atomname);
 
@@ -406,7 +411,7 @@ void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
 }
 
 
-void CcModelDoc::DisableAllAtoms(Boolean select)
+void CcModelDoc::DisableAllAtoms(bool select)
 {
     mAtomList->Reset();
     mSphereList->Reset();
@@ -469,7 +474,7 @@ CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)
 
 
 
-void CcModelDoc::SelectAllAtoms(Boolean select)
+void CcModelDoc::SelectAllAtoms(bool select)
 {
     mAtomList->Reset();
     mSphereList->Reset();
@@ -625,7 +630,7 @@ void CcModelDoc::DocToList( CrModList* ml )
    }
 }
 
-Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
+bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 {
 
 //   if ( m_glIDsok ) { LOGERR ( "Rendering: glIDs OK" ); }
@@ -1234,7 +1239,7 @@ CcString CcModelDoc::SelectedAsString( CcString delimiter )
 
 
 
-void CcModelDoc::SendAtoms( int style, Boolean sendonly )
+void CcModelDoc::SendAtoms( int style, bool sendonly )
 {
 
    CcModelObject* item;
@@ -1252,7 +1257,7 @@ void CcModelDoc::SendAtoms( int style, Boolean sendonly )
         if ( item->IsSelected() ) item->SendAtom (style, sendonly);
 }
 
-void CcModelDoc::ZoomAtoms( Boolean doZoom )
+void CcModelDoc::ZoomAtoms( bool doZoom )
 {
   if ( mAtomList->ListSize() )
   {
@@ -1409,46 +1414,46 @@ extern "C" {
 
 //declarations:
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
 #endif
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int part, float ueq, float fspare);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int part, float ueq, float fspare);
 #endif
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
 #endif
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
@@ -1456,13 +1461,13 @@ void fastdonut_  (char* label,int x1,int y1,int z1,
 
 //implementations:
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
                 char label[80], char slabel[80] )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
@@ -1476,14 +1481,14 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                                          np,ptrs,clabel,slabel);
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int part, float ueq, float fspare)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
@@ -1502,12 +1507,12 @@ void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
@@ -1521,12 +1526,12 @@ void fastsphere_  (char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
@@ -1541,6 +1546,3 @@ void fastdonut_  (char* label,int x1,int y1,int z1,
 }
 
 }
-
-
-

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   5.3.1998 13:51 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2001/06/17 14:34:05  richard
+//
+//   CxDestroyWindow function.
+//
 //   Revision 1.13  2001/03/08 16:44:10  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -39,10 +43,10 @@ class CxMultiEdit : public BASEMULTIEDIT
         void BackALine();
         void Empty();
         void Spew();
-        void SetFixedWidth(Boolean fixed);
-        void SetItalic(Boolean italic);
-        void SetUnderline(Boolean underline);
-        void SetBold(Boolean bold);
+        void SetFixedWidth(bool fixed);
+        void SetItalic(bool italic);
+        void SetUnderline(bool underline);
+        void SetBold(bool bold);
         void SetColour (int red, int green, int blue);
         void Focus();
 

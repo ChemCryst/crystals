@@ -12,7 +12,7 @@
 
 
 int CxMenu::mMenuCount = kMenuBase;
-CxMenu *    CxMenu::CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup )
+CxMenu *    CxMenu::CreateCxMenu( CrMenu * container, CxMenu * guiParent, bool popup )
 {
     CxMenu  *theMenu = new CxMenu( container );
 #ifdef __CR_WIN__
@@ -118,7 +118,7 @@ void CxMenu::PopupMenuHere(int x, int y, void *window)
 #endif
 }
 
-void CxMenu::EnableItem( int id, Boolean enable )
+void CxMenu::EnableItem( int id, bool enable )
 {
 #ifdef __CR_WIN__
       if (enable)

@@ -5,6 +5,10 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2001/06/18 12:29:36  richard
+// Removed \ chars which must have been copied in from macro version of this
+// function.
+//
 // Revision 1.11  2001/06/17 15:14:12  richard
 // Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -107,7 +111,7 @@ CcRect CrEditBox::CalcLayout(bool recalc)
 CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -189,7 +193,7 @@ CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
@@ -201,7 +205,7 @@ CcParse CrEditBox::ParseInput( CcTokenList * tokenList )
             case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 CcString temp = tokenList->GetToken(); // Remove that token!
                 LOGSTAT( "EditBox disabled = " + temp);
                 ((CxEditBox*)ptr_to_cxObject)->Disable( disabled );

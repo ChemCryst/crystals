@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2002/09/27 14:51:36  rich
+//   Move definition of ATTACH token into crconstants.
+//
 //   Revision 1.15  2002/07/04 13:04:44  richard
 //
 //   glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
@@ -64,7 +67,7 @@ public:
    float radius_scale;
    int normal_res;
    int quick_res;
-   Boolean high_res;
+   bool high_res;
    CxModel* m_modview;
 };
 
@@ -87,7 +90,7 @@ class   CrModel : public CrGUIElement
     void    SysKeyUp ( UINT nChar );
 
 // Called from CxModel:
-    Boolean RenderModel(Boolean detailed, bool feedback=false);
+    bool RenderModel(bool detailed, bool feedback=false);
     void    MenuSelected(int id);
     void    ContextMenu(int x, int y, CcString atomname = "", int selection = 1, CcString atom2="");
     int     GetSelectionAction();

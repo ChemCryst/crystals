@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/02/27 12:48:03  rich
+C Change keyword for identifying slot 17 from "HYBRID" to "FRAGMENT".
+C
 C Revision 1.41  2003/02/27 11:49:50  rich
 C
 C Two BRAND NEW lexical things:
@@ -282,6 +285,7 @@ C
 &&DVFGID      DATA IQUN /2/, JQUN/2/
 &&GILLINC      SET INTERACTIVE UNDER LINUX
 &&GILLIN      DATA IQUN /2/, JQUN/2/
+&WXS      DATA IQUN /2/, JQUN/2/
 &VAXC      INITIALISE THE ENVIRONMENT TO BATCH
 &VAX      DATA IQUN /2/, JQUN/0/
 C
@@ -387,12 +391,14 @@ C       VDU, MONITOR, PRINTER, PUNCH, LOG, ERROR
 &GID      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &DVF      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &GIL      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+&WXS      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &LIN      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 &VAXC      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
 &VAX      DATA NCVDU/6/, NCAWU/3/, NCWU/9/, NCPU/7/, NCLU/8/, NCEROR/6/
 &DOS      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &&DVFGID      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &&GILLIN      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+&WXS      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &VAX      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 &PPC      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 C      THE AUXILLIARY INPUT DEVICE (REFLECTIONS)
@@ -472,6 +478,7 @@ C
 &DVF      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 &LIN      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 &GIL      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+&WXS      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 &VAX      DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 C----- CHANGE IFLUNI(7) TO 3 LATER
       DATA IFLUNI(7)  /  6 / , IFLUNI(8)  / 11 / , IFLUNI(9)  / 12 /
@@ -1199,6 +1206,10 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
 &&GILLIN      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
 &&GILLIN      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
 &&GILLIN      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
+&WXS      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
+&WXS      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
+&WXS      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
+&WXS      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 &VAX      DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
 &VAX      DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /
 &VAX      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
@@ -1221,6 +1232,7 @@ C
 &&DVFGID      DATA ISSFNF /  29 /
 &VAX      DATA ISSFNF /  29 /
 &&GILLIN      DATA ISSFNF /  2 /
+&WXS      DATA ISSFNF /  29 /
       DATA ISSOKF / 0 /
       DATA ISSEOF /-1 /
       DATA ISSERF / 1 /
@@ -1243,6 +1255,7 @@ C                  ISSDAR = 4 * ISSRLI
 &VAX      DATA ISSDAR / 512 /
 &DVF      DATA ISSDAR / 512 /
 &&GILLIN      DATA ISSDAR / 2048 /
+&WXS      DATA ISSDAR / 2048 /
 &GID      DATA ISSDAR / 512 /
 &DOS      DATA ISSDAR /2048 /
 C
@@ -1310,6 +1323,12 @@ C
 &&GILLIN      DATA LSSOPS / 5 /
 &&GILLIN      DATA CSSDAT / 'May 1999' /
 &&GILLIN      DATA LSSDAT / 8 /
+&WXS      DATA CSSMAC / 'Intel Pentium' /
+&WXS      DATA LSSMAC / 13 /
+&WXS      DATA CSSOPS / 'Linux' /
+&WXS      DATA LSSOPS / 5 /
+&WXS      DATA CSSDAT / 'May 1999' /
+&WXS      DATA LSSDAT / 8 /
 &VAX      DATA CSSMAC / 'DEC VAX' /
 &VAX      DATA LSSMAC / 7 /
 &VAX      DATA CSSOPS / 'VMS 5' /
@@ -1326,11 +1345,13 @@ C
 &&DVFDOS      DATA CSSCST / 'CRYSDIR:crystals.srt' /
 &&VAXGID      DATA CSSCST / 'CRYSDIR:crystals.srt' /
 &&LINGIL      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+&WXS      DATA CSSCST / 'CRYSDIR:crystals.srt' /
       DATA LSSCST / 20 /
 C
 &&DVFDOS      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
 &&VAXGID      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
 &&LINGIL      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+&WXS      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
       DATA LSSDST / ' 19 ' /
 C
 &PPC      DATA CSSSCT / 'CRSCP:scatt.dat' /
@@ -1343,6 +1364,8 @@ C
 &&DVFGID      DATA LSSSCT / 1 /
 &&GILLIN      DATA CSSSCT / ' ' /
 &&GILLIN      DATA LSSSCT / 1 /
+&WXS      DATA CSSSCT / ' ' /
+&WXS      DATA LSSSCT / 1 /
 &VAX      DATA CSSSCT / 'CRSCP:scatt.dat' /
 &VAX      DATA LSSSCT / 15 /
 C
@@ -1356,6 +1379,8 @@ C
 &&DVFGID      DATA LSSELE / 1 /
 &&GILLIN      DATA CSSELE / ' ' /
 &&GILLIN      DATA LSSELE / 1 /
+&WXS      DATA CSSELE / ' ' /
+&WXS      DATA LSSELE / 1 /
 &VAX      DATA CSSELE / 'CRSCP:propwin.dat' /
 &VAX      DATA LSSELE / 17 /
 C
@@ -1369,6 +1394,8 @@ C
 &&DVFGID      DATA LSSVDU / 3 /
 &&GILLIN      DATA CSSVDU  / 'CON' /
 &&GILLIN      DATA LSSVDU / 3 /
+&WXS      DATA CSSVDU  / 'CON' /
+&WXS      DATA LSSVDU / 3 /
 &VAX      DATA CSSVDU  / 'SYS$COMMAND' /
 &VAX      DATA LSSVDU / 11 /
 C
@@ -1382,6 +1409,8 @@ C
 &&DVFGID      DATA LSSLPT / 3 /
 &&GILLIN      DATA CSSLPT  / 'PRN' /
 &&GILLIN      DATA LSSLPT / 3 /
+&WXS      DATA CSSLPT  / 'PRN' /
+&WXS      DATA LSSLPT / 3 /
 &VAX      DATA CSSLPT  / 'SYS$PRINT' /
 &VAX      DATA LSSLPT / 9 /
 C
@@ -1396,6 +1425,8 @@ cdjwmay99
 &&DVFGID      DATA LSSCIF / 11 /
 &&GILLIN      DATA CSSCIF / 'publish.cif' /
 &&GILLIN      DATA LSSCIF / 11 /
+&WXS      DATA CSSCIF / 'publish.cif' /
+&WXS      DATA LSSCIF / 11 /
 &VAX      DATA CSSCIF / 'publish.cif' /
 &VAX      DATA LSSCIF / 11 /
 cRICjul99
@@ -1405,6 +1436,8 @@ cRICjul99
 &&&DVFGIDVAX      DATA LSSMAP / 11 /
 &&GILLIN      DATA CSSMAP / 'fourier.map' /
 &&GILLIN      DATA LSSMAP / 11 /
+&WXS      DATA CSSMAP / 'fourier.map' /
+&WXS      DATA LSSMAP / 11 /
 C          q
 C -- 'DEVICE' AND 'EXTENSION' REQUIRED FOR 'HELP' , 'MANUAL' , AND
 C    'SCRIPT' INSTRUCTIONS
@@ -1891,6 +1924,7 @@ C --- UFILE ---
       IFLUNI(3)  =  5  
 &&&DOSGIDDVF      IFLUNI(4)  =  6
 &&GILLIN      IFLUNI(4)  =  6
+&WXS      IFLUNI(4)  =  6
 &VAX      IFLUNI(4)  =  9
       IFLUNI(5) = 7
       IFLUNI(6) = 8
@@ -1964,6 +1998,7 @@ C --- XUNITS ---
       NCRRU =1
 &&&DOSDVFGID      NCWU=6
 &&GILLIN      NCWU=6
+&WXS      NCWU=6
 &VAX      NCWU=9
       NCPU=7
       IPAGE(1)=10
@@ -1977,6 +2012,8 @@ C --- XUNITS ---
 &&&DOSDVFGID      JQUN=2
 &&GILLIN      IQUN=2
 &&GILLIN      JQUN=2
+&WXS      IQUN=2
+&WXS      JQUN=2
 &VAX      IQUN=2
 &VAX      JQUN=0
       IUSFLG = 0 

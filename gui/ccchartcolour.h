@@ -1,6 +1,6 @@
 
-#ifndef		__CcChartColour_H__
-#define		__CcChartColour_H__
+#ifndef     __CcChartColour_H__
+#define     __CcChartColour_H__
 
 class CrChart;
 class CcTokenList;
@@ -8,14 +8,14 @@ class CcTokenList;
 
 class CcChartColour : public CcChartObject
 {
-	public:
-		CcChartColour();
+    public:
+        CcChartColour();
             CcChartColour(int ir, int ig, int ib);
-		~CcChartColour();
-		void Draw(CrChart* chartToDrawOn);
-		Boolean ParseInput(CcTokenList* tokenList);
-	private:
-		int r,g,b;
+        ~CcChartColour();
+        void Draw(CrChart* chartToDrawOn);
+        bool ParseInput(CcTokenList* tokenList);
+    private:
+        int r,g,b;
 };
 
 #endif

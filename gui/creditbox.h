@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/03/08 15:32:43  richard
+//   Limit=n token prevents user entering more than n characters.
+//
 
 #ifndef     __CrEditBox_H__
 #define     __CrEditBox_H__
@@ -38,8 +41,8 @@ class   CrEditBox : public CrGUIElement
         // attributes
 
 private:
-    Boolean mSendOnReturn;
-      Boolean m_IsInput;
+    bool mSendOnReturn;
+      bool m_IsInput;
 };
 
 #define kSIsInput   "INPUT"

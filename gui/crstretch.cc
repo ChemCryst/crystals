@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 15:14:14  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.1  2001/02/26 12:07:06  richard
 //   New stretch class. Probably the simplest class ever written, it has no functionality
 //   except that it can be put in a grid of non-resizing items, and it will make that
@@ -49,7 +52,7 @@ CRCALCLAYOUT(CrStretch,CxStretch)
 CcParse CrStretch::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     if( ! mSelfInitialised )
     {

@@ -36,9 +36,9 @@ class CxModList : public BASEMODLIST
         void InvertSelection();
         int m_ProgSelecting;
         CcString GetListItem(int item);
-        void SelectPattern(CcString* strings, Boolean select);
+        void SelectPattern(CcString* strings, bool select);
         CcString GetCell(int row, int col);
-        void SelectAll(Boolean select);
+        void SelectAll(bool select);
         void AddRow ( int id, CcString * rowOfStrings, bool sel, bool dis);
         void AddColumn( CcString colHeader);
         void Focus();
@@ -105,8 +105,8 @@ protected:
 
 
     int nSortedCol;
-    Boolean bSortAscending;
-    Boolean SortItems( int colType, int nCol, Boolean bAscending);
+    bool bSortAscending;
+    bool SortItems( int colType, int nCol, bool bAscending);
 
 };
 #endif

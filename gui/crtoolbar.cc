@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/06/17 15:14:12  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.2  2001/03/08 16:44:07  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -60,7 +63,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
 {
 
   CcParse retVal(true, mXCanResize, mYCanResize);
-  Boolean hasTokenForMe = true;
+  bool hasTokenForMe = true;
   CcString theToken;
 
 // Initialization for the first time
@@ -98,7 +101,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
         newTool->toggleable = false;
         newTool->tTool = this;
 
-        Boolean moreTokens = true;
+        bool moreTokens = true;
         while ( moreTokens )
         {
           switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -161,7 +164,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
         CcTool* nt = (CcController::theController)->FindTool(item);
         if ( !nt ) break;
 
-        Boolean moreTokens = true;
+        bool moreTokens = true;
         while ( moreTokens )
         {
           switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -169,7 +172,7 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
             case kTState:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean on = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
+                bool on = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 ((CxToolBar*)ptr_to_cxObject)->CheckTool(on,nt->CxID);
                 break;

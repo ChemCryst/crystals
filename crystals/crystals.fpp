@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2002/07/22 10:47:32  richard
+C Save and restore IERFLG around XGUIUP call, otherwise the error contingency
+C in SCRIPTS is never activated.
+C
 C Revision 1.11  2002/03/13 12:33:28  richard
 C Call XGUIUP in between EVERY instruction.
 C
@@ -22,7 +26,8 @@ CODE FOR CRYSTL
 C      winapp 500000,1000000
 &GID      SUBROUTINE CRYSTL
 &GIL      SUBROUTINE CRYSTL
-##GIDGIL      PROGRAM CRYSTL
+&WXS      SUBROUTINE CRYSTL
+###GIDGILWXS      PROGRAM CRYSTL
 C
 C
 C     ******************************************************

@@ -25,6 +25,16 @@
 #include <wx/cmndata.h>
 #include <wx/fontdlg.h>
 #include <wx/event.h>
+
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
+
 #endif
 #ifdef __LINUX__
 #define RGB wxColour
@@ -259,7 +269,7 @@ void CxTextOut::SetIdealWidth(int nCharsWide)
         mIdealWidth = nCharsWide * owidth;
 #endif
 #ifdef __BOTHWX__
-        mIdealWidth = nCharsWide * GetCharWidth();
+        mIdealWidth = nCharsWide * this->GetCharWidth();
 #endif
 }
 
@@ -398,8 +408,8 @@ void CxTextOut::CxSetFont( wxFont* rFont )
 
     SetFont ( *m_pFont );
 
-    m_nAvgCharWidth = GetCharWidth();
-    m_nFontHeight = GetCharHeight();
+    m_nAvgCharWidth = this->GetCharWidth();
+    m_nFontHeight = this->GetCharHeight();
 
 
 // Redraw the display if necessary:
@@ -844,7 +854,7 @@ void CxTextOut::OnMouseMove( wxMouseEvent & evt )
 #endif
 
 
-Boolean CxTextOut::IsAHit( CcString & commandString, int x, int y )
+bool CxTextOut::IsAHit( CcString & commandString, int x, int y )
 {
 
 #ifdef __CR_WIN__
@@ -1016,7 +1026,7 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
     int cx,cy;
     int nPos;
     int nWidth = 0;
-    Boolean bUnderline = false;
+    bool bUnderline = false;
     m_bInLink = false; //Beginning new line.
 
     do
@@ -1437,7 +1447,7 @@ void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 void CxTextOut::SetTransparent()
 {
     SetBackColour( GetSysColor(COLOR_3DFACE) );
+#ifdef __CR_WIN__
     ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,SWP_NOSIZE|SWP_NOMOVE);
+#endif
 }
-
-

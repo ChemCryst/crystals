@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/06/17 15:14:12  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.4  2001/03/08 16:44:04  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -50,7 +53,7 @@ CRCALCLAYOUT(CrCheckBox,CxCheckBox)
 CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -78,7 +81,7 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(inform)
                     LOGSTAT( "CrCheckBox:ParseInput Checkbox INFORM on ");
@@ -90,7 +93,7 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
             case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(disabled)
                     LOGSTAT( "CrCheckBox:ParseInput Checkbox disabled ");
@@ -102,7 +105,7 @@ CcParse CrCheckBox::ParseInput( CcTokenList * tokenList )
             case kTState:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTOn) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(state)
                     LOGSTAT( "CrCheckBox:ParseInput Checkbox STATE on ");
@@ -161,7 +164,7 @@ void    CrCheckBox::GetValue(CcTokenList * tokenList)
     }
 }
 
-void    CrCheckBox::BoxChanged( Boolean state )
+void    CrCheckBox::BoxChanged( bool state )
 {
     if(mCallbackState)
     {
@@ -174,7 +177,7 @@ void    CrCheckBox::BoxChanged( Boolean state )
     }
 }
 
-void    CrCheckBox::SetState( Boolean state )
+void    CrCheckBox::SetState( bool state )
 {
     ((CxCheckBox*)ptr_to_cxObject)->SetBoxState(state);
 }

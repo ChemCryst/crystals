@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/03/20 16:10:11  rich
+C
+C Moved SYMMETRY expansion code into a subroutine so it can be applied
+C identically whether in LINK or in DISTANCES. Commented out some debugging.
+C
 C Revision 1.40  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -418,6 +423,7 @@ C--WRITE THE PARAMETER FILE TYPE
 &DVF      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &LIN      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &GIL      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+&WXS      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &GID      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &H-P      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &CYB      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
@@ -1501,7 +1507,7 @@ C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C - Only GID, GIL and DOS support Cameron's graphics.
-###GILGIDDOS        GOTO 9000 !Skip this Cameron part.
+####GILGIDDOSWXS        GOTO 9000 !Skip this Cameron part.
 
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
 C      IF (ISSTML .EQ. 4) THEN
@@ -1509,14 +1515,14 @@ C      IF (ISSTML .EQ. 4) THEN
 C - Only GID needs funny text strings to initialise the graphics.
 C - Could move these to ZCAMER.
 
-&&GIDGIL        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
-&&GIDGIL        CALL ZMORE(CHARTC,0)
-&&GIDGIL        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
-&&GIDGIL        CALL ZMORE(CHARTC,0)
-&&GIDGIL        WRITE(CHARTC,'(A)') '^^CW'
-&&GIDGIL        CALL ZMORE(CHARTC,0)
-C&&GIDGIL        CALL GUWAIT()
-&&&GIDDOSGIL        CALL ZCAMER ( 1, 0 , 0 , 0)
+&&&GIDGILWXS        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
+&&&GIDGILWXS        CALL ZMORE(CHARTC,0)
+&&&GIDGILWXS        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
+&&&GIDGILWXS        CALL ZMORE(CHARTC,0)
+&&&GIDGILWXS        WRITE(CHARTC,'(A)') '^^CW'
+&&&GIDGILWXS        CALL ZMORE(CHARTC,0)
+&&GIDGIL        CALL ZCAMER ( 1, 0 , 0 , 0)
+&&DOSWXS        CALL ZCAMER ( 1, 0 , 0 , 0)
 
 8025  CONTINUE
         IF (LCLOSE) THEN
@@ -1525,7 +1531,8 @@ C&&GIDGIL        CALL GUWAIT()
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
         WRITE(CHRBUF,'(256A1)')LCMAGE
-&&&GIDDOSGIL         CALL ZCONTR
+&&&GIDGIL         CALL ZCONTR
+&&&DOSWXS         CALL ZCONTR
       GOTO 8025
 
 8030  CONTINUE

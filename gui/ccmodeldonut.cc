@@ -88,19 +88,19 @@ void CcModelDonut::ParseInput(CcTokenList* tokenList)
 
 int CcModelDonut::X()
 {
-	return x;
+    return x;
 }
 int CcModelDonut::Y()
 {
-	return y;
+    return y;
 }
 int CcModelDonut::Z()
 {
-	return z;
+    return z;
 }
 int CcModelDonut::R()
 {
-	return covrad;
+    return covrad;
 }
 
 
@@ -211,7 +211,7 @@ void CcModelDonut::Render(CcModelStyle *style, bool feedback)
 
 }
 
-void CcModelDonut::SendAtom(int style, Boolean output)
+void CcModelDonut::SendAtom(int style, bool output)
 {
   style = (output) ? CR_SENDA : style;
 

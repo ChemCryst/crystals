@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/11/16 15:12:01  ckp2
+//   Updated GetIdealWidth routine to be more accurate (use correct DC for calculations).
+//
 //   Revision 1.9  2001/06/17 14:45:02  richard
 //   CxDestroyWindow function.
 //
@@ -62,10 +65,10 @@ Destroy();
 void    CxCheckBox::BoxClicked()
 {
 #ifdef __CR_WIN__
-      Boolean state = GetBoxState() == 1 ? true : false;
+      bool state = GetBoxState() == 1 ? true : false;
 #endif
 #ifdef __BOTHWX__
-      Boolean state = GetValue();
+      bool state = GetValue();
 #endif
 
     ( (CrCheckBox *)ptr_to_crObject)->BoxChanged( state );
@@ -137,7 +140,7 @@ int   CxCheckBox::GetIdealHeight()
 
 }
 
-void    CxCheckBox::SetBoxState( Boolean inValue )
+void    CxCheckBox::SetBoxState( bool inValue )
 {
 #ifdef __CR_WIN__
     int value;
@@ -153,7 +156,7 @@ void    CxCheckBox::SetBoxState( Boolean inValue )
 
 }
 
-Boolean CxCheckBox::GetBoxState()
+bool CxCheckBox::GetBoxState()
 {
 #ifdef __CR_WIN__
     int value = GetCheck();
@@ -193,7 +196,7 @@ void CxCheckBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
     {
         case 9:
         {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -217,7 +220,7 @@ void CxCheckBox::OnChar( wxKeyEvent & event )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-                  Boolean shifted = event.m_shiftDown;
+                  bool shifted = event.m_shiftDown;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -240,7 +243,7 @@ void CxCheckBox::Focus()
     SetFocus();
 }
 
-void CxCheckBox::Disable(Boolean disabled)
+void CxCheckBox::Disable(bool disabled)
 {
 #ifdef __CR_WIN__
     if(disabled)

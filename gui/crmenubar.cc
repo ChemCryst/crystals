@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   08.6.1998 02:01 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/06/17 15:14:14  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.2  2001/03/08 16:44:06  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -61,8 +64,8 @@ CrMenuBar::~CrMenuBar()
 CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
-    Boolean isMainMenu = false;
+    bool hasTokenForMe = true;
+    bool isMainMenu = false;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -102,7 +105,7 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
                 menuItem->name = mMenuPtr->mName;
                 menuItem->command = nil;
                 menuItem->ptr = mMenuPtr;
-                Boolean moreTokens = true;
+                bool moreTokens = true;
                 while ( moreTokens )
                 {
                     switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -141,7 +144,7 @@ CcParse CrMenuBar::ParseInput( CcTokenList * tokenList )
                 menuItem->text    = menuItem->originaltext    = tokenList->GetToken();
                 menuItem->command = menuItem->originalcommand = tokenList->GetToken();
                 menuItem->ptr = nil;
-                Boolean moreTokens = true;
+                bool moreTokens = true;
                 while ( moreTokens )
                 {
                     switch ( tokenList->GetDescriptor(kAttributeClass) )

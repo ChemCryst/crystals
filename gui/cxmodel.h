@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.30  2003/01/14 10:27:19  rich
+//  Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //  Revision 1.29  2002/07/03 16:44:05  richard
 //  Implemented polygon selection in model window.
 //
@@ -153,7 +156,7 @@ class CxModel : public BASEMODEL
   public:
     void Update(bool rescale=true);
     void DoDrawingLists();
-    int IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly=false);
+    int IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, bool atomsOnly=false);
     void SelectBoxedAtoms(CcRect rectangle, bool select);
     void Setup();
     void NeedRedraw(bool needrescale = false);
@@ -275,7 +278,7 @@ class CxModel : public BASEMODEL
     afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
     afx_msg BOOL OnEraseBkgnd( CDC* pDC );
     afx_msg void OnMenuSelected (UINT nID);
-	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

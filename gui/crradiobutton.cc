@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/06/17 15:14:14  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.6  2001/03/08 15:42:39  richard
 //   Included a DISABLED= token for radiobutton (at last).
 //
@@ -49,7 +52,7 @@ CRCALCLAYOUT(CrRadioButton,CxRadioButton)
 CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -91,7 +94,7 @@ CcParse CrRadioButton::ParseInput( CcTokenList * tokenList )
             case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(disabled)
                     LOGSTAT( "CrRadiobutton:ParseInput "+mName+" disabled ");
@@ -180,7 +183,7 @@ void    CrRadioButton::ButtonOn()
     }
 }
 
-void    CrRadioButton::SetState( Boolean state )
+void    CrRadioButton::SetState( bool state )
 {
 
     ((CxRadioButton*)ptr_to_cxObject)->SetRadioState(state);

@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/03/27 16:10:45  rich
+//   Allow list control selection to be set from scripts.
+//
 //   Revision 1.7  2001/06/17 15:14:13  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -55,7 +58,7 @@ CRCALCLAYOUT(CrListCtrl,CxListCtrl)
 CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
     CcString theToken;
 
     if( ! mSelfInitialised ) //Once Only.
@@ -111,7 +114,7 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
@@ -123,7 +126,7 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
             case kTAddToList:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean stop = false;
+                bool stop = false;
                 while ( ! stop )
                 {
                     CcString* rowOfStrings = new CcString[m_cols];
@@ -160,7 +163,7 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
                 if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
                 {
                     tokenList->GetToken(); //Remove the kTAll token!
-                    Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+                    bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
                     tokenList->GetToken(); //Remove the kTYes/No token!
                     ((CxListCtrl *)ptr_to_cxObject)->SelectAll(select);
                 }
@@ -175,7 +178,7 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
                     for (int k = 0; k < m_cols; k++)
                         rowOfStrings[k] = tokenList->GetToken();
 
-                    Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+                    bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
                     tokenList->GetToken();
                     ((CxListCtrl*)ptr_to_cxObject)->SelectPattern(rowOfStrings,select);
                     delete [] rowOfStrings;

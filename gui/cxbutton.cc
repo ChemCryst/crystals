@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2003/02/20 14:08:04  rich
+//   New option of making buttoms "SLIM" they fit into text more easily.
+//
 //   Revision 1.11  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -229,7 +232,7 @@ void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -252,7 +255,7 @@ void CxButton::OnChar( wxKeyEvent & event )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-                  Boolean shifted = event.m_shiftDown;
+                  bool shifted = event.m_shiftDown;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -281,7 +284,7 @@ void CxButton::SetSlim()
     m_Slim = true;
 }
 
-void CxButton::Disable(Boolean disabled)
+void CxButton::Disable(bool disabled)
 {
 #ifdef __CR_WIN__
     if(disabled)
@@ -297,7 +300,7 @@ void CxButton::Disable(Boolean disabled)
 #endif
 
 }
-void CxButton::CxSetState(Boolean highlight)
+void CxButton::CxSetState(bool highlight)
 {
 #ifdef __CR_WIN__
             EnableWindow(false);
@@ -307,4 +310,3 @@ void CxButton::CxSetState(Boolean highlight)
 #endif
 
 }
-

@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.9  2003/01/15 15:26:38  rich
 C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
 C anywhere will benefit from less IO, it's here.
@@ -1289,13 +1294,13 @@ C -- PRODUCE DISPLAY IF REQUIRED
 C
       IF ( DISPL6 ) THEN
         IF ( N6R .GE. (N6D-1) ) THEN
-#GID          WRITE ( CMON,1505)
-#GID          CALL XPRVDU(NCVDU, 1, 0)
-#GID          WRITE(NCVDU,1505)
+##WXSGID          WRITE ( CMON,1505)
+##WXSGID          CALL XPRVDU(NCVDU, 1, 0)
+##WXSGID          WRITE(NCVDU,1505)
 1505      FORMAT ( 15X ,  12X, 'Processing reflections ')
 C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
            CALL OUTCOL(6)
-#GID          WRITE(NCVDU,'(15X,''^'',$)')
+##WXSGID          WRITE(NCVDU,'(15X,''^'',$)')
           NSTAR = 1
           NXTLVL = ( NSTAR * N6D ) / NINTER
         ELSE IF ( (N6D-N6R) .GE. NXTLVL ) THEN

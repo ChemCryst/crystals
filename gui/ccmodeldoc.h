@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2002/10/02 13:42:00  rich
+//   Support for more info from GUIBIT (e.g. UEQUIV).
+//   Ability to act as a source of data for either a MODELWINDOW
+//   or a MODLIST.
+//
 //   Revision 1.15  2002/07/23 08:25:43  richard
 //
 //   Moved selected, disabled and excluded variables and functions into the base class.
@@ -66,11 +71,12 @@
 #endif
 #ifdef __BOTHWX__
 #include <wx/glcanvas.h>
+#include <windows.h>
 #include <GL/glu.h>
 #endif
 
 #include "ccstring.h"   // added by classview
-#include "cclist.h" // added by classView
+#include "cclist.h" // added by classView                      
 class CcTokenList;
 class CrModel;
 class CrModList;
@@ -86,14 +92,14 @@ class CcModelDoc
 {
     public:
 
-        Boolean RenderModel( CcModelStyle *style, bool feedback=false );
+        bool RenderModel( CcModelStyle *style, bool feedback=false );
         void DocToList( CrModList* ml );
         void InvertSelection();
         CcString Compress(CcString atomname);
-        void SelectAllAtoms(Boolean select);
-        void SelectAtomByLabel(CcString atomname, Boolean select);
-        void DisableAllAtoms(Boolean select);
-        void DisableAtomByLabel(CcString atomname, Boolean select);
+        void SelectAllAtoms(bool select);
+        void SelectAtomByLabel(CcString atomname, bool select);
+        void DisableAllAtoms(bool select);
+        void DisableAtomByLabel(CcString atomname, bool select);
         CcModelObject* FindAtomByLabel(CcString atomname);
         CcModelAtom* FindAtomByPosn(int posn);
 
@@ -127,12 +133,12 @@ class CcModelDoc
         CcString SelectedAsString( CcString delimiter = " " );
         CcString FragAsString    ( CcString atomname, CcString delimiter = " ");
         void     FlagFrag ( CcString atomname );
-        void SendAtoms( int style, Boolean sendonly=false );
-        void ZoomAtoms( Boolean doZoom );
+        void SendAtoms( int style, bool sendonly=false );
+        void ZoomAtoms( bool doZoom );
 
 
         void SelectFrag(CcString atomname, bool select);
-        void Select(Boolean selected);
+        void Select(bool selected);
         void HighlightView(CrModel* aView);
         void RemoveView(CrModel* aView);
         void DrawViews(bool rescaled = false);
@@ -141,7 +147,7 @@ class CcModelDoc
         void Clear();
         CcModelDoc();
         ~CcModelDoc();
-        Boolean ParseInput( CcTokenList * tokenList );
+        bool ParseInput( CcTokenList * tokenList );
 
 
         int NumSelected();

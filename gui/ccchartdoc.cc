@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2002/06/26 11:57:48  richard
+// Label mouse fixes.
+//
 // Revision 1.12  2002/06/25 11:56:43  richard
 // Initialise some local variables. Could have been causing Cameron no black bonds bug.
 //
@@ -83,10 +86,10 @@ CcChartDoc::~CcChartDoc()
 
 }
 
-Boolean CcChartDoc::ParseInput( CcTokenList * tokenList )
+bool CcChartDoc::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
-    Boolean hasTokenForMe = true;
+    bool retVal = true;
+    bool hasTokenForMe = true;
 
     if( ! mSelfInitialised )
     {
@@ -165,7 +168,7 @@ Boolean CcChartDoc::ParseInput( CcTokenList * tokenList )
             {
                 tokenList->GetToken(); // Remove that token!
                 CcChartColour* item = new CcChartColour();
-                Boolean storeMe = item->ParseInput(tokenList); //If the pen colour is already set, this object is superfluous.
+                bool storeMe = item->ParseInput(tokenList); //If the pen colour is already set, this object is superfluous.
                 if (storeMe)
                     mCommandList->AddItem(item);
                 else
@@ -181,10 +184,10 @@ Boolean CcChartDoc::ParseInput( CcTokenList * tokenList )
             case kTChartFlow:
             {
                 tokenList->GetToken();
-                Boolean north;
-                Boolean south;
-                Boolean east;
-                Boolean west;
+                bool north;
+                bool south;
+                bool east;
+                bool west;
                 CcString flowtext = "";
                 switch ( tokenList->GetDescriptor(kChartClass) )
                 {
@@ -352,13 +355,13 @@ void CcChartDoc::DrawView()
 
 }
 
-void CcChartDoc::ReadDirections(CcTokenList* tokenList,Boolean * north, Boolean * south, Boolean * east, Boolean * west)
+void CcChartDoc::ReadDirections(CcTokenList* tokenList,bool * north, bool * south, bool * east, bool * west)
 {
     *north = false;
     *south = false;
     *east = false;
     *west = false;
-    Boolean readDirections = true;
+    bool readDirections = true;
     while ( readDirections )
     {
         switch ( tokenList->GetDescriptor(kChartClass) )
@@ -502,7 +505,7 @@ void CcChartDoc::Clear()
 
 extern "C" {
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastline  ( int x1, int y1, int x2, int y2 );
 void fastfelli ( int x,  int y,  int w,  int h  );
 void fasteelli ( int x,  int y,  int w,  int h  );
@@ -514,7 +517,7 @@ void fastclear     ( );
 void fastshow      ( );
 void complete      ( );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastline_  ( int x1, int y1, int x2, int y2 );
 void fastfelli_ ( int x,  int y,  int w,  int h  );
 void fasteelli_ ( int x,  int y,  int w,  int h  );
@@ -527,10 +530,10 @@ void fastshow_      ( );
 void complete_      ( );
 #endif
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastline  ( int x1, int y1, int x2, int y2 )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastline_  ( int x1, int y1, int x2, int y2 )
 #endif
 {
@@ -539,10 +542,10 @@ void fastline_  ( int x1, int y1, int x2, int y2 )
             doc->FastLine( x1, y1, x2, y2 );
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastfelli  ( int x, int y, int w, int h )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastfelli_  ( int x, int y, int w, int h )
 #endif
 {
@@ -550,10 +553,10 @@ void fastfelli_  ( int x, int y, int w, int h )
       if ( doc )
             doc->FastFElli( x, y, w, h );
 }
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fasteelli  ( int x, int y, int w, int h )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fasteelli_  ( int x, int y, int w, int h )
 #endif
 {
@@ -562,10 +565,10 @@ void fasteelli_  ( int x, int y, int w, int h )
             doc->FastEElli( x, y, w, h );
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastfpoly ( int nv, int * points )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastfpoly_ ( int nv, int * points )
 #endif
 {
@@ -573,10 +576,10 @@ void fastfpoly_ ( int nv, int * points )
       if ( doc )
             doc->FastFPoly( nv, points );
 }
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastepoly ( int nv, int * points )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastepoly_ ( int nv, int * points )
 #endif
 {
@@ -585,10 +588,10 @@ void fastepoly_ ( int nv, int * points )
             doc->FastEPoly( nv, points );
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fasttext  ( int x,  int y,  char theText[80], int fs )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fasttext_  ( int x,  int y,  char theText[80], int fs )
 #endif
 {
@@ -606,10 +609,10 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs )
             doc->FastText( x,y,text, fs );
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastcolour( int r, int g, int b )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastcolour_( int r, int g, int b )
 #endif
 {
@@ -618,10 +621,10 @@ void fastcolour_( int r, int g, int b )
             doc->FastColour( r,g,b );
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastclear ( )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastclear_ ( )
 #endif
 {
@@ -630,10 +633,10 @@ void fastclear_ ( )
             doc->Clear( );
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void fastshow ( )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void fastshow_ ( )
 #endif
 {
@@ -648,10 +651,10 @@ void fastshow_ ( )
 #endif
 }
 
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 void complete ( )
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void complete_ ( )
 #endif
 {

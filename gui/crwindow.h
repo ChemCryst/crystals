@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2003/02/25 15:36:48  rich
+//   New WINDOW modifer "LARGE" makes the given window take up 64% of the area
+//   of the Main CRYSTALS window, provided the window doesn't already have a
+//   stored size from a previous "KEEP" modifier. This means that the first time
+//   windows appear (e.g. Cameron) they don't have to be ridiculously small.
+//
 //   Revision 1.16  2003/01/15 14:06:29  rich
 //   Some fail-safe code in the GUI. In the event of a creation of a window failing don't
 //   allow the rest of the windows to be corrupted.
@@ -56,7 +62,7 @@ class   CrWindow : public CrGUIElement
     CcRect  CalcLayout(bool recalculate=false);
     void    ResizeWindow(int newWidth, int newHeight);
     void    SetText( CcString item );
-    void    Show( Boolean show );
+    void    Show( bool show );
     void    Align();
     void    CrFocus();
     CrGUIElement *  FindObject( CcString Name );
@@ -86,7 +92,7 @@ class   CrWindow : public CrGUIElement
     void SysKeyReleased ( UINT nChar );
     void MenuSelected(int id);
     void ToolSelected(int id);
-    void SendCommand(CcString theText, Boolean jumpQueue = false);
+    void SendCommand(CcString theText, bool jumpQueue = false);
     void TimerFired();
 
 // attributes
@@ -94,12 +100,12 @@ class   CrWindow : public CrGUIElement
     CcList *    mTabGroup;
     int mSafeClose;
     int m_relativePosition;
-    Boolean m_Keep;
-    Boolean m_Large;
-    Boolean m_Shown;
-    Boolean mIsSizeable;
-    Boolean mIsModal;
-    Boolean mStayOpen;
+    bool m_Keep;
+    bool m_Large;
+    bool m_Shown;
+    bool mIsSizeable;
+    bool mIsModal;
+    bool mStayOpen;
     CrMenuBar* mMenuPtr;
     CcList mWindowsWantingSysKeys;
     int    wEnableFlags, wDisableFlags;
@@ -108,9 +114,9 @@ class   CrWindow : public CrGUIElement
 
 private:
     CrGUIElement* m_relativeWinPtr;
-    Boolean mCommitSet;
-    Boolean mCancelSet;
-    Boolean mCommandSet;
+    bool mCommitSet;
+    bool mCancelSet;
+    bool mCommandSet;
     CcString mCommitText;
     CcString mCancelText;
     CcString mCommandText;

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/06/17 15:14:13  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.3  2001/03/08 16:44:05  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -48,7 +51,7 @@ CRCALCLAYOUT(CrIcon,CxIcon)
 CcParse     CrIcon::ParseInput( CcTokenList * tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
-  Boolean hasTokenForMe = true;
+  bool hasTokenForMe = true;
 
 // This is the only class I can think of that doesn't have
 // a general parser. All info must be set up as the icon

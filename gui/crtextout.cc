@@ -46,7 +46,7 @@ CRCALCLAYOUT(CrTextOut,CxTextOut)
 CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )

@@ -43,7 +43,7 @@ typedef struct _tagCOLOURCODE
 {
     int nFore;      // Foreground Colour Index
     int nBack;      // Background Colour Index
-        Boolean nUnder;            // Underline
+        bool nUnder;            // Underline
 } COLOURCODE;
 
 #define COLOUR_WHITE        0
@@ -117,7 +117,7 @@ class CxTextOut : public BASETEXTOUT
     int GetHead() const { return( m_nHead ); }; // Return the Head
     int GetMaxViewableLines();     // Return viewable lines
 
-    Boolean IsAHit( CcString & commandString, int x, int y );
+    bool IsAHit( CcString & commandString, int x, int y );
 
   private:
 // attributes

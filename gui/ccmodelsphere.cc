@@ -82,19 +82,19 @@ void CcModelSphere::ParseInput(CcTokenList* tokenList)
 
 int CcModelSphere::X()
 {
-	return x;
+    return x;
 }
 int CcModelSphere::Y()
 {
-	return y;
+    return y;
 }
 int CcModelSphere::Z()
 {
-	return z;
+    return z;
 }
 int CcModelSphere::R()
 {
-	return covrad;
+    return covrad;
 }
 
 void CcModelSphere::Render(CcModelStyle *style, bool feedback)
@@ -213,7 +213,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 
 }
 
-void CcModelSphere::SendAtom(int style, Boolean output)
+void CcModelSphere::SendAtom(int style, bool output)
 {
   style = (output) ? CR_SENDA : style;
 

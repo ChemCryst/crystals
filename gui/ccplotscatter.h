@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/02/21 15:23:12  DJWgroup
+//   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
+//
 //   Revision 1.11  2002/02/20 12:05:19  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -60,28 +63,28 @@ class CcPlotScatter : public CcPlotData
 {
     public:
         void DrawView(bool print);
-        Boolean ParseInput( CcTokenList * tokenList );
+        bool ParseInput( CcTokenList * tokenList );
         CcPlotScatter();
         virtual ~CcPlotScatter();
 
-		PlotDataPopup GetDataFromPoint(CcPoint *point);
-		void CreateSeries(int numser, int* type);
-		void AllocateMemory();
-		void AddSeries(int type, int length);
-		void ExtendSeriesLength(int ser);
+        PlotDataPopup GetDataFromPoint(CcPoint *point);
+        void CreateSeries(int numser, int* type);
+        void AllocateMemory();
+        void AddSeries(int type, int length);
+        void ExtendSeriesLength(int ser);
 };
 
 class CcSeriesScatter : public CcSeries
 {
 public:
-	Boolean ParseInput(CcTokenList * tokenList);
-	CcSeriesScatter();
-	virtual ~CcSeriesScatter();
+    bool ParseInput(CcTokenList * tokenList);
+    CcSeriesScatter();
+    virtual ~CcSeriesScatter();
 
-	void AllocateMemory();
+    void AllocateMemory();
 
-	float *		m_Data[2];					// pointer to a this series' data (x and y)
-	CcString*	m_Label;					// pointer to the label for each data point
+    float *     m_Data[2];                  // pointer to a this series' data (x and y)
+    CcString*   m_Label;                    // pointer to the label for each data point
 };
 
 #endif

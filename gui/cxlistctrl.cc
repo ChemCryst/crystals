@@ -214,7 +214,7 @@ void CxListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
         GetItem(&lvi);
 
         // Should the item be highlighted
-        Boolean bHighlight =((lvi.state & LVIS_DROPHILITED)
+        bool bHighlight =((lvi.state & LVIS_DROPHILITED)
                                 || ( (lvi.state & LVIS_SELECTED)
                                         && ((GetFocus() == this)
                                                 || (GetStyle() & LVS_SHOWSELALWAYS)
@@ -555,7 +555,7 @@ void CxListCtrl::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 // colType              - INT, REAL or TEXT. Makes sure correct sort is done.
 // nCol                 - column that contains the text to be sorted
 // bAscending           - indicate sort order
-Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
+bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     if( nCol >= nColCount)
@@ -619,7 +619,7 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
         }
         int hold = index[element];
         int hold2 = m_originalIndex[element];
-        Boolean repeat = true;
+        bool repeat = true;
         int place;
         for ( place = element - 1; repeat; place-- )
         {
@@ -707,7 +707,7 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
     CStringArray rowText;
     rowText.SetSize( nColCount );
 
-      Boolean *sorted = new Boolean[size+1];
+      bool *sorted = new bool[size+1];
     for (i = 0; i <= size; i++)
         sorted[i] = false;
 
@@ -803,8 +803,8 @@ int CxListCtrl::WhichType(CcString text)
 
 //Test two: One token only.
 //Test two(b): Minus sign in correct place if present.
-    Boolean inLeadingSpace = true;
-    Boolean inFinalSpace = false;
+    bool inLeadingSpace = true;
+    bool inFinalSpace = false;
     for (i = 0; i < text.Length(); i++)
     {
         if(inLeadingSpace)
@@ -838,7 +838,7 @@ int CxListCtrl::WhichType(CcString text)
 
 
 //Test three: One point symbol in the text.
-    Boolean pointFound = false;
+    bool pointFound = false;
     for (i = 0; i < text.Length(); i++)
     {
         if ( text[i] == '.' )
@@ -865,7 +865,7 @@ int CxListCtrl::WhichType(CcString text)
 
 }
 
-void CxListCtrl::SelectAll(Boolean select)
+void CxListCtrl::SelectAll(bool select)
 {
 
     int size = GetItemCount();
@@ -898,10 +898,10 @@ CcString CxListCtrl::GetCell(int row, int col)
     return retVal;
 }
 
-void CxListCtrl::SelectPattern(CcString * strings, Boolean select)
+void CxListCtrl::SelectPattern(CcString * strings, bool select)
 {
     int size = GetItemCount();
-    Boolean match = true;
+    bool match = true;
     for ( int i = 0; i < size; i++ )
     {
         match = true;
@@ -999,7 +999,7 @@ void    CxListCtrl::InvertSelection()
                             LVIS_OVERLAYMASK | LVIS_STATEIMAGEMASK;
         GetItem( &moveItem );
 
-        Boolean select = (( moveItem.state & LVIS_SELECTED ) != 0);
+        bool select = (( moveItem.state & LVIS_SELECTED ) != 0);
 
         if(select)
             moveItem.state &= (~LVIS_SELECTED);

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   22.2.1998 14:43 Hours
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/17 15:14:14  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.8  2001/03/08 16:44:07  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -50,7 +53,7 @@ CRCALCLAYOUT(CrProgress,CxProgress)
 CcParse CrProgress::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
 // Initialization for the first time
     if( ! mSelfInitialised )

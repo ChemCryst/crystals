@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/01/31 14:39:36  ckp2
+//   RIC: SetBondType function for ccstatus. Allows popup-menus to vary depending on
+//   the bond type that has been clicked on.
+//
 //   Revision 1.7  2001/12/13 20:45:30  ckp2
 //   RIC: (Bug) CcStatus was going out of it's way to ignore script exit signals
 //   and failing to instruct cccontroller to remove any modal windows left open by
@@ -94,7 +98,7 @@ void CcStatus::SetBondType(int bt)
   }
 }
 
-Boolean CcStatus::ShouldBeEnabled(int enableFlags, int disableFlags)
+bool CcStatus::ShouldBeEnabled(int enableFlags, int disableFlags)
 {
     if( disableFlags & statusFlags )           //If any bits match, then should be disabled.
             return false;
@@ -128,7 +132,7 @@ int CcStatus::CreateFlag(CcString text)
     int returnFlag = 0;
 
     int start = 0, i;
-    Boolean inSpace = true;
+    bool inSpace = true;
 
     for (i=1; i < text.Len()+1; i++ )
     {
@@ -207,7 +211,7 @@ int CcStatus::GetBitByToken(CcString token)
 
 void CcStatus::ParseInput(CcTokenList * tokenList)
 {
-    Boolean moreTokens = true;
+    bool moreTokens = true;
     while (moreTokens)
     {
         switch(tokenList->GetDescriptor(kStatusClass))

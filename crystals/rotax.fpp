@@ -551,28 +551,28 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
             exit
           else
             bc=bc+1
-#GIL            jp = maxloc(dcopy)
-&GIL            jp(1) = maxpos(dcopy,30)
+##GILWXS            jp = maxloc(dcopy)
+&&GILWXS            jp(1) = maxpos(dcopy,30)
             dsum = dsum - dcopy(jp(1))
             dcopy(jp(1)) = 0.
             d(jp(1),1)=-d(jp(1),1)
           endif
       enddo
       fom=1000.*fom
-#GIL      q=1000*q
-&GIL      do i=1,15
-&GIL      q(i)=1000*q(i)
-&GIL      end do
+##GILWXS      q=1000*q
+&&GILWXS      do i=1,15
+&&GILWXS      q(i)=1000*q(i)
+&&GILWXS      end do
       end
 
-&GIL      FUNCTION maxpos(dcopy, n)
-&GIL      DIMENSION dcopy(n)
-&GIL      maxpos = 1
-&GIL      do i = 2,n
-&GIL        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
-&GIL      end do
-&GIL      return
-&GIL      end
+&&GILWXS      FUNCTION maxpos(dcopy, n)
+&&GILWXS      DIMENSION dcopy(n)
+&&GILWXS      maxpos = 1
+&&GILWXS      do i = 2,n
+&&GILWXS        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
+&&GILWXS      end do
+&&GILWXS      return
+&&GILWXS      end
 
       subroutine write_results(fom,disag, d,q,bc,m2,ipunch)
 c prints the results to rotax.out

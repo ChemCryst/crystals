@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/02/27 11:41:16  rich
+C
+C Changes to KSCTRN so that it can be called safely when SCRIPTS aren't running.
+C
 C Revision 1.41  2003/01/14 10:22:39  rich
 C Remove unimplemented FLOOR intrinsic
 C
@@ -3164,6 +3168,7 @@ C 'c:\structures\nket\'  e.g. everything up to the last slash.
 &GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
 &LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 &GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+&WXS      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 C      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
       IF ( IECF .LE. 0 ) THEN
             CWORK1 = ' '
@@ -3188,6 +3193,7 @@ C 'crfile.dsc'  e.g. everything after the last slash if there is one.
 &GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
 &LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 &GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+&WXS      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 C      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
@@ -3213,6 +3219,7 @@ C up to the last dot.
 &GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
 &LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 &GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+&WXS      IECF = KCLEQL(CWORK1(1:LEN1),'/')
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
@@ -6801,6 +6808,11 @@ C----- RECOVER SCRIPT NAME
 &&GILGID      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
 &&GILGID      CLSTNM = CSCPNM(1:LENNM)
 &&GILGID      CALL XCTRIM (CLSTNM,LLSTNM)
+&WXS      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
+&WXS      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
+&WXS      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+&WXS      CLSTNM = CSCPNM(1:LENNM)
+&WXS      CALL XCTRIM (CLSTNM,LLSTNM)
 
 &&GILGID      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
 &&GILGID      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
@@ -6813,6 +6825,18 @@ C----- RECOVER SCRIPT NAME
 &&GILGID      ENDIF
 &&GILGID      WRITE(CMON(3),'(A)') '^^CR'
 &&GILGID      CALL XPRVDU(NCVDU,3,0)
+
+&WXS      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
+&WXS      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
+&WXS         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
+&WXS     1   CSCPNM(1:LENNM),
+&WXS     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
+&WXS      ELSE
+&WXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+&WXS     1  CSCPNM(1:LENNM), ''''
+&WXS      ENDIF
+&WXS      WRITE(CMON(3),'(A)') '^^CR'
+&WXS      CALL XPRVDU(NCVDU,3,0)
 C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C

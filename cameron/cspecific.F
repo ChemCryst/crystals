@@ -10,6 +10,7 @@ CODE FOR ZCLRA
 &DOS\CAMWIN
 &GID\CAMCOL
 &GIL\CAMCOL
+&WXS\CAMCOL
       INTEGER IX1,IY1,IX2,IY2,ICOL
 
 &DOS      INTEGER*2 IXX1,IYY1,IXX2,IYY2,ICOL1
@@ -22,12 +23,14 @@ CODE FOR ZCLRA
 
 C&&GIDGIL      CHARACTER*80 CHARTC
 &&GIDGIL      INTEGER IPTS(8)
+&WXS      INTEGER IPTS(8)
 
 C &&GIDGIL      WRITE(CHARTC,1)'^^CH CLEAR'
 C &&GIDGIL1     FORMAT (A)
 C &&GIDGIL      CALL ZMORE(CHARTC,0)
 
 &&GIDGIL              CALL FSTCLR
+&WXS              CALL FSTCLR
 
 C &&GIDGIL      WRITE(CHARTC,2)'^^CH RGB',
 C &&GIDGIL     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -38,6 +41,9 @@ C &&GIDGIL      CALL ZMORE(CHARTC,0)
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GIDGIL      WRITE(CHARTC,3)'^^CH POLYF 4',IX1,IY1,IX1,IY2,
 C &&GIDGIL     1  IX2,IY2,IX2,IY1
@@ -53,6 +59,15 @@ C &&GIDGIL      CALL ZMORE(CHARTC,0)
 &&GIDGIL      IPTS(7) = IX2
 &&GIDGIL      IPTS(8) = IY1
 &&GIDGIL      CALL FSTFPO(4,IPTS)
+&WXS      IPTS(1) = IX1
+&WXS      IPTS(2) = IY1
+&WXS      IPTS(3) = IX1
+&WXS      IPTS(4) = IY2
+&WXS      IPTS(5) = IX2
+&WXS      IPTS(6) = IY2
+&WXS      IPTS(7) = IX2
+&WXS      IPTS(8) = IY1
+&WXS      CALL FSTFPO(4,IPTS)
 
       RETURN
       END
@@ -61,6 +76,7 @@ CODE FOR ZDLINE
       SUBROUTINE ZDLINE (IX1,IY1,IX2,IY2,ICOL)
 &DOS\CAMWIN
 &&GIDGIL\CAMCOL
+&WXS\CAMCOL
       INTEGER IX1,IY1,IX2,IY2,ICOL
 &DOS      INTEGER*2 IXX1,IYY1,IXX2,IYY2,ICOL1
 &DOS      ixx1 = nint(float(ix1)*scale_X)
@@ -71,6 +87,7 @@ CODE FOR ZDLINE
 &DOS      CALL DRAW_LINE@ (IXX1,IYY1,IXX2,IYY2,ICOL1)
 
 &&GILGID      CHARACTER*80 CHARTC
+&WXS      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -81,11 +98,15 @@ c
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH LINE',IX1,IY1,IX2,IY2
 C &&GILGID3     FORMAT(A,4(1X,I4))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 &&GILGID      CALL FSTLIN( IX1, IY1, IX2, IY2 )
+&WXS      CALL FSTLIN( IX1, IY1, IX2, IY2 )
       RETURN
       END
  
@@ -95,6 +116,9 @@ CODE FOR ZDTEXT
 &&GILGID\CAMPAR
 &&GILGID\CAMCOL
 &&GILGID\CAMGRP
+&WXS\CAMPAR
+&WXS\CAMCOL
+&WXS\CAMGRP
       CHARACTER*(*) TEXT
       INTEGER ICOL
 &DOS      INTEGER*2 ICOL1,IXX,IYY
@@ -120,6 +144,9 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH TEXT',IX,IY,'''',
 C &&GILGID     1 TEXT(1:LEN(TEXT)),''''
@@ -127,6 +154,7 @@ C &&GILGID3     FORMAT(A,1X,2(I4,1X),3A)
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
 &&GIDGIL      CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
+&WXS      CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
 
       RETURN
       END
@@ -135,6 +163,7 @@ CODE FOR ZFILEL
       SUBROUTINE ZFILEL (IXC,IYC,IMAJ,IMIN,ICOL)
 &DOS\CAMWIN
 &&GILGID\CAMCOL
+&WXS\CAMCOL
       INTEGER IMAJ,IMIN,ICOL
 &DOS      INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
 &DOS      ixc1  = nint(float(ixc)*scale_X)
@@ -145,6 +174,7 @@ CODE FOR ZFILEL
 &DOS      CALL FILL_ELLIPSE@( IXC1,IYC1,IMAJ1,IMIN1,ICOL1)
 
 &&GILGID      CHARACTER*80 CHARTC
+&WXS      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -155,12 +185,16 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH ELLIF',IXC,IYC,IMAJ,IMIN
 C &&GILGID3     FORMAT(A,4(1X,I4))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
 &&GIDGIL              CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
+&WXS              CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
             
       RETURN
       END
@@ -202,6 +236,7 @@ CODE FOR ZPLINE
 
 C &&GILGID      CHARACTER*80 CHARTC
 &&GILGID      INTEGER IPTS(2000)    
+&WXS      INTEGER IPTS(2000)    
 
       IF (N.GT.1000) N = 1000
 
@@ -213,6 +248,8 @@ C &&GILGID      CHARACTER*80 CHARTC
 &DOS        iyy2(i) = nint(float(iy(i))*scale_Y)
 &&GILGID        IPTS(I*2 - 1) = IX(I)
 &&GILGID        IPTS(I*2    ) = IY(I)
+&WXS        IPTS(I*2 - 1) = IX(I)
+&WXS        IPTS(I*2    ) = IY(I)
 
 10    CONTINUE
 
@@ -229,12 +266,16 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL1+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL1+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH FPOLYE',N,ID
 C &&GILGID3     FORMAT(A,2(1X,I6))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
 &&GIDGIL              CALL FSTEPO ( N, IPTS )
+&WXS              CALL FSTEPO ( N, IPTS )
 
       RETURN
       END
@@ -245,6 +286,7 @@ CODE FOR ZVGAEL
 &DOS      INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
 &DOS\CAMWIN
 &&GILGID\CAMCOL
+&WXS\CAMCOL
 &DOS      ixc1  = nint(float(ixc)*scale_X)
 &DOS      iyc1  = nint(float(iyc)*scale_Y)
 &DOS      imaj1 = nint(float(imaj)*scale_X)
@@ -253,6 +295,7 @@ CODE FOR ZVGAEL
 &DOS      CALL ELLIPSE@( IXC1,IYC1,IMAJ1,IMIN1,ICOL1)
 
 &&GILGID      CHARACTER*80 CHARTC
+&WXS      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -263,12 +306,16 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH ELLIE',IXC,IYC,IMAJ,IMIN
 C &&GILGID3     FORMAT(A,4(1X,I4))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
 &&GIDGIL              CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
+&WXS              CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
 
       RETURN
       END
@@ -584,21 +631,23 @@ CODE FOR ZPOLGN
 &DOS      INTEGER*2 ICOL2,HANDLE,ERROR
 C &&GILGID      CHARACTER*80 CHARTC
 &&GILGID      INTEGER IPTS(2000)    
+&WXS      INTEGER IPTS(2000)    
 
 &DOS      ICOL2 = ICOL
 
-&GIL      WRITE(6,*) 'ZPOLGN, N: ', N
-
-&GIL      WRITE(6,*) 'ZPOLGN2, N: ', N
+C&GIL      WRITE(6,*) 'ZPOLGN, N: ', N
+C&GIL      WRITE(6,*) 'ZPOLGN2, N: ', N
 
       DO 10 I = 1 , N
 &DOS        ixx2(i) = nint(float(ix(i))*scale_X)
 &DOS        iyy2(i) = nint(float(iy(i))*scale_Y)
 &&GILGID        IPTS(I*2 - 1) = IX(I)
 &&GILGID        IPTS(I*2    ) = IY(I)
+&WXS        IPTS(I*2 - 1) = IX(I)
+&WXS        IPTS(I*2    ) = IY(I)
 10    CONTINUE
 
-&GIL      WRITE(6,*) 'ZPOLGN3, N: ', N
+c&GIL      WRITE(6,*) 'ZPOLGN3, N: ', N
 
 &DOS      CALL CREATE_POLYGON@(IXX2,IYY2,N,HANDLE,ERROR)
 &DOS      CALL FILL_POLYGON@(HANDLE,ICOL2,ERROR)
@@ -614,14 +663,18 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 &&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
 &&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH FPOLYF',N,ID
 C &&GILGID3     FORMAT(A,2(1X,I6))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&GIL      WRITE(6,*) 'ZPOLGN4, N: ', N
+c&GIL      WRITE(6,*) 'ZPOLGN4, N: ', N
 
 &&GIDGIL              CALL FSTFPO ( N, IPTS )
+&WXS              CALL FSTFPO ( N, IPTS )
 
       RETURN
       END
@@ -740,36 +793,36 @@ C          Update the mouse position variables
 &DOS      ENDIF
 &DOS      GOTO 30
 
-&&GILGID      INTEGER IX(N),IY(N)
-&&GILGID      INTEGER IXPOS,IYPOS
-&&GILGID      INTEGER IPPOS
-&&GILGID      CHARACTER CLINE*80
-&&GILGID      IUNIT = 5
-&&GILGID      IPPOS = 0
-&&GILGID      CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=YES',0)
-&&GILGID100   CONTINUE   ! NOW BEGIN TO LOOP
-&&GILGID      ISTAT = KRDLIN ( IUNIT, CLINE, LENUSE )
-&&GILGID      IF (CLINE(1:6).NE.'LCLICK') THEN
-&&GILGID            IF (CLINE(1:6).EQ.'CLOSED') THEN  !Closed the polygon.
-&&GILGID              IPPOS = IPPOS + 1
-&&GILGID              IX(IPPOS) = IX(1)
-&&GILGID              IY(IPPOS) = IY(1)
-&&GILGID              RETURN
-&&GILGID            ELSE               !Cancelled the polygon.
-&&GILGID              CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=NO',0)
-&&GILGID              IPPOS = 0
-&&GILGID              RETURN
-&&GILGID            ENDIF
-&&GILGID      ELSE                   !Get some coordinates.
-&&GILGID            READ (CLINE(7:),*)IXPOS, IYPOS
-&&GILGID            IPPOS = IPPOS + 1
-&&GILGID            IX(IPPOS) = IXPOS
-&&GILGID            IY(IPPOS) = IYPOS
-&&GILGID      ENDIF
-&&GILGID      GOTO 100
+&&&GILGIDWXS      INTEGER IX(N),IY(N)
+&&&GILGIDWXS      INTEGER IXPOS,IYPOS
+&&&GILGIDWXS      INTEGER IPPOS
+&&&GILGIDWXS      CHARACTER CLINE*80
+&&&GILGIDWXS      IUNIT = 5
+&&&GILGIDWXS      IPPOS = 0
+&&&GILGIDWXS      CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=YES',0)
+&&&GILGIDWXS100   CONTINUE   ! NOW BEGIN TO LOOP
+&&&GILGIDWXS      ISTAT = KRDLIN ( IUNIT, CLINE, LENUSE )
+&&&GILGIDWXS      IF (CLINE(1:6).NE.'LCLICK') THEN
+&&&GILGIDWXS        IF (CLINE(1:6).EQ.'CLOSED') THEN  !Closed the polygon.
+&&&GILGIDWXS          IPPOS = IPPOS + 1
+&&&GILGIDWXS          IX(IPPOS) = IX(1)
+&&&GILGIDWXS          IY(IPPOS) = IY(1)
+&&&GILGIDWXS          RETURN
+&&&GILGIDWXS        ELSE               !Cancelled the polygon.
+&&&GILGIDWXS          CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=NO',0)
+&&&GILGIDWXS          IPPOS = 0
+&&&GILGIDWXS          RETURN
+&&&GILGIDWXS        ENDIF
+&&&GILGIDWXS      ELSE                   !Get some coordinates.
+&&&GILGIDWXS            READ (CLINE(7:),*)IXPOS, IYPOS
+&&&GILGIDWXS            IPPOS = IPPOS + 1
+&&&GILGIDWXS            IX(IPPOS) = IXPOS
+&&&GILGIDWXS            IY(IPPOS) = IYPOS
+&&&GILGIDWXS      ENDIF
+&&&GILGIDWXS      GOTO 100
       END
 
-&&GILGID      SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
+&&&GILGIDWXS      SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTLINE (JX1, JY1, JX2, JY2)
 &GID          !DEC$ ATTRIBUTES C :: fastline
@@ -781,12 +834,17 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTLINE
 &GID      END INTERFACE
 &&GILGID      INTEGER IX1, IX2, IY1, IY2
+&WXS      INTEGER IX1, IX2, IY1, IY2
 &GIL      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
+&WXS      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
 &GID      CALL FASTLINE(IX1, IY1, IX2, IY2)
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTFEL(IX, IY, IW, IH)
+&WXS      SUBROUTINE FSTFEL(IX, IY, IW, IH)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTFELLI (JX, JY, JW, JH)
 &GID          !DEC$ ATTRIBUTES C :: fastfelli
@@ -798,12 +856,17 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTFELLI
 &GID      END INTERFACE
 &&GILGID      INTEGER IX, IY, IW, IH
+&WXS      INTEGER IX, IY, IW, IH
 &GIL      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+&WXS      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
 &GID      CALL FASTFELLI(IX, IY, IW, IH)
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTEEL(IX, IY, IW, IH)
+&WXS      SUBROUTINE FSTEEL(IX, IY, IW, IH)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTEELLI (JX, JY, JW, JH)
 &GID          !DEC$ ATTRIBUTES C :: fasteelli
@@ -815,12 +878,17 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTEELLI
 &GID      END INTERFACE
 &&GILGID      INTEGER IX, IY, IW, IH
+&WXS      INTEGER IX, IY, IW, IH
 &GID      CALL FASTEELLI(IX, IY, IW, IH)
 &GIL      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTFPO(NV, IPTS)
+&WXS      SUBROUTINE FSTFPO(NV, IPTS)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTFPOLY (NV, IPTS)
 &GID          !DEC$ ATTRIBUTES C :: fastfpoly
@@ -830,12 +898,17 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTFPOLY
 &GID      END INTERFACE
 &&GILGID      INTEGER NV, IPTS(2000)
+&WXS      INTEGER NV, IPTS(2000)
 &GID      CALL FASTFPOLY(NV, IPTS)
 &GIL      CALL FASTFPOLY(%VAL(NV), IPTS)
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      CALL FASTFPOLY(%VAL(NV), IPTS)
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTEPO(NV, IPTS)
+&WXS      SUBROUTINE FSTEPO(NV, IPTS)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTEPOLY (NV, IPTS)
 &GID          !DEC$ ATTRIBUTES C :: fastepoly
@@ -845,12 +918,17 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTEPOLY
 &GID      END INTERFACE
 &&GILGID      INTEGER NV, IPTS(2000)
+&WXS      INTEGER NV, IPTS(2000)
 &GIL      CALL FASTEPOLY(%VAL(NV), IPTS)
+&WXS      CALL FASTEPOLY(%VAL(NV), IPTS)
 &GID      CALL FASTEPOLY(NV, IPTS)
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
+&WXS      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTTEXT (JX, JY, CALINE, JFS)
 &GID          !DEC$ ATTRIBUTES C :: fasttext
@@ -867,11 +945,19 @@ C          Update the mouse position variables
 &&GILGID      CHARACTER*80  NTEXT
 &&GILGID      NTEXT = CTEXT
 &GIL      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
+&WXS      INTEGER IX, IY, IFSIZE
+&WXS      CHARACTER*(*) CTEXT
+&WXS      CHARACTER*80  NTEXT
+&WXS      NTEXT = CTEXT
+&WXS      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
 &GID      CALL FASTTEXT(IX, IY, NTEXT, IFSIZE )
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTCOL(IR, IG, IB)
+&WXS      SUBROUTINE FSTCOL(IR, IG, IB)
 &GID      INTERFACE
 &GID          SUBROUTINE FASTCOLOUR ( JR, JG, JB )
 &GID          !DEC$ ATTRIBUTES C :: fastcolour
@@ -882,12 +968,17 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTCOLOUR
 &GID      END INTERFACE
 &&GILGID      INTEGER IR, IG, IB
+&WXS      INTEGER IR, IG, IB
 &GIL      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
+&WXS      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
 &GID      CALL FASTCOLOUR(IR, IG, IB)
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTCLR()
+&WXS      SUBROUTINE FSTCLR()
 &GID      INTERFACE
 &GID          SUBROUTINE FASTCLEAR ()
 &GID          !DEC$ ATTRIBUTES C :: fastclear
@@ -896,8 +987,12 @@ C          Update the mouse position variables
 &&GILGID      CALL FASTCLEAR()
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      CALL FASTCLEAR()
+&WXS      RETURN
+&WXS      END
 
 &&GILGID      SUBROUTINE FSTSHW()
+&WXS      SUBROUTINE FSTSHW()
 &GID      INTERFACE
 &GID          SUBROUTINE FASTSHOW ()
 C Suits you.
@@ -907,14 +1002,17 @@ C Suits you.
 &&GILGID      CALL FASTSHOW()
 &&GILGID      RETURN
 &&GILGID      END
+&WXS      CALL FASTSHOW()
+&WXS      RETURN
+&WXS      END
 
 
       SUBROUTINE ZMORE1(text,iarg)
 C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
 &DOS\CAMWIN
-#GIL      character*(*) text
-&GIL      character*70 text
+##GILWXS      character*(*) text
+&&GILWXS      character*70 text
       CHARACTER*80 ntext
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
@@ -925,5 +1023,11 @@ C&DOS      call window_update@(Status$Text)
 &&GILGID      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
 &&GILGID      CALL ZMORE('^^WI '''//TEXT(1:ITL)//'''',0)
 &&GILGID      CALL ZMORE('^^CR',0)
+&WXS      CALL XCTRIM(TEXT,ITL)
+&WXS      IF ( ITL .LE. 2 ) RETURN
+&WXS      ITL = MIN ( ITL, 70 )
+&WXS      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
+&WXS      CALL ZMORE('^^WI '''//TEXT(1:ITL)//'''',0)
+&WXS      CALL ZMORE('^^CR',0)
       end
 

@@ -149,20 +149,20 @@ void CcModelAtom::ParseInput(CcTokenList* tokenList)
 
 int CcModelAtom::X()
 {
-	return x;
+    return x;
 }
 int CcModelAtom::Y()
 {
-	return y;
+    return y;
 }
 int CcModelAtom::Z()
 {
-	return z;
+    return z;
 }
 
 float CcModelAtom::R()
 {
-	return covrad;
+    return covrad;
 }
 
 void CcModelAtom::Render(CcModelStyle *style, bool feedback)
@@ -284,7 +284,7 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
 }
 
-void CcModelAtom::SendAtom(int style, Boolean output)
+void CcModelAtom::SendAtom(int style, bool output)
 {
   style = (output) ? CR_SENDA : style;
 

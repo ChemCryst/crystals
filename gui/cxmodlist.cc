@@ -277,7 +277,7 @@ void CxModList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
         GetItem(&lvi);
 
         // Should the item be highlighted?
-        Boolean bHighlight =((lvi.state & LVIS_DROPHILITED)
+        bool bHighlight =((lvi.state & LVIS_DROPHILITED)
                                 || ( (lvi.state & LVIS_SELECTED)
                                         && ((GetFocus() == this)
                                                 || (GetStyle() & LVS_SHOWSELALWAYS)
@@ -574,7 +574,7 @@ void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 // nCol                 - column that contains the text to be sorted
 // bAscending           - indicate sort order
 #ifdef __CR_WIN__
-Boolean CxModList::SortItems( int colType, int nCol, Boolean bAscending)
+bool CxModList::SortItems( int colType, int nCol, bool bAscending)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     if( nCol >= nColCount)
@@ -638,7 +638,7 @@ Boolean CxModList::SortItems( int colType, int nCol, Boolean bAscending)
         }
         int hold = index[element];
         int IDhold = IDlist[element-1];
-        Boolean repeat = true;
+        bool repeat = true;
         int place;
         for ( place = element - 1; repeat; place-- )
         {
@@ -726,7 +726,7 @@ Boolean CxModList::SortItems( int colType, int nCol, Boolean bAscending)
     CStringArray rowText;
     rowText.SetSize( nColCount );
 
-    Boolean *sorted = new Boolean[size+1];
+    bool *sorted = new bool[size+1];
     for (i = 0; i <= size; i++)
         sorted[i] = false;
 
@@ -822,8 +822,8 @@ int CxModList::WhichType(CcString text)
 
 //Test two: One token only.
 //Test two(b): Minus sign in correct place if present.
-    Boolean inLeadingSpace = true;
-    Boolean inFinalSpace = false;
+    bool inLeadingSpace = true;
+    bool inFinalSpace = false;
     for (i = 0; i < text.Length(); i++)
     {
         if(inLeadingSpace)
@@ -857,7 +857,7 @@ int CxModList::WhichType(CcString text)
 
 
 //Test three: One point symbol in the text.
-    Boolean pointFound = false;
+    bool pointFound = false;
     for (i = 0; i < text.Length(); i++)
     {
         if ( text[i] == '.' )
@@ -886,7 +886,7 @@ int CxModList::WhichType(CcString text)
 
 
 #ifdef __CR_WIN__
-void CxModList::SelectAll(Boolean select)
+void CxModList::SelectAll(bool select)
 {
     int size = GetItemCount();
     m_ProgSelecting = size;
@@ -927,10 +927,10 @@ CcString CxModList::GetCell(int row, int col)
 #endif
 
 #ifdef __CR_WIN__
-void CxModList::SelectPattern(CcString * strings, Boolean select)
+void CxModList::SelectPattern(CcString * strings, bool select)
 {
     int size = GetItemCount();
-    Boolean match = true;
+    bool match = true;
     for ( int i = 0; i < size; i++ )
     {
         match = true;
@@ -1039,7 +1039,7 @@ void    CxModList::InvertSelection()
                             LVIS_OVERLAYMASK | LVIS_STATEIMAGEMASK;
         GetItem( &moveItem );
 
-        Boolean select = (( moveItem.state & LVIS_SELECTED ) != 0);
+        bool select = (( moveItem.state & LVIS_SELECTED ) != 0);
 
         if(select)
             moveItem.state &= (~LVIS_SELECTED);
@@ -1129,11 +1129,18 @@ void CxModList::Update(int newsize)
 
 //       m_listboxparent->LockWindowUpdate();
 
+#ifdef __CR_WIN__
        SendMessage(WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
-//       m_listboxparent->UnlockWindowUpdate();
        SendMessage(WM_SETREDRAW,TRUE,0);
-       Invalidate(FALSE); 
+       Invalidate(FALSE);
+#endif
+#ifdef __BOTHWX__
+       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
+       ((CrModList*)ptr_to_crObject)->DocToList();
+       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
+       Refresh();
+#endif
 
 }
 
@@ -1162,7 +1169,7 @@ void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
    lvi.stateMask = 0xFFFF;         // get all state flags
    GetItem(&lvi);
 // Is item highlighted?
-   Boolean bHighlight = (lvi.state & LVIS_SELECTED) != 0;
+   bool bHighlight = (lvi.state & LVIS_SELECTED) != 0;
 
    if ( bHighlight )
    {
@@ -1193,4 +1200,3 @@ void CxModList::OnMenuSelected(UINT nID)
     ((CrModList*)ptr_to_crObject)->MenuSelected( nID );
 }
 #endif
-

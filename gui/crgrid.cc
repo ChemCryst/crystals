@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2003/01/15 14:06:29  rich
+//   Some fail-safe code in the GUI. In the event of a creation of a window failing don't
+//   allow the rest of the windows to be corrupted.
+//
 //   Revision 1.21  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -870,7 +874,7 @@ void CrGrid::CrFocus()
 }
 
 
-void CrGrid::SendCommand(CcString theText, Boolean jumpQueue)
+void CrGrid::SendCommand(CcString theText, bool jumpQueue)
 {
 //If there is a COMMAND= set for this window
 //send this first, unless the text begins with

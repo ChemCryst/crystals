@@ -1,6 +1,6 @@
 
-#ifndef		__CcChartPoly_H__
-#define		__CcChartPoly_H__
+#ifndef     __CcChartPoly_H__
+#define     __CcChartPoly_H__
 
 class CrChart;
 class CcTokenList;
@@ -8,16 +8,16 @@ class CcTokenList;
 
 class CcChartPoly : public CcChartObject
 {
-	public:
-            CcChartPoly(Boolean filled = true);
-            CcChartPoly(Boolean filled, int iv, int* points );
-		~CcChartPoly();
-		void Draw(CrChart* chartToDrawOn);
-		Boolean ParseInput(CcTokenList* tokenList);
-	private:
-		int nVerts;
-		int* verts;
-		Boolean fill;
+    public:
+            CcChartPoly(bool filled = true);
+            CcChartPoly(bool filled, int iv, int* points );
+        ~CcChartPoly();
+        void Draw(CrChart* chartToDrawOn);
+        bool ParseInput(CcTokenList* tokenList);
+    private:
+        int nVerts;
+        int* verts;
+        bool fill;
 };
 
 #endif

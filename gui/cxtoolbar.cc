@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/01/14 10:27:19  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.8  2002/07/15 12:19:13  richard
 //   Reorder headers to improve ease of linking.
 //   Update program to use new standard C++ io libraries.
@@ -48,10 +51,11 @@
 //
 
 #include    "crystalsinterface.h"
+#include    "cxwindow.h"
+
 #include    "crtoolbar.h"
 #include    "cxtoolbar.h"
 #include    "cxgrid.h"
-#include    "cxwindow.h"
 #include    "cccontroller.h"
 
 #ifdef __BOTHWX__

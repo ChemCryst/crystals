@@ -11,6 +11,12 @@
 //   Cx equivalent class.
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2002/05/14 17:07:11  richard
+//   New GUI control CrHidden (HIDDENSTRING) is completely transparent and small, but
+//   will store a text string, so that, for example you can pass data from one script
+//   to another via a window which is open in between. (Use therefore mainly lies in
+//   programming Non-Modal windows like "Guide" and "Add H".)
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -50,7 +56,7 @@ void CrHidden::SetGeometry(const CcRect * rect)
 CcParse CrHidden::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     if( ! mSelfInitialised )
     {
@@ -103,4 +109,3 @@ void CrHidden::GetValue(CcTokenList * tokenList)
         LOGWARN( "CrEditBox:GetValue Error unrecognised token." + error);
     }
 }
-

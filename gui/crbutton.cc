@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2003/02/20 14:08:04  rich
+// New option of making buttoms "SLIM" they fit into text more easily.
+//
 // Revision 1.11  2003/01/14 10:27:18  rich
 // Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -96,7 +99,7 @@ CRCALCLAYOUT(CrButton,CxButton)
 CcParse CrButton::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -125,7 +128,7 @@ CcParse CrButton::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(inform) {
                     LOGSTAT( "CrButton:ParseInput INFORM on (default)");
@@ -141,7 +144,7 @@ CcParse CrButton::ParseInput( CcTokenList * tokenList )
             case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(disabled)
                     LOGSTAT( "CrButton:ParseInput Button disabled ");
@@ -263,5 +266,3 @@ void CrButton::GetValue(CcTokenList * tokenList)
         LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + stateString);
     }
 }
-
-

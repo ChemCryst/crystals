@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/02/20 14:08:04  rich
+//   New option of making buttoms "SLIM" they fit into text more easily.
+//
 //   Revision 1.9  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -62,8 +65,8 @@ class CxButton : public BASEBUTTON
 {
 // The interface exposed to the CrClass
     public:
-        void Disable(Boolean disabled);
-        void CxSetState(Boolean highlight);
+        void Disable(bool disabled);
+        void CxSetState(bool highlight);
         void Focus();
         // methods
         static CxButton *   CreateCxButton( CrButton * container, CxGrid * guiParent );
@@ -90,7 +93,7 @@ class CxButton : public BASEBUTTON
         static int mButtonCount;
         bool m_lengthStringUsed;
         CcString m_lengthString;
-        Boolean m_Slim;
+        bool m_Slim;
 //      LDefaultOutline * mOutlineWidget;
 
 

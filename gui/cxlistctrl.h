@@ -34,9 +34,9 @@ class CxListCtrl : public BASELISTCTRL
         void InvertSelection();
         int m_ProgSelecting;
         CcString GetListItem(int item);
-        void SelectPattern(CcString* strings, Boolean select);
+        void SelectPattern(CcString* strings, bool select);
         CcString GetCell(int row, int col);
-        void SelectAll(Boolean select);
+        void SelectAll(bool select);
         void AddRow ( CcString * rowOfStrings );
         void AddColumn( CcString colHeader);
         void Focus();
@@ -99,8 +99,8 @@ protected:
     int * m_originalIndex;
 
     int nSortedCol;
-    Boolean bSortAscending;
-    Boolean SortTextItems( int colType, int nCol, Boolean bAscending);
+    bool bSortAscending;
+    bool SortTextItems( int colType, int nCol, bool bAscending);
 
 };
 #endif

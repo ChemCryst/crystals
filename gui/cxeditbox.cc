@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2002/11/06 10:59:09  rich
+//   New function in CcString to return a double with a specified precision (sig figs)
+//   Called from editbox to allow 7 digits of precision.
+//
 //   Revision 1.17  2001/12/12 14:18:40  ckp2
 //   RIC: Mousewheel support! (Guess who's just got a new mouse.)
 //   RIC: Also PGUP and PGDOWN and Mousewheel allow the textoutput to be
@@ -41,6 +45,15 @@
 #ifdef __BOTHWX__
 #include <ctype.h> //for proto of iscntrl()
 #include <wx/utils.h> //for wxBell!
+
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
 #endif
 
 
@@ -286,7 +299,7 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
     if( nChar == 9 )   //TAB. Move focus to next UI object.
     {
-        Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+        bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
         ptr_to_crObject->NextFocus(shifted);
     }
     else if ( allowedInput == CXE_READ_ONLY )
@@ -331,7 +344,7 @@ void CxEditBox::OnChar( wxKeyEvent & event )
 
       if ( nChar == 9 )
     {
-             Boolean shifted = event.m_shiftDown;
+             bool shifted = event.m_shiftDown;
              ptr_to_crObject->NextFocus(shifted);
       }
     else if ( allowedInput == CXE_READ_ONLY )
@@ -371,7 +384,7 @@ void CxEditBox::OnChar( wxKeyEvent & event )
 
 
 
-void CxEditBox::Disable(Boolean disable)
+void CxEditBox::Disable(bool disable)
 {
 #ifdef __CR_WIN__
       if(disable)

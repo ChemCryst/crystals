@@ -102,7 +102,7 @@ void CxMenuBar::PopupMenuHere(int x, int y, void *window)
 #endif
 }
 
-void CxMenuBar::EnableItem( int id, Boolean enable )
+void CxMenuBar::EnableItem( int id, bool enable )
 {
 #ifdef __CR_WIN__
       if (enable)

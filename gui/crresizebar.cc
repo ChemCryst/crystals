@@ -7,6 +7,9 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.6  2002/01/16 14:12:40  ckp2
 //   Further fix of resize bar woes.
 //
@@ -159,7 +162,7 @@ void CrResizeBar::SetGeometry( const CcRect * rect )
 CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
-  Boolean hasTokenForMe = true;
+  bool hasTokenForMe = true;
 
 // Initialization for the first time
   if( ! mSelfInitialised )
@@ -434,5 +437,3 @@ void CrResizeBar::SwapOrient()
 
    MoveResizeBar(m_offset);
 }
-
-

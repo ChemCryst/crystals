@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2003/03/27 14:57:55  rich
+//   Added GUI command "GETREG string1 string2" to fetch string values from
+//   the registry. Will be used to find latest Mogul location. string1 is the
+//   key name in either CURRENT_USER (default) or LOCAL_MACHINE (falls back
+//   if not found in C_U). String 2 is the value name. The value data is returned
+//   to the CRYSTALS input buffer.
+//
 //   Revision 1.29  2003/02/25 15:34:29  rich
 //   For lines passed up from CRYSTALS (^^lines), allow "" and !!
 //   and <> to be delimiter pairs aswell as the trad ''.
@@ -77,6 +84,14 @@
 #ifndef     __CcController_H__
 #define     __CcController_H__
 
+
+#ifdef __BOTHWX__
+#include <wx/app.h>
+#include <wx/thread.h>
+#include "ccthread.h"
+#endif
+
+
 #include    "cclist.h"
 #include    "cccommandqueue.h"
 #include    "ccstatus.h"
@@ -89,12 +104,6 @@
 #include <afxwin.h>
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/thread.h>
-#include <wx/app.h>
-#include "crystals.h"
-#include "ccthread.h"
-#endif
 
 
 class CcPlotData;
@@ -162,22 +171,22 @@ class   CcController
     void AddHistory( CcString theText );
 
     void ReLayout();
-    void History(Boolean up);
+    void History(bool up);
     void FocusToInput(char theChar);
 
-    Boolean ParseInput( CcTokenList * tokenList );
-    Boolean ParseLine( CcString text );
-    void    SendCommand( CcString command , Boolean jumpQueue = false);
+    bool ParseInput( CcTokenList * tokenList );
+    bool ParseLine( CcString text );
+    void    SendCommand( CcString command , bool jumpQueue = false);
     void    Tokenize( CcString text );
-    Boolean IsSpace( char c );
+    bool IsSpace( char c );
     char IsDelimiter( char c, char delim = 0 );
     void  AppendToken( CcString text );
 
-    void  AddCrystalsCommand( CcString line , Boolean jumpQueue = false);
-    Boolean GetCrystalsCommand( char * line );
+    void  AddCrystalsCommand( CcString line , bool jumpQueue = false);
+    bool GetCrystalsCommand( char * line );
     void  AddInterfaceCommand( CcString line );
-    Boolean GetInterfaceCommand( char * line );
-//    Boolean GetInterfaceCommand( CcString * line );
+    bool GetInterfaceCommand( char * line );
+//    bool GetInterfaceCommand( CcString * line );
 
     void LogError( CcString errString , int level);
 
@@ -193,7 +202,7 @@ class   CcController
     CcString GetRegKey( CcString key, CcString name );
 
 
-    void OpenFileDialog(CcString* filename, CcString extensionFilter, CcString extensionDescription, Boolean titleOnly);
+    void OpenFileDialog(CcString* filename, CcString extensionFilter, CcString extensionDescription, bool titleOnly);
     void SaveFileDialog(CcString* filename, CcString defaultName, CcString extensionFilter, CcString extensionDescription);
     void OpenDirDialog(CcString* result);
     void ChooseFont();
@@ -212,8 +221,8 @@ class   CcController
 // attributes
 
     CcChartDoc* mCurrentChartDoc;
-    Boolean mThisThreadisDead;
-    Boolean m_Completing;
+    bool mThisThreadisDead;
+    bool m_Completing;
     CcStatus status;
 
     static CcController* theController;
@@ -224,8 +233,8 @@ class   CcController
     CrGUIElement *  mTextWindow;
     CrGUIElement *  mProgressWindow;
     CcString m_newdir;
-    Boolean m_restart;
-    Boolean m_Wait;
+    bool m_restart;
+    bool m_Wait;
     CcList  mChartList;
 
 #ifdef __CR_WIN__

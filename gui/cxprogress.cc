@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/01/31 14:36:42  ckp2
+//   Delete text overlay in progress bar properly.
+//
 //   Revision 1.10  2001/07/16 07:30:02  ckp2
 //   Let the linux version resize.
 //
@@ -31,6 +34,17 @@
 #include    "cxprogress.h"
 #include    "cxgrid.h"
 #include    "crprogress.h"
+
+
+#ifdef __BOTHWX__
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+
+#endif
+
 
 int CxProgress::mProgressCount = kProgressBase;
 CxProgress *    CxProgress::CreateCxProgress( CrProgress * container, CxGrid * guiParent )
@@ -97,7 +111,7 @@ void    CxProgress::SetText( char * text )
 #endif
 #ifdef __WINMSW__
         m_TextOverlay = new wxStaticText();
-        cerr << "Creating new static text overlay for the Progress Bar.\n";
+//        cerr << "Creating new static text overlay for the Progress Bar.\n";
         m_TextOverlay->Create( (wxWindow*)this, -1, text, wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
 #endif
     }
@@ -113,7 +127,7 @@ void    CxProgress::SetText( char * text )
 
 
 void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
-{
+{ 
 #ifdef __CR_WIN__
     MoveWindow(left,top,right-left,bottom-top,true);
     if(m_TextOverlay != nil)

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2003/01/14 10:27:19  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.23  2002/10/16 09:07:31  rich
 //   Make the graphs a bit trendier.
 //
@@ -103,7 +106,7 @@
 #include    "crplot.h"
 #include    "ccpoint.h"
 #include    "ccrect.h"
-#include	<math.h>
+#include    <math.h>
 #include <cstdlib>
 #include <cstdio>
 
@@ -114,6 +117,16 @@
 #ifdef __BOTHWX__
  #include <wx/font.h>
  #include <wx/thread.h>
+
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
+
 #endif
 
 int CxPlot::mPlotCount = kPlotBase;
@@ -168,10 +181,10 @@ CxPlot::CxPlot(CrPlot* container)
     :wxControl()
 #endif
 {
-	m_TextPopup = 0;
-	m_Key = 0;
-	m_FlippedPlot = false;
-	mMouseCaptured = false;
+    m_TextPopup = 0;
+    m_Key = 0;
+    m_FlippedPlot = false;
+    mMouseCaptured = false;
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
     mfgcolour = PALETTERGB(0,0,0);
@@ -187,9 +200,9 @@ CxPlot::CxPlot(CrPlot* container)
 
 CxPlot::~CxPlot()
 {
-	DeletePopup();
-	DeleteKey();
-	mPlotCount--;
+    DeletePopup();
+    DeleteKey();
+    mPlotCount--;
     delete m_newMemDCBitmap;
 #ifdef __CR_WIN__
     delete m_memDC;
@@ -225,7 +238,7 @@ void CxPlot::SetText( char * text )
 
 void CxPlot::FlipGraph(bool flip)
 {
-	m_FlippedPlot = flip;
+    m_FlippedPlot = flip;
 }
 
 CcPoint CxPlot::DeviceToLogical(int x, int y)
@@ -251,22 +264,22 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
 // convert to a 0-2400 scale on both axes
 CcPoint CxPlot::LogicalToDevice(int x, int y)
 {
-	CcPoint newpoint;
+    CcPoint newpoint;
 
 #ifdef __CR_WIN__
-//	CRect		windowext;
-//	GetClientRect(&windowext);
-	CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
+//  CRect       windowext;
+//  GetClientRect(&windowext);
+    CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
 #ifdef __BOTHWX__
-	wxRect wwindowext = GetRect();
-	CcRect windowext(wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+    wxRect wwindowext = GetRect();
+    CcRect windowext(wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
 
-	newpoint.x = (int)(2400*x / (windowext.mRight - windowext.mLeft));
-	newpoint.y = (int)(2400*y / (windowext.mBottom - windowext.mTop));
+    newpoint.x = (int)(2400*x / (windowext.mRight - windowext.mLeft));
+    newpoint.y = (int)(2400*y / (windowext.mBottom - windowext.mTop));
 
-	return newpoint;
+    return newpoint;
 }
 
 void CxPlot::Display()
@@ -282,24 +295,24 @@ void CxPlot::Display()
 #ifdef __CR_WIN__
 void CxPlot::OnPaint()
 {
-	RECT winsize;
-	if(m_Key) m_Key->GetWindowRect(&winsize);
-	
-	CPaintDC dc(this); // device context for painting
+    RECT winsize;
+    if(m_Key) m_Key->GetWindowRect(&winsize);
+    
+    CPaintDC dc(this); // device context for painting
    CRect rect;
    GetClientRect (&rect);
 
-	// remove key area from drawing...
-	ValidateRect(&winsize);
+    // remove key area from drawing...
+    ValidateRect(&winsize);
 
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
  //dc.BitBlt(0,0,m_client.Width(),m_client.Height(),m_memDC,0,0,SRCCOPY);
-	dc.BitBlt(0,0,rect.Width(), rect.Height(),m_memDC,0,0,SRCCOPY);
+    dc.BitBlt(0,0,rect.Width(), rect.Height(),m_memDC,0,0,SRCCOPY);
     m_memDC->SelectObject(m_oldMemDCBitmap);
-	if(m_Key)
-	{
-		m_Key->BringWindowToTop();
-	}
+    if(m_Key)
+    {
+        m_Key->BringWindowToTop();
+    }
 }
 #endif
 
@@ -353,17 +366,17 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 {
     CcPoint cpoint1, cpoint2;
 
-	if(m_FlippedPlot) 
-	{
-		y1 = 2400-y1;
-		y2 = 2400-y2;
-	}
+    if(m_FlippedPlot) 
+    {
+        y1 = 2400-y1;
+        y2 = 2400-y2;
+    }
 
     cpoint1 = DeviceToLogical(x1,y1);
     cpoint2 = DeviceToLogical(x2,y2);
 
 #ifdef __CR_WIN__
-    CPen pen(PS_SOLID,thickness,mfgcolour), *oldpen;		// changed 1 to thickness
+    CPen pen(PS_SOLID,thickness,mfgcolour), *oldpen;        // changed 1 to thickness
     oldpen = m_memDC->SelectObject(&pen);
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
 
@@ -371,7 +384,7 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
     m_memDC->LineTo(CPoint(cpoint2.x,cpoint2.y));
     m_memDC->SelectObject(m_oldMemDCBitmap);
     m_memDC->SelectObject(oldpen);
-	pen.DeleteObject();										// added by steve - clean up resources
+    pen.DeleteObject();                                     // added by steve - clean up resources
 #endif
 #ifdef __BOTHWX__
     m_memDC->SetPen( *m_pen );
@@ -380,14 +393,14 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 
 }
 
-void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
+void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 {
     //NB w and h are half diameters. (i.e. radii).
 
-	if(m_FlippedPlot) 
-	{
-		y = 2400-y;
-	}
+    if(m_FlippedPlot) 
+    {
+        y = 2400-y;
+    }
 
     int x1 = x - w;
     int y1 = y - h;
@@ -403,14 +416,14 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
     brush.CreateSolidBrush(mfgcolour);
-	oldbrush = (CBrush*)m_memDC->SelectObject(brush);
+    oldbrush = (CBrush*)m_memDC->SelectObject(brush);
     if(fill)
         m_memDC->FillRgn(&rgn,&brush);
     else
         m_memDC->FrameRgn(&rgn,&brush,1,1);
     m_memDC->SelectObject(m_oldMemDCBitmap);
-	m_memDC->SelectObject(oldbrush);
-	brush.DeleteObject();			
+    m_memDC->SelectObject(oldbrush);
+    brush.DeleteObject();           
 #endif
 #ifdef __BOTHWX__
       m_memDC->SetPen( *m_pen );
@@ -424,24 +437,24 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 }
 
 // STEVE added the fourth parameter, to allow for justification of text
-// param can be:	TEXT_VCENTRE	y is the coordinate of the CENTRE of the text
-//					TEXT_HCENTRE	x is the centre coordinate
-//					TEXT_RIGHT		y is the right hand side (RH justified)
-//					TEXT_TOP		x is the top of the text
-//					TEXT_BOTTOM		x is the bottom of the text
-//					TEXT_VERTICAL   string is written one character above the next (for y axis label)
-//					TEXT_VERTICALDOWN and the other way up (rh axis title)
-//					TEXT_BOLD		text drawn in black (else grey)
-//					TEXT_ANGLE		text is drawn at an angle (for crowded axes...)
-//	All coordinates in the range 0 - 2400
+// param can be:    TEXT_VCENTRE    y is the coordinate of the CENTRE of the text
+//                  TEXT_HCENTRE    x is the centre coordinate
+//                  TEXT_RIGHT      y is the right hand side (RH justified)
+//                  TEXT_TOP        x is the top of the text
+//                  TEXT_BOTTOM     x is the bottom of the text
+//                  TEXT_VERTICAL   string is written one character above the next (for y axis label)
+//                  TEXT_VERTICALDOWN and the other way up (rh axis title)
+//                  TEXT_BOLD       text drawn in black (else grey)
+//                  TEXT_ANGLE      text is drawn at an angle (for crowded axes...)
+//  All coordinates in the range 0 - 2400
 void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 {
-	if(m_FlippedPlot)
-	{
-		y = 2400-y;
-	}
+    if(m_FlippedPlot)
+    {
+        y = 2400-y;
+    }
 
-	CcPoint      coord = DeviceToLogical(x,y);
+    CcPoint      coord = DeviceToLogical(x,y);
 
 #ifdef __CR_WIN__
    CPen        pen(PS_SOLID,1,mfgcolour);
@@ -449,79 +462,79 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
     CPen        *oldpen = m_memDC->SelectObject(&pen);
 
     CFont  theFont;
-	CFont* oldFont;
-	int thickness = 400;
+    CFont* oldFont;
+    int thickness = 400;
 
     char face[32] = "Times New Roman";
 
-	if(param & TEXT_BOLD) thickness = 600;
+    if(param & TEXT_BOLD) thickness = 600;
 
-	if(param & TEXT_ANGLE)
-	{
-		theFont.CreateFont(fontsize, 0, 450, 450, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-		oldFont = m_memDC->SelectObject(&theFont);
-		CSize temp = m_memDC->GetTextExtent(text.ToCString(), text.Len());
-		CSize move;
+    if(param & TEXT_ANGLE)
+    {
+        theFont.CreateFont(fontsize, 0, 450, 450, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+        oldFont = m_memDC->SelectObject(&theFont);
+        CSize temp = m_memDC->GetTextExtent(text.ToCString(), text.Len());
+        CSize move;
 
-		move.cx = (long)(temp.cx/sqrt(2));			// must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
-		move.cy = (long)(temp.cx/sqrt(2));			//		for both sin and cos.
+        move.cx = (long)(temp.cx/sqrt(2));          // must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
+        move.cy = (long)(temp.cx/sqrt(2));          //      for both sin and cos.
 
-		coord.x -= move.cx + temp.cy/2;
-		coord.y += move.cy + temp.cy/2; 
-	}
-	else
-	{
-		int down = 1;
+        coord.x -= move.cx + temp.cy/2;
+        coord.y += move.cy + temp.cy/2; 
+    }
+    else
+    {
+        int down = 1;
 
-		if(param & TEXT_VERTICALDOWN)
-			down = -1;	// rotate the other way if text is to be facing left
+        if(param & TEXT_VERTICALDOWN)
+            down = -1;  // rotate the other way if text is to be facing left
 
-		if(param & TEXT_VERTICAL || param & TEXT_VERTICALDOWN)
-		{
-			theFont.CreateFont(fontsize, 0, down*900,down*900, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-			oldFont = m_memDC->SelectObject(&theFont);
-			int len = text.Len();
-			CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
-			coord.y = coord.y + down*temp.cx/2;		// nb swapping of cx and cy - GetTextEntent doesn't handle rotations
-			coord.x = coord.x - down*temp.cy/2;
-		}
-		else
-		{
-			theFont.CreateFont(fontsize, 0, 0,0, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-			oldFont = m_memDC->SelectObject(&theFont);
-		}
-	}
+        if(param & TEXT_VERTICAL || param & TEXT_VERTICALDOWN)
+        {
+            theFont.CreateFont(fontsize, 0, down*900,down*900, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+            oldFont = m_memDC->SelectObject(&theFont);
+            int len = text.Len();
+            CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
+            coord.y = coord.y + down*temp.cx/2;     // nb swapping of cx and cy - GetTextEntent doesn't handle rotations
+            coord.x = coord.x - down*temp.cy/2;
+        }
+        else
+        {
+            theFont.CreateFont(fontsize, 0, 0,0, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+            oldFont = m_memDC->SelectObject(&theFont);
+        }
+    }
 
     CSize size = m_memDC->GetTextExtent(text.ToCString(), strlen(text.ToCString()));
 
-	if(param & TEXT_VCENTRE)
-	{
-		  coord.y -= size.cy/2;                                                   // centre the text
-	}
-	if(param & TEXT_HCENTRE)
-	{
-		  coord.x -= size.cx/2;    
-	}
-	if(param & TEXT_RIGHT)
-	{ 
-			coord.x -= size.cx;
-	}
-	if(param & TEXT_TOP)
-	{
-			coord.y += size.cy/2;
-	}
-	if(param & TEXT_BOTTOM)
-	{
-		coord.y -= size.cy;
-	}
+    if(param & TEXT_VCENTRE)
+    {
+          coord.y -= size.cy/2;                                                   // centre the text
+    }
+    if(param & TEXT_HCENTRE)
+    {
+          coord.x -= size.cx/2;    
+    }
+    if(param & TEXT_RIGHT)
+    { 
+            coord.x -= size.cx;
+    }
+    if(param & TEXT_TOP)
+    {
+            coord.y += size.cy/2;
+    }
+    if(param & TEXT_BOTTOM)
+    {
+        coord.y -= size.cy;
+    }
 
-	m_memDC->SetBkMode(TRANSPARENT);
-	m_memDC->TextOut(coord.x,coord.y,text.ToCString());
+    m_memDC->SetBkMode(TRANSPARENT);
+    m_memDC->TextOut(coord.x,coord.y,text.ToCString());
 
     m_memDC->SelectObject(oldpen);
-	pen.DeleteObject();
+    pen.DeleteObject();
     m_memDC->SelectObject(oldFont);
-	theFont.DeleteObject();
+    theFont.DeleteObject();
     m_memDC->SelectObject(m_oldMemDCBitmap);
 
 #endif
@@ -541,45 +554,45 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 #ifdef __CR_WIN__
 CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 {
-	CcPoint tsize;
-	CSize size;
-	CFont theFont;
-	CFont* oldFont;
+    CcPoint tsize;
+    CSize size;
+    CFont theFont;
+    CFont* oldFont;
     char face[32] = "Times New Roman";
 
-	if(param & TEXT_ANGLE)
-	{
-		theFont.CreateFont(fontsize,0,450,450, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES,	PROOF_QUALITY, DEFAULT_PITCH, face);
-		oldFont = m_memDC->SelectObject(&theFont);
+    if(param & TEXT_ANGLE)
+    {
+        theFont.CreateFont(fontsize,0,450,450, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+        oldFont = m_memDC->SelectObject(&theFont);
 
-		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+        size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
 
-		tsize.x = (int)(size.cx/sqrt(2));
-		tsize.y = (int)(size.cx/sqrt(2));
-	}
-	else if(param & TEXT_VERTICAL)
-	{
-		theFont.CreateFont(fontsize,0,900,900, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES,	PROOF_QUALITY, DEFAULT_PITCH, face);
-		oldFont = m_memDC->SelectObject(&theFont);
+        tsize.x = (int)(size.cx/sqrt(2));
+        tsize.y = (int)(size.cx/sqrt(2));
+    }
+    else if(param & TEXT_VERTICAL)
+    {
+        theFont.CreateFont(fontsize,0,900,900, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+        oldFont = m_memDC->SelectObject(&theFont);
 
-		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
-		tsize.x = size.cy;			// swap axes cos of the 90 degree rotation
-		tsize.y = size.cx;
-	}
-	else
-	{
-		theFont.CreateFont(fontsize,0,0,0, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES,	PROOF_QUALITY, DEFAULT_PITCH, face);
-		oldFont = m_memDC->SelectObject(&theFont);
+        size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+        tsize.x = size.cy;          // swap axes cos of the 90 degree rotation
+        tsize.y = size.cx;
+    }
+    else
+    {
+        theFont.CreateFont(fontsize,0,0,0, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+        oldFont = m_memDC->SelectObject(&theFont);
 
-		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
-		tsize.x = size.cx;
-		tsize.y = size.cy;
-	}
+        size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+        tsize.x = size.cx;
+        tsize.y = size.cy;
+    }
 
-	m_memDC->SelectObject(oldFont);
-	theFont.DeleteObject();
+    m_memDC->SelectObject(oldFont);
+    theFont.DeleteObject();
 
-	return (LogicalToDevice(tsize.x, tsize.y));
+    return (LogicalToDevice(tsize.x, tsize.y));
 }
 #endif
 #ifdef __BOTHWX__
@@ -589,20 +602,20 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
         int cx,cy,cs;
         GetTextExtent( text.ToCString(), &cx, &cy );
 
-	if(param & TEXT_ANGLE)
-	{
-		cx = (int)(cx/sqrt(2));
-		cx = (int)(cx/sqrt(2));
-	}
-	else if(param & TEXT_VERTICAL)
-	{
-		cs=cx; cx=cy; cy=cs;
-	}
-	return (LogicalToDevice(cx, cy));
+    if(param & TEXT_ANGLE)
+    {
+        cx = (int)(cx/sqrt(2));
+        cx = (int)(cx/sqrt(2));
+    }
+    else if(param & TEXT_VERTICAL)
+    {
+        cs=cx; cx=cy; cy=cs;
+    }
+    return (LogicalToDevice(cx, cy));
 }
 #endif
 
-void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
+void CxPlot::DrawPoly(int nVertices, int * vertices, bool fill)
 {
 #ifdef __CR_WIN__
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
@@ -618,17 +631,17 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
         CcPoint*           points = new CcPoint[nVertices];
         for ( int j = 0; j < nVertices*2 ; j+=2 )
         {
-			if(m_FlippedPlot)
-			{
-				*(vertices+j+1) = 2400 - *(vertices+j+1);
-			}
+            if(m_FlippedPlot)
+            {
+                *(vertices+j+1) = 2400 - *(vertices+j+1);
+            }
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
         }
         m_memDC->Polygon( (LPPOINT) points, nVertices );
         m_memDC->SelectObject(oldBrush);
-		brush.DeleteObject();
+        brush.DeleteObject();
         m_memDC->SelectObject(oldpen);
-		pen.DeleteObject();
+        pen.DeleteObject();
         delete [] points;
     }
     else
@@ -641,18 +654,18 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
         CcPoint*           points = new CcPoint[nVertices];
         for ( int j = 0; j < nVertices*2 ; j+=2 )
         {
-			if(m_FlippedPlot)
-			{
-				*(vertices+j+1) = 2400 - *(vertices+j+1);
-			}
-			points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
+            if(m_FlippedPlot)
+            {
+                *(vertices+j+1) = 2400 - *(vertices+j+1);
+            }
+            points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
         }
 
         m_memDC->Polyline( (LPPOINT) points, nVertices );
 
         m_memDC->SelectObject(oldBrush);
         m_memDC->SelectObject(oldpen);
-		pen.DeleteObject();
+        pen.DeleteObject();
         delete [] points;
     }
 
@@ -754,7 +767,7 @@ void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
       SetSize(left,top,right-left,bottom-top);
 
       ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
-	  m_client.Set(top,left,bottom,right);
+      m_client.Set(top,left,bottom,right);
 #endif
 
 }
@@ -782,9 +795,9 @@ BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_MOUSEMOVE()
    ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
    ON_WM_RBUTTONUP()
-	ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
+    ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
       ON_WM_KEYDOWN()
-	ON_WM_LBUTTONDOWN()
+    ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 #endif
 
@@ -808,8 +821,8 @@ void CxPlot::Focus()
 #ifdef __CR_WIN__
 LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
-	DeletePopup();
-	mMouseCaptured = false;
+    DeletePopup();
+    mMouseCaptured = false;
     return TRUE;
 }
 #endif
@@ -819,53 +832,53 @@ LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 // windows stuff goes here
 void CxPlot::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
-	// bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
-	// bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
-	
-	// convert coord to 0-2400 range
-	CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+    // bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
+    // bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
+    
+    // convert coord to 0-2400 range
+    CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
 
-	// now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
-	if(!mMouseCaptured)
-	{
-		TRACKMOUSEEVENT tme;
-		tme.cbSize = sizeof(tme);
-		tme.hwndTrack = m_hWnd;
-		tme.dwFlags = TME_LEAVE;
-		_TrackMouseEvent(&tme);
-		mMouseCaptured = true;
-	}
+    // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
+    if(!mMouseCaptured)
+    {
+        TRACKMOUSEEVENT tme;
+        tme.cbSize = sizeof(tme);
+        tme.hwndTrack = m_hWnd;
+        tme.dwFlags = TME_LEAVE;
+        _TrackMouseEvent(&tme);
+        mMouseCaptured = true;
+    }
 #endif
 
 #ifdef __BOTHWX__
 // and now the Linux version
 void CxPlot::OnMouseMove( wxMouseEvent & event )
 {
-	// convert to a coordinate from 0-2400 in both axes...
-	  CcPoint point = LogicalToDevice( event.m_x, event.m_y );
+    // convert to a coordinate from 0-2400 in both axes...
+      CcPoint point = LogicalToDevice( event.m_x, event.m_y );
 #endif
 
-	  if(m_FlippedPlot) point.y = 2400-point.y;
+      if(m_FlippedPlot) point.y = 2400-point.y;
 
-	if(moldMPos.x != point.x || moldMPos.y != point.y)
-	{	
-		moldMPos = point;
-	  // now we have the mouse position, get the details of any bar / scatter point below it...
-	  PlotDataPopup data = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(&point); //nb: point is changed now by GetData to align with top of graph
-	  point = DeviceToLogical(point.x, point.y);
+    if(moldMPos.x != point.x || moldMPos.y != point.y)
+    {   
+        moldMPos = point;
+      // now we have the mouse position, get the details of any bar / scatter point below it...
+      PlotDataPopup data = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(&point); //nb: point is changed now by GetData to align with top of graph
+      point = DeviceToLogical(point.x, point.y);
 
-		if(data.m_Valid == true)
-		{
-			if((moldPPos.x != point.x || moldPPos.y != point.y) || !(data.m_PopupText == moldText ))
-			{
-				CreatePopup(data.m_PopupText, point);
-				moldPPos = point;
-				moldText = data.m_PopupText;
-			}
-		}
-		// if mouse message is not valid, remove the popup (ie catch mouse leaving window...)
-		else DeletePopup();
-	}
+        if(data.m_Valid == true)
+        {
+            if((moldPPos.x != point.x || moldPPos.y != point.y) || !(data.m_PopupText == moldText ))
+            {
+                CreatePopup(data.m_PopupText, point);
+                moldPPos = point;
+                moldText = data.m_PopupText;
+            }
+        }
+        // if mouse message is not valid, remove the popup (ie catch mouse leaving window...)
+        else DeletePopup();
+    }
 }
 
 // remove the previously created pop-up window
@@ -882,8 +895,8 @@ void CxPlot::DeletePopup()
 //    m_DoNotPaint = false;
 #endif
     m_TextPopup=nil;
-	moldPPos.x = 0;
-	moldPPos.y = 0;
+    moldPPos.x = 0;
+    moldPPos.y = 0;
   }
 }
 
@@ -894,7 +907,7 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 //  m_DoNotPaint = true;
 #endif
   if(m_TextPopup) 
-	 DeletePopup();
+     DeletePopup();
 
 #ifdef __CR_WIN__
   CClientDC dc(this);
@@ -926,22 +939,22 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
 
 // create a popup window containing a key for this graph.
 // numser : number of series
-// names:	the series names (array of numser elements)
-// col:		the series colours...
+// names:   the series names (array of numser elements)
+// col:     the series colours...
 void CxPlot::CreateKey(int numser, CcString* names, int** col)
 {
-	if(!m_Key)
-	{
-		m_Key = new CxPlotKey(this, numser, names, col);
-	}
-	else
-	{
-		if(m_Key->GetNumberOfSeries() != numser)
-		{
-			DeleteKey();
-			m_Key = new CxPlotKey(this, numser, names, col);
-		}
-	}
+    if(!m_Key)
+    {
+        m_Key = new CxPlotKey(this, numser, names, col);
+    }
+    else
+    {
+        if(m_Key->GetNumberOfSeries() != numser)
+        {
+            DeleteKey();
+            m_Key = new CxPlotKey(this, numser, names, col);
+        }
+    }
 }
 
 void CxPlot::DeleteKey()
@@ -992,13 +1005,13 @@ void CxPlot::MakeMetaFile(int w, int h)
         ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
 
         if(mdc.CloseEnhanced())
-		{
-			CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
-		}
-		else
-		{
-			CcController::theController->ProcessOutput("File creation failed.");
-		}
+        {
+            CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+        }
+        else
+        {
+            CcController::theController->ProcessOutput("File creation failed.");
+        }
     }
     else
     {
@@ -1015,7 +1028,7 @@ void CxPlot::PrintPicture()
 
     CDC * backup_memDC = m_memDC;
     CcRect backup_m_client = m_client;
-	char buffer[_MAX_PATH];
+    char buffer[_MAX_PATH];
     _getcwd( buffer, _MAX_PATH ); // Get the current working directory.
 
  
@@ -1073,7 +1086,7 @@ void CxPlot::PrintPicture()
 void CxPlot::OnRButtonUp( wxMouseEvent & event )
 {
     CcPoint point = LogicalToDevice(event.m_x,event.m_y);
-	
+    
     if(m_FlippedPlot) point.y = 2400-point.y;
     ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,point.x,point.y);
 }
@@ -1082,8 +1095,8 @@ void CxPlot::OnRButtonUp( wxMouseEvent & event )
 void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
 {
     CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
-	
-	if(m_FlippedPlot) point.y = 2400-point.y;
+    
+    if(m_FlippedPlot) point.y = 2400-point.y;
 
     ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
     ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,wpoint.x,wpoint.y);
@@ -1106,14 +1119,14 @@ void CxPlot::OnMenuSelected(wxCommandEvent & event)
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //
-//	The CxPlotKey stuff
+//  The CxPlotKey stuff
 //
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef __CR_WIN__
 // Windows message map for the key
 BEGIN_MESSAGE_MAP(CxPlotKey, CWnd)
-	ON_WM_PAINT()
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 #endif
 
@@ -1128,34 +1141,34 @@ END_EVENT_TABLE()
 CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 {
 #ifdef __CR_WIN__
-	m_Parent = parent;
-	mDragPos.x = 0;
-	mDragPos.y = 0;
-	mDragging = false;
+    m_Parent = parent;
+    mDragPos.x = 0;
+    mDragPos.y = 0;
+    mDragging = false;
 
-	m_NumberOfSeries = numser;
-	m_Names = new CcString[numser];
+    m_NumberOfSeries = numser;
+    m_Names = new CcString[numser];
 
-	m_Colours = new int*[3];
+    m_Colours = new int*[3];
 
-	m_Colours[0] = new int[m_NumberOfSeries];
-	m_Colours[1] = new int[m_NumberOfSeries];
-	m_Colours[2] = new int[m_NumberOfSeries];
+    m_Colours[0] = new int[m_NumberOfSeries];
+    m_Colours[1] = new int[m_NumberOfSeries];
+    m_Colours[2] = new int[m_NumberOfSeries];
 
-	for(int i=0; i<m_NumberOfSeries; i++)
-	{
-		m_Names[i] = names[i];
-		m_Colours[0][i] = col[0][i];
-		m_Colours[1][i] = col[1][i];
-		m_Colours[2][i] = col[2][i];
-	}
+    for(int i=0; i<m_NumberOfSeries; i++)
+    {
+        m_Names[i] = names[i];
+        m_Colours[0][i] = col[0][i];
+        m_Colours[1][i] = col[1][i];
+        m_Colours[2][i] = col[2][i];
+    }
 
-	CcPoint point = mDragPos;
+    CcPoint point = mDragPos;
 
   CWnd *parw = (CWnd*)m_Parent->ptr_to_crObject->GetRootWidget()->ptr_to_cxObject;
 
-	const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
-	
+    const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
+    
   Create(wClass, "Key", WS_VISIBLE|WS_CLIPSIBLINGS|WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
   ModifyStyleEx(NULL,WS_EX_TOOLWINDOW,NULL); //Small title bar effect.
 
@@ -1170,37 +1183,37 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
   size.cx = 10; //Reasonable minimum size.
   size.cy = 10; //Reasonable minimum size.
 
-	for(i=0; i<m_NumberOfSeries; i++)
-	{
-		SIZE ts = newDC.GetOutputTextExtent(m_Names[i].ToCString());
-		size.cx = max(ts.cx, size.cx);
-		size.cy = max(ts.cy, size.cy);
-	}
+    for(i=0; i<m_NumberOfSeries; i++)
+    {
+        SIZE ts = newDC.GetOutputTextExtent(m_Names[i].ToCString());
+        size.cx = max(ts.cx, size.cx);
+        size.cy = max(ts.cy, size.cy);
+    }
 
-	// get the client window size, and the total window size
-	RECT clientsize;
-	RECT windowsize;
-	GetClientRect(&clientsize);
-	GetWindowRect(&windowsize);
+    // get the client window size, and the total window size
+    RECT clientsize;
+    RECT windowsize;
+    GetClientRect(&clientsize);
+    GetWindowRect(&windowsize);
 
-	SetWindowPos( &wndTopMost , 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE);
+    SetWindowPos( &wndTopMost , 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE);
 
-	// now calculate the required size (including title bar)
-	size.cy *= m_NumberOfSeries;
-	size.cy += windowsize.bottom - windowsize.top - clientsize.bottom;
-	size.cx += 20;
-	size.cx += windowsize.right - windowsize.left - clientsize.right;
+    // now calculate the required size (including title bar)
+    size.cy *= m_NumberOfSeries;
+    size.cy += windowsize.bottom - windowsize.top - clientsize.bottom;
+    size.cx += 20;
+    size.cx += windowsize.right - windowsize.left - clientsize.right;
 
-	// set the required size
-	MoveWindow(0,0, size.cx, size.cy, TRUE);
+    // set the required size
+    MoveWindow(0,0, size.cx, size.cy, TRUE);
 
-	// get the new client area, and store this.
-	GetClientRect(&clientsize);
+    // get the new client area, and store this.
+    GetClientRect(&clientsize);
 
-	m_WinPosAndSize.mLeft = 0;
-	m_WinPosAndSize.mRight = clientsize.right;//size.cx;
-	m_WinPosAndSize.mTop = 0;
-	m_WinPosAndSize.mBottom = clientsize.bottom;//size.cy;
+    m_WinPosAndSize.mLeft = 0;
+    m_WinPosAndSize.mRight = clientsize.right;//size.cx;
+    m_WinPosAndSize.mTop = 0;
+    m_WinPosAndSize.mBottom = clientsize.bottom;//size.cy;
 
   newDC.SelectObject(oldFont);
 
@@ -1209,12 +1222,12 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
 CxPlotKey::~CxPlotKey()
 {
-	delete [] m_Colours[0];
-	delete [] m_Colours[1];
-	delete [] m_Colours[2];
+    delete [] m_Colours[0];
+    delete [] m_Colours[1];
+    delete [] m_Colours[2];
 
-	delete [] m_Names;
-	delete [] m_Colours;
+    delete [] m_Names;
+    delete [] m_Colours;
 }
 
 #ifdef __BOTHWX__
@@ -1242,11 +1255,11 @@ void CxPlotKey::OnPaint()
 
   for(int i=0; i<m_NumberOfSeries; i++)
   {
-	  temp[0].x = 3;				temp[0].y = i*size.cy/m_NumberOfSeries + 3;
-	  temp[1].x = 3;				temp[1].y = (i+1)*size.cy/m_NumberOfSeries - 3;
-	  temp[2].x = 12;				temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 3;
-	  temp[3].x = 12;				temp[3].y = i*size.cy/m_NumberOfSeries + 3;
-	  temp[4].x = 3;				temp[4].y = i*size.cy/m_NumberOfSeries + 3;
+      temp[0].x = 3;                temp[0].y = i*size.cy/m_NumberOfSeries + 3;
+      temp[1].x = 3;                temp[1].y = (i+1)*size.cy/m_NumberOfSeries - 3;
+      temp[2].x = 12;               temp[2].y = (i+1)*size.cy/m_NumberOfSeries- 3;
+      temp[3].x = 12;               temp[3].y = i*size.cy/m_NumberOfSeries + 3;
+      temp[4].x = 3;                temp[4].y = i*size.cy/m_NumberOfSeries + 3;
 
         CBrush      brush;
         brush.CreateSolidBrush(PALETTERGB(m_Colours[0][i],m_Colours[1][i],m_Colours[2][i]));
@@ -1257,11 +1270,11 @@ void CxPlotKey::OnPaint()
 
         newDC.Polygon( (LPPOINT) temp, 5);
         newDC.SelectObject(oldBrush);
-		brush.DeleteObject();
+        brush.DeleteObject();
         newDC.SelectObject(oldpen);
-		pen.DeleteObject();
+        pen.DeleteObject();
 
-	  newDC.TextOut(20, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
+      newDC.TextOut(20, i*size.cy/m_NumberOfSeries, m_Names[i].ToCString());
   }
 
   delete [] temp;
@@ -1269,4 +1282,3 @@ void CxPlotKey::OnPaint()
 
 }
 #endif
-

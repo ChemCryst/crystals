@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2003/02/27 13:42:01  rich
+//   If LARGE specified and window is the MAIN one, then use the desktop
+//   size to size to. Change guimenu.ssr to make the main CRYSTALS window LARGE!
+//
 //   Revision 1.27  2003/02/25 15:36:48  rich
 //   New WINDOW modifer "LARGE" makes the given window take up 64% of the area
 //   of the Main CRYSTALS window, provided the window doesn't already have a
@@ -130,7 +134,7 @@ CrWindow::~CrWindow()
 CcParse CrWindow::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(false, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( !mSelfInitialised )
@@ -647,7 +651,7 @@ void    CrWindow::SetText( CcString item )
     }
 }
 
-void    CrWindow::Show( Boolean show )
+void    CrWindow::Show( bool show )
 {
 
     if( show )
@@ -813,7 +817,7 @@ void CrWindow::SetCancelText(CcString text)
     mCancelSet = true;
 }
 
-void CrWindow::SendCommand(CcString theText, Boolean jumpQueue)
+void CrWindow::SendCommand(CcString theText, bool jumpQueue)
 {
 //If there is a COMMAND= set for this window
 //send this first, unless the text begins with

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/05/08 08:56:13  richard
+//   Added support for wmf AND emf file output to Chart objects (Cameron). Reason:
+//   emf doesn't work on Windows 95. Bah.
+//
 //   Revision 1.9  2002/01/30 10:58:43  ckp2
 //   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
 //   be copied to CxPlot to do same thing.
@@ -31,6 +35,18 @@
 #include    "cccontroller.h"    // for sending commands
 #include    "crwindow.h" // for getting cursor keys
 
+#ifdef __BOTHWX__
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
+#endif
+
+
 CrChart::CrChart( CrGUIElement * mParentPtr )
     :   CrGUIElement( mParentPtr )
 {
@@ -49,7 +65,7 @@ CrChart::~CrChart()
     {
         ((CxChart*)ptr_to_cxObject)->CxDestroyWindow(); 
 #ifdef __CR_WIN__
-		delete (CxChart*)ptr_to_cxObject;
+        delete (CxChart*)ptr_to_cxObject;
 #endif
         ptr_to_cxObject = nil;
     }
@@ -77,7 +93,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
         LOGSTAT( "*** Created Chart      " + mName );
 
         //Init only parsing
-        Boolean hasTokenForMe = true;
+        bool hasTokenForMe = true;
         while (hasTokenForMe)
         {
             switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -109,7 +125,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
                 case kTIsoView:
                 {
                     tokenList->GetToken();
-                    Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                    bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                     tokenList->GetToken(); // Remove that token!
                     ((CxChart*)ptr_to_cxObject)->UseIsotropicCoords(state);
                     break;
@@ -124,7 +140,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
     }
     // End of Init, now comes the general parser
 
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
     while ( hasTokenForMe )
     {
         switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -140,7 +156,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(inform)
                     LOGSTAT( "CrButton:ParseInput Chart INFORM on ");
@@ -152,7 +168,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
             case kTGetPolygonArea:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 CcString theString = tokenList->GetToken(); // Remove that token!
                 ((CxChart*)ptr_to_cxObject)->SetPolygonDrawMode(state);
                 break;
@@ -160,7 +176,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
                   case kTGetCursorKeys:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 CcString theString = tokenList->GetToken(); // Remove that token!
                         ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) ((state)?this:nil) );
                         mWantSysKeys=true;
@@ -170,7 +186,7 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
             case kTChartHighlight:
             {
                 tokenList->GetToken();
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken();
                 Highlight(state);
                 ReDrawView();
@@ -271,12 +287,12 @@ void CrChart::Clear()
     ((CxChart*)ptr_to_cxObject)->Clear();
 }
 
-void CrChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
+void CrChart::DrawEllipse(int x, int y, int w, int h, bool fill)
 {
     ((CxChart*)ptr_to_cxObject)->DrawEllipse(x,y,w,h,fill);
 }
 
-void CrChart::DrawRect(int x1, int y1, int x2, int y2, Boolean fill)
+void CrChart::DrawRect(int x1, int y1, int x2, int y2, bool fill)
 {
     int temp[10];
     temp[0] = x1; temp[1] = y1;
@@ -287,7 +303,7 @@ void CrChart::DrawRect(int x1, int y1, int x2, int y2, Boolean fill)
     DrawPoly(5,&temp[0],fill);
 }
 
-void CrChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
+void CrChart::DrawPoly(int nVertices, int * vertices, bool fill)
 {
     ((CxChart*)ptr_to_cxObject)->DrawPoly(nVertices, vertices, fill);
 }
@@ -322,12 +338,12 @@ void CrChart::PolygonClosed()
     SendCommand( CcString( "CLOSED" ) );
 }
 
-void CrChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated)
+void CrChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rotated)
 {
     ((CxChart*)ptr_to_cxObject)->FitText(x1, y1, x2, y2, theText, rotated);
 }
 
-void CrChart::Highlight(Boolean highlight)
+void CrChart::Highlight(bool highlight)
 {
     ((CxChart*)ptr_to_cxObject)->Invert(highlight);
 }
@@ -364,4 +380,3 @@ void CrChart::SysKey ( UINT nChar )
       }
    }
 }
-

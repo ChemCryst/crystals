@@ -44,7 +44,7 @@ CRCALCLAYOUT(CrBitmap,CxBitmap)
 CcParse CrBitmap::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.29  2003/01/14 10:27:19  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.28  2002/12/16 18:26:40  rich
 //   Fix breaking Cameron menus. Add some debugging for debug version.
 //
@@ -105,7 +108,9 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
       theWindow->mParentWnd = (wxWindow*) parentWindow;
       theWindow->Create( theWindow->mParentWnd, -1, "Window",
                          wxPoint(0, 0), wxSize(-1,-1),
-                         (attributes & kSize)?wxDEFAULT_FRAME_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?0:wxFRAME_TOOL_WINDOW) :wxDEFAULT_DIALOG_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?0:wxFRAME_TOOL_WINDOW) );
+                         ((attributes & kSize)  ? wxDEFAULT_FRAME_STYLE : wxDEFAULT_DIALOG_STYLE) |
+                         ( parentWindow         ? wxFRAME_FLOAT_ON_PARENT : 0) |
+                         ((attributes & kModal) ? 0 : wxFRAME_TOOL_WINDOW) );
       theWindow->SetIcon( wxICON (IDI_ICON1) );
   #endif
 

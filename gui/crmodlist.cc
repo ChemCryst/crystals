@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.2  2002/11/18 17:28:36  djw
 //   Fix function returning a value when it should not.
 //
@@ -70,7 +73,7 @@ CRCALCLAYOUT(CrModList,CxModList)
 CcParse CrModList::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
     CcString theToken;
 
     if( ! mSelfInitialised ) //Once Only.
@@ -113,7 +116,7 @@ CcParse CrModList::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
@@ -364,6 +367,3 @@ void CrModList::MenuSelected(int id)
     LOGERR("CrModList:MenuSelected Model cannot find menu item id = " + CcString(id));
     return;
 }
-
-
-

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2002/10/14 12:33:25  rich
+C Support for DVF command line version.
+C
 C Revision 1.38  2002/08/23 11:25:30  richard
 C Output script names to progress bar.
 C
@@ -88,6 +91,9 @@ C
 &GIL      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
 &GIL      CALL XCTRIM( REASON, MSGEND )
 &GIL      CALL PERROR (' perror message ')
+&WXS      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
+&WXS      CALL XCTRIM( REASON, MSGEND )
+&WXS      CALL PERROR (' perror message ')
 &LIN      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
 &LIN      CALL XCTRIM( REASON, MSGEND )
 &LIN      CALL PERROR (' perror message ')
@@ -354,7 +360,7 @@ C it is passed a string like "CRDSC:", so we must either check
 C for FNF and BADFILENAME, or better still, just let the system
 C try again with a NEW file, if that still fails, then there is an
 C error.
-#GID      IF ( IOS .NE. ISSFNF ) GO TO 9900
+##GIDWXS      IF ( IOS .NE. ISSFNF ) GO TO 9900
 C
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
 C    'OLD' . TRY AGAIN WITH STATUS = 'NEW'
@@ -633,7 +639,7 @@ C it is passed a string like "CRDSC:", so we must either check
 C for FNF and BADFILENAME, or better still, just let the system
 C try again with a NEW file, if that still fails, then there is an
 C error.
-#GID      IF ( IOS .NE. ISSFNF ) GO TO 9900
+##GIDWXS      IF ( IOS .NE. ISSFNF ) GO TO 9900
 C
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
 C    'OLD' . TRY AGAIN WITH STATUS = 'NEW'
@@ -851,6 +857,7 @@ C      J SOME MEASURE OF PROGRESS
 &&DOSDVF      DATA CLOCK / '|', '/', '-', '\' /
 &&GIDVAX      DATA CLOCK / '|', '/', '-', '\' /
 &&LINGIL      DATA CLOCK / '|', '/', '-', '\\' /
+&WXS      DATA CLOCK / '|', '/', '-', '\\' /
 C
        ICLOCK = 1 + MOD (J,4)
 C
@@ -980,6 +987,8 @@ C
 &LIN      IF (IOS .EQ. -1) GOTO 3000
 &GIL      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
 &GIL      IF (IOS .EQ. -1) GOTO 3000
+&WXS      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
+&WXS      IF (IOS .EQ. -1) GOTO 3000
 &&DVFGID      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
 &&DVFGID      IF (IOS .EQ. -1) GOTO 3000
 &VAX      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
@@ -1053,6 +1062,13 @@ C----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
 &&GILLIN            K = 0
 &&GILLIN20          CONTINUE
 &&GILLIN            I = K
+&WXS            J = LEN (CNAME)
+&WXS            DO 10 K = J, 1, -1
+&WXS              IF (CNAME(K:K) .EQ. '/') GOTO 20
+&WXS10          CONTINUE
+&WXS            K = 0
+&WXS20          CONTINUE
+&WXS            I = K
 C----- UNDER WIN, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 &&DVFGID            J = LEN (CNAME)
 &&DVFGID            I = KCLEQL ( CNAME, CHAR(92))
@@ -1320,7 +1336,7 @@ C
 &VAX      IMPLICIT INTEGER  (A-Z)
 C&&DVFGID      RTIME = RTC()
 &&DVFGID      CALL CPU_TIME(RTIME)
-&&LINGIL      CALL CPU_TIME(RTIME)
+&WXS      CALL CPU_TIME(RTIME)
 &VAXC
 &VAXC -- ON THE VAX THE FUNCTION IS IMPLEMENTED BY USING THE SYSTEM
 &VAXC    SERVICE ROUTINE '$GETJPI'.
@@ -1415,6 +1431,8 @@ CDJW&&DVFGID      I = TIME()
 &&DVFGID      I = NINT ( SECNDS ( 0.0 ) )
 &&GILLIN      CALL CPU_TIME(A)
 &&GILLIN      I = NINT ( A )
+&WXS      CALL CPU_TIME(A)
+&WXS      I = NINT ( A )
 C
 &VAX      I = NINT ( SECNDS ( 0.0 ) )
 C
@@ -1448,6 +1466,7 @@ C
 CODE FOR XTIMER
 &&DVFGID      SUBROUTINE XTIMER ( CTIME2 )
 &&LINGIL      SUBROUTINE XTIMER ( CTIME2 )
+&WXS      SUBROUTINE XTIMER ( CTIME2 )
 &&DOSVAX      SUBROUTINE XTIMER ( CTIME )
 C
 &&DVFGID      USE DFPORT
@@ -1496,11 +1515,15 @@ C
 C
 &&DVFGID      CHARACTER*8 CTIME2
 &&LINGIL      CHARACTER*8 CTIME2
+&WXS      CHARACTER*8 CTIME2
 &&DVFGID      CTIME2 = CLOCK()
 
 &&LINGIL      DIMENSION ITIM(3)
 &&LINGIL      CALL ITIME(ITIM)
 &&LINGIL      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
+&WXS      DIMENSION ITIM(3)
+&WXS      CALL ITIME(ITIM)
+&WXS      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
 C
 &XXX      CTIME = ' '
 C
@@ -1587,6 +1610,12 @@ C
 &&LINGIL     2      IDAT(2) , MOD ( IDAT(3) , 100 )
 &&LINGIL      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
 &&LINGIL      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
+&WXS      DIMENSION IDAT(3)
+&WXS      CALL IDATE ( IDAT )
+&WXS      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
+&WXS     2      IDAT(2) , MOD ( IDAT(3) , 100 )
+&WXS      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
+&WXS      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
 &H-P      call get_time (tmbuf)
 &H-P      char_ptr=format_time(tmbuf)
@@ -1611,6 +1640,7 @@ C
 &PPC      KOR = JIOR ( I , J )
 &&DVFGID      KOR = IOR ( I , J )
 &&LINGIL      KOR = IOR ( I , J )
+&WXS      KOR = IOR ( I , J )
 &VAX      KOR = JIOR ( I , J )
 &PRI      KOR = OR ( I , J )
 &DGV      KOR = IOR ( I , J )
@@ -1630,6 +1660,7 @@ C
 &PPC      KAND = JIAND ( I , J )
 &&DVFGID      KAND = IAND ( I , J )
 &&LINGIL      KAND = IAND ( I , J )
+&WXS      KAND = IAND ( I , J )
 &VAX      KAND = JIAND ( I , J )
 &PRI      KAND = AND ( I , J )
 &DGV      KAND = IAND ( I , J )
@@ -1661,6 +1692,8 @@ C
 &&DVFGID      J = LOC ( IRESLT(1))
 &&LINGIL      I = LOC ( ISRCE(1))
 &&LINGIL      J = LOC ( IRESLT(1))
+&WXS      I = LOC ( ISRCE(1))
+&WXS      J = LOC ( IRESLT(1))
 C
 &VAXC -- USE VAX FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
 &VAXC    DATA WILL BE MOVED
@@ -1744,11 +1777,15 @@ C
 &&DVFGID      J = LOC ( IRESLT(1))
 &&LINGIL      I = LOC ( ISRCE(1))
 &&LINGIL      J = LOC ( IRESLT(1))
+&WXS      I = LOC ( ISRCE(1))
+&WXS      J = LOC ( IRESLT(1))
 C
 &&DVFGID      I = LOC ( ISRCE(1))
 &&DVFGID      J = LOC ( IRESLT(1))
 &&LINGIL      I = LOC ( ISRCE(1))
 &&LINGIL      J = LOC ( IRESLT(1))
+&WXS      I = LOC ( ISRCE(1))
+&WXS      J = LOC ( IRESLT(1))
 C
 &UNX      I = LOC ( ISRCE(1))
 &UNX      J = LOC ( IRESLT(1))
@@ -2047,6 +2084,8 @@ C
 &DVF      IF (IFAIL .EQ. 0 ) RETURN
 &&LINGIL      CALL SYSTEM(COMMND,IFAIL)
 &&LINGIL      IF (IFAIL .EQ. 0 ) RETURN
+&WXS      CALL SYSTEM(COMMND,IFAIL)
+&WXS      IF (IFAIL .EQ. 0 ) RETURN
 
 C
 &XXX      IF (ISSPRT .EQ. 0) THEN
@@ -2418,7 +2457,18 @@ C----- RECOVER SCRIPT NAME
 &&GILGID      ENDIF
 &&GILGID          WRITE(CMON(3),'(A)') '^^CR'
 &&GILGID      CALL XPRVDU(NCVDU,3,0)
-      
+
+&WXS          WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
+&WXS      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
+&WXS         WRITE(CMON(2),'(5A)')'^^WI ''Script: ',CSCPNM(1:LENNM),
+&WXS     1   ' called from:', CPRVNM, ''''
+&WXS      ELSE
+&WXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+&WXS     1  CSCPNM(1:LENNM), ''''
+&WXS      ENDIF
+&WXS          WRITE(CMON(3),'(A)') '^^CR'
+&WXS      CALL XPRVDU(NCVDU,3,0)
+
 C
       IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
 
@@ -2693,6 +2743,7 @@ C      CPARAM, INITIALISED WITH THE DOS COMMAND:   SET CPARAM=CVALUE
 &&DVFGID      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &UNX        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &&LINGIL      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+&WXS      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
         IF (LIST(LEVEL) .EQ. ' ') THEN
@@ -2707,6 +2758,7 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
 &VAX         LIST(LEVEL) = '.\'
 &LIN         LIST(LEVEL) = './'
 &GIL         LIST(LEVEL) = './'
+&WXS         LIST(LEVEL) = './'
           ENDIF
         ENDIF
         LSTPOS(LEVEL)=0
@@ -2946,13 +2998,13 @@ CODE FOR XRDMSE
       SUBROUTINE XRDMSE (CMOUSE, NMOUSE)
 C----- GET A STRING OF ATOM NAMES FROM THE MOUSE
 C----- SHOULD BE REPLACED BY A MACHINE SPECIFIC ROUTINE
-&&DVFGID      CALL GUEXIT(2027) 
-##DVFGID      CHARACTER*(*) CMOUSE
-##DVFGID      CMOUSE = ' FIRST UNTIL LAST '
-##DVFGID      NMOUSE = 18
-##DVFGID      LMOUSE = 1
-##DVFGID      MMOUSE = 1
-##DVFGID      RETURN
+&&&DVFGIDWXS      CALL GUEXIT(2027) 
+###DVFGIDWXS      CHARACTER*(*) CMOUSE
+###DVFGIDWXS      CMOUSE = ' FIRST UNTIL LAST '
+###DVFGIDWXS      NMOUSE = 18
+###DVFGIDWXS      LMOUSE = 1
+###DVFGIDWXS      MMOUSE = 1
+###DVFGIDWXS      RETURN
       END
 
 CODE FOR FRAND
@@ -2963,6 +3015,7 @@ C       random number generator.
 &&DVFGID      FRAND = RAND()
 &DOS          FRAND = RANDOM()
 &&LINGIL      FRAND = RAND()
+&WXS      FRAND = RAND()
 &VAX          FRAND = RAN (NINT(SECNDS(0.0)))
       RETURN
       END
@@ -2987,6 +3040,7 @@ C----- REPEAT RANDOM SEQUENCE
 &DOS          CALL SET_SEED@(SEED)
 &&DVFGID          CALL SRAND(0)
 &&LINGIL          CALL SRAND(0)
+&WXS          CALL SRAND(0)
         ELSE
 C----- CREATE NEW SEQUENCE
 &XXX          SEED = 0
@@ -2995,6 +3049,8 @@ C----- CREATE NEW SEQUENCE
 &&DVFGID          CALL SRAND(RND$TIMESEED )
 &&LINGIL          CALL SYSTEM_CLOCK(ISEED,IDV,IDV2)
 &&LINGIL          CALL SRAND(ISEED)
+&WXS          CALL SYSTEM_CLOCK(ISEED,IDV,IDV2)
+&WXS          CALL SRAND(ISEED)
         ENDIF
       ENDIF
       IF (ISET .EQ. 0) THEN
@@ -3054,6 +3110,7 @@ CODE FOR GETCOM
 &GID            END INTERFACE
 &GID      INTEGER ISTAT
 &&GIDGIL      CHARACTER*256 CALINE
+&WXS      CHARACTER*256 CALINE
 \XSSVAL
 \UFILE
 \CAMPAR
@@ -3066,10 +3123,12 @@ CODE FOR GETCOM
 &VAX      READ( NCUFU(1), 1) CLINE
 &LIN      READ( NCUFU(1), 1) CLINE
 &DVF      READ( NCUFU(1), 1) CLINE
-&GIL      CALINE = ' '
 &GIL      ISTAT = 0
 &GIL      CALL CINEXTCOMMAND(ISTAT,CALINE)
 &GIL      READ(CALINE,'(A)') CLINE
+&WXS      ISTAT = 0
+&WXS      CALL CINEXTCOMMAND(ISTAT,CALINE)
+&WXS      READ(CALINE,'(A)') CLINE
 C&GID      DATA CALINE(1:40) /'                                        '/
 &GID      CALINE=' '
 &GID      ISTAT = 0
@@ -3083,6 +3142,15 @@ C&GID      DATA CALINE(1:40) /'                                        '/
 &&GILGID          WRITE(CMON,'(A)')  '^^CR '
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
 &&GILGID      ENDIF
+
+&WXS      IF ( LCLOSE ) THEN
+&WXS          WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
+&WXS          CALL XPRVDU (NCVDU,1,0)
+&WXS          WRITE(CMON,'(A)') '^^WI ''Working. Please Wait.'''
+&WXS          CALL XPRVDU (NCVDU,1,0)
+&WXS          WRITE(CMON,'(A)')  '^^CR '
+&WXS          CALL XPRVDU (NCVDU,1,0)
+&WXS      ENDIF
 &DOS      IF ( LCLOSE ) THEN
 &DOS         READ( NCUFU(1), 1) CLINE
 &DOS      ELSE
@@ -3101,6 +3169,7 @@ CODE FOR GUWAIT
 &GID          END SUBROUTINE COMPLETE
 &GID      END INTERFACE
 &&GIDGIL      CALL COMPLETE()
+&WXS      CALL COMPLETE()
       END
 
 
@@ -3155,11 +3224,13 @@ C----- CLOSE ALL THE FILES
 2001  CONTINUE
 &DVF      CALL EXIT(IVAR)
 &LIN      CALL EXIT(IVAR)
-##GIDDVF      STOP
+###GIDDVFWXS      STOP
 &GID      CALL CIENDTHREAD(IVAR)
 &GIL      CALL CIENDTHREAD(IVAR)
+&WXS      CALL CIENDTHREAD(IVAR)
 &GID      RETURN
 &GIL      RETURN
+&WXS      RETURN
       END
 
 code for dumio (keep the program going while we test it)
@@ -3420,9 +3491,9 @@ C---- MACHINE SPECIFIC WRITE TO THE SCREEN
 
       CEXTRA = ' '
       LENBUF = LEN(CBUF(1))
-##GILGID      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) THEN
-##GILGID         LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79
-##GILGID      ENDIF
+###GILGIDWXS      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) THEN
+###GILGIDWXS         LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79
+###GILGIDWXS      ENDIF
 
       IF (NLINES .GE. 1) THEN
             IF (NLINES .GT. LINBUF) THEN
@@ -3449,14 +3520,26 @@ C&&GILGID          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79 (for output)
 &&GIDGIL          WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
 &&GIDGIL       END IF
 
+&WXS       IF (CBUF(J)(2:2).NE.'^') THEN
+&WXS          IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
+&WXS             WRITE( CEXTRA,'(A)') CBUF(J)
+&WXS          ELSE 
+&WXS             WRITE( CEXTRA,'(2(A,I2.2),A)')
+&WXS     1       '{', IOFORE, ',', IOBACK, CBUF(J)
+&WXS          ENDIF 
+&WXS       ELSE 
+&WXS          WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
+&WXS       END IF
+
                IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
 &DOS               JNL77 = 0                 !--- SWITCH OFF LINE FEEDS
-##GIDGIL            CFRMAT = '(1X,A)'
+###GIDGILWXS            CFRMAT = '(1X,A)'
 &VAX                N = N - 1
 &VAX                CFRMAT = '(''+'',A)'
 &DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-##GIDGIL            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
+###GIDGILWXS            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
 &&GIDGIL            CALL CALLCCODE ( CEXTRA(1:N+6))
+&WXS            CALL CALLCCODE ( CEXTRA(1:N+6))
 &DOS                JNL77 = 1                   !--- SWITCH ON LINE FEEDS
                ELSEIF ( CFIRST .EQ. '+' ) THEN !--FORTRAN CR WITHOUT LF
 &DOSC------             
@@ -3464,8 +3547,8 @@ C&&GILGID          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79 (for output)
                     CFRMAT = '(A)'
 &DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 Cdjw:      enable thermometer etc in non-vga mode
-##GIDGIL            WRITE(NCDEV ,'(A,$)') char(13)
-##GIDGIL            WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
+###GIDGILWXS            WRITE(NCDEV ,'(A,$)') char(13)
+###GIDGILWXS            WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
 &DOS                JNL77 = 1               !--- SWITCH ON LINE FEEDS
                ELSEIF (CLAST .EQ. '$') THEN !--- LEAVE CURSOR AT CURRENT POSITION
 &DOS                JNL77 = 0           !--- SWITCH OFF LINE FEEDS
@@ -3473,19 +3556,22 @@ Cdjw:      enable thermometer etc in non-vga mode
 &DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 &DOS                WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
 &&GIDGIL            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+&WXS            CALL CALLCCODE ( CEXTRA(1:LENBUF))
 &VAX                CFRMAT = '(A,$)'
 &VAX                WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOS                JNL77 = 1           !--- SWITCH ON LINE FEEDS
                ELSEIF ( CFIRST .EQ. '0' ) THEN
                     CFRMAT = '(/,A)'
 &DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-##GIDGIL            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+###GIDGILWXS            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &&GIDGIL            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+&WXS            CALL CALLCCODE ( CEXTRA(1:LENBUF))
                ELSE
                     CFRMAT = '(A)'
-##GIDGIL            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+###GIDGILWXS            WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOS                IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 &&GIDGIL            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+&WXS            CALL CALLCCODE ( CEXTRA(1:LENBUF))
                ENDIF
 C
                CBUF(J) = ' '

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.22  2002/08/30 10:32:19  richard
 //   This should fix some font-not-appearing problems that Foxman was having under
 //   Win95.
@@ -85,6 +88,14 @@
 #ifdef __BOTHWX__
 #include <wx/font.h>
 #include <wx/thread.h>
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
 #endif
 
 int CxChart::mChartCount = kChartBase;
@@ -503,7 +514,7 @@ void CxChart::Clear()
 #endif
 }
 
-void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
+void CxChart::DrawEllipse(int x, int y, int w, int h, bool fill)
 {
 
     //NB w and h are half diameters. (i.e. radii).
@@ -550,7 +561,7 @@ void CxChart::DrawText(int x, int y, CcString text)
     CPen        pen(PS_SOLID,1,mfgcolour);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     CPen        *oldpen = memDC->SelectObject(&pen);
-	LOGFONT     theLogfont;
+    LOGFONT     theLogfont;
     (CcController::mp_font)->GetLogFont(&theLogfont);
     CString face = CString(*(theLogfont.lfFaceName));
     CFont theFont;
@@ -576,7 +587,7 @@ void CxChart::DrawText(int x, int y, CcString text)
 #endif
 }
 
-void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
+void CxChart::DrawPoly(int nVertices, int * vertices, bool fill)
 {
 #ifdef __CR_WIN__
       oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
@@ -740,7 +751,7 @@ void CxChart::OnLButtonUp( wxMouseEvent & event )
 }
 
 
-void CxChart::SetPolygonDrawMode(Boolean on)
+void CxChart::SetPolygonDrawMode(bool on)
 {
     //If the user closes the polygon, the area is returned as an array
     //with the first element as the number of vertices, followed by all
@@ -897,15 +908,15 @@ void CxChart::OnRButtonUp( wxMouseEvent & event )
     }
 }
 
-void CxChart::UseIsotropicCoords(Boolean iso)
+void CxChart::UseIsotropicCoords(bool iso)
 {
     m_IsoCoords = iso;
 }
 
-void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated)
+void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rotated)
 {
 
-    Boolean centred = ( x2>0 );
+    bool centred = ( x2>0 );
     x2 = abs(x2);
 
 #ifdef __CR_WIN__
@@ -926,7 +937,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
     *(theLogfont.lfFaceName) = *face;
 
 
-    Boolean fontIsTooBig = true;
+    bool fontIsTooBig = true;
     CSize size;
 //  int sign = theLogfont.lfHeight / abs(theLogfont.lfHeight);
     while (fontIsTooBig)
@@ -985,7 +996,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
       int cwide = coord2.x - coord.x;
       int chigh = coord2.y - coord.y;
 
-    Boolean fontIsTooBig = true;
+    bool fontIsTooBig = true;
 
     while (fontIsTooBig)
     {
@@ -1020,7 +1031,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 #endif
 }
 
-void CxChart::Invert(Boolean inverted)
+void CxChart::Invert(bool inverted)
 {
     m_inverted = inverted;
 }

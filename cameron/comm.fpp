@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/01/14 10:28:15  rich
+C g77 spotted undeclard logical variable.
+C
 C Revision 1.18  2002/06/28 16:20:56  Administrator
 C Enable NEW to be stored in LIST 5, try to fix postscript line thickness and boundingbox
 C
@@ -88,6 +91,7 @@ C This is the code for the VIEW group of commands.
       REAL SCLSAV
       INTEGER IAXDAT(3)
       DATA IAXDAT /1,4,3/
+
       ID = ID - (ID/100)*100 + 1
       GOTO (100,101,1222,103,104,105,106,122,108,109,110,111,112,113,
      c 114,115,116,117,118,119,120,121,122,123,124,125,112,113,
@@ -123,6 +127,7 @@ C        IFONT = 12 (changed from IFSIZE by DJW)
 &DOS        ILSIZE = 8
 &GID        ILSIZE = 60
 &GIL        ILSIZE = 60
+&WXS        ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
         DO 1000 I = 1 , ICLMAX
 C          IDEVCL(I) = IDEVCS(I)
@@ -316,8 +321,8 @@ C SCALE DOWN FURTHER TO PRODUCE A BORDER
         ELSE
           IF (ISCRN.EQ.6 .OR. ISCRN.EQ.5
      +   .OR. ISCRN.EQ.8 ) THEN
-##GIDGIL            SCALE = SCLFIX * 10.0
-&&GIDGIL            SCALE = SCLFIX * 2.0
+###GIDGILWXS            SCALE = SCLFIX * 10.0
+&&&GIDGILWXS            SCALE = SCLFIX * 2.0
           ELSE
             SCALE = SCLFIX
           ENDIF
@@ -336,6 +341,7 @@ c
 &DOS      ILSIZE = NINT (8 * RES)
 &GID      ILSIZE = NINT (60 * RES)
 &GIL      ILSIZE = NINT (60 * RES)
+&WXS      ILSIZE = NINT (60 * RES)
       SCLSAV = SCALE
       IF (ISTREO .EQ. 1) THEN
 C----- SET LEFT VIEW
@@ -702,6 +708,7 @@ C        IFSIZE = 12
 &DOS        ILSIZE = 8
 &GID        ILSIZE = 60
 &GIL        ILSIZE = 60
+&WXS        ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
         DO 1152 I = 1 , ICLMAX
           IDEVCL(I) = IDEVCS(I)
@@ -735,23 +742,28 @@ C      CALL ZATMUL(0,0,0)
 &GID      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 &GID      IUNIT = 5
 &GIL      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
+&WXS      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 &GIL      IUNIT = 5
+&WXS      IUNIT = 5
 1150  CONTINUE
 &DOS      CALL ZGETKY(K)
 &GID      K = KRDLIN ( IUNIT, CLINE, LENUSE )
 &GIL      K = KRDLIN ( IUNIT, CLINE, LENUSE )
+&WXS      K = KRDLIN ( IUNIT, CLINE, LENUSE )
 &DOS      IF (K.EQ.0) GOTO 1150
       CALL ZCLARE(0,IDEVCL(IBACK+1))
       ICURS = 1
 &DOS        IF (K.EQ.ICLEFT) THEN
 &GID        IF (CLINE(1:1).EQ.'L') THEN
 &GIL        IF (CLINE(1:1).EQ.'L') THEN
+&WXS        IF (CLINE(1:1).EQ.'L') THEN
 C LEFT
         ANG = ABS(ANG)
         CALL ZROT(ANG,2)
 &DOS      ELSE IF (K.EQ.ICRGHT) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'R') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'R') THEN
+&WXS      ELSE IF (CLINE(1:1).EQ.'R') THEN
 C RIGHT
         ANG = -ABS(ANG)
         CALL ZROT(ANG,2)
@@ -759,28 +771,33 @@ C UP
 &DOS      ELSE IF (K.EQ.ICUP) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'U') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'U') THEN
+&WXS      ELSE IF (CLINE(1:1).EQ.'U') THEN
         ANG = ABS(ANG)
         CALL ZROT(ANG,1)
 C DOWN
 &DOS      ELSE IF (K.EQ.ICDOWN) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'D') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'D') THEN
+&WXS      ELSE IF (CLINE(1:1).EQ.'D') THEN
         ANG = -ABS(ANG)
         CALL ZROT(ANG,1)
 C ANTICLOCKWISE
 &DOS      ELSE IF (K.EQ.ICANTI) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'A') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'A') THEN
+&WXS      ELSE IF (CLINE(1:1).EQ.'A') THEN
         ANG = -ABS(ANG)
         CALL ZROT(ANG,3)
 C CLOCKWISE
 &DOS      ELSE IF (K.EQ.ICCLCK) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'C') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'C') THEN
+&WXS      ELSE IF (CLINE(1:1).EQ.'C') THEN
         ANG = ABS(ANG)
         CALL ZROT(ANG,3)
 &DOS      ELSE IF (K.NE.0) THEN
 &GID      ELSE 
+&WXS      ELSE 
 &GIL      ELSE 
         ICURS = 0
         CALL ZATMUL(0,0,0)
@@ -5441,8 +5458,8 @@ CODE FOR CAMPRESETS
      1              'TEKT',      'POST',         'ENCAP',
      1              'VGA',       'CPOST',        'CENCA' /
 
-##GILGID      DATA RCAMDV / 320.0, 240.0, 30.0,
-&&GILGID      DATA RCAMDV /1200.0,1200.0, 30.0,
+###GILGIDWXS      DATA RCAMDV / 320.0, 240.0, 30.0,
+&&&GILGIDWXS      DATA RCAMDV /1200.0,1200.0, 30.0,
      2                  480.0, 360.0, 50.0,
      3                 5200.0,3700.0,300.0,
      4                  550.0, 360.0, 40.0,

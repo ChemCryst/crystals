@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2003/04/01 13:48:51  rich
+C XTHLIM could go into an infinite loop in certain cases (certain cells?). Limit
+C loops for optimising MAXH,K,L to 400 iterations.
+C
 C Revision 1.52  2003/03/25 14:02:35  rich
 C Move DELRHOMIN/MAX back to their original locations in LIst 30.
 C
@@ -333,7 +337,7 @@ C--END OF THE REFLECTIONS  -  EXIT
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTRF .GT. 0 ) WRITE ( NCWU,'(A)' ) CHAR(12)
       ENDIF
-#GID      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
+##GIDWXS      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
 1720  CONTINUE
       CALL XOPMSG ( IOPPPR , IOPLSE , 6 )
       CALL XTIME2(2)
@@ -599,7 +603,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       IF( ILSTRF .GT. 0) WRITE(NCWU, '(A)') CHAR(12)
       ENDIF
-#GID      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
+##GIDWXS      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
 C--CLEAR THE PRINT LINE TO BLANKS
       CALL XMVSPD(IB,LINEA(1),LSTX)
       JD=0
@@ -885,7 +889,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
         IF(ILSTCO .GT. 0) WRITE(NCWU,'(A)')CHAR(12)
       ENDIF
-##GILGID      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
+###GILGIDWXS      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
 C
 C----- OUTPUT THE OVERALL PARAMETERS
       MCFUNC = 1
@@ -1208,7 +1212,8 @@ C--LOOP OVER THE COORDS.
           J=J+NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
-            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+#WXS            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&WXS            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c            CALL XCRAS(CHTML,NHTML)
             WRITE(NCPU,913)CHTML(1:)
 913         FORMAT('<TD>',A,'</TD>')
@@ -1241,7 +1246,8 @@ C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
         CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
         IF (IPCHCO .EQ. 3) THEN  
-          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+#WXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&WXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
           WRITE(NCPU,913)CHTML(1:)
         END IF
@@ -1260,7 +1266,8 @@ c            w = store(m5+2)*store(m5+13)
         endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
         IF (IPCHCO .EQ. 3) THEN  
-          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
+#WXS          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
+&WXS          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
           WRITE(NCPU,913)CHTML(1:)//'</TR>'
         END IF
@@ -1290,7 +1297,7 @@ C--END OF THE PAGE  -  START A NEW PAGE
         IF (ISSPRT .EQ. 0) THEN
           IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
         ENDIF
-#GID      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+##GIDWXS      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
         CALL STATX(LINEB)
         CALL STXYZ(LINEB)
         IF (ISSPRT .EQ. 0) THEN
@@ -1496,7 +1503,8 @@ C--LOOP OVER THE PARAMETERS
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
 
       IF (IPCHCO .EQ. 3) THEN  
-          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+#WXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&WXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
           WRITE(NCPU,913)CHTML(1:)
 913       FORMAT('<TD>',A,'</TD>')
       END IF
@@ -1523,7 +1531,7 @@ C--NEW PAGE
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTAN .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
       ENDIF
-#GID      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+##GIDWXS      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
       CALL STATX(LINEB)
       CALL STUIJ(LINEB)
       IF(MINX-MINU)2000,2100,2000
@@ -1668,7 +1676,7 @@ C
       DATA CCIF /
      3      '_refine_ls_extinction_coef' /
 C
-###LINGILGID      IFUNC = IFUNC
+####LINGILGIDWXS      IFUNC = IFUNC
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
@@ -3383,8 +3391,8 @@ C----- OUTPUT A TITLE, FIRST 60 CHARACTERS ONLY
       IF ( IPUNCH .EQ. 0 ) THEN
 C----- COPY HEADER INFORMATION FROM .CIF FILE
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-##LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&&LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
+###LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script\refcif.dat',25)
+&&&LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script/refcif.dat',25)
 
         IF (IERFLG.GE.0) THEN
           CLINE=' '
@@ -3394,8 +3402,8 @@ C----- COPY HEADER INFORMATION FROM .CIF FILE
           GO TO 100
 150       CONTINUE
 C----- CLOSE THE FILE
-##LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
-&&LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
+###LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script\refcif.dat',25)
+&&&LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script/refcif.dat',25)
         ELSE
           WRITE (CMON,'('' cif header file not available'')')
           CALL XPRVDU (NCVDU,1,0)
@@ -3468,8 +3476,8 @@ C################################################################
       IF ( IPUNCH .EQ. 0 ) THEN
 C-----  LOAD THE AVAILABLE REFERENCE TABLE
 
-##LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&&LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+###LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
+&&&LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
         IF (IERFLG.GE.0) THEN
           READ (NCARU,'(i4)') NREFS
           REWIND (NCARU)
@@ -4212,11 +4220,13 @@ C RIC2001 New scan types. Use IVAL, not char string.
 &&DOSDVF            CVALUE = '\w/2\q'
 &&GIDVAX            CVALUE = '\w/2\q'
 &&LINGIL            CVALUE = '\\w/2\\q'
+&WXS            CVALUE = '\\w/2\\q'
              CALL XCRAS (CVALUE,J)
            ELSE IF ( IVAL .EQ. 2 ) THEN
 &&DOSVAX            CVALUE = '\w'
 &&DVFGID            CVALUE = '\w'
 &&LINGIL            CVALUE = '\\w'
+&WXS            CVALUE = '\\w'
              CALL XCRAS (CVALUE,J)
            ELSE IF ( IVAL .EQ. 3 ) THEN
              CVALUE = '''\f scans'''
@@ -4224,6 +4234,7 @@ C RIC2001 New scan types. Use IVAL, not char string.
 &&DOSVAX             CVALUE = '''\f & \w scans'''
 &&DVFGID             CVALUE = '''\f & \w scans'''
 &&LINGIL             CVALUE = '''\\f & \\w scans'''
+&WXS             CVALUE = '''\\f & \\w scans'''
            ELSE
              CVALUE = '?'
            END IF
@@ -5017,11 +5028,11 @@ C
       IF (JLOAD(6).GE.1) THEN
          CBUF(1:5)=''' ? '''
          IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
-##LINGIL            CBUF(1:8) = '''Mo K\a'''
-&&LINGIL            CBUF(1:8) = '''Mo K\\a'''
+###LINGILWXS            CBUF(1:8) = '''Mo K\a'''
+&&&LINGILWXS            CBUF(1:8) = '''Mo K\\a'''
          ELSE IF (NINT(10.*STORE(L13DC)).EQ.15) THEN
-##LINGIL            CBUF(1:8) = '''Cu K\a'''
-&&LINGIL            CBUF(1:8) = '''Cu K\\a'''
+###LINGILWXS            CBUF(1:8) = '''Cu K\a'''
+&&&LINGILWXS            CBUF(1:8) = '''Cu K\\a'''
          END IF
          IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (NCFPU1,'(''_diffrn_radiation_type       '', T35, A)')
@@ -5056,7 +5067,7 @@ C - NOW LIST THE REFERENCES
 2550  CONTINUE
 
       IF ( IPUNCH .EQ. 1 ) THEN
-#GID      WRITE (NCPU,'(A)') CHAR(12)
+##GIDWXS      WRITE (NCPU,'(A)') CHAR(12)
         WRITE (NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
 C----- ONLY 29 LINES USED IN PAGE  - CMON IS CURRENLTY 24
         WRITE (CMON,'(X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,24)
@@ -5084,8 +5095,8 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       IF ( IPUNCH .EQ. 0 ) THEN
         CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
 C      CLOSE THE REFERENCES FILE
-##LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\reftab.dat', 25)
-&&LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/reftab.dat', 25)
+###LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
+&&&LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
       END IF
       RETURN
       END
@@ -5198,6 +5209,6 @@ C                CALL XPRVDU(NCVDU,1,0)
 100   CONTINUE
       RETURN
 900   CONTINUE
-&&GIDGIL      CALL ZMORE ('Premature end',0)
+&&&GIDGILWXS      CALL ZMORE ('Premature end',0)
       RETURN
       END

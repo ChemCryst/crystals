@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2002/10/02 13:43:17  rich
+//   New ModList class added.
+//
 //   Revision 1.26  2002/07/23 08:25:43  richard
 //
 //   Moved selected, disabled and excluded variables and functions into the base class.
@@ -121,7 +124,7 @@ CRCALCLAYOUT(CrModel,CxModel)
 CcParse CrModel::ParseInput( CcTokenList * tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
-  Boolean hasTokenForMe = true;
+  bool hasTokenForMe = true;
 
 // Initialization for the first time
   if( ! mSelfInitialised )
@@ -177,7 +180,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTInform:
       {
         tokenList->GetToken(); // Remove that token!
-        Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+        bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
         mCallbackState = inform;
         if (mCallbackState)
@@ -316,7 +319,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
         {
           tokenList->GetToken(); //Remove the kTAll token!
-          Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
           tokenList->GetToken();
           if(m_ModelDoc) m_ModelDoc->SelectAllAtoms(select);
         }
@@ -328,7 +331,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         else
         {
           CcString atomLabel = tokenList->GetToken();
-          Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
           tokenList->GetToken(); //Remove the kTYes/kTNo token
           if(m_ModelDoc) m_ModelDoc->SelectAtomByLabel(atomLabel,select);
         }
@@ -341,14 +344,14 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         if( tokenList->GetDescriptor(kLogicalClass) == kTAll)
         {
           tokenList->GetToken(); //Remove the kTAll token!
-          Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
           tokenList->GetToken();
           if(m_ModelDoc) m_ModelDoc->DisableAllAtoms(select);
         }
         else
         {
           CcString atomLabel = tokenList->GetToken();
-          Boolean select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
+          bool select = (tokenList->GetDescriptor(kLogicalClass) == kTYes);
           tokenList->GetToken(); //Remove the kTYes/kTNo token
           if(m_ModelDoc) m_ModelDoc->DisableAtomByLabel(atomLabel,select);
         }
@@ -425,7 +428,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTAutoSize:
       {
         tokenList->GetToken();
-        Boolean size = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+        bool size = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
         if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetAutoSize( size );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
@@ -434,7 +437,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTHover:
       {
         tokenList->GetToken();
-        Boolean hover = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+        bool hover = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
         if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetHover( hover );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
@@ -443,7 +446,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTShading:
       {
         tokenList->GetToken();
-        Boolean shading = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+        bool shading = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
         if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetShading( shading );
         else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
@@ -452,7 +455,7 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
       case kTSelectTool:
       {
         tokenList->GetToken();
-        Boolean bRect = true;
+        bool bRect = true;
         if (tokenList->GetDescriptor(kLogicalClass) == kTSelectRect)
         {
           tokenList->GetToken();
@@ -643,7 +646,7 @@ int CrModel::GetSelectionAction()
   return m_AtomSelectAction;
 }
 
-Boolean CrModel::RenderModel(bool detailed, bool feedback)
+bool CrModel::RenderModel(bool detailed, bool feedback)
 {
 //    TEXTOUT ( "RenderModel" );
     m_style.high_res = detailed;
@@ -695,4 +698,3 @@ CcModelObject * CrModel::FindObjectByGLName(GLuint name)
   if(m_ModelDoc) return m_ModelDoc->FindObjectByGLName(name);
   return NULL;
 }
-

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/06/17 14:32:57  richard
+//   CxDestroyWindow function.
+//
 //   Revision 1.7  2001/03/08 15:55:41  richard
 //   Disable function - called by Cr class to disable the radiobutton.
 //
@@ -58,7 +61,7 @@ Destroy();
 void    CxRadioButton::ButtonChanged()
 {
 #ifdef __CR_WIN__
-    Boolean state = ( GetRadioState() == 1 ) ? true : false;
+    bool state = ( GetRadioState() == 1 ) ? true : false;
     if (state)
         ((CrRadioButton*)ptr_to_crObject)->ButtonOn();
 #endif
@@ -131,7 +134,7 @@ void    CxRadioButton::RemoveRadioButton()
     mRadioButtonCount--;
 }
 
-void    CxRadioButton::SetRadioState( Boolean inValue )
+void    CxRadioButton::SetRadioState( bool inValue )
 {
 #ifdef __CR_WIN__
     int value;
@@ -146,7 +149,7 @@ void    CxRadioButton::SetRadioState( Boolean inValue )
 #endif
 }
 
-Boolean CxRadioButton::GetRadioState()
+bool CxRadioButton::GetRadioState()
 {
 #ifdef __CR_WIN__
       int value = GetCheck();
@@ -189,7 +192,7 @@ void CxRadioButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -212,7 +215,7 @@ void CxRadioButton::OnChar( wxKeyEvent & event )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-                  Boolean shifted = event.m_shiftDown;
+                  bool shifted = event.m_shiftDown;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -230,7 +233,7 @@ void CxRadioButton::OnChar( wxKeyEvent & event )
 #endif
 
 
-void CxRadioButton::Disable(Boolean disabled)
+void CxRadioButton::Disable(bool disabled)
 {
 #ifdef __CR_WIN__
     if(disabled)

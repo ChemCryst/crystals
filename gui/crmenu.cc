@@ -65,7 +65,7 @@ CrMenu::~CrMenu()
 CcParse CrMenu::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -104,7 +104,7 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
                 menuItem->name = mMenuPtr->mName;
                 menuItem->command = nil;
                 menuItem->ptr = mMenuPtr;
-                Boolean moreTokens = true;
+                bool moreTokens = true;
                 while ( moreTokens )
                 {
                     switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -143,7 +143,7 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
                 menuItem->text    = menuItem->originaltext    = tokenList->GetToken();
                 menuItem->command = menuItem->originalcommand = tokenList->GetToken();
                 menuItem->ptr = nil;
-                Boolean moreTokens = true;
+                bool moreTokens = true;
                 while ( moreTokens )
                 {
                     switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -371,7 +371,7 @@ void CrMenu::Substitute(PlotDataPopup data)
 // _Y with the y value
 // _L with the label (scatterpoints only)
 
-	if(data.m_Valid == false) return;
+    if(data.m_Valid == false) return;
 
     CcMenuItem* menuItem = nil;
     CcString acommand, atext;
@@ -392,7 +392,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_PopupText + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'S')
                 {
@@ -401,7 +401,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_SeriesName + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'X')
                 {
@@ -410,7 +410,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_XValue + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'Y')
                 {
@@ -419,7 +419,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_YValue + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'L')
                 {
@@ -489,7 +489,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_PopupText + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'S')
                 {
@@ -498,7 +498,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_SeriesName + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'X')
                 {
@@ -507,7 +507,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_XValue + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'Y')
                 {
@@ -516,7 +516,7 @@ void CrMenu::Substitute(PlotDataPopup data)
                     atext = firstPart + data.m_YValue + lastPart;
                 }
             }
-			for (i = 0; i < atext.Len()-1; i++)
+            for (i = 0; i < atext.Len()-1; i++)
             {
                 if(atext[i] == '_' && atext[i+1] == 'L')
                 {

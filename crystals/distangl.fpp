@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/03/20 16:10:11  rich
+C
+C Moved SYMMETRY expansion code into a subroutine so it can be applied
+C identically whether in LINK or in DISTANCES. Commented out some debugging.
+C
 C Revision 1.42  2003/03/05 16:30:45  rich
 C Fiddling to make more general.
 C
@@ -6013,8 +6018,8 @@ C -- Add this extra element in L29 style at NEWL29.
             STORE(NEWM29+2) = STORE(L40T+2)
 
 C -- Have to get proper covalent radii from file if possible.
-##LINGIL            CFILEN = 'CRYSDIR:\script\propwin.dat'
-&&LINGIL            CFILEN = 'CRYSDIR:/script/propwin.dat'
+###LINGILWXS            CFILEN = 'CRYSDIR:\script\propwin.dat'
+&&&LINGILWXS            CFILEN = 'CRYSDIR:/script/propwin.dat'
             CALL MTRNLG(CFILEN,'OLD',ILENG)
             INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
             IF(WEXIST) THEN

@@ -9,6 +9,13 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.60  2003/03/27 14:57:54  rich
+// Added GUI command "GETREG string1 string2" to fetch string values from
+// the registry. Will be used to find latest Mogul location. string1 is the
+// key name in either CURRENT_USER (default) or LOCAL_MACHINE (falls back
+// if not found in C_U). String 2 is the value name. The value data is returned
+// to the CRYSTALS input buffer.
+//
 // Revision 1.59  2003/03/26 10:21:56  rich
 // Removed use of \windows\wincrys.ini and \wincrys\script\winsizes.ini
 // as places to store and retrieve application information. All information is
@@ -310,9 +317,15 @@
 //      display atom names in the current progress/status bar.
 //
 
+
+
 #include    "crystalsinterface.h"
+#ifdef __BOTHWX__
+#include <wx/app.h>
+#endif
 #include    "ccstring.h"
 #include    "crconstants.h"
+
 #include    "crgrid.h"
 #include    "cclock.h"
 #include    "cccontroller.h"
@@ -332,6 +345,9 @@
 #include    "crprogress.h"
 #include    "ccmenuitem.h"
 #include    "crtoolbar.h"
+
+
+
 #include <iostream>
 #include <iomanip>
 
@@ -363,13 +379,17 @@
 #ifdef __WINMSW__
   #include <stdio.h>
   #include <direct.h>
-  #include <wx/cmndata.h>
+  #define F77_STUB_REQUIRED
+//  #include <math.h>
   #include <wx/fontdlg.h>
+  #include <wx/cmndata.h>
   #include <wx/filedlg.h>
   #include <wx/dirdlg.h>
   #include <wx/mimetype.h>
   #include <wx/utils.h>
   CcThread * CcController::mCrystalsThread = nil;
+#define max(a, b)  (((a) > (b)) ? (a) : (b))
+#define min(a, b)  (((a) < (b)) ? (a) : (b))
 #endif
 
 
@@ -636,7 +656,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 
     LOGSTAT( "Starting Crystals Thread" );
     
-	StartCrystalsThread();
+    StartCrystalsThread();
 
     LOGSTAT ( "Crystals thread started.\n") ;
 }
@@ -702,7 +722,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 
 }
 
-Boolean CcController::ParseInput( CcTokenList * tokenList )
+bool CcController::ParseInput( CcTokenList * tokenList )
 {
     CcController::debugIndent = 0;
 
@@ -732,10 +752,10 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                     tokenList->GetToken(); //remove token.
                     retVal = wPtr->ParseInput( tokenList );
                     if ( retVal.OK() )
-					{
+                    {
                         mWindowList.AddItem( wPtr );
-		                mCurrentWindow = wPtr;
-					}
+                        mCurrentWindow = wPtr;
+                    }
                     else
                         delete wPtr;
                 }
@@ -1220,12 +1240,12 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
 
 }
 
-Boolean     CcController::ParseLine( CcString text )
+bool     CcController::ParseLine( CcString text )
 {
 
     int start = 1, stop = 1, i;
-    Boolean inSpace = true;
-    Boolean inDelimiter = false;
+    bool inSpace = true;
+    bool inDelimiter = false;
     char closer = 0;
 
       int clen = text.Len();
@@ -1295,7 +1315,7 @@ Boolean     CcController::ParseLine( CcString text )
     return true; // *** for now
 }
 
-void    CcController::SendCommand( CcString command , Boolean jumpQueue)
+void    CcController::SendCommand( CcString command , bool jumpQueue)
 {
     LOGSTAT("CcController:SendCommand received command '" + command + "'");
     char* theLine = (char*)command.ToCString();
@@ -1427,7 +1447,7 @@ bool CcController::Completing()
    return temp;
 }    
 
-Boolean CcController::IsSpace( char c )
+bool CcController::IsSpace( char c )
 {
     return (   c == ' '
             || c == '\t'
@@ -1469,7 +1489,7 @@ void  CcController::AppendToken( CcString text  )
     mCurTokenList->AddItem( theString );
 }
 
-void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
+void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
 {
 
 //Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
@@ -1535,7 +1555,10 @@ void  CcController::AddInterfaceCommand( CcString line )
   {
     if ( line[1] == '^' )
     {
-      chop = min(clen,5); 
+
+//      chop = min(clen,5);
+      if ( clen > 5 ) chop = 5;
+
       if ( line[0] == '^' )
       {
         chop = 4;
@@ -1591,7 +1614,7 @@ void  CcController::AddInterfaceCommand( CcString line )
 
 
 
-Boolean CcController::GetCrystalsCommand( char * line )
+bool CcController::GetCrystalsCommand( char * line )
 //-----------------------------------------------------
 {
 //This is where the Crystals thread will spend most of its time.
@@ -1636,7 +1659,7 @@ Boolean CcController::GetCrystalsCommand( char * line )
 
 
 
-Boolean CcController::GetInterfaceCommand( char * line )
+bool CcController::GetInterfaceCommand( char * line )
 //------------------------------------------------------
 {
     //This routine gets called repeatedly by the Idle loop.
@@ -1925,7 +1948,7 @@ CcRect CcController::GetScreenArea()
     return retVal;
 }
 
-void CcController::History(Boolean up)
+void CcController::History(bool up)
 {
     if (up)
         mCommandHistoryPosition ++;
@@ -1934,8 +1957,11 @@ void CcController::History(Boolean up)
 
     int listSize = mCommandHistoryList.ListSize();
 
-    mCommandHistoryPosition = min ( mCommandHistoryPosition, listSize );
-    mCommandHistoryPosition = max ( mCommandHistoryPosition, 0 );
+//    mCommandHistoryPosition = min ( mCommandHistoryPosition, listSize );
+    if ( mCommandHistoryPosition > listSize ) mCommandHistoryPosition = listSize;
+
+//    mCommandHistoryPosition = max ( mCommandHistoryPosition, 0 );
+    if ( mCommandHistoryPosition < 0 ) mCommandHistoryPosition = 0;
 
     mCommandHistoryList.Reset();
     for ( int i = 0; i < listSize - mCommandHistoryPosition; i++ )
@@ -2111,7 +2137,7 @@ void CcController::StoreKey( CcString key, CcString value )
       else if ( i >= nEnv )
       {
         readFile = ""; //Assume doesn't exist.
-		noLuck = false;
+        noLuck = false;
       }
     }
 
@@ -2408,7 +2434,7 @@ int CcController::FindFreeMenuId()
     while (1)
     {
 
-       Boolean pointerfree = true;
+       bool pointerfree = true;
        mMenuItemList.Reset();     //To the beginning
        CcMenuItem* theItem;
 
@@ -2531,7 +2557,7 @@ int CcController::FindFreeToolId()
     while (1)
     {
 
-       Boolean pointerfree = true;
+       bool pointerfree = true;
        mToolList.Reset();     //To the beginning
        CcTool* theItem;
 
@@ -2781,24 +2807,13 @@ UINT CrystalsThreadProc( LPVOID arg )
 }
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 int CrystalsThreadProc( void* arg );
 SUBROUTINE_F77 crystl_();
 int CrystalsThreadProc( void * arg )
 {
     m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
     crystl_();
-    return 0;
-}
-#endif
-
-#ifdef __WINMSW__
-UINT CrystalsThreadProc( void* arg );
-SUBROUTINE CRYSTL();
-UINT CrystalsThreadProc( void * arg )
-{
-    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
-    CRYSTL();
     return 0;
 }
 #endif
@@ -2849,7 +2864,7 @@ void CcController::ProcessOutput( CcString line )
 }
 
 
-void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, CcString extensionDescription, Boolean titleOnly)
+void CcController::OpenFileDialog(CcString* result, CcString extensionFilter, CcString extensionDescription, bool titleOnly)
 {
 #ifdef __CR_WIN__
     CString pathname, filename, filetitle;
@@ -3310,9 +3325,9 @@ extern "C" {
       memcpy(str,theLine,262);
       *(str+262) = '\0';
       CcString temp = CcString(str);
-      LOGSTAT("Tempuntrimmed:\""+temp+"\"");
+//      LOGSTAT("Tempuntrimmed:\""+temp+"\"");
       temp.Trim();
-      LOGSTAT("Temp, trimmed:\""+temp+"\"");
+//      LOGSTAT("Temp, trimmed:\""+temp+"\"");
       (CcController::theController)->AddInterfaceCommand( temp );
       delete [] str;
   }
@@ -3365,7 +3380,7 @@ extern "C" {
     {
        for ( eFirst = sFirst; eFirst < line.Length(); eFirst++ )
        {
-		if ( line [eFirst] == ' ' ) break;
+        if ( line [eFirst] == ' ' ) break;
        }
     }
 
@@ -3696,17 +3711,20 @@ extern "C" {
 
   void endthread ( long theExitcode )
   {
+
+        LOGERR ("Thread ends. Exit code is: " + CcString ( theExitcode ) );
+  
         if ( theExitcode == 1000 ) //This means crystals wants re-starting
         {
         // perhaps empty out the interface queue checking for RESTART command.
         }
-        else if ( theExitcode > 0 )
+        else if ( theExitcode != 0 )
         {
   #ifdef __CR_WIN__
            MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
   #endif
   #ifdef __BOTHWX__
-           wxMessageBox("Closing","Crystals ends in error",wxOK|wxICON_HAND);
+           wxMessageBox("Closing","Crystals ends in error",wxOK|wxICON_HAND|wxCENTRE);
   #endif
         }
 
@@ -3720,6 +3738,3 @@ extern "C" {
   }
 
 } // end of C functions
-
-
-

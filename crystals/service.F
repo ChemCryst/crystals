@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2002/02/27 19:40:10  ckp2
+C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
+C this extra length. In general the program continues to ignore everything beyond
+C column 80. The "system" commands (OPEN, RELEASE, etc.) do know about the extra length
+C and can take extra long filenames as a result. The script processor also knows: lines
+C in script files, the script input buffer and text output may now run up to 256 chars.
+C RIC: THe system commands respect double-quotes around arguments, so that filenames can be
+C given which contain spaces.
+C
 C Revision 1.28  2002/02/20 14:35:39  ckp2
 C Don't remove spaces from files names when generating names.
 C
@@ -846,7 +855,7 @@ C#PPC      STOP 'OK'
 &PPC      CALL exitthefortran
 &PPCCE***
 &PPC      STOP
-##PPCGID      write(*,*) ' Ending in error'
+###PPCGIDWXS      write(*,*) ' Ending in error'
 &VAX      WRITE ( NCVDU , 8305 ) J/(icode-2)
 #PPC      CALL GUEXIT(1)
 8300  CONTINUE
@@ -860,7 +869,7 @@ C
 &PPC      CALL exitthefortran
 &PPCCE***
 &PPC      STOP
-##GIDPPC      write(*,*) ' Ending in serious error'
+###GIDPPCWXS      write(*,*) ' Ending in serious error'
 &VAX      WRITE ( NCVDU , 8305 ) J/(icode-3)
 #PPC8305  FORMAT ( 1X , I10 )
 #PPCC

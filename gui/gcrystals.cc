@@ -243,7 +243,59 @@ END_EVENT_TABLE()
 bool CCrystalsApp::OnInit()
 {
 
-      theControl = new CcController("","crfilev2.dsc");
+
+      CcString directory;
+      CcString dscfile;
+
+
+      for ( int i = 1; i < __argc; i++ )
+      {
+         CcString command = __argv[i];
+
+         if ( command == "/d" )
+         {
+           if ( i + 2 >= __argc )
+           {
+//             MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
+           }
+           else
+           {
+             CcString envvar = __argv[i+1];
+             CcString value  = __argv[i+2];
+             _putenv( (envvar+"="+value).ToCString() );
+             i = i + 2;
+           }
+         }
+         else
+         {
+           CcString command = __argv[i];
+           if ( command.Length() > 0 )
+           {
+// we need a directory name. Look for last slash
+             int iptr;
+             int ils = -1;
+             for ( iptr = 0; iptr < command.Length(); iptr++ )
+             {
+                  if ( command[iptr] == '\\' ) ils = iptr;
+             }
+//Check: is there a directory name?
+             if ( ils > 0 )
+             {
+                  directory = command.Sub(1,ils);
+             }
+//Check: is there a dscfilename?
+             if ( ils < command.Length()-1 )
+             {
+                  dscfile = command.Sub(ils+2,command.Length());
+             }
+           }
+
+         }
+      }
+
+
+
+      theControl = new CcController(directory,dscfile);
 
       kickTimer = new wxTimer(this, 5241);
       kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.

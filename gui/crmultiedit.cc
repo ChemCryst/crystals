@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2001/06/17 15:14:13  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.11  2001/03/08 16:44:06  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -54,7 +57,7 @@ CRCALCLAYOUT(CrMultiEdit,CxMultiEdit)
 CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -146,7 +149,7 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
             case kTTextItalic:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                     ((CxMultiEdit*)ptr_to_cxObject)->SetItalic(state);
                 CcString theString = tokenList->GetToken(); // Remove that token!
                 LOGSTAT( "Setting MultiEdit Italic: " + theString  );
@@ -155,7 +158,7 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
             case kTTextBold:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                     ((CxMultiEdit*)ptr_to_cxObject)->SetBold(state);
                 CcString theString = tokenList->GetToken(); // Remove that token!
                 LOGSTAT( "Setting MultiEdit Bold: " + theString  );
@@ -164,7 +167,7 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
             case kTTextUnderline:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                     ((CxMultiEdit*)ptr_to_cxObject)->SetUnderline(state);
                 CcString theString = tokenList->GetToken(); // Remove that token!
                 LOGSTAT( "Setting MultiEdit Underline: " + theString );
@@ -173,7 +176,7 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
             case kTTextFixedFont:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                     ((CxMultiEdit*)ptr_to_cxObject)->SetFixedWidth(state);
                 CcString theString = tokenList->GetToken(); // Remove that token!
                 LOGSTAT( "Setting MultiEdit Fixedfont: " + theString );
@@ -302,7 +305,7 @@ void CrMultiEdit::SetColour(int red, int green, int blue)
 }
 
 
-void CrMultiEdit::NoEcho(Boolean noEcho)
+void CrMultiEdit::NoEcho(bool noEcho)
 {
     mNoEcho = noEcho;
 }

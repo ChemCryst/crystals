@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2002/07/03 14:23:21  richard
+//   Replace as many old-style stream class header references with new style
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+//   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+//   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+//   Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+//   warning messages.
+//
 //   Revision 1.14  2001/12/12 14:18:41  ckp2
 //   RIC: Mousewheel support! (Guess who's just got a new mouse.)
 //   RIC: Also PGUP and PGDOWN and Mousewheel allow the textoutput to be
@@ -41,10 +51,6 @@
 
 #ifndef     __CxWindow_H__
 #define     __CxWindow_H__
-//Insert your own code here.
-#include    "crguielement.h"
-#include    "crwindow.h"
-#include    "cxbutton.h"
 
 #ifdef __BOTHWX__
 #include <wx/frame.h>
@@ -59,6 +65,10 @@
 #include <afxwin.h>
 #define BASEWINDOW CFrameWnd
 #endif
+
+#include    "crguielement.h"
+#include    "crwindow.h"
+#include    "cxbutton.h"
 
 class CxMenuBar;
 
@@ -94,14 +104,14 @@ class CxWindow : public BASEWINDOW
 // attributes
      CrGUIElement *  ptr_to_crObject;
      CxButton * mDefaultButton;
-     Boolean mWindowWantsKeys;
+     bool mWindowWantsKeys;
   private:
-     Boolean mSizeable;
+     bool mSizeable;
      static int mWindowCount;
      bool m_PreDestroyed;
      UINT m_TimerActive;
   protected:
-     Boolean mProgramResizing;
+     bool mProgramResizing;
 
   public:
 //PRIVATE MS WINDOWS SPECIFIC FUNCTIONS AND OVERRIDES

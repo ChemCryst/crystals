@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2002/12/05 15:57:47  rich
+// Allow listbox selection to be set from end if selection number is negative.
+// In structure undo dialog, start with last L5 highlighted.
+//
 // Revision 1.14  2002/07/18 16:57:52  richard
 // Upgrade to use standard c++ library, rather than old C libraries.
 //
@@ -307,7 +311,7 @@ CcString CxListBox::GetListBoxText(int index)
 
 }
 
-void CxListBox::Disable(Boolean disable)
+void CxListBox::Disable(bool disable)
 {
 #ifdef __CR_WIN__
       if(disable)

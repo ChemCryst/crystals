@@ -1,6 +1,6 @@
 
-#ifndef		__CcModelObject_H__
-#define		__CcModelObject_H__
+#ifndef     __CcModelObject_H__
+#define     __CcModelObject_H__
 
 class CrModel;
 class CcTokenList;
@@ -38,7 +38,7 @@ class CcModelObject
      bool Select();
      bool spare;
      bool IsSelected();
-     virtual void SendAtom(int style, Boolean output=false); 
+     virtual void SendAtom(int style, bool output=false); 
      GLuint m_glID;
 
      bool m_disabled;
@@ -51,8 +51,8 @@ class CcModelObject
      bool m_selected;
 };
 
-#include	"ccmodelatom.h"
-#include	"ccmodelbond.h"
+#include    "ccmodelatom.h"
+#include    "ccmodelbond.h"
 #include        "ccmodelsphere.h"
 #include        "ccmodeldonut.h"
 

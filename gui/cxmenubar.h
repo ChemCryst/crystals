@@ -6,6 +6,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   09.6.1998 00:03 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 16:44:09  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef           __CxMenuBar_H__
 #define           __CxMenuBar_H__
@@ -48,7 +52,7 @@ class CxMenuBar : public BASEMENUBAR
         CxMenuBar( CrMenuBar * container );
         ~CxMenuBar();
         void PopupMenuHere(int x, int y, void *window);
-        void EnableItem( int id, Boolean enable );
+        void EnableItem( int id, bool enable );
 
 
         // attributes

@@ -1133,6 +1133,8 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
             IF(IIILEN.GT.1) THEN
 &&GILGID              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
 &&GILGID     1 CC(1:IIILEN) // '''',0)
+&WXS              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
+&WXS     1 CC(1:IIILEN) // '''',0)
 &DOS              CALL ZMORE('Append atom '//CC(1:IIILEN),0)
             ENDIF
             LLINE(ILINE)=' '

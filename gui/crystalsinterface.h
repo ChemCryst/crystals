@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.24  2003/01/14 10:27:18  rich
+// Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 // Revision 1.23  2002/12/16 18:26:40  rich
 // Fix breaking Cameron menus. Add some debugging for debug version.
 //
@@ -78,15 +81,6 @@
 #define __BOTHWIN__ 1
 #endif
 
-#ifdef __WINMSW__
-#define __BOTHWX__ 1
-#define __BOTHWIN__ 1
-#define __WXMSW__ 1
-#define __WIN95__
-#define __WIN32__
-#define STRICT
-#define __WINDOWS__
-#endif
 
 //#include    "ccstring.h"
 //void errorlog( CcString outStr );
@@ -131,8 +125,8 @@ enum {
 #define kClose              4
 #define kSize               8
 #define EMPTY_CELL          10
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
+
+
 #define NOTUSED(a) //Compares a to itself, optimiser will remove this.(?)
 
 #ifdef __POWERPC__
@@ -144,27 +138,32 @@ typedef void AppContext;
 typedef void AppContext;
 #endif
 
+
+
 #ifdef __BOTHWX__
-typedef bool Boolean;
 #define nil 0
-//#define TRUE true
-//#define FALSE false
+#include <wx/wx.h>
+//typedef false GFSHJKLSHGJK;
+//typedef true FHDLJDSGS;
 typedef unsigned int UINT;
-#include <wx/file.h>
-#include <wx/memory.h>
-#include <stdio.h>
-#include <iostream>
-#include <iomanip>
+//#include <stdio.h>
+//#include <iostream>
+//#include <wx/file.h>
+//#include <wx/memory.h>
+// #include <wx/fontdlg.h>
+//#include <iomanip>
 //#define TRACE WXTRACE
 #endif
+
 
 #ifdef __CR_WIN__
 #include "stdafx.h"
 #include "crystals.h"
-typedef bool Boolean;
 #define nil NULL
 #define WM_STUFFTOPROCESS 6351
 #endif
+
+
 
 #ifdef _DEBUG
   #ifdef __CR_WIN__
@@ -190,6 +189,8 @@ typedef bool Boolean;
 #define VDW       2
 #define THERMAL   3
 #define SPARE     4
+
+
 
 #ifdef _DEBUG
  #define LOGERRORS    //        Log errors         (LOGERR macro)
@@ -302,12 +303,11 @@ else {ptr_to_crObject->FocusToInput((char)event.KeyCode());}}
 
 
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #define FORCALL(a) a##_
 #endif
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
 #define FORCALL(a) a
 #endif
-
 
 #endif

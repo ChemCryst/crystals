@@ -26,8 +26,8 @@ typedef int     LOGICAL;          // LOGICAL              4 bytes
 #include  "f77matrx.h"            // fmatrix class
 
 // values for LOGICAL
-#define FALSE 0
-#define TRUE  1
+// #define FALSE 0
+// #define TRUE  1
 
 // Macros for portable handling of linkage & calling conventions
 #ifdef F77_STUB_REQUIRED

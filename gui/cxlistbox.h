@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/03/05 12:12:59  ckp2
+//   Enhancements to listbox for my List 28 project.
+//
 //   Revision 1.9  2001/06/17 14:39:59  richard
 //   CxDestroyWindow function.
 //
@@ -64,7 +67,7 @@ class CxListBox : public BASELISTBOX
         void    AddItem( char * text );
         void    SetVisibleLines( int lines );
         void    SetGeometry( int top, int left, int bottom, int right );
-        void    Disable (Boolean disable);
+        void    Disable (bool disable);
         void CxDestroyWindow();
         int GetTop();
         int GetLeft();

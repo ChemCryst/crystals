@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/03/07 10:46:44  DJWgroup
+//   SH: Change to fix reversed y axes; realign text labels.
+//
 //   Revision 1.8  2002/02/20 12:05:20  DJWgroup
 //   SH: Added class to allow easier passing of mouseover information from plot classes.
 //
@@ -41,36 +44,50 @@
 #ifndef     __CrPlot_H__
 #define     __CrPlot_H__
 #include    "crguielement.h"
-#include	"ccstring.h"
+#include    "ccstring.h"
+
+
+#ifdef __BOTHWX__
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
+
+#endif
+
 
 class CcTokenList;
 class CcPoint;
 class CrMenu;
 class CcPlotData;
 
-#define TEXT_VCENTRE		1
-#define TEXT_HCENTRE		2
-#define TEXT_RIGHT			4
-#define TEXT_TOP			8
-#define TEXT_VERTICAL		16
-#define TEXT_BOLD			32
-#define TEXT_ANGLE			64
-#define TEXT_BOTTOM			128
-#define TEXT_VERTICALDOWN	256
+#define TEXT_VCENTRE        1
+#define TEXT_HCENTRE        2
+#define TEXT_RIGHT          4
+#define TEXT_TOP            8
+#define TEXT_VERTICAL       16
+#define TEXT_BOLD           32
+#define TEXT_ANGLE          64
+#define TEXT_BOTTOM         128
+#define TEXT_VERTICALDOWN   256
 
 class PlotDataPopup
 {
 public:
-	PlotDataPopup() {m_Valid = false;};
-	~PlotDataPopup(){};
+    PlotDataPopup() {m_Valid = false;};
+    ~PlotDataPopup(){};
 
-	CcString	m_PopupText;		// all the popup text
-	CcString	m_SeriesName;		// series name only
-	CcString	m_XValue;			// x value (or the x label for bargraphs)
-	CcString	m_YValue;			// y value
-	CcString	m_Label;			// point label
+    CcString    m_PopupText;        // all the popup text
+    CcString    m_SeriesName;       // series name only
+    CcString    m_XValue;           // x value (or the x label for bargraphs)
+    CcString    m_YValue;           // y value
+    CcString    m_Label;            // point label
 
-	Boolean		m_Valid;			// is this a valid point?
+    bool     m_Valid;            // is this a valid point?
 };
 
 class CrPlot : public CrGUIElement
@@ -79,14 +96,14 @@ class CrPlot : public CrGUIElement
 //Functions for drawing on the window:
         void DrawLine(int thickness, int x1, int y1, int x2, int y2); // STEVE added thickness parameter
         void DrawText(int x, int y, CcString text, int param, int fontsize);// STEVE added justification parameter
-        void DrawRect(int x1, int y1, int x2, int y2, Boolean fill);
-        void DrawPoly(int nVertices, int* vertices, Boolean fill);
-        void DrawEllipse(int x, int y, int w, int h, Boolean fill);
-		void SetColour(int r, int g, int b);							// STEVE added this - set colour in cxplot class
+        void DrawRect(int x1, int y1, int x2, int y2, bool fill);
+        void DrawPoly(int nVertices, int* vertices, bool fill);
+        void DrawEllipse(int x, int y, int w, int h, bool fill);
+        void SetColour(int r, int g, int b);                            // STEVE added this - set colour in cxplot class
         void Clear();
-		CcPoint GetTextArea(int size, CcString text, int param);
-		PlotDataPopup GetDataFromPoint(CcPoint *point);					// get a description of the data under the mouse
-		void CreateKey(int numser, CcString* names, int** col);
+        CcPoint GetTextArea(int size, CcString text, int param);
+        PlotDataPopup GetDataFromPoint(CcPoint *point);                 // get a description of the data under the mouse
+        void CreateKey(int numser, CcString* names, int** col);
 
 //Creation and adding data:
         void Attach(CcPlotData* doc);
@@ -105,7 +122,7 @@ class CrPlot : public CrGUIElement
         void    SetText( CcString text );
         int GetIdealWidth();
         int GetIdealHeight();
-		void FlipGraph(bool flip);
+        void FlipGraph(bool flip);
 
 //attributes
         CcPlotData* attachedPlotData;

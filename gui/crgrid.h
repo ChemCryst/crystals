@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/10/02 13:43:17  rich
+//   New ModList class added.
+//
 //   Revision 1.11  2002/07/23 08:27:02  richard
 //
 //   Extra parameter during GRID creation: "ISOLATE" - grid won't expand when the
@@ -57,7 +60,7 @@ class   CrGrid : public CrGUIElement
     int     GetHeightOfRow( int row );
     int     GetWidthOfColumn( int col );
     CrGUIElement *  FindObject( CcString Name );
-    void    SendCommand(CcString theText, Boolean jumpQueue);
+    void    SendCommand(CcString theText, bool jumpQueue);
     void    SetCommandText(CcString theText);
     void    CrShowGrid(bool state);
     CrGUIElement *  GetPointer( int xpos, int ypos );
@@ -70,11 +73,11 @@ class   CrGrid : public CrGUIElement
     bool SetPointer( int xpos, int ypos, CrGUIElement * ptr );
 
     CcList  m_ItemList;
-    Boolean m_GridComplete;
+    bool m_GridComplete;
     CrGrid *        m_ActiveSubGrid;
     CrGUIElement ** m_TheGrid;
     CxGroupBox *    m_OutlineWidget;
-    Boolean m_CommandSet;
+    bool m_CommandSet;
     CcString m_CommandText;
     int * m_InitialColWidths;
     int * m_InitialRowHeights;

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2001/06/17 14:34:05  richard
+//
+//   CxDestroyWindow function.
+//
 //   Revision 1.16  2001/03/08 16:44:10  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -18,6 +22,18 @@
 #include    "cccontroller.h"
 #include    "crmultiedit.h"
 #include    "crgrid.h"
+
+#ifdef __BOTHWX__
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
+#endif
+
 
 int CxMultiEdit::mMultiEditCount = kMultiEditBase;
 
@@ -184,7 +200,7 @@ void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -205,7 +221,7 @@ void CxMultiEdit::OnChar( wxKeyEvent & event )
     {
         case 9:     //TAB. Shift focus back or forwards.
         {
-                  Boolean shifted = event.m_shiftDown;
+                  bool shifted = event.m_shiftDown;
             ptr_to_crObject->NextFocus(shifted);
             break;
         }
@@ -240,7 +256,7 @@ void CxMultiEdit::SetColour(int red, int green, int blue)
 }
 
 
-void CxMultiEdit::SetBold(Boolean bold)
+void CxMultiEdit::SetBold(bool bold)
 {
 #ifdef __CR_WIN__
     CHARFORMAT cf;
@@ -262,7 +278,7 @@ void CxMultiEdit::SetBold(Boolean bold)
 
 }
 
-void CxMultiEdit::SetUnderline(Boolean underline)
+void CxMultiEdit::SetUnderline(bool underline)
 {
 #ifdef __CR_WIN__
     CHARFORMAT cf;
@@ -283,7 +299,7 @@ void CxMultiEdit::SetUnderline(Boolean underline)
 #endif
 }
 
-void CxMultiEdit::SetItalic(Boolean italic)
+void CxMultiEdit::SetItalic(bool italic)
 {
 #ifdef __CR_WIN__
     CHARFORMAT cf;
@@ -305,7 +321,7 @@ void CxMultiEdit::SetItalic(Boolean italic)
 }
 
 
-void CxMultiEdit::SetFixedWidth(Boolean fixed)
+void CxMultiEdit::SetFixedWidth(bool fixed)
 {
 #ifdef __CR_WIN__
       CHARFORMAT cf;

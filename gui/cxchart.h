@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.12  2002/05/08 08:56:13  richard
 //   Added support for wmf AND emf file output to Chart objects (Cameron). Reason:
 //   emf doesn't work on Windows 95. Bah.
@@ -52,6 +55,14 @@ class LStdChart;
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 #define BASECHART wxControl
+// These macros are being defined somewhere. They shouldn't be.
+
+#ifdef GetCharWidth
+ #undef GetCharWidth
+#endif
+#ifdef DrawText
+ #undef DrawText
+#endif
 #endif
 
 #ifdef __CR_WIN__
@@ -71,15 +82,15 @@ class CxChart : public BASECHART
 // Public interface exposed to the CrClass:
     public:
         void NoEdge();
-        void Invert(Boolean inverted);
-        void FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated);
-        void UseIsotropicCoords(Boolean iso);
-        void SetPolygonDrawMode(Boolean on);
+        void Invert(bool inverted);
+        void FitText(int x1, int y1, int x2, int y2, CcString theText, bool rotated);
+        void UseIsotropicCoords(bool iso);
+        void SetPolygonDrawMode(bool on);
         void SetColour(int r, int g, int b);
         void CxDestroyWindow();
-        void DrawPoly(int nVertices, int* vertices, Boolean fill);
+        void DrawPoly(int nVertices, int* vertices, bool fill);
         void DrawText(int x, int y, CcString text);
-        void DrawEllipse(int x, int y, int w, int h, Boolean fill);
+        void DrawEllipse(int x, int y, int w, int h, bool fill);
         void Clear();
         int mIdealHeight;
         int mIdealWidth;
@@ -110,9 +121,9 @@ class CxChart : public BASECHART
         int mPolyMode;
 
 private:
-            Boolean m_inverted;
-            Boolean m_IsoCoords;
-            Boolean m_SendCursorKeys;
+            bool m_inverted;
+            bool m_IsoCoords;
+            bool m_SendCursorKeys;
             CcPoint mLastPolyModePoint;
             CcPoint mStartPolyModePoint;
             CcPoint mCurrentPolyModeLineEndPoint;

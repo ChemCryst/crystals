@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/04/30 20:13:43  richard
+//   Get font size right and dependent on window/canvas size.
+//
 //   Revision 1.8  2002/03/16 18:08:22  richard
 //   Removed old CrGraph class (now obsolete given Steven's work).
 //   Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
@@ -40,7 +43,7 @@ class CcChartDoc
         void DrawView();
         CcChartDoc();
         ~CcChartDoc();
-        Boolean ParseInput( CcTokenList * tokenList );
+        bool ParseInput( CcTokenList * tokenList );
 
         void FastLine( int x1, int y1, int x2, int y2 );
         void FastFElli( int x, int y, int w, int h );
@@ -55,8 +58,8 @@ class CcChartDoc
         void Rename( CcString newName );
 
     private:
-        void ReadDirections( CcTokenList* tokenList, Boolean *north,Boolean *south,Boolean *east,Boolean *west);
-        Boolean mSelfInitialised;
+        void ReadDirections( CcTokenList* tokenList, bool *north,bool *south,bool *east,bool *west);
+        bool mSelfInitialised;
         CcString mName;
         CrChart* attachedChart;
         CcList* mCommandList;

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/03/08 15:38:29  richard
+//   ParseInput now defined to return a CcParse object, which contains three boolean
+//   values , success, xCanResize and yCanResize. This means that resize info filters
+//   back down to each level as the objects are created.
+//   Removed SetOriginalSizes subroutine - no longer needed.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -61,7 +67,7 @@ CrGUIElement *  CrGUIElement::GetRootWidget()
 }
 
 
-void    CrGUIElement::Show( Boolean show )
+void    CrGUIElement::Show( bool show )
 {
     NOTUSED(show);
 }
@@ -139,7 +145,7 @@ int CrGUIElement::GetIdealHeight()
     return 0;
 }
 
-void CrGUIElement::NextFocus(Boolean bPrevious)
+void CrGUIElement::NextFocus(bool bPrevious)
 {
     CrGUIElement* nextWindow;
     CrWindow* rootWindow = (CrWindow*)GetRootWidget();
@@ -161,7 +167,7 @@ void CrGUIElement::FocusToInput(char theChar)
 }
 
 
-void CrGUIElement::SendCommand(CcString theText, Boolean jumpQueue)
+void CrGUIElement::SendCommand(CcString theText, bool jumpQueue)
 {
     if(jumpQueue)
         CcController::theController->SendCommand(theText,true);

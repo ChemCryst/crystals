@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/10/10 12:44:50  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.7  2001/03/08 15:38:29  richard
 //   ParseInput now defined to return a CcParse object, which contains three boolean
 //   values , success, xCanResize and yCanResize. This means that resize info filters
@@ -46,7 +49,7 @@ class   CrGUIElement
 
 //Virtual functions, may be overridden in derived classes if reqd.
 //Overridden function can then be called using a pointer to the base class.
-    virtual void SendCommand(CcString theText, Boolean jumpQueue=false);
+    virtual void SendCommand(CcString theText, bool jumpQueue=false);
     virtual void FocusToInput(char theChar);
     virtual void SysKeyUp ( UINT nChar );
     virtual void SysKey ( UINT nChar );
@@ -55,7 +58,7 @@ class   CrGUIElement
     virtual CrGUIElement *  FindObject( CcString Name );
     virtual void *  GetWidget();
     virtual CrGUIElement *  GetRootWidget();
-    virtual void Show( Boolean show );
+    virtual void Show( bool show );
     virtual void Align();
     virtual void GetValue();
     virtual void GetValue(CcTokenList * tokenList);
@@ -75,7 +78,7 @@ class   CrGUIElement
     static void SetController( CcController * controller );
 
     void Rename ( CcString newName );
-    void NextFocus(Boolean bPrevious);
+    void NextFocus(bool bPrevious);
 
 // attributes
     static CcController *   mControllerPtr;
@@ -85,16 +88,16 @@ class   CrGUIElement
     CcString    mName;
     CrGUIElement *  mParentElementPtr;
 
-    Boolean mXCanResize;
-    Boolean mYCanResize;
-    Boolean mTabStop;
-    Boolean mDisabled;
+    bool mXCanResize;
+    bool mYCanResize;
+    bool mTabStop;
+    bool mDisabled;
     int m_InitWidth;
     int m_InitHeight;
   protected:
 
-    Boolean mCallbackState;
-    Boolean mSelfInitialised;
+    bool mCallbackState;
+    bool mSelfInitialised;
     int mAlignment;
 };
 #endif

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2002/06/26 11:56:43  richard
+C Fixes for label mouse.
+C
 C Revision 1.8  2001/07/16 07:58:23  ckp2
 C Do Cameron window update the old fashioned way. Instead of calling FSTSHW to indicate
 C that the picture is ready to show, send the ^^CH SHOW command.
@@ -77,19 +80,26 @@ C Get the mouse information
 &DOS      IB = KMSGET(JX,JY,JF)
 &&GILGID      IUNIT = 5
 &&GILGID      IB = KRDLIN ( IUNIT, CLINE, LENUSE )
+&WXS      IUNIT = 5
+&WXS      IB = KRDLIN ( IUNIT, CLINE, LENUSE )
 
-&DOS      IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
+&DOs      IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
 &&GILGID      IF ( CLINE(1:6) .EQ. 'LCLICK' ) THEN
+&WXS      IF ( CLINE(1:6) .EQ. 'LCLICK' ) THEN
 C Left mouse button has been pressed.
 &&GILGID        READ (CLINE(7:),*)JX,JY
+&WXS        READ (CLINE(7:),*)JX,JY
         CALL ZLBUT(JX,JY)
         GOTO 10
 
 &&GILGID      ELSE IF ( CLINE(1:1) .EQ. 'V' ) THEN
 &&GILGID        CALL ZDOVI
 &&GILGID        GOTO 10
-
 &&GILGID      ELSE
+&WXS      ELSE IF ( CLINE(1:1) .EQ. 'V' ) THEN
+&WXS        CALL ZDOVI
+&WXS        GOTO 10
+&WXS      ELSE
 
 &DOS      ELSE IF ((IB.EQ.0).AND.(JF.LT.0)) THEN
 
@@ -198,6 +208,8 @@ C DRAW THE LABEL
             CALL ZDRTEX(IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
 &&GILGID            CALL ZMORE('^^CH SHOW',0)
 &&GILGID            CALL ZMORE('^^CR',0)
+&WXS            CALL ZMORE('^^CH SHOW',0)
+&WXS            CALL ZMORE('^^CR',0)
 c &&GILGID            CALL FSTSHW()
 C SAVE THE LABEL COORDINATES
             RSTORE(I+ILAB) = RSTORE(I+IXYZO)
@@ -228,12 +240,16 @@ C NOW DRAW THE ATOM LABEL IN THE BACKGROUND COLOUR
       CALL ZDRTEX (IX,IY,CLAB(1:IL),IDEVCL(IBACK+1))
 &&GILGID      CALL ZMORE('^^CH SHOW',0)
 &&GILGID      CALL ZMORE('^^CR',0)
+&WXS      CALL ZMORE('^^CH SHOW',0)
+&WXS      CALL ZMORE('^^CR',0)
 c &&GILGID      CALL FSTSHW()
 C DRAW THE CROSS AND THE BOX
       ICOL = 4
       CALL ZMBXCR (ILNO,ICOL,ICOL)
 &&GILGID      CALL ZMORE('^^CH SHOW',0)
 &&GILGID      CALL ZMORE('^^CR',0)
+&WXS      CALL ZMORE('^^CH SHOW',0)
+&WXS      CALL ZMORE('^^CR',0)
 c &&GILGID      CALL FSTSHW()
 C NOW WAIT FOR THE NEXT LEFT BUTTON PRESS
 30    CONTINUE
@@ -243,12 +259,20 @@ C DVF GUI VERSION CODE
 &&GILGID      IUNIT = 5
 &&GILGID      IB = KRDLIN ( IUNIT, CLINE, LENUSE )
 &&GILGID      IF ( CLINE(1:6) .NE. 'LCLICK' ) THEN
+&WXS      IUNIT = 5
+&WXS      IB = KRDLIN ( IUNIT, CLINE, LENUSE )
+&WXS      IF ( CLINE(1:6) .NE. 'LCLICK' ) THEN
 C THIS ATOM IS NOT TO BE LABELLED
 &&GILGID          CALL ZMBXCR(ILNO,IBACK,IBACK)
 &&GILGID          RSTORE(ILNO+IATTYP+2) = 0.0
 &&GILGID          RETURN
 &&GILGID      ENDIF
 &&GILGID      READ (CLINE(7:),*)IMX,IMY
+&WXS          CALL ZMBXCR(ILNO,IBACK,IBACK)
+&WXS          RSTORE(ILNO+IATTYP+2) = 0.0
+&WXS          RETURN
+&WXS      ENDIF
+&WXS      READ (CLINE(7:),*)IMX,IMY
 
 C SALFORD DOS AND WIN32 CODE.
 &DOS      IB = KMSGET(IMX,IMY,JF)
@@ -286,6 +310,8 @@ C NOW DRAW THE NEW LABEL
       CALL ZDRTEX (IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
 &&GILGID      CALL ZMORE('^^CH SHOW',0)
 &&GILGID      CALL ZMORE('^^CR',0)
+&WXS      CALL ZMORE('^^CH SHOW',0)
+&WXS      CALL ZMORE('^^CR',0)
 c &&GILGID      CALL FSTSHW()
       RETURN
       END

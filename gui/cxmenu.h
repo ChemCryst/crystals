@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   09.6.1998 00:03 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2002/01/31 14:58:56  ckp2
+//   RIC: SetTitle function allows substitution of atom names into menuitems which
+//   open submenus.
+//
 //   Revision 1.6  2001/03/08 16:44:09  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -49,11 +53,11 @@ class CxMenu : public BASEMENU
         int AddItem(char* text, int position = -1);
         int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
         // methods
-        static CxMenu * CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup = FALSE );
+        static CxMenu * CreateCxMenu( CrMenu * container, CxMenu * guiParent, bool popup = FALSE );
             CxMenu( CrMenu * container );
             ~CxMenu();
             void PopupMenuHere(int x, int y, void *window);
-            void EnableItem( int id, Boolean enable );
+            void EnableItem( int id, bool enable );
 
 
         // attributes

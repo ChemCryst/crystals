@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2003/03/25 19:41:05  djw
+C Label holes as QN
+C
 C Revision 1.17  2003/03/25 14:02:34  rich
 C Move DELRHOMIN/MAX back to their original locations in LIst 30.
 C
@@ -1329,7 +1332,7 @@ CFEB03      WRITE(NCAWU,2801)(STORE(I),I=M,NFL)
       CALL XPRVDU(NCVDU, 2,0)
 2801  FORMAT(' *** Warning ***  Some atoms ',
      2 'do not fit in the',/
-     3 ' volume of the cell to be calculated :' /(6(X,A4,F6.0,2X)))
+     3 ' volume of the cell to be calculated :' /(6(1X,A4,F6.0,2X)))
       CALL XERHND ( IERWRN )
 C
 C--SET THE NUMBER OF PEAKS FOUND AS ZERO

@@ -1,6 +1,6 @@
 
-#ifndef		__CcModelAtom_H__
-#define		__CcModelAtom_H__
+#ifndef     __CcModelAtom_H__
+#define     __CcModelAtom_H__
 
 class CrModel;
 class CcTokenList;
@@ -28,7 +28,7 @@ class CcModelAtom : public CcModelObject
     ~CcModelAtom();
 
     void Render(CcModelStyle *style, bool feedback=false);
-    void SendAtom(int style, Boolean output=false); 
+    void SendAtom(int style, bool output=false); 
 
     int X();
     int Y();

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/03/06 12:01:59  rich
+C Clear ! prompt between reads.
+C
 C Revision 1.39  2003/02/20 16:04:10  rich
 C Don't put prompt in the text output in the GUI version. However, we may
 C set the "STATIC" text object XPRMPT to the prompt text.
@@ -306,7 +309,7 @@ C
       IF ( LPRMPT ) THEN
         IRDLIN = 0
         IF (ITYPFL .EQ. 1)  THEN
-##GIDGIL          CALL XPRMPT ( NCVDU , '!' )
+###GIDGILWXS          CALL XPRMPT ( NCVDU , '!' )
 &&GIDGIL          WRITE(CMON,'(A)')
 &&GIDGIL     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
 &&GIDGIL          CALL XPRVDU(NCVDU,1,0)
@@ -317,8 +320,19 @@ C
 &&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
 &&GILGID          WRITE (CMON,1515) '''Enter Commands'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
+
+&WXS          WRITE(CMON,'(A)')
+&WXS     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
+&WXS          CALL XPRVDU(NCVDU,1,0)
+
+&WXS          WRITE(CMON,'(A)')
+&WXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
+&WXS          CALL XPRVDU(NCVDU,1,0)
+&WXS1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&WXS          WRITE (CMON,1515) '''Enter Commands'''
+&WXS          CALL XPRVDU (NCVDU,1,0)
         ELSE
-##GIDGIL          CALL XPRMPT ( NCVDU , '>' )
+###GIDGILWXS          CALL XPRMPT ( NCVDU , '>' )
 &&GIDGIL          WRITE(CMON,'(A)')
 &&GIDGIL     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
 &&GIDGIL          CALL XPRVDU(NCVDU,1,0)
@@ -329,6 +343,17 @@ C
 &&GIDGIL          CALL XPRVDU(NCVDU,1,0)
 &&GILGID          WRITE (CMON,1515) '''Enter Directives'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
+
+&WXS          WRITE(CMON,'(A)')
+&WXS     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
+&WXS          CALL XPRVDU(NCVDU,1,0)
+
+
+&WXS          WRITE(CMON,'(A)')
+&WXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
+&WXS          CALL XPRVDU(NCVDU,1,0)
+&WXS          WRITE (CMON,1515) '''Enter Directives'''
+&WXS          CALL XPRVDU (NCVDU,1,0)
         ENDIF
 C If in script mode, set flag.
         INSTRC = .FALSE.
@@ -347,6 +372,8 @@ C
 
 &&GIDGIL      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
 &&GIDGIL      CALL XPRVDU(NCVDU,1,0)
+&WXS      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
+&WXS      CALL XPRVDU(NCVDU,1,0)
 
 C
       IF ( ISTAT .LT. 0 ) GO TO 9910
@@ -596,13 +623,18 @@ C If in script mode, set flag.
 &&GILGID        INSTRC = .FALSE.
 &&GILGID        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
 &&GILGID          INSTRC = .TRUE.
+&WXS        INSTRC = .FALSE.
+&WXS        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+&WXS          INSTRC = .TRUE.
 c&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
 c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 
 &&GILGID        END IF
+&WXS        END IF
 
 &&GILGIDC Update status information for UI.
 &&GILGID            CALL MENUUP
+&WXS            CALL MENUUP
             CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
@@ -611,6 +643,12 @@ C If in script mode, set progress text.
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
 &&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
 &&GILGID        END IF
+
+&WXS        IF ( INSTRC ) THEN
+&WXS          WRITE (CMON,1515) '''Crystals Script Mode'''
+&WXS          CALL XPRVDU (NCVDU,1,0)
+&WXS1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&WXS        END IF
 
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
@@ -2315,6 +2353,16 @@ CRICFEB01[
 &&GIDGIL        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
 &&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
 &&GIDGIL      ENDIF
+&WXS      IF ( IDEV .EQ. NCPU ) THEN
+&WXS        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
+&WXS        CALL XPRVDU ( NCVDU, 1, 0 )
+&WXS      ELSE IF ( IDEV .EQ. NCWU ) THEN
+&WXS        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
+&WXS        CALL XPRVDU ( NCVDU, 1, 0 )
+&WXS      ELSE IF ( IDEV .EQ. NCLU ) THEN
+&WXS        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
+&WXS        CALL XPRVDU ( NCVDU, 1, 0 )
+&WXS      ENDIF
 CRICFEB01]
 CDJWMAR99]
 C

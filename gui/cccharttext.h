@@ -1,6 +1,6 @@
 
-#ifndef		__CcChartText_H__
-#define		__CcChartText_H__
+#ifndef     __CcChartText_H__
+#define     __CcChartText_H__
 
 class CrChart;
 class CcTokenList;
@@ -9,18 +9,18 @@ class CcTokenList;
 
 class CcChartText : public CcChartObject
 {
-	public:
-                void Init(int x1, int y1, int x2, int y2, CcString theText, Boolean centred=true);
-		void Init(int xp, int yp, CcString theText);
-		CcChartText();
+    public:
+                void Init(int x1, int y1, int x2, int y2, CcString theText, bool centred=true);
+        void Init(int xp, int yp, CcString theText);
+        CcChartText();
             CcChartText(int ix, int iy, CcString itext );
-		~CcChartText();
-		void Draw(CrChart* chartToDrawOn);
-		Boolean ParseInput(CcTokenList* tokenList);
-	private:
-		int x, y;
-		int xm, ym;
-		CcString text;
+        ~CcChartText();
+        void Draw(CrChart* chartToDrawOn);
+        bool ParseInput(CcTokenList* tokenList);
+    private:
+        int x, y;
+        int xm, ym;
+        CcString text;
 };
 
 #endif

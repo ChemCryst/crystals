@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/07/16 07:25:31  ckp2
+//   Make sure (in the wx version) that all the grids in the tab control are removed
+//   from the tab control before it is destroyed.
+//
 //   Revision 1.4  2001/06/18 12:36:13  richard
 //   Moved CcTabData definition into header so it can be used by CxTab.
 //
@@ -106,7 +110,7 @@ CRGETGEOMETRY(CrTab,CxTab)
 CcParse CrTab::ParseInput( CcTokenList * tokenList )
 {
   CcParse retVal(false, mXCanResize, mYCanResize);
-  Boolean hasTokenForMe = true;
+  bool hasTokenForMe = true;
   CcString theString;
 
 // Initialization for the first time
@@ -123,7 +127,7 @@ CcParse CrTab::ParseInput( CcTokenList * tokenList )
         case kTInform:
         {
           tokenList->GetToken(); // Remove that token!
-          Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+          bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
           tokenList->GetToken(); // Remove that token!
           mCallbackState = inform;
           break;

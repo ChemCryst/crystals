@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   6.3.1998 00:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/03/08 16:44:06  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CrMultiEdit_H__
 #define     __CrMultiEdit_H__
@@ -23,8 +27,8 @@ class CxMultiEdit;
  class  CrMultiEdit : public CrGUIElement
 {
     public:
-        Boolean mNoEcho;
-        void NoEcho(Boolean noEcho);
+        bool mNoEcho;
+        void NoEcho(bool noEcho);
         void SetColour(int red, int green, int blue);
         void CrFocus();
         int GetIdealWidth();

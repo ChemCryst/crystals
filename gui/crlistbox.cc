@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 14:43 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.13  2002/03/05 12:12:58  ckp2
+//  Enhancements to listbox for my List 28 project.
+//
 //  Revision 1.12  2001/09/11 08:31:30  ckp2
 //  Delete some old comment.
 //
@@ -82,7 +85,7 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
 {
 
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
     CcString theToken;
 //t
     // Initialization for the first time
@@ -128,7 +131,7 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 mCallbackState = inform;
                 if (mCallbackState)
@@ -140,7 +143,7 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
             case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 CcString temp = tokenList->GetToken(); // Remove that token!
                 LOGSTAT( "ListBox disabled = " + temp);
                 ((CxListBox*)ptr_to_cxObject)->Disable( disabled );
@@ -149,7 +152,7 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
             case kTAddToList:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean stop = false;
+                bool stop = false;
                 while ( ! stop )
                 {
                     theToken = tokenList->GetToken();

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/06/17 15:19:09  richard
+//   MidX() and MidY() return midpoints of rectangle.
+//
 //   Revision 1.7  2001/03/08 15:20:50  richard
 //   New function .Contains(x,y) true if point is within rectangle.
 //   New function .Native() returns GUI specific rectangle - CRect or wxRect.
@@ -15,9 +18,18 @@
 //   swapping them if necessary.
 //
 
+
+
 #include    "crystalsinterface.h"
+
+#define max(a, b)  (((a) > (b)) ? (a) : (b))
+#define min(a, b)  (((a) < (b)) ? (a) : (b))
+
 #include    "ccstring.h"
+
+
 #include        "ccrect.h"
+
 
 
 CcRect::CcRect()
@@ -57,6 +69,8 @@ CcRect::CcRect( CcString geomString )
             mRight = mBottom = 6;
       }
 }
+
+
 
 CcString CcRect::AsString()
 {
@@ -144,6 +158,8 @@ CRect CcRect::Native()
   return CRect( mLeft, mTop, mRight, mBottom );
 }
 #endif
+
+
 
 CcRect CcRect::Sort()
 {

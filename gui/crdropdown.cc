@@ -40,7 +40,7 @@ CRCALCLAYOUT(CrDropDown,CxDropDown)
 CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    Boolean hasTokenForMe = true;
+    bool hasTokenForMe = true;
     CcString theToken;
 
     // Initialization for the first time
@@ -62,7 +62,7 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
             case kTInform:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                bool inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
                 tokenList->GetToken(); // Remove that token!
                 if(inform)
                     LOGSTAT( "CrDropDown:ParseInput Dropdown INFORM on ");
@@ -74,7 +74,7 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
             case kTAddToList:
             {
                 tokenList->GetToken(); // Remove that token!
-                Boolean stop = false;
+                bool stop = false;
                 while ( ! stop )
                 {
                     theToken = tokenList->GetToken();
