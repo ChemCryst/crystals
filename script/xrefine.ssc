@@ -64,7 +64,7 @@
 %       EVALUATE PMASK = TRUE
 %       EVALUATE PDONE = TRUE
 %       COPY '#SCRIPT XPUTINFO'
-%       COPY '#PURGE'
+%       COPY '#PURGE LIST=11'
 %       COPY 'END'
 %     END IF
 %%

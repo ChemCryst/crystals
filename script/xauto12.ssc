@@ -397,7 +397,7 @@
 %          COPY 'END'
 %        END IF
 %%
-%        COPY '#PURGE'
+%        COPY '#PURGE LIST=11'
 %        COPY 'END'
 %        EVALUATE PURGE = TRUE
 %      END IF

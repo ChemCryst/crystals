@@ -56,7 +56,7 @@
 %         COPY 'DELETE 11'
 %         COPY 'END'
 %       END IF
-%       COPY '#PURGE'
+%       COPY '#PURGE LIST=11'
 %       COPY 'END'
 %       COPY '#LIST 22'
 %       COPY 'END'
