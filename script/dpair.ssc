@@ -1,0 +1,239 @@
+%SCRIPT DPAIR
+%%
+%% Subscript for returning two paired lists of atoms
+%% NPAIR is the number of pairs found
+%%
+% VARIABLE INTEGER NPAIR
+% EVALUATE NPAIR = 0
+% VARIABLE CHARACTER CTEXT1 CTEXT2
+% VARIABLE INTEGER REGTYPE LOOPAGAIN
+% VARIABLE INTEGER NPARA NVERT
+% EVALUATE LOOPAGAIN = 0
+% EVALUATE NVERT = 9
+% BLOCK
+% ON ERROR TERMINATE
+%%
+^^WI WINDOW XREGU 'Regularise' COMMIT='NEXT' CANCEL='CANCEL'
+^^WI POSITION CENTRED _MAINTEXTOUTPUT
+^^WI GRID GRIDM NROWS=2 NCOLS=3
+^^WI {
+^^WI  @ 2,2 GRID GRIDB NROWS=1 NCOLS=6
+^^WI  {
+^^WI   @ 1,2 BUTTON BACK '<Back'
+^^WI   @ 1,3 BUTTON NEXT 'Next>' DISABLED=YES
+^^WI   @ 1,5 BUTTON FINISH 'Process' DISABLED=YES
+^^WI  }
+^^WI  @ 1,2 GRID GRIDC NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID GRIDA NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC S1 'Click corresponding atoms in each fragment'
+^^WI    @ 2,1 STATIC S2 'Click Process to continue.'
+^^WI   }
+^^WI   @ 3,1 GRID GRIDD NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 GRID GRIDE NROWS=11 NCOLS=7
+^^WI    {
+^^WI     @ 1,3 STATIC TI2 'Ideal'
+^^WI     @ 1,7 STATIC TI1 'Target'
+^^WI     @ 2,5 STATIC T1 '< Click atom to go here'
+^^WI     @ 3,5 STATIC T2 ''
+^^WI     @ 4,5 STATIC T3 ''
+^^WI     @ 5,5 STATIC T4 ''
+^^WI     @ 6,5 STATIC T5 ''
+^^WI     @ 7,5 STATIC T6 ''
+^^WI     @ 8,5 STATIC T7 ''
+^^WI     @ 9,5 STATIC T8 ''
+^^WI     @ 10,5 STATIC T9 ''
+^^WI     @ 2,3 EDITBOX F1 '' CHARS=6
+^^WI     @ 3,3 EDITBOX F2 '' CHARS=6
+^^WI     @ 4,3 EDITBOX F3 '' CHARS=6
+^^WI     @ 5,3 EDITBOX F4 '' CHARS=6
+^^WI     @ 6,3 EDITBOX F5 '' CHARS=6
+^^WI     @ 7,3 EDITBOX F6 '' CHARS=6
+^^WI     @ 8,3 EDITBOX F7 '' CHARS=6
+^^WI     @ 9,3 EDITBOX F8 '' CHARS=6
+^^WI     @ 10,3 EDITBOX F9 '' CHARS=6
+^^WI     @ 2,7 EDITBOX E1 '' CHARS=6
+^^WI     @ 3,7 EDITBOX E2 '' CHARS=6
+^^WI     @ 4,7 EDITBOX E3 '' CHARS=6
+^^WI     @ 5,7 EDITBOX E4 '' CHARS=6
+^^WI     @ 6,7 EDITBOX E5 '' CHARS=6
+^^WI     @ 7,7 EDITBOX E6 '' CHARS=6
+^^WI     @ 8,7 EDITBOX E7 '' CHARS=6
+^^WI     @ 9,7 EDITBOX E8 '' CHARS=6
+^^WI     @ 10,7 EDITBOX E9 '' CHARS=6
+^^WI     @ 2,1 STATIC V1 'Pair 1'
+^^WI     @ 3,1 STATIC V2 'Pair 2'
+^^WI     @ 4,1 STATIC V3 'Pair 3'
+^^WI     @ 5,1 STATIC V4 'Pair 4'
+^^WI     @ 6,1 STATIC V5 'Pair 5'
+^^WI     @ 7,1 STATIC V5 'Pair 6'
+^^WI     @ 8,1 STATIC V5 'Pair 7'
+^^WI     @ 9,1 STATIC V5 'Pair 8'
+^^WI     @ 10,1 STATIC V5 'Pair 9'
+%%
+^^WI    }
+^^WI    @ 1,3 GRID GRIDF NROWS=7 NCOLS=1
+^^WI    {
+^^WI     @ 5,1 BUTTON UNDO 'Undo' DISABLED=YES
+^^WI    }
+^^WI   }
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%  VARIABLE INTEGER POSN OPOSN ICOL
+%  EVALUATE ICOL = 1
+%  EVALUATE POSN = 1
+%  EVALUATE OPOSN = 2
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%  LOOP
+%   VERIFY FINISH BACK CANCEL UNDO ATOM
+%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK       %FINISH%
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%       EVALUATE POSN = POSN - 1
+%       EVALUATE NPAIR = POSN
+%%
+%       CLEAR
+%       STORE CHARACTER CTEXT1 
+%       QUEUE SEND
+%       LOOP POSN TIMES
+%         CLEAR
+%         INSERT '^^?? E'
+%         STORE FORMAT /(I1)/ LENGTH 1 INTEGER LOOPCOUNTER
+%         INSERT ' TEXT'
+%         OUTPUT
+%         CLEAR
+%         INSERT 'CONT '
+%         GET SILENT TEXT ' ' ' '
+%         QUEUE SEND
+%       END LOOP
+%%
+%       CLEAR
+%       STORE CHARACTER CTEXT2 
+%       QUEUE SEND
+%       LOOP POSN TIMES
+%         CLEAR
+%         INSERT '^^?? F'
+%         STORE FORMAT /(I1)/ LENGTH 1 INTEGER LOOPCOUNTER
+%         INSERT ' TEXT'
+%         OUTPUT
+%         CLEAR
+%         INSERT 'CONT '
+%         GET SILENT TEXT ' ' ' '
+%         QUEUE SEND
+%       END LOOP
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%%
+%     BLOCK       %BACK%
+%       EVALUATE LOOPAGAIN = 1
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%     BLOCK       %CANCEL%
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%     BLOCK       %UNDO - back one
+%      IF ICOL .EQ. 1 THEN
+%       EVALUATE OPOSN = POSN
+%       EVALUATE POSN = POSN - 1
+%       IF POSN .LT. 1 THEN
+%          EVALUATE POSN = 1
+%       END IF
+%      ELSE
+%       EVALUATE ICOL = 1
+%      END IF
+%%
+%%      Put together this command: ^^CO SET En TEXT ' '
+%       CLEAR
+%       INSERT "^^CO SET E"
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%       INSERT " TEXT ' '"
+%       OUTPUT
+%       CLEAR
+%       INSERT "^^CO SET F"
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%       INSERT " TEXT ' '"
+%       OUTPUT
+%     END BLOCK
+%     BLOCK       %ATOM - fill in atom name
+%      IF POSN .LE. NVERT THEN
+%       IF ( ICOL .GE. 1 ) THEN
+%        GET SILENT TEXT ' ' ' '
+%        CLEAR
+%        INSERT '^^CO SET F'
+%        STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%        TRANSFER " TEXT '" // CVALUE // "'" TO BUFFER
+%        OUTPUT
+%        EVALUATE ICOL = - 1
+%       ELSE
+%        GET SILENT TEXT ' ' ' '
+%        CLEAR
+%        INSERT '^^CO SET E'
+%        STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%        TRANSFER " TEXT '" // CVALUE // "'" TO BUFFER
+%        OUTPUT
+%        EVALUATE ICOL =  1
+%        EVALUATE OPOSN = POSN
+%        EVALUATE POSN = POSN + 1
+%       END IF
+%      ELSE
+%%      THROW AWAY ATOM
+%       GET SILENT TEXT ' ' ' '
+%       CLEAR
+%      END IF
+%     END BLOCK
+%   END CASE
+%%
+%% Check for completion
+%%
+%   IF POSN .EQ. 1 THEN
+^^CO   SET UNDO  DISABLED=YES
+%   ELSE
+^^CO   SET UNDO  DISABLED=NO
+%   END IF
+%%
+%% Update "Click Next Atom" prompt
+%%
+%   IF OPOSN .LE. NVERT THEN
+%      CLEAR
+%      INSERT "^^CO SET T"
+%      STORE FORMAT /(I1)/ LENGTH 1 INTEGER OPOSN
+%      INSERT " TEXT ''"
+%      OUTPUT
+%   END IF
+%   IF POSN .LE. NVERT THEN
+%     IF ICOL .GE. 1 THEN
+%      CLEAR
+%      INSERT "^^CO SET T"
+%      STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%      INSERT " TEXT '< Click atom to go here'"
+%      OUTPUT
+^^CO   SET FINISH DISABLED=NO
+%     ELSE
+%      CLEAR
+%      INSERT "^^CO SET T"
+%      STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%      INSERT " TEXT 'Click atom to go here >'"
+%      OUTPUT
+^^CO   SET FINISH DISABLED=YES
+%     END IF
+%   ELSE
+%      EVALUATE POSN = NVERT + 1
+%      CLEAR
+%      INSERT "^^CO SET T"
+%      STORE FORMAT /(I1)/ LENGTH 1 INTEGER ( POSN - 1 )
+%      INSERT " TEXT ' Click Finish'"
+%      OUTPUT
+^^CO   SET FINISH DISABLED=NO
+%   END IF
+%  END LOOP
+% END BLOCK
+^^CO    DISPOSE XREGU
+%END SCRIPT

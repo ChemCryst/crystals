@@ -1,0 +1,88 @@
+%SCRIPT DCHOOSE
+%% Create a CONTINUED list in the Script Queue 
+%%
+%% Returns the number of atoms selected in NCHOSEN 
+%%
+%% CTEXT1 is the text to be displayed in the window frame
+%%
+%% N5 - The maximum number of atoms in LIST 5
+%%
+% VARIABLE CHARACTER CTEXT1
+% VARIABLE INTEGER  N5
+% VARIABLE INTEGER NCHOSEN
+% CLEAR
+% INSERT !^^WI WINDOW XCHOOSE  '!
+% STORE CHARACTER CTEXT1
+% INSERT !' COMMIT='BOK' CANCEL='BXX'!
+% OUTPUT
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID TEXT NROWS=8 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'Highlight the atoms you want to'
+^^WI     @ 2,1 STATIC T2 'select'
+^^WI     @ 3,1 STATIC T3 ' '
+^^WI     @ 4,1 STATIC T4 'Click "Abort to" '
+^^WI     @ 5,1 STATIC T5 'abort whole operation'
+^^WI     @ 6,1 STATIC T6 ' '
+^^WI     @ 7,1 STATIC T7 'Click "Done" when selection is'
+^^WI     @ 8,1 STATIC T8 'completed'
+^^WI   }
+^^WI   @ 2,4 GRID BTNS NROWS=5 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK 'D&one' DEFAULT COMMIT
+^^WI     @ 3,1 BUTTON BXX '&Abort' CANCEL
+^^WI     @ 5,1 BUTTON BHELP '&Help'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%%
+%%
+%  VARIABLE INTEGER ICOUNTER
+%  EVALUATE ICOUNTER = 0
+%  CLEAR
+%  LOOP
+%    ON ERROR TERMINATE
+%    VERIFY BOK BXX ATOM BHELP
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    CASE VALUE
+%      BLOCK      %BOK
+^^CO DISPOSE XCHOOSE
+%% Returning CONTINUED list of atoms to calling script
+%        EVALUATE NCHOSEN = ICOUNTER
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%      BLOCK      %BXX
+^^CO DISPOSE XCHOOSE
+%% Diposing of CONTINUED list of atoms
+%        QUEUE REWIND
+%        EVALUATE NCHOSEN = 0
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%      BLOCK      %ATOM
+%        CLEAR
+%        INSERT 'CONTINUE '
+%        GET SILENT TEXT ' ' ' '
+%        QUEUE SEND
+%TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CVALUE // ' YES' TO DISPLAY
+%        CLEAR
+%        EVALUATE ICOUNTER = ICOUNTER + 1
+%      END BLOCK
+%      BLOCK      %HELP
+%        COPY '#SCRIPT XHELP1'
+  Highlight the atoms you wish to select.
+%        COPY '#SCRIPT XHELP2'
+%      END BLOCK
+%    END CASE
+%    IF ICOUNTER .EQ. N5 THEN
+%       EVALUATE LOOPEND = LOOPCOUNTER
+^^CO DISPOSE XCHOOSE
+%% Returning list of CONTINUED atoms to calling SCRIPT
+%    END IF
+%  END LOOP
+%END SCRIPT
+ 

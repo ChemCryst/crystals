@@ -1,0 +1,56 @@
+%SCRIPT DGETAB
+%% obtain an abort/continue message
+%% ABORT = true for abort, else false
+%  VARIABLE LOGICAL ABORT
+%  EVALUATE ABORT = TRUE
+%% CTEXT1 is the text to be displayed
+%  VARIABLE CHARACTER CTEXT1
+%%
+%%
+^^WI WINDOW GETAB 'Continue' MODAL COMMIT='BOK' CANCEL='BXX'
+^^WI GRID             GRIDM NROWS=1 NCOLS=3
+^^WI {
+^^WI  @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
+^^WI  {
+^^WI   @ 2,2 GRID GRIDML NROWS=1 NCOLS=6
+^^WI   {
+% CLEAR
+% INSERT !^^WI @ 1,1 STATIC RTEXT1 '!
+% STORE CHARACTER CTEXT1
+% INSERT !'!
+% OUTPUT
+^^WI      CHARS=8 
+^^WI   }
+^^WI  }
+^^WI  @ 1,2 GRID GRIDR NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 BUTTON BOK '&Continue' DEFAULT
+^^WI   @ 4,1 BUTTON BXX '&Abort'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%  LOOP
+%   ON ERROR REPEAT
+%   ON END   TERMINATE
+%   VERIFY BXX BOK
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%    BLOCK             %BXX%
+^^WI  DISPOSE GETAB
+^^CR
+%     EVALUATE ABORT = TRUE
+%     FINISH
+%    END BLOCK
+%    BLOCK             %BOK%
+%     CLEAR
+^^WI       DISPOSE GETAB
+^^CR
+%          EVALUATE ABORT = FALSE
+%          FINISH
+%    END BLOCK
+%   END CASE
+%  END LOOP
+%END SCRIPT
