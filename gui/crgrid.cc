@@ -150,7 +150,13 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 					LOGSTAT( "Setting Grid alignment BOTTOM" );
 					break;
 				}
-				default:
+                        case kTOpenGrid:
+                        {
+                              tokenList->GetToken();
+                              //No break,
+                              //end of initialsing token input for this grid.
+                        }
+                        default:
 				{
 					hasTokenForMe = false;
 					break; // We leave the token in the list and exit the loop
