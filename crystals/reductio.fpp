@@ -347,6 +347,7 @@ C
 \XLST02
 \XLST06
 \XLST13
+\XLST30
 \XERVAL
 \XOPVAL
 \XIOBUF
@@ -514,6 +515,10 @@ C
 1800  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
+CDJWAPR99 UPDATE LIST 30
+       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL30
+              STORE(L30DR) = FLOAT(N6W)
+        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 1810  CONTINUE
       CALL XOPMSG ( IOPSSM , IOPEND , 200 )
       CALL XTIME2(2)
