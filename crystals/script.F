@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2003/11/20 13:02:58  rich
+C Add new SCRIPT global character variable 'CTITLE' that evaluates
+C to the name of the experiment title set by \TITLE.
+C
 C Revision 1.49  2003/11/06 15:48:37  rich
 C When using IDECMASK operator in scripts always return absolute values.
 C
@@ -3325,9 +3329,10 @@ C
       CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
-          OPEN  (101,FILE=CWORK1(1:LEN1))
-          CLOSE (101,STATUS='DELETE')
+          OPEN  (101,FILE=CWORK1(1:LEN1),ERR=5171)
+          CLOSE (101,STATUS='DELETE',ERR=5171)
       ENDIF
+5171  CONTINUE
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
           ICODE(JVALUE,IARG(1)) = 0
