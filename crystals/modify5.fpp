@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2001/04/30 11:50:16  ckpgroup
+C fix-up omitted rflections when re-indexing matrix has non-integral results' read6.src
+C
 C Revision 1.19  2001/03/16 16:54:18  CKP2
 C fis split atoms
 C
@@ -2353,12 +2356,12 @@ C
       DATA IMDTYP/4/,IMDNDA/5/
 C
 Cdjwmap99 output 8 items for brief atoms
-      DATA INUM(1,1)/2/,INUM(2,1)/8/,INUM(3,1)/14/
+      DATA INUM(1,1)/2/,INUM(2,1)/8/,INUM(3,1)/15/
       DATA INUM(1,2)/2/,INUM(2,2)/3/,INUM(3,2)/3/
       DATA INUM(1,3)/3/,INUM(2,3)/4/,INUM(3,3)/4/
 C
 Cdjwmap99 output 8x2 items for brief atoms
-      DATA IMAX(1,1)/14/,IMAX(2,1)/16/,IMAX(3,1)/14/
+      DATA IMAX(1,1)/14/,IMAX(2,1)/16/,IMAX(3,1)/15/
       DATA IMAX(1,2)/16/,IMAX(2,2)/12/,IMAX(3,2)/12/
       DATA IMAX(1,3)/15/,IMAX(2,3)/16/,IMAX(3,3)/16/
 C
@@ -2367,12 +2370,12 @@ C
       DATA IOFF(1,3)/0/,IOFF(2,3)/4/,IOFF(3,3)/4/
 C
 Cdjwmap99 output 8 items for brief atoms
-      DATA ILEN(1,1)/2/,ILEN(2,1)/8/,ILEN(3,1)/14/
+      DATA ILEN(1,1)/2/,ILEN(2,1)/8/,ILEN(3,1)/15/
       DATA ILEN(1,2)/0/,ILEN(2,2)/1/,ILEN(3,2)/1/
       DATA ILEN(1,3)/0/,ILEN(2,3)/1/,ILEN(3,3)/1/
 C
       DATA ITEM/0/
-      DATA MAXITM/14/
+      DATA MAXITM/15/
 C
 C -- SELECT THE REQUIRED LEVEL OF LISTING
 C
@@ -2519,6 +2522,7 @@ C  ICONTL   CONTROL DATA - ARRAY OF LENGTH 5. SEE 'XMDMON'
 C
 C
       DIMENSION A(20)
+      dimension b(20),ib(20)
       DIMENSION ICONTL(5)
 C
       DIMENSION LTYPE(8)
@@ -2533,6 +2537,7 @@ C
 \XOPVAL
 \XIOBUF
 C
+      equivalence (b(1), ib(1))
 C
       DATA TYPE(1)/' atom                   '/
       DATA TYPE(2)/' overall parameter      '/
@@ -2567,6 +2572,8 @@ C
       DATA IMDLVL/1/,IMDITM/2/,IMDFUN/3/
       DATA IMDTYP/4/,IMDNDA/5/
 C
+CDJWNOV2001 - A BODGE TO HANDLE THE INTEGER ELEMENTS
+      CALL XMOVE(A,B,20)
 C
       IF (NA.LE.0) GO TO 1000
       IF (ICONTL(IMDLVL).LE.0) GO TO 1000
@@ -2609,8 +2616,9 @@ CDJWMAR99[
          END IF
 100      FORMAT (2(9X,'Occ',4X,'x',5X,'y',5X,'z',7X,'U',3X))
 150      FORMAT (9X,'Occ',4X,'x',5X,'y',5X,'z',6X,'U11',3X,'U22',3X,'U33
-     1',2X,'U23',2X,'U13',2X,'U12',6X,'Spare'/35X,'Uiso',2X,'Size',1X,'D
-     2/100',1X,'A/100')
+     1',2X,'U23',2X,'U13',2X,'U12',4X,'Spare',2X,'Part'/
+     2 35X,'Uiso',2X,'Size',1X,'D
+     3 /100',1X,'A/100')
       ELSE
 C
 C -- SELECT THE OPERATION THAT WILL BE PERFORMED
@@ -2671,11 +2679,11 @@ C
 C -- FULL PRINT
       WRITE (CMON,550) (A(I),NINT(A(I+1)),A(I+2),A(I+4),A(I+5),A(I+6),
      1NINT(A(I+3)),A(I+7),A(I+8),A(I+9),A(I+10),A(I+11),A(I+12),A(I+13),
-     2I=1,NA,14)
+     2IB(I+14),I=1,NA,15)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
       WRITE (NCAWU,'(A)') CMON(1)(:)
-550   FORMAT (A4,I4,F5.2,3F6.3,I2,3F6.3,3F5.2,F10.3)
+550   FORMAT (A4,I4,F5.2,3F6.3,I2,3F6.3,3F5.2,F10.3,I4)
       GO TO 1000
 600   CONTINUE
 C -- LOW LEVEL PRINT FOR OVERALL PARAMETERS
