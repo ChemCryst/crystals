@@ -97,7 +97,6 @@ bool containsOnly(char* pString, char* pChars)
         strncpy(tempString, pString+20, 8);
         tempString[8] = 0;
         iSE = strtod(tempString, &tEndPointer);
-  //      printf("%d, %d, %d, %f, %f\n", h, k, l, i, iSE);
     }
     
     Matrix<float>* Reflection::getHKL()
@@ -109,27 +108,7 @@ bool containsOnly(char* pString, char* pChars)
     {
         delete tHKL;
     }
-    /*double Reflection::intSigmaRatio();
-    bool Reflection::intLess3Sigma();
-    bool Reflection::kPlusLEven();	
-    bool Reflection::hPlusLEven();	B - centered
-    bool Reflection::hPlusKEven();	C - centered
-    bool Reflection::hPlusKPlusL(); Body centered
-*/
 
-/*class HKLData
-{
-    private:
-        ArrayList<Reflection>* tLinkedList;
-    
-    public:
-        /**********************************************/
-        /*** HKLData				***/
-        /*** Parameters:				***/
-        /***	pFile - A pointer to an open 	***/
-        /***	file which as read access.	***/
-        /**********************************************/
-        
 long fsize(char* pPath)
 {
     struct stat tFileStat;
@@ -155,7 +134,7 @@ HKLData::HKLData(char* pPath)
     while (fgets(tLine, 255, tFile))
     {
         Reflection* tReflection = new Reflection(tLine);
-        if (tReflection->h == 0 && tReflection->k == 0 && tReflection->l == 0
+        if (tReflection->getHKL()->getValue(0) == 0 && tReflection->getHKL()->getValue(1) == 0 && tReflection->getHKL()->getValue(2) == 0
         && tReflection->i == 0.0)	//We might have already reached the end of the file.        	
         {
             if (tHadZeros)	//We have reached the end of the file.
@@ -181,23 +160,6 @@ HKLData::~HKLData()
     }
 }
 
-bool HKLData::find(Reflection* pReflection)
-{
-    Reflection* tReflection;
-    
-    for (int i = 0; i < tReflectionList->length(); i++)
-    {
-        tReflection = tReflectionList->get(i);
-        if (tReflection->h == pReflection->h &&
-            tReflection->k == pReflection->k &&
-            tReflection->l == pReflection->l && pReflection != tReflection)
-        {
-            cout << "Reflection: " << pReflection->h << ", " << pReflection->k << ", " << pReflection->l << "\n";
-        }
-    }
-    return true;
-}
-
 typedef struct __CenteringType
 {
     int iTotalNumber;	//The number of reflections counted
@@ -221,52 +183,7 @@ void addReflection(CenteringType* pInfo, float pIntensity, int pSum1, int pSum2,
             pInfo->iIntSigma ++;
             pInfo->iIntTotal += pIntensity;
         }
- /*       else
-        {
-            pInfo->iNonMached ++;
-            pInfo->iNonMachedInt += pIntensity;
-        }*/
     }
-}
-
-/* Centering types when 
-h + k = 2n : C centered (C)
-k + l = 2n : A centered (A)
-h + l = 2n : B centered (B)
-h + k + l = 2n : body centered (I)
-h+k, h+l, k+l = 2n or
-h, k, l all odd or all even: All faces centered (F) 
--h+k+l = 3n : Rhombohedrally centered obverse setting(R1)
-h-k+l = 3n : Rhombohedrally centered reverse setting(R2)
-h-k = 3n : Hexagonally centered (H)
-*/
-void HKLData::centeringTypeInfo()
-{
-    CenteringType tA = {0, 0, 0.0f}, 
-                tB = {0, 0, 0.0f}, 
-                tC = {0, 0, 0.0f}, 
-                tI = {0, 0, 0.0f}, 
-                tF = {0, 0, 0.0f},
-                tRO = {0, 0, 0.0f},
-                tRR = {0, 0, 0.0f},
-                tH = {0, 0, 0.0f}, 
-                tAll = {0, 0, 0.0f};
-    
-    for (int i = 0; i < tReflectionList->length(); i++)
-    {
-        Reflection* tReflection = tReflectionList->get(i);
-        
-        addReflection(&tAll, tReflection->i, 1, 0, 0, 2, tReflection->iSE); //All centered
-        addReflection(&tC, tReflection->i, tReflection->h, tReflection->k, 0, 2, tReflection->iSE); //C centered
-        addReflection(&tB, tReflection->i, tReflection->l, tReflection->k, 0, 2, tReflection->iSE); //B centered
-        addReflection(&tA, tReflection->i, tReflection->h, tReflection->l, 0, 2, tReflection->iSE); //A centered
-        addReflection(&tI, tReflection->i, tReflection->h, tReflection->k, tReflection->l, 2, tReflection->iSE); //I centered
-        addReflection(&tRO, tReflection->i, -tReflection->h, tReflection->k, tReflection->l, 3, tReflection->iSE); //RO centered
-        addReflection(&tRR, tReflection->i, tReflection->h, -tReflection->k, tReflection->l, 3, tReflection->iSE); //RR centered
-        addReflection(&tH, tReflection->i, tReflection->h, -tReflection->k, 0, 3, tReflection->iSE); //H centered
-    }
-    cout << "A " << tA << "B " << tB << "C " << tC << "I " << tI << "All " << tAll;
-    cout << "Ro " << tRO << "Rr " << tRR << "H " << tH;
 }
 
 Reflection* HKLData::getReflection(int pIndex)
