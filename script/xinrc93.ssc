@@ -9,6 +9,7 @@
 %  VARIABLE CHARACTER CNULL CDLINE
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ^^WI WINDOW XINRC93 'Input RC93 data' MODAL
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
@@ -20,7 +21,7 @@
 ^^WI   }
 ^^WI   @ 1,2 GRID RIGHT NROWS=8 NCOLS=10
 ^^WI   {
-^^WI    @ 2,9 BUTTON BTNOK '&Ok' DISABLED=YES DEFAULT
+^^WI    @ 2,9 BUTTON BTNOK '&Ok' DISABLED=YES DEFAULT COMMIT
 ^^WI    @ 4,9 BUTTON BTNXX '&Cancel'
 ^^WI   }
 ^^WI  }
@@ -32,6 +33,7 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^CO FOCUS E1
 %%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LOOP
 %  VERIFY BTNOK BTNXX BROWSE E1
@@ -132,16 +134,16 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  END BLOCK
 %%
 
- * Applying Lp corection
+{S * Applying Lp corection
 %COPY '#LP'
 %COPY 'END'
- * Checking systematic absences
+{S * Checking systematic absences
 %COPY '#SYSTEMATIC'
 %COPY 'END'
- * Sorting data
+{S * Sorting data
 %COPY '#SORT'
 %COPY 'END'
- * Merging equivalent reflections
+{S * Merging equivalent reflections
 %    COPY '#MERGE'
 %    COPY 'WEIGHT SCHEME=2 NPARAM=6'
 %    COPY 'PARAM 0.5 3.0 1.0 2.0 0.01 0.00001'
@@ -163,7 +165,17 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY '#WEIGHT'
 %    COPY 'END'
 %    COPY '#RELEASE PRINT BFILE.LIS'
-%    COPY '#TYPE RC93.ERR'
- * Done. RC93 input complete.
+%    IF FILEEXISTS ( 'rc93.err' ) THEN
+%       COPY '#TYPE RC93.ERR'
+
+%    ELSE
+{I    There is no RC93 "error file", which suggests that you may be using
+{I    data from a very old version of RC93. Crystallographic results will
+{I    not be affected, but if you still have the original CAD4 data, you
+{I    may like to reprocess it with the current version.
+
+%    END IF
+{R   Done. RC93 input complete.
 %%
 %END SCRIPT
+
