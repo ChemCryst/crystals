@@ -1,4 +1,57 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2003/01/14 18:31:35  rich
+C Right - this is a useful one and I'm quite pleased with it.
+C
+C Added a new lexical token PART to the scanner. The following
+C examples show what you might do with it:
+C ----
+C Get distances between all atoms in part 1:
+C   #DIST
+C   INCLUDE PART(1)
+C   END
+C ----
+C Competitively refine the occupancy of two parts, e.g. in disorder:
+C   #LIST 12
+C   FULL X'S U'S
+C   EQUIV PART(1,OCC) PART(2,OCC)
+C   WEIGHT -1 PART(1,OCC)
+C   END
+C ----
+C Quickly id whole fragments in regularise:
+C   #REGUL
+C   target c(1) to c(6)
+C   ideal c(11) to c(16)
+C   cameron
+C   map part(2)
+C   onto part(1)
+C   END
+C ----
+C Move a part of the structure:
+C   #EDIT
+C   ADD 0.2 PART(3,X)
+C   END
+C ----
+C Have different regimes for refining e.g. a host and a guest molecule:
+C   #LIST 12
+C   FULL PART(0,X'S,U'S) PART(1,X'S,U[ISO])
+C   END
+C ----
+C So it's quite handy. Part numbers are stored in the 15th slot of LIST 5, and
+C are defined as follows:
+C   ( 1000 * GROUPNUMBER ) + COMPONENTNUMBER.
+C     e.g. 123456 is group 123 and component 456.
+C   The same syntax is used to select a part in the lexical input:
+C     e.g. PART(123456) selects atoms in group 123, component 456.
+C   BUT, if the value of the group or component is 999, all atoms in that
+C   group or component are selected.
+C     e.g. PART(999003) selects all atoms with component 3 in their partnumber and
+C     PART(4999) selects all atoms in group 4.
+C
+C The reason for having groups and parts is to enable logical grouping of, for example
+C a disorder where all affected atoms are group 1, with each component being part 0,1,2 etc.
+C
+C NB. #script xparts runs a useful tool for defining part numbers.
+C
 C Revision 1.38  2002/12/04 14:31:11  rich
 C Reformat output during refinement.
 C
@@ -769,7 +822,9 @@ C
 C
       DATA NOWT/-1000000/
       DATA UISO/0.0000005/,ZERO/0.00005/,VALUE/0.0001/
-C
+      DATA BLANKS/   '                                                    
+     *                                      '/
+C     12345678901234567890123456789012345678
       DATA MD0/8/,N0/0/,LN/0/,LSN/0/,IREC/0/,LEF/0/,LSTLEF/0/,MAPS/0/
 C
       DATA IENDC/-1111111/
