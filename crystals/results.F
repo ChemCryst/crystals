@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/09/11 11:19:16  ckp2
+C In the Windows version, stop the CHAR(12) from printing in the PUNCH file.
+C
 C Revision 1.24  2001/09/07 14:24:54  ckp2
 C CIF tidy.
 C 1) Any writes directly to the CIF file (NCFPU1) are formatted so that
@@ -1032,7 +1035,7 @@ cnov98      CALL SNUM(STORE(M5+3),0.0,1,0,10,LINEA)
 C--UPDATE THE CURRENT POSITION FLAG
       J=IFIR+NSTA
 C--RIC01 Add in atom_site_type_symbol
-      CALL SA41(J,ISTORE(M5),LINEA)
+      IF (IPCHCO .EQ. 2) CALL SA41(J,ISTORE(M5),LINEA)
 C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
       MP=M5+4
       MPD=3
