@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2004/04/21 13:11:45  rich
+C Added "#PUNCH 6 G" command, it outputs a SHELX format reflection
+C file, but using slightly perturbed Fcalc^2 and made-up sigma(F-calc^2).
+C
+C Added a routine ISCNTRC(HKL) to determine if a given reflection is
+C in a centrosymmetric class of reflections (e.g. the h0l class in monoclinic-b
+C ). Used in plot of phase distribution to exclude this class of reflections.
+C Added text to xphase.scp to explain this.
+C
 C Revision 1.8  2003/06/27 10:11:34  rich
 C Added "#PUNCH 6 F" - outputs a plain HKLF4 format listing to the
 C punch file with no headers or anything.
@@ -55,8 +64,8 @@ C--LOAD THE NEXT '#INSTRUCTION'
 
 
 
-      WRITE ( CMON, '(A,6I6)')'List input', NUM,LSTOP,LSTNO,ICLASS
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE ( CMON, '(A,6I6)')'List input', NUM,LSTOP,LSTNO,ICLASS
+c      CALL XPRVDU(NCVDU, 1,0)
 
 
 
