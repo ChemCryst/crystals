@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/03/02 17:03:46  CKP2
+C djw put common block \xsfwk inti macrifile, and extend for (more!) cif
+C items
+C
 C Revision 1.9  2001/02/26 10:29:08  richard
 C Added changelog to top of file
 C
@@ -717,15 +721,22 @@ C--OUTPUT THE NEW LIST 33 TO DISC
         IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
 C----- UPDATE LIST 30
         STORE(L30RF +0 ) = R
+        STORE(L30GE +10 ) = R
         STORE(L30RF +1 ) = RW
+        STORE(L30GE +12 ) = RW
 CNOV98        STORE(L30RF +3 ) = MAX (STORE(L30RF +3 ), STORE(L11P+23))
         IF(STORE(L11P+23) .GT.ZERO) STORE(L30RF +2 ) = STORE(L11P+23)
         IF (STORE(L11P+16) .GT. ZERO) THEN
           STORE(L30RF +4 ) = SQRT(AMINF / STORE(L11P+16))
         ENDIF
+C----- NUMBER OF REFLECTIONS USED
         STORE(L30RF +8 ) = STORE(L11P+24)
+        STORE(L30GE +9 ) = STORE(L11P+24)
 C----- SIGMA THRESHOLD FOR REFINEMENT
-      IF (JB .GE. 0)  STORE(L30RF+3) = S6SIG
+      IF (JB .GE. 0)  THEN
+            STORE(L30RF+3) = S6SIG
+            STORE(L30GE+8) = S6SIG
+      ENDIF
 C----- STORE THETA LIMITS
       STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)
       STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
@@ -2035,7 +2046,6 @@ C----- SET B PART TO ZERO
 11390 CONTINUE
       FNSQ = ACN*ACN + BCN*BCN
       FN = SQRT (FNSQ)
-C^^^^
 C----- LARGE ENANTIOMER DIFFERENCES
       DENAN = 200. * ABS(FN-FP)/(FN+FP)
 c      denan = 100. * abs(fn-fp)/ (scalek * store(m6+12))
@@ -2050,7 +2060,6 @@ C----  H,K,L,F+,FO,F-,R
      1   0, DEF2)
       IENPRT = IENPRT +1
       ENDIF
-C^^^
       PN = AMOD(ATAN2(BCN,ACN)+PSHIFT,TWOPI)
       FESQ = FCSQ * CENANT + ENANT*FNSQ
       IF (FESQ - .00001) 11391,11391,11392
