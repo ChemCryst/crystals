@@ -1109,7 +1109,7 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
             II=LMOUSE(CC,MXPOS,MYPOS)
             CALL XCTRIM(CC,IIILEN)
             IF(IIILEN.GT.1) THEN
-&&GILGID              CALL ZMORE('^^CO SET _MAINTEXTINPUT APPEND='' '//
+&&GILGID              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
 &&GILGID     1 CC(1:IIILEN) // '''',0)
 &DOS              CALL ZMORE('Append atom '//CC(1:IIILEN),0)
             ENDIF
