@@ -700,11 +700,17 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 
 
 
-void CrModel::RenderModel(Boolean detailed)
+Boolean CrModel::RenderModel(Boolean detailed)
 {
     if(mAttachedModelDoc)
-            mAttachedModelDoc->RenderModel(this,detailed);
-}      
+    {
+            return mAttachedModelDoc->RenderModel(this,detailed);
+    }
+    else
+    {
+            return false;
+    }
+}
 
 
 CcModelAtom* CrModel::LitAtom()

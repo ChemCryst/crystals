@@ -33,7 +33,7 @@ class	CrModel : public CrGUIElement
             CcModelAtom* LitAtom();
             int RadiusType();
             float RadiusScale();
-            void RenderModel(Boolean detailed);
+            Boolean RenderModel(Boolean detailed);
             void SendAtom(CcModelAtom* atom, Boolean output = false);
             void GetValue();
             CcModelAtom* GetSelectedAtoms (int * nSelected);
