@@ -1,7 +1,8 @@
 CODE FOR CRYSTL
 C      winapp 500000,1000000
 &GID      SUBROUTINE CRYSTL
-#GID      PROGRAM CRYSTL
+&GIL      SUBROUTINE CRYSTL
+##GIDGIL      PROGRAM CRYSTL
 C
 C
 C     ******************************************************
