@@ -122,7 +122,7 @@ Conditions::~Conditions()
     }
 }
 
-int Conditions::getID(int pIndex)
+int Conditions::getID(const size_t pIndex)
 {
     Condition* tCondition = (*this)[pIndex];
     
@@ -133,7 +133,7 @@ int Conditions::getID(int pIndex)
     return tCondition->getID();
 }
 
-char* Conditions::getName(int pIndex)
+char* Conditions::getName(const size_t pIndex)
 {
     Condition* tCondition = (*this)[pIndex];
     
@@ -144,7 +144,7 @@ char* Conditions::getName(int pIndex)
     return tCondition->getName();
 }
 
-Matrix<short>* Conditions::getMatrix(int pIndex)
+Matrix<short>* Conditions::getMatrix(const size_t pIndex)
 {
     Condition* tCondition = (*this)[pIndex];
     
@@ -155,7 +155,7 @@ Matrix<short>* Conditions::getMatrix(int pIndex)
     return tCondition;
 }
 
-float Conditions::getMult(int pIndex)
+float Conditions::getMult(const size_t pIndex)
 {
     Condition* tCondition = (*this)[pIndex];
     
@@ -233,8 +233,8 @@ void Conditions::readFrom(filebuf& pFile)
 
 std::ostream& Conditions::output(std::ostream& pStream)
 {
-    int tSize = size();
-    for (int i = 0; i < tSize; i++)
+    size_t tSize = size();
+    for (size_t i = 0; i < tSize; i++)
     {
         Condition* tCondition = (*this)[i];
         if (tCondition)
