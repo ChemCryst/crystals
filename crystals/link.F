@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/05/14 13:02:45  rich
+C Ensure correct bond indices for TRIPOS mol2 file.
+C
+C Ensure additional symmetry atoms are not duplicates of
+C existing atoms (even in the first level of expansion - the
+C atom may be on a special position.)
+C
 C Revision 1.42  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -267,7 +274,7 @@ C- POINTER TO LIST
 C
       DATA KHYD /'H   '/
 
-      DATA CBONDS / '1','2','3','4','ar','un','un','un','un'/
+      DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
 
 
 C
@@ -806,18 +813,15 @@ C affect polymeric and Z'<1 structures.
 
        NORIG5 = N5
        CALL GROWFR
-       WRITE (CMON,'(A4,2I6)') 'LkGrown: ',NORIG5,N5
-       CALL XPRVDU(NCVDU,1,0)
+c       WRITE (CMON,'(A4,2I6)') 'LkGrown: ',NORIG5,N5
+c       CALL XPRVDU(NCVDU,1,0)
 
-c      WRITE ( CMON,'(A,3I5)') 'N41B, L41B, MD41B: ',N41B,L41B,MD41B
-c      CALL XPRVDU(NCVDU, 1,0)
-c      WRITE ( CMON,'(A)') 'New bonds(2): Bonding now looks like this:'
-c      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE ( 99,'(A,3I5)') 'N41B, L41B, MD41B: ',N41B,L41B,MD41B
+c      WRITE ( 99,'(A)') 'New bonds(2): Bonding now looks like this:'
 c      DO I = 0,N41B-1
 c        IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
-c          WRITE(CMON,'(2I5)')
+c          WRITE(99,'(2I5)')
 c     1    ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
-c          CALL XPRVDU(NCVDU, 1,0)
 c        END IF
 c      END DO
 
@@ -2138,6 +2142,40 @@ C care if we extend it. L40 should also be loaded as bonds will be calculated.
       JBASAT = NFL
       ININ5 = N5
 
+
+C Allocate space at top of store for whole of L41B three times over,
+C plus at least space for twenty more bonds.
+       L41MAX = LFL
+       L41BSV = KCHLFL( ( 20 + ( N41B * 3 ) ) * MD41B )
+       N41BSV = 0
+       L41BEX = L41BSV
+
+C Copy L41B, but remove sym bonds:
+       DO M41B = L41B, L41B + MD41B * ( N41B - 1 )
+         IF (( ISTORE(M41B+7) .NE. 1 ) .OR.
+     1       ( ISTORE(M41B+8) .NE. 1 ) .OR.
+     2       ( ISTORE(M41B+9) .NE. 0 ) .OR.
+     3       ( ISTORE(M41B+10).NE. 0 ) .OR.
+     4       ( ISTORE(M41B+11).NE. 0 ) ) CYCLE
+         IF (( ISTORE(M41B+1) .NE. 1 ) .OR.
+     1       ( ISTORE(M41B+2) .NE. 1 ) .OR.
+     2       ( ISTORE(M41B+3) .NE. 0 ) .OR.
+     3       ( ISTORE(M41B+4) .NE. 0 ) .OR.
+     4       ( ISTORE(M41B+5) .NE. 0 ) ) CYCLE
+         CALL XMOVE( STORE(M41B), STORE(L41BEX), MD41B )
+         L41BEX = L41BEX + MD41B
+         N41BSV = N41BSV + 1
+       END DO
+
+
+C Put L5 index into SPARE.
+       DO I = 0, N5-1
+        M5 = L5 + MD5 * I
+        ISTORE(M5+13) = I
+       END DO
+
+c      write(99,'(A,2I8)')'N41B, N41BSV: ', N41B, N41BSV
+
 c      WRITE ( CMON,'(A)') 'Seeking bonds across sym ops.'
 c      CALL XPRVDU(NCVDU, 1,0)  
 c
@@ -2153,27 +2191,27 @@ c      END DO
 
       TOPSER = 0
  
-      DO I = 0,N5-1
+      DO I = 0,N5-1             !Find the highest serial number.
         M5A = L5+I*MD5
         TOPSER = MAX(TOPSER,STORE(M5A+1))
       END DO
       TOPSER = TOPSER + 3
 
-      DO I = 0,N5-1
+
+      DO I = 0,N5-1            !Loop over atoms. Each atom becomes pivot.
 
         M5A = L5+I*MD5
         M5 = L5
         JT = 14
 
 
-        JDISTS = JBASAT + JNEWAT*MD5 + 1400
+        JDISTS = JBASAT + JNEWAT*MD5 + 1400   !Leave space for 100 atoms.
         NFL = JDISTS
         JS = JDISTS
 
-C If disordered, only output set 1 (lowest part # of each group):
 
-        IPART = 1
-        JATVC = 0
+        IPART = 1  ! If disorder, output set 1 (lowest part # of each group).
+        JATVC = 0  ! There is no atom vector.
         K = KDIST4(JS,JT,JATVC,IPART)
 
         NFL = JDISTS
@@ -2191,7 +2229,7 @@ C Find entries where sym ops are applied
      1              +ABS(STORE(J+8)-STORE(L5+K*MD5+5))
      1              +ABS(STORE(J+9)-STORE(L5+K*MD5+6)).LT. 0.0001)
      1               THEN
-                  ICOINC = 1
+                  ICOINC = -K-1
                   EXIT
                 END IF
               END DO
@@ -2200,17 +2238,71 @@ C Find entries where sym ops are applied
      1              +ABS(STORE(J+8)-STORE(JBASAT+K*MD5+5))
      1              +ABS(STORE(J+9)-STORE(JBASAT+K*MD5+6)).LT.0.0001)
      1               THEN
-                  ICOINC = 1
+                  ICOINC = K+1
                   EXIT
                 END IF
               END DO
               IF ( ICOINC .EQ. 0 ) THEN
 
-C Add entry to our "new L5 in memory".
-
+C Add entry to our "new L5 in memory". Copy original atom:
                 CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
+C Change its coords:
                 CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
+C Change its serial:                
                 STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
+
+C Find new bond I5 to M5A in L41. Add new entry
+C for this atom onto the end.
+
+
+                IF ( L41BEX + MD41B .LE. L41MAX  ) THEN
+                 ISVI1 = ISTORE(I5+13)  ! Index of found atom
+                 ISVI2 = ISTORE(M5A+13) ! Index of pivot atom
+
+                 write (CMON,'(A,4I8)') 'Checking for ',ISVI1,ISVI2,
+     1           (I5-L5)/MD5,I
+                 CALL XPRVDU(NCVDU,1,0)
+
+                 DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+                  I51 = ISTORE(M41B)
+                  I52 = ISTORE(M41B+6)
+                  IF ( ( ISVI1.NE.I51 ) .AND. ( ISVI2.NE.I51 ) ) CYCLE
+                  IF ( ( ISVI1.NE.I52 ) .AND. ( ISVI2.NE.I52 ) ) CYCLE
+
+
+
+                  CALL XMOVE(STORE(M41B),STORE(L41BEX),MD41B)
+
+
+                 write (CMON,'(A,12I5)') 'Made it ',
+     1 (ISTORE(L41BEX+NN),NN=0,11)
+                 CALL XPRVDU(NCVDU,1,0)
+
+
+C Remove the symmetry operator from the bond
+
+                  CALL XMOVE(STORE(L41BEX+7),STORE(L41BEX+1),5)
+
+                 write (CMON,'(A,12I5)') 'Made it ',
+     1 (ISTORE(L41BEX+NN),NN=0,11)
+                 CALL XPRVDU(NCVDU,1,0)
+                  
+
+                  IF ( ISTORE(L41BEX) .EQ. ISVI1 ) THEN
+                    ISTORE(L41BEX) = N5 + JNEWAT
+                    ISTORE(L41BEX+6) = I
+                  ELSE
+                    ISTORE(L41BEX+6) = N5 + JNEWAT
+                    ISTORE(L41BEX) = I
+                  END IF
+                  L41BEX = L41BEX + MD41B
+                  N41BSV = N41BSV + 1
+      write(CMON,'(A,2I15)')'new bond (1) ', I, N5+JNEWAT
+      CALL XPRVDU(NCVDU,1,0)
+                  EXIT
+                 END DO
+                END IF
+
                 TOPSER=TOPSER+1
                 JNEWAT = JNEWAT + 1
 
@@ -2219,19 +2311,69 @@ C Add entry to our "new L5 in memory".
      1                 (ISTORE(J+L),L=2,6),
      1                 (STORE(J+L),L=7,9)  
                 CALL XPRVDU(NCVDU, 1,0)
+
+              ELSE
+
+C The atom is coincident, but check if a bond exists already.
+C Could be a bond looping back.
+                 ISVI1 = N5+ICOINC-1     ! Index of the coincident atom
+                 IF ( ICOINC .LT. 0 ) ISVI1 = -ICOINC-1
+                 ISVI2 = I            ! Index of pivot atom
+                 IBDEXI = 0
+                 DO M41SV = L41BSV, L41BSV+(N41BSV-1)*MD41B, MD41B
+                  I51 = ISTORE(M41SV)
+                  I52 = ISTORE(M41SV+6)
+                  IF ( ( ISVI1.NE.I51 ) .AND. ( ISVI2.NE.I51 ) ) CYCLE
+                  IF ( ( ISVI1.NE.I52 ) .AND. ( ISVI2.NE.I52 ) ) CYCLE
+C                  IF ( ISVI1 .EQ. ISVI2 ) CYCLE
+                  IBDEXI = 1
+                 END DO
+                 IF ( IBDEXI .EQ. 0 ) THEN
+C Now find original index of these two atoms.
+                  IF ( ISVI1 .GE. N5 ) THEN
+                     IORG1 = ISTORE(JBASAT+(ISVI1-N5)*MD5+13)
+                  ELSE
+                     IORG1 = ISTORE(L5+ISVI1*MD5+13)
+                  END IF
+                  IORG2 = ISTORE(L5+ISVI2*MD5+13)
+C Find bond IORG1 to IORG2 in 'safe' bit of L41. Add new entry for this
+C bond onto the end.
+                  IF ( L41BEX + MD41B .LE. L41MAX ) THEN
+                    DO M41SV = L41BSV, L41BSV+(N41BSV-1)*MD41B, MD41B
+                     I51 = ISTORE(M41SV)
+                     I52 = ISTORE(M41SV+6)
+c                     write (99,'(A,2I6)') '3:Test ',I51,I52
+                     IF ( ( IORG1.NE.I51 ) .AND. ( IORG2.NE.I51 ) )CYCLE
+                     IF ( ( IORG1.NE.I52 ) .AND. ( IORG2.NE.I52 ) )CYCLE
+C                     IF ( ISVI1 .EQ. ISVI2 ) CYCLE
+c                     write (99,'(A)') '3:Made it'
+                     CALL XMOVE(STORE(M41SV),STORE(L41BEX),MD41B)
+                     IF ( ISTORE(L41BEX) .EQ. IORG1 ) THEN
+                       ISTORE(L41BEX) = ISVI1
+                       ISTORE(L41BEX+6) = ISVI2
+                     ELSE
+                      ISTORE(L41BEX+6) = ISVI1
+                      ISTORE(L41BEX) = ISVI2
+                     END IF
+                     L41BEX = L41BEX + MD41B
+                     N41BSV = N41BSV + 1
+                     EXIT
+                    END DO
+                  END IF
+                 END IF
               END IF
           END IF
         END DO
       END DO
 
-      WRITE ( CMON,'(A)') 'Done.'
+c      WRITE ( CMON,'(A)') 'Done.'
       TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
 
       IF ( JNEWAT .GT. 0 ) THEN
 C Layer 1 of sym atoms complete. Start on layer 2.
 
-         WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
-         CALL XPRVDU(NCVDU, 1,0)  
+c         WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
+c         CALL XPRVDU(NCVDU, 1,0)  
 
 C Move new atoms up and insert existing L5 block.
          CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
@@ -2245,15 +2387,15 @@ C Move new atoms up and insert existing L5 block.
 
 c         WRITE ( CMON,'(A,3I5)') 'New atoms: N5, L5, MD5: ',N5,L5,MD5
 c         CALL XPRVDU(NCVDU, 1,0)
-         WRITE ( CMON,'(A)') 'Model look like this:'
-         CALL XPRVDU(NCVDU, 1,0)
-         DO I = 0, N5-1
-           WRITE(CLAB,'(A,I4,A,I4)') ISTORE(L5+I*MD5),I+1,':',
-     1     NINT(STORE(L5+1+I*MD5))
-           CALL XCRAS(CLAB,LLAB)
-           WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
-           CALL XPRVDU(NCVDU, 1,0)
-         END DO
+c         WRITE ( CMON,'(A)') 'Model look like this:'
+c         CALL XPRVDU(NCVDU, 1,0)
+c         DO I = 0, N5-1
+c           WRITE(CLAB,'(A,I4,A,I4)') ISTORE(L5+I*MD5),I+1,':',
+c     1     NINT(STORE(L5+1+I*MD5))
+c           CALL XCRAS(CLAB,LLAB)
+c           WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
+c           CALL XPRVDU(NCVDU, 1,0)
+c         END DO
 
 C Recalculate bonds.
          CALL XBCALC(2) !Force bondcalc, but no loading of lists allowed.
@@ -2261,15 +2403,15 @@ C Recalculate bonds.
 c         WRITE ( CMON,'(A,3I5)') 'New bonds(1): N41B, L41B, MD41B: ',
 c     1     N41B,L41B,MD41B
 c         CALL XPRVDU(NCVDU, 1,0)
-         WRITE ( CMON,'(A)') 'Bonding now looks like this:'
-         CALL XPRVDU(NCVDU, 1,0)
-         DO I = 0,N41B-1
-           IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
-             WRITE(CMON,'(2I5)')
-     1       ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
-             CALL XPRVDU(NCVDU, 1,0)
-           END IF
-         END DO
+c         WRITE ( CMON,'(A)') 'Bonding now looks like this:'
+c         CALL XPRVDU(NCVDU, 1,0)
+c         DO I = 0,N41B-1
+c           IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
+c             WRITE(CMON,'(2I5)')
+c     1       ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
+c             CALL XPRVDU(NCVDU, 1,0)
+c           END IF
+c         END DO
 
        DO LSY = 1,3
 
@@ -2327,7 +2469,7 @@ C Ignore entries that coincide with existing atoms:
      1                 +ABS(STORE(J+8)-STORE(L5+K*MD5+5))
      1                 +ABS(STORE(J+9)-STORE(L5+K*MD5+6)).LT. 0.0001)
      1                  THEN
-                     ICOINC = 1
+                     ICOINC = -K-1
                      EXIT
                    END IF
                  END DO
@@ -2336,7 +2478,7 @@ C Ignore entries that coincide with existing atoms:
      1                 +ABS(STORE(J+8)-STORE(JBASAT+K*MD5+5))
      1                 +ABS(STORE(J+9)-STORE(JBASAT+K*MD5+6)).LT.0.0001)
      1                  THEN
-                     ICOINC = 1
+                     ICOINC = K+1
                      EXIT
                    END IF
                  END DO
@@ -2349,15 +2491,99 @@ C Add entry to our "new L5 in memory".
                    CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
                    CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
                    STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
-                   TOPSER=TOPSER+1
-                   JNEWAT = JNEWAT + 1
 
                    WRITE ( CMON,'(A,I4,1X,A,6I4,3F9.3)')'new atom (2) ',
      1               LSY,
      1               ISTORE(I5),NINT(STORE(I5+1)),
      1               (ISTORE(J+L),L=2,6),
      1               (STORE(J+L),L=7,9)  
-                   CALL XPRVDU(NCVDU, 1,0)  
+                   CALL XPRVDU(NCVDU, 1,0)
+
+
+C Find bond I5 to M5A in 'safe' bit of L41. Add new entry for this
+C atom onto the end.
+                   IF ( L41BEX + MD41B .LE. L41MAX ) THEN
+                    ISVI1 = ISTORE(I5+13)  ! Index of found atom
+                    ISVI2 = ISTORE(M5A+13) ! Index of pivot atom
+c                    write (99,'(A,2I6)') 'Checking for ',ISVI1,ISVI2
+                    DO M41SV = L41BSV, L41BSV+(N41BSV-1)*MD41B, MD41B
+                     I51 = ISTORE(M41SV)
+                     I52 = ISTORE(M41SV+6)
+c                     write (99,'(A,2I6)') 'Test ',I51,I52
+                     IF ( ( ISVI1.NE.I51 ) .AND. ( ISVI2.NE.I51 ) )CYCLE
+                     IF ( ( ISVI1.NE.I52 ) .AND. ( ISVI2.NE.I52 ) )CYCLE
+C                     IF ( ISVI1 .EQ. ISVI2 ) CYCLE
+c                     write (99,'(A)') 'Made it'
+   
+                     CALL XMOVE(STORE(M41SV),STORE(L41BEX),MD41B)
+
+                     IF ( ISTORE(L41BEX) .EQ. ISVI1 ) THEN
+                       ISTORE(L41BEX) = N5 + JNEWAT
+                       ISTORE(L41BEX+6) = I
+                     ELSE
+                      ISTORE(L41BEX+6) = N5 + JNEWAT
+                      ISTORE(L41BEX) = I
+                     END IF
+                     L41BEX = L41BEX + MD41B
+                     N41BSV = N41BSV + 1
+c      write(99,'(A,2I15)')'2: Added bond ', L41BEX, N5+JNEWAT
+                     EXIT
+                    END DO
+                   END IF
+
+                   TOPSER=TOPSER+1
+                   JNEWAT = JNEWAT + 1
+                 ELSE
+
+C The atom is coincident, but check if a bond exists already.
+C Could be a bond looping back.
+                 ISVI1 = N5+ICOINC-1     ! Index of the coincident atom
+                 IF ( ICOINC .LT. 0 ) ISVI1 = -ICOINC-1
+                 ISVI2 = I            ! Index of pivot atom
+                 IBDEXI = 0
+                 DO M41SV = L41BSV, L41BSV+(N41BSV-1)*MD41B, MD41B
+                  I51 = ISTORE(M41SV)
+                  I52 = ISTORE(M41SV+6)
+                  IF ( ( ISVI1.NE.I51 ) .AND. ( ISVI2.NE.I51 ) ) CYCLE
+                  IF ( ( ISVI1.NE.I52 ) .AND. ( ISVI2.NE.I52 ) ) CYCLE
+C                  IF ( ISVI1 .EQ. ISVI2 ) CYCLE
+                  IBDEXI = 1
+                 END DO
+                 IF ( IBDEXI .EQ. 0 ) THEN
+C Now find original index of these two atoms.
+                  IF ( ISVI1 .GE. N5 ) THEN
+                     IORG1 = ISTORE(JBASAT+(ISVI1-N5)*MD5+13)
+                  ELSE
+                     IORG1 = ISTORE(L5+ISVI1*MD5+13)
+                  END IF
+                  IORG2 = ISTORE(L5+ISVI2*MD5+13)
+C Find bond IORG1 to IORG2 in 'safe' bit of L41. Add new entry for this
+C bond onto the end.
+                  IF ( L41BEX + MD41B .LE. L41MAX ) THEN
+                    DO M41SV = L41BSV, L41BSV+(N41BSV-1)*MD41B, MD41B
+                     I51 = ISTORE(M41SV)
+                     I52 = ISTORE(M41SV+6)
+c                     write (99,'(A,2I6)') '3:Test ',I51,I52
+                     IF ( ( IORG1.NE.I51 ) .AND. ( IORG2.NE.I51 ) )CYCLE
+                     IF ( ( IORG1.NE.I52 ) .AND. ( IORG2.NE.I52 ) )CYCLE
+C                     IF ( ISVI1 .EQ. ISVI2 ) CYCLE
+c                     write (99,'(A)') '3:Made it'
+                     CALL XMOVE(STORE(M41SV),STORE(L41BEX),MD41B)
+                     IF ( ISTORE(L41BEX) .EQ. IORG1 ) THEN
+                       ISTORE(L41BEX) = ISVI1
+                       ISTORE(L41BEX+6) = ISVI2
+                     ELSE
+                      ISTORE(L41BEX+6) = ISVI1
+                      ISTORE(L41BEX) = ISVI2
+                     END IF
+                     L41BEX = L41BEX + MD41B
+                     N41BSV = N41BSV + 1
+                     EXIT
+                    END DO
+                   END IF
+
+
+                 END IF
                  END IF
              END IF
            END DO
@@ -2393,6 +2619,12 @@ c         END DO
 
        END DO
       END IF
+
+C TODO - change L41 pointers.
+
+
+      L41B = L41BSV
+      N41B = N41BSV
 
 
       LATVC = LLATVC
