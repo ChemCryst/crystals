@@ -1,0 +1,58 @@
+%SCRIPT FINH
+% VARIABLE INTEGER RETURNTO
+% VARIABLE LOGICAL HPOS
+% VERIFY FIND AUTO
+% GET SILENT NOSTORE FINAL ABBREVIATED 'Return to' 'FIND'
+% EVALUATE RETURNTO = VALUE
+^^WI DISPOSE CONTINUE
+^^CR
+% VERIFY BOK BXX
+% GET SILENT NOSTORE FINAL ABBREVIATED 'Cancel?' 'BOK'
+% IF VALUE .EQ. 2 THEN
+%   FINISH
+% END IF
+%%
+^^CO FOCUS _MAIN
+  You can now choose to keep only the geometrically placed H atoms, or
+  to convert well-placed peaks into H atoms.
+% VERIFY GEOMETRIC MAP
+%   GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want GEOMETRIC or MAP  found H atoms ?' 'GEOMETRIC'
+%   IF VALUE .EQ. 1 THEN
+%       COPY '#PEAK 5 5'
+%       COPY 'SEL TYPE=PEAK'
+%       COPY 'END'
+%       COPY '#EDIT'
+%       COPY 'SEL TYPE NE QH'
+%       COPY 'END'
+%   ELSE
+%       COPY '#EDIT'
+%       COPY 'TYPECHANGE TYPE EQ QH Q'
+%       COPY 'END'
+%       COPY '#PEAK 5 5'
+%       COPY 'SEL REJECT = .0001 TYPE=PEAK'
+%       COPY 'REFINE DIST = .3'
+%       COPY 'END'
+%       COPY '#SCRIPT PLOT'
+%       COPY '#EDIT'
+%       COPY 'SEL TYPE NE Q'
+%       COPY 'END'
+%   END IF
+%   IF RETURNTO .EQ. 1 THEN
+%      FINISH
+%   END IF
+%   COPY '#SCRIPT CHECK12'
+%   VERIFY YES NO
+
+ * Remember - the data may not be good enough to reveal all H atoms.
+
+%   GET NOSTORE FINAL ABBREVIATED -
+ 'Have all H atoms been located?' 'YES'
+%   IF VALUE .EQ. 1 THEN
+%      EVALUATE HPOS = TRUE
+%   END IF
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   COPY '#SCRIPT XAUTO12'
+%END SCRIPT
