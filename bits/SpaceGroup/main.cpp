@@ -185,11 +185,6 @@ void runTest(RunParameters& pRunData)
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\n" << *tRankings << "\n";
     outputToFile(pRunData, tStats, tRankings, *tTable);
- /*   if (pRunData.iInteractiveMode)
-    {
-        InteractiveControl tInteractiveControl(tStats, tRankings, tTable);
-        tInteractiveControl.goInteractive();
-    }*/
     delete tRankings;
     delete tStats;
     delete tHKL;
