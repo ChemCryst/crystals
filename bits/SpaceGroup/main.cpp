@@ -67,7 +67,7 @@ using namespace std;
 #define PATH_MAX _MAX_PATH
 #endif
 
-#define kVersion "1.0.1.2(Beta)"
+#define kVersion "1.0.1.3(Beta)"
 
 void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRanking, Table& pTable)	//This outputs the ranked spacegroups and the stats table to the file at the path pRunData->iOutputFile
 {
@@ -126,11 +126,12 @@ void runTest(RunParameters& pRunData)
     
     //This is just testing  
     std::cout << "Merging...\n";  
-    gettimeofday(&time1, NULL);
+       gettimeofday(&time1, NULL);
+       //getMergeCrystalSys(0);
     LaueGroups tGroups;
     SystemRef tSystemRef;
     unsigned short tNumGroups;
-    for (int i = kCubicID; i > 0; i--)
+    for (int i = LaueGroups::kCubicID; i >= 0; i--)
     {
 	tSystemRef = tGroups.getSystemRef(&tNumGroups, i); 
 	cout << "System: " <<  tSystemRef << " " << tNumGroups << "\n";
@@ -187,7 +188,9 @@ int _tmain(int argc, _TCHAR* argv[])
 { 
     std::cout << "The Determinator Version " << kVersion << "\n";
     std::cout << "Written by Stefan Pantos\n";
+
     RunParameters tRunStruct;
+
     try
     {
 	/* Handle all the arguments which were passed to the program.
