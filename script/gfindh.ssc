@@ -1,8 +1,12 @@
 %SCRIPT GFINDH                                                                  
-% VARIABLE CHARACTER CATOM CEL CTYPE
-% VARIABLE REAL SX SY SZ SS SERI
-% VARIABLE LOGICAL HQEXEC
-% VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND                                   
+% VARIABLE CHARACTER CTYPE
+% VARIABLE INTEGER HFOUND
+% VARIABLE REAL SERIAL
+%%
+% VARIABLE CHARACTER CATOM CEL CTYPE                                            
+% VARIABLE REAL SX SY SZ SS SERI                                                
+% VARIABLE LOGICAL HQEXEC                                                       
+% VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
@@ -38,7 +42,7 @@
 ^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''                              
 ^^WI   {                                                                        
 ^^WI     @ 1,1 ICON IM INFO                                                     
-^^WI     @ 1,3 GRID EXP2 NROWS=5 NCOLS=1                                        
+^^WI     @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                        
 ^^WI     {                                                                      
 ^^WI       @ 1,1 STATIC T1                                                      
 ^^WI 'Key: H (white) - Geometric H positions, QH (pink) - Diff Fourier peaks.'  
@@ -50,6 +54,8 @@
 ^^WI 'Delete any computed (white) H atoms you do not want to keep.'             
 ^^WI       @ 5,1 STATIC T5                                                      
 ^^WI 'If the structure is complete, check "All H atoms have been found" below.' 
+^^WI       @ 6,1 STATIC T6                                                      
+^^WI 'Regularisation will optimise the H positions using the X-ray data' 
 ^^WI     }                                                                      
 ^^WI   }                                                                        
 ^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3                                          
@@ -67,10 +73,12 @@
 ^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
 ^^WI            MOUSEACTION=HEADERATOM                                          
 ^^WI   }                                                                        
-^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=3                                        
+^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=5                                        
 ^^WI     @ 1,1 CHECKBOX AHFOUND                                                 
 ^^WI       'All H atoms have been found' STATE=OFF                              
-^^WI     @ 1,3 CHECKBOX FOUREF                                                  
+^^WI     @ 1,3 CHECKBOX REGUL
+^^WI       'Advanced: Regularise the H using restraints' STATE=ON              
+^^WI     @ 1,5 CHECKBOX FOUREF                                                  
 ^^WI       'Advanced: Fourier refinement using QH peaks' STATE=OFF              
 ^^WI   }                                                                        
 ^^WI   @ 8,2 GRID BTNS NROWS=1 NCOLS=7                                          
@@ -124,63 +132,63 @@
 %    COPY 'CALC'                                                                
 % END IF                                                                        
 %%                                                                              
-^^CO SET GFT1 TEXT 'Difference Fourier map.'
-% COPY '#SCRIPT PREFOUR'        
-% COPY 'MAP TYPE=DIFF'
-% COPY 'PEAK HEIGHT=1'
-% COPY 'END'
-% COPY '#SCRIPT POSTFOUR'
-^^CO SET GFT1 TEXT 'Rejecting coincident peaks.'
-% COPY '#PEAKS 10 10'
-% COPY 'SEL TYPE=PEAK'
-% COPY 'END'
-^^CO SET GFT1 TEXT 'Collecting peaks (pink).'
-% COPY '#COLL 10 10'
-% COPY 'SEL TYPE=PEAK'
-% COPY 'END'
-^^CO SET GFT1 TEXT 'Adding geometric H (white).'
-% COPY '#PERHYDRO 5 5'
-% COPY 'ACTION BOTH'
-% COPY 'END'
-%% Copy peaks from L10 into L5
-% QUEUE REWIND
-% COPY '#GENERALEDIT 10'
-% COPY "LOCATE RECORDTYPE=101"
-% COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"
-% COPY "TOP"
-% LOOP
-%   ON EDITERROR TERMINATE
-%   COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%   IF ( CTYPE .EQ. 'Q' ) THEN
-%     COPY 'TRANSFER FROM OFFSET=1 TO SERI'
-%     COPY 'TRANSFER FROM OFFSET=4 TO SX'
-%     COPY 'TRANSFER FROM OFFSET=5 TO SY'
-%     COPY 'TRANSFER FROM OFFSET=6 TO SZ'
-%     COPY 'TRANSFER FROM OFFSET=13 TO SS'
-%     CLEAR
-%     INSERT 'ATOM QH'
-%     STORE INTEGER INTEGER SERI
-%     INSERT ' X='
-%     STORE REAL SX
-%     STORE REAL SY
-%     STORE REAL SZ
-%     INSERT ' SPAR='
-%     STORE REAL SS
-%     QUEUE SEND
-%   END IF
-%   COPY 'NEXT'
-% END LOOP
-% COPY 'END'
-% COPY '#EDIT'
-% QUEUE PROCESS
-% COPY 'END'
-%%
-^^CO SET GFT1 TEXT 'Changing Q to QH.'
-% COPY '#EDIT'
-% COPY 'GUI HIGH'
-% COPY 'TYPECHANGE TYPE EQ Q QH'
-% COPY 'CLASH FIXLATTER'
-% COPY 'EXEC'                                                                  
+^^CO SET GFT1 TEXT 'Difference Fourier map.'                                    
+% COPY '#SCRIPT PREFOUR'                                                        
+% COPY 'MAP TYPE=DIFF'                                                          
+% COPY 'PEAK HEIGHT=1'                                                          
+% COPY 'END'                                                                    
+% COPY '#SCRIPT POSTFOUR'                                                       
+^^CO SET GFT1 TEXT 'Rejecting coincident peaks.'                                
+% COPY '#PEAKS 10 10'                                                           
+% COPY 'SEL TYPE=PEAK'                                                          
+% COPY 'END'                                                                    
+^^CO SET GFT1 TEXT 'Collecting peaks (pink).'                                   
+% COPY '#COLL 10 10'                                                            
+% COPY 'SEL TYPE=PEAK'                                                          
+% COPY 'END'                                                                    
+^^CO SET GFT1 TEXT 'Adding geometric H (white).'                                
+% COPY '#PERHYDRO 5 5'                                                          
+% COPY 'ACTION BOTH'                                                            
+% COPY 'END'                                                                    
+%% Copy peaks from L10 into L5                                                  
+% QUEUE REWIND                                                                  
+% COPY '#GENERALEDIT 10'                                                        
+% COPY "LOCATE RECORDTYPE=101"                                                  
+% COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"             
+% COPY "TOP"                                                                    
+% LOOP                                                                          
+%   ON EDITERROR TERMINATE                                                      
+%   COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                      
+%   IF ( CTYPE .EQ. 'Q' ) THEN                                                  
+%     COPY 'TRANSFER FROM OFFSET=1 TO SERI'                                     
+%     COPY 'TRANSFER FROM OFFSET=4 TO SX'                                       
+%     COPY 'TRANSFER FROM OFFSET=5 TO SY'                                       
+%     COPY 'TRANSFER FROM OFFSET=6 TO SZ'                                       
+%     COPY 'TRANSFER FROM OFFSET=13 TO SS'                                      
+%     CLEAR                                                                     
+%     INSERT 'ATOM QH'                                                          
+%     STORE INTEGER INTEGER SERI                                                
+%     INSERT ' X='                                                              
+%     STORE REAL SX                                                             
+%     STORE REAL SY                                                             
+%     STORE REAL SZ                                                             
+%     INSERT ' SPAR='                                                           
+%     STORE REAL SS                                                             
+%     QUEUE SEND                                                                
+%   END IF                                                                      
+%   COPY 'NEXT'                                                                 
+% END LOOP                                                                      
+% COPY 'END'                                                                    
+% COPY '#EDIT'                                                                  
+% QUEUE PROCESS                                                                 
+% COPY 'END'                                                                    
+%%                                                                              
+^^CO SET GFT1 TEXT 'Changing Q to QH.'                                          
+% COPY '#EDIT'                                                                  
+% COPY 'GUI HIGH'                                                               
+% COPY 'TYPECHANGE TYPE EQ Q QH'                                                
+% COPY 'CLASH FIXLATTER'                                                        
+% COPY 'EXEC'                                                                   
 ^^CO DISPOSE XABORT                                                             
 % LOOP                                                                          
 %   VERIFY FHBOK FHBXX ATOM FHBHELP                                             
@@ -194,6 +202,13 @@
 %      EVALUATE FOUREF = FALSE                                                  
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %        EVALUATE FOUREF = TRUE                                                 
+%      END IF                                                                   
+^^??   REGUL STATE                                                             
+%      VERIFY ON OFF                                                            
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                             
+%      EVALUATE REGUL = FALSE                                                  
+%      IF ( VALUE .EQ. 1 ) THEN                                                 
+%        EVALUATE REGUL = TRUE                                                 
 %      END IF                                                                   
 ^^??   AHFOUND STATE                                                            
 %      VERIFY ON OFF                                                            
@@ -225,7 +240,22 @@
 %        COPY 'SEL TYPE NE QN'                                                  
 %        COPY 'SEL TYPE NE Q'                                                   
 %        COPY 'END'                                                             
-%      END IF                                                                   
+%      END IF          
+%      IF ( REGUL .EQ. TRUE ) THEN
+%        COPY '#RELEASE PUNCH SAV1216.DAT'
+%        COPY '#PUNCH 12'
+%        COPY 'END'
+%        COPY '#PUNCH 16'
+%        COPY 'END'
+%        COPY '#RELEASE PUNCH BFILE.PCH'
+%%                                                                              
+%        COPY '#SCRIPT XREGULH'     
+%%                                                                              
+%%      COPY '#CLEAR 12'
+%%      COPY '#CLEAR 16'
+%%      COPY '#USE SAV1216.DAT'
+
+%      END IF
  * Remember - the data may not be good enough to reveal all H atoms.            
 %      IF AHFOUND .EQ. TRUE THEN                                                
 %% Store the fact that all H's have been found.                                 
