@@ -1,6 +1,6 @@
 #!/bin/sh -x
-export LD_LIBRARY_PATH=/usr/local/lib
-export CRYSTALS_HOME=/usr/local/crystals
+export LD_LIBRARY_PATH=/usr/lib
+export CRYSTALS_HOME=/usr/crystals
 export CRYSDIR=$HOME/.crystals/,$CRYSTALS_HOME/
 
 $CRYSTALS_HOME/crystals.exe $*
