@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.31  2004/03/09 13:28:17  rich
+c New pseudo-op space group deviation measure.
+c
 c Revision 1.30  2004/02/26 09:47:55  rich
 c Add three new closed set testing measures for Anna.
 c
@@ -764,7 +767,7 @@ C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
 C 
       DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3)
-      DIMENSION OPM(4,4), OPN(4,4), OTEMP(4)
+      DIMENSION OPM(4,4), OPN(4,4), OTEMP(4), IBMA(16)
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       COMMON/REGTMP/ 
@@ -1188,6 +1191,7 @@ C (CENTN) and then subtracting from the OLD centroid (CENTO).
           RWORST = -9999999.0
           RAVERAGE = 0.0
           NRCOMP = 0
+          CALL XFILL (-1,IBMA(1),16)
 
           DO K1 = 1,2  ! Once for the new gen (OPN), once for its inverse
 
@@ -1216,14 +1220,24 @@ C The largest possible delta in a periodic function like this is 0.5.
                   END DO
 
 C Do the comparison.
-                  BEST = MIN(BEST,CMPMAT(STORE(K3),OPM(1,1),16)) 
+                  RMAT = CMPMAT(STORE(K3),OPM(1,1),16)
+                  IF ( RMAT .LT. BEST ) THEN
+                    BEST = RMAT
+                    IF ( NRCOMP .LT. 16 ) THEN       !Store match
+                      IBMA(NRCOMP+1) = (K3-LSGT)/16
+                    END IF
+                  END IF
               END DO
 
               WRITE(CMON,'(A,I2,A,F9.4)')'Best match for ( OP#',
      1        (K2-LSGT)/16,' ) x OPN is:',BEST
               CALL XPRVDU(NCVDU,1,0)
 
-              RWORST = MAX(RWORST,BEST) ! Worst of the best for row
+              IF ( BEST .GT. RWORST ) THEN
+                RWORST = BEST
+                IWORS = NRCOMP
+              END IF
+
               RAVERAGE = RAVERAGE + BEST  ! Average of best for row
               NRCOMP = NRCOMP + 1
 
@@ -1264,7 +1278,16 @@ c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
      1    CHAR(9),RAVERAGE
           CALL XCREMS(CPCH,CPCH,LENFIL)
 
-          WRITE(CMON,'(A,F9.4)')'Lowest best match in last row: ',RWORST
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,I3)')
+     1    CHAR(9),IWORS
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(16(A,I3))')
+     1    (CHAR(9),IBMA(K3),K3=1,16)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CMON,'(A,F9.4,A,I3)')'Lowest best match in last row: ',
+     1     RWORST, ' to op# ', IWORS
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A,F9.4)')'Average best in last row: ',RAVERAGE
           CALL XPRVDU(NCVDU,1,0)
