@@ -3,6 +3,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2001/03/27 15:15:00  richard
+// Added a timer to the main window that is activated as the main window is
+// created.
+// The timer fires every half a second and causes any messages in the
+// CRYSTALS message queue to be processed. This is not the main way that messages
+// are found and processed, but sometimes the program just seemed to freeze and
+// would stay that way until you moved the mouse. This should (and in fact, does
+// seem to) remedy that problem.
+// Good good good.
+//
 // Revision 1.14  2001/03/15 11:05:41  richard
 // Error checking. Ensure that if ptr_to_cxObject is NULL then we don't call
 // any of the Cx object's functions. (This allows CxModel to fail gracefully, and
@@ -176,7 +186,7 @@ typedef bool Boolean;
 
 
 // The following functions are common to many classes,
-// so I've made them into macros. 
+// so I've made them into macros.
 
 #define CRCALCLAYOUT(a,b)                                              \
 CcRect a##::CalcLayout(bool recalc)                                                            \
@@ -241,8 +251,9 @@ void a##::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
 
 #define CXONCHAR(a)  \
 void a##::OnChar(wxKeyEvent &event){ \
-if(nChar==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}  \
-else {ptr_to_crObject->FocusToInput((char)event.keyCode());}}
+if(event.KeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}\
+else {ptr_to_crObject->FocusToInput((char)event.KeyCode());}}
+
 
 #endif
 
