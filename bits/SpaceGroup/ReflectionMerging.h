@@ -11,6 +11,7 @@
 #include "HKLData.h"
 #include "RunParameters.h"
 #include "UnitCell.h"
+#include "LaueClasses.h"
 
 #include <set>
 #include <vector>
@@ -18,21 +19,6 @@
 using namespace std;
 
 typedef unsigned int SystemRef;
-
-struct lsreflection
-{
-  bool operator()(const Reflection* pReflection1, const Reflection* pReflection2) const
-  {
-      Matrix<short>* tHKL1 = pReflection1->getHKL();
-      Matrix<short>* tHKL2 = pReflection2->getHKL();
-      int tValue = tHKL1->bytecmp(*tHKL2);
-      if (tValue > 0)
-      {
-	  return true;
-      }
-      return false;
-  }
-};
 
 class MergedData:public MyObject
 {
@@ -64,26 +50,14 @@ private:
     
     Array<unsigned short>& getGroupIndice(const unsigned int pSystemRef, const unsigned short pGroupNum) const;
  public:
-    enum systemID
-    {
-      kTriclinicID = 0,
-      kMonoclinicAID,
-      kMonoclinicBID,
-      kMonoclinicCID,
-      kOrtharombicID,
-      kTetragonalID,
-      kTrigonalID,
-      kHexagonalID,
-      kCubicID,
-      };
     LaueGroups();
-    SystemRef getSystemRef(unsigned short* pNumGroup, const LaueGroups::systemID pSystemID) const; //Returns a reference to the first system LaueGroup and the number of groups for that system in pNumGroups
+    SystemRef getSystemRef(unsigned short* pNumGroup, const SystemID pSystemID) const; //Returns a reference to the first system LaueGroup and the number of groups for that system in pNumGroups
     void mergeSystemGroup(const HKLData& pHKLData, const SystemRef pSystemRef, const unsigned short pGroupID, const RunParameters& pRunPara);
-    static LaueGroups::systemID unitCellID2LaueGroupID(const UnitCell::systemID pID);
-    static UnitCell::systemID laueGroupID2UnitCellID(LaueGroups::systemID pID);
-    LaueGroups::systemID getCrystalSystemFor(const SystemRef pSystemRef);
+    static SystemID unitCellID2LaueGroupID(const SystemID pID);
+    static SystemID laueGroupID2UnitCellID(SystemID pID);
+    SystemID getCrystalSystemFor(const SystemRef pSystemRef);
     bool mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const;
-    LaueGroups::systemID guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam);
+    SystemID guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam);
     size_t count();
     ~LaueGroups();
     std::ostream& output(std::ostream& pStream);
