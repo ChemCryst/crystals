@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/03/13 12:42:01  richard
+C Support for writing MOL2 and CSD file formats. PUNCH MOGUL option for distances.
+C Changed default colour in L28 to UNKNOWN.
+C
 C Revision 1.32  2002/03/08 16:01:00  ckp2
 C Second parameter for #FOREIGN. METHOD = NORMAL, METHOD = FILTERED. Controls
 C output of reflections for Sir92 only.
@@ -1401,9 +1405,9 @@ C - Could move these to ZCAMER.
 &&GIDGIL        CALL ZMORE(CHARTC,0)
 &&GIDGIL        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
 &&GIDGIL        CALL ZMORE(CHARTC,0)
-&&GIDGIL        WRITE(CHARTC,'(A)') '^^CR'
+&&GIDGIL        WRITE(CHARTC,'(A)') '^^CW'
 &&GIDGIL        CALL ZMORE(CHARTC,0)
-&&GIDGIL        CALL GUWAIT()
+C&&GIDGIL        CALL GUWAIT()
 &&&GIDDOSGIL        CALL ZCAMER ( 1, 0 , 0 , 0)
 
 8025  CONTINUE
