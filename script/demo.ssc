@@ -56,6 +56,7 @@
 ^^WI   @ 1,1 STATIC SP1 'Choose a workshop structure:'
 ^^WI   @ 2,1 LISTBOX CHSTR VISLINES=7
 ^^WI         ADDTOLIST
+^^WI     'Nket'
 ^^WI     'Cyclo'
 ^^WI     'Quick'
 ^^WI     'Edit examples'
@@ -67,7 +68,6 @@
 ^^WI     'Ylid'
 ^^WI     'Peach'
 ^^WI     'Keen'
-^^WI     'Nket'
 ^^WI     'Hex'
 ^^WI     'Mogul'       NULL
 ^^WI   @ 4,1 CHECKBOX XWIP 'Clean start' STATE=ON
@@ -111,6 +111,7 @@
 %     END CASE
 ^^CO  DISPOSE QUERY
 %     CASE CHOICE
+%          EVALUATE CDIR = 'CRYSDIR:nket\'
 %          EVALUATE CDIR = 'CRYSDIR:demo\cyclo\'
 %          EVALUATE CDIR = 'CRYSDIR:demo\quick\'
 %          EVALUATE CDIR = 'CRYSDIR:demo\editor\'
@@ -122,7 +123,6 @@
 %          EVALUATE CDIR = 'CRYSDIR:demo\ylid\'
 %          EVALUATE CDIR = 'CRYSDIR:demo\peach\'
 %          EVALUATE CDIR = 'CRYSDIR:demo\keen\'
-%          EVALUATE CDIR = 'CRYSDIR:nket\'
 %          EVALUATE CDIR = 'CRYSDIR:example\'
 %          EVALUATE CDIR = 'CRYSDIR:demo\mogul\'
 %     END CASE
@@ -136,6 +136,10 @@
 %         EVALUATE T = FILEDELETE ( CFDIR // 'crfilev2.dsc' )
 %         EVALUATE T = FILEDELETE ( CFDIR // 'sir9x.ins' )
 %         EVALUATE T = FILEDELETE ( CFDIR // 'pretwin6.dat' )
+%         IF CHOICE .EQ. 1 THEN
+%TRANSFER '#SPAWN copy ' // CFDIR // 'nket.dsc ' // CFDIR // 'crfilev2.dsc' -
+TO CRYSTALS
+%         END IF
 %     END IF
 ^^WI  SET _MAIN TEXT=
 %     TRANSFER "^^WI 'Crystals - " // CFDIR // "'" TO DISPLAY
