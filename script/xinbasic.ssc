@@ -28,15 +28,18 @@
      + EXISTS 29 + EXISTS 30 + EXISTS 31 .EQ. 8 ) THEN
    Mandatory LISTs are present.
 %    ON ERROR REPEAT
-%    VERIFY YES NO
-%    GET FINAL ABBREVIATED  -
-      'Do you want to change any mandatory LISTS ? ' 'NO'
-%    IF ( VALUE .EQ. 2 ) THEN
+%      EVALUATE QTITLE = 'Before reading in data...'
+%      EVALUATE QLINE1 = 'Do you want to modify any existing data?'
+%      EVALUATE QLINE2 = 'e.g. cell, spacegroup, etc.'
+%      EVALUATE BUTTOK = '&No'
+%      EVALUATE BUTTXX = '&Yes'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
 %        EVALUATE INBASICS = 1
 %        FINISH
-%    ELSE
+%      ELSE
 %        COPY '#SCRIPT INPUT'
-%    END IF
+%      END IF
 %  END IF
 %  CLEAR
 %  BLOCK
