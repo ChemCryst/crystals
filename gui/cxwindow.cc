@@ -283,8 +283,12 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_CLOSE( CxWindow::OnClose ) 
       EVT_SIZE( CxWindow::OnSize )
       EVT_CHAR( CxWindow::OnChar )
-      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_COMMAND_MENU_SELECTED, CxWindow::OnMenuSelected )
-      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_UPDATE_UI, CxWindow::OnUpdateMenuItem )
+      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
+                        wxEVT_COMMAND_MENU_SELECTED,
+                        CxWindow::OnMenuSelected )
+      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
+                        wxEVT_UPDATE_UI,
+                        CxWindow::OnUpdateMenuItem )
       EVT_KEY_DOWN( CxWindow::OnKeyDown )
 END_EVENT_TABLE()
 #endif

@@ -8,6 +8,12 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  1999/05/28 18:00:29  dosuser
+// RIC: Attempted world record for most number of files
+// checked in at once. Most changes are to do with adding
+// support for a LINUX windows library. Nothing has broken
+// in the windows version. As far as I can see.
+//
 // Revision 1.4  1999/04/26 13:14:32  dosuser
 // RIC: Added void SetSelection ( int select ) function.
 //
@@ -30,7 +36,7 @@ CxListBox *	CxListBox::CreateCxListBox( CrListBox * container, CxGrid * guiParen
 {
 	CxListBox	*theListBox = new CxListBox( container );
 #ifdef __WINDOWS__
-	theListBox->Create(WS_CHILD|WS_VISIBLE|LBS_NOTIFY|LBS_HASSTRINGS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
+        theListBox->Create(WS_CHILD| WS_VISIBLE| LBS_NOTIFY| LBS_HASSTRINGS| WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
 	theListBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theListBox->SetFont(CxGrid::mp_font);
 #endif

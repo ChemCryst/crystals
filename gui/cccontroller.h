@@ -96,6 +96,8 @@ class	CcController
             CcString m_newdir;
             Boolean m_restart;
             Boolean m_Wait;
+                CcList  mGraphList;
+                CcList  mChartList;
 
 	protected:
 		// methods

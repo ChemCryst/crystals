@@ -23,7 +23,7 @@ CxCheckBox *	CxCheckBox::CreateCxCheckBox( CrCheckBox * container, CxGrid * guiP
 	CxCheckBox	*theStdButton = new CxCheckBox(container);
 
 #ifdef __WINDOWS__
-	theStdButton->Create("CheckBox",WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX,CRect(0,0,10,10),guiParent,mCheckBoxCount++);
+        theStdButton->Create("CheckBox",WS_CHILD| WS_VISIBLE| BS_AUTOCHECKBOX, CRect(0,0,10,10), guiParent, mCheckBoxCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __LINUX__

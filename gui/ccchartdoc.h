@@ -44,6 +44,9 @@ class CcChartDoc
             void FastColour( int r, int g, int b );
 
             void Clear();
+            CcChartDoc * FindObject( CcString Name );
+            void Rename( CcString newName );
+
 	private:
 		CrGraph* mGraphPointer;
 		void ReadDirections( CcTokenList* tokenList, Boolean *north,Boolean *south,Boolean *east,Boolean *west);

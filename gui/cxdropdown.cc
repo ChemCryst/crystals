@@ -10,6 +10,9 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  1999/06/22 13:14:12  dosuser
+// RIC: Moved the calls in SetGeometry round a bit.
+//
 // Revision 1.4  1999/05/28 17:59:56  dosuser
 // RIC: Attempted world record for most number of files
 // checked in at once. Most changes are to do with adding
@@ -33,7 +36,7 @@ CxDropDown *	CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiP
 {
 	CxDropDown* theDropDown = new CxDropDown ( container);
 #ifdef __WINDOWS__
-	theDropDown->Create(CBS_DROPDOWNLIST|WS_CHILD|WS_VISIBLE,CRect(0,0,10,10),guiParent,mDropDownCount++);
+        theDropDown->Create(CBS_DROPDOWNLIST |WS_CHILD |WS_VISIBLE, CRect(0,0,10,10), guiParent, mDropDownCount++);
 	theDropDown->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __LINUX__

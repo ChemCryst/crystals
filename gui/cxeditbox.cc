@@ -31,7 +31,7 @@ CxEditBox *	CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
 	
 	CxEditBox	*theEditBox = new CxEditBox( container );
 #ifdef __WINDOWS__
-	theEditBox->Create(ES_LEFT|ES_AUTOHSCROLL|WS_VISIBLE|WS_CHILD|ES_WANTRETURN,CRect(0,0,10,10),guiParent,mEditBoxCount++);
+        theEditBox->Create(ES_LEFT| ES_AUTOHSCROLL| WS_VISIBLE| WS_CHILD| ES_WANTRETURN, CRect(0,0,10,10), guiParent, mEditBoxCount++);
 	theEditBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);  //Sink it into the window.
 	theEditBox->SetFont(CxGrid::mp_font);
 #endif

@@ -21,7 +21,7 @@ CxRadioButton *	CxRadioButton::CreateCxRadioButton( CrRadioButton * container, C
 {
 	CxRadioButton	*theStdButton = new CxRadioButton( container );
 #ifdef __WINDOWS__
-	theStdButton->Create("RadioButton",WS_CHILD|WS_VISIBLE|BS_AUTORADIOBUTTON,CRect(0,0,10,10),guiParent,mRadioButtonCount++);
+        theStdButton->Create("RadioButton", WS_CHILD| WS_VISIBLE| BS_AUTORADIOBUTTON, CRect(0,0,10,10), guiParent, mRadioButtonCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __LINUX__

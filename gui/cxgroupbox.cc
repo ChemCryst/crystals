@@ -20,7 +20,7 @@ CxGroupBox *	CxGroupBox::CreateCxGroupBox( CrGrid * container, CxGrid * guiParen
 //      char * defaultName = (char *)"Group";
 	CxGroupBox	*theGrid = new CxGroupBox( container );
 #ifdef __WINDOWS__
-	theGrid->Create("GroupBox",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,CRect(0,0,10,10),guiParent,mGroupBoxCount++);
+        theGrid->Create("GroupBox",WS_CHILD| WS_VISIBLE| BS_GROUPBOX, CRect(0,0,10,10), guiParent, mGroupBoxCount++);
 	theGrid->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __LINUX__

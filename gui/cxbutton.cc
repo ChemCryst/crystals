@@ -32,7 +32,7 @@ CxButton *	CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
 {
 	CxButton	*theStdButton = new CxButton(container);
 #ifdef __WINDOWS__
-	theStdButton->Create("Button",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(0,0,10,10),guiParent,mButtonCount++);
+        theStdButton->Create("Button",WS_CHILD |WS_VISIBLE |BS_PUSHBUTTON, CRect(0,0,10,10), guiParent, mButtonCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __LINUX__

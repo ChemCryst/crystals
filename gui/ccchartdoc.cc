@@ -31,10 +31,14 @@ CcChartDoc::CcChartDoc( )
 	attachedChart = nil;
 	mSelfInitialised = false;
 	mGraphPointer = nil;
+        (CcController::theController)->mChartList.AddItem(this);
 }
 
 CcChartDoc::~CcChartDoc()
 {
+        (CcController::theController)->mChartList.FindItem(this);
+        (CcController::theController)->mChartList.RemoveItem();
+
 	mCommandList->Reset();
 	CcChartObject* theItem = (CcChartObject *)mCommandList->GetItem();
 	while ( theItem != nil )
@@ -308,7 +312,8 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			{
 				tokenList->GetToken();
 				mGraphPointer = new CrGraph(this);
-				mGraphPointer->ParseInput(tokenList);
+                                (CcController::theController)->mGraphList.AddItem( mGraphPointer );
+                                mGraphPointer->ParseInput(tokenList);
 				break;
 			}
 
@@ -564,3 +569,20 @@ void complete ( )
 }
 
 } //extern "C"
+
+
+CcChartDoc *  CcChartDoc::FindObject( CcString Name )
+{
+	if ( Name == mName )
+		return this;
+	else
+		return nil;
+}
+
+
+void CcChartDoc::Rename( CcString newName )
+{
+      LOGSTAT("Renaming object: " + mName + " to " + newName );
+      mName = newName;
+}
+                

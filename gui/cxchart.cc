@@ -38,7 +38,7 @@ CxChart *	CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
 									);
 
 	CxChart	*theStdChart = new CxChart(container);
-	theStdChart->Create(wndClass,"Chart",WS_CHILD|WS_VISIBLE,CRect(0,0,26,28),guiParent,mChartCount++);
+        theStdChart->Create(wndClass,"Chart",WS_CHILD| WS_VISIBLE, CRect(0,0,26,28), guiParent, mChartCount++);
 	theStdChart->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theStdChart->SetFont(CxGrid::mp_font);
 
@@ -966,7 +966,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 
 		size = memDC.GetOutputTextExtent(theText.ToCString(), theText.Len());
 
-		if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=10))
+                if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=60))
 		{
 			//Output the text, and exit.
 			fontIsTooBig = false;

@@ -11,6 +11,13 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.16  1999/07/30 20:17:59  richard
+// RIC: Added Focus instruction to give the specified window or object
+// the users input focus.
+// RIC: Added FontIncrease instruction for changing the font size. Follow
+// with YES to increase, or NO to decrease the current font size in the
+// current output window.
+//
 // Revision 1.15  1999/07/02 17:59:10  richard
 // RIC: Added a boolean m_Wait which is true while CRYSTALS is off processing
 // things. It isn't actually used by anything though.
@@ -123,6 +130,7 @@
 #include	"ccmodeldoc.h"
 #include	"ccquickdata.h"
 #include	"ccchartobject.h"
+#include        "crgraph.h"
 #include    "crprogress.h"
 #include <iostream.h>
 #include <iomanip.h>
@@ -162,7 +170,7 @@ CcController::CcController( CxApp * appContext )
       mThisThreadisDead = false;
       m_Completing = false;
 
-      m_newdir = "";
+      //m_newdir = "";
       m_restart = false;
 
       m_Wait = false;
@@ -393,9 +401,9 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 					theElement = GetProgressOutputPlace();
 					theElement->ParseInput( tokenList );
 				}
-                        else if (name == "TEXTINPUT")
+                                else if (name == "TEXTINPUT")
 				{
-                              theElement = GetInputPlace();
+                                        theElement = GetInputPlace();
 					theElement->ParseInput( tokenList );
 				}
 				else                // if ( mCurrentWindow != nil ) No search all windows.
@@ -405,7 +413,34 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 					if(theElement)
 						theElement->ParseInput( tokenList );
 					else
-						LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
+                                        {
+                                                CrGraph * theGraph = nil, * theItem;
+                                                mGraphList.Reset();
+                                                theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                                                while ( theItem != nil && theGraph == nil )
+                                                {
+                                                           theGraph = theItem->FindObject( name );
+                                                           theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                                                }
+                                                if ( theGraph )
+                                                           theGraph->ParseInput( tokenList );
+                                                else
+                                                {
+
+                                                   CcChartDoc * theChart = nil, * theCItem;
+                                                   mChartList.Reset();
+                                                   theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                                                   while ( theCItem != nil && theChart == nil )
+                                                   { 
+                                                           theChart = theCItem->FindObject( name );
+                                                           theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                                                   }
+                                                   if ( theChart )
+                                                           theChart->ParseInput( tokenList );
+                                                   else
+                                                             LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
+                                                }
+                                        }
 				}
 				break;
 			}
@@ -444,22 +479,48 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				}
 				break;
 			}
-                  case kTRenameObject:
+                        case kTRenameObject:
 			{
 				// remove that token
 				tokenList->GetToken();
 				
 				CcString name = tokenList->GetToken();	// Get the name of the object
-                        LOGSTAT("CcController: About to rename: " + name);
+                                LOGSTAT("CcController: About to rename: " + name);
 				CrGUIElement* theElement = nil;
 
                         // Look for the item
-                        theElement = FindObject( name );
-                        if(theElement)
-                              theElement->Rename( tokenList->GetToken() );
-                        else
-                              LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
-				break;
+                                theElement = FindObject( name );
+                                if(theElement)
+                                      theElement->Rename( tokenList->GetToken() );
+                                else
+                                {
+                                      CcChartDoc * theChart = nil, * theCItem;
+                                      mChartList.Reset();
+                                      theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                                      while ( theCItem != nil && theChart == nil )
+                                      { 
+                                            theChart = theCItem->FindObject( name );
+                                            theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                                      }
+                                      if ( theChart )
+                                            theChart->Rename( tokenList->GetToken() );
+                                      else
+                                      {
+                                              CrGraph * theGraph = nil, * theItem;
+                                              mGraphList.Reset();
+                                              theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                                              while ( theItem != nil && theGraph == nil )
+                                              {
+                                                    theGraph = theItem->FindObject( name );
+                                                    theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                                              }
+                                              if ( theGraph )
+                                                    theGraph->Rename( tokenList->GetToken() );
+                                              else
+                                                    LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
+                                      }
+                                }
+                                break;
 			}
 			case kTCreateChartDoc:
 			{
@@ -1035,7 +1096,7 @@ void  CcController::AddInterfaceCommand( CcString line )
 Boolean	CcController::GetCrystalsCommand( char * line )
 {
 //This is where the Crystals thread will spend most of its time.
-//Waiting for the user to do something.
+//Waiting for the user to do somethine.
 
 //Wait until the list is free for reading.
 #ifdef __WINDOWS__
@@ -1066,6 +1127,8 @@ Boolean	CcController::GetCrystalsCommand( char * line )
 	if (mThisThreadisDead) return false;
 
 	LOGSTAT("!!!Crystals thread: Got command: "+ CcString(line));
+
+    if (CcString(line) == "#DIENOW") endthread(0);
 
 //Signal the text output that NOECHO has finished. (In case it was ever started.)
       ((CrMultiEdit*)GetTextOutputPlace())->NoEcho(false);
@@ -1235,7 +1298,7 @@ void	CcController::LogError( CcString errString , int level )
 
 CrGUIElement* CcController::FindObject(CcString Name)
 {
-//Insert your own code here.
+
 	CrGUIElement * theElement = nil, * theItem;
 	
 	mWindowList.Reset();
@@ -1246,9 +1309,9 @@ CrGUIElement* CcController::FindObject(CcString Name)
 		theElement = theItem->FindObject( Name );
 		theItem = (CrGUIElement *)mWindowList.GetItemAndMove();
 	}
-		
+
+                            
 	return ( theElement );
-//End of user code.         
 }
 
 void CcController::FocusToInput(char theChar)

@@ -27,8 +27,8 @@ class	CrWindow : public CrGUIElement
 		void SetCommandText(CcString theText);
 		void SendCommand(CcString theText, Boolean jumpQueue = false);
 		void SetCancelText(CcString text);
-		void SetCommitText( CcString text);
 		void FocusToInput(char theChar);
+		void SetCommitText( CcString text);
 		void MenuSelected(int id);
 		void SetMainMenu(CrMenu* menu);
 		void CrFocus();

@@ -26,7 +26,7 @@ CxMultiEdit * 	CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid *
 {
 	CxMultiEdit *theMEdit = new CxMultiEdit (container);
 #ifdef __WINDOWS__
-        theMEdit->Create(ES_LEFT|ES_AUTOHSCROLL|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL|WS_VISIBLE|WS_CHILD|ES_MULTILINE,CRect(0,0,10,10),guiParent,mMultiEditCount++);
+        theMEdit->Create(ES_LEFT| ES_AUTOHSCROLL| ES_AUTOVSCROLL| WS_VSCROLL| WS_HSCROLL| WS_VISIBLE| WS_CHILD| ES_MULTILINE, CRect(0,0,10,10), guiParent, mMultiEditCount++);
 	theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 //      theMEdit->SetFont(CxGrid::mp_font);
 //      theMEdit->SetBackgroundColor(false,RGB(255,255,255));

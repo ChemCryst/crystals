@@ -21,7 +21,7 @@ CxText *	CxText::CreateCxText( CrText * container, CxGrid * guiParent )
 {
 	CxText	*theText = new CxText( container );
 #ifdef __WINDOWS__
-      theText->Create("Text", SS_LEFTNOWORDWRAP|WS_CHILD|WS_VISIBLE,CRect(0,0,20,20),guiParent);
+      theText->Create("Text", SS_LEFTNOWORDWRAP| WS_CHILD| WS_VISIBLE, CRect(0,0,20,20), guiParent);
 	theText->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __LINUX__
