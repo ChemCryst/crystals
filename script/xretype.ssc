@@ -176,6 +176,10 @@
 %       COPY '#COLLECT'
 %       COPY 'END'
 {I Atoms collected by symmetry.
+%       COPY '#EDIT'
+%       COPY 'CLASH FIXLATTER'
+%       COPY 'GUI HIGH'
+%       COPY 'EXEC'
 %    END BLOCK
 %    BLOCK     %NULL
 Call from add H script.
