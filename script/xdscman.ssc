@@ -3,6 +3,7 @@
 %% A script to manage (reset, delete, retain) the List 5's in the DSC file.
 %%
 %  VARIABLE INTEGER NT NTS NTSC
+%  VARIABLE LOGICAL L
 %%
 %  COPY '#GENERALEDIT 5'
 %  COPY 'GETSERIAL NTSC'
@@ -154,6 +155,8 @@
 %    CASE VALUE
 %      BLOCK                                                  % BCLOSE %
 ^^CO     DISPOSE DSCMAN
+%        COPY '#CLOSE SCPDATA'
+%        L = FILEDELETE ( 'dscdata.pch' )
 %        FINISH
 %      END BLOCK
 %      BLOCK                                                  % BRESET %
