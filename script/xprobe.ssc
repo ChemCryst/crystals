@@ -1,0 +1,261 @@
+%SCRIPT XPERT
+%%
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+%%
+%% show the current model
+%  COPY '#DISPLAY'
+%  COPY 'END'
+%%
+%   EVALUATE QTITLE = 'Test Convergence'
+%   EVALUATE QLINE1 = 'Are you sure that the Model displaid'
+%   EVALUATE QLINE2 = 'is the model you wish to test?'
+%   EVALUATE BUTTOK = '&Yes'
+%   EVALUATE BUTTXX = '&No'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ANSWER .EQ. FALSE THEN
+%      FINISH
+%   END IF
+%%
+%% variables neded by LIST 5 preservation
+%  VARIABLE CHARACTER CISER CJSER
+%  VARIABLE INTEGER ISER JSER
+%% save the current LIST 5 serial
+%   COPY '#GENERALEDIT 5'
+%   COPY 'GETSERIAL ISER'
+%   COPY 'END'
+%   IF ISER .LT. 0 THEN 
+%     EVALUATE ISER = - ISER
+%   END IF
+%   EVALUATE CISER = CHARACTER ISER
+%   QUEUE REWIND
+%   QUEUE COPY #DISK
+%   CLEAR
+%   STORE CHARACTER "RETAIN 5 " // CISER
+%   QUEUE SEND
+%   QUEUE COPY END
+%   QUEUE PROCESS
+%%
+%%
+%%
+%  VARIABLE LOGICAL SERR
+%  VARIABLE INTEGER NCYCLE NL5
+%  VARIABLE REAL APERT
+%  VARIABLE CHARACTER CPERT
+%  EVALUATE SERR = TRUE
+%%
+%%
+^^WI WINDOW XREFINE 'Minima Probing' MODAL
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=7
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID NTRY NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'Maximum number of tries'
+^^WI    @ 1,3 EDITBOX NT ' 5' CHARS=5 INTEGER
+^^WI   }
+^^WI   @ 3,1 GRID NPERT NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'rms perturbation'
+^^WI    @ 1,3 EDITBOX NP ' .25' CHARS=5 REAL
+^^WI   }
+^^WI  }
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%      VERIFY RF_BXX RF_BOK 
+%      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%      CASE VALUE
+%       BLOCK
+^^CO      DISPOSE XREFINE
+%         FINISH
+%       END BLOCK
+%       BLOCK
+%         EVALUATE SERR = FALSE
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END BLOCK
+%      END CASE
+%    END LOOP
+%    IF SERR .EQ. TRUE THEN
+^^CO      DISPOSE XREFINE
+%         FINISH
+%    END IF
+%%
+^^?? NT TEXT
+%    GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
+%    EVALUATE NCYCLE = VALUE
+^^?? NP TEXT
+%    VERIFY ON OFF
+%    GET NOSTORE SILENT FINAL REAL 'Pert' '.25'
+%    EVALUATE APERT = VALUE
+^^CO DISPOSE XREFINE
+%
+%%
+%%
+%%
+%   EVALUATE CPERT = CHARACTER APERT
+%   VARIABLE REAL R OSCALE RATIO 
+%   VARIABLE REAL SAVER MINR MAXR
+%   EVALUATE MINR = 1000000.
+%   EVALUATE MAXR = - 1000000.
+%   COPY '#SCRIPT RFACTOR'
+%   EVALUATE SAVER = R
+%%
+% LOOP NCYCLE TIMES
+%   QUEUE REWIND
+%   QUEUE COPY #DISK
+%   CLEAR
+%   STORE CHARACTER "RESET 5 " // CISER
+%   QUEUE SEND
+%   QUEUE COPY END
+%   QUEUE COPY #DISPLAY
+%   QUEUE COPY END
+%   QUEUE COPY #EDIT
+%   CLEAR
+%   STORE CHARACTER "PERTURB " // CPERT // " ALL(X) "
+%   QUEUE SEND
+%   CLEAR
+%   STORE CHARACTER "PERTURB " // CPERT // " ALL(Y) "
+%   QUEUE SEND
+%   CLEAR
+%   STORE CHARACTER "PERTURB " // CPERT // " ALL(Z) "
+%   QUEUE SEND
+%   QUEUE COPY END
+%   QUEUE PROCESS
+
+%   COPY '#SCRIPT SIXCYCLE'
+%   COPY '#SCRIPT RFACTOR'
+%   IF R .GT. MAXR THEN
+%     EVALUATE MAXR = R
+%   END IF
+%   IF R .LT. MINR THEN
+%     EVALUATE MINR = R
+%% save the serial number
+%     COPY '#GENERALEDIT 5'
+%     COPY 'GETSERIAL JSER'
+%     COPY 'END'
+%     IF JSER .LT. 0 THEN 
+%       EVALUATE JSER = - JSER
+%     END IF
+%     EVALUATE CJSER = CHARACTER JSER
+%   END IF
+
+% END LOOP
+%%
+%% Finally, reset to the model
+
+
+
+%  VARIABLE INTEGER CHOICE
+%  EVALUATE CHOICE = 1
+^^WI WINDOW SET5 'Set active model' MODAL
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'
+^^WI GRID MYMAIN NROWS=1 NCOLS=3
+^^WI {
+^^WI  @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
+^^WI   {
+^^WI     @ 2,2 ICON IM INFO
+^^WI   }
+^^WI   @ 1,2 GRID GRIDL NROWS=8 NCOLS=5
+^^WI   {
+% CLEAR
+% INSERT !^^WI @ 2,2 STATIC TEXT1 -
+ 'Original R factor was !
+% STORE FORMAT /(F8.4)/ LENGTH 8 REAL  SAVER
+% INSERT ! ' !
+% OUTPUT
+% CLEAR
+% INSERT !^^WI @ 3,2 STATIC TEXT1 -
+ '    Best R factor was !
+% STORE FORMAT /(F8.4)/ LENGTH 8 REAL  MINR
+% INSERT ! ' !
+% OUTPUT
+% CLEAR
+% INSERT !^^WI @ 4,2 STATIC TEXT1 -
+ '  Worst R factor was !
+% STORE FORMAT /(F8.4)/ LENGTH 8 REAL  MAXR
+% INSERT ! ' !
+% OUTPUT
+^^WI   @ 6,2 CHECKBOX XPURGE 'Remove old models'
+^^WI                                         STATE=ON
+^^WI     @ 2,4 RADIOBUTTON OR ' ' STATE=ON
+^^WI     @ 3,4 RADIOBUTTON BR ' ' STATE=OFF
+^^WI   }
+^^WI   @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
+^^WI   {
+^^WI     @ 2,2 BUTTON BTNOK '&Ok' DEFAULT
+^^WI     @ 4,2 BUTTON BTNXX '&Cancel'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+
+%  VARIABLE INTEGER DOPURGE
+%  EVALUATE DOPURGE = 2
+
+
+% VERIFY BTNOK BTNXX
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% CASE VALUE
+%        BLOCK                %BUTTONOK%
+%          QUEUE REWIND
+%          CLEAR
+
+^^??       OR STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF ( VALUE .EQ. 1 ) THEN
+%            EVALUATE CHOICE = 1
+%          ELSE
+^^??         BR STATE
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%            IF ( VALUE .EQ. 1 ) THEN
+%              EVALUATE CHOICE = 2
+%            END IF
+%          END IF
+^^??       XPURGE STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          EVALUATE DOPURGE = VALUE
+^^WI       DISPOSE SET5
+^^CR
+%        END BLOCK
+%        BLOCK                %BUTTONXX%
+%          EVALUATE DOPURGE = 2
+^^WI       DISPOSE SET5
+^^CR
+%        END BLOCK
+% END CASE
+% IF CHOICE .EQ. 2 THEN
+%  EVALUATE CISER = CJSER
+% END IF
+%%
+%   QUEUE REWIND
+%   QUEUE COPY #DISK
+%   CLEAR
+%   STORE CHARACTER "RESET 5 " // CISER
+%   QUEUE SEND
+%   QUEUE COPY END
+%   QUEUE COPY #DISPLAY
+%   QUEUE COPY END
+%   QUEUE PROCESS
+%  SHOW DOPURGE
+%   IF DOPURGE .EQ. 1 THEN
+%     COPY '#PURGE '
+%     COPY 'END'
+%   END IF
+%END SCRIPT
