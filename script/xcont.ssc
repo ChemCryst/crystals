@@ -93,7 +93,7 @@
 ^^WI  @ 3,1 GRID VBOTTOM NROWS=2 NCOLS=7
 ^^WI  {
 -GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
--GIL .OR. FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
+-GIL .OR. FILEEXISTS 'crysdir:mce\mce.exe' THEN
 +GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' -
 +GIL .EQ. TRUE THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
@@ -322,7 +322,7 @@ view the generated sections.
 -GIL% TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe" ' -
 -GIL    // CFILE TO CRYSTALS
 -GIL% ELSE
--GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
+-GIL% TRANSFER '#SPAWN "CRYSDIR:mce\mce.exe" ' -
 -GIL   // CFILE TO CRYSTALS
 -GIL% END IF
 +GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
