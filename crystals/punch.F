@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/05/15 17:20:56  richard
+C To the fcf output file, I have added:
+C 1) Cell params - useful for cross checking that fcf belongs to cif.
+C 2) _refln_observed_status - this is 'o' for a refl used in the refinement.
+C '<' if rejected by I/sigmaI cutoff or 'x' if rejected for some other reason.
+C ('<' appears in preference to 'x' if both apply)
+C
 C Revision 1.27  2002/01/24 15:44:57  Administrator
 C OPEN/CLOSE file for publish.fcf in script
 C
@@ -318,7 +325,7 @@ C-C-C-ISO/SPHERE/LINE/RING
 1350  CONTINUE
       WRITE(NCPU,1300)CATNM,ISTORE(M5),(STORE(K),K=L,M),
 C     2 STORE(M5+2),STORE(M5+3)
-     2 STORE(M5+2),STORE(M5+7)
+     2 10.+STORE(M5+2),STORE(M5+7)
 1400  CONTINUE
       M5=M5+MD5
       M5A=M5A+1

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/04/16 10:04:50  Administrator
+C re-Fix atom types to be mixed case
+C
 C Revision 1.32  2002/04/12 13:52:02  Administrator
 C Ensure refernce for absorption correction output
 C
@@ -1019,8 +1022,12 @@ C
         ENDIF
         WRITE( NCFPU1, 902)
 902     FORMAT ('_atom_site_occupancy'/
-     1 '_atom_site_adp_type'  )
+     1 '_atom_site_adp_type'  /
+     2 '_atom_site_attached_hydrogens' )
       ENDIF
+      WRITE(NCFPU1,903)
+903   FORMAT('# Replace trailing . with the number of unfound',
+     1 /'# hydrogen atoms attaced to relavent atom')
 C
       iuij = 0
 C--LOOP OVER THE ATOMS
@@ -1178,7 +1185,7 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCTRIM (CLINE,NCHAR)
             CLINE(NCHAR+1:NCHAR+4) = CTEM
             CALL XCREMS( CLINE, CLINE, NCHAR)
-            WRITE(NCFPU1,'(A)') CLINE(1:NCHAR)
+            WRITE(NCFPU1,'(A,A)') CLINE(1:NCHAR), ' .'
       ENDIF
 1550  FORMAT(2X,118A1)
       NL=NL+1

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/03/28 17:04:02  richard
+C REmoved obsolete GUWAIT, used ^^CW instead.
+C
 C Revision 1.33  2002/03/13 12:42:01  richard
 C Support for writing MOL2 and CSD file formats. PUNCH MOGUL option for distances.
 C Changed default colour in L28 to UNKNOWN.
@@ -190,6 +193,7 @@ C----- FOR CSD & MOL2
 
 C
 \ISTORE
+\ICOM31
 C
 \STORE
 \XUNITS
@@ -203,6 +207,7 @@ C
 \XLST06
 \XLST13
 \XLST29
+\XLST31
 \XLST41
 \XOPVAL
 \XERVAL
@@ -211,13 +216,14 @@ C
 \CAMBLK
 C
 \QSTORE
+\QLST31
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD, 10:MOL2
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,
-     3            1, 2, 3, 0, 6, 13, 29,
+     3            1, 2, 3,31, 6, 13, 29,
      4            1, 2, 3, 0, 6, 13, 29,
      5            1, 2, 3, 0, 6, 13, 29,
      6            1, 2, 3, 0, 6, 13, 29,
@@ -280,6 +286,18 @@ C --        CONVERT ANGLES TO DEGREES.
             CALL XFAL13
         ELSE IF (LSTNUM .EQ. 29) THEN
             CALL XFAL29
+        ELSE IF (LSTNUM .EQ. 31) THEN
+C--         LOAD LIST 31 FROM DISC
+\IDIM31
+            CALL XLDLST(31,ICOM31,IDIM31,0)
+            IF ( IERFLG .LT. 0 ) GO TO 9900
+C-----      SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
+            A = STORE(L31K)
+            M31 = L31
+            M31L = M31 + MD31 -1
+            DO 900 I = M31, M31L
+              STORE(I)  =  SQRT (STORE(I) * A)
+900         CONTINUE
         ELSE IF (LSTNUM .EQ. 41) THEN
             CALL XFAL41
         ENDIF
@@ -433,6 +451,10 @@ C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
      1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
+      WRITE(NCFPU1,1810) NINT(T2), 
+     1 STORE(L31), STORE(L31+6), STORE(L31+11),
+     2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
+1810  FORMAT ('ZERR ', I4, 6F7.4)
 C----- FIND LATTICE TYPE
       LATTYP = ((2*IC) -1) * IL
       WRITE (NCFPU1,'( ''LATT '', I3)') LATTYP
@@ -477,12 +499,12 @@ C----- UNIT CARDS
       ENDIF
 C
       IF (IEFORT .EQ. 3) THEN
-C----- JUST WRITING ATOMS - SAVE AND RESTORE IO UNITS
+C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         J = NCPU
         NCPU = NCFPU1
         CALL XPCH5C(1)
         NCPU = J
-        GOTO 1850
+c        GOTO 1850
       ENDIF
 C----- REQUEST STRUCTURE SOLUTION
       IF (IEFORT .EQ. 4) THEN
