@@ -15,7 +15,7 @@
 ^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2
 ^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3
+^^WI   @ 1,1 GRID GRIDL NROWS=9 NCOLS=3
 ^^WI   {
 ^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir92 parameters'
 ^^WI           STATE=ON
@@ -25,9 +25,11 @@
 ^^WI           STATE=OFF
 ^^WI @ 4,2 RADIOBUTTON RD '&Alternative 3 (very long random phasing job)'
 ^^WI           STATE=OFF
-^^WI     @ 6,2 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI     @ 5,2 RADIOBUTTON REX '&Do NOT create new SIR input file'
 ^^WI           STATE=OFF
-^^WI     @ 7,2 CHECKBOX CRUN '&Run Sir92 now'
+^^WI     @ 8,2 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI           STATE=OFF
+^^WI     @ 9,2 CHECKBOX CRUN '&Run Sir92 now'
 ^^WI           STATE=ON
 ^^WI   }
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
@@ -66,8 +68,15 @@
 %            COPY '#FOREIGN SIR92 HARD'
 %            COPY 'END'
 %          ELSE
-%            COPY '#FOREIGN SIR92 LONG'
-%            COPY 'END'
+^^??         REX STATE
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE ABBREVIATED 'On=Existing'
+%            IF ( VALUE .EQ. 1 ) THEN
+  Using existing data
+%            ELSE
+%              COPY '#FOREIGN SIR92 LONG'
+%              COPY 'END'
+%            END IF
 %          END IF
 %        END IF
 %      END IF
@@ -105,7 +114,7 @@
 %      EVALUATE BUTTXX = '&No'
 %      COPY '#SCRIPT XQUESTIO'
 %      IF ANSWER .EQ. FALSE THEN
-^^WI WINDOW SIRFAIL 'Failed to solve' SIZE MODAL POSITION=ABOVE _MAIN 
+^^WI WINDOW SIRFAIL 'Failed to solve' SIZE MODAL POSITION=ABOVE _MAIN
 ^^WI GRID OUTER NROWS=3 NCOLS=5
 ^^WI {
 ^^WI   @ 2,2 TEXTOUT XSIRTEXT ''
@@ -124,7 +133,7 @@
    2) Try SHELXS or DirDif.
    3) Read the Sir92 guide in SIR92/GUIDE92.TXT for help.
    4) Be sure that the space group is correct.
-   5) Click on 'View Log' and study the output of the 
+   5) Click on 'View Log' and study the output of the
       Sir92 program for reasons for failure.
 ^^CO SENDTEXTTO _MAINTEXTOUTPUT
 %          VERIFY CLOSE HELP
