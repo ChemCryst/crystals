@@ -24,6 +24,7 @@ class CrMenu;
 class	CrWindow : public CrGUIElement
 {
 	public:
+            int mSafeClose;
 		int m_relativePosition;
 		void SetCommandText(CcString theText);
 		void SendCommand(CcString theText, Boolean jumpQueue = false);
