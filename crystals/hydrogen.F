@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/06/18 08:26:44  richard
+C Replace XPROCC common blocks with macro references. Two common block variables
+C (TOLER and ITRANS) were being set in two separate data statements. Fixed.
+C
 C Revision 1.10  2001/03/28 12:49:43  richard
 C Fixed call to KDIST1 that had an 'O' instead of a '0' in the argument list.
 C This is the sort of thing that crashes spacecraft and gives Fortran a bad name.
@@ -2067,10 +2071,13 @@ C--USE THE T.F. OF THE BONDED ATOM
       CALL XTRANS(STORE(JE),STORE(JN),3,3)
       I=KINV2(3,STORE(JN),STORE(JF),9,1,STORE(JO),STORE(JP),3)
       IF (I .NE. 0) THEN
-C----- EVADE SINGULARITY
-       STORE(JN+0) = STORE(JN+0) + ZERO
-       STORE(JN+4) = STORE(JN+4) + ZERO
-       STORE(JN+8) = STORE(JN+8) + ZERO
+C----- EVADE OCCASIONAL INEXPLICABLE SINGULARITIES
+       CALL XTRANS(STORE(JE),STORE(JN),3,3)
+       DO 98 IK = 0,6,3
+       STORE(JN+IK)   = STORE(JN+IK)  -STORE(JN+IK+1) +.1
+       STORE(JN+IK+2) = STORE(JN+IK+2)-STORE(JN+IK+1) +.1  
+       STORE(JN+IK+1) = STORE(JN+IK+1)-STORE(JN+IK+1) +.1
+98     CONTINUE
        I=KINV2(3,STORE(JN),STORE(JF),9,1,STORE(JO),STORE(JP),3)
       ENDIF
       IF(I)1100,1200,1100
@@ -2468,10 +2475,13 @@ C--WE SHOULD THE USE THE T.F. OF THE BONDED ATOM
       CALL XTRANS(STORE(JE),STORE(JN),3,3)
       I=KINV2(3,STORE(JN),STORE(JF),9,1,STORE(JO),STORE(JP),3)
       IF (I .NE. 0) THEN
-C----- EVADE SINGULARITY
-       STORE(JN+0) = STORE(JN+0) + ZERO
-       STORE(JN+4) = STORE(JN+4) + ZERO
-       STORE(JN+8) = STORE(JN+8) + ZERO
+C----- EVADE OCCASIONAL INEXPLICABLE SINGULARITIES
+       CALL XTRANS(STORE(JE),STORE(JN),3,3)
+       DO 98 IK = 0,6,3
+       STORE(JN+IK)   = STORE(JN+IK)  -STORE(JN+IK+1) +.1
+       STORE(JN+IK+2) = STORE(JN+IK+2)-STORE(JN+IK+1) +.1  
+       STORE(JN+IK+1) = STORE(JN+IK+1)-STORE(JN+IK+1) +.1
+98    CONTINUE
        I=KINV2(3,STORE(JN),STORE(JF),9,1,STORE(JO),STORE(JP),3)
       ENDIF
       IF(I)1250,1350,1250
