@@ -35,10 +35,7 @@ CrMultiEdit::~CrMultiEdit()
 		delete (CxMultiEdit*)mWidgetPtr;
 		mWidgetPtr = nil;
 	}
-	if ( mControllerPtr->GetTextOutputPlace() == this )
-	{
-		mControllerPtr->RemoveTextOutputPlace();
-	}
+      mControllerPtr->RemoveTextOutputPlace(this);
 }
 
 Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
@@ -85,11 +82,6 @@ Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
 				int chars = atoi( theString.ToCString() );
 				((CxMultiEdit*)mWidgetPtr)->SetIdealWidth( chars );
 				LOGSTAT( "Setting MultiEdit Chars Width: " + theString );
-				break;
-			}
-			case kTCallback:
-			{
-				tokenList->GetToken(); // Remove that token!
 				break;
 			}
 			case kTInform:
@@ -304,4 +296,10 @@ void CrMultiEdit::SetColour(int red, int green, int blue)
 void CrMultiEdit::NoEcho(Boolean noEcho)
 {
 	mNoEcho = noEcho;
+}
+
+void CrMultiEdit::SetOriginalSizes()
+{
+      ((CxMultiEdit*)mWidgetPtr)->SetOriginalSizes(); 
+      return;
 }
