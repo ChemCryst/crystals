@@ -72,7 +72,7 @@
 ^^WI           @ 1,1 LISTCTRL MR_RES VISLINES=9 NCOLS=4
 ^^WI           'Query' 'Delta' '\Z\' 'Type' INFORM=YES ADDTOLIST
 % COPY '#SCRIPT MOGEXTR1'
-^^WI              'NULL'
+^^WI              'NULL' SORTCOL 2 YES
 ^^WI           @ 3,1 GRID GB NROWS=2 NCOLS=1
 ^^WI           {
 ^^WI             @ 1,1 STATIC MR_TYPE 'Angle X(000) X(000) X(000)'
