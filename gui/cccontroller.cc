@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.82  2004/02/09 20:27:09  rich
+// Correct use of chdir and putenv on WXS target platform.
+// ----------------------------------------------------------------------
+//
 // Revision 1.81  2004/02/06 13:49:26  rich
 // Some debugging messages when spawning programs.
 //
@@ -3701,6 +3705,8 @@ extern "C" {
         CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
         CcController::theController->ProcessOutput( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
+        CcController::theController->ProcessOutput( "                                                               {0,2 ... Done");
+        CcController::theController->ProcessOutput( " ");
 
       }
       else if ( (int)si.hInstApp <= 32 )
@@ -3762,6 +3768,8 @@ extern "C" {
         CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
         CcController::theController->ProcessOutput( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
+        CcController::theController->ProcessOutput( "                                                               {0,2 ... Done");
+        CcController::theController->ProcessOutput( " ");
       }
 
 
@@ -3907,7 +3915,10 @@ extern "C" {
     if ( bWait )
     {
         std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
-        waitpid(pid,NULL,0);	     
+        waitpid(pid,NULL,0);
+
+        (CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
+
     }
 
     std::cerr << "\n\nGUEXEC: Done.\n";
