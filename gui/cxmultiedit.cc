@@ -80,6 +80,7 @@ void  CxMultiEdit::SetText( CcString cText )
             {
                   if ( alink->ReIndex(li))
                   {
+                        delete alink;
                         mHyperLinks.RemoveItem();
                   }
 
