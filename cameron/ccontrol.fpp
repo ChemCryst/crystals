@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2000/11/17 17:32:45  CKP2
+C Fix up 18 param per atom
+C
 C Revision 1.11  2000/09/20 14:31:46  CKP2
 C djw  Change directory path for fixed files
 C
@@ -236,7 +239,8 @@ C NOW LOOP TO FIND THE FIRST AND LAST COMMANDS IN THE GROUP
 C SEARCH THROUGH THE FILE FOR THE REQUIRED INFO
       IS = (ISTART - ICOM + 1)/ISRCOM
       IF = (IFIN - ICOM + 1)/ISRCOM
-        IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+##GILLIN        IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+&&GILLIN        IF (.NOT.LFILES (-1,'script/command.cmn',IINPT)) THEN
           CALL ZTXTMD
           CALL ZMORE('Error - file COMMAND.CMN not found.',0)
           CALL ZMORE('CAMERON cannot continue.',0)
@@ -472,7 +476,8 @@ C      ENDIF
 200   CONTINUE
 C HELP
 C Load in the appropriate error message
-      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+##GILLIN        IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+&&GILLIN        IF (.NOT.LFILES (-1,'script/command.cmn',IINPT)) THEN
         CALL ZMORE('Error on opening COMMAND.CMN.',0)
         CALL ZMORE('HELP is unavailable.',0)
         GOTO 10
@@ -1336,7 +1341,8 @@ C by two 80 character lines of help and error message.
       LOGICAL LFILES
 C MAIN LOOP TO INPUT THE INDEX
 C      OPEN (UNIT = 1,FILE = 'ORDER.DAT',STATUS = 'OLD')
-      IF (.NOT.LFILES (-1,'SCRIPT\ORDER.CMN',IINPT)) THEN
+##GILLIN      IF (.NOT.LFILES (-1,'SCRIPT\ORDER.CMN',IINPT)) THEN
+&&GILLIN      IF (.NOT.LFILES (-1,'script/order.cmn',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE('Error - file ORDER.CMN cannot be opened.',0)
         CALL ZMORE('CAMERON cannot continue.',0)
@@ -1353,7 +1359,8 @@ C cljf
       IF (.NOT.LFILES (0,' ',IINPT)) THEN
         CALL ZMORE('Error on closing ORDER.CMN.',0)
       ENDIF
-      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+##GILLIN      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+&&GILLIN      IF (.NOT.LFILES (-1,'script/command.cmn',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE('Error - file COMMAND.CMN cannot be opened.',0)
         CALL ZMORE('CAMERON cannot continue.',0)
@@ -1817,7 +1824,8 @@ CODE FOR ZGNHLP [ READ GENERAL HELP FILE ]
       INTEGER IFLAG
       LOGICAL LFILES
       IFLAG = 1
-      IF (.NOT.LFILES (-1,'SCRIPT\GENHELP.CMN',12)) THEN
+##GILLIN      IF (.NOT.LFILES (-1,'SCRIPT\GENHELP.CMN',12)) THEN
+&&GILLIN      IF (.NOT.LFILES (-1,'script/genhelp.cmn',12)) THEN
         CALL ZMORE(
      +'Error - help information file GENHELP.CMN not available.',0)
        RETURN
@@ -2110,7 +2118,8 @@ CODE FOR ZCOLOT [ COLOUR TABLE INPUT ]
       INTEGER IPOS
       LOGICAL LSTOP,LFILES
 C CHECK FOR THE FILES EXISTENCE
-      IF (.NOT.LFILES(-1,'SCRIPT\COLOUR.CMN',IINPT)) THEN
+##GILLIN      IF (.NOT.LFILES(-1,'SCRIPT\COLOUR.CMN',IINPT)) THEN
+&&GILLIN      IF (.NOT.LFILES(-1,'script/colour.cmn',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE ('Error : COLOUR.CMN not available',0)
         CALL ZMORE ('CAMERON cannot continue.',0)
@@ -2182,19 +2191,20 @@ C The file contains info about NELM elements.
       REAL COV,ION,VAN
       LOGICAL LFILES
 c      IF (.NOT.LFILES (-1,'script\PROP.CMN',IINPT)) THEN
-      IF (.NOT.LFILES (-1,'SCRIPT\PROPWIN.DAT',IINPT)) THEN
+##GILLIN      IF (.NOT.LFILES (-1,'SCRIPT\PROPWIN.DAT',IINPT)) THEN
+&&GILLIN      IF (.NOT.LFILES (-1,'script/propwin.dat',IINPT)) THEN
         CALL ZTXTMD
-        CALL ZMORE('Error - file PROP.CMN cannot be accessed.',0)
+        CALL ZMORE('Error - file PROPWIN.DAT cannot be accessed.',0)
         CALL ZMORE('CAMERON cannot continue.',0)
 C cljf
-        CALL ZMORE1('Error - file PROP.CMN cannot be accessed.',0)
+        CALL ZMORE1('Error - file PROPWIN.DAT cannot be accessed.',0)
         STOP
       ENDIF
 C OPEN FILE, CONNECT TO UNIT 11
       IRELM = IRLAST
       ICELM = ICLAST
       J = IRELM
-C-DJW NELM counted from the PROP.CMN file - MAX SET IN BLOCK.FOR
+C-DJW NELM counted from the PROPWIN.DAT file - MAX SET IN BLOCK.FOR
       JELM = 0
       DO 10 I = ICELM , ICELM + NELM - 1
 C READ IN THE INFO
@@ -2216,11 +2226,11 @@ C WORK OUT THE COLOUR NUMBER
       IF (JELM .LE. NELM) THEN
             NELM = JELM
       ELSE
-            CALL ZMORE (' Too many elements in PROP.DAT', 0)
+            CALL ZMORE (' Too many elements in PROPWIN.DAT', 0)
       ENDIF
 15    CONTINUE
       IF (.NOT.LFILES (0,' ',IINPT)) THEN
-        CALL ZMORE('Error on closing PROP.CMN',0)
+        CALL ZMORE('Error on closing PROPWIN.DAT',0)
       ENDIF
       ICLAST = I + 1
       IRLAST = J
@@ -2322,7 +2332,8 @@ C FIRST TIME AROUND LOOK FOR HEADER
       ENDIF
 C LOAD IN THE HELP MESSAGE
 5     CONTINUE
-      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+##GILLIN      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
+&&GILLIN      IF (.NOT.LFILES (-1,'script/command.cmn',IINPT)) THEN
         CALL ZMORE('Error - cannot access COMMAND.CMN',0)
         HLPMESS = 'Help unavailable.'
         WORD = '******'
@@ -3652,7 +3663,8 @@ cnov98
         IFOBEY = IFOBEY + 1
       ENDIF
 CNOV98      IF (.NOT.LFILES (IFPATH,'CAMERON.OBY',IFOBEY)) THEN
-      IF (.NOT.LFILES (IFPATH,'CAMERON.SRT',IFOBEY)) THEN
+##GILLIN      IF (.NOT.LFILES (IFPATH,'CAMERON.SRT',IFOBEY)) THEN
+&&GILLIN      IF (.NOT.LFILES (IFPATH,'cameron.srt',IFOBEY)) THEN
         CALL ZMORE('CAMERON.SRT exists but cannot be opened.',0)
         RETURN
       ENDIF
