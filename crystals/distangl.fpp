@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/10/02 13:38:42  rich
+C
+C Extra arg to KDIST1 to indicate offset of X coord in L5 (may be 2 from Fourier routines).
+C KDIST1 - fixed box function.
+C KDIST4 - return transformed coords in list of contacts
+C Fix bug in bond finding code that would miss bonds occassionally.
+C
 C Revision 1.30  2002/08/29 15:19:43  richard
 C Attempt overwrite of L41 when re-writing to disk. (Will work if number of bonds and atoms
 C is unchanged).
@@ -675,19 +682,19 @@ C----- RELOCATE THE COMMON BLOCK DATA
 
       IF ( IDSPDA .EQ. -1 ) ISORT = 1
 
-      IF ( IPUNCH .EQ. 4 ) THEN
-C CSD format requires atom sequence number excluding H's:
-         INHVEC = KSTALL ( N5 )
-         NNHAT  = 0
-         DO I = 0,N5-1
-            IF ( ISTORE(L5+I*MD5) .NE. KHYD ) THEN
-              NNHAT = NNHAT + 1
-              ISTORE ( INHVEC + I ) = NNHAT
-            ELSE
-              ISTORE ( INHVEC + I ) = 0
-            END IF
-         END DO
-      END IF    
+c      IF ( IPUNCH .EQ. 4 ) THEN
+cC CSD format requires atom sequence number excluding H's:
+c         INHVEC = KSTALL ( N5 )
+c         NNHAT  = 0
+c         DO I = 0,N5-1
+c            IF ( ISTORE(L5+I*MD5) .NE. KHYD ) THEN
+c              NNHAT = NNHAT + 1
+c              ISTORE ( INHVEC + I ) = NNHAT
+c            ELSE
+c              ISTORE ( INHVEC + I ) = 0
+c            END IF
+c         END DO
+c      END IF    
 
 C----- EXTRACT THE FUNCTION FLAG (0 for no radii, 1 for radii):
       JFNVC = MIN0(1,IRDUS)  !IRDUS: 0 limits, 1 covalent, 2 vdw, 3 ionic
@@ -1259,16 +1266,11 @@ C----- DUMMY WRITES AT END FOR COMPATIBILITY WITH TORSION
      5          IB, ZERO, 1,1,0,0,0
               ENDIF
               IF (IPUNCH.EQ.4 .AND.(IDSPDA.EQ.1.OR.IDSPDA.EQ.3)) THEN
-C CSD ignores bonds to H, instead uses an NCH key for atoms with H's.
-C We've made a vector at INHVEC that stores the sequential number for
-C the atom, excluding any H in the structure.
-                INH1 = ISTORE ( INHVEC + (M5P-L5)/MD5 )
-                INH2 = ISTORE ( INHVEC +   (L-L5)/MD5 )
-                IF ( INH1 .GT. 0 .AND. INH2 .GT. 0 ) THEN
-                  WRITE(NCPU,'(A,2(1X,I4),1X,F7.4,2(1X,A))')
-     1            'DIST ',INH1,INH2,STORE(J+10),CATOM1(1:LATOM1),
+                INH1 = 1+ (M5P-L5)/MD5 
+                INH2 = 1+ (L-L5)/MD5
+                  WRITE(NCPU,'(A,2(1X,I4),A,F7.4,2(1X,A))')
+     1            'DIST ',INH1,INH2,' # ',STORE(J+10),CATOM1(1:LATOM1),
      2            CATOM2(1:LATOM2)
-                END IF
               END IF
               IF (IPUNCH .EQ. 5) THEN
 C----- WRITE SIMPLE FORM
@@ -1796,15 +1798,12 @@ C--- DUMMY
      5          IB, ZERO, 1,1,0,0,0
 C       
               ELSE IF(IPUNCH.EQ.4.AND.(IDSPDA.EQ.2.OR.IDSPDA.EQ.3)) THEN
-C CSD ignores bonds to H, instead uses an NCH key for atoms with H's. 
-                INH1 = ISTORE ( INHVEC + (M5A-L5)/MD5 )
-                INH2 = ISTORE ( INHVEC + (IZZ-L5)/MD5 )
-                INH3 = ISTORE ( INHVEC + (IXX-L5)/MD5 )
-                IF ( INH1.GT.0 .AND. INH2.GT.0 .AND. INH3.GT.0) THEN
-                  WRITE(NCPU,'(A,3(1X,I4),1X,F7.2,3(1X,A))')
-     1            'ANGLE ',INH1,INH2,INH3,TERM,
+                INH1 = 1+  (M5A-L5)/MD5
+                INH2 = 1+ (IZZ-L5)/MD5 
+                INH3 = 1+ (IXX-L5)/MD5 
+                  WRITE(NCPU,'(A,3(1X,I4),A,F7.2,3(1X,A))')
+     1            'ANGLE ',INH1,INH2,INH3,' # ',TERM,
      2            CATOM2(1:LATOM2),CATOM1(1:LATOM1),CATOM3(1:LATOM3)
-                END IF
               ELSE IF (IPUNCH .EQ. 0) THEN
                 NANG = NINT (TERM)
                 WRITE(NCPU,
