@@ -13,7 +13,7 @@
 #include "CrystalSystem.h"
 #include "Conditions.h"
 
-#define kNumberOfOutputValues 7
+#define kNumberOfOutputValues 8
 
 typedef struct ElemStats
 {
