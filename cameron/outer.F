@@ -66,7 +66,9 @@ CDJWSEP2000  SET UP DATA SIZES SO THAT POINTERS CAN BE
 C      MORE EASILY UPDATED.
 C        JCOORD = 13
 C   INCREASE TO MAKE ROOM FOR GROUP AND NAME VALUES
-        JCOORD = 15
+C        JCOORD = 15
+CNOV2000   INCREASE AGAIN FOR RICHARDS WORK
+        JCOORD = 19
         JPCK = 2        
         JXYZO = 16
         JATTYP = 9
@@ -81,7 +83,7 @@ C        IBOND = 41
 C        ILAB = 43
 C        ISYM = 48
 cdjwjan99 - make room for the shape flag
-        IPACKT = 49 + 1
+c        IPACKT = 49 + 1
 C  COMPUTE THE ADDRESSES INSTEAD 
         IPCK = 1+JCOORD
         IXYZO = IPCK + JPCK
