@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2004/10/22 11:00:23  rich
+C Fix a type mismatch in KSCEXE. Remove all writes to NCAWU.
+C
 C Revision 1.53  2004/08/09 11:21:15  rich
 C Uppercase variable name in KSCTRN. TRANSFER has unpredictable results
 C if lowercase variable names were given.
@@ -2529,6 +2532,8 @@ C
       PARAMETER ( JANY = 5 , JSAME = 6 , JNUMER = 7 )
 C
       CHARACTER*12 CDATAT(JNONE:JNUMER)
+      CHARACTER*12  CSPOPS
+      CHARACTER*5   CSPNMS 
 C
       DIMENSION ICODE(LENITM,NITEM)
       DIMENSION XCODE(LENITM,NITEM)
@@ -2581,6 +2586,8 @@ C
      2              'character' , 'any' , 'same' , 'numeric' /
 C
       DATA CLOGIC / 'FALSE' , 'TRUE' /
+      DATA CSPOPS / 'abcdnmABCDNM' /
+      DATA CSPNMS / '12346' /
 C
 C
       NLAST = 0
@@ -3472,8 +3479,88 @@ C (3) Any closing brackets become spaces, unless followed by '/'
           IED = IED + 1
         END IF
       END DO
-      CALL XCTRIM(CWORK1,IED)
-      ISTAT = KSCSCD ( CWORK1(1:IED) , ICODE(JVALUE,IARG(1)) )
+
+C (4) There is always a space after a, b, c, d, n or m
+
+      IED=1
+      DO IES = 1,LEN(CWORK1)
+        CWORK2(IED:IED) = CWORK1(IES:IES)
+        DO JES = 1,12
+          IF ( CWORK1(IES:IES) .EQ. CSPOPS(JES:JES) ) THEN
+            IED = IED + 1
+            CWORK2(IED:IED) = ' '
+            EXIT
+          END IF
+        END DO
+        IED = IED + 1
+      END DO
+
+C (5) There is always a space before 6
+
+      IED=1
+      DO IES = 1,LEN(CWORK2)
+        CWORK1(IED:IED) = CWORK2(IES:IES)
+        IF ( CWORK2(IES:IES) .EQ. '6' ) THEN
+          CWORK1(IED:IED) = ' '
+          IED = IED + 1
+          CWORK1(IED:IED) = '6'
+        END IF
+        IED = IED + 1
+      END DO
+
+C (6a) Adjacent numbers always have #1>#2.
+C (6b) Always a space after a number, unless another number or /
+
+      IED=1
+      DO IES = 1,LEN(CWORK1) - 1
+        CWORK2(IED:IED) = CWORK1(IES:IES)
+        IN1 = INDEX ( CSPNMS, CWORK1(IES:IES) )
+        IN2 = INDEX ( CSPNMS, CWORK1(IES+1:IES+1) )
+        IF ( ( IN1 .GT. 0 ) .AND. ( IN2 .GT. 0 ) ) THEN
+          IF ( IN1 .LE. IN2 ) THEN
+            IED = IED + 1
+            CWORK2(IED:IED) = ' '
+          END IF
+        ELSE IF ( ( IN1 .GT. 0 ) .AND. (IN2 .LE. 0 ) ) THEN
+          IF ( CWORK1(IES+1:IES+1) .NE. '/' ) THEN
+            IED = IED + 1
+            CWORK2(IED:IED) = ' '
+          END IF
+        END IF
+        IED = IED + 1
+      END DO
+
+C (7) There is always a space before -, and one digit after.
+
+      IED=1
+      IMEM = 0
+      DO IES = 1,LEN(CWORK2)
+        CWORK1(IED:IED) = CWORK2(IES:IES)
+        IF ( CWORK2(IES:IES) .EQ. '-' ) THEN
+          CWORK1(IED:IED) = ' '
+          IED = IED + 1
+          CWORK1(IED:IED) = '-'
+          IMEM = 1
+        ELSE IF ( IMEM .EQ. 1 ) THEN  ! Next char should not be a space.
+          IF ( CWORK2(IES:IES) .NE. ' ' ) THEN
+             IMEM = -1
+          ELSE
+             IED = IED - 1
+          END IF
+        ELSE IF ( IMEM .EQ. -1 ) THEN ! Next char should be a space.
+          IF ( CWORK2(IES:IES) .NE. ' ' ) THEN
+            CWORK1(IED:IED) = ' '
+            IED = IED + 1
+            CWORK1(IED:IED) = CWORK2(IES:IES)
+          END IF
+          IMEM = 0
+        END IF
+        IED = IED + 1
+      END DO
+
+      CALL XCREMS(CWORK1,CWORK2,IED)
+
+      ISTAT = KSCSCD ( CWORK2(1:IED) , ICODE(JVALUE,IARG(1)) )
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
 C
