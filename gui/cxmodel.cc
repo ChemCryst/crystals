@@ -274,6 +274,8 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
       glRenderMode ( GL_RENDER ); //Switching to render mode.
 
+      glViewport(0,0,GetWidth(),GetHeight());
+
 #ifdef __CR_WIN__
       int col = GetSysColor(COLOR_3DFACE);
       glClearColor( GetRValue(col)/255.0f,
