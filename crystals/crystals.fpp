@@ -129,7 +129,7 @@ C
 &HOL      DATA PROGLS(3,18) / 4HDIFA / , PROGLS(4,18) / 4HBS   /
 C
 C Re-initialise system variables in case starting again.
-C      CALL CRESET
+      CALL CRESET
 C
 C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
       CALL FBCINI

@@ -1522,7 +1522,7 @@ CODE FOR MACBLK
 \XDAVAL
 \XCBVAL
 \XUNTNM
-\XLEXIC
+c\XLEXIC
 \XLISTI
 \XFILE
 \XLISTS
@@ -1530,6 +1530,8 @@ CODE FOR MACBLK
 \PSCSTI
 \XSCSTK
 \XFILEC
+
+      EQUIVALENCE ( IRIC,ZRIC )
 
 C --- XSSVAL ---
       ISSLSM = 3
@@ -1689,7 +1691,6 @@ C --- XUNITS ---
 &&&DOSDVFGID      JQUN=2
 &VAX      IQUN=2
 &VAX      JQUN=0
-      IERFLG = 0
       IUSFLG = 0 
       NCSU = 11
       NCEXTR = 88
@@ -1820,7 +1821,8 @@ C --- XLEXIC ---
       MW = 0
       MX = 0
       MY = 0
-      Z  = 0
+      IRIC = 0
+      Z  = ZRIC
 
 C --- XFILE  ---
 C --- XLISTS ---
