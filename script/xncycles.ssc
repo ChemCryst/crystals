@@ -56,7 +56,7 @@
 %         COPY 'DELETE 11'
 %         COPY 'END'
 %       END IF
-%%       COPY '#PURGE LIST=11'
+%%       COPY '#PURGE LIST=11 MON=LOW'
 %% Purge everything until bug is fixed.
 %       COPY '#PURGE'
 %       COPY 'END'

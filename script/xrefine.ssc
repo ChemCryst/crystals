@@ -120,9 +120,7 @@
 %    EVALUATE PMASK = TRUE
 %    EVALUATE PDONE = TRUE
 %    COPY '#SCRIPT XPUTINFO'
-%% Purge everything until bug is fixed.
-%%    COPY '#PURGE LIST=11'
-%    COPY '#PURGE'
+%    COPY '#PURGE LIST=11 MON=LOW'
 %    COPY 'END'
 %  END IF
 %%
