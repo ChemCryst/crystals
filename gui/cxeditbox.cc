@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.18  2002/11/06 10:59:09  rich
 //   New function in CcString to return a double with a specified precision (sig figs)
 //   Called from editbox to allow 7 digits of precision.
@@ -489,7 +495,7 @@ void CxEditBox::IsInputPlace()
     CcString temp;
     temp = (CcController::theController)->GetKey( "MainFontHeight" );
     if ( temp.Len() )
-          pFont->SetPointSize( max( 2, atoi( temp.ToCString() ) ) );
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
     temp = (CcController::theController)->GetKey( "MainFontFace" );
           pFont->SetFaceName( temp.ToCString() );
 

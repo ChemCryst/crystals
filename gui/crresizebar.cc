@@ -7,6 +7,12 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.7  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -174,8 +180,8 @@ CcParse CrResizeBar::ParseInput( CcTokenList * tokenList )
     if ( coffset.Len() )
     {
       m_offset = atoi( coffset.ToCString() );
-      m_offset = min ( m_offset, 1000 );
-      m_offset = max ( m_offset, 0 );
+      m_offset = CRMIN ( m_offset, 1000 );
+      m_offset = CRMAX ( m_offset, 0 );
       if ( ( m_offset == 0 ) || ( m_offset == 1000) ) ((CxResizeBar*)ptr_to_cxObject)->AlreadyCollapsed();
     }
     else
@@ -318,7 +324,7 @@ CcRect CrResizeBar::CalcLayout(bool recalc)
 
   if ( m_type == kTHorizontal ) //   (NB. items arranged vertically)
   {
-     totWidth = max ( firstitemWidth, seconditemWidth );
+     totWidth = CRMAX ( firstitemWidth, seconditemWidth );
      firstitemWidth = totWidth;
      seconditemWidth = totWidth;
      totHeight = firstitemHeight + seconditemHeight + SIZE_BAR;
@@ -326,7 +332,7 @@ CcRect CrResizeBar::CalcLayout(bool recalc)
   }
   else // (items arranged horizontally)
   {
-     totHeight = max ( firstitemHeight, seconditemHeight );
+     totHeight = CRMAX ( firstitemHeight, seconditemHeight );
      firstitemHeight = totHeight;
      seconditemHeight = totHeight;
      totWidth  = firstitemWidth + seconditemWidth + SIZE_BAR;
@@ -371,8 +377,8 @@ void CrResizeBar::CrFocus()
 void CrResizeBar::MoveResizeBar(int offset)
 {
 // The variable m_offset should run from 0 to +1000.
-   m_offset = min ( offset, 1000 );
-   m_offset = max ( m_offset, 0 );
+   m_offset = CRMIN ( offset, 1000 );
+   m_offset = CRMAX ( m_offset, 0 );
 
 // Set new sizes
    CcRect child    = GetGeometry();

@@ -178,7 +178,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
         glRotatef(45.0f,0,1,0);
 
         float rc = (outerrad-innerrad)/2.5f;  // torus thickness
-        int numt = max(6,detail);             // num of cylinders to make torus?
+        int numt = CRMAX(10,detail);             // num of cylinders to make torus?
         float rt = (float)rad ;          // torus radius
         int numc = detail;             // num of sides to cylinder?
         float s, t;

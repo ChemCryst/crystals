@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.28  2003/11/07 10:43:06  rich
+// Split the 'part' column in the atom list into 'assembly' and 'group'.
+//
 // Revision 1.27  2003/10/31 10:44:16  rich
 // When an atom is selected in the model window, it is scrolled
 // into view in the atom list, if not already in view.
@@ -671,11 +674,11 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
       GLuint glIDCount = 0;
 
       int nRes = (int) ( 1250.0 / mAtomList->ListSize() );
-      nRes = min ( 15, nRes );
-      nRes = max ( 4,  nRes );
+      nRes = CRMIN ( 15, nRes );
+      nRes = CRMAX ( 4,  nRes );
       int qRes = (int) ( 500.0 / mAtomList->ListSize() );
-      qRes = min ( 5, qRes );
-      qRes = max ( 3,  qRes );
+      qRes = CRMIN ( 5, qRes );
+      qRes = CRMAX ( 3,  qRes );
 
       style->normal_res = nRes;
       style->quick_res  = qRes;

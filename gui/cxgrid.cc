@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.12  2001/11/16 15:12:51  ckp2
 //   Useful debugging tip.
 //
@@ -90,7 +93,7 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
     CcString temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
     if ( temp.Len() )
-          pFont->SetPointSize( max( 2, atoi( temp.ToCString() ) ) );
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
           pFont->SetFaceName( temp.ToCString() );
 

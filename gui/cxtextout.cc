@@ -181,7 +181,7 @@ void CxTextOut::Init()
     CcString temp;
     temp = (CcController::theController)->GetKey( "FontHeight" );
     if ( temp.Len() )
-          pFont->SetPointSize( max( 2, atoi( temp.ToCString() ) ) );
+          pFont->SetPointSize( CRMAX( 2, atoi( temp.ToCString() ) ) );
     temp = (CcController::theController)->GetKey( "FontFace" );
           pFont->SetFaceName( temp.ToCString() );
     CxSetFont( pFont );
@@ -333,7 +333,7 @@ void CxTextOut::AddLine( CcString& strLine )
     };
 
         // Automatically jump to the bottom...
-    m_nHead = max(GetLineCount(),GetMaxViewableLines());
+    m_nHead = CRMAX(GetLineCount(),GetMaxViewableLines());
 
         // Automatically jump to the left...
     m_nXOffset = 0;
@@ -445,12 +445,12 @@ void CxTextOut::SetBackColour( COLORREF col )
 void CxTextOut::SetHead( int nPos )
 {
     if( nPos < -1 ) nPos = -1;
-    if( nPos > GetLineCount() - 1 ) nPos = max( GetLineCount() - 1, GetMaxViewableLines() -1 );
+    if( nPos > GetLineCount() - 1 ) nPos = CRMAX( GetLineCount() - 1, GetMaxViewableLines() -1 );
     m_nHead = nPos;
 #ifdef __CR_WIN__
     if( GetSafeHwnd() )
     {
-        SetScrollRange( SB_VERT, GetMaxViewableLines()-1, max(GetMaxViewableLines()-1,GetLineCount()-1));
+        SetScrollRange( SB_VERT, GetMaxViewableLines()-1, CRMAX(GetMaxViewableLines()-1,GetLineCount()-1));
         SetScrollPos( SB_VERT, m_nHead );
         Invalidate();
     };
@@ -458,7 +458,8 @@ void CxTextOut::SetHead( int nPos )
 #ifdef __BOTHWX__
     if ( mbOkToDraw )
     {
-        SetScrollbar( wxVERTICAL, max(0,m_nHead+1-GetMaxViewableLines()), GetMaxViewableLines(), GetLineCount() );
+        SetScrollbar( wxVERTICAL, CRMAX(0,m_nHead+1-GetMaxViewableLines()), GetMaxViewableLines(), 
+GetLineCount() );
         Refresh();
     }
 #endif
@@ -606,7 +607,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
                             UINT nPos,
                             CScrollBar* pScrollBar )
 {
-    int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
+    int nUBound = CRMAX(GetLineCount() - 1, GetMaxViewableLines() - 1);
     switch( nSBCode )
     {
     case SB_TOP:
@@ -619,7 +620,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
         if( m_nHead > GetMaxViewableLines() - 1 )
         {
             m_nHead -= GetMaxViewableLines()/2;
-            m_nHead = max(0,m_nHead);
+            m_nHead = CRMAX(0,m_nHead);
             SetHead( m_nHead );
         }
         break;
@@ -634,7 +635,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
         if( m_nHead < nUBound )
         {
             m_nHead += GetMaxViewableLines()/2;
-            m_nHead = min (m_nHead, nUBound);
+            m_nHead = CRMIN (m_nHead, nUBound);
             SetHead( m_nHead );
          };
          break;
@@ -659,7 +660,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
 {
         if ( !mbOkToDraw ) return;
 
-        int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
+        int nUBound = CRMAX(GetLineCount() - 1, GetMaxViewableLines() - 1);
         if ( evt.GetOrientation() == wxVERTICAL )
         {
           if ( evt.m_eventType == wxEVT_SCROLLWIN_TOP ) {
@@ -672,7 +673,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  if( m_nHead > GetMaxViewableLines() - 1 )
                  {
                    m_nHead -= GetMaxViewableLines()/2;
-                   m_nHead = max(0,m_nHead);
+                   m_nHead = CRMAX(0,m_nHead);
                    SetHead( m_nHead );
                  }
           }
@@ -687,7 +688,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  if( m_nHead < nUBound )
                  {
                    m_nHead += GetMaxViewableLines()/2;
-                   m_nHead = min (m_nHead, nUBound);
+                   m_nHead = CRMIN (m_nHead, nUBound);
                    SetHead( m_nHead );
                  };
           }
@@ -733,7 +734,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
           else if (( evt.m_eventType == wxEVT_SCROLLWIN_THUMBRELEASE ) || (evt.m_eventType == wxEVT_SCROLLWIN_THUMBTRACK )) {
                  m_nXOffset = evt.GetPosition();
           }
-          SetScrollbar( wxHORIZONTAL, m_nXOffset, min(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
+          SetScrollbar( wxHORIZONTAL, m_nXOffset, CRMIN(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
           Refresh();
         }
         LOGSTAT("CxTextOut::OnScroll ends");
@@ -990,7 +991,7 @@ void CxTextOut::UpdateHScroll()
         int nMax = m_nMaxWidth - clientRc.GetWidth();
     if( nMax <= 0 )
         m_nXOffset = 0;
-    SetScrollbar( wxHORIZONTAL, m_nXOffset, min(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
+    SetScrollbar( wxHORIZONTAL, m_nXOffset, CRMIN(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
 #endif
 
 };
@@ -999,11 +1000,11 @@ void CxTextOut::UpdateHScroll()
 void CxTextOut::UpdateVScroll()
 {
 #ifdef __CR_WIN__
-//        SetScrollRange( SB_VERT, GetMaxViewableLines()-1, max(GetMaxViewableLines()-1,GetLineCount()-1));
+//        SetScrollRange( SB_VERT, GetMaxViewableLines()-1, CRMAX(GetMaxViewableLines()-1,GetLineCount()-1));
 #endif
 #ifdef __BOTHWX__
-//        SetScrollbar( wxVERTICAL, min(0,m_nHead-GetMaxViewableLines()), GetMaxViewableLines(), GetLineCount() );
-//        SetScrollbar( wxVERTICAL, GetMaxViewableLines()-1, 16, max(GetMaxViewableLines()-1,GetLineCount()-1));
+//        SetScrollbar( wxVERTICAL, CRMIN(0,m_nHead-GetMaxViewableLines()), GetMaxViewableLines(), GetLineCount() );
+//        SetScrollbar( wxVERTICAL, GetMaxViewableLines()-1, 16, CRMAX(GetMaxViewableLines()-1,GetLineCount()-1));
 #endif
 };
 
@@ -1275,7 +1276,7 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
 
         nBytesToSkip+= nCodeLength;
         strBack = strData.Sub( 1,nCodeLength );          // Get the background string yy or y
-        strData = strData.Sub( min(strData.Length(),nCodeLength+1),-1 );       // Leave the rest of the string in strData.
+        strData = strData.Sub( CRMIN(strData.Length(),nCodeLength+1),-1 );       // Leave the rest of the string in strData.
         for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
         pColourCode->nBack = atoi( strBack.ToCString() ); // Get the colour code.
       }
@@ -1293,7 +1294,7 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
 
         nBytesToSkip += nCodeLength;
         strFore = strData.Sub( 1,nCodeLength );
-        strData = strData.Sub( min(nCodeLength+1,strData.Length()),-1 ); // Leave rest of text in strData,
+        strData = strData.Sub( CRMIN(nCodeLength+1,strData.Length()),-1 ); // Leave rest of text in strData,
         for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
                                                                             // but avoid calling Sub with out of bound positions.
         pColourCode->nFore = atoi( strFore.ToCString() );                // Get colourcode
@@ -1411,17 +1412,17 @@ void CxTextOut::ScrollPage(bool up)
      if( m_nHead > GetMaxViewableLines() - 1 )
      {
         m_nHead -= GetMaxViewableLines()/2;
-        m_nHead = max(0,m_nHead);
+        m_nHead = CRMAX(0,m_nHead);
         SetHead( m_nHead );
      }
    }
    else
    {
-     int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
+     int nUBound = CRMAX(GetLineCount() - 1, GetMaxViewableLines() - 1);
      if( m_nHead < nUBound )
      {
         m_nHead += GetMaxViewableLines()/2;
-        m_nHead = min (m_nHead, nUBound);
+        m_nHead = CRMIN (m_nHead, nUBound);
         SetHead( m_nHead );
      }
    }

@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2003/05/07 12:18:58  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.15  2002/12/05 15:57:47  rich
 // Allow listbox selection to be set from end if selection number is negative.
 // In structure undo dialog, start with last L5 highlighted.
@@ -177,7 +183,7 @@ int CxListBox::GetIdealWidth()
     {
         GetText(i, text);
         size = dc.GetOutputTextExtent(text);
-        maxSiz = max ( maxSiz, size.cx );
+        maxSiz = CRMAX ( maxSiz, size.cx );
     }
     dc.SelectObject(oldFont);
     if(mItems > mVisibleLines) maxSiz += GetSystemMetrics(SM_CXVSCROLL);
@@ -263,8 +269,8 @@ void CxListBox::CxSetSelection( int select )
 
    if ( select < 1 ) select = mItems+select+1;
 
-   select = min ( select, mItems );
-   select = max ( select, 1 );
+   select = CRMIN ( select, mItems );
+   select = CRMAX ( select, 1 );
 #ifdef __CR_WIN__
     SetCurSel ( select - 1 );
 #endif
@@ -280,7 +286,7 @@ void CxListBox::CxRemoveItem ( int item )
     if ( item > 0 )
     {
        DeleteString ( item - 1 );
-       mItems = max(0,mItems-1);
+       mItems = CRMAX(0,mItems-1);
     }
     else
     {
@@ -295,8 +301,8 @@ void CxListBox::CxRemoveItem ( int item )
 CcString CxListBox::GetListBoxText(int index)
 {
    if ( mItems < 1 ) return CcString(' ');
-   index = min ( index, mItems );
-   index = max ( index, 1 );
+   index = CRMIN ( index, mItems );
+   index = CRMAX ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
     GetText(index-1, temp);

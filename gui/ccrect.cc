@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2001/06/17 15:19:09  richard
 //   MidX() and MidY() return midpoints of rectangle.
 //
@@ -22,8 +28,6 @@
 
 #include    "crystalsinterface.h"
 
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
 
 #include    "ccstring.h"
 
@@ -163,8 +167,8 @@ CRect CcRect::Native()
 
 CcRect CcRect::Sort()
 {
- return CcRect( min(mTop,mBottom), min(mLeft,mRight),
-                max(mTop,mBottom), max(mLeft,mRight) );
+ return CcRect( CRMIN(mTop,mBottom), CRMIN(mLeft,mRight),
+                CRMAX(mTop,mBottom), CRMAX(mLeft,mRight) );
 
 }
 

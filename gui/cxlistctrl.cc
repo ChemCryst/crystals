@@ -153,7 +153,7 @@ void CxListCtrl::AddColumn(CcString colHeader)
         newcolTypes[i]  = m_colTypes[i];
     }
     newcolTypes[m_numcols-1] = COL_INT; //Always start with INT. This will fail to REAL, and then to TEXT.
-    newcolWidths[m_numcols-1] = max(10,GetStringWidth(colHeader.ToCString())+15);
+    newcolWidths[m_numcols-1] = CRMAX(10,GetStringWidth(colHeader.ToCString())+15);
     InsertColumn( m_numcols, colHeader.ToCString(), LVCFMT_LEFT, 10, m_numcols );
     SetColumnWidth(m_numcols,newcolWidths[m_numcols-1]);
 
@@ -181,10 +181,10 @@ void CxListCtrl::AddRow(CcString * rowOfStrings)
     {
         SetItemText(nItem, j, rowOfStrings[j].ToCString());
         int width = GetStringWidth(rowOfStrings[j].ToCString());
-        m_colWidths[j] = max(m_colWidths[j],width + 15);
+        m_colWidths[j] = CRMAX(m_colWidths[j],width + 15);
         SetColumnWidth(j,m_colWidths[j]);
         int type = WhichType(rowOfStrings[j]);
-        m_colTypes[j] = max(m_colTypes[j], type);
+        m_colTypes[j] = CRMAX(m_colTypes[j], type);
     }
 }
 
@@ -432,7 +432,7 @@ void CxListCtrl::OnPaint()
                         CRect rcClip;
                         dc.GetClipBox(rcClip);
 
-                        rcClip.left = min(rcBounds.right-1, rcClip.left);
+                        rcClip.left = CRMIN(rcBounds.right-1, rcClip.left);
                         rcClip.right = rcClient.right;
 
                         InvalidateRect(rcClip, false);
@@ -1070,8 +1070,8 @@ void CxListCtrl::CxSetSelection( int select )
 
    if ( select < 1 ) select = mItems+select+1; // reverse indexing is possible
 
-   select = min ( select, mItems );
-   select = max ( select, 1 );
+   select = CRMIN ( select, mItems );
+   select = CRMAX ( select, 1 );
 #ifdef __CR_WIN__
     SetItemState(select - 1, 0xFFFF, LVIS_SELECTED);
 #endif

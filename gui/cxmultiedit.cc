@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.17  2001/06/17 14:34:05  richard
 //
 //   CxDestroyWindow function.
@@ -367,7 +373,7 @@ void CxMultiEdit::Spew()
     for (int i=0; i<GetNumberOfLines(); i++)
     {
        wxString aline = GetLineText(i);
-       int cp = min ( aline.Length(), 80 );
+       int cp = CRMIN ( aline.Length(), 80 );
        strcpy ( (char*)&theLine, aline.c_str() );
 #endif
        theLine[cp]='\0';

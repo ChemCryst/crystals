@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.78  2003/11/19 16:00:53  rich
+// Remove the XInitThreads call - seems to cause occasional deadlocks.
+// Change exit to _exit in guexec, so that if execvp call fails it
+// doesn't kill the whole application.
+//
 // Revision 1.77  2003/11/19 15:18:50  rich
 //
 // Rewritten guexec for linux version to use system calls rather than
@@ -462,8 +467,6 @@
   #include <wx/mimetype.h>
   #include <wx/utils.h>
   CcThread * CcController::mCrystalsThread = nil;
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
 #endif
 
 
@@ -1714,7 +1717,6 @@ void  CcController::AddInterfaceCommand( CcString line, bool internal )
     if ( line[1] == '^' )
     {
 
-//      chop = min(clen,5);
       if ( clen > 5 ) chop = 5;
 
       if ( line[0] == '^' )
@@ -2136,10 +2138,10 @@ void CcController::History(bool up)
 
     int listSize = mCommandHistoryList.ListSize();
 
-//    mCommandHistoryPosition = min ( mCommandHistoryPosition, listSize );
+//    mCommandHistoryPosition = CRMIN ( mCommandHistoryPosition, listSize );
     if ( mCommandHistoryPosition > listSize ) mCommandHistoryPosition = listSize;
 
-//    mCommandHistoryPosition = max ( mCommandHistoryPosition, 0 );
+//    mCommandHistoryPosition = CRMAX ( mCommandHistoryPosition, 0 );
     if ( mCommandHistoryPosition < 0 ) mCommandHistoryPosition = 0;
 
     mCommandHistoryList.Reset();
@@ -3470,7 +3472,7 @@ CcString CcController::EnvVarExtract ( CcString dir, int i )
      if ( dir[j] == ',' ) nCommas++;
    }
 
-   int firstPos = max(1,j+1);
+   int firstPos = CRMAX(1,j+1);
 
 // Find posn of ith+1 comma.
 
@@ -3479,10 +3481,10 @@ CcString CcController::EnvVarExtract ( CcString dir, int i )
      if ( dir[j] == ',' ) break;
    }
 
-   int lastPos = min(dir.Length(),j);
+   int lastPos = CRMIN(dir.Length(),j);
 
-   firstPos = min (firstPos,lastPos);
-   lastPos = max (firstPos,lastPos);
+   firstPos = CRMIN (firstPos,lastPos);
+   lastPos = CRMAX (firstPos,lastPos);
 
    CcString retS =  dir.Sub(firstPos,lastPos);
 
@@ -3629,16 +3631,16 @@ extern "C" {
     if ( sRest <= eRest )
     {
       bRest = true;
-      eRest = max ( eRest, sRest );          // ensure positive length
-      sRest = min ( sRest+1, line.Length()); // convert to valid 1-based index.
-      eRest = min ( eRest+1, line.Length()); // convert to valid 1-based index.
+      eRest = CRMAX ( eRest, sRest );          // ensure positive length
+      sRest = CRMIN ( sRest+1, line.Length()); // convert to valid 1-based index.
+      eRest = CRMIN ( eRest+1, line.Length()); // convert to valid 1-based index.
       restLine = line.Sub(sRest,eRest);
     }
     else
     {
-      eRest = max ( eRest, sRest );          // ensure positive length
-      sRest = min ( sRest+1, line.Length()); // convert to valid 1-based index.
-      eRest = min ( eRest+1, line.Length()); // convert to valid 1-based index.
+      eRest = CRMAX ( eRest, sRest );          // ensure positive length
+      sRest = CRMIN ( sRest+1, line.Length()); // convert to valid 1-based index.
+      eRest = CRMIN ( eRest+1, line.Length()); // convert to valid 1-based index.
     }
 
 #ifdef __CR_WIN__

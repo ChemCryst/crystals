@@ -78,13 +78,13 @@ void CxModList::AddCols()
     {
       m_colTypes[i] = COL_INT; //Always start with INT. This will fail to REAL, and then to TEXT.
 #ifdef __CR_WIN__
-      m_colWidths[i] = max(10,GetStringWidth(colHeader[i].ToCString())+5);
+      m_colWidths[i] = CRMAX(10,GetStringWidth(colHeader[i].ToCString())+5);
       InsertColumn( i, colHeader[i].ToCString(), LVCFMT_LEFT, 10, i );
 #endif
 #ifdef __BOTHWX__
       int w,h;
       GetTextExtent(colHeader[i].ToCString(),&w,&h);
-      m_colWidths[i] = max(10,w);
+      m_colWidths[i] = CRMAX(10,w);
       InsertColumn( i, colHeader[i].ToCString(), wxLIST_FORMAT_LEFT, 10 );
 #endif
       SetColumnWidth( i, m_colWidths[i]);
@@ -218,7 +218,7 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
 // A new item. Extend id list.
     if ( id > m_IDlist_size )
     {
-       m_IDlist_size = max(m_IDlist_size,id) * 2;
+       m_IDlist_size = CRMAX(m_IDlist_size,id) * 2;
        int * newIDlist = new int[m_IDlist_size];
        for ( i = 0; i < mItems; i++ )
        {
@@ -254,7 +254,7 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
         if ( m_colTypes[j] != COL_TEXT )   // if already text, don't bother testing.
         {
           int type = WhichType(rowOfStrings[j]);
-          m_colTypes[j] = max(m_colTypes[j], type);
+          m_colTypes[j] = CRMAX(m_colTypes[j], type);
         }
     }
     if ( selected )
@@ -463,7 +463,7 @@ void CxModList::OnPaint()
                         CRect rcClip;
                         dc.GetClipBox(rcClip);
 
-                        rcClip.left = min(rcBounds.right-1, rcClip.left);
+                        rcClip.left = CRMIN(rcBounds.right-1, rcClip.left);
                         rcClip.right = rcClient.right;
 
                         InvalidateRect(rcClip, false);

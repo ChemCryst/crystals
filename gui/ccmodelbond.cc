@@ -128,7 +128,7 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
               - style->m_modview->mat[2] * (m_z2 - m_z1);
          vecZ = style->m_modview->mat[2] * (m_y2 - m_y1)
               - style->m_modview->mat[6] * (m_x2 - m_x1);
-         float vecLeng = (float)max ( 0.001, sqrt ( vecX*vecX + vecY*vecY + vecZ*vecZ ));
+         float vecLeng = (float)CRMAX ( 0.001, sqrt ( vecX*vecX + vecY*vecY + vecZ*vecZ ));
          vecX = vecX / vecLeng;
          vecY = vecY / vecLeng;
          vecZ = vecZ / vecLeng;
@@ -223,7 +223,7 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 //        glCallList(TORUS);
 
         float rc = (float)bondrad; // torus thickness
-        int numt = max(10,detail);             // num of cylinders to make torus?
+        int numt = CRMAX(10,detail);             // num of cylinders to make torus?
         float rt = m_length ;          // torus radius
         int numc = detail;             // num of sides to cylinder?
         float s, t;

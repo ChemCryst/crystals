@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2003/06/19 16:40:30  rich
+// Allow DropDown listboxes to be disabled from SCRIPT.
+//
+// Increase minimum height of dropdown listbox on Windows, as
+// it wasn't quite high enough.
+//
 // Revision 1.16  2003/01/14 10:27:18  rich
 // Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -120,7 +126,7 @@ void CxDropDown::CxRemoveItem ( int item )
     if ( item > 0 )
     {
        DeleteString ( item - 1 );
-       mItems = max(0,mItems-1);
+       mItems = CRMAX(0,mItems-1);
     }
     else
     {
@@ -225,7 +231,7 @@ int CxDropDown::GetIdealWidth()
     {
         GetLBText(i, text);
         size = dc.GetOutputTextExtent(text);
-        maxSiz = max ( maxSiz, size.cx );
+        maxSiz = CRMAX ( maxSiz, size.cx );
     }
     dc.SelectObject(oldFont);
     return ( maxSiz + (2 * GetSystemMetrics(SM_CXVSCROLL) ));
@@ -236,7 +242,7 @@ int CxDropDown::GetIdealWidth()
     for ( int i=0;i<mItems;i++ )
     {
         GetTextExtent( GetString(i), &cx, &cy );
-        maxSiz = max (maxSiz, cx);
+        maxSiz = CRMAX (maxSiz, cx);
     }
     return ( maxSiz + (3 * wxSystemSettings::GetSystemMetric(wxSYS_VSCROLL_X ) ) ); 
 #endif
@@ -246,7 +252,7 @@ int CxDropDown::GetIdealWidth()
 int CxDropDown::GetIdealHeight()
 {
 #ifdef __CR_WIN__
-    return max ( GetItemHeight(-1) + 2, GetSystemMetrics(SM_CYVSCROLL) + 2 ) ;
+    return CRMAX ( GetItemHeight(-1) + 2, GetSystemMetrics(SM_CYVSCROLL) + 2 ) ;
 #endif
 #ifdef __BOTHWX__
 // May need to base this on font size if it returns the dropped
@@ -311,8 +317,8 @@ void CxDropDown::Focus()
 
 CcString CxDropDown::GetDropDownText(int index)
 {
-   index = min ( index, mItems );
-   index = max ( index, 1 );
+   index = CRMIN ( index, mItems );
+   index = CRMAX ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
     GetLBText(index-1,temp);

@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.27  2003/09/16 14:49:31  rich
+// Remove default logging from the Linux release version
+//
 // Revision 1.26  2003/08/13 16:02:05  rich
 // Add definition of min and max macros to header.
 //
@@ -84,17 +87,15 @@
 
 #ifdef __LINUX__
 #define __BOTHWX__ 1
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
 #endif
 
 #ifdef __CR_WIN__
 #define __BOTHWIN__ 1
 #endif
 
+#define CRMAX(a, b)  (((a) > (b)) ? (a) : (b))
+#define CRMIN(a, b)  (((a) < (b)) ? (a) : (b))
 
-//#include    "ccstring.h"
-//void errorlog( CcString outStr );
 // Instructions
 
 //NB Try to keep Windows ID's below 65535, I think

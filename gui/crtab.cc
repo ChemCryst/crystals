@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.5  2001/07/16 07:25:31  ckp2
 //   Make sure (in the wx version) that all the grids in the tab control are removed
 //   from the tab control before it is destroyed.
@@ -234,8 +240,8 @@ CcRect CrTab::CalcLayout(bool recalc)
   {
     LOGSTAT ("TAB"); CcController::debugIndent++;
     aRectangle = theItem->CalcLayout(recalc);
-    maxH = max ( maxH, aRectangle.Height() );
-    maxW = max ( maxW, aRectangle.Width()  );
+    maxH = CRMAX ( maxH, aRectangle.Height() );
+    maxW = CRMAX ( maxW, aRectangle.Width()  );
     CcController::debugIndent--;
     theItem = (CrGrid*)mTabsList.GetItemAndMove();
   }
@@ -293,7 +299,7 @@ int CrTab::GetIdealWidth()
   CrGrid* theItem = (CrGrid *)mTabsList.GetItemAndMove();
   while ( theItem != nil )
   {
-    resizeableWidth = max ( resizeableWidth, theItem->GetIdealWidth() );
+    resizeableWidth = CRMAX ( resizeableWidth, theItem->GetIdealWidth() );
     theItem = (CrGrid*)mTabsList.GetItemAndMove();
   }
 
@@ -310,7 +316,7 @@ int CrTab::GetIdealHeight()
   CrGrid* theItem = (CrGrid *)mTabsList.GetItemAndMove();
   while ( theItem != nil )
   {
-    resizeableHeight = max ( resizeableHeight, theItem->GetIdealHeight() );
+    resizeableHeight = CRMAX ( resizeableHeight, theItem->GetIdealHeight() );
     theItem = (CrGrid*)mTabsList.GetItemAndMove();
   }
 

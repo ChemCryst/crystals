@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/02/20 14:07:25  rich
+//   Neater resize bars.
+//
 //   Revision 1.8  2003/01/14 13:35:02  rich
 //   Error crept in during linux editing. Fixed.
 //
@@ -167,10 +170,10 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
 
  if( leftDown && (m_startDrag >= 0) )
  {
-   x = min(x,GetWidth()-SIZE_BAR);
-   x = max(x,0);
-   y = min(y,GetHeight()-SIZE_BAR);
-   y = max(y,0);
+   x = CRMIN(x,GetWidth()-SIZE_BAR);
+   x = CRMAX(x,0);
+   y = CRMIN(y,GetHeight()-SIZE_BAR);
+   y = CRMAX(y,0);
 
 
    CcRect newRect;
@@ -358,10 +361,10 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
 #endif
 
 
- x = min(x,GetWidth()-SIZE_BAR);
- x = max(x,0);
- y = min(y,GetHeight()-SIZE_BAR);
- y = max(y,0);
+ x = CRMIN(x,GetWidth()-SIZE_BAR);
+ x = CRMAX(x,0);
+ y = CRMIN(y,GetHeight()-SIZE_BAR);
+ y = CRMAX(y,0);
 
 #ifdef __CR_WIN__
  CDC* myDC;

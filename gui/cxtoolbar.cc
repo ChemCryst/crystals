@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2003/09/16 16:40:48  rich
+//   Always return a value in AddTool
+//
 //   Revision 1.11  2003/09/11 17:50:50  rich
 //   AddTool now returns a value so we can tell if it fails.
 //
@@ -325,7 +328,7 @@ int CxToolBar::GetIdealWidth()
 #ifdef __CR_WIN__
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
-   return min(1600,tbs.cx);
+   return CRMIN(1600,tbs.cx);
 #endif
 #ifdef __BOTHWX__
 //   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
@@ -342,7 +345,7 @@ int CxToolBar::GetIdealHeight()
 #ifdef __CR_WIN__
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
-   return min(200,tbs.cy+2);
+   return CRMIN(200,tbs.cy+2);
 #endif
 #ifdef __BOTHWX__
    return 15 + 10;

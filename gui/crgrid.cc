@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.22  2003/01/15 14:06:29  rich
 //   Some fail-safe code in the GUI. In the event of a creation of a window failing don't
 //   allow the rest of the windows to be corrupted.
@@ -539,13 +545,13 @@ void CrGrid::SetGeometry( const CcRect * rect )
   {
     ColWidths[xp] = m_InitialColWidths[xp];
     if ( m_ColCanResize[xp] ) ColWidths[xp] += (int)((float)ColWidths[xp]*((deltaWidth/m_resizeableWidth)));
-    ColWidths[xp] = max ( ColWidths[xp], EMPTY_CELL ); //Limit
+    ColWidths[xp] = CRMAX ( ColWidths[xp], EMPTY_CELL ); //Limit
   }
   for ( yp = 0; yp < m_Rows ; yp++)
   {
     RowHeights[yp] = m_InitialRowHeights[yp];
     if ( m_RowCanResize[yp] ) RowHeights[yp] += (int)((float)RowHeights[yp]*((deltaHeight/m_resizeableHeight)));
-    RowHeights[yp] = max ( RowHeights[yp], EMPTY_CELL ); //Limit
+    RowHeights[yp] = CRMAX ( RowHeights[yp], EMPTY_CELL ); //Limit
   }
 
 //Call SetGeometry on all children.
@@ -598,8 +604,8 @@ CcRect CrGrid::CalcLayout(bool recalc)
       CcController::debugIndent++;
       CcRect rect;
       rect = ((CrGUIElement*)vtemp)->CalcLayout(recalc);
-      ColWidths[xp-1] = max ( ColWidths[xp-1], rect.Width() );
-      RowHeights[yp-1] = max ( RowHeights[yp-1], rect.Height() );
+      ColWidths[xp-1] = CRMAX ( ColWidths[xp-1], rect.Width() );
+      RowHeights[yp-1] = CRMAX ( RowHeights[yp-1], rect.Height() );
       CcController::debugIndent--;
     }
   }

@@ -909,8 +909,8 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
       int winy = GetHeight();
       float hDrag = (m_ptMMove.y - point.y)/(float)winy;
       m_xScale += hDrag;
-      m_xScale = max(0.01f,m_xScale);
-      m_xScale = min(100.0f,m_xScale);
+      m_xScale = CRMAX(0.01f,m_xScale);
+      m_xScale = CRMIN(100.0f,m_xScale);
 //      m_xTrans = 8000.0f * ( (float)m_ptLDown.x / (float)winx ) - 4000.0f; // NB y axis is upside down for OpenGL.
 //      m_yTrans = 8000.0f * ( (float)m_ptLDown.y / (float)winy ) - 4000.0f;
 
@@ -1508,13 +1508,13 @@ void CxModel::AutoScale()
    float wscale = (float)viewport[2] / (float)enclosed.Width() ;
    float hscale = (float)viewport[3] / (float)enclosed.Height() ;
 
-   m_xScale = min ( hscale , wscale ) * 0.9f; //Allow a margin.
+   m_xScale = CRMIN ( hscale , wscale ) * 0.9f; //Allow a margin.
 
    float xpoffset = ((float)viewport[2]/2.0f)-(float)enclosed.MidX();
    float ypoffset = ((float)viewport[3]/2.0f)-(float)enclosed.MidY();
 
-   float xmoffset = xpoffset * 10000.0f / (float) min ( viewport[2], viewport[3] );
-   float ymoffset = ypoffset * 10000.0f / (float) min ( viewport[2], viewport[3] );
+   float xmoffset = xpoffset * 10000.0f / (float) CRMIN ( viewport[2], viewport[3] );
+   float ymoffset = ypoffset * 10000.0f / (float) CRMIN ( viewport[2], viewport[3] );
 
    m_xTrans = xmoffset * m_xScale;
    m_yTrans = ymoffset * m_xScale;
@@ -1528,10 +1528,10 @@ void CxModel::AutoScale()
 
 int CxModel::AdjustEnclose( CcRect* enc, GLfloat* buf, int point )
 {
-  enc->mLeft   = min( (int)buf[point],   enc->mLeft );
-  enc->mRight  = max( (int)buf[point],   enc->mRight );
-  enc->mTop    = min( (int)buf[point+1], enc->mTop );
-  enc->mBottom = max( (int)buf[point+1], enc->mBottom );
+  enc->mLeft   = CRMIN( (int)buf[point],   enc->mLeft );
+  enc->mRight  = CRMAX( (int)buf[point],   enc->mRight );
+  enc->mTop    = CRMIN( (int)buf[point+1], enc->mTop );
+  enc->mBottom = CRMAX( (int)buf[point+1], enc->mBottom );
   return 2;
 }
 
@@ -1812,7 +1812,7 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
   m_TextPopup->SetFont(CcController::mp_font);
   m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
   m_TextPopup->ShowWindow(SW_SHOW);
-  m_TextPopup->MoveWindow(max(0,point.x-size.cx-4),max(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
+  m_TextPopup->MoveWindow(CRMAX(0,point.x-size.cx-4),CRMAX(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
   m_TextPopup->InvalidateRect(NULL,false);
 #endif
 #ifdef __BOTHWX__
@@ -1820,7 +1820,7 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
   GetTextExtent( atomname.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
   m_TextPopup = new mywxStaticText(this, -1, atomname.ToCString(),
-                                 wxPoint(max(0,point.x-cx-4),max(0,point.y-cy-4)),
+                                 wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
 //  m_TextPopup->SetEvtHandlerEnabled(true);

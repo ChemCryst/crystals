@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2003/09/16 19:15:37  rich
+//   Code to thin out labels on the x-axis of graphs to prevent overcrowding.
+//   Seems to slow down the linux version - will investigate on Windows.
+//
 //   Revision 1.26  2003/09/04 16:49:54  rich
 //   Make graphs work on the Linux version. We're getting there.
 //
@@ -989,7 +993,7 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
   m_TextPopup->SetFont(CcController::mp_font);
   m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
   m_TextPopup->ShowWindow(SW_SHOW);
-  m_TextPopup->MoveWindow(max(0,point.x-size.cx-4),max(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
+  m_TextPopup->MoveWindow(CRMAX(0,point.x-size.cx-4),CRMAX(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
   m_TextPopup->InvalidateRect(NULL,false);
 #endif
 #ifdef __BOTHWX__
@@ -997,7 +1001,7 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
   GetTextExtent( text.ToCString(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
   m_TextPopup = new mywxStaticText(this, -1, text.ToCString(),
-                                 wxPoint(max(0,point.x-cx-4),max(0,point.y-cy-4)),
+                                 wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
 //  m_TextPopup->SetEvtHandlerEnabled(true);
@@ -1255,8 +1259,8 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
     for(i=0; i<m_NumberOfSeries; i++)
     {
         SIZE ts = newDC.GetOutputTextExtent(m_Names[i].ToCString());
-        size.cx = max(ts.cx, size.cx);
-        size.cy = max(ts.cy, size.cy);
+        size.cx = CRMAX(ts.cx, size.cx);
+        size.cy = CRMAX(ts.cy, size.cy);
     }
 
     // get the client window size, and the total window size
