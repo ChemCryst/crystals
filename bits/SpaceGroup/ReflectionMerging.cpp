@@ -16,6 +16,7 @@
     #include "PCPort.h"
 #endif
 #include <math.h>
+#include <float.h>
 #include <iostream>
 #include <iterator>
 
@@ -245,13 +246,13 @@ public:
         Matrix<float> tDiff(3,3);
         Matrix<float> tOperator(3, 3);
         Matrix<float> tOperatorTranspose(3, 3);
+
         float tScalarDiff = 0;
         for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
         {   
             tOperator = (*gLaueMatrices.getMatrix((*iMatIndices)[i])); //Multiply the hkl value with the current matrix
             tOperatorTranspose = tOperator;
             tOperatorTranspose.transpose();
-            
             tOperatorTranspose.mul(tMetricTensor, tDiff);
             tDiff.mul(tOperator, tOperatorTranspose);
             
@@ -401,38 +402,59 @@ LaueGroups::~LaueGroups()
     delete iGroups;
 }
 
-void LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const
+bool LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const
 {
-   // bool tMerged = false;
+    bool tMerged = false;
     
     for (size_t i = 0; i < iGroups->size(); i++)
     {
         if ((*iGroups)[i]->unitCellGuessRating(pRunParam) < kGuessThreshHold)
         {
             (*iGroups)[i]->buildMergedData(pHKLs, pRunParam);
-            if ((*iGroups)[i]->getRFactor() == 0)
+			(*iGroups)[i]->getRFactor();
+            if (!tMerged && (*iGroups)[i]->getRFactor() == 0)
             {
-           //     tMerged = true;
-                std::cout << "\tData already been merged at least for one laue group!\n\tWill merge for all the laue groups";
+                tMerged = true;
+                std::cout << "\n\tData already been merged at least for one laue group!\n\tWill merge for all the laue groups";
             }
         }
     }
     MergedData::releaseReflections();
+	return tMerged;
 }
 
 LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
 {
     size_t tBest = 0;
-    float tLowestRF;
-    LaueGroups::mergeForAll(pHKLs, true, pRunParam);
+    float tLowestRF = 0;
+	float tHighestRF = FLT_MIN;
+	float tRFactor;
+    bool tMergedAlready = LaueGroups::mergeForAll(pHKLs, true, pRunParam);
     
-    tLowestRF = (*iGroups)[0]->getRFactor();
+	if (tMergedAlready)
+	{
+		for (size_t i = 1; i < iGroups->size(); i++)
+		{
+			tRFactor = (*iGroups)[i]->getRFactor();
+			if (tRFactor < 0)
+			{
+				tHighestRF = max(tHighestRF, tRFactor);
+				tLowestRF = min(tLowestRF, tRFactor);
+			}
+		}
+		if (tHighestRF/tLowestRF < 7)
+		{
+			tLowestRF = 0;
+		}
+	}
+	else
+		tLowestRF = (*iGroups)[0]->getRFactor(); //Triclinic will have the smallest RFactor if it hasn't been merged
     for (size_t i = 1; i < iGroups->size(); i++)
     {
-        float tRFactor = (*iGroups)[i]->getRFactor();
+        tRFactor = (*iGroups)[i]->getRFactor();
         if (tRFactor >= 0)
         {
-            if (tRFactor/tLowestRF < 10)
+            if (tRFactor == 0 || tRFactor/tLowestRF < 10)
             {
                 tBest = i;
             }
@@ -514,7 +536,6 @@ MergedData::MergedData(const size_t pNumRefl):iUpto(0), iRFactor(-1)
     }
     if (gReflections == NULL)
     {
-        cout << "!!!!!!!!!!!Allocated memory " << gNumRefl << " !!!!!!\n";
         gReflections = new Reflection[gNumRefl];
     }
     if (gSortedReflections == NULL)
@@ -526,16 +547,11 @@ MergedData::MergedData(const size_t pNumRefl):iUpto(0), iRFactor(-1)
 
 MergedData::~MergedData()
 {
+	
 }
 
 void MergedData::add(const Matrix<short>& pHKL, const Reflection& pRefl)
 {
-   /* if (iReflections == NULL)
-    {
-        iReflections = new Reflection*[iNumRefl];
-        iRFactor = -1;
-    }*/
-//    iReflections[iUpto] = new Reflection();
     gReflections[iUpto].setHKL(pHKL);
     gReflections[iUpto].i = pRefl.i;
     gReflections[iUpto].iSE = pRefl.iSE;
