@@ -302,6 +302,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%      SHOW NPEAKS
 %       IF NPEAKS .LE. 0 THEN
 ^^WI    WINDOW NOPEAKS 'No peaks' MODAL
+^^WI    COMMIT='BTNXX' CANCEL='BTNXX'
 ^^WI    GRID MYMAIN NROWS=1 NCOLS=3
 ^^WI    {
 ^^WI      @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
@@ -316,8 +317,8 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI      }
 ^^WI      @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI      {
-^^WI        @ 2,2 BUTTON BTNOK '&Try Again' DEFAULT
-^^WI        @ 4,2 BUTTON BTNXX '&Abort'
+^^WI        @ 4,2 BUTTON BTNOK '&Try Again'
+^^WI        @ 2,2 BUTTON BTNXX '&Cancel'  DEFAULT
 ^^WI      }
 ^^WI    }
 ^^WI    SHOW
@@ -333,6 +334,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           FINISH
 %       END IF
 ^^WI WINDOW PEAKS 'Peaks found' MODAL
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'
 ^^WI GRID MYMAIN NROWS=1 NCOLS=3
 ^^WI {
 ^^WI  @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
