@@ -1635,6 +1635,11 @@ C
 C -- ALTER 'PURGE' FLAG
       IOFF = 1
       INEWVL = IVALUE * IABS ( INDEXF(INDFIL+1) )
+cdjwjan2001
+      write(cmon,2201) ln, lsnreq
+      call xprvdu(ncvdu,1,0)
+2201  format('Disc operation on LIST',i4,
+     1 ' Serial',i6)
       GO TO 4500
 C
 3000  CONTINUE
