@@ -19,6 +19,7 @@
 #include	"ccrect.h"
 #include	"cctokenlist.h"
 #include	"cccontroller.h"	// for sending commands
+#include    "crwindow.h" // for getting cursor keys
 
 CrChart::CrChart( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )
@@ -29,6 +30,7 @@ CrChart::CrChart( CrGUIElement * mParentPtr )
 	mXCanResize = true;
 	mYCanResize = true;
 	attachedChartDoc = nil;
+      mWantSysKeys=false;
 }
 
 CrChart::~CrChart()
@@ -141,6 +143,16 @@ Boolean	CrChart::ParseInput( CcTokenList * tokenList )
 				Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
 				CcString theString = tokenList->GetToken(); // Remove that token!
 				((CxChart*)mWidgetPtr)->SetPolygonDrawMode(state);
+				break;
+			}
+                  case kTGetCursorKeys:
+			{
+				tokenList->GetToken(); // Remove that token!
+				Boolean state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+				CcString theString = tokenList->GetToken(); // Remove that token!
+                        ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) ((state)?this:nil) );
+                        mWantSysKeys=true;
+                        GetRootWidget()->CrFocus();
 				break;
 			}
 			case kTChartHighlight:
@@ -311,4 +323,37 @@ void CrChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 void CrChart::Highlight(Boolean highlight)
 {
 	((CxChart*)mWidgetPtr)->Invert(highlight);
+}
+
+void CrChart::SysKey ( UINT nChar )
+{
+   if ( mWantSysKeys)
+   {
+      switch (nChar)
+      {
+            case VK_LEFT:
+                  SendCommand( CcString( "L" ) );
+                  break;
+            case VK_RIGHT:
+                  SendCommand( CcString( "R" ) );
+                  break;
+            case VK_UP:
+                  SendCommand( CcString( "U" ) );
+                  break;
+            case VK_DOWN:
+                  SendCommand( CcString( "D" ) );
+                  break;
+            case VK_DELETE:
+                  SendCommand( CcString( "A" ) );
+                  break;
+            case VK_END:
+                  SendCommand( CcString( "C" ) );
+                  break;
+            case VK_ESCAPE:
+                  SendCommand( CcString( "E" ) );
+                  break;
+            default:
+                  break;
+      }
+   }
 }
