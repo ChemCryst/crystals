@@ -6,59 +6,59 @@
 %% The outer grid splits the left 'view' area from the right
 ^^WI  @ 1,1 GRID OUTER NROWS=3 NCOLS=5
 ^^WI  {
-^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=50 NCOLS=90
+^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=25 NCOLS=45
 ^^WI         INFORM=YES
 %% The inner grid splits the text output from the tools
-^^WI   @ 2,4 GRID INNER NROWS=12 NCOLS=1
+^^WI   @ 2,4 GRID INNER NROWS=9 NCOLS=1
 ^^WI   {
-^^WI     @ 2,1 GRID MOVE NROWS=7 NCOLS=9
+^^WI     @ 2,1 GRID MOVE NROWS=5 NCOLS=9
 ^^WI                COMMAND='#SCRIPT xcrotate'
 ^^WI     {
-^^WI      @ 2,2 BUTTON XROTP '+X'
-^^WI      @ 2,4 BUTTON XROTN '-X'
-^^WI      @ 4,2 BUTTON YROTP '+Y'
-^^WI      @ 4,4 BUTTON YROTN '-Y'
-^^WI      @ 6,2 BUTTON ZROTP '+Z'
-^^WI      @ 6,4 BUTTON ZROTN '-Z'
-^^WI      @ 2,6 BUTTON AXISA 'Axis a'
-^^WI      @ 2,8 BUTTON PLANE 'Plane'
-^^WI      @ 4,6 BUTTON AXISB 'Axis b'
-^^WI      @ 4,8 BUTTON HKL   'hkl'
-^^WI      @ 6,6 BUTTON AXISC 'Axis c'
-^^WI      @ 6,8 BUTTON CURSO 'Cursor'
+^^WI      @ 1,2 BUTTON XROTP '+X'
+^^WI      @ 1,4 BUTTON XROTN '-X'
+^^WI      @ 3,2 BUTTON YROTP '+Y'
+^^WI      @ 3,4 BUTTON YROTN '-Y'
+^^WI      @ 5,2 BUTTON ZROTP '+Z'
+^^WI      @ 5,4 BUTTON ZROTN '-Z'
+^^WI      @ 1,6 BUTTON AXISA 'Axis a'
+^^WI      @ 1,8 BUTTON PLANE 'Plane'
+^^WI      @ 3,6 BUTTON AXISB 'Axis b'
+^^WI      @ 3,8 BUTTON HKL   'hkl'
+^^WI      @ 5,6 BUTTON AXISC 'Axis c'
+^^WI      @ 5,8 BUTTON CURSO 'Cursor'
 ^^WI     }
-^^WI     @ 4,1 GRID STYLE NROWS=3 NCOLS=7
+^^WI     @ 4,1 GRID STYLE NROWS=1 NCOLS=7
 ^^WI                COMMAND='#SCRIPT xcstyle'
 ^^WI     {
-^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST
+^^WI      @ 1,2 DROPDOWN LSTYLE ADDTOLIST
 ^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
-^^WI      @ 2,4 DROPDOWN LCOLOR ADDTOLIST
+^^WI      @ 1,4 DROPDOWN LCOLOR ADDTOLIST
 ^^WI      'Normal' 'Publish' 'NULL'
-^^WI      @ 2,6 BUTTON BSTYLE 'Apply'
+^^WI      @ 1,6 BUTTON BSTYLE 'Apply'
 ^^WI     }
-^^WI     @ 6,1 GRID PACK NROWS=3 NCOLS=5
+^^WI     @ 6,1 GRID PACK NROWS=1 NCOLS=5
 ^^WI                COMMAND='#SCRIPT xcpack'
 ^^WI     {
-^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST
+^^WI      @ 1,2 DROPDOWN LPACK ADDTOLIST
 ^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
-^^WI      @ 2,4 BUTTON BPACK 'Apply'
+^^WI      @ 1,4 BUTTON BPACK 'Apply'
 ^^WI     }
-^^WI     @ 8,1 GRID STUFF NROWS=11 NCOLS=5 COMMAND='#SCRIPT xcalter'
+^^WI     @ 8,1 GRID STUFF NROWS=10 NCOLS=5 COMMAND='#SCRIPT xcalter'
 ^^WI     {
-^^WI       @ 4,2 BUTTON SLABEL 'Show labels'
-^^WI       @ 6,2 BUTTON HHYDRO 'Hide H'
-^^WI       @ 4,4 BUTTON MLABEL 'Move labels'
-^^WI       @ 8,2 BUTTON SCELL  'Show cell'
-^^WI       @ 10,2 BUTTON INCAR  'Include area'
-^^WI       @ 8,4 BUTTON INCAL  'Show all'
-^^WI       @ 10,4 BUTTON EXCAR  'Exclude area'
 ^^WI       @ 2,2 BUTTON OHCONT 'Find O---H'
-^^WI       @ 6,4 BUTTON HPEAK 'Hide Q'
-^^WI       @ 2,4 BUTTON VIEW 'VIEW'
+^^WI       @ 2,4 BUTTON VIEW   'View'
+^^WI       @ 4,2 BUTTON SLABEL 'Labels on'
+^^WI       @ 4,4 BUTTON MLABEL 'Label move'
+^^WI       @ 6,2 BUTTON HHYDRO 'Hide H'
+^^WI       @ 6,4 BUTTON HPEAK  'Hide Q'
+^^WI       @ 8,2 BUTTON SCELL  'Show cell'
+^^WI       @ 8,4 BUTTON INCAL  'Show all'
+^^WI       @ 10,2 BUTTON INCAR 'Incl area'
+^^WI       @ 10,4 BUTTON EXCAR 'Excl area'
 ^^WI     }
 ^^WI   }
 ^^WI  }
-^^WI  @ 2,1 TEXTOUT _CAMTEXT '' NROWS=5 NCOLS=1
+^^WI  @ 2,1 TEXTOUT _CAMTEXT '' NROWS=2 NCOLS=1
 ^^WI  @ 3,1 EDITBOX _CAMTEXTINPUT '' NCOLS=1
 ^^WI          SENDONRETURN=YES INPUT
 ^^WI }
