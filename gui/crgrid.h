@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/05/14 17:04:49  richard
+//   Changes to include new GUI control HIDDENSTRING.
+//
 //   Revision 1.9  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -100,7 +103,7 @@ class   CrGrid : public CrGUIElement
 #define kSCreatePlot       "PLOTWINDOW"
 #define kSCreateModel       "MODELWINDOW"
 #define kSOutline       "OUTLINE"
-#define kSAlignExpand       "EXPAND"
+#define kSAlignIsolate       "ISOLATE"
 #define kSAlignRight        "RIGHT"
 #define kSAlignBottom       "BOTTOM"
 #define kSCreateBitmap          "BITMAP"
@@ -128,7 +131,7 @@ enum
  kTCreateChart,
  kTCreateModel,
  kTOutline,
- kTAlignExpand,
+ kTAlignIsolate,
  kTAlignRight,
  kTAlignBottom,
  kTCreateBitmap,

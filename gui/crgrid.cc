@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2002/05/14 17:04:49  richard
+//   Changes to include new GUI control HIDDENSTRING.
+//
 //   Revision 1.17  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -174,11 +177,11 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
           LOGSTAT( "Setting Grid outline" );
           break;
         }
-        case kTAlignExpand:
+        case kTAlignIsolate:
         {
           tokenList->GetToken(); // Remove that token!
-          mAlignment += kExpand;
-          LOGSTAT( "Setting Grid alignment EXPAND" );
+          mAlignment += kIsolate;
+          LOGSTAT( "Setting Grid alignment ISOLATE" );
           break;
         }
         case kTAlignRight:
@@ -268,7 +271,10 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken();
         m_GridComplete = true;
         LOGSTAT("CrGrid:ParseInput:EndGrid Grid closed");
-        retVal = CcParse(true,mXCanResize,mYCanResize);
+        if ( mAlignment &  kIsolate )
+           retVal = CcParse(true,false,false);
+        else
+           retVal = CcParse(true,mXCanResize,mYCanResize);
         hasTokenForMe = false;
         CcController::debugIndent --;
         break;
@@ -653,7 +659,7 @@ void    CrGrid::Align()
     bool done = false;
     CrGUIElement * vtemp;
 
-//    if ( mAlignment &  kExpand )
+//    if ( mAlignment &  kIsolate )
 //    {
 //      if ( doAdjust )
 //      {

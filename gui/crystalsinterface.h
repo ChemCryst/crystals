@@ -3,6 +3,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2002/07/03 14:23:21  richard
+// Replace as many old-style stream class header references with new style
+// e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+// Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+// stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+// Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+// warning messages.
+//
 // Revision 1.19  2001/10/10 12:44:50  ckp2
 // The PLOT classes!
 //
@@ -98,7 +108,7 @@ enum {
     kPlotBase           =   72000
 };
 #define kNoAlignment        0
-#define kExpand             1
+#define kIsolate            1
 #define kRightAlign         2
 #define kBottomAlign        4
 #define kModal              1
