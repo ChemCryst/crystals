@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2002/02/01 14:41:29  Administrator
+C Enable CALC to get additional R factors and display them in SUMMARY
+C
 C Revision 1.12  2002/01/09 14:59:17  Administrator
 C bound shifts, abandon ill-conditioned problem
 C
@@ -1837,7 +1840,7 @@ C--'#PUNCH' TO BE ISSUED  -  CHECK IF IT IS NECESSARY
 3150  CONTINUE
 CDJW0102 - ONLY IF TYPE IS 'REFINE'. ITEM+5 USED AS 'FILTER'
 C          ON 'CALC'
-      IF ((J .EQ. 1) .AND. (ISTORE(M33CD+5) .EQ. 0)) GOTO 3300
+      IF ((J .EQ. 1) .AND. (ISTORE(M33CD+5) .LT. 0)) GOTO 3300
       GOTO 3250      
 C--'#INVERT' TO BE ISSUED  -  CHECK IF THIS IS A 'VECTOR' INSTRUCTION
 3200  CONTINUE

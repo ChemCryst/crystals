@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2002/01/09 14:59:18  Administrator
+C bound shifts, abandon ill-conditioned problem
+C
 C Revision 1.8  2001/07/11 10:19:21  ckpgroup
 C Enable -ve Flack Parameter
 C
@@ -493,6 +496,8 @@ C--UPDATE THE ADDRESS AND CONTROL FLAGS
       JQ=JQ+JY-JX+1
       JT=JT+1
       M24=M24+MD24
+      write(ncwu,'(a,i6,2f12.6)') 'next list 24', m24,store(m24)
+     1, store(m24+1)
 3450  CONTINUE
 C----- PUT THE GOODIES BACK ON THE DISK
       CALL XUPF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
@@ -1247,6 +1252,9 @@ C---------  COMPUTE ESD
             A=STR11(JQ)
             A=SQRT(A*E)
 C--CHECK IF WE ARE USING AN OLD LIST 24
+cdjw0202
+      write(ncwu,'(a,i6,2f12.6)') 'list 24 address', m24,store(m24),
+     1 store(m24+1)
             IF(M24 .GT. 0) THEN
 C---------- USING AN OLD LIST 24 - CHECK THAT SHIFT IS NOT SINGULAR
 C---------- COMPUTE THE RATIO OF THE TWO SHIFTS
@@ -1674,7 +1682,8 @@ C--PRINT OUT A FEW CAPTIONS
      3 'Calculated E.S.D.',/,15X,'E.S.D. in angstrom')
 C>DJWSEP96
 C--BRING DOWN THE SHIFT LIST
-      CALL XFAL24
+      IF (KHUNTR (24,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL24
+cdjw0202      CALL XFAL24
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE POINTER FOR THE ACCUMULATION OF THE E.S.D. DATA
       JS=NFL
