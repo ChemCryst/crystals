@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2001/12/14 16:56:53  ckp2
+C Put cell volume su into CIF file. SU is based only on cell parameter esd's not full
+C variance-covariance matrix but cifcheck can only use these too, so the results
+C will tally.
+C
 C Revision 1.26  2001/09/26 11:36:50  Administrator
 C No atom site type in summary file. CIF only.
 C
@@ -3952,8 +3957,9 @@ C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             WRITE (CTEMP,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CTEMP,N)
             WRITE (CLINE,'(A, ''abs_structure_Flack  '', 4X,            
-     1      '''''''',                                                   
-     2      A, '''''''')') CBUF(1:11),CTEMP(1:N)
+     2      A )') CBUF(1:11),CTEMP(1:N)
+C     1      '''''''',                                                   
+C     2      A, '''''''')') CBUF(1:11),CTEMP(1:N)
             CALL XPCIF (CLINE)
             WRITE (CPAGE(IREF+7,1)(:),'(A,A)') 'Flack parameter',
      1       CTEMP(1:N)
