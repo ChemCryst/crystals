@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.64  2004/07/08 15:23:28  rich
+C Added H-treatment options to the end of L30's CIF block. The default is
+C UNKNOWN, and if left unchanged, this will cause the CIF generator to
+C actually work out the appropriate keyword. It does this using the REFINE
+C flag (Offset 15 in List 5), and can distinguish between NONE (no H present),
+C CONSTR (for riding and rigid group refinement), REFALL, REFU, REFXYZ (for
+C those types), MIXED (if any H differs from any other), and NOREF (for
+C no refinement of any H). Happy Acta'ing.
+C
 C Revision 1.63  2004/06/28 12:30:35  rich
 C Fix bug in labels of reflections on normal probability plot (k&l were swapped).
 C
@@ -3528,6 +3537,7 @@ C
 \STORE
 \ISTORE
 \QSTORE
+c      REAL HKL(3)
 
       M42M = L42M
 
@@ -3549,6 +3559,27 @@ C CDD For g77 changed       CMON = ' '   to:
         M42M = M42M+NINT(STORE(L42L+1))
        END DO
       END DO
+
+C Test Fourier transform of L42.
+c      CALL XFAL02
+c      HKL(1)=0.0
+c      HKL(2)=0.0
+c      HKL(3)=0.0
+c      CALL XMASKF(FA,FB,HKL)
+c      WRITE(CMON(1),'(3F4.1,2F9.5)') HKL(1),HKL(2),HKL(3),FA,FB
+c      CALL XPRVDU(NCVDU,1,0)
+c      HKL(1)=1.0
+c      HKL(2)=1.0
+c      HKL(3)=1.0
+c      CALL XMASKF(FA,FB,HKL)
+c      WRITE(CMON(1),'(3F4.1,2F9.5)') HKL(1),HKL(2),HKL(3),FA,FB
+c      CALL XPRVDU(NCVDU,1,0)
+c      HKL(1)=5.0
+c      HKL(2)=2.0
+c      HKL(3)=-1.0
+c      CALL XMASKF(FA,FB,HKL)
+c      WRITE(CMON(1),'(3F4.1,2F9.5)') HKL(1),HKL(2),HKL(3),FA,FB
+c      CALL XPRVDU(NCVDU,1,0)
 
       RETURN
       END
