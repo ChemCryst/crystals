@@ -67,8 +67,8 @@ CxWindow *	CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 #ifdef __WINDOWS__
 	if ( attributes & kSize )
 		theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
-	theWindow->ShowWindow(SW_SHOW);
-	theWindow->UpdateWindow();
+//      theWindow->ShowWindow(SW_SHOW);
+//      theWindow->UpdateWindow();
 #endif
 #ifdef __LINUX__
       theWindow->Show(true);
@@ -127,8 +127,11 @@ void	CxWindow::CxShowWindow()
 
 void	CxWindow::SetGeometry( int top, int left, int bottom, int right )
 {
+      TEXTOUT( "CxWindow::SetGeom called " + CcString(top) + " " + CcString(left)+ " " + CcString(bottom) + " " + CcString(right) );
+
 	if(mProgramResizing)  //Only move the window, if the program is resizing it.
 	{
+      TEXTOUT(" Progresizing is TRUE ");
 #ifdef __WINDOWS__
 		MoveWindow(left, top, (right-left), (bottom-top),true);
 #endif
@@ -139,7 +142,8 @@ void	CxWindow::SetGeometry( int top, int left, int bottom, int right )
 	else // if the user is resizing, then the window is already the right size.
 	{
 #ifdef __WINDOWS__
-            UpdateWindow();
+      TEXTOUT(" Progresizing is FALSE ");
+//            UpdateWindow();
 #endif
       }
 }
@@ -342,6 +346,8 @@ void CxWindow::OnClose(wxCloseEvent & event)
 #ifdef __WINDOWS__
 void CxWindow::OnSize(UINT nType, int cx, int cy)
 {
+      
+      TEXTOUT( "OnSize called " + CcString(cx) + " " + CcString(cy) );
 	CFrameWnd::OnSize(nType, cx, cy);
 	mProgramResizing = false;
       if ( nType == SIZE_MINIMIZED ) return;
@@ -360,8 +366,9 @@ void CxWindow::OnSize(wxSizeEvent & event)
       int bT = ss.GetSystemMetric(wxSYS_FRAMESIZE_X);
 #endif
 
-        ((CrWindow*)mWidget)->ResizeWindow( cx + (2*bT),
-                                            cy + ( mN + cH + 2*bT ) );
+//        ((CrWindow*)mWidget)->ResizeWindow( cx + (2*bT),
+//                                            cy + ( mN + cH + 2*bT ) );
+        ((CrWindow*)mWidget)->ResizeWindow( cx ,cy );
 
 	mProgramResizing = true;
 }
