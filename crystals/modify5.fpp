@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/07/17 13:46:40  rich
+C Remove unnecesary updating of the GUI during #EDIT with GUI HIGH set
+C on.
+C
 C Revision 1.39  2003/07/09 11:34:39  rich
 C REmove line break in print.
 C
@@ -2139,8 +2143,13 @@ C-----TRANSFORM THE ANISOTROPIC TEMPERATURE FACTORS
 6650     CONTINUE
          J=M5A+7
          CALL XEXANI (J,JTEMP)
-         CALL XMLTTM (STORE(JTEMP),APD,STORE(KTEMP),3,3,3)
-         CALL XMLTTM (APD,STORE(KTEMP),STORE(JTEMP),3,3,3)
+C RIC, this is wrong - tensor transform should be R*U*R', not other way.
+C         CALL XMLTTM (STORE(JTEMP),APD,STORE(KTEMP),3,3,3)
+C         CALL XMLTTM (APD,STORE(KTEMP),STORE(JTEMP),3,3,3)
+C R * U
+         CALL XMLTMM (APD,STORE(JTEMP),STORE(KTEMP),3,3,3)
+C Result * R'
+         CALL XMLTMT (STORE(KTEMP),APD,STORE(JTEMP),3,3,3)
          CALL XCOANI (JTEMP,J)
 6700     CONTINUE
          CALL XMDMON (M5A,MD5A,1,1,1,6,3,MONLVL,2,0,ISTORE(IMONBF))
