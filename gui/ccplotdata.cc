@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.28  2004/06/24 09:12:01  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.27  2004/06/03 14:41:20  rich
 // Don't crash if no range on second y axis.
 //
@@ -1045,6 +1049,47 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
         bool smalltext = false;  // true if text gets too small
 
 
+        // draw marker lines in grey
+        attachedPlot->SetColour(150,150,150);
+
+        // now loop through the divisions on each axis, drawing each one
+        // first x axis
+        for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
+        {
+            attachedPlot->DrawLine(1, xgapleft+i*xdivoffset, ygaptop, xgapleft + i*xdivoffset, 2400-ygapbottom );
+        }
+    
+        // and the y axis
+        for(i=0; i<m_AxisData[Axis_YL].m_NumDiv+1; i++)
+        {
+            attachedPlot->DrawLine(1, xgapleft, (2400-ygapbottom)-i*ydivoffset, 2400-xgapright, (2400-ygapbottom)-i*ydivoffset);
+        }
+
+        // if there is a 2nd y axis (right) draw that too...
+        if(m_NumberOfYAxes == 2)
+        {
+            for(i=0; i<m_AxisData[Axis_YR].m_NumDiv+1; i++)
+            {
+                attachedPlot->DrawLine(1, 2400-xgapright, (2400-ygapbottom)-i*yroffset, 2400-xgapright+10, (2400-ygapbottom)-i*yroffset);
+            }
+        }
+        
+        // write the labels for each axis, and the graph title
+        attachedPlot->FlipGraph(false);
+        attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.c_str(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
+        attachedPlot->FlipGraph(m_Flipped);
+
+        if(!m_Flipped)
+            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
+        else
+            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_TOP, 16);
+
+        attachedPlot->DrawText(xgapleft/5, 1200, m_AxisData[Axis_YL].m_Title.c_str(), TEXT_VERTICAL, 16);
+        if(m_NumberOfYAxes == 2)
+            attachedPlot->DrawText(2400-xgapright/5, 1200, m_AxisData[Axis_YR].m_Title.c_str(), TEXT_VERTICALDOWN, 16);
+
+
+
         if(m_GraphType == Plot_GraphBar)
         {
 // First try reducing font size to make fit:
@@ -1120,7 +1165,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
                 textOK = true;
                 for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i+=step)
                 {
-                  attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset), (int)(2400-ygapbottom), m_Labels[i].c_str(), TEXT_VERTICAL, fontsize);
+                  attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset), (int)(2400-ygapbottom+textextent.y/2+ygapbottom/6), m_Labels[i].c_str(), TEXT_VERTICAL, fontsize);
                 }
               }
 
@@ -1293,43 +1338,5 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
             }
         }
         
-        // draw marker lines in grey
-        attachedPlot->SetColour(150,150,150);
-
-        // now loop through the divisions on each axis, drawing each one
-        // first x axis
-        for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
-        {
-            attachedPlot->DrawLine(1, xgapleft+i*xdivoffset, ygaptop, xgapleft + i*xdivoffset, 2400-ygapbottom );
-        }
-    
-        // and the y axis
-        for(i=0; i<m_AxisData[Axis_YL].m_NumDiv+1; i++)
-        {
-            attachedPlot->DrawLine(1, xgapleft, (2400-ygapbottom)-i*ydivoffset, 2400-xgapright, (2400-ygapbottom)-i*ydivoffset);
-        }
-
-        // if there is a 2nd y axis (right) draw that too...
-        if(m_NumberOfYAxes == 2)
-        {
-            for(i=0; i<m_AxisData[Axis_YR].m_NumDiv+1; i++)
-            {
-                attachedPlot->DrawLine(1, 2400-xgapright, (2400-ygapbottom)-i*yroffset, 2400-xgapright+10, (2400-ygapbottom)-i*yroffset);
-            }
-        }
-        
-        // write the labels for each axis, and the graph title
-        attachedPlot->FlipGraph(false);
-        attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.c_str(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
-        attachedPlot->FlipGraph(m_Flipped);
-
-        if(!m_Flipped)
-            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
-        else
-            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_TOP, 16);
-
-        attachedPlot->DrawText(xgapleft/5, 1200, m_AxisData[Axis_YL].m_Title.c_str(), TEXT_VERTICAL, 16);
-        if(m_NumberOfYAxes == 2)
-            attachedPlot->DrawText(2400-xgapright/5, 1200, m_AxisData[Axis_YR].m_Title.c_str(), TEXT_VERTICALDOWN, 16);
     }
 }
