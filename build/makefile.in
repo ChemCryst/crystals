@@ -94,6 +94,3 @@ obj/%.d: obj %.cc
 
 %.o : %.c
 	$(CC) -c $(CFLAGS) -D_$(COMPCODE)_ $(OPT) -o $@ $<
-
-obj :
-	mkdir obj
