@@ -1515,7 +1515,8 @@ C
 C
 cdjwapr99
       data cold /'OLD '/
-      DATA ICOMSZ / 3 /
+cdjwmay00
+      DATA ICOMSZ / 4 /
       DATA MINSIZ / 5 /
 C
 C
@@ -1545,6 +1546,9 @@ C -- SET LOG FLAG
       LOGREQ = ISTORE(ICOMBF+2)
 C -- SET TOTAL LENGTH OF FILE REQUIRED FOR NEW LISTS
       LENTOT = 0
+cdjwmay99
+c----- set type of list to be purged
+      ipgtyp = istore(icombf+3)
 C
 C -- OLD AND NEW FILE UNITS = 'NCDFU'
       NUOLD = NCDFU
@@ -1603,6 +1607,9 @@ C--CHECK IF THERE ARE ANY LISTS ON THIS DISC
 C--PRESERVE THE ADDRESS OF THE LAST LIST IN THE CURRENT LIST INDEX
 1250  CONTINUE
       KE=KC-KB-KB
+c
+c^
+c
 C--FIND ANY LISTS IN THE FILE INDEX WHICH CANNOT BE PURGED
       DO 1700 I=1,MLN
       ISRCH=0
@@ -1624,6 +1631,10 @@ C--CHECK THE SERIAL NUMBERS
 1450  CONTINUE
 C--CHECK IF THIS LIST SHOULD BE SAVED
 1500  CONTINUE
+cdjwmay99{
+c----- is this list type to be purged?
+      If ( (ipgtyp .ne. 0) .and. (ipgtyp .ne. istore(kd))) goto 1550
+cdjwmay99}
       IF ( ISTORE(KD+1) .LT. 0 ) GO TO 1550
 C -- CHECK IF THIS SHOULD BE LOGGED
       IF ( LOGREQ .GT. 0 ) CALL XPUMSG ( 8 , KD )
@@ -1658,20 +1669,27 @@ C -- CREATE NEW FILE
 cdjwapr99{
       istat = len(cssnda)
       call xctrim(cssnda(1:lssnda), jlen)
-      cssnda(jlen:istat) = ' '
+      if (istat .ge. jlen+1) cssnda(jlen+1:istat) = ' '
       do 1710 istat = jlen,1,-1
         if (cssnda(istat:istat) .eq. '.') goto 1715
 1710  continue
-      istat = 0
+c----- add a '.'
+      jlen =jlen+1
+      cssnda(jlen:jlen) = '.'
+      istat = jlen
 1715  continue
       if (jlen - istat .gt. 4) then
        write(cmon,'(a)') 'File extension limited to 4 characters'       
-       CALL XPRVDU(NCEROR, 1,0)
+       call xprvdu(nceror, 1,0)
        write(ncawu,'(a)') cmon(1)(:)
-       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+       if (issprt .eq. 0) write ( ncwu , '(a)' ) cmon(1)(:)
       endif
       cssnda(istat+1:) = cexten
       call xctrim(cssnda,lssnda)
+      write (cmon,*) 'Opening new dsc file: ', cssnda(1:lssnda)
+      call xprvdu(nceror, 1,0)
+      write(ncawu,'(a)') cmon(1)(:)
+      if (issprt .eq. 0) write ( ncwu , '(a)' ) cmon(1)(:)
 cdjwapr99}
       ISTAT = KDAOPN ( NUNEW , CSSNDA(1:LSSNDA) , ISSNEW , ISSWRI )
 C -- CALCULATE THE SPACE REQUIRED FOR THE NEW FILE. THIS IS THE MAXIMUM
