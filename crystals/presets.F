@@ -1102,6 +1102,8 @@ C
 &H-P      DATA LSSVDU / 3 /
 &DOS      DATA CSSVDU  / 'CON' /
 &DOS      DATA LSSVDU / 3 /
+&DVF      DATA CSSVDU  / 'CON' /
+&DVF      DATA LSSVDU / 3 /
 &VAX      DATA CSSVDU  / 'SYS$COMMAND' /
 &VAX      DATA LSSVDU / 11 /
 C
@@ -1111,6 +1113,8 @@ C
 &H-P      DATA LSSLPT / 3 /
 &DOS      DATA CSSLPT  / 'PRN' /
 &DOS      DATA LSSLPT / 3 /
+&DVF      DATA CSSLPT  / 'PRN' /
+&DVF      DATA LSSLPT / 3 /
 &VAX      DATA CSSLPT  / 'SYS$PRINT' /
 &VAX      DATA LSSLPT / 9 /
 C
