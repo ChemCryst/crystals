@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2002/03/13 12:36:23  richard
+C Removed calls to XGDBUP (now obsolete).
+C
 C Revision 1.5  2002/02/12 12:49:10  Administrator
 C reformat output to print new dates properly
 C
@@ -65,7 +68,7 @@ C -- New style date format.
        ENDIF
        WRITE(NCWU,901)LN,LSN,K,IADDI,I,J,CDT
 901    FORMAT
-     1 (' List',I3,' Serial',I5,' Original',I4' Address',I7,' Size',
+     1 (' List',I3,' Serial',I5,' Original',I4,' Address',I7,' Size',
      2 I7,' Write flag',I3,' Date ',A24,' From Disc')
         WRITE ( NCAWU,911) LN,LSN,CDT
         WRITE ( CMON, 911) LN,LSN,CDT

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2002/02/12 12:48:35  Administrator
+C reformat output to print new dates properly
+C
 C Revision 1.9  2001/09/28 10:50:56  ckp2
 C New date style when printing lists.
 C
@@ -194,7 +197,7 @@ C -- New style date format.
        ENDIF
        WRITE(NCWU,901)LN,LSN,NOS,NFW,LL,CDT
 901    FORMAT
-     1 (' List',I3,' Serial',I5,' Original',I4' Address',I7,' Size',
+     1 (' List',I3,' Serial',I5,' Original',I4,' Address',I7,' Size',
      2 I7,14X,' Date ',A24,'   To Disc')
         WRITE ( NCAWU,910) LN,LSN,CDT
         WRITE ( CMON, 910) LN,LSN,CDT
