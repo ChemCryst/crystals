@@ -68,6 +68,7 @@ class CxWindow : public BASEWINDOW
 	afx_msg void OnUpdateMenuItem(CCmdUI* pCmdUI);
 	afx_msg LRESULT OnMyNcPaint(WPARAM wparam, LPARAM lparam);
       afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+      afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
       afx_msg void OnMenuSelected(int nID);
      
 	DECLARE_MESSAGE_MAP()
@@ -85,6 +86,7 @@ protected:
       void OnMenuSelected(wxCommandEvent &event );
       void OnUpdateMenuItem(wxUpdateUIEvent &event );
       void OnKeyDown( wxKeyEvent & event );
+      void OnKeyUp( wxKeyEvent & event );
 
       DECLARE_EVENT_TABLE()
 
