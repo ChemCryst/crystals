@@ -192,140 +192,131 @@ Matrix<float> UnitCell::metricTensor()const
  * index next them
  */
 std::ostream& printCrystConst(std::ostream& pStream)
-{
-    unsigned int i = 0;
-    char* tText = crystalSystemConst((UnitCell::systemID)i);
-    while (tText != NULL)
-    {
-        pStream << i << ": " << tText << "\n";
-        i ++;
-        tText = crystalSystemConst((UnitCell::systemID)i);
+{	
+	for (SystemID i = kTriclinicID; i < kUnknownID; ((uint)i)++)
+	{
+        pStream << i << ": " << crystalSystemConst(i) << "\n";
     }
     return pStream;
 }
 
-char* getCrystalSystem(const UnitCell::systemID pDefault)
+SystemID getCrystalSystem(const SystemID pDefault)
 {
     char* iSelect = new char[255];
-    char* tString = NULL;
     char* tEnd = NULL;
+	SystemID tResult;
     
     do
     {
-        std::cout << "\n" << printCrystConst << "Select crystal system[" << pDefault << "]:";
+		printCrystConst(std::cout);
+		std::cout << "Select crystal system[" << pDefault << "]:";
+		//std::cin.ignore();
+		std::cin.clear();
         std::cin.getline(iSelect, 255);
         if (iSelect[0] == '\0')
-            tString = crystalSystemConst(pDefault);
+		{
+            tResult = pDefault;
+			tEnd = iSelect;
+		}
         else
         { 
-            tString = crystalSystemConst((UnitCell::systemID)strtol(iSelect, &tEnd, 10));
-            if (tEnd[0] != '\0')
-            {
-                tString =NULL;
-            }
+            unsigned int tCheckedResult = strtol(iSelect, &tEnd, 10);
+			tResult = tCheckedResult >= kUnknownID ? kUnknownID:(SystemID)tCheckedResult;
         }
     }
-    while (tString == NULL);
+    while (tEnd[0] != '\0' && tResult!=kUnknownID);
     delete[] iSelect;
-    return tString;
+    return tResult;
 }
 
-/*
- * Requests the user for a crystal system.
- */
-char* getCrystalSystem()
-{
-   return getCrystalSystem(UnitCell::kMonoclinicB);
-}
-
-/*
- * Returns the index of the crystal system which is 
- * passed in pSystem
- */
-UnitCell::systemID indexOfSystem(String& pSystem, String& pUnique)
+SystemID indexOfSystem(String& pSystem, String& pUnique)
 {
     pSystem.upcase();
     pUnique.upcase();
     if (pSystem.cmp("TRICLINIC") == 0)
     {
-        return UnitCell::kTriclinic;
+        return kTriclinicID;
     }
     else if (pSystem.cmp("MONOCLINIC") == 0)
     {
         if (pUnique.cmp("A") == 0)
         {
-            return UnitCell::kMonoclinicA;
+            return kMonoclinicAID;
         }
         else if (pUnique.cmp("C") == 0)
         {
-            return UnitCell::kMonoclinicC;
+            return kMonoclinicCID;
         }
         else if (pUnique.cmp("B")==0 || pUnique.cmp("UNKNOWN")==0)
         {
-            return UnitCell::kMonoclinicB;
+            return kMonoclinicBID;
         }
     }
     else if (pSystem.cmp("ORTHORHOMBIC") == 0)
     {
-        return UnitCell::kOrtharombic;
+        return kOrtharombicID;
     }
     else if (pSystem.cmp("TETRAGONAL") == 0)
     {
-        return UnitCell::kTetragonal;
+        return kTetragonalID;
     }
     else if(pSystem.cmp("TRIGONAL") == 0)
     {
-        return UnitCell::kTrigonal;
+        return kTrigonalID;
     }
     else if(pSystem.cmp("TRIGONAL(RHOM)") == 0)
     {
-        return UnitCell::kTrigonalRhom;
+        return kTrigonalRhomID;
     }
     else if(pSystem.cmp("HEXAGONAL") == 0)
     {
-        return UnitCell::kHexagonal;
+        return kHexagonalID;
     }
     else if(pSystem.cmp("CUBIC") == 0)
     {
-        return UnitCell::kCubic;
+        return kCubicID;
     }
-    return UnitCell::kTriclinic;
+    return kUnknownID;
 }
 
-char* crystalSystemConst(const UnitCell::systemID pIndex)
+
+char* crystalSystemConst(const SystemID pIndex)
 {
     switch (pIndex)
     {
-        case UnitCell::kTriclinic:
-            return "Triclinic";
+        case kTriclinicID:
+            return "TRICLINIC";
         break;
-        case UnitCell::kMonoclinicA:
-            return "MonoclinicA";
+        case kMonoclinicAID:
+            return "MONOCLINICA";
         break;
-        case UnitCell::kMonoclinicB:
-            return "MonoclinicB";
+        case kMonoclinicBID:
+            return "MONOCLINICB";
         break;
-        case UnitCell::kMonoclinicC:
-            return "MonoclinicC";
+        case kMonoclinicCID:
+            return "MONOCLINICC";
         break;
-        case UnitCell::kOrtharombic:
-            return "Orthorhombic";
+        case kOrtharombicID:
+            return "ORTHORHOMBIC";
         break;
-        case UnitCell::kTetragonal:
-            return "Tetragonal";
+        case kTetragonalID:
+            return "TETRAGONAL";
         break;
-        case UnitCell::kTrigonal:
-            return "Trigonal";
+        case kTrigonalID:
+            return "TRIGONAL";
         break;
-        case UnitCell::kTrigonalRhom:
-            return "Trigonal(Rhom)";
+        case kTrigonalRhomID:
+            return "TRIGONAL(RHOM)";
         break;
-        case UnitCell::kHexagonal:
-            return "Hexagonal";
+        case kHexagonalID:
+            return "HEXAGONAL";
         break;
-        case UnitCell::kCubic:
-            return "Cubic";
+        case kCubicID:
+            return "CUBIC";
         break;
+		case kUnknownID:
+			throw MyException(kUnknownException, "Unknown Crystal System being used some how.");
+		break;
     }
     return NULL;
 }
