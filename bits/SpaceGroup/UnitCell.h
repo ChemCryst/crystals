@@ -71,7 +71,7 @@ public:
     float getSEBeta();
     float getSEGamma();
     char* guessCrystalSystem();
-    void readInUnitCell(char* tPath);
+    void readInUnitCell(char* pPath);
 };
 
 char* getCrystalSystem();
