@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2001/06/17 14:50:00  richard
+// Bug in wx version of onchar macro.
+//
 // Revision 1.15  2001/03/27 15:15:00  richard
 // Added a timer to the main window that is activated as the main window is
 // created.
@@ -36,13 +39,15 @@
 //
 #ifndef     __CrystalsInterface_H__
 #define     __CrystalsInterface_H__
+
 #ifdef __LINUX__
 #define __BOTHWX__ 1
-#define __WXGTK__
 #endif
+
 #ifdef __CR_WIN__
 #define __BOTHWIN__ 1
 #endif
+
 #ifdef __WINMSW__
 #define __BOTHWX__ 1
 #define __BOTHWIN__ 1
@@ -251,9 +256,8 @@ void a##::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
 
 #define CXONCHAR(a)  \
 void a##::OnChar(wxKeyEvent &event){ \
-if(event.KeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}\
+if(event.KeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}  \
 else {ptr_to_crObject->FocusToInput((char)event.KeyCode());}}
-
 
 #endif
 
