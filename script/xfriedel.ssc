@@ -1,20 +1,97 @@
 % SCRIPT XFRIEDEL
 % VARIABLE INTEGER FMERGE 
+% VARIABLE REAL ZMAX WORK1 CENTRO WAVE
+% IF ( EXISTS ( 13 ) .NE. 1 ) THEN
+%   COPY '#LIST 13'
+%   COPY 'END'
+% END IF
+% COPY '#GENERALEDIT 13'
+% COPY 'LOCATE RECORDTYPE=103'
+% COPY 'TRANSFER FROM OFFSET=0 TO WAVE'
+% COPY 'END'
+% IF ( EXISTS 29 .NE. 1 ) THEN
+{I **** No atomic properties present (list 29)
+{R             I could have done with that information to  
+{R             recommend what to do with the Friedel pairs.
+% ELSE
+%   COPY '#GENERALEDIT 29'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   LOOP
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=6 TO WORK1'
+%     IF ( WORK1 .GT. ZMAX ) THEN
+%        EVALUATE ZMAX = WORK1
+%     END IF
+%     COPY 'NEXT'
+%   END LOOP
+%   COPY 'END'
+% END IF
+% IF ( EXISTS 2 .NE. 1 ) THEN
+{I **** No symmetry (list 2) present.
+{R             I could have done with that information to  
+{R             recommend what to do with the Friedel pairs.
+%%
+% ELSE
+%   COPY '#GENERALEDIT 2'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%   COPY 'END'
+% END IF
+%%
+%%
+%%
+% IF ( CENTRO .GT. 0.9 ) THEN
+
+{I Centro-symmetric space-group.
+{R * Friedel Pairs will be merged.
+%   EVALUATE FMERGE = 0
+%   COPY '#GENERALEDIT 13'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER TO OFFSET=0 FROM FMERGE'
+%   COPY 'WRITE'
+%   COPY 'END'
+%   FINISH
+% END IF
 %%
 ^^WI WINDOW XFRIEDEL 'Merge Friedel Opposites?' MODAL
 ^^WI COMMIT='MF_BOK' CANCEL='MF_BXX'
-^^WI GRID MAIN NROWS=11 NCOLS=3
+^^WI GRID MAIN NROWS=16 NCOLS=3
 ^^WI {
-^^WI  @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' STATE=ON
-^^WI  @ 3,2 RADIOBUTTON KUN 'Do not merge opposites'
 ^^WI  @ 5,2 STATIC MF1 'It is important NOT TO MERGE OPPOSITES for'
 ^^WI  @ 6,2 STATIC MF1 'structures which have strong anomolous scatterers,'
 ^^WI  @ 7,2 STATIC MF1 'since reflections related by Friedel`s law are not'
 ^^WI  @ 8,2 STATIC MF1 'equivalent in these cases.'
-^^WI  @ 10,2 GRID BTNS NROWS=3 NCOLS=3
+% IF ( ZMAX .GT. 29.0 )  THEN
+^^WI  @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' 
+^^WI  @ 3,2 RADIOBUTTON KUN 'Do not merge opposites' STATE=ON
+^^WI @ 10,2 STATIC MF2 'This structure has atoms heavier than Silicon, so'
+^^WI @ 11,2 STATIC MF2 'in the opinion of the IUCr, the Friedel pairs should'
+^^WI @ 12,2 STATIC MF2 'NOT be merged. However to determine the absolute'
+^^WI @ 13,2 STATIC MF2 'structure you must have observed a sufficient'
+^^WI @ 14,2 STATIC MF2 'number of Friedel pairs, e.g. > 50%.'
+% ELSE IF ( WAVE .GT. 1.5 ) THEN
+^^WI  @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' STATE=ON
+^^WI  @ 3,2 RADIOBUTTON KUN 'Do not merge opposites'
+^^WI @ 10,2 STATIC MF2 'However, this is a light-atom structure so the'
+^^WI @ 11,2 STATIC MF2 'anomalous differences will be small. As you have'
+^^WI @ 12,2 STATIC MF2 'used Cu radiation, you may be able to determine'
+^^WI @ 13,2 STATIC MF2 'the absolute structure if you have collected'
+^^WI @ 14,2 STATIC MF2 'enough Friedel pairs. e.g. > 50%.'
+% ELSE
+^^WI @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' STATE=ON
+^^WI @ 3,2 RADIOBUTTON KUN 'Do not merge opposites'
+^^WI @ 10,2 STATIC MF2 'However, this is a light-atom structure so the'
+^^WI @ 11,2 STATIC MF2 'anomalous differences will be small. As you have'
+^^WI @ 12,2 STATIC MF2 'used Mo radiation, you will not be able to determine'
+^^WI @ 13,2 STATIC MF2 'the absolute structure, except under VERY special' 
+^^WI @ 14,2 STATIC MF2 'conditions. You should merge the Friedel pairs.'
+% END IF
+^^WI  @ 16,2 GRID BTNS NROWS=3 NCOLS=4
 ^^WI  {
-^^WI   @ 2,1 BUTTON MF_BOK '&OK' LENGTH='Cancel' DEFAULT
-^^WI   @ 2,3 BUTTON MF_BXX '&Cancel'
+^^WI   @ 2,1 STRETCH MF_ST HORIZONTAL
+^^WI   @ 2,2 BUTTON MF_BOK '&OK' LENGTH='Cancel' DEFAULT
+^^WI   @ 2,4 BUTTON MF_BXX '&Cancel'
 ^^WI  }
 ^^WI }
 ^^WI SHOW
