@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/07/31 06:51:21  richard
+C
+C Be a little more careful with STORE allocation in XBCALC when called from #EDIT.
+C
 C Revision 1.27  2002/07/29 12:59:25  richard
 C When adding new items to L29 either set colour to 'UNKN', or find the correct
 C colour. (This L29 remains loaded and will be used by XGUIUP).
@@ -961,6 +965,8 @@ C--CHECK IF ANY DISTANCES OR ANGLES HAVE BEEN FOUND AT THIS ATOM
 
         IF ( JFNVC.GE.0 ) THEN
            K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
+c           WRITE(CMON,'(A,I4)') 'K = ',K
+c           CALL XPRVDU(NCVDU,1,0)
         ELSE
            K = KDIST4( JS, JT, JATVC)
         ENDIF
@@ -1107,7 +1113,7 @@ C   it's one where L.LT.M5A. To avoid duplication.
 
           IF ((ISTORE(J).LT.M5A).AND.(ISTORE(MATVCA+1).EQ.0)
      1                          .AND.(ISTORE(IL2     ).EQ.0)) THEN
-             L=3
+             IF (IALL.LE.0) L=3
 c             WRITE(CMON,'(A,A4,I4)')'Duplication removed:',
 c     1       ISTORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1))
 c             CALL XPRVDU(NCVDU,1,0)
