@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/01/22 16:12:26  ckpgroup
+//   Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
+//
 //   Revision 1.8  2002/01/16 10:28:38  ckpgroup
 //   SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
 //
@@ -96,7 +99,7 @@ public:
 class CcPlotData
 {
 public:
-    virtual void DrawView() =0;
+    virtual void DrawView(bool print) =0;
     void Clear();
     virtual Boolean ParseInput( CcTokenList * tokenList );
     CcPlotData();
@@ -124,7 +127,6 @@ public:
 	Boolean			m_AxesOK;
 
 	Boolean			m_DrawKey;		// draw a key of the series names / colours?
-	Boolean			m_DrawRegression;// draw a regression line? (scatter plots only)
 
 	int				m_CurrentSeries;// currently selected series (init as -1 = all)
 	int				m_CurrentAxis;	// currently selected axis (init as -1 = all)
@@ -160,8 +162,6 @@ public:
 	int				m_DrawStyle;	// how to draw this series (scatter / bar / line / etc)
 	int				m_YAxis;		// which y axis is this series attached to (left or right)
 
-	Boolean			m_PlotRegressionLine; // whether to calculate and plot a linear regression line or not
-
 	virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
 
 private:
@@ -195,10 +195,12 @@ private:
 #define kSPlotYAxisRight   "YAXISRIGHT"
 #define kSPlotUseRightAxis "USERIGHTAXIS"
 #define kSPlotKey		   "KEY"
-#define kSPlotBestFitLine  "REGRESSION"
+#define kSPlotSave         "SAVE"
+#define kSPlotPrint        "PLOTPRINT"
+
 enum
 {
- kTPlotAttach = 300,
+ kTPlotAttach = 350,
  kTPlotShow,
  kTPlotBarGraph,
  kTPlotScatter,
@@ -222,7 +224,8 @@ enum
  kTPlotYAxisRight,
  kTPlotUseRightAxis,
  kTPlotKey,
- kTPlotBestFitLine
+ kTPlotSave,
+ kTPlotPrint
 };
 
 

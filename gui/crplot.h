@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/12/13 16:20:33  ckpgroup
+//   SH: Cleaned up the key code. Now redraws correctly, although far too often.
+//   Some problems with mouse-move when key is enabled. Fine when disabled.
+//
 //   Revision 1.4  2001/12/12 16:02:26  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -64,7 +68,7 @@ class   CrPlot : public CrGUIElement
         CrPlot( CrGUIElement * mParentPtr );
         ~CrPlot();
 
-        void ReDrawView();
+        void ReDrawView(bool print);
         void Display();
         void CrFocus();
         CcParse ParseInput( CcTokenList * tokenList );

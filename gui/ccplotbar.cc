@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2002/01/16 10:28:37  ckpgroup
+// SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
+//
 // Revision 1.12  2002/01/14 12:19:52  ckpgroup
 // SH: Various changes. Fixed scatter graph memory allocation.
 // Fixed mouse-over for scatter graphs. Updated graph key.
@@ -203,7 +206,7 @@ void CcPlotBar::ExtendSeriesLength()
 }
 
 // draw all the bar-graph specific stuff
-void CcPlotBar::DrawView()
+void CcPlotBar::DrawView(bool print)
 {
     if(attachedPlot)
 	{
@@ -271,9 +274,12 @@ void CcPlotBar::DrawView()
 			yoriginvaluer = m_Axes.m_AxisData[Axis_YR].m_AxisDivisions[0];
 		}
 
-		// draw a grey background
-		attachedPlot->SetColour(200,200,200);
-		attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
+		// draw a grey background (not if printing)
+		if(!print)
+		{
+			attachedPlot->SetColour(200,200,200);
+			attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
+		}
 		
 		// now loop through the data items, drawing each one
 		// if there are 'm_Next' data items, each will use axiswidth/m_Next as an offset

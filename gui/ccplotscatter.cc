@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2002/01/22 16:12:26  ckpgroup
+// Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
+//
 // Revision 1.10  2002/01/16 10:28:38  ckpgroup
 // SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
 //
@@ -66,7 +69,6 @@
 CcPlotScatter::CcPlotScatter( )
 {
 	m_Axes.m_GraphType = Plot_GraphScatter;
-	m_RecalculateRegression = true;
 }
 
 CcPlotScatter::~CcPlotScatter()
@@ -199,7 +201,7 @@ void CcPlotScatter::ExtendSeriesLength()
 }
 
 // draw scatter-graph specific stuff
-void CcPlotScatter::DrawView()
+void CcPlotScatter::DrawView(bool print)
 {
     if(attachedPlot)
     {
@@ -230,9 +232,6 @@ void CcPlotScatter::DrawView()
 		// check the axis divisions have been calculated
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 
-//		// check if regression line needs calculating
-//		if(m_DrawRegression && m_RecalculateRegression) CalculateRegression();
-
 		// don't draw the graph if no data is present
 		if(m_NextItem == 0)
 			return;
@@ -260,9 +259,12 @@ void CcPlotScatter::DrawView()
 			yoriginvalue = m_Axes.m_AxisData[Axis_YL].m_AxisDivisions[0];
 		}
 		
-		// draw a grey background
-		attachedPlot->SetColour(200,200,200);
-		attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
+		// draw a grey background (not if printing....)
+		if(!print)
+		{
+			attachedPlot->SetColour(200,200,200);
+			attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
+		}
 
 		// now loop through the data items, drawing each one
 		// if there are 'm_Next' data items, each will use 2200/m_Next as an offset
@@ -348,7 +350,6 @@ CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 {
 	CcString ret = "error";
 	bool pointfound = false;
-//	if(m_NextItem > 100) return ret;
 
 	if((point->x < (2400 - m_XGapRight)) && (point->x > m_XGapLeft) && (point->y > m_YGapTop) && (point->y < (2400 - m_YGapBottom)))
 	{
@@ -451,42 +452,6 @@ void CcPlotScatter::AllocateMemory(int length)
 	{
 		m_Series[i]->AllocateMemory(length);
 	}
-}
-
-// calculate a regression line for the specified series
-void CcPlotScatter::CalculateRegression()
-{
-//	LOGWARN("Calculate regression line...");
-
-	// regression calculates a line of equation y = a + bx
-	// where a = ymean - b.xmean
-	// b = ( sum(xy) - (sum x)(sum y)/n ) / (sum(x**2) - (sum x)**2/n)
-	
-/*	for(int i=0; i<m_NumberOfSeries; i++)
-	{
-		float xmean = 0;
-		float ymean = 0;
-		float sumxy = 0;
-		float sumx  = 0;
-		float sumy  = 0;
-		float sumxq = 0;
-
-		for(int j=0; j<m_NextItem; j++)
-		{
-			sumx += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
-			sumy += ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
-			
-			sumxq += (((CcSeriesScatter*)m_Series[i])->m_Data[0][j])*(((CcSeriesScatter*)m_Series[i])->m_Data[0][j]);
-			sumxy += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j] * ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
-		}
-
-		xmean = sumx / m_NextItem;
-		ymean = sumy / m_NextItem;
-
-//		m_RegressionB = (sumxy - sumx*sumy/m_NextItem) / (sumxq - sumx^^2/m_NextItem);
-//		m_RegressionA = ymean - m_RegressionB*xmean;
-	}
-	*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

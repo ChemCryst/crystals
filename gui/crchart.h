@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2002/01/30 10:58:43  ckp2
+//   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
+//   be copied to CxPlot to do same thing.
+//
 //   Revision 1.5  2001/03/08 16:44:04  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -60,7 +64,7 @@ class   CrChart : public CrGUIElement
 #define kSGetCursorKeys         "CURSORKEYS"
 #define kSIsoView       "ISO"
 #define kSNoEdge        "NOEDGE"
-#define kSChartSave    "CHARTSAVE"
+#define kSChartSave    "SAVE"
 #define kSChartPrint    "CHARTPRINT"
 
 enum

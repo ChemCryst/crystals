@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/01/16 10:28:38  ckpgroup
+//   SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
+//
 //   Revision 1.7  2001/12/12 16:02:24  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -46,7 +49,7 @@ class CcString;
 class CcPlotBar : public CcPlotData
 {
     public:
-        void DrawView();
+        void DrawView(bool print);
         Boolean ParseInput( CcTokenList * tokenList );
         CcPlotBar();
         virtual ~CcPlotBar();

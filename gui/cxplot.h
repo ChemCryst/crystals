@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/01/14 12:19:56  ckpgroup
+//   SH: Various changes. Fixed scatter graph memory allocation.
+//   Fixed mouse-over for scatter graphs. Updated graph key.
+//
 //   Revision 1.7  2001/12/13 16:20:34  ckpgroup
 //   SH: Cleaned up the key code. Now redraws correctly, although far too often.
 //   Some problems with mouse-move when key is enabled. Fine when disabled.
@@ -40,6 +44,7 @@
 #define     __CxPlot_H__
 #include    "crguielement.h"
 #include    "ccpoint.h"
+#include	"ccrect.h"
 
 #ifdef __BOTHWX__
 #include <wx/control.h>
@@ -77,9 +82,6 @@ public:
 		~CxPlotKey();
 
 		afx_msg void OnPaint();
-//		afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-//		afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-//		afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 		DECLARE_MESSAGE_MAP()
 
 		CDC * m_memDC;
@@ -140,6 +142,8 @@ class CxPlot : public BASEPlot
 		void CreateKey(int numser, CcString* names, int** col);
 		void CreateKeyWindow(int x, int y);
 
+		CcRect m_client;
+
         CrGUIElement *  ptr_to_crObject;
         int mIdealHeight;
         int mIdealWidth;
@@ -150,20 +154,18 @@ class CxPlot : public BASEPlot
 		CcString	moldText;	// popup text in the last frame
 		bool		mMouseCaptured;
 
-//		CcPoint		mDragPos;	// mouse position when dragging
-//		bool		mDragging;	// true if lbutton down and dragging the key around...
-
 //Machine specific parts:
 #ifdef __CR_WIN__
       public:
 		CStatic* m_TextPopup;
-//		CStatic* m_Key;
-
 		CxPlotKey*	m_Key;
 
         COLORREF mfgcolour;
         CBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
         CDC * m_memDC;
+	
+		void MakeMetaFile(int w, int h);
+		void PrintPicture();
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnSize(UINT nType, int cx, int cy);

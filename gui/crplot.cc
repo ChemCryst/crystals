@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/12/13 16:20:32  ckpgroup
+//   SH: Cleaned up the key code. Now redraws correctly, although far too often.
+//   Some problems with mouse-move when key is enabled. Fine when disabled.
+//
 //   Revision 1.5  2001/12/12 16:02:26  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -130,6 +134,23 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
                 LOGSTAT( "Setting Plot Text: " + mText );
                 break;
             }
+
+			case kTPlotPrint:
+            { 
+                tokenList->GetToken(); 
+                ((CxPlot*)ptr_to_cxObject)->PrintPicture(); 
+                break; 
+            } 
+
+			case kTPlotSave:
+            {
+                tokenList->GetToken();	// "PLOTSAVE"
+                int w = atoi( tokenList->GetToken().ToCString() );
+                int h = atoi( tokenList->GetToken().ToCString() );
+                ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h);
+                break;
+            }
+
             default:
             {
                 hasTokenForMe = false;
@@ -219,10 +240,11 @@ void CrPlot::Display()
     ( (CxPlot *)ptr_to_cxObject)->Display();
 }
 
-void CrPlot::ReDrawView()
+// redraw the view. If print==true, the background rectangle is not drawn (save ink for printing)
+void CrPlot::ReDrawView(bool print)
 {
     if(attachedPlotData)
-        attachedPlotData->DrawView();
+        attachedPlotData->DrawView(print);
 }
 
 void CrPlot::Attach(CcPlotData * doc)

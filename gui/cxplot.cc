@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2002/01/16 10:33:13  ckp2
+//   More meddling. Improved window behaviour by using default CWnd attributes
+//   rather than making own WNDCLASS structure.
+//
 //   Revision 1.13  2002/01/16 10:03:13  ckp2
 //   RC: Just meddling. Made the title bar of the key smaller.
 //
@@ -66,6 +70,9 @@
 #include    "ccpoint.h"
 #include    "ccrect.h"
 #include	<math.h>
+#include <direct.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #ifdef __CR_WIN__
  #include    <afxwin.h>
@@ -182,17 +189,17 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
      CcPoint      newpoint;
 
 #ifdef __CR_WIN__
-     CRect       wwindowext;
-     GetClientRect(&wwindowext);
-     CcRect       windowext( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+//     CRect       swindowext;
+//     GetClientRect(&swindowext);
+     CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
 #ifdef __BOTHWX__
      wxRect wwindowext = GetRect();
      CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
 
-     newpoint.x = (int)((windowext.mRight * x)/2400);
-     newpoint.y = (windowext.mBottom * y)/2400;
+     newpoint.x = (int)(((windowext.mRight - windowext.mLeft) * x)/2400);
+     newpoint.y = ((windowext.mBottom - windowext.mTop)* y)/2400;
 
      return newpoint;
 }
@@ -202,17 +209,17 @@ CcPoint CxPlot::LogicalToDevice(int x, int y)
 	CcPoint newpoint;
 
 #ifdef __CR_WIN__
-	CRect		wwindowext;
-	GetClientRect(&wwindowext);
-	CcRect		windowext(wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+//	CRect		windowext;
+//	GetClientRect(&windowext);
+	CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
 #ifdef __BOTHWX__
 	wxRect wwindowext = GetRect();
 	CcRect windowext(wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
 
-	newpoint.x = (int)(2400*x / windowext.mRight);
-	newpoint.y = (int)(2400*y / windowext.mBottom);
+	newpoint.x = (int)(2400*x / (windowext.mRight - windowext.mLeft));
+	newpoint.y = (int)(2400*y / (windowext.mBottom - windowext.mTop));
 	return newpoint;
 }
 
@@ -233,21 +240,19 @@ void CxPlot::OnPaint()
 	if(m_Key) m_Key->GetWindowRect(&winsize);
 	
 	CPaintDC dc(this); // device context for painting
-    CRect rect;
-    GetClientRect (&rect);
+   CRect rect;
+   GetClientRect (&rect);
 
 	// remove key area from drawing...
 	ValidateRect(&winsize);
 
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
-    dc.BitBlt(0,0,rect.Width(),rect.Height(),m_memDC,0,0,SRCCOPY);
+ //dc.BitBlt(0,0,m_client.Width(),m_client.Height(),m_memDC,0,0,SRCCOPY);
+	dc.BitBlt(0,0,rect.Width(), rect.Height(),m_memDC,0,0,SRCCOPY);
     m_memDC->SelectObject(m_oldMemDCBitmap);
 	if(m_Key)
 	{
 		m_Key->BringWindowToTop();
-//		m_Key->Invalidate();
-//		m_Key->ShowWindow(SW_HIDE);
-//		m_Key->ShowWindow(SW_SHOW);
 	}
 }
 
@@ -278,8 +283,10 @@ void CxPlot::Clear()
 #ifdef __CR_WIN__
     CRect rect;
     GetClientRect (&rect);
+
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
-    m_memDC->PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+//    m_memDC->PatBlt(0, 0, m_client.Width(), m_client.Height(), WHITENESS);
+	m_memDC->PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
@@ -725,7 +732,8 @@ void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
      m_memDC->PatBlt(0, 0, right-left, bottom-top, WHITENESS);
      m_memDC->SelectObject(m_oldMemDCBitmap);
   }
-  ((CrPlot*)ptr_to_crObject)->ReDrawView();
+  m_client.Set(top,left,bottom,right);
+  ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
 #endif
 #ifdef __BOTHWX__
 
@@ -746,7 +754,8 @@ void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
 
       SetSize(left,top,right-left,bottom-top);
 
-      ((CrPlot*)ptr_to_crObject)->ReDrawView();
+      ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
+	  m_client.Set(top,left,bottom,right);
 #endif
 
 }
@@ -936,6 +945,98 @@ void CxPlot::DeleteKey()
   }
 }
 
+// create a wmf of the graph
+void CxPlot::MakeMetaFile(int w, int h)
+{
+    CDC * backup_memDC = m_memDC;
+    CcRect backup_m_client = m_client;
+
+    CcString result;
+    CcString defName = "plot1.wmf";
+    CcString extension = "*.wmf";
+    CcString description = "Windows MetaFile (*.wmf)";
+    CcController::theController->SaveFileDialog(&result, defName, extension, description);
+
+    if ( ! ( result == "CANCEL" ) )
+    {
+        CMetaFileDC mdc;
+
+        mdc.Create((LPCTSTR)result.ToCString());
+
+        mdc.SetAttribDC( m_memDC->m_hAttribDC );
+
+        m_memDC = &mdc;
+        m_client.Set(0,0,w,h);
+
+        ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
+
+        mdc.Close();
+
+        CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+    }
+    else
+    {
+        CcController::theController->ProcessOutput( "Save file cancelled.");
+    }
+    m_memDC = backup_memDC;
+    m_client = backup_m_client;
+}
+
+// allow the user to print this graph
+void CxPlot::PrintPicture() 
+{
+
+    CDC * backup_memDC = m_memDC;
+    CcRect backup_m_client = m_client;
+	char buffer[_MAX_PATH];
+    _getcwd( buffer, _MAX_PATH ); // Get the current working directory.
+
+ 
+    CDC printDC;
+    CPrintDialog printDlg(FALSE);
+
+    if (printDlg.DoModal() == IDOK)
+    {
+
+
+      printDC.Attach(printDlg.GetPrinterDC());
+      printDC.m_bPrinting = TRUE;
+
+      CString appName;
+      appName.LoadString(AFX_IDS_APP_TITLE);
+
+      DOCINFO di;
+      ::ZeroMemory (&di, sizeof (DOCINFO));
+      di.cbSize = sizeof (DOCINFO);
+      di.lpszDocName = appName;
+
+      printDC.StartDoc(&di);        // Begin print job.
+      printDC.StartPage();
+
+// Get the printing extents
+     m_client.Set(0,0, printDC.GetDeviceCaps(VERTRES),
+                        printDC.GetDeviceCaps(HORZRES)); 
+
+      m_memDC = &printDC;
+      ((CrPlot*)ptr_to_crObject)->ReDrawView(true);
+      m_memDC = backup_memDC;
+      m_client = backup_m_client;
+
+      printDC.EndPage();
+      printDC.EndDoc();
+      printDC.Detach();
+    }
+
+
+//If the users saves to a file, it is possible for them to change
+//the Windows working directory. This will confuse CRYSTALS badly.
+//Therefore:
+
+    _chdir(buffer);
+
+    return;
+
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //

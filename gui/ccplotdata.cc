@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2002/01/22 16:12:24  ckpgroup
+// Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
+//
 // Revision 1.11  2002/01/14 12:19:53  ckpgroup
 // SH: Various changes. Fixed scatter graph memory allocation.
 // Fixed mouse-over for scatter graphs. Updated graph key.
@@ -89,7 +92,6 @@ CcPlotData::CcPlotData( )
 	m_NewSeries = false;
 	m_CurrentSeries = -1;	// all series selected
 	m_CurrentAxis = -1;		// also all axes selected
-	m_DrawRegression = false;
 	
 	m_XGapRight = 160;		// horizontal gap between graph and edge of window
 	m_XGapLeft = 200;		//		nb: leave enough space for labels
@@ -188,7 +190,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 			case kTPlotShow:
 			{
 				tokenList->GetToken(); // Remove that token!#
-				this->DrawView();
+				this->DrawView(false);
 				break;
 			}
 			
@@ -478,24 +480,6 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken();	// "KEY"
 
 				m_DrawKey = true;
-				break;
-			}
-
-			// tells this graph to use linear regression
-			case kTPlotBestFitLine:
-			{
-				tokenList->GetToken();	// "REGRESSION"
-
-				if(m_CurrentSeries == (-1))
-				{
-					for(int i=0; i<m_NumberOfSeries; i++)
-					{
-						m_Series[i]->m_PlotRegressionLine = true;
-					}
-				}
-				else m_Series[m_CurrentSeries]->m_PlotRegressionLine = true;
-				
-				m_DrawRegression = true;
 				break;
 			}
 
@@ -1002,7 +986,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 					maxangletextextent.y = 0;
 					for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 					{
-						textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_ANGLE);
+						textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_VERTICAL);
 						if(textextent.x > maxangletextextent.x) maxangletextextent.x = textextent.x;
 						if(textextent.y > maxangletextextent.y) maxangletextextent.y = textextent.y;
 					}
@@ -1011,7 +995,9 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 					{
 						for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 						{
-							attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset), 2400-ygapbottom, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
+							// get the text extent of this label
+							textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_VERTICAL);
+							attachedPlot->DrawText((int)(xgapleft+(i)*xdivoffset), 2400-ygapbottom+textextent.y/2, m_Labels[i].ToCString(), TEXT_VERTICAL, fontsize);
 						}
 						textOK = true;
 					}
