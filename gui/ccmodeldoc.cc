@@ -1,13 +1,12 @@
 ////////////////////////////////////////////////////////////////////////
 
-//   CRYSTALS Interface      Class CcModelDoc
+//   CRYSALS Interface      Class CcModelDoc
 
 ////////////////////////////////////////////////////////////////////////
 
 //   Filename:  CcModelDoc.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:25 Uhr
 
 //BIG NOTICE: ModelDoc is not a CrGUIElement, it's more like a list
 //            of drawing commands.
@@ -18,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2001/01/25 17:04:23  richard
+// Commented out unused lists of model objects. Triangles and Cells, actually.
+//
 // Revision 1.9  2000/10/31 15:42:14  ckp2
 // Link to atom disabling code.
 //
@@ -54,43 +56,43 @@
 
 
 
-#include	"crystalsinterface.h"
-#include	"crconstants.h"
-#include	"ccmodeldoc.h"
-#include	"ccmodelobject.h"
+#include    "crystalsinterface.h"
+#include    "crconstants.h"
+#include    "ccmodeldoc.h"
+#include    "ccmodelobject.h"
 //insert your own code here.
-#include	"crmodel.h"
-//#include	"ccrect.h"
-#include	"cccoord.h"
-#include	"cccontroller.h"	// for sending commands
+#include    "crmodel.h"
+//#include  "ccrect.h"
+#include    "cccoord.h"
+#include    "cccontroller.h"    // for sending commands
 
 CcModelDoc::CcModelDoc( )
 {
-	mAtomList = new CcList();
-	mBondList = new CcList();
+    mAtomList = new CcList();
+    mBondList = new CcList();
 //        mCellList = new CcList();
 //        mTriList = new CcList();
-	m_nAtoms = 0;
-	nSelected = 0;
+    m_nAtoms = 0;
+    nSelected = 0;
 }
 
 CcModelDoc::~CcModelDoc()
 {
-	mAtomList->Reset();
-	mBondList->Reset();
+    mAtomList->Reset();
+    mBondList->Reset();
 //        mCellList->Reset();
 //        mTriList->Reset();
-	CcModelObject* theItem ;
-	while ( ( theItem = (CcModelObject *)mAtomList->GetItem() ) != nil )
-	{
-		mAtomList->RemoveItem();
-		delete theItem;
-	}
-	while ( ( theItem = (CcModelObject *)mBondList->GetItem() ) != nil )
-	{
-		mBondList->RemoveItem();
-		delete theItem;
-	}
+    CcModelObject* theItem ;
+    while ( ( theItem = (CcModelObject *)mAtomList->GetItem() ) != nil )
+    {
+        mAtomList->RemoveItem();
+        delete theItem;
+    }
+    while ( ( theItem = (CcModelObject *)mBondList->GetItem() ) != nil )
+    {
+        mBondList->RemoveItem();
+        delete theItem;
+    }
 //        while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
 //        {
 //                mCellList->RemoveItem();
@@ -102,52 +104,52 @@ CcModelDoc::~CcModelDoc()
 //                delete theItem;
 //        }
 
-	delete mAtomList;
-	delete mBondList;
+    delete mAtomList;
+    delete mBondList;
 //        delete mCellList;
 //        delete mTriList;
 
-	attachedViews.Reset();
-	CrModel* aView;
-	while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
-	{
-		aView->DocRemoved();
-	}
+    attachedViews.Reset();
+    CrModel* aView;
+    while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
+    {
+        aView->DocRemoved();
+    }
 
 }
 
-Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
+Boolean CcModelDoc::ParseInput( CcTokenList * tokenList )
 {
-	Boolean retVal = true;
-	Boolean hasTokenForMe = true;
-	
-	while ( hasTokenForMe )
-	{
-		switch ( tokenList->GetDescriptor(kModelClass) )
-		{
-			case kTModelShow:
-			{
-				tokenList->GetToken(); // Remove that token!
-				DrawViews();
-				break;
-			}
-			case kTModelAtom:
-			{
-				tokenList->GetToken(); // Remove that token!
-				CcModelAtom* item = new CcModelAtom(this);
+    Boolean retVal = true;
+    Boolean hasTokenForMe = true;
+
+    while ( hasTokenForMe )
+    {
+        switch ( tokenList->GetDescriptor(kModelClass) )
+        {
+            case kTModelShow:
+            {
+                tokenList->GetToken(); // Remove that token!
+                DrawViews();
+                break;
+            }
+            case kTModelAtom:
+            {
+                tokenList->GetToken(); // Remove that token!
+                CcModelAtom* item = new CcModelAtom(this);
                         item->ParseInput(tokenList);
-				mAtomList->AddItem(item);
-				m_nAtoms++;
-				break;
-			}
-			case kTModelBond:
-			{
-				tokenList->GetToken(); // Remove that token!
-				CcModelBond* item = new CcModelBond();
-				item->ParseInput(tokenList);
-				mBondList->AddItem(item);
-				break;
-			}
+                mAtomList->AddItem(item);
+                m_nAtoms++;
+                break;
+            }
+            case kTModelBond:
+            {
+                tokenList->GetToken(); // Remove that token!
+                CcModelBond* item = new CcModelBond(this);
+                item->ParseInput(tokenList);
+                mBondList->AddItem(item);
+                break;
+            }
 //                        case kTModelCell:
 //                        {
 //                                tokenList->GetToken(); // Remove that token!
@@ -164,43 +166,43 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 //                                mTriList->AddItem(item);
 //                                break;
 //                        }
-			case kTModelClear:
-			{
-				tokenList->GetToken(); // Remove that token!
-				Clear();
-				break;
-			}
-			default:
-			{
-				hasTokenForMe = false;
-				break; // We leave the token in the list and exit the loop
-			}
-		}
-	}	
-	
-	return retVal;
+            case kTModelClear:
+            {
+                tokenList->GetToken(); // Remove that token!
+                Clear();
+                break;
+            }
+            default:
+            {
+                hasTokenForMe = false;
+                break; // We leave the token in the list and exit the loop
+            }
+        }
+    }
+
+    return retVal;
 }
 
 
 void CcModelDoc::Clear()
 {
-	mAtomList->Reset();
-	mBondList->Reset();
+    mAtomList->Reset();
+    mBondList->Reset();
 //        mCellList->Reset();
 //        mTriList->Reset();
 
-	
-	CcModelObject* theItem ;
-	while ( ( theItem = (CcModelObject *)mAtomList->GetItem() ) != nil )
-	{
-		mAtomList->RemoveItem();
-		delete theItem;
-	}
-	while ( ( theItem = (CcModelObject *)mBondList->GetItem() ) != nil )
-	{
-		mBondList->RemoveItem();
-		delete theItem;
-	}
+
+    CcModelObject* theItem ;
+    while ( ( theItem = (CcModelObject *)mAtomList->GetItem() ) != nil )
+    {
+        mAtomList->RemoveItem();
+        delete theItem;
+    }
+    while ( ( theItem = (CcModelObject *)mBondList->GetItem() ) != nil )
+    {
+        mBondList->RemoveItem();
+        delete theItem;
+    }
 //      while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
 //      {
 //            mCellList->RemoveItem();
@@ -212,7 +214,7 @@ void CcModelDoc::Clear()
 //                delete theItem;
 //        }
 
-	m_nAtoms = 0;
+    m_nAtoms = 0;
 
       nSelected = 0;
 
@@ -224,55 +226,67 @@ void CcModelDoc::Clear()
 
 void CcModelDoc::AddModelView(CrModel * aView)
 {
-	attachedViews.AddItem(aView);
+    attachedViews.AddItem(aView);
       aView->Update();
 }
 
 void CcModelDoc::DrawViews()
 {
-	attachedViews.Reset();
-	CrModel* aView;
-	while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
-	{
+    attachedViews.Reset();
+    CrModel* aView;
+    while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
+    {
             aView->Update();
-	}
+    }
 }
 
 void CcModelDoc::RemoveView(CrModel * aView)
 {
-	while ( attachedViews.FindItem( aView ) )
-	{
-		attachedViews.RemoveItem();
-	}
+    while ( attachedViews.FindItem( aView ) )
+    {
+        attachedViews.RemoveItem();
+    }
 }
 
 void CcModelDoc::Select(Boolean selected)
 {
-	if (selected)
-		nSelected++;
-	else
-		nSelected--;
+    if (selected)
+        nSelected++;
+    else
+        nSelected--;
 //Update the status flag.
-	(CcController::theController)->status.SetNumSelectedAtoms( nSelected );
+    (CcController::theController)->status.SetNumSelectedAtoms( nSelected );
 }
 
 void CcModelDoc::PrepareToGetAtoms()
 {
-	mAtomList->Reset();
+    mAtomList->Reset();
+}
+
+void CcModelDoc::PrepareToGetBonds()
+{
+    mBondList->Reset();
 }
 
 CcModelAtom* CcModelDoc::GetModelAtom()
 {
-	CcModelAtom* item = nil;
-	item = (CcModelAtom*)mAtomList->GetItemAndMove();
-	return item;
+    CcModelAtom* item = nil;
+    item = (CcModelAtom*)mAtomList->GetItemAndMove();
+    return item;
+}
+
+CcModelBond* CcModelDoc::GetModelBond()
+{
+    CcModelBond* item = nil;
+    item = (CcModelBond*)mBondList->GetItemAndMove();
+    return item;
 }
 
 void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 {
-	CcModelAtom* item = FindAtomByLabel(atomname);
-	if(item)
-		item->Select(select);
+    CcModelAtom* item = FindAtomByLabel(atomname);
+    if(item)
+        item->Select(select);
 //      ReDrawHighlights(true);
       DrawViews();
 
@@ -280,8 +294,8 @@ void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 
 void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
 {
-	CcModelAtom* item = FindAtomByLabel(atomname);
-	if(item)
+    CcModelAtom* item = FindAtomByLabel(atomname);
+    if(item)
                 item->Disable(select);
       DrawViews();
 
@@ -289,29 +303,29 @@ void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
 
 CcModelAtom* CcModelDoc::FindAtomByLabel(CcString atomname)
 {
-	CcString nAtomname = Compress(atomname);
-	mAtomList->Reset();
-	CcModelAtom* item;
-	while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
-	{
-		if(item->Label() == nAtomname)
-			return item;
-	}
-	return nil;
+    CcString nAtomname = Compress(atomname);
+    mAtomList->Reset();
+    CcModelAtom* item;
+    while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+    {
+        if(item->Label() == nAtomname)
+            return item;
+    }
+    return nil;
 }
 
 
 
 void CcModelDoc::SelectAllAtoms(Boolean select)
 {
-	mAtomList->Reset();
-	CcModelAtom* item;
+    mAtomList->Reset();
+    CcModelAtom* item;
       int i=0;
-	while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
-	{
+    while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+    {
             i++;
-		item->Select(select);
-	}
+        item->Select(select);
+    }
       DrawViews();
       if ( select )
       {
@@ -327,76 +341,75 @@ void CcModelDoc::SelectAllAtoms(Boolean select)
 
 CcString CcModelDoc::Compress(CcString atomname)
 {
-	int leng = atomname.Length();
-	int index = 0;
-	int charstart = 1, charend = 1;
-	int numbstart = 1, numbend = 1;
-	int i;
+    int leng = atomname.Length();
+    int index = 0;
+    int charstart = 1, charend = 1;
+    int numbstart = 1, numbend = 1;
+    int i;
 //Find first non-space
-	for ( i = 1 ; i <= leng; i++)
-	{
-		if (!(atomname.Sub(i,i) == " "))
-		{
-			charstart = i;
-			i = leng + 1;
-		}
-	}
+    for ( i = 1 ; i <= leng; i++)
+    {
+        if (!(atomname.Sub(i,i) == " "))
+        {
+            charstart = i;
+            i = leng + 1;
+        }
+    }
 
 //Find next space or number.
-	for ( i = charstart ; i <= leng; i++)
-	{
-		if (   (atomname.Sub(i,i) == " ") 
-			|| (atomname.Sub(i,i) == "(") 
-			|| (atoi(atomname.Sub(i,i).ToCString())!=0)
-		   ) 
-		{
-			charend = i - 1;
-			i = leng + 1;
-		}
-	}
+    for ( i = charstart ; i <= leng; i++)
+    {
+        if (   (atomname.Sub(i,i) == " ")
+            || (atomname.Sub(i,i) == "(")
+            || (atoi(atomname.Sub(i,i).ToCString())!=0)
+           )
+        {
+            charend = i - 1;
+            i = leng + 1;
+        }
+    }
 
 //Find first number.
-	for ( i = charend + 1; i <= leng; i++)
-	{
-		if (atoi(atomname.Sub(i,i).ToCString())!=0) 
-		{
-			numbstart = i;
-			i = leng + 1;
-		}
-	}
+    for ( i = charend + 1; i <= leng; i++)
+    {
+        if (atoi(atomname.Sub(i,i).ToCString())!=0)
+        {
+            numbstart = i;
+            i = leng + 1;
+        }
+    }
 
 //Find next non-number.
-	for ( i = numbstart + 1; i <= leng; i++)
-	{
-		if (    (atoi(atomname.Sub(i,i).ToCString())==0)
-			 && !(atomname.Sub(i,i) == "0")
-		   )
-		{
-			numbend = i - 1;
-			i = leng + 1;
-		}
-	}
+    for ( i = numbstart + 1; i <= leng; i++)
+    {
+        if (    (atoi(atomname.Sub(i,i).ToCString())==0)
+             && !(atomname.Sub(i,i) == "0")
+           )
+        {
+            numbend = i - 1;
+            i = leng + 1;
+        }
+    }
 
 //Build string in CRYSTALS format.
-	CcString result;
-	result = atomname.Sub(charstart,charend);
-	result += "(";
-	result += atomname.Sub(numbstart,numbend);
-	result += ")";
+    CcString result;
+    result = atomname.Sub(charstart,charend);
+    result += "(";
+    result += atomname.Sub(numbstart,numbend);
+    result += ")";
 
-	return result;
+    return result;
 }
 
 void CcModelDoc::InvertSelection()
 {
-	mAtomList->Reset();
-	CcModelAtom* item;
-	while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
-	{
-		item->Select();
-	}
-//      ReDrawHighlights(true);
-      DrawViews();
+    mAtomList->Reset();
+    CcModelAtom* item;
+    while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+    {
+        item->Select();
+    }
+    DrawViews();
 }
 
 
@@ -405,28 +418,98 @@ Boolean CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
 {
    if ( mAtomList->ListSize() || mBondList->ListSize() )
    {
-	mAtomList->Reset();
-	mBondList->Reset();
-//      mCellList->Reset();
-//        mTriList->Reset();
+      mAtomList->Reset();
+      mBondList->Reset();
       CcModelAtom* aitem;
       CcModelBond* bitem;
-//    CcModelCell* citem;
-//      CcModelTri*  titem;
 
-      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
             aitem->Render(view,detailed);
 
-      while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) != nil )
+      while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
             bitem->Render(view,detailed);
-
-//      while ( (citem = (CcModelCell*)mCellList->GetItemAndMove()) != nil )
-//            citem->Render(view,detailed);
-//      while ( (titem = (CcModelTri*)mTriList->GetItemAndMove()) != nil )
-//            titem->Render(view,detailed);
 
       return true;
    }
    return false;
+}
+
+void CcModelDoc::ExcludeBonds()
+{
+  if ( mBondList->ListSize() )
+  {
+    mBondList->Reset();
+    CcModelBond* bitem;
+
+    while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
+    {
+      bitem->SelfExclude();
+    }
+   }
+}
+
+
+void CcModelDoc::SelectFrag(CcString atomname, bool select)
+{
+   CcModelAtom *aitem;
+   CcModelBond *bitem;
+
+// Set spare to false for all atoms
+
+   if ( mAtomList->ListSize() )
+   {
+      mAtomList->Reset();
+      while ((aitem = (CcModelAtom*)mAtomList->GetItemAndMove()))
+      {
+        aitem->spare = false;
+      }
+   }
+
+// Set spare to true for the passed in atom.
+
+   aitem = FindAtomByLabel(atomname);
+   if ( aitem ) aitem->spare = true;
+   int nChanged = 1;
+
+// Loop setting spare to true for any atoms bonded to other atoms
+// that also have spare true, until no more changes.
+
+   while ( nChanged )
+   {
+     nChanged = 0;
+
+     if ( mBondList->ListSize() )
+     {
+       mBondList->Reset();
+       while ((bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
+       {
+         if (( bitem->atom1 ) && ( bitem->atom2 ))
+         {
+           if (( bitem->atom1->spare ) && ( ! bitem->atom2->spare ))
+           {
+              bitem->atom2->spare = true;
+              nChanged++;
+           }
+           else if (( bitem->atom2->spare ) && ( ! bitem->atom1->spare ))
+           {
+              bitem->atom1->spare = true;
+              nChanged++;
+           }
+         }
+       }
+     }
+   }
+
+// Select or unselect all spare-flagged atoms.
+
+   if ( mAtomList->ListSize() )
+   {
+      mAtomList->Reset();
+      while ((aitem = (CcModelAtom*)mAtomList->GetItemAndMove()))
+      {
+         if ( aitem->spare ) aitem->Select(select);
+      }
+   }
+   DrawViews();
 }
 
