@@ -1,0 +1,684 @@
+%SCRIPT XPARTS
+%
+%% GENEDIT should be set true while a GENERALEDIT instruction is still active. 
+%%         If you add new code, you must set this as appropriate, especially
+%%         if you are issuing other instructions.
+%% GENCNT  counts the number of TRANSFER directives within GENERALEDIT that
+%%         have been issued. If it gets to 1000, the current instruction is
+%%         ended, and GENEDIT is set to false. (The limit is 9999 TRANSFERS).
+%
+%
+%% Declare variables
+%
+%
+% VARIABLE INTEGER IPART IGROUP ICUR ISELGR ISELPR GENCNT ISER
+% VARIABLE INTEGER NEWGR NEWPR TOTGR TOTPR MAXGR MAXPR
+% VARIABLE LOGICAL GRCHNG PRCHNG ATCHNG GENEDIT PRCHALL
+% VARIABLE CHARACTER CATOM CSEEK
+% VARIABLE REAL RSER
+%%
+% EVALUATE GRCHNG = TRUE
+% EVALUATE PRCHNG = FALSE
+% EVALUATE ATCHNG = FALSE
+% EVALUATE PRCHALL = FALSE
+% EVALUATE NEWGR = 0
+% EVALUATE NEWPR = 0
+% EVALUATE MAXGR = 0
+% EVALUATE MAXPR = 0
+%
+%
+%% Create the window
+%
+%
+^^WI WINDOW XPARTS 'Group and part definitions' KEEP SIZE MODAL
+^^WI COMMIT='PR_BOK' CANCEL='PR_BOK'
+%
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,2 GRID LEFT NROWS=4 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID LEFT NROWS=10 NCOLS=5
+^^WI   {
+^^WI    @ 1,1 STATIC T1 Group
+^^WI    @ 1,3 STATIC T1 Part
+^^WI    @ 1,5 STATIC T1 Atoms
+^^WI    @ 2,1 LISTBOX XPGROUPS VISLINES=9 INFORM=YES ADDTOLIST '0' NULL
+^^WI    @ 2,3 LISTBOX XPPARTS VISLINES=9 INFORM=YES ADDTOLIST '0' NULL
+^^WI    @ 2,5 LISTBOX XPATOMS VISLINES=9 ADDTOLIST 'MM(0000)' NULL
+^^WI    @ 5,1 BUTTON XPBGRA 'New group'
+^^WI    @ 7,1 BUTTON XPBGRR 'Remove group'
+^^WI    @ 5,3 BUTTON XPBPTA 'New part'
+^^WI    @ 7,3 BUTTON XPBPTR 'Remove part'
+^^WI    @ 5,5 BUTTON XPBARA 'Remove atom' DISABLED=YES
+^^WI   }
+^^WI   @ 3,1 STATIC STAT 'Click atoms to add to current group and part'
+^^WI  }
+%
+^^WI  @ 2,4 GRID RIGHT NROWS=1 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 MODELWINDOW MODELPR 'N' NROWS=5 NCOLS=65
+^^WI          ATTACH L5 RADSCALE=250 RADTYPE=COV
+^^WI          MOUSEACTION HEADERATOM
+^^WI  }
+%
+^^WI }
+%
+^^WI SHOW
+^^CR
+%
+%% Window created. Open a generaledit command.
+%
+% COPY '#GENERALEDIT 5'
+% COPY 'LOCATE RECORDT=101'
+% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+% EVALUATE GENEDIT = TRUE
+% EVALUATE GENCNT = 0
+%
+%% Loop back to here every time...
+%
+% LOOP
+%
+%% Find currently selected group:
+%
+%   CLEAR
+%   INSERT '^^?? XPGROUPS LISTTEXT '
+^^?? XPGROUPS SELECTED
+%   GET SILENT INTEGER ' '
+%   OUTPUT
+%   GET SILENT INTEGER ' ' '-1'
+%   EVALUATE ISELGR = VALUE
+%
+%% Find currently selected part:
+%
+%   CLEAR
+%   INSERT '^^?? XPPARTS LISTTEXT '
+^^?? XPPARTS SELECTED
+%   GET SILENT INTEGER ' '
+%   OUTPUT
+%   GET SILENT KEYWORD ' ' '-1'
+%   EVALUATE ISELPR = FIRSTINT ( CVALUE )
+%
+%
+%   IF ( GRCHNG ) THEN
+%
+%% Fill in the GROUPS list.
+%
+%     EVALUATE TOTGR = 1
+%     EVALUATE MAXGR = 0
+%     EVALUATE GRCHNG = FALSE
+%     EVALUATE PRCHNG = TRUE
+%     EVALUATE ISELGR = - 1
+^^CO  SET XPGROUPS REMOVE 0 
+%
+%     IF ( GENEDIT .EQ. FALSE ) THEN
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDT=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       EVALUATE GENEDIT = TRUE
+%       EVALUATE GENCNT = 0
+%     END IF
+%
+%% Find a unique list of group numbers...
+%
+%% Move the GROUP number into SPARE.
+%     COPY 'TOP'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%       EVALUATE IGROUP = ( IPART IDECMASK 111000 ) / 1000
+%       COPY 'TRANSFER TO OFFSET=13 FROM IGROUP'
+%       IF ( IGROUP .GT. MAXGR ) THEN
+%         EVALUATE MAXGR = IGROUP
+%       END IF
+%       COPY 'NEXT'
+%       EVALUATE GENCNT = GENCNT + 1
+%     END LOOP
+%     COPY 'TOP'
+%
+%% Sort into order of GROUP number.
+%% NB: Offset for sort is 1-based, offset for transfer is 0-based.
+%
+%     COPY 'SORT 14 INTEGER ASCEND'
+%
+%% Find and output groups.
+%     COPY 'TOP'
+^^CO  SET XPGROUPS ADDTOLIST '0' 'NULL'
+%     EVALUATE ICUR = 0
+%     EVALUATE ISELGR = 0
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=13 TO IGROUP'
+%       EVALUATE GENCNT = GENCNT + 1
+%       IF ( ICUR .NE. IGROUP ) THEN
+%         IF ( NEWGR .GT. 0 ) .AND. ( IGROUP .GT. NEWGR ) THEN
+%           EVALUATE TOTGR = TOTGR + 1
+%           EVALUATE ISELGR = NEWGR
+%           TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // CHARACTER NEWGR -
+            // "' NULL" TO DISPLAY
+%           TRANSFER "^^CO SET XPGROUPS SELECTION=" // CHARACTER TOTGR -
+            TO DISPLAY
+%           IF ( NEWGR .GT. MAXGR ) THEN
+%             EVALUATE MAXGR = NEWGR
+%           END IF
+%           EVALUATE NEWGR = 0
+%         END IF
+%         EVALUATE ICUR = IGROUP
+%         TRANSFER '^^CO SET XPGROUPS ADDTOLIST ' // CHARACTER ( ICUR ) // -
+          ' NULL' TO DISPLAY
+%         EVALUATE TOTGR = TOTGR + 1
+%         IF ( IGROUP .EQ. NEWGR ) THEN
+%           EVALUATE ISELGR = NEWGR
+%           EVALUATE NEWGR = 0
+%           TRANSFER "^^CO SET XPGROUPS SELECTION=" // -
+            CHARACTER TOTGR TO DISPLAY
+%         END IF
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%
+%     IF ( NEWGR .GT. 0 ) THEN
+%       EVALUATE TOTGR = TOTGR + 1
+%       EVALUATE ISELGR = NEWGR
+%       TRANSFER "^^CO SET XPGROUPS ADDTOLIST '" // CHARACTER NEWGR -
+        // "' NULL" TO DISPLAY
+%       TRANSFER "^^CO SET XPGROUPS SELECTION=" // CHARACTER TOTGR -
+        TO DISPLAY
+%       IF ( NEWGR .GT. MAXGR ) THEN
+%         EVALUATE MAXGR = NEWGR
+%       END IF
+%       EVALUATE NEWGR = 0
+%     END IF
+%
+%
+%   END IF
+%
+%   IF ( GENCNT .GE. 1000 ) THEN
+%     EVALUATE GENCNT = 0
+%     IF ( GENEDIT ) THEN
+%       COPY 'END'
+%       EVALUATE GENEDIT = FALSE
+%     END IF
+%   END IF
+%
+%%%
+%%%
+%%%
+%%%
+%%%
+%
+%
+%   IF ( PRCHNG ) THEN
+%
+%% For the selected GROUP, fill in the PARTS list.
+%
+%     EVALUATE PRCHNG = FALSE
+%     EVALUATE ATCHNG = TRUE
+%     EVALUATE TOTPR = 0
+%     EVALUATE MAXPR = 0
+%     EVALUATE ISELPR = - 1
+^^CO  SET XPPARTS REMOVE 0 
+%
+%     IF ( GENEDIT .EQ. FALSE ) THEN
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDT=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       EVALUATE GENEDIT = TRUE
+%       EVALUATE GENCNT = 0
+%     END IF
+%
+%% Find a unique list of part numbers, for a given group...
+%
+%% Move the PART number into SPARE.
+%
+%     COPY 'TOP'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%       EVALUATE IGROUP = ( IPART IDECMASK 111 )
+%       COPY 'TRANSFER TO OFFSET=13 FROM IGROUP'
+%       COPY 'NEXT'
+%       EVALUATE GENCNT = GENCNT + 2
+%     END LOOP
+%     COPY 'TOP'
+%
+%% Sort into order of PART number.
+%% NB: Offset for sort is 1-based, offset for transfer is 0-based.
+%
+%     COPY 'SORT 14 INTEGER ASCEND'
+%
+%% Find unique PARTS within selected GROUP.
+%
+%     COPY 'TOP'
+%     EVALUATE ICUR = - 1
+%% Always have a group 0 part 0, even if empty.
+%     IF ( ISELGR .EQ. 0 ) THEN
+^^CO    SET XPPARTS ADDTOLIST '0' 'NULL'
+%       EVALUATE TOTPR = 1
+%       EVALUATE ICUR = 0
+%       EVALUATE ISELPR = 0
+%     END IF
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=13 TO IGROUP'
+%       COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%       EVALUATE GENCNT = GENCNT + 2
+%       IF ( ( ( IPART IDECMASK 111000 ) / 1000 ) .EQ. ISELGR ) THEN
+%         IF ( ICUR .NE. IGROUP ) THEN
+%           IF ( IGROUP .GT. MAXPR ) THEN
+%             EVALUATE MAXPR = IGROUP
+%           END IF
+%           IF ( NEWPR .GT. 0 ) .AND. ( IGROUP .GT. NEWPR ) THEN
+%             EVALUATE TOTPR = TOTPR + 1
+%             EVALUATE ISELPR = NEWPR
+%             TRANSFER "^^CO SET XPPARTS ADDTOLIST '" // CHARACTER NEWPR -
+              // "' NULL" TO DISPLAY
+%             TRANSFER "^^CO SET XPPARTS SELECTION=" // CHARACTER TOTPR -
+              TO DISPLAY
+%             IF ( NEWPR .GT. MAXPR ) THEN
+%               EVALUATE MAXPR = NEWPR
+%             END IF
+%             EVALUATE NEWPR = 0
+%           END IF
+%           EVALUATE ICUR = IGROUP
+%           TRANSFER "^^CO SET XPPARTS ADDTOLIST '" // -
+            CHARACTER ( ICUR ) //  "' NULL" TO DISPLAY
+%           EVALUATE TOTPR = TOTPR + 1
+%           IF ( IGROUP .EQ. NEWPR ) THEN
+%             EVALUATE ISELPR = NEWPR
+%             EVALUATE NEWPR = 0
+%             TRANSFER "^^CO SET XPPARTS SELECTION=" // -
+              CHARACTER TOTPR TO DISPLAY
+%           END IF
+%           IF ( ISELPR .EQ. - 1 ) THEN
+%             EVALUATE ISELPR = ICUR
+%           END IF
+%         END IF
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%%
+%     IF ( NEWPR .GT. 0 ) THEN
+%       EVALUATE TOTPR = TOTPR + 1
+%       EVALUATE ISELPR = NEWPR
+%       TRANSFER "^^CO SET XPPARTS ADDTOLIST '" // CHARACTER NEWPR -
+        // "' NULL" TO DISPLAY
+%       TRANSFER "^^CO SET XPPARTS SELECTION=" // CHARACTER TOTPR -
+        TO DISPLAY
+%       IF ( NEWPR .GT. MAXPR ) THEN
+%         EVALUATE MAXPR = NEWPR
+%       END IF
+%       EVALUATE NEWPR = 0
+%     END IF
+%%
+%   END IF
+%
+%%  For group 0, part 0, disable the Remove atom button
+%   IF ( ISELGR .LE. 0 ) .AND. ( ISELPR .LE. 0 ) THEN
+^^CO SET XPBARA DISABLED=YES
+%   ELSE
+^^CO SET XPBARA DISABLED=NO
+%   END IF
+%
+%   IF ( GENCNT .GE. 1000 ) THEN
+%     EVALUATE GENCNT = 0
+%     IF ( GENEDIT ) THEN
+%       COPY 'END'
+%       EVALUATE GENEDIT = FALSE
+%     END IF
+%   END IF
+%
+%   IF ( ATCHNG ) THEN
+%
+%% For the selected GROUP and PART, fill in the ATOMS list.
+%
+%     EVALUATE ATCHNG = FALSE
+^^CO  SET XPATOMS REMOVE 0 
+%
+%     IF ( GENEDIT .EQ. FALSE ) THEN
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDT=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       EVALUATE GENEDIT = TRUE
+%       EVALUATE GENCNT = 0
+%     END IF
+%
+%     COPY 'TOP'
+%     EVALUATE ICUR = 0
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%       EVALUATE GENCNT = GENCNT + 1
+%       IF ( ( ( IPART IDECMASK 000111 ) ) .EQ. ISELPR ) THEN
+%         IF ( ( ( IPART IDECMASK 111000 ) / 1000 ) .EQ. ISELGR ) THEN
+%           COPY 'TRANSFER FROM OFFSET=0 TO CATOM'
+%           COPY 'TRANSFER FROM OFFSET=1 TO RSER'
+%           TRANSFER "^^CO SET XPATOMS ADDTOLIST '" // CATOM // -
+            CHARACTER ( INTEGER RSER ) // "' NULL" TO DISPLAY
+%           EVALUATE GENCNT = GENCNT + 2
+%         END IF
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%   END IF
+%
+%%%
+%
+%   IF ( GENCNT .GE. 1000 ) THEN
+%     EVALUATE GENCNT = 0
+%     IF ( GENEDIT ) THEN
+%       COPY 'END'
+%       EVALUATE GENEDIT = FALSE
+%     END IF
+%   END IF
+%%%
+%
+%% End of the action. Now wait for a user generated event.
+%
+%   VERIFY PR_BOK XPGROUPS XPPARTS ATOM XPBGRA XPBPTA XPBGRR XPBPTR XPBARA
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%
+%% Got an event, now act upon it.
+%
+%   CASE VALUE
+%%
+%     BLOCK                                                %PR_BOK%
+%       IF ( GENEDIT ) THEN
+%         COPY 'END'
+%       END IF
+^^CO    DISPOSE XPARTS
+%       FINISH
+%     END BLOCK
+%%
+%     BLOCK                                                %XPGROUPS%
+%       GET NOSTORE SILENT INTEGER ' ' '0'
+%       EVALUATE PRCHNG = TRUE
+%     END BLOCK
+%%
+%     BLOCK                                                %XPPARTS%
+%       GET NOSTORE SILENT INTEGER ' ' '0'
+%       EVALUATE ATCHNG = TRUE
+%     END BLOCK
+%%
+%     BLOCK                                                %ATOM%
+%       GET NOSTORE SILENT KEYWORD ' ' '0'
+%       EVALUATE CSEEK = FIRSTSTR ( CVALUE )
+%       EVALUATE ISER = FIRSTINT ( CVALUE )
+%       EVALUATE ATCHNG = TRUE
+%
+%       IF ( ISELGR .LT. 0 ) THEN
+%          EVALUATE ISELGR = 0
+^^CO       SET XPGROUPS ADDTOLIST 0 NULL
+%          TRANSFER "^^CO SET XPGROUPS SELECTION=" // -
+           CHARACTER ( TOTGR + 1 ) TO DISPLAY
+%       END IF
+%       IF ( ISELPR .LT. 0 ) THEN
+%          EVALUATE ISELPR = 0
+^^CO       SET XPPARTS ADDTOLIST 0 NULL
+%          TRANSFER "^^CO SET XPPARTS SELECTION=" // -
+           CHARACTER ( TOTPR + 1 ) TO DISPLAY
+%       END IF
+%       EVALUATE ICUR = ( ISELGR * 1000 ) + ISELPR
+%
+%% Find atom in L5
+%
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDT=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       EVALUATE GENCNT = 0
+%
+%       COPY 'TOP'
+%       LOOP
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=0 TO CATOM'
+%         COPY 'TRANSFER FROM OFFSET=1 TO RSER'
+%         IF ( CATOM .EQ. CSEEK ) .AND. ( ( INTEGER RSER ) .EQ. ISER ) THEN
+%           EVALUATE LOOPEND = LOOPCOUNTER
+%           COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%           IF ( ( ( ( IPART IDECMASK 111111 ) ) .EQ. 0 ) .OR. -
+                     ( PRCHALL ) )  THEN
+%             COPY 'TRANSFER TO OFFSET=14 FROM ICUR'
+%             EVALUATE GENCNT = GENCNT + 1
+%           ELSE
+^^WI WINDOW QUESTION 'Change part number?' MODAL
+^^WI COMMIT='PR_BCH'  CANCEL='PRNO' POSITION=CENTRED 'MODELPR'
+^^WI GRID GTB NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 ICON MYICON QUERY
+^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=5
+^^WI   {
+^^WI     @ 1,3 STATIC T1
+% TRANSFER "^^WI 'Atom " // CVALUE // " is already in group " // CHARACTER -
+ ( ( IPART IDECMASK 111000 ) / 1000 ) // " part " // CHARACTER ( IPART -
+ IDECMASK 111 ) // "'" TO DISPLAY
+^^WI     @ 2,3 STATIC T2 'Do you want to move it to this group?'
+^^WI   }
+^^WI   @ 4,4 GRID LOWER NROWS=1 NCOLS=7
+^^WI   {
+^^WI     @ 1,1 STRETCH XQ_S1 HORIZONTAL
+^^WI     @ 1,2 BUTTON PR_BCH 'Yes' DEFAULT COMMIT
+^^WI     @ 1,4 BUTTON PR_BAL 'Yes to all'
+^^WI     @ 1,6 BUTTON PRNO  'No'
+^^WI     @ 1,7 STRETCH XQ_S2 HORIZONTAL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%             VERIFY PR_BCH PR_BAL PRNO
+%             GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%             IF VALUE .LT. 3 THEN
+%               COPY 'TRANSFER TO OFFSET=14 FROM ICUR'
+%               EVALUATE GENCNT = GENCNT + 1
+%             END IF
+%             IF VALUE .EQ. 2 THEN
+%               EVALUATE PRCHALL = TRUE
+%             END IF
+^^CO          DISPOSE QUESTION
+%           END IF
+%         END IF
+%         COPY 'NEXT'
+%       END LOOP
+%       IF GENCNT .GT. 0 THEN
+%         COPY 'WRITE OVERWRITE=OVERWRITE'
+%       END IF
+%       COPY 'END'
+%       EVALUATE GENEDIT = FALSE
+%%
+%     END BLOCK
+%%
+%     BLOCK                                                %XPBGRA%
+^^WI WINDOW NEWGROUP 'New group number?' MODAL
+^^WI COMMIT='NGBT'  CANCEL='NGNO' POSITION=CENTRED 'MODELPR'
+^^WI GRID GTB NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 ICON MYICON QUERY
+^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=5
+^^WI   {
+^^WI     @ 2,2 STATIC T1 'New group number (0-999):'
+%       IF ( MAXGR .GT. 998 ) THEN
+%         EVALUATE MAXGR = 998
+%       END IF
+% TRANSFER "^^WI @ 2,4 EDITBOX ENG '" // CHARACTER ( MAXGR + 1 ) // -
+  "' INTEGER" TO DISPLAY
+^^WI   }
+^^WI   @ 4,4 GRID LOWER NROWS=1 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STRETCH XQ_S1 HORIZONTAL
+^^WI     @ 1,2 BUTTON NGBT 'OK' DEFAULT COMMIT
+^^WI     @ 1,4 BUTTON NGNO  'Cancel'
+^^WI     @ 1,5 STRETCH XQ_S2 HORIZONTAL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%       VERIFY NGBT NGNO
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .EQ. 1 THEN
+%         EVALUATE GRCHNG = TRUE
+^^?? ENG TEXT
+%         GET NOSTORE SILENT INTEGER ' '
+%         EVALUATE NEWGR = VALUE
+%         IF NEWGR .GT. 999 .OR. NEWGR .LT. 0 THEN
+{E Group number out of range. Set to zero.
+%           EVALUATE NEWGR = 0
+%         END IF
+%       END IF
+^^CO DISPOSE NEWGROUP
+%     END BLOCK
+%%
+%     BLOCK                                                %XPBPTA%
+^^WI WINDOW NEWPART 'New part number?' MODAL
+^^WI COMMIT='NPBT'  CANCEL='NPNO' POSITION=CENTRED 'MODELPR'
+^^WI GRID GTB NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 ICON MYICON QUERY
+^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=5
+^^WI   {
+^^WI     @ 2,2 STATIC T1 'New part number (0-999):'
+%       IF ( MAXPR .GT. 998 ) THEN
+%         EVALUATE MAXPR = 998
+%       END IF
+% TRANSFER "^^WI @ 2,4 EDITBOX ENP '" // CHARACTER ( MAXPR + 1 ) // -
+  "' INTEGER" TO DISPLAY
+^^WI   }
+^^WI   @ 4,4 GRID LOWER NROWS=1 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STRETCH XQ_S1 HORIZONTAL
+^^WI     @ 1,2 BUTTON NPBT 'OK' DEFAULT COMMIT
+^^WI     @ 1,4 BUTTON NPNO  'Cancel'
+^^WI     @ 1,5 STRETCH XQ_S2 HORIZONTAL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%       VERIFY NPBT NPNO
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF VALUE .EQ. 1 THEN
+%         EVALUATE PRCHNG = TRUE
+^^?? ENP TEXT
+%         GET NOSTORE SILENT INTEGER ' '
+%         EVALUATE NEWPR = VALUE
+%         IF NEWPR .GT. 999 .OR. NEWPR .LT. 0 THEN
+{E Part number out of range. Set to zero.
+%           EVALUATE NEWPR = 0
+%         END IF
+%       END IF
+^^CO DISPOSE NEWPART
+%     END BLOCK
+%%
+%     BLOCK                                                %XPBGRR%
+%%
+%       TRANSFER '{I Removing all of group ' // CHARACTER ( ISELGR ) -
+        TO DISPLAY
+%       IF ( GENEDIT .EQ. FALSE ) THEN
+%         COPY '#GENERALEDIT 5'
+%         COPY 'LOCATE RECORDT=101'
+%         COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%         EVALUATE GENEDIT = TRUE
+%         EVALUATE GENCNT = 0
+%       END IF
+%       COPY 'TOP'
+%       LOOP
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=14 TO ICUR'
+%         EVALUATE IGROUP = ( ICUR IDECMASK 111000 ) / 1000
+%         IF ( IGROUP .EQ. ISELGR ) THEN
+%           EVALUATE ICUR = 0
+%           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'
+%         END IF
+%         COPY 'NEXT'
+%         EVALUATE GENCNT = GENCNT + 2
+%       END LOOP
+%       IF GENCNT .GT. 0 THEN
+%         COPY 'WRITE OVERWRITE=OVERWRITE'
+%         COPY 'END'
+%         EVALUATE GENEDIT = FALSE
+%       END IF
+%       EVALUATE GRCHNG = TRUE
+%%
+%     END BLOCK
+%%
+%     BLOCK                                                %XPBPTR%
+%%
+%       TRANSFER '{I Removing all of group ' // CHARACTER ( ISELGR ) -
+        // ' Part ' // CHARACTER ( ISELPR ) TO DISPLAY
+%       IF ( GENEDIT .EQ. FALSE ) THEN
+%         COPY '#GENERALEDIT 5'
+%         COPY 'LOCATE RECORDT=101'
+%         COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%         EVALUATE GENEDIT = TRUE
+%         EVALUATE GENCNT = 0
+%       END IF
+%       COPY 'TOP'
+%       LOOP
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=14 TO ICUR'
+%         EVALUATE IGROUP = ( ICUR IDECMASK 111000 ) / 1000
+%         EVALUATE IPART = ( ICUR IDECMASK 000111 )
+%         IF ( IGROUP .EQ. ISELGR ) .AND. ( IPART .EQ. ISELPR ) THEN
+%           EVALUATE ICUR = 0
+%           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'
+%         END IF
+%         COPY 'NEXT'
+%         EVALUATE GENCNT = GENCNT + 2
+%       END LOOP
+%       IF GENCNT .GT. 0 THEN
+%         COPY 'WRITE OVERWRITE=OVERWRITE'
+%         COPY 'END'
+%         EVALUATE GENEDIT = FALSE
+%       END IF
+%       EVALUATE GRCHNG = TRUE
+%%
+%     END BLOCK
+%%
+%     BLOCK                                                %XPBARA%
+%%
+%       IF ( GENEDIT .EQ. FALSE ) THEN
+%         COPY '#GENERALEDIT 5'
+%         COPY 'LOCATE RECORDT=101'
+%         COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%         EVALUATE GENEDIT = TRUE
+%         EVALUATE GENCNT = 0
+%       END IF
+%
+%%      Find currently selected atom
+%
+%       CLEAR
+%       INSERT '^^?? XPATOMS LISTTEXT '
+^^?? XPATOMS SELECTED
+%       GET SILENT INTEGER ' '
+%       OUTPUT
+%       GET SILENT TEXT ' ' ' '
+%       EVALUATE CSEEK = FIRSTSTR ( CVALUE )
+%       EVALUATE ISER = FIRSTINT ( CVALUE )
+%%
+%       COPY 'TOP'
+%       LOOP
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=0 TO CATOM'
+%         COPY 'TRANSFER FROM OFFSET=1 TO RSER'
+%         IF ( CATOM .EQ. CSEEK ) .AND. ( ( INTEGER RSER ) .EQ. ISER ) THEN
+%           EVALUATE ICUR = 0
+%           COPY 'TRANSFER TO OFFSET=14 FROM ICUR'
+%           EVALUATE LOOPEND = LOOPCOUNTER
+%         END IF
+%         COPY 'NEXT'
+%         EVALUATE GENCNT = GENCNT + 2
+%       END LOOP
+%       IF GENCNT .GT. 0 THEN
+%         COPY 'WRITE OVERWRITE=OVERWRITE'
+%         COPY 'END'
+%         EVALUATE GENEDIT = FALSE
+%       END IF
+%       EVALUATE PRCHNG = TRUE
+%%
+%     END BLOCK
+%%
+%   END CASE
+%
+%
+% END LOOP
+%
+% END SCRIPT
