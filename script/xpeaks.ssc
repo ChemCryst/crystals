@@ -16,7 +16,7 @@
 %    ON ERROR REPEAT
 %    QUEUE REWIND
 %    CLEAR
-%    IF ( MAPTYPE .NE. 'DIF' ) THEN
+%    IF ( MAPTYPE .NE. 'DIF' ) .AND. ( EXISTS 5 .EQ. 1 ) THEN
 %%      FO or 2FO-FC   -    we might want refinement
 %      EVALUATE QTITLE = 'Peaks routine'
 %      EVALUATE QLINE1 = 'Do you want to use the peaks to refine'
