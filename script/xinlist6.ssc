@@ -210,6 +210,7 @@
 %         COPY '#LP'
 %         COPY 'END'
 %       END IF
+%       COPY '#SCRIPT XFRIEDEL'
 %       MESSAGE USER1 ' Error during reflection processing'
 %       ON ERROR TERMINATE USER1
 {S * Removing systematically absent reflections
@@ -287,6 +288,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.14  2001/03/27 15:06:23  richard
+%% Use XQMERGE to ask the MERGE question.
+%%
 %% Revision 1.13  2001/02/06 10:18:33  richard
 %% Changed "IGNORE" token after CHECKBOX to "INFORM=NO"
 %%
