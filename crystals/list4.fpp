@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2002/06/05 16:06:12  richard
+C Change header of agreement analysis from /Fo/ to /Fc/.
+C Change SHELX weighting scheme so that parameters refer to data on scale
+C of FC.
+C
 C Revision 1.37  2002/05/09 13:12:29  richard
 C RIC: Swap red/blue bars for the class, parity and layer agreement
 C analyses, to match the Fc/rho plots, which in turn match the
@@ -177,58 +182,62 @@ C
 C
       DATA CSQUAR / '**2 ' /, IBL / '    ' /
       DATA SMALL / .01 /
-C
+
 C----- NO OF PARAMETERS EXPECTED FOR EACH SCHEME. 0 = UNDEFINED
       DATA NPARAM / 1, 1, 2, 1, 0, 0, 0, 0, 0, 0,
      1              0, 1, 3, 0, 0, 6, 0, 0 /
-C
+
       DATA IFMT1 / '(I6,2X,20F7.3)  '/
       DATA IFMT2 / '(/7X,20I7)  '/
       DATA MINSCM /1/, MAXSCM /18/
-C
+
       DATA IVERSN / 530 /
-C
-C
+
+
 C----- ENABLE PRINTING OF OUTLIERS
       JPRINT = 0
-C--CLEAR THE TIME AND CORE AREAS
+C--CLEAR THE TIME
       CALL XTIME1(2)
+
 C--READ ANY DIRECTIVES THAT OFFER THEMSELVES
       I=KRDDPV(IGUI4,1)
       IF ( I .LT. 0 ) GO TO 9970
+
 C--CLEAR THE CORE
       CALL XCSAE
       CALL XRSL
-C--LOAD LIST TYPE 1
+
+C--LOAD LIST TYPE 1, 13 and 23
       CALL XFAL01
       CALL XFAL13
       CALL XFAL23
       IF (IERFLG .LT. 0) GOTO 9990
-      IF (ISTORE(L13CD+1) .LE. -1) THEN
-C F = FO
+
+      IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
             ITWIN = 3
-      ELSE
-C F = FOT
+      ELSE                                 ! F = FOT
             ITWIN = 10
       ENDIF
-      IF (ISTORE(L23MN+3) .LT. 0) GOTO 5560
+
+      IF (ISTORE(L23MN+3) .GE. 0) THEN     ! We are using reflections
 C--BRING DOWN LIST 4
-      CALL XFAL04
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+        CALL XFAL04
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+
 C--SET THE LIST 4 TYPE
-      IULN=4
+        IULN=4
+
 C----- STORE ORIGINAL TYPE
-      ITYPEO = ITYPE4
-      IF ((ITYPE4 .EQ. 17) .OR. (ITYPE4 .EQ. 18)) THEN
-            CALL XNAP04
-            GOTO 9000
-      ENDIF
+        ITYPEO = ITYPE4
+        IF ((ITYPE4 .EQ. 17) .OR. (ITYPE4 .EQ. 18)) THEN
+          CALL XNAP04
+          GOTO 9000
+        ENDIF
 C--FIND THE TYPE OF THIS WEIGHTING SCHEME
-      JTYPE=ICON41
-      IF (JTYPE .EQ. 3) THEN
-C----- RESET JTYPE DEPENDING ON SCHEME NUMBER AND REFINEMENT TYPE
-         IF (ISTORE(L23MN+1) .GE. 0) THEN
-C-----      FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
+        JTYPE=ICON41
+        IF (JTYPE .EQ. 3) THEN     ! Auto Fo or FoSqrd set JTYPE automatically.
+          IF (ISTORE(L23MN+1) .GE. 0) THEN 
+C--FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
             IF (  (ITYPE4 .EQ. 10) .OR.
      1            (ITYPE4 .EQ. 11) .OR.
      1            (ITYPE4 .EQ. 14) .OR.
@@ -241,585 +250,614 @@ C-----      FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
                JTYPE = 1
                IF (ISSPRT .EQ. 0) WRITE(NCWU,100) '1/FO'
             ENDIF
-         ELSE
-C-----     NORMAL REFINEMENT
+          ELSE
+C-- NORMAL REFINEMENT
             JTYPE = 0
             IF (ISSPRT .EQ. 0) WRITE(NCWU,100) 'NORMAL'
-         ENDIF
-      ENDIF
-C----- SET THE MAXIMUM WEIGHT
-      WMX = STORE(L4F+1)
-C----- SET THE RECIPROCAL MAXIMUM WEIGHT
-      WMXINV = 1./ AMAX1( WMX, ZERO)
-C----- NO. WITH MAXIMUM WEIGHT
-      NMX = 0
-C----- SET A UNIT WEIGHT MODIFIER
-      WWT = 1.0
-C----- A BUFFER FOR ONE REFELCTION AND NEGATIVE WEIGHT
-      LTEMPR = NFL
-      NTEMPR = 6
-      NFL = KCHNFL(NTEMPR)
-C----- INITIALISE THE BUFFER
-      JSORT = -5
-      MDSORT = NTEMPR
-      NSORT = 30
-      CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,
+          ENDIF
+        ENDIF
+
+C-- SET THE MAXIMUM WEIGHT
+        WMX = STORE(L4F+1)
+C-- SET THE RECIPROCAL MAXIMUM WEIGHT
+        WMXINV = 1./ AMAX1( WMX, ZERO)
+C-- NO. WITH MAXIMUM WEIGHT
+        NMX = 0
+C-- SET A UNIT WEIGHT MODIFIER
+        WWT = 1.0
+
+C-- A BUFFER FOR ONE REFELCTION AND NEGATIVE WEIGHT
+        LTEMPR = NFL
+        NTEMPR = 6
+        NFL = KCHNFL(NTEMPR)
+C-- INITIALISE THE BUFFER
+        JSORT = -5
+        MDSORT = NTEMPR
+        NSORT = 30
+        CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,
      1   -1, DEF)
-      JSORT = 5
-C----- A BUFFER FOR ONE REFLECTION AND ITS MODIFIER
-      LTEMPE = NFL
-      NTEMPE = 7
-      NFL = KCHNFL(NTEMPE)
+        JSORT = 5
+
+C-- A BUFFER FOR ONE REFLECTION AND ITS MODIFIER
+        LTEMPE = NFL
+        NTEMPE = 7
+        NFL = KCHNFL(NTEMPE)
 C----- INITIALISE THE BUFFER
-      JENAN = -6
-      MDENAN = NTEMPE
-      NENAN = 30
-      CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN, JENAN, LTEMPE, XVALUE,
+        JENAN = -6
+        MDENAN = NTEMPE
+        NENAN = 30
+        CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN, JENAN, LTEMPE, XVALUE,
      1   -1, DEF2)
-      JENAN = 6
+        JENAN = 6
 C
-C--CHECK IF THIS IS VALID WEIGHTING SCHEME
-      IF ( ITYPE4 .LT. MINSCM ) GO TO 9930
-      IF ( ITYPE4 .GT. MAXSCM ) GO TO 9930
-      IF ((ITYPE4 .EQ. 14) .OR. (ITYPE4 .EQ. 15)) THEN
-C-----      WEIGHT ACAINST FC
-            IFTYPE = 1
-      ELSE
-C-----      WEIGHT ACAINST FO
-            IFTYPE = 0
-      ENDIF
+C-- CHECK IF THIS IS VALID WEIGHTING SCHEME
+        IF ( ITYPE4 .LT. MINSCM ) GO TO 9930
+        IF ( ITYPE4 .GT. MAXSCM ) GO TO 9930
+        IF ((ITYPE4 .EQ. 14) .OR. (ITYPE4 .EQ. 15)) THEN
+C-- WEIGHT AGAINST FC
+          IFTYPE = 1
+        ELSE
+C-- WEIGHT ACAINST FO
+          IFTYPE = 0
+        ENDIF
+
 C--SET UP THE DEFAULT SCALE FACTOR
-      A=1.
+        A=1.
 C--SET THE NUMBER OF NEGATIVE WEIGHTS FOUND TO ZERO
-      NGW=0
-C-- CHECK IF THERE IS A LIST 5 TO LOAD
-      IF(KEXIST(5))1800,1800,1750
-C--THERE IS A LIST 5  -  LOAD IT
-1750  CONTINUE
-      CALL XFAL05
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+        NGW=0
+
+        IF(KEXIST(5).GE.1)THEN    ! THERE IS A LIST 5  -  LOAD IT
+          CALL XFAL05
+          IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE SCALE FACTOR
-      A=STORE(L5O)
-1800  CONTINUE
-C----- CHECK IF LIST 6 EXISTS
-      IF (KEXIST(6) .LE. 0) GOTO 9990
+          A=STORE(L5O)
+        END IF
+
+C--CHECK IF LIST 6 EXISTS
+        IF (KEXIST(6) .LE. 0) GOTO 9990
+
 C--JUMP ON THE SORT OF WEIGHTING SCHEME
-      GOTO(1400,1400,1400,1250,1400,1400,1400,1400,1400,1700,1700,2350,
-     2 2410, 1700, 1700, 1400,  9980 ) , ITYPE4
-      GO TO 9980
-C
-C--CHECK FOR WEIGHTING SCHEME TYPE 4
-1250  CONTINUE
-C -- CHECK ENOUGH PARAMETERS GIVEN
-      IF ( MD4 .LT. NPARAM(ITYPE4) ) GO TO 9940
-      GO TO 1450
-C--CHECK FOR MOST OTHER WEIGHTING SCHEMES
-1400  CONTINUE
-      IF ( MD4 .NE. NPARAM(ITYPE4) ) GO TO 9940
-C--CHECK IF THIS IS THE FIRST THREE WEIGHTING SCHEMES
-1450  CONTINUE
-      IF(ITYPE4-3)1500,1500,1650
-C--CHECK THE VALUE FOR PARAMETER ONE  -  A DIVISOR LATER ON
-1500  CONTINUE
-C -- CHECK FOR ZERO OR NEARLY ZERO DIVISOR
-      IF ( ABS(STORE(L4)) - ZERO ) 9950 , 9950 , 1650
-C--SET UP THE REFLECTIONS FOR PROCESSING
-1650  CONTINUE
-      CALL XFAL06(1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+        GOTO(1400,1400,1400,1250,1400,1400,1400,1400,1400,1700,
+     2       1700,2350,2410,1700,1700,1400, 9980 ) , ITYPE4
+        GO TO 9980
+
+1250    CONTINUE   !  WEIGHTING SCHEME TYPE 4
+
+C-- CHECK ENOUGH PARAMETERS GIVEN
+        IF ( MD4 .LT. NPARAM(ITYPE4) ) GO TO 9940
+        GO TO 1450
+
+1400  CONTINUE   ! MOST OTHER WEIGHTING SCHEMES (1,2,3,5,6,7,8,9,16)
+        IF ( MD4 .NE. NPARAM(ITYPE4) ) GO TO 9940
+
+1450    CONTINUE   ! SCHEMES 1,2,3,4,5,6,7,8,9,16
+
+        IF (ITYPE4.LE.3) THEN  ! ONE OF FIRST THREE WEIGHTING SCHEMES
+C-- CHECK THE VALUE FOR PARAMETER ONE - A DIVISOR LATER ON
+C-- CHECK FOR ZERO OR NEARLY ZERO DIVISOR
+          IF ( ABS(STORE(L4)) .LE. ZERO ) GOTO 9950
+        END IF
+
+1650    CONTINUE
+
+        CALL XFAL06(1)
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+
 C--CLEAR THE ACCUMULATION AREA FOR THE WEIGHT
-      CALL XIRTAC(5)
-      GOTO 5100
-C
-C--CHEBYSHEV TYPE WEIGHTING  -
-1700  CONTINUE
+        CALL XIRTAC(5)
+        GOTO 5100
+
+
+1700    CONTINUE   ! CHEBYSHEV TYPE WEIGHTING  - 10,11,14,15
+
 C--SET THE NUMBER OF REFLECTIONS USED TO ZERO
-      NX=0
+        NX=0
 C--SET THE MAXIMUM CHEBYSHEV WEIGHT AS ZERO INITIALLY
-      ADW=0.
+        ADW=0.
 C--SET THE CHEBYSHEV MINIMISATION FUNCTION AS ZERO INITIALLY
-      H=0.
+        H=0.
 C--CHECK THAT THERE ARE AT LEAST TWO COEFFICIENTS TO FIND
-      IF ( MD4 .LE. 1 ) GO TO 9910
+        IF ( MD4 .LE. 1 ) GO TO 9910
+
 C--CHECK IF WE CALCULATING OR JUST APPLYING CHEBYSHEV WEIGHTS
-      IF ((ITYPE4 .EQ. 11).OR.(ITYPE4 .EQ. 15)) THEN
+        IF ((ITYPE4 .EQ. 11).OR.(ITYPE4 .EQ. 15)) THEN
+
 C--SIMPLY APPLYING THE WEIGHTS  -  SET UP LIST 6
-      CALL XFAL06(1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      CALL XIRTAC(5)
+
+          CALL XFAL06(1)
+          IF ( IERFLG .LT. 0 ) GO TO 9900
+          CALL XIRTAC(5)
 C--INDICATE ONLY AN APPLICATION
-      NW=0
-      GOTO 2150
-      ENDIF
-C--SET UP LIST 6 FOR THE INITIAL PASS
-      CALL XFAL06(1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+          NW=0
+        ELSE
+
+C--CALCULATING THE WEIGHTS, SET UP INITIAL PASS OF L6.
+
+          CALL XFAL06(1)
+          IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE CHEBYSHEV POINTER FOR THE CALCULATION OF THE PARAMETERS
-      NW=1
+          NW=1
 C--SET UP A DUMMY LIST 12
-      LN=12
-      IREC=8001
-      N12=MD4
-      MD12B=2
-      N12B=1
-      L12B=KCHLFL(MD12B)
-      ISTORE(L12B)=1
-      ISTORE(L12B+1)=MD4
+          LN=12
+          IREC=8001
+          N12=MD4
+          MD12B=2
+          N12B=1
+          L12B=KCHLFL(MD12B)
+          ISTORE(L12B)=1
+          ISTORE(L12B+1)=MD4
 C--SET UP THE MATRIX AREA
-      IOLD=-1
-      CALL XSET11 (IOLD,1,1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+          IOLD=-1
+          CALL XSET11 (IOLD,1,1)
+          IF ( IERFLG .LT. 0 ) GO TO 9900
 C--ASSIGN A FEW POINTERS
-      NR=L11
-      NS=L11R
+          NR=L11
+          NS=L11R
 C--SET UP THE ANSWERS AREA
-      LN=IULN
-      NT=KADD11(1001,MD11,MD4)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+          LN=IULN
+          NT=KADD11(1001,MD11,MD4)
+          IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE PARTIAL DERIVATIVE AREA
-      IREC=1002
-      NU=NFL
-      NV=KCHNFL(MD4)-1
-2150  CONTINUE
-      CS=0.
-      EW=1.0
-      IF (IFTYPE .EQ. 0) THEN
-C--         FETCH THE MAXIMUM VALUE OF /FO/
-            M6DTL=L6DTL+3*MD6DTL
-            E=STORE(M6DTL+1)
-      ELSE
-C--         FETCH THE MAXIMUM VALUE OF /FC/
-            M6DTL = L6DTL + 5*MD6DTL
-            E = A* STORE(M6DTL+1)
-      ENDIF
+          IREC=1002
+          NU=NFL
+          NV=KCHNFL(MD4)-1
+        ENDIF
+
+
+        CS=0.
+        EW=1.0
+        IF (IFTYPE .EQ. 0) THEN
+C-- FETCH THE MAXIMUM VALUE OF /FO/
+          M6DTL=L6DTL+3*MD6DTL
+          E=STORE(M6DTL+1)
+        ELSE
+C-- FETCH THE MAXIMUM VALUE OF /FC/
+          M6DTL = L6DTL + 5*MD6DTL
+          E = A* STORE(M6DTL+1)
+        ENDIF
 C--CHECK ON THE TYPE OF REFINEMENT THAT WE ARE DOING
-      IF(JTYPE .EQ. 2 ) THEN
-C--     THIS IS REFINEMENT AGAINST /FO/ **2
-        ITL = CSQUAR
-        E=E*E
-      ELSE
-C--     SET THE DEFAULT /FO/ TYPE AS NOT THE SQUARED VARIETY
-        ITL = '    '
-      ENDIF
+        IF(JTYPE .EQ. 2 ) THEN
+C-- THIS IS REFINEMENT AGAINST /FO/ **2
+          ITL = CSQUAR
+          E=E*E
+        ELSE
+C-- SET THE DEFAULT /FO/ TYPE AS NOT THE SQUARED VARIETY
+          ITL = '    '
+        ENDIF
 C----- FC FITTING AGAINST LOG(FC)
-      IF (IFTYPE .NE. 0)      E = LOG(E)
+        IF (IFTYPE .NE. 0)      E = LOG(E)
 C--SET UP THE CORRECT DIVISOR
-      E=1.0/E
+        E=1.0/E
 C--CHECK IF WE ARE CALCULATING OR ONLY APPLYING THE WEIGHTS
-      IF ((ITYPE4 .EQ. 11).OR.(ITYPE4 .EQ. 15))
-     1  GOTO 5100
+        IF ((ITYPE4 .EQ. 11).OR.(ITYPE4 .EQ. 15))
+     1    GOTO 5100
 C--SET UP THE WEIGHTING PARAMETER
-      CS = STORE(L4F)
-      EW=(1.0/E)**CS
-      GOTO 3900
-C
-C--WEIGHTING SCHEME ON SIN(THETA)  -  CHECK IF A PARAMETER HAS BEEN GIVE
-2350  CONTINUE
-      AP=-1.0
-      IF(MD4)1400,1400,2400
+        CS = STORE(L4F)
+        EW=(1.0/E)**CS
+        GOTO 3900
+
+
+2350    CONTINUE   ! WEIGHTING SCHEME 12 ON SIN(THETA)
+C CHECK FOR A PARAMETER
+        AP=-1.0
+        IF(MD4.LE.0) GOTO 1400
 C--A PARAMETER HAS BEEN GIVEN
-2400  CONTINUE
-      AP=STORE(L4)
-      GOTO 1650
-C
-2410  CONTINUE
-C----- MODIFY EXISTING WEIGHTS
-C----- CHECK PARAMETERS GIVEN
-      AP=-1
-      IF(MD4)1400,1400,2420
-2420  CONTINUE
-C----- CHECK SECOND IS NON ZERO
-      AP=STORE(L4)
-      APP=STORE(L4+1)
-      IF ( ABS ( APP ) .LE. ZERO ) GO TO 9940
-      GO TO 1650
-C
+        AP=STORE(L4)
+        GOTO 1650
+
+
+2410    CONTINUE     ! SCHEME 13
+C-- MODIFY EXISTING WEIGHTS
+C-- CHECK PARAMETERS GIVEN
+        AP=-1
+        IF(MD4.LE.0) GOTO 1400
+C-- CHECK SECOND IS NON ZERO
+        AP=STORE(L4)
+        APP=STORE(L4+1)
+        IF ( ABS ( APP ) .LE. ZERO ) GO TO 9940
+        GO TO 1650
+
 C--PROCESS THE NEXT REFLECTION  -  CHECK THAT THE CURRENT /FO/ IS NOT ZE
 
-2450  CONTINUE
-CDJW      FO= ABS(STORE(M6+3))
-      FO= ABS(STORE(M6+ITWIN))
+2450    CONTINUE
+        FO= ABS(STORE(M6+ITWIN))
 C--SET THE WEIGHT TO THE SIGMA VALUED STORED IN LIST 6
-      AW=STORE(M6+12)
-      FC=STORE(M6+5)*A
-      AM=1.0
+        AW=STORE(M6+12)
+        FC=STORE(M6+5)*A
+        AM=1.0
 C--SET UP THE INVERSE VALUES
-      RFO=0.
-      RAW=0.
-C--CHECK THAT /FO/ IS LARGE ENOUGH
+        RFO=0.
+        RAW=0.
+
+C----------- CHECK THAT /FO/ IS LARGE ENOUGH
 cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
-cdjw aug99      IF(ABS(FO)-ZERO)2550,2550,2500
-      IF((FO)-aw)2550,2550,2500
+
+        IF((FO).GT.aw)THEN
 C--THIS /FO/ IS LARGE ENOUGH  -  COMPUTE ITS INVERSE
-2500  CONTINUE
-      RFO=1./FO
-      GOTO 2600
+          RFO=1./FO
+        ELSE
 C--/FO/ IS ZERO  -  ASSIGN A SMALL VALUE TO AVOID 0**0
-2550  CONTINUE
-cdjwaug99
-      rfo = 1. /max(fo, fc, aw, 2.)
-      FO=ZEROSQ
+          rfo = 1. /max(fo, fc, aw, 2.)
+          FO=ZEROSQ
+        ENDIF
+
 C--CHECK THE SIZE OF THE SIGMA TERM
-2600  CONTINUE
-      IF(ABS(AW)-ZERO)2700,2700,2650
+        IF(ABS(AW).GT.ZERO) THEN
 C--THIS WEIGHT IS LARGE ENOUGH  -  COMPUTE ITS INVERSE
-2650  CONTINUE
-      RAW=1./AW
+          RAW=1./AW
+        END IF
+
 C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
-2700  CONTINUE
-      IF(JTYPE-1)2850,2750,2800
-C--WEIGHTS FROM /FO/, BUT MODIFIED TO REFINE AGAINST /FO/ **2
-2750  CONTINUE
-cdjw aug99      AM=0.5*RFO
-      am = 0.5 / max(fo, fc, aw, 2.)
-      GOTO 2850
-C--WEIGHTS COMPUTED FROM /FO/ **2
-2800  CONTINUE
-cdjw aug99      AW=2.0*AW*FO
-      if (fo .le. aw) then
-       AW=2.0*AW*max(FO,fc,aw,2.)
-      else
-       AW=2.0*AW*FO
-      endif
-      FO=FO*FO
-      FC=FC*FC
+        IF(JTYPE.EQ.1) THEN     ! WGHTS FRM /FO/, MODIFD TO BE AGAINST FO**2
+          am = 0.5 / max(fo, fc, aw, 2.)
+        ELSE IF ( JTYPE .GE. 2 ) THEN    ! WEIGHTS COMPUTED FROM /FO/ **2
+          if (fo .le. aw) then
+            AW=2.0*AW*max(FO,fc,aw,2.)
+          else
+            AW=2.0*AW*FO
+          endif
+          FO=FO*FO
+          FC=FC*FC
+        END IF
+
+
 C--BRANCH ON THE TYPE OF WEIGHTING SCHEME
-2850  CONTINUE
-      GOTO(2950,3100,3150,3200,3350,3400,3450,3500,3550,3600,4050,4550,
-     2 4560, 3600, 4050, 3452, 2900),ITYPE4
-C2900  STOP 377
-2900  CALL GUEXIT(377)
-C
+        GOTO(2950,3100,3150,3200,3350,3400,3450,3500,3550,3600,
+     1       4050,4550,4560, 3600, 4050, 3452, 2900),ITYPE4
+2900    CALL GUEXIT(377)
+
 C--WEIGHTING SCHEME TYPE 1  -  FO/P(1), OR P(1) IF FO>P(1)
-2950  CONTINUE
-      IF(FO-STORE(L4))3000,3000,3050
-3000  CONTINUE
-      AW=FO/STORE(L4)
-      GOTO 5050
-3050  CONTINUE
-      AW=STORE(L4)*RFO
-      GOTO 5050
+2950    CONTINUE
+        IF(FO.LE.STORE(L4)) THEN
+          AW=FO/STORE(L4)
+        ELSE
+          AW=STORE(L4)*RFO
+        END IF
+        GOTO 5050
+
 C--WEIGHTING SCHEME TYPE 2  -  1, OR P(1)/FO IF FO>P(1)
-3100  CONTINUE
-      AW=1.
-      IF(FO-STORE(L4))5050,5050,3050
+3100    CONTINUE
+        AW=1.
+        IF(FO.GT.STORE(L4))THEN
+          AW=STORE(L4)*RFO
+        END IF
+        GOTO 5050
+
 C--WEIGHTING SCHEME TYPE 3  -  1/(1+[(FO-P(2))/P(1)]**2)
-3150  CONTINUE
-      AW=1./(1.+((FO-STORE(L4+1))*(FO-STORE(L4+1)))/(STORE(L4)
-     2 *STORE(L4)))
-      GOTO 4600
+3150    CONTINUE
+        AW=1./(1.+((FO-STORE(L4+1))*(FO-STORE(L4+1)))/(STORE(L4)
+     2   *STORE(L4)))
+        GOTO 4600
+
 C--WEIGHTING SCHEME TYPE 4  -  1/(P(1)+FO+P(2)*FO**2+. . . )
 3200  CONTINUE
-      AW=STORE(L4)+FO
-      F=FO
-      M=L4
+        AW=STORE(L4)+FO
+        F=FO
+        M=L4
 C--CHECK IF THE SERIES HAS MORE THAN ONE TERM
-      IF(MD4-2) 4600,3250,3250
+        IF (MD4.GT.1) THEN
 C--ADD IN THE REMAINING TERMS
-3250  CONTINUE
-      DO 3300 L=2,MD4
-      F=F*FO
-      M=M+1
-      AW=AW+F*STORE(M)
-3300  CONTINUE
-      AW = 1. / AW
-      GOTO 4600
-C--WEIGHTING SCHEME TYPE 5  -  STORE(M6+4)=W
-3350  CONTINUE
-      AW=STORE(M6+4)
-      GOTO 4600
-C--WEIGHTING SCHEME TYPE 6  -  STORE(M6+4)=SQRT(W)
-3400  CONTINUE
-      AW=STORE(M6+4)
-      IF(AW)4650,5050,5050
-C--WEIGHTING SCHEME TYPE 7  -  1/SIGMA(/FO/)
-3450  CONTINUE
-      AW=RAW
-      GOTO 4600
-3452  CONTINUE
-C----- SHELXTL WEIGHTS
-C
-C -- Convert everything to scale of FC:
-C
-      IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
-        SFCSIG = AW / A**2
-        SFCFO  = FO / A**2
-        SFCFC  = FC / A**2
-      ELSE                       ! Fo refinement
-        SFCSIG = AW / A
-        SFCFO  = FO / A
-        SFCFC  = FC / A
-      END IF
+          DO L=2,MD4
+            F=F*FO
+            M=M+1
+            AW=AW+F*STORE(M)
+          END DO
+          AW = 1. / AW
+        END IF
+        GOTO 4600
 
-      STHOLS = SNTHL2(L)
-      STH = SQRT(STHOLS)*STORE(L13DC)
-      Q = EXP (STORE(L4+2) * STHOLS)
-      IF ( ABS(STORE(L4+2)) .LE. ZERO) THEN
-            Q = 1.
-      ELSE IF (STORE(L4+2) .LT. ZERO ) THEN
-            Q =  1. - Q
-      ENDIF
-      P = STORE(L4+5) * MAX(0., SFCFO) + (1-STORE(L4+5))*SFCFC
-      AW = Q / 
-     1 (SFCSIG*SFCSIG + (P*STORE(L4))*(P*STORE(L4)) +
-     2  STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH) 
-C
+C--WEIGHTING SCHEME TYPE 5  -  STORE(M6+4)=W
+3350    CONTINUE
+        AW=STORE(M6+4)
+        GOTO 4600
+
+C--WEIGHTING SCHEME TYPE 6  -  STORE(M6+4)=SQRT(W)
+3400    CONTINUE
+        AW=STORE(M6+4)
+        IF(AW)4600,5050,5050
+
+C--WEIGHTING SCHEME TYPE 7  -  1/SIGMA(/FO/)
+3450    CONTINUE
+        AW=RAW
+        GOTO 4600
+
+C--WEIGHTING SCHEME 16 - SHELXL WEIGHTS
+3452    CONTINUE
+
+C -- Convert everything to scale of FC:
+
+        IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
+          SFCSIG = AW / A**2
+          SFCFO  = FO / A**2
+          SFCFC  = FC / A**2
+        ELSE                       ! Fo refinement
+          SFCSIG = AW / A
+          SFCFO  = FO / A
+          SFCFC  = FC / A
+        END IF
+
+        STHOLS = SNTHL2(L)
+        STH = SQRT(STHOLS)*STORE(L13DC)
+        Q = EXP (STORE(L4+2) * STHOLS)
+        IF ( ABS(STORE(L4+2)) .LE. ZERO) THEN
+          Q = 1.
+        ELSE IF (STORE(L4+2) .LT. ZERO ) THEN
+          Q =  1. - Q
+        ENDIF
+        P = STORE(L4+5) * MAX(0., SFCFO) + (1-STORE(L4+5))*SFCFC
+        AW = Q / 
+     1   (SFCSIG*SFCSIG + (P*STORE(L4))*(P*STORE(L4)) +
+     2   STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH) 
+       
 C -- Convert weight back onto scale of FO:
-C
-      IF ( JTYPE .EQ. 2 ) THEN
-        AW = AW / A**4
-      ELSE
-        AW = AW / A**2
-      END IF
-C
-      GOTO 4600
+
+        IF ( JTYPE .EQ. 2 ) THEN
+          AW = AW / A**4
+        ELSE
+          AW = AW / A**2
+        END IF
+        GOTO 4600
+
 C--WEIGHTING SCHEME TYPE 8  -  1/SIGMA(/FO/)**2
-3500  CONTINUE
-      AW=RAW
-      GOTO 5050
+3500    CONTINUE
+        AW=RAW
+        GOTO 5050
+
 C--WEIGHTING SCHEME TYPE 9  -  UNIT WEIGHTS
-3550  CONTINUE
-      AW=1.
-      GOTO 5050
-C
-C--CALCULATE THE CHEBYSHEV COEFFICIENTS  -  WEIGHTING SCHEME TYPE 10
-C----- OR SCHEME 14
-3600  CONTINUE
-      B = (FO - FC) * (FO - FC)
-      IF (IFTYPE .EQ. 0) THEN
-      G=2.*FO*E-1.
-      ELSE
-      G = 2. * (LOG(AMAX1(1.,FC))*E) -1.
-      B = SQRT(B)
-      ENDIF
-      STORE(NU)=1.
-      STORE(NU+1)=G
-      IF(MD4-2)3750,3750,3650
+3550    CONTINUE
+        AW=1.
+        GOTO 5050
+
+C-- CALCULATE THE CHEBYSHEV COEFFICIENTS  -  WEIGHTING SCHEME TYPE 10
+C-- OR SCHEME 14
+3600    CONTINUE
+        B = (FO - FC) * (FO - FC)
+        IF (IFTYPE .EQ. 0) THEN
+          G=2.*FO*E-1.
+        ELSE
+          G = 2. * (LOG(AMAX1(1.,FC))*E) -1.
+          B = SQRT(B)
+        ENDIF
+        STORE(NU)=1.
+        STORE(NU+1)=G
+        IF(MD4.GT.1)THEN
 C--ACCUMULATE TERMS HIGHER THAN 2
-3650  CONTINUE
-      NQ=NU+2
-      DO 3700 L=3,MD4
-      STORE(NQ)=2.*G*STORE(NQ-1)-STORE(NQ-2)
-      NQ=NQ+1
-3700  CONTINUE
+          NQ=NU+2
+          DO L=3,MD4
+            STORE(NQ)=2.*G*STORE(NQ-1)-STORE(NQ-2)
+            NQ=NQ+1
+          END DO
+        END IF
 C--COMPUTE THE WEIGHTS FOR THIS REFLECTION
-3750  CONTINUE
-cdjw99      W=EW/(1.+FO**CS)
-      W=EW/(1.+Fc**CS)
-      NQ=NR
-      NP=NS
+        W=EW/(1.+Fc**CS)
+        NQ=NR
+        NP=NS
+
 C--ACCUMULATE THE LEAST SQUARES MATRIX
-      DO 3850 L=NU,NV
+        DO L=NU,NV
 C--THE LEFT HAND SIDE
-      DO 3800 M=L,NV
-      STR11(NQ)=STR11(NQ)+STORE(L)*STORE(M)*W
-      NQ=NQ+1
-3800  CONTINUE
+          DO M=L,NV
+            STR11(NQ)=STR11(NQ)+STORE(L)*STORE(M)*W
+            NQ=NQ+1
+          END DO
 C--THE RIGHT HAND SIDE
-      STR11(NP)=STR11(NP)+STORE(L)*B*W
-      NP=NP+1
-3850  CONTINUE
+          STR11(NP)=STR11(NP)+STORE(L)*B*W
+          NP=NP+1
+        END DO
+
 C--FETCH THE NEXT REFLECTION
-3900  CONTINUE
-      IF(KFNR(0))3950,2450,2450
-C
-C
-C
+3900    CONTINUE
+        IF(KFNR(0).GE.0) GOTO 2450
+
+
+
 C--SOLVE THE CHEBYSHEV CASE
-3950  CONTINUE
-      CALL XCHOLS(MD4,NR,NT)
-      CALL XSOLVE(MD4,NR,NS,NT)
+        CALL XCHOLS(MD4,NR,NT)
+        CALL XSOLVE(MD4,NR,NS,NT)
 C--CLEAR THE LIST ENTRIES
-      CALL XCSAE
+        CALL XCSAE
 C--RELOAD LIST 4
-      CALL XFAL04
+        CALL XFAL04
 C--MOVE THE PARAMETERS TO LIST 4
-      IF ((ITYPE4 .EQ. 10) .OR. (ITYPE4 .EQ. 14)) THEN
-      NP=NT
-      NQ=L4
-      DO 4000 L=1,MD4
-      STORE(NQ)=STR11(NP)
-      NP=NP+1
-      NQ=NQ+1
-4000  CONTINUE
-      IF (ITYPE4 .EQ. 10) THEN
+        IF ((ITYPE4 .EQ. 10) .OR. (ITYPE4 .EQ. 14)) THEN
+          NP=NT
+          NQ=L4
+          DO L=1,MD4
+            STORE(NQ)=STR11(NP)
+            NP=NP+1
+            NQ=NQ+1
+          END DO
+          IF (ITYPE4 .EQ. 10) THEN
 C--ALTER THE SCHEME TYPE TO 11, AND APPLY THE PARAMETERS
-      ITYPE4=11
-      ELSE IF (ITYPE4 .EQ. 14) THEN
-C----- ALTER TYPE TO 15
+            ITYPE4=11
+          ELSE IF (ITYPE4 .EQ. 14) THEN
+C--ALTER TYPE TO 15
             ITYPE4 = 15
-      ENDIF
-      ELSE
-C----- PROGRAMMING ERROR
+          ENDIF
+        ELSE
+C--PROGRAMMING ERROR
             GOTO 9980
-      ENDIF
+        ENDIF
 C--SET THE NUMBER OF REFLECTIONS USED TO ZERO
-      NX=0
+        NX=0
 C--SET THE MAXIMUM CHEBYSHEV WEIGHT AS ZERO INITIALLY
-      ADW=0.
+        ADW=0.
 C--SET THE CHEBYSHEV MINIMISATION FUNCTION AS ZERO INITIALLY
-      H=0.
-      GOTO 1650
-C
-C----- WEIGHTING SCHEMES TYPE 11, 15 - APPLY CHEBYCHEV WEIGHTS
-4050  CONTINUE
-      F=FO-FC
-      F=F*F
-      FSQ = F
-      IF (IFTYPE .EQ. 0) THEN
-      G=2.*FO*E-1.
-      ELSE
-            F = SQRT(F)
-            G = 2. * (LOG(AMAX1(1.,FC))*E) -1.
-      ENDIF
-      B=1.
-      C=G
-      AW=B*STORE(L4)
+        H=0.
+        GOTO 1650
+
+
+C--WEIGHTING SCHEMES TYPE 11, 15 - APPLY CHEBYCHEV WEIGHTS
+4050    CONTINUE
+        F=FO-FC
+        F=F*F
+        FSQ = F
+        IF (IFTYPE .EQ. 0) THEN
+          G=2.*FO*E-1.
+        ELSE
+          F = SQRT(F)
+          G = 2. * (LOG(AMAX1(1.,FC))*E) -1.
+        ENDIF
+        B=1.
+        C=G
+        AW=B*STORE(L4)
 C--CHECK THE NUMBER OF TERMS TO BE USED
-      IF(MD4-2)4250,4200,4100
-C--ADD IN TERMS OVER THE SECOND
-4100  CONTINUE
-      M=L4+2
-      DO 4150 L=3,MD4
-      D=2.*G*C-B
-      AW=AW+D*STORE(M)
-      M=M+1
-      B=C
-      C=D
-4150  CONTINUE
-C--ADD IN THE SECOND TERM
-4200  CONTINUE
-      AW=AW+G*STORE(L4+1)
+        IF ( MD4 .GE. 3 ) THEN    ! MORE THAN TWO TERMS
+          M=L4+2
+          DO L=3,MD4
+            D=2.*G*C-B
+            AW=AW+D*STORE(M)
+            M=M+1
+            B=C
+            C=D
+          END DO
+        END IF
+        IF ( MD4 .GE. 2 ) THEN   ! TWO OR MORE TERMS - ADD IN THE SECOND TERM
+          AW=AW+G*STORE(L4+1)
+        END IF
 C--CHECK IF WE SHOULD ACCUMULATE THE VARIANCE
-4250  CONTINUE
-      IF (NW) 4400, 4400, 4300
+        IF ( NW .GE. 1 ) THEN
 C--ACCUMULATE THE VARIANCE
-4300  CONTINUE
-      IF(KALLOW(I))4400,4350,4350
+          IF( KALLOW(I) .GE. 0 ) THEN
 C--THIS REFLECTION DID TAKE PART IN FORMING THE COEFFICIENTS
-4350  CONTINUE
-      NX=NX+1
-      F=AW-F
+            NX=NX+1
+            F=AW-F
 cdjw99      H=H+F*F*EW/(1.+FO**CS)
-      H=H+F*F*EW/(1.+Fc**CS)
+            H=H+F*F*EW/(1.+Fc**CS)
+          END IF
+        END IF
+
 C--FIND THE MAXIMUM OF THE INVERSE WEIGHT
-4400  CONTINUE
-      IF (IFTYPE .EQ. 1)       AW = AW * AW
-      ADW=AMAX1(ADW,AW)
-C
-C----- SAVE INVERSE WEIGHT
-      AWI = AW
-      IF (AW .LT. WMXINV) THEN
-C            INVERSE WEIGHT TOO SMALL
+        IF (IFTYPE .EQ. 1)       AW = AW * AW
+        ADW=AMAX1(ADW,AW)
+
+C--SAVE INVERSE WEIGHT
+        AWI = AW
+        IF (AW .LT. WMXINV) THEN
+C--INVERSE WEIGHT TOO SMALL
             AW = WMXINV
-      ENDIF
-C----- GT ACTUAL WEIGHT
-      AW = 1. / AW
-C
-      IF (ITYPE4 .EQ. 15)  THEN
-C----- TUKEY-PRINCE SCHEME (SCHEME 15)
-            CALL XMODWT (FSQ, AWI, WWT, JPRINT, jtype)
-C----- APPLY WEIGHT MODIFIERS
-C                WRITE TO OUTLIER BUFFER
-              IF (WWT .LT. XVALUE) THEN
-C----  H,K,L,FO,FC,WWT
-                 CALL XMOVE(STORE(M6), STORE(LTEMPE), 3)
-                 STORE(LTEMPE+3) = FO
-                 STORE(LTEMPE+4) = FC
-                 STORE(LTEMPE+5) = SQRT(FSQ/(AWI+ZEROSQ))
-                 STORE(LTEMPE+6) = WWT
-                 CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN,
+        ENDIF
+C--GT ACTUAL WEIGHT
+        AW = 1. / AW
+
+        IF (ITYPE4 .EQ. 15)  THEN
+C--TUKEY-PRINCE SCHEME (SCHEME 15)
+           CALL XMODWT (FSQ, AWI, WWT, JPRINT, jtype)
+C--APPLY WEIGHT MODIFIERS
+C--WRITE TO OUTLIER BUFFER
+           IF (WWT .LT. XVALUE) THEN
+C--H,K,L,FO,FC,WWT
+              CALL XMOVE(STORE(M6), STORE(LTEMPE), 3)
+              STORE(LTEMPE+3) = FO
+              STORE(LTEMPE+4) = FC
+              STORE(LTEMPE+5) = SQRT(FSQ/(AWI+ZEROSQ))
+              STORE(LTEMPE+6) = WWT
+              CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN,
      1           JENAN, LTEMPE, XVALUE, -1, DEF2)
-             ENDIF
-      ENDIF
-      GOTO 4600
-C
+           ENDIF
+        ENDIF
+        GOTO 4600
+
+
 C--WEIGHTING SCHEME TYPE 12  -  A FUNCTION OF SIN(THETA)/LAMBDA
-4550  CONTINUE
-      AW=SQRT(SNTHL2(L))**AP
-      GOTO 5000
-C
-4560  CONTINUE
+4550    CONTINUE
+        AW=SQRT(SNTHL2(L))**AP
+        GOTO 5000
+
+
+4560    CONTINUE
 C-- WEIGHTING SCHEME TYPE 13 -  MODIFY EXISTING WEIGHTS
-      A=SNTHL2(L)
-      AW=STORE(M6+4)*STORE(M6+4)*EXP(4.*TWOPIS*A*AP/APP)
-      GOTO 4600
-C
+        A=SNTHL2(L)
+        AW=STORE(M6+4)*STORE(M6+4)*EXP(4.*TWOPIS*A*AP/APP)
+        GOTO 4600
+
+
+
+
 C--CALCULATE THE SQUARE ROOT OF THE WEIGHT AND STORE IT
-4600  CONTINUE
-4650  CONTINUE
-      IF (WWT .LE. 0.0) THEN
+4600    CONTINUE
+        IF (WWT .LE. 0.0) THEN
 C----- WRITE OUTLIERS TO LISTING FILE
-        IF (JPRINT .EQ. 1) THEN
+          IF (JPRINT .EQ. 1) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,  '( '' Outliers '',
      1    3X,''h'',3X, ''k'',3X, ''l'',4X, ''F obs'', 4X,
      2    ''F calc'', 3X, ''Delta sq'', 1X, ''Est delta sq'')' )
-        ENDIF
-        IF ((JPRINT .GT. 0) .AND. (JPRINT .LT. 60)) THEN
-          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(10X, 3I4,2F10.2,2G10.2)')
+          ENDIF
+          IF ((JPRINT .GT. 0) .AND. (JPRINT .LT. 60)) THEN
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(10X, 3I4,2F10.2,2G10.2)')
      1      NINT(STORE(M6)), NINT(STORE(M6+1)), NINT(STORE(M6+2)),
      2      FO, FC, FSQ, AWI
-        ELSE IF (JPRINT .EQ. 60 ) THEN
-          IF (ISSPRT .EQ. 0)WRITE(NCWU, '(1X,'' And so on .......'')')
-        ELSE
-          CONTINUE
+          ELSE IF (JPRINT .EQ. 60 ) THEN
+            IF (ISSPRT .EQ. 0)WRITE(NCWU, '(1X,'' And so on .......'')')
+          ELSE
+            CONTINUE
+          ENDIF
         ENDIF
-      ENDIF
-      IF(AW .LT. 0.0) THEN
+        IF(AW .LT. 0.0) THEN
             AW = ZEROSQ
             NGW = NGW+1
-      ENDIF
-C     WRITE TO SMALL WEIGHT BUFFER
-      IF (AW .LT. XVALUR) THEN
-C----  H,K,L,FO,FC,AW
-             CALL XMOVE(STORE(M6), STORE(LTEMPR), 3)
-             STORE(LTEMPR+3) = FO
-             STORE(LTEMPR+4) = FC
-             STORE(LTEMPR+5) = AW
-             CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT,
+        ENDIF
+C--WRITE TO SMALL WEIGHT BUFFER
+        IF (AW .LT. XVALUR) THEN
+C--H,K,L,FO,FC,AW
+           CALL XMOVE(STORE(M6), STORE(LTEMPR), 3)
+           STORE(LTEMPR+3) = FO
+           STORE(LTEMPR+4) = FC
+           STORE(LTEMPR+5) = AW
+           CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT,
      1       LTEMPR, XVALUR, -1, DEF)
-      ENDIF
-      AW = AW * WWT
+        ENDIF
+        AW = AW * WWT
 C--STORE THE SQUARE ROOT OF THE WEIGHT
-5000  CONTINUE
-C----- CHECK IF TOO LARGE
-      IF (AW - WMX) 5020, 5020, 5010
-5010  CONTINUE
-C----- TOO LARGE
-      AW  = WMX
-      NMX = NMX + 1
-5020  CONTINUE
-      AW=SQRT(AW)
+5000    CONTINUE
+C--CHECK IF TOO LARGE
+        IF (AW - WMX) 5020, 5020, 5010
+5010    CONTINUE
+C--TOO LARGE
+        AW  = WMX
+        NMX = NMX + 1
+5020    CONTINUE
+        AW=SQRT(AW)
+
 C--STORE THE LAST REFLECTION
-5050  CONTINUE
-      STORE(M6+4)=AM*AW
-      CALL XSLR(1)
-      CALL XACRT(5)
+5050    CONTINUE
+        STORE(M6+4)=AM*AW
+        CALL XSLR(1)
+        CALL XACRT(5)
 C--FETCH THE NEXT REFLECTION
-5100  CONTINUE
-      IF(KLDRNR(1))5150,2450,2450
-C
-C
-C
+
+5100    CONTINUE
+        IF(KLDRNR(1))5150,2450,2450
+
+        GOTO 5150
+
+      ENDIF
+
+      GOTO 5560
+
 C----- TIDY UP AND END
-C
+
 5150  CONTINUE
 C--JUMP ON THE SCHEME TYPE
-      GOTO(5550,5550,5550,5550,5550,5550,5550,5550,5550,9975,5700,5550,
-     2 5550, 9975, 5700, 5550,  9930), ITYPE4
+      GOTO(5550,5550,5550,5550,5550,5550,5550,5550,5550,9975,
+     1       5700,5550,5550,9975,5700,5550,9930), ITYPE4
 C
 C--TERMINATE THE REFLECTION TRANSFER AND RETURN
 5550  CONTINUE
       CALL XCRD(5)
       CALL XEND06
-C----- IF THE TYPE WAS TO TAKE ROOT W, CHANGE TO SAVE W
+C--TYPE WAS TO TAKE ROOT W, CHANGE TO SAVE W
       IF (ITYPE4 .EQ. 5) ITYPE4 = 6
-C----- IF ANY TYPE CHANGES (FROM 5, 10, 14), REWRITE LIST 4
+C--TYPE CHANGES (FROM 5, 10, 14), REWRITE LIST 4
       IF (ITYPE4 .NE. ITYPEO) THEN
 C--WRITE THE NEW LIST OUT TO DISC
 \IDIM04
-      CALL XWLSTD(4, ICOM04, IDIM04,-1,-1)
+        CALL XWLSTD(4, ICOM04, IDIM04,-1,-1)
       ENDIF
+
+
+
+
 C--FORM LIST 36 AND OUTPUT IT
 5560  CONTINUE
       CALL XCELST(36,ICOM04,4)
@@ -839,7 +877,8 @@ c----- write the buffers
      3  JXAP= MSORT, MSORT+MDSORT, MDSORT)
 5565    CONTINUE
       ENDIF
-C
+
+C--For SCHEME 15 print outliers etc.
       IF ((ITYPE4 .EQ. 15) .AND. (JPRINT .GT .0)) THEN
 6110      FORMAT(/I6,
      1    ' Outliers,      N= Abs(delta)/Estimated(delta)')
@@ -851,18 +890,18 @@ C
      1     (2('   h   k   l      Fo       Fc     N    '))
            WRITE(NCAWU, '(A)') CMON(1)(:)
            CALL XPRVDU(NCVDU, 1,0)
-           DO 5563 MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
-           IF (STORE(MENAN+13) .GT. ZERO) GOTO 5563
-           WRITE ( CMON,
-     *     '(3I4, 2F9.1, F7.2, 2X,3I4, 2F9.1, F7.2 )')
-     1     ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
-     2     (STORE(IXAP), IXAP= JXAP+3,JXAP+5),
-     3     JXAP= MENAN, MENAN+MDENAN, MDENAN)
-           CALL XPRVDU(NCVDU, 1,0)
-           WRITE(NCAWU, '(A)') CMON(1)(:)
-5563       CONTINUE
+           DO MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
+             IF (STORE(MENAN+13) .GT. ZERO) CYCLE
+             WRITE ( CMON,
+     *         '(3I4, 2F9.1, F7.2, 2X,3I4, 2F9.1, F7.2 )')
+     1         ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
+     2         (STORE(IXAP), IXAP= JXAP+3,JXAP+5),
+     3         JXAP= MENAN, MENAN+MDENAN, MDENAN)
+             CALL XPRVDU(NCVDU, 1,0)
+             WRITE(NCAWU, '(A)') CMON(1)(:)
+           END DO
       ENDIF
-C
+
       IF (NGW .GT. 0) GOTO 9920
 5570  CONTINUE
 C--CHECK IF ANY REFLECTIONS HAVE BEEN FOUND WITH NEGATIVE WEIGHTS
@@ -915,13 +954,13 @@ C----- RESTORE 'E' (AS F!)
       IF (IFTYPE .EQ. 1)      F =  EXP(F)
       WRITE(NCAWU,5800) MD4, ITL, F, B
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5800) MD4, ITL, F, B, IBL, CS
+        WRITE(NCWU,5800) MD4, ITL, F, B, IBL, CS
       ENDIF
 5800  FORMAT(33H Chebyshev weighting scheme for  ,I2,7H  terms//
      2 13H Maximum /FO/,A3,4H =  ,G11.2,10X,21H Estimated variance =,
      3 G14.5, A4, /, 9X, 14H/Fo/ weight = , F6.2)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5850)
+        WRITE(NCWU,5850)
       ENDIF
 5850  FORMAT(//,' Terms',7X,'Coefficients',11X,'E.S.D.''S',4X,'Ratios',
      2 //)
