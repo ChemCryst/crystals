@@ -87,7 +87,7 @@ class Index:public Number<signed char>
 {
     public:
         Index(signed char pValue);
-        Index(Index& pObject);
+        Index(const Index& pObject);
         signed char get();
         std::ostream& output(std::ostream& pStream);
 };
@@ -109,7 +109,7 @@ std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs);
 class ConditionColumn:virtual public Column
 {
     private:
-        ArrayList<Index>* iRegionConditions;
+        vector<Index>* iRegionConditions;
         ArrayList<Indexs>* iConditions;	
     public:
         ConditionColumn();
@@ -117,7 +117,7 @@ class ConditionColumn:virtual public Column
         void addRegion(signed char pIndex);
         void setRegion(char* pRegion);
         int getRegion(const int pIndex);
-        ArrayList<Index>* getRegions();
+        vector<Index>* getRegions();
         void addCondition(signed char pIndex, int pRow);
         void addEmptyCondition(int pRow);
         Indexs* getConditions(int pIndex);
@@ -145,7 +145,7 @@ class Table:public MyObject
 	void readColumnRegions(char* pRegions);
         void readFrom(filebuf& pFile);
         char* getName();
-        ArrayList<Index>* getRegions(int pI) const;
+        vector<Index>* getRegions(int pI) const;
 		size_t numSGColumns();
 //        int getNumPointGroups();	
         SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
@@ -185,27 +185,37 @@ std::ostream& operator <<(std::ostream& pStream, Tables& pTables);
 
 class Stats;
 
-class RankedSpaceGroups:public MyObject
+class RowRating:public Float	//The value is the mean value;
 {
-    private:
-        class RowRating:public Float	//The value is the mean value;
-        {
-            private:
-                void addConditionRatings(Stats& pStats, Indexs* tIndexs,  Index* pRegionIndex);
-                void addRating(const ElemStats* pStats);
-            public:
-                int iRowNum;	//The number of the row in the table.
-                int iTotNumVal;	//Total number of values include in these stats.
-                float iSumRat1;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-                float iSumRat2;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-                float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-                float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-                bool iFiltered;
-                RowRating(int pRow, Table& pTable, Stats& pStats);
-                RowRating& operator=(const RowRating& pRowRating);
-        };
-        
-        MultiTree<RowRating> iSortedRatings;
+	private:
+		void addConditionRatings(Stats& pStats, Indexs* tIndexs,  Index* pRegionIndex);
+		void addRating(const ElemStats* pStats);
+	public:
+		int iRowNum;	//The number of the row in the table.
+		int iTotNumVal;	//Total number of values include in these stats.
+		float iSumRat1;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+		float iSumRat2;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+		float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+		float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+		bool iFiltered;
+		RowRating(int pRow, Table& pTable, Stats& pStats);
+		RowRating(const RowRating& pRating);
+		RowRating& operator=(const RowRating& pRowRating);
+};
+
+struct RRlt
+{
+	bool operator()(const RowRating& s1, const RowRating& s2) const
+	{
+		return s1 > s2;
+	}
+};
+
+
+
+class RankedSpaceGroups:public multiset<RowRating, RRlt>
+{
+    protected:
         Table* iTable;			//The table which the rattings have been made for. Reference to the table. Table should never be released by this class.
         bool iChiral;
 		LaueGroup iLaueGroup;
