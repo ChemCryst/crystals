@@ -52,6 +52,12 @@ Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
 		mSelfInitialised = true;
 
 		LOGSTAT( "*** Created MulitEdit    " + mName );
+
+            int size = 200;
+            CcString cgeom = (CcController::theController)->GetKey( "FontSize" );
+            if ( cgeom.Len() )
+                size = atoi( cgeom.ToCString() );
+            ((CxMultiEdit*)mWidgetPtr)->SetFontHeight(size); 
 	}
 	// End of Init, now comes the general parser
 	while ( hasTokenForMe )
@@ -207,6 +213,12 @@ void CrMultiEdit::SetText ( CcString cText )
 {
 	if(!mNoEcho)
       {
+
+
+                   ((CxMultiEdit*)mWidgetPtr)->SetText(cText);
+
+
+/*
 // Scan for @ markup.
 // Format is:               Normal text @Link Text@Link Commands@ normal text
 // e.g  You may @Click here@#SCRIPT ANALYSE@ to see an analysis.
@@ -243,9 +255,12 @@ void CrMultiEdit::SetText ( CcString cText )
             }
 
                   if ( cText.Length() == 0 )
-	            ((CxMultiEdit*)mWidgetPtr)->SetText(cText);
+                   ((CxMultiEdit*)mWidgetPtr)->SetText(cText);
 			else
-	            ((CxMultiEdit*)mWidgetPtr)->SetText(cText.Sub(iSt,iCr-1));
+                   ((CxMultiEdit*)mWidgetPtr)->SetText(cText.Sub(iSt,iCr-1));
+*/
+
+
       }
 }
 
@@ -307,5 +322,11 @@ void CrMultiEdit::NoEcho(Boolean noEcho)
 void CrMultiEdit::SetOriginalSizes()
 {
       ((CxMultiEdit*)mWidgetPtr)->SetOriginalSizes(); 
+      return;
+}
+
+void CrMultiEdit::SetFontHeight(int height)
+{
+      ((CxMultiEdit*)mWidgetPtr)->SetFontHeight(height); 
       return;
 }

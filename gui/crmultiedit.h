@@ -41,6 +41,7 @@ class CxMultiEdit;
 //		void    SetWidthScale(float w);
 //		CcRect  GetOriginalGeometry();
             void SetOriginalSizes();
+            void SetFontHeight(int height);
 
 		// attributes
 //		CcRect mOriginalGeometry;
