@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2003/07/12 08:36:00  rich
+C Yesterday's fix of CKP's ring bug was incorrect. THIS is the correct
+C fix!
+C
 C Revision 1.61  2003/07/11 17:20:07  rich
 C Kind of fix CKP's aromatic ring bug - they're still off centre, but
 C at least in plane!
@@ -1285,12 +1289,19 @@ c             CALL XPRVDU(NCVDU, 1,0)
                IF(KEXIST(1).LE.0) CYCLE
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(1).LE.0) CYCLE
+               IF(KEXIST(1).LE.0) THEN
+                 WRITE(CMON,'(A)')
+     1            '^^CO SAFESET [ _XIN1 TEXT "Input cell" ]'
+                 CALL XPRVDU(NCVDU, 1,0)
+                 CYCLE
+               END IF
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
             END IF
             CALL XRLIND(1, L01SR, NFW, LL, IOW, NOS, ID)
             IF ( L01SR.NE.ISERnn(1) )THEN
               ISERnn(1)  = L01SR
+              WRITE(CMON,'(A)')'^^CO SAFESET [ _XIN1 TEXT "Edit cell" ]'
+              CALL XPRVDU(NCVDU, 1,0)
 
 211           FORMAT ('^^WI SAFESET [ _MT_CELL_A TEXT ',F8.4,' ]',/,
      1                '^^WI SAFESET [ _MT_CELL_B TEXT ',F8.4,' ]',/,
@@ -1310,12 +1321,21 @@ c             CALL XPRVDU(NCVDU, 1,0)
                IF(KEXIST(2).LE.0) CYCLE
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(2).LE.0) CYCLE
+               IF(KEXIST(2).LE.0) THEN
+                WRITE(CMON,'(A)')
+     1           '^^CO SAFESET [ _XIN2 TEXT "Input space group" ]'
+                CALL XPRVDU(NCVDU, 1,0)
+                CYCLE
+               END IF
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
             END IF
             CALL XRLIND(2, L02SR, NFW, LL, IOW, NOS, ID)
             IF ( L02SR.NE.ISERnn(2) )THEN
               ISERnn(2)  = L02SR
+              WRITE(CMON,'(A)')
+     1        '^^CO SAFESET [ _XIN2 TEXT "Edit space group" ]'
+              CALL XPRVDU(NCVDU, 1,0)
+
 221         FORMAT ('^^CO SAFESET [ _MT_SPACEGROUP TEXT ''',
      1              4(A4,1X),''' ]')
               WRITE ( CMON, 221 ) (STORE(L2SG+J),J=0,MD2SG-1)
@@ -1351,12 +1371,20 @@ c             CALL XPRVDU(NCVDU, 1,0)
                IF(KEXIST(29).LE.0) CYCLE
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(29).LE.0) CYCLE
+               IF(KEXIST(29).LE.0) THEN
+                 WRITE(CMON,'(A)')
+     1        '^^CO SAFESET [ _XIN3 TEXT "Input formula / radiation" ]'
+                 CALL XPRVDU(NCVDU, 1,0)
+                 CYCLE
+               END IF
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
             END IF
             CALL XRLIND(29, L29SR, NFW, LL, IOW, NOS, ID)
             IF ( L29SR.NE.ISERnn(29) )THEN
               ISERnn(29)  = L29SR
+              WRITE(CMON,'(A)')
+     1         '^^CO SAFESET [ _XIN3 TEXT "Edit formula / radiation" ]'
+              CALL XPRVDU(NCVDU, 1,0)
 
               WRITE( CMON(1),'(A)')'^^WI SAFESET [ _MT_FORMULA TEXT'
               WRITE( CMON(2),'(A)')'^^WI'''
