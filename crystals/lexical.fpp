@@ -1,4 +1,20 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2003/01/15 14:03:52  rich
+C Remove debugging from PART processing.
+C
+C For every error message that prints a column number, output a star below the
+C offending line in the offending column.
+C
+C In KLXRDD, return with an error on finding an invalid operator. Previously
+C it muddled on, but all the card pointers were set negative causing trouble
+C later.
+C
+C Remove all NCAWU output as part of an ongoing battle.
+C
+C In KATOMU, don't allow UNTIL to or from a PART - KATOMU gets called
+C repeatedly for a single PART and would therefore return a range for every
+C atom in the PART.
+C
 C Revision 1.15  2003/01/14 18:31:35  rich
 C Right - this is a useful one and I'm quite pleased with it.
 C
@@ -797,7 +813,7 @@ C
 
 1200  CONTINUE
       INPART = 0
-      IF ( NPTCUR .GE. 0 ) INPART = 1   !Are we processing a part.
+      IF ( NPTCUR .GE. 0 ) INPART = 1   !Are we processing a part or frag?
       IF(L5)1400,1400,1250 !CHECK IF WE SHOULD LOOK FOR THIS ATOM IN LIST 5
 C--SEARCH FOR THE ATOM IN LIST 5
 1250  CONTINUE
@@ -833,7 +849,7 @@ C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
 
 1600  CONTINUE
       ME=ME-1
-      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs, please.
+      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs or FRAGs, please.
       IF(ME)1700,1700,1800        !CHECK FOR AN END OF CARD AFTER 'UNTIL'
 
 1650  CONTINUE                   !ERROR IN AN 'UNTIL' SEQUENCE
@@ -857,7 +873,7 @@ C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
       IF(II)1000,1050,1850 !CHECK THE REPLY
 
 1850  CONTINUE
-      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs, please.
+      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs or FRAGs, please.
       IF(ISTORE(MQ+5))1650,1900,1650 !CHECK NO PARAMS READ FOR THIS ATOM
 
 C--LINK THE ATOM HEADERS AND CHECK IF WE MUST SEARCH THROUGH LIST 5
@@ -991,16 +1007,18 @@ C
       IDWZAP = IN
       KA=0
       KB=0
+      KBB=0
       IF(ISTORE(MF).GT.0) GOTO 1000 ! CHECK 1st OP IS A VARIABLE (ATOM TYPE)
 
-C--START TO FORM THE ATOM HEADER BLOCK  -  CHECK FOR 'FIRST' OR 'LAST'
+C--START TO FORM THE ATOM HEADER BLOCK  -
+C-- CHECK FOR 'FIRST', 'LAST', 'PART', 'FRAG', 'TYPE'
 1100  CONTINUE
-      II=KCOMP(1,ISTORE(MF+2),IFIRST(1),3,1)
+      II=KCOMP(1,ISTORE(MF+2),IFIRST(1),5,1)
       IF ( ( II. EQ. 1 ) .OR. ( II .EQ. 2 ) ) THEN !This is First or Last
         KA = -1
-      END IF
-      IF ( II .EQ. 3 ) THEN  !This is Part.
+      ELSE IF ( ( II .GE. 3 ) .OR. ( II .LE. 5 ) ) THEN  !Part,Frag or Type
         KB = 1
+        IF ( II .EQ. 5 ) KBB = 1 ! We are looking for a char.
         OME=ME
         OMF=MF
         IF ( NPTCUR .LT. 0 ) THEN   !First time. Initialise.
@@ -1016,9 +1034,9 @@ C--START TO FORM THE ATOM HEADER BLOCK  -  CHECK FOR 'FIRST' OR 'LAST'
       END IF
 
 C SET UP THE HEADER LINK INFORMATION
-      J=MQ+2
       ISTORE(MQ)=NOWT
       ISTORE(MQ+1)=0
+      J=MQ+2
 
       CALL XMOVE(STORE(MF+2),STORE(J),1)  ! SET UP THE ATOM TYPE
       ME=ME-1
@@ -1043,8 +1061,14 @@ C SET UP THE HEADER LINK INFORMATION
 1350  CONTINUE                ! FOUND '('
 
       IF(KA.EQ.0) THEN                   ! CHECK IF SERIAL EXPECTED
+        IF ( KBB .EQ. 1 ) THEN
+          CALL XMOVE(ISTORE(MF+2),IPTVAL,1)
+          ME=ME-1
+          MF=MF+LK2
+        ELSE
           IF(KNUMBR(STORE(K)).NE.0) GOTO 1000   ! READ SERIAL NUMBER OF ATOM
-          IF(KB.EQ.1)IPTVAL = NINT(STORE(K))    ! PART NUMBER EXPECTED
+          IF(KB.EQ.1) IPTVAL = NINT(STORE(K))    ! PART NUMBER EXPECTED
+        END IF
       END IF
 
 C--SET UP THE ATOM HEADER BLOCK
@@ -1255,9 +1279,9 @@ C--CHECK THE ATOM TYPES
 1400  CONTINUE
       IF(KCOMP(1,ARG,STORE(M5F),1,1))1300,1300,1050
 C
-C--ATOMS PROVIDED  -  CHECK FOR 'FIRST', 'LAST', 'PART' INITIALLY
+C--ATOMS PROVIDED  -  CHECK FOR 'FIRST', 'LAST', 'PART', 'FRAG', 'TYPE'
 1450  CONTINUE
-      J=KCOMP(1,ARG(1),IFIRST(1),3,1)
+      J=KCOMP(1,ARG(1),IFIRST(1),5,1)
 C--CHECK THE REPLY
       IF(J.LE.0) GOTO 1250 !Process as an element type
       IF ( J .EQ. 1 ) THEN ! 'FIRST' - CHECK WE CAN ACCESS THE FIRST ATOM
@@ -1308,6 +1332,64 @@ c                WRITE(CMON,'(A,I4)') 'Nptcur: ',NPTCUR
 c                CALL XPRVDU(NCVDU,1,0)
               END IF
 
+              GOTO 1050
+           END IF
+           IF ( M12F .GT. 0 ) M12F = ISTORE( M12F )
+        END DO
+        IATOMF=-1    !Not found
+        GOTO 1000
+      ELSE IF ( J .EQ. 4 ) THEN ! 'FRAG' - CHECK THE ADDRESSING
+C IPTVAL = requested frag. NPTTOT = # matching atoms. NPTCUR = Current atom.
+        IF ( NPTCUR .LE. 1 ) THEN   !First time.
+           NPTCUR = 1
+           NPTTOT = 0
+C Count the frags
+           DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
+             JPTVAL = ISTORE(I+16)
+             IF (JPTVAL .EQ. IPTVAL) NPTTOT=NPTTOT+1
+           END DO
+        END IF
+        II = 0
+        DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
+           JPTVAL = ISTORE(I+16)
+           IF (JPTVAL .EQ. IPTVAL) II = II + 1
+           IF ( II .GE. NPTCUR ) THEN
+              M5F = I
+              IF ( NPTCUR .GE. NPTTOT ) THEN
+                NPTCUR = -1
+              ELSE
+                ME=OME    !Backspace to trick calling routine
+                MF=OMF
+              END IF
+              GOTO 1050
+           END IF
+           IF ( M12F .GT. 0 ) M12F = ISTORE( M12F )
+        END DO
+        IATOMF=-1    !Not found
+        GOTO 1000
+      ELSE IF ( J .EQ. 5 ) THEN ! 'TYPE' - CHECK THE ADDRESSING
+C IPTVAL = requested type. NPTTOT = # matching atoms. NPTCUR = Current atom.
+        IF ( NPTCUR .LE. 1 ) THEN   !First time.
+           NPTCUR = 1
+           NPTTOT = 0
+C Count the types
+           DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
+             JPTVAL = ISTORE(I)
+             IF (JPTVAL .EQ. IPTVAL) NPTTOT=NPTTOT+1
+           END DO
+        END IF
+        II = 0
+        DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
+           JPTVAL = ISTORE(I)
+           IF (JPTVAL .EQ. IPTVAL) II = II + 1
+           IF ( II .GE. NPTCUR ) THEN
+              M5F = I
+              IF ( NPTCUR .GE. NPTTOT ) THEN
+                NPTCUR = -1
+              ELSE
+                ME=OME    !Backspace to trick calling routine
+                MF=OMF
+              END IF
               GOTO 1050
            END IF
            IF ( M12F .GT. 0 ) M12F = ISTORE( M12F )

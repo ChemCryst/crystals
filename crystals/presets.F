@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/01/15 14:04:47  rich
+C Add a character variable BLANKS to XCONST common block. Initialise it with
+C spaces.
+C
 C Revision 1.39  2003/01/14 18:31:35  rich
 C Right - this is a useful one and I'm quite pleased with it.
 C
@@ -1032,6 +1036,7 @@ C -- INITIALISE DATA FOR EFFICIENCY STATISTICS
       DATA NCALL / 0 /
 C
       DATA IFIRST(1)/'FIRS'/,IFIRST(2)/'LAST'/,IFIRST(3)/'PART'/
+     1     IFIRST(4)/'FRAG'/,IFIRST(5)/'TYPE'/
 C
 C----- KEYS FOR COEFFICIENTS IN LIST 6
       DATA I14(1) / 14 / , I15(1) / 15 / , I31(1) / 31 /
