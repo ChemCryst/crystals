@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2002/03/06 15:35:53  Administrator
+C Fix a format statement, enable Extinction and TWINS to be refined together
+C
 C Revision 1.18  2002/02/12 12:54:49  Administrator
 C Allow filtering of reflections in SFLS/CALC
 C
@@ -474,11 +477,13 @@ C--UPDATE  -  INITIALISE THE COLLECTION
 c
 2000  CONTINUE
 C--THIS IS A TWINNED REFINEMENT  -  SUPPRESS EXTINCTION CORRECTIONS
-      write(cmon,'(a)') 
+      CALL OUTCOL(9)
+      WRITE(CMON,'(6X,A)') 
      1'It is unwise to refine extinction for twinned data'
-      call xprvdu(ncvdu, 1,0)
-      if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)
-      write(ncawu,'(a)') cmon(1)
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+      WRITE(NCAWU,'(A)') CMON(1)
+      CALL OUTCOL(1)
 cdjw0302      NA=-1
 C--SUPPRESS PARTIAL CONTRIBUTIONS
       NC=-1
