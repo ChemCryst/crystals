@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2000/12/01 17:08:55  richard
+C RIC: Removed calls to experimental CSD code #EMAP and #EMAP2
+C
 C Revision 1.22  2000/10/30 15:35:10  CKP2
 C fix some lowercase
 C
@@ -283,33 +286,28 @@ C
       ENDIF
 C
 1420  CONTINUE
-C
-C
-C RICJUL00 KRDLIN returns ISTAT=2 if the line is a shell ($) command
-C These can be processed immediately, as they cannot have any effect
-C on the running script.
 
+C If the current read unit is a script, then call KSCPRC.
       IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
         IFLAG = KSCPRC ( CRDLWC , IFIN )
-        IF ( IFLAG .LE. 0 ) THEN
-          GO TO 1000
-        ELSE IF ( IFLAG .EQ. 1 ) THEN
-        ELSE IF (( IFLAG .EQ. 2 ) .OR. ( ISTAT .EQ. 2 )) THEN
-          CALL XCCUPC ( CRDLWC , CRDUPC )
-          IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
-              WRITE ( NCLU , 1450 ) CRDLWC(1:IFIN)
-          ENDIF
-          GO TO 1500
-        ELSE IF ( IFLAG .EQ. 3 ) THEN
-          GO TO 1420
-        ENDIF
+
+C If IFLAG is negative, then get a new line (from the SCRIPT file).
+        IF ( IFLAG .LE. 0 )      GO TO 1000
+
+C If IFLAG is 2, then send the command to CRYSTALS.
+        IF ( IFLAG .EQ. 2 ) GO TO 1500
+
+C If IFLAG is 3, then loop back and send this line back to scripts.
+        IF ( IFLAG .EQ. 3 ) GO TO 1420
+
+C Otherwise, carry on the output will be copied to the screen.
       ENDIF
-C
+
       IFIN = MAX0 ( 1 , IFIN )
-C
+
 C -- IF COPYING, WRITE LINE TO MONITOR CHANNEL
       IF ( IRDCPY(IFLIND) .EQ. 1 ) THEN
-C
+
         LPRMPT = ( IQUN .EQ. 1 ) .AND. ( IRDPAG .GT. 0 ) .AND.
      2 ( ISSSTA .LE. 0 )
         IF ( LPRMPT ) THEN
@@ -759,7 +757,9 @@ C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
 C      SPAW(N)     $           APPE(ND)    BENCH
 C
 C----- DO NOT LOG SCRIPT INSTRUCTIONS
-      IF ( ISYSIN .NE. ISCRIP) THEN
+CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
+      IF (( ISYSIN .NE. ISCRIP) .AND. ( ISYSIN .NE. IUSE )
+     1.AND.(ISYSIN .NE. IDOLLA) .AND. ( ISYSIN .NE. ISPAWN) ) THEN
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
         IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
           WRITE ( NCLU , 500 ) CRDLWC(1:80)
@@ -1014,7 +1014,8 @@ C
 C
 C -- SWITCH ON COPYING TO OUTPUT FILE
       ICOPY = 1
-      INLOG = 0
+CRIC0101 USE LOGGING PROPERTIES FOR THIS FILE INDEX
+      INLOG = IRDLOG(IFLIND)
       INCAT = 0
       IOPER = 0
       ISCR = 1
