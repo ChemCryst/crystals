@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.35  2004/10/06 13:57:26  rich
+//   Fixes for WXS version.
+//
 //   Revision 1.34  2004/06/28 13:26:57  rich
 //   More Linux fixes, stl updates.
 //
@@ -205,9 +208,11 @@ void CxWindow::CxPreDestroy()
 
 CxWindow::~CxWindow()
 {
-    ((CrWindow*)ptr_to_crObject)->NotifyControl();
     mWindowCount--;
-    if ( !m_PreDestroyed ) CxPreDestroy(); // Should really be called earlier.
+    if ( !m_PreDestroyed ) {
+      CxPreDestroy(); // Should really be called earlier.
+      ((CrWindow*)ptr_to_crObject)->NotifyControl();
+    }
 }
 
 void CxWindow::CxDestroyWindow()
@@ -621,12 +626,13 @@ void CxWindow::AdjustSize(CcRect * size)
 #endif
 #ifdef __BOTHWX__
 // The system metrics aren't implemented yet!
-       int mN = ( GetMenuBar() ) ? 20 : 0;
-       int cH = 15;
-       int bT = 4;
-//      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetSystemMetric(wxSYS_MENU_Y) : 0;
-//      int cH = wxSystemSettings::GetSystemMetric(wxSYS_CAPTION_Y);
-//      int bT = wxSystemSettings::GetSystemMetric(wxSYS_FRAMESIZE_X);
+//       int mN = ( GetMenuBar() ) ? 20 : 0;
+//       int cH = 15;
+//       int bT = 4;
+// They are now:
+      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetMetric(wxSYS_MENU_Y) : 0;
+      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
+      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
 #endif
  
     size->mRight  = size->Right()  + (2*bT);
