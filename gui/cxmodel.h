@@ -14,25 +14,20 @@
 //Insert your own code here.
 #include	"crguielement.h"
 
-#ifdef __POWERPC__
-class LStdModel;
-#endif
-
-#ifdef __MOTO__
-#include	<LStdControl.h>
-#endif
-
 #ifdef __LINUX__
 #include    <GL/gl.h>
 #include    <GL/glu.h>
-#include <wx/control.h>
-#define BASEMODEL wxControl
+#include    "glcanvas.h"
+#include <wx/dcclient.h>
+#include <wx/event.h>
+#include    "glcanvas.h"
+#define BASEMODEL wxGLCanvas
 #endif
 
 #ifdef __WINDOWS__
-#include <afxwin.h>
-#include	<GL\gl.h>
-#include	<GL\glu.h>
+#include    <GL\gl.h>
+#include    <GL\glu.h>
+#include	<afxwin.h>
 #define BASEMODEL CWnd
 #endif
 
@@ -56,8 +51,6 @@ class CxModel : public BASEMODEL
             Boolean m_moved;
 		void UpdateHighlights();
 		Boolean m_drawing;
-		void OnMenuSelected (int nID);
-
             void StartHighlights();
             void FinishHighlights();
 		void HighlightAtom(CcModelAtom* theAtom, Boolean selected = TRUE);
@@ -105,9 +98,9 @@ class CxModel : public BASEMODEL
 		GLuint mNormal;
 		GLuint mHighlights;
 		GLuint mLitatom;
-		HGLRC m_hGLContext;									 //The rendering context handle.
 
 #ifdef __WINDOWS__
+		HGLRC m_hGLContext;									 //The rendering context handle.
 		HDC hDC;
 
 		BOOL SetWindowPixelFormat(HDC hDC);
@@ -121,8 +114,19 @@ class CxModel : public BASEMODEL
 		afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
+            afx_msg void OnMenuSelected (int nID);
 	
 		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+            void OnLButtonUp(wxMouseEvent & event);
+            void OnLButtonDown(wxMouseEvent & event);
+            void OnRButtonUp(wxMouseEvent & event);
+            void OnMouseMove(wxMouseEvent & event);
+            void OnChar(wxKeyEvent & event );
+            void OnPaint(wxPaintEvent & event );
+            void OnMenuSelected(wxCommandEvent &event );
+            DECLARE_EVENT_TABLE()
 #endif
 
 private:

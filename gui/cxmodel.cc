@@ -5,15 +5,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include	"crystalsinterface.h"
-#ifdef __WINDOWS__
-#include    <GL\gl.h>
-#include    <GL\glu.h>
-#include	<afxwin.h>
-#endif
-#ifdef __LINUX__
-#include    <GL/gl.h>
-#include    <GL/glu.h>
-#endif
 
 #include	<math.h>
 #include	"cxmodel.h"
@@ -28,19 +19,19 @@ int CxModel::mModelCount = kModelBase;
 
 CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
+	CxModel	*theStdModel = new CxModel(container);
+
+#ifdef __WINDOWS__
         const char* wndClass = AfxRegisterWndClass(   CS_HREDRAW|CS_VREDRAW,
                                                       NULL,
                                                       (HBRUSH)(COLOR_MENU+1),
                                                       NULL
                                                            );
 
-	CxModel	*theStdModel = new CxModel(container);
 	theStdModel->Create(wndClass,"Model",WS_CHILD|WS_VISIBLE,CRect(0,0,26,28),guiParent,mModelCount++);
 	theStdModel->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theStdModel->SetFont(CxGrid::mp_font);
-
 	CRect rect;
-
 	theStdModel->hDC = ::GetDC(theStdModel->GetSafeHwnd());
 	theStdModel->SetWindowPixelFormat(theStdModel->hDC);
 	theStdModel->CreateViewGLContext(theStdModel->hDC);
@@ -49,20 +40,22 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 	theStdModel->mHighlights = glGenLists(oneList);
 	theStdModel->mLitatom = glGenLists(oneList);
 	theStdModel->Setup();
-
+#endif
+#ifdef __LINUX__
+      theStdModel->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10));
+#endif
 	return theStdModel;
 }
 
 CxModel::CxModel(CrModel* container)
-	:CWnd()
+      :BASEMODEL()
 {
 	mWidget = container;
 	m_radius = COVALENT;
 	m_radscale = 1.0f;
-	m_fastrotate = FALSE;
+      m_fastrotate = false;
       m_moved = true;
 	matrix = new float[16];
-	m_hGLContext = NULL;
 	m_GLPixelIndex = 0;
 	matrix[0]=1.0f;  matrix[1]=0.0f;  matrix[2]=0.0f;  matrix[3]=0.0f;
 	matrix[4]=0.0f;	 matrix[5]=1.0f;  matrix[6]=0.0f;  matrix[7]=0.0f;	
@@ -70,30 +63,45 @@ CxModel::CxModel(CrModel* container)
 	matrix[12]=0.0f; matrix[13]=0.0f; matrix[14]=0.0f; matrix[15]=1.0f;
 	m_LitAtom = nil;
 	m_drawing = false;
-        m_projratio = 1.0;
-
+      m_projratio = 1.0;
+#ifdef __WINDOWS__
+	m_hGLContext = NULL;
+#endif
 }
+
 
 CxModel::~CxModel()
 {
 	mModelCount--;
 	delete [] matrix;
 
+#ifdef __WINDOWS__
         wglMakeCurrent(NULL,NULL);
         wglDeleteContext(m_hGLContext);
-
 	HWND hWnd = GetSafeHwnd();
 	::ReleaseDC(hWnd,hDC);
-
+#endif
+#ifdef __LINUX__
+      
+#endif
 }
 
 void	CxModel::SetText( char * text )
 {
+#ifdef __WINDOWS__
 	SetWindowText(text);
+#endif
+#ifdef __LINUX__
+//This is a pointless function for a graphics window.      
+#endif
+
 }
 
-void    CxModel::SetGeometry( int top, int left, int bottom, int right )
+
+
+void  CxModel::SetGeometry( int top, int left, int bottom, int right )
 {
+#ifdef __WINDOWS__
 	if((top<0) || (left<0))
 	{
 		RECT windowRect;
@@ -112,11 +120,18 @@ void    CxModel::SetGeometry( int top, int left, int bottom, int right )
 	{
 		MoveWindow(left,top,right-left,bottom-top,true);
 	}
+#endif
+#ifdef __LINUX__
+      SetSize(left,top,right-left,bottom-top);
+#endif
+
 }
-int	CxModel::GetTop()
+
+
+int   CxModel::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -125,11 +140,23 @@ int	CxModel::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
-int	CxModel::GetLeft()
+int   CxModel::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -138,29 +165,58 @@ int	CxModel::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
+
 }
-int	CxModel::GetWidth()
+int   CxModel::GetWidth()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
-int	CxModel::GetHeight()
+int   CxModel::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
 
-int	CxModel::GetIdealWidth()
+
+int   CxModel::GetIdealWidth()
 {
 	return mIdealWidth;
 }
-int	CxModel::GetIdealHeight()
+int   CxModel::GetIdealHeight()
 {
 	return mIdealHeight;
 }
 
+#ifdef __WINDOWS__
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxModel, CWnd)
 	ON_WM_CHAR()
@@ -171,19 +227,35 @@ BEGIN_MESSAGE_MAP(CxModel, CWnd)
 	ON_WM_MOUSEMOVE()
 	ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
 END_MESSAGE_MAP()
+#endif
+
+#ifdef __LINUX__
+//wx Message Table
+BEGIN_EVENT_TABLE(CxModel, wxGLCanvas)
+      EVT_CHAR( CxModel::OnChar )
+      EVT_PAINT( CxModel::OnPaint )
+      EVT_LEFT_UP( CxModel::OnLButtonUp )
+      EVT_LEFT_DOWN( CxModel::OnLButtonDown )
+      EVT_RIGHT_UP( CxModel::OnRButtonUp )
+      EVT_MOTION( CxModel::OnMouseMove )
+      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_COMMAND_MENU_SELECTED, CxModel::OnMenuSelected )
+END_EVENT_TABLE()
+#endif
+
 
 void CxModel::Focus()
 {
 	SetFocus();
 }
 
+#ifdef __WINDOWS__
 void CxModel::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	NOTUSED(nRepCnt);
 	NOTUSED(nFlags);
 	switch(nChar)
 	{
-		case 9:
+		case 9:     //TAB. Shift focus back or forwards.
 		{
 			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
 			mWidget->NextFocus(shifted);
@@ -192,39 +264,67 @@ void CxModel::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 		default:
 		{
 			mWidget->FocusToInput((char)nChar);
+			break;
 		}
 	}
 }
-
+#endif
+#ifdef __LINUX__
+void CxModel::OnChar( wxKeyEvent & event )
+{
+      switch(event.KeyCode())
+	{
+		case 9:     //TAB. Shift focus back or forwards.
+		{
+                  Boolean shifted = event.m_shiftDown;
+			mWidget->NextFocus(shifted);
+			break;
+		}
+		default:
+		{
+                  mWidget->FocusToInput((char)event.KeyCode());
+			break;
+		}
+	}
+}
+#endif
 
 CcPoint CxModel::DeviceToLogical(int x, int y)
 {
       CcPoint            newpoint;
-	CRect		windowext;
 	float		aspectratio, windowratio;
 
-	GetClientRect(&windowext);
+#ifdef __WINDOWS__
+      CRect       wwindowext;
+      GetClientRect(&wwindowext);
+      CcRect       windowext( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+#endif
+#ifdef __LINUX__
+      wxRect wwindowext = GetRect();
+      CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+#endif
+
 	aspectratio = 1;
 	x = (int)(x * aspectratio);
 
-	windowratio = (float)windowext.right / (float)windowext.bottom;
+      windowratio = (float)windowext.mRight / (float)windowext.mBottom;
 
 	if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
 	{								  //centered and scaled.
-		newpoint.x = (int)((windowext.right * x)/(2400*aspectratio));
-		newpoint.y = (int)((windowext.right * y)/(2400*aspectratio));
-		newpoint.y = (int)(newpoint.y + ((windowext.bottom-windowext.right)/2*aspectratio));	
+            newpoint.x = (int)((windowext.mRight * x)/(2400*aspectratio));
+            newpoint.y = (int)((windowext.mRight * y)/(2400*aspectratio));
+            newpoint.y = (int)(newpoint.y + ((windowext.mBottom-windowext.mRight)/2*aspectratio)); 
 	}
 	else if (aspectratio < windowratio)    //The y coords are okay, xcoords must be
 	{									  //centered and scaled.
-		newpoint.y = (windowext.bottom * y) / 2400;
-		newpoint.x = (windowext.bottom * x) / 2400;
-		newpoint.x = (int)(newpoint.x + ((windowext.right- aspectratio*windowext.bottom)/2));	
+            newpoint.y = (windowext.mBottom * y) / 2400;
+            newpoint.x = (windowext.mBottom * x) / 2400;
+            newpoint.x = (int)(newpoint.x + ((windowext.mRight- aspectratio*windowext.mBottom)/2)); 
 	}
 	else
 	{
-		newpoint.x = (int)((windowext.right * x)/(2400*aspectratio));
-		newpoint.y = (windowext.bottom * y)/2400;
+            newpoint.x = (int)((windowext.mRight * x)/(2400*aspectratio));
+            newpoint.y = (windowext.mBottom * y)/2400;
 	}
 
 
@@ -234,99 +334,152 @@ CcPoint CxModel::DeviceToLogical(int x, int y)
 CcPoint CxModel::LogicalToDevice(CcPoint point)
 {
       CcPoint            newpoint;
-	CRect		windowext;
 	float		aspectratio, windowratio;
 
-	GetClientRect(&windowext);
+#ifdef __WINDOWS__
+      CRect       wwindowext;
+      GetClientRect(&wwindowext);
+      CcRect       windowext( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+#endif
+#ifdef __LINUX__
+      wxRect wwindowext = GetRect();
+      CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+#endif
+
 	aspectratio = 1;
 //	x = (int)(x * aspectratio);
 
-	windowratio = (float)windowext.right / (float)windowext.bottom;
+      windowratio = (float)windowext.mRight / (float)windowext.mBottom;
 
 	if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
 	{								  //centered and scaled.
-		newpoint.x = (int) ( (point.x*2400*aspectratio) / windowext.right );
-		point.y -= (int)((windowext.bottom-windowext.right)/2*aspectratio);	
-		newpoint.y = (int) ( (point.y*2400*aspectratio) / windowext.right );
+            newpoint.x = (int) ( (point.x*2400*aspectratio) / windowext.mRight );
+            point.y -= (int)((windowext.mBottom-windowext.mRight)/2*aspectratio); 
+            newpoint.y = (int) ( (point.y*2400*aspectratio) / windowext.mRight );
 	}
 	else if (aspectratio < windowratio)    //The y coords are okay, xcoords must be
 	{									  //centered and scaled.
-		newpoint.y = (int) ( (point.y*2400) / windowext.bottom );
-		point.x -= (int)((windowext.right- aspectratio*windowext.bottom)/2);	
-		newpoint.x = (int) ( (point.x*2400) / windowext.bottom );
+            newpoint.y = (int) ( (point.y*2400) / windowext.mBottom );
+            point.x -= (int)((windowext.mRight- aspectratio*windowext.mBottom)/2); 
+            newpoint.x = (int) ( (point.x*2400) / windowext.mBottom );
 	}
 	else
 	{
-		newpoint.x = (int) ( (point.x*2400*aspectratio) / windowext.right );
-		newpoint.y = (int) ( (point.y*2400) / windowext.bottom );
+            newpoint.x = (int) ( (point.x*2400*aspectratio) / windowext.mRight );
+            newpoint.y = (int) ( (point.y*2400) / windowext.mBottom );
 	}
 
 	return newpoint;
 }
 
-void CxModel::OnPaint() 
+
+#ifdef __LINUX__
+void CxModel::OnPaint(wxPaintEvent & event)
+{
+      wxPaintDC dc(this); // device context for painting
+      SetCurrent();
+      Setup();
+      PaintBuffer();
+}
+#endif
+#ifdef __WINDOWS__
+void CxModel::OnPaint()
 {
 
     wglMakeCurrent(hDC, m_hGLContext);
-
       CPaintDC dc(this); // device context for painting
 
       Setup();
       PaintBuffer();
-
     wglMakeCurrent(NULL,NULL);
-
 }
+#endif
+
 
 void CxModel::SetIdealHeight(int nCharsHigh)
 {
+#ifdef __WINDOWS__
 	CClientDC cdc(this);
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
 	mIdealHeight = nCharsHigh * textMetric.tmHeight;
+#endif
+#ifdef __LINUX__
+      mIdealHeight = nCharsHigh * GetCharHeight();
+#endif      
 }
 
 void CxModel::SetIdealWidth(int nCharsWide)
 {
+#ifdef __WINDOWS__
 	CClientDC cdc(this);
 	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
 	mIdealWidth = nCharsWide * textMetric.tmAveCharWidth;
+#endif
+#ifdef __LINUX__
+      mIdealWidth = nCharsWide * GetCharWidth();
+#endif      
 }
 
-
-void CxModel::OnLButtonUp( UINT nFlags, CPoint point )
+#ifdef __WINDOWS__
+void CxModel::OnLButtonUp( UINT nFlags, CPoint wpoint )
 {
-	NOTUSED(nFlags);
-      NOTUSED(point);
+#endif
+#ifdef __LINUX__
+void CxModel::OnLButtonUp( wxMouseEvent & event )
+{
+#endif
 	if(m_fastrotate)
 	{
-		m_fastrotate = FALSE;
+            m_fastrotate = false;
 		((CrModel*)mWidget)->ReDrawHighlights();
-		InvalidateRect(NULL,FALSE);
+#ifdef __WINDOWS__
+            InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+      Refresh();
+#endif
 	}
 
 }
 
+#ifdef __WINDOWS__
 void CxModel::OnLButtonDown( UINT nFlags, CPoint wpoint )
-{	
+{
       CcPoint point(wpoint.x,wpoint.y);
+#endif
+#ifdef __LINUX__
+void CxModel::OnLButtonDown( wxMouseEvent & event )
+{
+      CcPoint point ( event.m_x, event.m_y );
+#endif
 	CcString atomname;
 	CcModelAtom* atom;
 	if(IsAtomClicked(point.x, point.y, &atomname, &atom))
 	{
 		((CrModel*)mWidget)->SendAtom(atom);
             m_LitAtom=nil; //Get it to rehighlight properly.
+#ifdef __WINDOWS__
             wglMakeCurrent(hDC, m_hGLContext);
+#endif
+#ifdef __LINUX__
+            SetCurrent();
+#endif
               glNewList(mLitatom,GL_COMPILE);
               DrawAtom(atom,1);
               glEndList();
+#ifdef __WINDOWS__
             wglMakeCurrent(NULL,NULL);
-            InvalidateRect(NULL,FALSE);
+            InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+            Refresh();
+#endif
 	}
 	//No atom is clicked, we are going to rotate from here
 	m_ptLDown = point;
@@ -334,17 +487,27 @@ void CxModel::OnLButtonDown( UINT nFlags, CPoint wpoint )
 }
 
 
+#ifdef __WINDOWS__
 void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
-
-      CcPoint point;
-      point.Set(wpoint.x,wpoint.y);
-
-      CRect rect;
-	GetWindowRect(&rect);
-
+      CcPoint point(wpoint.x,wpoint.y);
+//      CcPoint point;
+//      point.Set(wpoint.x,wpoint.y);
+      CRect       wwindowext;
+      GetClientRect(&wwindowext);
+      CcRect       rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
 	if(nFlags & MK_LBUTTON) 
 	{
+#endif
+#ifdef __LINUX__
+void CxModel::OnMouseMove( wxMouseEvent & event )
+{
+      CcPoint point ( event.m_x, event.m_y );
+      wxRect wwindowext = GetRect();
+      CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+      if(event.m_leftDown) 
+	{
+#endif
 		if(m_fastrotate) //LBUTTONDOWN and already rotating.
 		{
 			float *oldmatrix;
@@ -398,8 +561,13 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
 	
 			delete oldmatrix;
                   m_moved = true;
-                  InvalidateRect(NULL,FALSE);
-		}
+#ifdef __WINDOWS__
+                  InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+                  Refresh();
+#endif
+            }
 		else   //LBUTTONDOWN, but not rotating yet.
 		{
 			//We shouldn't really get here, but we might (say the user
@@ -414,11 +582,16 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
 	{
 		if(m_fastrotate) //Was rotating, but now LBUTTON is up. Redraw. (MISSED LBUTTONUP message)
 		{
-			m_fastrotate = FALSE;
+                  m_fastrotate = false;
 			((CrModel*)mWidget)->ReDrawHighlights();
                   m_moved = true;
-                  InvalidateRect(NULL,FALSE);
-		}
+#ifdef __WINDOWS__
+                  InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+                  Refresh();
+#endif
+            }
 
 		CcString atomname;
 		CcModelAtom* atom;
@@ -430,7 +603,12 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
                         (CcController::theController)->SetProgressText(atomname);
 				if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
 				{       
+#ifdef __WINDOWS__
 					wglMakeCurrent(hDC, m_hGLContext);
+#endif
+#ifdef __LINUX__
+                              SetCurrent();
+#endif
                                          glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
                                          glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
                                          glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
@@ -438,9 +616,14 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
                                          glNewList(mLitatom,GL_COMPILE);
                                          DrawAtom(atom,1);
                                          glEndList();
+#ifdef __WINDOWS__
                                         wglMakeCurrent(NULL,NULL);
-                                        InvalidateRect(NULL,FALSE);
-				}
+                                        InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+                                        Refresh();
+#endif
+                        }
 			}
 		}
 		else if (m_LitAtom != nil) //Not over an atom, but one is still lit. Redraw.
@@ -449,19 +632,37 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
                   (CcController::theController)->SetProgressText("Ready");
 			if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
 			{       
+#ifdef __WINDOWS__
 				wglMakeCurrent(hDC, m_hGLContext);
+#endif
+#ifdef __LINUX__
+                        SetCurrent();
+#endif
                         glNewList(mLitatom,GL_COMPILE);
                         glEndList();
+#ifdef __WINDOWS__
                         wglMakeCurrent(NULL,NULL);
-                        InvalidateRect(NULL,FALSE);
+                        InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+                        Refresh();
+#endif
 			}
 		}
 	}
 }
 
+#ifdef __WINDOWS__
 void CxModel::OnRButtonUp( UINT nFlags, CPoint wpoint )
 {
       CcPoint point(wpoint.x,wpoint.y);
+#endif
+#ifdef __LINUX__
+void CxModel::OnRButtonUp( wxMouseEvent & event )
+{
+      CcPoint point ( event.m_x, event.m_y );
+#endif
+
 	CcString atomname;
 	CcModelAtom* atom;
 	CrModel* crModel = (CrModel*)mWidget;
@@ -505,7 +706,12 @@ void CxModel::OnRButtonUp( UINT nFlags, CPoint wpoint )
 
 void CxModel::Start()
 {
+#ifdef __WINDOWS__
       wglMakeCurrent(hDC, m_hGLContext);
+#endif
+#ifdef __LINUX__
+      SetCurrent();
+#endif
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
@@ -530,10 +736,15 @@ void CxModel::Start()
 void CxModel::Display()
 {
       glEndList();
-      wglMakeCurrent(NULL,NULL);
       m_moved = true;
-      InvalidateRect(NULL,FALSE);
       m_drawing = false;
+#ifdef __WINDOWS__
+      wglMakeCurrent(NULL,NULL);
+      InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+      Refresh();
+#endif
 }
 
 ///////////// Start the highlight atom list
@@ -543,8 +754,13 @@ void CxModel::StartHighlights()
 	if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
 	{       
 		m_drawing = true;
+#ifdef __WINDOWS__
 		wglMakeCurrent(hDC, m_hGLContext);
-		glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+#endif
+#ifdef __LINUX__
+            SetCurrent();
+#endif
+            glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 		glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
@@ -568,9 +784,13 @@ void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
 void CxModel::FinishHighlights()
 {
 	glEndList();
+#ifdef __WINDOWS__
 	wglMakeCurrent(NULL,NULL);
-
-	InvalidateRect(NULL,FALSE);
+      InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+      Refresh();
+#endif
 	m_drawing = false;
 }
 
@@ -673,8 +893,15 @@ void CxModel::DrawAtom(CcModelAtom* anAtom, int style)
 
 void CxModel::Setup()
 {	
-      CRect rect;
-	GetClientRect(&rect);
+#ifdef __WINDOWS__
+      CRect       wwindowext;
+      GetClientRect(&wwindowext);
+      CcRect       rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+#endif
+#ifdef __LINUX__
+      wxRect wwindowext = GetRect();
+      CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+#endif
 
         GLsizei width  = min (rect.Width(),rect.Height());
         GLsizei height = width;
@@ -691,7 +918,7 @@ void CxModel::Setup()
         m_projratio = ratio;
       }
 
-      int diff = (int)( 10000 -  ( 10000 * m_projratio ) ) / 2.0;
+      int diff = (int)( ( 10000 -  ( 10000 * m_projratio ) ) / 2.0 ) ;
 
       glOrtho(diff,10000-diff,diff,10000-diff,-10000,0);
 	glMatrixMode(GL_MODELVIEW);
@@ -751,8 +978,12 @@ void CxModel::PaintBuffer()
 			glCallList(mHighlights);
 			glCallList(mLitatom);
 			glFlush();
+#ifdef __WINDOWS__
 			SwapBuffers(hDC);		//the slight disadvantgae of this method is that mouse movements become 'buffered' and the molecule may continue to move after
-	
+#endif
+#ifdef __LINUX__
+                  SwapBuffers();
+#endif
 		}
 		else
 		{
@@ -760,7 +991,12 @@ void CxModel::PaintBuffer()
 			glCallList(mHighlights);
 			glCallList(mLitatom);
 			glFlush();
+#ifdef __WINDOWS__
 			SwapBuffers(hDC);		//the slight disadvantgae of this method is that mouse movements become 'buffered' and the molecule may continue to move after
+#endif
+#ifdef __LINUX__
+                  SwapBuffers();
+#endif
 		}							//the mouse is released.
 
 //Need this later, to translate mouse clicks into 3D space.
@@ -771,7 +1007,7 @@ void CxModel::PaintBuffer()
 }
 
 
-
+#ifdef __WINDOWS__
 BOOL CxModel::SetWindowPixelFormat(HDC hDC)
 {
 	PIXELFORMATDESCRIPTOR pixelDesc;
@@ -815,12 +1051,12 @@ BOOL CxModel::SetWindowPixelFormat(HDC hDC)
 		m_GLPixelIndex = 1;
 		if (DescribePixelFormat (hDC, m_GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc) == 0)
 		{
-			return FALSE;
+                  return false;
 		}
 	}
-	if (SetPixelFormat(hDC, m_GLPixelIndex, &pixelDesc) == FALSE)
+      if (SetPixelFormat(hDC, m_GLPixelIndex, &pixelDesc) == false)
 	{
-		return FALSE;
+            return false;
 	}
 
 	return TRUE;
@@ -831,17 +1067,17 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 	m_hGLContext = wglCreateContext(hDC);
 	if(m_hGLContext ==NULL)
 	{
-		return FALSE;
+            return false;
 	}
 
-	if(wglMakeCurrent(hDC, m_hGLContext) == FALSE)
+      if(wglMakeCurrent(hDC, m_hGLContext) == false)
 	{
-		return FALSE;
+            return false;
 	}
 
 	return TRUE;
 }
-
+#endif
 
 void CxModel::SetRadiusType( int radtype )
 {
@@ -944,8 +1180,15 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 // Account for difference between Windows (GDI) coordinates
 // and OpenGL coordinates
 
-	CRect rect;
-	GetClientRect(&rect);
+#ifdef __WINDOWS__
+      CRect       wwindowext;
+      GetClientRect(&wwindowext);
+      CcRect       rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+#endif
+#ifdef __LINUX__
+      wxRect wwindowext = GetRect();
+      CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+#endif
 	yPos = rect.Height() - yPos;
 
                           
@@ -958,18 +1201,13 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 	viewport[2] = min(rect.Width(), rect.Height());
 	viewport[3] = viewport[2];
 
-
 // Account for m_projratio scaling of the model.
 // Need to scale about the centre point of the window.
 
+        int diff = (int)(( viewport[2] - ( viewport[2] * m_projratio ) ) / 2.0);
 
-        int diff = (int)( viewport[2] - ( viewport[2] * m_projratio ) ) / 2.0;
-
-        xPos = ( xPos * m_projratio ) + diff;
-        yPos = ( yPos * m_projratio ) + diff;
-
-
-
+        xPos = (int) ( xPos * m_projratio ) + diff;
+        yPos = (int) ( yPos * m_projratio ) + diff;
 
         projMatrix[0]  = 1.0 / ( 5000.0 );
 	projMatrix[1]  = 0.0;
@@ -1009,7 +1247,7 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 		while ( (atomCoord = crModel->GetModelAtom()) != nil )
 		{
 			int radius = (int)(atomCoord->R() * max(m_radscale,0.25) * scale); //NB m_radscale doesn't go below 0.5 or it gets all fiddly trying to find atoms with the mouse.
-            int radsq = radius * radius / m_projratio;
+            int radsq = (int) (radius * radius / m_projratio);
 
 
             gluProject((double)atomCoord->X(), (double)atomCoord->Y(), (double)atomCoord->Z(), 
@@ -1049,7 +1287,7 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 			*atom = topAtomB;
 			return TRUE;
 		}
-		return FALSE;
+            return false;
 }
 
 
@@ -1072,9 +1310,15 @@ float CxModel::ScaleToWindow()
         int xMin =  10000;
         int yMin =  10000;
 
-
-	CRect rect;
-	GetClientRect(&rect);
+#ifdef __WINDOWS__
+      CRect       wwindowext;
+      GetClientRect(&wwindowext);
+      CcRect       rect( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+#endif
+#ifdef __LINUX__
+      wxRect wwindowext = GetRect();
+      CcRect rect( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+#endif
 
 	for ( int i = 0; i<16; i++ )
 	{
@@ -1120,10 +1364,10 @@ float CxModel::ScaleToWindow()
                         modelMatrix, projMatrix, viewport, 
                         &x, &y, &z);
 
-             xMax = max ( xMax, x + 2 * radius + 20 );
-             xMin = min ( xMin, x - 2 * radius - 20);
-             yMax = max ( yMax, y + 2 * radius + 20);
-             yMin = min ( yMin, y - 2 * radius - 20);
+             xMax = (int) max ( xMax, x + 2 * radius + 20 );
+             xMin = (int) min ( xMin, x - 2 * radius - 20);
+             yMax = (int) max ( yMax, y + 2 * radius + 20);
+             yMin = (int) min ( yMin, y - 2 * radius - 20);
 
 
        } //end atom getting loop
@@ -1151,14 +1395,28 @@ float CxModel::ScaleToWindow()
 
 
 
+#ifdef __WINDOWS__
 void CxModel::OnMenuSelected(int nID)
 {
+#endif
+#ifdef __LINUX__
+void CxModel::OnMenuSelected(wxCommandEvent & event)
+{
+      int nID = event.m_id;
+#endif
+
 	((CrModel*)mWidget)->MenuSelected( nID );
 }
 
+
 void CxModel::UpdateHighlights()
 {
-	InvalidateRect(NULL,FALSE);
+#ifdef __WINDOWS__
+      InvalidateRect(NULL,false);
+#endif
+#ifdef __LINUX__
+      Refresh();
+#endif
 }
 
 
