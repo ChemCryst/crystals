@@ -5,6 +5,10 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  1999/03/05 17:07:10  dosuser
+// RIC: Standardising syntax. Main window definition moved to external
+//      ASCII file for user flexibility.
+//
 
 //   Filename:  CrEditBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
@@ -20,7 +24,7 @@
 #include	"ccrect.h"
 #include	"cctokenlist.h"
 #include	"cccontroller.h"	// for sending commands
-
+#include    "crwindow.h"  // for getting cursor keys
 
 CrEditBox::CrEditBox( CrGUIElement * mParentPtr )
 :	CrGUIElement( mParentPtr )
@@ -54,6 +58,11 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 		mSelfInitialised = true;
 
 		LOGSTAT( "*** Created EditBox     " + mName );
+
+            if ( mName == "_MAINTEXTINPUT" )
+            {
+                  ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this);
+            }            
 
 		while ( hasTokenForMe )
 		{
@@ -276,14 +285,33 @@ void CrEditBox::AddText(CcString theText)
 	((CxEditBox*)mWidgetPtr)->AddText( (char*) theText.ToCString() );
 }
 
-void CrEditBox::Arrow(Boolean up)
-{
-	//Only send History requests if this is _the_ input window.
-	if ( (CcController::theController)->mInputWindow == this)
-		(CcController::theController)->History(up);
-}
+//void CrEditBox::Arrow(Boolean up)
+//{
+//      //Only send History requests if this is _the_ input window.
+//      if ( (CcController::theController)->mInputWindow == this)
+//            (CcController::theController)->History(up);
+//}
 
 void CrEditBox::ClearBox()
 {
 	((CxEditBox*)mWidgetPtr)->ClearBox();
+}
+
+void CrEditBox::SysKey ( UINT nChar )
+{
+//Only send History requests if this is _the_ input window.
+	if ( (CcController::theController)->mInputWindow == this)
+      {
+            switch ( nChar )
+            {
+                  case VK_UP:
+                        (CcController::theController)->History(true);
+                        break;      
+                  case VK_DOWN:
+                        (CcController::theController)->History(false);
+                        break;
+                  default:
+                        break;
+            }
+      }
 }

@@ -20,7 +20,8 @@ class	CrEditBox : public CrGUIElement
 {
 	public:
 		void ClearBox();
-		void Arrow(Boolean up);
+//            void Arrow(Boolean up);
+            void SysKey ( UINT nChar );
 		void AddText(CcString theText);
 		void ReturnPressed();
 		void CrFocus();
