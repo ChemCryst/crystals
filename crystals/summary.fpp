@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/06/24 13:01:04  djw
+C Change SHELX weighting text to keep Acta happy
+C
 C Revision 1.43  2003/06/19 16:29:50  rich
 C
 C Store, in L30, the number of restraints that L16 is generating.
@@ -1369,6 +1372,7 @@ CODE FOR XCOMPL
       DIMENSION IHKLTR ( 3, ITRSZ + 1 )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
+      DIMENSION ACTBIN ( 100 )
 
 
       DO I = 1, 100
@@ -1417,7 +1421,7 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
      1              .AND.( NINT(STORE(M6+1)) .EQ. IK )
      2              .AND.( NINT(STORE(M6+2)) .EQ. IL ) ) THEN
                   NALLWD = NALLWD + 1
-                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 400.0 ) - 300
+                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
                   JID = MAX ( 1,  JID )
                   JID = MIN ( 100,JID )
                   ALLBIN(JID) = ALLBIN(JID) + 1.0
@@ -1467,6 +1471,13 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
 
       THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
 
+      DO I = 1, 100
+        IF ( ALLBIN(I) .LE. 0.0) THEN
+          ACTBIN(I) = 1.0
+        ELSE
+          ACTBIN(I) = FNDBIN(I) / ALLBIN(I)
+        END IF
+      END DO
       DO I = 2, 100
         FNDBIN(I) = FNDBIN(I) + FNDBIN(I-1)
         ALLBIN(I) = ALLBIN(I) + ALLBIN(I-1)
@@ -1481,19 +1492,19 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
       ENDIF
       DO I = 1,100
         IF ( ALLBIN(I) .EQ. 0 ) THEN
-          COMP = 0.0
+          COMP = 1.0
         ELSE
           COMP = FNDBIN(I) / ALLBIN(I)
           CMPMIN = MIN (CMPMIN,COMP)
         END IF
 
         IF ( IPLOT .GE. 0 ) THEN
-          WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I+300.0)/400.0),
+          WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I)/100.0),
      1   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
         END IF
 
         IF ( (COMP .GE. THBCMP) .OR. (COMP .GT. 0.995) ) THEN
-          THBEST = THMAX*((I+300.0)/400.0)                       
+          THBEST = THMAX*(I/100.0)                       
           THBCMP = COMP
         END IF
       END DO
@@ -1503,21 +1514,31 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
      1   '< best theta_full'
       END IF
 
+
       IF ( IPLOT .EQ. 1 ) THEN
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
-        WRITE(CMON,'(A/A,2F7.2,A/A,F7.2,A)')
-     1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL',
-     1  '^^PL XAXIS ZOOM ', .75*THMAX, THMAX,
-     1  ' TITLE Theta NSERIES=1 LENGTH=100',
-     1  '^^PL YAXIS ZOOM ', CMPMIN, ' 100.1 TITLE Completeness',
-     1  '^^PL SERIES 1 TYPE LINE'
-        CALL XPRVDU(NCVDU, 4,0)
+        WRITE(CMON,'(A/A/A,F7.2,A/A/A/A)')
+     1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL KEY',
+     1  '^^PL XAXIS TITLE Theta NSERIES=2 LENGTH=100',
+     1  '^^PL YAXIS ZOOM ', CMPMIN,
+     1  ' 100.0 TITLE ''Cumulative Completeness''',
+     1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
+     1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
+     1  '^^PL SERIES 2 SERIESNAME ''Shell Completeness''',
+     1  '^^PL USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 7,0)
 
         DO I = 1,100
+          IF ( ALLBIN(I) .EQ. 0 ) THEN
+            COMP = 1.0
+          ELSE
+            COMP = FNDBIN(I) / ALLBIN(I)
+          END IF
 
-          WRITE(CMON,'(A,F10.3,A,2F10.5)')
-     1    '^^PL LABEL ', THMAX*((I+300.0)/400.0),
-     1    ' DATA ', THMAX*((I+300.0)/400.0),100.*FNDBIN(I)/ALLBIN(I)
+          WRITE(CMON,'(A,F10.3,A,4F10.5)')
+     1    '^^PL LABEL ', THMAX*(I/100.0),
+     1    ' DATA ', THMAX*(I/100.0),100.0*COMP,
+     1              THMAX*(I/100.0),100.0*ACTBIN(I)
           CALL XPRVDU(NCVDU, 1,0)
         END DO
 
@@ -3042,5 +3063,155 @@ C -- INPUT ERRORS
 
       END
 
+CODE FOR XTWINP
+      SUBROUTINE XTWINP
+      DIMENSION KSIGS(25)
+      DIMENSION BAD(3), TEMP(3), RJKL(3)
+\ISTORE
+\STORE
+\XLST06
+\XLST01
+\ICOM30
+\XLST30
+\XUNITS
+\XSSVAL
+\XERVAL
+\XOPVAL
+\XCONST
+\XIOBUF
+\QSTORE
+\QLST30
+      DATA ICOMSZ / 11 /
+      DATA IVERSN /100 /
+
+C -- SET THE TIMING AND READ THE CONSTANTS
+
+      CALL XTIME1 ( 2 )
+      CALL XCSAE
+
+C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
+      ICOMBF = KSTALL( ICOMSZ )
+      CALL XZEROF (STORE(ICOMBF), ICOMSZ)
+      I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
+      IF ( I .LT. 0 ) GO TO 9910
+
+      IPLOT = ISTORE(ICOMBF+9)
+      ITYP06 = ISTORE(ICOMBF+10)
+      IULN = KTYP06(ITYP06)
+      CALL XFAL06 (IULN, 0)
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+
+      DO I = 1,25
+        KSIGS(I) = 0
+      END DO
+
+C Calculate max distance in A^-2.
+
+      bad(1)=0.5
+      bad(2)=0.5
+      bad(3)=0.5
+      CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
+      CALL VPROD(BAD,TEMP,DMX)
+      DMX = MAX(DMX,ZEROSQ)
+      DMX = SQRT(DMX)
+
+      WRITE(CMON,'(A,G13.6)')'Highest dist = ',DMX
+      CALL XPRVDU(NCVDU,1,0)
+
+      tmx =   store(l1s)*bad(1)*bad(1)
+     1     +store(l1s+1)*bad(2)*bad(2)
+     2     +store(l1s+2)*bad(3)*bad(3)
+     3     +store(l1s+3)*bad(2)*bad(3)
+     4     +store(l1s+4)*bad(1)*bad(3)
+     5     +store(l1s+5)*bad(1)*bad(2)
+
+      tmx = tmx * 4.0
+
+      TMX = MAX(TMX,ZEROSQ)
+      TMX = SQRT(TMX)
+
+      WRITE(CMON,'(A,G13.6)')'Highest test = ',TMX
+      CALL XPRVDU(NCVDU,1,0)
+
+
+C SCAN LIST 6 FOR REFLECTIONS
+
+
+      ISTAT = KLDRNR(0)
+
+
+      DO WHILE ( ISTAT .GE. 0 )
+
+        DMIN = 1000.0
+        DO J = -1,1
+         RJKL(1) = J
+         DO K = -1,1
+          RJKL(2) = K
+          DO L = -1,1
+           RJKL(3) = L
+
+           CALL XMLTMM(STORE(ICOMBF),STORE(M6),TEMP,3,3,1)
+           DO I=1,3
+             BAD(I) = (TEMP(I) - NINT(TEMP(I)) + RJKL(I) )
+           END DO
+ 
+           CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
+           CALL VPROD(BAD,TEMP,D)
+           IF ( D .GT. ZEROSQ ) D = SQRT(D)
+           IF ( D .LT. DMIN ) DMIN = D
+
+          END DO
+
+         END DO
+
+        END DO
+
+        JSIGS = 1 + ( 25. * DMIN / DMX )
+        JSIGS = MAX(JSIGS,1)
+        JSIGS = MIN(JSIGS,25)
+        KSIGS(JSIGS) = KSIGS(JSIGS) + 1
+
+        ISTAT = KLDRNR(0)
+      END DO
+
+      IF (IPLOT .EQ. 1) THEN
+        WRITE(CMON,'(A,3(/A))')
+     1  '^^PL PLOTDATA _XTLA BARGRAPH ATTACH _TLA',
+     1  '^^PL XAXIS TITLE ''Deviation in A^-1'' NSERIES=1 LENGTH=25',
+     1  '^^PL YAXIS TITLE ''Number of observations''',
+     1  '^^PL SERIES 1 SERIESNAME ''Number of reflections at'''
+        CALL XPRVDU(NCVDU, 4,0)
+
+        DO I = 1, 25
+          WRITE(CMON,'(A,1X,F9.5,1X,A,1X,I6)')
+     1    '^^PL LABEL',(I-1)*DMX/25.0,'DATA',KSIGS(I)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+
+      END IF
+
+9000  CONTINUE
+C -- FINAL MESSAGE
+      CALL XOPMSG ( IOPDSP , IOPEND , IVERSN )
+      CALL XTIME2 ( 2 )
+      CALL XRSL
+      CALL XCSAE
+      RETURN
+
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPDSP , IOPABN , 0 )
+      GO TO 9000
+
+9910  CONTINUE
+C -- INPUT ERRORS
+      CALL XOPMSG ( IOPDSP , IOPCMI , 0 )
+      GO TO 9900
+      RETURN
+
+      END
 
 
