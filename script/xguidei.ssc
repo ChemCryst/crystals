@@ -112,6 +112,12 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.1.1.1  2004/12/13 11:16:23  rich
+%%  New CRYSTALS repository
+%%
+%%  Revision 1.10  2004/10/19 15:53:57  rich
+%%  Default guide to Run KCCDIN if import.cif detected.
+%%
 %%  Revision 1.9  2004/09/28 09:35:32  rich
 %%  Removed redundant output.
 %%

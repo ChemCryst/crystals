@@ -413,6 +413,15 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.1.1.1  2004/12/13 11:16:23  rich
+%% New CRYSTALS repository
+%%
+%% Revision 1.27  2003/07/08 10:00:09  rich
+%%
+%% Col/row ordering was wrong for new
+%% transformation matrix on input of
+%% LIST 6. Fixed.
+%%
 %% Revision 1.26  2003/07/07 14:24:29  rich
 %% If an hkl filename is passed in, then enable the OK button, or the hapless
 %% user will be stuck.

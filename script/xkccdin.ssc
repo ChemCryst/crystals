@@ -6,6 +6,7 @@
 %  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE
 %  VARIABLE CHARACTER CNULL CDLINE
 %%
+% LOOP
 %  EVALUATE LFILE = FILEEXISTS ( 'kccd.ins' )
 %  EVALUATE IFILE = FILEEXISTS ( 'import.cif' )
 %%
@@ -52,7 +53,6 @@
 %%
 %%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-% LOOP
 %  VERIFY BTNOK BTNXX BTNRR
 %  GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' ' '
 %  CASE VALUE
@@ -65,18 +65,10 @@
 %         FINISH
 %    END BLOCK
 %    BLOCK             %RUN KCCDIN%
+^^CO      DISPOSE XKCCDIN
 {S * Running KCCDIN.
-^^WI   WINDOW BLOCKK 'Waiting' MODAL CANCEL='^^CO DISPOSE BLOCKK'
-^^WI   GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting KCCDIN.'
-^^WI   @ 3,2 STATIC T1 'Complete or close KCCDIN to continue.' } SHOW
-^^CR
---GILLIN%      COPY '#SPAWN + "CRYSDIR:KCCDIN.BAT"'
-++GILLIN%      COPY '#SPAWN + "CRYSDIR:kccdin"'
-^^CO   DISPOSE BLOCKK
-^^CO   SET BTNOK DISABLED=NO
-^^CO   SET BTNRR TEXT = 'Run KCCDin again'
-^^CO   SET T1 TEXT 'Click OK to read in data'
-^^CO   SET T2 TEXT 'from the file kccd.ins.'
+--GILLIN%      COPY '#SPAWN % "CRYSDIR:kccdin.exe"'
+++GILLIN%      COPY '#SPAWN % "CRYSDIR:kccdin.sh"'
 {R   Done.
 %    END BLOCK
 %  END CASE

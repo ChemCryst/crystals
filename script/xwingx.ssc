@@ -53,3 +53,9 @@
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.1.1.1  2004/12/13 11:16:24  rich
+%% New CRYSTALS repository
+%%
+%% Revision 1.1  2001/12/18 12:43:01  ckp2
+%% WinGX support.
+%%

@@ -116,7 +116,7 @@
 %     END CASE
 ^^CO  DISPOSE QUERY
 %     CASE CHOICE
-%          EVALUATE CDIR = 'CRYSDIR:nket/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/nket/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/cyclo/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/quick/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/editor/'
@@ -130,7 +130,7 @@
 %          EVALUATE CDIR = 'CRYSDIR:demo/ylid/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/peach/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/keen/'
-%          EVALUATE CDIR = 'CRYSDIR:example/'
+%          EVALUATE CDIR = 'CRYSDIR:demo/example/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/mogul/'
 %          EVALUATE CDIR = 'CRYSDIR:demo/zoltan/'
 %     END CASE
@@ -142,7 +142,7 @@
 %     END IF
 %     IF ( CLEAN .EQ. 1 ) THEN
 %         EVALUATE T = FILEDELETE ( CFDIR // 'crfilev2.dsc' )
-%         EVALUATE T = FILEDELETE ( CFDIR // 'sir9x.ins' )
+%         EVALUATE T = FILEDELETE ( CFDIR // 'SIR9x.ins' )
 %         EVALUATE T = FILEDELETE ( CFDIR // 'pretwin6.dat' )
 %         IF CHOICE .EQ. 1 THEN
 %TRANSFER '#SPAWN copy "' // CFDIR // 'nket.dsc" "' // CFDIR // -

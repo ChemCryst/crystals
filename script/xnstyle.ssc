@@ -1,215 +1,216 @@
-%SCRIPT XCstyle                                                                 
-% VARIABLE CHARACTER COMMAND IH IK IL                                           
-% VERIFY LSTYLE LCOLOR LPACK COLBUT LFONT                                       
-% GET SILENT NOSTORE FINAL ABBREVIATED ' '                                      
-% CASE VALUE                                                                    
-%  BLOCK               %LSTYLE%                                                 
-%    GET SILENT NOSTORE INTEGER ' '                                             
-%    CASE VALUE                                                                 
-%     COPY 'BALL ALL VIEW'                                                      
-%     COPY 'LINE ALL VIEW'                                                      
-%     COPY 'ELLIPSE TYPE ALL 3 VIEW'                                            
-%    END CASE                                                                   
-%  END BLOCK                                                                    
-%  BLOCK               %LCOLOR%                                                 
-%    GET SILENT NOSTORE INTEGER ' '                                             
-%% Default, B&W, B&W 2                                                          
-%    CASE VALUE                                                                 
-% COPY 'FILL COLO DEFA COLO BACK WHITE COLO BOND ALL BLACK VIEW'                
-% COPY 'UNFI COLO BOND ALL WHITE COLO BACK GREY COLO ALL BLACK VIEW'            
-% COPY 'UNFI COLO BOND ALL BLACK COLO BACK WHITE COLO ALL BLACK VIEW'           
-%    END CASE                                                                   
-%  END BLOCK                                                                    
-%  BLOCK               %LPACK%                                                  
-%   GET SILENT NOSTORE INTEGER ' '                                          
-%    CASE VALUE                                                              
-%     COPY 'UNPACK VIEW'                                                   
-%     COPY 'PACK CELL COMPLETE INTER NOLABEL ALL INCL CELL LABEL CELL VIEW'
-%     COPY 'PACK CELL CENTROID INTER NOLABEL ALL INCL CELL LABEL CELL VIEW'        
-%     COPY 'PACK CELL CUT INTER NOLABEL ALL INCL CELL LABEL CELL VIEW'             
-%     COPY '#SCRIPT XCWINDOW'                                              
-%    END CASE                                                                
-%   COPY ' '                                                                
-%  END BLOCK                                                                    
-%  BLOCK               %COLBUT%                                                 
-^^WI WINDOW XCOLOUR 'Set Colours' MODAL POSITION=RIGHTOF _CAMWINDOW             
-^^WI GRID G1 NROWS=2 NCOLS=3                                                    
-^^WI {                                                                          
-^^WI  @ 1,1 GRID GL NROWS=3 NCOLS=1                                             
-^^WI  {                                                                         
-^^WI   @ 2,1 GRID GB NROWS=2 NCOLS=5                                            
-^^WI   {                                                                        
-^^WI    @ 1,1  RADIOBUTTON  XA 'Atom' INFORM                                    
-^^WI    @ 1,2  STATIC   TH 'Element'                                            
-^^WI    @ 1,3  EDITBOX  AH ' ' CHARS=8 INFORM=NO                                
-^^WI    @ 2,1  RADIOBUTTON  XB 'Bond' INFORM                                    
-^^WI    @ 2,2  STATIC   TH 'Element1:'                                          
-^^WI    @ 2,3  EDITBOX  BH ' ' CHARS=8 INFORM=NO                                
-^^WI    @ 2,4  STATIC   TH 'Element2:'                                          
-^^WI    @ 2,5  EDITBOX  BK ' ' CHARS=8 INFORM=NO                                
-^^WI   }                                                                        
-^^WI  }                                                                         
-^^WI  @ 1,2 GRID   GC NROWS=3 NCOLS=3                                           
-^^WI  {                                                                         
-^^WI    @ 1,2  STATIC   TH 'Colour:'                                            
-^^WI    @ 2,2 DROPDOWN BL ADDTOLIST                                             
-^^WI 'BLACK' 'RED' 'ORANGE' 'YELLOW' 'GREEN' 'BLUE'                             
-^^WI 'PURPLE' 'WHITE' 'GREY' 'PINK' 'MAGENTA' 'CYAN'                            
-^^WI 'LGREY' 'LRED' 'LGREEN' 'LBLUE' 'NULL'                                     
-^^WI  }                                                                         
-^^WI  @ 1,3 GRID   GR NROWS=3 NCOLS=3                                           
-^^WI  {                                                                         
-^^WI   @ 1,2 BUTTON      BTOK 'Exit' DEFAULT COMMIT                             
-^^WI   @ 3,2 BUTTON      BTPP 'Apply'                                           
-^^WI  }                                                                         
-^^WI  @ 2,1 STATIC  AT 'Enter either an atom or an element'                     
-^^WI }                                                                          
-^^WI SHOW                                                                       
-^^CR                                                                            
-%%                                                                              
-^^WI    SET XA STATE=OFF                                                        
-^^WI    SET XB STATE=OFF                                                        
-^^WI    SET AH DISABLED=YES                                                     
-^^WI    SET BH DISABLED=YES                                                     
-^^WI    SET BK DISABLED=YES                                                     
-^^CR                                                                            
-%%                                                                              
-%   LOOP                                                                        
-%    VERIFY BTOK BTPP  XA XB                                                    
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'BTOK'                            
-%    CASE VALUE                                                                 
-%     BLOCK        %BTOK%                                                       
-^^WI   DISPOSE XCOLOUR                                                          
-^^CR                                                                            
-%      COPY ' VIEW '                                                            
-%      FINISH                                                                   
-%     END BLOCK                                                                 
-%     BLOCK        %BTPP%                                                       
-^^WI   GETVALUE XA                                                              
-^^CR                                                                            
-%      VERIFY ON OFF                                                            
-%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                                 
-%      IF VALUE .EQ. 1 THEN                                                     
-^^??              AH TEXT                                                       
-%                 GET SILENT NOSTORE TEXT ' ' ' '                               
-%                 EVALUATE IH = CVALUE                                          
-^^??              BL SELECTED                                                   
-%                 GET SILENT NOSTORE INTEGER ' '                                
-%                 CASE VALUE                                                    
-%                  EVALUATE IL = 'BLACK'                                        
-%                  EVALUATE IL = 'RED'                                          
-%                  EVALUATE IL = 'ORANGE'                                       
-%                  EVALUATE IL = 'YELLOW'                                       
-%                  EVALUATE IL = 'GREEN'                                        
-%                  EVALUATE IL = 'BLUE'                                         
-%                  EVALUATE IL = 'PURPLE'                                       
-%                  EVALUATE IL = 'WHITE'                                        
-%                  EVALUATE IL = 'GREY'                                         
-%                  EVALUATE IL = 'PINK'                                         
-%                  EVALUATE IL = 'MAGENTA'                                      
-%                  EVALUATE IL = 'CYAN'                                         
-%                  EVALUATE IL = 'LGREY'                                        
-%                  EVALUATE IL = 'LRED'                                         
-%                  EVALUATE IL = 'LGREEN'                                       
-%                  EVALUATE IL = 'LBLUE'                                        
-%                 END CASE                                                      
-%                 QUEUE REWIND                                                  
-%                 CLEAR                                                         
-%                 INSERT 'COLOUR '                                              
-%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IH                     
-%                 INSERT ' '                                                    
-%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IL                     
-%                 INSERT ' VIEW'                                                
-%                 QUEUE SEND                                                    
-%                 QUEUE PROCESS                                                 
-%%                 COPY ' '                                                     
-%      ELSE                                                                     
-^^WI      GETVALUE XB                                                           
-^^CR                                                                            
-%         VERIFY ON OFF                                                         
-%         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
-%         IF VALUE .EQ. 1 THEN                                                  
-^^??              BH TEXT                                                       
-%                 GET SILENT NOSTORE KEYWORD ' ' ' '                            
-%                 EVALUATE IH = CVALUE                                          
-^^??              BK TEXT                                                       
-%                 GET SILENT NOSTORE KEYWORD ' ' ' '                            
-%                 EVALUATE IK = CVALUE                                          
-^^??              BL SELECTED                                                   
-%                 GET SILENT NOSTORE INTEGER ' '                                
-%                 CASE VALUE                                                    
-%                  EVALUATE IL = 'BLACK'                                        
-%                  EVALUATE IL = 'RED'                                          
-%                  EVALUATE IL = 'ORANGE'                                       
-%                  EVALUATE IL = 'YELLOW'                                       
-%                  EVALUATE IL = 'GREEN'                                        
-%                  EVALUATE IL = 'BLUE'                                         
-%                  EVALUATE IL = 'PURPLE'                                       
-%                  EVALUATE IL = 'WHITE'                                        
-%                  EVALUATE IL = 'GREY'                                         
-%                  EVALUATE IL = 'PINK'                                         
-%                  EVALUATE IL = 'MAGENTA'                                      
-%                  EVALUATE IL = 'CYAN'                                         
-%                  EVALUATE IL = 'LGREY'                                        
-%                  EVALUATE IL = 'LRED'                                         
-%                  EVALUATE IL = 'LGREEN'                                       
-%                  EVALUATE IL = 'LBLUE'                                        
-%                 END CASE                                                      
-%                 QUEUE REWIND                                                  
-%                 CLEAR                                                         
-%                 INSERT 'COLOUR BOND '                                         
-%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IH                     
-%                 INSERT ' '                                                    
-%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IK                     
-%                 INSERT ' '                                                    
-%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IL                     
-%                 INSERT ' VIEW'                                                
-%                 QUEUE SEND                                                    
-%                 QUEUE PROCESS                                                 
-%%                 COPY ' '                                                     
-%         END IF                                                                
-%      END IF                                                                   
-%     END BLOCK                                                                 
-%     BLOCK   %XA%                                                              
-^^WI    SET XB STATE=OFF                                                        
-^^WI    SET AH DISABLED=NO                                                      
-^^WI    SET BH DISABLED=YES                                                     
-^^WI    SET BK DISABLED=YES                                                     
-^^CR                                                                            
-%     END BLOCK                                                                 
-%     BLOCK   %XB%                                                              
-^^WI    SET XA STATE=OFF                                                        
-^^WI    SET BH DISABLED=NO                                                      
-^^WI    SET BK DISABLED=NO                                                      
-^^WI    SET AH DISABLED=YES                                                     
-^^CR                                                                            
-%     END BLOCK                                                                 
-%    END CASE                                                                   
-%   END LOOP                                                                    
-%   CLEAR                                                                       
-%  END BLOCK                                                                    
-%  BLOCK               %LFONT%                                                  
-%    GET SILENT NOSTORE INTEGER ' '                                             
-%% 8 9 10 12 16 20 24 36 48 72                                                  
-%    CASE VALUE                                                                 
-%      COPY 'FONT 8 VIEW'                                                       
-%      COPY 'FONT 9 VIEW'                                                       
-%      COPY 'FONT 10 VIEW'                                                      
-%      COPY 'FONT 12 VIEW'                                                      
-%      COPY 'FONT 16 VIEW'                                                      
-%      COPY 'FONT 20 VIEW'                                                      
-%      COPY 'FONT 24 VIEW'                                                      
-%      COPY 'FONT 36 VIEW'                                                      
-%      COPY 'FONT 48 VIEW'                                                      
-%      COPY 'FONT 72 VIEW'                                                      
-%    END CASE                                                                   
-%  END BLOCK                                                                    
-% END CASE                                                                      
-%END SCRIPT                                                                     
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
-                                                                                
+%SCRIPT XCstyle
+% VARIABLE CHARACTER COMMAND IH IK IL
+% VERIFY LSTYLE LCOLOR LPACK COLBUT LFONT
+% GET SILENT NOSTORE FINAL ABBREVIATED ' '
+% CASE VALUE
+%  BLOCK               %LSTYLE%
+%    GET SILENT NOSTORE INTEGER ' '
+%    CASE VALUE
+%     COPY 'BALL ALL VIEW'
+%     COPY 'LINE ALL VIEW'
+%     COPY 'ELLIPSE TYPE ALL 3 VIEW'
+%    END CASE
+%  END BLOCK
+%  BLOCK               %LCOLOR%
+%    GET SILENT NOSTORE INTEGER ' '
+%% Default, B&W, B&W 2
+%    CASE VALUE
+% COPY 'FILL COLO DEFA COLO BACK WHITE COLO BOND ALL BLACK VIEW'
+% COPY 'UNFI COLO BOND ALL WHITE COLO BACK GREY COLO ALL BLACK VIEW'
+% COPY 'UNFI COLO BOND ALL BLACK COLO BACK WHITE COLO ALL BLACK VIEW'
+%    END CASE
+%  END BLOCK
+%  BLOCK               %LPACK%
+%   GET SILENT NOSTORE INTEGER ' '
+%   CASE VALUE
+%    COPY 'UNPACK VIEW'
+%    COPY 'PACK CELL COMPLETE INTER NOLABEL ALL INCL CELL LABEL CELL VIEW'
+%    COPY 'PACK CELL CENTROID INTER NOLABEL ALL INCL CELL LABEL CELL VIEW'
+%    COPY 'PACK CELL CUT INTER NOLABEL ALL INCL CELL LABEL CELL VIEW'
+%    COPY '#SCRIPT XCWINDOW'
+%   END CASE
+%   COPY ' '
+%  END BLOCK
+%  BLOCK               %COLBUT%
+^^WI WINDOW XCOLOUR 'Set Colours' MODAL POSITION=RIGHTOF _CAMWINDOW
+^^WI GRID G1 NROWS=2 NCOLS=3
+^^WI {
+^^WI  @ 1,1 GRID GL NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 GRID GB NROWS=2 NCOLS=5
+^^WI   {
+^^WI    @ 1,1  RADIOBUTTON  XA 'Atom' INFORM
+^^WI    @ 1,2  STATIC   TH 'Element'
+^^WI    @ 1,3  EDITBOX  AH ' ' CHARS=8 INFORM=NO
+^^WI    @ 2,1  RADIOBUTTON  XB 'Bond' INFORM
+^^WI    @ 2,2  STATIC   TH 'Element1:'
+^^WI    @ 2,3  EDITBOX  BH ' ' CHARS=8 INFORM=NO
+^^WI    @ 2,4  STATIC   TH 'Element2:'
+^^WI    @ 2,5  EDITBOX  BK ' ' CHARS=8 INFORM=NO
+^^WI   }
+^^WI  }
+^^WI  @ 1,2 GRID   GC NROWS=3 NCOLS=3
+^^WI  {
+^^WI    @ 1,2  STATIC   TH 'Colour:'
+^^WI    @ 2,2 DROPDOWN BL ADDTOLIST
+^^WI 'BLACK' 'RED' 'ORANGE' 'YELLOW' 'GREEN' 'BLUE'
+^^WI 'PURPLE' 'WHITE' 'GREY' 'PINK' 'MAGENTA' 'CYAN'
+^^WI 'LGREY' 'LRED' 'LGREEN' 'LBLUE' 'NULL'
+^^WI  }
+^^WI  @ 1,3 GRID   GR NROWS=3 NCOLS=3
+^^WI  {
+^^WI   @ 1,2 BUTTON      BTOK 'Exit' DEFAULT COMMIT
+^^WI   @ 3,2 BUTTON      BTPP 'Apply'
+^^WI  }
+^^WI  @ 2,1 STATIC  AT 'Enter either an atom or an element'
+^^WI }
+^^WI SHOW
+^^CR
+%%
+^^WI    SET XA STATE=OFF
+^^WI    SET XB STATE=OFF
+^^WI    SET AH DISABLED=YES
+^^WI    SET BH DISABLED=YES
+^^WI    SET BK DISABLED=YES
+^^CR
+%%
+%   LOOP
+%    VERIFY BTOK BTPP  XA XB
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'BTOK' 
+%    CASE VALUE
+%     BLOCK        %BTOK%
+^^WI   DISPOSE XCOLOUR
+^^CR
+%      COPY ' VIEW '
+%      FINISH
+%     END BLOCK
+%     BLOCK        %BTPP%
+^^WI   GETVALUE XA
+^^CR
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      IF VALUE .EQ. 1 THEN
+^^??              AH TEXT
+%                 GET SILENT NOSTORE TEXT ' ' ' '
+%                 EVALUATE IH = CVALUE
+^^??              BL SELECTED
+%                 GET SILENT NOSTORE INTEGER ' '
+%                 CASE VALUE
+%                  EVALUATE IL = 'BLACK'
+%                  EVALUATE IL = 'RED'
+%                  EVALUATE IL = 'ORANGE'
+%                  EVALUATE IL = 'YELLOW'
+%                  EVALUATE IL = 'GREEN'
+%                  EVALUATE IL = 'BLUE'
+%                  EVALUATE IL = 'PURPLE'
+%                  EVALUATE IL = 'WHITE'
+%                  EVALUATE IL = 'GREY'
+%                  EVALUATE IL = 'PINK'
+%                  EVALUATE IL = 'MAGENTA'
+%                  EVALUATE IL = 'CYAN'
+%                  EVALUATE IL = 'LGREY'
+%                  EVALUATE IL = 'LRED'
+%                  EVALUATE IL = 'LGREEN'
+%                  EVALUATE IL = 'LBLUE'
+%                 END CASE
+%                 QUEUE REWIND
+%                 CLEAR
+%                 INSERT 'COLOUR '
+%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IH
+%                 INSERT ' '
+%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IL
+%                 INSERT ' VIEW'
+%                 QUEUE SEND
+%                 QUEUE PROCESS
+%%                 COPY ' '
+%      ELSE
+^^WI      GETVALUE XB
+^^CR
+%         VERIFY ON OFF
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%         IF VALUE .EQ. 1 THEN
+^^??              BH TEXT
+%                 GET SILENT NOSTORE KEYWORD ' ' ' '
+%                 EVALUATE IH = CVALUE
+^^??              BK TEXT
+%                 GET SILENT NOSTORE KEYWORD ' ' ' '
+%                 EVALUATE IK = CVALUE
+^^??              BL SELECTED
+%                 GET SILENT NOSTORE INTEGER ' '
+%                 CASE VALUE
+%                  EVALUATE IL = 'BLACK'
+%                  EVALUATE IL = 'RED'
+%                  EVALUATE IL = 'ORANGE'
+%                  EVALUATE IL = 'YELLOW'
+%                  EVALUATE IL = 'GREEN'
+%                  EVALUATE IL = 'BLUE'
+%                  EVALUATE IL = 'PURPLE'
+%                  EVALUATE IL = 'WHITE'
+%                  EVALUATE IL = 'GREY'
+%                  EVALUATE IL = 'PINK'
+%                  EVALUATE IL = 'MAGENTA'
+%                  EVALUATE IL = 'CYAN'
+%                  EVALUATE IL = 'LGREY'
+%                  EVALUATE IL = 'LRED'
+%                  EVALUATE IL = 'LGREEN'
+%                  EVALUATE IL = 'LBLUE'
+%                 END CASE
+%                 QUEUE REWIND
+%                 CLEAR
+%                 INSERT 'COLOUR BOND '
+%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IH
+%                 INSERT ' '
+%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IK
+%                 INSERT ' '
+%                 STORE FORMAT /(A8)/ LENGTH 8 CHARACTER IL
+%                 INSERT ' VIEW'
+%                 QUEUE SEND
+%                 QUEUE PROCESS
+%%                 COPY ' '
+%         END IF
+%      END IF
+%     END BLOCK
+%     BLOCK   %XA%
+^^WI    SET XB STATE=OFF
+^^WI    SET AH DISABLED=NO
+^^WI    SET BH DISABLED=YES
+^^WI    SET BK DISABLED=YES
+^^CR
+%     END BLOCK
+%     BLOCK   %XB%
+^^WI    SET XA STATE=OFF
+^^WI    SET BH DISABLED=NO
+^^WI    SET BK DISABLED=NO
+^^WI    SET AH DISABLED=YES
+^^CR
+%     END BLOCK
+%    END CASE
+%   END LOOP
+%   CLEAR
+%  END BLOCK
+%  BLOCK               %LFONT%
+%    GET SILENT NOSTORE INTEGER ' '
+%% 8 9 10 12 16 20 24 28 36 48 72
+%    CASE VALUE
+%      COPY 'FONT 8 VIEW'
+%      COPY 'FONT 9 VIEW'
+%      COPY 'FONT 10 VIEW'
+%      COPY 'FONT 12 VIEW'
+%      COPY 'FONT 16 VIEW'
+%      COPY 'FONT 20 VIEW'
+%      COPY 'FONT 24 VIEW'
+%      COPY 'FONT 28 VIEW'
+%      COPY 'FONT 36 VIEW'
+%      COPY 'FONT 48 VIEW'
+%      COPY 'FONT 72 VIEW'
+%    END CASE
+%  END BLOCK
+% END CASE
+%END SCRIPT
+
+
+
+
+
+
+

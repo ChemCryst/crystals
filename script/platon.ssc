@@ -1,19 +1,42 @@
 %SCRIPT PLATON                                                                  
 %  VARIABLE CHARACTER CDIR CFILE                                                
-%  VARIABLE LOGICAL T                                                           
-%%                                                                              
-%  IF FILEEXISTS ( 'publish.cif' ) .EQ. FALSE THEN                              
-                                                                                
-{E            No CIF file present.                                              
-{I First run "Results"->"Output CIF file"                                       
-                                                                                
-%     FINISH                                                                    
-%  END IF                                                                       
-%%                                                                              
-%%                                                                              
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
-%  EVALUATE T = FILEDELETE ( 'publish.chk' )                                    
-%%                                                                              
+%  VARIABLE LOGICAL VALID11
+%%
+%    COPY "#BONDCALC FORCE"
+%    COPY "END"
+%    COPY "#STORE CSYS CIF 'platon.cif'"
+%    COPY '#APPEND PUNCH '
+%% Check list 11 is up to date
+%    COPY '#SCRIPT VALID11'
+%%
+%%
+%    IF ( VALID11 .EQ. TRUE ) THEN
+%     COPY '#CIF '
+%     COPY 'END'
+%     COPY '#PARAMETERS'
+%     COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=EXCLRH'
+%     COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
+%     COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
+%     COPY 'END'
+%     COPY '#DIST'
+%     COPY 'E.S.D YES YES'
+%     COPY 'SELECT RANGE=L41'
+%     COPY 'OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED'
+%     COPY 'END'
+%    ELSE
+%     COPY '#CIF '
+%     COPY 'END'
+%     COPY '#PARAMETERS'
+%     COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'
+%     COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
+%     COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
+%     COPY 'END'
+%     COPY '#DIST'
+%     COPY 'SELECT RANGE=L41'
+%     COPY 'OUTPUT MON=DIST PUNCH=CIF'
+%     COPY 'END'
+%    END IF
+%%
 %%                                                                              
 ^^CO GETKEY PLATONDIR                                                           
 %%                                                                              
@@ -39,9 +62,9 @@
 %  END IF                                                                       
 %%                                                                              
 %%                                                                              
-%  TRANSFER '#SPAWN + "' // CFILE // '" publish.cif' TO DISPLAY              
-%  TRANSFER '#SPAWN + "' // CFILE // '" publish.cif' TO CRYSTALS             
+%  TRANSFER '#SPAWN + "' // CFILE // '" platon.cif' TO DISPLAY              
+%  TRANSFER '#SPAWN + "' // CFILE // '" platon.cif' TO CRYSTALS             
 %%                                                                              
-%  COPY '#spawn notepad publish.lis'                                            
+%  COPY '#spawn notepad platon.lis'
 %%                                                                              
 %END SCRIPT                                                                     

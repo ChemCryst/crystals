@@ -295,6 +295,16 @@
 %%
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.1.1.1  2004/12/13 11:16:23  rich
+%%  New CRYSTALS repository
+%%
+%%  Revision 1.12  2004/11/12 13:22:04  rich
+%%  Made residual peak check in TIDYUP equivalent to the one in ACTA (max
+%%  peak height is Zmax * 0.075 (i.e. about .45 e/A) for a light atom structure.
+%%  Clever up the interaction between the acta validation and the guide so that
+%%  if the validation fails, it can automatically recommend six-cycle if the
+%%  structure is unconverged or optimise weights if the GoOF is wonky.
+%%
 %%  Revision 1.11  2004/10/01 10:31:39  rich
 %%  Removed calls to VALID12 where no longer necessary (SCALE & CALC no longer
 %%  require a valid constraint matrix).

@@ -90,6 +90,12 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.1.1.1  2004/12/13 11:16:23  rich
+%%  New CRYSTALS repository
+%%
+%%  Revision 1.7  2002/03/21 17:56:19  richard
+%%  Enclose bitmaps in GRID object to stop them stretching.
+%%
 %%  Revision 1.6  2002/03/08 12:21:17  ckp2
 %%  Changed guides to offer "initial analyses" option before proceeding to solve. Added key
 %%  to put and get info scripts to store that this has been done.

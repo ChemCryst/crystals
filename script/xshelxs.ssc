@@ -76,8 +76,8 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
---LINGIL%      COPY '#SPAWN + "CRYSDIR:shelxs.exe"'
-++LINGIL%      COPY '#SPAWN + "CRYSDIR:shelxs"'
+--LINGIL%      COPY '#SPAWN % "CRYSDIR:shelxs.exe"'
+++LINGIL%      COPY '#SPAWN % "CRYSDIR:shelxs"'
 %      COPY '#TYPE SHELXS.LIS'
 %   END BLOCK
 %   BLOCK
