@@ -23,6 +23,10 @@ class CxWindow;
 #define POPUP_MENU  1
 #define MENU_BAR    2
 
+#define CR_MENUITEM 0
+#define CR_SUBMENU  1
+#define CR_SPLIT    2
+
 
 class	CrMenu : public CrGUIElement
 {
@@ -47,4 +51,24 @@ class	CrMenu : public CrGUIElement
             int mMenuType;
 
 };
+
+#define kSMenu				"MENU"
+#define kSEndMenu			"ENDMENU"
+#define kSMenuItem			"ITEM"
+#define kSMenuSplit			"SPLIT"
+#define	kSMenuDisableCondition	"DISABLEIF"
+#define	kSMenuEnableCondition	"ENABLEIF"
+
+enum 
+{
+ kTMenu = 1300,                 
+ kTEndMenu,			
+ kTMenuItem,			
+ kTMenuSplit,			
+ kTMenuDisableCondition,	
+ kTMenuEnableCondition	
+};
+
+
+
 #endif

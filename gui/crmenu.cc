@@ -219,11 +219,11 @@ Boolean	CrMenu::ParseInput( CcTokenList * tokenList )
 				mMenuList.AddItem(menuItem);
                         if ( mMenuType == MENU_BAR )
                         {
-                              ((CxMenuBar*)mWidgetPtr)->AddItem();
+                              menuItem->id = ((CxMenuBar*)mWidgetPtr)->AddItem();
                         }
                         else
                         {
-                              ((CxMenu*)mWidgetPtr)->AddItem();
+                              menuItem->id = ((CxMenu*)mWidgetPtr)->AddItem();
                         }
 				break;
 			}
