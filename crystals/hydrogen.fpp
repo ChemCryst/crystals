@@ -112,8 +112,8 @@ C--SET THE POINTER TO THE TOP OF THE ORTHOGONAL COORDS. STACK
       JD=NFL
       JE=JD
       ASSIGN 4250 TO NRET
-      GOTO(1250,1600,1750,2050,2050,2050,2050,2050,2050,2050,3700,1200)
-     2 ,MG
+      GOTO(1250,1600,1750,2050,2050,2050,2050,2050,2050,2050,2050,
+     2 3700,1200),MG
 C1200  STOP346
 1200  CALL GUEXIT(346)
 C
@@ -232,19 +232,33 @@ C--GENERATE THE TRANSFORMED COORDINATES
 2600  CONTINUE
       JI=MG-3
 C--CHECK THE NUMBER OF ATOMS
-      JJ=3
-      JK=JI-2
-      IF(JK)2650,2700,2750
-2650  JJ=6
-      GOTO 2850
-2700  JJ=4
-      GOTO 2850
-2750  JK=JK-5
-      IF(JK)2850,2800,2900
-2800  JJ=2
-2850  CONTINUE
-      IF(JC-JJ)2900,3000,2900
-2900  CONTINUE
+CDJW2000>
+C      JK=JI-2
+C      JJ=3
+C      IF(JK)2650,2700,2750
+C2650  JJ=6
+C      GOTO 2850
+C2700  JJ=4
+C      GOTO 2850
+C2750  JK=JK-5
+C      IF(JK)2850,2800,2900
+C2800  JJ=2
+C2850  CONTINUE
+C      IF(JC-JJ)2900,3000,2900
+C2900  CONTINUE
+      IF (JI .EQ. 1) THEN 
+            JJ = 6
+      ELSE IF (JI .EQ. 2) THEN
+            JJ = 4
+      ELSE IF (JI .LE. 6) THEN
+            JJ = 3
+      ELSE IF (JI .LE. 8) THEN
+            JJ = 2
+      ELSE
+            JJ = -1
+      ENDIF
+      IF (JC .EQ. JJ) GOTO 3000
+CDJW2000<
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2950)
@@ -261,7 +275,7 @@ C--INSTRUCTION LOOP
       CALL SAORT
       CALL SAPRT
       STORE(JU+4) = UMULT
-      GOTO(3100,3150,3200,3250,3300,3350,3400,3050),JI
+      GOTO(3100,3150,3200,3250,3300,3350,3400,3420,3050),JI
 C3050  STOP347
 3050  CALL GUEXIT(347)
 C--'PHEN' INSTRUCTION
@@ -291,6 +305,10 @@ C--'H12' INSTRUCTION
 C--'H11' INSTRUCTION
 3400  CONTINUE
       CALL SH11
+      GOTO 4250
+C--'HBOND' INSTRUCTION
+3420  CONTINUE
+      CALL SHB
       GOTO 4250
 C
 C--MAIN TERMINATION ROUTINES
@@ -400,21 +418,21 @@ CODE FOR XPERHY
       SUBROUTINE XPERHY
 C------ CODE DEVISED AND PRODUCED BY DAVID KINNA AS A PART II PROJECT
 C----- PERHYDROGENATE THE CARBON ATOMS
-C
+C 
 C----- THIS ROUTINE SEARCHES FOR BONDED CARBON ATOMS, ASSESSES THEIR
 C      HYBRIDISATION FROM A LOOK UP TABLE OF COMMON BOND LENGTHS,
 C      AND THEN GENERATES INTERNAL COMMANDS IN THE SYSTEM REQUEST QUEUE
 C      OF THE FORM USED BY #HYDROGEN .
-C
+C 
 C  LN1    INPUT LIST TYPE
 C  LN2    OUTPUT LIST TYPE
 C  ILIST   THE LIST CONTROL FLAG :
 C          -1  DO NOT LIST THE HYDROGENATED ATOMS.
 C           0  LIST THE HYDROGENATED ATOMS.
 C  TOLER   CURRENTLY A DUMMY
-C  ITYPEF   CURRENTLY C,N OR ALL
+C  ITYPEF   CURRENTLY C OR C&N 
 C--THE COMMON BLOCK /XWORKA/ IS USED :
-C
+C 
 C  JB  ADDRESS OF THE TEMP. STORAGE FOR ATOMS
 C  JC  ADDRESS OF THE ATOM HEADER FOR MOVING ATOMS FROM 'JB'
 C  JD  WORK SPACE FOR 'KATOMS'
@@ -433,9 +451,9 @@ C      0  USE THE VALUE INPUT FOR U[ISO]
 C      1  USE THE VALUE FROM THE ADJACENT ATOM
 C  SX  DISTANCE C-H TO USE
 C  JACT ACTION FLAG (1=SRQ, 2=BOTH, 3=PUNCH)
-C
+C 
 C--THE FOLLOWING VARIABLES MUST BE SET ON ENTRY TO KDIST1:-
-C
+C 
 C  AT     MINIMUM ALLOWED DISTANCE FOR DISTANCES
 C  AC     MAXIMUM ALLOWED DISTANCE FOR DISTANCES
 C  BT     MINIMUM ALLOWED DISTANCE FOR ANGLES
@@ -445,19 +463,19 @@ C  AP     MAXIMUM ALLOWED DISTANCES SQUARED OVERALL
 C  BP     MINIMUM ALLOWED DISTANCE SQUARED OVERALL
 C  M5A    ADDRESS OF THE CURRENT TARGET ATOM IN LIST 5
 C  M5     ADDRESS OF THE FIRST ATOM TO MOVE AROUND IN LIST 5
-C
-C
+C 
+C 
 C--ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
 C  WHICH HAS THE FOLLOWING FORMAT :
-C
+C 
 C   0  ADDRESS OF THE ATOM IN LIST 5
 C   1  ACCEPTANCE FLAG
-C
+C 
 C      1  ACCEPTABLE TO NONE
 C      2  DISTANCES ONLY
 C      3  ANGLES ONLY
 C      4  ACCEPTABLE TO BOTH
-C
+C 
 C   2  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM.)
 C   3  NON-PRIMITIVE LATTICE INDICATOR
 C   4  T(X)
@@ -470,8 +488,8 @@ C  10  DISTANCE
 C  11  DISTANCE SQUARED
 C  12  ADDRESS IN LIST 12  (IF USED).
 C  13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
-C
-C
+C 
+C 
       CHARACTER *80 CSRQ
       CHARACTER *12 CTEMP
 C----- PATH AND FILENAME FOR RIDING CONSTRAINTS
@@ -508,614 +526,604 @@ C
       DATA KFRN /'F', 'R', 'N', '2'/
 CC
 C----- SET THE SYMBOL FOR CARBON AND NITROGEN
-      DATA ICARB /'C   '/, INTRO/'N   '/, IALL/'ALL '/
+      DATA ICARB /'C   '/, INTRO/'N   '/
       DATA INEXT(1) / 'NEXT' /
       DATA IACT / 'NORM', 'BOTH', 'PUNC' /
 C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
-      DATA D13 / 3.5 /, D13S / 12.25 /
-      DATA TOLER /0.6/, ITRANS / 0 /
-C
+      DATA D13/3.5/,D13S/12.25/
+      DATA TOLER/0.6/,ITRANS/0/
+C 
 C--SET THE INITIAL TIMING
-      CALL XTIME1(2)
+      CALL XTIME1 (2)
 C--READ THE INPUT DATA
-      IF ( KLEXAN(IULN,IFIRST,LENGTH) .LT. 0 ) GO TO 9910
+      IF (KLEXAN(IULN,IFIRST,LENGTH).LT.0) GO TO 2600
 C--DATA INPUT  -  CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
 C----- CLEAR A BUFFER
-      JU = NFL
-      NFL = NFL + 5
-C
-      WRITE ( CMON, 100)
-      CALL XPRVDU(NCVDU, 2, 1)
-100   FORMAT(10X, ' Per-hydrogenation of Carbon atoms')
-      WRITE ( CMON, '(a)') ' Including Nitrogen'
-      CALL XPRVDU(NCVDU, 2, 1)
+      JU=NFL
+      NFL=NFL+5
+C 
+      WRITE (CMON,50)
+      CALL XPRVDU (NCVDU,2,1)
+50    FORMAT (10X,' Per-hydrogenation of Carbon atoms')
+      WRITE (CMON,'(a)') ' Including Nitrogen'
+      CALL XPRVDU (NCVDU,2,1)
 C--LOAD THE INPUT LIST
       LN1=KTYP05(MX)
-      CALL XLDR05(LN1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      CALL XLDR05 (LN1)
+      IF (IERFLG.LT.0) GO TO 2550
 C--FIND THE OUTPUT LIST TYPE
       LN2=KTYP05(MY)
-C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,100)
-      ENDIF
-C
+C 
+      IF (ISSPRT.EQ.0) THEN
+         WRITE (NCWU,50)
+      END IF
+C 
 C----- SET THE DEFAULT TEMPERATURE FACTOR OR MULTIPLIER
-      UFACT = 1.2
-      JACT = 1
-      JNEXT = INEXT(1)
+      UFACT=1.2
+      JACT=1
+      JNEXT=INEXT(1)
       JT=12
-      BMAX = D13
-      AT = 0.5
-      AC = D13
+      BMAX=D13
+      AT=0.5
+      AC=D13
 C----- NO ANGLES TO BE LOOKED FOR
-      BT = 0.
-      BC = 0.
+      BT=0.
+      BC=0.
 C--SET THE INPUT PARAMETER DEFAULTS
       SX=1.0
       JS=0
       JZ=0
 C----- SET THE TYPE TO C (2 = C & N)
-      ITYPEF = 1
+      ITYPEF=1
 C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
       CALL XDIST2
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-C
-\IDIM12
+      IF (IERFLG.LT.0) GO TO 2550
+C 
+C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
+      IDIM12=40
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
-      DO 1050 I=1,IDIM12
-      ICOM12(I)=NOWT
-1050  CONTINUE
+      DO 100 I=1,IDIM12
+         ICOM12(I)=NOWT
+100   CONTINUE
       L12=-1
       M12=-1
 C----- SET UP A BUFFER FOR A POSSIBLE MOLAX CALCULATION
-      IMOLAX = NFL
-      NFL = KCHNFL(44)
+      IMOLAX=NFL
+      NFL=KCHNFL(44)
 C--SET UP A FEW STACK CONSTANTS
       JB=NFL
       JC=JB+MD5
       JD=JC+20
       JE=JD+30
 C--CHECK THE STORE AREA
-      IF ( JE - LFL ) 1000 , 9920 , 9920
-1000  CONTINUE
-C
+      IF (JE-LFL) 150,2650,2650
+150   CONTINUE
+C 
 C--PREPARE FOR PROCESSING OF THE LEXICAL SCANNER OUTPUT
-      CALL XILEXP(IULN,IFIRST)
-C
+      CALL XILEXP (IULN,IFIRST)
+C 
 C--MAIN INSTRUCTION CYCLING LOOP  -  SET THE BUFFER ADDRESS AFTER THE LA
-1100  CONTINUE
-      IDWZAP =0
-      IF(KLDNLR(IDWZAP))2100, 1150, 4200
+200   CONTINUE
+      IDWZAP=0
+      IF (KLDNLR(IDWZAP)) 1400,250,2400
 C--SET THE POINTER TO THE ATOM STACK
-1150  CONTINUE
-      GOTO (1250, 1600, 1750, 1730, 1200), MG
+250   CONTINUE
+      GO TO (350,700,1100,900,300),MG
 C1200  STOP346
-1200  CALL GUEXIT(346)
-C
+300   CALL GUEXIT (346)
+C 
 C--'DISTANCE' INSTRUCTION
-1250  CONTINUE
-      IF(ME)1300,1300,1400
-1300  CONTINUE
-      CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1350)
-      ENDIF
-      WRITE(NCAWU,1350)
-      WRITE ( CMON, 1350)
-      CALL XPRVDU(NCVDU, 1,0)
-1350  FORMAT(' No arguments found')
-      GOTO 4200
+350   CONTINUE
+      IF (ME) 400,400,500
+400   CONTINUE
+      CALL XPCLNN (LN)
+      IF (ISSPRT.EQ.0) THEN
+         WRITE (NCWU,450)
+      END IF
+      WRITE (NCAWU,450)
+      WRITE (CMON,450)
+      CALL XPRVDU (NCVDU,1,0)
+450   FORMAT (' No arguments found')
+      GO TO 2400
 C--READ THE DISTANCE
-1400  CONTINUE
-      IF(KSYNUM(Z))1450,1550,1450
-1450  CONTINUE
-      CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)ISTORE(MF+1)
-      ENDIF
-      WRITE(NCAWU,1500) ISTORE(MF+1)
-      WRITE ( CMON, 1500) ISTORE(MF+1)
-      CALL XPRVDU(NCVDU, 1,0)
-1500  FORMAT(' New value of wrong type or missing',
-     2 ' at about column',I5)
-      GOTO 4200
-1550  CONTINUE
+500   CONTINUE
+      IF (KSYNUM(Z)) 550,650,550
+550   CONTINUE
+      CALL XPCLNN (LN)
+      IF (ISSPRT.EQ.0) THEN
+         WRITE (NCWU,600) ISTORE(MF+1)
+      END IF
+      WRITE (NCAWU,600) ISTORE(MF+1)
+      WRITE (CMON,600) ISTORE(MF+1)
+      CALL XPRVDU (NCVDU,1,0)
+600   FORMAT (' New value of wrong type or missing',' at about column',
+     1I5)
+      GO TO 2400
+650   CONTINUE
       SX=Z
-      GOTO 4250
-C
+      GO TO 2450
+C 
 C--'ACTION' INSTRUCTION
-1600  CONTINUE
-      IF(ME)1300,1300,1650
-1650  CONTINUE
+700   CONTINUE
+      IF (ME) 400,400,750
+750   CONTINUE
 C--CHECK THE TYPE OF ARGUMENT
-      IF(ISTORE(MF))1700,1450,1450
+      IF (ISTORE(MF)) 800,550,550
 C--CHECK IF THIS IS A 'ACTION' DIRECTIVE
-1700  CONTINUE
-      J = KCOMP(1, ISTORE(MF+2), IACT, 3, 1)
-      IF(J)1450,1450, 1720
-1720  CONTINUE
-      JACT = J
-      GOTO 4250
-C
+800   CONTINUE
+      J=KCOMP(1,ISTORE(MF+2),IACT,3,1)
+      IF (J) 550,550,850
+850   CONTINUE
+      JACT=J
+      GO TO 2450
+C 
 C------ 'TYPE' INSTRUCTION
-1730  CONTINUE
-      IF(ME)1300,1300,1735
+900   CONTINUE
+      IF (ME) 400,400,950
 C--CHECK THE TYPE OF ARGUMENT
-1735  CONTINUE
-      IF(ISTORE(MF))1740,1450,1450
+950   CONTINUE
+      IF (ISTORE(MF)) 1000,550,550
 C--CHECK IF THIS IS A 'N    ' DIRECTIVE
-1740  CONTINUE
-      J = KCOMP(1, ISTORE(MF+2), INTRO, 1, 1)
-      IF(J)4250,4250,1742
-1742  CONTINUE
-      ITYPEF = 2
-      GOTO 4250
-C
-C
+1000  CONTINUE
+      J=KCOMP(1,ISTORE(MF+2),INTRO,1,1)
+      IF (J) 2450,2450,1050
+1050  CONTINUE
+      ITYPEF=2
+      GO TO 2450
+C 
+C 
 C--'UISO' INSTRUCTION
-1750  CONTINUE
-      IF(ME)1300,1300,1800
+1100  CONTINUE
+      IF (ME) 400,400,1150
 C--CHECK THE TYPE OF ARGUMENT
-1800  CONTINUE
-      IF(ISTORE(MF))1850,1950,1450
+1150  CONTINUE
+      IF (ISTORE(MF)) 1200,1300,550
 C--CHECK IF THIS IS A 'NEXT' DIRECTIVE
-1850  CONTINUE
-      J = KCOMP(1, ISTORE(MF+2), INEXT, 1, 1)
-      IF(J)1450,1450,1900
-1900  CONTINUE
-      JNEXT = INEXT(1)
+1200  CONTINUE
+      J=KCOMP(1,ISTORE(MF+2),INEXT,1,1)
+      IF (J) 550,550,1250
+1250  CONTINUE
+      JNEXT=INEXT(1)
       JZ=1
 C----- GET THE U MULTIPLIER
-      ME = ME - 1
+      ME=ME-1
 C----- RE-SET THE DEFAULT TEMPERATURE FACTOR MULTIPLIER
-      UFACT = 1.0
-      IF (ME .LE. 0) GOTO 4250
-      MF = MF + LK2
-      IF (ISTORE(MF) .NE. 0) GOTO 1450
-      IF (KSYNUM(Z) .NE. 0) GOTO 1450
-      UFACT = Z
-      GOTO 4250
+      UFACT=1.0
+      IF (ME.LE.0) GO TO 2450
+      MF=MF+LK2
+      IF (ISTORE(MF).NE.0) GO TO 550
+      IF (KSYNUM(Z).NE.0) GO TO 550
+      UFACT=Z
+      GO TO 2450
 C--NOT 'NEXT' - READ U[ISO] OFF THE CARD
-1950  CONTINUE
-      IF(KSYNUM(Z))1450,2000,1450
+1300  CONTINUE
+      IF (KSYNUM(Z)) 550,1350,550
 C--STORE THE NUMBER AND RESET THE FLAG
-2000  CONTINUE
+1350  CONTINUE
 C----- BLANK OUT THE 'NEXT'
-      JNEXT = IB
+      JNEXT=IB
       JZ=0
-      UFACT = Z
-      GOTO 4250
-C
-C
+      UFACT=Z
+      GO TO 2450
+C 
+C 
 C--MAIN TERMINATION ROUTINES
-2100  CONTINUE
-C
-C
+1400  CONTINUE
+C 
+C 
 C----- OPEN A FILE FOR THE RIDING RESTRAINTS
-      IF (JACT .GE. 2) THEN
-       WRITE(CMON,'(11X,A)') 'Putting Perhydro commands in PERH.DAT'
-       CALL XPRVDU(NCVDU, 1, 1)
-       CPATH2 = 'PERH.DAT'
-       LPATH2  = KPATH( CPATH2)
-       CALL XRDOPN ( 6 , KFRN(1) ,
-     1 CPATH2(1:LPATH2)// 'PERH.DAT', LPATH2+8)
-      ENDIF
-      WRITE(CMON,'(11X,A)') 'Putting riding Constraints in RIDEH.DAT'
-      CALL XPRVDU(NCVDU, 1, 1)
-      CPATH = 'RIDEH.DAT'
-      LPATH  = KPATH( CPATH)
-      CALL XRDOPN ( 6 , JFRN(1) ,
-     1 CPATH(1:LPATH)// 'RIDEH.DAT', LPATH+9)
-      IF (JACT .LE. 2 ) THEN
-        CSRQ = ' '
-        WRITE(CSRQ,'(A10)') '#HYDROGENS'
-        CALL XISRC (CSRQ)
-        CSRQ = ' '
-        WRITE(CSRQ, '(A5,F6.3)') 'DIST ', SX
-        CALL XISRC (CSRQ)
-        CSRQ = ' '
-        WRITE(CSRQ, '(A7, A4, F6.3)' ) 'U[ISO] ', JNEXT, UFACT
-        CALL XISRC (CSRQ)
-      ENDIF
-      IF (JACT .GE. 2) THEN
-        WRITE (NCFPU2,'(A10)') '#HYDROGENS'
-        WRITE (NCFPU2, '(A5,F6.3)') 'DIST ', SX
-        WRITE (NCFPU2, '(A7, A4, F6.3)' ) 'U[ISO] ', JNEXT, UFACT
-      ENDIF
-C
+      IF (JACT.GE.2) THEN
+         WRITE (CMON,'(11X,A)') 'Putting Perhydro commands in PERH.DAT'
+         CALL XPRVDU (NCVDU,1,1)
+         CPATH2='PERH.DAT'
+         LPATH2=KPATH(CPATH2)
+         CALL XRDOPN (6,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT',LPATH2+8)
+      END IF
+      WRITE (CMON,'(11X,A)') 'Putting riding Constraints in RIDEH.DAT'
+      CALL XPRVDU (NCVDU,1,1)
+      CPATH='RIDEH.DAT'
+      LPATH=KPATH(CPATH)
+      CALL XRDOPN (6,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
+      IF (JACT.LE.2) THEN
+         CSRQ=' '
+         WRITE (CSRQ,'(A10)') '#HYDROGENS'
+         CALL XISRC (CSRQ)
+         CSRQ=' '
+         WRITE (CSRQ,'(A5,F6.3)') 'DIST ',SX
+         CALL XISRC (CSRQ)
+         CSRQ=' '
+         WRITE (CSRQ,'(A7, A4, F6.3)') 'U[ISO] ',JNEXT,UFACT
+         CALL XISRC (CSRQ)
+      END IF
+      IF (JACT.GE.2) THEN
+         WRITE (NCFPU2,'(A10)') '#HYDROGENS'
+         WRITE (NCFPU2,'(A5,F6.3)') 'DIST ',SX
+         WRITE (NCFPU2,'(A7, A4, F6.3)') 'U[ISO] ',JNEXT,UFACT
+      END IF
+C 
 C SET UP THE CONTROL VARIABLES FOR THIS PASS
-C
+C 
 C SAVE THE VALUE FOR 1-2 CONTACT, AND ITS SQUARE
-       AOTEMP = AO
-       APTEMP = AP
-C
+      AOTEMP=AO
+      APTEMP=AP
+C 
 C----- SET THE TARGET ATOM ADDRESSES
-      MATOM = 0
-      M5A = L5
-C
+      MATOM=0
+      M5A=L5
+C 
 C     LOOPS BACK TO 2500 UNTIL MATOM=N5
-2500  CONTINUE
-C
+1450  CONTINUE
+C 
 C----- FIX THE RADII FOR 1-3 CONTACTS
-      AC = D13
-      AO = D13
-      AP = D13S
-C
+      AC=D13
+      AO=D13
+      AP=D13S
+C 
 C----- RESET THE CONTACT ATOM AND FUNCTION VECTOR ADDRESSES
       M5=L5
-C
-C
+C 
+C 
 C----RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
-       NFL=JE
-C
+      NFL=JE
+C 
 C----END OF LOOP ?
-      IF (MATOM  .GE. N5) GOTO 3400
-C
-C----IS THE CURRENT ATOM CARBON ? 
-      IF (ISTORE(M5A) .EQ. ICARB) GOTO 2510
+      IF (MATOM.GE.N5) GO TO 2300
+C 
+C----IS THE CURRENT ATOM CARBON ?
+      IF (ISTORE(M5A).EQ.ICARB) GO TO 1500
 C --- CHECK NITROGEN ALLOWED
-      IF ((ISTORE(M5A) .EQ. INTRO) .AND. (ITYPEF .EQ.2)) GOTO 2510
-      GOTO 3350
-2510	continue
-      NHYB = 0
-      NBONDS = 0
+      IF ((ISTORE(M5A).EQ.INTRO).AND.(ITYPEF.EQ.2)) GO TO 1500
+      GO TO 2250
+1500  CONTINUE
+      NHYB=0
+      NBONDS=0
 C --  COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-      NDIST = KDIST1( N5, JL, JT, 0, TOLER, ITRANS)
+      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS)
 C---- JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
-      NFL = JL
-      JK = JL - JT
-C
+      NFL=JL
+      JK=JL-JT
+C 
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
-      IF (NDIST .LE. 0 ) THEN
-        IF (ISSPRT .EQ. 0)
-     1  WRITE(NCWU, 3250)  STORE(M5A), NINT(STORE(M5A+1))
-        WRITE ( CMON, 3250)  STORE(M5A), NINT(STORE(M5A+1))
-        CALL XPRVDU(NCVDU, 1,0)
-        GOTO 3350
-      ENDIF
-C
-C
-C
+      IF (NDIST.LE.0) THEN
+         IF (ISSPRT.EQ.0) WRITE (NCWU,1600) STORE(M5A),NINT(STORE(M5A+1)
+     1    )
+         WRITE (CMON,1600) STORE(M5A),NINT(STORE(M5A+1))
+         CALL XPRVDU (NCVDU,1,0)
+         GO TO 2250
+      END IF
+C 
+C 
 C----CALCULATE THE NUMBER OF BONDED ATOMS AND THEIR ADDRESSES IN
 C----THE FIRST STACK.
-      NBONDS = KBNDED(JE, JK, JT, IADD, DIST)
-C
+      NBONDS=KBNDED(JE,JK,JT,IADD,DIST)
+C 
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
 C----- GET THE ATOM ID
-              WRITE (CTEMP,'(A4,''('',I4,'')'')') STORE(M5A),
-     1                                    NINT(STORE(M5A+1))
-              CALL XCRAS(CTEMP, LTEMP)
-      IF (NBONDS  .GT. 4) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, 3200) NBONDS, ISTORE(M5A),
-     1  CTEMP(1:LTEMP)
-        WRITE(NCAWU, 3200) NBONDS, ISTORE(M5A), CTEMP(1:LTEMP)
-        WRITE ( CMON, 3200) NBONDS, ISTORE(M5A), CTEMP(1:LTEMP)
-        CALL XPRVDU(NCVDU, 1,0)
-3200    FORMAT( 10X, I3, ' valent',A4,' - ', A)
-      ELSE IF (NBONDS .LE. 0) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, 3250) ISTORE(M5A), CTEMP(1:LTEMP)
-        WRITE(NCAWU, 3250) ISTORE(M5A), CTEMP(1:LTEMP)
-        WRITE ( CMON, 3250) ISTORE(M5A), CTEMP(1:LTEMP)
-        CALL XPRVDU(NCVDU, 1,0)
-3250    FORMAT( 10X,  ' Non-bonded',A4,' - ', A)
-      ELSE IF (ISTORE(M5A) .EQ. ICARB) THEN
+      WRITE (CTEMP,'(A4,''('',I4,'')'')') STORE(M5A),NINT(STORE(M5A+1))
+      CALL XCRAS (CTEMP,LTEMP)
+      IF (NBONDS.GT.4) THEN
+         IF (ISSPRT.EQ.0) WRITE (NCWU,1550) NBONDS,ISTORE(M5A),
+     1    CTEMP(1:LTEMP)
+         WRITE (NCAWU,1550) NBONDS,ISTORE(M5A),CTEMP(1:LTEMP)
+         WRITE (CMON,1550) NBONDS,ISTORE(M5A),CTEMP(1:LTEMP)
+         CALL XPRVDU (NCVDU,1,0)
+1550     FORMAT (10X,I3,' valent',A4,' - ',A)
+      ELSE IF (NBONDS.LE.0) THEN
+         IF (ISSPRT.EQ.0) WRITE (NCWU,1600) ISTORE(M5A),CTEMP(1:LTEMP)
+         WRITE (NCAWU,1600) ISTORE(M5A),CTEMP(1:LTEMP)
+         WRITE (CMON,1600) ISTORE(M5A),CTEMP(1:LTEMP)
+         CALL XPRVDU (NCVDU,1,0)
+1600     FORMAT (10X,' Non-bonded',A4,' - ',A)
+      ELSE IF (ISTORE(M5A).EQ.ICARB) THEN
 C----   WE HAVE CONTACTS.
 C       CALCULATE THE HYBRIDISATION BASED ON SHORTEST BOND
-        NHYB=KHYB(IADD(1),  DIST, DELTA)
-        MHYB = 0
-        DELTA2 = 0.
-        IF (NBONDS .GE. 2) THEN
+         NHYB=KHYB(IADD(1),DIST,DELTA)
+         MHYB=0
+         DELTA2=0.
+         IF (NBONDS.GE.2) THEN
 C         GET THE NEXT SHORTEST BOND
-          MHYB=KHYB(IADD(2),  STORE(IADD(2)+10), DELTA2)
-        ENDIF
+            MHYB=KHYB(IADD(2),STORE(IADD(2)+10),DELTA2)
+         END IF
 C-----  LOOK FOR SECONDARY CONTACTS
-        ISEC= KSEC (AOTEMP, APTEMP, NDTEMP, IADD, NBONDS, IZ)
-        LHYB = 0
-        DELTAA = 100.
-        DEV = 100.
-        IF ( NBONDS .EQ. 3 ) THEN
+         ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+         LHYB=0
+         DELTAA=100.
+         DEV=100.
+         IF (NBONDS.EQ.3) THEN
 C         1 ON SP3 OR 0 ON SP2
 C         COMPUTE A PLANE
-          CALL XMOVE(STORE(M5A+4), STORE(IMOLAX), 3)
-          CALL XMOVE(STORE(IADD(1)+7), STORE(IMOLAX+4), 3)
-          CALL XMOVE(STORE(IADD(2)+7), STORE(IMOLAX+8), 3)
-          CALL XMOVE(STORE(IADD(3)+7), STORE(IMOLAX+12), 3)
-          STORE(IMOLAX+3) = 1.
-          STORE(IMOLAX+7) = 1.
-          STORE(IMOLAX+11) = 1.
-          STORE(IMOLAX+15) = 1.
-          I = KMOLAX(STORE(IMOLAX), 4, 4, STORE(IMOLAX+16),
-     1    STORE(IMOLAX+19), STORE(IMOLAX+2), STORE(IMOLAX+31),
-     2    STORE(IMOLAX+40))
-          DEV = STORE(IMOLAX+21)
-          IF (DEV .GE. 0.1) THEN
-                LHYB = 3
-          ELSE
-                LHYB = 2
-          ENDIF
-        ELSE IF ( NBONDS .EQ. 2 ) THEN
-C         2 ON SP3 , 1 ON SP2 OR 0 ON SP1
-          SOP = XDSTN2 (STORE(IADD(1)+7), STORE(IADD(2)+7))
-          SOP = SQRT (SOP)
-          ANG = XANG (STORE(IADD(1)+10), STORE(IADD(2)+10), SOP)
-          IF (ANG .GT. 160.) THEN
-                LHYB = 1
-                DELTAA = 180. - ANG
-          ELSE
-                IF (DELTA .GE. .05) THEN
-                  LHYB = NHYB
-                ELSE
-                  LHYB = MIN(NHYB,MHYB)
-                ENDIF
-          ENDIF
-        ELSE IF (NBONDS .EQ. 1 ) THEN
-C         3 ON SP3 , 2 ON SP2 OR 1 ON SP1
-          IF (DELTA .GE. .05) THEN
-            LHYB = NHYB
-          ELSE
-            SOP = XDSTN2 (STORE(IADD(1)+7), STORE(ISEC+7))
-            SOP = SQRT (SOP)
-            ANG = XANG (STORE(IADD(1)+10), SOP, STORE(ISEC+10) )
-            IF (ANG .GT. 160.) THEN
-                LHYB = 1
-                DELTAA = 180. - ANG
-            ELSE IF (ANG .GT. 113) THEN
-                LHYB = 2
-                DELTAA = 113. - ANG
+            CALL XMOVE (STORE(M5A+4),STORE(IMOLAX),3)
+            CALL XMOVE (STORE(IADD(1)+7),STORE(IMOLAX+4),3)
+            CALL XMOVE (STORE(IADD(2)+7),STORE(IMOLAX+8),3)
+            CALL XMOVE (STORE(IADD(3)+7),STORE(IMOLAX+12),3)
+            STORE(IMOLAX+3)=1.
+            STORE(IMOLAX+7)=1.
+            STORE(IMOLAX+11)=1.
+            STORE(IMOLAX+15)=1.
+            I=KMOLAX(STORE(IMOLAX),4,4,STORE(IMOLAX+16),STORE(IMOLAX+19)
+     1       ,STORE(IMOLAX+2),STORE(IMOLAX+31),STORE(IMOLAX+40))
+            DEV=STORE(IMOLAX+21)
+            IF (DEV.GE.0.1) THEN
+               LHYB=3
             ELSE
-                DELTAA = 109. - ANG
-                LHYB = 3
-            ENDIF
-          ENDIF
-        ENDIF
-        IF (LHYB .NE. NHYB) THEN
-            IF (NHYB .NE. 0) THEN
-              WRITE ( CMON, 3259) CTEMP(1:LTEMP)
-     1        ,NHYB, LHYB, NBONDS, LHYB
-              CALL XPRVDU(NCVDU, 1,0)
-              WRITE(NCAWU, '(A)') CMON(1)(:)
-              WRITE(NCAWU,3258) CTEMP(1:LTEMP), NHYB,DELTA,
-     1        MHYB,DELTA2, DEV, DELTAA
-              IF (ISSPRT .EQ. 0) THEN
-                  WRITE(NCWU, '(A)') CMON(1)(:)
-                  WRITE(NCWU,3258) CTEMP(1:LTEMP), NHYB,DELTA,
-     1            MHYB,DELTA2, DEV, DELTAA
-              ENDIF
-            ENDIF
-3258    FORMAT (A,1X, 'sp',I1, ' delta ',F6.2,
-     1  'sp',I1, ' delta', F6.2, ' planarity ',F7.2,
-     2  ' angle delta ',F7.2)
-3259    FORMAT
-     1  (A,' hybridisation uncertain (', I1,'/',I1,')',
-     2   I3, ' Bonds,',
-     3  ' sp',I1,' used')
-          NHYB = LHYB
-        ENDIF
-      IF (NHYB .GT. 0) THEN
+               LHYB=2
+            END IF
+         ELSE IF (NBONDS.EQ.2) THEN
+C         2 ON SP3 , 1 ON SP2 OR 0 ON SP1
+            SOP=XDSTN2(STORE(IADD(1)+7),STORE(IADD(2)+7))
+            SOP=SQRT(SOP)
+            ANG=XANG(STORE(IADD(1)+10),STORE(IADD(2)+10),SOP)
+            IF (ANG.GT.160.) THEN
+               LHYB=1
+               DELTAA=180.-ANG
+            ELSE
+               IF (DELTA.GE..05) THEN
+                  LHYB=NHYB
+               ELSE
+                  LHYB=MIN(NHYB,MHYB)
+               END IF
+            END IF
+         ELSE IF (NBONDS.EQ.1) THEN
+C         3 ON SP3 , 2 ON SP2 OR 1 ON SP1
+            IF (DELTA.GE..05) THEN
+               LHYB=NHYB
+            ELSE
+               SOP=XDSTN2(STORE(IADD(1)+7),STORE(ISEC+7))
+               SOP=SQRT(SOP)
+               ANG=XANG(STORE(IADD(1)+10),SOP,STORE(ISEC+10))
+               IF (ANG.GT.160.) THEN
+                  LHYB=1
+                  DELTAA=180.-ANG
+               ELSE IF (ANG.GT.113) THEN
+                  LHYB=2
+                  DELTAA=113.-ANG
+               ELSE
+                  DELTAA=109.-ANG
+                  LHYB=3
+               END IF
+            END IF
+         END IF
+         IF (LHYB.NE.NHYB) THEN
+            IF (NHYB.NE.0) THEN
+               WRITE (CMON,1700) CTEMP(1:LTEMP),NHYB,LHYB,NBONDS,LHYB
+               CALL XPRVDU (NCVDU,1,0)
+               WRITE (NCAWU,'(A)') CMON(1)(:)
+               WRITE (NCAWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,DELTA2,
+     1          DEV,DELTAA
+               IF (ISSPRT.EQ.0) THEN
+                  WRITE (NCWU,'(A)') CMON(1)(:)
+                  WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,
+     1             DELTA2,DEV,DELTAA
+               END IF
+            END IF
+1650        FORMAT (A,1X,'sp',I1,' delta ',F6.2,'sp',I1,' delta',F6.2,' 
+     1planarity ',F7.2,' angle delta ',F7.2)
+1700        FORMAT (A,' hybridisation uncertain (',I1,'/',I1,')',I3,' Bo
+     1nds,',' sp',I1,' used')
+            NHYB=LHYB
+         END IF
+         IF (NHYB.GT.0) THEN
 C----   WRITE COMMAND TO FILE.
-        CALL
-     1  HPLACE(NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,ISEC)
-      ELSE
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, 3260)  CTEMP(1:LTEMP)
-        WRITE(NCAWU, 3260)  CTEMP(1:LTEMP)
-        WRITE ( CMON, 3260) CTEMP(1:LTEMP)
-        CALL XPRVDU(NCVDU, 1,0)
-3260    FORMAT( ' Unassignable carbon - ', A )
-      ENDIF
-c
-c
-c Start of main body of Part II Project
-c
-c
-c
-	ELSE IF ((ISTORE(M5A) .EQ.INTRO).AND. (ITYPEF .EQ.2)) THEN
-c        WRITE (CMON,3261)
-c        CALL XPRVDU (NCVDU,1,0)
-c3261    FORMAT ('NITROGEN H-PLACEMENT')
-		IF (NBONDS .EQ. 1) THEN
-		 IF (STORE(IADD(1)+10) .GT. 1.43) THEN
-c	NH3+ WITH +VE CHARGE- USES SAME H PLACING ROUTINE AS CARBON
-		 NHYB=3
-                 WRITE (CMON, 6754) CTEMP(1:LTEMP)
-                 CALL XPRVDU (NCVDU,1,0)
-6754         FORMAT (' NH3 WITH +VE CHARGE ', A)
-		 ELSE IF (STORE(IADD(1)+10) .LE. 1.24) THEN
-	 	 WRITE (CMON, 3262) CTEMP(1:LTEMP)
-	     CALL XPRVDU (NCVDU,1,0)
-3262		 FORMAT (A, ' No H on Nitrogen, (Cyanide) -')
-c THIS IS CASE 1--no hydrogens to place
-                 ELSE
-                 AOTEMP = 1.9
-                 APTEMP = AOTEMP * AOTEMP
-                 NNEW = KNICK( AOTEMP, APTEMP, IADD(1))
-                 ISEC= KSEC(AOTEMP, APTEMP, NDTEMP, IADD, NBONDS, IZ)
-                   IF (NNEW .EQ. 4) THEN
-                   NHYB=3
+            CALL HPLACE (NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,
+     1       ISEC)
+         ELSE
+            IF (ISSPRT.EQ.0) WRITE (NCWU,1750) CTEMP(1:LTEMP)
+            WRITE (NCAWU,1750) CTEMP(1:LTEMP)
+            WRITE (CMON,1750) CTEMP(1:LTEMP)
+            CALL XPRVDU (NCVDU,1,0)
+1750        FORMAT (' Unassignable carbon - ',A)
+         END IF
+C 
+C 
+C Start of main body of Part II Project
+C 
+C 
+      ELSE IF ((ISTORE(M5A).EQ.INTRO).AND.(ITYPEF.EQ.2)) THEN
+        WRITE (CMON,3261) istore(m5a), store(m5a+1)
+        CALL XPRVDU (NCVDU,1,0)
+        write(ncawu,'(a)') cmon(1)
+3261    FORMAT ('NITROGEN H-PLACEMENT ', a4, f6.0)
+         IF (NBONDS.EQ.1) THEN
+            IF (STORE(IADD(1)+10).GT.1.43) THEN
+C       NH3+ WITH +VE CHARGE- USES SAME H PLACING ROUTINE AS CARBON
+               NHYB=3
+               WRITE (CMON,1800) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
+1800           FORMAT (' NH3 WITH +VE CHARGE ',A)
+            ELSE IF (STORE(IADD(1)+10).LE.1.24) THEN
+               WRITE (CMON,1850) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
+1850           FORMAT (A,' No H on Nitrogen, (Cyanide) -')
+C THIS IS CASE 1--no hydrogens to place
+            ELSE
+               AOTEMP=1.9
+               APTEMP=AOTEMP*AOTEMP
+               NNEW=KNICK(AOTEMP,APTEMP,IADD(1))
+               ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+               IF (NNEW.EQ.4) THEN
+                  NHYB=3
 C---MUST BE A FULLY SATURATED CARBON. THEREFORE N IS STANDARD NH2
-                   WRITE (CMON,5555) CTEMP(1:LTEMP)
-                   CALL XPRVDU (NCVDU,1,0)
-5555               FORMAT (A,' has two hydrogens & 1 lone pair. ',
-     1             'Delete one h')
-c     m             has added 3 hydrogens, user should delete hydrogen where
-c     m             the lone pair is thought to exist')
-c  THIS IS CASE 2- two hydrogens, one lone pair
-                   ELSE IF (NNEW .EQ.3) THEN
+                  WRITE (CMON,1900) CTEMP(1:LTEMP)
+                  CALL XPRVDU (NCVDU,1,0)
+1900              FORMAT (A,' has two hydrogens & 1 lone pair. ','Delete
+     1 one h')
+C  THIS IS CASE 2- two hydrogens, one lone pair
+               ELSE IF (NNEW.EQ.3) THEN
 C                    DMIN = 1.4
-                   AOTEMP = 1.9
-                   APTEMP = AOTEMP * AOTEMP
-                   INICK = KNICK2(AOTEMP, APTEMP, IADD(1), DMIN)
-                    ISEC= KSEC(AOTEMP, APTEMP, NDTEMP, IADD, NBONDS, IZ)
-                     IF (DMIN .LT. STORE(IADD(1)+10)) THEN
-                     WRITE (CMON,5555) CTEMP(1:LTEMP)
+                  AOTEMP=1.9
+                  APTEMP=AOTEMP*AOTEMP
+                  INICK=KNICK2(AOTEMP,APTEMP,IADD(1),DMIN)
+                  ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+                  IF (DMIN.LT.STORE(IADD(1)+10)) THEN
+                     WRITE (CMON,1900) CTEMP(1:LTEMP)
                      CALL XPRVDU (NCVDU,1,0)
                      NHYB=3
-                   WRITE (CMON,5555) CTEMP(1:LTEMP)
-                   CALL XPRVDU (NCVDU,1,0)
-c AGAIN CASE 2 - 2 hydrogens, one lone pair
-                     ELSE
+                     WRITE (CMON,1900) CTEMP(1:LTEMP)
+                     CALL XPRVDU (NCVDU,1,0)
+C AGAIN CASE 2 - 2 hydrogens, one lone pair
+                  ELSE
                      NHYB=2
+                     WRITE (CMON,1950) CTEMP(1:LTEMP)
+                     CALL XPRVDU (NCVDU,1,0)
+1950                 FORMAT ('1Hydrogen, 1 lone pair or aromatic ',A)
+                  END IF
+               ELSE IF (NNEW.EQ.2) THEN
+                  NHYB=3
+                  WRITE (CMON,1900) CTEMP(1:LTEMP)
+                  CALL XPRVDU (NCVDU,1,0)
+               END IF
+            END IF
+         ELSE IF (NBONDS.EQ.3) THEN
+C       NEED TO LOOK AT BOND ANGLES TO DECIDE WHETHER OR NOT N IS +VE
+C       MUST COMPUTE AVERAGE OF THE THREE BOND ANGLES
                 WRITE (CMON, 3281) CTEMP(1:LTEMP)
                 CALL XPRVDU (NCVDU,1,0)
-3281            FORMAT ('1H 1LP OR AROMATIC  ', A)
-                     ENDIF
-                   ELSE IF (NNEW.EQ.2) THEN
-                   NHYB=3
-                   WRITE (CMON,5555) CTEMP(1:LTEMP)
-                   CALL XPRVDU (NCVDU,1,0)
-                    ENDIF
-		 ENDIF
-		ELSE IF (NBONDS .EQ. 3) THEN
-C	NEED TO LOOK AT BOND ANGLES TO DECIDE WHETHER OR NOT N IS +VE
-C	MUST COMPUTE AVERAGE OF THE THREE BOND ANGLES
-c                WRITE (CMON, 3281) CTEMP(1:LTEMP)
-c                CALL XPRVDU (NCVDU,1,0)
-c3281            FORMAT (A, ' hybridisation uncertain. ',
-c     1           'Calculate some angles for Nitrogen ')
-                SOP1 = XDSTN2 (STORE(IADD(1)+7), STORE(IADD(2)+7))
-          SOP1 = SQRT (SOP1)
-          ANG1 = XANG (STORE(IADD(1)+10), STORE(IADD(2)+10), SOP1)
-                SOP2 = XDSTN2 (STORE(IADD(2)+7), STORE(IADD(3)+7))
-          SOP2 = SQRT (SOP2)
-          ANG2 = XANG (STORE(IADD(2)+10), STORE(IADD(3)+10), SOP2)
-                SOP3 = XDSTN2 (STORE(IADD(1)+7), STORE(IADD(3)+7))
-          SOP3 = SQRT (SOP3)
-          ANG3 = XANG (STORE(IADD(1)+10), STORE(IADD(3)+10), SOP3)
-                AVANG = (ANG1 + ANG2 +ANG3)/3
-                  IF (AVANG .GT. 118) THEN
-                  WRITE (CMON, 5557) CTEMP(1:LTEMP)
-                  CALL XPRVDU (NCVDU,1,0)
+3281            FORMAT (A, ' hybridisation uncertain. ',
+     1           'Calculate some angles for Nitrogen ')
+            SOP1=XDSTN2(STORE(IADD(1)+7),STORE(IADD(2)+7))
+            SOP1=SQRT(SOP1)
+            ANG1=XANG(STORE(IADD(1)+10),STORE(IADD(2)+10),SOP1)
+            SOP2=XDSTN2(STORE(IADD(2)+7),STORE(IADD(3)+7))
+            SOP2=SQRT(SOP2)
+            ANG2=XANG(STORE(IADD(2)+10),STORE(IADD(3)+10),SOP2)
+            SOP3=XDSTN2(STORE(IADD(1)+7),STORE(IADD(3)+7))
+            SOP3=SQRT(SOP3)
+            ANG3=XANG(STORE(IADD(1)+10),STORE(IADD(3)+10),SOP3)
+            AVANG=(ANG1+ANG2+ANG3)/3
+            IF (AVANG.GT.118) THEN
+               WRITE (CMON,2050) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
 C                  NHYB=2
 C IN THIS CASE THERE ARE NO HYDROGENS TO PLACE - PLANAR
-                  ELSE
-                   NHYB=3
-                  WRITE (CMON, 9998) CTEMP(1:LTEMP)
-                  CALL XPRVDU (NCVDU,1,0)
-9998              FORMAT ('Hydrogen may or may not be present')
-5557              FORMAT (A,' No hydrogens, one lone pair but planar')
+            ELSE
+               NHYB=3
+               WRITE (CMON,2050) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
+2000           FORMAT ('Hydrogen may or may not be present')
+2050           FORMAT (A,' No hydrogens, one lone pair but planar')
 C CASE 1 AGAIN. NO HYDROGENS TO PLACE
-                  END IF
-		ELSE IF (NBONDS .EQ. 2) THEN
-C		NEED TO CALC THIS BOND ANGLE
-		SOP = XDSTN2 (STORE(IADD(1)+7), STORE(IADD(2)+7))
-          SOP = SQRT (SOP)
-          ANG = XANG (STORE(IADD(1)+10), STORE(IADD(2)+10), SOP)
-		DIF = STORE(IADD(1)+10) - STORE(IADD(2)+10)
-			IF (DIF .LT. 0) THEN
-			DIF =(DIF*(-1))
-			END IF
-                  IF ((ANG .LT.190) .AND. (ANG.GT. 155)) THEN
-                  NHYB=1
-                   WRITE (CMON,4155) CTEMP(1:LTEMP)
-                   CALL XPRVDU (NCVDU,1,0)
-4155          FORMAT (A,' Linear nitrogen no H to be placed')
+            END IF
+         ELSE IF (NBONDS.EQ.2) THEN
+C               NEED TO CALC THIS BOND ANGLE
+            SOP=XDSTN2(STORE(IADD(1)+7),STORE(IADD(2)+7))
+            SOP=SQRT(SOP)
+            ANG=XANG(STORE(IADD(1)+10),STORE(IADD(2)+10),SOP)
+            DIF=STORE(IADD(1)+10)-STORE(IADD(2)+10)
+            IF (DIF.LT.0) THEN
+               DIF=(DIF*(-1))
+            END IF
+            IF ((ANG.LT.190).AND.(ANG.GT.155)) THEN
+               NHYB=1
+               WRITE (CMON,2100) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
+2100           FORMAT (A,' Linear nitrogen no H to be placed')
 C THIS IS A LINEAR NITROGEN WITH A DOUBLE BOND EITHER SIDE
 C THEREFORE NO HYDROGENS NEED BE PLACED (CASE 0)
-C	NOW NEED TO SEE IF SHORTEST BOND IS APPROX EQUAL TO SECOND SHORTEST
-                  ELSE IF (DIF .LT. 0.19) THEN
-c                        IF (ANG .GT. 115) THEN
-                        AVV =STORE(IADD(1)+10) + STORE(IADD(2)+10)
-                        AV = AVV/2
-c                         IF (AV. LT. 1.37) THEN
-c THE N IS AROMATIC/DELOCALISED. THEREFORE PLANAR AND DOESNT HAVE ANY H.
-c                         NHYB = 1
-c                         ELSE
-                         NHYB=3
-                         WRITE (CMON,3282) CTEMP(1:LTEMP)
-                         CALL XPRVDU (NCVDU,1,0)
-c                         END IF
+C       NOW NEED TO SEE IF SHORTEST BOND IS APPROX EQUAL TO SECOND SHORT
+            ELSE IF (DIF.LT.0.19) THEN
+C                        IF (ANG .GT. 115) THEN
+               AVV=STORE(IADD(1)+10)+STORE(IADD(2)+10)
+               AV=AVV/2
+C                         IF (AV. LT. 1.37) THEN
+C THE N IS AROMATIC/DELOCALISED. THEREFORE PLANAR AND DOESNT HAVE ANY H.
+C                         NHYB = 1
+C                         ELSE
+               NHYB=3
+               WRITE (CMON,2150) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
+C                         END IF
 C EXACTLY THE SAME AS FULLY SATURATED CARBON  (CASE 0)
-c                        ELSE IF (ANG.LT.115) THEN
-c                        WRITE (CMON,3282) CTEMP(1:LTEMP)
-c                        CALL XPRVDU (NCVDU,1,0)
-3282        FORMAT ( A, ' has one hydrogen, 1 lone pair. Delete one H')
+C                        ELSE IF (ANG.LT.115) THEN
+C                        WRITE (CMON,3282) CTEMP(1:LTEMP)
+C                        CALL XPRVDU (NCVDU,1,0)
+2150           FORMAT (A,' has one hydrogen, 1 lone pair. Delete one H')
 C                  CRYSTALS HAS ADDED 2 HYDROGENS USER MUST DELETE
 C                  ONE HYDROGEN WHERE LP IS THOUGHT TO EXIST')
-c                        NHYB=3
+C                        NHYB=3
 C CASE 3 ONE HYDROGEN TO PLACE BUT ALSO ONE LP
-c                        END IF
-                  ELSE IF (DIF .GT. 0.19) THEN
-c                        IF (ANG .GT. 115) THEN
-                        NHYB=2
+C                        END IF
+            ELSE IF (DIF.GT.0.19) THEN
+C                        IF (ANG .GT. 115) THEN
+               NHYB=2
 C 1 HYDROGEN TO PLACE NO LONE PAIRS. (CASE 0). IE +VE CHARGE. SP2
-c                        ELSE IF (ANG .LT. 115) THEN
-			WRITE (CMON,3283) CTEMP(1:LTEMP)
-			CALL XPRVDU (NCVDU,1,0)
-3283   FORMAT ( A, ' Probably has no hydrogens, 1 lone pair- Delete H')
+C                        ELSE IF (ANG .LT. 115) THEN
+               WRITE (CMON,2200) CTEMP(1:LTEMP)
+               CALL XPRVDU (NCVDU,1,0)
+2200           FORMAT (A,' Probably has no hydrogens, 1 lone pair-',
+     1         ' delete H')
 C CASE 1  NO H TO PLACE
-c                        END IF
-		  END IF	
-		ENDIF
-	ENDIF
-C
-      IF (NHYB .GT. 0) THEN
+C                        END IF
+            END IF
+         END IF
+C 
+        IF (NHYB.GT.0) THEN
 C----   WRITE COMMAND TO FILE.
-        CALL
-     1  HPLACE(NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,ISEC)
-      ELSE
-      ENDIF
-C
+           CALL HPLACE (NBONDS,NHYB,M5A,IADD,AOTEMP,
+     1      APTEMP,NDTEMP,JACT,ISEC)
+        ELSE
+        END IF
+      END IF
+C 
 C--UPDATE FOR THE NEXT TARGET ATOM.
-3350  CONTINUE
-      M5A = M5A + MD5
-      MATOM = MATOM + 1
-      GOTO 2500
-C
-C
-3400  CONTINUE
-3720  CONTINUE
-C
-      IF (JACT .LE. 2) THEN
-        CSRQ = ' '
-        WRITE (CSRQ,'(A3)')'END'
-        CALL XISRC (CSRQ)
-      ENDIF
-      IF (JACT .GE. 2) THEN
-        WRITE (NCFPU2,'(A3)')'END'
-      ENDIF
-C
+2250  CONTINUE
+      M5A=M5A+MD5
+      MATOM=MATOM+1
+      GO TO 1450
+C 
+C 
+2300  CONTINUE
+2350  CONTINUE
+C 
+      IF (JACT.LE.2) THEN
+         CSRQ=' '
+         WRITE (CSRQ,'(A3)') 'END'
+         CALL XISRC (CSRQ)
+      END IF
+      IF (JACT.GE.2) THEN
+         WRITE (NCFPU2,'(A3)') 'END'
+      END IF
+C 
 C -- END ROUTINE
-      GO TO 9000
-C
-C
+      GO TO 2500
+C 
+C 
 C--ERROR EXIT FOR THESE ROUTINES
-4200  CONTINUE
-      CALL XPCA(ISTORE(MD+4))
+2400  CONTINUE
+      CALL XPCA (ISTORE(MD+4))
       LEF=LEF+1
-4250  CONTINUE
-      GOTO 1100
-C
+2450  CONTINUE
+      GO TO 200
+C 
 C -- FINAL MESSAGES
-9000  CONTINUE
-C
+2500  CONTINUE
+C 
 C----- CLOSE THE RIDING RESTRAINT FILE
-      CALL XRDOPN ( 7 , JFRN(1) ,
-     1 CPATH(1:LPATH)// 'RIDEH.DAT', LPATH+9)
-      IF (JACT .GE. 2) CALL XRDOPN ( 7 , KFRN(1) ,
-     1 CPATH2(1:LPATH2)// 'PERH.DAT', LPATH+8)
-C
-      CALL XOPMSG ( IOPHYD , IOPEND , 410 )
-C
-      CALL XTIME2(2)
+      CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'RIDEH.DAT',LPATH+9)
+      IF (JACT.GE.2) CALL XRDOPN (7,KFRN(1),CPATH2(1:LPATH2)//'PERH.DAT'
+     1,LPATH+8)
+C 
+      CALL XOPMSG (IOPHYD,IOPEND,410)
+C 
+      CALL XTIME2 (2)
       CALL XCSAE
       CALL XRSL
       RETURN
-9900  CONTINUE
+2550  CONTINUE
 C -- ERRORS
-      CALL XOPMSG ( IOPHYD , IOPABN , 0 )
-      GO TO 3720
-9910  CONTINUE
-C
+      CALL XOPMSG (IOPHYD,IOPABN,0)
+      GO TO 2350
+2600  CONTINUE
+C 
 C -- INPUT ERRORS
-      CALL XOPMSG ( IOPHYD, IOPCMI, 0 )
-      GO TO 9900
-9920  CONTINUE
+      CALL XOPMSG (IOPHYD,IOPCMI,0)
+      GO TO 2550
+2650  CONTINUE
 C -- INSUFFICIENT SPACE
-      CALL XOPMSG ( IOPHYD , IOPSPC , 0 )
-      GO TO 9900
-C
+      CALL XOPMSG (IOPHYD,IOPSPC,0)
+      GO TO 2550
+C 
       END
 C
 CODE FOR KNICK
@@ -2259,6 +2267,58 @@ C--WE USE THE T.F. OF THE BONDED ATOM
       JN1=JN
       DO 1100 N=1,3
       STORE(JQ1)=STORE(JE1)+STORE(JN1)*SX*EE
+      JQ1=JQ1+1
+      JE1=JE1+1
+      JN1=JN1+1
+1100  CONTINUE
+      CALL XMLTMM(STORE(L1O2),STORE(JQ),STORE(JG),3,3,1)
+      CALL SAPR
+      RETURN
+      END
+C
+C
+CODE FOR SHB
+      SUBROUTINE SHB
+C
+\ISTORE
+C
+\STORE
+\XWORKA
+\XLISTI
+\XLST01
+\XLST05
+\XUNITS
+\XSSVAL
+C
+\QSTORE
+C
+      EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV)
+C
+      JB=JA
+      JE=JD
+      JG=JF+9
+      JH=JG+9
+      JI=JH+9
+      JO=JI+9
+      JP=JO+3
+      JQ=JP+3
+      JN=JQ+3
+C--CHECK IF WE SHOULD THE T.F. OF THE BONDED ATOM
+      IF(JZ)1050,1050,1000
+C--WE USE THE T.F. OF THE BONDED ATOM
+1000  CONTINUE
+      CALL XEQUIV(0, JB, MD5A, JU)
+      SY = STORE(JU) * STORE(JU+4)
+      SV = STORE(JB+2)
+1050  CONTINUE
+      CALL SDIFV(STORE(JE+3),STORE(JE),STORE(JN))
+      EE=SNOR(STORE(JN))
+      JQ1=JQ
+      JE1=JE
+      JN1=JN
+      DO 1100 N=1,3
+COCT2000 NOTE - SIGN
+      STORE(JQ1)=STORE(JE1)-STORE(JN1)*SX*EE
       JQ1=JQ1+1
       JE1=JE1+1
       JN1=JN1+1
