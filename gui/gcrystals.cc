@@ -151,7 +151,7 @@ using namespace std;
 //Check: is there a dscfilename?
            int remain = command.length() - ils - 1;
            if ( remain > 0 )
-                dscfile = command.substr(ils+1,remain),;
+                dscfile = command.substr(ils+1,remain);
          }
        }
      }
