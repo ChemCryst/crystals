@@ -67,7 +67,7 @@
 ^^WI           @ 6,2 GRID STUFF NROWS=5 NCOLS=2
 ^^WI                 COMMAND='#SCRIPT xcalter'
 ^^WI           {
-^^WI              @ 1,1 BUTTON OHCONT 'Find O---H'
+^^WI              @ 1,1 BUTTON OHCONT 'Find Hbond'
 ^^WI              @ 1,2 BUTTON VIEW   'View'
 ^^WI              @ 2,1 BUTTON SLABEL 'Labels on'
 ^^WI              @ 2,2 BUTTON MLABEL 'Label move'
