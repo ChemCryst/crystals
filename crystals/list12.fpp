@@ -1559,8 +1559,9 @@ C
 \XIOBUF
 \QSTORE
 C
+      DATA IHYD /'H   '/
       DATA IDELIM(1)/'AND '/
-      data dfuiso /.05/
+      DATA DFUISO /.05/
 C
       DATA NERROR/5/
 C----- INDICATE FIRST PART OF CARD
@@ -1673,11 +1674,25 @@ C
 C----- CHECK FOR IMPLICIT PARAMETERS
 C
 1300  CONTINUE
+CDJWOCT2000>
+      WRITE(CMON,'(A,I6)') 'IMPLICIT FLAG-a=', MH
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU,'(A)') CMON(1)
+C----- SET OUR OWN FLAG AS WELL
+      IJMH = 0
+CDJWOCT2000>
       IDWZAP = 0
       KA=KCORCH(IDWZAP)
       IF (KA) 2050, 1350, 1310
 C
 1310  CONTINUE
+CDJWOCT2000>
+      WRITE(CMON,'(A,I6)') 'IMPLICIT FLAG-b=', MH
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU,'(A)') CMON(1)
+C----- SET OUR OWN FLAG AS WELL
+      IJMH = 1
+CDJWOCT2000>
 C----- IMPLICIT PARAMETER NAMES
       IF (ML .EQ. 4) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU,1311)
@@ -1805,6 +1820,18 @@ C----- CHECK IF ANY ATOMS TO PROCESS
       IF(N5A)1950,1950,1750
 C--SET UP THE PARAMETER AND ATOM HEADER BLOCK POINTERS
 1750  CONTINUE
+CDJWOCT2000>
+      WRITE(CMON,'(A,2I6,A4)')'Implicit flags=', MH, IJMH, ISTORE(M5A)
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU,'(A)') CMON(1)
+C----- SKIP H FOR IMPLICIT PARAMETERS
+      if ((ijmh .eq. 1) .and. (istore(m5a) .eq. ihyd)) then
+       write(cmon,'(a)') 'Implicit and hydrogen'
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(NCAWU,'(A)') CMON(1)
+       goto 1850
+      endif
+CDJWOCT2000>
       MR=ISTORE(MQ+5)
       MS=ISTORE(MQ+6)+MQ
 c----- checking for extended parameter index
