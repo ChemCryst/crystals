@@ -39,6 +39,7 @@ C
 C
       DATA ICOMSZ / 5 /
       DATA LLSTCM / 512 /
+      DIMENSION ID(2)
 C
 C
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -111,13 +112,13 @@ C      LOCATE      KEY         DISPLAY     FORMAT      SEARCH
 C      GROUP       ERROR       INSERT      DELETE      WRITE
 C      TRANSFER    CHANGE      RECORD      CHECK       OPERATE
 C      TOP         NEXT        PREVIOUS    BOTTOM
-C      GENERALEDIT
+C      TRANSHEAD   GETSERIAL   GENERALEDIT
 C
       GO TO ( 2100 , 2200 , 2300 , 2400 , 2500 ,
      2 2600 , 2700 , 2800 , 2900 , 3000 ,
      3 3100 , 3200 , 3300 , 3400 , 3500 ,
-     4 2420,  2440, 2460, 2480,
-     5 1500 , 9920 ) , IDIR
+     4 2420,  2440 , 2460 , 2480 , 
+     5 3150 , 3160,  1500 , 9920 ) , IDIR
       GO TO 9920
 C
 1500  CONTINUE
@@ -364,6 +365,32 @@ C
 C
       ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF) )
 C
+      GO TO 8000
+C
+C RICAUG00 -- Get info from the list header (common block)
+3150  CONTINUE
+C -- 'TRANSHEAD' DIRECTIVE
+      IDIREC = ISTORE(ICOMBL)
+      IOFF = ISTORE(ICOMBL+1)
+      CTVARI = CIFORM
+C
+      IF ( ILSTCM + IOFF .LE. 0 ) GO TO 8930
+      IF ( ILSTCM + IOFF .GT. 131072 ) GO TO 8930
+C
+      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF) )
+C              
+      GO TO 8000
+C
+C RICAUG00 -- Get the list serial number...
+3160  CONTINUE
+C -- 'GETSERIAL' DIRECTIVE
+      IDIREC = 1
+      CTVARI = CIFORM
+C
+      CALL XRLIND ( ILTYPE, ILSERI, NFW, LL, IOW, NOS, ID)
+C
+      ISTAT = KSCTRN ( IDIREC , CTVARI , ILSERI )
+C              
       GO TO 8000
 C
 3200  CONTINUE
