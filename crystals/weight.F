@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2002/06/24 15:33:50  richard
+C Load list 6 before calling XAPP04, so that it can use dynamic arrays.
+C
 C Revision 1.6  2002/03/16 19:07:47  richard
 C Removed #VISUALISE command - originally present as prototype for Steve, but
 C now graphs are built into other commands.
@@ -32,6 +35,10 @@ CODE FOR WEIGHT
 CODE FOR XWAITS
       SUBROUTINE XWAITS
 C--SUBROUTINE TO CONTROL THE APPLICATION OF LIST 4 AND CHECK THE RESULTS
+C
+      PARAMETER (NPROC4=3)
+      DIMENSION IPROC4(NPROC4)
+C
 \XUNITS
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
@@ -43,8 +50,13 @@ C--BRANCH ON THE TYPE OF OPERATION
 
 C--ROUTINE TO APPLY THE PARAMETERS IN LIST 4
 2000  CONTINUE
-      CALL XFAL06(0) !Get N6D for dynamic arrays in XAPP04
-      CALL XAPP04
+
+C--READ ANY DIRECTIVES THAT OFFER THEMSELVES
+      I=KRDDPV(IPROC4,NPROC4)
+      IF ( I .LT. 0 ) GO TO 1300
+      IULN06 = KTYP06(IPROC4(3))
+      CALL XFAL06(IULN06, 0) !Get N6D for dynamic arrays in XAPP04
+      CALL XAPP04(IPROC4,NPROC4)
       RETURN
 
 C--ROUTINE TO CHECK THE WEIGHTING SCHEME

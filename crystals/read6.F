@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2002/03/05 15:32:50  ckp2
+C RIC: 2nd bug relating to long file names: Read6 was grabbing too much input
+C when reading compressed input format.
+C
 C Revision 1.16  2001/07/03 08:58:09  ckp2
 C Read in Fc^2, if flag for F^2 is set.
 C
@@ -10,6 +14,149 @@ C fix-up omitted rflections when re-indexing matrix has non-integral results' re
 C
 C Revision 1.13  2001/02/26 10:28:04  richard
 C RIC: Added changelog to top of file
+C
+C
+CODE FOR XCPY67
+      SUBROUTINE XCPY67
+C------CREATE A LIST 7 FROM A LIST 6
+C      THIS REQUIRES A LIST 7 TO EXIST AS A PLACEHOLDER BEFORE THE COPY
+C      IF ONE DOES NOT EXIST, THE AUTOMATIC GENERATION FACILITY IN
+C      COMMANDS.DSC IS USED
+C
+C----- LIST 6 MUST BE IN THE .DSC - L6D WILL BE GREATER THAN ZERO
+C
+C----- LIST 6 IS FIRST LOADED AND THE COMMON BLOCK SAVED AS ICOM07
+C      LIST 7 IS THEN LOADED, AND THE READ-FROM FLAGS (L6R ETC), THE
+C      NUMBER OF REFLECTIONS (N6D), AND THE COLLECTION DETAILS (L6DTL)
+C      COPIED IN FROM THE LIST 6 VALUES STORED IN ICOM07
+C
+      DIMENSION IBUF(7)
+      DIMENSION PROCS(2)
+C
+\ISTORE
+\ICOM06
+\ICOM07
+C
+\STORE
+\XUNITS
+\XSSVAL
+\XDISCS
+\XTAPES
+\XLST06
+\XLST07
+\XIOBUF
+\XERVAL
+\XOPVAL
+C
+\QSTORE
+\QLST06
+\QLST07
+      EQUIVALENCE (PROCS(1),IULN1)
+      EQUIVALENCE (PROCS(2),IULN2)
+C
+C
+\IDIM06
+\IDIM07
+C---- NOTHING TO DO IF NO LIST 6
+      IF (KEXIST(6) .LE. 0) THEN
+        WRITE (CMON,'(A)') ' No LIST 6'
+        CALL XPRVDU(NCVDU,1,0)
+        WRITE (NCAWU,'(a)') CMON(1)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+      RETURN
+      ENDIF
+C
+C
+C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
+C--READ THE CONTROL DATA
+      IF ( KRDDPV ( PROCS , 2 )  .LT. 0 ) GO TO 9910
+C--FIND THE TYPE OF LISTS   IULN1 IS USUALY 6
+      IULN1=KTYP06(IULN1)
+      IULN2=KTYP06(IULN2)
+      IF (IULN1 .EQ. IULN2) THEN
+            WRITE(CMON,'(A)')
+     1    ' Input and Output lists cannot be the same'
+            CALL XPRVDU(NCVDU,1,0)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+            GOTO 9910
+      ENDIF
+C--CLEAR THE STORE
+      CALL XRSL
+      CALL XCSAE
+C
+C      RESERVE THE SCRATCH AREA
+       KZ = KSTALL(4)
+       CALL XZEROF(STORE(KZ),4)
+C
+      IDWZAP = 0
+C      FIRST - READ LIST 6 
+      CALL XFAL06(IULN1,0)
+C-----CHECK REFLECTIONS ALREADY ON DISK
+      IF (L6D .LE. 0) THEN
+       WRITE(CMON,'(A)')' Reflections not in DSC file'
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+       GOTO 9910
+      ENDIF
+C
+      CALL XMOVEI(ICOM06(5), ISTORE(KZ), 4)
+C----- SAVE LIST 6 COMMON BLOCK AS LIST 7 COMMON BLOCK
+      CALL XMOVEI(ICOM06(1), ICOM07(1), IDIM06)
+
+C      THEN READ LIST 7 AND RESTORE THE lIST 6 READ ADDRESSES
+      CALL XFAL06(IULN2,0)
+      CALL XMOVEI(ICOM07(5),ICOM06(5), 4)
+C----- SAVE THE CORRECT NUMBER OF OUTPUT REFLECTIONS
+      N6D = N6R
+C      COPY THE COLLECTION DETAILS FROM 6 TO 7
+       CALL XMOVE(STORE(ICOM07(25)), STORE(ICOM06(25)), MD6DTL*N6DTL)
+C
+C     START WRITING NEW LIST 6
+       WRITE(NCAWU, 120)
+       IF (ISSPRT .EQ. 0)  WRITE(NCWU, 120)
+120    FORMAT( ' Creating new reflection list')
+C----- FIND OUT HOW MUCH ROOM WE NEED
+        LN = 6
+        I =  KRCLI (LN,IBUF(1),IBUF(2),IBUF(3),IBUF(4),IBUF(5),
+     1                 IBUF(6))
+        LENTOT = (IBUF(3) - IBUF(2)) + 1
+        CALL XDACVI (IBUF(1),IBUF(2),IBUF(3))
+        LSTLEN = (LENTOT / IBUF(1)) + 1
+        IEXTN =  KDAFRE (NCDFU, -1, LSTLEN)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, 150) IEXTN
+        WRITE(NCAWU, 150) IEXTN
+150     FORMAT (/,' Disc file extended by ', I6, ' records')
+C
+C    NOW SET UP LIST 7 FOR OUTPUT
+        CALL XSTR06( IULN2, 0, 0, 0, 0)
+C
+C     START FETCHING THE REFLECTIONS
+20    CONTINUE
+      IF ( KLDRNR(0) .LE. -1) GOTO 100
+C
+C     STORE THIS REFLECTION
+      CALL XSLR(IDWZAP)
+C     LOOP FOR NEXT REFLECTION
+      GO TO 20
+100   CONTINUE
+C
+C     CLOSE NEW LIST 7
+      CALL XERT(IULN2)
+1810  CONTINUE
+      CALL XOPMSG ( IOPREF , IOPEND , 200 )
+      CALL XTIME2(2)
+      CALL XRSL
+      CALL XCSAE
+      RETURN
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPREF , IOPABN , 0 )
+      GO TO 1810
+9910  CONTINUE
+C -- INPUT ERROR
+      CALL XOPMSG ( IOPREF , IOPCMI , 0 )
+      GO TO 9900
+      END
 C
 C
 CODE FOR XRD06
@@ -509,7 +656,7 @@ c----- restore the base index
         endif
         store(m6+11)=elem
       endif
-c^^^
+c
 C--RESET THE MOVE POINTERS
       L6DMP=ISTORE(KX+16)
       M6DMP=ISTORE(KX+17)
@@ -586,11 +733,19 @@ C----- CONVERT TO CHARACTERS
 CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
       IF (KCITOF(CFORM).LE.0) THEN
          WRITE (CMON,'(A)') 'FORMAT card error'
+         CALL XPRVDU (NCVDU,1,0)
          GO TO 5200
       END IF
 C--READ THE NEXT REFLECTION
 2950  CONTINUE
-      call xzerof (store(l6ib),m6ib)
+      CALL XZEROF (STORE(L6IB),M6IB)
+C
+cdjw2003
+c----- if a list 7 read no reflections
+C      if (iuln .ne. 7) then
+
+
+
       READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
@@ -605,11 +760,15 @@ C--END OF FILE DURING THE READ  -  CHECK IF THIS IS ON THE INPUT UNIT
 C----- ERROR DURING READ -
 3100  CONTINUE
       IF (NCARDS.LE.0) THEN
+         WRITE(CMON,'(A)') 'No reflections found'
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCAWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          WRITE (CMON,'(A)') ' Check the reflection filename, and format'
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(A)') CMON(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-         LEF=-1
+CDJW2003         LEF=-1
       ELSE
          WRITE (CMON,3150)
          CALL XPRVDU (NCVDU,3,0)
@@ -621,6 +780,17 @@ C----- ERROR DURING READ -
          BACKSPACE (UNIT=IUNIT,ERR=3200)
       END IF
       GO TO 5000
+
+cdjw2003
+C      else
+C         call xzerof(store(l6),md6)
+c -- and now store the reflection
+C         call xslr (1)
+C         goto 5000
+C      endif
+
+
+
 3200  CONTINUE
       IF (IUNIT.EQ.NCARU) GO TO 5000
 C--NORMAL CONTROL INPUT UNIT  -  INDICATE END OF FILE
@@ -881,8 +1051,10 @@ C--TERMINATE THE OUTPUT OF THE LIST
       WRITE (NCAWU,'(A)') CMON(1)(:)
 5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
      1')
+C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
+      IF (IULN .EQ. 6) THEN
 C----- IF ITYPE6 .NE. 'COPY'  OR 'TWIN' WE WERE PROBABLY READING RAW DATA
-      IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
+       IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
          IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
 C         IF (STORE(L30DR).LE.ZERO) STORE(L30DR)=FLOAT(N6W)
 C         IF (STORE(L30DR+2).LE.ZERO) STORE(L30DR+2)=FLOAT(N6W)
@@ -903,7 +1075,8 @@ C        LIX = L6DTL + 16*MD6DTL
 C        STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
 C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
          CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
-      END IF
+       ENDIF
+      ENDIF
 C----- WRITE LIST 13 TO DISK IF TYPE IS TWIN
       IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
          WRITE (CMON,'(a)') 'Upating List 13 for twinned data'

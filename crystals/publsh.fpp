@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2002/11/12 15:14:12  rich
+C Extended plots from #SUM L 6 to include omitted reflections on the Fo vs Fc
+C graph. They appear in blue.
+C
 C Revision 1.7  2002/07/29 13:01:41  richard
 C #THLIM calls completeness code, which inserts values into L30.
 C
@@ -82,10 +86,11 @@ C
 
 CODE FOR XTHX
       SUBROUTINE XTHX
-
+      DIMENSION IPROCS(2)
       CALL XCSAE
-      I = KRDDPV ( IPLOT , 1 )
-
-      IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT)
+      I = KRDDPV ( IPROCS , 2 )
+      IPLOT = IPROCS(1)
+      IULN = KTYP06(IPROCS(2))
+      IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT,IULN)
       RETURN
       END

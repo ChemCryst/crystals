@@ -34,7 +34,8 @@ C -- SET UP INITIAL VALUES, READ PROGRAM PARAMETERS
 
       CALL XTIME1 ( 2 )
       CALL XCSAE
-
+C----- SET REFLECTION LIST TYPE
+      IULN6 = 6
 C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       ICOMBF = KSTALL( ICOMSZ )
       CALL XZEROF (STORE(ICOMBF), ICOMSZ)
@@ -47,7 +48,7 @@ C Store tolerance (only show fom's below this limit)
       ISTATP = ISTORE(ICOMBF+2)
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-      CALL XFAL06 (0)
+      CALL XFAL06(IULN6,0)
 
       NREF=0                                                            
       RHOMAX=0.0                                                        
@@ -387,7 +388,7 @@ C READ REFLEXIONS
 \XWMISC
 \XLST06
 \STORE
-      CALL XFAL06(0)
+      CALL XFAL06(6, 0)
       ISTAT = KFNR(0)
       DO WHILE ( ISTAT .GE. 0 )
         IH = STORE(M6)               ! H
@@ -548,7 +549,7 @@ C     SET INITIAL VALUES
        ENDIF
       ENDIF
       IF(E5)SCALE = STORE(L5O)
-      CALL XFAL06(0)
+      CALL XFAL06(6, 0)
       ISTAT = KFNR(0)
       DO WHILE ( ISTAT .GE. 0 )
         FOB  = STORE(M6+3)            ! FO
@@ -856,7 +857,7 @@ C INDEX GROUP RESCALING
         NG(I)=0
       END DO
 
-      CALL XFAL06(0)
+      CALL XFAL06(6, 0)
       ISTAT = KFNR(0)
       DO WHILE ( ISTAT .GE. 0 )
         FOB  = STORE(M6+3)            ! FO
@@ -989,7 +990,7 @@ C SET INITIAL VALUES
       SCF=SQRT(SC)                                                      
       RR=10.0/SQRT(RHOMAX)
      
-      CALL XFAL06(0)
+      CALL XFAL06(6, 0)
       ISTAT = KFNR(0)
       DO WHILE ( ISTAT .GE. 0 )
         FOB  = STORE(M6+3)            ! FO

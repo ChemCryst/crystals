@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2003/01/14 10:17:16  rich
+C Don't prefix filenames with a space (empty path), as on Unix the space
+C gets put into the filename. Urgh.
+C
 C Revision 1.38  2002/12/16 18:21:58  rich
 C Now only outputs 'main' part of molecule.
 C
@@ -251,6 +255,7 @@ C
 
 
 C
+      IULN6 = 6
       IF ((ILINK .LE. 0) .OR. (ILINK .GT. NLINK)) GOTO 9100
       IF ((ILINK .EQ. 1) .OR. (ILINK .EQ. 2)) THEN
 C -- CHECK THAT OPERATION IS BEING PERFORMED IN INTERACTIVE MODE
@@ -294,7 +299,7 @@ C --        CONVERT ANGLES TO DEGREES.
         ELSE IF (LSTNUM .EQ. 5) THEN
             CALL XFAL05
         ELSE IF (LSTNUM .EQ. 6) THEN
-            CALL XFAL06(0)
+            CALL XFAL06(IULN6,0)
         ELSE IF (LSTNUM .EQ. 13) THEN
             CALL XFAL13
         ELSE IF (LSTNUM .EQ. 29) THEN
@@ -2144,6 +2149,7 @@ C
       DATA JFRN1 /'F', 'R', 'N', '1'/
       DATA JFRN2 /'F', 'R', 'N', '2'/
 C
+      IULN6 = 6
       IERROR = 1
 C---- GET THE PATH NAME
       LPATH  = KPATH( CPATH)
@@ -2242,7 +2248,7 @@ C
 1730  FORMAT( 'FORMAT 1  (3I4, F8.1, I2)' / 'END ')
 C
 C----- LOAD LIST 6
-      CALL XFAL06(0)
+      CALL XFAL06(IULN6,0)
 C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
       IN = L6DTL + MD6DTL * 3
       IF (STORE(IN+3) .LE. ZERO) THEN

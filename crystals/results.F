@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/01/15 13:52:49  rich
+C Remove all output to NCAWU.
+C
+C Fix return path for SPRT5P so that it doesn't try to print
+C the overall parameters on the way out if there was an error.
+C This occasionally crashed if you did a #PARAM without having
+C an up-to-date LIST22.
+C
 C Revision 1.46  2003/01/14 10:20:49  rich
 C Name clash in volume esd function fixed. (A).
 C Escape backslashes in report of phi and omega scans.
@@ -211,15 +219,18 @@ C
 \XSSVAL
 \XLST05
 \XLST06
+\XIOBUF
 C
 \XLST01
 \QSTORE
 C
 C--READ THE CONTROL DIRECTIVES AND SET UP THE DEFAULT VALUES
       IN = 0
-      IF(JDIR6P(IN))1850,1000,1000
+      IF(JDIR6P(ITYP06))1850,1000,1000
 C--LOAD LIST 5 AND FIND THE SCALE FACTOR
 1000  CONTINUE
+C--FIND THE TYPE OF LISTS   IULN IS USUALY 6
+      IULN=KTYP06(ITYP06)
       CALL XRSL
       CALL XCSAE
       CALL XFAL01
@@ -235,7 +246,7 @@ C--SET THE SCALE FACTOR
       ENDIF
       Y=360./TWOPI
 C--SET UP LIST 6 FOR PROCESSING
-      CALL XFAL06(0)
+      CALL XFAL06(IULN, 0)
       IF ( IERFLG .LT. 0 ) GO TO 1850
 C--SET UP THE PAGE ASSEMBLY AREA
       JA=NFL
@@ -320,7 +331,7 @@ C -- ERRORS
       END
 C
 CODE FOR JDIR6P
-      FUNCTION JDIR6P(IN)
+      FUNCTION JDIR6P(ITYP06)
 C--READ DIRECTIVES FOR PRINT LIST 6P
 C
 C--RETURN VALUES OF 'JDIR6P' ARE :
@@ -328,9 +339,13 @@ C
 C  -1  ERRORS FOUND.
 C   0  ALL OKAY.
 C
+C   ITYP06 CODE FOR LIST TYPE 
+C      1== 6
+C      2== 7
 C--
 C
-      DIMENSION PROCS(9)
+      PARAMETER(IPROCS=10)
+      DIMENSION PROCS(IPROCS)
 C
 C
 \TSSCHR
@@ -343,14 +358,16 @@ C
 C
       EQUIVALENCE (PROCS(1),NCOL)
 C
-      IDWZAP = IN
 C--SET THE INITIAL RETURN VALUE
       JDIR6P=0
 C--INITIALISE THE TIMING
       CALL XTIME1(2)
 C--READ THE DIRECTIVES AND PARAMETERS
-      IF (KRDDPV (PROCS, 9) .LT. 0) GOTO 1150
-C--DIRECTIVES INPUT OKAY  -  CALCULATE THE LINE LENGTH
+      IF (KRDDPV (PROCS, IPROCS) .LT. 0) GOTO 1150
+C--DIRECTIVES INPUT OKAY  
+C----- GET THE LIST TYPE
+      ITYP06 =ILST
+C  CALCULATE THE LINE LENGTH
       LST=18
       LW=5
       LSTX=NSKIP+NCOL*(LST+NSPAC)
@@ -3050,6 +3067,9 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
       CALL XRSL
       CALL XCSAE
 
+C----- SET REFLECTION LISTING TYPE
+      ITYP06 = 1
+
       IF (KEXIST(33) .LE. 0) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 1151)
          WRITE ( CMON ,1151)
@@ -3057,7 +3077,7 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 1151     FORMAT(' Calculation of R values cannot proceed ',
      2          'as no refinement has been carried out yet.')
       ELSE
-         CALL XSFLSB(-1)
+         CALL XSFLSB(-1,ITYP06)
       ENDIF
 
 C      WRITE(99,'(A,2F15.6)')'Pre: ',STORE(L30CF+7),STORE(L30RF+1)
@@ -3149,7 +3169,8 @@ C
          ELSE IF (LSTYPE.EQ.5) THEN
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.6) THEN
-            CALL XFAL06 (0)
+            IULN = 6
+            CALL XFAL06 (IULN, 0)
          ELSE IF (LSTYPE.EQ.10) THEN
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.13) THEN
@@ -3985,7 +4006,7 @@ C
          CALL XPCIF (' ')
          CALL XPCIF (' ')
 
-         CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, 0)
+         CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, 0, IULN)
 
          CBUF(1:21)='_diffrn_reflns_theta_'
          WRITE (CLINE,'(A,''min '', F10.3)') CBUF(1:21), THMIN

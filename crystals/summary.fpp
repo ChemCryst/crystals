@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2003/01/14 10:23:57  rich
+C Replace tabs with spaces.
+C
 C Revision 1.36  2002/11/12 15:14:12  rich
 C Extended plots from #SUM L 6 to include omitted reflections on the Fo vs Fc
 C graph. They appear in blue.
@@ -277,7 +280,7 @@ C
 C      1 - 9 , 10 - 19 , 20 - 29 , 30 - 39 , 40 - 49 , 50
 C
 C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
-      DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  0 ,  0 ,  0 , 10 ,
+      DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  7 ,  0 ,  0 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
@@ -286,7 +289,8 @@ C
 C
       DATA CLTYPE / 'Cell parameters', 'Symmetry',
      2 'Scattering factors', 'Weighting scheme', 'Parameters',
-     3 'Reflection data', 3*'*', 'Peaks', '*', 'Refinement directives',
+     3 'Reflection data', 
+     * 'List 7', 2*'*', 'Peaks', '*', 'Refinement directives',
      4 'Diffraction conditions', 'Asymmetric section', '*',
      5 'Restraints', 'Special restraints', 5*'*',
      6 'S.F. modifications', '*', 'Twin Laws', '*',
@@ -296,7 +300,7 @@ C
 C
       DATA LLTYPE / 15, 8,
      2 18, 16, 10,
-     3 15, 1, 1, 1,  5, 1,  21,
+     3 15, 6, 1, 1,  5, 1,  21,
      4 22, 18, 1,
      5 10, 18, 1, 1, 1, 1, 1,
      6 18, 1, 9, 1,
@@ -333,7 +337,12 @@ C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-          CALL XFAL06 ( 0 )
+          CALL XFAL06 (6, 0 )
+        ELSE IF ( LSTYPE .EQ. 7 ) THEN
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+          CALL XFAL06 (7, 0 )
         ELSE IF ( LSTYPE .EQ. 10 ) THEN
       IF (KHUNTR (10,0, IADDL,IADDR,IADDD, -1) .LT. 0)
      1  CALL XLDR05 ( LSTYPE )
@@ -384,7 +393,9 @@ C
       ELSE IF ( LSTYPE .EQ. 5 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 6 ) THEN
-        CALL XSUM06 ( LEVEL )
+        CALL XSUM06 ( 6, LEVEL )
+      ELSE IF ( LSTYPE .EQ. 7 ) THEN
+        CALL XSUM06 ( 7, LEVEL )
       ELSE IF ( LSTYPE .EQ. 10 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 12 ) THEN
@@ -948,7 +959,7 @@ CODE FOR XTHETA
       END
 C
 CODE FOR XTHLIM
-      SUBROUTINE XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, IPLOT)
+      SUBROUTINE XTHLIM (THMIN,THMAX,THMCMP,THBEST,THBCMP,IPLOT,IULN)
 C
 C -- ROUTINE WORK OUT COMPLETENESS OF DATA
 C
@@ -972,7 +983,7 @@ C
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-      CALL XFAL06 ( 0 )
+      CALL XFAL06 (IULN, 0 )
 
 C -- SCAN LIST 6 FOR ALL REFLECTIONS
 
@@ -1280,15 +1291,15 @@ C will not be optimised.
          STORE(L30CF+10)=MAX(STORE(L30CF+10),-THMAX)
          THBEST = -STORE(L30CF+10)
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THBEST, THBCMP, THDUM,THDUM2,-1)
+     1            THBEST, THBCMP, THDUM,THDUM2,-1,IULN)
          STORE(L30CF+11)=THBCMP
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THMAX, THMCMP, THDUM,THDUM2,IPLOT)
+     1            THMAX, THMCMP, THDUM,THDUM2,IPLOT,IULN)
 
       ELSE
 
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THMAX, THMCMP, THBEST,THBCMP,IPLOT)
+     1            THMAX, THMCMP, THBEST,THBCMP,IPLOT,IULN)
          STORE(L30CF+10)=THBEST
          STORE(L30CF+11)=THBCMP
 
@@ -1306,7 +1317,7 @@ C will not be optimised.
 
 CODE FOR XCOMPL
       SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
-     1                    THMAX,THMCMP, THBEST,THBCMP, IPLOT )
+     1              THMAX,THMCMP, THBEST,THBCMP, IPLOT, IULN )
 \ISTORE
 \STORE
 \XLST06
@@ -1324,7 +1335,7 @@ CODE FOR XCOMPL
         FNDBIN(I) = 0.0
       END DO
 
-      CALL XFAL06(0)
+      CALL XFAL06(IULN, 0)
 
       NHKL = 0
 
@@ -1479,7 +1490,7 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
       END
 
 CODE FOR XSUM06
-      SUBROUTINE XSUM06 ( LEVEL )
+      SUBROUTINE XSUM06 (iuln,  LEVEL )
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
@@ -1619,7 +1630,7 @@ C - FSQ REFINENENT
      1  '^^PL ADDSERIES Omitted TYPE SCATTER'
         CALL XPRVDU(NCVDU,1,0)
 
-        CALL XFAL06 ( 0 )
+        CALL XFAL06 (IULN, 0 )
         DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
           IF (KALLOW(IN).LT.0) THEN
             FO = STORE(M6+3)
@@ -2871,7 +2882,7 @@ CODE FOR XSGDST
 \XIOBUF
 \QSTORE
 \QLST30
-      DATA ICOMSZ / 2 /
+      DATA ICOMSZ / 3 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -2887,8 +2898,9 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
 
       IPLOT1 = ISTORE(ICOMBF)
       IPLOT2 = ISTORE(ICOMBF+1)
-
-      CALL XFAL06 (0)
+      ITYP06 = ISTORE(ICOMBF+2)
+      IULN = KTYP06(ITYP06)
+      CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
 
 
