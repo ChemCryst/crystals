@@ -21,27 +21,22 @@
 %%
 %%
 ^^WI WINDOW XCIF 'Output CIF' MODAL COMMIT='CIFOK' CANCEL='CIFXX'
-^^WI GRID   GRIDM NROWS=9 NCOLS=3
+^^WI GRID   GRIDM NROWS=10 NCOLS=3
 ^^WI {
 ^^WI  @ 2,2 BUTTON GOODY 'Edit CIF Goodies...'
-^^WI  @ 8,2 GRID GRIDB NROWS=1 NCOLS=5
-^^WI  {
-^^WI    @ 1,1 BUTTON CIFOK '&Ok' DEFAULT
-^^WI    @ 1,3 BUTTON CIFXX '&Cancel'
-^^WI    @ 1,5 BUTTON CIFHELP    '&Help'
-^^WI  }
 ^^WI  @ 4,2 GRID GRIDA NROWS=1 NCOLS=3 OUTLINE='Recalculate'
 ^^WI  {
 ^^WI    @ 1,1 CHECKBOX XREF 'Six final cycles' STATE=ON
 ^^WI    @ 1,3 CHECKBOX XFOU 'Difference Fourier map' STATE=ON
 ^^WI  }
-^^WI  @ 6,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Additional FCF file'
+
+^^WI  @ 5,2 GRID GRIDA NROWS=1 NCOLS=2 OUTLINE='H-bonds'
 ^^WI  {
-^^WI    @ 1,1 RADIOBUTTON FCFS 'Reflections with F-squared values' STATE=ON
-^^WI    @ 2,1 RADIOBUTTON FCFF 'Reflections with F values'
-^^WI    @ 3,1 RADIOBUTTON FCFN 'No output'
+^^WI    @ 1,1 CHECKBOX XHBD 'List H-bonds' STATE=ON
 ^^WI  }
-^^WI  @ 5,2 GRID GRIDV NROWS=3 NCOLS=3 OUTLINE='Display'
+
+
+^^WI  @ 6,2 GRID GRIDV NROWS=3 NCOLS=3 OUTLINE='Display'
 ^^WI  {
 ^^WI    @ 1,1 RADIOBUTTON CFNONE 'None' STATE=ON
 ^^WI    @ 2,1 RADIOBUTTON CFNOTE 'Notepad' 
@@ -49,6 +44,18 @@
 ^^WI    @ 1,3 RADIOBUTTON CFPLAT 'Platon' 
 ^^WI    @ 2,3 RADIOBUTTON CFCHKC 'Platon checkcif' 
 ^^WI    @ 3,3 RADIOBUTTON CFCCDM 'Mercury' 
+^^WI  }
+^^WI  @ 7,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Additional FCF file'
+^^WI  {
+^^WI    @ 1,1 RADIOBUTTON FCFS 'Reflections with F-squared values' STATE=ON
+^^WI    @ 2,1 RADIOBUTTON FCFF 'Reflections with F values'
+^^WI    @ 3,1 RADIOBUTTON FCFN 'No output'
+^^WI  }
+^^WI  @ 9,2 GRID GRIDB NROWS=1 NCOLS=5
+^^WI  {
+^^WI    @ 1,1 BUTTON CIFOK '&Ok' DEFAULT
+^^WI    @ 1,3 BUTTON CIFXX '&Cancel'
+^^WI    @ 1,5 BUTTON CIFHELP    '&Help'
 ^^WI  }
 ^^WI }
 ^^WI SHOW
@@ -149,6 +156,22 @@
 %    COPY 'SELECT RANGE=L41'
 %    COPY 'OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED'
 %    COPY 'END'
+%%
+^^?? XHBD STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#DISTANCE '
+%      COPY 'OUT PUNCh=H-CIF mon=ang'
+%      COPY 'SELECT RANGE=LIMIT'
+%      COPY 'LIMIT 0.7 2.2 0.7 2.2 '
+%      COPY 'E.S.D YES YES'
+%      COPY 'PIVOT H '
+%      COPY 'BOND O N '
+%      COPY 'END '
+%    END IF
+%%
+%%^
   Parameters saved in {&publish.cif{&
 %%
 %%

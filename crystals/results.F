@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.88  2004/08/09 16:37:08  djw
+C Output SHELX weights in compact form
+C
 C Revision 1.87  2004/07/12 15:32:11  stefan
 C Replaces a reference to 'H   ' which Richard added with a constant already declared in the function.
 C This was to fix a type mismatch problem on the mac and Mandrake.
@@ -3152,10 +3155,11 @@ CODE FOR XPRTDA
 C--PUBLICATION PRINT OF DISTANCES, ANGLES, TORSION ANGLES
 C
 C
-C      KEY      1 = DIST
+C      KEY      1 = DIST     +10 = CIF  +20 = HTML
 C               2 = ANGLES
 C               3 = BOTH
 C               4 = TORSION
+C               5 = H-BOND
 C
 C  NODEV    THE OUTPUT DEVICE
 C
@@ -3515,11 +3519,19 @@ CODE FOR XCIFPR
 C
 C----- PRINT GEOMETRY INFORMATION IN CIF FORMAT
 C
+C      KEY      11 = DIST     
+C               12 = ANGLES
+C               13 = BOTH
+C               14 = TORSION
+C               15 = H-BOND
+C
       DIMENSION IVEC(20), KDEV(4)
       CHARACTER *80 CLINE, CBUF
-      CHARACTER *3 CKEY
+      CHARACTER *3 ctemp, cangl, cbond, cbond2
+      CHARACTER *4 CKEY
       CHARACTER *1 CODE
-      CHARACTER CGEOM(3)*8
+      CHARACTER CGEOM(4)*8
+      CHARACTER CTEXT(2)*9
 \TSSCHR
 \ISTORE
 \STORE
@@ -3532,8 +3544,12 @@ C
 \UFILE
 \XSSCHR
 C
-      DATA CGEOM /'_bond', '_angle', '_torsion' /
-      DATA CKEY /'DAT'/
+      DATA CGEOM /'_bond', '_angle', '_torsion', '_hbond' /
+      DATA CTEXT /'_geom', '_distance'/
+      DATA CKEY /'DATH'/
+      data cangl /'123'/
+      data cbond /'DHA'/
+      data cbond2 /'HAA'/
 C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
@@ -3541,6 +3557,11 @@ CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
 c
       IESD = IESD
       NODEV = NODEV
+      if (key .eq. 15) then
+            ctemp = cbond
+      else
+            ctemp = cangl
+      endif
 C      CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
@@ -3552,11 +3573,17 @@ C      CLEAR THE STORE
       ENDIF
       IPUB = KSTALL (28)
 C----- WE NEED JKEY ETC BECAUSE MTE MAY CONTAIN BOTH DISTANCES AND ANGLE
+cdjw160804 - jkey & ncyc were not initialised
+      jkey = 0
+      ncyc = 1
       IF (KEY .EQ. 13) THEN
             JKEY = 0
             NCYC = 2
       ELSE IF (KEY .EQ. 14) THEN
             JKEY = 2
+            NCYC = 1
+      ELSE IF (KEY .EQ. 15) THEN
+            JKEY = 0
             NCYC = 1
       ELSE
             CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
@@ -3564,37 +3591,70 @@ C----- WE NEED JKEY ETC BECAUSE MTE MAY CONTAIN BOTH DISTANCES AND ANGLE
       ENDIF
 C
       DO 3000 ICYC = 1, NCYC
+c----- kkey = number of atoms involved - 1
+c      lkey = id of geomerty keyword
       KKEY = JKEY + ICYC
+      lkey = kkey
+      if (key .eq. 15) then
+            kkey = 2
+            lkey = 4
+      endif
       WRITE(NCFPU1, '(A)') 'loop_'
-      DO 500 I = 1, KKEY+1
-        WRITE( CLINE, 510) CGEOM(KKEY), I
-510   FORMAT( '_geom', A, '_atom_site_label_', I1)
-        CALL XCRAS ( CLINE, N)
-        WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
-       WRITE( CLINE, 520) CGEOM(KKEY), I
-520   FORMAT ('_geom', A, '_site_symmetry_', I1)
-        CALL XCRAS ( CLINE, N)
-        WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
-500   CONTINUE
-      IF (KKEY .EQ. 1) THEN
-      WRITE(CLINE, 530) CGEOM(KKEY), '_distance'
-      ELSE
-      WRITE(CLINE, 530) CGEOM(KKEY)
-530   FORMAT ('_geom', A, A)
-      ENDIF
-      CALL XCRAS ( CLINE, N)
-      WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
-      WRITE(CLINE, 540) CGEOM(KKEY)
+        DO 500 I = 1, KKEY+1
+c
+          WRITE( CLINE, 510) CGEOM(lKEY), ctemp(I:I)
+510   FORMAT( '_geom', A, '_atom_site_label_', A)
+          CALL XCRAS ( CLINE, N)
+          WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
+c
+          WRITE( CLINE, 520) CGEOM(lKEY), ctemp(I:I)
+520   FORMAT ('_geom', A, '_site_symmetry_', A)
+          CALL XCRAS ( CLINE, N)
+          WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
+500     CONTINUE
+c
+      if (key .ne. 15) then
+       IF (KKEY .EQ. 1) THEN
+          WRITE(CLINE, 530) CGEOM(KKEY), '_distance'
+       ELSE
+          WRITE(CLINE, 530) CGEOM(KKEY)
+530       FORMAT ('_geom', A, A)
+       ENDIF
+       CALL XCRAS ( CLINE, N)
+       WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
+      endif
+c
+      if (key .eq. 15) then
+      if (key .eq. 15) kkey = 2
+        write(cline,'(4A)') ctext(1),cgeom(4),cgeom(2),'_DHA'
+        call xcras ( cline, n)
+        write (ncfpu1, '(1x,a)') cline(1:n)
+       do i=1,2
+        write(cline,'(6A)') ctext(1),cgeom(4),ctext(2),
+     1 '_',cbond(i:i),cbond2(I:I)
+        call xcras ( cline, n)
+        write (ncfpu1, '(1x,a)') cline(1:n)
+       enddo
+      endif
+      WRITE(CLINE, 540) CGEOM(LKEY)
 540   FORMAT ('_geom', A, '_publ_flag')
       CALL XCRAS ( CLINE, N)
       WRITE (NCFPU1, '(1X,A)') CLINE(1:N)
 C
+c----- reset kkey to point to 'H'
+      if (key .eq. 15) kkey = 4
       REWIND (MTE)
 1000  CONTINUE
       CALL XZEROF(STORE(IPUB), 28)
-      READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
+      if (key .ne. 15) then
+       READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+21, 7)
+      else
+       READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
+     1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
+     2  JPUB=IPUB, IPUB+14, 7), (store(kpub),kpub=ipub+21,ipub+27)
+      endif
 C
 C----- GET ADDRESS OF LAST USEFUL ITEM - UP TO 4
       JPUB = INDEX (CKEY, CODE)
@@ -3604,12 +3664,32 @@ C----- GET ADDRESS OF LAST USEFUL ITEM - UP TO 4
       ELSE
         KPUB=0
       ENDIF
+c----- use temporary addresses since we may need to reverse order
+      itmp = ipub
+      ktmp = kpub
+      jtmp = 7
+      if (key .eq. 15) then 
+c-----   the last record for h-bonds is not an atom
+         kpub = ipub + 14
+         itmp = Kpub
+         ktmp = Ipub
+         jtmp = -7
+        if (store(ipub+21) .gt. store(ipub+23)) then
+c       swap order of atoms
+         itmp = Ipub
+         ktmp = Kpub
+         jtmp = 7
+         call xmove(store(ipub+21), store(ipub+25),2) 
+         call xmove(store(ipub+23), store(ipub+21),2) 
+         call xmove(store(ipub+25), store(ipub+23),2) 
+        endif
+      endif
 C
       CLINE = ' '
       J = 1
 C----- NO HYDROGEN YET
       NOH = 0
-      DO 2000 JPUB = IPUB, KPUB, 7
+      DO 2000 JPUB = Itmp, Ktmp, jtmp
 C----- ATOM NAME
         WRITE (CBUF, '(A4)') STORE(JPUB)
         CALL XCTRIM (CBUF, N)
@@ -3656,6 +3736,19 @@ C----- VALUE AND ESD
       CALL XCRAS ( CBUF, N)
       CLINE(J:J+N-1) = CBUF(1:N)
       J = J + N + 1
+      if (key .eq. 15) then
+C----- bonds AND ESDs
+      do itmp =ipub+21, ipub+23, 2
+        CALL XFILL (IB, IVEC, 20)
+        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+        WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
+        CALL XCRAS ( CBUF, N)
+        CLINE(J:J+N-1) = CBUF(1:N)
+        J = J + N + 1
+      enddo
+c----- force printing
+       noh = 0
+      endif
 C
       N = INDEX (CLINE(1:J), 'H')
       IF (NOH .LE. 0) THEN

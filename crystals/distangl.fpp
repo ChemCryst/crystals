@@ -1050,6 +1050,9 @@ C--SET VARIOUS CONSTANTS FOR E.S.D. CALCULATIONS
         NW=13
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
         IF (IPUNCH .EQ. 0) NW = 14
+cdjw130804
+C----- SAVE SOME SPACE FOR THE ESDS FOR H-BONDS
+        IF (IPUNCH .EQ. 11) NW = 15
         JU=1
         JV=3
         NCOL=5
@@ -1564,6 +1567,9 @@ C    FROM 'NEGATIVE VARIANCES'
                 STORE(JF) = XDSESD ( STORE(JF) , STORE(JN) , NWDT )
                 STORE(IJX+3)=STORE(JF)
               END IF     
+CDJW130804
+C----- SAVE THE ESD IF NECESSARY
+              IF (IPUNCH .EQ. 11) STORE(J+14) = STORE(JF)
 C----- COMPRESS ATOMS INTO CHARACTER FORM
               CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1                      CATOM1,LATOM1)
@@ -2145,23 +2151,31 @@ C----- STRIP AND PACK ATOM NAMES
                  CALL CATSTR (STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1           ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
      2           CATOM1, LATOM1)
+                 dd1 = store(na+10)
+                 ed1 = store(na+14)
                  CALL CATSTR (STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
      1           ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
      2           CATOM3, LATOM3)
+                 dd3 = store(nz+10)
+                 ed3 = store(nz+14)
               ELSE
                  CALL CATSTR (STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
      1           ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
      2           CATOM3, LATOM3)
+                 dd3 = store(na+10)
+                 ed3 = store(na+14)
                  CALL CATSTR (STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
      1           ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
      2           CATOM1, LATOM1)
+                 dd1 = store(nz+10)
+                 ed1 = store(nz+14)
               END IF
-
               CALL CATSTR (STORE(M5A), STORE(M5A+1),
      1         1,1,0,0,0, CATOM2, LATOM2)
-
+c
               IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2).OR.
      1            (IPUNCH .EQ. 9)      ) THEN
+c
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
                 IF ((IHFIXD.EQ.1).AND.
      1                (LHFIXD(1).OR.LHFIXD(2).OR.LHFIXD(3))) ESD = 0.0
@@ -2175,6 +2189,19 @@ C--- ATOM 3
      4          ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
 C--- DUMMY
      5          IB, ZERO, 1,1,0,0,0
+CDJW160804
+              else if ((ipunch .eq. 11) .and. (term .ge. 120.)) then
+                WRITE(MTE) 'H',TERM,ESD,
+     1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
+     1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
+C--- PIVOT
+     2          STORE(M5A), STORE(M5A+1), 1,1,0,0,0,
+C--- ATOM 3
+     3          STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
+     4          ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
+C--- OTHER BONDS AND ESDS
+     5          DD1, ED1, DD3,ED3,0.,0.,0.
+C
 C       
               ELSE IF(IPUNCH.EQ.4.AND.(IDSPDA.EQ.2.OR.IDSPDA.EQ.3)) THEN
                 INH1 = 1+  (M5A-L5)/MD5
@@ -2286,6 +2313,9 @@ C----- FINISH RESTRAINT LIST
       ELSE IF (IPUNCH .EQ. 2) THEN
 C----- CIF
         CALL XPRTDA(13,IESD,NCPU)
+      ELSE IF (IPUNCH .EQ. 11) THEN
+C----- H-CIF
+        CALL XPRTDA(15,IESD,NCPU)
       ELSE IF (IPUNCH .EQ. 9) THEN
 C----- HTML
         CALL XPRTDA(23,IESD,NCPU)
@@ -6937,8 +6967,6 @@ C--
 C--SET UP A FEW INITIAL POINTERS
       MAKE41=0         !Return value. Number of atoms found
       I5A=MPIV
-
-
 C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
       DO J=1,3
         BPD(J+3)=STORE(I5A+4)-AO/BPD(J)
@@ -6953,11 +6981,6 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
           EXIT
         END IF
       END DO
-
-
-C Check radii.
-      IF ( DAT1 .LT. 0.0 ) RETURN   ! R,L and M atoms for voids.
-      
 
       CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR)
 
