@@ -1,0 +1,44 @@
+%SCRIPT VALID12
+%% Ensures that we have at least a minimum valid LIST12
+ 
+{S * Ensuring that refinement directives exist and are valid.
+%%
+%  VARIABLE LOGICAL EXTINCT DOEXTINC DOCHECK
+%  VARIABLE INTEGER ADP IKEY IOLDS ISER
+%  VARIABLE CHARACTER CLAST CPARAM CPARAM2 CKEY
+%%
+%  BLOCK
+%    ON ERROR TERMINATE
+%    COPY '#LIST 22'
+%    COPY 'END'
+%% 
+
+{R  CRYSTALS has a valid refinement list, LIST 12
+%% 
+%    COPY '#PRINT 12'
+%    COPY 'END'
+ 
+{R  Remember that a 'valid' list may not be a 'suitable' list
+%%
+%      FINISH
+%    END IF
+%  END BLOCK
+
+{E  CRYSTALS DOES NOT have a valid refinement list, LIST 12
+
+{S  * Creating a minimum valid refinement list.
+%  COPY '#LIST 12'
+%  COPY 'FULL'
+%  COPY 'END'
+%  COPY '#PRINT 12'
+%  COPY 'END'
+ 
+{R  This 'valid' list may not be suitable for refinement, but
+{R  will be fine for calculating scale factor and R-factor.
+% END IF
+%%
+%%
+
+{S * Done
+%END SCRIPT
+ 
