@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 15:55:41  richard
+//   Disable function - called by Cr class to disable the radiobutton.
+//
 
 #ifndef     __CxRadioButton_H__
 #define     __CxRadioButton_H__
@@ -52,6 +55,7 @@ class CxRadioButton : public BASERADIOBUTTON
         void    SetRadioState( Boolean inValue );
         Boolean GetRadioState();
         void Disable(Boolean disabled);
+        void CxDestroyWindow();
 
 // The private parts.
         CrGUIElement *  ptr_to_crObject;

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 15:55:41  richard
+//   Disable function - called by Cr class to disable the radiobutton.
+//
 
 
 #include    "crystalsinterface.h"
@@ -40,6 +43,16 @@ CxRadioButton::CxRadioButton( CrRadioButton * container)
 CxRadioButton::~CxRadioButton()
 {
     RemoveRadioButton();
+}
+
+void CxRadioButton::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 void    CxRadioButton::ButtonChanged()
@@ -232,4 +245,3 @@ void CxRadioButton::Disable(Boolean disabled)
             Enable(true);
 #endif
 }
-
