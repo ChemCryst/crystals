@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/02/26 10:24:14  richard
+C Added changelog to top of file
+C
 C
 CODE FOR CRYSTL
 C      winapp 500000,1000000
@@ -36,6 +39,7 @@ C
 \XDISCS
 \XSSCHR
 \XIOBUF
+\XCHARS
 &PPC\XGSTOP
 &PPC\CFLDAT
 C
@@ -168,11 +172,10 @@ C            STOP 'ERROR OPENING STARTUP FILE'
         ENDIF
       ENDIF
 C
-      I = KNXTOP ( LSTOP,LSTNO,ICLASS )
 1210  CONTINUE
-&PPCCS***
-&PPC      IF ( GLSTOP .EQ. 1 ) GOTO 9999
-&PPCCE***
+
+      CALL XFILL(IB,KPRGNM,17) !No longer in a program sub-unit.
+      I = KNXTOP ( LSTOP,LSTNO,ICLASS )
 C----- CHECK IF THIS SEGMENT NAME IS AVAILABLE
       I=KCOMP(4,KPRGNM,PROGLS,NPROG,4)
       IF ( I .LE. 0 ) GO TO 9920

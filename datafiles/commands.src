@@ -1876,13 +1876,12 @@ GENERAL DEFAULTS
     .MAXBONDS           0    0    1    0    0 12.0
     .NOSYMMETRY         0    0    1    0    0 0.0
     .SIGCHANGE          0    0    1    0    0 0.1
-   2.READ               5    1    0    0
-         1    1    1    1    1
+   2.READ               4    1    0    0
+         1    1    1    1
     .NELEMENTS          8    0    1    0    0         0
     .NPAIRS            12    0    1    0    0         0
     .NMAKE             16    0    1    0    0         0
     .NBREAK            20    0    1    0    0         0
-    .NFTYPE            24    0    1    0    0         0
    3.ELEMENT            3   -8    0    0    3   -8  102    5   40
          1    1    1    1    1    1    0    0    0    0
 ELEMENTS
