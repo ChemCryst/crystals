@@ -10,7 +10,7 @@
 %  COPY 'END'
 %%
 %   EVALUATE QTITLE = 'Test Convergence'
-%   EVALUATE QLINE1 = 'Are you sure that the Model displaid'
+%   EVALUATE QLINE1 = 'Are you sure that the model displayed'
 %   EVALUATE QLINE2 = 'is the model you wish to test?'
 %   EVALUATE BUTTOK = '&Yes'
 %   EVALUATE BUTTXX = '&No'
@@ -108,12 +108,37 @@
 %%
 %%
 %   EVALUATE CPERT = CHARACTER APERT
+%   VARIABLE LOGICAL OK12
 %   VARIABLE REAL R OSCALE RATIO
 %   VARIABLE REAL SAVER MINR MAXR
 %   EVALUATE MINR = 1000000.
 %   EVALUATE MAXR = - 1000000.
 %   COPY '#SCRIPT RFACTOR'
 %   EVALUATE SAVER = R
+%%
+%%
+{I Checking that L12 is valid.
+%   EVALUATE OK12 = FALSE
+%   BLOCK
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%     COPY '#LIST 22'
+%     COPY 'END'
+%     COPY '#SUM L 12'
+%     COPY 'END'
+%     EVALUATE OK12 = TRUE
+{I List 12 is valid
+%   END BLOCK
+%%
+%   IF ( .NOT. OK12 ) THEN
+%     EVALUATE QTITLE = 'Refinement problem'
+%     EVALUATE QLINE1 = 'The refinement directives are not valid. Choose'
+%     EVALUATE QLINE2 = 'Refinement->Setup directives before running this.'
+%     EVALUATE BUTTOK = '&Ok'
+%     COPY '#SCRIPT XMESSAGE'
+%     FINISH
+%   END IF
+{I Initiating cycles of perturbation and refinement.
 %%
 % LOOP NCYCLE TIMES
 %   QUEUE REWIND
@@ -180,16 +205,14 @@
 ^^WI   @ 1,2 GRID GRIDL NROWS=8 NCOLS=5
 ^^WI   {
 % CLEAR
-% INSERT !^^WI @ 2,2 STATIC TEXT1 -
- 'Original R factor was !
+% INSERT !^^WI @ 2,2 RADIOBUTTON OR 'Use original model - R factor:!
 % STORE FORMAT /(F8.4)/ LENGTH 8 REAL  SAVER
-% INSERT ! ' !
+% INSERT ! ' STATE=ON !
 % OUTPUT
 % CLEAR
-% INSERT !^^WI @ 3,2 STATIC TEXT1 -
- '    Best R factor was !
+% INSERT !^^WI @ 3,2 RADIOBUTTON BR 'Use best model - R factor: !
 % STORE FORMAT /(F8.4)/ LENGTH 8 REAL  MINR
-% INSERT ! ' !
+% INSERT ! ' STATE=OFF !
 % OUTPUT
 % CLEAR
 % INSERT !^^WI @ 4,2 STATIC TEXT1 -
@@ -197,10 +220,8 @@
 % STORE FORMAT /(F8.4)/ LENGTH 8 REAL  MAXR
 % INSERT ! ' !
 % OUTPUT
-^^WI   @ 6,2 CHECKBOX XPURGE 'Remove old models'
+^^WI   @ 6,2 CHECKBOX XPURGE 'Delete all old models to save space.'
 ^^WI                                         STATE=ON
-^^WI     @ 2,4 RADIOBUTTON OR ' ' STATE=ON
-^^WI     @ 3,4 RADIOBUTTON BR ' ' STATE=OFF
 ^^WI   }
 ^^WI   @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI   {
