@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.39  2003/01/14 10:17:16  rich
 C Don't prefix filenames with a space (empty path), as on Unix the space
 C gets put into the filename. Urgh.
@@ -787,251 +792,10 @@ c              CALL XPRVDU(NCVDU, 1,0)
 C Grow list 5 to a depth of 4 symmetry related atoms. (This will only
 C affect polymeric and Z'<1 structures.
 
-C Allocate space for results of 100 atoms (overkill)
-
-
-      JNEWAT = 0
-      JBASAT = NFL
-      ININ5 = N5
-
-c      WRITE ( CMON,'(A)') 'Seeking bonds across sym ops.'
-c      CALL XPRVDU(NCVDU, 1,0)  
-c
-c      WRITE ( CMON,'(A)') 'Bonding originally looks like this:'
-c      CALL XPRVDU(NCVDU, 1,0)
-c      DO I = 0,N41B-1
-c        IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
-c          WRITE(CMON,'(2I5)')
-c     1    ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
-c          CALL XPRVDU(NCVDU, 1,0)
-c        END IF
-c      END DO
-
-      TOPSER = 0
-
-      DO I = 0,N5-1
-        M5A = L5+I*MD5
-        TOPSER = MAX(TOPSER,STORE(M5A+1))
-      END DO
-      TOPSER = TOPSER + 3
-
-      DO I = 0,N5-1
-
-        M5A = L5+I*MD5
-        M5 = L5
-        JT = 14
-
-
-        JDISTS = JBASAT + JNEWAT*MD5 + 1400
-        NFL = JDISTS
-        JS = JDISTS
-
-C If disordered, only output set 1 (lowest part # of each group):
-
-        IPART = 1
-        K = KDIST4(JS,JT,0,IPART)
-
-        NFL = JDISTS
-
-C Go through results (K is -ve if stack overflow: ignore)
-        DO J=JDISTS,JDISTS+(K-1)*14,14
-          I5 = ISTORE(J)
-C Find entries where sym ops are applied
-          IF ((ISTORE(J+2).NE.1).OR.(ISTORE(J+3).NE.1).OR.
-     1        (ISTORE(J+4).NE.0).OR.(ISTORE(J+5).NE.0).OR.
-     1                              (ISTORE(J+6).NE.0)    ) THEN
-
-C Add entry to our "new L5 in memory".
-
-              CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
-              CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
-              STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
-              TOPSER=TOPSER+1
-              JNEWAT = JNEWAT + 1
-
-c              WRITE ( CMON,'(2A,6I4,3F9.3)')'new atom (1) ',
-c     1               ISTORE(I5),NINT(STORE(I5+1)),
-c     1               (ISTORE(J+L),L=2,6),
-c     1               (STORE(J+L),L=7,9)  
-c              CALL XPRVDU(NCVDU, 1,0)  
-           END IF
-        END DO
-      END DO
-
-      WRITE ( CMON,'(A)') 'Done.'
-      TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
-
-      IF ( JNEWAT .GT. 0 ) THEN
-C Layer 1 of sym atoms complete. Start on layer 2.
-
-c         WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
-c         CALL XPRVDU(NCVDU, 1,0)  
-
-C Move new atoms and insert existing L5 block.
-         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
-         CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
-         L5 = JBASAT
-         LASTN5 = N5
-         N5 = N5+JNEWAT
-         NFL = L5+MD5*N5
-
-
-
-c         WRITE ( CMON,'(A,3I5)') 'New atoms: N5, L5, MD5: ',N5,L5,MD5
-c         CALL XPRVDU(NCVDU, 1,0)
-c         WRITE ( CMON,'(A)') 'Model look like this:'
-c         CALL XPRVDU(NCVDU, 1,0)
-c         DO I = 0, N5-1
-c           WRITE(CLAB,'(A,I4,A,I4)') ISTORE(L5+I*MD5),I+1,':',
-c     1     NINT(STORE(L5+1+I*MD5))
-c           CALL XCRAS(CLAB,LLAB)
-c           WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
-c           CALL XPRVDU(NCVDU, 1,0)
-c         END DO
-
-C Recalculate bonds.
-         CALL XBCALC(2) !Force bondcalc, but no loading of lists allowed.
-
-c         WRITE ( CMON,'(A,3I5)') 'New bonds(1): N41B, L41B, MD41B: ',
-c     1     N41B,L41B,MD41B
-c         CALL XPRVDU(NCVDU, 1,0)
-c         WRITE ( CMON,'(A)') 'Bonding now looks like this:'
-c         CALL XPRVDU(NCVDU, 1,0)
-c         DO I = 0,N41B-1
-c           IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
-c             WRITE(CMON,'(2I5)')
-c     1       ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
-c             CALL XPRVDU(NCVDU, 1,0)
-c           END IF
-c         END DO
-
-        DO LSY = 1,3
-
-         TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
-C Call KDIST4 again, this time pivot/bonded atom vectors are required.
-         MDATVC = 3
-         NATVC = N5
-         I=N5*MDATVC
-         LATVC = KSTALL (I)
-         CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
-C Mark all new atoms not to be BONDED type
-         DO I = 0,JNEWAT-1
-            ISTORE(LATVC+1+MDATVC*I) = -1
-            ISTORE(LATVC+2+MDATVC*I) = -1
-         END DO
-
-         JNEWAT = 0
-         JBASAT = NFL
-
-         DO I = LASTN5,N5-1
-
-           M5A = L5+I*MD5
-           M5 = L5
-           JT = 14
-
-           JDISTS = JBASAT + JNEWAT*MD5 + 1400
-           NFL = JDISTS
-           JS = JDISTS
-
-           IPART = 1
-           K = KDIST4(JS,JT,1, IPART)
-
-           NFL = JDISTS
-
-C Go through results (K is -ve if stack overflow: ignore)
-           DO J=JDISTS,JDISTS+(K-1)*14,14
-             I5 = ISTORE(J)
-
-c                 WRITE(CMON,'(2A,I4,2A,I4)')
-c     1      'Pivot:',  ISTORE(M5A),NINT(STORE(M5A+1)),
-c     1      'Bonded:',  ISTORE(I5),NINT(STORE(I5+1))
-c                   CALL XPRVDU(NCVDU, 1,0)  
-
-C Find entries where sym ops are applied
-             IF ((ISTORE(J+2).NE.1).OR.(ISTORE(J+3).NE.1).OR.
-     1           (ISTORE(J+4).NE.0).OR.(ISTORE(J+5).NE.0).OR.
-     1                              (ISTORE(J+6).NE.0)    ) THEN
-
-
-C Ignore entries that coincide with existing atoms:
-
-                 ICOINC = 0
-                 DO K = 0,N5-1
-                   IF ( ABS(STORE(J+7)-STORE(L5+K*MD5+4))
-     1                 +ABS(STORE(J+8)-STORE(L5+K*MD5+5))
-     1                 +ABS(STORE(J+9)-STORE(L5+K*MD5+6)).LT. 0.0001)
-     1                  THEN
-                     ICOINC = 1
-                     EXIT
-                   END IF
-                 END DO
-                 DO K = 0,JNEWAT-1
-                   IF ( ABS(STORE(J+7)-STORE(JBASAT+K*MD5+4))
-     1                 +ABS(STORE(J+8)-STORE(JBASAT+K*MD5+5))
-     1                 +ABS(STORE(J+9)-STORE(JBASAT+K*MD5+6)).LT.0.0001)
-     1                  THEN
-                     ICOINC = 1
-                     EXIT
-                   END IF
-                 END DO
-
-
-                 IF ( ICOINC .EQ. 0 ) THEN
-
-C Add entry to our "new L5 in memory".
-
-                   CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
-                   CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
-                   STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
-                   TOPSER=TOPSER+1
-                   JNEWAT = JNEWAT + 1
-
-c                   WRITE ( CMON,'(A,I4,1X,A,6I4,3F9.3)')'new atom (2) ',
-c     1               LSY,
-c     1               ISTORE(I5),NINT(STORE(I5+1)),
-c     1               (ISTORE(J+L),L=2,6),
-c     1               (STORE(J+L),L=7,9)  
-c                   CALL XPRVDU(NCVDU, 1,0)  
-                END IF
-              END IF
-           END DO
-         END DO
-
-C Move new atoms and insert existing L5 block.
-         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
-         CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
-         L5 = JBASAT
-         LASTN5 = N5
-         N5 = N5+JNEWAT
-         NFL = L5+MD5*N5
-
-c         WRITE ( CMON,'(A,3I5)') 'N5, L5, MD5: ',N5,L5,MD5
-c         CALL XPRVDU(NCVDU, 1,0)
-c         WRITE ( CMON,'(A,i4)') 'Atoms now look like this: ',LSY
-c         CALL XPRVDU(NCVDU, 1,0)
-
-c         DO I = 0, N5-1
-c           WRITE(CLAB,'(A,I4,A,I4)') ISTORE(L5+I*MD5),I+1,':',
-c     1     NINT(STORE(L5+1+I*MD5))
-c           CALL XCRAS(CLAB,LLAB)
-c           WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
-c           CALL XPRVDU(NCVDU, 1,0)
-c         END DO
-
-         IF(LSY.EQ.3) THEN !Last time around - don't look for SYM atoms.
-             ISTORE(L40T+3) = 1
-         END IF
-        
-
-         CALL XBCALC(2)
-
-        END DO
-
-c      ELSE
-c        WRITE ( CMON,'(A)') 'No new atoms found across sym ops.'
-c        CALL XPRVDU(NCVDU, 1,0)  
-      END IF
-
+       NORIG5 = N5
+       CALL GROWFR
+       WRITE (CMON,'(A4,2I6)') 'LkGrown: ',NORIG5,N5
+       CALL XPRVDU(NCVDU,1,0)
 
 c      WRITE ( CMON,'(A,3I5)') 'N41B, L41B, MD41B: ',N41B,L41B,MD41B
 c      CALL XPRVDU(NCVDU, 1,0)
@@ -1084,6 +848,7 @@ c      END DO
          END IF
         END IF
       END DO
+
 
 c      JDISTS = NFL
 c
@@ -2309,3 +2074,271 @@ C  -108,108
 C          CALL XCREMS (CSOURC(1:72), CRESLT(1:72) , J)
 C  *XUNIX
 C
+
+CODE FOR GROWFR
+      SUBROUTINE GROWFR
+C To be called from a routine that has L5 already loaded, and doesn't
+C care if we extend it. L40 should also be loaded as bonds will be calculated. 
+      CHARACTER *18 CLAB, CLAB2
+\XLST05
+\XIOBUF
+\XUNITS
+\STORE
+\ISTORE
+\XDSTNC 
+\XLST40
+\XLST41
+\QSTORE
+
+      LLATVC = LATVC
+      NNATVC = NATVC
+
+      JNEWAT = 0
+      JBASAT = NFL
+      ININ5 = N5
+
+c      WRITE ( CMON,'(A)') 'Seeking bonds across sym ops.'
+c      CALL XPRVDU(NCVDU, 1,0)  
+c
+c      WRITE ( CMON,'(A)') 'Bonding originally looks like this:'
+c      CALL XPRVDU(NCVDU, 1,0)
+c      DO I = 0,N41B-1
+c        IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
+c          WRITE(CMON,'(2I5)')
+c     1    ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
+c          CALL XPRVDU(NCVDU, 1,0)
+c        END IF
+c      END DO
+
+      TOPSER = 0
+ 
+      DO I = 0,N5-1
+        M5A = L5+I*MD5
+        TOPSER = MAX(TOPSER,STORE(M5A+1))
+      END DO
+      TOPSER = TOPSER + 3
+
+      DO I = 0,N5-1
+
+        M5A = L5+I*MD5
+        M5 = L5
+        JT = 14
+
+
+        JDISTS = JBASAT + JNEWAT*MD5 + 1400
+        NFL = JDISTS
+        JS = JDISTS
+
+C If disordered, only output set 1 (lowest part # of each group):
+
+        IPART = 1
+        JATVC = 0
+        K = KDIST4(JS,JT,JATVC,IPART)
+
+        NFL = JDISTS
+
+C Go through results (K is -ve if stack overflow: ignore)
+        DO J=JDISTS,JDISTS+(K-1)*14,14
+          I5 = ISTORE(J)
+C Find entries where sym ops are applied
+          IF ((ISTORE(J+2).NE.1).OR.(ISTORE(J+3).NE.1).OR.
+     1        (ISTORE(J+4).NE.0).OR.(ISTORE(J+5).NE.0).OR.
+     1                              (ISTORE(J+6).NE.0)    ) THEN
+
+C Add entry to our "new L5 in memory".
+
+              CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
+              CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
+              STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
+              TOPSER=TOPSER+1
+              JNEWAT = JNEWAT + 1
+
+              WRITE ( CMON,'(2A,6I4,3F9.3)')'new atom (1) ',
+     1               ISTORE(I5),NINT(STORE(I5+1)),
+     1               (ISTORE(J+L),L=2,6),
+     1               (STORE(J+L),L=7,9)  
+              CALL XPRVDU(NCVDU, 1,0)  
+           END IF
+        END DO
+      END DO
+
+      WRITE ( CMON,'(A)') 'Done.'
+      TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
+
+      IF ( JNEWAT .GT. 0 ) THEN
+C Layer 1 of sym atoms complete. Start on layer 2.
+
+         WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
+         CALL XPRVDU(NCVDU, 1,0)  
+
+C Move new atoms up and insert existing L5 block.
+         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
+         CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
+         L5 = JBASAT
+         LASTN5 = N5
+         N5 = N5+JNEWAT
+         NFL = L5+MD5*N5
+
+
+
+c         WRITE ( CMON,'(A,3I5)') 'New atoms: N5, L5, MD5: ',N5,L5,MD5
+c         CALL XPRVDU(NCVDU, 1,0)
+         WRITE ( CMON,'(A)') 'Model look like this:'
+         CALL XPRVDU(NCVDU, 1,0)
+         DO I = 0, N5-1
+           WRITE(CLAB,'(A,I4,A,I4)') ISTORE(L5+I*MD5),I+1,':',
+     1     NINT(STORE(L5+1+I*MD5))
+           CALL XCRAS(CLAB,LLAB)
+           WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
+           CALL XPRVDU(NCVDU, 1,0)
+         END DO
+
+C Recalculate bonds.
+         CALL XBCALC(2) !Force bondcalc, but no loading of lists allowed.
+
+c         WRITE ( CMON,'(A,3I5)') 'New bonds(1): N41B, L41B, MD41B: ',
+c     1     N41B,L41B,MD41B
+c         CALL XPRVDU(NCVDU, 1,0)
+         WRITE ( CMON,'(A)') 'Bonding now looks like this:'
+         CALL XPRVDU(NCVDU, 1,0)
+         DO I = 0,N41B-1
+           IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
+             WRITE(CMON,'(2I5)')
+     1       ISTORE(L41B+I*MD41B)+1,ISTORE(L41B+6+I*MD41B)+1
+             CALL XPRVDU(NCVDU, 1,0)
+           END IF
+         END DO
+
+       DO LSY = 1,3
+
+         TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
+C Call KDIST4 again, this time pivot/bonded atom vectors are required.
+         MDATVC = 3
+         NATVC = N5
+         I=N5*MDATVC
+         LATVC = KSTALL (I)
+         CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
+C Mark all new atoms not to be BONDED type
+         DO I = NATVC-JNEWAT,NATVC-1
+            ISTORE(LATVC+1+MDATVC*I) = -1
+            ISTORE(LATVC+2+MDATVC*I) = -1
+         END DO
+
+         JNEWAT = 0
+         JBASAT = NFL
+
+         DO I = LASTN5,N5-1
+
+           M5A = L5+I*MD5
+           M5 = L5
+           JT = 14
+
+           JDISTS = JBASAT + JNEWAT*MD5 + 1400
+           NFL = JDISTS
+           JS = JDISTS
+
+           IPART = 1
+           K = KDIST4(JS,JT,1, IPART)
+
+           NFL = JDISTS
+
+C Go through results (K is -ve if stack overflow: ignore)
+           DO J=JDISTS,JDISTS+(K-1)*14,14
+             I5 = ISTORE(J)
+
+c                 WRITE(CMON,'(2A,I4,2A,I4)')
+c     1      'Pivot:',  ISTORE(M5A),NINT(STORE(M5A+1)),
+c     1      'Bonded:',  ISTORE(I5),NINT(STORE(I5+1))
+c                   CALL XPRVDU(NCVDU, 1,0)  
+
+C Find entries where sym ops are applied
+             IF ((ISTORE(J+2).NE.1).OR.(ISTORE(J+3).NE.1).OR.
+     1           (ISTORE(J+4).NE.0).OR.(ISTORE(J+5).NE.0).OR.
+     1                              (ISTORE(J+6).NE.0)    ) THEN
+
+
+C Ignore entries that coincide with existing atoms:
+
+                 ICOINC = 0
+                 DO K = 0,N5-1
+                   IF ( ABS(STORE(J+7)-STORE(L5+K*MD5+4))
+     1                 +ABS(STORE(J+8)-STORE(L5+K*MD5+5))
+     1                 +ABS(STORE(J+9)-STORE(L5+K*MD5+6)).LT. 0.0001)
+     1                  THEN
+                     ICOINC = 1
+                     EXIT
+                   END IF
+                 END DO
+                 DO K = 0,JNEWAT-1
+                   IF ( ABS(STORE(J+7)-STORE(JBASAT+K*MD5+4))
+     1                 +ABS(STORE(J+8)-STORE(JBASAT+K*MD5+5))
+     1                 +ABS(STORE(J+9)-STORE(JBASAT+K*MD5+6)).LT.0.0001)
+     1                  THEN
+                     ICOINC = 1
+                     EXIT
+                   END IF
+                 END DO
+
+
+                 IF ( ICOINC .EQ. 0 ) THEN
+
+C Add entry to our "new L5 in memory".
+
+                   CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
+                   CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
+                   STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
+                   TOPSER=TOPSER+1
+                   JNEWAT = JNEWAT + 1
+
+                   WRITE ( CMON,'(A,I4,1X,A,6I4,3F9.3)')'new atom (2) ',
+     1               LSY,
+     1               ISTORE(I5),NINT(STORE(I5+1)),
+     1               (ISTORE(J+L),L=2,6),
+     1               (STORE(J+L),L=7,9)  
+                   CALL XPRVDU(NCVDU, 1,0)  
+                END IF
+              END IF
+           END DO
+         END DO
+
+C Move new atoms and insert existing L5 block.
+         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
+         CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
+         L5 = JBASAT
+         LASTN5 = N5
+         N5 = N5+JNEWAT
+         NFL = L5+MD5*N5
+
+c         WRITE ( CMON,'(A,3I5)') 'N5, L5, MD5: ',N5,L5,MD5
+c         CALL XPRVDU(NCVDU, 1,0)
+c         WRITE ( CMON,'(A,i4)') 'Atoms now look like this: ',LSY
+c         CALL XPRVDU(NCVDU, 1,0)
+
+c         DO I = 0, N5-1
+c           WRITE(CLAB,'(A,I4,A,I4)') ISTORE(L5+I*MD5),I+1,':',
+c     1     NINT(STORE(L5+1+I*MD5))
+c           CALL XCRAS(CLAB,LLAB)
+c           WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
+c           CALL XPRVDU(NCVDU, 1,0)
+c         END DO
+
+         IF(LSY.EQ.3) THEN !Last time around - don't look for SYM atoms.
+             ISTORE(L40T+3) = 1
+         END IF
+        
+
+         CALL XBCALC(2)
+
+       END DO
+      END IF
+
+
+      LATVC = LLATVC
+      NATVC = NNATVC
+
+      RETURN
+      END
+
+
+
+

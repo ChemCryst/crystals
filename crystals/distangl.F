@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/03/05 16:30:45  rich
+C Fiddling to make more general.
+C
 C Revision 1.41  2003/02/27 11:24:38  rich
 C Changed regroup, so that fragment number goes into slot 17 of L5 (FRAGMENT)
 C
@@ -489,7 +492,7 @@ C----- READ A DIRECTIVE
         IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
         IF (IDIRNM .LT. 0) GOTO 100
         IF (IDIRNM .EQ. 0) GOTO 1000
-        GOTO( 100, 100, 100, 100, 220, 230, 240, 250, 260, 255,
+        GOTO( 100, 100, 100, 210, 220, 230, 240, 250, 260, 255,
      1        265, 200,9910),IDIRNM
         GOTO 9910
 
@@ -516,10 +519,44 @@ C----- ALLOCATE A FUNCTION VECTOR
 C----- LOAD L41 in case anyone might want it. (KDIST4, for example)
         GOTO 100
 
+210   CONTINUE
+C -- 'OUTPUT' DIRECTIVE - not normally checked, but we need to know
+C if PUNCH=MOGUL.
+C---- In MOGUL mode, grow the fragment to allow polymeric structures.
+        IPUNCH = ISTORE(JCOMBF+14)
+        IF ( IPUNCH .EQ. 4 ) THEN
+         NORIG5 = N5
+         CALL GROWFR
+         WRITE (CMON,'(A4,2I6)') 'Grown: ',NORIG5,N5
+         CALL XPRVDU(NCVDU,1,0)
+         IF ( N5.GT.NORIG5) THEN       ! RE-ALLOCATE VECTORS
+           I=N5*MDFNVC
+           LFNVC = KSTALL (I)
+           NFNVC = N5
+           CALL XZEROF ( ISTORE(LFNVC) , I ) ! Not used yet, just zero.
+           LLATVC = LATVC
+           I=N5*MDATVC
+           LATVC = KSTALL (I)
+           CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
+C Copy any existing values:
+           CALL XMOVE ( ISTORE(LLATVC), ISTORE(LATVC), NATVC*MDATVC )
+           NATVC = N5
+C---- Fill rest of function vector default to bonded, not pivot.
+           DO MATVC = LATVC+NORIG5*MDATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
+             ISTORE(MATVC) = -1
+             ISTORE(MATVC+1) = 0
+             ISTORE(MATVC+2) = 0
+           ENDDO
+           PIVINI = .TRUE.
+         END IF
+        END IF
+
+        GOTO 100
+
 220   CONTINUE
 C -- 'INCLUDE' DIRECTIVE
 C Set all 3 atom vectors to exclude by default.
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           IF ( .NOT. PIVINI ) ISTORE(MATVC)   = -1
           IF ( .NOT. BONINI ) ISTORE(MATVC+1) = -1
           IF ( .NOT. BONINI ) ISTORE(MATVC+2) = -1
@@ -548,7 +585,7 @@ C Set all 3 atom vectors to exclude by default.
 230   CONTINUE
 C -- 'EXCLUDE' DIRECTIVE
 C Set all 3 atom vectors to include by default.
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
@@ -578,7 +615,7 @@ C----- 3RD ATOM VECTOR TO INCLUDE ANY ATOM. SO, WITHOUT ONLY, THE COMMAND
 C----- "BONDED H" WOULD RETURN, SAY, "H-C-H", WITH ONLY IT CAN RETURN
 C----- "H-C-O" FOR EXAMPLE.
 240   CONTINUE
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           ISTORE(MATVC+2) = 0
         ENDDO  
         IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
@@ -597,7 +634,7 @@ C----- "H-C-O" FOR EXAMPLE.
 250   CONTINUE
 C----- 'PIVOT'
 C Set first vector (pivot) to -1, and the other 2 to 0:
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           IF ( .NOT. PIVINI ) ISTORE(MATVC)   = -1
           IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
@@ -624,7 +661,7 @@ C Set first vector (pivot) to -1, and the other 2 to 0:
 255   CONTINUE
 C----- 'NOTPIVOT'
 C Set first vector (pivot) to 0, and the other 2 to 0:
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
@@ -651,7 +688,7 @@ C Set first vector (pivot) to 0, and the other 2 to 0:
 260   CONTINUE
 C----- 'BONDED'
 C Set first vector (pivot) to 0, and the other 2 to -1:
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+1) = -1
           IF ( .NOT. BONINI ) ISTORE(MATVC+2) = -1
@@ -678,7 +715,7 @@ C Set first vector (pivot) to 0, and the other 2 to -1:
 265   CONTINUE
 C----- 'NOTBONDED'
 C Set first vector (pivot) to 0, and the other 2 to 0:
-        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+        DO MATVC = LATVC,LATVC+(NATVC-1)*MDATVC,MDATVC
           IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
           IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
@@ -792,6 +829,14 @@ C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
 
 C----- REDUCE SYMMETRY IF NECESSARY
       CALL KSYMOD (ISYMOD, IC, IL, N2P, L2C, L2, N2, MD2)
+
+      IF ( IPUNCH .EQ. 4 ) THEN   ! Don't need symmetry in MOGUL mode.
+        ITRANS = -1
+        N2 = 1
+        N2P = 1
+        IC = 0
+      END IF
+
 
 C----- WRITE OUT THE CELL CONTENT PROPERTIES
 C----- SKIP THE MOLECULAR PROPERTIES CALCULATION - FOR NOW
@@ -3621,13 +3666,13 @@ c          CALL XPRVDU(NCVDU,1,0)
 
 C Post process dist stack into consistent disordered set.
 
-      WRITE (CMON,'(/A)')'Results:'
-      CALL XPRVDU(NCVDU,2,0)
-      DO I = NFL,JS-JT,JT
-        WRITE (CMON,'(A,I5,I15)')
-     1  ISTORE(ISTORE(I)),NINT(STORE(ISTORE(I)+1)),ISTORE(ISTORE(I)+14)
-        CALL XPRVDU(NCVDU,1,0)
-      END DO
+c      WRITE (CMON,'(/A)')'Results:'
+c      CALL XPRVDU(NCVDU,2,0)
+c      DO I = NFL,JS-JT,JT
+c        WRITE (CMON,'(A,I5,I15)')
+c     1  ISTORE(ISTORE(I)),NINT(STORE(ISTORE(I)+1)),ISTORE(ISTORE(I)+14)
+c        CALL XPRVDU(NCVDU,1,0)
+c      END DO
 
       IF ( IPART .GT. 0 ) THEN
 C We can use space after current stack. (at JS)
@@ -3662,12 +3707,12 @@ C Start by creating a vector of all the unique GROUP/PART numbers.
         NUVP = 1+LUVP-IUVP
 C We now have a vector of unique group/part IDs.
 
-      WRITE (CMON,'(A)')'Unique parts:'
-      CALL XPRVDU(NCVDU,1,0)
-      DO I = IUVP,LUVP
-        WRITE (CMON,'(I15)')ISTORE(I)
-        CALL XPRVDU(NCVDU,1,0)
-      END DO
+c      WRITE (CMON,'(A)')'Unique parts:'
+c      CALL XPRVDU(NCVDU,1,0)
+c      DO I = IUVP,LUVP
+c        WRITE (CMON,'(I15)')ISTORE(I)
+c        CALL XPRVDU(NCVDU,1,0)
+c      END DO
 
 
 C Check if the vector is worth having:
@@ -3699,12 +3744,12 @@ C Check for group change:
         END DO
         LGP = MGP
 
-        WRITE (CMON,'(A)')'Group sizes:'
-        CALL XPRVDU(NCVDU,1,0)
-        DO I = IGP,LGP
-          WRITE (CMON,'(I8)')ISTORE(I)
-          CALL XPRVDU(NCVDU,1,0)
-        END DO
+c        WRITE (CMON,'(A)')'Group sizes:'
+c        CALL XPRVDU(NCVDU,1,0)
+c        DO I = IGP,LGP
+c          WRITE (CMON,'(I8)')ISTORE(I)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
 
 
 C Make a vector of allowed/not allowed to match unique group/part vector...
@@ -3732,9 +3777,9 @@ C Check for group change:
             PROD = PROD * NGR
 C This is the next group, which parts are allowed?
             IPAL = MOD(((IPART-1)-MOD((IPART-1),IOPROD))/IOPROD,NGR)
-        WRITE (CMON,'(A,4I9)')
-     1  'IPAL,IPART,IOPROD,NGR:',IPAL,IPART,IOPROD,NGR
-        CALL XPRVDU(NCVDU,1,0)
+c        WRITE (CMON,'(A,4I9)')
+c     1  'IPAL,IPART,IOPROD,NGR:',IPAL,IPART,IOPROD,NGR
+c        CALL XPRVDU(NCVDU,1,0)
             IPCUR = -1
           END IF
 
@@ -3749,12 +3794,12 @@ C This is the next group, which parts are allowed?
           ICURN = ISTORE(IVC)
         END DO
 
-        WRITE (CMON,'(A)')'Allow / disallow:'
-        CALL XPRVDU(NCVDU,1,0)
-        DO I = IAVC,LAVC
-          WRITE (CMON,'(I8)')ISTORE(I)
-          CALL XPRVDU(NCVDU,1,0)
-        END DO
+c        WRITE (CMON,'(A)')'Allow / disallow:'
+c        CALL XPRVDU(NCVDU,1,0)
+c        DO I = IAVC,LAVC
+c          WRITE (CMON,'(I8)')ISTORE(I)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
 
 C Work out number of possible sets of consistent bonds.
 
