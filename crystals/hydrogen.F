@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/02/26 10:24:13  richard
+C Added changelog to top of file
+C
 C
 CODE FOR SYDROG
       SUBROUTINE SYDROG
@@ -495,7 +498,7 @@ C
       CHARACTER *80 CSRQ
       CHARACTER *12 CTEMP
 C----- PATH AND FILENAME FOR RIDING CONSTRAINTS
-      CHARACTER *32 CPATH, CPATH2
+      CHARACTER *64 CPATH, CPATH2
       DIMENSION JFRN(4), KFRN(4)
 C--
 \ISTORE
