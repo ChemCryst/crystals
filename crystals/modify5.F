@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2002/07/23 15:55:45  richard
+C Load lists 3,29,40 and 41 *BEFORE* the ordered list 5, otherwise what's going
+C to happen when you add an ATOM? That's right: a mess.
+C
+C If MONGUI is 2 then update the model. Recalculate bonds first as #edit has
+C the power to muddle the order of L5 around which makes the bond list
+C pointers go wrong.
+C
 C Revision 1.29  2002/07/23 10:02:09  richard
 C
 C INSERT NCONN and INSERT RELAX use L41 to work out bonding. L41 is dangerously
@@ -342,7 +350,7 @@ C-C-C-INTRODUCTION OF ADDITIONAL DIRECTIVE-ADDRESSES FOR "SPECIALS"
      1       3800,1000,1050, 900,1100, 400,5100, 100, 200, 300,
      2        250, 600,2700,2850,2300,1150,6950,6300,6800,3950,
      3       5450,4100,4300,4500,2900,350,15500, 460,1160,2870,
-     4        150,8250), IDIRNM
+     4       2300, 150,8250), IDIRNM
       GO TO 8250
 C
 150   CONTINUE
@@ -809,7 +817,17 @@ C--CHECK FOR THIS ATOM IN LIST 5
       M5A=L5
       N5A=N5
       L12A=0
-      IF (KATOMF(STORE(MQ+2),M5A,N5A,MD5A,L12A).EQ.0) GO TO 8100
+      IF (KATOMF(STORE(MQ+2),M5A,N5A,MD5A,L12A).EQ.0) THEN
+         IF (IDIRNM.LE.25) GO TO 8100   !'RENAME'
+C Otherwise 'DRENAME' - push other serial out of the way:
+         IHSER = 1
+         DO K5 = L5,L5+(N5-1)*MD5,MD5
+           IF ( ISTORE(K5) .EQ. ISTORE(M5A) ) THEN
+             IHSER = MAX(IHSER,NINT(STORE(K5+1)))
+           END IF
+         END DO
+         STORE(M5A+1) = IHSER+1.0
+      END IF
 C--ATOM NOT IN LIST 5
 C----- MOVE OVER THE NEW NAME AND SERIAL
       CALL XMOVE (STORE(MQ+2),STORE(M5B),2)
@@ -882,7 +900,9 @@ C  Inner loop over atoms between current and last.
 C  Fix clash. Find highest serial and add one.
              IHSER = 1
              DO K5C = K5F,K5L,K5S
+              IF ( ISTORE(K5C) .EQ. ISTORE(K5A) ) THEN
                IHSER = MAX(IHSER,NINT(STORE(K5C+1)))
+              END IF
              END DO
              STORE(K5B+1) = IHSER+1.0
              ICHNG = ICHNG + 1
