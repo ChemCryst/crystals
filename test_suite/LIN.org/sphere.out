@@ -1,0 +1,658 @@
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
+  Space Group P-4 3 N   
+  The Space Group is ACentric  Primitive Cubic         Laue Symmetry M 3 M   
+  Multiplicity of a General Site is  24
+  The Equivalent Positions are:
+
+       x      y      z        y      z      x        z      x      y 
+   1/2+y  1/2-x  1/2-z    1/2+z  1/2-y  1/2-x    1/2+x  1/2-z  1/2-y 
+      -x     -y      z       -z      x     -y       -x      y     -z 
+      -y     -z      x       -z     -x      y    1/2-y  1/2+x  1/2-z 
+   1/2-z  1/2+y  1/2-x    1/2-x  1/2+z  1/2-y       -y      z     -x 
+   1/2+z  1/2+y  1/2+x    1/2+x  1/2+z  1/2+y    1/2+y  1/2+x  1/2+z 
+       y     -z     -x    1/2-y  1/2-x  1/2+z    1/2-z  1/2-y  1/2+x 
+   1/2-x  1/2-z  1/2+y        x     -y     -z        z     -x     -y 
+ 
+
+    Fourier limits are :-
+                              X axis from  0.000 to  1.000
+                              Y axis from  0.000 to  0.250
+                              Z axis from  0.000 to  0.250
+
+   Patterson limits are :-
+                              X axis from  0.000 to  0.500
+                              Y axis from  0.000 to  0.500
+                              Z axis from  0.000 to  0.500
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by     1 records 
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+
+                               H     K     L     I or /FO/     Sigma      JCODE    Serial
+
+         Observation too       5.    0.    0.        -0.5        0.7         0.        0.
+         Observation too       7.    5.    5.        -0.9        0.7         0.        0.
+         Observation too       7.    7.    1.        -0.7        0.9         0.        0.
+         Observation too       9.    4.    4.        -0.9        1.2         0.        0.
+         Observation too       9.    5.    5.        -1.0        0.6         0.        0.
+         Observation too      -9.   -6.   -2.        -0.9        1.1         0.        0.
+         Observation too       9.    9.    3.        -0.3        2.1         0.        0.
+         Observation too       9.    9.    5.        -0.6        2.3         0.        0.
+         Observation too      10.    7.    6.         0.0        2.8         0.        0.
+         Observation too     -10.   -9.   -2.        -1.6        0.8         0.        0.
+         Observation too      10.   10.    1.        -0.5        4.2         0.        0.
+         Observation too      11.    1.    1.        -0.7        1.4         0.        0.
+         Observation too      11.    6.    6.        -1.1        1.4         0.        0.
+         Observation too      11.    7.    3.        -1.4        1.0         0.        0.
+         Observation too      11.    8.    0.        -2.1        0.6         0.        0.
+         Observation too      12.    5.    0.        -0.8        3.5         0.        0.
+         Observation too      12.    5.    4.        -0.8        3.0         0.        0.
+         Observation too      13.    0.    0.        -1.2        1.4         0.        0.
+         Observation too      13.    3.    3.        -0.7        3.2         0.        0.
+  Disc file on unit   1 extended by     1 records 
+ The updated reflections are now on UNIT 53
+
+
+
+     525 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+  Disc file on unit   1 extended by    34 records 
+  Disc file on unit   1 extended by     1 records 
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+
+                               H     K     L     I or /FO/     Sigma      JCODE    Serial
+
+ Systematic absence            2.    2.    1.         1.4        0.1         0.        0.
+ Systematic absence            3.    0.    0.         1.0        0.3         0.        0.
+ Systematic absence            3.    1.    1.         1.9        0.1         0.        0.
+ Systematic absence            3.    2.    2.         0.9        0.2         0.        0.
+ Systematic absence            3.    3.    1.         1.7        0.1         0.        0.
+ Systematic absence            3.    3.    3.         1.3        0.2         0.        0.
+ Systematic absence            4.    4.    1.         1.3        0.1         0.        0.
+ Systematic absence            4.    4.    3.         1.5        0.1         0.        0.
+ Systematic absence            5.    0.    0.        -0.5        0.7       -10.        0.
+ Systematic absence            5.    1.    1.         1.3        0.1         0.        0.
+ Systematic absence            5.    2.    2.         0.7        0.4         0.        0.
+ Systematic absence            5.    3.    3.         0.8        0.3         0.        0.
+ Systematic absence            5.    4.    4.         0.3        0.5         0.        0.
+ Systematic absence            5.    5.    1.         0.8        0.3         0.        0.
+ Systematic absence            5.    5.    3.         1.2        0.2         0.        0.
+ Systematic absence            5.    5.    5.         0.8        0.9         0.        0.
+ Systematic absence            6.    6.    1.         1.3        0.1         0.        0.
+ Systematic absence            6.    6.    3.         0.9        0.4         0.        0.
+ Systematic absence            6.    6.    5.         0.6        0.6         0.        0.
+ Systematic absence            7.    0.    0.         1.8        0.3         0.        0.
+ Systematic absence            7.    1.    1.         1.2        0.1         0.        0.
+ Systematic absence            7.    2.    2.         1.4        0.2         0.        0.
+ Systematic absence            7.    3.    3.         0.9        0.5         0.        0.
+ Systematic absence            7.    4.    4.         1.1        0.4         0.        0.
+ Systematic absence            7.    5.    5.        -0.9        0.7       -10.        0.
+ Systematic absence            7.    6.    6.         0.4        0.9         0.        0.
+ Systematic absence            7.    7.    1.        -0.7        0.9       -10.        0.
+ Systematic absence            7.    7.    3.         1.1        0.3         0.        0.
+ Systematic absence            7.    7.    5.         1.3        0.4         0.        0.
+ Systematic absence            7.    7.    7.         1.0        2.0         0.        0.
+ Systematic absence            8.    8.    1.         0.9        0.9         0.        0.
+ Systematic absence            8.    8.    3.         1.1        0.6         0.        0.
+ Systematic absence            8.    8.    5.         1.2        0.7         0.        0.
+ Systematic absence            8.    8.    7.         2.3        0.9         0.        0.
+ Systematic absence            9.    0.    0.         0.9        0.7         0.        0.
+ Systematic absence            9.    1.    1.         1.4        0.2         0.        0.
+ Systematic absence            9.    2.    2.         0.9        0.7         0.        0.
+ Systematic absence            9.    3.    3.         0.8        0.8         0.        0.
+ Systematic absence            9.    4.    4.        -0.9        1.2       -10.        0.
+ Systematic absence            9.    5.    5.        -1.0        0.6       -10.        0.
+ Systematic absence            9.    6.    6.         1.1        0.7         0.        0.
+ Systematic absence            9.    7.    7.         2.2        0.8         0.        0.
+ Systematic absence            9.    9.    1.         0.9        1.9         0.        0.
+ Systematic absence            9.    9.    3.        -0.3        2.1       -10.        0.
+ Systematic absence            9.    9.    5.        -0.6        2.3       -10.        0.
+ Systematic absence           10.   10.    1.        -0.5        4.2       -10.        0.
+ Systematic absence           11.    0.    0.         3.5        0.7         0.        0.
+ Systematic absence           11.    1.    1.        -0.7        1.4       -10.        0.
+ Systematic absence           11.    2.    2.         1.6        0.4         0.        0.
+ Systematic absence           11.    3.    3.         0.3        2.1         0.        0.
+ Systematic absence           11.    4.    4.         1.3        0.8         0.        0.
+ Systematic absence           11.    5.    5.         0.4        2.4         0.        0.
+ Systematic absence           11.    6.    6.        -1.1        1.4       -10.        0.
+ Systematic absence           13.    0.    0.        -1.2        1.4       -10.        0.
+ Systematic absence           13.    1.    1.         0.3        2.2         0.        0.
+ Systematic absence           13.    2.    2.         1.4        0.9         0.        0.
+ Systematic absence           13.    3.    3.        -0.7        3.2       -10.        0.
+ Systematic absence           13.    4.    4.         1.9        1.0         0.        0.
+ The updated reflections are now on UNIT 52
+  Disc file on unit   1 extended by     1 records 
+  Disc file on unit   1 extended by    30 records 
+
+
+
+     58 absences,   mean Fo =   0.781,   rms Fo/sigma(Fo)=   7.349
+                                                                                                                                                                                                                                                                
+Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
+Mean Fo          -0.786   0.720   1.354   2.642   0.000   0.000   0.000                                                                                                                                                                                         
+Number               12      18      25       3       0       0       0                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                
+Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
+rms (Fo/sigma)    0.837   0.585   1.560   2.978   5.448  12.402  25.855                                                                                                                                                                                         
+Number               12       9      12       9       8       5       3                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                
+    467 reflections accepted              58 reflections rejected                                                                                                                                                                                               
+  Disc file on unit   1 extended by     1 records 
+ After   1 pass     467 reflection(s) have been sorted
+ The updated reflections are now on UNIT 53
+  Disc file on unit   1 extended by    31 records 
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+
+  Disc file on unit   1 extended by     1 records 
+ The updated reflections are now on UNIT 52
+  Disc file on unit   1 extended by    20 records 
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+   0.0 -  0.5     6  2     6   294 -------
+   0.5 -  1.0     6  2    12   288 -------
+   1.0 -  1.5     7  2    19   281 --------
+   1.5 -  2.0     5  2    24   276 ------
+   2.0 -  2.5     2  1    26   274 ---
+   2.5 -  3.0     2  1    28   272 ---
+   3.0 -  3.5     2  1    30   270 ---
+   3.5 -  4.0     5  2    35   265 ------
+   4.0 -  4.5     1  0    36   264 --
+   4.5 -  5.0     3  1    39   261 ----
+   5.0 -  5.5     2  1    41   259 ---
+   5.5 -  6.0     3  1    44   256 ----
+   6.0 -  6.5     2  1    46   254 ---
+   6.5 -  7.0     1  0    47   253 --
+   7.0 -  7.5     2  1    49   251 ---
+   7.5 -  8.0     2  1    51   249 ---
+   8.0 -  8.5     3  1    54   246 ----
+   8.5 -  9.0     4  1    58   242 -----
+   9.0 -  9.5     1  0    59   241 --
+   9.5 - 10.0     7  2    66   234 --------
+  10.0 - 10.5     5  2    71   229 ------
+  10.5 - 11.0     3  1    74   226 ----
+  11.0 - 11.5     2  1    76   224 ---
+  11.5 - 12.0     6  2    82   218 -------
+  12.0 - 12.5     5  2    87   213 ------
+  12.5 - 13.0     5  2    92   208 ------
+  13.0 - 13.5     4  1    96   204 -----
+  13.5 - 14.0     1  0    97   203 --
+  14.0 - 14.5     0  0    97   203 -
+  14.5 - 15.0     6  2   103   197 -------
+  15.0 - 15.5     2  1   105   195 ---
+  15.5 - 16.0     1  0   106   194 --
+  16.0 - 16.5     0  0   106   194 -
+  16.5 - 17.0     4  1   110   190 -----
+  17.0 - 17.5     5  2   115   185 ------
+  17.5 - 18.0     3  1   118   182 ----
+  18.0 - 18.5     1  0   119   181 --
+  18.5 - 19.0     2  1   121   179 ---
+  19.0 - 19.5     5  2   126   174 ------
+  19.5 - 20.0     1  0   127   173 --
+  20.0 - 20.5     2  1   129   171 ---
+  20.5 - 21.0     2  1   131   169 ---
+  21.0 - 21.5     2  1   133   167 ---
+  21.5 - 22.0     4  1   137   163 -----
+  22.0 - 22.5     2  1   139   161 ---
+  22.5 - 23.0     1  0   140   160 --
+  23.0 - 23.5     1  0   141   159 --
+  23.5 - 24.0     2  1   143   157 ---
+  24.0 - 24.5     3  1   146   154 ----
+  24.5 - 25.0     0  0   146   154 -
+  25.0 - 25.5     3  1   149   151 ----
+  25.5 - 26.0     0  0   149   151 -
+  26.0 - 26.5     2  1   151   149 ---
+  26.5 - 27.0     1  0   152   148 --
+  27.0 - 27.5     2  1   154   146 ---
+  27.5 - 28.0     3  1   157   143 ----
+  28.0 - 28.5     4  1   161   139 -----
+  28.5 - 29.0     2  1   163   137 ---
+  29.0 - 29.5     4  1   167   133 -----
+  29.5 - 30.0     0  0   167   133 -
+  30.0 - 30.5     1  0   168   132 --
+  30.5 - 31.0     2  1   170   130 ---
+  31.0 - 31.5     3  1   173   127 ----
+  31.5 - 32.0     1  0   174   126 --
+  32.0 - 32.5     0  0   174   126 -
+  32.5 - 33.0     2  1   176   124 ---
+  33.0 - 33.5     2  1   178   122 ---
+  33.5 - 34.0     0  0   178   122 -
+  34.0 - 34.5     1  0   179   121 --
+  34.5 - 35.0     2  1   181   119 ---
+  35.0 - 35.5     1  0   182   118 --
+  35.5 - 36.0     0  0   182   118 -
+  36.0 - 36.5     2  1   184   116 ---
+  36.5 - 37.0     5  2   189   111 ------
+  37.0 - 37.5     2  1   191   109 ---
+  37.5 - 38.0     0  0   191   109 -
+  38.0 - 38.5     1  0   192   108 --
+  38.5 - 39.0     3  1   195   105 ----
+  39.0 - 39.5     1  0   196   104 --
+  39.5 - 40.0     2  1   198   102 ---
+  40.0 - 40.5     1  0   199   101 --
+  40.5 - 41.0     0  0   199   101 -
+  41.0 - 41.5     2  1   201    99 ---
+  41.5 - 42.0     0  0   201    99 -
+  42.0 - 42.5     0  0   201    99 -
+  42.5 - 43.0     1  0   202    98 --
+  43.0 - 43.5     3  1   205    95 ----
+  43.5 - 44.0     2  1   207    93 ---
+  44.0 - 44.5     2  1   209    91 ---
+  44.5 - 45.0     1  0   210    90 --
+  45.0 - 45.5     1  0   211    89 --
+  45.5 - 46.0     1  0   212    88 --
+  46.0 - 46.5     2  1   214    86 ---
+  46.5 - 47.0     2  1   216    84 ---
+  47.0 - 47.5     2  1   218    82 ---
+  47.5 - 48.0     0  0   218    82 -
+  48.0 - 48.5     0  0   218    82 -
+  48.5 - 49.0     2  1   220    80 ---
+  49.0 - 49.5     0  0   220    80 -
+  49.5 - 50.0    80 27   300     0 ---------------------------------------------------------------------------------
+
+
+
+   467 Contributors input            0 Contributors rejected
+   300 Merged reflections output     0 Merged reflections rejected
+     0 Contributors deviating from the average by more than   3.0e.s.ds
+   272 Reflections greater than 3 sigma(i),  90.667 percent of data                                                                                                                                                                                             
+ Rmerge = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015                                                                                                                                                                                                 
+ Rint   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013                                                                                                                                                                                                 
+ Rmerge for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                           
+               0.012           0.086          0.612                                                                                                                                                                                                             
+  Disc file on unit   1 extended by     1 records 
+ Initialising Special positions
+  Atom GA     1,  Multiplicity =  6,  Number of positions = 24 Occ = 0.2500
+     *      *      *      U[11]     U[22]     U[22]     *         *         *    
+  Atom P      1,  Multiplicity =  6,  Number of positions = 24 Occ = 0.2500
+     *      *      *      U[11]     U[22]     U[11]     *         *         *    
+  Sphe C      1,  Multiplicity =  2,  Number of positions = 24 Occ = 0.0833
+     *      *      *      "UIS"     SIZE      *         *         *         *    
+ Parameters GA     1    U[22] and  constraint related by                                                                                                                                                                                                        
+ Parameter  GA     1    U[23]       to be fixed by  constraint                                                                                                                                                                                                  
+ Parameter  GA     1    U[13]       to be fixed by  constraint                                                                                                                                                                                                  
+ Parameter  GA     1    U[12]       to be fixed by  constraint                                                                                                                                                                                                  
+ Parameters P      1    U[11] and  constraint related by                                                                                                                                                                                                        
+ Parameter  P      1    U[23]       to be fixed by  constraint                                                                                                                                                                                                  
+ Parameter  P      1    U[13]       to be fixed by  constraint                                                                                                                                                                                                  
+ Parameter  P      1    U[12]       to be fixed by  constraint                                                                                                                                                                                                  
+  Disc file on unit   1 extended by     1 records 
+Refining    16 parameters in    1 block :      184 elements in the LS matrix.
+ Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
+                     LIST 4 weighting type is NORMAL
+  Disc file on unit   1 extended by     1 records 
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+ Initialising Special positions
+  Disc file on unit   1 extended by     1 records 
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Structure factor least squares      calculation number     1
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    1.   1.   2.   117.53   119.82
+    0.   2.   2.    79.75    78.35
+    2.   2.   2.   211.08   226.49
+    0.   1.   3.    70.34    66.18
+    0.   2.   3.    58.33    57.18
+    1.   2.   3.    53.94    53.59
+    0.   3.   3.    19.32    21.36
+    2.   3.   3.    75.79    73.60
+    0.   0.   4.   113.18   122.20
+    0.   1.   4.     6.11     4.86
+    1.   1.   4.    46.95    44.69
+    0.   2.   4.    45.29    44.76
+    1.   2.   4.    60.95    59.31
+    2.   2.   4.    59.52    57.68
+    0.   3.   4.     5.63     4.82
+    1.   3.   4.    81.28    80.74
+    2.   3.   4.    59.25    57.55
+    3.   3.   4.    76.27    72.52
+    0.   4.   4.   190.92   190.47
+    2.   4.   4.    68.83    66.33
+    4.   4.   4.   138.74   139.01
+    0.   1.   5.    54.71    50.24
+    0.   2.   5.    64.83    62.50
+    1.   2.   5.    52.10    51.85
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   3.55        4.16         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     9258.3         9291.7           328.2                                   On scale of /FC/
+
+     4446.7         4462.8           157.7           0.21360764E+03          On scale of /FO/
+
+ New scale factor (G) is    0.48030,     273 reflections used in refinement
+
+ Structure factor least squares calculation    1  ends  2
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     1
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+ Sum of the squares of the ratio (Shift/e.s.d.) =          0.4167
+                            The rms (shift/esd) =       0.1613761
+ The largest (shift/esd) =  0.477183, for Parameter    1,                      
+All cycle   1       0.00           100.           3.55    
+All cycle   2       0.00           100.           4.16    
+All cycle   3      0.300E-01      0.100E+05      0.161    
+All cycle   4       0.00          0.100E+16       214.    
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for    16 least squares parameters, with   257 degrees of freedom
+ Number of observations               273                 0               273
+ Minimisation function          0.2136076E+03     0.0000000E+00     0.2136076E+03
+ Hamilton weighted R-value           4.157             0.000             4.157
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean       -0.00100  0.00000  0.00000  0.00000  0.00000  0.00000  0.00002  0.00002 -0.00004 -0.00001  0.00000  0.00003
+                                       -0.00002  0.00001 -0.00004
+
+ R.M.S.      0.00100  0.00000  0.00000  0.00000  0.00000  0.00000  0.00007  0.00007  0.00004  0.00001  0.00000  0.00003
+                                        0.00002  0.00001  0.00004
+
+ Maximum     0.00100  0.00000  0.00000  0.00000  0.00000  0.00000  0.00010  0.00011  0.00004  0.00001  0.00000  0.00003
+                                        0.00002  0.00001  0.00004
+
+ Reversals      0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Calculated shifts for special parameters
+
+             UisoSph  RadSph   UisoLin  LenLin   DecLin   AziLin   UisoRin  RadRin   DecRin   AziRin
+
+ Mean       -0.00018  0.00009  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+ R.M.S.      0.00018  0.00009  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+ Maximum     0.00018  0.00009  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+ Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle,
+ and is   0.00 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    0.47930  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+   -0.00100  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.00209  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+     4  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     GA         1.   1.00000  0.00000  0.75000  0.50000  0.00000  0.00658  0.00830  0.00830  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00010  0.00011  0.00011  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00046  0.00029  0.00029  0.00000  0.00000  0.00000
+                                       0.00000  0.00000  0.00000
+
+     P          1.   1.00000  0.00000  0.50000  0.25000  0.00000  0.01020  0.00361  0.01020  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00060  0.00093  0.00060  0.00000  0.00000  0.00000
+                                       0.00000  0.00000  0.00000
+
+     O          1.   1.00000  0.00000  0.62745  0.34653 -0.06700  0.01718  0.01136  0.01709 -0.00231  0.00382 -0.00911
+                     0.00000           0.00000  0.00000  0.00000 -0.00005 -0.00005 -0.00004 -0.00001  0.00000  0.00003
+                     0.00000           0.00051  0.00048  0.00048  0.00193  0.00179  0.00192  0.00159  0.00158  0.00162
+                                       0.00452  0.00423  0.00426
+
+     C          1.   5.00000  2.00000  0.50000  0.50000  0.50000  0.04822  1.26448
+                     0.00000           0.00000  0.00000  0.00000 -0.00018  0.00009
+                     0.00000           0.00000  0.00000  0.00000  0.01459  0.02492
+                                       0.00000  0.00000  0.00000
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Structure factor least squares      calculation number     2
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+    0.   3.   4.     5.64     4.82
+    0.   4.   5.     6.05     5.40
+    2.   3.   6.     3.40     2.25
+    4.   7.   8.     4.35     3.43
+    7.   7.   8.    19.46    21.97
+    1.   5.   9.     3.36     2.69
+    3.   7.   9.     5.73     6.57
+    5.   7.   9.     5.99     7.28
+    4.   8.   9.     5.88     7.41
+    0.   0.  10.    14.36    10.92
+    3.   6.  10.     4.33     3.46
+    7.   7.  10.     9.98    13.41
+    0.   8.  10.    18.80    21.26
+    5.   8.  10.    13.69    16.09
+    6.   8.  10.    13.89    17.91
+    3.   9.  10.    20.09    22.99
+    4.   9.  10.    10.50    13.47
+    0.  10.  10.    14.53    16.85
+    3.   5.  11.     8.65    10.24
+    3.   8.  11.    19.41    22.52
+    0.   9.  11.    18.68    20.86
+    0.   1.  12.     9.12    10.18
+    0.   6.  12.    19.67    22.07
+    2.   7.  12.     7.74    10.14
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+   3.56        4.14         ************              ************
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+     9277.6         9272.4           330.5                                   On scale of /FC/
+
+     4446.7         4444.2           158.4           0.21186600E+03          On scale of /FO/
+
+ New scale factor (G) is    0.47930,     273 reflections used in refinement
+
+ Structure factor least squares calculation    2  ends  2
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     2
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+ Sum of the squares of the ratio (Shift/e.s.d.) =          0.0002
+                            The rms (shift/esd) =       0.0032812
+ The largest (shift/esd) =  0.008083, for Parameter    1, C1U[22]
+All cycle   1       0.00           100.           3.56    
+All cycle   2       0.00           100.           4.14    
+All cycle   3      0.300E-01      0.100E+05      0.328E-02
+ Forced termination after this cycle:  Actual value condition on shift/esd                                                                                                                                                                                      
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for    16 least squares parameters, with   257 degrees of freedom
+ Number of observations               273                 0               273
+ Minimisation function          0.2118660E+03     0.0000000E+00     0.2118660E+03
+ Hamilton weighted R-value           4.140             0.000             4.140
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+ Mean       -0.00002  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00001
+                                        0.00001  0.00000  0.00000
+
+ R.M.S.      0.00002  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00001
+                                        0.00001  0.00000  0.00000
+
+ Maximum     0.00002  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00001
+                                        0.00001  0.00000  0.00000
+
+ Reversals      0.00     0.00     0.00   100.00     0.00   100.00    33.33   100.00   100.00   100.00     0.00     0.00
+
+
+ Calculated shifts for special parameters
+
+             UisoSph  RadSph   UisoLin  LenLin   DecLin   AziLin   UisoRin  RadRin   DecRin   AziRin
+
+ Mean        0.00003  0.00003  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+ R.M.S.      0.00003  0.00003  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+ Maximum     0.00003  0.00003  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+
+ Reversals   100.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+
+
+ Reversals is the percentage of shifts whose signs have changed since the last cycle,
+ and is 351.56 for all parameters.
+
+
+ Shift
+ factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+             1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+    0.47928  0.05000  0.05000  1.00000  0.00000    0.00000E+00
+   -0.00002  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+    0.00209  0.00000  0.00000  0.00000  0.00000    0.00000E+00
+
+
+
+     4  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+     GA         1.   1.00000  0.00000  0.75000  0.50000  0.00000  0.00658  0.00830  0.00830  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00046  0.00029  0.00029  0.00000  0.00000  0.00000
+                                       0.00000  0.00000  0.00000
+
+     P          1.   1.00000  0.00000  0.50000  0.25000  0.00000  0.01020  0.00361  0.01020  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+                     0.00000           0.00000  0.00000  0.00000  0.00060  0.00093  0.00060  0.00000  0.00000  0.00000
+ 

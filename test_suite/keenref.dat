@@ -1,0 +1,178 @@
+\ Here is the atom list with coords before twin elements have
+\ been refined.
+#LIST      5                                                                    
+READ NATOM=10, NLAYER=0, NELEMENT=2, NBATCH=0
+OVERALL 4.312633  0.05 0.05 1.00 0.0 0.0
+ATOM C   1 1.0 1.0  0.202092  0.166143  0.892299 U[11]=0.029243   
+ATOM N   2 1.0 1.0  0.293893  0.117122  0.807139 U[11]=0.023963   
+ATOM C   3 1.0 1.0  0.210812  0.041650  0.714039 U[11]=0.033613   
+ATOM N   4 1.0 1.0  0.331655  0.016791  0.657743 U[11]=0.031857   
+ATOM C   5 1.0 1.0  0.494429  0.085290  0.713435 U[11]=0.035460   
+ATOM C   6 1.0 1.0  0.470443  0.145061  0.807507 U[11]=0.032054   
+ATOM C   7 1.0 1.0  0.198503  0.314946  0.879060 U[11]=0.041917   
+ATOM C   8 1.0 1.0  0.321487  0.128797  1.019623 U[11]=0.040547   
+ATOM C   9 1.0 1.0  0.011402  0.101082  0.865149 U[11]=0.068753   
+ATOM Cl 10 1.0 1.0 -0.212459  0.171694  0.543201 U[11]=0.032003   
+ELEMENTS  0.5 0.5
+END                                                                             
+\              Make sure scale is right.
+#SFLS
+SCALE
+END
+\              Make sure weights are right. (unit or quasi-unit).
+#LIST 4
+END
+#WEIGHT
+END
+\              X's and twin elements only
+#LIST 12
+FULL X'S
+SUMFIX ELEMENT SCALES
+END
+#PRINT 12                                                                       
+END
+#LIST 22                                                                        
+END
+#SFLS                                                                           
+REFINE
+REFINE
+REFINE
+REFINE
+REFINE
+END
+\              X's, U[iso] of CL and twin elements only
+#LIST 12                                                                        
+BLOCK SCALE X'S CL(10,U[ISO])
+SUMFIX ELEMENT SCALES
+END
+#PRINT 12                                                                       
+END
+#LIST 22                                                                        
+END
+#SFLS                                                                           
+REFINE
+REFINE
+REFINE
+REFINE
+REFINE
+END
+\              X's, U's of CL, U[iso] of other and twin elements only
+#LIST 12                                                                        
+BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U's)
+SUMFIX ELEMENT SCALES
+END
+#PRINT 12                                                                       
+END
+#LIST 22                                                                        
+END
+#SFLS                                                                           
+REFINE
+REFINE
+REFINE
+REFINE
+REFINE
+END
+\              X's, U's and twin elements.
+#LIST 12                                                                        
+FULL X'S U'S
+SUMFIX ELEMENT SCALES
+END
+#PRINT 12                                                                       
+END
+#LIST 22                                                                        
+END
+#SFLS                                                                           
+REFINE
+REFINE
+REFINE
+REFINE
+REFINE
+END
+\              Put in some geometric H
+#PERHYDRO 5 5                                                                   
+ACTION BOTH
+END
+\              Now do a Fourier to find the H
+#SFLS                                                                           
+CALC /FO/=SCALED-/FOT/
+END
+#FOUR                                                                           
+MAP TYPE=DIFF
+PEAK HEIGHT=3
+END
+#PEAKS
+END
+#COLL
+SEL TYPE=PEAK
+END
+#EDIT                                                                           
+SELECT TYPE NE QN
+TYPECHANGE TYPE EQ Q H
+END
+\ Now refine some more.
+#LIST 12                                                                        
+BLOCK SCALE X'S, U'S
+SUMFIX ELEMENT SCALES
+END
+#SFLS                                                                           
+REFINE
+REFINE
+REFINE
+REFINE
+REFINE
+END
+#LIST 4                                                                         
+SCHEME 17
+END
+#WEIGHT                                                                         
+END
+#ANALYSE                                                                        
+LIST LEVEL=HIGH
+END
+#DISK                                                                           
+DELETE 11
+END
+#PURGE                                                                          
+END
+#SFLS                                                                           
+REFINE
+REFINE
+REFINE
+REFINE
+REFINE
+END
+#SFLS                                                                           
+CALC /FO/=SCALED-/FOT/
+END
+#FOURIER                                                                        
+MAP TYPE=DIFF
+END
+#SFLS                                                                           
+REFINE
+END
+#SFLS                                                                           
+REFINE
+END
+#SFLS                                                                           
+REFINE
+END
+#SFLS                                                                           
+REFINE
+END
+#SFLS                                                                           
+REFINE
+END
+#SFLS                                                                           
+REFINE
+END
+#SFLS                                                                           
+CALC /FO/=SCALED-/FOT/
+#FOUR                                                                           
+MAP TYPE=DIFF
+PEAK HEIGHT=1 
+END
+#DIST                                                                           
+E.S.D YES YES
+SELECT RANGE=L41
+OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED
+END

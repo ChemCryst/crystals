@@ -1,0 +1,154 @@
+#
+# Start off with batch 1 only.
+#
+\LIST 28
+MAXIMA BATCH=1.5
+MINIMA SINTH=0.02
+END
+#
+# Get scale factor
+#
+\LIST 12
+FULL
+END
+\SFLS
+SCALE
+END
+#
+# Refine model a bit.
+#
+\LIST 12
+FULL X'S
+END
+\SFLS
+R
+R
+R
+END
+\SFLS
+R
+END
+\LIST 12
+FULL X'S U[ISO]
+END
+\SFLS
+R
+R
+R
+END
+\SFLS
+R
+END
+\LIST 12
+FULL X'S U'S
+END
+\SFLS
+R
+R
+R
+END
+\SFLS
+R
+END
+\PRINT 22
+END
+#
+# Put the other batch back in
+#
+\LIST 28
+MINIMA SINTH=0.02
+END
+\SFLS
+SCALE
+END
+#
+# Stabilise with a restraint
+#
+\LIST 16
+LIMIT .1 BATCH SCALES
+END
+#
+# Try to get the batch scales about right.
+#
+\LIST 12
+BLOCK
+SUMFIX BATCH SCALES
+END
+\SFLS
+R
+R
+R
+END
+\PRINT 22
+END
+\SFLS
+R
+END
+\SFLS
+SCALE
+END
+\SFLS
+R
+R
+R
+END
+\SFLS
+SCALE
+END
+# Now try all the scales together. (Note: constraint on batch scales)
+\LIST 12
+FULL
+SUMFIX BATCH SCALES
+END
+\SFLS
+R
+R
+R
+END
+\PRINT 22
+END
+#
+# Refine model a bit.
+#
+\LIST 12
+FULL X'S
+SUMFIX BATCH SCALES
+END
+\SFLS
+R
+R
+R
+END
+\PRINT 22
+END
+\SFLS
+R
+END
+\LIST 12
+FULL X'S U[ISO]
+SUMFIX BATCH SCALES
+END
+\SFLS
+R
+R
+R
+END
+\PRINT 22
+END
+\SFLS
+R
+END
+\LIST 12
+FULL X'S U'S
+SUMFIX BATCH SCALES
+END
+\SFLS
+R
+R
+R
+END
+\PRINT 22
+END
+\SFLS
+R
+END

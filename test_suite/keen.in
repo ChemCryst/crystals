@@ -1,0 +1,104 @@
+\SET COMMUNIC SLOW
+\SET WATCH 5
+#clear 12
+end
+#clear 16
+END
+\TITLE Keen in P21/c
+\
+#LIST 1                                                                         
+REAL 7.580 10.288 12.082  90.000 108.365  90.000
+END
+#LIST 13                                                                        
+END
+#LIST 31                                                                        
+AMULT 0.000001
+MATRIX
+CONT V(11)=    1.2100000381
+CONT V(22)=    3.2399997711
+CONT V(33)=    6.2500000000
+CONT V(44)=    0.0000000000
+CONT V(55)=    0.0000000000
+CONT V(66)=    0.0000000000
+END
+#SPACEGROUP                                                                     
+SYMBOL P 21/c
+END
+#COMPOSIT                                                                       
+CONTE  C 28. H 52. CL 4. N 8.
+SCATT CRYSDIR:script/scatt.dat
+PROPERTIES CRYSDIR:script/propwin.dat
+END
+#CLOSE HKLI                                                                     
+#OPEN HKLI  "keen.hkl"                                                          
+#HKLI                                                                           
+READ   F'S=FSQ  NCOEF = 5  TYPE = FIXED CHECK = NO
+INPUT H K L /FO/ SIGMA(/FO/)
+FORMAT (3F4.0, 2F8.0)
+STORE NCOEF=6
+OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL
+END
+#CLOSE HKLI                                                                     
+#SYSTEMATIC                                                                     
+END
+#SORT                                                                           
+END
+#MERGE                                                                          
+END
+#LIST 6                                                                         
+READ TYPE = COPY
+END
+#LIST 23                                                                        
+MINIMISE F-SQ=YES
+END
+#LIST 4                                                                         
+END
+#WEIGHT                                                                         
+END
+#LIST 28                                                                        
+MINIMA  SINT=0.01
+END
+#list 5                                                                         
+read natom = 0
+end
+#edit                                                                           
+atom cl   1   1.0000    0.0294   -0.2126    0.1700    0.5430
+atom n    2   1.0000    0.0226    0.2967    0.1157    0.8065
+atom n    3   1.0000    0.0324    0.3312    0.0164    0.6572
+atom c    4   1.0000    0.0320    0.1991    0.3186    0.8778
+atom c    5   1.0000    0.0316    0.2106    0.0472    0.7123
+atom c    6   1.0000    0.0306    0.4950    0.0868    0.7154
+atom c    7   1.0000    0.0340    0.2093    0.1699    0.8951
+atom c    8   1.0000    0.0345    0.4683    0.1428    0.8068
+atom c    9   1.0000    0.0411    0.3191    0.1337    1.0176
+atom c   10   1.0000    0.0762    0.0084    0.0912    0.8616
+atom c   11   1.0000    0.0548   -0.3811    0.3685    0.5289
+atom c   12   1.0000    0.0466   -0.3046    0.2772    0.6932
+end
+#EDIT                                                                           
+MON OFF
+REFORMAT ALL
+CHANGE FIRST(OCC) UNTIL LAST 1.0
+MON MEDIUM
+END
+#EDIT                                                                           
+CLASH FIXLATTER
+GUI HIGH
+EXEC
+DELETE C(11)
+EXEC
+DELETE C(12)
+EXEC
+END
+#EDIT                                                                           
+MONITOR OFF
+SORT
+INSERT RELAX
+DSORT SPARE
+INSERT ELECTRON
+END
+#REGROUP                                                                        
+SELECT TYPE=ALL SEQUENCE=YES MOVE=-0.2
+END
+#DISTANCES                                                                      
+END
