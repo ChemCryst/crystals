@@ -85,10 +85,10 @@ bool containsOnly(char* pString, char* pChars)
         tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 2); //L == 2
         strncpy(tempString, pString+12, 8);
         tempString[8] = 0;
-        i = strtod(tempString, &tEndPointer);
+        i = (long)strtod(tempString, &tEndPointer);
         strncpy(tempString, pString+20, 8);
         tempString[8] = 0;
-        iSE = strtod(tempString, &tEndPointer);
+        iSE = (long)strtod(tempString, &tEndPointer);
     }
     
     Matrix<short>* Reflection::getHKL()
