@@ -46,7 +46,7 @@ class Stats:public MyObject
         Stats(Headings* pHeadings, Conditions* pConditions);
         ~Stats();
         bool filtered();
-        void addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float>* pHKLM);
+        void addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>* pHKLM);
         void addReflection(Reflection* tReflection);
         void calProbs();			//Calculates all the probabilites for all the cells.
         ElemStats* getElem(int pHeadIndex, int pCondIndex);
