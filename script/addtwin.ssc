@@ -1,0 +1,74 @@
+%SCRIPT ADDTWIN
+%%
+%% Put twin element scales into list5.
+%%
+%  VARIABLE INTEGER NES
+%  COPY '#GENERALEDIT 5'
+%  COPY 'TRANSHEAD FROM OFFSET=22 TO NES'
+%  COPY 'END'
+%%
+%  IF NES .GE. 2 THEN
+
+{E You already have two or more twin element scales being
+{E refined. This script is too confused to help you further.
+{R Try editing the list 5 manually to correct the confusion.
+{R I'd recommend removing any lines beginning 'ELEMENT', and
+{R setting NELEMENT = 0.
+
+%    COPY '#SCRIPT EDLIST5'
+%    FINISH
+%  END IF
+{S Adding twin element scales for a two component twin to list 5...
+%%
+%  IF ( EXISTS 5 .NE. 1 ) THEN
+
+{E You don't have a parameter list ( list 5 ).
+%    FINISH
+%  END IF
+%  VARIABLE INTEGER MD5ES
+%  EVALUATE MD5ES = 2
+%  BLOCK
+%   ON EDITERROR TERMINATE
+%   COPY '#GENERALEDIT 5'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'TRANSHEAD TO OFFSET=22 FROM MD5ES'
+%   COPY 'WRITE'
+%   COPY 'END'
+%  END BLOCK
+{R Updated number of elements in L5.
+{S Now punching and altering element values...
+%  BLOCK
+%   VARIABLE CHARACTER CLINE1
+%   EXTRACT CLOSE
+%   COPY '#RELEASE PUNCH pretwin5.dat'
+%   COPY '#PUNCH 5'
+%   COPY 'END'
+%   COPY '#RELEASE PUNCH bfile.pch'
+%   COPY '#OPEN SCPDATA pretwin5.dat'
+%   COPY '#RELEASE SCPQUEUE postwin5.dat'
+%   QUEUE REWIND
+%   LOOP
+%     ON ERROR TERMINATE
+%     CLEAR
+%     EXTRACT NEXT
+%     EXTRACT TRANSFER INPUT
+%     EXTRACT TRANSFER COMMAND
+%     GET NOSTORE KEYWORD ' ' 'NONE'
+%     IF ( CVALUE STARTSWITH 'ELEMENT' ) THEN
+%       CLEAR
+%       INSERT 'ELEMENT 0.5 0.5'
+%     END IF
+%     QUEUE SEND
+%   END LOOP
+%  END BLOCK
+{R Completed alteration to List5.
+{S Reading altered data back into program...
+%%
+%  COPY '#RELEASE SCPQUEUE bfile.spq'
+%  EXTRACT CLOSE
+%  COPY '#USE postwin5.dat'
+%  COPY '#SUM L 5'
+%  COPY 'END'
+{R Done.
+%%
+%END SCRIPT
