@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2003/11/06 17:02:06  rich
+C Try to avoid skipping spaces when parsing long strings in
+C e.g. space group class, crystal colour and shape fields.
+C So 'Pale Pink' should now stay 'Pale Pink' and not become 'PalePink'.
+C
 C Revision 1.5  2003/08/05 11:11:10  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -1235,7 +1240,7 @@ C--NOT ALLOWED ANY MORE
       WRITE(NCWU,2300)
       ENDIF
       WRITE(NCAWU,2300)
-      WRITE ( CMON, 2150) (STORE(I+1),I=J,K)
+      WRITE ( CMON, 2150) (STORE(I+1),I=J,MIN(J+40,K))
       CALL XPRVDU(NCEROR, 2,0)
 2150  FORMAT(' The directive above may not follow',
      2 ' a card containing the directive : '/40A1)
