@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.50  2002/07/23 15:49:42  richard
+// Small rarely manifested bugette discovered in queue locking behaviour. Now
+// fixed. (I said max, I meant min).
+//
 // Revision 1.49  2002/07/19 08:08:17  richard
 // Remove backwards incompatibilty of new std C++ library.
 //
@@ -1913,11 +1917,40 @@ void CcController::StoreKey( CcString key, CcString value )
     {
       CcString dir = EnvVarExtract( crysdir, i );
       i++;
+
+      HANDLE hDir;
+
+// Check directory exists, if not, create it.
+      hDir = CreateFile( dir.ToCString(),
+            FILE_LIST_DIRECTORY, FILE_SHARE_READ|FILE_SHARE_DELETE,
+            NULL,OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL );
+
+      if ( hDir == INVALID_HANDLE_VALUE )
+      {
+        CreateDirectory( dir.ToCString() , NULL );
+      }
+
 #ifdef __BOTHWIN__
-      dir += "script\\winsizes.ini";
+      dir += "script\\";
 #endif
 #ifdef __LINUX__
-      dir += "script/winsizes.ini";
+      dir += "script/";
+#endif
+
+// Check directory exists, if not, create it.
+      hDir = CreateFile( dir.ToCString(),
+    FILE_LIST_DIRECTORY, FILE_SHARE_READ|FILE_SHARE_DELETE, NULL,OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL );
+
+      if ( hDir == INVALID_HANDLE_VALUE )
+      {
+        CreateDirectory( dir.ToCString() , NULL );
+      }
+
+#ifdef __BOTHWIN__
+      dir += "winsizes.ini";
+#endif
+#ifdef __LINUX__
+      dir += "winsizes.ini";
 #endif
       szfile = fopen( dir.ToCString(), "r" );
       if ( szfile != NULL )
@@ -2009,6 +2042,10 @@ void CcController::StoreKey( CcString key, CcString value )
           {
             fputs ( buffer, tempf);
           }
+        }
+        else
+        {
+          fputs ( buffer, tempf);
         }
       }
     }
@@ -2947,7 +2984,20 @@ CcString CcController::EnvVarExtract ( CcString dir, int i )
    firstPos = min (firstPos,lastPos);
    lastPos = max (firstPos,lastPos);
 
-   return dir.Sub(firstPos,lastPos);
+   CcString retS =  dir.Sub(firstPos,lastPos);
+
+// Search for allowed env variables to expand:
+// USERPROFILE
+
+   int up = retS.Find("USERPROFILE:");
+
+   if (up)
+   {
+      CcString userp ( getenv("USERPROFILE") );
+      retS = retS.Sub(1,up-1) + userp + retS.Sub(up+12,-1);
+   }
+
+   return retS;
 
 }
 
