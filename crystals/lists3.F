@@ -1562,8 +1562,8 @@ CDJWAPR99{
        CALL XCRAS(CNEWD(1:LNEWD), JLEN)
        DO 1710 ISTAT = 1,JLEN
 C----- REMOVE ANY '.'
-       IF (CSSNDA(ISTAT:ISTAT) .EQ. '.') THEN
-         CSSNDA(ISTAT:) = ' '
+       IF (CNEWD(ISTAT:ISTAT) .EQ. '.') THEN
+         CNEWD(ISTAT:) = ' '
          JLEN = ISTAT - 1
          GOTO 1715
        ENDIF
