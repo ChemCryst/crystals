@@ -26,11 +26,11 @@ class CcModelAtom : public CcModelObject
 
     void Render(CcModelStyle *style);
     void Select(bool select);
+    bool Select();
     void Disable(bool select);
     void SendAtom(int style, Boolean output=false); 
 
     bool IsSelected();
-    bool Select();
     int X();
     int Y();
     int Z();
@@ -38,8 +38,6 @@ class CcModelAtom : public CcModelObject
     void ParseInput(CcTokenList* tokenList);
 
   public:
-    bool spare;
-
     int x, y, z;
     int r, g, b;
     int id;

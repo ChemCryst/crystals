@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2002/06/28 10:09:53  richard
+// Minor gui update enabling vague display of special shapes: ring and sphere.
+//
 // Revision 1.16  2002/06/25 11:58:09  richard
 // Use _F in popup-menu commands to substitute in all atoms in fragment connected
 // to clicked-on atom.
@@ -328,24 +331,13 @@ void CcModelDoc::Select(Boolean selected)
 
 void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 {
-    CcModelObject* item = FindAtomByLabel(atomname);
 
-    if(item)
-    {
-      if ( item->Type() == CC_ATOM )
-      {
-        ((CcModelAtom*)item)->Select(select);
-      }
-      else if ( item->Type() == CC_SPHERE )
-      {
-        ((CcModelSphere*)item)->Select(select);
-      }
-      else if ( item->Type() == CC_DONUT )
-      {
-        ((CcModelDonut*)item)->Select(select);
-      }
+   CcModelObject* item = FindAtomByLabel(atomname);
+   if(item)
+   {
+      item->Select(select);
       DrawViews();
-    }
+   }
 }
 
 void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
@@ -412,25 +404,25 @@ CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)
 void CcModelDoc::SelectAllAtoms(Boolean select)
 {
     mAtomList->Reset();
-    CcModelAtom* item;
-    CcModelSphere* sitem;
-    CcModelDonut* ditem;
+    mSphereList->Reset();
+    mDonutList->Reset();
+    CcModelObject* item;
     int i=0;
-    while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+
+    while ( item = (CcModelObject*)mAtomList->GetItemAndMove() )
     {
       i++;
       item->Select(select);
     }
-    while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) != nil )
+    while ( item = (CcModelObject*)mSphereList->GetItemAndMove() )
     {
       i++;
-      sitem->Select(select);
+      item->Select(select);
     }
-    DrawViews();
-    while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) != nil )
+    while ( item = (CcModelObject*)mDonutList->GetItemAndMove() )
     {
       i++;
-      ditem->Select(select);
+      item->Select(select);
     }
     DrawViews();
 
@@ -513,11 +505,20 @@ CcString CcModelDoc::Compress(CcString atomname)
 void CcModelDoc::InvertSelection()
 {
     mAtomList->Reset();
-    CcModelAtom* item;
-    while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
-    {
-        item->Select();
-    }
+    mSphereList->Reset();
+    mDonutList->Reset();
+    CcModelObject* item;
+    int i=0;
+
+    while ( item = (CcModelObject*)mAtomList->GetItemAndMove() )
+        if ( item->Select() ) i++;
+    while ( item = (CcModelObject*)mSphereList->GetItemAndMove() )
+        if ( item->Select() ) i++;
+    while ( item = (CcModelObject*)mDonutList->GetItemAndMove() )
+        if ( item->Select() ) i++;
+
+    (CcController::theController)->status.SetNumSelectedAtoms( i );
+
     DrawViews();
 }
 
@@ -562,8 +563,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            aitem->Render(style);
             aitem->m_glID = glIDCount;
+            aitem->Render(style);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -572,8 +573,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            sitem->Render(style);
             sitem->m_glID = glIDCount;
+            sitem->Render(style);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -582,8 +583,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            ditem->Render(style);
             ditem->m_glID = glIDCount;
+            ditem->Render(style);
           }
         }
 
@@ -603,8 +604,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
           {
             glLoadName ( ++ glIDCount );
-            aitem->Render(style);
             aitem->m_glID = glIDCount;
+            aitem->Render(style);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -613,8 +614,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
           {
             glLoadName ( ++ glIDCount );
-            sitem->Render(style);
             sitem->m_glID = glIDCount;
+            sitem->Render(style);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -623,8 +624,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
           {
             glLoadName ( ++ glIDCount );
-            ditem->Render(style);
             ditem->m_glID = glIDCount;
+            ditem->Render(style);
           }
         }
 
@@ -644,8 +645,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            aitem->Render(style);
             aitem->m_glID = glIDCount;
+            aitem->Render(style);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -654,8 +655,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            sitem->Render(style);
             sitem->m_glID = glIDCount;
+            sitem->Render(style);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -664,8 +665,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            ditem->Render(style);
             ditem->m_glID = glIDCount;
+            ditem->Render(style);
           }
         }
         glEndList();
@@ -686,8 +687,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(bitem->m_excluded) )
           {
             glLoadName ( ++ glIDCount );
-            bitem->Render(style);
             bitem->m_glID = glIDCount;
+            bitem->Render(style);
           }
         }
         glEndList();
@@ -702,8 +703,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glPolygonMode(GL_FRONT, GL_POINT);
             glPolygonMode(GL_BACK, GL_POINT);
-            aitem->Render(style);
             aitem->m_glID = 0;
+            aitem->Render(style);
           }
         }
         mBondList->Reset();
@@ -713,8 +714,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           {
             glPolygonMode(GL_FRONT, GL_POINT);
             glPolygonMode(GL_BACK, GL_POINT);
-            bitem->Render(style);
             bitem->m_glID = 0;
+            bitem->Render(style);
           }
         }
         glEndList();
@@ -737,8 +738,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            aitem->Render(style);
             aitem->m_glID = glIDCount;
+            aitem->Render(style);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -747,8 +748,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            sitem->Render(style);
             sitem->m_glID = glIDCount;
+            sitem->Render(style);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -757,8 +758,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            ditem->Render(style);
             ditem->m_glID = glIDCount;
+            ditem->Render(style);
           }
         }
         mAtomList->Reset();
@@ -776,8 +777,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
           {
             glLoadName ( ++ glIDCount );
-            aitem->Render(style);
             aitem->m_glID = glIDCount;
+            aitem->Render(style);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -786,8 +787,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
           {
             glLoadName ( ++ glIDCount );
-            sitem->Render(style);
             sitem->m_glID = glIDCount;
+            sitem->Render(style);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -796,8 +797,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
           {
             glLoadName ( ++ glIDCount );
-            ditem->Render(style);
             ditem->m_glID = glIDCount;
+            ditem->Render(style);
           }
         }
         mAtomList->Reset();
@@ -815,8 +816,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            aitem->Render(style);
             aitem->m_glID = glIDCount;
+            aitem->Render(style);
           }
         }
         while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
@@ -825,8 +826,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            sitem->Render(style);
             sitem->m_glID = glIDCount;
+            sitem->Render(style);
           }
         }
         while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
@@ -835,8 +836,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
           {
             glLoadName ( ++ glIDCount );
-            ditem->Render(style);
             ditem->m_glID = glIDCount;
+            ditem->Render(style);
           }
         }
         glEndList();
@@ -858,8 +859,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
           if ( !(bitem->m_excluded) )
           {
             glLoadName ( ++ glIDCount );
-            bitem->Render(style);
             bitem->m_glID = glIDCount;
+            bitem->Render(style);
           }
         }
         glEndList();
@@ -976,38 +977,24 @@ void CcModelDoc::FlagFrag(CcString atomname)
 
 void CcModelDoc::SelectFrag(CcString atomname, bool select)
 {
-   CcModelAtom *aitem;
-   CcModelSphere *sitem;
-   CcModelDonut *ditem;
+   CcModelObject *item;
 
    FlagFrag ( atomname );
 
 // Select or unselect all spare-flagged atoms.
 
-   if ( mAtomList->ListSize() )
-   {                  
-      mAtomList->Reset();
-      while ((aitem = (CcModelAtom*)mAtomList->GetItemAndMove()))
-      {
-         if ( aitem->spare ) aitem->Select(select);
-      }
-   }
-   if ( mSphereList->ListSize() )
-   {                  
-      mSphereList->Reset();
-      while ((sitem = (CcModelSphere*)mSphereList->GetItemAndMove()))
-      {
-         if ( sitem->spare ) sitem->Select(select);
-      }
-   }
-   if ( mDonutList->ListSize() )
-   {                  
-      mDonutList->Reset();
-      while ((ditem = (CcModelDonut*)mDonutList->GetItemAndMove()))
-      {
-         if ( ditem->spare ) ditem->Select(select);
-      }
-   }
+   mAtomList->Reset();
+   while (item = (CcModelObject*)mAtomList->GetItemAndMove())
+      if ( item->spare ) item->Select(select);
+
+   mSphereList->Reset();
+   while (item = (CcModelObject*)mSphereList->GetItemAndMove())
+      if ( item->spare ) item->Select(select);
+
+   mDonutList->Reset();
+   while (item = (CcModelObject*)mDonutList->GetItemAndMove())
+      if ( item->spare ) item->Select(select);
+
    DrawViews();
 }
 
@@ -1015,37 +1002,23 @@ void CcModelDoc::SelectFrag(CcString atomname, bool select)
 CcString CcModelDoc::FragAsString( CcString atomname, CcString delimiter )
 {
   CcString result;
-  CcModelAtom * aitem;
-  CcModelSphere * sitem;
-  CcModelDonut * ditem;
+  CcModelObject * item;
 
   FlagFrag ( atomname );
 
 
-  if ( mAtomList->ListSize() )
-  {                  
-     mAtomList->Reset();
-     while ((aitem = (CcModelAtom*)mAtomList->GetItemAndMove()))
-     {
-        if ( aitem->spare ) result += aitem->Label() + delimiter;
-     }
-  }
-  if ( mSphereList->ListSize() )
-  {                  
-     mSphereList->Reset();
-     while ((sitem = (CcModelSphere*)mSphereList->GetItemAndMove()))
-     {
-        if ( sitem->spare ) result += sitem->Label() + delimiter;
-     }
-  }
-  if ( mDonutList->ListSize() )
-  {                  
-     mDonutList->Reset();
-     while ((ditem = (CcModelDonut*)mDonutList->GetItemAndMove()))
-     {
-        if ( ditem->spare ) result += ditem->Label() + delimiter;
-     }
-  }
+  mAtomList->Reset();
+  while (item = (CcModelObject*)mAtomList->GetItemAndMove())
+        if ( item->spare ) result += item->Label() + delimiter;
+
+  mSphereList->Reset();
+  while (item = (CcModelObject*)mSphereList->GetItemAndMove())
+        if ( item->spare ) result += item->Label() + delimiter;
+
+  mDonutList->Reset();
+  while (item = (CcModelObject*)mDonutList->GetItemAndMove())
+        if ( item->spare ) result += item->Label() + delimiter;
+
   return result;
 }
 
@@ -1054,25 +1027,21 @@ CcString CcModelDoc::FragAsString( CcString atomname, CcString delimiter )
 CcString CcModelDoc::SelectedAsString( CcString delimiter )
 {
   CcString result;
-  CcModelAtom * anAtom;
-  CcModelSphere * aSphere;
-  CcModelDonut * aDonut;
+  CcModelObject * item;
 
   mAtomList->Reset();
   mSphereList->Reset();
   mDonutList->Reset();
-  while ( anAtom = (CcModelAtom*)mAtomList->GetItemAndMove() ) 
-  {
-     if( anAtom->IsSelected() ) result += anAtom->Label() + delimiter;
-  }
-  while ( aSphere = (CcModelSphere*)mSphereList->GetItemAndMove() ) 
-  {
-     if( aSphere->IsSelected() ) result += aSphere->Label() + delimiter;
-  }
-  while ( aDonut = (CcModelDonut*)mDonutList->GetItemAndMove() ) 
-  {
-     if( aDonut->IsSelected() ) result += aDonut->Label() + delimiter;
-  }
+
+  while ( item = (CcModelObject*)mAtomList->GetItemAndMove() ) 
+     if( item->IsSelected() ) result += item->Label() + delimiter;
+
+  while ( item = (CcModelObject*)mDonutList->GetItemAndMove() ) 
+     if( item->IsSelected() ) result += item->Label() + delimiter;
+
+  while ( item = (CcModelObject*)mSphereList->GetItemAndMove() ) 
+     if( item->IsSelected() ) result += item->Label() + delimiter;
+
   return result;
 
 }
@@ -1081,33 +1050,20 @@ CcString CcModelDoc::SelectedAsString( CcString delimiter )
 
 void CcModelDoc::SendAtoms( int style, Boolean sendonly )
 {
-   if ( mAtomList->ListSize() )
-   {
-      mAtomList->Reset();
-      CcModelAtom* aitem;
-      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
-      {
-        if ( aitem->IsSelected() ) aitem->SendAtom (style, sendonly);
-      }
-   }
-   if ( mSphereList->ListSize() )
-   {
-      mSphereList->Reset();
-      CcModelSphere* sitem;
-      while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
-      {
-        if ( sitem->IsSelected() ) sitem->SendAtom (style, sendonly);
-      }
-   }
-   if ( mDonutList->ListSize() )
-   {
-      mDonutList->Reset();
-      CcModelDonut* ditem;
-      while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
-      {
-        if ( ditem->IsSelected() ) ditem->SendAtom (style, sendonly);
-      }
-   }
+
+   CcModelObject* item;
+
+   mAtomList->Reset();
+   while ( item = (CcModelObject*)mAtomList->GetItemAndMove() )
+        if ( item->IsSelected() ) item->SendAtom (style, sendonly);
+
+   mSphereList->Reset();
+   while ( item = (CcModelObject*)mSphereList->GetItemAndMove() )
+        if ( item->IsSelected() ) item->SendAtom (style, sendonly);
+
+   mDonutList->Reset();
+   while ( item = (CcModelObject*)mDonutList->GetItemAndMove() )
+        if ( item->IsSelected() ) item->SendAtom (style, sendonly);
 }
 
 void CcModelDoc::ZoomAtoms( Boolean doZoom )

@@ -130,6 +130,8 @@ CxModel::CxModel(CrModel* container)
   m_fbsize = 2048;
   m_sbsize = 256;
 
+  m_movingPoint.Set(-1,-1);
+
   mat = new float[16];
 
   mat[0] = mat[5] = mat[10] = mat[15] = 1.0f;
@@ -146,8 +148,6 @@ CxModel::CxModel(CrModel* container)
   m_Hover     = false;
   m_Shading   = true;
   m_TextPopup = nil;
-  m_selectionPoints = nil;
-  m_nSelectionPoints = 0;
   m_selectRect.Set(0,0,0,0);
   m_mouseMode = CXROTATE;
 
@@ -410,8 +410,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
     }
     case CXPOLYSEL:
     {
-      LOGERR ("Polygon select not implemented");
-      m_mouseMode = CXROTATE;
+//Do nothing
       break;
     }
     case CXZOOM:
@@ -500,7 +499,94 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
     }
     case CXPOLYSEL:
     {
-      LOGERR ("Polygon select not implemented");
+//Get first point for closure testing in a min:
+      m_selectionPoints.Reset();
+      CcPoint* firstPoint = (CcPoint*) m_selectionPoints.GetItem();
+//Get last point for drawing purposes in a min:
+      CcPoint* oldPoint = (CcPoint*) m_selectionPoints.GetLastItem();
+      m_movingPoint.Set(point.x,point.y);
+
+      if ( oldPoint )
+      {
+
+        if ( (  ( abs ( firstPoint->x - point.x ) < 4  )  &&
+                ( abs ( firstPoint->y - point.y ) < 4  ) ) ||
+             (  ( oldPoint->x   == point.x )  &&
+                ( oldPoint->y   == point.y )     )     )
+        {
+// Click within 4 pixels of first point to close, or
+// Click same point twice to auto-close.
+          m_mouseMode= CXROTATE;
+
+          CcPoint* newPoint = new CcPoint(*firstPoint);
+          m_selectionPoints.AddItem(newPoint);
+
+          NeedRedraw();
+
+          PolyCheck();
+          ModelChanged(false);
+
+          m_selectionPoints.Reset();
+          CcPoint* nextPoint;
+          while ( nextPoint = (CcPoint *) m_selectionPoints.GetItem() )
+          {
+             m_selectionPoints.RemoveItem();
+             delete nextPoint;
+          }
+        }
+        else
+        {
+
+//Add point to list of selected points.
+          CcPoint* newPoint = new CcPoint(point);
+          m_selectionPoints.AddItem(newPoint);
+
+
+#ifdef __CR_WIN__
+//Erase previous line
+          CClientDC dc(this);
+          dc.SetROP2( R2_NOTXORPEN );
+          dc.MoveTo(oldPoint->x,oldPoint->y);
+          dc.LineTo(m_movingPoint.x,m_movingPoint.y);
+#endif
+#ifdef __BOTHWX__
+          CClientDC dc(this);
+          dc.SetLogicalFunction( wxINVERT );
+          dc.MoveTo(oldPoint->x,oldPoint->y);
+          dc.LineTo(m_movingPoint->x,m_movingPoint->y);
+#endif
+
+//Draw in polygon so far:
+          CcPoint* nextPoint;
+          m_selectionPoints.Reset();
+          nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
+#ifdef __CR_WIN__
+          dc.SetROP2( R2_COPYPEN );
+          dc.MoveTo(nextPoint->x, nextPoint->y);
+          while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+          {
+            dc.LineTo(nextPoint->x,nextPoint->y);
+          }
+#endif
+#ifdef __BOTHWX__
+          dc.SetLogicalFunction( wxCOPY );
+          dc.MoveTo(nextPoint->x, nextPoint->y);
+          while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+          {
+            dc.LineTo(nextPoint->x,nextPoint->y);
+          }  
+#endif
+        }
+
+      }
+      else
+      {
+//First point: Add point to list of selected points.
+        CcPoint* newPoint = new CcPoint(point);
+        m_selectionPoints.AddItem(newPoint);
+      }
+
+
       break;
     }
     case CXZOOM:
@@ -720,7 +806,52 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
     }
     case CXPOLYSEL:
     {
-      LOGERR ("Polygon select not implemented");
+//Get first point for testing closure approach:
+      m_selectionPoints.Reset();
+      CcPoint* firstPoint = (CcPoint*) m_selectionPoints.GetItem();
+//Get last point for drawing purposes in a min:
+      CcPoint* oldPoint = (CcPoint*) m_selectionPoints.GetLastItem();
+
+ 
+      if ( firstPoint &&  ( abs ( firstPoint->x - point.x ) < 4  )  &&
+            ( abs ( firstPoint->y - point.y ) < 4  ) )
+      {
+          ChooseCursor(CURSORCROSS);
+      }
+      else
+      {
+          ChooseCursor(CURSORCOPY);
+      }
+
+      if ( oldPoint )
+      {
+//Erase previous line
+#ifdef __CR_WIN__
+        CClientDC dc(this);
+        CPen pen(PS_SOLID,1,PALETTERGB(0,0,0)), *oldpen;  
+        oldpen = dc.SelectObject(&pen);
+        dc.SetROP2( R2_NOTXORPEN );
+        dc.MoveTo(oldPoint->x,oldPoint->y);
+        dc.LineTo(m_movingPoint.x,m_movingPoint.y);
+#endif
+#ifdef __BOTHWX__
+        CClientDC dc(this);
+        dc.SetLogicalFunction( wxINVERT );
+        dc.MoveTo(m_movingPoint.x,m_movingPoint.y);
+        dc.LineTo(oldPoint->x,oldPoint->y);
+#endif
+        m_movingPoint.Set(point.x,point.y);
+//Draw new line
+#ifdef __CR_WIN__
+        dc.MoveTo(oldPoint->x,oldPoint->y);
+        dc.LineTo(m_movingPoint.x,m_movingPoint.y);
+        dc.SelectObject(oldpen);
+        dc.SetROP2( R2_COPYPEN );
+#endif
+#ifdef __BOTHWX__
+        dc.LineTo(m_movingPoint.x,m_movingPoint.y);
+#endif
+      }
       break;
     }
     case CXZOOM:
@@ -761,6 +892,27 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
   CcPoint point ( event.m_x, event.m_y );
 
 #endif
+
+
+  if ( m_mouseMode == CXPOLYSEL )
+  {
+
+// Cancel polygon selection: Remove points, redraw model, reset mousemode.
+     m_selectionPoints.Reset();
+     CcPoint* aP;
+     while ( aP = (CcPoint *) m_selectionPoints.GetItem() )
+     {
+        m_selectionPoints.RemoveItem();
+        delete aP;
+     }
+
+     NeedRedraw();
+
+     m_mouseMode = CXROTATE;
+
+     return;
+
+  }
 
   CcString atomname;
 
@@ -1155,7 +1307,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 //Hit records in selectbuf have the form:
 // uint Number of names (this will always be 1, because we are careful only to call PushName once.)
 // uint Min depth of hit primitive
-// uint Max depth of hit primitive
+// uint Max depth of hit primitive      
 // uint Name
 
    if ( hits )
@@ -1248,10 +1400,181 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
    delete [] selectbuf;
 }
 
+void CxModel::PolyCheck()
+{
+
+
+   if ( m_selectionPoints.ListSize() < 3 ) return;
+
+   GLint viewport[4];
+   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
+
+   GLfloat *feedbuf;
+
+   Boolean bigger_buf_needed = true;
+   int hits = 0;
+
+   while ( bigger_buf_needed )
+   {
+
+     feedbuf = new GLfloat[m_fbsize];
+
+     glFeedbackBuffer ( m_fbsize, GL_2D, feedbuf ); 
+  
+     glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
+
+
+     glMatrixMode ( GL_PROJECTION );
+     glLoadIdentity();
+     CameraSetup();
+     ModelSetup();
+
+     glCallList( ATOMLIST );
+
+     glMatrixMode ( GL_PROJECTION );
+     glMatrixMode ( GL_MODELVIEW );
+
+     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
+
+     if ( hits < 0 )
+     {
+       delete [] feedbuf;
+       m_fbsize = m_fbsize * 2;
+       LOGSTAT ( "Feedback buffer overflows, doubling size to " + CcString (m_fbsize) );
+       bigger_buf_needed = true;
+     }
+     else
+     {
+       bigger_buf_needed = false;
+     }        
+   }
+
+   int point = hits, nVert, token;
+
+   int currentGLID = 0, lastGLID = -1;
+   int curX = 0, curY = 0;
+
+   while ( point > 0 )
+   {
+     token = (int)feedbuf [ hits - point ];
+     switch ( token ) {
+     case GL_PASS_THROUGH_TOKEN:
+       point--;
+       currentGLID = (int) feedbuf [ hits - point ];
+       point--;
+       break;
+     case GL_POINT_TOKEN:
+     case GL_BITMAP_TOKEN:
+     case GL_DRAW_PIXEL_TOKEN:
+     case GL_COPY_PIXEL_TOKEN:
+       point--;
+       curX = (int) feedbuf [ hits - point ];
+       point--;
+       curY = (int) feedbuf [ hits - point ];
+       point--;
+       break;
+     case GL_LINE_TOKEN:
+     case GL_LINE_RESET_TOKEN:
+       point--;
+       curX = (int) feedbuf [ hits - point ];
+       point--;
+       curY = (int) feedbuf [ hits - point ];
+       feedbuf [ hits - point ] = (float) RC_NEXT_LINE_TOKEN;
+       break;
+     case RC_NEXT_LINE_TOKEN:
+       point--;
+       curX = (int) feedbuf [ hits - point ];
+       point--;
+       curY = (int) feedbuf [ hits - point ];
+       point--;
+       break;
+     case GL_POLYGON_TOKEN:
+       point--;
+       nVert = (int)feedbuf[hits-point];
+       point--;
+       nVert--;
+       curX = (int) feedbuf [ hits - point ];
+       if ( nVert > 0 ) feedbuf [ hits - point ] = (float) GL_POLYGON_TOKEN;
+	   else point--;
+       curY = (int) feedbuf [ 1 + hits - point ];
+       if ( nVert > 0 ) feedbuf [ 1 + hits - point ] = (float) nVert;
+	   else point--;
+       break;
+     default:
+       LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
+       point--;
+     }
+
+     if ( ( currentGLID > 0 ) && ( currentGLID != lastGLID ) && ( curX > 0 ) )
+     {
+
+// Imagine a horizontal line drawn from the current polygon of the
+// current atom to the right. If it cuts the polygon an odd number
+// of times, then it is inside.
+// Check each polygon segment in turn and add up the number of crossings.
+// A crossing occurs if:
+//   1. The y-coord of the atom lies inbetween the y-coords of
+//      the ends of the line.
+//   2. The point of intersection of our imaginary horizonatal line and
+//      the extrapolated polygon line lies on the polygon line.
+//   3. The x-coord of our atom is less than the x-coord of intersection.
+
+       curY = viewport[3] - curY; // Correct for sense of OpenGL coord system.
+
+       int crossings = 0;
+       CcPoint *p1, *p2;
+
+       m_selectionPoints.Reset();
+       p1 = (CcPoint*)m_selectionPoints.GetItemAndMove();
+
+       while ( p2 = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+       {
+         if (  ( ( p1->y < curY ) && ( p2->y > curY ) ) ||
+               ( ( p1->y > curY ) && ( p2->y < curY ) )    )
+         {
+            float invgrad = 1000000.0f; // Avoid divide by zero:
+            if ( p2->y - p1->y != 0 ) invgrad = (float)(p2->x - p1->x) / (float)(p2->y - p1->y);
+
+            float xCut = ( p1->x + ( (curY - p1->y) * invgrad ) );
+
+            if ( ( ( ( p1->x < xCut ) && ( p2->x > xCut ) ) ||
+                   ( ( p1->x > xCut ) && ( p2->x < xCut ) )    ) &&
+                 ( curX < xCut ) )
+            {
+              crossings++;
+            }
+         }
+         p1 = p2;
+       }
+
+       if ( crossings % 2 != 0 )
+       {
+         CcModelObject* atom;
+         atom = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( currentGLID );
+         if ( atom )
+         {
+           if ( atom->Type() == CC_ATOM )
+           {
+              ((CcModelAtom*)atom)->Select(true);
+              lastGLID = currentGLID;
+           }
+         }
+       }
+     }
+
+     curX = -1;
+
+   }
+
+   delete [] feedbuf;
+
+
+}
+
+
 void CxModel::AutoScale()
 {
 
-//   TEXTOUT ( "Autoscale" );
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
@@ -1316,6 +1639,7 @@ void CxModel::AutoScale()
      token = (int)feedbuf [ hits - point ];
      switch ( token ) {
      case GL_PASS_THROUGH_TOKEN:
+       point--;
        point--;
        break;
      case GL_POINT_TOKEN:

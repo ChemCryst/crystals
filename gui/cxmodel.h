@@ -7,6 +7,16 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.28  2002/07/03 14:23:21  richard
+//  Replace as many old-style stream class header references with new style
+//  e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+//  Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+//  stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+//  Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+//  warning messages.
+//
 //  Revision 1.27  2002/03/13 12:27:24  richard
 //  Detect clicks on bonds.
 //
@@ -84,6 +94,9 @@
 #include    <afxwin.h>
 #define BASEMODEL CWnd
 #endif
+
+
+#define RC_NEXT_LINE_TOKEN 0x0790
 
 #include "ccpoint.h"
 
@@ -173,6 +186,7 @@ class CxModel : public BASEMODEL
     void SetIdealHeight(int nCharsHigh);
     void Focus();
     void AutoScale();
+    void PolyCheck();
     int  AdjustEnclose( CcRect* enc, GLfloat* buf, int point );
     void CameraSetup();
     void ModelSetup();
@@ -199,9 +213,9 @@ class CxModel : public BASEMODEL
     CcPoint m_ptLDown;       //  Last mouse position when rotating
     CcPoint m_ptMMove;       //  Last mouse position
 
-    CcPoint* m_selectionPoints;
+    CcList m_selectionPoints;
     CcRect m_selectRect;
-    int m_nSelectionPoints;
+    CcPoint m_movingPoint;
 
     int m_mouseMode;
 

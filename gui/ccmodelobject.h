@@ -33,6 +33,12 @@ class CcModelObject
      virtual void ParseInput ( CcTokenList* tokenlist) = 0;
      CcString Label();
      int Type();
+     virtual void Select(bool select);
+     virtual bool Select();
+     bool spare;
+     virtual bool IsSelected();
+     virtual void SendAtom(int style, Boolean output=false); 
+
      GLuint m_glID;
    protected:
      CcModelDoc * mp_parent;

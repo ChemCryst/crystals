@@ -27,3 +27,23 @@ int CcModelObject::Type()
 {
   return m_type;
 }
+
+void CcModelObject::Select(bool select)
+{
+  return;
+}
+
+bool CcModelObject::Select()
+{
+  return false;
+}
+
+bool CcModelObject::IsSelected()
+{
+  return false;
+}
+
+void CcModelObject::SendAtom(int style, Boolean output)
+{
+  return;
+}

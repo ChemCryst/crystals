@@ -137,6 +137,8 @@ bool CcModelAtom::IsSelected()
 
 void CcModelAtom::Render(CcModelStyle *style)
 {
+  glPassThrough((float)m_glID);
+
   glPushMatrix();
 
   GLUquadricObj* sphere = gluNewQuadric();
@@ -264,6 +266,9 @@ void CcModelAtom::Render(CcModelStyle *style)
 
 //  glPopAttrib();
   glPopMatrix();
+
+  glPassThrough(0.0);
+
 }
 
 void CcModelAtom::SendAtom(int style, Boolean output)

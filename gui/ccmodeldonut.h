@@ -36,7 +36,6 @@ class CcModelDonut : public CcModelObject
     void ParseInput(CcTokenList* tokenList);
 
   public:
-    bool spare;
 
     int x, y, z;
     int r, g, b;
