@@ -3546,14 +3546,16 @@ TRIAL              5    5
     .Z-COMPONENT        9   -1    1    0    0
 FOREIGN            1    0
    1    4096 CRYSTALSFOREIGN
-   1.FOREIGN            2    1    0    0
-         3    3
+   1.FOREIGN            3    1    0    0
+         3    3    3
     .PROGRAM            1   -1    1    8    1
      SNOOPI         CAMERON        SHELXS         MULTAN         SIR88
      SIR92          SIR97          PLATON
     .MODE               2    0    1    6    1 NORMAL
      NORMAL         DIFFICULT      SPECIAL        PATTERSON      HARD
      LONG
+    .METHOD             3    0    1    2    0 NORMAL
+     NORMAL         FILTERED
 XCAMERON           1    0
    1    4096 CRYSTALSFOREIGN
    1.XCAMERON           2    1    0    0

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/02/27 19:30:18  ckp2
+C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
+C RIC: Ensure consistent use of backslash after CRYSDIR:
+C
 C Revision 1.30  2001/11/23 08:58:08  Administrator
 C Patches to facilitate link to SQUEEZE
 C
@@ -99,7 +103,7 @@ C
 C
 \QSTORE
 C
-      DATA ICOMSZ / 2 /
+      DATA ICOMSZ / 3 /
 C
 C----- ALLOCATE ROOM FOR INPUT VALUES
 CMAR98
@@ -109,10 +113,11 @@ C
       ISTAT = KRDDPV( ISTORE(ICOMBF), ICOMSZ)
       IF ( ISTAT .LT. 0 ) GO TO 9910
       ITYPE = ISTORE(ICOMBF + 1)
+      IMETH = ISTORE(ICOMBF + 2)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON
-      CALL XLNK (ISTORE(ICOMBF), ITYPE)
+      CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH)
 C
 C
 9000  CONTINUE
@@ -132,7 +137,7 @@ C
       END
 C
 CODE FOR XLNK
-      SUBROUTINE XLNK (ILINK, IEFORT)
+      SUBROUTINE XLNK (ILINK, IEFORT, IMETHD)
 C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
@@ -148,6 +153,11 @@ C           FOR SIR**        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
 c           for cameron      iefort = 1, normal
 c                                     2, dont create new cameron files
+C
+C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
+C      FOREIGN CALL.
+C           FOR SIR92 (only)  IMETHD = 0, NORMAL
+C                             IMETHD = 1, FILTERED (check refl with L28)
 C
       PARAMETER (NLINK=8, NLIST=7)
 C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
@@ -1147,14 +1157,15 @@ C----- LOOP OVER DATA
       S = FS / STORE(M6+20)
       ENDIF
       IF (ILINK .EQ. 5) THEN
-       IF (KALLOW(IN) .LT. 0) THEN
-            JCODE = 1
-       ELSE
-            JCODE = 0
-       ENDIF
-       WRITE(NCFPU1,'( 3I4, F10.3, I2)') I, J, K, FS, JCODE
+         JCODE = 0
+         IF (KALLOW(IN) .LT. 0) JCODE = 1
+         WRITE(NCFPU1,'( 3I4, F10.3, I2)') I, J, K, FS, JCODE
+      ELSE IF ((ILINK .EQ. 6) .AND. (IMETHD .EQ. 1)) THEN
+         IF (KALLOW(IN) .GE. 0) THEN
+           WRITE(NCFPU1,'(3I4, F10.3, F7.2)') I, J, K, FS, S
+         END IF
       ELSE
-        WRITE(NCFPU1, '(3I4, F10.3, F7.2)') I, J, K, FS, S
+         WRITE(NCFPU1,'(3I4, F10.3, F7.2)') I, J, K, FS, S
       ENDIF
       GOTO 1950
 1960  CONTINUE
