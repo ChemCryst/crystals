@@ -1154,7 +1154,6 @@ Tables::Tables(char* pFileName)
     }
     iConditions = new Conditions();
     iHeadings = new Headings();
-    
     iHeadings->readFrom(tFile);
     iConditions->readFrom(tFile);
     iTables = new ArrayList<Table>(1);
