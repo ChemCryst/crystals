@@ -1,4 +1,17 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2001/09/07 14:24:54  ckp2
+C CIF tidy.
+C 1) Any writes directly to the CIF file (NCFPU1) are formatted so that
+C the data lines up at column 35.
+C 2) Any writes via the XPCIF subroutine are subject to the following rules:
+C If there is a CIF dataname at the start of the line (an underscore) then any
+C data following it is moved to column 35 provided that:
+C a) There is some data there.
+C b) This will not result in the data running past column 80.
+C c) The CIF dataname is shorter than 35 characters.
+C
+C The CIF looks much easier to read as a result.
+C
 C Revision 1.23  2001/08/15 08:23:34  ckp2
 C Two new scan types for LIST 30. Six new absorption correction types.
 C (Currently these new types all store min+max in PSIMIN and PSIMAX).
@@ -196,7 +209,7 @@ C--END OF THE REFLECTIONS  -  EXIT
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTRF .GT. 0 ) WRITE ( NCWU,'(A)' ) CHAR(12)
       ENDIF
-      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
+#GID      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
 1720  CONTINUE
       CALL XOPMSG ( IOPPPR , IOPLSE , 6 )
       CALL XTIME2(2)
@@ -458,7 +471,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       IF( ILSTRF .GT. 0) WRITE(NCWU, '(A)') CHAR(12)
       ENDIF
-      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
+#GID      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
 C--CLEAR THE PRINT LINE TO BLANKS
       CALL XMVSPD(IB,LINEA(1),LSTX)
       JD=0
@@ -744,7 +757,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       IF(ILSTCO .GT. 0) WRITE(NCWU,'(A)')CHAR(12)
       ENDIF
-      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
+#GID      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
 C
 2300  CONTINUE
 C----- OUTPUT THE OVERALL PARAMETERS
@@ -1093,7 +1106,7 @@ C--END OF THE PAGE  -  START A NEW PAGE
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
       ENDIF
-      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+#GID      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
       CALL STATX(LINEB)
       CALL STXYZ(LINEB)
       IF (ISSPRT .EQ. 0) THEN
@@ -1293,7 +1306,7 @@ C--NEW PAGE
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTAN .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
       ENDIF
-      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+#GID      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
       CALL STATX(LINEB)
       CALL STUIJ(LINEB)
       IF(MINX-MINU)2000,2100,2000
@@ -2603,8 +2616,9 @@ C--CHECK FOR THE END OF A PAGE
       IF(NL-LINEX)2500,2350,2350
 C--END OF THE PAGE  -  START A NEW PAGE
 2350  CONTINUE
-      IF (CODE .NE. ANGLE .AND. KEY .NE. 2 .AND. NODEV .NE. NCWU)
-     1  WRITE(NODEV, '(A)') CHAR(12)
+      IF ( CODE  .NE. ANGLE  .AND.  KEY   .NE. 2    .AND.
+     1     NODEV .NE. NCWU   .AND.  NODEV .NE. NCPU      )
+     2  WRITE(NODEV, '(A)') CHAR(12)
 C----- WRITE SOME LINETHROWS
 C--CLEAR THE OUTPUT BUFFER
       IF (CODE .NE. ANGLE .AND. KEY .NE. 2) WRITE(NODEV,2450)
@@ -2638,7 +2652,7 @@ C------ WRITE OUT THE ANGLE BUFFER
       NL=LINEX
 C
       DO 3500 I=IBUF,JBUF,JLEN
-      IF (NL .GE. LINEX .AND. NODEV .NE. NCWU) THEN
+      IF (NL.GE.LINEX .AND. NODEV.NE.NCWU .AND. NODEV.NE.NCPU) THEN
             WRITE(NODEV, '(A)') CHAR(12)
             WRITE(NODEV,2450)
             NL=0
@@ -4045,7 +4059,7 @@ C - NOW LIST THE REFERENCES
 C 
 C 
 2550  CONTINUE
-      WRITE (NCPU,'(A)') CHAR(12)
+#GID      WRITE (NCPU,'(A)') CHAR(12)
       WRITE (NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
 C----- ONLY 29 LINES USED IN PAGE  - CMON IS CURRENLTY 24
       WRITE (CMON,'(X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,24)
