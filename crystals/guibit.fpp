@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2001/03/16 17:10:41  richard
+C Re-instate full search of atom list for bonds. Had changed it to pivot onwards,
+C but this meant that bonds across symm ops, only one was drawn. Unfortunately, it now
+C means that for normal bonds, twice as many as are needed are being sent to the
+C GUI and rendered.
+C Changed colour of bonds across symm ops to grey.
+C
 C Revision 1.32  2001/03/08 14:30:58  richard
 C
 C Remove "Too many contacts" message - failing silently is much much faster.
@@ -695,7 +702,6 @@ C--MOVE BACK ONE MORE UNIT CELL
       END
 C
 CODE FOR XGDBUP
-c      SUBROUTINE XGDBUP(CTXT,L5,N5,MD5,ISERI,LDOFOU,IOFF)
       SUBROUTINE XGDBUP(CTXT,IULN,LSN,ICOMMN,IDIMN)
 C----- UPDATE THE GRAPHICS DATA BASE
 C      PREPARE FOR GUI
@@ -1202,6 +1208,18 @@ C Include Atom Labels in this info.
 221     FORMAT ('^^CO SET _MT_SPACEGROUP TEXT ''',4(A4,1X),'''')
         WRITE ( CMON, 221 ) (STORE(L2SG+J),J=0,MD2SG-1)
         CALL XPRVDU(NCVDU, 1,0)
+      ELSE IF ( IULN .EQ. 23 ) THEN   ! SFLS control - get F or F2.
+        L23MN = ICOMMN(9)
+
+        IF ( ISTORE ( L23MN + 1 ) .EQ. -1 ) THEN
+          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''F'''
+        ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
+          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''F squared'''
+        ELSE
+          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''Unknown'''
+        END IF
+        CALL XPRVDU(NCVDU, 1, 0)
+
       ELSE IF ( IULN .EQ. 29 ) THEN   ! asymm unit - update info tab.
         L29 = ICOMMN(1)
         M29 = ICOMMN(2)
@@ -1295,15 +1313,6 @@ C Include Atom Labels in this info.
         WRITE ( CMON, 246 ) STORE(L30R),   STORE(L30R+1), STORE(L30R+2),
      1      STORE(L30R+3),  STORE(L30R+4), STORE(L30R+7), STORE(L30R+8)
         CALL XPRVDU(NCVDU, 5, 0)
-        IF ( ISTORE ( L30R + 12 ) .EQ. 1 ) THEN
-          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''F'''
-        ELSE IF ( ISTORE ( L30R+12 ) .EQ. 2 ) THEN
-          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''F squared'''
-        ELSE
-          WRITE (CMON,'(A)') '^^CO SET _MT_REF_COEF TEXT ''Unknown'''
-        END IF
-        CALL XPRVDU(NCVDU, 1, 0)
-
       ENDIF
 
 
