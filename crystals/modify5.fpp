@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2003/02/27 11:39:50  rich
+C Code to INSERT FRAGMENT id into FRAG slot in List 5. The maximum fragment number
+C is returned to scripts (if they are listening) in the variable 'EDIT:FRAGMAX'.
+C This is the first of many places that this method will be used.
+C
 C Revision 1.33  2002/12/16 18:00:27  rich
 C New Perturb command. Allows per parameter shift multipliers, and a general
 C multiplier to apply to all shifts. The shifts respect weights setup in
@@ -1139,6 +1144,8 @@ C-C-C-SET UNUSED U[IJ]'S TO ZERO
          END IF
 C-C-C-APPLY CHANGE OF PARAMETER
          CALL XMOVE (APD(1),STORE(JT),1)
+C Look out for PART, REFINE, FRAGMENT - they are integers.
+         IF ((JV .GE. 14) .AND. (JV .LE. 16)) ISTORE(JT) = NINT(APD(1))
 C--UPDATE THE ATOM ADDRESS
 3550     CONTINUE
          CALL XMDMON (M5A,MD5A,1,1,1,4,3,MONLVL,2,0,ISTORE(IMONBF))
