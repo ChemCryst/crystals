@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.67  2003/07/04 16:33:38  rich
+// Fix recently introduced bug, which prevented CRYSTALS from restarting in
+// new directories.
+//
 // Revision 1.66  2003/07/01 16:38:21  rich
 // Three small changes. (1) Set flag to indicate CRYSTALS thread exit, and
 // exit from the GUI thread accordingly. (2) Make GETKEY a special case for
@@ -395,6 +399,7 @@
   #include <stdio.h>
   #include <unistd.h>
   #include <errno.h>
+  #include <sys/time.h>
   #define F77_STUB_REQUIRED
   #include "ccthread.h"
   #include <wx/cmndata.h>
@@ -462,8 +467,15 @@ int CcController::debugIndent = 0;
 
 CcController::CcController( CcString directory, CcString dscfile )
 {
+#ifdef __WIN_MSW__
     m_start_ticks = GetTickCount();
-
+#endif
+#ifdef __LINUX__
+    struct timeval time;
+    struct timezone tz;
+    gettimeofday(&time,&tz);
+    m_start_ticks = time.tv_sec*1000 + time.tv_usec/1000;
+#endif
 //Things
     mErrorLog = nil;
     mThisThreadisDead = false;
@@ -1188,6 +1200,7 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                               LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + inputWindow + "'");
                 break;
             }
+#ifdef __CR_WIN__
             case kTGetRegValue:
             {
                 tokenList->GetToken();
@@ -1197,6 +1210,7 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                 SendCommand(val);
                 break;
             }
+#endif
             case kTGetKeyValue:
             {
                 tokenList->GetToken();
@@ -1784,7 +1798,18 @@ void    CcController::LogError( CcString errString , int level )
       fprintf( mErrorLog, "  ");
     }
 
-    int elapse = GetTickCount() - m_start_ticks; // may go negative- GetTickCount wraps every 47 days.
+#ifdef __WIN_MSW__
+    int now_ticks = GetTickCount();
+#endif
+#ifdef __LINUX__
+    struct timeval time;
+    struct timezone tz;
+    gettimeofday(&time,&tz);
+    int now_ticks = time.tv_sec*1000 + time.tv_usec/1000;
+#endif
+
+
+    int elapse = now_ticks - m_start_ticks; // may go negative- GetTickCount wraps every 47 days.
 
     fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.ToCString() );
     fflush( mErrorLog );
@@ -2419,6 +2444,7 @@ CcString CcController::GetKey( CcString key )
 
 }
 
+#ifdef __CR_WIN__
 CcString CcController::GetRegKey( CcString key, CcString name )
 {
 
@@ -2461,6 +2487,7 @@ CcString CcController::GetRegKey( CcString key, CcString name )
  }
  return data;
 }
+#endif
 
 void CcController::AddHistory( CcString theText )
 {
