@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR SPRT6P
       SUBROUTINE SPRT6P
 C--MAIN ROUTINE FOR LIST 6P
