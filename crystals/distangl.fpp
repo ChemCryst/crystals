@@ -1,5 +1,37 @@
 
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2002/07/17 09:29:49  richard
+C
+C In #DISTANCE added option: SEL RANGE=L41
+C This will use the bond list (41) to determine what is connected.
+C
+C In #DISTANCE added option: OUT PUNCH=DELU D1DEV=x D2DEV=y
+C This will output VIBR restraints to the punch file with an esd
+C of x for 1,2 distances and y for 1,3 distances. You probably want an
+C EXCL H if using the DELU option.
+C
+C In #DISTANCE added option: OUT PUNCH=SIMU S1DEV=x S2DEV=y
+C This will output U(IJ) restraints to the punch file with an esd
+C of x for normal bonds and y for terminal bonds. A bond is terminal
+C if it connects to an atom with no other connections except hydrogen.
+C This option uses LIST 41 to determine whether the atom is 'terminal',
+C but the RANGE can still be set at user's discretion. You probably want an
+C EXCL H if using the SIMU option.
+C
+C In #EDIT added option: INSERT NCONN
+C This will put the number of connections to other atoms (according to L41)
+C into the SPARE slot in List 5.
+C
+C In #EDIT added option: INSERT RELAX
+C This will start with the electron count of each atom in SPARE, and
+C keep cycling through the bond list, adding the current value of
+C SPARE to all the neighbouring atoms. It will cycle until the number
+C of unique values of SPARE stops increasing.
+C
+C distangl.src now contains a routine KDIST4, which works like KDIST1 but using
+C the existing L41. It should be noted that the bond lengths stored in L41
+C may be out of date as the bonding is only recalculated every now and again.
+C
 C Revision 1.21  2002/06/26 10:30:52  richard
 C New output punch option: "SIMPLE" punches value followed by atoms. Suitable
 C for reading by scripts.
@@ -360,7 +392,8 @@ C----- READ A DIRECTIVE
         IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
         IF (IDIRNM .LT. 0) GOTO 100
         IF (IDIRNM .EQ. 0) GOTO 1000
-        GOTO( 100,100,100,100, 220, 230, 240, 250, 260, 200,9910),IDIRNM
+        GOTO( 100, 100, 100, 100, 220, 230, 240, 250, 260, 255,
+     1        265, 200,9910),IDIRNM
         GOTO 9910
 
 
@@ -401,11 +434,17 @@ C Set all 3 atom vectors to exclude by default.
         KATV(3) = 1
         CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 0 , KATV)
 
-c        DO KKI = 0, NATVC-1
-c          MATVC = LATVC+MDATVC*KKI
-c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
-c          CALL XPRVDU(NCVDU,1,0)
-c        END DO
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
         LDISTI=.TRUE.
         GO TO 100
 
@@ -423,11 +462,17 @@ C Set all 3 atom vectors to include by default.
         KATV(2) = 1
         KATV(3) = 1
         CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , -1 , KATV )
-c        DO KKI = 0, NATVC-1
-c          MATVC = LATVC+MDATVC*KKI
-c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
-c          CALL XPRVDU(NCVDU,1,0)
-c        END DO
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
         LDISTE=.TRUE.
         GO TO 100
 
@@ -439,11 +484,17 @@ C----- "H-C-O" FOR EXAMPLE.
         DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
           ISTORE(MATVC+2) = 0
         ENDDO  
-c        DO KKI = 0, NATVC-1
-c          MATVC = LATVC+MDATVC*KKI
-c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
-c          CALL XPRVDU(NCVDU,1,0)
-c        END DO
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
         GOTO 100
 
 250   CONTINUE
@@ -459,11 +510,44 @@ C Set first vector (pivot) to -1, and the other 2 to 0:
         KATV(2) = 0
         KATV(3) = 0
         CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 0 , KATV)
-c        DO KKI = 0, NATVC-1
-c          MATVC = LATVC+MDATVC*KKI
-c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
-c          CALL XPRVDU(NCVDU,1,0)
-c        END DO
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
+        LDISTP=.TRUE.
+        GOTO 100
+
+255   CONTINUE
+C----- 'NOTPIVOT'
+C Set first vector (pivot) to 0, and the other 2 to 0:
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
+        ENDDO
+        PIVINI = .TRUE.
+        KATV(1) = 1
+        KATV(2) = 0
+        KATV(3) = 0
+        CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , -1 , KATV)
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
         LDISTP=.TRUE.
         GOTO 100
 
@@ -480,11 +564,44 @@ C Set first vector (pivot) to 0, and the other 2 to -1:
         KATV(2) = 1
         KATV(3) = 1
         CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 0 , KATV)
-c        DO KKI = 0, NATVC-1
-c          MATVC = LATVC+MDATVC*KKI
-c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
-c          CALL XPRVDU(NCVDU,1,0)
-c        END DO
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
+        LDISTB=.TRUE.
+        GOTO 100
+
+265   CONTINUE
+C----- 'NOTBONDED'
+C Set first vector (pivot) to 0, and the other 2 to 0:
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
+        ENDDO
+        BONINI = .TRUE.
+        KATV(1) = 0
+        KATV(2) = 1
+        KATV(3) = 1
+        CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , -1 , KATV)
+        IF ( ISTORE(ICOMBF+18) .EQ. 3 ) THEN
+          WRITE (CMON,'(A)')
+     1      'Atom         Pivot    Bonded "3rd in angle"'
+          CALL XPRVDU(NCVDU,1,0)
+          DO KKI = 0, NATVC-1
+            MATVC = LATVC+MDATVC*KKI
+            WRITE (CMON,'(A4,I4,3I10)') ISTORE(L5+KKI*MD5),
+     1        NINT(STORE(L5+1+KKI*MD5)),(ISTORE(MATVC+KKR),KKR=0,2)
+            CALL XPRVDU(NCVDU,1,0)
+          END DO
+        END IF
         LDISTB=.TRUE.
         GOTO 100
 
@@ -501,6 +618,8 @@ C----- RELOCATE THE COMMON BLOCK DATA
         IALL = -1
         IF ( LDISTI .OR. LDISTP .OR. LDISTB ) IALL=1
       END IF
+
+      IF ( IDSPDA .EQ. -1 ) ISORT = 1
 
       IF ( IPUNCH .EQ. 4 ) THEN
 C CSD format requires atom sequence number excluding H's:
@@ -814,7 +933,19 @@ C----- RESET NFL (ITS BEEN CHECKED) TO UPPER  LIMIT
         NFL = JS
 C--CHECK THE REPLY
         IF ( K .LT. 0 ) GOTO 9920
-        IF ( K .EQ. 0 ) CYCLE
+        IF ( K .EQ. 0 ) THEN
+           IF ( IDSPDA .EQ. -1 ) THEN
+              CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+     1                      CATOM1,LATOM1)
+              LATOM1 = MIN(10, LATOM1)
+              WRITE ( CMON ,2803)
+     1        CATOM1(1:LATOM1),STORE(M5A+13)
+              CALL XPRVDU(NCVDU, 1,0)
+2803          FORMAT ('^^WI ''',A,' height:',F8.2,
+     1                ', no near contacts''')
+           ENDIF
+           CYCLE
+        END IF
 c        WRITE(CMON,'(A,I4)') 'IALL = ',IALL
 c        CALL XPRVDU(NCVDU,1,0)
         IF (IALL .LE. 0) THEN
@@ -887,6 +1018,7 @@ C----- SCRIPT DATA PUBLICATION
      1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
         ENDIF
 
+        IF ( IDSPDA .EQ. -1 ) JS = NFLBAS
 
 C--PRINT THE CALCULATED DISTANCES
         PRINTLOOP: DO J = NFLBAS, JS, NW
@@ -1002,13 +1134,23 @@ C -- CALCULATE E.S.D. FROM THE VARIANCE, PRODUCING NEGATIVE E.S.D.'S
 C    FROM 'NEGATIVE VARIANCES'
                 STORE(JF) = XDSESD ( STORE(JF) , STORE(JN) , NWDT )
                 STORE(IJX+3)=STORE(JF)
-              END IF
+              END IF     
 C----- COMPRESS ATOMS INTO CHARACTER FORM
               CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1                      CATOM1,LATOM1)
               CALL CATSTR (STORE(L), STORE(L+1),
      1         ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
      2         ISTORE(J+6), CATOM2, LATOM2)
+
+
+              IF ( IDSPDA .EQ. -1 ) THEN
+                LATOM1 = MIN(10, LATOM1)
+                WRITE ( CMON ,2804)
+     1          CATOM1(1:LATOM1),STORE(M5P+13),STORE(J+10),CATOM2(1:25)
+                CALL XPRVDU(NCVDU, 1,0)
+2804            FORMAT ('^^WI ''',A,' height:',F8.2,', '
+     1                  F6.3,'A from ',A,'''')
+              ENDIF
 
               IF (IDSPDA .EQ. 1  .OR. IDSPDA .EQ. 3 ) THEN
                 LATOM1 = MIN(10, LATOM1)
@@ -5482,9 +5624,12 @@ C Read the properties file and extract cov, vdw and colour.
               CLOSE(NCARU)
             END IF
             NOTFND = NOTFND + 1
-            WRITE(CMON,'(2A)')'FYI: Element not in L40 or L29: ',
+            WRITE(CATTYP,'(A4)')ISTORE(M5)
+            IF ( CATTPY(1:1).NE.'Q' ) THEN
+              WRITE(CMON,'(2A)')'FYI: Element not in L40 or L29: ',
      1                        ISTORE(M5)
-            CALL XPRVDU(NCVDU,1,0)
+              CALL XPRVDU(NCVDU,1,0)
+            END IF
          END IF
       END DO
 
