@@ -1594,12 +1594,12 @@ LIST 32            0    0
 SFLS              13   16
    1   40960 CRYSTALSINPUT
     1    2    3    4    5    6   13   11   16   17   22   23   25   26   33   36
-   1.REFINE            12    0    0    0   16   11  101    1   33
+   1.REFINE            13    0    0    0   16   11  101    1   33
          1    1    1    1    1    1    0    0    0    0
 INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
 (1H ,8(3X,12A1))
 (1H ,I7,7I15/(1H ,7X,7I15))
-         3    3    3    3    3    3    3    3    3    2    2    2
+         3    3    3    3    3    3    3    3    3    2    2    2    1
     .XXXXXXX            0    0    1    2   -1 NO
      NO             YES
     .YYYYYY             0    0    1   -1    1 NO
@@ -1620,6 +1620,7 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
     .AUGFACT            0    0    1    0    0 0.0
     .FILTER             0    0    1    0    0 .00005
     .DISCRIMINATOR      0    0    1    0    0 100.0
+    .LEVERAGE           0    0    1    0    0         0
    2.SCALE              6    0    3    0   16   11  101    1   33
          0    0    0    0    0    0    0    0    0    0
          6    7    8
@@ -1634,8 +1635,8 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
      /FOT/          SCALED-/FOT/
     .THRESHOLD          0    0    1    0    0  2.0
   -2.CALCULATE          6    0    3    0   16   11  101    1   33
-  -1.SOLVE             12    0    0    0   16   11  101    1   33
-  -1.VECTOR            12    0    0    0   16   11  101    1   33
+  -1.SOLVE             13    0    0    0   16   11  101    1   33
+  -1.VECTOR            13    0    0    0   16   11  101    1   33
    6.SHIFT             25    0    0    0   25   11  102    5   33
          1    1    1    1    1    1    0    0    0    0
 INFORMATION ABOUT THE SHIFT FACTORS TO BE USED DURING SFLS
