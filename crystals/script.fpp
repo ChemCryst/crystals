@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2002/11/06 10:57:02  rich
+C Updated FIRSTINT and FIRSTCHR to do an initial check for () in
+C an atom string. These take precedence over alpha-numeric analysis
+C so that SIP4(2) can be interpreted. If you have SIP42, you are lost.
+C
 C Revision 1.39  2002/10/31 13:25:26  rich
 C New script binary operator - IDECMASK. Uses one decimal number to
 C mask another: A IDECMASK B
@@ -2815,8 +2820,10 @@ C Only the leftmost 9 digits of each number are used.
               IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
                 IRES = IRES + ( MOD(IDEC,10) * 10**IDM )
               END IF
-              IMASK = FLOOR ( IMASK / 10.0 )
-              IDEC  = FLOOR ( IDEC  / 10.0 )
+              IMASK = IMASK - MOD ( IMASK, 10 )
+              IMASK = NINT ( IMASK / 10.0 )
+              IDEC  = IDEC  - MOD ( IMASK, 10 )
+              IDEC  = NINT ( IDEC  / 10.0 )
             END DO
             ICODE(JVALUE,IARG(2)) = IRES
           ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
@@ -2828,8 +2835,10 @@ C Only the leftmost 9 digits of each number are used.
               IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
                 IRES = IRES + ( MOD(IDEC,10) * 10**IDM )
               END IF
-              IMASK = FLOOR ( IMASK / 10.0 )
-              IDEC  = FLOOR ( IDEC  / 10.0 )
+              IMASK = IMASK - MOD ( IMASK, 10 )
+              IMASK = NINT ( IMASK / 10.0 )
+              IDEC  = IDEC  - MOD ( IMASK, 10 )
+              IDEC  = NINT ( IDEC  / 10.0 )
             END DO
             XCODE(JVALUE,IARG(2)) = IRES
           ENDIF
