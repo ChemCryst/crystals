@@ -96,6 +96,9 @@
 %          FINISH
 %      END IF
 %      EVALUATE LCRY = TRUE
+%%
+%      COPY '#SCRIPT FRESH'
+%%
 %      COPY '#OPEN SCPDATA SHELXS.CRY'
 %      COPY '#SCRIPT ZSHELXIN'
 %%DJW      COPY '#SCRIPT INshelxs'
