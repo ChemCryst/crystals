@@ -1488,7 +1488,7 @@ C     7     SPARE             Green       Bold White on Blue
 C     7     COMMAND ECHO      Green       Black on LGrey
 C
       CHARACTER*80 GUICOL(6)
-      CHARACTER*16 VGACOL(6)
+      CHARACTER*16 VGACOL(8)
       DATA GUICOL(1) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           1 NORM
       DATA GUICOL(2) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 185'/         2 DIAGRAM
       DATA GUICOL(3) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 185 0 0'/         3 SCR QUESTION
