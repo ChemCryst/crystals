@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2002/06/07 15:20:55  richard
+C If sigma cutoff is <= -10, display 'none' in refinement tab.
+C
 C Revision 1.43  2002/04/30 20:19:56  richard
 C RIC1: In XGUIUP - Keep going if some lists don't exist - was causing problems,
 C e.g. formula (L29) not displayed in GUI until atoms (L5) were input. Fixed.
@@ -857,7 +860,7 @@ C Filter out tiny axes
 C                WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
-               ELSE
+               ELSE IF ( NINT(STORE(I5+3)) .EQ. 1 ) THEN
                  DO KI=1,3
                    DO KJ=1,3
                      AXES(KI,KJ) = 0
@@ -866,8 +869,9 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
                  AXES(1,1) = SQRT(ABS(STORE(I5+7))) * GSCALE
                END IF
 
+        
 
-               IF ( LSPARE ) THEN
+               IF ( LSPARE .AND. ( NINT(STORE(I5+3)) .LE. 1 )) THEN
                   ISPARE = NINT(1000 * STORE(I5+13) )
                   SPARE = 0.297 * (STORE(I5+13)**(1.0/3.0))
                   AXES (1,1) = ( GSCALE * SPARE )
@@ -880,44 +884,46 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
                   AXES (3,1) = 0.0
                   AXES (3,2) = 0.0
                   STORE(I5+3) = 0.0
-
-c                  WRITE (CMON,'(3F15.8,I8,A4,I4)') SPARE, AXES(1,1),
-c     1                   STORE(I5+13), I5, ISTORE(I5),NINT(STORE(I5+1))
-c                  CALL XPRVDU(NCVDU,1,0)
-
                ELSE
                    ISPARE = NINT(COV*GSCALE)
                END IF
 
-c96             FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,3(1X,I6),/,A,9(1X,I6))
-c               WRITE ( CMON,96 )
-c     1         '$$GR ATOM ',
-c     2         1,  CLAB(1:LLAB),
-c     3         '$$GR ',
-c     4         NINT(STR11(IPLACE)*GSCALE),
-c     5         NINT(STR11(IPLACE+1)*GSCALE),
-c     6         NINT(STR11(IPLACE+2)*GSCALE),
-c     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-c     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-c     1         '$$GR',
-c     2         NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
-c     1         '$$GR',
-c     3         ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
-c               CALL XPRVDU(NCVDU, 4,0)
-c              WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
+               IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
+                 CALL FSTATM( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5           NINT(STR11(IPLACE+1)*GSCALE),
+     6           NINT(STR11(IPLACE+2)*GSCALE),
+     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2           NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     3           NINT(AXES(1,1)),NINT(AXES(2,1)),NINT(AXES(3,1)),
+     3           NINT(AXES(1,2)),NINT(AXES(2,2)),NINT(AXES(3,2)),
+     3           NINT(AXES(1,3)),NINT(AXES(2,3)),NINT(AXES(3,3)) )
 
-               CALL FSTATM( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-     5         NINT(STR11(IPLACE+1)*GSCALE),
-     6         NINT(STR11(IPLACE+2)*GSCALE),
-     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-     2         NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
-     3         NINT(AXES(1,1)),NINT(AXES(2,1)),NINT(AXES(3,1)),
-     3         NINT(AXES(1,2)),NINT(AXES(2,2)),NINT(AXES(3,2)),
-     3         NINT(AXES(1,3)),NINT(AXES(2,3)),NINT(AXES(3,3)) )
+               ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
+                 CALL FSTSPH( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5           NINT(STR11(IPLACE+1)*GSCALE),
+     6           NINT(STR11(IPLACE+2)*GSCALE),
+     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2           NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
+     4           NINT(STORE(I5+8) * GSCALE) )
 
+               ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
+
+                 CALL FSTRNG( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5           NINT(STR11(IPLACE+1)*GSCALE),
+     6           NINT(STR11(IPLACE+2)*GSCALE),
+     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2           NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
+     3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
+     4           NINT(STORE(I5+8) * GSCALE),
+     5           NINT(STORE(I5+9)*100.0), NINT(STORE(I5+10)*100.0) )
+
+               END IF
 
                IPLACE = IPLACE + 3
              END DO
@@ -1508,3 +1514,87 @@ C
 &&GILGID      RETURN
 &&GILGID      END
 
+&&GILGID      SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+&&GILGID     1 ISP,IFL,ISO,IRAD)
+C
+&GID      INTERFACE
+&GID          SUBROUTINE FASTSPHERE (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
+&&GILGID     1 JSP,JFL,JISO,JRAD)
+&GID          !DEC$ ATTRIBUTES C :: fastsphere
+&GID          !DEC$ ATTRIBUTES VALUE :: JX
+&GID          !DEC$ ATTRIBUTES VALUE :: JY
+&GID          !DEC$ ATTRIBUTES VALUE :: JZ
+&GID          !DEC$ ATTRIBUTES VALUE :: JR
+&GID          !DEC$ ATTRIBUTES VALUE :: JG
+&GID          !DEC$ ATTRIBUTES VALUE :: JB
+&GID          !DEC$ ATTRIBUTES VALUE :: JOC
+&GID          !DEC$ ATTRIBUTES VALUE :: JCO
+&GID          !DEC$ ATTRIBUTES VALUE :: JVD
+&GID          !DEC$ ATTRIBUTES VALUE :: JSP
+&GID          !DEC$ ATTRIBUTES VALUE :: JFL
+&GID          !DEC$ ATTRIBUTES VALUE :: JISO
+&GID          !DEC$ ATTRIBUTES VALUE :: JRAD
+&GID          !DEC$ ATTRIBUTES REFERENCE :: DL
+&GID          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
+&GID          INTEGER JSP,JFL,JISO,JRAD
+&GID          CHARACTER DL
+&GID          END SUBROUTINE FASTSPHERE
+&GID      END INTERFACE
+C
+&&GILGID      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+&&GILGID      INTEGER ISP,IFL,ISO,IRAD
+&&GILGID      CHARACTER*(*) CL
+&&GILGID      CHARACTER*(LL+1) BL
+C
+&&GILGID      BL = CL(1:LL)  // CHAR(0)
+&GID      CALL FASTSPHERE(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+&GID     1 ISP,IFL,ISO,IRAD)
+&GIL      CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),%VAL(IG),
+&GIL     1 %VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
+&GIL     1 %VAL(ISO),%VAL(IRAD))
+&&GILGID      RETURN
+&&GILGID      END
+C
+C
+&&GILGID      SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+&&GILGID     1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
+C
+&GID      INTERFACE
+&GID          SUBROUTINE FASTDONUT (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
+&&GILGID     1 JSP,JFL,JISO,JRAD, JDEC, JAZ)
+&GID          !DEC$ ATTRIBUTES C :: fastdonut
+&GID          !DEC$ ATTRIBUTES VALUE :: JX
+&GID          !DEC$ ATTRIBUTES VALUE :: JY
+&GID          !DEC$ ATTRIBUTES VALUE :: JZ
+&GID          !DEC$ ATTRIBUTES VALUE :: JR
+&GID          !DEC$ ATTRIBUTES VALUE :: JG
+&GID          !DEC$ ATTRIBUTES VALUE :: JB
+&GID          !DEC$ ATTRIBUTES VALUE :: JOC
+&GID          !DEC$ ATTRIBUTES VALUE :: JCO
+&GID          !DEC$ ATTRIBUTES VALUE :: JVD
+&GID          !DEC$ ATTRIBUTES VALUE :: JSP
+&GID          !DEC$ ATTRIBUTES VALUE :: JFL
+&GID          !DEC$ ATTRIBUTES VALUE :: JISO
+&GID          !DEC$ ATTRIBUTES VALUE :: JRAD
+&GID          !DEC$ ATTRIBUTES VALUE :: JDEC
+&GID          !DEC$ ATTRIBUTES VALUE :: JAZ
+&GID          !DEC$ ATTRIBUTES REFERENCE :: DL
+&GID          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
+&GID          INTEGER JSP,JFL,JISO,JRAD, JDEC, JAZ
+&GID          CHARACTER DL
+&GID          END SUBROUTINE FASTDONUT
+&GID      END INTERFACE
+C
+&&GILGID      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+&&GILGID      INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
+&&GILGID      CHARACTER*(*) CL
+&&GILGID      CHARACTER*(LL+1) BL
+C
+&&GILGID      BL = CL(1:LL)  // CHAR(0)
+&GID      CALL FASTDONUT(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+&GID     1 ISP,IFL,ISO,IRAD, IDEC,IAZ)
+&GIL      CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),%VAL(IG),
+&GIL     1 %VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
+&GIL     1 %VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
+&&GILGID      RETURN
+&&GILGID      END
