@@ -32,6 +32,7 @@ class	CrGrid : public CrGUIElement
 		void	SetGeometry( const CcRect * rect );
 		CcRect	GetGeometry();
 		void	CalcLayout();
+            void  SetOriginalSizes();
 		void	SetText( CcString item );
 		Boolean	GridComplete();
 		Boolean	InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos );
@@ -63,4 +64,52 @@ class	CrGrid : public CrGUIElement
 
 
 };
+
+#define	kSCreateButton		"BUTTON"
+#define kSAt			"@"
+#define kSCreateListBox		"LISTBOX"
+#define kSCreateListCtrl	"LISTCTRL"
+#define kSCreateDropDown	"DROPDOWN"
+#define kSCreateEditBox		"EDITBOX"
+#define kSCreateMultiEdit	"MULTIEDIT"
+#define kSCreateText		"STATIC"
+#define kSCreateIcon          "ICON"
+#define kSCreateProgress	"PROGRESS"
+#define kSCreateRadioButton	"RADIOBUTTON"
+#define kSCreateCheckBox	"CHECKBOX"
+#define kSCreateChart		"CHARTWINDOW"
+#define kSCreateModel		"MODELWINDOW"
+#define kSEndGrid             "}"
+#define kSOpenGrid            "{"
+#define kSOutline		"OUTLINE"
+#define kSAlignExpand		"EXPAND"
+#define kSAlignRight		"RIGHT"
+#define kSAlignBottom		"BOTTOM"
+
+enum 
+{
+ kTCreateButton = 1100, 
+ kTAt,		
+ kTCreateListBox,
+ kTCreateListCtrl,
+ kTCreateDropDown,	
+ kTCreateEditBox,	
+ kTCreateMultiEdit,	
+ kTCreateText,		
+ kTCreateIcon,          
+ kTCreateProgress,	
+ kTCreateRadioButton,	
+ kTCreateCheckBox,	
+ kTCreateChart,		
+ kTCreateModel,		
+ kTEndGrid,      
+ kTOpenGrid,     
+ kTOutline,	
+ kTAlignExpand,	
+ kTAlignRight,	
+ kTAlignBottom
+}; 
+
+
+
 #endif
