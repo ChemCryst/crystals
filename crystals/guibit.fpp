@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  1999/05/10 16:53:58  dosuser
+C RIC: Removed unused routine GUI()
+C
 CODE FOR CHINIT
       SUBROUTINE CHINIT(N,M,IR,IG,IB)
 \XCHTAP
@@ -314,7 +317,8 @@ CODE FOR GUIBLK
 \XGUIOV
       DATA PSTORE /1/
       DATA ISERIA/0/, NATINF/0/
-      DATA LGUIL1/.FALSE./, LGUIL5/.FALSE./,
+      DATA LGUIL1/.FALSE./
+      DATA LGUIL2/.FALSE./
      1 LUPDAT/.FALSE./, QSINL5/.FALSE./
       END
 C
@@ -649,7 +653,7 @@ C The QSINl5 flag is set here, if there are Q atoms in list 5.
 C It is used by the menu update routine.
 C The LUPDAT flag prevents the data from being sent to the GUI.
 C LGUIL1 IS SET IF LIST 1 IS AVAILABLE
-C LGUIL5 IS SET IF LIST 5 IS AVAILABLE
+C LGUIL2 IS SET IF LIST 2 IS AVAILABLE
 C LUPDAT IS SET WHEN MTRX IS INITIALISED AND GUI IS ENABLED
 C MTRX IS INITIALISED
 C      1 WHEN LIST 1 IS FORMED
@@ -681,11 +685,10 @@ C Initial checks.....
 C If the current list is is the same as one sent before the
 C don't send it again...
       IF((ISERI.EQ.ISERIA).AND.(ISERI.NE.0)) RETURN
-      ISERIA = ISERI
 C Check for valid pointers to lists.
-      IF ((.NOT.LGUIL5) .AND. (.NOT.LGUIL1)) THEN
-               GOTO 9900
-      ENDIF
+      IF ((.NOT.LGUIL1).OR.(.NOT.LGUIL2)) RETURN
+C Set old list number to current list number.
+      ISERIA = ISERI
 C
 C Calculate and store orthogonal coords....
 C Calculate sum of x, y and z as we go.
@@ -1007,6 +1010,7 @@ C of its own. It *must* then send ^^GR SHOW then ^^CR.
  
       RETURN
 9900  CONTINUE
-      WRITE (NCVDU,'(A)') 'ERROR IN GUIDRIVER'
+      WRITE ( CMON, '(A,/,A)')'Failed to open file : ',CFILEN(1:ILENG)
+      CALL XPRVDU(NCVDU, 2,0)
       RETURN
       END

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  1999/05/04 17:46:20  dosuser
+C RIC: Begin to implement angle checking code.
+C
 C Revision 1.2  1999/04/26 10:59:23  dosuser
 C RIC: Removed unneccesary brackets in I/O list.
 C      Comment starting ! on a line with no Fortran code wasn't liked
@@ -963,7 +966,7 @@ C                      !Needed when using a compressed L5 during FOURIER.
 	NBOCRY = 0
 
 C Check for valid pointers to lists.
-      IF ((.NOT.LGUIL5) .AND. (.NOT.LGUIL1)) THEN
+      IF ((.NOT.LGUIL1).OR.(.NOT.LGUIL2)) THEN
                GOTO 9900
       ENDIF
 
