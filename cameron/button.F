@@ -1,0 +1,360 @@
+CRYSTALS CODE FOR BUTTON.FOR                                                    
+      SUBROUTINE ZMNINI
+C INITIALISE MENUS
+C THIS IS A TEST ROUTINE FOR THE BUTTON CODE
+C FIRST CALL THE BUTTON DRAWING ROUTINE
+c^^^      INCLUDE 'BUTTON.INC'
+      INCLUDE 'COMMON.INC'
+      LOGICAL LFILES
+C READ IN THE FILE
+      IF (.NOT.LFILES(-1,'BUTTON.CMN',IINPT)) THEN
+        WRITE (ISTOUT,*) 'ERROR BUTTON.CMN NOT FOUND'
+        IMENCN = 0
+        RETURN
+      ENDIF
+      READ (IINPT,*) IBNWID,IBNHEI
+      INTOT = IBNWID*IBNHEI
+C READ IN THE NAMES
+      DO 10 I = 1 , INTOT
+        READ (IINPT,'(A20)') CBUTTS(I)
+        READ (IINPT,'(A80)') CBUTTX(I)
+10    CONTINUE
+      IF (.NOT.LFILES(0,' ',IINPT)) THEN
+        WRITE (ISTOUT,*) 'ERROR CLOSING BUTTON.CMN'
+      ENDIF
+      CALL ZSETUP ( IBBACK, IBTEXT, IBBORD, 1)
+      IMENCN = 2
+      CALL ZDOBUT (CBUTTS,INTOT,500,0,139,460,IBNWID,IBNHEI)
+      RETURN
+      END
+ 
+CODE FOR IBDRAW
+      INTEGER FUNCTION IBDRAW (IX,IY,CTEXT)
+      INCLUDE 'COMMON.INC'
+      CHARACTER*(*) CTEXT
+      INTEGER IXX(5),IYY(5)
+      INTEGER IX,IY
+      INTEGER IXT,IYT
+      IBDRAW = -1
+      IBUTNO = IBUTNO + 1
+      IF (IBUTNO.GT.MAXBUT) RETURN
+C FIND THE BUTTON LENGTH
+      ILENB = LEN(CTEXT)
+      IMAX = 0
+      DO 10 I = ILENB , 1 , -1
+        IF (CTEXT(I:I).NE.' ') THEN
+          IMAX = I
+          GOTO 20
+        ENDIF
+10    CONTINUE
+20    CONTINUE
+      IF (IMAX.EQ.0) THEN
+        IBUTTS(1,IBUTNO) = -1
+        RETURN
+      ENDIF
+C LOOK FOR THE BUTTON SPLITTING CHARACTER '_'
+      ISPLIT = INDEX(CTEXT,'_')
+      IF (ISPLIT.EQ.0) THEN
+        ILENB = IMAX*8.0
+      ELSE
+        ILEN1 = (ISPLIT-1)*8.0
+        ILEN2 = (IMAX-ISPLIT)*8.0
+      ENDIF
+      IBDRAW = IBUTNO
+C FIRST MAKE UP THE POLYGON
+C STORE THE CORNERS IN THE ARRAY
+      IBUTTS(1,IBUTNO) = IX
+      IBUTTS(2,IBUTNO) = IY
+      IBUTTS(3,IBUTNO) = IX+IWIDTH
+      IBUTTS(4,IBUTNO) = IY+IHEIGT
+      IXX(1) = IX
+      IYY(1) = IY
+      IXX(2) = IBUTTS(3,IBUTNO)
+      IYY(2) = IYY(1)
+      IXX(3) = IXX(2)
+      IYY(3) = IBUTTS(4,IBUTNO)
+      IXX(4) = IXX(1)
+      IYY(4) = IYY(3)
+      IXX(5) = IXX(1)
+      IYY(5) = IYY(1)
+C----- DRAW A PALE POLYGON
+      CALL ZPOLGN (IXX,IYY,5,7)
+C      CALL ZPLINE (IXX,IYY,5,IBBORD)
+C----- DRAW A DARK OFFSET POLYGON
+      IXX(1) = IXX(1)+2
+      IYY(1) = IYY(1)+2
+      IYY(2) = IYY(2)+2
+      IXX(4) = IXX(4)+2
+      IXX(5) = IXX(1)
+      IYY(5) = IYY(1)
+      call zpolgn (ixx, iyy, 5, 8)
+C----- DRAW THE BUTTON TOP
+      IXX(2) = IXX(2)-3
+      IXX(3) = IXX(3)-3
+      IYY(3) = IYY(3)-3
+      IYY(4) = IYY(4)-3
+      CALL ZPOLGN (IXX, IYY, 5, IBBACK)
+C
+C CENTRE THE STRING IN THE BUTTON
+      IF (IHEIGT.GT.10) THEN
+        IF (ISPLIT.EQ.0) THEN
+          IHPOS = (IHEIGT-10.0)/2.0
+        ELSE
+          IHPOS = (IHEIGT-20.0)/2.0
+        ENDIF
+        IYT = IY + IHPOS
+      ELSE
+        IYT = IY
+      ENDIF
+      IF (ICENTR.EQ.1) THEN
+        IF (ISPLIT.EQ.0) THEN
+          IF (ILENB.GT.IWIDTH) RETURN
+          IXT = (IWIDTH-ILENB)/2.0 + IX
+        ELSE
+          IF (ILEN1.GT.IWIDTH.OR.ILEN2.GT.IWIDTH) RETURN
+          IXT = (IWIDTH-ILEN1)/2.0 + IX
+        ENDIF
+C STORE THE XY COORDINATES OF THE TEXT
+        IBUTTS(5,IBUTNO) = IXT
+        IBUTTS(6,IBUTNO) = IYT
+        IF (ISPLIT.EQ.0) THEN
+          CALL ZDTEXT (CTEXT(1:IMAX),IXT,IYT,IBTEXT)
+          IBUTTS(7,IBUTNO) = -1
+          IBUTTS(8,IBUTNO) = 0
+        ELSE
+          CALL ZDTEXT (CTEXT(1:ISPLIT-1),IXT,IYT,IBTEXT)
+          IYT = IYT + 10
+          IXT = (IWIDTH-ILEN2)/2.0 + IX
+          CALL ZDTEXT (CTEXT(ISPLIT+1:IMAX),IXT,IYT,IBTEXT)
+          IBUTTS(7,IBUTNO) = IXT
+          IBUTTS(8,IBUTNO) = IYT
+        ENDIF
+      ELSE
+        IXT = IX + 10
+        IF (ISPLIT.EQ.0) THEN
+          CALL ZDTEXT (CTEXT(1:IMAX),IXT,IYT,IBTEXT)
+        ELSE
+          CALL ZDTEXT (CTEXT(1:ISPLIT-1),IXT,IYT,IBTEXT)
+          IYT= IYT + 10
+          CALL ZDTEXT(CTEXT(ISPLIT+1:IMAX),IXT,IYT,IBTEXT)
+        ENDIF
+      ENDIF
+      RETURN
+      END
+ 
+CODE FOR ZSETUP
+      SUBROUTINE ZSETUP (ICOL1,ICOL2,ICOL3,IFLAG1)
+c^^^      INCLUDE 'BUTTON.INC'
+      include 'common.inc'
+      IBBACK = ICOL1
+      IBTEXT = ICOL2
+      IBBORD = ICOL3
+      ICENTR = IFLAG1
+      RETURN
+      END
+ 
+CODE FOR ZDOBUT
+      SUBROUTINE ZDOBUT (CTEXT,N,IXPOS,IYPOS,IWID,IHEI,INWID,INHEI)
+      CHARACTER*(*) CTEXT(N)
+c^^^      INCLUDE 'BUTTON.INC'
+      include 'common.inc'
+C IVFLAG = 1, VERTICAL COLUMNS
+C IVFLAG = 0, HORIZONTAL
+      INTEGER IWID,IHEI
+C WORK OUT THE WIDTH AND HEIGHT OF THE BUTTONS
+      IWIDTH = IWID/INWID
+      IHEIGT = IHEI/INHEI
+      IBUTNO = 0
+C LOOP OVER THE BUTTONS
+      DO 10 I = 1 , INWID
+        DO 20 J = 1, INHEI
+          IX = IXPOS + (I-1)*IWIDTH
+          IHPOS = MOD(J,INHEI+1)
+          IY = IYPOS + (IHPOS-1)*IHEIGT
+          INBUT = (I-1)*INHEI + IHPOS
+          IBNO = IBDRAW (IX,IY,CTEXT(INBUT))
+          IF (IBNO.EQ.-1) THEN
+            WRITE (6,*) 'ERROR - BUTTON NAME TOO LONG'
+            WRITE (6,*) CTEXT(INBUT)
+          ENDIF
+20      CONTINUE
+10    CONTINUE
+      RETURN
+      END
+ 
+CODE FOR ZMOUSE
+      SUBROUTINE ZMOUSE
+      INTEGER IBX,IBY,IBCHCK
+c^^^      INCLUDE 'BUTTON.INC'
+      include 'common.inc'
+      CALL ZMINIT
+      CALL ZMDISP
+      IB = 0
+10    CONTINUE
+      CALL ZGTBUT (1,IB)
+      IF (IB.GT.0) RETURN
+      CALL ZGTBUT (0,IB)
+      IF (IB.EQ.0) GOTO 10
+C GET THE MOUSE POSITION
+      CALL ZGTMPS (IBX,IBY)
+C CHECK THIS POSITION
+      INO = IBCHCK (IBX,IBY)
+      IF (INO.GT.0) THEN
+        WRITE (6,*) CBUTTX (INO)
+      ENDIF
+      GOTO 10
+      END
+ 
+ 
+CODE FOR IBCHCK
+      INTEGER FUNCTION IBCHCK (IMX,IMY)
+      INCLUDE 'COMMON.INC'
+C^^^      INCLUDE 'BUTTON.INC'
+      IBCHCK = -1
+C THIS CHECKS THE BUTTONS TO SEE WHETHER ONE HAS BEEN ACTIVATED
+      DO 10 I = 1 , IBUTNO
+        IF (IMX.LT.IBUTTS(1,I)) GOTO 10
+        IF (IMY.LT.IBUTTS(2,I)) GOTO 10
+        IF (IMX.GT.IBUTTS(3,I)) GOTO 10
+        IF (IMY.GT.IBUTTS(4,I)) GOTO 10
+        IBCHCK = I
+        RETURN
+10    CONTINUE
+      RETURN
+      END
+ 
+CODE FOR ZMENUS
+      SUBROUTINE ZMENUS
+      INCLUDE 'COMMON.INC'
+c^^^      INCLUDE 'BUTTON.INC'
+      INTEGER IX(5),IY(5)
+      CHARACTER*(ICLEN) CTEXT
+      IFLAG = 0
+C DRAW THE MENU BUTTONS
+C      CALL ZVGA
+C      INTOT = IBNWID*IBNHEI
+C      CALL ZDOBUT (CBUTTS,INTOT,500,0,139,460,IBNWID,IBNHEI)
+C NOW NEED TO DRAW THE BUTTONS
+      DO 10 I = 1 , IBUTNO
+        IX(1) = IBUTTS(1,I)
+        IX(2) = IBUTTS(3,I)
+        IX(3) = IX(2)
+        IX(4) = IX(1)
+        IX(5) = IX(1)
+        IY(1) = IBUTTS(2,I)
+        IY(2) = IY(1)
+        IY(3) = IBUTTS(4,I)
+        IY(4) = IY(3)
+        IY(5) = IY(1)
+C----- DRAW A PALE POLYGON
+      CALL ZPOLGN (IX,IY,5,7)
+C      CALL ZPLINE (IX,IY,5,IBBORD)
+C----- DRAW A DARK OFFSET POLYGON
+      IX(1) = IX(1)+2
+      IY(1) = IY(1)+2
+      IY(2) = IY(2)+2
+      IX(4) = IX(4)+2
+      IX(5) = IX(1)
+      IY(5) = IY(1)
+      call zpolgn (ix, iy, 5, 8)
+C----- DRAW THE BUTTON TOP
+      IX(2) = IX(2)-3
+      IX(3) = IX(3)-3
+      IY(3) = IY(3)-3
+      IY(4) = IY(4)-3
+      CALL ZPOLGN (IX, IY, 5, IBBACK)
+C
+C NOW DRAW IN THE TEXT
+        ISPLIT = INDEX (CBUTTS(I),'_')
+        IF (ISPLIT.EQ.0) THEN
+          CALL ZDTEXT (CBUTTS(I),IBUTTS(5,I),IBUTTS(6,I),IBTEXT)
+        ELSE
+          CALL ZDTEXT (CBUTTS(I)(1:ISPLIT-1),IBUTTS(5,I),IBUTTS(6,I),
+     c    IBTEXT)
+          CALL ZDTEXT (CBUTTS(I)(ISPLIT+1:20),IBUTTS(7,I),IBUTTS(8,I),
+     c    IBTEXT)
+        ENDIF
+10    CONTINUE
+C DRAW THE INPUT REGION - USE THE SCREEN COORDINATES XCENS, YCENS
+      IX(1) = 0
+      IY(1) = YCENS*2.0
+      IX(2) = XCENS*2.0+139
+      IY(2) = IY(1)
+      IX(3) = IX(2)
+      IY(3) = 2.0*YCENS+21
+      IX(4) = IX(1)
+      IY(4) = IY(3)
+      IX(5) = IX(1)
+      IY(5) = IY(1)
+      CALL ZPOLGN (IX,IY,5,IBBACK)
+      CALL ZPLINE (IX,IY,5,IBBORD)
+C NOW DO THE MAIN LOOP
+      IMESSG = -1
+C Use the screen co-ordinates, not the device co-ordinates!
+C99 NOTE RC USES YCEN
+c      IYPOS = 2.0*YCEN + 5
+      IYPOS = 2.0*YCENS + 5
+      CALL ZMDISP
+
+C Wait for input.
+      CALL ZTXT (10,IYPOS,CTEXT,IMESSG)
+
+      LLINE(ILINE) = CTEXT
+        CALL ZUPCAS (CTEXT)
+      LINE(ILINE) = CTEXT
+C      IF (IDEV.EQ.1) CALL ZMHIDE
+C NEED TO GET THE UPPERCASE VERSION FOR ANALYSIS
+13    CALL ZCANAL
+      IF (IPROC.EQ.1) THEN
+C SEND THE LINE TO THE LOG FILE
+         CALL ZLOGWT(1)
+         CALL ZCOMDO
+         CALL ZABAND(2)
+         IF (ICAMER.EQ.-1) RETURN
+      ENDIF
+      IF (IPROC.EQ.2) THEN
+C REMOVE THE LAST (INCOMPLETE) COMMAND.
+        IF (INCOM(1).NE.INCOM(2)) THEN
+          ICPOS = ICPOS - 1
+          ICCPOS = ICCPOS - IC
+          ICNPOS = ICNPOS - IN
+          ICRPOS = ICRPOS - IR
+        ENDIF
+        CALL ZABAND(1)
+        CALL ZCOMDO
+        CALL ZABAND(2)
+        IF (ICAMER.EQ.-1) RETURN
+        IBEG = -1
+      ENDIF
+      IF (IPROC.EQ.0) THEN
+C ABANDON
+        ILINE = 1
+        CALL ZLOGWT(0)
+        CALL ZABAND(2)
+        IBEG = -1
+        IHEAD = 1
+C RESET FLAGS FOR LOG FILE
+        ICLOG = 1
+        ICABAN = 1
+      ENDIF
+      IF ((ILINE.LT.10).AND.(IBEG.EQ.-1)) THEN
+        ILINE = ILINE + 1
+        IEND = 0
+      ELSE IF ((ILINE.EQ.10).AND.(IBEG.EQ.-1)) THEN
+        DO 30 I = 1 , 10
+          DO 40 J = 1 , ICLEN
+40        LINE(I)(J:J) = ' '
+30      CONTINUE
+        ILINE = 1
+        IEND = 0
+      ENDIF
+      IF (IBEG.NE.-1) GOTO 13
+C PROCESS THE BLANK LINE
+      IF (IFLAG.EQ.0) THEN
+        LINE(ILINE) = ' '
+        LLINE(ILINE) = ' '
+        IFLAG = 1
+        GOTO 13
+      ENDIF
+      RETURN
+      END
