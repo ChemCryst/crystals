@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.5  2001/03/07 17:54:28  CKP2
 C Proper List 13 checking
 C
@@ -1673,3 +1678,144 @@ C
 16    A=AMOD(A,360.0)
       RETURN
       END
+
+
+
+CODE FOR SOLVEN
+      SUBROUTINE SOLVEN
+C Added line to test the CVS system problems.
+C     *****************
+C----- THE ROUTINES IN THIS FILE ARE FROM THE HARWELL SUBROUTINE
+C      LIBRARY, AND HAVE BEEN INCORPORATED INTO CRYSTALS IN
+C      CONJUNCTION WITH THE DIFABS ROUTINE OF NIGEL WALKER
+C
+C
+      LOGICAL TCOR
+      REAL VEC(44,44),EIG(44),UM1(44),WORK(220),RDASH(44),SDASH(44)
+      COMMON /NORMAL/ ANORM(44,44),ATB(44),ROWJ(88),TERMS(44)
+      COMMON /SOLVE/ NSIZE,FILTER,FILSTA,FILDEC,FILEND
+      COMMON /DRVR/ LI,LD,LO,LF,LP,NCY,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
+\XUNITS
+C   FOLLOWING EQUIVALENCING TO SAVE SOME SPACE
+      EQUIVALENCE (WORK(1),RDASH(1)),(WORK(45),SDASH(1))
+      EQUIVALENCE (ROWJ(1),EIG(1)),(ROWJ(45),UM1(1))
+C
+C Pre-scale normal matrix.
+C Invert normal matrix using HARWELL s/r for eigenvalue inversion.
+C
+C Get inverse diagonal scaling matrix UM1 (U**-1) from normal matrix.
+C The elements are SQRT(diagonal element of normal matrix)
+C
+C
+      AINFL=FILSTA - (NCY-1)*FILDEC
+      IF(AINFL.LT.FILEND)AINFL=FILEND
+C      WRITE(LP,1030)FILTER,AINFL
+C1030  FORMAT(/' Eigenvalue filtering; filter value=',F10.6,
+C     +',  inflation constant=',F10.6)
+C
+      DO 10 I=1,NSHAPE
+      UM1(I)=1.0
+      IF(ANORM(I,I).NE.0.0) UM1(I)=1.0/SQRT(ANORM(I,I))
+10    CONTINUE
+C
+C Scale matrix and vector(ATB) by UM1
+C
+      DO 20 J=1,NSHAPE
+      UM1J=UM1(J)
+      ATB(J)=ATB(J)*UM1J
+      DO 30 K=1,J
+      ANORM(J,K)=ANORM(J,K)*UM1(K)*UM1J
+30    CONTINUE
+20    CONTINUE
+C
+C Solve normal equations, EA06C returns eigenvectors and eigenvalues
+C
+      CALL EA06C(ANORM,EIG,VEC,NSHAPE,NSIZE,NSIZE,WORK)
+C
+C Write eigenvalues
+C
+C      WRITE(LP,1000)
+C1000  FORMAT(/,' Eigenvalues')
+C      WRITE(LP,1010)(EIG(I),I=1,NSHAPE)
+C1010  FORMAT(10F8.4)
+C
+C To diagonalize, premultiply by column eigenvectors
+C  VEC is matrix of eignvectors.
+C
+      DO 40 I=1,NSHAPE
+      SUM=0.0
+      DO 50 J=1,NSHAPE
+      SUM=SUM+VEC(J,I)*ATB(J)
+50    CONTINUE
+      RDASH(I)=SUM
+40    CONTINUE
+C
+C Solve diagonalization with inflated eigenvalue weighting & filtering
+C
+      DO 60 I=1,NSHAPE
+      SDASH(I)=0.0
+      IF(EIG(I).GT.FILTER)SDASH(I)=RDASH(I)/(EIG(I)+AINFL)
+60    CONTINUE
+C
+C Rotate shifts back and rescale using UM1
+C
+      DO 70 J=1,NSHAPE
+      SUM=0.0
+      DO 80 I=1,NSHAPE
+      SUM=SUM+VEC(J,I)*SDASH(I)
+80    CONTINUE
+      ATB(J)=SUM*UM1(J)
+70    CONTINUE
+C
+C
+C Write coefficient shifts
+C
+      WRITE(LP,1040)
+1040  FORMAT(/,' Coefficient shifts')
+      WRITE(LP,1050)(ATB(I),I=1,NSHAPE)
+1050  FORMAT(1X,10F8.5)
+C
+C Apply shifts to original defining variables
+      DO 90 J=1,NSHAPE
+      TERMS(J)=TERMS(J)+ATB(J)
+90    CONTINUE
+C
+C Write coefficients of absorption factor expansion
+C
+C      WRITE(LP,1020)
+C1020  FORMAT(/,' New coefficients')
+C      WRITE(LP,*)(TERMS(I),I=1,NSHAPE)
+      RETURN
+      END
+
+
+
+CODE FOR AMI3
+      SUBROUTINE AMI3 (A,B,DET)
+C     *************************
+C
+C.... INVERTS ASYMMETRIC 3X3 MATRIX
+C
+      REAL A(3,3),B(3,3)
+C
+      B(1,1)=A(2,2)*A(3,3)-A(3,2)*A(2,3)
+      B(2,1)=A(2,1)*A(3,3)-A(3,1)*A(2,3)
+      B(3,1)=A(2,1)*A(3,2)-A(3,1)*A(2,2)
+      DET=A(1,1)*B(1,1)-A(1,2)*B(2,1)+A(1,3)*B(3,1)
+      IF (DET) 12,16,12
+12    B(1,2)=A(1,2)*A(3,3)-A(3,2)*A(1,3)
+      B(2,2)=A(1,1)*A(3,3)-A(3,1)*A(1,3)
+      B(3,2)=A(1,1)*A(3,2)-A(3,1)*A(1,2)
+      B(1,3)=A(1,2)*A(2,3)-A(2,2)*A(1,3)
+      B(2,3)=A(1,1)*A(2,3)-A(2,1)*A(1,3)
+      B(3,3)=A(1,1)*A(2,2)-A(2,1)*A(1,2)
+      DO 14 I=1,3
+      DO 14 J=1,3
+      B(I,J)=(-1.)**(I+J)*B(I,J)/DET
+14    CONTINUE
+C
+16    RETURN
+      END
+C
+C
+C
