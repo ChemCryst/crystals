@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.42  2003/02/27 12:48:03  rich
 C Change keyword for identifying slot 17 from "HYBRID" to "FRAGMENT".
 C
@@ -1521,7 +1527,7 @@ C -- SYMBOLIC CODES FOR FACILITY NAMES - SYSTEM MESSAGES
       DATA IOPFPL / 37 / , IOPDAB / 38 / , IOPDSP / 39 /
       DATA IOPINV / 40 / , IOPGNP / 41 / , IOPP22 / 42 /
       DATA IOPSCP / 43 / , IOPSGP / 44 / , IOPQCK / 45 /
-      DATA IOPCMP / 46 /
+      DATA IOPCMP / 46 / , IOPBND / 47 /
 C -- SYMBOLIC CODES FOR MESSAGE TYPES
       DATA IOPABN / 1 / , IOPCMI / 2 / , IOPEND / 3 /
       DATA IOPPRC / 4 / , IOPSPC / 5 / , IOPLSP / 6 /
