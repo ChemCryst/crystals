@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2003/01/14 13:35:02  rich
+//   Error crept in during linux editing. Fixed.
+//
 //   Revision 1.7  2003/01/14 10:27:19  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -578,42 +581,42 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
     {
       if ( arrow == 0 )
       {
-        rect1.Set(m_hotRect.Top() + 1, m_hotRect.Left() + EMPTY_CELL,
-                  m_hotRect.Top() + 3, m_hotRect.Right()- EMPTY_CELL );
-        rect2.Set(m_hotRect.Top() + 5, m_hotRect.Left() + EMPTY_CELL,
-                  m_hotRect.Top() + 7, m_hotRect.Right()- EMPTY_CELL );
+        rect1.Set(m_hotRect.Top() + 3, m_hotRect.Left() + EMPTY_CELL,
+                  m_hotRect.Top() + 5, m_hotRect.Right()- EMPTY_CELL );
+//        rect2.Set(m_hotRect.Top() + 5, m_hotRect.Left() + EMPTY_CELL,
+//                  m_hotRect.Top() + 7, m_hotRect.Right()- EMPTY_CELL );
       }
       else
       {
-        rect1.Set(m_hotRect.Top() + 1, m_hotRect.Left() + EMPTY_CELL,
-                  m_hotRect.Top() + 3, midPointX        - ((arrow==CXARROWUP)?(2*EMPTY_CELL):(3*EMPTY_CELL)));
-        rect2.Set(m_hotRect.Top() + 1, midPointX        + ((arrow==CXARROWUP)?(2*EMPTY_CELL):(3*EMPTY_CELL)),
-                  m_hotRect.Top() + 3, m_hotRect.Right()- EMPTY_CELL );
-        rect3.Set(m_hotRect.Top() + 5, m_hotRect.Left() + EMPTY_CELL,
-                  m_hotRect.Top() + 7, midPointX        - ((arrow==CXARROWDOWN)?(2*EMPTY_CELL):(3*EMPTY_CELL)));
-        rect4.Set(m_hotRect.Top() + 5, midPointX        + ((arrow==CXARROWDOWN)?(2*EMPTY_CELL):(3*EMPTY_CELL)),
-                  m_hotRect.Top() + 7, m_hotRect.Right()- EMPTY_CELL );
+        rect1.Set(m_hotRect.Top() + 3, m_hotRect.Left() + EMPTY_CELL,
+                  m_hotRect.Top() + 5, midPointX        - ((arrow==CXARROWUP)?(2*EMPTY_CELL):(3*EMPTY_CELL)));
+        rect2.Set(m_hotRect.Top() + 3, midPointX        + ((arrow==CXARROWUP)?(2*EMPTY_CELL):(3*EMPTY_CELL)),
+                  m_hotRect.Top() + 5, m_hotRect.Right()- EMPTY_CELL );
+//        rect3.Set(m_hotRect.Top() + 5, m_hotRect.Left() + EMPTY_CELL,
+//                  m_hotRect.Top() + 7, midPointX        - ((arrow==CXARROWDOWN)?(2*EMPTY_CELL):(3*EMPTY_CELL)));
+//        rect4.Set(m_hotRect.Top() + 5, midPointX        + ((arrow==CXARROWDOWN)?(2*EMPTY_CELL):(3*EMPTY_CELL)),
+//                  m_hotRect.Top() + 7, m_hotRect.Right()- EMPTY_CELL );
       }
     }
     else
     {
       if ( arrow == 0 )
       {
-        rect1.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+1,
-                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+3 );
-        rect2.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+5,
-                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+7 );
+        rect1.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+3,
+                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+5 );
+//        rect2.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+5,
+//                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+7 );
       }
       else
       {
-        rect1.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+1,
-                   midPointY          - ((arrow==CXARROWLEFT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+3 );
-        rect2.Set( midPointY          + ((arrow==CXARROWLEFT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+1,
-                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+3 );
-        rect3.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+5,
-                   midPointY          - ((arrow==CXARROWRIGHT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+7 );
-        rect4.Set( midPointY          + ((arrow==CXARROWRIGHT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+5,
-                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+7 );
+        rect1.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+3,
+                   midPointY          - ((arrow==CXARROWLEFT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+5 );
+        rect2.Set( midPointY          + ((arrow==CXARROWLEFT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+3,
+                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+5 );
+//        rect3.Set( m_hotRect.Top()    + EMPTY_CELL, m_hotRect.Left()+5,
+//                   midPointY          - ((arrow==CXARROWRIGHT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+7 );
+//        rect4.Set( midPointY          + ((arrow==CXARROWRIGHT)?(2*EMPTY_CELL):(3*EMPTY_CELL)), m_hotRect.Left()+5,
+//                   m_hotRect.Bottom() - EMPTY_CELL, m_hotRect.Left()+7 );
       }
     }
 
@@ -622,14 +625,14 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
     if (arrow == 0)
     {
       dc.Draw3dRect(&rect1.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
-      dc.Draw3dRect(&rect2.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
+//      dc.Draw3dRect(&rect2.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
     }
     else
     {
       dc.Draw3dRect(&rect1.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
       dc.Draw3dRect(&rect2.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
-      dc.Draw3dRect(&rect3.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
-      dc.Draw3dRect(&rect4.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
+//      dc.Draw3dRect(&rect3.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
+//      dc.Draw3dRect(&rect4.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
     }
 #endif
 #ifdef __BOTHWX__
@@ -638,13 +641,13 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
       dc.SetPen ( penHigh );
       dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Left(),  rect1.Bottom() );
       dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Right(), rect1.Top() );
-      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Left(),  rect2.Bottom() );
-      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Right(), rect2.Top() );
+//      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Left(),  rect2.Bottom() );
+//      dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Right(), rect2.Top() );
       dc.SetPen ( penLow );
       dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Right(), rect1.Top() );
       dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Left(),  rect1.Bottom() );
-      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Right(), rect2.Top() );
-      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Left(),  rect2.Bottom() );
+//      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Right(), rect2.Top() );
+//      dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Left(),  rect2.Bottom() );
       dc.SetPen ( wxNullPen );
     }
     else
@@ -654,19 +657,19 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
       dc.DrawLine ( rect1.Left(),  rect1.Top(),    rect1.Right(), rect1.Top() );
       dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Left(),  rect2.Bottom() );
       dc.DrawLine ( rect2.Left(),  rect2.Top(),    rect2.Right(), rect2.Top() );
-      dc.DrawLine ( rect3.Left(),  rect3.Top(),    rect3.Left(),  rect3.Bottom() );
-      dc.DrawLine ( rect3.Left(),  rect3.Top(),    rect3.Right(), rect3.Top() );
-      dc.DrawLine ( rect4.Left(),  rect4.Top(),    rect4.Left(),  rect4.Bottom() );
-      dc.DrawLine ( rect4.Left(),  rect4.Top(),    rect4.Right(), rect4.Top() );
+//      dc.DrawLine ( rect3.Left(),  rect3.Top(),    rect3.Left(),  rect3.Bottom() );
+//      dc.DrawLine ( rect3.Left(),  rect3.Top(),    rect3.Right(), rect3.Top() );
+//      dc.DrawLine ( rect4.Left(),  rect4.Top(),    rect4.Left(),  rect4.Bottom() );
+//      dc.DrawLine ( rect4.Left(),  rect4.Top(),    rect4.Right(), rect4.Top() );
       dc.SetPen ( penLow );
       dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Right(), rect1.Top() );
       dc.DrawLine ( rect1.Right(), rect1.Bottom(), rect1.Left(),  rect1.Bottom() );
       dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Right(), rect2.Top() );
       dc.DrawLine ( rect2.Right(), rect2.Bottom(), rect2.Left(),  rect2.Bottom() );
-      dc.DrawLine ( rect3.Right(), rect3.Bottom(), rect3.Right(), rect3.Top() );
-      dc.DrawLine ( rect3.Right(), rect3.Bottom(), rect3.Left(),  rect3.Bottom() );
-      dc.DrawLine ( rect4.Right(), rect4.Bottom(), rect4.Right(), rect4.Top() );
-      dc.DrawLine ( rect4.Right(), rect4.Bottom(), rect4.Left(),  rect4.Bottom() );
+//      dc.DrawLine ( rect3.Right(), rect3.Bottom(), rect3.Right(), rect3.Top() );
+//      dc.DrawLine ( rect3.Right(), rect3.Bottom(), rect3.Left(),  rect3.Bottom() );
+//      dc.DrawLine ( rect4.Right(), rect4.Bottom(), rect4.Right(), rect4.Top() );
+//      dc.DrawLine ( rect4.Right(), rect4.Bottom(), rect4.Left(),  rect4.Bottom() );
       dc.SetPen ( wxNullPen );
     }
 #endif
