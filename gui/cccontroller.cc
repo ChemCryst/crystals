@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.85  2004/04/16 10:10:41  rich
+// If chdir fails, then popup an error message for debugging purposes.
+//
 // Revision 1.84  2004/04/01 10:24:34  rich
 // Don't delete mCrystalsThread object when the thread ends, otherwise
 // the GUI thread can't query its exit status.
@@ -4019,7 +4022,7 @@ extern "C" {
   #endif
   #ifdef __BOTHWX__
         (CcController::theController)->mCrystalsThread->CcEndThread( theExitcode );
-        mCrystalsThread = nil;
+        (CcController::theController)->mCrystalsThread = nil;
   #endif
   }
 
