@@ -38,7 +38,7 @@
 #ifndef __MATRICES_H__
 #define __MATRICES_H__
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 #include "ComClasses.h"
 #if defined(__APPLE__)
 #include <vecLib/vDSP.h>
@@ -112,12 +112,12 @@ class Matrix:public MyObject
             delete[] iMatrix;
         }
         
-        short sizeX() const
+        size_t sizeX() const
         {
             return iXSize;
         }
         
-        short sizeY() const
+        size_t sizeY() const
         {
             return iYSize;
         }
@@ -173,12 +173,12 @@ class Matrix:public MyObject
             return *this;
         }
         
-        inline type getValue(const short pIndex) const
+        inline type getValue(const size_t pIndex) const
         {
             return iMatrix[pIndex];
         }
         
-        inline type getValue(const short pXIndex, const short pYIndex) const
+        inline type getValue(const size_t pXIndex, const size_t pYIndex) const
         {
             return iMatrix[pXIndex*iYSize+pYIndex];
         }
@@ -248,7 +248,18 @@ class Matrix:public MyObject
                 pResult[i] = iMatrix[i] + pMatrix1.iMatrix[i];
             }
         }
-           
+
+        inline float abssum()
+        {
+            type tSum = 0;
+            
+            for (size_t i = 0;  i < iSize; i ++)
+            {
+                tSum += fabsf(iMatrix[i]);
+            }
+            return tSum;
+        }
+
         inline void sub(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             for (size_t i = 0; i < iSize; i++)
@@ -274,7 +285,7 @@ class Matrix:public MyObject
             }
         }
         
-        void resize(const short pXSize, const short pYSize)
+        void resize(const size_t pXSize, const size_t pYSize)
         {
             size_t tSize = pXSize*pYSize;
             type* tMatrix = new type[tSize];//malloc(sizeof(type) * tSize);
