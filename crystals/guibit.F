@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2001/06/18 08:25:21  richard
+C Platform specific file names were being overridden by a following statement which
+C reset file name to the windows specific name.
+C
 C Revision 1.35  2001/06/17 14:20:27  richard
 C Make bonds crossing symmetry elements lighter to distinguish them from normal bonds more.
 C
@@ -736,10 +740,7 @@ C
       CHARACTER CCOL*6, WCLINE*80, CFILEN*80, CATTYP*4,CLAB*10,CLAB2*10
       LOGICAL WEXIST
       REAL STACK(500)     !Space for 100 contacts.
-      LOGICAL LNOUPD
       CHARACTER*8 CINST(6)
-      SAVE    LNOUPD
-      DATA    LNOUPD /.FALSE./
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
 
 C
@@ -758,17 +759,17 @@ C
 CDJWDEC99 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
 C
 C
-      IF (ISSUPD .EQ. 0 ) RETURN
+C      IF ( ISSUPD .EQ. 0 ) RETURN
+
       IF (.NOT.LUPDAT) RETURN
-      IF (LNOUPD) THEN
-             LNOUPD = .FALSE.
-             RETURN
-      ENDIF
  
 
 C Branch on type of list that has been sent:
 
       IF ( IULN .EQ. 5 ) THEN   ! atom coordinates - update model
+
+        IF ( ISSUPD .EQ. 0 ) RETURN
+
 
 C NB. L5 common block is not present, this just substitutes the
 C     values into familiar looking variables.
