@@ -86,9 +86,11 @@
 ^^WI }
 ^^WI DEFINEMENU MAIN 'NULL'
 ^^WI  MENU _FILE '&File'
-^^WI   ITEM _SAVE '&Save Image' '#SCRIPT XPOST'
+^^WI   ITEM _SAVE 'Save Pos&tscript' '#SCRIPT XPOST'
+^^WI   ITEM _SAVE '&Save .wmf format' '#SCRIPT XWMF_N_CAMERONVIEW'
 ^^WI   ITEM _CHIME 'Save &Chime' 'OUTPUT CHIME'
 ^^WI   SPLIT
+^^WI   ITEM _PRINT 'Print...' '^^CO SET _CAMERONVIEW CHARTPRINT'
 ^^WI   ITEM _CLOSE '&Exit Cameron' 'END'
 ^^WI  ENDMENU
 ^^WI  MENU STYLE '&Style'
