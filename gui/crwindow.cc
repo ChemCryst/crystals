@@ -12,7 +12,6 @@
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"crwindow.h"
-//insert your own code here.
 #include	"crgrid.h"
 #include	"crmenu.h"
 #include	"ccmenuitem.h"
@@ -23,21 +22,17 @@
 
 CcList CrWindow::mModalWindowStack;
 
-// OPSignature:  CrWindow:CrWindow( CxApp *:mParentPtr ) 
-	CrWindow::CrWindow( CxApp * mParentPtr )
-//Insert your own initialization here.
+CrWindow::CrWindow( CxApp * mParentPtr )
 	:	CrGUIElement( (CrGUIElement *)mParentPtr )
-//End of user initialization.         
 {
-//Insert your own code here.
 	// For the window we don't generate the GUI equivalent immediately
 	// because we have to find the attributes first
 	mWidgetPtr = nil;
 	mGridPtr = nil;
 	mMenuPtr = nil;
-        mSetSize = false;
-        mMinWidth = 10000000; // { Set to ridiculous +ve values as they
-        mMinHeight= 10000000; // { are set in a Min in CalcLayout.
+      mSetSize = false;
+      mMinWidth = 10000000; // { Set to ridiculous +ve values as they
+      mMinHeight= 10000000; // { are set in a Min in CalcLayout.
 	mTabGroup = new CcList();
 	mTabStop = false;
 	mIsModal = false;
@@ -52,11 +47,17 @@ CcList CrWindow::mModalWindowStack;
 	m_relativeWinPtr = nil;
       mWindowWantingSysKeys = nil;
       mSafeClose=0;
-      
+      m_Keep = false;      
 }
+
 
 CrWindow::~CrWindow()
 {
+      if ( m_Keep )
+      { 
+// Store the old size in a file...
+           (CcController::theController)->StoreSize( mName, GetGeometry() );
+      }
 	if ( mGridPtr != nil )
 	{
 		delete mGridPtr;
@@ -164,6 +165,12 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 						LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+nearWindow);
 					break;
 				}
+                        case kTKeep:
+                        {
+                              tokenList->GetToken();
+                              m_Keep = true;
+                              break;
+                        }
 				default:
 				{
 					hasTokenForMe = false;
@@ -310,6 +317,15 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 					newPosn.mLeft   = workRect.Left();
 					newPosn.mRight  = workRect.Left() + thisRect.Width();
 				}
+// Check the right again.
+// If it is still off the
+// screen, we need to
+// shrink the window a bit.
+				if ( newPosn.Right()  > workRect.Right() )
+				{
+					newPosn.mRight  = workRect.Right();
+				}
+
 				//Check the bottom.
 				if ( newPosn.Bottom() > workRect.Bottom() )
 				{
@@ -322,14 +338,46 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 					newPosn.mTop     = workRect.Top();
 					newPosn.mBottom  = workRect.Top() + thisRect.Height();
 				}
+// Check the bottom again.
+// If it is still off the
+// screen, we need to
+// shrink the window a bit.
+				if ( newPosn.Bottom() > workRect.Bottom() )
+				{
+					newPosn.mBottom = workRect.Bottom();
+				}
+
 
 				((CxWindow*)mWidgetPtr)->SetGeometry(	newPosn.Top(),
                                                                   newPosn.Left(),
                                                                   newPosn.Bottom(),
                                                                   newPosn.Right() );
-			}
+                  }
 
-			//For now show self. Children are shown automagically.
+
+                  if ( m_Keep )
+                  {
+// Get the old size out of a file...
+                        CcRect oldSize = (CcController::theController)->GetSize( mName );
+                        if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
+                              ((CxWindow*)mWidgetPtr)->SetGeometry(oldSize.mTop,
+                                                                   oldSize.mLeft,
+                                                                   oldSize.mBottom,
+                                                                   oldSize.mRight );
+// Direct call to the CxWindow::SetGeometry, avoids the AdjustSize call
+// in CrWindow::SetGeometry which adds on height and width for borders and
+// menubars. 
+
+                  }
+
+                  // Lock the original sizes of all resizable windows.
+                  // These are needed to calculate how extra space
+                  // is shared out when the window is resized by the
+                  // user.
+
+                  SetOriginalSizes();
+
+                  //For now show self. Children are shown automagically.
 			this->Show(true);
 
 
@@ -458,6 +506,14 @@ void	CrWindow::CalcLayout()
 	}
 }
 
+void  CrWindow::SetOriginalSizes()
+{
+	if ( mGridPtr != nil )
+	{
+            mGridPtr->SetOriginalSizes();
+	}
+}
+
 void	CrWindow::SetText( CcString item )
 {
 	char theText[256];
@@ -474,15 +530,11 @@ void	CrWindow::Show( Boolean show )
 	if( show )
 	{
 		((CxWindow*)mWidgetPtr)->CxShowWindow();
-//		if(mIsModal)
-			//Disable its parent window.
 			
 	}
 	else
 	{
 		((CxWindow*)mWidgetPtr)->Hide();
-//////		if(mIsModal)
-	//		((CxWindow*)mWidgetPtr)->EndModalState();
 	}
 }
 
@@ -534,7 +586,7 @@ void CrWindow::ResizeWindow(int newWidth, int newHeight)
 
 //Set size of new child grid to this
 	if ( mGridPtr != nil )
-		mGridPtr->Resize(newWidth, newHeight, mMinWidth, mMinHeight);
+            mGridPtr->Resize(newWidth, newHeight, mMinWidth, mMinHeight);
 
 //Finally re-calculate positions and draw the window
 	CalcLayout();
@@ -715,5 +767,16 @@ void CrWindow::SysKeyPressed ( UINT nChar )
       else
       {
             mWindowWantingSysKeys->SysKey ( nChar );
+      }
+}
+void CrWindow::SysKeyReleased ( UINT nChar )
+{
+      if ( mWindowWantingSysKeys == nil )
+      {
+            ((CxWindow*)mWidgetPtr)->mWindowWantsKeys = false;
+      }
+      else
+      {
+            mWindowWantingSysKeys->SysKeyUp ( nChar );
       }
 }
