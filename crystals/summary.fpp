@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2002/01/16 10:30:33  ckpgroup
+C SH: Added labels to scatter plot of Fo vs. Fc.
+C
 C Revision 1.12  2002/01/14 12:21:40  ckpgroup
 C SH: Added Fo vs. Fc scatter graph (use xfovsfc.ssc).
 C
@@ -931,10 +934,10 @@ C
       IF ( LEVEL .EQ. 4 ) THEN
         WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1  NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
-        CALL XCREMS(HKLLAB, HKLLAB, IHKLLEN)
+        CALL XCRAS(HKLLAB, IHKLLEN)
 
-        WRITE(CMON,'(A,3A,A,2F15.7)')
-     1 '^^PL LABEL ', '''', HKLLAB(1:IHKLLEN-1), '''',' DATA ', FC ,FO
+        WRITE(CMON,'(3A,2F10.2)')
+     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
