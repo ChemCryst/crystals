@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/09/28 10:50:56  ckp2
+C New date style when printing lists.
+C
 C Revision 1.8  2001/09/11 09:29:16  ckp2
 C New #DISK options. Give a list number to the PRINT directive to only
 C get info for that list.
@@ -95,6 +98,7 @@ C
 C--
 C
 C
+      CHARACTER*24 CDT
       DIMENSION ID(4)
 C
 \XFILE
@@ -179,15 +183,25 @@ CDJWFEB97<
       IF ( ( ISSLSM .EQ. 3 ) .OR. ( ISSLSM .EQ. 4 ) ) THEN
 C -- PRINT THE MESSAGE TO THE USER, IF REQUIRED
         IF ( ( ISSLNM .EQ. 0 ) .OR. ( ISSLNM .EQ. LN ) ) THEN
-      IF (ISSPRT .EQ. 0)
-     1 WRITE ( NCWU , 1450 ) LN , LSN , NOS, NFW , NLW , LL
-1450  FORMAT(/,' List ',I3,' Serial ',I6,' Original serial ',I6,
-     1 ' Address ',I8,' To ',I8,' Length ',I7,/)
-        WRITE ( NCAWU , 1460 ) LN , LSN , NOS
-      WRITE ( CMON, 1460) LN , LSN , NOS
-      CALL XPRVDU(NCVDU, 1,0)
-1460  FORMAT(1X,'List ',I4,' Serial ',I4,' Original serial ',I4,
-     1 ' written to disc.')
+cdjw0202
+      IF (ISSPRT .EQ. 0) THEN
+       IF ( ID(3) .NE. 0 ) THEN
+C -- Old style date format.
+            WRITE(CDT,'(2A4)') ID(3),ID(4)
+       ELSE
+C -- New style date format.
+        CALL XCDATE(ID(4),CDT)
+       ENDIF
+       WRITE(NCWU,901)LN,LSN,NOS,NFW,LL,CDT
+901    FORMAT
+     1 (' List',I3,' Serial',I5,' Original',I4' Address',I7,' Size',
+     2 I7,14X,' Date ',A24,'   To Disc')
+        WRITE ( NCAWU,910) LN,LSN,CDT
+        WRITE ( CMON, 910) LN,LSN,CDT
+        CALL XPRVDU(NCVDU, 1,0)
+910     FORMAT(1X,'List ',I4,' Serial ',I4,'  Date ',A24,
+     1  '  written to disc.')
+      ENDIF
         ENDIF
       ENDIF
       RETURN

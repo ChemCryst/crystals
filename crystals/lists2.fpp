@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2001/03/08 14:33:06  richard
+C Changed call to XGDBUP, all lists now passed over.
+C
 C
 CODE FOR XLDLST
       SUBROUTINE XLDLST(IULN,ICOMMN,IDIMN,IOWF)
@@ -17,6 +20,7 @@ C          -1  READ THE LIST, THEN REWRITE IT.
 C           0  READ THE LIST ONLY.
 C          +1  READ THE LIST, THEN CAREFULLY UPDATE IT.
 C
+      CHARACTER*24 CDT
 C--
 \ISTORE
 \HEADES
@@ -49,16 +53,23 @@ C -- MONITOR OPERATION IF REQUIRED
       IF ( ( ISSLSM .EQ. 2 ) .OR. ( ISSLSM .EQ. 4 ) ) THEN
         IF ( ( ISSLNM .EQ. 0 ) .OR. ( ISSLNM .EQ. LN ) ) THEN
       IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,900)LN,LSN,IADDI,I,J,K,IBUFF(1),IBUFF(2)
-      ENDIF
-900     FORMAT(' List',I4,' Serial',I4,' From',I8,' Length',I8,
-     1 ' Write status',I4,' Original serial',I4,' Date  ',2A4,
-     2 ' being loaded. ')
-        WRITE ( NCAWU,910) LN,LSN,IBUFF(1),IBUFF(2)
-        WRITE ( CMON, 910) LN,LSN,IBUFF(1),IBUFF(2)
+       IF ( IBUFF(1) .NE. 0 ) THEN
+C -- Old style date format.
+            WRITE(CDT,'(2A4)') IBUFF(1),IBUFF(2)
+       ELSE
+C -- New style date format.
+        CALL XCDATE(IBUFF(2),CDT)
+       ENDIF
+       WRITE(NCWU,901)LN,LSN,K,IADDI,I,J,CDT
+901    FORMAT
+     1 (' List',I3,' Serial',I5,' Original',I4' Address',I7,' Size',
+     2 I7,' Write flag',I3,' Date ',A24,' From Disc')
+        WRITE ( NCAWU,911) LN,LSN,CDT
+        WRITE ( CMON, 911) LN,LSN,CDT
         CALL XPRVDU(NCVDU, 1,0)
-910     FORMAT(1X,'List ',I4,' Serial ',I4,'  Date ',2A4,
-     1 6X,'  read from disc.')
+911     FORMAT(1X,'List ',I4,' Serial ',I4,'  Date ',A24,
+     1  '  read from disc.')
+      ENDIF
         ENDIF
       ENDIF
 C
