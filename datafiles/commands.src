@@ -3963,6 +3963,28 @@ PERTURB            2    3
          3    
     .OVERWRITE         24    0    1    2   -1 NO
      YES            NO
+TWINPLOT           3    2
+  12    4096 CRYSTALSPROCESS6
+    1    6
+   1.OUTPUT             1    1    0    0
+         3 
+    .PLOT              10    0    1    2    0 NO
+     NO             YES
+   2.MATRIX             9    1    0    0
+         2    2    2    2    2    2    2    2    2
+    .M11                1    0    1    0    0 1.0
+    .M21                2    0    1    0    0 0.0
+    .M31                3    0    1    0    0 0.0
+    .M12                4    0    1    0    0 0.0
+    .M22                5    0    1    0    0 1.0
+    .M32                6    0    1    0    0 0.0
+    .M13                7    0    1    0    0 0.0
+    .M23                8    0    1    0    0 0.0
+    .M33                9    0    1    0    0 1.0
+   3.TWINPLOT           1    1    0    0
+         1    
+    .INPUTLIST         11    0    1    2    1         6
+              6         7
 MATCH              6    4
   10    4096 CRYSTALSALTER5
     1    2    5   41

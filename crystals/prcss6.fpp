@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2002/02/28 18:04:20  ckp2
+C New command #SIGMADIST for producing sigma distribution graph. It doesn't
+C do anything else.
+C
 C Revision 1.6  2002/02/28 11:34:46  ckp2
 C Wilson plot & E stat code.
 C
@@ -44,8 +48,8 @@ C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 C--BRANCH ON THE TYPE OF OPERATION
 
-      GOTO (1500,2200,2300,2400,2500,2550,2600,2700,4000,4100,4200,
-     2      1500),NUM
+      GOTO (1500,2200,2300,2400,2500,2550,2600,2700,4000,4100,
+     2      4200,4300,1500),NUM
 1500  CALL GUEXIT(324)
 
 C--'#SYST' INSTRUCTION
@@ -98,5 +102,13 @@ C--'#SIGMADIST' INSTRUCTION
 4200  CONTINUE
       CALL XSGDST
       RETURN
+
+C--'#TWINPLOT' INSTRUCTION
+4300  CONTINUE
+      CALL XTWINP
+      RETURN
+
       END
+
+
 
