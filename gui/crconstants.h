@@ -6,6 +6,11 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.10  1999/06/13 14:33:46  dosuser
+// RIC: All tokens which are specific to a single GUI object have been
+// moved into the header file for that object. All that is left are the
+// shared tokens e.g. YES, NO, NULL, ALL etc.
+//
 // Revision 1.9  1999/06/03 17:38:34  dosuser
 // RIC: Added support for ICON guielement. You can say e.g.
 // @ 1,2 ICON IC QUERY
@@ -67,6 +72,7 @@
 #define	kSRow		"ROW"
 #define	kSColumn	"COL"
 #define kSCreateGrid            "GRID"
+#define kSEmpty                "EMPTY"
 
 // Query types:
 #define kSQExists	"EXISTS"
@@ -115,7 +121,8 @@ enum
  kTQNselected,	
  kTQSelected,	
  kTQState, 
- kTCreateGrid
+ kTCreateGrid,
+ kTEmpty
 };
 
 
