@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.41  2003/07/03 10:41:04  rich
 C Bug fixed: When top level scripts were called, the status bar shows them
 C as being called from the last top level script that was run. Fix: Clear
@@ -466,18 +469,19 @@ C
       CHARACTER *256 CLCNAM, FILNAM
 C
 C
-      CHARACTER*6 FLSTAT(3)
-      CHARACTER*6 ACSTAT, TESTAT
-C
+      CHARACTER*7 FLSTAT(4)
+      CHARACTER*7 ACSTAT
+
 \XOPVAL
 \XSSVAL
 \XUNITS
 \XIOBUF
-C
-C
-      DATA FLSTAT / 'OLD   ' , 'NEW   ' , 'CIF   ' /
+
+
+      DATA FLSTAT / 'OLD    ' , 'NEW    ' , 'CIF    ','SCRATCH' /
       CLCNAM =  ' '
       FILNAM = CFNAME
+
 &CYBC THE 'DISK' FILE WAS A SCRATCH, CREATED FROM NEW EACH RUN
 &CYB      IF (FILNAM .EQ. ' ') THEN
 &CYB            IF(IUNIT .GE. 10)THEN
@@ -487,7 +491,7 @@ C
 &CYB            WRITE(FILNAM,101) IUNIT
 &CYB101         FORMAT('TAPE',I1.1)
 &CYB      ENDIF
-C
+
       NAMLEN = MAX (INDEX( FILNAM, ' ')-1, 0)
       IF (ISSFLC .EQ. 0) THEN
 C----- CONVERT NAME TO LOWER CASE
@@ -498,44 +502,34 @@ C----- CONVERT NAME TO UPPER CASE
       ELSE
             IF (NAMLEN .GT. 0) CLCNAM(1:NAMLEN) = FILNAM(1:NAMLEN)
       ENDIF
-C
-C
+
+
 C -- CHECK DATA TO SOME EXTENT
-      IF ( IFSTAT .GT. ISSCIF ) GO TO 9910
+      IF ( IFSTAT .GT. ISSSCR ) GO TO 9910
       IF ( IFMODE .GT. ISSWRI ) GO TO 9910
-C
+
 C -- SET REQUIRED STATUS TO THAT SPECIFIED
       ACSTAT = FLSTAT(IFSTAT)
-C
+
 C -- IF REQUEST IS 'CIF' SET STATUS TO 'OLD'
-C
+
       IF ( ACSTAT .EQ. 'CIF' ) ACSTAT = 'OLD'
-C
-C
+
+
 2000  CONTINUE
 C
-cRICmay99{ moved checks inside the loop as MTRNLG
-c          will fail when called with 'OLD' if the
-c          file does not exist.
-cdjwapr99 move to here  - done for PPC anyway
-      CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-cdjwapr99{
-c      if a 'new' file already exists, return a proper message
+      IF ( IFSTAT .NE. ISSSCR ) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+
+C      if a 'new' file already exists, return a proper message
       IF ((FLSTAT(IFSTAT) .EQ. 'NEW' ) .AND. (FILNAM .NE. ' '))THEN
        lexist = .false.
        inquire(file=clcnam(1:namlen), exist=lexist)
        if (lexist ) goto 9920
       endif
-cdjwapr99}
-cRICmay99}
+
       IF ( IFMODE .EQ. ISSREA ) GO TO 2500
-C
-&PPCC**** We better check on the variable CLCNAM, because MTRNLG might
-&PPCC**** set a name unknown before
-&PPCC**** 12.11.1995 Ludwig Macko
-&PPCC****
-&PPC      IF ( CLCNAM .EQ. ' ' ) THEN
-#PPC      IF ( FILNAM .EQ. ' ' ) THEN
+
+      IF ( FILNAM .EQ. ' ' ) THEN
         OPEN ( UNIT   = IDUNIT ,
      1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
@@ -543,53 +537,37 @@ C
      1         RECL   = ISSDAR ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
-C
+
       ELSE
-&PPCCS***
-&PPC        IF ( ACSTAT .EQ. 'NEW' ) THEN
-&PPC           CALL SFINFO( CLCNAM(1:NAMLEN), 2 )
-&PPC           TESTAT = 'OLD'
-&PPC        ELSE
-&PPC           TESTAT = ACSTAT
-&PPC        ENDIF
-&PPCCE***
-cdjwapr99 moved higher up        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
-&PPC     1         STATUS = TESTAT ,
-#PPC     1         STATUS = ACSTAT ,
+     1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
      1         RECL   = ISSDAR ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ENDIF
-C
+
       IF (IOS .NE. ISSOKF) GOTO 3000
-C
+
 C -- SUCCESS
-C
+
 C -- IF A NEW FILE HAS BEEN CREATED, SOME INITIALISATION TASKS
 C    MUST BE PERFORMED IMMEDIATELY
-C
-      IF ( ACSTAT .EQ. 'NEW' ) CALL XDAINI ( IDUNIT )
-C
+
+      IF ((ACSTAT.EQ.'NEW').OR.(ACSTAT.EQ.'SCRATCH'))CALL XDAINI(IDUNIT)
+
       GO TO 9000
-C
+
 2500  CONTINUE
 &VAXC -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
-C
-&PPCC**** We better check on the variable CLCNAM, because MTRNLG might
-&PPCC**** set a name unknown before
-&PPCC**** 12.11.1995 Ludwig Macko
-&PPCC****
-&PPC      IF ( CLCNAM .EQ. ' ' ) THEN
-#PPC      IF ( FILNAM .EQ. ' ' ) THEN
+
+      IF ( FILNAM .EQ. ' ' ) THEN
         OPEN ( UNIT   = IDUNIT ,
 &VAX     1         SHARED ,
-&VAX     1         READONLY ,
-&&DVFGID     1         READONLY ,
-&PPC     1         READONLY ,
+&&&VAXDVFGID     1         READONLY ,
 #DOS     1         STATUS = ACSTAT ,
 &DOS     1         STATUS = 'READONLY',
      1         ACCESS = 'DIRECT' ,
@@ -597,25 +575,13 @@ C
      1         RECL   = ISSDAR ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
-C
+
       ELSE
-#PPC        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-&PPCCS***
-&PPC        IF ( ACSTAT .EQ. 'NEW' ) THEN
-&PPC           CALL SFINFO( CLCNAM(1:NAMLEN), 2 )
-&PPC           TESTAT = 'OLD'
-&PPC        ELSE
-&PPC           TESTAT = ACSTAT
-&PPC        ENDIF
-&PPCCE***
+        CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
 &VAX     1         SHARED ,
-&VAX     1         READONLY ,
-&PPC     1         READONLY ,
-&&DVFGID     1         READONLY ,
-&PPC     1         STATUS = TESTAT ,
-&VAX     1         STATUS = ACSTAT ,
+&&&VAXDVFGID     1         READONLY ,
 #DOS     1         STATUS = ACSTAT ,
 &DOS     1         STATUS = 'READONLY',
      1         ACCESS = 'DIRECT' ,
@@ -624,24 +590,19 @@ C
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ENDIF
-C
+
       IF (IOS .NE. ISSOKF) GOTO 3000
-C
+
       GO TO 9000
-C
-C
+
+
 3000  CONTINUE
 C
 C -- OPEN FAILED -- IF IT SHOULD HAVE SUCCEEDED THEN THIS IS AN ERROR
 C
       IF ( ACSTAT .EQ. FLSTAT(ISSNEW) ) GO TO 9900
       IF ( IFSTAT .EQ. ISSOLD ) GO TO 9900
-&PPCCS***
-&PPC      IF ( IFSTAT .EQ. ISSCIF ) THEN
-&PPC         ACSTAT = FLSTAT(ISSNEW)
-&PPC         GO TO 2000
-&PPC      ENDIF
-&PPCCE***
+
 CRICJUL00
 C NT returns a BADFILENAME error instead of file not found, if
 C it is passed a string like "CRDSC:", so we must either check
@@ -649,33 +610,33 @@ C for FNF and BADFILENAME, or better still, just let the system
 C try again with a NEW file, if that still fails, then there is an
 C error.
 ##GIDWXS      IF ( IOS .NE. ISSFNF ) GO TO 9900
-C
+
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
 C    'OLD' . TRY AGAIN WITH STATUS = 'NEW'
-C
+
       ACSTAT = FLSTAT(ISSNEW)
       GO TO 2000
-C
-C
+
+
 9000  CONTINUE
-C
+
 C -- NORMAL EXIT FROM ROUTINE
-C
+
 C    SET FLAG
-C
+
       KDAOPN = 1
       RETURN
-C
-C
+
+
 9900  CONTINUE
-C
+
 C -- ERROR EXIT FROM ROUTINE
-C
+
 C    SET FLAG
-C
+
       KDAOPN = ISIGN ( IOS , -1 )
       RETURN
-C
+
 9910  CONTINUE
 C -- INTERNAL ERROR DETECTED
 CS*** The following line has been changed out causing compiling error
