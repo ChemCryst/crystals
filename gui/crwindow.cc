@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.31  2003/07/01 16:40:45  rich
+//   Tidy window sizing/display code to speed up initialisation of
+//   windows. Each window should now have its size set only once regardless of
+//   whether it works out its own size, retreives its size from the registry,
+//   positions itself relative to another window, or makes itself LARGE.
+//
 //   Revision 1.30  2003/05/21 11:23:34  rich
 //   Logging.
 //
@@ -105,7 +111,9 @@ CrWindow::~CrWindow()
 // Store the old size in a file...
         CcRect currentSize = GetGeometry();
         if ( ( currentSize.Height() > 30 ) &&
-             ( currentSize.Width()  > 30 ) )
+             ( currentSize.Width()  > 30 ) &&
+             ( currentSize.Bottom() > 0  ) &&
+             ( currentSize.Right()  > 0  ) )
         {
             (CcController::theController)->StoreKey( mName, currentSize.AsString() );
         }
