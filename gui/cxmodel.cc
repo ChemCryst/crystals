@@ -239,13 +239,13 @@ void CxModel::OnPaint(wxPaintEvent &event)
     SetCurrent();
     if ( m_DoNotPaint )
     {
-//      TEXTOUT ( "OnPaint: Not painting" );
+//      TEXTOUT ( CcString((int)this) + " OnPaint: Not painting" );
       m_DoNotPaint = false;
       return;
     }
 #endif
 
-//    TEXTOUT ( "OnPaint" );
+//    TEXTOUT ( CcString((int)this) + " OnPaint" );
     Boolean ok_to_draw = true;
 
     if (m_bModelChanged)
@@ -259,7 +259,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
     if ( ok_to_draw )
     {
-//      TEXTOUT ( "Displaying model" );
+//      TEXTOUT ( CcString((int)this) + " Displaying model" );
       if ( m_Autosize && m_bNeedReScale )
       {
         AutoScale();
@@ -307,7 +307,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       {
 // Now that the display is out of the way, render the quick
 // model to the quick display lists.
-//        TEXTOUT ( "Redrawing quick model from scratch" );
+//        TEXTOUT ( CcString((int)this) + " Redrawing quick model from scratch" );
         ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(false);
         m_bModelChanged = false;
         m_bQuickListOk = true;
@@ -499,6 +499,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
       int type = 0;
       if( type = IsAtomClicked(point.x, point.y, &atomname, &object, true))
       {
+//        LOGERR( CcString(point.x) + ", " + CcString(point.y) + " " + atomname);
         if ( type == CC_ATOM )
          ((CcModelAtom*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         else if ( type == CC_SPHERE )
@@ -1272,6 +1273,9 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 
 int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly)
 {
+   HDC hdc = ::GetDC ( GetSafeHwnd() );
+   wglMakeCurrent(hdc, m_hGLContext);
+
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
@@ -1281,6 +1285,10 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 // Correct for strange "3 pixels out in the vertical" effect.
    yPos += 3;
 
+/*   if (atomsOnly) {
+      LOGERR( CcString((int)this) + "IAC? " + CcString(xPos) + " " + CcString (yPos)+
+      CcString(viewport[0])+" "+CcString(viewport[1])+" "+CcString(viewport[2])+" "+CcString(viewport[3])+" " );
+   }*/
 
    bool repeat = true;
    int tolerance = 0;
@@ -1344,6 +1352,8 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
        }
      }
 
+//     if (atomsOnly) { LOGERR( "HitGLID: " + CcString((int)highest_name) ); }
+
      *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
 
 
@@ -1361,6 +1371,9 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
+   HDC hdc = ::GetDC ( GetSafeHwnd() );
+   wglMakeCurrent(hdc, m_hGLContext);
+
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
 
@@ -1422,8 +1435,10 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 
 void CxModel::PolyCheck()
 {
-
    if ( m_selectionPoints.ListSize() < 3 ) return;
+
+   HDC hdc = ::GetDC ( GetSafeHwnd() );
+   wglMakeCurrent(hdc, m_hGLContext);
 
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
@@ -1817,7 +1832,7 @@ void CxModel::NeedRedraw(bool needrescale)
 
 void CxModel::ModelChanged(bool needrescale) 
 {
-//  TEXTOUT ( "Model changed" );
+//  TEXTOUT ( "Model " + CcString((int)this) + "changed" );
   m_bModelChanged = true;
   m_bFullListOk = false;
   m_bQuickListOk = false;
