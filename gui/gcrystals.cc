@@ -67,8 +67,6 @@ BOOL CCrystalsApp::InitInstance()
 #endif
 
 
-
-
 // The user can override the ini file settings by setting
 // CRYSDIR to the crystals directory, and USECRYSDIR to anything.
 
@@ -98,35 +96,59 @@ BOOL CCrystalsApp::InitInstance()
       }
 
     // Parse command line for standard shell commands, DDE, file open
-      CCommandLineInfo cmdInfo;
-      ParseCommandLine(cmdInfo);
+//      CCommandLineInfo cmdInfo;
+//      ParseCommandLine(cmdInfo);
 
-      CcString command = CcString (cmdInfo.m_strFileName.GetBuffer(cmdInfo.m_strFileName.GetLength()));
       CcString directory;
       CcString dscfile;
 
-        if ( command.Length() > 0 )
-        {
-// we need a directory name.
-// look for last slash
-            int iptr;
-            int ils = -1;
-            for ( iptr = 0; iptr < command.Length(); iptr++ )
-            {
-                  if ( command[iptr] == '\\' ) ils = iptr;
-            }
-//Check: is there a directory name?
-            if ( ils > 0 )
-            {
-                  directory = command.Sub(1,ils);
-            }
-//Check: is there a dscfilename?
-            if ( ils < command.Length()-1 )
-            {
-                  dscfile = command.Sub(ils+2,command.Length());
-            }
-       }
 
+      for ( int i = 1; i < __argc; i++ )
+      {
+         CcString command = __argv[i];
+
+         if ( command == "/d" )
+         {
+           if ( i + 2 >= __argc )
+           {
+             MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
+           }
+           else
+           {
+             CcString envvar = __argv[i+1];
+             CcString value  = __argv[i+2];
+             _putenv( (envvar+"="+value).ToCString() );
+             i = i + 2;
+           }
+         }
+         else
+         {
+//           CcString command = CcString (cmdInfo.m_strFileName.GetBuffer(cmdInfo.m_strFileName.GetLength()));
+           CcString command = __argv[i];
+
+           if ( command.Length() > 0 )
+           {
+// we need a directory name. Look for last slash
+             int iptr;
+             int ils = -1;
+             for ( iptr = 0; iptr < command.Length(); iptr++ )
+             {
+                  if ( command[iptr] == '\\' ) ils = iptr;
+             }
+//Check: is there a directory name?
+             if ( ils > 0 )
+             {
+                  directory = command.Sub(1,ils);
+             }
+//Check: is there a dscfilename?
+             if ( ils < command.Length()-1 )
+             {
+                  dscfile = command.Sub(ils+2,command.Length());
+             }
+           }
+
+         }
+      }
 
       LoadStandardCursor(IDC_APPSTARTING);
 
