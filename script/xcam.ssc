@@ -2,7 +2,7 @@
 % VARIABLE LOGICAL NOXCAMQ LNEWL5
 % EVALUATE LNEWL5 = TRUE
 % IF ( NOXCAMQ ) THEN
-%    EVALUATE LNEWL5 = FALSE
+%    EVALUATE LNEWL5 = TRUE
 % ELSE
 %%   find out if the caller wants CRYSTALS to write new files
 %    VERIFY YES NO
