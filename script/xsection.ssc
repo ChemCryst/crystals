@@ -1,0 +1,87 @@
+%SCRIPT XSECTION
+% VARIABLE INTEGER DOSECTION
+%%
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ The script SECTION inputs the CRYSTALS data list, LIST 14, which           
+ defines the volume of the cell to be used for a Fourier calculation        
+ You may either input the required resolution and minimum and maximum       
+ in the x, y, and z directions for both the real and vector space, or       
+ let CRYSTALS compute an asymmetric volume from the space group symbol.     
+  This second option also ensures that the space group symmetry matrices    
+ are valid for the space group.                                             
+ The code for interpreting the space group symbol was written by Alan       
+ Larson and Eric Gabe, and is used with their kind permission.              
+% ELSE
+A SCRIPT to help you define the asymmetric part of the unit cell for
+Fourier map calculations.
+You may get CRYSTALS to compute it for you from the space group symbol,
+  or you may input the limits by hand
+% END IF
+%%
+^^WI WINDOW SECTION 'Define Fourier Volume' MODAL
+^^WI GRID MYMAIN NROWS=1 NCOLS=2
+^^WI {
+^^WI   @ 1,1 GRID GRIDL NROWS=5 NCOLS=3
+^^WI   {
+% CLEAR
+^^WI   @ 3,2 RADIOBUTTON XSG 'Compute from Space Group'
+^^WI                                           STATE=ON IGNORE
+^^WI   @ 5,2 RADIOBUTTON XDEF 'Define manually'
+^^WI                                           STATE=OFF IGNORE
+^^WI   }
+^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
+^^WI   {
+^^WI     @ 2,2 BUTTON BTNOK '&Ok' DEFAULT
+^^WI     @ 4,2 BUTTON BTNXX '&Cancel'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%    VERIFY BTNOK BTNXX
+^^WI    SET _MAINTEXTOUTPUT NOECHO
+^^CR
+%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%             BLOCK                %BUTTONOK%
+%                 CLEAR
+^^WI              SET _MAINTEXTOUTPUT NOECHO
+^^WI              GETVALUE XSG
+^^CR
+%                 VERIFY ON OFF
+%                 GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%                 EVALUATE DOSECTION = VALUE
+%                 IF DOSECTION .EQ. 1 THEN
+%                    VARIABLE CHARACTER L A B C 
+%                    IF EXISTS 2 .NE. 1 THEN
+%                      COPY '#SCRIPT INSPACE'
+%                    END IF
+%                    COPY '#GENERALEDIT 2'
+%                    COPY 'LOCATE RECORDTYPE = 106'
+%                    COPY 'TRANSFER FROM OFFSET =  0 TO L'
+%                    COPY 'TRANSFER FROM OFFSET =  1 TO A '
+%                    COPY 'TRANSFER FROM OFFSET =  2 TO B'
+%                    COPY 'TRANSFER FROM OFFSET =  3 TO C'
+%                    COPY 'END'
+%                    QUEUE REWIND
+%                    QUEUE COPY #SPACEGROUP
+%                    CLEAR
+%  STORE CHARACTER 'SYMBOL ' // L // ' ' // A // ' ' //  B // ' ' //  C
+%                    QUEUE SEND
+%                    CLEAR
+%                    QUEUE COPY END
+%                    QUEUE PROCESS
+%                 ELSE
+%                    COPY '#SCRIPT XLIST14'
+%                 END IF
+^^WI              DISPOSE SECTION
+^^CR
+%             END BLOCK
+%             BLOCK                %BUTTONXX%
+^^WI              DISPOSE SECTION
+^^CR
+%                 FINISH
+%             END BLOCK
+%        END CASE
+%%
+%END SCRIPT
