@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.2  2005/01/13 10:43:49  rich
 //   Fix tab layout on WXS version - I think this was changed previously to fix
 //   the MAC version, so some machine specific code will be required.
@@ -163,8 +167,11 @@ int CxTab::GetTabsHeight()
    wxSize mySize;
    mySize = CalcSizeFromPage(wxSize(0,0));
    // std::cout << "mySize.y " << mySize.y;
+#ifdef __WXMAC__
+   return 0;
+#else
    return mySize.y;
-   //return 0;
+#endif
 #endif
 }
 
