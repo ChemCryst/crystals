@@ -176,6 +176,10 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  MESSAGE USER1 ' Error during reflection processing'
 %  ON ERROR TERMINATE USER1
 %%
+%% Call space group determining code
+%%
+%  COPY '#SCRIPT SG'
+%%
 %  COPY '#SCRIPT XFRIEDEL'
 %%
 {S * Removing systematically absent reflections
