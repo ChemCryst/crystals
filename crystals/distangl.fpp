@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/06/18 08:23:45  richard
+C Add missing comma to format statement.
+C
 C Revision 1.11  2001/06/12 15:44:23  richard
 C Code to inhibit printing of SU's of bond lengths and angles to non-refined
 C H atoms to the CIF (if requested).
@@ -859,15 +862,15 @@ C----- WRITE RESTRAINT
      2      CATOM2(1:LATOM2)
       ELSE IF (IPUNCH .EQ. 1) THEN
 C----- WRITE UNFORMATTED PUBLICATION LIST
-            IF (STORE(JF) .GT. ZERO) THEN
-                WRITE(NCPU,2806)
-     1          CBLANK(1: 23-LATOM1), CATOM1(1:LATOM1), CATOM2(1:21),
-     2          STORE(J+10), STORE(JF)
-            ELSE
-                WRITE(NCPU,2806)
-     1          CBLANK(1: 23-LATOM1), CATOM1(1:LATOM1), CATOM2(1:21),
-     2          STORE(J+10)
-            ENDIF
+c            IF (STORE(JF) .GT. ZERO) THEN
+c                WRITE(NCPU,2806)
+c     1          CBLANK(1: 23-LATOM1), CATOM1(1:LATOM1), CATOM2(1:21),
+c     2          STORE(J+10), STORE(JF)
+c            ELSE
+c                WRITE(NCPU,2806)
+c     1          CBLANK(1: 23-LATOM1), CATOM1(1:LATOM1), CATOM2(1:21),
+c     2          STORE(J+10)
+c            ENDIF
       ENDIF
       IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
 C----- CIF AND FORMATTED PUBLICATION
