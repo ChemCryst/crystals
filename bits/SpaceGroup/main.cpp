@@ -118,7 +118,9 @@ void runTest(RunParameters& pRunData)
     }
     catch (MyException& eException)
     {
-        eException.addError("When opening hkl file:");
+        char tError[255];
+        sprintf(tError, "When opening hkl file:%s", pRunData.iFileName.getCString());
+        eException.addError(tError);
         throw eException;
     }
     gettimeofday(&time2, NULL);
@@ -144,7 +146,7 @@ void runTest(RunParameters& pRunData)
                     if (!pRunData.iCrystalSys.contains(tResult))
                     {
 						std::cout << tLaueGroups << "\n";
-                        std::cout << "Merging Identifys the system to be " << tResult << "\n";
+                        std::cout << "Merging identifys the system to be " << tResult << "\n";
 						pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
                     }
                 }
