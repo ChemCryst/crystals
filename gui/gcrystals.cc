@@ -90,7 +90,7 @@ BOOL CCrystalsApp::InitInstance()
 // will free the memory.
 
          m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
-         CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Location", NULL );
+         CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Crysdir", NULL );
          _putenv( ("CRYSDIR="+location).ToCString() );
 
       }
