@@ -17,31 +17,31 @@ C--CHECK THE TYPE OF ERROR
       IF(IN)1050,1150,1250
 C--SYSTEM TYPE ERROR, PRODUCED BY A PROGRAMMING MISTAKE
 1050  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1100)
-      ENDIF
+      CALL OUTCOL(3)
       WRITE ( CMON,1100)
-      CALL XPRVDU(NCEROR, 2,0)
+      CALL XPRVDU(NCEROR, 3,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)
       WRITE(NCAWU,1100)
-1100  FORMAT(' Programming error, not a user error'/
-     2 ' Consult a CRYSTALS expert ')
+1100  FORMAT(/
+     1 ' Programming error, not a user error.'
+     2 ' Consult a CRYSTALS expert '/)
+      CALL OUTCOL(1)
       GOTO 1350
 C--USER ERROR
 1150  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1200)
-      ENDIF
+      CALL OUTCOL(3)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
       WRITE ( CMON,1200)
       CALL XPRVDU(NCEROR, 2,0)
       WRITE(NCAWU,1200)
 1200  FORMAT(' User error ', / 'Check your',
      2 ' input data and your job control cards and parameters')
+      CALL OUTCOL(1)
       GOTO 1350
 C--UNDETERMINED TYPE OF ERROR
 1250  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1300)
-      ENDIF
+      CALL OUTCOL(3)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)
       WRITE ( CMON,1300)
       CALL XPRVDU(NCEROR, 1,0)
       WRITE(NCAWU,1300)
@@ -50,6 +50,7 @@ C--UNDETERMINED TYPE OF ERROR
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1200)
       ENDIF
+      CALL OUTCOL(1)
 C--AND NOW RETURN
 1350  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
@@ -139,6 +140,7 @@ C
 C
       CHARACTER*30 FACNAM(NFAC)
       DIMENSION    IFACLN(NFAC)
+\TLISTC
 C
 \XUNITS
 \XSSVAL
@@ -301,13 +303,16 @@ C
       CALL XERHND ( IERERR )
       GO TO 8000
 1060  CONTINUE
+      CALL OUTCOL(3)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1065 ) NAME(1:LENGTH) , IPARAM
+      WRITE ( NCWU , 1065 ) NAME(1:LENGTH) , IPARAM, CLISTS(IPARAM)
       ENDIF
-      WRITE ( CMON,1065) NAME(1:LENGTH), IPARAM
+      WRITE ( CMON,1065) NAME(1:LENGTH), IPARAM, CLISTS(IPARAM)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1065 ) NAME(1:LENGTH) , IPARAM
-1065  FORMAT ( 1X , A , ' of list type ' , I5 , ' abandoned' )
+      WRITE ( NCAWU , 1065 ) NAME(1:LENGTH) , IPARAM, CLISTS(IPARAM)
+1065  FORMAT ( 1X , A , ' of list type ' , I5 ,
+     1 ' (',A,') abandoned' )
+      CALL OUTCOL(1)
       GO TO 8000
 1070  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
@@ -1481,11 +1486,17 @@ C     5     TERM UNKNOWN      Black       White on Black
 C     6     PROCESSING REFS   Black       Bold Yellow on Black
 C     7     SPARE             Green       Bold White on Blue
 C     7     COMMAND ECHO      Green       Black on LGrey
-
-      CHARACTER*16 VGACOL(8)
-
+C
+      CHARACTER*80 GUICOL(6)
+      CHARACTER*16 VGACOL(6)
+      DATA GUICOL(1) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           1 NORM
+      DATA GUICOL(2) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 185'/         2 DIAGRAM
+      DATA GUICOL(3) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 185 0 0'/         3 SCR QUESTION
+      DATA GUICOL(4) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 185 0'/         4 SCR MENU
+      DATA GUICOL(5) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           5 UNKNOWN (NORM)
+      DATA GUICOL(6) /'^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0'/           6 PROCESSING REFLECTIONS
       INTEGER IGUICL(2,8) /-1,-1, 1,10, 0,2, 8,10, 0,1, 8,1, 3,0, 1,15/
-
+C
 100   FORMAT (A)
 101   FORMAT (1X, 7A)
 
