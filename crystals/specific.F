@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2004/05/17 15:40:04  rich
+C Linux: Ending thread from FORTRAN failed due to a wrongly placed
+C STOP statement.
+C
 C Revision 1.51  2004/02/27 12:55:06  rich
 C Supress output of dates from \DISK/PRINT if TIME is \SET to SLOW. (For
 C test_suite tests).
@@ -3532,6 +3536,9 @@ C- PRINT A WARNING SOMEWHERE
                N = MAX(1,N)         ! SET N TO LAST NON-BLANK
                CFIRST = CBUF(J)(1:1)
                CLAST = CBUF(J)(N:N)
+&GIL               N = MIN(N,261)         ! SET N TO LAST NON-BLANK
+&GIL       CBUF(J)(N+1:N+1) = CHAR(0)  ! Make into a c string.
+
 &&GIDGIL       IF (CBUF(J)(2:2).NE.'^') THEN
 C&&GILGID          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79 (for output)
 &&GIDGIL          IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
