@@ -47,6 +47,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <set>
 
 using namespace std;
 struct ElemStats;
@@ -61,7 +62,7 @@ class Region:public Matrix<short>
         ~Region();
         char* getName();
         int getID();
-		bool contains(Matrix<short> &pHKL, JJLaueGroup &pLaueGroup, Matrix<short>& pResultMatrix);
+		bool contains(Matrix<short> &pHKL, LaueGroup &pLaueGroup, Matrix<short>& pResultMatrix);
         std::ostream& output(std::ostream& pStream);
 };
 
@@ -130,7 +131,7 @@ class Table:public MyObject
     private:
         char* iName;
         ArrayList<ConditionColumn>* iColumns;	//The conditions. Null means that there is no condition.
-        ArrayList<SGColumn>* iSGColumn;	//Columns of space groups.
+        ArrayList<SGColumn>* iSGColumn;			//Columns of space groups.
         Regions* iRegions;
         Conditions* iConditions;
 	void columnRegions(char* pRegions, int pColumn);
@@ -145,19 +146,22 @@ class Table:public MyObject
         void readFrom(filebuf& pFile);
         char* getName();
         ArrayList<Index>* getRegions(int pI) const;
-        int getNumPointGroups();	
+		size_t numSGColumns();
+//        int getNumPointGroups();	
         SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
         int numberOfRows();
-        int chiralPointGroups(int pPointGroupIndeces[]);
+		set<int, ltint>& chiralColumns(set<int, ltint>& pColumnIndeces);
+		set<int, ltint>& columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pColumnIndeces);
         int dataUsed(signed char pIndices[], const int pMax) const;
         int conditionsUsed(signed char pIndices[], const int pMax) const;
+		bool hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber);
         std::ostream& output(std::ostream& pStream);
         std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
-        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[]);
+		std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, set<int, ltint>& tPointGroups);
         std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pPointGroups[], int pColumnCount=8);
+		std::ostream& outputLine(int pLineNum, std::ostream& pStream, set<int, ltint>& tPointGroups, int pColumnSize);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
@@ -204,9 +208,10 @@ class RankedSpaceGroups:public MyObject
         MultiTree<RowRating> iSortedRatings;
         Table* iTable;			//The table which the rattings have been made for. Reference to the table. Table should never be released by this class.
         bool iChiral;
+		LaueGroup iLaueGroup;
         void addToList(RowRating& pRating);
     public:
-        RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral);
+        RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral, LaueGroup& pLaueGroup);
         std::ofstream& output(std::ofstream& pStream);
         std::ostream& output(std::ostream& pStream);
 };
