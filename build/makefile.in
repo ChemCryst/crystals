@@ -103,3 +103,6 @@ obj/%.d: %.cc
 	-mkdir obj
 	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
 	| sed "s/$*\.o/& obj\/$*.d/g" ' > $@
+
+%.o : %.fpp
+	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
