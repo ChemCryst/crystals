@@ -12,10 +12,9 @@
 #ifndef		__CrProgress_H__
 #define		__CrProgress_H__
 #include	"crguielement.h"
-//insert your own code here.
 #include	"cctokenlist.h"
+#include    "ccstring.h"
 class CxProgress;
-//End of user code.         
  
 class	CrProgress : public CrGUIElement
 {
@@ -29,6 +28,7 @@ class	CrProgress : public CrGUIElement
 		void	SetGeometry( const CcRect * rect );
 		CcRect	GetGeometry();
 		void	CalcLayout();
+            void  SwitchText ( CcString * text );
 		
 		// attributes
 		

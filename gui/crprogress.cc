@@ -131,3 +131,9 @@ void CrProgress::CrFocus()
 {
 
 }
+
+void CrProgress::SwitchText ( CcString * text )
+{
+      ((CxProgress*)mWidgetPtr)->SwitchText( text );
+}
+
