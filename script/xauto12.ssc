@@ -7,6 +7,8 @@
 %  EVALUATE EXTINCT = FALSE
 %  EVALUATE PURGE  = FALSE
 %  VARIABLE CHARACTER CLAST CPARAM CPARAM2
+%  VARIABLE LOGICAL XAUTO12
+%  EVALUATE XAUTO12 = TRUE
 %%
 %%%%%%
 %% The possible next steps to take.
@@ -17,7 +19,6 @@
 %%
 %  VARIABLE LOGICAL OPTIM HPOS
 %  EVALUATE OPTIM = FALSE
-%  EVALUATE HPOS = FALSE
 %  VARIABLE INTEGER ISTAGE
 %%
 %  EVALUATE ISTAGE = 0
@@ -85,7 +86,7 @@
 %    ON ERROR TERMINATE
 %%   
 %%
-^^WI WINDOW XAUTO12 'Supervisor' SIZE
+^^WI WINDOW XAUTO12 'Supervisor' SIZE MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID OUTER NROWS=3 NCOLS=7
 ^^WI {
@@ -228,7 +229,7 @@
 %             EVALUATE EXEREFN = TRUE
 %           END BLOCK
 %           BLOCK % KSHYDR 6
-%             COPY '#SCRIPT FINDH'
+%             COPY '#SCRIPT XFINDH'
 %             COPY '#SCRIPT CHECK12'
 %             VERIFY YES NO
 %             GET NOSTORE FINAL ABBREVIATED -
@@ -260,7 +261,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %             EVALUATE EXEREFN = TRUE
 %           END BLOCK
 %           BLOCK % KSWEIG 8
-%             COPY '#SCRIPT WEIGHTS'
+%             COPY '#SCRIPT XWEIGHTS'
 %             EVALUATE OPTIM = TRUE
 %           END BLOCK
 %           BLOCK % VALIDATE 9
@@ -268,7 +269,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %           END BLOCK
 %           BLOCK % PUBLISH 10
 %             COPY '#SCRIPT TIDYUP'
-%             COPY '#SCRIPT PUBLISH'
+%             COPY '#SCRIPT XPUBLISH'
 %             FINISH
 %           END BLOCK
 %         END CASE
