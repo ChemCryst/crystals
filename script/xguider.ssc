@@ -257,13 +257,7 @@
 
 %  ELSE IF ( VALIDFAIL ) THEN
 %      EVALUATE KTDEFA = 11
-    Recommended:   Fix the problems with the structure.
-    Options:       Re-validate.
-                   Refine positions and Uaniso.
-                   View the structure.
-                   Relocate or replace all hydrogen atoms.
-                   Check for extinction.
-                   Optimise least squares weights.
+    Recommended:   Fix the problems with the structure. See advice above.
 %%
 %  ELSE
 %%
@@ -287,6 +281,9 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.5  2001/03/21 17:07:16  richard
+%%  Changed window layout and bitmap.
+%%
 %%  Revision 1.4  2001/03/13 09:36:46  richard
 %%  Re-instated cancel action. Made cancel action the default in the xguide?c scripts.
 %%
