@@ -4,6 +4,7 @@
 %% Display non-modal window with available options. 
 %% Exit. - The window will callback XGUIDEIC.SCP with events.
 %%
+%  VARIABLE CHARACTER INSTITLE
 %  VARIABLE INTEGER KTDEFA
 %% KTDEFA  = 
 %%  1 Run KCCDIN
@@ -75,10 +76,12 @@
 ^^WI   @ 1,3 BUTTON GI_BOK '&Ok' DISABLEIF='IN'
 ^^WI   @ 3,3 BUTTON GI_BXX '&Hide' DISABLEIF='IN'
 ^^WI  }
+% TRANSFER "^^WI @ 3,5 HIDDENSTRING INSTTL '" // INSTITLE // "'" TO DISPLAY
 ^^WI }
 ^^WI SHOW
-^^CR
+^^CR                                                        
 %  END IF
+%  TRANSFER "^^CO SET INSTTL TEXT '" // INSTITLE // "'" TO DISPLAY
 %  EVALUATE KTDEFA = 1
 
 {I   Choose an option. The following data is still required:
@@ -89,6 +92,7 @@
 %    EVALUATE KTDEFA = 4
 % ELSE IF EXISTS ( 1 ) .LT. 1 THEN
 {I   Cell dimension data is still required.
+%    EVALUATE KTDEFA = 7
 % ELSE IF EXISTS ( 6 ) .LT. 1 THEN
 {I   Reflection data is still required.
 %    EVALUATE KTDEFA = 8
@@ -108,6 +112,9 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.7  2002/03/21 17:56:19  richard
+%%  Enclose bitmaps in GRID object to stop them stretching.
+%%
 %%  Revision 1.6  2001/11/16 15:28:18  ckp2
 %%  Add a bit more intelligence to the import guide to help poor old SHELX users.
 %%

@@ -1,5 +1,6 @@
 %SCRIPT XINLIST6
 %% CRYSTALS reflection input script
+%  VARIABLE CHARACTER INSTITLE HKLTITLE
 %  VARIABLE INTEGER INBASICS
 %  VARIABLE INTEGER FS NCOEF FMT
 %  VARIABLE LOGICAL LCANCEL
@@ -91,6 +92,10 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
+% EVALUATE HKLTITLE = INSTITLE // '.hkl'
+% IF ( FILEEXISTS ( HKLTITLE ) ) THEN
+%   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY
+% END IF
 %%
 %% Now the window is displayed, we wait for any of the following
 %% things to happen:
@@ -313,6 +318,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.20  2002/03/12 17:57:18  ckp2
+%% Warn about the meaning of F and F2 in this context.
+%%
 %% Revision 1.19  2002/02/27 19:52:35  ckp2
 %% RIC: Whenever SPAWN command is used with unexpanded environment variable as arg,
 %% ensure that arg is in double quotes in case expanded value contains spaces.

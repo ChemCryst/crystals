@@ -1,4 +1,5 @@
 %SCRIPT XGUIDECI
+% VARIABLE CHARACTER INSTITLE
 %%
 %%  1 Run KCCDIN
 %%  2 Run RC93
@@ -51,6 +52,9 @@
 %        END BLOCK
 %%
 %        BLOCK % 8
+^^??       INSTTL TEXT
+%          GET SILENT NOSTORE TEXT 'institle?' ' '
+%          EVALUATE INSTITLE = CVALUE
 %          COPY '#SCRIPT XINLIST6'
 %        END BLOCK
 %%

@@ -1,4 +1,5 @@
 %SCRIPT XGUIDE
+% VARIABLE CHARACTER INSTITLE
 %%
 %% Determine current state of analysis.
 %% Call appropriate Sub-Guide.
