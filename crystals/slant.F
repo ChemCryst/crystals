@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2001/03/28 13:35:17  richard
+C Calls to KDIST1 should have JFNVC as 0 if there is no function vector!
+C
 C Revision 1.11  2001/01/15 12:15:25  richard
 C Append symmetry information to end of slant fourier maps,
 C for Michal Husak.
@@ -1274,6 +1277,7 @@ C--
       EQUIVALENCE (IOUFIL, PROCS(28))
 
       DATA NCOL/28/
+      DATA IPEAK /'Q   '/
       
 C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
       DATA D13 / 4.0 /, D13S / 9.0 /
@@ -1408,10 +1412,17 @@ C----- SCAN LIST 5 SETTING SPARE TO VDW RADIUS
             END IF
          END DO
          IF ( IFOUND .EQ. 0 ) THEN
+           IF ( ISTORE(M5) .EQ. IPEAK ) THEN
+            STORE(M5+14) = 0.0
+             WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+     2           ' ignored.'
+             CALL XPRVDU(NCVDU, 1,0)
+           ELSE
             STORE(M5+14) = 1.78
-            WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+             WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
      2           ' not in LIST 29 - using carbon VDW of 1.78A'
-            CALL XPRVDU(NCVDU, 1,0)
+             CALL XPRVDU(NCVDU, 1,0)
+           END IF
          END IF
       END DO
 
@@ -1498,7 +1509,9 @@ C------ COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
             NBONDS = NDIST
             DIST = AC
             DO K = JE, JE+(JT*(NBONDS-1)),JT
-               DIST = MIN(DIST, STORE(K+10) - STORE(ISTORE(K)+14))
+               IF ( ISTORE(ISTORE(K)) .NE. IPEAK ) THEN
+                  DIST = MIN(DIST, STORE(K+10) - STORE(ISTORE(K)+14))
+               END IF
             END DO
 
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
