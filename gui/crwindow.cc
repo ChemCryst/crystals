@@ -107,6 +107,8 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 		mSelfInitialised = true;
 		
 		void* modalParent = nil;
+                if (void* modalParentWindow = mModalWindowStack.GetLastItem()) //NB: Assignment(=), not comparison(==)
+                        modalParent = ((CrWindow*)modalParentWindow)->GetWidget();
 		
 		// Get attributes
 		while ( hasTokenForMe )
@@ -118,10 +120,7 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 					tokenList->GetToken(); // Remove that token!
 					attributes += kModal;
 					mIsModal = true;
-					if (void* modalParentWindow = mModalWindowStack.GetLastItem())
-						modalParent = ((CrWindow*)modalParentWindow)->GetWidget();
 					mModalWindowStack.AddItem((void*)this);
-
 					LOGSTAT( "Setting Window modal" );
 					break;
 				}
@@ -175,12 +174,12 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 						LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+nearWindow);
 					break;
 				}
-                        case kTKeep:
-                        {
-                              tokenList->GetToken();
-                              m_Keep = true;
-                              break;
-                        }
+                                case kTKeep:
+                                {
+                                      tokenList->GetToken();
+                                      m_Keep = true;
+                                      break;
+                                }
 				default:
 				{
 					hasTokenForMe = false;
@@ -783,3 +782,10 @@ void CrWindow::SysKeyReleased ( UINT nChar )
             elem->SysKeyUp ( nChar );
       }
 }
+
+
+void CrWindow::NotifyControl()
+{
+      (CcController::theController)->RemoveWindowFromList(this);
+}
+

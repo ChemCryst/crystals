@@ -65,6 +65,7 @@ class	CrWindow : public CrGUIElement
 		void CloseWindow();
 		void Committed();
 		void Cancelled();
+                void NotifyControl();
 
             void SysKeyPressed ( UINT nChar );
             void SysKeyReleased ( UINT nChar );
