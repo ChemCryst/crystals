@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/12/12 17:49:01  Administrator
+C matrix calculator
+C
 C Revision 1.9  2001/10/09 10:34:39  ckp2
 C Punch 41 for Simon's project.
 C
@@ -283,7 +286,7 @@ C----- NOT PERMITTED
 
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-DJWFEB2000      IF(ICLASS)7310,7320,7330
+CDJWFEB2000      IF(ICLASS)7310,7320,7330
       GOTO (7310,7320,7330,7340), ICLASS+2
 C--NORMAL PUNCH FORMAT
 7310  CONTINUE
