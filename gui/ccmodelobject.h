@@ -18,6 +18,8 @@ class CcModelDoc;
 
 #define CC_ATOM 1
 #define CC_BOND 2
+#define CC_SPHERE 3
+#define CC_DONUT 4
 
 class CcModelStyle;
 
@@ -40,5 +42,7 @@ class CcModelObject
 
 #include	"ccmodelatom.h"
 #include	"ccmodelbond.h"
+#include        "ccmodelsphere.h"
+#include        "ccmodeldonut.h"
 
 #endif

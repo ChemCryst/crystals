@@ -474,9 +474,15 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 #endif
       CcString atomname;
       CcModelObject* object;
-      if( IsAtomClicked(point.x, point.y, &atomname, &object, true))
+      int type = 0;
+      if( type = IsAtomClicked(point.x, point.y, &atomname, &object, true))
       {
+        if ( type == CC_ATOM )
          ((CcModelAtom*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
+        else if ( type == CC_SPHERE )
+         ((CcModelSphere*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
+        else if ( type == CC_DONUT )
+         ((CcModelDonut*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
       }
       m_ptLDown = point;  //maybe start rotating from here.
       break;
@@ -650,6 +656,19 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
               {
                 labelstring += "  " + CcString ((float)((CcModelAtom*)object)->sparerad/1000.0);
               }
+              if ( objectType == CC_ATOM )
+              {
+                if ( ((CcModelAtom*)object)->occ != 1000 )
+                   labelstring += " occ:" + CcString ((float)((CcModelAtom*)object)->occ/1000.0);
+              }
+              else if ( objectType == CC_SPHERE )
+              {
+                labelstring += " shell occ:" + CcString ((float)((CcModelSphere*)object)->occ/1000.0);
+              }
+              else if ( objectType == CC_DONUT )
+              {
+                labelstring += " annulus occ:" + CcString ((float)((CcModelDonut*)object)->occ/1000.0);
+              }
               CreatePopup(labelstring, point);
               ChooseCursor(CURSORCOPY);
               (CcController::theController)->SetProgressText(&labelstring);
@@ -761,7 +780,7 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
     point = CcPoint(wpoint.x,wpoint.y);
 #endif
 
-  if ( obtype == CC_ATOM )
+  if ( obtype == CC_ATOM || obtype == CC_SPHERE || obtype == CC_DONUT )
   {
     atom = (CcModelAtom*)object;
     if (atom->IsSelected()) // If it's selected pass the atom-clicked, and all the selected atoms.

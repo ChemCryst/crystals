@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2002/03/13 12:26:26  richard
+//   One new popupmenu for clicking on bonds.
+//
 //   Revision 1.21  2001/09/07 14:39:06  ckp2
 //
 //   New modelwindow function lets the user choose a background bitmap to
@@ -327,11 +330,25 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         CcString atomLabel = tokenList->GetToken();
         if(m_ModelDoc)
         {
-          CcModelAtom* atom = m_ModelDoc->FindAtomByLabel(atomLabel);
-          if (atom)
+          CcModelObject* oitem = m_ModelDoc->FindAtomByLabel(atomLabel);
+          if (oitem)
           {
-            if (atom->IsSelected()) (CcController::theController)->SendCommand("SET");
-            else                    (CcController::theController)->SendCommand("UNSET");
+            if ( oitem->Type()==CC_ATOM )
+            {
+              if (((CcModelAtom*)oitem)->IsSelected()) (CcController::theController)->SendCommand("SET");
+              else                                     (CcController::theController)->SendCommand("UNSET");
+            }
+            else if ( oitem->Type()==CC_SPHERE )
+            {
+              if (((CcModelSphere*)oitem)->IsSelected()) (CcController::theController)->SendCommand("SET");
+              else                                     (CcController::theController)->SendCommand("UNSET");
+            }
+            else if ( oitem->Type()==CC_DONUT )
+            {
+              if (((CcModelDonut*)oitem)->IsSelected()) (CcController::theController)->SendCommand("SET");
+              else                                     (CcController::theController)->SendCommand("UNSET");
+            }
+
           }
           else LOGERR("CrModel:ParseInput:kTCheckValue No such atom");
         }

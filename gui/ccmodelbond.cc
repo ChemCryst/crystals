@@ -90,9 +90,13 @@ void CcModelBond::ParseInput(CcTokenList* tokenList)
     CcString catom2 = tokenList->GetToken();
     m_label = catom1 + "-" + catom2 + " " + tokenList->GetToken();
     m_bondtype = atoi( tokenList->GetToken().ToCString() );
-    m_atom1 = mp_parent->FindAtomByLabel( catom1 );
-    m_atom2 = mp_parent->FindAtomByLabel( catom2 );
-
+    CcModelObject *oitem;
+    oitem = mp_parent->FindAtomByLabel( catom1 );
+    if ( oitem && oitem->Type()==CC_ATOM )
+       m_atom1 = (CcModelAtom*)oitem;
+    oitem = mp_parent->FindAtomByLabel( catom2 );
+    if ( oitem && oitem->Type()==CC_ATOM )
+       m_atom2 = (CcModelAtom*)oitem;
 
 // Do these calculations now. Uses 3 bytes more memory per bond, but saves a lot of time later,
 // as they were re-calculated every time the model is rotated.
@@ -218,9 +222,9 @@ void CcModelBond::Render(CcModelStyle *style)
 //        glCallList(TORUS);
 
         float rc = (float)bondrad; // torus thickness
-        int numc = detail;             // num of cylinders to make torus?
+        int numt = max(5,detail);             // num of cylinders to make torus?
         float rt = m_length ;          // torus radius
-        int numt = detail;             // num of sides to cylinder?
+        int numc = detail;             // num of sides to cylinder?
         float s, t;
         float x, y, z;
         float pi, twopi;

@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2002/06/25 11:58:09  richard
+// Use _F in popup-menu commands to substitute in all atoms in fragment connected
+// to clicked-on atom.
+//
 // Revision 1.15  2002/05/15 17:25:00  richard
 // Bug fix.
 //
@@ -99,6 +103,8 @@ CcModelDoc::CcModelDoc( )
 {
     mAtomList = new CcList();
     mBondList = new CcList();
+    mSphereList = new CcList();
+    mDonutList = new CcList();
 //        mCellList = new CcList();
 //        mTriList = new CcList();
     m_nAtoms = 0;
@@ -111,6 +117,9 @@ CcModelDoc::~CcModelDoc()
 {
     mAtomList->Reset();
     mBondList->Reset();
+    mSphereList->Reset();
+    mDonutList->Reset();
+
 //        mCellList->Reset();
 //        mTriList->Reset();
     CcModelObject* theItem ;
@@ -122,6 +131,16 @@ CcModelDoc::~CcModelDoc()
     while ( ( theItem = (CcModelObject *)mBondList->GetItem() ) != nil )
     {
         mBondList->RemoveItem();
+        delete theItem;
+    }
+    while ( ( theItem = (CcModelObject *)mSphereList->GetItem() ) != nil )
+    {
+        mSphereList->RemoveItem();
+        delete theItem;
+    }
+    while ( ( theItem = (CcModelObject *)mDonutList->GetItem() ) != nil )
+    {
+        mDonutList->RemoveItem();
         delete theItem;
     }
 //        while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
@@ -137,6 +156,8 @@ CcModelDoc::~CcModelDoc()
 
     delete mAtomList;
     delete mBondList;
+    delete mSphereList;
+    delete mDonutList;
 //        delete mCellList;
 //        delete mTriList;
 
@@ -222,6 +243,8 @@ void CcModelDoc::Clear()
 {
     mAtomList->Reset();
     mBondList->Reset();
+    mSphereList->Reset();
+    mDonutList->Reset();
 //        mCellList->Reset();
 //        mTriList->Reset();
 
@@ -235,6 +258,16 @@ void CcModelDoc::Clear()
     while ( ( theItem = (CcModelObject *)mBondList->GetItem() ) != nil )
     {
         mBondList->RemoveItem();
+        delete theItem;
+    }
+    while ( ( theItem = (CcModelObject *)mSphereList->GetItem() ) != nil )
+    {
+        mSphereList->RemoveItem();
+        delete theItem;
+    }
+    while ( ( theItem = (CcModelObject *)mDonutList->GetItem() ) != nil )
+    {
+        mDonutList->RemoveItem();
         delete theItem;
     }
 //      while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
@@ -295,29 +328,66 @@ void CcModelDoc::Select(Boolean selected)
 
 void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 {
-    CcModelAtom* item = FindAtomByLabel(atomname);
-    if(item)
-        item->Select(select);
-//      ReDrawHighlights(true);
-      DrawViews();
+    CcModelObject* item = FindAtomByLabel(atomname);
 
+    if(item)
+    {
+      if ( item->Type() == CC_ATOM )
+      {
+        ((CcModelAtom*)item)->Select(select);
+      }
+      else if ( item->Type() == CC_SPHERE )
+      {
+        ((CcModelSphere*)item)->Select(select);
+      }
+      else if ( item->Type() == CC_DONUT )
+      {
+        ((CcModelDonut*)item)->Select(select);
+      }
+      DrawViews();
+    }
 }
 
 void CcModelDoc::DisableAtomByLabel(CcString atomname, Boolean select)
 {
-    CcModelAtom* item = FindAtomByLabel(atomname);
-    if(item)
-                item->Disable(select);
-      DrawViews();
+    CcModelObject* item = FindAtomByLabel(atomname);
 
+    if(item)
+    {
+      if ( item->Type() == CC_ATOM )
+      {
+        ((CcModelAtom*)item)->Disable(select);
+      }
+      else if ( item->Type() == CC_SPHERE )
+      {
+        ((CcModelSphere*)item)->Disable(select);
+      }
+      else if ( item->Type() == CC_DONUT )
+      {
+        ((CcModelDonut*)item)->Disable(select);
+      }
+      DrawViews();
+    }
 }
 
-CcModelAtom* CcModelDoc::FindAtomByLabel(CcString atomname)
+CcModelObject* CcModelDoc::FindAtomByLabel(CcString atomname)
 {
     CcString nAtomname = Compress(atomname);
     mAtomList->Reset();
-    CcModelAtom* item;
-    while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+    mSphereList->Reset();
+    mDonutList->Reset();
+    CcModelObject* item;
+    while ( (item = (CcModelObject*)mAtomList->GetItemAndMove()) != nil )
+    {
+        if(item->Label() == nAtomname)
+            return item;
+    }
+    while ( (item = (CcModelObject*)mSphereList->GetItemAndMove()) != nil )
+    {
+        if(item->Label() == nAtomname)
+            return item;
+    }
+    while ( (item = (CcModelObject*)mDonutList->GetItemAndMove()) != nil )
     {
         if(item->Label() == nAtomname)
             return item;
@@ -343,22 +413,36 @@ void CcModelDoc::SelectAllAtoms(Boolean select)
 {
     mAtomList->Reset();
     CcModelAtom* item;
-      int i=0;
+    CcModelSphere* sitem;
+    CcModelDonut* ditem;
+    int i=0;
     while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
     {
-            i++;
-        item->Select(select);
+      i++;
+      item->Select(select);
     }
-      DrawViews();
-      if ( select )
-      {
-            nSelected = i;
-      }
-      else
-      {
-            nSelected = 0;
-      }
-      (CcController::theController)->status.SetNumSelectedAtoms( nSelected );
+    while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) != nil )
+    {
+      i++;
+      sitem->Select(select);
+    }
+    DrawViews();
+    while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) != nil )
+    {
+      i++;
+      ditem->Select(select);
+    }
+    DrawViews();
+
+    if ( select )
+    {
+      nSelected = i;
+    }
+    else
+    {
+      nSelected = 0;
+    }
+    (CcController::theController)->status.SetNumSelectedAtoms( nSelected );
 
 }
 
@@ -441,17 +525,31 @@ void CcModelDoc::InvertSelection()
 
 Boolean CcModelDoc::RenderModel( CcModelStyle * style )
 {
-   if ( mAtomList->ListSize() || mBondList->ListSize() )
+   if ( mAtomList->ListSize()   || mBondList->ListSize() ||
+        mSphereList->ListSize() || mDonutList->ListSize()  )
    {
       CcModelAtom* aitem;
       CcModelBond* bitem;
+      CcModelSphere* sitem;
+      CcModelDonut* ditem;
       GLuint glIDCount = 0;
 
+      int nRes = (int) ( 1250.0 / mAtomList->ListSize() );
+      nRes = min ( 15, nRes );
+      nRes = max ( 4,  nRes );
+      int qRes = (int) ( 500.0 / mAtomList->ListSize() );
+      qRes = min ( 5, qRes );
+      qRes = max ( 3,  qRes );
+
+      style->normal_res = nRes;
+      style->quick_res  = qRes;
 
       if ( style->high_res )
       {
 //High res normal atoms:
         mAtomList->Reset();
+        mSphereList->Reset();
+        mDonutList->Reset();
         glDeleteLists(ATOMLIST,1);
         glNewList( ATOMLIST, GL_COMPILE);
         {
@@ -468,7 +566,31 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             aitem->m_glID = glIDCount;
           }
         }
+        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+        {
+//not excluded, not selected, not disabled:
+          if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            sitem->Render(style);
+            sitem->m_glID = glIDCount;
+          }
+        }
+        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+        {
+//not excluded, not selected, not disabled:
+          if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            ditem->Render(style);
+            ditem->m_glID = glIDCount;
+          }
+        }
+
+
         mAtomList->Reset();
+        mSphereList->Reset();
+        mDonutList->Reset();
         {
           GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
           GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
@@ -485,7 +607,31 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             aitem->m_glID = glIDCount;
           }
         }
+        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+        {
+//not excluded, selected:
+          if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
+          {
+            glLoadName ( ++ glIDCount );
+            sitem->Render(style);
+            sitem->m_glID = glIDCount;
+          }
+        }
+        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+        {
+//not excluded, selected:
+          if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
+          {
+            glLoadName ( ++ glIDCount );
+            ditem->Render(style);
+            ditem->m_glID = glIDCount;
+          }
+        }
+
+
         mAtomList->Reset();
+        mSphereList->Reset();
+        mDonutList->Reset();
         {
           GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -500,6 +646,26 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
             aitem->m_glID = glIDCount;
+          }
+        }
+        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+        {
+//not excluded, not selected, disabled
+          if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            sitem->Render(style);
+            sitem->m_glID = glIDCount;
+          }
+        }
+        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+        {
+//not excluded, not selected, disabled
+          if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            ditem->Render(style);
+            ditem->m_glID = glIDCount;
           }
         }
         glEndList();
@@ -559,6 +725,8 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
         glDeleteLists(QATOMLIST,1);
         glNewList( QATOMLIST, GL_COMPILE);
         mAtomList->Reset();
+        mSphereList->Reset();
+        mDonutList->Reset();
         {
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
           glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
@@ -573,7 +741,29 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             aitem->m_glID = glIDCount;
           }
         }
+        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+        {
+//not excluded, not selected, not disabled:
+          if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            sitem->Render(style);
+            sitem->m_glID = glIDCount;
+          }
+        }
+        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+        {
+//not excluded, not selected, not disabled:
+          if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            ditem->Render(style);
+            ditem->m_glID = glIDCount;
+          }
+        }
         mAtomList->Reset();
+        mSphereList->Reset();
+        mDonutList->Reset();
         {
           GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
           GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
@@ -590,7 +780,29 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             aitem->m_glID = glIDCount;
           }
         }
+        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+        {
+//not excluded, selected:
+          if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
+          {
+            glLoadName ( ++ glIDCount );
+            sitem->Render(style);
+            sitem->m_glID = glIDCount;
+          }
+        }
+        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+        {
+//not excluded, selected:
+          if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
+          {
+            glLoadName ( ++ glIDCount );
+            ditem->Render(style);
+            ditem->m_glID = glIDCount;
+          }
+        }
         mAtomList->Reset();
+        mSphereList->Reset();
+        mDonutList->Reset();
         {
           GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -605,6 +817,26 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
             glLoadName ( ++ glIDCount );
             aitem->Render(style);
             aitem->m_glID = glIDCount;
+          }
+        }
+        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+        {
+//not excluded, not selected, disabled
+          if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            sitem->Render(style);
+            sitem->m_glID = glIDCount;
+          }
+        }
+        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+        {
+//not excluded, not selected, disabled
+          if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
+          {
+            glLoadName ( ++ glIDCount );
+            ditem->Render(style);
+            ditem->m_glID = glIDCount;
           }
         }
         glEndList();
@@ -657,6 +889,9 @@ void CcModelDoc::FlagFrag(CcString atomname)
 {
    CcModelAtom *aitem;
    CcModelBond *bitem;
+   CcModelSphere *sitem;
+   CcModelDonut *ditem;
+   CcModelObject *oitem;
 
 // Set spare to false for all atoms
 
@@ -668,12 +903,45 @@ void CcModelDoc::FlagFrag(CcString atomname)
         aitem->spare = false;
       }
    }
+   if ( mSphereList->ListSize() )
+   {
+      mSphereList->Reset();
+      while ((sitem = (CcModelSphere*)mSphereList->GetItemAndMove()))
+      {
+        sitem->spare = false;
+      }
+   }
+   if ( mDonutList->ListSize() )
+   {
+      mDonutList->Reset();
+      while ((ditem = (CcModelDonut*)mDonutList->GetItemAndMove()))
+      {
+        ditem->spare = false;
+      }
+   }
 
 // Set spare to true for the passed in atom.
 
-   aitem = FindAtomByLabel(atomname);
-   if ( aitem ) aitem->spare = true;
-   int nChanged = 1;
+   int nChanged=0;
+
+   if ( oitem = FindAtomByLabel(atomname) )
+   {
+     if ( oitem->Type() == CC_ATOM )
+     {
+       ((CcModelAtom*)oitem)->spare = true;
+       nChanged = 1;
+     }
+     else if ( oitem->Type() == CC_SPHERE )
+     {
+       ((CcModelSphere*)oitem)->spare = true;
+       nChanged = 1;
+     }
+     else if ( oitem->Type() == CC_DONUT )
+     {
+       ((CcModelDonut*)oitem)->spare = true;
+       nChanged = 1;
+     }
+   }
 
 // Loop setting spare to true for any atoms bonded to other atoms
 // that also have spare true, until no more changes.
@@ -709,6 +977,8 @@ void CcModelDoc::FlagFrag(CcString atomname)
 void CcModelDoc::SelectFrag(CcString atomname, bool select)
 {
    CcModelAtom *aitem;
+   CcModelSphere *sitem;
+   CcModelDonut *ditem;
 
    FlagFrag ( atomname );
 
@@ -722,6 +992,22 @@ void CcModelDoc::SelectFrag(CcString atomname, bool select)
          if ( aitem->spare ) aitem->Select(select);
       }
    }
+   if ( mSphereList->ListSize() )
+   {                  
+      mSphereList->Reset();
+      while ((sitem = (CcModelSphere*)mSphereList->GetItemAndMove()))
+      {
+         if ( sitem->spare ) sitem->Select(select);
+      }
+   }
+   if ( mDonutList->ListSize() )
+   {                  
+      mDonutList->Reset();
+      while ((ditem = (CcModelDonut*)mDonutList->GetItemAndMove()))
+      {
+         if ( ditem->spare ) ditem->Select(select);
+      }
+   }
    DrawViews();
 }
 
@@ -730,6 +1016,8 @@ CcString CcModelDoc::FragAsString( CcString atomname, CcString delimiter )
 {
   CcString result;
   CcModelAtom * aitem;
+  CcModelSphere * sitem;
+  CcModelDonut * ditem;
 
   FlagFrag ( atomname );
 
@@ -742,6 +1030,22 @@ CcString CcModelDoc::FragAsString( CcString atomname, CcString delimiter )
         if ( aitem->spare ) result += aitem->Label() + delimiter;
      }
   }
+  if ( mSphereList->ListSize() )
+  {                  
+     mSphereList->Reset();
+     while ((sitem = (CcModelSphere*)mSphereList->GetItemAndMove()))
+     {
+        if ( sitem->spare ) result += sitem->Label() + delimiter;
+     }
+  }
+  if ( mDonutList->ListSize() )
+  {                  
+     mDonutList->Reset();
+     while ((ditem = (CcModelDonut*)mDonutList->GetItemAndMove()))
+     {
+        if ( ditem->spare ) result += ditem->Label() + delimiter;
+     }
+  }
   return result;
 }
 
@@ -751,11 +1055,23 @@ CcString CcModelDoc::SelectedAsString( CcString delimiter )
 {
   CcString result;
   CcModelAtom * anAtom;
+  CcModelSphere * aSphere;
+  CcModelDonut * aDonut;
 
   mAtomList->Reset();
+  mSphereList->Reset();
+  mDonutList->Reset();
   while ( anAtom = (CcModelAtom*)mAtomList->GetItemAndMove() ) 
   {
      if( anAtom->IsSelected() ) result += anAtom->Label() + delimiter;
+  }
+  while ( aSphere = (CcModelSphere*)mSphereList->GetItemAndMove() ) 
+  {
+     if( aSphere->IsSelected() ) result += aSphere->Label() + delimiter;
+  }
+  while ( aDonut = (CcModelDonut*)mDonutList->GetItemAndMove() ) 
+  {
+     if( aDonut->IsSelected() ) result += aDonut->Label() + delimiter;
   }
   return result;
 
@@ -772,6 +1088,24 @@ void CcModelDoc::SendAtoms( int style, Boolean sendonly )
       while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
       {
         if ( aitem->IsSelected() ) aitem->SendAtom (style, sendonly);
+      }
+   }
+   if ( mSphereList->ListSize() )
+   {
+      mSphereList->Reset();
+      CcModelSphere* sitem;
+      while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+      {
+        if ( sitem->IsSelected() ) sitem->SendAtom (style, sendonly);
+      }
+   }
+   if ( mDonutList->ListSize() )
+   {
+      mDonutList->Reset();
+      CcModelDonut* ditem;
+      while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+      {
+        if ( ditem->IsSelected() ) ditem->SendAtom (style, sendonly);
       }
    }
 }
@@ -791,6 +1125,38 @@ void CcModelDoc::ZoomAtoms( Boolean doZoom )
         else
         {
           aitem->m_excluded = doZoom;
+        }
+     }
+  }
+  if ( mSphereList->ListSize() )
+  {
+     mSphereList->Reset();
+     CcModelSphere* sitem;
+     while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
+     {
+        if ( sitem->IsSelected() )
+        {
+          sitem->m_excluded = false;
+        }
+        else
+        {
+          sitem->m_excluded = doZoom;
+        }
+     }
+  }
+  if ( mDonutList->ListSize() )
+  {
+     mDonutList->Reset();
+     CcModelDonut* ditem;
+     while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
+     {
+        if ( ditem->IsSelected() )
+        {
+          ditem->m_excluded = false;
+        }
+        else
+        {
+          ditem->m_excluded = doZoom;
         }
      }
   }
@@ -824,6 +1190,22 @@ CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
         if ( aitem->m_glID == name )  return aitem;
      }
   }
+  if ( mSphereList->ListSize() )
+  {
+     mSphereList->Reset();
+     while ( (aitem = (CcModelObject*)mSphereList->GetItemAndMove()) )
+     {
+        if ( aitem->m_glID == name )  return aitem;
+     }
+  }
+  if ( mDonutList->ListSize() )
+  {
+     mDonutList->Reset();
+     while ( (aitem = (CcModelObject*)mDonutList->GetItemAndMove()) )
+     {
+        if ( aitem->m_glID == name )  return aitem;
+     }
+  }
   return nil;
 }
 
@@ -849,6 +1231,26 @@ void CcModelDoc::FastAtom(CcString label,int x1,int y1,int z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,this);
     mAtomList->AddItem(item);
+}
+
+void CcModelDoc::FastSphere(CcString label,int x1,int y1,int z1, 
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag, int iso, int irad)
+{
+    CcModelSphere* item = new CcModelSphere(label,x1,y1,z1, 
+                          r,g,b,occ,cov,vdw,spare,flag,
+                          iso,irad,this);
+    mSphereList->AddItem(item);
+}
+
+void CcModelDoc::FastDonut(CcString label,int x1,int y1,int z1,
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag, int iso, int irad, int idec, int iaz)
+{
+    CcModelDonut* item = new CcModelDonut(label,x1,y1,z1, 
+                          r,g,b,occ,cov,vdw,spare,flag,
+                          iso,irad,idec,iaz,this);
+    mDonutList->AddItem(item);
 }
 
 
@@ -878,6 +1280,26 @@ void fastatom_  (char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int u1,int u2,int u3,int u4,int u5,
                 int u6,int u7,int u8,int u9);
+#endif
+#ifdef __BOTHWIN__
+void fastsphere  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad);
+#endif
+#ifdef __LINUX__
+void fastsphere_  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad);
+#endif
+#ifdef __BOTHWIN__
+void fastdonut  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz);
+#endif
+#ifdef __LINUX__
+void fastdonut_  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz);
 #endif
 
 //implementations:
@@ -924,6 +1346,43 @@ void fastatom_  (char* label,int x1,int y1,int z1,
 
 }
 
+#ifdef __BOTHWIN__
+void fastsphere  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad)
+#endif
+#ifdef __LINUX__
+void fastsphere_  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad)
+#endif
+{
+      CcString clabel = label;
+      LOGSTAT ( "-----------Fastsphere added:" + clabel );
+      if ( CcModelDoc::sm_CurrentModelDoc )
+            CcModelDoc::sm_CurrentModelDoc->FastSphere(clabel,x1,y1,z1, 
+                          r,g,b,occ,cov,vdw,spare,flag,iso,irad) ;
+
+}
+
+#ifdef __BOTHWIN__
+void fastdonut  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz)
+#endif
+#ifdef __LINUX__
+void fastdonut_  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz)
+#endif
+{
+      CcString clabel = label;
+      LOGSTAT ( "-----------Fastdonut added:" + clabel );
+      if ( CcModelDoc::sm_CurrentModelDoc )
+            CcModelDoc::sm_CurrentModelDoc->FastDonut(clabel,x1,y1,z1, 
+                          r,g,b,occ,cov,vdw,spare,flag,iso,irad,idec,iaz) ;
+
+}
 
 }
 

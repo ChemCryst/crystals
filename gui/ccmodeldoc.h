@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/06/25 11:58:09  richard
+//   Use _F in popup-menu commands to substitute in all atoms in fragment connected
+//   to clicked-on atom.
+//
 //   Revision 1.10  2002/03/13 12:25:45  richard
 //   Update variable names. Added FASTBOND and FASTATOM routines which can be called
 //   from the Fortran instead of passing data through the text channel.
@@ -52,6 +56,8 @@ class CcTokenList;
 class CrModel;
 class CcList;
 class CcModelAtom;
+class CcModelSphere;
+class CcModelDonut;
 class CcModelObject;
 class CcModelStyle;
 class CcModelDoc;
@@ -66,7 +72,7 @@ class CcModelDoc
         void SelectAllAtoms(Boolean select);
         void SelectAtomByLabel(CcString atomname, Boolean select);
         void DisableAtomByLabel(CcString atomname, Boolean select);
-        CcModelAtom* FindAtomByLabel(CcString atomname);
+        CcModelObject* FindAtomByLabel(CcString atomname);
         CcModelAtom* FindAtomByPosn(int posn);
 
         void FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
@@ -78,6 +84,16 @@ class CcModelDoc
                           int spare, int flag,
                           int u1,int u2,int u3,int u4,int u5,
                           int u6,int u7,int u8,int u9);
+
+        void FastSphere(CcString label,int x1,int y1,int z1, 
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag,
+                          int iso, int irad);
+
+        void FastDonut(CcString label,int x1,int y1,int z1,
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag,
+                          int iso, int irad, int idec, int iaz);
 
         void ExcludeBonds();
 
@@ -117,6 +133,8 @@ class CcModelDoc
         int m_TotZ;
         CcList* mAtomList;
         CcList* mBondList;
+        CcList* mSphereList;
+        CcList* mDonutList;
 //                CcList* mCellList;
 //                CcList* mTriList;
 };
