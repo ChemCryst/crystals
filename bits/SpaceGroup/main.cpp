@@ -81,7 +81,7 @@ void runTest(RunStruct *pRunData)
     struct timeval time1;
     struct timeval time2;
     gettimeofday(&time1, NULL);
-    Tables tTables(pRunData->iTablesFile);
+    Tables* tTables = new Tables(pRunData->iTablesFile);
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     if (pRunData->iCrystalSys[0] == 0)
@@ -90,31 +90,36 @@ void runTest(RunStruct *pRunData)
     }
     std::cout << "\nReading in hkl data...";
     gettimeofday(&time1, NULL);
-    HKLData tHKL(pRunData->iFileName);
+    HKLData* tHKL = new HKLData(pRunData->iFileName);
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nCalculating probabilities...";
     gettimeofday(&time1, NULL);
-    Table* tTable = tTables.findTable(pRunData->iCrystalSys);
-    Stats tStats(tTables.getHeadings(), tTables.getConditions());
-    int tNumRef = tHKL.numberOfReflections();
+    Table* tTable = tTables->findTable(pRunData->iCrystalSys);
+    Stats* tStats = new Stats(tTables->getHeadings(), tTables->getConditions());
+    int tNumRef = tHKL->numberOfReflections();
     for (int i = 0; i < tNumRef; i++)
     {
-        Reflection* tReflection = tHKL.getReflection(i);
-        tStats.addReflection(tReflection);
+        Reflection* tReflection = tHKL->getReflection(i);
+        tStats->addReflection(tReflection);
     }
     gettimeofday(&time2, NULL);
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     gettimeofday(&time1, NULL);
-    tStats.calProbs();
+    tStats->calProbs();
     gettimeofday(&time2, NULL);
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\nRanking space groups...";
     gettimeofday(&time1, NULL);
-    RankedSpaceGroups tRankings(*tTable, tStats, pRunData->iChiral);
+    RankedSpaceGroups* tRankings = new RankedSpaceGroups(*tTable, *tStats, pRunData->iChiral);
     gettimeofday(&time2, NULL);
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\n" << tRankings << "\n";
+    delete tRankings;
+    delete tStats;
+    delete tHKL;
+    delete tTables;
+    std::cout << MyObject::objectCount() << " objects left.\n";
 }
 
 void initRunStruct(RunStruct *pRunStruct)
