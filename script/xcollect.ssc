@@ -49,7 +49,7 @@ to existing atoms.
 %             BLOCK                %BUTTONOK%
 %                 QUEUE REWIND
 %                 CLEAR
-^^WI              GETVALUE XNEW
+^^WI              GETVALUE XALL
 ^^CR
 %                 VERIFY ON OFF
 %                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
