@@ -1,9 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2003/11/13 14:06:02  rich
+C Change element names to mixed case in summary and HTML output.
+C
 C Revision 1.70  2003/11/06 15:50:08  rich
 C Added to the CIF atom loop_:
 C
-C   _atom_site_refinement_disorder_assembly
-C   _atom_site_refinement_disorder_group
+C   _atom_site_disorder_assembly
+C   _atom_site_disorder_group
 C
 C  These keys take the value of the assembly and group bits of the part
 C  key in L5 respectively. Otherwise, just a '.'
@@ -1221,8 +1224,8 @@ C----- CAPTIONS FOR CIF FILE
      1 '_atom_site_refinement_flags_posn'  /
      1 '_atom_site_refinement_flags_adp'  /
      1 '_atom_site_refinement_flags_occupancy'  /
-     1 '_atom_site_refinement_disorder_assembly'  /
-     1 '_atom_site_refinement_disorder_group'  /
+     1 '_atom_site_disorder_assembly'  /
+     1 '_atom_site_disorder_group'  /
      2 '_atom_site_attached_hydrogens' )
 
       ELSE IF (IPCHCO .EQ. 3) THEN    !HEADERS FOR HTML TABLE
