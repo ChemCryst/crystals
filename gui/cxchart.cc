@@ -983,6 +983,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 			theLogfont.lfHeight -= 10;
 			memDC.SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
 		}
+                theFont.DeleteObject(); //Free memory associated with font.
 	}
 	memDC.SelectObject(oldMemDCBitmap);
 #endif
