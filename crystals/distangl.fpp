@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2004/11/10 16:43:54  djw
+C Include N-H and O-H restraint generator
+C
 C Revision 1.67  2004/09/28 10:36:52  rich
 C Move some boring messages to the listing file.
 C
@@ -1453,9 +1456,9 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
             ENDIF
 C----- N-H 
            ELSE IF ((ISTORE(M5P) .EQ. KAZOT) .AND. (NHY .GE. 1)) THEN
-            IF (KHY .GT. 4) THEN
+            IF (KHY .GE. 4) THEN
              WRITE(NCPU,'(A,I6)')
-     1      'REM Probably disordered, No of H atoms=', NHY
+     1      'REM Possibly disordered, No of H atoms=', NHY
                   UEQUIV = UEQUIV * 1.25
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
