@@ -1,6 +1,6 @@
 %SCRIPT XINLIST3
 % VARIABLE REAL MULT NUMBER
-% VARIABLE CHARACTER CLTYPE
+% VARIABLE CHARACTER CLTYPE CNUMB CELEM CTEM
 % VARIABLE INTEGER ECOUNT RADIATION ORIENTTYPE
 % VARIABLE LOGICAL LCANCEL
 % VARIABLE CHARACTER SPACEHOOK
@@ -23,7 +23,7 @@
 ^^WI  @ 8,2 STATIC T3 'e.g. C   8   N   1   O   4   H   24'
 ^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1
 ^^WI  {
-^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT
+^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT COMMIT
 ^^WI   @ 3,1 BUTTON    BXX 'Cancel' CANCEL
 ^^WI  }
 ^^WI }
@@ -52,27 +52,27 @@
 ^^WI SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
 ^^CR
 % ELSE
+^^WI SET LE TEXT=''
+^^CR
 %   COPY '#GENERALEDIT 29'
 %   COPY 'LOCATE RECORDTYPE=101'
 %   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   CLEAR
-%   INSERT "^^WI '"
 %   EVALUATE ECOUNT = 0
 %   LOOP
 %       ON EDITERROR TERMINATE
+%       CLEAR
+%       INSERT "^^WI SET LE APPEND='"
 %       COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
 %       TRANSFER CLTYPE TO BUFFER
 %       COPY 'TRANSFER FROM OFFSET=4 TO NUMBER'
 %       STORE FORMAT /(F6.2)/ LENGTH 7 REAL ( MULT * NUMBER )
 %       EVALUATE ECOUNT = ECOUNT + 1
+%       INSERT "'"
+%       OUTPUT
+^^CR
 %       COPY 'NEXT'
 %   END LOOP
-%   INSERT "'"
-%   IF ECOUNT .GT. 0 THEN
-^^WI   SET LE TEXT=
-%      OUTPUT
-^^CR
-%   ELSE
+%   IF ECOUNT .EQ. 0 THEN
 ^^WI   SET LE TEXT='C 1.0 H 1.0 O 1.0 N 1.0'
 ^^CR
 %   END IF
@@ -89,7 +89,36 @@
 %      FINISH
 %    END BLOCK
 %    BLOCK        %BOK%
+%      COPY '#LIST 13'
+%      COPY 'END'
+%      COPY '#COMPOSITION'
+%      CLEAR
+%      INSERT 'CONTENTS '
 ^^??   LE TEXT
+%      GET KEYWORD 'Element' ' '
+%      EVALUATE CELEM = CVALUE
+%      LOOP 18 TIMES
+%        GET NOPROMPT KEYWORD 'Number' ' '
+%        EVALUATE CNUMB = CVALUE
+%        GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
+%        IF ( CELEM .EQ. CNUMB ) .OR. -
+            ( CELEM .EQ. ' ' ) .OR. ( CNUMB .EQ. ' ' ) THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          SEND
+%          OUTPUT
+%          CLEAR
+%          INSERT 'CONTINUE '
+%          GET NOPROMPT KEYWORD 'Element' ' '
+%          EVALUATE CELEM = CVALUE
+%        END IF
+%      END LOOP
+%      OUTPUT
+%      CLEAR
+%      COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
+%      COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPERTI.DAT'
+%      COPY 'END'
+%%
 %      GET NOSTORE TEXT ' ' ' '
 %      EVALUATE CLTYPE = CVALUE
 ^^??   COP STATE
@@ -124,7 +153,7 @@
 %        INSERT 'DIFFRACTION GEOMETRY ='
 %        VERIFY CAD4 KAPPA EQUI ROLLETT NONE
 %        GET VERIFIED 'Diffraction geometry' 'ROLLETT'
-NOTE - 'ROLLETT' is a theoretical geometry described in Crystallographic 
+NOTE - 'ROLLETT' is a theoretical geometry described in Crystallographic
 Computing, 1969, and gives approximate corrections for most machines.
 %        EVALUATE CTYPE = CVALUE
 %        QUEUE SEND
@@ -195,12 +224,6 @@ Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
 %      CLEAR
 %      COPY '#LIST 13'
 %      QUEUE PROCESS
-%      COPY 'END'
-%%
-%      COPY '#COMPOSITION'
-%      TRANSFER 'CONTENTS ' // CLTYPE TO CRYSTALS
-%      COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
-%      COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPERTI.DAT'
 %      COPY 'END'
 %%
 %      FINISH
