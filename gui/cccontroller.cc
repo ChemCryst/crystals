@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.29  2001/06/17 15:30:06  richard
+// ScriptsExited function loops through window list and closes any MODAL windows
+// without the STAYOPEN attribute. (Prevents that problem where scripts crash
+// and leave a window open blocking the input.)
+//
 // Revision 1.28  2001/03/27 15:14:58  richard
 // Added a timer to the main window that is activated as the main window is
 // created.
@@ -213,6 +218,7 @@
 #ifdef __LINUX__
   #include <stdio.h>
   #include <unistd.h>
+  #include <errno.h>
   #define F77_STUB_REQUIRED
   #include "ccthread.h"
   #include <wx/cmndata.h>
