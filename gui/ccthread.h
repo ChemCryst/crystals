@@ -6,7 +6,6 @@
 class CcThread : public wxThread
 {
       public:
-            virtual void * Entry();
-			void CcEndThread( int exitcode = 0 );
+         virtual void * Entry();
 };
 #endif

@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.86  2004/04/16 12:50:16  rich
+// Fix compilation on Linux.
+//
 // Revision 1.85  2004/04/16 10:10:41  rich
 // If chdir fails, then popup an error message for debugging purposes.
 //
@@ -557,7 +560,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 //Things
     mErrorLog = nil;
     mThisThreadisDead = false;
-    mThatThreadisDead = false;
+//    mThatThreadisDead = false;
     m_Completing = false;
 
     m_restart = false;
@@ -877,7 +880,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
       delete (CcController::mp_inputfont);
 #endif
 
-    if(mCrystalsThread && !mThatThreadisDead)
+    if(mCrystalsThread ) //&& !mThatThreadisDead)
     {
 #ifdef __CR_WIN__
       DWORD threadStatus;
@@ -1850,8 +1853,9 @@ bool CcController::GetInterfaceCommand( char * line )
     //This routine gets called repeatedly by the Idle loop.
     //It needn't be highly optimised even though it is high on
     //the profile count list.
+  LOGSTAT("GtIfCmd.");
 
-  if( mCrystalsThread && !mThatThreadisDead)
+  if( mCrystalsThread ) // && !mThatThreadisDead)
   {
 #ifdef __CR_WIN__
     DWORD threadStatus;
@@ -1863,7 +1867,7 @@ bool CcController::GetInterfaceCommand( char * line )
 #endif
     {
       LOGSTAT("The CRYSTALS thread has died.");
-      delete mCrystalsThread;
+//      delete mCrystalsThread;
       mCrystalsThread = nil;
       if ( m_restart )
       {
@@ -1874,7 +1878,7 @@ bool CcController::GetInterfaceCommand( char * line )
       }
 
       mThisThreadisDead = true;
-      LOGSTAT("Shutting down this (GUI) thread.");
+      LOGSTAT("Shutting down the main window of this (GUI) thread.");
       strcpy(line,"^^CO DISPOSE _MAIN ");
       return (true);
     }
@@ -1884,8 +1888,14 @@ bool CcController::GetInterfaceCommand( char * line )
       LOGSTAT("The CRYSTALS thread has ended.");
       mThisThreadisDead = true;
       LOGSTAT("Shutting down this (GUI) thread.");
+#ifdef __BOTHWX__
+      ::wxExit();
+      LOGSTAT("App did not exit...");
+#endif
+#ifdef __CR_WIN__
       strcpy(line,"^^CO DISPOSE _MAIN ");
       return (true);
+#endif
   }
 
   m_Interface_Commands_CS.Enter();
@@ -3050,7 +3060,15 @@ int CrystalsThreadProc( void * arg )
     m_wait_for_thread_start.Leave();
 
     LOGSTAT("FORTRAN: Running CRYSTALS");
-    crystl_();
+    try
+    {
+       crystl_();
+    }
+    catch (CcController::MyException)
+    {
+        LOGSTAT ("Exception caught. Thread ends. Releasing mutex. Goodbye. " );
+    }
+    m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
     return 0;
 }
 #endif
@@ -3092,6 +3110,7 @@ void CcController::StartCrystalsThread()
    LOGSTAT("GUI: Releasing and waiting for wait_for_thread_start signal");
    m_wait_for_thread_start.Wait(0);
    LOGSTAT("GUI: Continuing.");
+   m_wait_for_thread_start.Leave();
 
 #endif
 
@@ -3570,6 +3589,48 @@ bool CcController::DoCommandTransferStuff()
 }
 
 
+  void CcController::endthread ( long theExitcode )
+  {
+
+        LOGSTAT ("Thread ends2. Exit code is: " + CcString ( theExitcode) );
+  
+        if ( theExitcode != 0 && theExitcode != 1000 )
+        {
+           CcController::theController->m_ExitCode = theExitcode;
+  #ifdef __CR_WIN__
+           if ( !CcController::theController->m_BatchMode )
+           {
+             MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
+             ASSERT(0);
+           }
+  #endif
+//  #ifdef __BOTHWX__
+//           if ( !CcController::theController->m_BatchMode )
+//                 wxMessageBox("Closing","Crystals ends in error",
+//                               wxOK|wxICON_HAND|wxCENTRE);
+//  #endif
+        }
+
+        if ( theExitcode != 1000 && !CcController::theController->m_restart) //Crystals does not wants re-starting. Shut down.
+        {
+//           (CcController::theController)->mThatThreadisDead = true;
+        }
+
+        LOGSTAT ("Really going now. Bye. " );
+
+  #ifdef __CR_WIN__
+        AfxEndThread((UINT) theExitcode, FALSE);
+  #endif
+  #ifdef __BOTHWX__
+        throw CcController::MyException();   // Leap right out of the Fortran
+                                             // to the top of the call stack. 
+//        (CcController::theController)->mCrystalsThread->CcEndThread(0);
+//      Never get to here
+        LOGSTAT ("Thread ends. Execution should never get here. Odd. ");
+//        (CcController::theController)->mCrystalsThread = nil;
+  #endif
+  }
+
 
 
 //////////////////////////////
@@ -3982,48 +4043,15 @@ extern "C" {
       }
       else
       {
-         endthread ( 0 );
+         CcController::theController->endthread ( 0 );
       }
   }
 
   void    FORCALL(ciendthread) (long theExitcode )
   {
-        m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
-        endthread ( theExitcode );
-  }
+        LOGSTAT ("Thread ends1. Exit code is: " + CcString ( theExitcode) );
 
-  void endthread ( long theExitcode )
-  {
-
-        LOGSTAT ("Thread ends. Exit code is: " + CcString ( theExitcode ) );
-  
-        if ( theExitcode != 0 && theExitcode != 1000 )
-        {
-           CcController::theController->m_ExitCode = theExitcode;
-  #ifdef __CR_WIN__
-           if ( !CcController::theController->m_BatchMode )
-           {
-             MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
-             ASSERT(0);
-           }
-  #endif
-  #ifdef __BOTHWX__
-           if ( !CcController::theController->m_BatchMode ) wxMessageBox("Closing","Crystals ends in error",wxOK|wxICON_HAND|wxCENTRE);
-  #endif
-        }
-
-        if ( theExitcode != 1000 && !CcController::theController->m_restart) //Crystals does not wants re-starting. Shut down.
-        {
-           (CcController::theController)->mThatThreadisDead = true;
-        }
-
-  #ifdef __CR_WIN__
-        AfxEndThread((UINT) theExitcode, FALSE);
-  #endif
-  #ifdef __BOTHWX__
-        (CcController::theController)->mCrystalsThread->CcEndThread( theExitcode );
-        (CcController::theController)->mCrystalsThread = nil;
-  #endif
+        CcController::theController->endthread ( theExitcode );
   }
 
 } // end of C functions

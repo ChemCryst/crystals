@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.35  2003/09/19 18:02:27  rich
+//   Add code to allow inclusion of subsiduary files from the guimenu.srt
+//   startup file. (Allows clear separation and structure of the GUI).
+//
 //   Revision 1.34  2003/07/01 16:38:21  rich
 //   Three small changes. (1) Set flag to indicate CRYSTALS thread exit, and
 //   exit from the GUI thread accordingly. (2) Make GETKEY a special case for
@@ -140,11 +144,15 @@ class CcMenuItem;
 class CcTool;
 class CrButton;
 
+
+
 class   CcController
 {
   public:
     CcController( CcString directory, CcString dscfile );
     ~CcController();
+     
+    class MyException { };
 
     void GetValue (CcTokenList * tokenlist);
 
@@ -243,6 +251,9 @@ class   CcController
     void TimerFired();
     bool DoCommandTransferStuff();
 
+    void  endthread ( long theExitcode  );
+
+
 // attributes
 
     CcChartDoc* mCurrentChartDoc;
@@ -321,7 +332,6 @@ extern "C" {
   // FORCALL() macro adds on _ to end of word for linux version.
 
 //  void  ciflushbuffer  (    long *theLength,    char * theLine  );
-  void  endthread      (  long theExitcode                  );
 
   void  FORCALL(cinextcommand)  (    long *theStatus,    char theLine[80]);
   void  FORCALL(ciendthread)    (  long theExitcode                  );
