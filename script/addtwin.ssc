@@ -18,7 +18,7 @@
 %    COPY '#SCRIPT EDLIST5'
 %    FINISH
 %  END IF
-{S Adding twin element scales for a two component twin to list 5...
+{S * Adding twin element scales for a two component twin to list 5...
 %%
 %  IF ( EXISTS 5 .NE. 1 ) THEN
 
@@ -35,8 +35,7 @@
 %   COPY 'WRITE'
 %   COPY 'END'
 %  END BLOCK
-{R Updated number of elements in L5.
-{S Now punching and altering element values...
+{R Updated twin elements in L5. Now punching and altering element values...
 %  BLOCK
 %   VARIABLE CHARACTER CLINE1
 %   EXTRACT CLOSE
@@ -61,14 +60,13 @@
 %     QUEUE SEND
 %   END LOOP
 %  END BLOCK
-{R Completed alteration to List5.
-{S Reading altered data back into program...
+{R Completed alteration to List5. Reading altered data back into program...
 %%
 %  COPY '#RELEASE SCPQUEUE bfile.spq'
 %  EXTRACT CLOSE
 %  COPY '#USE postwin5.dat'
-%  COPY '#SUM L 5'
-%  COPY 'END'
+%%  COPY '#SUM L 5'
+%%  COPY 'END'
 {R Done.
 %% Empty input buffer
 %  GET NOPROMPT NOSTORE TEXT ' ' ' '
