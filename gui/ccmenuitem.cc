@@ -44,3 +44,12 @@ void CcMenuItem::SetText(CcString theText)
         ((CxMenu*)parent->ptr_to_cxObject)->SetText(theText,id);
     text = theText;
 }
+
+void CcMenuItem::SetTitle(CcString theText)
+{
+    if( parent != nil) {
+        CxMenu* xp = (CxMenu*)ptr->ptr_to_cxObject;
+        ((CxMenu*)parent->ptr_to_cxObject)->SetTitle(theText,xp);
+    }
+    text = theText;
+}

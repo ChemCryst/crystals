@@ -83,7 +83,26 @@ void CxMenu::SetText(CcString theText, int id)
 #ifdef __BOTHWX__
       SetLabel( id, theText.ToCString() );
 #endif
+}
 
+void CxMenu::SetTitle(CcString theText, CxMenu* ptr)
+{
+#ifdef __CR_WIN__
+    for ( int i = 0; i < (int)GetMenuItemCount() ; i++ )
+    {
+       CxMenu* subm = (CxMenu*)GetSubMenu(i);
+       if (!subm) continue;
+       if (!subm->m_hMenu) continue;
+
+       if ( subm == ptr ) {
+          ModifyMenu(i, MF_BYPOSITION|MF_STRING, i, theText.ToCString());
+          break;
+       }
+    }
+#endif
+#ifdef __BOTHWX__
+      SetLabel( id, theText.ToCString() );
+#endif
 }
 
 void CxMenu::PopupMenuHere(int x, int y, void *window)
