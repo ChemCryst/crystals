@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.95  2004/07/02 11:38:45  rich
+// Fix command line startup mode. Correct use of putenv under unix - the
+// string passed in should not have its memory freed until the program
+// closes. Store pointers in a list, and delete at the end.
+//
 // Revision 1.94  2004/06/29 15:15:29  rich
 // Remove references to unused kTNoMoreToken. Protect against reading
 // an empty list of tokens.
@@ -1106,7 +1111,6 @@ bool CcController::ParseInput( deque<string> & tokenList )
                     {
                       //Never mind - scan for closing ], but error if find
                       //an InstructionClass first.
-                      int tok;
                       while (true)
                       {
                          if ( tokenList.empty() )

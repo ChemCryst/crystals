@@ -5,6 +5,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2004/06/28 13:26:57  rich
+// More Linux fixes, stl updates.
+//
 // Revision 1.14  2004/06/24 09:12:01  rich
 // Replaced home-made strings and lists with Standard
 // Template Library versions.
@@ -288,10 +291,7 @@ void CrEditBox::GetValue(deque<string> & tokenList)
 void    CrEditBox::BoxChanged()
 {
     if(mCallbackState)
-    {
-        char theText[256];
         SendCommand(mName + "_N" + ((CxEditBox*)ptr_to_cxObject)->GetText() );
-    }
 }
 
 int CrEditBox::GetIdealWidth()
@@ -323,7 +323,7 @@ void CrEditBox::ReturnPressed()
     else
     {
         //FocusToInput, unless this IS the input, of course.
-            if(m_IsInput)
+         if(m_IsInput)
             FocusToInput( (char)13 );
     }
 }
