@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2002/05/15 17:16:48  richard
+C Removed out of place subroutine header comment.
+C
 C Revision 1.36  2002/03/12 17:45:40  ckp2
 C In MTRNLG, special case filenames with #'s in. Trim back to before the hash before
 C inquiring whether they exist.
@@ -2385,23 +2388,37 @@ C
 \XIOBUF
 C
 C
-      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
+CRIC02      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
 C----- FIND NO LINES IN CURRENT MENU
       CALL XMNCR (NCHKUS, MNLICM, I, MNISL, MNWID)
 C      FIND THE LINE AND COLUMN ADDRESSES
       CALL XMNADD ( MNLICM)
 C
 C----- PUSH PLAIN TEXT UP TO MAKE ROOM FOR MENU
-      DO 200 I = 1, NLNFR + 3
-      WRITE( NCAWU, '(1X)')
-200   CONTINUE
+&VAX      DO  I = 1, NLNFR + 3
+&VAX      WRITE( NCAWU, '(1X)')
+&VAX      END DO
 C
 C----- RECOVER SCRIPT NAME
       ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
       ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
       IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
       CLSTNM = CSCPNM(1:LENNM)
+
+&&GILGID          WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
+&&GILGID      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
+&&GILGID         WRITE(CMON(2),'(5A)')'^^WI ''Script: ',CSCPNM(1:LENNM),
+&&GILGID     1   ' called from:', CPRVNM, ''''
+&&GILGID      ELSE
+&&GILGID         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+&&GILGID     1  CSCPNM(1:LENNM), ''''
+&&GILGID      ENDIF
+&&GILGID          WRITE(CMON(3),'(A)') '^^CR'
+&&GILGID      CALL XPRVDU(NCVDU,3,0)
+      
 C
+      IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
+
 C----- FIND THE DEFAULT MENU ITEM
       IDEF = 1
       DO 300 I = 1, NCHKUS
