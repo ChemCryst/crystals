@@ -32,10 +32,10 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 									CS_HREDRAW|CS_VREDRAW,
 									NULL,
 									(HBRUSH)(COLOR_MENU+1),
-									NULL
+                                                                        AfxGetApp()->LoadIcon(IDI_ICON1)
 									);
 
-	theWindow->mParentWnd = (CWnd*) parentWindow;
+        theWindow->mParentWnd = (CWnd*) parentWindow;
 
         theWindow->Create(                      wndClass,
 						"Window",
