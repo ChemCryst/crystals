@@ -1,10 +1,11 @@
 %SCRIPT MOGULRES
 %     VARIABLE REAL ZMAX ZSUM ZNUM ZTOT ZAVE
-%     VARIABLE REAL IDEAL ACTUAL DEV Z
+%     VARIABLE REAL IDEAL ACTUAL DEV Z EFOM RCHK EMAX ESUM ENUM
 %     VARIABLE INTEGER ZB1 ZB2 ZB3 ZB4 ZB5 ZB6 ZB7 ZB8 ZB9 ZB10
 %     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ZMISS
-%     VARIABLE INTEGER NOHIT NERROR
+%     VARIABLE INTEGER NOHIT NERROR DPVCOUNT ISER NINDEX
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
+%     VARIABLE CHARACTER CAT CELE CCHK
 %     EVALUATE ZMAX = 0.0
 %     EVALUATE ZSUM = 0.0
 %     EVALUATE ZTOT = 0.0
@@ -43,101 +44,173 @@
 ^^WI         {
 ^^WI           @ 1,1 LISTBOX MR_RES VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
-{I About to get all the FOM's
-%                 EXTRACT REWIND
-%                 LOOP
-%                   ON ERROR TERMINATE
-%                   ON END TERMINATE
+{I Fetching MOGUL data. Please wait...
+%     EXTRACT REWIND
+%     EVALUATE DPVCOUNT = 0
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%     LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      ON EDITERROR REPEAT
+%      IF ( DPVCOUNT .GT. 5000 ) THEN
+%       COPY 'WRITE'
+%       COPY 'END'
+{S Directive count limitation: Starting a new command.
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDTYPE=101'
+%       COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%       EVALUATE DPVCOUNT = 0
+%      END IF
+%%
+%      COPY 'TOP'
+%      EVALUATE DPVCOUNT = DPVCOUNT + 1
 %%
 %% Extract the original query line:
 %%
-%                   EXTRACT NEXT
-%                   EXTRACT TRANSFER INPUT
-%                   CLEAR
-%                   VERIFY DIST ANGLE TORSION
-%                   GET SILENT NOSTORE ABBREVIATED ' '
-%                   EVALUATE NIN = VALUE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      VERIFY DIST ANGLE TORSION
+%      GET SILENT NOSTORE ABBREVIATED ' '
+%      EVALUATE NIN = VALUE
 %% Read the atom numbers:
-%                   GET SILENT NOSTORE INTEGER ' '
-%                   LOOP NIN TIMES
-%                     GET SILENT NOSTORE INTEGER ' '
-%                   END LOOP
+%      GET SILENT NOSTORE INTEGER ' '
+%      LOOP NIN TIMES
+%       GET SILENT NOSTORE INTEGER ' '
+%      END LOOP
 %% Read the #:
-%                   GET SILENT NOSTORE KEYWORD ' '
+%      GET SILENT NOSTORE KEYWORD ' '
 %% Read the actual value:
-%                   GET SILENT NOSTORE REAL ' '
-%                   EVALUATE ACTUAL = VALUE
+%      GET SILENT NOSTORE REAL ' '
+%      EVALUATE ACTUAL = VALUE
 %% Read the atoms:
-%                   INSERT !^^WI '!
-%                   GET SILENT TEXT ' ' ' '
+%      INSERT !^^WI '!
+%      EVALUATE CAT1 = ' '
+%      EVALUATE CAT2 = ' '
+%      EVALUATE CAT3 = ' '
+%      EVALUATE CAT4 = ' '
+%      LOOP ( NIN + 1 ) TIMES
+%       EVALUATE CAT4 = CAT3
+%       EVALUATE CAT3 = CAT2
+%       EVALUATE CAT2 = CAT1
+%       GET SILENT KEYWORD ' '
+%       EVALUATE CAT1 = CVALUE
+%      END LOOP
 %%
 %% Extract the results line:
 %%
-%                   EXTRACT NEXT
-%                   EXTRACT TRANSFER INPUT
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
 %% See what it holds:
-%                   VERIFY NOHITS ERROR STATS
-%                   GET SILENT NOSTORE ABBREVIATED ' '
-%                   CASE VALUE
-%                    BLOCK    %NOHITS%
-%                      EVALUATE NOHIT = NOHIT + 1
-%                      INSERT 'No hits'
+%      VERIFY NOHITS ERROR STATS
+%      GET SILENT NOSTORE ABBREVIATED ' '
+%      CASE VALUE
+%       BLOCK    %NOHITS%
+%        EVALUATE NOHIT = NOHIT + 1
+%        INSERT 'No hits'
 %% Read the reason:
-%                    END BLOCK
-%                    BLOCK    %ERROR%
-%                      EVALUATE NERROR = NERROR + 1
-%                      INSERT 'Error'
+%       END BLOCK
+%       BLOCK    %ERROR%
+%        EVALUATE NERROR = NERROR + 1
+%        INSERT 'Error'
 %% Read the error code:
 %% Read the reason:
-%                    END BLOCK
-%                    BLOCK    %STATS%
+%       END BLOCK
+%       BLOCK    %STATS%
 %% Work out the Z-score:
-%                     GET SILENT NOSTORE INTEGER ' '
-%                     EVALUATE NUMOBS = VALUE
+%        GET SILENT NOSTORE INTEGER ' '
+%        EVALUATE NUMOBS = VALUE
 %% Ignore, for now, the mean, min and max:
-%                     GET SILENT NOSTORE REAL ' '
-%                     GET SILENT NOSTORE REAL ' '
-%                     GET SILENT NOSTORE REAL ' '
+%        GET SILENT NOSTORE REAL ' '
+%        GET SILENT NOSTORE REAL ' '
+%        GET SILENT NOSTORE REAL ' '
 %% Read the median:
-%                     GET SILENT NOSTORE REAL ' '
-%                     EVALUATE IDEAL = VALUE
-%                     GET SILENT NOSTORE REAL ' '
-%                     EVALUATE DEV = VALUE
-%                     IF ( DEV .LT. 0.000001 ) THEN
-%                       EVALUATE DEV = 0.000001
-%                     END IF
-%                     EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
-%                     IF Z .GT. 100.0 THEN
-%                       INSERT '>100.0'
-%                     ELSE IF Z .LT. - 100.0 THEN
-%                       INSERT '>-100.0'
-%                     ELSE
-%                       TRANSFER CHARACTER ( Z ) TO BUFFER
-%                     END IF
-%                     EVALUATE ZTOT = ZTOT + 1.0
-%                     IF NUMOBS .GE. 4 THEN
+%        GET SILENT NOSTORE REAL ' '
+%        EVALUATE IDEAL = VALUE
+%        GET SILENT NOSTORE REAL ' '
+%        EVALUATE DEV = VALUE
+%        IF ( DEV .LT. 0.000001 ) THEN
+%         EVALUATE DEV = 0.000001
+%        END IF
+%        EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
+%        IF Z .GT. 100.0 THEN
+%         INSERT '>100.0'
+%        ELSE IF Z .LT. - 100.0 THEN
+%         INSERT '>-100.0'
+%        ELSE
+%         TRANSFER CHARACTER ( Z ) TO BUFFER
+%        END IF
+%        EVALUATE ZTOT = ZTOT + 1.0
+%        IF NUMOBS .GE. 4 THEN
 %%
-%                       IF Z .GT. 0.0 THEN
-%                        EVALUATE ZSUM = ZSUM + Z
-%                       ELSE
-%                        EVALUATE ZSUM = ZSUM - Z
-%                       END IF
+%         IF Z .GT. 0.0 THEN
+%          EVALUATE ZSUM = ZSUM + Z
+%         ELSE
+%          EVALUATE ZSUM = ZSUM - Z
+%         END IF
 %%
-%                       EVALUATE ZNUM = ZNUM + 1.0
+%         EVALUATE ZNUM = ZNUM + 1.0
 %%
-%                       IF Z .GT. ZMAX THEN
-%                         EVALUATE ZMAX = Z
-%                       END IF
-%                       IF ( - Z ) .GT. ZMAX THEN
-%                          EVALUATE ZMAX = - Z
-%                       END IF
+%         IF Z .GT. ZMAX THEN
+%          EVALUATE ZMAX = Z
+%         END IF
+%         IF ( - Z ) .GT. ZMAX THEN
+%          EVALUATE ZMAX = - Z
+%         END IF
 %%
-%                      END IF
-%                    END BLOCK
-%                   END CASE
-%                   INSERT !'!
-%                   OUTPUT
-%                 END LOOP
+%         IF Z .LT. 0.0 THEN
+%          EVALUATE Z = - Z
+%         END IF
+%         IF Z .GT. 10.0 THEN
+%          EVALUATE Z = 10.0
+%         ELSE IF Z .LT. 1.0 THEN
+%          EVALUATE Z = 1.0
+%         END IF
+%         LOOP ( NIN + 1 ) TIMES
+%          CASE LOOPCOUNTER
+%           EVALUATE CAT = CAT1
+%           EVALUATE CAT = CAT2
+%           EVALUATE CAT = CAT3
+%           EVALUATE CAT = CAT4
+%          END CASE
+%          EVALUATE ISER = FIRSTINT ( CAT ) 
+%          EVALUATE CELE = FIRSTSTR ( CAT )
+%          EVALUATE NINDEX = 0
+%          ON EDITERROR TERMINATE
+%          COPY 'TOP'
+%          EVALUATE DPVCOUNT = DPVCOUNT + 1
+% LOOP 
+%  ON EDITERROR TERMINATE
+%  COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%  COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%  EVALUATE DPVCOUNT = DPVCOUNT + 2
+%  IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%   COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
+%   EVALUATE EFOM = EFOM * Z
+%   COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
+%   EVALUATE LOOPEND = LOOPCOUNTER
+%   EVALUATE NINDEX = LOOPCOUNTER
+%   TRANSFER '^^CO SET PROGOUTPUT TEXT "' // CAT // CHARACTER ( EFOM ) // - 
+    '"' TO DISPLAY
+%  END IF
+%  COPY 'NEXT'
+%  EVALUATE DPVCOUNT = DPVCOUNT + 3
+% END LOOP
+%          IF ( NINDEX .EQ. 0 ) THEN
+%           TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
+%          END IF
+%         END LOOP
+%%
+%        END IF
+%       END BLOCK
+%      END CASE
+%      INSERT !'!
+%      OUTPUT
+%     END LOOP
+%     COPY 'WRITE'
+%     COPY 'END'
 ^^WI              'NULL'
 ^^WI           @ 1,3 GRID GB NROWS=2 NCOLS=1
 ^^WI           {
@@ -178,6 +251,12 @@
 ^^WI           @ 1,1 BUTTON MR_BOK '&Restrain Everything'
 ^^WI         }
 ^^WI       }
+^^WI     }
+^^WI     TAB MGTAB11 'Atoms' GRID ZDG NROWS=5 NCOLS=3
+^^WI     {
+^^WI       @ 2,2 STATIC RC_XX 'xxxxxxxxxxxxxxxxx'
+^^WI       @ 3,2 STATIC RC_YY 'xxxxxxxxxxxxxxxxx'
+^^WI       @ 4,2 PLOTWINDOW _VPARAM NROWS=20 NCOLS=64
 ^^WI     }
 ^^WI     TAB MGTAB2 'Z Distribution' GRID ZDG NROWS=5 NCOLS=3
 ^^WI     {
@@ -221,7 +300,38 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
+End of script.
 ^^CO SET MGEXPLAIN VIEWTOP
+%    COPY '#edit'
+%    COPY 'monitor off'
+%    COPY 'select type ne H'
+%    COPY 'dsort spare'
+%    COPY 'graph of=spare'
+%    COPY 'exec'
+%    COPY 'QUIT'
+%    COPY 'END'
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%    COPY 'TOP'
+%    EVALUATE EFOM = 1.0
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
+%      EVALUATE ENUM = ENUM + 1.0
+%      EVALUATE ESUM = ESUM + EFOM
+%      IF EFOM .GT. EMAX THEN
+%        EVALUATE EMAX = EFOM
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%    TRANSFER "^^CO SET RC_XX TEXT 'Av Fom:  " // CHARACTER ( ESUM / ENUM ) -
+ // "'" TO DISPLAY
+%    TRANSFER "^^CO SET RC_YY TEXT 'Max Fom: " // CHARACTER ( EMAX ) -
+ // "'" TO DISPLAY
+%  GET NOSTORE NOPROMPT TEXT NULLSTRING ' '
+
 %     EVALUATE ZMISS = INTEGER ( ZTOT - ZNUM )
 %     IF ZNUM .LE. 0.1 THEN
 %      EVALUATE ZNUM = 1.0
@@ -353,132 +463,106 @@
            ' DATA '      // CHARACTER ( ZB10 ) TO DISPLAY
 ^^PL SHOW
 ^^CR
-%     LOOP
-%%
+% LOOP
 %% Flush input buffer:
-%       GET NOPROMPT NOSTORE TEXT ' ' ' '
-%%
+% GET NOPROMPT NOSTORE TEXT ' ' ' '
 %% Loop back here every time. First, fill in the details for the
 %% currently selected FOM.
-%%
-^^??    MR_RES SELECTED
-%       GET NOSTORE SILENT INTEGER ' ' ' '
-%       EVALUATE NFOM = VALUE
-%%
-%%
+^^?? MR_RES SELECTED
+%  GET NOSTORE SILENT INTEGER ' ' ' '
+%  EVALUATE NFOM = VALUE
 %% Rewind mogul.stat
-%       EXTRACT REWIND
+%  EXTRACT REWIND
 %% Skip (NFOM-1 * 2) lines
-%       LOOP ( ( NFOM - 1 ) * 2 ) TIMES
-%         ON ERROR TERMINATE
-%         ON END TERMINATE
-%         EXTRACT NEXT
-%       END LOOP
-%%
-%% Get the info
-%%
-%       BLOCK
-%         ON ERROR TERMINATE
-%         ON END TERMINATE
-%%
-%         EXTRACT NEXT
-%         EXTRACT TRANSFER INPUT
-%%
-%% Get the type
-%%
-%         CLEAR
-%         VERIFY DIST ANGLE TORSION
-%         GET SILENT NOSTORE ABBREVIATED ' '
-%         EVALUATE NIN = VALUE
-%         CASE NIN
-%           TRANSFER '^^CO SET MR_TYPE TEXT Distance' TO DISPLAY
-%           TRANSFER '^^CO SET MR_TYPE TEXT Angle' TO DISPLAY
-%           TRANSFER '^^CO SET MR_TYPE TEXT Torsion' TO DISPLAY
-%         END CASE
-%%
-%% Get the atom indexes
-%%
-%         CASE NIN
-%           BLOCK
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT1 = VALUE
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT2 = VALUE
-%           END BLOCK
-%           BLOCK
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT1 = VALUE
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT2 = VALUE
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT3 = VALUE
-%           END BLOCK
-%           BLOCK
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT1 = VALUE
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT2 = VALUE
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT3 = VALUE
-%             GET SILENT NOSTORE INTEGER ' '
-%             EVALUATE MAT4 = VALUE
-%           END BLOCK
-%         END CASE
-%%
+% LOOP ( ( NFOM - 1 ) * 2 ) TIMES
+%  ON ERROR TERMINATE
+%  ON END TERMINATE
+%  EXTRACT NEXT
+% END LOOP
+% BLOCK
+%  ON ERROR TERMINATE
+%  ON END TERMINATE
+%  EXTRACT NEXT
+%  EXTRACT TRANSFER INPUT
+%  CLEAR
+%  VERIFY DIST ANGLE TORSION
+%  GET SILENT NOSTORE ABBREVIATED ' '
+%  EVALUATE NIN = VALUE
+%  CASE NIN
+%   TRANSFER '^^WI SET MR_TYPE TEXT Distance' TO DISPLAY
+%   TRANSFER '^^WI SET MR_TYPE TEXT Angle' TO DISPLAY
+%   TRANSFER '^^WI SET MR_TYPE TEXT Torsion' TO DISPLAY
+%  END CASE
+%  CASE NIN
+%   BLOCK
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT1 = VALUE
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT2 = VALUE
+%   END BLOCK
+%   BLOCK
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT1 = VALUE
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT2 = VALUE
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT3 = VALUE
+%   END BLOCK
+%   BLOCK
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT1 = VALUE
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT2 = VALUE
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT3 = VALUE
+%    GET SILENT NOSTORE INTEGER ' '
+%    EVALUATE MAT4 = VALUE
+%   END BLOCK
+%  END CASE
 %% Skip the '#'
-%%
-%         GET NOSTORE SILENT KEYWORD ' ' 
-%%
-%% Get the actual value
-%%
-%         CLEAR
-%         INSERT !^^CO SET MR_ACTU TEXT '!
-%         GET SILENT REAL ' '
-%         EVALUATE ACTUAL = VALUE
-%         INSERT !'!
-%         OUTPUT
+%  GET NOSTORE SILENT KEYWORD ' ' 
+%  CLEAR
+%  INSERT !^^CO SET MR_ACTU TEXT '!
+%  GET SILENT REAL ' '
+%  EVALUATE ACTUAL = VALUE
+%  INSERT !'!
+%  OUTPUT
 %%
 %% Get the crystals atom names
 %%
-%         EVALUATE CAT1 = ' '
-%         EVALUATE CAT2 = ' '
-%         EVALUATE CAT3 = ' '
-%         EVALUATE CAT4 = ' '
-^^CO SET MODEL01 SELECT ALL NO
-%         LOOP ( NIN + 1 ) TIMES
-%           EVALUATE CAT4 = CAT3
-%           EVALUATE CAT3 = CAT2
-%           EVALUATE CAT2 = CAT1
-%           CLEAR
-%           INSERT '^^CO SET MODEL01 SELECT '
-%           GET SILENT KEYWORD ' '
-%           EVALUATE CAT1 = CVALUE
-%           INSERT ' YES'
-%           OUTPUT
-%         END LOOP
-%%
+%  EVALUATE CAT1 = ' '
+%  EVALUATE CAT2 = ' '
+%  EVALUATE CAT3 = ' '
+%  EVALUATE CAT4 = ' '
+^^WI SET MODEL01 SELECT ALL NO
+%  LOOP ( NIN + 1 ) TIMES
+%   EVALUATE CAT4 = CAT3
+%   EVALUATE CAT3 = CAT2
+%   EVALUATE CAT2 = CAT1
+%   CLEAR
+%   INSERT '^^WI SET MODEL01 SELECT '
+%   GET SILENT KEYWORD ' '
+%   EVALUATE CAT1 = CVALUE
+%   INSERT ' YES'
+%   OUTPUT
+%  END LOOP
 %% Extract the next line
-%%
-%         EXTRACT NEXT
-%         EXTRACT TRANSFER INPUT
-%%
-%% See what it holds:
-%%
-%         VERIFY NOHITS ERROR STATS
-%         GET SILENT NOSTORE ABBREVIATED ' '
-%         CASE VALUE
-%          BLOCK    %NOHITS%
+%  EXTRACT NEXT
+%  EXTRACT TRANSFER INPUT
+%  VERIFY NOHITS ERROR STATS
+%  GET SILENT NOSTORE ABBREVIATED ' '
+%  CASE VALUE
+%   BLOCK    %NOHITS%
 Nohits - setting dialog values to zero.
 ^^CO SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
 ^^CO SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
 ^^CO SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
 ^^CO SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
 ^^CO SET MR_ZSCO TEXT ' ' 
-
 %% Flush input buffer:
-%       GET NOPROMPT NOSTORE TEXT ' ' ' '
-%          END BLOCK
-%          BLOCK    %ERROR%
+%    GET NOPROMPT NOSTORE TEXT ' ' ' '
+%   END BLOCK
+%   BLOCK    %ERROR%
 Mogul reports error - setting dialog values to zero.
 ^^CO SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
 ^^CO SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
@@ -486,82 +570,71 @@ Mogul reports error - setting dialog values to zero.
 ^^CO SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
 ^^CO SET MR_ZSCO TEXT ' ' 
 %% Flush input buffer:
-%       GET NOPROMPT NOSTORE TEXT ' ' ' '
-%          END BLOCK
-%          BLOCK    %STATS%
-%           CLEAR
-%           INSERT !^^CO SET MR_NUMO TEXT '!
-%           GET SILENT INTEGER ' '
-%           INSERT !'!
-%           OUTPUT
+%    GET NOPROMPT NOSTORE TEXT ' ' ' '
+%   END BLOCK
+%   BLOCK    %STATS%
+%    CLEAR
+%    INSERT !^^CO SET MR_NUMO TEXT '!
+%    GET SILENT INTEGER ' '
+%    INSERT !' SET MR_MEAN TEXT '!
+%    GET SILENT REAL ' '
+%    INSERT !'!
+%    OUTPUT
 %%
-%           CLEAR
-%           INSERT !^^CO SET MR_MEAN TEXT '!
-%           GET SILENT REAL ' '
-%           INSERT !'!
-%           OUTPUT
+%    CLEAR
+%    INSERT !^^CO SET MR_MINO TEXT '!
+%    GET SILENT REAL ' '
+%    INSERT !' SET MR_MAXO TEXT '!
+%    GET SILENT REAL ' '
+%    INSERT !'!
+%    OUTPUT
 %%
-%           CLEAR
-%           INSERT !^^CO SET MR_MINO TEXT '!
-%           GET SILENT REAL ' '
-%           INSERT !'!
-%           OUTPUT
+%    CLEAR
+%    INSERT !^^CO SET MR_MEDIAN TEXT '!
+%    GET NOSTORE SILENT REAL ' '
+%    EVALUATE IDEAL = VALUE
+%    STORE FORMAT /(F8.3)/ LENGTH 8 REAL IDEAL
+%    INSERT !' SET MR_SIGM TEXT '!
+%    GET NOSTORE SILENT REAL ' '
+%    EVALUATE DEV = VALUE
+%    STORE FORMAT /(F8.3)/ LENGTH 8 REAL DEV
+%    INSERT !'!
+%    OUTPUT
 %%
-%           CLEAR
-%           INSERT !^^CO SET MR_MAXO TEXT '!
-%           GET SILENT REAL ' '
-%           INSERT !'!
-%           OUTPUT
-%%
-%           CLEAR
-%           INSERT !^^CO SET MR_MEDIAN TEXT '!
-%           GET NOSTORE SILENT REAL ' '
-%           EVALUATE IDEAL = VALUE
-%           STORE FORMAT /(F8.3)/ LENGTH 6 REAL IDEAL
-%           INSERT !'!
-%           OUTPUT          
-%%
-%           CLEAR
-%           INSERT !^^CO SET MR_SIGM TEXT '!
-%           GET NOSTORE SILENT REAL ' '
-%           EVALUATE DEV = VALUE
-%           STORE FORMAT /(F8.3)/ LENGTH 6 REAL DEV
-%           INSERT !'!
-%           OUTPUT
-%%
-%           CLEAR
-%           INSERT !^^CO SET MR_UPPERQ TEXT '!
-%           GET SILENT REAL ' '
-%           INSERT !'!
-%           OUTPUT
-%%
-%           CLEAR
-%           INSERT !^^CO SET MR_LOWERQ TEXT '!
-%           GET SILENT REAL ' '
-%           INSERT !'!
-%           OUTPUT
+%    CLEAR
+%    INSERT !^^CO SET MR_UPPERQ TEXT '!
+%    GET SILENT REAL ' '
+%    INSERT !' SET MR_LOWERQ TEXT '!
+%    GET SILENT REAL ' '
+%    INSERT !'!
+%    OUTPUT
 %%
 %%  Work out the Z-score
-%           IF ( DEV .LT. 0.000001 ) THEN
-%             EVALUATE DEV = 0.000001
-%           END IF
-%           EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
+%    IF ( DEV .LT. 0.000001 ) THEN
+%     EVALUATE DEV = 0.000001
+%    END IF
+%    EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
 %%
-%           CLEAR
-%           INSERT !^^CO SET MR_ZSCO TEXT '!
-%           IF Z .GT. 100.0 THEN
-%             INSERT '>100.0'
-%           ELSE
-%             STORE FORMAT /(F8.3)/ LENGTH 6 REAL Z
-%           END IF
-%           INSERT !'!
-%           OUTPUT
-%          END BLOCK
-%         END CASE
-%       END BLOCK
-%       VERIFY #$ MR_BXX MR_BOK MR_BRR MR_RES 
+%    CLEAR
+%    INSERT !^^CO SET MR_ZSCO TEXT '!
+%    IF Z .GT. 100.0 THEN
+%     INSERT '>100.0'
+%    ELSE
+%     STORE FORMAT /(F8.3)/ LENGTH 6 REAL Z
+%    END IF
+%    INSERT !'!
+%    OUTPUT
+%   END BLOCK
+%  END CASE
+^^CR
+% END BLOCK
+%%
+%       VERIFY MR_RES #$ MR_BXX MR_BOK MR_BRR 
 %       GET NOSTORE SILENT ABBREVIATED ' ' ' '
 %       CASE VALUE
+%         BLOCK        %%MR_RES
+%           GET NOSTORE SILENT INTEGER ' ' ' '
+%         END BLOCK
 %         BLOCK  %#$command%
 %           CLEAR
 %           INSERT '#SPAWN '
@@ -657,9 +730,6 @@ Mogul reports error - setting dialog values to zero.
 %               END CASE
 %             END BLOCK
 %           END CASE
-%         END BLOCK
-%         BLOCK        %%MR_RES
-%           GET NOSTORE SILENT INTEGER ' ' ' '
 %         END BLOCK
 %       END CASE
 %     END LOOP
