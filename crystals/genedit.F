@@ -206,6 +206,10 @@ C
         LIM2 = MDATA
       ENDIF
 C
+C RICJUN99 - The XPRVDU call was only outputting one line.
+C This does not allow for format statements with linefeeds in.
+C I don't see how we can handle that really.
+      NLINES = 1 + ( LIM2 - LIM1 ) / LENGRP
       IF ( ( IDTYPE .EQ. 1 ) .OR. ( IDTYPE .EQ. 3 ) ) THEN
         WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) ( ( ISTORE(J) ,
      2                              J = I + IOFF , I + IEND ) ,
@@ -213,7 +217,7 @@ C
         WRITE ( CMON, CFORM(ITYPE) , ERR = 8950 ) ( ( ISTORE(J) ,
      2                              J = I + IOFF , I + IEND ) ,
      3                              I = LIM1 , LIM2 , LENGRP )
-        CALL XPRVDU(NCVDU, 1,0)
+        CALL XPRVDU(NCVDU, NLINES ,0)
       ELSE IF ( IDTYPE .EQ. 2 ) THEN
         WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) ( ( STORE(J) ,
      2                              J = I + IOFF , I + IEND ),
@@ -221,7 +225,7 @@ C
         WRITE ( CMON, CFORM(ITYPE) , ERR = 8950 ) ( ( STORE(J) ,
      2                              J = I + IOFF , I + IEND ),
      3                              I = LIM1 , LIM2 , LENGRP )
-        CALL XPRVDU(NCVDU, 1,0)
+        CALL XPRVDU(NCVDU, NLINES ,0)
       ENDIF
       GO TO 8000
 C
