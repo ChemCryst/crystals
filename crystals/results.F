@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2003/11/06 15:50:08  rich
+C Added to the CIF atom loop_:
+C
+C   _atom_site_refinement_disorder_assembly
+C   _atom_site_refinement_disorder_group
+C
+C  These keys take the value of the assembly and group bits of the part
+C  key in L5 respectively. Otherwise, just a '.'
+C
 C Revision 1.69  2003/11/05 15:48:36  rich
 C Increase maximum field length of distance and angle output in CIF from
 C 10 to 12 characters. Otherwise it truncates to the left.
@@ -3066,6 +3075,7 @@ C
 C
       CHARACTER *1 CODE, ANGLE, DIST
       CHARACTER *160 CLINE
+      CHARACTER *4 CTEM
 C
       DIMENSION ITYPE(4) , SER(4) , ITEM(3)
       DIMENSION LINEA(118)
@@ -3162,9 +3172,13 @@ C--CLEAR THE OUTPUT BUFFER
       idjw=0
       DO 2020 I=1,NUM
       J=K
-C--OUTPUT THE TYPE
-c^
+
       if (itype(i) .eq. ihyd) idjw=idjw+1
+C convert atom type to mixed case
+      WRITE(CTEM,'(A4)') ITYPE(I)
+      CALL XCCLWC (CTEM(2:), CTEM(2:))
+      READ (CTEM,'(A4)') ITYPE(I)
+C Output the type
       CALL SA41 ( J , ITYPE(I) , LINEA )
       IND1=NINT(SER(I))
 C----- OUTPUT  SERIAL NUMBER
@@ -3335,7 +3349,12 @@ C-- GET ADDRESS OF LAST USEFUL ITEM - UP TO 4 (D, A or T)
           WRITE(NCPU,'(''<TR>'')')
 1         FORMAT ('<TD>',A,'</TD>')
           DO JPUB = IPUB, KPUB, 7
-            WRITE (CLINE, '(A4,I4)') STORE(JPUB), NINT(STORE(JPUB+1))
+
+            WRITE (CBUF, '(A4)') STORE(JPUB)
+            CALL XCTRIM (CBUF, N)
+            CALL XCCLWC (CBUF(2:N), CBUF(2:N))
+
+            WRITE (CLINE, '(A4,I4)') CBUF(1:N), NINT(STORE(JPUB+1))
             CALL XCRAS( CLINE, J)
 
 C----- CHECK SYMMETRY INFORMATION
@@ -3499,7 +3518,7 @@ C----- ATOM NUMBER
         J = J+N+1
 C
 C----- SYMMETRY INFORMATION
-      IF (
+        IF (
      1 (ISTORE(JPUB+2)+ISTORE(JPUB+3)+ISTORE(JPUB+4)
      2  +ISTORE(JPUB+5)+ISTORE(JPUB+6) .EQ. 2) .AND.
      3 (ABS(ISTORE(JPUB+2))+ABS(ISTORE(JPUB+3))+ABS(ISTORE(JPUB+4))
@@ -3507,7 +3526,7 @@ C----- SYMMETRY INFORMATION
 C----- IDENTITY
             CLINE(J:J) = '.'
             J = J + 2
-      ELSE
+        ELSE
             M = 1+
      1         (ABS(ISTORE(JPUB+2))-1) * N2P * JA +
      2         (ISTORE(JPUB+3)-1) * JA +
@@ -3519,7 +3538,7 @@ C----- IDENTITY
             WRITE(CLINE(J:J+2), '(3I1)') 5+ISTORE(JPUB+4),
      1      5+ISTORE(JPUB+5), 5+ISTORE(JPUB+6)
             J = J+4
-      ENDIF
+        ENDIF
 2000  CONTINUE
 C
 C----- VALUE AND ESD
