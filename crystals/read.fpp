@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2000/09/20 12:42:24  ckp2
+C Allow shell commands to be processed immediately, even if script awaiting input.
+C Add "SCRIPTS - Awaiting action" to status bar, when appropriate.
+C Move "IGNORED/ERRORS" back 5 spaces so that it doesn't overflow 80 chars.
+C
 C Revision 1.19  2000/07/11 11:04:10  ckp2
 C Extra argument to KFLOPN, for specifying SEQUENTIAL or DIRECT access
 C
@@ -658,6 +663,7 @@ C -- CHECK IF THE CURRENT CARD CONTAINS A SYSTEM INSTRUCTION. IF IT
 C    DOES, EXECUTE THE INSTRUCTION.
 C
 CDJWMAR99 Add APPEND as system function - implies 'OPEN'
+CDJWOXT00 Add BENCHMARK for timings
 C
 C  INPUT :-
 C
@@ -678,6 +684,7 @@ C
       CHARACTER *80 CCMND
       CHARACTER *63 CUFILE, CRFILE
 C
+\XSTR11
 \TDVNAM
 \TRDDAT
 C
@@ -700,7 +707,7 @@ C
       DATA IOPEN  / 5 / , IRELES /  6 / , IUSE   /  7 / , IMANUL /  8 /
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
-      DATA IDOLLA / 17 /, IAPEND / 18 /
+      DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -742,7 +749,7 @@ C
 C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
-C      SPAW(N)     $           APPE(ND)
+C      SPAW(N)     $           APPE(ND)    BENCH
 C
 C----- DO NOT LOG SCRIPT INSTRUCTIONS
       IF ( ISYSIN .NE. ISCRIP) THEN
@@ -757,7 +764,7 @@ CDJWMAR99
       GO TO ( 1100 , 1200 , 1300 , 1400 , 1500 ,
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
      3        2100 , 2200 , 2300 , 2400 , 2500 , 
-     4        2600 , 2600 , 1550 ,
+     4        2600 , 2600 , 1550 , 3000,
      5        9920 ) , ISYSIN
       GO TO 9920
 C
@@ -1044,6 +1051,45 @@ C----- COPY AS MUCH OF LINE AS POSSIBLE
       ENDIF
       CALL XDETCH ( CCMND(1:LCMND) )
       GOTO 9000
+C
+3000  CONTINUE
+C----- SPEED BENCHMARK
+C----- NOTE TEMPORARY USE OF PAUSE(1)
+C      INITIALISE THE MATRIX AREA SIZE
+      CALL XIN11
+C -- IDENTIFY 1ST ARGUMENT
+      IREQUI = 1
+      LENGTH = KRDARG ( IREQUI  , 2 )
+      IF ( LENGTH .LE. 0 ) THEN
+            NVAR = 500
+      ELSE
+            I = KREADC ( PAUSE(1) , 1 )
+            IF ( I .LT. 0 ) GO TO 9930
+C -- CONVERT VALUE READ TO INTEGER NUMBER 
+            NVAR = NINT ( PAUSE(1))
+      ENDIF
+C -- IDENTIFY 2ND ARGUMENT
+      IREQUI = 1
+      LENGTH = KRDARG ( IREQUI  , 2 )
+      IF ( LENGTH .LE. 0 ) THEN
+            NREF = 5000
+      ELSE
+            I = KREADC ( PAUSE(1) , 1 )
+            IF ( I .LT. 0 ) GO TO 9930
+C -- CONVERT VALUE READ TO INTEGER NUMBER 
+            NREF = NINT ( PAUSE(1))
+      ENDIF
+      WRITE(NCAWU,*) LFLD, NFLD, NVAR
+      IF ((LFLD-NFLD) .LT. NVAR*(NVAR+1)) THEN
+            WRITE(NCAWU,3050) NVAR, NREF
+            WRITE(CMON,3050) NVAR,NREF
+            CALL XPRVDU(NCVDU, 1,0)
+3050  FORMAT ('Too many variables requested', 2I6)
+      ELSE
+        CALL XBENCH (XSTR11(NFLD), NVAR, XSTR11(NFLD+NVAR),
+     1  NVAR*NVAR, NVAR, NREF)
+      ENDIF
+      GO TO 9000
 C
 C
 9000  CONTINUE
@@ -4474,5 +4520,94 @@ C--UPDATE FOR THE NEXT CHARACTER
       GOTO 1000
 1100  KNEQUL=I
 1150  CONTINUE
+      RETURN
+      END
+C
+CODE FOR XBENCH
+      SUBROUTINE XBENCH(DV, NDV, A, NA ,NVAR,NREF)
+C      DV - VECTOR
+C      NVD - LENGTH OF VECTOR
+C      A MATRIX
+C      NA NUMBER OF ELEMENTS
+C      NVAR NUMBER OF VARIABLES (LESS THAN SQRT(NA))
+C      NREF NUMBER OF REFLECTIONS
+C
+      DOUBLE PRECISION ACC
+      DIMENSION DV(NDV), A(NA)
+\XUNITS
+\XIOBUF
+\XSSVAL
+C
+C----- SAVE THE TIMER STATUS
+      ITEMP = ISSTIM
+      ISSTIM = 1
+      WRITE ( CMON,1234)
+      CALL XPRVDU(NCVDU, 5,0)
+1234  format (' BENCH MARK for crystallography.',/
+     1 ' Part 1 simulates matrix accumulation',/
+     1 ' Part 2 simulates matrix inversion',/
+     1 ' Both parts test addressing of a large array',/
+     1 ' and use of Double Precision accumulators')
+C
+      WRITE (CMON,1235)
+      CALL XPRVDU(NCVDU, 4,0)
+1235  format (/  ' For Microvax 3800,',
+     1 ' 500 parameters, 5000 observations '/
+     1 'Accumulation = 1824 secs, Inversion = 75 secs'/)
+C
+            WRITE(NCAWU,3060) NVAR, NREF
+            WRITE(CMON,3060) NVAR,NREF
+            CALL XPRVDU(NCVDU, 1,0)
+3060  FORMAT (I6, ' variables and', I6, ' reflections')
+      KOFFST = NVAR*NVAR
+      DO 10 I=1,KOFFST
+      A(I)=0.
+10    CONTINUE
+      M=NVAR
+      MM=M+1
+C----- SIMULATE DERIVATIVES
+      DO 20 I=1,M
+      DV(I)=I*NVAR*.9
+20    CONTINUE
+      CALL XTIME1(3)
+      CALL XTIME2(3)
+      CALL XTIME1(3)
+C----- LOOP FOR EACH REFLECTION
+      DO 6001 IP=1,NREF
+      K=1
+C----- SUMMATION OVER DERIVATIVES
+      DO 5001 J=1,NVAR
+      B=DV(J)
+      DO 5003 L = J,M
+      A(K)=A(K)+DV(L)*B
+      A(KOFFST-K)=A(K)
+      K=K+1
+5003  CONTINUE
+5001  CONTINUE
+6001  CONTINUE
+      WRITE (CMON,'(A)') ' Matrix accumulation'
+      CALL XPRVDU(NCVDU,1,0)
+      CALL XTIME2(3)
+C
+C---- SIMULATE MATRIX INVERSION
+      ACC = 0.0D1
+      CALL XTIME1(3)
+      K = 1
+      DO 7000 J = 1, NVAR
+            B = A(J)
+            DO 7500 L = J,NVAR
+                  C = A(L)
+                  DO 7300 I = L, NVAR
+                  ACC = ACC + DPROD( A(K), B ) + DPROD( A(L), C )
+     1                      + DPROD( A(K), A(L))
+7300              CONTINUE
+                  K =K + 1
+7500        CONTINUE
+7000  CONTINUE
+      WRITE (CMON,'(A)') ' Matrix inversion'
+      CALL XPRVDU(NCVDU,1,0)
+      CALL XTIME2(3)
+C----- RESTORE THE TIMER STATUS
+      ISSTIM = ITEMP
       RETURN
       END

@@ -711,12 +711,12 @@ C
 C
 C -- DEFINE SYSTEM INSTRUCTIONS
 cdjwmar99
-      DATA NWHF / 4 / , NHF / 18 / , LHF / 4 /
+      DATA NWHF / 4 / , NHF / 19 / , LHF / 4 /
 C
 C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
 C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
 C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
-C      'SPAW'      '$   '      'APPE'
+C      'SPAW'      '$   '      'APPE'      'BENC'
 C
 C
       DATA IHF / 'P', 'A', 'U', 'S', 'H', 'E', 'L', 'P',
@@ -727,7 +727,8 @@ C
      6           'S', 'T', 'O', 'R', 'S', 'T', 'A', 'R',
      7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
      8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
-     9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E' /
+     9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
+     1           'B', 'E', 'N', 'C'  /
 C
 C
 C

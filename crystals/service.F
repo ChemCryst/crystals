@@ -785,14 +785,14 @@ C
       IF ( NWARN .EQ. 1 ) WARNPL = ' '
       IF ( NERR .EQ. 1 ) ERRPL = ' '
 C
-      CALL XTIME ( A , B )
+      CALL XTIME ( IA , IB )
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1005 ) A , B , RESULT(ICODE) , NWARN , WARNPL ,
+      WRITE ( NCWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
      2 NERR , ERRPL
       ENDIF
-      WRITE ( NCAWU , 1005 ) A , B , RESULT(ICODE) , NWARN , WARNPL ,
+      WRITE ( NCAWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
      2 NERR , ERRPL
-      WRITE ( CMON,1005)   A , B ,
+      WRITE ( CMON,1005)   IA , IB ,
      2                        RESULT(ICODE), NWARN, WARNPL, NERR, ERRPL
       CALL XPRVDU(NCVDU, 3,0)
 1005  FORMAT ( // , 1X , 2A4 , ' : Job ends ' , A8 , ' with ' ,
@@ -954,10 +954,6 @@ C
       RETURN
       END
 C
-C
-C
-C
-C
 CODE FOR XTIME1
       SUBROUTINE XTIME1(N)
 C--INITIATE THE TIMING OF A GIVEN OPERATION
@@ -988,9 +984,7 @@ C--
 \XSSVAL
 \XIOBUF
 C
-C
       DATA A/0.0/,I/0/,J/0/,K/0/,L/0/
-C
 C
 C -- IF TIMING IS DISABLED, RETURN IMMEDIATELY
       IF ( ISSTIM .LE. 0 ) RETURN
@@ -1017,14 +1011,11 @@ C--DAY HAS CHANGED
 1100  CONTINUE
       K=L/60
       L=L-K*60
-      CALL XTIME(A,B)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1150)A,B,I,J,K,L
-      ENDIF
-      WRITE ( CMON,1150) A,B,I,J,K,L
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,1150) A,B,I,J,K,L
-C
+      CALL XTIME(IA,IB)
+      WRITE ( CMON,1150) IA,IB,I,J,K,L
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+      WRITE(NCAWU,'(A)') CMON(1)
 1150  FORMAT(1X,2A4,' : Processor time ',I4,' min',I4,
      2 ' sec : Elapsed time ',I4,' min',I4,' sec')
       RETURN
@@ -1041,18 +1032,12 @@ C  IPART2  M/PP
 C
 C--FOR THE TIME NN/MM/PP
 C
-C--
-C
       CHARACTER*8 CTIME
-C
       CALL XTIMER ( CTIME )
-C
       READ ( CTIME(1:4) , '(A4)' ) IPART1
       READ ( CTIME(5:8) , '(A4)' ) IPART2
-C
       RETURN
       END
-C
 C
 CODE FOR XDATE
       SUBROUTINE XDATE(IPART1,IPART2)
@@ -1065,26 +1050,17 @@ C  IPART2  M/PP
 C
 C--FOR THE DATE NN/MM/PP
 C
-C--
-C
       CHARACTER*8 CDATE
-C
       CALL XDATER ( CDATE )
-C
       READ ( CDATE(1:4) , '(A4)' ) IPART1
       READ ( CDATE(5:8) , '(A4)' ) IPART2
-C
       RETURN
       END
-C
-C
-C
 C
 CODE FOR OVERFL
       SUBROUTINE OVERFL(IN)
 C--CLEAR THE OVERFLOW MARKER ON 1900 RANGE MACHINES
 C
-C--
       IN=2
       RETURN
       END
@@ -1105,14 +1081,11 @@ C
 CODE FOR XFLPCK
       SUBROUTINE XFLPCK ( NAME, LENGTH, PREFIX, SUFFIX, RESULT, LENRES)
 C
-C
       CHARACTER*(*) PREFIX , SUFFIX , RESULT
       DIMENSION NAME(LENGTH)
 C
-C
       ISTART = 1
       RESULT = ' '
-C
 C
       IF ( PREFIX .NE. ' ' ) THEN
         IEND = ISTART + LEN ( PREFIX ) - 1
