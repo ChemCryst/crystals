@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  1999/04/09 10:37:13  dosuser
+C djw apr99 change format statement for sigma in SIR92
+C
 C Revision 1.9  1999/03/29 13:26:02  dosuser
 C djw mar99 XSQRT and XSQRR  used
 C
@@ -256,6 +259,7 @@ C--WRITE THE PARAMETER FILE TYPE
 &VAX      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &DOS      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &DVF      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+&LIN      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &GID      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &H-P      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &CYB      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
@@ -311,7 +315,7 @@ C               3, SPECIAL - WRITE ATOMS
 C               4, PATTERSON
 C
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
-      WRITE(NCFPU1,'(''TITL '',10A4)') (TITLE(I),I=1,10)
+      WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
      1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
 C----- FIND LATTICE TYPE
@@ -460,7 +464,7 @@ C----- SET UP THE FILE SPECIFICATIONS
         WRITE(NCFPU1, '(''%FILE SIRDATA.BIN  SIR.CRY '')')
 C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
         WRITE(NCFPU1, '(''%INITIALISE'', /, ''%JOB '',20A4)')
-     1 (TITLE(I),I=1,20)
+     1 (KTITL(I),I=1,20)
         WRITE(NCFPU1, '(''%NORMAL '',/,''CELL '', 3F7.3, 3F8.3)')
      1 (STORE(I),I=L1P1,L1P1+5)
        WRITE(NCFPU1, '(''SPACE '', A )') CSPACE(1:ISP)
@@ -477,7 +481,7 @@ C----- SET UP THE FILE SPECIFICATIONS
         WRITE(NCFPU1, '(''%structure  SIR92 '')')
 C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
         WRITE(NCFPU1, '(''%init'', /, ''%job '',20A4)')
-     1 (TITLE(I),I=1,20)
+     1 (KTITL(I),I=1,20)
         WRITE(NCFPU1, '(''%data '',/,8X,''cell '', 3F7.3, 3F8.3)')
      1 (STORE(I),I=L1P1,L1P1+5)
        WRITE(NCFPU1, '(8X,''space '', A )') CSPACE(1:ISP)
@@ -1008,7 +1012,7 @@ C
       IF ( IERROR .LE. 0 ) GOTO 9900
 C
 C----- OUTPUT A TITLE, FIRST 20 CHARACTERS ONLY
-      WRITE(NCFPU1,1320) (TITLE(I),I=1,20)
+      WRITE(NCFPU1,1320) (KTITL(I),I=1,20)
 1320  FORMAT(' ',20A4)
 C
 C----- LOAD LIST 1 AND 13. CONVERT ANGLES TO DEGREES.
