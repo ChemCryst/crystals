@@ -1,4 +1,0 @@
-
-cp -R $CRYSSRC/precomp/all/* $CRYSBUILD
-cp -R $CRYSSRC/precomp/$COMPCODE/* $CRYSBUILD
-

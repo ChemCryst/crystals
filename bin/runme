@@ -1,7 +1,0 @@
-#!/bin/sh
-echo Setting paths for building CRYSTALS...
-. bin/sourceme
-echo $CRYSDIR
-echo $PATH
-echo Building CRYSTALS and Cameron for Linux...
-bin/buildall

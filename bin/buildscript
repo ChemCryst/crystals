@@ -1,8 +1,0 @@
-cd $CRYSBUILD
-mkdir script
-mkdir errors
-
-cd $CRYSSRC/scriptsrc
-for i in *.ssc; do buildfile ${i%.ssc}; done
-for i in *.sda; do buildfile ${i%.sda}; done
-

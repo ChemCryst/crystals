@@ -1,4 +1,0 @@
-
-echo I am building $1.obj
-g++ -c -s -O3            -fexceptions -I /usr/local/include `wx-config --cppflags` -o crel/$1.obj $SRCDIR/$1.cpp || builderr CPP_ERROR $1
-g++ -c -D__CRDEBUG__ -g -fexceptions -I /usr/local/include `wx-config --cppflags` -o cdbg/$1.obj $SRCDIR/$1.cpp || builderr CPP_ERROR $1

@@ -1,7 +1,0 @@
-which wx-config || echo wx-config not found
-export CRYSBUILD=`pwd`/build
-export CRYSSRC=`pwd`
-export CRYSDIR=`pwd`/build/
-export PATH=`pwd`/bin:$PATH
-export COMPCODE=GIL
-
