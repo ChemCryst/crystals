@@ -39,6 +39,7 @@
 #define __MATRICES_H__
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 #include "ComClasses.h"
 #if defined(__APPLE__)
 #include <vecLib/vDSP.h>
