@@ -3,7 +3,7 @@
 % VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
 % VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER WIDTH 
 % VARIABLE CHARACTER CFILE
-% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER
+% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER
 %%
 % VARIABLE LOGICAL TWINNED
 % EVALUATE TWINNED = FALSE
@@ -194,22 +194,38 @@ view the generated sections.
 ^^CR
 %       BLOCK
 %         ON ERROR TERMINATE
-%         IF DOSCALE .EQ. 1 THEN
-%           COPY '#SFLS'
-%           IF TWINNED .EQ. TRUE THEN
-%             COPY 'SCALE /FO/=SCALED-/FOT/'
-%           ELSE
-%             COPY 'SCALE'
-%           END IF
+%         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN
+%% Remove any Q atoms, but restore again later.
+%           COPY '#GENERALEDIT 5'
+%           COPY 'GETSERIAL OLDSER'
+%           COPY '#EDIT'
+%           COPY 'SELECT TYPE NE Q'
 %           COPY 'END'
-%         END IF
-%         IF DOCALC .EQ. 1 THEN
-%           COPY '#SFLS'
-%           IF TWINNED .EQ. TRUE THEN
-%             COPY 'CALC /FO/=SCALED-/FOT/'
-%           ELSE
-%             COPY 'CALC'
+%           IF DOSCALE .EQ. 1 THEN
+%             COPY '#SFLS'
+%             IF TWINNED .EQ. TRUE THEN
+%               COPY 'SCALE /FO/=SCALED-/FOT/'
+%             ELSE
+%               COPY 'SCALE'
+%             END IF
+%             COPY 'END'
 %           END IF
+%           IF DOCALC .EQ. 1 THEN
+%             COPY '#SFLS'
+%             IF TWINNED .EQ. TRUE THEN
+%               COPY 'CALC /FO/=SCALED-/FOT/'
+%             ELSE
+%               COPY 'CALC'
+%             END IF
+%             COPY 'END'
+%           END IF
+%% Restore the list 5 (may have Q atoms in it).
+%           COPY '#DISK'
+%           CLEAR
+%           INSERT 'RESET 5 '
+%           STORE INTEGER OLDSER
+%           SEND
+%           COPY '#SUM L 5'
 %           COPY 'END'
 %         END IF
 %       END BLOCK
