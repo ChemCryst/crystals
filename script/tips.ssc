@@ -20,7 +20,7 @@
 ^^WI SENDTEXTTO XTIPTEXT
 ^^CR
 % LOOP
-%  EVALUATE NTIPS = 27
+%  EVALUATE NTIPS = 28
 ^^CO  GETKEY TIP#
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'
 %  EVALUATE CTIP = VALUE
@@ -284,6 +284,15 @@ compound - e.g.
 Note: #set autoupdate on/off can be issued at any time CRYSTALS
 is running. The autoupdate flag is not used by #DISPLAY, which
 always updates the model.
+%   END BLOCK
+%   BLOCK % TIP28
+Do you know about the command #PURGE?  This clears space inside the .DSC
+for re-use. It does not make the .DSC smaller, but you could type
+#PURGE xxx
+to get a new, small file xxx.dsc
+or #PURGE DATE
+to get a file abcdef.DSC , where abcdef is the date and time.  Very
+useful for e-mailing or archiving CRYSTALS data.
 %   END BLOCK
 %  END CASE
 ^^CO SET XTIPTEXT VIEWTOP
