@@ -138,6 +138,7 @@ class Indexs
         void addIndex(signed char pIndex);
         int number();
         Index* getIndex(int pIndex);
+        int getValue(int pIndex);
         ostream& output(ostream& pStream);
 };
 
@@ -157,7 +158,8 @@ class ConditionIndexs:public Indexs
         ConditionIndexs(signed char pValue);
         ConditionIndexs(ConditionIndexs& pObject);
         void addReflection(Reflection* pReflection, Conditions* pCondtions);
-        ostream& ConditionIndexs::output(ostream& pStream);
+        ostream& output(ostream& pStream);
+        ostream& output(ostream& pStream,  Conditions* pConditions);
 };
 
 /* to be implemented */
@@ -230,7 +232,7 @@ class Table
         char* getName();
         ostream& output(ostream& pStream);
         ostream& outputLine(int pLineNum, ostream& pStream);
-        ostream& outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
+        ostream& outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions);
 };
 
 ostream& operator<<(ostream& pStream, Table& pTable);
