@@ -190,29 +190,30 @@
 %%
 %% Check for completion
 %%
-%     IF POSN .EQ. 1 THEN
+%     IF LOOPEND .NE. LOOPCOUNTER THEN
+%      IF POSN .EQ. 1 THEN
 ^^CO    SET UNDO  DISABLED=YES
-%     ELSE
+%      ELSE
 ^^CO    SET UNDO  DISABLED=NO
-%     END IF
+%      END IF
 %%
 %% Update "Click Next Atom" prompt
 %%
-%     IF OPOSN .LE. NARGS THEN
+%      IF OPOSN .LE. NARGS THEN
 %       CLEAR
 %       INSERT "^^CO SET T"
 %       STORE FORMAT /(I1)/ LENGTH 1 INTEGER OPOSN
 %       INSERT " TEXT ''"
 %       OUTPUT
-%     END IF
-%     IF POSN .LE. NARGS THEN
+%      END IF
+%      IF POSN .LE. NARGS THEN
 %       CLEAR
 %       INSERT "^^CO SET T"
 %       STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
 %       INSERT " TEXT '< Click atom to go here'"
 %       OUTPUT
 ^^CO    SET BOK DISABLED=YES
-%     ELSE
+%      ELSE
 %       EVALUATE POSN = NARGS + 1
 %       CLEAR
 %       INSERT "^^CO SET T"
@@ -220,6 +221,7 @@
 %       INSERT " TEXT ' Click Next'"
 %       OUTPUT
 ^^CO    SET BOK DISABLED=NO
+%      END IF
 %     END IF
 %    END LOOP
 %    COPY '#SCRIPT XADDH3'
