@@ -156,7 +156,7 @@
 %      BLOCK                                                  % BCLOSE %
 ^^CO     DISPOSE DSCMAN
 %        COPY '#CLOSE SCPDATA'
-%        L = FILEDELETE ( 'dscdata.pch' )
+%        EVALUATE L = FILEDELETE ( 'dscdata.pch' )
 %        FINISH
 %      END BLOCK
 %      BLOCK                                                  % BRESET %
