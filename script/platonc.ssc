@@ -1,0 +1,49 @@
+%SCRIPT PLATONC
+%  VARIABLE CHARACTER CDIR CFILE
+%  VARIABLE LOGICAL T
+%%
+%  IF FILEEXISTS ( 'publish.cif' ) .EQ. FALSE THEN
+
+{E            No CIF file present.
+{I First run "Results"->"Publication Tables"->"Cif"
+
+%     FINISH
+%  END IF
+%%
+%%
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  EVALUATE T = FILEDELETE ( 'publish.chk' )
+%%
+%%
+^^CO GETKEY PLATONDIR
+%%
+%%
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'
+%  EVALUATE CFILE = CVALUE
+%  IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
+
+  Where is the Platon executable?
+
+^^CO SYSOPENFILE 'Platon*.exe' 'Platon executable'
+
+%    CLEAR
+%    INSERT '^^CO SETKEY PLATONDIR '
+%    GET SILENT TEXT 'Platon location:'
+%    IF CVALUE .NE. 'CANCEL' THEN
+%      EVALUATE CFILE = CVALUE
+%      OUTPUT
+%    ELSE
+%      FINISH
+%    END IF
+%  END IF
+%%
+%%
+%  EVALUATE CDIR = GETPATH ( CFILE )
+%  TRANSFER '#spawn +copy ' // CDIR // 'check.def .' TO DISPLAY
+%  TRANSFER '#spawn +copy ' // CDIR // 'check.def .' TO CRYSTALS
+%  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO DISPLAY
+%  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO CRYSTALS
+%%
+%%
+%  COPY '#spawn notepad publish.chk'
+%END SCRIPT
