@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2002/03/18 22:14:02  richard
+C Enhance #SIGMADIST so it will output I/sigma(I) vs. resolution.
+C
 C Revision 1.25  2002/03/15 11:11:25  richard
 C Ensure List 1 is loaded before calling KALLOW.
 C
@@ -2285,7 +2288,7 @@ C To do - check dependencies at this point
 C
 CODE FOR XSGDST
       SUBROUTINE XSGDST
-      DIMENSION KSIGS(100)
+      DIMENSION KSIGS(110)
       CHARACTER *15 HKLLAB
 \ISTORE
 \STORE
@@ -2322,14 +2325,14 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
 
 
-      DO I = 1,100
+      DO I = 1,110
         KSIGS(I) = 0
       END DO
 
 
 C -- SCAN LIST 6 FOR REFLECTIONS
 
-      N6ACC = 0
+      NTOT = 0
       NALLOW = 0
 
       ISTAT = KLDRNR(0)
@@ -2345,11 +2348,11 @@ C -- SCAN LIST 6 FOR REFLECTIONS
 
 
       DO WHILE ( ISTAT .GE. 0 )
-        N6ACC = N6ACC + 1
+        NTOT = NTOT + 1
         CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
-        JSIGS = 1 + NINT( (2.*FOS)/SIGMA )
+        JSIGS = 10 + NINT( (2.*FOS)/SIGMA )
         JSIGS = MAX(JSIGS,1)
-        IF ( JSIGS .LE. 100 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
+        IF ( JSIGS .LE. 110 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
         IF ( IPLOT2 .EQ. 1 ) THEN
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -2369,7 +2372,6 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       END IF
 
  
-      NTOT = N6ACC
 
       IF (IPLOT1 .EQ. 1) THEN
         WRITE(CMON,'(A,6(/A))')
@@ -2382,9 +2384,9 @@ C -- SCAN LIST 6 FOR REFLECTIONS
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
 
-        DO I = 1, 100
-          WRITE(CMON,'(A,1X,F4.1,1X,A,1X,I6,1X,I8)')
-     1    '^^PL LABEL',(I-1)*.5,'DATA',KSIGS(I),NTOT
+        DO I = 1, 110
+          WRITE(CMON,'(A,1X,F5.1,1X,A,1X,I6,1X,I8)')
+     1    '^^PL LABEL',(I-11)*.5,'DATA',KSIGS(I),NTOT
           CALL XPRVDU(NCVDU,1,0)
           NTOT = NTOT - KSIGS(I)
         END DO
@@ -2419,4 +2421,6 @@ C -- INPUT ERRORS
       RETURN
 
       END
+
+
 
