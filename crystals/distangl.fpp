@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2004/09/28 10:36:52  rich
+C Move some boring messages to the listing file.
+C
 C Revision 1.66  2004/08/17 15:56:47  djw
 C Append H bonds to cif
 C
@@ -423,6 +426,7 @@ C             7 SIMU RESTRAINTS
 C             8 NONBONDED RESTRAINTS
 C             9 HTML OUTPUT
 C            10 HYDROGEN RESTRAINTS
+C            11 HYDROGEN BONDING
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -598,7 +602,7 @@ C
 C----- MAXIMUM PARTS PER PARAMETER
       DATA MXPPP /50/
 
-      DATA KHYD /'H   '/, KCARB /'C   '/
+      DATA KHYD /'H   '/, KCARB /'C   '/, KAZOT/'N   '/, KOXY/'O   '/
 
       PIVINI = .FALSE.
       BONINI = .FALSE.
@@ -1151,9 +1155,12 @@ C--PREPARE A SORT BUFFER AT THE TOP OF CORE
 C--PREPARE ONE EMPTY SLOT AT THE TOP AS WELL
       IREC=1003
       I=KCHLFL(JT)
-
-
-
+      if (ipunch .eq. 10) then
+            CALL XRESTV 
+      endif
+C
+C
+C
 C --             **** MAIN DISTANCE / ANGLES LOOP ****
 
       M5A=L5
@@ -1371,12 +1378,13 @@ C
             CBONDA(KHY)(:) = CATOM2(1:LATOM2)
            END DO LOOP16
 C
-C
+C----- FIND A UEQUIV TO USE FOR FOR THE H ATOMS 
+C      RESCALED LATER BY 1.25 FOR ME AND OH
+       CALL XEQUIV (0, M5P, N5P, NBASE)
+       UEQUIV = STORE(NBASE) * 1.2
+C----- C-H RESTRAINTS
            IF ((ISTORE(M5P) .EQ. KCARB) .AND. 
      1                (NHY .GE. 1)) THEN
-
-       CALL XEQUIV (0, M5P, N5P, NBASE)
-       UEQUIV = STORE(NBASE)
 C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
         do idjw=1,khy
          if (ihy(idjw) .eq. 1) then
@@ -1393,23 +1401,24 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
             IF (KHY .GT. 4) THEN
              WRITE(NCPU,'(A,I6)')
      1      'REM Probably disordered, No of H atoms=', NHY
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  UEQUIV = UEQUIV * 1.25
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.96)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
             ELSE
              IF      (NHY .EQ. 1) THEN
                 IF       (NNHY .EQ. 1) THEN
                   WRITE(NCPU,'(A)') 'REM            1 H on sp 1'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL ANG180(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
                   WRITE(NCPU,'(A)') 'REM            1 H on sp 2'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 3) THEN
                   WRITE(NCPU,'(A)') 'REM            1 H on sp 3'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.98)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
                   WRITE(NCPU,'(A)') 'REM            error 1'
@@ -1418,12 +1427,12 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
              ELSE IF (NHY .EQ. 2) THEN
                 IF       (NNHY .EQ. 1) THEN
                   WRITE(NCPU,'(A)') 'REM            2 H on sp 2'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
                   WRITE(NCPU,'(A)') 'REM            2 H on sp 3'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.97)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
@@ -1433,7 +1442,8 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
              ELSE IF (NHY .EQ. 3) THEN
                 IF       (NNHY .EQ. 1) THEN
                   WRITE(NCPU,'(A)') 'REM            3 H on sp 3'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
+                  UEQUIV = UEQUIV * 1.25
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.96)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
@@ -1441,6 +1451,66 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
                 ENDIF
              ENDIF        
             ENDIF
+C----- N-H 
+           ELSE IF ((ISTORE(M5P) .EQ. KAZOT) .AND. (NHY .GE. 1)) THEN
+            IF (KHY .GT. 4) THEN
+             WRITE(NCPU,'(A,I6)')
+     1      'REM Probably disordered, No of H atoms=', NHY
+                  UEQUIV = UEQUIV * 1.25
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
+                  CALL HCC109(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
+            ELSE
+             IF      (NHY .EQ. 1) THEN
+                IF       (NNHY .EQ. 1) THEN
+                  WRITE(NCPU,'(A)') 'REM            H1-N-R1'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.86)
+                  CALL HCC120(KHY, IHY, CATOM1, CBONDA)
+                ELSE IF (NNHY .EQ. 2) THEN
+                  WRITE(NCPU,'(A)') 'REM            H1-N-R2'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.86)
+                  CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
+                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
+                ELSE IF (NNHY .EQ. 3) THEN
+                  WRITE(NCPU,'(A)') 'REM            H1-N-R3'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
+                  CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
+                ELSE
+                  WRITE(NCPU,'(A)') 'REM            error 1'
+                ENDIF
+
+             ELSE IF (NHY .EQ. 2) THEN
+                IF       (NNHY .EQ. 1) THEN
+                  WRITE(NCPU,'(A)') 'REM            H2-N-R'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.86)
+                  CALL HCC120(KHY, IHY, CATOM1, CBONDA)
+                  CALL PLANH(KHY, IHY, CATOM1, CBONDA)
+                ELSE IF (NNHY .EQ. 2) THEN
+                  WRITE(NCPU,'(A)') 'REM            H2-N-R2'
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
+                  CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
+                ELSE
+                  WRITE(NCPU,'(A)') 'REM            error 2'
+                ENDIF
+
+             ELSE IF (NHY .EQ. 3) THEN
+                IF       (NNHY .EQ. 1) THEN
+                  WRITE(NCPU,'(A)') 'REM            H3-N-R'
+                  UEQUIV = UEQUIV * 1.25
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.89)
+                  CALL HCC109(KHY, IHY, CATOM1, CBONDA)
+                  CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
+                ELSE
+                  WRITE(NCPU,'(A)') 'REM            error 3'
+                ENDIF
+             ENDIF        
+            ENDIF
+C----- O-H
+           ELSE IF ((ISTORE(M5P) .EQ. KOXY) .AND. (NHY .GE. 1)) THEN
+            WRITE(NCPU,'(A)') 'REM       H ON O-HETRO ATOM'
+            UEQUIV = UEQUIV * 1.25
+            CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.82)
            ENDIF
           ENDIF
 c
@@ -7293,15 +7363,15 @@ C - Returns a CRC checksum for the TYPE, SERIAL and PART# of all L5 atoms.
       RETURN
       END
 CODE FOR DIS11
-      SUBROUTINE DIS11(khy, ihy, catom1, cbonda, uequiv)
-c----- set c-h distance to 0.98
+      SUBROUTINE DIS11(khy, ihy, catom1, cbonda, uequiv, dist)
+c----- set c-h distance to dist
 \XUNITS
       character*132 cline
       CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
-      write(cline,'(a,f5.2,a )') 'dist ', 0.98, ', 0.02 = '
+      write(cline,'(a,f5.2,a )') 'dist ', dist, ', 0.02 = '
       call xcrems( cline, cline, nch)
       write(ncpu,'(a)') cline(1:nch)
       do j=1,khy
@@ -7395,7 +7465,7 @@ c
       parameter (nbonda=12)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
-      write(cline,'(a )') 'angle 109.54, 5.0 = '
+      write(cline,'(a )') 'angle 109.54, 2.0 = '
       call xcrems( cline, cline, nch)
       write(ncpu,'(a)') cline(1:nch)
 
@@ -7416,7 +7486,7 @@ c
       END
 CODE FOR hcc120
       SUBROUTINE hcc120(khy, ihy, catom1, cbonda)
-c--- set h-c-c angle to 109.54
+c--- set h-c-c angle to 120
 c
 \XUNITS
       character*132 cline
@@ -7549,7 +7619,35 @@ C E.g. -123456 -> IPART = -456, IGROUP = 123
       IGROUP = ABS(IPACKD - IPART) / 1000
       RETURN
       END
-
+CODE FOR XRESTV
+      SUBROUTINE XRESTV
+C---- PRINT OUT THE RESTRAINT TARGET VALUES
+\XUNITS
+       WRITE(NCPU,'(A)')'REM No H   No #H U mult dist'
+       WRITE(NCPU,'(A)')'REM C-H'
+       WRITE(NCPU,'(A)')'REM >4           1.5    .96 disorder'
+       WRITE(NCPU,'(A)')'REM 1      1     1.2    .93 C C-H (acetylene)'
+       WRITE(NCPU,'(A)')'REM 1      2     1.2    .93 C-C(H)-C'
+       WRITE(NCPU,'(A)')'REM 1      3     1.2    .98 (C)3-C-H'
+       WRITE(NCPU,'(A)')'REM 2      1     1.2    .93 C=C-H(2)'
+       WRITE(NCPU,'(A)')'REM 2      2     1.2    .97 (C)2-C-(H)2'
+       WRITE(NCPU,'(A)')'REM 3      1     1.5    .96 C-C-(H)3'
+       WRITE(NCPU,'(A)')'REM N-H'
+       WRITE(NCPU,'(A)')'REM >4           1.5    .89 Disorder'
+       WRITE(NCPU,'(A)')'REM 1      1     1.2    .86 N-N/H'
+       WRITE(NCPU,'(A)')'REM 1      2     1.2    .86 (C)2-N-H'
+       WRITE(NCPU,'(A)')'REM 1      3     1.2    .89 (C)3-N-H'
+       WRITE(NCPU,'(A)')'REM 2      1     1.2    .86 C-N-(H)2'
+       WRITE(NCPU,'(A)')'REM 2      2     1.2    .89 (C)2-N-(H)2'
+       WRITE(NCPU,'(A)')'REM 3      1     1.2    .89 C-H-(H)3'
+       WRITE(NCPU,'(A)')'REM O-H'
+       WRITE(NCPU,'(A)')'REM 1      1     1.5    .82 O-H'
+       WRITE(NCPU,'(A)')'REM '
+       WRITE(NCPU,'(A)')'REM Dist      esd = 0.02'
+       WRITE(NCPU,'(A)')'REM Vib       esd = 0.002'
+       WRITE(NCPU,'(A)')'REM Angle     esd = 2.0'
+       RETURN
+      END
 
 
 
