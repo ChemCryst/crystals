@@ -153,7 +153,7 @@ class Table:public MyObject
         std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
         std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[]);
         std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnCount=8);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pPointGroups[], int pColumnCount=8);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
@@ -168,7 +168,6 @@ class Tables:public ArrayList<Table>
         ~Tables();
         Headings* getHeadings();
 	Conditions* getConditions();
-        void addTable(Table* pTable);
         void readFrom(filebuf& pFile);
         Table* findTable(char* pName);
         std::ostream& output(std::ostream& pStream);
