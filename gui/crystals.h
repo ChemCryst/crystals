@@ -1,6 +1,11 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2001/01/16 15:35:00  richard
+// wxWindows support.
+// Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
+// checked out in conjunction with changes to \bin\
+//
 // Revision 1.5  2000/12/13 18:03:08  richard
 // Linux(wxWindows) and Windows(wxWindows) support added.
 //
@@ -48,7 +53,7 @@ class CCrystalsApp : public wxApp
 
 public:
 
-        BOOL CCrystalsApp::DoCommandTransferStuff();
+        bool CCrystalsApp::DoCommandTransferStuff();
 
 #ifdef __CR_WIN__
 // Overrides
