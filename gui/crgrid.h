@@ -11,9 +11,9 @@
 
 #ifndef		__CrGrid_H__
 #define		__CrGrid_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcList.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cclist.h"
 class CxGroupBox;
 class CcTokenList;
 //End of user code.         

@@ -11,9 +11,9 @@
 
 #ifndef		__CrText_H__
 #define		__CrText_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
 class CxText;
 //End of user code.         
  

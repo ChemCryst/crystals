@@ -8,10 +8,10 @@
 //always contained in a grid. It draws a box around controls (groups),
 //and therefore doesn't fit into the heirachy properly. 
 
-#include	"CrystalsInterface.h"
-#include	"CxGroupBox.h"
-#include	"CrGrid.h"
-#include	"CxGrid.h"
+#include	"crystalsinterface.h"
+#include	"cxgroupbox.h"
+#include	"crgrid.h"
+#include	"cxgrid.h"
 
 int CxGroupBox::mGroupBoxCount = kGroupBoxBase;
 

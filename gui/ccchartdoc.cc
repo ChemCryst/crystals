@@ -17,13 +17,13 @@
 //            drawing commands. Note again - it is not a CrGUIElement,
 //            it has no graphical presence, nor a complimentary Cx- class
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CcChartDoc.h"
-#include	"CrChart.h"
-#include	"CrGraph.h"
-#include	"CcChartObject.h"
-#include	"CcController.h"	
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"ccchartdoc.h"
+#include	"crchart.h"
+#include	"crgraph.h"
+#include	"ccchartobject.h"
+#include	"cccontroller.h"	
 
 CcChartDoc::CcChartDoc( )
 {

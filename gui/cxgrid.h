@@ -12,10 +12,10 @@
 #ifndef		__CxGrid_H__
 #define		__CxGrid_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 
 #include	<afxwin.h>
-#include	"CxRadioButton.h"
+#include	"cxradiobutton.h"
 
 class CrGrid;
 class CxGrid;

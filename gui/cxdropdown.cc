@@ -9,11 +9,11 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  6.3.1998 10:10 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxDropDown.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-#include	"CrDropDown.h"
+#include	"crystalsinterface.h"
+#include	"cxdropdown.h"
+//insert your own code here.
+#include	"cxgrid.h"
+#include	"crdropdown.h"
 
 //#include	<LStdControl.h>
 //End of user code.          

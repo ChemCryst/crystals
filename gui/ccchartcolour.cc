@@ -1,9 +1,9 @@
 
 #include "crystalsinterface.h"
-#include	"CrConstants.h"
-#include "CcChartColour.h"
-#include "CcTokenList.h"
-#include "CrChart.h"
+#include "crconstants.h"
+#include "ccchartlolour.h"
+#include "cctokenlist.h"
+#include "crchart.h"
 
 CcChartColour::CcChartColour()
 {

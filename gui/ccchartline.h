@@ -4,7 +4,7 @@
 
 class CrChart;
 class CcTokenList;
-#include "CcChartObject.h"
+#include "ccchartobject.h"
 
 class CcChartLine : public CcChartObject
 {

@@ -21,8 +21,8 @@
 #define		__CcModelDoc_H__
 
 
-#include "CcString.h"	// Added by ClassView
-#include "CcList.h"	// Added by ClassView
+#include "ccstring.h"	// added by classview
+#include "cclist.h"	// added by classView
 class CcTokenList;
 class CrModel;
 class CcList;

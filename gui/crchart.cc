@@ -9,16 +9,16 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:25 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrChart.h"
-//Insert your own code here.
-#include	"CrGrid.h"
-#include	"CxChart.h"
-#include    "CcChartDoc.h"
-#include	"CcRect.h"
-#include	"CcTokenList.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crchart.h"
+//insert your own code here.
+#include	"crgrid.h"
+#include	"cxchart.h"
+#include    "ccchartdoc.h"
+#include	"ccrect.h"
+#include	"cctokenlist.h"
+#include	"cccontroller.h"	// for sending commands
 
 CrChart::CrChart( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )

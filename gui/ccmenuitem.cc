@@ -2,12 +2,12 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "CrystalsInterface.h"
-#include	"CrConstants.h"
+#include "crystalsinterface.h"
+#include	"crconstants.h"
 #include "crystals.h"
-#include "CcMenuItem.h"
-#include "CrMenu.h"
-#include "CxMenu.h"
+#include "ccmenuitem.h"
+#include "crmenu.h"
+#include "cxmenu.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

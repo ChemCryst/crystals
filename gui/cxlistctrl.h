@@ -9,11 +9,11 @@
 
 #ifndef		__CxListCtrl_H__
 #define		__CxListCtrl_H__
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 
 
 #include <afxwin.h>
-#include "CcString.h"	// Added by ClassView
+#include "ccstring.h"	// added by ClassView
 
 class CrListCtrl;
 class CxGrid;

@@ -9,8 +9,8 @@
 //   Created:   26.2.1998 9:36 Uhr
 //   Modified:  11.3.1998 11:36 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CcRect.h"
+#include	"crystalsinterface.h"
+#include	"ccrect.h"
 //Insert your own code here.
 
 //End of user code.          

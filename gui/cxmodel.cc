@@ -9,20 +9,20 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 15:22 Uhr
 
-#include	"CrystalsInterface.h"
-#include	<GL\gl.h>
-#include	<GL\glu.h>
+#include	"crystalsinterface.h"
+#include	<gl\gl.h>
+#include	<gl\glu.h>
 #include	<math.h>
-#include	"CxModel.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-#include	"CxWindow.h"
-#include	"CrModel.h"
+#include	"cxmodel.h"
+//insert your own code here.
+#include	"cxgrid.h"
+#include	"cxwindow.h"
+#include	"crmodel.h"
 #include	<afxwin.h>
-#include	"CcModelAtom.h"
-#include	"CrEditBox.h"
-#include	"CcController.h"
-//#include	<TextUtils.h>
+#include	"ccmodelatom.h"
+#include	"creditbox.h"
+#include	"cccontroller.h"
+//#include	<textutils.h>
 //#include	<LStdControl.h>
 
 int CxModel::mModelCount = kModelBase;

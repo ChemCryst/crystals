@@ -9,14 +9,14 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 10:38 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrProgress.h"
-//Insert your own code here.
-#include	"CrGrid.h"
-#include	"CxProgress.h"
-#include	"CcRect.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crprogress.h"
+//insert your own code here.
+#include	"crgrid.h"
+#include	"cxprogress.h"
+#include	"ccrect.h"
+#include	"cccontroller.h"	// for sending commands
 
 
 // OPSignature:  CrProgress:CrProgress( CrGUIElement *:mParentPtr ) 

@@ -1,9 +1,9 @@
 
 #include "crystalsinterface.h"
-#include	"CrConstants.h"
-#include "CcChartEllipse.h"
-#include "CcTokenList.h"
-#include "CrChart.h"
+#include	"crconstants.h"
+#include "ccchartellipse.h"
+#include "cctokenlist.h"
+#include "crchart.h"
 
 CcChartEllipse::CcChartEllipse(Boolean filled)
 {

@@ -9,8 +9,8 @@
 
 #ifndef		__CrListCtrl_H__
 #define		__CrListCtrl_H__
-#include	"CrGUIElement.h"
-#include	"CcTokenList.h"
+#include	"crguielement.h"
+#include	"cctokenlist.h"
  
 class	CrListCtrl : public CrGUIElement
 {

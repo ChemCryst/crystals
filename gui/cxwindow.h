@@ -12,9 +12,9 @@
 #ifndef		__CxWindow_H__
 #define		__CxWindow_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
-#include	"CrWindow.h"
-#include	"CxButton.h"
+#include	"crguielement.h"
+#include	"crwindow.h"
+#include	"cxbutton.h"
 
 #ifdef __POWERPC__
 #include	<LWindow.h>

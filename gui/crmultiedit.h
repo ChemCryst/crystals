@@ -11,10 +11,10 @@
 
 #ifndef		__CrMultiEdit_H__
 #define		__CrMultiEdit_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
-#include	"CcRect.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
+#include	"ccrect.h"
 class CxMultiEdit;
 //End of user code.         
 

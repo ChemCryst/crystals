@@ -9,11 +9,11 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  12.3.1998 10:38 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxCheckBox.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-#include	"CrCheckBox.h"
+#include	"crystalsinterface.h"
+#include	"cxcheckbox.h"
+//insert your own code here.
+#include	"cxgrid.h"
+#include	"crcheckbox.h"
 //#include	<TextUtils.h>
 //#include	<LStdControl.h>
 //End of user code.          

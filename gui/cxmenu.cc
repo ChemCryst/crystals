@@ -4,9 +4,9 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-#include	"CrystalsInterface.h"
-#include	"CrMenu.h"
-#include	"CxMenu.h"
+#include	"crystalsinterface.h"
+#include	"crmenu.h"
+#include	"cxmenu.h"
 
 
 int	CxMenu::mMenuCount = kMenuBase;

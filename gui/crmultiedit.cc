@@ -9,14 +9,14 @@
 //   Created:   06.3.1998 00:04 Uhr
 //   Modified:  06.3.1998 00:04 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include 	"CcRect.h"
-#include	"CrMultiEdit.h"
-//Insert your own code here.
-#include	"CrGrid.h"
-#include	"CcController.h"
-#include	"CxMultiEdit.h"
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include 	"ccrect.h"
+#include	"crmultiedit.h"
+//insert your own code here.
+#include	"crgrid.h"
+#include	"cccontroller.h"
+#include	"cxmultiedit.h"
 //End of user code.          
 
 // OPSignature:  CrMultiEdit:CrMultiEdit( CrGUIElement *:mParentPtr ) 

@@ -9,13 +9,13 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 16:45 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxWindow.h"
-#include	"CxApp.h"
-#include	"CxMenu.h"
-#include	"CrMenu.h"
-#include	"CcMenuItem.h"
-#include	"CcController.h"
+#include	"crystalsinterface.h"
+#include	"cxwindow.h"
+#include	"cxapp.h"
+#include	"cxmenu.h"
+#include	"crmenu.h"
+#include	"ccmenuItem.h"
+#include	"cccontroller.h"
 
 
 int	CxWindow::mWindowCount = kWindowBase;

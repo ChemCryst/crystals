@@ -9,10 +9,10 @@
 //   Created:   05.11.1998 14:24 Uhr
 //   Modified:  05.11.1998 14:25 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxProgress.h"
-#include	"CxGrid.h"
-#include	"CrProgress.h"
+#include	"crystalsinterface.h"
+#include	"cxprogress.h"
+#include	"cxgrid.h"
+#include	"crprogress.h"
 
 int	CxProgress::mProgressCount = kProgressBase;
 CxProgress *	CxProgress::CreateCxProgress( CrProgress * container, CxGrid * guiParent )

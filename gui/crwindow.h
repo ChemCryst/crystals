@@ -11,11 +11,11 @@
 
 #ifndef		__CrWindow_H__
 #define		__CrWindow_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
-#include	"CrGrid.h"
-#include "CcString.h"	// Added by ClassView
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
+#include	"crgrid.h"
+#include "ccstring.h"	// added by classview
 
 class CxApp;
 class CrMenu;

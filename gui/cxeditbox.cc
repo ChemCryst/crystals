@@ -9,12 +9,12 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  9.3.1998 10:08 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxEditBox.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-#include	"CxWindow.h"
-#include	"CrEditBox.h"
+#include	"crystalsinterface.h"
+#include	"cxeditbox.h"
+//insert your own code here.
+#include	"cxgrid.h"
+#include	"cxwindow.h"
+#include	"creditbox.h"
 //#include	<TextUtils.h>
 //#include	<LEditField.h>
 //#include	<LWindow.h>

@@ -21,7 +21,7 @@
 #define		__CcChartDoc_H__
 
 
-#include "CcString.h"	// Added by ClassView
+#include "ccstring.h"	// Added by ClassView
 class CcTokenList;
 class CrChart;
 class CcList;

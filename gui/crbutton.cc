@@ -9,16 +9,16 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:25 Uhr
 
-#include	"CrystalsInterface.h"
-#include    "CrConstants.h"
-#include	"CrButton.h"
-#include	"CrWindow.h"
+#include	"crystalsinterface.h"
+#include    "crconstants.h"
+#include	"crbutton.h"
+#include	"crwindow.h"
 
-#include	"CrGrid.h"
-#include	"CxButton.h"
-#include	"CcRect.h"
-#include	"CcTokenList.h"
-#include	"CcController.h"	// for sending commands
+#include	"crgrid.h"
+#include	"cxbutton.h"
+#include	"ccrect.h"
+#include	"cctokenlist.h"
+#include	"cccontroller.h"	// for sending commands
 
 
 CrButton::CrButton( CrGUIElement * mParentPtr )

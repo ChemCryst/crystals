@@ -4,14 +4,14 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrDropDown.h"
-#include	"CrGrid.h"
-#include	"CxDropDown.h"
-#include	"CcRect.h"
-#include	"CcTokenList.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crdropdown.h"
+#include	"crgrid.h"
+#include	"cxdropdown.h"
+#include	"ccrect.h"
+#include	"cctokenlist.h"
+#include	"cccontroller.h"	// for sending commands
 
 
 CrDropDown::CrDropDown( CrGUIElement * mParentPtr )

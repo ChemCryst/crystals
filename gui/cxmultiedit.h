@@ -12,7 +12,7 @@
 #ifndef		__CxMultiEdit_H__
 #define		__CxMultiEdit_H__
 //Insert your own code here.
-#include "CrystalsInterface.h"
+#include "crystalsinterface.h"
 
 #ifdef __LINUX__
 #include <qmlined.h>

@@ -12,10 +12,10 @@
 #ifndef		__CcController_H__
 #define		__CcController_H__
 //Insert your own code here.
-#include	"CcList.h"
-#include	"CcCommandQueue.h"
-#include	"CcStatus.h"
-#include "CcRect.h"	// Added by ClassView
+#include	"cclist.h"
+#include	"cccommandqueue.h"
+#include	"ccstatus.h"
+#include "ccrect.h"	// added by ClassView
 //End of user code.         
 class CcChartDoc;
 class CcModelDoc;

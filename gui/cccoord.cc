@@ -9,8 +9,8 @@
 //   Created:   26.2.1998 9:36 Uhr
 //   Modified:  11.3.1998 11:36 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CcCoord.h"
+#include	"crystalsinterface.h"
+#include	"cccoord.h"
 
 CcCoord::CcCoord()
 {

@@ -6,7 +6,7 @@ class CrModel;
 class CcTokenList;
 class CcModelDoc;
 //#include "crystalsinterface.h"
-#include "CcModelObject.h"
+#include "ccmodelobject.h"
 
 class CcModelAtom : public CcModelObject
 {

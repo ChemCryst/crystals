@@ -11,9 +11,9 @@
 
 #ifndef		__CrListBox_H__
 #define		__CrListBox_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
 //End of user code.         
  
 class	CrListBox : public CrGUIElement

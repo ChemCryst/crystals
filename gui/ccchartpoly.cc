@@ -1,11 +1,11 @@
 
 #include "crystalsinterface.h"
-#include	"CrConstants.h"
-#include "CcChartPoly.h"
-#include "CcTokenList.h"
-#include "CrChart.h"
-#include "CcController.h"
-#include "CcQuickData.h"
+#include	"crconstants.h"
+#include "ccchartpoly.h"
+#include "cctokenlist.h"
+#include "crchart.h"
+#include "cccontroller.h"
+#include "ccquickdata.h"
 
 CcChartPoly::CcChartPoly(Boolean filled)
 {

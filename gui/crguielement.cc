@@ -9,15 +9,15 @@
 //   Created:   22.2.1998 13:19 Uhr
 //   Modified:  30.3.1998 13:33 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcList.h"
-#include	"CcRect.h"
-#include	"CcController.h"
-#include	"CcTokenList.h"
-#include	"CrWindow.h"
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cclist.h"
+#include	"ccrect.h"
+#include	"cccontroller.h"
+#include	"cctokenlist.h"
+#include	"crwindow.h"
 //End of user code.          
 
 CcController *	CrGUIElement::mControllerPtr;

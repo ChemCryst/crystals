@@ -12,7 +12,7 @@
 #ifndef		__CxDropDown_H__
 #define		__CxDropDown_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 
 #ifdef __POWERPC__
 class LStdPopupMenu;

@@ -9,14 +9,14 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  25.2.1998 15:27 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxMultiEdit.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-//#include	"CcRect.h"
-#include	"CrMultiEdit.h"
-#include	"CrGrid.h"
-//#include	<LView.h>
+#include	"crystalsinterface.h"
+#include	"cxmultiedit.h"
+//insert your own code here.
+#include	"cxgrid.h"
+//#include	"ccrect.h"
+#include	"crmultiedit.h"
+#include	"crgrid.h"
+//#include	<lview.h>
 //#include	<LGroupBox.h>
 //End of user code.          
 

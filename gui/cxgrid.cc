@@ -9,10 +9,10 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 16:18 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxGrid.h"
-//Insert your own code here.
-#include	"CrGrid.h"
+#include	"crystalsinterface.h"
+#include	"cxgrid.h"
+//insert your own code here.
+#include	"crgrid.h"
 //#include	<LView.h>
 //#include	<LRadioGroup.h>
 //End of user code.          

@@ -12,7 +12,7 @@
 #ifndef		__CxChart_H__
 #define		__CxChart_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 
 #ifdef __POWERPC__
 class LStdChart;

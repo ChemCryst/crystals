@@ -7,13 +7,13 @@
 //   Filename:  CxListCtrl.cc
 //   Authors:   Richard Cooper
 
-#include	"CrystalsInterface.h"
-#include	"CxListCtrl.h"
+#include	"crystalsinterface.h"
+#include	"cxlistctrl.h"
 
-#include	"CxGrid.h"
-#include	"CxWindow.h"
-#include	"CrListCtrl.h"
-#include	"CcController.h"
+#include	"cxgrid.h"
+#include	"cxwindow.h"
+#include	"crlistctrl.h"
+#include	"cccontroller.h"
 #include	"math.h"
 
 int	CxListCtrl::mListCtrlCount = kListCtrlBase;

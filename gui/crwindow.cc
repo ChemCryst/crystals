@@ -9,17 +9,17 @@
 //   Created:   22.2.1998 13:26 Uhr
 //   Modified:  30.3.1998 12:11 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrWindow.h"
-//Insert your own code here.
-#include	"CrGrid.h"
-#include	"CrMenu.h"
-#include	"CcMenuItem.h"
-#include	"CcController.h"
-#include	"CxWindow.h"
-#include	"CcRect.h"
-#include	"CxApp.h"
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crwindow.h"
+//insert your own code here.
+#include	"crgrid.h"
+#include	"crmenu.h"
+#include	"ccmenuitem.h"
+#include	"cccontroller.h"
+#include	"cxwindow.h"
+#include	"ccrect.h"
+#include	"cxapp.h"
 
 CcList CrWindow::mModalWindowStack;
 

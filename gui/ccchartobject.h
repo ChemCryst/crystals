@@ -15,10 +15,10 @@ class CcChartObject
 		virtual Boolean ParseInput(CcTokenList* tokenList) = 0;
 };
 
-#include	"CcChartLine.h"
-#include	"CcChartEllipse.h"
-#include	"CcChartPoly.h"
-#include	"CcChartText.h"
-#include	"CcChartColour.h"
+#include	"ccchartline.h"
+#include	"ccchartellipse.h"
+#include	"ccchartpoly.h"
+#include	"cccharttext.h"
+#include	"ccchartcolour.h"
 
 #endif

@@ -1,10 +1,10 @@
 
 #include "crystalsinterface.h"
-#include "CrConstants.h"
-#include "CcModelAtom.h"
-#include "CcTokenList.h"
-#include "CcModelDoc.h"
-#include "CrModel.h"
+#include "crconstants.h"
+#include "ccmodelatom.h"
+#include "cctokenlist.h"
+#include "ccmodeldoc.h"
+#include "crmodel.h"
 
 CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
 {

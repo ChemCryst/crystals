@@ -1,9 +1,9 @@
 
 #include "crystalsinterface.h"
-#include	"CrConstants.h"
-#include "CcChartLine.h"
-#include "CcTokenList.h"
-#include "CrChart.h"
+#include	"crconstants.h"
+#include "ccchartline.h"
+#include "cctokenlist.h"
+#include "crchart.h"
 
 CcChartLine::CcChartLine()
 {

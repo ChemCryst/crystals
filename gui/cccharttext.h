@@ -4,8 +4,8 @@
 
 class CrChart;
 class CcTokenList;
-#include "CcChartObject.h"
-#include "CcString.h"
+#include "ccchartobject.h"
+#include "ccstring.h"
 
 class CcChartText : public CcChartObject
 {

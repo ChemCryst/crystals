@@ -1,6 +1,6 @@
 #include "crystalsinterface.h"
-#include "CcController.h"
-#include "CcChartObject.h"
+#include "cccontroller.h"
+#include "ccchartobject.h"
 
 
 CcChartObject::CcChartObject()

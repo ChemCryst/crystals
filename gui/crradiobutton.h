@@ -11,9 +11,9 @@
 
 #ifndef		__CrRadioButton_H__
 #define		__CrRadioButton_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
 class CxRadioButton;
 //End of user code.         
  

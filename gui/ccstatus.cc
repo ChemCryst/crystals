@@ -9,10 +9,10 @@
 //   Created:   26.2.1998 9:36 Uhr
 //   Modified:  11.3.1998 11:36 Uhr
 
-#include	"CrConstants.h"
-#include	"CrystalsInterface.h"
-#include	"CcStatus.h"
-#include	"CcTokenList.h"
+#include	"crconstants.h"
+#include	"crystalsinterface.h"
+#include	"ccstatus.h"
+#include	"cctokenlist.h"
 
 CcStatus::CcStatus()
 {

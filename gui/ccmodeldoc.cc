@@ -17,15 +17,15 @@
 //            drawing commands. Note again - it is not a CrGUIElement,
 //            it has no graphical presence, nor a complimentary Cx- class
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CcModelDoc.h"
-#include	"CcModelObject.h"
-//Insert your own code here.
-#include	"CrModel.h"
-//#include	"CcRect.h"
-#include	"CcCoord.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"ccmodeldoc.h"
+#include	"ccmodelobject.h"
+//insert your own code here.
+#include	"crmodel.h"
+//#include	"ccrect.h"
+#include	"cccoord.h"
+#include	"cccontroller.h"	// for sending commands
 
 CcModelDoc::CcModelDoc( )
 {

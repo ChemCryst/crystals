@@ -1,6 +1,6 @@
 #include "crystalsinterface.h"
-#include "CcController.h"
-#include "CcModelObject.h"
+#include "cccontroller.h"
+#include "ccmodelobject.h"
 
 
 CcModelObject::CcModelObject()

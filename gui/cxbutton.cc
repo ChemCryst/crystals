@@ -9,12 +9,12 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 15:22 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxButton.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-#include	"CxWindow.h"
-#include	"CrButton.h"
+#include	"crystalsinterface.h"
+#include	"cxbutton.h"
+//insert your own code here.
+#include	"cxgrid.h"
+#include	"cxwindow.h"
+#include	"crbutton.h"
 #include	<afxwin.h>
 //#include	<TextUtils.h>
 //#include	<LStdControl.h>

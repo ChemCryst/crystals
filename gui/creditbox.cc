@@ -9,15 +9,15 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:15 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrEditBox.h"
-//Insert your own code here.
-#include	"CrGrid.h"
-#include	"CxEditBox.h"
-#include	"CcRect.h"
-#include	"CcTokenList.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"creditbox.h"
+//insert your own code here.
+#include	"crgrid.h"
+#include	"cxeditbox.h"
+#include	"ccrect.h"
+#include	"cctokenlist.h"
+#include	"cccontroller.h"	// for sending commands
 
 
 // OPSignature:  CrEditBox:CrEditBox( CrGUIElement *:mParentPtr ) 

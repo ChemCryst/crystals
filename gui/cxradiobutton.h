@@ -12,7 +12,7 @@
 #ifndef		__CxRadioButton_H__
 #define		__CxRadioButton_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 
 #include <afxwin.h>
 

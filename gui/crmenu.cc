@@ -9,17 +9,17 @@
 //   Created:   08.6.1998 02:01 Uhr
 //   Modified:  08.6.1998 02:01 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrMenu.h"
-#include	"CcMenuItem.h"
-//Insert your own code here.
-//#include	"CrGrid.h"
-#include	"CxMenu.h"
-#include	"CcRect.h"
-#include	"CrWindow.h"
-#include	"CxWindow.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crmenu.h"
+#include	"ccmenuitem.h"
+//insert your own code here.
+//#include	"crgrid.h"
+#include	"cxmenu.h"
+#include	"ccrect.h"
+#include	"crwindow.h"
+#include	"cxwindow.h"
+#include	"cccontroller.h"	// for sending commands
 
 
 // OPSignature:  CrMenu:CrMenu( CrGUIElement *:mParentPtr ) 

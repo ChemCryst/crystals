@@ -3,10 +3,10 @@
 
 #include "stdafx.h"
 #include "crystals.h"
-#include "CrystalsInterface.h"
+#include "crystalsinterface.h"
 #include <afxwin.h>
-#include "CrApp.h"
-#include "CcController.h"
+#include "crapp.h"
+#include "cccontroller.h"
 
 
 #ifdef _DEBUG

@@ -11,9 +11,9 @@
 
 #ifndef		__CrProgress_H__
 #define		__CrProgress_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
 class CxProgress;
 //End of user code.         
  

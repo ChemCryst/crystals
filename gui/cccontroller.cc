@@ -9,24 +9,24 @@
 //   Created:   22.2.1998 15:02 Uhr
 //   Modified:  30.3.1998 12:23 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CcController.h"
-//Insert your own code here.
-#include	"CrWindow.h"
-#include	"CrGrid.h"
-#include	"CxGrid.h" //to delete its static font pointer.
-#include	"CrButton.h"
-#include	"CrEditBox.h"
-#include	"CcTokenList.h"
-#include	"CcCommandQueue.h"
-#include	"CxApp.h"
-#include	"CxEditBox.h"
-#include	"CrMultiEdit.h"
-#include	"CcChartDoc.h"
-#include	"CcModelDoc.h"
-#include	"CcQuickData.h"
-#include	"CcChartObject.h"
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"cccontroller.h"
+//insert your own code here.
+#include	"crwindow.h"
+#include	"crgrid.h"
+#include	"cxgrid.h" //to delete its static font pointer.
+#include	"crbutton.h"
+#include	"creditbox.h"
+#include	"cctokenlist.h"
+#include	"cccommandqueue.h"
+#include	"cxapp.h"
+#include	"cxeditbox.h"
+#include	"crmultiedit.h"
+#include	"ccchartdoc.h"
+#include	"ccmodeldoc.h"
+#include	"ccquickdata.h"
+#include	"ccchartobject.h"
 //End of user code.          
 
 HANDLE mInterfaceCommandQueueMutex;

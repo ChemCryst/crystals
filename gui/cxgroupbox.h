@@ -12,7 +12,7 @@
 #ifndef		__CxGroupBox_H__
 #define		__CxGroupBox_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 
 #include <afxwin.h>
 

@@ -9,20 +9,20 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:25 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrModel.h"
-//Insert your own code here.
-#include	"CrGrid.h"
-#include	"CrMenu.h"
-#include	"CcMenuItem.h"
-#include	"CxModel.h"
-#include    "CcModelDoc.h"
-#include	"CcRect.h"
-#include	"CcTokenList.h"
-#include	"CcController.h"	// for sending commands
-#include	"CrEditBox.h"      //Appends could be done through CcController for better separation.
-#include	"CcModelAtom.h"
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crmodel.h"
+//insert your own code here.
+#include	"crgrid.h"
+#include	"crmenu.h"
+#include	"ccmenuitem.h"
+#include	"cxmodel.h"
+#include    "ccmodeldoc.h"
+#include	"ccrect.h"
+#include	"cctokenlist.h"
+#include	"cccontroller.h"	// for sending commands
+#include	"creditbox.h"      //appends could be done through cccontroller for better separation.
+#include	"ccmodelatom.h"
 
 
 // OPSignature:  CrModel:CrModel( CrGUIElement *:mParentPtr ) 

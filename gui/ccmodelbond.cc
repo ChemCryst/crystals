@@ -1,9 +1,9 @@
 
 #include "crystalsinterface.h"
-#include	"CrConstants.h"
-#include "CcModelBond.h"
-#include "CcTokenList.h"
-#include "CrModel.h"
+#include	"crconstants.h"
+#include "ccmodelbond.h"
+#include "cctokenlist.h"
+#include "crmodel.h"
 
 CcModelBond::CcModelBond()
 {

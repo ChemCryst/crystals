@@ -11,10 +11,10 @@
 
 #ifndef		__CrMenu_H__
 #define		__CrMenu_H__
-#include	"CrGUIElement.h"
-//Insert your own code here.
-#include	"CcTokenList.h"
-#include "CcList.h"	// Added by ClassView
+#include	"crguielement.h"
+//insert your own code here.
+#include	"cctokenlist.h"
+#include "cclist.h"	// added by ClassView
 class CxMenu;
 class CcMenuItem;
 class CxWindow;

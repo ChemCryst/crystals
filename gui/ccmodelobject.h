@@ -5,7 +5,7 @@
 class CrModel;
 class CcTokenList;
 class CcController;
-#include "CcCoord.h"
+#include "cccoord.h"
 
 class CcModelObject
 {
@@ -17,9 +17,9 @@ class CcModelObject
 		virtual CcCoord ParseInput(CcTokenList* tokenList) = 0;
 };
 
-#include	"CcModelAtom.h"
-#include	"CcModelBond.h"
-#include	"CcModelCell.h"
-#include	"CcModelTri.h"
+#include	"ccmodelatom.h"
+#include	"ccmodelbond.h"
+#include	"ccmodelcell.h"
+#include	"ccmodeltri.h"
 
 #endif

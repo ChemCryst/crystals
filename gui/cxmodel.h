@@ -12,7 +12,7 @@
 #ifndef		__CxModel_H__
 #define		__CxModel_H__
 //Insert your own code here.
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 #include	<GL\gl.h>
 #include	<GL\glu.h>
 

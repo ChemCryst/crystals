@@ -12,8 +12,8 @@
 #ifndef		__CrGUIElement_H__
 #define		__CrGUIElement_H__
 //Insert your own code here.
-#include "CcTokenList.h"
-#include "CcString.h"
+#include "cctokenlist.h"
+#include "ccstring.h"
 
 class CcList;
 class CcRect;

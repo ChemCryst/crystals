@@ -9,12 +9,12 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  6.3.1998 10:10 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxListBox.h"
-//Insert your own code here.
-#include	"CxGrid.h"
-#include	"CxWindow.h"
-#include	"CrListBox.h"
+#include	"crystalsinterface.h"
+#include	"cxlistbox.h"
+//insert your own code here.
+#include	"cxgrid.h"
+#include	"cxwindow.h"
+#include	"crlistbox.h"
 
 //#include	<LWindow.h>
 //#include	<LStdControl.h>

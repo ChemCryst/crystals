@@ -9,14 +9,14 @@
 //   Created:   10.11.1998 16:36
 //   Modified:  10.11.1998 16:36
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrListCtrl.h"
-#include	"CrWindow.h"
-#include	"CrGrid.h"
-#include	"CxListCtrl.h"
-#include	"CcRect.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crlistctrl.h"
+#include	"crwindow.h"
+#include	"crgrid.h"
+#include	"cxlistctrl.h"
+#include	"ccrect.h"
+#include	"cccontroller.h"	// for sending commands
 
 CrListCtrl::CrListCtrl( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )

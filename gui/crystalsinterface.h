@@ -8,7 +8,7 @@
 #ifndef		__CrystalsInterface_H__
 #define		__CrystalsInterface_H__
 
-#include	"CcString.h"
+#include	"ccstring.h"
 
 void errorlog( CcString outStr );
 

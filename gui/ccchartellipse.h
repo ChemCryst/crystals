@@ -5,7 +5,7 @@
 class CrChart;
 class CcTokenList;
 //#include "crystalsinterface.h"
-#include "CcChartObject.h"
+#include "ccchartobject.h"
 
 class CcChartEllipse : public CcChartObject
 {

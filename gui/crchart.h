@@ -11,7 +11,7 @@
 
 #ifndef		__CrChart_H__
 #define		__CrChart_H__
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 //Insert your own code here.
 class CcChartDoc;
 class CcTokenList;

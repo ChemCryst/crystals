@@ -11,7 +11,7 @@
 
 #ifndef		__CrModel_H__
 #define		__CrModel_H__
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 //Insert your own code here.
 class CcModelDoc;
 class CcTokenList;

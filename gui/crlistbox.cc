@@ -9,15 +9,15 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 11:25 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrListBox.h"
-//Insert your own code here.
-#include	"CrWindow.h"
-#include	"CrGrid.h"
-#include	"CxListBox.h"
-#include	"CcRect.h"
-#include	"CcController.h"	// for sending commands
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crlistbox.h"
+//insert your own code here.
+#include	"crwindow.h"
+#include	"crgrid.h"
+#include	"cxlistbox.h"
+#include	"ccrect.h"
+#include	"cccontroller.h"	// for sending commands
 
 
 // OPSignature:  CrListBox:CrListBox( CrGUIElement *:mParentPtr ) 

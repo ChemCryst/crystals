@@ -9,15 +9,15 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 10:41 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CrConstants.h"
-#include	"CrCheckBox.h"
+#include	"crystalsinterface.h"
+#include	"crconstants.h"
+#include	"crcheckbox.h"
 
-#include	"CrGrid.h"
-#include	"CxCheckBox.h"
-#include	"CcRect.h"
-#include	"CcTokenList.h"
-#include	"CcController.h"	// for sending commands
+#include	"crgrid.h"
+#include	"cxcheckbox.h"
+#include	"ccrect.h"
+#include	"cctokenlist.h"
+#include	"cccontroller.h"	// for sending commands
 
 CrCheckBox::CrCheckBox( CrGUIElement * mParentPtr )
 	:	CrGUIElement( mParentPtr )

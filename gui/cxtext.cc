@@ -9,11 +9,11 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  12.3.1998 9:47 Uhr
 
-#include	"CrystalsInterface.h"
-#include	"CxText.h"
+#include	"crystalsinterface.h"
+#include	"cxtext.h"
 //Insert your own code here.
-#include	"CxGrid.h"
-#include	"CrText.h"
+#include	"cxgrid.h"
+#include	"crtext.h"
 //#include	<TextUtils.h>
 //#include	<LCaption.h>
 //#include	<UTextTraits.h>

@@ -11,7 +11,7 @@
 
 #ifndef		__CrEditBox_H__
 #define		__CrEditBox_H__
-#include	"CrGUIElement.h"
+#include	"crguielement.h"
 //Insert your own code here.
 class CcTokenList;
 //End of user code.         
