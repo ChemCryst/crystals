@@ -18,6 +18,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  1999/06/22 12:57:18  dosuser
+// RIC: RenderModel returns a boolean indicating whether anything was drawn.
+//
 // Revision 1.5  1999/06/13 16:40:32  dosuser
 // RIC: No need to keep track of the centre as objects are added. Atoms
 // are now centred in XGDBUP. DrawViews and Centre() removed.
@@ -203,6 +206,8 @@ void CcModelDoc::Clear()
 
 	m_nAtoms = 0;
 
+      (CcController::theController)->status.SetNumSelectedAtoms( 0 );
+
       DrawViews();
 
 }
@@ -282,12 +287,17 @@ void CcModelDoc::SelectAllAtoms(Boolean select)
 {
 	mAtomList->Reset();
 	CcModelAtom* item;
+      int i=0;
 	while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
 	{
+            i++;
 		item->Select(select);
 	}
-//      ReDrawHighlights(true);
       DrawViews();
+      if ( select )
+            (CcController::theController)->status.SetNumSelectedAtoms( i );
+      else
+            (CcController::theController)->status.SetNumSelectedAtoms( 0 );
 }
 
 CcString CcModelDoc::Compress(CcString atomname)
