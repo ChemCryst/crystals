@@ -3,4 +3,6 @@
  * Running DIPIN.
 %      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:DIPIN.EXE'
  * Done.
+
+% COPY '#SCRIPT XDIPIN'
 %END SCRIPT

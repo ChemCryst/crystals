@@ -3,4 +3,6 @@
  * Running KCCDIN.
 %      COPY '#SPAWN CRYSDIR:KCCDIN.BAT'
  * Done.
+
+% COPY '#SCRIPT XKCCDIN'
 %END SCRIPT

@@ -1,7 +1,9 @@
 %SCRIPT RC93
 
  * Running RC93.
-%      COPY '#SPAWN  COMMAND.COM /e:2048 /c CRYSDIR:RC93.BAT'
+%      COPY '#SPAWN  +COMMAND.COM /e:2048 /c CRYSDIR:RC93.BAT'
  * Done.
 % copy '#type rc93.err'
+
+% COPY '#SCRIPT XINRC93'
 %END SCRIPT
