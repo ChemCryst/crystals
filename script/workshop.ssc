@@ -1,0 +1,125 @@
+%SCRIPT WORKSHOP
+% VARIABLE INTEGER CHOICE CLEAN
+% VARIABLE CHARACTER CDIR
+% VARIABLE LOGICAL T
+%%
+%% Closes current files and dir and restarts in appropriate location,
+%% copying data across if required.
+%%
+^^WI WINDOW WORKS 'Workshop examples' MODAL
+^^WI GRID TOP NROWS=7 NCOLS=3
+^^WI {
+^^WI   @ 2,2 GRID CH NROWS=6 NCOLS=1 OUTLINE='Structure'
+^^WI   {
+^^WI    @ 1,1 RADIOBUTTON RCYC 'Cyclo (structure 1)' STATE=ON
+^^WI    @ 2,1 RADIOBUTTON RYLI 'Ylid (structure 2)' STATE=OFF
+^^WI    @ 3,1 RADIOBUTTON RPEA 'Peach (structure 3)' STATE=OFF
+^^WI    @ 4,1 RADIOBUTTON RKEE 'Keen (structure 4)' STATE=OFF
+^^WI    @ 5,1 RADIOBUTTON RNKE 'N-ket' STATE=OFF
+^^WI    @ 6,1 RADIOBUTTON RHEX 'Hex' STATE=OFF
+^^WI   }
+^^WI   @ 4,2 CHECKBOX XWIP 'Clean start' STATE=ON
+^^WI   @ 6,2 GRID BT NROWS=1 NCOLS=6
+^^WI   {
+^^WI    @ 1,1 STRETCH SX HORIZONTAL
+^^WI    @ 1,2 BUTTON WKOK '&Ok' DEFAULT
+^^WI    @ 1,4 BUTTON WKXX '&Cancel'
+^^WI    @ 1,6 BUTTON WKHL '&Help'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%%
+% LOOP
+%   VERIFY WKXX WKHL WKOK
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK
+^^CO    DISPOSE WORKS
+%       FINISH
+%     END BLOCK
+%     BLOCK
+%       COPY '$ somehtmlfile.html'
+%     END BLOCK
+%     BLOCK
+%       EVALUATE CHOICE = 0
+^^??    XWIP STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       CASE VALUE
+%         EVALUATE CLEAN = 1
+%         EVALUATE CLEAN = 0
+%       END CASE
+^^??    RCYC STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       IF ( VALUE .EQ. 1 ) THEN
+%         EVALUATE CHOICE = 1
+%       ELSE
+^^??     RYLI STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        IF ( VALUE .EQ. 1 ) THEN
+%         EVALUATE CHOICE = 2
+%        ELSE
+^^??      RPEA STATE
+%         VERIFY ON OFF
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%         IF ( VALUE .EQ. 1 ) THEN
+%          EVALUATE CHOICE = 3
+%         ELSE
+^^??       RKEE STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF ( VALUE .EQ. 1 ) THEN
+%           EVALUATE CHOICE = 4
+%          ELSE
+^^??        RNKE STATE
+%           VERIFY ON OFF
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%           IF ( VALUE .EQ. 1 ) THEN
+%             EVALUATE CHOICE = 5
+%           ELSE
+%            EVALUATE CHOICE = 6
+%           END IF
+%          END IF
+%         END IF
+%        END IF
+%       END IF
+^^CO    DISPOSE WORKS
+%       CASE CHOICE
+%          EVALUATE CDIR = 'CRYSDIR:cyclo\'
+%          EVALUATE CDIR = 'CRYSDIR:ylid\'
+%          EVALUATE CDIR = 'CRYSDIR:peach\'
+%          EVALUATE CDIR = 'CRYSDIR:keen\'
+%          EVALUATE CDIR = 'CRYSDIR:nket\'
+%          EVALUATE CDIR = 'CRYSDIR:example\'
+%       END CASE
+%       IF ( .NOT. ( FILEEXISTS CDIR ) ) THEN
+%         TRANSFER '{E Cannot find ' // CDIR TO DISPLAY
+ {I Suggest that you reinstall CRYSTALS to restore the workshop data.
+%         FINISH
+%       END IF
+%       IF ( CLEAN .EQ. 1 ) THEN
+%         EVALUATE T = FILEDELETE ( CDIR // 'crfilev2.dsc' )
+%         EVALUATE T = FILEDELETE ( CDIR // 'sir9x.ins' )
+%         EVALUATE T = FILEDELETE ( CDIR // 'pretwin6.dat' )
+%       END IF
+^^WI    SET _MAIN TEXT=
+%       TRANSFER "^^WI 'Crystals - " // CDIR // "'" TO DISPLAY
+^^CR
+% TRANSFER '^^CO RESTART ' // CDIR // ' NEWFILE=crfilev2.dsc' TO DISPLAY
+%% MAKE SURE THE GUI HAS RECEIVED THESE COMMANDS
+%% BEFORE CLOSING DOWN!
+%% We query the value of any object by name.
+%% A value will not return until the GUI has caught up.
+^^??    _MAIN EXISTS
+%       GET NOSTORE TEXT 'About to restart in new directory...' ' '
+^^CO    SET _MAINTEXTOUTPUT EMPTY
+%       COPY '#END'
+%       FINISH
+%     END BLOCK
+%   END CASE
+% END LOOP
