@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2002/12/04 14:31:11  rich
+C Reformat output during refinement.
+C
+C Allow punching to MATLAB files, including restraints.
+C
+C Tidy some routines.
+C
 C Revision 1.7  2002/12/02 15:48:54  rich
 C XADCPD was looking at PUNCH YES/NO, should have been looking at MATRIX OLD/NEW
 C in LIST 33.
@@ -2875,9 +2882,9 @@ C--ADD INTO THE R.H.S.
                  M11R=L11R+J-1
                  STR11(M11R)=STR11(M11R)+A*D
 
-                 WRITE(CMON,'(A,2G12.5,I12)')
-     1           'Rest: J,A*D,M11R: ',J,A*D,M11R
-                 CALL XPRVDU(NCVDU,1,0)
+c                 WRITE(CMON,'(A,2G12.5,I12)')
+c     1           'Rest: J,A*D,M11R: ',J,A*D,M11R
+c                 CALL XPRVDU(NCVDU,1,0)
 
                  IF(JK.LT.0) THEN       !The L.H.S is required.
                     DO K=M16,M16Q,MD16Q      !Inner loop through remaining params
