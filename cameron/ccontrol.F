@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2000/01/13 14:38:24  ckp2
+C djw Jan 2000 Reduce amount of output going to status window
+C
 C Revision 1.5  1999/07/30 20:14:43  richard
 C RIC: Store the absolute value of covalent radius, so that it may be set
 C negative to flag a non-bonding dummy atom.
@@ -3177,14 +3180,14 @@ C A LIST1 HERE FOR CRYSTALS ENTRY
      +CALL ZMORE('Error on closing input file.',0)
       RETURN
       END
- 
- 
+C 
 CODE FOR ZOUTCS
       SUBROUTINE ZOUTCS (IORTH)
 C This routine outputs the current data in CSSR format.
+CDJWFEB2000 or CHIME .XYZ format
 C IORTH = 1 ORTHOGONAL
 C IORTH = 0 FRACTIONAL
-      
+C IORTH = -1 .XYZ FORMAT      
 \CAMPAR
 \CAMCOM
 \CAMANA
@@ -3202,7 +3205,8 @@ C IORTH = 0 FRACTIONAL
 \CAMBTN
 \CAMBLK
 \XIOBUF
-
+      CHARACTER *10 CNUM
+      PARAMETER (CNUM='0123456789')
       REAL ORTH(3,3),X(3)
       INTEGER BONDS(8)
       CHARACTER * 60 FILENM
@@ -3211,7 +3215,11 @@ C IORTH = 0 FRACTIONAL
       CHARACTER*80 CFORT
       CALL ZMOVE ( RSTORE(ICRYST+6) , ORTH, 9)
       NPOS = ICCMMD(ICCNT)
-      CALL ZGTTXT ( FILENM , 60 , NPOS )
+      IF (IORTH .GE. 0) THEN
+       CALL ZGTTXT ( FILENM , 60 , NPOS )
+      ELSE
+       FILENM = 'CHIME.XYZ'
+      ENDIF
       INQUIRE (FILE=FILENM,EXIST=LEXIST)
       IF (.NOT.LEXIST) THEN
         CALL ZFORTF (FILENM,CFORT,IERR)
@@ -3219,24 +3227,28 @@ C IORTH = 0 FRACTIONAL
           IPROC = 0
           RETURN
         ENDIF
-        CALL ZMORE('File created as:',0)
-        CALL ZMORE (CFORT,0)
+        WRITE(CLINE,'(A,A)') 'File created as:', CFORT
+        CALL ZMORE (CLINE,0)
       ELSE
         CFORT = FILENM
+        WRITE(CLINE,'(A,A)') 'Writing to existing file:', CFORT
+        CALL ZMORE (CLINE,0)
       ENDIF
       IF (.NOT.LFILES (2,CFORT,IFSTAR-1)) THEN
-        CALL ZMORE('Error on opening file.',0)
-        CALL ZMORE(CFORT,0)
+        WRITE(CLINE,'(A,A)') 'Error on opening file:', CFORT
+        CALL ZMORE (CLINE,0)
         IPROC = 0
         RETURN
       ENDIF
+      IF (IORTH .GE. 0) THEN
 C OUTPUT THE UNIT CELL INFORMATION
-      WRITE (IFSTAR-1 , 100) RSTORE(ICRYST), RSTORE(ICRYST+1),
+       WRITE (IFSTAR-1 , 100) RSTORE(ICRYST), RSTORE(ICRYST+1),
      c RSTORE(ICRYST+2)
-      WRITE (IFSTAR-1 , 101) RSTORE(ICRYST+3), RSTORE(ICRYST+4),
+       WRITE (IFSTAR-1 , 101) RSTORE(ICRYST+3), RSTORE(ICRYST+4),
      c RSTORE(ICRYST+5)
-100   FORMAT (38X,3F8.3)
-101   FORMAT (21X,3F8.3)
+100    FORMAT (38X,3F8.3)
+101    FORMAT (21X,3F8.3)
+      ENDIF
 C NOW WE NEED TO FIND OUT THE NUMBER OF THE ATOMS AND GENERATE AN
 C ATOM LIST.
       INATOM = 0
@@ -3248,15 +3260,20 @@ C ATOM IS INCLUDED ADD INTO LIST
       ENDIF
 10    CONTINUE
 C NOW OUTPUT THE LINE CONTAINING THE NUMBER OF ATOMS
-      WRITE (IFSTAR-1, 102) INATOM, IORTH
-102   FORMAT (I4,3X,I1,/)
+      IF (IORTH .GE. 0) THEN
+       WRITE (IFSTAR-1, 102) INATOM, IORTH
+102    FORMAT (I4,3X,I1,/)
+      ELSE
+       WRITE (IFSTAR-1, 102) INATOM
+       WRITE (IFSTAR-1, '(A)') '  Chime file created by CAMERON '
+      ENDIF
 C NOW WORK THROUGH THE LIST OF ATOMS
       DO 20 I = IRLAST , IRLAST + INATOM - 1
 C GET THE COORDS IN THE CORRECT FORM
         DO 24 J = 1 , 3
           X(J) = RSTORE(NINT(RSTORE(I))+J)
 24      CONTINUE
-        IF (IORTH.EQ.1) THEN
+        IF (IORTH.ne.0) THEN
           CALL ZMATV ( ORTH , X , X)
         ENDIF
 C CHECK FOR SIZE OF X
@@ -3300,17 +3317,28 @@ C        ELSE
 C          CLAB = CSTORE(KK)
 C        ENDIF
         CLAB = ' '//CSTORE(KK)
-        WRITE (IFSTAR-1 , 104) I-IRLAST+1, CLAB ,
+        IF (IORTH .GE. 0) THEN
+          WRITE (IFSTAR-1 , 104) I-IRLAST+1, CLAB ,
      c  X , BONDS
 104     FORMAT (I4,A6,3F10.5,1X,8I4)
+        ELSE
+            DO 106 IL = 6,1,-1
+            IF (INDEX (CNUM(:), CLAB(il:il)) .EQ. 0) GOTO 107
+106         CONTINUE
+            IL = 2
+107         CONTINUE
+            WRITE(IFSTAR-1,  105) CLAB(1:IL), X
+105         FORMAT(1X,A2, 3F10.5)
+        ENDIF
 20    CONTINUE
       IF (.NOT.LFILES (0, ' ',IFSTAR-1))
      + CALL ZMORE('Error on closing output file.',0)
       RETURN
       END
+C 
 CODE FOR ZXYZ [ READ IN LIST5 FILE ]
       SUBROUTINE ZXYZ
-      
+C      
 \CAMPAR
 \CAMCOM
 \CAMANA

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2000/02/08 20:27:18  ckp2
+C djw fix bug so that 'dist range value value' now works
+C
 C Revision 1.10  1999/12/23 12:29:17  ckp2
 C djw  Close postscript file once figure is written
 C
@@ -2536,7 +2539,7 @@ C
       LOGICAL LOPEN,LFILES
       ID = ID - (ID/100)*100 + 1
       GOTO (900,901,902,903,904,905,906,907,908,909,
-     c 910,911,912,913,914,915,916,917,918,919,920,921) ID
+     c 910,911,912,913,914,915,916,917,918,919,920,921,922) ID
       WRITE (CLINE,'(A)')
      1 ' Command not recognised by this version of CAMERON'
       CALL ZMORE(CLINE,0)
@@ -2568,6 +2571,11 @@ C ORTHOGONAL COORDS
 905   CONTINUE
 C FRACTIONAL COORDS
       CALL ZOUTCS ( 0 )
+      GOTO 9999
+CDJWFEB99
+922   CONTINUE
+C OUTPUT .XYZ FILE
+      CALL ZOUTCS( -1)
       GOTO 9999
 906   CONTINUE
 C DARREN XYZ FILE
@@ -3563,15 +3571,16 @@ C SET UNIT
      c'currently on the screen.  These are then treated as the '
       CALL ZMORE(CLINE,0)
       WRITE (CLINE,'(2A)')
-     c'asymmetric unit.  Are you sure that you want to do this? (Y/N)'
+     c'asymmetric unit.'
       CALL ZMORE(CLINE,0)
-      READ (5,'(A)') ANS
-      IF ((ANS.NE.'Y').AND.(ANS.NE.'y')) THEN
-        IPROC = 0
-        CALL ZMORE(
-     c'All commands after and including SETUNIT have been lost.',0)
-        RETURN
-      ENDIF
+cdjwfeb2000      READ (5,'(A)') ANS
+c      READ (5,'(A)') ANS
+c      IF ((ANS.NE.'Y').AND.(ANS.NE.'y')) THEN
+c        IPROC = 0
+c        CALL ZMORE(
+c     c'All commands after and including SETUNIT have been lost.',0)
+c        RETURN
+c      ENDIF
 C MOVE THE ATOMS IN THE CURRENT VIEW INTO THE ISINIT PLACE IN RSTORE.
       IPLACE = ISINIT
       LL = (IPLACE - IRATOM)/IPACKT + ICATOM
@@ -4335,7 +4344,8 @@ C RANGE
       DISBEG = RCOMMD(IRCNT)
       DISEND = RCOMMD(IRCNT+1)
 cdjwfeb2000      GOTO 9999
-      goto 1501
+cdjwfeb2000      goto 1501
+      goto 9999
 1503  CONTINUE
 C FROM
       IF (NDIST1.NE.0) RETURN
