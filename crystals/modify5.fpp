@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/09/11 19:41:22  rich
+C Transformation matrix was applied incorrectly to Uij tensor. Now fixed.
+C
 C Revision 1.40  2003/07/17 13:46:40  rich
 C Remove unnecesary updating of the GUI during #EDIT with GUI HIGH set
 C on.
@@ -260,6 +263,8 @@ C-C-C-DEFINITION OF VARIABLES FOR CHANGES BY LS
       character *20 ctemp
       character *21 CATOM1
       DIMENSION XCF(3), VA(3), ROF(3,3), RCA(3,3), XWORKS(4)
+C - Matrices to hold real and reciprocal unit cell lengths on diagonal:
+      DIMENSION RCPD(9), RCPDI(9)
 C-C-C
 C
 C
@@ -2125,7 +2130,15 @@ C -- CHECK IF ANY ATOMS HAVE BEEN GIVEN
 6600  CONTINUE
       IF (KATOMU(LN).LE.0) GO TO 7100
       IF (ISTORE(MQ+5).NE.0) GO TO 7400
-C--APPLY THE MATRIX
+      CALL XZEROF(RCPD,9)
+      CALL XZEROF(RCPDI,9)
+      RCPD(1) = STORE(L1P2)
+      RCPD(5) = STORE(L1P2+1)
+      RCPD(9) = STORE(L1P2+2)
+      RCPDI(1) = STORE(L1P1)
+      RCPDI(5) = STORE(L1P1+1)
+      RCPDI(9) = STORE(L1P1+2)
+C--APPLY THE MATRIX to each atom in turn
       DO 6750 JW=1,N5A
 C--GENERATE THE MOVED PARAMETERS BY SYMMETRY FIRST
          IF (KATOMS(MQ,M5A,ITEMP).LT.0) GO TO 7100
@@ -2141,15 +2154,27 @@ C----- NOW DO THE U'S
 C-----TRANSFORM THE ANISOTROPIC TEMPERATURE FACTORS
          IF (ABS(STORE(M5A+3))-UISO) 6650,6700,6700
 6650     CONTINUE
+C Get full tensor from upper diagonal storage:
          J=M5A+7
          CALL XEXANI (J,JTEMP)
-C RIC, this is wrong - tensor transform should be R*U*R', not other way.
-C         CALL XMLTTM (STORE(JTEMP),APD,STORE(KTEMP),3,3,3)
-C         CALL XMLTTM (APD,STORE(KTEMP),STORE(JTEMP),3,3,3)
-C R * U
-         CALL XMLTMM (APD,STORE(JTEMP),STORE(KTEMP),3,3,3)
-C Result * R'
-         CALL XMLTMT (STORE(KTEMP),APD,STORE(JTEMP),3,3,3)
+C Transform should be inv(N) * R * N * U * trans(N) * trans(R) * trans(inv(N))
+C where N is a matrix with a*, b* and c* on the diagonal.
+C N == RCPD, inv(N) == RCPDI
+C Start from the middle to the left:
+C N * U
+         CALL XMLTMM (RCPD,STORE(JTEMP),STORE(KTEMP),3,3,3)
+C R * RESULT
+         CALL XMLTMM (APD,STORE(KTEMP),STORE(JTEMP),3,3,3)
+C inv(N) * RESULT
+         CALL XMLTMM (RCPDI,STORE(JTEMP),STORE(KTEMP),3,3,3)
+C Now to the right:
+C RESULT * trans(N) == RESULT * N
+         CALL XMLTMM (STORE(KTEMP),RCPD,STORE(JTEMP),3,3,3)
+C RESULT * trans(R)
+         CALL XMLTMT (STORE(JTEMP),APD,STORE(KTEMP),3,3,3)
+C RESULT * trans(inv(N)) == RESULT * inv(N)
+         CALL XMLTMM (STORE(KTEMP),RCPDI,STORE(JTEMP),3,3,3)
+C Put RESULT back in upper diagonal storage:
          CALL XCOANI (JTEMP,J)
 6700     CONTINUE
          CALL XMDMON (M5A,MD5A,1,1,1,6,3,MONLVL,2,0,ISTORE(IMONBF))
