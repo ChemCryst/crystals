@@ -2,21 +2,25 @@
 % VARIABLE CHARACTER CELEM
 % VARIABLE REAL RMAX
 ^^WI WINDOW XHBOND 'Hydrogen bonding' MODAL
-^^WI STARTGRID G1 'n' NROWS=3 NCOLS=5
-^^WI  STARTGRID ROW=2 COL=2 L1 'n' NROWS=5 NCOLS=1
-^^WI   STATIC    ROW=1 COL=1 T1 'Search for hydrogen bonds.'
-^^WI    STARTGRID ROW=2 COL=1 G2 'n' NROWS=3 NCOLS=3
-^^WI     STATIC    ROW=1 COL=1 T2 'Maximum distance:'
-^^WI     EDITBOX   ROW=1 COL=3 E1 '2.5 ' REAL CHARS=10
-^^WI     STATIC    ROW=3 COL=1 T3 'Elements:'
-^^WI     EDITBOX   ROW=3 COL=3 E2 'O N ' CHARS=10
-^^WI    ENDGRID
-^^WI  ENDGRID
-^^WI  STARTGRID ROW=2 COL=4 GR 'n' NROWS=3 NCOLS=3
-^^WI   BUTTON    ROW=1 COL=2  BTOK 'Ok' DEFAULT COMMIT
-^^WI   BUTTON    ROW=3 COL=2  BTXX 'Cancel' CANCEL
-^^WI  ENDGRID
-^^WI ENDGRID
+^^WI GRID G1 NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,2 GRID L1 NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 STATIC    T1 'Search for hydrogen bonds.'
+^^WI   @ 2,1 GRID G2 NROWS=3 NCOLS=3
+^^WI   {
+^^WI     @ 1,1 STATIC    T2 'Maximum distance:'
+^^WI     @ 1,3 EDITBOX   E1 '2.5 ' REAL CHARS=10
+^^WI     @ 3,1 STATIC    T3 'Elements:'
+^^WI     @ 3,3 EDITBOX   E2 'O N ' CHARS=10
+^^WI   }
+^^WI  }
+^^WI  @ 2,4 GRID GR NROWS=3 NCOLS=3
+^^WI  {
+^^WI   @ 1,2 BUTTON    BTOK 'Ok' DEFAULT COMMIT
+^^WI   @ 3,2 BUTTON    BTXX 'Cancel' CANCEL
+^^WI  }
+^^WI }
 ^^WI SHOW
 ^^CR
 %    VERIFY BTOK BTXX

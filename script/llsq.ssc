@@ -13,38 +13,45 @@
 %VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 ^^WI WINDOW SELECTI 'Least-squares' MODAL SIZE
 %%MAIN GRID IS THREE HORIZONTAL CELLS
-^^WI STARTGRID GRMAIN 'N' NROWS=5 NCOLS=3
+^^WI GRID GRMAIN NROWS=5 NCOLS=3
+^^WI {
 %% THIS GRID IS THREE VERTICAL CELLS IN THE MAIN TOP CELL
-^^WI   STARTGRID ROW=2 COL=2 GRLCR  'N' NROWS=1 NCOLS=3
+^^WI   @ 2,2 GRID GRLCR  NROWS=1 NCOLS=3
+^^WI   {
 %% THIS GRID IS THE LEFT VERTICAL CELL it contains QNLINES of text
-^^WI    STARTGRID ROW=1 COL=1 GRTEX  'N' NROWS=7 NCOLS=1
-^^WI      STATIC ROW=1 COL=1 T1 'Choose an option'
-^^WI      STATIC ROW=4 COL=1 RVAL 'R-Factor = 000.000'
-^^WI      STATIC ROW=6 COL=1 METH 'Setting  = X`s,U(iso)  '
-^^WI      STATIC ROW=7 COL=1 EXTI 'Extinction pending.'
-^^WI    ENDGRID
+^^WI    @ 1,1 GRID GRTEX  NROWS=7 NCOLS=1
+^^WI    {
+^^WI      @ 1,1 STATIC T1 'Choose an option'
+^^WI      @ 4,1 STATIC RVAL 'R-Factor = 000.000'
+^^WI      @ 6,1 STATIC METH 'Setting  = X`s,U(iso)  '
+^^WI      @ 7,1 STATIC EXTI 'Extinction pending.'
+^^WI    }
 %% THIS GRID IS THE CENTRE VERTICAL CELL it contains a listbox with QVLINES visible
-^^WI    STARTGRID ROW=1 COL=2 GRLIST 'N' NROWS=1 NCOLS=3
-^^WI       LISTBOX ROW=1 COL=2 LIST01 VISLINES=4
+^^WI    @ 1,2 GRID GRLIST NROWS=1 NCOLS=3
+^^WI    {
+^^WI       @ 1,2 LISTBOX LIST01 VISLINES=4
+^^WI             ADDTOLIST
 ^^WI       'Change the refinement settings'
 ^^WI       'Carry out some refinement'
 ^^WI       'Add hydrogens to the structure'
 ^^WI       'View the structure'
 ^^WI       'NULL'
-^^WI    ENDGRID
+^^WI    }
 %% THIS GRID IS THE RIGHT VERTICAL CELL it contains the Ok and Cancel buttons
-^^WI    STARTGRID ROW=1 COL=3 GRBUTT 'N' NROWS=3 NCOLS=3
-^^WI       BUTTON ROW=1 COL=2 BUTTONOK '&Ok' COMMIT
-^^WI       BUTTON ROW=3 COL=2 BUTTONXX '&Back' CANCEL
-^^WI    ENDGRID
-^^WI   ENDGRID
+^^WI    @ 1,3 GRID GRBUTT NROWS=3 NCOLS=3
+^^WI    {
+^^WI       @ 1,2 BUTTON BUTTONOK '&Ok' COMMIT
+^^WI       @ 3,2 BUTTON BUTTONXX '&Back' CANCEL
+^^WI    }
+^^WI   }
 %% THIS GRID IS THE BOTTOM ROW OF THE MAIN GRID it contains a help text.
 %% The only reason for using a grid is to add the outline to it.
-^^WI   STARTGRID ROW=4 COL=2 GRIDHLP '' NROWS=1 NCOLS=1 OUTLINE
-^^WI     STATIC ROW=1 COL=1 LHELP 
+^^WI   @ 4,2 GRID GRIDHLP NROWS=1 NCOLS=1 OUTLINE=''
+^^WI   {
+^^WI     @ 1,1 STATIC LHELP 
 ^^WI     'Define which parameters will be refined.                      ' 
-^^WI   ENDGRID
-^^WI ENDGRID
+^^WI   }
+^^WI }
 ^^WI SHOW
 ^^CR
 % END BLOCK
@@ -97,8 +104,8 @@
 %   CASE VALUE
 %       BLOCK                        %OK BUTTON%
 ^^WI       SET _MAINTEXTOUTPUT NOECHO
-^^WI       GETVALUE LIST01
 ^^CR
+^^??       LIST01 SELECTED
 %          GET NOSTORE INTEGER ' '
 %          CASE VALUE
 %           BLOCK                                         %SETTINGS%

@@ -1,28 +1,32 @@
 %SCRIPT FOPTWT
 %  VARIABLE INTEGER LEXTINCT
 ^^WI WINDOW _WEIGHT 'Weighting analysis' SIZE MODAL
-^^WI STARTGRID MAIN 'N' NROWS=6 NCOLS=3
-^^WI  STARTGRID ROW=1 COL=2 TOP 'N' NROWS=2 NCOLS=1
-^^WI   STATIC ROW=2 COL=1 T1 
+^^WI GRID MAIN NROWS=6 NCOLS=3
+^^WI {
+^^WI  @ 1,2 GRID TOP NROWS=2 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 STATIC T1 
 ^^WI 'Delta(F)^2 vs F followed by analysis of residuals.'
-^^WI  ENDGRID
-^^WI  MULTIEDIT ROW=2 COL=2 _ANALTEXT '' NROWS=25 NCOLS=90
-^^WI  IGNORE FIXEDFONT=YES DISABLED=YES
-^^WI  STARTGRID ROW=3 COL=2 MID 'N' NROWS=5 NCOLS=1
-^^WI   STATIC ROW=2 COL=1 T3 
+^^WI  }
+^^WI  @ 2,2 MULTIEDIT _ANALTEXT '' NROWS=25 NCOLS=90
+^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI  @ 3,2 GRID MID NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 STATIC T3 
 ^^WI  'The first curve shows estimated delta(F)^2 as a function of F.'
-^^WI   STATIC ROW=3 COL=1 T4 
+^^WI   @ 3,1 STATIC T4 
 ^^WI  'It should vary smoothly, and not show any pronounced local'
-^^WI   STATIC ROW=4 COL=1 T5 
+^^WI   @ 4,1 STATIC T5 
 ^^WI  'maxima. The values should parallel those in the <Delta^2> '
-^^WI   STATIC ROW=5 COL=1 T6 
+^^WI   @ 5,1 STATIC T6 
 ^^WI  'column in the agreement analysis that follows.'
-^^WI  ENDGRID
-^^WI  STARTGRID ROW=4 COL=2 LOW 'N' NROWS=3 NCOLS=3
-^^WI   BUTTON  ROW=2 COL=1 AL 'Use these &weights' COMMIT DEFAULT
-^^WI   BUTTON  ROW=2 COL=3 XX '&Remove weighting scheme.' CANCEL 
-^^WI  ENDGRID
-^^WI ENDGRID
+^^WI  }
+^^WI  @ 4,2 GRID LOW NROWS=3 NCOLS=3
+^^WI  {
+^^WI   @ 2,1 BUTTON  AL 'Use these &weights' COMMIT DEFAULT
+^^WI   @ 2,3 BUTTON  XX '&Remove weighting scheme.' CANCEL 
+^^WI  }
+^^WI }
 ^^WI SHOW
 ^^CR
 ^^WI SENDTEXTTO _ANALTEXT

@@ -3,9 +3,8 @@
 %%
 % VARIABLE INTEGER LSETUP LEXTINCT
 ^^WI WINDOW RFNG 'Busy...' 
-^^WI STARTGRID RFNGM1 'N' NROWS=3 NCOLS=3
-^^WI STATIC ROW=2 COL=2 T1 'Refinement in progress. Please wait.'
-^^WI ENDGRID
+^^WI GRID RFNGM1 NROWS=3 NCOLS=3
+^^WI { @ 2,2 STATIC T1 'Refinement in progress. Please wait.' }
 ^^WI SHOW
 ^^CR
 % COPY '#SCRIPT LSETUP'
