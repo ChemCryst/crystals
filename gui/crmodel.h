@@ -55,7 +55,7 @@ class	CrModel : public CrGUIElement
             void DrawAtom(CcModelAtom* anAtom);
 		void DocRemoved();
 		void LMouseClick(int x, int y);
-		void Clear();
+//            void Clear();
 		int GetIdealWidth();
 		int GetIdealHeight();
 //		void Attach(CcModelDoc* doc);
