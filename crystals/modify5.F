@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2001/11/12 17:03:11  Administrator
+C enable printing of PARTs from LIST 5
+C
 C Revision 1.20  2001/04/30 11:50:16  ckpgroup
 C fix-up omitted rflections when re-indexing matrix has non-integral results' read6.src
 C
@@ -1828,7 +1831,7 @@ C--SHIFT THE NEW COORDS.
          STORE(M5A+4)=STORE(M5A+4)+APD(1)
          STORE(M5A+5)=STORE(M5A+5)+APD(2)
          STORE(M5A+6)=STORE(M5A+6)+APD(3)
-         CALL XMDMON (M5A,MD5A,1,1,1,6,3,MONLVL,2,0,ISTORE(IMONBF))
+         CALL XMDMON (M5A,MD5A,1,1,1,13,3,MONLVL,2,0,ISTORE(IMONBF))
          ICHNG=ICHNG+1
          M5A=M5A+MD5A
 6450  CONTINUE
@@ -2529,7 +2532,7 @@ C
       DIMENSION LACT(11)
 C
       CHARACTER*24 TYPE (8),ACTTYP
-      CHARACTER*24 ACTION(11),OPERAT
+      CHARACTER*24 ACTION(12),OPERAT
 C
 C
 \XUNITS
@@ -2563,6 +2566,7 @@ C
       DATA ACTION(9)/'selected                '/
       DATA ACTION(10)/'made isotropic          '/
       DATA ACTION(11)/'sorted                  '/
+      DATA ACTION(12)/'shifted                 '/
 C
       DATA LACT(1)/7/,LACT(2)/16/,LACT(3)/7/
       DATA LACT(4)/23/,LACT(5)/7/,LACT(6)/7/
