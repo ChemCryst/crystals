@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2001/01/12 15:09:59  CKP2
+C enable CAMERON to use old lists
+C
 C Revision 1.23  2001/01/11 15:56:43  CKP2
 C Enable CAMERON to use old files
 C
@@ -289,7 +292,7 @@ C----- WRITE LIST 5 TO A SEPARATE UNIT
 C--SAVE THE PUNCH UNIT
         NSAV = NCPU
         NCPU = NCFPU2
-        CALL XPCH5S
+        CALL XPCH5S(1)
 C--SWAP THE UNITS BACK
         NCPU = NSAV
       GOTO 8000
@@ -352,7 +355,7 @@ C----- WRITE LIST 5 TO A SEPARATE UNIT
 C--SAVE THE PUNCH UNIT
         NSAV = NCPU
         NCPU = NCFPU2
-        CALL XPCH5S
+        CALL XPCH5S(1)
 C--SWAP THE UNITS BACK
         NCPU = NSAV
       GOTO 8000
