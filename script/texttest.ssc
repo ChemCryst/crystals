@@ -1,0 +1,32 @@
+%SCRIPT TEXTTEST
+This is normal.
+^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0 255
+This is a rainbow. Pink
+^^CO SET TEXTOUTPUT TEXTCOLOUR 255 255 0
+This is a rainbow. Yellow
+^^CO SET TEXTOUTPUT TEXTCOLOUR 0 255 255 
+This is a rainbow. Cyan
+^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0 0
+This is a rainbow. Red
+^^CO SET TEXTOUTPUT TEXTCOLOUR 0 255 0
+This is a rainbow. Green
+^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 255 
+This is a rainbow. Blue
+^^CO SET TEXTOUTPUT TEXTBOLD=YES
+And now we're bold. Bold Blue
+^^CO SET TEXTOUTPUT TEXTITALIC=YES
+And italicised. Italic bold blue
+^^CO SET TEXTOUTPUT TEXTBOLD=NO
+And loosing boldness. Italic normal blue
+^^CO SET TEXTOUTPUT TEXTITALIC=NO
+And back to normal. normal blue
+^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0
+Oh, and normal colour aswell.
+^^CO SET TEXTOUTPUT TEXTCOLOUR 128 128 255
+Some inbetween, but more readable colours: 128 128 255
+^^CO SET TEXTOUTPUT TEXTCOLOUR 128 0 255
+Some inbetween, but more readable colours: 128 0 255
+^^CO SET TEXTOUTPUT TEXTCOLOUR 0 128 255 
+Some inbetween, but more readable colours: 0 128 255
+^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0
+%END SCRIPT
