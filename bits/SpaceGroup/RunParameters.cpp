@@ -205,10 +205,11 @@ void RunParameters::readParamFile()
         try
         {
             char tClassRE[] = "CLASS[[:space:]]+([[:alpha:]]+)";
-            char tUniqueRE[] = "UNIQUE[[:space:]]+(A|B|C|(UNKNOWN))";
-            char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(NONE/UNKNOWN))";
+            char tUniqueRE[] = "UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
+            char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
             char tOutputRE[] = "OUTPUT[[:space:]]+\"([^\"]+)\"";
             char tHKLRE[] = "HKL[[:space:]]+\"([^\"]+)\"";
+            char tCommentRE[] = "^#";
             filebuf tParamFile;
             if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
             {
@@ -220,11 +221,13 @@ void RunParameters::readParamFile()
             regex_t* tChiralFSO = new regex_t;
             regex_t* tOutputFSO = new regex_t;
             regex_t* tHKLFSO = new regex_t;
+            regex_t* tCommentSO = new regex_t;
             regcomp(tClassFSO, tClassRE, REG_EXTENDED | REG_ICASE);
             regcomp(tUniqueFSO, tUniqueRE, REG_EXTENDED | REG_ICASE);
             regcomp(tChiralFSO, tChiralRE, REG_EXTENDED | REG_ICASE);
             regcomp(tOutputFSO, tOutputRE, REG_EXTENDED | REG_ICASE);
             regcomp(tHKLFSO, tHKLRE, REG_EXTENDED | REG_ICASE);
+            regcomp(tCommentSO, tCommentRE, REG_EXTENDED | REG_ICASE);
             regmatch_t tMatchs[13];
             char tLine[255];
             int tLineNum = 0;
@@ -282,6 +285,9 @@ void RunParameters::readParamFile()
                     iFileName.copy(tTemp);
                 }
                 else if (iUnitCell.init(tLine))
+                {
+                }
+                else if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
                 {
                 }
                 else
