@@ -7,9 +7,9 @@
 @set PATH=C:\Progra~1\Micros~3\vc98\bin;C:\Progra~1\Micros~3\df98\bin;%PATH%
 @set LIB=C:\Progra~1\Micros~3\vc98\lib;C:\Progra~1\Micros~3\df98\lib;%LIB%
 @set LINK=
-DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\sir92.fpp /static /libs:qwin /optimize:4 /nolink
-DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\norm92.fpp /nostatic /libs:qwin /optimize:4 /nolink
-DF sir92.obj norm92.obj /libs:qwin
+DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\sir92.fpp /Fosir92.o /static /libs:qwin /optimize:4 /nolink
+DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\sir92\norm92.fpp /Fonorm92.o /nostatic /libs:qwin /optimize:4 /nolink
+DF sir92.o norm92.o /libs:qwin
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\cif2cry\cif2cry.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\convplat\convplat.fpp /optimize:4 /MD
 DF /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\csd2cry\csd2cry.fpp /optimize:4 /MD
@@ -33,7 +33,6 @@ del kccdin.exe rc93.exe reindex.exe shelxs.exe sxtocry.exe sir92.exe
 del rc93.src form.dat
 
 :tidy
-del cif2cry.obj convplat.obj csd2cry.obj delred.obj dipin.obj ctwin.obj
-del kccdin.obj rc93.obj reindex.obj shelxs.obj sxtocry.obj sir92.obj norm92.obj
+del sir92.o norm92.o
 
 :exit
