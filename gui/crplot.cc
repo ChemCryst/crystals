@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/03/07 10:46:44  DJWgroup
+//   SH: Change to fix reversed y axes; realign text labels.
+//
 //   Revision 1.10  2002/02/21 15:23:12  DJWgroup
 //   SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -265,6 +268,7 @@ void CrPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 void CrPlot::Clear()
 {
     ((CxPlot*)ptr_to_cxObject)->Clear();
+    ((CxPlot*)ptr_to_cxObject)->Display();
 }
 
 // STEVE added this function
