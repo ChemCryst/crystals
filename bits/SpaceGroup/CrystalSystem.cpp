@@ -718,7 +718,7 @@ SpaceGroups* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
     return NULL;
 }
 
-ArrayList<Index>* Table::getHeadings(int pI)
+ArrayList<Index>* Table::getHeadings(int pI) const
 {
     return iColumns->get(pI)->getHeadings();
 }
