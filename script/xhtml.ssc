@@ -1,0 +1,32 @@
+%SCRIPT XHTML
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+
+ * HTML report of all data
+
+%    COPY '#RELEASE PUNCH publish.html'
+%    COPY '#CIF HTML'
+%    COPY 'END'
+%    COPY '#PARAMETERS'
+%    COPY 'LAYOUT INSET = 1 NCHAR = 120'
+%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=HTML NCHAR=14'
+%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=HTML, NCHAR=14"
+%    COPY 'END'
+%    COPY '#DIST'
+%    COPY 'E.S.D YES'
+%    COPY 'OUTPUT MON=DIST PUNCH = HTML HESD=NONFIXED'
+%    COPY 'END'
+%%
+%%
+%    EVALUATE QTITLE = 'HTML report'
+%    EVALUATE QLINE1 = 'Report saved as publish.html'
+%    EVALUATE QLINE2 = 'Do you want to open it for editing?'
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%      COPY '#SPAWN publish.html'
+%    END IF
+  Report saved in {&publish.html{&
+%END SCRIPT
