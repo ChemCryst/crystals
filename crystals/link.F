@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2004/11/11 15:54:14  rich
+C Add ZERR line to PLATON output.
+C
 C Revision 1.49  2004/10/06 13:57:13  rich
 C Fix for WXS version.
 C
@@ -1595,8 +1598,8 @@ C - Could move these to ZCAMER.
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
         WRITE(CHRBUF,'(256A1)')LCMAGE
-&&&GIDGIL         CALL ZCONTR
-&&&DOSWXS         CALL ZCONTR
+&&GIDGIL         CALL ZCONTR
+&&DOSWXS         CALL ZCONTR
       GOTO 8025
 
 8030  CONTINUE
