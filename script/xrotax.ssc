@@ -1,0 +1,370 @@
+%SCRIPT ROTAX
+% VARIABLE INTEGER NFOM
+^^WI WINDOW ROTAX 'Rotax' MODAL
+^^WI POSITION=CENTRED 'MODEL01'
+^^WI GRID M NROWS=6 NCOLS=3 {
+^^WI  @ 2,2 GRID E NROWS=2 NCOLS=9 {
+^^WI     @ 1,1 STATIC RT_T1 'Search for twin laws involving a'
+^^WI     @ 1,5 EDITBOX RT_ANGLE '180.0' CHARS=9 REAL
+^^WI     @ 1,7 STATIC RT_T2 'degree'
+^^WI     @ 1,9 DROPDOWN RT_PORI
+^^WI           ADDTOLIST 'rotation' 'rotoinversion' 'NULL'
+^^WI  }
+^^WI  @ 3,2 GRID Q NROWS=2 NCOLS=3 {
+^^WI     @ 1,1 STATIC RT_T3 'Show results with figure of merit less than'
+^^WI     @ 1,3 EDITBOX RT_FOM '0.1' CHARS=7 REAL
+^^WI  }
+^^WI  @ 4,2 GRID S NROWS=6 NCOLS=6 {
+^^WI     @ 1,1 STATIC RT_T5 'Reject at least'
+^^WI     @ 1,3 EDITBOX RT_MIN '5' CHARS=7 INTEGER
+^^WI     @ 1,5 STATIC RT_T6 'worst agreements.'
+^^WI     @ 3,1 STATIC RT_T7 'Reject at most'
+^^WI     @ 3,3 EDITBOX RT_MAX '15' CHARS=7 INTEGER
+^^WI     @ 3,5 STATIC RT_T8 'worst agreements.'
+^^WI     @ 3,6 STRETCH RT_STR1 HORIZONTAL
+^^WI     @ 5,1 STATIC RT_T3 'Reject indices >'
+^^WI     @ 5,3 EDITBOX RT_OUT '4.0' CHARS=7 REAL
+^^WI     @ 5,5 STATIC RT_T4 'sigma from lattice points.'
+^^WI  }
+^^WI  @ 5,2 GRID B NROWS=2 NCOLS=5 {
+^^WI     @ 1,1 STRETCH RT_STR2 HORIZONTAL
+^^WI     @ 1,2 BUTTON RT_BOK '&OK' DEFAULT COMMIT
+^^WI     @ 1,4 BUTTON RT_BXX '&Cancel' CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+% VERIFY RT_BXX RT_BOK
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% CASE VALUE
+%   BLOCK               %CANCEL
+^^CO  DISPOSE ROTAX
+%     FINISH
+%   END BLOCK
+%   BLOCK               %ROTAX
+%     COPY '#CLOSE SCPDATA'
+%     COPY '#RELE PUNCH rotax.pch'
+%     COPY '#ROTAX'
+%     COPY 'OUTPUT PUNCH=YES'
+%     CLEAR
+%     INSERT 'TOLERANCE FOM='
+^^?? RT_FOM TEXT
+%     GET SILENT REAL ' '
+%     INSERT 'REJ='
+^^?? RT_OUT TEXT
+%     GET SILENT REAL ' '
+%     INSERT 'MIN='
+^^?? RT_MIN TEXT
+%     GET SILENT INTEGER ' '
+%     INSERT 'MAX='
+^^?? RT_MAX TEXT
+%     GET SILENT INTEGER ' '
+%     SEND
+%     CLEAR
+%     INSERT 'ROTATION ANGLE='
+^^?? RT_ANGLE TEXT
+%     GET SILENT REAL ' '
+^^?? RT_PORI SELECTED
+%     VERIFY 1 2
+%     GET SILENT FINAL NOSTORE ABBREVIATED ' '
+%     CASE VALUE
+%        INSERT 'INVERT=NO'
+%        INSERT 'INVERT=YES'
+%     END CASE
+^^CO  DISPOSE ROTAX
+%     SEND
+%     COPY 'END'
+%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#OPEN SCPDATA rotax.pch'
+^^WI WINDOW ROTAX2 'Rotax results' MODAL
+^^WI POSITION=CENTRED 'MODEL01'
+^^WI GRID M NROWS=6 NCOLS=3 {
+^^WI  @ 2,2 GRID E NROWS=2 NCOLS=1 {
+^^WI     @ 1,1 STATIC RT_T1 'Apply a twin law (two component twins only):'
+^^WI  }
+^^WI  @ 3,2 GRID F NROWS=1 NCOLS=7 {
+{I About to get angle and p or i flag.
+%     BLOCK
+%       ON ERROR TERMINATE
+%       ON END TERMINATE
+%       EXTRACT NEXT
+%       CLEAR
+%       EXTRACT TRANSFER COMMAND
+%       EXECUTE SEND
+%       EXTRACT TRANSFER INPUT
+%       CLEAR
+%       INSERT !^^WI @ 1,3 STATIC RT_ANGLE '!
+%       GET NOPROMPT KEYWORD ' ' 'ERROR'
+%       INSERT !'!
+%       OUTPUT
+%       CLEAR
+%       GET NOPROMPT INTEGER ' ' '100'
+%       IF VALUE .EQ. 100  THEN
+{E Error reading proper/improper flag from rotax.pch
+^^WI     @ 1,7 STATIC RT_PORI 'ERROR'
+%       ELSE IF VALUE .GT. 0 THEN
+^^WI     @ 1,7 STATIC RT_PORI 'rotation'
+%       ELSE
+^^WI     @ 1,7 STATIC RT_PORI 'rotoinversion'
+%       END IF
+%     END BLOCK
+^^WI     @ 1,1 STATIC RT_T2 'Results for'
+^^WI     @ 1,5 STATIC RT_T2 'degree'
+^^WI  }
+^^WI  @ 4,2 GRID G NROWS=3 NCOLS=3 {
+^^WI     @ 2,1 GRID GA NROWS=3 NCOLS=1 {
+^^WI        @ 1,1 STATIC RT_T4 'Figures of merit'
+^^WI        @ 3,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
+^^WI              ADDTOLIST
+{I About to get all the FOM's
+%     EXTRACT REWIND
+%     LOOP
+%       ON ERROR TERMINATE
+%       ON END TERMINATE
+%%
+%% Get the fom for each result
+%       EXTRACT NEXT
+%       EXTRACT NEXT
+%       CLEAR
+%       EXTRACT TRANSFER COMMAND
+%       EXECUTE SEND
+%       EXTRACT TRANSFER INPUT
+%       CLEAR
+%       INSERT !^^WI '!
+%       GET NOPROMPT REAL ' ' '-1.0'
+%       IF VALUE .GT. - 0.01  THEN
+%          INSERT !'!
+%          OUTPUT
+%       END IF
+%     END LOOP
+^^WI              'NULL'
+^^WI     }
+^^WI     @ 2,3 GRID GB NROWS=3 NCOLS=1 {
+^^WI        @ 1,1 GRID GBA NROWS=3 NCOLS=3 {
+^^WI           @ 1,1 STATIC RT_T3 'Lattice:'
+^^WI           @ 1,3 STATIC RT_RORD 'Reciprocal'
+^^WI           @ 2,1 STATIC RT_T3 'Direction:'
+^^WI           @ 2,3 STATIC RT_DIRE '-00 -00 -00'
+^^WI           @ 3,1 STATIC RT_T3 'Outliers:'
+^^WI           @ 3,3 STATIC RT_OUT '00'
+^^WI        }
+^^WI        @ 3,1 GRID GBB NROWS=5 NCOLS=5 {
+^^WI           @ 1,1 EDITBOX M11 '1.000' CHARS=9 REAL
+^^WI           @ 1,3 EDITBOX M12 '0.000' CHARS=9 REAL
+^^WI           @ 1,5 EDITBOX M13 '0.000' CHARS=9 REAL
+^^WI           @ 3,1 EDITBOX M21 '0.000' CHARS=9 REAL
+^^WI           @ 3,3 EDITBOX M22 '1.000' CHARS=9 REAL
+^^WI           @ 3,5 EDITBOX M23 '0.000' CHARS=9 REAL
+^^WI           @ 5,1 EDITBOX M31 '0.000' CHARS=9 REAL
+^^WI           @ 5,3 EDITBOX M32 '0.000' CHARS=9 REAL
+^^WI           @ 5,5 EDITBOX M33 '1.000' CHARS=9 REAL
+^^WI        }
+^^WI     }
+^^WI  }
+^^WI  @ 5,2 GRID B NROWS=2 NCOLS=5 {
+^^WI     @ 1,1 STRETCH RT_STR2 HORIZONTAL
+^^WI     @ 1,2 BUTTON RT_BOK '&Apply twin law' DEFAULT COMMIT
+^^WI     @ 1,4 BUTTON RT_BXX '&Cancel' CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%     LOOP
+%%
+%% Flush input buffer:
+%       GET NOPROMPT NOSTORE TEXT ' ' ' '
+%%
+%% Loop back here every time. First, fill in the details for the
+%% currently selected FOM.
+%%
+^^??    RT_RES SELECTED
+%       GET NOSTORE SILENT INTEGER ' ' ' '
+%       EVALUATE NFOM = VALUE
+%%
+%%
+%%
+%% Rewind rotax.pch
+%       EXTRACT REWIND
+%% Skip header line.
+%       EXTRACT NEXT
+%% Skip (NFOM-1 * 2) lines
+%       LOOP ( ( NFOM - 1 ) * 2 ) TIMES
+%         ON ERROR TERMINATE
+%         ON END TERMINATE
+%         EXTRACT NEXT
+%       END LOOP
+%%
+%% Get the fom, the direct/recip text, the direction
+%%
+%       BLOCK
+%         ON ERROR TERMINATE
+%         ON END TERMINATE
+%         EXTRACT NEXT
+%         CLEAR
+%%         EXTRACT TRANSFER COMMAND
+%%         EXECUTE SEND
+%         EXTRACT TRANSFER INPUT
+%         GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%         IF VALUE .LT. - 0.01  THEN
+{E Error reading FOM from rotax.pch. Requested FOM not found.
+%         END IF
+%         CLEAR
+%         INSERT !^^CO SET RT_RORD TEXT '!
+%         GET NOPROMPT KEYWORD ' ' 'error'
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET RT_DIRE TEXT '!
+%         GET NOPROMPT TEXT ' ' 'error'
+%         INSERT !'!
+%         OUTPUT
+%       END BLOCK
+%%
+%% Get the outliers and the twin law matrix.
+%%
+%       BLOCK
+%         ON ERROR TERMINATE
+%         ON END TERMINATE
+%         EXTRACT NEXT
+%         CLEAR
+%         EXTRACT TRANSFER INPUT
+%         CLEAR
+%         INSERT !^^CO SET RT_OUT TEXT '!
+%         GET NOPROMPT INTEGER ' ' '-1'
+%         IF VALUE .LT. 0  THEN
+{E Error reading outliers from rotax.pch. Integer not found.
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%%
+%         CLEAR
+%         INSERT !^^CO SET M11 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M12 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M13 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M21 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M22 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M23 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M31 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M32 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%         CLEAR
+%         INSERT !^^CO SET M33 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%         INSERT !'!
+%         OUTPUT
+%       END BLOCK
+%       VERIFY RT_BXX RT_BOK RT_RES
+%       GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%       CASE VALUE
+%         BLOCK   %RT_BXX%
+^^CO        DISPOSE ROTAX2
+%           FINISH
+%         END BLOCK
+%         BLOCK
+{S * Removing any existing twin laws...
+%           COPY '#SCRIPT UNTWIN'
+{S * Storing the twin law in LIST 25.
+%           COPY '#LIST 25'
+%           COPY 'READ NELEMENT=2'
+%           COPY 'MATRIX 1 0 0 0 1 0 0 0 1'
+%           CLEAR
+%           INSERT 'MATRIX'
+^^??        M11 TEXT
+%           GET SILENT REAL ' ' '1.0'
+^^??        M12 TEXT
+%           GET SILENT REAL ' ' '0.0'
+^^??        M13 TEXT
+%           GET SILENT REAL ' ' '0.0'
+^^??        M21 TEXT
+%           GET SILENT REAL ' ' '0.0'
+^^??        M22 TEXT
+%           GET SILENT REAL ' ' '1.0'
+%           SEND
+%           CLEAR
+%           INSERT 'CONT'
+^^??        M23 TEXT
+%           GET SILENT REAL ' ' '0.0'
+^^??        M31 TEXT
+%           GET SILENT REAL ' ' '0.0'
+^^??        M32 TEXT
+%           GET SILENT REAL ' ' '0.0'
+^^??        M33 TEXT
+%           GET SILENT REAL ' ' '1.0'
+%           SEND
+%           COPY 'END'
+^^CO        DISPOSE ROTAX2
+{S * Adding twin element scales to list 5 (to be refined).
+%           COPY '#SCRIPT addtwin'
+{S *  Converting the reflection list to twinned (FOT) format
+%           COPY '#LIST 6'
+%           COPY 'READ TYPE=TWIN'
+%           COPY 'END'
+%           FINISH
+%         END BLOCK
+%         BLOCK
+%           GET NOSTORE SILENT INTEGER ' ' ' '
+%         END BLOCK
+%       END CASE
+%     END LOOP
+%   END BLOCK
+% END CASE
+%END SCRIPT
+                                  
