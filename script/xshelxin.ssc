@@ -2,17 +2,8 @@
 %%
 %% Read in a the cell, symm and atoms from a shelx file.
 %%
- --                                                      --
-{R SHELX Script version 0.25 by Richard Cooper, University of
-{R Oxford, April 1999. Based on the fortran program SXTOCA by
+{R SHELX Script version by R. Cooper. Based on the fortran program SXTOCA by
 {R R.O. Gould, The University of Edinburgh, March 1994.
- --                                                      --
-{I Read in the cell, contents and atomic parameters
-{I from a variety of standard SHELX res or ins files.
- --                                                      --
-{R This operation will overwrite your current model structure
-{R Be sure that you want to proceed.
- 
 %%
 %%
 % VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM
@@ -41,10 +32,10 @@
 ^^WI  {
 ^^WI   @ 1,1 GRID TX NROWS=4 NCOLS=1
 ^^WI   {
-^^WI    @ 1,1 STATIC T1 'The option scans a SHELX file for a unit cell'
-^^WI    @ 2,1 STATIC T2 'and atomic parameters. During input, you will'
-^^WI    @ 3,1 STATIC T3 'be asked for the spacegroup so that it'
-^^WI    @ 4,1 STATIC T4 'can be included in the CIF.'
+^^WI    @ 1,1 STATIC T1 'Input cell, space group and atomic parameters from'
+^^WI    @ 2,1 STATIC T2 'a SHELX file. During input, you will be asked to'
+^^WI    @ 3,1 STATIC T3 'confirm the space group.  An existing structure'
+^^WI    @ 4,1 STATIC T4 'will be overwritten by the new one.'
 ^^WI   }
 ^^WI   @ 1,2 GRID GB NROWS=5 NCOLS=5
 ^^WI   {
@@ -110,8 +101,7 @@
 %%
 %% Cell card is the first thing to look for.
 %%
-{I Please be patient while the SHELX file is scanned for
-{I information. This may take some time...
+{I Scanning SHELX file for information. This may take some time...
 {I Looking for CELL instruction.
 %         EVALUATE SFILERR = TRUE
 %         LOOP
@@ -119,8 +109,8 @@
 %           ON END TERMINATE
 %           EXTRACT NEXT
 %           CLEAR
-%           EXTRACT TRANSFER COMMAND
-%           EXECUTE SEND
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
 %           EXTRACT TRANSFER INPUT
 %           CLEAR
 %           GET NOSTORE NOPROMPT KEYWORD NULLSTRING
@@ -152,7 +142,6 @@
 %            FINISH
 %         END IF
 {R CELL card processed.
-{I Rewinding SHELX file.
 %           EXTRACT REWIND
 {I Looking for ZERR instruction.
 %         EVALUATE SFILERR = TRUE
@@ -161,8 +150,8 @@
 %           ON END TERMINATE
 %           EXTRACT NEXT
 %           CLEAR
-%           EXTRACT TRANSFER COMMAND
-%           EXECUTE SEND
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
 %           EXTRACT TRANSFER INPUT
 %           CLEAR
 %           GET NOSTORE NOPROMPT KEYWORD NULLSTRING
@@ -232,7 +221,6 @@
 %%
 %% Space group is the next thing to look for.
 %%
-{I * Rewinding SHELX file.
 %           EXTRACT REWIND
 {I Looking for TITL instruction.
 %         EVALUATE SFILERR = TRUE
@@ -241,8 +229,8 @@
 %           ON END TERMINATE
 %           EXTRACT NEXT
 %           CLEAR
-%           EXTRACT TRANSFER COMMAND
-%           EXECUTE SEND
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
 %           EXTRACT TRANSFER INPUT
 %           CLEAR
 %           GET NOSTORE NOPROMPT KEYWORD NULLSTRING
@@ -277,9 +265,9 @@
 %         ELSE
 {R TITL card processed.
 %         END IF
-% TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY
+%% TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY
 %%
-{I Now check the spacegroup...
+%{I Now check the spacegroup...
 %%
 %          EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'
 %          COPY '#SCRIPT XSPACE'
@@ -289,7 +277,6 @@
 %              FINISH
 %          END IF
 %%
-{I * Rewinding SHELX file.
 %          EXTRACT REWIND
 %%
 %%
@@ -298,7 +285,7 @@
 %% is in the unit cell.
 %%
 %%
-{I * Looking for cell contents.
+{I Looking for cell contents.
 %%
 %%
 %% STEP1: Store the SFAC and UNIT cards in CSFAC and CUNIT.
@@ -311,7 +298,7 @@
 %           ON END TERMINATE
 %           EXTRACT NEXT
 %           CLEAR
-%           EXTRACT TRANSFER COMMAND
+%%           EXTRACT TRANSFER COMMAND
 %%           EXECUTE SEND
 %           EXTRACT TRANSFER INPUT
 %           CLEAR
@@ -434,7 +421,6 @@
 %%
 %           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS
 %         END IF
-{I * Rewinding SHELX file.
 %         EXTRACT REWIND
 %%
 %%

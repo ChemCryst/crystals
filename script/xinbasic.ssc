@@ -18,15 +18,15 @@
       LIST 31  The cell parameter e.s.d.s
  
 %   COPY '#PAUSE 10'
-% ELSE
-    Checking the basic data, LISTS 1, 2, 3, 13, 23, 29, 30  and 31
+%% ELSE
+%%    Checking the basic data, LISTS 1, 2, 3, 13, 23, 29, 30  and 31
 % END IF
 %  VARIABLE INTEGER INBASICS
 %  EVALUATE INBASICS = 0
 %% note that LISTS 30 & 31 are not mandatory.
 %  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
      + EXISTS 29 + EXISTS 30 + EXISTS 31 .EQ. 8 ) THEN
-   Mandatory LISTs are present.
+%%   Mandatory LISTs are present.
 %%
 %% Only ask next question if the user hasn't just input all this!
 %% INITSETUP indicates a call via XSHELXIN.
