@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2000/12/11 12:22:52  richard
+C RIC: Bug fix in KSCTRN. Recent changes stopped GENERALEDIT getting values
+C in some cases. Fixed.
+C
 C Revision 1.23  2000/12/08 16:12:01  richard
 C RIC: Modify KSCTRN to copy CHARACTER data into store for length longer than
 C 1 byte. Default behaviour remains backwards compatible.
@@ -6524,6 +6528,12 @@ C
 C -- MOST DATA ITEMS ARE TERMINATED BY A SPACE
 C
       NSTART = KCCNEQ ( CLINPB , IINPPS , ' ' )
+      IF ( NSTART .LT. 0 ) THEN
+        IF ( IDEFLT .LE. 0 ) GO TO 9920
+        CLINPB = CDEFLT
+        CUINPB = CDEFLT
+        IINPLN = LENDEF
+      ENDIF
       IF ( NSTART .LE. 0 ) NSTART = 1
       NENDIN = IINPLN
       NDATA = NSTART
@@ -6532,6 +6542,7 @@ C -- 'TEXT' HOWEVER CONSISTS OF THE REMAINDER OF THE INPUT LINE
 C
       IF ( IVALTP .NE. ITPTXT ) THEN
         LENARG = KCCARG ( CLINPB , NDATA , 3 , NSTART , NEND )
+        IF ( NSTART .LE. 0 ) NSTART = 1
         IF ( IFINAL .GT. 0 ) THEN
           IF ( KCCNEQ ( CLINPB , NDATA , ' ' ) .GT. 0 ) GO TO 9910
         ENDIF
