@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/17 14:39:59  richard
+//   CxDestroyWindow function.
+//
 //   Revision 1.8  2001/03/28 09:17:07  richard
 //   Code to allow you to disable the listbox.
 //
@@ -54,7 +57,8 @@ class CxListBox : public BASELISTBOX
         static CxListBox *  CreateCxListBox( CrListBox * container, CxGrid * guiParent);
             CxListBox( CrListBox * container );
             ~CxListBox();
-                void  CxSetSelection ( int select );
+        void CxSetSelection ( int select );
+        void CxRemoveItem ( int select );
 //      void    DoubleClicked( int itemIndex );
 //      void    Selected( int itemIndex );
         void    AddItem( char * text );

@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 14:43 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.12  2001/09/11 08:31:30  ckp2
+//  Delete some old comment.
+//
 //  Revision 1.11  2001/06/17 15:14:13  richard
 //  Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -161,13 +164,20 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
                 }
                 break;
             }
-                  case kTSetSelection:
-                  {
-                        tokenList->GetToken(); //Remove that token!
-                        int select = atoi ( tokenList->GetToken().ToCString() );
-                        ((CxListBox*)ptr_to_cxObject)->CxSetSelection(select);
-                        break;
-                  }
+            case kTSetSelection:
+            {
+                  tokenList->GetToken(); //Remove that token!
+                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  ((CxListBox*)ptr_to_cxObject)->CxSetSelection(select);
+                  break;
+            }
+            case kTRemove:
+            {
+                  tokenList->GetToken(); //Remove that token!
+                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  ((CxListBox*)ptr_to_cxObject)->CxRemoveItem(select);
+                  break;
+            }
             default:
             {
                 hasTokenForMe = false;

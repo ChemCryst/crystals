@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2001/09/11 08:31:10  ckp2
+// Protect the program from invalid list index numbers being
+// passed to a LISTTEXT query.
+//
 // Revision 1.11  2001/06/17 14:39:59  richard
 // CxDestroyWindow function.
 //
@@ -253,6 +257,15 @@ void CxListBox::CxSetSelection( int select )
 #endif
 
 }
+
+void CxListBox::CxRemoveItem ( int item )
+{
+#ifdef __CR_WIN__
+    DeleteString ( item - 1 );
+#endif
+}
+
+
 
 CcString CxListBox::GetListBoxText(int index)
 {
