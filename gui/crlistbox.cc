@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 14:43 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.9  2001/03/08 16:44:05  richard
+//  General changes - replaced common functions in all GUI classes by macros.
+//  Generally tidied up, added logs to top of all source files.
+//
 //  Revision 1.8  2001/01/16 15:34:59  richard
 //  wxWindows support.
 //  Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
@@ -119,6 +123,15 @@ CcParse CrListBox::ParseInput( CcTokenList * tokenList )
                               LOGSTAT( "Enabling ListBox callback" );
                 else
                               LOGSTAT( "Disabling ListBox callback" );
+                break;
+            }
+            case kTDisabled:
+            {
+                tokenList->GetToken(); // Remove that token!
+                Boolean disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                CcString temp = tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "ListBox disabled = " + temp);
+                ((CxListBox*)ptr_to_cxObject)->Disable( disabled );
                 break;
             }
             case kTAddToList:

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/03/08 16:44:09  richard
+// General changes - replaced common functions in all GUI classes by macros.
+// Generally tidied up, added logs to top of all source files.
+//
 // Revision 1.8  2001/01/16 15:35:03  richard
 // wxWindows support.
 // Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
@@ -248,4 +252,20 @@ CcString CxListBox::GetListBoxText(int index)
     return result;
 #endif
 
+}
+
+void CxListBox::Disable(Boolean disable)
+{
+#ifdef __CR_WIN__
+      if(disable)
+            EnableWindow(false);
+      else
+            EnableWindow(true);
+#endif
+#ifdef __BOTHWX__
+      if(disable)
+            Enable(false);
+    else
+            Enable(true);
+#endif
 }
