@@ -1,12 +1,24 @@
 %SCRIPT INLIST29
 %% CRYSTALS script for input of LIST 29 from library file
 %  VARIABLE INTEGER ELEMENTCOUNT RADIATION
+%  VARIABLE REAL WAVE
 %  EVALUATE ELEMENTCOUNT = 0
  Input details of the elements in the asymmetric unit
  ----- ------- -- --- -------- -- --- ---------- ----
       If you are going to use SHELXS to solve the structure, remember
       to give C and H first, if present in your compound.
 %
+%    IF ( EXISTS 13 .NE. 0 ) THEN
+%        COPY '#GENERALEDIT 13'
+%        COPY 'LOCATE RECORDTYPE=103'
+%        COPY 'TRANSFER FROM OFFSET=0 TO WAVE'
+%        IF ( WAVE .GT. 1. ) THEN
+%         EVALUATE RADIATION = 1
+%        ELSE
+%         EVALUATE RADIATION = 2
+%        END IF
+%        COPY 'END'
+%    END IF
 %  IF RADIATION .LE. 0 THEN
 %    VERIFY CU MO
 %    GET FINAL VERIFIED 'Radiation' 'MO'
