@@ -19,7 +19,7 @@
 ^^WI   @ 2,2 CHECKBOX MATR 'Specify orientation' STATE=OFF
 ^^WI  }
 ^^WI  @ 4,2 STATIC T1 'Enter the cell contents here:'
-^^WI  @ 5,2 EDITBOX LE ' ' NCOLS=80 IGNORE
+^^WI  @ 5,2 EDITBOX LE ' ' NCOLS=80 LIMIT=80
 ^^WI  @ 7,2 STATIC T2 'Enter element symbol followed by number in cell,'
 ^^WI  @ 8,2 STATIC T3 'e.g. C 8 H 13 N 1 O 4 - use spaces.'
 ^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1
@@ -221,6 +221,9 @@ Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
 %      CLEAR
 %      COPY '#LIST 13'
 %      QUEUE PROCESS
+%      COPY 'END'
+%%
+%      COPY '#SUM L 29'
 %      COPY 'END'
 %%
 %      FINISH
