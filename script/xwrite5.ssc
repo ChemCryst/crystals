@@ -91,6 +91,10 @@
 %    END IF
 %  END IF
 %%
+%%
+%  COPY '#SCRIPT CHECK3'
+%%
+%%
 ^^WI WINDOW XRSETUP 'Least Squares Directives' MODAL
 ^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'
 ^^WI GRID MAIN NROWS=3 NCOLS=5
