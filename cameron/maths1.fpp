@@ -323,10 +323,13 @@ C the TO atoms are held IRLAST + NDIST1 -> IRLAST + NDIST2 - 1
       RETURN
       ENDIF
 C OUTPUT THE CURRENT RANGE
-      WRITE (CLINE,1) DISBEG,DISEND
-      CALL ZMORE(CLINE,1)
-1     FORMAT ('Distances in range ',
-     c F5.2 ,' to ', F5.2, ' A')
+cdjwfeb2000
+      if ((ndist1 .ne.2) .and. (ndist2 .ne. 4)) then
+        WRITE (CLINE,1) DISBEG,DISEND
+        CALL ZMORE(CLINE,1)
+1       FORMAT ('Distances in range ',
+     c   F5.2 ,' to ', F5.2, ' A')
+      endif
 C IDOUT WILL BE SET ONCE A DISTANCE HAS BEEN OUTPUTTED
       IDOUT = 0
       INPOS = IRLAST + NDIST2*4
@@ -443,16 +446,16 @@ C WORK OUT THE PACK LABEL FROM THE ATOM POSITION
 CRIC99 ISLEN is one char too long.
             ISLEN=ISLEN-1
             ENDIF
-            WRITE (CLINE,11) CLAB,CLAB1,D
+cdjwfeb2000 ------------------------------------------------------
+            IF (IPACK.EQ.0) THEN
+             WRITE (CLINE,12) CLAB,CLAB1,D,' ',SWORD(1:ISLEN),IMX
+            else
+             WRITE (CLINE,12) CLAB,CLAB1,D
+            ENDIF
             CALL ZMORE(CLINE,2)
             CALL ZMORE1(CLINE,2)
-11          FORMAT (A12,1X,A12,1X,F7.4)
-            IF (IPACK.EQ.0) THEN
-            WRITE (CLINE,12) SWORD(1:ISLEN),IMX
-            CALL ZMORE(CLINE,2)
-            ENDIF
-cdjwjan99         CALL ZMORE(' ',2)
-12            FORMAT ('Operator ',A,' trans ',3I3)
+12          FORMAT(A12,1X,A12,1X,F7.4,a,'Operator ',A,' trans',3I3)
+cdjwfeb2000 -------------------------------------------------------
             IDOUT = 1
           ENDIF
 140         CONTINUE
@@ -527,14 +530,26 @@ C WE HAVE FOUND THE ATOM!
 CRIC99 ISLEN is one char too long.
             ISLEN=ISLEN-1
             ENDIF
-            WRITE (CLINE,11) CLAB,CLAB1,D
+cdjwfeb2000 ------------------------------------------------------
+            IF (IPACK.EQ.0) THEN
+             WRITE (CLINE,12) CLAB,CLAB1,D,':',SWORD(1:ISLEN),
+     1       IMX(1)+IMX1(1),IMX(2)+IMX1(2),IMX(3)+IMX1(3)
+            else
+             WRITE (CLINE,12) CLAB,CLAB1,D
+            ENDIF
             CALL ZMORE(CLINE,2)
             CALL ZMORE1(CLINE,2)
-            IF (IPACK.EQ.0) THEN
-            WRITE (CLINE,12) SWORD(1:ISLEN),IMX(1)+IMX1(1),
-     c          IMX(2)+IMX1(2), IMX(3)+IMX1(3)
-            CALL ZMORE(CLINE,2)
-            ENDIF
+cdjwfeb2000 -------------------------------------------------------
+c            WRITE (CLINE,11) CLAB,CLAB1,D
+c            CALL ZMORE(CLINE,2)
+c            CALL ZMORE1(CLINE,2)
+c            IF (IPACK.EQ.0) THEN
+c            WRITE (CLINE,12) SWORD(1:ISLEN),
+c     c      IMX(1)+IMX1(1),IMX(2)+IMX1(2),IMX(3)+IMX1(3)
+c            CALL ZMORE(CLINE,2)
+c            ENDIF
+cdjwfeb2000 -------------------------------------------------------
+c
             IDOUT = 1
             K = 3
             GOTO 100
@@ -577,10 +592,10 @@ C GET  THE LABELS
         LLL = (NINT(RSTORE(IRLAST+4))-IRATOM) / IPACKT + ICATOM
         IL = INDEX ( CSTORE(LLL),' ') -1
         CALL ZPLABL (NINT(RSTORE(IRLAST+4)),CLAB1,IL)
-        WRITE (CLINE,98) CLAB , CLAB1 , D
-98        FORMAT (A12,' to ',A12,F7.4 , ' A')
+        WRITE (CLINE,12) CLAB , CLAB1 , D
+cdjw2000        FORMAT (A12,' to ',A12,F7.4 , ' A')
         CALL ZMORE(CLINE,2)
-        WRITE (CLINE,11) CLAB , CLAB1 , D
+        WRITE (CLINE,12) CLAB , CLAB1 , D,'*'
         CALL ZMORE1(CLINE,0)
       ELSE
 C NO DISTANCES WERE FOUND
