@@ -26,7 +26,5 @@ class CcModelObject
 
 #include	"ccmodelatom.h"
 #include	"ccmodelbond.h"
-#include	"ccmodelcell.h"
-#include	"ccmodeltri.h"
 
 #endif
