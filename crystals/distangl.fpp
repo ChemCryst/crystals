@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2002/08/29 15:19:43  richard
+C Attempt overwrite of L41 when re-writing to disk. (Will work if number of bonds and atoms
+C is unchanged).
+C
 C Revision 1.29  2002/08/23 09:02:59  richard
 C Fix alldist=yes.
 C
@@ -967,7 +971,7 @@ C--CALCULATE ALL THE DISTANCES AND ANGLES ABOUT THIS ATOM
 C--CHECK IF ANY DISTANCES OR ANGLES HAVE BEEN FOUND AT THIS ATOM
 
         IF ( JFNVC.GE.0 ) THEN
-           K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
+           K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC, 4)
 c           WRITE(CMON,'(A,I4)') 'K = ',K
 c           CALL XPRVDU(NCVDU,1,0)
         ELSE
@@ -2256,7 +2260,7 @@ cdjwoct2001
       NFL=JE
       JJ=M5
 C -- CHECK SPACE AVAILABLE
-      IF (KDIST1(JF, J, JT, 0, TOLER, ITRANS,0)) 9920, 3350, 1550
+      IF (KDIST1(JF, J, JT, 0, TOLER, ITRANS,0,4)) 9920, 3350, 1550
 C--REMOVE DUPLICATE ENTRIES FOR EACH ATOM, LEAVING THE MIN. CONTACT DIST
 1550  CONTINUE
       NFL=J
@@ -2719,7 +2723,7 @@ C----- DONT REUSE PREVIOUS FOUND OR UNFOUND ATOMS AS PIVOT.
         IF (ISTORE(MATVCA) .NE. ICURR) GOTO 3350
         NFL=JE
 C -- COMPUTE DISTANCE STACK
-        NDIST = KDIST1( N5, JRIC, JT, 1, TOLER, ITRANS,1)
+        NDIST = KDIST1( N5, JRIC, JT, 1, TOLER, ITRANS,1,4)
         IF(NDIST .LE. -1 ) GOTO 9920 !Error
 
         IF (NDIST .EQ. 0) THEN
@@ -3008,7 +3012,7 @@ C--PRESERVE THE LIST 12 POINTERS
 C--SET THE ENTRY LENGTH
       KD=12
 C--COMPUTE SOME DISTANCES
-      IF(KDIST1( 1, I, KD, 0, .2, 0, 0)) 1000, 1050, 1150
+      IF(KDIST1( 1, I, KD, 0, .2, 0, 0, 4)) 1000, 1050, 1150
 C--NOT ENOUGH CORE
 1000  CONTINUE
       XOCC=-1.
@@ -3037,7 +3041,7 @@ C--UPDATE THE POINTER
       END
 C
 CODE FOR KDIST1
-      FUNCTION KDIST1( IN, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
+      FUNCTION KDIST1( IN, JS, JT, JFNVC, TOLER, ITRANS, JATVC, IPTR)
 C--ENTRY THAT CALCULATES DISTANCES AND STORES THE RESULTS AT NFL
 C
 C  IN    THE NUMBER OF ATOMS TO BE MOVED AROUND.
@@ -3051,6 +3055,7 @@ C  TOLER SET TO TOTAL TOLERANCE IF FUNCTION VECTOR SUPPLIED
 C  ITRANS SET TO -1 TO SUPPRESS UNIT CELL TRANSLATIONS
 C  JATVC ZERO IF NO FUNCTION VECTOR SUPPLIED
 C  JATVC  +1  IF VCTOR CONTAINING 3 ATOM FLAGS SUPPLIED
+C  IPTR - OFFSET of co-ordinates (usually 4, may be 2 from Fourier).
 C
 C--THE RETURN VALUES OF 'KDIST1' ARE :
 C
@@ -3168,8 +3173,8 @@ C--DISTANCES ARE BEING CALCULATED
       I=M5A
 C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
       DO J=1,3
-        BPD(J+3)=STORE(I+4)-AO/BPD(J)
-        BPD(J+6)=STORE(I+4)+AO/BPD(J)
+        BPD(J+3)=STORE(I+IPTR)-AO/BPD(J)
+        BPD(J+6)=STORE(I+IPTR)+AO/BPD(J)
         I=I+1
       END DO
 C--SET UP THE OTHER FLAGS
@@ -3191,7 +3196,7 @@ C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
         M2=L2
         DO NE=1,N2
 C--APPLY THIS SYMMETRY OPERATOR
-          CALL XMLTTM(STORE(M2),STORE(M5+4),APD(1),3,3,1)
+          CALL XMLTTM(STORE(M2),STORE(M5+IPTR),APD(1),3,3,1)
 C--LOOP OVER EACH REQUIRED SIGN FOR THE CENTRE OF SYMMETRY FLAG
           DO NF=1,NC,2
             M2P=L2P
@@ -3241,10 +3246,23 @@ C--SWITCH -- TYPE OF FUNCTION
 
 C--FILLING A MULTI-SIDED BOX  -  MOVE TO THE CENTROID
                   CALL XSUBTR(APD(7),STORE(LBOX),XX(1),3)
+
+          WRITE (CMON,'(A,3(1X,3F6.3))')'Crd,cen,diff',
+     1 (APD(7+J),J=0,2),(STORE(LBOX+J),J=0,2),(XX(J),J=1,3)
+          CALL XPRVDU(NCVDU,1,0)
+
 C--CHECK THAT THE POINT IS WITHIN THE BOX
                   MBOX=LBOX
                   DO NH=1,NBOX
                     MBOX=MBOX+MDBOX
+      WRITE (CMON,'(A,I4,4F8.3)')'NH,plane,D: ',NH,(STORE(MBOX+J),J=0,3)
+                    CALL XPRVDU(NCVDU,1,0)
+      WRITE (CMON,'(A,F8.3)')'Prod: ', STORE( MBOX )*XX(1)
+     1                 + STORE(MBOX+1)*XX(2)
+     2                 + STORE(MBOX+2)*XX(3)
+
+                    CALL XPRVDU(NCVDU,1,0)
+
                     IF(  STORE( MBOX )*XX(1)
      1                 + STORE(MBOX+1)*XX(2)
      2                 + STORE(MBOX+2)*XX(3)
@@ -3254,12 +3272,12 @@ C--CHECK THAT THE POINT IS WITHIN THE BOX
 
 C----- CHECK FOR SELF-SELF CONTACT
                   IF ( ( M5 .EQ. M5A ) .AND. 
-     1                 (ABS(STORE(M5A+4)-APD(7)) .LE. ZERO) .AND.
-     1                 (ABS(STORE(M5A+5)-APD(8)) .LE. ZERO) .AND.
-     1                 (ABS(STORE(M5A+6)-APD(9)) .LE. ZERO) ) GOTO 2570
+     1                 (ABS(STORE(M5A+IPTR)-APD(7)) .LE. ZERO) .AND.
+     1                 (ABS(STORE(M5A+IPTR+1)-APD(8)).LE.ZERO) .AND.
+     1                 (ABS(STORE(M5A+IPTR+2)-APD(9)).LE.ZERO))GOTO 2570
 
 C-- NOT A SELF-SELF CONTACT WITH NO OPERATORS  -  CALC. DIST.
-                  F=XDSTN2(STORE(M5A+4),APD(7))
+                  F=XDSTN2(STORE(M5A+IPTR),APD(7))
 C--CHECK THE DISTANCE AGAINST THE MIN AND MAX ALLOWED VALUE SQUARED
                   IF ((F .LE. BP) .OR. (F .GE. AP)) GOTO 2570
 
@@ -3303,6 +3321,12 @@ C--SET THE REMAINING FLAGS
                 STORE(J+3)=APD(I+6)
                 J=J+1
               END DO
+
+c          WRITE (CMON,'(A,3(1X,3F6.3))')'Stored: ',
+c     1 (STORE(7+JK+JS),JK=0,2)
+c          CALL XPRVDU(NCVDU,1,0)
+
+
               STORE(JS+10)=E
               STORE(JS+11)=F
               ISTORE(JS+12)=M12
@@ -3489,15 +3513,38 @@ C--SET THE FLAGS
           ISTORE(JS+5)=ISTORE(M41B+4)
           ISTORE(JS+6)=ISTORE(M41B+5)
 
-          STORE(JS+7)=STORE(I51+4)
-          STORE(JS+8)=STORE(I51+5)
-          STORE(JS+9)=STORE(I51+6)
+C Calculate transformed co-ordinates
+
+          M2 = L2 + ( MIN(N2,ABS(ISTORE(M41B+1))) - 1) * MD2
+          M2P =L2P+ ( MIN(N2P,ISTORE(M41B+2))     - 1) * MD2P
+          CALL XMLTTM(STORE(M2),STORE(I51+4),STORE(JS+7),3,3,1)
+          IF (ISTORE(M41B+1).LT.0)CALL XNEGTR(STORE(JS+7),STORE(JS+7),3)
+          DO L = 0,2
+            STORE(JS+7+L) = STORE(JS+7+L) +STORE(M2P+L) +STORE(M2+9+L)
+     1                                    +ISTORE(JS+4+L)
+          END DO
 
           STORE(JS+10)=STORE(M41B+13)
           STORE(JS+11)=STORE(M41B+13)**2
 
           ISTORE(JS+12)=-1
           IF(JT.EQ.14) STORE(JS+13)=STORE(M41B+13)
+
+          CALL CATSTR (STORE(I51),STORE(I51+1),
+     2                  ISTORE(M41B+1),ISTORE(M41B+2),
+     3                  ISTORE(M41B+3),ISTORE(M41B+4),ISTORE(M41B+5),
+     4                  CATOM1, LATOM1)
+          CALL CATSTR (STORE(I52),STORE(I52+1),
+     2                  ISTORE(M41B+7),ISTORE(M41B+8),
+     3                  ISTORE(M41B+9),ISTORE(M41B+10),ISTORE(M41B+11),
+     4                  CATOM2, LATOM2)
+          WRITE (CMON,24) CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2,ISTORE(M41B+12),
+     3                  STORE(M41B+13)
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE (CMON,'(2(A,I5))')'I51=',I51,' Stored at JS=', JS
+          CALL XPRVDU(NCVDU,1,0)
+
 
           JS=JS+JT
           NJ=NJ+1
@@ -3698,8 +3745,8 @@ C
 C
       ISTAT2=0
 C--LOAD LIST 1 AND LIST 2
-      CALL XFAL01
-      CALL XFAL02
+      IF (KHUNTR (1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+      IF (KHUNTR (2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET UP THE SHIFT DATA
       DO 1050 I=1,3
@@ -4754,7 +4801,7 @@ C ----- SET JFNVC TO 'NOWT' TO REDUCE SEARCH TIME
             JFNVC = NOWT
             NBONDS = 0
 C-------COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0)
+            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0, 4)
             NBONDS = NDIST
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
             NFL = JL
@@ -4797,7 +4844,7 @@ C
 C
                   MBONDS = 0
 C-------COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-                  MDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0)
+                  MDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0,4)
                   MBONDS = MDIST
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
                   NFL = JL
@@ -5539,6 +5586,7 @@ C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
 
       IF ( KEXIST(1) .LT. 1 ) GOTO 9900
       IF ( KEXIST(2) .LT. 1 ) GOTO 9900
+
       IF ( KEXIST(5) .LT. 1 ) GOTO 9900
       IF ( KEXIST(29) .LT. 1 ) GOTO 9900
       
@@ -5727,12 +5775,12 @@ C -- NB we have already put stuff above NFL, this call allows for that:
 
       JT = 12
 
-      ITEMP1 = KCHLFL(JT) !reserve a sort buffer at top of store.
+      ITEMP1 = KSTALL(JT) !reserve a sort buffer.
 
 
 C -- Allocate a N5 length vector to hold: { maxbonds, bondssofar }
 
-      LATVEC = KCHLFL( N5 * 2 ) 
+      LATVEC = KSTALL( N5 * 2 ) 
       DO I5 = 0,N5-1
          M5 = L5 + I5*MD5
          DO M29 = L29,I29,MD29
@@ -5756,17 +5804,24 @@ C -- elements which will override the TOLERANCE calculation.
 
          NEXTLC = NFL
          NFOUND = MAKE41( M5, NEXTLC )
+
          IF ( NFOUND .GT. 0 ) THEN
 
-C Reject bonds to atoms that have reached their quota of bonds.
+C Reject bonds to nonsym atoms that have reached their quota of bonds.
             NREJ = 0
             DO J = 0,(NFOUND-1)*JT,JT
-               K = ISTORE(NFL+J)
-               IL5 = ( K - L5 ) / MD5
-               IF ( ISTORE(LATVEC+(IL5*2)+1) .GE.
-     1              ISTORE(LATVEC+(IL5*2)))  THEN
-                  STORE(NFL+J+10) = 9999.0
-                  NREJ = NREJ + 1
+               IF ( ( ISTORE(NFL+J+2) .EQ. 1 ) .AND.
+     1              ( ISTORE(NFL+J+3) .EQ. 1 ) .AND.
+     1              ( ISTORE(NFL+J+4) .EQ. 0 ) .AND.
+     1              ( ISTORE(NFL+J+5) .EQ. 0 ) .AND.
+     1              ( ISTORE(NFL+J+6) .EQ. 0 )) THEN
+                    K = ISTORE(NFL+J)
+                    IL5 = ( K - L5 ) / MD5
+                    IF ( ISTORE(LATVEC+(IL5*2)+1) .GE.
+     1                 ISTORE(LATVEC+(IL5*2)))  THEN
+                      STORE(NFL+J+10) = 9999.0
+                     NREJ = NREJ + 1
+                    END IF
                END IF
             END DO
             
@@ -6138,16 +6193,24 @@ C--
 \XLST40
 \XLST05
 \XLST29
+\XIOBUF
+\XUNITS 
 
       COMMON /PERM02/ RLIST2(1000),ICFLAG,LSYM,NSYM,MDSYM,LNONP,NNONP
       EQUIVALENCE (STORE(1),ISTORE(1))
 
-
       CALL CRDIST2     !Set up BPD.
       JT= 12           !Size of atom info on stack
       AO = 3.0
+      DO M40P = L40P, L40P + (N40P-1)*MD40P, MD40P
+          AO = MAX(AO, STORE(M40P+3))
+      END DO
       AP = AO * AO     !Max dist squared
       BP = 0.5 * 0.5   !Min dist squared
+
+
+
+
 
 C--SET UP A FEW INITIAL POINTERS
       MAKE41=0         !Return value. Number of atoms found
@@ -6158,6 +6221,7 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
         BPD(J+6)=STORE(I5A+4)+AO/BPD(J)
         I5A=I5A+1
       END DO
+
       DAT1 = 0.0
       DO M29 = L29, L29+(N29-1)*MD29, MD29
         IF ( ISTORE(MPIV) .EQ. ISTORE(M29) ) THEN
@@ -6166,9 +6230,9 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
         END IF
       END DO
 
-
 C--LOOP OVER ALL THE ATOMS.
       DO I5= L5,L5+(MD5*(N5-1)),MD5
+
         KPAIR = 0
         DAT2 = 0.0
 C--Check for this atom pair on a L40 PAIR record.
@@ -6199,7 +6263,7 @@ C--If the NOSYMM flag is set, hide all the symmetry operators:
             NKICF = ICFLAG
             NKNON = NNONP
         END IF
-
+                                      
 C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
         M2=LSYM
         DO NE=1,NKSYM
@@ -6218,84 +6282,89 @@ C--ADD IN THE VARIOUS TRANSLATION PARTS
                 M2P=M2P+1
                 NH=NH+1
               END DO
+
               CALL XSHIFT2(1) ! Move X-coord out of required volume.
-1300          CONTINUE
-              IF(KDIST2(1).GE.0) THEN  !Advance X-coord by one or more cells.
+              DO WHILE ( KDIST2(1).GE.0 ) !Advance X-coord.
+
                 CALL XSHIFT2(2) ! Move Y-coord out of required volume.
-C--ADVANCE THE Y COORDINATE BY ONE OR MORE UNIT CELLS
-1400            CONTINUE
-                IF(KDIST2(2).LT.0) GOTO 1300 !Advance Y-coord.
-                CALL XSHIFT2(3) ! Move Z-coord out of required volume.
-                IF(KDIST2(3).LT.0) GOTO 1400 !Advance Z-coord.
+                DO WHILE ( KDIST2(2).GE.0 )  ! Advance Y-coord.
+
+                  CALL XSHIFT2(3) ! Move Z-coord out of required volume.
+                  DO WHILE ( KDIST2(3).GE.0 )  !Advance Z-coord.
 C--A SUCCESSFUL FIND.
 
-                IF((I5-MPIV.NE.0).OR.(ABS(STORE(M5A+4)-APD(7)).GT.ZERO)
+                    IF((I5-MPIV.NE.0)
+     1                  .OR.(ABS(STORE(M5A+4)-APD(7)).GT.ZERO)
      2                      .OR. (ABS(STORE(MPIV+5)-APD(8)).GT.ZERO)
      3                   .OR. (ABS(STORE(MPIV+6)-APD(9)).GT.ZERO) )THEN
+
+
 C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS. 
 C--We want A->B and not B->A, however we want both A->B' and B->A'.
-                  IF ((MPIV.GT.I5).OR.(NE.NE.1).OR.(NF.NE.1)
+                      IF ((MPIV.GT.I5).OR.(NE.NE.1).OR.(NF.NE.1)
      1                                       .OR.(NG.NE.1)) THEN
-                    F=XDSTNCR(STORE(MPIV+4),APD(7)) !Calculate distance
-                    DPMIN = 0.0
-                    DPMAX = 0.0
-                    LPAIR = 0
+
+                        F=XDSTNCR(STORE(MPIV+4),APD(7)) !Calculate distance
+                        DPMIN = 0.0
+                        DPMAX = 0.0
+                        LPAIR = 0
 C -- There may be more than one PAIR record for a given pair of elements.
 C -- (they have different bond types). So search L40P again for a matching
 C -- pair AND range.
-                    IF(KPAIR.EQ.1) THEN
-                      DO M40P = L40P, L40P + (N40P-1)*MD40P, MD40P
-                        IF (((STORE(M40P).EQ.STORE(I5))
-     1                  .AND.(STORE(M40P+1).EQ.STORE(MPIV)))
-     2                  .OR.((STORE(M40P)  .EQ.STORE(MPIV))
-     3                  .AND.(STORE(M40P+1).EQ.STORE(I5)))) THEN
-                          IF (( F .GE. STORE(M40P+2)**2 ) .AND.
-     1                        ( F .LE. STORE(M40P+3)**2 )) THEN
-                            DPMIN = STORE(M40P+2)
-                            DPMAX = STORE(M40P+3)
-                            LPAIR = NINT(STORE(M40P+4))
-                            EXIT
+                        IF(KPAIR.EQ.1) THEN
+                          DO M40P = L40P, L40P + (N40P-1)*MD40P, MD40P
+                            IF (((STORE(M40P).EQ.STORE(I5))
+     1                      .AND.(STORE(M40P+1).EQ.STORE(MPIV)))
+     2                      .OR.((STORE(M40P)  .EQ.STORE(MPIV))
+     3                      .AND.(STORE(M40P+1).EQ.STORE(I5)))) THEN
+                              IF (( F .GE. STORE(M40P+2)**2 ) .AND.
+     1                            ( F .LE. STORE(M40P+3)**2 )) THEN
+                                DPMIN = STORE(M40P+2)
+                                DPMAX = STORE(M40P+3)
+                                LPAIR = NINT(STORE(M40P+4))
+                                EXIT
+                              END IF
+                            END IF
+                          END DO
+                          DMIN = DPMIN**2
+                          DMAX = DPMAX**2
+                        ELSE IF ( NINT(STORE(L40T)) .EQ. 0 ) THEN
+                          DMAX = (DAT1+DAT2+STORE(L40T+1))**2
+                          DMIN = (MAX(0.0,DAT1+DAT2-STORE(L40T+1)))**2
+                        ELSE
+                          DMAX = ((DAT1 + DAT2)*STORE(L40T+1))**2
+                          DMIN = ((DAT1 + DAT2)/2.0)**2
+                        ENDIF
+
+                        IF((F .GE. DMIN).AND.(F .LE. DMAX)) THEN
+                          E=SQRT(F) ! Compute distance.
+                          ISTORE(MSADR)=I5           !0 = Pointer to atom
+                          ISTORE(MSADR+1) = (2-NF)*NE
+                          ISTORE(MSADR+2) = NG
+                          DO I = 1,3
+                            ISTORE(MSADR+I+2) = NINT(APD(I+6)-APD(I+3))
+                            STORE (MSADR+I+5) = APD(I+6)
+                          END DO
+                          STORE(MSADR+9) = E
+                          IF (KPAIR.EQ.1) THEN
+                            ETOL = ABS( E - ((DPMIN+DPMAX)/2.0))
+                          ELSE
+                            ETOL = ABS( E - (DAT1 + DAT2) )
+                          END IF
+                          STORE(MSADR+10) = ETOL
+                          ISTORE(MSADR+11) = LPAIR
+                          MAKE41=MAKE41+1                   !Atom Counter.
+                          MSADR=MSADR+JT
+                          IF (MSADR.GT.LFL) THEN
+                              MSADR=MSADR-JT
+                              MAKE41=MAKE41-1
                           END IF
                         END IF
-                      END DO
-                      DMIN = DPMIN**2
-                      DMAX = DPMAX**2
-                    ELSE IF ( NINT(STORE(L40T)) .EQ. 0 ) THEN
-                      DMAX = (DAT1+DAT2+STORE(L40T+1))**2
-                      DMIN = (MAX(0.0,DAT1+DAT2-STORE(L40T+1)))**2
-                    ELSE
-                      DMAX = ((DAT1 + DAT2)*STORE(L40T+1))**2
-                      DMIN = ((DAT1 + DAT2)/2.0)**2
-                    ENDIF
-
-                    IF((F .GE. DMIN).AND.(F .LE. DMAX)) THEN
-                      E=SQRT(F) ! Compute distance.
-                      ISTORE(MSADR)=I5           !0 = Pointer to atom
-                      ISTORE(MSADR+1) = (2-NF)*NE
-                      ISTORE(MSADR+2) = NG
-                      DO I = 1,3
-                        ISTORE(MSADR+I+2) = NINT(APD(I+6)-APD(I+3))
-                        STORE (MSADR+I+5) = APD(I+6)
-                      END DO
-                      STORE(MSADR+9) = E
-                      IF (KPAIR.EQ.1) THEN
-                        ETOL = ABS( E - ((DPMIN+DPMAX)/2.0))
-                      ELSE
-                        ETOL = ABS( E - (DAT1 + DAT2) )
-                      END IF
-                      STORE(MSADR+10) = ETOL
-                      ISTORE(MSADR+11) = LPAIR
-                      MAKE41=MAKE41+1                   !Atom Counter.
-                      MSADR=MSADR+JT
-                      IF (MSADR.GT.LFL) THEN
-                          MSADR=MSADR-JT
-C                          CALL ZMORE('Too many contacts in MAKE41',0)
-                          MAKE41=MAKE41-1
                       END IF
                     END IF
-                  END IF
-                END IF
-              END IF
+                  END DO
+                END DO
+              END DO
             END DO
             CALL XNEGTR(APD(1),APD(1),3)        !Centre of symmetry.
           END DO
