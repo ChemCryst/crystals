@@ -185,13 +185,17 @@ void CrGUIElement::SendCommand(CcString theText, Boolean jumpQueue)
 
 void CrGUIElement::SysKey( UINT nChar )
 {
-// This should never be called. It means that an Cr object has requested
+// This should never be called. It means that a Cr object has requested
 // system key messages, but doesn't have an over-riding SysKey routine
 // to handle them!
+}
 
-      LOGERR("SysKey called in CrGUIElement Base Class");
-      LOGERR("Have you tried to get SysKey messages for an object");
-      LOGERR("which has no capability to recieve them?");
+void CrGUIElement::SysKeyUp( UINT nChar )
+{
+// This may be called if the requesting window only want KEYDOWN messages.
+// This should never be called. It means that a Cr object has requested
+// system key messages, but doesn't have an over-riding SysKey routine
+// to handle them!
 }
 
 void CrGUIElement::Rename( CcString newName )
@@ -199,3 +203,12 @@ void CrGUIElement::Rename( CcString newName )
       LOGSTAT("Renameing object: " + mName + " to " + newName );
       mName = newName;
 }
+
+void CrGUIElement::SetOriginalSizes()
+{
+// Do nothing. This function is overridden by all
+// re-sizeable GUIElements. e.g. Model, Chart, MultiEdit, EditBox etc.
+      return;
+}
+
+

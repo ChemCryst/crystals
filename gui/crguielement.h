@@ -26,6 +26,7 @@ class	CrGUIElement
 		virtual void SendCommand(CcString theText, Boolean jumpQueue=false);
 		Boolean mDisabled;
 		virtual void FocusToInput(char theChar);
+            virtual void SysKeyUp ( UINT nChar );
             virtual void SysKey ( UINT nChar );
 		Boolean mTabStop;
 		virtual void CrFocus()=0;
@@ -47,6 +48,7 @@ class	CrGUIElement
 		virtual void	GetValue(CcTokenList * tokenList);
 		virtual void	SetText( CcString text ) = 0;
 		virtual void	CalcLayout() = 0;
+            virtual void      SetOriginalSizes();
 		virtual Boolean	ParseInput( CcTokenList * tokenList );
 		Boolean	ParseInputNoText( CcTokenList * tokenList );
 		virtual CcRect	GetGeometry() = 0;
