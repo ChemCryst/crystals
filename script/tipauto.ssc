@@ -1,0 +1,11 @@
+%SCRIPT TIPAUTO
+%%
+%% Check if automatic tips have been turned off.
+%%
+^^CO GETKEY TIPS
+%    GET SILENT NOSTORE FINAL TEXT '1' ' '
+%    IF CVALUE .NE. '1' THEN
+%      FINISH
+%    END IF
+%    COPY '#SCRIPT TIPS'
+%END SCRIPT
