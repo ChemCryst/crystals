@@ -88,6 +88,7 @@
 %%
 %  EVALUATE NTS = 1
 %%
+^^CO FOCUS DS_RES
 %%
 %%
 %  LOOP
@@ -164,6 +165,7 @@
 %        STORE INTEGER NT
 %        INSERT !'!
 %        OUTPUT
+^^CO FOCUS DS_RES
 %      END BLOCK
 %      BLOCK                                                  % BDELET %
 %        COPY '#DISK'
@@ -183,6 +185,7 @@
 %  COPY 'END'
 %  COPY '#RELEASE PUNCH bfile.pch'
 %  COPY '#OPEN SCPDATA dscdata.pch'
+^^CO FOCUS DS_RES
 %      END BLOCK
 %      BLOCK                                                  % BKEEP %
 %        COPY '#DISK'
@@ -202,6 +205,7 @@
 %  COPY 'END'
 %  COPY '#RELEASE PUNCH bfile.pch'
 %  COPY '#OPEN SCPDATA dscdata.pch'
+^^CO FOCUS DS_RES
 %      END BLOCK
 %      BLOCK                                                  % RT_RES %
 %% Do nothing. Window will update when it loops back.
