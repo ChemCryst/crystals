@@ -72,7 +72,8 @@ TO  CRYSTALS
 %        TRANSFER 'COPY "' // FILENAME // '"' TO CRYSTALS
 %        TRANSFER '   ' TO CRYSTALS
 %            IF IPRINT .EQ. 1 THEN
-%        TRANSFER 'PRINT "' // FILENAME // '"' TO CRYSTALS
+%% RIC MAR2001 Remove quotes - print doesn't seem to like them?
+%        TRANSFER 'PRINT ' // FILENAME TO CRYSTALS
 %            END IF
 %% DJW MAY2000
 %        IF FILETYPE .EQ. 'POST' .OR. FILETYPE .EQ. 'ENCAP' THEN
