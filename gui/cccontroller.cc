@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.63  2003/05/14 13:31:01  rich
+// Diagnostic should go to log, not appear as an error.
+//
 // Revision 1.62  2003/05/12 11:13:20  rich
 //
 // RIC: Introduce a "batch" mode which can be set as an attribute of the main CRYSTALS
@@ -1442,8 +1445,8 @@ void CcController::CompleteProcessing()
 // pending commands in the command queue.
 
    m_Protect_Completing_CS.Enter();
-   LOGSTAT("-----------Output queue locked." );
-   m_Completing = true;
+          LOGSTAT("-----------Output queue locked." );
+          m_Completing = true;
    m_Protect_Completing_CS.Leave();
 }
 
@@ -1455,8 +1458,8 @@ void CcController::ProcessingComplete()
 // processing all pending commands in the command queue.
 
    m_Protect_Completing_CS.Enter();
-   LOGSTAT("Output queue released." );
-   m_Completing=false;
+         LOGSTAT("Output queue released." );
+         m_Completing=false;
    m_Protect_Completing_CS.Leave();
    m_Complete_Signal.Signal();
 
@@ -1465,7 +1468,7 @@ void CcController::ProcessingComplete()
 bool CcController::Completing()
 {
    m_Protect_Completing_CS.Enter();
-   bool temp = m_Completing;
+         bool temp = m_Completing;
    m_Protect_Completing_CS.Leave();
    return temp;
 }    
@@ -1521,6 +1524,7 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
       {
          if( line.Sub(1,11) == "_MAIN CLOSE")
          {
+           LOGSTAT("---Closing main window.");
            AddInterfaceCommand("^^CO DISPOSE _MAIN ");
            mThisThreadisDead = true;
            return; //Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
@@ -1542,7 +1546,7 @@ void  CcController::AddCrystalsCommand( CcString line, bool jumpQueue)
 
     m_Crystals_Commands_CS.Enter();
 
-    mCrystalsCommandQueue.SetCommand( line, jumpQueue);
+         mCrystalsCommandQueue.SetCommand( line, jumpQueue);
 //    if (jumpQueue) {
 //        LOGSTAT ( "Jumpqueue occured, unlocking output queue.");
 //        ProcessingComplete();
@@ -1602,11 +1606,9 @@ void  CcController::AddInterfaceCommand( CcString line )
 
   m_Interface_Commands_CS.Enter();
 
-  if(mThisThreadisDead) endthread(0);
-
-  mInterfaceCommandQueue.SetCommand( line );
-
-  LOGSTAT("-----------CRYSTALS has put: " + line );
+       if(mThisThreadisDead) endthread(0);
+       mInterfaceCommandQueue.SetCommand( line );
+       LOGSTAT("-----------CRYSTALS has put: " + line );
 
   m_Interface_Commands_CS.Leave();
 
@@ -1647,26 +1649,24 @@ bool CcController::GetCrystalsCommand( char * line )
 
     m_Crystals_Commands_CS.Enter();
 
-    if (mThisThreadisDead) return false;
+       if (mThisThreadisDead) return false;
 
-    while ( Completing() || !mCrystalsCommandQueue.GetCommand( line ) )
-    {
+       while ( Completing() || !mCrystalsCommandQueue.GetCommand( line ) )
+       {
 // The queue is empty or locked so wait efficiently. 
 // Release the mutex for a while, so that someone else can write to the queue!
-        m_Wait = false;
-//        LOGSTAT ("-----------Queue locked or empty..");
-       m_Crystals_Commands_CS.Leave();
-        if (mThisThreadisDead) return false;
+           m_Wait = false;
+//           LOGSTAT ("-----------Queue locked or empty..");
+         m_Crystals_Commands_CS.Leave();
+         if (mThisThreadisDead) return false;
 
-
-        m_Crystals_Command_Added_CS.Wait(1000);
+         m_Crystals_Command_Added_CS.Wait(1000);
 
 //The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
+         m_Crystals_Commands_CS.Enter();
+       }
 
-        m_Crystals_Commands_CS.Enter();
-    }
-
-    LOGSTAT("-----------Crystals thread: Got command: "+ CcString(line));
+       LOGSTAT("-----------Crystals thread: Got command: "+ CcString(line));
 
     m_Crystals_Commands_CS.Leave();
 
@@ -1689,7 +1689,6 @@ bool CcController::GetInterfaceCommand( char * line )
     //It needn't be highly optimised even though it is high on
     //the profile count list.
 
-
   if( mCrystalsThread )
   {
 #ifdef __CR_WIN__
@@ -1701,6 +1700,7 @@ bool CcController::GetInterfaceCommand( char * line )
     if ( ! (m_Crystals_Thread_Alive.IsLocked()) )
 #endif
     {
+      LOGSTAT("The CRYSTALS thread has died.");
       if ( m_restart )
       {
         ChangeDir( m_newdir );
@@ -1710,6 +1710,7 @@ bool CcController::GetInterfaceCommand( char * line )
       }
 
       mThisThreadisDead = true;
+      LOGSTAT("Shutting down this (GUI) thread.");
       strcpy(line,"^^CO DISPOSE _MAIN ");
       return (true);
     }
