@@ -23,14 +23,12 @@ using namespace std;
   #include <wx/msw/regconf.h>
 #endif
 
-
 #include "ccrect.h"
 #include "cccontroller.h"
 
 //#include "Stackwalker.h"
 
 #ifdef __CR_WIN__
-
   #ifdef __CRDEBUG__
     #undef THIS_FILE
     static char THIS_FILE[] = __FILE__;
@@ -51,9 +49,9 @@ using namespace std;
   } _myLeakFinder;
   */
 
-
   // CCrystalsApp
   BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
+	  ON_THREAD_MESSAGE(WM_CRYSTALS_COMMAND, CCrystalsApp::OnCrystCommand)
   END_MESSAGE_MAP()
 
   // CCrystalsApp construction
@@ -101,7 +99,6 @@ using namespace std;
          if ( dwresult == ERROR_SUCCESS )  location = string(buf);
          RegCloseKey(hkey);
       }
-
       if ( dwresult != ERROR_SUCCESS )  // Try HK_CURRENT_USER instead
       {
          dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
@@ -125,7 +122,7 @@ using namespace std;
 
     string directory = "";
     string dscfile = "";
-
+	
     for ( int i = 1; i < __argc; i++ )
     {
        string command = __argv[i];
@@ -162,7 +159,6 @@ using namespace std;
          }
        }
      }
-
      LoadStandardCursor(IDC_APPSTARTING);
      theControl = new CcController(directory,dscfile);
      LoadStandardCursor(IDC_ARROW);
@@ -176,6 +172,11 @@ using namespace std;
     return FALSE;
   }
  
+  void CCrystalsApp::OnCrystCommand(UINT wp, LONG p)
+  {
+	theControl->DoCommandTransferStuff();
+  }
+  
   LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM)
   {
     theControl->DoCommandTransferStuff();
@@ -192,7 +193,6 @@ using namespace std;
 #endif
 
 #ifdef __BOTHWX__
-
   // The one and only CCrystalsApp object
   IMPLEMENT_APP(CCrystalsApp)
 
@@ -200,10 +200,19 @@ using namespace std;
   // the string's memory must not be freed until later.
   list<char*> stringlist;
 
+	DEFINE_EVENT_TYPE(ccEVT_COMMAND_ADDED)
+
+#define EVT_CC_COMMAND_ADDED(id, fn) \
+    DECLARE_EVENT_TABLE_ENTRY( \
+        ccEVT_COMMAND_ADDED, id, wxID_ANY, \
+        (wxObjectEventFunction)(wxEventFunction) wxStaticCastEvent( wxCommandEventFunction, &fn ), \
+        (wxObject *) NULL \
+    ),
+	
   // CCrystalsApp initialization
+//  EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
   BEGIN_EVENT_TABLE( CCrystalsApp, wxApp ) 
-      EVT_IDLE ( CCrystalsApp::OnIdle )
-      EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
+	  EVT_CC_COMMAND_ADDED (wxID_ANY, CCrystalsApp::OnCrystCommand )
   END_EVENT_TABLE()
 
   #ifdef __WXGTK__
@@ -255,6 +264,7 @@ using namespace std;
 	    }
 	  exit(0);
 	}
+
     }
    std::cerr << "There was an error when setting up the working directly dialog.\n";
    exit(0);
@@ -287,12 +297,9 @@ using namespace std;
     {
       macSetCRYSDIR((char*)tPath);
     }
-#endif
-
-
+#else
     if ( getenv("CRYSDIR") == nil )
     {
-
  // Use the registry to fetch keys.
       string location;
       wxString str;
@@ -307,7 +314,7 @@ using namespace std;
       stringlist.push_back(env);
       putenv( env );
     }
-
+#endif
 
     for ( int i = 1; i < argc; i++ )
     {
@@ -352,25 +359,14 @@ using namespace std;
 
     }
     theControl = new CcController(directory,dscfile);
-    kickTimer = new wxTimer(this, 5241);
-    kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
+   // kickTimer = new wxTimer(this, 5241);
+   // kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
     return true;
   }
 
-  void CCrystalsApp::OnIdle(wxIdleEvent & event)
+  void CCrystalsApp::OnCrystCommand(wxCommandEvent & event)
   {
-    wxApp::OnIdle(event);
-    bool sysret = event.MoreRequested();
-    bool appret;
-
-    for ( int i=0; i<25; i++ )
-       if ( ! (appret = theControl->DoCommandTransferStuff()) ) break;
-
-    //Only stop idle processing if:
-    // 1. appret is false (no more interface commands)
-    // 2. sysret is false (no more idle processing needed by framework).
-    if((appret) || (sysret))  event.RequestMore();
-    return;
+	theControl->DoCommandTransferStuff();
   }
 
   int CCrystalsApp::OnExit()
@@ -385,26 +381,7 @@ using namespace std;
     return wxApp::OnExit();
   }
 
-  void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
-  {
-        for ( int i=0; i<25; i++ )
-           if ( ! theControl->DoCommandTransferStuff() ) break;
-  }
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
