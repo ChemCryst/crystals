@@ -8,7 +8,7 @@
 %%
 %% Set up variables:
 %%
-% VARIABLE LOGICAL IS25 MATCHG TWINNED
+% VARIABLE LOGICAL IS25 MATCHG TWINNED ADD25 CANCEL25
 % VARIABLE INTEGER N25 NEL CURMAT LOOPCOUNTER N25I ITMP ORIGSER DPV
 %% The element scales from L5:
 % VARIABLE REAL    EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 RVAL VOLF
@@ -28,8 +28,8 @@
 %% Get some initial information:
 %%
 % EVALUATE CURMAT = 1
-% EVALUATE DPV = 1
 % EVALUATE MATCHG = TRUE
+% EVALUATE CANCEL25 = FALSE
 % EVALUATE IS25 =  ( ( EXISTS 25 ) .NE. 0 )
 % IF ( IS25 ) THEN
 %   COPY '#GENERALEDIT 25'
@@ -78,6 +78,33 @@
 %   END LOOP
 %   COPY 'END'
 % END IF
+%
+% COPY '#GENERALEDIT 25'
+% COPY 'LOCATE RECORDTYPE=101'
+% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+% EVALUATE DPV = 1
+%%
+%% Call from ROTAX passes in a twin law:
+%%
+% IF ( ADD25 ) THEN
+%   COPY 'TOP'
+%   LOOP N25 - 1 TIMES
+%     COPY 'NEXT'
+%   END LOOP
+%   COPY 'INSERT'
+%   COPY 'TRANSFER TO OFFSET=0 FROM MATRIX:M11'
+%   COPY 'TRANSFER TO OFFSET=1 FROM MATRIX:M12'
+%   COPY 'TRANSFER TO OFFSET=2 FROM MATRIX:M13'
+%   COPY 'TRANSFER TO OFFSET=3 FROM MATRIX:M21'
+%   COPY 'TRANSFER TO OFFSET=4 FROM MATRIX:M22'
+%   COPY 'TRANSFER TO OFFSET=5 FROM MATRIX:M23'
+%   COPY 'TRANSFER TO OFFSET=6 FROM MATRIX:M31'
+%   COPY 'TRANSFER TO OFFSET=7 FROM MATRIX:M32'
+%   COPY 'TRANSFER TO OFFSET=8 FROM MATRIX:M33'
+%   EVALUATE N25 = N25 + 1
+%   EVALUATE DPV = DPV + 9
+% END IF
+%%
 %%
 %% Create main twin laws window:
 %%
@@ -87,7 +114,7 @@
 ^^WI {
 ^^WI   @ 2,2 GRID G NROWS=1 NCOLS=3
 ^^WI   {
-^^WI     @ 1,1 GRID G NROWS=3 NCOLS=1
+^^WI     @ 1,1 GRID G NROWS=3 NCOLS=1 OUTLINE='Twin laws'
 ^^WI     {
 ^^WI       @ 1,1 LISTBOX TLAWS VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
@@ -100,7 +127,8 @@
 ^^WI              'NULL'
 ^^WI       @ 3,1 BUTTON ADD25 '&New twin law'
 ^^WI     }
-^^WI     @ 1,3 GRID GB NROWS=5 NCOLS=1 OUTLINE='Details for this twin law:'
+^^WI     @ 1,3 GRID GB NROWS=5 NCOLS=1
+^^WI           OUTLINE='Details for selected twin law:'
 ^^WI     {
 ^^WI       @ 1,1 GRID GBB NROWS=5 NCOLS=5
 ^^WI       {
@@ -123,27 +151,36 @@
 ^^WI       }
 ^^WI       @ 5,1 GRID GBD NROWS=1 NCOLS=3 {
 ^^WI           @ 1,1 BUTTON ANA25 '&Analyse twin law'
+^^WI           @ 1,2 STRETCH STR25 HORIZONTAL
 ^^WI           @ 1,3 BUTTON REM25 '&Remove twin law'
 ^^WI       }
 ^^WI     }
 ^^WI   }
-^^WI   @ 4,2 GRID B NROWS=2 NCOLS=11
+^^WI   @ 4,2 GRID B NROWS=1 NCOLS=3
 ^^WI   {
-^^WI     @ 1,1 STATIC T_T4 'Overlap tolerance'
-^^WI     @ 1,3 EDITBOX TOL25 '0.005' CHARS=9 REAL
-^^WI     @ 1,5 STATIC T_T4 'recip. Angstroms'
-^^WI     @ 1,6 STRETCH T_STR2 HORIZONTAL
-^^WI     @ 1,7 BUTTON BOK25 '&Apply twin laws' DEFAULT COMMIT
-^^WI     @ 1,9 BUTTON BXX25 '&Cancel' CANCEL
+^^WI    @ 1,1 GRID B NROWS=3 NCOLS=1 OUTLINE='Apply'
+^^WI    {
+^^WI     @ 1,1 GRID C NROWS=1 NCOLS=5
+^^WI     {
+^^WI      @ 1,1 STATIC T_T4 'Overlap tolerance'
+^^WI      @ 1,3 EDITBOX TOL25 '0.005' CHARS=9 REAL
+^^WI      @ 1,5 STATIC T_T4 'recip. Angstroms'
+^^WI     }
+^^WI     @ 3,1 GRID D NROWS=1 NCOLS=1
+^^WI      @ 1,1 BUTTON BOK25 '&Apply twin laws' DEFAULT COMMIT
+^^WI     }
+^^WI    }
+^^WI    @ 1,3 GRID E NROWS=4 NCOLS=2
+^^WI    {
+^^WI      @ 1,1 STRETCH T_STR2 HORIZONTAL
+^^WI      @ 1,2 STRETCH T_STR3 VERTICAL
+^^WI      @ 2,2 BUTTON UN25 '&Remove all twin laws'
+^^WI      @ 4,2 BUTTON BXX25 '&Cancel' CANCEL
+^^WI    }
 ^^WI   }
 ^^WI }
 ^^WI SHOW
 ^^CR
-%% From now on we are editing list 25. There is a limit of 9999 TRANSFER
-%% directives per GENEDIT, we may be able to fix this in future.
-% COPY '#GENERALEDIT 25'
-% COPY 'LOCATE RECORDTYPE=101'
-% COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 % LOOP
 %  IF ( DPV .GT. 5000 ) THEN
 %    COPY '#GENERALEDIT 25'
@@ -205,12 +242,13 @@
 %     TRANSFER '^^CO SET VOLF TEXT ' // CHARACTER EL9 TO DISPLAY
 %   END CASE
 %  END IF
-%  VERIFY BXX25 M25 TLAWS ADD25 REM25 VOLF BOK25 ANA25
+%  VERIFY BXX25 M25 TLAWS ADD25 REM25 VOLF BOK25 ANA25 UN25
 %  GET SILENT NOSTORE ABBREVIATED ' ' ' '
 %  CASE VALUE
 %     BLOCK       %BXX25 - close window
 %% Don't write L25, just close genedit.
 %       COPY 'END'
+%       EVALUATE CANCEL25 = TRUE
 %       IF ( .NOT. IS25 ) THEN
 %         COPY '#DISK'
 %         COPY 'DELETE'
@@ -578,6 +616,13 @@
 %        GET NOSTORE SILENT TEXT ' ' ' '
 ^^CO DISPOSE xtwinlaw
 %       END IF
+%     END BLOCK
+%     BLOCK       %UN25 - close window
+%% Don't write L25, just close genedit.
+%       COPY 'END'
+%       COPY '#SCRIPT UNTWIN'
+^^CO    DISPOSE ED25
+%       FINISH
 %     END BLOCK
 %  END CASE
 % END LOOP
