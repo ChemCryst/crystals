@@ -1,1 +1,1 @@
-./build/SpaceGroup -f $1 -t Data/Tables.txt -nc -s 2 -m
+./build/SpaceGroup -f $1 -t Data/Tables.txt
