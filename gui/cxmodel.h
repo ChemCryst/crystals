@@ -49,10 +49,14 @@ class	CxModel : public CWnd
 		void UpdateHighlights();
 		HDC hDC;
 		GLuint mNormal;
+		GLuint mHighlights;
+		GLuint mLitatom;
 		Boolean m_drawing;
 		void OnMenuSelected (int nID);
+
+            void StartHighlights();
+            void FinishHighlights();
 		void HighlightAtom(CcModelAtom* theAtom, Boolean selected = TRUE);
-		void ClearHighlights();
 		Boolean IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAtom **atom);
 		void DrawBond(int x1, int y1, int z1, int x2, int y2, int z2, int r, int g, int b, int rad);
 		void DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int r, int g, int b, Boolean fill);
@@ -63,10 +67,10 @@ class	CxModel : public CWnd
 		void Clear();
 		void Setup();
 		void PaintBuffer();
-            void DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw, int x11, int x12, int x13, int x21, int x22, int x23, int x31, int x32, int x33 );
+            void DrawAtom(CcModelAtom* anAtom, int style = 0);
 		BOOL SetWindowPixelFormat(HDC hDC);
 		BOOL CreateViewGLContext(HDC hDC);
-//		enum GLDisplayListNames { mNormal = 1, mFast = 2 };  //Normal are the atoms and bonds normally rendered. Fast consists of much cruder bonds for fast drawing during rotation.
+//		enum GLDisplayListNames { mNormal = 1, mFast = 2, mHighlights = 3, mLitatom = 4 };  //Normal are the atoms and bonds normally rendered. Fast consists of much cruder bonds for fast drawing during rotation.
 		HGLRC m_hGLContext;									 //The rendering context handle.
 		int m_GLPixelIndex;									 //The pixel index member?
 		int m_radius;

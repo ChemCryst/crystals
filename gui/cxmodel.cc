@@ -48,6 +48,8 @@ CxModel *	CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 	theStdModel->CreateViewGLContext(theStdModel->hDC);
 	GLsizei oneList = 1;
 	theStdModel->mNormal = glGenLists(oneList);
+	theStdModel->mHighlights = glGenLists(oneList);
+	theStdModel->mLitatom = glGenLists(oneList);
 	theStdModel->Setup();
 
 	return theStdModel;
@@ -291,8 +293,8 @@ void CxModel::OnPaint()
 	PaintBuffer();
 
 
-	if(m_LitAtom != nil)
-		HighlightAtom(m_LitAtom,FALSE);
+//	if(m_LitAtom != nil)
+//		HighlightAtom(m_LitAtom,FALSE);
 
 	CRect rect;
 	GetClientRect (&rect);
@@ -354,6 +356,13 @@ void CxModel::OnLButtonDown( UINT nFlags, CPoint point )
 	if(IsAtomClicked(point.x, point.y, &atomname, &atom))
 	{
 		((CrModel*)mWidget)->SendAtom(atom);
+            m_LitAtom=nil; //Get it to rehighlight properly.
+            wglMakeCurrent(hDC, m_hGLContext);
+            glNewList(mLitatom,GL_COMPILE);
+            DrawAtom(atom,1);
+            glEndList();
+            wglMakeCurrent(NULL,NULL);
+            InvalidateRect(NULL,FALSE);
 	}
 	//No atom is clicked, we are going to rotate from here
 	m_ptLDown = point;
@@ -409,8 +418,6 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 	
 			delete oldmatrix;
 			InvalidateRect(NULL,FALSE);
-//                  Setup();
-//                  PaintBuffer();
 		}
 		else   //LBUTTONDOWN, but not rotating yet.
 		{
@@ -437,19 +444,35 @@ void CxModel::OnMouseMove( UINT nFlags, CPoint point )
 		{
 			if(m_LitAtom != atom) //avoid excesive redrawing, it flickers.
 			{
-//				TRACE("Re-drawing highlights. The Lit atom has changed.");
-//				((CrModel*)mWidget)->ReDrawHighlights();
 				m_LitAtom = atom;
-				InvalidateRect(NULL,FALSE);
-//				HighlightAtom(atom,FALSE); //Draw pointed to atom on top of the DC afterwards
+                        (CcController::theController)->SetProgressText(atomname);
+				if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
+				{       
+					wglMakeCurrent(hDC, m_hGLContext);
+					glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+					glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+					glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+					glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+                              glNewList(mLitatom,GL_COMPILE);
+					DrawAtom(atom,1);
+                              glEndList();
+                              wglMakeCurrent(NULL,NULL);
+                              InvalidateRect(NULL,FALSE);
+				}
 			}
 		}
 		else if (m_LitAtom != nil) //Not over an atom, but one is still lit. Redraw.
 		{
-			TRACE("No atom lit. Re drawing highlights.");
 			m_LitAtom = nil;
-//			((CrModel*)mWidget)->ReDrawHighlights();
-			InvalidateRect(NULL,FALSE);
+                  (CcController::theController)->SetProgressText("Ready");
+			if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
+			{       
+				wglMakeCurrent(hDC, m_hGLContext);
+                        glNewList(mLitatom,GL_COMPILE);
+                        glEndList();
+                        wglMakeCurrent(NULL,NULL);
+                        InvalidateRect(NULL,FALSE);
+			}
 		}
 	}
 }
@@ -507,50 +530,93 @@ void CxModel::Start()
                              
 }
 
-void CxModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw, int x11, int x12, int x13, int x21, int x22, int x23, int x31, int x32, int x33 )
+void CxModel::DrawAtom(CcModelAtom* anAtom, int style)
 {
+//x,y,z, r,g,b,cov,vdw,x11,x12,x13,x21,x22,x23,x31,x32,x33 
       glPushMatrix();
-		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-		GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
-		GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
-		GLfloat Shinine[] = {89.6f};
-		glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-		glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
-		glTranslated(x,y,z);
+
+            float extra = 0.0;
+            if (style == 1 ) // hover over
+		{
+                  if ( anAtom->m_selected )  // hover over a selected atom
+                  {
+                        GLfloat Surface[] = { 1.0-(float)anAtom->r/255.0f, 1.0-(float)anAtom->g/255.0f, 1.0-(float)anAtom->b/255.0f, 1.0f };
+                        GLfloat Diffuse[] = { 0.9f,0.9f,0.9f,1.0f };
+                        GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
+                        GLfloat Shinine[] = {0.0f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 20.0;
+                  }
+                  else //hover over a normal atom
+                  {
+                        GLfloat Surface[] = { 1.0-(float)anAtom->r/255.0f, 1.0-(float)anAtom->g/255.0f, 1.0-(float)anAtom->b/255.0f, 1.0f };
+                        GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
+                        GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+                        GLfloat Shinine[] = {89.6f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 20.0;
+                  }
+		}
+		else if (style == 2) // highlighted
+		{
+			GLfloat Surface[] = { (float)anAtom->r/255.0f,(float)anAtom->g/255.0f,(float)anAtom->b/255.0f, 1.0f };
+			GLfloat Diffuse[] = { 0.9f,0.9f,0.9f,1.0f };
+			GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
+			GLfloat Shinine[] = {0.0f};
+			glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+			glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                  extra = 10.0;
+		}
+		else  // normal
+		{
+			GLfloat Surface[] = { (float)anAtom->r/255.0f,(float)anAtom->g/255.0f,(float)anAtom->b/255.0f, 1.0f };
+			GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
+			GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+			GLfloat Shinine[] = {89.6f};
+			glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+			glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+		}
+		glTranslated(anAtom->x,anAtom->y,anAtom->z);
 		GLUquadricObj* sphere = gluNewQuadric();
 		gluQuadricDrawStyle(sphere,GLU_FILL);
             if(m_radius == COVALENT)
-                gluSphere(sphere, (float)cov * m_radscale,16,16);
+                gluSphere(sphere, ((float)anAtom->covrad + extra ) * m_radscale,16,16);
             else if(m_radius == VDW)
-                gluSphere(sphere, (float)vdw * m_radscale,16,16);
+                gluSphere(sphere, ((float)anAtom->vdwrad + extra ) * m_radscale,16,16);
             else if(m_radius == THERMAL)
             {
                   float* localmatrix = new float[16];
-                  localmatrix[0]=(float)x11;
-                  localmatrix[1]=(float)x12;
-                  localmatrix[2]=(float)x13;
+                  localmatrix[0]=(float)anAtom->x11;
+                  localmatrix[1]=(float)anAtom->x12;
+                  localmatrix[2]=(float)anAtom->x13;
                   localmatrix[3]=(float)0;
-                  localmatrix[4]=(float)x21;
-                  localmatrix[5]=(float)x22;
-                  localmatrix[6]=(float)x23;
+                  localmatrix[4]=(float)anAtom->x21;
+                  localmatrix[5]=(float)anAtom->x22;
+                  localmatrix[6]=(float)anAtom->x23;
                   localmatrix[7]=(float)0;
-                  localmatrix[8]=(float)x31;
-                  localmatrix[9]=(float)x32;
-                  localmatrix[10]=(float)x33;
+                  localmatrix[8]=(float)anAtom->x31;
+                  localmatrix[9]=(float)anAtom->x32;
+                  localmatrix[10]=(float)anAtom->x33;
                   localmatrix[11]=(float)0;
                   localmatrix[12]=(float)0;
                   localmatrix[13]=(float)0;
                   localmatrix[14]=(float)0;
                   localmatrix[15]=(float)1;
                   glMultMatrixf(localmatrix);
-                  gluSphere(sphere, (float)1.0*m_radscale,16,16);
+                  gluSphere(sphere, 1000.0*m_radscale,16,16);
                   delete [] localmatrix;
             }
       glPopMatrix();
-
-
 }
 
 void CxModel::Display()
@@ -622,6 +688,8 @@ void CxModel::PaintBuffer()
 		if(!m_fastrotate)
 		{
 			glCallList(mNormal);
+			glCallList(mHighlights);
+			glCallList(mLitatom);
 			glFlush();
 			SwapBuffers(hDC);		//the slight disadvantgae of this method is that mouse movements become 'buffered' and the molecule may continue to move after
 	
@@ -629,6 +697,8 @@ void CxModel::PaintBuffer()
 		else
 		{
 			glCallList(mNormal);	//		glCallList(mFast);  //doesn't exist yet...
+			glCallList(mHighlights);
+			glCallList(mLitatom);
 			glFlush();
 			SwapBuffers(hDC);		//the slight disadvantgae of this method is that mouse movements become 'buffered' and the molecule may continue to move after
 		}							//the mouse is released.
@@ -872,7 +942,7 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 		crModel->PrepareToGetAtoms();
 		while ( (atomCoord = crModel->GetModelAtom()) != nil )
 		{
-			int radius = (int)(atomCoord->R() * m_radscale * scale);
+			int radius = (int)(atomCoord->R() * max(m_radscale,0.5) * scale); //NB m_radscale doesn't go below 0.5 or it gets all fiddly trying to find atoms with the mouse.
 			int radsq = radius * radius;
 			gluProject((double)atomCoord->X(), (double)atomCoord->Y(), (double)atomCoord->Z(), 
 						modelMatrix, projMatrix, viewport, 
@@ -915,82 +985,32 @@ Boolean CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAt
 
 
 
-void CxModel::ClearHighlights()
+void CxModel::StartHighlights()
 {
-	CRect rect;
-	GetClientRect (&rect);
-	memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+	if (!m_drawing) // handy though this feature is, we can't really draw two lists at once.
+	{       
+		m_drawing = true;
+		wglMakeCurrent(hDC, m_hGLContext);
+		glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+		glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+		glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+                glNewList(mHighlights,GL_COMPILE);
+	}
+}
+
+void CxModel::FinishHighlights()
+{
+	glEndList();
+	wglMakeCurrent(NULL,NULL);
+	InvalidateRect(NULL,FALSE);
+	m_drawing = false;
 }
 
 void CxModel::HighlightAtom(CcModelAtom * theAtom, Boolean selected)
 {
-
-      if ( ! m_drawing )
-      {
-            wglMakeCurrent(hDC, m_hGLContext);
-      }
-
-	GLdouble modelMatrix[16];	// Storage for modelview matrix
-	GLdouble projMatrix[16];	// Storage for projection matrix
-	GLdouble x,y,z,x1,y1,z1;	// Storeage for object coordinates
-	GLint viewport[4];			// Storage for viewport coordinates
-
-// Get the various transforms
-	for ( int i = 0; i<16; i++ )
-	{
-		modelMatrix[i] = matrix[i];
-	}
-//	glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,projMatrix);
-	glGetIntegerv(GL_VIEWPORT,viewport);
-
-//Need scale between model and window in order to do radius calculation
-	gluUnProject(0, 0, 0,	modelMatrix, projMatrix, viewport, &x1, &y1, &z1);
-	gluUnProject(1, 1, 0, modelMatrix, projMatrix, viewport, &x, &y, &z);
-	double scale = sqrt(2.0) / sqrt( (x1-x)*(x1-x) + (y1-y)*(y1-y) + (z1-z)*(z1-z) );
-
-	CRect rect;
-	GetClientRect(&rect);
-
-	CRgn		rgn;	
-	CBrush		brush;
-	int radius;
-	if(m_radius == COVALENT)
-		radius = (int) (theAtom->R() * m_radscale * scale);
-	else if(m_radius == VDW)
-		radius = (int) (theAtom->Vdw() * m_radscale * scale);
-	gluProject	((double)theAtom->X(),(double)theAtom->Y(),(double)theAtom->Z(),
-				 modelMatrix, projMatrix, viewport, 
-				 &x, &y, &z);
-	y = rect.Height() - y;
-	rgn.CreateEllipticRgn((int)x-radius,(int)y-radius,(int)x+radius+1,(int)y+radius+1);
-	if (selected)
-	{
-            brush.CreateSolidBrush(PALETTERGB(128,0,0));
-//                  FrameRgn(hDC,(HRGN)rgn,(HBRUSH)brush,2,2);
-            memDC.FrameRgn(&rgn,&brush,2,2);
-			CBrush brush2;
-			brush2.CreateSolidBrush(PALETTERGB(0,0,0));
-            memDC.FrameRgn(&rgn,&brush2,1,1);
-//            FrameRgn(hDC,(HRGN)rgn,(HBRUSH)brush2,1,1);
-	}
-	else
-	{
-		brush.CreateSolidBrush(PALETTERGB(128,0,0));
-		FrameRgn(hDC,(HRGN)rgn,(HBRUSH)brush,2,2);
-		TEXTMETRIC tm;
-		GetTextMetrics(hDC,&tm);
-		SetTextColor(hDC,PALETTERGB(0,0,0));
-		SetBkMode(hDC,TRANSPARENT);
-		TextOut(hDC,(int)x+radius/2,(int)y-radius/2-tm.tmHeight,theAtom->Label().ToCString(),theAtom->Label().Length());
-	}
-
-      if ( ! m_drawing )
-      {
-            wglMakeCurrent(NULL,NULL);
-      }
-
-
+      DrawAtom(theAtom,2);
+	return;
 }
 
 
