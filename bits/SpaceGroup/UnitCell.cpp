@@ -36,7 +36,16 @@
 */
 //#include "stdafx.h"
 #include "UnitCell.h"
+#include "Exceptions.h"
 #include <iostream.h>
+#include "MathFunctions.h"
+#include "StringClasses.h"
+#if defined(_WIN32)
+#include <Boost/regex.h>
+#else
+#include <regex.h>
+#endif
+
 
 void UnitCell::setA(float pA)
 {
@@ -160,9 +169,60 @@ float UnitCell::getSEGamma()
 
 char* UnitCell::guessCrystalSystem()
 {
+    float tAs[7];
+    float tGs[6];
+    
+    
+    float temp = iAlpha - 90;
+    tAs[0] = sqr(temp); 
+    temp = iGamma - 90;
+    tAs[1] = sqr(temp);  
+    temp = iBeta - 90;
+    tAs[2] = sqr(temp);  
+    temp = iGamma - 120;
+    tAs[3] = sqr(temp);  
+    temp = iAlpha - iBeta;
+    tAs[4] = sqr(temp);  
+    temp = iAlpha - iGamma;
+    tAs[5] = sqr(temp);  
+    temp = iBeta - iGamma;
+    tAs[6] = sqr(temp); 
+
+    temp = iB - iA;
+    tGs[0] = 1/sqr(temp); 
+    temp = iB - iC;
+    tGs[1] = 1/sqr(temp); 
+    temp = iC - iA;
+    tGs[2] = 1/sqr(temp); 
+    temp = iA - iB;
+    tGs[3] = sqr(temp); 
+    temp = iA - iC;
+    tGs[4] = sqr(temp); 
+    temp = iB - iC;
+    tGs[5] = sqr(temp); 
+
+    float tMonoA = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4;
+    float tMonoB = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4;
+    float tMonoC = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4;
+    float tOrth = (tAs[0] +  tAs[1] +  tAs[2])/3;
+    float tTetr = (tAs[0] + tAs[1] + tAs[2] + tGs[3])/4;
+    float tTriHexHex = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4;
+    float tTriRho = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6;
+    float tCubic = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6;
+    
+	std::cout << "tMonoA: " << tMonoA << "\n" <<
+    "tMonoB: " << tMonoB <<  "\n" <<
+    "tMonoC: " << tMonoC <<  "\n" <<
+    "tOrth: " << tOrth <<  "\n" <<
+    "tTetr: " << tTetr << "\n" <<
+    "tTriHexHex: " << tTriHexHex << "\n" <<
+    "tTriRho: " << tTriRho <<  "\n" <<
+    "tCubic: " << tCubic << "\n";
 /*    
 "Triclinic"
-"Monoclinic"
+"MonoclinicB"
+"MonoclinicC"
+"MonoclinicA"
 "Orthorhombic"
 "Tetragonal"
 "Trigonal"
@@ -240,7 +300,64 @@ char* crystalSystemConst(int pIndex)
     return NULL;
 }
 
-void UnitCell::readInUnitCell(char* tPath)	//Reads in from the file provided
+UnitCell::UnitCell(char* pPath)
+{
+    readInUnitCell(pPath);
+}
+
+/*void UnitCell::UnitCell(float pA, float pB, float pC, float pAlpha, float, pBeta, float pGamma)
 {
     
+}
+*/
+
+void UnitCell::readInUnitCell(char* pPath)	//Reads in from the file provided
+{
+    char tLine[255];
+    
+    regex_t tAngles;
+    regex_t tLengths;
+    
+    /**************************************/
+    /*** Open File ready to be read in	***/
+    /**************************************/
+    FILE* tFile = fopen(pPath, "r");
+    if (tFile == NULL)
+    {
+        throw FileException(errno);
+    }
+    
+    /**************************************/
+    /*** Set up the regular expressions ***/
+    /**************************************/
+     regcomp(&tAngles, 
+     "continue[[:space:]]+alpha[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+beta[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+gamma[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)",
+      REG_EXTENDED);
+    regcomp(&tLengths, 
+     "real[[:space:]]+a[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+b[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)[[:space:]]+c[[:space:]]*=[[:space:]]*([-+]?[[:digit:]]+(\\.[[:digit:]]+)?)",
+      REG_EXTENDED);
+    regmatch_t tMatch[8];
+    
+    while (fgets(tLine, 255, tFile))
+    {
+        if (!regexec(&tAngles, tLine, 8, tMatch, 0))
+        {
+            String tAlpha(tLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
+            String tBeta(tLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
+            String tGamma(tLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
+            iAlpha = tAlpha.toDouble();
+            iBeta = tBeta.toDouble();
+            iGamma = tGamma.toDouble();
+        }
+        else if (!regexec(&tLengths, tLine, 8, tMatch, 0))
+        {
+            String tA(tLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
+            String tB(tLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
+            String tC(tLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
+            iA = tA.toDouble();
+            iB = tB.toDouble();
+            iC = tC.toDouble();
+        }
+    }
+    fclose(tFile);
 }
