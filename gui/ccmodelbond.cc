@@ -5,6 +5,9 @@
 #include "cctokenlist.h"
 #include <math.h>
 #include "crmodel.h"
+#include "cxmodel.h"
+#include "cccontroller.h"
+#include "ccstring.h"
 
 CcModelBond::CcModelBond()
 {
@@ -46,36 +49,83 @@ void CcModelBond::ParseInput(CcTokenList* tokenList)
 
 void CcModelBond::Render(CrModel * view, Boolean detailed)
 {
-	double degToRad = 3.1415926535 / 180.0;
-      int detail = (detailed)? view->m_NormalRes : view->m_QuickRes ;
-	glPushMatrix();
-            GLUquadricObj* cylinder;
-            int bondrad = (int)((float)rad* view->RadiusScale());
-		float xlen = (float)(x2-x1), ylen = (float)(y2-y1), zlen = (float)(z2-z1);
-		float length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
-		float centerX = (x1 + x2)/2.0f , centerY = (y1 + y2)/2.0f, centerZ = (z1 + z2)/2.0f;
-		float xrot = (float)asin ( -ylen / length );
-		float yrot = (float)acos ( zlen / (length*cos(xrot)) );
-		if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
+
+                                                   
+/*   float vecX = ((CxModel*)view->mWidgetPtr)->mat[6] * (z2 - z1)
+              - ((CxModel*)view->mWidgetPtr)->mat[10] * (y2 - y1);
+   float vecY = ((CxModel*)view->mWidgetPtr)->mat[10] * (x2 - x1)
+              - ((CxModel*)view->mWidgetPtr)->mat[2] * (z2 - z1);
+   float vecZ = ((CxModel*)view->mWidgetPtr)->mat[2] * (y2 - y1)
+              - ((CxModel*)view->mWidgetPtr)->mat[6] * (x2 - x1);
+
+
+//   TEXTOUT("VECX "+CcString(vecX)+" VECY "+CcString(vecY)+"VECZ "+CcString(vecZ));
+
+   float vecLeng = max ( 0.001, sqrt ( vecX*vecX + vecY*vecY + vecZ*vecZ ));
+   vecX = vecX / vecLeng;
+   vecY = vecY / vecLeng;
+   vecZ = vecZ / vecLeng;
+
+*/
+
+   double degToRad = 3.1415926535 / 180.0;
+   int detail = (detailed)? view->m_NormalRes : view->m_QuickRes ;
+   glPushMatrix();
+      GLUquadricObj* cylinder;
+      GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
+      GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
+      GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+      GLfloat Shinine[] = {89.6f};
+      glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+      glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+      glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+      glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+
+      int bondrad = (int)((float)rad* view->RadiusScale());
+      float xlen = (float)(x2-x1), ylen = (float)(y2-y1), zlen = (float)(z2-z1);
+      float length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
+      float centerX = (x1 + x2)/2.0f , centerY = (y1 + y2)/2.0f, centerZ = (z1 + z2)/2.0f;
+      float xrot = (float)asin ( -ylen / length );
+      float yrot = (float)acos ( zlen / (length*cos(xrot)) );
+      if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
 			yrot = -yrot;
-		xrot = xrot/(float)degToRad;
-		yrot = yrot/(float)degToRad;
-		glTranslated(centerX, centerY, centerZ);   //Translate view origin to the center of the bond
-		glRotatef(yrot,0,1,0);
-		glRotatef(xrot,1,0,0);
-		glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
-		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-		glMaterialfv(GL_FRONT, GL_AMBIENT, Surface);
-		GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
-		GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
-		GLfloat Shinine[] = {89.6f};
-		glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-		glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
-		cylinder = gluNewQuadric();
-		gluQuadricDrawStyle(cylinder,GLU_FILL);
-            gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
-            gluDeleteQuadric(cylinder);
-	glPopMatrix();
+
+      xrot = xrot/(float)degToRad;
+      yrot = yrot/(float)degToRad;
+
+        glTranslated(centerX, centerY, centerZ);   //Translate view origin to the center of the bond
+        glRotatef(yrot,0,1,0);
+        glRotatef(xrot,1,0,0);
+        glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
+        cylinder = gluNewQuadric();
+        gluQuadricDrawStyle(cylinder,GLU_FILL);
+        gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
+        gluDeleteQuadric(cylinder);
+/*
+      glPushMatrix();
+        glTranslated(100*vecX+centerX, 100*vecY+centerY, 100*vecZ+centerZ);   //Translate view origin to the center of the bond
+        glRotatef(yrot,0,1,0);
+        glRotatef(xrot,1,0,0);
+        glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
+        cylinder = gluNewQuadric();
+        gluQuadricDrawStyle(cylinder,GLU_FILL);
+        gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
+        gluDeleteQuadric(cylinder);
+      glPopMatrix();
+      glPushMatrix();
+        glTranslated(-100*vecX+centerX, -100*vecY+centerY, -100*vecZ+centerZ);   //Translate view origin to the center of the bond
+        glRotatef(yrot,0,1,0);
+        glRotatef(xrot,1,0,0);
+        glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
+        cylinder = gluNewQuadric();
+        gluQuadricDrawStyle(cylinder,GLU_FILL);
+        gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
+        gluDeleteQuadric(cylinder);
+       glPopMatrix();
+*/
+   glPopMatrix();
+
+
+
 }
 
