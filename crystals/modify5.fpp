@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/09/15 15:27:06  rich
+C Upgraded TRANSFORM directive to handle transformations of ADPs better.
+C Rotation matrix, R, was applied: Unew = RUR', which only works properly
+C when all cell axes are identical length. Instead, we use
+C Unew = inv(N)RNUN'R'inv(N)', where N has the reciprocal cell lengths
+C along its diagonal.
+C
 C Revision 1.41  2003/09/11 19:41:22  rich
 C Transformation matrix was applied incorrectly to Uij tensor. Now fixed.
 C
@@ -2135,9 +2142,9 @@ C -- CHECK IF ANY ATOMS HAVE BEEN GIVEN
       RCPD(1) = STORE(L1P2)
       RCPD(5) = STORE(L1P2+1)
       RCPD(9) = STORE(L1P2+2)
-      RCPDI(1) = STORE(L1P1)
-      RCPDI(5) = STORE(L1P1+1)
-      RCPDI(9) = STORE(L1P1+2)
+      RCPDI(1) = 1.0/STORE(L1P2)
+      RCPDI(5) = 1.0/STORE(L1P2+1)
+      RCPDI(9) = 1.0/STORE(L1P2+2)
 C--APPLY THE MATRIX to each atom in turn
       DO 6750 JW=1,N5A
 C--GENERATE THE MOVED PARAMETERS BY SYMMETRY FIRST
