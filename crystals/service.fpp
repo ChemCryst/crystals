@@ -1183,7 +1183,6 @@ C            IF (LEXIST .EQV. .TRUE.) THEN  NOT PROCESSED CORRECTLY BY F
             ENDIF
       ENDIF
 C----- IF THE STATUS IN NEW AND THE FILE EXISTS, INCREMENT GENERATION
-C      IF ((ISTTUS.EQ.ISSNEW) .AND. (LEXIST.EQV..TRUE.) ) THEN (SEE ABOV
       IF ((ISTTUS.EQ.ISSNEW) .AND. (LEXIST) ) THEN
             CALL XINCNM ( NEWFIL,ISTTUS)
       ENDIF
@@ -1240,44 +1239,59 @@ C      NUMBER AND RETURN - PROBABLY VAX
         CNAME(I:IEND) = ' '
         RETURN
       ENDIF
-C----- CHECK IF THE PENULTIMATE CHARACTER IS A DIGIT
-      I = INDEX (CDIGIT, CNAME(IEND-1:IEND-1) )
+CDJWOCT2000
+C------ REORGANISE SO THET ROOT IS EXTENDED
+C----- ADD A '.' IF NECESSARY
+      I = INDEX (CNAME(1:IEND) , '.')
       IF (I .LE. 0) THEN
-C----- NOT A DIGIT
-C----- LOOK FOR A '.'
-        I = INDEX (CNAME(1:IEND) , '.')
-        IF (I .LE. 0) THEN
-            CNAME(IEND+1:IEND+4) = '.L00'
-            IEND = IEND + 4
-        ELSE IF (IEND .EQ. I) THEN
-            CNAME(IEND+1:IEND+3) = 'L00'
-            IEND = IEND + 3
-        ELSE IF (IEND -I .LT. 3) THEN
-            DO 50 J = IEND+1, I+3
-            CNAME(J:J) = 'L'
-50          CONTINUE
-            IEND = I+3
-        ENDIF
-        CNAME(IEND-1:IEND) = '00'
+            IF (IEND+1 .LE. LENGTH) THEN
+                  IEND = IEND +1
+            ELSE
+                  IEND = LENGTH
+            ENDIF
+            I = IEND
+            CNAME(I:I) = '.'
       ENDIF
-      IF (INDEX (CDIGIT, CNAME(IEND:IEND) ) .LE. 0)
-     1 CNAME(IEND:IEND) = '0'
+C----- MAKE SPACE FOR #NM IF POSSIBLE
+      IF (CNAME(I-3:I-3) .NE. '#') THEN
+            IF (IEND+3 .LE. LENGTH) THEN
+              IEND = IEND+3
+              I = I+3
+            ELSE
+              J = LENGTH - IEND
+              IEND = LENGTH
+              I = I + J
+            ENDIF
+            DO 50 J = IEND, I, -1
+             CNAME(J:J) = CNAME(J-3:J-3)
+50          CONTINUE
+            CNAME(I-3:I-1) = '#00'
+      ENDIF
+      K = I-2
+C      IF (INDEX(CDIGIT,CNAME(K:K)) * INDEX(CDIGIT,CNAME(K+1:K+1))
+C     1 .LE. 0) CNAME(K:K+1) = '00'
+C      READ(CNAME(K:K=1),'(I2)') I
+C      IF (I .LE. 98) THEN 
+C            I = I + 1
+C      ELSE
+C            I = 99
+C      ENDIF
+C      WRITE(CNAME(K:K=1),'(I2.2)') I
 C       LOOK FOR THE HIGHEST GENERATION. IF GENERATION 99 EXISTS,
 C       RESET STATUS TO UNKNOWN
       DO 100 J = 98, 0, -1
-            WRITE(CNAME(IEND-1:IEND),'(I2.2)') J
-            INQUIRE (FILE = CNAME, EXIST = LEXIST)
-c            IF (LEXIST .EQV. .TRUE.) THEN
+            WRITE(CNAME(K:K+1),'(I2.2)') J
+            INQUIRE (FILE = CNAME(1:IEND), EXIST = LEXIST)
             IF (LEXIST ) THEN
-                  K = J + 1
+                  I = J + 1
                   ISTTUS = 5
                   GOTO 200
             ENDIF
 100     CONTINUE
 C----- DROPPED OFF BOTTOM  - SET ZEROTH GENERATION
-      K = 0
+      I = 0
 200   CONTINUE
-      WRITE(CNAME(IEND-1:IEND),'(I2.2)') K
+      WRITE(CNAME(K:K+1),'(I2.2)') I
       RETURN
       END
 C
