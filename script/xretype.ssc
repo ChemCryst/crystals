@@ -1,42 +1,45 @@
 %SCRIPT XRETYPE
 % VARIABLE INTEGER N29
 % VARIABLE CHARACTER CLTYPE
+% VARIABLE LOGICAL BROKENEDIT RESET29
+% EVALUATE BROKENEDIT = FALSE
+% EVALUATE RESET29 = TRUE
 %%
  * Manual retyping of structure using mouse.
 ^^WI WINDOW XRENAM 'Rename' MODAL KEEP SIZE COMMIT='BOK' CANCEL='BXX'
 ^^WI POSITION=CENTRED 'MODEL01'
 ^^WI GRID MAIN NROWS=7 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 GRID TEXT NROWS=3 NCOLS=1
+^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI   {
-^^WI     @ 1,1 STATIC T1
-^^WI 'Click on atom to change to currently selected type, or to delete.'
+^^WI     @ 1,1 ICON IM INFO
+^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 STATIC T1
+^^WI 'If the stucture looks OK, just click done.'
+^^WI       @ 2,1 STATIC T2
+^^WI 'To change an element type, choose it from the list and click the atom.'
+^^WI       @ 3,1 STATIC T3
+^^WI 'To delete an atom choose the "Delete" option and click the atom.'
+^^WI     }
 ^^WI   }
 ^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3
 ^^WI   {
-^^WI      @ 1,1 GRID OPTIONS NROWS=2 NCOLS=3 OUTLINE='Click action'
+^^WI      @ 1,1 GRID OPTIONS NROWS=3 NCOLS=1
 ^^WI      {
-^^WI         @ 1,1 RADIOBUTTON _ELT 'Change to' STATE=ON
-^^WI         @ 1,3 DROPDOWN _ELS ADDTOLIST
-%  EVALUATE N29 = 0
-%  IF ( EXISTS 29 .EQ. 1 ) THEN
-%    COPY '#GENERALEDIT 29'
-%    COPY 'LOCATE RECORDTYPE=101'
-%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%    LOOP
-%      ON EDITERROR TERMINATE
-%      COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%      TRANSFER '^^WI ' // CLTYPE TO DISPLAY
-%      EVALUATE N29 = N29 + 1
-%      COPY 'NEXT'
-%    END LOOP
-%    COPY 'END'
-%  END IF
-%  IF ( N29 .EQ. 0 ) THEN
-^^WI    'C' 'H' 'N' 'O'
-%  END IF
-^^WI         'Q' 'NULL'
-^^WI        @ 2,1 RADIOBUTTON _DEL 'Delete atom' STATE=OFF
+^^WI        @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'
+^^WI        {
+^^WI           @ 1,1 RADIOBUTTON _ELT 'Change to' STATE=ON
+^^WI           @ 1,3 DROPDOWN _ELS ADDTOLIST 'Q' 'NULL'
+^^WI          @ 2,1 RADIOBUTTON _DEL 'Delete atom' STATE=OFF
+^^WI        }
+^^WI        @ 3,1 GRID CLICK NROWS=5 NCOLS=1
+^^WI        {
+^^WI          @ 1,1 STATIC T1 'If you want an element type that is not'
+^^WI          @ 2,1 STATIC T1 'available in the drop down list above'
+^^WI          @ 3,1 STATIC T1 'click the "Edit Elements" button.'
+^^WI              @ 5,1 BUTTON BED 'Edit Elements'
+^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
 ^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV
@@ -54,29 +57,63 @@
 ^^WI SHOW
 ^^CR
 %%
+%  VARIABLE INTEGER OLDSER
+%  COPY '#GENERALEDIT 5'
+%  COPY 'GETSERIAL OLDSER'
+%  COPY 'END'
 %%
 %  VARIABLE CHARACTER CATOM CEL
-%  COPY '#EDIT'
-%  COPY 'CLASH FIXLATTER'
-%  COPY 'GUI HIGH'
-%  COPY 'EXEC'
 %  CLEAR
 %  LOOP
 %   ON ERROR TERMINATE
-%   VERIFY BOK BXX ATOM BHELP
+%   IF ( RESET29 ) THEN
+^^CO  SET _ELS REMOVE 0
+^^WI  SET _ELS ADDTOLIST
+%     EVALUATE N29 = 0
+%     IF ( EXISTS 29 .EQ. 1 ) THEN
+%       COPY '#GENERALEDIT 29'
+%       COPY 'LOCATE RECORDTYPE=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       LOOP
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
+%         TRANSFER '^^WI ' // CLTYPE TO DISPLAY
+%         EVALUATE N29 = N29 + 1
+%         COPY 'NEXT'
+%       END LOOP
+%       COPY 'END'
+%     END IF
+^^WI   'Q' 'NULL'
+^^CR
+%     EVALUATE RESET29 = FALSE
+%     COPY '#EDIT'
+%     COPY 'CLASH FIXLATTER'
+%     COPY 'GUI HIGH'
+%     COPY 'EXEC'
+%   END IF
+%   VERIFY BOK BXX ATOM BHELP BED
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %    BLOCK      %BOK
  * Applying new types.
 %      COPY 'END'
-^^CO   DISPOSE XRENUM
+^^CO   DISPOSE XRENAM
 %      FINISH
 %    END BLOCK
 %    BLOCK      %BXX
-^^CO DISPOSE XRENUM
+^^CO DISPOSE XRENAM
  * Keeping old types and numbering scheme.
 %      COPY 'QUIT'
 %      COPY 'END'
+%      IF ( BROKENEDIT ) THEN
+%        COPY '#DISK'
+%        CLEAR
+%        INSERT 'RESET 5 '
+%        STORE INTEGER OLDSER
+%        SEND
+%        COPY '#SUM L 5'
+%        COPY 'END'
+%      END IF
 %      FINISH
 %    END BLOCK
 %    BLOCK      %ATOM
@@ -97,18 +134,25 @@
 %        OUTPUT
 %        GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
 %        EVALUATE CEL = CVALUE
-%        TRANSFER 'RENAME ' // CATOM // ' ' // CEL // '(' // -
+%        TRANSFER 'DRENAME ' // CATOM // ' ' // CEL // '(' // -
          CHARACTER ( FIRSTINT ( CATOM ) ) // ')' TO CRYSTALS
 %        COPY 'EXEC'
 %      END IF
 %    END BLOCK
 %    BLOCK      %HELP
 %      COPY '#SCRIPT XHELP1'
-  Click on the atoms in the molecule in the order
-  you want them to be numbered. When you are finished
-  click DONE to apply the new numbering scheme, or
-  CANCEL to keep the old numbering scheme.
+  Click on the atoms in the molecule to either change their
+  type to the current selection, or delete them.
+
+  Click done when complete.
 %      COPY '#SCRIPT XHELP2'
+%    END BLOCK
+%    BLOCK     %BED
+%       EVALUATE BROKENEDIT = TRUE
+%       EVALUATE RESET29 = TRUE
+%       COPY 'monitor OFF'
+%       COPY 'END'
+%       COPY '#SCRIPT XINLIST3'
 %    END BLOCK
 %   END CASE
 %  END LOOP
