@@ -2,9 +2,14 @@
 %%
 %% Crystallography Quiz
 %%
-%  VARIABLE INTEGER NQ QN QO QC P1 P2 P3 P4 CERTAIN POINTS LL
+%  VARIABLE CHARACTER CPASS CBINGO
+%  EVALUATE CPASS = 'HODGKIN'
+%  COPY '#SCRIPT PASSWORD'
+%%
+%  VARIABLE INTEGER NQ QN Q1 Q2 Q3 Q4 QC P1 P2 P3 P4 CERTAIN POINTS LL
 %  VARIABLE CHARACTER QL1 QL2 QL3 QL4 A1 A2 A3 A4 CBM
 %  VARIABLE LOGICAL LBM FIFTY PHONE ASK WWTBSURE
+%  VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK
 %  VARIABLE REAL THRESH
 %  EVALUATE FIFTY = TRUE
 %  EVALUATE PHONE = TRUE
@@ -49,13 +54,16 @@
 %% Question asking loop
 %%
 %%   Iinitialise OLD QUESTION recorder
-%    EVALUATE QO = 0
+%    EVALUATE Q1 = 0
+%    EVALUATE Q2 = 0
+%    EVALUATE Q3 = 0
+%    EVALUATE Q4 = 0
 %    LOOP 5 TIMES
 %
-%    EVALUATE POINTS = POINTS + 1
-%    IF ( LL .LT. 0 ) THEN
-%      EVALUATE LL = 0
-%    END IF
+%     EVALUATE POINTS = POINTS + 1
+%     IF ( LL .LT. 0 ) THEN
+%       EVALUATE LL = 0
+%     END IF
 %%
 %% Choose a question at random.
 %%
@@ -63,11 +71,17 @@
 %      ON ERROR TERMINATE
 %      LOOP ( NQ + 5 ) TIMES
 %        EVALUATE QN = INTEGER ( REAL ( NQ ) * RANDOM ( 0.0 ) ) + 1
-%        IF QN .NE. QO THEN
+%        IF ( QN .NE. Q1 ) .AND. ( QN .NE. Q2 ) .AND. -
+            ( QN .NE. Q3 ) .AND. ( QN .NE. Q4 ) THEN
 %          EVALUATE LOOPEND = LOOPCOUNTER
 %        END IF
 %      END LOOP
-%      EVALUATE QO = QN
+%      CASE LOOPCOUNTER
+%         EVALUATE Q1 = QN
+%         EVALUATE Q2 = QN
+%         EVALUATE Q3 = QN
+%         EVALUATE Q4 = QN
+%      END CASE
 %      EVALUATE QC = 0
 %      CLEAR
 %      INSERT '{S Looking for question number '
@@ -322,10 +336,12 @@
 %           IF ( WWTBSURE ) THEN
 %             COPY '#SCRIPT WWTBWRON'
 ^^CO          DISPOSE WWTB
- 
-{S Unlucky.
-{S Keep practising and learning to be an expert crystallographer.
- 
+%             EVALUATE QTITLE = 'Final Score'
+%             EVALUATE QLINE1 = 'Unlucky. Keep practising and learning'
+%             EVALUATE QLINE2 = 'You answered ' // CHARACTER ( POINTS - 1 ) -
+      // ' questions correctly.'
+%             EVALUATE BUTTOK = 'OK'
+%             COPY '#SCRIPT XMESSAGE'
 %             EXTRACT CLOSE
 %             FINISH
 %           END IF
@@ -338,10 +354,12 @@
 %           IF ( WWTBSURE ) THEN
 %             COPY '#SCRIPT WWTBWRON'
 ^^CO          DISPOSE WWTB
- 
-{S Unlucky.
-{S Keep practising and learning to be an expert crystallographer.
- 
+%             EVALUATE QTITLE = 'Final Score'
+%             EVALUATE QLINE1 = 'Unlucky. Keep practising and learning'
+%             EVALUATE QLINE2 = 'You answered ' // CHARACTER ( POINTS - 1 ) -
+      // ' questions correctly.'
+%             EVALUATE BUTTOK = 'OK'
+%             COPY '#SCRIPT XMESSAGE'
 %             EXTRACT CLOSE
 %             FINISH
 %           END IF
@@ -354,19 +372,23 @@
 %           IF ( WWTBSURE ) THEN
 %             COPY '#SCRIPT WWTBWRON'
 ^^CO          DISPOSE WWTB
- 
-{S Unlucky.
-{S Keep practising and learning to be an expert crystallographer.
- 
+%             EVALUATE QTITLE = 'Final Score'
+%             EVALUATE QLINE1 = 'Unlucky. Keep practising and learning'
+%             EVALUATE QLINE2 = 'You answered ' // CHARACTER ( POINTS - 1 ) -
+      // ' questions correctly.'
+%             EVALUATE BUTTOK = 'OK'
+%             COPY '#SCRIPT XMESSAGE'
 %             EXTRACT CLOSE
 %             FINISH
 %           END IF
 %         END BLOCK
 %         BLOCK     %BXX
- 
-{S Well done. Keep practising and learning and one day you'll reach
-{S the 1,000,000 point goal!
- 
+%             EVALUATE QTITLE = 'Final Score'
+%             EVALUATE QLINE1 = 'Well done. Keep practising and learning!'
+%             EVALUATE QLINE2 = 'You answered ' // CHARACTER ( POINTS - 1 ) -
+      // ' questions correctly.'
+%             EVALUATE BUTTOK = 'OK'
+%             COPY '#SCRIPT XMESSAGE'
 ^^CO        DISPOSE WWTB
 %           EXTRACT CLOSE
 %           FINISH
@@ -420,7 +442,9 @@
 ^^CO        SET ASK DISABLED=YES
 %           EVALUATE LL = LL - 1
 %           EVALUATE ASK = FALSE
+
 {S Audience, will you please vote now....
+
 %           COPY '#PAUSE 1'
  
 %           TRANSFER ' {S  54% say ' // A1 TO DISPLAY
@@ -433,8 +457,9 @@
 %    END LOOP
 %  END LOOP
 %  EXTRACT CLOSE
- 
-{S Well done you've scored 1,000,000 points. You truly
-{S are an expert crystallographer.
- 
+%  EVALUATE QTITLE = 'Final Score'
+%  EVALUATE QLINE1 = 'Well done. You scored 1,000,000 points!'
+%  EVALUATE QLINE2 = 'You truly are an expert crystallographer.'
+%  EVALUATE BUTTOK = 'Thanks!'
+%  COPY '#SCRIPT XMESSAGE'
 %END SCRIPT

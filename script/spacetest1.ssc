@@ -146,6 +146,7 @@ NOTE. In tetragonal and trigonal and hexagonal crystals, reflections of
 %     END BLOCK
 %     BLOCK         %BXX
 ^^CO    DISPOSE SPACETEST
+%       COPY '#SCRIPT DIRECT'
 %       FINISH
 %     END BLOCK
 %     BLOCK         %BIT
