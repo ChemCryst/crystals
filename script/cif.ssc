@@ -7,7 +7,7 @@
 % ELSE
       CIF listing of all data
 % END IF
-%    COPY '#OPEN FRN1 PUBLISH.CIF'
+%%    COPY '#OPEN FRN1 PUBLISH.CIF'
 %    COPY '#APPEND PUNCH '
 %    COPY '#CIF '
 %    COPY 'END'
@@ -28,5 +28,5 @@
 %      COPY '#PUNCH 6 B'
 %      COPY 'END'
 %  END IF
-%  COPY '#RELEASE FRN1 FRN1.DAT'
+%%  COPY '#RELEASE FRN1 FRN1.DAT'
 %END SCRIPT
