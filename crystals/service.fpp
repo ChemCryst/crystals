@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2004/02/18 12:08:23  rich
+C Added option \SET TIME SLOW which prevents output of DATE and TIME strings.
+C This is to be used by the new test_suite so that runs at different times
+C generate no significant differences. Also supresses timing functions, as
+C for \SET TIME OFF.
+C
 C Revision 1.34  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -1520,6 +1526,8 @@ C------ SWITCH ON LINE FEEDS
 CODE FOR OUTCOL
       SUBROUTINE  OUTCOL( ICOL )
 C----- SET THE ATTRIBUTES AND COLOURS FOR TEXT OUTPUT
+&DVF       USE DFWIN
+&DVF       INTEGER HC,IC,B
 \XUNITS
 \XSSVAL
 \XIOBUF
@@ -1546,34 +1554,64 @@ C
 
       IF (ISSTML .LE. 2) RETURN
 
-      IF ((ICOL .GT. 10).OR.(ICOL.LT.0)) RETURN
+      IF ((ICOL .GT. 10).OR.(ICOL.LE.0)) RETURN
 
       IF (ICOL .EQ. IOLDC) RETURN
 
       IOLDC = ICOL
 
       IF (ISSTML .EQ.3) THEN
-          WRITE(VGACOL(1),101) CHAR(27),'[1m', CHAR(27),'[37m',
-     2                         CHAR(27),'[44m',CHAR(13)
-          WRITE(VGACOL(2),101) CHAR(27),'[0m', CHAR(27),'[30m',
-     2                         CHAR(27),'[46m',CHAR(13)
-          WRITE(VGACOL(3),101) CHAR(27),'[1m', CHAR(27),'[37m',
-     2                         CHAR(27),'[44m',CHAR(13)
-          WRITE(VGACOL(4),101) CHAR(27),'[1m', CHAR(27),'[33m',
-     2                         CHAR(27),'[46m',CHAR(13)
-          WRITE(VGACOL(5),101) CHAR(27),'[0m', CHAR(27),'[37m',
-     2                         CHAR(27),'[40m',CHAR(13)
-          WRITE(VGACOL(6),101) CHAR(27),'[1m', CHAR(27),'[33m',
-     2                         CHAR(27),'[40m',CHAR(13)
-          WRITE(VGACOL(7),101) CHAR(27),'[1m', CHAR(27),'[37m',
-     2                         CHAR(27),'[44m',CHAR(13)
-          WRITE(VGACOL(8),101) CHAR(27),'[1m', CHAR(27),'[37m',
-     2                         CHAR(27),'[44m',CHAR(13)
-          WRITE(VGACOL(9),101) CHAR(27),'[1m', CHAR(27),'[37m',
-     2                         CHAR(27),'[44m',CHAR(13)
-          WRITE(VGACOL(10),101) CHAR(27),'[1m', CHAR(27),'[37m',
-     2                         CHAR(27),'[44m',CHAR(13)
-          WRITE(NCVDU,100) VGACOL(ICOL)
+#DVF          WRITE(VGACOL(1),101) CHAR(27),'[1m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[44m',CHAR(13)
+#DVF          WRITE(VGACOL(2),101) CHAR(27),'[0m', CHAR(27),'[30m',
+#DVF     2                         CHAR(27),'[46m',CHAR(13)
+#DVF          WRITE(VGACOL(3),101) CHAR(27),'[1m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[44m',CHAR(13)
+#DVF          WRITE(VGACOL(4),101) CHAR(27),'[1m', CHAR(27),'[33m',
+#DVF     2                         CHAR(27),'[46m',CHAR(13)
+#DVF          WRITE(VGACOL(5),101) CHAR(27),'[0m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[40m',CHAR(13)
+#DVF          WRITE(VGACOL(6),101) CHAR(27),'[1m', CHAR(27),'[33m',
+#DVF     2                         CHAR(27),'[40m',CHAR(13)
+#DVF          WRITE(VGACOL(7),101) CHAR(27),'[1m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[44m',CHAR(13)
+#DVF          WRITE(VGACOL(8),101) CHAR(27),'[1m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[44m',CHAR(13)
+#DVF          WRITE(VGACOL(9),101) CHAR(27),'[1m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[44m',CHAR(13)
+#DVF          WRITE(VGACOL(10),101) CHAR(27),'[1m', CHAR(27),'[37m',
+#DVF     2                         CHAR(27),'[44m',CHAR(13)
+#DVF          WRITE(NCVDU,100) VGACOL(ICOL)
+&DVF          HC = GetStdHandle(STD_OUTPUT_HANDLE)
+&DVF          SELECT CASE ( ICOL )
+&DVF          CASE (1)
+&DVF           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
+&DVF     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+&DVF          CASE (2)
+&DVF           IC = BACKGROUND_BLUE+BACKGROUND_GREEN
+&DVF          CASE (3)
+&DVF           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
+&DVF     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+&DVF          CASE (4)
+&DVF           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+&DVF     1         +BACKGROUND_BLUE+BACKGROUND_GREEN
+&DVF          CASE (5)
+&DVF           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE
+&DVF          CASE (6)
+&DVF           IC = FOREGROUND_RED+
+&DVF     1          FOREGROUND_GREEN+FOREGROUND_INTENSITY
+&DVF          CASE (7)
+&DVF           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
+&DVF     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+&DVF          CASE (8)
+&DVF           IC = BACKGROUND_INTENSITY
+&DVF          CASE (9)
+&DVF           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE+
+&DVF     1          BACKGROUND_RED
+&DVF          CASE (10)
+&DVF           IC = FOREGROUND_BLUE+BACKGROUND_INTENSITY
+&DVF          END SELECT
+&DVF          b = SetConsoleTextAttribute(HC,IC)
       ELSEIF (ISSTML .EQ. 4) THEN
           IOFORE = IGUICL(1,ICOL)
           IOBACK = IGUICL(2,ICOL)
