@@ -32,7 +32,7 @@ class CcModelAtom;
 class CcModelDoc
 {
 	public:
-            void RenderModel( CrModel* view, Boolean detailed );
+            Boolean RenderModel( CrModel* view, Boolean detailed );
 		void InvertSelection();
 		CcString Compress(CcString atomname);
 		void SelectAllAtoms(Boolean select);

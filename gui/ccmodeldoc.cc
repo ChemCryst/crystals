@@ -18,6 +18,18 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  1999/06/13 16:40:32  dosuser
+// RIC: No need to keep track of the centre as objects are added. Atoms
+// are now centred in XGDBUP. DrawViews and Centre() removed.
+// RedrawHighlights() removed. This is done automatically in the atoms
+// Render() function. New function RenderModel() is called when
+// a Paint event is recieved by CxModel. It calls Render() for each
+// of the modelobjects stored in its lists. The argument view lets
+// the modelobjects access global settings from the CrModel such as
+// RadiusType and Scale. The Boolean detailed tells the model object
+// whether to draw at high or low resolution depending on whether the
+// view is currently rotating.
+//
 // Revision 1.4  1999/04/30 17:09:45  dosuser
 // RIC: Changed the ClearHighlights() call before the HighlightAtoms loop
 //      to a StartHighlights() before and a FinishHighlights() after.
@@ -354,8 +366,11 @@ void CcModelDoc::InvertSelection()
 
 
 
-void CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
+Boolean CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
 {
+   if ( mAtomList->ListSize() || mBondList->ListSize() ||
+        mTriList ->ListSize() )
+   {
 	mAtomList->Reset();
 	mBondList->Reset();
 //      mCellList->Reset();
@@ -376,5 +391,8 @@ void CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
 
       while ( (titem = (CcModelTri*)mTriList->GetItemAndMove()) != nil )
             titem->Render(view,detailed);
+      return true;
+   }
+   return false;
 }
 
