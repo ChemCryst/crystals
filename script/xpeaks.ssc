@@ -1,0 +1,49 @@
+%SCRIPT XPEAKS
+% VARIABLE LOGICAL SCRIPTEXT
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+ * Peaks corresponding to existing atoms may be eliminated,
+   or used as the basis for Fourier refinement. 
+% END IF
+%% check we have a peaks list
+%  IF EXISTS 10 .NE. 1 THEN
+ * You do not have a peaks list. You must compute a Fourier map.
+%     FINISH
+%  END IF
+%  VARIABLE CHARACTER MAPTYPE
+%  BLOCK
+%    VARIABLE INTEGER PEAKREFINE
+%    ON ERROR REPEAT
+%    QUEUE REWIND
+%    CLEAR
+%    IF ( MAPTYPE .NE. 'DIF' ) THEN
+%%      FO or 2FO-FC   -    we might want refinement
+%      EVALUATE QTITLE = 'Peaks routine'
+%      EVALUATE QLINE1 = 'Do you want to use the peaks to refine'
+%      EVALUATE QLINE2 = 'the positions of existing atoms?'
+%      EVALUATE BUTTOK = '&No'
+%      EVALUATE BUTTXX = '&Yes'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. FALSE THEN
+%        EVALUATE PEAKREFINE = 1
+%        INSERT 'SELECT REJECT = .01'
+%        QUEUE SEND
+%        CLEAR
+%        INSERT 'REFINE DISTANCE = .3'
+%        QUEUE SEND
+%        CLEAR
+%      END IF
+%    END IF
+%%
+%    IF PEAKREFINE .NE. 1 THEN
+%        EVALUATE PEAKREFINE = 1
+%        INSERT 'SELECT REJECT = .5'
+%        QUEUE SEND
+%        CLEAR
+%    END IF
+%  END BLOCK
+%  COPY '#PEAKS'
+%  QUEUE PROCESS
+%  COPY 'END'
+%END SCRIPT
