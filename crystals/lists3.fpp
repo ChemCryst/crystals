@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2004/09/29 10:05:38  rich
+C Inhibit output of lists to screen when punching to a file.
+C
 C Revision 1.19  2004/05/13 11:52:50  rich
 C Increase maximum disk address for purge from 8M to 2G. NB. There is no
 C check on the disk size growth, this just allows huge .dsc's to be
@@ -104,7 +107,7 @@ C--LIST TYPE 4:
       ISTORE(I+3)=ISTORE(JA+17) ! STORE THE DUNITZ SEILER FLAG
       I = ISTORE(JA+12)
       STORE(I) = FLOAT (ISTORE(JA+2))    !STORE THE CHEBYCHEV WEIGHTER
-      STORE(I+1) = FLOAT (ISTORE(JA+3))  !STORE THE MAXIMUM WEIGHT
+      STORE(I+1) = STORE(JA+3)           !STORE THE MAXIMUM WEIGHT
       STORE(I+2) = STORE(JA+18)          !STORE THE ROBUST TOLERANCE
       STORE(I+3) = STORE(JA+19)          !STORE THE D-S SCHEME P1
       STORE(I+4) = STORE(JA+20)          !STORE THE D-S SCHEME P2
