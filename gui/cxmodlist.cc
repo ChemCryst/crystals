@@ -229,14 +229,17 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
     IDlist[id-1] = id;
     mItems = id;
 
+#ifdef __CR_WIN__
     int nItem = InsertItem(mItems, _T(""));
     for (int j = 0; j < m_numcols; j++)
     {
-#ifdef __CR_WIN__
         SetItemText(nItem, j, rowOfStrings[j].ToCString());
         int width = GetStringWidth(rowOfStrings[j].ToCString());
 #endif
 #ifdef __BOTHWX__
+    int nItem = InsertItem(mItems-1, _T(""));
+    for (int j = 0; j < m_numcols; j++)
+    {
         SetItem( nItem, j, rowOfStrings[j].ToCString());
         int width,h;
         GetTextExtent(rowOfStrings[j].ToCString(),&width,&h);
@@ -1153,7 +1156,7 @@ void CxModList::Update(int newsize)
 #endif
 #ifdef __BOTHWX__
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
-//       ((CrModList*)ptr_to_crObject)->DocToList();
+       ((CrModList*)ptr_to_crObject)->DocToList();
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
        Refresh();
 #endif
