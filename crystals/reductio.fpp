@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2004/05/10 11:02:41  rich
+C #SYST 7 FRIEDEL=YES FILTER=YES. The new FILTER option removes reflections
+C which are not allowed by the List 28 filters. This is important for filters
+C which use HKL range or specific OMIT directives, since the FRIEDEL option
+C may shift the reflections by symmetry to different indices.
+C
 C Revision 1.17  2003/09/05 20:09:58  djw
 C Gather WORK comments together
 C
@@ -405,9 +411,11 @@ C----- ACCUMULATORS
       ITOT2(I) = 0
 1410  CONTINUE
 
-      CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
-      IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
-      WRITE(NCFPU1,'(A)')'   H   K   L   Fobs^2/Sigma      Fobs^2'
+      IF ( IULN .EQ. 6 ) THEN
+        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
+        IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
+        WRITE(NCFPU1,'(A)')'   H   K   L   Fobs^2/Sigma      Fobs^2'
+      END IF
 C
 C--MAIN REFLECTION READING LOOP
 1450  CONTINUE
@@ -441,8 +449,10 @@ C--REFLECTION IS NOT ALLOWED  -  CHECK IF IT IS THE FIRST
         SIGRAT = SIGMAS
       END IF
 
-      WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
+      IF ( IULN .EQ. 6 ) THEN
+        WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
      1                                  SIGRAT,FOS
+      END IF
 
       IF (STORE(L6+12) .LE. 2.*ZERO) GOTO 1563
       RATIO = FO / STORE(L6+12)
@@ -478,7 +488,9 @@ C--LAST REFLECTION READ
       CALL XERT(IULN)
       CALL XSWP06(IULN,MEDIUM)
 C
-      I = KFLCLS(NCFPU1)
+      IF ( IULN .EQ. 6 ) THEN
+        I = KFLCLS(NCFPU1)
+      END IF
 
       CALL XLINES
       IF (NABSNT .GT. 0) THEN
@@ -1113,22 +1125,25 @@ C
      1 ' Rmerge for I>10sigma,  10sigma>I>2sigma,    I<2sigma'/
      2 2X,F18.3, F16.3, F15.3)
 
-      CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
-      IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
-      WRITE(NCFPU1,'(A)')'Rmerge%  Rint%'
-      WRITE(NCFPU1,'(2F8.2)')WORK(25)*100.,WORK(28)*100.
-      WRITE(NCFPU1,'(A)')'F2/sigma(F2)  Rmerge%    Observations'
-      NTOT = 0
-      DO I = 301,400
-        NTOT = NTOT + NINT(RINTF(I))
-      END DO
-      DO I = 1,100
-        IF (ABS(RINTF(I)) .GT. ZERO) RINTF(I) = (RINTF(I+100)/RINTF(I))
-        WRITE (NCFPU1,'(F4.1,3X,F15.7,3X,2I8)')
-     1  (I-1)/2.0, RINTF(I)*100., NINT(RINTF(I+200)), NTOT
-        NTOT = NTOT - NINT(RINTF(I+300))
-      END DO
-      I = KFLCLS(NCFPU1)
+      IF ( IULN .EQ. 6 ) THEN
+        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
+        IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
+        WRITE(NCFPU1,'(A)')'Rmerge%  Rint%'
+        WRITE(NCFPU1,'(2F8.2)')WORK(25)*100.,WORK(28)*100.
+        WRITE(NCFPU1,'(A)')'F2/sigma(F2)  Rmerge%    Observations'
+
+        NTOT = 0
+        DO I = 301,400
+          NTOT = NTOT + NINT(RINTF(I))
+        END DO
+        DO I = 1,100
+          IF(ABS(RINTF(I)) .GT. ZERO) RINTF(I) = (RINTF(I+100)/RINTF(I))
+          WRITE (NCFPU1,'(F4.1,3X,F15.7,3X,2I8)')
+     1    (I-1)/2.0, RINTF(I)*100., NINT(RINTF(I+200)), NTOT
+          NTOT = NTOT - NINT(RINTF(I+300))
+        END DO
+        I = KFLCLS(NCFPU1)
+      END IF
 C
 C----- LOAD DATA IF LIST 30 NOT ALREADY IN CORE
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
