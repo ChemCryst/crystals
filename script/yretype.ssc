@@ -2,9 +2,9 @@
 %VARIABLE INTEGER STARTFROM
 %VARIABLE LOGICAL CALLED
 %VARIABLE CHARACTER CATOM CTYPE
-%     GET NOSTORE TEXT 'Atom?' ' '
+%     GET SILENT NOSTORE TEXT 'Atom?' ' '
 %     EVALUATE CATOM = CVALUE
-%     GET NOSTORE TEXT 'New type?' ' '
+%     GET SILENT NOSTORE TEXT 'New type?' ' '
 %     EVALUATE CTYPE = CVALUE
 %%
 %% Need to find a free number for this new atom type
