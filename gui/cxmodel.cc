@@ -39,7 +39,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 
 ///  HDC hdc = ::GetDC(theModel->GetSafeHwnd());
 
-  if((theModel->SetWindowPixelFormat(theModel -> memDC.m_hDC))==false) return nil;
+  if((theModel->SetWindowPixelFormat(&(theModel -> memDC) ))==false) return nil;
   if((theModel->CreateViewGLContext(theModel -> memDC.m_hDC)) ==false) return nil;
 
 
@@ -743,8 +743,13 @@ void CxModel::NewSize(int cx, int cy)
 
 #ifdef __CR_WIN__
 
-BOOL CxModel::SetWindowPixelFormat(HDC hDC)
+BOOL CxModel::SetWindowPixelFormat(CDC* cDC)
 {
+
+    CBitmap* pBitmap = cDC->GetCurrentBitmap() ;
+    BITMAP bmInfo ;
+    pBitmap->GetObject(sizeof(BITMAP), &bmInfo) ;
+
     int GLPixelIndex = 0;
 
     PIXELFORMATDESCRIPTOR pixelDesc;
@@ -754,44 +759,45 @@ BOOL CxModel::SetWindowPixelFormat(HDC hDC)
     pixelDesc.nVersion = 1;
 
     pixelDesc.dwFlags =
-///                          PFD_DRAW_TO_WINDOW |
+//                          PFD_DRAW_TO_WINDOW |
                         PFD_DRAW_TO_BITMAP |
                           PFD_SUPPORT_OPENGL |
 //                            PFD_DOUBLEBUFFER |
                           PFD_STEREO_DONTCARE;
 
     pixelDesc.iPixelType = PFD_TYPE_RGBA;
-    pixelDesc.cColorBits = 32;
-    pixelDesc.cRedBits = 8;
-    pixelDesc.cRedShift = 16;
-    pixelDesc.cGreenBits = 8;
-    pixelDesc.cGreenShift = 8;
-    pixelDesc.cBlueBits = 8;
-    pixelDesc.cBlueShift = 0;
-    pixelDesc.cAlphaBits = 0;
-    pixelDesc.cAlphaShift = 0;
-    pixelDesc.cAccumBits = 64;
-    pixelDesc.cAccumRedBits = 16;
-    pixelDesc.cAccumGreenBits = 16;
-    pixelDesc.cAccumBlueBits = 16;
-    pixelDesc.cAccumAlphaBits = 0;
+    pixelDesc.cColorBits = (BYTE)bmInfo.bmBitsPixel ;
+//    pixelDesc.cColorBits = 32;
+//    pixelDesc.cRedBits = 8;
+//    pixelDesc.cRedShift = 16;
+//    pixelDesc.cGreenBits = 8;
+//    pixelDesc.cGreenShift = 8;
+//    pixelDesc.cBlueBits = 8;
+//    pixelDesc.cBlueShift = 0;
+//    pixelDesc.cAlphaBits = 0;
+//    pixelDesc.cAlphaShift = 0;
+//    pixelDesc.cAccumBits = 64;
+//    pixelDesc.cAccumRedBits = 16;
+//    pixelDesc.cAccumGreenBits = 16;
+//    pixelDesc.cAccumBlueBits = 16;
+//    pixelDesc.cAccumAlphaBits = 0;
     pixelDesc.cDepthBits = 32;
-    pixelDesc.cAuxBuffers = 0;
+//    pixelDesc.cAuxBuffers = 0;
     pixelDesc.iLayerType = PFD_MAIN_PLANE;
-    pixelDesc.bReserved = 0;
-    pixelDesc.dwLayerMask = 0;
-    pixelDesc.dwVisibleMask = 0;
-    pixelDesc.dwDamageMask = 0;
+//    pixelDesc.bReserved = 0;
+//    pixelDesc.dwLayerMask = 0;
+//    pixelDesc.dwVisibleMask = 0;
+//    pixelDesc.dwDamageMask = 0;
 
-    GLPixelIndex = ChoosePixelFormat (hDC, &pixelDesc);
+    GLPixelIndex = ChoosePixelFormat (cDC->m_hDC, &pixelDesc);
     if (GLPixelIndex ==0 ) //Choose a default index
     {
       GLPixelIndex = 1;
-      if (DescribePixelFormat (hDC, GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc) == 0)
+      if (DescribePixelFormat (cDC->m_hDC, GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc) == 0)
                   return false;
     }
 
-    if (SetPixelFormat(hDC, GLPixelIndex, &pixelDesc) == false)
+    if (SetPixelFormat(cDC->m_hDC, GLPixelIndex, &pixelDesc) == false)
                 return false;
 
       return true;

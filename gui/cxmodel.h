@@ -7,6 +7,13 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.17  2001/03/08 15:54:59  richard
+//  Stop using GL double buffers, and do this manually. (Draw to bitmap then
+//  bitblt to screen - some performance lost by looks of things, but also
+//  a few gains - no need to re-render whenever window is partially covered, for
+//  example. Also necessary for:
+//  Polygon selection modes - only box selection implemented at the moment.
+//
 
 #ifndef     __CxModel_H__
 #define     __CxModel_H__
@@ -142,7 +149,7 @@ class CxModel : public BASEMODEL
 
     HGLRC m_hGLContext;                                  //The rendering context handle.
 
-    BOOL SetWindowPixelFormat(HDC hDC);
+    BOOL SetWindowPixelFormat(CDC* cDC);
     BOOL CreateViewGLContext(HDC hDC);
     CBitmap *oldMemDCBitmap, *newMemDCBitmap;
     CDC memDC;
