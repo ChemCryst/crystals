@@ -7,13 +7,19 @@
  */
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2005/02/04 17:21:40  stefan
+//   1. A set of classes to extent CcSafeDeque to allow easy change notification.
+//   2. A set of classese to more generalise CcSafeDeques uses.
+//
 
 #if !defined(cccrystcommandlistener_H__)
 #define cccrystcommandlistener_H__
 
 #include "cclistenerperformer.h"
 #include "cclistenablesafedeque.h"
+#if defined(__BOTHWX__)
 #include <wx/event.h>
+#endif
 
 class CcCrystalsCommandListener : public AddListener
 {
@@ -22,8 +28,8 @@ class CcCrystalsCommandListener : public AddListener
 		wxEvtHandler* iEventHandler;
 		WXTYPE iEvent;
 		#else
-		CWinThread* pMessageHandler;
-		UINT pMessage
+		CWinThread* iMessageHandler;
+		UINT iMessage;
 		#endif
 	public:
 		#if defined(__BOTHWX__)
