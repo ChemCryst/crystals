@@ -6,7 +6,7 @@
  *  Copyright (c) 2003 . All rights reserved.
  *
  */
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Stats.h"
 #include "MathFunctions.h"
 #include "Collections.h"
@@ -32,6 +32,7 @@ Stats::Stats(Headings* pHeadings, Conditions* pConditions)
     iHeadings = pHeadings;
     iConditions = pConditions;
     iStats = new ElemStats[pHeadings->length()*pConditions->length()];
+	bzero((void*)iStats, sizeof(ElemStats)*pHeadings->length()*pConditions->length());
     iTotalNum = 0; 
     iTotalIntensity = 0;
 }
