@@ -39,6 +39,7 @@
 #define __HKL_DATA_H__
 #include "Collections.h"
 #include <stdio.h>
+#include "vector"
 #include "Matrices.h"
 
 using namespace std;
@@ -52,16 +53,41 @@ public:
     Reflection();
     Reflection(char* pString);
     Reflection(const Reflection& pReflection);
+	Reflection(const Matrix<short>& pHKL, float pI, float pSE);
     Reflection& operator=(const Reflection& pReflection);
 	bool operator<(const Reflection& pReflecton);
     ~Reflection();
     Matrix<short>* getHKL() const;
+	const Matrix<short>& hkl() const;
     void setHKL(const Matrix<short>& pMatrix);
+};
+
+struct lsreflection
+{
+  bool operator()(const Reflection* pReflection1, const Reflection* pReflection2) const
+  {
+      Matrix<short>* tHKL1 = pReflection1->getHKL();
+      Matrix<short>* tHKL2 = pReflection2->getHKL();
+      int tValue = tHKL1->bytecmp(*tHKL2);
+      if (tValue > 0)
+      {
+	  return true;
+      }
+      return false;
+  }
+};
+
+struct ltstr
+{
+  bool operator()(const char* s1, const char* s2) const
+  {
+    return strcmp(s1, s2) < 0;
+  }
 };
 
 std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection);
 
-class HKLData:public ArrayList<Reflection>
+class HKLData:public vector<Reflection*>
 {
     public:
         /**********************************************/
@@ -70,9 +96,12 @@ class HKLData:public ArrayList<Reflection>
         /***	pFile - A pointer to an open 	***/
         /***	file which as read access.	***/
         /**********************************************/
+		HKLData();
+		HKLData(HKLData& pHKLs);
         HKLData(char* pPath);	
         ~HKLData();
         bool find(const Reflection* pReflection);
+		//Reflection* operator[](size_type __n);
 };
 
 static const float kMoWL = 1.5418f; //Angstroms
