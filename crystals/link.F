@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  1999/06/06 19:34:45  dosuser
+C RIC: Added call to GUWAIT() after commands for creation of a Cameron
+C chartdoc are sent to the interface. This blocks until the GUI has
+C processed the pending commands.
+C
 C Revision 1.12  1999/06/03 17:25:58  dosuser
 C RIC: Added linux graphical interface support (GIL)
 C
@@ -391,8 +396,9 @@ C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
       SCALE = 1.0
       ELSE
 Cdjw99 Can this be true?
-C      SCALE = 99999.0 / STORE(IN+1)**2
-      SCALE = 99999.0 / STORE(IN+3)**2
+      SCALE = 99999.0 / STORE(IN+1)**2
+C IT WAS TRUE!
+CRESTORE      SCALE = 99999.0 / STORE(IN+3)**2
       ENDIF
 C
       WRITE(NCFPU1, '(''HKLF  -4'' )')
