@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.60  2003/11/24 12:51:40  rich
+C If a directive name is not defined uniquely on input the command
+C common block is emptied. This caused a crash when the instruction
+C was completed as it tried to load list 5 type 0. Fixed.
+C
 C Revision 1.59  2003/11/06 15:48:01  rich
 C Improved part numbering rules. The group bit of the number (digits > 1000)
 C should now be called the assembly number. The number may now be negative,
@@ -634,6 +639,8 @@ C----- ALLOCATE A FUNCTION VECTOR
         LATVC = KSTALL (I)
         CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
 C----- LOAD L41 in case anyone might want it. (KDIST4, for example)
+C----- sAVE SPACE FOR UEQUIV ETC
+        NBASE = KSTALL(4)
         GOTO 100
 
 210   CONTINUE
@@ -1347,8 +1354,10 @@ C
 C
            IF ((ISTORE(M5P) .EQ. KCARB) .AND. 
      1                (NHY .GE. 1)) THEN
-C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
 
+       CALL XEQUIV (0, M5P, N5P, NBASE)
+       UEQUIV = STORE(NBASE)
+C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
         do idjw=1,khy
          if (ihy(idjw) .eq. 1) then
           write(cline,'(a,a,a,a,a,a )') 
@@ -1364,23 +1373,23 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
             IF (KHY .GT. 4) THEN
              WRITE(NCPU,'(A,I6)')
      1      'REM Probably disordered, No of H atoms=', NHY
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
             ELSE
              IF      (NHY .EQ. 1) THEN
                 IF       (NNHY .EQ. 1) THEN
                   WRITE(NCPU,'(A)') 'REM            1 H on sp 1'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL ANG180(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
                   WRITE(NCPU,'(A)') 'REM            1 H on sp 2'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 3) THEN
                   WRITE(NCPU,'(A)') 'REM            1 H on sp 3'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
                   WRITE(NCPU,'(A)') 'REM            error 1'
@@ -1389,12 +1398,12 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
              ELSE IF (NHY .EQ. 2) THEN
                 IF       (NNHY .EQ. 1) THEN
                   WRITE(NCPU,'(A)') 'REM            2 H on sp 2'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
                   WRITE(NCPU,'(A)') 'REM            2 H on sp 3'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
@@ -1404,7 +1413,7 @@ C----- WRITE THE HYDROGEN ATOMS TO THE SCRIPT DATA FILE
              ELSE IF (NHY .EQ. 3) THEN
                 IF       (NNHY .EQ. 1) THEN
                   WRITE(NCPU,'(A)') 'REM            3 H on sp 3'
-                  CALL DIS11(KHY, IHY, CATOM1, CBONDA)
+                  CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
@@ -7277,9 +7286,8 @@ C - Returns a CRC checksum for the TYPE, SERIAL and PART# of all L5 atoms.
       RETURN
       END
 CODE FOR DIS11
-      SUBROUTINE DIS11(khy, ihy, catom1, cbonda)
+      SUBROUTINE DIS11(khy, ihy, catom1, cbonda, uequiv)
 c----- set c-h distance to 0.98
-c
 \XUNITS
       character*132 cline
       CHARACTER catom1*(*), cbonda(4)*(*)
@@ -7289,7 +7297,6 @@ c
       write(cline,'(a,f5.2,a )') 'dist ', 0.98, ', 0.02 = '
       call xcrems( cline, cline, nch)
       write(ncpu,'(a)') cline(1:nch)
-
       do j=1,khy
        if (ihy(j) .eq. 1) then        
         write(cline,'(a,a,a,a,a )') 
@@ -7298,6 +7305,21 @@ c
         write(ncpu,'(a)') cline(1:nch)
        endif
       enddo
+c
+c----- Set vibration restraint
+c
+      do j=1,khy
+       if (ihy(j) .eq. 1) then        
+        write(cline,'(a,f6.3,a, a )')
+     1 'REST ', 1.2*UEQUIV, ', 0.002 = ', cbonda(j)
+        call xcrems( cline, cline, nch)
+        cline(nch-1:) = ',u[iso])'
+        nch = nch + 7
+        write(ncpu,'(a)') cline(1:nch)
+       endif
+      enddo
+
+c
       RETURN
       END
 c
@@ -7463,7 +7485,6 @@ CODE FOR hchav
 c
       write(cline,'(a )') 'angle 0.0, 2.0 = mean '
       call xcrems( cline, cline, nch)
-      write(ncpu,'(a)') cline(1:nch)
 c
 c---- type flag negated once used, but reset before exit
 c
@@ -7474,11 +7495,13 @@ c
          if (ihy(j) .eq. 1) then
           if(iparth(i).eq.iparth(j)) then
 c           ihy(j)=-ihy(j)
-           write(cline,'(a,a,a,a,a,a )') 'cont ',
+           write(cline(nch+1:),'(a,a,a,a,a,a )') 
      1     cbonda(i), ' to ', catom1, ' to ', 
      2     cbonda(j)
            call xcrems( cline, cline, nch)
            write(ncpu,'(a)') cline(1:nch)
+           write(cline,'(a )') 'cont '
+           call xcrems( cline, cline, nch)
           endif
          endif
         enddo
