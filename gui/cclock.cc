@@ -73,45 +73,50 @@ CcLock::~CcLock()
 void CcLock::Enter()
 {
     m_Locked ++;
-//    LOGSTAT ("++++Entering critical section: " + CcString(m_Locked) + "\n");
+//    LOGSTAT ("++++Entering critical section: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
 #ifdef __CR_WIN__
     WaitForSingleObject( m_Mutex, INFINITE );
 #endif
 #ifdef __BOTHWX__
-    m_CSMutex -> Lock();
+    if (!( m_CSMutex -> Lock() == wxMUTEX_NO_ERROR) )
+    {
+       LOGSTAT ("----Failed to lock mutex " + CcString((int)this) + "\n");
+    }
 #endif
-//    LOGSTAT ("++++Critical section entered: " + CcString(m_Locked) + "\n");
+//    LOGSTAT ("++++Critical section entered: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
 }
 
 void CcLock::Leave()
 {
     if ( m_Locked > 0 ) m_Locked --;
-//    LOGSTAT ("++++Leaving critical section: " + CcString(m_Locked) + "\n");
+//    LOGSTAT ("++++Leaving critical section: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
 #ifdef __CR_WIN__
     ReleaseMutex( m_Mutex );
 #endif
 #ifdef __BOTHWX__
     m_CSMutex -> Unlock();
 #endif
-//    LOGSTAT ("++++Critical section left: " + CcString(m_Locked) + "\n");
+//    LOGSTAT ("++++Critical section left: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
 }
 
 bool CcLock::IsLocked()
 {          
-//    LOGSTAT ("++++Is Locked: " + CcString(m_Locked) + "\n");
+//    LOGSTAT ("++++Is Locked: " + CcString(m_Locked)  + " " + CcString((int)this) + "\n");
     return ( m_Locked > 0 );
 }
 
 bool CcLock::Wait(int timeout_ms)
 {
-//    LOGSTAT ("++++Waiting for object.");
+//    LOGSTAT ("++++Waiting for object." + CcString((int)this) + "\n");
 #ifdef __CR_WIN__
     if ( timeout_ms ) return ( WaitForSingleObject( m_Mutex, timeout_ms) == WAIT_OBJECT_0 );
     return ( WaitForSingleObject( m_Mutex, INFINITE ) == WAIT_OBJECT_0 );
 #endif
 #ifdef __BOTHWX__
+    if ( m_Locked > 0 ) m_Locked --;
     if ( timeout_ms ) return m_EvMutex -> WaitTimeout( timeout_ms );
     m_EvMutex -> Wait();
+//    LOGSTAT ("++++Object was signalled." + CcString((int)this) + "\n");
     return true;
 #endif
 
@@ -119,7 +124,8 @@ bool CcLock::Wait(int timeout_ms)
 
 void CcLock::Signal(bool all)
 {
-//    LOGSTAT ("++++Signalling object." + CcString(all?"True":"False") );
+//  LOGSTAT ("++++Signalling object." + CcString(all?"True ":"False ") +  CcString((int)this) + "\n");
+
 #ifdef __CR_WIN__
     PulseEvent(m_Mutex);
 #endif
