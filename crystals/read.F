@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.51  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.50  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -3827,6 +3830,8 @@ C
      1          ((NAME(J,K),J=NAMBEG,NAMEND),(IB,J=INTBEG,INTEND),
      2          K =NSTART,NEND)
                 CALL XPRVDU(NCVDU, NROW, 0)
+                IF (ISSPRT .EQ. 0) 
+     1          WRITE ( NCWU, '(A)') (CMON(IDJW)(:),IDJW=1,NROW)
               NSTART = NEND+1
 97531       CONTINUE
 1015        FORMAT ( 4(1X,16A1) )
