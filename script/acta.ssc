@@ -29,7 +29,7 @@
 %   EVALUATE ERRFLAG = 0
 %  END BLOCK
 %  IF ERRFLAG .NE. 0 THEN
-
+ 
 {E **** Fatal: Error in calculating phases.
 {R Do you have Fourier peaks ('Q,L,R or M') in your model?
  
@@ -39,7 +39,7 @@
 {S * Checking data against some IUCr validation criteria...
  
 {I A quick guide to possible warnings:
-{I 
+{I
 {I *    ALERT = Not too serious, may indicate problems
 {I **   WARN  = Problem - will need correcting or thorough investigation.
 {I ***  FAIL  = Serious problem or incomplete refinement.
@@ -59,6 +59,7 @@
 %%
 %% Crystals Size
 %%
+{I Checking crystal size.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 102'
@@ -82,6 +83,7 @@
 %%
 %% Temperature
 %%
+{I Checking experimental temperature is reasonable.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 102'
@@ -95,6 +97,7 @@
 %%
 %% Sigma cutoff
 %%
+{I Checking I/sigma cutoff is reasonable.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 103'
@@ -118,6 +121,7 @@
 %%
 %% Rint
 %%
+{I Checking merging R.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 101'
@@ -144,6 +148,7 @@
 %%
 %% Rfactor, weighted R-factor, GOF
 %%
+{I Checking R, wR and GoF.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 103'
@@ -211,6 +216,7 @@
 %%
 %% Shift / esd
 %%
+{I Checking shift / esd ratio.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 103'
@@ -236,6 +242,7 @@
 %  END BLOCK
 %%
 %% Diff density:
+{I Checking difference map residual density.
 %%
 %% NB. We need ZMAX, but element number information isn't known
 %% to CRYSTALS. Instead (as this is a fairly arbitrary test anyway)
@@ -329,6 +336,7 @@
 %%
 %% Flack parameter.
 %%
+{I Checking Flack parameter (if refined).
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 106'
@@ -357,6 +365,7 @@
 %%
 %% Ratio of NPARAM to NREF.
 %%
+{I Checking data to parameter ratio.
 %  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 103'
@@ -418,9 +427,9 @@
 %%
 %% Check results
 %%
-%% 
-%% 
-
+%%
+%%
+ 
 %  IF ERRFLAG .GT. 0 THEN
 %    CLEAR
 %    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ERRFLAG
