@@ -7,6 +7,10 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/07/16 07:34:58  ckp2
+//   Process ON_CHAR messages. Only ever capture and release the mouse once under wx or
+//   it gets upset.
+//
 //   Revision 1.2  2001/06/17 14:32:25  richard
 //   wx support. CxDestroyWindow function.
 //
@@ -250,7 +254,20 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
 {
         int x = event.m_x;
         int y = event.m_y;
+        int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
+        int nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
 #endif
+
+ if ( nFlags & MK_CONTROL )
+ {
+    ((CrResizeBar*)ptr_to_crObject)->SwapPanes();
+    return;
+ }
+ if ( nFlags & MK_SHIFT )
+ {
+    ((CrResizeBar*)ptr_to_crObject)->SwapOrient();
+    return;
+ }
 
  if ( !m_NonSizePresent )
  {

@@ -7,6 +7,9 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/06/17 15:14:14  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.2  2001/03/16 11:08:00  richard
 //   Delete the window's children before deleting the window. Otherwise, the window
 //   automatically deletes it's children as it is destroyed, leaving us in confusion.
@@ -42,6 +45,7 @@ CrResizeBar::CrResizeBar( CrGUIElement * mParentPtr )
   m_secondNonSize = false;
   m_NonSizePresent = false;
   m_BothNonSize = false;
+  m_Reverse = false;
 }
 
 
@@ -375,3 +379,32 @@ void CrResizeBar::Collapse(bool collapse)
    if ( m_firstNonSize ) MoveResizeBar ( collapse ? 0    : m_InitOffset );
    else                  MoveResizeBar ( collapse ? 1000 : m_InitOffset );
 }
+
+void CrResizeBar::SwapPanes()
+{
+   m_Reverse = !m_Reverse;
+   CrGUIElement* gtemp = m_firstitem;
+   m_firstitem = m_seconditem;
+   m_seconditem = gtemp;
+   bool btemp = m_firstNonSize;
+   m_firstNonSize  = m_secondNonSize;
+   m_secondNonSize = btemp;
+   ((CxResizeBar*)ptr_to_cxObject)->WillNotResize(m_firstNonSize,m_secondNonSize);
+   m_InitOffset = 1000 - m_InitOffset;
+   MoveResizeBar(1000-m_offset);
+}
+
+void CrResizeBar::SwapOrient()
+{
+   m_Rotate = !m_Rotate;
+   if ( m_type == kTHorizontal ) m_type = kTVertical;
+   else                          m_type = kTHorizontal;
+
+   ((CxResizeBar*)ptr_to_cxObject)->SetType ( m_type );
+
+   CalcLayout ( true );
+
+   MoveResizeBar(m_offset);
+}
+
+
