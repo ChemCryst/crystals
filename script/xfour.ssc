@@ -5,7 +5,7 @@
 % EVALUATE NOINI5 = FALSE
 %  BLOCK
 %    VARIABLE INTEGER ITMP
-%    IF ( EXISTS 13 .NE. 0 ) THEN
+%    IF ( ( EXISTS 13 ) .EQ. 1 ) THEN
 %        COPY '#GENERALEDIT 13'
 %        COPY 'LOCATE RECORDTYPE=101'
 %        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
@@ -39,8 +39,6 @@
  special treatment of reflections.
  After computing the map, this script enables you to process the peak
  search into an atoms list.
-% ELSE
-a SCRIPT to help with the computation and processing of Fourier maps
 % END IF
 %%
 %% This gets a passed in argument so that the menus
@@ -50,7 +48,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%
 %  IF ( XFCALLED .EQ. FALSE ) THEN
 %   VERIFY FOBS DIFF 2FO-FC FCALC OPT FO-PAT FC-PAT
-%   GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'Map type?' ' '
 %   EVALUATE MTYPE = VALUE
 %  END IF
 %%

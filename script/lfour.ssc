@@ -102,82 +102,59 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^CR
 % END IF
 % VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT BUTTONOK BUTTONXX
-^^WI SET _MAINTEXTOUTPUT NOECHO
-^^CR
-% GET NOSTORE FINAL ABBREVIATED ' ' ' '
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 % CASE VALUE
 %   BLOCK           %XFLIST Change default peak height?%
 %       VERIFY 1 2 3 4
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
-%       GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %       IF PEAKCHANGE .EQ. FALSE THEN
 %           IF VALUE .EQ. 2 THEN
-^^WI            SET XFEDIT TEXT '0.3'
-^^CR
+^^CO            SET XFEDIT TEXT '0.3'
 %           ELSE
-^^WI            SET XFEDIT TEXT '1.5'
-^^CR
+^^CO            SET XFEDIT TEXT '1.5'
 %           END IF
 %       END IF
 %   END BLOCK
 %   BLOCK           %XDPEAKS%
-^^WI            SET XNPEAKS STATE=OFF 
-^^WI            SET ICPEAKS DISABLED=YES
-^^CR
+^^CO            SET XNPEAKS STATE=OFF SET ICPEAKS DISABLED=YES
 %   END BLOCK
 %   BLOCK           %XNPEAKS%
-^^WI            SET XDPEAKS STATE=OFF
-^^WI            SET ICPEAKS DISABLED=NO
-^^CR
+^^CO            SET XDPEAKS STATE=OFF SET ICPEAKS DISABLED=NO
 %   END BLOCK
 %   BLOCK           %XFEDIT%
 %%If the user sets a value, turn off automatic value change.
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
-%       GET NOSTORE KEYWORD ' ' ' '
+%       GET SILENT NOSTORE KEYWORD ' ' ' '
 %       EVALUATE PEAKCHANGE = TRUE
 %   END BLOCK
 %   BLOCK           %BUTTONOK%
 %% map type
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
 ^^??    XFLIST SELECTED
 %       VERIFY 1 2 3 4
-%       GET FINAL NOSTORE ABBREVIATED ' '
+%       GET SILENT FINAL NOSTORE ABBREVIATED ' '
 %       EVALUATE IMAP = VALUE
 %% min peak height
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
 ^^??    XFEDIT TEXT
-%       GET NOSTORE REAL ' '
+%       GET SILENT NOSTORE REAL ' '
 %       EVALUATE PEAKHEIGHT = 10.0 * VALUE
 %% default or specified npeaks to keep
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^WI    GETVALUE XDPEAKS
-^^CR
+^^??    XDPEAKS STATE
 %       VERIFY ON OFF
-%       GET NOSTORE FINAL ABBREVIATED ' '
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       CASE VALUE
 %           BLOCK %ON%
 %               EVALUATE NPEAKS = 0
 %           END BLOCK
 %           BLOCK %OFF%
-^^WI            SET _MAINTEXTOUTPUT NOECHO
-^^CR
 ^^??            ICPEAKS TEXT
-%               GET NOSTORE INTEGER ' '
+%               GET SILENT NOSTORE INTEGER ' '
 %               EVALUATE NPEAKS = VALUE
 %           END BLOCK
 %       END CASE
 %% rejection limit
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
 ^^??    FCREJECT TEXT
-%       GET NOSTORE REAL ' '
+%       GET SILENT NOSTORE REAL ' '
 %       EVALUATE REJLIMIT = VALUE
-^^WI    DISPOSE FOURIER
-^^CR
+^^CO    DISPOSE FOURIER
 %%
 %       COPY '#SCRIPT XDELQ'
 %       COPY '#SFLS'
@@ -270,14 +247,11 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    SHOW
 ^^CR
 %           VERIFY BTNOK BTNXX
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
-%           GET NOSTORE FINAL ABBREVIATED ' ' ' '
-^^WI        DISPOSE NOPEAKS
-^^CR
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+^^CO        DISPOSE NOPEAKS
 %           IF VALUE .EQ. 1 THEN
 %% Don't know how wise this is, the stack will run out eventually
-%               COPY '#SCRIPT XFOUR'
+%               COPY '#SCRIPT LFOUR'
 %           END IF
 %           FINISH
 %       END IF
@@ -304,21 +278,16 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI SHOW
 ^^CR
 %    VERIFY BTNOK BTNXX
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
-%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %        CASE VALUE
 %             BLOCK                %BUTTONOK%
 %                 QUEUE REWIND
 %                 CLEAR
-^^WI              SET _MAINTEXTOUTPUT NOECHO
-^^CR
 ^^??              XCOLLECT STATE
 %                 VERIFY ON OFF
-%                 GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %                 EVALUATE DOCOLLECT = VALUE
-^^WI              DISPOSE PEAKS
-^^CR
+^^CO              DISPOSE PEAKS
 %                 COPY '#PEAKS'
 %                 COPY 'SELECT REJECT = .5'
 %                 COPY 'END'
@@ -330,16 +299,14 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %                 FINISH
 %             END BLOCK
 %             BLOCK                %BUTTONXX%
-^^WI              DISPOSE PEAKS
-^^CR
+^^CO              DISPOSE PEAKS
 %                 FINISH
 %             END BLOCK
 %        END CASE
 %   END BLOCK
 %%
 %   BLOCK                   %BUTTONXX%
-^^WI    DISPOSE FOURIER
-^^CR
+^^CO    DISPOSE FOURIER
 %       FINISH
 %   END BLOCK
 % END CASE
