@@ -110,8 +110,8 @@ void    CxBitmap::LoadFile( CcString bitmap )
         mWidth = mbitmap.GetWidth();
         mHeight = mbitmap.GetHeight();
 
-    mbOkToDraw = true;
 #endif
+    mbOkToDraw = true;
 }
 
 
