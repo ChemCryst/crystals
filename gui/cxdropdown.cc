@@ -10,9 +10,6 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
-// Revision 1.7  2000/11/03 10:47:56  csduser
-// Size dropdown list correctly.
-//
 // Revision 1.6  2000/07/04 14:41:54  ckp2
 // Gui changes since last year.
 // Mainly chart handling for multiple charts in one window.
@@ -50,7 +47,7 @@ CxDropDown *	CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiP
         theDropDown->Create(CBS_DROPDOWNLIST |WS_CHILD |WS_VISIBLE, CRect(0,0,10,10), guiParent, mDropDownCount++);
 	theDropDown->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theDropDown->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL);
 #endif
 	return theDropDown;
@@ -69,12 +66,12 @@ CxDropDown::~CxDropDown()
 	mDropDownCount--;
 }
 
-void CxDropDown::SetSelection(int select)
+void CxDropDown::CxSetSelection(int select)
 {
 #ifdef __WINDOWS__
       SetCurSel ( select - 1 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSelection ( select -1 );
 #endif
 }
@@ -84,7 +81,7 @@ void	CxDropDown::Selected()
 #ifdef __WINDOWS__
 	((CrDropDown *)mWidget)->Selected( GetCurSel() + 1 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       ((CrDropDown *)mWidget)->Selected( GetSelection() + 1 );
 #endif
 }
@@ -102,9 +99,9 @@ void	CxDropDown::AddItem( char * text )
 	SetMaxValue( GetMaxValue() +1 );
 	SetValue( 1 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       Append ( text );      
-      if( !mItems ) SetSelection(0);
+      if( !mItems ) CxSetSelection(0);
 	mItems++;
 #endif
 #ifdef __WINDOWS__
@@ -137,7 +134,7 @@ void	CxDropDown::SetGeometry( const int top, const int left, const int bottom, c
 	else
 		MoveWindow(left,top,right-left,GetIdealHeight(),true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 //End of user code.         
@@ -157,15 +154,15 @@ int   CxDropDown::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -182,15 +179,15 @@ int   CxDropDown::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//           windowRect.x -= parentRect.x;
+//	}
       return ( windowRect.x );
 #endif
 }
@@ -202,7 +199,7 @@ int   CxDropDown::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -214,7 +211,7 @@ int   CxDropDown::GetHeight()
 #ifdef __WINDOWS__
 	return GetItemHeight(-1);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 // May need to base this on font size if it returns the dropped
 // list height rather than the closed list height.
       wxRect windowRect;
@@ -241,7 +238,7 @@ int	CxDropDown::GetIdealWidth()
 				maxSiz = size.cx;
 	}
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxString text;
 	for ( int i=0;i<mItems;i++ )
 	{
@@ -268,7 +265,7 @@ int	CxDropDown::GetIdealHeight()
 	cdc.SelectObject(oldFont);
         return (mItems+3) * ( textMetric.tmHeight + 4 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( "Any old string", &cx, &cy );
       return (cy+5); // nice height for closed list boxes.
@@ -281,7 +278,7 @@ int	CxDropDown::GetDropDownValue()
 #ifdef __WINDOWS__
 	return ( GetCurSel() + 1 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return ( GetSelection() + 1 );
 #endif
 }
@@ -293,7 +290,7 @@ BEGIN_MESSAGE_MAP(CxDropDown, BASEDROPDOWN)
 END_MESSAGE_MAP()
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxDropDown, BASEDROPDOWN)
       EVT_CHOICE( -1, CxDropDown::Selected ) 
@@ -327,7 +324,7 @@ void CxDropDown::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxDropDown::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
@@ -365,7 +362,7 @@ CcString CxDropDown::GetDropDownText(int index)
 	CcString result = temp.GetBuffer(temp.GetLength());
 	return result;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxString temp = GetString( index );
       CcString result ( temp.c_str() );
 	return result;
