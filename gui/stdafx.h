@@ -3,6 +3,8 @@
 // but are changed infrequently
 
 #pragma once
+//This is for VC++ as it doesn't use throw declarations propaly and warns you all the time.
+#pragma warning( disable : 4290 )
 
 #ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
