@@ -1,4 +1,4 @@
-CODE FOR XPR11C
+CODE FOR XPR11C 
       SUBROUTINE XPR11C
 C--PRINT THE LATEST LIST 11 AS A CORRELATION MATRIX.
 C
@@ -949,15 +949,15 @@ C--NOT ENOUGH CORE
       ENDIF
       WRITE(NCAWU,1100) IUREC
       WRITE(NCAWU,1101) I, NULD
- 
+
       WRITE ( CMON, 1100) IUREC
       CALL XPRVDU(NCVDU, 1,0)
       WRITE ( CMON, 1101) I, NULD
       CALL XPRVDU(NCVDU, 2,0)
 1100  FORMAT(2X,
      2 'Insufficient memory allocated for LIST 11, Record number ', I5)
-1101  FORMAT(I6,' words too few for this',
-     2 ' compilation of CRYSTALS (max = ', I6,').', /,
+1101  FORMAT(I10,' words too few for this',
+     2 ' compilation of CRYSTALS (max = ', I10,')', /,
      3 ' Define a smaller matrix in LIST 12' )
       CALL XERHND ( IERERR )
 C**** Clean exit forced, L. Macko
