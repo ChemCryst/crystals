@@ -283,7 +283,7 @@ ATOMIC PARAMETERS
     .SPARE              0    0    1    0    0 0.0
     .PART               0    0    1    0    0         0
     .REF                0    0    1    0    0         0
-    .HYBRID             0    0    1    0    0         0
+    .FRAGMENT           0    0    1    0    0         0
     .NEW                0    0    1    0    0                            
    4.INDEX              5    1    0    0    5    1  103    9    5
          1    1    1    1    1    1    0    0    0    0
@@ -643,7 +643,7 @@ THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP
     .HEIGHT             0    0    1    0    0 0.0
     .PART               0    0    1    0    0         0
     .REF                0    0    1    0    0         0
-    .HYBRID             0    0    1    0    0         0
+    .FRAGMENT           0    0    1    0    0         0
     .NEW                0    0    1    0    0                    
    4.INDEX              5    1    0    0    5    1  103    9   10
          1    1    1    1    1    1    0    0    0    0
@@ -2484,7 +2484,7 @@ EDIT              42    5
     .SPARE             25    0    1    0    0 0.0
     .PART              26    0    1    0    0         0
     .REF               27    0    1    0    0         0
-    .HYBRID            28    0    1    0    0         0
+    .FRAGMENT          28    0    1    0    0         0
     .NEW               29    0    1    0    0                   
   23.SORT               0 9999    0    0    0    0  122    5  145
          0    0    0    0    0    0    0    0    0    0
@@ -2496,8 +2496,8 @@ EDIT              42    5
          0    0    0    0    0    0    0    0    0    0
   27.INSERT             1 9999    0    0
          3
-    .IDENTIFIER        10    0    1    4    1 ELECTRONS
-     ELECTRONS      WEIGHT         NCONNECTIONS   RELAX
+    .IDENTIFIER        10    0    1    5    1 ELECTRONS
+     ELECTRONS      WEIGHT         NCONNECTIONS   RELAX          FRAGMENT
   28.SHIFT              0 9999    0    0    0    0  126    5  145
          0    0    0    0    0    0    0    0    0    0
   29.DEORTHOGONAL       0 9999    0    0    0    0  127    5  145
