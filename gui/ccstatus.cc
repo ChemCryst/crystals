@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/12/13 20:45:30  ckp2
+//   RIC: (Bug) CcStatus was going out of it's way to ignore script exit signals
+//   and failing to instruct cccontroller to remove any modal windows left open by
+//   bad scripts. (It used to work, until the MENUUP messages were rationalised last
+//   month).
+//
 //   Revision 1.6  2001/06/17 15:18:26  richard
 //   Notice when scripts exit (status bit 5 changes) and call ScriptsExited to
 //   close any modal windows that have been accidentally left open. Windows with
@@ -66,6 +72,27 @@ void CcStatus::SetZoomedFlag(bool zoomed)
   UpdateToolBars();
 }
 
+
+void CcStatus::SetBondType(int bt)
+{
+  UnSetBit(22,&statusFlags);
+  UnSetBit(23,&statusFlags);
+  UnSetBit(24,&statusFlags);
+
+  switch ( bt ) {
+    case BOND_NORM:
+      SetBit(22,&statusFlags);
+      break;
+    case BOND_SYMM:
+      SetBit(23,&statusFlags);
+      break;
+    case BOND_AROMATIC:
+      SetBit(24,&statusFlags);
+      break;
+    default:
+      break;
+  }
+}
 
 Boolean CcStatus::ShouldBeEnabled(int enableFlags, int disableFlags)
 {

@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/06/17 15:18:26  richard
+//   Notice when scripts exit (status bit 5 changes) and call ScriptsExited to
+//   close any modal windows that have been accidentally left open. Windows with
+//   the STAYOPEN property (notably the MAIN window) are exempt.
+//
 //   Revision 1.3  2001/03/08 15:22:11  richard
 //   New flag signalling that the model window is in a ZOOMED in state.
 //   Call to UpdateToolbars, when status changes, updates toolbar buttons, normal
@@ -44,9 +49,9 @@
 #define bS19    "SEL3"
 #define bS20    "SEL>=3"
 #define bS21    "ZOOMED"
-#define bS22
-#define bS23
-#define bS24
+#define bS22    "BN"
+#define bS23    "BS"
+#define bS24    "BA"
 #define bS25
 #define bS26
 #define bS27
@@ -54,6 +59,11 @@
 #define bS29
 #define bS30
 #define bS31
+
+
+#define BOND_NORM 1
+#define BOND_SYMM 2
+#define BOND_AROMATIC 3
 
 class CcTokenList;
 
@@ -77,6 +87,8 @@ class   CcStatus
 
     void SetNumSelectedAtoms(int n);
     void SetZoomedFlag(bool zoomed);
+
+    void SetBondType(int bt);
 
 // Creates a bit flag for menu items/toolbars based on the
 // ENABLEIF and DISABLEIF strings they are passed.
