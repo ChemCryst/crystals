@@ -5,6 +5,16 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  1999/06/13 14:38:56  dosuser
+// RIC: Added m_IsInput boolean. Set with the kTIsInput token. Causes
+// the editbox to register itself as the user input place with the
+// controller. Also sends text and clears itself automatically when
+// return is pressed.
+// RIC: SetOriginalSizes() is called after CalcLayout(), before Show() from
+// kTShow in CrWindow. It adjusts the ideal width (mCharsWidth) to the size
+// that it now is, rather than the size it was set to by SCRIPTS. This helps
+// when calculating the change in size as the user resizes the whole window.
+//
 // Revision 1.5  1999/05/28 17:53:18  dosuser
 // RIC: Attempted world record for most number of files
 // checked in at once. Most changes are to do with adding
@@ -72,11 +82,6 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 
 		LOGSTAT( "*** Created EditBox     " + mName );
 
-            if ( mName == "_MAINTEXTINPUT" )
-            {
-                  ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this);
-            }            
-
 		while ( hasTokenForMe )
 		{
 			switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -116,6 +121,8 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 				}
 			} //end switch
 		}// end while
+
+            SetText(mText); //Re-set the text as it now knows if it is REAL,INT or TEXT..
 	}// end if
 
 	// End of Init, now comes the general parser
@@ -173,6 +180,7 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken(); // Remove that token!
                         m_IsInput = true;
                         (CcController::theController)->SetInputPlace(this);
+//                        ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this);
                         break;
 			}
 			default:
@@ -183,7 +191,6 @@ Boolean	CrEditBox::ParseInput( CcTokenList * tokenList )
 		}
 	}	
 	
-	SetText(mText); //Re-set the text as it now knows if it is REAL,INT or TEXT..
 
 	return retVal;
 
