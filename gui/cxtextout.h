@@ -30,8 +30,12 @@ class CrGUIElement;
 #define FLAG( a,b )     ( ( a & b ) == b )
 #endif  // FLAG
 
-#define         CONTROL_BYTE             '{'                      // Control Character
+#define         CONTROL_BYTE          '{'                      // Control Character
 #define         LINK_BYTE             '&'                      // Control Character
+#define         ERROR_BYTE            'E'                      // Control Character
+#define         INFO_BYTE             'I'                      // Control Character
+#define         STATUS_BYTE           'S'                      // Control Character
+#define         RESULT_BYTE           'R'                      // Control Character
 
 typedef struct _tagCOLOURCODE
 {
@@ -81,7 +85,6 @@ class CxTextOut : public BASETEXTOUT
     int GetHeight();
     int GetLeft();
     void    SetGeometry(int top, int left, int bottom, int right );
-        void SetOriginalSizes();
 
         // attributes
         static int mTextOutCount;

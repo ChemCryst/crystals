@@ -72,22 +72,22 @@ CxTextOut::CxTextOut( CrTextOut * container )
 
     // Temporary...
 
-    m_ColTable[ COLOUR_WHITE ]      = RGB( 255, 255, 255 );
+    m_ColTable[ COLOUR_WHITE ]      = RGB( 255, 255, 255 );  //0
     m_ColTable[ COLOUR_BLACK ]      = RGB( 0, 0, 0 );
-    m_ColTable[ COLOUR_BLUE ]       = RGB( 0, 0, 128 );
+    m_ColTable[ COLOUR_BLUE ]       = RGB( 0, 0, 128 );      //2
     m_ColTable[ COLOUR_GREEN ]      = RGB( 0, 128, 0 );
     m_ColTable[ COLOUR_LIGHTRED ]   = RGB( 255, 0, 0 );
-    m_ColTable[ COLOUR_BROWN ]      = RGB( 128, 0, 0 );
-    m_ColTable[ COLOUR_PURPLE ]     = RGB( 128, 0, 128 );
+    m_ColTable[ COLOUR_BROWN ]      = RGB( 128, 0, 0 );      //5
+    m_ColTable[ COLOUR_PURPLE ]     = RGB( 128, 0, 128 );    
     m_ColTable[ COLOUR_ORANGE ]     = RGB( 128, 128, 0 );
     m_ColTable[ COLOUR_YELLOW ]     = RGB( 255, 255, 0 );
     m_ColTable[ COLOUR_LIGHTGREEN ] = RGB( 0, 255, 0 );
-    m_ColTable[ COLOUR_CYAN ]       = RGB( 0, 128, 128 );
+    m_ColTable[ COLOUR_CYAN ]       = RGB( 0, 128, 128 );    //10
     m_ColTable[ COLOUR_LIGHTCYAN ]  = RGB( 0, 255, 255 );
     m_ColTable[ COLOUR_LIGHTBLUE ]  = RGB( 0, 0, 255 );
     m_ColTable[ COLOUR_PINK ]       = RGB( 255, 0, 255 );
     m_ColTable[ COLOUR_GREY ]       = RGB( 128, 128, 128 );
-    m_ColTable[ COLOUR_LIGHTGREY ]  = RGB( 192, 192, 192 );
+    m_ColTable[ COLOUR_LIGHTGREY ]  = RGB( 192, 192, 192 );  //15
 #ifdef __CR_WIN__
     m_hCursor = AfxGetApp()->LoadStandardCursor( IDC_IBEAM );
 #endif
@@ -228,114 +228,9 @@ void CxTextOut::SetIdealWidth(int nCharsWide)
 #endif
 }
 
+CXSETGEOMETRY(CxTextOut)
 
-void  CxTextOut::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    if((top<0) || (left<0))
-    {
-        RECT windowRect;
-        RECT parentRect;
-        GetWindowRect(&windowRect);
-        CWnd* parent = GetParent();
-        if(parent != nil)
-        {
-            parent->GetWindowRect(&parentRect);
-            windowRect.top -= parentRect.top;
-            windowRect.left -= parentRect.left;
-        }
-        MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
-    }
-    else
-    {
-        MoveWindow(left,top,right-left,bottom-top,true);
-    }
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-      mbOkToDraw = true;
-#endif
-
-}
-
-int   CxTextOut::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.top -= parentRect.top;
-    }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-//  if(parent != nil)
-//  {
-  //          parentRect = parent->GetRect();
-  //          windowRect.y -= parentRect.y;
-//  }
-      return ( windowRect.y );
-#endif
-}
-int   CxTextOut::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
-
-}
-int   CxTextOut::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxTextOut::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
-
+CXGETGEOMETRIES(CxTextOut)
 
 void CxTextOut::Focus()
 {
@@ -368,63 +263,8 @@ BEGIN_EVENT_TABLE(CxTextOut, wxWindow)
 END_EVENT_TABLE()
 #endif
 
-#ifdef __CR_WIN__
-void CxTextOut::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-    NOTUSED(nRepCnt);
-    NOTUSED(nFlags);
-    switch(nChar)
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-            if(ptr_to_crObject->mDisabled)
-                ptr_to_crObject->FocusToInput((char)nChar);
-            else
-                CWnd::OnChar( nChar, nRepCnt, nFlags );
-        }
-    }
-}
-#endif
+CXONCHAR(CxTextOut)
 
-#ifdef __BOTHWX__
-void CxTextOut::OnChar( wxKeyEvent & event )
-{
-      switch(event.KeyCode())
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-                  Boolean shifted = event.m_shiftDown;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-            if(ptr_to_crObject->mDisabled)
-                        ptr_to_crObject->FocusToInput((char)event.KeyCode());
-            else
-                        event.Skip();
-                  break;
-        }
-    }
-}
-#endif
-
-
-
-
-
-void CxTextOut::SetOriginalSizes()
-{
-      mIdealHeight = GetHeight();
-      mIdealWidth  = GetWidth();
-      return;
-}
 
 void CxTextOut::AddLine( CcString& strLine )
 {
@@ -771,7 +611,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
              case wxEVT_SCROLLWIN_PAGEUP:
              case wxEVT_SCROLLWIN_LINEUP:
                  if( m_nHead > GetMaxViewableLines() - 1 )
-                 { 
+                 {
                    m_nHead--;
                    SetHead( m_nHead );
                  }
@@ -1040,6 +880,7 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
 int CxTextOut::GetMaxViewableLines()
 {
 #ifdef __CR_WIN__
+
     ASSERT( GetSafeHwnd() != NULL );    // Must have been created
     CRect clientRc; GetClientRect( &clientRc );
     return( clientRc.Height() / m_nFontHeight );
@@ -1213,101 +1054,139 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
     ASSERT( strData.Sub( 1,1 ) == CONTROL_BYTE );
 #endif
 
-        if   (strData.Length() > 1 ) strData = strData.Sub( 2,-1 ); // Truncate control byte
-        else                         strData = "";
+    if   (strData.Length() > 1 )
+    {
+       strData = strData.Sub( 2,-1 ) + " "; // Truncate control byte
+                                            //Pad end of string with space for every removed byte.
+    }
+    else                         strData = "";
 
-        int nBytesToSkip = 1;
-        pColourCode->nUnder = false;
+    int nBytesToSkip = 1;
+    pColourCode->nUnder = false;
 
  // Jump out if strData is now empty...
 
-        if( strData.Length() == 0 )
-        {
-                pColourCode->nFore = -1;    // No foreground colour
-                pColourCode->nBack = -1;    // No background colour
-                m_bInLink = false;
-        }
-        else if ( strData.Match( LINK_BYTE ) == 1 )
-        {
+    if( strData.Length() == 0 )
+    {
+      pColourCode->nFore = -1;    // No foreground colour
+      pColourCode->nBack = -1;    // No background colour
+      m_bInLink = false;
+    }
+    else if ( strData.Match( LINK_BYTE ) == 1 )
+    {
 
 // A link code {& - if in a link go back to normal, otherwise start a link.
 
-                if ( m_bInLink )
-                {
-                   pColourCode->nFore = 1;
-                   pColourCode->nBack = 0;
-                   m_bInLink = false;
-                }
-                else
-                {
-                   pColourCode->nFore = 2;
-                   pColourCode->nBack = 0;
-                   pColourCode->nUnder = true;
-                   m_bInLink = true;
-                }
-                nBytesToSkip = 2;                 // Skip the &
-                strData = strData.Sub( 2,-1 );    // Remove the &
-        }
-        else
-        {
+      if ( m_bInLink )
+      {
+        pColourCode->nFore = 1;
+        pColourCode->nBack = -1;
+        m_bInLink = false;
+      }
+      else
+      {
+        pColourCode->nFore = 2;
+        pColourCode->nBack = -1;
+        pColourCode->nUnder = true;
+        m_bInLink = true;
+      }
+      nBytesToSkip = 2;                 // Skip the &
+      strData = strData.Sub( 2,-1 ) + " ";    // Remove the &
+    }
+    else if ( strData.Match( ERROR_BYTE ) == 1 )
+    {
+        m_bInLink = false;
+        pColourCode->nFore = 0;
+        pColourCode->nBack = 4;
+        nBytesToSkip = 2;                 // Skip the E
+        strData = strData.Sub( 2,-1 ) + " ";    // Remove the E
+    }
+    else if ( strData.Match( INFO_BYTE ) == 1 )
+    {
+        m_bInLink = false;
+        pColourCode->nFore = 2;
+        pColourCode->nBack = 15;
+        nBytesToSkip = 2;                 // Skip the I
+        strData = strData.Sub( 2,-1 ) + " ";    // Remove the I
+    }
+    else if ( strData.Match( STATUS_BYTE ) == 1 )
+    {
+        m_bInLink = false;
+        pColourCode->nFore = 11;
+        pColourCode->nBack = 10;
+        nBytesToSkip = 2;                 // Skip the S
+        strData = strData.Sub( 2,-1 ) + " ";    // Remove the S
+    }
+    else if ( strData.Match( RESULT_BYTE ) == 1 )
+    {
+        m_bInLink = false;
+        pColourCode->nFore = 4;
+        pColourCode->nBack = 15;                      
+        nBytesToSkip = 2;                 // Skip the R
+        strData = strData.Sub( 2,-1 ) + " ";    // Remove the R
+    }
+    else
+    {
 
 // A colour code {xx,yy - if in a link end link because colour is not allowed in links.
 
-            m_bInLink = false;
+      m_bInLink = false;
 
 // Handle foreground and background colours:
 
-            int nComma = strData.Match( ',' );   // Position of comma.  Only present if background colour present
+      int nComma = strData.Match( ',' );   // Position of comma.  Only present if background colour present
 
 // Proceed if the comma is at pos 2,                      i.e. {x,yy
 //         OR the comma is at pos 3 and pos 2 is a digit, i.e. {xx,yy
 
-        if ( ( nComma == 2 ) || ( nComma == 3 && isdigit(strData[1]) ) )
+      if ( ( nComma == 2 ) || ( nComma == 3 && isdigit(strData[1]) ) )
+      {
+        CcString strFore = strData.Sub( 1,nComma-1 );           // Get the foreground string xx or x
+        nBytesToSkip += strFore.Length() + 1;                   // Skip fore code and comma
+        pColourCode->nFore = atoi( strFore.ToCString() );       // Get Foreground Code
+        strData = strData.Sub( nComma+1 ,-1 );                  // Truncate string
+
+        // Now look for backcolour:
+
+        CcString strBack;
+        int nCodeLength = 1;             //  assume one digit background code
+        if ( strData.Length() >= 2 )
         {
-            CcString strFore = strData.Sub( 1,nComma-1 );           // Get the foreground string xx or x
-            nBytesToSkip += strFore.Length() + 1;                   // Skip fore code and comma
-            pColourCode->nFore = atoi( strFore.ToCString() );       // Get Foreground Code
-            strData = strData.Sub( nComma+1 ,-1 );                  // Truncate string
-
-            // Now look for backcolour:
-
-            CcString strBack;
-            int nCodeLength = 1;             //  assume one digit background code
-            if ( strData.Length() >= 2 )
-            {
-                if( isdigit( strData[1] ) )  nCodeLength++;  // no, two digit background code.
-            }
-
-            nBytesToSkip+= nCodeLength;
-            strBack = strData.Sub( 1,nCodeLength );          // Get the background string yy or y
-            strData = strData.Sub( min(strData.Length(),nCodeLength+1),-1 );       // Leave the rest of the string in strData.
-            pColourCode->nBack = atoi( strBack.ToCString() ); // Get the colour code.
+          if( isdigit( strData[1] ) )  nCodeLength++;  // no, two digit background code.
         }
-        else
+
+        nBytesToSkip+= nCodeLength;
+        strBack = strData.Sub( 1,nCodeLength );          // Get the background string yy or y
+        strData = strData.Sub( min(strData.Length(),nCodeLength+1),-1 );       // Leave the rest of the string in strData.
+        for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
+        pColourCode->nBack = atoi( strBack.ToCString() ); // Get the colour code.
+      }
+      else
+      {
+         // No background colour present, the delimiter for this code
+         // is the next non-numeric character...
+
+        CcString strFore;
+        int nCodeLength = 1;          // assume one digit foreground code
+        if( strData.Length() >= 2 )
         {
-            // No background colour present, the delimiter for this code
-            // is the next non-numeric character...
-
-            CcString strFore;
-            int nCodeLength = 1;          // assume one digit foreground code
-            if( strData.Length() >= 2 )
-            {
-                                if( isdigit( strData[ 1 ] ) ) nCodeLength++;  // no, two digit code.
-            }
-
-            nBytesToSkip += nCodeLength;
-            strFore = strData.Sub( 1,nCodeLength );
-            strData = strData.Sub( min(nCodeLength+1,strData.Length()),-1 ); // Leave rest of text in strData,
-                                                                             // but avoid calling Sub with out of bound positions.
-            pColourCode->nFore = atoi( strFore.ToCString() );                // Get colourcode
-            pColourCode->nBack = -1;                                         // Default background colour
+          if( isdigit( strData[ 1 ] ) ) nCodeLength++;  // no, two digit code.
         }
-    }
+
+        nBytesToSkip += nCodeLength;
+        strFore = strData.Sub( 1,nCodeLength );
+        strData = strData.Sub( min(nCodeLength+1,strData.Length()),-1 ); // Leave rest of text in strData,
+        for(int j=1;j<nBytesToSkip;j++){strData += " ";} //Pad end.
+                                                                            // but avoid calling Sub with out of bound positions.
+        pColourCode->nFore = atoi( strFore.ToCString() );                // Get colourcode
+        pColourCode->nBack = -1;                                         // Default background colour
+      }
+  }
 
 
-    // Return number of bytes processed:
+  // Return number of bytes processed:
 
-    return( nBytesToSkip );
+  return( nBytesToSkip );
 };
 
 
@@ -1356,10 +1235,10 @@ void CxTextOut::ChooseFont()
         *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
 #endif  // !_WINNT
      }
-	 else
-	 {
-		*pFont = *m_pFont;
-	 }
+     else
+     {
+        *pFont = *m_pFont;
+     }
 
      data.SetInitialFont(*pFont);
 
