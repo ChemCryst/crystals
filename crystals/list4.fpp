@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2001/12/12 15:57:52  ckpgroup
+C Changed to the new script layout. See Plot.man.
+C
 C Revision 1.26  2001/11/29 15:45:09  ckpgroup
 C SH: Update to reflect script changes.
 C
@@ -2189,6 +2192,7 @@ C
 C--
       CHARACTER *12 CTEMP
       CHARACTER *16 CNNN, COUT
+	CHARACTER *4  CSHK(2)
 \ICOM30
 \ISTORE
       DIMENSION NOPE(4,30),KN(5),KM(5)
@@ -2319,6 +2323,8 @@ C--INITIAL FORMAT FOR THE /FO/ RANGES
 C--INITIAL FORMAT FOR THE SIN(THETA)/LAMBDA RANGES
       DATA CFS(1)/'(1X'/, CFS(2)/',F12'/,CFS(3)/'.5, '/
       DATA CFS(4)/'97X,'/,CFS(5)/'2A1/'/,CFS(6)/'16X,'/
+C--VARIABLE USED TO CONTROL THE KEY DRAWING
+      DATA CSHK /'    ',' KEY'/
 C
 C--A FEW COMMONLY USED FORMAT STATEMENTS
 1000  FORMAT(//4A4,1X,'No. of data',3X,'  </Fo/>',4X,'  </Fc/>',5X,
@@ -2726,13 +2732,17 @@ C--AGREEEMNT ANALYSIS ON REFLECTION CLASSES
       WRITE(NCWU,1000)(NOPE(J,30),J=1,4),KM
       ENDIF
 
-      IF ( PLCLS .EQ. 1 ) THEN
-        WRITE(CMON,'(A,/,A,/,A,/,A)')
-     1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS ',
+c--PLCLS IS EITHER 0 (OFF), 1 (ON) OR 2 (KEY). PLOT GRAPH IF 1 OR 2.
+      IF ( PLCLS .GE. 1 ) THEN
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A)')
+     1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS', CSHK(PLCLS),
      1  '^^PL XAXIS TITLE ''HKL Class''',
-     1	'^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
+     1	 '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
+     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL ZOOM 0.01 100 SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 4,0)
+        CALL XPRVDU(NCVDU, 7,0)
       END IF
 
       L=ICLS
@@ -2762,7 +2772,7 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       WRITE(CNNN,'(4A4)') (NOPE(J,I+5),J=1,4)
       CALL XCREMS(CNNN,COUT,LNNN)
 
-      IF ( PLCLS .EQ. 1 ) THEN
+      IF ( PLCLS .GT. 0 ) THEN
         WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
      2   COUT(2:LNNN-1),''' DATA ', STORE(L+5), STORE(L+4), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
@@ -2776,7 +2786,7 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 C--PRINT THE FINAL CAPTION FOR THIS GROUP
 4550  CONTINUE
 
-      IF ( PLCLS .EQ. 1 ) THEN
+      IF ( PLCLS .GT. 0 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
@@ -2791,13 +2801,16 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
       WRITE(NCWU,1000)(NOPE(J,4),J=1,4),KM
       ENDIF
 
-      IF ( PLPAR .EQ. 1 ) THEN
-        WRITE(CMON,'(A,/,A,/,A,/,A)')
-     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR',
+      IF ( PLPAR .GE. 1 ) THEN
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A)')
+     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR', CSHK(PLPAR),
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
+     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 4,0)
+        CALL XPRVDU(NCVDU, 7,0)
       ENDIF
 
       L=IPAR
@@ -2827,7 +2840,7 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       WRITE(CNNN,'(4A4)') (NOPE(J,I+21),J=1,4)
       CALL XCREMS(CNNN,COUT,LNNN)
 
-      IF ( PLPAR .EQ. 1 ) THEN
+      IF ( PLPAR .GT. 0 ) THEN
         WRITE(CMON,'(3A,2F15.7,I8)')'^^PL LABEL ''',
      2   COUT(2:LNNN-1),''' DATA ', STORE(L+5), STORE(L+4), ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
@@ -2841,7 +2854,7 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 C--PRINT THE FINAL CAPTION FOR THIS GROUP
 4850  CONTINUE
 
-      IF ( PLPAR .EQ. 1 ) THEN
+      IF ( PLPAR .GT. 0 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
@@ -2865,23 +2878,27 @@ C--- OUTPUT TO SCREEN
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
-      IF ( PLFOR .EQ. 1 ) THEN
-        WRITE(CMON,'(A,/,A,/,A,/,A,/,A)') 
-     1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO',
+      IF ( PLFOR .GE. 1 ) THEN
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
+     1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PLFOR),
      1 '^^PL NSERIES=3 LENGTH=20 XAXIS TITLE',
      1'^^PL  ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
+     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 5,0)
+        CALL XPRVDU(NCVDU, 8,0)
       ENDIF
 
-      IF ( PLEXT .EQ. 1 ) THEN
-        WRITE(CMON,'(A,/,A,/,A,/,A)')
-     1 '^^PL PLOTDATA _EXT BARGRAPH ATTACH _VEXT',
+      IF ( PLEXT .GE. 1 ) THEN
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A)')
+     1 '^^PL PLOTDATA _EXT BARGRAPH ATTACH _VEXT', CSHK(PLEXT),
      1 '^^PL NSERIES=1 LENGTH=20 XAXIS TITLE',
-     1'^^PL  ''<- Weak           Fo Range            Strong ->''',
-     1 '^^PL YAXIS TITLE <Fo>-<Fc>'
-        CALL XPRVDU(NCVDU, 4,0)
+     1 '^^PL ''<- Weak           Fo Range            Strong ->''',
+     1 '^^PL YAXIS TITLE <Fo>-<Fc>',
+     1 '^^PL SERIES 1 SERIESNAME ''<Fo> - <Fc>'''
+        CALL XPRVDU(NCVDU, 5,0)
       ENDIF
 
 4910  FORMAT ( 1X , '  Range  Number  <FO>     <FC>    ' ,
@@ -2926,12 +2943,12 @@ C--- OUTPUT TO SCREEN
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
-      IF ( PLFOR .EQ. 1 ) THEN
+      IF ( PLFOR .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.0,1X,A)')'^^PL SET _FO LABEL ',ACI,
      1                           ' DATA  1.0 1.0'
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-      IF ( PLEXT .EQ. 1 ) THEN
+      IF ( PLEXT .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.0,1X,A)')'^^PL SET _EXT LABEL ',ACI,
      1                           ' DATA  0.0'
         CALL XPRVDU(NCVDU, 1,0)
@@ -2950,12 +2967,12 @@ C--- OUTPUT TO SCREEN
      2 (STORE(K+2),K=L+2,M) , IOUT
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-      IF ( PLFOR .EQ. 1 ) THEN
+      IF ( PLFOR .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.0,A,2(1X,F15.7),I8)')'^^PL SET _FO LABEL ',
      1    ACI,' DATA ',STORE(L+5),STORE(L+4),ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-      IF ( PLEXT .EQ. 1 ) THEN
+      IF ( PLEXT .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.0,A,1X,F15.7)')'^^PL SET _EXT LABEL ',ACI,
      1                                  ' DATA ',STORE(L+2)-STORE(L+3)
         CALL XPRVDU(NCVDU, 1,0)
@@ -2982,11 +2999,11 @@ C--PRINT THE LAST CAPTION FOR THIS GROUP
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1050)
       ENDIF
-      IF ( PLFOR .EQ. 1 ) THEN
+      IF ( PLFOR .GT. 0 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SET _FO SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
-      IF ( PLEXT .EQ. 1 ) THEN
+      IF ( PLEXT .GT. 0 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SET _EXT SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
@@ -3009,13 +3026,17 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
       WRITE(NCWU,1000)(NOPE(J,2),J=1,4),KM
       ENDIF
 
-      IF ( PLTHE .EQ. 1 ) THEN
-        WRITE(CMON,'(A,/,A,/,A,/,A)')
-     1'^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT YAXIS ZOOM 0.01 100',
-     1'^^PL  TITLE <Fo-Fc>**2 LOG NSERIES=3 LENGTH=10 XAXIS',
-     1'^^PL TITLE ''<-Low angle    Sin(theta)/lambda   High angle->''',
+      IF ( PLTHE .GE. 1 ) THEN
+        WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)')
+     1'^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT ', CSHK(PLTHE),
+     1'^^PL YAXIS ZOOM 0.01 100 TITLE',
+     1'^^PL  <Fo-Fc>**2 LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
+     1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
+     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1'^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 4,0)
+        CALL XPRVDU(NCVDU, 8,0)
       ENDIF
 
       IF (MONIT .NE. 1) THEN
@@ -3050,7 +3071,7 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,CFN)AC,ICE,IB,ISTORE(L+1),ICE
       ENDIF
-      IF ( PLTHE .EQ. 1 ) THEN
+      IF ( PLTHE .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,' DATA 1.0 1.0'
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -3066,7 +3087,7 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,CFY)AC,ICE,IB,ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
       ENDIF
-      IF ( PLTHE .EQ. 1 ) THEN
+      IF ( PLTHE .GT. 0 ) THEN
         WRITE(CMON,'(A,F7.3,A,2(1X,F15.7),I8)') '^^PL LABEL ',AC,
      1               ' DATA ',STORE(L+5),STORE(L+4),ISTORE(L+1)
         CALL XPRVDU(NCVDU, 1,0)
@@ -3087,7 +3108,7 @@ C--PRINT THE FINAL VALUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,CFY)AC,ICE
       ENDIF
-      IF ( PLTHE .EQ. 1 ) THEN
+      IF ( PLTHE .GT. 0 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
