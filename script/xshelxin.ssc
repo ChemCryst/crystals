@@ -7,18 +7,22 @@
  Oxford, April 1999. Based on the fortran program SXTOCA by 
  R.O. Gould, The University of Edinburgh, March 1994.
  --                                                      --
- Read in the cell, symmetry operators and atomic parameters
+ Read in the cell, contents and atomic parameters
  from a variety of standard SHELX res or ins files.
- --
+ --                                                      --
  This operation will overwrite your current model structure
- Are you sure that you want to proceed?
+ Be sure that you want to proceed.
+
 %%
 %%
-% VARIABLE CHARACTER CFILE CLINE CENTRO CLATYP CUNIT CSFAC CTEM
+% VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM
+% VARIABLE CHARACTER SPACEHOOK
 % VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND
-% VARIABLE LOGICAL SFILERR LNOTAT LFIRST LPEAK
+% VARIABLE LOGICAL SFILERR LCANCEL LCRY
 % VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22
 % VARIABLE REAL SXU33 SXU23 SXU13 SXU12
+%%
+% EVALUATE LCRY = FALSE
 %%
 ^^WI WINDOW XINSHELX 'Input RES or INS data' MODAL
 ^^WI        COMMIT='BOK' CANCEL='BXX'
@@ -26,14 +30,12 @@
 ^^WI {
 ^^WI  @ 2,2 GRID TP NROWS=1 NCOLS=2
 ^^WI  {
-^^WI   @ 1,1 GRID TX NROWS=6 NCOLS=1
+^^WI   @ 1,1 GRID TX NROWS=4 NCOLS=1
 ^^WI   {
 ^^WI    @ 1,1 STATIC T1 'The option scans a SHELX file for a unit cell'
-^^WI    @ 2,1 STATIC T2 'symmetry, and atomic parameters,'
-^^WI    @ 3,1 STATIC T3 'This procedure will fail when files contain'
-^^WI    @ 4,1 STATIC T4 'reflections or are non-standard.'
-^^WI    @ 5,1 STATIC T5 'You must enter the spacegroup later so that it'
-^^WI    @ 6,1 STATIC T6 'can be included in the CIF.'
+^^WI    @ 2,1 STATIC T2 'and atomic parameters.'
+^^WI    @ 3,1 STATIC T3 'You must enter the spacegroup so that it'
+^^WI    @ 4,1 STATIC T4 'can be included in the CIF.'
 ^^WI   }
 ^^WI   @ 1,2 GRID GB NROWS=5 NCOLS=5
 ^^WI   {
@@ -86,7 +88,6 @@
 %%
 %% Cell card is the first thing to look for.
 %%
-%%
 
 Please be patient while the SHELX file is scanned for
 information. This may take some time...
@@ -120,161 +121,175 @@ information. This may take some time...
 % END IF
 
  CELL card processed.
+ Now give the spacegroup...
 
 %%
+%  EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'
+%  COPY '#SCRIPT XSPACE'
+%  IF LCANCEL .EQ. TRUE THEN
+ Shelx files do not contain the space group symbol, therefore
+ it must be entered separately.
+%      FINISH
+%  END IF
 %%
-%% Now look for the LATT card. If not there default to P and centric.
 %%
+%%%% Symmetry bit removed. Instead the user is forced to give a
+%%%% space group symbol, otherwise things can go wrong later.
+%%%%
+%%%% Now look for the LATT card. If not there default to P and centric.
+%%%%
+%%%%
 %%
-
- Looking for LATT instruction.
-
-% EVALUATE SFILERR = TRUE
-% EVALUATE CENTRO = 'YES'
-% LOOP
-%   ON ERROR TERMINATE
-%   ON END TERMINATE
-%   EXTRACT NEXT
-%   CLEAR
-%   EXTRACT TRANSFER COMMAND
-%   EXECUTE SEND
-%   EXTRACT TRANSFER INPUT
-%   CLEAR
-%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%   IF CVALUE .EQ. 'LATT' THEN
- LATT card found.
-%      GET NOSTORE NOPROMPT INTEGER 'LATT?' ' '
-%      EVALUATE ILATT = VALUE
-%      IF ILATT .LT. 0 THEN
-%         EVALUATE ILATT = 0 - ILATT
-%         EVALUATE CENTRO = 'NO'
-%      END IF
-%      CASE ILATT
-%         EVALUATE CLATYP = 'P'
-%         EVALUATE CLATYP = 'I'
-%         EVALUATE CLATYP = 'R'
-%         EVALUATE CLATYP = 'F'
-%         EVALUATE CLATYP = 'A'
-%         EVALUATE CLATYP = 'B'
-%         EVALUATE CLATYP = 'C'
-%      END CASE
-%      EVALUATE SFILERR = FALSE
-%      EVALUATE LOOPEND = LOOPCOUNTER
-%   END IF
-% END LOOP
+%% Looking for LATT instruction.
 %%
-% IF SFILERR .EQ. TRUE THEN
-
- No LATT card found. Defaulting to primitive centosymmetric lattice.
-
-%   EVALUATE CLATYP = 'P'
+%%% EVALUATE SFILERR = TRUE
+%%% EVALUATE CENTRO = 'YES'
+%%% LOOP
+%%%   ON ERROR TERMINATE
+%%%   ON END TERMINATE
+%%%   EXTRACT NEXT
+%%%   CLEAR
+%%%   EXTRACT TRANSFER COMMAND
+%%%   EXECUTE SEND
+%%%   EXTRACT TRANSFER INPUT
+%%%   CLEAR
+%%%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%%%   IF CVALUE .EQ. 'LATT' THEN
+%% LATT card found.
+%%%      GET NOSTORE NOPROMPT INTEGER 'LATT?' ' '
+%%%      EVALUATE ILATT = VALUE
+%%%      IF ILATT .LT. 0 THEN
+%%%         EVALUATE ILATT = 0 - ILATT
+%%%         EVALUATE CENTRO = 'NO'
+%%%      END IF
+%%%      CASE ILATT
+%%%         EVALUATE CLATYP = 'P'
+%%%         EVALUATE CLATYP = 'I'
+%%%         EVALUATE CLATYP = 'R'
+%%%         EVALUATE CLATYP = 'F'
+%%%         EVALUATE CLATYP = 'A'
+%%%         EVALUATE CLATYP = 'B'
+%%%         EVALUATE CLATYP = 'C'
+%%%      END CASE
+%%%      EVALUATE SFILERR = FALSE
+%%%      EVALUATE LOOPEND = LOOPCOUNTER
+%%%   END IF
+%%% END LOOP
+%%%%
+%%% IF SFILERR .EQ. TRUE THEN
+%%
+%% No LATT card found. Defaulting to primitive centosymmetric lattice.
+%%
+%%%   EVALUATE CLATYP = 'P'
+%%
+%% Rewinding SHELX file.
+%%
+%%%   EXTRACT REWIND
+%%% END IF
+%%%%
+%%%%
+%%%% Now look for those SYMM cards.
+%%%%
+%%%%
+%%
+%% Looking for SYMM instructions.
+%%
+%%% EVALUATE SFILERR = TRUE
+%%% LOOP
+%%%   ON ERROR TERMINATE
+%%%   ON END TERMINATE
+%%%   EXTRACT NEXT
+%%%   CLEAR
+%%%   EXTRACT TRANSFER COMMAND
+%%%   EXECUTE SEND
+%%%   EXTRACT TRANSFER INPUT
+%%%   CLEAR
+%%%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%%%   IF CVALUE .EQ. 'SYMM' THEN
+%%
+%% First SYMM card found.
+%%
+%%%%
+%%%% Find out how many SYMM cards there are.
+%%%%
+%%%%%      EVALUATE NSYMS = 1
+%%%      LOOP 
+%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
+%%%         ON ERROR TERMINATE
+%%%         ON END TERMINATE
+%%%         EXTRACT NEXT
+%%%         CLEAR
+%%%         EXTRACT TRANSFER COMMAND
+%%%         EXECUTE SEND
+%%%         EXTRACT TRANSFER INPUT
+%%%         CLEAR
+%%%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%%%         IF CVALUE .NE. 'SYMM' THEN
+%%%            EVALUATE LOOPEND = LOOPCOUNTER
+%%%            CLEAR
+%%%            INSERT ' A total of '
+%%%            STORE FORMAT /(I4)/ LENGTH 4 INTEGER NSYMS
+%%%            INSERT ' SYMM card(s) were found.'
+%%%            OUTPUT
+%%%            CLEAR
+%%%            EXTRACT REWIND
+%%
+%% Rewinding SHELX file.
+%%
+%%%         ELSE
+%%%            EVALUATE NSYMS = NSYMS + 1
+%%%         END IF
+%%%      END LOOP
+%%%      COPY '#LIST 2'
+%%%      INSERT 'CELL   NSYM='
+%%%      STORE FORMAT /(I3)/ LENGTH 3 INTEGER NSYMS + 1
+%%%      TRANSFER ' LATTICE=' // CLATYP TO BUFFER
+%%%      TRANSFER ' CENTRIC=' // CENTRO TO BUFFER
+%%%      SEND
+%%%% ShelX assumes identity operation. Crystals doesn't.
+%%%      COPY 'SYM X,Y,Z'
+%%%      EVALUATE SCOUNT = 0
+%%%      LOOP 
+%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
+%%%         ON ERROR TERMINATE
+%%%         ON END TERMINATE
+%%%         EXTRACT NEXT
+%%%         CLEAR
+%%%         EXTRACT TRANSFER COMMAND
+%%%         EXECUTE SEND
+%%%         EXTRACT TRANSFER INPUT
+%%%         CLEAR
+%%%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%%%         IF CVALUE .EQ. 'SYMM' THEN
+%%%            CLEAR
+%%%            INSERT 'SYM '
+%%%            GET NOPROMPT TEXT 'SYM OP'
+%%%            SEND
+%%%            EVALUATE SCOUNT = SCOUNT + 1
+%%%            IF SCOUNT .EQ. NSYMS THEN
+%%%               EVALUATE LOOPEND = LOOPCOUNTER
+%%%            END IF
+%%%         END IF
+%%%      END LOOP
+%%%      COPY 'END'
+%%%      EVALUATE SFILERR = FALSE
+%%%      EVALUATE LOOPEND = LOOPCOUNTER
+%%%   END IF
+%%% END LOOP
+%%% IF SFILERR .EQ. TRUE THEN
+%%
+%% No SYMM cards found. Defaulting to P -1.
+%%
+%%% COPY '#SPACE'
+%%% COPY 'SYMBOL P -1'
+%%% COPY 'END'
+%%
+%% End of the symmetry bit, which is commented out.
 
  Rewinding SHELX file.
 
 %   EXTRACT REWIND
-% END IF
-%%
-%%
-%% Now look for those SYMM cards.
-%%
-%%
-
- Looking for SYMM instructions.
-
-% EVALUATE SFILERR = TRUE
-% LOOP
-%   ON ERROR TERMINATE
-%   ON END TERMINATE
-%   EXTRACT NEXT
-%   CLEAR
-%   EXTRACT TRANSFER COMMAND
-%   EXECUTE SEND
-%   EXTRACT TRANSFER INPUT
-%   CLEAR
-%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%   IF CVALUE .EQ. 'SYMM' THEN
-
- First SYMM card found.
-
-%%
-%% Find out how many SYMM cards there are.
-%%
-%      EVALUATE NSYMS = 1
-%      LOOP 
-%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
-%         ON ERROR TERMINATE
-%         ON END TERMINATE
-%         EXTRACT NEXT
-%         CLEAR
-%         EXTRACT TRANSFER COMMAND
-%         EXECUTE SEND
-%         EXTRACT TRANSFER INPUT
-%         CLEAR
-%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%         IF CVALUE .NE. 'SYMM' THEN
-%            EVALUATE LOOPEND = LOOPCOUNTER
-%            CLEAR
-%            INSERT ' A total of '
-%            STORE FORMAT /(I4)/ LENGTH 4 INTEGER NSYMS
-%            INSERT ' SYMM card(s) were found.'
-%            OUTPUT
-%            CLEAR
-%            EXTRACT REWIND
-
- Rewinding SHELX file.
-
-%         ELSE
-%            EVALUATE NSYMS = NSYMS + 1
-%         END IF
-%      END LOOP
-%      COPY '#LIST 2'
-%      INSERT 'CELL   NSYM='
-%      STORE FORMAT /(I3)/ LENGTH 3 INTEGER NSYMS + 1
-%      TRANSFER ' LATTICE=' // CLATYP TO BUFFER
-%      TRANSFER ' CENTRIC=' // CENTRO TO BUFFER
-%      SEND
-%% ShelX assumes identity operation. Crystals doesn't.
-%      COPY 'SYM X,Y,Z'
-%      EVALUATE SCOUNT = 0
-%      LOOP 
-%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
-%         ON ERROR TERMINATE
-%         ON END TERMINATE
-%         EXTRACT NEXT
-%         CLEAR
-%         EXTRACT TRANSFER COMMAND
-%         EXECUTE SEND
-%         EXTRACT TRANSFER INPUT
-%         CLEAR
-%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%         IF CVALUE .EQ. 'SYMM' THEN
-%            CLEAR
-%            INSERT 'SYM '
-%            GET NOPROMPT TEXT 'SYM OP'
-%            SEND
-%            EVALUATE SCOUNT = SCOUNT + 1
-%            IF SCOUNT .EQ. NSYMS THEN
-%               EVALUATE LOOPEND = LOOPCOUNTER
-%            END IF
-%         END IF
-%      END LOOP
-%      COPY 'END'
-%      EVALUATE SFILERR = FALSE
-%      EVALUATE LOOPEND = LOOPCOUNTER
-%   END IF
-% END LOOP
-% IF SFILERR .EQ. TRUE THEN
-
- No SYMM cards found. Defaulting to P -1.
-
-% COPY '#SPACE'
-% COPY 'SYMBOL P -1'
-% COPY 'END'
-
- Rewinding SHELX file.
-
-%   EXTRACT REWIND
-% END IF
+%%% END IF
 
 %%
 %%
@@ -379,7 +394,7 @@ information. This may take some time...
 %%%%       TRANSFER 'CSFAC is now ' // CSFAC TO DISPLAY
 %%
 %       TRANSFER CUNIT TO INPUT
-%       GET KEYWORD 'UNIT1' ' '
+%       GET NOPROMPT KEYWORD ' '
 %       EVALUATE CTEM = CVALUE
 %%
 %       GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
@@ -427,102 +442,9 @@ information. This may take some time...
 %% in, though I'm sure someone could fix this by making it stop
 %% at an HKLF instruction.
 %%
-%% This loop was very long, and took some time to parse even when it is
-%% found that the card is not an atom right at the start.
-%% This has been fixed by moving the section that pulls all the
-%% atomic parameters out into another script. Like a subroutine.
-%%
-%%
-
- Looking for atoms and peaks in SHELX file.
-
-%%
-% EVALUATE SFILERR = TRUE
-% EVALUATE LFIRST = TRUE
-% SET VERIFY FALSE
-% LOOP
-%   ON ERROR TERMINATE
-%   ON END TERMINATE
-%   EXTRACT NEXT
-%   CLEAR
-%   EXTRACT TRANSFER COMMAND
-%   EXECUTE SEND
-%   EXTRACT TRANSFER INPUT
-%   CLEAR
-%   EVALUATE LNOTAT = FALSE
-%   EVALUATE LPEAK = FALSE
-%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING ' '
-%   EVALUATE CLINE = CVALUE
-%%
-%% Check that the keyword starts with alpha-numeric chars.
-%%
-%   IF FIRSTSTR ( CLINE ) .EQ. NULLSTRING THEN
-%     EVALUATE LNOTAT = TRUE
-%   END IF
-%%
-%   IF FIRSTSTR ( CLINE ) .EQ. 'Q' THEN
-%     EVALUATE LPEAK = TRUE
-%   END IF
-%%  
-%% Check for the first 20 SHELX commands.
-%%  
-%   IF LNOTAT .EQ. FALSE THEN
-%     VERIFY TITL CELL ZERR LATT SYMM SFAC UNIT -
-             TEMP SIZE HKLF OMIT EXTI MERG MOVE -
-             ANIS AFIX HFIX FRAG FEND EQIV
-%     LOOP 20 TIMES
-%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
-%          EVALUATE LNOTAT = TRUE
-%       END IF
-%     END LOOP
-%   END IF
-%   IF LNOTAT .EQ. FALSE THEN
-%%  
-%% Check for the second 20 SHELX commands.
-%%  
-%     VERIFY CONN PART BIND FREE DFIX SAME FLAT -
-             ISOR L.S. BLOC DAMP WGHT FVAR BOND -
-             CONF MPLA LIST FMAP GRID PLAN
-%     LOOP 20 TIMES
-%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
-%          EVALUATE LNOTAT = TRUE
-%       END IF
-%     END LOOP
-%   END IF
-%%  
-%% Check for the third 20 SHELX commands.
-%%  
-%   IF LNOTAT .EQ. FALSE THEN
-%     VERIFY MOLE ACTA END  DISP LAUE REM  MORE -
-             TIME SHEL BASF TWIN SWAT SPEC RESI -
-             RTAB EXYZ EADP BUMP SADI CHIV
-%     LOOP 20 TIMES
-%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
-%          EVALUATE LNOTAT = TRUE
-%       END IF
-%     END LOOP
-%   END IF
-%%
-%% Check for the last 7 SHELX commands. Add more commands here
-%% if you discover any that are missing. 
-%%
-%   IF LNOTAT .EQ. FALSE THEN
-%     VERIFY DELU SIMU DEFS SUMP CGLS SLIM WPDB
-%     LOOP 7 TIMES
-%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
-%          EVALUATE LNOTAT = TRUE
-%       END IF
-%     END LOOP
-%   END IF
-%   IF LNOTAT .EQ. FALSE THEN
-%     TRANSFER 'Found ' // CLINE TO DISPLAY
-%     COPY '#SCRIPT YSHELXIN'
-%   END IF
-% END LOOP
-% IF LFIRST .EQ. FALSE THEN
-%     COPY 'END'
-% END IF
+%  COPY '#SCRIPT ZSHELXIN'
  Shelx file processed.
+%  COPY '#CLOSE SCPDATA'
 % FINISH
 % END BLOCK
 % END CASE
