@@ -321,25 +321,14 @@ std::ostream& operator<<(std::ostream& pStream, Regions& pHeaders)
 
 ConditionColumn::ConditionColumn()
 {
-    iRegionConditions = new ArrayList<Index>(1);
+    iRegionConditions = new vector<Index>();
     iConditions = new ArrayList<Indexs>(1);
 }
 
 ConditionColumn::~ConditionColumn()
 {
-    int tSize = iRegionConditions->length();
-    
-    Index* tValue;
-    for (int i = 0; i < tSize; i++)
-    {
-        tValue = iRegionConditions->remove(i);
-        if (tValue !=NULL)
-        {
-            delete tValue;
-        }
-    }
-    Indexs* tValue2;
-    tSize = iConditions->length();
+	Indexs* tValue2;
+    int tSize = iConditions->length();
     for (int i = 0; i < tSize; i++)
     {
         tValue2 = iConditions->remove(i);
@@ -354,7 +343,8 @@ ConditionColumn::~ConditionColumn()
 
 void ConditionColumn::addRegion(signed char pIndex)
 {
-    iRegionConditions->add(new Index(pIndex));
+	Index tIndex(pIndex);
+    iRegionConditions->push_back(tIndex);
 }
 
 void ConditionColumn::addCondition(signed char pIndex, int pRow)
@@ -393,17 +383,17 @@ void ConditionColumn::setRegion(char* pRegion)
 
 int ConditionColumn::getRegion(const int pIndex)
 {
-    return iRegionConditions->get(pIndex)->get();
+    return (*iRegionConditions)[pIndex].get();
 }
 
-ArrayList<Index>* ConditionColumn::getRegions()
+vector<Index>* ConditionColumn::getRegions()
 {
     return iRegionConditions;
 }
 
 int ConditionColumn::countRegions()
 {
-    return iRegionConditions->length();
+    return iRegionConditions->size();
 }
 
 int ConditionColumn::length()
@@ -419,7 +409,7 @@ Indexs* ConditionColumn::getConditions(int pIndex)
 std::ostream& ConditionColumn::output(std::ostream& pStream, Regions* pRegions, Conditions* pConditions)
 {
     int tNumConditions = iConditions->length();
-    int tNumHeader = iRegionConditions->length();
+    int tNumHeader = iRegionConditions->size();
     
     for (int i = 0; i < tNumHeader; i++)
     {
@@ -449,7 +439,7 @@ std::ostream& ConditionColumn::output(std::ostream& pStream, Regions* pRegions, 
 Index::Index(signed char pValue):Number<signed char>(pValue)
 {}
         
-Index::Index(Index& pObject):Number<signed char>(pObject)
+Index::Index(const Index& pObject):Number<signed char>(pObject)
 {}
 
 signed char Index::get()
@@ -702,7 +692,7 @@ SpaceGroups* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
     return NULL;
 }
 
-ArrayList<Index>* Table::getRegions(int pI) const
+vector<Index>* Table::getRegions(int pI) const
 {
     return iColumns->get(pI)->getRegions();
 }
@@ -979,12 +969,11 @@ int Table::dataUsed(signed char pIndices[], const int pMax) const
     
     for (int i = 0; i < tNumColumns; i++)
     {
-        ArrayList<Index>* tIndexs = iColumns->get(i)->getRegions();
-        int tNumIndex = tIndexs->length();
-        for (int j = 0; j < tNumIndex; j ++)
+        vector<Index>::iterator tIndexsIter;
+        for (tIndexsIter = iColumns->get(i)->getRegions()->begin(); tIndexsIter != iColumns->get(i)->getRegions()->end(); tIndexsIter ++)
         {
-            signed char tIndexValue = tIndexs->get(j)->get();
-            tIndices.add(tIndexValue);
+			signed char tIndex =tIndexsIter->get();
+            tIndices.add(tIndex);
         }
     }
     Iterator<signed char>* tIterator = tIndices.createIterator();
@@ -1202,12 +1191,12 @@ RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral,
 	set<int, ltint> tChiralPGroupColNums;
 	vector<int> tResultingColumns;
 	
-	pTable.columnsFor(pLaueGroup, tLaueGPoinGColNums);
+	pTable.columnsFor(pLaueGroup, tLaueGPoinGColNums);  //get the columns for the laue groups
     if (iChiral)  	//If this is a chiral structure then get the information for filtering the list.
     {		
 		pTable.chiralColumns(tChiralPGroupColNums);
 		set_intersection(tChiralPGroupColNums.begin(), tChiralPGroupColNums.end(),
-		tLaueGPoinGColNums.begin(), tLaueGPoinGColNums.end(), tResultingColumns.begin());
+		tLaueGPoinGColNums.begin(), tLaueGPoinGColNums.end(), inserter(tResultingColumns, tResultingColumns.end())); //save the intersection of the two sets. These are are the columns which are needed.
     }
 	else
 	{
@@ -1225,7 +1214,7 @@ RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral,
     iTable = &pTable;
 }
 
-RankedSpaceGroups::RowRating::RowRating(int pRow, Table& pTable, Stats& pStats):Float(0)
+RowRating::RowRating(int pRow, Table& pTable, Stats& pStats):Float(0)
 {
     int tCount = pTable.numberOfColumns(); 
     
@@ -1239,19 +1228,24 @@ RankedSpaceGroups::RowRating::RowRating(int pRow, Table& pTable, Stats& pStats):
     
     for (int i = 0; i < tCount; i++)
     {
-        ArrayList<Index>* tRegions = pTable.getRegions(i);
-        int tHCount = tRegions->length();
+        vector<Index>* tRegions = pTable.getRegions(i);
+        int tHCount = tRegions->size();
         for (int j =0; j < tHCount; j++)
         {
             Indexs* tIndexs = pTable.getConditions(pRow, i);
-            addConditionRatings(pStats, tIndexs, tRegions->get(j));
+            addConditionRatings(pStats, tIndexs, &((*tRegions)[j]));
         }
     }
     iValue = (iSumRat1+iSumRat2)/(2*iTotNumVal);
     iValue += iFiltered?1:0;
 }
 
-void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tIndexs, Index* pRegionIndex)
+RowRating::RowRating(const RowRating& pRating):Float(pRating)
+{
+	*this = pRating;
+}
+
+void RowRating::addConditionRatings(Stats& pStats, Indexs* tIndexs, Index* pRegionIndex)
 {
     if (tIndexs)
     {
@@ -1269,7 +1263,7 @@ void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tI
     }
 }
 
-void RankedSpaceGroups::RowRating::addRating(const ElemStats* pStats)
+void RowRating::addRating(const ElemStats* pStats)
 {
     iTotNumVal++;
     iSumRat1 += pStats->tRating1;
@@ -1279,7 +1273,7 @@ void RankedSpaceGroups::RowRating::addRating(const ElemStats* pStats)
     iFiltered |= pStats->iFiltered ;
 }
 
-RankedSpaceGroups::RowRating& RankedSpaceGroups::RowRating::operator=(const RowRating& pRowRating)
+RowRating& RowRating::operator=(const RowRating& pRowRating)
 {
     (Float)(*this) = (Float)pRowRating;
     iRowNum = pRowRating.iRowNum;
@@ -1294,69 +1288,71 @@ RankedSpaceGroups::RowRating& RankedSpaceGroups::RowRating::operator=(const RowR
 
 void RankedSpaceGroups::addToList(RowRating& pRating)
 {
-    iSortedRatings.add(pRating);
+    insert(pRating);
 }
 
 std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when outputing the ranked space groups to a file.
 {
-    Iterator<RowRating>* tRatingIter = iSortedRatings.createIterator();
-    RowRating* tCurrentRating;
+    multiset<RowRating, RRlt>::iterator tRatingIter;
+//    RowRating* tCurrentRating;
         
-    pStream << "RESULTS " << iSortedRatings.count() << "\n";
+    pStream << "RESULTS " << size() << "\n";
     set<int, ltint> tChiralPointGroups;
 	set<int, ltint> tLaueGroupPointGroups;
 	set<int, ltint> tPointGroups;
     
+	iTable->columnsFor(iLaueGroup, tLaueGroupPointGroups);
     if (iChiral)
     {
-        iTable->chiralColumns(tPointGroups);
-		//iTable->laueGroupMatchingPG(iLaueGroup, tLaueGroupPointGroups);>>>>>>>>>>>
+        iTable->chiralColumns(tChiralPointGroups);
+		set_intersection(tChiralPointGroups.begin(), tChiralPointGroups.end(),
+		tLaueGroupPointGroups.begin(), tLaueGroupPointGroups.end(), inserter(tPointGroups, tPointGroups.end()));
     }
-    tRatingIter->reset();
-    while ((tCurrentRating = tRatingIter->next()) != NULL)
-    {
-        pStream << "SCORE " << tCurrentRating->value() << "\n";
+	else
+		tPointGroups.insert(tLaueGroupPointGroups.begin(), tLaueGroupPointGroups.end());
+    //tRatingIter->reset();
+	for (tRatingIter = begin(); tRatingIter != end(); tRatingIter++)
+	{
+        pStream << "SCORE " << tRatingIter->value() << "\n";
         pStream << "PROMOTED ";
-        if (tCurrentRating->iFiltered)
+        if (tRatingIter->iFiltered)
             pStream << "YES\n";
         else
             pStream << "NO\n";
-        if (iChiral)
-            iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);
-        else
-            iTable->outputLine(tCurrentRating->iRowNum, pStream);
+		iTable->outputLine(tRatingIter->iRowNum, pStream, tPointGroups);
     }
-    delete tRatingIter;
+    //delete tRatingIter;
   //  delete tPointGroups;
     return pStream;
 }
 
 std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 {
-    Iterator<RowRating>* tRatingIter = iSortedRatings.createIterator();
-    RowRating* tCurrentRating;
+	multiset<RowRating, RRlt>::iterator tRatingIter;
+	set<int, ltint> tChiralPointGroups;
+	set<int, ltint> tLaueGroupPointGroups;
     set<int, ltint> tPointGroups;
-    
+	
+    iTable->columnsFor(iLaueGroup, tLaueGroupPointGroups);
     if (iChiral)
     {
-        iTable->chiralColumns(tPointGroups);
+        iTable->chiralColumns(tChiralPointGroups);
+		set_intersection(tChiralPointGroups.begin(), tChiralPointGroups.end(),
+		tLaueGroupPointGroups.begin(), tLaueGroupPointGroups.end(), inserter(tPointGroups, tPointGroups.end()));
     }
+	else
+		tPointGroups.insert(tLaueGroupPointGroups.begin(), tLaueGroupPointGroups.end());
     pStream << "A '*' indicates that the row has been promoted because it seems that the data has been previously filtered for the centering.\n\n";
-     
-    tRatingIter->reset();
-    while ((tCurrentRating = tRatingIter->next()) != NULL)
-    {
-        pStream << setw(3) << tCurrentRating->iRowNum << " " << setprecision(4) << setw(9) << tCurrentRating->value() << " ";
-        if (tCurrentRating->iFiltered)
+    for (tRatingIter = begin(); tRatingIter != end(); tRatingIter++)
+	{
+        pStream << setw(3) << tRatingIter->iRowNum << " " << setprecision(4) << setw(9) << tRatingIter->value() << " ";
+        if (tRatingIter->iFiltered)
             pStream << " * ";
         else
             pStream << " + ";
-        if (iChiral)
-            iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);	//Output only set point group list.
-        else
-            iTable->outputLine(tCurrentRating->iRowNum, pStream);
+		iTable->outputLine(tRatingIter->iRowNum, pStream, tPointGroups);	//Output only set point group list.
     }
-    delete tRatingIter;
+    //delete tRatingIter;
     return pStream;
 }
 
@@ -1369,27 +1365,3 @@ std::ofstream& operator<<(std::ofstream& pStream, RankedSpaceGroups& pRank)
 {
     return pRank.output(pStream);
 }
-
-/*class CrystalSystem
-{
-	protected:
-		CrystalSystemID iID;
-		string iName;
-		list<LaueGroups*> iLaueGroups;
-		Table* iTables;
-	public:
-		CrystalSystem::CrystalSystem(Table* pTable,   
-		bool CrystalSystem::contains(LaueGroup* )
-		{
-			
-		}
-};
-
-class CrystalSystems:protected list<CrystalSystem*>
-{
-	public:
-		CrystalSystems(char* pFileName);
-		static CrystalSystems* defaultObject();
-		CrystalSystem* crystalSystemForLaueGroup(LaueGroup*);
-};*/
-
