@@ -46,5 +46,8 @@ them being overwritten
 % COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
 % COPY 'WRITE'
 % COPY 'END'
+% COPY '#SFLS'
+% COPY 'CALC'
+% COPY 'END'
 %%
 %END SCRIPT
