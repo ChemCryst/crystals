@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.99  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.4  2005/01/17 14:03:40  rich
 C Bring new repository into line with old (Remove esd from H atoms and report
 C angles to 1dp; Fix dps for H geom in CIF; Put H bond DA distance in CIF; reformat
@@ -3854,7 +3858,7 @@ C
 C
 2500  CONTINUE
 
-      IF ( NO_HBOND .EQ. 1 ) WRITE(NCFPU1,'(A)')'. . . . . . . . . .'
+      IF ( NO_HBOND .EQ. 1 ) WRITE(NCFPU1,'(A)')'. . . . . . . . . . .'
 
 3000  CONTINUE
 C
