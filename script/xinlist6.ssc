@@ -55,7 +55,7 @@
 ^^WI      @ 1,3 RADIOBUTTON RFS2 'F-squared' STATE=ON IGNORE
 ^^WI      @ 1,5 RADIOBUTTON RFS3 'I' IGNORE
 ^^WI    }
-^^WI    @ 2,1 CHECKBOX CS 'Data contains sigmas' STATE=ON IGNORE
+^^WI    @ 2,1 CHECKBOX CS 'Data contains sigmas' STATE=ON INFORM=NO
 ^^WI  }
 ^^WI  @ 6,2 GRID GL NROWS=1 NCOLS=2
 ^^WI  {
@@ -286,3 +286,6 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.12  2000/10/31 15:18:16  ckp2
+%% New text colour method
+%%
