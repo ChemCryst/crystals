@@ -1,4 +1,5 @@
 %SCRIPT XCHECK6
+% VARIABLE REAL WORK1 WORK2 WORK3 
 % VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE
 % VARIABLE REAL NEWRHO NEWRAT THFULL MRGR
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP
@@ -199,7 +200,7 @@
 ^^WI       @ 1,3 STATIC _MW_E2MIN1 '000000.000'
 ^^WI     }
 ^^WI    }
-^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=5 NCOLS=3
+^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=7 NCOLS=3
 ^^WI    {
 ^^WI     @ 2,2 GRID CGRID NROWS=3 NCOLS=1 OUTLINE='Cell contents'
 ^^WI     {
@@ -251,6 +252,27 @@
 ^^WI       @ 1,1 STRETCH CS2 HORIZONTAL
 ^^WI       @ 1,2 BUTTON ED28 'Change reflection filters'
 ^^WI      }
+^^WI     }
+^^WI     @ 6,2 GRID AGRID NROWS=6 NCOLS=5 OUTLINE='Acta recommendations'
+^^WI     {
+^^WI      @ 1,1 STATIC C1 'Crystal size'
+^^WI      @ 1,3 STATIC C2 'Computing'
+^^WI      @ 1,5 STATIC C3 'crystal size check results will appear here'
+^^WI      @ 2,1 STATIC T1 'Temperature'
+^^WI      @ 2,3 STATIC T2 'Computing'
+^^WI      @ 2,5 STATIC T3 'temperature check results will appear here'
+^^WI      @ 3,1 STATIC A1 'I/u(I) cutoff'
+^^WI      @ 3,3 STATIC A2 'Computing'
+^^WI      @ 3,5 STATIC A3 'I/u(I) check results will appear here'
+^^WI      @ 4,1 STATIC R1 'Merging R'
+^^WI      @ 4,3 STATIC R2 'Computing'
+^^WI      @ 4,5 STATIC R3 'Merging R check results will appear here'
+^^WI      @ 5,1 STATIC H1 'Theta full'
+^^WI      @ 5,3 STATIC H2 'Computing'
+^^WI      @ 5,5 STATIC H3 'Theta full check results will appear here'
+^^WI      @ 6,1 STATIC P1 'Completeness'
+^^WI      @ 6,3 STATIC P2 'Computing'
+^^WI      @ 6,5 STATIC P3 'Completeness check results will appear here'
 ^^WI     }
 ^^WI    }
 ^^WI   }
@@ -316,6 +338,81 @@
 %  COPY 'END'
 {I Done.
 %%
+%  IF ( LMAONCE ) THEN
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO WORK3'
+%    CLEAR
+%    INSERT "^^CO SET C3 TEXT '"
+^^CO SET C2 TEXT 'OK'
+%    IF WORK1 .GT. 0.6 THEN
+%       INSERT 'Min > 0.6mm '
+^^CO    SET C2 TEXT 'Warning'
+%    END IF
+%    IF WORK2 .GT. 0.8 THEN
+%       INSERT 'Med > 0.8mm '
+^^CO    SET C2 TEXT 'Warning'
+%    END IF
+%    IF WORK3 .GT. 1.0 THEN
+%       INSERT 'Max > 1.0mm'
+^^CO    SET C2 TEXT 'Warning'
+%    END IF
+%    INSERT "'"
+%    OUTPUT
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
+%    IF WORK1 .LT. 25.0 THEN
+^^CO    SET T2 TEXT 'Alert' SET T3 TEXT 'Temperaure < 25K. Please check.'
+%    ELSE
+^^CO    SET T2 TEXT 'OK' SET T3 TEXT ' '
+%    END IF
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    IF WORK1 .GE. 12.0 THEN
+^^CO   SET A2 TEXT 'Fail' SET A3 TEXT 'I/u(I) >= 12'
+%    ELSE
+%      IF WORK1 .GE. 10.0 THEN
+^^CO     SET A2 TEXT 'Warn' SET A3 TEXT 'I/u(I) >= 10'
+%      ELSE
+%        IF WORK1 .GE. 8.0 THEN
+^^CO   SET A2 TEXT 'Alert' SET A3 TEXT 'I/u(I) >= 8'
+%        ELSE
+^^CO   SET A2 TEXT 'OK' SET A3 TEXT ' '
+%        END IF
+%      END IF
+%    END IF
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    IF WORK1 .GT. 0.20 THEN
+^^CO   SET R2 TEXT 'Fail' SET R3 TEXT 'Rmerge > 20%. Poor data.'
+%    ELSE
+%      IF WORK1 .GE. 0.15 THEN
+^^CO     SET R2 TEXT 'Warn' SET R3 TEXT 'Rmerge > 15%. Poor data.'
+%      ELSE
+%        IF WORK1 .GE. 0.10 THEN
+^^CO       SET R2 TEXT 'Alert' SET R3 TEXT 'Rmerge > 10%. Not brilliant.'
+%        ELSE
+^^CO       SET R2 TEXT 'OK' SET R3 TEXT ' '
+%        END IF
+%      END IF
+%    END IF
+%    COPY 'LOCATE RECORDTYPE = 109'
+%    COPY 'TRANSFER FROM OFFSET = 10 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 11 TO WORK2'
+%    IF WORK1 .LT. 25.0 THEN
+^^CO   SET H2 TEXT 'Fail' SET H3 TEXT 'Theta full < 25 degrees'
+%    ELSE
+^^CO   SET H2 TEXT 'OK' SET H3 TEXT ' '
+%    END IF
+%    IF WORK2 .LT. 0.995 THEN
+^^CO   SET P2 TEXT 'Fail' SET P3 TEXT 'Completeness at theta full < 99.5%'
+%    ELSE
+^^CO   SET P2 TEXT 'OK' SET P3 TEXT ' '
+%    END IF
+%    COPY 'END'
+%  END IF
 ^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'
 %  IF ( MERGER .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA mergingr.dat'
