@@ -58,7 +58,7 @@ ie until the model is fully parameterised.  It is rarely advisable
 for the final refinement since it leads to poor error estimates.
 
 STATISTICAL WEIGHTS
-      (w=1/Sigma + modifiers)
+      (w=1/SigmaSq + modifiers)
       This scheme is most suitable for final refinement of good 
 quality data free from serious systematic error, and where there 
 the model is complete and well behaved. 
