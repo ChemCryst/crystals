@@ -61,7 +61,7 @@
 ^^WI   DISPOSE SHELX
 ^^CR
 %      IF ( VALUE .EQ. 1 ) THEN
-%           COPY '#SPAWN start /w notepad.exe shelxs.ins'
+%           COPY '#SPAWN +notepad.exe shelxs.ins'
 %           EVALUATE QTITLE = 'Shelxs Preparation'
 %           EVALUATE QLINE1 = 'Do you want to'
 %           EVALUATE QLINE2 = 'run SHELXS now?'

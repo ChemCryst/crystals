@@ -81,7 +81,7 @@
 ^^WI   DISPOSE SIR92
 ^^CR
 %      IF ( VALUE .EQ. 1 ) THEN
-%           COPY '#SPAWN start /w notepad.exe sir92.ini'
+%           COPY '#SPAWN +notepad.exe sir92.ini'
 %           EVALUATE QTITLE = 'Sir92 Preparation'
 %           EVALUATE QLINE1 = 'Do you still want to'
 %           EVALUATE QLINE2 = 'run the Sir92 job?'
@@ -95,7 +95,7 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
-%      COPY '#SPAWN  COMMAND.COM /e:3072 /c CRYSDIR:SIR92.BAT'
+%      COPY '#SPAWN +COMMAND.COM /e:3072 /c CRYSDIR:SIR92.BAT'
 %   END BLOCK
 %   BLOCK
 %      EVALUATE QTITLE = 'Sir92 Results'
@@ -130,7 +130,7 @@
 %          VERIFY CLOSE HELP
 %          GET NOSTORE FINAL ABBREVIATED ' ' ' '
 %          IF VALUE .EQ. 2 THEN
-%             COPY '#SPAWN start /w notepad.exe sir92.lis'
+%             COPY '#SPAWN +notepad.exe sir92.lis'
 %          END IF
 ^^CO DISPOSE SIRFAIL
 %          FINISH
