@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2002/12/03 13:59:34  rich
+C Compress output message when forming L22.
+C
 C Revision 1.8  2001/02/26 10:26:48  richard
 C Added changelog to top of file
 C
@@ -61,6 +64,8 @@ C      = 0 NOT LINK/RIDE
 C      = 1 RIDE
 C      = 2 LINK
 C      = 3 COMBINE
+C      = 4 GROUP
+C      = 5 SUMFIX
 C
 C      EQUIVALENCE EQUIVALENCES ALL THE SPECIFIED PARAMETERS TO A
 C      SINGLE L.S. PARAMETER.
@@ -534,15 +539,20 @@ C--JUMP ON THE FUNCTION OF THE CARD
 C----- UN-SET THE LINK FLAG
       ML=0
       GOTO (1350, 2150, 2150, 1500, 1650, 1800, 1850, 1340,
-     1      1330, 1320, 1310, 9910) ,MG
+     1      1330, 1320, 1310, 1315, 1200, 9910) ,MG
 C
 1310  CONTINUE
 C----- 'GROUP' CARD
       ML = 4
       NGPDIR = NGPDIR  + 1
       GOTO 1345
+1315  CONTINUE
+C----- 'SUMFIX' CARD
+      ML = 5
+      GOTO 1345
 1320  CONTINUE
-C----- 'COMBINE' CARD. SET FLAG
+C----- '
+COMBINE' CARD. SET FLAG
       ML = 3
       GOTO 1345
 1330  CONTINUE
@@ -1541,6 +1551,7 @@ C            1 RIDE
 C            2 LINK (NEEDS AND)
 C            3 COMBINE (NEEDS AND)
 C            4 GROUP
+C            5 SUMFIX
 C
       DIMENSION ORIGIN(3),WORK(3)
       DIMENSION IDELIM(1)
@@ -1583,6 +1594,87 @@ C----- SET NO OF ATOMS PROCESSED FROM THIS CARD
       IATOM = 0
       IBASE = NOWT
       LBASE = 0
+C--  SET NUMBER OF PARAMETERS FOUND SO FAR ON SUMFIX CARD:
+      NSMFXP = 0
+
+C SUMFIX: Need to know number of parameters in advance of
+C processing. We must make our way to the end of the card
+C now, then skip back and reprocess it:
+C
+C Two possible forms to this command:
+C
+C 1) SUMFIX p1 p2 AND p3 p4 AND p5
+C
+C   shift(p1)=shift(p2) shift(p3)=shift(p4)  shift(p1+p3+p5)=0
+C
+C 2) SUMFIX p1 p2 p3 p4
+C
+C   Assumes you forgot ANDs:  shift (p1+p2+p3+p4)=0
+
+      IF ( ML .EQ. 5 ) THEN
+        OME = ME                ! SAVE LEXICAL ADDRESSES
+        OMF = MF
+
+        NMANDS = 0
+        NSMFXP = 0
+
+800     CONTINUE
+
+        I = KCOMP (1, ISTORE(MF+2), IDELIM(1), 1,1) ! CHECK FOR 'AND'
+        IF ( I .GT. 0 ) THEN    ! IT IS AN 'AND'
+          NMANDS = NMANDS + 1
+          ME = ME - 1
+          MF = MF + LK2
+          GOTO 895
+        END IF
+
+        KB=KOVPCH(I)            ! CHECK FOR OVERALL PARAMETER
+        IF ( KB .LT. 0 ) THEN
+          GOTO 2050
+        ELSE IF ( KB .GT. 0 ) THEN
+          NSMFXP = NSMFXP + N5A
+          GOTO 895
+        ENDIF
+
+        KA=KCORCH(IDWZAP)       ! CHECK FOR IMPLICIT PARAMETERS
+        IF ( KA .NE. 0 ) THEN
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,1312)
+          WRITE(NCAWU,1312)
+          WRITE( CMON ,1312)
+          CALL XPRVDU(NCVDU, 1,0)
+          GOTO 2050
+        ENDIF
+
+C----- MUST BE AN ATOM WITH PARAMETERS
+
+        KA=KATOMU(LN)
+        IF ( KA .LE. 0 ) GOTO 2050
+        NSMFXP = NSMFXP + N5A * ISTORE(MQ+5)
+        IF(ISTORE(MQ+5) .EQ. 0) THEN
+C----- PARAMETERS SHOULD BE SPECIFIED
+          MF=MF-LK2
+          CALL XPCL12
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)ISTORE(MF+1)
+          WRITE(NCAWU,1500) ISTORE(MF+1)
+          WRITE( CMON ,1500) ISTORE(MF+1)
+          CALL XPRVDU(NCVDU, 1,0)
+          LEF=LEF+1
+          GOTO 2050
+        END IF
+895     CONTINUE
+C----- CHECK FOR END OF CARD
+        IF(ME.LE.0) GOTO 899
+        GOTO 800
+899     CONTINUE
+        ME = OME
+        MF = OMF
+        IF ( NMANDS .GT. 0 ) NSMFXP = NMANDS + 1
+C        WRITE(CMON,'(A,I8)')'N params found: ', NSMFXP
+C        CALL XPRVDU(NCVDU,1,0)
+        ISMFXP = NMANDS
+      END IF
+
+
 C
 C--ASSIGN THE MAXIMUM ADDRESS AS ZERO INITIALLY
       KA=0
@@ -1590,6 +1682,7 @@ C--CHECK THERE ARE ANY ARGUMENTS LEFT
       IF(ME)2100,2100,1000
 C--CHECK IF THE FIRST ARGUMENT IS A NUMBER
 1000  CONTINUE
+
       IF(KSYNUM(Z))1200,1050,1150
 C--NUMBER FOUND  -  CHECK IF THIS A WEIGHT FUNCTION
 1050  CONTINUE
@@ -1600,8 +1693,9 @@ C--NUMBER FOUND  -  CHECK IF THIS A WEIGHT FUNCTION
 1150  CONTINUE
       CALL XILOP(ISTORE(MF+1))
       GOTO 2050
-C
+
 1200  CONTINUE
+
 C
 C----- CHECK FOR 'AND'
 C
@@ -1611,7 +1705,7 @@ C
 C----- UPDATE DATA SET
       ISET = ISET + 1
 C----- NOW CHECK THAT 'AND' IS PERMITTED
-      IF (ML .EQ. 2 .OR. ML .EQ. 3) GOTO 1213
+      IF (ML .EQ. 2 .OR. ML .EQ. 3 .OR. ML .EQ. 5) GOTO 1213
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1212)
       WRITE(NCAWU,1212)
       WRITE ( CMON ,1212)
@@ -1670,7 +1764,7 @@ C----- ARE THERE LINKED PARAMETERS?
 1253     FORMAT( ' A GROUP may not contain OVERALL parameters')
          GOTO 2050
       ELSE IF (ML .GE. 2) THEN
-C----- LINKED PARAMETERS
+C----- LINKED, COMBINE OR SUMFIX PARAMETERS
          IMR = IMR + N5A
       ENDIF
       IF (KOVPIN (KB, M5O, N5A, IMP, ISET)) 2050, 1950, 2050
@@ -1698,6 +1792,13 @@ C----- IMPLICIT PARAMETER NAMES
          WRITE( CMON ,1311)
          CALL XPRVDU(NCVDU, 1,0)
 1311     FORMAT (' GROUP may not be used with IMPLICIT paramters')
+         GOTO 2050
+      ELSE IF (ML .EQ. 5) THEN
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,1311)
+         WRITE(NCAWU,1312)
+         WRITE( CMON ,1312)
+         CALL XPRVDU(NCVDU, 1,0)
+1312     FORMAT (' SUMFIX may not be used with IMPLICIT paramters')
          GOTO 2050
       ELSE
          GOTO 1600
@@ -1800,6 +1901,7 @@ C--CHECK THAT ONLY CORRECT VALUES ARE REFINED
       MS=ISTORE(MS)+MQ
       IF(ISTORE(MS+1)-3)2350,1650,1650
 1650  CONTINUE
+
 C----- SET BASE ADDRESS FOR WEIGHTS
       JBASE = IBASE
 C
@@ -1904,6 +2006,9 @@ C----- SET INCREMENT FOR COMBINE CARD
 C----- GROUP CARD
 C----- PHI,CHI,OMEGA,X0,Y0,Z0
             IMR = 6
+      ELSE IF (ML .EQ.5) THEN
+C----- SET INCREMENT FOR SUMFIX CARD
+            IMR = IMR + MR
       ENDIF
 1770  CONTINUE
       IF (MO + IMR -1 - MAXEQ) 1790, 1790, 1780
@@ -1920,6 +2025,10 @@ C
       I = KINSRT (IMP, ISET, JBASE)
 C
 C
+C      WRITE(CMON,'(A,6I9)') 'Back from KINSRT: I,ISET,MO,IMR,IMP,M12: ',
+C     1 I,ISET,MO,IMR,IMP,M12
+C      CALL XPRVDU(NCVDU,1,0)
+
       IF(I)2050,1850,1800
 1800  CONTINUE
       CALL XPRTCO(3,M5A,ISTORE(MS+1))
@@ -1949,6 +2058,7 @@ C--CHECK IF WE HAVE GENERATED TOO MANY ERRORS ALREADY
 C----- CARD HAS AN 'AND' OPERATOR. CHECK NO OF ARGUMENTS
       IF (IMP - LIMP) 2030, 2040, 2030
 2030  CONTINUE
+      IF ( ML .EQ. 5 ) GOTO 2040 ! Number do not have to match for SUMFIX
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,2035)
       WRITE(NCAWU,2035)
       WRITE( CMON ,2035)
@@ -1963,7 +2073,7 @@ C----- END OF CARD - TIDY UP
 2100  CONTINUE
       IF (ML - 1) 2120, 2117, 2110
 2110  CONTINUE
-      IF (ML .EQ. 4) GOTO 2117
+      IF (ML .EQ. 4 .OR. ML .EQ. 5) GOTO 2117
 C----- 'AND' REQUIRED
       IF(ISET) 2115, 2115, 2117
 2115  CONTINUE
@@ -2155,6 +2265,7 @@ C         = 1 FOR RIDE
 C         = 2 FOR LINK
 C         = 3 FOR COMBINE
 C         = 4 FOR GROUP
+C         = 5 FOR SUMFIX
 C
 C      NPASS = NO OF 'PARTS' TO BE SET FOR THE FUNCTION
 C
@@ -2213,6 +2324,30 @@ C---------- GROUP
 C---------- CHECK THAT THERE ARE 4 PARTS
             NPASS = 4
             CALL XCHKPT (NPASS)
+      ELSE IF (ML .EQ. 5) THEN
+C---------- SUMFIX
+            INC = 1
+C---------- ALL BUT LAST PARAMETER ONLY REQUIRE ONE PART
+            NPASS = 1
+            IF ( JSET .EQ. NSMFXP ) THEN
+              NPASS = NSMFXP - 1
+              INC = NPASS
+C              INC = 1
+            END IF
+            LSTPP = 0
+            IF ( JSET + MR - 1 .EQ. NSMFXP ) THEN
+C-- There is more than one parameter present. The last one
+C-- will require more parts. Remember this well.
+               LSTPP = 1
+            END IF
+C            WRITE(CMON,'(A,T30,5I9)')'KIN NPASS,JSET,NSMFXP,MS,MP,MO=',
+C     1       NPASS,JSET,NSMFXP,MS,MP,MO
+C            CALL XPRVDU(NCVDU,1,0)
+C            WRITE(CMON,'(A,T30,I9)')'KIN M12=',
+C     1       M12
+C            CALL XPRVDU(NCVDU,1,0)
+C---------- CHECK THAT THERE ARE ENOUGH PARTS
+            CALL XCHKPT (NPASS)
       ELSE
 C----- ILLEGAL ML VALUE
          CALL XPCL12
@@ -2241,6 +2376,7 @@ C----- SET THE EQUIVALENCE VALUE INCREMENT
       JMP = IMP
 C
 1105  CONTINUE
+
 C----- FIND THE LENGTH OF A 'PART' ENTRY
       NWDPT = ISTORE(M12+1)
 C----- PASS THROUGH THE PARTS FOR THIS PARAMETER
@@ -2291,12 +2427,26 @@ C----- ADD IN THE RELATIVE LS PARAMETER NUMBER
 1700  CONTINUE
       IF (ML .EQ. 3) JMP = IMP + ICMB( IPASS, JSET)
       IF (ML .EQ. 4) JMP = IMP + IGRP( IPASS, MT-3)
+      IF (ML .EQ. 5) THEN
+         IF ( JSET .LT. NSMFXP ) THEN
+           JMP = JSET-1
+         ELSE
+           JMP = IPASS-1
+         END IF
+      END IF
+
       ISTORE(I) = ISTORE(I) + MP + JMP
       ISTORE(I+2) = KOR(ISTORE(I+2),IE(MH))
       ISTORE(I+2) = KOR(ISTORE(I+2),IO(MG))
 C----- NOTE THAT AT THIS STAGE NO ACTUAL PARAMETER NO IS ASSIGNED
 C-----
-      IF (ML .NE. 3 .AND. ML .NE. 4) GOTO 1730
+
+C      WRITE(CMON,'(A,4I10)') 'MT, I, ISTORE(I), JMP:',
+C     1  MT,I,ISTORE(I),JMP
+C      CALL XPRVDU(NCVDU,1,0)
+
+
+      IF (ML .NE. 3 .AND. ML .NE. 4 .AND. ML .NE. 5) GOTO 1730
 C----- THERE SHOULD BE NO WEIGHT SET YET
        IF (ABS (STORE(I+1)) - ZERO) 1730, 1730, 1710
 1710   CONTINUE
@@ -2320,10 +2470,42 @@ C----- SET UP WEIGHTS (DERIVATIVES) FOR A GROUP CARD
             ELSE
                   STORE(I+1) = ABIT
             ENDIF
+      ELSE IF (ML .EQ. 5) THEN
+C To set up the SUMFIX constraint we need something like this (e.g. for
+C a five parameter sum):
+C x is a vector of the physical parameters.
+C x' is a vector of the LS variables.
+C C is a linear transformation.
+C
+C   dx = C.dx'
+C
+C        1  0  0  0 
+C        0  1  0  0
+C   C =  0  0  1  0
+C        0  0  0  1
+C       -1 -1 -1 -1
+C
+C i.e. the constraint reduces the number of parameters by one and
+C satisfies the condition that changing any of the x' variables
+C leaves the sum of the x variables constant.
+C We are being passed model parameters one by one so we are filling
+C a row from the above layout each time. The last parameter gets
+C all -1's.
+C Each new LS parameter must be stored in a different real parameter.
+
+C----- SET UP WEIGHTS FOR A SUMFIX CARD
+            IF ( JSET .EQ. NSMFXP ) THEN
+              STORE(I+1) = -1.0
+            ELSE
+               STORE(I+1) = 1.0
+            END IF
+C            WRITE(CMON,'(A,T25,5I8/)')'IPASS,IMP,JSET,WT,M12=',
+C     1       IPASS,IMP,JSET,NINT(STORE(I+1)),M12
+C            CALL XPRVDU(NCVDU,2,0)
       ELSE
-C----- NON-COMPOUND PARAMTERS
-C--CHECK IF THERE IS ALREADY A 'WEIGHT' STORED
-      IF(ABS(STORE(I+1)) .LE. ZEROSQ) STORE(I+1)=Z
+C-----  NON-COMPOUND PARAMTERS
+C-- CHECK IF THERE IS ALREADY A 'WEIGHT' STORED
+        IF(ABS(STORE(I+1)) .LE. ZEROSQ) STORE(I+1)=Z
       ENDIF
 C--SET UP THE MAX. AND MIN. DETAILS
       ISTORE(M12+4)=MIN0(MT,ISTORE(M12+4))
@@ -2339,10 +2521,38 @@ C
 1840  CONTINUE
 C--UPDATE FOR THE NEXT PARAMETER
 1850  CONTINUE
+
+C      WRITE(CMON,'(A,5I9)')'Updating for next param: MR,MS,LST,JSE,NSM',
+C     1 MR,MS,LSTPP,JSET,NSMFXP
+C      CALL XPRVDU(NCVDU,1,0)
+
       MR=MR-1
       MS=ISTORE(MS)+MQ
 C----- INCREMENT THE LINK EQUIVALENCE COUNTER
       IMP = IMP + INC
+
+C This is required to handle the implicit ANDs in "SUMFIX p1 p2 p3 p4"
+      IF ( ML .EQ. 5  .AND.  ISMFXP .EQ. 0 ) THEN
+        ISET = ISET + 1     ! This simulates an 'AND'
+        IMP = 0             ! Reinitialise bases.
+        IMR = 1
+C For situations where the last
+C parameters all belong to the same atom. e.g. SUMFIX C(7,X's)
+C this function is called only once, so the last
+C parameter (which holds all the -1 weights) must be spotted
+C and space made to store the parts:
+C- IF IT IS THE LAST PARAMETER; REQUIRES MORE PARTS:
+        IF ( MR .EQ. 1 .AND. LSTPP .EQ. 1 ) THEN
+          NPASS = NSMFXP - 1
+          INC = NPASS
+C          WRITE(CMON,'(A,T30,I9)')'KIN2 NPASS=',NPASS
+C          CALL XPRVDU(NCVDU,1,0)
+C          WRITE(CMON,'(A,T30,I9)')'KIN2 M12=', M12
+C          CALL XPRVDU(NCVDU,1,0)
+          CALL XCHKPT (NPASS)
+        ENDIF
+        JSET = ISET + 1
+      END IF
 C----- INCREMENT THE GROUP DERIVATIVE BASE
       JBASE = JBASE + 1
       GOTO 1000
@@ -2357,7 +2567,12 @@ C----- CHECK IF THE CURRENT ATOM HAS SUFFICIENT PARTS, AND ADD MORE IF N
 \STORE
 \XLST12
 \QSTORE
+\XIOBUF
+\XUNITS
 C
+
+C      WRITE(CMON,'(A,I9)')'Checking parts: ',INC
+C      CALL XPRVDU(NCVDU,1,0)
       M12J =  M12
       NPART = INC-1
       DO 1000 I = 1, NPART
@@ -2365,6 +2580,8 @@ C
       IF (M12J .LT. 0) THEN
 C---- INSERT A NEW PART
             M12J = KINEP(L12A)
+C      WRITE(CMON,'(A,I9)')'Inserting new part: ',M12J
+C      CALL XPRVDU(NCVDU,1,0)
       ENDIF
 1000  CONTINUE
       RETURN
