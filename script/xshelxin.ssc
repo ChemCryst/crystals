@@ -42,8 +42,8 @@
 ^^WI   @ 1,1 GRID TX NROWS=4 NCOLS=1
 ^^WI   {
 ^^WI    @ 1,1 STATIC T1 'The option scans a SHELX file for a unit cell'
-^^WI    @ 2,1 STATIC T2 'and atomic parameters.'
-^^WI    @ 3,1 STATIC T3 'You must enter the spacegroup so that it'
+^^WI    @ 2,1 STATIC T2 'and atomic parameters. During input, you will'
+^^WI    @ 3,1 STATIC T3 'be asked for the spacegroup so that it'
 ^^WI    @ 4,1 STATIC T4 'can be included in the CIF.'
 ^^WI   }
 ^^WI   @ 1,2 GRID GB NROWS=5 NCOLS=5
@@ -52,7 +52,7 @@
 ^^WI    @ 4,5 BUTTON BXX '&Cancel'
 ^^WI   }
 ^^WI  }
-^^WI  @ 4,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='Shelx File'
+^^WI  @ 4,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='Shelx File to input:'
 ^^WI  {
 ^^WI    @ 1,1 EDITBOX L6FILE ' ' CHARS=48 INFORM=NO INPUT
 ^^WI    @ 1,3 BUTTON BROWSE 'Browse...'
