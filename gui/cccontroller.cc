@@ -272,21 +272,14 @@ static CcLock m_Crystals_Commands_CS(true);
 static CcLock m_Interface_Commands_CS(true);
 
 static CcLock m_Crystals_Thread_Alive(true);
+static CcLock m_Protect_Completing_CS(true);
 
-static CcLock m_Wait_For_Processing_CS(false);
 static CcLock m_Crystals_Command_Added_CS(false);
 
 
 #ifdef __BOTHWX__
 #include <wx/settings.h>
 wxFont* CcController::mp_inputfont = nil;
-/*
-static wxMutex mInterfaceCommandQueueMutex;
-static wxMutex mCrystalsCommandQueueMutex;
-static wxMutex mCrystalsCommandQueueEmptyEvent;
-static wxMutex mLockCrystalsQueueDuringQueryMutex;
-static wxMutex mCrystalsThreadIsLocked;
-*/
 #include <wx/msgdlg.h>
 #endif
 
@@ -1151,7 +1144,6 @@ void    CcController::Tokenize( CcString cText )
         else if      ( selector == kSControlSelector )
         {
             while ( ParseInput( mCurTokenList ) );
-//            ProcessingComplete();
         }
         else if      ( selector == kSOneCommand )
         {                                                                                                                                //Avoids breaking up (and corrupting) the incoming streams from scripts.
@@ -1160,7 +1152,6 @@ void    CcController::Tokenize( CcString cText )
             ParseLine( cText.Chop(1,chop) );
             while ( ParseInput( mQuickTokenList ) );
             mCurTokenList  = mTempTokenList;
-//            ProcessingComplete();
         }
         else if      ( selector == kSQuerySelector )
         {
@@ -1190,42 +1181,9 @@ void CcController::CompleteProcessing()
 // will not return until the interface has processed all
 // pending commands in the command queue.
 
+   m_Protect_Completing_CS.Enter();
    m_Completing = true;
-   LOGSTAT("Complete processing - waiting");
-   while ( m_Completing )
-   {
-      m_Wait_For_Processing_CS.Wait(1000);
-   }
-   LOGSTAT("Complete processing - signal recieved.");
-
-/*
-#ifdef __CR_WIN__
-            WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE );
-#endif
-*/
-//This MUTEX is not normally owned. It stops the interface thread from
-//reclaiming the LockCrystalsQueue...Mutex before this thread gets it.
-                  if(mThisThreadisDead) endthread(0);
-
-
-//We (CRYSTALS) must wait here until the answer to this query has been put at the front
-//of the command queue.
-/*
-#ifdef __CR_WIN__
-            WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE );
-#endif
-*/
-//This MUTEX is always held by the interface thread. It is released
-//temporarily by the interface thread after processing a ^^?? instruction.
-//It is reclaimed once the mCrystalsThreadIsLocked mutex is released by this thread.
-//                  if(mThisThreadisDead) endthread(0);
-
-/*
-#ifdef __CR_WIN__
-            ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //Release and continue
-            ReleaseMutex( mCrystalsThreadIsLocked );            //Release to allow the interface thread to continue.
-#endif
-*/
+   m_Protect_Completing_CS.Leave();
 }
 
 
@@ -1235,55 +1193,18 @@ void CcController::ProcessingComplete()
 // This is called by the interface to signal that it has finished
 // processing all pending commands in the command queue.
 
-       m_Completing=false;
-
-       LOGSTAT("Processing complete - signalling");
-
-       m_Wait_For_Processing_CS.Signal();
-
-       LOGSTAT("Processing complete - signalled");
-/*
-#ifdef __CR_WIN__
-                  ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); // (1) We always hold this. Crystals thread is waiting for it.
-
-                  WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE ); // (2) Crystals thread gets the mLCQDQMutex, releases it, then releases this one.
-
-                  WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); // (3) We want this back.
-
-                  ReleaseMutex( mCrystalsThreadIsLocked ); // (4) Crystals thread needs this next time.
-#endif
-*/
-
-// This is a complicated bit of thread handshaking!
-// CRYSTALS is paused in the function above, CompleteProcessing(),
-// CRYSTALS has got hold of the mCrystalsThreadisLocked mutex.
-// CRYSTALS is waiting for the mLockCrystalsQueueDuringQueryMutex mutex,
-// which is held by this thread.
-// Now that we've finished processing, we release the
-// mLockCrystalsQueueDuringQueryMutex mutex. (1).
-// We then have to wait for the mCrystalsThreadisLocked mutex (2), this
-// is to ensure that it is CRYSTALS that gets the
-// mLockCrystalsQueueDuringQueryMutex mutex, before we reclaim it at (3).
-// Once CRYSTALS has got the mLockCrystalsQueueDuringQueryMutex it
-// immediately releases it, and also the mCrystalsThread is locked
-// mutex, so that we can continue to (4).
-//
-//             CRYSTALS                INTERFACE (US)
-//        --------------------     ---------------------
-//           Obtain mCTIL
-//        Waiting for mLCQDQM
-//                                  (Finish processing.)
-//                                    Release mLCQDQM
-//                                   Waiting for mCTIL
-//          Obtain mLCQDQM
-//         Release mLCQDQM
-//          Release mCTIL
-//        (Continue running.)
-//                                      Obtain mCTIL
-//                                     Obtain mLCQDQM
-//                                      Release mCTIL
-//
+   m_Protect_Completing_CS.Enter();
+   m_Completing=false;
+   m_Protect_Completing_CS.Leave();
 }
+
+bool CcController::Completing()
+{
+   m_Protect_Completing_CS.Enter();
+   bool temp = m_Completing;
+   m_Protect_Completing_CS.Leave();
+   return temp;
+}    
 
 Boolean CcController::IsSpace( char c )
 {
@@ -1343,19 +1264,14 @@ void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
 
     m_Crystals_Commands_CS.Enter();
 
-      mCrystalsCommandQueue.SetCommand( line, jumpQueue);
+    mCrystalsCommandQueue.SetCommand( line, jumpQueue);
+    ProcessingComplete();
 
     m_Crystals_Commands_CS.Leave();
 
     m_Crystals_Command_Added_CS.Signal();
 
 
-/*
-#ifdef __CR_WIN__
-    ReleaseMutex( mCrystalsCommandQueueMutex );
-    PulseEvent(mCrystalsCommandQueueEmptyEvent );
-#endif
-*/
 }
 
 void  CcController::AddInterfaceCommand( CcString line )
@@ -1371,47 +1287,25 @@ void  CcController::AddInterfaceCommand( CcString line )
  *  is placed at the top of the queue.
  */
 
-  bool needComplete = false;
-
   for ( int j = 1; j < min ( line.Length()-3, 6 ); j++ )
   {
     if ( line.Sub(j,j+3).Compare("^^??",4) )
     {
-      needComplete = true;
+      CompleteProcessing();
+// Nothing can be read back from queue until this query is answered.
       break;
     }
   }
 
-//    if ( line.Sub(j,j+3) == "^^??" )
-//    {
-
-
-
   m_Interface_Commands_CS.Enter();
 
-/*#ifdef __CR_WIN__
-    WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
-#endif
-*/
-    if(mThisThreadisDead) endthread(0);
+  if(mThisThreadisDead) endthread(0);
 
-    mInterfaceCommandQueue.SetCommand( line );
+  mInterfaceCommandQueue.SetCommand( line );
+
+//  LOGSTAT("CRYSTALS puts: " + line );
 
   m_Interface_Commands_CS.Leave();
-
-/*#ifdef __CR_WIN__
-    ReleaseMutex( mInterfaceCommandQueueMutex );
-#endif
-*/
-
-  if ( needComplete )
-  {
-    LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
-    CompleteProcessing();
-    LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
-  }
-
-  LOGSTAT("CRYSTALS puts: " + line );
 
 #ifdef __CR_WIN__
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
@@ -1434,12 +1328,12 @@ Boolean CcController::GetCrystalsCommand( char * line )
 
     if (mThisThreadisDead) return false;
 
-
-    while ( ! mCrystalsCommandQueue.GetCommand( line ) )
+    while ( Completing() || !mCrystalsCommandQueue.GetCommand( line ) )
     {
-//The queue is empty, so wait efficiently. Release the mutex first, so that someone else can write to the queue!
+// The queue is empty or locked so wait efficiently. 
+// Release the mutex for a while, so that someone else can write to the queue!
         m_Wait = false;
-        m_Crystals_Commands_CS.Leave();
+       m_Crystals_Commands_CS.Leave();
         if (mThisThreadisDead) return false;
 
 
@@ -1448,6 +1342,7 @@ Boolean CcController::GetCrystalsCommand( char * line )
 //The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
 
         m_Crystals_Commands_CS.Enter();
+//        LOGSTAT ("Bored. Retesting queue.");
     }
 
     LOGSTAT("!!!Crystals thread: Got command: "+ CcString(line));
@@ -1504,8 +1399,9 @@ Boolean CcController::GetInterfaceCommand( char * line )
   if ( ! mInterfaceCommandQueue.GetCommand( line ) )
   {
     strcpy( line, "" );
-    if ( m_Completing ) ProcessingComplete();
-
+// If CRYSTALS has nothing more to say, the we'd better make sure that the
+// queue of commands for CRYSTALS isn't locked:
+    if ( Completing() ) ProcessingComplete(); 
     m_Interface_Commands_CS.Leave();
     return (false);
   }
@@ -1517,57 +1413,6 @@ Boolean CcController::GetInterfaceCommand( char * line )
     return (true);
   }
 }
-
-/*
-//
-//Boolean CcController::GetInterfaceCommand( CcString * line )
-//{
-//    //This routine gets called repeatedly by the Idle loop.
-//    //It needn't be highly optimised even though it is high on
-//    //the profile count list.
-//
-//
-//  if(mCrystalsThread)
-//  {
-//#ifdef __CR_WIN__
-//    DWORD threadStatus;
-//    GetExitCodeThread(mCrystalsThread->m_hThread,&threadStatus);
-//    if(threadStatus != STILL_ACTIVE)
-//#endif
-//#ifdef __BOTHWX__
-//    if ( ! (mCrystalsThread->IsAlive()) )
-//#endif
-//    {
-//      if ( m_restart )
-//      {
-//        ChangeDir( m_newdir );
-//        StartCrystalsThread();
-//        m_restart = false;
-//        return (false);
-//      }
-//
-//      mThisThreadisDead = true;
-//      *line = "^^CO DISPOSE _MAIN ";
-//      return (true);
-//    }
-//  }
-//  m_Interface_Commands_CS.Enter();
-//
-//  if ( ! mInterfaceCommandQueue.GetCommand( line ) )
-//  {
-//    *line = "";
-//    if ( m_Completing ) ProcessingComplete();
-//    m_Interface_Commands_CS.Leave();
-//    return (false);
-//  }
-//  else
-//  {
-//    LOGSTAT("CcController:GetInterfaceCommand(ccstring version) Getting this command: "+ *line);
-//    m_Interface_Commands_CS.Leave();
-//    return (true);
-//  }
-//}
-*/
 
 void    CcController::LogError( CcString errString , int level )
 {
@@ -1788,11 +1633,10 @@ CcRect CcController::GetScreenArea()
                 screenRect.right);
 #endif
 #ifdef __BOTHWX__
-      wxSystemSettings ss;
       retVal.mTop = 0;
       retVal.mLeft = 0;
-      retVal.mBottom = ss.GetSystemMetric(wxSYS_SCREEN_Y);
-      retVal.mRight = ss.GetSystemMetric(wxSYS_SCREEN_X);
+      retVal.mBottom = wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_Y);
+      retVal.mRight =  wxSystemSettings::GetSystemMetric(wxSYS_SCREEN_X);
 
 //      cerr << "Screen Area: " << retVal.mRight << "," << retVal.mBottom << "\n";
 #endif
