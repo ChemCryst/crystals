@@ -4,7 +4,7 @@
 %% Test if the system editor should be used
 %   VERIFY YES NO
 %   GET NOSTORE FINAL ABBREVIATED  -
-  ' Do you want to use the system editor to modify LIST 5' 'YES'
+  ' Do you want to use a text editor to modify LIST 5' 'YES'
 %   IF ( VALUE .EQ. 1 ) THEN
       This SCRIPT puts you into a system editor to modify the atomic
       parameters.

@@ -1,11 +1,31 @@
 %SCRIPT DCANON
-%%scriptdata
-%% CANONICAL NUMBERING
+%% Canonical numbering.
 %% Compare two groups of atoms, and apply names from one group
 %% to the other. User has to identify 4 matching atoms in each group
 %  VARIABLE INTEGER OLDSER N5 NCHOSEN
+%  VARIABLE CHARACTER CTEXT1 CTEXT2
 %  COPY '#DISPLAY'
 %  COPY 'END'
+{1,11
+{1,11  This SCRIPT enable you to apply atomic typing and related
+{1,11  numbering to multiple occurances of a motif in a structure.
+{1,11  Since CRYSTALS becomes confused if there are two or more atoms
+{1,11  of the same type with the same serial number, the best strategy
+{1,11  is as follows:
+{1,11  Quit this SCRIPT  
+{1,11  Number the atoms sequentially from 1
+{1,11  Convert all the atoms to type C
+{1,11  Use the graphics window to change required element types in one
+{1,11  fragment
+{1,11  Restart this SCRIPT to number and type the remaining motifs.
+{1,11
+{1,0
+%  VARIABLE LOGICAL ABORT
+%  EVALUATE CTEXT1 = 'Continue or Abort?'
+%  COPY '#SCRIPT DGETAB'
+%  IF ABORT = TRUE THEN
+%   FINISH
+%  END IF
 %  COPY '#GENERALEDIT 5'
 %  COPY 'GETSERIAL OLDSER'
 %  COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
@@ -13,14 +33,13 @@
 % COPY '#REGULARISE COMPARE'
 % COPY 'METHOD 1'
 % QUEUE REWIND
-% VARIABLE CHARACTER CTEXT1 CTEXT2
 % EVALUATE CTEXT1 = 'TARGET'
 % EVALUATE CTEXT2 = 'IDEAL'
 % VARIABLE INTEGER NPAIR
 % COPY '#SCRIPT DPAIR'
 % IF NPAIR .LE. 3 THEN
 %   EVALUATE CTEXT1 = 'Insufficient pairs of atoms selected'
-%   COPY '#SCRIPT DMESSAGE'
+%   COPY '#SCRIPT DMESAGE'
 %   COPY 'TERMINATE'
 %   COPY 'END'
 % END IF
@@ -59,7 +78,6 @@
 % END IF
 % COPY 'ONTO'
 % QUEUE PROCESS
-% VARIABLE LOGICAL ABORT
 % EVALUATE CTEXT1 = 'Continue or Abort?'
 % COPY '#SCRIPT DGETAB'
 % IF ABORT = TRUE THEN

@@ -1,9 +1,10 @@
 %SCRIPT DCHOOSE
-%%scriptdata
-%% CHOOSE ATOM LIST
 %% Create a CONTINUED list in the Script Queue 
+%%
 %% Returns the number of atoms selected in NCHOSEN 
+%%
 %% CTEXT1 is the text to be displayed in the window frame
+%%
 %% N5 - The maximum number of atoms in LIST 5
 %%
 % VARIABLE CHARACTER CTEXT1
@@ -22,11 +23,11 @@
 ^^WI     @ 1,1 STATIC T1 'Highlight the atoms you want to'
 ^^WI     @ 2,1 STATIC T2 'select'
 ^^WI     @ 3,1 STATIC T3 ' '
-^^WI     @ 4,1 STATIC T4 'Click "Abort to" '
-^^WI     @ 5,1 STATIC T5 'abort whole operation'
+^^WI     @ 4,1 STATIC T4 'Click "Done" when selection is'
+^^WI     @ 5,1 STATIC T5 'completed'
 ^^WI     @ 6,1 STATIC T6 ' '
-^^WI     @ 7,1 STATIC T7 'Click "Done" when selection is'
-^^WI     @ 8,1 STATIC T8 'completed'
+^^WI     @ 7,1 STATIC T7'Click "Abort to" '
+^^WI     @ 8,1 STATIC T8'abort whole operation'
 ^^WI   }
 ^^WI   @ 2,4 GRID BTNS NROWS=5 NCOLS=1
 ^^WI   {
