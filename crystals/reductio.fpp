@@ -519,7 +519,8 @@ C
 C
 CDJWAPR99 UPDATE LIST 30
        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL30
-              STORE(L30DR) = FLOAT(N6W)
+              STORE(L30DR) = max(FLOAT(N6W),STORE(L30DR))
+              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 1810  CONTINUE
       CALL XOPMSG ( IOPSSM , IOPEND , 200 )
@@ -729,6 +730,8 @@ C--SET UP LIST 6 FOR THE I/O OPERATIONS
       CALL XFLT06(IULN,0)
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--CHECK THE TYPE OF OUTPUT MEDIUM
+cdjwmay99
+c      write(ncawu,*) 'medium=',medium
       IF(MEDIUM)1150,1100,1150
 C--SAME AS BEFORE  -  SET THE 'MEDIUM' FLAG
 1100  CONTINUE
@@ -839,6 +842,7 @@ C--CHECK IF WE HAVE /FO/ OR /FO/ **2 STORED
       IF(ISQ)2050,2000,2000
 C--/FO/ STORED  -  CONVERT TO /FO/ **2
 2000  CONTINUE
+cdjwmay99 - we should use the proper routine for this! ^
       JFO=KREF+IFO
       TEMP = ABS(STORE(JFO))
       STORE(KREF+12)=2.*TEMP*STORE(KREF+12)
@@ -992,6 +996,8 @@ CDJWMAP99[
       CALL XSQRT(STORE(JFO), FSIGN, FABS, STORE(M6+12), SIG)
       STORE(JFO) = FSIGN
       STORE(M6+12) = SIG
+cdjwmay99 - store the goodie in /FO/ as well for twinned
+      if (itwin .gt. 0) store(m6+3) = store(jfo)
 CDJWMAP99]
 C--STORE THE REFLECTION
 3600  CONTINUE
@@ -1019,6 +1025,8 @@ C--END OF THE TAPE  -  TERMINATE THE WRITE
       N6D=N6W
       CALL XERT(IULN)
 C--AND NOW GENERATE THE OUTPUT FILE IF NECESSARY
+cdjwmay99
+      call xswp06(iuln,medium)
 C--PRINT THE REFLECTION STATISTICS PROFILE
       CALL WSTAT(N3SIG, PC3SIG)
 C
@@ -1103,7 +1111,7 @@ C------- FRIEDEL USED
             STORE(L30DR+4) = FLOAT(N6W)
             STORE(L30DR+5) = WORK(28)
       ELSE
-            STORE(L30DR+2) = FLOAT(N6W)
+            STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
             STORE(L30DR+3) = WORK(28)
       ENDIF
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
