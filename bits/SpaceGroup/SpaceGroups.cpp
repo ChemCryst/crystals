@@ -6,7 +6,6 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
-//#include "stdafx.h"
 #include "SpaceGroups.h"
 #include "Exceptions.h"
 #include <iostream>
@@ -73,16 +72,14 @@ std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup)
     return pSpaceGroup.output(pStream);
 }
 
-//char* iBrackets;
 //These are here to save allocation time. You have to make sure that you don't try and uses them where they might get over written.
 static regex_t * gSpaceGroupsFSO =NULL;
 static regex_t * gSGBraketsFSO =NULL;
 const size_t gMatches = 10;
 regmatch_t gMatch[gMatches];
 
-SpaceGroups::SpaceGroups(char* pSpaceGroups)
+SpaceGroups::SpaceGroups(char* pSpaceGroups):iBrackets(NULL)
 {
-    iBrackets = NULL;
     if (gSpaceGroupsFSO == NULL)
     {//(([^\\[\\{].+[^\\]\\}]))
         #if defined(_WIN32)
@@ -130,7 +127,6 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups)
     }
     else if(gMatch[7].rm_so > -1)
     {
-    
     }
 }
 
@@ -185,7 +181,6 @@ std::ofstream& SpaceGroups::output(std::ofstream& pStream)
     for (int i = 0; i < tNumber; i++)
     {
         (*this)[i].crystalsOutput(pStream);
-       //pStream << (*this)[i];
         if (i+1 < tNumber)
             pStream << "\n";
     }
@@ -202,40 +197,31 @@ std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups)
     return pSpaceGroups.output(pStream);
 }
 
-SGColumn::SGColumn()
-{
-    iPointGroup = NULL;
-    iSpaceGroups = new ArrayList<SpaceGroups>(1);
-}
+SGColumn::SGColumn():ArrayList<SpaceGroups>(1), iPointGroup(NULL)
+{}
 
 SGColumn::~SGColumn()
 {
-    int tSize = iSpaceGroups->length();
+    int tSize = length();
     
     for (int i = 0; i < tSize; i++)
     {
-        SpaceGroups* tSpace = iSpaceGroups->get(i);
+        SpaceGroups* tSpace = get(i);
         if (tSpace)
         {
             delete tSpace;
         }
     }
-    delete iSpaceGroups;
 }
 
 void SGColumn::add(char* pSpaceGroup,  int pRow)
 {
-    iSpaceGroups->setWithAdd(new SpaceGroups(pSpaceGroup), pRow);
+    setWithAdd(new SpaceGroups(pSpaceGroup), pRow);
 }
 
 SpaceGroups* SGColumn::get(int pIndex)
 {
-    return iSpaceGroups->get(pIndex);
-}
-
-int SGColumn::length()
-{
-    return iSpaceGroups->length();
+    return get(pIndex);
 }
 
 void SGColumn::setHeading(char* pHeading)
