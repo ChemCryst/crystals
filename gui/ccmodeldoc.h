@@ -20,7 +20,8 @@
 #ifndef		__CcModelDoc_H__
 #define		__CcModelDoc_H__
 
-
+#include <GL/glu.h>
+#include <GL/gl.h>
 #include "ccstring.h"	// added by classview
 #include "cclist.h"	// added by classView
 class CcTokenList;
@@ -31,28 +32,27 @@ class CcModelAtom;
 class CcModelDoc
 {
 	public:
+            void RenderModel( CrModel* view, Boolean detailed );
 		void InvertSelection();
 		CcString Compress(CcString atomname);
 		void SelectAllAtoms(Boolean select);
 		void SelectAtomByLabel(CcString atomname, Boolean select);
 		CcModelAtom* FindAtomByLabel(CcString atomname);
-		Boolean centred;
 		void PrepareToGetAtoms();
 		void Select(Boolean selected);
 		void HighlightView(CrModel* aView);
-		void ReDrawHighlights(Boolean notify);
 		CcModelAtom* GetModelAtom();
-		void Centre();
 		void RemoveView(CrModel* aView);
-		CcList attachedViews;
 		void DrawViews();
 		void AddModelView(CrModel* aView);
 		void Clear();
-		void DrawView(CrModel* aView);
 		CcModelDoc();
 		~CcModelDoc();
 		Boolean	ParseInput( CcTokenList * tokenList );
+
+
 		CcString mName;
+		CcList attachedViews;
 	private:
 		int nSelected;
 		int m_nAtoms;

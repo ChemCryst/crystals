@@ -18,6 +18,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  1999/04/30 17:09:45  dosuser
+// RIC: Changed the ClearHighlights() call before the HighlightAtoms loop
+//      to a StartHighlights() before and a FinishHighlights() after.
+//
 // Revision 1.3  1999/04/26 11:12:39  dosuser
 // RIC: Added a bit of code to call Reset() on all views attached to
 //      the modeldoc in order that they don't keep pointers to atoms
@@ -43,11 +47,7 @@ CcModelDoc::CcModelDoc( )
 	mCellList = new CcList();
 	mTriList = new CcList();
 	m_nAtoms = 0;
-	m_TotX = 0;
-	m_TotY = 0;
-	m_TotZ = 0;
 	nSelected = 0;
-	centred = false;
 }
 
 CcModelDoc::~CcModelDoc()
@@ -99,7 +99,6 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 	
 	while ( hasTokenForMe )
 	{
-		CcCoord cotemp(0,0,0);
 		switch ( tokenList->GetDescriptor(kModelClass) )
 		{
 			case kTModelShow:
@@ -112,13 +111,9 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 			{
 				tokenList->GetToken(); // Remove that token!
 				CcModelAtom* item = new CcModelAtom(this);
-				cotemp = item->ParseInput(tokenList);
+                        item->ParseInput(tokenList);
 				mAtomList->AddItem(item);
 				m_nAtoms++;
-				m_TotX += cotemp.X();
-				m_TotY += cotemp.Y();
-				m_TotZ += cotemp.Z();
-				centred = false;
 				break;
 			}
 			case kTModelBond:
@@ -127,7 +122,6 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 				CcModelBond* item = new CcModelBond();
 				item->ParseInput(tokenList);
 				mBondList->AddItem(item);
-				centred = false;
 				break;
 			}
 			case kTModelCell:
@@ -136,7 +130,6 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 				CcModelCell* item = new CcModelCell();
 				item->ParseInput(tokenList);
 				mCellList->AddItem(item);
-				centred = false;
 				break;
 			}
 			case kTModelTri:    //Triangles for those 3D fourier surfaces.
@@ -152,7 +145,6 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 			{
 				tokenList->GetToken(); // Remove that token!
 				Clear();
-				centred = false;
 				break;
 			}
 			default:
@@ -166,25 +158,6 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 	return retVal;
 }
 
-void CcModelDoc::DrawView(CrModel* aView)
-{
-	mAtomList->Reset();
-	mBondList->Reset();
-	mCellList->Reset();
-	mTriList->Reset();
-	CcModelObject* item;
-	aView->Start();
-	while ( (item = (CcModelObject*)mAtomList->GetItemAndMove()) != nil )
-		item->Draw(aView);
-	while ( (item = (CcModelObject*)mBondList->GetItemAndMove()) != nil )
-		item->Draw(aView);
-	while ( (item = (CcModelObject*)mCellList->GetItemAndMove()) != nil )
-		item->Draw(aView);
-	while ( (item = (CcModelObject*)mTriList->GetItemAndMove()) != nil )
-		item->Draw(aView);
-	aView->Display();
-
-}
 
 void CcModelDoc::Clear()
 {
@@ -205,11 +178,11 @@ void CcModelDoc::Clear()
 		mBondList->RemoveItem();
 		delete theItem;
 	}
-	while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
-	{
-		mCellList->RemoveItem();
-		delete theItem;
-	}
+//      while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
+//      {
+//            mCellList->RemoveItem();
+//            delete theItem;
+//      }
 	while ( ( theItem = (CcModelObject *)mTriList->GetItem() ) != nil )
 	{
 		mTriList->RemoveItem();
@@ -217,35 +190,24 @@ void CcModelDoc::Clear()
 	}
 
 	m_nAtoms = 0;
-	m_TotX = 0;
-	m_TotY = 0;
-	m_TotZ = 0;
 
-	attachedViews.Reset();
-	CrModel* aView;
-	while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
-	{
-            aView->Reset();
-	}
-
+      DrawViews();
 
 }
 
 void CcModelDoc::AddModelView(CrModel * aView)
 {
 	attachedViews.AddItem(aView);
-	Centre();
-	DrawView(aView);
+      aView->Update();
 }
 
 void CcModelDoc::DrawViews()
 {
-	Centre();
 	attachedViews.Reset();
 	CrModel* aView;
 	while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
 	{
-		DrawView(aView);
+            aView->Update();
 	}
 }
 
@@ -255,52 +217,6 @@ void CcModelDoc::RemoveView(CrModel * aView)
 	{
 		attachedViews.RemoveItem();
 	}
-}
-
-void CcModelDoc::Centre()
-{
-	if(!centred)
-	{
-		CcModelObject* item;
-		if(m_nAtoms > 0)
-		{
-			int x = (int)( (float)m_TotX / (float)m_nAtoms );
-			int y = (int)( (float)m_TotY / (float)m_nAtoms );
-			int z = (int)( (float)m_TotZ / (float)m_nAtoms );
-			while ( (item = (CcModelObject*)mAtomList->GetItemAndMove()) != nil )
-				item->Centre(x,y,z);
-			while ( (item = (CcModelObject*)mBondList->GetItemAndMove()) != nil )
-				item->Centre(x,y,z);
-			while ( (item = (CcModelObject*)mCellList->GetItemAndMove()) != nil )
-				item->Centre(x,y,z);
-			while ( (item = (CcModelObject*)mTriList->GetItemAndMove()) != nil )
-				item->Centre(x,y,z);
-		}
-		centred = true;
-	}
-}
-
-void CcModelDoc::ReDrawHighlights(Boolean notify)
-{
-	attachedViews.Reset();
-	CrModel* aView;
-	while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
-	{
-		HighlightView(aView);
-		if(notify)
-			aView->UpdateHighlights();
-	}
-
-}
-
-void CcModelDoc::HighlightView(CrModel * aView)
-{
-	mAtomList->Reset();
-	CcModelAtom* item;
-      aView->StartHighlights();
-	while ( (item = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
-		item->Highlight(aView);
-      aView->FinishHighlights();
 }
 
 void CcModelDoc::Select(Boolean selected)
@@ -330,7 +246,9 @@ void CcModelDoc::SelectAtomByLabel(CcString atomname, Boolean select)
 	CcModelAtom* item = FindAtomByLabel(atomname);
 	if(item)
 		item->Select(select);
-	ReDrawHighlights(true);
+//      ReDrawHighlights(true);
+      DrawViews();
+
 }
 
 CcModelAtom* CcModelDoc::FindAtomByLabel(CcString atomname)
@@ -356,7 +274,8 @@ void CcModelDoc::SelectAllAtoms(Boolean select)
 	{
 		item->Select(select);
 	}
-	ReDrawHighlights(true);
+//      ReDrawHighlights(true);
+      DrawViews();
 }
 
 CcString CcModelDoc::Compress(CcString atomname)
@@ -429,5 +348,33 @@ void CcModelDoc::InvertSelection()
 	{
 		item->Select();
 	}
-	ReDrawHighlights(true);
+//      ReDrawHighlights(true);
+      DrawViews();
 }
+
+
+
+void CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
+{
+	mAtomList->Reset();
+	mBondList->Reset();
+//      mCellList->Reset();
+	mTriList->Reset();
+      CcModelAtom* aitem;
+      CcModelBond* bitem;
+//    CcModelCell* citem;
+      CcModelTri*  titem;
+
+      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
+            aitem->Render(view,detailed);
+
+      while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) != nil )
+            bitem->Render(view,detailed);
+
+//      while ( (citem = (CcModelCell*)mCellList->GetItemAndMove()) != nil )
+//            citem->Render(view,detailed);
+
+      while ( (titem = (CcModelTri*)mTriList->GetItemAndMove()) != nil )
+            titem->Render(view,detailed);
+}
+
