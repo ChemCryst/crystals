@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2002/10/02 13:39:00  rich
+C Mapview file output.support.
+C
 C Revision 1.12  2002/06/07 16:13:46  richard
 C Just some tidying.
 C
@@ -547,25 +550,27 @@ C------ SET UP SOME CONSTANTS
           BPD(8) = YEND
           BPD(9) = ZEND
 
-          WRITE(CMON,'(A,9F7.3)') 'BPD1-9 ',(BPD(J),J=1,9)
-          CALL XPRVDU(NCVDU, 1,0)
+c          WRITE(CMON,'(A,9F7.3)') 'BPD1-9 ',(BPD(J),J=1,9)
+c          CALL XPRVDU(NCVDU, 1,0)
 
 
-          JE=NFL
-          M5=L5
-          JFNVC = 0
-          ITRANS = 0 !Allow translation
-          NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0, 2)
+          LSTK=NFL
 
+          IF (NTYP .LT. IPMAP)  THEN   !List 5 is loaded:
+            M5=L5
+            JFNVC = 0
+            TOLER = 0.0
+            ITRANS = 0 !Allow translation
+            NDIST = KDIST1( N5, MSTK, 12, JFNVC, TOLER, ITRANS, 0, 2, 0)
+          ELSE
+            NDIST = 0
+          END IF
 
           WRITE (NCFPU1,REC=JPOINT+1) NDIST
           JPOINT = JPOINT + 2
 
 
-          WRITE(CMON,'(A,I5)') 'Natoms: ', NDIST
-          CALL XPRVDU(NCVDU, 1,0)
-
-          DO K = JE, JE+(JT*(NDIST-1)),JT
+          DO K = LSTK, LSTK+(12*(NDIST-1)),12
             M5 = ISTORE(K)
 
             CALL CATSTR (STORE(M5),STORE(M5+1),1,1,0,0,0,CSERI,LSERI)
@@ -584,18 +589,6 @@ C Mapview assumes XY plane origin is 0,0, so offset.
             JPOINT = JPOINT + 3
           END DO
 
-c          DO I5 = L5, L5+(N5-1)*MD5, MD5
-c            CALL CATSTR (STORE(I5),STORE(I5+1),1,1,0,0,0,CSERI,LSERI)
-c            WRITE ( NCFPU1,REC=JPOINT) CSERI(1:4)
-c            WRITE ( NCFPU1,REC=JPOINT+1) CSERI(5:8)
-c            JPOINT = JPOINT + 2
-c            DO IN5 = 0,2
-c              WRITE ( NCFPU1,REC=JPOINT+IN5) STORE(I5+2+IN5)
-c            END DO
-c            WRITE(CMON,'(3F15.4)') (STORE(I5+J),J=2,4)
-c            CALL XPRVDU(NCVDU, 1,0)
-c            JPOINT = JPOINT + 3
-c          END DO
 
           WRITE (NCFPU1,REC=18) DENMIN
           WRITE (NCFPU1,REC=19) DENMAX
@@ -1260,7 +1253,7 @@ C--SWOP THE COORDINATES OF THE CURRENT ATOM
       CALL XFSWOP(STORE(M5+4),3,1,1,1)
 C--MOVE THE ATOM AROUND
 C
-      J = KDIST1(1, K, 10, 0, .2, 0, 0, 4)
+      J = KDIST1(1, K, 10, 0, .2, 0, 0, 4, 0)
 C
       M5=M5-MD5
       IF(J)2650,2550,2600
@@ -2654,7 +2647,7 @@ C -- IF PEAK IS UNREASONABLE, MARK AS DELETED
 C--CHECK FOR ANY CONTACTS TO THIS PEAK
       M5A=M10-3
       M5=M5A+MD10
-      N = KDIST1( N10-I, KC, KD, 0, .2, 0, 0, 4)
+      N = KDIST1( N10-I, KC, KD, 0, .2, 0, 0, 4, 0)
 C--CHECK IF THERE ARE ANY CONTACTS TO THIS ATOM
       IF(N)2300,2300,2000
 C--MARK THE OTHER CONTACTS NOT TO BE USED
