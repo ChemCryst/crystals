@@ -43,6 +43,7 @@
 %  VARIABLE REAL ELECTRON 
 %% Make sure we have a valid LIST 12 of some sort
 %% and find the last non- hydrogen atom
+%  COPY '#SCRIPT CHECK5'
 %  COPY '#SCRIPT CHECK12'
 %%
 %% Make sure that H is in list 29.
@@ -94,8 +95,7 @@
 ^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID OUTER NROWS=3 NCOLS=7
 ^^WI {
-^^WI   @ 2,2 MULTIEDIT AUTO12TEXT '' NROWS=10 NCOLS=80
-^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI   @ 2,2 TEXTOUT AUTO12TEXT '' NROWS=10 NCOLS=80
 ^^WI   @ 2,6 GRID BTNS NROWS=5 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
@@ -228,6 +228,7 @@
 %             EVALUATE ISTAGE = 1
 %           END BLOCK
 %           BLOCK % KSLSQ1 3
+%             EVALUATE ADP = 0
 %             EVALUATE CPARAM = " X'S "
 %             EVALUATE EXEREFN = TRUE
 %           END BLOCK
@@ -238,17 +239,22 @@
 %             COPY 'UEQUIV FIRST UNTIL LAST'
 %             COPY 'MONITOR MEDIUM'
 %             COPY 'END'
+%             EVALUATE ADP = 1
 %             EVALUATE CPARAM = " X'S, U[ISO] "
 %             EVALUATE ISTAGE = 2
 %             EVALUATE EXEREFN = TRUE
 %           END BLOCK
 %           BLOCK % KSLSQ3 5
+%             EVALUATE ADP = 3
 %             EVALUATE CPARAM = " X'S, U'S "
 %             EVALUATE ISTAGE = 3
 %             EVALUATE EXEREFN = TRUE
 %           END BLOCK
 %           BLOCK % KSHYDR 6
 %             COPY '#SCRIPT XFINDH'
+%%% This script drops back to control don't put
+%%% anything here!
+%             COPY '#SCRIPT CHECK5'
 %             COPY '#SCRIPT CHECK12'
 %             VERIFY YES NO
 %             GET NOSTORE FINAL ABBREVIATED -
@@ -260,6 +266,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %             COPY '#SFLS'
 %             COPY 'CALC'
 %             COPY 'END'
+%%%%%%%%
 %           END BLOCK
 %           BLOCK % KSEXTN 7
  You will be shown an analysis of residuals.
@@ -303,8 +310,7 @@ Remember - the data may not be good enough to reveal all H atoms
 ^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID OUTER NROWS=3 NCOLS=5
 ^^WI {
-^^WI   @ 2,2 MULTIEDIT HELPTEXT '' NROWS=10 NCOLS=80
-^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI   @ 2,2 TEXTOUT HELPTEXT '' NROWS=10 NCOLS=80
 ^^WI   @ 2,4 GRID HBTNS NROWS=1 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON HBOK '&Ok' DEFAULT COMMIT
@@ -405,48 +411,42 @@ REFINEMENT
 %      END BLOCK
 %    END CASE
 %    IF ( EXEREFN .EQ. TRUE ) THEN
-%      QUEUE REWIND
-%      QUEUE COPY #LIST 12
-%      CLEAR
-%      STORE CHARACTER -
-      'FULL ' // cparam2 // ' First(' // CPARAM // ') until '
-%      QUEUE SEND
-%      CLEAR
-%      STORE CHARACTER "CONTINUE " // CLAST
-%      QUEUE SEND 
-%      TRANSFER "END" TO CRYSTALS
-%%
-%      QUEUE COPY END
-%      QUEUE PROCESS
+%      COPY '#SCRIPT CHECK12'
 %      COPY '#SUM LIST 12'
 %      COPY 'END'
+%%
 %      IF ( EXTINCT .EQ. TRUE ) .AND. ( PURGE .EQ. FALSE ) THEN
 %        IF EXISTS 11 .EQ. 1 THEN
 %          COPY '#DISK'
 %          COPY 'DELETE 11'
 %          COPY 'END'
 %        END IF
+%%
 %        COPY '#PURGE'
 %        COPY 'END'
 %        EVALUATE PURGE = TRUE
 %      END IF
+%%
 %      COPY '#LIST 22'
 %      COPY 'END'
-%%
 %      COPY '#SCRIPT XREFINE'
 %      COPY '#SCRIPT RFACTOR'
- Test for near convergence of the R factor...
+ * Test for near convergence of the R factor...
 %      CLEAR
-%      INSERT 'Old R factor = '
+%      INSERT '    Old R factor = '
 %      STORE FORMAT /(F7.2)/ LENGTH 7 REAL RMIN
 %      INSERT '%. New R factor = '
 %      STORE FORMAT /(F7.2)/ LENGTH 7 REAL R
 %      OUTPUT
 %      CLEAR
+%%
 %      IF R .GE. RMIN * 0.99 THEN
- The refinement has probably converged.
+   The refinement has probably converged.
 %      END IF
+%%
 %      EVALUATE RMIN = R
 %    END IF % ERROR%
+%%
 %  END LOOP
+%%
 %END SCRIPT
