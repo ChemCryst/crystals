@@ -49,6 +49,7 @@ CcList CrWindow::mModalWindowStack;
 	mCommandText= "";
 	m_relativePosition = 0;
 	m_relativeWinPtr = nil;
+      mWindowWantingSysKeys = nil;
 
 }
 
@@ -610,7 +611,7 @@ void CrWindow::FocusToInput(char theChar)
 	}
 	else
 	{
-		mControllerPtr->FocusToInput(theChar);
+            mControllerPtr->FocusToInput(theChar);
 	}
 }
 
@@ -654,4 +655,41 @@ void CrWindow::SetCommandText(CcString theText)
 {
 	mCommandText = theText;
 	mCommandSet = true;
+}
+
+
+
+// Called by objects in the window to request that
+// system key information is passed to them
+// Currently used by CxChart for Cameron rotation and
+// CxEditBox for command line history.
+
+void CrWindow::SendMeSysKeys( CrGUIElement* interestedWindow )
+{
+      mWindowWantingSysKeys = interestedWindow;
+      if ( interestedWindow != nil )
+      {
+// Make sure the CxWindow is listening for us.
+            ((CxWindow*)mWidgetPtr)->mWindowWantsKeys = true;
+      }
+      else
+      {
+// Make sure the CxWindow is not listening.
+            ((CxWindow*)mWidgetPtr)->mWindowWantsKeys = false;
+      }
+}
+
+// Called by CxWindow when a system key is pressed,
+// if CxWindow->mWindowWantsKeys is set to true.
+
+void CrWindow::SysKeyPressed ( UINT nChar )
+{
+      if ( mWindowWantingSysKeys == nil )
+      {
+            ((CxWindow*)mWidgetPtr)->mWindowWantsKeys = false;
+      }
+      else
+      {
+            mWindowWantingSysKeys->SysKey ( nChar );
+      }
 }

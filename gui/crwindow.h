@@ -54,11 +54,14 @@ class	CrWindow : public CrGUIElement
 		void* GetPrevTabItem(void* pElement);
 		void* GetNextTabItem(void* pElement);
 		void* FindTabItem(void* pElement);
+            void  SendMeSysKeys( CrGUIElement* interestedWindow );
 //Callbacks
 		void CloseWindow();
 		void Committed();
 		void Cancelled();
-		
+
+            void SysKeyPressed ( UINT nChar );
+
 		// attributes
 		CrGrid *	mGridPtr;
 		CcList *	mTabGroup;
@@ -67,6 +70,7 @@ class	CrWindow : public CrGUIElement
 		int mMinWidth;
 
 		static CcList mModalWindowStack;
+            CrGUIElement* mWindowWantingSysKeys;
 
 private:
 	CrGUIElement* m_relativeWinPtr;
