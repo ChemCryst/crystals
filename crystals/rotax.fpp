@@ -561,6 +561,8 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
       subroutine write_results(fom,disag, d,q,bc,m2,ipunch)
 c prints the results to rotax.out
       real  fom,disag(3,30), d(30,5),q(15), m2(3,3)
+      INTEGER BININC(12),BINREJ(12)
+      REAL BINMAX
       integer bc,i
 \XIOBUF
 \XUNITS
@@ -571,6 +573,8 @@ c prints the results to rotax.out
 4     FORMAT(i2,' reflections omitted'/
      4          'Figure of merit with no omissions = ',f6.2)
 5     FORMAT (i2,1X,9f7.3)
+
+      BINMAX = 0.0
 
       write(NCWU,1)(m2(1,i),i=1,3)
       write(NCWU,1)(m2(2,i),i=1,3)
@@ -610,7 +614,28 @@ c prints the results to rotax.out
          write(NCWU,7) (disag(j,i),j=1,3),
      1 (d(i,j),j=2,4),abs(d(i,1)),d(i,5),' Omitted from fom calculation'
         endif
+        BINMAX = MAX(BINMAX,ABS(D(I,1)))
       enddo
+
+      IF ( ipunch .ge. 1 ) then
+        DO I = 1,12
+          BININC(I) = 0
+          BINREJ(I) = 0     
+        END DO
+
+        DO I = 1,30
+          N = 1 + (12.0 * abs(d(i,1)) / BINMAX)
+          N = MAX(1,N)
+          N = MIN(12,N)
+          if (d(i,1)>0) then
+             BININC(N) = BININC(N) + 1
+          else
+             BINREJ(N) = BINREJ(N) + 1
+          end if
+        END DO
+        write (NCPU,'(F6.4,24I3)')BINMAX,(BININC(I),BINREJ(I),I=1,12)
+      END IF
+
       write(NCWU,8)
 8     FORMAT('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      8+++++++++++')
