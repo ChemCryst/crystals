@@ -135,9 +135,10 @@ void runTest(RunParameters& pRunData)
         gettimeofday(&time1, NULL);
         LaueGroups tLaueGroups;
         tResultID = tLaueGroups.guessSystem(*tHKL, pRunData);
-        strcpy(tResult, crystalSystemConst(LaueGroups::laueGroupID2UnitCellID(tResultID)));
         gettimeofday(&time2, NULL);    
         std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n\n";
+        strcpy(tResult, crystalSystemConst(LaueGroups::laueGroupID2UnitCellID(tResultID)));
+        
         // ask the user if need be.
         if (!pRunData.iCrystalSys.empty())
         {
