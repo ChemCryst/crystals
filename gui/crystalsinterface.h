@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.32  2004/10/06 13:57:26  rich
+// Fixes for WXS version.
+//
 // Revision 1.31  2004/06/28 13:26:57  rich
 // More Linux fixes, stl updates.
 //
@@ -193,12 +196,14 @@ typedef unsigned int UINT;
 
 
 
-#ifdef _DEBUG
-  #ifdef __CR_WIN__
-//    #include <afxwin.h> //Needed for TRACE debugger macro.
-//    #define new DEBUG_NEW //Needed for debugger to track heap allocations.
+#ifdef __CR_WIN__
+  #ifdef _DEBUG
+    #define __CRDEBUG__
   #endif
-  #ifdef __BOTHWX__
+#endif
+
+#ifdef __BOTHWX__
+  #ifdef __CRDEBUG__
     #include <wx/object.h>
   #endif
 #endif
@@ -220,7 +225,7 @@ typedef unsigned int UINT;
 
 
 
-#ifdef _DEBUG
+#ifdef __CRDEBUG__
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
  #define LOGSTATUS    //Log lots of things (LOGSTAT macro)

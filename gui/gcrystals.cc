@@ -23,8 +23,7 @@ using namespace std;
 
 #ifdef __CR_WIN__
 
-  #ifdef _DEBUG
-    //#define new DEBUG_NEW
+  #ifdef __CRDEBUG__
     #undef THIS_FILE
     static char THIS_FILE[] = __FILE__;
   #endif
