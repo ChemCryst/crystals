@@ -6,7 +6,7 @@
 %   VARIABLE REAL RCHK
 %% Re-assign fragment numbers.
 %   COPY '#EDIT'
-%   COPY 'INSERT FRAG'
+%   COPY 'INSERT RESIDUE'
 %   COPY 'END'
 %%
 %   QUEUE REWIND
@@ -30,7 +30,7 @@
 ^^WI {
 ^^WI   @ 2,2 STATIC T1 'First choose offset for renumbering:'
 ^^WI   @ 2,4 EDITBOX MOFFS '100' INTEGER CHARS=10
-^^WI   @ 3,2 STATIC T2 'Then click an atom in the fragment'
+^^WI   @ 3,2 STATIC T2 'Then click an atom in the residue'
 ^^WI   @ 4,2 STATIC T3 'to be mapped onto.'
 ^^WI   @ 5,2 GRID G NROWS=2 NCOLS=1
 ^^WI   {
@@ -66,7 +66,7 @@
 {E Cannot find the atom you clicked on. Sounds like an error.
 %       ELSE
 %         QUEUE PROCESS
-%         TRANSFER 'ONTO FRAG (' // CHARACTER ( IFRAG ) // ')' TO CRYSTALS
+%         TRANSFER 'ONTO RESI(' // CHARACTER ( IFRAG ) // ')' TO CRYSTALS
 %         CLEAR
 %         INSERT 'RENAME '
 ^^?? MOFFS TEXT
