@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2003/09/10 21:18:28  djw
+C Correct mis-formatting of Sheldrick weighting formula in .cifs
+C
 C Revision 1.62  2003/09/03 20:58:56  rich
 C g77 compiler does not allow addressing of sections of array using string
 C notation. Fixed.
@@ -2338,14 +2341,26 @@ C--IF 'ND' IS NEGATIVE, THEN THE SUBROUTINE WILL CHOOSE
 C  A VALUE FOR 'ND', UNLESS THAT VALUE IS LESS THAN 'ND' AND
 C  THE NUMBER IS TO BE PRINTED AS AN INTEGER.
 C
+C----- SECTION DEALING WITH DECIMAL OUTPUT REWRITTEN oCT2003
+C      THE VALUE OF 'ND' IS IGNORED IF THE SIGN IS -VE
 C--
 C
+      CHARACTER *4 CB
+      CHARACTER*32 CFORM
+      CHARACTER*80 CTEMP
 C
       DIMENSION IVET(118)
 C
 \XCHARS
+\XCONST
 C
+      EQUIVALENCE (JB,CB)
+      DATA CB/'    '/
 C
+C----- WE DONT KNOW HOW BIG IVET IS, BUT WE CAN CLEAR OUT THE LAST
+C      /ND/ LOCATIONS
+      MODND = ABS(ND)
+      CALL XFILL(JB,IVET(j-modnd+1),modnd)
       J1=J
       A=COOR
       B=ESD
@@ -2365,6 +2380,7 @@ C--STILL TOO SMALL
 C--NO E.S.D. TO PRINT  -  INSERT THE DEFAULT
       N1=J2
       GOTO 1350
+C
 C--THE NUMBER OF PLACES FOR THE E.S.D. HAS BEEN FOUND
 1150  CONTINUE
 C----- 'RULE OF 19'
@@ -2398,31 +2414,87 @@ C--PRINT WITHOUT DECIMAL POINT
       CALL SI(A,N1,ID)
       CALL SUBALF(J1,ID,IVET)
       J2=J1
-      GOTO 1500
-C--PRINT WITH DECIMAL POINT
-1450  CONTINUE
-      J3=J1+1
-      CALL SID(A,N1,IX,ID)
-      J2=J1-N1+1
-C--OUTPUT THE NUMBER AFTER THE DECIMAL POINT
-      CALL SUBALF(J1,ID,IVET)
-      CALL SET0(J2,J1,IVET)
-      J2=J2-1
-      IVET(J2)=IPOINT
-      J2=J2-1
-C--OUTPUT THE PART BEFORE THE DECIMAL POINT
-      CALL SUBALF(J2,IX,IVET)
-C--OUTPUT THE SIGH IF NECESSARY
-1500  CONTINUE
-      IF(A)1550,1600,1600
-1550  CONTINUE
-      IVET(J2)=MINUS
+C--OUTPUT THE SIGN IF NECESSARY
+      IF(A .LT.0) IVET(J2)=MINUS
 C--OUTPUT THE E.S.D.
-1600  CONTINUE
       CALL SI(B,N1,ID)
       CALL SUBZED(J3,ID,IVET, 1)
       RETURN
+C
+C
+C--PRINT WITH DECIMAL POINT
+1450  CONTINUE
+C----- COMPLETELY RE-WRITTEN BY DJW OCT 2003 IN ORDER TO DEAL WITH
+C      ESDS GREATER THAN UNITY.
+C      METHOD USES INTERNAL WRITES TO BUILD UP A TEXT STRING FORMAT
+C      TO TAKE ADVANTAGE OF INTERNAL ROUNDING.  
+C      THIS IS THEN MANIPUATED FOR SUS GREATER THAN 2.0 EITHER TO REMOVE
+C      THE DECIMAL POINT, OR BACKFILL THE TRAILING ZEROS.
+      CTEMP = ' '
+      NND= MIN(ABS(ND),N1)
+      NND = N1
+      IF (B .LE. ZERO) THEN
+C----- NO ESD - WRITE TO REQUESTED PRECISION
+        WRITE(CFORM,'(A,I2,A,A,A)')  
+     1  '(F20.',
+     1  ABS(ND),
+     1  ')'
+        WRITE(CTEMP,CFORM) A
+C        
+      ELSE IF (B .LT. 2.) THEN
+C-----NORMAL PRINT WITH VALUES BOTH SIDES OF THE DECIMAL POINT
+        WRITE(CFORM,'(A,I2,A,A,A)')  
+     1  '(F20.',
+     1  ABS(NND),
+     1  ',''('', I20',
+     1  ','')''',
+     1  ')'
+        IE = NINT(B*10**NND)
+        WRITE(CTEMP,CFORM) A,IE
+      ELSE
+C-----ALL THE VALUES ARE TO THE RIGHT OF THE DECIMAL POINT
+C     SO DONT PRINT IT.
+        IXX = NINT(A)
+        IE = NINT(B)
+C      WRITE THE NUMBER AND ITS ESD, THEN FIND OUT WHERE THE ACTUAL
+C      VALUES BEGIN IN THE STRING.
+        WRITE(CTEMP,'(2I10)') IXX,IE
+        IK = 11
+        DO II = 1,10
+          IF (CTEMP(IK:IK) .NE. ' ') EXIT
+          IK = IK +1
+        ENDDO
+        IK = MIN(IK,20)
+        IJ = IK-10 
+        IF (IK .NE. 20) THEN
+C      'RULE OF 19'
+            IF (CTEMP(IK:IK) .EQ. '1') THEN
+               IF (CTEMP(IK+1:IK+1) .NE. '0') THEN
+                    IK=IK+1
+                    IJ=IJ+1
+                ENDIF
+            ENDIF
+        ENDIF
+C      ROUND THE RESULT RATHER THAN JUST TRUNCATE
+        READ(CTEMP(1:10),'(I10)') IXX
+        READ(CTEMP(11:20),'(I10)') IE
+        IP=10-IJ
+        IXX=10**IP*(NINT(FLOAT(IXX)/10**IP))
+        IE=10**IP*(NINT(FLOAT(IE)/10**IP))
+        WRITE(CTEMP,'(2I10)') IXX,IE
+        CTEMP(11:11)='('
+        CTEMP(21:21)=')'
+      ENDIF
+      CALL XCRAS(CTEMP,N)
+C----- LOOK FOR '(' OR '.' TO POSITION RESULT IN FIELD
+      IP=INDEX(CTEMP,'(')
+      IF (IP .EQ. 0) IP=INDEX(CTEMP,'.')
+      IP = N-IP
+C      WRITE(*,'(A,2I6)') 'J,IP= ',J,IP
+      READ(CTEMP(1:N),'(32A1)') (IVET(II+IP),II=J-N,J)        
+C
       END
+C
 C
 CODE FOR SUBALF
       SUBROUTINE SUBALF(J,IARG,IVET)
@@ -2796,6 +2868,7 @@ C
 \QSTORE
 C
 C
+      data ihyd /'H   '/
       DATA DIST/'D'/, ANGLE/'A'/
       DATA ITEM(1)/2/, ITEM(2)/3/, ITEM(3)/4/
 C----- MAXIMUM NO OF ATOMS
@@ -2870,9 +2943,12 @@ C
 C--CLEAR THE OUTPUT BUFFER
       CALL XMVSPD(IB,LINEA(1),LINE)
       K=IFIR
+      idjw=0
       DO 2020 I=1,NUM
       J=K
 C--OUTPUT THE TYPE
+c^
+      if (itype(i) .eq. ihyd) idjw=idjw+1
       CALL SA41 ( J , ITYPE(I) , LINEA )
       IND1=NINT(SER(I))
 C----- OUTPUT  SERIAL NUMBER
@@ -2883,7 +2959,16 @@ C--UPDATE THE CURRENT POSITION FLAG
 2020  CONTINUE
       J=K + NFX
 C----- OUTPUT VALUE AND ESD
-      CALL SNUM(TERM, ESD, NXD, NOP,J,LINEA)
+      if(idjw .ne. 0) then
+            if (code .eq. dist) then 
+                 inxd = -2
+            else
+                 inxd = -1
+            endif
+      else
+            inxd = nxd
+      endif
+      CALL SNUM(TERM, ESD, INXD, NOP,J,LINEA)
 C--CHECK FOR DOUBLE SPACING
 2200  CONTINUE
       IF(NAP)2300,2250,2250
@@ -3657,7 +3742,7 @@ C----- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
          DO 700 I=1,3
 C----- VALUE AND ESD
             CALL XFILL (IB,IVEC,16)
-            CALL SNUM (STORE(M1P1),ESD(I),-3,0,7,IVEC)
+            CALL SNUM (STORE(M1P1),ESD(I),-3,0,10,IVEC)
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
             IF ( IPUNCH .EQ. 0 ) THEN
@@ -3671,7 +3756,7 @@ C----- VALUE AND ESD
             END IF
 
             CALL XFILL (IB,IVEC,16)
-            CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,7,IVEC)
+            CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,10,IVEC)
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
             J=INDEX(CBUF(1:N),'.')
@@ -3700,7 +3785,7 @@ C----- VALUE AND ESD
      5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
 
          CALL XFILL (IB,IVEC,16)
-         CALL SNUM (VOL,CU,-2,0,8,IVEC)
+         CALL SNUM (VOL,CU,-2,0,12,IVEC)
          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
          CALL XCRAS (CBUF,N)
          IF ( IPUNCH .EQ. 0 ) THEN
