@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2002/01/30 10:58:43  ckp2
+//   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
+//   be copied to CxPlot to do same thing.
+//
 //   Revision 1.14  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -55,9 +59,8 @@
 #endif
 
 int CxChart::mChartCount = kChartBase;
-//End of user code.
 
-// OPSignature: CxChart * CxChart:CreateCxChart( CrChart *:container  CxGrid *:guiParent )
+
 CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
 {
 #ifdef __CR_WIN__
@@ -519,9 +522,17 @@ void CxChart::DrawText(int x, int y, CcString text)
     CPen        pen(PS_SOLID,1,mfgcolour);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
     CPen        *oldpen = memDC->SelectObject(&pen);
-    CFont       *oldFont = memDC->SelectObject(CcController::mp_font);
+	LOGFONT     theLogfont;
+    (CcController::mp_font)->GetLogFont(&theLogfont);
+    CString face = *(theLogfont.lfFaceName);
+    CFont theFont;
+        theFont.CreatePointFont(110, face , memDC);
+
+    CFont* oldFont = memDC->SelectObject(&theFont);
     memDC->SetBkMode(TRANSPARENT);
+
     memDC->TextOut(coord.x,coord.y,text.ToCString());
+
     memDC->SelectObject(oldpen);
     memDC->SelectObject(oldFont);
     memDC->SelectObject(oldMemDCBitmap);
@@ -1063,27 +1074,33 @@ void CxChart::MakeMetaFile(int w, int h)
     CcRect backup_m_client = m_client;
 
     CcString result;
-    CcString defName = "cam_pic1.wmf";
-    CcString extension = "*.wmf";
-    CcString description = "Windows MetaFile (*.wmf)";
+    CcString defName = "cam_pic1.emf";
+    CcString extension = "*.emf";
+    CcString description = "Windows Enhanced MetaFile (*.emf)";
     CcController::theController->SaveFileDialog(&result, defName, extension, description);
 
     if ( ! ( result == "CANCEL" ) )
     {
         CMetaFileDC mdc;
 
-        mdc.Create((LPCTSTR)result.ToCString());
+        mdc.CreateEnhanced( memDC, (LPCTSTR)result.ToCString(),
+                            NULL, "Cameron\0Crystal Structure\0\0");
 
         mdc.SetAttribDC( memDC->m_hAttribDC );
 
         memDC = &mdc;
-        m_client.Set(0,0,w,h);
+        m_client.Set(0,0,h,w);
 
         ((CrChart*)ptr_to_crObject)->ReDrawView();
 
-        mdc.Close();
-
-        CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+        if ( mdc.CloseEnhanced() )
+        {
+           CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+        }
+        else
+        {
+           CcController::theController->ProcessOutput( "File creation failed.");
+        }
     }
     else
     {
@@ -1135,6 +1152,9 @@ void CxChart::PrintPicture()
       printDC.EndPage();
       printDC.EndDoc();
       printDC.Detach();
+
+      CcController::theController->ProcessOutput( "Image sent to printer.");
+
     }
 
 
