@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/07/15 12:04:36  richard
+C Three things:
+C F000 ignores F' and F'' if anomolous correction is off in L23 - awaiting confirmation
+C from Ton about this.
+C Call new code to work out completeness and theta_full.
+C Put _chemical_absolute_configuration into the CIF during space group output.
+C '.' for centro or 'unk' for non-centro. Leave it for the user to change if they
+C think they've discovered something about the configuration.
+C
 C Revision 1.35  2002/06/07 16:01:59  richard
 C Some things:
 C
@@ -2367,7 +2376,7 @@ C        A(2) = F000
 C        A(3) = ABSN
 C        A(4) = WEIGHT
 C
-      DIMENSION A(8)
+      DIMENSION A(10)
 \TSSCHR
 \ISTORE
 \STORE
@@ -2400,7 +2409,7 @@ C-----  SET UP OCCUPANCIES
 cdjw feb2001
         iupdat = istore(l23sp+1)
         toler = store(l23sp+5)
-        inomo = ( istore(l23m) * -2 ) + 1 ! 1 for anom, 3 for no anom
+c        inomo = ( istore(l23m) * -2 ) + 1 ! 1 for anom, 3 for no anom
         CALL XPRC17 (0, 0, toler, -1)
         IF (IERFLG .LE. 0) GOTO 1600
 C----- CLEAR THE CELL PROPERTY DETAILS
@@ -2409,6 +2418,7 @@ C----- CLEAR THE CELL PROPERTY DETAILS
         F000 = 0.
         FIMAG = 0.0
         FREAL = 0.0
+        FELEC = 0.0
         ICHECK=N5
         JCHECK=0
         I29=L29 + (N29-1)*MD29
@@ -2439,11 +2449,17 @@ C----- CHECK LIST 3
           DO M3 = L3, L3+(N3-1)*MD3, MD3
             IF (ISTORE(M5) .EQ. ISTORE(M3)) THEN
               F = 0.0
-              DO I = INOMO, 11, 2
+              DO I = 1, 11, 2
                 F = F + STORE(M3+I)
               END DO
               FREAL = FREAL + STORE(M5+2) * STORE(M5+13) * F
-              IF(INOMO.EQ.1)FIMAG=STORE(M5+2)*STORE(M5+13)*STORE(M3+2)
+              FIMAG=STORE(M5+2)*STORE(M5+13)*STORE(M3+2)
+              F = 0.0
+              DO I = 3, 11, 2
+                F = F + STORE(M3+I)
+              END DO
+              F = REAL(NINT(F))
+              FELEC = FELEC + STORE(M5+2) * STORE(M5+13) * F
               GOTO 1528
             ENDIF
           END DO
@@ -2451,7 +2467,7 @@ C----- NO MATCH -
           JCHECK= JCHECK + 1
           GOTO 1530
 1528      CONTINUE
-          F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG)
+          F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG )
 1530    CONTINUE
 
 C----- COMPUTE MU AND M
@@ -2503,13 +2519,16 @@ C----- NUMBER OF ASYMMETRIC UNITS
         A(2) = F000 * ASYM
         A(3) = ABSN
         A(4) = WEIGHT
+        A(5) = FELEC * ASYM
 C
         WEIGHT=0.
         ABSN=0.
+
         DO 1580 M29=L29,I29,MD29
           WEIGHT = WEIGHT + STORE(M29+4)*STORE(M29+6)
           ABSN = ABSN + STORE(M29+4)*STORE(M29+5)
 1580    CONTINUE
+
         ABSN = ABSN * RVOL * 10.
         DENS = WEIGHT * RVOL / 0.60225
         I = 29
@@ -2517,10 +2536,11 @@ C
         CALL XPRVDU(NCVDU, 1,0)
         WRITE (NCAWU,'(A)') CMON(1)(:)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
-        A(5) = DENS
-        A(6) = F000 * ASYM
-        A(7) = ABSN
-        A(8) = WEIGHT
+        A(6) = DENS
+        A(7) = F000 * ASYM
+        A(8) = ABSN
+        A(9) = WEIGHT
+        A(10) = FELEC * ASYM
 1600    CONTINUE
       RETURN
       END
@@ -2919,7 +2939,7 @@ C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
       PARAMETER (NNAMES=30)
-      DIMENSION A(8), JDEV(4), KDEV(4)
+      DIMENSION A(10), JDEV(4), KDEV(4)
       PARAMETER (NLST=12)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
@@ -3403,7 +3423,7 @@ C
 C----- SAVE THE GOODIES IN LIST 30
          IF (JLOAD(9).GE.1) THEN
             STORE(L30GE+1)=A(1)
-            STORE(L30GE+2)=A(2)
+            STORE(L30GE+2)=A(5)
             STORE(L30GE+3)=A(3)
             STORE(L30GE+4)=A(4)
          END IF
@@ -3584,7 +3604,9 @@ C
 1850        FORMAT (A,A,T35,A,A,A)
             CALL XPCIF (CLINE)
          END IF
-C 
+C
+         WRITE (CLINE,'(''# Non-dispersive F(000):'')')
+         CALL XPCIF (CLINE)
         WRITE (CLINE,'(A,''F_000'',T35,F13.3)')CBUF(1:15),STORE(L30GE+2)
          CALL XPCIF (CLINE)
 C 
