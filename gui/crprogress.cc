@@ -24,7 +24,8 @@ CrProgress::CrProgress( CrGUIElement * mParentPtr )
 	mWidgetPtr = CxProgress::CreateCxProgress( this, (CxGrid *)(mParentPtr->GetWidget()) );
 	mTabStop = false;
 }
-	CrProgress::~CrProgress()
+
+CrProgress::~CrProgress()
 {
 	if ( mWidgetPtr != nil )
 	{
@@ -32,11 +33,7 @@ CrProgress::CrProgress( CrGUIElement * mParentPtr )
 		mWidgetPtr = nil;
 	}
 
-	if ( mControllerPtr->GetProgressOutputPlace() == this )
-	{
-		mControllerPtr->RemoveProgressOutputPlace();
-	}
-
+      mControllerPtr->RemoveProgressOutputPlace(this);
 }
 
 Boolean	CrProgress::ParseInput( CcTokenList * tokenList )
