@@ -2558,9 +2558,13 @@ VOIDS              4    3
               5        10
     .OUTPUTLIST        37    0    1    2    1         5
               5        10
-WEIGHT             0    6
+WEIGHT             1    6
    1    4096 CRYSTALSWEIGHT
     1    4    5    6   13   23
+   1.GUI                1    1    0    0
+         3
+    .GRAPH              1    0    1    2    0 OFF
+     OFF            ON
 ANALYSE            6    5
    2    4096 CRYSTALSWEIGHT
     1    4    5    6   36
@@ -2586,10 +2590,18 @@ ANALYSE            6    5
          3
     .LEVEL              8    0    1    4    0 LOW
      HIGH           LOW            MEDIUM         OFF
-   5.PLOT               1    1    0    0
-         3
-    .GUI               10    0    1    2    0 NO
-     NO             YES
+   5.PLOT               5    1    0    0
+         3    3    3    3    3
+    .CLASS             10    0    1    2    0 OFF
+     OFF            ON
+    .PARITY            11    0    1    2    0 OFF
+     OFF            ON
+    .FO                12    0    1    2    0 OFF
+     OFF            ON
+    .THETA             13    0    1    2    0 OFF
+     OFF            ON
+    .FO-FC             14    0    1    2    0 OFF
+     OFF            ON
    6.ANALYSE            1    1    0    0
          3
     .MONITOR            9    0    1    3    1 F
