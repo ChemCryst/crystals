@@ -11,16 +11,8 @@
 
 #ifndef		__CxProgress_H__
 #define		__CxProgress_H__
-//Insert your own code here.
+
 #include	"crguielement.h"
-
-#ifdef __POWERPC__
-class LCaption;
-#endif
-
-#ifdef __MOTO__
-#include	<LCaption.h>
-#endif
 
 #ifdef __LINUX__
 #include <wx/gauge.h>

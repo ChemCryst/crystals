@@ -19,8 +19,8 @@
 #endif
 
 #ifdef __LINUX__
-#include <wx/button.h>
-#define BASERADIOBUTTON wxButton
+#include <wx/radiobut.h>
+#define BASERADIOBUTTON wxRadioButton
 #endif
 
 class CrRadioButton;
@@ -66,6 +66,11 @@ class CxRadioButton : public BASERADIOBUTTON
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 		DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+            void ButtonChanged();
+            void OnChar(wxKeyEvent & event );
+            DECLARE_EVENT_TABLE()
 #endif
 
 		

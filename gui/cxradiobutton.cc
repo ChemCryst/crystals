@@ -9,95 +9,65 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  12.3.1998 10:38 Uhr
 
+
 #include	"crystalsinterface.h"
 #include	"cxradiobutton.h"
-//Insert your own code here.
 #include	"cxgrid.h"
 #include	"crradiobutton.h"
-//#include	<TextUtils.h>
-//#include	<LStdControl.h>
-//End of user code.          
 
 int	CxRadioButton::mRadioButtonCount = kRadioButtonBase;
-// OPSignature: CxRadioButton * CxRadioButton:CreateCxRadioButton( CrRadioButton *:container  CxGrid *:guiParent ) 
+
 CxRadioButton *	CxRadioButton::CreateCxRadioButton( CrRadioButton * container, CxGrid * guiParent )
 {
-//Insert your own code here.
-/*	SPaneInfo	thePaneInfo;	// Info for Pane
-	
-	thePaneInfo.visible = true;
-	thePaneInfo.enabled = true;
-	thePaneInfo.bindings.left = false;
-	thePaneInfo.bindings.right = false;
-	thePaneInfo.bindings.top = false;
-	thePaneInfo.bindings.bottom = false;
-	thePaneInfo.userCon = 0;
-	thePaneInfo.superView = reinterpret_cast<LView *>(guiParent);
-
-	thePaneInfo.paneID = AddRadioButton();
-	thePaneInfo.width = 80;
-	thePaneInfo.height = 20;
-	thePaneInfo.left = 10;
-	thePaneInfo.top = 50;
-*/	
-	char * defaultName = (char *)"StdButton";
 	CxRadioButton	*theStdButton = new CxRadioButton( container );
+#ifdef __WINDOWS__
 	theStdButton->Create("RadioButton",WS_CHILD|WS_VISIBLE|BS_AUTORADIOBUTTON,CRect(0,0,10,10),guiParent,mRadioButtonCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
+#endif
+#ifdef __LINUX__
+      theStdButton->Create(guiParent,-1,"Radiobutton");
+#endif
 	return theStdButton;
-//End of user code.         
 }
-// OPSignature:  CxRadioButton:CxRadioButton( CrRadioButton *:container  SPaneInfo:&inPaneInfo char *:defaultName ) 
-	CxRadioButton::CxRadioButton( CrRadioButton * container)
-//Insert your own initialization here.
-	:CButton()
-//End of user initialization.         
+
+CxRadioButton::CxRadioButton( CrRadioButton * container)
+      :BASERADIOBUTTON()
 {
-//Insert your own code here.
 	mWidget = container;
-//End of user code.         
 }
-// OPSignature:  CxRadioButton:~CxRadioButton() 
-	CxRadioButton::~CxRadioButton()
+
+CxRadioButton::~CxRadioButton()
 {
-//Insert your own code here.
 	RemoveRadioButton();
-//End of user code.         
 }
-// OPSignature: void CxRadioButton:ButtonChanged() 
+
 void	CxRadioButton::ButtonChanged()
 {
-//Insert your own code here.
+#ifdef __WINDOWS__
 	Boolean state = ( GetRadioState() == 1 ) ? true : false;
 	if (state)	
 		((CrRadioButton*)mWidget)->ButtonOn();
-//End of user code.         
-}
-// OPSignature: void CxRadioButton:SetText( char *:text ) 
-void	CxRadioButton::SetText( char * text )
-{
-//Insert your own code here.
-#ifdef __POWERPC__
-	Str255 descriptor;
-	
-	strcpy( reinterpret_cast<char *>(descriptor), text );
-	c2pstr( reinterpret_cast<char *>(descriptor) );
-	SetDescriptor( descriptor );
 #endif
 #ifdef __LINUX__
-	setText(text);
+      if ( GetValue() )
+		((CrRadioButton*)mWidget)->ButtonOn();
+#endif            
+}
+
+void	CxRadioButton::SetText( char * text )
+{
+#ifdef __LINUX__
+      SetLabel(text);
 #endif
 #ifdef __WINDOWS__
 	SetWindowText(text);
 #endif
 
-//End of user code.         
 }
-// OPSignature: void CxRadioButton:SetGeometry( int:top  int:left  int:bottom  int:right ) 
-void	CxRadioButton::SetGeometry( int top, int left, int bottom, int right )
+
+void  CxRadioButton::SetGeometry( int top, int left, int bottom, int right )
 {
-	//If top or left are negative, this is a call from CalcLayout,
-	//therefore don't repaint the window.
+#ifdef __WINDOWS__
 	if((top<0) || (left<0))
 	{
 		RECT windowRect;
@@ -113,12 +83,20 @@ void	CxRadioButton::SetGeometry( int top, int left, int bottom, int right )
 		MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
 	}
 	else
+	{
 		MoveWindow(left,top,right-left,bottom-top,true);
+	}
+#endif
+#ifdef __LINUX__
+      SetSize(left,top,right-left,bottom-top);
+#endif
+
 }
-int	CxRadioButton::GetTop()
+
+int   CxRadioButton::GetTop()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -127,11 +105,23 @@ int	CxRadioButton::GetTop()
 		windowRect.top -= parentRect.top;
 	}
 	return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
 }
-int	CxRadioButton::GetLeft()
+int   CxRadioButton::GetLeft()
 {
-	RECT windowRect;
-	RECT parentRect;
+#ifdef __WINDOWS__
+      RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
 	if(parent != nil)
@@ -140,143 +130,189 @@ int	CxRadioButton::GetLeft()
 		windowRect.left -= parentRect.left;
 	}
 	return ( windowRect.left );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
+
 }
-int	CxRadioButton::GetWidth()
+int   CxRadioButton::GetWidth()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetWidth() );
+#endif
 }
-int	CxRadioButton::GetHeight()
+int   CxRadioButton::GetHeight()
 {
+#ifdef __WINDOWS__
 	CRect windowRect;
 	GetWindowRect(&windowRect);
-	return ( windowRect.Height() );
+      return ( windowRect.Height() );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect;
+      windowRect = GetRect();
+      return ( windowRect.GetHeight() );
+#endif
 }
 
-// OPSignature: int CxRadioButton:GetIdealWidth() 
-int	CxRadioButton::GetIdealWidth()
+
+int   CxRadioButton::GetIdealWidth()
 {
-//Insert your own code here.
-//	Str255 descriptor, str;
-//	Int16 strSize;
-	
-//	GetDescriptor( descriptor );
-//	GetDescriptor( str );
-//	p2cstr( str );
-	
-	// Check for empty strings
-//	if ( strlen( (char *)str ) == 0 )
-//		strSize = 18;
-//	else
-//		strSize = ::StringWidth(descriptor) + 18;	// 9 pixels slop on either side
-//
-//	return ( strSize );
+#ifdef __WINDOWS__
 	CString text;
 	SIZE size;
 	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
 	GetWindowText(text);
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-	return (size.cx+20); //*** optimum width for Windows buttons (only joking)
-//End of user code.         
+      return (size.cx+20); // optimum width for Windows buttons (only joking)
+#endif
+#ifdef __LINUX__
+      int cx,cy;
+      GetTextExtent( GetLabel(), &cx, &cy );
+      return (cx+20); // nice width for buttons
+#endif
+
 }
-// OPSignature: int CxRadioButton:GetIdealHeight() 
-int	CxRadioButton::GetIdealHeight()
+
+int   CxRadioButton::GetIdealHeight()
 {
-//Insert your own code here.
+#ifdef __WINDOWS__
 	CString text;
 	SIZE size;
 	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
 	GetWindowText(text);
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 	return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
-//End of user code.         
+#endif
+#ifdef __LINUX__
+      int cx,cy;
+      GetTextExtent( GetLabel(), &cx, &cy );
+      return (cy+5); // nice height for buttons
+#endif
+
 }
-// OPSignature: int CxRadioButton:AddRadioButton() 
+
 int	CxRadioButton::AddRadioButton()
 {
-//Insert your own code here.
 	mRadioButtonCount++;
 	return mRadioButtonCount;
-//End of user code.         
 }
-// OPSignature: void CxRadioButton:RemoveRadioButton() 
+
 void	CxRadioButton::RemoveRadioButton()
 {
-//Insert your own code here.
 	mRadioButtonCount--;
-//End of user code.         
 }
-// OPSignature: void CxRadioButton:BroadcastValueMessage() 
-void	CxRadioButton::BroadcastValueMessage()
-{
-//Insert your own code here.
-	// call the CxClass callback
-	ButtonChanged();
-	
-	// call the framework callback
-//	LControl::BroadcastValueMessage();
-//End of user code.         
-}
-// OPSignature: void CxRadioButton:SetRadioState( Boolean:inValue ) 
+
 void	CxRadioButton::SetRadioState( Boolean inValue )
 {
-//Insert your own code here.
+#ifdef __WINDOWS__
 	int value;
-	
 	if ( inValue == true )
 		value = 1;
 	else
 		value = 0;
-	
 	SetCheck( value );
-//End of user code.         
+#endif
+#ifdef __LINUX__
+      SetValue ( inValue );
+#endif
 }
-// OPSignature: Boolean CxRadioButton:GetRadioState() 
+
 Boolean	CxRadioButton::GetRadioState()
 {
-//Insert your own code here.
-	int value = GetCheck();
-	
+#ifdef __WINDOWS__
+      int value = GetCheck();
 	if ( value == 1 )
 		return (true);
 	else
 		return (false);
-//End of user code.         
+#endif
+#ifdef __LINUX__
+      return GetValue();
+#endif
 }
 
+#ifdef __WINDOWS__
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxRadioButton, CButton)
 	ON_CONTROL_REFLECT(BN_CLICKED, ButtonChanged)
 	ON_WM_CHAR()
 END_MESSAGE_MAP()
+#endif
+#ifdef __LINUX__
+//wx Message Map
+BEGIN_EVENT_TABLE(CxRadioButton, wxRadioButton)
+      EVT_RADIOBUTTON( -1, CxRadioButton::ButtonChanged ) 
+      EVT_CHAR( CxRadioButton::OnChar )
+END_EVENT_TABLE()
+#endif
 
 void CxRadioButton::Focus()
 {
 	SetFocus();
 }
 
+#ifdef __WINDOWS__
 void CxRadioButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 	NOTUSED(nRepCnt);
 	NOTUSED(nFlags);
 	switch(nChar)
 	{
-		case 9:
+		case 9:     //TAB. Shift focus back or forwards.
 		{
 			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
 			mWidget->NextFocus(shifted);
 			break;
 		}
-		case 32:    //SPACE. Activate Button.
+		case 32:    //SPACE. Activates button. Don't focus to the input line.
 		{
-			ButtonChanged();
 			break;
 		}
-
 		default:
 		{
 			mWidget->FocusToInput((char)nChar);
+			break;
 		}
 	}
 }
+#endif
+#ifdef __LINUX__
+void CxRadioButton::OnChar( wxKeyEvent & event )
+{
+      switch(event.KeyCode())
+	{
+		case 9:     //TAB. Shift focus back or forwards.
+		{
+                  Boolean shifted = event.m_shiftDown;
+			mWidget->NextFocus(shifted);
+			break;
+		}
+		case 32:    //SPACE. Activates button. Don't focus to the input line.
+		{
+			break;
+		}
+		default:
+		{
+                  mWidget->FocusToInput((char)event.KeyCode());
+			break;
+		}
+	}
+}
+#endif

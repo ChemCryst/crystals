@@ -11,16 +11,12 @@
 
 #ifndef		__CxMultiEdit_H__
 #define		__CxMultiEdit_H__
-//Insert your own code here.
+
 #include "crystalsinterface.h"
 
 #ifdef __LINUX__
 #include <wx/textctrl.h>
 #define BASEMULTIEDIT wxTextCtrl
-#endif
-
-#ifdef __MOTO__
-#include	<LTextEditView.h>
 #endif
 
 #ifdef __WINDOWS__
@@ -60,7 +56,6 @@ class CxMultiEdit : public BASEMULTIEDIT
 		int	GetHeight();
 		int	GetLeft();
 		void	SetGeometry(int top, int left, int bottom, int right );
-		void	Changed();
 		static int AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
 		static void RemoveMultiEdit( void) { mMultiEditCount--; };
 		
@@ -82,5 +77,11 @@ class CxMultiEdit : public BASEMULTIEDIT
 
 		DECLARE_MESSAGE_MAP()
 #endif
+#ifdef __LINUX__
+      public:
+            void OnChar(wxKeyEvent & event );
+            DECLARE_EVENT_TABLE()
+#endif
+
 };
 #endif
