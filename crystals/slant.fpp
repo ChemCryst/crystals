@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/01/15 12:15:25  richard
+C Append symmetry information to end of slant fourier maps,
+C for Michal Husak.
+C
 C Revision 1.10  2001/01/12 15:06:43  CKP2
 C Make slant callable
 C
@@ -1488,7 +1492,7 @@ C------ RESET THE CONTACT ATOM
             M5=L5
 C------ RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
             NFL=JE
-            JFNVC = -1
+            JFNVC = 0
 C------ COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
             NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
             NBONDS = NDIST
@@ -1577,7 +1581,7 @@ C-------LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
 
         JE=NFL
         M5=L5
-        JFNVC = -1
+        JFNVC = 0
         ITRANS = 0 !Allow translation
         NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
 
