@@ -38,11 +38,6 @@
 %  END IF
 %%
 %  COPY '#SCRIPT ASSESS5'
-%  IF ( DOSORT ) THEN
-{S * Re-ordering list 5, so that H atoms are at the end
-%    COPY '#SCRIPT HLAST'
-%    COPY '#SCRIPT ASSESS5'
-%  END IF
 %%
 %  IF ( DKEXT ) THEN
 %    EVALUATE DOEXTNC = TRUE
