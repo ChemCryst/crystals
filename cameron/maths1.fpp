@@ -1979,6 +1979,7 @@ C OUTPUT COMPLETION MESSAGE
       WRITE (CLINE,1101) IPACK-IPKOLD
       CALL ZMORE(CLINE,0)
 1101  FORMAT (I5 , ' additional symmetry generated units.')
+      CALL ZMORE('Key to packing codes is in CRYSTALS listing file',0)
       RETURN
       END
  
