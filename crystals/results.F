@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/05/31 14:41:09  Administrator
+C Update SHELX SPECIAL output
+C
 C Revision 1.33  2002/04/16 10:04:50  Administrator
 C re-Fix atom types to be mixed case
 C
@@ -2969,31 +2972,54 @@ C                  1 2 3 4 5 6  7  8  9  10 11 12
       DATA ICARB/'C   '/
       DATA IHYD/'H   '/
 CDJWMAR99      DATA JDEV /'H','K','L','I'/
-C 
+ 
+1     FORMAT (A)
+
 CDJWMAY99 - PREAPRE TO OPEN CIF OUTPUT ON FRN1
+
       CALL XMOVEI (KEYFIL(1,23),KDEV,4)
       CALL XRDOPN (6,KDEV,CSSCIF,LSSCIF)
+
 C--READ THE REMAINING CONTROL CARDS
       I=KRDDPV(ISTORE(NFL),1)
       IF (I.LT.0) GO TO 2550
+
+CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
       CALL XRSL
       CALL XCSAE
+
+      IF (KEXIST(33) .LE. 0) THEN
+         IF (ISSPRT .EQ. 0) WRITE(NCAWU, 1151)
+         WRITE(NCWU, 1151)
+         WRITE ( CMON ,1151)
+         CALL XPRVDU(NCVDU, 1,0)
+1151     FORMAT(' Calculation of R values cannot procede ',
+     2          'as no refinement has been carried out yet.')
+      ELSE
+         CALL XSFLSB(-1)
+      ENDIF
+ 
+      CALL XRSL
+      CALL XCSAE
+
 C----- CLEAR OUT THE PAGE BUFFER
-      DO 50 I=1,NROW
+      DO I=1,NROW
          CPAGE(I,1)=' '
          CPAGE(I,2)=' '
-50    CONTINUE
+      END DO
+
       WRITE (NCFPU1,'(''data_CRYSTALS_cif '')')
       CALL XDATER (CBUF(1:8))
       WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
-     1CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
+     1       CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
       WRITE (NCFPU1,'(''_audit_creation_method CRYSTALS_ver_12-03-99'')'
      1)
+
 C----- OUTPUT A TITLE, FIRST 60 CHARACTERS ONLY
       WRITE (NCFPU1,'(''#  '',15A4)') (KTITL(I),I=1,15)
       WRITE (CLINE,'(15A4,3(A2,A))') (KTITL(I),I=1,15),CBUF(7:8),'-',
      1CBUF(4:5),'-',CBUF(1:2)
-C 
+ 
       K=KHKIBM(CLINE)
       CALL XCREMS (CLINE,CLINE,NCHAR)
       CALL XCTRIM (CLINE,NCHAR)
@@ -3003,19 +3029,20 @@ C
          K=MIN(70,NCHAR)
          WRITE (CPAGE(1,2)(:),'(A)') CLINE(36:K)
       END IF
+
 C----- COPY HEADER INFORMATION FROM .CIF FILE
       CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-Cdjw99      CALL XRDOPN(6, JDEV , 'CRYSDIR:REFCIF.SDA', 18)
 ##LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &&LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/refcif.dat', 25)
+
       IF (IERFLG.GE.0) THEN
          CLINE=' '
 100      CONTINUE
-         READ (NCARU,'(A)',ERR=100,END=150) CLINE
-         WRITE (NCFPU1,'(A)') CLINE
+           READ (NCARU,'(A)',ERR=100,END=150) CLINE
+           WRITE (NCFPU1,'(A)') CLINE
          GO TO 100
 150      CONTINUE
-C      CLOSE THE FILE
+C----- CLOSE THE FILE
 ##LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script\refcif.dat', 25)
 &&LINGIL       CALL XRDOPN(7, JDEV , 'CRYSDIR:script/refcif.dat', 25)
       ELSE
@@ -3024,10 +3051,13 @@ C      CLOSE THE FILE
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IERFLG=0
       END IF
+C
+C
 C################################################################
 C 
-C                  1 2 3 4 5 6  7  8  9  10 11 12
-C     DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
+C                      1 2 3 4 5 6  7  8  9  10 11 12
+C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
+
       DO 550 MLST=1,NLST
 C-----  INDICATE LIST NOT LOADED
          JLOAD(MLST)=0
@@ -3070,7 +3100,7 @@ C
          ELSE IF (LSTYPE.EQ.27) THEN
             CALL XFAL27
          ELSE IF (LSTYPE.EQ.28) THEN
-C--- LOADED BY XFAL06          CALL XFAL28
+C----- LOADED BY XFAL06          CALL XFAL28
          ELSE IF (LSTYPE.EQ.29) THEN
             CALL XFAL29
          ELSE IF (LSTYPE.EQ.30) THEN
@@ -3084,7 +3114,8 @@ C
 550   CONTINUE
 C 
 C################################################################
-c----- LOAD THE AVAILABLE REFERENCE TABLE
+C
+C----- LOAD THE AVAILABLE REFERENCE TABLE
 ##LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script\reftab.dat', 25)
 &&LINGIL      CALL XRDOPN(6, JDEV , 'CRYSDIR:script/reftab.dat', 25)
       IF (IERFLG.GE.0) THEN
@@ -3131,9 +3162,10 @@ c      call xrefpr (istore(lrefs),nrefs,mdrefs)
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(A)') CMON(1)(:)
       END IF
+C
 C################################################################
-      call xpcif(
-     1 '# General computing')
+C
+      call xpcif('# General computing')
       call xpcif(
      1'#=============================================================')
          ival=22
@@ -3145,14 +3177,14 @@ C################################################################
          WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
          CALL XPCIF (CLINE)
          CALL XPCIF (';')
-C
+
          WRITE (CLINE,'(''_computing_publication_material'' )') 
          CALL XPCIF (CLINE)
          CALL XPCIF (';')
          WRITE (CLINE,'(A )') CTEMP(1:NCHAR)
          CALL XPCIF (CLINE)
          CALL XPCIF (';')
-C
+
          ival=23
          ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
          CALL XCTRIM (CTEMP,NCHAR)
@@ -3164,6 +3196,7 @@ C
          CALL XPCIF (';')
       call xpcif(
      1'#=============================================================')
+         CALL XPCIF (' ')
 C----- GET LIST 30 READY FOR UPDATING
       IF (JLOAD(9).LE.0) THEN
          WRITE (CMON,'(A)') 'List 30 not available - cif output abandone
@@ -3239,12 +3272,15 @@ C----- VALUE AND ESD
          WRITE (NCFPU1,750) CBUF(1:N)
 750      FORMAT ('_cell_volume ',T35,A)
          WRITE (CPAGE(7,1)(:),'(A,10X,A)') 'Volume',CBUF(1:N)
+         CALL XPCIF (' ')
       END IF
 C 
 C----- LIST 2
-C 
+C
+      Z2 = 1
       IF (JLOAD(2).GE.1) THEN
          ICENTR=NINT(STORE(L2C))+1
+         Z2 = STORE(L2C+3)
 C----- CRYSTAL CLASS - FROM LIST 2
          J=L2CC+MD2CC-1
          WRITE (CTEMP,800) (ISTORE(I),I=L2CC,J)
@@ -3293,6 +3329,8 @@ C             NEGATE IF REQUIRED
 1200     CONTINUE
 C 
       END IF
+
+      CALL XPCIF (' ')
 C 
 C----- LIST 3
 C 
@@ -3330,6 +3368,31 @@ C----- SAVE THE GOODIES IN LIST 30
          END IF
       END IF
 C 
+      CALL XPCIF (' ')
+      CALL XPCIF (' ')
+
+C Sneaky early look at List 30 - need Z.
+
+      Z30 = Z2
+      IF ( JLOAD(9).EQ.1 ) THEN
+         Z30=STORE(L30GE+5)
+C Catch case where Z30 isn't set in L30 - assume = Z2.
+         IF ( Z30 .LT. 0.00001 ) Z30 = Z2
+      END IF
+
+      NSUM=NINT(Z30)
+      IF (AMOD(Z30,1.0).LE.ZERO) THEN
+          WRITE (CTEMP,1600) NSUM
+      ELSE
+          WRITE (CTEMP,1650) Z30
+      END IF
+      CALL XCRAS (CTEMP,LENGTH)
+      WRITE (NCFPU1,'(''_cell_formula_units_Z '',T42, A)')
+     1 CTEMP(1:LENGTH)
+      WRITE (CPAGE(7,2)(:),'(A,19X,A)') 'Z ',CTEMP(1:LENGTH)
+
+      ZPRIME = Z30 / Z2
+
 C----- CHECK IF LIST 5 LOADED
       IF (JLOAD(5).NE.1) GO TO 1750
 C----- CHEMICAL FORMULA
@@ -3382,7 +3445,7 @@ Cdjw NOV97
             CBUF=CTYPE(2:LENGTH)
             CALL XCCLWC (CBUF(1:LENGTH-1),CTYPE(2:LENGTH))
          END IF
-         SUM=STORE(I+1)
+         SUM=STORE(I+1) / ZPRIME
          NSUM=NINT(SUM)
          IF (AMOD(SUM,1.0).LE.ZERO) THEN
             WRITE (CTEMP,1600) NSUM
@@ -3415,9 +3478,12 @@ C----- LIST 30
 1750  CONTINUE
 C 
       IF (JLOAD(9).GE.1) THEN
+
 C 
          WRITE (NCFPU1,'(''_chemical_formula_weight '',T35,F8.2)')
-     1    STORE(L30GE+4)
+     1    STORE(L30GE+4) / ZPRIME
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
          CLINE(1:18)='_cell_measurement_'
          WRITE (NCFPU1,'(A18, ''reflns_used '',T35,I8)') CLINE(1:18),
      1    NINT(STORE(L30CD+3))
@@ -3435,18 +3501,8 @@ C
          WRITE (CPAGE(10,2)(:),'(A,5X,I6)') 'Temperature (K)',
      1    NINT(STORE(L30CD+6))
 C 
-         SUM=STORE(L30GE+5)
-         NSUM=NINT(SUM)
-         IF (AMOD(SUM,1.0).LE.ZERO) THEN
-            WRITE (CTEMP,1600) NSUM
-         ELSE
-            WRITE (CTEMP,1650) SUM
-         END IF
-         CALL XCRAS (CTEMP,LENGTH)
-         WRITE (NCFPU1,'(''_cell_formula_units_Z '',T42, A)')
-     1    CTEMP(1:LENGTH)
-         WRITE (CPAGE(7,2)(:),'(A,19X,A)') 'Z ',CTEMP(1:LENGTH)
 C 
+         CALL XPCIF (' ')
          CBUF(1:15)='_exptl_crystal_'
          WRITE (CLINE,'(3X,8A4)') (ISTORE(K),K=L30SH,L30SH+MD30SH-1)
          CALL XCCLWC (CLINE(1:),CTEMP(1:))
@@ -3472,6 +3528,7 @@ C
          WRITE (CPAGE(11,1)(:),'(A,13X,F5.2,''x'',F5.2,''x'',F5.2)') 'Si
      1ze',STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
 C 
+         CALL XPCIF (' ')
          WRITE (CLINE,'(A,''density_diffrn'',T35,F6.3)') CBUF(1:15),
      1    STORE(L30GE+1)
          CALL XPCIF (CLINE)
@@ -3503,6 +3560,8 @@ C      THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
      1     T35,2F8.2)')
      1     TMIN,TMAX
          CALL XPCIF (CLINE)
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING
 C DIFFRACTOMETER MAKE
          IPARAM=13
@@ -3757,6 +3816,7 @@ C-----   A FIX IN THE ABSENCE OF REAL INFO
      1ge',TMIN,TMAX
          END IF
 C 
+         CALL XPCIF (' ')
          CBUF(1:18)='_diffrn_standards_'
 C 
          WRITE (CLINE,'(A, ''interval_time '',I8)') CBUF(1:18),
@@ -3777,6 +3837,7 @@ C
          WRITE (CLINE,'(A, ''decay_% '', F6.2)') CBUF(1:18),STORE(L30CD+
      1    8)
          CALL XPCIF (CLINE)
+         CALL XPCIF (' ')
 C 
          WRITE (NCFPU1,'(''_diffrn_ambient_temperature '',I10)')
      1    NINT(STORE(L30CD+6))
@@ -3831,10 +3892,8 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
             END IF
          END IF
 C 
-         CLINE=' '
-         WRITE (CLINE,'(A, ''gt  '', I10)') CTEMP(1:15),
-     1    NINT(STORE(L30RF+8))
-         CALL XPCIF (CLINE)
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
 C 
          DO 1950 J=1,3,2
             WRITE (CLINE,'(A, ''theta_'',A, F10.2)') CBUF(1:15),CSIZE(J)
@@ -3900,7 +3959,7 @@ C     1      (ISTORE(J), J = INDNAM, INDNAM + 2 )
 C            IF (INDEX(CBUF,'RATIO') .GT. 0) THEN
 C            WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(I+1)
 C            CALL XCRAS(CBUF,NCHAR)
-C            WRITE(NCFPU1,'(''_reflns_threshold_expression  '',A)')
+C            WRITE(NCFPU1,'(''_reflns_observed_criterion  '',A)')
 C     1      CBUF(1:NCHAR)
 C            ENDIF
 C            INDNAM = INDNAM + MD28CN
@@ -3908,6 +3967,9 @@ C1702      CONTINUE
 C         ENDIF
 C       ENDIF
 C 
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
+
          CBUF(1:21)='_refine_diff_density_'
          J=1
          IF( ( ABS(STORE(L30RF+5)) .LT. 0.000001 ) .AND.
@@ -3925,15 +3987,17 @@ C
              J=J+2
            END DO
          END IF
-&DOS       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
-&DVF       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
-&GID       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
-&VAX       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
-&LIN       WRITE(CBUF, '(''>'',F6.2,''\\s(I)'')') STORE(L30RF+3)
-&GIL       WRITE(CBUF, '(''>'',F6.2,''\\s(I)'')') STORE(L30RF+3)
-         CALL XCRAS (CBUF,NCHAR)
-         WRITE (NCFPU1,'(''_reflns_threshold_expression  '',T35,A)')
-     1    CBUF(1:NCHAR)
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
+
+
+         IF ( STORE(L30RF+3) .LT. -9.9 ) THEN
+           LCUTUS = 0
+         ELSE
+           LCUTUS = 1
+         END IF
+
+
          CBUF(1:11)='_refine_ls_'
 C 
          WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
@@ -3943,19 +4007,68 @@ C
          WRITE (CLINE,'(A, ''number_parameters '', I10)') CBUF(1:11),
      1    NINT(STORE(L30RF+2))
          CALL XPCIF (CLINE)
-C 
-         WRITE (CLINE,'(A, ''R_factor_gt '', F10.4)') CBUF(1:11),
-     1    STORE(L30RF+0)*0.01
+C
+         CALL XPCIF (' ')
+         WRITE (CLINE,'(''#'',A,''R_factor_ref '',F10.4)') CBUF(1:11),
+     1            STORE(L30RF+0)*0.01
          CALL XPCIF (CLINE)
-C 
+C
          WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') CBUF(1:11),
-     1    STORE(L30RF+1)*0.01
+     1            STORE(L30RF+1)*0.01
+         CALL XPCIF (CLINE)
+C
+         WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')CBUF(1:11),
+     1    STORE(L30RF+4)
+         CALL XPCIF (CLINE)
+C
+         CALL XPCIF (' ')
+         WRITE (CLINE,'(''#_reflns_number_all '', I10)')
+     1   NINT(STORE(L30CF+5))
+         CALL XPCIF (CLINE)
+C
+         WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
+     1    STORE(L30CF+6)*0.01
          CALL XPCIF (CLINE)
 C 
-         WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)') CBUF(1:11)
-     1    ,STORE(L30RF+4)
+         WRITE (CLINE,'(''_refine_ls_wR_factor_all '', F10.4)')
+     1    STORE(L30CF+7)*0.01
          CALL XPCIF (CLINE)
-C 
+C
+         CALL XPCIF (' ')
+         IF ( LCUTUS .EQ. 0 ) THEN
+           WRITE (NCFPU1,1)
+     1     '# No actual I/u(I) cutoff was used for refinement. The'
+           WRITE (NCFPU1,1)
+     1     '# threshold below is used for "_gt" information ONLY:'
+         ELSE
+           WRITE (NCFPU1,
+     1    '(''# The I/u(I) cutoff below was used for refinement as '')')
+           WRITE (NCFPU1,
+     1    '(''# well as the _gt R-factors:'')')
+         END IF
+C
+         WRITE(CBUF, '(''I>'',F6.2,''u(I)'')') STORE(L30CF+0)
+         CALL XCRAS (CBUF,NCHAR)
+         WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
+     1   CBUF(1:NCHAR)
+C
+         WRITE (CLINE,'(''_reflns_number_gt '', I10)')
+     1   NINT(STORE(L30CF+1))
+         CALL XPCIF (CLINE)
+C
+         WRITE (CLINE,'(''_refine_ls_R_factor_gt '', F10.4)')
+     1   STORE(L30CF+2)*0.01
+         CALL XPCIF (CLINE)
+C
+         WRITE (CLINE,'(''_refine_ls_wR_factor_gt '', F10.4)')
+     1   STORE(L30CF+3)*0.01
+         CALL XPCIF (CLINE)
+C
+C
+         CBUF(1:11)='_refine_ls_'
+C
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
          WRITE (CLINE,'(A, ''shift/su_max '', F10.6)') CBUF(1:11),
      1    STORE(L30RF+7)
          CALL XPCIF (CLINE)
@@ -4085,6 +4198,8 @@ C
          WRITE (CPAGE(8,2)(:),'(A,5X,F10.6)') 'Wavelength',STORE(L13DC)
 C 
       END IF
+         CALL XPCIF (' ')
+         CALL XPCIF (' ')
 C - NOW LIST THE REFERENCES
          WRITE (CLINE,'( A)') 
      1 '## -------------------REFERENCES ----------------------##'
