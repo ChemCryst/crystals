@@ -1,10 +1,11 @@
 %SCRIPT GETEXP
 %
-%    VARIABLE INTEGER TNATM EXPECTED
+%    VARIABLE INTEGER TNATM EXPECTED EXPECTALL
 %    VARIABLE REAL OCCUR
-%    VARIABLE CHARACTER CTNATM ELEMT
+%    VARIABLE CHARACTER ELEMT
 %    EVALUATE TNATM = 0
 %    EVALUATE EXPECTED = 0
+%    EVALUATE EXPECTALL = 0
 %%
 %%  Look at the list 29 to find the largest atom type present and the total
 %%  number of atoms to find
@@ -19,11 +20,21 @@
 %       IF ELEMT .NE. 'H' THEN
 %         EVALUATE TNATM = TNATM + INTEGER OCCUR
 %       END IF
+%       EVALUATE EXPECTALL = EXPECTALL + INTEGER OCCUR
 %       COPY 'NEXT'
 %    END LOOP
 %%
-%    EVALUATE CTNATM = CHARACTER TNATM
-%    TRANSFER 'CRYSTALS is looking for ' // CTNATM // ' atoms' TO DISPLAY
+%    CLEAR
+%    INSERT 'CRYSTALS is looking for '
+%    STORE INTEGER EXPECTALL
+%    INSERT ' atoms'
+%    OUTPUT
+%    CLEAR
+%    INSERT '              including '
+%    STORE INTEGER TNATM
+%    INSERT ' non-H atoms'
+%    OUTPUT
+%    CLEAR
 %    EVALUATE EXPECTED = TNATM
 %%
 %    COPY 'END'

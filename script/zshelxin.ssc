@@ -10,23 +10,27 @@
 %% atomic parameters out into another script. Like a subroutine.
 %%
 %%
-% VARIABLE LOGICAL   SFILERR LFIRST LPEAK LNOTAT LCRY
+% VARIABLE LOGICAL   SFILERR LFIRST LPEAK LNOTAT LCRY SXGETALL
 % VARIABLE CHARACTER CLINE
  
 {I * Looking for atoms and peaks in SHELX file.
  
 %%
-%  VARIABLE INTEGER ATOMCOUNT EXPECTED
+% VARIABLE INTEGER ATOMCOUNT EXPECTED EXPECTALL
 %% call a script to get the expected number of atoms into EXPECTED
-%  copy '#script getexp'
-%  CLEAR
-%  EVALUATE EXPECTED = INTEGER ( REAL ( EXPECTED ) * 1.1 )
-%        insert "% GET INTEGER 'How many atoms do you want to keep' '"
-%        store integer EXPECTED
-%        insert "'"
-%        execute
-%        EVALUATE EXPECTED = VALUE
-%  EVALUATE ATOMCOUNT = 0
+% copy '#script getexp'
+% IF ( SXGETALL ) THEN
+%   EVALUATE EXPECTED = EXPECTALL
+% ELSE
+%   CLEAR
+%   EVALUATE EXPECTED = INTEGER ( REAL ( EXPECTED ) * 1.1 )
+%   insert "% GET INTEGER 'How many atoms do you want to keep' '"
+%   store integer EXPECTED
+%   insert "'"
+%   execute
+%   EVALUATE EXPECTED = VALUE
+% END IF
+% EVALUATE ATOMCOUNT = 0
 %%
 % EVALUATE SFILERR = TRUE
 % EVALUATE LFIRST = TRUE
