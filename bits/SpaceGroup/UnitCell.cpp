@@ -41,14 +41,14 @@
  */
 
 //#include "stdafx.h"    //This is need for compiling on windowz. Cannot put precomp if round it because M$ are a pain.
-
+#define _USE_MATH_DEFINES
 #include "UnitCell.h"
 #include "Exceptions.h"
 #include "Collections.h"
 #include "MathFunctions.h"
 #include "StringClasses.h"
 #include "Wrappers.h"
-#include <iostream.h>
+#include <iostream>
 #include <map>
 #include <cmath>
 
@@ -57,7 +57,6 @@
 #else
 #include <regex.h>
 #endif
-
 
 void UnitCell::setA(float pA)
 {
@@ -181,9 +180,9 @@ float UnitCell::getSEGamma() const
 
 Matrix<float> UnitCell::metricTensor()const
 {
-    float tMatrix[] = {iA*iA, iA*iB*cos(deg2rad(iGamma)), iA*iC*cos(deg2rad(iBeta)), 
-                       iB*iA*cos(deg2rad(iGamma)), iB*iB, iB*iC*cos(deg2rad(iAlpha)),
-                       iC*iA*cos(deg2rad(iBeta)), iC*iB*cos(deg2rad(iAlpha)), iC*iC};
+    float tMatrix[] = {iA*iA, iA*iB*cosf(deg2rad(iGamma)), iA*iC*cosf(deg2rad(iBeta)), 
+                       iB*iA*cosf(deg2rad(iGamma)), iB*iB, iB*iC*cosf(deg2rad(iAlpha)),
+                       iC*iA*cosf(deg2rad(iBeta)), iC*iB*cosf(deg2rad(iAlpha)), iC*iC};
     Matrix<float> tMatricTensor(tMatrix, 3, 3);
     return tMatricTensor;
 }
@@ -377,17 +376,17 @@ std::ostream& UnitCell::output(std::ostream& pStream) const
 
 float UnitCell::volume() const
 {
-    float cosa = cos(iAlpha/180*M_PI);
-    float cosb = cos(iBeta/180*M_PI);
-    float cosg = cos(iGamma/180*M_PI);
+    float cosa = cosf(iAlpha/180.0f*(float)M_PI);
+    float cosb = cosf(iBeta/180.0f*(float)M_PI);
+    float cosg = cosf(iGamma/180.0f*(float)M_PI);
     
-    return iA*iB*iC*sqrt(1-sqr(cosa)-sqr(cosb)-sqr(cosg)+2*cosa*cosb*cosg);
+    return iA*iB*iC*sqrtf(1.0f-sqr(cosa)-sqr(cosb)-sqr(cosg)+2.0f*cosa*cosb*cosg);
 }
 
 float UnitCell::calcMaxIndex(const int pMaxNumRef, const float pAxisLength) const
 {
     float V = volume();
-    float value = pow(0.6e1, 0.1e1 / 0.3e1) * pow(pMaxNumRef / M_PI / V, 0.1e1 / 0.3e1) * pAxisLength / 0.2e1;
+    float value = powf(0.6e1f, 0.1e1f / 0.3e1f) * powf(pMaxNumRef / (float)M_PI / V, 0.1e1f / 0.3e1f) * pAxisLength / 0.2e1f;
     return value;
 }
 
