@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 14:43 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.15  2004/06/24 09:12:01  rich
+//  Replaced home-made strings and lists with Standard
+//  Template Library versions.
+//
 //  Revision 1.14  2003/05/07 12:18:57  rich
 //
 //  RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -204,13 +208,8 @@ CcParse CrListBox::ParseInput(deque<string> &  tokenList )
 
 void    CrListBox::SetText( const string &item )
 {
-
-    char theText[256];
-    strcpy( theText, item.c_str() );
-
-    ( (CxListBox *)ptr_to_cxObject)->AddItem( theText );
+    ( (CxListBox *)ptr_to_cxObject)->AddItem( item );
     LOGSTAT( "Adding Item '" + item + "'");
-
 }
 
 void    CrListBox::GetValue()

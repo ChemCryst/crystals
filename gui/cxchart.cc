@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.26  2003/11/13 17:13:48  rich
 //   Change font code in cxchart (for Cameron). Use arial. Simpler design.
 //   Might fix JCD's problems.
@@ -1150,7 +1154,6 @@ void CxChart::MakeMetaFile(int w, int h, bool enhanced)
     CDC * backup_memDC = memDC;
     CcRect backup_m_client = m_client;
 
-    string result;
     string defName = "cam_pic1.wmf";
     if ( enhanced ) defName = "cam_pic1.emf";
 
@@ -1160,7 +1163,7 @@ void CxChart::MakeMetaFile(int w, int h, bool enhanced)
     string description = "Windows MetaFile (*.wmf)";
     if ( enhanced ) description = "Windows Enhanced MetaFile (*.emf)";
 
-    CcController::theController->SaveFileDialog(&result, defName, extension, description);
+    string result = CcController::theController->SaveFileDialog( defName, extension, description);
 
     if ( ! ( result == "CANCEL" ) )
     {

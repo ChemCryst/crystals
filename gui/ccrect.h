@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.5  2001/06/17 15:19:09  richard
 //   MidX() and MidY() return midpoints of rectangle.
 //
@@ -29,8 +33,8 @@ class   CcRect
     public:
         // methods
             CcRect();
-                  CcRect( const CcRect & inRect );
-                  CcRect( string inGeom );
+            CcRect( const CcRect & inRect );
+            CcRect( const string & inGeom );
             CcRect( const int top, const int left, const int bottom, const int right );
             ~CcRect();
         void    Set( const int top, const int left, const int bottom, const int right );

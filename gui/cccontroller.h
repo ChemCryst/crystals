@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.38  2004/06/25 12:50:38  rich
+//
+//   Removed Completing() series of functions and replaced with a
+//   simple semaphore. Also wait on empty queue using a semaphore -
+//   more efficient.
+//
 //   Revision 1.37  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -223,9 +229,9 @@ class   CcController
     string GetKey( string key );
     string GetRegKey( string key, string name );
 
-    void OpenFileDialog(string* filename, string extensionFilter, string extensionDescription, bool titleOnly);
-    void SaveFileDialog(string* filename, string defaultName, string extensionFilter, string extensionDescription);
-    void OpenDirDialog(string* result);
+    string OpenFileDialog(const string & extensionFilter, const string & extensionDescription, bool titleOnly);
+    string SaveFileDialog(const string & defaultName, const string & extensionFilter, const string & extensionDescription);
+    string OpenDirDialog();
     void ChooseFont();
 
     void StartCrystalsThread();

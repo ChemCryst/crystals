@@ -128,10 +128,7 @@ CcParse CrDropDown::ParseInput( deque<string> &  tokenList )
 
 void    CrDropDown::SetText( const string &item )
 {
-    char theText[256];
-    strcpy( theText, item.c_str() );
-
-    ( (CxDropDown *)ptr_to_cxObject)->AddItem( theText );
+    ( (CxDropDown *)ptr_to_cxObject)->AddItem( item );
 }
 
 void    CrDropDown::GetValue()

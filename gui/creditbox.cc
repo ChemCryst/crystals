@@ -5,6 +5,10 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2004/06/24 09:12:01  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.13  2003/05/07 12:18:57  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -257,20 +261,12 @@ CcParse CrEditBox::ParseInput( deque<string> &  tokenList )
 
 void CrEditBox::SetText( const string &text )
 {
-
-    char theText[256];
-    strcpy( theText, text.c_str() );
-
-    ( (CxEditBox *)ptr_to_cxObject)->SetText( theText );
-
+    ( (CxEditBox *)ptr_to_cxObject)->SetText( text );
 }
 
 void CrEditBox::GetValue()
 {
-    char theText[256];
-//TODO: Oops. Get text is a base class call. Wrap it.
-    int textLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-    SendCommand( string( theText ) );
+    SendCommand( ((CxEditBox*)ptr_to_cxObject)->GetText() );
 }
 
 void CrEditBox::GetValue(deque<string> & tokenList)
@@ -279,9 +275,7 @@ void CrEditBox::GetValue(deque<string> & tokenList)
     if( desc == kTQText )
     {
         tokenList.pop_front();
-        char theText[256];
-        int textLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-        SendCommand( string( theText ), true );
+        SendCommand( ((CxEditBox*)ptr_to_cxObject)->GetText(), true );  
     }
     else
     {
@@ -296,8 +290,7 @@ void    CrEditBox::BoxChanged()
     if(mCallbackState)
     {
         char theText[256];
-        int theTextLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-                SendCommand(mName + "_N" + string( theText ) );
+        SendCommand(mName + "_N" + ((CxEditBox*)ptr_to_cxObject)->GetText() );
     }
 }
 
@@ -315,18 +308,17 @@ void CrEditBox::ReturnPressed()
 {
     if(mSendOnReturn)
     {
-        char theText[256];
-        int textLen = ((CxEditBox*)ptr_to_cxObject)->GetText(&theText[0]);
-            if ( m_IsInput )
-            {
-                  SendCommand( string ( theText ) );
+        string theText = ((CxEditBox*)ptr_to_cxObject)->GetText();
+        if ( m_IsInput )
+        {
+                  SendCommand( theText );
                   AddHistory( theText );
                   ClearBox();
-            }
-            else
-            {
-                  SendCommand(mName + " " + string( theText ) );
-            }
+        }
+        else
+        {
+                  SendCommand(mName + " " +theText );
+        }
     }
     else
     {

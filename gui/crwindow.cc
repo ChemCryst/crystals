@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.33  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.32  2004/06/07 12:05:03  rich
 //   Fix annoying bug: Close CRYSTALS while minimized and it would re-start
 //   in that same minimized state. Not any more.
@@ -72,6 +76,7 @@
 #include    "ccrect.h"
 #include    "crtoolbar.h"
 #include   <algorithm>
+#include   <iostream>
 using namespace std;
 
 list<CrWindow*> CrWindow::mModalWindowStack;
@@ -684,11 +689,9 @@ CcRect CrWindow::CalcLayout(bool recalc)
 
 void    CrWindow::SetText( const string & item )
 {
-    char theText[256];
-    strcpy (theText, item.c_str() );
     if ( ptr_to_cxObject != nil )
     {
-        ((CxWindow*)ptr_to_cxObject)->SetText(theText);
+        ((CxWindow*)ptr_to_cxObject)->SetText(item);
     }
 }
 
@@ -757,6 +760,9 @@ void CrWindow::Cancelled()
 {
 // What if the script has crashed out, and we can't close
 // the modal window?
+       
+      std::cerr << "Close window: "<< mSafeClose;
+   
       if (mSafeClose > 6)
       {
 #ifdef __CR_WIN__
@@ -764,7 +770,7 @@ void CrWindow::Cancelled()
 #endif
             SendCommand( "^^CO DISPOSE " + mName );
       }
-    SendCommand(mCancelText);
+      SendCommand(mCancelText);
       mSafeClose ++;
 }
 
@@ -859,19 +865,19 @@ void CrWindow::FocusToInput(char theChar)
     }
 }
 
-void CrWindow::SetCommitText(string text)
+void CrWindow::SetCommitText(const string & text)
 {
     mCommitText = text;
     mCommitSet = true;
 }
 
-void CrWindow::SetCancelText(string text)
+void CrWindow::SetCancelText(const string & text)
 {
     mCancelText = text;
     mCancelSet = true;
 }
 
-void CrWindow::SendCommand(string theText, bool jumpQueue)
+void CrWindow::SendCommand(const string & theText, bool jumpQueue)
 {
 //If there is a COMMAND= set for this window
 //send this first, unless the text begins with
@@ -905,7 +911,7 @@ void CrWindow::SendCommand(string theText, bool jumpQueue)
       }
 }
 
-void CrWindow::SetCommandText(string theText)
+void CrWindow::SetCommandText(const string & theText)
 {
     mCommandText = theText;
     mCommandSet = true;

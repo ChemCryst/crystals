@@ -1,4 +1,4 @@
-#////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CcStatus
 
@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.9  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -135,7 +139,7 @@ void CcStatus::UnSetBit(int i, int * theFlag)
 
 
 
-int CcStatus::CreateFlag(string text)
+int CcStatus::CreateFlag(const string & text)
 {
     int returnFlag = 0;
     int bit;
@@ -153,43 +157,107 @@ int CcStatus::CreateFlag(string text)
     return returnFlag;
 }
 
-int CcStatus::GetBitByToken(string token)
+int CcStatus::GetBitByToken(string & token)
 {
 //   newway           if(token==string(bS0))  return 0;
 //   oldway           if(token==string(bS1))  {SetBit(1,flag);return;}
-#define CHECKTOKEN(a) if(token==string(bS##a))return a;
+#define CHECKTOKEN(a) if(token.compare(bS##a)==0) return a;
+#ifdef bs0
     CHECKTOKEN(0)
+#endif
+#ifdef bs1
     CHECKTOKEN(1)
+#endif
+#ifdef bs2
     CHECKTOKEN(2)
+#endif
+#ifdef bs3
     CHECKTOKEN(3)
+#endif
+#ifdef bs4
     CHECKTOKEN(4)
+#endif
+#ifdef bs5
     CHECKTOKEN(5)
+#endif
+#ifdef bs6
     CHECKTOKEN(6)
+#endif
+#ifdef bs7
     CHECKTOKEN(7)
+#endif
+#ifdef bs8
     CHECKTOKEN(8)
+#endif
+#ifdef bs9
     CHECKTOKEN(9)
+#endif
+#ifdef bs10
     CHECKTOKEN(10)
+#endif
+#ifdef bs11
     CHECKTOKEN(11)
+#endif
+#ifdef bs12
     CHECKTOKEN(12)
+#endif
+#ifdef bs13
     CHECKTOKEN(13)
+#endif
+#ifdef bs14
     CHECKTOKEN(14)
+#endif
+#ifdef bs15
     CHECKTOKEN(15)
+#endif
+#ifdef bs16
     CHECKTOKEN(16)
+#endif
+#ifdef bs17
     CHECKTOKEN(17)
+#endif
+#ifdef bs18
     CHECKTOKEN(18)
+#endif
+#ifdef bs19
     CHECKTOKEN(19)
+#endif
+#ifdef bs20
     CHECKTOKEN(20)
+#endif
+#ifdef bs21
     CHECKTOKEN(21)
+#endif
+#ifdef bs22
     CHECKTOKEN(22)
+#endif
+#ifdef bs23
     CHECKTOKEN(23)
+#endif
+#ifdef bs24
     CHECKTOKEN(24)
+#endif
+#ifdef bs26
     CHECKTOKEN(25)
+#endif
+#ifdef bs26
     CHECKTOKEN(26)
+#endif
+#ifdef bs27
     CHECKTOKEN(27)
+#endif
+#ifdef bs28
     CHECKTOKEN(28)
+#endif
+#ifdef bs29
     CHECKTOKEN(29)
+#endif
+#ifdef bs30
     CHECKTOKEN(30)
+#endif
+#ifdef bs31
     CHECKTOKEN(31)
+#endif
     return -1; //Tokenn not matched.
 }
 

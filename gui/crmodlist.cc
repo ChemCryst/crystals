@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.5  2003/10/31 10:44:16  rich
 //   When an atom is selected in the model window, it is scrolled
 //   into view in the atom list, if not already in view.
@@ -287,7 +291,7 @@ int CrModList::GetIdealHeight()
     return ((CxModList*)ptr_to_cxObject)->GetIdealHeight();
 }
 
-void CrModList::SendValue(string message)
+void CrModList::SendValue(const string & message)
 {
     if(mCallbackState)
     {

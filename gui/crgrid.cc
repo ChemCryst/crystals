@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.25  2004/05/21 14:00:18  rich
 //   Implement LISTCTRL on Linux. Some extra functionality still missing,
 //   such as clicking column headers to sort.
@@ -107,7 +111,6 @@ CrGrid::CrGrid( CrGUIElement * mParentPtr )
   // We have to create a GUI representation of the grid only, if we
   // need to outline it
   ptr_to_cxObject = CxGrid::CreateCxGrid( this, (CxGrid *)(mParentPtr->GetWidget()) );
-  m_TheGrid = nil;
   mTabStop = false;
   m_Rows = 0;
   m_Columns = 0;
@@ -118,12 +121,6 @@ CrGrid::CrGrid( CrGUIElement * mParentPtr )
   m_ContentHeight = 0;
   m_InitContentWidth = 0;
   m_InitContentHeight = 0;
-
-  m_InitialColWidths = 0;
-  m_InitialRowHeights = 0;
-  m_ColCanResize = 0;
-  m_RowCanResize = 0;
-
 }
 
 CrGrid::~CrGrid()
@@ -151,14 +148,6 @@ CrGrid::~CrGrid()
 #endif
     ptr_to_cxObject = nil;
   }
-
-
-  delete [] m_TheGrid;
-  delete [] m_InitialColWidths;
-  delete [] m_InitialRowHeights;
-  delete [] m_ColCanResize;
-  delete [] m_RowCanResize;
-
 }
 
 CcParse CrGrid::ParseInput( deque<string> & tokenList )
@@ -250,24 +239,18 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
 
 // Create the array holding the elements
 
-    m_TheGrid = (CrGUIElement **) new int [ m_Rows * m_Columns ];
-    m_InitialColWidths = new int [ m_Columns ];
-    m_InitialRowHeights = new int [ m_Rows ];
-    m_ColCanResize = new bool [ m_Columns ];
-    m_RowCanResize = new bool [ m_Rows ];
+    m_TheGrid.resize(m_Rows);
+    for ( vector<vector<CrGUIElement*> >::iterator vv= m_TheGrid.begin(); vv != m_TheGrid.end(); vv++ )
+        (*vv).resize(m_Columns);
 
-    int i;
-    for (i = 0; i < m_Rows*m_Columns; i++) m_TheGrid[i] = nil;
-    for (i = 0; i < m_Columns; i++)
-    {
-      m_InitialColWidths[i] = EMPTY_CELL;
-      m_ColCanResize[i] = false;
-    }
-    for (i = 0; i < m_Rows; i++)
-    {
-      m_InitialRowHeights[i] = EMPTY_CELL;
-      m_RowCanResize[i] = false;
-    }
+    m_InitialColWidths.resize( m_Columns, EMPTY_CELL );
+    m_InitialRowHeights.resize( m_Rows, EMPTY_CELL );
+    m_ColCanResize.resize( m_Columns, false );
+    m_RowCanResize.resize( m_Rows, false );
+
+    for (int i = 0; i < m_Rows; i++) 
+       for ( int j = 0; j < m_Columns; j++)
+          m_TheGrid[i][j] = nil;
 
     mSelfInitialised = true;
   }
@@ -658,10 +641,7 @@ CcRect CrGrid::CalcLayout(bool recalc)
 
 void    CrGrid::SetText( const string &item )
 {
-  char theText[256];
-  strcpy( theText, item.c_str() );
-
-  if (m_OutlineWidget != nil ) m_OutlineWidget->SetText( theText );
+  if (m_OutlineWidget != nil ) m_OutlineWidget->SetText( item );
 }
 
 CcParse CrGrid::InitElement( CrGUIElement * element, deque<string> & tokenList, int xpos, int ypos)
@@ -848,19 +828,19 @@ bool CrGrid::SetPointer( int xpos, int ypos, CrGUIElement * ptr )
     LOGERR("Position of element out of range of grid size");
     return false;
   }
-  if ( *( m_TheGrid + ((xpos-1)+(ypos-1)*m_Columns) ) != nil )
+  if ( m_TheGrid[ypos-1][xpos-1] != nil )
   {
     LOGERR("Position of element clashes with existing element");
     return false;
   }
 
-  *(m_TheGrid + ( (xpos-1) + (ypos-1) * m_Columns)) = ptr;
+  m_TheGrid[ypos-1][xpos-1] = ptr;
   return true;
 }
 
 CrGUIElement *  CrGrid::GetPointer( int xpos, int ypos )
 {
-  return *(m_TheGrid + (xpos-1 + (ypos-1) * m_Columns));
+  return m_TheGrid[ypos-1][xpos-1];
 }
 
 
@@ -889,7 +869,7 @@ void CrGrid::CrFocus()
 }
 
 
-void CrGrid::SendCommand(string theText, bool jumpQueue)
+void CrGrid::SendCommand(const string & theText, bool jumpQueue)
 {
 //If there is a COMMAND= set for this window
 //send this first, unless the text begins with
@@ -926,7 +906,7 @@ void CrGrid::SendCommand(string theText, bool jumpQueue)
  }
 }
 
-void CrGrid::SetCommandText(string theText)
+void CrGrid::SetCommandText(const string & theText)
 {
   m_CommandText = theText;
   m_CommandSet = true;

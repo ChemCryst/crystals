@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.92  2004/06/25 12:50:37  rich
+//
+// Removed Completing() series of functions and replaced with a
+// simple semaphore. Also wait on empty queue using a semaphore -
+// more efficient.
+//
 // Revision 1.91  2004/06/24 11:39:46  rich
 // Removed unused variable.
 //
@@ -941,6 +947,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
                     retVal = wPtr->ParseInput( tokenList );
                     if ( retVal.OK() )
                     {
+                        LOGSTAT("CcController: Adding window to list.");
                         mWindowList.push_back( wPtr );
                         mCurrentWindow = wPtr;
                     }
@@ -1216,14 +1223,14 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front();
                 string description = string(tokenList.front());   // Get the extension description
                 tokenList.pop_front();
-                if ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
+                if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
                 {
-                    OpenFileDialog(&result, extension, description, true);
+                    result = OpenFileDialog(extension, description, true);
                     tokenList.pop_front(); //Remove TitleOnly token
                 }
                 else
                 {
-                    OpenFileDialog(&result, extension, description, false);
+                    result = OpenFileDialog(extension, description, false);
                 }
                 SendCommand(result);
                 break;
@@ -1231,7 +1238,6 @@ bool CcController::ParseInput( deque<string> & tokenList )
             case kTSysSaveFile: //Display SaveFileDialog and send result back to the Script.
             {
                 tokenList.pop_front();    // remove that token
-                string result;
                 string defName = string(tokenList.front());   // Get the default file name.
                 tokenList.pop_front();    // remove that token
                 string extension = string(tokenList.front()); // Get the extension.
@@ -1239,15 +1245,13 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 string description = string(tokenList.front());   // Get the extension description.
                 tokenList.pop_front();    // remove that token
 
-                SaveFileDialog(&result, defName, extension, description);
-                SendCommand(result);
+                SendCommand( SaveFileDialog( defName, extension, description ) );
                 break;
             }
             case kTSysGetDir: //Display GetDirDialog and send result back to the Script.
             {
                 tokenList.pop_front();    // remove that token
-                string result;
-                OpenDirDialog(&result);
+                string result = OpenDirDialog();
                 SendCommand(result);
                 break;
             }
@@ -1257,7 +1261,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 m_newdir = string (tokenList.front());
                 tokenList.pop_front();
                 m_restart = true;
-                if (CcController::GetDescriptor( tokenList.front(),  kAttributeClass  )==kTRestartFile)
+                if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(),  kAttributeClass  )==kTRestartFile)
                 {
                               tokenList.pop_front();    // remove that token
                               string newdsc = "CRDSC=" + tokenList.front();
@@ -1766,11 +1770,9 @@ void CcController::FocusToInput(char theChar)
     }
     else if ( nChar > 31 && nChar < 127 ) //Some keyboard text. Append to command line.
     {
-        char theText[256];
-        int theLen = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText(&theText[0]);
-        theText[theLen] = theChar;
-        theText[theLen+1] = '\0';
-        GetInputPlace()->SetText(string(theText));
+        string someText = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText();
+        someText += theChar;
+        GetInputPlace()->SetText(someText);
         GetInputPlace()->CrFocus();
     }
 }
@@ -2245,7 +2247,9 @@ void CcController::ProcessOutput( const string & line )
 }
 
 
-void CcController::OpenFileDialog(string* result, string extensionFilter, string extensionDescription, bool titleOnly)
+string CcController::OpenFileDialog(const string &extensionFilter, 
+                                  const string &extensionDescription, 
+                                  bool titleOnly)
 {
 #ifdef __CR_WIN__
     CString pathname, filename, filetitle;
@@ -2283,7 +2287,7 @@ void CcController::OpenFileDialog(string* result, string extensionFilter, string
         pathname = "CANCEL";
     }
 
-    *result = string(pathname.GetBuffer(256));
+    return string(pathname.GetBuffer(256));
 #endif
 #ifdef __BOTHWX__
     wxString pathname, filename, filetitle;
@@ -2320,11 +2324,13 @@ void CcController::OpenFileDialog(string* result, string extensionFilter, string
 
     wxSetWorkingDirectory(cwd);
 
-    *result = string(pathname.c_str());
+    return string(pathname.c_str());
 #endif
 }
 
-void CcController::SaveFileDialog(string* result, string defaultName, string extensionFilter, string extensionDescription)
+string CcController::SaveFileDialog(const string &defaultName, 
+                                    const string &extensionFilter, 
+                                    const string &extensionDescription) 
 {
 
 #ifdef __CR_WIN__
@@ -2357,7 +2363,7 @@ void CcController::SaveFileDialog(string* result, string defaultName, string ext
         pathname = "CANCEL";
     }
 
-    *result = string(pathname.GetBuffer(256));
+    return string(pathname.GetBuffer(256));
 #endif
 
 #ifdef __BOTHWX__
@@ -2389,7 +2395,7 @@ void CcController::SaveFileDialog(string* result, string defaultName, string ext
 
     wxSetWorkingDirectory(cwd);
 
-    *result = string(pathname.c_str());
+    return string(pathname.c_str());
 #endif
 
 }
@@ -2398,11 +2404,11 @@ void CcController::SaveFileDialog(string* result, string defaultName, string ext
 static int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 #endif
 
-void CcController::OpenDirDialog(string* result)
+string CcController::OpenDirDialog()
 {
 #ifdef __CR_WIN__
 
-      string lastPath;
+      string lastPath, result;
       char buffer[MAX_PATH];
 
  // Use the registry to fetch keys.
@@ -2446,7 +2452,7 @@ void CcController::OpenDirDialog(string* result)
       {
           if ( SHGetPathFromIDList(chosen, buffer))
           {
-             *result = string(buffer);
+             result = string(buffer);
 
 
              dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
@@ -2456,22 +2462,23 @@ void CcController::OpenDirDialog(string* result)
              if ( dwresult == ERROR_SUCCESS )
              {
                 dwtype=REG_SZ;
-                dwsize = ( _tcslen(result->c_str()) + 1) * sizeof(TCHAR);
+                dwsize = ( _tcslen(result.c_str()) + 1) * sizeof(TCHAR);
                 RegSetValueEx(hkey, TEXT("Strdir"), 0, dwtype,
-                          (PBYTE)result->c_str(), dwsize);
+                          (PBYTE)result.c_str(), dwsize);
                 RegCloseKey(hkey);
              }
           }
           else
           {
-             *result = "CANCEL";
+             result = "CANCEL";
           }
 
       }
       else
       {
-            *result = "CANCEL";
+            result = "CANCEL";
       }
+      return result;
 #endif
 
 #ifdef __BOTHWX__
@@ -2500,7 +2507,7 @@ void CcController::OpenDirDialog(string* result)
     delete config;
 
     wxSetWorkingDirectory(cwd);
-    *result = string(pathname.c_str());
+    return string(pathname.c_str());
 #endif
 }
 

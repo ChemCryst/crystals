@@ -13,13 +13,13 @@ class CcModelAtom : public CcModelObject
 {
   public:
     CcModelAtom(CcModelDoc* parentptr);
-    CcModelAtom(string label,int x1,int y1,int z1, 
+    CcModelAtom(const string & label,int x1,int y1,int z1, 
                     int r, int g, int b, int occ,float cov, int vdw,
                     int spare, int flag,
                     float u1,float u2,float u3,float u4,float u5,
                     float u6,float u7,float u8,float u9,
                     float fx, float fy, float fz,
-                    string elem, int serial, int refflag,
+                    const string & elem, int serial, int refflag,
                     int assembly, int group, float ueq, float fspare,
                     CcModelDoc* parentptr);
 

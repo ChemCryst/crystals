@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.13  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -245,9 +249,7 @@ void CrPlot::CrFocus()
 
 void CrPlot::SetText( const string &text )
 {
-    char theText[256];
-    strcpy( theText, text.c_str() );
-    ( (CxPlot *)ptr_to_cxObject)->SetText( theText );
+    ( (CxPlot *)ptr_to_cxObject)->SetText( text );
 }
 
 

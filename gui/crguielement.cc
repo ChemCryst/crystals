@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.11  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -174,7 +178,7 @@ void CrGUIElement::FocusToInput(char theChar)
 }
 
 
-void CrGUIElement::SendCommand(string theText, bool jumpQueue)
+void CrGUIElement::SendCommand(const string & theText, bool jumpQueue)
 {
     if(jumpQueue)
         CcController::theController->SendCommand(theText,true);
@@ -204,7 +208,7 @@ void CrGUIElement::SysKeyUp( UINT nChar )
 // to handle them!
 }
 
-void CrGUIElement::Rename( string newName )
+void CrGUIElement::Rename( const string & newName )
 {
       LOGSTAT("Renameing object: " + mName + " to " + newName );
       mName = newName;

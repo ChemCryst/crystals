@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:19 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.9  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -56,7 +60,7 @@ class   CrGUIElement
 
 //Virtual functions, may be overridden in derived classes if reqd.
 //Overridden function can then be called using a pointer to the base class.
-    virtual void SendCommand(string theText, bool jumpQueue=false);
+    virtual void SendCommand(const string & theText, bool jumpQueue=false);
     virtual void FocusToInput(char theChar);
     virtual void SysKeyUp ( UINT nChar );
     virtual void SysKey ( UINT nChar );
@@ -84,7 +88,7 @@ class   CrGUIElement
 
     static void SetController( CcController * controller );
 
-    void Rename ( string newName );
+    void Rename ( const string & newName );
     void NextFocus(bool bPrevious);
 
 // attributes

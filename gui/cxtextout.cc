@@ -873,12 +873,6 @@ bool CxTextOut::IsAHit( string & commandString, int x, int y )
         if ( line < (int)GetLineCount() )
         {
             strTemp = m_Lines[ line ];
-//#ifdef __CR_WIN__
-//            strTemp = string(m_Lines[ line ]);
-//#endif
-//#ifdef __BOTHWX__
-//            strTemp = string(m_Lines.ListToArray()[line] );
-//#endif
         }
         string::size_type nPos;
         int cx=0, nWidth=0, oldnX=0, cy=0;
@@ -1098,6 +1092,7 @@ void CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
             if( code.nBack != -1 ) {
               pDC->SetTextBackground( m_ColTable[ code.nBack ] ) ;
               m_brush->SetColour( m_ColTable[ code.nBack ] );
+              lastcol = m_ColTable[ code.nBack ];
               pDC->SetBrush( *m_brush );
             }
 #endif

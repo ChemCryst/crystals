@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.13  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -41,6 +45,7 @@
 #define     __CrGrid_H__
 #include    "crguielement.h"
 #include   <list>
+#include   <vector>
 
 class CxGroupBox;
 
@@ -65,8 +70,8 @@ class   CrGrid : public CrGUIElement
     int     GetHeightOfRow( int row );
     int     GetWidthOfColumn( int col );
     CrGUIElement *  FindObject( const string & Name );
-    void    SendCommand(string theText, bool jumpQueue);
-    void    SetCommandText(string theText);
+    void    SendCommand(const string & theText, bool jumpQueue);
+    void    SetCommandText(const string & theText);
     void    CrShowGrid(bool state);
     CrGUIElement *  GetPointer( int xpos, int ypos );
 
@@ -80,14 +85,15 @@ class   CrGrid : public CrGUIElement
     list<CrGUIElement*> m_ItemList;
     bool m_GridComplete;
     CrGrid *        m_ActiveSubGrid;
-    CrGUIElement ** m_TheGrid;
+    vector < vector < CrGUIElement * > > m_TheGrid;
     CxGroupBox *    m_OutlineWidget;
     bool m_CommandSet;
     string m_CommandText;
-    int * m_InitialColWidths;
-    int * m_InitialRowHeights;
-    bool * m_ColCanResize;
-    bool * m_RowCanResize;
+
+    vector<int> m_InitialColWidths;
+    vector<int> m_InitialRowHeights;
+    vector<bool> m_ColCanResize;
+    vector<bool> m_RowCanResize;
 
     int m_InitContentWidth;
     int m_ContentWidth;
@@ -95,8 +101,6 @@ class   CrGrid : public CrGUIElement
     int m_ContentHeight;
     float m_resizeableWidth;
     float m_resizeableHeight;
-
-
 };
 
 #define kSCreateButton      "BUTTON"

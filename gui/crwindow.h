@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.18  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -81,10 +85,10 @@ class   CrWindow : public CrGUIElement
     void* GetNextTabItem(void* pElement);
     void* FindTabItem(void* pElement);
     void  SendMeSysKeys( CrGUIElement* interestedWindow );
-    void  SetCommandText(string theText);
-    void  SetCancelText(string text);
+    void  SetCommandText(const string & theText);
+    void  SetCancelText(const string & text);
     void  FocusToInput(char theChar);
-    void  SetCommitText( string text);
+    void  SetCommitText(const string & text);
     void  SetMainMenu(CrMenuBar* menu);
     void  Redraw();
     void  Enable ( bool enable );
@@ -100,7 +104,7 @@ class   CrWindow : public CrGUIElement
     void SysKeyReleased ( UINT nChar );
     void MenuSelected(int id);
     void ToolSelected(int id);
-    void SendCommand(string theText, bool jumpQueue = false);
+    void SendCommand(const string & theText, bool jumpQueue = false);
     void TimerFired();
 
 // attributes

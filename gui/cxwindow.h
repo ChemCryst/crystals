@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.16  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -148,7 +152,7 @@ class CxWindow : public BASEWINDOW
 
 #ifdef __BOTHWX__
 
-      void OnClose( wxCloseEvent & event );
+      void OnCloseWindow( wxCloseEvent & event );
       void OnSize ( wxSizeEvent & event );
       void OnChar ( wxKeyEvent & event );
       void OnMenuSelected(wxCommandEvent &event );

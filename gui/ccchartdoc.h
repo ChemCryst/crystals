@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.10  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -62,12 +66,13 @@ class CcChartDoc
         void FastEElli( int x, int y, int w, int h );
         void FastFPoly( int nv, int * points );
         void FastEPoly( int nv, int * points );
-        void FastText( int x, int y, string text, int fs );
+        void FastText( const int &x, const int &y, 
+                       const string &text, const int &fs );
         void FastColour( int r, int g, int b );
 
         void Clear();
         CcChartDoc * FindObject( const string & Name );
-        void Rename( string newName );
+        void Rename( const string & newName );
 
         static list<CcChartDoc*> sm_ChartDocList;
         static CcChartDoc* sm_CurrentChartDoc;

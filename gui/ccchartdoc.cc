@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2004/06/25 12:48:40  rich
+// Remove obsolete, unused function 'complete()'
+//
 // Revision 1.16  2004/06/24 09:12:00  rich
 // Replaced home-made strings and lists with Standard
 // Template Library versions.
@@ -444,7 +447,8 @@ void CcChartDoc::FastEPoly( int nv, int * points )
       mCommandList.push_back(item);
 }
 
-void CcChartDoc::FastText( int x, int y, string text, int fs )
+void CcChartDoc::FastText( const int &x, const int &y, 
+                           const string &text, const int &fs )
 {
       int xoffs = 0;
       int yoffs = 0;
@@ -663,7 +667,7 @@ CcChartDoc *  CcChartDoc::FindObject( const string & Name )
 }
 
 
-void CcChartDoc::Rename( string newName )
+void CcChartDoc::Rename( const string & newName )
 {
       LOGSTAT("Renaming object: " + mName + " to " + newName );
       mName = newName;

@@ -797,88 +797,38 @@ bool CxModList::SortItems( int colType, int nCol, bool bAscending)
 
 //Work out whether a string is REAL, INT or TEXT.
 
-int CxModList::WhichType(string text)
+int CxModList::WhichType(const string & text)
 {
-    string::size_type i;
+    string::size_type i, tbegin, tend;
+
 //Test one: Any characters other than space, number or point.
-    for (i = 0; i < text.length(); i++)
-    {
-        if (   text[i] != ' '
-            && text[i] != '1'
-            && text[i] != '2'
-            && text[i] != '3'
-            && text[i] != '4'
-            && text[i] != '5'
-            && text[i] != '6'
-            && text[i] != '7'
-            && text[i] != '8'
-            && text[i] != '9'
-            && text[i] != '0'
-            && text[i] != '-'
-            && text[i] != '.' ) return COL_TEXT;
-    }
+    if ( text.find_first_not_of(" 1234567890-.") != string::npos ) 
+               return COL_TEXT;
 
 //Test two: One token only.
+    tbegin = text.find_first_not_of(" ");
+    if ( tbegin != string::npos ) 
+    {
+       tend = text.find_first_of(" ",tbegin);
+       if ( ( tend != string::npos ) && 
+            ( text.find_first_not_of(" ",tend) != string::npos ) )
+               return COL_TEXT;
+
 //Test two(b): Minus sign in correct place if present.
-    bool inLeadingSpace = true;
-    bool inFinalSpace = false;
-    for (i = 0; i < text.length(); i++)
-    {
-        if(inLeadingSpace)
-        {
-            if ( text[i] != ' ' )
-            {
-                inLeadingSpace = false;
-            }
-        }
-        else
-        {
-            if ( text[i] == ' ' )
-            {
-                inFinalSpace = true;
-            }
-            if ( text[i] == '-' )
-            {
-                return COL_TEXT; //if we're not in leading space, or first char, there should be no minus sign.
-            }
-        }
-
-        if(inFinalSpace)
-        {
-            if ( text[i] != ' ' )
-            {
-                return COL_TEXT;
-            }
-        }
+       if (text.find_last_of("-") != tbegin )
+               return COL_TEXT;
     }
 
+//Test three, check for one decimal point.
 
+    tbegin = text.find_first_of(".");
+    tend = text.find_last_of(".");
 
-//Test three: One point symbol in the text.
-    bool pointFound = false;
-    for (i = 0; i < text.length(); i++)
-    {
-        if ( text[i] == '.' )
-        {
-            if(pointFound)
-            {
-                return COL_TEXT;
-            }
-            else
-            {
-                pointFound = true;
-            }
-        }
-    }
+    if ( tbegin != tend ) return COL_TEXT;  // Two decimal points.
 
-    if(pointFound)
-    {
-        return COL_REAL;
-    }
-    else
-    {
-        return COL_INT;
-    }
+    if ( tbegin != string::npos ) return COL_REAL; // One decimal point
+    
+    return COL_INT;       // No decimal points.
 
 }
 

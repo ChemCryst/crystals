@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.10  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -55,29 +59,10 @@ CcRect::CcRect( const CcRect &inRect )
       mRight      = inRect.mRight;
 }
 
-CcRect::CcRect( string geomString )
+CcRect::CcRect( const string & geomString )
 {
-      int len = geomString.length();
-      char str[] = "                                                                                ";
-      strcpy(&str[0], geomString.c_str());
-      char delim[] = " ";
-      char * top = strtok( str , delim);
-      char * lef = strtok( NULL, delim);
-      char * bot = strtok( NULL, delim);
-      char * rig = strtok( NULL, delim);
-
-      if ( top && lef && bot && rig )
-      {
-        mTop    = atoi ( top ) ;
-        mLeft   = atoi ( lef ) ;
-        mBottom = atoi ( bot ) ;
-        mRight  = atoi ( rig ) ;
-      }
-      else
-      {
-            mTop   = mLeft = 0;
-            mRight = mBottom = 6;
-      }
+      istringstream s (geomString);
+      s >> mTop >> mLeft >> mBottom >> mRight;    
 }
 
 

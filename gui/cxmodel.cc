@@ -685,7 +685,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
           ChooseCursor(CURSORNORMAL);
           if ( m_ptLDown.x - point.x )             // if non-zero
           {
-            float rot = (float)(m_ptLDown.x - point.x ) * 3.14f / 180.0f;
+            float rot = (float)(m_ptLDown.x - point.x ) * 0.5 * 3.14f / 180.0f;
             float * cMat = new float[16];
             for ( int i=0; i < 16; i++) cMat[i]=mat[i];
             float cosr = (float)cos(rot);
@@ -700,7 +700,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
           }
           if ( m_ptLDown.y - point.y )
           {
-            float rot = (float)(m_ptLDown.y - point.y ) * 3.14f / 180.0f;
+            float rot = (float)(m_ptLDown.y - point.y ) * 0.5 * 3.14f / 180.0f;
             float * cMat = new float[16];
             for ( int i=0; i < 16; i++) cMat[i]=mat[i];
             float cosr = (float)cos(rot);

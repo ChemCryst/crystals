@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.33  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.32  2003/09/16 14:48:17  rich
 //   Changes for linux.
 //
@@ -348,7 +352,7 @@ END_MESSAGE_MAP()
 #ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxWindow, wxFrame)
-      EVT_CLOSE( CxWindow::OnClose )
+      EVT_CLOSE( CxWindow::OnCloseWindow )
       EVT_SIZE( CxWindow::OnSize )
       EVT_CHAR( CxWindow::OnChar )
       EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
@@ -415,9 +419,12 @@ void CxWindow::OnClose()
 }
 #endif
 #ifdef __BOTHWX__
-void CxWindow::OnClose(wxCloseEvent & event)
+void CxWindow::OnCloseWindow(wxCloseEvent & event)
 {
+    if ( m_PreDestroyed ) return;
     ((CrWindow*)ptr_to_crObject)->CloseWindow();
+    event.Veto(); // Indicate that we did not close the window 
+                  // just yet.
 }
 #endif
 

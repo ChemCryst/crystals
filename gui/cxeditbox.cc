@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.20  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -200,33 +204,6 @@ int CxEditBox::GetIdealHeight()
 #endif
 }
 
-int CxEditBox::GetText(char* theText, int maxlen)
-{
-#ifdef __CR_WIN__
-    int textlen = GetWindowText(theText,maxlen);
-#endif
-#ifdef __BOTHWX__
-      wxString wtext = GetValue();
-      int textlen = wtext.length();
-      strcpy(theText, wtext.c_str());
-#endif
-
-//If the allowed input is a number, check it before returning.
-//It should be a number, if it isn't 0 or 0.0 will be returned.
-    if(allowedInput == CXE_INT_NUMBER)
-    {
-        int number = atoi(theText);
-        sprintf(theText,"%-d",number);
-    }
-    else if( allowedInput == CXE_REAL_NUMBER)
-    {
-        double number = atof(theText);
-        sprintf(theText,"%-f",number);
-    }
-
-    return textlen;
-}
-
 string CxEditBox::GetText()
 {
       char theText[255];
@@ -253,7 +230,7 @@ string CxEditBox::GetText()
         sprintf(theText,"%-f",number);
     }
 
-      return string( theText );
+    return string( theText );
 }
 
 void    CxEditBox::SetVisibleChars( int count )

@@ -3,6 +3,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.30  2004/06/24 09:12:02  rich
+// Replaced home-made strings and lists with Standard
+// Template Library versions.
+//
 // Revision 1.29  2004/02/09 22:05:55  rich
 // Fix token pasting warnings in preprocessor - these have been upgraded
 // to errors in gcc 3.3
@@ -147,7 +151,7 @@ enum {
 #define EMPTY_CELL          10
 
 
-#define NOTUSED(a) //Compares a to itself, optimiser will remove this.(?)
+#define NOTUSED(a) //Gets rid of warnings about unused variables.
 
 #ifdef __MOTO__
 #include <Types.h>

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.5  2002/01/31 14:39:36  ckp2
 //   RIC: SetBondType function for ccstatus. Allows popup-menus to vary depending on
 //   the bond type that has been clicked on.
@@ -100,7 +104,7 @@ class   CcStatus
 // Creates a bit flag for menu items/toolbars based on the
 // ENABLEIF and DISABLEIF strings they are passed.
 
-    int CreateFlag(string theFlags);
+    int CreateFlag(const string & theFlags);
 
 // Checks a menu/toolbar item against the current status to determine
 // whether it should be enabled.
@@ -110,7 +114,7 @@ class   CcStatus
   private:
 
 //methods
-    int GetBitByToken(string token);
+    int GetBitByToken(string & token);
     void UnSetBit(int i, int* theFlags);
     void SetBit(int i, int* theFlag);
     void UpdateToolBars();

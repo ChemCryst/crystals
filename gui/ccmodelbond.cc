@@ -31,7 +31,8 @@ CcModelBond::CcModelBond(CcModelDoc * pointer)
 
 CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
             int r, int g, int b,  int rad,int btype,
-            int np, int * ptrs, string label, string cslabl,
+            int np, int * ptrs, const string & label, 
+            const string & cslabl,
             CcModelDoc* ptr)
 {
   mp_parent = ptr;

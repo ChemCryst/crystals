@@ -42,12 +42,10 @@ class CxModList : public BASEMODLIST
         string GetCell(int row, int col);
         void SelectAll(bool select);
         void AddRow ( int id, vector<string> & rowOfStrings, bool sel, bool dis);
-        void AddColumn( string colHeader);
         void Focus();
         static CxModList * CreateCxModList( CrModList * container, CxGrid * guiParent);
             CxModList( CrModList * container );
             ~CxModList();
-        void    AddItem( const string &  text );
         void    SetVisibleLines( int lines );
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
@@ -104,7 +102,7 @@ protected:
 #define COL_TEXT 3
     vector<int> m_colTypes;
 
-    int WhichType(string text);
+    int WhichType(const string & text);
 
 
     int nSortedCol;

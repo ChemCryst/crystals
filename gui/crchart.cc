@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.11  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -249,10 +253,7 @@ void CrChart::CrFocus()
 
 void    CrChart::SetText( const string &text )
 {
-    char theText[256];
-    strcpy( theText, text.c_str() );
-
-    ( (CxChart *)ptr_to_cxObject)->SetText( theText );
+    ( (CxChart *)ptr_to_cxObject)->SetText( text );
 }
 
 

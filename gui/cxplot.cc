@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2004/06/25 12:49:11  rich
+//   Make popup menus appear in the right place on plots under
+//   wxWindows
+//
 //   Revision 1.29  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -1068,11 +1072,10 @@ void CxPlot::MakeMetaFile(int w, int h)
     CDC * backup_memDC = m_memDC;
     CcRect backup_m_client = m_client;
 
-    string result;
     string defName = "plot1.emf";
     string extension = "*.emf";
     string description = "Windows Enhanced MetaFile (*.emf)";
-    CcController::theController->SaveFileDialog(&result, defName, extension, description);
+    string result = CcController::theController->SaveFileDialog(defName, extension, description);
 
     if ( ! ( result == "CANCEL" ) )
     {

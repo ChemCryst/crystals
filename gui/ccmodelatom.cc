@@ -16,13 +16,13 @@ CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
   Init();
 }
 
-CcModelAtom::CcModelAtom(string llabel,int lx1,int ly1,int lz1, 
+CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1, 
                           int lr, int lg, int lb, int locc,float lcov, int lvdw,
                           int lspare, int lflag,
                           float u1,float u2,float u3,float u4,float u5,
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
-                          string elem, int serial, int refflag,
+                          const string & elem, int serial, int refflag,
                           int assembly, int group, float ueq, float fspare,
                           CcModelDoc* parentptr)
 {

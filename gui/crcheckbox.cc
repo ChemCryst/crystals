@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.6  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -132,10 +136,7 @@ CcParse CrCheckBox::ParseInput( deque<string> &  tokenList )
 }
 void    CrCheckBox::SetText( const string &text )
 {
-    char theText[256];
-    strcpy( theText, text.c_str() );
-
-    ( (CxCheckBox *)ptr_to_cxObject)->SetText( theText );
+    ( (CxCheckBox *)ptr_to_cxObject)->SetText( text );
 }
 
 void    CrCheckBox::GetValue()

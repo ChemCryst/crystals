@@ -22,7 +22,7 @@ class CcModelAtom;
 class   CrModList : public CrGUIElement
 {
     public:
-        void SendValue(string message);
+        void SendValue(const string & message);
         int GetIdealHeight();
         int GetIdealWidth();
         int m_cols;

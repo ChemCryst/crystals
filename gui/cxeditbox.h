@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.9  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -78,8 +82,7 @@ class CxEditBox : public BASEEDITBOX
         int GetIdealHeight();
         static int AddEditBox( void ) { mEditBoxCount++; return mEditBoxCount; };
         static void RemoveEditBox( void ) { mEditBoxCount--; };
-        int GetText(char* theText, int maxlen = 256);
-            string GetText();
+        string GetText();
         void    LimitChars(string::size_type nChars);
         void    SetVisibleChars( int count );
         void    IsInputPlace();

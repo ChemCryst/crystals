@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   22.2.1998 14:43 Hours
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.10  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -83,7 +87,7 @@ CcParse CrProgress::ParseInput( deque<string> & tokenList )
                 mText = string(tokenList.front());
                 tokenList.pop_front();
                 SetText( mText );
-                LOGSTAT( "Setting Text to '" + mText);
+                LOGSTAT( "Setting Text to " + mText);
                 break;
             }
             case kTChars:
@@ -116,10 +120,7 @@ CcParse CrProgress::ParseInput( deque<string> & tokenList )
 
 void    CrProgress::SetText( const string &text )
 {
-    char theText[256];
-    strcpy( theText, text.c_str() );
-
-    ( (CxProgress *)ptr_to_cxObject)->SetText( theText );
+    ( (CxProgress *)ptr_to_cxObject)->SetText( text );
 }
 
 
