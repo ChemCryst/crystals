@@ -37,8 +37,11 @@
 %     END LOOP
 ^^WI WINDOW MOGUL2 'Mogul Results' MODAL COMMIT='MR_BXX' CANCEL='MR_BXX'
 ^^WI SIZE LARGE KEEP POSITION=CENTRED '_MAINTEXTOUTPUT'
-^^WI GRID MGM NROWS=5 NCOLS=5
+^^WI GRID MGR NROWS=2 NCOLS=1
 ^^WI {
+^^WI  @ 2,1 PROGRESS MOGPRO ' '
+^^WI  @ 1,1 GRID MGM NROWS=5 NCOLS=5
+^^WI  {
 ^^WI   @ 4,4 GRID MGC NROWS=1 NCOLS=2
 ^^WI   {
 ^^WI     @ 1,1 STRETCH B HORIZONTAL
@@ -161,6 +164,7 @@
 ^^WI VIEWTOP
 ^^WI     }
 ^^WI   }
+^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CO DISPOSE XABORT
@@ -432,7 +436,7 @@
 %  GET SILENT NOSTORE ABBREVIATED ' '
 %  CASE VALUE
 %   BLOCK    %NOHITS%
-Mogul reports no hits for selected fragment.
+^^CO SET MOGPRO TEXT 'No hits for the selected fragment'
 ^^WI SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
 ^^WI SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
 ^^WI SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
@@ -449,9 +453,10 @@ Mogul reports no hits for selected fragment.
 ^^WI SET MR_ZSCO TEXT ' '
 %% Flush input buffer:
 %    GET NOPROMPT NOSTORE TEXT ' ' ' '
-%    TRANSFER 'Mogul reports error:' // CVALUE TO DISPLAY
+%    TRANSFER "^^CO SET MOGPRO TEXT '" // CVALUE // "'" TO DISPLAY
 %   END BLOCK
 %   BLOCK    %STATS%
+^^CO SET MOGPRO TEXT ' '
 %    CLEAR
 %    INSERT !^^WI SET MR_NUMO TEXT '!
 %    GET SILENT INTEGER ' '
