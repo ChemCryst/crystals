@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2004/03/24 15:03:39  rich
+C Fixed: U[iso] too small message was never output due to linefeed in FORMAT statement.
+C (Symptom: lots of blank lines output, followed by 'n temperature factors too small' message).
+C
 C Revision 1.30  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -154,6 +158,8 @@ C
 \XWORKA
 \XIOBUF
 &PPC\XGSTOP
+C RIC test
+      COMMON/XACC11/LW11,MW11,MDW11,NW11,LW11T
 C
 \QSTORE
 \QLST33
@@ -174,6 +180,7 @@ C      THE CODE IS ALMOST CONTINUOUS. F**2 REFINEMENT HAS ALSO BEEN
 C      LINEARISED.
 C
       CALL XTIME1(1)
+      ILEV = 0
       IF (MODE .LE. 0) THEN
 C----- WE WONT READ ANY DATA, BUT WILL SET TYPE TO 'CALC'
             NUM = 3
@@ -291,7 +298,7 @@ C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       END IF
 
 C If outputting design matrix and deltaF's then open files now.
-      IF ((JB.EQ.0) .AND. (JH.EQ.-1)) THEN
+      IF ((JB.EQ.0) .AND. (JH.EQ.-1)) THEN   ! Refinement
        MATLAB = 0
        IF (ISTORE(L33CD+5).EQ.1) THEN
         MATLAB = 1
@@ -300,6 +307,8 @@ C If outputting design matrix and deltaF's then open files now.
         CALL XRDOPN (5,JFRN(1,2),'wdf.m',5)
         WRITE (NCFPU2, '(''DF=['')')
        END IF
+
+       ILEV = ISTORE(L33CD+12)
       END IF
 
       NF=-1
@@ -637,26 +646,65 @@ C--SET UP THE STACK FOR THE COMPLETE PARTIAL DERIVATIVES
       JO=JR
       JP=JO+N12-1
 C--CHECK IF WE NEED THE L.H.S.
-      IF(JK)2700,2750,2750
+      IF ( ILEV .NE. 0 ) THEN
+       CALL XSET11(0,1,1)  ! Need old matrices for working out leverage.
+       IF ( IERFLG .LT. 0 ) GO TO 9900
+      ELSE
+       IF(JK)2700,2750,2750
 C--SET UP A NEW MATRIX
-2700  CONTINUE
-      CALL XSET11(JK,1,1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      GOTO 2850
+2700   CONTINUE                   ! MATRIX=NEW (default)
+       CALL XSET11(JK,1,1)
+       IF ( IERFLG .LT. 0 ) GO TO 9900
+       GOTO 2850
 C--WE ONLY NEED THE R.H.S.
-2750  CONTINUE
-      CALL XSET11(JK,0,1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+2750   CONTINUE                   ! MATRIX=OLD (Old LHS will be loaded later)
+       CALL XSET11(JK,0,1)
+       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--CLEAR THE R.H.S. OF THE OLD NUMBERS
-      M11R=L11R+N11R-1
-      DO 2800 I=L11R,M11R
-      STR11(I)=0.
-2800  CONTINUE
+       M11R=L11R+N11R-1
+       DO 2800 I=L11R,M11R
+        STR11(I)=0.
+2800   CONTINUE
 C--CHECK THAT THERE IS ROOM TO OUTPUT THE MATRIX
-2850  CONTINUE
+2850   CONTINUE
+      END IF
+
       CALL XCL11(11)
 C--INITIALISE THE MATRIX ACCUMULATION ROUTINES
       CALL XSETMT(JO,L11,L11R,N12,L12B,N12B)
+
+
+c      IF ( ILEV .NE. 0 ) THEN
+c       WRITE(CMON,'(A)')'Just for fun, here is the last inv norm matrix'
+c       CALL XPRVDU(NCVDU,1,0)
+c
+c       M11 = L11
+c
+c       DO I = L12B,M12B,MD12B   ! Loop over each block
+c         IRW = ISTORE(I)           ! IRW: Address of first row
+c         IBS = ISTORE(I+1)         ! IBS: Number of rows in block
+c
+c         WRITE(CMON,'(A,3I9)')'Rows in block, add, M11: ',IBS, IRW,M11
+c         CALL XPRVDU(NCVDU,1,0)
+c
+c         DO J = 0, IBS-1
+c
+c           WRITE(CMON,'(A,I4)')'Row: ',J
+c           CALL XPRVDU(NCVDU,1,0)
+c
+c           DO K = 0, IBS-J-1
+c               WRITE(CMON,'(2I4,G15.8)')J,K,STR11(M11)
+c               CALL XPRVDU(NCVDU,1,0)
+c               M11 = M11 + 1
+c           END DO
+c
+c         END DO
+c         WRITE(CMON,'(A)')'Next block'
+c         CALL XPRVDU(NCVDU,1,0)
+c       END DO
+c
+c      END IF
+
       GOTO 3000
 C--NO REFINEMENT
 2900  CONTINUE
@@ -1342,8 +1390,22 @@ C----- INITIALISE THE ENANTIOMER BUFFER
       CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN, JENAN, LTEMPE, XVALUE,
      1   0, DEF2)
       JENAN = 6
+
+C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
+      LTEMPL = NFL
+      NTEMPL = 7              ! Seven items to be stored: H,K,L,STL2,LEV,FO,FC
+      NFL = KCHNFL(LTEMPL)    ! Make the space
+C----- INITIALISE THE SORT BUFFER
+      JLEVER = -5             ! Sort on the fifth item (NB: abs)
+      MDLEVE = NTEMPL         ! Five items to be stored
+      NLEVER = 30             ! Worst 30 reflections to be kept
+      CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,
+     1  -1, DEF3)             ! Init
+      JLEVER = 4              ! Sort on the fifth item (NB: offset)
+
 C----- SET PRINT COUNTER
       IENPRT = -1
+      ILEVPR = 0
 C----- SET BAD R FACTOR COUNTER
       IBADR = -1
 C--INITIALISE THE TIMING FUNCTION
@@ -2686,7 +2748,7 @@ C--ACCUMULATE THE RIGHT HAND SIDES
 5500  CONTINUE
 
 C Check if we should output matrix in MATLAB format.
-       IF (ISTORE(L33CD+5).EQ.1) THEN
+      IF (ISTORE(L33CD+5).EQ.1) THEN
         DO I = JO,JP-MOD(JP-JO,5)-1,5
           WRITE(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
         END DO
@@ -2699,7 +2761,37 @@ C--CHECK IF WE MUST ACCUMULATE THE LEFT HAND SIDES
       IF(JK)5550,5750,5750
 C--ACCUMULATE THE LEFT HAND SIDES
 5550  CONTINUE
-      CALL XADLHS
+
+
+C Check if we should compute leverages, Pii.
+C
+
+      IF (ISTORE(L33CD+12).EQ.0) THEN    ! Just a normal accumulation.
+        CALL XADLHS
+      ELSE                   ! No accumulation, do leverages.
+        Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
+     1                  STR11(L11),N11,  STORE(JO),JP-JO+1)
+
+        WRITE(CMON,'(A,3I4,2G18.8)')'Leverage',NINT(STORE(M6)),
+     1                NINT(STORE(M6+1)),NINT(STORE(M6+2)),PII,XVALUL
+        CALL XPRVDU(NCVDU,1,0)
+
+        IF (( ILEVPR .LT. 30 ) .OR. ( PII .LT. XVALUL ) ) THEN
+C----    H,K,L,SNTHL,LEV,
+         CALL XMOVE(STORE(M6), STORE(LTEMPL), 3)
+         STORE(LTEMPL+3) = SST
+         STORE(LTEMPL+4) = Pii
+         STORE(LTEMPL+5) = FO*SCALEK
+         STORE(LTEMPL+6) = FCEXT
+         CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, 
+     1   XVALUL,-1, DEF3)
+         ILEVPR = ILEVPR + 1
+        END IF
+
+
+      END IF
+
+
       GOTO 5750
 C
 C
@@ -2804,14 +2896,42 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
 6111      FORMAT
      1    (2('   h   k   l    F+     Fo     F-     Rt  '))
           CALL XPRVDU(NCVDU, 1,0)
-          DO 12 MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
-          WRITE ( CMON,
-     * '(3I4, 3F7.2, F6.2,2X,3I4, 3F7.2, F6.2)')
-     1 ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
-     2 (STORE(IXAP), IXAP= JXAP+3,JXAP+5), STORE(JXAP+6),
-     3 JXAP= MENAN, MENAN+MDENAN, MDENAN)
+          DO MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
+          WRITE ( CMON,'(3I4, 3F7.2, F6.2,2X,3I4, 3F7.2, F6.2)')
+     1     ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
+     2     (STORE(IXAP), IXAP= JXAP+3,JXAP+5), STORE(JXAP+6),
+     3     JXAP= MENAN, MENAN+MDENAN, MDENAN)
           CALL XPRVDU(NCVDU, 1,0)
-12    CONTINUE
+          END DO
+      ENDIF
+
+      IF (ILEVPR .GT. 0) THEN
+6112      FORMAT(I6,' low leverage reflections.')
+          WRITE ( CMON, 6112) MIN(30,ILEVPR)
+          CALL XPRVDU(NCVDU, 1,0)
+          RLEVNM = 0.0
+          RLEVDN = 0.0
+          DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, MDLEVE
+            RLEVNM = RLEVNM + ABS(STORE(MLEVER+5)-STORE(MLEVER+6))
+            RLEVDN = RLEVDN + STORE(MLEVER+5)
+          END DO
+
+          WRITE(CMON,'(''R(lowleverage) = <Fo-Fc>/<Fo> ='',F9.2,''%'')')
+     1     100.*RLEVNM/MAX(.001,RLEVDN)
+          CALL XPRVDU(NCVDU,1,0)
+
+          WRITE(CMON,6113)
+6113      FORMAT (2('   h   k   l sintl2 Leverage    FO-FC    '))
+          CALL XPRVDU(NCVDU, 1,0)
+
+          DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, 2*MDLEVE
+            WRITE (CMON,'(2(3I4,F6.3,X,F7.5,F10.3,5X))')
+     1       ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
+     2       (STORE(IXAP), IXAP= JXAP+3,JXAP+4),
+     2       STORE(JXAP+5)-STORE(JXAP+6),
+     3       JXAP= MLEVER, MLEVER+MDLEVE, MDLEVE)
+            CALL XPRVDU(NCVDU, 1,0)
+          END DO
       ENDIF
 C
 C Only print disagreeable reflections during calc.
@@ -3691,4 +3811,40 @@ C-C-C-CALCULATE THE DERIVATIVE W.R.T. SPHERE-FACTOR FOR RADIUS
       DSFRAD=((COS(4*PI*STSP*STORE(M5ASP+8))
      2 *4*PI*STSP*STORE(M5ASP+8))-(SIN(4*PI*STSP*STORE(M5ASP+8))))
      3 /(4*PI*STSP*(STORE(M5ASP+8))**2)
+      END
+
+
+CODE FOR PDOLEV
+      FUNCTION PDOLEV( L12, N12, MD12B, V, N11, DF, NDF )
+
+      DIMENSION L12(N12), V(N11), DF(NDF)
+
+
+C  L12 is an array of size N12 containing information about the
+C  blocking of the array V.
+
+C  V is of size N11, but may be in blocks (see L12)
+
+C  P = A.V.At
+c  where P is the projection (say hat) matrix.
+c        A is the LHS
+c        V is the inverse normal matrix (must be already known).
+c  The leverages are the diagonal elements of the hat matrix, Pii.
+
+
+       M11 = 1
+       PII = 0.0
+       DO I = 1,N12,MD12B        ! Loop over each block
+         IBS = L12(I+1)             ! IBS:= Number of rows in block
+         DO J = 0, IBS-1            ! Loop over each row
+           DO K = 0, IBS-J-1          ! Loop over each column.
+             DOUB = 2.0                 ! Add in off-diagonals twice.
+             IF ( K.EQ.0 ) DOUB = 1.0   ! Add on-diagonals once.
+             PII = PII + DOUB * DF(1+J) * DF(1+J+K) * V(M11)
+             M11 = M11 + 1
+           END DO
+         END DO
+       END DO
+       PDOLEV = PII
+       RETURN
       END
