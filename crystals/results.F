@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2001/06/04 16:04:33  richard
+C Fix display of su's in overall parameters in #PARA/END
+C
 C Revision 1.17  2001/04/11 15:27:18  CKP2
 C Fix xsymop so that .CIF entries tally
 C
@@ -2304,29 +2307,32 @@ C----- CLEAR THE CELL PROPERTY DETAILS
         F000 = 0.
         FIMAG = 0.0
         FREAL = 0.0
-        ICHECK=0
+        ICHECK=N5
         JCHECK=0
         I29=L29 + (N29-1)*MD29
         I5 = L5 + (N5-1)*MD5
-        DO 1530 M5=L5,I5,MD5
 C
-          DO 1510 M29= L29,I29,MD29
-            IF (ISTORE(M5) - ISTORE(M29)) 1510,1520,1510
-1510      CONTINUE
-C----- NO MATCH -
-          ICHECK= ICHECK + 1
-          GOTO 1522
-1520  CONTINUE
+        DO 1521 M29= L29,I29,MD29
+          CWGHT = 0.0
+          CABSN = 0.0
+          DO 1510 M5=L5,I5,MD5
+            IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
 C----- MATCH
-          if (iupdat .ge.0) then
-            w = store(m5+2)*store(m5+13)
-          else
-            w = store(m5+2)
-          endif
-          WEIGHT = WEIGHT + W * STORE(M29+6)
-          ABSN = ABSN + W * STORE(M29+5)
-1522    CONTINUE
+              if (iupdat .ge.0) then
+                w = store(m5+2)*store(m5+13)
+              else
+                w = store(m5+2)
+              endif
+              CWGHT = CWGHT + W
+              CABSN = CABSN + W
+              ICHECK = ICHECK - 1
+            END IF
+1510      CONTINUE
+          WEIGHT = WEIGHT + CWGHT * STORE(M29+6)
+          ABSN = ABSN + CABSN * STORE(M29+5)
+1521    CONTINUE
 C
+        DO 1530 M5=L5,I5,MD5
 C----- CHECK LIST 3
         DO 1525 M3 = L3, L3+(N3-1)*MD3, MD3
           IF (ISTORE(M5) .EQ. ISTORE(M3)) THEN
@@ -2347,7 +2353,7 @@ C    -----  NO MATCH -
 1530    CONTINUE
 C
 C----- COMPUTE MU AND M
-        IF (ICHECK .GT. 0 ) THEN
+        IF (ICHECK .NE. 0 ) THEN
           WRITE ( CMON, 1545) ICHECK, 29
           CALL XPRVDU(NCVDU, 1,0)
           WRITE(NCAWU,'(A)') CMON(1)(:)
