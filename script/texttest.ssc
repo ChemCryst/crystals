@@ -1,32 +1,43 @@
-%SCRIPT TEXTTEST
-This is normal.
-^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0 255
-This is a rainbow. Pink
-^^CO SET TEXTOUTPUT TEXTCOLOUR 255 255 0
-This is a rainbow. Yellow
-^^CO SET TEXTOUTPUT TEXTCOLOUR 0 255 255 
-This is a rainbow. Cyan
-^^CO SET TEXTOUTPUT TEXTCOLOUR 255 0 0
-This is a rainbow. Red
-^^CO SET TEXTOUTPUT TEXTCOLOUR 0 255 0
-This is a rainbow. Green
-^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 255 
-This is a rainbow. Blue
-^^CO SET TEXTOUTPUT TEXTBOLD=YES
-And now we're bold. Bold Blue
-^^CO SET TEXTOUTPUT TEXTITALIC=YES
-And italicised. Italic bold blue
-^^CO SET TEXTOUTPUT TEXTBOLD=NO
-And loosing boldness. Italic normal blue
-^^CO SET TEXTOUTPUT TEXTITALIC=NO
-And back to normal. normal blue
-^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0
-Oh, and normal colour aswell.
-^^CO SET TEXTOUTPUT TEXTCOLOUR 128 128 255
-Some inbetween, but more readable colours: 128 128 255
-^^CO SET TEXTOUTPUT TEXTCOLOUR 128 0 255
-Some inbetween, but more readable colours: 128 0 255
-^^CO SET TEXTOUTPUT TEXTCOLOUR 0 128 255 
-Some inbetween, but more readable colours: 0 128 255
-^^CO SET TEXTOUTPUT TEXTCOLOUR 0 0 0
+%SCRIPT TEXT2
+White on:
+{0,1  0,1  black
+{0,2  0,2  blue
+{0,3  0,3  green
+{0,4  0,4  red
+{0,5  0,5  maroon
+{0,6  0,6  purple
+{0,7  0,7  brown
+{0,8  0,8  yellow
+{0,9  0,9  l green
+{0,10  0,10  grey
+{0,11  0,11  cyan
+{0,12  0,12  l blue
+{0,13  0,13  magenta
+{0,14  0,14  l grey
+{0,15  0,15  m grey
+
+Black on:
+{1,0  1,0  white
+{1,1  1,1 
+{1,2  1,2 
+{1,3  1,3 
+{1,4  1,4 
+{1,5  1,5 
+{1,6  1,6 
+{1,7  1,7 
+{1,8  1,8 
+{1,9  1,9 
+
+{2,1  2,1 
+{3,1  3,1 
+{4,1  4,1 
+{5,1  5,1 
+{6,1  6,1 
+{7,1  7,1 
+{8,1  8,1 
+{9,1  9,1 
+{10,1  10,1 
+{11,1  11,1 
+{12,1  12,1 
+{13,1  13,1 
 %END SCRIPT
