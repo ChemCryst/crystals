@@ -39,3 +39,11 @@ class RunParameters
         void handleArgs(int pArgc, _TCHAR* argv[]);
         void getParamsFromUser();
 };
+
+
+
+
+
+
+
+
