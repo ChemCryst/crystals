@@ -68,4 +68,7 @@
 %    END IF
 ^^CO DISPOSE XWMF
 %    OUTPUT
+
+{I A free wmf viewer is available from {&http://www.irfanview.com/{&.
+
 %END SCRIPT
