@@ -1,5 +1,6 @@
 %SCRIPT L6CHECK
 %%
+
 %%
 % IF ( EXISTS  1 .NE. 1 ) THEN
 +----------------------------------------------------+
@@ -8,8 +9,8 @@
 |  Use 'X-ray Data' off the tool bar to input them   |
 |                                                    |
 +----------------------------------------------------+
-% FINISH
 % END IF
+
 %%
 % IF ( EXISTS  2 .NE. 1 ) THEN
 +----------------------------------------------------+
@@ -18,8 +19,8 @@
 |  Use 'X-ray Data' off the tool bar to input one    |
 |                                                    |
 +----------------------------------------------------+
-% FINISH
 % END IF
+
 %%
 % IF ( EXISTS  6 .NE. 1 ) THEN
 +-----------------------------------------------------+
@@ -28,6 +29,6 @@
 |  Use 'X-ray Data' off the tool bar to input them    |
 |                                                     |
 +-----------------------------------------------------+
-% FINISH
+
 % END IF
 %END SCRIPT
