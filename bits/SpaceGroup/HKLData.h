@@ -55,16 +55,13 @@ public:
     Reflection& operator=(const Reflection& pReflection);
     ~Reflection();
     Matrix<short>* getHKL() const;
-    void setHKL(const Matrix<short> pMatrix);
+    void setHKL(const Matrix<short>& pMatrix);
 };
 
 std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection);
 
-class HKLData:public MyObject
+class HKLData:public ArrayList<Reflection>
 {
-    private:
-        ArrayList<Reflection>* iReflectionList;
-    
     public:
         /**********************************************/
         /*** HKLData				***/
@@ -74,8 +71,6 @@ class HKLData:public MyObject
         /**********************************************/
         HKLData(char* pPath);	
         ~HKLData();
-        int numberOfReflections() const;
-        Reflection* getReflection(const int pIndex) const;
         bool find(const Reflection* pReflection);
 };
 
