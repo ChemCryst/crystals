@@ -302,6 +302,11 @@ void Conditions::readFrom(filebuf& pFile)
     while (!tFile.eof() && strlen(tLine)>0);
 }
 
+int Conditions::length()
+{
+    return iConditions->length();
+}
+
 ostream& Conditions::output(ostream& pStream)
 {
     int tSize = iConditions->length();
@@ -350,6 +355,11 @@ Headings::~Headings()
     {
         iHeadings->remove(i);
     }
+}
+
+int Headings::length()
+{
+    return iHeadings->length();
 }
 
 Matrix<float>* Headings::getMatrix(int pIndex)
@@ -592,49 +602,48 @@ void ConditionIndexs::addReflection(Reflection* pReflection, Conditions* pCondit
     Matrix<float>* tHKLM = pReflection->getHKL();
     Matrix<float>* tConditionM;
     int tNumConditions = this->number();
-    bool tReject = false;
+    bool tAccept = true;
         
-    for (int i = 0; i <  tNumConditions && !tReject;  i++)
+    for (int i = 0; i <  tNumConditions && tAccept;  i++)
     {
         tConditionM = pConditions->getMatrix(getValue(i));
         Matrix<float> tMatrix = (*tConditionM)*(*tHKLM);
         if (((int)tMatrix.getValue(0)) % ((int)pConditions->getMult(getValue(i))) != 0)
         {
-            iStats->setValue(iStats->getValue(0) + pReflection->i, 0);	//Add the intensity
-            iStats->setValue(iStats->getValue(3) + 1, 3);	//Add to count
-            if (pReflection->i/pReflection->iSE >= 3)
-            {
-                iStats->setValue(iStats->getValue(5) + 1, 5);	//Add to count
-            }
-            else
-            {
-                iStats->setValue(iStats->getValue(6) + 1, 6);	//Add to count
-            }
+            tAccept = false;
+        }
+    }
+    if (tAccept == false)	//Non-matched reflections
+    {
+        iStats->setValue(iStats->getValue(0) + pReflection->i, 0);	//Add the intensity
+        iStats->setValue(iStats->getValue(3) + 1, 3);	//Add to count
+        if (pReflection->i/pReflection->iSE >= 3)
+        {
+            iStats->setValue(iStats->getValue(5) + 1, 5);	//Add to count
         }
         else
         {
-            iStats->setValue(iStats->getValue(1) + pReflection->i, 1);	//Add the intensity
-            iStats->setValue(iStats->getValue(4) + 1, 4);	//Add to count
+            iStats->setValue(iStats->getValue(6) + 1, 6);	//Add to count
         }
-        iStats->setValue(iStats->getValue(2) + pReflection->i, 2);	//Add the intensity
     }
+    else
+    {
+        iStats->setValue(iStats->getValue(1) + pReflection->i, 1);	//Add the intensity
+        iStats->setValue(iStats->getValue(4) + 1, 4);	//Add to count
+    }
+    iStats->setValue(iStats->getValue(2) + pReflection->i, 2);	//Add the intensity
 }
 
 ostream& ConditionIndexs::output(ostream& pStream)
 {
     ((Indexs*)this)->output(pStream);
-    pStream << "\nAverage Excepted Reflections Int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
-    pStream << "Average Rejected Reflections Int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
-    pStream << "Average Intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
-    pStream << "Number of Int<3*sigma excepted: " << iStats->getValue(5) << "\n";
-    pStream << "Number of Int>=3*sigma excepted: " << iStats->getValue(6) << "\n";
-   /* 0: Total intensity excepted, 
-    1: Total intensity rejected,
-    2: Total intensity, 
-    3: Number excepted, 
-    4: Number rejected, 
-    5: Number of Int<3*sigma excepted, 
-    6: Number of Int<3*sigma excepted, */
+    pStream << "\nAverage non-matched reflections int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
+    pStream << "Average matched reflections int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
+    pStream << "Num accept reflections: " << iStats->getValue(3) << "\n";
+    pStream << "Num matched reflections int: " << iStats->getValue(4) << "\n";
+    pStream << "Average intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
+    pStream << "Number of Int<3*sigma non-matched: " << iStats->getValue(5) << "\n";
+    pStream << "Number of Int>=3*sigma non-matched: " << iStats->getValue(6) << "\n";
     return pStream;
 }
 
@@ -649,14 +658,18 @@ ostream& ConditionIndexs::output(ostream& pStream,  Conditions* pConditions)
             pStream << ", ";
         }
     }
-    pStream << "\nAverage Excepted Reflections Int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
-    pStream << "Average Rejected Reflections Int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
-    pStream << "Average Intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
-    pStream << "Number of Int<3*sigma excepted: " << iStats->getValue(5) << "\n";
-    pStream << "Number of Int>=3*sigma excepted: " << iStats->getValue(6) << "\n";
+    pStream << "\nAverage non-matched reflections Int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
+    pStream << "Average matched reflections Int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
+    pStream << "Num non-matched reflections: " << iStats->getValue(3) << "\n";
+    pStream << "Num matched reflections int: " << iStats->getValue(4) << "\n";
+    pStream << "Int Ratio: " << (iStats->getValue(0)/iStats->getValue(3))/(iStats->getValue(1)/iStats->getValue(4)) << "\n";
+    pStream << "Average intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
+    pStream << "Number of Int<3*sigma non-matched: " << iStats->getValue(5) << "\n";
+    pStream << "Number of Int>=3*sigma non-matched: " << iStats->getValue(6) << "\n";
+    pStream << "N(Int<3Sigma)/N(Tot) Ratio: " << iStats->getValue(5)/(iStats->getValue(6)+iStats->getValue(5)) << "\n";
     return pStream;
 }
-        
+  
 
 ostream& operator<<(ostream& pStream, ConditionIndexs& pIndexs)
 {
@@ -666,7 +679,7 @@ ostream& operator<<(ostream& pStream, ConditionIndexs& pIndexs)
 ConditionColumn::ConditionColumn()
 {
     iHeadingConditions = new ArrayList<Index>(1);
-    iConditions = new ArrayList<ConditionIndexs>(1);
+    iConditions = new ArrayList<Indexs>(1);
 }
 
 ConditionColumn::~ConditionColumn()
@@ -682,7 +695,7 @@ ConditionColumn::~ConditionColumn()
             delete tValue;
         }
     }
-    ConditionIndexs* tValue2;
+    Indexs* tValue2;
     for (int i = 0; i < tSize; i++)
     {
         tValue2 = iConditions->remove(i);
@@ -702,10 +715,10 @@ void ConditionColumn::addHeading(signed char pIndex)
 
 void ConditionColumn::addCondition(signed char pIndex, int pRow)
 {
-    ConditionIndexs* tIndexs = iConditions->get(pRow);
+    Indexs* tIndexs = iConditions->get(pRow);
     if (tIndexs==NULL)
     {
-        iConditions->setWithAdd(new ConditionIndexs(pIndex), pRow);
+        iConditions->setWithAdd(new Indexs(pIndex), pRow);
     }
     else
     {
@@ -718,7 +731,7 @@ void ConditionColumn::addEmptyCondition(int pRow)
     iConditions->setWithAdd(NULL, pRow);
 }
 
-ConditionIndexs* ConditionColumn::getCondition(int pIndex)
+Indexs* ConditionColumn::getCondition(int pIndex)
 {
     return iConditions->get(pIndex);
 }
@@ -780,7 +793,7 @@ void ConditionColumn::addReflection(Reflection* pReflection, Headings* pHeadings
         int tNumConditions = iConditions->length();
         for (int i = 0; i <= tNumConditions; i++)
         {
-            ConditionIndexs*  tCondition = iConditions->get(i);
+            Indexs*  tCondition = iConditions->get(i);
             if (tCondition)
             {
                 tCondition->addReflection(pReflection, pConditions);
@@ -805,7 +818,7 @@ ostream& ConditionColumn::output(ostream& pStream, Headings* pHeadings, Conditio
     pStream << "\n\n";
     for (int i = 0; i <= tNumConditions; i++)
     {
-       ConditionIndexs*  tConditions = iConditions->get(i);
+        Indexs*  tConditions = iConditions->get(i);
         if (tConditions)
         {
             tConditions->output(pStream, pConditions);
@@ -1156,7 +1169,7 @@ ostream& Table::outputColumn(ostream& pStream, int pColumn, Headings* pHeadings,
     }
     else
     {
-        SpaceGroups* tSpaceGroups = iSpaceGroups->get(pColumn - iColumns->length());
+        //SpaceGroups* tSpaceGroups = iSpaceGroups->get(pColumn - iColumns->length());
         //tSpaceGroups->output(pStream);
     }
     return pStream;
