@@ -115,6 +115,14 @@ C
  
 C In this table, the CAPITAL characters in FORLOGNAM are used to identif
 C unit in STORE instructions.
+C        Keywords used in ATTATCH instructions to change the above values
+C
+C           Value
+C
+C             1                       SEQU   OLD    FORM   READ     FREE
+C             2                       DIRE   NEW    UNFO   WRIT     LOCK
+C             3                              CIF
+C             4                              SCRA
 C
 C IFLUNI FORNU  FORLOGNAM     KEYFIL   IFLACC IFLSTA  IFLFRM IFLREA IFLO
 C
@@ -140,8 +148,8 @@ C 19    49   MT2            MT2         1      4      2      2      0
 C 20    50   MT3            MT3         1      4      2      2      0
 C 21    51   MTE            MTE         1      4      2      2      0
 C 22    63   NUSRQ          SRQ         1      4      1      2      0
-C 23    71   NCFpu1         FORN1       1      2      1      2      0
-C 24    72   NCFpu2         FORN2       1      2      1      2      0
+C 23    71   NCFpu1         FORN1       1      3      1      2      0
+C 24    72   NCFpu2         FORN2       1      3      1      2      0
 C 25    88   NCeXTr         SCPDATA     1      1      1      1      0
 C 26    89   NCQUe          SCPQUEUE    1      3      1      2      0
 C 27     4   NUCoM          COMSRC      1      1      1      1      0
