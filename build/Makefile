@@ -1,6 +1,6 @@
 include makefile.in
 
-
+ifneq ($(COMPCODE), MAC)
 all : crysexe data scripts bits documentation
 	@echo .
 	@echo .
@@ -17,6 +17,15 @@ ifeq ($(COMPCODE),WXS)
 endif
 ifneq ($(COMPCODE),WXS)
 	@echo .       rpm -i ../installer/crystals-*.rpm
+endif
+else
+all : crysexe data scripts bits documentation
+	@echo .
+	@echo .
+	@echo .     To create an Mac OS Application:
+	@echo .        $(MAKE) app-package
+	@echo .     To run crystals:
+	@echo .	    Double click on Crystals application in $(CURDIR)
 endif
 	@echo .
 
@@ -66,7 +75,6 @@ app-package : ./Crystals.app crysexe data scripts bits documentation
 	mv Crystals.app/Contents/Resources/Crystals_Resources/Crystals Crystals.app/Contents/MacOS/
 	rm -Rf `find Crystals.app/Contents/Resources/Crystals_Resources -name CVS`
 	cp ../bin/crystals.script Crystals.app/Contents/Resources/Crystals_Resources
-	python mac_scripts/LibMove.py
 
 ./Crystals.app : 
 	mkdir $@
