@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/07/22 14:37:31  Administrator
+C Try to fix LIST 4 in cif
+C
 C Revision 1.30  2002/07/18 17:02:29  richard
 C Limit max theta value to 90, if ASIN is going to fail.
 C
@@ -932,7 +935,8 @@ C
 \ISTORE
 C
 \STORE
-\XLST23
+\ICOM30
+\XLST30
 C
 \XLST01
 \XLST06
@@ -942,11 +946,12 @@ C
 \XIOBUF
 C
 \QSTORE
+\QLST30
 C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
-      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
       CALL XFAL06 ( 0 )
 
 C -- SCAN LIST 6 FOR ALL REFLECTIONS
@@ -1247,6 +1252,15 @@ C See if there is a lower possible IMINL
 
       CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
      1            THMAX, THMCMP, THBEST,THBCMP)
+
+      STORE(L30IX+6)=THMIN
+      STORE(L30IX+7)=THMAX
+
+      STORE(L30CF+9)=THMCMP
+      STORE(L30CF+10)=THBEST
+      STORE(L30CF+11)=THBCMP
+
+      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 
       RETURN
       END
@@ -2312,7 +2326,7 @@ C
       DATA (CKEY(I,9),I=1,MAXKEY)/ 
      1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
      2 'Sigma All', 'No. All', 'R All', 'Rw All', 'Extn-su',
-     * 10*'*' /
+     * 'Completeness' , 'Theta-full', 'Cmpltnss-full', 7*'*' /
 C
 C
 C
