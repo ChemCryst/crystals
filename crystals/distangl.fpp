@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/02/27 11:24:38  rich
+C Changed regroup, so that fragment number goes into slot 17 of L5 (FRAGMENT)
+C
 C Revision 1.40  2003/02/20 15:59:11  rich
 C Output html from distances.
 C
@@ -213,6 +216,7 @@ C
 C Revision 1.5  2000/10/31 15:35:48  ckp2
 C RIC: New subroutine XDIST3 sets up distance calculation for a box.
 C
+
 CODE FOR XDIST
       SUBROUTINE XDIST
 C--CALCULATE AND PRINT DISTANCES AND ANGLES
@@ -1987,15 +1991,17 @@ CODE FOR XDSSEL
       SUBROUTINE XDSSEL ( IFUNC , MDFUNC , NFUNC , IMARK , KATV )
 C
 C
-C      IFUNC(MDFUNC,NFUNC)  FUNCTION VECTOR. IFUNC(1,*) IS MARKED WITH
+C      IFUNC(MDFUNC,NFUNC)  FUNCTION VECTORS. IFUNC(1,*) IS MARKED WITH
 C                           THE FLAG TO INDICATE WHETHER ATOM IS TO BE
 C                           INCLUDED
-C      IMARK       MARK TO PLACE IN FUNCTION VECTOR FOR ATOMS INDICATED
-C                  BY INPUT
-C      KATV(3)     FLAGS INDICATING WHICH VECTORS TO UPDATE
+C      IMARK        MARK TO PLACE IN FUNCTION VECTOR FOR ATOMS INDICATED
+C                   BY INPUT
+C      KATV(MDFUNC) VECTOR INDICATING WHICH VECTORS TO UPDATE
+C                    1 - UPDATE
+C                    0 - LEAVE ALONE
 C
       DIMENSION IFUNC(MDFUNC,NFUNC)
-      DIMENSION KATV(3)
+      DIMENSION KATV(MDFUNC)
       LOGICAL SETTHS
 
 \ISTORE
@@ -2049,7 +2055,7 @@ C -- TRY FOR '(', INDICATING AN ATOM SPECIFICATION
         ENDIF
 
 
-        DO I = 1,3
+        DO I = 1,MDFUNC
           IF ( ( KATV(I) .NE. 0 ).AND.( SETTHS ) ) THEN
             IFUNC(I,MFUNC) = IMARK
           ENDIF
