@@ -54,8 +54,7 @@
 %%
 %%
 %    BLOCK  %BXX%
-^^WI   DISPOSE XGUIDES
-^^CR
+^^CO   DISPOSE XGUIDES
 %      FINISH
 %    END BLOCK
 %%
