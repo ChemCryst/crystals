@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/05/07 12:18:53  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.43  2003/03/20 16:10:11  rich
 C
 C Moved SYMMETRY expansion code into a subroutine so it can be applied
@@ -5928,7 +5934,7 @@ C -- C R E A T E   A   N E W   L I S T   4 1:
         END IF
       END IF
 
-C Remeber a few pointers
+C Remember a few pointers
 
       KBL29 = L29
       KBN29 = N29
