@@ -68,6 +68,8 @@
 %     END BLOCK
 %     BLOCK               %HPEAK%
 %       COPY 'EXCL Q VIEW'
+%       COPY 'EXCL QH VIEW'
+%       COPY 'VIEW'
 %       COPY ' '
 ^^WI    RENAME HPEAK SPEAK
 ^^CR
@@ -76,6 +78,8 @@
 %     END BLOCK
 %     BLOCK               %SPEAK%
 %       COPY 'INCL Q VIEW'
+%       COPY 'INCL QH VIEW'
+%       COPY 'VIEW'
 %       COPY ' '
 ^^WI    RENAME SPEAK HPEAK
 ^^CR

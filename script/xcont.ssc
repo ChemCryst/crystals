@@ -254,7 +254,7 @@ view the generated sections.
 %             TRANSFER '#SPAWN CRYSDIR:contour ' // CFILE TO CRYSTALS
 %           END BLOCK
 %           BLOCK    %Run marchingcubesELD viewer
- * Starting Michal Husak's 3D ELD viewer.
+ * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
 %             TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MARCHI~1 ' -
     // CFILE TO CRYSTALS
 %           END BLOCK
