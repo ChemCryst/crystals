@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2000/02/23 12:18:09  ckp2
+C djw  Add .XYZ (Chime) output, fix bug with setunit
+C
 C Revision 1.11  2000/02/08 20:27:18  ckp2
 C djw fix bug so that 'dist range value value' now works
 C
@@ -133,7 +136,8 @@ C CHECK FOR STEREO PAIRS
         IVCHAN = 1
 c----- half rotation left and right
         ang = strang * pi / (2. * 180.0)
-        call zrot(-ang,2)
+cmay2000        call zrot(-ang,2)
+        call zrot(ang,2)
         call zatmul(0,0,0)
         call zdovi
       else
@@ -147,7 +151,8 @@ C CHECK FOR THE OTHER STEREO PAIR
         YOFF = 0.0
 c----- full rotation  right
         ang = strang * pi / (2. * 180.0)
-        CALL ZROT(2.* ANG,2)
+cmay2000        CALL ZROT(2.* ANG,2)
+        CALL ZROT(-2.* ANG,2)
 C SAVE THE SCALE SO THAT BOTH PICTURES ARE DONE ON THE SAME SCALE
         SCLSAV = SCALE
         CALL ZATMUL (0,0,0)
@@ -155,7 +160,8 @@ C SAVE THE SCALE SO THAT BOTH PICTURES ARE DONE ON THE SAME SCALE
         CALL ZDOVI
         IVCHAN = 1
 c------ restore orientation and centre
-        CALL ZROT(-ANG,2)
+cmay2000        CALL ZROT(-ANG,2)
+        CALL ZROT(ANG,2)
         CALL ZATMUL(0,0,0)
         XCEN = XCEN / 0.45
         XOFF = 0.0
@@ -307,7 +313,8 @@ c
 C----- SET LEFT VIEW
         IVCHAN = 1
         ANG = STRANG * PI /(2.0 * 180.)
-        CALL ZROT (-ANG,2)
+cmay2000        CALL ZROT (-ANG,2)
+        CALL ZROT (ANG,2)
         XOFF = -DXOFF
         YOFF = 0.0
         CALL ZATMUL(0,0,0)
@@ -322,7 +329,8 @@ C CHECK FOR THE OTHER STEREO PAIR
         XOFF = 0.
         YOFF = 0.0
 C----- ROTATE RIGHT
-        CALL ZROT(2.*ANG,2)
+cmay2000        CALL ZROT(2.*ANG,2)
+        CALL ZROT(-2.*ANG,2)
         XOFF = DXOFF
         CALL ZATMUL (0,0,0)
         SCALE = SCLSAV
@@ -330,7 +338,8 @@ C----- ROTATE RIGHT
         CALL ZDOVI
         IVCHAN = 1
 C----- RESTORE VIEW AND ORIGIN
-        CALL ZROT(-ANG,2)
+cmay2000        CALL ZROT(-ANG,2)
+        CALL ZROT(ANG,2)
         CALL ZATMUL(0,0,0)
         XOFF = 0.0
         YOFF = 0.0
