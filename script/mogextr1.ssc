@@ -2,7 +2,7 @@
 % VARIABLE INTEGER DPVCOUNT NIN ISER NINDEX
 % VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 CAT CELE
 % VARIABLE REAL ZMAX ZSUM ZNUM ZTOT
-% VARIABLE REAL IDEAL ACTUAL DEV Z 
+% VARIABLE REAL IDEAL ACTUAL DEV Z EFOM ETOT
 % VARIABLE INTEGER NIN NUMOBS SERMAX
 % VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 CAT  
 % EXTRACT REWIND
@@ -133,16 +133,19 @@
 %      IF NUMOBS .LT. 0 THEN
 %% No badness for errors (probably bonds to metals etc.):
 %        EVALUATE Z = 1.0
+%      ELSE IF NUMOBS .LE. 0 THEN
+%% Arbitrary badness for missing results:
+%        EVALUATE Z = 4.0
 %      ELSE IF NUMOBS .LT. 4 THEN
 %% Arbitrary badness for missing results:
-%        EVALUATE Z = 2.0
+%        EVALUATE Z = 3.0
 %      ELSE IF Z .LT. 0.0 THEN
 %        EVALUATE Z = - Z
 %      END IF
 %      IF Z .GT. 10.0 THEN
 %        EVALUATE Z = 10.0
-%      ELSE IF Z .LT. 1.0 THEN
-%          EVALUATE Z = 1.0
+%      ELSE IF Z .LT. 0.25 THEN
+%          EVALUATE Z = 0.25
 %      END IF
 %      LOOP ( NIN + 1 ) TIMES
 %          CASE LOOPCOUNTER
@@ -158,7 +161,7 @@
 %            ON EDITERROR TERMINATE
 %            COPY 'TOP'
 %            EVALUATE DPVCOUNT = DPVCOUNT + 1
-% COPY '#SCRIPT MOGEXTR2'
+%            COPY '#SCRIPT MOGEXTR2'
 %            IF ( NINDEX .EQ. 0 ) THEN
 %              TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
 %            END IF
@@ -172,6 +175,25 @@
 %      END CASE
 %      INSERT !'!
 %      OUTPUT
+% END LOOP
+%%
+%% Take geometric mean of EFOM values.
+%%
+% COPY 'TOP'
+% LOOP
+%   ON ERROR TERMINATE
+%   ON EDITERROR TERMINATE
+%   COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
+%   COPY 'TRANSFER FROM OFFSET=14 TO ETOT'
+%   IF ( ETOT .GT. 0.1 ) THEN
+%     EVALUATE ETOT = 1.0 / ETOT
+%     EVALUATE EFOM = EFOM ** ETOT
+%   ELSE
+%     EVALUATE EFOM = 0.0
+%   END IF
+%   COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
+%   COPY 'TRANSFER TO OFFSET=14 FROM ETOT'
+%   COPY 'NEXT'
 % END LOOP
 % COPY 'WRITE'
 % COPY 'END'
