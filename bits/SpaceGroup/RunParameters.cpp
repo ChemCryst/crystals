@@ -245,6 +245,8 @@ void RunParameters::readParamFile()
                     tClass = new String(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     if (tUniqueAxis)
                     {
+                        if (tUniqueAxis->cmp("NONE/UNKNOWN")==0)
+                            tUniqueAxis->init("B");
                         int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
                         if (tClassIndex < 0)
                         {
@@ -256,8 +258,11 @@ void RunParameters::readParamFile()
                 else if (regexec(tUniqueFSO, tLine, 13, tMatchs, 0) == 0)
                 {
                     tUniqueAxis = new String(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
+                    tUniqueAxis->upcase();
                     if (tClass)
-                    {
+                    {	
+                        if (tUniqueAxis->cmp("NONE/UNKNOWN")==0)
+                            tUniqueAxis->init("B");
                         int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
                         if (tClassIndex < 0)
                         {
