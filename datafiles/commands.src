@@ -2053,8 +2053,37 @@ SPECIAL BONDING (CENTROIDS, NORMALS, PI-BONDS, H-BONDS?)
     .S4                 0    0    1    0    0 0
     .S5                 0    0    1    0    0 0
     .S6                 0    0    1    0    0 0
-LIST 42            0    0
+LIST 42            3    0
   42   40960 CRYSTALSINPUT
+   1.LIMITS             9    1    0    0    9    1  101    1   42
+         1    1    1    1    1    1    0    0    0    0
+MASK LIMITS
+(T2,12A1,8(TL4,12A1))
+(1X,9(1X,F7.3))
+         2    2    2    2    2    2    2    2    2
+    .XMIN               0    0    1    0    0 0.0
+    .XDIVS              0    0    1    0    0 0.3
+    .XMAX               0    0    1    0    0 1.0
+    .YMIN               0    0    1    0    0 0.0
+    .YDIVS              0    0    1    0    0 0.3
+    .YMAX               0    0    1    0    0 1.0
+    .ZMIN               0    0    1    0    0 0.0
+    .ZDIVS              0    0    1    0    0 0.3
+    .ZMAX               0    0    1    0    0 1.0
+   2.MASK               1   -8    0    0    1   -8  102    5   42
+         1    1    1    1    1    1    0    0    0    0
+MASK ITSELF
+(T2,12A1)
+(1X,I8)
+         1
+    .M                  0    0    1    0    0 0
+   3.VALUES             1  -12    0    0    1  -12  103    9   42
+         1    1    1    1    1    1    0    0    0    0
+MASKABLE VALUES
+(T2,12A1)
+(1X,F7.3)
+         2
+    .V                  0    0    1    0    0 0.0
 LIST 43            0    0
   43   40960 CRYSTALSINPUT
 LIST 44            0    0
@@ -3652,8 +3681,8 @@ SLANT              8    5
      NO             YES
     .TAPE              26    0    1    2    0 NO
      NO             YES
-    .FILE              28    0    1    2    0 NO
-     NO             YES
+    .FILE              28    0    1    3    0 NO
+     NO             YES            MAPVIEW
    2.CENTROID           3    1    1    0
          7
          2    2    2
@@ -4059,4 +4088,33 @@ MATCH              6    4
    6.MATCH              1    1    0    0
          1
     .INPUTLIST         10    0    1    2    1         5
+              5        10
+MASK               3    4
+   4    4096 CRYSTALSFOURIER
+    1    2    5   29
+   1.LIMITS            10    1    0    0
+         3    2    2    2    2    2    2    2    2    2
+    .SOURCE             3    0    1    3   -1 EXISTING
+     EXISTING       RANGE          DEFAULTS
+    .XMINIMUM           4    0    1    0    0 0.0
+    .XDIVS              5    0    1    0    0 0.3
+    .XMAXIMUM           6    0    1    0    0 1.0
+    .YMINIMUM           7    0    1    0    0 0.0
+    .YDIVS              8    0    1    0    0 0.3
+    .YMAXIMUM           9    0    1    0    0 1.0
+    .ZMINIMUM          10    0    1    0    0 0.0
+    .ZDIVS             11    0    1    0    0 0.3
+    .ZMAXIMUM          12    0    1    0    0 1.0
+   2.RADII              4    1    0    0
+         3    2    2    2 
+    .ATOMS             13    0    1    2    1 VDW
+     COVALENT       VDW            
+    .MULTIPLIER        14    0    1    0    0 1.0
+    .CONSTANT          15    0    1    0    0 0.0
+    .VOIDATOM          16    0    1    0    0 0.77
+   3.MASK               2    1    0    0
+         3    1
+    .OPERATION          1    0    1    4    0 ACCESSIBLE
+     ACCESSIBLE     OUTSIDE        INSIDE         SHRINK
+    .INPUTLIST          2    0    1    2    1         5
               5        10
