@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/02/27 11:23:59  rich
+C Some commented out code, exploring what to do with hybridisation.
+C
 C Revision 1.18  2003/01/21 12:54:11  rich
 C Commented out swathes of unused code in order to shrink
 C the executable a bit.
@@ -3192,13 +3195,13 @@ C-- if metal involved then skip!  do not assign delocalise bond type 7.
           DO K=1,NRING
             I1=RINGAT(K)
             J1=RINGAT(K+1)
-            ISTORE(AROMA+K+NAROMA*7) = I1 - 1
+            ISTORE(AROMA+MIN(6,K)+NAROMA*7) = I1 - 1
             IF (K.EQ.NRING) J1=RINGAT(1)
             IF(IDEBUG.GT.0) WRITE (LU,9235) I1,J1,NBT
  9235       FORMAT (' set bond ',2I3,' btype',I2)
             CALL SAMSBT(I1,J1,NBT,BOND,BTYPE,NBOCRY)
           END DO
-          ISTORE(AROMA+NAROMA*7) = NRING ! Type flag 5 for five, 6 for six.
+          ISTORE(AROMA+NAROMA*7) = MIN(6,NRING) ! Type flag 5 for five, 6 for six.
           NAROMA = NAROMA + 1
         ENDIF
 
