@@ -8,19 +8,20 @@
 % EVALUATE LCANCEL = FALSE
 % CLEAR
 ^^WI WINDOW INLIST3 'InList3' MODAL SIZE
+^^WI COMMIT=BOK CANCEL=BXX
 ^^WI GRID             G1 NROWS=9 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 GRID G2 NROWS=2 NCOLS=3 OUTLINE='Experimental'
+^^WI  @ 2,2 GRID G2 NROWS=2 NCOLS=2 OUTLINE='Experimental'
 ^^WI  {
 ^^WI   @ 1,1 RADIOBUTTON COP 'Copper' STATE=OFF IGNORE
-^^WI   @ 1,3 RADIOBUTTON MOL 'Molybdenum' STATE=ON IGNORE
-^^WI   @ 2,1 CHECKBOX FRIE 'Apply Friedels Law' STATE=ON
+^^WI   @ 2,1 RADIOBUTTON MOL 'Molybdenum' STATE=ON IGNORE
+^^WI   @ 1,2 CHECKBOX FRIE 'Apply Friedels Law' STATE=ON
 ^^WI   @ 2,2 CHECKBOX MATR 'Specify orientation' STATE=OFF
 ^^WI  }
 ^^WI  @ 4,2 STATIC T1 'Enter the cell contents here:'
 ^^WI  @ 5,2 EDITBOX LE ' ' NCOLS=80 IGNORE
 ^^WI  @ 7,2 STATIC T2 'Enter element symbol followed by number in cell,'
-^^WI  @ 8,2 STATIC T3 'e.g. C   8   N   1   O   4   H   24'
+^^WI  @ 8,2 STATIC T3 'e.g. C 8 H 13 N 1 O 4 - use spaces.'
 ^^WI  @ 2,4 GRID B2 NROWS=3 NCOLS=1
 ^^WI  {
 ^^WI   @ 1,1 BUTTON    BOK 'Ok' DEFAULT COMMIT
@@ -93,43 +94,39 @@
 %      COPY 'END'
 %      COPY '#COMPOSITION'
 %      CLEAR
-%      INSERT 'CONTENTS '
+%      INSERT 'CONTENTS'
 ^^??   LE TEXT
-%      GET KEYWORD 'Element' ' '
+%      GET SILENT KEYWORD 'Element' 'fini'
 %      EVALUATE CELEM = CVALUE
 %      LOOP 18 TIMES
-%        GET NOPROMPT KEYWORD 'Number' ' '
+%        GET NOPROMPT KEYWORD 'Number' 'fini'
 %        EVALUATE CNUMB = CVALUE
-%        GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
 %        IF ( CELEM .EQ. CNUMB ) .OR. -
-            ( CELEM .EQ. ' ' ) .OR. ( CNUMB .EQ. ' ' ) THEN
+            ( CELEM .EQ. 'fini' ) .OR. ( CNUMB .EQ. 'fini' ) THEN
 %          EVALUATE LOOPEND = LOOPCOUNTER
 %        ELSE
 %          SEND
 %          OUTPUT
 %          CLEAR
 %          INSERT 'CONTINUE '
-%          GET NOPROMPT KEYWORD 'Element' ' '
+%          GET NOPROMPT KEYWORD 'Element' 'fini'
 %          EVALUATE CELEM = CVALUE
 %        END IF
 %      END LOOP
-%      OUTPUT
 %      CLEAR
 %      COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
 %      COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT'
 %      COPY 'END'
-%%
-%      GET NOSTORE TEXT ' ' ' '
 %      EVALUATE CLTYPE = CVALUE
 ^^??   COP STATE
 %      VERIFY ON OFF
-%      GET NOSTORE VERIFIED 'ON or Off' ' '
+%      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '
 %      EVALUATE RADIATION = VALUE
 %      QUEUE REWIND
 %      CLEAR
 ^^??   FRIE STATE
 %      VERIFY ON OFF
-%      GET NOSTORE VERIFIED 'ON or Off' ' '
+%      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '
 %      IF VALUE .EQ. 1 THEN
 %        INSERT 'CRYSTAL FRIEDEL = YES '
 %      ELSE
@@ -145,7 +142,7 @@
 %      CLEAR
 ^^??   MATR STATE
 %      VERIFY ON OFF
-%      GET NOSTORE VERIFIED 'On or Off' ' '
+%      GET SILENT NOSTORE VERIFIED 'On or Off' ' '
 ^^WI   DISPOSE INLIST3
 ^^CR
 %      IF ( VALUE .EQ. 1 ) THEN
