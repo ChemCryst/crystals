@@ -3265,20 +3265,26 @@ C         IF (IVAL .LE. 1) THEN
         ENDIF
         IF (IVAL .EQ. 0) THEN
             CVALUE='none'
+            J = 0
         ELSE IF (IVAL .EQ. 1) THEN
             CVALUE='refdelf'
+            J = 6
         ELSE IF (IVAL .EQ. 2) THEN
           IF (L13DT .EQ. 9) THEN
 C           AREA DETECTOR
             CVALUE='multi-scan'
+            J = 2
           ELSE
             CVALUE='psi-scan'
+            J = 4
           ENDIF
         ELSE IF (IVAL .EQ. 3) THEN
 C           AREA DETECTOR
             CVALUE='multi-scan'
+            J = 2
         ELSE
             CVALUE='?'
+            J = 0
         ENDIF
         CLINE = ' '
         WRITE(CLINE, '( A, ''correction_type '',A)')
@@ -3286,17 +3292,17 @@ C           AREA DETECTOR
         CALL XPCIF( CLINE)
         WRITE(CPAGE(IDATA+1,1)(:), '(A,5X,A)') 
      1 'Absorption type', CVALUE
-      IF (ISTORE(L30AB+8) .EQ. 1 ) THEN
-        J = 6
+      IF (J .EQ. 6 ) THEN
         CTEMP = '''refined from delta-F (Walker & Stuart , 1983)'''
-      ELSE IF (ISTORE(L30AB+8) .EQ. 2 ) THEN
-        J = 4
+      ELSE IF (J .EQ. 4 ) THEN
 &DOS        CTEMP = '''\y scan,(North et al, 1968)'''
 &DVF        CTEMP = '''\y scan,(North et al, 1968)'''
 &GID        CTEMP = '''\y scan,(North et al, 1968)'''
 &VAX        CTEMP = '''\y scan,(North et al, 1968)'''
 &LIN        CTEMP = '''\\y scan,(North et al, 1968)'''
 &GIL        CTEMP = '''\\y scan,(North et al, 1968)'''
+      ELSE IF (J .EQ. 2 ) THEN
+        CTEMP = ''' (Otwinowski, Z. & Minor, W. 1996)'''
       ELSE
         J = 0
       ENDIF
