@@ -164,10 +164,10 @@ void runTest(RunParameters& pRunData)
     gettimeofday(&time1, NULL);
     Table* tTable = tTables->findTable(pRunData.iCrystalSys.getCString());
     Stats* tStats = new Stats(tTables->getHeadings(), tTables->getConditions());
-    int tNumRef = tHKL->numberOfReflections();
+    int tNumRef = tHKL->length();
     for (int i = 0; i < tNumRef; i++)
     {
-        Reflection* tReflection = tHKL->getReflection(i);
+        Reflection* tReflection = tHKL->get(i);
         tStats->addReflection(tReflection);
     }
 
