@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/08/13 12:30:12  rich
+C Avoid calling XMOVE with zero length arrays to move, it fails.
+C
 C Revision 1.46  2003/08/05 11:11:11  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -559,7 +562,7 @@ C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         NCPU = NCFPU1
         CALL XPCH5C(1)
         NCPU = J
-c        GOTO 1850
+        GOTO 1850
       ENDIF
 C----- REQUEST STRUCTURE SOLUTION
       IF (IEFORT .EQ. 4) THEN
