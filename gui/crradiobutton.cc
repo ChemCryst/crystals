@@ -63,11 +63,6 @@ Boolean	CrRadioButton::ParseInput( CcTokenList * tokenList )
 				LOGSTAT( "Setting RadioButton Text: " + mText );
 				break;
 			}
-			case kTCallback:
-			{
-				tokenList->GetToken(); // Remove that token!
-				break;
-			}
 			case kTInform:
 			{
 				mCallbackState = true;
