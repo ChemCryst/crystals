@@ -3,6 +3,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.28  2003/11/28 10:29:11  rich
+// Replace min and max macros with CRMIN and CRMAX. These names are
+// less likely to confuse gcc.
+//
 // Revision 1.27  2003/09/16 14:49:31  rich
 // Remove default logging from the Linux release version
 //
@@ -242,33 +246,33 @@ typedef unsigned int UINT;
 // so I've made them into macros.
 
 #define CRCALCLAYOUT(a,b)                                              \
-CcRect a##::CalcLayout(bool recalc)                                                            \
+CcRect a ::CalcLayout(bool recalc)                                                            \
 {                                                                          \
   if(!recalc) return CcRect(0,0,m_InitHeight,m_InitWidth);                 \
   if ( ptr_to_cxObject )  {                           \
-  return CcRect(0,0,(int)(m_InitHeight=((##b*)ptr_to_cxObject)->GetIdealHeight()),  \
-                          m_InitWidth =((##b*)ptr_to_cxObject)->GetIdealWidth()); }  \
+  return CcRect(0,0,(int)(m_InitHeight=(( b *)ptr_to_cxObject)->GetIdealHeight()),  \
+                          m_InitWidth =(( b *)ptr_to_cxObject)->GetIdealWidth()); }  \
   return CcRect(0,0,0,0); \
 };
 
 
 #define CRGETGEOMETRY(a,b)                         \
-CcRect a##:: GetGeometry()                          \
+CcRect a ::GetGeometry()                          \
 {   \
 if ( ptr_to_cxObject ) \
-return CcRect(((##b*)ptr_to_cxObject)->GetTop(),   \
-((##b*)ptr_to_cxObject)->GetLeft(),                \
-((##b*)ptr_to_cxObject)->GetTop()+                 \
-((##b*)ptr_to_cxObject)->GetHeight(),              \
-((##b*)ptr_to_cxObject)->GetLeft()+                \
-((##b*)ptr_to_cxObject)->GetWidth());              \
+return CcRect((( b *)ptr_to_cxObject)->GetTop(),   \
+(( b *)ptr_to_cxObject)->GetLeft(),                \
+(( b *)ptr_to_cxObject)->GetTop()+                 \
+(( b *)ptr_to_cxObject)->GetHeight(),              \
+(( b *)ptr_to_cxObject)->GetLeft()+                \
+(( b *)ptr_to_cxObject)->GetWidth());              \
 return CcRect(0,0,0,0);                            \
 };
 
 #define CRSETGEOMETRY(a,b)                         \
-void a##::SetGeometry(const CcRect * rect){        \
+void a ::SetGeometry (const CcRect * rect){        \
 if ( ptr_to_cxObject ) \
-((##b*)ptr_to_cxObject)->SetGeometry(         \
+(( b *)ptr_to_cxObject)->SetGeometry(         \
 rect->mTop,rect->mLeft,rect->mBottom,rect->mRight);\
 }                                                  \
 
@@ -276,16 +280,16 @@ rect->mTop,rect->mLeft,rect->mBottom,rect->mRight);\
 #ifdef __CR_WIN__
 
 #define CXGETGEOMETRIES(a)    \
-int a##::GetTop()  { RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.top );}\
-int a##::GetLeft() { RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.left );}\
-int a##::GetWidth() { CRect windowRect; GetWindowRect(&windowRect); return ( windowRect.Width());}\
-int a##::GetHeight(){ CRect windowRect; GetWindowRect(&windowRect); return ( windowRect.Height());}
+int a ::GetTop()  { RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.top );}\
+int a ::GetLeft() { RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.left );}\
+int a ::GetWidth() { CRect windowRect; GetWindowRect(&windowRect); return ( windowRect.Width());}\
+int a ::GetHeight(){ CRect windowRect; GetWindowRect(&windowRect); return ( windowRect.Height());}
 
 #define CXSETGEOMETRY(a)   \
-void a##::SetGeometry(int t,int l,int b,int r){MoveWindow(l,t,r-l,b-t,true);}
+void a ::SetGeometry(int t,int l,int b,int r){MoveWindow(l,t,r-l,b-t,true);}
 
 #define CXONCHAR(a)  \
-void a##::OnChar(UINT nChar,UINT nRepCnt,UINT nFlags){  \
+void a ::OnChar(UINT nChar,UINT nRepCnt,UINT nFlags){  \
 NOTUSED(nRepCnt);NOTUSED(nFlags);   \
 if(nChar==9){ptr_to_crObject->NextFocus( ( HIWORD(GetKeyState(VK_SHIFT))) ? true:false);return;}  \
 else {ptr_to_crObject->FocusToInput((char)nChar);}}
@@ -294,16 +298,16 @@ else {ptr_to_crObject->FocusToInput((char)nChar);}}
 #ifdef __BOTHWX__
 
 #define CXGETGEOMETRIES(a)    \
-int a##::GetTop()  { return ( GetRect().y );}\
-int a##::GetLeft() { return ( GetRect().x );}\
-int a##::GetWidth() { return ( GetRect().GetWidth());}\
-int a##::GetHeight(){ return ( GetRect().GetHeight());}
+int a ::GetTop()  { return ( GetRect().y );}\
+int a ::GetLeft() { return ( GetRect().x );}\
+int a ::GetWidth() { return ( GetRect().GetWidth());}\
+int a ::GetHeight(){ return ( GetRect().GetHeight());}
 
 #define CXSETGEOMETRY(a)   \
-void a##::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
+void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
 
 #define CXONCHAR(a)  \
-void a##::OnChar(wxKeyEvent &event){ \
+void a ::OnChar(wxKeyEvent &event){ \
 if(event.KeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}  \
 else {ptr_to_crObject->FocusToInput((char)event.KeyCode());}}
 
