@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2002/05/15 10:24:35  richard
+C Output Rsigma during SUM L 6. This is sum(sigma)/sum(Fo) as opposed to
+C sum(delta)/sum(Fo) and therefore if the sigmas are good estimates of error,
+C it should be equal to the final R-factor. In reality sigmas are usually
+C underestimated, so it's just something to aim for.
+C
 C Revision 1.27  2002/03/21 17:51:18  richard
 C Extend I/sigma(I) frequency graph down to -5.
 C
@@ -890,8 +896,534 @@ C----- SET ILOOP TO A DUMMY, SAVE AUTOUPDTE FLAG
 C
 C
 C
+
+CODE FOR XTHETA
+      FUNCTION XTHETA()
+\XLST13
+\STORE
+\XCONST
+      ST = SQRT ( ABS ( SNTHL2(I) ) ) * STORE(L13DC)
+      IF ( ST .GT. 1.0 ) THEN
+        XTHETA = 999.0
+      ELSE
+        XTHETA = ASIN ( ST  ) * RTD
+      END IF
+      RETURN
+      END
 C
+CODE FOR XTHLIM
+      SUBROUTINE XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP)
 C
+C -- ROUTINE WORK OUT COMPLETENESS OF DATA
+C
+\ISTORE
+C
+\STORE
+\XLST23
+C
+\XLST01
+\XLST06
+\XUNITS
+\XSSVAL
+\XCONST
+\XIOBUF
+C
+\QSTORE
+C
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+      CALL XFAL06 ( 0 )
+
+C -- SCAN LIST 6 FOR ALL REFLECTIONS
+
+      IKLAST = -99999
+      ILLAST = -99999
+      IHTOT = 0
+      IKTOT = 0
+      ILTOT = 0
+      THMAX = 0.0
+      THMIN = 999.0
+      IMAXH = 0
+      IMINH = 0
+      IMAXK = 0
+      IMINK = 0
+      IMAXL = 0
+      IMINL = 0
+
+1100  CONTINUE
+        ISTAT = KLDRNR ( 0 )
+        IF ( ISTAT .LT. 0 ) GO TO 1200
+        IMAXH = MAX( IMAXH, NINT (STORE(M6  )) )
+        IMAXK = MAX( IMAXK, NINT (STORE(M6+1)) )
+        IMAXL = MAX( IMAXL, NINT (STORE(M6+2)) )
+        IMINH = MIN( IMINH, NINT (STORE(M6  )) )
+        IMINK = MIN( IMINK, NINT (STORE(M6+1)) )
+        IMINL = MIN( IMINL, NINT (STORE(M6+2)) )
+        IHTOT = IHTOT + 1
+        IF ( NINT ( STORE (M6+2) ) .NE. ILLAST ) THEN
+          ILTOT = ILTOT + 1
+          IKTOT = IKTOT + 1
+          ILLAST = NINT(STORE(M6+2))
+          IKLAST = NINT(STORE(M6+1))
+        ELSE IF ( NINT ( STORE ( M6+1 ) ) .NE. IKLAST ) THEN
+          IKTOT = IKTOT + 1
+          IKLAST = NINT(STORE(M6+1))
+        END IF
+        THMAX = MAX ( THMAX, XTHETA() )
+        THMIN = MIN ( THMIN, XTHETA() )
+      GO TO 1100
+
+1200  CONTINUE
+
+C See if there is a higher possible IMAXH
+      STORE(M6) = IMAXH
+      STORE(M6+1) = 0.0
+      STORE(M6+2) = 0.0
+      ICHG = 1
+      DO WHILE ( ICHG .NE. 0 )
+        ICHG = 0
+        STORE(M6) = STORE(M6) + 1.0
+        IF ( XTHETA() .LT. THMAX ) THEN
+          ICHG = 1
+          IMAXH = NINT ( STORE(M6) )
+        ELSE
+          STORE(M6) = STORE(M6) - 1.0
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+1) = STORE(M6+1) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+1) = STORE(M6+1) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+1) = STORE(M6+1) + 1.0
+          END IF
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+2) = STORE(M6+2) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+2) = STORE(M6+2) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+2) = STORE(M6+2) + 1.0
+          END IF
+        END IF
+      END DO
+
+C See if there is a lower possible IMINH
+      STORE(M6) = IMINH
+      STORE(M6+1) = 0.0
+      STORE(M6+2) = 0.0
+      ICHG = 1
+      DO WHILE ( ICHG .NE. 0 )
+        ICHG = 0
+        STORE(M6) = STORE(M6) - 1.0
+        IF ( XTHETA() .LT. THMAX ) THEN
+          ICHG = 1
+          IMINH = NINT ( STORE(M6) )
+        ELSE
+          STORE(M6) = STORE(M6) + 1.0
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+1) = STORE(M6+1) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+1) = STORE(M6+1) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+1) = STORE(M6+1) + 1.0
+          END IF
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+2) = STORE(M6+2) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+2) = STORE(M6+2) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+2) = STORE(M6+2) + 1.0
+          END IF
+        END IF
+      END DO
+
+C See if there is a higher possible IMAXK
+      STORE(M6  ) = 0.0
+      STORE(M6+1) = IMAXK
+      STORE(M6+2) = 0.0
+      ICHG = 1
+      DO WHILE ( ICHG .NE. 0 )
+        ICHG = 0
+        STORE(M6+1) = STORE(M6+1) + 1.0
+        IF ( XTHETA() .LT. THMAX ) THEN
+          ICHG = 1
+          IMAXK = NINT ( STORE(M6+1) )
+        ELSE
+          STORE(M6+1) = STORE(M6+1) - 1.0
+        END IF
+
+        STO = XTHETA()
+        STORE(M6) = STORE(M6) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6) = STORE(M6) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6) = STORE(M6) + 1.0
+          END IF
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+2) = STORE(M6+2) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+2) = STORE(M6+2) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+2) = STORE(M6+2) + 1.0
+          END IF
+        END IF
+      END DO
+
+C See if there is a higher possible IMINK
+      STORE(M6  ) = 0.0
+      STORE(M6+1) = IMINK
+      STORE(M6+2) = 0.0
+      ICHG = 1
+      DO WHILE ( ICHG .NE. 0 )
+        ICHG = 0
+        STORE(M6+1) = STORE(M6+1) - 1.0
+        IF ( XTHETA() .LT. THMAX ) THEN
+          ICHG = 1
+          IMINK = NINT ( STORE(M6+1) )
+        ELSE
+          STORE(M6+1) = STORE(M6+1) + 1.0
+        END IF
+
+        STO = XTHETA()
+        STORE(M6) = STORE(M6) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6) = STORE(M6) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6) = STORE(M6) + 1.0
+          END IF
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+2) = STORE(M6+2) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+2) = STORE(M6+2) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+2) = STORE(M6+2) + 1.0
+          END IF
+        END IF
+      END DO
+
+C See if there is a higher possible IMAXL
+      STORE(M6) = 0.0
+      STORE(M6+1) = 0.0
+      STORE(M6+2) = IMAXL
+      ICHG = 1
+      DO WHILE ( ICHG .NE. 0 )
+        ICHG = 0
+        STORE(M6+2) = STORE(M6+2) + 1.0
+        IF ( XTHETA() .LT. THMAX ) THEN
+          ICHG = 1
+          IMAXL = NINT ( STORE(M6+2) )
+        ELSE
+          STORE(M6+2) = STORE(M6+2) - 1.0
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+1) = STORE(M6+1) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+1) = STORE(M6+1) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+1) = STORE(M6+1) + 1.0
+          END IF
+        END IF
+
+        STO = XTHETA()
+        STORE(M6) = STORE(M6) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6) = STORE(M6) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6) = STORE(M6) + 1.0
+          END IF
+        END IF
+      END DO
+
+C See if there is a lower possible IMINL
+      STORE(M6) = 0.0
+      STORE(M6+1) = 0.0
+      STORE(M6+2) = IMINL
+      ICHG = 1
+      DO WHILE ( ICHG .NE. 0 )
+        ICHG = 0
+        STORE(M6+2) = STORE(M6+2) - 1.0
+        IF ( XTHETA() .LT. THMAX ) THEN
+          ICHG = 1
+          IMINL = NINT ( STORE(M6+2) )
+        ELSE
+          STORE(M6+2) = STORE(M6+2) + 1.0
+        END IF
+
+        STO = XTHETA()
+        STORE(M6+1) = STORE(M6+1) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6+1) = STORE(M6+1) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6+1) = STORE(M6+1) + 1.0
+          END IF
+        END IF
+
+        STO = XTHETA()
+        STORE(M6) = STORE(M6) + 1.0
+        IF ( XTHETA() .LT. STO ) THEN
+          ICHG = 1
+        ELSE
+          STORE(M6) = STORE(M6) - 2.0
+          IF ( XTHETA() .LT. STO ) THEN
+            ICHG = 1
+          ELSE
+            STORE(M6) = STORE(M6) + 1.0
+          END IF
+        END IF
+      END DO
+
+
+      ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
+
+      CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
+     1            THMAX, THMCMP, THBEST,THBCMP)
+
+      RETURN
+      END
+
+CODE FOR XCOMPL
+      SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
+     1                    THMAX,THMCMP, THBEST,THBCMP )
+\ISTORE
+\STORE
+\XLST06
+\XUNITS
+\XSSVAL
+\XCONST
+\XIOBUF
+\QSTORE
+      DIMENSION IHKLTR ( ITRSZ )
+      DIMENSION ALLBIN ( 100 )
+      DIMENSION FNDBIN ( 100 )
+
+      DO I = 1, 100
+        ALLBIN(I) = 0.0
+        FNDBIN(I) = 0.0
+      END DO
+
+      CALL XFAL06(0)
+
+C Build a HKL tree (requires sorted data to work properly).
+
+      JP = 0
+      JLLP = -1
+      JLKP = -1
+      ILL = 99999
+      ILK = 99999
+
+1100  CONTINUE
+        ISTAT = KLDRNR ( 0 )
+        IF ( ISTAT .LT. 0 ) GO TO 1200
+
+        IF ( NINT(STORE(M6+2)) .NE. ILL ) THEN
+            ILK = NINT(STORE(M6+1))
+            ILL = NINT(STORE(M6+2))
+C Terminate the last K chain:
+            IF ( JLKP .GT. 0 ) IHKLTR(JLKP) = -512
+            JLKP = -1
+C Terminate H chain:
+            IF ( JP .GT. 0 ) IHKLTR(JP) = -512
+            JP = JP + 1
+C Store new L value:
+            IHKLTR(JP) = NINT(STORE(M6+2))
+            IF ( JLLP .GT. 0 ) IHKLTR(JLLP) = JP
+            JP = JP + 1
+C Store place for pointer to next L value:
+            JLLP = JP
+            JP = JP + 1
+C Store new K value:
+            IHKLTR(JP) = NINT(STORE(M6+1))
+            JP = JP + 1
+C Leave place for pointer to next K value:
+            JLKP = JP
+            JP = JP + 1
+C Store new H value:
+            IHKLTR(JP) = NINT(STORE(M6))
+            JP = JP + 1
+        ELSE IF ( NINT(STORE(M6+1)) .NE. ILK ) THEN
+            ILK = NINT(STORE(M6+1))
+C Terminate H chain:
+            IF ( JP .GT. 0 ) IHKLTR(JP) = -512
+            JP = JP + 1
+C Store new K value:
+            IHKLTR(JP) = NINT(STORE(M6+1))
+            IF ( JLKP .GT. 0 ) IHKLTR(JLKP) = JP
+            JP = JP + 1
+C Store place for pointer to next K value:
+            JLKP = JP
+            JP = JP + 1
+C Store new H value:
+            IHKLTR(JP) = NINT(STORE(M6))
+            JP = JP + 1
+         ELSE
+C Store next H value:
+            IHKLTR(JP) = NINT(STORE(M6))
+            JP = JP + 1
+         END IF
+      GO TO 1100
+1200  CONTINUE
+C Terminate all chains:
+      IHKLTR(JP) = -512
+      IHKLTR(JLKP) = -512
+      IHKLTR(JLLP) = -512
+
+
+c      DO I = 1, ITRSZ
+c        WRITE(99,'(I6,1X,I8)') I, IHKLTR(I)
+c      END DO
+
+
+c      WRITE(99,'(a,6I7)') 'min and maxs', JNH,JXH,JNK,JXK,JNL,JXL
+
+      NALLWD = 0
+      NFOUND = 0
+
+      DO IL = JNL, JXL
+        DO IK = JNK, JXK
+          DO IH = JNH, JXH
+            IF ( ABS(IH) + ABS(IK) + ABS(IL) .EQ. 0 ) CYCLE
+            STORE(M6) = IH
+            STORE(M6+1) = IK
+            STORE(M6+2) = IL
+C Check refln is within theta range
+            IF ( XTHETA() .LE. THMAX ) THEN
+C Check if it is systematically absent.
+              IF ( KSYSAB(2) .GE. 0 ) THEN
+C Only consider 'allowed' if indices were not changed by KSYSAB:
+                IF (     ( NINT(STORE(M6  )) .EQ. IH )
+     1              .AND.( NINT(STORE(M6+1)) .EQ. IK )
+     2              .AND.( NINT(STORE(M6+2)) .EQ. IL ) ) THEN
+                  NALLWD = NALLWD + 1
+                  JID = ( ( XTHETA() / THMAX ) * 400.0 ) - 300
+                  JID = MAX ( 1,  JID )
+                  JID = MIN ( 100,JID )
+                  ALLBIN(JID) = ALLBIN(JID) + 1.0
+                  JP = 1
+                  IFOUND = 0
+                  DO WHILE ( IHKLTR(JP) .NE. IL )
+                    JP = IHKLTR(JP+1)
+                    IF ( JP .GT. ITRSZ ) JP = -1
+                    IF ( JP .LE. 0)  EXIT
+                  END DO
+                  IF ( JP .GT. 0 ) THEN
+                    JP = JP + 2
+                    DO WHILE ( IHKLTR(JP) .NE. IK )
+                      JP = IHKLTR(JP+1)
+                      IF ( JP .GT. ITRSZ ) JP = -1
+                      IF ( JP .LE. 0)  EXIT
+                    END DO
+                    IF ( JP .GT. 0 ) THEN
+                      JP = JP + 2
+                      DO WHILE ( IHKLTR(JP) .NE. IH )
+                        JP = JP + 1
+                        IF ( JP .GT. ITRSZ ) JP = -1
+                        IF ( IHKLTR(JP) .LE. -512 ) JP = -1
+                        IF ( JP .LE. 0)  EXIT
+                      END DO
+                      IF ( JP .GT. 0 ) THEN
+                        NFOUND = NFOUND + 1
+                        IFOUND = 1
+                        FNDBIN(JID) = FNDBIN(JID) + 1.0
+                      END IF
+                    END IF
+                  END IF
+                  IF ( IFOUND .EQ. 0 ) THEN
+c               WRITE (99,'(A,3I5,F8.3)')'Missing: ',IH,IK,IL,XTHETA()
+                  END IF
+                END IF
+              END IF
+            END IF
+          END DO
+        END DO
+      END DO
+
+c      WRITE(99,'(A,2I9)') 'NALLWD, NFOUND: ', NALLWD, NFOUND
+
+      THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
+
+      DO I = 2, 100
+        FNDBIN(I) = FNDBIN(I) + FNDBIN(I-1)
+        ALLBIN(I) = ALLBIN(I) + ALLBIN(I-1)
+      END DO
+
+      THBEST = 0.0
+      THBCMP = 0.0
+
+      DO I = 1,100
+c        WRITE(99,'(A,2F10.4)')'Fnd,Tot: ',FNDBIN(I),ALLBIN(I)
+        IF ( ALLBIN(I) .EQ. 0 ) THEN
+          FNDBIN(I) = 0
+        ELSE
+          FNDBIN(I) = FNDBIN(I) / ALLBIN(I)
+        END IF
+c        WRITE(99,'(30X,A,2F10.4)')'Cmp,tht: ',
+c     1     FNDBIN(I),THMAX*((I+300.0)/400.0)
+        IF ( (FNDBIN(I) .GE. THBCMP) .OR. (FNDBIN(I) .GT. 0.995) ) THEN
+          THBEST = THMAX*((I+300.0)/400.0)                       
+          THBCMP = FNDBIN(I)
+        END IF
+      END DO
+
+      RETURN
+      END
+
 CODE FOR XSUM06
       SUBROUTINE XSUM06 ( LEVEL )
 C
@@ -1045,54 +1577,6 @@ c -- ADD A SERIES FOR STRAIGHT LINE
         CALL XPRVDU(NCVDU, 1, 0)
       ENDIF
 
-
-
-
-cC -- ALLOCATE SPACE FOR MATRICES
-c      IALPHA = KSTALL(4)
-c      IBETA = KSTALL(2)
-cC -- ACCUMULATE BETA MATRIX
-c      DO K=0,1
-c          STORE(IBETA+K) = 0
-c          DO I=1,N6D
-c          STORE(IBETA+K) = STORE(IBETA+K) + Y(I)*FUNCT(K,X(I))
-c        ENDDO
-c      ENDDO                               
-cC -- ACCUMULATE ALPHA MATRIX
-c      DO J=0,1
-c          DO K=0,1
-c            STORE(IALPHA+J+(2*K)) = 0
-c            DO I=1,N6D
-c            STORE(IALPHA+J+(2*K)) = (STORE(IALPHA+J+(2*K))
-c     1  + (FUNCT(J,X(I))*FUNCT(K,X(I))))
-c            ENDDO
-c          ENDDO
-c        ENDDO
-c      WRITE(CMON,'(A,2G13.6)')'A 1/2:',STORE(IALPHA),STORE(IALPHA+1)
-c      WRITE(NCAWU,'(A,2G13.6)')'A 1/2:',STORE(IALPHA),STORE(IALPHA+1)
-c      CALL XPRVDU(NCVDU, 1,0)
-c      WRITE(CMON,'(A,2G13.6)')'A 3/4:',STORE(IALPHA+2),STORE(IALPHA+3)
-c      WRITE(NCAWU,'(A,2G13.6)')'A 3/4:',STORE(IALPHA+2),STORE(IALPHA+3)
-c      CALL XPRVDU(NCVDU, 1,0)
-c      WRITE(CMON,'(A,2G13.6)')'Beta:',STORE(IBETA),STORE(IBETA+1)
-c      WRITE(NCAWU,'(A,2G13.6)')'Beta:',STORE(IBETA),STORE(IBETA+1)
-c      CALL XPRVDU(NCVDU, 1,0)
-c
-cC -- ALLOCATE STORE FOR INVERTED ALPHA AND SOLUTIONS
-c      IWRK  = KSTALL(2)
-c        IWRK2 = KSTALL(2)
-c        IINV  = KSTALL(4)
-c        ISOLN = KSTALL(2)
-cC -- DO INVERSION AND GET RESULT
-c      ISTAT = KINV2(2,STORE(IALPHA),STORE(IINV),4,0,STORE(IWRK),
-c     1 STORE(IWRK2),2)
-c      CALL XMLTMM(STORE(IBETA),STORE(IINV),STORE(ISOLN),1,2,2)
-c      WRITE(CMON,'(A,2F)')'Solutions:',STORE(ISOLN),STORE(ISOLN+1)
-c      CALL XPRVDU(NCVDU,1,0)
-c      WRITE(CMON,'(A,2G13.6)')'I 1/2:',STORE(IINV),STORE(IINV+1)
-c      CALL XPRVDU(NCVDU,1,0)
-c      WRITE(CMON,'(A,2G13.6)')'I 3/4:',STORE(IINV+2),STORE(IINV+3)
-c      CALL XPRVDU(NCVDU,1,0)
 
 C----- COMPUTE AND STORE R-VALUES
       RFACT = 100. * TOP / BOTTOM
