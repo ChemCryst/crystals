@@ -60,12 +60,12 @@ int CxMenu::AddItem(char * text, int position)
 int CxMenu::AddItem(int position)
 {
 #ifdef __WINDOWS__
-	InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR);
+      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR, (UINT)++mMenuCount);
 #endif
 #ifdef __LINUX
       AppendSeparator();
 #endif
-	return 0;
+	return mMenuCount;
 }
 
 
