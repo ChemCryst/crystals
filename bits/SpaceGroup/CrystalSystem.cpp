@@ -596,14 +596,21 @@ Indexs::~Indexs()
 std::ostream& Indexs::output(std::ostream& pStream)
 {
     int tCount = iIndexs->length();
+    char* tString = new char[tCount*2+3];
+    tString[0] = '\0';
     for (int i = 0; i < tCount;  i++)
     {
-        pStream << *(iIndexs->get(i));
-        if (i < tCount -1)
+        if (i+1==tCount)
         {
-            pStream << " ";
+            sprintf(tString, "%s%d", tString, iIndexs->get(i)->get());
+        }
+        else
+        {
+            sprintf(tString, "%s%d ", tString, iIndexs->get(i)->get());
         }
     }
+    pStream << tString;
+    delete tString;
     return pStream;
 }
 
@@ -1019,7 +1026,7 @@ void Table::readFrom(filebuf& pFile)
     }
 }
 
-std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
+std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
 {
     int tLengthConditions = iColumns->length();
     int tLengthSpaceGroup = iSpaceGroups->length();
@@ -1028,26 +1035,23 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
         Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
-            pStream << setw(1) << "-\t";
+            pStream << "-\n";
         }
         else
         {
-           pStream << setw(1) << *(tIndexs) << "\t";
+           pStream << *(tIndexs) << "\n";
         }
     }
-    pStream << "| ";
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SpaceGroups* tSpaceGroups = iSpaceGroups->get(i);
         SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
-        pStream << setw(6) << *(tSpaceGroup);
-        pStream << "\t";
+        pStream << *(tSpaceGroup) << "\n";
     }
-    pStream << "\n";
     return pStream;
 }
 
-std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[])
+std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[])
 {
     int tLengthConditions = iColumns->length();
     for (int i = 0; i < tLengthConditions; i++)
@@ -1055,21 +1059,68 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointG
         Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
-            pStream << setw(7) <<  "-";
+            pStream << "-\n";
         }
         else
         {
-           pStream << setw(7) << *(tIndexs);
+           pStream << *(tIndexs) << "\n";
         }
     }
-    pStream << "SG: ";
-    
     for (int i = 0; tPointGroups[i]!=-1; i++)
     {
         SpaceGroups* tSpaceGroups = iSpaceGroups->get(tPointGroups[i]);
         SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
-        pStream << *(tSpaceGroup) << " ";
-        pStream << "\t";
+        pStream << *(tSpaceGroup) << "\n";
+    }
+    return pStream;
+}
+
+std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumnSize)
+{
+    int tLengthConditions = iColumns->length();
+    int tLengthSpaceGroup = iSpaceGroups->length();
+    for (int i = 0; i < tLengthConditions; i++)
+    {
+        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        if (tIndexs == NULL)
+        {
+            pStream << setw(pColumnSize) << "-" << " ";
+        }
+        else
+        {
+           pStream << setw(pColumnSize) << *(tIndexs) << " ";
+        }
+    }
+    for (int i = 0; i < tLengthSpaceGroup; i++)
+    {
+        SpaceGroups* tSpaceGroups = iSpaceGroups->get(i);
+        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
+    }
+    pStream << "\n";
+    return pStream;
+}
+
+std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnSize)
+{
+    int tLengthConditions = iColumns->length();
+    for (int i = 0; i < tLengthConditions; i++)
+    {
+        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        if (tIndexs == NULL)
+        {
+            pStream << setw(pColumnSize) <<  "-";
+        }
+        else
+        {
+           pStream << setw(pColumnSize) << *(tIndexs);
+        }
+    }
+    for (int i = 0; tPointGroups[i]!=-1; i++)
+    {
+        SpaceGroups* tSpaceGroups = iSpaceGroups->get(tPointGroups[i]);
+        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
     return pStream;
@@ -1498,6 +1549,35 @@ RankedSpaceGroups::~RankedSpaceGroups()
     delete[] iRatings;
 }
 
+std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when outputing the ranked space groups to a file.
+{
+    pStream << "RESULTS " << iRatingList.count() << "\n";
+    RowRating* tCurrentRating;
+    const int tPNum = iTable->getNumPointGroups();
+    int* tPointGroups = new int[tPNum];
+    
+    if (iChiral)
+    {
+        iTable->chiralPointGroups(tPointGroups);
+    }
+    iRatingList.reset();
+    while ((tCurrentRating = iRatingList.next()) != NULL)
+    {
+        pStream << tCurrentRating->iMean << "\n";
+        pStream << "PROMOTED ";
+        if (tCurrentRating->iFiltered)
+            pStream << "YES\n";
+        else
+            pStream << "NO\n";
+        if (iChiral)
+            iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);
+        else
+            iTable->outputLine(tCurrentRating->iRowNum, pStream);
+    }
+    delete tPointGroups;
+    return pStream;
+}
+
 std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 {
     RowRating* tCurrentRating;
@@ -1519,7 +1599,7 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
         else
             pStream << " + ";
         if (iChiral)
-            iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);	//Make output space group only.
+            iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);	//Output only set point group list.
         else
             iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
@@ -1528,6 +1608,11 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 }
 
 std::ostream& operator<<(std::ostream& pStream, RankedSpaceGroups& pRank)
+{
+    return pRank.output(pStream);
+}
+
+std::ofstream& operator<<(std::ofstream& pStream, RankedSpaceGroups& pRank)
 {
     return pRank.output(pStream);
 }
