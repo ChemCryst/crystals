@@ -1,6 +1,7 @@
 CODE FOR CRYSTL
 C      winapp 500000,1000000
-      PROGRAM CRYSTL
+&GID      SUBROUTINE CRYSTL
+#GID      PROGRAM CRYSTL
 C
 C
 C     ******************************************************
@@ -155,7 +156,8 @@ C
         IF ( ISTAT .LE. 0 ) THEN
             WRITE(6,*) 'UNIT =', NCRU, 'FILE =', CSSCST
             CALL XERIOM ( NCRU, ISTAT)
-            STOP 'ERROR OPENING STARTUP FILE'
+C            STOP 'ERROR OPENING STARTUP FILE'
+            CALL GUEXIT (2003)
         ENDIF
       ENDIF
 C
@@ -239,7 +241,8 @@ C
       GO TO 9990
 C
 9990  CONTINUE
-      STOP 'CRYSTALS START ERROR'
+C      STOP 'CRYSTALS START ERROR'
+      CALL GUEXIT (2004)
 &PPCCS***
 &PPC9999  CONTINUE
 &PPCCE***

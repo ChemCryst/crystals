@@ -665,7 +665,8 @@ C -- INTERNAL ERROR
 9925  FORMAT ( 1X , 'An illegal code has been found in ' ,
      2 'the error routine -- Programming error' )
       CALL XFINAL ( 2 )
-      STOP 'ERROR HANDLING'
+C      STOP 'ERROR HANDLING'
+      CALL GUEXIT(2020)
       END
 C
 C --
@@ -807,7 +808,8 @@ C
 &PPC      GLSTOP = 1
 &PPC      RETURN
 &PPCCE***
-#PPC      STOP 'OK'
+C#PPC      STOP 'OK'
+#PPC      CALL GUEXIT(0)
 8200  CONTINUE
 &PPCC
 &PPCCS***
@@ -818,7 +820,8 @@ C
 &PPC      STOP
 #PPC      write(*,*) ' Ending in error'
 #PPC      WRITE ( NCVDU , 8305 ) J/(icode-2)
-#PPC      STOP 'ERROR'
+C#PPC      STOP 'ERROR'
+#PPC      CALL GUEXIT(1)
 8300  CONTINUE
 C
 C -- CAUSE PROG. TO CRASH TO GET TRACEBACK
@@ -834,7 +837,8 @@ C
 #PPC      WRITE ( NCVDU , 8305 ) J/(icode-3)
 #PPC8305  FORMAT ( 1X , I10 )
 #PPCC
-#PPC      STOP 'SERIOUS ERROR'
+C#PPC      STOP 'SERIOUS ERROR'
+#PPC        CALL GUEXIT(2)
       END
 C
 C --
@@ -1588,7 +1592,8 @@ C----- CHECK IF WE CAN START
 C
       GOTO (1000,2000,2000,2000,100),IOP
 100   CONTINUE
-      STOP 'SPYERROR'
+C      STOP 'SPYERROR'
+      CALL GUEXIT(2021)
 C
 1000  CONTINUE
 C----- INITIAL CALL
@@ -1676,23 +1681,27 @@ C
 CODE FOR KEQUAT
       FUNCTION KEQUAT(IN)
       KEQUAT = 0
-      STOP 'KEQUAT'
+C      STOP 'KEQUAT'
+      CALL GUEXIT(2022)
 100   RETURN
       END
 CODE FOR KFORM
       FUNCTION KFORM(IN)
       KFORM = 0
-      STOP 'KFORM'
+C      STOP 'KFORM'
+      CALL GUEXIT (2023)
 100   RETURN
       END
 CODE FOR KFUNCT
       FUNCTION KFUNCT(IN)
       KFUNCT = 0
-      STOP 'KFUNCT'
+C      STOP 'KFUNCT'
+      CALL GUEXIT (2024)
 100   RETURN
       END
 CODE FOR XABS
       SUBROUTINE XABS
-      STOP 'XABS'
+C      STOP 'XABS'
+      CALL GUEXIT(2025)
 100   RETURN
       END

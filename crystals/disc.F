@@ -459,7 +459,8 @@ C
       I = I
       J = J
       K = K
-      STOP 'XFETCH'
+C      STOP 'XFETCH'
+      CALL GUEXIT(2007)
 C
       END
 C
@@ -601,7 +602,8 @@ C
       I = I
       J = J
       K = K
-      STOP 'XSTORE'
+C      STOP 'XSTORE'
+      CALL GUEXIT(2008)
 C
       END
 C

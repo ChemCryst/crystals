@@ -621,7 +621,8 @@ C
 C
 9910  CONTINUE
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
-      STOP
+C      STOP
+      CALL GUEXIT(2011)
       END
 C
 C

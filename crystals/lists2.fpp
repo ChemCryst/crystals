@@ -1115,7 +1115,8 @@ C--SOME SORT OF ERROR
      2 ' - indicated list type ',I5,' and record type ',I8)
       CALL XPCM(1)
       CALL XERHND ( IERPRG )
-      STOP
+C      STOP
+      CALL GUEXIT(2016)
       END
 C
 CODE FOR KCHKCC

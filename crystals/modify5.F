@@ -1966,7 +1966,8 @@ C      SUM[(X-A)*(Y-B)]= SUM(X*Y) - 1/N * SUM(X)*SUM(Y)
             A(I) = A(I) * DIV / D(I)
 40      CONTINUE
       ELSE
-            STOP 'ERROR'
+C            STOP 'ERROR'
+            CALL GUEXIT(2017)
       ENDIF
       RETURN
       END
