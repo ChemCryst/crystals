@@ -1,5 +1,5 @@
  This is the main command definition file
- 17
+ 18
   4 \LIST 4
   7 \LIST 7
  12 \CLEAR 12
@@ -17,6 +17,7 @@
  30 \LIST 30
  31 \LIST 31
  36 \WEIGHT
+ 41 \BONDCALC
 LIST               1    2
    1   40960
     20   30
@@ -1192,9 +1193,9 @@ THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT
          1    1    0    0    1    1    0    0    0    0
 THE INVERSE MATRICES FOR THE TWIN TRANSFORMATIONS
 (3(1H ,10X,3F10.3/))
-LIST 26            3    5
+LIST 26            3    6
    2    4096 CRYSTALSPROCESS
-    1    2    5   16   17
+    1    2    5   16   17   41
    1.DEPENDENCIES       4    0    0    0    4    2    1    5   26
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1
