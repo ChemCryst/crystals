@@ -51,15 +51,16 @@
 ^^WI     }
 ^^WI     @ 8,2 GRID STUFF NROWS=11 NCOLS=5 COMMAND='#SCRIPT xcalter'
 ^^WI     {
-^^WI       @ 2,2 BUTTON SLABEL 'Show labels'
-^^WI       @ 2,4 BUTTON HHYDRO 'Hide H'
-^^WI       @ 4,2 BUTTON MLABEL 'Move labels'
-^^WI       @ 4,4 BUTTON SCELL  'Show cell'
-^^WI       @ 6,2 BUTTON INCAR  'Include area'
-^^WI       @ 6,4 BUTTON INCAL  'Show all'
-^^WI       @ 8,2 BUTTON EXCAR  'Exclude area'
-^^WI       @ 8,4 BUTTON OHCONT 'Find O---H'
-^^WI       @ 10,2 BUTTON HPEAK 'Hide Q'
+^^WI       @ 4,2 BUTTON SLABEL 'Show labels'
+^^WI       @ 6,2 BUTTON HHYDRO 'Hide H'
+^^WI       @ 4,4 BUTTON MLABEL 'Move labels'
+^^WI       @ 8,2 BUTTON SCELL  'Show cell'
+^^WI       @ 10,2 BUTTON INCAR  'Include area'
+^^WI       @ 8,4 BUTTON INCAL  'Show all'
+^^WI       @ 10,4 BUTTON EXCAR  'Exclude area'
+^^WI       @ 2,2 BUTTON OHCONT 'Find O---H'
+^^WI       @ 6,4 BUTTON HPEAK 'Hide Q'
+^^WI       @ 2,4 BUTTON VIEW 'VIEW'
 ^^WI     }
 ^^WI    }
 ^^WI   }

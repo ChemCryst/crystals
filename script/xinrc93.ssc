@@ -162,7 +162,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY 'END'
 %    COPY '#WEIGHT'
 %    COPY 'END'
-%    COPY '#RELEASE PRINT'
+%    COPY '#RELEASE PRINT BETACRYS'
+%    COPY '#TYPE RC93.ERR'
  * Done. RC93 input complete.
 %%
 %END SCRIPT

@@ -3,12 +3,12 @@
 % CLEAR
 % BLOCK
 %   ON ERROR REPEAT
-%   ON END TERMINATE
+%%   ON END TERMINATE
 %   QUEUE REWIND
 %   CLEAR
  Structure factor control list
  -----------------------------
-                                             use  END  to abandon input
+%%                                             use  END  to abandon input
 %    CLEAR
 %    VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
