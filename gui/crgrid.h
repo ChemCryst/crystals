@@ -42,6 +42,7 @@ class	CrGrid : public CrGUIElement
 		CrGUIElement *	FindObject( CcString Name );
             void SendCommand(CcString theText, Boolean jumpQueue);
             void SetCommandText(CcString theText);
+            void CrShowGrid(bool state);
 		
 		// attributes
 		int	mColumns;
@@ -87,6 +88,7 @@ class	CrGrid : public CrGUIElement
 #define kSAlignRight		"RIGHT"
 #define kSAlignBottom		"BOTTOM"
 #define kSCreateBitmap          "BITMAP"
+#define kSCreateTabCtrl         "TABCTRL"
 
 enum 
 {
@@ -111,7 +113,8 @@ enum
  kTAlignExpand,	
  kTAlignRight,	
  kTAlignBottom,
- kTCreateBitmap
+ kTCreateBitmap,
+ kTCreateTabCtrl
 };
 
 
