@@ -180,7 +180,7 @@ C OUTPUT THE RESULT
       WRITE (CLINE,20) CALAB1,CBLAB1,CCLAB1,ANG
       CALL ZMORE(CLINE,0)
       CALL ZMORE1(CLINE,0)
-20    FORMAT (' ',3(A12,2X),'Angle ',F6.2)
+20    FORMAT (3(A12,1X),'Angle ',F6.2)
       RETURN
       END
  
@@ -255,7 +255,7 @@ C GET THE LABELS
       WRITE (CLINE,20) CALAB1, CBLAB1, CCLAB1, CDLAB1 , ANG
       CALL ZMORE(CLINE,0)
       CALL ZMORE1(CLINE,0)
-20    FORMAT ('  ',4(A12,2X),' angle ',F6.2)
+20    FORMAT (4(A12,1X),' angle ',F6.2)
       RETURN
       END
  
@@ -444,7 +444,7 @@ C WORK OUT THE PACK LABEL FROM THE ATOM POSITION
             WRITE (CLINE,11) CLAB,CLAB1,D
             CALL ZMORE(CLINE,2)
             CALL ZMORE1(CLINE,2)
-11          FORMAT (A12,2X,A12,2X,F10.4)
+11          FORMAT (A12,1X,A12,1X,F7.4)
             IF (IPACK.EQ.0) THEN
             WRITE (CLINE,12) SWORD(1:ISLEN),IMX
             CALL ZMORE(CLINE,2)
@@ -574,8 +574,7 @@ C GET  THE LABELS
         IL = INDEX ( CSTORE(LLL),' ') -1
         CALL ZPLABL (NINT(RSTORE(IRLAST+4)),CLAB1,IL)
         WRITE (CLINE,98) CLAB , CLAB1 , D
-98        FORMAT ('Distance between ',A12,2X,A12,' is ',F10.4 ,
-     c           ' angstroms.')
+98        FORMAT (A12,' to ',A12,F7.4 , ' A')
         CALL ZMORE(CLINE,2)
         WRITE (CLINE,11) CLAB , CLAB1 , D
         CALL ZMORE1(CLINE,0)
@@ -583,7 +582,7 @@ C GET  THE LABELS
 C NO DISTANCES WERE FOUND
         WRITE (CLINE,99) DISBEG , DISEND
         CALL ZMORE(CLINE,0)
-99        FORMAT ('No distances were found in the range ',F5.2,
+99        FORMAT ('No distances in the range ',F5.2,
      c ' to ',F5.2,' angstroms.')
       ENDIF
       ENDIF
