@@ -43,7 +43,6 @@ class SpaceGroup:public CrystSymmetry
          * @abstract
          */
         std::ostream& output(std::ostream& pStream);
-        std::ostream& SpaceGroup::crystalsOutput(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup);
@@ -81,13 +80,6 @@ class SpaceGroups:public vector<SpaceGroup>
          * @abstract
          */
         std::ostream& output(std::ostream& pStream);
-
-        /*!
-         * @function output 
-         * @description Not yet documented.
-         * @abstract
-         */
-        std::ofstream& output(std::ofstream& pStream);
 };
 
 std::ofstream& operator<<(std::ofstream& pStream, SpaceGroups& pSpaceGroups);
