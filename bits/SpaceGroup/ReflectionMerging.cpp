@@ -420,15 +420,15 @@ bool LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const 
         }
     }
     MergedData::releaseReflections();
-	return tMerged;
+    return tMerged;
 }
 
 LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
 {
     size_t tBest = 0;
-    float tLowestRF = 0;
-	float tHighestRF = FLT_MIN;
-	float tRFactor;
+    float tLowestRF = FLT_MAX;
+    float tHighestRF = FLT_MIN;
+    float tRFactor;
     bool tMergedAlready = LaueGroups::mergeForAll(pHKLs, true, pRunParam);
     
 	if (tMergedAlready)
@@ -436,7 +436,7 @@ LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunPara
 		for (size_t i = 1; i < iGroups->size(); i++)
 		{
 			tRFactor = (*iGroups)[i]->getRFactor();
-			if (tRFactor < 0)
+			if (tRFactor > 0)
 			{
 				tHighestRF = max(tHighestRF, tRFactor);
 				tLowestRF = min(tLowestRF, tRFactor);
@@ -558,27 +558,29 @@ void MergedData::add(const Matrix<short>& pHKL, const Reflection& pRefl)
     gSortedReflections->insert(&(gReflections[iUpto++]));
 }
 
+/*
+ *  
+ */
 void MergedData::releaseReflections()
 {
     if (gReflections != NULL)
     {
-        delete[] gReflections;
-        gReflections = NULL;
-        gSortedReflections->clear();
-        delete gSortedReflections;
-        gSortedReflections = NULL;
+        delete[] gReflections; //Release all the global reflections used.
+        gReflections = NULL;    //Make sure that we know that this is need.
+        gSortedReflections->clear(); //Clear all the reflections which where in the sorted list because they no longer exist
+        delete gSortedReflections;  //Release the memory
+        gSortedReflections = NULL; 
     }
 }
 
 float MergedData::calculateRFactor()
 {
 	static Matrix<short>* tCurHKL;
-        static Array<float> tValues(23); //I don't think that this should need to be any greater then 23 elements long.
-        tCurHKL = (*(gSortedReflections->begin()))->tHKL;
-        tValues.clear();
-        tValues.add((*gSortedReflections->begin())->i);
-        multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin();
-        float tSumSum = 0;
+        static Array<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
+        tCurHKL = (*(gSortedReflections->begin()))->tHKL; //Save the pointer to the current hkl value
+        tValues.clear();                                //Clear the values from the last time they were used.
+        multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin(); //Start at the first 
+        float tSumSum = 0;                              //Make sure that every thing is set to 0
         float tMeanDiffSum = 0;
         float tSum = 0;
         
@@ -598,7 +600,10 @@ float MergedData::calculateRFactor()
             tValues.add((*tIter)->i);  //Save the intensity
             tIter++; //Move on to the next reflection in the list.
         }
-        iRFactor = tMeanDiffSum/tSumSum; //In the desciption this is multiplied by
+        if (tSumSum == 0)
+            iRFactor = 0;
+        else
+            iRFactor = tMeanDiffSum/tSumSum; //In the desciption this is multiplied by
 	//But as these values are for comparison there isn't much point
         return iRFactor;
 }
