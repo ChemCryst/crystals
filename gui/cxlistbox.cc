@@ -8,6 +8,14 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2000/07/04 14:42:01  ckp2
+// Gui changes since last year.
+// Mainly chart handling for multiple charts in one window.
+// Some Cx files only changed to split long lines to make inclusion
+// into "the thesis" more automatic.
+// New GUIMENU.SSR has more "right-click" options and swapped panes for model
+// and text output.
+//
 // Revision 1.5  1999/05/28 18:00:29  dosuser
 // RIC: Attempted world record for most number of files
 // checked in at once. Most changes are to do with adding
@@ -25,7 +33,7 @@
 #include	"cxwindow.h"
 #include	"crlistbox.h"
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/settings.h>
 #endif
 
@@ -40,7 +48,7 @@ CxListBox *	CxListBox::CreateCxListBox( CrListBox * container, CxGrid * guiParen
 	theListBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theListBox->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theListBox->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL,wxLB_SINGLE|wxLB_NEEDED_SB);
 #endif
 	return theListBox;
@@ -65,7 +73,7 @@ void	CxListBox::DoubleClicked()
 #ifdef __WINDOWS__
             int itemIndex = GetCurSel();
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             int itemIndex = GetSelection();
 #endif
             ((CrListBox *)mWidget)->Committed( itemIndex + 1 );
@@ -76,7 +84,7 @@ void	CxListBox::Selected()
 #ifdef __WINDOWS__
             int itemIndex = GetCurSel();
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             int itemIndex = GetSelection();
 #endif
 		((CrListBox *)mWidget)->Selected( itemIndex + 1 );
@@ -93,7 +101,7 @@ void	CxListBox::AddItem( char * text )
 	theCell.v = mItems -1;						// Set cell
 	LSetCell( text, strlen( text ), theCell, macListH);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       Append (text);
       if( !mItems ) SetSelection(0);
 	mItems++;
@@ -133,7 +141,7 @@ void	CxListBox::SetGeometry( int top, int left, int bottom, int right )
 	else
 		MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 
@@ -152,15 +160,15 @@ int   CxListBox::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+  //          parentRect = parent->GetRect();
+    //        windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -177,7 +185,7 @@ int   CxListBox::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -197,7 +205,7 @@ int   CxListBox::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -210,7 +218,7 @@ int   CxListBox::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -235,15 +243,12 @@ int	CxListBox::GetIdealWidth()
 	if(mItems > mVisibleLines)
 		maxSiz += GetSystemMetrics(SM_CXVSCROLL);
 #endif
-#ifdef __LINUX__
-      wxString text;
+#ifdef __BOTHWX__
 	for ( int i=0;i<mItems;i++ )
 	{
-            text = GetString(i);
             int cx,cy;
-            GetTextExtent( GetLabel(), &cx, &cy );
-            if ( maxSiz < cx )
-                    maxSiz = cx;
+            GetTextExtent( GetString(i), &cx, &cy );
+            if ( maxSiz < cx )  maxSiz = cx;
 	}
 
 	if(mItems > mVisibleLines)
@@ -268,7 +273,7 @@ int	CxListBox::GetIdealHeight()
 	cdc.SelectObject(oldFont);
       return mVisibleLines * ( textMetric.tmHeight + 2 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( "Any old string", &cx, &cy );
       return mVisibleLines * ( cy + 2 );
@@ -282,7 +287,7 @@ int	CxListBox::GetBoxValue()
 #ifdef __WINDOWS__
       return ( GetCurSel() + 1 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return ( GetSelection() + 1 );
 #endif
 
@@ -295,7 +300,7 @@ BEGIN_MESSAGE_MAP(CxListBox, CListBox)
 	ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxListBox, BASELISTBOX)
       EVT_LISTBOX_DCLICK(-1, CxListBox::DoubleClicked )
@@ -330,7 +335,7 @@ void CxListBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxListBox::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
@@ -352,12 +357,12 @@ void CxListBox::OnChar( wxKeyEvent & event )
 
 
 
-void CxListBox::SetSelection( int select )
+void CxListBox::CxSetSelection( int select )
 {
 #ifdef __WINDOWS__
     SetCurSel ( select - 1 );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
     SetSelection ( select - 1 );
 #endif
 
@@ -371,7 +376,7 @@ CcString CxListBox::GetListBoxText(int index)
 	CcString result = temp.GetBuffer(temp.GetLength());
 	return result;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxString temp = GetString( index -1 );
       CcString result ( temp.c_str() );
 	return result;

@@ -25,7 +25,7 @@ class LListBox;
 #include	<LTabGroup.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/listbox.h>
 #define BASELISTBOX wxListBox
 #endif
@@ -47,7 +47,7 @@ class CxListBox : public BASELISTBOX
 		static CxListBox *	CreateCxListBox( CrListBox * container, CxGrid * guiParent);
 			CxListBox( CrListBox * container );
 			~CxListBox();
-            void  SetSelection ( int select );
+                void  CxSetSelection ( int select );
 //		void	DoubleClicked( int itemIndex );
 //		void	Selected( int itemIndex );
 		void	AddItem( char * text );
@@ -77,7 +77,7 @@ class CxListBox : public BASELISTBOX
 
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void DoubleClicked();
             void Selected();
             void OnChar(wxKeyEvent & event );
