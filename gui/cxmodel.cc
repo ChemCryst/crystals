@@ -1699,9 +1699,12 @@ void CxModel::PaintBannerInstead( wxPaintDC * dc )
 {
   if ( m_bitmapok )
   {
+    double x,y;
+    dc->GetUserScale(&x,&y);
     dc->SetUserScale( (double)GetWidth() / (double)m_bitmap.GetWidth(),
                       (double)GetHeight()/ (double)m_bitmap.GetHeight()  );
     dc->DrawBitmap(m_bitmap, 0, 0);
+    dc->SetUserScale(x,y);
   }
 }
 
