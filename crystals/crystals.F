@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2002/03/13 12:33:28  richard
+C Call XGUIUP in between EVERY instruction.
+C
 C Revision 1.10  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -186,7 +189,11 @@ C            STOP 'ERROR OPENING STARTUP FILE'
 C
 1210  CONTINUE
 
+      KOLDER = IERFLG
+
       CALL XGUIUP(0)
+
+      IERFLG = KOLDER
 
       CALL XFILL(IB,KPRGNM,17) !No longer in a program sub-unit.
       I = KNXTOP ( LSTOP,LSTNO,ICLASS )
