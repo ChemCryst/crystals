@@ -105,11 +105,11 @@
 %     END IF
 ^^WI   @ 2,1 GRID OR NROWS=5 NCOLS=1 OUTLINE='General'
 ^^WI   {
-^^WI     @ 1,1 RADIOBUTTON REFPXO 'Refine &positions only' STATE=OFF
-^^WI     @ 2,1 RADIOBUTTON REFPUI 'Refine positions and U&iso' STATE=OFF
-^^WI     @ 3,1 RADIOBUTTON REFPUA 'Refine positions and &Uijs' STATE=OFF
-^^WI     @ 5,1 CHECKBOX OVRD
-^^WI           '&Override sticky settings for atoms' STATE=OFF
+^^WI   @ 1,1 RADIOBUTTON REFSCO 'Refine scale factor' STATE=OFF
+^^WI   @ 2,1 RADIOBUTTON REFPXO 'Refine scale and positions' STATE=OFF
+^^WI   @ 3,1 RADIOBUTTON REFPUI 'Refine scale, positions and U&iso' STATE=OFF
+^^WI   @ 4,1 RADIOBUTTON REFPUA 'Refine scale, positions and &Uijs' STATE=OFF
+^^WI   @ 5,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
 ^^WI   @ 3,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Hydrogens'
@@ -391,10 +391,12 @@
 %    ELSE
 {S * CRYSTALS is setting refinement modes for non-sticky atoms.
 %    END IF
-%    IF SETADP .LE. 1 THEN
+%    IF SETADP .EQ. 1 THEN
 {R   Atomic positions will be refined
 %    ELSE IF SETADP .EQ. 2 THEN
 {R   Positions and isotropic temperature factors will be refined
+%    ELSE IF SETADP .EQ. 0 THEN
+{R   Scale factor will be refined
 %    ELSE IF SETADP .EQ. 3 THEN
 {R   Positions and anisotropic temperature factors will be refined
 %    END IF
@@ -609,7 +611,8 @@ Doing write.
 %    COPY '#USE l12.spq'
 %  ELSE
 %    COPY '#LIST 12'
-%    CASE SETADP
+%    CASE SETADP + 1
+%      COPY "BLOCK SCALE "
 %      COPY "BLOCK SCALE X'S"
 %      COPY "BLOCK SCALE X'S, U[ISO]"
 %      COPY "BLOCK SCALE X'S, U'S"
