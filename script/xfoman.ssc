@@ -1,23 +1,16 @@
 %SCRIPT xfoman
+% VARIABLE REAL EFOM ENUM ESUM EMAX
+% EVALUATE ENUM = 0.0
+% EVALUATE ESUM = 0.0
+% EVALUATE EMAX = 0.0
 ^^WI WINDOW xfoman 'Fom analysis' KEEP SIZE MODAL
 ^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
 ^^WI  {
-^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
-^^WI   {
-^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
-^^WI    {
-^^WI     @ 1,1 STATIC XFW1
-^^WI ''
-^^WI     @ 2,1 STATIC XFW2
-^^WI ''
-^^WI     @ 3,1 STATIC XFW3
-^^WI ''
-^^WI    }
-^^WI    @ 1,1 ICON IM INFO
-^^WI   }
+^^WI   @ 2,2 STATIC RC_XX 'xxxxxxxxxxxxxxxxx'
+^^WI   @ 3,2 STATIC RC_YY 'xxxxxxxxxxxxxxxxx'
 ^^WI   @ 4,2 PLOTWINDOW _VPARAM NROWS=20 NCOLS=64
 ^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
 ^^WI   {
@@ -28,13 +21,42 @@
 ^^WI SHOW
 ^^CR
 %    COPY '#edit'
+%    COPY 'select type ne H'
 %    COPY 'dsort spare'
 %    COPY 'graph of=spare'
 %    COPY 'exec'
 %    COPY 'QUIT'
 %    COPY 'END'
-%    GET SILENT NOSTORE TEXT '?' 'EXT_BOK'
-^^CO DISPOSE xfoman
-%    FINISH
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%    COPY 'TOP'
+%    EVALUATE EFOM = 1.0
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
+%      EVALUATE ENUM = ENUM + 1.0
+%      EVALUATE ESUM = ESUM + EFOM
+%      IF EFOM .GT. EMAX THEN
+%        EVALUATE EMAX = EFOM
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%    TRANSFER "^^CO SET RC_XX TEXT 'Av Fom:  " // CHARACTER ( ESUM / ENUM ) -
+ // "'" TO DISPLAY
+%    TRANSFER "^^CO SET RC_YY TEXT 'Max Fom: " // CHARACTER ( EMAX ) -
+ // "'" TO DISPLAY
+
+
+%  GET NOSTORE NOPROMPT TEXT NULLSTRING ' '
+%  LOOP
+%    VERIFY EXT_BOK
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF VALUE .EQ. 1 THEN
+^^CO   DISPOSE xfoman
+%      FINISH
+%    END IF
+%  END LOOP
 %END SCRIPT
 
