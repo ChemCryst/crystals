@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2002/07/15 11:59:48  richard
+C New routine XTHETA works out completeness and best theta value for
+C fullish completeness. Probably doesn't belong is SUMMARY.
+C
 C Revision 1.28  2002/05/15 10:24:35  richard
 C Output Rsigma during SUM L 6. This is sum(sigma)/sum(Fo) as opposed to
 C sum(delta)/sum(Fo) and therefore if the sigmas are good estimates of error,
@@ -904,7 +908,7 @@ CODE FOR XTHETA
 \XCONST
       ST = SQRT ( ABS ( SNTHL2(I) ) ) * STORE(L13DC)
       IF ( ST .GT. 1.0 ) THEN
-        XTHETA = 999.0
+        XTHETA = 90.0
       ELSE
         XTHETA = ASIN ( ST  ) * RTD
       END IF
