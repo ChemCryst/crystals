@@ -13,30 +13,23 @@
 #include	"crconstants.h"
 #include 	"ccrect.h"
 #include	"crmultiedit.h"
-//insert your own code here.
 #include	"crgrid.h"
 #include	"cccontroller.h"
 #include	"cxmultiedit.h"
-//End of user code.          
 
-// OPSignature:  CrMultiEdit:CrMultiEdit( CrGUIElement *:mParentPtr ) 
-	CrMultiEdit::CrMultiEdit( CrGUIElement * mParentPtr )
-//Insert your own initialization here.
-	:	CrGUIElement( mParentPtr )
-//End of user initialization.         
+
+CrMultiEdit::CrMultiEdit( CrGUIElement * mParentPtr )
+ : CrGUIElement( mParentPtr )
 {
-//Insert your own code here.
 	mWidgetPtr = CxMultiEdit::CreateCxMultiEdit( this, (CxGrid *)(mParentPtr->GetWidget()) );
 	mXCanResize = true;
 	mYCanResize = true;
 	mTabStop = true;
 	mNoEcho = false;
-//End of user code.         
 }
-// OPSignature:  CrMultiEdit:~CrMultiEdit() 
-	CrMultiEdit::~CrMultiEdit()
+
+CrMultiEdit::~CrMultiEdit()
 {
-//Insert your own code here.
 	if ( mWidgetPtr != nil )
 	{
 		delete (CxMultiEdit*)mWidgetPtr;
@@ -46,12 +39,10 @@
 	{
 		mControllerPtr->RemoveTextOutputPlace();
 	}
-//End of user code.         
 }
-// OPSignature: Boolean CrMultiEdit:ParseInput( CcTokenList *:tokenList ) 
+
 Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
 {
-//Insert your own code here.
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	
@@ -212,7 +203,6 @@ Boolean	CrMultiEdit::ParseInput( CcTokenList * tokenList )
 	}	
 	
 	return retVal;
-//End of user code. 
 }
 
 void CrMultiEdit::SetText ( CcString text )
@@ -254,22 +244,6 @@ void CrMultiEdit::Changed()
 {
 	SendCommand(mName+"_NCHANGED");
 }
-
-//CcRect CrMultiEdit::GetOriginalGeometry()
-//{
-//	return mOriginalGeometry;
-//}
-
-//void CrMultiEdit::SetWidthScale(float w)
-//{
-//	int width =  ((CxMultiEdit*)mWidgetPtr)->GetWidth();
-//	int height =  ((CxMultiEdit*)mWidgetPtr)->GetHeight();
-//	int x =  ((CxMultiEdit*)mWidgetPtr)->GetLeft();
-//	int y =  ((CxMultiEdit*)mWidgetPtr)->GetTop();
-//
-//	((CxMultiEdit*)mWidgetPtr)->SetGeometry( y, x, height, (int)( width * w ) );
-//}
-
 
 int CrMultiEdit::GetIdealWidth()
 {
