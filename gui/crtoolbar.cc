@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.3  2001/06/17 15:14:12  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -137,7 +143,13 @@ CcParse CrToolBar::ParseInput( CcTokenList * tokenList )
             }
           }
         }
-        ((CxToolBar*)ptr_to_cxObject)->AddTool( newTool );
+        if ( !((CxToolBar*)ptr_to_cxObject)->AddTool( newTool ) )
+        {
+           //Remove tool
+           (CcController::theController)->RemoveTool(newTool);
+           if ( m_ToolList.FindItem( (void*) newTool ) ) m_ToolList.RemoveItem();
+           delete newTool;
+        }
         break;
       }
       case kTMenuSplit:
