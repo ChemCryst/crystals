@@ -822,22 +822,35 @@ void CrGrid::SendCommand(CcString theText, Boolean jumpQueue)
 // e.g. in xmodel.scp COMMAND='xmodelhand.scp'
 
 //For certain commands it is useful to bypass this
-//mechanism and pass the command straigt to 
+//mechanism and pass the command straight to 
 //CRYSTALS (#) or to GUI (^).
 
-	if (
-		     ( mCommandSet )
-		 &&  (!( theText.Sub(1,1) == '#' ))
-		 &&  (!( theText.Sub(1,1) == '^' ))
-	   )
-      {                                 //Apply prefix and send command.
-		mControllerPtr->SendCommand(mCommandText);
-      	mControllerPtr->SendCommand(theText);
+      if ( theText.Len() == 0 ) //It may be that objects or commands have empty strings.
+      {                         //in which case it would be bad to check the text at position(1).
+            if ( mCommandSet )
+            {
+                  mControllerPtr->SendCommand(mCommandText);
+                  mControllerPtr->SendCommand(theText);
+            }
+            else
+            {
+                  mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
+            }
       }
       else
-            mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
-
-
+      {
+            if (       ( mCommandSet                )
+                   &&  (!( theText.Sub(1,1) == '#' ))
+                   &&  (!( theText.Sub(1,1) == '^' ))   )
+            {
+                  mControllerPtr->SendCommand(mCommandText);
+                  mControllerPtr->SendCommand(theText);
+            }
+            else
+            {
+                  mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
+            }
+      }
 }
 
 void CrGrid::SetCommandText(CcString theText)
