@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/02/20 12:05:20  DJWgroup
+//   SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 //   Revision 1.8  2002/02/19 16:34:52  ckp2
 //   Menus for plots.
 //
@@ -80,6 +83,12 @@ CrPlot::~CrPlot()
             CcPlotData::sm_CurrentPlotData = nil;
         delete attachedPlotData;
     }
+
+	if(m_cmenu != nil)
+	{
+		delete m_cmenu;
+		m_cmenu = nil;
+	}
 }
 
 CcParse CrPlot::ParseInput( CcTokenList * tokenList )

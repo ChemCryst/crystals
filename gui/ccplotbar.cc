@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2002/02/20 12:05:18  DJWgroup
+// SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 // Revision 1.15  2002/02/18 15:16:41  DJWgroup
 // SH: Added ADDSERIES command, and allowed series to have different lengths.
 //
@@ -85,7 +88,6 @@ CcPlotBar::~CcPlotBar()
 {
 }
 
-
 // parse input destined for bar-graphs
 Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 {
@@ -106,11 +108,11 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 				CcString nlabel = tokenList->GetToken();
 
 				// check there is enough space for this string
-				if(m_NextItem >= m_SeriesLength)
+				if(m_NextItem >= m_Axes.m_NumberOfLabels) //m_Series[0]->m_SeriesLength)
 				{
-					LOGWARN("Series length needs extending: reallocating memory");
+					LOGSTAT("Series length needs extending: reallocating memory");
 
-					ExtendSeriesLength();
+					ExtendSeriesLength(-1);
 				}
 				
 				// copy this label to m_Label[n]
@@ -125,7 +127,7 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken();
 
 				// now record the data itself
-				for(int i=m_CompleteSeries; i< (m_NumberOfSeries); i++)
+				for(int i=m_CompleteSeries; i < (m_NumberOfSeries); i++)
 				{
 					CcString ndata = tokenList->GetToken();
 					float tempdata = (float)atof(ndata.ToCString());
@@ -137,9 +139,17 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 					{
 						if(tempdata <= 0)
 						{
-							LOGWARN("Negative data passed to a LOG plot...");
+							LOGERR("Negative data passed to a LOG plot...");
 						}
 						else tempdata = (float)log10(tempdata);
+					}
+
+					// check there is enough space for this string
+					if(m_NextItem >= m_Series[i]->m_SeriesLength)
+					{
+						LOGSTAT("Series length needs extending: reallocating memory");
+
+						ExtendSeriesLength(i);
 					}
 
 					// and copy this to m_Series[i]->m_Data[n]
@@ -150,7 +160,6 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 
 				m_NextItem++;		// make sure next label / data pair goes into the next slot
 				if(m_NextItem > m_MaxItem) m_MaxItem = m_NextItem;
-
 
 				// make sure the x axis knows how many items there are...
 				if(m_NextItem > m_Axes.m_AxisData[Axis_X].m_Max) m_Axes.m_AxisData[Axis_X].m_Max++;
@@ -169,41 +178,57 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 }
 
 // reallocate memory if series overruns estimated length
-void CcPlotBar::ExtendSeriesLength()
+void CcPlotBar::ExtendSeriesLength(int ser)
 {
-	// check m_SeriesLength is non-zero
-	if(m_SeriesLength == 0) m_SeriesLength = 10;
-
-	// allocate new memory 
-	CcString* templabels = new CcString[(int)(m_SeriesLength * 1.5)];
-	float *   tempdata = 0;
-	
-	// loop through the previous set of bar-labels, copying data to the new one
-	for(int j=0; j<m_SeriesLength; j++)		
+	bool prevlabel; // are any labels present?
+	if(ser == -1)
 	{
-		templabels[j] = m_Axes.m_Labels[j].ToCString();
-	}
-
-	// free the previously allocated memory, point to the new area
-	delete [] m_Axes.m_Labels;					
-	m_Axes.m_Labels = templabels;
-
-	// loop through the series, copy data to newly allocated memory
-	for(int i=0; i< m_NumberOfSeries; i++)
-	{
-		tempdata = new float[(int)(m_SeriesLength * 1.5)];
-
-		for(j=0; j<m_SeriesLength; j++)
+		if(m_Axes.m_NumberOfLabels == 0)
 		{
-			tempdata[j] = ((CcSeriesBar*)m_Series[i])->m_Data[j];
+			prevlabel = false;
+			m_Axes.m_NumberOfLabels = 10;
+		}
+		else prevlabel = true;
+
+		// allocate new memory 
+		CcString* templabels = new CcString[(int)(m_Axes.m_NumberOfLabels * 1.5)];
+		
+		// loop through the previous set of bar-labels, copying data to the new one
+		// NB: if prevlabel = false (eg this is the first label stored) there are no previous labels to copy, so skip this loop.
+		//		(m_NumberOfLabels * false) == 0 ! Yuck.
+		for(int j=0; j<m_Axes.m_NumberOfLabels*prevlabel; j++)		
+		{
+			templabels[j] = m_Axes.m_Labels[j].ToCString();
 		}
 
-		// delete the previous memory area, point to the new one.
-		delete [] ((CcSeriesBar*)m_Series[i])->m_Data;
-		((CcSeriesBar*)m_Series[i])->m_Data = tempdata;
+		// free the previously allocated memory, point to the new area
+		if(prevlabel) delete [] m_Axes.m_Labels;					
+		m_Axes.m_Labels = templabels;
+		m_Axes.m_NumberOfLabels *= 1.5;
+
+		return;
 	}
+
+	int i = ser;
+	float *   tempdata = 0;
+
+	// check m_SeriesLength is non-zero
+	if(m_Series[i]->m_SeriesLength == 0) m_Series[i]->m_SeriesLength = 10;
+
+	// copy data to newly allocated memory
+	tempdata = new float[(int)(m_Series[i]->m_SeriesLength * 1.5)];
+
+	for(int j=0; j<m_Series[i]->m_SeriesLength; j++)
+	{
+		tempdata[j] = ((CcSeriesBar*)m_Series[i])->m_Data[j];
+	}
+
+	// delete the previous memory area, point to the new one.
+	delete [] ((CcSeriesBar*)m_Series[i])->m_Data;
+	((CcSeriesBar*)m_Series[i])->m_Data = tempdata;
+
 	// the series has now been extended
-	m_SeriesLength = (int)(m_SeriesLength*1.5);
+	m_Series[i]->m_SeriesLength = (int)(m_Series[i]->m_SeriesLength*1.5);
 }
 
 // draw all the bar-graph specific stuff
@@ -218,7 +243,6 @@ void CcPlotBar::DrawView(bool print)
 		}
 		
 		// setup variables for scaling / positioning of graphs
-
 		// if graph has a title, make top gap bigger
 		if(!(m_Axes.m_PlotTitle == ""))
 			m_YGapTop = 300;
@@ -383,16 +407,13 @@ PlotDataPopup CcPlotBar::GetDataFromPoint(CcPoint *point)
 			{
 				if(m_Series[i]->m_DrawStyle != Plot_SeriesBar)
 				{
-					for(int j=0; j<m_SeriesLength; j++)
+					for(int j=0; j<m_Series[i]->m_NumberOfItems; j++)
 					{
 						int axis = m_Series[i]->m_YAxis;
 
 						// need to : interpolate between xmin,xmax to get the label at that point,
 						int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
 						int axisheight = 2400 - m_YGapTop - m_YGapBottom;
-
-					//	int xrange = m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxesData[Axis_X].m_AxisMin;
-					//	int yrange = m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxesData[axis].m_AxisMin;
 		
 						// calculate x and y positions of the cursor
 						float y = m_Axes.m_AxisData[axis].m_AxisMax + (m_Axes.m_AxisData[axis].m_AxisMin-m_Axes.m_AxisData[axis].m_AxisMax)*(point->y - m_YGapTop) / axisheight;
@@ -485,7 +506,7 @@ PlotDataPopup CcPlotBar::GetDataFromPoint(CcPoint *point)
 }
 
 // add a series (note: can be called after the rest of the graph is initialised)
-void CcPlotBar::AddSeries(int type)
+void CcPlotBar::AddSeries(int type, int length)
 {
 	// need to re-allocate memory for the series list, transfer pointers over, and delete old memory
 	CcSeries** temp = new CcSeries*[m_NumberOfSeries + 1];
@@ -496,7 +517,8 @@ void CcPlotBar::AddSeries(int type)
 
 	temp[m_NumberOfSeries] = new CcSeriesBar;
 	temp[m_NumberOfSeries]->m_DrawStyle = type;
-	temp[m_NumberOfSeries]->AllocateMemory(m_SeriesLength);
+	temp[m_NumberOfSeries]->m_SeriesLength = length;
+	temp[m_NumberOfSeries]->AllocateMemory();
 
 	delete [] m_Series;
 	
@@ -504,8 +526,6 @@ void CcPlotBar::AddSeries(int type)
 
 	m_CompleteSeries = m_NumberOfSeries;
 	m_NumberOfSeries++;
-//	m_NewSeriesNextItem = m_SeriesLength;	
-//	m_NewSeries = true;
 }
 
 // create the data series
@@ -524,20 +544,19 @@ void CcPlotBar::CreateSeries(int numser, int* type)
 }
 
 // allocate memory within each series
-void CcPlotBar::AllocateMemory(int length)
+void CcPlotBar::AllocateMemory()
 {
 	// an array of pointers to CcString text labels
-	m_Axes.m_Labels = new CcString[length];
-	for(int j=0; j<length; j++)
+	m_Axes.m_Labels = new CcString[m_Axes.m_NumberOfLabels];
+	for(int j=0; j<m_Axes.m_NumberOfLabels; j++)
 		m_Axes.m_Labels[j] = j;
 	
-	m_SeriesLength = length;
 	m_NextItem = 0;
 
 	// allocate the data memory space here
 	for(int i=0; i<m_NumberOfSeries; i++)
 	{
-		m_Series[i]->AllocateMemory(length);
+		m_Series[i]->AllocateMemory();
 	}
 }
 
@@ -582,10 +601,12 @@ Boolean CcSeriesBar::ParseInput( CcTokenList * tokenList )
 }
 
 // allocate memory for this series
-void CcSeriesBar::AllocateMemory(int length)
+void CcSeriesBar::AllocateMemory()
 {
-	m_Data = new float[length];
-	for(int j=0; j<length; j++)
+	if(m_SeriesLength == 0) m_SeriesLength = 10;
+
+	m_Data = new float[m_SeriesLength];
+	for(int j=0; j<m_SeriesLength; j++)
 	{
 		m_Data[j] = 0;
 	}

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/02/20 12:05:19  DJWgroup
+//   SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 //   Revision 1.10  2002/02/18 15:16:42  DJWgroup
 //   SH: Added ADDSERIES command, and allowed series to have different lengths.
 //
@@ -63,9 +66,9 @@ class CcPlotScatter : public CcPlotData
 
 		PlotDataPopup GetDataFromPoint(CcPoint *point);
 		void CreateSeries(int numser, int* type);
-		void AllocateMemory(int length);
-		void AddSeries(int type);
-		void ExtendSeriesLength();
+		void AllocateMemory();
+		void AddSeries(int type, int length);
+		void ExtendSeriesLength(int ser);
 };
 
 class CcSeriesScatter : public CcSeries
@@ -75,7 +78,7 @@ public:
 	CcSeriesScatter();
 	virtual ~CcSeriesScatter();
 
-	void AllocateMemory(int length);
+	void AllocateMemory();
 
 	float *		m_Data[2];					// pointer to a this series' data (x and y)
 	CcString*	m_Label;					// pointer to the label for each data point

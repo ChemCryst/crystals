@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/02/20 12:05:21  DJWgroup
+//   SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 //   Revision 1.11  2002/02/19 16:34:52  ckp2
 //   Menus for plots.
 //
@@ -179,7 +182,6 @@ private:
 
         afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-		afx_msg void OnSize(UINT nType, int cx, int cy);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2002/02/20 12:05:19  DJWgroup
+// SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 // Revision 1.14  2002/02/18 15:16:42  DJWgroup
 // SH: Added ADDSERIES command, and allowed series to have different lengths.
 //
@@ -60,7 +63,6 @@
 //
 //
 
-
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
 #include    "cclist.h"
@@ -81,7 +83,6 @@
 CcList CcPlotData::sm_PlotList;
 CcPlotData* CcPlotData::sm_CurrentPlotData = nil;
 
-
 CcPlotData::CcPlotData( )
 {
 	attachedPlot = nil;
@@ -91,7 +92,6 @@ CcPlotData::CcPlotData( )
 	m_DrawKey = false;
 	m_AxesOK = false;
 	m_Series = 0;
-	m_SeriesLength = 0;
 	m_CompleteSeries = 0;	// no data present
 	m_NextItem = 0;
 	m_MaxItem = 0;
@@ -327,8 +327,13 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 			    CcString plotlength = tokenList->GetToken();
 			    int length = atoi(plotlength.ToCString());
 
+				for(int i=0; i<m_NumberOfSeries; i++)
+				{
+					m_Series[i]->m_SeriesLength = length;
+				}
+
 				// allocate space for the data
-				AllocateMemory(length);
+				AllocateMemory();
 
 				break;
 			}
@@ -463,7 +468,10 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				m_NextItem = 0;
 
 				// now add the series.
-				AddSeries(FindSeriesType(next));
+				AddSeries(FindSeriesType(next), 10);
+
+				m_Series[m_NumberOfSeries-1]->m_SeriesName = sname;
+				
 				break;
 			}
 
@@ -515,6 +523,7 @@ void CcPlotData::DrawKey()
 	col[1] = new int[m_NumberOfSeries];
 	col[2] = new int[m_NumberOfSeries];
 
+	// copy series names and colours for each data series
 	for(int i=0; i<m_NumberOfSeries; i++)
 	{
 		names[i] = m_Series[i]->m_SeriesName;
@@ -522,8 +531,11 @@ void CcPlotData::DrawKey()
 		col[1][i] = m_Colour[1][i];
 		col[2][i] = m_Colour[2][i];
 	}
+
+	// pass these through the CrPlot to CxPlot, and create a key window.
 	attachedPlot->CreateKey(m_NumberOfSeries, names, col);
 
+	// free up memory.
 	delete [] names;
 	delete [] col[0];
 	delete [] col[1];
@@ -574,6 +586,7 @@ CcSeries::CcSeries()
 	m_YAxis = Axis_YL;
 	m_DrawStyle = -1;
 	m_NumberOfItems = 0;
+	m_SeriesLength = 0;
 }
 
 CcSeries::~CcSeries()
@@ -605,6 +618,7 @@ Boolean CcSeries::ParseInput( CcTokenList * tokenList )
 // set all values to default
 CcAxisData::CcAxisData()
 {
+	// set min and max the wrong way round so they are corrected when data is added
 	m_Max = 0;
 	m_Min = 10000;
 
@@ -640,7 +654,7 @@ Boolean CcAxisData::CalculateLinearDivisions()
 
 	// increment the delta, so reducing the number of divisions needed.
 	// x2, x2.5, x2, x2, x2.5, x2, x2 etc
-	// this gives 'nice' delta values - 1,2,5,10,20,50,100,200,500,1000 etc.
+	// this gives 'nice' delta values - 0.1, 0.2, 0.5, 1,2,5,10,20,50,100,200,500,1000 etc.
 	while(m_NumDiv > 15)				// max 15 divisions
 	{
 		if((numinc+2)%3 == 0)				// every third increment is x2.5
@@ -767,6 +781,7 @@ CcPlotAxes::CcPlotAxes()
 {
 	m_Labels = 0;
 	m_NumberOfYAxes = 1;	// only one y axis (left) is default
+	m_NumberOfLabels = 0;
 }
 
 // free any allocated memory
@@ -969,12 +984,15 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		Boolean textOK = false;
 		Boolean smalltext = false;	// true if text gets too small
 
+		// step: used to skip labels if overlap occurs at smallest font size
+		int step = 1;
+
 		if(m_GraphType == Plot_GraphBar)
 		{
 			while(!textOK && !smalltext)
 			{
 				// find the maximum screen area occupied by a label at this font size
-				for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
+				for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=step)
 				{
 					textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], 0);
 					if(textextent.x > maxhorizontaltextextent.x) maxhorizontaltextextent.x = textextent.x;
@@ -982,17 +1000,18 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 				}
 
 				// if the text fits at this size, draw normally
-				if((maxhorizontaltextextent.x < xdivoffset))
+				if((maxhorizontaltextextent.x < 0.9*xdivoffset*step))
 				{
-					for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i++)
+					for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i+=step)
 					{
 						attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset),2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_TOP, fontsize);
 					}
 					textOK = true;
 				}
 				// otherwise try at an angle
-				else
+		/*		else
 				{
+					
 					// find the maximum screen area occupied by a label at this font size
 					maxangletextextent.x = 0;
 					maxangletextextent.y = 0;
@@ -1013,11 +1032,20 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 						}
 						textOK = true;
 					}
+					
 				}
+				*/
 				// if the text didn't fit, try again with smaller font
 				fontsize--;
-				if (fontsize <= 6) smalltext = true; //Bail out.
+				if (fontsize <= 8)
+				{
+					step *= 2; //smalltext = true; //Bail out.
+					fontsize = 12;
+				}
+				if(step >= 5)
+					smalltext = true;
 			}
+			
 		}
 		// for scatter graphs use horizontal text always
 		else if(m_GraphType == Plot_GraphScatter)
@@ -1035,9 +1063,10 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		{
 			fontsize = 8;
 
-			for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=2)
+			for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=1)
 			{
-				attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset, 2400-ygapbottom, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
+				textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_VERTICAL);
+				attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset, 2400-ygapbottom+textextent.y/2+ygapbottom/6, m_Labels[i].ToCString(), TEXT_VERTICAL, fontsize);
 			}
 		}
 
@@ -1087,9 +1116,9 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		
 		// write the labels for each axis, and the graph title
 		attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.ToCString(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
-		attachedPlot->DrawText(1200, 2400-ygapbottom/6, m_AxisData[Axis_X].m_Title.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
-		attachedPlot->DrawText(xgapleft/6, 1200, m_AxisData[Axis_YL].m_Title.ToCString(), TEXT_VERTICAL, 16);
+		attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
+		attachedPlot->DrawText(xgapleft/5, 1200, m_AxisData[Axis_YL].m_Title.ToCString(), TEXT_VERTICAL, 16);
 		if(m_NumberOfYAxes == 2)
-			attachedPlot->DrawText(2400-xgapright/6, 1200, m_AxisData[Axis_YR].m_Title.ToCString(), TEXT_VERTICALDOWN, 16);
+			attachedPlot->DrawText(2400-xgapright/5, 1200, m_AxisData[Axis_YR].m_Title.ToCString(), TEXT_VERTICALDOWN, 16);
 	}
 }

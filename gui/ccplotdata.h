@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/02/20 12:05:19  DJWgroup
+//   SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 //   Revision 1.11  2002/02/18 15:16:42  DJWgroup
 //   SH: Added ADDSERIES command, and allowed series to have different lengths.
 //
@@ -95,6 +98,7 @@ public:
 	void DrawAxes(CrPlot* attachedPlot);	// draw lines, markers and text
 
 	CcString*		m_Labels;		// one label per data item (only for bar graphs)
+	int				m_NumberOfLabels; // amount of memory allocated for the labels
 	CcString		m_PlotTitle;	// graph title
 
 	CcAxisData		m_AxisData[3];	// the axes themselves
@@ -118,19 +122,20 @@ public:
     static CcList  sm_PlotList;
     static CcPlotData* sm_CurrentPlotData;
 
-	virtual PlotDataPopup GetDataFromPoint(CcPoint* point) = 0; // returns a string from a point, for mouse-over messages
+	virtual PlotDataPopup GetDataFromPoint(CcPoint* point) = 0; // returns data from a point, for mouse-over messages.
+																// NB: PlotDataPopup defined in CrPlot.h
 
 	virtual void CreateSeries(int numser, int* type) = 0;	// controls memory allocation for a series
-	virtual void AllocateMemory(int length) = 0;			// this one allocates the memory
-	virtual void AddSeries(int type) = 0;					// add a series (after data transfer for previous ones complete)
-	virtual void ExtendSeriesLength() = 0;					// reallocate memory to hold more data
+	virtual void AllocateMemory() = 0;						// this one allocates the memory
+	virtual void AddSeries(int type, int length) = 0;		// add a series (after data transfer for previous ones complete)
+	virtual void ExtendSeriesLength(int ser) = 0;			// reallocate memory to hold more data
 
 	void DrawKey();											// get the key redrawn.
 	int FindSeriesType(CcString textstyle);
 
 protected:
     CcSeries**		m_Series;		// array of series
-	int				m_SeriesLength; // length of the data series (IE the memory allocated so far...)
+//	int				m_SeriesLength; // length of the data series (IE the memory allocated so far...)
 	int				m_NextItem;		// number of data items added so far to the current series
 	int				m_MaxItem;		// the maximum number of data items present in any one series
 	CcPlotAxes		m_Axes;			// the graph axes
@@ -170,8 +175,9 @@ public:
 	int				m_DrawStyle;	// how to draw this series (scatter / bar / line / etc)
 	int				m_YAxis;		// which y axis is this series attached to (left or right)
 	int				m_NumberOfItems;// how many data items there are in this series
+	int				m_SeriesLength; // how much memory has been allocated to this series
 
-	virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
+	virtual void AllocateMemory()=0;// allocate space
 
 private:
 	int				m_Type;			// type of series - bar / scatter (defined above)

@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2002/02/20 12:05:19  DJWgroup
+// SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 // Revision 1.13  2002/02/18 15:16:42  DJWgroup
 // SH: Added ADDSERIES command, and allowed series to have different lengths.
 //
@@ -97,11 +100,11 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken(); // "LABEL"
 
 				// check there is enough space for this data item
-				if(m_NextItem >= m_SeriesLength)
+				if(m_NextItem >= m_Series[0]->m_SeriesLength)
 				{
 					LOGSTAT("Series length needs extending: reallocating memory");
 
-					ExtendSeriesLength();
+					ExtendSeriesLength(0);
 				}
 
 				CcString nlabel = tokenList->GetToken();
@@ -117,17 +120,17 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 
 				CcString ndata;
 
-				// check there is enough space for this data item
-				if(m_NextItem >= m_SeriesLength)
-				{
-					LOGSTAT("Series length needs extending: reallocating memory");
-
-					ExtendSeriesLength();
-				}
-
 				// now save the data (x1 y1 x2 y2 ...)
 				for(int i=m_CompleteSeries; i< m_NumberOfSeries; i++)
 				{
+					// check there is enough space for this data item
+					if(m_NextItem >= m_Series[i]->m_SeriesLength)
+					{
+						LOGSTAT("Series length needs extending: reallocating memory");
+
+						ExtendSeriesLength(i);
+					}
+
 					for(int j=0; j<2; j++)
 					{
 						ndata = tokenList->GetToken();
@@ -169,44 +172,43 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 }
 
 // reallocate memory if data overruns estimated length
-void CcPlotScatter::ExtendSeriesLength()
+void CcPlotScatter::ExtendSeriesLength(int ser)
 {
 	float *  tempdata[2];
 	tempdata[0] = 0;
 	tempdata[1] = 0;
 	CcString* templabels = 0;
-	
-	for(int i=0; i< m_NumberOfSeries; i++)
+
+	int i=ser;
+
+	// check series length is non-zero
+	if(m_Series[i]->m_SeriesLength == 0) m_Series[i]->m_SeriesLength = 10;
+
+	// allocate some new memory
+	tempdata[Axis_X] = new float[(int)(m_Series[i]->m_SeriesLength * 1.5)];
+	tempdata[Axis_YL] = new float[(int)(m_Series[i]->m_SeriesLength * 1.5)];
+	templabels = new CcString[(int)(m_Series[i]->m_SeriesLength * 1.5)];
+
+	// transfer the data across
+	for(int j=0; j<m_Series[i]->m_SeriesLength; j++)
 	{
-		// check series length is non-zero
-		if(m_SeriesLength == 0) m_SeriesLength = 10;
-
-		// allocate some new memory
-		tempdata[Axis_X] = new float[(int)(m_SeriesLength * 1.5)];
-		tempdata[Axis_YL] = new float[(int)(m_SeriesLength * 1.5)];
-		templabels = new CcString[(int)(m_SeriesLength * 1.5)];
-
-		// transfer the data across
-		for(int j=0; j<m_SeriesLength; j++)
-		{
-			tempdata[Axis_X][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X][j];
-			tempdata[Axis_YL][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL][j];
-			templabels[j] = ((CcSeriesScatter*)m_Series[i])->m_Label[j];
-		}
-
-		// free the old memory
-		delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X];
-		delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL];
-		delete [] ((CcSeriesScatter*)m_Series[i])->m_Label;
-
-		// and point to the new memory
-		((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X] = tempdata[Axis_X];
-		((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL] = tempdata[Axis_YL];
-		((CcSeriesScatter*)m_Series[i])->m_Label = templabels;
+		tempdata[Axis_X][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X][j];
+		tempdata[Axis_YL][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL][j];
+		templabels[j] = ((CcSeriesScatter*)m_Series[i])->m_Label[j];
 	}
 
+	// free the old memory
+	delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X];
+	delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL];
+	delete [] ((CcSeriesScatter*)m_Series[i])->m_Label;
+
+	// and point to the new memory
+	((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X] = tempdata[Axis_X];
+	((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL] = tempdata[Axis_YL];
+	((CcSeriesScatter*)m_Series[i])->m_Label = templabels;
+
 	// series has been extended...
-	m_SeriesLength = (int)(m_SeriesLength*1.5);
+	m_Series[i]->m_SeriesLength = (int)(m_Series[i]->m_SeriesLength*1.5);
 }
 
 // draw scatter-graph specific stuff
@@ -365,7 +367,7 @@ PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
 		// search through all data points to find the one the pointer is over
 		for(int i=0; (i<m_NumberOfSeries) && (pointfound == false); i++)
 		{
-			for(int j=0; j<m_SeriesLength; j++)
+			for(int j=0; j<m_Series[i]->m_NumberOfItems; j++)
 			{
 				int axis = m_Series[i]->m_YAxis;
 
@@ -425,7 +427,7 @@ PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
 }
 	
 // add a series to the graph
-void CcPlotScatter::AddSeries(int type)
+void CcPlotScatter::AddSeries(int type, int length)
 {
 	// need to re-allocate memory for the series list, transfer pointers over, and delete old memory
 	CcSeries** temp = new CcSeries*[m_NumberOfSeries + 1];
@@ -436,7 +438,8 @@ void CcPlotScatter::AddSeries(int type)
 
 	temp[m_NumberOfSeries] = new CcSeriesScatter;
 	temp[m_NumberOfSeries]->m_DrawStyle = type;
-	temp[m_NumberOfSeries]->AllocateMemory(m_SeriesLength);
+	temp[m_NumberOfSeries]->m_SeriesLength = length;
+	temp[m_NumberOfSeries]->AllocateMemory();
 
 	delete [] m_Series;
 	
@@ -461,14 +464,12 @@ void CcPlotScatter::CreateSeries(int numser, int* type)
 }
 
 // allocate memory for the series
-void CcPlotScatter::AllocateMemory(int length)
+void CcPlotScatter::AllocateMemory()
 {
-	m_SeriesLength = length;
-
 	// allocate the data memory space here
 	for(int i=0; i<m_NumberOfSeries; i++)
 	{
-		m_Series[i]->AllocateMemory(length);
+		m_Series[i]->AllocateMemory();
 	}
 }
 
@@ -519,13 +520,13 @@ Boolean CcSeriesScatter::ParseInput( CcTokenList * tokenList )
 }
 
 // allocate memory for this series' data
-void CcSeriesScatter::AllocateMemory(int length)
+void CcSeriesScatter::AllocateMemory()
 {
-	m_Data[Axis_X] = new float[length];
-	m_Data[Axis_YL] = new float[length];
-	m_Label = new CcString[length];
+	m_Data[Axis_X] = new float[m_SeriesLength];
+	m_Data[Axis_YL] = new float[m_SeriesLength];
+	m_Label = new CcString[m_SeriesLength];
 
-	for(int j=0; j<length; j++)
+	for(int j=0; j<m_SeriesLength; j++)
 	{
 		m_Data[Axis_X][j] = 0;
 		m_Data[Axis_YL][j] = 0;

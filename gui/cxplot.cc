@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2002/02/20 12:05:21  DJWgroup
+//   SH: Added class to allow easier passing of mouseover information from plot classes.
+//
 //   Revision 1.16  2002/02/19 16:34:52  ckp2
 //   Menus for plots.
 //
@@ -261,15 +264,6 @@ void CxPlot::OnPaint()
 		m_Key->BringWindowToTop();
 	}
 }
-
-void CxPlot::OnSize(UINT nType, int cx, int cy)
-{
-	if(m_Key)
-	{
-		m_Key->BringWindowToTop();
-	}
-}
-
 #endif
 
 
@@ -430,6 +424,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 			int len = text.Len();
 			CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
 			coord.y = coord.y + down*temp.cx/2;		// nb swapping of cx and cy - GetTextEntent doesn't handle rotations
+			coord.x = coord.x - down*temp.cy/2;
 		}
 		else
 		{
@@ -686,7 +681,6 @@ int CxPlot::GetIdealHeight()
 BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_CHAR()
     ON_WM_PAINT()
-	ON_WM_SIZE(nType,cx, cy)
     ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MOUSEMOVE()
@@ -839,6 +833,11 @@ void CxPlot::CreateKey(int numser, CcString* names, int** col)
 {
 	if(!m_Key)
 	{
+		m_Key = new CxPlotKey(this, numser, names, col);
+	}
+	else
+	{
+		DeleteKey();
 		m_Key = new CxPlotKey(this, numser, names, col);
 	}
 }
