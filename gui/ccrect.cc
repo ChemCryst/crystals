@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 15:20:50  richard
+//   New function .Contains(x,y) true if point is within rectangle.
+//   New function .Native() returns GUI specific rectangle - CRect or wxRect.
+//   New function .Sort() returns a rectangle ensuring mLeft<mRight and mTop<mBottom by
+//   swapping them if necessary.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -146,3 +152,12 @@ CcRect CcRect::Sort()
 
 }
 
+const int CcRect::MidX()
+{
+  return ( mLeft + mRight ) / 2;
+}
+
+const int CcRect::MidY()
+{
+  return ( mTop + mBottom ) / 2;
+}

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 15:20:51  richard
+//   New function .Contains(x,y) true if point is within rectangle.
+//   New function .Native() returns GUI specific rectangle - CRect or wxRect.
+//   New function .Sort() returns a rectangle ensuring mLeft<mRight and mTop<mBottom by
+//   swapping them if necessary.
+//
 
 #ifndef     __CcRect_H__
 #define     __CcRect_H__
@@ -32,6 +38,8 @@ class   CcRect
         const int   Right();
         const int   Height();
         const int   Width();
+        const int   MidX();
+        const int   MidY();
         CcRect& operator=( const CcRect &inRect );
             CcString AsString();
 
