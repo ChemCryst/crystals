@@ -1,5 +1,14 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:11  rich
+C New CRYSTALS repository
+C
+C Revision 1.20  2003/03/12 18:28:27  rich
+C Limit aromatic ring size (stored in L41S) to first six atoms found - only space for this
+C in L41. This data is used to actually draw the rings, so rings >7 will be
+C a bit weird. Ideally we could store parameters defining the ring instead
+C of the atoms making up the ring, thus allowing any size.
+C
 C Revision 1.19  2003/02/27 11:23:59  rich
 C Some commented out code, exploring what to do with hybridisation.
 C
@@ -1290,18 +1299,18 @@ C
 C-------------------- END CSDS COMMON --------------
 C----------------- START CRYSTALS COMMON ----------
 
-\XLST05
-\XLST01
-\XLST02
-\XLST41
-\STORE
-\ISTORE
-\QSTORE
-\XUNITS
-\XIOBUF
-\XSSVAL
-\XOPVAL
-\XGUIOV
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XGUIOV.INC'
 
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4
       LOGICAL WEXIST
@@ -1320,7 +1329,7 @@ C\TLST18
 
       REAL STACK(500)     !Space for 100 contacts.
 
-\QGUIOV
+      INCLUDE 'QGUIOV.INC'
       CHARACTER*2 EL(133)
 
       INTEGER IOFF
@@ -2517,9 +2526,9 @@ C-- Notes:
 C-- 1. Iat , Jat are atom numbers inthe list of atoms with coords XO
 C--   The distance is returned as DVAL
 C      IMPLICIT NONE
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
 
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
@@ -2594,11 +2603,11 @@ C      IMPLICIT NONE
 
 C ........... Molecule Viewer Atom DATa .............
 C INT  TATOM             : total number of atoms to be displayed
-\STORE
-\ISTORE
-\QSTORE
-\XIOBUF
-\XUNITS
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
 
       INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
       COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
@@ -3588,9 +3597,9 @@ C-- ICOB    output bond types for each connection in ICON
 C-- IPIB    whether to include pi bonds
 C      IMPLICIT NONE
 
-\STORE
-\QSTORE
-\ISTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'ISTORE.INC'
 
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
@@ -3689,9 +3698,9 @@ C-- IAT,JAT,KAT  define atom number for torsion anngle i-j-k
 C-- XO     othogonal coords
 C-- AVAL   returned angle in degrees
 C      IMPLICIT NONE
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
 
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
@@ -3729,9 +3738,9 @@ C-- XO      input orthogonal coords
 C-- NTOR    output number of tor angles found
 C-- TORANG  output list of tor angles
 C      IMPLICIT NONE
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
 
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
@@ -3798,9 +3807,9 @@ C-- IAT,JAT,KAT,LAT  define atom number for torsion anngle i-j-k-l
 C-- XO     othogonal coords
 C-- AVAL   returned angle in degrees
 C      IMPLICIT NONE
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
@@ -3838,13 +3847,13 @@ C--  IBOC    bond list
 C--  IBOT    bond type
 C--  NBOCRY  number of bonds in list
 C      IMPLICIT NONE
-\STORE
-\ISTORE
-\QSTORE
-\XLST05
-\XIOBUF
-\XUNITS
-\XSSVAL
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
@@ -3972,9 +3981,9 @@ C      IMPLICIT NONE
 
 C ........... Molecule Viewer Atom DATa .............
 C INT  TATOM             : total number of atoms to be displayed
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
       INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
       COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
 C..........................................................................
@@ -4671,9 +4680,9 @@ C INT  TBOND          : total number of atoms to be displayed
 C..........................................................................
 C
 C ........... Molecule Viewer Atom DATa .............
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
       INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
       COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
 C..........................................................................
@@ -4748,9 +4757,9 @@ C-- IBONT      bond type list
 C-- NBON       number of bonds in list
 C-- IPIBON     returned answer =0 not pi-bond,  =1 pibond
 C      IMPLICIT NONE
-\STORE
-\ISTORE
-\QSTORE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
@@ -5047,3 +5056,4 @@ C
       C(3)=C(3)/D
    10 RETURN
       END
+

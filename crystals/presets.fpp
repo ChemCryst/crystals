@@ -1,4 +1,19 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:08  rich
+C New CRYSTALS repository
+C
+C Revision 1.48  2004/03/16 12:19:00  rich
+C Double size of store arrays to 64Mb.
+C
+C If a directive has a maximum count of >= 9999, then treat this as a
+C special case, allowing an infinite number of directives of this
+C type to be issued. (Suggest that if any directives really do
+C need a maximum count to prevent, e.g. a runaway loop somewhere, then
+C they be set to 9998).
+C
 C Revision 1.47  2003/09/29 15:38:34  rich
 C Added \DEFINE system instruction for building the command file. No
 C need for separate executable anymore. This command is \REMOVEd in
@@ -175,84 +190,84 @@ CODE FOR DATA
       BLOCK DATA CRYBLK
 C--PRESETS FOR THE CRYSTALS SYSTEM
 C
-\PLSTHN
+      INCLUDE 'PLSTHN.INC'
 C
-\TLISTC
-\TDVNAM
-\TSSCHR
+      INCLUDE 'TLISTC.INC'
+      INCLUDE 'TDVNAM.INC'
+      INCLUDE 'TSSCHR.INC'
 C
 C
-\UFILE
-\XDISC
-\XDISCB
-\XDISCS
-\XUNITS
-\XTIMES
-\XNWPGE
-\XUNTNM
-\XFILEC
-\XFILE
-\XLISTS
-\XCNTRL
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XDISC.INC'
+      INCLUDE 'XDISCB.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XTIMES.INC'
+      INCLUDE 'XNWPGE.INC'
+      INCLUDE 'XUNTNM.INC'
+      INCLUDE 'XFILEC.INC'
+      INCLUDE 'XFILE.INC'
+      INCLUDE 'XLISTS.INC'
+      INCLUDE 'XCNTRL.INC'
 C----- THE SCRIPT STACK
-\PSCSTI
+      INCLUDE 'PSCSTI.INC'
       PARAMETER (IDMSTK = LSTACK*NSTACK)
-\XSCSTK
-\XCOMPD
-\XCHARS
-\XCONST
-\XLISTI
-\XLIMIT
-\XCARDS
-\XSYSHF
-\XSYSDR
-\XDIRTP
-\XLEXIC
-\XTAPES
-\XTAPED
-\XLST50
-\XPRGNM
-\XLEXCH
-\XAPK
-\XOPK
-\XSCALE
-\XSHORT
-\XSTATS
-\XFIRST
-\XPCK06
+      INCLUDE 'XSCSTK.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLIMIT.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XSYSHF.INC'
+      INCLUDE 'XSYSDR.INC'
+      INCLUDE 'XDIRTP.INC'
+      INCLUDE 'XLEXIC.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XTAPED.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XPRGNM.INC'
+      INCLUDE 'XLEXCH.INC'
+      INCLUDE 'XAPK.INC'
+      INCLUDE 'XOPK.INC'
+      INCLUDE 'XSCALE.INC'
+      INCLUDE 'XSHORT.INC'
+      INCLUDE 'XSTATS.INC'
+      INCLUDE 'XFIRST.INC'
+      INCLUDE 'XPCK06.INC'
 C
 C
-\XDVNAM
+      INCLUDE 'XDVNAM.INC'
 C
-\XLSTHN
+      INCLUDE 'XLSTHN.INC'
 C
-\XSSCHR
+      INCLUDE 'XSSCHR.INC'
 C
-\XSIZES
+      INCLUDE 'XSIZES.INC'
 C
-\XRGRP
+      INCLUDE 'XRGRP.INC'
 C
-\XERVAL
-\XERCNT
-\XLSVAL
-\XOPVAL
-\XSSVAL
-\XDAVAL
-\XCBVAL
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XERCNT.INC'
+      INCLUDE 'XLSVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XDAVAL.INC'
+      INCLUDE 'XCBVAL.INC'
 C
-\XSCCNT
-\XSCCHR
-\XSCGBL
-\XSCMSG
-\XERRRS
+      INCLUDE 'XSCCNT.INC'
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XSCMSG.INC'
+      INCLUDE 'XERRRS.INC'
 C
-\XMENUI
+      INCLUDE 'XMENUI.INC'
 C
-\XDRIVE
+      INCLUDE 'XDRIVE.INC'
 C
-\OUTCOL
-\XMTLAB
-\XFLAGS
+      INCLUDE 'OUTCOL.INC'
+      INCLUDE 'XMTLAB.INC'
+      INCLUDE 'XFLAGS.INC'
 
 C LOAD THE LIST NAMES
 C      
@@ -303,21 +318,35 @@ C
 C
       DATA ISIZST / 16777216 /, ISIZ11 / 16777216 /
 C
-&PPCC      SET INTERACTIVE UNDER MAC OS
-&PPC      DATA IQUN /2/, JQUN/2/
-&H-PC      INITIALISE THE ENVIRONMENT TO BATCH
-&H-P      DATA IQUN /2/, JQUN/0/
-&DOSC      SET INTERACTIVE UNDER DOS
-&DOS      DATA IQUN /2/, JQUN/2/
-&&DVFGIDC      SET INTERACTIVE UNDER WINDOWS
-&&DVFGID      DATA IQUN /2/, JQUN/2/
-&&GILLINC      SET INTERACTIVE UNDER LINUX
-&&GILLIN      DATA IQUN /2/, JQUN/2/
-&WXS      DATA IQUN /2/, JQUN/2/
-&VAXC      INITIALISE THE ENVIRONMENT TO BATCH
-&VAX      DATA IQUN /2/, JQUN/0/
+#if defined(_PPC_) 
+C      SET INTERACTIVE UNDER MAC OS
+      DATA IQUN /2/, JQUN/2/
+#endif
+#if defined(_H_P_) 
+C      INITIALISE THE ENVIRONMENT TO BATCH
+      DATA IQUN /2/, JQUN/0/
+#endif
+#if defined(_DOS_) 
+C      SET INTERACTIVE UNDER DOS
+      DATA IQUN /2/, JQUN/2/
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+C      SET INTERACTIVE UNDER WINDOWS
+      DATA IQUN /2/, JQUN/2/
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+C      SET INTERACTIVE UNDER LINUX
+      DATA IQUN /2/, JQUN/2/
+#endif
+#if defined(_WXS_) 
+      DATA IQUN /2/, JQUN/2/
+#endif
+#if defined(_VAX_) 
+C      INITIALISE THE ENVIRONMENT TO BATCH
+      DATA IQUN /2/, JQUN/0/
 C
 C      INITIALISE THE TAPE USE STACK
+#endif
       DATA NMTR /0/
 C      INITIALISE THE DISK INDEX
       DATA INDEXF/424*0/, LIST/424*0/
@@ -409,27 +438,59 @@ C      THE COMMAND FILE SOURCE
       DATA NUCOM /4/
 C      THE OUTPUT DEVICES
 C       VDU, MONITOR, PRINTER, PUNCH, LOG, ERROR
-&PPCC      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
-&PPC      DATA NCVDU/6/, NCAWU/3/, NCWU/9/, NCPU/7/, NCLU/8/, NCEROR/6/
-&H-PC      REASSIGN PRINTER IN STARTUP FILE
-&H-P      DATA NCVDU/6/, NCAWU/6/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&DOSC      REASSIGN PRINTER IN STARTUP FILE
-&DOS      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&&DVFGIDC      REASSIGN PRINTER IN STARTUP FILE
-&GID      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&DVF      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&GIL      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&WXS      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&LIN      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
-&VAXC      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
-&VAX      DATA NCVDU/6/, NCAWU/3/, NCWU/9/, NCPU/7/, NCLU/8/, NCEROR/6/
-&DOS      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-&&DVFGID      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-&&GILLIN      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-&WXS      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-&VAX      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-&PPC      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+#if defined(_PPC_) 
+C      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
+      DATA NCVDU/6/, NCAWU/3/, NCWU/9/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_H_P_) 
+C      REASSIGN PRINTER IN STARTUP FILE
+      DATA NCVDU/6/, NCAWU/6/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_DOS_) 
+C      REASSIGN PRINTER IN STARTUP FILE
+      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+C      REASSIGN PRINTER IN STARTUP FILE
+#endif
+#if defined(_GID_) 
+      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_DVF_) 
+      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_GIL_) 
+      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_WXS_) 
+      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_LIN_) 
+      DATA NCVDU/6/, NCAWU/3/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_VAX_) 
+C      PRINTER ASSIGNED IN JOB CONTROL LANGUAGE
+      DATA NCVDU/6/, NCAWU/3/, NCWU/9/, NCPU/7/, NCLU/8/, NCEROR/6/
+#endif
+#if defined(_DOS_) 
+      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+#endif
+#if defined(_WXS_) 
+      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+#endif
+#if defined(_VAX_) 
+      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
+#endif
+#if defined(_PPC_) 
+      DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
 C      THE AUXILLIARY INPUT DEVICE (REFLECTIONS)
+#endif
       DATA NCARU /2/
 C      THE SYSTEM SPY FILE
       DATA NCSU /11/
@@ -499,16 +560,34 @@ C
       DATA NFLUSD / 49 /
 C
       DATA IFLUNI(1)  /  1 / , IFLUNI(2)  /  2 / , IFLUNI(3)  /  5 /
-&PPC      DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&H-P      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&DOS      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&GID      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&DVF      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&LIN      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&GIL      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&WXS      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
-&VAX      DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#if defined(_PPC_) 
+      DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_H_P_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_DOS_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_GID_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_DVF_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_LIN_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_GIL_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_WXS_) 
+      DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
+#endif
+#if defined(_VAX_) 
+      DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 C----- CHANGE IFLUNI(7) TO 3 LATER
+#endif
       DATA IFLUNI(7)  /  6 / , IFLUNI(8)  / 11 / , IFLUNI(9)  / 12 /
       DATA IFLUNI(10) / 14 / , IFLUNI(11) / 15 / , IFLUNI(12) / 20 /
       DATA IFLUNI(13) / 21 / , IFLUNI(14) / 22 / , IFLUNI(15) / 23 /
@@ -852,23 +931,28 @@ C
       DATA IFILE/1000000/,ILIST/1100000/,IEND/1111111/
       DATA LNFLE/416/,LNLST/416/,IACCL/-1/
 C
-&HOL      DATA KTITL( 1)/4HTHIS/,KTITL( 2)/4H IS /,KTITL( 3)/4HTHE /
-&HOL      DATA KTITL( 4)/4HDEFA/,KTITL( 5)/4HULT /,KTITL( 6)/4HSETT/
-&HOL      DATA KTITL( 7)/4HING /,KTITL( 8)/4HFOR /,KTITL( 9)/4HTHE /
-&HOL      DATA KTITL(10)/4HTITL/,KTITL(11)/4HE, P/,KTITL(12)/4HROVI/
-&HOL      DATA KTITL(13)/4HDED /,KTITL(14)/4HWHEN/,KTITL(15)/4H NO /
-&HOL      DATA KTITL(16)/4HUSER/,KTITL(17)/4H TIT/,KTITL(18)/4HLE I/
-&HOL      DATA KTITL(19)/4HS GI/,KTITL(20)/4HVEN./
+#if defined(_HOL_) 
+      DATA KTITL( 1)/4HTHIS/,KTITL( 2)/4H IS /,KTITL( 3)/4HTHE /
+      DATA KTITL( 4)/4HDEFA/,KTITL( 5)/4HULT /,KTITL( 6)/4HSETT/
+      DATA KTITL( 7)/4HING /,KTITL( 8)/4HFOR /,KTITL( 9)/4HTHE /
+      DATA KTITL(10)/4HTITL/,KTITL(11)/4HE, P/,KTITL(12)/4HROVI/
+      DATA KTITL(13)/4HDED /,KTITL(14)/4HWHEN/,KTITL(15)/4H NO /
+      DATA KTITL(16)/4HUSER/,KTITL(17)/4H TIT/,KTITL(18)/4HLE I/
+      DATA KTITL(19)/4HS GI/,KTITL(20)/4HVEN./
 C
-#HOL      DATA KTITL( 1)/'THIS'/,KTITL( 2)/' IS '/,KTITL( 3)/'THE '/
-#HOL      DATA KTITL( 4)/'DEFA'/,KTITL( 5)/'ULT '/,KTITL( 6)/'SETT'/
-#HOL      DATA KTITL( 7)/'ING '/,KTITL( 8)/'FOR '/,KTITL( 9)/'THE '/
-#HOL      DATA KTITL(10)/'TITL'/,KTITL(11)/'E, P'/,KTITL(12)/'ROVI'/
-#HOL      DATA KTITL(13)/'DED '/,KTITL(14)/'WHEN'/,KTITL(15)/' NO '/
-#HOL      DATA KTITL(16)/'USER'/,KTITL(17)/' TIT'/,KTITL(18)/'LE I'/
-#HOL      DATA KTITL(19)/'S GI'/,KTITL(20)/'VEN.'/
+#else
+      DATA KTITL( 1)/'THIS'/,KTITL( 2)/' IS '/,KTITL( 3)/'THE '/
+#endif
+#if !defined(_HOL_) 
+      DATA KTITL( 4)/'DEFA'/,KTITL( 5)/'ULT '/,KTITL( 6)/'SETT'/
+      DATA KTITL( 7)/'ING '/,KTITL( 8)/'FOR '/,KTITL( 9)/'THE '/
+      DATA KTITL(10)/'TITL'/,KTITL(11)/'E, P'/,KTITL(12)/'ROVI'/
+      DATA KTITL(13)/'DED '/,KTITL(14)/'WHEN'/,KTITL(15)/' NO '/
+      DATA KTITL(16)/'USER'/,KTITL(17)/' TIT'/,KTITL(18)/'LE I'/
+      DATA KTITL(19)/'S GI'/,KTITL(20)/'VEN.'/
 C
 C
+#endif
       DATA IB / ' ' /
       DATA IH / '#' /
       DATA NUMB( 1)/'0'/,NUMB( 2)/'1'/,NUMB( 3)/'2'/,NUMB( 4)/'3'/
@@ -938,21 +1022,26 @@ C
       DATA LCOM/13/,MCOM/29/,MDCOM/4/,NCOM/5/
       DATA MULT50/10000/,IDIM50/32/,LSTOFF/3/
 C
-&HOL      DATA KPRGNM( 1)/4H    /,KPRGNM( 2)/4H    /,KPRGNM( 3)/4H    /
-&HOL      DATA KPRGNM( 4)/4H    /,KPRGNM( 5)/4H    /,KPRGNM( 6)/4H    /
-&HOL      DATA KPRGNM( 7)/4H    /,KPRGNM( 8)/4H    /,KPRGNM( 9)/4H    /
-&HOL      DATA KPRGNM(10)/4H    /,KPRGNM(11)/4H    /,KPRGNM(12)/4H    /
-&HOL      DATA KPRGNM(13)/4H    /,KPRGNM(14)/4H    /,KPRGNM(15)/4H    /
-&HOL      DATA KPRGNM(16)/4H    /,KPRGNM(17)/4H    /
+#if defined(_HOL_) 
+      DATA KPRGNM( 1)/4H    /,KPRGNM( 2)/4H    /,KPRGNM( 3)/4H    /
+      DATA KPRGNM( 4)/4H    /,KPRGNM( 5)/4H    /,KPRGNM( 6)/4H    /
+      DATA KPRGNM( 7)/4H    /,KPRGNM( 8)/4H    /,KPRGNM( 9)/4H    /
+      DATA KPRGNM(10)/4H    /,KPRGNM(11)/4H    /,KPRGNM(12)/4H    /
+      DATA KPRGNM(13)/4H    /,KPRGNM(14)/4H    /,KPRGNM(15)/4H    /
+      DATA KPRGNM(16)/4H    /,KPRGNM(17)/4H    /
 C
-#HOL      DATA KPRGNM( 1)/'    '/,KPRGNM( 2)/'    '/,KPRGNM( 3)/'    '/
-#HOL      DATA KPRGNM( 4)/'    '/,KPRGNM( 5)/'    '/,KPRGNM( 6)/'    '/
-#HOL      DATA KPRGNM( 7)/'    '/,KPRGNM( 8)/'    '/,KPRGNM( 9)/'    '/
-#HOL      DATA KPRGNM(10)/'    '/,KPRGNM(11)/'    '/,KPRGNM(12)/'    '/
-#HOL      DATA KPRGNM(13)/'    '/,KPRGNM(14)/'    '/,KPRGNM(15)/'    '/
-#HOL      DATA KPRGNM(16)/'    '/,KPRGNM(17)/'    '/
+#else
+      DATA KPRGNM( 1)/'    '/,KPRGNM( 2)/'    '/,KPRGNM( 3)/'    '/
+#endif
+#if !defined(_HOL_) 
+      DATA KPRGNM( 4)/'    '/,KPRGNM( 5)/'    '/,KPRGNM( 6)/'    '/
+      DATA KPRGNM( 7)/'    '/,KPRGNM( 8)/'    '/,KPRGNM( 9)/'    '/
+      DATA KPRGNM(10)/'    '/,KPRGNM(11)/'    '/,KPRGNM(12)/'    '/
+      DATA KPRGNM(13)/'    '/,KPRGNM(14)/'    '/,KPRGNM(15)/'    '/
+      DATA KPRGNM(16)/'    '/,KPRGNM(17)/'    '/
 C
 C
+#endif
       DATA KS/13/,KE/10/,KN/11/,KV/12/
       DATA KB(1)/  1/,KB(2)/  2/,KB(3)/  4/,KB(4)/  8/,KB(5)/ 16/
       DATA KB(6)/ 32/,KB(7)/ 64/,KB(8)/128/,KB(9)/1024/,KB(10)/512/
@@ -969,58 +1058,62 @@ CDJWSEP2000      DATA NWKA/2/, NKA/18/, LKA/2/, NKAS/15/, NKAO/7/
 CDJWNOV2000      DATA NWKA/2/, NKA/20/, LKA/2/, NKAS/17/, NKAO/9/
 CDJWJAN2001      DATA NWKA/2/, NKA/22/, LKA/2/, NKAS/19/, NKAO/11/
       DATA NWKA/2/, NKA/22/, LKA/2/, NKAS/19/, NKAO/11/, NKAV/11/
-&HOL      DATA ICOORD(1, 1)/4HTYPE/,ICOORD(2, 1)/4H    /
-&HOL      DATA ICOORD(1, 2)/4HSERI/,ICOORD(2, 2)/4HAL  /
-&HOL      DATA ICOORD(1, 3)/4HOCC /,ICOORD(2, 3)/4H    /
-&HOLC      DATA ICOORD(1, 4)/4HU[IS/,ICOORD(2, 4)/4HO]  /
-&HOLC-C-C-PARAM. FOR DISTINCT. BETW. ATOM (AN-/ISO.), SPHERE, LINE, RING
-&HOL      DATA ICOORD(1, 4)/4HFLAG/,ICOORD(2, 4)/4H    /
-&HOL      DATA ICOORD(1, 5)/4HX   /,ICOORD(2, 5)/4H    /
-&HOL      DATA ICOORD(1, 6)/4HY   /,ICOORD(2, 6)/4H    /
-&HOL      DATA ICOORD(1, 7)/4HZ   /,ICOORD(2, 7)/4H    /
-&HOL      DATA ICOORD(1, 8)/4HU[11/,ICOORD(2, 8)/4H]   /
-&HOL      DATA ICOORD(1, 9)/4HU[22/,ICOORD(2, 9)/4H]   /
-&HOL      DATA ICOORD(1,10)/4HU[33/,ICOORD(2,10)/4H]   /
-&HOL      DATA ICOORD(1,11)/4HU[23/,ICOORD(2,11)/4H]   /
-&HOL      DATA ICOORD(1,12)/4HU[13/,ICOORD(2,12)/4H]   /
-&HOL      DATA ICOORD(1,13)/4HU[12/,ICOORD(2,13)/4H]   /
-&HOL      DATA ICOORD(1,14)/4HSPAR/, ICOORD(2,14)/4HE   /
+#if defined(_HOL_) 
+      DATA ICOORD(1, 1)/4HTYPE/,ICOORD(2, 1)/4H    /
+      DATA ICOORD(1, 2)/4HSERI/,ICOORD(2, 2)/4HAL  /
+      DATA ICOORD(1, 3)/4HOCC /,ICOORD(2, 3)/4H    /
+C      DATA ICOORD(1, 4)/4HU[IS/,ICOORD(2, 4)/4HO]  /
+C-C-C-PARAM. FOR DISTINCT. BETW. ATOM (AN-/ISO.), SPHERE, LINE, RING
+      DATA ICOORD(1, 4)/4HFLAG/,ICOORD(2, 4)/4H    /
+      DATA ICOORD(1, 5)/4HX   /,ICOORD(2, 5)/4H    /
+      DATA ICOORD(1, 6)/4HY   /,ICOORD(2, 6)/4H    /
+      DATA ICOORD(1, 7)/4HZ   /,ICOORD(2, 7)/4H    /
+      DATA ICOORD(1, 8)/4HU[11/,ICOORD(2, 8)/4H]   /
+      DATA ICOORD(1, 9)/4HU[22/,ICOORD(2, 9)/4H]   /
+      DATA ICOORD(1,10)/4HU[33/,ICOORD(2,10)/4H]   /
+      DATA ICOORD(1,11)/4HU[23/,ICOORD(2,11)/4H]   /
+      DATA ICOORD(1,12)/4HU[13/,ICOORD(2,12)/4H]   /
+      DATA ICOORD(1,13)/4HU[12/,ICOORD(2,13)/4H]   /
+      DATA ICOORD(1,14)/4HSPAR/, ICOORD(2,14)/4HE   /
 C
 CSEP2000  NEW NAMES
-&HOL      DATA ICOORD(1,15)/4HPART/,ICOORD(2,15)/4H    /
-&HOL      DATA ICOORD(1,16)/4HREF /,ICOORD(2,16)/4H    /
+      DATA ICOORD(1,15)/4HPART/,ICOORD(2,15)/4H    /
+      DATA ICOORD(1,16)/4HREF /,ICOORD(2,16)/4H    /
 CNOV2000  MORE NEW NAMES
-&HOL      DATA ICOORD(1,17)/4HRESI/,ICOORD(2,17)/4HDUE /
-&HOL      DATA ICOORD(1,18)/4HNEW /,ICOORD(2,18)/4H    /
+      DATA ICOORD(1,17)/4HRESI/,ICOORD(2,17)/4HDUE /
+      DATA ICOORD(1,18)/4HNEW /,ICOORD(2,18)/4H    /
 C
 C----- THE EXTENDED PARAMETER NAMES
-&HOL      DATA ICOORD(1,19)/4HU[IS/,ICOORD(2,19)/4HO]  /
-&HOL      DATA ICOORD(1,20)/4HSIZE/,ICOORD(2,20)/4H    /
-&HOL      DATA ICOORD(1,21)/4HDECL/,ICOORD(2,21)/4HINAT/
-&HOL      DATA ICOORD(1,22)/4HAZIM/,ICOORD(2,22)/4HUTH /
+      DATA ICOORD(1,19)/4HU[IS/,ICOORD(2,19)/4HO]  /
+      DATA ICOORD(1,20)/4HSIZE/,ICOORD(2,20)/4H    /
+      DATA ICOORD(1,21)/4HDECL/,ICOORD(2,21)/4HINAT/
+      DATA ICOORD(1,22)/4HAZIM/,ICOORD(2,22)/4HUTH /
 C
-#HOL      DATA ICOORD(1, 1)/'TYPE'/,ICOORD(2, 1)/'    '/
-#HOL      DATA ICOORD(1, 2)/'SERI'/,ICOORD(2, 2)/'AL  '/
-#HOL      DATA ICOORD(1, 3)/'OCC '/,ICOORD(2, 3)/'    '/
-#HOLC      DATA ICOORD(1, 4)/'U[IS'/,ICOORD(2, 4)/'O]  '/
-#HOLC-C-C-PARAM. FOR DISTINCT. BETW. ATOM (AN-/ISO.), SPHERE, LINE, RING
-#HOL      DATA ICOORD(1, 4)/'FLAG'/,ICOORD(2, 4)/'    '/
-#HOL      DATA ICOORD(1, 5)/'X   '/,ICOORD(2, 5)/'    '/
-#HOL      DATA ICOORD(1, 6)/'Y   '/,ICOORD(2, 6)/'    '/
-#HOL      DATA ICOORD(1, 7)/'Z   '/,ICOORD(2, 7)/'    '/
-#HOL      DATA ICOORD(1, 8)/'U[11'/,ICOORD(2, 8)/']   '/
-#HOL      DATA ICOORD(1, 9)/'U[22'/,ICOORD(2, 9)/']   '/
-#HOL      DATA ICOORD(1,10)/'U[33'/,ICOORD(2,10)/']   '/
-#HOL      DATA ICOORD(1,11)/'U[23'/,ICOORD(2,11)/']   '/
-#HOL      DATA ICOORD(1,12)/'U[13'/,ICOORD(2,12)/']   '/
-#HOL      DATA ICOORD(1,13)/'U[12'/,ICOORD(2,13)/']   '/
-#HOL      DATA ICOORD(1,14)/'SPAR'/, ICOORD(2,14)/'E   '/
+#else
+      DATA ICOORD(1, 1)/'TYPE'/,ICOORD(2, 1)/'    '/
+#endif
+#if !defined(_HOL_) 
+      DATA ICOORD(1, 2)/'SERI'/,ICOORD(2, 2)/'AL  '/
+      DATA ICOORD(1, 3)/'OCC '/,ICOORD(2, 3)/'    '/
+C      DATA ICOORD(1, 4)/'U[IS'/,ICOORD(2, 4)/'O]  '/
+C-C-C-PARAM. FOR DISTINCT. BETW. ATOM (AN-/ISO.), SPHERE, LINE, RING
+      DATA ICOORD(1, 4)/'FLAG'/,ICOORD(2, 4)/'    '/
+      DATA ICOORD(1, 5)/'X   '/,ICOORD(2, 5)/'    '/
+      DATA ICOORD(1, 6)/'Y   '/,ICOORD(2, 6)/'    '/
+      DATA ICOORD(1, 7)/'Z   '/,ICOORD(2, 7)/'    '/
+      DATA ICOORD(1, 8)/'U[11'/,ICOORD(2, 8)/']   '/
+      DATA ICOORD(1, 9)/'U[22'/,ICOORD(2, 9)/']   '/
+      DATA ICOORD(1,10)/'U[33'/,ICOORD(2,10)/']   '/
+      DATA ICOORD(1,11)/'U[23'/,ICOORD(2,11)/']   '/
+      DATA ICOORD(1,12)/'U[13'/,ICOORD(2,12)/']   '/
+      DATA ICOORD(1,13)/'U[12'/,ICOORD(2,13)/']   '/
+      DATA ICOORD(1,14)/'SPAR'/, ICOORD(2,14)/'E   '/
 CSEP2000  NEW NAMES
-#HOL      DATA ICOORD(1,15)/'PART'/,ICOORD(2,15)/'    '/
-#HOL      DATA ICOORD(1,16)/'REF '/,ICOORD(2,16)/'    '/
+      DATA ICOORD(1,15)/'PART'/,ICOORD(2,15)/'    '/
+      DATA ICOORD(1,16)/'REF '/,ICOORD(2,16)/'    '/
 CSEP2000  MORE NEW NAMES
-#HOL      DATA ICOORD(1,17)/'RESI'/,ICOORD(2,17)/'DUE '/
-#HOL      DATA ICOORD(1,18)/'NEW '/,ICOORD(2,18)/'    '/
+      DATA ICOORD(1,17)/'RESI'/,ICOORD(2,17)/'DUE '/
+      DATA ICOORD(1,18)/'NEW '/,ICOORD(2,18)/'    '/
 C
 C-C-C-ADDITIONAL KEYWORDS FOR SPHERE, LINE, RING
 C-C-C-(ATTENTION: IT MIGHT BE REASONABLE NOT TO SUMMARIZE SPHERE-RADIUS,
@@ -1028,49 +1121,60 @@ C-C-C-            LINE-LENGTH, RING-RADIUS IN SIZE, BECAUSE THERE MIGHT
 C-C-C-            MORE FIGURES BE ADDED TO THE PROGRAM WITH MORE THAN
 C-C-C-            ONE PARAMETER FOR THE SIZE !?)
 C
-#HOL      DATA ICOORD(1,19)/'U[IS'/,ICOORD(2,19)/'O]  '/
-#HOL      DATA ICOORD(1,20)/'SIZE'/,ICOORD(2,20)/'    '/
-#HOL      DATA ICOORD(1,21)/'DECL'/,ICOORD(2,21)/'INAT'/
-#HOL      DATA ICOORD(1,22)/'AZIM'/,ICOORD(2,22)/'UTH '/
+      DATA ICOORD(1,19)/'U[IS'/,ICOORD(2,19)/'O]  '/
+      DATA ICOORD(1,20)/'SIZE'/,ICOORD(2,20)/'    '/
+      DATA ICOORD(1,21)/'DECL'/,ICOORD(2,21)/'INAT'/
+      DATA ICOORD(1,22)/'AZIM'/,ICOORD(2,22)/'UTH '/
 C
 C
+#endif
       DATA NWKO/2/,NKO/6/,LKO/2/
-&HOL      DATA KVP(1,1)/4HSCAL/,KVP(2,1)/4HE   /
-&HOL      DATA KVP(1,2)/4HDU[I/,KVP(2,2)/4HSO] /
-&HOL      DATA KVP(1,3)/4HOU[I/,KVP(2,3)/4HSO] /
-&HOL      DATA KVP(1,4)/4HPOLA/,KVP(2,4)/4HRITY/
-&HOL      DATA KVP(1,5)/4HENAN/,KVP(2,5)/4HTIO /
-&HOL      DATA KVP(1,6)/4HEXTP/,KVP(2,6)/4HARAM/
+#if defined(_HOL_) 
+      DATA KVP(1,1)/4HSCAL/,KVP(2,1)/4HE   /
+      DATA KVP(1,2)/4HDU[I/,KVP(2,2)/4HSO] /
+      DATA KVP(1,3)/4HOU[I/,KVP(2,3)/4HSO] /
+      DATA KVP(1,4)/4HPOLA/,KVP(2,4)/4HRITY/
+      DATA KVP(1,5)/4HENAN/,KVP(2,5)/4HTIO /
+      DATA KVP(1,6)/4HEXTP/,KVP(2,6)/4HARAM/
 C
-#HOL      DATA KVP(1,1)/'SCAL'/,KVP(2,1)/'E   '/
-#HOL      DATA KVP(1,2)/'DU[I'/,KVP(2,2)/'SO] '/
-#HOL      DATA KVP(1,3)/'OU[I'/,KVP(2,3)/'SO] '/
-#HOL      DATA KVP(1,4)/'POLA'/,KVP(2,4)/'RITY'/
-#HOL      DATA KVP(1,5)/'ENAN'/,KVP(2,5)/'TIO '/
-#HOL      DATA KVP(1,6)/'EXTP'/,KVP(2,6)/'ARAM'/
+#else
+      DATA KVP(1,1)/'SCAL'/,KVP(2,1)/'E   '/
+#endif
+#if !defined(_HOL_) 
+      DATA KVP(1,2)/'DU[I'/,KVP(2,2)/'SO] '/
+      DATA KVP(1,3)/'OU[I'/,KVP(2,3)/'SO] '/
+      DATA KVP(1,4)/'POLA'/,KVP(2,4)/'RITY'/
+      DATA KVP(1,5)/'ENAN'/,KVP(2,5)/'TIO '/
+      DATA KVP(1,6)/'EXTP'/,KVP(2,6)/'ARAM'/
 C
 C
+#endif
       DATA NWSC/2/,NSC/6/,LSC/2/
 C
-&HOL      DATA KSCAL(1,1)/4HSCAL/,KSCAL(2,1)/4HES  /
-&HOL      DATA KSCAL(1,2)/4HPARA/,KSCAL(2,2)/4HMETE/
-&HOL      DATA KSCAL(1,3)/4HLAYE/,KSCAL(2,3)/4HR   /
-&HOL      DATA KSCAL(1,4)/4HELEM/,KSCAL(2,4)/4HENT /
-&HOL      DATA KSCAL(1,5)/4HBATC/,KSCAL(2,5)/4HH   /
-&HOL      DATA KSCAL(1,6)/4HCELL/,KSCAL(2,6)/4H    /
-&HOL      DATA KSCAL(1,7)/4HPROF/,KSCAL(2,7)/4HILE /
-&HOL      DATA KSCAL(1,8)/4HEXTI/,KSCAL(2,8)/4HNCTI/
+#if defined(_HOL_) 
+      DATA KSCAL(1,1)/4HSCAL/,KSCAL(2,1)/4HES  /
+      DATA KSCAL(1,2)/4HPARA/,KSCAL(2,2)/4HMETE/
+      DATA KSCAL(1,3)/4HLAYE/,KSCAL(2,3)/4HR   /
+      DATA KSCAL(1,4)/4HELEM/,KSCAL(2,4)/4HENT /
+      DATA KSCAL(1,5)/4HBATC/,KSCAL(2,5)/4HH   /
+      DATA KSCAL(1,6)/4HCELL/,KSCAL(2,6)/4H    /
+      DATA KSCAL(1,7)/4HPROF/,KSCAL(2,7)/4HILE /
+      DATA KSCAL(1,8)/4HEXTI/,KSCAL(2,8)/4HNCTI/
 C
-#HOL      DATA KSCAL(1,1)/'SCAL'/,KSCAL(2,1)/'ES  '/
-#HOL      DATA KSCAL(1,2)/'PARA'/,KSCAL(2,2)/'METE'/
-#HOL      DATA KSCAL(1,3)/'LAYE'/,KSCAL(2,3)/'R   '/
-#HOL      DATA KSCAL(1,4)/'ELEM'/,KSCAL(2,4)/'ENT '/
-#HOL      DATA KSCAL(1,5)/'BATC'/,KSCAL(2,5)/'H   '/
-#HOL      DATA KSCAL(1,6)/'CELL'/,KSCAL(2,6)/'    '/
-#HOL      DATA KSCAL(1,7)/'PROF'/,KSCAL(2,7)/'ILE '/
-#HOL      DATA KSCAL(1,8)/'EXTI'/,KSCAL(2,8)/'NCTI'/
+#else
+      DATA KSCAL(1,1)/'SCAL'/,KSCAL(2,1)/'ES  '/
+#endif
+#if !defined(_HOL_) 
+      DATA KSCAL(1,2)/'PARA'/,KSCAL(2,2)/'METE'/
+      DATA KSCAL(1,3)/'LAYE'/,KSCAL(2,3)/'R   '/
+      DATA KSCAL(1,4)/'ELEM'/,KSCAL(2,4)/'ENT '/
+      DATA KSCAL(1,5)/'BATC'/,KSCAL(2,5)/'H   '/
+      DATA KSCAL(1,6)/'CELL'/,KSCAL(2,6)/'    '/
+      DATA KSCAL(1,7)/'PROF'/,KSCAL(2,7)/'ILE '/
+      DATA KSCAL(1,8)/'EXTI'/,KSCAL(2,8)/'NCTI'/
 C
 C
+#endif
       DATA NWXS/2/,NXS/5/,LXS/2/
       DATA MXS(1,1)/'U''S '/,MXS(2,1)/'    '/
       DATA MXS(1,2)/'UII'''/,MXS(2,2)/'S   '/
@@ -1213,37 +1317,51 @@ C      ISSBND      BOND TYPING FOR MODEL WINDOW
 C
 C (THE FOLLOWING 4 DEFINITIONS ARE REDUNDANT, AND ARE REPLACED BY
 C  THE CHARACTER DEFINITIONS 'CSS***)
-&PPC      DATA ISSMAC(1) / ' Pwr' / , ISSMAC(2) / ' Mac' /
-&PPC      DATA ISSOPS(1) / ' Mac' / , ISSOPS(2) / ' OS ' /
-&PPC      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Oct' /
-&PPC      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '95  ' /
-&H-P      DATA ISSMAC(1) / ' H-P' / , ISSMAC(2) / '    ' /
-&H-P      DATA ISSOPS(1) / 'UNIX' / , ISSOPS(2) / ' X.X' /
-&H-P      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
-&H-P      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
-&DOS      DATA ISSMAC(1) / ' 486' / , ISSMAC(2) / '  PC' /
-&DOS      DATA ISSOPS(1) / ' DOS' / , ISSOPS(2) / '6.22' /
-&DOS      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
-&DOS      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '97  ' /
+#if defined(_PPC_) 
+      DATA ISSMAC(1) / ' Pwr' / , ISSMAC(2) / ' Mac' /
+      DATA ISSOPS(1) / ' Mac' / , ISSOPS(2) / ' OS ' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Oct' /
+      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '95  ' /
+#endif
+#if defined(_H_P_) 
+      DATA ISSMAC(1) / ' H-P' / , ISSMAC(2) / '    ' /
+      DATA ISSOPS(1) / 'UNIX' / , ISSOPS(2) / ' X.X' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
+      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
+#endif
+#if defined(_DOS_) 
+      DATA ISSMAC(1) / ' 486' / , ISSMAC(2) / '  PC' /
+      DATA ISSOPS(1) / ' DOS' / , ISSOPS(2) / '6.22' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
+      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '97  ' /
  
-&&DVFGID      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
-&&DVFGID      DATA ISSOPS(1) / ' WIN' / , ISSOPS(2) / '95  ' /
-&&DVFGID      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
-&&DVFGID      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
-&&GILLIN      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
-&&GILLIN      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
-&&GILLIN      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
-&&GILLIN      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
-&WXS      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
-&WXS      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
-&WXS      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
-&WXS      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
-&VAX      DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
-&VAX      DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /
-&VAX      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
-&VAX      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '90  ' /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
+      DATA ISSOPS(1) / ' WIN' / , ISSOPS(2) / '95  ' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
+      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
+      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
+      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
+#endif
+#if defined(_WXS_) 
+      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
+      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
+      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
+#endif
+#if defined(_VAX_) 
+      DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
+      DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /
+      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
+      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '90  ' /
 C
 C
+#endif
       DATA ISSISS     / 9 / ,     ISSVER     / 910 /
       DATA ISSSEG / -1 /
 C
@@ -1254,13 +1372,27 @@ C RICJUL00
       DATA ISSSEQ / 1 / , ISSDAF / 2 /
 C
       DATA ISSREA / 1 /, ISSWRI / 2 /, ISSAPP /3/
-&PPC      DATA ISSFNF /  29 /
-&H-P      DATA ISSFNF / 940 /
-&DOS      DATA ISSFNF / 128 /
-&&DVFGID      DATA ISSFNF /  29 /
-&VAX      DATA ISSFNF /  29 /
-&&GILLIN      DATA ISSFNF /  2 /
-&WXS      DATA ISSFNF /  29 /
+#if defined(_PPC_) 
+      DATA ISSFNF /  29 /
+#endif
+#if defined(_H_P_) 
+      DATA ISSFNF / 940 /
+#endif
+#if defined(_DOS_) 
+      DATA ISSFNF / 128 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA ISSFNF /  29 /
+#endif
+#if defined(_VAX_) 
+      DATA ISSFNF /  29 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA ISSFNF /  2 /
+#endif
+#if defined(_WXS_) 
+      DATA ISSFNF /  29 /
+#endif
       DATA ISSOKF / 0 /
       DATA ISSEOF /-1 /
       DATA ISSERF / 1 /
@@ -1270,32 +1402,52 @@ C^      DATA ISSNBF / 6 / , ISSBFS / 3200 /
       DATA ISSNBF / 24 / , ISSBFS / 12928 /
 C
       DATA ISSPAG / 128 /
-#H-P      DATA ISSRLI / 512 / , ISSBLI / 128 / , ISSWLI / 4 /
-#H-P      DATA ISSRLF / 512 / , ISSBLF / 128 / , ISSWLF / 4 /
-&H-P      DATA ISSRLI / 512 / , ISSBLI / 512 / , ISSWLI / 4 /
-&H-P      DATA ISSRLF / 512 / , ISSBLF / 512 / , ISSWLF / 4 /
+#if !defined(_H_P_) 
+      DATA ISSRLI / 512 / , ISSBLI / 128 / , ISSWLI / 4 /
+      DATA ISSRLF / 512 / , ISSBLF / 128 / , ISSWLF / 4 /
+#else
+      DATA ISSRLI / 512 / , ISSBLI / 512 / , ISSWLI / 4 /
+#endif
+#if defined(_H_P_) 
+      DATA ISSRLF / 512 / , ISSBLF / 512 / , ISSWLF / 4 /
 C
 C----- THE DIRECT ACCESS FILE PHYSICAL RECORD LENGTH IS MACINE SPECIFIC
 C      ON THE VAX, THE RECORD LENGTH IS GIVEN IN LONGWORDS, SO THAT
 C                  ISSDAR = ISSRLI
 C      ON THE HEWLET PACKARD, IT IS IN BYTES, SO THAT
 C                  ISSDAR = 4 * ISSRLI
-&VAX      DATA ISSDAR / 512 /
-&DVF      DATA ISSDAR / 512 /
-&&GILLIN      DATA ISSDAR / 2048 /
-&WXS      DATA ISSDAR / 2048 /
-&GID      DATA ISSDAR / 512 /
-&DOS      DATA ISSDAR /2048 /
+#endif
+#if defined(_VAX_) 
+      DATA ISSDAR / 512 /
+#endif
+#if defined(_DVF_) 
+      DATA ISSDAR / 512 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA ISSDAR / 2048 /
+#endif
+#if defined(_WXS_) 
+      DATA ISSDAR / 2048 /
+#endif
+#if defined(_GID_) 
+      DATA ISSDAR / 512 /
+#endif
+#if defined(_DOS_) 
+      DATA ISSDAR /2048 /
 C
 C
+#endif
       DATA ISSPRG(1) / 'CRYS' / , ISSPRG(2) / 'TALS' /
 C
       DATA ISSLSM / 3 / , ISSSPD / 2 / , ISSTIM / 1 /
 C
       DATA ISSL11 / 1 /
       DATA ISSLNM / 5 /
-#H-P      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 0 /
-&H-P      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 1 /
+#if !defined(_H_P_) 
+      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 0 /
+#else
+      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 1 /
+#endif
       DATA ISSSFI / 1 /, ISSTML /0/, ISSFLC /2/, ISSMSG /1/
       DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/, ISSBND/1/
 C
@@ -1321,48 +1473,62 @@ C C*64 CSSCIF      CIF OUTPUT FILE
 cRICjul99
 C C*64 CSSMAP      MAP OUTPUT FILE
 C
-&PPC      DATA CSSMAC / 'PowerMacintosh' /
-&PPC      DATA LSSMAC / 14 /
-&PPC      DATA CSSOPS / 'MacOS' /
-&PPC      DATA LSSOPS / 5 /
-&PPC      DATA CSSDAT / 'October 1995' /
-&PPC      DATA LSSDAT / 12 /
-&H-P      DATA CSSMAC / 'HP UNIX' /
-&H-P      DATA LSSMAC / 7 /
-&H-P      DATA CSSOPS / 'Version X.X' /
-&H-P      DATA LSSOPS / 11 /
-&H-P      DATA CSSDAT / 'February  2000' /
-&H-P      DATA LSSDAT / 14 /
-&DOS      DATA CSSMAC / 'Intel 80X86' /
-&DOS      DATA LSSMAC / 11 /
-&DOS      DATA CSSOPS / 'DOS 7.0' /
-&DOS      DATA LSSOPS / 7 /
-&DOS      DATA CSSDAT / 'February  1996' /
-&DOS      DATA LSSDAT / 14 /
-&&DVFGID      DATA CSSMAC / 'Intel Pentium' /
-&&DVFGID      DATA LSSMAC / 13 /
-&&DVFGID      DATA CSSOPS / 'WIN 95' /
-&&DVFGID      DATA LSSOPS / 6 /
-&&DVFGID      DATA CSSDAT / 'December 1998' /
-&&DVFGID      DATA LSSDAT / 13 /
-&&GILLIN      DATA CSSMAC / 'Intel Pentium' /
-&&GILLIN      DATA LSSMAC / 13 /
-&&GILLIN      DATA CSSOPS / 'Linux' /
-&&GILLIN      DATA LSSOPS / 5 /
-&&GILLIN      DATA CSSDAT / 'May 1999' /
-&&GILLIN      DATA LSSDAT / 8 /
-&WXS      DATA CSSMAC / 'Intel Pentium' /
-&WXS      DATA LSSMAC / 13 /
-&WXS      DATA CSSOPS / 'Linux' /
-&WXS      DATA LSSOPS / 5 /
-&WXS      DATA CSSDAT / 'May 1999' /
-&WXS      DATA LSSDAT / 8 /
-&VAX      DATA CSSMAC / 'DEC VAX' /
-&VAX      DATA LSSMAC / 7 /
-&VAX      DATA CSSOPS / 'VMS 5' /
-&VAX      DATA LSSOPS / 5 /
-&VAX      DATA CSSDAT / 'February  1990' /
-&VAX      DATA LSSDAT / 14 /
+#if defined(_PPC_) 
+      DATA CSSMAC / 'PowerMacintosh' /
+      DATA LSSMAC / 14 /
+      DATA CSSOPS / 'MacOS' /
+      DATA LSSOPS / 5 /
+      DATA CSSDAT / 'October 1995' /
+      DATA LSSDAT / 12 /
+#endif
+#if defined(_H_P_) 
+      DATA CSSMAC / 'HP UNIX' /
+      DATA LSSMAC / 7 /
+      DATA CSSOPS / 'Version X.X' /
+      DATA LSSOPS / 11 /
+      DATA CSSDAT / 'February  2000' /
+      DATA LSSDAT / 14 /
+#endif
+#if defined(_DOS_) 
+      DATA CSSMAC / 'Intel 80X86' /
+      DATA LSSMAC / 11 /
+      DATA CSSOPS / 'DOS 7.0' /
+      DATA LSSOPS / 7 /
+      DATA CSSDAT / 'February  1996' /
+      DATA LSSDAT / 14 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA CSSMAC / 'Intel Pentium' /
+      DATA LSSMAC / 13 /
+      DATA CSSOPS / 'WIN 95' /
+      DATA LSSOPS / 6 /
+      DATA CSSDAT / 'December 1998' /
+      DATA LSSDAT / 13 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSMAC / 'Intel Pentium' /
+      DATA LSSMAC / 13 /
+      DATA CSSOPS / 'Linux' /
+      DATA LSSOPS / 5 /
+      DATA CSSDAT / 'May 1999' /
+      DATA LSSDAT / 8 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSMAC / 'Intel Pentium' /
+      DATA LSSMAC / 13 /
+      DATA CSSOPS / 'Linux' /
+      DATA LSSOPS / 5 /
+      DATA CSSDAT / 'May 1999' /
+      DATA LSSDAT / 8 /
+#endif
+#if defined(_VAX_) 
+      DATA CSSMAC / 'DEC VAX' /
+      DATA LSSMAC / 7 /
+      DATA CSSOPS / 'VMS 5' /
+      DATA LSSOPS / 5 /
+      DATA CSSDAT / 'February  1990' /
+      DATA LSSDAT / 14 /
+#endif
       DATA CSSPRG / 'CRYSTALS' /
       DATA LSSPRG / 8 /
       DATA CSSCMD / ' ' /
@@ -1370,102 +1536,195 @@ C
       DATA CSSNDA / ' ' /
       DATA LSSNDA / 1 /
 C
-&&DVFDOS      DATA CSSCST / 'CRYSDIR:crystals.srt' /
-&&VAXGID      DATA CSSCST / 'CRYSDIR:crystals.srt' /
-&&LINGIL      DATA CSSCST / 'CRYSDIR:crystals.srt' /
-&WXS      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+#if defined(_DOS_) || defined(_DVF_) 
+      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+#endif
+#if defined(_GID_) || defined(_VAX_) 
+      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+#endif
+#if defined(_WXS_) 
+      DATA CSSCST / 'CRYSDIR:crystals.srt' /
+#endif
       DATA LSSCST / 20 /
 C
-&&DVFDOS      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-&&VAXGID      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-&&LINGIL      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
-&WXS      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+#if defined(_DOS_) || defined(_DVF_) 
+      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+#endif
+#if defined(_GID_) || defined(_VAX_) 
+      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+#endif
+#if defined(_WXS_) 
+      DATA CSSDST / 'CRYSDIR:crysdef.srt' /
+#endif
       DATA LSSDST / ' 19 ' /
 C
-&PPC      DATA CSSSCT / 'CRSCP:scatt.dat' /
-&PPC      DATA LSSSCT / 15 /
-&H-P      DATA CSSSCT / '/users/oxford/scatt.dat' /
-&H-P      DATA LSSSCT / 23 /
-&DOS      DATA CSSSCT / ' ' /
-&DOS      DATA LSSSCT / 1 /
-&&DVFGID      DATA CSSSCT / ' ' /
-&&DVFGID      DATA LSSSCT / 1 /
-&&GILLIN      DATA CSSSCT / ' ' /
-&&GILLIN      DATA LSSSCT / 1 /
-&WXS      DATA CSSSCT / ' ' /
-&WXS      DATA LSSSCT / 1 /
-&VAX      DATA CSSSCT / 'CRSCP:scatt.dat' /
-&VAX      DATA LSSSCT / 15 /
+#if defined(_PPC_) 
+      DATA CSSSCT / 'CRSCP:scatt.dat' /
+      DATA LSSSCT / 15 /
+#endif
+#if defined(_H_P_) 
+      DATA CSSSCT / '/users/oxford/scatt.dat' /
+      DATA LSSSCT / 23 /
+#endif
+#if defined(_DOS_) 
+      DATA CSSSCT / ' ' /
+      DATA LSSSCT / 1 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA CSSSCT / ' ' /
+      DATA LSSSCT / 1 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSSCT / ' ' /
+      DATA LSSSCT / 1 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSSCT / ' ' /
+      DATA LSSSCT / 1 /
+#endif
+#if defined(_VAX_) 
+      DATA CSSSCT / 'CRSCP:scatt.dat' /
+      DATA LSSSCT / 15 /
 C
-&PPC      DATA CSSELE / 'CRSCP:propwin.dat' /
-&PPC      DATA LSSELE / 17 /
-&H-P      DATA CSSELE / '/users/oxford/propwin.dat' /
-&H-P      DATA LSSELE / 24 /
-&DOS      DATA CSSELE / ' ' /
-&DOS      DATA LSSELE / 1 /
-&&DVFGID      DATA CSSELE / ' ' /
-&&DVFGID      DATA LSSELE / 1 /
-&&GILLIN      DATA CSSELE / ' ' /
-&&GILLIN      DATA LSSELE / 1 /
-&WXS      DATA CSSELE / ' ' /
-&WXS      DATA LSSELE / 1 /
-&VAX      DATA CSSELE / 'CRSCP:propwin.dat' /
-&VAX      DATA LSSELE / 17 /
+#endif
+#if defined(_PPC_) 
+      DATA CSSELE / 'CRSCP:propwin.dat' /
+      DATA LSSELE / 17 /
+#endif
+#if defined(_H_P_) 
+      DATA CSSELE / '/users/oxford/propwin.dat' /
+      DATA LSSELE / 24 /
+#endif
+#if defined(_DOS_) 
+      DATA CSSELE / ' ' /
+      DATA LSSELE / 1 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA CSSELE / ' ' /
+      DATA LSSELE / 1 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSELE / ' ' /
+      DATA LSSELE / 1 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSELE / ' ' /
+      DATA LSSELE / 1 /
+#endif
+#if defined(_VAX_) 
+      DATA CSSELE / 'CRSCP:propwin.dat' /
+      DATA LSSELE / 17 /
 C
-&PPC      DATA CSSVDU  / 'SYS$COMMAND' /
-&PPC      DATA LSSVDU / 11 /
-&H-P      DATA CSSVDU  / 'VDU' /
-&H-P      DATA LSSVDU / 3 /
-&DOS      DATA CSSVDU  / 'CON' /
-&DOS      DATA LSSVDU / 3 /
-&&DVFGID      DATA CSSVDU  / 'CON' /
-&&DVFGID      DATA LSSVDU / 3 /
-&&GILLIN      DATA CSSVDU  / 'CON' /
-&&GILLIN      DATA LSSVDU / 3 /
-&WXS      DATA CSSVDU  / 'CON' /
-&WXS      DATA LSSVDU / 3 /
-&VAX      DATA CSSVDU  / 'SYS$COMMAND' /
-&VAX      DATA LSSVDU / 11 /
+#endif
+#if defined(_PPC_) 
+      DATA CSSVDU  / 'SYS$COMMAND' /
+      DATA LSSVDU / 11 /
+#endif
+#if defined(_H_P_) 
+      DATA CSSVDU  / 'VDU' /
+      DATA LSSVDU / 3 /
+#endif
+#if defined(_DOS_) 
+      DATA CSSVDU  / 'CON' /
+      DATA LSSVDU / 3 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA CSSVDU  / 'CON' /
+      DATA LSSVDU / 3 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSVDU  / 'CON' /
+      DATA LSSVDU / 3 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSVDU  / 'CON' /
+      DATA LSSVDU / 3 /
+#endif
+#if defined(_VAX_) 
+      DATA CSSVDU  / 'SYS$COMMAND' /
+      DATA LSSVDU / 11 /
 C
-&PPC      DATA CSSLPT  / 'SYS$PRINT' /
-&PPC      DATA LSSLPT / 9 /
-&H-P      DATA CSSLPT  / 'LPT' /
-&H-P      DATA LSSLPT / 3 /
-&DOS      DATA CSSLPT  / 'PRN' /
-&DOS      DATA LSSLPT / 3 /
-&&DVFGID      DATA CSSLPT  / 'PRN' /
-&&DVFGID      DATA LSSLPT / 3 /
-&&GILLIN      DATA CSSLPT  / 'PRN' /
-&&GILLIN      DATA LSSLPT / 3 /
-&WXS      DATA CSSLPT  / 'PRN' /
-&WXS      DATA LSSLPT / 3 /
-&VAX      DATA CSSLPT  / 'SYS$PRINT' /
-&VAX      DATA LSSLPT / 9 /
+#endif
+#if defined(_PPC_) 
+      DATA CSSLPT  / 'SYS$PRINT' /
+      DATA LSSLPT / 9 /
+#endif
+#if defined(_H_P_) 
+      DATA CSSLPT  / 'LPT' /
+      DATA LSSLPT / 3 /
+#endif
+#if defined(_DOS_) 
+      DATA CSSLPT  / 'PRN' /
+      DATA LSSLPT / 3 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA CSSLPT  / 'PRN' /
+      DATA LSSLPT / 3 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSLPT  / 'PRN' /
+      DATA LSSLPT / 3 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSLPT  / 'PRN' /
+      DATA LSSLPT / 3 /
+#endif
+#if defined(_VAX_) 
+      DATA CSSLPT  / 'SYS$PRINT' /
+      DATA LSSLPT / 9 /
 C
 cdjwmay99
-&PPC      DATA CSSCIF / 'publish.cif' /
-&PPC      DATA LSSCIF / 11 /
-&H-P      DATA CSSCIF / 'publish.cif' /
-&H-P      DATA LSSCIF / 11 /
-&DOS      DATA CSSCIF / 'publish.cif' /
-&DOS      DATA LSSCIF / 11 /
-&&DVFGID      DATA CSSCIF / 'publish.cif' /
-&&DVFGID      DATA LSSCIF / 11 /
-&&GILLIN      DATA CSSCIF / 'publish.cif' /
-&&GILLIN      DATA LSSCIF / 11 /
-&WXS      DATA CSSCIF / 'publish.cif' /
-&WXS      DATA LSSCIF / 11 /
-&VAX      DATA CSSCIF / 'publish.cif' /
-&VAX      DATA LSSCIF / 11 /
+#endif
+#if defined(_PPC_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
+#endif
+#if defined(_H_P_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
+#endif
+#if defined(_DOS_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
+#endif
+#if defined(_VAX_) 
+      DATA CSSCIF / 'publish.cif' /
+      DATA LSSCIF / 11 /
 cRICjul99
-&&&PPCH-PDOS      DATA CSSMAP / 'fourier.map' /
-&&&PPCH-PDOS      DATA LSSMAP / 11 /
-&&&DVFGIDVAX      DATA CSSMAP / 'fourier.map' /
-&&&DVFGIDVAX      DATA LSSMAP / 11 /
-&&GILLIN      DATA CSSMAP / 'fourier.map' /
-&&GILLIN      DATA LSSMAP / 11 /
-&WXS      DATA CSSMAP / 'fourier.map' /
-&WXS      DATA LSSMAP / 11 /
+#endif
+#if defined(_DOS_) || defined(_H_P_) || defined(_PPC_) 
+      DATA CSSMAP / 'fourier.map' /
+      DATA LSSMAP / 11 /
+#endif
+#if defined(_DVF_) || defined(_GID_) || defined(_VAX_) 
+      DATA CSSMAP / 'fourier.map' /
+      DATA LSSMAP / 11 /
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      DATA CSSMAP / 'fourier.map' /
+      DATA LSSMAP / 11 /
+#endif
+#if defined(_WXS_) 
+      DATA CSSMAP / 'fourier.map' /
+      DATA LSSMAP / 11 /
 C          q
 C -- 'DEVICE' AND 'EXTENSION' REQUIRED FOR 'HELP' , 'MANUAL' , AND
 C    'SCRIPT' INSTRUCTIONS
@@ -1474,6 +1733,7 @@ C    CHLPDV  CHLPEX      'HELP'
 C    CINDDV  CINDEX      'MANUAL'
 C    CSCPDV  CSCPEX      'SCRIPT
 C
+#endif
       DATA CHLPDV / ' ' / , CHLPEX / ' ' /
       DATA LHLPDV / 1 / ,        LHLPEX / 1 /
 C
@@ -1666,7 +1926,7 @@ C
 C
 CODE FOR SYNBLK
       BLOCK DATA SYNBLK
-\XPARSE
+      INCLUDE 'XPARSE.INC'
 C
 C--CONTROL VALUES FOR THE SYSTEM VARIABLES
       DATA NWSV/1/,NSV/20/,LSV/3/
@@ -1795,106 +2055,108 @@ C
 C
 C
 CODE FOR MACBLK
-&PPC      BLOCK DATA MACBLK
-&PPCC
-&PPC\CFLDAT
-&PPCC
-&PPCC      DISCFILE,  HKLI    ,  CONTROL ,  PRINTER ,  PUNCH
-&PPCC
-&PPC      DATA LFNAME(1)  /  1 /, FLNAME(1)  /' '/
-&PPC      DATA LFNAME(2)  /  1 /, FLNAME(2)  /' '/
-&PPC      DATA LFNAME(3)  /  1 /, FLNAME(3)  /' '/
-&PPC      DATA LFNAME(4)  /  1 /, FLNAME(4)  /' '/
-&PPC      DATA LFNAME(5)  /  1 /, FLNAME(5)  /' '/
-&PPCC
-&PPCC      LOG     ,  MONITOR ,  SPY     ,  NEWDISC ,  EXCOMMON
-&PPCC
-&PPC      DATA LFNAME(6)  /  1 /, FLNAME(6)  /' '/
-&PPC      DATA LFNAME(7)  /  1 /, FLNAME(7)  /' '/
-&PPC      DATA LFNAME(8)  /  3 /, FLNAME(8)  /'Spy'/
-&PPC      DATA LFNAME(9)  /  1 /, FLNAME(9)  /' '/
-&PPC      DATA LFNAME(10) /  8 /, FLNAME(10) /'Excommon'/
-&PPCC
-&PPCC      COMMANDS,  USE1    ,  USE2    ,  USE3    ,  USE4
-&PPCC
-&PPC      DATA LFNAME(11) /  8 /, FLNAME(11) /'Commands'/
-&PPC      DATA LFNAME(12) /  1 /, FLNAME(12) /' '/
-&PPC      DATA LFNAME(13) /  1 /, FLNAME(13) /' '/
-&PPC      DATA LFNAME(14) /  1 /, FLNAME(14) /' '/
-&PPC      DATA LFNAME(15) /  1 /, FLNAME(15) /' '/
-&PPCC
-&PPCC      M32     ,  M33     ,  MT1     ,  MT2     ,  MT3
-&PPCC
-&PPC      DATA LFNAME(16) /  9 /, FLNAME(16) /'Scratch#1'/
-&PPC      DATA LFNAME(17) /  9 /, FLNAME(17) /'Scratch#2'/
-&PPC      DATA LFNAME(18) /  6 /, FLNAME(18) /'Tape#1'/
-&PPC      DATA LFNAME(19) /  6 /, FLNAME(19) /'Tape#2'/
-&PPC      DATA LFNAME(20) /  6 /, FLNAME(20) /'Tape#3'/
-&PPCC
-&PPCC      MTE     ,  SRQ     ,  FRN1DATA,  FRN2DATA,  SCPDATA
-&PPCC
-&PPC      DATA LFNAME(21) /  6 /, FLNAME(21) /'Tape#E'/
-&PPC      DATA LFNAME(22) /  3 /, FLNAME(22) /'Srq'/
-&PPC      DATA LFNAME(23) /  1 /, FLNAME(23) /' '/
-&PPC      DATA LFNAME(24) /  1 /, FLNAME(24) /' '/
-&PPC      DATA LFNAME(25) /  7 /, FLNAME(25) /'ScpData'/
-&PPCC
-&PPCC      SCPQUEUE,  COMMSRC ,  USE5    ,  USE6    ,  USE7
-&PPCC
-&PPC      DATA LFNAME(26) /  8 /, FLNAME(26) /'ScpQueue'/
-&PPC      DATA LFNAME(27) /  7 /, FLNAME(27) /'CommSrc'/
-&PPC      DATA LFNAME(28) /  1 /, FLNAME(28) /' '/
-&PPC      DATA LFNAME(29) /  1 /, FLNAME(29) /' '/
-&PPC      DATA LFNAME(30) /  1 /, FLNAME(30) /' '/
-&PPCC
-&PPCC      USE8    ,  USE9    ,
-&PPCC
-&PPC      DATA LFNAME(31) /  1 /, FLNAME(31) /' '/
-&PPC      DATA LFNAME(32) /  1 /, FLNAME(32) /' '/
-&PPCC
-&PPC      DATA FLTYPE(1)  /'    '/,  FLTYPE(2)  /'.HKL'/
-&PPC      DATA FLTYPE(3)  /'    '/,  FLTYPE(4)  /'.LIS'/
-&PPC      DATA FLTYPE(5)  /'.PCH'/,  FLTYPE(6)  /'.LOG'/
-&PPC      DATA FLTYPE(7)  /'.MON'/,  FLTYPE(8)  /'    '/
-&PPC      DATA FLTYPE(9)  /'    '/,  FLTYPE(10) /'    '/
-&PPC      DATA FLTYPE(11) /'    '/,  FLTYPE(12) /'    '/
-&PPC      DATA FLTYPE(13) /'    '/,  FLTYPE(14) /'    '/
-&PPC      DATA FLTYPE(15) /'    '/,  FLTYPE(16) /'    '/
-&PPC      DATA FLTYPE(17) /'    '/,  FLTYPE(18) /'    '/
-&PPC      DATA FLTYPE(19) /'    '/,  FLTYPE(20) /'    '/
-&PPC      DATA FLTYPE(21) /'    '/,  FLTYPE(22) /'    '/
-&PPC      DATA FLTYPE(23) /'.FN1'/,  FLTYPE(24) /'.FN2'/
-&PPC      DATA FLTYPE(25) /'    '/,  FLTYPE(26) /'    '/
-&PPC      DATA FLTYPE(27) /'    '/,  FLTYPE(28) /'    '/
-&PPC      DATA FLTYPE(29) /'    '/,  FLTYPE(30) /'    '/
-&PPC      DATA FLTYPE(31) /'    '/,  FLTYPE(32) /'    '/
-&PPCC
-&PPC      END
-&PPCC
-&PPCC
+#if defined(_PPC_) 
+      BLOCK DATA MACBLK
+C
+\CFLDAT
+C
+C      DISCFILE,  HKLI    ,  CONTROL ,  PRINTER ,  PUNCH
+C
+      DATA LFNAME(1)  /  1 /, FLNAME(1)  /' '/
+      DATA LFNAME(2)  /  1 /, FLNAME(2)  /' '/
+      DATA LFNAME(3)  /  1 /, FLNAME(3)  /' '/
+      DATA LFNAME(4)  /  1 /, FLNAME(4)  /' '/
+      DATA LFNAME(5)  /  1 /, FLNAME(5)  /' '/
+C
+C      LOG     ,  MONITOR ,  SPY     ,  NEWDISC ,  EXCOMMON
+C
+      DATA LFNAME(6)  /  1 /, FLNAME(6)  /' '/
+      DATA LFNAME(7)  /  1 /, FLNAME(7)  /' '/
+      DATA LFNAME(8)  /  3 /, FLNAME(8)  /'Spy'/
+      DATA LFNAME(9)  /  1 /, FLNAME(9)  /' '/
+      DATA LFNAME(10) /  8 /, FLNAME(10) /'Excommon'/
+C
+C      COMMANDS,  USE1    ,  USE2    ,  USE3    ,  USE4
+C
+      DATA LFNAME(11) /  8 /, FLNAME(11) /'Commands'/
+      DATA LFNAME(12) /  1 /, FLNAME(12) /' '/
+      DATA LFNAME(13) /  1 /, FLNAME(13) /' '/
+      DATA LFNAME(14) /  1 /, FLNAME(14) /' '/
+      DATA LFNAME(15) /  1 /, FLNAME(15) /' '/
+C
+C      M32     ,  M33     ,  MT1     ,  MT2     ,  MT3
+C
+      DATA LFNAME(16) /  9 /, FLNAME(16) /'Scratch#1'/
+      DATA LFNAME(17) /  9 /, FLNAME(17) /'Scratch#2'/
+      DATA LFNAME(18) /  6 /, FLNAME(18) /'Tape#1'/
+      DATA LFNAME(19) /  6 /, FLNAME(19) /'Tape#2'/
+      DATA LFNAME(20) /  6 /, FLNAME(20) /'Tape#3'/
+C
+C      MTE     ,  SRQ     ,  FRN1DATA,  FRN2DATA,  SCPDATA
+C
+      DATA LFNAME(21) /  6 /, FLNAME(21) /'Tape#E'/
+      DATA LFNAME(22) /  3 /, FLNAME(22) /'Srq'/
+      DATA LFNAME(23) /  1 /, FLNAME(23) /' '/
+      DATA LFNAME(24) /  1 /, FLNAME(24) /' '/
+      DATA LFNAME(25) /  7 /, FLNAME(25) /'ScpData'/
+C
+C      SCPQUEUE,  COMMSRC ,  USE5    ,  USE6    ,  USE7
+C
+      DATA LFNAME(26) /  8 /, FLNAME(26) /'ScpQueue'/
+      DATA LFNAME(27) /  7 /, FLNAME(27) /'CommSrc'/
+      DATA LFNAME(28) /  1 /, FLNAME(28) /' '/
+      DATA LFNAME(29) /  1 /, FLNAME(29) /' '/
+      DATA LFNAME(30) /  1 /, FLNAME(30) /' '/
+C
+C      USE8    ,  USE9    ,
+C
+      DATA LFNAME(31) /  1 /, FLNAME(31) /' '/
+      DATA LFNAME(32) /  1 /, FLNAME(32) /' '/
+C
+      DATA FLTYPE(1)  /'    '/,  FLTYPE(2)  /'.HKL'/
+      DATA FLTYPE(3)  /'    '/,  FLTYPE(4)  /'.LIS'/
+      DATA FLTYPE(5)  /'.PCH'/,  FLTYPE(6)  /'.LOG'/
+      DATA FLTYPE(7)  /'.MON'/,  FLTYPE(8)  /'    '/
+      DATA FLTYPE(9)  /'    '/,  FLTYPE(10) /'    '/
+      DATA FLTYPE(11) /'    '/,  FLTYPE(12) /'    '/
+      DATA FLTYPE(13) /'    '/,  FLTYPE(14) /'    '/
+      DATA FLTYPE(15) /'    '/,  FLTYPE(16) /'    '/
+      DATA FLTYPE(17) /'    '/,  FLTYPE(18) /'    '/
+      DATA FLTYPE(19) /'    '/,  FLTYPE(20) /'    '/
+      DATA FLTYPE(21) /'    '/,  FLTYPE(22) /'    '/
+      DATA FLTYPE(23) /'.FN1'/,  FLTYPE(24) /'.FN2'/
+      DATA FLTYPE(25) /'    '/,  FLTYPE(26) /'    '/
+      DATA FLTYPE(27) /'    '/,  FLTYPE(28) /'    '/
+      DATA FLTYPE(29) /'    '/,  FLTYPE(30) /'    '/
+      DATA FLTYPE(31) /'    '/,  FLTYPE(32) /'    '/
+C
+      END
+C
+C
 
+#endif
       SUBROUTINE CRESET
 
-\XSSVAL
-\XCARDS
-\UFILE
-\XUNITS
-\XDISCS
-\XTAPES
-\XTAPED
-\XLST50
-\XDAVAL
-\XCBVAL
-\XUNTNM
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XTAPED.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XDAVAL.INC'
+      INCLUDE 'XCBVAL.INC'
+      INCLUDE 'XUNTNM.INC'
 c\XLEXIC
-\XLISTI
-\XFILE
-\XLISTS
-\XCNTRL
-\PSCSTI
-\XSCSTK
-\XFILEC
-\XGUIOV
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XFILE.INC'
+      INCLUDE 'XLISTS.INC'
+      INCLUDE 'XCNTRL.INC'
+      INCLUDE 'PSCSTI.INC'
+      INCLUDE 'XSCSTK.INC'
+      INCLUDE 'XFILEC.INC'
+      INCLUDE 'XGUIOV.INC'
 
       EQUIVALENCE ( IRIC,ZRIC )
 
@@ -1906,8 +2168,11 @@ C --- XSSVAL ---
       ISSLNM = 5
       ISSINI = 1
       ISSSTA = 1
-#H-P      ISSBAN = 0 
-&H-P      ISSBAN = 1
+#if !defined(_H_P_) 
+      ISSBAN = 0 
+#else
+      ISSBAN = 1
+#endif
       ISSSFI = 1
       ISSTML = 0
       ISSFLC = 2
@@ -1970,10 +2235,18 @@ C --- UFILE ---
       IFLUNI(1)  =  1  
       IFLUNI(2)  =  2
       IFLUNI(3)  =  5  
-&&&DOSGIDDVF      IFLUNI(4)  =  6
-&&GILLIN      IFLUNI(4)  =  6
-&WXS      IFLUNI(4)  =  6
-&VAX      IFLUNI(4)  =  9
+#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
+      IFLUNI(4)  =  6
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      IFLUNI(4)  =  6
+#endif
+#if defined(_WXS_) 
+      IFLUNI(4)  =  6
+#endif
+#if defined(_VAX_) 
+      IFLUNI(4)  =  9
+#endif
       IFLUNI(5) = 7
       IFLUNI(6) = 8
       IFLUNI(7) = 6
@@ -2044,10 +2317,18 @@ C --- UFILE ---
 C --- XUNITS ---
       NCRU =20
       NCRRU =1
-&&&DOSDVFGID      NCWU=6
-&&GILLIN      NCWU=6
-&WXS      NCWU=6
-&VAX      NCWU=9
+#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
+      NCWU=6
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      NCWU=6
+#endif
+#if defined(_WXS_) 
+      NCWU=6
+#endif
+#if defined(_VAX_) 
+      NCWU=9
+#endif
       NCPU=7
       IPAGE(1)=10
       IPAGE(2)=8
@@ -2056,14 +2337,22 @@ C --- XUNITS ---
       IPAGE(5)=20
       NCARU=2
       NCAWU=3
-&&&DOSDVFGID      IQUN=2
-&&&DOSDVFGID      JQUN=2
-&&GILLIN      IQUN=2
-&&GILLIN      JQUN=2
-&WXS      IQUN=2
-&WXS      JQUN=2
-&VAX      IQUN=2
-&VAX      JQUN=0
+#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) 
+      IQUN=2
+      JQUN=2
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+      IQUN=2
+      JQUN=2
+#endif
+#if defined(_WXS_) 
+      IQUN=2
+      JQUN=2
+#endif
+#if defined(_VAX_) 
+      IQUN=2
+      JQUN=0
+#endif
       IUSFLG = 0 
       NCSU = 11
       NCEXTR = 88
@@ -2249,3 +2538,4 @@ C --- XGUIOV ---
 
       RETURN
       END
+

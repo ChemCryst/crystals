@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:08  rich
+C New CRYSTALS repository
+C
+C Revision 1.10  2004/02/16 14:17:04  rich
+C Output list of missing reflections to GUI during #THLIM calculation, if
+C requested.
+C
 C Revision 1.9  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -39,7 +46,7 @@ CODE FOR XPUBL
 C--MAIN ROUTINE TO CONTROL PUBLICATION LISTINGS
 C
 C--
-\XERVAL
+      INCLUDE 'XERVAL.INC'
 C
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
@@ -100,3 +107,4 @@ CODE FOR XTHX
       IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT,IULN,IGLST)
       RETURN
       END
+

@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:11  rich
+C New CRYSTALS repository
+C
+C Revision 1.4  2004/11/18 16:30:59  stefan
+C 1. Added the subroutine PAIR_XDLHS which used a pair list to accume the normal matrix.
+C
 C Revision 1.3  2004/09/30 15:52:56  rich
 C Uh-oh. SFLS reorganised quite a lot.
 C
@@ -88,3 +94,4 @@ C     WDF  SQRT(W)*(/FO/ - /FC/)
 
       RETURN
       END
+

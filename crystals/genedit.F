@@ -1,4 +1,15 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:09  rich
+C New CRYSTALS repository
+C
+C Revision 1.11  2002/10/16 11:47:51  rich
+C
+C This is a good one: Added SORT directive to GENERALEDIT.
+C SORT OFFSET=n MODE=[REAL,INT] direction=[ASCEN,DESCE]. It sorts
+C a group of a list in memory - no changes unless you write back
+C to disk. e.g. #GENER 5/LOCA RECO=101/SORT 2 REAL DESC/....
+C sorts L5 into descending order of serial.
+C
 C Revision 1.10  2002/10/01 14:09:12  rich
 C DISPLAY KEYS was causing problems if CMON buffer not emptied first.
 C
@@ -60,21 +71,21 @@ C
       CHARACTER*80 CFORM(3) , CIFORM
       CHARACTER*12 CEVARI , CTVARI
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XLST50
-\XLISTI
-\XCARDS
-\XUNITS
-\XSSVAL
-\XERVAL
-\XOPVAL
-\XIOBUF
-\XSIZES
-\UFILE
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSIZES.INC'
+      INCLUDE 'UFILE.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       DATA IVERSN / 103 /
 C
@@ -664,3 +675,4 @@ C
 C
 C
       END
+

@@ -1,4 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:08  rich
+C New CRYSTALS repository
+C
+C Revision 1.12  2004/07/02 13:26:01  rich
+C Remove dependency on HARWELL and NAG libraries. Replaced with LAPACK
+C and BLAS code (and a home-made bessel function approximation).
+C
 C Revision 1.11  2003/09/24 09:44:25  rich
 C Added routine XMXUIJ to matrix.src to apply a transformation to
 C a vector of Uijs. Added new vector to store Uijs for the "new"
@@ -66,20 +76,20 @@ C  15.MATRIX
 C
       DIMENSION A(3,3),B(3,3),C(3,3),TEMP(3,3),ROW(9)
       DIMENSION ACC(3,3)
-\ISTORE
-\STORE
-\XUNITS
-\XSSVAL
-\XLISTI
-\XCNTRL
-\XCONST
-\XLEXIC
-\XCHARS
-\XERVAL
-\XOPVAL
-\XIOBUF
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCNTRL.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLEXIC.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       DATA IVERSN /100/
@@ -158,7 +168,9 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-&&&GIDGILWXS      CALL ZMORE(CMON,0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      CALL ZMORE(CMON,0)
+#endif
       GOTO 1100
 C
 C
@@ -192,7 +204,9 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-&&&GIDGILWXS      CALL ZMORE(CMON,0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      CALL ZMORE(CMON,0)
+#endif
       GOTO 1100
 C
 C--ERROR IN THE INPUT NUMBER
@@ -240,11 +254,15 @@ C-----INV
       CALL MATINV(A,ACC,D)
       ISTAT = KSCTRN ( 1 , 'MATRIX:DET' ,D, 1 )
       WRITE(CMON,'(A, F12.5)') 'Determinant = ', D
-&&&GIDGILWXS      CALL ZMORE(CMON,0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      CALL ZMORE(CMON,0)
+#endif
       GOTO 101
 C-----EIG     
 9     CONTINUE
-&&&GIDGILWXS      call zmore('Not yet implemented',0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      call zmore('Not yet implemented',0)
+#endif
       GOTO 101
 C-----ACC2A 
 10     CONTINUE
@@ -281,8 +299,10 @@ C-----SCR2B
 C
 101    CONTINUE
       WRITE(CMON,'(9F8.3)') ACC
-&&&GIDGILWXS      CALL ZMORE(CMON,0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      CALL ZMORE(CMON,0)
 C Keep script up-to-date with what's going on, if it cares.
+#endif
       ISTAT = KSCTRN ( 1 , 'MATRIX:M11' ,ACC(1,1), 1 )
       ISTAT = KSCTRN ( 1 , 'MATRIX:M12' ,ACC(1,2), 1 )
       ISTAT = KSCTRN ( 1 , 'MATRIX:M13' ,ACC(1,3), 1 )
@@ -688,7 +708,7 @@ C--
 C
       DIMENSION AL(3),AMAT(9)
 C
-\XCONST
+      INCLUDE 'XCONST.INC'
 C
 C
       DATA E/0.0/,S/0.0/,C/0.0/,D/0.0/
@@ -780,7 +800,7 @@ C--
 C
       DIMENSION X(3)
 C
-\XCONST
+      INCLUDE 'XCONST.INC'
 C
 C
       DATA D/0.0/
@@ -833,10 +853,10 @@ C--
 C
       DIMENSION A(NA),B(NA),C(NC),D(NC)
 C
-\XUNITS
-\XSSVAL
-\XERVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       DATA ASING/0.0/,BSING/0.0/,CSING/0.0/,E/0.0/,F/0.0/
       DATA M1/0/,M2/0/,M3/0/,M4/0/,M5/0/,M6/0/,M7/0/,M8/0/
@@ -1114,18 +1134,18 @@ C      THE FOLLOWING VARIABLES WOULD BEST BE IN QUADRUPLE PRECISION.
 C      SINCE QUAD PRECISION IS NOT PART OF FORTRAN77, WE USE DOUBLE
 C      LENGTH VARIABLES FOR BOTH SINGLE AND DOUBLE LENGTH MATRICES.
 C
-\TYPDBL
+      INCLUDE 'TYPDBL.INC'
 C      REAL *16  DPV,ASING,BSING,CSING,DSING,EPV,ONE
 C
-\TYPE11
+      INCLUDE 'TYPE11.INC'
 C
-\STORE
-\XSTR11
-\XUNITS
-\XIOBUF
-\XSSVAL
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
 C
-\QSTR11
+      INCLUDE 'QSTR11.INC'
 C
 C
       DATA ONE/0.1D1/
@@ -1314,12 +1334,12 @@ C
 C--
 C
 C
-\TYPE11
+      INCLUDE 'TYPE11.INC'
 C
-\STORE
-\XSTR11
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XSTR11.INC'
 C
-\QSTR11
+      INCLUDE 'QSTR11.INC'
 C
 C--WORK OUT THE ANSWERS
       K=IRES
@@ -1352,15 +1372,15 @@ C  N       THE ORDER OF THE MATRIX.
 C  IBASE   THE ADDRESS OF THE FIRST WORD.
 C
 C--
-\TYPE11
+      INCLUDE 'TYPE11.INC'
 C
-\STORE
-\XSTR11
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTR11
+      INCLUDE 'QSTR11.INC'
 C
       LS=NOC+1
       IF (ISSPRT .EQ. 0) THEN
@@ -1391,15 +1411,15 @@ C----- MOORE-PENROSE INVERTOR
 C----- ACTA (1977),A33 212-215. A. L. MACKAY
       DIMENSION A(N,N)
       DIMENSION B(N,N)
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XUNITS
-\XSSVAL
-\XERVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C --
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C --
 C -- SET UP NUMBERS REQUIRED LATER
       NSQ=N*N
@@ -1772,7 +1792,7 @@ CODE FOR XMXCRM
       SUBROUTINE XMXCRM(ROTN,XMATR)
       DIMENSION ROTN(3)
       DIMENSION XMATR(3,3)
-\STORE
+      INCLUDE 'STORE.INC'
 C --
       ITMP1=KSTALL(9)
       ITMP2=KSTALL(27)
@@ -1791,3 +1811,4 @@ C -- RELEASE WORK SPACE
       CALL XSTRLL(ITMP2)
       RETURN
       END
+

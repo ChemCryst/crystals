@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:09  rich
+C New CRYSTALS repository
+C
+C Revision 1.12  2004/07/09 12:28:16  rich
+C \punch 12 b  writes a easy to read version of list 22
+C to the punch file. It can't be read back in, of course.
+C May develop this into something for the CIF.
+C
 C Revision 1.11  2003/05/13 17:03:55  rich
 C Corrected slightly illegal comment from 3 years ago.
 C
@@ -55,19 +63,19 @@ C--FIRST CONTROL ROUTINE FOR LIST INPUT AND OUTPUT.
 
       CHARACTER *80 CLINE
       CHARACTER*4 CTXT(4)
-\PLSTHN
-\ISTORE
-\STORE
-\XUNITS
-\XCHARS
-\XCARDS
-\XLST50
-\XERVAL
-\XOPVAL
-\XSSVAL
-\QSTORE
-\XLSTHN
-\XIOBUF
+      INCLUDE 'PLSTHN.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XLSTHN.INC'
+      INCLUDE 'XIOBUF.INC'
       DATA CTXT   / 'LIST', 'END ', 'BLOC', 'NO  ' /
 
 C--LOAD THE NEXT '#INSTRUCTION'

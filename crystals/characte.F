@@ -1,4 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/13 16:16:07  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:11  rich
+C New CRYSTALS repository
+C
+C Revision 1.6  2002/02/20 14:32:02  ckp2
+C New function KCLNEQ searches a string for last occurence of a string that doesn't
+C match. KCLNEQ(STRING,47,' ') returns the last non-space before position 47 in STRING.
+C
 C Revision 1.5  2000/12/05 12:36:42  CKP2
 C Reformat FORMAT statements
 C
@@ -427,11 +437,11 @@ C
       CHARACTER *(*) CSOURC, COUT
       CHARACTER *1 CBUF
 C
-      LIN = LEN (CSOURC)
+      LINEL = LEN (CSOURC)
       LOUT = LEN (COUT)
       J = 0
       IFLAG = 0
-      DO 1500 I = 1, LIN
+      DO 1500 I = 1, LINEL
       CBUF = CSOURC(I:I)
       IF (CBUF .EQ. ' ') THEN
             IF (IFLAG .EQ. 1) THEN
@@ -511,7 +521,7 @@ C
       CHARACTER *1 CTERM
 C      CHARACTER *9 CNUM
       CHARACTER *10 CNUM
-\XUNITS
+      INCLUDE 'XUNITS.INC'
 C
 C      DATA CNUM / '123456789' /
       DATA CNUM / '0123456789' /
@@ -869,11 +879,11 @@ C        ILAST    - POSITION IN CASTR OF THE MOST RECENT NON-DEFAULT
 C                   SYMMETRY OPERATOR.
 C
        CHARACTER*(*) CASTR
-\ISTORE
-\STORE
-\XUNITS
-\XSSVAL
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'QSTORE.INC'
 C
 C CLEAN OUT CASTR.
        CASTR =' '
@@ -944,9 +954,9 @@ CODE FOR XIVHT
 C
 C----- ERROR MESSAGE FROM HNN WRITER
       CHARACTER *(*) CTYPE
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,100) 'Unable to get atom type in routine', CTYPE
@@ -967,7 +977,7 @@ C      IN FORMAT STATEMENTS
       CHARACTER *(*) CFORM
       CHARACTER *1 CTERM
       CHARACTER *10 CNUM
-\XUNITS
+      INCLUDE 'XUNITS.INC'
       DATA CNUM/'0123456789'/
       KCITOF = 1
       LFORM = LEN(CFORM)
@@ -1005,3 +1015,4 @@ C      WRITE(*,*) 'ERROR CONDITION'
 300   CONTINUE
       RETURN
       END
+

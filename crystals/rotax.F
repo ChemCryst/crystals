@@ -6,19 +6,19 @@ C ROTAX : Simon Parsons & Bob Gould, University of Edinburgh
 C Version 26th November, 2001
 C Crystals implementation - blame Richard Cooper.
 
-\ISTORE
-\STORE
-\XLST01
-\XLST05
-\XLST23
-\XLST06
-\XUNITS
-\XSSVAL
-\XERVAL
-\XOPVAL
-\XCONST
-\XIOBUF
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
       DIMENSION HKL(3)
       REAL INVM(9), INVM2(9), MRES(9), SROT(9), PHID, PHIR
       REAL P(3,3,3), V, DISAG(3,30)
@@ -344,11 +344,11 @@ C Returns TRUE if the transformation matrix does not belong
 C to the current point group.
       DIMENSION TM(9),SYM(9),SUB(9)
 
-\XLST02
-\XCONST
-\STORE
-\XUNITS
-\XIOBUF
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
 
       NOTPTG = .TRUE.
 
@@ -496,8 +496,8 @@ c to write results to file rotax.out.
       real mdisag(3,30),fom,disag(3,30),tol, phid, d(30,5), q(15)
       integer bc, pori
       character*1 dorr
-\XIOBUF
-\XUNITS
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
 
       CALL XMLTMM(M,DISAG,MDISAG,3,3,30)
 c      mdisag=matmul(M,disag)
@@ -556,8 +556,8 @@ c works out the figure of merit
       real mdisag(3,30),fom,bad(3), d(30,5), dcopy(30),q(15), dmin, d1
       integer i,bc, i1, i2, i3, i1min, i2min, i3min
       integer jp(1)
-\XIOBUF
-\XUNITS
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
 
 
       do i=1,15
@@ -619,37 +619,47 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
             exit
           else
             bc=bc+1
-###GILWXSLIN            jp = maxloc(dcopy)
-&&&GILWXSLIN            jp(1) = maxpos(dcopy,30)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+            jp = maxloc(dcopy)
+#else
+            jp(1) = maxpos(dcopy,30)
+#endif
             dsum = dsum - dcopy(jp(1))
             dcopy(jp(1)) = 0.
             d(jp(1),1)=-d(jp(1),1)
           endif
       enddo
       fom=1000.*fom
-###GILWXSLIN      q=1000*q
-&&&GILWXSLIN      do i=1,15
-&&&GILWXSLIN      q(i)=1000*q(i)
-&&&GILWXSLIN      end do
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+      q=1000*q
+#else
+      do i=1,15
+#endif
+#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_) 
+      q(i)=1000*q(i)
+      end do
+#endif
       end
 
-&&&GILWXSLIN      FUNCTION maxpos(dcopy, n)
-&&&GILWXSLIN      DIMENSION dcopy(n)
-&&&GILWXSLIN      maxpos = 1
-&&&GILWXSLIN      do i = 2,n
-&&&GILWXSLIN        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
-&&&GILWXSLIN      end do
-&&&GILWXSLIN      return
-&&&GILWXSLIN      end
+#if defined(_GIL_) || defined(_LIN_) || defined(_WXS_) 
+      FUNCTION maxpos(dcopy, n)
+      DIMENSION dcopy(n)
+      maxpos = 1
+      do i = 2,n
+        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
+      end do
+      return
+      end
 
+#endif
       subroutine write_results(fom,disag, d,q,bc,m2,ipunch)
 c prints the results to rotax.out
       real  fom,disag(3,30), d(30,5),q(15), m2(3,3)
       INTEGER BININC(12),BINREJ(12)
       REAL BINMAX
       integer bc,i
-\XIOBUF
-\XUNITS
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
 
 1     FORMAT('[',f8.3,2(1x,f8.3),']')
 2     FORMAT('Figure of merit = ',f6.2,A)

@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:11  rich
+C New CRYSTALS repository
+C
+C Revision 1.9  2003/03/05 16:53:18  rich
+C Removed dynamic arrays from weighting routine. There is no way all reflections
+C can be held in memory for large structures. Stack overflows.
+C The Sheldrick weights now use multiple passes of L6 to calculate best fits.
+C
 C Revision 1.8  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -44,7 +52,7 @@ C
       PARAMETER (NPROC4=3)
       DIMENSION IPROC4(NPROC4)
 C
-\XUNITS
+      INCLUDE 'XUNITS.INC'
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
 C--CHECK IF WE SHOULD RETURN
@@ -81,3 +89,4 @@ C--'#TITLE' INSTRUCTION
       RETURN
       END
 C
+

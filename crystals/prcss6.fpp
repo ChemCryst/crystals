@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:08  rich
+C New CRYSTALS repository
+C
+C Revision 1.11  2003/09/17 14:38:11  rich
+C Thetabs call inserted just slightly in the wrong place. Fixed.
+C
 C Revision 1.10  2003/09/05 19:28:58  djw
 C Spherical absorption corection Directive
 C
@@ -56,11 +62,11 @@ CODE FOR XPRC06
       SUBROUTINE XPRC06
 C--MAIN ROUTINE TO CONTROL THE PROCESSING OF LIST 6
 
-\ISTORE
-\STORE
-\XUNITS
-\XLST50
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'QSTORE.INC'
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)

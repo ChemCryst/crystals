@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2005/01/07 11:56:53  rich
+C Add some blank lines between some #if and #endifs.
+C
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:09  rich
+C New CRYSTALS repository
+C
+C Revision 1.51  2004/11/23 15:12:21  stefan
+C 1. A crysedit directied had one more & and # than it should have had.
+C
 C Revision 1.50  2004/11/11 15:54:14  rich
 C Add ZERR line to PLATON output.
 C
@@ -168,14 +180,14 @@ C    APPROPRIATE LINK ROUTINE TO THE PROGRAM.
 C
 C
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XOPVAL
-\XUNITS
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       DATA ICOMSZ / 3 /
 C
@@ -255,32 +267,32 @@ C----- FOR CSD & MOL2
       CHARACTER*2 CBONDS(9)
 
 C
-\ISTORE
-\ICOM31
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM31.INC'
 C
-\STORE
-\XUNITS
-\XSSVAL
-\XCOMPD
-\XCONST
-\XLST01
-\XLST02
-\XLST03
-\XLST05
-\XLST06
-\XLST13
-\XLST29
-\XLST31
-\XLST40
-\XLST41
-\XOPVAL
-\XERVAL
-\XIOBUF
-\XCARDS
-\CAMBLK
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XLST31.INC'
+      INCLUDE 'XLST40.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'CAMBLK.INC'
 C
-\QSTORE
-\QLST31
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST31.INC'
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD, 10:MOL2
@@ -353,7 +365,7 @@ C --        CONVERT ANGLES TO DEGREES.
             CALL XFAL29
         ELSE IF (LSTNUM .EQ. 31) THEN
 C--         LOAD LIST 31 FROM DISC
-\IDIM31
+      INCLUDE 'IDIM31.INC'
             CALL XLDLST(31,ICOM31,IDIM31,0)
             IF ( IERFLG .LT. 0 ) GO TO 9900
 C-----      SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
@@ -373,14 +385,18 @@ C-----      SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
 C
 1400  CONTINUE
 C----- OPEN THE OUTPUT DEVICES
-&PPC      CALL stuser
+#if defined(_PPC_) 
+      CALL stuser
+#endif
       IF (KLNKIO (ILINK) .LE. 0 ) GOTO 9900
-&PPC      CALL stcrys
+#if defined(_PPC_) 
+      CALL stcrys
 C
 C
 C            SNOOPI, CAMERON, SHELXS86,
 C            MULTAN, SIR88,   SIR92,
 C            SIR97,  PLATON,  CSD,   MOL2
+#endif
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,
      2       1900,   1860,    1870,  1880 ), ILINK
@@ -395,11 +411,21 @@ C
      2
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
-&PPC      WRITE ( NCFPU1 ,  '(''CRUSE:SNOOPI.L5'')' )
-&VAX      WRITE ( NCFPU1 ,  '(''USER:SNOOPI.L5'')' )
-&DOS      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
-&H-P      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
-&CYB      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
+#if defined(_PPC_) 
+      WRITE ( NCFPU1 ,  '(''CRUSE:SNOOPI.L5'')' )
+#endif
+#if defined(_VAX_) 
+      WRITE ( NCFPU1 ,  '(''USER:SNOOPI.L5'')' )
+#endif
+#if defined(_DOS_) 
+      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
+#endif
+#if defined(_H_P_) 
+      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
+#endif
+#if defined(_CYB_) 
+      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
+#endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
       DO 16190 IND1=L2P,M2P,3
         DO 16180 IND2=L2,M2,MD2
@@ -454,16 +480,36 @@ C
      2
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
-&PPC      WRITE ( NCFPU1 ,  '(''CRUSE:CAMERON.L5I'')' )
-&VAX      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&DOS      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&DVF      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&LIN      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&GIL      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&WXS      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&GID      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&H-P      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-&CYB      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#if defined(_PPC_) 
+      WRITE ( NCFPU1 ,  '(''CRUSE:CAMERON.L5I'')' )
+#endif
+#if defined(_VAX_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_DOS_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_DVF_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_LIN_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_GIL_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_WXS_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_GID_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_H_P_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
+#if defined(_CYB_) 
+      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+#endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
       DO 26190 IND1=L2P,M2P,3
         DO 26180 IND2=L2,M2,MD2
@@ -1563,9 +1609,11 @@ C----- SNOOPI - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C -- SPAWN SNOOPI
-&PPCCS***
-&PPC      CALL stsnpi
-&PPCCE***
+#if defined(_PPC_) 
+CS***
+      CALL stsnpi
+CE***
+#endif
       CALL XDETCH ( '$ @ CRSNOOPI:SNOOPI' )
       GOTO 9000
 C
@@ -1574,23 +1622,31 @@ C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C - Only GID, GIL and DOS support Cameron's graphics.
-####GILGIDDOSWXS        GOTO 9000 !Skip this Cameron part.
+#if !defined(_DOS_) && !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+        GOTO 9000 !Skip this Cameron part.
 
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
 C      IF (ISSTML .EQ. 4) THEN
+#endif
         LCLOSE = .FALSE.
 C - Only GID needs funny text strings to initialise the graphics.
 C - Could move these to ZCAMER.
 
-&&&GIDGILWXS        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
-&&&GIDGILWXS        CALL ZMORE(CHARTC,0)
-&&&GIDGILWXS        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
-&&&GIDGILWXS        CALL ZMORE(CHARTC,0)
-&&&GIDGILWXS        WRITE(CHARTC,'(A)') '^^CW'
-&&&GIDGILWXS        CALL ZMORE(CHARTC,0)
-&&GIDGIL        CALL ZCAMER ( 1, 0 , 0 , 0)
-&&DOSWXS        CALL ZCAMER ( 1, 0 , 0 , 0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
+        CALL ZMORE(CHARTC,0)
+        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
+        CALL ZMORE(CHARTC,0)
+        WRITE(CHARTC,'(A)') '^^CW'
+        CALL ZMORE(CHARTC,0)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+        CALL ZCAMER ( 1, 0 , 0 , 0)
+#endif
+#if defined(_DOS_) || defined(_WXS_) 
+        CALL ZCAMER ( 1, 0 , 0 , 0)
 
+#endif
 8025  CONTINUE
         IF (LCLOSE) THEN
             GOTO 9000 !Cameron has shutdown
@@ -1598,8 +1654,12 @@ C - Could move these to ZCAMER.
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
         WRITE(CHRBUF,'(256A1)')LCMAGE
-&&GIDGIL         CALL ZCONTR
-&&DOSWXS         CALL ZCONTR
+#if defined(_GID_) || defined(_GIL_) 
+         CALL ZCONTR
+#endif
+#if defined(_DOS_) || defined(_WXS_) 
+         CALL ZCONTR
+#endif
       GOTO 8025
 
 8030  CONTINUE
@@ -1637,7 +1697,9 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DETECTED
-&PPC      CALL stcrys
+#if defined(_PPC_) 
+      CALL stcrys
+#endif
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
       CALL XERHND ( IERWRN )
@@ -1655,10 +1717,10 @@ C      ILINK - THPE OF FOREIGN PROGRAM
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
 C
-\XUNITS
-\XSSVAL
-\XOPVAL
-\XERVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XERVAL.INC'
 C
       DATA CFILE / 'SNOOPI.INI' ,  'SNOOPI.L5' ,
      1             'SHELXS.INS' ,  'SIRDATA.DAT',
@@ -1719,8 +1781,17 @@ C
 C
 1000  CONTINUE
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
-##WXSGIL     1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
-&&WXSGIL     1 CFILE(IFILE)(1:LFILE(IFILE)),
+
+#if !defined(_GIL_) && !defined(_WXS_)
+
+     1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
+
+#else
+
+     1 CFILE(IFILE)(1:LFILE(IFILE)),
+
+#endif
+
      2 LPATH+LFILE(IFILE))
 C------ EXIT ON ERROR
       IF (IERFLG .LE. 0) GOTO 9900
@@ -1960,26 +2031,26 @@ C
       CHARACTER *1  LATTYP(7)
 C
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
       DIMENSION LISTS( 6 ), JFRN1(4), JFRN2(4)
 C
-\STORE
-\XUNITS
-\XSSVAL
-\XCOMPD
-\XCONST
-\XLST01
-\XLST02
-\XLST03
-\XLST06
-\XLST13
-\XLST29
-\XERVAL
-\XOPVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       DATA NLISTS / 6 /
       DATA LISTS(1) / 1 /, LISTS(2) / 2 /, LISTS(3) / 3 /,
@@ -2154,17 +2225,17 @@ CODE FOR GROWFR
 C To be called from a routine that has L5 already loaded, and doesn't
 C care if we extend it. L40 should also be loaded as bonds will be calculated. 
       CHARACTER *18 CLAB, CLAB2
-\XLST05
-\XIOBUF
-\XUNITS
-\STORE
-\ISTORE
-\XDSTNC
-\XLST12
-\XLST40
-\XLST41
-\XCONST
-\QSTORE
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'XDSTNC.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST40.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'QSTORE.INC'
 
       LLATVC = LATVC
       NNATVC = NATVC

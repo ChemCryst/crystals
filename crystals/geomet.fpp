@@ -1,4 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:09  rich
+C New CRYSTALS repository
+C
+C Revision 1.5  2001/12/14 14:44:30  Administrator
+C
+C DJW Combine TLS amd MOLAX into new module GEOEMTRY. This enables angles
+C beween plane normals (etc) and libration axes to be computed.  Add code
+C to enable TLS restaints to be generated, and to enable the user to
+C modify the T and L tensors
+C
 C Revision 1.4  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -25,7 +35,7 @@ C
 CODE FOR XGEOM
       SUBROUTINE XGEOM
 C--CONTROL ROUTINE FOR GEOMETRICAL CALCULATIONS
-\XUNITS
+      INCLUDE 'XUNITS.INC'
 C
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
@@ -64,3 +74,4 @@ C--'#TITLE' INSTRUCTION
       CALL XRCN
       RETURN
       END
+

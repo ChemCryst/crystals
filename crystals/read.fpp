@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:08  rich
+C New CRYSTALS repository
+C
+C Revision 1.49  2004/02/25 10:02:11  stefan
+C Removed gui output not GILGIDWXS versions
+C
 C Revision 1.48  2004/02/18 12:08:23  rich
 C Added option \SET TIME SLOW which prevents output of DATE and TIME strings.
 C This is to be used by the new test_suite so that runs at different times
@@ -294,23 +303,23 @@ C
 C
       LOGICAL LPRMPT
 C
-\TRDDAT
+      INCLUDE 'TRDDAT.INC'
 C
-\UFILE
-\XRDDAT
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
-\XSYSHF
-\XLISTI
-\XERVAL
-\XIOBUF
-\XGUIOV
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XRDDAT.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XSYSHF.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XGUIOV.INC'
 CDJW DEC 99 ADD GLOBAL SCRIPT VARIABLES SO WE CAN GET 'VERIFY'
-\XSCGBL
-\XSCCHK
-\XMENUC
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XSCCHK.INC'
+      INCLUDE 'XMENUC.INC'
 C
 C
 C
@@ -350,26 +359,36 @@ C
       IF ( LPRMPT ) THEN
         IRDLIN = 0
         IF (ITYPFL .EQ. 1 .AND. NCRU .EQ. 5)  THEN
-###GIDGILWXS          CALL XPRMPT ( NCVDU , '!' )
-&&&GIDGILWXS          WRITE(CMON,'(A)')
-&&&GIDGILWXS     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
-&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
-&&&GIDGILWXS          WRITE(CMON,'(A)')
-&&&GIDGILWXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
-&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
-&&&GILGIDWXS1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&&&GILGIDWXS          WRITE (CMON,1515) '''Enter Commands'''
-&&&GILGIDWXS          CALL XPRVDU (NCVDU,1,0)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+          CALL XPRMPT ( NCVDU , '!' )
+#else
+          WRITE(CMON,'(A)')
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+     1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE(CMON,'(A)')
+     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=SELECTATOM ]'
+          CALL XPRVDU(NCVDU,1,0)
+1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+          WRITE (CMON,1515) '''Enter Commands'''
+          CALL XPRVDU (NCVDU,1,0)
+#endif
         ELSE
-###GIDGILWXS          CALL XPRMPT ( NCVDU , '>' )
-&&&GIDGILWXS          WRITE(CMON,'(A)')
-&&&GIDGILWXS     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
-&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
-&&&GIDGILWXS          WRITE(CMON,'(A)')
-&&&GIDGILWXS     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
-&&&GIDGILWXS          CALL XPRVDU(NCVDU,1,0)
-&&&GILGIDWXS          WRITE (CMON,1515) '''Enter Directives'''
-&&&GILGIDWXS          CALL XPRVDU (NCVDU,1,0)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+          CALL XPRMPT ( NCVDU , '>' )
+#else
+          WRITE(CMON,'(A)')
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+     1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE(CMON,'(A)')
+     1     '^^CO SAFESET [ MODEL01 MOUSEACTION=APPENDATOM ]'
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE (CMON,1515) '''Enter Directives'''
+          CALL XPRVDU (NCVDU,1,0)
+#endif
         ENDIF
 C If in script mode, set flag.
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
@@ -382,7 +401,9 @@ C If in script mode, set flag.
         END IF
 C Update status information for GUI.
 
-&&&GILGIDWXS        IF (ISSTML .EQ. 4) CALL MENUUP
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+        IF (ISSTML .EQ. 4) CALL MENUUP
+#endif
       ENDIF
 
       IF ( IRDFND(IFLIND) .GT. 0 ) THEN
@@ -391,12 +412,14 @@ C Update status information for GUI.
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
 
-&&&GIDGILWXS      IF ( NCRU .EQ. 5 ) THEN
-&&&GIDGILWXS      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
-&&&GIDGILWXS      CALL XPRVDU(NCVDU,1,0)
-&&&GIDGILWXS      END IF
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      IF ( NCRU .EQ. 5 ) THEN
+      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
+      CALL XPRVDU(NCVDU,1,0)
+      END IF
 
 C
+#endif
       IF ( ISTAT .LT. 0 ) GO TO 9910
       IF ( ISTAT .EQ. 0 ) GO TO 3000
 C
@@ -602,16 +625,18 @@ C
       CHARACTER*(*) CLINE
       CHARACTER *1 CDOLAR
       CHARACTER *2 CTRAN1 , CTRAN2
-&PPCCS***
-&PPC      CHARACTER*80 theLine
-&PPCCE***
+#if defined(_PPC_) 
+CS***
+      CHARACTER*80 theLine
+CE***
 C
 C
-\XUNITS
-\XSSVAL
-\XGUIOV
-\UFILE
-\XIOBUF
+#endif
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XGUIOV.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA  CTRAN2 / '#?' /, CDOLAR /'$'/
@@ -624,63 +649,83 @@ C----- INITIALISE BUFFER
       CLINE = ' '
       KRDLIN = 1
 C
-&PPCCS*** For any event driven system we have to hook in to respond to
-&PPCC**** some events (menu, high-level or keypress). The called routine
-&PPCC**** will give us back the next command in a variable theLine,
-&PPCC**** which is copied then.
-&PPCC**** 12.11.1995 Ludwig Macko
-&PPCC****
-&PPC      IF ( IUNIT .EQ. 5 ) THEN
-&PPC        CALL resetcursor
-&PPC        CALL SETSTA( 'Crystals' )
-&PPC        CALL nextlineofcommand( IOS, %LOC(theLine) )
-&PPC        CLINE = theLine
-&PPC      ELSE
-&PPCCE***
+#if defined(_PPC_) 
+CS*** For any event driven system we have to hook in to respond to
+C**** some events (menu, high-level or keypress). The called routine
+C**** will give us back the next command in a variable theLine,
+C**** which is copied then.
+C**** 12.11.1995 Ludwig Macko
+C****
+      IF ( IUNIT .EQ. 5 ) THEN
+        CALL resetcursor
+        CALL SETSTA( 'Crystals' )
+        CALL nextlineofcommand( IOS, %LOC(theLine) )
+        CLINE = theLine
+      ELSE
+CE***
 C&PPCCE***
 
+#endif
       IF (IUNIT .EQ. NCUFU(1)) THEN
 C If in script mode, set flag.
-&&GILGID        INSTRC = .FALSE.
-&&GILGID        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-&&GILGID          INSTRC = .TRUE.
-&WXS        INSTRC = .FALSE.
-&WXS        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-&WXS          INSTRC = .TRUE.
+#if defined(_GID_) || defined(_GIL_) 
+        INSTRC = .FALSE.
+        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+          INSTRC = .TRUE.
+#endif
+#if defined(_WXS_) 
+        INSTRC = .FALSE.
+        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+          INSTRC = .TRUE.
 c&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
 c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 
-&&GILGID        END IF
-&WXS        END IF
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+        END IF
+#endif
+#if defined(_WXS_) 
+        END IF
 
-&&GILGIDC Update status information for UI.
-&&GILGID            CALL MENUUP
-&WXS            CALL MENUUP
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+C Update status information for UI.
+            CALL MENUUP
+#endif
+#if defined(_WXS_) 
+            CALL MENUUP
+#endif
             CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
-&&GILGID        IF ( INSTRC ) THEN
-&&GILGID          WRITE (CMON,1515) '''Crystals Script Mode'''
-&&GILGID          CALL XPRVDU (NCVDU,1,0)
-&&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&&GILGID        END IF
+#if defined(_GID_) || defined(_GIL_) 
+        IF ( INSTRC ) THEN
+          WRITE (CMON,1515) '''Crystals Script Mode'''
+          CALL XPRVDU (NCVDU,1,0)
+1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+        END IF
 
-&WXS        IF ( INSTRC ) THEN
-&WXS          WRITE (CMON,1515) '''Crystals Script Mode'''
-&WXS          CALL XPRVDU (NCVDU,1,0)
-&WXS1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&WXS        END IF
+#endif
+#if defined(_WXS_) 
+        IF ( INSTRC ) THEN
+          WRITE (CMON,1515) '''Crystals Script Mode'''
+          CALL XPRVDU (NCVDU,1,0)
+1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+        END IF
 
+#endif
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
       ENDIF
 
 1015  FORMAT ( A )
 1002  CONTINUE
-&PPCCS***
-&PPC      ENDIF
-&PPCCE***
+#if defined(_PPC_) 
+CS***
+      ENDIF
+CE***
 C
+#endif
       LENUSE = 0
       DO 1100 I = 1 , LEN ( CLINE )
         IF ( CLINE(I:I) .NE. ' ' ) LENUSE = I
@@ -819,32 +864,33 @@ C
       DIMENSION PAUSE(1), IDEV(4)
 C
       DIMENSION KEYUSE(8)
+      LOGICAL WEXIST
 C
       CHARACTER *1  CFILE
       CHARACTER *256 CCMND
       CHARACTER *256 CUFILE, CRFILE
 C
-\XSTR11
-\TDVNAM
-\TRDDAT
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'TDVNAM.INC'
+      INCLUDE 'TRDDAT.INC'
 C
 C
 C
 C
-\TSSCHR
-\UFILE
-\XDVNAM
-\XRDDAT
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
-\XSYSHF
-\XERVAL
-\XOPVAL
-\XIOBUF
-\XDISCS
-\XSSCHR
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XDVNAM.INC'
+      INCLUDE 'XRDDAT.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XSYSHF.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XSSCHR.INC'
 C
       DATA IPAUSE / 1 / , IHELP  /  2 / , ISET   /  3 / , IATTCH /  4 /
       DATA IOPEN  / 5 / , IRELES /  6 / , IUSE   /  7 / , IMANUL /  8 /
@@ -1042,11 +1088,22 @@ C
         ELSE IF ( ISYSIN .EQ. ISCRIP ) THEN
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            CSCPDV(1:LSCPDV) , CSCPEX(1:LSCPEX) , CRFILE , N )
-&GILC FORCE all #SCRIPT arguments to lowercase - all other files can
-&GILC mixed case, but all script must be lower. This is for compatibility
-&GILC with existing script calls in scripts which are usually uppercase.
-&GIL       CUFILE = CRFILE
-&GIL       CALL XCCLWC ( CUFILE, CRFILE )      
+#if defined(_GIL_) 
+C FORCE all #SCRIPT arguments to lowercase - all other files can
+C mixed case, but all script must be lower. This is for compatibility
+C with existing script calls in scripts which are usually uppercase.
+          CUFILE = CRFILE
+          CALL XCCLWC ( CUFILE, CRFILE )
+          CALL MTRNLG(CRFILE,'OLD',ILENG)
+          INQUIRE(FILE=CRFILE(1:ILENG),EXIST=WEXIST)
+          IF(.NOT.WEXIST) THEN
+            CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
+     2           '' , CSCPEX(1:LSCPEX) , CRFILE , N )
+            CUFILE = CRFILE
+            CALL XCCLWC ( CUFILE, CRFILE )
+            CALL MTRNLG(CRFILE,'OLD',ILENG)
+          END IF
+#endif
         ELSE
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            ' ' ,              ' ' ,              CRFILE , N )
@@ -1342,12 +1399,12 @@ C      +VE         ARGUMENT FOUND SUCCESSFULLY. THE VALUE IS THE LENGTH
 C                    OF THE ARGUMENT. 'NC' AND 'ND' POINT TO THE ENDS
 C                    OF THE ARGUMENT.
 C
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
-\XERVAL
-\XIOBUF
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 
       DATA KQUOT /'"'/
 C
@@ -1520,15 +1577,15 @@ C
 C
 C
 C
-\UFILE
-\XUNITS
-\XSSVAL
-\XCARDS
-\XLISTI
-\XERVAL
-\XOPVAL
-\XIOBUF
-\XGUIOV
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XGUIOV.INC'
 C
       DATA LFNC /8/, NFNC /20/, LUFNC /4/
 C
@@ -1940,13 +1997,13 @@ C
 C
 C
 C
-\UFILE
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
-\XERVAL
-\XIOBUF
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
 C
@@ -2160,27 +2217,31 @@ C
 C
       DIMENSION JDEV(4)
 C
-\TSSCHR
+      INCLUDE 'TSSCHR.INC'
 C
-\UFILE
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
-\XERVAL
-\XOPVAL
-\XSSCHR
-&PPCCO***
-&PPC\XDISCS
-\XIOBUF
-&PPC\CFLDAT
-&PPCC
-&PPC      CHARACTER*31  theName
-&PPC      INTEGER       MYLENGTH
-&PPC      INTEGER*2     theLength
-&PPCCE***
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+#if defined(_PPC_) 
+CO***
+\XDISCS
+#endif
+      INCLUDE 'XIOBUF.INC'
+#if defined(_PPC_) 
+\CFLDAT
+C
+      CHARACTER*31  theName
+      INTEGER       MYLENGTH
+      INTEGER*2     theLength
+CE***
 C
 CDJWMAR99[
+#endif
       DATA COPER / ' output sent to ', ' connected to ', 'closed', 
      1 ' appended to '/
       DATA CRESLT / 'released ' , 'opened ' , 'closed '
@@ -2297,20 +2358,27 @@ CDJWMAR99
             ENDIF
           ENDIF
         ENDIF
-&PPCCS***
-&PPC        IF ( IDEV .EQ. NCDFU ) THEN
-&PPC           DISKOP = 0
-&PPC           ISTAT = KDUMP( IN )
-&PPC           IF ( ISTAT .LT. 0 ) CALL XERHND ( IERSEV )
-&PPC           CALL SETNAM ( ' ', 1 )
-&PPC        ENDIF
-&PPCCE***
+#if defined(_PPC_) 
+CS***
+        IF ( IDEV .EQ. NCDFU ) THEN
+           DISKOP = 0
+           ISTAT = KDUMP( IN )
+           IF ( ISTAT .LT. 0 ) CALL XERHND ( IERSEV )
+           CALL SETNAM ( ' ', 1 )
+        ENDIF
+CE***
+#endif
         ISTAT = KFLCLS ( IDEV )
       ELSE
         IF ( IACCSS .EQ. 2 ) THEN
-#PPC          IF ( ISSINI .LE. 0 ) THEN
-&PPCCP***          IF ( ISSINI .LE. 0 ) THEN
-&PPC          IF ( ISSINI .LE. 0 .AND. DISKOP .GT. 0) THEN
+#if !defined(_PPC_) 
+          IF ( ISSINI .LE. 0 ) THEN
+#else
+CP***          IF ( ISSINI .LE. 0 ) THEN
+#endif
+#if defined(_PPC_) 
+          IF ( ISSINI .LE. 0 .AND. DISKOP .GT. 0) THEN
+#endif
             GO TO 9960
           ENDIF
         ENDIF
@@ -2358,19 +2426,26 @@ C----- GENERATE NAME IF NECESSARY - NOT FOR D/A FILES
        ISTAT = KFLOPN ( IDEV, NEWFIL, ISTTUS, IRWOPN, IFORMT, ISSSEQ )
        IF ( ISTAT .LE. 0 ) GO TO 9980
       ELSE IF ( IACCSS .EQ. 2 ) THEN
-&PPC      IF ( IDEV .EQ. NCDFU ) THEN
-&PPC       CALL transferdiscname( %loc(theName) , theLength )
-&PPC       MYLENGTH = theLength
-&PPC       CALL SETNAM ( theName, MYLENGTH )
-&PPC      ENDIF
+#if defined(_PPC_) 
+      IF ( IDEV .EQ. NCDFU ) THEN
+       CALL transferdiscname( %loc(theName) , theLength )
+       MYLENGTH = theLength
+       CALL SETNAM ( theName, MYLENGTH )
+      ENDIF
+#endif
        ISTAT = KDAOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI )
 
-#PPC      IF ( ISTAT .LT. 0 ) GO TO 9980
-&PPC      IF ( ISTAT .LT. 0 ) THEN
-&PPC        GO TO 9980
-&PPC      ELSE
-&PPC        IF ( IDEV .EQ. NCDFU ) DISKOP = 1
-&PPC      ENDIF
+#if !defined(_PPC_) 
+      IF ( ISTAT .LT. 0 ) GO TO 9980
+#else
+      IF ( ISTAT .LT. 0 ) THEN
+#endif
+#if defined(_PPC_) 
+        GO TO 9980
+      ELSE
+        IF ( IDEV .EQ. NCDFU ) DISKOP = 1
+      ENDIF
+#endif
       ENDIF
 C
 
@@ -2395,30 +2470,34 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       ENDIF
 CRICFEB01[
 2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
-&&GIDGIL      IF ( IDEV .EQ. NCPU ) THEN
-&&GIDGIL        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
-&&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
-&&GIDGIL      ELSE IF ( IDEV .EQ. NCWU ) THEN
-&&GIDGIL        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
-&&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
-&&GIDGIL      ELSE IF ( IDEV .EQ. NCLU ) THEN
-&&GIDGIL        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
-&&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
-&&GIDGIL      ENDIF
-&WXS      IF ( IDEV .EQ. NCPU ) THEN
-&WXS        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
-&WXS        CALL XPRVDU ( NCVDU, 1, 0 )
-&WXS      ELSE IF ( IDEV .EQ. NCWU ) THEN
-&WXS        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
-&WXS        CALL XPRVDU ( NCVDU, 1, 0 )
-&WXS      ELSE IF ( IDEV .EQ. NCLU ) THEN
-&WXS        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
-&WXS        CALL XPRVDU ( NCVDU, 1, 0 )
-&WXS      ENDIF
+#if defined(_GID_) || defined(_GIL_) 
+      IF ( IDEV .EQ. NCPU ) THEN
+        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ELSE IF ( IDEV .EQ. NCWU ) THEN
+        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ELSE IF ( IDEV .EQ. NCLU ) THEN
+        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ENDIF
+#endif
+#if defined(_WXS_) 
+      IF ( IDEV .EQ. NCPU ) THEN
+        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ELSE IF ( IDEV .EQ. NCWU ) THEN
+        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ELSE IF ( IDEV .EQ. NCLU ) THEN
+        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ENDIF
 CRICFEB01]
 CDJWMAR99]
 C
 C
+#endif
       IFLOPN(IFIND) = 1
       GOTO 9010
 C
@@ -2555,12 +2634,12 @@ C
 C
 C
 C
-\XUNITS
-\XSSVAL
-\XDISCS
-\XCARDS
-\XERVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA LFNC / 1 / , NFNC / 6 /
@@ -2688,7 +2767,7 @@ C
       PARAMETER ( ISSDIM = 38 )
 C----- ICDDIM = 2 * NWK, IN COMMON BLOCK XLEXCH
       PARAMETER (ICDDIM  = 28 )
-\PLSTHN
+      INCLUDE 'PLSTHN.INC'
       PARAMETER ( NUNITS = 29 )
       PARAMETER ( NTAPES = 6 )
       PARAMETER ( NDISCS = 4 )
@@ -2712,25 +2791,25 @@ C
       DIMENSION ISSLEN(NSSLEN)
 C
 C
-\TRDDAT
-\TDVNAM
-\TSSCHR
+      INCLUDE 'TRDDAT.INC'
+      INCLUDE 'TDVNAM.INC'
+      INCLUDE 'TSSCHR.INC'
 C
-\XUNITS
-\XSSVAL
-\XRDDAT
-\XERVAL
-\XOPVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XRDDAT.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
 C
 C
-\XAPK
-\XLSTHN
-\XTAPES
-\XDISCS
-\UFILE
-\XDVNAM
-\XSSCHR
-\XIOBUF
+      INCLUDE 'XAPK.INC'
+      INCLUDE 'XLSTHN.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XDVNAM.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       EQUIVALENCE ( ISSBLK(1) , ISSISS )
@@ -3033,13 +3112,13 @@ C
 C
 C
 C
-\XLST50
-\XCARDS
-\XCHARS
-\XLISTI
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA IDIMCX / 4 /
@@ -3105,11 +3184,11 @@ C
       DIMENSION ICONTX(4)
 C
 C
-\XCARDS
-\XCHARS
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
 C
@@ -3195,11 +3274,11 @@ C
       LOGICAL SPEC , SINGLE , WILD
 C
 C
-\XUNITS
-\XSSVAL
-\XCARDS
-\XCHARS
-\XERVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XERVAL.INC'
 C
       DATA MAXCX / 4 /
 C
@@ -3288,19 +3367,19 @@ C -- IF AN INSTRUCTION NAME IS FOUND, 'XLL50R' IS CALLED TO LOAD THE
 C    DIRECTIVE DETAILS FOR THIS INSTRUCTION
 C
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XLST50
-\XCARDS
-\XCHARS
-\XUNITS
-\XSSVAL
-\XERVAL
-\XLSVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XLSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       LENGTH = ND - NC + 1
@@ -3363,15 +3442,15 @@ C
       DIMENSION ICOMN(100)
 C
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       DATA IDIMN / 100 /
@@ -3409,15 +3488,15 @@ C    POSSIBLE PARAMETER NAME. IF IT IS A VALID PARAMETER NAME,
 C    'ICONTX' IS SET TO THE APPROPRIATE PARAMETER NUMBER. IF NOT
 C    ICONTX IS SET TO 0
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
 C
@@ -3453,16 +3532,16 @@ C    ICONTX IS SET TO 0
 C
 C
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XCONST
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
 C
@@ -3542,17 +3621,17 @@ C
       CHARACTER*21 CPTYPE(4)
 C
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XLST50
-\XSYSHF
-\XCHARS
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XSYSHF.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
 C
@@ -3705,15 +3784,15 @@ C
 C
       CHARACTER*14 CDTYPE(4)
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XUNITS
-\XSSVAL
-\XCHARS
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       DATA CDTYPE(1) /'instruction(s)'/ , CDTYPE(2) /'directive(s)  '/
       DATA CDTYPE(3) /'parameter(s)  '/ , CDTYPE(4) /'input value(s)'/
@@ -3786,10 +3865,10 @@ C--
 C
       CHARACTER CFORM *6, CIMAGE*80
 C
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
 C
 C
       DATA CFORM / '(80A1)' /
@@ -3845,13 +3924,13 @@ C--
 C
       CHARACTER CLINE*(*)
 C
-\XCARDS
-\XUNITS
-\XSSVAL
-\XCHARS
-\UFILE
-\XERVAL
-\XIOBUF
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA I / 0 /
@@ -3942,14 +4021,14 @@ C----- STORE THE SYSTEM REQUEST QUEUE
 C      IADD  ADDRESS IN ISTORE FOR START OF QUEUE
 C      NSRQ  NO OF REQUESTS IN QUEUE
 C
-\ISTORE
-\STORE
-\XUNITS
-\XSSVAL
-\XLISTI
-\XCHARS
-\XCARDS
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'QSTORE.INC'
 C
 C----- CHECK IF THERE ARE ANY REQUESTS OUTSTANDING
       NSRQ = 0
@@ -3982,14 +4061,14 @@ C----- RESTORE THE SYSTEM REQUEST QUEUE
 C      IADD  ADDRESS IN ISTORE FOR START OF QUEUE
 C
       CHARACTER CFORM *6, CIMAGE*80
-\ISTORE
-\STORE
-\XUNITS
-\XSSVAL
-\XLISTI
-\XCHARS
-\XCARDS
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'QSTORE.INC'
       DATA CFORM / '(20A4)' /
 C
 C----- CHECK IF THERE ARE ANY REQUESTS OUTSTANDING
@@ -4008,7 +4087,7 @@ CODE FOR XRPSRQ
 C--REPOSITION THE SYSTEM REQUEST QUEUE
 C
 C
-\XCARDS
+      INCLUDE 'XCARDS.INC'
 C
 C
       DATA I/0/
@@ -4032,7 +4111,7 @@ C
       DIMENSION IDIR(LDIR,NDIR)
       DIMENSION ITEXT(80)
 C
-\XCARDS
+      INCLUDE 'XCARDS.INC'
       M = ND - NC
       CALL XMOVE (IMAGE(NC), ITEXT(1), M)
       I = KCHKDS (ITEXT(1), M, NWDIR, IDIR, NDIR, LDIR)
@@ -4072,12 +4151,12 @@ C
       DIMENSION ITEXT(M)
       DIMENSION IDIR(LDIR,NDIR)
 C
-\XCHARS
-\XLISTI
-\XCARDS
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
 C----- COMPUTE THE USEFUL LENGTH
@@ -4137,12 +4216,12 @@ CODE FOR XMDCS
 C--MULTIPLY DEFINED CHARACTER STRING
 C
 C--
-\XLISTI
-\XCARDS
-\XUNITS
-\XSSVAL
-\XDIRTP
-\XIOBUF
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XDIRTP.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       CALL XMONTR(0)
 C--THE INPUT KEYWORD DEFINES MORE THAN ONE PROVIDED KEYWORD
@@ -4254,8 +4333,8 @@ C--
 C
       DIMENSION A(N)
 C
-\XCARDS
-\XCHARS
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
 C
 C
       DATA I/0/,M/0/
@@ -4400,8 +4479,8 @@ C  TO THE SPACE OR THE CHARACTER AFTER THE ',' DEPENDING ON THE
 C  TERMINATION CONDITION.
 C
 C--
-\XCARDS
-\XCHARS
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
 C
 C
       DATA I/0/,J/0/
@@ -4479,12 +4558,12 @@ CODE FOR XSPCH
       SUBROUTINE XSPCH
 C--PRINT OUT A MESSAGE FOR A SPURIOUS CHARACTER
 C
-\XCHARS
-\XCARDS
-\XLISTI
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA I/0/
@@ -4541,13 +4620,13 @@ C
 CDJW OUTPUT TO LISTING AND MONITOR FILES IS ENABLED EITHER BY ICAT 'ON'
 C    OR BY SCRIPT VERIFY 'TRUE'
 C--
-\XCARDS
-\XCHARS
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 CDJW DEC 99  SCRIPT GLOBALS TO ENABLE/DISABLE MONITORING
-\XSCGBL
+      INCLUDE 'XSCGBL.INC'
 C
 C -- CHECK IF THIS CARD HAS BEEN PRINTED BEFORE
       IF ( MON .EQ. NI ) RETURN
@@ -4615,7 +4694,7 @@ C--KEQUAL IS SET TO THE CHARACTER POSITION, OR -1 IF THE CHARACTER
 C  CANNOT BE FOUND
 C
 C--
-\XCARDS
+      INCLUDE 'XCARDS.INC'
 C
 C
       DATA I/0/
@@ -4648,7 +4727,7 @@ C--KNEQUL RETURNS SET TO THE POSITION OF THE FIRST CHARACTER NOT
 C  EQUAL TO 'IICHAR', OR ELSE TO -1.
 C
 C--
-\XCARDS
+      INCLUDE 'XCARDS.INC'
 C
 C
       DATA I/0/
@@ -4681,9 +4760,9 @@ C      NREF NUMBER OF REFLECTIONS
 C
       DOUBLE PRECISION ACC
       DIMENSION DV(NDV), A(NA)
-\XUNITS
-\XIOBUF
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C----- SAVE THE TIMER STATUS
       ITEMP = ISSTIM
@@ -4758,3 +4837,4 @@ C----- RESTORE THE TIMER STATUS
       ISSTIM = ITEMP
       RETURN
       END
+

@@ -1,12 +1,17 @@
 C $Log: not supported by cvs2svn $
-C Revision 1.97  2004/12/07 14:37:41  djw
-C Hydrogen bond D-A distance now in cif. esd not yet computed - use the value from the checkcif error !
+C Revision 1.4  2005/01/17 14:03:40  rich
+C Bring new repository into line with old (Remove esd from H atoms and report
+C angles to 1dp; Fix dps for H geom in CIF; Put H bond DA distance in CIF; reformat
+C SHELX weights for Clegg's sake).
 C
-C Revision 1.96  2004/12/03 15:01:24  djw
-C Fix number of decimal places for H geometry in CIF.  Still working on H-bonds!
+C Revision 1.3  2004/12/20 11:43:41  rich
+C Fix for WXS version.
 C
-C Revision 1.95  2004/12/02 16:55:10  djw
-C Remove esd from H atoms and report angles to one decimal place only
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:07  rich
+C New CRYSTALS repository
 C
 C Revision 1.94  2004/11/16 16:20:30  rich
 C Oops. Try writing valid FORTRAN.
@@ -401,26 +406,26 @@ C  3  /FC/ OR NOT USED
 C  4  PHASE OR NOT USED
 C
 C--
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCS
+      INCLUDE 'XPTCS.INC'
 C
-\XOPVAL
-\XWORK
-\XWORKA
-\XLISTI
-\XCONST
-\XUNITS
-\XSSVAL
-\XLST05
-\XLST06
-\XIOBUF
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XWORK.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\XLST01
-\QSTORE
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'QSTORE.INC'
 C
 C--READ THE CONTROL DIRECTIVES AND SET UP THE DEFAULT VALUES
       IN = 0
@@ -514,7 +519,9 @@ C--END OF THE REFLECTIONS  -  EXIT
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTRF .GT. 0 ) WRITE ( NCWU,'(A)' ) CHAR(12)
       ENDIF
-###GILGIDWXS      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      IF ( IPCHRF .GT. 0 ) WRITE ( NCPU ,'(A)' ) CHAR(12)
+#endif
 1720  CONTINUE
       CALL XOPMSG ( IOPPPR , IOPLSE , 6 )
       CALL XTIME2(2)
@@ -546,12 +553,12 @@ C
       DIMENSION PROCS(IPROCS)
 C
 C
-\TSSCHR
-\XPTCS
-\XWORKA
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'XPTCS.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       EQUIVALENCE (PROCS(1),NCOL)
@@ -597,8 +604,8 @@ C  1  END OF COLUMN
 C
 C--
 C
-\XPTCS
-\XWORKA
+      INCLUDE 'XPTCS.INC'
+      INCLUDE 'XWORKA.INC'
 C
       IDWZAP = IN
       JBLAS=0
@@ -624,15 +631,15 @@ C  0  OKAY
 C  1  END OF COLUMN
 C
 C--
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCS
-\XWORKA
-\XLST06
+      INCLUDE 'XPTCS.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XLST06.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       IDWZAP = IN
       JKLS=0
@@ -663,23 +670,23 @@ C
 C--THIS ROUTINE IS RESPONSIBLE FOR FETCHING THE NEXT REFLECTION
 C
 C--
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCS
-\XWORK
-\XWORKA
-\XUNITS
-\XSSVAL
-\XLST05
-\XLST06
-\XCONST
-\XERVAL
-\XIOBUF
+      INCLUDE 'XPTCS.INC'
+      INCLUDE 'XWORK.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       DATA IFO/'FO'/,IFC/'FC'/
@@ -760,28 +767,30 @@ CODE FOR SPRINT
 C--PRINT LIST 6P
 C
 C
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
       DIMENSION LINEA(120)
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCS
-\XWORKA
-\XUNITS
-\XSSVAL
-\XCHARS
+      INCLUDE 'XPTCS.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       JC=JA-LW
       JF=LW*NLIN
       IF (ISSPRT .EQ. 0) THEN
       IF( ILSTRF .GT. 0) WRITE(NCWU, '(A)') CHAR(12)
       ENDIF
-###GILGIDWXS      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      IF( IPCHRF .GT. 0) WRITE(NCPU, '(A)') CHAR(12)
 C--CLEAR THE PRINT LINE TO BLANKS
+#endif
       CALL XMVSPD(IB,LINEA(1),LSTX)
       JD=0
 C
@@ -839,7 +848,7 @@ C
       DIMENSION IH(7)
 C
 C
-\XPTCS
+      INCLUDE 'XPTCS.INC'
 C
 C
       DATA IH(1)/'H'/
@@ -869,17 +878,17 @@ CODE FOR SKL
       SUBROUTINE SKL(IN)
 C--FORM THE K L PARTIAL LINE
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
       DIMENSION IHKL(3)
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCS
-\XCHARS
-\XWORKA
+      INCLUDE 'XPTCS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XWORKA.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       DATA IHKL(1)/'K'/
@@ -907,13 +916,13 @@ CODE FOR SHFF
       SUBROUTINE SHFF(IN)
 C--FORM THE H,FO,FC,PHASE PARTIAL LINE
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCS
+      INCLUDE 'XPTCS.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       IND=ISTORE(IN+1)
       J=4
@@ -985,27 +994,27 @@ C
 C
 C
 C--
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCL
-\XWORKA
-\XCONST
-\XCHARS
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XLST23
-\XUNITS
-\XSSVAL
-\XAPK
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XAPK.INC'
 C
-\XOPVAL
-\QSTORE
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'QSTORE.INC'
 C
       DATA IPPSEP / 5 / , IPPNBT / 1 /
 C--READ THE INPUT DIRECTIVES
@@ -1069,9 +1078,11 @@ C
       IF (ISSPRT .EQ. 0) THEN
         IF(ILSTCO .GT. 0) WRITE(NCWU,'(A)')CHAR(12)
       ENDIF
-###GILGIDWXS      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      IF(IPCHCO .EQ. 1) WRITE(NCPU,'(A)')CHAR(12)
 C
 C----- OUTPUT THE OVERALL PARAMETERS
+#endif
       MCFUNC = 1
       CALL XPP5OV(MCFUNC)
 C----- OUTPUT THE TWIN SCALE PARAMETERS
@@ -1102,16 +1113,16 @@ C   0  ALL OKAY.
 C
 C--
 C
-\TSSCHR
+      INCLUDE 'TSSCHR.INC'
       PARAMETER (LPROCS = 27)
       DIMENSION PROCS(LPROCS)
 C
 C
-\XPTCL
-\XUNITS
-\XSSVAL
-\XWORKA
-\XIOBUF
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       EQUIVALENCE (PROCS(1),IFIR)
@@ -1174,12 +1185,15 @@ C    PARAMETERS. ISELCM AND TYPECM ARE THE VALUES DERIVED FROM THE
 C    COMMAND PROCESSOR.
 C    ISELRQ AND TYPERQ ARE THE VALUES THAT SHOULD BE PASSED TO XPP5CO
 C
-\XOPVAL
+      INCLUDE 'XOPVAL.INC'
 C
       EQUIVALENCE (IALATM,ALLATM)
       SAVE IALATM
-#HOL      DATA IALATM / '    ' /
-&HOL      DATA IALATM /4H     /
+#if !defined(_HOL_) 
+      DATA IALATM / '    ' /
+#else
+      DATA IALATM /4H     /
+#endif
       DATA IPPNBT / 1 / , IPPABT / 2 /
 C
       TYPERQ = TYPECM
@@ -1241,43 +1255,49 @@ C                         END OF PAGE.
 C
       CHARACTER CLINE *160, CTEM *4, CHTML*20, CSGRD*4, CTU*2, CP*1
       CHARACTER CASDA*4, CASDG*4
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
       DIMENSION LINEC(118), KDEV(4)
-\XPTCL
-\XWORKA
-\XCONST
-\XCHARS
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XLST23
-\XUNITS
-\XSSVAL
-\XAPK
-\XIOBUF
-\UFILE
-\XSSCHR
-\XFLAGS
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XAPK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XFLAGS.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       LOGICAL LHFIXD(3)
 C
       EQUIVALENCE (IALATM,ALLATM)
       SAVE IALATM
-#HOL      DATA IALATM / '    ' /
-&HOL      DATA IALATM /4H     /
+#if !defined(_HOL_) 
+      DATA IALATM / '    ' /
+#else
+      DATA IALATM /4H     /
+#endif
       SAVE KHYD 
-#HOL      DATA KHYD /'H   '/
-&HOL      DATA KHYD /4HH   /
+#if !defined(_HOL_) 
+      DATA KHYD /'H   '/
+#else
+      DATA KHYD /4HH   /
 C
 C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
+#endif
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 C -- SET INITIAL VALUES.
@@ -1431,9 +1451,12 @@ C
           J=J+NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
-###GILWXSLIN            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&&&GILWXSLIN            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+#else
+            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c            CALL XCRAS(CHTML,NHTML)
+#endif
             WRITE(NCPU,913)CHTML(1:)
 913         FORMAT('<TD>',A,'</TD>')
           END IF
@@ -1465,9 +1488,12 @@ C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
         CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
         IF (IPCHCO .EQ. 3) THEN  
-###GILWXSLIN          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&&&GILWXSLIN          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+#else
+          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
+#endif
           WRITE(NCPU,913)CHTML(1:)
         END IF
 cdjw99]
@@ -1485,9 +1511,12 @@ c            w = store(m5+2)*store(m5+13)
         endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
         IF (IPCHCO .EQ. 3) THEN  
-###LINGILWXS          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
-&&&LINGILWXS          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
+#else
+          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
+#endif
           WRITE(NCPU,913)CHTML(1:)//'</TR>'
         END IF
 C-C-C-SET OCC TO BE PRINTED ON SCREEN AFTER \PARAMETERS-COMMAND
@@ -1516,7 +1545,9 @@ C--END OF THE PAGE  -  START A NEW PAGE
         IF (ISSPRT .EQ. 0) THEN
           IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
         ENDIF
-###GILGIDWXS      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+#endif
         CALL STATX(LINEB)
         CALL STXYZ(LINEB)
         IF (ISSPRT .EQ. 0) THEN
@@ -1652,33 +1683,36 @@ C
       CHARACTER *160 CLINE
       CHARACTER *4 CTEM
       CHARACTER *20 CHTML
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCL
-\XWORKA
-\XCONST
-\XCHARS
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XUNITS
-\XSSVAL
-\XAPK
-\XIOBUF
-\UFILE
-\XSSCHR
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XAPK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (IALATM,ALLATM)
       SAVE IALATM
-#HOL      DATA IALATM / '    ' /
-&HOL      DATA IALATM /4H     /
+#if !defined(_HOL_) 
+      DATA IALATM / '    ' /
+#else
+      DATA IALATM /4H     /
 C
+#endif
 1450  FORMAT ( // , 2X , 118A1 )
 1460  FORMAT(15X,A6,6X,A4,8X,A5,7X,A5)
 1550  FORMAT ( 2X , 118A1 )
@@ -1775,8 +1809,11 @@ C--LOOP OVER THE PARAMETERS
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
 
       IF (IPCHCO .EQ. 3) THEN  
-###LINGILWXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&&&LINGILWXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+#else
+          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+#endif
           WRITE(NCPU,913)CHTML(1:)
 913       FORMAT('<TD>',A,'</TD>')
       END IF
@@ -1803,7 +1840,9 @@ C--NEW PAGE
       IF (ISSPRT .EQ. 0) THEN
       IF ( ILSTAN .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
       ENDIF
-###GILGIDWXS      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      IF ( IPCHAN .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
+#endif
       CALL STATX(LINEB)
       CALL STUIJ(LINEB)
       IF(MINX-MINU)2000,2100,2000
@@ -1919,28 +1958,28 @@ C
       CHARACTER *80 CFORM, CBUF
       CHARACTER *10 COVER(6)
       CHARACTER *32 CCIF(2)
-\TSSCHR
+      INCLUDE 'TSSCHR.INC'
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCL
-\XWORKA
-\XCONST
-\XCHARS
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XUNITS
-\XSSVAL
-\XOPK
-\XIOBUF
-\UFILE
-\XSSCHR
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       DATA COVER / 'Scale  ', 'Du(iso) ', 'Ou(iso) ',
      2  'Polarity', 'Flack  ', 'Extinction'/
@@ -1948,8 +1987,10 @@ C
       DATA CCIF /
      3      '_refine_ls_extinction_coef','_oxford_refine_ls_scale' /
 C
-####LINGILGIDWXS      IFUNC = IFUNC
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+      IFUNC = IFUNC
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
+#endif
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 C -- SET INITIAL VALUES.
@@ -2074,33 +2115,35 @@ C
       DIMENSION KDEV(4)
       CHARACTER *80 CLINE
       CHARACTER *80 CFORM, CBUF
-\TSSCHR
+      INCLUDE 'TSSCHR.INC'
 C
-\ISTORE
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCL
-\XWORKA
-\XCONST
-\XCHARS
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XUNITS
-\XSSVAL
-\XOPK
-\XIOBUF
-\UFILE
-\XSSCHR
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
 C
-####LINGILGIDWXS      IFUNC = IFUNC
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+      IFUNC = IFUNC
 
+#endif
       IF ( MD5ES .EQ. 0 ) RETURN
 
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
@@ -2198,25 +2241,25 @@ C      ISTART             START ADDRESS IN RECORD FOR FIRST VARIABLE
 C                        1 FOR OVERALL
 C                       -1 FOR ATOMS (ITEMS -1 AND 0 ARE TYPE AND SERIAL
 C
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCL
-\XWORKA
-\XCONST
-\XCHARS
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XUNITS
-\XSSVAL
-\XOPK
-\XIOBUF
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPK.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       JP = ISTART
       CALL XZEROF (BPD, 11)
@@ -2322,15 +2365,15 @@ C  'LF' IS THE FIRST FREE LOCATION  -  USED FOR WORK SPACE
 C  WORK SPACE IS NS*NS+2*NS
 C
 C--
-\TYPE11
-\ISTORE
+      INCLUDE 'TYPE11.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XSTR11
-\XERVAL
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'XERVAL.INC'
 C
-\QSTORE
-\QSTR11
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QSTR11.INC'
 C
 C--SET UP A FEW POINTERS
       N=LS
@@ -2412,7 +2455,7 @@ C
       DIMENSION IVET(118)
 C
 C
-\XCHARS
+      INCLUDE 'XCHARS.INC'
 C
 C
       CALL XARS(IND,IVET(J))
@@ -2432,8 +2475,8 @@ C
       DIMENSION IK(8)
 C
 C
-\XPTCL
-\XCHARS
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XCHARS.INC'
 C
 C
       DATA IK(1)/'A'/
@@ -2467,8 +2510,8 @@ C
       DIMENSION IK(3)
 C
 C
-\XPTCL
-\XCHARS
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XCHARS.INC'
 C
 C
       DATA IK(1)/'U'/
@@ -2509,7 +2552,7 @@ C
       DIMENSION IK(16)
 C
 C
-\XPTCL
+      INCLUDE 'XPTCL.INC'
 C
 C
       DATA IK(1)/'x'/
@@ -2579,24 +2622,24 @@ C
 C--REQUIRES M12 SET ON ENTRY
 C
 C--
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
+      INCLUDE 'STORE.INC'
 C
-\XPTCL
-\XWORKA
-\XCONST
-\XLST01
-\XLST05
-\XLST11
-\XLST12
-\XUNITS
-\XSSVAL
-\XERVAL
-\XIOBUF
+      INCLUDE 'XPTCL.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST11.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       NPAR = 0
 C--CLEAR THE TEMPORARY STORAGE
@@ -2716,8 +2759,8 @@ C
 C
       DIMENSION IVET(118)
 C
-\XCHARS
-\XCONST
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
 C
       EQUIVALENCE (JB,CB)
       DATA CB/'    '/
@@ -2879,7 +2922,7 @@ C
 C
       DIMENSION IVET(118)
 C
-\XCHARS
+      INCLUDE 'XCHARS.INC'
 C
 C
       IAR=IABS(IARG)
@@ -2915,7 +2958,7 @@ C
 C
       DIMENSION IVET(118)
 C
-\XCHARS
+      INCLUDE 'XCHARS.INC'
 C
       IF(IARG)1000,1250,1000
 1000  CONTINUE
@@ -3017,21 +3060,21 @@ C        A(3) = ABSN
 C        A(4) = WEIGHT
 C
       DIMENSION A(10)
-\TSSCHR
-\ISTORE
-\STORE
-\XCONST
-\XLST01
-\XLST02
-\XLST03
-\XLST05
-\XLST23
-\XLST29
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
       KCPROP = 1
       CALL XZEROF (A, 8)
@@ -3221,18 +3264,18 @@ C
       DIMENSION ITYPE(4) , SER(4) , ITEM(3)
       DIMENSION LINEA(118)
 C--
-\TSSCHR
-\ISTORE
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
 C
-\STORE
-\XCHARS
-\XUNITS
-\XSSVAL
-\XTAPES
-\XOPVAL
-\XIOBUF
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       data ihyd /'H   '/
@@ -3421,17 +3464,17 @@ C
       CHARACTER *1 CODE
       CHARACTER *3 CKEY
       CHARACTER CGEOM(3)*8
-\TSSCHR
-\ISTORE
-\STORE
-\XUNITS
-\XTAPES
-\XCHARS
-\XCONST
-\XLST02
-\QSTORE
-\UFILE
-\XSSCHR
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
       DATA CKEY /'DAT'/
 
       CALL XRSL  ! CLEAR THE STORE
@@ -3561,17 +3604,17 @@ C
       CHARACTER *1 CODE
       CHARACTER CGEOM(4)*8
       CHARACTER CTEXT(2)*9
-\TSSCHR
-\ISTORE
-\STORE
-\XUNITS
-\XTAPES
-\XCHARS
-\XCONST
-\XLST02
-\QSTORE
-\UFILE
-\XSSCHR
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSCHR.INC'
 C
       DATA CGEOM /'_bond', '_angle', '_torsion', '_hbond' /
       DATA CTEXT /'_geom', '_distance'/
@@ -3664,9 +3707,9 @@ c
         call xcras ( cline, n)
         write (ncfpu1, '(1x,a)') cline(1:n)
        enddo
-        write(cline,'(4A)') ctext(1),cgeom(4),ctext(2),'_DA'
-        call xcras ( cline, n)
-        write (ncfpu1, '(1x,a)') cline(1:n)
+       write(cline,'(4A)') ctext(1),cgeom(4),ctext(2),'_DA'
+       call xcras ( cline, n)
+       write (ncfpu1, '(1x,a)') cline(1:n)
       endif
       WRITE(CLINE, 540) CGEOM(LKEY)
 540   FORMAT ('_geom', A, '_publ_flag')
@@ -3722,14 +3765,11 @@ c       swap order of atoms
 C
       CLINE = ' '
       J = 1
-C----- NO HYDROGEN YET
-      NOH = 0
-c----- number of atoms
-      NATOUT = 0
+      NOH = 0                           ! NO HYDROGEN YET
+      NATOUT = 0                        ! Number of atoms
       DO 2000 JPUB = Itmp, Ktmp, jtmp
         NATOUT = NATOUT + 1
-C----- ATOM NAME
-        WRITE (CBUF, '(A4)') STORE(JPUB)
+        WRITE (CBUF, '(A4)') STORE(JPUB)   ! ATOM NAME
         CALL XCTRIM (CBUF, N)
         CALL XCCLWC (CBUF(2:N), CBUF(2:N))
         NOH = MAX (NOH, INDEX(CBUF(1:2), 'H '))
@@ -3766,7 +3806,7 @@ C----- IDENTITY
             J = J+4
         ENDIF
 2000  CONTINUE
-c
+C
 C----- VALUE AND ESD
       CALL XFILL (IB, IVEC, 20)
 cdjw021204
@@ -3781,26 +3821,25 @@ cdjw021204
       CLINE(J:J+N-1) = CBUF(1:N)
       J = J + N + 1
       if (key .eq. 15) then
-C-----H-bonds AND ESDs
+C----- H-bonds AND ESDs
       do itmp =ipub+21, ipub+23, 2
         CALL XFILL (IB, IVEC, 20)
 c        CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
-        CALL SNUM ( store(itmp), 0.,  -3, 0, 10, IVEC )
+        CALL SNUM ( store(itmp), 0.0,  -3, 0, 10, IVEC )
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
         CLINE(J:J+N-1) = CBUF(1:N)
         J = J + N + 1
       enddo
-cdjw071204 - calculate D-A distance
-        dadist = sqrt(
-     1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23) 
+      dadist = sqrt(
+     1  store(ipub+21)*store(Ipub+21) + store(ipub+23)*store(Ipub+23)
      2  -2.*store(ipub+21)*store(Ipub+23)*cos(term*dtr))
-        call xfill (ib, ivec, 20)
-        call snum ( dadist, 0.,  -3, 0, 10, ivec )
-        write( cbuf, '(20a1)') (ivec(i), i=1, 20)
-        call xcras ( cbuf, n)
-        cline(j:j+n-1) = cbuf(1:n)
-        j = j + n + 1
+      call xfill (ib, ivec, 20)
+      call snum ( dadist, 0.,  -3, 0, 10, ivec )
+      write( cbuf, '(20a1)') (ivec(i), i=1, 20)
+      call xcras ( cbuf, n)
+      cline(j:j+n-1) = cbuf(1:n)
+      j = j + n + 1
 c----- force printing
        noh = 0
       endif
@@ -3859,39 +3898,39 @@ C
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
 C                      
-\TSSCHR                
-\ICOM30
-\ICOM31
-\ISTORE
-\STORE
-\XCOMPD
-\XUNITS
-\UFILE
-\XTAPES
-\XCHARS
-\XCONST
-\XSSVAL
-\XSSCHR
-\XLISTI
-\XLST01
-\XLST02
-\XLST03
-\XLST04
-\XLST05
-\XLST06
-\XLST13
-\XLST23
-\XLST28
-\XLST29
-\XLST30
-\XLST31
-\XIOBUF
-\XFLAGS
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ICOM30.INC'
+      INCLUDE 'ICOM31.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST04.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST28.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST31.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XFLAGS.INC'
 C 
 C 
-\QLST30
-\QLST31
-\QSTORE
+      INCLUDE 'QLST30.INC'
+      INCLUDE 'QLST31.INC'
+      INCLUDE 'QSTORE.INC'
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
@@ -4080,7 +4119,7 @@ C----- LOADED BY XFAL06          CALL XFAL28
          ELSE IF (LSTYPE.EQ.30) THEN
             CALL XFAL30
          ELSE IF (LSTYPE.EQ.31) THEN
-\IDIM31
+      INCLUDE 'IDIM31.INC'
             CALL XLDLST (31,ICOM31,IDIM31,0)
          END IF
  
@@ -4092,8 +4131,11 @@ C################################################################
       IF ( IPUNCH .EQ. 0 ) THEN
 C-----  LOAD THE AVAILABLE REFERENCE TABLE
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-###LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
-&&&LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+      CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
+#else
+      CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
+#endif
         IF (IERFLG.GE.0) THEN
           READ (NCARU,'(i4)') NREFS
           REWIND (NCARU)
@@ -4106,8 +4148,11 @@ C
           J=LREFS
 200       CONTINUE
           READ (NCARU,'(a)',ERR=200,END=250) CTEMP
-##LINGIL          IF (CTEMP(1:1).EQ.'\') CTEMP(1:1)='#'
-&&LINGIL          IF (CTEMP(1:1).EQ.'\\') CTEMP(1:1)='#'
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)
+          IF (CTEMP(1:1).EQ.'\') CTEMP(1:1)='#'
+#else
+          IF (CTEMP(1:1).EQ.'\\') CTEMP(1:1)='#'
+#endif
           IF (CTEMP(1:1).EQ.'#') THEN
             READ (CTEMP,'(1x,i3,19a4)') (ISTORE(K),K=J+1,J+MDREFS-1)
             J=J+MDREFS
@@ -4124,8 +4169,11 @@ C
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
           END IF
 C      CLOSE THE REFERENCES FILE
-###LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
-&&&LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+       CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
+#else
+       CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
+#endif
         ELSE
           NREFS = 0
           MDREFS= 1
@@ -5006,11 +5054,17 @@ C
       IF (JLOAD(6).GE.1) THEN
          CBUF(1:5)=''' ? '''
          IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
-###LINGILWXS            CBUF(1:8) = '''Mo K\a'''
-&&&LINGILWXS            CBUF(1:8) = '''Mo K\\a'''
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+            CBUF(1:8) = '''Mo K\a'''
+#else
+            CBUF(1:8) = '''Mo K\\a'''
+#endif
          ELSE IF (NINT(10.*STORE(L13DC)).EQ.15) THEN
-###LINGILWXS            CBUF(1:8) = '''Cu K\a'''
-&&&LINGILWXS            CBUF(1:8) = '''Cu K\\a'''
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+            CBUF(1:8) = '''Cu K\a'''
+#else
+            CBUF(1:8) = '''Cu K\\a'''
+#endif
          END IF
          IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (NCFPU1,'(''_diffrn_radiation_type       '', T35, A)')
@@ -5038,24 +5092,48 @@ C SCAN MODE DETAILS
 C RIC2001 New scan types. Use IVAL, not char string.
         ELSE IF ( IPUNCH .EQ. 0 ) THEN
            IF ( IVAL .EQ. 1 ) THEN
-&&DOSDVF            CVALUE = '\w/2\q'
-&&GIDVAX            CVALUE = '\w/2\q'
-&&LINGIL            CVALUE = '\\w/2\\q'
-&WXS            CVALUE = '\\w/2\\q'
+#if defined(_DOS_) || defined(_DVF_) 
+            CVALUE = '\w/2\q'
+#endif
+#if defined(_GID_) || defined(_VAX_) 
+            CVALUE = '\w/2\q'
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+            CVALUE = '\\w/2\\q'
+#endif
+#if defined(_WXS_) 
+            CVALUE = '\\w/2\\q'
+#endif
              CALL XCRAS (CVALUE,J)
            ELSE IF ( IVAL .EQ. 2 ) THEN
-&&DOSVAX            CVALUE = '\w'
-&&DVFGID            CVALUE = '\w'
-&&LINGIL            CVALUE = '\\w'
-&WXS            CVALUE = '\\w'
+#if defined(_DOS_) || defined(_VAX_) 
+            CVALUE = '\w'
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+            CVALUE = '\w'
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+            CVALUE = '\\w'
+#endif
+#if defined(_WXS_) 
+            CVALUE = '\\w'
+#endif
              CALL XCRAS (CVALUE,J)
            ELSE IF ( IVAL .EQ. 3 ) THEN
              CVALUE = '''\f scans'''
            ELSE IF ( IVAL .EQ. 4 ) THEN
-&&DOSVAX             CVALUE = '''\f & \w scans'''
-&&DVFGID             CVALUE = '''\f & \w scans'''
-&&LINGIL             CVALUE = '''\\f & \\w scans'''
-&WXS             CVALUE = '''\\f & \\w scans'''
+#if defined(_DOS_) || defined(_VAX_) 
+             CVALUE = '''\f & \w scans'''
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+             CVALUE = '''\f & \w scans'''
+#endif
+#if defined(_GIL_) || defined(_LIN_) 
+             CVALUE = '''\\f & \\w scans'''
+#endif
+#if defined(_WXS_) 
+             CVALUE = '''\\f & \\w scans'''
+#endif
            ELSE
              CVALUE = '?'
            END IF
@@ -5954,10 +6032,12 @@ cdjw011104
 cdjw090804^
                 if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
      1          .le. 0.0) then
-c-----            writeout simplified equation
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
-##LINGIL     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
-&&LINGIL     1            ' w=1/[\\s^2^(F^2^) +', store(l4),' +',
+#if !defined(_GIL_) && !defined(_LIN_)  && !defined(_WXS_)
+     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
+#else
+     1            ' w=1/[\\s^2^(F^2^) +', store(l4),' +',
+#endif
      2              store(l4+1),'P]'
                   ctext(3) = ' '
                   ctext(4) = ' '
@@ -5970,12 +6050,11 @@ c-----            writeout simplified equation
                 ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
                 call xctrim (ctemp,nchar)
                 write (cline,'(a,a )') ' Method = ', ctemp(1:nchar)
-cdjw091204
-                if (ival .eq. 34) then 
-                    ctext(3) = 'where '//ctext(1)
-                    ctext(1) = ' '
+                if (ival .eq. 34) then
+                  ctext(3) = 'where '//ctext(1)
+                  ctext(1) = ' '
                 else
-                    call xpcif (cline)
+                  call xpcif (cline)
                 endif
               else
                 call xpcif(ctext(1))
@@ -5993,9 +6072,12 @@ C
         CALL XPCIF (' ')
 C----- COPY HEADER INFORMATION FROM .CIF FILE
        CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-###LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script\refcif.dat',25)
-&&&LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script/refcif.dat',25)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+      CALL XRDOPN(6,JDEV,'CRYSDIR:script\refcif.dat',25)
+#else
+      CALL XRDOPN(6,JDEV,'CRYSDIR:script/refcif.dat',25)
 
+#endif
         IF (IERFLG.GE.0) THEN
           CLINE=' '
 100       CONTINUE
@@ -6004,8 +6086,11 @@ C----- COPY HEADER INFORMATION FROM .CIF FILE
           GO TO 100
 150       CONTINUE
 C----- CLOSE THE FILE
-###LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script\refcif.dat',25)
-&&&LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script/refcif.dat',25)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+       CALL XRDOPN(7,JDEV,'CRYSDIR:script\refcif.dat',25)
+#else
+       CALL XRDOPN(7,JDEV,'CRYSDIR:script/refcif.dat',25)
+#endif
         ELSE
           WRITE (CMON,'('' cif header file not available'')')
           CALL XPRVDU (NCVDU,1,0)
@@ -6016,8 +6101,11 @@ C----- CLOSE THE FILE
 
       IF ( IPUNCH .EQ. 0 ) THEN
 C - NOW LIST THE REFERENCES
-###LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
-&&&LINGILWXS      CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+      CALL XRDOPN(6,JDEV,'CRYSDIR:script\reftab.dat',25)
+#else
+      CALL XRDOPN(6,JDEV,'CRYSDIR:script/reftab.dat',25)
+#endif
          WRITE (CLINE,'(A)') 
      1'# Insert your own references if required - in alphabetical order'
          CALL XPCIF (CLINE)
@@ -6033,7 +6121,9 @@ C - NOW LIST THE REFERENCES
 2550  CONTINUE
 
       IF ( IPUNCH .EQ. 1 ) THEN
-###GILGIDWXS      WRITE (NCPU,'(A)') CHAR(12)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      WRITE (NCPU,'(A)') CHAR(12)
+#endif
         WRITE (NCPU,'(5X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,NROW)
 C----- ONLY 29 LINES USED IN PAGE  - CMON IS CURRENLTY 24
         WRITE (CMON,'(X,2A35)') ((CPAGE(I,J),J=1,NCOL),I=1,24)
@@ -6061,8 +6151,11 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       IF ( IPUNCH .EQ. 0 ) THEN
         CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
 C      CLOSE THE REFERENCES FILE
-###LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
-&&&LINGILWXS       CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+       CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
+#else
+       CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
+#endif
       END IF
       RETURN
       END
@@ -6072,7 +6165,7 @@ CODE FOR XPCIF
 C----- COMPRESS AND PUNCH THE STRING CLINE
       CHARACTER *(*) CLINE
       CHARACTER *80 CTEMP, CTEMP2
-\XUNITS
+      INCLUDE 'XUNITS.INC'
       CTEMP = ''
       CTEMP2 = ''
 
@@ -6112,9 +6205,9 @@ C      NTAB AND MDTAB NUMBER OF IDENTIFIERS, LENGTH OF EACH
 C      IVAL IDENTIFIER TO BE MARKED AS USED
       DIMENSION ITAB(MDTAB*NTAB)
       CHARACTER *80 CTEMP
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
       CREFMK = ' '      
       IF (NTAB.LE. 0) GOTO 980
       DO 100 I = 1, 1+(NTAB-1)*MDTAB,MDTAB
@@ -6137,9 +6230,9 @@ CODE FOR XREFPR
 C----- PRINT OUT THE USED-REFERENCES
       DIMENSION ITAB(MDTAB*NTAB)
       CHARACTER *80 CBUF
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
       REWIND (NCARU)
       IFIRST = 1
       IF (NTAB.LE. 0) GOTO 900
@@ -6168,6 +6261,9 @@ C----- PRINT OUT THE USED-REFERENCES
 100   CONTINUE
       RETURN
 900   CONTINUE
-&&&GIDGILWXS      CALL ZMORE ('Premature end',0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      CALL ZMORE ('Premature end',0)
+#endif
       RETURN
       END
+

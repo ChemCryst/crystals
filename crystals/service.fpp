@@ -1,4 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/13 16:16:09  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:07  rich
+C New CRYSTALS repository
+C
+C Revision 1.36  2004/08/09 11:22:12  rich
+C For the Windows command line only version: re-introduce the old text
+C output colour scheme.
+C
 C Revision 1.35  2004/02/18 12:08:23  rich
 C Added option \SET TIME SLOW which prevents output of DATE and TIME strings.
 C This is to be used by the new test_suite so that runs at different times
@@ -64,9 +74,9 @@ C--PRINT THE ERROR MESSAGE HEADING THAT PRECEDES EACH ERROR MESSAGE
 C
 C--
 C
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       IF (ISSPRT .EQ. 0) THEN
@@ -201,12 +211,12 @@ C
 C
       CHARACTER*30 FACNAM(NFAC)
       DIMENSION    IFACLN(NFAC)
-\TLISTC
+      INCLUDE 'TLISTC.INC'
 C
-\XUNITS
-\XSSVAL
-\XERVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA FACNAM(1)  / 'CRYSTALS                      ' /
@@ -562,13 +572,13 @@ C      OF 'IERMAX' IN THE COMMON BLOCK 'XERCNT'
 C
 C
 C
-\XUNITS
-\XSSVAL
-\UFILE
-\XCARDS
-\XERVAL
-\XERCNT
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XERCNT.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C -- GIVE INITIAL VALUES TO A FEW VARIABLES
       DATA I / 0 /
@@ -750,10 +760,10 @@ CODE FOR XERINI
       SUBROUTINE XERINI
 C -- RUN TIME INITIALISATION OF ERROR HANDLING.
 C
-\XUNITS
-\XSSVAL
-\XERVAL
-\XERCNT
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XERCNT.INC'
 C
 C
 C -- IF NOT INTERACTIVE, ONLY ONE 'ERROR' IS ALLOWED
@@ -767,13 +777,13 @@ C
 CODE FOR XEND
       SUBROUTINE XEND
 C--STANDARD TERMINATION SUBROUTINE
-\ISTORE
-\STORE
-\UFILE
-\XSSVAL
-\QSTORE
-\XIOBUF
-\XUNITS
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
       IF (ISSEXP .GE. 1) THEN
        CALL XRSL
        CALL XCSAE
@@ -816,20 +826,24 @@ C
       CHARACTER*8 RESULT(3)
       CHARACTER*1 WARNPL,ERRPL
 C
-&PPCCS***
-&PPC      INTEGER IOS
-&PPC      CHARACTER*80 theLine
-&PPCCE***
-\XUNITS
-\XSSVAL
-\UFILE
-\XCARDS
-\XERCNT
-\XERVAL
-\XSTATS
-\XIOBUF
-&PPC\XGSTOP
+#if defined(_PPC_) 
+CS***
+      INTEGER IOS
+      CHARACTER*80 theLine
+CE***
+#endif
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XERCNT.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XSTATS.INC'
+      INCLUDE 'XIOBUF.INC'
+#if defined(_PPC_) 
+\XGSTOP
 C
+#endif
       DATA RESULT(1) / 'ok      ' /
       DATA RESULT(2) / 'in error' /
       DATA RESULT(3) / 'in error' /
@@ -876,40 +890,59 @@ C -- FINAL CALL TO THE SPY
 C
       GO TO ( 8100 , 8200 , 8300 ) , ICODE
 8100  CONTINUE
-&PPCCS***
-&PPC      CALL exitthefortran
-&PPC      GLSTOP = 1
-&PPC      RETURN
-&PPCCE***
+#if defined(_PPC_) 
+CS***
+      CALL exitthefortran
+      GLSTOP = 1
+      RETURN
+CE***
 C#PPC      STOP 'OK'
-#PPC      CALL GUEXIT(0)
+#else
+      CALL GUEXIT(0)
+#endif
 8200  CONTINUE
-&PPCC
-&PPCCS***
-&PPC      CALL finalcleanup
-&PPC      CALL nextlineofcommand( IOS, %loc(theLine) )
-&PPC      CALL exitthefortran
-&PPCCE***
-&PPC      STOP
-###PPCGIDWXS      write(*,*) ' Ending in error'
-&VAX      WRITE ( NCVDU , 8305 ) J/(icode-2)
-#PPC      CALL GUEXIT(1)
+#if defined(_PPC_) 
+C
+CS***
+      CALL finalcleanup
+      CALL nextlineofcommand( IOS, %loc(theLine) )
+      CALL exitthefortran
+CE***
+      STOP
+#endif
+#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) 
+      write(*,*) ' Ending in error'
+#endif
+#if defined(_VAX_) 
+      WRITE ( NCVDU , 8305 ) J/(icode-2)
+#endif
+#if !defined(_PPC_) 
+      CALL GUEXIT(1)
+#endif
 8300  CONTINUE
 C
 C VAX -- CAUSE PROG. TO CRASH TO GET TRACEBACK
 C----WRITE STATEMENT IS NECESSARY TO FOOL  VAX FORTRAN OPTIMISER.
 C
-&PPCCS***
-&PPC      CALL finalcleanup
-&PPC      CALL nextlineofcommand( IOS, %loc(theLine) )
-&PPC      CALL exitthefortran
-&PPCCE***
-&PPC      STOP
-###GIDPPCWXS      write(*,*) ' Ending in serious error'
-&VAX      WRITE ( NCVDU , 8305 ) J/(icode-3)
-#PPC8305  FORMAT ( 1X , I10 )
-#PPCC
-#PPC        CALL GUEXIT(2)
+#if defined(_PPC_) 
+CS***
+      CALL finalcleanup
+      CALL nextlineofcommand( IOS, %loc(theLine) )
+      CALL exitthefortran
+CE***
+      STOP
+#endif
+#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) 
+      write(*,*) ' Ending in serious error'
+#endif
+#if defined(_VAX_) 
+      WRITE ( NCVDU , 8305 ) J/(icode-3)
+#endif
+#if !defined(_PPC_) 
+8305  FORMAT ( 1X , I10 )
+C
+        CALL GUEXIT(2)
+#endif
       END
 C
 C --
@@ -927,14 +960,14 @@ C    ENABLED BY SETTING THE VARIABLE 'ISSBAN' IN COMMON BLOCK
 C    'XSSVAL' TO 1.
       CHARACTER*8 CTIME , CDATE
 C
-\TSSCHR
+      INCLUDE 'TSSCHR.INC'
 C
 C
-\XCHARS
-\XUNITS
-\XSSVAL
-\XSSCHR
-\XIOBUF
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
 C
@@ -1033,7 +1066,7 @@ C  N  THE NUMBER THAT IDENTIFIES THIS OPERATION (1-3)
 C     ENTRY WITH N=0 IS RESERVED FOR OVERALL TIMING
 C
 C--
-\XTIMES
+      INCLUDE 'XTIMES.INC'
 C
 C**MACHINE SPECIFIC - GET THE PROCESSOR TIME.
       CALL MTIME(Q(N+1))
@@ -1050,10 +1083,10 @@ C  N  IDENTIFIES THE OPERATION AND SHOULD TAKE THE SAME VALUE
 C     AS 'N' GIVEN TO 'XTIME1' AT THE START.
 C
 C--
-\XTIMES
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XTIMES.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       DATA A/0.0/,I/0/,J/0/,K/0/,L/0/
 C
@@ -1193,13 +1226,17 @@ C
       CHARACTER *3 CDEV
       CHARACTER *(*) NEWFIL, OLDFIL
 C
-&PPCCS***
-&PPC      INTEGER MYINDX
-&PPCCE***
-\TSSCHR
-\XSSCHR
-\XSSVAL
-&PPC\CFLDAT
+#if defined(_PPC_) 
+CS***
+      INTEGER MYINDX
+CE***
+#endif
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XSSVAL.INC'
+#if defined(_PPC_) 
+\CFLDAT
+#endif
       LENFIL = LEN (NEWFIL)
 C
 C----- RETURN IF THE FILE IS 'SCRATCH, 'READ' OR 'OLD'
@@ -1231,21 +1268,27 @@ C----- SEE IF THERE WAS A NAMED FILE ON THE UNIT
        IF (OLDFIL .NE. ' ') THEN
             NEWFIL = OLDFIL
        ELSE
-&PPCCS***
-&PPC            CALL GINDEX ( IDEV, MYINDX )
-&PPC            NEWFIL = FLNAME( MYINDX )(1:LFNAME( MYINDX ) )
-&PPC     +//FLTYPE( MYINDX )
-&PPCCE***
-#PPC       CALL XMAKNM (IDEV, NEWFIL, ISTTUS)
+#if defined(_PPC_) 
+CS***
+            CALL GINDEX ( IDEV, MYINDX )
+            NEWFIL = FLNAME( MYINDX )(1:LFNAME( MYINDX ) )
+     +//FLTYPE( MYINDX )
+CE***
+#else
+       CALL XMAKNM (IDEV, NEWFIL, ISTTUS)
+#endif
        ENDIF
       ENDIF
 C     IF THE FILE EXISTS AND STATUS IS CIF,
 C     CHANGE THE STATUS TO OLD, OTHERWISE NEW
 C(MK
-&PPCC**** Next Line commented out, no logical names on the Mac
-&PPCC**** Ludwig Macko, 8.12.1994
-#PPC      CALL MTRNLG(NEWFIL,'OLD',LENNAM)
+#if defined(_PPC_) 
+C**** Next Line commented out, no logical names on the Mac
+C**** Ludwig Macko, 8.12.1994
+#else
+      CALL MTRNLG(NEWFIL,'OLD',LENNAM)
 C)MK
+#endif
       INQUIRE (FILE = NEWFIL, EXIST = LEXIST)
       IF (ISTTUS .EQ. ISSCIF) THEN
 C            IF (LEXIST .EQV. .TRUE.) THEN  NOT PROCESSED CORRECTLY BY F
@@ -1300,11 +1343,13 @@ C
       LOGICAL LEXIST
       CHARACTER *(*) CNAME
       CHARACTER *10 CDIGIT
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
       DATA CDIGIT /'0123456789'/
       LEXIST = .FALSE.
-#PPC            CALL MTRNLG(CNAME,'OLD',LENNAM)
+#if !defined(_PPC_) 
+            CALL MTRNLG(CNAME,'OLD',LENNAM)
+#endif
       LENGTH = LEN (CNAME)
 C----- FIND THE ACTUAL FILENAME
       I = KCCTRM ( 1, CNAME, ISTART, IEND)
@@ -1405,7 +1450,7 @@ C      NSCPPR    SCRIPT NAMES
 C      NTPFR     TOP OF FRAME
 C      NLNFR     LINES IN FRAME
 C
-\XMENUI
+      INCLUDE 'XMENUI.INC'
 C
 C
       NTPFR = 1
@@ -1438,9 +1483,9 @@ C----- SET THE ATTRIBUTES AND COLOURS FOR VGA SCREENS
       CHARACTER *3 CATRIB, CFOR, CBACK
       CHARACTER *24 CCOL
       CHARACTER *27 CFUN
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 CGUI{
         CHARACTER*80 GUICOL(8)
         CHARACTER*80 GUIFUN(3)
@@ -1526,12 +1571,14 @@ C------ SWITCH ON LINE FEEDS
 CODE FOR OUTCOL
       SUBROUTINE  OUTCOL( ICOL )
 C----- SET THE ATTRIBUTES AND COLOURS FOR TEXT OUTPUT
-&DVF       USE DFWIN
-&DVF       INTEGER HC,IC,B
-\XUNITS
-\XSSVAL
-\XIOBUF
-\OUTCOL
+#if defined(_DVF_) 
+       USE DFWIN
+       INTEGER HC,IC,B
+#endif
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'OUTCOL.INC'
 C     ICOL  Meaning           WinColour   VGAColour
 C     ----  -------           ---------   ---------
 C     1     NORMAL            Black       Bold White on Blue
@@ -1561,57 +1608,62 @@ C
       IOLDC = ICOL
 
       IF (ISSTML .EQ.3) THEN
-#DVF          WRITE(VGACOL(1),101) CHAR(27),'[1m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[44m',CHAR(13)
-#DVF          WRITE(VGACOL(2),101) CHAR(27),'[0m', CHAR(27),'[30m',
-#DVF     2                         CHAR(27),'[46m',CHAR(13)
-#DVF          WRITE(VGACOL(3),101) CHAR(27),'[1m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[44m',CHAR(13)
-#DVF          WRITE(VGACOL(4),101) CHAR(27),'[1m', CHAR(27),'[33m',
-#DVF     2                         CHAR(27),'[46m',CHAR(13)
-#DVF          WRITE(VGACOL(5),101) CHAR(27),'[0m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[40m',CHAR(13)
-#DVF          WRITE(VGACOL(6),101) CHAR(27),'[1m', CHAR(27),'[33m',
-#DVF     2                         CHAR(27),'[40m',CHAR(13)
-#DVF          WRITE(VGACOL(7),101) CHAR(27),'[1m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[44m',CHAR(13)
-#DVF          WRITE(VGACOL(8),101) CHAR(27),'[1m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[44m',CHAR(13)
-#DVF          WRITE(VGACOL(9),101) CHAR(27),'[1m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[44m',CHAR(13)
-#DVF          WRITE(VGACOL(10),101) CHAR(27),'[1m', CHAR(27),'[37m',
-#DVF     2                         CHAR(27),'[44m',CHAR(13)
-#DVF          WRITE(NCVDU,100) VGACOL(ICOL)
-&DVF          HC = GetStdHandle(STD_OUTPUT_HANDLE)
-&DVF          SELECT CASE ( ICOL )
-&DVF          CASE (1)
-&DVF           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
-&DVF     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
-&DVF          CASE (2)
-&DVF           IC = BACKGROUND_BLUE+BACKGROUND_GREEN
-&DVF          CASE (3)
-&DVF           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
-&DVF     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
-&DVF          CASE (4)
-&DVF           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
-&DVF     1         +BACKGROUND_BLUE+BACKGROUND_GREEN
-&DVF          CASE (5)
-&DVF           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE
-&DVF          CASE (6)
-&DVF           IC = FOREGROUND_RED+
-&DVF     1          FOREGROUND_GREEN+FOREGROUND_INTENSITY
-&DVF          CASE (7)
-&DVF           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
-&DVF     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
-&DVF          CASE (8)
-&DVF           IC = BACKGROUND_INTENSITY
-&DVF          CASE (9)
-&DVF           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE+
-&DVF     1          BACKGROUND_RED
-&DVF          CASE (10)
-&DVF           IC = FOREGROUND_BLUE+BACKGROUND_INTENSITY
-&DVF          END SELECT
-&DVF          b = SetConsoleTextAttribute(HC,IC)
+#if !defined(_DVF_) 
+          WRITE(VGACOL(1),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(2),101) CHAR(27),'[0m', CHAR(27),'[30m',
+     2                         CHAR(27),'[46m',CHAR(13)
+          WRITE(VGACOL(3),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(4),101) CHAR(27),'[1m', CHAR(27),'[33m',
+     2                         CHAR(27),'[46m',CHAR(13)
+          WRITE(VGACOL(5),101) CHAR(27),'[0m', CHAR(27),'[37m',
+     2                         CHAR(27),'[40m',CHAR(13)
+          WRITE(VGACOL(6),101) CHAR(27),'[1m', CHAR(27),'[33m',
+     2                         CHAR(27),'[40m',CHAR(13)
+          WRITE(VGACOL(7),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(8),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(9),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(VGACOL(10),101) CHAR(27),'[1m', CHAR(27),'[37m',
+     2                         CHAR(27),'[44m',CHAR(13)
+          WRITE(NCVDU,100) VGACOL(ICOL)
+#else
+          HC = GetStdHandle(STD_OUTPUT_HANDLE)
+#endif
+#if defined(_DVF_) 
+          SELECT CASE ( ICOL )
+          CASE (1)
+           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
+     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+          CASE (2)
+           IC = BACKGROUND_BLUE+BACKGROUND_GREEN
+          CASE (3)
+           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
+     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+          CASE (4)
+           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+     1         +BACKGROUND_BLUE+BACKGROUND_GREEN
+          CASE (5)
+           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE
+          CASE (6)
+           IC = FOREGROUND_RED+
+     1          FOREGROUND_GREEN+FOREGROUND_INTENSITY
+          CASE (7)
+           IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
+     1          FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_INTENSITY
+          CASE (8)
+           IC = BACKGROUND_INTENSITY
+          CASE (9)
+           IC = FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE+
+     1          BACKGROUND_RED
+          CASE (10)
+           IC = FOREGROUND_BLUE+BACKGROUND_INTENSITY
+          END SELECT
+          b = SetConsoleTextAttribute(HC,IC)
+#endif
       ELSEIF (ISSTML .EQ. 4) THEN
           IOFORE = IGUICL(1,ICOL)
           IOBACK = IGUICL(2,ICOL)
@@ -1711,18 +1763,18 @@ C
       CHARACTER*8 IBUF , JBUF
       DIMENSION IHASH(8),MODE(3),MERROR(8)
 C
-\ISTORE
-\STORE
-\XUNITS
-\XSSVAL
-\XDISCS
-\XCARDS
-\XLST50
-\XSTATS
-\XERCNT
-\XERVAL
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XSTATS.INC'
+      INCLUDE 'XERCNT.INC'
+      INCLUDE 'XERVAL.INC'
 C
-\QSTORE
+      INCLUDE 'QSTORE.INC'
 C
 C
       DATA MODE(1)/'I'/ , MODE(2)/'B'/ , MODE(3)/'O'/
@@ -1868,9 +1920,9 @@ C      SET ICASE EQUAL TO ISSFLC
 C      TO USE THE SYSTEM VARIABLE SET WITH #SET FILECASE
       CHARACTER *(*) FILNAM, CLCNAM
       CHARACTER *256 CTEMP
-\XSSVAL
-\XUNITS
-\XIOBUF
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
       NAMLEN = MIN (LEN(FILNAM), LEN(CLCNAM))
       IF (NAMLEN .GT. 0) THEN
         IF (NAMLEN .GT. 256) THEN
@@ -1902,13 +1954,13 @@ CODE FOR KCRCHK
       CHARACTER*1 CBUFF, CRC(2), CREG(4), CIN(4), RCHR(0:255)
       DIMENSION CBUFF(ILEN)
       DIMENSION ICRCTB(0:255),IT(0:15)
-\ISTORE
-\STORE
-\UFILE
-\XSSVAL
-\QSTORE
-\XIOBUF
-\XUNITS
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
       EQUIVALENCE (CREG,IREG)
       EQUIVALENCE (CIN,IIN)
 

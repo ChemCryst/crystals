@@ -6,22 +6,22 @@ C      IWEIGT 0 = NOTHING
 C             1 = UPDATE WEIGHTS 
 
 
-\XWISYM
-\XWSCAT
-\XWMISC
-\XWILSO
-\XESTAT
-\XLST02
-\XLST03
-\XLST29
-\XLST01
-\ISTORE
-\STORE
-\QSTORE
-\XCONST
-\XUNITS
-\XOPVAL
-\XIOBUF
+      INCLUDE 'XWISYM.INC'
+      INCLUDE 'XWSCAT.INC'
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'XWILSO.INC'
+      INCLUDE 'XESTAT.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 
       DATA ICOMSZ / 5 /
       DATA IVERSN /100/
@@ -222,9 +222,9 @@ CODE FOR INCELL
       SUBROUTINE INCELL                                                 
 C ------------------------------------------------------------------
 C INPUT UNIT CELL PARAMETERS AND CALCULATE RECIPROCAL PARAMETERS    
-\XCONST
-\XUNITS
-\XWMISC
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XWMISC.INC'
       WRITE(NCWU,20) (CX(I),I=1,6)                                        
    20 FORMAT(1H ,11HDIRECT CELL,9X,3HA =,F8.3,4X,3HB =,F8.3,4X,         
      1 3HC =,F8.3,4X,7HALPHA =,F7.2,4X,6HBETA =,F7.2,4X,7HGAMMA =,F7.2) 
@@ -250,7 +250,7 @@ C
 CODE FOR VOL
       SUBROUTINE VOL(CX,V)                                              
 C     SINE AND COSINE OF CELL ANGLES PLUS TRIGONOMETRIC PART OF VOLUME  
-\XCONST
+      INCLUDE 'XCONST.INC'
       DIMENSION CX(9)                                                   
       ARG=1.0                                                           
       DO 10 I=4,6                                                       
@@ -267,13 +267,13 @@ CODE FOR INSYM
       SUBROUTINE INSYM    
 C READ GENERAL EQUIVALENT POSITIONS AS IN INTERNATIONAL TABLES AND  
 C DETERMINE LATTICE MULTIPLICITY (PTS) AND CRYSTAL SYSTEM (KSYS)    
-\XWISYM
+      INCLUDE 'XWISYM.INC'
       DIMENSION KX(15),LTC(7),ICAP(2),LINE(21)
-\STORE
-\ISTORE
-\QSTORE
-\XLST02
-\XUNITS
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XUNITS.INC'
 
       DATA KX/1H1,1H2,1H3,1H4,1H5,1H6,1HX,1HY,1HZ,1H ,1H,,1H+,1H-,1H/,
      1 1H*/                                                             
@@ -345,9 +345,9 @@ C
 C IL28FL: 0 - Use all reflections
 C         1 - Use reflections allowed by List 28.
 C
-\XWMISC
-\XLST06
-\STORE
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'STORE.INC'
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
        IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
@@ -369,13 +369,13 @@ CODE FOR FCAL2
 C CALCULATE RHO, EPSILON, MULTIPLICITY AND SCATTERING FACTOR        
 C FOR EACH REFLEXION
       DIMENSION MHKL(3),I2(3)
-\XWISYM
-\XWSCAT
-\XWMISC
-\STORE
-\ISTORE
-\QSTORE
-\XLST02
+      INCLUDE 'XWISYM.INC'
+      INCLUDE 'XWSCAT.INC'
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XLST02.INC'
         RHO   =P(1)*FLOAT(MHKL(1)*MHKL(1))
      1        +P(2)*FLOAT(MHKL(2)*MHKL(2))
      2        +P(3)*FLOAT(MHKL(3)*MHKL(3))
@@ -475,17 +475,17 @@ C ISTATP: 0 - No GUI output
 C         1 - Set GUI elements for scale and B-factor
 C
 C
-\XWMISC
-\XWILSO
-\XCONST
-\XLST05
-\XLST06
-\XLST30
-\ICOM30
-\STORE
-\XUNITS
-\XIOBUF
-\QLST30
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'XWILSO.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST30.INC'
+      INCLUDE 'ICOM30.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QLST30.INC'
 
       DIMENSION SW(30),SR(30),SI(30),NSUM(30), MHKL(3),
      1          SWC(30),SIC(30)
@@ -638,10 +638,10 @@ C
 CODE FOR GRAPH80
       SUBROUTINE GRAPH80(NGP,IPLOTW)
 C     LINE PRINTER PLOT AT 50 VALUES OF RHO                             
-\XWMISC
-\XWILSO
-\XIOBUF
-\XUNITS
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'XWILSO.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
       DIMENSION FH(6),RH(6),M(117),R(4),AD(4),AW(4),AWC(4)                     
       DATA IST,ISP,ICW,ICD/1H*,1H ,1HW,1HD/                             
 C     DETERMINE RANGES OF LOGS                                          
@@ -830,11 +830,11 @@ C IL28FL: 0 - Use all reflections
 C         1 - Use reflections allowed by L28.
 C
 
-\XWMISC
-\XWILSO
-\XLST06
-\STORE
-\XUNITS
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'XWILSO.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
 
       DIMENSION NG(8),SCS(8),MHKL(3)
       TOT=0.0                                                           
@@ -910,8 +910,8 @@ C
 CODE FOR CURVK
       SUBROUTINE CURVK(ESQ,RHO,ED)                                      
 C     K-CURVE INTERPOLATION                                             
-\XWILSO
-\XWMISC
+      INCLUDE 'XWILSO.INC'
+      INCLUDE 'XWMISC.INC'
       EI=RHO*DEL                                                        
       I=EI                                                              
 C FOR SMALL RHO THE CURVE IS EXTRAPOLATED FROM THE FIRST POINT      
@@ -939,15 +939,15 @@ C CALCULATE FINAL E-VALUES AND RESCALED F'S
 C CREATE NEW IF REQUIRED                                      
 C OUTPUT REFLEXIONS FOR MULTAN                                      
 C PREPARE TABLES OF STATISTICS                                      
-\ISTORE
-\XWMISC
-\XWILSO
-\XESTAT
-\XLST06
-\STORE
-\XUNITS
-\XIOBUF
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'XWMISC.INC'
+      INCLUDE 'XWILSO.INC'
+      INCLUDE 'XESTAT.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
       DIMENSION IX(1000),EX(1000),FX(1000)                             
       DIMENSION RHR(10),NHR(10),NU(25),STL(10),MHKL(3)
 C TABLES OF THEORETICAL DISTRIBUTIONS                               
@@ -1275,7 +1275,7 @@ C
 CODE FOR ADD
       SUBROUTINE ADD(N)                                                 
 C     SUMS FOR REFLEXION IN ZONE N                                      
-\XESTAT
+      INCLUDE 'XESTAT.INC'
       IS=1                                                              
       NT=N                                                              
       IF(N.LE.2.OR.IND.LE.1) GO TO 20                                   
@@ -1329,7 +1329,7 @@ C
 CODE FOR OUTPUT
       SUBROUTINE OUTPUT(EX,FX,IX,N,M)                                   
 C     PRINT AND OUTPUT TO FILE FOR REFLEXIONS TO BE USED IN MULTAN      
-\XUNITS
+      INCLUDE 'XUNITS.INC'
       DIMENSION EX(1000),FX(1000),IX(1000)                              
       DIMENSION J(6),K(6),L(6),E(6),KODE(6)                             
       IF(N.EQ.M) GO TO 60                                               
@@ -1361,3 +1361,4 @@ C     PRINT AND OUTPUT TO FILE FOR REFLEXIONS TO BE USED IN MULTAN
       D=-1.0                                                            
       RETURN                                                            
       END                                                               
+

@@ -1,4 +1,19 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:05  rich
+C New CRYSTALS repository
+C
+C Revision 1.6  2001/10/08 12:25:59  ckp2
+C
+C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
+C The changes made are: in every sub-program the GOTO's that used to loop back for
+C the next KNXTOP command have been changed to RETURN's. In the main program KNXTOP is now
+C called at the top of the loop, but first the current ProgramName (KPRGNM) array is cleared
+C to ensure the KNXTOP knows that it is not in the correct sub-program already. (This
+C is the way KNXTOP worked on the very first call within CRYSTALS).
+C
+C We now have one location (CRYSTL()) where the program flow returns between every command. I will
+C put this to good use soon.
+C
 C Revision 1.5  2001/01/12 15:06:46  CKP2
 C Make slant callable
 C
@@ -29,11 +44,11 @@ C--
 C      ST UP A DUMMY ARRAY SO THAT XSLANT CAN BE CALLED INTERNALLY
       DIMENSION ADJW(1), IDJW(1)
       EQUIVALENCE (ADJW(1), IDJW(1))
-\ISTORE
-\STORE
-\XUNITS
-\XLST50
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'QSTORE.INC'
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
@@ -60,3 +75,4 @@ C--'#VSLANT' INSTRUCTION
       RETURN
       END
 C
+

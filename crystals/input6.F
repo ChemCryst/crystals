@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:09  rich
+C New CRYSTALS repository
+C
+C Revision 1.10  2004/05/12 09:55:07  rich
+C Remove debugging print.
+C
 C Revision 1.9  2004/04/21 13:11:45  rich
 C Added "#PUNCH 6 G" command, it outputs a SHELX format reflection
 C file, but using slightly perturbed Fcalc^2 and made-up sigma(F-calc^2).
@@ -48,15 +54,15 @@ CODE FOR XRDL67
       SUBROUTINE XRDL67
 C--MAIN ROUTINE TO CONTROL THE INPUT OF LIST 6 AND LIST 7
 
-\ISTORE
-\STORE
-\XUNITS
-\XCHARS
-\XLST50
-\XERVAL
-\XSSVAL
-\XIOBUF
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)

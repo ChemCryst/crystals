@@ -1,4 +1,15 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:10  rich
+C New CRYSTALS repository
+C
+C Revision 1.5  2003/12/02 11:52:33  rich
+C Code for \MASK command.
+C
+C Changed output of Fourier map data, so that the cell is NOT permuted
+C in the output file. This makes the output the same form as the
+C \slant file. The permutation can be recovered from the translation
+C matrix given at the top of the file.
+C
 C Revision 1.4  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -26,15 +37,15 @@ CODE FOR XFOURA
       SUBROUTINE XFOURA
 C--MAIN CONTROL ROUTINE FOR FOURIER CALCULATIONS
 
-\ISTORE
-\ICOM24
-\STORE
-\XUNITS
-\XLST12
-\XLST24
-\XLST50
-\QSTORE
-\QLST24
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM24.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST24.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST24.INC'
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)

@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2005/01/17 14:59:42  rich
+C Typo.
+C
+C Revision 1.3  2005/01/17 13:42:27  rich
+C Bring new repository into line with old. (Extend SPGTOCRY script function).
+C
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:07  rich
+C New CRYSTALS repository
+C
 C Revision 1.54  2004/10/22 11:00:23  rich
 C Fix a type mismatch in KSCEXE. Remove all writes to NCAWU.
 C
@@ -819,9 +831,9 @@ C
 C
 C
 C
-\PSCRPT
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
       CHARACTER*(MAXLAB) CVARIB
       CHARACTER*(MAXLAB) CLABEL
@@ -837,18 +849,18 @@ C
       PARAMETER ( LSTRUC = 12 , NSTRUC = 5 )
       CHARACTER*(LSTRUC) CSTRUC(0:NSTRUC)
 C
-\XSCCHR
-\XSCCHK
-\XSCGBL
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCCHK.INC'
+      INCLUDE 'XSCGBL.INC'
 C
-\UFILE
-\XUNITS
-\XSSVAL
-\XOPVAL
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPVAL.INC'
 C
-\XSCCNT
-\XSCMSG
-\XIOBUF
+      INCLUDE 'XSCCNT.INC'
+      INCLUDE 'XSCMSG.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       SAVE CSERCH
@@ -1669,16 +1681,16 @@ C                  +1      SUCCESS
 C
       CHARACTER*(*) CTYPE
 C
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCMSG
+      INCLUDE 'XSCMSG.INC'
 C
 C
-\UFILE
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C -- SEARCH FOR CONTIGENCY. IF NOT DECLARED, RETURN IMMEDIATELY
 C
@@ -1784,9 +1796,9 @@ C
 C
       CHARACTER*(*) CVARIB
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCHR
+      INCLUDE 'XSCCHR.INC'
 C
 C
 C
@@ -1854,14 +1866,14 @@ C
       DIMENSION ITMSG(NMSG)
 C
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
       CHARACTER*(MAXLAB) CCONT
 C
-\XSCCHR
-\XUNITS
-\XSSVAL
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
       DATA CACT / 'RESTART' , 'REPEAT'  , 'TERMINATE' , 'CONTINUE' /
       DATA CMSG / 'ABANDONED' , 'USER1' , 'USER2' , 'USER3' , 'USER4' /
@@ -1940,10 +1952,10 @@ C
       PARAMETER ( LKEY2 = 4 , NKEY2 = 1 )
       CHARACTER*(LKEY2) CKEY2(NKEY2)
 C
-\PSCMSG
-\PSCSTK
+      INCLUDE 'PSCMSG.INC'
+      INCLUDE 'PSCSTK.INC'
 C
-\XSCCHR
+      INCLUDE 'XSCCHR.INC'
 C
 C
       DATA CKEY1 / 'IF' /
@@ -2067,9 +2079,9 @@ C
       LOGICAL LSCALC(NSTAND)
 C
 C
-\XSCCHR
-\XSCGBL
-\XCOMPD
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XCOMPD.INC'
 C
 C
       DATA CSTAND / 'TRUE' , 'FALSE' , 'VALUE' , 'USERLENGTH' ,
@@ -2177,15 +2189,15 @@ C -- SET UP INPUT BUFFER, AND AREA TO STORE SEARCH STRING
       PARAMETER ( NSERCH = 256 )
       CHARACTER*(NSERCH) CSERCH
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCNT
-\XSCCHR
+      INCLUDE 'XSCCNT.INC'
+      INCLUDE 'XSCCHR.INC'
 C
-\XUNITS
-\XSSVAL
-\XERVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
 C
       SAVE CINPBF
       SAVE LENGTH
@@ -2342,15 +2354,15 @@ C      RETURN VALUE OF KSCEVL IS THE VALUE TO BE USED FOR 'KSCPRC'
 C
 C
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
       CHARACTER*(MAXLAB) CVARIB
 C
-\XSCCHR
+      INCLUDE 'XSCCHR.INC'
 C
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
 C -- FIND NAME OF RESULT VARIABLE
@@ -2533,7 +2545,7 @@ C
 C
       CHARACTER*12 CDATAT(JNONE:JNUMER)
       CHARACTER*12  CSPOPS
-      CHARACTER*5   CSPNMS 
+      CHARACTER*5   CSPNMS
 C
       DIMENSION ICODE(LENITM,NITEM)
       DIMENSION XCODE(LENITM,NITEM)
@@ -2553,13 +2565,13 @@ C
       CHARACTER*1 CECT
       LOGICAL LRESLT , LEQUAL , LLESST
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XUNITS
-\XSSVAL
-\XSCCHK
-\XSCCNT
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSCCHK.INC'
+      INCLUDE 'XSCCNT.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
@@ -2588,7 +2600,6 @@ C
       DATA CLOGIC / 'FALSE' , 'TRUE' /
       DATA CSPOPS / 'abcdnmABCDNM' /
       DATA CSPNMS / '12346' /
-C
 C
       NLAST = 0
 C
@@ -3254,14 +3265,28 @@ C
 C Extract the directory from a full pathname.
 C e.g. GETPATH 'c:\structures\nket\crfile.dsc' will return
 C 'c:\structures\nket\'  e.g. everything up to the last slash.
-&DOS      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&VAX      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&DVF      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-&GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-&WXS      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#if defined(_DOS_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_VAX_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_DVF_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_GID_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_LIN_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
+#if defined(_GIL_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
+#if defined(_WXS_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 C      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
+#endif
       IF ( IECF .LE. 0 ) THEN
             CWORK1 = ' '
             IECF = 1
@@ -3279,14 +3304,28 @@ C
 C Extract the filename from a full pathname.
 C e.g. GETFILE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile.dsc'  e.g. everything after the last slash if there is one.
-&DOS      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&VAX      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&DVF      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-&GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-&WXS      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#if defined(_DOS_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_VAX_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_DVF_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_GID_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_LIN_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
+#if defined(_GIL_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
+#if defined(_WXS_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 C      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
+#endif
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
@@ -3305,13 +3344,27 @@ C Extract the filetitle from a full pathname.
 C e.g. GETTITLE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile'  e.g. everything after the last slash if there is one,
 C up to the last dot.
-&DOS      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&VAX      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&DVF      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
-&LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-&GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
-&WXS      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#if defined(_DOS_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_VAX_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_DVF_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_GID_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+#endif
+#if defined(_LIN_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
+#if defined(_GIL_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
+#if defined(_WXS_) 
+      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+#endif
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
@@ -3479,9 +3532,7 @@ C (3) Any closing brackets become spaces, unless followed by '/'
           IED = IED + 1
         END IF
       END DO
-
 C (4) There is always a space after a, b, c, d, n or m
-
       IED=1
       DO IES = 1,LEN(CWORK1)
         CWORK2(IED:IED) = CWORK1(IES:IES)
@@ -3494,9 +3545,7 @@ C (4) There is always a space after a, b, c, d, n or m
         END DO
         IED = IED + 1
       END DO
-
 C (5) There is always a space before 6
-
       IED=1
       DO IES = 1,LEN(CWORK2)
         CWORK1(IED:IED) = CWORK2(IES:IES)
@@ -3507,10 +3556,8 @@ C (5) There is always a space before 6
         END IF
         IED = IED + 1
       END DO
-
 C (6a) Adjacent numbers always have #1>#2.
 C (6b) Always a space after a number, unless another number or /
-
       IED=1
       DO IES = 1,LEN(CWORK1) - 1
         CWORK2(IED:IED) = CWORK1(IES:IES)
@@ -3529,9 +3576,7 @@ C (6b) Always a space after a number, unless another number or /
         END IF
         IED = IED + 1
       END DO
-
 C (7) There is always a space before -, and one digit after.
-
       IED=1
       IMEM = 0
       DO IES = 1,LEN(CWORK2)
@@ -3541,7 +3586,7 @@ C (7) There is always a space before -, and one digit after.
           IED = IED + 1
           CWORK1(IED:IED) = '-'
           IMEM = 1
-        ELSE IF ( IMEM .EQ. 1 ) THEN  ! Next char should not be a space.
+        ELSE IF ( IMEM .EQ. 1 ) THEN  ! Next char should not be a space
           IF ( CWORK2(IES:IES) .NE. ' ' ) THEN
              IMEM = -1
           ELSE
@@ -3557,9 +3602,7 @@ C (7) There is always a space before -, and one digit after.
         END IF
         IED = IED + 1
       END DO
-
       CALL XCREMS(CWORK1,CWORK2,IED)
-
       ISTAT = KSCSCD ( CWORK2(1:IED) , ICODE(JVALUE,IARG(1)) )
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
@@ -3823,12 +3866,12 @@ C
 C
       CHARACTER*2 CSTRNG
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCGBL
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       EQUIVALENCE ( IOUTLS(1,1) , XOUTLS(1,1) )
 C
@@ -4214,11 +4257,11 @@ C
       PARAMETER ( LCOM = 4 , NCOM = 2 )
       CHARACTER*(LCOM) COMMND(NCOM)
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCHR
-\XUNITS
-\XSSVAL
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
       DATA COMMND / 'COPY' , 'SEND' /
@@ -4342,19 +4385,19 @@ C
       LOGICAL LVERIF
 C
 C
-\PSCRPT
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
       PARAMETER ( MAXIDN = 200 )
 C
       CHARACTER*(MAXLAB) CIDENT(MAXIDN)
       DIMENSION ITYPEI(MAXIDN) , IVALUI(MAXIDN) , ISBTPI(MAXIDN)
 C
-\XSCGBL
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       SAVE CIDENT , ITYPEI , IVALUI , ISBTPI
 C
@@ -4589,8 +4632,8 @@ C
       CHARACTER*(LCOM) KEYCOM(NCOM)
 C
 C
-\XSCGBL
-\XERVAL
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XERVAL.INC'
 C
 C
       DATA KEYCOM / 'ERROR' , 'DIRECT' , 'END' /
@@ -4649,12 +4692,12 @@ C
 C
 C
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCNT
+      INCLUDE 'XSCCNT.INC'
 C
-\XSCCHR
+      INCLUDE 'XSCCHR.INC'
 C
       CHARACTER*(MAXLAB) CVAR1
 C
@@ -4732,14 +4775,14 @@ C            COPER       CHARACTER ARRAY DEFINING SUBCOMMANDS
 C
 C            NCQUE       INTEGER VARIABLE DEFINING QUEUE UNIT NUMBER
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
       DIMENSION JDEV(4)
-\XSCCNT
-\XSCGBL
+      INCLUDE 'XSCCNT.INC'
+      INCLUDE 'XSCGBL.INC'
 C
-\XSCCHR
+      INCLUDE 'XSCCHR.INC'
 C
 C
       PARAMETER ( NOPR = 4 , LOPR = 8 )
@@ -4747,10 +4790,10 @@ C
 C
 C
 C
-\UFILE
-\XUNITS
-\XCARDS
-\XSSVAL
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
       DATA JDEV / 'S', 'C', 'P', 'Q' /
@@ -4969,14 +5012,14 @@ C            -1          ERROR - NO MORE DESCRIPTORS. A MESSAGE IS
 C                        OUTPUT
 C            +1          SUCCESS
 C
-\PSCSTK
+      INCLUDE 'PSCSTK.INC'
 C
-\XSCDSC
+      INCLUDE 'XSCDSC.INC'
 C
-\XUNITS
-\XSSVAL
-\XSCGBL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C -- FIND NEXT FREE DESCRIPTOR
 C
@@ -5027,7 +5070,7 @@ C
       CHARACTER*(*) CTEXT
 C
 C
-\XSCDSC
+      INCLUDE 'XSCDSC.INC'
 C
 C
       ISTAT = KSCSAD ( LEN ( CTEXT ) , IDESC )
@@ -5163,20 +5206,20 @@ C
       LOGICAL LTERMI
       LOGICAL LEXECU
 C
-\PSCRPT
+      INCLUDE 'PSCRPT.INC'
 C
       CHARACTER*(MAXLAB) CSTNAM
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
       CHARACTER*(MAXLAB) CNAME
       LOGICAL LERROR
 C
 C
 C
-\UFILE
-\XSCCHR
-\XSCGBL
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCGBL.INC'
 C
       DATA IDEFPT / 1 , 0 , 2 , 4 , 6 /
       DATA NDEFS  / 1 , 0 , 2 , 2 , 2 /
@@ -5585,7 +5628,7 @@ C -- CONVERT TEXT FROM DESCRIPTOR TO FORTRAN CHARACTER FORM
 C
       CHARACTER*(*) CTEXT
 C
-\XSCDSC
+      INCLUDE 'XSCDSC.INC'
 C
       IF ( IDESC .LE. 0 ) THEN
         CTEXT = ' '
@@ -5625,7 +5668,7 @@ C            +1          SUCCESS
 C
       LOGICAL LEMPTY , LALLOC , LOUTDS
 C
-\XSCDSC
+      INCLUDE 'XSCDSC.INC'
 C
 C -- CHECK IF INPUT STRING IS EMPTY
 C
@@ -5706,10 +5749,10 @@ C
 C
 C
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCHR
-\XSCGBL
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCGBL.INC'
 C
       PARAMETER ( JINTEG = 1 , JREAL = 2 , JLOGIC = 3 )
 C
@@ -5719,8 +5762,8 @@ C
       DIMENSION IRQTYP(NVAL)
 C
 C
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
       DATA CVALUE / 'MESSAGE' , 'VERIFY' , 'FAST' , 'EVALUATE' ,
@@ -5799,7 +5842,7 @@ C            CLOG        TEXT REPRESENTATIONS OF THE TWO POSSIBLE
 C                        LOGICAL VALUES ( TRUE AND FALSE )
 C
 C
-\PSCRPT
+      INCLUDE 'PSCRPT.INC'
 C
       CHARACTER*(MAXLAB) CVARIB
 C
@@ -5808,12 +5851,12 @@ C
       CHARACTER*5 CLOG(0:1)
 C
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XUNITS
-\XSSVAL
-\XSCCHR
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       EQUIVALENCE ( IVALUE , XVALUE )
 C
@@ -5920,7 +5963,7 @@ C
 C
       LOGICAL LEQUAL , LLESST
 C
-\XSCDSC
+      INCLUDE 'XSCDSC.INC'
 C
 C
       IF ( IDESC1 .LE. 0 ) THEN
@@ -5981,17 +6024,17 @@ C            0,+VE       THE REQUESTED VALUE
 C
 C
 C
-\PSCSTI
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCSTI.INC'
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
 C
-\UFILE
+      INCLUDE 'UFILE.INC'
 C
-\XSCSTK
+      INCLUDE 'XSCSTK.INC'
 C
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C -- CHECK REQUEST IS LEGAL
 C
@@ -6067,11 +6110,11 @@ C
 C
 C
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCHR
-\XSCCHK
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCCHK.INC'
 C
       PARAMETER ( JINTEG = 1 , JREAL = 2 , JLOGIC = 3 , JCHAR = 4)
 C
@@ -6086,8 +6129,8 @@ C
       DIMENSION IRQTYP(NVAL)
 C
 C
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
       EQUIVALENCE ( IVALUE , VALUE )
 C
@@ -6276,12 +6319,12 @@ C
       PARAMETER ( LENDSP = 256 )
       CHARACTER*(LENDSP) CWORK
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XUNITS
-\XSSVAL
-\XSCCHR
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       DATA CTO / 'TO' /
 CJAN99
@@ -6426,9 +6469,9 @@ C
 C      -1          ERROR. VARIABLE NAME IS NOT KNOWN
 C      +1          SUCCESS
 C
-\XUNITS
-\UFILE
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XIOBUF.INC'
 
       DIMENSION IVALUE(ILGTH)
 
@@ -6505,7 +6548,7 @@ C      LENG LENGTH OF TEXT
       CHARACTER*(*) CTEXT
 C
 C
-\XSCDSC
+      INCLUDE 'XSCDSC.INC'
 C
 C
       IF (IDESC .LE. 0) THEN
@@ -6550,15 +6593,15 @@ C
       PARAMETER ( LTYP = 12 , NTYP = 20 )
       CHARACTER*(LTYP) CTYPE(NTYP)
 C
-\PSCMSG
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCMSG
-\XSCCHR
+      INCLUDE 'XSCMSG.INC'
+      INCLUDE 'XSCCHR.INC'
 C
 C
 C
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
 C
@@ -6674,7 +6717,7 @@ C
 C
 C
 C -- CHARACTER BUFFERS FOR GENERATING PROMPT STRINGS
-\XCLWIN
+      INCLUDE 'XCLWIN.INC'
 C
       CHARACTER *256 CBUFFR
 C----- TO HOLD REAL FORMAT EXPRESSION
@@ -6698,26 +6741,26 @@ C
       CHARACTER*(LMOD) CMODIF(NMOD)
 C
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
-\XSCCNT
-\XSCMSG
-\XSCCHR
-\XSCCHK
-\XMENUC
-\XSCGBL
-C
-C
-\XSSVAL
+      INCLUDE 'XSCCNT.INC'
+      INCLUDE 'XSCMSG.INC'
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCCHK.INC'
+      INCLUDE 'XMENUC.INC'
+      INCLUDE 'XSCGBL.INC'
 C
 C
-\UFILE
-\XUNITS
-\XERVAL
-\XIOBUF
+      INCLUDE 'XSSVAL.INC'
+C
+C
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C        CHARACTER*4 CCRICH
-\CAMBLK
+      INCLUDE 'CAMBLK.INC'
 C
 C
       EQUIVALENCE ( IVALUE , VALUE )
@@ -6937,19 +6980,27 @@ C            CALL VGACOL ('BOL', 'YEL', 'CYA' )
             IF (ISSTML .EQ. 3) THEN
 C---- SPECIAL  DOS PROMPT - YELLOW ON CYAN
 C Don't use those funny characters in Cameron.
-&DOS              IF ( LCLOSE ) THEN
+#if defined(_DOS_) 
+              IF ( LCLOSE ) THEN
+#endif
                WRITE ( CMON, 1102) CTOP(1:MLNLEN)
                CALL XPRVDU(NCVDU, 1,0)
-&DOS              ENDIF
+#if defined(_DOS_) 
+              ENDIF
+#endif
               J = 1
               JCP = 1
               DO 1101 I = 1,3
               IF ( IPMBRK(J) .NE. 0 ) THEN
-&DOS                IF ( LCLOSE ) THEN
+#if defined(_DOS_) 
+                IF ( LCLOSE ) THEN
+#endif
                  CMENU(1:) = CBOX(1:)
-&DOS                ELSE
-&DOS                 CMENU(1:) = ' '
-&DOS                ENDIF
+#if defined(_DOS_) 
+                ELSE
+                 CMENU(1:) = ' '
+                ENDIF
+#endif
                 CMENU(2:IPMBRK(J)+1-JCP) = CVAL(JCP:IPMBRK(J))
                 WRITE ( CMON, 1102 ) CMENU(1:MLNLEN)
                 CALL XPRVDU(NCVDU, 1,0)
@@ -6962,11 +7013,15 @@ C Don't use those funny characters in Cameron.
               ENDIF
 1101          CONTINUE
 1103          CONTINUE
-&DOS              IF ( LCLOSE ) THEN
+#if defined(_DOS_) 
+              IF ( LCLOSE ) THEN
+#endif
                WRITE ( CMON, 1102) CBTM(1:MLNLEN)
                CALL XPRVDU(NCVDU, 1,0)
-&DOS              END IF
+#if defined(_DOS_) 
+              END IF
 C----       NORMAL DOS PROMPT - RED ON WHITE
+#endif
             ELSE
 C----- NORMAL TEXT TERMINAL
               J = 1
@@ -7005,32 +7060,36 @@ C
         CALL OUTCOL(1)
        ENDIF
 C----- RECOVER SCRIPT NAME
-&&&GILGIDWXS      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
-&&&GILGIDWXS      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
-&&&GILGIDWXS      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
-&&&GILGIDWXS      CLSTNM = CSCPNM(1:LENNM)
-&&&GILGIDWXS      CALL XCTRIM (CLSTNM,LLSTNM)
-&&&GILGIDWXS      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
-&&&GILGIDWXS      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
-&&&GILGIDWXS         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
-&&&GILGIDWXS     1   CSCPNM(1:LENNM),
-&&&GILGIDWXS     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
-&&&GILGIDWXS      ELSE
-&&&GILGIDWXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
-&&&GILGIDWXS     1  CSCPNM(1:LENNM), ''''
-&&&GILGIDWXS      ENDIF
-&&&GILGIDWXS      WRITE(CMON(3),'(A)') '^^CR'
-&&&GILGIDWXS      CALL XPRVDU(NCVDU,3,0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
+      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
+      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+      CLSTNM = CSCPNM(1:LENNM)
+      CALL XCTRIM (CLSTNM,LLSTNM)
+      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
+      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
+         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
+     1   CSCPNM(1:LENNM),
+     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
+      ELSE
+         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+     1  CSCPNM(1:LENNM), ''''
+      ENDIF
+      WRITE(CMON(3),'(A)') '^^CR'
+      CALL XPRVDU(NCVDU,3,0)
 C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C
+#endif
         ISTAT = KRDLIN ( NCUFU(1) , CLINPB , IINPLN )
 C -- IF NOT IN SILENT MODE ECHO THE TEXT TO THE OUTPUT FOR THE 
 C    GUI VERSION
-&GID        IF ( ( ISILNT .EQ. 0 ) .OR. ( IFAILS .EQ. 1 ) ) THEN
-&GID         WRITE(CMON,'(A)') CLINPB(1:IINPLN)
-&GID         CALL XPRVDU(NCVDU,1,0)
-&GID        ENDIF
+#if defined(_GID_) 
+        IF ( ( ISILNT .EQ. 0 ) .OR. ( IFAILS .EQ. 1 ) ) THEN
+         WRITE(CMON,'(A)') CLINPB(1:IINPLN)
+         CALL XPRVDU(NCVDU,1,0)
+        ENDIF
+#endif
         IF ( ISTAT .LE. 0 ) GO TO 1100
 C
 1200    CONTINUE
@@ -7103,69 +7162,81 @@ CJAN99
 C----  THIS HORRID CODE IS BECAUSE digital visual fortran CANNOT ACCEPT
 C      THE WRITE TO A CHARACTER FORMAT EXPRESSION
        IF ( IVALTP .EQ. ITPREA ) THEN
-#GID         WRITE (CFMTXP, '(''( F'', I2, ''.0)'')') LFMTXP
-&GID       IF (LFMTXP.EQ.1) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F1.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.2) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F2.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.3) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F3.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.4) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F4.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.5) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F5.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.6) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F6.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.7) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F7.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.8) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F8.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.9) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(F9.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.10) THEN
-&GID        READ ( CLINPB(NSTART:NENDIN) , '(F10.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.11) THEN
-&GID        READ ( CLINPB(NSTART:NENDIN) , '(F11.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.12) THEN
-&GID        READ ( CLINPB(NSTART:NENDIN) , '(F12.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.13) THEN
-&GID        READ ( CLINPB(NSTART:NENDIN) , '(F13.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.14) THEN
-&GID        READ ( CLINPB(NSTART:NENDIN) , '(F14.0)', ERR = 9940 ) VALUE
-&GID       ELSEIF (LFMTXP.EQ.15) THEN
-&GID        READ ( CLINPB(NSTART:NENDIN) , '(F15.0)', ERR = 9940 ) VALUE
-&GID       ENDIF
-#GID         READ ( CLINPB(NSTART:NENDIN) , CFMTXP , ERR = 9930 ) VALUE
+#if !defined(_GID_) 
+         WRITE (CFMTXP, '(''( F'', I2, ''.0)'')') LFMTXP
+#else
+       IF (LFMTXP.EQ.1) THEN
+#endif
+#if defined(_GID_) 
+         READ ( CLINPB(NSTART:NENDIN) , '(F1.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.2) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F2.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.3) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F3.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.4) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F4.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.5) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F5.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.6) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F6.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.7) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F7.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.8) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F8.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.9) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(F9.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.10) THEN
+        READ ( CLINPB(NSTART:NENDIN) , '(F10.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.11) THEN
+        READ ( CLINPB(NSTART:NENDIN) , '(F11.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.12) THEN
+        READ ( CLINPB(NSTART:NENDIN) , '(F12.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.13) THEN
+        READ ( CLINPB(NSTART:NENDIN) , '(F13.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.14) THEN
+        READ ( CLINPB(NSTART:NENDIN) , '(F14.0)', ERR = 9940 ) VALUE
+       ELSEIF (LFMTXP.EQ.15) THEN
+        READ ( CLINPB(NSTART:NENDIN) , '(F15.0)', ERR = 9940 ) VALUE
+       ENDIF
+#else
+         READ ( CLINPB(NSTART:NENDIN) , CFMTXP , ERR = 9930 ) VALUE
+#endif
        ELSE IF ( IVALTP .EQ. ITPINT ) THEN
-#GID         WRITE (CFMTXP, '(''( I'',I2,''  )'')') LFMTXP
-&GID       IF (LFMTXP.EQ.1) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I1)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.2) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I2)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.3) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I3)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.4) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I4)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.5) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I5)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.6) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I6)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.7) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I7)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.8) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I8)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.9) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I9)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.10) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I10)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.11) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I11)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.12) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I12)', ERR = 9940 ) IVALUE
-&GID       ELSEIF (LFMTXP.EQ.13) THEN
-&GID         READ ( CLINPB(NSTART:NENDIN) , '(I13)', ERR = 9940 ) IVALUE
-&GID       ENDIF
-#GID      READ ( CLINPB(NSTART:NENDIN) , CFMTXP, ERR = 9940 ) IVALUE
+#if !defined(_GID_) 
+         WRITE (CFMTXP, '(''( I'',I2,''  )'')') LFMTXP
+#else
+       IF (LFMTXP.EQ.1) THEN
+#endif
+#if defined(_GID_) 
+         READ ( CLINPB(NSTART:NENDIN) , '(I1)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.2) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I2)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.3) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I3)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.4) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I4)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.5) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I5)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.6) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I6)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.7) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I7)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.8) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I8)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.9) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I9)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.10) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I10)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.11) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I11)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.12) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I12)', ERR = 9940 ) IVALUE
+       ELSEIF (LFMTXP.EQ.13) THEN
+         READ ( CLINPB(NSTART:NENDIN) , '(I13)', ERR = 9940 ) IVALUE
+       ENDIF
+#else
+      READ ( CLINPB(NSTART:NENDIN) , CFMTXP, ERR = 9940 ) IVALUE
+#endif
        ENDIF
 C
 C -- CHECKING OF KEYWORD DATA AGAINST AN ALLOWED LIST
@@ -7354,8 +7425,8 @@ C      RETURN VALUE OF KSCVAR IS THE VALUE TO BE USED FOR 'KSCPRC'
 C
 C
 C
-\PSCRPT
-\PSCMSG
+      INCLUDE 'PSCRPT.INC'
+      INCLUDE 'PSCMSG.INC'
 C
 C
       CHARACTER*(MAXLAB) CVARIB
@@ -7364,12 +7435,12 @@ C
       CHARACTER*(LTYP) CTYPE(NTYP)
 C
 C
-\XSCCHR
-\XSCGBL
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XSCGBL.INC'
 C
-\XUNITS
-\XSSVAL
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
       EQUIVALENCE ( IVALUE , VALUE )
@@ -7505,21 +7576,21 @@ C
 C
 C
 C
-\PSCSTI
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCSTI.INC'
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
 C
       PARAMETER ( JCOPY = 1 , JZERO = 2 , JCALC = 3 )
       DIMENSION INOPER(LSTACK)
       DIMENSION ICOPY0(LSTACK)
 C
-\UFILE
-\XUNITS
-\XSSVAL
-\XSCSTK
-\XSCGBL
-\XIOBUF
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSCSTK.INC'
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C                   JVARIB JNVARI JNFDAT JNFCHR JEXECU
 C                   JBTYPE JBSTRT JBLEND JNSTAT JREQST
@@ -7650,13 +7721,13 @@ C
       CHARACTER*(*) CLABEL
 C
 C
-\UFILE
-\XUNITS
-\XSSVAL
-\XSCCNT
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSCCNT.INC'
 C
-\XSCGBL
-\XIOBUF
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
 C
 C -- SET DEFAULT SEARCH START POINT
@@ -7728,13 +7799,13 @@ C
 C
       DIMENSION LNTYPE(NTYPE) , LNERR(NERROR)
 C
-\XUNITS
-\XSSVAL
-\UFILE
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
 C
-\XSCGBL
-\XSCCHR
-\XIOBUF
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XSCCHR.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       DATA CCOMP / 'SCRIPT      ' ,
      2 '(LABEL)     ', 'ACTIVATE    ', 'COPY        ',
@@ -7870,18 +7941,18 @@ C
 C -- REDUCE STACK LEVEL BY ONE
 C
 C
-\PSCSTI
-\PSCSTK
+      INCLUDE 'PSCSTI.INC'
+      INCLUDE 'PSCSTK.INC'
 C
 C
 C
-\XSCGBL
-\XSCSTK
-\UFILE
-\XUNITS
-\XSSVAL
+      INCLUDE 'XSCGBL.INC'
+      INCLUDE 'XSCSTK.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
-\XIOBUF
+      INCLUDE 'XIOBUF.INC'
 C
 C
 C
@@ -7935,7 +8006,7 @@ C
       CHARACTER*(*) CNAME
 C
 C
-\PSCRPT
+      INCLUDE 'PSCRPT.INC'
 C
       PARAMETER ( NSTRUC = 5 )
       CHARACTER*(MAXLAB) CADDR
@@ -7975,17 +8046,17 @@ C            ITEM        CODE INDICATING STACK ITEM TO BE UPDATED
 C            IVALUE      NEW VALUE
 C
 C
-\PSCSTI
-\PSCSTK
-\PSCMSG
+      INCLUDE 'PSCSTI.INC'
+      INCLUDE 'PSCSTK.INC'
+      INCLUDE 'PSCMSG.INC'
 C
 C
-\UFILE
+      INCLUDE 'UFILE.INC'
 C
-\XSCSTK
+      INCLUDE 'XSCSTK.INC'
 C
-\XUNITS
-\XSSVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
 C
@@ -8016,3 +8087,4 @@ C
 C
 C
       END
+

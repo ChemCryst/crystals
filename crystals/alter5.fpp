@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:11  rich
+C New CRYSTALS repository
+C
+C Revision 1.5  2003/03/26 10:36:09  rich
+C Prototype #MATCH code. Syntax: #MATCH/MAP atoms/ONTO atoms/END
+C It does the match, refines it, prints stats and writes a cameron.ini
+C and regular.l5i which can be viewed by choosing "Graphics"->"Special"->"existing input files".
+C
 C Revision 1.4  2002/12/16 18:00:27  rich
 C New Perturb command. Allows per parameter shift multipliers, and a general
 C multiplier to apply to all shifts. The shifts respect weights setup in
@@ -35,8 +43,8 @@ CODE FOR XMODL5
       SUBROUTINE XMODL5
 C--SUBROUTINE TO MODIFY THE CONTENTS OF LIST 5.
 
-\XUNITS
-\XERVAL
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XERVAL.INC'
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)

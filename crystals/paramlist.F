@@ -145,13 +145,13 @@ C
 C     Make the param list describe earlier
 C     Returns the amount of space used    
 C
-\ISTORE
-\STORE
-\XLST05
-\XLST41
-\XLST22
-\XLST12
-\QSTORE
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'XLST22.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'QSTORE.INC'
       integer results_size
       integer results(results_size)
       integer atom_links(N5+md12o)    ! An array of links to the atom and parameter parts in L12
@@ -165,7 +165,7 @@ C --------- Functions called ---------
 
       param_list_make = n12+md12o ! set the param list to the number of parameters there are
 
-      call XZEROF(atom_links(1), N5+md120) ! zero all the links.
+      call XZEROF(atom_links(1), N5+md12o) ! zero all the links.
       call XZEROF(results, results_size) ! zero all the results.
 
       if (KHUNTR (5, 0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
@@ -395,3 +395,4 @@ C
       return 
       end
       
+

@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:10  rich
+C New CRYSTALS repository
+C
+C Revision 1.7  2002/03/13 12:34:00  richard
+C Added argument to XBCALC call.
+C
 C Revision 1.6  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -43,7 +49,7 @@ C
 CODE FOR XDISTC
       SUBROUTINE XDISTC
 C--MAIN DISTANCE ANGLES CONTROL ROUTINE.
-\XUNITS
+      INCLUDE 'XUNITS.INC'
 
 C--LOAD THE NEXT '#INSTRUCTION'
 

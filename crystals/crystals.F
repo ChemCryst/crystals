@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/13 16:16:07  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:11  rich
+C New CRYSTALS repository
+C
+C Revision 1.13  2003/05/07 12:18:53  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.12  2002/07/22 10:47:32  richard
 C Save and restore IERFLG around XGUIUP call, otherwise the error contingency
 C in SCRIPTS is never activated.
@@ -24,10 +36,17 @@ C
 C
 CODE FOR CRYSTL
 C      winapp 500000,1000000
-&GID      SUBROUTINE CRYSTL
-&GIL      SUBROUTINE CRYSTL
-&WXS      SUBROUTINE CRYSTL
-###GIDGILWXS      PROGRAM CRYSTL
+#if defined(_GID_) 
+      SUBROUTINE CRYSTL
+#endif
+#if defined(_GIL_) 
+      SUBROUTINE CRYSTL
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE CRYSTL
+#endif
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+      PROGRAM CRYSTL
 C
 C
 C     ******************************************************
@@ -41,147 +60,170 @@ C
 C             THE NAME OF THE STARTUP FILE MAY EITHER BE SET AS
 C             DATA IN PRESETS, OR IN AN ASSIGNMENT BELOW.
 C
-\ISTORE
+#endif
+      INCLUDE 'ISTORE.INC'
       DIMENSION PROGLS(4,18)
 C--
 C
-\STORE
-\TSSCHR
-&PPC      CHARACTER*40 theText
+      INCLUDE 'STORE.INC'
+      INCLUDE 'TSSCHR.INC'
+#if defined(_PPC_) 
+      CHARACTER*40 theText
 C
-\XDRIVE
-\XUNITS
-\XSSVAL
-\XCARDS
-\XPRGNM
-\XTAPES
-\XDISC
-\XDISCS
-\XSSCHR
-\XIOBUF
-\XCHARS
-&PPC\XGSTOP
-&PPC\CFLDAT
+#endif
+      INCLUDE 'XDRIVE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XPRGNM.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XDISC.INC'
+      INCLUDE 'XDISCS.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XCHARS.INC'
+#if defined(_PPC_) 
+\XGSTOP
+\CFLDAT
 C
-\QSTORE
+#endif
+      INCLUDE 'QSTORE.INC'
 
       INTEGER PROGLS
 C
 C
 C -- DECLARE EXTERNAL REFERENCES TO BLOCK DATA SEGMENTS
 C
-&PPCC**** Commented out for Mac OS, COMMON must be in the same module
-&PPCC**** 13.11.1995 Ludwig Macko
-&PPCC****
-#PPC      EXTERNAL CRYBLK, SYNBLK, UTIBLK
+#if defined(_PPC_) 
+C**** Commented out for Mac OS, COMMON must be in the same module
+C**** 13.11.1995 Ludwig Macko
+C****
+#else
+      EXTERNAL CRYBLK, SYNBLK, UTIBLK
 C
 C -- DECLARE LIST 11 REFERENCES TO RESERVE EXTENSIBLE COMMON
 C
+#endif
       EXTERNAL XFAL11,KADD11,XIN11
-&DOS      EXTERNAL MYDRIV
+#if defined(_DOS_) 
+      EXTERNAL MYDRIV
 C
 C -- SET UP AVAILABLE PROGRAM LIST.
 C    NAMES RESTRICTED TO FIRST 16 CHARACTERS OF THOSE IN COMMANDFILE
 C
+#endif
       DATA NPROG / 18 /
-#HOL      DATA PROGLS(1,1)  / 'CRYS' / , PROGLS(2,1)  / 'TALS' /
-#HOL      DATA PROGLS(3,1)  / 'INPU' / , PROGLS(4,1)  / 'T   ' /
-#HOL      DATA PROGLS(1,2)  / 'CRYS' / , PROGLS(2,2)  / 'TALS' /
-#HOL      DATA PROGLS(3,2)  / 'FIDD' / , PROGLS(4,2)  / 'LE  ' /
-#HOL      DATA PROGLS(1,3)  / 'CRYS' / , PROGLS(2,3)  / 'TALS' /
-#HOL      DATA PROGLS(3,3)  / 'CALC' / , PROGLS(4,3)  / 'ULAT' /
-#HOL      DATA PROGLS(1,4)  / 'CRYS' / , PROGLS(2,4)  / 'TALS' /
-#HOL      DATA PROGLS(3,4)  / 'INVE' / , PROGLS(4,4)  / 'RT  ' /
-#HOL      DATA PROGLS(1,5)  / 'CRYS' / , PROGLS(2,5)  / 'TALS' /
-#HOL      DATA PROGLS(3,5)  / 'REST' / , PROGLS(4,5)  / 'RAIN' /
-#HOL      DATA PROGLS(1,6)  / 'CRYS' / , PROGLS(2,6)  / 'TALS' /
-#HOL      DATA PROGLS(3,6)  / 'GEOM' / , PROGLS(4,6)  / 'ETRY' /
-#HOL      DATA PROGLS(1,7)  / 'CRYS' / , PROGLS(2,7)  / 'TALS' /
-#HOL      DATA PROGLS(3,7)  / 'ANIS' / , PROGLS(4,7)  / 'O   ' /
-#HOL      DATA PROGLS(1,8)  / 'CRYS' / , PROGLS(2,8)  / 'TALS' /
-#HOL      DATA PROGLS(3,8)  / 'ALTE' / , PROGLS(4,8)  / 'R5  ' /
-#HOL      DATA PROGLS(1,9)  / 'CRYS' / , PROGLS(2,9)  / 'TALS' /
-#HOL      DATA PROGLS(3,9)  / 'WEIG' / , PROGLS(4,9)  / 'HT  ' /
-#HOL      DATA PROGLS(1,10) / 'CRYS' / , PROGLS(2,10) / 'TALS' /
-#HOL      DATA PROGLS(3,10) / 'DIST' / , PROGLS(4,10) / 'ANCE' /
-#HOL      DATA PROGLS(1,11) / 'CRYS' / , PROGLS(2,11) / 'TALS' /
-#HOL      DATA PROGLS(3,11) / 'FOUR' / , PROGLS(4,11) / 'IER ' /
-#HOL      DATA PROGLS(1,12) / 'CRYS' / , PROGLS(2,12) / 'TALS' /
-#HOL      DATA PROGLS(3,12) / 'INPU' / , PROGLS(4,12) / 'T6  ' /
-#HOL      DATA PROGLS(1,13) / 'CRYS' / , PROGLS(2,13) / 'TALS' /
-#HOL      DATA PROGLS(3,13) / 'PROC' / , PROGLS(4,13) / 'ESS6' /
-#HOL      DATA PROGLS(1,14) / 'CRYS' / , PROGLS(2,14) / 'TALS' /
-#HOL      DATA PROGLS(3,14) / 'TRIA' / , PROGLS(4,14) / 'L   ' /
-#HOL      DATA PROGLS(1,15) / 'CRYS' / , PROGLS(2,15) / 'TALS' /
-#HOL      DATA PROGLS(3,15) / 'PROC' / , PROGLS(4,15) / 'ESS ' /
-#HOL      DATA PROGLS(1,16) / 'CRYS' / , PROGLS(2,16) / 'TALS' /
-#HOL      DATA PROGLS(3,16) / 'PUBL' / , PROGLS(4,16) / 'ISH ' /
-#HOL      DATA PROGLS(1,17) / 'CRYS' / , PROGLS(2,17) / 'TALS' /
-#HOL      DATA PROGLS(3,17) / 'FORE' / , PROGLS(4,17) / 'IGN ' /
-#HOL      DATA PROGLS(1,18) / 'CRYS' / , PROGLS(2,18) / 'TALS' /
-#HOL      DATA PROGLS(3,18) / 'DIFA' / , PROGLS(4,18) / 'BS  ' /
-&HOL      DATA PROGLS(1,1)  / 4HCRYS / , PROGLS(2,1)  / 4HTALS /
-&HOL      DATA PROGLS(3,1)  / 4HINPU / , PROGLS(4,1)  / 4HT    /
-&HOL      DATA PROGLS(1,2)  / 4HCRYS / , PROGLS(2,2)  / 4HTALS /
-&HOL      DATA PROGLS(3,2)  / 4HFIDD / , PROGLS(4,2)  / 4HLE   /
-&HOL      DATA PROGLS(1,3)  / 4HCRYS / , PROGLS(2,3)  / 4HTALS /
-&HOL      DATA PROGLS(3,3)  / 4HCALC / , PROGLS(4,3)  / 4HULAT /
-&HOL      DATA PROGLS(1,4)  / 4HCRYS / , PROGLS(2,4)  / 4HTALS /
-&HOL      DATA PROGLS(3,4)  / 4HINVE / , PROGLS(4,4)  / 4HRT   /
-&HOL      DATA PROGLS(1,5)  / 4HCRYS / , PROGLS(2,5)  / 4HTALS /
-&HOL      DATA PROGLS(3,5)  / 4HREST / , PROGLS(4,5)  / 4HRAIN /
-&HOL      DATA PROGLS(1,6)  / 4HCRYS / , PROGLS(2,6)  / 4HTALS /
-&HOL      DATA PROGLS(3,6)  / 4HGEOM / , PROGLS(4,6)  / 4HETRY /
-&HOL      DATA PROGLS(1,7)  / 4HCRYS / , PROGLS(2,7)  / 4HTALS /
-&HOL      DATA PROGLS(3,7)  / 4HANIS / , PROGLS(4,7)  / 4HO    /
-&HOL      DATA PROGLS(1,8)  / 4HCRYS / , PROGLS(2,8)  / 4HTALS /
-&HOL      DATA PROGLS(3,8)  / 4HALTE / , PROGLS(4,8)  / 4HR5   /
-&HOL      DATA PROGLS(1,9)  / 4HCRYS / , PROGLS(2,9)  / 4HTALS /
-&HOL      DATA PROGLS(3,9)  / 4HWEIG / , PROGLS(4,9)  / 4HHT   /
-&HOL      DATA PROGLS(1,10) / 4HCRYS / , PROGLS(2,10) / 4HTALS /
-&HOL      DATA PROGLS(3,10) / 4HDIST / , PROGLS(4,10) / 4HANCE /
-&HOL      DATA PROGLS(1,11) / 4HCRYS / , PROGLS(2,11) / 4HTALS /
-&HOL      DATA PROGLS(3,11) / 4HFOUR / , PROGLS(4,11) / 4HIER  /
-&HOL      DATA PROGLS(1,12) / 4HCRYS / , PROGLS(2,12) / 4HTALS /
-&HOL      DATA PROGLS(3,12) / 4HINPU / , PROGLS(4,12) / 4HT6   /
-&HOL      DATA PROGLS(1,13) / 4HCRYS / , PROGLS(2,13) / 4HTALS /
-&HOL      DATA PROGLS(3,13) / 4HPROC / , PROGLS(4,13) / 4HESS6 /
-&HOL      DATA PROGLS(1,14) / 4HCRYS / , PROGLS(2,14) / 4HTALS /
-&HOL      DATA PROGLS(3,14) / 4HTRIA / , PROGLS(4,14) / 4HL    /
-&HOL      DATA PROGLS(1,15) / 4HCRYS / , PROGLS(2,15) / 4HTALS /
-&HOL      DATA PROGLS(3,15) / 4HPROC / , PROGLS(4,15) / 4HESS  /
-&HOL      DATA PROGLS(1,16) / 4HCRYS / , PROGLS(2,16) / 4HTALS /
-&HOL      DATA PROGLS(3,16) / 4HPUBL / , PROGLS(4,16) / 4HISH  /
-&HOL      DATA PROGLS(1,17) / 4HCRYS / , PROGLS(2,17) / 4HTALS /
-&HOL      DATA PROGLS(3,17) / 4HFORE / , PROGLS(4,17) / 4HIGN  /
-&HOL      DATA PROGLS(1,18) / 4HCRYS / , PROGLS(2,18) / 4HTALS /
-&HOL      DATA PROGLS(3,18) / 4HDIFA / , PROGLS(4,18) / 4HBS   /
+#if !defined(_HOL_) 
+      DATA PROGLS(1,1)  / 'CRYS' / , PROGLS(2,1)  / 'TALS' /
+      DATA PROGLS(3,1)  / 'INPU' / , PROGLS(4,1)  / 'T   ' /
+      DATA PROGLS(1,2)  / 'CRYS' / , PROGLS(2,2)  / 'TALS' /
+      DATA PROGLS(3,2)  / 'FIDD' / , PROGLS(4,2)  / 'LE  ' /
+      DATA PROGLS(1,3)  / 'CRYS' / , PROGLS(2,3)  / 'TALS' /
+      DATA PROGLS(3,3)  / 'CALC' / , PROGLS(4,3)  / 'ULAT' /
+      DATA PROGLS(1,4)  / 'CRYS' / , PROGLS(2,4)  / 'TALS' /
+      DATA PROGLS(3,4)  / 'INVE' / , PROGLS(4,4)  / 'RT  ' /
+      DATA PROGLS(1,5)  / 'CRYS' / , PROGLS(2,5)  / 'TALS' /
+      DATA PROGLS(3,5)  / 'REST' / , PROGLS(4,5)  / 'RAIN' /
+      DATA PROGLS(1,6)  / 'CRYS' / , PROGLS(2,6)  / 'TALS' /
+      DATA PROGLS(3,6)  / 'GEOM' / , PROGLS(4,6)  / 'ETRY' /
+      DATA PROGLS(1,7)  / 'CRYS' / , PROGLS(2,7)  / 'TALS' /
+      DATA PROGLS(3,7)  / 'ANIS' / , PROGLS(4,7)  / 'O   ' /
+      DATA PROGLS(1,8)  / 'CRYS' / , PROGLS(2,8)  / 'TALS' /
+      DATA PROGLS(3,8)  / 'ALTE' / , PROGLS(4,8)  / 'R5  ' /
+      DATA PROGLS(1,9)  / 'CRYS' / , PROGLS(2,9)  / 'TALS' /
+      DATA PROGLS(3,9)  / 'WEIG' / , PROGLS(4,9)  / 'HT  ' /
+      DATA PROGLS(1,10) / 'CRYS' / , PROGLS(2,10) / 'TALS' /
+      DATA PROGLS(3,10) / 'DIST' / , PROGLS(4,10) / 'ANCE' /
+      DATA PROGLS(1,11) / 'CRYS' / , PROGLS(2,11) / 'TALS' /
+      DATA PROGLS(3,11) / 'FOUR' / , PROGLS(4,11) / 'IER ' /
+      DATA PROGLS(1,12) / 'CRYS' / , PROGLS(2,12) / 'TALS' /
+      DATA PROGLS(3,12) / 'INPU' / , PROGLS(4,12) / 'T6  ' /
+      DATA PROGLS(1,13) / 'CRYS' / , PROGLS(2,13) / 'TALS' /
+      DATA PROGLS(3,13) / 'PROC' / , PROGLS(4,13) / 'ESS6' /
+      DATA PROGLS(1,14) / 'CRYS' / , PROGLS(2,14) / 'TALS' /
+      DATA PROGLS(3,14) / 'TRIA' / , PROGLS(4,14) / 'L   ' /
+      DATA PROGLS(1,15) / 'CRYS' / , PROGLS(2,15) / 'TALS' /
+      DATA PROGLS(3,15) / 'PROC' / , PROGLS(4,15) / 'ESS ' /
+      DATA PROGLS(1,16) / 'CRYS' / , PROGLS(2,16) / 'TALS' /
+      DATA PROGLS(3,16) / 'PUBL' / , PROGLS(4,16) / 'ISH ' /
+      DATA PROGLS(1,17) / 'CRYS' / , PROGLS(2,17) / 'TALS' /
+      DATA PROGLS(3,17) / 'FORE' / , PROGLS(4,17) / 'IGN ' /
+      DATA PROGLS(1,18) / 'CRYS' / , PROGLS(2,18) / 'TALS' /
+      DATA PROGLS(3,18) / 'DIFA' / , PROGLS(4,18) / 'BS  ' /
+#else
+      DATA PROGLS(1,1)  / 4HCRYS / , PROGLS(2,1)  / 4HTALS /
+#endif
+#if defined(_HOL_) 
+      DATA PROGLS(3,1)  / 4HINPU / , PROGLS(4,1)  / 4HT    /
+      DATA PROGLS(1,2)  / 4HCRYS / , PROGLS(2,2)  / 4HTALS /
+      DATA PROGLS(3,2)  / 4HFIDD / , PROGLS(4,2)  / 4HLE   /
+      DATA PROGLS(1,3)  / 4HCRYS / , PROGLS(2,3)  / 4HTALS /
+      DATA PROGLS(3,3)  / 4HCALC / , PROGLS(4,3)  / 4HULAT /
+      DATA PROGLS(1,4)  / 4HCRYS / , PROGLS(2,4)  / 4HTALS /
+      DATA PROGLS(3,4)  / 4HINVE / , PROGLS(4,4)  / 4HRT   /
+      DATA PROGLS(1,5)  / 4HCRYS / , PROGLS(2,5)  / 4HTALS /
+      DATA PROGLS(3,5)  / 4HREST / , PROGLS(4,5)  / 4HRAIN /
+      DATA PROGLS(1,6)  / 4HCRYS / , PROGLS(2,6)  / 4HTALS /
+      DATA PROGLS(3,6)  / 4HGEOM / , PROGLS(4,6)  / 4HETRY /
+      DATA PROGLS(1,7)  / 4HCRYS / , PROGLS(2,7)  / 4HTALS /
+      DATA PROGLS(3,7)  / 4HANIS / , PROGLS(4,7)  / 4HO    /
+      DATA PROGLS(1,8)  / 4HCRYS / , PROGLS(2,8)  / 4HTALS /
+      DATA PROGLS(3,8)  / 4HALTE / , PROGLS(4,8)  / 4HR5   /
+      DATA PROGLS(1,9)  / 4HCRYS / , PROGLS(2,9)  / 4HTALS /
+      DATA PROGLS(3,9)  / 4HWEIG / , PROGLS(4,9)  / 4HHT   /
+      DATA PROGLS(1,10) / 4HCRYS / , PROGLS(2,10) / 4HTALS /
+      DATA PROGLS(3,10) / 4HDIST / , PROGLS(4,10) / 4HANCE /
+      DATA PROGLS(1,11) / 4HCRYS / , PROGLS(2,11) / 4HTALS /
+      DATA PROGLS(3,11) / 4HFOUR / , PROGLS(4,11) / 4HIER  /
+      DATA PROGLS(1,12) / 4HCRYS / , PROGLS(2,12) / 4HTALS /
+      DATA PROGLS(3,12) / 4HINPU / , PROGLS(4,12) / 4HT6   /
+      DATA PROGLS(1,13) / 4HCRYS / , PROGLS(2,13) / 4HTALS /
+      DATA PROGLS(3,13) / 4HPROC / , PROGLS(4,13) / 4HESS6 /
+      DATA PROGLS(1,14) / 4HCRYS / , PROGLS(2,14) / 4HTALS /
+      DATA PROGLS(3,14) / 4HTRIA / , PROGLS(4,14) / 4HL    /
+      DATA PROGLS(1,15) / 4HCRYS / , PROGLS(2,15) / 4HTALS /
+      DATA PROGLS(3,15) / 4HPROC / , PROGLS(4,15) / 4HESS  /
+      DATA PROGLS(1,16) / 4HCRYS / , PROGLS(2,16) / 4HTALS /
+      DATA PROGLS(3,16) / 4HPUBL / , PROGLS(4,16) / 4HISH  /
+      DATA PROGLS(1,17) / 4HCRYS / , PROGLS(2,17) / 4HTALS /
+      DATA PROGLS(3,17) / 4HFORE / , PROGLS(4,17) / 4HIGN  /
+      DATA PROGLS(1,18) / 4HCRYS / , PROGLS(2,18) / 4HTALS /
+      DATA PROGLS(3,18) / 4HDIFA / , PROGLS(4,18) / 4HBS   /
 C
 C Re-initialise system variables in case starting again.
+#endif
       CALL CRESET
 C
 C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
       CALL FBCINI
-&PPC      CALL envini
-&PPC      CALL cabout
-&PPC      DISKOP = 0
-&PPC      GLSTOP = 0
+#if defined(_PPC_) 
+      CALL envini
+      CALL cabout
+      DISKOP = 0
+      GLSTOP = 0
 C
 cnov98 - disable argument type checking
-&DOS      call suppress_argument_type_checks@
+#endif
+#if defined(_DOS_) 
+      call suppress_argument_type_checks@
+#endif
       CALL STCTLC
 C
 C -- ASSIGN AND OPEN STARTUP CONTROL FILE - CSSCST AND LSSCST
 C    ARE SET IN BLOCK DATA IN PRESETS. THE LOGICAL NAME MAT BE
 C    EXPANDED
-#PPC      CALL MTRNLG ( CSSCST, 'OLD', LSSCST)
+#if !defined(_PPC_) 
+      CALL MTRNLG ( CSSCST, 'OLD', LSSCST)
 C----- ALTERNATIVELY, THAY CAN BE SET HERE
 C      CSSCST = '\CRYSTALS\SRT\CRYSTALS.SRT'
 C      LSSCST =  26
 C
-&DOSC----- HOOK IN THE SALFORD DOS DRIVER TO COUNT LINES
+#endif
+#if defined(_DOS_) 
+C----- HOOK IN THE SALFORD DOS DRIVER TO COUNT LINES
 CWIN_32&DOS      OPEN ( NCVDU, STATUS = 'UNKNOWN', DRIVER = MYDRIV)
 C
+#endif
       IF ( ISSSFI .GT. 0 ) THEN
         ISTAT = KFLOPN ( NCRU ,CSSCST(1:LSSCST),ISSOLD,ISSREA,1,ISSSEQ)
         IF ( ISTAT .LE. 0 ) THEN
@@ -279,8 +321,13 @@ C
 9990  CONTINUE
 C      STOP 'CRYSTALS START ERROR'
       CALL GUEXIT (2004)
-&PPCCS***
-&PPC9999  CONTINUE
-&PPCCE***
+#if defined(_PPC_) 
+CS***
+9999  CONTINUE
+CE***
+#endif
       END
-&PPCC
+#if defined(_PPC_) 
+C
+
+#endif

@@ -1,4 +1,16 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2005/01/07 11:56:53  rich
+C Add some blank lines between some #if and #endifs.
+C
+C Revision 1.2  2004/12/13 16:16:08  rich
+C Changed GIL to _GIL_ etc.
+C
+C Revision 1.1.1.1  2004/12/13 11:16:09  rich
+C New CRYSTALS repository
+C
+C Revision 1.70  2004/04/16 09:34:41  rich
+C Change bonds from black to very dark grey.
+C
 C Revision 1.69  2004/02/13 12:15:05  rich
 C Reduce sig figs in popup bond length display on model. These bond lengths
 C can get out of date as they reflect the last time the bonding network
@@ -260,8 +272,8 @@ C RIC: Removed unused routine GUI()
 C
 CODE FOR GUIBLK
       BLOCK DATA GUIBLK
-\XGUIOV
-\QGUIOV
+      INCLUDE 'XGUIOV.INC'
+      INCLUDE 'QGUIOV.INC'
       DATA ISERIA/0/, NATINF/0/
       DATA LGUIL1/.FALSE./
       DATA LGUIL2/.FALSE./
@@ -273,10 +285,10 @@ CODE FOR GUIBLK
 
 CODE FOR MENUUP (Updates the flags for the menus)
       SUBROUTINE MENUUP
-\XUNITS
-\XIOBUF
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
       INTEGER LCR
-\XGUIOV
+      INCLUDE 'XGUIOV.INC'
       LCR = 1
 
       IF(KEXIST(1).EQ.1)THEN
@@ -396,9 +408,9 @@ C
 CODE FOR CRDIST2
       SUBROUTINE CRDIST2
 C--SET UP A BPD VALUES
-\XCONST
-\XPDS
-\XGUIOV
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XPDS.INC'
+      INCLUDE 'XGUIOV.INC'
 C--SET UP THE SHIFT DATA
       DO 1050 I=1,3
            K=9+I
@@ -424,8 +436,8 @@ C
 C--THE RETURN VALUE OF 'XDSTN2' IS THE DISTANCE SQUARED.
 C
       DIMENSION A(3),B(3),C(3),D(3)
-\XCONST
-\XGUIOV
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XGUIOV.INC'
 C
 C--SUBTRACT THE VECTORS
       CALL XSUBTR(A(1),B(1),C(1),3)
@@ -465,7 +477,7 @@ C  BPD(4-6)  MIINIMUM ALONG EACH OF THE AXIAL DIRECTIONS.
 C  BPD(7-9)  MAXIMUM ALONG EACH OF THE AXIAL DIRECTIONS.
 C
 C--
-\XPDS
+      INCLUDE 'XPDS.INC'
 C
       KDIST2=-1
 C--JUMP THE ATOM TO AT LEAST JUST BEFORE THE REQUIRED VOLUME
@@ -501,7 +513,7 @@ C  BPD(4-6)  MIINIMUM ALONG EACH OF THE AXIAL DIRECTIONS.
 C  BPD(7-9)  MAXIMUM ALONG EACH OF THE AXIAL DIRECTIONS.
 C
 C--
-\XPDS
+      INCLUDE 'XPDS.INC'
 C
 C--CHECK IF WE GONE FAR ENOUGH BACKWARDS
 1000  CONTINUE
@@ -537,32 +549,32 @@ C   -ve - update list -IULN, but don't touch store. ( We may use STR11 )
 C         for list 5, this means that 1, 2, 5, 29 and 41 must have been
 c         loaded by the calling routine.
 
-\ISTORE
-\STORE
-\XUNITS
-\UFILE
-\XIOBUF
-\XSSVAL
-\XOPVAL
-\XGUIOV
-\QSTORE
-\QGUIOV
-\XCONST 
-\XLST05
-\XLST25
-\XLST04
-\XLST01
-\XLST02
-\XLST23
-\XLST13
-\XLST29
-\XLST30
-\XLST41
-\HEADES 
-\TYPE11
-\XSTR11 
-\QSTR11
-\XDISCB
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XGUIOV.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'QGUIOV.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST25.INC'
+      INCLUDE 'XLST04.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'HEADES.INC'
+      INCLUDE 'TYPE11.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'QSTR11.INC'
+      INCLUDE 'XDISCB.INC'
 
       DIMENSION JDEV(4)
       DIMENSION CARD(20)
@@ -845,8 +857,11 @@ C Look for properties in our cache: (things like Q, which are not in 29).
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 
-###LINGILWXS             CFILEN = 'CRYSDIR:script\propwin.dat'
-&&&LINGILWXS             CFILEN = 'CRYSDIR:script/propwin.dat'
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+             CFILEN = 'CRYSDIR:script\propwin.dat'
+#else
+             CFILEN = 'CRYSDIR:script/propwin.dat'
+#endif
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(WEXIST) THEN
@@ -908,8 +923,11 @@ C Get colour definition from our cache:
                IF ( KFNDPR .EQ. 0 ) THEN
 
 C Get the colour definition for this colour from colour.cmn and cache it.
-###GILLINWXS                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
-&&&GILLINWXS                  CFILEN = 'CRYSDIR:script/colour.cmn'
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
+#else
+                  CFILEN = 'CRYSDIR:script/colour.cmn'
+#endif
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(WEXIST) THEN
@@ -972,9 +990,11 @@ C We now have an orthogonal tensor in TENSOR(3,3).
 
 c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
-##DVFLIN         CALL ZEIGEN(TENSOR,ROTN)
+#if !defined(_DVF_) && !defined(_LIN_) 
+         CALL ZEIGEN(TENSOR,ROTN)
 
 C Filter out tiny axes
+#endif
                  TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
                  TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
                  TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
@@ -1034,42 +1054,48 @@ C                  STORE(I5+3) = 0.0
 
                      CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP)
 
-##LINDVF                CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
-##LINDVF     1          NINT(STR11(IPLACE)*GSCALE),
-##LINDVF     5          NINT(STR11(IPLACE+1)*GSCALE),
-##LINDVF     6          NINT(STR11(IPLACE+2)*GSCALE),
-##LINDVF     7          NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-##LINDVF     8          NINT(1000*STORE(I5+2)), COV*GSCALE,
-##LINDVF     2          NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-##LINDVF     3          AXES(1,1),AXES(2,1),AXES(3,1),
-##LINDVF     3          AXES(1,2),AXES(2,2),AXES(3,2),
-##LINDVF     3          AXES(1,3),AXES(2,3),AXES(3,3),
-##LINDVF     4          STORE(I5+4),STORE(I5+5),STORE(I5+6),
-##LINDVF     5          ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13))
+#if !defined(_DVF_) && !defined(_LIN_) 
+                CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
+     1          NINT(STR11(IPLACE)*GSCALE),
+     5          NINT(STR11(IPLACE+1)*GSCALE),
+     6          NINT(STR11(IPLACE+2)*GSCALE),
+     7          NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8          NINT(1000*STORE(I5+2)), COV*GSCALE,
+     2          NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+     3          AXES(1,1),AXES(2,1),AXES(3,1),
+     3          AXES(1,2),AXES(2,2),AXES(3,2),
+     3          AXES(1,3),AXES(2,3),AXES(3,3),
+     4          STORE(I5+4),STORE(I5+5),STORE(I5+6),
+     5          ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13))
 
+#endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
-##LINDVF               CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-##LINDVF     5         NINT(STR11(IPLACE+1)*GSCALE),
-##LINDVF     6         NINT(STR11(IPLACE+2)*GSCALE),
-##LINDVF     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-##LINDVF     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-##LINDVF     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-##LINDVF     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
-##LINDVF     4         NINT(STORE(I5+8) * GSCALE) )
+#if !defined(_DVF_) && !defined(_LIN_) 
+               CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5         NINT(STR11(IPLACE+1)*GSCALE),
+     6         NINT(STR11(IPLACE+2)*GSCALE),
+     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
+     4         NINT(STORE(I5+8) * GSCALE) )
 
+#endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 
-##LINDVF               CALL FSTRNG(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-##LINDVF     5         NINT(STR11(IPLACE+1)*GSCALE),
-##LINDVF     6         NINT(STR11(IPLACE+2)*GSCALE),
-##LINDVF     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-##LINDVF     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-##LINDVF     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-##LINDVF     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
-##DVFLIN     4         NINT(STORE(I5+8) * GSCALE),
-##LINDVF     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0))
+#if !defined(_DVF_) && !defined(_LIN_) 
+               CALL FSTRNG(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5         NINT(STR11(IPLACE+1)*GSCALE),
+     6         NINT(STR11(IPLACE+2)*GSCALE),
+     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
+     4         NINT(STORE(I5+8) * GSCALE),
+     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0))
 
+#endif
                END IF
 
                IPLACE = IPLACE + 3
@@ -1205,17 +1231,21 @@ c               CALL XPRVDU(NCVDU, 2,0)
                CALL XCTRIM( CMON(1), LTMN )
 
                IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
-##LINDVF          CALL FSTBND(NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
-##LINDVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
-##LINDVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
-##LINDVF     1             KR,KG,KB,NINT(GSCALE*0.25),ISTORE(M41B+12),
-##LINDVF     1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
+#if !defined(_DVF_) && !defined(_LIN_) 
+          CALL FSTBND(NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+     1             KR,KG,KB,NINT(GSCALE*0.25),ISTORE(M41B+12),
+     1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
+#endif
                ELSE                       !Bond across symm op.
-##LINDVF         CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
-##LINDVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
-##LINDVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
-##LINDVF     1             KR,KG,KB,NINT(GSCALE*0.25),-ISTORE(M41B+12),
-##LINDVF     1        2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
+#if !defined(_DVF_) && !defined(_LIN_) 
+         CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+     1             KR,KG,KB,NINT(GSCALE*0.25),-ISTORE(M41B+12),
+     1        2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
+#endif
                END IF
              END DO
 
@@ -1288,12 +1318,13 @@ c     1                            CLAB2(1:LLAB2),'''',
 c     1                  ' ''et al. Aromatic Ring'' ', 101
 c               CALL XPRVDU(NCVDU, 2,0)
 
-##LINDVF         CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
-##LINDVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
-##LINDVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
-##LINDVF     1             0,0,0,NINT(GSCALE*0.25),101,
-##LINDVF     1             ISTORE(M41S),ISTORE(M41S+1),13,
-##LINDVF     1             'Aromatic Ring',0,'' )
+#if !defined(_DVF_) && !defined(_LIN_) 
+         CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+     1             0,0,0,NINT(GSCALE*0.25),101,
+     1             ISTORE(M41S),ISTORE(M41S+1),13,
+     1             'Aromatic Ring',0,'' )
 
 
 c               WRITE ( CMON,'(A,6F8.5)')
@@ -1301,6 +1332,7 @@ c     1                 '  AROMATIC RING: ',
 c     1                  (STR11(ICENT+KJ),KJ=0,2),
 c     1                  (STR11(IVECT+KJ),KJ=6,8)
 c               CALL XPRVDU(NCVDU, 1,0)
+#endif
              ENDDO
 
              WRITE (CMON,'(A/A)')'^^GR SHOW','^^CW'
@@ -1998,266 +2030,432 @@ c      END
 
 
 
-&&GILGID      SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
-&&GILGID     1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
-&WXS      SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
-&WXS     1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
+     1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
+     1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
 C
-&GID      INTERFACE
-&GID          SUBROUTINE FASTBOND (JX1, JY1, JZ1, JX2, JY2, JZ2,
-&GID     1 JR,JG,JB,JRAD,JBT,JNP,KPTS,DLABL,DSLABL)
-&GID          !DEC$ ATTRIBUTES C :: fastbond
-&GID          !DEC$ ATTRIBUTES VALUE :: JX1
-&GID          !DEC$ ATTRIBUTES VALUE :: JY1
-&GID          !DEC$ ATTRIBUTES VALUE :: JZ1
-&GID          !DEC$ ATTRIBUTES VALUE :: JX2
-&GID          !DEC$ ATTRIBUTES VALUE :: JY2
-&GID          !DEC$ ATTRIBUTES VALUE :: JZ2
-&GID          !DEC$ ATTRIBUTES VALUE :: JR
-&GID          !DEC$ ATTRIBUTES VALUE :: JG
-&GID          !DEC$ ATTRIBUTES VALUE :: JB
-&GID          !DEC$ ATTRIBUTES VALUE :: JRAD
-&GID          !DEC$ ATTRIBUTES VALUE :: JBT
-&GID          !DEC$ ATTRIBUTES VALUE :: JNP
-&GID          !DEC$ ATTRIBUTES REFERENCE :: KPTS
-&GID          !DEC$ ATTRIBUTES REFERENCE :: DLABL
-&GID          !DEC$ ATTRIBUTES REFERENCE :: DSLABL
-&GID          INTEGER JX1, JY1, JZ1, JX2, JY2, JZ2
-&GID          INTEGER JR, JG, JB, JRAD, JBT, JNP, KPTS(*)
-&GID          CHARACTER DLABL, DSLABL
-&GID          END SUBROUTINE FASTBOND
-&GID      END INTERFACE
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTBOND (JX1, JY1, JZ1, JX2, JY2, JZ2,
+     1 JR,JG,JB,JRAD,JBT,JNP,KPTS,DLABL,DSLABL)
+          !DEC$ ATTRIBUTES C :: fastbond
+          !DEC$ ATTRIBUTES VALUE :: JX1
+          !DEC$ ATTRIBUTES VALUE :: JY1
+          !DEC$ ATTRIBUTES VALUE :: JZ1
+          !DEC$ ATTRIBUTES VALUE :: JX2
+          !DEC$ ATTRIBUTES VALUE :: JY2
+          !DEC$ ATTRIBUTES VALUE :: JZ2
+          !DEC$ ATTRIBUTES VALUE :: JR
+          !DEC$ ATTRIBUTES VALUE :: JG
+          !DEC$ ATTRIBUTES VALUE :: JB
+          !DEC$ ATTRIBUTES VALUE :: JRAD
+          !DEC$ ATTRIBUTES VALUE :: JBT
+          !DEC$ ATTRIBUTES VALUE :: JNP
+          !DEC$ ATTRIBUTES REFERENCE :: KPTS
+          !DEC$ ATTRIBUTES REFERENCE :: DLABL
+          !DEC$ ATTRIBUTES REFERENCE :: DSLABL
+          INTEGER JX1, JY1, JZ1, JX2, JY2, JZ2
+          INTEGER JR, JG, JB, JRAD, JBT, JNP, KPTS(*)
+          CHARACTER DLABL, DSLABL
+          END SUBROUTINE FASTBOND
+      END INTERFACE
 C
-&&GILGID      INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
-&&GILGID      INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
-&&GILGID      CHARACTER*(*) CLABL
-&WXS      INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
-&WXS      INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
-&WXS      CHARACTER*(*) CLABL
-&GID      CHARACTER*(ILLEN+1) BLABL
-&GIL      CHARACTER*80 BLABL
-&WXS      CHARACTER*80 BLABL
-&&GILGID      CHARACTER*(*) CSLABL
-&WXS      CHARACTER*(*) CSLABL
-&GID      CHARACTER*(ISLEN+1) BSLABL
-&GIL      CHARACTER*80 BSLABL
-&WXS      CHARACTER*80 BSLABL
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+
+      INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
+      INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
+      CHARACTER*(*) CLABL
+
+#endif
+
+#if defined(_WXS_)
+      INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
+      INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
+      CHARACTER*(*) CLABL
+#endif
+#if defined(_GID_) 
+      CHARACTER*(ILLEN+1) BLABL
+#endif
+#if defined(_GIL_) 
+      CHARACTER*80 BLABL
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 BLABL
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      CHARACTER*(*) CSLABL
+
+#endif
+
+#if defined(_WXS_)
+      CHARACTER*(*) CSLABL
+#endif
+#if defined(_GID_) 
+      CHARACTER*(ISLEN+1) BSLABL
+#endif
+#if defined(_GIL_) 
+      CHARACTER*80 BSLABL
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 BSLABL
 C
-&&GILGID      BLABL = CLABL(1:ILLEN)  // CHAR(0)
-&&GILGID      BSLABL= CSLABL(1:ISLEN) // CHAR(0)
-&WXS      BLABL = CLABL(1:ILLEN)  // CHAR(0)
-&WXS      BSLABL= CSLABL(1:ISLEN) // CHAR(0)
-&GID      CALL FASTBOND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
-&GID     1 IBT,INP,LPTS,BLABL,BSLABL)
-&GIL      CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
-&GIL     1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
-&GIL     1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
-&WXS      CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
-&WXS     1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
-&WXS     1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      RETURN
-&WXS      END
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      BLABL = CLABL(1:ILLEN)  // CHAR(0)
+      BSLABL= CSLABL(1:ISLEN) // CHAR(0)
+
+#endif
+
+#if defined(_WXS_)
+      BLABL = CLABL(1:ILLEN)  // CHAR(0)
+      BSLABL= CSLABL(1:ISLEN) // CHAR(0)
+#endif
+#if defined(_GID_) 
+      CALL FASTBOND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
+     1 IBT,INP,LPTS,BLABL,BSLABL)
+#endif
+#if defined(_GIL_) 
+      CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
+     1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
+     1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
+#endif
+#if defined(_WXS_) 
+      CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
+     1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
+     1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      RETURN
+      END
+#endif
+
+#if defined(_WXS_)
+      RETURN
+      END
+#endif
 
 
-&&GILGID      SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
-&&GILGID     1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
-&&GILGID     1 RFX,RFY,RFZ,IFF,IFA,IFG,RUE,RUS)
-&WXS      SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
-&WXS     1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
-&WXS     1 RFX,RFY,RFZ,IFF,IFA,IFG,RUE,RUS)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTATOM (DE,JS,DL,JX,JY,JZ,JR,JG,JB,JOC,SCO,
-&GID     1 JVD,JSP,JFL,SU1,SU2,SU3,SU4,SU5,SU6,SU7,SU8,SU9,
-&GID     2 SFX,SFY,SFZ,JFF,JFA,JFG,SUE,SUS )
-&GID          !DEC$ ATTRIBUTES C :: fastatom
-&GID          !DEC$ ATTRIBUTES VALUE :: JS
-&GID          !DEC$ ATTRIBUTES VALUE :: JX
-&GID          !DEC$ ATTRIBUTES VALUE :: JY
-&GID          !DEC$ ATTRIBUTES VALUE :: JZ
-&GID          !DEC$ ATTRIBUTES VALUE :: JR
-&GID          !DEC$ ATTRIBUTES VALUE :: JG
-&GID          !DEC$ ATTRIBUTES VALUE :: JB
-&GID          !DEC$ ATTRIBUTES VALUE :: JOC
-&GID          !DEC$ ATTRIBUTES VALUE :: SCO
-&GID          !DEC$ ATTRIBUTES VALUE :: JVD
-&GID          !DEC$ ATTRIBUTES VALUE :: JSP
-&GID          !DEC$ ATTRIBUTES VALUE :: JFL
-&GID          !DEC$ ATTRIBUTES VALUE :: SU1
-&GID          !DEC$ ATTRIBUTES VALUE :: SU2
-&GID          !DEC$ ATTRIBUTES VALUE :: SU3
-&GID          !DEC$ ATTRIBUTES VALUE :: SU4
-&GID          !DEC$ ATTRIBUTES VALUE :: SU5
-&GID          !DEC$ ATTRIBUTES VALUE :: SU6
-&GID          !DEC$ ATTRIBUTES VALUE :: SU7
-&GID          !DEC$ ATTRIBUTES VALUE :: SU8
-&GID          !DEC$ ATTRIBUTES VALUE :: SU9
-&GID          !DEC$ ATTRIBUTES VALUE :: SFX
-&GID          !DEC$ ATTRIBUTES VALUE :: SFY
-&GID          !DEC$ ATTRIBUTES VALUE :: SFZ
-&GID          !DEC$ ATTRIBUTES VALUE :: SUE
-&GID          !DEC$ ATTRIBUTES VALUE :: SUS
-&GID          !DEC$ ATTRIBUTES VALUE :: JFA
-&GID          !DEC$ ATTRIBUTES VALUE :: JFG
-&GID          !DEC$ ATTRIBUTES VALUE :: JFF
-&GID          !DEC$ ATTRIBUTES REFERENCE :: DL
-&GID          !DEC$ ATTRIBUTES REFERENCE :: DE
-&GID          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JVD
-&GID          INTEGER JSP,JFL, JFF,JFA,JFG,JS
-&GID          REAL SCO,SU1,SU2,SU3,SU4,SU5,SU6,SU7,SU8,SU9,SFX,SFY,SFZ
-&GID          REAL SUE,SUS
-&GID          CHARACTER DL,DE
-&GID          END SUBROUTINE FASTATOM
-&GID      END INTERFACE
-C
-&&GILGID      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,IVD
-&&GILGID      INTEGER ISP,IFL, IFF, IFA, IFG, IS
-&&GILGID      REAL RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RCO,RFX,RFY,RFZ
-&&GILGID      REAL RUE, RUS
-&&GILGID      CHARACTER*(*) CL
-&&GILGID      CHARACTER CE*4, BE*5
-&WXS      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,IVD
-&WXS      INTEGER ISP,IFL, IFF, IFA, IFG, IS
-&WXS      REAL RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RCO,RFX,RFY,RFZ
-&WXS      REAL RUE, RUS
-&WXS      CHARACTER*(*) CL
-&WXS      CHARACTER CE*4, BE*5
-&GID      CHARACTER*(LL+1) BL
-&GIL      CHARACTER*80 BL
-&WXS      CHARACTER*80 BL
-C
-&&GILGID      BL = CL(1:LL)  // CHAR(0)
-&&GILGID      BE = CE(1:4)  // CHAR(0)
-&WXS      BL = CL(1:LL)  // CHAR(0)
-&WXS      BE = CE(1:4)  // CHAR(0)
-&GID      CALL FASTATOM(BE,IS,BL,IX,IY,IZ,IR,IG,IB,IOC,RCO,IVD,
-&GID     1 ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RFX,RFY,RFZ,
-&GID     2 IFF, IFA, IFG, RUE, RUS)
-&GIL      CALL FASTATOM(BE,%VAL(IS),BL,%VAL(IX),%VAL(IY),%VAL(IZ),
-&GIL     1 %VAL(IR),%VAL(IG),
-&GIL     1 %VAL(IB),%VAL(IOC),%VAL(RCO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
-&GIL     1 %VAL(RU1),%VAL(RU2),%VAL(RU3),%VAL(RU4),%VAL(RU5),%VAL(RU6),
-&GIL     1 %VAL(RU7),%VAL(RU8),%VAL(RU9),%VAL(RFX),%VAL(RFY),%VAL(RFZ),
-&GIL     1 %VAL(IFF),%VAL(IFA),%VAL(IFG),%VAL(RUE),%VAL(RUS))
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTATOM(BE,%VAL(IS),BL,%VAL(IX),%VAL(IY),%VAL(IZ),
-&WXS     1 %VAL(IR),%VAL(IG),
-&WXS     1 %VAL(IB),%VAL(IOC),%VAL(RCO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
-&WXS     1 %VAL(RU1),%VAL(RU2),%VAL(RU3),%VAL(RU4),%VAL(RU5),%VAL(RU6),
-&WXS     1 %VAL(RU7),%VAL(RU8),%VAL(RU9),%VAL(RFX),%VAL(RFY),%VAL(RFZ),
-&WXS     1 %VAL(IFF),%VAL(IFA),%VAL(IFG),%VAL(RUE),%VAL(RUS))
-&WXS      RETURN
-&WXS      END
+#if defined(_GID_) || defined(_GIL_)
 
-&&GILGID      SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
-&&GILGID     1 ISP,IFL,ISO,IRAD)
-&WXS      SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
-&WXS     1 ISP,IFL,ISO,IRAD)
+      SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
+     1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
+     1 RFX,RFY,RFZ,IFF,IFA,IFG,RUE,RUS)
+
+#endif
+
+#if defined(_WXS_)
+      SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
+     1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
+     1 RFX,RFY,RFZ,IFF,IFA,IFG,RUE,RUS)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTATOM (DE,JS,DL,JX,JY,JZ,JR,JG,JB,JOC,SCO,
+     1 JVD,JSP,JFL,SU1,SU2,SU3,SU4,SU5,SU6,SU7,SU8,SU9,
+     2 SFX,SFY,SFZ,JFF,JFA,JFG,SUE,SUS )
+          !DEC$ ATTRIBUTES C :: fastatom
+          !DEC$ ATTRIBUTES VALUE :: JS
+          !DEC$ ATTRIBUTES VALUE :: JX
+          !DEC$ ATTRIBUTES VALUE :: JY
+          !DEC$ ATTRIBUTES VALUE :: JZ
+          !DEC$ ATTRIBUTES VALUE :: JR
+          !DEC$ ATTRIBUTES VALUE :: JG
+          !DEC$ ATTRIBUTES VALUE :: JB
+          !DEC$ ATTRIBUTES VALUE :: JOC
+          !DEC$ ATTRIBUTES VALUE :: SCO
+          !DEC$ ATTRIBUTES VALUE :: JVD
+          !DEC$ ATTRIBUTES VALUE :: JSP
+          !DEC$ ATTRIBUTES VALUE :: JFL
+          !DEC$ ATTRIBUTES VALUE :: SU1
+          !DEC$ ATTRIBUTES VALUE :: SU2
+          !DEC$ ATTRIBUTES VALUE :: SU3
+          !DEC$ ATTRIBUTES VALUE :: SU4
+          !DEC$ ATTRIBUTES VALUE :: SU5
+          !DEC$ ATTRIBUTES VALUE :: SU6
+          !DEC$ ATTRIBUTES VALUE :: SU7
+          !DEC$ ATTRIBUTES VALUE :: SU8
+          !DEC$ ATTRIBUTES VALUE :: SU9
+          !DEC$ ATTRIBUTES VALUE :: SFX
+          !DEC$ ATTRIBUTES VALUE :: SFY
+          !DEC$ ATTRIBUTES VALUE :: SFZ
+          !DEC$ ATTRIBUTES VALUE :: SUE
+          !DEC$ ATTRIBUTES VALUE :: SUS
+          !DEC$ ATTRIBUTES VALUE :: JFA
+          !DEC$ ATTRIBUTES VALUE :: JFG
+          !DEC$ ATTRIBUTES VALUE :: JFF
+          !DEC$ ATTRIBUTES REFERENCE :: DL
+          !DEC$ ATTRIBUTES REFERENCE :: DE
+          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JVD
+          INTEGER JSP,JFL, JFF,JFA,JFG,JS
+          REAL SCO,SU1,SU2,SU3,SU4,SU5,SU6,SU7,SU8,SU9,SFX,SFY,SFZ
+          REAL SUE,SUS
+          CHARACTER DL,DE
+          END SUBROUTINE FASTATOM
+      END INTERFACE
 C
-&GID      INTERFACE
-&GID          SUBROUTINE FASTSPHERE (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
-&GID     1 JSP,JFL,JISO,JRAD)
-&GID          !DEC$ ATTRIBUTES C :: fastsphere
-&GID          !DEC$ ATTRIBUTES VALUE :: JX
-&GID          !DEC$ ATTRIBUTES VALUE :: JY
-&GID          !DEC$ ATTRIBUTES VALUE :: JZ
-&GID          !DEC$ ATTRIBUTES VALUE :: JR
-&GID          !DEC$ ATTRIBUTES VALUE :: JG
-&GID          !DEC$ ATTRIBUTES VALUE :: JB
-&GID          !DEC$ ATTRIBUTES VALUE :: JOC
-&GID          !DEC$ ATTRIBUTES VALUE :: JCO
-&GID          !DEC$ ATTRIBUTES VALUE :: JVD
-&GID          !DEC$ ATTRIBUTES VALUE :: JSP
-&GID          !DEC$ ATTRIBUTES VALUE :: JFL
-&GID          !DEC$ ATTRIBUTES VALUE :: JISO
-&GID          !DEC$ ATTRIBUTES VALUE :: JRAD
-&GID          !DEC$ ATTRIBUTES REFERENCE :: DL
-&GID          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
-&GID          INTEGER JSP,JFL,JISO,JRAD
-&GID          CHARACTER DL
-&GID          END SUBROUTINE FASTSPHERE
-&GID      END INTERFACE
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,IVD
+      INTEGER ISP,IFL, IFF, IFA, IFG, IS
+      REAL RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RCO,RFX,RFY,RFZ
+      REAL RUE, RUS
+      CHARACTER*(*) CL
+      CHARACTER CE*4, BE*5
+
+#endif
+
+#if defined(_WXS_)
+      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,IVD
+      INTEGER ISP,IFL, IFF, IFA, IFG, IS
+      REAL RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RCO,RFX,RFY,RFZ
+      REAL RUE, RUS
+      CHARACTER*(*) CL
+      CHARACTER CE*4, BE*5
+#endif
+#if defined(_GID_) 
+      CHARACTER*(LL+1) BL
+#endif
+#if defined(_GIL_) 
+      CHARACTER*80 BL
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 BL
 C
-&&GILGID      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
-&&GILGID      INTEGER ISP,IFL,ISO,IRAD
-&&GILGID      CHARACTER*(*) CL
-&WXS      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
-&WXS      INTEGER ISP,IFL,ISO,IRAD
-&WXS      CHARACTER*(*) CL
-&GID      CHARACTER*(LL+1) BL
-&GIL      CHARACTER*80 BL
-&WXS      CHARACTER*80 BL
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      BL = CL(1:LL)  // CHAR(0)
+      BE = CE(1:4)  // CHAR(0)
+
+#endif
+
+#if defined(_WXS_)
+      BL = CL(1:LL)  // CHAR(0)
+      BE = CE(1:4)  // CHAR(0)
+#endif
+#if defined(_GID_) 
+      CALL FASTATOM(BE,IS,BL,IX,IY,IZ,IR,IG,IB,IOC,RCO,IVD,
+     1 ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RFX,RFY,RFZ,
+     2 IFF, IFA, IFG, RUE, RUS)
+#endif
+#if defined(_GIL_) 
+      CALL FASTATOM(BE,%VAL(IS),BL,%VAL(IX),%VAL(IY),%VAL(IZ),
+     1 %VAL(IR),%VAL(IG),
+     1 %VAL(IB),%VAL(IOC),%VAL(RCO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
+     1 %VAL(RU1),%VAL(RU2),%VAL(RU3),%VAL(RU4),%VAL(RU5),%VAL(RU6),
+     1 %VAL(RU7),%VAL(RU8),%VAL(RU9),%VAL(RFX),%VAL(RFY),%VAL(RFZ),
+     1 %VAL(IFF),%VAL(IFA),%VAL(IFG),%VAL(RUE),%VAL(RUS))
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      RETURN
+      END
+
+#endif
+
+#if defined(_WXS_)
+      CALL FASTATOM(BE,%VAL(IS),BL,%VAL(IX),%VAL(IY),%VAL(IZ),
+     1 %VAL(IR),%VAL(IG),
+     1 %VAL(IB),%VAL(IOC),%VAL(RCO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
+     1 %VAL(RU1),%VAL(RU2),%VAL(RU3),%VAL(RU4),%VAL(RU5),%VAL(RU6),
+     1 %VAL(RU7),%VAL(RU8),%VAL(RU9),%VAL(RFX),%VAL(RFY),%VAL(RFZ),
+     1 %VAL(IFF),%VAL(IFA),%VAL(IFG),%VAL(RUE),%VAL(RUS))
+      RETURN
+      END
+
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+     1 ISP,IFL,ISO,IRAD)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+     1 ISP,IFL,ISO,IRAD)
 C
-&&GILGID      BL = CL(1:LL)  // CHAR(0)
-&WXS      BL = CL(1:LL)  // CHAR(0)
-&GID      CALL FASTSPHERE(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
-&GID     1 ISP,IFL,ISO,IRAD)
-&GIL      CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
-&GIL     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
-&GIL     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD))
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
-&WXS     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
-&WXS     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD))
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTSPHERE (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
+     1 JSP,JFL,JISO,JRAD)
+          !DEC$ ATTRIBUTES C :: fastsphere
+          !DEC$ ATTRIBUTES VALUE :: JX
+          !DEC$ ATTRIBUTES VALUE :: JY
+          !DEC$ ATTRIBUTES VALUE :: JZ
+          !DEC$ ATTRIBUTES VALUE :: JR
+          !DEC$ ATTRIBUTES VALUE :: JG
+          !DEC$ ATTRIBUTES VALUE :: JB
+          !DEC$ ATTRIBUTES VALUE :: JOC
+          !DEC$ ATTRIBUTES VALUE :: JCO
+          !DEC$ ATTRIBUTES VALUE :: JVD
+          !DEC$ ATTRIBUTES VALUE :: JSP
+          !DEC$ ATTRIBUTES VALUE :: JFL
+          !DEC$ ATTRIBUTES VALUE :: JISO
+          !DEC$ ATTRIBUTES VALUE :: JRAD
+          !DEC$ ATTRIBUTES REFERENCE :: DL
+          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
+          INTEGER JSP,JFL,JISO,JRAD
+          CHARACTER DL
+          END SUBROUTINE FASTSPHERE
+      END INTERFACE
+C
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+      INTEGER ISP,IFL,ISO,IRAD
+      CHARACTER*(*) CL
+#endif
+#if defined(_WXS_) 
+      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+      INTEGER ISP,IFL,ISO,IRAD
+      CHARACTER*(*) CL
+#endif
+#if defined(_GID_) 
+      CHARACTER*(LL+1) BL
+#endif
+#if defined(_GIL_) 
+      CHARACTER*80 BL
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 BL
+C
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      BL = CL(1:LL)  // CHAR(0)
+
+#endif
+
+#if defined(_WXS_)
+      BL = CL(1:LL)  // CHAR(0)
+#endif
+#if defined(_GID_) 
+      CALL FASTSPHERE(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+     1 ISP,IFL,ISO,IRAD)
+#endif
+#if defined(_GIL_) 
+      CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
+     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
+     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD))
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
+     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
+     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD))
+      RETURN
+      END
 C
 C
-&&GILGID      SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
-&&GILGID     1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
-&WXS      SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
-&WXS     1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+     1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+     1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
 C
-&GID      INTERFACE
-&GID          SUBROUTINE FASTDONUT (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
-&GID     1 JSP,JFL,JISO,JRAD, JDEC, JAZ)
-&GID          !DEC$ ATTRIBUTES C :: fastdonut
-&GID          !DEC$ ATTRIBUTES VALUE :: JX
-&GID          !DEC$ ATTRIBUTES VALUE :: JY
-&GID          !DEC$ ATTRIBUTES VALUE :: JZ
-&GID          !DEC$ ATTRIBUTES VALUE :: JR
-&GID          !DEC$ ATTRIBUTES VALUE :: JG
-&GID          !DEC$ ATTRIBUTES VALUE :: JB
-&GID          !DEC$ ATTRIBUTES VALUE :: JOC
-&GID          !DEC$ ATTRIBUTES VALUE :: JCO
-&GID          !DEC$ ATTRIBUTES VALUE :: JVD
-&GID          !DEC$ ATTRIBUTES VALUE :: JSP
-&GID          !DEC$ ATTRIBUTES VALUE :: JFL
-&GID          !DEC$ ATTRIBUTES VALUE :: JISO
-&GID          !DEC$ ATTRIBUTES VALUE :: JRAD
-&GID          !DEC$ ATTRIBUTES VALUE :: JDEC
-&GID          !DEC$ ATTRIBUTES VALUE :: JAZ
-&GID          !DEC$ ATTRIBUTES REFERENCE :: DL
-&GID          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
-&GID          INTEGER JSP,JFL,JISO,JRAD, JDEC, JAZ
-&GID          CHARACTER DL
-&GID          END SUBROUTINE FASTDONUT
-&GID      END INTERFACE
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTDONUT (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
+     1 JSP,JFL,JISO,JRAD, JDEC, JAZ)
+          !DEC$ ATTRIBUTES C :: fastdonut
+          !DEC$ ATTRIBUTES VALUE :: JX
+          !DEC$ ATTRIBUTES VALUE :: JY
+          !DEC$ ATTRIBUTES VALUE :: JZ
+          !DEC$ ATTRIBUTES VALUE :: JR
+          !DEC$ ATTRIBUTES VALUE :: JG
+          !DEC$ ATTRIBUTES VALUE :: JB
+          !DEC$ ATTRIBUTES VALUE :: JOC
+          !DEC$ ATTRIBUTES VALUE :: JCO
+          !DEC$ ATTRIBUTES VALUE :: JVD
+          !DEC$ ATTRIBUTES VALUE :: JSP
+          !DEC$ ATTRIBUTES VALUE :: JFL
+          !DEC$ ATTRIBUTES VALUE :: JISO
+          !DEC$ ATTRIBUTES VALUE :: JRAD
+          !DEC$ ATTRIBUTES VALUE :: JDEC
+          !DEC$ ATTRIBUTES VALUE :: JAZ
+          !DEC$ ATTRIBUTES REFERENCE :: DL
+          INTEGER JL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD
+          INTEGER JSP,JFL,JISO,JRAD, JDEC, JAZ
+          CHARACTER DL
+          END SUBROUTINE FASTDONUT
+      END INTERFACE
 C
-&&GILGID      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
-&&GILGID      INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
-&&GILGID      CHARACTER*(*) CL
-&WXS      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
-&WXS      INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
-&WXS      CHARACTER*(*) CL
-&GID      CHARACTER*(LL+1) BL
-&GIL      CHARACTER*80 BL
-&WXS      CHARACTER*80 BL
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+      INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
+      CHARACTER*(*) CL
+#endif
+#if defined(_WXS_) 
+      INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
+      INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
+      CHARACTER*(*) CL
+#endif
+#if defined(_GID_) 
+      CHARACTER*(LL+1) BL
+#endif
+#if defined(_GIL_) 
+      CHARACTER*80 BL
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 BL
 C
-&&GILGID      BL = CL(1:LL)  // CHAR(0)
-&WXS      BL = CL(1:LL)  // CHAR(0)
-&GID      CALL FASTDONUT(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
-&GID     1 ISP,IFL,ISO,IRAD, IDEC,IAZ)
-&GIL      CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
-&GIL     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
-&GIL     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
-&WXS     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
-&WXS     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
-&WXS      RETURN
-&WXS      END
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+      BL = CL(1:LL)  // CHAR(0)
+
+#endif
+
+#if defined(_WXS_)
+
+      BL = CL(1:LL)  // CHAR(0)
+#endif
+#if defined(_GID_) 
+      CALL FASTDONUT(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
+     1 ISP,IFL,ISO,IRAD, IDEC,IAZ)
+#endif
+#if defined(_GIL_) 
+      CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
+     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
+     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
+#endif
+
+#if defined(_GID_) || defined(_GIL_)
+
+      RETURN
+      END
+
+#endif
+
+#if defined(_WXS_)
+      CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
+     1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
+     1 %VAL(IFL),%VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
+      RETURN
+      END
+
+#endif
