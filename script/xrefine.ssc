@@ -152,5 +152,10 @@
 %   END BLOCK
 %  END CASE
 % END LOOP
+^^WI  DISPOSE XREFINE
+^^CR
+{E An error of some type occured. The xrefine script has stopped just
+{E in case it is serious. A possible cause is an invalid List 12 - maybe
+{E it refers to non-existant atoms.
 %END SCRIPT
 
