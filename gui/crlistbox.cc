@@ -10,6 +10,9 @@
 //   Modified:  30.3.1998 11:25 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.6  1999/06/01 12:48:39  dosuser
+//  RIC: Failed to check in with the last bunch of files.
+//
 //  Revision 1.5  1999/04/28 13:59:48  dosuser
 //  RIC: Fix: Added a break to a case statement.
 //
@@ -112,8 +115,9 @@ Boolean	CrListBox::ParseInput( CcTokenList * tokenList )
 				while ( ! stop ) 
 				{
 					theToken = tokenList->GetToken();
-					if ( strcmp( kSNull, theToken.ToCString() ) == 0 )
-						stop = true;
+					if (    ( strcmp( kSNull, theToken.ToCString() ) == 0 )
+					     || ( theToken.Length() == 0 ) )
+                                       	                              stop = true;
 					else
 					{
 						SetText( theToken );
@@ -126,7 +130,7 @@ Boolean	CrListBox::ParseInput( CcTokenList * tokenList )
                   {
                         tokenList->GetToken(); //Remove that token!
                         int select = atoi ( tokenList->GetToken().ToCString() );
-                        ((CxListBox*)mWidgetPtr)->SetSelection(select);
+                        ((CxListBox*)mWidgetPtr)->CxSetSelection(select);
                         break;
                   }
 			default:
