@@ -26,25 +26,6 @@
 
 ________________________________________________________________________
 
-%% INITIALISE THE GUI BUFFERS
-% IF ( EXISTS  1 .EQ. 1 ) THEN
-%            COPY '#SUM L 1'
-%            COPY 'END'
-% ELSE
- 
-{S * The cell parameters are not available for the Model window
-% END IF
-% IF ( EXISTS  2 .EQ. 1 ) THEN
-%            COPY '#SUM L 2'
-%            COPY 'END'
-% ELSE
-{S * The Space Group is not available for the Model window
-% END IF
-%% Read in L23 in order to get correct F/F2 info in summary window.
-% IF ( EXISTS  23 .EQ. 1 ) THEN
-%            COPY '#SUM L 23'
-%            COPY 'END'
-% END IF
 % IF ( EXISTS  5 .NE. 1 ) THEN
 %% Make the model disappear in case we are restarting in a new directory.
 ^^GR MODEL L5
@@ -79,5 +60,4 @@ ________________________________________________________________________
 {R                  in the menu), for advice on what to do next.
 
 % END IF
-
 %END SCRIPT

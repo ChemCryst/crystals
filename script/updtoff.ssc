@@ -2,12 +2,16 @@
 % COPY '#SET AUTOUPDT OFF'
 ^^GR MODEL L5 SHOW
 ^^CR
+%%Ensure update routine zeroes record of last lists updated:
+%  COPY '#SUM L 5 LO'
+%  COPY 'END'
 
 To update the model window manually, either type:
 
-{0,2 #SUM L 5 {1,0
-{0,2 END      {1,0
+{0,2 #SET AUTOUPD ON {1,0
+{0,2 #DISPLAY        {1,0
+{0,2 END             {1,0
 
-or choose "Update model" from the popup menu in the model window.
 
+or choose {0,2"Update model"{1,0 from the popup menu in the model window.
 %END SCRIPT
