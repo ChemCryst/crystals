@@ -120,7 +120,7 @@
 ^^WI     'Unknown' 'CAD4' 'Mach3' 'KappaCCD' 'Dip' 'Smart' 'NULL'
 ^^WI     @ 1,9  STATIC ED30T 'Scan'
 ^^WI     @ 1,11  DROPDOWN SCAN INFORM=YES ADDTOLIST
-^^WI     '2theta/omega' 'Omega' 'unknown' 'NULL'
+^^WI     '2theta/omega' 'Omega' 'Phi' 'Phi and omega' 'unknown' 'NULL'
 ^^WI    }
 ^^WI    @ 2,1 GRID GRIDAAB NROWS=4 NCOLS=9
 ^^WI              COMMAND='OBSERVE'
@@ -225,7 +225,8 @@
 ^^WI    @ 1,1  STATIC ED30T 'Type'
 ^^WI    @ 1,3 DROPDOWN ABSTYPE INFORM=YES ADDTOLIST
 ^^WI     'None' 'DifAbs' 'Empirical' 'Multi-scan' 'SadAbs '
-^^WI     'SortAV' 'ShelxA' 'NULL'
+^^WI     'SortAV' 'ShelxA' 'Gaussian' 'Analytical' 'Numerical'
+^^WI     'Integration' 'Spherical' 'Cylindrical' 'NULL'
 ^^WI    @ 1,5  STATIC ABSMINT 'Empirical min'
 ^^WI    @ 1,7  EDITBOX ABSMIN '0' CHARS=11 REAL INFORM=YES 
 ^^WI    @ 1,9  STATIC ABSMAXT 'Empirical max'
@@ -426,6 +427,66 @@
 %   END BLOCK
 %   BLOCK
 ^^CO SET ABSTYPE SELECTION=7 
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=8
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=9 
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=10 
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=11
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=12
+^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
+%    CLEAR
+%    INSERT '^^CO SET ABSMIN TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMIN
+%    INSERT ' SET ABSMAX TEXT '
+%    STORE FORMAT /(F9.5)/ LENGTH 9 REAL PSIMAX
+%    OUTPUT
+%   END BLOCK
+%   BLOCK
+^^CO SET ABSTYPE SELECTION=13
 ^^CO SET ABSMINT TEXT 'Psi min' SET ABSMAXT TEXT 'Psi max'
 %    CLEAR
 %    INSERT '^^CO SET ABSMIN TEXT '
@@ -903,6 +964,30 @@
 %                BLOCK
 %                  COPY 'TRANSFER TO OFFSET = 4 FROM ABSMIN'
 %                  COPY 'TRANSFER TO OFFSET = 5 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
+%                END BLOCK
+%                BLOCK
+%                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'
+%                  COPY 'TRANSFER TO OFFSET = 1 FROM ABSMAX'
 %                END BLOCK
 %                BLOCK
 %                  COPY 'TRANSFER TO OFFSET = 0 FROM ABSMIN'

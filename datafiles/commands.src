@@ -1370,8 +1370,8 @@ Data collection details
     .TEMPERATURE        0    0    1    0    1 293.
     .STANDARDS          0    0    1    0    1 0.
     .DECAY              0    0    1    0    1 0.
-    .SCANMODE           0    0    1    3    1 2THETA/OMEGA
-     2THETA/OMEGA   OMEGA          UNKNOWN
+    .SCANMODE           0    0    1    5    1 2THETA/OMEGA
+     2THETA/OMEGA   OMEGA          PHI            PHIOMEGA       UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
     .INSTRUMENT         0    0    1    7    0 UNKNOWN
@@ -1425,9 +1425,10 @@ Absorption correction details
     .EMPMAX             0    0    1    0    1 0.
     .DIFABSMIN          0    0    1    0    1 0.
     .DIFABSMAX          0    0    1    0    1 0.
-    .ABSTYPE            0    0    1    7    0 NONE
+    .ABSTYPE            0    0    1   13    0 NONE
      NONE           DIFABS         EMPIRICAL      MULTI-SCAN     SADABS
-     SORTAV         SHELXA
+     SORTAV         SHELXA         GAUSSIAN       ANALYTICAL     NUMERICAL
+     INTEGRATION    SPHERICAL      CYLINDRICAL
    6.GENERAL           13    1    0    0   13    1  106   21   30
          1    1    1    1    1    1    0    0    0    0
 Various bits and pieces

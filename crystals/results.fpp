@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2001/08/09 07:29:40  ckp2
+C It helps if _atom_site_type_symbol is uppercase for certain programs. (WinGX).
+C
 C Revision 1.21  2001/07/19 11:57:25  ckp2
 C Add an _atom_site_type_symbol to CIF output.
 C
@@ -2829,7 +2832,7 @@ C
       DIMENSION IREFCD(3,IDIFMX)
       PARAMETER (ISOLMX=7)
       DIMENSION ISOLCD(ISOLMX)
-      PARAMETER (IABSMX=7)
+      PARAMETER (IABSMX=13)
       DIMENSION IABSCD(IABSMX)
 
 C 
@@ -2886,7 +2889,7 @@ C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
 C------ REFERENCE CODES FOR DIRECT METHODS
       DATA ISOLCD /1,18,30,11,22,28,29/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
-      DATA IABSCD /7,21,16,17,31,32,33/
+      DATA IABSCD /7,21,16,17,31,32,33,7,7,7,7,7,7/
 
 C 
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
@@ -3535,25 +3538,26 @@ C SCAN MODE DETAILS
          CALL XCTRIM (CVALUE,NCHAR)
          WRITE (CPAGE(IDATA,2)(:),'(A,4X,A)') 'Scan type ',
      1    CVALUE(1:NCHAR)
-         J=INDEX(CVALUE,'THETA')
-         IF (J.NE.0) THEN
-&DOS            CVALUE = '\w/2\q'
-&DVF            CVALUE = '\w/2\q'
-&GID            CVALUE = '\w/2\q'
-&VAX            CVALUE = '\w/2\q'
-&LIN            CVALUE = '\\w/2\\q'
-&GIL            CVALUE = '\\w/2\\q'
+C RIC2001 New scan types. Use IVAL, not char string.
+         IF ( IVAL .EQ. 1 ) THEN
+&&DOSDVF            CVALUE = '\w/2\q'
+&&GIDVAX            CVALUE = '\w/2\q'
+&&LINGIL            CVALUE = '\\w/2\\q'
+            CALL XCRAS (CVALUE,J)
+         ELSE IF ( IVAL .EQ. 2 ) THEN
+&&DOSVAX            CVALUE = '\w'
+&&DVFGID            CVALUE = '\w'
+&&LINGIL            CVALUE = '\\w'
+            CALL XCRAS (CVALUE,J)
+         ELSE IF ( IVAL .EQ. 3 ) THEN
+             CVALUE = '''\f scans'''
+         ELSE IF ( IVAL .EQ. 4 ) THEN
+&&DOSVAX             CVALUE = '''\f & \w scans'''
+&&DVFGID             CVALUE = '''\f & \w scans'''
+&&LINGIL             CVALUE = '''\f & \w scans'''
+         ELSE
+             CVALUE = '?'
          END IF
-         J=INDEX(CVALUE,'OMEG')
-         IF (J.NE.0) THEN
-&DOS            CVALUE(J:J+4) = '\w'
-&DVF            CVALUE(J:J+4) = '\w'
-&GID            CVALUE(J:J+4) = '\w'
-&VAX            CVALUE(J:J+4) = '\w'
-&LIN            CVALUE(J:J+4) = '\\w'
-&GIL            CVALUE(J:J+4) = '\\w'
-         END IF
-         CALL XCRAS (CVALUE,J)
          CLINE=' '
          WRITE (CLINE,'( ''_diffrn_measurement_method '',A)') CVALUE
          CALL XPCIF (CLINE)
@@ -3580,8 +3584,19 @@ C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
             CALL XPCIF('# '//CMON(1)(:))
          ENDIF
          IVAL = MIN (IABSMX, IVAL + 1)
-C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA
-C   1    2         3        4      5      6        7
+C NONE          1
+C DIFABS        2
+C EMPIRICAL     3
+C MULTI-SCAN    4
+C SADABS        5
+C SORTAV        6
+C SHELXA        7
+C GAUSS         8
+C ANALYT        9
+C NUMER        10
+C INTEGERATION 11
+C SPHERICAL    12
+C CYLINDRICAL  13
          IF (IVAL.EQ.1) THEN
             CVALUE='none'
             J=0
@@ -3597,10 +3612,28 @@ C           AREA DETECTOR
                CVALUE='psi-scan'
                J=4
             END IF
-         ELSE IF ((IVAL.GE.4).OR.(IVAL.LE.6)) THEN
+         ELSE IF ((IVAL.GE.4).AND.(IVAL.LE.6)) THEN
 C           AREA DETECTOR
             CVALUE='multi-scan'
             J=2
+         ELSE IF (IVAL.EQ.8) THEN
+            CVALUE='gaussian'
+            J=0
+         ELSE IF (IVAL.EQ.9) THEN
+            CVALUE='analytical'
+            J=0
+         ELSE IF (IVAL.EQ.10) THEN
+            CVALUE='numerical'
+            J=0
+         ELSE IF (IVAL.EQ.11) THEN
+            CVALUE='integration'
+            J=0
+         ELSE IF (IVAL.EQ.12) THEN
+            CVALUE='sphere'
+            J=0
+         ELSE IF (IVAL.EQ.13) THEN
+            CVALUE='cylinder'
+            J=0
          ELSE
             CVALUE='?'
             J=0
