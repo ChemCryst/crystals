@@ -100,7 +100,7 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups)
     {
         throw MyException(kUnknownException, "SpaceGroups where in bad format.");
     }
-    if (gMatch[2].rm_so > 0 && gMatch[2].rm_eo)
+    if (gMatch[2].rm_so > -1)
     {
         char * tSubString = new char[(long)(gMatch[2].rm_eo - gMatch[2].rm_so)+1];
         tSubString[(long)(gMatch[2].rm_eo - gMatch[2].rm_so)] = '\0';
