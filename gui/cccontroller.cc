@@ -11,6 +11,17 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.13  1999/06/22 12:55:42  dosuser
+// RIC: Added GetKeyValue and SetKeyValue to ParseInput function + supporting
+// subroutines. They allow a key (single word) to be stored in a global file
+// followed by a value (any text). This is used to save window size and
+// position, but can also be used by for example TIPS.SCP to remember whether
+// the user really wants to see tips at startup.
+// RIC: SetProgressText changed slightly. It now calls switch text in
+// the ProgressBar class. The progress bar remembers what it said before
+// the call to SwitchText and pops it back up when you call SwitchText with
+// a NULL pointer.
+//
 // Revision 1.12  1999/06/13 16:31:57  dosuser
 // RIC: Added GetInputPlace(), SetInputPlace() and RemoveInputPlace()
 // for dynamically changing the Input Window. Check for TEXTINPUT on
@@ -122,6 +133,7 @@ static wxMutex mCrystalsThreadIsLocked;
 
 
 CcController* CcController::theController = nil;	
+//DWORD CcController::threadID = 0L; 
 
 extern "C" {
 void  endthread(            long theExitcode );
@@ -165,8 +177,8 @@ CcController::CcController( CxApp * appContext )
 
 // Initialize the static pointers in classes for accessing this controller object.
 	CrGUIElement::mControllerPtr = this;
-	CcController::theController = this;	
-	
+	CcController::theController = this;
+//      CcController::threadID = GetCurrentThreadId();
 #ifdef __WINDOWS__
 // Win32 specific: Set up MUTEXES for synchronising threads.
 // ie. Only one thread at a time can access the command and interface queues to prevent corruption.
@@ -606,7 +618,7 @@ Boolean     CcController::ParseLine( CcString text )
       int clen = text.Len();
 
       for (i=1; i <= clen; i++ )
-	{
+	  {
 		if ( inDelimiter )
 		{
 			if ( IsDelimiter( text[i-1] ) )  // end of item
@@ -692,7 +704,7 @@ void	CcController::Tokenize( char * text )
       Boolean tagged = false;
 
 // Look out for lines where the ^^ are misplaced.
-      for ( j = 1; ( j < clen-1 ); j++ )
+      for ( j = 1; ( j < min ( clen-1, 6 ) ); j++ )
 	{
             if ( cText.Sub(j,j+1) == "^^" )
             {
@@ -704,33 +716,34 @@ void	CcController::Tokenize( char * text )
 
       if ( cText.Len() >= 4 && tagged )
 	// It is definitely tagged text
-	{
+	  {
+		  CcString selector = cText.Sub(3,4);
 		// Get the selector and determine list to use
-            if      ( cText.Sub(3,4) == kSWindowSelector ) 
+        if      ( selector == kSWindowSelector ) 
 		{
 			mCurTokenList = mWindowTokenList;
                   ParseLine( cText.Chop(1,4) );
 		}
-            else if      ( cText.Sub(3,4) == kSChartSelector ) 
+        else if      ( selector == kSChartSelector ) 
 		{
 			mCurTokenList = mChartTokenList;
                   ParseLine( cText.Chop(1,4) );
 		}
-            else if      ( cText.Sub(3,4) == kSModelSelector ) 
+        else if      ( selector == kSModelSelector ) 
 		{
 			mCurTokenList = mModelTokenList;
                   ParseLine( cText.Chop(1,4) );
 		}
-            else if      ( cText.Sub(3,4) == kSStatusSelector ) 
+        else if      ( selector == kSStatusSelector ) 
 		{
 			mCurTokenList = mStatusTokenList;
                   ParseLine( cText.Chop(1,4) );
 		}
-            else if      ( cText.Sub(3,4) == kSControlSelector ) 
+        else if      ( selector == kSControlSelector ) 
 		{
 			while ( ParseInput( mCurTokenList ) );
 		}
-            else if      ( cText.Sub(3,4) == kSOneCommand ) 
+        else if      ( selector == kSOneCommand ) 
 		{																 //Avoids breaking up (and corrupting) the incoming streams from scripts.
 			mTempTokenList = mCurTokenList;
 			mCurTokenList  = mQuickTokenList;
@@ -738,7 +751,7 @@ void	CcController::Tokenize( char * text )
 			while ( ParseInput( mQuickTokenList ) );
 			mCurTokenList  = mTempTokenList;
 		}
-            else if      ( cText.Sub(3,4) == kSQuerySelector ) 
+        else if      ( selector == kSQuerySelector ) 
 		{
 			mTempTokenList = mCurTokenList;
 			mCurTokenList  = mQuickTokenList;
@@ -748,10 +761,10 @@ void	CcController::Tokenize( char * text )
 			//We must now signal the waiting Crystals thread that it's input is ready.
                   ProcessingComplete();
 		}
-            else                                             // Simple output text or comment
-            {
+        else                                             // Simple output text or comment
+        {
                         mAppContext->ProcessOutput( cText ); // Useful to see mistakes in ^^ format.
-            }
+        }
 	}
 	else                                             // Simple output text or comment
 	{
@@ -934,7 +947,7 @@ void  CcController::AddInterfaceCommand( CcString line )
       LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Adding: " + line );
 
 
-      for ( int j = 1; j < line.Length()-3; j++ )
+      for ( int j = 1; j < min ( line.Length()-3, 6 ); j++ )
       {
             if ( line.Sub(j,j+3) == "^^??" )
             {
@@ -945,25 +958,11 @@ void  CcController::AddInterfaceCommand( CcString line )
             }
       }
 
-/*      Boolean stop = false;
- *      int leng = (int)strlen ( line );
- *      for ( int j=0; (stop != true) && (j < leng-3); j++ )
- *      {
- *            if ( strncmp ( line + j, "^^??", 4 ) == 0 )
- *            {
- *                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
- *                  CompleteProcessing();
- *                  LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
- *                  stop = true;
- *            }
- *      }
- */
 
-
+//      PostThreadMessage( CcController::threadID, WM_STUFFTOPROCESS, NULL, NULL );
 }
 
 //This is a list of commands for crystals to process
-
 Boolean	CcController::GetCrystalsCommand( char * line )
 {
 //This is where the Crystals thread will spend most of its time.
@@ -1590,7 +1589,7 @@ void CcController::AddHistory( CcString theText )
       CcString *historyCommand = new CcString ( theText );
       mCommandHistoryList.AddItem( (void*) historyCommand);
       mCommandHistoryList.Reset();
-      while ( (CcController::theController)->mCommandHistoryList.ListSize() > 100 ) //Limit the history to 100 items.
+      while ( mCommandHistoryList.ListSize() > 100 ) //Limit the history to 100 items.
       {
             CcString *temp = (CcString*) mCommandHistoryList.GetItem();
             delete temp;

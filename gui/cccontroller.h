@@ -60,6 +60,7 @@ class	CcController
 		CcStatus status;
 
 		static CcController* theController;
+//            static DWORD threadID;
 		void FocusToInput(char theChar);
 		CrGUIElement* FindObject( CcString Name );
 		// methods
