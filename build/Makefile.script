@@ -16,7 +16,7 @@ VPATH = ../script
 all : $(SCPDIR) $(CRYSEDIT) $(SCPOUT) $(DATOUT)
 
 $(CRYSEDIT) :
-	cd ../../editor; $(MAKE)
+	cd ../editor; $(MAKE)
 
 script/%.scp : %.ssc
 	$(CRYSEDIT) $< $@ $(SSCCRYEDFLAGS)
