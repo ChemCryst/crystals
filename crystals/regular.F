@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.17  2003/07/17 01:03:30  rich
+c Character buffer was too short.
+c
 c Revision 1.16  2003/07/15 09:32:52  rich
 c When doing #MATCH output atom lists to regular.dat for use by scripts (if
 c they want).
@@ -1941,12 +1944,12 @@ C
 c      IPUNCH = 1
 c
 c      IF ( IPUNCH .EQ. 1 ) THEN
-c        CALL XRDOPN ( 5 , JFRN(1,1) , 'cameron.ini', 11)
+c        CALL XRDOPN ( 5 , JFRN(1,1) , 'CAMERON.INI', 11)
 c        WRITE(NCFPU1,1002)
 c1002    FORMAT('$DATA'/'CELL    1.0000    1.0000    1.0000    90.000
 c     1 90.000    90.000'/'LIST5'/'REGULAR.L5I'/'$SYMM'/'NOCEN'/'$')
-c        CALL XRDOPN ( 7 , JFRN(1,1) , 'cameron.ini', 11)
-c        CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.l5i', 11)
+c        CALL XRDOPN ( 7 , JFRN(1,1) , 'CAMERON.INI', 11)
+c        CALL XRDOPN ( 5 , JFRN(1,1) , 'REGULAR.L5I', 11)
 c        WRITE(NCFPU1,1003)
 c1003    FORMAT('#'/'#  Written out from REGULARISE COMPARE'/'#'/
 c     1  '#LIST      5')
@@ -2480,11 +2483,28 @@ C
 \XOPVAL
 \XIOBUF
 \XLST05
+\XLST01
+      COMMON/REGTMP/ 
+     1CENTO(4), CENTN(4),WSPAC1(3,3), WSPAC2(3,3), WSPAC3(3,3),
+     2ROOTO(3), ROOTN(3),VECTO(3,3),VECTN(3,3),COSNO(3,3),COSNN(3,3),
+     3RESULT(3,3),DELCNT(3), AVCNT(3),CFBPOL(3,3), CFBPNE(3,3),
+     4BPCFOL(3,3), BPCFNE(3,3)
+
       CHARACTER*21 CAMATM
       DIMENSION JFRN(4,2)
+      DIMENSION RCPD(9), RCPDI(9), RTEMP(9), STEMP(9)
 C 
 \QSTORE
       DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
+
+      CALL XZEROF(RCPD,9)   
+      CALL XZEROF(RCPDI,9)
+      RCPD(1) = STORE(L1P2)
+      RCPD(5) = STORE(L1P2+1)
+      RCPD(9) = STORE(L1P2+2)
+      RCPDI(1) = STORE(L1P1)
+      RCPDI(5) = STORE(L1P1+1)
+      RCPDI(9) = STORE(L1P1+2)
 
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
@@ -2498,11 +2518,11 @@ C
       IF (NOLD.LE.0) GO TO 200
 
 C Write cameron.ini for orthogonal coords:
-      CALL XRDOPN ( 5 , JFRN(1,1) , 'cameron.ini', 11)
+      CALL XRDOPN ( 5 , JFRN(1,1) , 'CAMERON.INI', 11)
       WRITE(NCFPU1,1002)
 1002  FORMAT('$DATA'/'CELL    1.0000    1.0000    1.0000    90.000     9
      10.000    90.000'/'LIST5'/'REGULAR.L5I'/'$SYMM'/'NOCEN'/'$')
-      CALL XRDOPN ( 7 , JFRN(1,1) , 'cameron.ini', 11)
+      CALL XRDOPN ( 7 , JFRN(1,1) , 'CAMERON.INI', 11)
 
 
 C Write regular.oby - may be used in cameron to colour the two
@@ -2541,7 +2561,7 @@ C overlapping molecules separately.
       CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.dat', 11)
 
 C Write header for superimposed orthogonal atom lists:
-      CALL XRDOPN ( 5 , JFRN(1,1) , 'regular.l5i', 11)
+      CALL XRDOPN ( 5 , JFRN(1,1) , 'REGULAR.L5I', 11)
       WRITE(NCFPU1,1003)
 1003  FORMAT('#'/'#  Written out from REGULARISE CAMERON'/'#'/
      1           '#LIST      5')
@@ -2557,13 +2577,60 @@ C Write header for superimposed orthogonal atom lists:
          INDNEW=LNEW+MDNEW*(I-1)
          JOLD=ISTORE(LRENM+(MDRENM*(I-1))+4)
          JNEW=ISTORE(LRENM+(MDRENM*(I-1))+5)
-         WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3),
-     1      (STORE(J),J=INDOLD,INDOLD+2),
-     2      (STORE(J),J=JOLD+7,JOLD+13),
-     3      1,(ISTORE(J),J=JOLD+15,JOLD+17)
-         WRITE(NCFPU1,2016) (STORE(J),J=JNEW,JNEW+3),
+
+C Get full tensor from upper diagonal storage:
+         J=JOLD+7
+         RTEMP(1)=STORE(J)    !U11
+         RTEMP(2)=STORE(J+5)  !U12
+         RTEMP(3)=STORE(J+4)  !U13
+         RTEMP(4)=STORE(J+5)  !U21
+         RTEMP(5)=STORE(J+1)  !U22
+         RTEMP(6)=STORE(J+3)  !U23
+         RTEMP(7)=STORE(J+4)  !U31
+         RTEMP(8)=STORE(J+3)  !U32
+         RTEMP(9)=STORE(J+2)  !U33
+
+C Transform = inv(M) * R * N * U * trans(N) * trans(R) * trans(inv(M))
+C where N is a matrix with a*, b* and c* on the diagonal,
+C and M is a matrix with a*, b* and c* of the best plane on
+C the diagonal (ie. unit matrix).
+C N == RCPD, inv(N) == RCPDI
+C Start from the middle to the left:
+         CALL XMLTMM (RCPD,RTEMP,STEMP,3,3,3)  ! N*U
+         CALL XMLTMM (CFBPOL,STEMP,RTEMP,3,3,3)! R*RESULT
+C Now to the right:
+         CALL XMLTMM (RTEMP,RCPD,STEMP,3,3,3)  ! RESULT*N
+         CALL XMLTMT (STEMP,CFBPOL,RTEMP,3,3,3)! RESULT*R'
+
+         WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3), !Type,ser,occ,flag
+     1      (STORE(J),J=INDOLD,INDOLD+2),             !X,Y,Z
+     2      RTEMP(1),RTEMP(5),RTEMP(9),RTEMP(6),RTEMP(3),RTEMP(2), !U's
+     2      STORE(JOLD+13),                           !Spare
+     3      1,(ISTORE(J),J=JOLD+15,JOLD+17)           !Extras
+
+
+C Get full tensor from upper diagonal storage:
+         J=JNEW+7
+         RTEMP(1)=STORE(J)    !U11
+         RTEMP(2)=STORE(J+5)  !U12
+         RTEMP(3)=STORE(J+4)  !U13
+         RTEMP(4)=STORE(J+5)  !U21
+         RTEMP(5)=STORE(J+1)  !U22
+         RTEMP(6)=STORE(J+3)  !U23
+         RTEMP(7)=STORE(J+4)  !U31
+         RTEMP(8)=STORE(J+3)  !U32
+         RTEMP(9)=STORE(J+2)  !U33
+C Start from the middle to the left:
+         CALL XMLTMM (RCPD,RTEMP,STEMP,3,3,3)  ! N*U
+         CALL XMLTMM (CFBPNE,STEMP,RTEMP,3,3,3)! R*RESULT
+C Now to the right:
+         CALL XMLTMM (RTEMP,RCPD,STEMP,3,3,3)  ! RESULT*N
+         CALL XMLTMT (STEMP,CFBPNE,RTEMP,3,3,3)! RESULT*R'
+
+         WRITE(NCFPU1,2016) (STORE(J),J=JNEW,JNEW+3), 
      1      (STORE(J),J=INDNEW,INDNEW+2),
-     2      (STORE(J),J=JNEW+7,JNEW+13),
+     2      RTEMP(1),RTEMP(5),RTEMP(9),RTEMP(6),RTEMP(3),RTEMP(2),
+     2      STORE(JNEW+13),                     
      3      2,(ISTORE(J),J=JNEW+15,JNEW+17)
       END DO
 
@@ -2574,7 +2641,7 @@ C Write header for superimposed orthogonal atom lists:
 
 C Don't bother with element, layer scales etc. Punch End:
       WRITE(NCFPU1,'(''END''/''#USE LAST'')')
-      CALL XRDOPN ( 7 , JFRN(1,1) , 'regular.l5i', 11)
+      CALL XRDOPN ( 7 , JFRN(1,1) , 'REGULAR.L5I', 11)
 
       RETURN
  
