@@ -6,7 +6,7 @@
 %  VARIABLE LOGICAL ANSWER LCANCEL
 %  VARIABLE CHARACTER CNULL CDLINE
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-^^WI WINDOW XDIPIN 'Input Dip 2000 data' MODAL
+^^WI WINDOW XKCCDIN 'Input KccD data' MODAL
 ^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
@@ -41,12 +41,12 @@
 %       IF CVALUE .NE. CNULL THEN
 %         EVALUATE LOOPEND = LOOPCOUNTER
 %         EVALUATE FILENAME = CVALUE
-^^WI      DISPOSE XDIPIN
+^^WI      DISPOSE XKCCDIN
 ^^CR
 %       END IF
 %    END BLOCK
 %    BLOCK             %CANCEL%
-^^WI      DISPOSE XDIPIN
+^^WI      DISPOSE XKCCDIN
 ^^CR
 %         FINISH
 %    END BLOCK
@@ -206,5 +206,5 @@ Give the minimum I/sigma(i) to be used in refinement. It can be changed later
 %  END IF
 %%
 %%
- * Done. Dip data input complete.
+ * Done. Kccd data input complete.
 %END SCRIPT
