@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.94  2004/11/16 16:20:30  rich
+C Oops. Try writing valid FORTRAN.
+C Fix another unescaped backslash in SHELX weight format statement.
+C
 C Revision 1.93  2004/11/16 16:18:36  rich
 C Need to escape backslash on unix.
 C
@@ -3747,10 +3751,15 @@ C----- IDENTITY
             J = J+4
         ENDIF
 2000  CONTINUE
-C
+c
 C----- VALUE AND ESD
       CALL XFILL (IB, IVEC, 20)
-      CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
+cdjw021204
+      if ((noh .gt. 0 ) .and. ( esd .le. 0.)) then
+        CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
+      else
+        CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
+      endif
       WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
       CALL XCRAS ( CBUF, N)
       CLINE(J:J+N-1) = CBUF(1:N)
