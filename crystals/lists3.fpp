@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/09/11 16:27:51  Administrator
+C Show record sizes in #disk checkdisk
+C
 C Revision 1.9  2001/09/11 09:29:16  ckp2
 C New #DISK options. Give a list number to the PRINT directive to only
 C get info for that list.
@@ -2598,6 +2601,7 @@ C--
 \ISTORE
 C
       DIMENSION ID(2)
+      CHARACTER*24 CDT
 \STORE
 \XLISTI
 \XUNITS
@@ -2621,10 +2625,17 @@ C -- START NEW PAGE
 C--PRINT THE LIST TYPE AND DETAILS
       LSN=IABS(LSN)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1300)LN,LSN,IADDI,LL,ID
+        IF (ID(1).NE.0) THEN
+          WRITE(NCWU,1300)LN,LSN,IADDI,LL,ID
+        ELSE
+          CALL XCDATE(ID(2),CDT)
+          WRITE(NCWU,1300)LN,LSN,IADDI,LL,CDT
+        END IF
       ENDIF
 1300  FORMAT(' Print list type ',I5,5X,'serial number ',I8,5X,
      2 'Address ',I8,5X,'Length ',I7,5X,'Created on  ',2A4/)
+1301  FORMAT(' Print list type ',I5,5X,'serial number ',I8,5X,
+     2 'Address ',I8,5X,'Length ',I7,5X,'Created on  ',A24/)
       KPRTLN=0
       RETURN
 C
