@@ -1,11 +1,14 @@
 %SCRIPT DSCCHECK
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL ANSWER
 %%
 %%
-%  VARIABLE INTEGER MD
-%  VARIABLE REAL UISOF
-%  VARIABLE LOGICAL OLDDSC1 OLDDSC2 SLOWDSC
-%  EVALUATE OLDDSC1 = FALSE
-%  EVALUATE OLDDSC2 = FALSE
+% VARIABLE INTEGER MD
+% VARIABLE REAL UISOF
+% VARIABLE LOGICAL OLDDSC1 OLDDSC2 SLOWDSC LNEW30 LNEW29
+% EVALUATE OLDDSC1 = FALSE
+% EVALUATE OLDDSC2 = FALSE
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                    %%
@@ -23,32 +26,37 @@
 %  COPY 'END'
 %  IF ( SLOWDSC ) THEN
 
-{E                   W A R N I N G
-
-{E                                                  
 %CLEAR
 %INSERT '{E    You are opening a DSC file with'
 %STORE FORMAT /(I10)/ LENGTH 10 INTEGER MD
 %INSERT 'atoms.'
 %OUTPUT
-{E                                                  
  
-% VERIFY NO YES
-  You have two options:
+{I  You have two options:
  
-  Ignore this warning - Carry on working with this number of atoms,
-                        your model window may take a very long time
-                        to update.
-  Turn off updating   - The model will only be updated when you type
-                        #SUM L 5
-                        END
- 
-%  GET NOSTORE FINAL ABBREVIATED 'Do you want to -
-disable auto updating of the model?' 'YES'
-%   IF VALUE .EQ. 2 THEN
+{R  Ignore this warning - Carry on working with this number of atoms,
+{R                        your model window may take a very long time
+{R                        to update.
+{R  Turn off updating   - The model will only be updated when you type
+{R                        #SUM L 5
+{R                        END
+
+%   EVALUATE QTITLE = 'Disable updates'
+%   EVALUATE QLINE1 = 'Lots of atoms. Updates of model window will be slow.'
+%   EVALUATE QLINE2 = 'Disable automatic updates?'
+%   EVALUATE BUTTOK = '&Disable updates'
+%   EVALUATE BUTTXX = '&Update automatically'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ( ANSWER ) THEN
 %     COPY '#SCRIPT UPDTOFF'
+%   ELSE
+%     COPY '#SET AUTOUPDT ON'
 %   END IF
+%  ELSE
+%     COPY '#SET AUTOUPDT ON'
 %  END IF
+% ELSE
+%     COPY '#SET AUTOUPDT ON'
 % END IF
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,69 +88,65 @@ disable auto updating of the model?' 'YES'
 %  COPY '#GENERALEDIT 5'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
-%     IF ( MD .NE. 18 ) THEN
-%         EVALUATE OLDDSC2 = TRUE
-%     END IF
+%  IF ( MD .NE. 18 ) THEN
+%    EVALUATE OLDDSC2 = TRUE
+%  END IF
 %  COPY 'END'
 %%
 %  IF ( OLDDSC1 ) .OR. ( OLDDSC2 ) THEN
  
-  +------------------------------------------------+
-  |                                                |
-  |                 W A R N I N G                  |
-  |                                                |
-  |  You are opening what appears to be an OLD     |
-  |  format DSC file.                              |
-  |                                                |
-  |  It is possible to automatically reformat      |
-  |  your current LIST 5 so that you can           |
-  |  continue to use it with the new program.      |
-  |                                                |
-  +------------------------------------------------+
+{E WARNING: You are opening an OLD format DSC file.
+{I It is possible to automatically reformat
+{I your current LIST 5 so that you can
+{I continue to use it with the new program.
+
+{I  You have two options:
  
-% VERIFY NO YES
-  You have two options:
- 
-  Ignore this warning - Carry on working with this
-                        DSC file. Any calculation
-                        using Uiso will be incorrect.
-  Reformat the list 5 - Change the current LIST 5 so
-                        that its format is correct.
-                        (Your old list 5 will be written
-                         to disk for safety).
- 
-%  GET NOSTORE FINAL ABBREVIATED 'Do you want me to -
-automatically reformat LIST 5 for you?' 'YES'
-%   IF VALUE .EQ. 2 THEN
+{R  Ignore this warning - Carry on working with this
+{R                        DSC file. Any calculation
+{R                        using Uiso will be incorrect.
+
+{R  Reformat the list 5 - Change the current LIST 5 so
+{R                        that its format is correct.
+{R                        (Your old list 5 will be written
+{R                        to disk for safety).
+
+%   EVALUATE QTITLE = 'Reformat List 5'
+%   EVALUATE QLINE1 = 'Old format atom list detected. Update automatically,'
+%   EVALUATE QLINE2 = '(old L5 backed up), or ignore (U[iso] will be wrong).'
+%   EVALUATE BUTTOK = '&Update automatically'
+%   EVALUATE BUTTXX = '&Ignore warning'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ( ANSWER ) THEN
 %    COPY '#RELEASE PUNCH OLDLIST5.DAT'
 %    COPY '#PUNCH 5'
 %    COPY 'END'
 %    COPY '#RELEASE PUNCH CRFILE.PCH'
  
- A copy of your current atom list has been saved in
- the current directory as 'OLDLIST5.DAT'
+{I A copy of your current atom list has been saved in
+{I the current directory as 'OLDLIST5.DAT'
  
- If you return to using a pre-December 1998 version
- of CRYSTALS, then type '#USE OLDLIST5.DAT' when
- you start up CRYSTALS.
+{I If you return to using a pre-December 1998 version
+{I of CRYSTALS, then type '#USE OLDLIST5.DAT' when
+{I you start up CRYSTALS.
  
-% IF ( OLDDSC1 ) THEN
-%    COPY '#EDIT'
-%    COPY 'REFORMAT ALL'
-%    COPY 'END'
-% END IF
+%    IF ( OLDDSC1 ) THEN
+%     COPY '#EDIT'
+%     COPY 'REFORMAT ALL'
+%     COPY 'END'
+%    END IF
 %%
-% IF ( OLDDSC2 ) THEN
+%    IF ( OLDDSC2 ) THEN
 %%  REINPUT OLD LIST 5 TO GET CORRECT NUMBER OF ATOM KEYS
-%    COPY '#RELEASE PUNCH TMPLIST5.DAT'
-%    COPY '#PUNCH 5'
-%    COPY 'END'
-%    COPY '#RELEASE PUNCH CRFILE.PCH'
-%    COPY '#USE TMPLIST5.DAT'
-% END IF 
+%     COPY '#RELEASE PUNCH TMPLIST5.DAT'
+%     COPY '#PUNCH 5'
+%     COPY 'END'
+%     COPY '#RELEASE PUNCH CRFILE.PCH'
+%     COPY '#USE TMPLIST5.DAT'
+%    END IF 
 %%
- Your present LIST 5 has been converted to the new
- format. You may now continue safely.
+{I Your present LIST 5 has been converted to the new
+{I format. You may now continue safely.
  
 %   END IF
 %  END IF
@@ -159,35 +163,33 @@ automatically reformat LIST 5 for you?' 'YES'
 %  COPY '#GENERALEDIT 29'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
-%     IF ( MD .NE. 8 ) THEN
-%         EVALUATE OLDDSC1 = TRUE
-%     END IF
+%  IF ( MD .NE. 8 ) THEN
+%    EVALUATE OLDDSC1 = TRUE
+%  END IF
 %  COPY 'END'
 %  IF ( OLDDSC1 ) THEN
-  +----------------------------------------------------------------+
-  |                                                                |
-  | Your database knows nothing about colours schemes for elements.|
-  |                                                                |
-  +----------------------------------------------------------------+
+
+{E  List 29 (atomic properties) has no element colour entries.
+
+{I  You have two options:
  
-% VERIFY NO YES
-  You have two options:
+{R  Ignore this warning - Carry on working with this
+{R                        DSC file. Colour schemes may
+{R                        be weird.
  
-  Ignore this warning - Carry on working with this
-                        DSC file. Colour schemes may
-                        be weird.
+{R  Update the element properties automatically (recommended).
  
-  Update the element properties. This requires you to re-input
-                        the empirical formula for the contents
-                        of the asymmetric unit.
- 
-%  COPY '#SUM L 29'
-%  COPY 'END'
- 
-%  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input the -
- empirical formula?' 'YES'
-%   IF VALUE .EQ. 2 THEN
-%     COPY '#SCRIPT INLIST29'
+%   EVALUATE QTITLE = 'Old atomic properties'
+%   EVALUATE QLINE1 = 'Old atom properties list found (no colour scheme).'
+%   EVALUATE QLINE2 = 'Update to get colours in the display.'
+%   EVALUATE BUTTOK = '&Update automatically'
+%   EVALUATE BUTTXX = '&Ignore warning'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ( ANSWER ) THEN
+%     EVALUATE LNEW29 = TRUE
+%     COPY '#SCRIPT XINLIST3'
+%     COPY '#BONDCALC FORCE'
+%     COPY 'END'
 %   END IF
 %  END IF
 % END IF
@@ -209,43 +211,30 @@ automatically reformat LIST 5 for you?' 'YES'
 %     END IF
 %  COPY 'END'
 %  IF ( OLDDSC1 ) THEN
-  +----------------------------------------------------------------+
-  |                                                                |
-  | You have old-style cif information.                            |
-  | CRYSTALS cannot continue safely.                               |
-  |                                                                |
-  +----------------------------------------------------------------+
+
+{E You have old format CIF info (List 30). CRYSTALS can not continue safely.
  
-% VERIFY NO YES
-  You have two options:
+{I  You have two options:
  
-1  Ignore this warning - Carry on working with this DSC file.
-                         CRYSTALS will eventually crash.
+{R  Ignore this warning - Carry on working with this DSC file.
+{R                        CRYSTALS will eventually crash.
  
-2  Delete the existing LIST 30, re-input any LIST 30 created by an
-   X-ray data pre-processor (DIPIN, KCCDIN, RC93), manually update
-   LIST 30 and then continue.
- 
-%  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input list -
-30?' 'YES'
-%   IF VALUE .EQ. 2 THEN
-%    COPY '#SUM L 30'
-%    COPY 'END'
-%    VERIFY YES NO
-%    GET NOSTORE FINAL ABBREVIATED -
- 'Do you a file containing LIST 30 information?' 'NO'
-%    IF VALUE .EQ. 1 THEN
-%      CLEAR
-%      GET FINAL KEYWORD -
-  'Please give the full name of the file containing LIST 30'
-%      VARIABLE CHARACTER FILENAME
-%      EVALUATE FILENAME = CVALUE
-%      TRANSFER '#USE ' //  FILENAME // ' ' TO CRYSTALS
-%    ELSE
-%     COPY '#LIST 30'
-%     COPY 'END'
-%    END IF
+{R  Automatically recreate a new List 30 from the old one.
+
+%   EVALUATE QTITLE = 'Old CIF data'
+%   EVALUATE QLINE1 = 'Old format CIF info found. You must update this now'
+%   EVALUATE QLINE2 = 'or CRYSTALS will crash later.'
+%   EVALUATE BUTTOK = '&Update automatically'
+%   EVALUATE BUTTXX = '&Ignore warning'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ( ANSWER ) THEN
+%    EVALUATE LNEW30 = TRUE
 %    COPY '#SCRIPT ED30'
+%   ELSE
+
+{E You have chosen not to update List 30. CRYSTALS will crash if you
+{E attempt any structure factor calculations (including refinement).
+
 %   END IF
 %  END IF
 % END IF
