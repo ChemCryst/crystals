@@ -86,7 +86,7 @@ Boolean	CrDropDown::ParseInput( CcTokenList * tokenList )
                   {
                         tokenList->GetToken(); //Remove that token!
                         int select = atoi ( tokenList->GetToken().ToCString() );
-                        ((CxDropDown*)mWidgetPtr)->SetSelection(select);
+                        ((CxDropDown*)mWidgetPtr)->CxSetSelection(select);
                         break;
                   }
 			default:
