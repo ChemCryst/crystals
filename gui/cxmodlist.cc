@@ -1125,7 +1125,11 @@ void CxModList::Update(int newsize)
           IDlist =  nil;
        }
 
+       ::LockWindowUpdate(this->m_hWnd); 
        ((CrModList*)ptr_to_crObject)->DocToList();
+       ::LockWindowUpdate(NULL);
+       Invalidate(FALSE); 
+
 }
 
 
