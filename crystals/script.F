@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2001/03/08 14:37:50  richard
+C  REAL = RANDOM ( 0.0 )  - the 0.0 doesn't do anything, but could be used
+C as a seed in future...
+C Fixed array bonds error when missing arguments to operators.
+C
 C Revision 1.28  2001/03/02 12:26:25  richard
 C Added an exponentiation operator ** to scripts. Numerical types of both arguments
 C and the result must all be the same.
@@ -5816,7 +5821,7 @@ C
       CHARACTER*(LTO) CTO(NTO)
 C
 CJAN99
-      PARAMETER ( LDEST = 12 , NDEST = 5 )
+      PARAMETER ( LDEST = 12 , NDEST = 6 )
       CHARACTER*(LDEST) CDEST(NDEST)
 C
       PARAMETER ( LENDSP = 80 )
@@ -5831,7 +5836,8 @@ C
 C
       DATA CTO / 'TO' /
 CJAN99
-      DATA CDEST / 'DISPLAY','CRYSTALS','SCRIPT','BUFFER','INPUT' /
+      DATA CDEST / 'DISPLAY','CRYSTALS','SCRIPT','BUFFER','INPUT',
+     1             'PUNCH' /
 C
 C
 C
@@ -5923,6 +5929,12 @@ C Remarks: Any existing unprocessed user input is overwritten.
             IINPPS = 1
             IINPLN = IUSLEN
         END IF
+      ELSE IF ( IDEST .EQ. 6 ) THEN
+C
+C -- 'PUNCH' To write lines of text into the punch file.
+C
+        ISTAT = KSCSDC ( IVALUE , CWORK , LENWRK )
+        WRITE ( NCPU, 1105 ) CWORK(1:LENWRK)
       ENDIF
 C
 C
