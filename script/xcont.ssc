@@ -71,7 +71,7 @@
 ^^WI    @ 6,2 GRID GSIZE NROWS=3 NCOLS=5
 ^^WI    {
 ^^WI      @ 1,1 STATIC T1 'Section width'
-^^WI      @ 1,3 EDITBOX EW '16.4' CHARS=8 REAL
+^^WI      @ 1,3 EDITBOX EW '8.0' CHARS=8 REAL
 ^^WI      @ 1,5 STATIC T2 'angstroms.'
 ^^WI      @ 2,1 STATIC T3 'Resolution'
 ^^WI      @ 2,3 EDITBOX ER '0.25' CHARS=8 REAL
