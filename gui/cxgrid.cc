@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2004/05/13 09:18:19  rich
+//   AfxRegisterWndClass was leaking resources. Use a predefined WNDCLASS instead.
+//
 //   Revision 1.14  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -123,7 +126,6 @@ void CxGrid::CxDestroyWindow()
 {
   #ifdef __CR_WIN__
 DestroyWindow();
-TEXTOUT("Destroyed grid. " + CcString((int)this));
 #endif
 #ifdef __BOTHWX__
 Destroy();
