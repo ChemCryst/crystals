@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:30
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/07/16 07:25:31  ckp2
+//   Make sure (in the wx version) that all the grids in the tab control are removed
+//   from the tab control before it is destroyed.
+//
 //   Revision 1.3  2001/06/18 12:41:14  richard
 //   AddTab is now passed a CcTabData rather than just a text string. The wx base
 //   class (wxNoteBook) manages the child window for itself, (unlike windows where
@@ -69,7 +73,6 @@ class CxTab : public BASETAB
 #endif
 #ifdef __BOTHWX__
         void LetGoOfTabs();
-        void OnSelChange ( wxNotebookEvent& tab );
         void OnChar(wxKeyEvent & event);
         DECLARE_EVENT_TABLE()
 #endif

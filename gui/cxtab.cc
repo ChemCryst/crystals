@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.7  2003/01/14 10:27:19  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -94,7 +98,6 @@ END_MESSAGE_MAP()
 #ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxTab, wxNotebook)
-      EVT_NOTEBOOK_PAGE_CHANGED( -1, CxTab::OnSelChange )
       EVT_CHAR(CxTab::OnChar)
 END_EVENT_TABLE()
 #endif
@@ -163,7 +166,7 @@ int CxTab::GetTabsExtraVSpace()
   return work.bottom + 10; //Good space at bottom.
 #endif
 #ifdef __BOTHWX__
-  return 0;
+  return 10;
 #endif
 }
 
@@ -177,12 +180,6 @@ void CxTab::OnSelChange(NMHDR* pNMHDR, LRESULT* pResult)
 #endif
 
 #ifdef __BOTHWX__
-void CxTab::OnSelChange(wxNotebookEvent& tabevt)
-{
-    int nTab = GetSelection();
-//    ((CrTab*)ptr_to_crObject)->ChangeTab(nTab);
-}
-
 void CxTab::LetGoOfTabs()
 {
   int pc = GetPageCount();
