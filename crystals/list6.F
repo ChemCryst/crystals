@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.11  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -1300,13 +1303,13 @@ C -- PRODUCE DISPLAY IF REQUIRED
 C
       IF ( DISPL6 ) THEN
         IF ( N6R .GE. (N6D-1) ) THEN
-##WXSGID          WRITE ( CMON,1505)
-##WXSGID          CALL XPRVDU(NCVDU, 1, 0)
-##WXSGID          WRITE(NCVDU,1505)
+###WXSGIDGIL          WRITE ( CMON,1505)
+###WXSGIDGIL          CALL XPRVDU(NCVDU, 1, 0)
+###WXSGIDGIL          WRITE(NCVDU,1505)
 1505      FORMAT ( 15X ,  12X, 'Processing reflections ')
 C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
            CALL OUTCOL(6)
-##WXSGID          WRITE(NCVDU,'(15X,''^'',$)')
+###WXSGIDGIL          WRITE(NCVDU,'(15X,''^'',$)')
           NSTAR = 1
           NXTLVL = ( NSTAR * N6D ) / NINTER
         ELSE IF ( (N6D-N6R) .GE. NXTLVL ) THEN
