@@ -41,7 +41,6 @@
 #include <string.h>
 #include <iostream.h>
 #include "Exceptions.h"
-#include <sys/types.h>
 #include <sys/stat.h>
      
 /**********************************/
