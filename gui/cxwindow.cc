@@ -96,8 +96,10 @@ CxWindow::~CxWindow()
 	mWindowCount--;
 	if (mParentWnd)
 #ifdef __WINDOWS__
+	{
             mParentWnd->EnableWindow(true); //Re-enable the parent.
             mParentWnd->SetFocus(); //Focus the parent.
+	}
 #endif
 #ifdef __LINUX__
             mParentWnd->Enable(true); //Re-enable the parent.
