@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  1999/07/15 10:56:31  richard
+C RIC: Added INPUT as an option for the "TRANSFER XXX TO" command. This fills
+C the users input buffer with the value XXX so that it can be got with GET.
+C
 C Revision 1.17  1999/07/02 17:56:09  richard
 C RIC: If there is a USER ERROR, then SCRIPTS ignores the SILENT keyword
 C and prints allowed values and prompts anyway. Stops you from getting
@@ -5772,7 +5776,8 @@ C -- 'DISPLAY'
 C
         ISTAT = KSCSDC ( IVALUE , CWORK , LENWRK )
         IF ( LENWRK .GT. 0 ) THEN
-          WRITE ( NCAWU , 1105 ) CWORK(1:LENWRK)
+          IF (CWORK(1:2) .NE. '^^')
+     1    WRITE ( NCAWU , 1105 ) CWORK(1:LENWRK)
           WRITE ( CMON, 1105 ) CWORK(1:LENWRK)
           CALL XPRVDU(NCVDU, 1,0)
 1105      FORMAT ( 1X , A )

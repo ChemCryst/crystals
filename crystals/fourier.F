@@ -504,8 +504,8 @@ C----- NEGATED MAP
       CALL XPRVDU(NCVDU, 2,0)
 2610  FORMAT(' The minimum and maximum',
      1' map densities are ',2G10.3,A,'/A**3')
-      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON
-      WRITE (NCAWU,'(A)') CMON
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
+      WRITE (NCAWU,'(A)') CMON(1),CMON(2)
 C----- STORE IN LIST30 IF DIFFERENCE MAP
       IF (NTYP .EQ. 3) THEN
         CALL XFAL30

@@ -1568,7 +1568,7 @@ C--CALCULATE THE E.S.D.
 9910  CONTINUE
       WRITE ( CMON,'(A)') ' Error computing parameter e.s.d '
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON
+      WRITE(NCAWU, '(A)') CMON(1)
 9999  CONTINUE
       RETURN
       END

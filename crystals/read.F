@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  1999/12/15 14:54:53  ckp2
+C djw  Add set autoupdate on/off, force ON in summary.
+C
 C Revision 1.15  1999/10/22 11:47:26  ckp2
 C RIC: Uncommented the secret CSD stuff.
 C
@@ -240,7 +243,7 @@ C Update status information for GUI.
       ENDIF
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
-
+C
       IF ( ISTAT .LT. 0 ) GO TO 9910
       IF ( ISTAT .EQ. 0 ) GO TO 3000
 C
@@ -311,7 +314,7 @@ C          CALL VGACOL ( 'OFF', 'BLU', 'WHI')
 C-----    SWITCH ON LINE FEEDS
           ICPSTS = 1
         ENDIF
-       WRITE ( NCAWU , 1451 ) CRDLWC(1:IFIN)
+       if (crdlwc(1:2) .ne. '^^') WRITE (NCAWU,1451 ) CRDLWC(1:IFIN)
        WRITE ( CMON,1451) CRDLWC(1:IFIN)
        CALL XPRVDU(NCVDU, 1,0)
 1451   FORMAT ( 1X , A )
@@ -1147,9 +1150,9 @@ C
       RETURN
 9960  CONTINUE
       CALL XMONTR ( 0 )
-      IF (ISSPRT .EQ. 0) THEN
       WRITE ( CMON,9965)
       CALL XPRVDU(NCEROR, 1,0)
+      IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9965 )
       ENDIF
       WRITE ( NCAWU , 9965 )
@@ -4366,15 +4369,15 @@ C--PRINT THE CARD AND ITS NUMBER
      2   NUMB(N+1),(LCMAGE(I),I=1,MIN(72,IFIN))
 1151     FORMAT(1X,4A1,1X,80A1,2A1)
          IF (IND .GE. 0) CMON(1)(65:) = 'IGNORED/ERRORS'
+cdjwdec99 slightly re-organied
       IF ( ICAT .GT. 0 ) THEN
          CALL XPRVDU(NCVDU, 1, 0)
       ENDIF
-      WRITE(NCAWU,'(A)') CMON(1)(:)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1150)NUMB(K+1),NUMB(L+1),NUMB(M+1),NUMB(N+1),(LCMAGE(I)
-     2 ,I=1,IFIN),(IB,I=1,J)
-1150  FORMAT(1X,4A1,'*  ',80A1,2A1,'*** IGNORED/ERROR(S) *** ')
-      ENDIF
+         WRITE(NCAWU,'(A)') CMON(1)(:)
+         IF (ISSPRT .EQ. 0) 
+     1   WRITE(NCWU,1150)NUMB(K+1),NUMB(L+1),NUMB(M+1),NUMB(N+1),
+     2   (LCMAGE(I),I=1,IFIN),(IB,I=1,J)
+1150     FORMAT(1X,4A1,'*  ',80A1,2A1,'*** IGNORED/ERROR(S) *** ')
 C
       RETURN
       END
