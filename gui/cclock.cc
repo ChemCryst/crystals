@@ -58,7 +58,7 @@ CcLock::CcLock(bool isMutex )   //true for CS, false for signal.
   {
 #ifdef __CR_WIN__
     m_CSMutex = CreateMutex(NULL, false, NULL);
-    m_EvMutex = CreateEvent(NULL, true, false, NULL);
+    m_EvMutex = CreateSemaphore(NULL, 0, 99999, NULL);
 #endif
 #ifdef __BOTHWX__
     m_CSMutex = new wxMutex();
@@ -79,6 +79,7 @@ void CcLock::Enter()
 //    LOGSTAT ("++++Entering critical section: " + string(m_Locked)  + " " + string((int)this) + "\n");
 #ifdef __CR_WIN__
     WaitForSingleObject( m_CSMutex, INFINITE );
+    m_Locked ++;
 #endif
 #ifdef __BOTHWX__
     if (!( m_CSMutex -> Lock() == wxMUTEX_NO_ERROR) )
@@ -112,14 +113,17 @@ bool CcLock::IsLocked()
     return ( m_Locked > 0 );
 }
 
+
+
+
+
+
 bool CcLock::Wait(int timeout_ms)
 {
 //    LOGSTAT ("++++Waiting for object." + string((int)this) + "\n");
     if ( m_Locked > 0 ) m_Locked --;
 #ifdef __CR_WIN__
-    Leave();  // This is done automatically under wx.
     bool ret = (WaitForSingleObject( m_EvMutex, timeout_ms?timeout_ms:INFINITE ) == WAIT_OBJECT_0 ) ;
-    ResetEvent ( m_EvMutex );
     return ret;
 #endif
 #ifdef __BOTHWX__
@@ -134,12 +138,11 @@ bool CcLock::Wait(int timeout_ms)
 void CcLock::Signal(bool all)
 {
 //  LOGSTAT ("++++Signalling object." + string(all?"True ":"False ") +  string((int)this) + "\n");
-
 #ifdef __CR_WIN__
-    SetEvent(m_EvMutex);
+       ReleaseSemaphore( m_EvMutex, 1, NULL );
 #endif
 #ifdef __BOTHWX__
-        m_EvMutex -> Post();
+       m_EvMutex -> Post();
 #endif
 
 }
