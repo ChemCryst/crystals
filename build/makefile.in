@@ -34,7 +34,10 @@ else
     OPT = -O2
  else
   ifeq ($(COMPCODE),WXS)
-    GUIFLAGS = -fno-inline -fexceptions
+
+    SUFFIX =.exe
+
+    GUIFLAGS = -fno-inline -fexceptions -mwindows
     GUILIBRARIES = -lg2c `wx-config --libs --gl-libs` 
     CLFLAGS = 
     CLLIBRARIES = -lg2c
@@ -76,21 +79,16 @@ else
 endif
 
 
-%.o : %.fpp
-	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
-
 obj/%.o : %.fpp
 	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
-
-%.o: %.cc
-	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
 
 obj/%.o: %.cc
 	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
 
-obj/%.d: obj %.cc
+obj/%.o : %.c
+	$(CC) -c $(CFLAGS) -D_$(COMPCODE)_ $(OPT) -o $@ $<
+
+obj/%.d: %.cc
+	-mkdir obj
 	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
 	| sed "s/$*\.o/& obj\/$*.d/g" ' > $@
-
-%.o : %.c
-	$(CC) -c $(CFLAGS) -D_$(COMPCODE)_ $(OPT) -o $@ $<
