@@ -1,6 +1,6 @@
 
 #include <wx/msw/wx.rc>
-idb_splash BITMAP image3.bmp
 idi_icon1 ICON wincrys.ico
 idi_icon2 ICON icon2.ico
+idb_splash BITMAP image3.bmp
 
