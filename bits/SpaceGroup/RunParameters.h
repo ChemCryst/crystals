@@ -28,8 +28,8 @@ class RunParameters
         Path iTablesFile;               //The file name of the tables file.
         Path iOutputFile;		//The path of the file where the stats and ranking should be output to.
         Path iParamFile;		//A path to the file which contains any further parameters.
+//        long iFlags;        //New this contains iChiral iVerbose and iMerge
         bool iChiral;		//False is not nessaseraly chiral. false chiral -nc, -c
-     //   bool iInteractiveMode;	//If this is set true the program will go into interactive mode at the end. -i
         bool iVerbose;		//If this is set true the program will output the stats table after it has calculated all it's probabilits. -v
 	bool iMerge;            //If this is set true then the HKL data will be merged to try and find the laue group. Default is true. -m
         String iCrystalSys;	//Crystal System
