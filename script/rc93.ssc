@@ -3,4 +3,5 @@
  * Running RC93.
 %      COPY '#SPAWN  COMMAND.COM /e:2048 /c CRYSDIR:RC93.BAT'
  * Done.
+% copy '#type rc93.err'
 %END SCRIPT
