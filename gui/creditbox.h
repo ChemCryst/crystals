@@ -36,10 +36,30 @@ class	CrEditBox : public CrGUIElement
 		void	GetValue();
 		void	GetValue(CcTokenList* tokenList);
 		void	BoxChanged();
-		
+            void  SetOriginalSizes();       
 		// attributes
 		
 private:
 	Boolean mSendOnReturn;
+      Boolean m_IsInput;
 };
+
+#define kSIsInput	"INPUT"
+#define kSWantReturn	"SENDONRETURN"
+#define kSIntegerInput	"INTEGER"
+#define kSRealInput	"REAL"
+#define kSNoInput	"READONLY"
+#define kSAppend	"APPEND"
+
+enum
+{
+ kTIsInput = 800, 
+ kTWantReturn,	
+ kTIntegerInput,	
+ kTRealInput,	
+ kTNoInput,	
+ kTAppend	
+};
+
+
 #endif
