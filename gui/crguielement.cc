@@ -9,172 +9,172 @@
 //   Created:   22.2.1998 13:19 Uhr
 //   Modified:  30.3.1998 13:33 Uhr
 
-#include	"crystalsinterface.h"
-#include	"crconstants.h"
-#include	"crguielement.h"
-#include	"cclist.h"
-#include	"ccrect.h"
-#include	"cccontroller.h"
-#include	"cctokenlist.h"
-#include	"crwindow.h"
+#include    "crystalsinterface.h"
+#include    "crconstants.h"
+#include    "crguielement.h"
+#include    "cclist.h"
+#include    "ccrect.h"
+#include    "cccontroller.h"
+#include    "cctokenlist.h"
+#include    "crwindow.h"
 
-CcController *	CrGUIElement::mControllerPtr;
+CcController *  CrGUIElement::mControllerPtr;
 
 CrGUIElement::CrGUIElement( CrGUIElement * mParentPtr )
 {
-	mParentElementPtr = mParentPtr;
-	mWidgetPtr = nil;
-	mSelfInitialised = false;
-	mCallbackState = false;
-	mAlignment = kNoAlignment;
-	mWidthFactor = 1.0;
-	mHeightFactor = 1.0;
-	mXCanResize = false;
-	mYCanResize = false;
-	mTabStop = true;
-	mDisabled = true;
+    mParentElementPtr = mParentPtr;
+    ptr_to_cxObject = nil;
+    mSelfInitialised = false;
+    mCallbackState = false;
+    mAlignment = kNoAlignment;
+    mWidthFactor = 1.0;
+    mHeightFactor = 1.0;
+    mXCanResize = false;
+    mYCanResize = false;
+    mTabStop = true;
+    mDisabled = true;
 }
 
 CrGUIElement::~CrGUIElement()
 {
 }
 
-CrGUIElement *	CrGUIElement::FindObject( CcString Name )
+CrGUIElement *  CrGUIElement::FindObject( CcString Name )
 {
-	if ( Name == mName )
-		return this;
-	else
-		return nil;
+    if ( Name == mName )
+        return this;
+    else
+        return nil;
 }
 
-void *	CrGUIElement::GetWidget()
+void *  CrGUIElement::GetWidget()
 {
-	if ( mWidgetPtr == nil )
-		return mParentElementPtr->GetWidget();
-	else
-		return mWidgetPtr;
+    if ( ptr_to_cxObject == nil )
+        return mParentElementPtr->GetWidget();
+    else
+        return ptr_to_cxObject;
 }
 
-CrGUIElement *	CrGUIElement::GetRootWidget()
+CrGUIElement *  CrGUIElement::GetRootWidget()
 {
-	return mParentElementPtr->GetRootWidget();
+    return mParentElementPtr->GetRootWidget();
 }
 
 
-void	CrGUIElement::Show( Boolean show )
+void    CrGUIElement::Show( Boolean show )
 {
-	NOTUSED(show);
+    NOTUSED(show);
 }
 
-void	CrGUIElement::Align()
+void    CrGUIElement::Align()
 {
 
 }
-void	CrGUIElement::GetValue()
+void    CrGUIElement::GetValue()
 {
 //For all elements that don't return a value, return the text TRUE,
 //so the programmer can test their existence.
-	(CcController::theController)->SendCommand("TRUE",true);
+    (CcController::theController)->SendCommand("TRUE",true);
 //(If the element can't be found, FALSE is returned from CcController)
 }
 
-void	CrGUIElement::GetValue(CcTokenList * tokenList)
+void    CrGUIElement::GetValue(CcTokenList * tokenList)
 {
 //For all elements that don't return a value, return the text ERROR,
 //The only valid query for an object that doesn't override this function
 //is EXISTS, and that is handled in the CcController::GetValue routine.
-	(CcController::theController)->SendCommand("ERROR",true);
+    (CcController::theController)->SendCommand("ERROR",true);
 }
 
-Boolean	CrGUIElement::ParseInput( CcTokenList * tokenList )
+Boolean CrGUIElement::ParseInput( CcTokenList * tokenList )
 {
-	Boolean retVal = false;
-	
-	mName = tokenList->GetToken();
-	mText = tokenList->GetToken();
+    Boolean retVal = false;
 
-	SetText(mText);
-	
-	if ( mText.Length() != 0 || mName.Length() != 0 )
-		retVal = true;
+    mName = tokenList->GetToken();
+    mText = tokenList->GetToken();
 
-	LOGSTAT( "Setting identifier " + mName + 
-			 "Setting text "      + mText  );
-						
-	return retVal;
+    SetText(mText);
+
+    if ( mText.Length() != 0 || mName.Length() != 0 )
+        retVal = true;
+
+    LOGSTAT( "Setting identifier " + mName +
+             "Setting text "      + mText  );
+
+    return retVal;
 }
 
-Boolean	CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
+Boolean CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
 {
-	Boolean retVal = false;
-	
-	mName = tokenList->GetToken();
+    Boolean retVal = false;
 
-	if ( mName.Length() != 0 )
-		retVal = true;
+    mName = tokenList->GetToken();
 
-	LOGSTAT( "Setting identifier " + mName );
-						
-	return retVal;
+    if ( mName.Length() != 0 )
+        retVal = true;
+
+    LOGSTAT( "Setting identifier " + mName );
+
+    return retVal;
 }
 
 
- 
- 
-void	CrGUIElement::SetController( CcController * controller )
+
+
+void    CrGUIElement::SetController( CcController * controller )
 {
-	mControllerPtr = controller;
+    mControllerPtr = controller;
 }
 
 
 int CrGUIElement::GetIdealWidth()
 {
 //This just returns zero. It is overridden for elements which can resize.
-	return 0;
+    return 0;
 }
 
 int CrGUIElement::GetIdealHeight()
 {
 //This just returns zero. It is overridden for elements which can resize.
-	return 0;
+    return 0;
 }
 
 void CrGUIElement::Resize(int newColWidth, int newRowHeight, int origColWidth, int origRowHeight)
 {
-	mWidthFactor = (float)((float)newColWidth / (float)origColWidth);
-	mHeightFactor= (float)((float)newRowHeight/ (float)origRowHeight);
+    mWidthFactor = (float)((float)newColWidth / (float)origColWidth);
+    mHeightFactor= (float)((float)newRowHeight/ (float)origRowHeight);
 }
 
 
 void CrGUIElement::NextFocus(Boolean bPrevious)
 {
-	CrGUIElement* nextWindow;
-	CrWindow* rootWindow = (CrWindow*)GetRootWidget();
+    CrGUIElement* nextWindow;
+    CrWindow* rootWindow = (CrWindow*)GetRootWidget();
 
-	if(bPrevious)
-		nextWindow = (CrGUIElement*)rootWindow->GetPrevTabItem(this);
-	else
-		nextWindow = (CrGUIElement*)rootWindow->GetNextTabItem(this);
+    if(bPrevious)
+        nextWindow = (CrGUIElement*)rootWindow->GetPrevTabItem(this);
+    else
+        nextWindow = (CrGUIElement*)rootWindow->GetNextTabItem(this);
 
-	if(nextWindow)
-		nextWindow->CrFocus();
+    if(nextWindow)
+        nextWindow->CrFocus();
 }
 
 
 void CrGUIElement::FocusToInput(char theChar)
 {
-	GetRootWidget()->FocusToInput(theChar); //Give the window a chance to handle the
-										  //input first.
+    GetRootWidget()->FocusToInput(theChar); //Give the window a chance to handle the
+                                          //input first.
 }
 
 
 void CrGUIElement::SendCommand(CcString theText, Boolean jumpQueue)
 {
-	if(jumpQueue)
-		CcController::theController->SendCommand(theText,true);
-	else
+    if(jumpQueue)
+        CcController::theController->SendCommand(theText,true);
+    else
             mParentElementPtr->SendCommand(theText); //Give the parent objects a chance to handle the
-											   //output first.
+                                               //output first.
 //NB For Grid and Window, this function is overridden, to allow commands
 //to be prefixed to the output.
 //If a command is prefixed, the CcController implementation is called and
@@ -210,5 +210,3 @@ void CrGUIElement::SetOriginalSizes()
 // re-sizeable GUIElements. e.g. Model, Chart, MultiEdit, EditBox etc.
       return;
 }
-
-

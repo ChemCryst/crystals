@@ -5,12 +5,12 @@
 ////////////////////////////////////////////////////////////////////////
 
 //   Filename:  CxModel.h
-//   Author:   Richard Cooper 
+//   Author:   Richard Cooper
 
-#ifndef		__CxModel_H__
-#define		__CxModel_H__
+#ifndef     __CxModel_H__
+#define     __CxModel_H__
 //Insert your own code here.
-#include	"crguielement.h"
+#include    "crguielement.h"
 
 #ifdef __BOTHWX__
 #include  <wx/defs.h>
@@ -22,10 +22,10 @@
 #define BASEMODEL wxGLCanvas
 #endif
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #include    <GL\gl.h>
 #include    <GL\glu.h>
-#include	<afxwin.h>
+#include    <afxwin.h>
 #define BASEMODEL CWnd
 #endif
 
@@ -34,7 +34,7 @@
 class CrModel;
 class CxGrid;
 class CcModelAtom;
-//End of user code.         
+//End of user code.
 
 #define CURSORNORMAL  0
 #define CURSORZOOMIN  1
@@ -46,7 +46,7 @@ class CcModelAtom;
 
 class CxModel : public BASEMODEL
 {
-	public:
+    public:
             void Update();
             Boolean IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAtom **atom);
             void SetRadiusScale(int scale);
@@ -55,38 +55,38 @@ class CxModel : public BASEMODEL
             void NeedRedraw();
             void NewSize(int cx, int cy);
             void ChooseCursor( int cursor );
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
             void PaintBannerInstead(CPaintDC *dc);
 #endif
 
 // The usual functions:
-		static CxModel *	CreateCxModel( CrModel * container, CxGrid * guiParent );
-#ifdef __WINDOWS__
-		CxModel(CrModel* container);
+        static CxModel *    CreateCxModel( CrModel * container, CxGrid * guiParent );
+#ifdef __CR_WIN__
+        CxModel(CrModel* container);
 #endif
 #ifdef __BOTHWX__
-		CxModel(wxWindow* parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, 
+        CxModel(wxWindow* parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
                        const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = "GLWindow");
 #endif
-		~CxModel();
-		void	SetText( char * text );
-		void	SetGeometry( int top, int left, int bottom, int right );
-		int	GetTop();
-		int	GetLeft();
-		int	GetWidth();
-		int	GetHeight();
-		int	GetIdealWidth();
-		int	GetIdealHeight();
-		int mIdealHeight;
-		int mIdealWidth;
-		void SetIdealWidth(int nCharsWide);
-		void SetIdealHeight(int nCharsHigh);
-		void Focus();
+        ~CxModel();
+        void    SetText( char * text );
+        void    SetGeometry( int top, int left, int bottom, int right );
+        int GetTop();
+        int GetLeft();
+        int GetWidth();
+        int GetHeight();
+        int GetIdealWidth();
+        int GetIdealHeight();
+        int mIdealHeight;
+        int mIdealWidth;
+        void SetIdealWidth(int nCharsWide);
+        void SetIdealHeight(int nCharsHigh);
+        void Focus();
             void AutoScale();
 
 
-		CrGUIElement *	mWidget;
-		static int mModelCount;
+        CrGUIElement *  ptr_to_crObject;
+        static int mModelCount;
 
 
 //            GLuint mNormal;
@@ -107,7 +107,7 @@ class CxModel : public BASEMODEL
             Boolean m_fastrotate;    //  Detailed or quick drawing
             CcPoint m_ptLDown;       //  Last mouse position when rotating
 
-            CcPoint m_ptMMove;       //  Last mouse position 
+            CcPoint m_ptMMove;       //  Last mouse position
 
 
             void SetDrawStyle( int drawStyle );
@@ -120,32 +120,33 @@ class CxModel : public BASEMODEL
             Boolean m_Hover;         // Highlight atoms on hover?
             Boolean m_Shading;       // Use fancy shading?
 
-#ifdef __WINDOWS__
-		int m_GLPixelIndex;									 //The pixel index member?
-		HGLRC m_hGLContext;									 //The rendering context handle.
-		HDC hDC;
+#ifdef __CR_WIN__
+        int m_GLPixelIndex;                                  //The pixel index member?
+        HGLRC m_hGLContext;                                  //The rendering context handle.
+        HDC hDC;
 
-		BOOL SetWindowPixelFormat(HDC hDC);
-		BOOL CreateViewGLContext(HDC hDC);
-		CBitmap *oldMemDCBitmap, *newMemDCBitmap;
-		CDC memDC;
+        BOOL SetWindowPixelFormat(HDC hDC);
+        BOOL CreateViewGLContext(HDC hDC);
+        CBitmap *oldMemDCBitmap, *newMemDCBitmap;
+        CDC memDC;
             CBitmap m_bitmap;
             Boolean m_bitmapok;
             CPalette m_pal;
 
 
-		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-		afx_msg void OnPaint();
-		afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
-		afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
-		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
-		afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
+        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+        afx_msg void OnPaint();
+        afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
+        afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
+        afx_msg void OnMouseMove( UINT nFlags, CPoint point );
+        afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
                 afx_msg BOOL OnEraseBkgnd( CDC* pDC );
                 afx_msg void OnMenuSelected (int nID);
-	
-		DECLARE_MESSAGE_MAP()
+
+        DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
+            void OnEraseBackground(wxEraseEvent & evt);
             void OnLButtonUp(wxMouseEvent & event);
             void OnLButtonDown(wxMouseEvent & event);
             void OnRButtonUp(wxMouseEvent & event);

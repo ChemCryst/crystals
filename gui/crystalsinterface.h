@@ -5,66 +5,73 @@
 //   Created:   27.2.1998 14:11 Uhr
 //   Modified:  27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2000/12/13 18:03:08  richard
+// Linux(wxWindows) and Windows(wxWindows) support added.
+//
 
-#ifndef		__CrystalsInterface_H__
-#define		__CrystalsInterface_H__
+#ifndef     __CrystalsInterface_H__
+#define     __CrystalsInterface_H__
 
 #ifdef __LINUX__
 #define __BOTHWX__ 1
 #define __WXGTK__
 #endif
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #define __BOTHWIN__ 1
 #endif
 
 #ifdef __WINMSW__
 #define __BOTHWX__ 1
 #define __BOTHWIN__ 1
-#define __WXMSW__
+#define __WXMSW__ 1
+#define __WIN95__
+#define __WIN32__
+#define STRICT
+#define __WINDOWS__
 #endif
 
 
 
-#include	"ccstring.h"
+//#include    "ccstring.h"
 
-void errorlog( CcString outStr );
+//void errorlog( CcString outStr );
 
 // Instructions
 
 
 enum {
-	kButtonBase			=	40000,
-	kListBoxBase		=	41000,
-	kDropDownBase		=	42000,
-	kEditBoxBase		=	43000,
-	kGridBase			=	44000,
-	kGroupBoxBase		=	45000,
-	kMultiEditBase		=	46000,
-	kTextBase			=	47000,
-	kCheckBoxBase		=	48000,
-	kRadioButtonBase	=	49000,
-	kWindowBase			=	50000,
-	kMenuBase			=	51000,
-	kChartBase			=	52000,
-	kModelBase			=	53000,
-	kProgressBase		=	54000,
+    kButtonBase         =   40000,
+    kListBoxBase        =   41000,
+    kDropDownBase       =   42000,
+    kEditBoxBase        =   43000,
+    kGridBase           =   44000,
+    kGroupBoxBase       =   45000,
+    kMultiEditBase      =   46000,
+    kTextBase           =   47000,
+    kCheckBoxBase       =   48000,
+    kRadioButtonBase    =   49000,
+    kWindowBase         =   50000,
+    kMenuBase           =   51000,
+    kChartBase          =   52000,
+    kModelBase          =   53000,
+    kProgressBase       =   54000,
         kListCtrlBase           =       55000,
         kTextOutBase            =       56000,
         kBitmapBase             =       57000
 };
 
-#define	kNoAlignment		0
-#define kExpand				1
-#define kRightAlign			2
-#define kBottomAlign		4
+#define kNoAlignment        0
+#define kExpand             1
+#define kRightAlign         2
+#define kBottomAlign        4
 
-#define kModal				1
-#define kZoom				2
-#define kClose				4
-#define kSize				8
+#define kModal              1
+#define kZoom               2
+#define kClose              4
+#define kSize               8
 
-#define EMPTY_CELL			10
+#define EMPTY_CELL          10
 
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -85,16 +92,16 @@ typedef bool Boolean;
 #define nil 0
 //#define TRUE true
 //#define FALSE false
-#define UINT uint
+typedef unsigned int UINT;
 #include <wx/file.h>
 #include <wx/memory.h>
 #include <stdio.h>
 #include <iostream.h>
 #include <iomanip.h>
-#define TRACE WXTRACE
+//#define TRACE WXTRACE
 #endif
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #include "stdafx.h"
 #include "crystals.h"
 typedef bool Boolean;
@@ -113,7 +120,7 @@ typedef bool Boolean;
 #define CRCONTROL 8
 #define CRSHIFT   9
 
-#define COVALENT	1
+#define COVALENT    1
 #define VDW       2
 #define THERMAL   3
 #define SPARE     4
@@ -127,36 +134,38 @@ typedef bool Boolean;
 
 
 #ifdef _DEBUG
-#ifdef __WINDOWS__
-	#include <afxwin.h> //Needed for TRACE debugger macro.
-	#define new DEBUG_NEW //Needed for debugger to track heap allocations.
+#ifdef __CR_WIN__
+    #include <afxwin.h> //Needed for TRACE debugger macro.
+    #define new DEBUG_NEW //Needed for debugger to track heap allocations.
 #endif
 #ifdef __BOTHWX__
-        #include <wx/object.h>
-	#define new WXDEBUG_NEW //Needed for debugger to track heap allocations.
+    #include <wx/object.h>
+//#ifndef new
+//    #define new WXDEBUG_NEW //Needed for debugger to track heap allocations.
+//#endif
 #endif
 
-	#ifdef LOGERRORS
-		#define LOGERR(a) ( (CcController::theController)->LogError(a,0) )
-	#else
-		#define LOGERR(a)
-	#endif
-	#ifdef LOGWARNINGS 
-		#define LOGWARN(a) ( (CcController::theController)->LogError(a,1) )
-	#else
-		#define LOGWARN(a)
-	#endif
-	#ifdef LOGSTATUS
-		#define LOGSTAT(a) ( (CcController::theController)->LogError(a,2) )
-	#else
-		#define LOGSTAT(a)
-	#endif
+    #ifdef LOGERRORS
+        #define LOGERR(a) ( (CcController::theController)->LogError(a,0) )
+    #else
+        #define LOGERR(a)
+    #endif
+    #ifdef LOGWARNINGS
+        #define LOGWARN(a) ( (CcController::theController)->LogError(a,1) )
+    #else
+        #define LOGWARN(a)
+    #endif
+    #ifdef LOGSTATUS
+        #define LOGSTAT(a) ( (CcController::theController)->LogError(a,2) )
+    #else
+        #define LOGSTAT(a)
+    #endif
 
       #define TEXTOUT(a) ( (CcController::theController)->Tokenize((char*)CcString(a).ToCString()) )
 #else
-	#define LOGERR(a)
-	#define LOGWARN(a)
-	#define LOGSTAT(a)
+    #define LOGERR(a)
+    #define LOGWARN(a)
+    #define LOGSTAT(a)
       #define TEXTOUT(a)
 #endif
 

@@ -6,8 +6,14 @@ class CrModel;
 class CcTokenList;
 class CcController;
 #include "cccoord.h"
-#include <GL/gl.h>
+#ifdef __CR_WIN__
 #include <GL/glu.h>
+#include <GL/gl.h>
+#endif
+#ifdef __BOTHWX__
+#include <wx/glcanvas.h>
+#include <GL/glu.h>
+#endif
 
 class CcModelObject
 {

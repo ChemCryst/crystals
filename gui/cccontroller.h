@@ -25,6 +25,7 @@ class CcTokenList;
 class CxApp;
 class CrGUIElement;
 class CcQuickData;
+class CcMenuItem;
 
 class	CcController
 {
@@ -87,6 +88,13 @@ class	CcController
             void StoreKey( CcString key, CcString value );
             CcString GetKey( CcString key );
 
+            int FindFreeMenuId();
+            void AddMenuItem( CcMenuItem * menuitem );
+            void RemoveMenuItem( CcMenuItem * menuitem );
+            void RemoveMenuItem ( CcString menuitemname );
+            CcMenuItem* FindMenuItem( int id );
+            CcMenuItem* FindMenuItem( CcString name );
+
 		// attributes
 		
 		CxApp *	mAppContext;
@@ -119,8 +127,11 @@ class	CcController
 		CcList	mWindowList;
 		CcList  mTextOutputWindowList;
 		CcList  mProgressOutputWindowList;
-            CcList  mInputWindowList;
-		CcList  mModelDocList;
+                CcList  mInputWindowList;
+                CcList  mModelDocList;
+
+                CcList  mMenuItemList;
+                int     m_next_id_to_try;
 
 		CcList mCommandHistoryList;
 		int mCommandHistoryPosition;

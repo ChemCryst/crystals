@@ -9,149 +9,151 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 15:22 Uhr
 
-#include	"crystalsinterface.h"
-#include	"cxchart.h"
-#include	"cxgrid.h"
-#include	"cxwindow.h"
-#include	"crchart.h"
+#include    "crystalsinterface.h"
+#include    "ccstring.h"
+#include    "cxchart.h"
+#include    "cxgrid.h"
+#include    "cxwindow.h"
+#include    "crchart.h"
 #include    "ccpoint.h"
 #include    "ccrect.h"
-#ifdef __WINDOWS__
-#include	<afxwin.h>
+#ifdef __CR_WIN__
+#include    <afxwin.h>
 #endif
 #ifdef __BOTHWX__
 #include <wx/font.h>
 #endif
 
 int CxChart::mChartCount = kChartBase;
-//End of user code.          
+//End of user code.
 
-// OPSignature: CxChart * CxChart:CreateCxChart( CrChart *:container  CxGrid *:guiParent ) 
-CxChart *	CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
+// OPSignature: CxChart * CxChart:CreateCxChart( CrChart *:container  CxGrid *:guiParent )
+CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
 {
-#ifdef __WINDOWS__
-	const char* wndClass = AfxRegisterWndClass(
-									CS_HREDRAW|CS_VREDRAW,
-									NULL,
-									(HBRUSH)(COLOR_MENU+1),
-									NULL
-									);
+#ifdef __CR_WIN__
+    const char* wndClass = AfxRegisterWndClass(
+                                    CS_HREDRAW|CS_VREDRAW,
+                                    NULL,
+                                    (HBRUSH)(COLOR_MENU+1),
+                                    NULL
+                                    );
 
-	CxChart	*theStdChart = new CxChart(container);
+    CxChart *theStdChart = new CxChart(container);
         theStdChart->Create(wndClass,"Chart",WS_CHILD| WS_VISIBLE, CRect(0,0,26,28), guiParent, mChartCount++);
-	theStdChart->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-	theStdChart->SetFont(CxGrid::mp_font);
+    theStdChart->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
+    theStdChart->SetFont(CxGrid::mp_font);
 
-	CClientDC	dc(theStdChart);
-	theStdChart->memDC.CreateCompatibleDC(&dc);
-	theStdChart->newMemDCBitmap = new CBitmap;
-	CRect rect;
-	theStdChart->GetClientRect (&rect);
-	theStdChart->newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
-	theStdChart->oldMemDCBitmap = theStdChart->memDC.SelectObject(theStdChart->newMemDCBitmap);
-	theStdChart->memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
-	theStdChart->memDC.SelectObject(theStdChart->oldMemDCBitmap);
+    CClientDC   dc(theStdChart);
+    theStdChart->memDC.CreateCompatibleDC(&dc);
+    theStdChart->newMemDCBitmap = new CBitmap;
+    CRect rect;
+    theStdChart->GetClientRect (&rect);
+    theStdChart->newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
+    theStdChart->oldMemDCBitmap = theStdChart->memDC.SelectObject(theStdChart->newMemDCBitmap);
+    theStdChart->memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
+    theStdChart->memDC.SelectObject(theStdChart->oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       CxChart  *theStdChart = new CxChart(container);
       theStdChart->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
+      theStdChart->newMemDCBitmap = new wxBitmap;
 #endif
-	return theStdChart;
-//End of user code.         
+    return theStdChart;
+//End of user code.
 }
 
 CxChart::CxChart(CrChart* container)
-#ifdef __WINDOWS__
-	:CWnd()
+#ifdef __CR_WIN__
+    :CWnd()
 #endif
 #ifdef __BOTHWX__
       :wxControl()
 #endif
 {
-	mWidget = container;
-#ifdef __WINDOWS__
+    ptr_to_crObject = container;
+#ifdef __CR_WIN__
       mfgcolour = PALETTERGB(0,0,0);
 #endif
 #ifdef __BOTHWX__
       mfgcolour = wxColour(0,0,0);
 #endif
-	mPolyMode = 0;
-	m_IsoCoords = true;
-	m_inverted = false;
+    mPolyMode = 0;
+    m_IsoCoords = true;
+    m_inverted = false;
       m_SendCursorKeys = false;
 
 }
 
 CxChart::~CxChart()
 {
-	mChartCount--;
-	delete newMemDCBitmap;	
+    mChartCount--;
+    delete newMemDCBitmap;
 }
 
-void	CxChart::SetText( char * text )
+void    CxChart::SetText( char * text )
 {
 
 #ifdef __POWERPC__
-	Str255 descriptor;
-	
-	strcpy( reinterpret_cast<char *>(descriptor), text );
-	c2pstr( reinterpret_cast<char *>(descriptor) );
-	SetDescriptor( descriptor );
+    Str255 descriptor;
+
+    strcpy( reinterpret_cast<char *>(descriptor), text );
+    c2pstr( reinterpret_cast<char *>(descriptor) );
+    SetDescriptor( descriptor );
 #endif
 #ifdef __BOTHWX__
       SetLabel(text);
 #endif
-#ifdef __WINDOWS__
-	SetWindowText(text);
+#ifdef __CR_WIN__
+    SetWindowText(text);
 #endif
 
 }
 
-void	CxChart::SetGeometry( int top, int left, int bottom, int right )
+void    CxChart::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef __WINDOWS__
-	if((top<0) || (left<0))
-	{
-		RECT windowRect;
-		RECT parentRect;
-		GetWindowRect(&windowRect);
-		CWnd* parent = GetParent();
-		if(parent != nil)
-		{
-			parent->GetWindowRect(&parentRect);
-			windowRect.top -= parentRect.top;
-			windowRect.left -= parentRect.left;
-		}
-		MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
-	}
-	else
-	{
-		MoveWindow(left,top,right-left,bottom-top,true);
+#ifdef __CR_WIN__
+    if((top<0) || (left<0))
+    {
+        RECT windowRect;
+        RECT parentRect;
+        GetWindowRect(&windowRect);
+        CWnd* parent = GetParent();
+        if(parent != nil)
+        {
+            parent->GetWindowRect(&parentRect);
+            windowRect.top -= parentRect.top;
+            windowRect.left -= parentRect.left;
+        }
+        MoveWindow(windowRect.left,windowRect.top,right-left,bottom-top,false);
+    }
+    else
+    {
+        MoveWindow(left,top,right-left,bottom-top,true);
             if(memDC != NULL)
-		{
-			delete newMemDCBitmap;	
+        {
+            delete newMemDCBitmap;
 
-			CClientDC	dc(this);
-			newMemDCBitmap = new CBitmap;
-			CRect rect;
-			newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
+            CClientDC   dc(this);
+            newMemDCBitmap = new CBitmap;
+            CRect rect;
+            newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
                   oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-			memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
-			memDC.SelectObject(oldMemDCBitmap);
-		}
-		((CrChart*)mWidget)->ReDrawView();
+            memDC.PatBlt(0, 0, right-left, bottom-top, WHITENESS);
+            memDC.SelectObject(oldMemDCBitmap);
+        }
+        ((CrChart*)ptr_to_crObject)->ReDrawView();
 
-	}
+    }
 #endif
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
-      delete newMemDCBitmap; 
+      delete newMemDCBitmap;
       wxClientDC   dc(this);
       newMemDCBitmap = new wxBitmap(right-left, bottom-top);
       memDC.SelectObject(*newMemDCBitmap);
       memDC.Clear();
       memDC.SelectObject(wxNullBitmap);
-      ((CrChart*)mWidget)->ReDrawView();
+      ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 
 }
@@ -159,61 +161,61 @@ void	CxChart::SetGeometry( int top, int left, int bottom, int right )
 
 int   CxChart::GetTop()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.top -= parentRect.top;
-	}
-	return ( windowRect.top );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.top -= parentRect.top;
+    }
+    return ( windowRect.top );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
+    if(parent != nil)
+    {
             parentRect = parent->GetRect();
             windowRect.y -= parentRect.y;
-	}
+    }
       return ( windowRect.y );
 #endif
 }
 int   CxChart::GetLeft()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
-	return ( windowRect.left );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.left -= parentRect.left;
+    }
+    return ( windowRect.left );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
+    if(parent != nil)
+    {
             parentRect = parent->GetRect();
             windowRect.x -= parentRect.x;
-	}
+    }
       return ( windowRect.x );
 #endif
 
 }
 int   CxChart::GetWidth()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
-	return ( windowRect.Width() );
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
+    return ( windowRect.Width() );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect;
@@ -223,9 +225,9 @@ int   CxChart::GetWidth()
 }
 int   CxChart::GetHeight()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
 #ifdef __BOTHWX__
@@ -235,23 +237,23 @@ int   CxChart::GetHeight()
 #endif
 }
 
-int	CxChart::GetIdealWidth()
+int CxChart::GetIdealWidth()
 {
-	return mIdealWidth;
+    return mIdealWidth;
 }
-int	CxChart::GetIdealHeight()
+int CxChart::GetIdealHeight()
 {
-	return mIdealHeight;
+    return mIdealHeight;
 }
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxChart, CWnd)
-	ON_WM_CHAR()
-	ON_WM_PAINT()
-	ON_WM_LBUTTONUP()
-	ON_WM_RBUTTONUP()
-	ON_WM_MOUSEMOVE()
+    ON_WM_CHAR()
+    ON_WM_PAINT()
+    ON_WM_LBUTTONUP()
+    ON_WM_RBUTTONUP()
+    ON_WM_MOUSEMOVE()
       ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 #endif
@@ -270,49 +272,49 @@ END_EVENT_TABLE()
 
 void CxChart::Focus()
 {
-	SetFocus();
+    SetFocus();
 }
 
 
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxChart::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
-	NOTUSED(nRepCnt);
-	NOTUSED(nFlags);
-	switch(nChar)
-	{
-		case 9:     //TAB. Shift focus back or forwards.
-		{
-			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-			mWidget->NextFocus(shifted);
-			break;
-		}
-		default:
-		{
-			mWidget->FocusToInput((char)nChar);
-			break;
-		}
-	}
+    NOTUSED(nRepCnt);
+    NOTUSED(nFlags);
+    switch(nChar)
+    {
+        case 9:     //TAB. Shift focus back or forwards.
+        {
+            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            ptr_to_crObject->NextFocus(shifted);
+            break;
+        }
+        default:
+        {
+            ptr_to_crObject->FocusToInput((char)nChar);
+            break;
+        }
+    }
 }
 #endif
 #ifdef __BOTHWX__
 void CxChart::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
-	{
-		case 9:     //TAB. Shift focus back or forwards.
-		{
+    {
+        case 9:     //TAB. Shift focus back or forwards.
+        {
                   Boolean shifted = event.m_shiftDown;
-			mWidget->NextFocus(shifted);
-			break;
-		}
-		default:
-		{
-                  mWidget->FocusToInput((char)event.KeyCode());
-			break;
-		}
-	}
+            ptr_to_crObject->NextFocus(shifted);
+            break;
+        }
+        default:
+        {
+                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
+            break;
+        }
+    }
 }
 #endif
 
@@ -322,15 +324,15 @@ void CxChart::DrawLine(int x1, int y1, int x2, int y2)
       cpoint1 = DeviceToLogical(x1,y1);
       cpoint2 = DeviceToLogical(x2,y2);
 
-#ifdef __WINDOWS__
-	CPen pen(PS_SOLID,1,mfgcolour), *oldpen;
-	oldpen = memDC.SelectObject(&pen);
-	oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+#ifdef __CR_WIN__
+    CPen pen(PS_SOLID,1,mfgcolour), *oldpen;
+    oldpen = memDC.SelectObject(&pen);
+    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
 
       memDC.MoveTo(CPoint(cpoint1.x,cpoint1.y));
       memDC.LineTo(CPoint(cpoint2.x,cpoint2.y));
-	memDC.SelectObject(oldMemDCBitmap);
-	memDC.SelectObject(oldpen);
+    memDC.SelectObject(oldMemDCBitmap);
+    memDC.SelectObject(oldpen);
 #endif
 
 #ifdef __BOTHWX__
@@ -349,7 +351,7 @@ CcPoint CxChart::DeviceToLogical(int x, int y)
       CcPoint      newpoint;
       float        aspectratio, windowratio;
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       CRect       wwindowext;
       GetClientRect(&wwindowext);
       CcRect       windowext( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
@@ -359,45 +361,45 @@ CcPoint CxChart::DeviceToLogical(int x, int y)
       CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
 
-	aspectratio = 1;
+    aspectratio = 1;
 
       windowratio = (float)windowext.mRight / (float)windowext.mBottom;
 
-	if(m_IsoCoords)
-	{
-		if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
-		{								  //centered and scaled.
+    if(m_IsoCoords)
+    {
+        if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
+        {                                 //centered and scaled.
                   newpoint.x = (int)((windowext.mRight * x)/(2400*aspectratio));
                   newpoint.y = (int)((windowext.mRight * y)/(2400*aspectratio));
-                  newpoint.y = (int)(newpoint.y + ((windowext.mBottom-windowext.mRight)/2*aspectratio)); 
-		}
-		else if (aspectratio < windowratio)    //The y coords are okay, xcoords must be
-		{									  //centered and scaled.
+                  newpoint.y = (int)(newpoint.y + ((windowext.mBottom-windowext.mRight)/2*aspectratio));
+        }
+        else if (aspectratio < windowratio)    //The y coords are okay, xcoords must be
+        {                                     //centered and scaled.
                   newpoint.y = (windowext.mBottom * y) / 2400;
                   newpoint.x = (windowext.mBottom * x) / 2400;
-                  newpoint.x = (int)(newpoint.x + ((windowext.mRight- aspectratio*windowext.mBottom)/2)); 
-		}
-		else
-		{
+                  newpoint.x = (int)(newpoint.x + ((windowext.mRight- aspectratio*windowext.mBottom)/2));
+        }
+        else
+        {
                   newpoint.x = (int)((windowext.mRight * x)/(2400*aspectratio));
                   newpoint.y = (windowext.mBottom * y)/2400;
-		}
-	}
-	else
-	{
+        }
+    }
+    else
+    {
                   newpoint.x = (int)((windowext.mRight * x)/2400);
                   newpoint.y = (windowext.mBottom * y)/2400;
-	}
+    }
 
-	return newpoint;
+    return newpoint;
 }
 
 CcPoint CxChart::LogicalToDevice(CcPoint point)
 {
       CcPoint     newpoint;
-	float		aspectratio, windowratio;
+    float       aspectratio, windowratio;
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       CRect       wwindowext;
       GetClientRect(&wwindowext);
       CcRect       windowext( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
@@ -407,34 +409,34 @@ CcPoint CxChart::LogicalToDevice(CcPoint point)
       CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
 
-	aspectratio = 1;
+    aspectratio = 1;
 
       windowratio = (float)windowext.mRight / (float)windowext.mBottom;
 
-	if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
-	{								  //centered and scaled.
+    if (aspectratio > windowratio)    //The x coords are okay, ycoords must be
+    {                                 //centered and scaled.
             newpoint.x = (int) ( (point.x*2400*aspectratio) / windowext.mRight );
-            point.y -= (int)((windowext.mBottom-windowext.mRight)/2*aspectratio); 
+            point.y -= (int)((windowext.mBottom-windowext.mRight)/2*aspectratio);
             newpoint.y = (int) ( (point.y*2400*aspectratio) / windowext.mRight );
-	}
-	else if (aspectratio < windowratio)    //The y coords are okay, xcoords must be
-	{									  //centered and scaled.
+    }
+    else if (aspectratio < windowratio)    //The y coords are okay, xcoords must be
+    {                                     //centered and scaled.
             newpoint.y = (int) ( (point.y*2400) / windowext.mBottom );
-            point.x -= (int)((windowext.mRight- aspectratio*windowext.mBottom)/2); 
+            point.x -= (int)((windowext.mRight- aspectratio*windowext.mBottom)/2);
             newpoint.x = (int) ( (point.x*2400) / windowext.mBottom );
-	}
-	else
-	{
+    }
+    else
+    {
             newpoint.x = (int) ( (point.x*2400*aspectratio) / windowext.mRight );
             newpoint.y = (int) ( (point.y*2400) / windowext.mBottom );
-	}
+    }
 
-	return newpoint;
+    return newpoint;
 }
 
 void CxChart::Display()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       InvalidateRect(NULL,false);
 //      OnPaint();
 #endif
@@ -443,26 +445,26 @@ void CxChart::Display()
 #endif
 }
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxChart::OnPaint()
 {
-	CPaintDC dc(this); // device context for painting
-	
-	CRect rect;
-	GetClientRect (&rect);
+    CPaintDC dc(this); // device context for painting
 
-	oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    CRect rect;
+    GetClientRect (&rect);
 
-	dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCCOPY);
+    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
 
-	memDC.SelectObject(oldMemDCBitmap);
+    dc.BitBlt(0,0,rect.Width(),rect.Height(),&memDC,0,0,SRCCOPY);
 
-	if(m_inverted)
-	{
-		CRect rect;
-		GetClientRect(&rect);
-		dc.InvertRect(rect);
-	}
+    memDC.SelectObject(oldMemDCBitmap);
+
+    if(m_inverted)
+    {
+        CRect rect;
+        GetClientRect(&rect);
+        dc.InvertRect(rect);
+    }
 // Do not call CFrameWnd::OnPaint() for painting messages
 }
 #endif
@@ -471,7 +473,7 @@ void CxChart::OnPaint()
 void CxChart::OnPaint(wxPaintEvent & event)
 {
       wxPaintDC dc(this); // device context for painting
-	
+
       wxRect rect = GetRect();
 
       memDC.SelectObject(*newMemDCBitmap);
@@ -480,11 +482,11 @@ void CxChart::OnPaint(wxPaintEvent & event)
 
       memDC.SelectObject(wxNullBitmap);
 
-	if(m_inverted)
-	{
+    if(m_inverted)
+    {
             wxRect rect = GetRect();
             dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),NULL,0,0,wxINVERT,false);
-	}
+    }
 }
 #endif
 
@@ -492,32 +494,32 @@ void CxChart::OnPaint(wxPaintEvent & event)
 
 void CxChart::SetIdealHeight(int nCharsHigh)
 {
-#ifdef __WINDOWS__
-	CClientDC cdc(this);
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
-	TEXTMETRIC textMetric;
-	cdc.GetTextMetrics(&textMetric);
-	cdc.SelectObject(oldFont);
-	mIdealHeight = nCharsHigh * textMetric.tmHeight;
+#ifdef __CR_WIN__
+    CClientDC cdc(this);
+    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    TEXTMETRIC textMetric;
+    cdc.GetTextMetrics(&textMetric);
+    cdc.SelectObject(oldFont);
+    mIdealHeight = nCharsHigh * textMetric.tmHeight;
 #endif
 #ifdef __BOTHWX__
       mIdealHeight = nCharsHigh * GetCharHeight();
-#endif      
+#endif
 }
 
 void CxChart::SetIdealWidth(int nCharsWide)
 {
-#ifdef __WINDOWS__
-	CClientDC cdc(this);
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
-	TEXTMETRIC textMetric;
-	cdc.GetTextMetrics(&textMetric);
-	cdc.SelectObject(oldFont);
-	mIdealWidth = nCharsWide * textMetric.tmAveCharWidth;
+#ifdef __CR_WIN__
+    CClientDC cdc(this);
+    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    TEXTMETRIC textMetric;
+    cdc.GetTextMetrics(&textMetric);
+    cdc.SelectObject(oldFont);
+    mIdealWidth = nCharsWide * textMetric.tmAveCharWidth;
 #endif
 #ifdef __BOTHWX__
       mIdealWidth = nCharsWide * GetCharWidth();
-#endif      
+#endif
 }
 
 
@@ -526,12 +528,12 @@ void CxChart::SetIdealWidth(int nCharsWide)
 
 void CxChart::Clear()
 {
-#ifdef __WINDOWS__
-	CRect rect;
-	GetClientRect (&rect);
-	oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-	memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
-	memDC.SelectObject(oldMemDCBitmap);
+#ifdef __CR_WIN__
+    CRect rect;
+    GetClientRect (&rect);
+    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    memDC.PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+    memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       memDC.SelectObject(*newMemDCBitmap);
@@ -543,31 +545,28 @@ void CxChart::Clear()
 void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 {
 
-	//NB w and h are half diameters.
-	
+    //NB w and h are half diameters.
+
+    int x1 = x - w;
+    int y1 = y - h;
+    int x2 = x + w;
+    int y2 = y + h;
+
+    CcPoint topleft = DeviceToLogical(x1,y1);
+    CcPoint bottomright = DeviceToLogical(x2,y2);
 
 
-
-	int x1 = x - w;
-	int y1 = y - h;
-	int x2 = x + w;
-	int y2 = y + h;
-	
-      CcPoint topleft = DeviceToLogical(x1,y1);
-      CcPoint bottomright = DeviceToLogical(x2,y2);
-
-
-#ifdef __WINDOWS__
-	CRgn		rgn;
-	CBrush		brush;
-	oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-	rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
-	brush.CreateSolidBrush(mfgcolour);
-	if(fill)
-		memDC.FillRgn(&rgn,&brush);
-	else
-		memDC.FrameRgn(&rgn,&brush,1,1);
-	memDC.SelectObject(oldMemDCBitmap);
+#ifdef __CR_WIN__
+    CRgn        rgn;
+    CBrush      brush;
+    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
+    brush.CreateSolidBrush(mfgcolour);
+    if(fill)
+        memDC.FillRgn(&rgn,&brush);
+    else
+        memDC.FrameRgn(&rgn,&brush,1,1);
+    memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
 
@@ -577,7 +576,7 @@ void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
             memDC.SetBrush( wxBrush( mfgcolour, wxSOLID ));
       else
             memDC.SetBrush( wxBrush( mfgcolour, wxTRANSPARENT ));
-      memDC.DrawEllipse(x1,y1,x2,y2);
+      memDC.DrawEllipse(x1,y1,w,h);
       memDC.SetPen( wxNullPen );
       memDC.SetBrush( wxNullBrush );
       memDC.SelectObject(wxNullBitmap);
@@ -588,16 +587,16 @@ void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 void CxChart::DrawText(int x, int y, CcString text)
 {
       CcPoint      coord = DeviceToLogical(x,y);
-#ifdef __WINDOWS__
-	CPen		pen(PS_SOLID,1,mfgcolour);
-	oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-	CPen		*oldpen	= memDC.SelectObject(&pen);
-	CFont		*oldFont = memDC.SelectObject(CxGrid::mp_font);
-	memDC.SetBkMode(TRANSPARENT);
-	memDC.TextOut(coord.x,coord.y,text.ToCString());
-	memDC.SelectObject(oldpen);
-	memDC.SelectObject(oldFont);
-	memDC.SelectObject(oldMemDCBitmap);
+#ifdef __CR_WIN__
+    CPen        pen(PS_SOLID,1,mfgcolour);
+    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    CPen        *oldpen = memDC.SelectObject(&pen);
+    CFont       *oldFont = memDC.SelectObject(CxGrid::mp_font);
+    memDC.SetBkMode(TRANSPARENT);
+    memDC.TextOut(coord.x,coord.y,text.ToCString());
+    memDC.SelectObject(oldpen);
+    memDC.SelectObject(oldFont);
+    memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       wxString wtext = wxString(text.ToCString());
@@ -612,27 +611,27 @@ void CxChart::DrawText(int x, int y, CcString text)
 
 void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-	if(fill)
-	{
-		CBrush		brush;
-		brush.CreateSolidBrush(mfgcolour);
+    if(fill)
+    {
+        CBrush      brush;
+        brush.CreateSolidBrush(mfgcolour);
             CPen   pen(PS_SOLID,1,mfgcolour);
 
             CBrush *oldBrush = memDC.SelectObject(&brush);
             CPen   *oldpen = memDC.SelectObject(&pen);
 
             CcPoint*           points = new CcPoint[nVertices];
-		for ( int j = 0; j < nVertices*2 ; j+=2 )
-		{
-			points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
-		}
+        for ( int j = 0; j < nVertices*2 ; j+=2 )
+        {
+            points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
+        }
             memDC.Polygon( (LPPOINT) points, nVertices );
             memDC.SelectObject(oldBrush);
             memDC.SelectObject(oldpen);
             delete [] points;
-	}
+    }
       else
       {
 //NB: If the polygon isn't filled, then it shouldn't closed.
@@ -641,12 +640,12 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
         CBrush *oldBrush = (CBrush*)memDC.SelectStockObject(NULL_BRUSH);
 
         CcPoint*           points = new CcPoint[nVertices];
-		for ( int j = 0; j < nVertices*2 ; j+=2 )
-		{
-			points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
-		}
-        
-		memDC.Polyline( (LPPOINT) points, nVertices );
+        for ( int j = 0; j < nVertices*2 ; j+=2 )
+        {
+            points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
+        }
+
+        memDC.Polyline( (LPPOINT) points, nVertices );
 
         memDC.SelectObject(oldBrush);
         memDC.SelectObject(oldpen);
@@ -679,34 +678,34 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
 /* OLD CODE FROM ANOTHER PROJECT FOR REFERENCE
 void CGraphWnd::drawpolygon(int i)
 {
-//	CClientDC	graphDC(this);
-	CRgn		rgn;	
-	CBrush		brush;
+//  CClientDC   graphDC(this);
+    CRgn        rgn;
+    CBrush      brush;
       CcPoint            points[1000];
-	int j;
+    int j;
 
-	for ( j = 0; j < wgraphcommands[i+1] - 2 ; j=j+2)
-			points[j/2] = deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]);
-	rgn.CreatePolygonRgn((LPPOINT) &points,(wgraphcommands[i+1]-2)/2,WINDING);
-	brush.CreateSolidBrush(fgcolour);
-	memDC.FillRgn(&rgn,&brush);
+    for ( j = 0; j < wgraphcommands[i+1] - 2 ; j=j+2)
+            points[j/2] = deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]);
+    rgn.CreatePolygonRgn((LPPOINT) &points,(wgraphcommands[i+1]-2)/2,WINDING);
+    brush.CreateSolidBrush(fgcolour);
+    memDC.FillRgn(&rgn,&brush);
 
-	//or	graphDC.Polygon(points, wgrap....);
+    //or    graphDC.Polygon(points, wgrap....);
 }
 
 void CGraphWnd::drawemptypolygon(int i) //NB Empty polygon is not closed (should be calld POLYLINE)
 {
-//	CClientDC	graphDC(this);
-	CPen		pen(PS_SOLID,1,fgcolour);
-	CPen		*oldpen;
+//  CClientDC   graphDC(this);
+    CPen        pen(PS_SOLID,1,fgcolour);
+    CPen        *oldpen;
 
-	oldpen = memDC.SelectObject(&pen);
-	memDC.MoveTo(deviceToLogical(wgraphcommands[i+2],wgraphcommands[i+3]));
+    oldpen = memDC.SelectObject(&pen);
+    memDC.MoveTo(deviceToLogical(wgraphcommands[i+2],wgraphcommands[i+3]));
 
-	for (int j = 2; j < wgraphcommands[i+1] - 2 ; j=j+2)
-		memDC.LineTo(deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]));
+    for (int j = 2; j < wgraphcommands[i+1] - 2 ; j=j+2)
+        memDC.LineTo(deviceToLogical(wgraphcommands[i+j+2],wgraphcommands[i+j+3]));
 
-	memDC.SelectObject(oldpen);
+    memDC.SelectObject(oldpen);
 
 }
 
@@ -714,16 +713,16 @@ void CGraphWnd::drawemptypolygon(int i) //NB Empty polygon is not closed (should
 
 void CxChart::SetColour(int r, int g, int b)
 {
-#ifdef __WINDOWS__
-	mfgcolour = PALETTERGB(r,g,b);
-//	TRACE("CxChart SetColour to: %d, %d, %d \n",r,g,b);
+#ifdef __CR_WIN__
+    mfgcolour = PALETTERGB(r,g,b);
+//  TRACE("CxChart SetColour to: %d, %d, %d \n",r,g,b);
 #endif
 #ifdef __BOTHWX__
       mfgcolour = wxColour ( r,g,b );
 #endif
 }
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxChart::OnLButtonUp( UINT nFlags, CPoint wpoint )
 {
       CcPoint point(wpoint.x, wpoint.y);
@@ -735,81 +734,81 @@ void CxChart::OnLButtonUp( wxMouseEvent & event )
 #endif
 
       CcPoint devPoint = LogicalToDevice(point);
-	((CrChart*)mWidget)->LMouseClick(devPoint.x, devPoint.y);
-	
-	if (mPolyMode == 2)
-	{
-	//Add a point, set new last point coords
+    ((CrChart*)ptr_to_crObject)->LMouseClick(devPoint.x, devPoint.y);
+
+    if (mPolyMode == 2)
+    {
+    //Add a point, set new last point coords
             mLastPolyModePoint = point;
-	}
-	else if (mPolyMode == 1)
-	{
-	//Add first point, set mode to 2, set last point coords.
+    }
+    else if (mPolyMode == 1)
+    {
+    //Add first point, set mode to 2, set last point coords.
             mLastPolyModePoint = point;
             mCurrentPolyModeLineEndPoint = point;
             mStartPolyModePoint = point;
-		mPolyMode = 2;
-	}
-	else if (mPolyMode == 3)
-	{
-	//Add last point, set mode to 0, restore cursor.
+        mPolyMode = 2;
+    }
+    else if (mPolyMode == 3)
+    {
+    //Add last point, set mode to 0, restore cursor.
             mLastPolyModePoint = point;
-		mPolyMode = 0;
+        mPolyMode = 0;
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
             HCURSOR arrow = LoadCursor(NULL,IDC_ARROW);
-		SetCursor(arrow);
-		((CrChart*)mWidget)->PolygonClosed();
+        SetCursor(arrow);
+        ((CrChart*)ptr_to_crObject)->PolygonClosed();
 //            OnPaint();
             InvalidateRect(NULL,false);
 #endif
 #ifdef __BOTHWX__
             wxCursor arrow ( wxCURSOR_ARROW );
-		SetCursor(arrow);
-		((CrChart*)mWidget)->PolygonClosed();
+        SetCursor(arrow);
+        ((CrChart*)ptr_to_crObject)->PolygonClosed();
             Refresh();
 #endif
 
-	}
+    }
 
 }
 
 
 void CxChart::SetPolygonDrawMode(Boolean on)
 {
-	//If the user closes the polygon, the area is returned as an array
-	//with the first element as the number of vertices, followed by all
-	//the vertices.
+    //If the user closes the polygon, the area is returned as an array
+    //with the first element as the number of vertices, followed by all
+    //the vertices.
 
-	//If the user types a key, or clicks the right mouse button before the
-	//polygon is closed, then NULL is returned.
+    //If the user types a key, or clicks the right mouse button before the
+    //polygon is closed, then NULL is returned.
 
-	if(on)
-	{
-		mPolyMode = 1;
-#ifdef __WINDOWS__
+    if(on)
+    {
+        mPolyMode = 1;
+#ifdef __CR_WIN__
             HCURSOR cross = LoadCursor(NULL,IDC_CROSS);
 #endif
 #ifdef __BOTHWX__
             wxCursor cross ( wxCURSOR_CROSS );
 #endif
-		SetCursor(cross);
-	}
-	else
-	{
-		mPolyMode = 0;
-#ifdef __WINDOWS__
-		HCURSOR arrow = LoadCursor(NULL,IDC_ARROW);
+        SetCursor(cross);
+    }
+    else
+    {
+        mPolyMode = 0;
+#ifdef __CR_WIN__
+        HCURSOR arrow = LoadCursor(NULL,IDC_ARROW);
 #endif
 #ifdef __BOTHWX__
             wxCursor arrow ( wxCURSOR_ARROW );
 #endif
-		SetCursor(arrow);
-	}
+        SetCursor(arrow);
+    }
 }
 
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxChart::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
       CcPoint point(wpoint.x, wpoint.y);
@@ -820,25 +819,25 @@ void CxChart::OnMouseMove( wxMouseEvent & event )
       CcPoint point ( event.m_x, event.m_y );
 #endif
 
-	//If mode is 2 then change to 3 if closing.
-	//If not closing and mode is 3, then change to 2.
-	if (mPolyMode >= 2)
-	{
-		if( ( abs(point.x - mStartPolyModePoint.x) < 10) && ( abs(point.y - mStartPolyModePoint.y) < 10) )
-		{
-#ifdef __WINDOWS__
+    //If mode is 2 then change to 3 if closing.
+    //If not closing and mode is 3, then change to 2.
+    if (mPolyMode >= 2)
+    {
+        if( ( abs(point.x - mStartPolyModePoint.x) < 10) && ( abs(point.y - mStartPolyModePoint.y) < 10) )
+        {
+#ifdef __CR_WIN__
             HCURSOR cross = LoadCursor(NULL,IDC_ARROW);
 //                  HCURSOR cross = LoadCursor(AfxGetApp()->m_hInstance,MAKEINTRESOURCE( IDC_CURSOR2 ));
 #endif
 #ifdef __BOTHWX__
                   wxCursor cross ( wxCURSOR_BULLSEYE );
 #endif
-			SetCursor(cross);
-			mPolyMode = 3;
-		}
-		else 
-		{
-#ifdef __WINDOWS__
+            SetCursor(cross);
+            mPolyMode = 3;
+        }
+        else
+        {
+#ifdef __CR_WIN__
             HCURSOR arrow = LoadCursor(NULL,IDC_CROSS);
 //                  HCURSOR arrow = LoadCursor(AfxGetApp()->m_hInstance,MAKEINTRESOURCE( IDC_CURSOR1));
 #endif
@@ -846,146 +845,146 @@ void CxChart::OnMouseMove( wxMouseEvent & event )
                   wxCursor arrow ( wxCURSOR_CROSS );
 #endif
                   SetCursor(arrow);
-			mPolyMode = 2;
-		}
+            mPolyMode = 2;
+        }
 
-		//Erase the old line.
-#ifdef __WINDOWS__
-		CClientDC dc(this); // device context for painting
-		CRgn oldrgn, newrgn;
+        //Erase the old line.
+#ifdef __CR_WIN__
+        CClientDC dc(this); // device context for painting
+        CRgn oldrgn, newrgn;
 #endif
 #ifdef __BOTHWX__
             wxClientDC dc(this); // device context for painting
 #endif
 
             CcPoint points[4];
-		points[0] = mLastPolyModePoint;
-		points[1] = mCurrentPolyModeLineEndPoint;
-		points[2].x = mCurrentPolyModeLineEndPoint.x + 2;
-		points[2].y = mCurrentPolyModeLineEndPoint.y + 2;
-		points[3].x = mLastPolyModePoint.x + 2;
-		points[3].y = mLastPolyModePoint.y + 2;
+        points[0] = mLastPolyModePoint;
+        points[1] = mCurrentPolyModeLineEndPoint;
+        points[2].x = mCurrentPolyModeLineEndPoint.x + 2;
+        points[2].y = mCurrentPolyModeLineEndPoint.y + 2;
+        points[3].x = mLastPolyModePoint.x + 2;
+        points[3].y = mLastPolyModePoint.y + 2;
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
             oldrgn.CreatePolygonRgn((LPPOINT) points, 4, ALTERNATE);
-		dc.InvertRgn(&oldrgn);
+        dc.InvertRgn(&oldrgn);
 #endif
 #ifdef __BOTHWX__
 
 #endif
 
             mCurrentPolyModeLineEndPoint = CcPoint(point.x,point.y);
-		points[0] = mLastPolyModePoint;
-		points[1] = mCurrentPolyModeLineEndPoint;
-		points[2].x = mCurrentPolyModeLineEndPoint.x + 2;
-		points[2].y = mCurrentPolyModeLineEndPoint.y + 2;
-		points[3].x = mLastPolyModePoint.x + 2;
-		points[3].y = mLastPolyModePoint.y + 2;
+        points[0] = mLastPolyModePoint;
+        points[1] = mCurrentPolyModeLineEndPoint;
+        points[2].x = mCurrentPolyModeLineEndPoint.x + 2;
+        points[2].y = mCurrentPolyModeLineEndPoint.y + 2;
+        points[3].x = mLastPolyModePoint.x + 2;
+        points[3].y = mLastPolyModePoint.y + 2;
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
             newrgn.CreatePolygonRgn((LPPOINT) points, 4, ALTERNATE);
-		dc.InvertRgn(&newrgn);
+        dc.InvertRgn(&newrgn);
 #endif
-	}
-	else if(mPolyMode == 1)
-	{
-#ifdef __WINDOWS__
+    }
+    else if(mPolyMode == 1)
+    {
+#ifdef __CR_WIN__
             HCURSOR cross = LoadCursor(NULL,IDC_CROSS);
 //            HCURSOR cross = LoadCursor(AfxGetApp()->m_hInstance,MAKEINTRESOURCE( IDC_CURSOR1));
 #endif
 #ifdef __BOTHWX__
             wxCursor cross ( wxCURSOR_CROSS );
 #endif
-		SetCursor(cross);
-	}
-	else
-	{
-#ifdef __WINDOWS__
-		HCURSOR cross = LoadCursor(NULL, IDC_ARROW);
+        SetCursor(cross);
+    }
+    else
+    {
+#ifdef __CR_WIN__
+        HCURSOR cross = LoadCursor(NULL, IDC_ARROW);
 #endif
 #ifdef __BOTHWX__
             wxCursor cross ( wxCURSOR_ARROW );
 #endif
-		SetCursor(cross);
-	}
+        SetCursor(cross);
+    }
 }
 
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxChart::OnRButtonUp( UINT nFlags, CPoint wpoint )
 #endif
 #ifdef __BOTHWX__
 void CxChart::OnRButtonUp( wxMouseEvent & event )
 #endif
 {
-	if (mPolyMode != 0)
-	{
-		mPolyMode = 0;
-#ifdef __WINDOWS__     
-		HCURSOR arrow = LoadCursor(NULL,IDC_ARROW);
+    if (mPolyMode != 0)
+    {
+        mPolyMode = 0;
+#ifdef __CR_WIN__
+        HCURSOR arrow = LoadCursor(NULL,IDC_ARROW);
 #endif
 #ifdef __BOTHWX__
             wxCursor arrow ( wxCURSOR_ARROW );
 #endif
-		SetCursor(arrow);
-		((CrChart*)mWidget)->PolygonCancelled();
-	}
+        SetCursor(arrow);
+        ((CrChart*)ptr_to_crObject)->PolygonCancelled();
+    }
 }
 
 void CxChart::UseIsotropicCoords(Boolean iso)
 {
-	m_IsoCoords = iso;
+    m_IsoCoords = iso;
 }
 
 void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated)
 {
-#ifdef __WINDOWS__
-	CPen		pen(PS_SOLID,1,mfgcolour);
-	CPen*       oldpen = memDC.SelectObject(&pen);
-	oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
-	LOGFONT     theLogfont;
-	(CxGrid::mp_font)->GetLogFont(&theLogfont);
-	theLogfont.lfHeight = 180;
-	theLogfont.lfWidth = 0;
-	theLogfont.lfWeight = 0;
-	if(rotated)
-		theLogfont.lfOrientation = 900;
-	char face[32] = "Times New Roman";
-	*(theLogfont.lfFaceName) = *face;
+#ifdef __CR_WIN__
+    CPen        pen(PS_SOLID,1,mfgcolour);
+    CPen*       oldpen = memDC.SelectObject(&pen);
+    oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
+    LOGFONT     theLogfont;
+    (CxGrid::mp_font)->GetLogFont(&theLogfont);
+    theLogfont.lfHeight = 180;
+    theLogfont.lfWidth = 0;
+    theLogfont.lfWeight = 0;
+    if(rotated)
+        theLogfont.lfOrientation = 900;
+    char face[32] = "Times New Roman";
+    *(theLogfont.lfFaceName) = *face;
 
       CcPoint      coord = DeviceToLogical(x1,y1);
       CcPoint       coord2 =DeviceToLogical(x2,y2);
-	Boolean fontIsTooBig = true;
-	CSize size;
-//	int sign = theLogfont.lfHeight / abs(theLogfont.lfHeight);
-	while (fontIsTooBig)
-	{
-		CFont  theFont;
-		theFont.CreatePointFontIndirect(&theLogfont, &memDC);
-		CFont* oldFont = memDC.SelectObject(&theFont);
+    Boolean fontIsTooBig = true;
+    CSize size;
+//  int sign = theLogfont.lfHeight / abs(theLogfont.lfHeight);
+    while (fontIsTooBig)
+    {
+        CFont  theFont;
+        theFont.CreatePointFontIndirect(&theLogfont, &memDC);
+        CFont* oldFont = memDC.SelectObject(&theFont);
 
-		size = memDC.GetOutputTextExtent(theText.ToCString(), theText.Len());
+        size = memDC.GetOutputTextExtent(theText.ToCString(), theText.Len());
 
                 if (((size.cx < coord2.x - coord.x)&&(size.cy < coord2.y - coord.y))||(theLogfont.lfHeight<=60))
-		{
-			//Output the text, and exit.
-			fontIsTooBig = false;
-			int xcrd = ( coord2.x + coord.x - size.cx ) / 2;
-			int ycrd = ( coord2.y + coord.y - size.cy ) / 2;
-			memDC.SetBkMode(TRANSPARENT);
-			memDC.TextOut(xcrd,ycrd,theText.ToCString(),theText.Len());
-			memDC.SelectObject(oldpen);
-			memDC.SelectObject(oldFont);
-		}
-		else
-		{
-			//Reduced the logfont height, put the oldfont back into the DC and repeat.
-			theLogfont.lfHeight -= 10;
-			memDC.SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
-		}
+        {
+            //Output the text, and exit.
+            fontIsTooBig = false;
+            int xcrd = ( coord2.x + coord.x - size.cx ) / 2;
+            int ycrd = ( coord2.y + coord.y - size.cy ) / 2;
+            memDC.SetBkMode(TRANSPARENT);
+            memDC.TextOut(xcrd,ycrd,theText.ToCString(),theText.Len());
+            memDC.SelectObject(oldpen);
+            memDC.SelectObject(oldFont);
+        }
+        else
+        {
+            //Reduced the logfont height, put the oldfont back into the DC and repeat.
+            theLogfont.lfHeight -= 10;
+            memDC.SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
+        }
                 theFont.DeleteObject(); //Free memory associated with font.
-	}
-	memDC.SelectObject(oldMemDCBitmap);
+    }
+    memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
       memDC.SetPen( wxPen(mfgcolour,1,wxSOLID) );
@@ -1002,31 +1001,31 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
       int cwide = coord2.x - coord.x;
       int chigh = coord2.y - coord.y;
 
-	Boolean fontIsTooBig = true;
+    Boolean fontIsTooBig = true;
 
-	while (fontIsTooBig)
-	{
+    while (fontIsTooBig)
+    {
             memDC.SetFont(theFont);
             int cx,cy;
             GetTextExtent( wtext, &cx, &cy );
 
             if ((( cx < cwide )&&( cy < chigh ))||(theFont.GetPointSize()<=8))
-		{
-			//Output the text, and exit.
-			fontIsTooBig = false;
+        {
+            //Output the text, and exit.
+            fontIsTooBig = false;
 //Centre the text.
                   int xcrd = ( coord2.x + coord.x - cx ) / 2;
                   int ycrd = ( coord2.y + coord.y - cy ) / 2;
                   memDC.SetBackgroundMode( wxTRANSPARENT );
                   memDC.DrawText(wtext, xcrd , ycrd );
-		}
-		else
-		{
+        }
+        else
+        {
                   //Reduced the font height and repeat.
                   theFont.SetPointSize( theFont.GetPointSize()-1 );
-                  memDC.SetFont( wxNullFont ); 
-		}
-	}
+                  memDC.SetFont( wxNullFont );
+        }
+    }
       memDC.SetFont( wxNullFont );
       memDC.SetPen( wxNullPen );
       memDC.SelectObject( wxNullBitmap );
@@ -1035,18 +1034,18 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 
 void CxChart::Invert(Boolean inverted)
 {
-	m_inverted = inverted;
+    m_inverted = inverted;
 }
 
 void CxChart::NoEdge()
 {
-#ifdef __WINDOWS__
-	ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,0);
+#ifdef __CR_WIN__
+    ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,0);
 #endif
 //LINUX: It is not possible to modify window styles after creation.
 }
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxChart::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
       int key = -1;
@@ -1081,7 +1080,7 @@ void CxChart::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
       }
 
       if (key >= 0)
-            ((CrChart*)mWidget)->SysKey( key );
+            ((CrChart*)ptr_to_crObject)->SysKey( key );
 
       CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
@@ -1093,7 +1092,7 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
       int key = -1;
 
       switch(event.KeyCode())
-	{
+    {
            case WXK_LEFT:
                   key = CRLEFT;
                   break;
@@ -1124,7 +1123,7 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
       }
 
       if (key >= 0)
-            ((CrChart*)mWidget)->SysKey( key );
+            ((CrChart*)ptr_to_crObject)->SysKey( key );
 
 
 // Carry on processing this event.
@@ -1132,4 +1131,3 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 
 }
 #endif
-

@@ -18,7 +18,7 @@
 #include "ccstring.h"	// added by classview
 
 class CxApp;
-class CrMenu;
+class CrMenuBar;
 //End of user code.         
  
 class	CrWindow : public CrGUIElement
@@ -30,7 +30,7 @@ class	CrWindow : public CrGUIElement
 		void FocusToInput(char theChar);
 		void SetCommitText( CcString text);
 		void MenuSelected(int id);
-		void SetMainMenu(CrMenu* menu);
+                void SetMainMenu(CrMenuBar* menu);
 		void CrFocus();
 
             int mSafeClose;
@@ -38,7 +38,7 @@ class	CrWindow : public CrGUIElement
             Boolean m_Keep;
 		Boolean mIsSizeable;
 		Boolean mIsModal;
-		CrMenu* mMenuPtr;
+                CrMenuBar* mMenuPtr;
             int mOrigHeight;
             int mOrigWidth;
 

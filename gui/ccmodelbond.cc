@@ -1,6 +1,7 @@
 
 #include "crystalsinterface.h"
-#include	"crconstants.h"
+#include "ccstring.h"
+#include "crconstants.h"
 #include "ccmodelbond.h"
 #include "cctokenlist.h"
 #include <math.h>
@@ -11,13 +12,13 @@
 
 CcModelBond::CcModelBond()
 {
-	ox1 = oy1 = oz1 = x1 = y1 = z1 = 0;
-	ox2 = oy2 = oz2 = x2 = y2 = z2 = 0;
-	r = g = b = 0;
-	rad = 0;
-	xrot = 0;
-	yrot = 0;
-	length = 1;
+    ox1 = oy1 = oz1 = x1 = y1 = z1 = 0;
+    ox2 = oy2 = oz2 = x2 = y2 = z2 = 0;
+    r = g = b = 0;
+    rad = 0;
+    xrot = 0;
+    yrot = 0;
+    length = 1;
 }
 
 CcModelBond::~CcModelBond()
@@ -27,38 +28,38 @@ CcModelBond::~CcModelBond()
 void CcModelBond::ParseInput(CcTokenList* tokenList)
 {
     float degToRad = (float) (3.1415926535 / 180.0);
-	CcString theString;
+    CcString theString;
 //Just read four integers.
-	theString = tokenList->GetToken();
-	x1 = ox1 = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	y1 = oy1 = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	z1 = oz1 = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	x2 = ox2 = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	y2 = oy2 = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	z2 = oz2 = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	r = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	g = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	b = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	rad = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    x1 = ox1 = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    y1 = oy1 = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    z1 = oz1 = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    x2 = ox2 = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    y2 = oy2 = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    z2 = oz2 = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    r = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    g = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    b = atoi( theString.ToCString() );
+    theString = tokenList->GetToken();
+    rad = atoi( theString.ToCString() );
 
 // Do these calculations now. Uses 3 bytes more memory per bond, but saves a lot of time later,
 // as they were re-calculated every time the model is rotated.
     float xlen = (float)(x2-x1);
-	float ylen = (float)(y2-y1);
-	float zlen = (float)(z2-z1);
+    float ylen = (float)(y2-y1);
+    float zlen = (float)(z2-z1);
     float xzlen =  (float)sqrt ( xlen*xlen + zlen*zlen );
-	
-    xrot = -atan2( ylen, xzlen ) / (float) degToRad;
-    yrot =  atan2( xlen , zlen ) / (float) degToRad;
+
+    xrot = (float) -atan2( ylen, xzlen ) / (float) degToRad;
+    yrot =  (float) atan2( xlen , zlen ) / (float) degToRad;
     length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
 
 
@@ -67,13 +68,13 @@ void CcModelBond::ParseInput(CcTokenList* tokenList)
 void CcModelBond::Render(CrModel * view, Boolean detailed)
 {
 
-                                                   
-/*   float vecX = ((CxModel*)view->mWidgetPtr)->mat[6] * (z2 - z1)
-//              - ((CxModel*)view->mWidgetPtr)->mat[10] * (y2 - y1);
-//   float vecY = ((CxModel*)view->mWidgetPtr)->mat[10] * (x2 - x1)
-//              - ((CxModel*)view->mWidgetPtr)->mat[2] * (z2 - z1);
-//  float vecZ = ((CxModel*)view->mWidgetPtr)->mat[2] * (y2 - y1)
-//              - ((CxModel*)view->mWidgetPtr)->mat[6] * (x2 - x1);
+
+/*   float vecX = ((CxModel*)view->ptr_to_cxObject)->mat[6] * (z2 - z1)
+//              - ((CxModel*)view->ptr_to_cxObject)->mat[10] * (y2 - y1);
+//   float vecY = ((CxModel*)view->ptr_to_cxObject)->mat[10] * (x2 - x1)
+//              - ((CxModel*)view->ptr_to_cxObject)->mat[2] * (z2 - z1);
+//  float vecZ = ((CxModel*)view->ptr_to_cxObject)->mat[2] * (y2 - y1)
+//              - ((CxModel*)view->ptr_to_cxObject)->mat[6] * (x2 - x1);
 //
 //
 //   TEXTOUT("VECX "+CcString(vecX)+" VECY "+CcString(vecY)+"VECZ "+CcString(vecZ));
@@ -103,11 +104,11 @@ void CcModelBond::Render(CrModel * view, Boolean detailed)
 //      float xrot = (float)asin (min(1.0f,max(-1.0f,(-ylen/length))));
 //      float yrot = (float)acos (min(1.0f,max(-1.0f,(zlen/(length*cos(xrot)) ))));
 //      if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
-//			yrot = -yrot;
+//          yrot = -yrot;
 // Changed to use atan2 instead of acos and asin and moved into ParseInput so only calced once.
 
 
-	  glTranslated((x1+x2)/2.0f, (y1+y2)/2.0f, (z1+z2)/2.0f);   //Translate view origin to the center of the bond
+      glTranslated((x1+x2)/2.0f, (y1+y2)/2.0f, (z1+z2)/2.0f);   //Translate view origin to the center of the bond
       glRotatef(yrot,0,1,0);
       glRotatef(xrot,1,0,0);
       glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
@@ -144,4 +145,3 @@ void CcModelBond::Render(CrModel * view, Boolean detailed)
 
 
 }
-

@@ -9,8 +9,9 @@
 //   Created:   26.2.1998 9:36 Uhr
 //   Modified:  11.3.1998 11:36 Uhr
 
-#include	"crconstants.h"
 #include	"crystalsinterface.h"
+#include "ccstring.h"
+#include        "crconstants.h"
 #include	"ccstatus.h"
 #include	"cctokenlist.h"
 

@@ -9,16 +9,18 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  5.3.1998 15:22 Uhr
 
-#include	"crystalsinterface.h"
-#include	"cxbutton.h"
+#include    "crystalsinterface.h"
+#include    "ccstring.h"
+#include    "cccontroller.h"
+#include    "cxbutton.h"
 //insert your own code here.
-#include	"cxgrid.h"
-#include	"cxwindow.h"
-#include	"crbutton.h"
+#include    "cxgrid.h"
+#include    "cxwindow.h"
+#include    "crbutton.h"
 
 
-#ifdef __WINDOWS__
-#include	<afxwin.h>
+#ifdef __CR_WIN__
+#include    <afxwin.h>
 #endif
 
 #ifdef __BOTHWX__
@@ -28,61 +30,61 @@
 
 int CxButton::mButtonCount = kButtonBase;
 
-CxButton *	CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
+CxButton *  CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
 {
-	CxButton	*theStdButton = new CxButton(container);
-#ifdef __WINDOWS__
+    CxButton    *theStdButton = new CxButton(container);
+#ifdef __CR_WIN__
         theStdButton->Create("Button",WS_CHILD |WS_VISIBLE |BS_PUSHBUTTON, CRect(0,0,10,10), guiParent, mButtonCount++);
-	theStdButton->SetFont(CxGrid::mp_font);
+    theStdButton->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10));
 #endif
 
-	return theStdButton;
+    return theStdButton;
 }
 
 CxButton::CxButton(CrButton* container)
-#ifdef __WINDOWS__
-	:CButton()
+#ifdef __CR_WIN__
+    :CButton()
 #endif
 #ifdef __BOTHWX__
       :wxButton()
 #endif
 {
-     mWidget = container;
+     ptr_to_crObject = container;
 }
 
 CxButton::~CxButton()
 {
-	mButtonCount--;
+    mButtonCount--;
 }
 
-void	CxButton::ButtonClicked()
+void    CxButton::ButtonClicked()
 {
-	( (CrButton *)mWidget)->ButtonClicked();
+    ( (CrButton *)ptr_to_crObject)->ButtonClicked();
 }
 
-void	CxButton::SetText( char * text )
+void    CxButton::SetText( char * text )
 {
 #ifdef __POWERPC__
-	Str255 descriptor;
-	strcpy( reinterpret_cast<char *>(descriptor), text );
-	c2pstr( reinterpret_cast<char *>(descriptor) );
-	SetDescriptor( descriptor );
+    Str255 descriptor;
+    strcpy( reinterpret_cast<char *>(descriptor), text );
+    c2pstr( reinterpret_cast<char *>(descriptor) );
+    SetDescriptor( descriptor );
 #endif
 #ifdef __BOTHWX__
       SetLabel(text);
 #endif
-#ifdef __WINDOWS__
-	SetWindowText(text);
+#ifdef __CR_WIN__
+    SetWindowText(text);
 #endif
 }
 
-void	CxButton::SetGeometry( int top, int left, int bottom, int right )
+void    CxButton::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef __WINDOWS__
-	MoveWindow(left,top,right-left,bottom-top,true);
+#ifdef __CR_WIN__
+    MoveWindow(left,top,right-left,bottom-top,true);
 #endif
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
@@ -91,64 +93,64 @@ void	CxButton::SetGeometry( int top, int left, int bottom, int right )
 #endif
 
 }
-int	CxButton::GetTop()
+int CxButton::GetTop()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.top -= parentRect.top;
-	}
-	return ( windowRect.top );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.top -= parentRect.top;
+    }
+    return ( windowRect.top );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
 //      cerr << "My uncorrected coord is " << CcString(windowRect.y) << "\n";
-//	if(parent != nil)
-//	{
+//  if(parent != nil)
+//  {
 //            parentRect = parent->GetRect();
 //            windowRect.y -= parentRect.y;
-//	}
+//  }
       return ( windowRect.y );
 #endif
 }
-int	CxButton::GetLeft()
+int CxButton::GetLeft()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
-	return ( windowRect.left );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.left -= parentRect.left;
+    }
+    return ( windowRect.left );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
+    if(parent != nil)
+    {
             parentRect = parent->GetRect();
             windowRect.x -= parentRect.x;
-	}
+    }
       return ( windowRect.x );
 #endif
 
 }
-int	CxButton::GetWidth()
+int CxButton::GetWidth()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
-	return ( windowRect.Width() );
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
+    return ( windowRect.Width() );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect;
@@ -156,11 +158,11 @@ int	CxButton::GetWidth()
       return ( windowRect.GetWidth() );
 #endif
 }
-int	CxButton::GetHeight()
+int CxButton::GetHeight()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
 #ifdef __BOTHWX__
@@ -170,14 +172,14 @@ int	CxButton::GetHeight()
 #endif
 }
 
-int	CxButton::GetIdealWidth()
+int CxButton::GetIdealWidth()
 {
-#ifdef __WINDOWS__
-	CString text;
-	SIZE size;
-	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
-	GetWindowText(text);
-	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+#ifdef __CR_WIN__
+    CString text;
+    SIZE size;
+    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    GetWindowText(text);
+    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
       return (size.cx+20); // optimum width for Windows buttons (only joking)
 #endif
 #ifdef __BOTHWX__
@@ -188,15 +190,15 @@ int	CxButton::GetIdealWidth()
 
 }
 
-int	CxButton::GetIdealHeight()
+int CxButton::GetIdealHeight()
 {
-#ifdef __WINDOWS__
-	CString text;
-	SIZE size;
-	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
-	GetWindowText(text);
-	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-	return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
+#ifdef __CR_WIN__
+    CString text;
+    SIZE size;
+    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    GetWindowText(text);
+    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+    return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
 #endif
 #ifdef __BOTHWX__
       int cx,cy;
@@ -208,13 +210,13 @@ int	CxButton::GetIdealHeight()
 
 void CxButton::BroadcastValueMessage()
 {
-	ButtonClicked();
+    ButtonClicked();
 }
 
 void CxButton::SetDef()
 {
 // create the default outline
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
        ModifyStyle(NULL,BS_DEFPUSHBUTTON,0);
 #endif
 #ifdef __BOTHWX__
@@ -222,95 +224,95 @@ void CxButton::SetDef()
 #endif
 
 // Store the default button in the responsible window
-	CxWindow * window = (CxWindow *) (mWidget->GetRootWidget()->GetWidget());
-	if ( window != nil )
-		window->SetDefaultButton( this );
+    CxWindow * window = (CxWindow *) (ptr_to_crObject->GetRootWidget()->GetWidget());
+    if ( window != nil )
+        window->SetDefaultButton( this );
 }
 
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxButton, CButton)
-	ON_CONTROL_REFLECT(BN_CLICKED, ButtonClicked)
-	ON_WM_CHAR()
+    ON_CONTROL_REFLECT(BN_CLICKED, ButtonClicked)
+    ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
 
 #ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxButton, wxButton)
-      EVT_BUTTON( -1, CxButton::ButtonClicked ) 
+      EVT_BUTTON( -1, CxButton::ButtonClicked )
       EVT_CHAR( CxButton::OnChar )
 END_EVENT_TABLE()
 #endif
 
 void CxButton::Focus()
 {
-	SetFocus();
+    SetFocus();
 }
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
-	NOTUSED(nRepCnt);
-	NOTUSED(nFlags);
-	switch(nChar)
-	{
-		case 9:     //TAB. Shift focus back or forwards.
-		{
-			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-			mWidget->NextFocus(shifted);
-			break;
-		}
-		case 32:    //SPACE. Activates button. Don't focus to the input line.
-		{
-			break;
-		}
-		default:
-		{
-			mWidget->FocusToInput((char)nChar);
-			break;
-		}
-	}
+    NOTUSED(nRepCnt);
+    NOTUSED(nFlags);
+    switch(nChar)
+    {
+        case 9:     //TAB. Shift focus back or forwards.
+        {
+            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            ptr_to_crObject->NextFocus(shifted);
+            break;
+        }
+        case 32:    //SPACE. Activates button. Don't focus to the input line.
+        {
+            break;
+        }
+        default:
+        {
+            ptr_to_crObject->FocusToInput((char)nChar);
+            break;
+        }
+    }
 }
 #endif
 #ifdef __BOTHWX__
 void CxButton::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
-	{
-		case 9:     //TAB. Shift focus back or forwards.
-		{
+    {
+        case 9:     //TAB. Shift focus back or forwards.
+        {
                   Boolean shifted = event.m_shiftDown;
-			mWidget->NextFocus(shifted);
-			break;
-		}
-		case 32:    //SPACE. Activates button. Don't focus to the input line.
-		{
-			break;
-		}
-		default:
-		{
-                  mWidget->FocusToInput((char)event.KeyCode());
-			break;
-		}
-	}
+            ptr_to_crObject->NextFocus(shifted);
+            break;
+        }
+        case 32:    //SPACE. Activates button. Don't focus to the input line.
+        {
+            break;
+        }
+        default:
+        {
+                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
+            break;
+        }
+    }
 }
 #endif
 
 
 void CxButton::Disable(Boolean disabled)
 {
-#ifdef __WINDOWS__
-	if(disabled)
+#ifdef __CR_WIN__
+    if(disabled)
             EnableWindow(false);
-	else
+    else
             EnableWindow(true);
 #endif
 #ifdef __BOTHWX__
-	if(disabled)
+    if(disabled)
             Enable(false);
-	else
+    else
             Enable(true);
 #endif
 

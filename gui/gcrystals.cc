@@ -1,7 +1,7 @@
 // crystals.cpp : Defines the class behaviors for the application.
 //
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #include "stdafx.h"
 #include <stdlib.h>
 #endif
@@ -10,12 +10,12 @@
 #include <wx/app.h>
 #endif
 
-#include "crystals.h"
 #include "crystalsinterface.h"
+#include "crystals.h"
 #include "crapp.h"
 #include "cccontroller.h"
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -24,11 +24,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
-	//{{AFX_MSG_MAP(CCrystalsApp)
-	//}}AFX_MSG_MAP
-	// Standard file based document commands
+    //{{AFX_MSG_MAP(CCrystalsApp)
+    //}}AFX_MSG_MAP
+    // Standard file based document commands
 //      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 //      ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 //      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
@@ -39,8 +39,8 @@ END_MESSAGE_MAP()
 
 CCrystalsApp::CCrystalsApp()
 {
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+    // TODO: add construction code here,
+    // Place all significant initialization in InitInstance
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,15 +54,15 @@ CCrystalsApp theApplication;
 
 BOOL CCrystalsApp::InitInstance()
 {
-	// Standard initialization
-	// If you are not using these features and wish to reduce the size
-	//  of your final executable, you should remove from the following
-	//  the specific initialization routines you do not need.
+    // Standard initialization
+    // If you are not using these features and wish to reduce the size
+    //  of your final executable, you should remove from the following
+    //  the specific initialization routines you do not need.
 
 #ifdef _AFXDLL
-	Enable3dControls();			// Call this when using MFC in a shared DLL
+    Enable3dControls();         // Call this when using MFC in a shared DLL
 #else
-	Enable3dControlsStatic();	// Call this when linking to MFC statically
+    Enable3dControlsStatic();   // Call this when linking to MFC statically
 #endif
 
 
@@ -96,7 +96,7 @@ BOOL CCrystalsApp::InitInstance()
 
       }
 
-	// Parse command line for standard shell commands, DDE, file open
+    // Parse command line for standard shell commands, DDE, file open
       CCommandLineInfo cmdInfo;
       ParseCommandLine(cmdInfo);
 
@@ -138,37 +138,27 @@ BOOL CCrystalsApp::InitInstance()
 
 
 
-BOOL CCrystalsApp::OnIdle(LONG lCount) 
+BOOL CCrystalsApp::OnIdle(LONG lCount)
 {
-	// TODO: Add your specialized code here and/or call the base class
-	BOOL sysret = CWinApp::OnIdle(lCount);
-	BOOL appret = false;
+    // TODO: Add your specialized code here and/or call the base class
+    BOOL sysret = CWinApp::OnIdle(lCount);
+    BOOL appret = false;
 
-	char theLine[255];
+    if (lCount > 10)
+    {
 
-	if (lCount > 10)
-	{
-            if(theCrApp->mController->GetInterfaceCommand(theLine))
-		{
-			appret = true;
-			int theLength = 0;
+        appret = DoCommandTransferStuff();
 
-			if(theLength = strlen( theLine )) //Assignment within conditional (OK)
-			{
-				theLine[theLength+1]='\0';
-				theCrApp->mController->Tokenize(theLine);
-			}
-		}
-	}
+    }
 
-	//Only stop idle processing if:
-	// 1. lCount is high.
-	// 2. appret is false (no more interface commands)
-	// 3. sysret is false (no more idle processing needed by framework).
-	if((lCount > 1000) && (!appret) && (!sysret)) 
-		return false;
-	else
-		return true;
+    //Only stop idle processing if:
+    // 1. lCount is high.
+    // 2. appret is false (no more interface commands)
+    // 3. sysret is false (no more idle processing needed by framework).
+    if((lCount > 1000) && (!appret) && (!sysret))
+        return false;
+    else
+        return true;
 }
 
 /*
@@ -190,23 +180,18 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
  *
  */
 
-int CCrystalsApp::ExitInstance() 
+int CCrystalsApp::ExitInstance()
 {
 
-	delete theCrApp;
-	delete (CFrameWnd*)m_pMainWnd;
+    delete theCrApp;
+    delete (CFrameWnd*)m_pMainWnd;
 
-	return CWinApp::ExitInstance();
+    return CWinApp::ExitInstance();
 }
 #endif
 
 #ifdef __BOTHWX__
 
-CCrystalsApp::CCrystalsApp()
-{
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // The one and only CCrystalsApp object
@@ -218,61 +203,81 @@ IMPLEMENT_APP(CCrystalsApp)
 
 BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
       EVT_IDLE ( CCrystalsApp::OnIdle )
+          EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
 END_EVENT_TABLE()
 
 bool CCrystalsApp::OnInit()
 {
 
       theCrApp = new CrApp("","crfilev2.dsc");
+
+	  kickTimer = new wxTimer(this, 5241);
+      kickTimer->Start(1000);      //Call OnKickTimer every second while idle.
       return true;
 }
 
 
 
-void CCrystalsApp::OnIdle(wxIdleEvent & event) 
+void CCrystalsApp::OnIdle(wxIdleEvent & event)
 {
-	// TODO: Add your specialized code here and/or call the base class
-      wxApp::OnIdle(event);
-	bool sysret = event.MoreRequested();
-	bool appret = false;
+    wxApp::OnIdle(event);
+    bool sysret = event.MoreRequested();
 
-	char theLine[255];
+    
+    int appret = DoCommandTransferStuff();
 
-	if(theCrApp->mController->GetInterfaceCommand(theLine))
-	{
-		appret = true;
 
-		int theLength = 0;
+    //Only stop idle processing if:
+    // 1. appret is false (no more interface commands)
+    // 2. sysret is false (no more idle processing needed by framework).
+    if((appret==0) && (!sysret))
+    {
+        return;
+    }
+    else
+    {
+        event.RequestMore();
+    }
+    return;
+}
 
-		if(theLength = strlen( theLine )) //Assignment within conditional (OK)
-		{
-			theLine[theLength+1]='\0';
-			theCrApp->mController->Tokenize(theLine);
-		}
-	}
+int CCrystalsApp::OnExit()
+{
 
-	//Only stop idle processing if:
-	// 1. appret is false (no more interface commands)
-	// 2. sysret is false (no more idle processing needed by framework).
-	if((!appret) && (!sysret)) 
-      {
-		return;
-      }
-      else
-      {
-		event.RequestMore();
-      }
-	return;
+    delete theCrApp;
+//  delete (CFrameWnd*)m_pMainWnd;
+
+    return wxApp::OnExit();
 }
 
 
-int CCrystalsApp::OnExit() 
+void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 {
-
-	delete theCrApp;
-//	delete (CFrameWnd*)m_pMainWnd;
-
-	return wxApp::OnExit();
+	DoCommandTransferStuff();
 }
+
 #endif
+
+
+BOOL CCrystalsApp::DoCommandTransferStuff()
+{
+    char theLine[255];
+    bool appret = false;
+
+    if(theCrApp->mController->GetInterfaceCommand(theLine))
+    {
+        appret = true;
+
+        int theLength = 0;
+
+        if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+        {
+            theLine[theLength+1]='\0';
+            theCrApp->mController->Tokenize(theLine);
+        }
+    }
+
+
+	return appret;
+}
 

@@ -4,183 +4,183 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-#include	"crystalsinterface.h"
-#include	"crconstants.h"
-#include	"crdropdown.h"
-#include	"crgrid.h"
-#include	"cxdropdown.h"
-#include	"ccrect.h"
-#include	"cctokenlist.h"
-#include	"cccontroller.h"	// for sending commands
+#include    "crystalsinterface.h"
+#include    "crconstants.h"
+#include    "crdropdown.h"
+#include    "crgrid.h"
+#include    "cxdropdown.h"
+#include    "ccrect.h"
+#include    "cctokenlist.h"
+#include    "cccontroller.h"    // for sending commands
 
 
 CrDropDown::CrDropDown( CrGUIElement * mParentPtr )
-	:	CrGUIElement( mParentPtr )
+    :   CrGUIElement( mParentPtr )
 {
-	mWidgetPtr = CxDropDown::CreateCxDropDown( this, (CxGrid *)(mParentPtr->GetWidget()) );
-	mTabStop = true;
+    ptr_to_cxObject = CxDropDown::CreateCxDropDown( this, (CxGrid *)(mParentPtr->GetWidget()) );
+    mTabStop = true;
 }
 
 CrDropDown::~CrDropDown()
 {
-	if ( mWidgetPtr != nil )
-	{
-		delete (CxDropDown*)mWidgetPtr;
-		mWidgetPtr = nil;
-	}
+    if ( ptr_to_cxObject != nil )
+    {
+        delete (CxDropDown*)ptr_to_cxObject;
+        ptr_to_cxObject = nil;
+    }
 }
 
-Boolean	CrDropDown::ParseInput( CcTokenList * tokenList )
+Boolean CrDropDown::ParseInput( CcTokenList * tokenList )
 {
-	Boolean retVal = true;
-	Boolean hasTokenForMe = true;
-	CcString theToken;
-	
-	// Initialization for the first time
-	if( ! mSelfInitialised )
-	{	
-		LOGSTAT("*** DropDown *** Initing...");
+    Boolean retVal = true;
+    Boolean hasTokenForMe = true;
+    CcString theToken;
 
-		retVal = CrGUIElement::ParseInputNoText( tokenList );
-		mSelfInitialised = true;
+    // Initialization for the first time
+    if( ! mSelfInitialised )
+    {
+        LOGSTAT("*** DropDown *** Initing...");
 
-		LOGSTAT( "*** Created DropDown    " + mName );
-	}
-	// End of Init, now comes the general parser
-	
-	while ( hasTokenForMe )
-	{
-		switch ( tokenList->GetDescriptor(kAttributeClass) )
-		{
-			case kTInform:
-			{
-				tokenList->GetToken(); // Remove that token!
-				Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-				tokenList->GetToken(); // Remove that token!
-				if(inform)
-					LOGSTAT( "CrDropDown:ParseInput Dropdown INFORM on ");
-				else
-					LOGSTAT( "CrDropDown:ParseInput Dropdown INFORM off ");
-				mCallbackState = inform;
-				break;
-			}
-			case kTAddToList:
-			{
-				tokenList->GetToken(); // Remove that token!
-				Boolean stop = false;
-				while ( ! stop ) 
-				{
-					theToken = tokenList->GetToken();
-		
-					if ( strcmp( kSNull, theToken.ToCString() ) == 0 )
-						stop = true;
-					else
-					{
-						SetText( theToken );
-						LOGSTAT("Adding DropDown text '" + theToken + "'");
-					}
-				}
-				break;
-			}
+        retVal = CrGUIElement::ParseInputNoText( tokenList );
+        mSelfInitialised = true;
+
+        LOGSTAT( "*** Created DropDown    " + mName );
+    }
+    // End of Init, now comes the general parser
+
+    while ( hasTokenForMe )
+    {
+        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        {
+            case kTInform:
+            {
+                tokenList->GetToken(); // Remove that token!
+                Boolean inform = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                tokenList->GetToken(); // Remove that token!
+                if(inform)
+                    LOGSTAT( "CrDropDown:ParseInput Dropdown INFORM on ");
+                else
+                    LOGSTAT( "CrDropDown:ParseInput Dropdown INFORM off ");
+                mCallbackState = inform;
+                break;
+            }
+            case kTAddToList:
+            {
+                tokenList->GetToken(); // Remove that token!
+                Boolean stop = false;
+                while ( ! stop )
+                {
+                    theToken = tokenList->GetToken();
+
+                    if ( strcmp( kSNull, theToken.ToCString() ) == 0 )
+                        stop = true;
+                    else
+                    {
+                        SetText( theToken );
+                        LOGSTAT("Adding DropDown text '" + theToken + "'");
+                    }
+                }
+                break;
+            }
                   case kTSetSelection:
                   {
                         tokenList->GetToken(); //Remove that token!
                         int select = atoi ( tokenList->GetToken().ToCString() );
-                        ((CxDropDown*)mWidgetPtr)->CxSetSelection(select);
+                        ((CxDropDown*)ptr_to_cxObject)->CxSetSelection(select);
                         break;
                   }
-			default:
-			{
-				hasTokenForMe = false;
-				break; // We leave the token in the list and exit the loop
-			}
-		}
-	}	
+            default:
+            {
+                hasTokenForMe = false;
+                break; // We leave the token in the list and exit the loop
+            }
+        }
+    }
 
-	return retVal;
+    return retVal;
 }
 
-void	CrDropDown::SetGeometry( const CcRect * rect )
+void    CrDropDown::SetGeometry( const CcRect * rect )
 {
       TEXTOUT( "Drop: " + CcString(rect->mTop) + " " + CcString ( rect->mLeft ) );
-	((CxDropDown*)mWidgetPtr)->SetGeometry(	rect->mTop,
-											rect->mLeft,
-											rect->mBottom,
-											rect->mRight );
+    ((CxDropDown*)ptr_to_cxObject)->SetGeometry( rect->mTop,
+                                            rect->mLeft,
+                                            rect->mBottom,
+                                            rect->mRight );
 }
 
-CcRect	CrDropDown::GetGeometry()
+CcRect  CrDropDown::GetGeometry()
 {
-	CcRect retVal(
-			((CxDropDown*)mWidgetPtr)->GetTop(), 
-			((CxDropDown*)mWidgetPtr)->GetLeft(),
-			((CxDropDown*)mWidgetPtr)->GetTop()+((CxDropDown*)mWidgetPtr)->GetHeight(),
-			((CxDropDown*)mWidgetPtr)->GetLeft()+((CxDropDown*)mWidgetPtr)->GetWidth()   );
-	return retVal;
+    CcRect retVal(
+            ((CxDropDown*)ptr_to_cxObject)->GetTop(),
+            ((CxDropDown*)ptr_to_cxObject)->GetLeft(),
+            ((CxDropDown*)ptr_to_cxObject)->GetTop()+((CxDropDown*)ptr_to_cxObject)->GetHeight(),
+            ((CxDropDown*)ptr_to_cxObject)->GetLeft()+((CxDropDown*)ptr_to_cxObject)->GetWidth()   );
+    return retVal;
 }
 
-void	CrDropDown::CalcLayout()
+void    CrDropDown::CalcLayout()
 {
-	int w =  ((CxDropDown*)mWidgetPtr)->GetIdealWidth();
-	int h =  ((CxDropDown*)mWidgetPtr)->GetIdealHeight();
-      ((CxDropDown*)mWidgetPtr)->SetGeometry(-1,-1,h,w); 
+    int w =  ((CxDropDown*)ptr_to_cxObject)->GetIdealWidth();
+    int h =  ((CxDropDown*)ptr_to_cxObject)->GetIdealHeight();
+      ((CxDropDown*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
 }
 
-void	CrDropDown::SetText( CcString item )
+void    CrDropDown::SetText( CcString item )
 {
-	char theText[256];
-	strcpy( theText, item.ToCString() );
+    char theText[256];
+    strcpy( theText, item.ToCString() );
 
-	( (CxDropDown *)mWidgetPtr)->AddItem( theText );
+    ( (CxDropDown *)ptr_to_cxObject)->AddItem( theText );
 }
 
-void	CrDropDown::GetValue()
+void    CrDropDown::GetValue()
 {
-	int value = ( (CxDropDown *)mWidgetPtr)->GetDropDownValue();
-	
-	SendCommand( CcString( value ) );
+    int value = ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
+
+    SendCommand( CcString( value ) );
 }
 
 
 
-void	CrDropDown::GetValue(CcTokenList * tokenList)
+void    CrDropDown::GetValue(CcTokenList * tokenList)
 {
-	int desc = tokenList->GetDescriptor(kQueryClass);
+    int desc = tokenList->GetDescriptor(kQueryClass);
 
-	if( desc == kTQListtext )
-	{
-		tokenList->GetToken();
-		CcString theString = tokenList->GetToken();
-		int index = atoi( theString.ToCString() );
-		CcString text = ( ( CxDropDown*)mWidgetPtr)->GetDropDownText(index);
-		SendCommand( text,true );
-	}
-	else if (desc == kTQSelected )
-	{
-		tokenList->GetToken();
-		int value = ( (CxDropDown *)mWidgetPtr)->GetDropDownValue();
-		SendCommand( CcString( value ), true );
-	}
-	else
-	{
-		SendCommand( "ERROR",true );
-		CcString error = tokenList->GetToken();
-		LOGWARN( "CrDropDown:GetValue Error unrecognised token." + error);
-	}
+    if( desc == kTQListtext )
+    {
+        tokenList->GetToken();
+        CcString theString = tokenList->GetToken();
+        int index = atoi( theString.ToCString() );
+        CcString text = ( ( CxDropDown*)ptr_to_cxObject)->GetDropDownText(index);
+        SendCommand( text,true );
+    }
+    else if (desc == kTQSelected )
+    {
+        tokenList->GetToken();
+        int value = ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
+        SendCommand( CcString( value ), true );
+    }
+    else
+    {
+        SendCommand( "ERROR",true );
+        CcString error = tokenList->GetToken();
+        LOGWARN( "CrDropDown:GetValue Error unrecognised token." + error);
+    }
 }
 
-void	CrDropDown::Selected( int item )
+void    CrDropDown::Selected( int item )
 {
-	if(mCallbackState)
-	{
-		CcString theItem;
-		theItem = CcString( item );
-		SendCommand(mName + "_N" + theItem);
+    if(mCallbackState)
+    {
+        CcString theItem;
+        theItem = CcString( item );
+        SendCommand(mName + "_N" + theItem);
 
-	}
+    }
 }
 
 void CrDropDown::CrFocus()
 {
-	((CxDropDown*)mWidgetPtr)->Focus();	
+    ((CxDropDown*)ptr_to_cxObject)->Focus();
 }

@@ -9,17 +9,17 @@
 //   Created:   09.6.1998 00:03 Uhr
 //   Modified:  09.6.1998 00:03 Uhr
 
-#ifndef		__CxMenu_H__
-#define		__CxMenu_H__
+#ifndef     __CxMenu_H__
+#define     __CxMenu_H__
 //Insert your own code here.
-#include	"crguielement.h"
+#include    "crguielement.h"
 
 #ifdef __POWERPC__
 class LCaption;
 #endif
 
 #ifdef __MOTO__
-#include	<LCaption.h>
+#include    <LCaption.h>
 #endif
 
 #ifdef __BOTHWX__
@@ -27,36 +27,37 @@ class LCaption;
 #define BASEMENU wxMenu
 #endif
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #include <afxwin.h>
 #define BASEMENU CMenu
 #endif
 
-//End of user code.         
- 
+class CrMenu;
+
+
 class CxMenu : public BASEMENU
 {
-	public:
-		void SetText(CcString theText, int id);
-		int AddItem(int position = -1);
-		int AddItem(char* text, int position = -1);
-		int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
-		// methods
-		static CxMenu *	CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup = FALSE );
-			CxMenu( CrMenu * container );
-			~CxMenu();
+    public:
+        void SetText(CcString theText, int id);
+        int AddItem(int position = -1);
+        int AddItem(char* text, int position = -1);
+        int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
+        // methods
+        static CxMenu * CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup = FALSE );
+            CxMenu( CrMenu * container );
+            ~CxMenu();
             void PopupMenuHere(int x, int y, void *window);
             void EnableItem( int id, Boolean enable );
 
 
-		// attributes
-		CrGUIElement *	mWidget;
-		
-	protected:
-		// methods
-		
-		// attributes
-		static int	mMenuCount;
+        // attributes
+        CrGUIElement *  ptr_to_crObject;
+
+    protected:
+        // methods
+
+        // attributes
+        static int  mMenuCount;
 
 };
 #endif

@@ -4,20 +4,22 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-#include	"crystalsinterface.h"
-#include	"crmenu.h"
-#include	"cxmenu.h"
+#include    "crystalsinterface.h"
+#include    "ccstring.h"
+#include    "cccontroller.h"
+#include    "crmenu.h"
+#include    "cxmenu.h"
 
 
-int	CxMenu::mMenuCount = kMenuBase;
-CxMenu *	CxMenu::CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup )
+int CxMenu::mMenuCount = kMenuBase;
+CxMenu *    CxMenu::CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean popup )
 {
-	CxMenu	*theMenu = new CxMenu( container );
-#ifdef __WINDOWS__
-	if(popup)
-		theMenu->CreatePopupMenu();
-	else
-		theMenu->CreateMenu();
+    CxMenu  *theMenu = new CxMenu( container );
+#ifdef __CR_WIN__
+    if(popup)
+        theMenu->CreatePopupMenu();
+    else
+        theMenu->CreateMenu();
 #endif
       return theMenu;
 }
@@ -25,7 +27,7 @@ CxMenu *	CxMenu::CreateCxMenu( CrMenu * container, CxMenu * guiParent, Boolean p
 CxMenu::CxMenu( CrMenu * container )
 :BASEMENU()
 {
-	mWidget = container;
+    ptr_to_crObject = container;
 }
 
 CxMenu::~CxMenu()
@@ -36,57 +38,60 @@ CxMenu::~CxMenu()
 
 int CxMenu::AddMenu(CxMenu * menuToAdd, char * text, int position)
 {
-#ifdef __WINDOWS__
+      int id = (CcController::theController)->FindFreeMenuId();
+#ifdef __CR_WIN__
       InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text);
 #endif
 #ifdef __BOTHWX__
-      Append( ++mMenuCount, text, menuToAdd);
+      Append( id, text, menuToAdd);
           LOGSTAT ( "cxmenu " + CcString((int)this) + " adding submenu called " + CcString(text) );
 #endif
-      return 0;
+      return id;
 }
 
 int CxMenu::AddItem(char * text, int position)
 {
-#ifdef __WINDOWS__
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)++mMenuCount, text);
+      int id = (CcController::theController)->FindFreeMenuId();
+#ifdef __CR_WIN__
+      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text);
 #endif
 #ifdef __BOTHWX__
-      Append( ++mMenuCount, wxString(text), wxString("") );
-          LOGSTAT ("cxmenu " + CcString((int)this) + " adding item called " + CcString(text) );
+      Append( id, wxString(text), wxString("") );
+      LOGSTAT ("cxmenu " + CcString((int)this) + " adding item called " + CcString(text) );
 #endif
-	return mMenuCount;
+    return id;
 }
 
 int CxMenu::AddItem(int position)
 {
-#ifdef __WINDOWS__
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR, (UINT)++mMenuCount);
+      int id = (CcController::theController)->FindFreeMenuId();
+#ifdef __CR_WIN__
+      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR, (UINT)id);
 #endif
 #ifdef __BOTHWX__
       AppendSeparator();
 #endif
-	return mMenuCount;
+    return id;
 }
 
 
 void CxMenu::SetText(CcString theText, int id)
 {
-#ifdef __WINDOWS__
-	ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.ToCString());
+#ifdef __CR_WIN__
+    ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.ToCString());
 #endif
 #ifdef __BOTHWX__
       SetLabel( id, theText.ToCString() );
 #endif
 
 }
- 
+
 void CxMenu::PopupMenuHere(int x, int y, void *window)
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       TrackPopupMenu(
                  TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
-                  x, y, (CWnd*)window); 
+                  x, y, (CWnd*)window);
 #endif
 #ifdef __BOTHWX__
 // This is handled by the window class. But that's easy:
@@ -96,7 +101,7 @@ void CxMenu::PopupMenuHere(int x, int y, void *window)
 
 void CxMenu::EnableItem( int id, Boolean enable )
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       if (enable)
          EnableMenuItem( id, MF_ENABLED|MF_BYCOMMAND);
       else
@@ -106,4 +111,3 @@ void CxMenu::EnableItem( int id, Boolean enable )
          Enable( id, enable );
 #endif
 }
-

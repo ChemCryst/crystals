@@ -20,8 +20,15 @@
 #ifndef		__CcModelDoc_H__
 #define		__CcModelDoc_H__
 
+#ifdef __CR_WIN__
 #include <GL/glu.h>
 #include <GL/gl.h>
+#endif
+#ifdef __BOTHWX__
+#include <wx/glcanvas.h>
+#include <GL/glu.h>
+#endif
+
 #include "ccstring.h"	// added by classview
 #include "cclist.h"	// added by classView
 class CcTokenList;

@@ -1,5 +1,6 @@
 
 #include "crystalsinterface.h"
+#include    "ccstring.h"
 #include "crconstants.h"
 #include "ccmodelatom.h"
 #include "cctokenlist.h"

@@ -31,24 +31,24 @@ class CxWindow;
 class	CrMenu : public CrGUIElement
 {
 	public:
+                CrMenu( CrGUIElement * mParentPtr , int menuType = NORMAL_MENU );
+                ~CrMenu();
+
+          // methods
+		Boolean	ParseInput( CcTokenList * tokenList );
 		void Substitute(CcString atomname, int nSelected, CcString* atomNames);
 		void Popup(int x, int y, void* window);
-		CcMenuItem* FindItembyID(int id);
 		int Condition(CcString conditions);
-		CcList mMenuList;
-		void CrFocus();
-		// methods
-//            CrMenu( CrGUIElement * mParentPtr );
-            CrMenu( CrGUIElement * mParentPtr , int menuType = NORMAL_MENU );
-            ~CrMenu();
-		Boolean	ParseInput( CcTokenList * tokenList );
+
+                void    CrFocus();
 		void	SetText( CcString text );
 		void	SetGeometry( const CcRect * rect );
 		CcRect	GetGeometry();
 		void	CalcLayout();
 		
-		// attributes
-            int mMenuType;
+          // attributes
+                int mMenuType;
+		CcList mMenuList;
 
 };
 

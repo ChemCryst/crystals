@@ -10,6 +10,9 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2000/12/13 18:11:34  richard
+// Linux support. Changed SetSelection to CxSetSelection to avoid name clash.
+//
 // Revision 1.6  2000/07/04 14:41:54  ckp2
 // Gui changes since last year.
 // Mainly chart handling for multiple charts in one window.
@@ -32,43 +35,44 @@
 //      writer can choose which item is selected.
 //
 
-#include	"crystalsinterface.h"
-#include	"cxdropdown.h"
+#include    "crystalsinterface.h"
+#include    "ccstring.h"
+#include    "cxdropdown.h"
 
-#include	"cxgrid.h"
-#include	"crdropdown.h"
+#include    "cxgrid.h"
+#include    "crdropdown.h"
 
 
-int	CxDropDown::mDropDownCount = kDropDownBase;
-CxDropDown *	CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiParent )
+int CxDropDown::mDropDownCount = kDropDownBase;
+CxDropDown *    CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiParent )
 {
-	CxDropDown* theDropDown = new CxDropDown ( container);
-#ifdef __WINDOWS__
+    CxDropDown* theDropDown = new CxDropDown ( container);
+#ifdef __CR_WIN__
         theDropDown->Create(CBS_DROPDOWNLIST |WS_CHILD |WS_VISIBLE, CRect(0,0,10,10), guiParent, mDropDownCount++);
-	theDropDown->SetFont(CxGrid::mp_font);
+    theDropDown->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __BOTHWX__
       theDropDown->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL);
 #endif
-	return theDropDown;
+    return theDropDown;
 }
 
 CxDropDown::CxDropDown( CrDropDown * container)
             :BASEDROPDOWN()
 {
-	mWidget = container;
-	mItems = 0;
+    ptr_to_crObject = container;
+    mItems = 0;
 
 }
 
 CxDropDown::~CxDropDown()
 {
-	mDropDownCount--;
+    mDropDownCount--;
 }
 
 void CxDropDown::CxSetSelection(int select)
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       SetCurSel ( select - 1 );
 #endif
 #ifdef __BOTHWX__
@@ -76,128 +80,128 @@ void CxDropDown::CxSetSelection(int select)
 #endif
 }
 
-void	CxDropDown::Selected()
+void    CxDropDown::Selected()
 {
-#ifdef __WINDOWS__
-	((CrDropDown *)mWidget)->Selected( GetCurSel() + 1 );
+#ifdef __CR_WIN__
+    ((CrDropDown *)ptr_to_crObject)->Selected( GetCurSel() + 1 );
 #endif
 #ifdef __BOTHWX__
-      ((CrDropDown *)mWidget)->Selected( GetSelection() + 1 );
+      ((CrDropDown *)ptr_to_crObject)->Selected( GetSelection() + 1 );
 #endif
 }
 
-void	CxDropDown::AddItem( char * text )
+void    CxDropDown::AddItem( char * text )
 {
 #ifdef __POWERPC__
-	Str255 itemText;
-	MenuHandle mh;
-	
-	strcpy( reinterpret_cast<char *>(itemText), text );
-	c2pstr( reinterpret_cast<char *>(itemText) );
-	mh =  GetMacMenuH();
-	::AppendMenu( mh, itemText );
-	SetMaxValue( GetMaxValue() +1 );
-	SetValue( 1 );
+    Str255 itemText;
+    MenuHandle mh;
+
+    strcpy( reinterpret_cast<char *>(itemText), text );
+    c2pstr( reinterpret_cast<char *>(itemText) );
+    mh =  GetMacMenuH();
+    ::AppendMenu( mh, itemText );
+    SetMaxValue( GetMaxValue() +1 );
+    SetValue( 1 );
 #endif
 #ifdef __BOTHWX__
-      Append ( text );      
+      Append ( text );
       if( !mItems ) CxSetSelection(0);
-	mItems++;
+    mItems++;
 #endif
-#ifdef __WINDOWS__
-	AddString(text);
-	if( !mItems ) SetCurSel(0);
-	mItems++;
+#ifdef __CR_WIN__
+    AddString(text);
+    if( !mItems ) SetCurSel(0);
+    mItems++;
 #endif
 }
 
-void	CxDropDown::SetGeometry( const int top, const int left, const int bottom, const int right )
+void    CxDropDown::SetGeometry( const int top, const int left, const int bottom, const int right )
 {
-#ifdef __WINDOWS__
-	//If top or left are negative, this is a call from CalcLayout,
-	//therefore don't repaint the window.
+#ifdef __CR_WIN__
+    //If top or left are negative, this is a call from CalcLayout,
+    //therefore don't repaint the window.
       SetItemHeight(-1, bottom-top); //The closed up height is set by this call, MoveWindow sets the dropped height.
-	if((top<0) || (left<0))
-	{
+    if((top<0) || (left<0))
+    {
             RECT windowRect;
             GetWindowRect(&windowRect);
-		RECT parentRect;
-		CWnd* parent = GetParent();
-		if(parent != nil)
-		{
-			parent->GetWindowRect(&parentRect);
-			windowRect.top -= parentRect.top;
-			windowRect.left -= parentRect.left;
-		}
-		MoveWindow(windowRect.left,windowRect.top,right-left,GetIdealHeight(),false);
-	}
-	else
-		MoveWindow(left,top,right-left,GetIdealHeight(),true);
+        RECT parentRect;
+        CWnd* parent = GetParent();
+        if(parent != nil)
+        {
+            parent->GetWindowRect(&parentRect);
+            windowRect.top -= parentRect.top;
+            windowRect.left -= parentRect.left;
+        }
+        MoveWindow(windowRect.left,windowRect.top,right-left,GetIdealHeight(),false);
+    }
+    else
+        MoveWindow(left,top,right-left,GetIdealHeight(),true);
 #endif
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
-//End of user code.         
+//End of user code.
 }
 
 
 int   CxDropDown::GetTop()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.top -= parentRect.top;
-	}
-	return ( windowRect.top );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.top -= parentRect.top;
+    }
+    return ( windowRect.top );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-//	if(parent != nil)
-//	{
+//  if(parent != nil)
+//  {
 //            parentRect = parent->GetRect();
 //            windowRect.y -= parentRect.y;
-//	}
+//  }
       return ( windowRect.y );
 #endif
 }
 int   CxDropDown::GetLeft()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
-	return ( windowRect.left );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.left -= parentRect.left;
+    }
+    return ( windowRect.left );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-//	if(parent != nil)
-//	{
+//  if(parent != nil)
+//  {
 //            parentRect = parent->GetRect();
 //           windowRect.x -= parentRect.x;
-//	}
+//  }
       return ( windowRect.x );
 #endif
 }
 
 int   CxDropDown::GetWidth()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
-	return ( windowRect.Width() );
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
+    return ( windowRect.Width() );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect;
@@ -208,8 +212,8 @@ int   CxDropDown::GetWidth()
 
 int   CxDropDown::GetHeight()
 {
-#ifdef __WINDOWS__
-	return GetItemHeight(-1);
+#ifdef __CR_WIN__
+    return GetItemHeight(-1);
 #endif
 #ifdef __BOTHWX__
 // May need to base this on font size if it returns the dropped
@@ -220,49 +224,49 @@ int   CxDropDown::GetHeight()
 #endif
 }
 
-int	CxDropDown::GetIdealWidth()
+int CxDropDown::GetIdealWidth()
 {
-	int maxSiz = 10; //At least you can see it if it's empty!
+    int maxSiz = 10; //At least you can see it if it's empty!
 
-#ifdef __WINDOWS__
-	CString text;
-	SIZE size;
-	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+#ifdef __CR_WIN__
+    CString text;
+    SIZE size;
+    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
 
-	for ( int i=0;i<mItems;i++ )
-	{
-		GetLBText(i, text);
-		GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+    for ( int i=0;i<mItems;i++ )
+    {
+        GetLBText(i, text);
+        GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 
-		if ( maxSiz < size.cx )
-				maxSiz = size.cx;
-	}
+        if ( maxSiz < size.cx )
+                maxSiz = size.cx;
+    }
 #endif
 #ifdef __BOTHWX__
       wxString text;
-	for ( int i=0;i<mItems;i++ )
-	{
+    for ( int i=0;i<mItems;i++ )
+    {
             text = GetString(i);
             int cx,cy;
             GetTextExtent( GetLabel(), &cx, &cy );
             if ( maxSiz < cx )
                     maxSiz = cx;
-	}
+    }
 #endif
 
-	return ( maxSiz + 10 ); //10 pixels spare
+    return ( maxSiz + 10 ); //10 pixels spare
 }
 
 
 
-int	CxDropDown::GetIdealHeight()
+int CxDropDown::GetIdealHeight()
 {
-#ifdef __WINDOWS__
-	CClientDC cdc(this);
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
-	TEXTMETRIC textMetric;
-	cdc.GetTextMetrics(&textMetric);
-	cdc.SelectObject(oldFont);
+#ifdef __CR_WIN__
+    CClientDC cdc(this);
+    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    TEXTMETRIC textMetric;
+    cdc.GetTextMetrics(&textMetric);
+    cdc.SelectObject(oldFont);
         return (mItems+3) * ( textMetric.tmHeight + 4 );
 #endif
 #ifdef __BOTHWX__
@@ -273,98 +277,98 @@ int	CxDropDown::GetIdealHeight()
 
 }
 
-int	CxDropDown::GetDropDownValue()
+int CxDropDown::GetDropDownValue()
 {
-#ifdef __WINDOWS__
-	return ( GetCurSel() + 1 );
+#ifdef __CR_WIN__
+    return ( GetCurSel() + 1 );
 #endif
 #ifdef __BOTHWX__
       return ( GetSelection() + 1 );
 #endif
 }
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CxDropDown, BASEDROPDOWN)
-	ON_WM_CHAR()
-	ON_CONTROL_REFLECT(CBN_SELCHANGE, Selected)
+    ON_WM_CHAR()
+    ON_CONTROL_REFLECT(CBN_SELCHANGE, Selected)
 END_MESSAGE_MAP()
 #endif
 
 #ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxDropDown, BASEDROPDOWN)
-      EVT_CHOICE( -1, CxDropDown::Selected ) 
+      EVT_CHOICE( -1, CxDropDown::Selected )
       EVT_CHAR( CxDropDown::OnChar )
 END_EVENT_TABLE()
 #endif
 
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 void CxDropDown::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
-	NOTUSED(nRepCnt);
-	NOTUSED(nFlags);
-	switch(nChar)
-	{
-		case 9:     //TAB. Shift focus back or forwards.
-		{
-			Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-			mWidget->NextFocus(shifted);
-			break;
-		}
-		case 32:    //SPACE. Activates button. Don't focus to the input line.
-		{
-			break;
-		}
-		default:
-		{
-			mWidget->FocusToInput((char)nChar);
-			break;
-		}
-	}
+    NOTUSED(nRepCnt);
+    NOTUSED(nFlags);
+    switch(nChar)
+    {
+        case 9:     //TAB. Shift focus back or forwards.
+        {
+            Boolean shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
+            ptr_to_crObject->NextFocus(shifted);
+            break;
+        }
+        case 32:    //SPACE. Activates button. Don't focus to the input line.
+        {
+            break;
+        }
+        default:
+        {
+            ptr_to_crObject->FocusToInput((char)nChar);
+            break;
+        }
+    }
 }
 #endif
 #ifdef __BOTHWX__
 void CxDropDown::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
-	{
-		case 9:     //TAB. Shift focus back or forwards.
-		{
+    {
+        case 9:     //TAB. Shift focus back or forwards.
+        {
                   Boolean shifted = event.m_shiftDown;
-			mWidget->NextFocus(shifted);
-			break;
-		}
-		case 32:    //SPACE. Activates button. Don't focus to the input line.
-		{
-			break;
-		}
-		default:
-		{
-                  mWidget->FocusToInput((char)event.KeyCode());
-			break;
-		}
-	}
+            ptr_to_crObject->NextFocus(shifted);
+            break;
+        }
+        case 32:    //SPACE. Activates button. Don't focus to the input line.
+        {
+            break;
+        }
+        default:
+        {
+                  ptr_to_crObject->FocusToInput((char)event.KeyCode());
+            break;
+        }
+    }
 }
 #endif
 
 
 void CxDropDown::Focus()
 {
-	SetFocus();
+    SetFocus();
 }
 
 CcString CxDropDown::GetDropDownText(int index)
 {
-#ifdef __WINDOWS__
-	CString temp;
-	GetLBText(index,temp);
-	CcString result = temp.GetBuffer(temp.GetLength());
-	return result;
+#ifdef __CR_WIN__
+    CString temp;
+    GetLBText(index,temp);
+    CcString result = temp.GetBuffer(temp.GetLength());
+    return result;
 #endif
 #ifdef __BOTHWX__
       wxString temp = GetString( index );
       CcString result ( temp.c_str() );
-	return result;
+    return result;
 #endif
 }

@@ -44,7 +44,7 @@ CrGrid::CrGrid( CrGUIElement * mParentPtr )
 	mOutlineWidget = nil;
 	// We have to create a GUI representation of the grid only, if we
 	// need to outline it
-	mWidgetPtr = CxGrid::CreateCxGrid( this, (CxGrid *)(mParentPtr->GetWidget()) );
+        ptr_to_cxObject = CxGrid::CreateCxGrid( this, (CxGrid *)(mParentPtr->GetWidget()) );
 	mTheGrid = nil;
 	mTabStop = false;
 	mRows = 0;
@@ -72,10 +72,10 @@ CrGrid::~CrGrid()
 		delete (CxGroupBox*)mOutlineWidget;
 		mOutlineWidget = nil;
 	}
-	if ( mWidgetPtr != nil )
+        if ( ptr_to_cxObject != nil )
 	{
-		delete (CxGrid*)mWidgetPtr;
-		mWidgetPtr = nil;
+                delete (CxGrid*)ptr_to_cxObject;
+                ptr_to_cxObject = nil;
 	}
 
 
@@ -245,7 +245,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 						retVal = InitElement( listPtr, tokenList, xpos, ypos );
 					break;
 				}
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 //The ListCtrl is not yet supported
 // under linux due to lack of demand.
                         case kTCreateListCtrl:                    // Create a List Control
@@ -311,7 +311,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 					if ( radioButtPtr != nil )
 					{
 						retVal = InitElement( radioButtPtr, tokenList, xpos, ypos );
-//                                    ( (CxGrid *)mWidgetPtr )->AddRadioButton( (CxRadioButton *)radioButtPtr->GetWidget() );
+//                                    ( (CxGrid *)ptr_to_cxObject )->AddRadioButton( (CxRadioButton *)radioButtPtr->GetWidget() );
 					}
 					break;
 				}
@@ -370,7 +370,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 
 void	CrGrid::SetGeometry( const CcRect * rect )
 {
-	((CxGrid*)mWidgetPtr)->SetGeometry(	rect->mTop,
+        ((CxGrid*)ptr_to_cxObject)->SetGeometry(     rect->mTop,
 										rect->mLeft,
 										rect->mBottom,
 										rect->mRight );
@@ -384,10 +384,10 @@ void	CrGrid::SetGeometry( const CcRect * rect )
 CcRect	CrGrid::GetGeometry()
 {
 	CcRect retVal( 
-			((CxGrid*)mWidgetPtr)->GetTop(), 
-			((CxGrid*)mWidgetPtr)->GetLeft(),
-			((CxGrid*)mWidgetPtr)->GetTop()+((CxGrid*)mWidgetPtr)->GetHeight(),
-			((CxGrid*)mWidgetPtr)->GetLeft()+((CxGrid*)mWidgetPtr)->GetWidth()   );
+                        ((CxGrid*)ptr_to_cxObject)->GetTop(), 
+                        ((CxGrid*)ptr_to_cxObject)->GetLeft(),
+                        ((CxGrid*)ptr_to_cxObject)->GetTop()+((CxGrid*)ptr_to_cxObject)->GetHeight(),
+                        ((CxGrid*)ptr_to_cxObject)->GetLeft()+((CxGrid*)ptr_to_cxObject)->GetWidth()   );
 	return retVal;
 }
 

@@ -10,7 +10,8 @@
 //   Modified:  11.3.1998 11:36 Uhr
 
 #include	"crystalsinterface.h"
-#include	"ccrect.h"
+#include    "ccstring.h"
+#include        "ccrect.h"
 
 
 CcRect::CcRect()

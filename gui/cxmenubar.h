@@ -1,7 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-
 //   CRYSTALS Interface      Class CxMenuBar
-
 ////////////////////////////////////////////////////////////////////////
 
 //   Filename:  CxMenuBar.h
@@ -12,14 +10,14 @@
 #ifndef           __CxMenuBar_H__
 #define           __CxMenuBar_H__
 //Insert your own code here.
-#include	"crguielement.h"
+#include    "crguielement.h"
 
 #ifdef __POWERPC__
 class LCaption;
 #endif
 
 #ifdef __MOTO__
-#include	<LCaption.h>
+#include    <LCaption.h>
 #endif
 
 #ifdef __BOTHWX__
@@ -27,36 +25,40 @@ class LCaption;
 #define BASEMENUBAR wxMenuBar
 #endif
 
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
 #include <afxwin.h>
 #define BASEMENUBAR CMenu
 #endif
 
-//End of user code.         
- 
+class CxMenu;
+class CrMenu;
+class CxWindow;
+class CrMenuBar;
+
 class CxMenuBar : public BASEMENUBAR
 {
-	public:
-		void SetText(CcString theText, int id);
-		int AddItem(int position = -1);
-		int AddItem(char* text, int position = -1);
-            int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
-		// methods
-            static CxMenuBar *   CreateCxMenu( CrMenu * container, CxWindow * guiParent );
-                  CxMenuBar( CrMenu * container );
-                  ~CxMenuBar();
-            void PopupMenuHere(int x, int y, void *window);
-            void EnableItem( int id, Boolean enable );
+    public:
+        void SetText(CcString theText, int id);
+        int AddItem(int position = -1);
+        int AddItem(char* text, int position = -1);
+        int AddMenu(CxMenu* menuToAdd, char* text, int position = -1);
+
+        // methods
+        static CxMenuBar *   CreateCxMenu( CrMenuBar * container, CxWindow * guiParent );
+        CxMenuBar( CrMenuBar * container );
+        ~CxMenuBar();
+        void PopupMenuHere(int x, int y, void *window);
+        void EnableItem( int id, Boolean enable );
 
 
-		// attributes
-		CrGUIElement *	mWidget;
-		
-	protected:
-		// methods
-		
-		// attributes
-		static int	mMenuCount;
+        // attributes
+        CrGUIElement *  ptr_to_crObject;
+
+    protected:
+        // methods
+
+        // attributes
+        static int  mMenuCount;
 
 };
 #endif

@@ -9,155 +9,155 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  30.3.1998 10:29 Uhr
 
-#include	"crystalsinterface.h"
-#include	"crconstants.h"
-#include	"crradiobutton.h"
+#include    "crystalsinterface.h"
+#include    "crconstants.h"
+#include    "crradiobutton.h"
 //insert your own code here.
-#include	"crgrid.h"
-#include	"cxradiobutton.h"
-#include	"ccrect.h"
-#include	"cccontroller.h"	// for sending commands
+#include    "crgrid.h"
+#include    "cxradiobutton.h"
+#include    "ccrect.h"
+#include    "cccontroller.h"    // for sending commands
 
 
 CrRadioButton::CrRadioButton( CrGUIElement * mParentPtr )
-	:	CrGUIElement( mParentPtr )
+    :   CrGUIElement( mParentPtr )
 {
-	mWidgetPtr = CxRadioButton::CreateCxRadioButton( this, (CxGrid *)(mParentPtr->GetWidget()) );
-	mTabStop = true;
+    ptr_to_cxObject = CxRadioButton::CreateCxRadioButton( this, (CxGrid *)(mParentPtr->GetWidget()) );
+    mTabStop = true;
 }
 
 CrRadioButton::~CrRadioButton()
 {
-	if ( mWidgetPtr != nil )
-	{
-		delete (CxRadioButton*)mWidgetPtr;
-		mWidgetPtr = nil;
-	}
+    if ( ptr_to_cxObject != nil )
+    {
+        delete (CxRadioButton*)ptr_to_cxObject;
+        ptr_to_cxObject = nil;
+    }
 }
 
-Boolean	CrRadioButton::ParseInput( CcTokenList * tokenList )
+Boolean CrRadioButton::ParseInput( CcTokenList * tokenList )
 {
-	Boolean retVal = true;
-	Boolean hasTokenForMe = true;
-	
-	// Initialization for the first time
-	if( ! mSelfInitialised )
-	{	
-		LOGSTAT("RadioButton Initing...");
+    Boolean retVal = true;
+    Boolean hasTokenForMe = true;
 
-		retVal = CrGUIElement::ParseInput( tokenList );
-		mSelfInitialised = true;
+    // Initialization for the first time
+    if( ! mSelfInitialised )
+    {
+        LOGSTAT("RadioButton Initing...");
 
-		LOGSTAT( "Created RadioButton " + mName );
-	}
-	// End of Init, now comes the general parser
-	while ( hasTokenForMe )
-	{
-		switch ( tokenList->GetDescriptor(kAttributeClass) )
-		{
-			case kTTextSelector:
-			{
-				tokenList->GetToken(); // Remove that token!
-				mText = tokenList->GetToken();
-				SetText( mText );
-				LOGSTAT( "Setting RadioButton Text: " + mText );
-				break;
-			}
-			case kTInform:
-			{
-				mCallbackState = true;
-				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "Enabling RadioButton callback" );
-				break;
-			}
-			case kTIgnore:
-			{
-				mCallbackState = false;
-				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "Disabling RadioButton callback" );
-				break;
-			}
-			case kTState:
-			{
-				tokenList->GetToken(); // Remove that token!
-				break;
-			}
-			case kTOn:
-			{
-				SetState( true );
-				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "RadioButton State turned on" );
-				break;
-			}
-			case kTOff:
-			{
-				SetState( false );
-				tokenList->GetToken(); // Remove that token!
-				LOGSTAT( "RadioButton State turned off" );
-				break;
-			}
-			default:
-			{
-				hasTokenForMe = false;
-				break; // We leave the token in the list and exit the loop
-			}
-		}
-	}	
-	
-	return retVal;
+        retVal = CrGUIElement::ParseInput( tokenList );
+        mSelfInitialised = true;
+
+        LOGSTAT( "Created RadioButton " + mName );
+    }
+    // End of Init, now comes the general parser
+    while ( hasTokenForMe )
+    {
+        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        {
+            case kTTextSelector:
+            {
+                tokenList->GetToken(); // Remove that token!
+                mText = tokenList->GetToken();
+                SetText( mText );
+                LOGSTAT( "Setting RadioButton Text: " + mText );
+                break;
+            }
+            case kTInform:
+            {
+                mCallbackState = true;
+                tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "Enabling RadioButton callback" );
+                break;
+            }
+            case kTIgnore:
+            {
+                mCallbackState = false;
+                tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "Disabling RadioButton callback" );
+                break;
+            }
+            case kTState:
+            {
+                tokenList->GetToken(); // Remove that token!
+                break;
+            }
+            case kTOn:
+            {
+                SetState( true );
+                tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "RadioButton State turned on" );
+                break;
+            }
+            case kTOff:
+            {
+                SetState( false );
+                tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "RadioButton State turned off" );
+                break;
+            }
+            default:
+            {
+                hasTokenForMe = false;
+                break; // We leave the token in the list and exit the loop
+            }
+        }
+    }
+
+    return retVal;
 }
 
-void	CrRadioButton::SetText( CcString text )
+void    CrRadioButton::SetText( CcString text )
 {
-	char theText[256];
-	strcpy( theText, text.ToCString() );
+    char theText[256];
+    strcpy( theText, text.ToCString() );
 
-	( (CxRadioButton *)mWidgetPtr)->SetText( theText );
+    ( (CxRadioButton *)ptr_to_cxObject)->SetText( theText );
 }
 
-void	CrRadioButton::SetGeometry( const CcRect * rect )
+void    CrRadioButton::SetGeometry( const CcRect * rect )
 {
-	((CxRadioButton*)mWidgetPtr)->SetGeometry(	rect->mTop,
-												rect->mLeft,
-												rect->mBottom,
-												rect->mRight );
+    ((CxRadioButton*)ptr_to_cxObject)->SetGeometry(  rect->mTop,
+                                                rect->mLeft,
+                                                rect->mBottom,
+                                                rect->mRight );
 }
 
-CcRect	CrRadioButton::GetGeometry()
+CcRect  CrRadioButton::GetGeometry()
 {
-	 CcRect retVal(
-			((CxRadioButton*)mWidgetPtr)->GetTop(), 
-			((CxRadioButton*)mWidgetPtr)->GetLeft(),
-			((CxRadioButton*)mWidgetPtr)->GetTop()+((CxRadioButton*)mWidgetPtr)->GetHeight(),
-			((CxRadioButton*)mWidgetPtr)->GetLeft()+((CxRadioButton*)mWidgetPtr)->GetWidth()   );
-	return retVal;
+     CcRect retVal(
+            ((CxRadioButton*)ptr_to_cxObject)->GetTop(),
+            ((CxRadioButton*)ptr_to_cxObject)->GetLeft(),
+            ((CxRadioButton*)ptr_to_cxObject)->GetTop()+((CxRadioButton*)ptr_to_cxObject)->GetHeight(),
+            ((CxRadioButton*)ptr_to_cxObject)->GetLeft()+((CxRadioButton*)ptr_to_cxObject)->GetWidth()   );
+    return retVal;
 }
 
-void	CrRadioButton::CalcLayout()
+void    CrRadioButton::CalcLayout()
 {
-	int w =  ((CxRadioButton*)mWidgetPtr)->GetIdealWidth();
-	int h =  ((CxRadioButton*)mWidgetPtr)->GetIdealHeight();
-	((CxRadioButton*)mWidgetPtr)->SetGeometry(0,0,h,w);	
+    int w =  ((CxRadioButton*)ptr_to_cxObject)->GetIdealWidth();
+    int h =  ((CxRadioButton*)ptr_to_cxObject)->GetIdealHeight();
+    ((CxRadioButton*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
 }
 
-void	CrRadioButton::GetValue()
+void    CrRadioButton::GetValue()
 {
-	CcString stateString;
-	if ( ((CxRadioButton*)mWidgetPtr)->GetRadioState() )
-		stateString = kSOn;
-	else
-		stateString = kSOff;
-	SendCommand( stateString );
+    CcString stateString;
+    if ( ((CxRadioButton*)ptr_to_cxObject)->GetRadioState() )
+        stateString = kSOn;
+    else
+        stateString = kSOff;
+    SendCommand( stateString );
 }
 
 void  CrRadioButton::GetValue( CcTokenList * tokenList )
 {
-	CcString stateString;
+    CcString stateString;
 
       if( tokenList->GetDescriptor(kQueryClass) == kTQState )
       {
             tokenList->GetToken();
-            if ( ((CxRadioButton*)mWidgetPtr)->GetRadioState() )
+            if ( ((CxRadioButton*)ptr_to_cxObject)->GetRadioState() )
                   stateString = kSOn;
             else
                   stateString = kSOff;
@@ -174,21 +174,21 @@ void  CrRadioButton::GetValue( CcTokenList * tokenList )
 
 
 
-void	CrRadioButton::ButtonOn()
+void    CrRadioButton::ButtonOn()
 {
-	if ( mCallbackState )
-	{
-		SendCommand(mName);
-	}
+    if ( mCallbackState )
+    {
+        SendCommand(mName);
+    }
 }
 
-void	CrRadioButton::SetState( Boolean state )
+void    CrRadioButton::SetState( Boolean state )
 {
 
-	((CxRadioButton*)mWidgetPtr)->SetRadioState(state);
+    ((CxRadioButton*)ptr_to_cxObject)->SetRadioState(state);
 }
 
 void CrRadioButton::CrFocus()
 {
-	((CxRadioButton*)mWidgetPtr)->Focus();	
+    ((CxRadioButton*)ptr_to_cxObject)->Focus();
 }

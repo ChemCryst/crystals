@@ -10,19 +10,19 @@
 //   Modified:  12.3.1998 9:47 Uhr
 
 
-#include	"crystalsinterface.h"
-#include	"cxtext.h"
-#include	"cxgrid.h"
-#include	"crtext.h"
+#include    "crystalsinterface.h"
+#include    "cxtext.h"
+#include    "cxgrid.h"
+#include    "crtext.h"
 
 
-int	CxText::mTextCount = kTextBase;
-CxText *	CxText::CreateCxText( CrText * container, CxGrid * guiParent )
+int CxText::mTextCount = kTextBase;
+CxText *    CxText::CreateCxText( CrText * container, CxGrid * guiParent )
 {
-	CxText	*theText = new CxText( container );
-#ifdef __WINDOWS__
+    CxText  *theText = new CxText( container );
+#ifdef __CR_WIN__
       theText->Create("Text", SS_LEFTNOWORDWRAP| WS_CHILD| WS_VISIBLE, CRect(0,0,20,20), guiParent);
-	theText->SetFont(CxGrid::mp_font);
+    theText->SetFont(CxGrid::mp_font);
 #endif
 #ifdef __BOTHWX__
       theText->Create(guiParent, -1, "text");
@@ -33,30 +33,30 @@ CxText *	CxText::CreateCxText( CrText * container, CxGrid * guiParent )
 CxText::CxText( CrText * container )
       :BASETEXT()
 {
-	mWidget = container;
-	mCharsWidth = 0;
+    ptr_to_crObject = container;
+    mCharsWidth = 0;
 }
 
 CxText::~CxText()
 {
-	RemoveText();
+    RemoveText();
 }
 
-void	CxText::SetText( char * text )
+void    CxText::SetText( char * text )
 {
 #ifdef __BOTHWX__
       SetLabel(text);
 #endif
-#ifdef __WINDOWS__
-	SetWindowText(text);
+#ifdef __CR_WIN__
+    SetWindowText(text);
 #endif
 
 }
 
 void  CxText::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef __WINDOWS__
-	MoveWindow(left,top,right-left,bottom-top,true);
+#ifdef __CR_WIN__
+    MoveWindow(left,top,right-left,bottom-top,true);
 #endif
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
@@ -65,61 +65,61 @@ void  CxText::SetGeometry( int top, int left, int bottom, int right )
 }
 int   CxText::GetTop()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.top -= parentRect.top;
-	}
-	return ( windowRect.top );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.top -= parentRect.top;
+    }
+    return ( windowRect.top );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-//	if(parent != nil)
-//	{
+//  if(parent != nil)
+//  {
 //            parentRect = parent->GetRect();
 //            windowRect.y -= parentRect.y;
-//	}
+//  }
       return ( windowRect.y );
 #endif
 }
 int   CxText::GetLeft()
 {
-#ifdef __WINDOWS__
+#ifdef __CR_WIN__
       RECT windowRect, parentRect;
-	GetWindowRect(&windowRect);
-	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
-	return ( windowRect.left );
+    GetWindowRect(&windowRect);
+    CWnd* parent = GetParent();
+    if(parent != nil)
+    {
+        parent->GetWindowRect(&parentRect);
+        windowRect.left -= parentRect.left;
+    }
+    return ( windowRect.left );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-//	if(parent != nil)
-//	{
+//  if(parent != nil)
+//  {
 //            parentRect = parent->GetRect();
 //            windowRect.x -= parentRect.x;
-//	}
+//  }
       return ( windowRect.x );
 #endif
 
 }
 int   CxText::GetWidth()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
-	return ( windowRect.Width() );
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
+    return ( windowRect.Width() );
 #endif
 #ifdef __BOTHWX__
       wxRect windowRect;
@@ -129,9 +129,9 @@ int   CxText::GetWidth()
 }
 int   CxText::GetHeight()
 {
-#ifdef __WINDOWS__
-	CRect windowRect;
-	GetWindowRect(&windowRect);
+#ifdef __CR_WIN__
+    CRect windowRect;
+    GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
 #ifdef __BOTHWX__
@@ -142,53 +142,53 @@ int   CxText::GetHeight()
 }
 
 
-int	CxText::GetIdealWidth()
+int CxText::GetIdealWidth()
 {
-#ifdef __WINDOWS__
-	CString text;
-	SIZE size;
-	CClientDC dc(this);
-	CFont* oldFont = dc.SelectObject(CxGrid::mp_font);
-	GetWindowText(text);
-	size = dc.GetOutputTextExtent(text);
-	dc.SelectObject(oldFont);
-	return ( size.cx );
+#ifdef __CR_WIN__
+    CString text;
+    SIZE size;
+    CClientDC dc(this);
+    CFont* oldFont = dc.SelectObject(CxGrid::mp_font);
+    GetWindowText(text);
+    size = dc.GetOutputTextExtent(text);
+    dc.SelectObject(oldFont);
+    return ( size.cx );
 #endif
 #ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
-      return cx; 
+      return cx;
 #endif
 
 }
 
-int	CxText::GetIdealHeight()
+int CxText::GetIdealHeight()
 {
-#ifdef __WINDOWS__
-	CString text;
-	SIZE size;
-	HDC hdc= (HDC) (GetDC()->m_hAttribDC);
-	GetWindowText(text);
-	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-	return ( size.cy );
+#ifdef __CR_WIN__
+    CString text;
+    SIZE size;
+    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+    GetWindowText(text);
+    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+    return ( size.cy );
 #endif
 #ifdef __BOTHWX__
       return GetCharHeight();
 #endif
 }
 
-int	CxText::AddText()
+int CxText::AddText()
 {
-	mTextCount++;
-	return mTextCount;
+    mTextCount++;
+    return mTextCount;
 }
 
-void	CxText::RemoveText()
+void    CxText::RemoveText()
 {
-	mTextCount--;
+    mTextCount--;
 }
 
-void	CxText::SetVisibleChars( int count )
+void    CxText::SetVisibleChars( int count )
 {
-	mCharsWidth = count;
+    mCharsWidth = count;
 }
