@@ -6,6 +6,10 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 15:49:58  richard
+//   Support for transparent bitmaps.
+//   Support for CRYSDIR with more than one path in it i.e. c:\temp\,c:\build\
+//
 
 #include    "crystalsinterface.h"
 #include    "cxbitmap.h"
@@ -90,8 +94,8 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
     BITMAPINFOHEADER &bmInfo = ds.dsBmih;
     mbitmap.GetObject( sizeof(ds), &ds );
     int nColors = bmInfo.biClrUsed ? bmInfo.biClrUsed : 1 << bmInfo.biBitCount;
-        mWidth = bmInfo.biWidth;
-        mHeight = bmInfo.biHeight;
+    mWidth = bmInfo.biWidth;
+    mHeight = bmInfo.biHeight;
     // Create a halftone palette if colors > 256.
     CClientDC dc(NULL);         // Desktop DC
     if( nColors > 256 )
@@ -104,7 +108,7 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
         CBitmap memBitmap;
         CBitmap* oldBitmap;
         memDC.CreateCompatibleDC(&dc);
-                memBitmap.CreateCompatibleBitmap(&dc, mWidth,mHeight);
+        memBitmap.CreateCompatibleBitmap(&dc, mWidth,mHeight);
         oldBitmap = (CBitmap*)memDC.SelectObject( &memBitmap );
         ::GetDIBColorTable( memDC, 0, nColors, pRGB );
         UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * nColors);
@@ -123,6 +127,8 @@ void    CxBitmap::LoadFile( CcString bitmap, bool transp )
         delete[] pRGB;
         memDC.SelectObject(oldBitmap);
     }
+
+
 #endif
 #ifdef __BOTHWX__
         if (!mbitmap.LoadFile(file.ToCString(), wxBITMAP_TYPE_BMP))
@@ -167,50 +173,58 @@ void    CxBitmap::RemoveBitmap()
 
 
 #ifdef __CR_WIN__
+
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxBitmap, CWnd)
     ON_WM_PAINT()
 END_MESSAGE_MAP()
+
 #endif
 #ifdef __BOTHWX__
+
 //wx Message Table
 BEGIN_EVENT_TABLE(CxBitmap, wxWindow)
       EVT_PAINT( CxBitmap::OnPaint )
 END_EVENT_TABLE()
+
 #endif
 
 #ifdef __CR_WIN__
+
 void CxBitmap::OnPaint()
 {
-    CPaintDC dc(this);
+  CPaintDC dc(this);
 
+  if (!mbOkToDraw) return;
 
-    if (!mbOkToDraw) return;
+// Create a memory DC compatible with the paint DC
 
-    // Create a memory DC compatible with the paint DC
-    CDC memDC;
-    memDC.CreateCompatibleDC( &dc );
+  CDC memDC;
+  memDC.CreateCompatibleDC( &dc );
 
-    memDC.SelectObject( &mbitmap );
+  memDC.SelectObject( &mbitmap );
 
-    // Select and realize the palette
-        if( dc.GetDeviceCaps(RASTERCAPS) & RC_PALETTE && mpal.m_hObject != NULL )
-    {
-                dc.SelectPalette( &mpal, FALSE );
-        dc.RealizePalette();
-    }
-        dc.BitBlt(0, 0, mWidth, mHeight, &memDC, 0, 0,SRCCOPY);
+// Select and realize the palette if present.
+  if( dc.GetDeviceCaps(RASTERCAPS) & RC_PALETTE && mpal.m_hObject != NULL )
+  {
+    dc.SelectPalette( &mpal, FALSE );
+    dc.RealizePalette();
+  }
+
+  dc.BitBlt(0, 0, mWidth, mHeight, &memDC, 0, 0,SRCCOPY);
+
 }
 #endif
 
 #ifdef __BOTHWX__
 void CxBitmap::OnPaint(wxPaintEvent & evt)
 {
-    wxPaintDC dc(this);
-        if (!mbOkToDraw) return;
-        dc.DrawBitmap(mbitmap,0,0,false);
+  wxPaintDC dc(this);
+  if (!mbOkToDraw) return;
+  dc.DrawBitmap(mbitmap,0,0,false);
 }
 #endif
+
 
 void CxBitmap::ReplaceBackgroundColour()
 {
@@ -223,18 +237,25 @@ void CxBitmap::ReplaceBackgroundColour()
   const UINT numPixels (bmInfo.bmHeight * bmInfo.bmWidth);
 
 
-  if ( ( bmInfo.bmBitsPixel != 24 ) || (bmInfo.bmWidthBytes == (bmInfo.bmWidth * 3)))
+  if ( bmInfo.bmBitsPixel != 24 )
   {
-	  LOGERR ("Can only make 24 bit bitmaps transparent. Increase the colour depth");
-      return;
+    LOGERR ("Can only make 24 bit bitmaps transparent. Increase the colour depth");
+    return;
   }
 
+/*
+//  if ( bmInfo.bmWidthBytes != (bmInfo.bmWidth * 3) )
+//  {
+//    LOGERR ("Bad width for bitmap. Am I making sense?");
+//    return;
+//  }
+*/
 
 // get a pointer to the pixels
   DIBSECTION  ds;
   mbitmap.GetObject (sizeof (DIBSECTION), &ds);
 
-  RGBTRIPLE* pixels = reinterpret_cast<RGBTRIPLE*>(ds.dsBm.bmBits);
+  RGBTRIPLE* pixels = reinterpret_cast <RGBTRIPLE*> (ds.dsBm.bmBits);
 
 // get the user's preferred button color from the system
   const COLORREF            buttonColor (::GetSysColor (COLOR_BTNFACE));
@@ -243,16 +264,24 @@ void CxBitmap::ReplaceBackgroundColour()
   const RGBTRIPLE          userBackgroundColor = {
   GetBValue (buttonColor), GetGValue (buttonColor), GetRValue (buttonColor)};
 
-
 // search through the pixels, substituting the button
 // color for any pixel that has the magic background color
-  for (UINT i = 0; i < numPixels; ++i)
+
+
+  unsigned char * pData = reinterpret_cast <unsigned char*> (ds.dsBm.bmBits);;
+
+  for (int y = 0; y < bmInfo.bmHeight; y++ )
   {
-    if (pixels [i].rgbtBlue == kBackgroundColor.rgbtBlue
-     && pixels [i].rgbtGreen == kBackgroundColor.rgbtGreen
-     && pixels [i].rgbtRed == kBackgroundColor.rgbtRed)
+    for (int x = 0; x < bmInfo.bmWidth; x++ )
     {
-      pixels [i] = userBackgroundColor;
+      if (pData[x*3+y*bmInfo.bmWidthBytes]   == kBackgroundColor.rgbtBlue
+       && pData[x*3+1+y*bmInfo.bmWidthBytes] == kBackgroundColor.rgbtGreen
+       && pData[x*3+2+y*bmInfo.bmWidthBytes] == kBackgroundColor.rgbtRed)
+       {
+          pData[x*3+y*bmInfo.bmWidthBytes]   = userBackgroundColor.rgbtBlue ;
+          pData[x*3+1+y*bmInfo.bmWidthBytes] = userBackgroundColor.rgbtGreen;
+          pData[x*3+2+y*bmInfo.bmWidthBytes] = userBackgroundColor.rgbtRed ;
+       }
     }
   }
 }
