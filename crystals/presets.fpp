@@ -1,4 +1,23 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/02/27 11:49:50  rich
+C
+C Two BRAND NEW lexical things:
+C
+C  You can now use, wherever appropriate, FRAG(1,X's) syntax to
+C  select all atoms whose fragment number (slot 17 in L5) matches. This
+C  works in EDIT, LIST 12, DIST, REGULARISE etc.
+C
+C  You can now use, wherever appropriate, TYPE(H,X's) syntax to
+C  select all atoms whose type matches that given. This
+C  works in EDIT, LIST 12, DIST, REGULARISE etc. Main use I can think
+C  of is to quickly FIX all H positions (especially if using FRAG to specify
+C  bits to refine) or to special case a few heavy atoms: TYPE(AU,U'S).
+C
+C  If you say FULL U[ISO] TYPE(PB,U's) - it causes an error - this is better
+C  than going silently crazy I suppose, but It would be nice if it just
+C  overrode the iso setting, like FIX does: i.e. ALL(X'S) followed
+C  by FIX(H,X'S) works as expected.
+C
 C Revision 1.40  2003/01/15 14:04:47  rich
 C Add a character variable BLANKS to XCONST common block. Initialise it with
 C spaces.
@@ -936,7 +955,7 @@ CSEP2000  NEW NAMES
 &HOL      DATA ICOORD(1,15)/4HPART/,ICOORD(2,15)/4H    /
 &HOL      DATA ICOORD(1,16)/4HREF /,ICOORD(2,16)/4H    /
 CNOV2000  MORE NEW NAMES
-&HOL      DATA ICOORD(1,17)/4HHYBR/,ICOORD(2,17)/4HID  /
+&HOL      DATA ICOORD(1,17)/4HFRAG/,ICOORD(2,17)/4HMENT/
 &HOL      DATA ICOORD(1,18)/4HNEW /,ICOORD(2,18)/4H    /
 C
 C----- THE EXTENDED PARAMETER NAMES
@@ -965,7 +984,7 @@ CSEP2000  NEW NAMES
 #HOL      DATA ICOORD(1,15)/'PART'/,ICOORD(2,15)/'    '/
 #HOL      DATA ICOORD(1,16)/'REF '/,ICOORD(2,16)/'    '/
 CSEP2000  MORE NEW NAMES
-#HOL      DATA ICOORD(1,17)/'HYBR'/,ICOORD(2,17)/'ID  '/
+#HOL      DATA ICOORD(1,17)/'FRAG'/,ICOORD(2,17)/'MENT'/
 #HOL      DATA ICOORD(1,18)/'NEW '/,ICOORD(2,18)/'    '/
 C
 C-C-C-ADDITIONAL KEYWORDS FOR SPHERE, LINE, RING
