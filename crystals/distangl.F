@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/12/16 18:22:55  rich
+C Added code to KDIST1 and KDIST4 for outputting different parts in
+C self-consistent sets, all permutations.
+C
 C Revision 1.32  2002/10/31 13:20:33  rich
 C Changes to PUNCH=MOGUL option in #DIST.
 C
@@ -354,7 +358,7 @@ C
 \TYPE11
 \ISTORE
 C
-      DIMENSION B(3), PROCS(22)
+      DIMENSION B(3), PROCS(24)
       DIMENSION CC(4),TT(2)
       DIMENSION IS(9),ANGLE(3),DIST(3),DISTSQ(3)
       DIMENSION IAPD(13)
@@ -368,6 +372,7 @@ C
 C
       COMMON /XPROCD/DISTS(4),IALL,IP,IESD,ICELL,ISORT,INTRA,LEVEL,IULN
      1 ,IRDUS,IDSPDA,IPUNCH,ISYMOD,ITRANS,IHFIXD,DDEV1,DDEV2,SDEV1,SDEV2
+     2 ,SNBVAL,SNBPOW 
       COMMON /XDISTW/A,BB,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y
 \XLEXIC
 \XWORKA
@@ -402,7 +407,7 @@ C
       DATA RESTR1 /'DIST'/, RESTR2 /'ENER'/
       DATA TOLER1 / .2 /, TOLER2 / .5 /
 C
-      DATA IDIMN /22/
+      DATA IDIMN /24/
 C
       DATA IS(1)/0/,IS(2)/3/,IS(3)/6/
       DATA IS(4)/3/,IS(5)/3/,IS(6)/3/
@@ -1256,6 +1261,11 @@ C Get index of atoms at L and M5P in L5.
                IF ( ISTORE(INHVEC+J52) .LE. 1 ) SDEV = SDEV2
                WRITE (NCPU,'(''U(IJ) .0, '',F7.5,'' = '',A,'' to '',A)')
      1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+              ELSE IF (IPUNCH .EQ. 8) THEN
+C----- WRITE RESTRAINT
+                WRITE (NCPU,
+     1  '(''NONBONDED '',F7.4,'', '',F7.4,'' = '',A,'' to '',A)')
+     1          SNBVAL,SNBPOW,CATOM1(1:LATOM1),CATOM2(1:LATOM2)
               END IF
               IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
 C----- CIF AND FORMATTED PUBLICATION

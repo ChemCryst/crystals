@@ -2726,21 +2726,23 @@ DISTANCES         12    7
      PATTERSON      SPACEGROUP     NONE
     .TRANSLATION       25    0    1    2   -1 YES
      NO             YES
-   4.OUTPUT             8    1    0    0
-         3    3    3    3    2    2    2    2
+   4.OUTPUT            10    1    0    0
+         3    3    3    3    2    2    2    2    2    2
     .MONITOR           22    0    1    5   -1 DISTANCES
      PEAKSTOGUI     OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    5   -1 HIGH
      OFF            LOW            MEDIUM         HIGH           DEBUG
-    .PUNCH             23    0    1    9   -1 NOTHING
+    .PUNCH             23    0    1   10   -1 NOTHING
      NOTHING        RESTRAIN       PUBLISH        CIF            SCRIPT
-     MOGUL          SIMPLE         DELU           SIMU
+     MOGUL          SIMPLE         DELU           SIMU           NONBONDED
     .HESD              26    0    1    2    0 ALL
      ALL            NONFIXED
     .D1DEV             27    0    1    0    0 0.002
     .D2DEV             28    0    1    0    0 0.005
     .S1DEV             29    0    1    0    0 0.04
     .S2DEV             30    0    1    0    0 0.08
+    .VALUE             31    0    1    0    0 1.5
+    .POWERFACTOR       32    0    1    0    0 1.0
    5.INCLUDE            0 9999    2    0    0    0  104    5  175
          0    0    0    0    0    0    0    0    0    0
          8    9 
