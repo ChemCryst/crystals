@@ -52,6 +52,7 @@
 #include "InteractiveControl.h"
 #include "RunParameters.h"
 #include "StringClasses.h"
+#include "ReflectionMerging.h"
 
 using namespace std;
 
@@ -118,6 +119,30 @@ void runTest(RunParameters& pRunData)
     }
     gettimeofday(&time2, NULL);
     std::cout << "\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+    
+    //This is just testing  
+    std::cout << "Merging...";  
+    gettimeofday(&time1, NULL);
+    vector<Matrix<short>*> tMatrices;
+    tMatrices.push_back(new Matrix<short>(3, 3, 0));
+    tMatrices.push_back(new Matrix<short>(3, 3, 0));
+    tMatrices.push_back(new Matrix<short>(3, 3, 0));
+    tMatrices[0]->makeDiagonal((short)1, (short)0);
+    tMatrices[1]->setValue(-1, 0, 0);
+    tMatrices[1]->setValue(1, 1, 1);
+    tMatrices[1]->setValue(-1, 2, 2);
+    tMatrices[2]->setValue(1, 0, 0);
+    tMatrices[2]->setValue(-1, 1, 1);
+    tMatrices[2]->setValue(1, 2, 2);
+    MergedData* tMergedData = new MergedData(*tHKL, tMatrices);
+    delete tMatrices[0];
+    delete tMatrices[1];
+    delete tMatrices[2];
+    //delete tMergedData;
+    gettimeofday(&time2, NULL);    
+    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
+// this is the end of testing.
+
     std::cout << "\nCalculating probabilities...";
     gettimeofday(&time1, NULL);
     Table* tTable = tTables->findTable(pRunData.iCrystalSys.getCString());
@@ -128,9 +153,7 @@ void runTest(RunParameters& pRunData)
         Reflection* tReflection = tHKL->getReflection(i);
         tStats->addReflection(tReflection);
     }
-    gettimeofday(&time2, NULL);    
-    std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
-    gettimeofday(&time1, NULL);
+
     tStats->calProbs();
     gettimeofday(&time2, NULL);
     if (pRunData.iVerbose)
