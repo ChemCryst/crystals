@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  1999/05/21 11:47:28  dosuser
+C RIC: Added section (commented out) for testing the CSD derived
+C validation code.
+C
 C Revision 1.6  1999/05/10 17:09:10  dosuser
 C RIC: Fixed so that atomic co-ordinates will be displayed as soon
 C     as they become available. Previously you would have to either close
@@ -2355,7 +2359,8 @@ C
 C
       PARAMETER ( JNUMER = 1 , JCHAR = 2 )
 C
-      PARAMETER ( LADR = 1, NADR = 67)
+cdjwmay99
+      PARAMETER ( LADR = 1, NADR = 68)
       DIMENSION ITRADR(NADR) , ITRAD2(NADR) , ITRLEN(NADR)
       CHARACTER*4 CADDR(NADR)
 C
@@ -2372,7 +2377,8 @@ C----- ICDDIM = 2 * NWK, IN COMMON BLOCK XLEXCH
       PARAMETER ( NUFILE = 125 )
       PARAMETER ( NDVLEN = 6  , NDVNAM = 384 )
 C----- NUMBER OF VARIABLES AND CHARACTERS IN COMMON /XSSCHR/
-      PARAMETER (NSSLEN = 12, NSSCHR = 576 )
+cdjwmay99one more parameter length 64
+      PARAMETER (NSSLEN = 13, NSSCHR = 640 )
 C
 C
       DIMENSION ISSBLK(ISSDIM)
@@ -2459,9 +2465,10 @@ C----- UFIL   48 - 49
      8 'FLMX', 'NCLU',
 C----- DEVI   50 - 55
      9 'HLPD', 'HLPE', 'INDD', 'INDE', 'SCPD', 'SCPE',
-C----- CSYS   56 - 67
+cdjwmay99
+C----- CSYS   56 - 68
      1 'MACH', 'OPER', 'DATE', 'PROG', 'CMND', 'NEWD', 'CSRT', 'DSRT',
-     2 'SCAT', 'ELEM', 'TT', 'LP' /
+     2 'SCAT', 'ELEM', 'TT', 'LP', 'CIF' /
 C
 C
       DATA ITRADR /
@@ -2480,7 +2487,8 @@ C----- UFIL   48 - 49
 C----- DEVI   50 - 55
      * 1, 65, 129, 193, 257, 321,
 C----- CSYS   56 - 67
-     * 1,   17,  33,  49,  65,  129, 193, 257, 321, 385, 448, 513 /
+cdjwmay99 change 448 to 449, add 577
+     * 1,   17,  33,  49,  65,  129, 193, 257, 321, 385, 449, 513, 577 /
 C
 C
       DATA ITRAD2 /
@@ -2496,8 +2504,9 @@ C----- UFIL   48 - 49
      * 0, 0,
 C----- DEVI   50 - 55
      * 1, 2, 3, 4, 5, 6,
+cdjwmay99
 C----- CSYS   56 - 67
-     * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 /
+     * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 /
 C
 C
       DATA ITRLEN /
@@ -2513,8 +2522,9 @@ C----- UFIL   48 - 49
      * 0, 0,
 C----- DEVI   50 - 55
      * 64, 64, 64, 64, 64, 64,
-C----- CSYS   56 - 67
-     * 16, 16, 16, 16, 64, 64, 64, 64, 64, 64, 64, 64 /
+cdjwmay99
+C----- CSYS   56 - 68
+     * 16, 16, 16, 16, 64, 64, 64, 64, 64, 64, 64, 64, 64 /
 C
 C
 C -- IDENTIFY BLOCK NAME
