@@ -1,9 +1,18 @@
 %SCRIPT XREFINE
 %%
 %%
-%  VARIABLE LOGICAL EDONE PDONE PMASK
-%  VARIABLE INTEGER NCYCLE
+%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE
+%  VARIABLE INTEGER NCYCLE NFORCE
 %  VARIABLE REAL RMIN R
+%  EVALUATE SERR = TRUE
+%%
+%%
+%% If xrefine is set to true before calling, then ncycle and nforce should
+%% also be set - otherwise if xrefine is false (not set) then ncycle and
+%% nforce are set here:
+%%
+%%
+%  IF XREFINE .EQ. FALSE THEN
 %%
 %%
 %%
@@ -37,125 +46,134 @@
 %%
 %%
 %%
-% LOOP
-%  ON ERROR TERMINATE
-%  VERIFY RF_BXX RF_BOK RF_B12 RF_B16
-%  GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
-%  CASE VALUE
-%   BLOCK
-^^WI  DISPOSE XREFINE
-^^CR
-%     FINISH
-%   END BLOCK
-%   BLOCK
-%     COPY '#SUM LIST 12'
-%     COPY 'END'
-%%
-%     COPY '#SCRIPT RFACTOR'
-%     EVALUATE RMIN = R
-%%
-%     COPY '#SCRIPT XGETINFO'
-%     IF ( EDONE .EQ. TRUE ) .AND. ( PDONE .EQ. FALSE ) THEN
-%       IF EXISTS 11 .EQ. 1 THEN
-%         COPY '#DISK'
-%         COPY 'DELETE 11'
-%         COPY 'END'
-%       END IF
-%       EVALUATE PMASK = TRUE
-%       EVALUATE PDONE = TRUE
-%       COPY '#SCRIPT XPUTINFO'
-%       COPY '#PURGE LIST=11'
-%       COPY 'END'
-%     END IF
-%%
-%     COPY '#LIST 22'
-%     COPY 'END'
-%%
-%     COPY '#SCRIPT XDELQ'
-^^??  NC TEXT
-%     GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
-%     EVALUATE NCYCLE = VALUE
-%     IF NCYCLE .GT.  0 THEN
-^^??   NF STATE
-%      VERIFY ON OFF
-%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
-^^WI  DISPOSE XREFINE
-^^CR
+%    LOOP
+%      ON ERROR TERMINATE
+%      VERIFY RF_BXX RF_BOK RF_B12 RF_B16
+%      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %      CASE VALUE
-%       BLOCK                                        % NORMAL
+%       BLOCK
+^^CO      DISPOSE XREFINE
+%         FINISH
+%       END BLOCK
+%       BLOCK
+%         EVALUATE SERR = FALSE
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END BLOCK
+%       BLOCK         % EDIT 12
+%         COPY '#SCRIPT EDLIST12'
+%       END BLOCK
+%       BLOCK         % EDIT 16
+%         COPY '#SCRIPT EDLIST16'
+%       END BLOCK
+%      END CASE
+%    END LOOP
+%    IF SERR .EQ. TRUE THEN
+^^CO      DISPOSE XREFINE
+{E An error of some type occured. The xrefine script has stopped just
+{E in case it is serious. A possible cause is an invalid List 12 - maybe
+{E it refers to non-existant atoms.
+%         FINISH
+%    END IF
+%%
+^^?? NC TEXT
+%    GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
+%    EVALUATE NCYCLE = VALUE
+^^?? NF STATE
+%    VERIFY ON OFF
+%    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+%    EVALUATE NFORCE = VALUE
+^^CO DISPOSE XREFINE
+%       
+%%
+%  END IF
+%  COPY '#SUM LIST 12'
+%  COPY 'END'
+%%
+%  COPY '#SCRIPT RFACTOR'
+%  EVALUATE RMIN = R
+%%
+%  COPY '#SCRIPT XGETINFO'
+%  IF ( EDONE .EQ. TRUE ) .AND. ( PDONE .EQ. FALSE ) THEN
+%    IF EXISTS 11 .EQ. 1 THEN
+%      COPY '#DISK'
+%      COPY 'DELETE 11'
+%      COPY 'END'
+%    END IF
+%    EVALUATE PMASK = TRUE
+%    EVALUATE PDONE = TRUE
+%    COPY '#SCRIPT XPUTINFO'
+%% Purge everything until bug is fixed.
+%%    COPY '#PURGE LIST=11'
+%    COPY '#PURGE'
+%    COPY 'END'
+%  END IF
+%%
+%  COPY '#LIST 22'
+%  COPY 'END'
+%%
+%  COPY '#SCRIPT XDELQ'
+%  IF NCYCLE .GT. 0 THEN
+%    CASE NFORCE
+%      BLOCK                                        % NORMAL (not forced)
 %%
 %% Cope with people who insist on more than 5 lsq cycles in one go.
 %% Do them in blocks of 5. Even if convergence is detected, we'll
 %% still have to do one from every block of 5.
 %%
-%         IF NCYCLE .GT. 5 THEN
-%           LOOP
-%             COPY '#SFLS'
-%             LOOP 5 TIMES
-%               COPY 'REFINE'
-%               EVALUATE NCYCLE = NCYCLE - 1
-%               IF ( NCYCLE .LE. 0 ) THEN
-%                 EVALUATE LOOPEND = LOOPCOUNTER
-%               END IF
-%             END LOOP
-%             COPY 'END'
-%             IF ( NCYCLE .LE. 0 ) THEN
-%               EVALUATE LOOPEND = LOOPCOUNTER
-%             END IF
-%           END LOOP
-%         ELSE
+%        IF NCYCLE .GT. 5 THEN
+%          LOOP
+%            COPY '#SFLS'
+%            LOOP 5 TIMES
+%              COPY 'REFINE'
+%              EVALUATE NCYCLE = NCYCLE - 1
+%              IF ( NCYCLE .LE. 0 ) THEN
+%                EVALUATE LOOPEND = LOOPCOUNTER
+%              END IF
+%            END LOOP
+%            COPY 'END'
+%            IF ( NCYCLE .LE. 0 ) THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%        ELSE
 %%
 %% Normal less than or eq 5 lsq cycles.
 %%
-%           COPY '#SFLS'
-%           LOOP NCYCLE TIMES
-%             COPY 'REFINE'
-%           END LOOP
-%           COPY 'END'
-%         END IF
-%       END BLOCK
-%       BLOCK                                        % FORCE
+%          COPY '#SFLS'
+%          LOOP NCYCLE TIMES
+%            COPY 'REFINE'
+%          END LOOP
+%          COPY 'END'
+%        END IF
+%      END BLOCK
+%      BLOCK                                        % FORCE
 %%
 %% n forced cycles.
 %%
-%         LOOP NCYCLE TIMES
-%           COPY '#SFLS'
-%           COPY 'REFINE'
-%           COPY 'END'
-%         END LOOP
-%       END BLOCK
-%      END CASE
-%     END IF
-%% Unless this line is here, error contingency doesn't work - 28-03-01
-%     COPY '#SCRIPT RFACTOR'
+%        LOOP NCYCLE TIMES
+%          COPY '#SFLS'
+%          COPY 'REFINE'
+%          COPY 'END'
+%        END LOOP
+%      END BLOCK
+%    END CASE
+%  END IF
+%%
+%  COPY '#SCRIPT RFACTOR'
 {S * Test for near convergence of the R factor...
-%     CLEAR
-%     INSERT ' {R   Old R factor = '
-%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL RMIN
-%     INSERT '%. New R factor = '
-%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL R
-%     OUTPUT
-%     CLEAR
+%  CLEAR
+%  INSERT ' {R   Old R factor = '
+%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL RMIN
+%  INSERT '%. New R factor = '
+%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL R
+%  OUTPUT
+%  CLEAR
 %%
-%     IF R .GE. RMIN * 0.99 THEN
+%  IF R .GE. RMIN * 0.99 THEN
 {S * The refinement has probably converged.
-%     END IF
+%  END IF
 %%
-%     EVALUATE RMIN = R
-%     FINISH
-%   END BLOCK
-%   BLOCK         % EDIT 12
-%     COPY '#SCRIPT EDLIST12'
-%   END BLOCK
-%   BLOCK         % EDIT 16
-%     COPY '#SCRIPT EDLIST16'
-%   END BLOCK
-%  END CASE
-% END LOOP
-^^WI  DISPOSE XREFINE
-^^CR
-{E An error of some type occured. The xrefine script has stopped just
-{E in case it is serious. A possible cause is an invalid List 12 - maybe
-{E it refers to non-existant atoms.
+%  EVALUATE RMIN = R
+%%
 %END SCRIPT
 
