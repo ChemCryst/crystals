@@ -15,70 +15,90 @@
 ^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2
 ^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=9 NCOLS=3
+^^WI  @ 1,1 GRID GRIDL NROWS=5 NCOLS=3
+^^WI  {
+^^WI   @ 1,2 GRID GRIDLT NROWS=5 NCOLS=1
 ^^WI   {
-^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir92 parameters'
+^^WI    @ 1,1 RADIOBUTTON RS '&Default Sir92 parameters'
 ^^WI           STATE=ON
-^^WI    @ 2,2 RADIOBUTTON RDS '&Alternative 1 (seminv and random)'
+^^WI    @ 2,1 RADIOBUTTON RDS '&Alternative 1 (seminv and random)'
 ^^WI           STATE=OFF
-^^WI     @ 3,2 RADIOBUTTON RDR '&Alternative 2 (seminv and 12 symbols)'
+^^WI    @ 3,1 RADIOBUTTON RDR '&Alternative 2 (seminv and 12 symbols)'
 ^^WI           STATE=OFF
-^^WI @ 4,2 RADIOBUTTON RD '&Alternative 3 (very long random phasing job)'
+^^WI    @ 4,1 RADIOBUTTON RD '&Alternative 3 (very long random phasing job)'
 ^^WI           STATE=OFF
-^^WI     @ 5,2 RADIOBUTTON REX '&Do NOT create new SIR input file'
+^^WI    @ 5,1 RADIOBUTTON REX '&Do NOT create new SIR input file'
 ^^WI           STATE=OFF
-^^WI     @ 8,2 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI   }
+^^WI   @ 3,2 GRID GRIDLB NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 RADIOBUTTON RNFLT '&Pass all reflections to Sir92'
+^^WI           STATE=ON
+^^WI    @ 2,1 RADIOBUTTON RFLT '&Filter reflections using List28 conditions'
 ^^WI           STATE=OFF
-^^WI     @ 9,2 CHECKBOX CRUN '&Run Sir92 now'
+^^WI   }
+^^WI   @ 5,2 GRID GRIDLB NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI           STATE=OFF
+^^WI    @ 2,1 CHECKBOX CRUN '&Run Sir92 now'
 ^^WI           STATE=ON
 ^^WI   }
-^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
-^^WI   {
-^^WI     @ 2,1 BUTTON BOK '&Ok'
-^^WI     @ 4,1 BUTTON BXX '&Cancel'
-^^WI   }
+^^WI  }
+^^WI  @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
+^^WI  {
+^^WI   @ 2,1 BUTTON BOK '&Ok'
+^^WI   @ 4,1 BUTTON BXX '&Cancel'
+^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
 %      VERIFY BOK BXX
 %      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'
 %      IF VALUE .EQ. 2 THEN
-^^WI      DISPOSE SIR92
-^^CR
+^^CO      DISPOSE SIR92
 %         FINISH
 %      END IF
-^^??   RS STATE
+^^??   REX STATE
 %      VERIFY ON OFF
-%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
+%      GET SILENT NOSTORE ABBREVIATED 'On=Existing'
 %      IF ( VALUE .EQ. 1 ) THEN
-%          COPY '#FOREIGN SIR92 '
-%          COPY 'END'
-%      ELSE
-^^??     RDS STATE
-%        VERIFY ON OFF
-%        GET SILENT NOSTORE ABBREVIATED 'On=2nd job'
-%        IF ( VALUE .EQ. 1 ) THEN
-%          COPY '#FOREIGN SIR92 DIFFICULT'
-%          COPY 'END'
-%        ELSE
-^^??       RDR STATE
-%          VERIFY ON OFF
-%          GET SILENT NOSTORE ABBREVIATED 'On=3rd job'
-%          IF ( VALUE .EQ. 1 ) THEN
-%            COPY '#FOREIGN SIR92 HARD'
-%            COPY 'END'
-%          ELSE
-^^??         REX STATE
-%            VERIFY ON OFF
-%            GET SILENT NOSTORE ABBREVIATED 'On=Existing'
-%            IF ( VALUE .EQ. 1 ) THEN
   Using existing data
+%      ELSE
+%        CLEAR
+%        INSERT '#FOREIGN SIR92 '
+^^??     RS STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
+%        IF ( VALUE .EQ. 1 ) THEN
+%            INSERT 'NORMAL '
+%        ELSE
+^^??       RDS STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE ABBREVIATED 'On=2nd job'
+%          IF ( VALUE .EQ. 1 ) THEN
+%            INSERT 'DIFFICULT '
+%          ELSE
+^^??         RDR STATE
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE ABBREVIATED 'On=3rd job'
+%            IF ( VALUE .EQ. 1 ) THEN
+%              INSERT 'HARD '
 %            ELSE
-%              COPY '#FOREIGN SIR92 LONG'
-%              COPY 'END'
+%              INSERT 'LONG '
 %            END IF
 %          END IF
 %        END IF
+^^??     RFLT STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
+%        IF ( VALUE .EQ. 1 ) THEN
+%            INSERT 'FILTERED'
+%        ELSE
+%            INSERT 'NORMAL'
+%        END IF
+%        SEND
+%        COPY 'END'
 %      END IF
 ^^??   CRUN STATE
 %      VERIFY ON OFF
