@@ -193,10 +193,13 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  COPY 'END'
 %%
 
-Give the minimum I/sigma(i) to be used in refinement. It can be changed later
+Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be 
+used in refinement. They can be changed at any time later
 % COPY '#LIST 28'
 % INSERT 'MINIMA RATIO='
-% GET FINAL REAL  'I/sigma(I) ' '3.0'
+% GET REAL  'I/sigma(I) ' '3.0'
+% INSERT ' SINTH='
+% GET  FINAL REAL  '[Sin(theta)/lambda]sq ' '.01'
 % SEND
 % COPY 'END'
 %%
