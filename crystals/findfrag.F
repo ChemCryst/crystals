@@ -923,21 +923,26 @@ C
 C NERRFI = NERRFI_INCORRECT_ARGUMENT_TO_KNCR
             NERRFI = 50
             GO TO 9900
-      END IF
+      END IF                                        
 C
       IF ((N-IR) .LE. 12) THEN
           NFACT  = 1
           DO 1000, M = N-IR+1, N
                 NFACT = NFACT * M
 1000      CONTINUE
-          IF (IR .LE. 12) THEN
+          IF ( NFACT .GT. 0) THEN
+            IF (IR .LE. 12) THEN
               IRFACT = 1
               DO 3000, M = 1, IR
                     IRFACT = IRFACT * M
 3000          CONTINUE
               KNCR  = NFACT/IRFACT
-          ELSE
+            ELSE
               KNCR = MAXISO + 1
+            END IF
+          ELSE
+C Oops, NFACT has overflowed.
+            KNCR = MAXISO + 1
           END IF
       ELSE
               KNCR = MAXISO + 1
