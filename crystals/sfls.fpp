@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2002/03/18 10:01:22  richard
+C Minor bug in CALC THRESHOLD fixed.
+C
 C Revision 1.21  2002/03/12 18:03:55  ckp2
 C Only print "unwise" warning when twinned data, if user actually attempts extinction
 C calculation.
@@ -57,7 +60,10 @@ CODE FOR XSFLSB
 C--MAIN CONTROL ROUTINE FOR THE S.F.L.S. ROUTINES
 C
 C--
-C      IF MODE EQ 0, DONT READ DATA STREAM
+C      IF MODE EQ -1, DON'T READ DATA STREAM, USE I/u(I)>4 if no value
+C                                             in L28.
+C      IF MODE EQ 0,  DON'T READ DATA STREAM, USE EXISTING L33 THRESHOLD
+C      IF MODE EQ 1, READ DATA STREAM
 C
 \TYPE11
 \ISTORE
@@ -120,7 +126,7 @@ C      THE CODE IS ALMOST CONTINUOUS. F**2 REFINEMENT HAS ALSO BEEN
 C      LINEARISED.
 C
       CALL XTIME1(1)
-      IF (MODE .EQ. 0) THEN
+      IF (MODE .LE. 0) THEN
 C----- WE WONT READ ANY DATA, BUT WILL SET TYPE TO 'CALC'
             NUM = 3
             GOTO 1105
@@ -135,19 +141,19 @@ C--BRANCH ON THE TYPE OF OPERATION
       CALL XZEROF(IWORKA(1),52)
       GOTO(1200,1250,1300,1350,4550,4600,1150),NUM
 1150  CALL GUEXIT(54)
-C
+
 C--'#REFINE' HAS BEEN GIVEN
 1200  CONTINUE
       JB=0
       JH=-1
       GOTO 1400
-C
+
 C--'#SCALE' HAS BEEN REQUESTED
 1250  CONTINUE
       JB=-1
       JH=0
       GOTO 1400
-C
+
 C--'#CALCULATE' HAS BEEN GIVEN
 1300  CONTINUE
       JB=-1
@@ -155,7 +161,7 @@ C--'#CALCULATE' HAS BEEN GIVEN
       CALL XZEROF(RALL(1),12)
       RALL(1)=STORE(L33CD+5)
       GOTO 1400
-C
+
 C--'#CYCLENDS' INSTRUCTION
 1350  CONTINUE
       CALL XCYCLE
@@ -215,7 +221,9 @@ C----- SAVE SOME SPACE FOR THE U AXES
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      if (jb+jh.eq.-2)      RALL(1)=STORE(L33CD+5)
+      IF (jb+jh.eq.-2) THEN
+         RALL(1)=STORE(L33CD+5)
+      END IF
       NF=-1
       JG=-1
 C----- READ DOWN SOME LISTS
@@ -426,117 +434,109 @@ C----- CHECK ON THE TYPE OF MATRIX TO USE
 C----- SET THE STORE MAP LEVEL
       ISTAT2 = ISTORE (M33CD+3)
 C----- CHECK FOR RESTRAINTS ONLY
-      IF (IREFLS .LE. -1) GOTO 2350
+      IF ( IREFLS .GE. 0 ) THEN            ! Not Restraints only
 C--CHECK ON THE TYPE OF LISTING REQUIRED
-      IF(ISTORE(M33CD+2))1550,1500,1450
+         IF(ISTORE(M33CD+2))1550,1500,1450
 C--COMPLETE LISTING, INCLUDING ELEMENT CONTRIBUTIONS FOR A TWIN
-1450  CONTINUE
-      NF=0
+1450     CONTINUE
+         NF=0
 C--LISTING OF EACH STRUCTURE FACTOR AS IT IS CALCULATED
-1500  CONTINUE
-      JG=0
-1550  CONTINUE
+1500     CONTINUE
+         JG=0
+1550     CONTINUE
 C--CHECK IF THIS STRUCTURE IS TWINNED
-      IF(NB)1700,1600,1600
-C--TWINNED  -  CHECK ON THE TYPE OF OUTPUT FOR /FO/
-1600  CONTINUE
-      NB=0
-      IF(ISTORE(M33CD+4))1700,1650,1650
-C--SCALED /FOT/ IS REQUIRED
-1650  CONTINUE
-      NB=1
-1700  CONTINUE
+         IF (NB.GE.0) THEN
+C--TWINNED - CHECK ON THE TYPE OF OUTPUT FOR /FO/
+            NB=0
+            IF(ISTORE(M33CD+4).GE.0) NB=1   ! SCALED /FOT/ IS REQUIRED
+         END IF
+
 C--READ DOWN SOME LISTS
-      CALL XFAL03
-      CALL XFAL06(1)
+         CALL XFAL03
+         CALL XFAL06(1)
+
 C----- SIGMA THRESHOLD
-         S6SIG = 0.0
+         S6SIG = -10.0
+         IF ( MODE.EQ.-1 ) RALL(1) = 4.0
          IF ( N28MN .GT. 0 ) THEN
-          INDNAM = L28CN
-          DO 1702 I = L28MN , M28MN , MD28MN
-            WRITE ( CTEMP , '(3A4)')
-     1      (ISTORE(J), J = INDNAM, INDNAM + 2 )
-            IF (INDEX(CTEMP,'RATIO') .GT. 0) THEN
-             S6SIG = STORE(I+1)
-             ENDIF
-            INDNAM = INDNAM + MD28CN
-1702      CONTINUE
-         ENDIF
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+            INDNAM = L28CN
+            DO I = L28MN , M28MN , MD28MN
+               WRITE ( CTEMP , '(3A4)') (ISTORE(J), J = INDNAM,INDNAM+2)
+               IF (INDEX(CTEMP,'RATIO') .GT. 0) THEN
+                  S6SIG = STORE(I+1)
+                  IF ( MODE.EQ.-1 ) RALL(1) = STORE(I+1)
+               ENDIF
+               INDNAM = INDNAM + MD28CN
+            END DO
+         END IF
+         IF ( IERFLG .LT. 0 ) GO TO 9900
+
 C--INITIALISE THE COLLECTION OF THE DETAILS FOR /FC/ AND PHASE
-      CALL XIRTAC(6)
-      CALL XIRTAC(7)
-      CALL XIRTAC(16)
+         CALL XIRTAC(6)
+         CALL XIRTAC(7)
+         CALL XIRTAC(16)
 C--SET UP DEFAULT VALUES FOR THE REFLECTION HOLDING STACK
-      N12=0
-      N25=1
+         N12=0
+         N25=1
+
 C--CHECK IF THIS IS A TWINNED REFINEMENT
-      IF(NB)1900,2000,2000
-C--THIS IS NOT A TWINNED REFINEMENT
-1900  CONTINUE
-      NF=-1
+         IF ( NB .LT. 0 ) THEN        ! THIS IS NOT A TWINNED REFINEMENT
+           NF=-1
 C--CHECK IF WE ARE UPDATING THE PARTIAL DERIVATIVES
-      IF(ND)2350,1950,1950
-C--UPDATE  -  INITIALISE THE COLLECTION
-1950  CONTINUE
-      CALL XIRTAC(8)
-      CALL XIRTAC(9)
-      GOTO 2350
-c
-2000  CONTINUE
-C--THIS IS A TWINNED REFINEMENT  -  SUPPRESS EXTINCTION CORRECTIONS
-      IF ( NA .EQ. 0 ) THEN
-        CALL OUTCOL(9)
-        WRITE(CMON,'(6X,A)') 
-     1  'It is unwise to refine extinction for twinned data'
-        CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-        WRITE(NCAWU,'(A)') CMON(1)
-        CALL OUTCOL(1)
-cdjw0302      NA=-1
-      END IF
+           IF(ND.GE.0) THEN
+             CALL XIRTAC(8)
+             CALL XIRTAC(9)
+           END IF
+
+         ELSE                         ! THIS IS A TWINNED REFINEMENT
+           IF ( NA .EQ. 0 ) THEN
+             CALL OUTCOL(9)
+             WRITE(CMON,'(6X,A)') 
+     1       'It is unwise to refine extinction for twinned data'
+             CALL XPRVDU(NCVDU, 1,0)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+             WRITE(NCAWU,'(A)') CMON(1)
+             CALL OUTCOL(1)
+cdjw0302 - allow twin with extparam:  NA=-1
+           END IF
 C--SUPPRESS PARTIAL CONTRIBUTIONS
-      NC=-1
-      ND=-1
+           NC=-1
+           ND=-1
 C----- SUPPRESS ENANTIOPOLE REFINEMENT
-      JL = -1
+           JL = -1
 C--INITIALISE THE DETAILS FOR /FO/
-      CALL XIRTAC(4)
+           CALL XIRTAC(4)
 C--CHECK IF PRINTING IS BEING DONE
-      IF(JG)2050,2100,2100
-C--SUPPRESS ELEMENT PRINTING
-2050  CONTINUE
-      NF=-1
+           IF(JG.LT.0) NF = -1          ! SUPPRESS ELEMENT PRINTING
 C--LOAD THE TWIN OPERATORS
-2100  CONTINUE
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      CALL XFAL25
+           IF ( IERFLG .LT. 0 ) GO TO 9900
+           CALL XFAL25
 C--CHECK THAT THE NUMBER OF OPERATORS EQUALS THE NUMBER OF ELEMENTS
-      IF ( MD5ES .NE. N25 ) GO TO 9910
+           IF ( MD5ES .NE. N25 ) GO TO 9910
 C--FORM THE SQUARE ROOT OF THE ELEMENT SCALES
-      LN=LN5
-      IREC=1001
-      M5ES=NFL
-      I=KCHNFL(MD5ES)
+           LN=LN5
+           IREC=1001
+           M5ES=NFL
+           I=KCHNFL(MD5ES)
 C--SET UP THE VALUES
-      J=M5ES
-      K=L5ES
-      DO 2300 I=1,MD5ES
-      IF (STORE(K) .LT. 0) THEN
-      WRITE(NCAWU,2301) ' Twin element error, Scale', I, ' = ', STORE(K)
-      IF (ISSPRT .EQ. 0)
-     1 WRITE(NCWU,2301) ' Twin element error, Scale', I, ' = ', STORE(K)
-      WRITE ( CMON, 2301) ' Twin element error, Scale', I, ' = ',
-     2                     STORE(K)
-      CALL XPRVDU(NCVDU, 1,0)
-2301  FORMAT(A,I3,A,F8.4)
-      STORE(K) = 0.0
-      ENDIF
-      STORE(J)=SQRT(STORE(K))
-      J=J+1
-      K=K+1
-2300  CONTINUE
-2350  CONTINUE
+           J=M5ES
+           K=L5ES
+           DO I=1,MD5ES
+             IF (STORE(K) .LT. 0) THEN
+               WRITE(NCAWU,2301) I,STORE(K)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,2301) I, STORE(K)
+               WRITE ( CMON, 2301)  I, STORE(K)
+               CALL XPRVDU(NCVDU, 1,0)
+2301           FORMAT(' Twin element error, Scale',I3,' = ',F8.4)
+               STORE(K) = 0.0
+             ENDIF
+             STORE(J)=SQRT(STORE(K))
+             J=J+1
+             K=K+1
+           END DO
+         END IF
+      END IF
+
 C--CHECK ON WHETHER THERE IS A REFINEMENT TO BE DONE
       JQ=0
       IF(JB)2900,2400,2400
@@ -797,24 +797,27 @@ C----- REFINEMENT TYPE
       ENDIF
 C----- 'CALC' ONLY
       IF(JB+JH .EQ. -2) THEN
-            STORE(L30CF)=RALL(1)
-            STORE(L30CF+4)=-10.
-            STORE(L30CF+1)=RALL(2)
-            STORE(L30CF+5)=RALL(7)
-            IF (RALL(4) .GT. ZERO) THEN
-             STORE(L30CF+2) =100.* RALL(3)/RALL(4)
-            ENDIF
-            IF (RALL(9) .GT. ZERO) THEN
-             STORE(L30CF+6) =100.* RALL(8)/RALL(9)
-            ENDIF
-C
-            IF (RALL(6) .GT. ZERO) THEN
-             STORE(L30CF+3) = 100.*SQRT(RALL(5)/RALL(6))
-            ENDIF
-            IF (RALL(11) .GT. ZERO) THEN
-             STORE(L30CF+7) = 100.*SQRT(RALL(10)/RALL(11))
-            ENDIF
-6260        FORMAT (/
+          STORE(L30CF)=RALL(1)
+          STORE(L30CF+1)=RALL(2)
+
+          STORE(L30CF+4)=-10.
+          STORE(L30CF+5)=RALL(7)
+
+          IF (RALL(4) .GT. ZERO) THEN
+            STORE(L30CF+2) =100.* RALL(3)/RALL(4)
+          ENDIF
+          IF (RALL(6) .GT. ZERO) THEN
+            STORE(L30CF+3) = 100.*SQRT(RALL(5)/RALL(6))
+          ENDIF
+
+          IF (RALL(9) .GT. ZERO) THEN
+            STORE(L30CF+6) =100.* RALL(8)/RALL(9)
+          ENDIF
+          IF (RALL(11) .GT. ZERO) THEN
+            STORE(L30CF+7) = 100.*SQRT(RALL(10)/RALL(11))
+          ENDIF
+
+6260      FORMAT (/
      1       ' With Sigma(I) cutoff= ',F6.2, 
      1       ', there are', I9, ' reflections',/
      1       , ' R-value=',F7.3, 34X, ' Rw=', F7.3)
@@ -864,7 +867,7 @@ C--PRINT THE TERMINATION MESSAGES
 4450  CONTINUE
       CALL XOPMSG(IOPSFS, IOPEND, IVERSN)
       CALL XTIME2(1)
-      IF (MODE .EQ. 0)  RETURN
+      IF (MODE .LE. 0)  RETURN
       RETURN
 
 C--'#END' INSTRUCTION
@@ -879,7 +882,7 @@ C--'#TITLE' INSTRUCTION
 
 9900  CONTINUE
 C -- ERRORS
-      IF (MODE .EQ. 0)  RETURN
+      IF (MODE .LE. 0)  RETURN
       RETURN
 9910  CONTINUE
 C -- NUMBERS DON'T MATCH
@@ -2622,18 +2625,18 @@ C--ACCUMULATE TOTALS FOR /FC/ AND THE PHASE
       CALL XACRT(16)
 C----- ADD IN DETAILS FOR ALL DATA DURING 'CALC'
       IF(JB+JH .EQ. -2) THEN
-       IF (STORE(M6+20) .GE. RALL(1)) THEN
+         IF (STORE(M6+20) .GE. RALL(1)) THEN
             RALL(2) = RALL(2) + 1.
             RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS)
             RALL(4) = RALL(4) + ABS(FO)
             RALL(5) = RALL(5) + WDF*WDF
             RALL(6) = RALL(6) + A*A
-       ENDIF
-            RALL(7) = RALL(7) + 1.
-            RALL(8) = RALL(8) + ABS(ABS(FO)-FCEXS)
-            RALL(9) = RALL(9) + ABS(FO)
-            RALL(10) = RALL(10) + WDF*WDF
-            RALL(11) = RALL(11) + A*A
+         ENDIF
+         RALL(7) = RALL(7) + 1.
+         RALL(8) = RALL(8) + ABS(ABS(FO)-FCEXS)
+         RALL(9) = RALL(9) + ABS(FO)
+         RALL(10) = RALL(10) + WDF*WDF
+         RALL(11) = RALL(11) + A*A
       ENDIF
 C
 C--PICK UP THE NEXT REFLECTION
