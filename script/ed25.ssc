@@ -413,7 +413,7 @@
 %%
 %% Update L5 ELEMENT card.
 %%
-%       IF ( ( EXISTS 5 ) .NE. 1 ) THEN
+%       IF ( ( EXISTS 5 ) .GE. 1 ) THEN
 %% Calculate total of vol fractions.
 %         EVALUATE VOLF = 0.0
 %         LOOP N25 TIMES
@@ -521,6 +521,7 @@
 %         COPY '#RELEASE PUNCH pretwin6.dat'
 %         COPY '#PUNCH 6 C'
 %         COPY 'END'
+%         COPY '#RELEASE PUNCH bfile.pch'
 %       END IF
 {S * Converting the reflection list to twinned (FOT) format.
 %       COPY '#LIST 6'
