@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2003/07/15 09:46:21  rich
+C New SGPLOT instruction. Takes a 3x3 matrix,A, to select reflection classes
+C (if h == Ah, then the reflection is selected). Takes a 3x1 vector, B, and
+C a value, N, to split the selected class into two conditions (if mod(B'h,N) is
+C zero the reflection is 'allowed' if it is non-zero the reflection is
+C 'dis-allowed'. These allowed and disallowed from the class are plotted as
+C two series of a bar graph showing frequency vs. sqrt(Fo).
+C
 C Revision 1.8  2003/07/08 10:08:03  rich
 C
 C New #TWINPLOT instruction. Given a twin-law, it
@@ -56,9 +64,9 @@ C--LOAD THE NEXT '#INSTRUCTION'
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 C--BRANCH ON THE TYPE OF OPERATION
-
+c
       GOTO (1500,2200,2300,2400,2500,2550,2600,2700,4000,4100,
-     2      4200,4300,4400,1500),NUM
+     2      4200,4300,4400,4500,1500),NUM
 1500  CALL GUEXIT(324)
 
 C--'#SYST' INSTRUCTION
@@ -111,7 +119,7 @@ C--'#SIGMADIST' INSTRUCTION
 4200  CONTINUE
       CALL XSGDST
       RETURN
-
+C
 C--'#TWINPLOT' INSTRUCTION
 4300  CONTINUE
       CALL XTWINP
@@ -120,8 +128,12 @@ C--'#TWINPLOT' INSTRUCTION
 C--'#SGPLOT' INSTRUCTION
 4400  CONTINUE
       CALL XSPGPL
+c
+C--'#THETABS'INSTRUCTION
+4500  CONTINUE
+      CALL XTHABS
       RETURN
-
+      RETURN
       END
 
 
