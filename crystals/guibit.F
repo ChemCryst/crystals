@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2004/02/13 12:15:05  rich
+C Reduce sig figs in popup bond length display on model. These bond lengths
+C can get out of date as they reflect the last time the bonding network
+C was calculated, so 3 decimal places was a bit much.
+C
 C Revision 1.68  2004/02/05 09:29:50  rich
 C Fix overlong lines.
 C
@@ -1084,10 +1089,10 @@ c       CALL XPRVDU(NCVDU, 1,0)
                IAT1P = L5 + IA1 * MD5
                IAT2P = L5 + IA2 * MD5
 
-C Set colour to black:
-               KR = 0
-               KG = 0
-               KB = 0
+C Set colour to blackish:
+               KR = 40
+               KG = 40
+               KB = 40
 
 C If a symm related atom, colour bond bright white, and calculate real
 C co-ordinates for bond end.
