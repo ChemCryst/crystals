@@ -2248,13 +2248,14 @@ C----- CLEAR THE CELL PROPERTY DETAILS
         WEIGHT =0.
         ABSN=0.
         F000 = 0.
-      FIMAG = 0.0
-      FREAL = 0.0
+        FIMAG = 0.0
+        FREAL = 0.0
         ICHECK=0
         JCHECK=0
         I29=L29 + (N29-1)*MD29
         I5 = L5 + (N5-1)*MD5
         DO 1530 M5=L5,I5,MD5
+C
           DO 1510 M29= L29,I29,MD29
             IF (ISTORE(M5) - ISTORE(M29)) 1510,1520,1510
 1510      CONTINUE
@@ -2266,6 +2267,7 @@ C----- MATCH
           WEIGHT = WEIGHT + STORE(M5+2) * STORE(M5+13) * STORE(M29+6)
           ABSN = ABSN + STORE(M5+2) * STORE(M5+13) * STORE(M29+5)
 1522    CONTINUE
+C
 C----- CHECK LIST 3
         DO 1525 M3 = L3, L3+(N3-1)*MD3, MD3
           IF (ISTORE(M5) .EQ. ISTORE(M3)) THEN
@@ -2275,12 +2277,14 @@ C----- CHECK LIST 3
 1527        CONTINUE
             FREAL = FREAL + STORE(M5+2) * STORE(M5+13) * F
             FIMAG = FIMAG + STORE(M5+2) * STORE(M5+13) * STORE(M3+2)
-          ELSE
-C    -----  NO MATCH -
-            JCHECK= JCHECK + 1
+            GOTO 1528
           ENDIF
 1525    CONTINUE
-      F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG)
+C    -----  NO MATCH -
+            JCHECK= JCHECK + 1
+        GOTO 1530
+1528    CONTINUE
+        F000 = SQRT( FREAL*FREAL + FIMAG*FIMAG)
 1530    CONTINUE
 C
 C----- COMPUTE MU AND M
