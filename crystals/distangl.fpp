@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.57  2003/10/30 13:36:07  djw
+C Output H-restraints and atom list from DISTANCES
+C
 C Revision 1.56  2003/10/23 08:23:26  rich
 C Load list 1 and 2 early, in case using L41.
 C
@@ -6787,6 +6790,11 @@ C -- Work out bond types:
 
       IF ( ISSBND .NE. 0 ) THEN
         CALL BONDTY(1)
+      ELSE                      ! Remove special bonds (set by BONDTY).
+        N41S = 0
+        ISTAT = KHUNTR(41,104,IADDL,IADDR,IADDD,-1)
+        IF ( ISTAT.NE.0 ) GOTO 9900
+        ISTORE(IADDR+3) = L41S   ! Change header pointer to data
       END IF
 
 C -- Write new list back to disk, unless INTERN == 2, in which case

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2003/10/30 11:28:37  rich
+C Dynamically update Input/Edit menu items in the X-ray data
+C menu, to reflect whether they can be input or edited.
+C
 C Revision 1.62  2003/07/12 08:36:00  rich
 C Yesterday's fix of CKP's ring bug was incorrect. THIS is the correct
 C fix!
@@ -547,7 +551,7 @@ c         loaded by the calling routine.
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
       CHARACTER*8 CRADTN(2)
-      CHARACTER*11 CBONDS(9)
+      CHARACTER*11 CBONDS(0:9)
 
 
       DIMENSION LST(15)
@@ -563,8 +567,9 @@ c         loaded by the calling routine.
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
       DATA    IUNKN /'UNKN'/
       DATA CRADTN / 'X-rays' , 'neutrons' /
-      DATA CBONDS / 'single',    'double',      'triple',  'quadruple',
-     1  'aromatic', 'polymeric', 'delocalised', 'strange', 'pi-bond'/
+      DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
+     c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',
+     c'pi-bond'/
 
 
 C The QSINl5 flag is set here, if there are Q atoms in list 5.
