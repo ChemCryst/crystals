@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2004/11/18 16:48:51  stefan
+C 1. Added code to create a paramlist from the bonded atoms.
+C 2. Added code to using the param list to accumerlat the paramlist
+C 3. Added some code to time sflsc
+C
 C Revision 1.37  2004/10/11 10:37:10  djw
 C Output enantiomer & high GOF info to listinf file
 C
@@ -783,10 +788,8 @@ C--CHECK IF WE SHOULD DUMP ANY OTHER GOODIES
             END IF
           END IF
         END IF
-        call cpu_time(time_begin)
+        
         CALL XSFLSC ( STORE(JO), JP-JO+1, istore(iresults), nresults) ! CALL THE CALCULATION LINK
-        call cpu_time(time_end)
-        print *, (time_end - time_begin)
       ENDIF
 
       IF ( IERFLG .LT. 0 ) GO TO 9900
