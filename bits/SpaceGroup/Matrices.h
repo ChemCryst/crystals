@@ -40,12 +40,10 @@
 #include <stdio.h>
 #include <iostream.h>
 #include "ComClasses.h"
-#include "Exceptions.h"
-
 #if defined(__APPLE__)
 #include <vecLib/vDSP.h>
 #endif
-
+#include "Exceptions.h"
 //Error codes
 #define kDimensionErrorN -1
 #define kInnerDimensionErrorN -2
