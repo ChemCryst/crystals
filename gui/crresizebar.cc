@@ -7,6 +7,14 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/08/14 10:20:35  ckp2
+//   Quirky new feature: Hold down CTRL and click on a resize-bar and the panes
+//   will swap sides. Hold down SHIFT and click, and the panes will rotate by 90
+//   degrees. Gives more control over screen layout, but is not intuitive as the
+//   user can't SEE which panes belong to a given resize bar. Try it and see.
+//   The new layout is not stored and will revert to original layout when window
+//   is reopened (for the time being).
+//
 //   Revision 1.3  2001/06/17 15:14:14  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -356,9 +364,13 @@ void CrResizeBar::MoveResizeBar(int offset)
    m_offset = max ( m_offset, 0 );
 
 // Set new sizes
-   CcRect initial = GetGeometry();
-   initial.Set(0,0,initial.Height(),initial.Width());
-   SetGeometry(&initial);
+   CcRect child    = GetGeometry();
+   CcRect parent   = mParentElementPtr->GetGeometry();
+   CcRect relative;
+   relative.Set(child.Top()  - parent.Top(),
+                child.Left() - parent.Left(),
+                child.Height(),child.Width());
+   SetGeometry(&relative);
 
 // Force repaint of entire window.
    ((CrWindow*)GetRootWidget())->Redraw();
