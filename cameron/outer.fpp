@@ -917,7 +917,8 @@ C COMMON BLOCK ZGRAPH
       RES = 0
       IPOST = 0
 C-DJW      IFSIZE = 12
-      IFONT = 12
+c-djw Nov03
+      IFONT = 20
       NCWU = 6
       IHAND = 0
       XCP = 0

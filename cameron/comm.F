@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2003/05/07 12:18:53  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.19  2003/01/14 10:28:15  rich
 C g77 spotted undeclard logical variable.
 C
@@ -2471,7 +2477,8 @@ C-DJW      IF (ICN.EQ.1) IFSIZE = MAX(2,NCOMMD(INCNT))
 714   CONTINUE
 C DEFAULT FONT
 C-DJW      IFSIZE = 12
-      IFONT = 12
+c DJW Nov03
+      IFONT = 20
       GOTO 9999
 715   CONTINUE
 C A TITLE

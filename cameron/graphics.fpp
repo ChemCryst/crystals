@@ -724,7 +724,7 @@ c      WRITE (IFOUT,'(17A)') '/Helvetica-Bold findfont '
 c      WRITE (IFOUT,503) IFONT
 c503   FORMAT (I5,' scalefont ')
 c      WRITE (IFOUT,'(7A)') 'setfont'
-      write(ifout,'(a,i5,a)') '/Helvetica-Bold findfont ',
+      write(ifout,'(a,i5,a)') '/Arial-Bold findfont ',
      1 ifont,' scalefont setfont '
       WRITE (IFOUT,504) IFONT
 504   FORMAT ('/ywid ',I5,' def')
