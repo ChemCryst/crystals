@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.30  2001/06/18 12:27:31  richard
+// Include errno.h for the linux version.
+//
 // Revision 1.29  2001/06/17 15:30:06  richard
 // ScriptsExited function loops through window list and closes any MODAL windows
 // without the STAYOPEN attribute. (Prevents that problem where scripts crash
@@ -263,8 +266,11 @@ HANDLE mCrystalsThreadIsLocked;
 
 static CcLock m_Crystals_Commands_CS(true);
 static CcLock m_Interface_Commands_CS(true);
-static CcLock m_Wait_For_Processing_CS(false);
+
 static CcLock m_Crystals_Thread_Alive(true);
+
+static CcLock m_Wait_For_Processing_CS(false);
+static CcLock m_Crystals_Command_Added_CS(false);
 
 
 #ifdef __BOTHWX__
@@ -1334,6 +1340,9 @@ void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
 
     m_Crystals_Commands_CS.Leave();
 
+    m_Crystals_Command_Added_CS.Signal();
+
+
 /*
 #ifdef __CR_WIN__
     ReleaseMutex( mCrystalsCommandQueueMutex );
@@ -1425,6 +1434,9 @@ Boolean CcController::GetCrystalsCommand( char * line )
         m_Wait = false;
         m_Crystals_Commands_CS.Leave();
         if (mThisThreadisDead) return false;
+
+
+        m_Crystals_Command_Added_CS.Wait(1000);
 
 //The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
 
