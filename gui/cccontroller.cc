@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.71  2003/09/12 14:13:17  rich
+//
+// WXversion: Protect acquisition of Thread_Alive mutex with a signal.
+//
 // Revision 1.70  2003/09/03 20:55:17  rich
 // Fix elapse time functions under Linux.
 //
@@ -3856,7 +3860,11 @@ extern "C" {
         {
            CcController::theController->m_ExitCode = theExitcode;
   #ifdef __CR_WIN__
-           if ( !CcController::theController->m_BatchMode ) MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
+           if ( !CcController::theController->m_BatchMode )
+           {
+             MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
+             ASSERT(0);
+           }
   #endif
   #ifdef __BOTHWX__
            if ( !CcController::theController->m_BatchMode ) wxMessageBox("Closing","Crystals ends in error",wxOK|wxICON_HAND|wxCENTRE);
