@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2004/05/11 10:19:42  rich
+C Add #PURGE MON=LOW option to prevent printing of entire disk
+C index.
+C
 C Revision 1.17  2003/09/24 14:07:39  rich
 C Fix glaring bug in new .dsc purging code. Only showed
 C up under linux.
@@ -1526,7 +1530,7 @@ C
 C
 C
 C----- 8M - THE BIGGEST DISK ADDRESS WE CAN EXPECT (1995). WAS 1M
-      PARAMETER (MADRES = 8 000 000)
+      PARAMETER (MADRES = 2 147 483 647) 
 c
 CDJWAPR99
       CHARACTER*16 COLDD, CNEWD
@@ -1546,7 +1550,7 @@ C
 \XERVAL
 \XOPVAL
 \XSSCHR
-\XIOBUF
+\XIOBUF  
 C
 \QSTORE
 C
