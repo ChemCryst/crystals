@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2002/06/28 16:13:08  Administrator
+C ensure that the field NEW can hold characters
+C
 C Revision 1.29  2002/05/31 14:41:09  Administrator
 C Update SHELX SPECIAL output
 C
@@ -1004,9 +1007,12 @@ C---- GET SIGMA THRESHOLD FROM L28
       FO = STORE(M6+3)
       FC = STORE(M6+5) * SCALE6
       S =  MAX(0.0,STORE(M6+12))
-      CALL XSQRF(FOS, FO, FABS, SIGMA, STORE(M6+12))
-      SIGRAT = FOS / MAX(0.0001,SIGMA)
-      IF (SIGRAT .LT. S6SIG) THEN
+
+
+C      CALL XSQRF(FOS, FO, FABS, SIGMA, STORE(M6+12))
+C      SIGRAT = FOS / MAX(0.0001,SIGMA)
+
+      IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
       ELSE IF (KALLOW(IN).LT.0) THEN
         IALW = 3                    !Rejected by something else.
