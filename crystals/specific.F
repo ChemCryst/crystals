@@ -1291,7 +1291,8 @@ C
 C
 &DOS      CALL CLOCK@ (RTIME)
 C
-&&DVFGID      RTIME = RTC()
+C&&DVFGID      RTIME = RTC()
+&&DVFGID      CALL CPU_TIME(RTIME)
 C
 &PPCC -- FOR MAC OS, WE WILL RETURN 0
 &PPC      RTIME = 0.0
@@ -1328,8 +1329,9 @@ C
 &H-P      I = TIMES(IBUF)
 &H-P      I = NINT(FLOAT(I)/60.)
 C
-&&DVFGID      A = RTC()
-&&DVFGID      I = NINT (A)
+C&&DVFGID      A = RTC()
+C&&DVFGID      I = NINT (A)
+&&DVFGID      I = TIME()
 &DOS      CALL CLOCK@ (A)
 &DOS      I = NINT (A)
 C
