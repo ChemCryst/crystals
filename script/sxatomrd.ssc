@@ -13,12 +13,6 @@
 %%
 %% If this is the first atom to be found, start adding atoms.
 %%
-%     IF LFIRST .EQ. TRUE THEN
-%       EVALUATE LFIRST = FALSE
-%       COPY '#LIST 5'
-%       COPY 'END'
-%       COPY '#EDIT'
-%     END IF
 %%
 %% If this is a SHELXS.CRY file, there is a space between elem and serial:
 %%
@@ -103,6 +97,12 @@
 %     COPY '#SCRIPT SXEOLCHK'
 %     IF ( SXEOL ) THEN
 %% No more info for this atom. Process now.
+%        IF LFIRST .EQ. TRUE THEN
+%         EVALUATE LFIRST = FALSE
+%         COPY '#LIST 5'
+%         COPY 'END'
+%         COPY '#EDIT'
+%        END IF
 %        CLEAR
 %        INSERT 'ATOM '
 %        TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
@@ -134,6 +134,12 @@
 %     IF ( SXEOL .OR. LPEAK ) THEN
 %% No more info. Last value was U[ISO]
 %% or this is a  peak height. Process now.
+%        IF LFIRST .EQ. TRUE THEN
+%         EVALUATE LFIRST = FALSE
+%         COPY '#LIST 5'
+%         COPY 'END'
+%         COPY '#EDIT'
+%        END IF
 %        CLEAR
 %        INSERT 'ATOM '
 %        TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
@@ -231,6 +237,12 @@
 %%
 %% Process this aniso atom...
 %%
+%     IF LFIRST .EQ. TRUE THEN
+%         EVALUATE LFIRST = FALSE
+%         COPY '#LIST 5'
+%         COPY 'END'
+%         COPY '#EDIT'
+%     END IF
 %     CLEAR
 %     INSERT 'ATOM '
 %     TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
