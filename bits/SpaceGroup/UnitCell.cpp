@@ -45,12 +45,12 @@
 #include "UnitCell.h"
 #include "Exceptions.h"
 #include "Collections.h"
-#include <iostream.h>
 #include "MathFunctions.h"
 #include "StringClasses.h"
 #include "Wrappers.h"
-
+#include <iostream.h>
 #include <map>
+#include <cmath>
 
 #if defined(_WIN32)
 #include <Boost/regex.h>
@@ -89,32 +89,32 @@ void UnitCell::setGamma(float pGamma)
     iGamma = pGamma;
 }
 
-float UnitCell::getA()
+float UnitCell::getA() const
 {
     return iA;
 }
 
-float UnitCell::getB()
+float UnitCell::getB() const
 {
     return iB;
 }
 
-float UnitCell::getC()
+float UnitCell::getC() const
 {
     return iB;
 }
 
-float UnitCell::getAlpha()
+float UnitCell::getAlpha() const
 {
     return iAlpha;
 }
 
-float UnitCell::getBeta()
+float UnitCell::getBeta() const
 {
     return iBeta;
 }
 
-float UnitCell::getGamma()
+float UnitCell::getGamma() const
 {
     return iGamma;
 }
@@ -149,93 +149,44 @@ void UnitCell::setSEGamma(float pSEGamma)
     iSEGamma = pSEGamma;
 }
 
-float UnitCell::getSEA()
+float UnitCell::getSEA() const
 {
     return iSEA;
 }
 
-float UnitCell::getSEB()
+float UnitCell::getSEB() const
 {
     return iSEB;
 }
 
-float UnitCell::getSEC()
+float UnitCell::getSEC() const
 {
     return iSEC;
 }
 
-float UnitCell::getSEAlpha()
+float UnitCell::getSEAlpha() const
 {
     return iSEAlpha;
 }
 
-float UnitCell::getSEBeta()
+float UnitCell::getSEBeta() const
 {
     return iSEBeta;
 }
 
-float UnitCell::getSEGamma()
+float UnitCell::getSEGamma() const
 {
     return iSEGamma;
 }
 
-/*
-char* UnitCell::guessCrystalSystem()
+Matrix<float> UnitCell::metricTensor()const
 {
-    float tAs[7];
-    float tGs[6];
-    multimap<float, int, less<float> > tResults;
-    
-    float  temp;
-    temp = iAlpha - 90.0f;
-    tAs[0] = sqr(temp); 
-    temp = iGamma - 90.0f;
-    tAs[1] = sqr(temp);  
-    temp = iBeta - 90.0f;
-    tAs[2] = sqr(temp);  
-    temp = iGamma - 120.0f;
-    tAs[3] = sqr(temp);  
-    temp = iAlpha - iBeta;
-    tAs[4] = sqr(temp);  
-    temp = iAlpha - iGamma;
-    tAs[5] = sqr(temp);  
-    temp = iBeta - iGamma;
-    tAs[6] = sqr(temp); 
-
-    temp = iB - iA;
-    tGs[0] = 1/sqr(temp); 
-    temp = iB - iC;
-    tGs[1] = 1/sqr(temp); 
-    temp = iC - iA;
-    tGs[2] = 1/sqr(temp); 
-    temp = iA - iB;
-    tGs[3] = sqr(temp); 
-    temp = iA - iC;
-    tGs[4] = sqr(temp); 
-    temp = iB - iC;
-    tGs[5] = sqr(temp); 
-
-    float tCurrentGuess;
-    tCurrentGuess = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4; 
-    tResults.insert(pair<float, int>(tCurrentGuess, 1));
-    tCurrentGuess = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4; 
-    tResults.insert(pair<float, int>(tCurrentGuess, 2));
-    tCurrentGuess = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4; 
-    tResults.insert(pair<float, int>(tCurrentGuess, 3));
-    tCurrentGuess = (tAs[0] +  tAs[1] +  tAs[2])/3;
-    tResults.insert(pair<float, int>(tCurrentGuess, 4));
-    tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3])/4;
-    tResults.insert(pair<float, int>(tCurrentGuess, 5));
-    tCurrentGuess = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4;
-    tResults.insert(pair<float, int>(tCurrentGuess, 6));
-    tCurrentGuess = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6;
-    tResults.insert(pair<float, int>(tCurrentGuess, 7));
-    tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6;
-    tResults.insert(pair<float, int>(tCurrentGuess, 8));
-
-     TODO: do something with these results.
-    return NULL;
-}*/
+    float tMatrix[] = {iA*iA, iA*iB*cos(deg2rad(iGamma)), iA*iC*cos(deg2rad(iBeta)), 
+                       iB*iA*cos(deg2rad(iGamma)), iB*iB, iB*iC*cos(deg2rad(iAlpha)),
+                       iC*iA*cos(deg2rad(iBeta)), iC*iB*cos(deg2rad(iAlpha)), iC*iC};
+    Matrix<float> tMatricTensor(tMatrix, 3, 3);
+    return tMatricTensor;
+}
 
 /*
  * This output a list of the crystal systems with there 
@@ -243,21 +194,18 @@ char* UnitCell::guessCrystalSystem()
  */
 std::ostream& printCrystConst(std::ostream& pStream)
 {
-    int i = 0;
-    char* tText = crystalSystemConst(i);
+    unsigned int i = 0;
+    char* tText = crystalSystemConst((UnitCell::systemID)i);
     while (tText != NULL)
     {
         pStream << i << ": " << tText << "\n";
         i ++;
-        tText = crystalSystemConst(i);
+        tText = crystalSystemConst((UnitCell::systemID)i);
     }
     return pStream;
 }
 
-/*
- * Requests the user for a crystal system.
- */
-char* getCrystalSystem()
+char* getCrystalSystem(const UnitCell::systemID pDefault)
 {
     char* iSelect = new char[255];
     char* tString = NULL;
@@ -265,101 +213,113 @@ char* getCrystalSystem()
     
     do
     {
-        std::cout << "\n" << printCrystConst << "Select crystal system:";
-        std::cin >> iSelect;
-        tString = crystalSystemConst(strtol(iSelect, &tEnd, 10));
+        std::cout << "\n" << printCrystConst << "Select crystal system[" << pDefault << "]:";
+        std::cin.getline(iSelect, 255);
+        if (iSelect[0] == '\0')
+        {
+            tString = crystalSystemConst(pDefault);
+        }
+        tString = crystalSystemConst((UnitCell::systemID)strtol(iSelect, &tEnd, 10));
     }
-    while (iSelect[0] == '\0' || tEnd[0] != '\0' || tString == NULL);
+    while (tEnd[0] != '\0' || tString == NULL);
     delete[] iSelect;
     return tString;
+}
+
+/*
+ * Requests the user for a crystal system.
+ */
+char* getCrystalSystem()
+{
+   return getCrystalSystem(UnitCell::kMonoclinicB);
 }
 
 /*
  * Returns the index of the crystal system which is 
  * passed in pSystem
  */
-int indexOfSystem(String& pSystem, String& pUnique)
+UnitCell::systemID indexOfSystem(String& pSystem, String& pUnique)
 {
     pSystem.upcase();
     pUnique.upcase();
     if (pSystem.cmp("TRICLINIC") == 0)
     {
-        return 0;
+        return UnitCell::kTriclinic;
     }
     else if (pSystem.cmp("MONOCLINIC") == 0)
     {
         if (pUnique.cmp("A") == 0)
         {
-            return 1;
+            return UnitCell::kMonoclinicA;
         }
         else if (pUnique.cmp("C") == 0)
         {
-            return 3;
+            return UnitCell::kMonoclinicC;
         }
         else if (pUnique.cmp("B")==0 || pUnique.cmp("UNKNOWN")==0)
         {
-            return 2;
+            return UnitCell::kMonoclinicB;
         }
     }
     else if (pSystem.cmp("ORTHORHOMBIC") == 0)
     {
-        return 4;
+        return UnitCell::kOrtharombic;
     }
     else if (pSystem.cmp("TETRAGONAL") == 0)
     {
-        return 5;
+        return UnitCell::kTetragonal;
     }
     else if(pSystem.cmp("TRIGONAL") == 0)
     {
-        return 6;
+        return UnitCell::kTrigonal;
     }
     else if(pSystem.cmp("TRIGONAL(RHOM)") == 0)
     {
-        return 7;
+        return UnitCell::kTrigonalRhom;
     }
     else if(pSystem.cmp("HEXAGONAL") == 0)
     {
-        return 8;
+        return UnitCell::kHexagonal;
     }
     else if(pSystem.cmp("CUBIC") == 0)
     {
-        return 9;
+        return UnitCell::kCubic;
     }
-    return -1;
+    return UnitCell::kTriclinic;
 }
 
-char* crystalSystemConst(int pIndex)
+char* crystalSystemConst(const UnitCell::systemID pIndex)
 {
     switch (pIndex)
     {
-        case 0:
+        case UnitCell::kTriclinic:
             return "Triclinic";
         break;
-        case 1:
+        case UnitCell::kMonoclinicA:
             return "MonoclinicA";
         break;
-        case 2:
+        case UnitCell::kMonoclinicB:
             return "MonoclinicB";
         break;
-        case 3:
+        case UnitCell::kMonoclinicC:
             return "MonoclinicC";
         break;
-        case 4:
+        case UnitCell::kOrtharombic:
             return "Orthorhombic";
         break;
-        case 5:
+        case UnitCell::kTetragonal:
             return "Tetragonal";
         break;
-        case 6:
+        case UnitCell::kTrigonal:
             return "Trigonal";
         break;
-        case 7:
+        case UnitCell::kTrigonalRhom:
             return "Trigonal(Rhom)";
         break;
-        case 8:
+        case UnitCell::kHexagonal:
             return "Hexagonal";
         break;
-        case 9:
+        case UnitCell::kCubic:
             return "Cubic";
         break;
     }
@@ -408,15 +368,30 @@ bool UnitCell::init(char* pLine)	//This parases the line which it is passed. Ini
     return false;
 }
 
-std::ostream& UnitCell::output(std::ostream& pStream)
+std::ostream& UnitCell::output(std::ostream& pStream) const
 {
     pStream << "Alpha = " << iAlpha <<  " Beta = " << iBeta << " Gamma = " << iGamma << "\n";
     pStream << "a = " << iA << " b = " << iB << " c = " << iC;
     return pStream;
 }
 
-std::ostream& operator<<(std::ostream& pStream, UnitCell& pUnitCell)
+float UnitCell::volume() const
+{
+    float cosa = cos(iAlpha/180*M_PI);
+    float cosb = cos(iBeta/180*M_PI);
+    float cosg = cos(iGamma/180*M_PI);
+    
+    return iA*iB*iC*sqrt(1-sqr(cosa)-sqr(cosb)-sqr(cosg)+2*cosa*cosb*cosg);
+}
+
+float UnitCell::calcMaxIndex(const int pMaxNumRef, const float pAxisLength) const
+{
+    float V = volume();
+    float value = pow(0.6e1, 0.1e1 / 0.3e1) * pow(pMaxNumRef / M_PI / V, 0.1e1 / 0.3e1) * pAxisLength / 0.2e1;
+    return value;
+}
+
+std::ostream& operator<<(std::ostream& pStream, const UnitCell& pUnitCell)
 {
     return pUnitCell.output(pStream);
 }
-
