@@ -180,12 +180,12 @@ LaueGroupGraph::LaueGroupGraph():iNodes(map<const char*, Node*, ltstr>())
 	JJLaueGroups* tLaueGroups = JJLaueGroups::defaultInstance();
 	//Node* tTempNodePtr; //temp stores for the nodes. Just for conveniance
 	MatrixReader tRotation1("[0 0 1; 1 0 0; 0 1 0]"), tRotation2("[0 1 0; 0 0 1; 1 0 0]"), tInvRotation2("[0  0  1; 1  0  0; 0  1  0]"); //Matrices for rotating the indeces 
-	MatrixReader tTransformation("[1 0 1; -1 1 1; 0 -1 1]");
+	MatrixReader tTransformation("[1 0 1; -1 1 1; 0 -1 1]"), tTransformToB("[1 0 0; 0 0 -1; 0 1 0]");
 	
 	//-1 links. 
 	iRootNode = new Node(tLaueGroups->laueGroupWithSymbol("-1"));
 	//create the nodes and put them in a safe place
-	iNodes["1 1 2/m"] = new Node(tLaueGroups->laueGroupWithSymbol("1 1 2/m"));
+	iNodes["1 2/m 1"] = new Node(tLaueGroups->laueGroupWithSymbol("1 2/m 1"));
 	iNodes["-3"] = new Node(tLaueGroups->laueGroupWithSymbol("-3"));
 	iNodes["4/m"] = new Node(tLaueGroups->laueGroupWithSymbol("4/m"));
 	iNodes["2/m 2/m 2/m"] = new Node(tLaueGroups->laueGroupWithSymbol("2/m 2/m 2/m"));
@@ -197,15 +197,15 @@ LaueGroupGraph::LaueGroupGraph():iNodes(map<const char*, Node*, ltstr>())
 	iNodes["m -3"] = new Node(tLaueGroups->laueGroupWithSymbol("m -3"));
 	iNodes["m -3 m"] = new Node(tLaueGroups->laueGroupWithSymbol("m -3 m"));
 	//Link the nodes for -1. There are three different versions of 2/m and -3 to get the correct axes 	
-	iRootNode->addLink(iNodes["1 1 2/m"]); //Identity
-	iRootNode->addLink(iNodes["1 1 2/m"], &tRotation1, NULL); 
-	iRootNode->addLink(iNodes["1 1 2/m"], &tRotation2, NULL);
+	iRootNode->addLink(iNodes["1 2/m 1"]); //Identity
+	iRootNode->addLink(iNodes["1 2/m 1"], &tRotation1, NULL); 
+	iRootNode->addLink(iNodes["1 2/m 1"], &tRotation2, NULL);
 	iRootNode->addLink(iNodes["-3"]); //Identity
 	iRootNode->addLink(iNodes["-3"], &tRotation1, NULL);
 	iRootNode->addLink(iNodes["-3"], &tRotation2, NULL);
-	//Link the nodes for 1 1 2/m.
-	iNodes["1 1 2/m"]->addLink(iNodes["4/m"]);
-	iNodes["1 1 2/m"]->addLink(iNodes["2/m 2/m 2/m"]);
+	//Link the nodes for 1 2/m 1.
+	iNodes["1 2/m 1"]->addLink(iNodes["4/m"], tTransformToB);
+	iNodes["1 2/m 1"]->addLink(iNodes["2/m 2/m 2/m"], tTransformToB);
 	//Link the nodes for -3
 	iNodes["-3"]->addLink(iNodes["6/m"]);
 	iNodes["-3"]->addLink(iNodes["-3 m 1"]);
