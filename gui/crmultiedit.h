@@ -30,8 +30,8 @@ class CxMultiEdit;
 		int GetIdealWidth();
 		int GetIdealHeight();
 		// methods
-			CrMultiEdit( CrGUIElement * mParentPtr );
-			~CrMultiEdit();
+            CrMultiEdit( CrGUIElement * mParentPtr );
+            ~CrMultiEdit();
 		Boolean	ParseInput( CcTokenList * tokenList );
 		void	SetText ( CcString text );
 		void 	SetGeometry( const CcRect * rect );
@@ -40,8 +40,33 @@ class CxMultiEdit;
 		void    Changed();	
 //		void    SetWidthScale(float w);
 //		CcRect  GetOriginalGeometry();
+            void SetOriginalSizes();
 
 		// attributes
 //		CcRect mOriginalGeometry;
 };
+
+#define kSTextColour		"TEXTCOLOUR"
+#define kSTextBold		"TEXTBOLD"
+#define kSTextItalic		"TEXTITALIC"
+#define kSTextUnderline		"TEXTUNDERLINE"
+#define kSTextFixedFont		"FIXEDFONT"
+#define kSBackLine		"BACKLINE"
+#define kSNoEcho		"NOECHO"
+#define kSSpew			"SPEW"
+
+enum {
+ kTTextColour = 1700,
+ kTTextBold,	
+ kTTextItalic,	
+ kTTextUnderline,
+ kTTextFixedFont,
+ kTBackLine,	
+ kTNoEcho,	
+ kTSpew	
+};
+
+
+
+
 #endif
