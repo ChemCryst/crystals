@@ -1,6 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.1.1.1  2004/12/13 11:16:12  rich
+C New CRYSTALS repository
+C
 C Revision 1.18  2003/05/12 14:07:18  rich
-C Added GID EDITOR target to the EDITOR source code itself.
+C Added _GID_ EDITOR target to the EDITOR source code itself.
 C
 C Revision 1.17  2002/12/19 16:25:51  djw
 C Increase number of MACROS
@@ -89,7 +92,7 @@ C      APRIL 1984      FORTRAN CHARACTER CONSTANTS MAY HAVE THE EDIT
 C                      COMMENT CHARACTER INSIDE THEM
 C
 C
-C      FEBRUARY 1997   DOS VERSION
+C      FEBRUARY 1997   _DOS_ VERSION
       CHARACTER *128 DOSMAC
       CHARACTER *128 DOSSRC
       CHARACTER *128 DOSFOR
@@ -114,7 +117,7 @@ C
 C
 C
 C----- OPEN THE FILE READONLY/SHARED IF POSSIBLE
-#if defined(VAX) 
+#if defined(_VAX_) 
       OPEN(UNIT=NCPU,CARRIAGECONTROL='LIST')
       OPEN(UNIT=NEFU, READONLY, SHARED, STATUS='OLD')
       OPEN(UNIT=NUMAC, READONLY, SHARED, STATUS = 'OLD')
@@ -122,26 +125,27 @@ C----- OPEN THE FILE READONLY/SHARED IF POSSIBLE
 #endif
       WRITE(6,*) ' Version Feb 99'
 
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       DOSMAC = ' '
+#endif
 C----- DOS OPENS
-#if defined(GID) || defined(LIN) || defined (GIL) || defined (MAC)
+#if defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
       CALL GETARG(1,DOSSRC)
       CALL GETARG(2,DOSFOR)
       IGTRG = 3
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
       DOSSRC=CMNAM()
       DOSFOR=CMNAM()
 #endif
 
 100   CONTINUE
 
-#if defined(GID) || defined(LIN) || defined (GIL) || defined (MAC)
+#if defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
       CALL GETARG(IGTRG,DOSCOD)
       IGTRG = IGTRG + 1
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
       DOSCOD=CMNAM()
 #endif
 
@@ -174,10 +178,10 @@ C----- DOS OPENS
      1   '[macro=macrofil.mac] [incl=&] [excl=#] '//
 #endif
 
-#if defined(DOS) || defined(GID) 
+#if defined(_DOS_) || defined(_GID_) 
      2   '[comm=CC] [subs=\] [strip]'
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC)
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
      2   '[comm=CC] [subs=\\] [strip]'
 #endif
         STOP 'Error'
@@ -190,22 +194,22 @@ C----- DOS OPENS
 C---- THE SOURCE FILE
       WRITE(*,'(2A)') 'Source = ', DOSSRC(1:LEN_TRIM(DOSSRC))
 
-#if defined(LIN) || defined (GIL) || defined (MAC)
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
       OPEN(UNIT=NCRU, FILE=DOSSRC, STATUS = 'OLD')
 #endif
-#if defined(DOS) || defined(GID) 
+#if defined(_DOS_) || defined(_GID_) 
       CALL CONVER(DOSSRC,NCRU)
 #endif
 C---- THE MACRO FILE
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (GIL) || defined (MAC)
-      WRITE(*,'(2A)') 'Macros = ', DOSMAC(1:LEN_TRIM(DOSMAC))
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
+      WRITE(*,'(2A)') 'macros = ', DOSMAC(1:LEN_TRIM(DOSMAC))
 #endif
 
-#if defined(LIN) || defined (MAC) || defined (GIL) 
+#if defined(_LIN_) || defined (_MAC_) || defined (_GIL_) 
       OPEN(UNIT=NUMAC, FILE=DOSMAC, STATUS = 'OLD', ERR=101)
 101   CONTINUE
 #endif
-#if defined(DOS) || defined(GID) 
+#if defined(_DOS_) || defined(_GID_) 
       CALL CONVER(DOSMAC,NUMAC)
 #endif
 
@@ -223,7 +227,7 @@ C----- SET FLAG FOR MACRO SUBSTITION
 C----- READ THE FIRST CARD FROM  THE MACROSUBSTITUTION FILE.
 C      THIS DEFINES THE TYPE OF MACHINE AS A 3 LETTER CODE.
 C
-#if defined(VAX) 
+#if defined(_VAX_) 
       READ (NUMAC,1010,END=1900) (MAC(I),I=1,3)
 #endif
 C----- FOR DOS VERSION, THIS IS ALREADY KNOWN FROM THE COMMAND LINE
@@ -234,7 +238,7 @@ C----- FOR DOS VERSION, THIS IS ALREADY KNOWN FROM THE COMMAND LINE
 C----- APPLY EDITS ONLY - NO NEED TO READ REST OF FILE
 C      THE CODE 'UPD' CAUSES ALL EDITS TO BE APPLIEDBUT NO
 C      SUBSTITUTION TO OCCUR.
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (MAC) || defined (GIL)
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_MAC_) || defined (_GIL_)
       WRITE(*,'(2A)') 'Fortran = ', DOSFOR(1:LEN_TRIM(DOSFOR))
       OPEN(UNIT=NCPU, FILE=DOSFOR, STATUS='UNKNOWN')
 #endif
@@ -250,7 +254,7 @@ C     CONSOLIDATED TEXT ('ALL' FLAG)
       IF(MAC(2).NE. IALL(2)) GOTO 1001
       IF(MAC(3).NE. IALL(3)) GOTO 1001
 C----- COPY ALL MACHINE SPECIFIC ENTRIES TO OUTPUT
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (MAC) || defined (GIL)
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_MAC_) || defined (_GIL_)
       WRITE(*,'(2a)') 'Fortran = ', DOSFOR(1:LEN_TRIM(DOSFOR))
       OPEN(UNIT=NCPU, FILE=DOSFOR, STATUS='UNKNOWN')
 #endif
@@ -260,7 +264,7 @@ C----- DONT PUNCH CARD SEQUENCE FIELD
       GOTO 1000
 1001  CONTINUE
 C--- NORMAL FORTRAN
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (MAC) || defined (GIL)
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_MAC_) || defined (_GIL_)
       WRITE(*,'(2a)') 'Fortran = ', DOSFOR(1:Len_trim(DOSFOR))
       OPEN(UNIT=NCPU, FILE=DOSFOR, STATUS='UNKNOWN')
 #endif
@@ -282,7 +286,7 @@ C--SET THE POINTER TO THIS MACRO
 C--STORE THE MACRO NAME
       DO 1150 K=1,6
 C Check for Non-ASCII characters (EOL etc.)
-#if !defined(GIL) && !defined(LIN) && !defined(MAC)
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
       IF ( KISCHR(ICARD(K+1)) .LE. 0 ) ICARD(K+1)=32
 #endif
       NAMES(K+1,NMAC)=ICARD(K+1)
@@ -349,7 +353,7 @@ C      PAUSE
       J=J0
 C--CHECK IF THERE IS AN EDIT FILE PRESENT
 C      Ignore the edit file
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (MAC) || defined (GIL)
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_MAC_) || defined (_GIL_)
       GOTO 8000
 #endif
       IF(KRDED(L))8000,2050,2050
@@ -608,7 +612,7 @@ C--MACROS STORED  -  SEARCH FOR THIS MACRO
 
 
       DO L=2,7
-#if !defined(GIL) && !defined(LIN) && !defined(MAC) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) 
         IF(KISCHR(LCARD(L)) .LE. 0) LCARD(L) = 32
 #endif
       ENDDO
@@ -840,7 +844,7 @@ C----- LOOK FOR HOLLERITH SUBSTITUTION
       IF (IMAC .EQ. -1) GOTO 1230
 C
 C----- IDENTIFY MACHINE
-C----- IMAC will be 1 if the machine is listed.
+C----- IMAC will be 1 if the MAChine is listed.
 C----- IMAC will be -1 if it is not.
       DO 1251 KK=0,INMAC-1
         IMAC=1
@@ -968,7 +972,7 @@ C
 1000  FORMAT(80A1)
       I=I+ID
       J=J+JD
-#if defined(DOS) || defined(GID) || defined(LIN) || defined (MAC) || defined (GIL)
+#if defined(_DOS_) || defined(_GID_) || defined(_LIN_) || defined (_MAC_) || defined (_GIL_)
       GOTO 1030
 #endif
       IF(ICARD(1) .EQ.IH) GOTO 1030
@@ -986,7 +990,7 @@ C      ICARD(75)=ISEG(3)
       KRDSOU=0
 C Check for Non-ASCII characters (EOL etc.)
       DO K=1,NCHAR
-#if !defined(GIL) && !defined(LIN) && !defined(MAC) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) 
       IF ( KISCHR(ICARD(K)) .LE. 0 ) ICARD(K)=32
 #endif
       END DO
@@ -1076,11 +1080,11 @@ C
       DATA ICODE(9)/' '/
       DATA NCRU/5/,NEFU/1/,NCWU/6/,NCPU/7/,NUMAC/3/
       DATA IA/'*'/,IM/'-'/,IB/' '/,IC/','/
-#if defined(DOS) || defined(GID) 
+#if defined(_DOS_) || defined(_GID_) 
       DATA ILP/'<'/,IRP/'>'/,IH/'\'/,IDQ/'"'/
 
 #endif
-#if defined(LIN)  || defined (MAC) || defined (GIL)
+#if defined(_LIN_)  || defined (_MAC_) || defined (_GIL_)
       DATA ILP/'<'/,IRP/'>'/,IH/'\\'/,IDQ/'"'/
 #endif
       DATA ISEG(1) /' '/ , ISEG(2) /' '/ , ISEG(3) /' '/
@@ -1119,7 +1123,7 @@ C
       END
 C
 C
-#if defined(DOS) || defined(GID) 
+#if defined(_DOS_) || defined(_GID_) 
       SUBROUTINE CONVER ( CFILE , NUNIT )
 
 
@@ -1172,7 +1176,7 @@ C
       RETURN
       END
 
-#if !defined(GIL) && !defined(LIN) && !defined(MAC) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_) 
 CODE FOR KISCHR
       FUNCTION KISCHR ( ICHAR )
 C Return 0 if CCHAR is not a character.
@@ -1180,7 +1184,7 @@ C Return 0 if CCHAR is not a character.
       CHARACTER*1  CCHAR
 C23456789012345678901234567890123456789012345678901234567890123456789012
       DATA CALPHA / 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY
-#if defined(DOS) || defined(GID) 
+#if defined(_DOS_) || defined(_GID_) 
      1Z1234567890!"œ$%^&*()_+-={}[]@~''#<>?,./|\:;`' /
 #endif
 C Note ' is escaped with '
