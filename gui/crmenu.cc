@@ -320,9 +320,16 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
 
 }
 
-void CrMenu::Substitute(CcString data)
+void CrMenu::Substitute(PlotDataPopup data)
 {
-//Replace all occurences of _D in the command and text fields with the label.
+//Replace all occurences of:
+// _D in the command and text fields with the popup text.
+// _S with the seriesname
+// _X with the x value (a text label for bar graphs)
+// _Y with the y value
+// _L with the label (scatterpoints only)
+
+	if(data.m_Valid == false) return;
 
     CcMenuItem* menuItem = nil;
     CcString acommand, atext;
@@ -340,7 +347,43 @@ void CrMenu::Substitute(CcString data)
                 {
                     CcString firstPart = atext.Chop(i+1,atext.Len());
                     CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data + lastPart;
+                    atext = firstPart + data.m_PopupText + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'S')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_SeriesName + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'X')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_XValue + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'Y')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_YValue + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'L')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_Label + lastPart;
                 }
             }
             menuItem->SetText(atext);
@@ -356,7 +399,43 @@ void CrMenu::Substitute(CcString data)
                 {
                     CcString firstPart = acommand.Chop(i+1,acommand.Len());
                     CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart + data + lastPart;
+                    acommand = firstPart + data.m_PopupText + lastPart;
+                }
+            }
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
+                if(acommand[i] == '_' && acommand[i+1] == 'S')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand = firstPart + data.m_SeriesName + lastPart;
+                }
+            }
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
+                if(acommand[i] == '_' && acommand[i+1] == 'X')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand = firstPart + data.m_XValue + lastPart;
+                }
+            }
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
+                if(acommand[i] == '_' && acommand[i+1] == 'Y')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand = firstPart + data.m_YValue + lastPart;
+                }
+            }
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
+                if(acommand[i] == '_' && acommand[i+1] == 'L')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand = firstPart + data.m_Label + lastPart;
                 }
             }
             for (i = 0; i < atext.Len()-1; i++)
@@ -365,7 +444,43 @@ void CrMenu::Substitute(CcString data)
                 {
                     CcString firstPart = atext.Chop(i+1,atext.Len());
                     CcString lastPart  = atext.Chop(1,i+2);
-                    atext = firstPart + data + lastPart;
+                    atext = firstPart + data.m_PopupText + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'S')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_SeriesName + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'X')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_XValue + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'Y')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_YValue + lastPart;
+                }
+            }
+			for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'L')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data.m_Label + lastPart;
                 }
             }
             menuItem->command = acommand;

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/02/18 15:16:42  DJWgroup
+//   SH: Added ADDSERIES command, and allowed series to have different lengths.
+//
 //   Revision 1.9  2002/02/18 11:21:12  DJWgroup
 //   SH: Update to plot code.
 //
@@ -48,6 +51,7 @@ class CrPlot;
 class CcSeriesScatter;
 class CcString;
 class CcPlotAxes;
+class PlotDataPopup;
 
 class CcPlotScatter : public CcPlotData
 {
@@ -57,7 +61,7 @@ class CcPlotScatter : public CcPlotData
         CcPlotScatter();
         virtual ~CcPlotScatter();
 
-		CcString GetDataFromPoint(CcPoint *point);
+		PlotDataPopup GetDataFromPoint(CcPoint *point);
 		void CreateSeries(int numser, int* type);
 		void AllocateMemory(int length);
 		void AddSeries(int type);

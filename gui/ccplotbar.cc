@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2002/02/18 15:16:41  DJWgroup
+// SH: Added ADDSERIES command, and allowed series to have different lengths.
+//
 // Revision 1.14  2002/02/18 11:21:11  DJWgroup
 // SH: Update to plot code.
 //
@@ -362,10 +365,9 @@ void CcPlotBar::DrawView(bool print)
 }
 
 // create a text string describing the data point at a certain coordinate
-CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
+PlotDataPopup CcPlotBar::GetDataFromPoint(CcPoint *point)
 {
-	// "error" is the default return string, detected by cxplot
-	CcString ret = "error";
+	PlotDataPopup ret;
 
 	// point has not yet been found
 	bool pointfound = false;
@@ -404,14 +406,22 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 							{
 								if(!(m_Series[i]->m_SeriesName == ""))
 								{
-									ret = m_Series[i]->m_SeriesName;
-									ret += "; ";
+									ret.m_PopupText = m_Series[i]->m_SeriesName;
+									ret.m_SeriesName = m_Series[i]->m_SeriesName;
+									ret.m_PopupText += "; ";
 								}
-								else ret = "";
-								ret += m_Axes.m_Labels[j];
-								ret += "; ";
-								ret += ((CcSeriesBar*)m_Series[i])->m_Data[j];
+								else
+								{
+									ret.m_PopupText = "";
+								}
+
+								ret.m_PopupText += m_Axes.m_Labels[j];
+								ret.m_PopupText += "; ";
+								ret.m_PopupText += ((CcSeriesBar*)m_Series[i])->m_Data[j];
+								ret.m_XValue = m_Axes.m_Labels[j];
+								ret.m_YValue = ((CcSeriesBar*)m_Series[i])->m_Data[j];
 								pointfound = true;
+								ret.m_Valid = true;
 
 								point->y = m_YGapTop;
 								point->x = m_XGapLeft + (j+0.5)*bar;
@@ -443,19 +453,30 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 				// put together a text string to describe the data under the mouse pointer
 				if(!(m_Series[bar]->m_SeriesName == ""))
 				{
-					ret = m_Series[bar]->m_SeriesName;
-					ret += "; ";
+					ret.m_PopupText = m_Series[bar]->m_SeriesName;
+					ret.m_PopupText += "; ";
 				}
-				else ret = "";
-				ret += m_Axes.m_Labels[num];
-				ret += "; ";
+				else ret.m_PopupText = "";
+
+				ret.m_PopupText += m_Axes.m_Labels[num];
+				ret.m_PopupText += "; ";
+				ret.m_XValue = m_Axes.m_Labels[num];
+
 				if(m_Axes.m_AxisData[Axis_YL].m_AxisLog)
-					ret += pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
-				else ret += ((CcSeriesBar*)m_Series[bar])->m_Data[num];
+				{
+					ret.m_PopupText += pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
+					ret.m_YValue = pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
+				}
+				else
+				{
+					ret.m_PopupText += ((CcSeriesBar*)m_Series[bar])->m_Data[num];
+					ret.m_YValue = ((CcSeriesBar*)m_Series[bar])->m_Data[num];
+				}
 
 				// change the popup position to better align with bars
 				point->x = m_XGapLeft + (num+1)*width;
 				point->y = m_YGapTop;
+				ret.m_Valid = true;
 			}
 		}
 	}

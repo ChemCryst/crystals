@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/02/18 11:21:11  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.8  2002/01/16 10:28:38  ckpgroup
 //   SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
 //
@@ -45,6 +48,7 @@ class CrPlot;
 class CcSeriesBar;
 class CcPlotAxes;
 class CcString;
+class PlotDataPopup;
 
 class CcPlotBar : public CcPlotData
 {
@@ -54,7 +58,7 @@ class CcPlotBar : public CcPlotData
         CcPlotBar();
         virtual ~CcPlotBar();
 
-		CcString GetDataFromPoint(CcPoint *point);	
+		PlotDataPopup GetDataFromPoint(CcPoint *point);	
 		void CreateSeries(int numser, int* type);		// creates all data series (type is a block of numser series types)
 		void AllocateMemory(int length);				// calls AllocateMemory for each series.
 		void AddSeries(int type);						// add a series to the graph

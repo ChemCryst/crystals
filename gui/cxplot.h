@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/02/19 16:34:52  ckp2
+//   Menus for plots.
+//
 //   Revision 1.10  2002/02/18 15:16:44  DJWgroup
 //   SH: Added ADDSERIES command, and allowed series to have different lengths.
 //
@@ -137,7 +140,7 @@ class CxPlot : public BASEPlot
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
-		int GetMaxFontSize(int width, int height, CcString text, int param);
+//		int GetMaxFontSize(int width, int height, CcString text, int param);
 		CcPoint GetTextArea(int size, CcString text, int param);
         void Focus();
         void Display();
@@ -147,7 +150,6 @@ class CxPlot : public BASEPlot
 		void DeleteKey();
 		void CreateKey(int numser, CcString* names, int** col);
 		void CreateKeyWindow(int x, int y);
-
 
 		CcRect m_client;
         CrGUIElement *  ptr_to_crObject;
@@ -176,13 +178,12 @@ private:
 		void PrintPicture();
 
         afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
-
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnSize(UINT nType, int cx, int cy);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnMenuSelected (int nID);
+		afx_msg void OnMenuSelected (int nID);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/02/18 15:16:42  DJWgroup
+//   SH: Added ADDSERIES command, and allowed series to have different lengths.
+//
 //   Revision 1.10  2002/02/18 11:21:12  DJWgroup
 //   SH: Update to plot code.
 //
@@ -47,6 +50,8 @@
 
 #include "ccstring.h"
 #include "ccpoint.h"
+#include "crplot.h"
+
 class CcTokenList;
 class CcList;
 class CrPlot;
@@ -113,7 +118,7 @@ public:
     static CcList  sm_PlotList;
     static CcPlotData* sm_CurrentPlotData;
 
-	virtual CcString GetDataFromPoint(CcPoint* point) = 0; // returns a string from a point, for mouse-over messages
+	virtual PlotDataPopup GetDataFromPoint(CcPoint* point) = 0; // returns a string from a point, for mouse-over messages
 
 	virtual void CreateSeries(int numser, int* type) = 0;	// controls memory allocation for a series
 	virtual void AllocateMemory(int length) = 0;			// this one allocates the memory

@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2002/02/18 15:16:42  DJWgroup
+// SH: Added ADDSERIES command, and allowed series to have different lengths.
+//
 // Revision 1.13  2002/02/18 11:21:11  DJWgroup
 // SH: Update to plot code.
 //
@@ -352,7 +355,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 
 				if(m_CurrentAxis != -1)
 					m_Axes.m_AxisData[m_CurrentAxis].m_Title = title;
-				else LOGWARN("Same title applied to all axes...");
+				else LOGSTAT("Same title applied to all axes...");
 				break;
 			}
 				
@@ -631,7 +634,7 @@ Boolean CcAxisData::CalculateLinearDivisions()
 	// support for reversed axes (eg 4 -> 0)
 	if(m_AxisMax < m_AxisMin) m_Delta = -m_Delta;
 
-	m_NumDiv = (float)((m_AxisMax - m_AxisMin) / m_Delta);	// initial number of divisions based on delta
+	m_NumDiv = (int)((m_AxisMax - m_AxisMin) / m_Delta);	// initial number of divisions based on delta
 
 	int numinc = 0;							// number of increments of delta
 
@@ -647,7 +650,7 @@ Boolean CcAxisData::CalculateLinearDivisions()
 		else m_Delta *= 2;			// others are x2
 
 		numinc++;
-		m_NumDiv = (float)((m_AxisMax - m_AxisMin) / m_Delta);// find new number of divisions
+		m_NumDiv = (int)((m_AxisMax - m_AxisMin) / m_Delta);// find new number of divisions
 	}
 
 	// move all divisions such that they are multiples of the delta
@@ -697,7 +700,7 @@ Boolean CcAxisData::CalculateLogDivisions()
 	m_Delta = 1;
 	if(m_AxisMin <= 0) m_AxisMin = 1;
 
-	m_NumDiv = (float)((log10(m_AxisMax) - log10(m_AxisMin)) / m_Delta);// initial number of divisions based on delta
+	m_NumDiv = (int)((log10(m_AxisMax) - log10(m_AxisMin)) / m_Delta);// initial number of divisions based on delta
 
 	int numinc = 0;									// number of increments of delta
 
@@ -713,7 +716,7 @@ Boolean CcAxisData::CalculateLogDivisions()
 		else m_Delta *= 2;						// others are x2
 
 		numinc++;
-		m_NumDiv = (float)((log10(m_AxisMax) - log10(m_AxisMin)) / m_Delta);// find new number of divisions
+		m_NumDiv = (int)((log10(m_AxisMax) - log10(m_AxisMin)) / m_Delta);// find new number of divisions
 	}
 
 	// move all divisions such that they are multiples of the delta
@@ -932,9 +935,9 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		int axiswidth = xdivoffset * (m_AxisData[Axis_X].m_NumDiv);
 		
 		// take the axis height, work out where zero is...
-		int xorigin = (float)(2400 - xgapleft + ((axiswidth * m_AxisData[Axis_X].m_Min) / (m_AxisData[Axis_X].m_Max - m_AxisData[Axis_X].m_Min)));
-		int yorigin = (float)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin))));
-		int yorigright = (float)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YR].m_AxisMin / (m_AxisData[Axis_YR].m_AxisMax - m_AxisData[Axis_YR].m_AxisMin))));
+		int xorigin = (int)(2400 - xgapleft + ((axiswidth * m_AxisData[Axis_X].m_Min) / (m_AxisData[Axis_X].m_Max - m_AxisData[Axis_X].m_Min)));
+		int yorigin = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin))));
+		int yorigright = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YR].m_AxisMin / (m_AxisData[Axis_YR].m_AxisMax - m_AxisData[Axis_YR].m_AxisMin))));
 
 		//this is the value of y at the origin <left> (may be non-zero for span-graphs)
 		float yoriginvalue = 0;

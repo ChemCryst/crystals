@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/02/19 16:34:52  ckp2
+//   Menus for plots.
+//
 //   Revision 1.7  2002/02/18 11:21:13  DJWgroup
 //   SH: Update to plot code.
 //
@@ -241,11 +244,6 @@ CcPoint CrPlot::GetTextArea(int size, CcString text, int param)
 	return ((CxPlot*)ptr_to_cxObject)->GetTextArea(size,text,param);
 }
 
-int CrPlot::GetMaxFontSize(int width, int height, CcString text, int param)
-{
-    return ((CxPlot*)ptr_to_cxObject)->GetMaxFontSize(width, height, text, param);
-}
-
 // STEVE changed cx plot to accept a line thickness
 void CrPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 {
@@ -262,7 +260,6 @@ void CrPlot::SetColour(int r, int g, int b)
 {
 	((CxPlot*)ptr_to_cxObject)->SetColour(r,g,b);
 }
-
 
 void CrPlot::Display()
 {
@@ -293,11 +290,14 @@ int CrPlot::GetIdealHeight()
     return ((CxPlot*)ptr_to_cxObject)->GetIdealHeight();
 }
 
-CcString CrPlot::GetDataFromPoint(CcPoint* point)
+PlotDataPopup CrPlot::GetDataFromPoint(CcPoint* point)
 {
 	if(attachedPlotData) return attachedPlotData->GetDataFromPoint(point);
-
-    return "error";
+	else
+	{
+		PlotDataPopup null;
+		return null;
+	}
 }
 
 void CrPlot::CreateKey(int numser, CcString* names, int** col)
@@ -305,20 +305,18 @@ void CrPlot::CreateKey(int numser, CcString* names, int** col)
 	((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
 }
 
-
 void CrPlot::ContextMenu(CcPoint * xy, int x1, int y1)
 {
     if ( !m_cmenu ) return;
     if(!attachedPlotData) return;
 
-    CcString data = attachedPlotData->GetDataFromPoint(xy);
+    PlotDataPopup data = attachedPlotData->GetDataFromPoint(xy);
 
-    if (!(data == "error")) {
-
+    if (data.m_Valid == true)
+	{
         m_cmenu->Substitute(data);
         if ( ptr_to_cxObject ) m_cmenu->Popup(x1,y1,(void*)ptr_to_cxObject);
     }
-
 }
 
 void CrPlot::MenuSelected(int id)

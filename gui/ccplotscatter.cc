@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2002/02/18 15:16:42  DJWgroup
+// SH: Added ADDSERIES command, and allowed series to have different lengths.
+//
 // Revision 1.12  2002/02/18 11:21:12  DJWgroup
 // SH: Update to plot code.
 //
@@ -96,7 +99,7 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 				// check there is enough space for this data item
 				if(m_NextItem >= m_SeriesLength)
 				{
-					LOGWARN("Series length needs extending: reallocating memory");
+					LOGSTAT("Series length needs extending: reallocating memory");
 
 					ExtendSeriesLength();
 				}
@@ -117,7 +120,7 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 				// check there is enough space for this data item
 				if(m_NextItem >= m_SeriesLength)
 				{
-					LOGWARN("Series length needs extending: reallocating memory");
+					LOGSTAT("Series length needs extending: reallocating memory");
 
 					ExtendSeriesLength();
 				}
@@ -137,7 +140,7 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 						{
 							if(tempdata <= 0)
 							{
-								LOGWARN("Negative data passed to a LOG plot...");
+								LOGERR("Negative data passed to a LOG plot...");
 							}
 							else tempdata = (float)log10(tempdata);
 						}
@@ -280,7 +283,7 @@ void CcPlotScatter::DrawView(bool print)
 		int x1 = 0;
 		int y1 = 0;
 		int x2 = 0;
-		int y2 = 0;;
+		int y2 = 0;
 
 		// loop first through the series
 		for(j=0; j<m_NumberOfSeries; j++)
@@ -352,9 +355,9 @@ void CcPlotScatter::DrawView(bool print)
     }
 }
 
-CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
+PlotDataPopup CcPlotScatter::GetDataFromPoint(CcPoint *point)
 {
-	CcString ret = "error";
+	PlotDataPopup ret;
 	bool pointfound = false;
 
 	if((point->x < (2400 - m_XGapRight)) && (point->x > m_XGapLeft) && (point->y > m_YGapTop) && (point->y < (2400 - m_YGapBottom)))
@@ -370,8 +373,8 @@ CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 				int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
 				int axisheight = 2400 - m_YGapTop - m_YGapBottom;
 
-				int xrange = m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin;
-				int yrange = m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin;
+				float xrange = m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin;
+				float yrange = m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin;
 
 				xrange /= 100;
 				yrange /= 100;
@@ -386,22 +389,31 @@ CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 					{
 						if(!(m_Series[i]->m_SeriesName == ""))
 						{
-							ret = m_Series[i]->m_SeriesName;
-							ret += "; ";
+							ret.m_SeriesName = m_Series[i]->m_SeriesName;
+							ret.m_PopupText = m_Series[i]->m_SeriesName;
+							ret.m_PopupText += "; ";
 						}
-						else ret = "";
+						else
+						{ 
+							ret.m_SeriesName = "";
+							ret.m_PopupText = "";
+						}
+
 						if(!(((CcSeriesScatter*)m_Series[i])->m_Label[j] == ""))
 						{
-							ret += ((CcSeriesScatter*)m_Series[i])->m_Label[j];
-							ret += "; ";
+							ret.m_Label = ((CcSeriesScatter*)m_Series[i])->m_Label[j];
+							ret.m_PopupText += ((CcSeriesScatter*)m_Series[i])->m_Label[j];
+							ret.m_PopupText += "; ";
 						}
-						ret += "(";
-						ret += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
-						ret += ", ";
-						ret += ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
-						ret += ")";
-						
+						ret.m_PopupText += "(";
+						ret.m_PopupText += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
+						ret.m_PopupText += ", ";
+						ret.m_PopupText += ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
+						ret.m_PopupText += ")";
+						ret.m_XValue = ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
+						ret.m_YValue = ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
 						pointfound = true;
+						ret.m_Valid = true;
 
 						point->y = m_YGapTop;
 					}

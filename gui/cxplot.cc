@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.16  2002/02/19 16:34:52  ckp2
+//   Menus for plots.
+//
 //   Revision 1.15  2002/02/18 11:21:14  DJWgroup
 //   SH: Update to plot code.
 //
@@ -523,104 +526,6 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 	return (LogicalToDevice(tsize.x, tsize.y));
 }
 
-int CxPlot::GetMaxFontSize(int width, int height, CcString text, int param)
-{
-    m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
-    CFont  theFont;
-    char face[32] = "Times New Roman";
-    CcPoint coord = DeviceToLogical(width,height);
-    CSize size;
-
-    int fontsize = 14; //our maximum possible fontsize...
-
-	if(param & TEXT_ANGLE)
-	{
-		while (fontsize > 40)
-		{
-	//		theFont.CreatePointFont(fontsize, face, m_memDC);
-			theFont.CreateFont(fontsize, 0, 450, 450, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-			CFont* oldFont = m_memDC->SelectObject(&theFont);
-
-			size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
-
-			size.cx = (long)(size.cx/sqrt(2));
-			size.cy = (long)(size.cx/sqrt(2));
-
-			if ((size.cy < coord.y ))//&&(size.cx < coord.x))
-			{
-				m_memDC->SelectObject(oldFont);
-				theFont.DeleteObject(); //Free memory associated with font.
-				break;
-			}
-			else
-			{
-				//Reduce the logfont height, put the oldfont back into the DC and repeat.
-				fontsize -= 1;
-				m_memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
-				theFont.DeleteObject(); //Free memory associated with font.
-			}
-		}
-	
-	}
-	else
-	{
-		if(param & TEXT_VERTICAL)
-		{
-			while (fontsize > 4)
-			{
-		//		theFont.CreatePointFont(fontsize, face, m_memDC);
-				theFont.CreateFont(fontsize, 0, 900, 900, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-				CFont* oldFont = m_memDC->SelectObject(&theFont);
-
-				size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
-
-				if (size.cy < coord.y)		// only worried about vertical dimension here
-				{
-					m_memDC->SelectObject(oldFont);
-					theFont.DeleteObject(); //Free memory associated with font.
-					break;
-				}
-				else
-				{
-					//Reduce the logfont height, put the oldfont back into the DC and repeat.
-					fontsize -= 1;
-					m_memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
-					theFont.DeleteObject(); //Free memory associated with font.
-				}
-			}
-		}
-		else
-		{
-			while (fontsize > 4)
-			{
-		//		theFont.CreatePointFont(fontsize, face, m_memDC);
-				theFont.CreateFont(fontsize, 0, 0, 0, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-		//		theFont.CreateFont(fontsize, 0, 450, 450, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
-				CFont* oldFont = m_memDC->SelectObject(&theFont);
-
-				size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
-
-				if ((size.cx < coord.x )) //&&(size.cy < coord.y))	// only need worry about horizontal
-				{
-					m_memDC->SelectObject(oldFont);
-					theFont.DeleteObject(); //Free memory associated with font.
-					break;
-				}
-				else
-				{
-					//Reduce the logfont height, put the oldfont back into the DC and repeat.
-					fontsize -= 1;
-					m_memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
-					theFont.DeleteObject(); //Free memory associated with font.
-				}
-			}
-		}
-	}
-    m_memDC->SelectObject(m_oldMemDCBitmap);
-
-    return fontsize;
-}
-
 void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
 {
 #ifdef __CR_WIN__
@@ -853,16 +758,16 @@ void CxPlot::OnMouseMove( wxMouseEvent & event )
 	{	
 		moldMPos = point;
 	  // now we have the mouse position, get the details of any bar / scatter point below it...
-	  CcString text = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(&point); //nb: point is changed now by GetData to align with top of graph
+	  PlotDataPopup data = ((CrPlot*)ptr_to_crObject)->GetDataFromPoint(&point); //nb: point is changed now by GetData to align with top of graph
 	  point = DeviceToLogical(point.x, point.y);
 
-		if(!(text == "error"))
+		if(data.m_Valid == true)
 		{
-			if((moldPPos.x != point.x || moldPPos.y != point.y) || !(text == moldText ))
+			if((moldPPos.x != point.x || moldPPos.y != point.y) || !(data.m_PopupText == moldText ))
 			{
-				CreatePopup(text, point);
+				CreatePopup(data.m_PopupText, point);
 				moldPPos = point;
-				moldText = text;
+				moldText = data.m_PopupText;
 			}
 		}
 		// if mouse message is not valid, remove the popup (ie catch mouse leaving window...)
@@ -957,16 +862,16 @@ void CxPlot::MakeMetaFile(int w, int h)
     CcRect backup_m_client = m_client;
 
     CcString result;
-    CcString defName = "plot1.wmf";
-    CcString extension = "*.wmf";
-    CcString description = "Windows MetaFile (*.wmf)";
+    CcString defName = "plot1.emf";
+    CcString extension = "*.emf";
+    CcString description = "Windows Enhanced MetaFile (*.emf)";
     CcController::theController->SaveFileDialog(&result, defName, extension, description);
 
     if ( ! ( result == "CANCEL" ) )
     {
         CMetaFileDC mdc;
 
-        mdc.Create((LPCTSTR)result.ToCString());
+        mdc.CreateEnhanced(m_memDC, (LPCTSTR)result.ToCString(), NULL, "Plot\0");
 
         mdc.SetAttribDC( m_memDC->m_hAttribDC );
 
@@ -975,9 +880,14 @@ void CxPlot::MakeMetaFile(int w, int h)
 
         ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
 
-        mdc.Close();
-
-        CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+        if(mdc.CloseEnhanced())
+		{
+			CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+		}
+		else
+		{
+			CcController::theController->ProcessOutput("File creation failed.");
+		}
     }
     else
     {
@@ -1030,6 +940,9 @@ void CxPlot::PrintPicture()
       printDC.EndPage();
       printDC.EndDoc();
       printDC.Detach();
+
+      CcController::theController->ProcessOutput( "Image sent to printer.");
+
     }
 
 
@@ -1043,6 +956,20 @@ void CxPlot::PrintPicture()
 
 }
 
+void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
+{
+    CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+    ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
+    ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,wpoint.x,wpoint.y);
+}
+
+
+void CxPlot::OnMenuSelected(int nID)
+{
+    ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 //
 //	The CxPlotKey stuff
@@ -1053,9 +980,6 @@ void CxPlot::PrintPicture()
 // Windows message map for the key
 BEGIN_MESSAGE_MAP(CxPlotKey, CWnd)
 	ON_WM_PAINT()
-//	ON_WM_LBUTTONUP()
-//	ON_WM_LBUTTONDOWN()
-//	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 #endif
 
@@ -1196,86 +1120,4 @@ void CxPlotKey::OnPaint()
   newDC.SelectObject(oldFont);
 
 #endif
-}
-
-/*
-
-void CxPlotKey::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// detect whether mouse was clicked on the m_key window
-	// if so, set the flag, and commence mouse tracking (in OnMouseMove())
-//	RECT wpos, pwpos;
-
-	//if(m_Key)
-//	{
-//		this->GetWindowRect(&wpos);
-//		m_Parent->GetWindowRect(&pwpos);
-///		
-//		if((point.x > wpos.left-pwpos.left) && (point.x < wpos.right-pwpos.left))
-//		{
-//			if((point.y > wpos.top-pwpos.top) && (point.y < wpos.bottom-pwpos.top))
-//			{
-				mDragging = true;
-//			}
-//		}
-//	}
-}
-
-void CxPlotKey::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	// remove flag, stop window dragging.
-	if(mDragging)
-		mDragging = false;
-}
-
-void CxPlotKey::OnMouseMove(UINT nFlags, CPoint point)
-{
-	// check button IS down - may have missed LbuttonUp message
-	if( (nFlags & MK_LBUTTON) != 0 )
-		mDragging = false;
-	
-	// if mouse was over key when clicked, move the key
-	if(mDragging)
-	{
-		// convert back to window coordinates
-
-		// point : current mouse pos
-		// mDragPos: last mouse pos
-		// dist : relative pos
-
-		CPoint dist;
-		dist.x = point.x - mDragPos.x;
-		dist.y = point.y - mDragPos.y;
-
-		RECT wpos,pwpos;
-
-		GetWindowRect(&wpos);
-//		m_Parent->GetWindowRect(&pwpos);
-//		MoveWindow(wpos.left - pwpos.left + dist.x,wpos.top - pwpos.top + dist.y, wpos.right-wpos.left,wpos.bottom-wpos.top,TRUE);
-		MoveWindow(point.x, point.y,  wpos.right-wpos.left, wpos.bottom-wpos.top, FALSE);
-//		m_Key->MoveWindow(drag.x, drag.y, wpos.right-wpos.left, wpos.bottom-wpos.top, TRUE);
-
-//		((CrPlot*)ptr_to_crObject)->RequestDrawKey();
-
-		mDragPos.x = point.x;
-		mDragPos.y = point.y;
-	}
-}
-
-*/
-
-
-
-
-void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
-{
-    CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
-    ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
-    ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,wpoint.x,wpoint.y);
-}
-
-
-void CxPlot::OnMenuSelected(int nID)
-{
-    ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
 }

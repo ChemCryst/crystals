@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/02/19 16:34:52  ckp2
+//   Menus for plots.
+//
 //   Revision 1.7  2001/06/17 15:10:15  richard
 //   Lowercase included file for linux compatibility.
 //   Reworked Substitute function so that a pointer to the modeldoc is
@@ -25,6 +28,7 @@
 #include    "crguielement.h"
 #include    "cctokenlist.h"
 #include "cclist.h" // added by ClassView
+#include "crplot.h"
 class CxMenu;
 class CcMenuItem;
 class CxWindow;
@@ -48,7 +52,7 @@ class   CrMenu : public CrGUIElement
           // methods
         CcParse ParseInput( CcTokenList * tokenList );
         void Substitute(CcString atomname, CcModelDoc* model);
-        void Substitute(CcString data);
+        void Substitute(PlotDataPopup data);
         void Popup(int x, int y, void* window);
         int Condition(CcString conditions);
 

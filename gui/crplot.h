@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2002/02/19 16:34:52  ckp2
+//   Menus for plots.
+//
 //   Revision 1.6  2002/02/18 11:21:13  DJWgroup
 //   SH: Update to plot code.
 //
@@ -35,23 +38,39 @@
 #ifndef     __CrPlot_H__
 #define     __CrPlot_H__
 #include    "crguielement.h"
+#include	"ccstring.h"
 
-class CcPlotData;
 class CcTokenList;
 class CcPoint;
 class CrMenu;
+class CcPlotData;
 
-#define TEXT_VCENTRE	1
-#define TEXT_HCENTRE	2
-#define TEXT_RIGHT		4
-#define TEXT_TOP		8
-#define TEXT_VERTICAL   16
-#define TEXT_BOLD		32
-#define TEXT_ANGLE		64
-#define TEXT_BOTTOM		128
-#define TEXT_VERTICALDOWN 256
+#define TEXT_VCENTRE		1
+#define TEXT_HCENTRE		2
+#define TEXT_RIGHT			4
+#define TEXT_TOP			8
+#define TEXT_VERTICAL		16
+#define TEXT_BOLD			32
+#define TEXT_ANGLE			64
+#define TEXT_BOTTOM			128
+#define TEXT_VERTICALDOWN	256
 
-class   CrPlot : public CrGUIElement
+class PlotDataPopup
+{
+public:
+	PlotDataPopup() {m_Valid = false;};
+	~PlotDataPopup(){};
+
+	CcString	m_PopupText;		// all the popup text
+	CcString	m_SeriesName;		// series name only
+	CcString	m_XValue;			// x value (or the x label for bargraphs)
+	CcString	m_YValue;			// y value
+	CcString	m_Label;			// point label
+
+	Boolean		m_Valid;			// is this a valid point?
+};
+
+class CrPlot : public CrGUIElement
 {
     public:
 //Functions for drawing on the window:
@@ -62,9 +81,8 @@ class   CrPlot : public CrGUIElement
         void DrawEllipse(int x, int y, int w, int h, Boolean fill);
 		void SetColour(int r, int g, int b);							// STEVE added this - set colour in cxplot class
         void Clear();
-		int GetMaxFontSize(int width, int height, CcString text, int param);
 		CcPoint GetTextArea(int size, CcString text, int param);
-		CcString GetDataFromPoint(CcPoint *point);					// get a description of the data under the mouse
+		PlotDataPopup GetDataFromPoint(CcPoint *point);					// get a description of the data under the mouse
 		void CreateKey(int numser, CcString* names, int** col);
 
 //Creation and adding data:
