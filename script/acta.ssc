@@ -6,9 +6,31 @@
 %  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG
 %  VARIABLE CHARACTER CDLINE
 %  VARIABLE REAL WORK1 WORK2 WORK3 ZMAX CENTRO
-%  EVALUATE ERRFLAG = 0
 %  EVALUATE ALERTFLAG = 0
 %  EVALUATE WARNFLAG = 0
+%%
+%%   Re-calculate the electron density.
+
+ * Recalculating min and max electron density.
+%  COPY '#FOURIER'
+%  COPY 'MAP TYPE=DIFF'
+%  COPY 'END'
+
+ * Recalculating R.
+%  EVALUATE ERRFLAG = 1
+%  BLOCK
+%   ON ERROR TERMINATE
+%   COPY '#SFLS'
+%   COPY 'CALC'
+%   COPY 'END'
+%   EVALUATE ERRFLAG = 0
+%  END BLOCK
+%  IF ERRFLAG .NE. 0 THEN
+ **** Fatal: Error in calculating phases.
+ Do you have Fourier peaks ('Q,L,R or M') in your model?
+
+%     FINISH
+%  END IF
 
  * Checking data against some IUCr validation criteria...
 
@@ -238,7 +260,7 @@
 %     COPY 'LOCATE RECORDTYPE=101'
 %     COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
 %     COPY 'END'
-
+%%
 %%
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 103'
