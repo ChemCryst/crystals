@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2002/12/02 15:48:54  rich
+C XADCPD was looking at PUNCH YES/NO, should have been looking at MATRIX OLD/NEW
+C in LIST 33.
+C
 C Revision 1.6  2001/02/26 10:28:01  richard
 C RIC: Added changelog to top of file
 C
@@ -2746,8 +2750,10 @@ C
 \XLST33
 \XCNTRL
 \XUNITS
+\XIOBUF
 \XSSVAL
 \XCONST
+\XMTLAB
 C
 \QSTORE
 \QSTR11
@@ -2818,78 +2824,97 @@ C--BRING DOWN THE LENGTH OF THE FIRST RECORD
       CALL XDOWNF(MD16,ISTORE(L16),1)
 C--SET THE LENGTH OF THE FIRST ENTRY
       N16=ISTORE(L16)
+
 C--INCREMENT THE TRANSFER ADDRESS
       MD16=MD16+KINCRF(1)
 C--QUEUE PROCESSING LOOP
 1200  CONTINUE
-      IF(N16)1850,1850,1250
+        IF(N16)1850,1850,1250
 C--PROCESS THE NEXT RESTRAINT
-1250  CONTINUE
-      CALL XDOWNF(MD16,STORE(L16),N16)
+1250    CONTINUE
+        CALL XDOWNF(MD16,STORE(L16),N16)
 C--INCREMENT THE TRANSFER ADDRESS
-      MD16=MD16+KINCRF(N16)
+        MD16=MD16+KINCRF(N16)
 C--INDICATE THE NUMBER OF ENTRIES TO PROCESS
-      N16=N16-4
+        N16=N16-4
 C--INDICATE THE CORE ADDRESS OF THE FIRST ENTRY
-      M16=L16+3
+        M16=L16+3
 C--INDICATE THE ADDRESS OF THE LAST ENTRY IN THE QUEUE
-      M16Q=M16+N16-MD16Q
+        M16Q=M16+N16-MD16Q
 C--CHECK IF ANY DERIVATIVES HAVE BEEN FOUND
-      IF(N16)1800,1800,1300
+        IF(N16)1800,1800,1300
 C--COMPUTE THE ACTUAL WEIGHT TO USE
-1300  CONTINUE
-      C=STORE(L16)*B
-      D=STORE(L16+1)
+1300    CONTINUE
+        C=STORE(L16)*B
+        D=STORE(L16+1)
 cdjwmay2000 - note problems with Rfactor when target is zero!
 c      write(ncawu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
 c      write(ncwu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
-      STORE(L11P+27)=STORE(L11P+27)+1.
-      STORE(L11P+28)=STORE(L11P+28)+D*D*C
-      STORE(L11P+29)=STORE(L11P+29)+STORE(L16+2)*C
+        STORE(L11P+27)=STORE(L11P+27)+1.
+        STORE(L11P+28)=STORE(L11P+28)+D*D*C
+        STORE(L11P+29)=STORE(L11P+29)+STORE(L16+2)*C
+
+        IF (MATLAB.GT.0) WRITE(NCFPU2,'(G16.8)') D
+
 C--PASS THROUGH THE MATRIX
-      M11=L11
-C--PROCESS BLOCK BY BLOCK
-      DO 1750 I=L12B,M12B,MD12B
-      M=ISTORE(I)
-      N=ISTORE(I+1)
-      L=M+N-1
-C--PASS THROUGH THE PARAMETERS IN THIS BLOCK
-      DO 1700 J=M,L
-C--CHECK IF THIS PARAMETER IS IN THE QUEUE
-      IF(ISTORE(M16)-J)1650,1350,1650
-C--PARAMETER FOUND IN THE QUEUE
-1350  CONTINUE
-      A=STORE(M16+1)*C
+        M11=L11
+        DO I=L12B,M12B,MD12B                 !PROCESS BLOCK BY BLOCK
+           M=ISTORE(I)
+           N=ISTORE(I+1)
+           L=M+N-1
+
+           DO J=M,L  !PASS THROUGH THE PARAMETERS IN THIS BLOCK
+
+              IF(ISTORE(M16) .NE. J) THEN             !Not this one.
+                 IF (MATLAB.GT.0) WRITE(NCFPU1,'(''0.0 ...'')')
+              ELSE                                    !Parameter is in queue
+                 A=STORE(M16+1)*C
+                 IF (MATLAB.GT.0) WRITE(NCFPU1,'(G16.8,'' ...'')')
+     1                SQRT(ABS(C))*STORE(M16+1)
 C--ADD INTO THE R.H.S.
-      M11R=L11R+J-1
-      STR11(M11R)=STR11(M11R)+A*D
-C--CHECK IF THE L.H.S. IS REQUIRED
-      IF(JK)1400,1550,1550
-C--PASS ONTO THE REMAINING PARAMETERS , ADDING THEIR CONTRIBUTIONS
-1400  CONTINUE
-      DO 1500 K=M16,M16Q,MD16Q
-C--CHECK IF THE PARAMETER IS NOT IN THE BLOCK
-      IF(ISTORE(K)-L)1450,1450,1550
-1450  CONTINUE
-      M11R=M11+ISTORE(K)-J
-      STR11(M11R)=STR11(M11R)+A*STORE(K+1)
-1500  CONTINUE
-1550  CONTINUE
-      N16=N16-MD16Q
-      IF(N16)1800,1800,1600
-1600  CONTINUE
-      M16=M16+MD16Q
-1650  CONTINUE
-      M11=M11+N
-      N=N-1
-1700  CONTINUE
-1750  CONTINUE
-1800  CONTINUE
+                 M11R=L11R+J-1
+                 STR11(M11R)=STR11(M11R)+A*D
+
+                 WRITE(CMON,'(A,2G12.5,I12)')
+     1           'Rest: J,A*D,M11R: ',J,A*D,M11R
+                 CALL XPRVDU(NCVDU,1,0)
+
+                 IF(JK.LT.0) THEN       !The L.H.S is required.
+                    DO K=M16,M16Q,MD16Q      !Inner loop through remaining params
+                       IF (ISTORE(K).GT.L) EXIT    !Param not in this block
+                       M11R=M11+ISTORE(K)-J        !Add contribution
+                       STR11(M11R)=STR11(M11R)+A*STORE(K+1)
+                    END DO
+                 END IF
+
+                 N16=N16-MD16Q
+                 IF(N16.LE.0)THEN                 !No more derivatives.
+                    IF ( MATLAB .GT. 0 ) THEN         !Finish this line.
+                        DO JJ = J+1,L
+                           WRITE(NCFPU1,'(''0.0 ...'')')
+                        END DO
+                     END IF
+                    GOTO 1800
+                 ENDIF
+                 M16=M16+MD16Q
+              END IF
+              M11=M11+N
+              N=N-1
+           END DO
+        END DO
+
+1800    CONTINUE
 C--FIND THE ADDRESS OF THE LENGTH OF THE NEXT ENTRY
-      M16Q=M16Q+MD16Q
+        M16Q=M16Q+MD16Q
 C--FIND THE LENGTH OF THE NEXT ENTRY
-      N16=ISTORE(M16Q)
+        N16=ISTORE(M16Q)
+        IF (MATLAB.GT.0) THEN
+          WRITE(NCFPU1,'('' '')')
+        END IF
+
       GOTO 1200
+
+
 C--OUTPUT THE NEW MATRIX
 1850  CONTINUE
       STORE(L11P+16)=STORE(L11P+16)+STORE(L11P+27)
@@ -2897,6 +2922,15 @@ C--OUTPUT THE NEW MATRIX
       CALL XCL11(16)
       CALL XMKOWF(11,0)
       CALL XALTES(11,1)
+
+      IF (MATLAB.GT.0) THEN
+        WRITE (NCFPU1, '(''];'')')
+        I = KFLCLS(NCFPU1)
+        WRITE (NCFPU2, '(''];'')')
+        I = KFLCLS(NCFPU2)
+        MATLAB = 0
+      END IF
+
       RETURN
 C
 9900  CONTINUE

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2002/11/29 15:25:38  rich
+C Add a variable MATLAB to XSFW common block, and zero it in presets. Keeps
+C track of open files.
+C
 C Revision 1.36  2002/08/23 11:20:26  richard
 C Increase STR11 and SORT to 32Mb each (8-fold increase), to allow refinement of
 C bigger structures.
@@ -133,7 +137,7 @@ C
 \XDRIVE
 C
 \OUTCOL
-\XSFWK
+\XMTLAB
 
 
 C LOAD THE LIST NAMES
