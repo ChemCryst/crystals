@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2004/02/25 10:03:24  stefan
+C Removed GUI output for Linux/Unix version
+C
 C Revision 1.49  2004/02/24 15:51:22  rich
 C Don't try to substitute HTTP: as an evironment variable.
 C Don't try to substitute C: as an environment variable.
@@ -3650,13 +3653,21 @@ C--SET THE # SECS SINCE 1970 IN ISECS
       ISECS = TIME()
       RETURN
       END
+
 CODE FOR XCDATE
       SUBROUTINE XCDATE(ISECS,CT)
 &&DVFGID      USE DFPORT
 C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING
 C e.g. "Fri Sep 07 04:37:23 2001"
+
+\XSSVAL
       CHARACTER*24 CT
-      CT = CTIME(ISECS)
+      IF (ISSTIM .EQ. 2 ) THEN
+       CT = ' '
+      ELSE
+       CT = CTIME(ISECS)
+      END IF
+
       RETURN
       END
 
