@@ -99,7 +99,7 @@
 %           COPY '#RELE PUNCH bfile.pch'
 %           EVALUATE KEYBREAK = 'SAME'
 %           COPY '#SCRIPT ZADDLI16'
- * Done. Vibrational restraints added.
+ * Done. Similarity restraints added.
 %         END IF
 %       END IF
 %   END IF
