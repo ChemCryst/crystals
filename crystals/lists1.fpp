@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/09/11 09:29:16  ckp2
+C New #DISK options. Give a list number to the PRINT directive to only
+C get info for that list.
+C
 C Revision 1.7  2001/09/11 08:29:29  ckp2
 C In #DISK, punch the absolute values of the list type and list serial, the delete
 C and to be retained status can be obtained from other flags further along the
@@ -859,18 +863,35 @@ C--PRINT THE HEADER FOR THE TOP OF THE NEXT PAGE
 1000  CONTINUE
       CALL XPRTCN
 C**MACHINE SPECIFIC IN ALL PROBABILITY
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1050 ) CINDEX(IN) , ID(IL+2) , ID(IL+3) ,
-     2 ID(IL+6) , ID(IL+7) , ID(IL+8)
-      ENDIF
+
+
 1050  FORMAT ( 1X , 'Print' , A , '  part' , I3 , 5X , 'Address' , I8 ,
      2 5X , 'Length' , I7 , 5X , 'Created on ' , 2A4 / )
-      WRITE ( NCAWU , 1060 ) CINDEX(IN),
-     1 ID(IL+2), ID(IL+7), ID(IL+8)
-      WRITE ( CMON , 1060 ) CINDEX(IN),
-     1 ID(IL+2), ID(IL+7), ID(IL+8)
-      CALL XPRVDU(NCVDU, 1,0)
+1051  FORMAT ( 1X , 'Print' , A , '  part' , I3 , 5X , 'Address' , I8 ,
+     2 5X , 'Length' , I7 , 5X , 'Created on ' , A24 / )
 1060  FORMAT ( 1X, 'Print', A20, ' part ', I3, ' Created on ', 2A4)
+1061  FORMAT ( 1X, 'Print', A20, ' part ', I3, ' Created on ', A24)
+
+
+      IF ( ID(IL+7) .NE. 0 ) THEN
+C -- Old style date format.
+        IF (ISSPRT .EQ. 0) THEN
+           WRITE(NCWU,1050)CINDEX(IN),ID(IL+2),ID(IL+3),
+     1                       ID(IL+6),ID(IL+7),ID(IL+8)
+        ENDIF
+        WRITE ( NCAWU , 1060 ) CINDEX(IN), ID(IL+2), ID(IL+7), ID(IL+8)
+        WRITE ( CMON , 1060 ) CINDEX(IN),  ID(IL+2), ID(IL+7), ID(IL+8)
+        CALL XPRVDU(NCVDU, 1,0)
+      ELSE
+C -- New style date format.
+        CALL XCDATE(ID(IL+8),CDT)
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE (NCWU,1051) CINDEX(IN),ID(IL+2),ID(IL+3),ID(IL+6),CDT
+        ENDIF
+        WRITE ( NCAWU , 1061 ) CINDEX(IN), ID(IL+2), CDT
+        WRITE ( CMON , 1061 ) CINDEX(IN),  ID(IL+2), CDT
+        CALL XPRVDU(NCVDU, 1,0)
+      END IF
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1100 )
