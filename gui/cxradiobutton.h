@@ -18,7 +18,7 @@
 #define BASERADIOBUTTON CButton
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/radiobut.h>
 #define BASERADIOBUTTON wxRadioButton
 #endif
@@ -67,7 +67,7 @@ class CxRadioButton : public BASERADIOBUTTON
 
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void ButtonChanged();
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()

@@ -24,7 +24,7 @@ CxRadioButton *	CxRadioButton::CreateCxRadioButton( CrRadioButton * container, C
         theStdButton->Create("RadioButton", WS_CHILD| WS_VISIBLE| BS_AUTORADIOBUTTON, CRect(0,0,10,10), guiParent, mRadioButtonCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"Radiobutton");
 #endif
 	return theStdButton;
@@ -48,7 +48,7 @@ void	CxRadioButton::ButtonChanged()
 	if (state)	
 		((CrRadioButton*)mWidget)->ButtonOn();
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       if ( GetValue() )
 		((CrRadioButton*)mWidget)->ButtonOn();
 #endif            
@@ -56,7 +56,7 @@ void	CxRadioButton::ButtonChanged()
 
 void	CxRadioButton::SetText( char * text )
 {
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetLabel(text);
 #endif
 #ifdef __WINDOWS__
@@ -87,7 +87,7 @@ void  CxRadioButton::SetGeometry( int top, int left, int bottom, int right )
 		MoveWindow(left,top,right-left,bottom-top,true);
 	}
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 
@@ -106,15 +106,15 @@ int   CxRadioButton::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -124,14 +124,14 @@ int   CxRadioButton::GetLeft()
       RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
+//	if(parent != nil)
+//	{
+//		parent->GetWindowRect(&parentRect);
+//		windowRect.left -= parentRect.left;
+//	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -151,7 +151,7 @@ int   CxRadioButton::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -164,7 +164,7 @@ int   CxRadioButton::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -182,7 +182,7 @@ int   CxRadioButton::GetIdealWidth()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
       return (size.cx+20); // optimum width for Windows buttons (only joking)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cx+20); // nice width for buttons
@@ -200,7 +200,7 @@ int   CxRadioButton::GetIdealHeight()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 	return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cy+5); // nice height for buttons
@@ -229,7 +229,7 @@ void	CxRadioButton::SetRadioState( Boolean inValue )
 		value = 0;
 	SetCheck( value );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetValue ( inValue );
 #endif
 }
@@ -243,7 +243,7 @@ Boolean	CxRadioButton::GetRadioState()
 	else
 		return (false);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return GetValue();
 #endif
 }
@@ -255,7 +255,7 @@ BEGIN_MESSAGE_MAP(CxRadioButton, CButton)
 	ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxRadioButton, wxRadioButton)
       EVT_RADIOBUTTON( -1, CxRadioButton::ButtonChanged ) 
@@ -293,7 +293,7 @@ void CxRadioButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxRadioButton::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())

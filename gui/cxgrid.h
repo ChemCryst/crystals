@@ -19,7 +19,8 @@
 #define BASEGRID CWnd
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
+#include <wx/window.h>
 #include <wx/control.h>
 #include <wx/font.h>
 #define BASEGRID wxWindow
@@ -56,7 +57,7 @@ class CxGrid : public BASEGRID
 #ifdef __WINDOWS__
 		static CFont* mp_font;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             static wxFont* mp_font;
 #endif
 };

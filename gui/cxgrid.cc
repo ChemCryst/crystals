@@ -42,8 +42,9 @@ CxGrid *	CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 		theGrid->SetFont(mp_font);
 	}	
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
+      mGridCount++;
 #endif
 	return theGrid;
 
@@ -76,8 +77,10 @@ void	CxGrid::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
       MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
+      LOGSTAT("I am grid number " + CcString((int)this) );
+      LOGSTAT("My top coord is set to " + CcString(top) );
 #endif
 }
 
@@ -94,16 +97,18 @@ int   CxGrid::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
-      wxRect windowRect, parentRect;
+#ifdef __BOTHWX__
+      wxRect windowRect; //, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
-      return ( windowRect.y );
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
+      LOGSTAT("I am grid number " + CcString((int)this) );
+      LOGSTAT("My top coord is " + CcString(windowRect.y));
+        return ( windowRect.y );
 #endif
 }
 int   CxGrid::GetLeft()
@@ -112,14 +117,14 @@ int   CxGrid::GetLeft()
       RECT windowRect, parentRect;
 	GetWindowRect(&windowRect);
 	CWnd* parent = GetParent();
-	if(parent != nil)
-	{
-		parent->GetWindowRect(&parentRect);
-		windowRect.left -= parentRect.left;
-	}
+//	if(parent != nil)
+//	{
+//		parent->GetWindowRect(&parentRect);
+//		windowRect.left -= parentRect.left;
+//	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -139,7 +144,7 @@ int   CxGrid::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -152,7 +157,7 @@ int   CxGrid::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
