@@ -73,6 +73,7 @@
 %        TRANSFER 'VIEW   ' TO CRYSTALS
 %        TRANSFER 'COPY "' // FILENAME // '"' TO CRYSTALS
 %        TRANSFER '   ' TO CRYSTALS
+%        TRANSFER 'Output file: {&' // FILENAME // '{& ' TO DISPLAY
 %            IF IPRINT .EQ. 1 THEN
 %% RIC MAR2001 Remove quotes - print doesn't seem to like them?
 %        TRANSFER 'PRINT ' // FILENAME TO CRYSTALS
