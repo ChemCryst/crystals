@@ -145,11 +145,14 @@
 %   EVALUATE BUTTXX = '&No'
 %   COPY '#SCRIPT XQUESTIO'
 %   IF ANSWER .EQ. TRUE THEN
+
+ * Reading list of atoms.
 %           COPY '#USE CAMERON.L5'
 %   ELSE
 %       FINISH
 %   END IF
 %% COUNT THE NUMBER OF ATOMS PASSED BACK FROM CAMERON.
+ * Checking atoms.
 %   COPY '#SCRIPT NATOMS'
 %       EVALUATE ATOMCHANGE = ATOMSOUT - ATOMSIN
 %   IF ATOMCHANGE .GT. 0 THEN
@@ -177,6 +180,7 @@
 %    EVALUATE BUTTXX = '&No'
 %    COPY '#SCRIPT XQUESTIO'
 %    IF ANSWER .EQ. TRUE THEN
+ * Reading original list of atoms.
 %          COPY '#USE CAMERON.L5I'
 %    ELSE
 %          FINISH
