@@ -67,3 +67,4 @@ public:
     double getSEBeta();
     double getSEGamma();
 };
+
