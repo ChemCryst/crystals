@@ -10,6 +10,10 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  1999/05/11 16:15:10  dosuser
+// RIC: Added token SYSGETDIR and supporting functions for getting a
+//      directory from the user via a common dialog.
+//
 // Revision 1.4  1999/04/30 16:56:49  dosuser
 // RIC: Added SetProgressText(CcString Text) to allow the model window to
 //      display atom names in the current progress/status bar.
@@ -33,7 +37,7 @@
 #include	"ccmodeldoc.h"
 #include	"ccquickdata.h"
 #include	"ccchartobject.h"
-//End of user code.          
+//End of user code.
 
 HANDLE mInterfaceCommandQueueMutex;
 HANDLE mCrystalsCommandQueueMutex;
@@ -44,7 +48,7 @@ HANDLE mCrystalsThreadIsLocked;
 CcController* CcController::theController = nil;	
 
 extern "C" {
-void	ciendthread(		long *theExitcode );
+void	ciendthread(		long theExitcode );
 }
 
 CcController::CcController( CxApp * appContext )
@@ -54,6 +58,9 @@ CcController::CcController( CxApp * appContext )
 	mAppContext = appContext;
 	mErrorLog = nil;
 	mThisThreadisDead = FALSE;
+
+      m_newdir = "";
+      m_restart = false;
 
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
 	mCurrentChartDoc = nil;
@@ -349,6 +356,19 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
                         mAppContext->OpenDirDialog(&result);
 				SendCommand(result);
 				break;
+			}
+                  case kTSysRestart: //Crystals has closed down, restart in specified directory.
+			{
+				tokenList->GetToken();    // remove that token
+                        m_newdir = tokenList->GetToken();
+                        m_restart = true;
+                        if (tokenList->GetDescriptor( kAttributeClass )==kTRestartFile)
+                        {
+                              tokenList->GetToken();    // remove that token
+                              CcString newdsc = "CRDSC=" + tokenList->GetToken();
+                              _putenv( (LPCTSTR) newdsc.ToCString() );
+                        }
+                        break;
 			}
 			case kTRedirectText:
 			{
@@ -781,20 +801,30 @@ Boolean	CcController::GetInterfaceCommand( char * line )
 	//This routine gets called repeatedly by the Idle loop.
 	//It needn't be highly optimised even though it is high on
 	//the profile count list.
-	WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
 
 	DWORD threadStatus;
 	CWinThread *temp = CxApp::mCrystalsThread;
 	if(temp != nil)
+
 	GetExitCodeThread(temp->m_hThread,&threadStatus);
-	if(threadStatus != STILL_ACTIVE)
-	{
+
+      if(threadStatus != STILL_ACTIVE)
+      {
+            if ( m_restart )
+            {
+                 mAppContext->ChangeDir( m_newdir );
+                 mAppContext->StartCrystalsThread();
+                 m_restart = false;
+                 return (false);
+            }
+
 		mThisThreadisDead = TRUE;
 		strcpy(line,"^^CO DISPOSE _MAIN ");
 		return (true);
 	}
 
 	
+	WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
 	
 	
 	if ( ! mInterfaceCommandQueue.GetCommand( line ) )
@@ -1064,3 +1094,6 @@ void  CcController::SetProgressText(CcString theText)
       }
 
 }
+
+
+

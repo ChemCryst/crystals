@@ -74,6 +74,9 @@ class	CcController
 		CrGUIElement *	mProgressWindow;
 		// attributes
 		
+            CcString m_newdir;
+            Boolean m_restart;
+
 	protected:
 		// methods
 		
