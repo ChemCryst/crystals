@@ -27,8 +27,8 @@
 ^^WI    {
 ^^WI     @ 1,2 STATIC  T4 
 ^^WI           'Click the atoms required, or &All for a full listing'
-^^WI     @ 3,2 MODELWINDOW MODELDD 'N' IGNORE 
-^^WI           NROWS=20 NCOLS=50 ATTACH=L5
+^^WI     @ 3,2 MODELWINDOW MODELDD 'N' NROWS=20 NCOLS=50
+^^WI           INFORM=NO ATTACH=L5
 ^^WI           RADSCALE=500 RADTYPE=COV MOUSEACTION=HEADERATOM
 ^^WI    }
 ^^WI   }
