@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  1999/05/21 11:18:59  dosuser
+C RIC: When drawing bonds colour them according to the deviation from
+C the CSD mean, if this info has already been computed.
+C
 C Revision 1.9  1999/05/10 19:48:44  dosuser
 C RIC: It turns out that LGUIL1 and LGUIL5 were a bit useless as they
 C     were only set when you call XWININ() from #SET TERM WIN. So I changed
@@ -786,7 +790,12 @@ C Get atom type.
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
-             CFILEN = 'CRYSDIR:\SCRIPT\PROPWIN.DAT'
+&DOS             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&DVF             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&GID             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&VAX             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&LIN             CFILEN = 'CRYSDIR:/script/propwin.dat'
+&GIL             CFILEN = 'CRYSDIR:/script/propwin.dat'
              CALL MTRNLG(CFILEN,'OLD',ILENG)
              INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
              IF(.NOT.WEXIST) THEN              !use default values
@@ -906,7 +915,7 @@ C We now have an orthogonal tensor in TENSOR(3,3).
 
 C             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
-#DVF             CALL ZEIGEN(TENSOR,ROTN)
+##DVFLIN             CALL ZEIGEN(TENSOR,ROTN)
 
 C Filter out tiny axes
              TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
