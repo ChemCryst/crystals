@@ -91,12 +91,9 @@
 %    END IF
 %  END LOOP
 %  COPY 'END'
-%  CASE ( ADP + 1 )
-%    TRANSFER '{E   Cannot determine state. No atoms?' TO DISPLAY
-%    TRANSFER '{S * Checking atoms: Thermal params not refined.' TO DISPLAY
-%    TRANSFER '{S * Checking atoms: Some atoms are isotropic.' TO DISPLAY
-%    TRANSFER '{S * Checking atoms: Some atoms are anisotropic.' TO DISPLAY
-%  END CASE
+%  IF ( ADP .EQ. 0 ) THEN
+%    TRANSFER '{E   Cannot determine adp state. No atoms?' TO DISPLAY
+%  END IF
 %  IF ( DOEXTNC .EQ. TRUE ) THEN
 %    CLEAR
 %    INSERT '{R   Extinction  has been refined to '
