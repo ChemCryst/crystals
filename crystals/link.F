@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2001/03/26 16:40:57  richard
+C Increased possible path length from 32 to 64 chars in KLNKIO.
+C
 C Revision 1.25  2001/02/06 15:35:05  CKP2
 C Atom-only output in PCH
 C
@@ -382,7 +385,7 @@ C----- FIND LATTICE TYPE
       LATTYP = ((2*IC) -1) * IL
       WRITE (NCFPU1,'( ''LATT '', I3)') LATTYP
       DO 1820 I = L2,M2,MD2
-            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH)
+            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH,0)
 C--DO NOT PRINT UNIT MATRIX.
             IF ( OPERAT(1:LENGTH) .EQ. 'X,Y,Z') GOTO 1820
             CALL XCONOP (OPERAT, LENGTH, DECML, LDEC)
@@ -485,7 +488,7 @@ C----- FIND LATTICE TYPE
       LATTYP = ((2*IC) -1) * IL
       WRITE (NCFPU1,'( ''LATT '', I3)') LATTYP
       DO I = L2,M2,MD2
-            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH)
+            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH,0)
 C--DO NOT PRINT UNIT MATRIX.
             IF ( OPERAT(1:LENGTH) .NE. 'X,Y,Z') THEN
                CALL XCONOP (OPERAT, LENGTH, DECML, LDEC)
@@ -1653,7 +1656,7 @@ C----- FIND LATTICE TYPE
 1450  FORMAT( 'LATT ', A)
 C
       DO 1550 I = L2,M2,MD2
-            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH)
+            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH,0)
             IF (I .EQ. L2) THEN
                   WRITE(NCFPU1,1500) OPERAT(1:LENGTH)
             ELSE

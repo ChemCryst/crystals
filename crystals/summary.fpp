@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2001/03/08 14:47:22  richard
+C Changed style of call to XGDBUP.
+C
 C
 CODE FOR XSMMRY
       SUBROUTINE XSMMRY
@@ -467,7 +470,7 @@ C
       M2 = L2 + (N2-1) * MD2
       J = 1
       DO 2000 I = L2 , M2 , MD2
-        CALL XSUMOP ( STORE(I) , STORE(L2P) , CLINE , LENGTH )
+        CALL XSUMOP ( STORE(I) , STORE(L2P) , CLINE , LENGTH, 0 )
         CALL XCCLWC(CLINE(1:LENGTH), OPERAT(1:LENGTH))
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1105 ) OPERAT(1:LENGTH)
         WRITE ( NCAWU , 1105 ) OPERAT(1:LENGTH)
@@ -1745,7 +1748,7 @@ C
 C
 C
 CODE FOR XSUMOP
-      SUBROUTINE XSUMOP ( OPER , XLATT , TEXT , LENGTH )
+      SUBROUTINE XSUMOP ( OPER , XLATT , TEXT , LENGTH, IMODE )
 C
 C -- CONVERT MATRIX FORM OF SYMMETRY OPERATOR TO TEXT
 C
@@ -1763,6 +1766,7 @@ C -- OUTPUT :-
 C      TEXT        TEXT REPRESENTATION OF OPERATOR IN FORM
 C                    X,Y,Z  OR  X,Y,Z+1/2  ETC.
 C      LENGTH      USEABLE LENGTH OF TEXT
+C      IMODE       IF 0, LEAVE OUT WHOLE-CELL TRANSLATIONS
 C
       DIMENSION OPER(3,4) , XLATT(3)
       CHARACTER*(*) TEXT
@@ -1771,6 +1775,7 @@ C
       CHARACTER *3 CTRANS
 C
 \XUNITS
+\XIOBUF
 \XCONST
 C
       DATA AXIS / 'X' , 'Y' , 'Z' /
@@ -1814,7 +1819,13 @@ C -- DETERMINE TRANSLATIONAL PART, BUT ONLY FOR NON-INTEGRAL
 C    TRANSLATIONS
 C
         TRANS = OPER(I,4) + XLATT(I)
-        IF ( ABS( TRANS - REAL(NINT(TRANS)) ) .LE. ZERO ) GO TO 2000
+cdjwapr2001
+        jtrans = int(abs(trans)) * nint(sign(1., trans))
+        itrans = 0
+        imult = 0
+        IF ( ABS( TRANS - REAL(NINT(TRANS)) ) .LE. ZERO ) then
+        GO TO 1975
+        endif
 C
 C -- CONVERT TRANSLATION TO RATIO OF TWO WHOLE NUMBERS
 C
@@ -1846,6 +1857,17 @@ C
 C -- ADD TRANSLATIONAL COMPONENT TO OUTPUT STRING. ( NUMERATOR MUST
 C    BE PRECEDED BY A PLUS OR MINUS SIGN, HENCE FORMAT 'SP' )
 C
+cdjwapr2001
+1975  continue
+      if ((imode .ne. 0) .and. (jtrans .ne. 0)) then
+            if (imult .ne. 0) then
+                  itrans = itrans+imult*jtrans
+            else
+                  itrans = jtrans
+            endif
+      endif
+c
+      if (itrans .ne. 0) then
         WRITE ( CTRANS , '(SP,I3)' ) ITRANS
         DO 1980 J = 1 , 3
           IF ( CTRANS(J:J) .NE. ' ' ) THEN
@@ -1853,7 +1875,9 @@ C
             TEXT(LENGTH:LENGTH) = CTRANS(J:J)
           ENDIF
 1980    CONTINUE
+      endif
 C
+      if (imult .ne. 0) then
         LENGTH = LENGTH + 1
         TEXT(LENGTH:LENGTH) = '/'
 C
@@ -1864,6 +1888,7 @@ C
             TEXT(LENGTH:LENGTH) = CTRANS(J:J)
           ENDIF
 1990    CONTINUE
+      endif
 C
 C
 2000  CONTINUE

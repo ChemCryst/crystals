@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2001/03/28 12:46:13  CKP2
+C DJW  Fix up site occupancies in LIST 5 part of cif output so that the
+C effects of crystallogrpahic occupancy are explicitly removed. This is
+C not explained in any CIFDIC, but is stated in current Notes for
+C Authors.
+C
 C Revision 1.15  2001/03/09 10:29:24  richard
 C Tweak to XPCIF to stop it crashing.
 C
@@ -3171,7 +3177,7 @@ C --    DISPLAY EACH SYMMETRY OPERATOR
                DO 1100 K=1,ICENTR
 C             NEGATE IF REQUIRED
                   IF (K.EQ.2) CALL XNEGTR (STORE(I),STORE(NFL),9)
-                  CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH)
+                  CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH,1)
                   CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
                   WRITE (NCFPU1,1050) CBUF(1:LENGTH)
 1050              FORMAT (1X,'''',A,'''')
