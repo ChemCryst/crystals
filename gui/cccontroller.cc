@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.39  2001/11/16 15:11:02  ckp2
+// Allow the SET command to find CcPlotData objects - reqd for switching between
+// PlotDatas when writing two graphs at once (e.g. <|Fo-Fc|> vs Fo and <Fo>-<Fc> vs Fo.)
+//
 // Revision 1.38  2001/11/15 10:44:54  ckp2
 // Reset default paths for Open and Save file dialogs to the current working
 // directory every time.
@@ -2884,7 +2888,8 @@ extern "C" {
   void FORCALL(guexec) ( char* theLine)
   {
     CcString line(theLine);
-// Trim any weird characters off the end of the line.
+// Trim any weird characters off the end of the line. Where do
+// they come from?!
     line = line.Sub(1,line.Length()-5);
 
     bool bWait = false;
@@ -2914,22 +2919,29 @@ extern "C" {
 
 // sFirst now points to the beginning of the command.
 
-// Find next space ( after the first word )
-
-    for ( eFirst = sFirst; eFirst < line.Length(); eFirst++ )
+    if ( line[sFirst] == '"' )  // Find next quote.
     {
+       sFirst++; //Move to after 1st quote.
+       for ( eFirst = sFirst; eFirst < line.Length(); eFirst++ )
+       {
+                if ( line [eFirst] == '"' ) break;
+       }
+    }
+    else                        // Find next space ( after the first word )
+    {
+       for ( eFirst = sFirst; eFirst < line.Length(); eFirst++ )
+       {
 		if ( line [eFirst] == ' ' ) break;
+       }
     }
 
 // Find next non space 
-
     for ( sRest = eFirst; sRest < line.Length(); sRest++ )
     {
        if ( line [sRest] != ' ' ) break;
     }
 
 // Find last non space
-
     for ( eRest = line.Length()-1; eRest > eFirst; eRest-- )
     {
        if ( line [eRest] != ' ' ) break;
@@ -2992,7 +3004,7 @@ extern "C" {
 
 // Some other failure. Try another method of starting external programs.
 
-        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+//        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[81];
         memcpy(str,line.Sub(sFirst+1,-1).ToCString(),80);
@@ -3013,7 +3025,7 @@ extern "C" {
   
         if ( result == -1 )  //Start failed
         {
-          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+//          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
           for (i = 7; i>=0; i--)
           {
              args[i+2] = args[i];
@@ -3064,7 +3076,7 @@ extern "C" {
       else if ( (int)ex <= 32 )
       {
 // Some other failure. Try another method of starting external programs.
-        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+//        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[81];
         memcpy(str,line.Sub(sFirst+1,-1).ToCString(),80);
@@ -3085,7 +3097,7 @@ extern "C" {
   
         if ( result == -1 )  //Start failed
         {
-          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
+//          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + CcString(errno)+" trying a command shell.");
           for (i = 7; i>=0; i--)
           {
              args[i+2] = args[i];
