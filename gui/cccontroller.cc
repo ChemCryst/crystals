@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.80  2003/12/04 09:53:53  rich
+//
+// Fix $ and SPAWN on Linux for "quoted" commands.
+//
 // Revision 1.79  2003/11/28 10:29:10  rich
 // Replace min and max macros with CRMIN and CRMAX. These names are
 // less likely to confuse gcc.
@@ -3737,7 +3741,14 @@ extern "C" {
 
           args[1] = "/c";
           result = _spawnvp(_P_WAIT, args[0], args);
+          TEXTOUT(CcString(args[0])+" "+
+                  CcString(args[1])+" "+
+                  CcString(args[2])+" "+
+                  CcString(args[3])+" "+
+                  CcString(args[4])+" ...etc...");
+
           if ( result != 0 ) TEXTOUT ( "{I Failed yet again. Errno is:" + CcString(errno) + ". Giving up.");
+          else TEXTOUT("Might have worked.");
         }
         delete [] str;
 
