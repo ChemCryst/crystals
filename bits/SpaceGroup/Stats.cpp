@@ -27,7 +27,7 @@ float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float P
     return 1-cumlNormal(pX, AbsentM, AbsentSD)-cumlNormal(pX, PresentM, PresentSD);
 }
 
-Stats::Stats(Headings* pHeadings, Conditions* pConditions)
+Stats::Stats(Headings* pHeadings, Conditions* pConditions):iFiltered(false)
 {
     iHeadings = pHeadings;
     iConditions = pConditions;
@@ -180,6 +180,34 @@ void Stats::calProbs()
         tValue1 = (float)iStats[i].tNumNonMLsInt/((float)iStats[i].tNumNonMGrInt+(float)iStats[i].tNumNonMLsInt);
         
         tCurrentStat->tRating2= evaluationFunction(tValue1, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
+    }
+    int tColumns[] = {0};
+    handleFilteredData(tColumns, 1);
+}
+
+bool Stats::filtered()
+{
+    return iFiltered;
+}
+
+void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an array of which columns to check to see if there data has been filtered.
+{
+    int tCCount = iConditions->length();    //Cache lengths of the table.
+
+    for (int i = 0; i < pNumColumns; i++)
+    {
+        int tOffset = pColumns[i]*tCCount;
+        for (int j = 0; j < tCCount; j++)
+        {
+            if (iStats[tOffset+j].tNumNonM == 0)
+            {
+                iStats[tOffset+j].tNonMTotInt = 0;
+                iStats[tOffset+j].tNumNonM = 0;
+                iStats[tOffset+j].tRating1 = 10;
+                iStats[tOffset+j].tRating2 = 10;
+                iFiltered = true;
+            }
+        }
     }
 }
 
