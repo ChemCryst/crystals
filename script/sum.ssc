@@ -1,6 +1,35 @@
 %SCRIPT CIF
 % VARIABLE LOGICAL SCRIPTEXT
-      Summary file of all data
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+{R * Summary file of all data
+%    VARIABLE LOGICAL ISERR
+%    EVALUATE ISERR = TRUE
+%    BLOCK
+%      ON ERROR TERMINATE
+%      COPY '#PARAM'
+%      COPY 'END'
+%%
+%      EVALUATE ISERR = FALSE
+%    END BLOCK
+%    IF ( ISERR .EQ. TRUE ) THEN
+%      EVALUATE QTITLE = 'Warning. Lists changed.'
+%      EVALUATE QLINE1 = 'In order to calculate esds on parameters, all'
+%      EVALUATE QLINE2 = 'lists must be up-to-date. Recalculate shifts?'
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. FALSE THEN
+{E * Summary file abandoned. Interdependent lists not up to date.
+%        FINISH
+%      END IF
+{I * Perfomrming one round of least squares, but shifts not applied.
+%      COPY '#SFLS'
+%      COPY 'REFINE'
+%      COPY 'SHIFT GENERAL=0.0'
+%      COPY 'END'
+{I * Perfomrmied one round of least squares, but shifts not applied.
+%    END IF
 %    COPY '#RELEASE PUNCH summary.lis'
 %    TRANSFER ' ' TO PUNCH
 %    TRANSFER 'Crystal structure information:' TO PUNCH
@@ -37,10 +66,13 @@
 %    COPY 'E.S.D YES'
 %    COPY 'OUTPUT MON=OFF PUNCH=PUB HESD=NONFIXED'
 %    COPY 'END'
-%    VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
-  'Include reflection listing?' 'NO'
-%  IF VALUE .EQ. 1 THEN
+%    EVALUATE QTITLE = 'Include reflections?'
+%    EVALUATE QLINE1 = 'Do you want to include a list of reflections'
+%    EVALUATE QLINE2 = '(list 6) in your summary file?'
+%    EVALUATE BUTTOK = '&No'
+%    EVALUATE BUTTXX = '&Yes'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. FALSE THEN
 %      TRANSFER ' ' TO PUNCH
 %      TRANSFER ' ' TO PUNCH
 %      TRANSFER ' ' TO PUNCH
@@ -51,7 +83,9 @@
 %      TRANSFER ' ' TO PUNCH
 %      COPY '#PUNCH 6 C'
 %      COPY 'END'
-%  END IF
-%  COPY '#RELEASE PUNCH bfile.pch'
-%  COPY '#SPAWN summary.lis'
+%    END IF
+%    COPY '#RELEASE PUNCH bfile.pch'
+
+{I * Summary data is now in a file: {&summary.lis{&
+
 %END SCRIPT
