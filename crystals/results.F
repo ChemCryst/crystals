@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2002/08/30 14:36:15  richard
+C Added pressure to L30. Only appears in CIF if non-zero.
+C
 C Revision 1.39  2002/07/22 14:37:31  Administrator
 C Try to fix LIST 4 in cif
 C
@@ -1034,6 +1037,7 @@ C
       M12=L12
       M5A=L5+2
       NL=LINEX
+
 C
 C----- CAPTIONS FOR CIF FILE
       IF (IPCHCO .EQ. 2) THEN
@@ -1043,10 +1047,14 @@ C----- CAPTIONS FOR CIF FILE
      1    '# i.e. Ueqiv = (U1+U2+U3)/3')
         ELSE
           WRITE(NCFPU1, 891)
-891       FORMAT(/'# Uequiv = geometric mean of Ui'/
-     1    '# i.e. Ueqiv = (U1*U2*U3)**1/3')
+891       FORMAT(/'# Uequiv = geometric mean of Ui',
+     1    ' i.e. Ueqiv = (U1*U2*U3)**1/3')
         ENDIF
-C
+
+        WRITE(NCFPU1,903)
+903     FORMAT(/'# Replace trailing . with the number of unfound',
+     1 /'# hydrogen atoms attaced to relavent atom')
+
         WRITE( NCFPU1, 900)
 900     FORMAT ( /'loop_'/'_atom_site_label'/'_atom_site_type_symbol'/
      1 '_atom_site_fract_x'/
@@ -1061,155 +1069,152 @@ C
      1 '_atom_site_adp_type'  /
      2 '_atom_site_attached_hydrogens' )
       ENDIF
-      WRITE(NCFPU1,903)
-903   FORMAT('# Replace trailing . with the number of unfound',
-     1 /'# hydrogen atoms attaced to relavent atom')
 C
       iuij = 0
 C--LOOP OVER THE ATOMS
-      DO 1600 K=1,N5
+      DO K=1,N5
 C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
-      MD5A=M5+NKA-1
-      N5A=NKA-2
+        MD5A=M5+NKA-1
+        N5A=NKA-2
 cdjw99[
 c      U=STORE(M5+3)
 C -- SET ANISO ATOMS FLAG IF APPROPRIATE
 c      IF ( ABS(U) .LT. UISO ) IUIJ = 1
 cdjw99]
 C -- CHECK FOR MATCH
-      MATCH = -1
-      IF ( TYPE .EQ. STORE(M5) ) MATCH = 1
-      IF ( TYPE .EQ. ALLATM ) MATCH = 1
-      IF ( IFUNC .EQ. 2 ) MATCH = -MATCH
-      IF ( MATCH .LE. 0 ) GO TO 1585
+        MATCH = -1
+        IF ( TYPE .EQ. STORE(M5) ) MATCH = 1
+        IF ( TYPE .EQ. ALLATM ) MATCH = 1
+        IF ( IFUNC .EQ. 2 ) MATCH = -MATCH
+        IF ( MATCH .LE. 0 ) GO TO 1585
 C
 cdjw99[
 C-C-C-USE OF ISOTROPIC T-FACTOR INSTEAD OF PURE FLAG
-c      BUFF(2)=STORE(M5+7)
+c        BUFF(2)=STORE(M5+7)
 cdjw99]
 C----- J IS DUMMY
-      CALL SAPPLY (J)
+        CALL SAPPLY (J)
 C--CLEAR THE OUTPUT BUFFER
-      CALL XMVSPD(IB,LINEA(1),118)
-      J=IFIR
+        CALL XMVSPD(IB,LINEA(1),118)
+        J=IFIR
 CDJW0402 CONVERT ATOM NAME TO MIXED CASE
-      WRITE(CTEM,'(A4)') ISTORE(M5)
-      CALL XCCLWC (CTEM(2:), CTEM(2:))
-      READ (CTEM,'(A4)') ISTORE(M5)
+        WRITE(CTEM,'(A4)') ISTORE(M5)
+        CALL XCCLWC (CTEM(2:), CTEM(2:))
+        READ (CTEM,'(A4)') ISTORE(M5)
 C--OUTPUT THE TYPE AND SERIAL NUMBER
-      CALL SA41(J,ISTORE(M5),LINEA)
-      IND=NINT(STORE(M5+1))
-      IBUFF=ISTORE(M5)
-      JBUFF=IND
-      CALL SUBZED(J,IND,LINEA,IPCHCO)
+        CALL SA41(J,ISTORE(M5),LINEA)
+        IND=NINT(STORE(M5+1))
+        IBUFF=ISTORE(M5)
+        JBUFF=IND
+        CALL SUBZED(J,IND,LINEA,IPCHCO)
 C-C-C-OUTPUT THE FLAG OF ATOM
 cnov98      CALL SNUM(STORE(M5+3),0.0,1,0,10,LINEA)
 C--UPDATE THE CURRENT POSITION FLAG
-      J=IFIR+NSTA
+        J=IFIR+NSTA
 C--RIC01 Add in atom_site_type_symbol
-      IF (IPCHCO .EQ. 2) CALL SA41(J,ISTORE(M5),LINEA)
+        IF (IPCHCO .EQ. 2) CALL SA41(J,ISTORE(M5),LINEA)
 C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
-      MP=M5+4
-      MPD=3
-      IP=3
+        MP=M5+4
+        MPD=3
+        IP=3
 C--LOOP OVER THE COORDS.
-      DO 1050 L=1,3
-      J=J+NXF
-      CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
-      BUFF(IP)=STORE(MP)
-      IP=IP+1
-      MP=MP+1
-      MPD=MPD+1
-1050  CONTINUE
+        DO L=1,3
+          J=J+NXF
+          CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
+          BUFF(IP)=STORE(MP)
+          IP=IP+1
+          MP=MP+1
+          MPD=MPD+1
+        END DO
 cdjw99[
 C--CHECK IF THIS ATOM IS ANISO OR ISO
-      if (nint(store(m5+3)) .eq. 0) then
+        if (nint(store(m5+3)) .eq. 0) then
 c----- aniso
 C----- CALCULATE U[EQUIV]
-      CTEM = 'Uani'
-      BUFF(2)= STORE(JBASE)
+          CTEM = 'Uani'
+          BUFF(2)= STORE(JBASE)
 C----- SET ESD=0.
-      BPD(2)=0.
+          BPD(2)=0.
 C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
-      IUIJ=1
-1150  CONTINUE
-      else
-      CTEM = 'Uiso'
-      BUFF(2)= STORE(m5+7)
-      bpd(2) = bpd(6)
-      endif
-      JBASE = JBASE + 4
-      J=J+NUF
+          IUIJ=1
+1150      CONTINUE
+        else
+          CTEM = 'Uiso'
+          BUFF(2)= STORE(m5+7)
+          bpd(2) = bpd(6)
+        endif
+        JBASE = JBASE + 4
+        J=J+NUF
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
-      CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
+        CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
 cdjw99]
 C----- GET THE OCCUPANCY
         J = J + NUF
         CALL XMOVE (LINEA, LINEC, 118)
 cdjwmar2001 - Notes for Authors - dont include crystallographic
 c             occupancy contribution - keep code for future
-          if (iupdat .ge.0) then
+        if (iupdat .ge.0) then
 c            w = store(m5+2)*store(m5+13)
             w = store(m5+2)
-          else
+        else
             w = store(m5+2)/store(m5+13)
-          endif
+        endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
 C-C-C-SET OCC TO BE PRINTED ON SCREEN AFTER \PARAMETERS-COMMAND
 C-C-C-(NOT IN CONTEXT WITH SPECIAL ATOMS, NEXT LINE MAY BE DELETED)
         BUFF(1)=W
         IF ( ABS (1.0 - W) .GT. ZERO) THEN
-        CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEA)
-      ENDIF
+          CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEA)
+        ENDIF
 C-C-C-OUTPUT THE FLAG OF ATOM
 cdjwnov98      CALL SNUM(STORE(M5+3),0.0,1,0,(IFIR+9),LINEA)
 C--CHECK FOR DOUBLE SPACING
-1200  CONTINUE
-      IF(NAP)1300,1250,1250
+1200    CONTINUE
+        IF(NAP)1300,1250,1250
 C--PRINT THE BLANK LINE
-1250  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      IF ( ILSTCO .GT. 0 ) WRITE ( NCWU , 1550 )
-      ENDIF
-      IF ( IPCHCO .GT. 0 ) WRITE ( NCPU , 1550 )
-      NL=NL+1
+1250    CONTINUE
+        IF (ISSPRT .EQ. 0) THEN
+          IF ( ILSTCO .GT. 0 ) WRITE ( NCWU , 1550 )
+        ENDIF
+        IF ( IPCHCO .GT. 0 ) WRITE ( NCPU , 1550 )
+        NL=NL+1
 C--CHECK FOR THE END OF A PAGE
-1300  CONTINUE
-      IF(NL-LINEX)1500,1350,1350
+1300    CONTINUE
+        IF(NL-LINEX)1500,1350,1350
 C--END OF THE PAGE  -  START A NEW PAGE
-1350  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
-      ENDIF
+1350    CONTINUE
+        IF (ISSPRT .EQ. 0) THEN
+          IF ( ILSTCO .GT. 0 ) WRITE( NCWU , '(A)') CHAR(12)
+        ENDIF
 #GID      IF ( IPCHCO .EQ. 1 ) WRITE(NCPU, '(A)') CHAR(12)
-      CALL STATX(LINEB)
-      CALL STXYZ(LINEB)
-      IF (ISSPRT .EQ. 0) THEN
-      IF ( ILSTCO .GT. 0 ) WRITE( NCWU ,1450) LINEB
-      ENDIF
-      IF (IPCHCO .EQ. 1) THEN
-        CLINE = ' '
-        WRITE(CLINE,'(160A1)' ) LINEB
-        CALL XCTRIM (CLINE,NCHAR)
-        WRITE(NCPU,'(//A/)') CLINE(1:NCHAR)
-1450    FORMAT (2X,118A1)
-      ENDIF
-      NL=MINX
-      GOTO 1200
+        CALL STATX(LINEB)
+        CALL STXYZ(LINEB)
+        IF (ISSPRT .EQ. 0) THEN
+          IF ( ILSTCO .GT. 0 ) WRITE( NCWU ,1450) LINEB
+        ENDIF
+        IF (IPCHCO .EQ. 1) THEN
+          CLINE = ' '
+          WRITE(CLINE,'(160A1)' ) LINEB
+          CALL XCTRIM (CLINE,NCHAR)
+          WRITE(NCPU,'(//A/)') CLINE(1:NCHAR)
+1450      FORMAT (2X,118A1)
+        ENDIF
+        NL=MINX
+        GOTO 1200
 C--PRINT THE CURRENT LINE
-1500  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      IF ( ILSTCO .GT. 0 ) WRITE( NCWU ,1550) LINEA
-      ENDIF
+1500    CONTINUE
+        IF (ISSPRT .EQ. 0) THEN
+          IF ( ILSTCO .GT. 0 ) WRITE( NCWU ,1550) LINEA
+        ENDIF
         CLINE = ' '
-      IF (IPCHCO .EQ. 1) THEN
+        IF (IPCHCO .EQ. 1) THEN
 C----- ORDINARY PUNCH LISTING
             WRITE(CLINE,'(160A1)') LINEA
             IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCCLWC (CLINE(IST:), CLINE(IST:))
             CALL XCTRIM (CLINE,NCHAR)
             WRITE(NCPU,'(A)') CLINE(1:NCHAR)
-      ELSE IF (IPCHCO .EQ. 2) THEN
+        ELSE IF (IPCHCO .EQ. 2) THEN
 C----- CIF PUNCH LISTING
             WRITE(CLINE,'(160A1)') LINEC
 C RIC01 Find second space in string:
@@ -1222,30 +1227,30 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CLINE(NCHAR+1:NCHAR+4) = CTEM
             CALL XCREMS( CLINE, CLINE, NCHAR)
             WRITE(NCFPU1,'(A,A)') CLINE(1:NCHAR), ' .'
-      ENDIF
-1550  FORMAT(2X,118A1)
-      NL=NL+1
+        ENDIF
+1550    FORMAT(2X,118A1)
+        NL=NL+1
 C -- DISPLAY ON MONITOR CHANNEL IF REQUIRED.
-      IF ( IDSPCO .LE. 0 ) GO TO 1585
-      IF ( IDSPHD .GT. 0 ) GO TO 1570
-      WRITE ( NCAWU , 1581 )
-      WRITE ( CMON  , 1581 )
-      CALL XPRVDU(NCVDU, 1,0)
-      IDSPHD = 1
-1570  CONTINUE
-      WRITE ( NCAWU , 1582 ) IBUFF , JBUFF , BUFF
-      WRITE ( CMON  , 1582 ) IBUFF , JBUFF , BUFF
-      CALL XPRVDU(NCVDU, 1,0)
-1581  FORMAT ( 1X , 'Type' , 4X , 'Serial' , 8X , 'Occ' , 5X ,
+        IF ( IDSPCO .LE. 0 ) GO TO 1585
+        IF ( IDSPHD .GT. 0 ) GO TO 1570
+        WRITE ( NCAWU , 1581 )
+        WRITE ( CMON  , 1581 )
+        CALL XPRVDU(NCVDU, 1,0)
+        IDSPHD = 1
+1570    CONTINUE
+        WRITE ( NCAWU , 1582 ) IBUFF , JBUFF , BUFF
+        WRITE ( CMON  , 1582 ) IBUFF , JBUFF , BUFF
+        CALL XPRVDU(NCVDU, 1,0)
+1581    FORMAT ( 1X , 'Type' , 4X , 'Serial' , 8X , 'Occ' , 5X ,
      2 'U(iso)' , 9X , 'Coordinates' )
-1582  FORMAT ( 1X , A4 , 4X , I6 , 4X , 5 ( F8.4 , 2X ) )
+1582    FORMAT ( 1X , A4 , 4X , I6 , 4X , 5 ( F8.4 , 2X ) )
 C
-1585  CONTINUE
+1585    CONTINUE
 C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
-      M12=ISTORE(M12)
-      M5=M5+MD5
-      M5A=M5A+MD5
-1600  CONTINUE
+        M12=ISTORE(M12)
+        M5=M5+MD5
+        M5A=M5A+MD5
+      END DO
 C
 CDJWMAY99
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
@@ -1671,7 +1676,7 @@ C
         JV=ISTORE(L12A+3)
         JT=ISTORE(L12A+4)
 C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
-        DO 1850 JW=JU,JV,MD12A
+        DO JW=JU,JV,MD12A
           IF(ISTORE(JW))1800,1800,1200
 1200  CONTINUE
           JX=JW
@@ -1734,7 +1739,7 @@ C--CALCULATE THE E.S.D.
 1800  CONTINUE
           JT=JT+1
           JP=JP+1
-1850  CONTINUE
+        END DO
       ENDIF
       GOTO 9999
 9900  CONTINUE
@@ -2048,7 +2053,7 @@ C
       NPAR = 0
 C--CLEAR THE TEMPORARY STORAGE
       DO 1000 JX=1,11
-      BPD(JX)=0.0
+        BPD(JX)=0.0
 1000  CONTINUE
 C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
       IF(ISTORE(M12+1))1100,1100,1050
@@ -2057,6 +2062,7 @@ C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
       IF(ISTORE(L12A+3))1100,1150,1150
 1100  CONTINUE
       RETURN
+
 1150  CONTINUE
       MD12A=ISTORE(L12A+1)
       NPAR = JV - JU
@@ -2065,59 +2071,59 @@ C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
       JT=ISTORE(L12A+4)
       JP=JT-1
 C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
-      DO 1850 JW=JU,JV,MD12A
-      IF(ISTORE(JW))1800,1800,1200
-1200  CONTINUE
-      JX=JW
-      JY=L12A
-      JR=JS
-      JZ=0
+      DO JW=JU,JV,MD12A
+        IF(ISTORE(JW).GT.0)THEN
+          JX=JW
+          JY=L12A
+          JR=JS
+          JZ=0
 C--CHECK IF THIS PART FOR THIS PARAMETER HAS BEEN REFINED
-1250  CONTINUE
-      IF(ISTORE(JX))1550,1550,1300
+1250      CONTINUE
+          IF(ISTORE(JX))1550,1550,1300
 C--ADD THE CONTRIBUTIONS INTO THE STACK
-1300  CONTINUE
-      IF ( ( JR+4 )  .GE.   LFL ) GO TO 9910
-      ISTORE(JR)=ISTORE(JX)
-      ISTORE(JR+2)=KBLCK(ISTORE(JR))
-      ISTORE(JR+1)=M12B
-      STORE(JR+3)=1.
-      IF(ISTORE(JY+1)-1)1450,1500,1450
-1450  CONTINUE
-      STORE(JR+3)=STORE(JX+1)
-1500  CONTINUE
-      JR=JR+4
-      JZ=JZ+1
+1300      CONTINUE
+          IF ( ( JR+4 )  .GE.   LFL ) GO TO 9910
+            ISTORE(JR)=ISTORE(JX)
+            ISTORE(JR+2)=KBLCK(ISTORE(JR))
+            ISTORE(JR+1)=M12B
+            STORE(JR+3)=1.
+            IF(ISTORE(JY+1)-1)1450,1500,1450
+1450        CONTINUE
+              STORE(JR+3)=STORE(JX+1)
+1500        CONTINUE
+            JR=JR+4
+            JZ=JZ+1
 C--CARRY ONTO THE NEXT PART
-1550  CONTINUE
-      JY=ISTORE(JY)
-      IF(JY)1700,1700,1600
+1550      CONTINUE
+          JY=ISTORE(JY)
+          IF(JY)1700,1700,1600
 C--MOVE ONTO THE NEXT PART
-1600  CONTINUE
-      JX=ISTORE(JY+2)+ISTORE(JY+1)*(JT-ISTORE(JY+4))
-      IF(JX-ISTORE(JY+2))1550,1250,1650
-1650  CONTINUE
-      IF(ISTORE(JY+3)-JX)1550,1250,1250
-1700  CONTINUE
-      IF(JZ)1800,1800,1750
+1600      CONTINUE
+            JX=ISTORE(JY+2)+ISTORE(JY+1)*(JT-ISTORE(JY+4))
+          IF(JX-ISTORE(JY+2))1550,1250,1650
+1650      CONTINUE
+          IF(ISTORE(JY+3)-JX)1550,1250,1250
+1700      CONTINUE
+          IF(JZ.GT.0)THEN
 C--CALCULATE THE E.S.D.
-1750  CONTINUE
-      BPD(JP)=XVAR(JS,JZ,4,JR)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      IF(BPD(JP)) 1760,1790,1790
-1760  CONTINUE
-      WRITE ( CMON, 1770) STORE(M5), STORE(M5+1), BPD(JP)
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-1770  FORMAT(1X,' Negative e.s.d for atom ',A4,F6.0,F12.10)
-      BPD(JP) = 0.0
-1790  CONTINUE
-      BPD(JP)=SQRT(BPD(JP)*AMULT)
-1800  CONTINUE
-      JT=JT+1
-      JP=JP+1
-1850  CONTINUE
+            BPD(JP)=XVAR(JS,JZ,4,JR)
+            IF ( IERFLG .LT. 0 ) GO TO 9900
+            IF(BPD(JP)) 1760,1790,1790
+1760        CONTINUE
+            WRITE ( CMON, 1770) STORE(M5), STORE(M5+1), BPD(JP)
+            CALL XPRVDU(NCVDU, 1,0)
+            WRITE(NCAWU,'(A)') CMON(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+1770        FORMAT(1X,' Negative e.s.d for atom ',A4,F6.0,F12.10)
+            BPD(JP) = 0.0
+1790        CONTINUE
+            BPD(JP)=SQRT(BPD(JP)*AMULT)
+          END IF
+        END IF
+
+        JT=JT+1
+        JP=JP+1
+      END DO
       GOTO 1100
 C
 9900  CONTINUE
@@ -3338,6 +3344,7 @@ C----- CRYSTAL CLASS - FROM LIST 2
          CALL XCCLWC (CTEMP(2:),CBUF(2:))
          CBUF(1:1)=CTEMP(1:1)
          CALL XCTRIM (CBUF,J)
+         J = J - 1
          WRITE (CLINE,850) CBUF(1:J)
 850      FORMAT ('_symmetry_cell_setting',T35,'''',A,'''')
          WRITE (CPAGE(3,1)(:),'(A,5X,A)') 'Crystal Class',CBUF(1:J)
@@ -3610,9 +3617,8 @@ C
             WRITE (CLINE,'(A,''density_meas'',T35,F6.3)') CBUF(1:15),
      1       STORE(L30GE)
          ELSE
-            WRITE (CLINE,1850) CBUF(1:15),'density_meas','''','not measu
-     1red',''''
-1850        FORMAT (A,A,T35,A,A,A)
+            WRITE (CLINE,1850) CBUF(1:15),'density_meas','?'
+1850        FORMAT (A,A,T35,A)
             CALL XPCIF (CLINE)
          END IF
 C
