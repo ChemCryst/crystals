@@ -61,7 +61,7 @@ class Matrix
 {
     private:
         type* 	iMatrix;
-        long 	iXSize, iYSize, iSize;
+        short 	iXSize, iYSize, iSize;
     public:
         Matrix()
         {
@@ -71,7 +71,7 @@ class Matrix
             iMatrix = new type[iSize];
         }
         
-        Matrix(long pXSize, long pYSize) //uninitalised matrix constructor
+        Matrix(short pXSize, short pYSize) //uninitalised matrix constructor
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
@@ -80,14 +80,14 @@ class Matrix
             iMatrix = new type[iSize];
         }
         
-        Matrix(long pXSize, long pYSize, type pC) //initalised matrix constructor with c
+        Matrix(short pXSize, short pYSize, type pC) //initalised matrix constructor with c
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
             iYSize = pYSize;
             
             iMatrix = new type[iSize];
-            for (long i = 0; i < iSize; i++)
+            for (short i = 0; i < iSize; i++)
             {
                 iMatrix[i] = pC;
             }
@@ -155,22 +155,22 @@ class Matrix
             return *this;
         }
         
-        inline type getValue(const long pIndex)
+        inline type getValue(const short pIndex)
         {
             return iMatrix[pIndex];
         }
         
-        inline type getValue(const long pXIndex, const long pYIndex)
+        inline type getValue(const short pXIndex, const short pYIndex)
         {
             return iMatrix[pXIndex*iYSize+pYIndex];
         }
         
-        inline void setValue(const type pValue, const long pIndex)
+        inline void setValue(const type pValue, const short pIndex)
         {
             iMatrix[pIndex] = pValue;
         }
         
-        inline void setValue(const type pValue, const long pXIndex, const long pYIndex)
+        inline void setValue(const type pValue, const short pXIndex, const short pYIndex)
         {
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
@@ -240,9 +240,9 @@ class Matrix
             }
         }
         
-        void resize(const long pXSize, const long pYSize)
+        void resize(const short pXSize, const short pYSize)
         {
-            long tSize = pXSize*pYSize;
+            short tSize = pXSize*pYSize;
             float* tMatrix = malloc(sizeof(type) * tSize);
             
             memcpy(tMatrix, iMatrix, sizeof(type)* (tSize < iSize?tSize:iSize));
@@ -306,7 +306,7 @@ class Matrix<float>
 {
     private:
         float* 	iMatrix;
-        long 	iXSize, iYSize, iSize;
+        short 	iXSize, iYSize, iSize;
     public:
         Matrix()
         {
@@ -316,7 +316,7 @@ class Matrix<float>
             iMatrix = (float*)malloc(sizeof(float)*iSize);
         }
 
-        Matrix(long pXSize, long pYSize) //uninitalised matrix constructor
+        Matrix(short pXSize, short pYSize) //uninitalised matrix constructor
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
@@ -325,14 +325,14 @@ class Matrix<float>
             iMatrix = (float*)malloc(sizeof(float)*iSize);
         }
         
-        Matrix(long pXSize, long pYSize, float pC) //initalised matrix constructor with c
+        Matrix(short pXSize, short pYSize, float pC) //initalised matrix constructor with c
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
             iYSize = pYSize;
             
             iMatrix = (float*)malloc(sizeof(float)*iSize);
-            for (long i = 0; i < iSize; i++)
+            for (short i = 0; i < iSize; i++)
             {
                 iMatrix[i] = pC;
             }
@@ -379,22 +379,22 @@ class Matrix<float>
             return *this;
         }
         
-        inline float getValue(const long pIndex)
+        inline float getValue(const short pIndex)
         {
             return iMatrix[pIndex];
         }
         
-        inline float getValue(const long pXIndex, const long pYIndex)
+        inline float getValue(const short pXIndex, const short pYIndex)
         {
             return iMatrix[pXIndex*iYSize+pYIndex];
         }
         
-        inline void setValue(const float pValue, const long pIndex)
+        inline void setValue(const float pValue, const short pIndex)
         {
             iMatrix[pIndex] = pValue;
         }
         
-        inline void setValue(const float pValue, const long pXIndex, const long pYIndex)
+        inline void setValue(const float pValue, const short pXIndex, const short pYIndex)
         {
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
@@ -457,9 +457,9 @@ class Matrix<float>
             free(iMatrix);
         }
         
-        void resize(const long pXSize, const long pYSize)
+        void resize(const short pXSize, const short pYSize)
         {
-            long tSize = pXSize*pYSize;
+            short tSize = pXSize*pYSize;
             float* tMatrix = (float*)malloc(sizeof(float) * tSize);
             
             memcpy(tMatrix, iMatrix, sizeof(float)* (tSize < iSize?tSize:iSize));
