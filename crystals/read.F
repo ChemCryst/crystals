@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2001/03/18 10:32:05  richard
+C
+C No longer send info about monitor file to the GUI.
+C
 C Revision 1.25  2001/03/08 14:36:04  richard
 C Pass file names of punch, log, list and mon files from KRDOPN, if ISSUPD is set
 C to one.
@@ -297,6 +301,8 @@ C
       ENDIF
 C
 1420  CONTINUE
+
+C&GIL      WRITE(6,*) NCRU, ':', CRDLWC
 
 C If the current read unit is a script, then call KSCPRC.
       IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
@@ -914,6 +920,11 @@ C
         ELSE IF ( ISYSIN .EQ. ISCRIP ) THEN
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            CSCPDV(1:LSCPDV) , CSCPEX(1:LSCPEX) , CRFILE , N )
+&GILC FORCE all #SCRIPT arguments to lowercase - all other files can
+&GILC mixed case, but all script must be lower. This is for compatibility
+&GILC with existing script calls in scripts which are usually uppercase.
+&GIL       CUFILE = CRFILE
+&GIL       CALL XCCLWC ( CUFILE, CRFILE )      
         ELSE
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            ' ' ,              ' ' ,              CRFILE , N )
