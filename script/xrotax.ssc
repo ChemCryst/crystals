@@ -16,20 +16,20 @@
 ^^WI  }
 ^^WI  @ 3,2 GRID Q NROWS=2 NCOLS=3 {
 ^^WI     @ 1,1 STATIC RT_T3 'Show results with figure of merit less than'
-^^WI     @ 1,3 EDITBOX RT_FOM '0.2' CHARS=7 REAL
+^^WI     @ 1,3 EDITBOX RT_FOM '5.0' CHARS=7 REAL
 ^^WI  }
-^^WI  @ 4,2 GRID S NROWS=6 NCOLS=6 {
-^^WI     @ 1,1 STATIC RT_T5 'Reject at least'
-^^WI     @ 1,3 EDITBOX RT_MIN '0' CHARS=7 INTEGER
-^^WI     @ 1,5 STATIC RT_T6 'worst agreements.'
-^^WI     @ 3,1 STATIC RT_T7 'Reject at most'
-^^WI     @ 3,3 EDITBOX RT_MAX '15' CHARS=7 INTEGER
-^^WI     @ 3,5 STATIC RT_T8 'worst agreements.'
-^^WI     @ 3,6 STRETCH RT_STR1 HORIZONTAL
-^^WI     @ 5,1 STATIC RT_T3 'Reject indices >'
-^^WI     @ 5,3 EDITBOX RT_OUT '2.0' CHARS=7 REAL
-^^WI     @ 5,5 STATIC RT_T4 'sigma from lattice points.'
-^^WI  }
+%%^^WI  @ 4,2 GRID S NROWS=6 NCOLS=6 {
+%%^^WI     @ 1,1 STATIC RT_T5 'Reject at least'
+%%^^WI     @ 1,3 EDITBOX RT_MIN '0' CHARS=7 INTEGER
+%%^^WI     @ 1,5 STATIC RT_T6 'worst agreements.'
+%%^^WI     @ 3,1 STATIC RT_T7 'Reject at most'
+%%^^WI     @ 3,3 EDITBOX RT_MAX '15' CHARS=7 INTEGER
+%%^^WI     @ 3,5 STATIC RT_T8 'worst agreements.'
+%%^^WI     @ 3,6 STRETCH RT_STR1 HORIZONTAL
+%%^^WI     @ 5,1 STATIC RT_T3 'Reject indices >'
+%%^^WI     @ 5,3 EDITBOX RT_OUT '2.0' CHARS=7 REAL
+%%^^WI     @ 5,5 STATIC RT_T4 'sigma from lattice points.'
+%%^^WI  }
 ^^WI  @ 5,2 GRID B NROWS=2 NCOLS=5 {
 ^^WI     @ 1,1 STRETCH RT_STR2 HORIZONTAL
 ^^WI     @ 1,2 BUTTON RT_BOK '&OK' DEFAULT COMMIT
@@ -48,21 +48,22 @@
 %   BLOCK               %ROTAX
 %     COPY '#CLOSE SCPDATA'
 %     COPY '#RELE PUNCH rotax.pch'
+%     COPY '#RELE PRINT rotax.lis'
 %     COPY '#ROTAX'
 %     COPY 'OUTPUT PUNCH=YES'
 %     CLEAR
 %     INSERT 'TOLERANCE FOM='
 ^^?? RT_FOM TEXT
 %     GET SILENT REAL ' '
-%     INSERT 'REJ='
-^^?? RT_OUT TEXT
-%     GET SILENT REAL ' '
-%     INSERT 'MIN='
-^^?? RT_MIN TEXT
-%     GET SILENT INTEGER ' '
-%     INSERT 'MAX='
-^^?? RT_MAX TEXT
-%     GET SILENT INTEGER ' '
+%%%     INSERT 'REJ='
+%%^^?? RT_OUT TEXT
+%%%     GET SILENT REAL ' '
+%%%     INSERT 'MIN='
+%%^^?? RT_MIN TEXT
+%%%     GET SILENT INTEGER ' '
+%%%     INSERT 'MAX='
+%%^^?? RT_MAX TEXT
+%%%     GET SILENT INTEGER ' '
 %     SEND
 %     CLEAR
 %     INSERT 'ROTATION ANGLE='
@@ -79,15 +80,22 @@
 %     SEND
 %     COPY 'END'
 %     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#RELEASE PRINT bfile.lis'
 %     COPY '#OPEN SCPDATA rotax.pch'
 ^^WI WINDOW ROTAX2 'Rotax results' MODAL
 ^^WI POSITION=CENTRED 'MODEL01'
 ^^WI GRID M NROWS=6 NCOLS=3 {
 ^^WI  @ 2,2 GRID E NROWS=2 NCOLS=1 {
-^^WI     @ 1,1 STATIC RT_T1 'Apply a twin law (two component twins only):'
+^^WI   @ 1,1 GRID EXP1 NROWS=1 NCOLS=3 OUTLINE='' {
+^^WI    @ 1,1 ICON IM INFO
+^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1 {
+^^WI     @ 1,1 STATIC XRT1 'For two component twins you can use this dialog'
+^^WI     @ 2,1 STATIC XRT2 'to choose a suitable twin law and it will'
+^^WI     @ 3,1 STATIC XRT3 'be automatically included in the refinement'
+^^WI    }
+^^WI   }
 ^^WI  }
-^^WI  @ 3,2 GRID F NROWS=1 NCOLS=7 {
-{I About to get angle and p or i flag.
+^^WI  @ 3,2 GRID F NROWS=1 NCOLS=10 {
 %     BLOCK
 %       ON ERROR TERMINATE
 %       ON END TERMINATE
@@ -114,11 +122,13 @@
 %     END BLOCK
 ^^WI     @ 1,1 STATIC RT_T2 'Results for'
 ^^WI     @ 1,5 STATIC RT_T2 'degree'
+^^WI     @ 1,10 BUTTON RT_BDT '&Details'
 ^^WI  }
 ^^WI  @ 4,2 GRID G NROWS=3 NCOLS=3 {
-^^WI     @ 2,1 GRID GA NROWS=3 NCOLS=1 {
-^^WI        @ 1,1 STATIC RT_T4 'Figures of merit'
-^^WI        @ 3,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
+^^WI     @ 2,1 GRID GA NROWS=4 NCOLS=1 {
+^^WI        @ 1,1 STATIC RT_T4 'Choose a'
+^^WI        @ 2,1 STATIC RT_T4 'figure of merit:'
+^^WI        @ 4,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
 {I About to get all the FOM's
 %     EXTRACT REWIND
@@ -143,7 +153,7 @@
 %     END LOOP
 ^^WI              'NULL'
 ^^WI     }
-^^WI     @ 2,3 GRID GB NROWS=5 NCOLS=1 {
+^^WI     @ 2,3 GRID GB NROWS=5 NCOLS=1 OUTLINE='Details for this f.o.m.' {
 ^^WI        @ 1,1 GRID GBA NROWS=3 NCOLS=3 {
 ^^WI           @ 1,1 STATIC RT_T3 'Lattice:'
 ^^WI           @ 1,3 STATIC RT_RORD 'Reciprocal'
@@ -170,7 +180,7 @@
 ^^WI        }
 ^^WI     }
 ^^WI  }
-^^WI  @ 5,2 GRID B NROWS=2 NCOLS=5 {
+^^WI  @ 5,2 GRID B NROWS=2 NCOLS=7 {
 ^^WI     @ 1,1 STRETCH RT_STR2 HORIZONTAL
 ^^WI     @ 1,2 BUTTON RT_BOK '&Apply twin law' DEFAULT COMMIT
 ^^WI     @ 1,4 BUTTON RT_BXX '&Cancel' CANCEL
@@ -320,12 +330,15 @@
 %         INSERT !'!
 %         OUTPUT
 %       END BLOCK
-%       VERIFY RT_BXX RT_BOK RT_RES
+%       VERIFY RT_BXX RT_BDT RT_BOK RT_RES
 %       GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %       CASE VALUE
 %         BLOCK   %RT_BXX%
 ^^CO        DISPOSE ROTAX2
 %           FINISH
+%         END BLOCK
+%         BLOCK   %RT_BDT%
+%           COPY '#spawn rotax.lis'
 %         END BLOCK
 %         BLOCK
 {S * Removing any existing twin laws...
