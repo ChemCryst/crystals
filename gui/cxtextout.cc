@@ -67,7 +67,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_pen     = new wxPen(m_BackCol,1,wxSOLID);
     m_brush   = new wxBrush(m_BackCol,wxSOLID);
 #endif
-    m_nHead = -1;
+    m_nHead = -1;    //The line # currently at the BOTTOM of the output area.
     m_nLinesDone = 0;
     m_nDefTextCol = COLOUR_BLACK;
     m_nXOffset = 0;
@@ -767,6 +767,7 @@ void CxTextOut::OnSize(UINT nType, int cx, int cy)
     if( GetSafeHwnd() )
     {
         UpdateHScroll();
+        SetHead ( m_nHead );
 //        UpdateVScroll();
     };
 }
