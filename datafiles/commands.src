@@ -3293,8 +3293,7 @@ FOREIGN            1    0
     .MODE               2    0    1    6    1 NORMAL
      NORMAL         DIFFICULT      SPECIAL        PATTERSON      HARD
      LONG
--GIDCAMERON            1    0
-+GIDXCAMERON           1    0
+XCAMERON           1    0
    1    4096 CRYSTALSFOREIGN
    1.XCAMERON           2    1    0    0
          3    3
