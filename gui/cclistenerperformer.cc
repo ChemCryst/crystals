@@ -7,9 +7,13 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.1  2005/02/04 17:21:40  stefan
+ //   1. A set of classes to extent CcSafeDeque to allow easy change notification.
+ //   2. A set of classese to more generalise CcSafeDeques uses.
+ //
  
 #include "crystalsinterface.h"
-#include "CcListenerPerformer.h"
+#include "cclistenerperformer.h"
 
 CcListenerPerformer::CcListenerPerformer():iListeners(){}
 
