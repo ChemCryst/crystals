@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  1999/02/16 11:24:06  dosuser
+C RIC: Added log information to head of file.
+C      Check return value when NSTART is computed. If 0 or -1, set to +1,
+C      as it is used as a character string subscript - even if the
+C      character string is empty.
+C
 
 CODE FOR KSCPRC
       FUNCTION KSCPRC ( CINPUT , IUSLEN )
@@ -5888,7 +5894,8 @@ C
 \XUNITS
 \XERVAL
 \XIOBUF
-        CHARACTER*4 CCRICH
+C        CHARACTER*4 CCRICH
+\CAMBLK
 C
 C
       EQUIVALENCE ( IVALUE , VALUE )
@@ -6095,13 +6102,20 @@ C            CALL VGACOL ('BOL', 'YEL', 'CYA' )
             CALL OUTCOL(4)
             IF (ISSTML .EQ. 3) THEN
 C---- SPECIAL  DOS PROMPT - YELLOW ON CYAN
-              WRITE ( CMON, 1102) CTOP(1:MLNLEN)
-              CALL XPRVDU(NCVDU, 1,0)
+C Don't use those funny characters in Cameron.
+&DOS              IF ( LCLOSE ) THEN
+               WRITE ( CMON, 1102) CTOP(1:MLNLEN)
+               CALL XPRVDU(NCVDU, 1,0)
+&DOS              ENDIF
               J = 1
               JCP = 1
               DO 1101 I = 1,3
               IF ( IPMBRK(J) .NE. 0 ) THEN
-                CMENU(1:) = CBOX(1:)
+&DOS                IF ( LCLOSE ) THEN
+                 CMENU(1:) = CBOX(1:)
+&DOS                ELSE
+&DOS                 CMENU(1:) = ' '
+&DOS                ENDIF
                 CMENU(2:IPMBRK(J)+1-JCP) = CVAL(JCP:IPMBRK(J))
                 WRITE ( NCAWU , 1102 ) CMENU(1:MLNLEN)
                 WRITE ( CMON, 1102 ) CMENU(1:MLNLEN)
@@ -6115,8 +6129,10 @@ C---- SPECIAL  DOS PROMPT - YELLOW ON CYAN
               ENDIF
 1101          CONTINUE
 1103          CONTINUE
-              WRITE ( CMON, 1102) CBTM(1:MLNLEN)
-              CALL XPRVDU(NCVDU, 1,0)
+&DOS              IF ( LCLOSE ) THEN
+               WRITE ( CMON, 1102) CBTM(1:MLNLEN)
+               CALL XPRVDU(NCVDU, 1,0)
+&DOS              END IF
 C----       NORMAL DOS PROMPT - RED ON WHITE
             ELSE
 C----- NORMAL TEXT TERMINAL
