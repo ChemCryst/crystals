@@ -13,15 +13,15 @@
 #include <set>
 #include <list>
 
-class JJMergedDataResult
+class MergedDataResult
 {
 	protected:
 		SystemID pCrystalSystem;
 		char* iLaueGroupSymmetry;
 		float iRFactor;
 	public:
-		JJMergedDataResult(const HKLData& pData, const JJLaueGroup& pForLaueGroup, const UnitCell& pUnitCell);
-		~JJMergedDataResult();
+		MergedDataResult(const HKLData& pData, const LaueGroup& pForLaueGroup, const UnitCell& pUnitCell);
+		~MergedDataResult();
 		SystemID crystalSystem() const;
 		char* laueGroup() const;
 		float rFactor() const;
@@ -30,30 +30,30 @@ class JJMergedDataResult
 class MergedReflections:public HKLData
 {
 	protected:
-		JJLaueGroup* iLaueGroup; //reference. not to be released.
+		LaueGroup* iLaueGroup; //reference. not to be released.
 		float iRFactor;
 	public:
-		MergedReflections(float pRFactor, JJLaueGroup* pLaueGroup);
+		MergedReflections(float pRFactor, LaueGroup* pLaueGroup, const Matrix<float>& pUnitCellTensor);
 		float rFactor();
-		JJLaueGroup *laueGroup();
+		LaueGroup *laueGroup();
 };
 
-class JJMergedData
+class MergedData
 {
 	protected:
 		multiset<Reflection*, lsreflection>* iSortedReflections;
 		Reflection* iUnsortedReflections;
 		float iRFactor;
 	public:
-		JJMergedData(const HKLData& pHKLs, const JJLaueGroup& pForLaueGroup, Matrix<short>* pTransformation = NULL);
-		~JJMergedData();
+		MergedData(const HKLData& pHKLs, const LaueGroup& pForLaueGroup, Matrix<short>* pTransformation = NULL);
+		~MergedData();
 		void mergeReflections(HKLData& pReflections); //Returns the merged reflections in pHKLs
 		float rFactor();
 };
 
 
 
-class DataMerger:public list<JJMergedDataResult*>
+class DataMerger:public list<MergedDataResult*>
 {
 	public:
 		DataMerger(const HKLData& pData, const float pUnitCellThreshHold, const LaueGroupRange pLaueGroupRange, const UnitCell& pUnitCell);
