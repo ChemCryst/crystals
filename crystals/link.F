@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2004/10/06 13:57:13  rich
+C Fix for WXS version.
+C
 C Revision 1.48  2003/10/31 17:25:31  rich
 C Don't output reflections to SHELXS.INS when using
 C #FOREIGN SHELX SPECIAL
@@ -224,7 +227,7 @@ c                                     2, dont create new cameron files
 C           FOR CSD          IEFORT = 1, normal - 2d structure
 C                                     2, special - just cell search
 C
-      PARAMETER (NLINK=10, NLIST=7)
+      PARAMETER (NLINK=10, NLIST=8)
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
 C      FOREIGN CALL.
 C           FOR SIR92 (only)  IMETHD = 0, NORMAL
@@ -279,16 +282,16 @@ C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD, 10:MOL2
 C- POINTER TO LIST
-      DATA LISTS /1, 2, 5, 0, 0,  0,  0,
-     2            1, 2, 5, 0, 0,  0,  0,
-     3            1, 2, 3,31, 6, 13, 29,
-     4            1, 2, 3, 0, 6, 13, 29,
-     5            1, 2, 3, 0, 6, 13, 29,
-     6            1, 2, 3, 0, 6, 13, 29,
-     7            1, 2, 3, 0, 6, 13, 29,
-     8            1, 2, 3, 5, 6, 13, 29,
-     9            1, 3, 5,29,41,  0,  0,
-     1            1, 2, 3, 5,29, 40, 41/
+      DATA LISTS /1, 2, 5, 0, 0,  0,  0,  0,
+     2            1, 2, 5, 0, 0,  0,  0,  0,
+     3            1, 2, 3, 0, 6, 13, 29, 31,
+     4            1, 2, 3, 0, 6, 13, 29,  0,
+     5            1, 2, 3, 0, 6, 13, 29,  0,
+     6            1, 2, 3, 0, 6, 13, 29,  0,
+     7            1, 2, 3, 0, 6, 13, 29,  0,
+     8            1, 2, 3, 5, 6, 13, 29, 31,
+     9            1, 3, 5,29,41,  0,  0,  0,
+     1            1, 2, 3, 5, 0, 29, 40, 41/
 C
       DATA KHYD /'H   '/
 
@@ -566,6 +569,8 @@ C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         NCPU = NCFPU1
         CALL XPCH5C(1)
         NCPU = J
+        WRITE(CMON,'(A)') 'Shelx ins written: {&SHELXS.INS{&'
+        CALL XPRVDU(NCVDU,1,0)
         GOTO 1850
       ENDIF
 C----- REQUEST STRUCTURE SOLUTION
@@ -617,6 +622,9 @@ C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
      1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
+      WRITE(NCFPU1,1810) NINT(T2), 
+     1 STORE(L31), STORE(L31+6), STORE(L31+11),
+     2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
 C----- FIND LATTICE TYPE
       LATTYP = ((2*IC) -1) * IL
       WRITE (NCFPU1,'( ''LATT '', I3)') LATTYP
