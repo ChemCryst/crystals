@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  1999/08/03 09:17:18  richard
+C RIC: Pass the SPARE value to the GUI (if available), otherwise pass the
+C covalent radii. Spare is scaled by 0.01 to display on an angstrom scale.
+C
 C Revision 1.19  1999/07/30 20:30:13  richard
 C RIC: If atoms have negative covalent radii, then don't bond them to
 C anything, but still use the absolute value for the radius.
@@ -450,34 +454,56 @@ C--ADD IN THE VARIOUS TRANSLATION PARTS
                 M2P=M2P+1
                 NH=NH+1
 1250          CONTINUE
+
 C--MOVE THE X COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
+
               CALL XSHIFT2(1)
+
 C--ADVANCE THE X COORDINATE BY ONE OR MORE UNIT CELLS
+
 1300          CONTINUE
               IF(KDIST2(1).GE.0) THEN
+
 C--MOVE THE Y COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
+
                 CALL XSHIFT2(2)
+
 C--ADVANCE THE Y COORDINATE BY ONE OR MORE UNIT CELLS
+
 1400            CONTINUE
                 IF(KDIST2(2).LT.0) GOTO 1300
+
 C--MOVE THE Z COORDINATE SO THAT IT IS OUT OF THE REQUIRED VOLUME
+
                 CALL XSHIFT2(3)
+
 C--ADVANCE THE Z COORDINATE BY ONE OR MORE UNIT CELLS
+
                 IF(KDIST2(3).LT.0) GOTO 1400
+
 C--A SUCCESSFUL FIND
 C----- CHECK FOR SELF-SELF CONTACT
+
                 IF (     (M5-M5A .NE. 0)
      1              .OR. (ABS(STORE(M5A+IOFF)-APD(7))-ZERO .GT. 0)
      2              .OR. (ABS(STORE(M5A+IOFF+1)-APD(8))-ZERO .GT. 0)
      3            .OR. (ABS(STORE(M5A+IOFF+2)-APD(9))-ZERO .GT. 0) )THEN
+
 C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS  -  CALC. DIST.
+
                   F=XDSTNCR(STORE(M5A+IOFF),APD(7))
                   IF(F .GE. BP) THEN
+
 C--CHECK THE DISTANCE AGAINST THE MAXIMUM ALLOWED VALUE SQUARED
+
                     IF(F .LE. AP) THEN
+
 C--COMPUTE THE DISTANCE
+
                       E=SQRT(F)
+
 C----- SET THE FLAGS
+
                       STACK(JS)=M5             !0 = Pointer to atom
                       NJ=NJ+1                   !Atom Counter.
                       J=JS+4
@@ -977,8 +1003,10 @@ C First atom is not to be bonded.
                IF (COV2 .LT. 0.00) GOTO 120
 C Second atom is not to be bonded.
 
-               REQDSX = (COV1 + COV2) * 1.2
-               REQDSN = (COV1 + COV2) * 0.8
+C NB 1.21 (1.1)^2 is the tolerance used by Lisa.
+C Cameron has no lower limit. I do. It is 0.5 * sum of cov.
+               REQDSX = (COV1 + COV2) * 1.21
+               REQDSN = (COV1 + COV2) * 0.5
                IF( (ACTDST.LT.REQDSX) .AND.
      1             (ACTDST.GT.REQDSN) ) THEN
                   XX   = GUMTRX(1) * STACK((J*5)-3)
