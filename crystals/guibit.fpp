@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2003/02/25 15:30:22  rich
+C Output L12 & 16 to the info tabs.
+C
 C Revision 1.54  2003/02/20 15:59:51  rich
 C Output list 4 info to the info tab in the GUI.
 C
@@ -487,6 +490,7 @@ c         loaded by the calling routine.
 \QGUIOV
 \XCONST 
 \XLST05
+\XLST25
 \XLST04
 \XLST01
 \XLST02
@@ -514,7 +518,7 @@ c         loaded by the calling routine.
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
 
-      DIMENSION LST(12)
+      DIMENSION LST(15)
       DIMENSION ICLINF(400)
       DIMENSION TXYZ(9)
 
@@ -559,7 +563,7 @@ C
       IF ( IULN .EQ. 0 ) THEN ! decide what needs updating
 c         WRITE(CMON,'(a)')' XGUIUP: Setting 7 lists to be updated.'
 c         CALL XPRVDU (NCVDU,1,0)
-         NLST = 9
+         NLST = 10
          LST(1) = 1
          LST(2) = 2
          LST(3) = 5
@@ -569,6 +573,7 @@ c         CALL XPRVDU (NCVDU,1,0)
          LST(7) = 4
          LST(8) = 12
          LST(9) = 16
+         LST(10)= 25
       ELSE
          NLST = 1
          LST(1) = ABS(IULN)
@@ -1505,11 +1510,47 @@ c             CALL XPRVDU(NCVDU, 1,0)
      1      '(''^^WI SET _MT_L'',I2,'' VIEWTOP'',/,''^^CR'')') ILST
            CALL XPRVDU(NCVDU,2,0)
 
+         ELSE IF (ILST .EQ. 25) THEN   ! Twinning
+
+           IF(KEXIST(25).LE.0) THEN
+              WRITE (CMON,
+     1 '(''^^CO SAFESET [ _MT_L25 EMPTY TEXT "No twin laws" ]'')')
+              CALL XPRVDU(NCVDU,1,0)
+              CYCLE
+           END IF
+           IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+              IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+           ELSE
+              IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
+           END IF
+
+
+           CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
+           IF ( L25SR.NE.ISERnn(25) ) THEN
+              ISERnn(25)  = L25SR
+           ELSE
+             CYCLE
+           END IF
+
+           WRITE (CMON,
+     1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
+           CALL XPRVDU(NCVDU,1,0)
+
+1106       FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),'" ]')
+           DO J = 0, N25-1
+             M25 = L25+J*MD25
+             WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
+             CALL XPRVDU(NCVDU, 1,0)
+           END DO
+
+           WRITE (CMON,'(''^^WI SET _MT_L25 VIEWTOP'',/,''^^CR'')')
+           CALL XPRVDU(NCVDU,2,0)
+
 
          ELSE IF ( ILST .EQ. 4 ) THEN   ! Weighting scheme
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
                IF(KEXIST(4).LE.0) CYCLE
-               IF(KHUNTR(344,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+               IF(KHUNTR(4,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
                IF(KEXIST(4).LE.0) CYCLE
                IF(KHUNTR(4,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL04
