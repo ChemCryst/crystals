@@ -11,8 +11,12 @@ CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.fpp))
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
 
 FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp=.o)) lapack.o)
-COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
-DEP      = $(patsubst %.d, obj/%.d, $(GUIFILES:.cc=.d))
+ifneq ($(COMPCODE),LIN)
+ ifneq ($(COMPCODE),DVF)
+  COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
+  DEP      = $(patsubst %.d, obj/%.d, $(GUIFILES:.cc=.d))
+ endif
+endif
 
 ifeq ($(COMPCODE),WXS)
   COBJ := $(COBJ) obj/resource.o
@@ -44,6 +48,10 @@ tidy :
 
 ifneq ($(MAKECMDGOALS),clean)
  ifneq ($(MAKECMDGOALS),tidy) 
-  include $(DEP)
+  ifneq ($(COMPCODE),LIN)
+   ifneq ($(COMPCODE),DVF)
+    include $(DEP)
+   endif
+  endif
  endif
 endif
