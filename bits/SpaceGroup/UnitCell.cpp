@@ -187,7 +187,7 @@ Matrix<float>& UnitCell::metricTensor(Matrix<float>& pResult)const
 	pResult.setValue(iC*iC, 2, 2);
 	
 	pResult.setValue(pResult.getValue(0, 1), 1, 0);
-	pResult.setValue(pResult.getValue(2, 0), 2, 0);
+	pResult.setValue(pResult.getValue(0, 2), 2, 0);
 	pResult.setValue(pResult.getValue(1, 2), 2, 1);
 
     return pResult;
@@ -374,7 +374,7 @@ UnitCell::UnitCell(const UnitCell& pUnitCell):iA(pUnitCell.iA), iB(pUnitCell.iB)
 
 /**************************************/
 /*** Initilised the unitcell from a ***/
-/*** matric tensor					***/
+/*** matric tensor	            ***/
 /**************************************/
 UnitCell::UnitCell(const Matrix<float> &pT):iA(0), iB(0), iC(0), iAlpha(0), iBeta(0), iGamma(0),
     iSEA(0), iSEB(0), iSEC(0), iSEAlpha(0), iSEBeta(0), iSEGamma(0)
