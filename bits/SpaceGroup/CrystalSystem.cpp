@@ -42,7 +42,7 @@
 #include <regex.h>
 #endif
 #include <fstream>
-#include "StringClassses.h"
+#include "StringClasses.h"
 #include "MathFunctions.h"
 #include "Stats.h"
 
@@ -65,9 +65,9 @@ void initCrysRegEx()
             //Checks the formoat of a line in the conditons list is the conrrect format.
         char tFirstNumRE[] = "([[:digit:]]),?[[:space:]]?"; 
             //Takes the first number of a , delimited list of numbers.
-        char tFirstNSpRE[] = "([^\t]+)\t?([^\t].+)?";	
+        char tFirstNSpRE[] = "([^\t]+)(\t([^\t].+))?";	
             //Takes the first non-space part of the heading line and returns the point of it in $1
-        char tTableRE[] = "([^\t]+\t?)([^\t].*)?";
+        char tTableRE[] = "([^\t]+)(\t[^\t].*)?";
             //Gets the first non-tab part of the line and returns its placing in $1.
         char tTableArgsRE[] = "([^\t]+)\t([[:digit:]]+), ([[:digit:]]+)";
             //The header line of the table. This contains the name of the system and the number of condition columns and the number of point group columns.
@@ -107,7 +107,7 @@ void deinitRE()
 
 Heading::Heading(char* pLine)
 {
-    size_t tMatches = 4;
+    const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
@@ -177,7 +177,7 @@ Condition::Condition(char* pLine)
      * 8		"
      * 9		Multiplier for condition
      */
-    size_t tMatches = 15;
+    const size_t tMatches = 15;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
@@ -670,7 +670,7 @@ void ConditionColumn::addEmptyCondition(int pRow)
 void ConditionColumn::setHeading(char* pHeading)
 {
     int tOffset = 0;
-    size_t tMatches = 3;
+    const size_t tMatches = 3;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*3);
@@ -862,7 +862,7 @@ Table::~Table()
 
 void Table::columnHeadings(char* pHeadings, int pColumn)
 {
-    size_t tMatches = 3;
+    const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
@@ -892,7 +892,7 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
     {
         return;
     }
-    columnHeadings(pHeadings+tMatch[2].rm_so, pColumn+1);
+    columnHeadings(pHeadings+tMatch[3].rm_so, pColumn+1);
 }
 
 void Table::readColumnHeadings(char* pHeadings)
@@ -902,7 +902,7 @@ void Table::readColumnHeadings(char* pHeadings)
 
 void Table::addLine(char* pLine, int pColumn)
 {
-    size_t tMatches = 3;
+    const size_t tMatches = 3;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
@@ -977,6 +977,21 @@ char* Table::getName()
     return iName;
 }
 
+int Table::getNumPointGroups()
+{
+	return	iSpaceGroups->length();
+}
+
+SpaceGroup* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
+{
+	SpaceGroups* tGroups = iSpaceGroups->get(pPointGroupNum);
+	if (tGroups)
+	{
+		return tGroups->get(pLineNum);
+	}
+	return NULL;
+}
+
 ArrayList<Index>* Table::getHeadings(int pI)
 {
     return iColumns->get(pI)->getHeadings();
@@ -1027,7 +1042,33 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
     return pStream;
 }
 
-
+std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[])
+{
+    int tLengthConditions = iColumns->length();
+    for (int i = 0; i < tLengthConditions; i++)
+    {
+        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        if (tIndexs == NULL)
+        {
+            pStream << "- ";
+        }
+        else
+        {
+           pStream << *(tIndexs) << " ";
+        }
+    }
+    pStream << "SG: ";
+    
+    for (int i = 0; tPointGroups[i]!=-1; i++)
+    {
+        SpaceGroups* tSpaceGroups = iSpaceGroups->get(tPointGroups[i]);
+        SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
+        pStream << *(tSpaceGroup) << " ";
+        pStream << "\t";
+    }
+    pStream << "\n";
+    return pStream;
+}
 
 std::ostream& Table::output(std::ostream& pStream)
 {	
@@ -1078,6 +1119,24 @@ int Table::numberOfColumns()
 int Table::numberOfRows()
 {
     return iSpaceGroups->get(0)->length();
+}
+
+int Table::chiralPointGroups(int pPointGroupIndeces[])
+{
+	int tPointGroups = this->getNumPointGroups();
+	int tIndecesPoint = 0;
+	for (int i = 0; i< tPointGroups; i++)
+	{
+		char* tPointGroup = iSpaceGroups->get(i)->getPointGroup();
+		//Is it a chiral point group
+		if (tPointGroup != NULL && strchr(tPointGroup, '-')==NULL && strchr(tPointGroup, 'm')==NULL)
+		{
+			pPointGroupIndeces[tIndecesPoint] = i;
+			tIndecesPoint++;
+		}
+	}
+	pPointGroupIndeces[tIndecesPoint] = -1;
+	return tIndecesPoint;
 }
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable)
@@ -1133,12 +1192,12 @@ Conditions* Tables::getConditions()
 
 void Tables::addTable(Table* pTable)
 {
-    iTables->add(pTable);
+	iTables->add(pTable);
 }
 
 void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, int *pNumOfSGCols)
 {
-    size_t tMatches = 4;
+    const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
@@ -1293,24 +1352,49 @@ void RankedSpaceGroups::addRating(RowRating* pRating, const float pRating1, cons
     pRating->iSumSqrRat2 += sqr(pRating2);
 }
 
+bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
+{
+    int i = 0;
+    while (pPGroupNumbers[i] > -1)
+    {
+        SpaceGroup* tSpaceGroup = pTable.getSpaceGroup(pRow, pPGroupNumbers[i]);
+        String tSymbol(tSpaceGroup->getSymbol());
+        tSymbol.trim();
+        if (tSymbol.cmp("-") != 0)
+        {
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
+
 RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)	//Chiral still needs handling. Needs doing
 {
     iRatings = new RowRating[pTable.numberOfRows()];		//Allocate space for all the ratings.s
+    const int tPGroupNumber = pTable.getNumPointGroups();
+    int* tPGroupNumbers = new int[tPGroupNumber+1];	//The end of this list is identifed by an index of -1
+    iChiral = pChiral;
     
+    pTable.chiralPointGroups(tPGroupNumbers);
     int tCount = pTable.numberOfRows();
     for (int i = 0; i < tCount; i++)
     {
-        iRatings[i].iRowNum = i;
-        iRatings[i].iTotNumVal = 0;
-        iRatings[i].iSumRat1 = 0;
-        iRatings[i].iSumRat2 = 0;
-        iRatings[i].iSumSqrRat1 = 0;
-        iRatings[i].iSumSqrRat2 = 0;
-        //If chiral is try make sure that row has a chiral space group in it. Needs doing
-        calcRowRating(&(iRatings[i]), i, pTable, pStats);
-        addToList(&(iRatings[i]));	//Add the rating for the current row into the order list of rows.
+        if (!iChiral || (pChiral && hasChiralSpaceGroup(tPGroupNumbers, pTable, i)))
+        {
+		iRatings[i].iRowNum = i;
+		iRatings[i].iTotNumVal = 0;
+		iRatings[i].iSumRat1 = 0;
+		iRatings[i].iSumRat2 = 0;
+		iRatings[i].iSumSqrRat1 = 0;
+		iRatings[i].iSumSqrRat2 = 0;
+		iRatings[i].iMean= 0;
+		calcRowRating(&(iRatings[i]), i, pTable, pStats);
+                addToList(&(iRatings[i]));	//Add the rating for the current row into the order list of rows.
+        }
     }
     iTable = &pTable;
+	delete tPGroupNumbers;
 }
 
 void RankedSpaceGroups::addToList(RowRating* pRating)
@@ -1337,13 +1421,23 @@ RankedSpaceGroups::~RankedSpaceGroups()
 std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 {
     RowRating* tCurrentRating;
+    const int tPNum = iTable->getNumPointGroups();
+    int* tPointGroups = new int[tPNum];
     
+    if (iChiral)
+    {
+        iTable->chiralPointGroups(tPointGroups);
+    }
     iRatingList.reset();
     while ((tCurrentRating = iRatingList.next()) != NULL)
     {
         pStream << tCurrentRating->iRowNum << ": " << tCurrentRating->iMean << " ";
-        iTable->outputLine(tCurrentRating->iRowNum, pStream);	//Make output space group only.
+        if (iChiral)
+            iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);	//Make output space group only.
+        else
+            iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
+	delete tPointGroups;
     return pStream;
 }
 

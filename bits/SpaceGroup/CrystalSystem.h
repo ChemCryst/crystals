@@ -224,11 +224,13 @@ class Table:public MyObject
         ArrayList<Index>* getHeadings(int pI);
         std::ostream& output(std::ostream& pStream);
         std::ostream& outputLine(int pLineNum, std::ostream& pStream);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[]);
         int getNumPointGroups();	//Needs doing
         SpaceGroup* getSpaceGroup(int pLineNum, int pPointGroupNum);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
         int numberOfRows();
+        int chiralPointGroups(int pPointGroupIndeces[]);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
@@ -272,6 +274,8 @@ class RankedSpaceGroups:public MyObject
         LList<RowRating> iRatingList;	//The order list of rows.
         RowRating* iRatings;		//Space to store the ratings
         Table* iTable;			//The table which the rattings have been made for. Reference to the table. Table should never be released by this class.
+        bool iChiral;
+        
         static void calcRowRating(RowRating* pRating, int pRow, Table& pTable, Stats& pStats);
         static void addConditionRatings(RowRating* pRating, Stats& pStats, Indexs* tIndexs,  Index* pHeadingIndex);
         static void addRating(RowRating* pRating, float pRating1, float pRating2);
