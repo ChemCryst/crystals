@@ -1000,28 +1000,24 @@ void CxTextOut::UpdateVScroll()
 
 bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int nY )
 {
-    COLORREF lastcol = m_BackCol;
-    bool needMod = false;
-    bool cbFound = false;
+  COLORREF lastcol = m_BackCol;
+  bool needMod = false;
+  bool cbFound = false;
+  unsigned int nWidth = 0;
 #ifdef __CR_WIN__
-    CRect clientRc; GetClientRect( &clientRc );
-    SIZE sz;
-    unsigned int cx,cy;
+  CRect clientRc; GetClientRect( &clientRc );
+  SIZE sz;
+  unsigned int cx,cy;
 #endif
 #ifdef __BOTHWX__
-    wxSize clientRc = GetClientSize( );
-    m_nAvgCharWidth = pDC->GetCharWidth();
-    int cx,cy;
+  wxSize clientRc = GetClientSize( );
+  m_nAvgCharWidth = pDC->GetCharWidth();
+  int cx,cy;
 #endif
 
-	if ( strLine.size() < 1 ) {
-	    nY += m_nFontHeight;
-		return false;
-	}
-
+  if ( strLine.size() > 0 ) {
     string strTemp = strLine.substr(1);
     string strToRender;
-    unsigned int nWidth = 0;
 
 
     if ( strLine.substr(0,1).compare("-") == 0 ) { // There may be some CONTROL_BYTES in this line.
@@ -1029,7 +1025,6 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
       bool bUnderline = false;
       m_bInLink = false; //Beginning new line.
       string::size_type nPos;
-
 
       do
       {
@@ -1157,38 +1152,39 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
             nX += nWidth = cx;
     }
 
-
-// Pad out rest of line with solid colour:
-#ifdef __CR_WIN__
-    CRect solidRc( nX, nY, clientRc.right, nY + m_nFontHeight );
-    pDC->FillSolidRect( &solidRc, lastcol);
-#endif
-#ifdef __BOTHWX__
-    m_brush->SetColour( lastcol );
-    m_pen->SetColour(  lastcol  );
-    pDC->SetTextForeground( lastcol  );
-    pDC->SetTextBackground( lastcol  ) ;
-    pDC->SetPen( *m_pen );
-    pDC->SetBrush( *m_brush );
-    pDC->DrawRectangle( nX,nY, clientRc.GetWidth(), m_nFontHeight );
-#endif
-
-
-    nY += m_nFontHeight;
-
-    if ( ! cbFound )
+	if ( ! cbFound )
     {
        needMod = true;
        strLine[0] = 'x';
     }
 
-    if( nWidth > m_nMaxWidth )
-    {
-        m_nMaxWidth = nWidth;
-        UpdateHScroll();
-    }
+  }
 
-    return needMod;
+// Pad out rest of line with solid colour:
+#ifdef __CR_WIN__
+  CRect solidRc( nX, nY, clientRc.right, nY + m_nFontHeight );
+  pDC->FillSolidRect( &solidRc, lastcol);
+#endif
+#ifdef __BOTHWX__
+  m_brush->SetColour( lastcol );
+  m_pen->SetColour(  lastcol  );
+  pDC->SetTextForeground( lastcol  );
+  pDC->SetTextBackground( lastcol  ) ;
+  pDC->SetPen( *m_pen );
+  pDC->SetBrush( *m_brush );
+  pDC->DrawRectangle( nX,nY, clientRc.GetWidth(), m_nFontHeight );
+#endif
+
+
+  nY += m_nFontHeight;
+
+  if( nWidth > m_nMaxWidth )
+  {
+      m_nMaxWidth = nWidth;
+      UpdateHScroll();
+  }
+
+  return needMod;
 
 }
 
