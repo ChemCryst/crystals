@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  1999/03/29 13:26:02  dosuser
+C djw mar99 XSQRT and XSQRR  used
+C
 C Revision 1.8  1999/03/24 17:51:33  dosuser
 C open/append changes
 C
@@ -481,7 +484,7 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
        WRITE ( NCFPU1 , '(8X,''content '', A)' ) CL29(1:I29)
       WRITE(NCFPU1,1941)
 1941  FORMAT( 8X,'reflection follow',/,
-     1 8X, 'format (3i4, f10.3, f7.3)')
+     1 8X, 'format (3i4, f10.3, f7.2)')
       IF (IEFORT .EQ. 2) WRITE(NCFPU1, '(
      1 ''%normal'',/ ''%seminv'',/ ''%invariant'',/ ''%phase'',/
      2 ''      random'')')
@@ -497,13 +500,12 @@ C----- LOOP OVER DATA
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
-CDJWMAR99[
-      CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
-      FS = FS * SCALE
-      S = S * SCALE
-      IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
-     1 S = ABS(FS) / STORE(M6+20)
-CDJWMAR99]
+      FS =  STORE(M6+3) * SCALE
+      IF (STORE(M6+20) .LE. ZERO) THEN
+      S = 0.0
+      ELSE
+      S = FS / STORE(M6+20)
+      ENDIF
       IF (ILINK .EQ. 5) THEN
        IF (KALLOW(IN) .LT. 0) THEN
             JCODE = 1
@@ -512,7 +514,7 @@ CDJWMAR99]
        ENDIF
        WRITE(NCFPU1,'( 3I4, F10.3, I2)') I, J, K, FS, JCODE
       ELSE
-        WRITE(NCFPU1, '(3I4, F10.3, F7.3)') I, J, K, FS, S
+        WRITE(NCFPU1, '(3I4, F10.3, F7.2)') I, J, K, FS, S
       ENDIF
       GOTO 1950
 1960  CONTINUE
