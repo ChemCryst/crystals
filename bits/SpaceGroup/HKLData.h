@@ -41,16 +41,24 @@
 #include <stdio.h>
 #include "Matrices.h"
 
+using namespace std;
+
 class Reflection:public MyObject
 {
 public:
     Matrix<short>* tHKL;
     float i, iSE;
     
+    Reflection();
     Reflection(char* pString);
+    Reflection(const Reflection& pReflection);
+    Reflection& operator=(const Reflection& pReflection);
     ~Reflection();
-    Matrix<short>* getHKL();
+    Matrix<short>* getHKL() const;
+    void setHKL(const Matrix<short> pMatrix);
 };
+
+std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection);
 
 class HKLData:public MyObject
 {
@@ -66,8 +74,8 @@ class HKLData:public MyObject
         /**********************************************/
         HKLData(char* pPath);	
         ~HKLData();
-        int numberOfReflections();
-        Reflection* getReflection(int pIndex);
-        bool find(Reflection* pReflection);
+        int numberOfReflections() const;
+        Reflection* getReflection(const int pIndex) const;
+        bool find(const Reflection* pReflection);
 };
 #endif
