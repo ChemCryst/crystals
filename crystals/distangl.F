@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2003/11/06 15:48:01  rich
+C Improved part numbering rules. The group bit of the number (digits > 1000)
+C should now be called the assembly number. The number may now be negative,
+C the -ve sign is given to the part digits (<999) and these atoms are not
+C allowed to form bonds to the same part using symmetry operators. Useful
+C for assemblies disordered across a sym op.
+C
 C Revision 1.58  2003/10/31 12:42:18  rich
 C If BONDTYPE is set to OFF, remove list of special bonds from list 41
 C (L41S), since this bit is only ever changed by the BONDTY routine.
@@ -609,6 +616,7 @@ C----- READ A DIRECTIVE
 200   CONTINUE
 C------ LOAD LIST 5/10
         IULN= ISTORE(JCOMBF+11)
+        IF (IULN .LT. 1) GOTO 9900 ! Common may be cleared by previous error.
         IULN = KTYP05 (IULN)
         CALL XLDR05 (IULN)
         IF (IERFLG .LT. 0) GOTO 9900
