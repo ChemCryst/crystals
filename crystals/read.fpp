@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/07/01 16:47:24  rich
+C Don't update the prompt information ['!','>',' '] in the GUI unless the
+C input unit is the command line. Considerably reduces pointless GUI traffic.
+C
 C Revision 1.42  2003/05/15 17:26:28  rich
 C Addition of one extra ENDFILE statement seems to
 C make the system request queue work properly under g77.
@@ -280,6 +284,8 @@ C
 \XGUIOV
 CDJW DEC 99 ADD GLOBAL SCRIPT VARIABLES SO WE CAN GET 'VERIFY'
 \XSCGBL
+\XSCCHK
+\XMENUC
 C
 C
 C
@@ -295,13 +301,13 @@ C--CHECK IF ANY ERRORS WERE MADE ON THE LAST CARD
       IF(LEF-LSTLEF)1050,1150,1050
 C--ERRORS  -  TERMINATE THEM PROPERLY
 1050  CONTINUE
+
 C--CHECK THE LAST READ, AND THE TYPE OF THE NEXT READ
 1150  CONTINUE
       LSTLEF=LEF
       IF ( IRDSRQ(IFLIND) .GT. 0 ) THEN
-C
+
 C -- MOVE POINTERS REQUIRED BY SYSTEM REQUEST QUEUE HANDLING
-C
         IF ( NREC .GT. 0 ) THEN
           NREC = NREC - 1
           IEOF = NREC
@@ -341,9 +347,13 @@ C
 &&&GILGIDWXS          CALL XPRVDU (NCVDU,1,0)
         ENDIF
 C If in script mode, set flag.
-        INSTRC = .FALSE.
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-            INSTRC = .TRUE.
+          INSTRC = .TRUE.
+        ELSE
+          INSTRC = .FALSE.
+          CPRVNM = ' '  ! Clear names of running scripts.
+          CSCPNM = ' '
+          CLSTNM = ' '
         END IF
 C Update status information for GUI.
         IF (ISSTML .EQ. 4) CALL MENUUP
@@ -355,10 +365,10 @@ C Update status information for GUI.
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
 
-      IF ( NCRU .EQ. 5 ) THEN
+&&&GIDGILWXS      IF ( NCRU .EQ. 5 ) THEN
 &&&GIDGILWXS      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
 &&&GIDGILWXS      CALL XPRVDU(NCVDU,1,0)
-      END IF
+&&&GIDGILWXS      END IF
 
 C
       IF ( ISTAT .LT. 0 ) GO TO 9910

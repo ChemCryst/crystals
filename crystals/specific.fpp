@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/05/07 12:18:56  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.39  2002/10/14 12:33:25  rich
 C Support for DVF command line version.
 C
@@ -2441,35 +2447,25 @@ C----- PUSH PLAIN TEXT UP TO MAKE ROOM FOR MENU
 &VAX      WRITE( NCAWU, '(1X)')
 &VAX      END DO
 C
-C----- RECOVER SCRIPT NAME
-      ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
-      ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
-      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
-      CLSTNM = CSCPNM(1:LENNM)
+cC----- RECOVER SCRIPT NAME
+c      ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
+c      ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
+c      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+c      CLSTNM = CSCPNM(1:LENNM)
+c
+c&&&GILGIDWXS          WRITE(CMON(1),'(A)')
+c&&&GILGIDWXS     1 '^^WI SET PROGOUTPUT TEXT = '
+c&&&GILGIDWXS      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
+c&&&GILGIDWXS         WRITE(CMON(2),'(5A)')
+c&&&GILGIDWXS     1'^^WI ''Script: ',CSCPNM(1:LENNM),
+c&&&GILGIDWXS     1   ' called from:', CPRVNM, ''''
+c&&&GILGIDWXS      ELSE
+c&&&GILGIDWXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+c&&&GILGIDWXS     1  CSCPNM(1:LENNM), ''''
+c&&&GILGIDWXS      ENDIF
+c&&&GILGIDWXS          WRITE(CMON(3),'(A)') '^^CR'
+c&&&GILGIDWXS      CALL XPRVDU(NCVDU,3,0)
 
-&&GILGID          WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
-&&GILGID      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
-&&GILGID         WRITE(CMON(2),'(5A)')'^^WI ''Script: ',CSCPNM(1:LENNM),
-&&GILGID     1   ' called from:', CPRVNM, ''''
-&&GILGID      ELSE
-&&GILGID         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
-&&GILGID     1  CSCPNM(1:LENNM), ''''
-&&GILGID      ENDIF
-&&GILGID          WRITE(CMON(3),'(A)') '^^CR'
-&&GILGID      CALL XPRVDU(NCVDU,3,0)
-
-&WXS          WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
-&WXS      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
-&WXS         WRITE(CMON(2),'(5A)')'^^WI ''Script: ',CSCPNM(1:LENNM),
-&WXS     1   ' called from:', CPRVNM, ''''
-&WXS      ELSE
-&WXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
-&WXS     1  CSCPNM(1:LENNM), ''''
-&WXS      ENDIF
-&WXS          WRITE(CMON(3),'(A)') '^^CR'
-&WXS      CALL XPRVDU(NCVDU,3,0)
-
-C
       IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
 
 C----- FIND THE DEFAULT MENU ITEM

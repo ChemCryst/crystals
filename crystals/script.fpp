@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/07/01 16:43:34  rich
+C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
+C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
+C data from CRYSTALS' store. The unprefixed versions take any type and return
+C the same type.
+C
 C Revision 1.45  2003/06/30 17:58:38  rich
 C On abandoning script due to CRYSTALS error, or due to a script syntax error,
 C print out the script source file line number where the failure occurred.
@@ -6545,8 +6551,6 @@ C
       CHARACTER *256 CBUFFR
 C----- TO HOLD REAL FORMAT EXPRESSION
       CHARACTER *8 CFMTXP
-      CHARACTER*80 CSCPNM, CPRVNM, CLSTNM
-      SAVE CLSTNM
 C
 C
       PARAMETER (MLNLEN = 78, MLIN = 3)
@@ -6573,6 +6577,7 @@ C
 \XSCMSG
 \XSCCHR
 \XSCCHK
+\XMENUC
 \XSCGBL
 C
 C
@@ -6874,40 +6879,22 @@ C
         CALL OUTCOL(1)
        ENDIF
 C----- RECOVER SCRIPT NAME
-&&GILGID      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
-&&GILGID      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
-&&GILGID      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
-&&GILGID      CLSTNM = CSCPNM(1:LENNM)
-&&GILGID      CALL XCTRIM (CLSTNM,LLSTNM)
-&WXS      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
-&WXS      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
-&WXS      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
-&WXS      CLSTNM = CSCPNM(1:LENNM)
-&WXS      CALL XCTRIM (CLSTNM,LLSTNM)
-
-&&GILGID      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
-&&GILGID      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
-&&GILGID         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
-&&GILGID     1   CSCPNM(1:LENNM),
-&&GILGID     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
-&&GILGID      ELSE
-&&GILGID         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
-&&GILGID     1  CSCPNM(1:LENNM), ''''
-&&GILGID      ENDIF
-&&GILGID      WRITE(CMON(3),'(A)') '^^CR'
-&&GILGID      CALL XPRVDU(NCVDU,3,0)
-
-&WXS      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
-&WXS      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
-&WXS         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
-&WXS     1   CSCPNM(1:LENNM),
-&WXS     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
-&WXS      ELSE
-&WXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
-&WXS     1  CSCPNM(1:LENNM), ''''
-&WXS      ENDIF
-&WXS      WRITE(CMON(3),'(A)') '^^CR'
-&WXS      CALL XPRVDU(NCVDU,3,0)
+&&&GILGIDWXS      ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
+&&&GILGIDWXS      ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
+&&&GILGIDWXS      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+&&&GILGIDWXS      CLSTNM = CSCPNM(1:LENNM)
+&&&GILGIDWXS      CALL XCTRIM (CLSTNM,LLSTNM)
+&&&GILGIDWXS      WRITE(CMON(1),'(A)') '^^WI SET PROGOUTPUT TEXT = '
+&&&GILGIDWXS      IF ( CPRVNM(1:3) .NE. '   ' ) THEN
+&&&GILGIDWXS         WRITE(CMON(2),'(5A)')'^^WI ''Running script: ',
+&&&GILGIDWXS     1   CSCPNM(1:LENNM),
+&&&GILGIDWXS     1   ' called from: ', CPRVNM(1:LLSTNM), ''''
+&&&GILGIDWXS      ELSE
+&&&GILGIDWXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
+&&&GILGIDWXS     1  CSCPNM(1:LENNM), ''''
+&&&GILGIDWXS      ENDIF
+&&&GILGIDWXS      WRITE(CMON(3),'(A)') '^^CR'
+&&&GILGIDWXS      CALL XPRVDU(NCVDU,3,0)
 C
 C -- READ THE USER'S RESPONSE FROM THE TERMINAL
 C
