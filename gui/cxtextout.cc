@@ -551,6 +551,8 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
         dc.DrawRectangle( 0, 0, clientRc.GetWidth(), clientRc.GetHeight() );
 
     dc.SetFont(wxNullFont);
+    dc.SetBrush( wxNullBrush );
+    dc.SetPen  ( wxNullPen );
 #endif
 
 }
