@@ -11,19 +11,42 @@
 #include "Matrices.h"
 #include <vector>
 
+/*!
+ * @class CrystSymmetry 
+ * @description Not yet documented.
+ * @abstract
+*/
 class CrystSymmetry:public string
 {
-	protected:
-		vector<Matrix<short> > iMatrices;
 	public:
 		CrystSymmetry();
 		CrystSymmetry(string& pSymmetryDescription, size_t pIndex);
 		CrystSymmetry(const string& pSymmetryDescription);
 		CrystSymmetry(const CrystSymmetry& pCrystSymmetry);
 		virtual ~CrystSymmetry();
+
+		/*!
+		 * @function runCheck 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		void runCheck();
-		virtual Matrix<short>& matrix(unsigned int pIndex);
-		virtual unsigned int matrixCount();
+		
+		/*!
+		 * @function matrix 
+		 * @description Returns a metrix associated with the symmetry.
+		 * @abstract Returns a matrix representing part of the symmetry
+		 * in reciprical space. This is a virtual method which should be
+		 * overloaded to return the appropriate matrix
+		 */
+		virtual Matrix<short>& matrix(const size_t pIndex) const;
+		
+		/*!
+		 * @function matrixCount 
+		 * @description Returns the number of matrix the symmetry has associated with it.
+		 * @abstract This is a virtual method which is intended to be replaces.
+		 */
+		virtual size_t matrixCount() const;
 };
 
 extern std::ostream& operator<<(std::ostream& pStream, CrystSymmetry& pSymmetry);

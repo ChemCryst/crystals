@@ -13,6 +13,11 @@
 #include <set>
 #include <list>
 
+/*!
+ * @class MergedDataResult 
+ * @description Not yet documented.
+ * @abstract
+*/
 class MergedDataResult
 {
 	protected:
@@ -22,11 +27,34 @@ class MergedDataResult
 	public:
 		MergedDataResult(const HKLData& pData, const LaueGroup& pForLaueGroup, const UnitCell& pUnitCell);
 		~MergedDataResult();
+
+		/*!
+		 * @function crystalSystem 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		SystemID crystalSystem() const;
+
+		/*!
+		 * @function laueGroup 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		char* laueGroup() const;
+
+		/*!
+		 * @function rFactor 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		float rFactor() const;
 };
 
+/*!
+ * @class MergedReflections 
+ * @description Not yet documented.
+ * @abstract
+*/
 class MergedReflections:public HKLData
 {
 	protected:
@@ -34,10 +62,27 @@ class MergedReflections:public HKLData
 		float iRFactor;
 	public:
 		MergedReflections(float pRFactor, LaueGroup* pLaueGroup, const Matrix<float>& pUnitCellTensor);
+
+		/*!
+		 * @function rFactor 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		float rFactor();
+		
+		/*!
+		 * @function laueGroup 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		LaueGroup *laueGroup();
 };
 
+/*!
+ * @class MergedData 
+ * @description Not yet documented.
+ * @abstract
+*/
 class MergedData
 {
 	protected:
@@ -47,18 +92,41 @@ class MergedData
 	public:
 		MergedData(const HKLData& pHKLs, const LaueGroup& pForLaueGroup, Matrix<short>* pTransformation = NULL);
 		~MergedData();
+
+		/*!
+		 * @function mergeReflections 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		void mergeReflections(HKLData& pReflections); //Returns the merged reflections in pHKLs
+
+		/*!
+		 * @function rFactor 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		float rFactor();
 };
 
 
 
+/*!
+ * @class DataMerger 
+ * @description Not yet documented.
+ * @abstract
+*/
 class DataMerger:public list<MergedDataResult*>
 {
 	public:
 		DataMerger(const HKLData& pData, const float pUnitCellThreshHold, const LaueGroupRange pLaueGroupRange, const UnitCell& pUnitCell);
 		DataMerger(const HKLData& pData, const SystemID pForLaueGroups[], const unsigned int pNumberOfLaueGroups, const UnitCell& pUnitCell);
 		~DataMerger();
+
+		/*!
+		 * @function mostLikelyCrysSystem 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		SystemID mostLikelyCrysSystem();
 };
 

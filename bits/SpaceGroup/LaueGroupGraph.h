@@ -17,11 +17,20 @@
 #include "HKLData.h"
 #include "MergedData.h"
 
+/*!
+ * @class LaueGroupGraph 
+ * @description Not yet documented.
+ * @abstract
+*/
 class LaueGroupGraph
 {
 	protected:
 		class Node;
-		 
+		/*!
+		 * @class Link 
+		 * @description Not yet documented.
+		 * @abstract
+		*/
 		class Link
 		{
 			protected:
@@ -33,16 +42,51 @@ class LaueGroupGraph
 			public:
 				Link(Node* pLinkingNode, const Matrix<short>* pRotation = NULL, const Matrix<short>* pTransformation = NULL);
 				Link(Node* pNode, const bool pInvertTransformation);
+
+				/*!
+				 * @function output 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				std::ostream& output(std::ostream& pStream) const;
 				Node *node();
 				~Link();
 				//Methods for the merging
+
+				/*!
+				 * @function unitCellRating 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				float unitCellRating(HKLData& pReflections);
+
+				/*!
+				 * @function dropReflections 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				void dropReflections(); //Releases all the reflections which where generated when merged.
+
+				/*!
+				 * @function merge 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				MergedReflections& merge(HKLData& tReflections);
+
+				/*!
+				 * @function follow 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				MergedReflections& follow(const float pThreshold);
 		};
 			
+		/*!
+		 * @class Node 
+		 * @description Not yet documented.
+		 * @abstract
+		*/
 		class Node
 		{
 			protected:
@@ -51,15 +95,63 @@ class LaueGroupGraph
 			public:
 				Node(LaueGroup* pLaueGroup);
 				~Node();
+
+				/*!
+				 * @function addLink 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				void addLink(Node* pNode, const Matrix<short>* pRotation = NULL, const Matrix<short>* pTransformation = NULL);
+
+				/*!
+				 * @function addLink 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				void addLink(Node* pNode, const bool pInvertTransformation); //remove any transformations applied to the data already.
+
+				/*!
+				 * @function numberOfLinks 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				size_t numberOfLinks();
+
+				/*!
+				 * @function laueGroup 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				LaueGroup* laueGroup();
+
+				/*!
+				 * @function output 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				std::ostream& output(std::ostream& pStream);
 				//Methods for the merging
 //				void dropReflections(); //Releases all the reflections which where generated when merged.
+
+				/*!
+				 * @function unitCellRating 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				float unitCellRating(HKLData& pReflections);
+
+				/*!
+				 * @function follow 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				MergedReflections& follow(MergedReflections& tReflections, const float pThreshold); //Make node merge the reflections for all of it's connection Nodes.
+
+				/*!
+				 * @function merge 
+				 * @description Not yet documented.
+				 * @abstract
+				 */
 				MergedReflections* merge(HKLData& tReflections, Matrix<short>* pTransformationMatrix = NULL);
 		};
 		
@@ -68,7 +160,19 @@ class LaueGroupGraph
 	public:
 		LaueGroupGraph();
 		~LaueGroupGraph();
+
+		/*!
+		 * @function output 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		std::ostream& output(std::ostream& pStream);
+
+		/*!
+		 * @function merge 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		MergedReflections& merge(HKLData& tData);
 		//std::ostream& LaueGroupGraph::operator<<(std::ostream& pStream, const LaueGroupGraph::Link& pLink);
 };

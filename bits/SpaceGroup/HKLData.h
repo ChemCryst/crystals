@@ -44,6 +44,11 @@
 
 using namespace std;
 
+/*!
+ * @class Reflection 
+ * @description Not yet documented.
+ * @abstract
+*/
 class Reflection:public MyObject
 {
 public:
@@ -57,8 +62,20 @@ public:
     Reflection& operator=(const Reflection& pReflection);
 	bool operator<(const Reflection& pReflecton);
     ~Reflection();
+
+    /*!
+     * @function getHKL 
+     * @description Not yet documented.
+     * @abstract
+     */
     Matrix<short>* getHKL() const;
 	const Matrix<short>& hkl() const;
+
+    /*!
+     * @function setHKL 
+     * @description Not yet documented.
+     * @abstract
+     */
     void setHKL(const Matrix<short>& pMatrix);
 };
 
@@ -79,6 +96,11 @@ struct lsreflection
 
 std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection);
 
+/*!
+ * @class HKLData 
+ * @description Not yet documented.
+ * @abstract
+*/
 class HKLData:public vector<Reflection*>
 {
 	protected:
@@ -95,13 +117,37 @@ class HKLData:public vector<Reflection*>
 		HKLData(HKLData& pHKLs);
         HKLData(char* pPath, Matrix<float>& pUnitCellTensor);	
         virtual ~HKLData();
+
+        /*!
+         * @function find 
+         * @description Not yet documented.
+         * @abstract
+         */
         bool find(const Reflection* pReflection);
+
+		/*!
+		 * @function unitCellTensor 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		Matrix<float>& unitCellTensor();
+
+		/*!
+		 * @function transformation 
+		 * @description Not yet documented.
+		 * @abstract
+		 */
 		Matrix<short>& transformation();
 };
 
 static const float kMoWL = 1.5418f; //Angstroms
 static const float kCuWL = 1.5418f; //Angstroms
 
+
+/*!
+ * @function resipSphVol 
+ * @description Not yet documented.
+ * @abstract
+ */
 float resipSphVol(float pAngRad, float pWaveLength);
 #endif
