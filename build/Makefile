@@ -2,6 +2,18 @@ include makefile.in
 
 
 all : crysexe data scripts bits documentation
+	@echo .
+	@echo .
+	@echo .     To test this build of CRYSTALS: 
+	@echo .       export CRYSDIR=$(CURDIR) 
+	@echo .     and then start CRYSTALS from a command prompt:
+	@echo .       $(CURDIR)/crystals.exe
+	@echo .
+	@echo .     To make an installer:
+	@echo .       $(MAKE) dist
+	@echo .     and to run the install:
+	@echo .       ../installer/crystals-*.exe
+	@echo .
 
 crysexe : 
 	$(MAKE) -f Makefile.crystals
