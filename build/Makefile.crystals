@@ -22,6 +22,7 @@ all : obj crystals$(SUFFIX)
 
 crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 	$(LD) $(GUIFLAGS) $(FOBJ) $(COBJ) $(GUILIBRARIES) $(OPT) -o $@
+	strip $@
 
 obj/resource.o : ../gui/wx.rc
 	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config --prefix`/include
