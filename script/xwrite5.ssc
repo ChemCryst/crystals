@@ -523,11 +523,6 @@
 %%
 %%
 %  IF ( STUCK ) THEN
-
-{E
-{I Sticky atoms are being implemented.... This may work, or not.
-{E
-
 %    CLEAR
 %    COPY '#RELEASE SCPQUEUE l12.spq'
 %    QUEUE REWIND
