@@ -17,6 +17,12 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2003/05/07 12:18:56  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.13  2002/06/26 11:57:48  richard
 // Label mouse fixes.
 //
@@ -340,6 +346,7 @@ void CcChartDoc::DrawView()
 {
     if(attachedChart)
     {
+        attachedChart->Clear();
         mCommandList->Reset();
         CcChartObject* item;
         while ( (item = (CcChartObject*)mCommandList->GetItemAndMove()) != nil )
