@@ -44,8 +44,10 @@ You must have set Lambda in LIST 13, Experimental conditions
 %      COPY '#COMPOSITION'
 %      CLEAR
 %      QUEUE PROCESS
-%      COPY 'SCATT  CRYSDIR:SCRIPT\SCATT.DAT'
-%      COPY 'PROPER CRYSDIR:SCRIPT\PROPWIN.DAT'
+-GIL%      COPY 'SCATT  CRYSDIR:SCRIPT\SCATT.DAT'
+-GIL%      COPY 'PROPER CRYSDIR:SCRIPT\PROPWIN.DAT'
++GIL%      COPY 'SCATT  CRYSDIR:script/scatt.dat'
++GIL%      COPY 'PROPER CRYSDIR:script/propwin.dat'
 %      COPY 'END'
 %    ELSE
 You have not specified any elements. No data has been stored

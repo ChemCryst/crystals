@@ -19,9 +19,12 @@
 %% Open the required question file:
 %%
 %    CASE LOOPCOUNTER
-%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb1.dat'
-%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb2.dat'
-%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb3.dat'
+-GIL%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb1.dat'
+-GIL%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb2.dat'
+-GIL%      COPY '#OPEN SCPDATA CRYSDIR:\script\wwtb3.dat'
++GIL%      COPY '#OPEN SCPDATA CRYSDIR:/script/wwtb1.dat'
++GIL%      COPY '#OPEN SCPDATA CRYSDIR:/script/wwtb2.dat'
++GIL%      COPY '#OPEN SCPDATA CRYSDIR:/script/wwtb3.dat'
 %    END CASE
 %%
 %% Count questions in file.
