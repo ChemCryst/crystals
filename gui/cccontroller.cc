@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.38  2001/11/15 10:44:54  ckp2
+// Reset default paths for Open and Save file dialogs to the current working
+// directory every time.
+//
 // Revision 1.37  2001/10/10 12:44:48  ckp2
 // The PLOT classes!
 //
@@ -734,35 +738,58 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                     // Look for the item
                     theElement = FindObject( name );
                     if(theElement)
-                        theElement->ParseInput( tokenList );
-                    else
                     {
-                        CrGraph * theGraph = nil, * theItem;
-                        mGraphList.Reset();
-                        theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                        while ( theItem != nil && theGraph == nil )
-                        {
-                            theGraph = theItem->FindObject( name );
-                            theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                        }
-                        if ( theGraph )
-                            theGraph->ParseInput( tokenList );
-                        else
-                        {
-                            CcChartDoc * theChart = nil, * theCItem;
-                            mChartList.Reset();
-                            theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                            while ( theCItem != nil && theChart == nil )
-                            {
-                                theChart = theCItem->FindObject( name );
-                                theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
-                            }
-                            if ( theChart )
-                                theChart->ParseInput( tokenList );
-                            else
-                                LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
-                        }
+                        theElement->ParseInput( tokenList );
+                        break;
                     }
+
+                    CrGraph * theGraph = nil, * theItem;
+                    mGraphList.Reset();
+                    theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                    while ( theItem != nil && theGraph == nil )
+                    {
+                        theGraph = theItem->FindObject( name );
+                        theItem = (CrGraph *)mGraphList.GetItemAndMove();
+                    }
+                    if ( theGraph )
+                    {
+                        theGraph->ParseInput( tokenList );
+                        break;
+                    }
+
+                    CcChartDoc * theChart = nil, * theCItem;
+                    mChartList.Reset();
+                    theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                    while ( theCItem != nil && theChart == nil )
+                    {
+                        theChart = theCItem->FindObject( name );
+                        theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
+                    }
+                    if ( theChart )
+                    {
+                        theChart->ParseInput( tokenList );
+                        break;
+                    }
+
+                    CcPlotData * thePlot = nil, * thePItem;
+                    CcPlotData::sm_PlotList.Reset();
+
+                    thePItem = (CcPlotData *)CcPlotData::sm_PlotList.GetItemAndMove();
+//This loop finds the LAST item with a given name in the plotlist.
+                    while ( thePItem != nil )
+                    {
+                        if ( thePItem->FindObject( name ) )
+                           thePlot = thePItem;
+                        thePItem = (CcPlotData *)CcPlotData::sm_PlotList.GetItemAndMove();
+                    }
+                    if ( thePlot )
+                    {
+                        thePlot->ParseInput( tokenList );
+                        break;
+                    }
+
+
+                    LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
                 }
                 break;
             }
