@@ -239,8 +239,11 @@ class Tables
         Headings* iHeadings;
         Conditions* iConditions;
     public:
-        Tables(Headings* pHeadings, Conditions* pConditions);
+        Tables(char* pFileName);
+        //Tables(Headings* pHeadings, Conditions* pConditions);
         ~Tables();
+        Headings* getHeadings();
+	Conditions* getConditions();
         void addTable(Table* pTable);
         void readFrom(filebuf& pFile);
         Table* findTable(char* pName);
