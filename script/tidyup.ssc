@@ -1,6 +1,30 @@
 %SCRIPT TIDYUP
 %%
+% VARIABLE LOGICAL TWINNED
+% EVALUATE TWINNED = FALSE
+%  BLOCK
+%    VARIABLE INTEGER ITMP
+%    IF ( EXISTS 13 .NE. 0 ) THEN
+%        COPY '#GENERALEDIT 13'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%        IF ( ITMP .GE. 0 ) THEN
+%         EVALUATE TWINNED = TRUE
+%        ELSE
+%         EVALUATE TWINNED = FALSE
+%        END IF
+%        COPY 'END'
+%    END IF
+%  END BLOCK
+%%
 %% A penultimate difference map
+%  COPY '#SCRIPT VALID12'
+%  COPY '#SFLS'
+%  IF TWINNED .EQ. TRUE THEN
+%     COPY 'CALC /FO/=SCALED-/FOT/'
+%  ELSE
+%     COPY 'CALC'
+%  END IF
 %  COPY '#FOUR'
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'PEAK HEIGHT=1 '
@@ -82,6 +106,12 @@
 %    COPY 'END'
 %  END IF
 %% A final difference map.
+%  COPY '#SFLS'
+%  IF TWINNED .EQ. TRUE THEN
+%     COPY 'CALC /FO/=SCALED-/FOT/'
+%  ELSE
+%     COPY 'CALC'
+%  END IF
 %  COPY '#FOUR'
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'PEAK HEIGHT=1 '
