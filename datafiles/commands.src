@@ -1460,22 +1460,22 @@ Indices and theta for data collection
     .THETAMAX           0    0    1    0    1 0.
    5.ABSORPTION         9    1    0    0    9    1  105   17   30
          1    1    1    1    1    1    0    0    0    0
-Absorption correction details
+New Absorption correction details
 (8(3X,12A1))
-(8G15.3/11X,A4)
-         2    2    2    2    2    2    2    2    3
-    .PSIMIN             0    0    1    0    1 0.
-    .PSIMAX             0    0    1    0    1 0.
+(8G15.3/3X,7I12)
+         2    2    2    2    2    2    2    2    3    
+    .ANALMIN            0    0    1    0    1 0.
+    .ANALMAX            0    0    1    0    1 0.
     .THETAMIN           0    0    1    0    1 0.
     .THETAMAX           0    0    1    0    1 0.
     .EMPMIN             0    0    1    0    1 0.
     .EMPMAX             0    0    1    0    1 0.
     .DIFABSMIN          0    0    1    0    1 0.
     .DIFABSMAX          0    0    1    0    1 0.
-    .ABSTYPE            0    0    1   13    0 NONE
+    .ABSTYPE            0    0    1   14    0 NONE
      NONE           DIFABS         EMPIRICAL      MULTI-SCAN     SADABS
      SORTAV         SHELXA         GAUSSIAN       ANALYTICAL     NUMERICAL
-     INTEGRATION    SPHERICAL      CYLINDRICAL
+     INTEGRATION    SPHERICAL      CYLINDRICAL    PSI-SCAN
    6.GENERAL           13    1    0    0   13    1  106   21   30
          1    1    1    1    1    1    0    0    0    0
 Various bits and pieces

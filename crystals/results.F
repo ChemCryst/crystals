@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.82  2004/06/08 14:16:56  djw
+C Show given and found formulae in cif. Output given (as opposed to found) as data items.  Variable IEPROP set if L5 and L29 differ
+C
 C Revision 1.81  2004/05/13 14:40:51  rich
 C Many, many changes to the CIF. It's better.
 C
@@ -3660,7 +3663,7 @@ C
       DIMENSION IREFCD(3,IDIFMX)
       PARAMETER (ISOLMX=7)
       DIMENSION ISOLCD(ISOLMX)
-      PARAMETER (IABSMX=13)
+      PARAMETER (IABSMX=14)
       DIMENSION IABSCD(IABSMX)
 
 C 
@@ -3725,7 +3728,7 @@ C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
 C------ REFERENCE CODES FOR DIRECT METHODS
       DATA ISOLCD /1,18,30,11,22,28,29/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
-      DATA IABSCD /7,21,16,17,31,32,33,7,7,7,7,7,7/
+      DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16/
 
 C 
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
@@ -4350,7 +4353,7 @@ cdjwjun04
       nbase=2
       do 1510 m29=l29,l29+(n29-1)*md29,md29
 c-----  get the character form of the name, as a unique code
-         write (ctype,'(a4)') istore(m5)
+         write (ctype,'(a4)') istore(m29)
          call xcras (ctype,nchar)
          itext=100*index(upper,ctype(1:1))+index(upper,ctype(2:2))
 c 
@@ -4617,9 +4620,10 @@ C NUMER        10
 C INTEGERATION 11
 C SPHERICAL    12
 C CYLINDRICAL  13
+C PSI-SCAN     14
         IF (IVAL.EQ.1) THEN
             CVALUE='none'
-            J=0
+            J=-1
         ELSE IF ((IVAL.EQ.2).OR.(IVAL.EQ.7)) THEN
             CVALUE='refdelf'
             J=6
@@ -4627,7 +4631,7 @@ C CYLINDRICAL  13
             IF (L13DT.EQ.9) THEN
 C           AREA DETECTOR
                CVALUE='multi-scan'
-               J=2
+               J=4
             ELSE
                CVALUE='psi-scan'
                J=4
@@ -4635,7 +4639,7 @@ C           AREA DETECTOR
         ELSE IF ((IVAL.GE.4).AND.(IVAL.LE.6)) THEN
 C           AREA DETECTOR
             CVALUE='multi-scan'
-            J=2
+            J=4
         ELSE IF (IVAL.EQ.8) THEN
             CVALUE='gaussian'
             J=0
@@ -4650,14 +4654,37 @@ C           AREA DETECTOR
             J=0
         ELSE IF (IVAL.EQ.12) THEN
             CVALUE='sphere'
-            J=0
+            J=2
         ELSE IF (IVAL.EQ.13) THEN
             CVALUE='cylinder'
-            J=0
+            J=2
+        ELSE IF (IVAL.EQ.14) THEN
+            CVALUE='psi-scan'
+            J=4
         ELSE
             CVALUE='?'
-            J=0
+            J=-1
         END IF
+        IF ( IPUNCH .EQ. 0 ) THEN
+              WRITE (CLINE,'(
+     1        ''# Sheldrick geometric approximations'',
+     1        T35,2F8.2)') TMIN,TMAX
+              CALL XPCIF (CLINE)
+        END IF
+C
+C-----    A TMAX/TMIN FIX IN THE ABSENCE OF REAL INFO
+         IF (J .NE. -1) THEN
+          IF (STORE(L30AB+1+J) .LE. ZERO) THEN
+            STORE(L30AB+J)  = TMIN
+            STORE(L30AB+1+J) = TMAX
+            IF ( IPUNCH .EQ. 0 ) THEN
+              WRITE(CLINE,'(A)')
+     1        '# No experimental values of Tmin/max available'
+              CALL XPCIF(CLINE)
+            ENDIF
+          ENDIF
+         ENDIF
+C
         CLINE=' '
         WRITE (CLINE,'( A, ''correction_type '',A)') CBUF(1:15),CVALUE
         IF ( IPUNCH .EQ. 0 ) THEN
@@ -4669,26 +4696,7 @@ C           AREA DETECTOR
            WRITE (NCPU,2) 'Absorption correction', CVALUE
         END IF
 C 
-C
-C-----  A TMAX/TMIN FIX IN THE ABSENCE OF REAL INFO
-          IF (STORE(L30AB+1+J) .LE. ZERO) THEN
-            STORE(L30AB+1+J) = TMAX
-            STORE(L30AB+J)  = TMIN
-            IF ( IPUNCH .EQ. 0 ) THEN
-              WRITE(CLINE,'(A)')
-     1        '# No experimental values of Tmin/max available'
-              CALL XPCIF(CLINE)
-            ENDIF
-          ENDIF
-          IF ( IPUNCH .EQ. 0 ) THEN
-              WRITE (CLINE,'(
-     1        ''# Sheldrick geometric approximations'',
-     1        T35,2F8.2)') TMIN,TMAX
-              CALL XPCIF (CLINE)
-              CALL XPCIF (' ')
-          END IF
-C
-        IF (J.GT.0) THEN
+        IF (J.GE.0) THEN
           IF ( IPUNCH .EQ. 0 ) THEN
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
