@@ -14,7 +14,8 @@ CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
 	occ = 1;
 	covrad = vdwrad = 1000;
 	uflag = 0;
-	u1 = u2 = u3 = u4 = u5 = u6 = 0;
+//      u1 = u2 = u3 = u4 = u5 = u6 = 0;
+      x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
 	label = "Err";
 	m_selected = false;
 	parent = parentptr;
@@ -28,7 +29,8 @@ CcModelAtom::CcModelAtom()
 	occ = 1;
 	covrad = vdwrad = 1000;
 	uflag = 0;
-	u1 = u2 = u3 = u4 = u5 = u6 = 0;
+//      u1 = u2 = u3 = u4 = u5 = u6 = 0;
+      x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
 	label = "Err";
 	m_selected = false;
 }
@@ -46,8 +48,8 @@ CcCoord CcModelAtom::ParseInput(CcTokenList* tokenList)
 // OCC*1000,
 // COVRAD, VDWRAD,
 // FLAG,
-// UISO or U11
-// U12, U13, U22, U23, U33
+// UISO or X11
+// X12, x13, x22, x23, x31, x32, x33
 	theString = tokenList->GetToken();    //ID
 	id = atoi ( theString.ToCString() );
 	label =     tokenList->GetToken();    //LABEL
@@ -71,25 +73,31 @@ CcCoord CcModelAtom::ParseInput(CcTokenList* tokenList)
 	vdwrad = atoi ( theString.ToCString() );
 	theString = tokenList->GetToken();    //UISO/U11 FLAG
 	uflag = atoi ( theString.ToCString() );
-	theString = tokenList->GetToken();    //U11 or UISO * 1000
-	u1 = atoi ( theString.ToCString() );
-	theString = tokenList->GetToken();    //U12 * 1000
-	u2 = atoi ( theString.ToCString() );
-	theString = tokenList->GetToken();    //U13 * 1000
-	u3 = atoi ( theString.ToCString() );
-	theString = tokenList->GetToken();    //U22 * 1000
-	u4 = atoi ( theString.ToCString() );
-	theString = tokenList->GetToken();    //U23 * 1000
-	u5 = atoi ( theString.ToCString() );
-	theString = tokenList->GetToken();    //U33 * 1000
-	u6 = atoi ( theString.ToCString() );
-	CcCoord retVal(x,y,z);
+      theString = tokenList->GetToken();    //X11 or UISO * 1000
+      x11 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X12 * 1000
+      x12 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X13 * 1000
+      x13 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X21 * 1000
+      x21 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X22 * 1000
+      x22 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X23 * 1000
+      x23 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X31 * 1000
+      x31 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X32 * 1000
+      x32 = atoi ( theString.ToCString() );
+      theString = tokenList->GetToken();    //X33 * 1000
+      x33 = atoi ( theString.ToCString() );
+      CcCoord retVal(x,y,z);
 	return retVal;
 }
 
 void CcModelAtom::Draw(CrModel* ModelToDrawOn)
 {
-	ModelToDrawOn->DrawAtom(x,y,z,r,g,b,covrad,vdwrad);
+      ModelToDrawOn->DrawAtom(x,y,z,r,g,b,covrad,vdwrad,x11,x12,x13,x21,x22,x23,x31,x32,x33);
 }
 
 
