@@ -12,16 +12,17 @@
 @set CDEF=/D"WIN32" /D"_WINDOWS" /D"__CR_WIN__" /D"_MBCS" /D"_AFXDLL"
 @set COPTS=/EHs /W3 /nologo /c /TP /I..\gui /O2 /D"NDEBUG" /MD
 @set CDEBUG=/EHs /W3 /nologo /c /Od /RTC1 /D"_DEBUG" /MDd /Z7 /TP /I..\gui
-@set COUT=/Fo
+@set COUT=/Foobj\
 
 @set F77=DF
 @set FDEF=/define:_%COMPCODE%_
 @set FOPTS=/fpp /I..\crystals /MD /optimize:4  /nolink
 @set FNOOPT=/fpp /I..\crystals /MD /optimize:0 /nolink
 @set FWIN=/winapp
-@set FOUT=/object:
+@set FOUT=/object:obj\
 @set FDEBUG=/fpp /I..\crystals /MDd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink
-
+@if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
+@if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 goto exit
 
 :DVF
@@ -41,8 +42,9 @@ set F77=DF
 set FDEF=/define:_%COMPCODE%_
 set FOPTS=/fpp /I..\crystals /ML /optimize:4 /winapp /nolink
 set FNOOPT=/fpp /I..\crystals /ML /optimize:0 /winapp /nolink
-set FOUT=/object:
+set FOUT=/object:obj\
 set FDEBUG=/fpp /I..\crystals /MLd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink
+@if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 goto exit
 
 :DOS
@@ -63,8 +65,9 @@ set F77=ftn77
 set FDEF=/define:_%COMPCODE%_
 set FOPTS=/cfpp /I..\crystals  /no_warn73 /zero
 set FNOOPT=/fpp /I..\crystals  /no_warn73 /zero 
-set FOUT=/binary  
+set FOUT=/binary obj\
 set FDEBUG=/debug
+@if "%CRDEBUG%" == "TRUE" set FOUT=/binary obj\
 
 :exit
 

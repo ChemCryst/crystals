@@ -8,27 +8,34 @@
 @if exist ..\crystalsd.exe del ..\crystalsd.exe
 @if exist link.lis del link.lis
 @if exist dlink.lis del dlink.lis
+@if not exist obj mkdir obj
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
-@if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 @set COPTIONS=%CDEF% %COPTS%
+@if "%CRDEBUG%" == "TRUE" if not exist dobj mkdir dobj
+@if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-@FOR %%I IN ( ..\crystals\*.fpp ) DO %F77% %%I %FOUT%%%~nI.obj %FOPTIONS%
-@FOR %%I IN ( ..\cameron\*.fpp )  DO %F77% %%I %FOUT%%%~nI.obj %FOPTIONS%
-@FOR %%I IN ( ..\gui\*.cc )       DO %CC%  %%I %COUT%%%~nI.obj %COPTIONS%
-@%F77% ..\crystals\lapack.f  %FOUT%lapack.obj %FWIN% %FDEF% %FNOOPT%
+@FOR %%I IN ( ..\crystals\*.fpp ) DO call buildfile.bat %%~nI
+@FOR %%I IN ( ..\cameron\*.fpp ) DO call buildfile.bat %%~nI
+@FOR %%I IN ( ..\gui\*.cc )      DO call buildfile.bat %%~nI
+call buildfile.bat lapack
 
 @if "%COMPCODE%" == "GID" rc /d__CR_WIN__ /fo script1.res ..\gui\script1.rc
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
-@%LD% %OPT% %LDFLAGS% *.obj %LIBS% %OUT%crystals.exe    >link.lis
+@%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe >link.lis
 @goto fini
 
 :debug
-@%LD% %LDEBUG% %LDFLAGS% *.obj %LIBS% %OUT%crystals.exe >link.lis
+@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe >link.lis
 
 :fini
 @type link.lis
 @goto next1
+
+:error
+echo Failed
+perl ..\bin\errmail.pl FPP_RELEASE_COMPILE %%I obj\listing.lis
+goto exit
 
 :clean
 @del crystals.exe
