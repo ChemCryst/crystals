@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.20  2003/09/16 13:30:22  rich
+c Remove unneeded array.
+c
 c Revision 1.19  2003/09/15 18:13:02  rich
 c Oops. Don't meddle with the Uij's if this isn't an anisotropic atom.
 c
@@ -1128,15 +1131,15 @@ c      DO  J = 1, NATMD
 c         WRITE(CMON,'(2A,I5,A,I5)') 'In RENM: ',
 c     1    STORE(LRENM+(J-1)*MDRENM),NINT(STORE(LRENM+(J-1)*MDRENM+1)),
 c     2    STORE(LRENM+(J-1)*MDRENM+4),NINT(STORE(LRENM+(J-1)*MDRENM+5))
-c         CALL XPRVDU(NCVDU,1,0)
+c          CALL XPRVDU(NCVDU,1,0)
 c      END DO
 
       DO 1520 J = 1, NATMD
-        DO 1748 I = 1,N5
-        TYPE = STORE(L5+(I-1)*MD5)
-        SERIAL = STORE(L5+(I-1)*MD5+1)
-         IF(abs(TYPE-STORE(LRENM+(J-1)*MDRENM)) .GT. ZERO)     GOTO 1748
-         IF(abs(SERIAL-STORE(LRENM+(J-1)*MDRENM+1)) .GT. ZERO) GOTO 1748
+       DO 1748 I = 1,N5
+         KTYPE = ISTORE(L5+(I-1)*MD5)
+         KSERIL = NINT(STORE(L5+(I-1)*MD5+1))
+         IF( KTYPE .NE. ISTORE(LRENM+(J-1)*MDRENM) ) GOTO 1748
+         IF( KSERIL.NE. NINT(STORE(LRENM+(J-1)*MDRENM+1)) ) GOTO 1748
          CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4), STORE(L5+(I-1)*MD5),2)
          GOTO 1520 !Only match once.
 1748    CONTINUE
