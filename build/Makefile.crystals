@@ -17,7 +17,7 @@ DEP      = $(GUIFILES:.cc=.d)
 all : crystals
 
 crystals : $(FOBJ) $(COBJ)
-	$(LD) $(GUIFLAGS) $(GUILIBRARIES) $(OPT) -o $@$(SUFFIX) $(FOBJ) $(COBJ)
+	$(LD) $(GUIFLAGS) $(FOBJ) $(COBJ) $(GUILIBRARIES) $(OPT) -o $@$(SUFFIX)
 
 # This lapack module contains routines for compting machine precision, and must be compiled without optimisation.
 lapack.o : lapack.f
