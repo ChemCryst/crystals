@@ -80,6 +80,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 
 
   theModel->Setup();
+  ::ReleaseDC(theModel->GetSafeHwnd(), hdc);
 
 #endif
 #ifdef __BOTHWX__
@@ -221,8 +222,8 @@ void CxModel::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
 
-    HDC hOldDC = wglGetCurrentDC();
-    HGLRC hOldRC = wglGetCurrentContext();
+//    HDC hOldDC = wglGetCurrentDC();
+//    HGLRC hOldRC = wglGetCurrentContext();
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -350,7 +351,8 @@ void CxModel::OnPaint(wxPaintEvent &event)
     }
 
 #ifdef __CR_WIN__
-    wglMakeCurrent( hOldDC, hOldRC );
+    ::ReleaseDC(GetSafeHwnd(), hdc);
+    wglMakeCurrent( NULL,NULL );
 #endif
 }
 
@@ -1107,8 +1109,8 @@ void CxModel::Setup()
 void CxModel::NewSize(int cx, int cy)
 {
 #ifdef __CR_WIN__
-    HDC hOldDC = wglGetCurrentDC();
-    HGLRC hOldRC = wglGetCurrentContext();
+//    HDC hOldDC = wglGetCurrentDC();
+//    HGLRC hOldRC = wglGetCurrentContext();
     HDC hdc = ::GetDC ( GetSafeHwnd() );
     wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -1124,7 +1126,8 @@ void CxModel::NewSize(int cx, int cy)
     else           m_stretchX = (float)cx / (float)cy;
 
 #ifdef __CR_WIN__
-    wglMakeCurrent( hOldDC, hOldRC );
+    ::ReleaseDC(GetSafeHwnd(), hdc);
+    wglMakeCurrent( NULL,NULL );
 #endif
 
 }
@@ -1283,8 +1286,8 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, bool atomsOnly)
 {
 #ifdef __CR_WIN__
-   HDC hOldDC = wglGetCurrentDC();
-   HGLRC hOldRC = wglGetCurrentContext();
+//   HDC hOldDC = wglGetCurrentDC();
+//   HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -1355,6 +1358,12 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 // uint Max depth of hit primitive      
 // uint Name
 
+
+#ifdef __CR_WIN__
+     ::ReleaseDC( GetSafeHwnd(), hdc );
+     wglMakeCurrent( NULL, NULL );
+#endif
+
    if ( hits )
    {
 //     TEXTOUT ( CcString ( hits ) + " hits" );
@@ -1372,10 +1381,6 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 //     if (atomsOnly) { LOGERR( "HitGLID: " + CcString((int)highest_name) ); }
 
      *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
-
-#ifdef __CR_WIN__
-     wglMakeCurrent( hOldDC, hOldRC );
-#endif
 
      if ( *outObject )
      {
@@ -1916,8 +1921,8 @@ void CxModel::PolyCheck()
    if ( m_selectionPoints.ListSize() < 3 ) return;
 
 #ifdef __CR_WIN__
-   HDC hOldDC = wglGetCurrentDC();
-   HGLRC hOldRC = wglGetCurrentContext();
+//   HDC hOldDC = wglGetCurrentDC();
+//   HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -2086,7 +2091,8 @@ void CxModel::PolyCheck()
    delete [] feedbuf;
 
 #ifdef __CR_WIN__
-   wglMakeCurrent( hOldDC, hOldRC );
+    ::ReleaseDC(GetSafeHwnd(), hdc);
+    wglMakeCurrent( NULL,NULL );
 #endif
 
 }
@@ -2096,8 +2102,8 @@ void CxModel::PolyCheck()
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
 #ifdef __CR_WIN__
-   HDC hOldDC = wglGetCurrentDC();
-   HGLRC hOldRC = wglGetCurrentContext();
+//   HDC hOldDC = wglGetCurrentDC();
+//   HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
 #endif
@@ -2164,6 +2170,7 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
    delete [] selectbuf;
 
 #ifdef __CR_WIN__
-   wglMakeCurrent( hOldDC, hOldRC );
+    ::ReleaseDC(GetSafeHwnd(), hdc);
+    wglMakeCurrent( NULL,NULL );
 #endif
 }
