@@ -1,0 +1,48 @@
+% SCRIPT XFRIEDEL
+% VARIABLE INTEGER FMERGE 
+%%
+^^WI WINDOW XFRIEDEL 'Merge Friedel Opposites?' MODAL
+^^WI COMMIT='MF_BOK' CANCEL='MF_BXX'
+^^WI GRID MAIN NROWS=11 NCOLS=3
+^^WI {
+^^WI  @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' STATE=ON
+^^WI  @ 3,2 RADIOBUTTON KUN 'Do not merge opposites'
+^^WI  @ 5,2 STATIC MF1 'It is important NOT TO MERGE OPPOSITES for'
+^^WI  @ 6,2 STATIC MF1 'structures which have strong anomolous scatterers,'
+^^WI  @ 7,2 STATIC MF1 'since reflections related by Friedel`s law are not'
+^^WI  @ 8,2 STATIC MF1 'equivalent in these cases.'
+^^WI  @ 10,2 GRID BTNS NROWS=3 NCOLS=3
+^^WI  {
+^^WI   @ 2,1 BUTTON MF_BOK '&OK' LENGTH='Cancel' DEFAULT
+^^WI   @ 2,3 BUTTON MF_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% VERIFY MF_BOK MF_BXX
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% IF ( VALUE .EQ. 2 ) THEN
+^^CO  DISPOSE XFRIEDEL
+%     FINISH
+% END IF
+%%
+%%
+^^?? MFO STATE
+% VERIFY OFF ON
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% EVALUATE FMERGE = VALUE - 2
+^^CO  DISPOSE XFRIEDEL
+%%
+%%
+% IF ( EXISTS ( 13 ) .NE. 1 ) THEN
+%   COPY '#LIST 13'
+%   COPY 'END'
+% END IF
+% COPY '#GENERALEDIT 13'
+% COPY 'LOCATE RECORDTYPE=101'
+% COPY 'TRANSFER TO OFFSET=0 FROM FMERGE'
+% COPY 'WRITE'
+% COPY 'END'
+%%
+%%
+% END SCRIPT

@@ -144,6 +144,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 {S * Applying Lp corection
 %COPY '#LP'
 %COPY 'END'
+%%
+%  COPY '#SCRIPT XFRIEDEL'
+%%
 {S * Checking systematic absences
 %COPY '#SYSTEMATIC'
 %COPY 'END'
