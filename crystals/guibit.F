@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2001/06/17 14:20:27  richard
+C Make bonds crossing symmetry elements lighter to distinguish them from normal bonds more.
+C
 C Revision 1.34  2001/06/08 15:02:51  richard
 C Get F/F2 state for status window from L23 rather than L30.
 C
@@ -905,7 +908,6 @@ C Read the properties file and extract cov, vdw and colour.
 C Now get the colour definition for this colour from colour.cmn
 ##GILLIN                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
 &&GILLIN                  CFILEN = 'CRYSDIR:script/colour.cmn'
-                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(.NOT.WEXIST) GOTO 88
