@@ -178,13 +178,56 @@ float UnitCell::getSEGamma() const
     return iSEGamma;
 }
 
-Matrix<float> UnitCell::metricTensor()const
+Matrix<float>& UnitCell::metricTensor(Matrix<float>& pResult)const
 {
-    float tMatrix[] = {iA*iA, iA*iB*cosf(deg2rad(iGamma)), iA*iC*cosf(deg2rad(iBeta)), 
-                       iB*iA*cosf(deg2rad(iGamma)), iB*iB, iB*iC*cosf(deg2rad(iAlpha)),
-                       iC*iA*cosf(deg2rad(iBeta)), iC*iB*cosf(deg2rad(iAlpha)), iC*iC};
-    Matrix<float> tMatricTensor(tMatrix, 3, 3);
-    return tMatricTensor;
+	pResult.resize(3, 3);
+	pResult.setValue(iA*iA, 0, 0);
+	pResult.setValue(iA*iB*cos(deg2rad(iGamma)), 0, 1);
+	pResult.setValue(iA*iC*cos(deg2rad(iBeta)), 0, 2);
+	pResult.setValue(iB*iB, 1, 1);
+	pResult.setValue(iB*iC*cos(deg2rad(iAlpha)), 1, 2);
+	pResult.setValue(iC*iC, 2, 2);
+	
+	pResult.setValue(pResult.getValue(0, 1), 1, 0);
+	pResult.setValue(pResult.getValue(2, 0), 2, 0);
+	pResult.setValue(pResult.getValue(1, 2), 2, 1);
+
+    return pResult;
+}
+
+bool UnitCell::zero() const
+{
+	return ((fabsf(iA) + fabsf(iB) + fabsf(iC) + fabsf(iAlpha) + fabsf(iBeta) + fabsf(iGamma) +
+	 fabsf(iSEA) + fabsf(iSEB) + fabsf(iSEC) + fabsf(iSEAlpha) + fabsf(iSEBeta) + fabsf(iSEGamma)) == 0);
+}
+
+UnitCell UnitCell::operator=(const UnitCell& pUnitCell)
+{
+	iA = pUnitCell.iA;
+	iB = pUnitCell.iB;
+	iC = pUnitCell.iC;
+	iAlpha = pUnitCell.iAlpha;
+	iBeta = pUnitCell.iBeta;
+	iGamma = pUnitCell.iGamma;
+	iSEA = pUnitCell.iSEA;
+	iSEB = pUnitCell.iSEB;
+	iSEC = pUnitCell.iSEC;
+	iSEAlpha = pUnitCell.iSEAlpha;
+	iSEBeta = pUnitCell.iSEBeta;
+	iSEGamma = pUnitCell.iSEGamma;
+	return *this;
+}
+
+UnitCell UnitCell::transform(Matrix<float>& pTrasformation)
+{
+	Matrix<float> tTensor;
+	metricTensor(tTensor);
+	Matrix<float> tTransformationTrans = pTrasformation; 
+	tTransformationTrans.transpose();
+	
+	tTransformationTrans = (tTransformationTrans * tTensor ); //Reusing tTransformationTrans
+	tTensor = tTransformationTrans* pTrasformation;
+	return UnitCell(tTensor);
 }
 
 /*
@@ -324,6 +367,26 @@ char* crystalSystemConst(const SystemID pIndex)
 UnitCell::UnitCell():iA(0), iB(0), iC(0), iAlpha(0), iBeta(0), iGamma(0),
     iSEA(0), iSEB(0), iSEC(0), iSEAlpha(0), iSEBeta(0), iSEGamma(0)
 {
+}
+
+UnitCell::UnitCell(const UnitCell& pUnitCell):iA(pUnitCell.iA), iB(pUnitCell.iB), iC(pUnitCell.iC), iAlpha(pUnitCell.iAlpha), iBeta(pUnitCell.iBeta), iGamma(pUnitCell.iGamma),
+    iSEA(pUnitCell.iSEA), iSEB(pUnitCell.iSEB), iSEC(pUnitCell.iSEC), iSEAlpha(pUnitCell.iSEAlpha), iSEBeta(pUnitCell.iSEBeta), iSEGamma(pUnitCell.iSEGamma)
+{
+}
+
+/**************************************/
+/*** Initilised the unitcell from a ***/
+/*** matric tensor					***/
+/**************************************/
+UnitCell::UnitCell(const Matrix<float> &pT):iA(0), iB(0), iC(0), iAlpha(0), iBeta(0), iGamma(0),
+    iSEA(0), iSEB(0), iSEC(0), iSEAlpha(0), iSEBeta(0), iSEGamma(0)
+{
+	iA = sqrt(pT.getValue(0, 0));
+	iB = sqrt(pT.getValue(1, 1));
+	iC = sqrt(pT.getValue(2, 2));
+	iAlpha = rad2deg(acos(pT.getValue(2, 1)/(iB*iC)));
+	iBeta = rad2deg(acos(pT.getValue(2, 0)/(iA*iC)));
+	iGamma = rad2deg(acos(pT.getValue(1, 0)/(iB*iA)));
 }
 
 bool UnitCell::init(char* pLine)	//This parases the line which it is passed. Initalising the feilds of the unit cell with it. If the line is not formated correctly then an false is returned.
