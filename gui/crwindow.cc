@@ -30,9 +30,8 @@ CrWindow::CrWindow( CxApp * mParentPtr )
 	mWidgetPtr = nil;
 	mGridPtr = nil;
 	mMenuPtr = nil;
-      mSetSize = false;
-      mMinWidth = 10000000; // { Set to ridiculous +ve values as they
-      mMinHeight= 10000000; // { are set in a Min in CalcLayout.
+      mOrigWidth = -1; 
+      mOrigHeight= -1; 
 	mTabGroup = new CcList();
 	mTabStop = false;
 	mIsModal = false;
@@ -45,7 +44,6 @@ CrWindow::CrWindow( CxApp * mParentPtr )
 	mCommandText= "";
       m_relativePosition = kTCentred;
 	m_relativeWinPtr = nil;
-      mWindowWantingSysKeys = nil;
       mSafeClose=0;
       m_Keep = false;      
 }
@@ -56,7 +54,7 @@ CrWindow::~CrWindow()
       if ( m_Keep )
       { 
 // Store the old size in a file...
-           (CcController::theController)->StoreSize( mName, GetGeometry() );
+           (CcController::theController)->StoreKey( mName, GetGeometry().AsString() );
       }
 	if ( mGridPtr != nil )
 	{
@@ -234,7 +232,9 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 			
 			//First call CalcLayout() on all children. (Should only be one).
 			this->CalcLayout();
-			
+
+                  SetOriginalSizes();
+                  
 			//First call Align() on all children. (Should only be one).
 			this->Align();
 			
@@ -358,7 +358,11 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
                   if ( m_Keep )
                   {
 // Get the old size out of a file...
-                        CcRect oldSize = (CcController::theController)->GetSize( mName );
+                        CcString cgeom = (CcController::theController)->GetKey( mName );
+                        CcRect oldSize(0,0,0,0);
+                        if ( cgeom.Len() )
+                            oldSize = CcRect( cgeom );
+
                         if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
                               ((CxWindow*)mWidgetPtr)->SetGeometry(oldSize.mTop,
                                                                    oldSize.mLeft,
@@ -375,7 +379,6 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
                   // is shared out when the window is resized by the
                   // user.
 
-                  SetOriginalSizes();
 
                   //For now show self. Children are shown automagically.
 			this->Show(true);
@@ -456,18 +459,19 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 
 void	CrWindow::SetGeometry( const CcRect * rect )
 {
-
 	CcRect tempRect;
 	tempRect.mTop		= rect->mTop;
 	tempRect.mLeft		= rect->mLeft;
 	tempRect.mBottom	= rect->mBottom;
 	tempRect.mRight		= rect->mRight;
 
+//Adjust size adds on the space for menus and borders.
 	((CxWindow*)mWidgetPtr)->AdjustSize(&tempRect);
-	((CxWindow*)mWidgetPtr)->SetGeometry(	tempRect.mTop,
-											tempRect.mLeft,
-											tempRect.mBottom,
-											tempRect.mRight );
+
+      ((CxWindow*)mWidgetPtr)->SetGeometry(tempRect.mTop,
+                                           tempRect.mLeft,
+                                           tempRect.mBottom,
+                                           tempRect.mRight );
 }
 
 CcRect	CrWindow::GetGeometry()
@@ -491,18 +495,6 @@ void	CrWindow::CalcLayout()
 		CcRect theRect;
 		theRect = mGridPtr->GetGeometry();
 		SetGeometry( &theRect );
-
-//Get the geometry, as CxWindow makes subtle increases to allow for the
-//border and title bar!
-		theRect = GetGeometry();
-//These are only set the first time this function is called, as after that
-//the stored dimensions will always be smaller than the current ones.
-                if( ! mSetSize )
-                {
-                  mMinWidth = theRect.Width();
-                  mMinHeight= theRect.Height();
-                  mSetSize = true;
-                }
 	}
 }
 
@@ -512,6 +504,13 @@ void  CrWindow::SetOriginalSizes()
 	{
             mGridPtr->SetOriginalSizes();
 	}
+
+      CcRect theRect;
+      theRect = mGridPtr->GetGeometry();
+
+      mOrigWidth = theRect.Width();
+      mOrigHeight= theRect.Height();
+
 }
 
 void	CrWindow::SetText( CcString item )
@@ -574,22 +573,17 @@ void CrWindow::CloseWindow()
 
 void CrWindow::ResizeWindow(int newWidth, int newHeight)
 {
-//Check for minimum size (If the class library supports it,
-//the min size of the window should be fixed. If not it is
-//reset here anyway.)
-        if (!mSetSize) return; 
-//        if(mMinWidth  > 100000) return; // On the first call,
-//        if(mMinHeight > 100000) return; // just return.
 
-//        newWidth = max(newWidth, mMinWidth);
-//        newHeight= max(newHeight,mMinHeight);
+    if ( mOrigWidth > 0 )
+    {
 
 //Set size of new child grid to this
 	if ( mGridPtr != nil )
-            mGridPtr->Resize(newWidth, newHeight, mMinWidth, mMinHeight);
+            mGridPtr->Resize(newWidth, newHeight, mOrigWidth, mOrigHeight);
 
 //Finally re-calculate positions and draw the window
 	CalcLayout();
+    }
 }
 
 void CrWindow::Committed()
@@ -742,7 +736,7 @@ void CrWindow::SetCommandText(CcString theText)
 
 void CrWindow::SendMeSysKeys( CrGUIElement* interestedWindow )
 {
-      mWindowWantingSysKeys = interestedWindow;
+      mWindowsWantingSysKeys.AddItem((void*)interestedWindow);
       if ( interestedWindow != nil )
       {
 // Make sure the CxWindow is listening for us.
@@ -760,23 +754,20 @@ void CrWindow::SendMeSysKeys( CrGUIElement* interestedWindow )
 
 void CrWindow::SysKeyPressed ( UINT nChar )
 {
-      if ( mWindowWantingSysKeys == nil )
+      mWindowsWantingSysKeys.Reset();
+      CrGUIElement * elem;
+      while ( ( elem = (CrGUIElement*)mWindowsWantingSysKeys.GetItemAndMove() ) != nil )
       {
-            ((CxWindow*)mWidgetPtr)->mWindowWantsKeys = false;
-      }
-      else
-      {
-            mWindowWantingSysKeys->SysKey ( nChar );
+            elem->SysKey ( nChar );
       }
 }
+
 void CrWindow::SysKeyReleased ( UINT nChar )
 {
-      if ( mWindowWantingSysKeys == nil )
+      mWindowsWantingSysKeys.Reset();
+      CrGUIElement * elem;
+      while ( ( elem = (CrGUIElement*)mWindowsWantingSysKeys.GetItemAndMove() ) != nil )
       {
-            ((CxWindow*)mWidgetPtr)->mWindowWantsKeys = false;
-      }
-      else
-      {
-            mWindowWantingSysKeys->SysKeyUp ( nChar );
+            elem->SysKeyUp ( nChar );
       }
 }

@@ -38,10 +38,9 @@ class	CrWindow : public CrGUIElement
             Boolean m_Keep;
 		Boolean mIsSizeable;
 		Boolean mIsModal;
-            Boolean mSetSize;
 		CrMenu* mMenuPtr;
-		int mMinHeight;
-		int mMinWidth;
+            int mOrigHeight;
+            int mOrigWidth;
 
 // methods
             CrWindow( CxApp * mParentPtr );
@@ -75,7 +74,7 @@ class	CrWindow : public CrGUIElement
 		CcList *	mTabGroup;
 	
 		static CcList mModalWindowStack;
-            CrGUIElement* mWindowWantingSysKeys;
+            CcList mWindowsWantingSysKeys;
 
 private:
 	CrGUIElement* m_relativeWinPtr;
