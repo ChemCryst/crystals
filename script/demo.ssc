@@ -68,7 +68,8 @@
 ^^WI     'Peach'
 ^^WI     'Keen'
 ^^WI     'Nket'
-^^WI     'Hex'       NULL
+^^WI     'Hex'
+^^WI     'Mogul'       NULL
 ^^WI   @ 4,1 CHECKBOX XWIP 'Clean start' STATE=ON
 ^^WI   @ 6,1 GRID BT NROWS=1 NCOLS=3
 ^^WI   {
@@ -123,6 +124,7 @@
 %          EVALUATE CDIR = 'CRYSDIR:demo\keen\'
 %          EVALUATE CDIR = 'CRYSDIR:nket\'
 %          EVALUATE CDIR = 'CRYSDIR:example\'
+%          EVALUATE CDIR = 'CRYSDIR:demo\mogul\'
 %     END CASE
 %     EVALUATE CFDIR = GETENV ( CDIR ) 
 %     IF ( .NOT. ( FILEEXISTS CFDIR ) ) THEN
