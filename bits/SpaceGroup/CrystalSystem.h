@@ -153,7 +153,7 @@ class Column
 class ConditionIndexs:public Indexs
 {
     private:
-        Matrix<float>* iStats;	//[Total intensity excepted, Total intensity rejected, Total intensity, Number excepted, Number rejected, Number of Int>3*sigma excepted, Number of Int<=3*sigma excepted]
+        Matrix<float>* iStats;	//[Total intensity non-matched, Total intensity matched, Total intensity, Number non-matched, Number matched, Number of Int>3*sigma non-matched, Number of Int<=3*sigma non-matched]
     public:
         ConditionIndexs(signed char pValue);
         ConditionIndexs(ConditionIndexs& pObject);
