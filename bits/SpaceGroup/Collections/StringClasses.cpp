@@ -422,32 +422,19 @@ std::istream& operator>>(std::istream& pStream, String& pString)
     return pString.input(pStream);
 }
 
-RegexException::RegexException(const int pError):iError(pError)
-{}
+RegexException::RegexException(const int pError, const regex_t* pRegEx):iError(pError), iMessage(new char[100])
+{
+    regerror(iError, pRegEx, iMessage, 100);
+}
 
 RegexException::~RegexException() throw()
-{}
+{
+  delete iMessage;
+}
 
 char* RegexException::what() const throw()
 {
-	switch (iError)
-	{
-		case REG_BADPAT:   return "Regex: invalid regular expression"; break;
-		case REG_ECOLLATE:  return "Regex: invalid collating element"; break;
-		case REG_ECTYPE:    return "Regex: invalid character class"; break;
-		case REG_EESCAPE:   return "Regex: `\' applied to unescapable character"; break;
-		case REG_ESUBREG:   return "Regex: invalid backreference number"; break;
-		case REG_EBRACK:    return "Regex: brackets `[ ]' not balanced"; break;
-		case REG_EPAREN:    return "Regex: parentheses `( )' not balanced"; break;
-		case REG_EBRACE:    return "Regex: braces `{ }' not balanced"; break;
-		case REG_BADBR:     return "Regex: invalid repetition count(s) in `{ }'"; break;
-		case REG_ERANGE:    return "Regex: invalid character range in `[ ]'"; break;
-		case REG_ESPACE:    return "Regex: ran out of memory"; break;
-		case REG_BADRPT:    return "Regex: `?', `*', or `+' operand invalid"; break;
-		case REG_EMPTY:     return "Regex: empty (sub)expression"; break;
-		case REG_INVARG:    return "Regex: invalid argument, e.g. negative-length string"; break;
-	}
-	return "Regex: can't happen - you found a bug"; 
+  return iMessage;
 }
 
 void Regex::initWith(string& pRegExp, int pFlags)
@@ -456,7 +443,7 @@ void Regex::initWith(string& pRegExp, int pFlags)
 	
 	if ((pError = regcomp(&iRegExFSO, pRegExp.c_str(), (REG_EXTENDED | pFlags))) != 0)
 	{
-		throw RegexException(pError);
+		throw RegexException(pError, &iRegExFSO);
 	}
 }
 
@@ -473,9 +460,18 @@ Regex::Regex(string& pRegExp, int pFlags):string(pRegExp)
 void Regex::exec(string& pString, size_t pNumMatches, regmatch_t tMatch[], int pFlags)
 {
 	int pError;
-	
-	if ((pError = regexec(&iRegExFSO, pString.c_str(), pNumMatches, tMatch, pFlags)) != 0)
+	const char * tSearchString = pString.c_str();
+
+	#ifdef __NO_REG_STARTEND_SUPPORT__
+	string tSubString;
+	if ((pFlags & REG_STARTEND) == REG_STARTEND)
 	{
-		throw RegexException(pError);
+	  tSubString = pString.substr(tMatch[0].rm_so, tMatch[0].rm_eo - tMatch[0].rm_so);
+	  tSearchString = tSubString.c_str(); 
+	}
+	#endif
+	if ((pError = regexec(&iRegExFSO, tSearchString, pNumMatches, tMatch, pFlags)) != 0)
+	{
+		throw RegexException(pError, &iRegExFSO);
 	}
 }	
