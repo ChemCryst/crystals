@@ -1,0 +1,102 @@
+  //while (sizeof(tPath) > 0 && tFile == NULL)
+    {
+       // std::cout << "Please enter the name of the file to read:\n>";
+       // cin >> tPath;<float>
+      //  cout << tPath << "\n";
+     /*   Matrix<float> A(30, 30);
+        Matrix<float> B(4, 3);
+        Matrix<float> C(3, 3);
+        
+        try
+        {
+            A.setValue(3.0f, 0, 0);
+            A.setValue(33.0f, 0, 1);
+            A.setValue(103.0f, 0, 2);
+            A.setValue(5.0f, 1, 0);
+            A.setValue(6.0f, 1, 1);
+            A.setValue(10.0f, 1, 2);
+            A.setValue(7.0f, 2, 0);
+            A.setValue(9.0f, 2, 1);
+            A.setValue(11.0f, 2, 2);
+    
+            B.setValue(1.0f, 0, 0);
+            B.setValue(2.0f, 0, 1);
+            B.setValue(3.0f, 0, 2);
+            B.setValue(5.0f, 1, 0);
+            B.setValue(6.0f, 1, 1);
+            B.setValue(7.0f, 1, 2);
+        //    B.setValue(8.0f, 1, 3);
+            B.setValue(9.0f, 2, 0);
+            B.setValue(10.0f, 2, 1);
+            B.setValue(11.0f, 2, 2);
+            //B.setValue(11.0f, 2, 3);
+            B.setValue(5.0f, 1, 0);
+            B.setValue(6.0f, 1, 1);
+            B.setValue(7.0f, 1, 2);                
+            //cout << "B\n" << B << "\n";
+            //cout << "A\n" << A << "\n";
+            Matrix<float> C(30, 30);
+            struct timeval tStartTime, tEndTime;
+              gettimeofday(&tStartTime, NULL);
+            for(int i = 0; i < 10000; i++)
+            {
+                (A*=A);
+            }
+            gettimeofday(&tEndTime, NULL);
+            cout << "Seconds: " << (tEndTime.tv_sec -  tStartTime.tv_sec);
+            cout << "Milli seconds:  " << (tEndTime.tv_usec -  tStartTime.tv_usec) << "\n";
+           // cout << C << "\n";
+            gettimeofday(&tStartTime, NULL);
+            for (int i = 0; i < 10000; i++)
+            {
+                B *=B;
+            }
+            gettimeofday(&tEndTime, NULL);
+            
+            cout << "Seconds: " << (tEndTime.tv_sec -  tStartTime.tv_sec);
+            cout << "Milli seconds:  " << (tEndTime.tv_usec -  tStartTime.tv_usec) << "\n";
+           
+        }
+        catch(MyException e)
+        {
+            cout << e.what() << "\n";
+        }*/
+        
+       // tFile = fopen(tPath, "r");
+        
+       /* if (tFile != NULL)
+        {
+            HKLData* tReflections;
+            fclose(tFile);
+            
+            cout << "File opened!\n";
+            try
+            {
+                                cout << "fg13\n";
+                tReflections = new HKLData(tPath);
+                tReflections->centeringTypeInfo();
+                delete tReflections;
+                                cout << "co1c\n";
+                tReflections = new HKLData("/Users/stefan/Desktop/co1c.hkl");
+                tReflections->centeringTypeInfo();
+                delete tReflections;
+                                cout << "fg24\n";
+                tReflections = new HKLData("/Users/stefan/Desktop/fg24.hkl");
+                tReflections->centeringTypeInfo();
+                delete tReflections;
+                cout << "fg18\n";
+                tReflections = new HKLData("/Users/stefan/Desktop/fg18.hkl");
+                tReflections->centeringTypeInfo();
+                delete tReflections;
+            }
+            catch(MyException eE)
+            {
+                cout << eE.what() << "\n";
+            }    */        
+        /*}
+        else
+        {
+            cout << "!!!Couldn't open file " << tPath << "!!!\n";
+        }*/
+        
+        }

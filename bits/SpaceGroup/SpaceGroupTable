@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InternationalTables>
+<Monoclinic>
+    <Constraint HKL="hkl, 0kl, hk0">
+        <ReflectionCondition condition="-">
+        
+        </ReflectionCondition>
+        <ReflectionCondition condition="h+k">
+        
+        </ReflectionCondition>
+    </Constraint>
+</Monoclinic>
+</InternationalTables>
