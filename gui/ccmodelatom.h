@@ -39,6 +39,7 @@ class CcModelAtom : public CcModelObject
 		CcString label;
 		Boolean m_selected;
                 Boolean m_disabled;
+                Boolean m_IsADP;
 };
 
 #endif

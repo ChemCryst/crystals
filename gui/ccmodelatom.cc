@@ -36,6 +36,7 @@ CcModelAtom::CcModelAtom()
 	label = "Err";
 	m_selected = false;
         m_disabled = false;
+        m_IsADP = true;
 }
 
 CcModelAtom::~CcModelAtom()
@@ -96,6 +97,10 @@ void CcModelAtom::ParseInput(CcTokenList* tokenList)
       x32 = atoi ( theString.ToCString() );
       theString = tokenList->GetToken();    //X33 * 1000
       x33 = atoi ( theString.ToCString() );
+
+      if ( ( x12 == 0 ) && ( x13 == 0 )
+        && ( x21 == 0 ) && ( x22 == 0 ) && ( x23 == 0 )
+        && ( x31 == 0 ) && ( x32 == 0 ) && ( x33 == 0 ) ) m_IsADP = false;
 }
 
 int CcModelAtom::X()
@@ -232,7 +237,7 @@ void CcModelAtom::Render(CrModel* view, Boolean detailed)
                   }
             }
 
-            if(view->RadiusType() == COVALENT)
+            if (view->RadiusType() == COVALENT)
             {
                 gluSphere(sphere, ((float)covrad + extra ) * view->RadiusScale(),detail,detail);
             }
@@ -253,17 +258,19 @@ void CcModelAtom::Render(CrModel* view, Boolean detailed)
             }
             else if(view->RadiusType() == THERMAL)
             {
+               if ( m_IsADP)
+               {
                   float * localmatrix = new float[16];
                   localmatrix[0]=(float)x11;
-                  localmatrix[1]=(float)x21;
-                  localmatrix[2]=(float)x31;
+                  localmatrix[1]=(float)x12;
+                  localmatrix[2]=(float)x13;
                   localmatrix[3]=0.0;
-                  localmatrix[4]=(float)x12;
+                  localmatrix[4]=(float)x21;
                   localmatrix[5]=(float)x22;
-                  localmatrix[6]=(float)x32;
+                  localmatrix[6]=(float)x23;
                   localmatrix[7]=0.0;
-                  localmatrix[8]=(float)x13;
-                  localmatrix[9]=(float)x23;
+                  localmatrix[8]=(float)x31;
+                  localmatrix[9]=(float)x32;
                   localmatrix[10]=(float)x33;
                   localmatrix[11]=0.0;
                   localmatrix[12]=0.0;
@@ -272,7 +279,40 @@ void CcModelAtom::Render(CrModel* view, Boolean detailed)
                   localmatrix[15]=1.0;
                   glMultMatrixf(localmatrix);
                   delete [] localmatrix;
-                  gluSphere(sphere, ( 1.0f + ((float)extra / 1000.0f) )* view->RadiusScale(), detail,detail);
+                  gluSphere(sphere, ( 1.0f + ((float)extra / 1000.0f) ), detail,detail);
+
+
+                  GLfloat Surface[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+                  GLfloat Diffuse[] = { 0.0f, 0.0f, 0.0f, 1.0f }; 
+                  GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+                  glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                  glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                  glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+
+                  GLUquadricObj* cylinder;
+                  cylinder = gluNewQuadric();
+                  gluQuadricDrawStyle(cylinder,GLU_FILL);
+                  gluCylinder(cylinder,1.02f + ((float)extra / 1000.0f),1.02f + ((float)extra / 1000.0f),0.1f, detail, detail);
+                  gluDeleteQuadric(cylinder);
+
+                  glRotatef(90.0f,0.0f,1.0f,0.0f);
+
+                  cylinder = gluNewQuadric();
+                  gluQuadricDrawStyle(cylinder,GLU_FILL);
+                  gluCylinder(cylinder,1.02f + ((float)extra / 1000.0f),1.02f + ((float)extra / 1000.0f),0.1f, detail, detail);
+                  gluDeleteQuadric(cylinder);
+
+                  glRotatef(90.0f,1.0f,0.0f,0.0f);
+
+                  cylinder = gluNewQuadric();
+                  gluQuadricDrawStyle(cylinder,GLU_FILL);
+                  gluCylinder(cylinder,1.02f + ((float)extra / 1000.0f),1.02f + ((float)extra / 1000.0f),0.1f, detail, detail);
+                  gluDeleteQuadric(cylinder);
+               }
+               else
+               {
+                  gluSphere(sphere, ((float)x11 + extra ), detail, detail);
+               }
             }
 
             gluDeleteQuadric(sphere);
