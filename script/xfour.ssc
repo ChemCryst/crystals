@@ -1,6 +1,6 @@
 %SCRIPT XFOUR
 % VARIABLE LOGICAL SCRIPTEXT
-% VARIABLE LOGICAL LCONTOUR LSECTION
+% VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
 % VARIABLE LOGICAL PEAKCHANGE REDRAW
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
 % VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE
@@ -23,7 +23,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %% This gets a passed in argument so that the menus
 %% can call the same script to do four different map types.
 %%
-%  VERIFY FO DIFF 2FO-FC FC OPT FO-PAT FC-PAT
+%  VERIFY FOBS DIFF 2FO-FC FCALC OPT FO-PAT FC-PAT
 %  GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
 %  EVALUATE MTYPE = VALUE
 %%
@@ -372,6 +372,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^CR
 %                 COPY '#SCRIPT PEAKS'
 %                 IF DOCOLLECT .EQ. 1 THEN
+%                     EVALUATE COLLECTNEW = TRUE
 %                     COPY '#SCRIPT XCOLLECT'
 %                 END IF
 %                 FINISH
