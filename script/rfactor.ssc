@@ -4,7 +4,7 @@
 %%       A dummy in case we have no Fc
 %      EVALUATE R = 100.
 %      EVALUATE RATIO = 100.
-%      VARIABLE CHARACTER CR
+%      VARIABLE CHARACTER CR CR2
 %      VARIABLE REAL  FO FC
 %      VARIABLE LOGICAL ERROR6 
 %      EVALUATE ERROR6 = TRUE
@@ -40,10 +40,12 @@
 %      EVALUATE ERROR6 = FALSE
 %      END BLOCK
 %      BLOCK
-%        EVALUATE CR = CHARACTER R
-%        TRANSFER "      The R factor is :== " // CR TO DISPLAY
-%        EVALUATE CR = CHARACTER RATIO
-%        TRANSFER "   The Ratio Fo/Fc is :== " // CR TO DISPLAY
+%        CLEAR
+%        INSERT '{I    The R-factor is '
+%        STORE FORMAT '(F8.3)' LENGTH 8 REAL R
+%        INSERT ', the ratio Fo/Fc is '
+%        STORE FORMAT '(F8.4)' LENGTH 8 REAL RATIO
+%        OUTPUT
 %      END BLOCK
 %      IF ERROR6 .EQ. TRUE THEN
 %            COPY '#SCRIPT XDELQ'
