@@ -56,16 +56,18 @@
 %    EVALUATE KSWEIG = 8
 %%
 %  LOOP
+ * Checking R-factor.
 %    COPY '#SCRIPT RFACTOR'
 %    IF RATIO .GE. 1.3 THEN
-%%     We need the R factor on a good scale
-       Recomputing overall scale factor and phases
+ * We need the R factor on a good scale.
+ * Recomputing overall scale factor and phases.
 %      COPY '#SFLS'
 %      COPY 'SCALE'
 %      COPY 'END'
 %      COPY '#SFLS'
 %      COPY 'SCALE'
 %      COPY 'END'
+ * Checking R-factor again.
 %      COPY '#SCRIPT RFACTOR'
 %    END IF
 %    EVALUATE RMIN = R
@@ -91,6 +93,7 @@
 ^^WI     'Add hydrogen'
 ^^WI     'Check extinction'
 ^^WI     'Optimise weights'
+^^WI     'Publish'
 ^^WI     NULL
 ^^WI }
 ^^WI SHOW
@@ -247,6 +250,10 @@ Remember - the data may not be good enough to reveal all H atoms
 %             COPY '#SCRIPT WEIGHTS'
 %             EVALUATE OPTIM = TRUE
 %           END BLOCK
+%           BLOCK % PUBLISH 9
+%             COPY '#SCRIPT PUBLISH'
+%             FINISH
+%           END BLOCK
 %         END CASE
 %      END BLOCK
 %      BLOCK  %BXX%
@@ -282,7 +289,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %      COPY '#LIST 22'
 %      COPY 'END'
 %%
-%      COPY '#SCRIPT REFINE'
+%      COPY '#SCRIPT XREFINE'
 %      COPY '#SCRIPT RFACTOR'
  Test for near convergence of the R factor...
 %      CLEAR
