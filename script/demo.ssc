@@ -1,5 +1,10 @@
 %SCRIPT DEMO1
 %VARIABLE CHARACTER QLINE
+%    IF ( EXISTS 4 .eq. 1 ) THEN 
+%     COPY '#disk'
+%     copy 'del 4'
+%     copy 'end'
+%    END IF
 %    IF ( EXISTS 12 .eq. 1 ) THEN 
 %     COPY '#disk'
 %     copy 'del 12'
