@@ -56,6 +56,7 @@ class CxEditBox : public BASEEDITBOX
             void  AddText( CcString text );
             void  SetText( CcString text );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
+            void  SetOriginalSizes();
 		int	GetTop();
 		int	GetLeft();
 		int	GetWidth();
@@ -84,7 +85,7 @@ class CxEditBox : public BASEEDITBOX
 
 #ifdef __WINDOWS__
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-		afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+            afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 		DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __LINUX__
