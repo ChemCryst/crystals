@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2000/10/30 15:35:10  CKP2
+C fix some lowercase
+C
 C Revision 1.21  2000/10/04 16:57:46  CKP2
 C set benchmarking
 C
@@ -555,6 +558,7 @@ C----- SPOT LINES BEGINNING WITH $, AND CONVERT TO # FUNCTIONS
         J = I+4
         CLINE(J:J) = CLINE(I:I)
 1200    CONTINUE
+        LENUSE = LENUSE + 4
         CLINE(1:5) = CTRAN1(1:1)//CDOLAR//'   '
         KRDLIN = 2
       END IF
@@ -581,21 +585,21 @@ cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH
 C '#EMAP2' is put in the SRQ by '#EMAP' so that we can come back
 C and analyse the results of a #FIND.
 cC----- SPOT LINES BEGINNING WITH #EMAP2, AND CALL EMAP2D               
-      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN                               
-          LENUSE = 1
-          CLINE = ' '
-        ICODE = 2
-        CALL EMAP2D(ICODE)
+c      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c        ICODE = 2
+c        CALL EMAP2D(ICODE)
 C '#EMAP2D' reads in a 'GUESS.DAT' file which describes the
 C bonding of a molecule (CSD quest format). It gets the relevant
 C bond length and angle data from the local database and then
 C checks the results of #FIND with this.
 cC----- SPOT LINES BEGINNING WITH #EMAP, AND CALL EMAP2D               
-      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN                               
-          LENUSE = 1
-          CLINE = ' '
-        ICODE = 0
-        CALL EMAP2D(ICODE)
+c      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c        ICODE = 0
+c        CALL EMAP2D(ICODE)
       ENDIF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C -- CONVERT FIRST CHARACTER IF NECESSARY
