@@ -5,7 +5,11 @@ Input LIST 5, the coordinates of a model
 %  EVALUATE ATOMCOUNT = 0
 Enter element symbol, serial, x, y, z, occ, Uiso
 Set Uiso to zero and enter Uijs for anisotropic atoms
-                                            use  END  to terminate input
+
+e.g.  C 1.0 0.23 0.34 0.45 1.0 0.05
+or    C 2.0 0.56 0.67 0.78 1.0 0.0 .05 .05 .05 .0 .0 .0
+
+  use  END  to terminate input
 %      QUEUE REWIND
 %      LOOP
 %        ON END TERMINATE
@@ -26,8 +30,13 @@ Set Uiso to zero and enter Uijs for anisotropic atoms
 %          GET REAL 'z coordinate'
 %          INSERT ' Occ = '
 %          GET REAL 'Occupation factor' '1.0'
-%          INSERT ' U[iso] = '
-%          GET FINAL REAL 'U[iso]' '.05'
+%          GET NOSTORE FINAL REAL 'U[iso] (0.0 for aniso)' '.05'
+%          IF VALUE .GT. .00001 THEN
+%            INSERT 'FLAG = 1.0 U[11]= '
+%            STORE FORMAT '(F12.5)' LENGTH 12 REAL VALUE
+%          ELSE
+%            INSERT 'FLAG = 0.0'
+%          END IF
 %          QUEUE SEND
 %          CLEAR
 %          EVALUATE UISO = VALUE
