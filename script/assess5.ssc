@@ -1,7 +1,5 @@
 %SCRIPT ASSESS5
 %% A Script to determine the current state of the list 5 refinement.
-
-{S * Checking the state of the atomic parameters list (5).
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT
 %  VARIABLE INTEGER ADP ISER HCOUNT
 %  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST 
@@ -81,12 +79,11 @@
 %    END IF
 %  END LOOP
 %  COPY 'END'
-{S * Done. State of the current refinement:
 %  CASE ( ADP + 1 )
 %    TRANSFER '{E   Cannot determine state. No atoms?' TO DISPLAY
-%    TRANSFER '{R   Thermal parameters not refined yet.' TO DISPLAY
-%    TRANSFER '{R   Some atoms are isotropic.' TO DISPLAY
-%    TRANSFER '{R   Some atoms are anisotropic.' TO DISPLAY
+%    TRANSFER '{S * Checking atoms: Thermal params not refined.' TO DISPLAY
+%    TRANSFER '{S * Checking atoms: Some atoms are isotropic.' TO DISPLAY
+%    TRANSFER '{S * Checking atoms: Some atoms are anisotropic.' TO DISPLAY
 %  END CASE
 %  IF ( DOEXTNC .EQ. TRUE ) THEN
 %    CLEAR
