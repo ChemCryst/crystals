@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/03/15 16:50:01  richard
+C Type #SET BONDTYPE OFF to suppress bond type calculation.
+C
 C Revision 1.34  2002/03/12 18:02:50  ckp2
 C GUIUP stores list serial numbers in a saved array. Moved it into common, clear out
 C every re-start in presets.
@@ -175,7 +178,7 @@ C----- INITIALISE THE VMS SCREEN MANAGER
 C
       DATA IACC/-1/,MLSS/15/
 C
-      DATA ISIZST / 8388608 /, ISIZ11 / 1048576 /
+      DATA ISIZST / 8388608 /, ISIZ11 / 8388608 /
 C
 &PPCC      SET INTERACTIVE UNDER MAC OS
 &PPC      DATA IQUN /2/, JQUN/2/
