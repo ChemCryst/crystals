@@ -655,6 +655,8 @@ void CrWindow::SendCommand(CcString theText, Boolean jumpQueue)
 //mechanism and pass the command straigt to 
 //CRYSTALS (#) or to GUI (^).
 
+	if ( theText.Len() == 0 ) return; //It may be useful to have objects with no names.
+
 	if (
 		     ( mCommandSet )
 		 &&  (!( theText.Sub(1,1) == '#' ))
