@@ -6,10 +6,8 @@
  *  Copyright (c) 2003 . All rights reserved.
  *
  */
-//#include "stdafx.h"
 #include "Stats.h"
 #include "MathFunctions.h"
-#include "Collections.h"
 #include "StringClasses.h"
 #include <iomanip>
 #include <math.h>
