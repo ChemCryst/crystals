@@ -776,7 +776,7 @@ C THIS ROUTINE GETS THE EQUIVALENT COLOUR NUMBER FOR THE COLOUR TABLE
 C cljf
         call zmore1(
      1'Need to check colour names in COLOUR.CMN and PROP.CMN.',0)
-        STOP
+C NO WAY!        STOP
       ENDIF
       RETURN
       END
