@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2001/10/10 16:03:57  Administrator
+C Add FVAR line to PLATON output to satisfy ORTEP-3 users
+C
 C Revision 1.28  2001/06/18 08:27:55  richard
 C Comment out the sir input file comments (which are jumped around anyway), because
 C the linux compiler doesn't like the format statements (lots of missing commas, I think).
@@ -447,16 +450,7 @@ C----- REQUEST STRUCTURE SOLUTION
       ELSE
             WRITE(NCFPU1, '(''TREF '')')
       ENDIF
-C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
-      IN = L6DTL + MD6DTL * 3
-      IF (STORE(IN+3) .LE. ZERO) THEN
-      SCALE = 1.0
-      ELSE
-Cdjw99 Can this be true?
-      SCALE = 99999.0 / STORE(IN+1)**2
-C IT WAS TRUE!
-CRESTORE      SCALE = 99999.0 / STORE(IN+3)**2
-      ENDIF
+C----- OUTPUT ON ACTUAL SCALE
 C
       WRITE(NCFPU1, '(''HKLF  -4'' )')
 C----- LOOP OVER DATA
@@ -469,12 +463,18 @@ C----- LOOP OVER DATA
       K = NINT(STORE(M6+2))
 CDJWMAR99[
       CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
-      FS = FS * SCALE
-      S = S * SCALE
       IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
      1 S = ABS(FS) / STORE(M6+20)
 CDJWMAR99]
-      WRITE(NCFPU1, '(3I4, 2F8.1)') I, J, K, FS, S
+      IF (FS.LE.9999.) THEN
+       WRITE(NCFPU1, '(3I4, 2F8.3)') I, J, K, FS, S
+      ELSE IF (FS.LE.99999.) THEN
+       WRITE(NCFPU1, '(3I4, 2F8.2)') I, J, K, FS, S
+      ELSE IF (FS.LE.999999.) THEN
+       WRITE(NCFPU1, '(3I4, 2F8.1)') I, J, K, FS, S
+      ELSE
+       WRITE(NCFPU1, '(3I4, 2F8.0)') I, J, K, FS, S
+      END IF
       GOTO 1840
 1850  CONTINUE
 C----- END OF DATA - WRITE A BLANK LINE
@@ -532,8 +532,8 @@ C----- UNIT CARDS
         WRITE (NCFPU1, ' (''UNIT '', 15F5.0)')
      1  (F*STORE(J+4), J = L29, M29, MD29)
       ENDIF
-C----- WRITE DUMMY FVAR CARD
-        WRITE (NCFPU1, ' (''FVAR 1. '')')
+C----- FVAR CARD - the SHELX scale is 1/Crystals scale
+        WRITE (NCFPU1, ' (''FVAR '', F10.4)') 1./STORE(L5O)
 C
 C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         J = NCPU
@@ -542,14 +542,7 @@ C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         NCPU = J
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
-
-C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
-      IN = L6DTL + MD6DTL * 3
-      IF (STORE(IN+3) .LE. ZERO) THEN
-      SCALE = 1.0
-      ELSE
-      SCALE = 99999.0 / STORE(IN+1)**2
-      ENDIF
+C
 C
 C      WRITE(NCFPU1, '(''HKLF  -4'' )')
 
@@ -563,16 +556,22 @@ C----- LOOP OVER DATA
       K = NINT(STORE(M6+2))
 CDJWMAR99[
       CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
-      FS = FS * SCALE
-      S = S * SCALE
       IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
      1 S = ABS(FS) / STORE(M6+20)
 CDJWMAR99]
-      WRITE(NCFPU2, '(3I4, 2F8.1)') I, J, K, FS, S
+      IF (FS.LE.9999.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.3)') I, J, K, FS, S
+      ELSE IF (FS.LE.99999.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.2)') I, J, K, FS, S
+      ELSE IF (FS.LE.999999.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.1)') I, J, K, FS, S
+      ELSE
+       WRITE(NCFPU2, '(3I4, 2F8.0)') I, J, K, FS, S
+      END IF
       GOTO 1862
 1863  CONTINUE
 C----- END OF DATA - WRITE A BLANK LINE
-      WRITE (NCFPU2,'(/)')
+      WRITE (NCFPU2,'(/)') 
       GOTO 8000
 C
 1900  CONTINUE
