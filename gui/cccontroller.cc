@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.108  2005/02/02 15:29:41  stefan
+// 1. Replaced the two deques which are used for comunicating between the two threads
+// with CcSafeDeque which is a thread safe version. Removing the need for two of the mutexs used
+// and the semaphore. This is now encapsulated withing the CcSafeDeque class.
+//
 // Revision 1.107  2005/01/23 10:20:24  rich
 // Reinstate CVS log history for C++ files and header files. Recent changes
 // are lost from the log, but not from the files!
@@ -552,6 +557,7 @@ using namespace std;
 #include    "cxgrid.h" //to delete its static font pointer.
 #include    "crbutton.h"
 #include    "creditbox.h"
+#include    "cccrystcommandlistener.h"
 
 // Get all the kT and kS defines for now: TODO - move all into crconstants.
 
@@ -654,6 +660,12 @@ int CcController::debugIndent = 0;
 
 CcController::CcController( const string & directory, const string & dscfile )
 {
+#ifdef __CR_WIN__
+	CcCrystalsCommandListener tInterfaceCommandListener(AfxGetApp(), WM_CRYSTALS_COMMAND);
+#else
+	CcCrystalsCommandListener tInterfaceCommandListener(wxTheApp, ccEVT_COMMAND_ADDED);
+#endif
+	mInterfaceCommandDeq.addAddListener(tInterfaceCommandListener);
 #ifdef __CR_WIN__
     m_start_ticks = GetTickCount();
 #endif
@@ -915,9 +927,6 @@ void CcController::ReadStartUp( FILE * file, string & crysdir )
   }
   fclose( file );
 }
-
-
-
 
 CcController::~CcController()       //The destructor. Delete all the heap objects.
 {
@@ -1692,8 +1701,12 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
    mInterfaceCommandDeq.push_back(line);
    LOGSTAT("-----------CRYSTALS has put: " + line );
 
+	
 #ifdef __CR_WIN__
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
+#else
+	//wxCommandEvent tEvent(ccEVT_COMMAND_ADDED);
+	//wxTheApp->AddPendingEvent(tEvent);
 #endif
 	  bool comp = false;
 	    if ( lock ) 
@@ -3800,6 +3813,7 @@ bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
 		}
 		catch (const exception& e)
 		{
+		
 			std::cerr << "This shouldn't have happened. " << e.what() << endl;
 		}
 	else 
