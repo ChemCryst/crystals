@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2001/04/30 11:50:28  ckpgroup
+C fix-up omitted rflections when re-indexing matrix has non-integral results' read6.src
+C
 C Revision 1.13  2001/02/26 10:28:04  richard
 C RIC: Added changelog to top of file
 C
@@ -868,11 +871,13 @@ C--TERMINATE THE OUTPUT OF THE LIST
       WRITE (NCAWU,'(A)') CMON(1)(:)
 5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
      1')
-C----- IF ITYPE6 .NE. 'COPY' WE WERE PROBABLY READING RAW DATA
+C----- IF ITYPE6 .NE. 'COPY'  OR 'TWIN' WE WERE PROBABLY READING RAW DATA
       IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
          IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
-         IF (STORE(L30DR).LE.ZERO) STORE(L30DR)=FLOAT(N6W)
-         IF (STORE(L30DR+2).LE.ZERO) STORE(L30DR+2)=FLOAT(N6W)
+C         IF (STORE(L30DR).LE.ZERO) STORE(L30DR)=FLOAT(N6W)
+C         IF (STORE(L30DR+2).LE.ZERO) STORE(L30DR+2)=FLOAT(N6W)
+         STORE(L30DR)=FLOAT(N6W)
+         STORE(L30DR+2)=FLOAT(N6W)
 C----- MIN AND MAX INDICES, FROM L6 DETAILS
          LIX=L6DTL
          STORE(L30IX)=STORE(LIX)
