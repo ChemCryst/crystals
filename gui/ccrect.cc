@@ -7,16 +7,16 @@
 //   Filename:  CcRect.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
-//   Modified:  11.3.1998 11:36 Uhr
+//   $Log: not supported by cvs2svn $
 
-#include	"crystalsinterface.h"
+#include    "crystalsinterface.h"
 #include    "ccstring.h"
 #include        "ccrect.h"
 
 
 CcRect::CcRect()
 {
-	Set( 0, 0, 100, 100 );
+    Set( 0, 0, 100, 100 );
 }
 
 CcRect::CcRect( const CcRect &inRect )
@@ -37,20 +37,20 @@ CcRect::CcRect( CcString geomString )
       char * lef = strtok( NULL, delim);
       char * bot = strtok( NULL, delim);
       char * rig = strtok( NULL, delim);
-       
+
       if ( top && lef && bot && rig )
       {
-		mTop    = atoi ( top ) ;
-		mLeft   = atoi ( lef ) ;
-		mBottom = atoi ( bot ) ;
-		mRight  = atoi ( rig ) ;
+        mTop    = atoi ( top ) ;
+        mLeft   = atoi ( lef ) ;
+        mBottom = atoi ( bot ) ;
+        mRight  = atoi ( rig ) ;
       }
       else
       {
             mTop   = mLeft = 0;
             mRight = mBottom = 6;
       }
-}     
+}
 
 CcString CcRect::AsString()
 {
@@ -65,60 +65,84 @@ CcString CcRect::AsString()
 
 CcRect::CcRect( const int top, const int left, const int bottom, const int right )
 {
-	Set( top, left, bottom, right );
+    Set( top, left, bottom, right );
 }
 
 CcRect::~CcRect()
 {
 }
 
-void	CcRect::Set( const int top, const int left, const int bottom, const int right )
+void    CcRect::Set( const int top, const int left, const int bottom, const int right )
 {
-	mTop	= top;
-	mLeft	= left;
-	mBottom	= bottom;
-	mRight	= right;
+    mTop    = top;
+    mLeft   = left;
+    mBottom = bottom;
+    mRight  = right;
 }
 
-const int	CcRect::Top()
+const int   CcRect::Top()
 {
-	return mTop;
+    return mTop;
 }
 
-const int	CcRect::Left()
+const int   CcRect::Left()
 {
-	return mLeft;
+    return mLeft;
 }
 
-const int	CcRect::Bottom()
+const int   CcRect::Bottom()
 {
-	return mBottom;
+    return mBottom;
 }
 
-const int	CcRect::Right()
+const int   CcRect::Right()
 {
-	return mRight;
+    return mRight;
 }
 
-const int	CcRect::Height()
+const int   CcRect::Height()
 {
-	return mBottom - mTop;
+    return mBottom - mTop;
 }
 
-const int	CcRect::Width()
+const int   CcRect::Width()
 {
-	return mRight - mLeft;
+    return mRight - mLeft;
 }
 
-CcRect&	CcRect::operator=( const CcRect &inRect )
+CcRect& CcRect::operator=( const CcRect &inRect )
 {
-	if ( this != &inRect )
-	{
-		mTop	= inRect.mTop;
-		mLeft	= inRect.mLeft;
-		mBottom	= inRect.mBottom;
-		mRight	= inRect.mRight;
-	}
-	
-	return *this;
+    if ( this != &inRect )
+    {
+        mTop    = inRect.mTop;
+        mLeft   = inRect.mLeft;
+        mBottom = inRect.mBottom;
+        mRight  = inRect.mRight;
+    }
+
+    return *this;
 }
+
+bool CcRect::Contains(int x, int y)
+{
+  return ( 
+               (  ((x<=mRight)&&(x>=mLeft))  ||  ((x>=mRight)&&(x<=mLeft))  )
+           &&  (  ((y<=mBottom)&&(y>=mTop))  ||  ((y>=mBottom)&&(y<=mTop))  )
+         );
+}
+
+
+#ifdef __CR_WIN__
+CRect CcRect::Native()
+{
+  return CRect( mLeft, mTop, mRight, mBottom );
+}
+#endif
+
+CcRect CcRect::Sort()
+{
+ return CcRect( min(mTop,mBottom), min(mLeft,mRight),
+                max(mTop,mBottom), max(mLeft,mRight) );
+
+}
+
