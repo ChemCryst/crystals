@@ -79,12 +79,18 @@ endif
 %.o : %.fpp
 	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
 
+obj/%.o : %.fpp
+	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
+
 %.o: %.cc
 	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
 
-%.d: %.cc
+obj/%.o: %.cc
+	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
+
+obj/%.d: %.cc
 	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
-	| sed "s/$*\.o/& $@/g" ' > $@
+	| sed "s/$*\.o/& obj\/$*.d/g" ' > $@
 
 %.o : %.c
 	$(CC) -c $(CFLAGS) -D_$(COMPCODE)_ $(OPT) -o $@ $<

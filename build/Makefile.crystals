@@ -10,24 +10,28 @@ CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.fpp))
 CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.fpp))
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
 
-FOBJ     = $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp=.o)) lapack.o
-COBJ     = $(notdir $(GUIFILES:.cc=.o))
-DEP      = $(GUIFILES:.cc=.d)
+FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp=.o)) lapack.o)
+COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
+DEP      = $(patsubst %.d, obj/%.d, $(GUIFILES:.cc=.d))
 
-all : crystals
+all : obj crystals
 
 crystals : $(FOBJ) $(COBJ)
 	$(LD) $(GUIFLAGS) $(FOBJ) $(COBJ) $(GUILIBRARIES) $(OPT) -o $@$(SUFFIX)
 
 # This lapack module contains routines for compting machine precision, and must be compiled without optimisation.
-lapack.o : lapack.f
+obj/lapack.o : lapack.f
 	$(F77) -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
+
+obj :
+	mkdir obj
 
 clean :
 	rm -f $(FOBJ) $(COBJ) crystals $(DEP)
+	rm -f $(FOBJ) $(COBJ) $(DEP)
 
 tidy :
-	rm -f $(FOBJ) $(COBJ) $(DEP)
+
 
 ifneq ($(MAKECMDGOALS),clean)
  ifneq ($(MAKECMDGOALS),tidy) 
