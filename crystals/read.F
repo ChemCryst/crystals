@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  1999/07/02 17:54:50  richard
+C RIC: Moved the "Script awaiting input" message so that it prints
+C every time, not just on first entry to KRDREC.
+C
 C Revision 1.11  1999/07/02 12:51:52  richard
 C RIC: Increase parameter NADR from 68 to 69
 C RIC: Increase NSSLEN from 13 to 14
@@ -220,7 +224,7 @@ C Update status information for GUI.
       ENDIF
 
 &&GILGID      IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-&&GILGID          WRITE (CMON,1515) '''Script awaiting input...'''
+&&GILGID          WRITE (CMON,1515) '''Script running...'''
 &&GILGID          CALL XPRVDU (NCVDU,1,0)
 &&GILGID      END IF
 
