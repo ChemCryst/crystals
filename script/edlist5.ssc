@@ -4,21 +4,17 @@
 %% Test if the system editor should be used
 %   VERIFY YES NO
 %   GET NOSTORE FINAL ABBREVIATED  -
-  ' Do you want to use the system editor to modify LIST 5' 'NO'
+  ' Do you want to use the system editor to modify LIST 5' 'YES'
 %   IF ( VALUE .EQ. 1 ) THEN
       This SCRIPT puts you into a system editor to modify the atomic
       parameters.
-DOSYOU MUST HAVE SET 'COMSPACE' IN AUTOEXEC SUFFICIENTLY LARGE (500000)
 %%
 %    COPY '#RELEASE PUNCH SCPLST5.DAT'
 %    COPY '#PUNCH 5'
 %    COPY 'END'
-%%&VAX%      COPY '#RELEASE PUNCH '
-%      COPY '#RELEASE PUNCH crfile.pch'
+%    COPY '#RELEASE PUNCH crfile.pch'
 %%
 %    CLEAR
-%%&VAX%      INSERT '@CRPROC:SPAWNCMD "EDIT SCPLST5.DAT"'
-%%&VAX%      EXTERNAL SEND
 %    INSERT '#use crysdir:\script\edlist5.dat'
 %    SEND
 %    COPY '# Inputting new list5'
@@ -263,6 +259,6 @@ DOSYOU MUST HAVE SET 'COMSPACE' IN AUTOEXEC SUFFICIENTLY LARGE (500000)
 %  END LOOP
 %%
 %  END IF
-%  COPY '#SCRIPT PLOT'
+-GID%  COPY '#SCRIPT PLOT'
 %%
 %END SCRIPT
