@@ -1,4 +1,13 @@
 %SCRIPT XCAM
+%% find out if the caller wants CRYSTALS to write new files
+% VERIFY YES NO
+% GET NOSTORE FINAL ABBREVIATED -
+  'Send current structure to CAMERON?' 'YES'
+% VARIABLE LOGICAL LNEWL5
+% EVALUATE LNEWL5 = TRUE
+% IF VALUE .NE. 1 THEN
+%      EVALUATE LNEWL5 = FALSE
+% END IF
 ^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
 %% The first grid splits the main area from the status bar.
 ^^WI GRID SPLIT NROWS=3 NCOLS=1
@@ -117,7 +126,11 @@
 % COPY '#SCRIPT NATOMS'
 % EVALUATE ATOMSIN = ATOMSOUT
 % COPY 'END'
-% COPY '#XCAM'
+% IF LNEWL5 .EQ. TRUE THEN
+%   COPY '#XCAM '
+% ELSE
+% COPY '#XCAM MODE = SPECIAL'
+% END IF
 % COPY 'END'
 % COPY ' '
 % COPY 'BALL ALL PLANE ALL VIEW'
@@ -142,7 +155,7 @@
 %   EVALUATE BUTTXX = '&No'
 %   COPY '#SCRIPT XQUESTIO'
 %   IF ANSWER .EQ. TRUE THEN
-
+ 
  * Reading list of atoms.
 %           COPY '#USE CAMERON.L5'
 %   ELSE
