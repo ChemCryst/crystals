@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2002/03/01 11:33:41  Administrator
+C Correct and improve presntation of weighting scheme in .cif file
+C
 C Revision 1.29  2002/02/27 19:30:18  ckp2
 C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
 C RIC: Ensure consistent use of backslash after CRYSDIR:
@@ -3878,13 +3881,21 @@ C       ENDIF
 C 
          CBUF(1:21)='_refine_diff_density_'
          J=1
-         DO 2350 K=1,2
-            WRITE (CLINE,'(A, A, F10.2)') CBUF(1:21),CSIZE(J),
+         IF( ( ABS(STORE(L30RF+5)) .LT. 0.000001 ) .AND.
+     1       ( ABS(STORE(L30RF+6)) .LT. 0.000001 ) ) THEN
+           DO K=1,2
+             WRITE (CLINE,'(A, A,1X,A)') CBUF(1:21),CSIZE(J), '?'
+             CALL XPCIF (CLINE)
+             J=J+2
+           END DO
+         ELSE
+           DO K=1,2
+             WRITE (CLINE,'(A, A, F10.2)') CBUF(1:21),CSIZE(J),
      1       (STORE(L30RF+4+K))
-            CALL XPCIF (CLINE)
-            J=J+2
-2350     CONTINUE
-C 
+             CALL XPCIF (CLINE)
+             J=J+2
+           END DO
+         END IF
 &DOS       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
 &DVF       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
 &GID       WRITE(CBUF, '(''>'',F6.2,''\s(I)'')') STORE(L30RF+3)
