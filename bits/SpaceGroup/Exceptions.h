@@ -58,6 +58,7 @@ class MyException : public std::exception
         MyException(int pErrNum, char* iErrStr);
         MyException(const MyException& pException);
         virtual ~MyException() throw();
+        virtual void addError(char* pErrMsg);
         virtual char* what();
         virtual int number();
         MyException& operator=(const MyException& pMatrix);
