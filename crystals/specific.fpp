@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2004/02/24 15:51:22  rich
+C Don't try to substitute HTTP: as an evironment variable.
+C Don't try to substitute C: as an environment variable.
+C Replace forward slashes with backward ones on Win32 platforms - allows
+C consistent file and path naming across platforms.
+C
 C Revision 1.48  2004/02/18 14:20:21  rich
 C In XDATER, change order from American to UK (reqd to get CIF audit_creation_date
 C in the correct order).
@@ -881,8 +887,8 @@ C
       IPERCN = MIN0 ( 100 , ( 100 * IVALUE ) / MAXVAL )
 CDJWJAN99<
       IF (ISSTML .EQ. 4) THEN
-       WRITE (CMON,1505) IPERCN
-1505   FORMAT ('^^CO SET PROGOUTPUT COMPLETE = ',I3)
+&&&GILGIDWXS       WRITE (CMON,1505) IPERCN
+&&&GILGIDWXS1505   FORMAT ('^^CO SET PROGOUTPUT COMPLETE = ',I3)
        CALL XPRVDU (NCVDU,1,0)
        RETURN
       ENDIF
