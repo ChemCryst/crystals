@@ -193,6 +193,8 @@
 %         COPY '#EDIT'
 %         COPY 'monitor off'
 %         COPY 'SELECT TYPE NE Q'
+%         COPY 'SELECT TYPE NE QH'
+%         COPY 'SELECT TYPE NE QN'
 %         COPY 'END'
 %       END IF
 ^^CO    DISPOSE XPRUNE

@@ -242,6 +242,8 @@ view the generated sections.
 %           COPY 'GETSERIAL OLDSER'
 %           COPY '#EDIT'
 %           COPY 'SELECT TYPE NE Q'
+%           COPY 'SELECT TYPE NE QH'
+%           COPY 'SELECT TYPE NE QN'
 %           COPY 'END'
 %           COPY '#SCRIPT VALID12'
 %           IF DOSCALE .EQ. 1 THEN

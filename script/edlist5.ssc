@@ -222,6 +222,7 @@
 %      BLOCK                                         %ELIMINATE%
 %        COPY 'SELECT TYPE NE Q '
 %        COPY 'SELECT TYPE NE QH '
+%        COPY 'SELECT TYPE NE QN '
 %        COPY 'SELECT TYPE NE L '
 %        COPY 'SELECT TYPE NE M '
 %        COPY 'SELECT TYPE NE R '
