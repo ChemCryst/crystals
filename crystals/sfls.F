@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2004/04/16 09:42:28  rich
+C Added code to compute leverages of individual reflections, instead of accummulating
+C a new normal matrix. (Requires matching inverted normal matrix from a previous cycle).
+C
 C Revision 1.31  2004/03/24 15:03:39  rich
 C Fixed: U[iso] too small message was never output due to linefeed in FORMAT statement.
 C (Symptom: lots of blank lines output, followed by 'n temperature factors too small' message).
@@ -1354,6 +1358,7 @@ C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DDECLINA
       DOUBLE PRECISION DAZIMUTH
 C
+      CHARACTER*15 HKLLAB
 C
       DATA S0/1.570795134/
       DATA S1/-.645925832/
@@ -1391,17 +1396,27 @@ C----- INITIALISE THE ENANTIOMER BUFFER
      1   0, DEF2)
       JENAN = 6
 
+
+      IF (ISTORE(L33CD+12).NE.0) THEN    ! Leverage calc.
 C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
-      LTEMPL = NFL
-      NTEMPL = 7              ! Seven items to be stored: H,K,L,STL2,LEV,FO,FC
-      NFL = KCHNFL(LTEMPL)    ! Make the space
+        LTEMPL = NFL
+        NTEMPL = 7              ! Seven items to be stored: H,K,L,STL2,LEV,FO,FC
+        NFL = KCHNFL(LTEMPL)    ! Make the space
 C----- INITIALISE THE SORT BUFFER
-      JLEVER = -5             ! Sort on the fifth item (NB: abs)
-      MDLEVE = NTEMPL         ! Five items to be stored
-      NLEVER = 30             ! Worst 30 reflections to be kept
-      CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,
-     1  -1, DEF3)             ! Init
-      JLEVER = 4              ! Sort on the fifth item (NB: offset)
+        JLEVER = -5             ! Sort on the fifth item (NB: abs)
+        MDLEVE = NTEMPL         ! Five items to be stored
+        NLEVER = 30             ! Worst 30 reflections to be kept
+        CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,
+     1    -1, DEF3)             ! Init
+        JLEVER = 4              ! Sort on the fifth item (NB: offset)
+
+        WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP',
+     1  '^^PL XAXIS TITLE ''k x Fo'' NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''Leverage, Pii'' SERIES 1 TYPE SCATTER'
+        CALL XPRVDU(NCVDU, 3,0)
+
+      END IF
 
 C----- SET PRINT COUNTER
       IENPRT = -1
@@ -2772,9 +2787,18 @@ C
         Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
      1                  STR11(L11),N11,  STORE(JO),JP-JO+1)
 
-        WRITE(CMON,'(A,3I4,2G18.8)')'Leverage',NINT(STORE(M6)),
-     1                NINT(STORE(M6+1)),NINT(STORE(M6+2)),PII,XVALUL
-        CALL XPRVDU(NCVDU,1,0)
+c        WRITE(CMON,'(A,3I4,2G18.8)')'Leverage',NINT(STORE(M6)),
+c     1                NINT(STORE(M6+1)),NINT(STORE(M6+2)),PII,XVALUL
+c        CALL XPRVDU(NCVDU,1,0)
+
+        WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)), ',',
+     1                                NINT(STORE(M6+1)), ',',
+     2                                NINT(STORE(M6+2))
+        CALL XCRAS(HKLLAB, IHKLLEN)
+        WRITE(CMON,'(3A,2F11.3)')
+     1   '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',FO,Pii
+        CALL XPRVDU(NCVDU, 1,0)
+
 
         IF (( ILEVPR .LT. 30 ) .OR. ( PII .LT. XVALUL ) ) THEN
 C----    H,K,L,SNTHL,LEV,
@@ -2841,6 +2865,12 @@ C--PICK UP THE NEXT REFLECTION
 C
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 5850  CONTINUE
+
+      IF (ISTORE(L33CD+12).NE.0) THEN    ! Leverage plot
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      ENDIF
+
       IF (NT .LE. 0) THEN
       IF (ISSPRT .EQ. 0) WRITE(NCWU,5851)
       WRITE ( CMON, 5851)
