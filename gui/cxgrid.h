@@ -50,6 +50,7 @@ class CxGrid : public BASEGRID
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
+        void CxShowWindow(bool state=true);
 
         CrGUIElement *  ptr_to_crObject;
         static int mGridCount;

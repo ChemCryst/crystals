@@ -85,6 +85,7 @@ void    CxGrid::SetGeometry( int top, int left, int bottom, int right )
       LOGSTAT("I am grid number " + CcString((int)this) );
       LOGSTAT("My top coord is set to " + CcString(top) );
 #endif
+      LOGSTAT("CxGrid SetGeom to t:" + CcString(top) + " l:" + CcString(left) + " b:" + CcString(bottom-top) + " r:" + CcString(right-left)  );
 }
 
 int   CxGrid::GetTop()
@@ -178,4 +179,23 @@ int CxGrid::GetIdealWidth()
 int CxGrid::GetIdealHeight()
 {
     return (100);
+}
+
+void CxGrid::CxShowWindow(bool state)
+{
+#ifdef __CR_WIN__
+  if (state)
+  {
+     ShowWindow(SW_SHOW);
+     UpdateWindow();
+  }
+  else
+  {
+     ShowWindow(SW_HIDE);
+     UpdateWindow();
+  }
+#endif
+#ifdef __BOTHWX__
+      Show(state);
+#endif
 }
