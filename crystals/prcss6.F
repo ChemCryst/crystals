@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2003/09/05 19:28:58  djw
+C Spherical absorption corection Directive
+C
 C Revision 1.9  2003/07/15 09:46:21  rich
 C New SGPLOT instruction. Takes a 3x3 matrix,A, to select reflection classes
 C (if h == Ah, then the reflection is selected). Takes a 3x1 vector, B, and
@@ -128,11 +131,11 @@ C--'#TWINPLOT' INSTRUCTION
 C--'#SGPLOT' INSTRUCTION
 4400  CONTINUE
       CALL XSPGPL
+      RETURN
 c
 C--'#THETABS'INSTRUCTION
 4500  CONTINUE
       CALL XTHABS
-      RETURN
       RETURN
       END
 
