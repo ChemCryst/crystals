@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2004/02/18 14:20:21  rich
+C In XDATER, change order from American to UK (reqd to get CIF audit_creation_date
+C in the correct order).
+C Use current version number to add a version suffix to the audit_creation_method
+C key in the CIF.
+C
 C Revision 1.47  2004/02/18 12:08:23  rich
 C Added option \SET TIME SLOW which prevents output of DATE and TIME strings.
 C This is to be used by the new test_suite so that runs at different times
@@ -2664,16 +2670,21 @@ c1     CONTINUE
       NAMLEN(1)=J
       LSTPOS(1)=0
       LSTLEN(1)=-1
-C
+
+C Check for http: links.
+      CALL XCCUPC(NAME(1),INQNAM)
+      IF ( INQNAM(1:5) .EQ. 'HTTP:' ) GOTO 9999   !No need to subst variables.
+      
+
 C CHECK ON FILE NAME NAMLEN OVERFLOW
-C
+
       IF(J.GT.LEN(NAME(LEVEL))) THEN
         WRITE ( cmon, '( '' MTRNLG: Filename too long '')')
         CALL XPRVDU(NCEROR, 1, 0)
         CALL XOPMSG (IOPCRY, IOPABN, 0 )
         CALL XERHND (IERSEV)
       ENDIF
-C
+
       IWHAT=0
       IF(STATUS.EQ.'OLD') IWHAT=1
       IF(STATUS.EQ.'NEW') IWHAT=2
@@ -2685,55 +2696,68 @@ C
         CALL XOPMSG (IOPCRY, IOPABN, 0 )
         CALL XERHND (IERSEV)
       END IF
-C
-C HERE COMES THE BIG SEARCH LOOP. IT IS GUIDED BY THE LEVEL AND THE
-C VARIABLE.
-C
-C SEARCH FOR THE FIRST ':' IF THERE IS ANY
-C
 
-2     COLPOS(LEVEL)=INDEX(NAME(LEVEL)(1:NAMLEN(LEVEL)),':')
+C HERE COMES THE BIG SEARCH LOOP. IT IS GUIDED BY THE LEVEL AND THE VARIABLE.
+C SEARCH FOR THE FIRST ':' IF THERE IS ANY
+
+
+C Don't subst things like C:\ - start search from third character.
+2     COLPOS(LEVEL) =
+     c    INDEX( NAME(LEVEL)(MIN(3,NAMLEN(LEVEL)):NAMLEN(LEVEL)),':' )
+      COLPOS(LEVEL) = COLPOS(LEVEL)+2  !Correct for starting from 3rd char.
+
+C FEB04: On Win32 platform, search for forward slashes and change
+C to back slashes - this will allow consistent file and path naming
+C on all platforms.
+&&&&GIDDOSDVFWXS      DO WHILE(.TRUE.)
+&&&&GIDDOSDVFWXS        ISLP = KCCEQL(NAME(LEVEL),1,'/')
+&&&&GIDDOSDVFWXS        IF ( ISLP .GT. 0 ) THEN
+&&&GIDDOSDVF          NAME(LEVEL)(ISLP:ISLP) = '\'
+&WXS                  NAME(LEVEL)(ISLP:ISLP) = '\\'
+&&&&GIDDOSDVFWXS        ELSE
+&&&&GIDDOSDVFWXS          EXIT
+&&&&GIDDOSDVFWXS        END IF
+&&&&GIDDOSDVFWXS      END DO
+
 
 C      WRITE(6,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
-C
+
 C TEST IF SOMETHING CAN BE DONE
-C
-      IF(COLPOS(LEVEL).LT.3) THEN
-C^^
+
+      IF(COLPOS(LEVEL).LT.3) THEN   
+
 C        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
+
         IF(IWHAT.EQ.2) GOTO 9999
         INQNAM=NAME(LEVEL)(1:NAMLEN(LEVEL))
-cmar02 - trim back to last hash - allows html files to be opened with
+
+c mar02 - trim back to last hash - allows html files to be opened with
 c anchors specified after filename. e.g. myfile.html#sect1
+
         IHASH = INDEX(INQNAM,'#')
         IF (IHASH.LE.0) IHASH = NAMLEN(LEVEL)+1
         DO I=MIN(IHASH,NAMLEN(LEVEL)+1),LEN(INQNAM)
           INQNAM(I:I)=' '
         END DO
 
-cnov98        INQUIRE(FILE=INQNAM,EXIST=LEXIST)
         INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
-        if( (iotest .eq. 0) .and.
-     1  (LEXIST))  GOTO 9999
+        if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
         LEVEL=LEVEL-1
         IF(LEVEL.GE.1) GOTO 3
         LEVEL=1
         GOTO 9999
       ENDIF
-C
+
 C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
-C
+
       IF(LSTLEN(LEVEL).LT.0) THEN
         CALL XCCUPC(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
      &              NAME(LEVEL)(1:COLPOS(LEVEL)-1))
         LIST(LEVEL) = ' '
-C----- DOSPARAM@ ( CPARAM, CVALUE) RETURNS THE CVALUE OF THE PARAMET
-C      CPARAM, INITIALISED WITH THE DOS COMMAND:   SET CPARAM=CVALUE
-&DOS        CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+&DOS          CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &&DVFGID      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-&UNX        CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 &&LINGIL      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-&WXS      CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+&WXS          CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
         IF (LIST(LEVEL) .EQ. ' ') THEN
@@ -2742,29 +2766,27 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
             LIST(LEVEL) = CSCPDV(1:LSCPDV)
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
-&DOS         LIST(LEVEL) = '.\'
-&DVF         LIST(LEVEL) = '.\'
-&GID         LIST(LEVEL) = '.\'
-&VAX         LIST(LEVEL) = '.\'
-&LIN         LIST(LEVEL) = './'
-&GIL         LIST(LEVEL) = './'
-&WXS         LIST(LEVEL) = './'
+&&DOSDVF         LIST(LEVEL) = '.\'
+&&GIDVAX         LIST(LEVEL) = '.\'
+&&LINGIL         LIST(LEVEL) = './'
+&WXS             LIST(LEVEL) = './'
           ENDIF
         ENDIF
         LSTPOS(LEVEL)=0
         LSTLEN(LEVEL)=KSTRLN(LIST(LEVEL))
-C^^
+
 C        WRITE(6,*) 'Environment ',LEVEL,'  "',
 C     &    NAME(LEVEL)(1:COLPOS(LEVEL)-1),'"  = "',
 C     &    LIST(LEVEL)(1:LSTLEN(LEVEL)),'"'
       ENDIF
-C
+
 C TEST LIST FOR SOMETHING TO PROCESS
-C
+
 3     CONTINUE
-C^^
+
 C      WRITE(6,*) 'Testing ',LEVEL,'  "',
 C     &  NAME(LEVEL)(1:NAMLEN(LEVEL)),'"'
+
       IF((LSTPOS(LEVEL).GE.LSTLEN(LEVEL))
      &  .OR.((LSTPOS(LEVEL).GT.0).AND.(IWHAT.EQ.2))) THEN
         LEVEL=LEVEL-1
@@ -2788,12 +2810,12 @@ C     &  NAME(LEVEL)(1:NAMLEN(LEVEL)),'"'
         J=LSTPOS(LEVEL)+1
         LSTPOS(LEVEL)=INDEX(LIST(LEVEL)(J:LSTLEN(LEVEL)),',')+J-1
         IF(LSTPOS(LEVEL).EQ.(J-1)) LSTPOS(LEVEL)=LSTLEN(LEVEL)+1
-C^^
+
 C         WRITE(6,*)
 C     1 'Extracted     "',LIST(LEVEL)(J:LSTPOS(LEVEL)-1),'"'
         K=LSTPOS(LEVEL)-J
         NAME(LEVEL+1)(1:K)=LIST(LEVEL)(J:LSTPOS(LEVEL)-1)
-C^^
+
 C          WRITE(6,*)'Name="',NAME(LEVEL+1)(1:K),'"',J,K
         J=COLPOS(LEVEL)
 
