@@ -325,7 +325,7 @@ EXTINCTION  PARAMETERS
 (1X,9F12.5)
          2
     .PARAMETER          0    0    1    0    0 0.0
-LIST 6            17    2
+LIST 6            16    2
    1    4096 CRYSTALSINPUT6
    13   28
    1.READ               6    1    0    0
@@ -436,22 +436,6 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
     .ELEMENTS           0    0    0    0    0        11
   16.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  106
          0    0    0    0    0    0    0    0    0    0
-  17.MATRIX            10    1    0    0   10    1 1009  108    6
-         1    1    1    1    1    1    0    0    0    0
-THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
-(10X,60A1)
-(1X,9F6.2)
-         2    2    2    2    2    2    2    2    2    2
-    .M11                0    0    1    0    0 1.0
-    .M21                0    0    1    0    0 0.0
-    .M31                0    0    1    0    0 0.0
-    .M12                0    0    1    0    0 0.0
-    .M22                0    0    1    0    0 1.0
-    .M32                0    0    1    0    0 0.0
-    .M13                0    0    1    0    0 0.0
-    .M23                0    0    1    0    0 0.0
-    .M33                0    0    1    0    0 1.0
-    .TOLERANCE          0    0    1    0    0 0.1
 LIST 7            16    0
    1    4096 CRYSTALSINPUT6
    1.READ               6    1    0    0
@@ -2435,7 +2419,7 @@ ANALYSE            4    5
          3
     .LEVEL              8    0    1    4    0 LOW
      HIGH           LOW            MEDIUM         OFF
-DISTANCES          8    7
+DISTANCES         10    7
    1    4096 CRYSTALSDISTANCES
     1    2    5   11   12   29   31
    1.LIMITS             4    1    0    0
@@ -2469,15 +2453,19 @@ DISTANCES          8    7
      OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    4   -1 HIGH
      OFF            LOW            MEDIUM         HIGH
-    .PUNCH             23    0    1    4   -1 NOTHING
-     NOTHING        RESTRAIN       PUBLISH        CIF
+    .PUNCH             23    0    1    5   -1 NOTHING
+     NOTHING        RESTRAIN       PUBLISH        CIF            DATA
    5.INCLUDE            0 9999    0    0    0    0  104    5  175
          0    0    0    0    0    0    0    0    0    0
    6.EXCLUDE            0 9999    0    0    0    0  105    5  175
          0    0    0    0    0    0    0    0    0    0
    7.ONLY               0 9999    0    0    0    0  106    5  175
          0    0    0    0    0    0    0    0    0    0
-   8.DISTANCES          1    1    0    0
+   8.FROM               0 9999    0    0    0    0  107    5  175
+         0    0    0    0    0    0    0    0    0    0
+   9.TO                 0 9999    0    0    0    0  108    5  175
+         0    0    0    0    0    0    0    0    0    0
+  10.DISTANCES          1    1    0    0
          1
     .INPUTLIST         20    0    1    2    1         5
               5        10
