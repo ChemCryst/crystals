@@ -2329,7 +2329,7 @@ HYDROGENS         13    3
               5        10
     .OUTPUTLIST        37    0    1    2    1         5
               5        10
-REGULARISE        26    3
+REGULARISE        23    3
    6    4096 CRYSTALSALTER5
     1    2    5
    1.GROUP              0 9999    0    0    4   -1  101    5  165
@@ -2376,13 +2376,7 @@ REGULARISE        26    3
          0    0    0    0    0    0    0    0    0    0
   22.DUMMY22            0 9999    0    0    4   -1  122    5  165
          0    0    0    0    0    0    0    0    0    0
-  23.COMPUTE            0 9999    0    0    4   -1  123    5  165
-         0    0    0    0    0    0    0    0    0    0
-  24.MAP                0 9999    0    0    4   -1  124    5  165
-         0    0    0    0    0    0    0    0    0    0
-  25.ONTO               0 9999    0    0    4   -1  125    5  165
-         0    0    0    0    0    0    0    0    0    0
-  26.REGULARISE         1    1    0    0    0    0    0    0    0
+  23.REGULARISE         1    1    0    0    0    0    0    0    0
          3
     .MODE              35    0    1    4    1 COMPARE
      REPLACE        COMPARE        KEEP           AUGMENT
