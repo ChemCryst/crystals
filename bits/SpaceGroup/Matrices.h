@@ -286,6 +286,17 @@ class Matrix
             iXSize = tYSize;
 
         }
+        
+        type sum()
+        {
+            type tSum = 0;
+            
+            for (int i = 0;  i < iSize; i ++)
+            {
+                tSum += iMatrix[i];
+            }
+            return tSum;
+        }
 };
 
 #if defined (__APPLE__)
@@ -474,6 +485,17 @@ class Matrix<float>
                 return bcmp(iMatrix, pMatrix2.iMatrix, iSize*sizeof(float))==0;
             }
             return false;
+        }
+        
+        float sum()
+        {
+            float tSum = 0;
+            
+            for (int i = 0;  i < iSize; i ++)
+            {
+                tSum += iMatrix[i];
+            }
+            return tSum;
         }
 };
 #endif
