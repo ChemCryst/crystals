@@ -28,7 +28,7 @@ CxIcon *    CxIcon::CreateCxIcon( CrIcon * container, CxGrid * guiParent )
       theText->Create(NULL, SS_ICON|WS_CHILD|WS_VISIBLE,CRect(0,0,20,20),guiParent);
 	theText->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theText->Create(guiParent, -1, "text");
 #endif
       return theText;
@@ -48,7 +48,7 @@ CxIcon::~CxIcon()
 
 void  CxIcon::SetText( char * text )
 {
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetLabel(text);
 #endif
 #ifdef __WINDOWS__
@@ -62,7 +62,7 @@ void  CxIcon::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 
@@ -80,7 +80,7 @@ int   CxIcon::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -105,7 +105,7 @@ int   CxIcon::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -123,7 +123,7 @@ int   CxIcon::GetWidth()
 #ifdef __WINDOWS__
       return GetSystemMetrics(SM_CXICON);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -134,7 +134,7 @@ int   CxIcon::GetHeight()
 #ifdef __WINDOWS__
       return GetSystemMetrics(SM_CYICON);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -147,7 +147,7 @@ int   CxIcon::GetIdealWidth()
 #ifdef __WINDOWS__
       return GetSystemMetrics(SM_CXICON);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return cx; 
@@ -160,7 +160,7 @@ int   CxIcon::GetIdealHeight()
 #ifdef __WINDOWS__
       return GetSystemMetrics(SM_CYICON);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return GetCharHeight();
 #endif
 }
@@ -205,6 +205,5 @@ void CxIcon::SetIconType( int iIconId )
 
       SetIcon ( icon );
 #endif
-
 
 }

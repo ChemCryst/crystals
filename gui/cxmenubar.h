@@ -22,7 +22,7 @@ class LCaption;
 #include	<LCaption.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/menu.h>
 #define BASEMENUBAR wxMenuBar
 #endif

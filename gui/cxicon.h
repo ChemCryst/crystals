@@ -13,7 +13,7 @@
 #define           __CxIcon_H__
 #include	"crguielement.h"
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/stattext.h>
 #define BASETEXT wxStaticText
 #endif

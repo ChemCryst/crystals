@@ -23,7 +23,7 @@ CxGroupBox *	CxGroupBox::CreateCxGroupBox( CrGrid * container, CxGrid * guiParen
         theGrid->Create("GroupBox",WS_CHILD| WS_VISIBLE| BS_GROUPBOX, CRect(0,0,10,10), guiParent, mGroupBoxCount++);
 	theGrid->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theGrid->Create(guiParent,-1,"GroupBox",wxPoint(0,0),wxSize(0,0));
 #endif
       return theGrid;
@@ -45,7 +45,7 @@ void	CxGroupBox::SetText( char * text )
 #ifdef __WINDOWS__
 	SetWindowText(text);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetLabel(text);
 #endif
 }
@@ -55,7 +55,7 @@ void	CxGroupBox::SetGeometry( const int top, const int left, const int bottom, c
 #ifdef __WINDOWS__
       MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 }

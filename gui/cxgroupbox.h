@@ -18,7 +18,7 @@
 #define BASEGROUPBOX CButton
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/statbox.h>
 #define BASEGROUPBOX wxStaticBox
 #endif

@@ -16,7 +16,7 @@
 #define BASELISTCTRL CListCtrl
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/listctrl.h>
 #define BASELISTCTRL wxListCtrl
 #endif

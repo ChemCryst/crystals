@@ -1,6 +1,6 @@
 // This class is being temporarily removed from the LINUX version,
 // as it is far too complicated and not even used in SCRIPTS yet.
-#ifndef __LINUX__
+#ifndef __BOTHWX__
 
 ////////////////////////////////////////////////////////////////////////
 
