@@ -3061,14 +3061,15 @@ GENERALEDIT       22    0
    8.INSERT             0 9999    0    0
    9.DELETE             0 9999    0    0
   10.WRITE              0 9999    0    0
-  11.TRANSFER           4 9999    0    0
-         3    1    3    4
+  11.TRANSFER           5 9999    0    0
+         3    1    1    3    4    
     .DIRECTION          1   -1    1    2    1
      FROM           TO
+    .LENGTH             3    0    1    0    0         1
     .OFFSET             2   -1    1    0
-    .XXXXXX             3   -1    1    2    1
+    .XXXXXX             4   -1    1    2    1
      FROM           TO
-    .VARIABLE           4   -1    1    0
+    .VARIABLE           5   -1    1    0
   12.CHANGE             5 9999    0    0
          1    3    1    2    3
     .OFFSET             1   -1    1    0
