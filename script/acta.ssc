@@ -10,12 +10,12 @@
 %  EVALUATE WARNFLAG = 0
 %%
 %%   Re-calculate the electron density.
-
+ 
  * Recalculating min and max electron density.
 %  COPY '#FOURIER'
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'END'
-
+ 
  * Recalculating R.
 %  EVALUATE ERRFLAG = 1
 %  BLOCK
@@ -28,11 +28,21 @@
 %  IF ERRFLAG .NE. 0 THEN
  **** Fatal: Error in calculating phases.
  Do you have Fourier peaks ('Q,L,R or M') in your model?
-
+ 
 %     FINISH
 %  END IF
 
  * Checking data against some IUCr validation criteria...
+
+ A quick guide to possible warnings:
+
+ *    ALERT = Not too serious, may indicate problems
+ **   WARN  = Problem - will need correcting or thorough investigation.
+ ***  FAIL  = Serious problem or incomplete refinement.
+ **** FATAL = Missing data prevents checking.
+ 
+---- RESULTS ----------------------------------------------------------
+
 
 %%
 %% Check List 30 exists.
@@ -47,7 +57,7 @@
 %%
 %% Crystals Size
 %%
-%  BLOCK      
+%  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 102'
 %    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
@@ -70,7 +80,7 @@
 %%
 %% Temperature
 %%
-%  BLOCK      
+%  BLOCK
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 102'
 %    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
@@ -370,7 +380,7 @@
 %           END IF
 %         END IF
 %      END IF
-%    ELSE  
+%    ELSE
 %%%                                   (Non-centro and Z < 18).
 %      IF WORK3 .LE. 4.0 THEN
  *** FAIL:  Ratio of reflections to parameters is unacceptable ( < 4.0 )
@@ -396,8 +406,8 @@
 %%
 %% Check results
 %%
-
-
+ 
+ 
 %  IF ERRFLAG .GT. 0 THEN
 %    CLEAR
 %    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ERRFLAG
@@ -431,7 +441,10 @@
 %%
 %  IF ( ALERTFLAG .EQ. 0 ) .AND. ( ERRFLAG .EQ. 0 ) .AND. -
       (  WARNFLAG .EQ. 0 ) THEN
-All checks passed successfully. 
-Email a CIF to checkcif@iucr.ac.uk for more detailed and up to date checks.
+All checks passed successfully.
+
+Select "Checkcif on the web" from the Analyse menu, or email a CIF to 
+checkcif@iucr.ac.uk for more detailed and up to date checks.
+
 %  END IF
 %END SCRIPT
