@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/01/09 18:48:27  richard
+C RIC: GET KEYWORD no longer resets from the end to the beginning of the line when used in
+C conjunction with NOPROMPT, instead, the default value is used. If no default value, error.
+C
 C Revision 1.24  2000/12/11 12:22:52  richard
 C RIC: Bug fix in KSCTRN. Recent changes stopped GENERALEDIT getting values
 C in some cases. Fixed.
@@ -7186,7 +7190,7 @@ C
 C
       PARAMETER ( LCOMP = 12, NCOMP = 30 )
       PARAMETER ( LERROR = 22 , NERROR = 17 )
-      PARAMETER ( LTYPE = 21 , NTYPE = 36 )
+      PARAMETER ( LTYPE = 21 , NTYPE = 37 )
 C
       PARAMETER ( MAXQUO = 50 )
 C
@@ -7223,7 +7227,7 @@ C
      8 'parameter' , 'opening file' , 'file channels' , 'stack' ,
      9 'prompt string' , 'message' , 'length' , 'stack level' ,
      * 'stack item code' , 'operation order' , 'default value' ,
-     1 'validating expression' /
+     1 'validating expression','command buffer (GET)' /
 C
       DATA LNTYPE / 7 , 8 , 8 , 4 ,
      2 10 , 3 , 13 , 5 , 9 ,
@@ -7235,7 +7239,7 @@ C
      8 9 , 12 , 13 , 5 ,
      9 13 , 7 , 6 , 11 ,
      * 15 , 15 , 13 ,
-     1 21 /
+     1 21, 20 /
 C
       DATA CERROR / 'Illegal' , 'Illegal or missing' , 'Wrong type of',
      2 'Missing' , 'Incorrect type of' , 'Too many' , 'Not found' ,
