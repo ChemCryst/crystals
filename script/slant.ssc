@@ -3,7 +3,7 @@
 % VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
 % VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER
 % VARIABLE LOGICAL VAX
-% VARIABLE CHARACTER CTYPE
+% VARIABLE CHARACTER CTYPE CFILE
 % VARIABLE LOGICAL EXSLANT
 % VARIABLE LOGICAL SCRIPTEXT
 %%&VAX% EVALUATE VAX = TRUE
@@ -127,7 +127,7 @@
 % END LOOP
   Sections can be computed above and below the best plane, centred on
   the plane itself
-%   GET FINAL REAL 'How many sections each side' '0'
+%   GET FINAL REAL 'How many sections each side' '1'
 %   EVALUATE ZSECT = VALUE
 % CLEAR
 %  BLOCK
@@ -173,38 +173,37 @@
 %  END BLOCK
 %  BLOCK
 %    ON ERROR RESTART
-%    CLEAR
-%    INSERT '#OPEN MT1'
-%    GET FINAL FILENAME 'Filename for map' 'SLANT.MT1'
-%    SEND
-%  END BLOCK
-% TRANSFER "#STORE CSYS MAP 'SLANT.FOU'" TO CRYSTALS
-% COPY '#SLANT'
-% QUEUE PROCESS
-% COPY 'END'
-% COPY  '#RELEASE MT1'
+%    GET FINAL FILENAME ' Filename for Map ' 'SLANT'
+%    EVALUATE CFILE = CVALUE
+%   COPY '#OPEN MT1 ' // CFILE  // '.MT1'
+%   TRANSFER "#STORE CSYS MAP '" // CFILE // ".FOU'" TO CRYSTALS
+%   COPY '#SLANT'
+%   QUEUE PROCESS
+%   COPY 'END'
+%% COPY  '#RELEASE MT1'
   The electron density map is in the listing file, and the plotfile
   in the file you nominated.
-%CLEAR
-% IF VAX .EQ. TRUE THEN
-%   INSERT '@CRPROC:SPAWNCMD "CONTOUR  "'
-%   EXTERNAL SEND
-% ELSE
-% BLOCK
-%   ON ERROR REPEAT
-%   VERIFY CONTOUR HUSAK
-%   GET NOSTORE ABBREVIATED -
+%   CLEAR
+%   IF VAX .EQ. TRUE THEN
+%     INSERT '@CRPROC:SPAWNCMD "CONTOUR  "'
+%     EXTERNAL SEND
+%   ELSE
+%     BLOCK
+%     ON ERROR REPEAT
+%     VERIFY CONTOUR HUSAK
+%     GET NOSTORE ABBREVIATED -
   'Contour or Husak ?' 'CONTOUR'
-%         CASE VALUE
-%           BLOCK    %Run contour
-%             TRANSFER '#SPAWN CRYSDIR:contour SLANT.FOU'  TO CRYSTALS
-%           END BLOCK
-%           BLOCK    %Run marchingcubesELD viewer
- * Starting Michal Husak's 3D ELD viewer.
-%             TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MARCHI~1 ' -
-    // ' slant.fou ' TO CRYSTALS
-%           END BLOCK
-%         END CASE
-% END BLOCK
-% END IF
+%     CASE VALUE
+%      BLOCK    %Run contour
+%        TRANSFER '#SPAWN CRYSDIR:contour ' // CFILE // '.FOU'  TO CRYSTALS
+%      END BLOCK
+%      BLOCK    %Run marchingcubesELD viewer
+ * Starting Michal Husak's 3D ELD viewer. Wait while it loads up.
+%        TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MARCHI~1 ' -
+    // CFILE // '.fou ' TO CRYSTALS
+%      END BLOCK
+%     END CASE
+%     END BLOCK
+%    END IF
+%  END BLOCK
 %END SCRIPT
