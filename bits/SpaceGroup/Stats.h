@@ -11,6 +11,7 @@
 #define __STATS_H__
 
 #include "CrystalSystem.h"
+#include "Conditions.h"
 
 #define kNumberOfOutputValues 7
 
@@ -37,23 +38,23 @@ class Stats:public MyObject
         float iTotalIntensity;
         ElemStats* iStats;	//Cells of the stats.
         bool iFiltered;
-        void outputHeadings(std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums);
-        void outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums, int pColumnWidth=12, int pOtherColumns=8);
+        void outputHeadings(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums);
+        void outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums, const int pColumnWidth=12, const int pOtherColumns=8);
         static float evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD);
         void handleFilteredData(int pColumns[], int pNumColumns);
-        int numberOfOutElementValues();
+        int numberOfOutElementValues() const;
         std::ostream& outputElementValue(std::ostream& pStream, ElemStats* pStats , int pValues);
         void setShouldDos(Headings* pHeadings, Conditions* pConditions);
     public:
         Stats(Headings* pHeadings, Conditions* pConditions);
         ~Stats();
-        bool filtered();
-        void addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>* pHKLM);
+      //  bool filtered() const;
+        void addReflectionRows(const int pColumn, Reflection* pReflection, Matrix<short>* pHKLM);
         void addReflection(Reflection* tReflection);
         void calProbs();			//Calculates all the probabilites for all the cells.
-        ElemStats* getElem(int pHeadIndex, int pCondIndex);
-        std::ostream& output(std::ostream& pStream, Table& pTable);
-        std::ofstream& output(std::ofstream& pStream, Table& pTable);
+        ElemStats* getElem(const int pHeadIndex, const int pCondIndex) const;
+        std::ostream& output(std::ostream& pStream, const Table& pTable);
+        std::ofstream& output(std::ofstream& pStream, const Table& pTable);
 };
 
 #endif
