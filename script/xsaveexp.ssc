@@ -1,0 +1,14 @@
+%SCRIPT XSAVEEXP
+%% Explain why you don't need to save data from Crystals.
+%       COPY '#SCRIPT XHELP1'
+ CRYSTALS maintains all current information in a file on
+ the disk with extension .DSC. This file is usually called
+ CRFILEV2.DSC.
+ You do  not  need to  explicitly  SAVE  data to it as it
+ is constantly updated as you work.
+ You may close the current data file and work with a new
+ one by choosing "SAVE AS"  from the file menu.  You may
+ return to the original by choosing "OPEN" from the file
+ menu and selecting the original DSC file.
+%       COPY '#SCRIPT XHELP2'
+%END SCRIPT

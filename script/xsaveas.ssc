@@ -1,0 +1,50 @@
+%SCRIPT XSAVEAS
+%  VARIABLE CHARACTER CTITLE CPATH CEXTN
+%% Get the name of a new DISCFILE from the user and purge
+%% to it and restart with it.
+^^WI SYSSAVEFILE 'v2save.dsc' '*.dsc' 'CRYSTALS database (*.dsc)'
+^^CR
+%    GET KEYWORD 'New dsc filename:'
+%    IF CVALUE .NE. 'CANCEL' THEN
+%      EVALUATE CTITLE = GETTITLE ( CVALUE )
+%      EVALUATE CPATH = GETPATH ( CVALUE )
+%      EVALUATE CEXTN = GETEXTN ( CVALUE )
+%%
+%% Some checks
+%%
+%      IF FILEEXISTS ( CVALUE ) THEN
+
+%         TRANSFER CTITLE // '.DSC' TO DISPLAY
+  Error: File exists already.
+
+%         FINISH
+%      END IF
+%      IF ( UPPERCASE CEXTN ) .NE. 'DSC' THEN
+
+% TRANSFER CEXTN // ' is not a valid file extension.' TO DISPLAY
+
+%         FINISH
+%      END IF
+
+%      TRANSFER "#STORE CSYS NEWD '" // CVALUE // "'" TO CRYSTALS
+%      COPY '#PURGE DSC'
+%      COPY 'END'
+^^WI RESTART
+%      TRANSFER '^^WI ' // CPATH TO DISPLAY
+^^WI FILE=
+%      TRANSFER '^^WI ' // CTITLE // '.DSC' TO DISPLAY
+^^CR
+^^WI SET _MAIN TEXT=
+% TRANSFER "^^WI 'Crystals - " // CVALUE // "'" TO DISPLAY
+^^CR
+%% MAKE SURE THE GUI HAS RECEIVED THESE COMMANDS
+%% BEFORE CLOSING DOWN!
+%% We query the value of any object by name.
+%% There won't be an object called _ANYTHING_ so the
+%% GUI returns FALSE.
+^^WI GETVALUE _ANYTHING_
+^^CR
+% GET NOSTORE TEXT 'Waiting to restart' ' '
+%      COPY '#END'
+%    END IF
+%END SCRIPT

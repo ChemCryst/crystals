@@ -1,0 +1,46 @@
+%SCRIPT XOPENDSC
+%  VARIABLE CHARACTER CPATH CNAME CFILE
+%% Get the name of a new DISCFILE from the user and restart
+%% Crystals in that directory.
+^^WI SYSOPENFILE '*.dsc' 'CRYSTALS database'
+^^CR
+%    CLEAR
+%    GET TEXT 'New filename:'
+%    IF CVALUE .NE. 'CANCEL' THEN
+%      EVALUATE CFILE = CVALUE
+%      EVALUATE CPATH = GETPATH ( CFILE )
+%      EVALUATE CNAME = GETFILE ( CFILE )
+%%
+%% Some checks
+%%
+%      IF ( FILEEXISTS ( CFILE ) .EQ. FALSE ) THEN
+
+ Error: File does not exist.
+
+%         FINISH
+%      END IF
+%      IF FILEISOPEN ( CFILE ) THEN
+
+ Error: File is in use.
+
+%         FINISH
+%      END IF
+^^WI RESTART
+%      TRANSFER '^^WI ' // CPATH TO DISPLAY
+^^WI FILE=
+%      TRANSFER '^^WI ' // CNAME TO DISPLAY
+^^CR
+^^WI SET _MAIN TEXT=
+% TRANSFER "^^WI 'Crystals - " // CFILE // "'" TO DISPLAY
+^^CR
+%% MAKE SURE THE GUI HAS RECEIVED THESE COMMANDS
+%% BEFORE CLOSING DOWN!
+%% We query the value of any object by name.
+%% There won't be an object called _ANYTHING_ so the
+%% GUI returns FALSE.
+^^WI GETVALUE _ANYTHING_
+^^CR
+% GET NOSTORE TEXT 'Waiting to restart' ' '
+%      COPY '#END'
+%    END IF
+%END SCRIPT
