@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2000/12/01 17:06:51  richard
+C RIC: Change default release year to 2000
+C
 CODE FOR DATA
       BLOCK DATA CRYBLK
 C--PRESETS FOR THE CRYSTALS SYSTEM
@@ -1417,6 +1420,8 @@ C
 C
 C
       DATA IOLDC / 0 /
+      DATA IOFORE / -1 /
+      DATA IOBACK / -1 /
 C
 C
       END
