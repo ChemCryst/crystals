@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/11/23 09:01:21  ckp2
+C Zero-value bars were missing from output of reciprocal weights graph in XApp04.
+C
 C Revision 1.24  2001/11/16 15:39:53  ckp2
 C Only output graphs when required. Extinction graph in ANALYSE <Fo>-<Fc> against
 C Fo range.
@@ -928,9 +931,9 @@ C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
       IF ( IGUI4 .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _RWGHT',
-     1  '^^PL XTITLE ''Reciprocal weights vs /FO/''',
-     1  '^^PL NSERIES=1 LENGTH=20 YTITLE ''estimated <Fo-Fc>**2'''
-C     1 ,'^^PL ZOOM 0 0 0.01 100'
+     1  '^^PL XAXIS TITLE ''Reciprocal weights vs /FO/''',
+     1  '^^PL NSERIES=1 LENGTH=20 YAXIS TITLE ''estimated <Fo-Fc>**2'''
+C     1 ,'^^PL ZOOM 0.01 100'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 
@@ -2723,9 +2726,9 @@ C--AGREEEMNT ANALYSIS ON REFLECTION CLASSES
       IF ( PLCLS .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS ',
-     1  '^^PL XTITLE ''HKL Class''',
-     1	'^^PL NSERIES=2 LENGTH=16 LOG YTITLE <Fo-Fc>**2',
-     1  '^^PL ZOOM 0 0 0.01 100'
+     1  '^^PL XAXIS TITLE ''HKL Class''',
+     1	'^^PL NSERIES=2 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
+     1  '^^PL ZOOM 0.01 100'
         CALL XPRVDU(NCVDU, 4,0)
       END IF
 
@@ -2787,9 +2790,9 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
 
       IF ( PLPAR .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A)')
-     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR YTITLE <Fo-Fc>**2',
-     1 '^^PL LOG NSERIES=2 LENGTH=8 XTITLE ''Parity Group''',
-     1 '^^PL ZOOM 0 0 0.01 100'
+     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR',
+     1 '^^PL NSERIES=2 LENGTH=8 XAXIS TITLE ''Parity Group''',
+     1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100'
         CALL XPRVDU(NCVDU, 3,0)
       ENDIF
 
@@ -2861,18 +2864,18 @@ C--- OUTPUT TO SCREEN
       IF ( PLFOR .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO',
-     1 '^^PL NSERIES=2 LENGTH=20 LOG ',
-     1'^^PL XTITLE ''<- Weak           Fo Range            Strong ->''',
-     1 '^^PL YTITLE <Fo-Fc>**2 ZOOM 0 0 0.01 100'
+     1 '^^PL NSERIES=2 LENGTH=20 XAXIS TITLE',
+     1'^^PL  ''<- Weak           Fo Range            Strong ->''',
+     1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100'
         CALL XPRVDU(NCVDU, 4,0)
       ENDIF
 
       IF ( PLEXT .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A,/,A)')
      1 '^^PL PLOTDATA _EXT BARGRAPH ATTACH _VEXT',
-     1 '^^PL NSERIES=1 LENGTH=20',
-     1'^^PL XTITLE ''<- Weak           Fo Range            Strong ->''',
-     1 '^^PL YTITLE <Fo>-<Fc>'
+     1 '^^PL NSERIES=1 LENGTH=20 XAXIS TITLE',
+     1'^^PL  ''<- Weak           Fo Range            Strong ->''',
+     1 '^^PL YAXIS TITLE <Fo>-<Fc>'
         CALL XPRVDU(NCVDU, 4,0)
       ENDIF
 
@@ -3003,10 +3006,10 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
 
       IF ( PLTHE .EQ. 1 ) THEN
         WRITE(CMON,'(A,/,A,/,A,/,A)')
-     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT YTITLE <Fo-Fc>**2',
-     1 '^^PL LOG NSERIES=2 LENGTH=10',
-     1'^^PL XTITLE ''<-Low angle    Sin(theta)/lambda   High angle->''',
-     1 '^^PL ZOOM 0 0 0.01 100'
+     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT ',
+     1 '^^PL YAXIS TITLE <Fo-Fc>**2 LOG NSERIES=2 LENGTH=10 XAXIS',
+     1'^^PL TITLE ''<-Low angle    Sin(theta)/lambda   High angle->''',
+     1 '^^PL YAXIS ZOOM 0.01 100'
         CALL XPRVDU(NCVDU, 4,0)
       ENDIF
 
