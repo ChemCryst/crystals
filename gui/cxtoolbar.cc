@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/09/11 17:50:50  rich
+//   AddTool now returns a value so we can tell if it fails.
+//
 //   Revision 1.10  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -177,7 +180,6 @@ bool    CxToolBar::AddTool( CcTool* newTool )
   int bitmapIndex=-1;
   newTool->CxID = (CcController::theController)->FindFreeToolId();
 
-
   if ( newTool->toolType == CT_APPICON )
   {
     CcString file = newTool->tImage;
@@ -294,6 +296,8 @@ bool    CxToolBar::AddTool( CcTool* newTool )
   if ( newTool->toggleable ) tbbutton.fsStyle = TBSTYLE_BUTTON|TBSTYLE_CHECK   ;
   m_ToolBar->AddButtons(1,&tbbutton);
 #endif
+
+  return true;
 
 }
 
