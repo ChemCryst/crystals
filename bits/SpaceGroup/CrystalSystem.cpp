@@ -1398,11 +1398,11 @@ bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
         SpaceGroups* tSpaceGroups = pTable.getSpaceGroup(pRow, pPGroupNumbers[i]);
         if (tSpaceGroups->count() == 0)
         {
-            return true;
+            return false;
         }
         i++;
     }
-    return false;
+    return true;
 }
 
 RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)
@@ -1418,7 +1418,12 @@ RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)
     int tCount = pTable.numberOfRows();
     for (int i = 0; i < tCount; i++)
     {
-        if (!iChiral || (iChiral && hasChiralSpaceGroup(tPGroupNumbers, pTable, i)))
+        if (!iChiral)
+        {
+            RowRating iRating(i, pTable, pStats);
+            addToList(iRating);	//Add the rating for the current row into the order list of rows.
+        }
+        else if(hasChiralSpaceGroup(tPGroupNumbers, pTable, i))
         {
             RowRating iRating(i, pTable, pStats);
             addToList(iRating);	//Add the rating for the current row into the order list of rows.
