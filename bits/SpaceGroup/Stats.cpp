@@ -49,9 +49,9 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float
         Matrix<float>* tMultiMat = NULL;
         tMultiMat = iConditions->getMatrix(i);
         Matrix<float> tMatrix = (*tMultiMat)*(*pHKLM);
-     /*   cout << *tMultiMat << "\n";
-        cout << *pHKLM << "\n";
-        cout << tMatrix << "\n";*/
+     /*   std::cout << *tMultiMat << "\n";
+        std::cout << *pHKLM << "\n";
+        std::cout << tMatrix << "\n";*/
         ElemStats* tStats = &(iStats[(pColumn*tCCount)+i]);
         if (((int)tMatrix.getValue(0)) % ((int)iConditions->getMult(i)) != 0)
         {
@@ -92,14 +92,14 @@ void Stats::addReflection(Reflection* pReflection)
         tMultiMat = iHeadings->getMatrix(i);
         Matrix<float> tResult(1, 3);
         tResult = (*tMultiMat)*(*tHKLMat);	//Multiply the two matrices to see if this reflection satisfy the condition
-   //     cout << (*tHKLMat) <<"\n" << tResult << "\n";
+   //     std::cout << (*tHKLMat) <<"\n" << tResult << "\n";
         if (tResult == (*tHKLMat))	//if this condition is satisfy then...
         {
             addReflectionRows(i, pReflection, tHKLMat);
             if (i == 4 && tHKLMat->getValue(1)!=0 && tHKLMat->getValue(2)!=0)
             {
-                cout << *tHKLMat << "==\n";
-                cout << tResult << "\n";
+                std::cout << *tHKLMat << "==\n";
+                std::cout << tResult << "\n";
             }   
         }
     }
@@ -114,7 +114,7 @@ void Stats::outputRow(int pRow, ostream& pStream)
     pStream << tName << "\t";
     if (strlen(tName) <	8)
     {
-        cout << "\t";
+        std::cout << "\t";
     }
     for (int i = 0; i < tHCount; i++)
     {
@@ -200,8 +200,8 @@ void Stats::calProbs()
 
 ostream& Stats::output(ostream& pStream)
 {
-    cout << "Total: " << iTotalNum <<"\n";
-    cout << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
+    std::cout << "Total: " << iTotalNum <<"\n";
+    std::cout << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
     //Print headings
     outputHeadings(pStream);
     //Print rows
