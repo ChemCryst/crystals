@@ -5,6 +5,11 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 14:27:40  richard
+//   wx Support.
+//   Catch bad bitmaps.
+//   Destroy window function.
+//
 //   Revision 1.1  2001/02/26 12:02:15  richard
 //   New toolbar classes.
 //
@@ -20,6 +25,14 @@
 #include <wx/settings.h>
 #endif
 
+
+#ifdef __BOTHWX__
+BEGIN_EVENT_TABLE(mywxToolBar, wxToolBar)
+      EVT_CHAR( mywxToolBar::OnChar )
+END_EVENT_TABLE()
+
+void mywxToolBar::OnChar(wxKeyEvent &event){CcController::theController->FocusToInput((char)event.KeyCode());}
+#endif
 
 
 int CxToolBar::mToolBarCount = kToolBarBase;
@@ -60,7 +73,7 @@ CxToolBar::CxToolBar( CrToolBar * container )
     m_ToolBar = new CToolBarCtrl();
 #endif
 #ifdef __BOTHWX__
-    m_ToolBar = new wxToolBar();
+    m_ToolBar = new mywxToolBar();
 #endif
     m_ImageIndex = 0;
 }
@@ -252,10 +265,10 @@ int CxToolBar::GetIdealWidth()
    return tbs.cx;
 #endif
 #ifdef __BOTHWX__
-//   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolSize().GetWidth() ) );
+//   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
 //   LOGSTAT ( "Toolsep = " + CcString ( m_ToolBar->GetToolSeparation() ) );
 //   LOGSTAT ( "m_ImageIndex = " + CcString ( m_ImageIndex ) );
-   return (( m_ToolBar->GetToolSize().GetWidth() + 5 ) * m_ImageIndex ) ;
+   return (( 18 + m_ToolBar->GetToolSeparation() ) * m_ImageIndex ) ;
 #endif
 }
 
@@ -267,7 +280,7 @@ int CxToolBar::GetIdealHeight()
    return tbs.cy+2;
 #endif
 #ifdef __BOTHWX__
-   return m_ToolBar->GetToolSize().GetHeight() + 10;
+   return 15 + 10;
 #endif
 }
 

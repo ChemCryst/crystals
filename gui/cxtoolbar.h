@@ -5,6 +5,11 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:50
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 14:27:40  richard
+//   wx Support.
+//   Catch bad bitmaps.
+//   Destroy window function.
+//
 //   Revision 1.1  2001/02/26 12:02:14  richard
 //   New toolbar classes.
 //
@@ -18,6 +23,12 @@
 #ifdef __BOTHWX__
 #include <wx/toolbar.h>
 #define BASETOOLBAR wxWindow
+
+class mywxToolBar : public wxToolBar
+{
+     void OnChar(wxKeyEvent & event );
+     DECLARE_EVENT_TABLE()
+};
 #endif
 
 #ifdef __CR_WIN__
@@ -67,7 +78,7 @@ class CxToolBar : public BASETOOLBAR
      DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-     wxToolBar * m_ToolBar;
+     mywxToolBar * m_ToolBar;
      void OnChar(wxKeyEvent & event );
      void OnToolSelected(wxCommandEvent & event);
      DECLARE_EVENT_TABLE()
