@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `basename #1 .tif`.png}
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\newcommand{\til}{\char '176}  %The tilde char
+\newcommand{\ands}{\char '46} %The and char
+\newcommand{\lar}{\char '74}	%left arrow
+\newcommand{\rar}{\char '46}  %right arrow
+\newcommand{\hash}{\char '43} %hash char
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+\title{Output file format}
+\author{Stefan Pantos}
+\begin{document}
+\maketitle
+\section{Introduction}
+The document is to describe the format of the file which is outputted from the program TheDeterminator. This is to give a referance to any other developer who would like to use this file. The format was origanly designed for intergation to the Crystallographic program Crystals.\\\\
+\section{File format}
+\small{\hash in integer number. \hash . \hash a floating point number.}
+\subsection{High level view}
+The file is spit into sections these sections are:\\
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+Header\\
+\hline
+Regions Used\\
+\hline
+Conditions Used\\
+\hline
+Stats Table\\
+\hline
+Results\\
+\hline
+\end{tabular}
+\end{table}
+\subsection{Header}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
+TOTAL \hash & \hash  is the number of reflections which where\\
+		&	read in from the .hkl file.\\
+\hline
+AVINT \hash . \hash & \hash . \hash average intensity of all the reflections in the .hkl file.\\
+\hline
+\end{tabular}
+\end{table}
+e.g.\\
+TOTAL 13390\\
+AVINT 67.0403
+\subsection{Regions Used}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
+NREGIONS \hash & \hash is the number of regions which where used in the calculation\\
+		&	and the number of regions which are to follow.\\
+\hline
+\hash index Matrix Region & \hash index is the index of the region as is in the table file.\\
+					& Matrix is the 3x3 matrix which defines the region. It is in the form\\
+					& \hash  \hash  \hash  \hash  \hash  \hash  \hash  \hash  \hash.\\
+					& Region is the text representation of the region. eg. h0l\\
+					& \emph{There is a line like this for each region.}\\
+\hline
+\end{tabular}
+\end{table}
+e.g.\\
+NREGIONS 3\\
+0 1 0 0 0 1 0 0 0 1 hkl\\
+1 0 0 0 0 1 0 0 0 1 0kl\\
+6 0 0 0 0 0 0 0 0 1 00l
+\subsection{Condtions Used}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
+NTEST \hash & \hash is the number of conditions which where used in the calculation\\
+		&	and the number of conditons which are to follow.\\
+\hline
+\hash index Matrix Multi Condition & \hash index is the index of the condition as is in the table file.\\
+					& Matrix is the 1x3 matrix which defines the condtion. It is in the form\\
+					& \hash  \hash  \hash.\\
+					& Multi is the multiplier used in the condition. This has the form \\hash.\\
+					& Condtion is the text representation of the condition. eg. h == 2n\\
+					& \emph{There is a line like this for each region.}\\
+\hline
+\end{tabular}
+\end{table}
+e.g.\\
+NTESTS 3
+0 1 0 0 2 h == 2n
+1 0 1 0 2 k == 2n
+8 0 0 1 4 l == 4n
+
+\subsection{Stats Table}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
+DATA \hash  \hash & First number is the number or sets of stats. The second number is the number of stats give. Currently this is set to 7.\\
+\hline
+\hash & The number of reflections which matched the condition.\\\hline
+\hash.\hash & The average intensity of the reflections which match the conditon.\\\hline
+\hash & The number of reflections which didn't matched the condition.\\\hline
+\hash.\hash & The average intensity of the reflections which didn't match the conditon.\\\hline
+\hash.\hash & Percentage of reflections didn't match which where I < 3*u(I)\\\hline
+\hash.\hash & \\\hline
+\hash.\hash & \\\hline
+\hline
+\end{tabular}
+\end{table}
+e.g.\\
+NTESTS 3
+0 1 0 0 2 h == 2n
+1 0 1 0 2 k == 2n
+8 0 0 1 4 l == 4n
+ \end{document}
