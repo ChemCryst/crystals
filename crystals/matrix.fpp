@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2002/10/14 12:33:24  rich
+C Support for DVF command line version.
+C
 C Revision 1.4  2002/06/21 09:49:03  Administrator
 C Fix zero esds on bonds across a symmetry operator between atoms on special positions
 C
@@ -1213,8 +1216,8 @@ C--FORM THE INVERSE MATRIX FROM THE TWO INVERTED TRIANGLES
 1950  CONTINUE
 C
 2000  CONTINUE
-      WRITE ( CMON,'(1X)' )
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE ( CMON,'(1X)' )
+c      CALL XPRVDU(NCVDU, 1,0)
       RETURN
 C
 C--ONLY ONE ELEMENT
