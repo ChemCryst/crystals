@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2002/04/30 20:19:56  richard
+C RIC1: In XGUIUP - Keep going if some lists don't exist - was causing problems,
+C e.g. formula (L29) not displayed in GUI until atoms (L5) were input. Fixed.
+C RIC2: Also in XGUIUP - set the thermal parameters of Q atoms to represent their
+C electron density - perhaps a little counterintuitive to crystallographers - big
+C thermals usually mean e-density is too low.... We'll see.
+C
 C Revision 1.42  2002/03/21 17:50:34  richard
 C Clear the error flag before doing bond calculations. (In case CRYSTALS had
 C an error last instruction).
@@ -719,7 +726,7 @@ C Read the properties file and extract cov, vdw and colour.
      1                   (WCLINE(1:3).NE.'   ')) THEN
 
                         IF(WCLINE(1:2).EQ.CATTYP) THEN
-                          CCOL = WCLINE(62:67)
+c                          CCOL = WCLINE(62:67)
                           READ(WCLINE(13:16),'(F4.2)') COV
                           READ(WCLINE(35:38),'(F4.2)') VDW
                           READ(WCLINE(62:65),'(A4)') ICOL
@@ -1315,16 +1322,21 @@ c             CALL XPRVDU(NCVDU, 1,0)
                 WRITE ( CMON, 245 ) 'New Type'
               END IF
               CALL XPRVDU ( NCVDU, 1, 0 )
+
+              CCOL = ' none '
+              IF (STORE(L30RF+3).GT.-9.9)
+     1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
+
 246           FORMAT ('^^WI SET _MT_REF_R TEXT ',F8.5,
      1                    ' SET _MT_REF_RW TEXT ',F8.5,/,
      1                '^^WI SET _MT_REF_NPAR TEXT ',F5.0,
-     1                    ' SET _MT_REF_SCUT TEXT ',F5.2,/,
+     1                    ' SET _MT_REF_SCUT TEXT ',A,/,
      1                  '^^WI SET _MT_REF_GOOF TEXT ',F6.3,
      1                    ' SET _MT_REF_MAXRMS TEXT ',F8.4,/,
      1                '^^WI SET _MT_REF_NREF TEXT ',F7.0,/,
      1                '^^CR')
               WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
-     1            STORE(L30RF+2), STORE(L30RF+3),  STORE(L30RF+4),
+     1            STORE(L30RF+2), CCOL,  STORE(L30RF+4),
      1            STORE(L30RF+7),STORE(L30RF+8)
               CALL XPRVDU(NCVDU, 5, 0)
             ENDIF
