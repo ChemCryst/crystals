@@ -1,8 +1,9 @@
 %SCRIPT XSPACE
 %% CRYSTALS space group input script
-% VARIABLE LOGICAL SCRIPTEXT LCANCEL
+% VARIABLE LOGICAL SCRIPTEXT LCANCEL HANDTYPE
 % VARIABLE CHARACTER L2 A2 B2 C2
 % VARIABLE CHARACTER SPACEHOOK
+% EVALUATE HANDTYPE = TRUE
 % IF SCRIPTEXT .EQ. TRUE THEN
 %  COPY '#HELP SPACE'
 % ELSE
@@ -29,117 +30,138 @@
 %  END IF
 %%
 %% CREATE LIST 2
-%%^
+%%
 ^^WI WINDOW INLIST2 'Space Group Symbol' MODAL COMMIT='BOK' CANCEL='BXX'
-^^WI GRID             GRIDM NROWS=1 NCOLS=2
+^^WI GRID GRM NROWS=1 NCOLS=2
 ^^WI {
-^^WI  @ 1,1 GRID GRIDL NROWS=5 NCOLS=2
+^^WI  @ 1,1 GRID GRL NROWS=6 NCOLS=2
 ^^WI  {
-%%
 ^^WI   @ 2,2 STATIC HOOK
-% TRANSFER "^^WI '" // SPACEHOOK // "'" TO DISPLAY 
-^^WI   @ 4,2 GRID GRIDML NROWS=2 NCOLS=10
+% TRANSFER "^^WI '" // SPACEHOOK // "'" TO DISPLAY
+^^WI   @ 3,2 STATIC WARN
+^^WI             'Put spaces between operators e.g. P 21 21 21'
+^^WI   @ 5,2 GRID GRLM NROWS=3 NCOLS=5
 ^^WI   {
-%%
-^^WI    @ 1,2 STATIC    TEXT1 'Lattice'
-^^WI    @ 1,4 STATIC    TEXT1 'a-axis'
-^^WI    @ 1,6 STATIC    TEXT1 'b-axis'
-^^WI    @ 1,8 STATIC    TEXT1 'c-axis'
-%%
-% CLEAR
-% INSERT !^^WI @ 2,2 EDITBOX R1 '!
-% STORE FORMAT /(A4)/ LENGTH 4 CHARACTER L2
-% INSERT !'!
-% OUTPUT
-^^WI CHARS=8  INFORM=YES
-% CLEAR
-% INSERT !^^WI @ 2,4 EDITBOX R2 '!
-% STORE FORMAT /(A4)/ LENGTH 4 CHARACTER A2
-% INSERT !'!
-% OUTPUT
-^^WI CHARS=8  INFORM=YES
-%%
-% CLEAR
-% INSERT !^^WI @ 2,6 EDITBOX R3 '!
-% STORE FORMAT /(A4)/ LENGTH 4 CHARACTER B2
-% INSERT !'!
-% OUTPUT
-^^WI CHARS=8  INFORM=YES
-%%
-% CLEAR
-% INSERT !^^WI @ 2,8 EDITBOX R4 '!
-% STORE FORMAT /(A4)/ LENGTH 4 CHARACTER C2
-% INSERT !'!
-% OUTPUT
-^^WI CHARS=8  INFORM=YES
-%%
+^^WI    @ 1,2 RADIOBUTTON RST 'Hand typed:' STATE=ON INFORM
+^^WI    @ 3,2 RADIOBUTTON RSL 'From list:'  INFORM
+^^WI    @ 1,4 EDITBOX SPT ' ' CHARS=24
+^^WI    @ 3,4 LISTBOX SPL VISLINES=9 DISABLED=YES ADDTOLIST
+^^WI     'P 1' 'P -1' 'P 2' 'P 21' 'C 2' 'I 2' 'A 2' 'B 2' 'P m'
+^^WI     'P c' 'P n' 'P a' 'P b' 'C m' 'A m' 'I m' 'B m' 
+^^WI     'C c' 'A n' 'I a' 'A a' 'B n' 'I b' 'P 2/m' 'P 21/m' 'C 2/m' 
+^^WI     'I 2/m' 'A 2/m' 'B 2/m' 'P 2/c' 'P2/n' 'P2/a' 'P2/b' 'P21/c' 
+^^WI     'P 21/n' 'P 21/a' 'P 21/b' 'C 2/c' 
+^^WI     'A 2/n' 'I 2/a' 'B 2/n' 'I 2/b'
+^^WI     'P 2 2 2' 'P 2 2 21' 'P 21 21 2' 'P 21 21 21'
+^^WI     'C 2 2 21' 'C 2 2 2' 'F 2 2 2' 'I 2 2 2' 'I 21 21 21'
+^^WI     'P m m 2' 'P m c 21' 'P c c 2' 'P m a 2' 'P c a 21' 'P n c 2'
+^^WI     'P m n 21' 'P b a 2' 'P n a 21' 'P n n 2' 'C m m 2' 'C m c 21'
+^^WI     'C c c 2' 'A m m 2' 'A b m 2' 'A m a 2' 'A b a 2' 'F m m 2'
+^^WI     'F d d 2' 'I m m 2' 'I b a 2' 'I m a 2' 'P m m m' 'P n n n'
+^^WI     'P c c m' 'P b a n' 'P m m a' 'P n n a' 'P m n a'
+^^WI     'P c c a' 'P b a m' 'P c c n' 'P b c m' 'P n n m' 
+^^WI     'P m m n' 'P b c n' 'P b c a' 'P n m a' 'C m c m' 'C m c a'
+^^WI     'C m m m' 'C c c m' 'C m m a' 'C c c a' 'F m m m' 'F d d d' 
+^^WI     'I m m m' 'I b a m' 'I b c a' 'I m m a'
+^^WI     'P 4' 'P 41' 'P 42' 'P 43' 'I 4' 'I 41' 'P -4' 'I -4' 'P 4/m'
+^^WI     'P 42/m' 'P 4/n' 'P 42/n' 'I 4/m' 'I 41/a' 'P 4 2 2' 'P 4 21 2' 
+^^WI     'P 41 2 2' 'P 41 21 2' 'P 42 2 2' 'P 42 21 2' 'P 43 2 2'
+^^WI     'P 43 21 2' 'I 4 2 2' 'I 41 2 2' 'P 4 m m' 'P 4 b m' 'P 42 c m'
+^^WI     'P 42 n m' 'P 4 c c' 'P 4 n c' 'P 42 m c' 'P 42 b c' 'I 4 m m'
+^^WI     'I 4 c m' 'I 41 m d' 'I 41 c d' 'P 4 -2 m' 'P 4 -2 c' 'P -4 21 m'
+^^WI     'P -4 2 1 c' 'P -4 m 2' 'P -4 c 2' 'P -4 b 2' 'P -4 n 2' 'I -4 m 2'
+^^WI     'I -4 c 2' 'I -4 2 m' 'I -4 2 d' 'P 4/m m m' 'P 4/m c c'
+^^WI     'P 4/n b m' 'P 4/n n c' 'P 4/m b m' 'P 4/m n c'
+^^WI     'P 4/n m m' 'P 4/n c c' 'P 42/m m c' 'P 42/m c m' 'P 42/n b c'
+^^WI     'P 42/n n m' 'P 42/m b c' 'P 42/m n m' 'P 42/n m c' 'P 42/n c m'
+^^WI     'I 4/m m m' 'I 4/m c m' 'I 41/a m d' 'I 41/a c d' 'I 41/a c d'
+^^WI     'P 3' 'P 31' 'P 32' 'R 3' 'P -3' 'R -3' 'P 3 1 2' 'P 3 2 1'
+^^WI     'P 31 1 2' 'P 31 2 1' 'P 32 1 2' 'P 32 2 1'
+^^WI     'R 3 2' 'P 3 m 1' 'P 3 1 m' 'P 3 c 1' 'P 3 1 c' 
+^^WI     'R 3 m' 'R 3 c' 'P -3 1 m' 'P -3 1 c' 'P -3 m 1' 'P -3 c 1'
+^^WI     'R -3 m' 'R -3 c'
+^^WI     'P 6' 'P 61' 'P 65' 'P 62' 'P 64' 'P 63' 
+^^WI     'P -6' 'P 6/m' 'P 63/m' 'P 6 2 2' 'P 61 2 2' 'P 65 2 2' 
+^^WI     'P 62 2 2' 'P 64 2 2' 'P 63 2 2' 'P 6 m m' 'P 6 c c' 'P 63 c m' 
+^^WI     'P 63 m c' 'P -6 m 2' 'P -6 c 2' 'P -6 2 m' 'P -6 2 c' 'P 6/m m m' 
+^^WI     'P 6/m c c' 'P 63/m c m' 'P 63/m m c' 'P 2 3' 'F 2 3' 'I 2 3' 
+^^WI     'P 21 3' 'I 21 3' 'P m -3' 'P n -3' 'F m -3' 
+^^WI     'F d -3' 'I m -3' 'P a -3' 'I a -3' 'P 4 3 2' 
+^^WI     'P 42 3 2' 'F 4 3 2' 'F 41 3 2' 'I 4 3 2' 'P 43 3 2' 'P 41 3 2' 
+^^WI     'I 41 3 2' 'P -4 3 m' 'I -4 3 m' 'P -4 3 n' 'F -4 3 c' 
+^^WI     'I -4 3 d' 'P m -3 m' 'P n -3 n' 'P m -3 n'  
+^^WI     'P n -3 m' 'F m -3 m' 'F m -3 c' 'F d -3 m' 'F d -3 m' 
+^^WI     'F d -3 c' 'I m -3 m' 'I a -3 d' NULL 
 ^^WI   }
 ^^WI  }
-^^WI  @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
+^^WI  @ 1,2 GRID GRR NROWS=5 NCOLS=3
 ^^WI  {
-^^WI   @ 2,2 BUTTON BOK '&Ok' DEFAULT
+^^WI   @ 2,2 BUTTON BOK '&OK' DEFAULT
 ^^WI   @ 4,2 BUTTON BXX '&Cancel'
 ^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
 %%
+% CLEAR
+% INSERT !^^CO SET SPT TEXT '!
+% STORE FORMAT /(A4)/ LENGTH 4 CHARACTER L2
+% STORE FORMAT /(A4)/ LENGTH 5 CHARACTER A2
+% STORE FORMAT /(A4)/ LENGTH 5 CHARACTER B2
+% STORE FORMAT /(A4)/ LENGTH 5 CHARACTER C2
+% INSERT !'!
+% OUTPUT
+%%
+%%
 %%
 %  LOOP
 %   ON ERROR TERMINATE
 %   ON END   TERMINATE
-%   VERIFY R1 R2 R3 R4 BXX BOK
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   VERIFY RST RSL BXX BOK
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'RST'
 %   CASE VALUE
-%    BLOCK             %LATTICE%
-%     GET SILENT NOSTORE TEXT ' ' ' '
-%     EVALUATE L2 = CVALUE
+%    BLOCK             %RST%
+^^CO   SET SPT DISABLED=NO
+^^CO   SET SPL DISABLED=YES
+%      EVALUATE HANDTYPE = TRUE
 %    END BLOCK
-%    BLOCK             %A=AXIS%
-%     GET SILENT NOSTORE TEXT ' ' ' '
-%     EVALUATE A2 = CVALUE
-%    END BLOCK
-%    BLOCK             %B-AXIS%
-%     GET SILENT NOSTORE TEXT ' ' ' '
-%     EVALUATE B2 = CVALUE
-%    END BLOCK
-%    BLOCK             %C-AXIS%
-%     GET SILENT NOSTORE TEXT ' ' ' '
-%     EVALUATE C2 = CVALUE
+%    BLOCK             %RSL%
+^^CO   SET SPT DISABLED=YES
+^^CO   SET SPL DISABLED=NO
+%      EVALUATE HANDTYPE = FALSE
 %    END BLOCK
 %    BLOCK             %BXX%
-^^WI  DISPOSE INLIST2
+^^WI   DISPOSE INLIST2
 ^^CR
-%     EVALUATE LCANCEL = TRUE
-%     FINISH
+%      EVALUATE LCANCEL = TRUE
+%      FINISH
 %    END BLOCK
 %    BLOCK             %BOK%
 %     CLEAR
-^^WI       DISPOSE INLIST2
-^^CR
-%% NOW WRITE NEW LIST 2
-%  BLOCK
-%    ON END   TERMINATE
-%%    ON ERROR RESTART
-%    QUEUE REWIND
-%    CLEAR
-%    INSERT 'SYMBOL '
-%    STORE FORMAT /(A4)/ LENGTH 4 CHARACTER L2
-%    INSERT ' '
-%    STORE FORMAT /(A4)/ LENGTH 4 CHARACTER A2
-%    INSERT ' '
-%    STORE FORMAT /(A4)/ LENGTH 4 CHARACTER B2
-%    INSERT ' '
-%    STORE FORMAT /(A4)/ LENGTH 4 CHARACTER C2
-%    INSERT ' '
-%    QUEUE SEND
-%    CLEAR
-%    COPY '#SPACEGROUP'
-%    QUEUE PROCESS
-%    COPY 'END'
-%  END BLOCK
-%%^
-%          FINISH
+%     IF ( HANDTYPE ) THEN
+^^??    SPT TEXT
+%       GET NOSTORE TEXT ' ' ' '
+%       EVALUATE L2 = CVALUE
+%     ELSE
+%       CLEAR
+%       INSERT '^^?? SPL LISTTEXT '
+^^??    SPL SELECTED
+%       GET SILENT INTEGER ' '
+%       OUTPUT
+%       GET SILENT NOSTORE TEXT ' ' 'ERROR'
+%       EVALUATE L2 = CVALUE
+%     END IF
+^^CO  DISPOSE INLIST2
+%%
+%% Now write new List 2
+%%
+%     BLOCK
+%       ON ERROR TERMINATE
+%       COPY '#SPACEGROUP'
+%       TRANSFER 'SYMBOL ' // L2 TO CRYSTALS
+%       COPY 'END'
+%     END BLOCK
+%     FINISH
 %    END BLOCK
 %   END CASE
 %  END LOOP
