@@ -1,0 +1,74 @@
+%SCRIPT XMOGUL
+%%
+% VARIABLE CHARACTER CLINE1 CATM CATM1 CATM2
+% VARIABLE INTEGER NINDEX NIN1 NIN2 NIN3 NIN4
+%%
+%%
+% VERIFY DIST ANGLE TORSION
+% GET SILENT NOSTORE FINAL ABBREVIATED 'Compare type?' 'DIST'
+% CASE VALUE
+%   BLOCK %DIST%
+%% Get two values and an END.
+%     COPY     '#RELEASE PUNCH crystals.qf'
+%     TRANSFER 'DISPLAY' TO PUNCH
+%     COPY     '#DISTANCES'
+%     COPY     'OUT MON=DIST PUNCH=MOGUL'
+%     CLEAR
+%     INSERT   'INCLUDE '
+%     GET SILENT TEXT 'Atom 1'
+%     GET SILENT TEXT 'Atom 2'
+%     SEND
+%     COPY     'END'
+%     GET SILENT NOSTORE TEXT 'type end...'
+%     COPY '#RELEASE PUNCH bfile.pch'
+%   END BLOCK
+%   BLOCK %ANGLES%
+%% Get a value then, three values and an END.
+%     GET NOSTORE SILENT TEXT 'Middle atom'
+%     COPY     '#RELEASE PUNCH crystals.qf'
+%     TRANSFER 'DISPLAY' TO PUNCH
+%     COPY     '#DISTANCES'
+%     COPY     'OUT MON=ANGL'
+%     CLEAR
+%     INSERT   'INCLUDE '
+%     GET SILENT TEXT 'Atom 1'
+%     GET SILENT TEXT 'Atom 2'
+%     GET SILENT TEXT 'Atom 3'
+%     SEND
+%     COPY 'END'
+%     GET SILENT NOSTORE TEXT 'type end...'
+%     COPY '#RELEASE PUNCH bfile.pch'
+%   END BLOCK
+%   BLOCK %TORSION%
+%% Get four values and an END.
+%     GET NOSTORE SILENT TEXT 'Atom 1'
+%     EVALUATE CATM = CVALUE
+%     COPY '#SCRIPT XFINDIN5'
+%     EVALUATE NIN1 = NINDEX
+%     GET SILENT NOSTORE TEXT 'Atom 2'
+%     EVALUATE CATM = CVALUE
+%     COPY '#SCRIPT XFINDIN5'
+%     EVALUATE NIN2 = NINDEX
+%     GET SILENT NOSTORE TEXT 'Atom 3'
+%     EVALUATE CATM = CVALUE
+%     COPY '#SCRIPT XFINDIN5'
+%     EVALUATE NIN3 = NINDEX
+%     GET SILENT NOSTORE TEXT 'Atom 4'
+%     EVALUATE CATM = CVALUE
+%     COPY '#SCRIPT XFINDIN5'
+%     EVALUATE NIN4 = NINDEX
+%     GET SILENT NOSTORE TEXT 'type end...'
+%     EVALUATE CLINE1 = 'ANGLE ' // CHARACTER ( NIN1 ) // ' ' // -
+      CHARACTER ( NIN2 ) // ' ' //  CHARACTER ( NIN3 ) // ' ' // -
+      CHARACTER ( NIN4 )
+%     COPY '#RELEASE PUNCH crystals.qf'
+%     TRANSFER 'DISPLAY' TO PUNCH
+%     TRANSFER CLINE1    TO PUNCH
+%     COPY '#RELEASE PUNCH bfile.pch'
+%   END BLOCK
+% END CASE
+% COPY '#FOREIGN CSD'
+% COPY 'END'
+% COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
+% COPY '#SPAWN COMMAND.COM /e:3072 /c CRYSDIR:mogul.bat qf crystals.qf'
+%END SCRIPT
