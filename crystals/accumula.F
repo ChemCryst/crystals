@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2005/02/09 15:59:36  stefan
+C 1. Mistakenly I have been adding the diagonal elements in twice when doing the paramlist refinment. Fixed now.
+C
 C Revision 1.5  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -17,84 +20,158 @@ C Added changelog to top of file
 
 
 CODE FOR XADLHS
-      SUBROUTINE XADLHS (DERIVS,NDERIV, AMAT11,NMAT11, I12,N12B,MD12B)
-
+ 	  subroutine XADLHS (DERIVS,NDERIV, AMAT11, NMAT11, I12,N12B,
+     1   MD12B)
+ 	  implicit none
 C--ADD THE DERIVATIVES INTO THE L.H.S. OF THE NORMAL MATRIX
-
-      DIMENSION DERIVS(NDERIV)  ! Vector of derivatives
-      DIMENSION AMAT11(NMAT11)  ! Normal matrix, upper triangle, blocked
-      DIMENSION I12(N12B) ! Info about block numbers & sizes in AMAT11
-
-      K11 = 1
-      IBL = 0
-      DO I = 1, N12B, MD12B !LOOP THROUGH THE BLOCKS OF THE NORMAL MATRIX
-        MNR = I12(I+1)
-        DO J=1,MNR  ! LOOP OVER THE DIFFERENT ROWS OF THE MATRIX
-          SCONST = DERIVS(IBL+J)  ! SET THE CONSTANT TERM
-          DO K=J,MNR  ! LOOP OVER THE COLUMNS OF THE CURRENT ROW
-            AMAT11(K11)=AMAT11(K11)+SCONST*DERIVS(IBL+K)
-            K11 = K11 + 1
-          END DO
-        END DO
-        IBL = IBL + MNR
-      END DO
-      RETURN
-      END
-
-CODE FOR PAIR_XDLHS
-      SUBROUTINE PARM_PAIRS_XLHS (DERIVS, NDERIV, AMAT11,NMAT11, NDIM,
-     1 PARAM_LIST, PARAM_L_SIZE)
-      implicit none 
-C--ADD SPECIFIC DERIVATIVES INTO THE L.H.S. OF THE NORMAL MATRIX
-      integer nderiv
-      integer nmat11
-      real DERIVS(NDERIV)  ! Vector of derivatives
-      real AMAT11(NMAT11)  ! Normal matrix, upper triangle, blocked
-      INTEGER PARAM_L_SIZE      ! The size of the parameter pair list
-      integer PARAM_LIST(PARAM_L_SIZE) ! A list of parameters which should be included in the normal matrix
-      integer ndim
-      integer param_l_pos       ! Current position in the parameter list
-      integer k11, i11          ! Current possition withing the normal matrix and a temparay store also
-      real sconst
-      integer K, J    ! temp count variables
-
-      param_l_pos = 1
-      K11 = 1
-      DO J=1,NDIM               ! LOOP OVER THE DIFFERENT ROWS OF THE MATRIX
-         SCONST = DERIVS(J)     ! SET THE CONSTANT TERM
-         
-         if (PARAM_LIST(param_l_pos) < 0) then
-            DO K=J,NDIM         ! LOOP OVER THE COLUMNS OF THE CURRENT ROW
-               AMAT11(K11) = AMAT11(K11)+SCONST*DERIVS(K)
-               K11 = K11 + 1
-            END DO
-            param_l_pos = param_l_pos + 1                     ! Move to the new row of parameters in the param list
-         else
-            AMAT11(K11) = AMAT11(K11)+SCONST*DERIVS(J)        ! A parameter is always correlated to it's self
-            do K = 1, PARAM_LIST(param_l_pos)
-               I11 = K11 + (PARAM_LIST(param_l_pos+K) - (J))  ! Get the position of the parameter we what to add
-               AMAT11(I11)=AMAT11(I11)+SCONST*DERIVS(PARAM_LIST(
-     1          param_l_pos+K))
-            end do
-            K11 = K11 + (NDIM-(J-1))                          ! Move to the next row in the normal matrix                         
-            param_l_pos = param_l_pos + PARAM_LIST(param_l_pos) + 1 ! Move to the new row of parameters in the param list
-         end if
-      END DO
-      RETURN
-      END
+ 	  integer N12B, MD12B, NDERIV, NMAT11
+ 	  real DERIVS(NDERIV)  ! Vector of derivatives
+ 	  real AMAT11(NMAT11)  ! Normal matrix, upper triangle, blocked
+       
+ 	  integer I12(N12B) ! Info about block numbers & sizes in AMAT11
+      integer SIZE, I, MNR, IBL
+ 	  integer BLOCKSTART
       
+ 	  BLOCKSTART = 1
+ 	  IBL = 1
+ 	  do I = 1, N12B, MD12B   ! Work through each block
+             MNR = I12(I+1)                             ! Get the dimenstions of this block
+             SIZE = (MNR*(MNR+1))/2                     ! Calculate the size of this block
+             call ADLHSBLOCK(DERIVS(IBL), NDERIV-(IBL-1),
+     1        AMAT11(BLOCKSTART), SIZE, MNR)            ! Add the derivatives to this block
+             BLOCKSTART = BLOCKSTART + SIZE             ! Move on to the next block
+            IBL = MNR + IBL                             ! Move on to the start of the needed derivatives
+ 	  end do
+ 	  return
+ 	  end
+	
+CODE FOR ADLHSBLOCK
+       subroutine ADLHSBLOCK(DERIVS, NDERIV, MATBLOCK, BLOCKSIZE, 
+     1 BLOCKdimension)
+       implicit none
+		integer BLOCKSIZE			! Size of the current block
+		integer NDERIV				! Size of the derivative matrix
+		real DERIVS(NDERIV)         ! Matrix of from the appropriate point on wards
+		real MATBLOCK(BLOCKSIZE)    ! Normal matrix block
+		integer   BLOCKdimension, i ! Size of the dimension of the blcok
+		real   CONST				! Constent term
+		
+		integer   ROW, COLUMN		! Counters
+		
+		I = 1
+		do ROW=1, BLOCKdimension	! Loop over all the rows of the block
+			CONST = DERIVS(ROW)	    ! Get the constent term
+			do COLUMN = ROW, BLOCKdimension
+				MATBLOCK(I) = MATBLOCK(I) + CONST*DERIVS(COLUMN)  ! Sum on the next term.
+				I = I + 1                                         ! Move to the next possion in the matrix
+			end do
+		end do
+       end
+
+       subroutine PARM_PAIRS_XLHS (DERIVS, NDERIV, AMAT11, NMAT11,
+     1 PARAM_LIST, PARAM_L_SIZE, I12, N12B, MD12B)
+       implicit none
+       
+       integer nderiv
+       integer nmat11
+       real DERIVS(NDERIV)  ! Vector of derivatives
+       real AMAT11(NMAT11)  ! Normal matrix, upper triangle, blocked
+       integer PARAM_L_SIZE      ! The size of the parameter pair list
+       integer PARAM_LIST(PARAM_L_SIZE) ! A list of parameters which should be included in the normal matrix
+       integer N12B                     ! Size of the blocking information
+       integer I12(N12B)                ! Array containing informatio about the blocks.
+       integer MD12B                    ! The step size of the blocking information
+       
+       integer param_l_pos          ! Current position in the parameter list
+       integer DERV_POS, MAT_POS    ! Positions in the derivative vector and the normal matrix
+       integer BLOCK_POS            ! Current position on the blocks
+       integer BLOCK_DIM            ! the dimension of the current block 
+       integer BLOCK_SIZE           ! The number of elements for the current block
+       
+C============ Called Functions ===========
+       integer PAIRS_BLOCK_ADLHS
+       
+       DERV_POS = 1
+       MAT_POS = 1
+       param_l_pos = 1
+       do BLOCK_POS = 1, N12B, MD12B      ! Work through the different blocks of the matrix
+             BLOCK_DIM = I12(BLOCK_POS+1)             ! Get the dimenstions of this block
+             BLOCK_SIZE = (BLOCK_DIM*(BLOCK_DIM+1))/2 ! Calculate the size of this block
+             param_l_pos = param_l_pos + PAIRS_BLOCK_ADLHS(DERIVS(
+     1       DERV_POS), NDERIV-(DERV_POS), AMAT11(MAT_POS), 
+     2       BLOCK_SIZE, BLOCK_DIM, PARAM_LIST(param_l_pos), 
+     3       PARAM_L_SIZE- (param_l_pos-1), DERV_POS) ! Add the derivatives to this block and move position in param_list to the next set of parameters.
+             
+             DERV_POS = DERV_POS + (BLOCK_DIM)        ! Move to the next point in the derivatives
+             MAT_POS = MAT_POS + BLOCK_SIZE           ! Move to the next block
+       end do
+       end
+            
+       function PAIRS_BLOCK_ADLHS(derv, derv_size, mat_block, 
+     1   mat_block_size, mat_block_dim, param_list, 
+     2   param_list_length, first_row_pos)
+       implicit none
+       
+       integer derv_size, mat_block_size, param_list_length ! The sizes of all the different arrays
+       integer mat_block_dim        ! Dimension of the current block
+       real derv(derv_size)         ! Derivative for this block
+       real mat_block(mat_block_size) ! Normal matrix block
+       integer param_list(param_list_length) !param_list for this block
+       integer first_row_pos        ! Which derivative are we up to
+       
+       real const          ! Constant term
+       integer param_l_pos ! Current position in the param list
+       integer param_l_elem! Which elem were are up to
+       integer mat_pos     ! Current position in the matrix
+       integer mat_elem    ! Current position in the matrix temp
+       integer row, column ! Current row and column in the this block
+       integer PAIRS_BLOCK_ADLHS ! Return value
+       
+       param_l_pos = 1
+       mat_pos = 1
+       do row = 1,  mat_block_dim ! Loop over all the rows in the matrix.
+             const = derv(row)    ! Get the constant term for this row.
+             if (PARAM_LIST(param_l_pos) .lt. 0) then !if the size of the param list element is < 0 
+C  Add in the whole row.
+                   do column = row, mat_block_dim     ! Run through all the columns of this block
+                      mat_block(mat_pos) = mat_block(mat_pos)+ derv(
+     1                  column)*const                 ! Sum next term on to mat element
+                      mat_pos = mat_pos + 1           ! Move on to next mat_pos
+                   end do
+                   param_l_pos = param_l_pos + 1      ! Move on to next list of parameters in param_list
+             else
+C Add in some of the row
+                   mat_block(mat_pos) = mat_block(mat_pos) + derv(row)*
+     1             const                              ! Add in diagonal element as we know it will need to be
+                   do param_l_elem = 1, PARAM_LIST(param_l_pos) ! Run through all the parameters in this list.
+                        column = param_list(param_l_pos+param_l_elem) -
+     1                   (first_row_pos-1)                      ! calculate the the correct column for this block from the current parameter in the list
+                        if (column .gt. mat_block_dim)          !if we are over the edge of the block then no need to go further
+     1                        exit
+                        mat_elem = (column - (row)) + mat_pos   ! Calculate the position in the matrix block
+                        mat_block(mat_elem) = mat_block(mat_elem) + 
+     1                  const * derv(column)                    ! Sum the next term into the normal matrix.
+                   end do
+                   mat_pos = mat_pos + (mat_block_dim -(row-1)) ! Move tht he next row in this block of the normal matrix
+                   param_l_pos = param_l_pos + PARAM_LIST(param_l_pos)+1 ! Move to the next row of param lists
+             end if
+       end do
+       PAIRS_BLOCK_ADLHS = param_l_pos-1  ! return the current position in the param list.
+       return
+       end
+       
 CODE FOR XADRHS
-      SUBROUTINE XADRHS(WDF, DERIVS, RMAT11, NDERIV)
+       subroutine XADRHS(WDF, DERIVS, RMAT11, NDERIV)
 C--   ADD INTO THE R.H.S. OF THE NORMAL EQUATIONS
-C     WDF  SQRT(W)*(/FO/ - /FC/)
-      
-      DIMENSION DERIVS(NDERIV)
-      DIMENSION RMAT11(NDERIV)
+C      WDF  SQRT(W)*(/FO/ - /FC/)
+       
+       dimension DERIVS(NDERIV)
+       dimension RMAT11(NDERIV)
 
-      DO I = 1, NDERIV
-        RMAT11(I) = RMAT11(I) + DERIVS(I) * WDF
-      END DO
+       do I = 1, NDERIV
+         RMAT11(I) = RMAT11(I) + DERIVS(I) * WDF
+       end do
 
-      RETURN
-      END
+       return
+       end
 
