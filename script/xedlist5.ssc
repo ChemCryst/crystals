@@ -3,7 +3,7 @@
 ^^WI WINDOW XEDLIST5 'Atomic co-ordinates' SIZE
 ^^WI GRID OUTER NROWS=3 NCOLS=5
 ^^WI {
-^^WI   @ 2,2 MULTIEDIT AUTO12TEXT '' NROWS=10 NCOLS=80
+^^WI   @ 2,2 MULTIEDIT TEXT5 '' NROWS=10 NCOLS=80
 ^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
 ^^WI   @ 2,4 GRID BTNS NROWS=3 NCOLS=1
 ^^WI   {
@@ -13,7 +13,7 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-^^WI SENDTEXTTO AUTO12TEXT
+^^WI SENDTEXTTO TEXT5
 ^^CR
 %  CLEAR
 #     ELEM  SERI  OCC    FLAG   X      Y      Z
@@ -50,7 +50,7 @@
 %        STORE FORMAT /(F6.3)/ LENGTH 7 REAL RATZ
 %        OUTPUT
 %        CLEAR
-%        INSERT 'CONT              '
+%        INSERT 'CONT        U[11]='
 %        STORE FORMAT /(F6.3)/ LENGTH 7 REAL RU11
 %        STORE FORMAT /(F6.3)/ LENGTH 7 REAL RU22
 %        STORE FORMAT /(F6.3)/ LENGTH 7 REAL RU33
@@ -68,7 +68,34 @@
 % IF VALUE .EQ. 1 THEN
 %% Somehow we have to get that text from the multiedit...
 %%
-Sorry, can't save your changes. Aaargh.
+%  IF EXISTS ( 5 ) .EQ. 1 THEN
+%    COPY '#RELEASE PUNCH EDATOMS.BAK'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+Current atom list backed up as EDATOMS.BAK
+%    COPY '#EDIT'
+%    COPY 'DELETE ALL'
+%    COPY 'END'
+Atoms deleted.
+%  END IF
+%  COPY '#EDIT'
+^^WI SENDTEXTTO TEXT5
+^^CR
+EOFXXX
+^^WI SENDTEXTTO _MAINTEXTOUTPUT
+^^CR
+^^WI SET TEXT5 SPEW
+^^CR
+%  LOOP
+%     ON ERROR TERMINATE
+%     GET NOSTORE TEXT 'Line' ' '
+%     IF CVALUE STARTSWITH 'EOFXXX' THEN
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%     ELSE
+%       TRANSFER CVALUE TO CRYSTALS
+%     END IF
+%  END LOOP
+%  COPY 'END'
 % END IF
 ^^WI DISPOSE XEDLIST5
 ^^CR
