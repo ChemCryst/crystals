@@ -37,6 +37,7 @@
 #ifndef __UNIT_CELL_H__
 #define __UNIT_CELL_H__
 #include "ComClasses.h"
+#include "StringClasses.h"
 
 class UnitCell:public MyObject
 {
@@ -44,8 +45,8 @@ private:
     float iA, iB, iC, iAlpha, iBeta, iGamma;
     float iSEA, iSEB, iSEC, iSEAlpha, iSEBeta, iSEGamma;    
 public:
-    UnitCell(float a, float b, float c, float alpha, float beta, float gamma);
-    UnitCell(char* pPath);
+    UnitCell();
+    bool init(char* pLine);
     void setA(float pA);
     void setB(float pB);
     void setC(float pC);
@@ -71,10 +72,11 @@ public:
     float getSEBeta();
     float getSEGamma();
     char* guessCrystalSystem();
-    void readInUnitCell(char* pPath);
+    std::ostream& output(std::ostream& pStream);
 };
 
 char* getCrystalSystem();
 char* crystalSystemConst(int pIndex);
 int indexOfClass(String& pClass, String& pUnique);
+std::ostream& operator<<(std::ostream& pStream, UnitCell& pUnitCell);
 #endif
