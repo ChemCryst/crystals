@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/12/13 16:20:33  ckpgroup
+//   SH: Cleaned up the key code. Now redraws correctly, although far too often.
+//   Some problems with mouse-move when key is enabled. Fine when disabled.
+//
 //   Revision 1.8  2001/12/12 16:02:26  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -939,7 +943,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
 	const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
 	
-  Create(wClass, "Key", SS_CENTER|WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
+  Create(wClass, "Key", WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
 
   SetFont(CcController::mp_font);
   ShowWindow(SW_SHOW);
@@ -948,8 +952,8 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
   CFont* oldFont = newDC.SelectObject(CcController::mp_font);  
 
   SIZE size;
-  size.cx = 0;
-  size.cy = 0;
+  size.cx = 10; //Reasonable minimum size.
+  size.cy = 10; //Reasonable minimum size.
 
 	for(i=0; i<m_NumberOfSeries; i++)
 	{
@@ -980,12 +984,15 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 	m_WinPosAndSize.right = clientsize.right;//size.cx;
 	m_WinPosAndSize.top = 0;
 	m_WinPosAndSize.bottom = clientsize.bottom;//size.cy;
+
+  newDC.SelectObject(oldFont);
+
 #endif
 }
 
 CxPlotKey::~CxPlotKey()
 {
-	delete m_memDC;
+//        delete m_memDC;
 }
 
 void CxPlotKey::OnPaint()
@@ -996,12 +1003,12 @@ void CxPlotKey::OnPaint()
   size.cx = m_WinPosAndSize.right;
   size.cy = m_WinPosAndSize.bottom;
 
-  CClientDC newDC(this);
+  CPaintDC newDC(this);
   COLORREF col = newDC.GetBkColor();
   CFont* oldFont = newDC.SelectObject(CcController::mp_font); 
   newDC.SetBkColor(col);
 
-//  newDC.PatBlt(0,0,size.cx, size.cy, WHITENESS);
+  newDC.PatBlt(0,0,size.cx, size.cy, WHITENESS);
   
   CcPoint* temp = new CcPoint[5];
 
