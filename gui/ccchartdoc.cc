@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2004/06/28 13:26:56  rich
+// More Linux fixes, stl updates.
+//
 // Revision 1.17  2004/06/25 12:48:40  rich
 // Remove obsolete, unused function 'complete()'
 //
@@ -68,6 +71,7 @@
 #include    "ccchartdoc.h"
 #include    "crchart.h"
 #include    "ccchartobject.h"
+#include    "cclock.h"
 #include    "cccontroller.h"
 #include   <list>
 using namespace std;
@@ -78,6 +82,7 @@ using namespace std;
 
 list<CcChartDoc*> CcChartDoc::sm_ChartDocList;
 CcChartDoc* CcChartDoc::sm_CurrentChartDoc = nil;
+static CcLock m_thread_critical_section(true);
 
 CcChartDoc::CcChartDoc( )
 {
@@ -95,10 +100,12 @@ CcChartDoc::~CcChartDoc()
   // Remove from the list of ChartDoc objects.
     sm_ChartDocList.remove(this);
     if ( sm_CurrentChartDoc == this ) sm_CurrentChartDoc = nil;
+    m_thread_critical_section.Enter();
     for (list<CcChartObject*>::iterator item = mCommandList.begin(); item != mCommandList.end(); item++ )
     {
        delete *item;
     }
+    m_thread_critical_section.Leave();
 }
 
 
@@ -136,7 +143,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
             case kTChartShow:
             {
                 tokenList.pop_front(); // Remove that token!
+                m_thread_critical_section.Enter();
                 DrawView();
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartLine:
@@ -144,7 +153,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartLine * item = new CcChartLine();
                 item->ParseInput(tokenList);
+                m_thread_critical_section.Enter();
                 mCommandList.push_back(item);
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartEllipseF:
@@ -152,7 +163,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartEllipse * item = new CcChartEllipse(true);
                 item->ParseInput(tokenList);
-                mCommandList.push_back(item);
+                m_thread_critical_section.Enter();
+				mCommandList.push_back(item);
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartEllipseE:
@@ -160,7 +173,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartEllipse * item = new CcChartEllipse(false);
                 item->ParseInput(tokenList);
+                m_thread_critical_section.Enter();
                 mCommandList.push_back(item);
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartPolyF:
@@ -168,7 +183,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartPoly * item = new CcChartPoly(true);
                 item->ParseInput(tokenList);
+                m_thread_critical_section.Enter();
                 mCommandList.push_back(item);
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartPolyE:
@@ -176,7 +193,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartPoly * item =new CcChartPoly(false);
                 item->ParseInput(tokenList);
+                m_thread_critical_section.Enter();
                 mCommandList.push_back(item);
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartText:
@@ -184,7 +203,9 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartText * titem = new CcChartText;
                 titem->ParseInput(tokenList);
+                m_thread_critical_section.Enter();
                 mCommandList.push_back(titem);
+                m_thread_critical_section.Leave();
                 break;
             }
             case kTChartColour:
@@ -192,8 +213,11 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcChartColour * citem = new CcChartColour ;
                 bool storeMe = citem->ParseInput(tokenList); //If the pen colour is already set, this object is superfluous.
-                if (storeMe)
-                    mCommandList.push_back(citem);
+				if (storeMe) {
+	               m_thread_critical_section.Enter();
+                   mCommandList.push_back(citem);
+		           m_thread_critical_section.Leave();
+				}
                 else
                     delete citem;
                 break;
@@ -201,8 +225,10 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
             case kTChartClear:
             {
                 tokenList.pop_front(); // Remove that token!
-                        Clear();
-                break;
+                m_thread_critical_section.Enter();
+                Clear();
+  	            m_thread_critical_section.Leave();
+		 	    break;
             }
             case kTChartFlow:
             {
@@ -220,6 +246,7 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                         //Add the commands to draw the flow chart object.
                         //joins:
                         CcChartLine * item = new CcChartLine;
+		                m_thread_critical_section.Enter();
                         if(west)
                         {
                             item->Init(0,1200,240,1200);
@@ -257,11 +284,13 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                         ttem->Init(480, 1000, 1920, 1400, tokenList.front());
                         tokenList.pop_front();
                         mCommandList.push_back(ttem);
+		                m_thread_critical_section.Leave();
                         break;
                     }
                     case kTChartAction:
                     {
                         tokenList.pop_front();
+		                m_thread_critical_section.Enter();
                         ReadDirections(tokenList, &north, &south, &east, &west);
                         //Add the commands to draw the flow chart object.
                         //joins:
@@ -303,11 +332,13 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                         tItem->Init(500, 1000, 1900, 1400, tokenList.front());
                         tokenList.pop_front();
                         mCommandList.push_back(tItem);
+		                m_thread_critical_section.Leave();
                         break;
                     }
                     case kTChartLink:
                     {
                         tokenList.pop_front();
+		                m_thread_critical_section.Enter();
                         ReadDirections(tokenList, &north, &south, &east, &west);
                         CcChartLine * item = new CcChartLine;
                         if(west)
@@ -330,7 +361,8 @@ bool CcChartDoc::ParseInput( deque<string> & tokenList )
                             item->Init(1200,2400,1200,1200);
                             mCommandList.push_back(item);
                         }
-                        break;
+                        m_thread_critical_section.Leave();
+						break;
                     }
                 }
                 break;
@@ -541,9 +573,11 @@ void fastline  ( int x1, int y1, int x2, int y2 )
 void fastline_  ( int x1, int y1, int x2, int y2 )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastLine( x1, y1, x2, y2 );
+      m_thread_critical_section.Leave();
 }
 
 #ifdef __CR_WIN__
@@ -553,9 +587,11 @@ void fastfelli  ( int x, int y, int w, int h )
 void fastfelli_  ( int x, int y, int w, int h )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastFElli( x, y, w, h );
+      m_thread_critical_section.Leave();
 }
 #ifdef __CR_WIN__
 void fasteelli  ( int x, int y, int w, int h )
@@ -564,9 +600,11 @@ void fasteelli  ( int x, int y, int w, int h )
 void fasteelli_  ( int x, int y, int w, int h )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastEElli( x, y, w, h );
+      m_thread_critical_section.Leave();
 }
 
 #ifdef __CR_WIN__
@@ -576,9 +614,11 @@ void fastfpoly ( int nv, int * points )
 void fastfpoly_ ( int nv, int * points )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastFPoly( nv, points );
+      m_thread_critical_section.Leave();
 }
 #ifdef __CR_WIN__
 void fastepoly ( int nv, int * points )
@@ -587,9 +627,11 @@ void fastepoly ( int nv, int * points )
 void fastepoly_ ( int nv, int * points )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastEPoly( nv, points );
+      m_thread_critical_section.Leave();
 }
 
 #ifdef __CR_WIN__
@@ -599,6 +641,7 @@ void fasttext  ( int x,  int y,  char theText[80], int fs )
 void fasttext_  ( int x,  int y,  char theText[80], int fs )
 #endif
 {
+      m_thread_critical_section.Enter();
       theText[80] = '\0';
       for ( int i = 80; i >= 0; i-- )
       {
@@ -611,6 +654,7 @@ void fasttext_  ( int x,  int y,  char theText[80], int fs )
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastText( x,y,text, fs );
+      m_thread_critical_section.Leave();
 }
 
 #ifdef __CR_WIN__
@@ -620,9 +664,11 @@ void fastcolour( int r, int g, int b )
 void fastcolour_( int r, int g, int b )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastColour( r,g,b );
+      m_thread_critical_section.Leave();
 }
 
 #ifdef __CR_WIN__
@@ -632,9 +678,11 @@ void fastclear ( )
 void fastclear_ ( )
 #endif
 {
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->Clear( );
+      m_thread_critical_section.Leave();
 }
 
 #ifdef __CR_WIN__
@@ -647,9 +695,14 @@ void fastshow_ ( )
 #ifdef __BOTHWX__
       ::wxMutexGuiEnter();
 #endif
+      m_thread_critical_section.Enter();
       CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
-      if ( doc )
+	  if ( doc ) {
+            m_thread_critical_section.Enter();
             doc->DrawView( );
+			m_thread_critical_section.Leave();
+	  }
+      m_thread_critical_section.Leave();
 #ifdef __BOTHWX__
       ::wxMutexGuiLeave();
 #endif
