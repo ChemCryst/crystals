@@ -29,6 +29,7 @@ C
 \XERVAL
 \XLSVAL
 \XIOBUF
+\TLISTC
 C
 \QSTORE
 C
@@ -109,15 +110,18 @@ C--CHECK THE VALUE
 C--NOT THE CORRECT SERIAL NUMBER
 1650  CONTINUE
       K=K+1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1700)LN,IBUFF(1),IBUFF(2)
-      ENDIF
-      WRITE ( NCAWU, 1700) LN, IBUFF(1), IBUFF(2)
-      WRITE ( CMON, 1700) LN, IBUFF(1), IBUFF(2)
-      CALL XPRVDU(NCEROR, 2,0)
-1700  FORMAT(' List type ',I5,' depends upon list type ',I5,
-     2 /' with original serial no.',I8,
-     3 ', not the current version of this list')
+      CALL OUTCOL(3)
+      WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
+     1 CLISTS(IBUFF(1)), IBUFF(2)
+      CALL XPRVDU(NCEROR, 5,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
+      WRITE(NCAWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
+      CALL OUTCOL(1)
+1700  FORMAT(/
+     1 '              List type ',I5,' (',A,')',/
+     1 ' depends upon list type ',I5,' (',A,')',/
+     2 ' with original serial no.',I8,
+     3 ', not the current version.'/)
       GOTO 1400
 C--ALL INTERDEPENDENCIES PROCESSED
 1750  CONTINUE
