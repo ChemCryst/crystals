@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2002/02/22 14:32:21  Administrator
+C Modify LIST 23 conditions, and improve termination messages
+C
 C Revision 1.12  2002/02/13 15:32:20  Administrator
 C Reduce calls to SPECIAL in multicycle SFLS, enable shift reversal monitoring, and fix Lachlans shift bounding
 C
@@ -537,9 +540,9 @@ C----- TIDY UP PARAMETER NAME
       CALL XCRAS ( CSAVE, LENNAM )
 C----- COMPUTE AND STORE RMS SHIFT/ESD
       RMSS=SQRT(F/STORE(L11P+23))
-CDJW0202      STORE(M33V+3)=RMSS
+      STORE(M33V+3)=RMSS
 C----- STORE MAXIMUM SHIFT/ESD
-      STORE(M33V+3) = SMAX
+CDJW0202      STORE(M33V+3) = ABS(SMAX)
       WRITE( NCAWU,3556) RMSS
       IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS
       WRITE ( CMON, 3556) RMSS
@@ -614,10 +617,12 @@ C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
       J = 0
       DO 4050 I=1,JF
 C--CHECK THE MINIMUM VALUE
-      IF(STORE(M23AC)-STORE(JE+1))3950,3950,4300
+      write(ncawu,'(a,i4,3g15.3e2)') 'All cycle',i,store(m23ac),
+     1 store(m23ac+1),store(je+1)
+      if (store(je+1) .lt. store(m23ac)) goto 4300
 C--CHECK THE MAXIMUM VALUE
 3950  CONTINUE
-      IF(STORE(M23AC+1)-STORE(JE+1))4300,4000,4000
+      if (store(je+1) .gt. store(m23ac+1)) goto 4300
 C--UPDATE FOR THE NEXT CONDITION
 4000  CONTINUE
       JE=JE+1
@@ -634,11 +639,13 @@ C--LOOP OVER THE INTER-CYCLE CONDITIONS
 C--LOOP OVER EACH
       DO 4250 J = 1, JF
       A=STORE(JH+1)-STORE(JE+1)
+      write(ncawu,'(a,i4,3g15.3e2)') 'Inter cycle',j,store(m23ic),
+     1 store(m23ic+1),a
 C--CHECK THE MIMIMUM
-      IF(STORE(M23IC)-A)4150,4150,4300
+      if (a .lt. store(m23ic)) goto 4300
 C--CHECK THE MAXIMUM
 4150  CONTINUE
-      IF(STORE(M23IC+1)-A)4300,4200,4200
+      if (a .gt. store(m23ic+1)) goto 4300
 C--UPDATE
 4200  CONTINUE
       JE=JE+1
@@ -654,7 +661,7 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
       IF (I .GT. 0) THEN
        WRITE(CMON,4350) CLST23(I)(:)
 4350  FORMAT(' Forced termination after this cycle: ',
-     3 ' All-cycle condition on ',   A)
+     3 ' Actual value condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
        WRITE(NCAWU,'(A)') CMON(1)
@@ -662,7 +669,7 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
       IF (J .GT. 0) THEN
        WRITE(CMON,4350) CLST23(J)(:)
 4351  FORMAT(' Forced termination after this cycle: ',
-     3 ' Inter-cycle condition on ',   A)
+     3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
        WRITE(NCAWU,'(A)') CMON(1)
