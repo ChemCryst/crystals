@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  1999/06/03 17:25:58  dosuser
+C RIC: Added linux graphical interface support (GIL)
+C
 C Revision 1.11  1999/05/25 19:10:04  dosuser
 C RIC: Added write to CAMERON.INI for linux version.
 C TITLE changed to KTITL. Only used in write statements.
@@ -564,53 +567,35 @@ C
 C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
-C - Only GID and DOS support Cameron's graphics.
-##GIDDOS        GOTO 9000 !Skip this Cameron part.
+
+C - Only GID, GIL and DOS support Cameron's graphics.
+###GILGIDDOS        GOTO 9000 !Skip this Cameron part.
+
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
 C      IF (ISSTML .EQ. 4) THEN
         LCLOSE = .FALSE.
 C - Only GID needs funny text strings to initialise the graphics.
 C - Could move these to ZCAMER.
-&GID        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
-&GID        CALL ZMORE(CHARTC,0)
-&GID        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
-&GID        CALL ZMORE(CHARTC,0)
-&GID        WRITE(CHARTC,'(A)') '^^CR'
-&GID        CALL ZMORE(CHARTC,0)
-&&GIDDOS        CALL ZCAMER ( 1, 0 , 0 , 0)
-C       OLNCRU = NCRU
-C       NCRU = 5
+
+&&GIDGIL        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
+&&GIDGIL        CALL ZMORE(CHARTC,0)
+&&GIDGIL        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
+&&GIDGIL        CALL ZMORE(CHARTC,0)
+&&GIDGIL        WRITE(CHARTC,'(A)') '^^CR'
+&&GIDGIL        CALL ZMORE(CHARTC,0)
+&&GIDGIL        CALL GUWAIT()
+&&&GIDDOSGIL        CALL ZCAMER ( 1, 0 , 0 , 0)
+
 8025  CONTINUE
         IF (LCLOSE) THEN
             GOTO 9000 !Cameron has shutdown
         ENDIF
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
-C Replace 0 with 32 along the string
-C        DO 8029 I = 1,80
-C           IF(LCMAGE(I) .EQ. 0) LCMAGE(I)=32
-C8029    CONTINUE
         WRITE(CHRBUF,'(80A1)')LCMAGE
-C&&GIDDOS           CALL ZMORE(CHRBUF,0)
-&&GIDDOS         CALL ZCONTR
-Ccdjwjan99
-C         if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
-C     1   lclose = .true.
-Ccdjwjan99
+&&&GIDDOSGIL         CALL ZCONTR
       GOTO 8025
-C
-C      ELSE IF (ISSTML .EQ. 3) THEN
-C       CALL ZCAMER ( 1, 0 , 0 , 0)
-CC       CALL VGACOL ('BOL', 'WHI', 'BLU')
-C       CALL OUTCOL(1)
-CC----- FLUSH THE SCREEN BUFFER AFTER GRAPHICS MODE - OBSOLETE IN WIN32
-CCDOS      CALL TEXT_MODE@
-CCDOS      WRITE(NCAWU,'(78X,A,///)') (' ',I=1,18)
-C      ELSE
-C       CALL ZCAMER ( 1, 0 , 0 , 0)
-C      ENDIF
-      GOTO 9000
-C
+
 8030  CONTINUE
 C----- ENSURE THE UNITS ARE CLOSED
       I = KFLCLS(NCFPU1)
