@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2003/05/07 12:18:55  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.53  2003/04/01 13:48:51  rich
 C XTHLIM could go into an infinite loop in certain cases (certain cells?). Limit
 C loops for optimising MAXH,K,L to 400 iterations.
@@ -4886,7 +4892,7 @@ C
      3           'P<sub>n-1</sub>T<sub>n-1</sub>&prime;(x)]'//
      4           '<sup>-1</sup>,<br>where P<sub>i</sub> are the '//
      5           'coefficients of a Chebychev series in '//
-     6           't<sub>i</sub>(x), where x = '//CFM(1:LFM)//'/'//
+     6           't<sub>i</sub>(x), and x = '//CFM(1:LFM)//'/'//
      7           CFM(1:LFM)//'<sub>max</sub>.'
                  WRITE(NCPU,2) 'P<sub>0</sub> - P<sub>n-1</sub> = ',
      1           CTEXT(4)
@@ -4909,7 +4915,7 @@ C
      3           'P<sub>n-1</sub>T<sub>n-1</sub>&prime;(x)]'//
      4           '<sup>-1</sup>,<br>where P<sub>i</sub> are the '//
      5           'coefficients of a Chebychev series in '//
-     6           't<sub>i</sub>(x), where x = '//CFMC(1:LFM+1)//'/'//
+     6           't<sub>i</sub>(x), and x = '//CFMC(1:LFM+1)//'/'//
      7           CFMC(1:LFM+1)//'<sub>max</sub>.'
                  WRITE(NCPU,2) 'P<sub>0</sub> - P<sub>n-1</sub> = ',
      1           CTEXT(4)
@@ -5006,7 +5012,20 @@ C------ SIGMA WEIGHTS
                 ival = 12
               else if ((itype .eq. 14) .or. (itype .eq. 15)) then
                 ival = 35
-              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
+                ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+                call xctrim (ctemp,nchar)
+                write (cline,'(a,a )') 'Method, part 1, ', ctemp(1:nchar)
+                call xpcif (cline)
+                write(cline,'(a,a)')  
+     1 '[weight] = 1.0/[A~0~*T~0~(x)+A~1~*T~1~(x)',
+     2 ' ... +A~n-1~]*T~n-1~(x)]'
+                call xpcif (cline)
+                write (cline,'(a,a)') 
+     1 'where A~i~ are the Chebychev coefficients listed below',
+     2 ' and x = Fcalc/Fmax'
+                call xpcif (cline)
+               ival = 38
+             else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
                 ival = 34
               endif
               if (ival .ne. 0 ) then     
