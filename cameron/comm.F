@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  1999/07/22 11:29:49  richard
+C RIC: Setting scale for postscript: Cameron multiplied the fixed scale by
+C 10.0 to get the post script value. For the GID version this should be 2.0
+C
 C Revision 1.7  1999/06/13 16:10:10  dosuser
 C RIC: Use common block to store device.cmn information.
 C Device.cmn no longer needed.
@@ -2798,7 +2802,9 @@ C LOG STOP
       GOTO 9999
 916   CONTINUE
 C PRINT
-      CISSUX(1:) = 'PRINT '
+CDJWNOV99      CISSUX(1:) = 'PRINT '
+      cissux(:) = ' '
+      CISSUX(1:) = 'COPY '
 9160  CONTINUE
       CALL ZGTTXT (FILENM , 60 , ICCMMD(ICCNT))
 C IS THIS FILE CURRENTLY OPENED?
@@ -2811,6 +2817,15 @@ C IS THIS FILE CURRENTLY OPENED?
         ENDIF
       ENDIF
       CISSUX(9:) = FILENM
+CDJWNIV99
+      j = len(cissux)
+      do 1234 klen = j, 1 , -1
+            if (cissux(klen:klen) .ne. ' ') goto 12345
+1234  continue
+      klen = 1
+12345 continue
+      CISSUX(kLEN+1:) = ' lpt1'
+      call zmore(cissux(1:60),0)
       CALL ZISSUE (CISSUX,IFAIL)
       GOTO 9999
 917   CONTINUE

@@ -355,9 +355,12 @@ CODE FOR ZISSUE
       SUBROUTINE ZISSUE (CTEXT,IFAIL)
       CHARACTER*(*) CTEXT
       INTEGER*2 IFF
+cdjw call CRYSTALS detach subroutine
 CVAX      INCLUDE '($LIBDEF)'
 CVAX      I = LIB$SPAWN (CTEXT)
-&DOS      CALL CISSUE(CTEXT,IFF)
+CDOS      CALL CISSUE(CTEXT,IFF)
+      call xdetch(ctext)
+      iff = 0
       IFAIL = IFF
       RETURN
       END
