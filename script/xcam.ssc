@@ -6,7 +6,7 @@
 %% The outer grid splits the left 'view' area from the right
 ^^WI  @ 1,1 GRID OUTER NROWS=3 NCOLS=5
 ^^WI  {
-^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=45
+^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=90
 ^^WI         INFORM=YES
 %% The inner grid splits the text output from the tools
 ^^WI   @ 2,4 GRID INNER NROWS=4 NCOLS=1
