@@ -34,10 +34,10 @@ class Conditions:public vector<Condition*>
     public:
         Conditions();
         ~Conditions();
-        char* getName(int pIndex);
-        float getMult(int pIndex);
-        Matrix<short>* getMatrix(int pIndex);
-        int getID(int pIndex);
+        char* getName(const size_t pIndex);
+        float getMult(const size_t pIndex);
+        Matrix<short>* getMatrix(const size_t pIndex);
+        int getID(const size_t pIndex);
         char* addCondition(char* pLine);
         void readFrom(filebuf& pFile);
         std::ostream& output(std::ostream& pStream);
