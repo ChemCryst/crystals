@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/01/30 10:58:43  ckp2
+//   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
+//   be copied to CxPlot to do same thing.
+//
 //   Revision 1.10  2001/10/10 12:44:51  ckp2
 //   The PLOT classes!
 //
@@ -118,7 +122,7 @@ private:
         CDC * memDC;
         CcRect m_client;
 
-        void MakeMetaFile(int w, int h);
+        void MakeMetaFile(int w, int h, bool enhanced);
         void PrintPicture();
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);

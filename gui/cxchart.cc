@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2002/04/30 20:13:43  richard
+//   Get font size right and dependent on window/canvas size.
+//
 //   Revision 1.16  2002/02/15 11:25:54  ckp2
 //   Use enhanced metafile for Cam pics - might work better?
 //   Fix text size at 11 points of the current display device, rather
@@ -1075,23 +1078,37 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 }
 #endif
 
-void CxChart::MakeMetaFile(int w, int h)
+void CxChart::MakeMetaFile(int w, int h, bool enhanced)
 {
     CDC * backup_memDC = memDC;
     CcRect backup_m_client = m_client;
 
     CcString result;
-    CcString defName = "cam_pic1.emf";
-    CcString extension = "*.emf";
-    CcString description = "Windows Enhanced MetaFile (*.emf)";
+    CcString defName = "cam_pic1.wmf";
+    if ( enhanced ) defName = "cam_pic1.emf";
+
+    CcString extension = "*.2mf";
+    if ( enhanced ) extension = "*.emf";
+
+    CcString description = "Windows MetaFile (*.wmf)";
+    if ( enhanced ) description = "Windows Enhanced MetaFile (*.emf)";
+
     CcController::theController->SaveFileDialog(&result, defName, extension, description);
 
     if ( ! ( result == "CANCEL" ) )
     {
         CMetaFileDC mdc;
 
-        mdc.CreateEnhanced( memDC, (LPCTSTR)result.ToCString(),
-                            NULL, "Cameron\0Crystal Structure\0\0");
+        if ( enhanced )
+        {
+
+          mdc.CreateEnhanced( memDC, (LPCTSTR)result.ToCString(),
+                              NULL, "Cameron\0Crystal Structure\0\0");
+        }
+        else
+        {
+          mdc.Create((LPCTSTR)result.ToCString());
+        }
 
         mdc.SetAttribDC( memDC->m_hAttribDC );
 
@@ -1100,13 +1117,27 @@ void CxChart::MakeMetaFile(int w, int h)
 
         ((CrChart*)ptr_to_crObject)->ReDrawView();
 
-        if ( mdc.CloseEnhanced() )
+        if ( enhanced )
         {
-           CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+          if ( mdc.CloseEnhanced() )
+          {
+             CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+          }
+          else
+          {
+             CcController::theController->ProcessOutput( "File creation failed.");
+          }
         }
         else
         {
-           CcController::theController->ProcessOutput( "File creation failed.");
+          if ( mdc.Close() )
+          {
+             CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+          }
+          else
+          {
+             CcController::theController->ProcessOutput( "File creation failed.");
+          }
         }
     }
     else
@@ -1150,6 +1181,8 @@ void CxChart::PrintPicture()
 // Get the printing extents
       m_client.Set(0,0, printDC.GetDeviceCaps(VERTRES),
                         printDC.GetDeviceCaps(HORZRES)); 
+
+      printDC.SetAttribDC( memDC->m_hAttribDC );
 
       memDC = &printDC;
       ((CrChart*)ptr_to_crObject)->ReDrawView();

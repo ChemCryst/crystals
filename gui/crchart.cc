@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/01/30 10:58:43  ckp2
+//   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
+//   be copied to CxPlot to do same thing.
+//
 //   Revision 1.8  2001/06/17 15:14:12  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -177,7 +181,15 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
                 tokenList->GetToken();
                 int w = atoi( tokenList->GetToken().ToCString() );
                 int h = atoi( tokenList->GetToken().ToCString() );
-                ((CxChart*)ptr_to_cxObject)->MakeMetaFile(w,h);
+                ((CxChart*)ptr_to_cxObject)->MakeMetaFile(w,h,false);
+                break;
+            }
+            case kTChartSaveEnh:
+            {
+                tokenList->GetToken();
+                int w = atoi( tokenList->GetToken().ToCString() );
+                int h = atoi( tokenList->GetToken().ToCString() );
+                ((CxChart*)ptr_to_cxObject)->MakeMetaFile(w,h,true);
                 break;
             }
             case kTChartPrint:
