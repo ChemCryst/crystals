@@ -1,7 +1,7 @@
 %SCRIPT FOPTWT
 %% WEIGHT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT
 %%
-We will try 8, 7 and 6 parameter schemes, in that order since the 6 parameter
+We will try 5, 4 and 3 parameter schemes, in that order since the 3 parameter
 scheme is most often satisfactory, and will by default be left in force. You
 will be given a chance to over-ride the choice.
   First you will be shown a curve of the estimated delta(F)**2 as a function
@@ -9,25 +9,25 @@ of F. This should be smoothly varying, and normally not showing any pronounced
 local maxima. The values in the column headed Delta**2 should parallel those
 in the column <Delta**2> in the agreement analysis.
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=14, NPARAM=8'
+%          COPY 'SCHEME NUMBER=14, NPARAM=5 type=ch wei=1'
 %          COPY 'END'
-            Chebychev weighting with 8 parameters
+            Chebychev weighting with 5 parameters
 %          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=14, NPARAM=7'
+%          COPY 'SCHEME NUMBER=14, NPARAM=4  type=ch wei=1'
 %          COPY 'END'
-            Chebychev weighting with 7 parameters
+            Chebychev weighting with 4 parameters
 %          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=14, NPARAM=6'
+%          COPY 'SCHEME NUMBER=14, NPARAM=3  type=ch wei=1'
 %          COPY 'END'
-            Chebychev weighting with 6 parameters
+            Chebychev weighting with 3 parameters
 %          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
