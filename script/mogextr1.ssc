@@ -183,7 +183,7 @@
 %      INSERT 'Angle'
 %      INSERT 'Torsion'
 %    END CASE
-%    INSERT !'!
+%%    INSERT !'!
 %    OUTPUT
 %  END IF
 % END LOOP
