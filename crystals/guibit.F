@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2003/03/06 15:13:28  rich
+C Output twin laws to the information tab. It would be nice to get the twin
+C scales in here too.
+C
 C Revision 1.55  2003/02/25 15:30:22  rich
 C Output L12 & 16 to the info tabs.
 C
@@ -495,6 +499,7 @@ c         loaded by the calling routine.
 \XLST01
 \XLST02
 \XLST23
+\XLST13
 \XLST29
 \XLST30
 \XLST41
@@ -517,6 +522,8 @@ c         loaded by the calling routine.
       LOGICAL WEXIST, LSPARE
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
+      CHARACTER*8 CRADTN(2)
+
 
       DIMENSION LST(15)
       DIMENSION ICLINF(400)
@@ -530,6 +537,7 @@ c         loaded by the calling routine.
 
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
       DATA    IUNKN /'UNKN'/
+      DATA CRADTN / 'X-rays' , 'neutrons' /
 
 C
 C The QSINl5 flag is set here, if there are Q atoms in list 5.
@@ -563,7 +571,7 @@ C
       IF ( IULN .EQ. 0 ) THEN ! decide what needs updating
 c         WRITE(CMON,'(a)')' XGUIUP: Setting 7 lists to be updated.'
 c         CALL XPRVDU (NCVDU,1,0)
-         NLST = 10
+         NLST = 11
          LST(1) = 1
          LST(2) = 2
          LST(3) = 5
@@ -574,6 +582,7 @@ c         CALL XPRVDU (NCVDU,1,0)
          LST(8) = 12
          LST(9) = 16
          LST(10)= 25
+         LST(11)= 13
       ELSE
          NLST = 1
          LST(1) = ABS(IULN)
@@ -1545,6 +1554,35 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
            WRITE (CMON,'(''^^WI SET _MT_L25 VIEWTOP'',/,''^^CR'')')
            CALL XPRVDU(NCVDU,2,0)
+
+
+         ELSE IF (ILST .EQ. 13) THEN   ! Radiation
+
+           IF(KEXIST(13).LE.0) THEN
+              WRITE (CMON,
+     1         '(''^^CO SAFESET [ _MT_WAVE TEXT "Not set" ]'')')
+              CALL XPRVDU(NCVDU,1,0)
+              CYCLE
+           END IF
+           IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+              IF(KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+           ELSE
+              IF(KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
+           END IF
+
+
+           CALL XRLIND(13, L13SR, NFW, LL, IOW, NOS, ID)
+           IF ( L13SR.NE.ISERnn(13) ) THEN
+              ISERnn(13)  = L13SR
+           ELSE
+             CYCLE
+           END IF
+
+1107       FORMAT ('^^CO SAFESET [ _MT_WAVE TEXT "',F8.5,1X,
+     2             'Angstroms (',A,')" ]')
+           WRITE(CMON,1107) STORE(L13DC),
+     2  CRADTN(ISTORE(L13DT+1)+2)(1:LEN_TRIM(CRADTN(ISTORE(L13DT+1)+2)))
+           CALL XPRVDU(NCVDU, 1,0)
 
 
          ELSE IF ( ILST .EQ. 4 ) THEN   ! Weighting scheme
