@@ -371,9 +371,21 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
     pStream << "NREGIONS " << tColumnCount << "\n";
     for (int i = 0; i< tColumnCount; i++)
     {
-        pStream << iHeadings->getID(tColumns[i]) << " ";
-        outputMatrix(pStream, iHeadings->getMatrix(tColumns[i]));
-        pStream << " " << iHeadings->getName(tColumns[i]) << "\n";
+        ArrayList<Index>* tHeadings = pTable.getHeadings(i);
+        
+        for (int j = 0; j < tHeadings->length(); j ++)
+        {
+            pStream << iHeadings->getID(tHeadings->get(j)->get()) << " ";
+            outputMatrix(pStream, iHeadings->getMatrix(tHeadings->get(j)->get()));
+            pStream << " " << iHeadings->getName(tHeadings->get(j)->get()) << "\n";
+        }
+     /*   ArrayList<Index>* tHeads;
+        if (int j = 0; j < tHeads->length(); j++)
+        {
+            pStream << iHeadings->getID(tHeadings->get(i)->get()) << " ";
+            outputMatrix(pStream, iHeadings->getMatrix(tHeadings->get(i)->get()));
+            pStream << " " << iHeadings->getName(tHeadings->get(i)->get()) << "\n";
+        }*/
     }
     pStream << "NTESTS " << tCount << "\n";
     for (int i = 0; i < tCount; i++)
@@ -419,6 +431,6 @@ std::ostream& Stats::output(std::ostream& pStream, const Table& pTable)
         outputRow(tConditions[i], pStream, tColumns, tColumnCount);
         pStream << "\n\n";
     }
-	delete tConditions;
+    delete tConditions;
     return pStream;
 }
