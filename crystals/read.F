@@ -419,20 +419,19 @@ C
 &PPC      ELSE
 &PPCCE***
 C&PPCCE***
-&DVFCGUI{
-      IF ((IUNIT .EQ. NCUFU(1)) .AND. (ISSTML .EQ. 4)) THEN
+
+      IF (IUNIT .EQ. NCUFU(1)) THEN
 C If in script mode, set flag.
-            INSTRC = .FALSE.
-            IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
-C Update status information for UI.
-            CALL MENUUP
-1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-            WRITE (CMON,1515) 'Ready'
-            CALL XPRVDU (NCVDU,1,0)
+&GID            INSTRC = .FALSE.
+&GID            IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
+&GIDC Update status information for UI.
+&GID            CALL MENUUP
+&GID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&GID            WRITE (CMON,1515) 'Ready'
+&GID            CALL XPRVDU (NCVDU,1,0)
             CALL GETCOM(CLINE)
-            WRITE (CMON,1515) 'Working...'
-            CALL XPRVDU (NCVDU,1,0)
-&DVFCGUI}
+&GID            WRITE (CMON,1515) 'Working...'
+&GID            CALL XPRVDU (NCVDU,1,0)
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
       ENDIF
