@@ -2,26 +2,26 @@
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE CHARACTER COMMAND
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ CRYSTALS has powerfull reflection processing instructions, able to use     บ
-บ data in many formats, from more than one crystal, suffering from decay     บ
-บ and from twinned crystals. To make use of these facilities, you must       บ
-บ read the printed manual.                                                   บ
-บ This SCRIPT processes data prepared by the CAD4 data preprocessor RC85     บ
-บ in the 'standard' SHELX format, and most other formats that contain h,k    บ
-บ l and structure factor information. It handles F, F**2 and I data.         บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  CRYSTALS has powerfull reflection processing instructions, able to use
+  data in many formats, from more than one crystal, suffering from decay
+  and from twinned crystals. To make use of these facilities, you must
+  read the printed manual.
+  This SCRIPT processes data prepared by the CAD4 data preprocessor RC85
+  in the 'standard' SHELX format, and most other formats that contain h,k
+  l and structure factor information. It handles F, F**2 and I data.
+ 
 % ELSE
 Script for starting on a new structure
 % END IF
 %LOOP
-% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX 
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX
 % VARIABLE INTEGER QNLINES QNITEMS QVLINES
 % VARIABLE LOGICAL QANSWER
 % VARIABLE CHARACTER QLINE1 QLINE2 QLINE3
 % VARIABLE CHARACTER QLIST1 QLIST2 QLIST3 QLIST4 QLIST5
 % VARIABLE CHARACTER QLIST6 QLIST7 QLIST8 QLIST9 QLIST10
-% VARIABLE CHARACTER QHELP1 QHELP2 QHELP3 QHELP4 QHELP5 
+% VARIABLE CHARACTER QHELP1 QHELP2 QHELP3 QHELP4 QHELP5
 % VARIABLE CHARACTER QHELP6 QHELP7 QHELP8 QHELP9 QHELP10
 % VARIABLE INTEGER   QIANSWER
 %%
@@ -40,7 +40,7 @@ Script for starting on a new structure
 %% The items to appear in the listbox
 % EVALUATE QLIST1 = 'Cad 4'
 % EVALUATE QLIST2 = 'DIP 2000'
-% EVALUATE QLIST3 = 'Quick start'
+% EVALUATE QLIST3 = 'Shelx file'
 % EVALUATE QLIST4 = 'Y290'
 % EVALUATE QLIST5 = 'Initial'
 % EVALUATE QLIST6 = 'Data'
