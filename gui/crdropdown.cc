@@ -71,6 +71,15 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
                 mCallbackState = inform;
                 break;
             }
+            case kTDisabled:
+            {
+                tokenList->GetToken(); // Remove that token!
+                bool disabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+                CcString temp = tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "Dropdown disabled = " + temp);
+                ((CxDropDown*)ptr_to_cxObject)->Disable( disabled );
+                break;
+            }
             case kTAddToList:
             {
                 tokenList->GetToken(); // Remove that token!
