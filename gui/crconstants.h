@@ -5,6 +5,8 @@
 //   Created:   22.7.1998 10:41 Uhr
 //   Modified:  22.7.1998 10:41 Uhr
 
+// $Log: not supported by cvs2svn $
+
 #ifndef		__CrConstants_H__
 #define		__CrConstants_H__
 
@@ -138,6 +140,7 @@
 #define kSUnSetStatus		"STATUNSET"
 #define kSAddToList			"ADDTOLIST"
 #define kSCheckValue		"CHECKVALUE"
+#define kSSetSelection        "SELECTION"
 
 #define kSPosition			"POSITION"
 #define kSRightOf			"RIGHTOF"
@@ -305,7 +308,8 @@ enum {
 	kTCascade,
 	kTCentred,
 	kTAddToList,
-	kTSendValue,
+      kTSetSelection,
+      kTSendValue,
 	kTCheckValue,
 	kTInvert,
 	kTSendLine,
