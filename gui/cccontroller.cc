@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.69  2003/08/14 18:18:12  rich
+// Fix bug discovered in overnight build.
+//
 // Revision 1.68  2003/08/13 16:01:10  rich
 // Find unix equiv of GetTickCount().
 // Comment out registry related functions on Linux.
@@ -481,7 +484,7 @@ CcController::CcController( CcString directory, CcString dscfile )
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
-    m_start_ticks = time.tv_sec*1000 + time.tv_usec/1000;
+    m_start_ticks = (time.tv_sec%10000)*1000 + time.tv_usec/1000;
 #endif
 //Things
     mErrorLog = nil;
@@ -1815,7 +1818,7 @@ void    CcController::LogError( CcString errString , int level )
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
-    int now_ticks = time.tv_sec*1000 + time.tv_usec/1000;
+    int now_ticks = (time.tv_sec%10000)*1000 + time.tv_usec/1000;
 #endif
 
 
@@ -1824,9 +1827,9 @@ void    CcController::LogError( CcString errString , int level )
     fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.ToCString() );
     fflush( mErrorLog );
 
-      #ifdef __LINUX__
-            cerr << errString.ToCString() << "\n";
-      #endif
+    #ifdef __LINUX__
+          cerr << elapse << " " << errString.ToCString() << "\n";
+    #endif
 }
 
 
