@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/11/26 14:02:50  ckpgroup
+//   SH: Added mouse-over message support - display label and data value for the bar
+//   under the pointer.
+//
 //   Revision 1.2  2001/11/12 16:24:30  ckpgroup
 //   SH: Graphical agreement analysis
 //
@@ -233,5 +237,7 @@ int CrPlot::GetIdealHeight()
 CcString CrPlot::GetDataFromPoint(CcPoint point)
 {
 	if(attachedPlotData) return attachedPlotData->GetDataFromPoint(point);
+
+        return "error";
 }
 
