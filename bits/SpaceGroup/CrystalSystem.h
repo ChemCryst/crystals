@@ -34,6 +34,8 @@
  * 	function name	
  * };
  */
+#ifndef __CRYSTAL_SYSTEM_H__
+#define __CRYSTAL_SYSTEM_H__
 #include "Matrices.h"
 #include "Collections.h"
 #include "HKLData.h"
@@ -68,6 +70,7 @@ class Headings
         ostream& output(ostream& pStream);
         char* addHeading(char* pLine);
         void readFrom(filebuf& pFile);
+        int length();
 };
 
 ostream& operator<<(ostream& pStream, Heading& pHeader);
@@ -105,6 +108,7 @@ class Conditions
         ostream& output(ostream& pStream);
         char* addCondition(char* pLine);
         void readFrom(filebuf& pFile);
+        int length();
 };
 
 ostream& operator<<(ostream& pStream, Conditions& pConditions);
@@ -253,3 +257,20 @@ class Tables
 };
 
 ostream& operator <<(ostream& pStream, Tables& pTables);
+
+class RankedSpaceGroups
+{
+    private:
+        typedef struct RowRating
+        {
+            int iRowNum;
+            int iTotNumVal;	//Total number of values include in these stats.
+            float iSumRat1;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+            float iSumRat2;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+            float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+            float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+        } RowRating;
+        
+        LList<RowRating> iRatings;
+};
+#endif
