@@ -9,7 +9,7 @@
 #ifndef __MERGED_DATE_H__
 #define __MERGED_DATA_H__
 #include "LaueClasses.h"
-#include "HKLData.h";
+#include "HKLData.h"
 #include <set>
 #include <list>
 
