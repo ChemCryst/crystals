@@ -7,24 +7,29 @@ class CcTokenList;
 //#include "crystalsinterface.h"
 #include "ccmodelobject.h"
 
+class CcModelAtom;
+
 class CcModelBond : public CcModelObject
 {
-	public:
-		Boolean fill;
-		CcModelBond();
-		~CcModelBond();
-            void ParseInput(CcTokenList* tokenList);
-            void Render(CrModel* view, Boolean detailed);
+  public:
+    CcModelBond(CcModelDoc* pointer);
+    ~CcModelBond();
+    void ParseInput(CcTokenList* tokenList);
+    void Render(CrModel* view, bool detailed);
+    void SelfExclude();
 
-	private:
-		int x1,y1,z1;
-		int x2,y2,z2;
-		int ox1,oy1,oz1;
-		int ox2,oy2,oz2;
-		int r,g,b;
-		int rad;
-		float length;
-		float xrot, yrot;
+    bool m_excluded;
+    CcModelAtom *atom1, *atom2;
+
+  private:
+    int x1,y1,z1;
+    int x2,y2,z2;
+    int r,g,b;
+    int rad;
+    float length;
+    float xrot, yrot;
+    CcString label;
 };
+
 
 #endif
