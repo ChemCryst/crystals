@@ -32,8 +32,8 @@
 ^^WI       @ 1,3 ICON IM INFO
 ^^WI       @ 1,5 GRID EXP3 NROWS=3 NCOLS=1
 ^^WI       {
-^^WI         @ 1,1 STATIC XFW1 'The red bars in the lower graphs show'
-^^WI         @ 2,1 STATIC XFW2 '<w|Fo-Fc|>^2 they should be as close'
+^^WI         @ 1,1 STATIC XFW1 'The blue bars in the lower graphs show'
+^^WI         @ 2,1 STATIC XFW2 '<w|Fo-Fc|>^2; they should be as close'
 ^^WI         @ 3,1 STATIC XFW3 'to unity as possible.'
 ^^WI       }
 ^^WI     }
