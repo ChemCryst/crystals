@@ -40,9 +40,9 @@
 ^^WI   {
 ^^WI     @ 1,2 STATIC CF1 'Prepare a CIF reflection listing with:'
 ^^WI     @ 3,2 RADIOBUTTON RF '&Fo, Fc and sigma(Fo)'
-^^WI           STATE=ON
-^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'
 ^^WI           STATE=OFF
+^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'
+^^WI           STATE=ON
 ^^WI     @ 6,2 STATIC CF2 'CIF will be saved as publish.fcf'
 ^^WI   }
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
