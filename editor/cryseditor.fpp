@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2004/12/17 10:01:02  rich
+C MAC to _MAC_ etc.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:12  rich
 C New CRYSTALS repository
 C
@@ -176,8 +179,6 @@ C----- DOS OPENS
         WRITE(6,'(A)')'Usage: EDITOR <src> <output> ' //
      1   'code=<XXX> '//
      1   '[macro=macrofil.mac] [incl=&] [excl=#] '//
-#endif
-
 #if defined(_DOS_) || defined(_GID_) 
      2   '[comm=CC] [subs=\] [strip]'
 #endif
