@@ -5,7 +5,7 @@
 % VARIABLE CHARACTER CFILE
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO
 %%
-% VARIABLE LOGICAL TWINNED LMCE
+% VARIABLE LOGICAL TWINNED LMCE LMAPV
 % EVALUATE TWINNED = FALSE
 %  BLOCK
 %    VARIABLE INTEGER ITMP
@@ -40,9 +40,13 @@
 %     EVALUATE LMCE = FALSE
 -GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
 -GIL .OR. FILEEXISTS 'crysdir:mce\mce.exe' THEN
-+GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' -
-+GIL .EQ. TRUE THEN
++GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
 %       EVALUATE LMCE = TRUE
+%     END IF
+%     EVALUATE LMAPV = FALSE
+-GIL% IF FILEEXISTS 'WINGXDIR:\for_prog\mapview.exe' THEN
++GIL% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview' THEN
+%       EVALUATE LMAPV = TRUE
 %     END IF
 %%
 %%
@@ -98,20 +102,27 @@
 ^^WI    @ 1,4 BUTTON BROWSE '&Choose'
 ^^WI   }
 ^^WI  }
-^^WI  @ 3,1 GRID VBOTTOM NROWS=1 NCOLS=7
+^^WI  @ 3,1 GRID VBOTTOM NROWS=1 NCOLS=9
 ^^WI  {
 % IF ( LMCE ) THEN
-^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
-^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' STATE=ON
+^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'  INFORM
+^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' STATE=ON INFORM
 % ELSE
-^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON
-^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' DISABLED=YES
+^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON INFORM
+^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' DISABLED=YES INFORM
 % END IF
-^^WI   @ 1,6 RADIOBUTTON XN 'Do not run viewer'
+^^WI   @ 1,6 RADIOBUTTON XV 'Run MapView' INFORM
+% IF ( .NOT. LMAPV ) THEN
+^^WI      DISABLED=YES
+% END IF
+^^WI   @ 1,8 RADIOBUTTON XN 'Do not run viewer' INFORM
 ^^WI  }
 ^^WI  @ 4,1 GRID VBOTTOM NROWS=2 NCOLS=9 OUTLINE='MCE advanced'
 ^^WI  {
 ^^WI   @ 1,2 CHECKBOX XMVOID 'Save void map'
+% IF ( .NOT. LMCE ) THEN
+^^WI       DISABLED=YES
+% END IF
 ^^WI   @ 1,4 CHECKBOX XMCEPF 'HW page flipping stereo'
 % IF ( .NOT. LMCE ) THEN
 ^^WI       DISABLED=YES
@@ -120,15 +131,31 @@
 % IF ( .NOT. LMCE ) THEN
 ^^WI       DISABLED=YES
 % END IF
-^^WI    @ 1,8 BUTTON XMCEHH 'MCE Help' 
+^^WI    @ 1,8 BUTTON MCEHH 'MCE Help' 
 ^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
 % LOOP
-%   VERIFY BXX BROWSE BMOLAX BHELP BOK XMCEHH
+%   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP BOK MCEHH
 %   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
+%     BLOCK                       % XC
+^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=YES
+^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES
+%     END BLOCK
+%     BLOCK                       % XM
+^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=NO
+^^CO    SET XMCEPF DISABLED=NO SET XMCEIF DISABLED=NO
+%     END BLOCK
+%     BLOCK                       % XV
+^^CO    SET E1 DISABLED=YES SET BROWSE DISABLED=YES SET XMVOID DISABLED=YES
+^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES
+%     END BLOCK
+%     BLOCK                       % XN
+^^CO    SET E1 DISABLED=NO SET BROWSE DISABLED=NO SET XMVOID DISABLED=YES
+^^CO    SET XMCEPF DISABLED=YES SET XMCEIF DISABLED=YES
+%     END BLOCK
 %     BLOCK                       % BXX
 ^^WI    DISPOSE XCONT
 ^^CR
@@ -219,20 +246,24 @@ view the generated sections.
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       IF VALUE .EQ. 1 THEN
-%          EVALUATE RUNVIEWER = 1
+%         EVALUATE RUNVIEWER = 1
 %       ELSE
-%%
-%% Sorry about the logic here. We can't check XM because it might
-%% not exist.
-%%
-^^??       XN STATE
-%          VERIFY OFF ON
-%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%          IF VALUE .EQ. 1 THEN
+^^??      XN STATE
+%         VERIFY ON OFF
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%         IF VALUE .EQ. 1 THEN
+%           EVALUATE RUNVIEWER = 0
+%         ELSE
+^^??        XV STATE
+%           VERIFY ON OFF
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%           IF VALUE .EQ. 1 THEN
+%             EVALUATE RUNVIEWER = 3
+%             TRANSFER "#STORE CSYS MAP 'Mapfile'" TO CRYSTALS
+%           ELSE
 %             EVALUATE RUNVIEWER = 2
-%          ELSE
-%             EVALUATE RUNVIEWER = 0
-%          END IF
+%           END IF
+%         END IF
 %       END IF
 %       BLOCK
 %         ON ERROR TERMINATE
@@ -302,7 +333,11 @@ view the generated sections.
 %           ELSE
 %             INSERT ' MIN-RHO = 0'
 %           END IF
+%           IF RUNVIEWER .EQ. 3 THEN
+%           INSERT ' 10 FILE=MAPVIEW'
+%           ELSE
 %           INSERT ' 10 FILE=YES'
+%           END IF
 %           QUEUE SEND
 %           CLEAR
 %           STORE CHARACTER 'SAVE MOLAX'
@@ -415,6 +450,10 @@ view the generated sections.
 %%
 +GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
 +GIL   // CFILE TO CRYSTALS
+%           END BLOCK
+%           BLOCK    %Run MapView
+%             TRANSFER '#SPAWN "WINGXDIR:\for_prog\mapview.exe" Mapfile' -
+ TO CRYSTALS
 %           END BLOCK
 %         END CASE
 %         FINISH
