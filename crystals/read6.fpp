@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2001/05/23 14:25:36  ckpgroup
+C Store number of raw reflectons read in
+C
 C Revision 1.14  2001/04/30 11:50:28  ckpgroup
 C fix-up omitted rflections when re-indexing matrix has non-integral results' read6.src
 C
@@ -800,6 +803,10 @@ Cdjwmap99[
          STORE(JFO)=FSIGN
          STORE(M6+12)=SIG
 Cdjwmap99]
+Cric2001[
+C If F's are squared, Fc's probably are aswell.
+         STORE(M6+5) = SQRT (ABS(STORE(M6+5)))
+Cric2001]
 C
 C--APPLY THE SCALE STORED IN THE 'CORRECTIONS' SLOT
 4700     CONTINUE
