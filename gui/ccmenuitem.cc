@@ -12,13 +12,13 @@
 #include "ccmenuitem.h"
 #include "crmenu.h"
 #include "cxmenu.h"
-
+#ifdef __WINDOWS__
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
-
+#endif
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
