@@ -543,7 +543,8 @@ C--RESET THE POINTERS FOR THE NEXT PLANE/LINE
       ISTORE(JL)=NOWT
       LFL=JL-1
 C----- RESET TO SHOW ATOMS ALREADY USED
-      NATOM=0
+cdjwmar05
+      if (jtype .ne. 3) NATOM=0
       LEF2=0
       GO TO 20
 C
