@@ -1,0 +1,55 @@
+%SCRIPT XWINGX
+%% CRYSTALS reflection input script
+%  VARIABLE LOGICAL XQMERGE
+%%
+%  COPY '#SCRIPT XFRIEDEL'
+%  MESSAGE USER1 ' Error during reflection processing'
+%  ON ERROR TERMINATE USER1
+{S * Removing systematically absent reflections
+%  COPY '#SYSTEMATIC'
+%  COPY 'END'
+%  CLEAR
+{S * Sorting reflections
+%  COPY '#SORT'
+%  COPY 'END'
+%  CLEAR
+%% Ask user if they want to merge reflections:
+%  COPY '#SCRIPT XQMERGE'
+%  IF ( XQMERGE ) THEN
+{S * Merging equivalent reflections
+%    CLEAR
+%    COPY '#MERGE'
+%    COPY 'END'
+%   END IF
+%
+{S * Final copy to DSC file
+%   COPY '#LIST 6'
+%   COPY 'READ TYPE = COPY'
+%   COPY 'END'
+%   COPY '#LIST 4'
+%   COPY 'END'
+%   COPY '#WEIGHT'
+%   COPY 'END'
+
+{I Give the minimum I/sigma(i) and [sin(theta)/lambda]^2 to be 
+{I used in refinement. They can be changed at any time later
+{I using the menu item "X-ray Data" -> "Filter Reflections".
+
+{R Recommended settings for F refinement:
+{R   Fo/sigma(Fo)              is at least 3.0    eliminates noise
+{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop
+
+%   COPY '#SCRIPT XLIST28'
+%%
+%   IF ( EXISTS 23 .NE. 1 ) THEN
+%     COPY '#LIST 23'
+%     COPY 'END'
+%   END IF
+%%
+%%
+{R * Done. Reflection data input complete.
+
+%   FINISH
+%END SCRIPT
+%%
+%% $Log: not supported by cvs2svn $

@@ -1,0 +1,133 @@
+%SCRIPT INWINGX
+%%
+%% If there is already a structure / reflections present,
+%% then there are four choices:
+%% a) continue with old structure
+%% b) fresh start with new WinGX data
+%% c) import hkl only from WinGX - keep last structure
+%% d) import atoms only from WinGX - keep last hkl
+%%
+%%
+% IF ( EXISTS 1 .NE. 1 ) .OR. ( EXISTS 2 .NE. 1 ) THEN
+%% No cell or spacegroup, continue importing everything.
+%   FINISH
+% END IF
+%%
+%%
+^^WI WINDOW INWINGX 'WinGX import' MODAL COMMIT='GX_OK' CANCEL='GX_XX'
+^^WI GRID GRIDM NROWS=7 NCOLS=3
+^^WI {
+^^WI  @ 6,2 GRID GRIDB NROWS=1 NCOLS=4
+^^WI  {
+^^WI    @ 1,1 STRETCH GX_S HORIZONTAL
+^^WI    @ 1,2 BUTTON GX_OK '&Ok' DEFAULT
+^^WI    @ 1,4 BUTTON GX_XX '&Cancel'
+^^WI  }
+^^WI  @ 2,2 GRID INFO NROWS=1 NCOLS=3
+^^WI  {
+^^WI    @ 1,1 ICON IM INFO
+^^WI    @ 1,3 GRID EXP3 NROWS=2 NCOLS=1
+^^WI    {
+% IF ( EXISTS 5 .NE. 1 ) THEN
+%   IF ( EXISTS 6 .NE. 1 ) THEN
+^^WI      @ 1,1 STATIC XFW1
+^^WI 'In a previous run of CRYSTALS some data (e.g. cell, spacegroup)'
+^^WI      @ 2,1 STATIC XFW2
+^^WI 'was entered, but reflection data and atomic coords are still missing.'
+%   ELSE 
+^^WI      @ 1,1 STATIC XFW1
+^^WI 'In a previous run of CRYSTALS some data (e.g. cell, spacegroup, '
+^^WI      @ 2,1 STATIC XFW2
+^^WI 'reflections) was entered, but there are no atomic coords yet.'
+%   END IF
+% ELSE
+%   IF ( EXISTS 6 .NE. 1 ) THEN
+^^WI      @ 1,1 STATIC XFW1
+^^WI 'In a previous run of CRYSTALS some data (e.g. cell, spacegroup,'
+^^WI      @ 2,1 STATIC XFW2
+^^WI 'atoms) was entered, but reflection data is still missing.'
+%   ELSE 
+^^WI      @ 1,1 STATIC XFW1
+^^WI 'In a previous run of CRYSTALS all important data was entered.'
+^^WI      @ 2,1 STATIC XFW2
+^^WI '(e.g. cell, spacegroup, reflections, atoms)'
+%   END IF                                          
+% END IF                                          
+^^WI    }
+^^WI  }
+^^WI  @ 4,2 GRID OPTIONS NROWS=4 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 RADIOBUTTON GX_ALL 'Re-import all WinGX data.' STATE=ON
+^^WI    @ 2,1 RADIOBUTTON GX_NON 'Continue working with existing (old) data.'
+^^WI    @ 3,1 RADIOBUTTON GX_ATO 'Import only updated structure from WinGX.'
+^^WI    @ 4,1 RADIOBUTTON GX_HKL 'Import only updated reflections from WinGX.'
+^^WI  }
+^^WI } SHOW
+^^CR
+% VERIFY GX_OK GX_XX
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% CASE VALUE
+%   BLOCK           %GX_OK%
+%%
+^^??  GX_ALL STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF ( VALUE .EQ. 1 ) THEN
+%% Proceed with import.
+^^CO    DISPOSE INWINGX
+%       FINISH
+%     END IF
+%%
+^^??  GX_NON STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF ( VALUE .EQ. 1 ) THEN
+%% Proceed with import.
+^^CO    DISPOSE INWINGX
+
+{I * WinGX import cancelled. Continuing with existing (old) data.
+
+%       COPY '#SCRIPT DIRECT'
+%     END IF
+%%
+^^??  GX_ATO STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF ( VALUE .EQ. 1 ) THEN
+%% Import atoms only
+^^CO    DISPOSE INWINGX
+
+{I * Importing structure only.
+
+%       COPY '#SCRIPT XSHELXIN'
+%       COPY '#SCRIPT DIRECT'
+%     ELSE
+%% Import reflections only
+^^CO    DISPOSE INWINGX
+
+{I * Importing reflections only.
+
+%       COPY '#CLOSE HKLI'
+%       COPY '#OPEN HKLI shelx.hkl'
+%       COPY '#HKLI'
+%       COPY "READ   F'S=FSQ  NCOEF = 5  TYPE = FIXED CHECK = NO"
+%       COPY 'INPUT H K L /FO/ SIGMA(/FO/)'
+%       COPY 'FORMAT (3F4.0, 2F8.0)'
+%       COPY 'STORE NCOEF=6'
+%       COPY 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL'
+%       COPY 'END'
+%       COPY '#CLOSE HKLI'
+%       COPY '#SCRIPT XWINGX'
+%       COPY '#SCRIPT DIRECT'
+%     END IF
+%   END BLOCK
+%   BLOCK           %GX_XX%
+^^CO  DISPOSE INWINGX
+
+{I * WinGX import cancelled
+
+%     COPY '#SCRIPT DIRECT'
+%     FINISH
+%   END BLOCK
+% END CASE
+%END SCRIPT
