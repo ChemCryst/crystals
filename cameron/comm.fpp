@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2002/06/28 16:20:56  Administrator
+C Enable NEW to be stored in LIST 5, try to fix postscript line thickness and boundingbox
+C
 C Revision 1.17  2001/11/06 12:42:34  Administrator
 C Create proper bounding box for EPS
 C
@@ -74,7 +77,7 @@ C This is the code for the VIEW group of commands.
 
       INTEGER K
       CHARACTER*60 FILENM
-      LOGICAL LEXIST
+      LOGICAL LEXIST, IDJW
       LOGICAL LFILES
       LOGICAL LITEMP
       CHARACTER*72 CTEXT
