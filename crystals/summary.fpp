@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/07/08 10:49:43  rich
+C
+C Completely changed the SIGMA vs RES graph - it takes far
+C too long to load due to the sheer number of points.
+C Instead, plot a line graph of number of reflections
+C in one of three I/sigma(I) classes (<3,3-10,>10) vs
+C resolution.
+C
 C Revision 1.45  2003/07/08 10:09:24  rich
 C
 C Two changes:
@@ -1511,9 +1519,11 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
      1   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
         END IF
 
-        IF ( (COMP .GE. THBCMP) .OR. (COMP .GT. 0.995) ) THEN
+        IF ( I .GE. 75 ) THEN ! Theta_full shouldn't be too low
+         IF ( (COMP .GE. THBCMP) .OR. (COMP .GT. 0.995) ) THEN
           THBEST = THMAX*(I/100.0)                       
           THBCMP = COMP
+         END IF
         END IF
       END DO
 
