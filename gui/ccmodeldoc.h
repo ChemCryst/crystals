@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2003/10/31 10:44:16  rich
+//   When an atom is selected in the model window, it is scrolled
+//   into view in the atom list, if not already in view.
+//
 //   Revision 1.18  2003/08/13 16:01:41  rich
 //   Comment out windows header on Linux ver.
 //
@@ -123,7 +127,7 @@ class CcModelDoc
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
                           CcString elem, int serial, int refflag,
-                          int part, float ueq, float fspare);
+                          int assembly, int group, float ueq, float fspare);
 
         void FastSphere(CcString label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,

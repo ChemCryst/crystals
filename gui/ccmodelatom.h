@@ -21,7 +21,7 @@ class CcModelAtom : public CcModelObject
                     float u6,float u7,float u8,float u9,
                     float fx, float fy, float fz,
                     CcString elem, int serial, int refflag,
-                    int part, float ueq, float fspare,
+                    int assembly, int group, float ueq, float fspare,
                     CcModelDoc* parentptr);
 
     void Init();
@@ -51,7 +51,8 @@ class CcModelAtom : public CcModelObject
     float m_spare;
     int m_serial;
     int m_refflag;
-    int m_part;
+    int m_assembly;
+    int m_group;
     CcString m_elem;
 };
 

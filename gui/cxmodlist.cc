@@ -55,20 +55,21 @@ CxModList::CxModList( CrModList * container )
 
 void CxModList::AddCols()
 {
-    m_numcols=12;
-    CcString colHeader[12];
-    colHeader[0] = "Id";
-    colHeader[1] = "Type";
-    colHeader[2] = "Serial";
-    colHeader[3] = "x";
-    colHeader[4] = "y";
-    colHeader[5] = "z";
-    colHeader[6] = "occ";
-    colHeader[7] = "Type";
-    colHeader[8] = "Ueq";
-    colHeader[9] = "Residue";
-    colHeader[10] = "Part";
-    colHeader[11] = "Spare";
+    m_numcols=13;
+    CcString colHeader[13];
+    colHeader[0]  = "Id";
+    colHeader[1]  = "Type";
+    colHeader[2]  = "Serial";
+    colHeader[3]  = "x";
+    colHeader[4]  = "y";
+    colHeader[5]  = "z";
+    colHeader[6]  = "occ";
+    colHeader[7]  = "Type";
+    colHeader[8]  = "Ueq";
+    colHeader[9]  = "Spare";
+    colHeader[10] = "Residue";
+    colHeader[11] = "Assembly";
+    colHeader[12] = "Group";
 
     m_colWidths = new int[m_numcols];
     m_colTypes  = new int[m_numcols];

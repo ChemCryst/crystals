@@ -22,7 +22,7 @@ CcModelAtom::CcModelAtom(CcString llabel,int lx1,int ly1,int lz1,
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
                           CcString elem, int serial, int refflag,
-                          int part, float ueq, float fspare,
+                          int assembly, int group, float ueq, float fspare,
                           CcModelDoc* parentptr)
 {
   mp_parent = parentptr;
@@ -42,7 +42,8 @@ CcModelAtom::CcModelAtom(CcString llabel,int lx1,int ly1,int lz1,
   m_ueq = ueq;
   m_serial = serial;
   m_refflag = refflag;
-  m_part = part;
+  m_assembly = assembly;
+  m_group = group;
   m_elem = elem;
   m_spare = fspare;
 
@@ -83,7 +84,8 @@ void CcModelAtom::Init()
   m_ueq = 0.0;
   m_serial = 0;
   m_refflag = 0;
-  m_part = 0;
+  m_assembly = 0;
+  m_group = 0;
   m_elem = "";
   frac_x = 0.0;
   frac_y = 0.0;

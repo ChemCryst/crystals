@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.27  2003/10/31 10:44:16  rich
+// When an atom is selected in the model window, it is scrolled
+// into view in the atom list, if not already in view.
+//
 // Revision 1.26  2003/05/12 12:01:19  rich
 // RIC: Oops; roll back some unintentional check-ins.
 //
@@ -626,7 +630,7 @@ void CcModelDoc::DocToList( CrModList* ml )
    if ( mAtomList->ListSize()  )
    {
       CcModelAtom* aitem;
-      CcString row[12];
+      CcString row[13];
       mAtomList->Reset();
       while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
       {
@@ -639,9 +643,10 @@ void CcModelDoc::DocToList( CrModList* ml )
           row[6] =  CcString((float)aitem->occ/1000.0f);
           row[7] =  aitem->m_IsADP ? CcString("Aniso"):CcString("Iso");
           row[8] =  CcString(aitem->m_ueq);
-          row[9] =  CcString(aitem->m_refflag);
-          row[10] =  CcString(aitem->m_part);
-          row[11] =  CcString(aitem->m_spare);
+          row[9] =  CcString(aitem->m_spare);
+          row[10] =  CcString(aitem->m_refflag);
+          row[11] =  CcString(aitem->m_assembly);
+          row[12] =  CcString(aitem->m_group);
 
           ml -> AddRow(aitem->id,    &*row,
                        aitem->IsSelected(),
@@ -1395,14 +1400,14 @@ void CcModelDoc::FastAtom(CcString label,int x1,int y1,int z1,
                           float u6,float u7,float u8,float u9,
                           float frac_x, float frac_y, float frac_z,
                           CcString elem, int serial, int refflag,
-                          int part, float ueq, float fspare)
+                          int assembly, int group, float ueq, float fspare)
 
 {
     CcModelAtom* item = new CcModelAtom(label,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,frac_x,
                           frac_y,frac_z,elem,serial,refflag,
-                          part,ueq,fspare,this);
+                          assembly, group, ueq,fspare,this);
     mAtomList->AddItem(item);
     m_nAtoms++;
     item->id = m_nAtoms;
@@ -1449,14 +1454,14 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int part, float ueq, float fspare);
+                int refflag, int assembly, int group, float ueq, float fspare);
 #endif
 #ifdef __BOTHWX__
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int part, float ueq, float fspare);
+                int refflag, int assembly, int group, float ueq, float fspare);
 #endif
 #ifdef __CR_WIN__
 void fastsphere  (char* label,int x1,int y1,int z1, 
@@ -1506,14 +1511,14 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int part, float ueq, float fspare)
+                int refflag, int assembly, int group, float ueq, float fspare)
 #endif
 #ifdef __BOTHWX__
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int part, float ueq, float fspare)
+                int refflag, int assembly, int group, float ueq, float fspare)
 #endif
 {
       CcString clabel = label;
@@ -1523,7 +1528,7 @@ void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1,
             CcModelDoc::sm_CurrentModelDoc->FastAtom(clabel,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,fx,fy,fz,
-                          celem,serial,refflag,part,ueq, fspare) ;
+                          celem,serial,refflag,assembly,group,ueq, fspare) ;
 
 }
 
