@@ -5,6 +5,10 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  1999/06/22 13:06:57  dosuser
+// RIC: Only reset the text if in initialisation. This was where the
+// editbox cursor was getting set to the beginning of the text. Fixed.
+//
 // Revision 1.6  1999/06/13 14:38:56  dosuser
 // RIC: Added m_IsInput boolean. Set with the kTIsInput token. Causes
 // the editbox to register itself as the user input place with the
@@ -269,8 +273,7 @@ void	CrEditBox::BoxChanged()
 	{
 		char theText[256];
 		int theTextLen = ((CxEditBox*)mWidgetPtr)->GetText(&theText[0]);
-		SendCommand(mName);
-		SendCommand( CcString( theText ) );
+                SendCommand(mName + "_N" + CcString( theText ) );
 	}
 }
 
