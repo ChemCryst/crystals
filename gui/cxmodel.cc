@@ -389,6 +389,11 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
 #endif
         if(m_fastrotate) //LBUTTONDOWN and already rotating.
         {
+                  if ( m_TextPopup )
+                  {
+                      delete m_TextPopup;
+                      m_TextPopup = nil;
+                  }
 #ifdef __CR_WIN__
                   SetCursor(AfxGetApp()->LoadCursor(IDC_CURSOR1) );
 #endif
@@ -465,17 +470,17 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                      if(m_LitAtom != atom) //avoid excesive redrawing, it flickers.
                      {
                         m_LitAtom = atom;
-#ifdef __CR_WIN__
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_POINTER_COPY) );
+                        if ( atomname.Length() && ( atomname.Sub(1,1) == "Q" ) )
+                        {
+                           atomname = atomname + "  " + CcString ((float)atom->sparerad/1000.0);
+                        }
                         if ( m_TextPopup )
                         {
                            delete m_TextPopup;
                            m_TextPopup = nil;
                         }
-                        if ( atomname.Length() && ( atomname.Sub(1,1) == "Q" ) )
-                        {
-                           atomname = atomname + "  " + CcString ((float)atom->sparerad/1000.0);
-                        }
+#ifdef __CR_WIN__
+                        SetCursor( AfxGetApp()->LoadCursor(IDC_POINTER_COPY) );
                         m_TextPopup = new CStatic();
                         m_TextPopup->Create(atomname.ToCString(), SS_CENTER|WS_BORDER, CRect(0,0,20,20), this);
                         m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
@@ -484,8 +489,17 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                         GetTextExtentPoint32(hdc, atomname.ToCString(), atomname.Length(), &size);
                         m_TextPopup->MoveWindow(max(0,point.x-size.cx-4),max(0,point.y-size.cy-4),size.cx+4,size.cy+4,false);
                         m_TextPopup->ShowWindow(SW_SHOW);
-
 #endif
+#ifdef __BOTHWX__
+                        m_TextPopup = new wxStaticText();
+                        m_TextPopup->Create(this, -1, atomname.ToCString(), wxPoint(0,0), wxSize(0,0), wxALIGN_CENTER|wxSIMPLE_BORDER);
+                        m_TextPopup->Show(false);
+                        int cx,cy;
+                        m_TextPopup->GetTextExtent( m_TextPopup->GetLabel(), &cx, &cy );
+                        m_TextPopup->SetSize(max(0,point.x-cx-4),max(0,point.y-cy-4),cx+4,cy+4);
+                        m_TextPopup->Show(true);
+#endif
+
                         (CcController::theController)->SetProgressText(&atomname);
                         if ( m_Hover )
                               NeedRedraw();
@@ -497,24 +511,24 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
                      (CcController::theController)->SetProgressText(NULL);
 #ifdef __CR_WIN__
                    SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
+#endif
                    if ( m_TextPopup )
                    {
                       delete m_TextPopup;
                       m_TextPopup = nil;
                    }
-#endif
                    if ( m_Hover )
                         NeedRedraw();
                   }
                   else
                   {
-#ifdef __CR_WIN__
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
                         if ( m_TextPopup )
                         {
                            delete m_TextPopup;
                            m_TextPopup = nil;
                         }               
+#ifdef __CR_WIN__
+                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
 #endif
                   }
                   m_ptMMove = point;

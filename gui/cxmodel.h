@@ -149,7 +149,7 @@ class CxModel : public BASEMODEL
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-            wxStaticText m_TextPopup;
+            wxStaticText * m_TextPopup;
             void OnEraseBackground(wxEraseEvent & evt);
             void OnLButtonUp(wxMouseEvent & event);
             void OnLButtonDown(wxMouseEvent & event);
