@@ -275,6 +275,11 @@
 %    COPY '#OPEN SCPDATA absences.dat'
 ^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'
 {I About to get absence data.
+^^WI WINDOW XABORT 'Absences' MODAL GRID MAIN NROWS=5 NCOLS=5
+^^WI { @ 2,2 STATIC T1 'Reading absence data.'
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO
+^^WI   @ 4,2 STATIC RABPR 'Reading absences         '} SHOW
+^^CR
 %    EVALUATE ABSPRINT = 0
 %    EVALUATE ABSTOTAL = 0
 %    EXTRACT REWIND
@@ -304,16 +309,24 @@
 %      GET NOPROMPT REAL ' ' '-1.0'
 %      OUTPUT
 %      EVALUATE ABSPRINT = ABSPRINT + 1
-%      IF ABSPRINT .GE. 500 THEN
+%      IF ABSPRINT .GE. 100 THEN
 %        EVALUATE ABSTOTAL = ABSTOTAL + ABSPRINT
 %        EVALUATE ABSPRINT = 0
-%        TRANSFER 'Read ' // CHARACTER ABSTOTAL // ' absences from file' -
- TO DISPLAY
+%        TRANSFER '^^CO SET RABPR TEXT "Read ' // CHARACTER ABSTOTAL // -
+                  ' absences"' TO DISPLAY
+^^??     RF_BAB STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%        IF VALUE .EQ. 1 THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+{I Aborted read of absences at user's request.
+%        END IF
 %      END IF
 %    END LOOP
 %    COPY '#CLOSE SCPDATA'
 ^^PL SHOW
 ^^CR
+^^CO DISPOSE XABORT
 {I Done.
 %  END IF
 %%
