@@ -86,6 +86,23 @@ BOOL CCrystalsApp::InitInstance()
          if ( dwresult == ERROR_SUCCESS )  location = CcString(buf);
          RegCloseKey(hkey);
       }
+
+      if ( dwresult != ERROR_SUCCESS )  // Try HK_CURRENT_USER instead
+      {
+         dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+                     0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
+         if ( dwresult == ERROR_SUCCESS )
+         {
+            dwtype=REG_SZ;
+            dwsize = 1024; // NB limits max key size to 1K of text.
+            char buf [ 1024];
+            dwresult = RegQueryValueEx( hkey, TEXT("Crysdir"), 0, &dwtype,
+                                     (PBYTE)buf,&dwsize);
+            if ( dwresult == ERROR_SUCCESS )  location = CcString(buf);
+            RegCloseKey(hkey);
+         }
+      }
+
 #else
          char buffer[255];
          GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
