@@ -39,6 +39,8 @@
 #include "regex.h"
 #include <fstream>
 #include "StringClassses.h"
+#include "MathFunctions.h"
+#include "Stats.h"
 
 using namespace std;
 
@@ -586,95 +588,6 @@ ostream& operator<<(ostream& pStream, Indexs& pIndexs)
 {
     return pIndexs.output(pStream);
 }
-
-ConditionIndexs::ConditionIndexs(signed char pValue):Indexs(pValue)
-{    
-    iStats = new Matrix<float>(7, 1, 0.0f);
-}
-
-ConditionIndexs::ConditionIndexs(ConditionIndexs& pObject):Indexs((Indexs)pObject)
-{
-    iStats = new Matrix<float>((*pObject.iStats));
-}
-
-void ConditionIndexs::addReflection(Reflection* pReflection, Conditions* pConditions)
-{
-    Matrix<float>* tHKLM = pReflection->getHKL();
-    Matrix<float>* tConditionM;
-    int tNumConditions = this->number();
-    bool tAccept = true;
-        
-    for (int i = 0; i <  tNumConditions && tAccept;  i++)
-    {
-        tConditionM = pConditions->getMatrix(getValue(i));
-        Matrix<float> tMatrix = (*tConditionM)*(*tHKLM);
-        if (((int)tMatrix.getValue(0)) % ((int)pConditions->getMult(getValue(i))) != 0)
-        {
-            tAccept = false;
-        }
-    }
-    if (tAccept == false)	//Non-matched reflections
-    {
-        iStats->setValue(iStats->getValue(0) + pReflection->i, 0);	//Add the intensity
-        iStats->setValue(iStats->getValue(3) + 1, 3);	//Add to count
-        if (pReflection->i/pReflection->iSE >= 3)
-        {
-            iStats->setValue(iStats->getValue(5) + 1, 5);	//Add to count
-        }
-        else
-        {
-            iStats->setValue(iStats->getValue(6) + 1, 6);	//Add to count
-        }
-    }
-    else
-    {
-        iStats->setValue(iStats->getValue(1) + pReflection->i, 1);	//Add the intensity
-        iStats->setValue(iStats->getValue(4) + 1, 4);	//Add to count
-    }
-    iStats->setValue(iStats->getValue(2) + pReflection->i, 2);	//Add the intensity
-}
-
-ostream& ConditionIndexs::output(ostream& pStream)
-{
-    ((Indexs*)this)->output(pStream);
-    pStream << "\nAverage non-matched reflections int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
-    pStream << "Average matched reflections int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
-    pStream << "Num accept reflections: " << iStats->getValue(3) << "\n";
-    pStream << "Num matched reflections int: " << iStats->getValue(4) << "\n";
-    pStream << "Average intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
-    pStream << "Number of Int<3*sigma non-matched: " << iStats->getValue(5) << "\n";
-    pStream << "Number of Int>=3*sigma non-matched: " << iStats->getValue(6) << "\n";
-    return pStream;
-}
-
-ostream& ConditionIndexs::output(ostream& pStream,  Conditions* pConditions)
-{
-    int tNumIndexs = this->number();
-    for (int j = 0; j < tNumIndexs; j++)
-    {
-        pStream << pConditions->getName(this->getValue(j));
-        if (j+1 != tNumIndexs)
-        {
-            pStream << ", ";
-        }
-    }
-    pStream << "\nAverage non-matched reflections Int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
-    pStream << "Average matched reflections Int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
-    pStream << "Num non-matched reflections: " << iStats->getValue(3) << "\n";
-    pStream << "Num matched reflections int: " << iStats->getValue(4) << "\n";
-    pStream << "Int Ratio: " << (iStats->getValue(0)/iStats->getValue(3))/(iStats->getValue(1)/iStats->getValue(4)) << "\n";
-    pStream << "Average intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
-    pStream << "Number of Int<3*sigma non-matched: " << iStats->getValue(5) << "\n";
-    pStream << "Number of Int>=3*sigma non-matched: " << iStats->getValue(6) << "\n";
-    pStream << "N(Int<3Sigma)/N(Tot) Ratio: " << iStats->getValue(5)/(iStats->getValue(6)+iStats->getValue(5)) << "\n";
-    return pStream;
-}
-  
-
-ostream& operator<<(ostream& pStream, ConditionIndexs& pIndexs)
-{
-    return pIndexs.output(pStream);
-}
         
 ConditionColumn::ConditionColumn()
 {
@@ -731,11 +644,6 @@ void ConditionColumn::addEmptyCondition(int pRow)
     iConditions->setWithAdd(NULL, pRow);
 }
 
-Indexs* ConditionColumn::getCondition(int pIndex)
-{
-    return iConditions->get(pIndex);
-}
-
 void ConditionColumn::setHeading(char* pHeading)
 {
     char tRegExp[] = "([[:digit:]]),?[[:space:]]?";
@@ -762,6 +670,11 @@ int ConditionColumn::getHeading(const int pIndex)
     return iHeadingConditions->get(pIndex)->get();
 }
 
+ArrayList<Index>* ConditionColumn::getHeadings()
+{
+    return iHeadingConditions;
+}
+
 int ConditionColumn::countHeadings()
 {
     return iHeadingConditions->length();
@@ -772,34 +685,9 @@ int ConditionColumn::countCondition()
     return iConditions->length();
 }
 
-void ConditionColumn::addReflection(Reflection* pReflection, Headings* pHeadings, Conditions* pConditions)
+Indexs* ConditionColumn::getConditions(int pIndex)
 {
-    int tNumHeader = iHeadingConditions->length();
-    bool tValid = false;
-    
-    for (int j = 0; j < tNumHeader && !tValid; j++)
-    {
-        Matrix<float>* tHeading = pHeadings->getMatrix(getHeading(j));
-        Matrix<float>* tHKL = pReflection->getHKL();
-        Matrix<float> tResult(1, 3);
-        tResult = (*tHeading)*(*tHKL);
-        if (tResult == (*tHKL))
-        {
-            tValid = true;
-        }
-    }
-    if (tValid)
-    {
-        int tNumConditions = iConditions->length();
-        for (int i = 0; i <= tNumConditions; i++)
-        {
-            Indexs*  tCondition = iConditions->get(i);
-            if (tCondition)
-            {
-                tCondition->addReflection(pReflection, pConditions);
-            }
-        }
-    }
+    return iConditions->get(pIndex);
 }
 
 ostream& ConditionColumn::output(ostream& pStream, Headings* pHeadings, Conditions* pConditions)
@@ -821,7 +709,7 @@ ostream& ConditionColumn::output(ostream& pStream, Headings* pHeadings, Conditio
         Indexs*  tConditions = iConditions->get(i);
         if (tConditions)
         {
-            tConditions->output(pStream, pConditions);
+            tConditions->output(pStream);
         }
         else
         {
@@ -886,6 +774,11 @@ void SpaceGroups::add(char* pSpaceGroup,  int pRow)
 SpaceGroup* SpaceGroups::get(int pIndex)
 {
     return iSpaceGroups->get(pIndex);
+}
+
+int SpaceGroups::length()
+{
+    return iSpaceGroups->length();
 }
 
 void SpaceGroups::setHeading(char* pHeading)
@@ -1075,6 +968,11 @@ char* Table::getName()
     return iName;
 }
 
+ArrayList<Index>* Table::getHeadings(int pI)
+{
+    return iColumns->get(pI)->getHeadings();
+}
+        
 void Table::readFrom(filebuf& pFile)
 {
     istream tFile(&pFile);
@@ -1090,7 +988,7 @@ void Table::readFrom(filebuf& pFile)
     }
 }
 
-void Table::addReflection(Reflection* pReflection)
+/*void Table::addReflection(Reflection* pReflection)
 {
     int tCount = iColumns->length();
     for (int i = 0; i < tCount; i++)
@@ -1098,7 +996,7 @@ void Table::addReflection(Reflection* pReflection)
         ConditionColumn* tColumn = iColumns->get(i);
         tColumn->addReflection(pReflection, iHeadings, iConditions);
     }
-}
+}*/
         
 ostream& Table::outputLine(int pLineNum, ostream& pStream)
 {
@@ -1106,7 +1004,7 @@ ostream& Table::outputLine(int pLineNum, ostream& pStream)
     int tLengthSpaceGroup = iSpaceGroups->length();
     for (int i = 0; i < tLengthConditions; i++)
     {
-        Indexs* tIndexs = iColumns->get(i)->getCondition(pLineNum);
+        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
             pStream << "- ";
@@ -1173,6 +1071,26 @@ ostream& Table::outputColumn(ostream& pStream, int pColumn, Headings* pHeadings,
         //tSpaceGroups->output(pStream);
     }
     return pStream;
+}
+
+Indexs* Table::getConditions(int pRow, int pColumn)
+{
+    ConditionColumn* tColumn = iColumns->get(pColumn);
+    if (tColumn)
+    {
+        return tColumn->getConditions(pRow);
+    }
+    return NULL;
+}
+
+int Table::numberOfColumns()
+{
+    return iColumns->length();
+}
+
+int Table::numberOfRows()
+{
+    return iSpaceGroups->get(0)->length();
 }
 
 ostream& operator<<(ostream& pStream, Table& pTable)
@@ -1302,3 +1220,104 @@ ostream& operator <<(ostream& pStream, Tables& pTables)
 {
     return pTables.output(pStream);
 };
+
+void RankedSpaceGroups::calcRowRating(RowRating* pRatings, int pRow, Table& pTable, Stats& pStats)
+{
+    int tCount = pTable.numberOfColumns(); 
+    
+    for (int i = 0; i < tCount; i++)
+    {
+        ArrayList<Index>* tHeadings = pTable.getHeadings(i);
+        int tHCount = tHeadings->length();
+        for (int j =0; j < tHCount; j++)
+        {
+            Indexs* tIndexs = pTable.getConditions(pRow, i);
+            addConditionRatings(pRatings, pStats, tIndexs, tHeadings->get(j));
+        }
+    }
+}
+
+void RankedSpaceGroups::addConditionRatings(RowRating* pRating, Stats& pStats, Indexs* tIndexs, Index* pHeadingIndex)
+{
+    if (tIndexs)
+    {
+        int tCount = tIndexs->number();
+        for (int i = 0; i < tCount; i++)
+        {
+            int tRow = tIndexs->getValue(i);
+            ElemStats* tElement = pStats.getElem(pHeadingIndex->get(), tRow);
+            addRating(pRating, tElement->tRating1, tElement->tRating2);
+        }
+    }
+    else
+    {
+        addRating(pRating, 0.0, 0.0);
+    }
+}
+
+void RankedSpaceGroups::addRating(RowRating* pRating, const float pRating1, const float pRating2)
+{
+    pRating->iTotNumVal++;
+    pRating->iSumRat1 += pRating1;
+    pRating->iSumRat2 += pRating2;
+    pRating->iSumSqrRat1 += sqr(pRating1);
+    pRating->iSumSqrRat2 += sqr(pRating2);
+}
+
+RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats)
+{
+    iRatings = new RowRating[pTable.numberOfRows()];		//Allocate space for all the ratings.s
+    
+    int tCount = pTable.numberOfRows();
+    for (int i = 0; i < tCount; i++)
+    {
+        iRatings[i].iRowNum = i;
+        iRatings[i].iTotNumVal = 0;
+        iRatings[i].iSumRat1 = 0;
+        iRatings[i].iSumRat2 = 0;
+        iRatings[i].iSumSqrRat1 = 0;
+        iRatings[i].iSumSqrRat2 = 0;
+        calcRowRating(&(iRatings[i]), i, pTable, pStats);
+        addToList(&(iRatings[i]));	//Add the rating for the current row into the order list of rows.
+    }
+    iTable = &pTable;
+}
+
+void RankedSpaceGroups::addToList(RowRating* pRating)
+{
+    RowRating* tCurrentRat;
+    int tCounter = 0;
+        
+    iRatingList.reset();
+    pRating->iMean = (pRating->iSumRat1+pRating->iSumRat2)/(2*pRating->iTotNumVal);
+    tCurrentRat = iRatingList.next();
+    while (tCurrentRat != NULL && tCurrentRat->iMean > pRating->iMean)
+    {
+        tCurrentRat = iRatingList.next();
+        tCounter++;
+    }
+    iRatingList.insert(pRating, tCounter);
+}
+
+RankedSpaceGroups::~RankedSpaceGroups()
+{
+    delete[] iRatings;
+}
+
+ostream& RankedSpaceGroups::output(ostream& pStream)
+{
+    RowRating* tCurrentRating;
+    
+    iRatingList.reset();
+    while ((tCurrentRating = iRatingList.next()) != NULL)
+    {
+        pStream << tCurrentRating->iRowNum << ": " << tCurrentRating->iSumRat1 << ", " << tCurrentRating->iSumRat2 << ", " << tCurrentRating->iMean << "\n";
+        iTable->outputLine(tCurrentRating->iRowNum, pStream);
+    }
+    return pStream;
+}
+
+ostream& operator<<(ostream& pStream, RankedSpaceGroups& pRank)
+{
+    return pRank.output(pStream);
+}
