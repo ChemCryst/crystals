@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/01/15 15:26:39  rich
+C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
+C anywhere will benefit from less IO, it's here.
+C
 C Revision 1.18  2002/12/04 14:31:11  rich
 C Reformat output during refinement.
 C
@@ -756,6 +760,8 @@ C----- Rw
       STORE(L30RF +1 ) = A
 C----- NO. PARAM
       STORE(L30RF +2 ) = STORE(L11P+23)
+C----- Number of restraints
+      STORE(L30CF +13 ) = STORE(L11P+27)
 C----- S GOONDNESS OF FIT - ONLY IF SOME OBSERVATIONS
       IF (STORE(L11P+24)+STORE(L11P+27) .GT. STORE(L30RF+2)) THEN
             STORE(L30RF +4 ) = SQRT(STORE(L11P+17) /

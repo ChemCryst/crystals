@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2003/05/27 10:24:04  djw
+C Line over-run fixed.
+C
 C Revision 1.55  2003/05/23 15:00:14  djw
 C Full expression for weigting schemes 14&15
 C
@@ -4616,6 +4619,10 @@ C----- RELECTION LIMITS IN DATA COLLECTION
 C 
            WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
      1      NINT(STORE(L30RF+8))
+           CALL XPCIF (CLINE)
+
+           WRITE (CLINE,'(A, ''number_restraints '', I10)') CBUF(1:11),
+     1      NINT(STORE(L30CF+13))
            CALL XPCIF (CLINE)
 C 
            WRITE (CLINE,'(A, ''number_parameters '', I10)') CBUF(1:11),

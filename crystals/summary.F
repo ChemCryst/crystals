@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/04/01 13:48:51  rich
+C XTHLIM could go into an infinite loop in certain cases (certain cells?). Limit
+C loops for optimising MAXH,K,L to 400 iterations.
+C
 C Revision 1.41  2003/03/25 14:02:35  rich
 C Move DELRHOMIN/MAX back to their original locations in LIst 30.
 C
@@ -2415,7 +2419,7 @@ C
      1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
      2 'Sigma All', 'No. All', 'R All', 'Rw All', 'Extn-su',
      4 'Completeness' , 'Theta-full', 'Cmpltnss-full', 'Pressure kPa',
-     5 '*','*','x','y','z','*' /
+     5 'Number restraints','*','x','y','z','*' /
 C
 C
 C

@@ -1539,7 +1539,7 @@ New CIF extensions
     .THETA-FULL         0    0    1    0    1 0.
     .COMPL-FULL         0    0    1    0    1 0.
     .PRESSURE           0    0    1    0    1 0.
-    .ZZ14               0    0    1    0    1 0.
+    .NRESTUSED          0    0    1    0    1 0.
     .ZZ15               0    0    1    0    1 0.
     .XMIN               0    0    1    0    1 0.
     .YMIN               0    0    1    0    1 0.
