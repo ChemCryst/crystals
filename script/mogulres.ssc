@@ -1,18 +1,15 @@
 %SCRIPT MOGULRES
 %     VARIABLE REAL ZMAX ZSUM ZNUM ZTOT ZAVE SERIAL
-%     VARIABLE REAL IDEAL ACTUAL DEV Z EFOM RCHK EMAX ESUM ENUM
+%     VARIABLE REAL IDEAL ACTUAL DEV Z EFOM EMAX ESUM ENUM
 %     VARIABLE INTEGER ZB1 ZB2 ZB3 ZB4 ZB5 ZB6 ZB7 ZB8 ZB9 ZB10
 %     VARIABLE INTEGER NIN NFOM MAT1 MAT2 MAT3 MAT4 NUMOBS ZMISS
-%     VARIABLE INTEGER NOHIT NERROR DPVCOUNT ISER NINDEX
 %     VARIABLE INTEGER CURSEL N SERMAX
 %     VARIABLE CHARACTER CAT1 CAT2 CAT3 CAT4 RSVAL RSESD CLINE1
-%     VARIABLE CHARACTER CAT CELE CCHK
+%     VARIABLE CHARACTER CAT  
 %     EVALUATE ZMAX = 0.0
 %     EVALUATE ZSUM = 0.0
 %     EVALUATE ZTOT = 0.0
 %     EVALUATE ZNUM = 0.0
-%     EVALUATE NOHIT = 0
-%     EVALUATE NERROR = 0
 ^^WI WINDOW XABORT 'Processing:' MODAL GRID MAIN NROWS=4 NCOLS=3
 ^^WI { @ 2,2 STATIC GFT1 'Please wait. Processing mogul data.'
 ^^WI   @ 3,2 STATIC GFT2 '                                   ' } SHOW
@@ -71,194 +68,7 @@
 ^^WI         {
 ^^WI           @ 1,1 LISTCTRL MR_RES VISLINES=9 NCOLS=4
 ^^WI           'Query' 'Delta' '\Z\' 'Type' INFORM=YES ADDTOLIST
-%     EXTRACT REWIND
-%     EVALUATE DPVCOUNT = 0
-%     LOOP
-%      ON ERROR TERMINATE
-%      ON END TERMINATE
-%      ON EDITERROR REPEAT
-%      IF ( DPVCOUNT .GT. 5000 ) THEN
-%       COPY 'WRITE'
-%       COPY 'END'
-%       COPY '#GENERALEDIT 5'
-%       COPY 'LOCATE RECORDTYPE=101'
-%       COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
-%       EVALUATE DPVCOUNT = 0
-%      END IF
-%%
-%      COPY 'TOP'
-%      EVALUATE DPVCOUNT = DPVCOUNT + 1
-%%
-%% Extract the original query line:
-%%
-%      EXTRACT NEXT
-%      EXTRACT TRANSFER INPUT
-%      CLEAR
-%      VERIFY DIST ANGLE TORSION
-%      GET SILENT NOSTORE ABBREVIATED ' '
-%      EVALUATE NIN = VALUE
-%% Read the atom numbers:
-%      GET SILENT NOSTORE INTEGER ' '
-%      LOOP NIN TIMES
-%       GET SILENT NOSTORE INTEGER ' '
-%      END LOOP
-%% Read the #:
-%      GET SILENT NOSTORE KEYWORD ' '
-%% Read the actual value:
-%      GET SILENT NOSTORE REAL ' '
-%      EVALUATE ACTUAL = VALUE
-%% Read the atoms:
-%      INSERT !^^WI '!
-%      EVALUATE CAT1 = ' '
-%      EVALUATE CAT2 = ' '
-%      EVALUATE CAT3 = ' '
-%      EVALUATE CAT4 = ' '
-%      LOOP ( NIN + 1 ) TIMES
-%       EVALUATE CAT4 = CAT3
-%       EVALUATE CAT3 = CAT2
-%       EVALUATE CAT2 = CAT1
-%       GET SILENT KEYWORD ' '
-%       EVALUATE CAT1 = CVALUE
-%      END LOOP
-%      INSERT !' !
-%%
-%% Extract the results line:
-%%
-%      EXTRACT NEXT
-%      EXTRACT TRANSFER INPUT
-%      EVALUATE NUMOBS = 0
-%% See what it holds:
-%      VERIFY NOHITS ERROR STATS
-%      GET SILENT NOSTORE ABBREVIATED ' '
-%      CASE VALUE
-%       BLOCK    %NOHITS%
-%        EVALUATE NOHIT = NOHIT + 1
-%        EVALUATE NUMOBS = 0
-%        EVALUATE Z = 0.0
-%        INSERT "'No hits'  ''"
-%% Read the reason:
-%       END BLOCK
-%       BLOCK    %ERROR%
-%        EVALUATE NERROR = NERROR + 1
-%        EVALUATE NUMOBS = - 1
-%        EVALUATE Z = 0.0
-%        INSERT "'Error' ''"
-%% Read the error code:
-%% Read the reason:
-%       END BLOCK
-%       BLOCK    %STATS%
-%% Work out the Z-score:
-%        GET SILENT NOSTORE INTEGER ' '
-%        EVALUATE NUMOBS = VALUE
-%% Ignore, for now, the mean, min and max:
-%        GET SILENT NOSTORE REAL ' '
-%        GET SILENT NOSTORE REAL ' '
-%        GET SILENT NOSTORE REAL ' '
-%% Read the median:
-%        GET SILENT NOSTORE REAL ' '
-%        EVALUATE IDEAL = VALUE
-%        GET SILENT NOSTORE REAL ' '
-%        EVALUATE DEV = VALUE
-%        IF ( DEV .LT. 0.000001 ) THEN
-%         EVALUATE DEV = 0.000001
-%        END IF
-%        EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
-%        STORE FORMAT /(F8.3)/ REAL ( ACTUAL - IDEAL )
-%        IF Z .GT. 100.0 THEN
-%         INSERT '>100.0'
-%        ELSE IF Z .LT. - 100.0 THEN
-%         INSERT '>100.0'
-%        ELSE IF Z .GT. 0.0 THEN
-%         STORE FORMAT /(F8.3)/  LENGTH 8 REAL Z
-%        ELSE
-%         STORE FORMAT /(F8.3)/  LENGTH 8 REAL ( - Z )
-%        END IF
-%%
-%%
-%        EVALUATE ZTOT = ZTOT + 1.0
-%        IF NUMOBS .GE. 4 THEN
-%%
-%         IF Z .GT. 0.0 THEN
-%          EVALUATE ZSUM = ZSUM + Z
-%         ELSE
-%          EVALUATE ZSUM = ZSUM - Z
-%         END IF
-%%
-%         EVALUATE ZNUM = ZNUM + 1.0
-%%
-%         IF Z .GT. ZMAX THEN
-%          EVALUATE ZMAX = Z
-%         END IF
-%         IF ( - Z ) .GT. ZMAX THEN
-%          EVALUATE ZMAX = - Z
-%         END IF
-%        END IF
-%       END BLOCK
-%      END CASE
-%%
-%% The atoms graph:
-%%
-%      IF NUMOBS .LT. 0 THEN
-%% No badness for errors (probably bonds to metals etc.):
-%        EVALUATE Z = 1.0
-%      ELSE IF NUMOBS .LT. 4 THEN
-%% Arbitrary badness for missing results:
-%        EVALUATE Z = 2.0
-%      ELSE IF Z .LT. 0.0 THEN
-%        EVALUATE Z = - Z
-%      END IF
-%      IF Z .GT. 10.0 THEN
-%        EVALUATE Z = 10.0
-%      ELSE IF Z .LT. 1.0 THEN
-%          EVALUATE Z = 1.0
-%      END IF
-%      LOOP ( NIN + 1 ) TIMES
-%          CASE LOOPCOUNTER
-%           EVALUATE CAT = CAT1
-%           EVALUATE CAT = CAT2
-%           EVALUATE CAT = CAT3
-%           EVALUATE CAT = CAT4
-%          END CASE
-%          EVALUATE ISER = FIRSTINT ( CAT ) 
-%          EVALUATE CELE = FIRSTSTR ( CAT )
-%          EVALUATE NINDEX = 0
-%          IF ( ISER .LE. SERMAX ) THEN
-%            ON EDITERROR TERMINATE
-%            COPY 'TOP'
-%            EVALUATE DPVCOUNT = DPVCOUNT + 1
-% LOOP 
-%  ON EDITERROR TERMINATE
-%  COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
-%  COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
-%  EVALUATE DPVCOUNT = DPVCOUNT + 2
-%  IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
-%   COPY 'TRANSFER FROM OFFSET=13 TO EFOM'
-%   EVALUATE EFOM = EFOM * Z
-%   COPY 'TRANSFER TO OFFSET=13 FROM EFOM'
-%   EVALUATE LOOPEND = LOOPCOUNTER
-%   EVALUATE NINDEX = LOOPCOUNTER
-%   TRANSFER '^^CO SET GFT2 TEXT "' // CAT // ' ' // CHARACTER ( EFOM ) // - 
-    '"' TO DISPLAY
-%  END IF
-%  COPY 'NEXT'
-%  EVALUATE DPVCOUNT = DPVCOUNT + 3
-% END LOOP
-%            IF ( NINDEX .EQ. 0 ) THEN
-%              TRANSFER '{E Atom not found. ' // CAT TO DISPLAY
-%            END IF
-%          END IF
-%      END LOOP
-%%
-%      CASE NIN
-%          INSERT 'Dist'
-%          INSERT 'Angle'
-%          INSERT 'Torsion'
-%      END CASE
-%      INSERT !'!
-%      OUTPUT
-%     END LOOP
-%     COPY 'WRITE'
-%     COPY 'END'
+% COPY '#SCRIPT MOGEXTR1'
 ^^WI              'NULL'
 ^^WI           @ 3,1 GRID GB NROWS=2 NCOLS=1
 ^^WI           {
@@ -622,28 +432,28 @@
 %  GET SILENT NOSTORE ABBREVIATED ' '
 %  CASE VALUE
 %   BLOCK    %NOHITS%
-Nohits - setting dialog values to zero.
-^^CO SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
-^^CO SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
-^^CO SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
-^^CO SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
-^^CO SET MR_ZSCO TEXT ' ' 
+Mogul reports no hits for selected fragment.
+^^WI SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
+^^WI SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
+^^WI SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
+^^WI SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
+^^WI SET MR_ZSCO TEXT ' '
 %% Flush input buffer:
 %    GET NOPROMPT NOSTORE TEXT ' ' ' '
 %   END BLOCK
 %   BLOCK    %ERROR%
-Mogul reports error - setting dialog values to zero.
-^^CO SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
-^^CO SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
-^^CO SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
-^^CO SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
-^^CO SET MR_ZSCO TEXT ' ' 
+^^WI SET MR_NUMO TEXT '0' SET MR_MEDIAN TEXT ' '
+^^WI SET MR_MEAN TEXT ' ' SET MR_MINO   TEXT ' '
+^^WI SET MR_MAXO TEXT ' ' SET MR_UPPERQ TEXT ' '
+^^WI SET MR_LOWERQ TEXT ' ' SET MR_SIGM TEXT ' '
+^^WI SET MR_ZSCO TEXT ' '
 %% Flush input buffer:
 %    GET NOPROMPT NOSTORE TEXT ' ' ' '
+%    TRANSFER 'Mogul reports error:' // CVALUE TO DISPLAY
 %   END BLOCK
 %   BLOCK    %STATS%
 %    CLEAR
-%    INSERT !^^CO SET MR_NUMO TEXT '!
+%    INSERT !^^WI SET MR_NUMO TEXT '!
 %    GET SILENT INTEGER ' '
 %    INSERT !' SET MR_MEAN TEXT '!
 %    GET NOSTORE SILENT REAL ' '
@@ -652,7 +462,7 @@ Mogul reports error - setting dialog values to zero.
 %    OUTPUT
 %%
 %    CLEAR
-%    INSERT !^^CO SET MR_MINO TEXT '!
+%    INSERT !^^WI SET MR_MINO TEXT '!
 %    GET NOSTORE SILENT REAL ' '
 %    STORE FORMAT /(F8.3)/  LENGTH 8 REAL VALUE
 %    INSERT !' SET MR_MAXO TEXT '!
@@ -662,7 +472,7 @@ Mogul reports error - setting dialog values to zero.
 %    OUTPUT
 %%
 %    CLEAR
-%    INSERT !^^CO SET MR_MEDIAN TEXT '!
+%    INSERT !^^WI SET MR_MEDIAN TEXT '!
 %    GET NOSTORE SILENT REAL ' '
 %    EVALUATE IDEAL = VALUE
 %    STORE FORMAT /(F8.3)/ LENGTH 8 REAL IDEAL
@@ -674,7 +484,7 @@ Mogul reports error - setting dialog values to zero.
 %    OUTPUT
 %%
 %    CLEAR
-%    INSERT !^^CO SET MR_UPPERQ TEXT '!
+%    INSERT !^^WI SET MR_UPPERQ TEXT '!
 %    GET NOSTORE SILENT REAL ' '
 %    STORE FORMAT /(F8.3)/  LENGTH 8 REAL VALUE
 %    INSERT !' SET MR_LOWERQ TEXT '!
@@ -690,7 +500,7 @@ Mogul reports error - setting dialog values to zero.
 %    EVALUATE Z = ( ACTUAL - IDEAL ) / DEV
 %%
 %    CLEAR
-%    INSERT !^^CO SET MR_ZSCO TEXT '!
+%    INSERT !^^WI SET MR_ZSCO TEXT '!
 %    IF Z .GT. 100.0 THEN
 %     INSERT '>100.0'
 %    ELSE
