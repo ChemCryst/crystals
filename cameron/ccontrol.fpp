@@ -1,6 +1,10 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2005/01/23 09:52:52  rich
+C Reinstate old history for Cameron files. History for changes since Dec 23 is
+C lost, but changes are not!
+C
 C Revision 1.2  2004/12/13 16:16:47  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -277,7 +281,7 @@ C NOW LOOP TO FIND THE FIRST AND LAST COMMANDS IN THE GROUP
 C SEARCH THROUGH THE FILE FOR THE REQUIRED INFO
       IS = (ISTART - ICOM + 1)/ISRCOM
       IF = (IFIN - ICOM + 1)/ISRCOM
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF (.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF (.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -517,7 +521,7 @@ C      ENDIF
 200   CONTINUE
 C HELP
 C Load in the appropriate error message
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -1385,7 +1389,7 @@ C by two 80 character lines of help and error message.
       LOGICAL LFILES
 C MAIN LOOP TO INPUT THE INDEX
 C      OPEN (UNIT = 1,FILE = 'ORDER.DAT',STATUS = 'OLD')
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\ORDER.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/order.cmn',IINPT))THEN
@@ -1406,7 +1410,7 @@ C cljf
       IF (.NOT.LFILES (0,' ',IINPT)) THEN
         CALL ZMORE('Error on closing ORDER.CMN.',0)
       ENDIF
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -1874,7 +1878,7 @@ CODE FOR ZGNHLP [ READ GENERAL HELP FILE ]
       INTEGER IFLAG
       LOGICAL LFILES
       IFLAG = 1
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\GENHELP.CMN',12))THEN
 #else
       IF(.NOT.LFILES(-1,'script/genhelp.cmn',12))THEN
@@ -2171,7 +2175,7 @@ CODE FOR ZCOLOT [ COLOUR TABLE INPUT ]
       INTEGER IPOS
       LOGICAL LSTOP,LFILES
 C CHECK FOR THE FILES EXISTENCE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\COLOUR.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/colour.cmn',IINPT))THEN
@@ -2247,7 +2251,7 @@ C The file contains info about NELM elements.
       REAL COV,ION,VAN
       LOGICAL LFILES
 c      IF (.NOT.LFILES (-1,'script\PROP.CMN',IINPT)) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\PROPWIN.DAT',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/propwin.dat',IINPT))THEN
@@ -2391,7 +2395,7 @@ C FIRST TIME AROUND LOOK FOR HEADER
       ENDIF
 C LOAD IN THE HELP MESSAGE
 5     CONTINUE
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(-1,'SCRIPT\COMMAND.CMN',IINPT))THEN
 #else
       IF(.NOT.LFILES(-1,'script/command.cmn',IINPT))THEN
@@ -3732,7 +3736,7 @@ cnov98
         IFOBEY = IFOBEY + 1
       ENDIF
 CNOV98      IF (.NOT.LFILES (IFPATH,'CAMERON.OBY',IFOBEY)) THEN
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_) 
+#if !defined(_GIL_) && !defined(_LIN_) && !defined(_WXS_)  && !defined(_MAC_)
       IF(.NOT.LFILES(IFPATH,'CAMERON.SRT',IFOBEY))THEN
 #else
       IF(.NOT.LFILES(IFPATH,'cameron.srt',IFOBEY))THEN

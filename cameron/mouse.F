@@ -95,7 +95,7 @@ C Get the mouse information
 #if defined(_DOS_) 
       IB = KMSGET(JX,JY,JF)
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       IUNIT = 5
       IB = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
@@ -107,14 +107,14 @@ C Get the mouse information
 #if defined(_DOs_) 
       IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       IF ( CLINE(1:6) .EQ. 'LCLICK' ) THEN
 #endif
 #if defined(_WXS_) 
       IF ( CLINE(1:6) .EQ. 'LCLICK' ) THEN
 C Left mouse button has been pressed.
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         READ (CLINE(7:),*)JX,JY
 #endif
 #if defined(_WXS_) 
@@ -122,8 +122,9 @@ C Left mouse button has been pressed.
 #endif
         CALL ZLBUT(JX,JY)
         GOTO 10
+<<<<<<< mouse.fpp
 
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       ELSE IF ( CLINE(1:1) .EQ. 'V' ) THEN
         CALL ZDOVI
         GOTO 10
@@ -141,11 +142,11 @@ C Left mouse button has been pressed.
 
 C Right mouse button has been pressed.
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
 C Non-left click action e.g. return,
 #endif
         RETURN
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)
       ENDIF
 #endif
 #if defined(_DOS_) 
@@ -250,7 +251,7 @@ C CHECK FOR PACK LABELLING
             ENDIF
 C DRAW THE LABEL
             CALL ZDRTEX(IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
             CALL ZMORE('^^CH SHOW',0)
             CALL ZMORE('^^CR',0)
 #endif
@@ -286,7 +287,7 @@ C FIND OUT THE LABEL LENGTH
 C NEED TO HIDE THE MOUSE CURSOR DURING DRAWING
 C NOW DRAW THE ATOM LABEL IN THE BACKGROUND COLOUR
       CALL ZDRTEX (IX,IY,CLAB(1:IL),IDEVCL(IBACK+1))
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
@@ -298,7 +299,7 @@ C DRAW THE CROSS AND THE BOX
 #endif
       ICOL = 4
       CALL ZMBXCR (ILNO,ICOL,ICOL)
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif
@@ -310,9 +311,8 @@ C NOW WAIT FOR THE NEXT LEFT BUTTON PRESS
 #endif
 30    CONTINUE
 
-
 C DVF GUI VERSION CODE
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       IUNIT = 5
       IB = KRDLIN ( IUNIT, CLINE, LENUSE )
       IF ( CLINE(1:6) .NE. 'LCLICK' ) THEN
@@ -323,7 +323,7 @@ C DVF GUI VERSION CODE
       IF ( CLINE(1:6) .NE. 'LCLICK' ) THEN
 C THIS ATOM IS NOT TO BE LABELLED
 #endif
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
           CALL ZMBXCR(ILNO,IBACK,IBACK)
           RSTORE(ILNO+IATTYP+2) = 0.0
           RETURN
@@ -374,7 +374,7 @@ C NOW DRAW THE NEW LABEL
       IX = IMX - XCEN - XOFF
       IY = IMY - YCEN - YOFF
       CALL ZDRTEX (IX,IY,CLAB(1:IL),IDEVCL(ILABCL+1))
-#if defined(_GID_) || defined(_GIL_) 
+#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
 #endif

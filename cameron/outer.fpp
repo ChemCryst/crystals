@@ -1153,7 +1153,7 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
             CALL XCTRIM(CC,IIILEN)
             IF(IIILEN.GT.1) THEN
 
-#if defined(_GID_) || defined(_GIL_)
+#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
 
               CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
      1 CC(1:IIILEN) // '''',0)

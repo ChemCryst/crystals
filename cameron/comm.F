@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2005/01/23 09:52:52  rich
+C Reinstate old history for Cameron files. History for changes since Dec 23 is
+C lost, but changes are not!
+C
 C Revision 1.2  2004/12/13 16:16:48  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -148,7 +152,7 @@ C        IFONT = 12 (changed from IFSIZE by DJW)
 #if defined(_GID_) 
         ILSIZE = 60
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
         ILSIZE = 60
 #endif
 #if defined(_WXS_) 
@@ -347,7 +351,7 @@ C SCALE DOWN FURTHER TO PRODUCE A BORDER
         ELSE
           IF (ISCRN.EQ.6 .OR. ISCRN.EQ.5
      +   .OR. ISCRN.EQ.8 ) THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
             SCALE = SCLFIX * 10.0
 #else
             SCALE = SCLFIX * 2.0
@@ -373,7 +377,7 @@ c
 #if defined(_GID_) 
       ILSIZE = NINT (60 * RES)
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ILSIZE = NINT (60 * RES)
 #endif
 #if defined(_WXS_) 
@@ -748,7 +752,7 @@ C        IFSIZE = 12
 #if defined(_GID_) 
         ILSIZE = 60
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
         ILSIZE = 60
 #endif
 #if defined(_WXS_) 
@@ -788,13 +792,13 @@ C      CALL ZATMUL(0,0,0)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
       IUNIT = 5
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 #endif
 #if defined(_WXS_) 
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       IUNIT = 5
 #endif
 #if defined(_WXS_) 
@@ -807,7 +811,7 @@ C      CALL ZATMUL(0,0,0)
 #if defined(_GID_) 
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
 #if defined(_WXS_) 
@@ -824,7 +828,7 @@ C      CALL ZATMUL(0,0,0)
 #if defined(_GID_) 
         IF (CLINE(1:1).EQ.'L') THEN
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
         IF (CLINE(1:1).EQ.'L') THEN
 #endif
 #if defined(_WXS_) 
@@ -839,7 +843,7 @@ C LEFT
 #if defined(_GID_) 
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 #endif
 #if defined(_WXS_) 
@@ -855,7 +859,7 @@ C UP
 #if defined(_GID_) 
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
 #if defined(_WXS_) 
@@ -870,7 +874,7 @@ C DOWN
 #if defined(_GID_) 
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
 #if defined(_WXS_) 
@@ -885,7 +889,7 @@ C ANTICLOCKWISE
 #if defined(_GID_) 
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
 #if defined(_WXS_) 
@@ -900,7 +904,7 @@ C CLOCKWISE
 #if defined(_GID_) 
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
 #if defined(_WXS_) 
@@ -917,7 +921,7 @@ C CLOCKWISE
 #if defined(_WXS_) 
       ELSE 
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       ELSE 
 #endif
         ICURS = 0
@@ -5580,7 +5584,7 @@ CODE FOR CAMPRESETS
      1              'TEKT',      'POST',         'ENCAP',
      1              'VGA',       'CPOST',        'CENCA' /
 
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
       DATA RCAMDV / 320.0, 240.0, 30.0,
 #else
       DATA RCAMDV /1200.0,1200.0, 30.0,
