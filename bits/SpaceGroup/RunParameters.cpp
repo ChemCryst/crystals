@@ -32,9 +32,8 @@
 #endif
 #include <stdlib.h>
 #include "LaueClasses.h"
-#include <string>
 
-RunParameters::RunParameters():iLaueGroup(NULL)
+RunParameters::RunParameters(const string& pProgramName):iLaueGroup(NULL), iProgramName(pProgramName)
 {
 #if defined(_WIN32)
 	char * tWorkingPath = (char*)malloc(PATH_MAX);
@@ -154,17 +153,7 @@ void RunParameters::handleArgs(int pArgc, const char* argv[])
 	{
 	  if (!handleArg(&tCount, pArgc, argv)) //if the argument is not recognised then error.
 		{
-            std::cout << "Usage: " << argv[0] << "[-f hklfile] [-t tablefile] [-e extradatafile] [-c|-nc] [-s symetry#]\n";
-            std::cout << "-f hklfile: The path of the hkl file to read in.\n";
-            std::cout << "-t tablefile: The path of the table file.\n";
-            std::cout << "-o outputfile: The path to a file to output the stats table and the raking table.\n";
-            std::cout << "[-c| -nc]: -c The structure is chiral. -nc The crystal isn't necessarily chiral.\n";
-            std::cout << "-v: verbose output\n";
-            std::cout << "-b batchfile: This supplies a file with all the parameters needed to run the program. The parameters in the file override any other parameters set on the command line.\n";
-			std::cout << "-m: Merge the data before predicting the Space Group.\n";
-            std::cout << "-s symetry#: The symetry to use.\n";
-            std::cout << "Valid values for system are:\n";
-			laueGroupOptions(std::cout);
+            usage(cout) << endl;
             throw MyException(kUnknownException, "");
         }
     }
