@@ -1,6 +1,10 @@
       SUBROUTINE MLTNRM
 C VERSION    JAN    1980          UNIVERSITY OF YORK
 C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
+C
+C      IWEIGT 0 = NOTHING
+C             1 = UPDATE WEIGHTS 
+
 
 \XWISYM
 \XWSCAT
@@ -19,7 +23,7 @@ C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
 \XOPVAL
 \XIOBUF
 
-      DATA ICOMSZ / 4 /
+      DATA ICOMSZ / 5 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -62,6 +66,8 @@ C Store tolerance (only show fom's below this limit)
       IPLOTN = ISTORE(ICOMBF+1)
       ISTATP = ISTORE(ICOMBF+2)
       IL28FL = ISTORE(ICOMBF+3)
+      IWEIGT = ISTORE(ICOMBF+4)
+
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(IULN6,0)
@@ -82,7 +88,7 @@ C Store tolerance (only show fom's below this limit)
 
       IND=1                                                             
 
-      CALL XFAL01
+CDJW      CALL XFAL01
       CALL XMULTR ( STORE(L1P1+3) , RTD , STORE(L1P1+3) , 3 ) !Angles to Degr.
       DO J=1,6
         CX(J)=STORE(L1P1+J-1)
@@ -189,7 +195,7 @@ C CALCULATE SCALE FACTORS FOR APPROPRIATE REFLEXION GROUPS
       CALL RESCA(KSYS,IL28FL) 
 
 C CALCULATE FINAL E'S AND OUTPUT REFLEXION STATISTICS
-      CALL ECAL(KSYS,IPLOTN, ISTATP, IL28FL)
+      CALL ECAL(KSYS,IPLOTN, ISTATP, IL28FL, IWEIGT)
 
 9000  CONTINUE
 C -- FINAL MESSAGE
@@ -212,10 +218,10 @@ C -- INPUT ERRORS
       END                                                               
 
 
-
+CODE FOR INCELL
+      SUBROUTINE INCELL                                                 
 C ------------------------------------------------------------------
 C INPUT UNIT CELL PARAMETERS AND CALCULATE RECIPROCAL PARAMETERS    
-      SUBROUTINE INCELL                                                 
 \XCONST
 \XUNITS
 \XWMISC
@@ -240,9 +246,10 @@ C     VOLUME AND RECIPROCAL CELL FUNCTIONS
      1 ,F9.6,10H * H * K +,F9.6,10H * H * L +,F9.6,8H * K * L)          
       RETURN                                                            
       END                                                               
-C     ------------------------------------------------------------------
-C     SINE AND COSINE OF CELL ANGLES PLUS TRIGONOMETRIC PART OF VOLUME  
+C
+CODE FOR VOL
       SUBROUTINE VOL(CX,V)                                              
+C     SINE AND COSINE OF CELL ANGLES PLUS TRIGONOMETRIC PART OF VOLUME  
 \XCONST
       DIMENSION CX(9)                                                   
       ARG=1.0                                                           
@@ -255,10 +262,11 @@ C     SINE AND COSINE OF CELL ANGLES PLUS TRIGONOMETRIC PART OF VOLUME
       RETURN                                                            
       END                                                               
 
-C ------------------------------------------------------------------
+C
+CODE FOR INSYM
+      SUBROUTINE INSYM    
 C READ GENERAL EQUIVALENT POSITIONS AS IN INTERNATIONAL TABLES AND  
 C DETERMINE LATTICE MULTIPLICITY (PTS) AND CRYSTAL SYSTEM (KSYS)    
-      SUBROUTINE INSYM    
 \XWISYM
       DIMENSION KX(15),LTC(7),ICAP(2),LINE(21)
 \STORE
@@ -329,9 +337,10 @@ C PRIMITIVE RHOMBOHEDRAL
       IF(KSYS.EQ.7) LATT=1                                              
   500 RETURN                                                            
       END                                                               
-
-C READ REFLEXIONS
+C
+CODE FOR CARDIN
       SUBROUTINE CARDIN ( IL28FL )
+C READ REFLEXIONS
 C
 C IL28FL: 0 - Use all reflections
 C         1 - Use reflections allowed by List 28.
@@ -353,11 +362,12 @@ C
       END DO
       RETURN                                                            
       END
-
-
+C
+C
+CODE FOR FCAL2
+      SUBROUTINE FCAL2 (MHKL,FOB,ID,EW,RHO)
 C CALCULATE RHO, EPSILON, MULTIPLICITY AND SCATTERING FACTOR        
 C FOR EACH REFLEXION
-      SUBROUTINE FCAL2 (MHKL,FOB,ID,EW,RHO)
       DIMENSION MHKL(3),I2(3)
 \XWISYM
 \XWSCAT
@@ -452,10 +462,11 @@ C 'WILSON' STRUCTURE FACTOR
 
       RETURN                                                            
       END                                                               
-
-C ------------------------------------------------------------------
-C     LEAST SQUARES PLOT, INCLUDING SUMMATION OVER NB RANGES OF RHO     
+C
+C
+CODE FOR WILSUM
       SUBROUTINE WILSUM(PTS,ISTATP,IL28FL)
+C     LEAST SQUARES PLOT, INCLUDING SUMMATION OVER NB RANGES OF RHO     
 C
 C IL28FL: 0 - Use all reflections
 C         1 - Use reflections allowed by L28.
@@ -622,9 +633,11 @@ C     LEAST SQUARES
 
       RETURN                                                            
       END                                                               
-C     ------------------------------------------------------------------
-C     LINE PRINTER PLOT AT 50 VALUES OF RHO                             
+C
+C
+CODE FOR GRAPH80
       SUBROUTINE GRAPH80(NGP,IPLOTW)
+C     LINE PRINTER PLOT AT 50 VALUES OF RHO                             
 \XWMISC
 \XWILSO
 \XIOBUF
@@ -787,9 +800,11 @@ C     CROSSES IT.
       END DO
       RETURN                                                            
       END                                                               
-C ------------------------------------------------------------------
-C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
+C
+C
+CODE FOR NSOLVE
       SUBROUTINE NSOLVE(R,Y1,Y2,Y3,Y4,A)                                 
+C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
       DIMENSION R(4),A(4)                                               
       B2=R(4)*(R(4)+R(1))                                               
       B1=(Y4-Y1)/(R(4)-R(1))                                            
@@ -805,9 +820,11 @@ C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
       A(4)=Y1-R(1)*(A(3)+R(1)*(A(2)+R(1)*A(1)))                         
       RETURN                                                            
       END                                                               
-C ------------------------------------------------------------------
-C INDEX GROUP RESCALING                                             
+C
+C
+CODE FOR RESCA
       SUBROUTINE RESCA(KSYS,IL28FL)
+C INDEX GROUP RESCALING                                             
 C
 C IL28FL: 0 - Use all reflections
 C         1 - Use reflections allowed by L28.
@@ -888,9 +905,11 @@ C 6 INDEX GROUPS IN OTHER SYSTEMS
   400 CONTINUE                                                          
       RETURN                                                            
       END                                                               
-C     ------------------------------------------------------------------
-C     K-CURVE INTERPOLATION                                             
+C 
+C
+CODE FOR CURVK
       SUBROUTINE CURVK(ESQ,RHO,ED)                                      
+C     K-CURVE INTERPOLATION                                             
 \XWILSO
 \XWMISC
       EI=RHO*DEL                                                        
@@ -905,17 +924,22 @@ C FOR LARGE RHO THE CURVE IS EXTRAPOLATED FROM THE LAST POINT
       ESQ=ED/SK                                                         
       RETURN                                                            
       END                                                               
-
+C
+C
+CODE FOR ECAL
+      SUBROUTINE ECAL(KSYS,IPLOTN, ISTATP, IL28FL, IWEIGT)
+C
+C IL28FL: 0 - Use all reflections
+C         1 - Use reflections allowed by L28
+C IWEIGT: 0 - DO NOTHING
+C         1 - UPDATE WEIGHTS
+C
 C ------------------------------------------------------------------
 C CALCULATE FINAL E-VALUES AND RESCALED F'S                         
 C CREATE NEW IF REQUIRED                                      
 C OUTPUT REFLEXIONS FOR MULTAN                                      
 C PREPARE TABLES OF STATISTICS                                      
-      SUBROUTINE ECAL(KSYS,IPLOTN, ISTATP, IL28FL)
-C
-C IL28FL: 0 - Use all reflections
-C         1 - Use reflections allowed by L28
-C
+\ISTORE
 \XWMISC
 \XWILSO
 \XESTAT
@@ -923,6 +947,7 @@ C
 \STORE
 \XUNITS
 \XIOBUF
+\QSTORE
       DIMENSION IX(1000),EX(1000),FX(1000)                             
       DIMENSION RHR(10),NHR(10),NU(25),STL(10),MHKL(3)
 C TABLES OF THEORETICAL DISTRIBUTIONS                               
@@ -939,6 +964,8 @@ C TABLES OF THEORETICAL DISTRIBUTIONS
      1 0.733,0.765,0.791,0.813,0.832,0.848,0.863,0.875,0.886,0.896,     
      2 0.905,0.913,0.920,0.926,0.932,0.938/                             
       DATA IOBS,IUNOBS/1H ,1HU/                                         
+      CALL XRSL
+      CALL XCSAE
 C SET INITIAL VALUES                                                
       DO 20 I=1,10                                                      
       RHR(I)=0.0                                                        
@@ -963,8 +990,16 @@ C SET INITIAL VALUES
       NL=0                                                              
       SCF=SQRT(SC)                                                      
       RR=10.0/SQRT(RHOMAX)
-     
-      CALL XFAL06(6, 0)
+C     
+CDJW0904
+      EMAX = 4
+      RMAX = 0.4
+      IF (IWEIGT .EQ. 1) THEN
+        CALL XFAL06(6, 1)
+        CALL XIRTAC(5) ! CLEAR THE ACCUMULATION AREA FOR THE WEIGHT
+      ELSE
+        CALL XFAL06(6, 0)
+      ENDIF
       DO WHILE ( KLDRNR(0) .GE. 0 )
        IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
@@ -973,7 +1008,7 @@ C SET INITIAL VALUES
         MHKL(2) = STORE(M6+1)         ! K
         MHKL(3) = STORE(M6+2)         ! L
         CALL FCAL2 (MHKL,FOB,IDS,EWS,RHOS)
- 
+C
         INP = 32896
 C TEST FOR END OF DATA    
         D=SC*EXP(BT*RHOS) 
@@ -984,7 +1019,7 @@ C CALCULATE E
         CALL CURVK(ESQ,RHOS,EWS)
         ESQ=ESQ*SCAL(IG)
         E=SQRT(ESQ)    
-        EWS=E          
+        EWS=E    
 C CALCULATE RESCALED F 
         FOB = FOB*SCF
 C PACK INDICES FOR TAPE ISTAN
@@ -1073,10 +1108,24 @@ C DISTRIBUTION OF E FOR COMPLETE DATA
         IF(NET.EQ.0) GO TO 220                                            
         NU(NET)=NU(NET)+1                                                 
   220   NRW=NRW+MULT                                                      
+CDJW0904
+        IF (IWEIGT .EQ. 1) then
+C        CALCULATE WEIGHT MODIFIER
+         EDJW = MIN (EWS, EMAX)
+         RDJW = MIN (RHOS, RMAX)
+         W =-1.*(1.-2.*EDJW/EMAX)*(2.*RDJW/RMAX-1.)
+         W = SQRT (2.+MAX(-2.,W))
+         STORE(M6+4) = W * STORE(M6+4)
+         I = 1
+         CALL XSLR(I)
+         CALL XACRT(5)
+        ENDIF
        END IF
       END DO
-
-
+CDJW0904
+      CALL XCRD(5)
+      IF (IWEIGT .EQ. 1) CALL XERT(6)
+C
 C OUTPUT STATISTICS
       RR=1.0/RR                                                         
       DO 320 I=1,10                                                     
@@ -1221,9 +1270,11 @@ C     OUTPUT REFLEXIONS FOR MULTAN
       CALL OUTPUT(EX,FX,IX,MS,MR)                                       
   630 RETURN                                                            
       END                                                               
-C     ------------------------------------------------------------------
-C     SUMS FOR REFLEXION IN ZONE N                                      
+C 
+C
+CODE FOR ADD
       SUBROUTINE ADD(N)                                                 
+C     SUMS FOR REFLEXION IN ZONE N                                      
 \XESTAT
       IS=1                                                              
       NT=N                                                              
@@ -1240,9 +1291,11 @@ C     REFLEXION IS ON PRINCIPAL AXIS - THEREFORE IGNORE IT
       IND=N                                                             
       RETURN                                                            
       END                                                               
-C     ------------------------------------------------------------------
-C     SORT ON A                                                         
+C
+C
+CODE FOR SORT
       SUBROUTINE SORT(A,B,IX,N)                                         
+C     SORT ON A                                                         
       DIMENSION A(N),B(N),IX(N)                                         
       INT=2                                                             
    10 INT=2*INT                                                         
@@ -1271,9 +1324,11 @@ C     SORT ON A
       IF(INT.GT.1) GO TO 20                                             
       RETURN                                                            
       END                                                               
-C     ------------------------------------------------------------------
-C     PRINT AND OUTPUT TO FILE FOR REFLEXIONS TO BE USED IN MULTAN      
+CC
+C
+CODE FOR OUTPUT
       SUBROUTINE OUTPUT(EX,FX,IX,N,M)                                   
+C     PRINT AND OUTPUT TO FILE FOR REFLEXIONS TO BE USED IN MULTAN      
 \XUNITS
       DIMENSION EX(1000),FX(1000),IX(1000)                              
       DIMENSION J(6),K(6),L(6),E(6),KODE(6)                             

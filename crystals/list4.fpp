@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2003/08/05 11:11:11  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.49  2003/07/03 10:39:07  rich
 C Spaces between data items passed to PLOT routine prevent crashes if the
 C format is overflowed.
@@ -681,7 +684,7 @@ cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
         IF((FO).GT.aw)THEN ! /FO/ IS LARGE ENOUGH - COMPUTE ITS INVERSE
            RFO=1./FO
         ELSE               ! /FO/ IS ZERO - SET TO SMALL VALUE TO AVOID 0**0
-           rfo = 1. /max(fo, fc, aw, 2.)
+           rfo = 1. /max(fo, aw, 2.)
            FO=ZEROSQ
         ENDIF
 
@@ -692,10 +695,10 @@ cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
 C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
 
         IF(JTYPE.EQ.1) THEN      ! WGHTS FRM /FO/, MODIFD TO BE AGAINST FO**2
-          am = 0.5 / max(fo, fc, aw, 2.)
+          am = 0.5 / max(fo, aw, 2.)
         ELSE IF ( JTYPE .GE. 2 ) THEN    ! WEIGHTS COMPUTED FROM /FO/ **2,
           if (fo .le. aw) then           ! SO COMPUTE SIGMA**2
-            AW=2.0*AW*max(FO,fc,aw,2.)   
+            AW=2.0*AW*max(FO,aw,2.)   
           else
             AW=2.0*AW*FO
           endif

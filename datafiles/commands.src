@@ -3402,7 +3402,7 @@ ROTAX              3    4
          3
     .PUNCH              7    0    1    2    0 NO
      NO             YES
-WILSON             2    2
+WILSON             3    2
    6    4096 CRYSTALSPROCESS6
     1    6
    1.OUTPUT             3    1    0    0
@@ -3416,6 +3416,10 @@ WILSON             2    2
    2.FILTER             1    1    0    0
          3
     .LIST28             4    0    1    2    0 NO
+     NO             YES
+   3.WEIGHT             1    1    0    0
+         3
+    .UPDATE             5    0    1    2    0 NO
      NO             YES
 SIGMADIST          2    2
   11    4096 CRYSTALSPROCESS6
