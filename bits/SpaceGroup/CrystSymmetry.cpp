@@ -22,12 +22,12 @@ CrystSymmetry::CrystSymmetry():string()
 }
 
 
-CrystSymmetry::CrystSymmetry(string& pSymmetryDescription, size_t pIndex):string(pSymmetryDescription, pIndex), iMatrices(vector<Matrix<short> >())
+CrystSymmetry::CrystSymmetry(string& pSymmetryDescription, size_t pIndex):string(pSymmetryDescription, pIndex)
 {
 	runCheck();
 }
 
-CrystSymmetry::CrystSymmetry(const string& pSymmetryDescription):string(pSymmetryDescription), iMatrices(vector<Matrix<short> >())
+CrystSymmetry::CrystSymmetry(const string& pSymmetryDescription):string(pSymmetryDescription)
 {
 	runCheck();
 }
@@ -53,7 +53,7 @@ void CrystSymmetry::runCheck()
 	}
 }
 
-CrystSymmetry::CrystSymmetry(const CrystSymmetry& pCrystSymmetry):string(pCrystSymmetry), iMatrices(vector<Matrix<short> >(pCrystSymmetry.iMatrices))
+CrystSymmetry::CrystSymmetry(const CrystSymmetry& pCrystSymmetry):string(pCrystSymmetry)
 {
 }
 
@@ -61,12 +61,12 @@ CrystSymmetry::~CrystSymmetry()
 {
 }
 
-Matrix<short>& CrystSymmetry::matrix(unsigned int pIndex)
+Matrix<short>& CrystSymmetry::matrix(const size_t pIndex)const
 {
 	return *(new Matrix<short>());
 }
 
-unsigned int CrystSymmetry::matrixCount()
+size_t CrystSymmetry::matrixCount() const
 {
 	return 0;
 }
