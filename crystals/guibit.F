@@ -1,4 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2001/03/08 14:30:58  richard
+C
+C Remove "Too many contacts" message - failing silently is much much faster.
+C XGDBUP is now called with common block address and length allowing
+C all lists to be passed through this routine.
+C Included calculations for drawing thermal ellipsoids. Speeded up
+C bond search. Added atoms labels to bond info passed to GUI.
+C Info extracted from LIST 1, LIST 2, LIST 29, LIST 30 and passed
+C to the GUI.
+C
 C Revision 1.31  2001/01/22 16:48:26  richard
 C Pass peak height (spare) as value*1000.
 C
@@ -1045,7 +1055,7 @@ C Find bonds:
 
         DO 130 I = 1, N5-1
             IAT1P = L5+((I-1)*MD5)
-            NFOUND=ICRDIST1(N5+1-I,STACK,IAT1P,IAT1P,MD5,4)
+            NFOUND=ICRDIST1(N5,STACK,L5,IAT1P,MD5,4)
             IAT1P = L5+((I-1)*MD5)
 
 
@@ -1073,8 +1083,9 @@ C NB 1.21 (1.1)^2 is the tolerance used by Lisa.
 C Cameron has no lower limit. I do. It is 0.5 * sum of cov.
                REQDSX = (COV1 + COV2) * 1.21
                REQDSN = (COV1 + COV2) * 0.5
-               IF( (ACTDST.LT.REQDSX) .AND.
-     1             (ACTDST.GT.REQDSN) ) THEN
+               IF ( ACTDST.LT.REQDSX ) THEN
+
+
                   XX   = GUMTRX(1) * STACK((J*5)-3)
      1                 + GUMTRX(2) * STACK((J*5)-2)
      2                 + GUMTRX(3) * STACK((J*5)-1)
@@ -1097,11 +1108,23 @@ c     1                  ISTORE(IAT2P),NINT(STORE(IAT2P+1)),
 c     1                  STORE(IAT2P+4),STORE(IAT2P+5),STORE(IAT2P+6)
 cCDEBUG}      
 
-C See if this bond is in LIST 18. If so, use it's deviation to colour it.
-
+C Set colour to black:
                   KR = 0
                   KG = 0
                   KB = 0
+C If far too short, colour RED.
+                  IF (ACTDST.LT.REQDSN) KR = 255
+
+C If a symm related atom, colour bond grey.
+                  IF ((ABS(STORE(IAT2P+4)-STACK(J*5-3)).GT.0.001).OR.
+     1                (ABS(STORE(IAT2P+5)-STACK(J*5-2)).GT.0.001).OR.
+     2                (ABS(STORE(IAT2P+6)-STACK(J*5-1)).GT.0.001))THEN
+                    KR = 192
+                    KG = 192
+                    KB = 192
+                  END IF
+
+C See if this bond is in LIST 18. If so, use it's deviation to colour it.
                   IF ( KBDDEV(IAT1P,IAT2P,DEVN) .GT. 0 )THEN
 
 C As deviation goes positive, KB and KG should decrease giving a red colour
