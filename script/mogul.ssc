@@ -1,0 +1,22 @@
+%SCRIPT MOGUL
+{I * Generating mogul structure file
+%  COPY '#FOREIGN CSD'
+%  COPY 'END'
+%  COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
+%  COPY '#RELEASE PUNCH crystals.qf'
+%  TRANSFER 'CALCULATE mogul.stat' TO PUNCH
+%%
+%% Do distances and angles in blocks - makes mogul go faster as data
+%% are in different libraries.
+%%
+%  COPY '#DISTANCES'
+%  COPY 'OUT MON=DIST PUNCH=MOGUL'
+%  COPY 'END'
+%  COPY '#DISTANCES'
+%  COPY 'OUT MON=ANGLE PUNCH=MOGUL'
+%  COPY 'END'
+%  TRANSFER 'CLOSE' TO PUNCH
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#SPAWN +COMMAND.COM /e:3072 /c CRYSDIR:mogul.bat qf crystals.qf'
+%  COPY '#SCRIPT MOGULRES'
+%END SCRIPT
