@@ -7,6 +7,10 @@
 //   Filename:  CxResizeBar.h
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/07/16 07:34:58  ckp2
+//   Process ON_CHAR messages. Only ever capture and release the mouse once under wx or
+//   it gets upset.
+//
 //   Revision 1.2  2001/06/17 14:32:25  richard
 //   wx support. CxDestroyWindow function.
 //
@@ -85,6 +89,7 @@ protected:
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove( UINT nFlags, CPoint wpoint );
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     DECLARE_MESSAGE_MAP()
 #endif
 

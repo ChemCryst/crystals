@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/07/16 07:31:45  ckp2
+//   Process ON_CHAR messages - result in passing keypress to current input editbox. Now
+//   whole interface is much easier to start typing from.
+//
 //   Revision 1.9  2001/06/17 14:42:00  richard
 //   CxDestroyWindow function.
 //
@@ -70,6 +74,7 @@ class CxGrid : public BASEGRID
 #ifdef __CR_WIN__
   protected:
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -82,3 +87,4 @@ class CxGrid : public BASEGRID
 
 };
 #endif
+

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/07/16 07:35:32  ckp2
+//   Process ON_CHAR messages.
+//
 //   Revision 1.2  2001/06/17 14:31:08  richard
 //   CxDestroyWindow function. wx support.
 //
@@ -57,6 +60,7 @@ Destroy();
 #ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CxStretch, CWnd)
     ON_WM_CHAR()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -75,3 +79,27 @@ CXGETGEOMETRIES(CxStretch)
 int CxStretch::GetIdealWidth()  { return EMPTY_CELL; }
 
 int CxStretch::GetIdealHeight() { return EMPTY_CELL; }
+
+BOOL CxStretch::OnEraseBkgnd(CDC* pDC)
+{
+
+  CRect rect;
+
+// GetClipBox Retrieves the dimensions of the view area and
+// copies to the buffer pointed to by rect.
+  pDC->GetClipBox( &rect);
+
+  COLORREF fillColor = GetSysColor(COLOR_3DFACE);
+
+// Create the bursh and select into DC
+  CBrush brush ( fillColor );
+  CBrush* pOldBrush = pDC->SelectObject( &brush );
+
+// PatBlt Creates a bit pattern on the device.
+  pDC->PatBlt( rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY );
+
+  pDC->SelectObject( pOldBrush ) ;
+
+  return TRUE;
+}
+

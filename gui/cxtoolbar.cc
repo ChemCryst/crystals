@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/09/07 14:37:22  ckp2
+//   Bug under un-updated versions of Win95 causes the toolbars to be created
+//   with ridiculous dimensions. This fix limits the maximum toolbar size
+//   to 200x1600 - still ridiculous, but at least you'll be able to see what's
+//   happening, and perhaps just hide the toolbars away.
+//
 //   Revision 1.3  2001/07/16 07:37:19  ckp2
 //   wx: Get better guess at ideal toolbar size. Sub-class native toolbar class in
 //   order to process ON_CHAR messages.
@@ -219,7 +225,7 @@ void    CxToolBar::AddTool( CcTool* newTool )
     {
       ReplaceBackgroundColor ( *abitmap );
       m_bitmapList.AddItem( abitmap );
-      m_ImageList->Add( abitmap,  ::GetSysColor (COLOR_BTNFACE));
+      m_ImageList->Add( abitmap,  ::GetSysColor (COLOR_3DFACE));
       bitmapIndex = m_ImageIndex++;
     }
     else
@@ -328,7 +334,7 @@ void CxToolBar::ReplaceBackgroundColor (CBitmap& ioBM)
   RGBTRIPLE* pixels = reinterpret_cast<RGBTRIPLE*>(ds.dsBm.bmBits);
 
 // get the user's preferred button color from the system
-  const COLORREF            buttonColor (::GetSysColor (COLOR_BTNFACE));
+  const COLORREF            buttonColor (::GetSysColor (COLOR_3DFACE));
   const RGBTRIPLE          kBackgroundColor = {
   pixels [0].rgbtBlue, pixels [0].rgbtGreen, pixels [0].rgbtRed};
   const RGBTRIPLE          userBackgroundColor = {

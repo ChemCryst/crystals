@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/07/16 07:35:32  ckp2
+//   Process ON_CHAR messages.
+//
 //   Revision 1.2  2001/06/17 14:31:09  richard
 //   CxDestroyWindow function. wx support.
 //
@@ -59,6 +62,7 @@ class CxStretch : public BASESTRETCH
         static int  mStretchCount;
 #ifdef __CR_WIN__
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+        afx_msg BOOL OnEraseBkgnd(CDC* pDC);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

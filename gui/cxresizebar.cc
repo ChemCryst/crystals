@@ -7,6 +7,14 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/08/14 10:20:35  ckp2
+//   Quirky new feature: Hold down CTRL and click on a resize-bar and the panes
+//   will swap sides. Hold down SHIFT and click, and the panes will rotate by 90
+//   degrees. Gives more control over screen layout, but is not intuitive as the
+//   user can't SEE which panes belong to a given resize bar. Try it and see.
+//   The new layout is not stored and will revert to original layout when window
+//   is reopened (for the time being).
+//
 //   Revision 1.3  2001/07/16 07:34:58  ckp2
 //   Process ON_CHAR messages. Only ever capture and release the mouse once under wx or
 //   it gets upset.
@@ -45,7 +53,7 @@ CxResizeBar * CxResizeBar::CreateCxResizeBar( CrResizeBar * container, CxGrid * 
 {
     CxResizeBar *control = new CxResizeBar (container);
 #ifdef __CR_WIN__
-    control->Create(NULL, "Resize", WS_VISIBLE| WS_CHILD, CRect(0,0,10,10), guiParent, mResizeBarCount++);
+    control->Create(NULL, "Resize", WS_VISIBLE|WS_CHILD|WS_CLIPCHILDREN, CRect(0,0,10,10), guiParent, mResizeBarCount++);
 #endif
 #ifdef __BOTHWX__
     control->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10));
@@ -101,6 +109,7 @@ BEGIN_MESSAGE_MAP(CxResizeBar, CWnd)
     ON_WM_MOUSEMOVE()
     ON_WM_PAINT()
     ON_WM_CHAR()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -655,4 +664,28 @@ void CxResizeBar::WillNotResize(bool item1, bool item2)
 void CxResizeBar::AlreadyCollapsed()
 {
   m_Collapsed = true;
+}
+
+
+BOOL CxResizeBar::OnEraseBkgnd(CDC* pDC)
+{
+
+  CRect rect;
+
+// GetClipBox Retrieves the dimensions of the view area and
+// copies to the buffer pointed to by rect.
+  pDC->GetClipBox( &rect);
+
+  COLORREF fillColor = GetSysColor(COLOR_3DFACE);
+
+// Create the bursh and select into DC
+  CBrush brush ( fillColor );
+  CBrush* pOldBrush = pDC->SelectObject( &brush );
+
+// PatBlt Creates a bit pattern on the device.
+  pDC->PatBlt( rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY );
+
+  pDC->SelectObject( pOldBrush ) ;
+
+  return TRUE;
 }

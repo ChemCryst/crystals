@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/03/08 16:44:09  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxGroupBox_H__
 #define     __CxGroupBox_H__
@@ -41,5 +45,8 @@ class CxGroupBox : public BASEGROUPBOX
 
         // attributes
         static int mGroupBoxCount;
+    protected:
+        afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+        DECLARE_MESSAGE_MAP()
 };
 #endif

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/07/16 07:31:44  ckp2
+//   Process ON_CHAR messages - result in passing keypress to current input editbox. Now
+//   whole interface is much easier to start typing from.
+//
 //   Revision 1.9  2001/06/17 14:41:59  richard
 //   CxDestroyWindow function.
 //
@@ -37,7 +41,16 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 {
   CxGrid  *theGrid = new CxGrid( container );
 #ifdef __CR_WIN__
-  theGrid->Create(NULL, "Window", WS_CHILD|WS_VISIBLE,
+    HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_ARROW);
+    CBrush cBrush;
+    cBrush.CreateSolidBrush(RGB(255,0,0));
+
+    const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,
+                                       hCursor, cBrush,
+                                      AfxGetApp()->LoadIcon(IDI_ICON1));
+
+//  theGrid->Create(wndClass, "Window", WS_CHILD|WS_VISIBLE,
+  theGrid->Create(wndClass, "Window", WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,
                   CRect(0,0,200,200), guiParent,mGridCount++,NULL);
 
   if (CcController::mp_font == nil)
@@ -114,6 +127,7 @@ void    CxGrid::SetText( char * text )
 
 #ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CxGrid, CWnd)
+    ON_WM_ERASEBKGND()
     ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
@@ -157,4 +171,28 @@ void CxGrid::CxShowWindow(bool state)
 #ifdef __BOTHWX__
       Show(state);
 #endif
+}
+
+
+BOOL CxGrid::OnEraseBkgnd(CDC* pDC)
+{
+
+  CRect rect;
+
+// GetClipBox Retrieves the dimensions of the view area and
+// copies to the buffer pointed to by rect.
+  pDC->GetClipBox( &rect);
+
+  COLORREF fillColor = GetSysColor(COLOR_3DFACE);
+
+// Create the bursh and select into DC
+  CBrush brush ( fillColor );
+  CBrush* pOldBrush = pDC->SelectObject( &brush );
+
+// PatBlt Creates a bit pattern on the device.
+  pDC->PatBlt( rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY );
+
+  pDC->SelectObject( pOldBrush ) ;
+
+  return TRUE;
 }

@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2001/07/16 07:38:38  ckp2
+//   Some system metrics missing from wx implementation on Linux, work around these.
+//   Also OnSize parameters are window size, not client size like MFC, so use a call to
+//   GetClientSize to work out the equivalent size.
+//
 //   Revision 1.23  2001/06/18 12:57:39  richard
 //   ? operator was returning a NULL for non-modal window styles, should be a 0 as it is
 //   part of a bitwise OR operation.
@@ -55,16 +60,21 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
   CxWindow *theWindow = new CxWindow( container, attributes & kSize );
 
   #ifdef __CR_WIN__
-    const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,
-                                       NULL, (HBRUSH)(COLOR_MENU+1),
-                                      AfxGetApp()->LoadIcon(IDI_ICON1));
+    HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_ARROW);
 
+    const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,
+                                       hCursor, (HBRUSH)(COLOR_3DFACE+1),
+                                      AfxGetApp()->LoadIcon(IDI_ICON1));
+      
     theWindow->mParentWnd = (CWnd*) parentWindow;
 
     theWindow->Create(wndClass, "Window",
-        (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX :
-                              WS_POPUP|WS_CAPTION|WS_SYSMENU,
+//    theWindow->Create(NULL, "Window",
+        (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX|WS_CLIPCHILDREN :
+                              WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_CLIPCHILDREN,
         CRect(0,0,1000,1000), theWindow->mParentWnd);
+
+//    theWindow->SetIcon(AfxGetApp()->LoadIcon(IDI_ICON1),true);
   #endif
   #ifdef __BOTHWX__
       theWindow->mParentWnd = (wxWindow*) parentWindow;
@@ -286,6 +296,7 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
     ON_WM_KEYDOWN()
     ON_WM_KEYUP()
     ON_WM_TIMER()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -744,3 +755,11 @@ void CxWindow::OnTimer(UINT nID)
   ((CrWindow*)ptr_to_crObject)->TimerFired();
 }
 #endif
+
+
+
+
+BOOL CxWindow::OnEraseBkgnd(CDC* pDC)
+{
+  return TRUE;
+}

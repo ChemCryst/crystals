@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/07/16 07:25:31  ckp2
+//   Make sure (in the wx version) that all the grids in the tab control are removed
+//   from the tab control before it is destroyed.
+//
 //   Revision 1.4  2001/06/18 12:41:14  richard
 //   AddTab is now passed a CcTabData rather than just a text string. The wx base
 //   class (wxNoteBook) manages the child window for itself, (unlike windows where
@@ -38,7 +42,7 @@ CxTab *    CxTab::CreateCxTab( CrTab * container, CxGrid * guiParent )
 {
     CxTab  *theTabCtrl = new CxTab( container );
 #ifdef __CR_WIN__
-    theTabCtrl->Create(TCS_TABS|WS_CHILD|WS_VISIBLE,
+    theTabCtrl->Create(TCS_TABS|WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN,
                     CRect(0,0,200,200), guiParent,mTabCount++);
     theTabCtrl->SetFont(CcController::mp_font);
 #endif

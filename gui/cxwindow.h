@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2001/06/17 14:26:38  richard
+//   Re-jig window creation.
+//   New CxDestroyWindow function to ensure correct destruction sequence.
+//   wx Support for toolbars.
+//
 //   Revision 1.11  2001/03/27 15:15:01  richard
 //   Added a timer to the main window that is activated as the main window is
 //   created.
@@ -103,6 +108,7 @@ class CxWindow : public BASEWINDOW
     afx_msg void OnMenuSelected(int nID);
     afx_msg void OnToolSelected(int nID);
     afx_msg void OnTimer(UINT nID);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 
     DECLARE_MESSAGE_MAP()
 
