@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/02/25 15:31:26  rich
+C New bug: XFAL06 called twice in a row due to merging clash. Fixed.
+C Double quotes around some graph axis titles.
+C
 C Revision 1.44  2003/02/20 16:01:48  rich
 C More changes than a stick can be shaken at. Main additions are application
 C of Dunitz-Seiler or Tukey type Robust-Resistant weight modifiers to any
@@ -212,7 +216,7 @@ C               arrays will hold the whole of L6, and could be used by
 C               every scheme eventually. It would save a lot of complex
 C               looping around down there:
 
-      DIMENSION SHFO(N6D), SHFC(N6D), SIG(N6D)
+c      DIMENSION SHFO(N6D), SHFC(N6D), SIG(N6D)
 C Space for automatic determination of Scheme 16 parameters.
       DIMENSION WD(-4:4,-4:4,20), SGF(-4:4,-4:4)
       DIMENSION RWD(20), BMEAN(20)
@@ -351,7 +355,7 @@ C--CHECK IF LIST 6 EXISTS
 
         CASE (17) ! Work out parameters for SHELX scheme 16.
 
-          CALL XFAL06(IULN06, 1)
+          CALL XFAL06(IULN06, 0)   ! Load READ ONLY
           IF ( IERFLG .LT. 0 ) GO TO 9900
 
           IFSQ = ISTORE(L23MN+1)
@@ -364,16 +368,16 @@ C--CHECK IF LIST 6 EXISTS
           DO WHILE ( KFNR ( 0 ) .GE. 0 )
             N6ACC = N6ACC + 1
             IF (IFSQ .GE. 0) THEN
-              CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMAS, STORE(M6+12))
-              SHFO(N6ACC) = FOS/MAX(.0001,A**2)
-              SHFC(N6ACC) = STORE(M6+5)**2
-              SIG(N6ACC) =SIGMAS / MAX(.0001,A**2)
+c              CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMAS, STORE(M6+12))
+c              SHFO(N6ACC) = FOS/MAX(.0001,A**2)
+              SHFC = STORE(M6+5)**2
+c              SIG(N6ACC) =SIGMAS / MAX(.0001,A**2)
             ELSE
-              SHFO(N6ACC) = STORE(M6+3) / MAX(.0001,A)
-              SHFC(N6ACC) = STORE(M6+5)
-              SIG(N6ACC) = STORE(M6+12) / MAX(.0001,A)
+c              SHFO(N6ACC) = STORE(M6+3) / MAX(.0001,A)
+              SHFC = STORE(M6+5)
+c              SIG(N6ACC) = STORE(M6+12) / MAX(.0001,A)
             END IF
-            FCMAX = MAX ( FCMAX, SHFC(N6ACC) )
+            FCMAX = MAX ( FCMAX, SHFC )
           END DO
 C Make up some starting values of A and B:
           SXA = 0.1
@@ -398,21 +402,34 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
                    END DO
                 END DO
              END DO
-             DO I = 1, N6ACC
-                FRACC = MAX(.0000001, SHFC(I)/FCMAX )
+             CALL XFAL06(IULN06, 0)   ! Load READ ONLY
+             IF ( IERFLG .LT. 0 ) GO TO 9900
+             DO WHILE ( KFNR ( 0 ) .GE. 0 )
+                IF (IFSQ .GE. 0) THEN
+                 CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMAS,STORE(M6+12))
+                 SHFO = FOS/MAX(.0001,A**2)
+                 SHFC = STORE(M6+5)**2
+                 SIG =SIGMAS / MAX(.0001,A**2)
+                ELSE
+                 SHFO = STORE(M6+3) / MAX(.0001,A)
+                 SHFC = STORE(M6+5)
+                 SIG = STORE(M6+12) / MAX(.0001,A)
+                END IF
+
+                FRACC = MAX(.0000001, SHFC/FCMAX )
                 IF (IFSQ .GE. 0) THEN
                    KDIV = MIN(20,INT(20.*SQRT(SQRT(FRACC)))+1)
                 ELSE
                    KDIV = MIN(20,INT(20.*SQRT(FRACC))+1)
                 END IF
                 RWD(KDIV) = RWD(KDIV) + 1.0
-                BMEAN(KDIV) = BMEAN(KDIV) + SHFC(I)
+                BMEAN(KDIV) = BMEAN(KDIV) + SHFC
                 DO J = -4,4
                    DO K = -4,4
                       WD(J,K,KDIV) =  WD(J,K,KDIV)
-     1                                + ( DELSQ(SHFO(I),SHFC(I))
-     2                                  * WGHT( SIG(I)**2,
-     3                                          FPSX(SHFO(I),SHFC(I)),
+     1                                + ( DELSQ(SHFO,SHFC)
+     2                                  * WGHT( SIG**2,
+     3                                          FPSX(SHFO,SHFC),
      4                                          SXA+(REAL(J)*SXAG),
      5                                          SXB+(REAL(K)*SXBG) ) )
                    END DO
@@ -450,10 +467,23 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
      1       SXA,SXB, ' .0 .0 .0 .333'
              CALL XPRVDU(NCVDU,2,0)
              WDTO = 0.0
-             DO I = 1,N6ACC
-               WDTO = WDTO + ( DELSQ(SHFO(I),SHFC(I))
-     2                                * WGHT( SIG(I)**2,
-     3                                        FPSX(SHFO(I),SHFC(I)),
+
+             CALL XFAL06(IULN06, 0)   ! Load READ ONLY
+             IF ( IERFLG .LT. 0 ) GO TO 9900
+             DO WHILE ( KFNR ( 0 ) .GE. 0 )
+               IF (IFSQ .GE. 0) THEN
+                 CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMAS,STORE(M6+12))
+                 SHFO = FOS/MAX(.0001,A**2)
+                 SHFC = STORE(M6+5)**2
+                 SIG =SIGMAS / MAX(.0001,A**2)
+               ELSE
+                 SHFO = STORE(M6+3) / MAX(.0001,A)
+                 SHFC = STORE(M6+5)
+                 SIG = STORE(M6+12) / MAX(.0001,A)
+               END IF
+               WDTO = WDTO + ( DELSQ(SHFO,SHFC)
+     2                                * WGHT( SIG**2,
+     3                                        FPSX(SHFO,SHFC),
      4                                        SXA,
      5                                        SXB ) )
              END DO
@@ -521,7 +551,7 @@ C--CHECK IF WE CALCULATING OR JUST APPLYING CHEBYSHEV WEIGHTS
             CALL XIRTAC(5)
             NW=0           ! INDICATES ONLY AN APPLICATION
           ELSE             ! CALCULATING WEIGHTS, SET UP INITIAL PASS OF L6.
-            CALL XFAL06(IULN06, 1)
+            CALL XFAL06(IULN06, 0) ! Load READ ONLY.
             IF ( IERFLG .LT. 0 ) GO TO 9900
             NW=1 ! SET CHEBYSHEV POINTER FOR THE CALCULATION OF THE PARAMETERS
             LN=12  ! SET UP A DUMMY LIST 12 (so we can use SFLS matrix area)

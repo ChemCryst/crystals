@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.7  2002/06/24 15:33:50  richard
 C Load list 6 before calling XAPP04, so that it can use dynamic arrays.
 C
@@ -54,8 +59,8 @@ C--ROUTINE TO APPLY THE PARAMETERS IN LIST 4
 C--READ ANY DIRECTIVES THAT OFFER THEMSELVES
       I=KRDDPV(IPROC4,NPROC4)
       IF ( I .LT. 0 ) GO TO 1300
-      IULN06 = KTYP06(IPROC4(3))
-      CALL XFAL06(IULN06, 0) !Get N6D for dynamic arrays in XAPP04
+c      IULN06 = KTYP06(IPROC4(3))
+c      CALL XFAL06(IULN06, 0) !Get N6D for dynamic arrays in XAPP04
       CALL XAPP04(IPROC4,NPROC4)
       RETURN
 
