@@ -82,6 +82,11 @@ C
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1 (2)
+c----- un-set data keys 
+      irfo = nowt
+      irft = nowt
+      jnfo = nowt
+      jnft = nowt
 C--BLANK OUT THE FORMAT ARRAY
       CALL XMVSPD (IB,IFORM(1),NFORM-1)
 \IDIM06
@@ -175,7 +180,8 @@ Cdjwnov2000
 C----- save the matrix and tolerance
       CALL XMOVE (STORE(L6MR),TRANSH,9)
       TOLER=STORE(L6MR+9)
-      TWIND=STORE(L6MR+10)
+csquare it for later use (sint/lam)sq
+      TWIND=STORE(L6MR+10) * STORE(L6MR+10)
 Cdjw dec97
 C ITYPE COPY FIXED FREE COMPRESSED TWIN (HKLI) FIXED FREE COMP
 C        1     2    3       4        5           6    7    8
@@ -244,12 +250,12 @@ C--CHECK IF THE KEYS TO BE STORED HAVE BEEN INPUT
 C -- CHECK IF 'RATIO' ( OF FO AND SIGMA ) HAS BEEN INPUT
       IRATIO=KCOMP(1,JRATIO,ISTORE(L6IMP),MD6IMP,1)
 C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN INPUT
-      INFO=KCOMP(1,JFOO,ISTORE(L6IMP),MD6IMP,1)
-      INFT=KCOMP(1,JFOT,ISTORE(L6IMP),MD6IMP,1)
+      IRFO=KCOMP(1,JFOO,ISTORE(L6IMP),MD6IMP,1)
+      IRFT=KCOMP(1,JFOT,ISTORE(L6IMP),MD6IMP,1)
 C----- determine input type from keys
 C----- set default to untwinned
       IFO=3
-      IF (INFT.GT.0) THEN
+      IF (IRFT.GT.0) THEN
          IFO=10
          IF (N25.LE.1) THEN
             WRITE (CMON,'(a)') 'Warning - You have no twin law'
@@ -263,7 +269,7 @@ C--NO STORAGE KEYS HAVE BEEN INPUT  -  SET THE DEFAULTS
 950   CONTINUE
 cjan2001 Reset output defaults if twin data input 
 c     l6bmp etc (twinned defaults) moved to lodfk
-      if (inft .gt. 0) call xmove (icom6a(9),icom6a(29),4)
+      if (irft .gt. 0) call xmove (icom6a(9),icom6a(29),4)
       MD6DMP=MIN0(MD6DMP,MDODFK)
 C--CHECK IF ANY OUTPUT KEYS ARE INDICATED
       IF (MD6DMP) 1000,1000,1100
@@ -291,7 +297,7 @@ C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
       JNFO=KCOMP(1,JFOO,ISTORE(L6DMP),MD6DMP,1)
       JNFT=KCOMP(1,JFOT,ISTORE(L6DMP),MD6DMP,1)
 Cdjwoct200
-      IF ((INFT.GT.0).AND.(JNFT.LE.0)) THEN
+      IF ((IRFT.GT.0).AND.(JNFT.EQ.0)) THEN
          WRITE (CMON,'(a/a)') 'Twinned data input but not stored - ','Ch
      1eck the List 6 keys'
          call outcol(3)
@@ -474,15 +480,14 @@ c----- create a twin index (matrix stored by rows)
             call xmlttm(store(m25), htemp1, store(m6),3,3,1)
 c----- find difference vector
             htemp(1) = float(nint(store(m6)))-store(m6)
-            htemp(1) = float(nint(store(m6+1)))-store(m6+1)
-            htemp(1) = float(nint(store(m6+2)))-store(m6+2)
+            htemp(2) = float(nint(store(m6+1)))-store(m6+1)
+            htemp(3) = float(nint(store(m6+2)))-store(m6+2)
 c--compute the length sq in rlus
             ii = 1
       t=store(l1s)*htemp(ii)*htemp(ii)+store(l1s+1)*htemp(ii+1)
      2 *htemp(ii+1)+store(l1s+2)*htemp(ii+2)*htemp(ii+2)+store(l1s+3)
      3 *htemp(ii+1)*htemp(ii+2)+store(l1s+4)*htemp(ii)*htemp(ii+2)
      4 +store(l1s+5)*htemp(ii)*htemp(ii+1)
-      t = t/(wave*wave)
             if (t .gt. twind) goto 698
             elem=10.*elem+float(i)
 698         continue
@@ -718,17 +723,7 @@ C--SEE IF WE SOULD REJECT THIS REFLECTION
             END IF
 4250     CONTINUE
          CALL XMOVE (TRANSH(10),STORE(M6),3)
-c^^
-Cdjw dec97        twins - sort out  Fo to FOT
-c--- put something into fo
-      if ((jnfo.gt.0).and.(irfo.le.0).and.(irft.gt.0)) store(m6+jfoo(1))
-     1=store(m6+jfot(1))
-c---- put someting into fot
-      if ((jnft.gt.0).and.(irft.le.0).and.(irfo.gt.0)) store(m6+jfot(1))
-     1=store(m6+jfoo(1))
-c----- put something into elements
-cdec2000
-c
+c--- set element flag
       if ((jnft.gt.0).and.(store(m6+11).le.zero)) then
        elem = 0.
         if (n25 .gt. 1) then
@@ -741,15 +736,16 @@ c----- create a twin index (matrix stored by rows)
             call xmlttm(store(m25), htemp1, store(m6),3,3,1)
 c----- find difference vector
             htemp(1) = float(nint(store(m6)))-store(m6)
-            htemp(1) = float(nint(store(m6+1)))-store(m6+1)
-            htemp(1) = float(nint(store(m6+2)))-store(m6+2)
+            htemp(2) = float(nint(store(m6+1)))-store(m6+1)
+            htemp(3) = float(nint(store(m6+2)))-store(m6+2)
 c--compute the length sq in rlus
             ii = 1
-      t=store(l1s)*htemp(ii)*htemp(ii)+store(l1s+1)*htemp(ii+1)
-     2 *htemp(ii+1)+store(l1s+2)*htemp(ii+2)*htemp(ii+2)+store(l1s+3)
-     3 *htemp(ii+1)*htemp(ii+2)+store(l1s+4)*htemp(ii)*htemp(ii+2)
-     4 +store(l1s+5)*htemp(ii)*htemp(ii+1)
-      t = t/(wave*wave)
+      t=store(l1s)*htemp(ii)*htemp(ii)
+     1 +store(l1s+1)*htemp(ii+1)*htemp(ii+1)
+     2 +store(l1s+2)*htemp(ii+2)*htemp(ii+2)
+     3 +store(l1s+3)*htemp(ii+1)*htemp(ii+2)
+     4 +store(l1s+4)*htemp(ii)*htemp(ii+2)
+     5 +store(l1s+5)*htemp(ii)*htemp(ii+1)
             if (t .gt. twind) goto 4256
             elem=10.*elem+float(i)
 4256        continue
@@ -807,6 +803,16 @@ C--APPLY THE SCALE STORED IN THE 'CORRECTIONS' SLOT
 4700     CONTINUE
          STORE(JFO)=STORE(JFO)*STORE(M6+27)
          STORE(M6+12)=STORE(M6+12)*STORE(M6+27)
+c^^moved from above -Feb 2001
+Cdjw dec97        twins - sort out  Fo to FOT
+c--- put something into fo
+      if ((jnfo.gt.0).and.(irfo.le.0).and.(irft.gt.0)) store(m6+jfoo(1))
+     1=store(m6+jfot(1))
+c---- put someting into fot
+      if ((jnft.gt.0).and.(irft.le.0).and.(irfo.gt.0)) store(m6+jfot(1))
+     1=store(m6+jfoo(1))
+c----- put something into elements
+cdec2000
 C----- RESET TO UNITY SINCE WE DONT NEED IT AGAIN
          STORE(M6+27)=1.
 C--CHECK THAT THE GIVEN VALUES OF /FO/ ARE NOT ZERO
@@ -892,6 +898,15 @@ C----- WRITE LIST 13 TO DISK IF TYPE IS TWIN
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
          ISTORE(L13CD+1)=0
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
+      ELSE
+         IF (ISTORE(L13CD+1) .EQ. 0 ) THEN
+         WRITE (CMON,'(a)') 'Resetting List 13 for un-twinned data'
+         CALL XPRVDU (NCVDU,1,0)
+         WRITE (NCAWU,'(a)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+         ISTORE(L13CD+1)=-1
+         CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
+         ENDIF
       END IF
 C
 C

@@ -451,7 +451,7 @@ THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
     .M23                0    0    1    0    0 0.0
     .M33                0    0    1    0    0 1.0
     .TOLERANCE          0    0    1    0    0 0.1
-    .TWINTOLER          0    0    1    0    0 0.001
+    .TWINTOLER          0    0    1    0    0 0.0001
 LIST 7            16    0
    1    4096 CRYSTALSINPUT6
    1.READ               6    1    0    0
@@ -2878,7 +2878,7 @@ THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
     .M23                0    0    1    0    0 0.0
     .M33                0    0    1    0    0 1.0
     .TOLERANCE          0    0    1    0    0 0.1
-    .TWINTOLER          0    0    1    0    0 0.001
+    .TWINTOLER          0    0    1    0    0 0.0001
 LP                 2    3
    9    4096 CRYSTALSPROCESS6
     1    6   13

@@ -32,7 +32,7 @@ C
 C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  0 ,  0 ,  0 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
-     3               0 ,  0 , 23 ,  0 ,  0 ,     0 , 27 , 28 , 29 , 30 ,
+     3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 ,
      5               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
@@ -142,6 +142,7 @@ C
 \XLST13
 \XLST14
 \XLST23
+\XLST25
 \XLST27
 \XLST28
 \XLST29
@@ -160,7 +161,7 @@ C
 C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  0 ,  0 ,  0 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
-     3               0 ,  0 , 23 ,  0 ,  0 ,     0 , 27 , 28 , 29 , 30 ,
+     3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
      4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 ,
      5               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
@@ -170,7 +171,8 @@ C
      3 'Reflection data', 3*'*', 'Peaks', '*', 'Refinement directives',
      4 'Diffraction conditions', 'Asymmetric section', '*',
      4 'Restraints', 'Special restraints', 5*'*',
-     5 'S.F. modifications', 3*'*', 'Raw data scale factors',
+     5 'S.F. modifications', '*', 'Twin Laws', '*',
+     5 'Raw data scale factors',
      6 'Reflection selection conditions', 'Elemental properties',
      7 'General details', '*' /
 C
@@ -179,7 +181,7 @@ C
      3 15, 1, 1, 1,  5, 1,  21,
      4 22, 18, 1,
      4 10, 18, 1, 1, 1, 1, 1,
-     5 18, 1, 1, 1, 22,
+     5 18, 1, 9, 1, 22,
      6 31, 20, 15,
      7 1 /
 C
@@ -222,6 +224,8 @@ C
       IF (KHUNTR (14,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL14
         ELSE IF ( LSTYPE .EQ. 23 ) THEN
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+        ELSE IF ( LSTYPE .EQ. 25 ) THEN
+      IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL25
         ELSE IF ( LSTYPE .EQ. 27 ) THEN
       IF (KHUNTR (27,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL27
         ELSE IF ( LSTYPE .EQ. 28 ) THEN
@@ -272,6 +276,8 @@ C
         CALL XPRTLX ( LSTYPE , -1 )
       ELSE IF ( LSTYPE .EQ. 23 ) THEN
         CALL XSUM23
+      ELSE IF ( LSTYPE .EQ. 25 ) THEN
+        CALL XSUM25
       ELSE IF ( LSTYPE .EQ. 27 ) THEN
         CALL XSUM27
       ELSE IF ( LSTYPE .EQ. 28 ) THEN
@@ -1239,6 +1245,35 @@ C
       RETURN
       END
 C
+C
+CODE FOR XSUM25
+      SUBROUTINE XSUM25
+\ISTORE
+\STORE
+\XLST25
+\XUNITS
+\XSSVAL
+\XCONST
+\XIOBUF
+C
+\QSTORE
+C
+C
+       WRITE ( CMON , 1015 ) N25
+       CALL XPRVDU(NCVDU, 1,0)
+1015  FORMAT ( 1X , I5 , ' Twin Laws are stored' , / )
+C
+      IF (N25 .GT. 0) THEN
+      M25 = L25 
+      DO 3000 J = 1, N25
+       WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25 -1)
+1106   FORMAT ( 3(3F7.3,2X) )
+       CALL XPRVDU(NCVDU, 1,0)
+      M25 = M25 + MD25
+3000  CONTINUE
+      ENDIF
+      RETURN
+      END
 C
 C
 C
