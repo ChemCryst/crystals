@@ -10,6 +10,14 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2000/07/04 14:41:54  ckp2
+// Gui changes since last year.
+// Mainly chart handling for multiple charts in one window.
+// Some Cx files only changed to split long lines to make inclusion
+// into "the thesis" more automatic.
+// New GUIMENU.SSR has more "right-click" options and swapped panes for model
+// and text output.
+//
 // Revision 1.5  1999/06/22 13:14:12  dosuser
 // RIC: Moved the calls in SetGeometry round a bit.
 //
@@ -255,7 +263,7 @@ int	CxDropDown::GetIdealHeight()
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
-	return 5 * ( textMetric.tmHeight + 2 );
+        return (mItems+1) * ( textMetric.tmHeight + 2 );
 #endif
 #ifdef __LINUX__
       int cx,cy;
