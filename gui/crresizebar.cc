@@ -7,6 +7,12 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:04:48  richard
+//   New resizebar class. A resize control has two panes and the bar between them
+//   can be dragged to change their relative sizes. If one of the panes is of fixed
+//   width or height in the relevant direction, then the resize-bar contains a button
+//   which will show or hide the fixed size item.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -38,14 +44,14 @@ CrResizeBar::CrResizeBar( CrGUIElement * mParentPtr )
 CrResizeBar::~CrResizeBar()
 {
 
+  if ( m_firstitem ) delete m_firstitem;
+  if ( m_seconditem ) delete m_seconditem;
   (CcController::theController)->StoreKey( mName, CcString ( m_offset ) );
   if ( ptr_to_cxObject )
   {
     ((CxResizeBar*)ptr_to_cxObject)->DestroyWindow(); delete (CxResizeBar*)ptr_to_cxObject;
     ptr_to_cxObject = nil;
   }
-  if ( m_firstitem ) delete m_firstitem;
-  if ( m_seconditem ) delete m_seconditem;
 }
 
 CRGETGEOMETRY(CrResizeBar,CxResizeBar)
