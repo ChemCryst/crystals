@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2003/02/20 15:59:11  rich
+C Output html from distances.
+C
 C Revision 1.39  2003/01/29 11:46:10  rich
 C Lesson of the day: Don't use stack pointers as implied do loop variables in
 C write statements.
@@ -2290,9 +2293,9 @@ C--CHECK THE REMAINING ATOMS WITH THE CURRENT PIVOT
 1450  CONTINUE
 cdjwoct2001
       if (igroup .ge. 0) then
-       if (istore(m5a+14) .le. 0) then
+       if (istore(m5a+16) .le. 0) then
             ifrag = ifrag+1
-            istore(m5a+14)=ifrag*1000
+            istore(m5a+16)=ifrag*1000
        endif
       endif
       NFL=JE
@@ -2467,7 +2470,7 @@ C--MOVE THE REST OF THE ATOMS DOWN TO MAKE ROOM FOR THIS ATOM AT THE TOP
 C--MOVE THE NEW ATOM FROM TEMP. STORAGE TO THE TOP OF THE STACK
 cdjwoct2001
         if (igroup .ge. 0) then
-         if (istore(jb+14) .le. 0) istore(jb+14)=ifrag
+         if (istore(jb+16) .le. 0) istore(jb+16)=ifrag
         endif
         JJ=KATOMS(JC,JB,JJ)
       END DO
