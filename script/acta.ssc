@@ -31,19 +31,19 @@
  
 %     FINISH
 %  END IF
-
+ 
  * Checking data against some IUCr validation criteria...
-
+ 
  A quick guide to possible warnings:
-
+ 
  *    ALERT = Not too serious, may indicate problems
  **   WARN  = Problem - will need correcting or thorough investigation.
  ***  FAIL  = Serious problem or incomplete refinement.
  **** FATAL = Missing data prevents checking.
  
----- RESULTS ----------------------------------------------------------
-
-
+ 
+ 
+ 
 %%
 %% Check List 30 exists.
 %%
@@ -362,6 +362,10 @@
 %    COPY 'TRANSFER FROM OFFSET =  8 TO WORK2 '
 %    COPY 'END'
 %    EVALUATE WORK3 = WORK2 / WORK1
+%    CLEAR
+%    INSERT ! *** INFORMATION: Observation:parameter ratio = !
+%    STORE FORMAT /(F6.1)/ LENGTH 6 REAL WORK3
+%    OUTPUT
 %    IF ( CENTRO .GT. 0.99 ) .OR. ( ZMAX .GT. 1.65 ) THEN
 %      IF WORK3 .LE. 6.0 THEN
  *** FAIL:  Ratio of reflections to parameters is unacceptable ( < 6.0 )
@@ -442,9 +446,9 @@
 %  IF ( ALERTFLAG .EQ. 0 ) .AND. ( ERRFLAG .EQ. 0 ) .AND. -
       (  WARNFLAG .EQ. 0 ) THEN
 All checks passed successfully.
-
-Select "Checkcif on the web" from the Analyse menu, or email a CIF to 
+ 
+Select "Checkcif on the web" from the Analyse menu, or email a CIF to
 checkcif@iucr.ac.uk for more detailed and up to date checks.
-
+ 
 %  END IF
 %END SCRIPT
