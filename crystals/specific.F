@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/03/12 17:45:40  ckp2
+C In MTRNLG, special case filenames with #'s in. Trim back to before the hash before
+C inquiring whether they exist.
+C
 C Revision 1.35  2002/02/28 11:19:04  ckp2
 C RIC: 1st bugfix related to long filenames - output trimmed filename when closing file.
 C
@@ -925,7 +929,6 @@ C
       RETURN
       END
 C
-CODE FOR KLDRNR
 CODE FOR XDAEND
       SUBROUTINE XDAEND ( IUNIT , LAST )
 C
