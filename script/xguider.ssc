@@ -84,9 +84,10 @@
 %    COPY '#SCRIPT RFACTOR'
 %  END IF
 %  EVALUATE RMIN = R
-%  IF RMIN .LE. R4 THEN
-%    EVALUATE ISTAGE = 3
-%  END IF
+%% Don't approve of this, what if no aniso yet?:
+%%  IF RMIN .LE. R4 THEN
+%%    EVALUATE ISTAGE = 3
+%%  END IF
 %%
 %% Check for window already open
 %%
@@ -166,7 +167,15 @@
 %%
 %  ELSE IF ( R .GT. R3 ) .AND. ( ISTAGE .LE. 2 ) THEN
 %%
- Low R factor 
+ Fairly low R factor 
+   Recommended:   Refine positions and Uaniso
+   Other options: View the structure
+%      EVALUATE KTDEFA = 5
+%%___________________________________________________________________
+%%
+%  ELSE IF ( ISTAGE .LE. 2 ) THEN
+%%
+ Low R factor but no anisotropic refinement done yet.
    Recommended:   Refine positions and Uaniso
    Other options: View the structure
 %      EVALUATE KTDEFA = 5
@@ -281,6 +290,9 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.7  2001/04/03 09:52:17  richard
+%%  Changed name from 'Supervisor' to 'The GUIDE' for consistency.
+%%
 %%  Revision 1.6  2001/03/21 18:59:11  richard
 %%  Cut down output after validate, to try to keep validation stuff on the screen.
 %%
