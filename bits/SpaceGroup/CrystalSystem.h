@@ -44,6 +44,8 @@
 #include "HKLData.h"
 #include "Conditions.h"
 #include <fstream>
+#include <vector>
+#include <map>
 
 using namespace std;
 struct ElemStats;
@@ -61,7 +63,7 @@ class Heading:public Matrix<short>
         std::ostream& Heading::output(std::ostream& pStream);
 };
 
-class Headings:public ArrayList<Heading>
+class Headings:public vector<Heading*>
 {
     public:
         Headings();
@@ -89,7 +91,7 @@ class Index:public Number<signed char>
 
 std::ostream& operator<<(std::ostream& pStream, Index& pIndex);
 
-class Indexs:public ArrayList<Index>
+class Indexs:public vector<Index*>
 {
     public:
         Indexs(signed char pIndex);
@@ -158,7 +160,7 @@ class Table:public MyObject
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
 
-class Tables:public ArrayList<Table>
+class Tables:public map<char*, Table*, ltstr>
 {
     private:
         Headings* iHeadings;
@@ -167,7 +169,7 @@ class Tables:public ArrayList<Table>
         Tables(char* pFileName);
         ~Tables();
         Headings* getHeadings();
-	Conditions* getConditions();
+	    Conditions* getConditions();
         void readFrom(filebuf& pFile);
         Table* findTable(char* pName);
         std::ostream& output(std::ostream& pStream);
@@ -206,6 +208,26 @@ class RankedSpaceGroups:public MyObject
         std::ofstream& output(std::ofstream& pStream);
         std::ostream& output(std::ostream& pStream);
 };
+
+//class CrystalSystem
+//{
+//	protected:
+//		//CrystalSystemID iID;
+//		string iName;
+//		list<LaueGroups*> iLaueGroups;
+//		Table* iTables;
+//	public:
+//		CrystalSystem(Table* pTable,   
+//		bool contains(LaueGroup* );
+//};
+//
+//class CrystalSystems:protected list<CrystalSystem*>
+//{
+//	public:
+//		CrystalSystems(char* pFileName);
+//		static CrystalSystems* defaultObject();
+//		CrystalSystem* crystalSystemForLaueGroup(LaueGroup*);
+//};
 
 std::ostream& operator<<(std::ostream& pStream, RankedSpaceGroups& pRank);
 std::ofstream& operator<<(std::ofstream& pStream, RankedSpaceGroups& pRank);

@@ -166,7 +166,8 @@ Headings::~Headings()
     for (tIter = begin(); tIter != end(); tIter++)
     {
         Heading* tHeading = *tIter;
-        delete tHeading;
+		if (tHeading)
+			delete tHeading;
     }
 }
 
@@ -438,47 +439,47 @@ std::ostream& operator<<(std::ostream& pStream, Index& pIndex)
     return pIndex.output(pStream);
 }
 
-Indexs::Indexs(signed char pIndex):ArrayList<Index>(1)
+Indexs::Indexs(signed char pIndex):vector<Index*>()
 {
-    add(new Index(pIndex));
+    push_back(new Index(pIndex));
 }
 
 void Indexs::addIndex(signed char pIndex)
 {
-    add(new Index(pIndex));
+    push_back(new Index(pIndex));
 }
 
 signed char Indexs::getValue(int pIndex)
 {
-    return get(pIndex)->get();
+    return (*this)[pIndex]->get();
 }
 
 Indexs::~Indexs()
 {
-    for (int i = iItemCount-1; i >= 0;  i--)
+	vector<Index*>::iterator tIter;
+	
+    for (tIter = begin(); tIter != end(); tIter++)
     {
-        Index* tTemp = remove(i);
-        if (tTemp)
-        {
-            delete tTemp;
-        }
-    }
+        Index* tIndex = *tIter;
+		if (tIndex)
+			delete tIndex;
+	}
 }
 
 std::ostream& Indexs::output(std::ostream& pStream)
 {
-    int tCount = length();
+    int tCount = size();
     char* tString = new char[tCount*2+3];
     tString[0] = '\0';
     for (int i = 0; i < tCount;  i++)
     {
         if (i+1==tCount)
         {
-            sprintf(tString, "%s%d", tString, get(i)->get());
+            sprintf(tString, "%s%d", tString, (*this)[i]->get());
         }
         else
         {
-            sprintf(tString, "%s%d ", tString, get(i)->get());
+            sprintf(tString, "%s%d ", tString, (*this)[i]->get());
         }
     }
     pStream << tString;
@@ -941,7 +942,7 @@ int Table::conditionsUsed(signed char pIndices[], const int pMax) const
             Indexs* tIndexs = tColumn->getConditions(j);
             if (tIndexs)
             {
-                int tNumIndices = tIndexs->length();
+                int tNumIndices = tIndexs->size();
                 for (int k = 0; k < tNumIndices; k++)
                 {
                     signed char tIndex = tIndexs->getValue(k);
@@ -971,7 +972,7 @@ std::ostream& operator<<(std::ostream& pStream, Table& pTable)
     return pTable.output(pStream);
 }
 
-Tables::Tables(char* pFileName):ArrayList<Table>(3)
+Tables::Tables(char* pFileName):map<char*, Table*, ltstr>()
 {
     filebuf tFile;
     initCrysRegEx();
@@ -988,15 +989,16 @@ Tables::Tables(char* pFileName):ArrayList<Table>(3)
 }
         
 Tables::~Tables()
-{
-    for (int i = iItemCount-1; i >=0; i--)
-    {
-        Table* tTable = remove(i);
+{	
+	while (!empty())
+	{
+		Table* tTable = (*end()).second;
+		erase(end());
         if (tTable)
         {
             delete tTable;
         }
-    }
+	}
     delete iHeadings;
     delete iConditions;
     deinitRE();
@@ -1072,7 +1074,8 @@ void Tables::readFrom(filebuf& pFile)
                     throw eE;
                 }
             }
-            add(tTable);
+			std::cout << "Read table: " << tTable->getName() << "\n";
+            (*this)[tTable->getName()] = tTable;
         }
     }
 }
@@ -1080,39 +1083,16 @@ void Tables::readFrom(filebuf& pFile)
 /* Returns name which was found in pName*/
 Table* Tables::findTable(char* pName)
 {
-    int tNumber = length();
-    Table* tTable; 
-    bool tFound = false;
-    
-    for (int i = 0; i < tNumber; i++)
-    {
-        tTable = get(i);
-        if (tTable)
-        {
-            char* tName = tTable->getName();
-            String::upcase(pName);
-            if (strcmp(pName, tName) == 0)
-            {
-                tFound = true;
-                break;
-            }
-        }	
-    }
-    if (tFound == false)
-    {
-        pName[0] = 0;
-        return NULL;
-    }
-    return tTable;
+    return (*this)[pName];
 }
 
 std::ostream& Tables::output(std::ostream& pStream)
 {
-    int tNumTables = length();
-    
-    for (int i = 0; i < tNumTables; i++)
+	map<char*, Table*, ltstr>::iterator tIter;
+	
+    for (tIter = begin(); tIter != end(); tIter++)
     {
-        Table* tTable = get(i);
+        Table* tTable = (*tIter).second;
         if (tTable)
         {
             pStream << *tTable;
@@ -1199,7 +1179,7 @@ void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tI
 {
     if (tIndexs)
     {
-        int tCount = tIndexs->length();
+        int tCount = tIndexs->size();
         for (int i = 0; i < tCount; i++)
         {
             int tRow = tIndexs->getValue(i);
