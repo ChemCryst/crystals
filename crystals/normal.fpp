@@ -26,7 +26,7 @@ C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
       DATA CLETT/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA KSP/1H /
 
-      DATA ICOMSZ / 2 /
+      DATA ICOMSZ / 3 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -44,6 +44,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
 C Store tolerance (only show fom's below this limit)
       IPLOTW = ISTORE(ICOMBF)
       IPLOTN = ISTORE(ICOMBF+1)
+      ISTATP = ISTORE(ICOMBF+2)
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06 (0)
@@ -170,7 +171,7 @@ C MAXIMUM OF 30 POINTS ON WILSON PLOT
 
 
 C OBTAIN SUMS FOR WILSON PLOT AND FIT LEAST SQUARES STRAIGHT LINE
-      CALL SUM(PTS)                                                     
+      CALL SUM(PTS,ISTATP)   
 
 
 C PLOT WILSON CURVE AND LEAST SQUARES STRAIGHT LINE
@@ -181,7 +182,7 @@ C CALCULATE SCALE FACTORS FOR APPROPRIATE REFLEXION GROUPS
       CALL RESCA(KSYS)                                         
 
 C CALCULATE FINAL E'S AND OUTPUT REFLEXION STATISTICS
-      CALL ECAL(KSYS,IPLOTN)
+      CALL ECAL(KSYS,IPLOTN, ISTATP)
 
 9000  CONTINUE
 C -- FINAL MESSAGE
@@ -502,7 +503,7 @@ C 'WILSON' STRUCTURE FACTOR
 
 C ------------------------------------------------------------------
 C     LEAST SQUARES PLOT, INCLUDING SUMMATION OVER NB RANGES OF RHO     
-      SUBROUTINE SUM(PTS)                                               
+      SUBROUTINE SUM(PTS,ISTATP)  
 \XWMISC
 \XWILSO
 \XCONST
@@ -510,6 +511,7 @@ C     LEAST SQUARES PLOT, INCLUDING SUMMATION OVER NB RANGES OF RHO
 \XLST06
 \STORE
 \XUNITS
+\XIOBUF
 
       DIMENSION SW(30),SR(30),SI(30),NSUM(30), MHKL(3),
      1          SWC(30),SIC(30)
@@ -640,7 +642,18 @@ C     LEAST SQUARES
       WRITE(NCWU,340) SLOPE,FLGK,BT,SC                                    
   340 FORMAT(1H ,7HSLOPE =,F8.4,4X,11HINTERCEPT =,F8.4,4X,              
      1/25H TEMPERATURE FACTOR (B) =,F8.4,4X,7HSCALE =,F8.4,             
-     2 4X,37HF(ABSOLUTE)**2 = SCALE*F(OBSERVED)**2)                     
+     2 4X,37HF(ABSOLUTE)**2 = SCALE*F(OBSERVED)**2)
+
+      IF (ISTATP .EQ. 1) THEN
+
+        WRITE(CMON,'(A,F8.4,/,A,F8.4,/,A)')
+     1  '^^WI SET _MW_BFACTR TEXT ',BT,
+     1  '^^WI SET _MW_BSCALE TEXT ',SC,
+     1  '^^CR'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+
+
       RETURN                                                            
       END                                                               
 C     ------------------------------------------------------------------
@@ -920,7 +933,7 @@ C CALCULATE FINAL E-VALUES AND RESCALED F'S
 C CREATE NEW IF REQUIRED                                      
 C OUTPUT REFLEXIONS FOR MULTAN                                      
 C PREPARE TABLES OF STATISTICS                                      
-      SUBROUTINE ECAL(KSYS,IPLOTN) 
+      SUBROUTINE ECAL(KSYS,IPLOTN, ISTATP) 
 \XWMISC
 \XWILSO
 \XESTAT
@@ -1127,7 +1140,15 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
      6 1H ,2X,11HMOD(E**2-1),5X,5F12.3,2X,3F12.3/                       
      7 1H ,2X,11H(E**2-1)**2,5X,5F12.3,2X,3F12.3/                       
      8 1H ,2X,11H(E**2-1)**3,5X,5F12.3,2X,3F12.3/                       
-     9 1H ,16H(MOD(E**2-1))**3,2X,5F12.3,2X,3F12.3)                     
+     9 1H ,16H(MOD(E**2-1))**3,2X,5F12.3,2X,3F12.3)
+
+      IF ( ISTATP .EQ. 1 ) THEN
+        WRITE(CMON,'(A,F12.3)')
+     1  '^^CO SET _MW_E2MIN1 TEXT ',VST(7,1)
+        CALL XPRVDU(NCVDU, 1,0)
+      END IF
+
+
       WRITE(NCWU,440) NST                                                 
   440 FORMAT(21H WEIGHTED SAMPLE SIZE,I10,4I12)                         
       WRITE(NCWU,450)                                                     
