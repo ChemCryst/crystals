@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2001/11/13 10:54:27  ckpgroup
+// SH: Log Axis Scaling fixed.
+//
 // Revision 1.2  2001/11/12 16:24:28  ckpgroup
 // SH: Graphical agreement analysis
 //
@@ -260,6 +263,7 @@ void CcPlotBar::DrawView()
 				}
 			}
 			fontsize--;
+			if (fontsize <= 0) textOK = true; //Bail out.
 		}
 
 		// temp string for text label
