@@ -12,7 +12,7 @@
 %       EVALUATE LNEWL5 = FALSE
 %    END IF
 % END IF
-^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
+^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE LARGE MODAL CANCEL='END'
 %% The first grid splits the main area from the status bar.
 ^^WI GRID SPLIT NROWS=2 NCOLS=1
 ^^WI {
