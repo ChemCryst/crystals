@@ -12,9 +12,10 @@
 
 #include "crystalsinterface.h"
 
-#ifdef __LINUX__
-#include <wx/textctrl.h>
-#define BASETEXTOUT wxTextCtrl
+#ifdef __BOTHWX__
+#include <wx/window.h>
+#include <wx/dcclient.h>
+#define BASETEXTOUT wxWindow
 #endif
 
 #ifdef __WINDOWS__
@@ -30,15 +31,14 @@ class CrGUIElement;
 #define FLAG( a,b )		( ( a & b ) == b )
 #endif	// FLAG
 
-#define         CONTROL_BYTE             "{"                      // Control Character
-#define         LINK_BYTE             "&"                      // Control Character
-#define		WRAP_BYTE			30			// Word-wrap byte
+#define         CONTROL_BYTE             '{'                      // Control Character
+#define         LINK_BYTE             '&'                      // Control Character
 
 typedef struct _tagCOLOURCODE
 {
-	UINT nFore;		// Foreground Colour Index
-	UINT nBack;		// Background Colour Index
-        BOOL nUnder;            // Underline
+	int nFore;		// Foreground Colour Index
+	int nBack;		// Background Colour Index
+        Boolean nUnder;            // Underline
 } COLOURCODE;
 
 #define COLOUR_WHITE		0
@@ -65,23 +65,23 @@ class CxTextOut : public BASETEXTOUT
 	public:
 		// methods
 		
-		static	CxTextOut * CreateCxTextOut( CrTextOut * container, CxGrid * guiParent );
-		static int AddTextOut( void) { mTextOutCount++; return mTextOutCount; };
-		static void RemoveTextOut( void) { mTextOutCount--; };
+	static	CxTextOut * CreateCxTextOut( CrTextOut * container, CxGrid * guiParent );
+	static int AddTextOut( void) { mTextOutCount++; return mTextOutCount; };
+	static void RemoveTextOut( void) { mTextOutCount--; };
 
         CxTextOut( CrTextOut * container );
         ~CxTextOut();
-		void Init();
-		void Focus();
-		void	SetIdealWidth(int nCharsWide);
-		void	SetIdealHeight(int nCharsHigh);
-		int	GetIdealWidth();
-		int	GetIdealHeight();
-		int	GetTop();
-		int	GetWidth();
-		int	GetHeight();
-		int	GetLeft();
-		void	SetGeometry(int top, int left, int bottom, int right );
+	void Init();
+	void Focus();
+	void	SetIdealWidth(int nCharsWide);
+	void	SetIdealHeight(int nCharsHigh);
+	int	GetIdealWidth();
+	int	GetIdealHeight();
+	int	GetTop();
+	int	GetWidth();
+	int	GetHeight();
+	int	GetLeft();
+	void	SetGeometry(int top, int left, int bottom, int right );
         void SetOriginalSizes();
         
 		// attributes
@@ -91,25 +91,78 @@ class CxTextOut : public BASETEXTOUT
         void  Empty();                      // Set the Head
         void  ChooseFont();                  
 
-		void SetDefaultTextColour( UINT nIndex ) { m_nDefTextCol = nIndex; if( GetSafeHwnd() ) Invalidate(); };	// Set default text colour
-		void AddLine( CString& strLine );	// Add a Line
-		void SetFont( LOGFONT& lf );		// Set the Font
-		void SetBackColour( COLORREF col );	// Set the background Colour
-		void SetColourTable( COLORREF* pColTable ) { memcpy( &m_ColTable, pColTable, sizeof( COLORREF ) * 16 ); if( GetSafeHwnd() ) Invalidate(); };
-		void SetHead( int nHead );			// Set the Head
-		int GetHead() const { return( m_nHead ); };	// Return the Head
-//		void SetMaxLines( UINT nMaxLines );		// Set max number of lines
-//		UINT GetMaxLines() const { return( m_nMaxLines ); };	// Return max number of lines
-		UINT GetMaxViewableLines();	// Return viewable lines
-		int GetLineCount() const { return( m_Lines.GetUpperBound() + 1 ); };	// Get Line Count
-		CString GetLine( int l ) const { return( m_Lines.GetAt( l ) ); };	// Retrieve a specific line
-                BOOL IsAHit( CString & commandString, CPoint wpoint );
+#ifdef __BOTHWX__
+#define COLORREF wxColour
+	int GetLineCount() const { return( m_Lines.GetCount() ); };	// Get Line Count
+#endif
 
-	// Generated message map functions
+	void AddLine( CcString& strLine );	// Add a Line
+#ifdef __WINDOWS__
+	void SetFont( LOGFONT& lf );		// Set the Font
+	void SetColourTable( COLORREF* pColTable ) { memcpy( &m_ColTable, pColTable, sizeof( COLORREF ) * 16 ); if( GetSafeHwnd() ) Invalidate(); };
+	int GetLineCount() const { return( m_Lines.GetUpperBound() + 1 ); };	// Get Line Count
+#endif
+	void SetBackColour( COLORREF col );	// Set the background Colour
+	void SetHead( int nHead );			// Set the Head
+	int GetHead() const { return( m_nHead ); };	// Return the Head
+        int GetMaxViewableLines();     // Return viewable lines
+
+        Boolean IsAHit( CcString & commandString, int x, int y );
+
 protected:
-	//{{AFX_MSG(CxTextOut)
+
+
+
+	
+	private:
+		// attributes
+	CrTextOut *	mWidget;
+	int		mIdealHeight;
+	int		mIdealWidth;
+	int    mHeight;
+	COLORREF		m_BackCol;			// Background Colour
+        bool mbOkToDraw;
+
+#ifdef __WINDOWS__
+	CFont*			m_pFont;			// Font we are using
+	LOGFONT			m_lfFont;			// Font as a LOGFONT
+	CStringArray	m_Lines;			// Lines
+#endif
+#ifdef __BOTHWX__
+	wxFont*			m_pFont;			// Font we are using
+	wxStringList    m_Lines;
+#endif
+	int				m_nHead;			// Head of the buffer
+        int                    m_nMaxLines;            // Maximum buffer size
+        int                    m_nDefTextCol;          // Default Text Colour Index
+        int                     m_nXOffset;                     // X Offset for drawing
+        int                    m_nMaxWidth;            // Maximum Written so far
+        int                    m_nAvgCharWidth;        // Average Char Width
+        bool                    m_bInLink;            // Word wrapping?
+#ifdef __WINDOWS__
+	HCURSOR			m_hCursor;			// Cursor for the window
+#endif
+        int                    m_nFontHeight;          // Height of the font
+	COLORREF		m_ColTable[ 16 ];	// Colour Table
+        int                    m_nLinesDone;           // Actual number of lines we drew last-time
+
+	void UpdateHScroll();
+	void UpdateVScroll();
+
+#ifdef __WINDOWS__
+#define PlatformDC CDC
+#endif
+#ifdef __BOTHWX__
+#define PlatformDC wxDC
+#endif
+
+	void RenderSingleLine( CcString&, PlatformDC*, int, int );
+	int  GetColourCodes( CcString&, COLOURCODE* );		// Remains the same
+
+#ifdef __WINDOWS__
+        protected:
 	afx_msg void OnPaint();
-	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+        afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
@@ -118,47 +171,20 @@ protected:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
         afx_msg void OnMouseMove( UINT nFlags, CPoint wpoint );
 	//}}AFX_MSG
-
-
-	
-	private:
-		// attributes
-		CrTextOut *	mWidget;
-		int		mIdealHeight;
-		int		mIdealWidth;
-		int    mHeight;
-		CFont*			m_pFont;			// Font we are using
-		LOGFONT			m_lfFont;			// Font as a LOGFONT
-		COLORREF		m_BackCol;			// Background Colour
-		CStringArray	m_Lines;			// Lines
-		int				m_nHead;			// Head of the buffer
-		UINT			m_nMaxLines;		// Maximum buffer size
-		UINT			m_nDefTextCol;		// Default Text Colour Index
-                int                     m_nXOffset;                     // X Offset for drawing
-		UINT			m_nMaxWidth;		// Maximum Written so far
-		UINT			m_nAvgCharWidth;	// Average Char Width
-		bool			m_bWordWrap;		// Word wrapping?
-                bool                    m_bInLink;            // Word wrapping?
-		HCURSOR			m_hCursor;			// Cursor for the window
-		UINT			m_nFontHeight;		// Height of the font
-		COLORREF		m_ColTable[ 16 ];	// Colour Table
-		UINT			m_nLinesDone;		// Actual number of lines we drew last-time
-
-		void UpdateHScroll();
-		void UpdateVScroll();
-
-		int	 GetLineInfo( CString&, CDC*, int );
-		void RenderSingleLine( CString&, CDC*, int, int );
-		int  GetColourCodes( CString&, COLOURCODE* );		// Remains the same
-
-#ifdef __WINDOWS__
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       public:
-            void OnChar(wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+	 void OnPaint(wxPaintEvent & evt);
+	 Boolean OnEraseBkgnd(wxEraseEvent & evt);
+	 void OnScroll(wxScrollWinEvent & evt);
+	 void OnSize(wxSizeEvent & evt);
+	 void OnLButtonUp(wxMouseEvent & evt);
+	 void OnRButtonDown(wxMouseEvent & evt);
+         void OnMouseMove(wxMouseEvent & evt);
+         void OnChar(wxKeyEvent & event );
+         DECLARE_EVENT_TABLE()
 #endif
 
 };
