@@ -10,6 +10,7 @@
 %%
 % VARIABLE INTEGER   CLAS UNIQ CHIR
 % VARIABLE REAL A B C AL BE GA
+% VARIABLE CHARACTER CLASS1
 %%
 %% Do some initial checks that all data is present
 %%
@@ -33,7 +34,7 @@
 ^^WI       @ 1,1 STATIC 'T' 'Crystal class:'
 ^^WI       @ 1,3 DROPDOWN 'CLASS' INFORM=YES ADDTOLIST
 ^^WI         'Triclinic' 'Monoclinic' 'Orthorhombic' 'Tetragonal'
-^^WI         'Rhombohedral' 'Hexagonal' 'Cubic' NULL
+^^WI         'Rhombohedral' 'Trigonal' 'Hexagonal' 'Cubic' NULL
 ^^WI       @ 1,5 STATIC 'T2' 'Unique axis:'
 ^^WI       @ 1,7 DROPDOWN 'UNIQUE' DISABLED=YES ADDTOLIST
 ^^WI         ' ' 'a' 'b' 'c' NULL
@@ -50,6 +51,31 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
+%% Step 1a - if SG already entered, get class
+%%
+% IF ( EXISTS 2 .NE. 0 ) THEN
+%   COPY '#GENERALEDIT 2'
+%   COPY 'LOCATE RECORDTYPE = 107'
+%   COPY 'TRANSFER FROM OFFSET = 0 TO CLASS1'
+%   COPY 'END'
+%   IF UPPERCASE CLASS1 STARTSWITH 'TRIC' THEN
+^^CO  SET CLASS SELECTION=1
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'MONO' THEN
+^^CO  SET CLASS SELECTION=2 SET UNIQUE SELECTION=3 DISABLED=NO
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'ORTH' THEN
+^^CO  SET CLASS SELECTION=3
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'TETR' THEN
+^^CO  SET CLASS SELECTION=4
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'RHOM' THEN
+^^CO  SET CLASS SELECTION=5
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'TRIG' THEN
+^^CO  SET CLASS SELECTION=6
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'HEXA' THEN
+^^CO  SET CLASS SELECTION=7
+%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'CUBI' THEN
+^^CO  SET CLASS SELECTION=8
+%   END IF
+% END IF
 %%
 %% Step 1b - Read their responses.
 %%
@@ -141,12 +167,15 @@
 %%
 %% The CLASS line
 %%
+%%         'Triclinic' 'Monoclinic' 'Orthorhombic' 'Tetragonal'
+%%         'Rhombohedral' 'Trigonal' 'Hexagonal' 'Cubic' NULL
 % CASE CLAS
 %   TRANSFER 'CLASS TRICLINIC' TO PUNCH
 %   TRANSFER 'CLASS MONOCLINIC' TO PUNCH
 %   TRANSFER 'CLASS ORTHORHOMBIC' TO PUNCH
 %   TRANSFER 'CLASS TETRAGONAL' TO PUNCH
 %   TRANSFER 'CLASS RHOMBOHEDRAL' TO PUNCH
+%   TRANSFER 'CLASS TRIGONAL' TO PUNCH
 %   TRANSFER 'CLASS HEXAGONAL' TO PUNCH
 %   TRANSFER 'CLASS CUBIC' TO PUNCH
 % END CASE
@@ -154,7 +183,7 @@
 %% The UNIQUE line, if reqd
 %%
 % CASE UNIQ
-%   TRANSFER 'UNIQUE NONE/UNKNOWN' TO PUNCH
+%   TRANSFER 'UNIQUE UNKNOWN' TO PUNCH
 %   TRANSFER 'UNIQUE A' TO PUNCH
 %   TRANSFER 'UNIQUE B' TO PUNCH
 %   TRANSFER 'UNIQUE C' TO PUNCH
@@ -172,11 +201,20 @@
 %%
 % TRANSFER 'OUTPUT "sg.dat"' TO PUNCH
 %%
-%% Close file.
+%% Switch PUNCH unit to sg.hkl
+%%
+% COPY '#RELEASE PUNCH sg.hkl'
+%%
+%% Output a plain HKLF4 format listing of reflections
+%%
+% COPY '#PUNCH 6 F'
+% COPY 'END'
+%%
+%% Close punch file.
 %%
 % COPY '#RELEASE PUNCH bfile.pch'
 %%
-%%
+%% Run the program
 %%
 % COPY '#SPAWN "CRYSDIR:Spacegroup.exe" -b sg.ini -t "CRYSDIR:tables.txt"'
 % 
