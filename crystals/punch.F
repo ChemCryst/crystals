@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2001/02/26 10:28:03  richard
+C RIC: Added changelog to top of file
+C
 C
 CODE FOR XPCH5S
       SUBROUTINE XPCH5S(IN)
@@ -44,12 +47,13 @@ C      WITH ALIEN PROGRAMS
 CDJWNOV2000 REINTRODUCE PUNCHING OF ALL DATA
 C      MD5TMP = MIN (13, MD5)
       MD5TMP = MIN(18, MD5)
-      J = M5 + MD5TMP - 1
-      WRITE(NCPU,1150) (STORE(I), I = M5, J)
+      J = M5 + MD5TMP - 5
+      WRITE(NCPU,1150) (STORE(I), I = M5, J),
+     1                (ISTORE(I), I= J+1, M5+MD5TMP -1 )
 1150  FORMAT
      1 ('ATOM ',A4,1X,6F11.6/
      2 'CON U[11]=',6F11.6/
-     3 'CON SPARE=',6F11.2)
+     3 'CON SPARE=',F11.2,5I11)
       M5 = M5 + MD5
 1170  CONTINUE
 C--CHECK IF THERE ARE ANY LAYER SCALES TO OUTPUT
