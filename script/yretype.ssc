@@ -21,11 +21,7 @@
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %  LOOP
 %  	EVALUATE N = LOOPCOUNTER + STARTFROM
-% 	CLEAR
-% 	  INSERT '%EVALUATE RN = '
-% 	  STORE FORMAT /(I4)/ LENGTH 3 INTEGER N
-% 	  INSERT '.0'
-% 	EXECUTE
+%       EVALUATE RN = REAL N
 %	COPY 'TOP'
 %	LOOP
 %		ON EDITERROR TERMINATE
@@ -48,13 +44,19 @@
 
 %% N now holds the new serial for our atom so lets rename it
 %     EVALUATE STARTFROM = N
-%     COPY '#EDIT'
+%     IF ( CALLED .EQ. FALSE ) THEN
+%       COPY '#EDIT'
+%     END IF
 %     CLEAR
-%       INSERT 'RENAME '
-%       TRANSFER '%INSERT "' // CATOM // ' ' // CTYPE // '"' TO SCRIPT
-%       INSERT '('
-%       STORE FORMAT /(I3)/ LENGTH 3 INTEGER N
-%       INSERT ')'
-%     SEND
-%     COPY 'END'
+%     INSERT 'RENAME '
+%     TRANSFER '%INSERT "' // CATOM // ' ' // CTYPE // '"' TO SCRIPT
+%     INSERT '('
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER N
+%     INSERT ')'
+%     IF ( CALLED ) THEN
+%       QUEUE SEND
+%     ELSE
+%       SEND
+%       COPY 'END'
+%     END IF
 %END SCRIPT
