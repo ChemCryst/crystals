@@ -1280,7 +1280,7 @@ C      WRITE (ISTOUT,*) 'FINISHED'
 cdjwjan00      INLINE = 2
       CALL ZMORE(CLINE,0)
       ENDIF
-11    FORMAT (' Scale is ',F7.2, ' (',2F7.2,')')
+11    FORMAT (' Scale is ',F9.2, ' (',2F9.2,')')
 C ---- GET A TITLE
       IF (ITITLE.GT.0) CALL ZCAPT
       IF (IMENCN.EQ.2) CALL ZMENUS

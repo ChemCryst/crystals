@@ -122,6 +122,7 @@ CDJW - CALL ZESCAL ENSURE THAT THE CORRECT SCALE IS IN THE HEADER
 C- CAUSING PROBLEMS REMOVED AGAIN MAR97 -          CALL ZESCAL
           WRITE (IFOUT,503) XEMIN*0.1*RES,YEMIN*0.1*RES
      c    ,XEMAX*0.1*RES,YEMAX*0.1*RES
+503       FORMAT ('%%BoundingBox: ',4F8.0)
 CDJW
           WRITE (IFOUT,'(13A)') '%%EndComments'
         ENDIF
@@ -147,19 +148,18 @@ CDJW
           WRITE (IFOUT,'(47A)')
      C   '300 420 translate 90 rotate -420 -300 translate'
           WRITE (IFOUT,501) 1.0/RES, 1.0/RES
+501       FORMAT (F4.2,2X,F4.2,' scale')
 CDJWMAR97 ENDIF MOVED UP 2 LINES
         ENDIF
 C SET LINE WIDTH
           WRITE (IFOUT,502) 0.5*RES
+502       FORMAT (F4.2,' setlinewidth')
       ENDIF
       IF (IPOST.EQ.2) THEN
 C CLEAR IF AT END OF PAGE
         IF (IENCAP.EQ.0)  WRITE (IFOUT,'(8A)') 'showpage'
         IPOST = 1
       ENDIF
-501   FORMAT (F4.2,2X,F4.2,' scale')
-502   FORMAT (F4.2,' setlinewidth')
-503   FORMAT ('%%BoundingBox: ',4F8.0)
       GOTO 9999
 700   CONTINUE
 C EGA
@@ -716,17 +716,19 @@ C POSTSCRIPT
         WRITE (IFOUT,'(A)') '0 setgray'
       ENDIF
 C      WRITE (IFOUT,'(17A)') '/Times-Roman findfont '
-      WRITE (IFOUT,'(17A)') '/Helvetica-Bold findfont '
-      WRITE (IFOUT,503) IFONT
-      WRITE (IFOUT,'(7A)') 'setfont'
+c      WRITE (IFOUT,'(17A)') '/Helvetica-Bold findfont '
+c      WRITE (IFOUT,503) IFONT
+c503   FORMAT (I5,' scalefont ')
+c      WRITE (IFOUT,'(7A)') 'setfont'
+      write(ifout,'(a,i5,a)') '/Helvetica-Bold findfont ',
+     1 ifont,' scalefont setfont '
       WRITE (IFOUT,504) IFONT
+504   FORMAT ('/ywid ',I5,' def')
       WRITE (IFOUT,501) (IX+INT(XCEN+XOFF))/10.0,
      + (IY+INT(YCEN+YOFF))/10.0
-      WRITE (IFOUT,502) TEXT
 501   FORMAT (F7.2,2X,F7.2,' ywid sub moveto')
+      WRITE (IFOUT,502) TEXT
 502   FORMAT ('(',A,') show')
-503   FORMAT (I5,' scalefont ')
-504   FORMAT ('/ywid ',I5,' def')
 9999  CONTINUE
       RETURN
       END

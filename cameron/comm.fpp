@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2001/11/06 12:42:34  Administrator
+C Create proper bounding box for EPS
+C
 C Revision 1.16  2001/06/18 08:17:24  richard
 C Set proper resolution for screen device in GIL version.
 C
@@ -183,6 +186,7 @@ cmay2000        CALL ZROT(-ANG,2)
       ENDIF
             GOTO 9999
 101   CONTINUE
+C
 C COPY
 C LOAD IN THE DEVICE PARAMETERS IF THEY HAVE CHANGED
 C NEED TO CHECK THE FILE - IS IT OPEN?
@@ -255,6 +259,7 @@ c        open IFOUT as scratchfile (not normal see below)
           RETURN
         ENDIF
       ENDIF
+c
 C start "copy" work here
       IF (ISCRN.NE.IHARD) THEN
         XCEN = XCENH
@@ -366,7 +371,11 @@ cmay2000        CALL ZROT(-ANG,2)
       ENDIF
       IPOST = 2
 C      RESET THE SCALE
+cdjwjun2002
+      write(cline,'(a,2f10.3)') ' scale', scale, oldscl
+      call zmore(cline,0)
       SCALE  = OLDSCL 
+      ares = 1./res
       res = 1.
       CALL ZCLEAR
 cdjwnov2001 - post-process encapsulated postscript
@@ -380,7 +389,7 @@ c        open real file on scratchfile unit not normal!
           CALL ZMORE1 ('Error on file open:'// cfort ,0)
           RETURN
         ENDIF
-       call xpostp (IFOUT, ISCRAT, IFONT)
+       call xpostp (IFOUT, ISCRAT, IFONT, ares)
       endif
 cdjwdec99
 c 'copy' finished - close the files
@@ -5463,12 +5472,15 @@ CODE FOR CAMPRESETS
       END
 C
 CODE FOR XPOSTP
-      SUBROUTINE XPOSTP(IIN, IOUT, IFONT)
+      SUBROUTINE XPOSTP(IIN, IOUT, IFONT, SCALE)
 C POST PROCESS A .PS FILE TO SET .EPS BOUNDING BOX
 C IFONT  NEW FONT SIZE
+C RE-ORGANIES JUNE 2002.  THE BOUNDINGBOX IS DETERMINED FROM THE
+C POINTS TO BE PLOTTED, THEN SHIFTED TO AN 0,0 ORIGIN. THE PICTUE
+C IS SCALED AND AN ORIGIN SHIFT APPLIED.
       CHARACTER *132 CLINE
-      ALlx=100000
-      ALly=100000
+      Allx=100000
+      Ally=100000
       Urx =-100000
       Ury =-100000
       REWIND (IIN)
@@ -5482,29 +5494,32 @@ C
             READ(CLINE,'(I5)', ERR=100)  JFONT
       ENDIF
       READ(CLINE, '(F7.0,F9.0)', ERR=100) A,B
-      IF (A .LT. ALlx) ALlx = A
+      IF (A .LT. Allx) Allx = A
       IF (A .GT. Urx) Urx = A
 
-      IF (B .LT. ALly) ALly = B
+      IF (B .LT. Ally) Ally = B
       IF (B .GT. Ury) Ury = B
       NLIN=NLIN+1
-
       GOTO 100
 200   CONTINUE
-      WRITE(CLINE,*) 'Figure limits ' , ALlx,ALly,Urx,Ury,NLIN
+      WRITE(CLINE,*) 'Figure limits ' , Allx,Ally,Urx,Ury,NLIN,
+     1 scale
       CALL ZMORE(CLINE,0)
-      DELTAX = (Urx-ALlx) * .05
-      DELTAY = (Ury-ALly) * .05
-      ALlx = MAX (0., ALlx - DELTAX)
-      Urx = Urx + 2.* DELTAX
-      ALly = MAX (0., ALly - 2.* DELTAY)
-      Ury = Ury + DELTAY
-      WRITE(CLINE,*) 'Bounding Box ', ALlx,ALly,Urx,Ury
+      DELTAX = Urx-Allx
+      DELTAY = Ury-Ally
+C (18~1/4 INCH)
+      Urx =  18. + DELTAX
+      Ury =  18. + DELTAY
+      WRITE(CLINE,*) 'Unscaled Bounding Box   0   0 ', Urx,Ury
       CALL ZMORE(CLINE,0)
-      WRITE(CLINE,*) 'Old font was ',JFONT
+      sx = 567./urx
+      sy = 828./ury
+      sc = min(sx,sy)
+      Urx = sc * Urx
+      Ury = sc * Ury
+      WRITE(CLINE,*) 'Scaled Bounding Box     0   0 ', Urx,Ury
       CALL ZMORE(CLINE,0)
-      WRITE(CLINE,*) 'New font is ',IFONT
-      CALL ZMORE(CLINE,0)
+      SC = 0.95*sc
 C
       REWIND (IIN)
       NLIN = 0
@@ -5513,14 +5528,15 @@ C
             READ(IIN,'(15X,4F8.0)') OALlx,OALly,OUrx,OUry
             WRITE(CLINE,*) 'Original Bounding Box ',
      1                   OALlx,OALly,OUrx,OUry
-
             CALL ZMORE(CLINE,0)
             READ(IIN, '(A)') CLINE
+            CALL ZMORE(CLINE,0)
             READ(IIN, '(A)') CLINE
+            CALL ZMORE(CLINE,0)
       ENDIF
       WRITE(IOUT,'(A)') '%!PS-Adobe-2.0 EPSF-1.2'
       WRITE(IOUT,'(A,4I8)') '%%BoundingBox: ',
-     1 nint(ALlx),nint(ALly),nint(Urx),nint(Ury)
+     1 0, 0, nint(Urx), nint(Ury)
       WRITE(IOUT,'(A)') '%%EndComments'
       WRITE(IOUT,'(A)') CLINE
 300   CONTINUE
@@ -5533,13 +5549,16 @@ C
      1 '/ywid  ', IFONT, 'def'
       ELSE
             IF (NLIN .LE. 12) THEN
-C                  SCRAP TRANSLATE AND SCALE LINES
-                  IF(CLINE(9:17) .EQ. 'translate') THEN
-                        READ(IIN,'(A)') CLINE
-                        GOTO 300
+                  IF(CLINE(6:17) .EQ. 'setlinewidth') THEN
+                  write(iout,'(2f8.2,a)') sc, sc, ' scale' 
+                  write(iout,'(f8.2,a)') 0.5/sc,  ' setlinewidth'
+                  write(iout,'(2f8.2,a)') 18.-allx, 18.-ally, 
+     1            '  translate'
+                  goto 300
                   ENDIF
             ENDIF
-            WRITE(IOUT,'(A)') CLINE
+            CALL XCTRIM( CLINE, NCHAR)
+            WRITE(IOUT,'(A)') CLINE(1:NCHAR)
       ENDIF
       GOTO 300
 350   CONTINUE
