@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:28
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2002/02/18 11:21:13  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.5  2001/12/13 16:20:33  ckpgroup
 //   SH: Cleaned up the key code. Now redraws correctly, although far too often.
 //   Some problems with mouse-move when key is enabled. Fine when disabled.
@@ -36,6 +39,7 @@
 class CcPlotData;
 class CcTokenList;
 class CcPoint;
+class CrMenu;
 
 #define TEXT_VCENTRE	1
 #define TEXT_HCENTRE	2
@@ -68,11 +72,13 @@ class   CrPlot : public CrGUIElement
         CrPlot( CrGUIElement * mParentPtr );
         ~CrPlot();
 
+        void ContextMenu(CcPoint * xy, int x1, int y1);
         void ReDrawView(bool print);
         void Display();
         void CrFocus();
         CcParse ParseInput( CcTokenList * tokenList );
         void    SetGeometry( const CcRect * rect );
+        void    MenuSelected(int id);
         CcRect  GetGeometry();
         CcRect  CalcLayout(bool recalculate=false);
         void    SetText( CcString text );
@@ -81,6 +87,7 @@ class   CrPlot : public CrGUIElement
 
 //attributes
         CcPlotData* attachedPlotData;
+        CrMenu* m_cmenu;
         
 };
 

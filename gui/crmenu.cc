@@ -319,3 +319,65 @@ void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
     }
 
 }
+
+void CrMenu::Substitute(CcString data)
+{
+//Replace all occurences of _D in the command and text fields with the label.
+
+    CcMenuItem* menuItem = nil;
+    CcString acommand, atext;
+    mMenuList.Reset();
+    while( menuItem = (CcMenuItem*)mMenuList.GetItemAndMove() )  //Assignment inside conditional (OK)
+    {
+        if (menuItem->type == CR_SUBMENU)
+        {
+            menuItem->ptr->Substitute(data);
+            atext    = menuItem->originaltext;
+            int i;
+            for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'D')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data + lastPart;
+                }
+            }
+            menuItem->SetText(atext);
+        }
+        else if (menuItem->type == CR_MENUITEM)
+        {
+            acommand = menuItem->originalcommand;
+            atext    = menuItem->originaltext;
+            int i;
+            for (i = 0; i < acommand.Len()-1; i++)
+            {
+                if(acommand[i] == '_' && acommand[i+1] == 'D')
+                {
+                    CcString firstPart = acommand.Chop(i+1,acommand.Len());
+                    CcString lastPart  = acommand.Chop(1,i+2);
+                    acommand = firstPart + data + lastPart;
+                }
+            }
+            for (i = 0; i < atext.Len()-1; i++)
+            {
+                if(atext[i] == '_' && atext[i+1] == 'D')
+                {
+                    CcString firstPart = atext.Chop(i+1,atext.Len());
+                    CcString lastPart  = atext.Chop(1,i+2);
+                    atext = firstPart + data + lastPart;
+                }
+            }
+            menuItem->command = acommand;
+            menuItem->SetText(atext);
+            if ( (CcController::theController)->status.ShouldBeEnabled( menuItem->enable, menuItem->disable ) )
+            {
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, true);
+            }
+            else
+            {
+                 ((CxMenu*)ptr_to_cxObject)->EnableItem( menuItem->id, false);
+            }
+        }
+    }
+}

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2002/02/18 11:21:13  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.6  2001/12/13 16:20:32  ckpgroup
 //   SH: Cleaned up the key code. Now redraws correctly, although far too often.
 //   Some problems with mouse-move when key is enabled. Fine when disabled.
@@ -40,6 +43,8 @@
 #include    "ccplotdata.h"
 #include    "ccrect.h"
 #include    "cctokenlist.h"
+#include    "crmenu.h"
+#include    "ccmenuitem.h"
 #include    "cccontroller.h"    // for sending commands
 #include    "crwindow.h" // for getting cursor keys
 
@@ -52,6 +57,7 @@ CrPlot::CrPlot( CrGUIElement * mParentPtr )
     mXCanResize = true;
     mYCanResize = true;
     attachedPlotData = nil;
+    m_cmenu = nil;
 }
 
 CrPlot::~CrPlot()
@@ -150,6 +156,29 @@ CcParse CrPlot::ParseInput( CcTokenList * tokenList )
                 ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h);
                 break;
             }
+      case kTDefinePopupMenu:
+      {
+        tokenList->GetToken();
+        LOGSTAT("Defining Popup Plot Menu...");
+        m_cmenu = new CrMenu( this, POPUP_MENU );
+        if ( m_cmenu != nil )
+        {
+// ParseInput generates all objects in the menu
+           CcParse menuP = m_cmenu->ParseInput( tokenList );
+           if ( ! menuP.OK() )
+           {
+             delete m_cmenu;
+             m_cmenu = nil;
+           }
+        }
+        break;
+      }
+      case kTEndDefineMenu:
+      {
+        tokenList->GetToken();
+        LOGSTAT("Popup Plot Menu Defined.");
+        break;
+      }
 
             default:
             {
@@ -274,4 +303,35 @@ CcString CrPlot::GetDataFromPoint(CcPoint* point)
 void CrPlot::CreateKey(int numser, CcString* names, int** col)
 {
 	((CxPlot*)ptr_to_cxObject)->CreateKey(numser, names, col);
+}
+
+
+void CrPlot::ContextMenu(CcPoint * xy, int x1, int y1)
+{
+    if ( !m_cmenu ) return;
+    if(!attachedPlotData) return;
+
+    CcString data = attachedPlotData->GetDataFromPoint(xy);
+
+    if (!(data == "error")) {
+
+        m_cmenu->Substitute(data);
+        if ( ptr_to_cxObject ) m_cmenu->Popup(x1,y1,(void*)ptr_to_cxObject);
+    }
+
+}
+
+void CrPlot::MenuSelected(int id)
+{
+    CcMenuItem* menuItem = (CcController::theController)->FindMenuItem( id );
+
+    if ( menuItem )
+    {
+        CcString theCommand = menuItem->command;
+        SendCommand(theCommand);
+        return;
+    }
+
+    LOGERR("CrPlot:MenuSelected Plot cannot find menu item id = " + CcString(id));
+    return;
 }

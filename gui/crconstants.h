@@ -5,6 +5,9 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2001/10/10 12:44:50  ckp2
+// The PLOT classes!
+//
 // Revision 1.13  2001/03/08 15:31:50  richard
 // Moved some token definitions here so that they can be shared between classes.
 //
@@ -101,6 +104,7 @@
 #define kSHorizontal  "HORIZONTAL"
 #define kSVertical    "VERTICAL"
 #define kSBoth    "BOTH"
+#define kSDefinePopupMenu   "DEFINEPOPUPMENU"
 
 
 
@@ -151,7 +155,8 @@ enum
  kTOpenGrid,
  kTHorizontal,
  kTVertical,
- kTBoth
+ kTBoth,
+ kTDefinePopupMenu
 };
 
 

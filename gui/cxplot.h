@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/02/18 15:16:44  DJWgroup
+//   SH: Added ADDSERIES command, and allowed series to have different lengths.
+//
 //   Revision 1.9  2002/02/18 11:21:14  DJWgroup
 //   SH: Update to plot code.
 //
@@ -172,11 +175,14 @@ private:
 		void MakeMetaFile(int w, int h);
 		void PrintPicture();
 
+        afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
+
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		afx_msg void OnSize(UINT nType, int cx, int cy);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnMenuSelected (int nID);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

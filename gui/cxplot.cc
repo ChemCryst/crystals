@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2002/02/18 11:21:14  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.14  2002/01/16 10:33:13  ckp2
 //   More meddling. Improved window behaviour by using default CWnd attributes
 //   rather than making own WNDCLASS structure.
@@ -782,6 +785,8 @@ BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MOUSEMOVE()
+   ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
+   ON_WM_RBUTTONUP()
 	ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
       ON_WM_KEYDOWN()
 	ON_WM_LBUTTONDOWN()
@@ -1258,3 +1263,19 @@ void CxPlotKey::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 */
+
+
+
+
+void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
+{
+    CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
+    ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
+    ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,wpoint.x,wpoint.y);
+}
+
+
+void CxPlot::OnMenuSelected(int nID)
+{
+    ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
+}

@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2001/09/07 14:39:06  ckp2
+//
+//   New modelwindow function lets the user choose a background bitmap to
+//   display behind the model. David is correct; I've been to too many
+//   conferences. But it's too late now, I've done it.
+//
 //   Revision 1.11  2001/06/17 15:06:48  richard
 //   Rename member variables so that they are prefixed "m_".
 //   Moved a lot of code over into CcModelDoc - such as sending lists of atoms
@@ -96,7 +102,6 @@ class   CrModel : public CrGUIElement
 
 
 // CrModel
-#define kSDefinePopupMenu   "DEFINEPOPUPMENU"
 #define kSAttachModel       "ATTACH"
 #define kSModelShow         "SHOW"
 #define kSModelBond         "BOND"
@@ -138,8 +143,7 @@ class   CrModel : public CrGUIElement
 
 enum
 {
- kTDefinePopupMenu = 1400,
- kTAttachModel,
+ kTAttachModel=1400,
  kTModelShow,
  kTModelBond,
  kTModelAtom,
