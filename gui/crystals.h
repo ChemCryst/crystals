@@ -1,6 +1,11 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2002/07/15 12:19:13  richard
+// Reorder headers to improve ease of linking.
+// Update program to use new standard C++ io libraries.
+// Update to use new version of MFC (5.0 with .NET.)
+//
 // Revision 1.9  2001/03/27 15:15:00  richard
 // Added a timer to the main window that is activated as the main window is
 // created.
@@ -101,6 +106,37 @@ public:
 };
 
 extern CCrystalsApp theApplication;
+
+#ifdef __CR_WIN__
+
+//Remove dependency of new MFC library on OLEACC.DLL, by providing our own 
+//proxy functions, which do nothing if OLEACC.DLL cannot be loaded.
+
+typedef LRESULT (_stdcall *pfnAccessibleObjectFromWindow)(HWND hwnd, DWORD dwId, 
+                                                    REFIID riid, void **ppvObject);
+typedef LRESULT (_stdcall *pfnCreateStdAccessibleObject)(HWND hwnd, LONG idObject, 
+                                                    REFIID riid, void** ppvObject);
+typedef LRESULT (_stdcall *pfnLresultFromObject)(REFIID riid, WPARAM wParam, 
+                                                    LPUNKNOWN punk);
+
+class COleaccProxy
+{
+public:
+    COleaccProxy(void);
+    virtual ~COleaccProxy(void);
+
+private:
+    static HMODULE m_hModule;
+    static BOOL m_bFailed;
+    
+public:
+    static void Init(void);
+    static pfnAccessibleObjectFromWindow m_pfnAccessibleObjectFromWindow;
+    static pfnCreateStdAccessibleObject m_pfnCreateStdAccessibleObject;
+    static pfnLresultFromObject m_pfnLresultFromObject;
+};
+
+#endif
 
 
 #endif // !defined(AFX_CRYSTALS_H__DEE5F4C5_D4B0_11D1_B74B_0080C8372E35__INCLUDED_)
