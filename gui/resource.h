@@ -9,6 +9,7 @@
 #define IDC_CURSOR1                     106
 #define IDC_CURSOR2                     107
 #define IDC_CURSOR3                     108
+#define IDC_CURSOR4                     109
 
 // Next default values for new objects
 // 
