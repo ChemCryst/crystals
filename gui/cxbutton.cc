@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.10  2001/09/07 14:35:19  ckp2
 //   LENGTH='a string' option lets the button length be based on a string other
 //   than the one actually displayed. Useful for making professional looking
@@ -73,6 +76,7 @@ CxButton::CxButton(CrButton* container)
      ptr_to_crObject = container;
      m_lengthStringUsed = false;
      m_lengthString = "";
+     m_Slim = false;
 }
 
 CxButton::~CxButton()
@@ -157,12 +161,18 @@ int CxButton::GetIdealHeight()
     GetWindowText(text);
     size = dc.GetOutputTextExtent(text);
     dc.SelectObject(oldFont);
-    return ( size.cy + 10 );
+    if ( m_Slim )
+      return ( size.cy + 2 );
+    else
+      return ( size.cy + 10 );
 #endif
 #ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
-      return (cy+10); // nice height for buttons
+      if ( m_Slim )
+        return (cy+3); // nice height for slim buttons
+      else
+        return (cy+10); // nice height for buttons
 #endif
 
 }
@@ -264,6 +274,11 @@ void CxButton::SetLength(CcString ltext)
 {
     m_lengthStringUsed = true;
     m_lengthString = ltext;
+}
+
+void CxButton::SetSlim()
+{
+    m_Slim = true;
 }
 
 void CxButton::Disable(Boolean disabled)

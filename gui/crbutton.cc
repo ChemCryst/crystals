@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2003/01/14 10:27:18  rich
+// Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 // Revision 1.10  2001/12/12 14:06:36  ckp2
 // RIC: Give buttons the "INFORM=NO" attribute and they'll not inform you that
 // they've been pressed. Instead you can query them using ^^?? BTNNAME STATE and
@@ -151,6 +154,12 @@ CcParse CrButton::ParseInput( CcTokenList * tokenList )
             {
                 tokenList->GetToken(); // Remove that token!
                 ((CxButton*)ptr_to_cxObject)->SetLength( tokenList->GetToken() );
+                break;
+            }
+            case kTSlim:
+            {
+                tokenList->GetToken(); // Remove that token!
+                ((CxButton*)ptr_to_cxObject)->SetSlim();
                 break;
             }
             case kTSetCommitText:

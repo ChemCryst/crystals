@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/01/14 10:27:18  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.8  2001/09/07 14:35:19  ckp2
 //   LENGTH='a string' option lets the button length be based on a string other
 //   than the one actually displayed. Useful for making professional looking
@@ -69,6 +72,7 @@ class CxButton : public BASEBUTTON
         void CxDestroyWindow();
         void    SetText( char * text );
         void    SetLength( CcString ltext );
+        void    SetSlim();
         void    SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
         int GetLeft();
@@ -86,6 +90,7 @@ class CxButton : public BASEBUTTON
         static int mButtonCount;
         bool m_lengthStringUsed;
         CcString m_lengthString;
+        Boolean m_Slim;
 //      LDefaultOutline * mOutlineWidget;
 
 
