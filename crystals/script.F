@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2000/12/08 16:12:01  richard
+C RIC: Modify KSCTRN to copy CHARACTER data into store for length longer than
+C 1 byte. Default behaviour remains backwards compatible.
+C
 C Revision 1.22  2000/09/20 15:34:09  ckp2
 C Removed debug statement
 C
@@ -5900,7 +5904,7 @@ C                    2      MOVE DATA TO 'IVALUE' FROM VARIABLE
 C      CVARIB      NAME OF VARIABLE. IF THIS IS ALL BLANK, NO ACTION
 C                  IS TAKEN, AND THE ROUTINE IMMEDIATELY RETURNS.
 C      IVALUE      VALUE
-C      ILGTH       LENGTH IN BYTES TO TRANSFER, IF CHARACTER VARIABLE
+C      ILGTH       LENGTH IN WORDS TO TRANSFER, IF CHARACTER VARIABLE
 C
 C      RETURN VALUES OF KSCTRN
 C
@@ -5936,7 +5940,7 @@ C
 C         A CHARACTER VARIABLE - CONVERT TO HOLLERITH
 C          WRITE (CBUFF, '(A4)') IVALUE
          DO J = 1, ILGTH
-          READ (CBUFF((J*4)-3:(J*4)), '(A4)') IVALUE(J)
+          WRITE (CBUFF((J*4)-3:(J*4)), '(A4)') IVALUE(J)
          END DO
 CDJW JUL 98 REPLACE CALL TO KSCSCD WITH CALL TO REPLACEMENT ROUTINE
          ISTAT = KSCREP (ICVAL, CBUFF(1:(ILGTH*4)), 4)
