@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C
@@ -66,7 +70,6 @@ C--ADD SPECIFIC DERIVATIVES INTO THE L.H.S. OF THE NORMAL MATRIX
             END DO
             param_l_pos = param_l_pos + 1                     ! Move to the new row of parameters in the param list
          else
-            AMAT11(K11)=AMAT11(K11)+SCONST*DERIVS(J)
             AMAT11(K11) = AMAT11(K11)+SCONST*DERIVS(J)        ! A parameter is always correlated to it's self
             do K = 1, PARAM_LIST(param_l_pos)
                I11 = K11 + (PARAM_LIST(param_l_pos+K) - (J))  ! Get the position of the parameter we what to add
