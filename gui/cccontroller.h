@@ -95,6 +95,7 @@ class	CcController
 		CrGUIElement *	mProgressWindow;
             CcString m_newdir;
             Boolean m_restart;
+            Boolean m_Wait;
 
 	protected:
 		// methods
@@ -123,6 +124,7 @@ class	CcController
 		
 		CcCommandQueue	mCrystalsCommandQueue;
 		CcCommandQueue  mInterfaceCommandQueue;
+
 
 };
 

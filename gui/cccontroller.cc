@@ -11,6 +11,16 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.14  1999/06/23 19:51:44  dosuser
+// RIC: Added code to postmessage on adding stuff to the interface command
+// queue. Didn't work very well, so I commented it out again.
+// RIC: No need to use CcController::theController pointer from within
+// the CcController class!
+// RIC: Checks for ^^ in Tokenize and ^^?? in AddInterfaceCommand have
+// been revised to only check the first 6 characters rather than the
+// whole string (This allows for accidental extra spaces, while not going
+// over the top.)
+//
 // Revision 1.13  1999/06/22 12:55:42  dosuser
 // RIC: Added GetKeyValue and SetKeyValue to ParseInput function + supporting
 // subroutines. They allow a key (single word) to be stored in a global file
@@ -150,6 +160,8 @@ CcController::CcController( CxApp * appContext )
 
       m_newdir = "";
       m_restart = false;
+
+      m_Wait = false;
 
 //Docs. (A doc is attached to a window (or vice versa), and holds and manages all the data)
 	mCurrentChartDoc = nil;
@@ -977,6 +989,7 @@ Boolean	CcController::GetCrystalsCommand( char * line )
 	while ( ! mCrystalsCommandQueue.GetCommand( line ) )
 	{
 //The queue is empty, so wait efficiently. Release the mutex first, so that someone else can write to the queue!
+            m_Wait = false;
 #ifdef __WINDOWS__
 		ReleaseMutex( mCrystalsCommandQueueMutex );
 	    //WaitForSingleObject( mCrystalsCommandQueueEmptyEvent, INFINITE ); //Sometimes we miss the pulseevent, so don't wait forever (just wait efficiently).
@@ -1000,6 +1013,9 @@ Boolean	CcController::GetCrystalsCommand( char * line )
 //Signal the text output that NOECHO has finished. (In case it was ever started.)
       ((CrMultiEdit*)GetTextOutputPlace())->NoEcho(false);
       ((CrMultiEdit*)GetBaseTextOutputPlace())->NoEcho(false);
+
+      m_Wait = true;
+
 	return (true);
 }
 
