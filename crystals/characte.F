@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+
 CODE FOR KCCEQL
       FUNCTION KCCEQL ( CDATA , ISTART , CMATCH )
 C
@@ -29,6 +31,44 @@ C
       IF ( IPOS .LE. 0 ) RETURN
 C
       KCCEQL = ISTART + IPOS - 1
+      RETURN
+      END
+
+CODE FOR KCLEQL
+      FUNCTION KCLEQL ( CDATA , CMATCH )
+C
+C -- LOCATE LAST SUBSTRING IN STRING
+C
+C -- THIS FUNCTION IS SIMILAR TO FORTRAN 'INDEX' BUT BACKWARDS
+C
+C      CDATA       STRING IN WHICH TO SEARCH
+C      CMATCH      STRING TO SEARCH FOR
+C
+C      KCLEQL      -1      NO MATCH
+C                  +VE     POSITION IN 'CDATA' OF CMATCH
+C
+C
+      CHARACTER*(*) CDATA , CMATCH
+C
+C
+      KCLEQL = -1
+C
+      LENMAT = LEN ( CMATCH )
+      LENDAT = LEN ( CDATA )
+      IFINSH = LENDAT - LENMAT
+
+100   CONTINUE
+      IF ( IFINSH .GT. 0 ) THEN
+         IPOS = INDEX ( CDATA(IFINSH:IFINSH+LENMAT), CMATCH )
+         IF ( IPOS .GT. 0 ) THEN
+            KCLEQL = IPOS + IFINSH - 1
+            RETURN
+         END IF
+         IFINSH = IFINSH - 1
+         GOTO 100
+      ENDIF
+
+      RETURN
       RETURN
       END
 C
