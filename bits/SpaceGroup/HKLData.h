@@ -39,14 +39,18 @@
 #define __HKL_DATA_H__
 #include "Collections.h"
 #include <stdio.h>
+#include "Matrices.h"
 
 class Reflection
 {
 public:
+    Matrix<float>* tHKL;
     int h, k, l;
     double i, iSE;
     
     Reflection(char* pString);
+    ~Reflection();
+    Matrix<float>* getHKL();
 //    double intSigmaRatio();
 //    bool intLess3Sigma();
 //    bool kPlusLEven();	//A - centered
@@ -69,6 +73,8 @@ class HKLData
         /**********************************************/
         HKLData(char* pPath);	
         ~HKLData();
+        int numberOfReflections();
+        Reflection* getReflection(int pIndex);
         bool find(Reflection* pReflection);
         void centeringTypeInfo();
 };

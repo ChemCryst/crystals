@@ -150,6 +150,7 @@ class Matrix
             }
             delete[] iMatrix;
             iXSize = pMatrix.iXSize;
+            iSize = iYSize*iXSize; 
             iMatrix=tNewMatrix;
             return *this;
         }
@@ -258,6 +259,33 @@ class Matrix
                 iMatrix[i] = pValue;
             }
         }
+        
+        bool operator ==(const Matrix<float>& pMatrix2)
+        {
+            if (pMatrix2.iXSize == iXSize && pMatrix2.iYSize == iYSize)
+            {
+                return bcmp(iMatrix, pMatrix2.iMatrix, iSize*sizeof(type))==0;
+            }
+            return false;
+        }
+        
+        void transpose()
+        {
+            int tXsize = iYSize, tYSize = iXSize;
+            int x = 0, y = 1, c =1;
+             
+            for (int x = 0; x < iXSize; x++)
+            {
+                for (int y = 1; y < iYSize; y++)
+                {
+                    type tTemp = iMatrix[pXIndex*tYSize+pYIndex];
+                    iMatrix[x*tYSize+y] = iMatrix[x*iYSize+y];
+                }
+            }
+            iYSize = tXSize;
+            iXSize = tYSize;
+
+        }
 };
 
 #if defined (__APPLE__)
@@ -299,6 +327,12 @@ class Matrix<float>
             }
         }
         
+        Matrix(const Matrix<float>& pMatrix):iXSize(pMatrix.iXSize), iYSize(pMatrix.iYSize), iSize(pMatrix.iSize)  //Copy constructor
+        {
+            iMatrix = (float*)malloc(sizeof(float)*iSize);;
+            memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(float));
+        }
+        
         ~Matrix()
         {
             free(iMatrix);
@@ -329,6 +363,7 @@ class Matrix<float>
             }
             free(iMatrix);
             iXSize = pMatrix.iXSize;
+            iSize = iYSize*iXSize; 
             iMatrix=tNewMatrix;
             return *this;
         }
@@ -419,6 +454,7 @@ class Matrix<float>
             memcpy(tMatrix, iMatrix, sizeof(float)* (tSize < iSize?tSize:iSize));
             free(iMatrix);
             iMatrix = tMatrix;
+            iSize = tSize;
             iXSize = pXSize;
             iYSize = pYSize;
         }
@@ -429,6 +465,15 @@ class Matrix<float>
             {
                 iMatrix[i] = pValue;
             }
+        }
+        
+        bool operator ==(Matrix<float>& pMatrix2)
+        {
+            if (pMatrix2.iXSize == iXSize && pMatrix2.iYSize == iYSize)
+            {
+                return bcmp(iMatrix, pMatrix2.iMatrix, iSize*sizeof(float))==0;
+            }
+            return false;
         }
 };
 #endif

@@ -86,9 +86,9 @@
 		};
 		08FB7794FE84155DC02AAC07 = {
 			children = (
-				F8C4E88C03DDB93000011915,
 				08FB7795FE84155DC02AAC07,
 				C6859E8C029090F304C91782,
+				F8C4E88C03DDB93000011915,
 				0249A662FF388D9811CA2CEA,
 				F5C515740378131B01011915,
 				1AB674ADFE9D54B511CA2CBB,
@@ -106,6 +106,8 @@
 				F572E58D036FF8800101B5AE,
 				F572E58E036FF8800101B5AE,
 				F572E591037042B80101B5AE,
+				F8FC943403E68EF400695130,
+				F8FC943503E68EF400695130,
 				F5C51575037815B101011915,
 				F5C51576037815B101011915,
 				F5C5157B03782D6A01011915,
@@ -139,6 +141,7 @@
 			);
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_VERSION = 2.x;
 				HEADER_SEARCH_PATHS = "\"/Users/stefan/Documents/Code Library/Headers\"";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "";
@@ -169,6 +172,7 @@
 				F51B0C03039E351D0101B5AE,
 				F53319BE03A679EE0101B5AE,
 				F5838D7B03A7871C0101B5AE,
+				F8FC943603E68EF400695130,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -186,6 +190,7 @@
 				F51B0C04039E351D0101B5AE,
 				F53319BD03A679ED0101B5AE,
 				F5838D7C03A7871C0101B5AE,
+				F8FC943703E68EF400695130,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,7 +271,6 @@
 				C6859E900290913A04C91782,
 				F5C51573037812A901011915,
 				F502A8140394EF7001011915,
-				F53957B303AF80960101B5AE,
 				F8C4E88F03DDB96000011915,
 				F8C4E89003DDB96100011915,
 			);
@@ -395,12 +399,6 @@
 			path = /Users/stefan/Desktop;
 			refType = 0;
 		};
-		F53957B303AF80960101B5AE = {
-			fileRef = F539574003AF80950101B5AE;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F572E58D036FF8800101B5AE = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -523,6 +521,7 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				GCC_VERSION = 2.x;
 				LIBRARY_STYLE = STATIC;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -686,6 +685,32 @@
 		};
 		F8C4E89003DDB96100011915 = {
 			fileRef = F8C4E88E03DDB95600011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F8FC943403E68EF400695130 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = StringClassses.h;
+			path = "/Users/stefan/Documents/Code Library/Headers/StringClassses.h";
+			refType = 0;
+		};
+		F8FC943503E68EF400695130 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = StringClassses.cpp;
+			path = "/Users/stefan/Documents/Code Library/CPP/StringClassses.cpp";
+			refType = 0;
+		};
+		F8FC943603E68EF400695130 = {
+			fileRef = F8FC943403E68EF400695130;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F8FC943703E68EF400695130 = {
+			fileRef = F8FC943503E68EF400695130;
 			isa = PBXBuildFile;
 			settings = {
 			};

@@ -52,6 +52,45 @@ void readInTable(filebuf& pFile, Table* pTable);
 
 int main (int argc, const char * argv[]) 
 {  
+            try
+            {
+                HKLData* tReflections = new HKLData("/Users/stefan/Documents/Programming/C++/SpaceGroup/Test files/co1c.hkl");
+                //tReflections->centeringTypeInfo();
+
+                Headings tHeadings;
+                Conditions tConditions;
+                
+                filebuf tFile;
+                tFile.open("/Users/stefan/Documents/Programming/C++/SpaceGroup/Data/Tables.txt", ios::in);
+                
+                tHeadings.readFrom(tFile);
+                tConditions.readFrom(tFile);
+            
+                Tables tTables(&tHeadings, &tConditions);
+                tTables.readFrom(tFile);
+                tFile.close(); 
+        
+                char tSystem[] = "MONOCLINIC";
+                Table* tTable = tTables.findTable(tSystem);
+                int tNumRefl = tReflections->numberOfReflections();
+                for (int i = 0; i < tNumRefl; i++)
+                {
+                    Reflection* tReflection = tReflections->getReflection(i);
+                    tTable->addReflection(tReflection);
+                }
+                
+             //   cout << tHeadings << "\n";
+             //   cout << tConditions << "\n";
+                cout << tTables << "\n";
+
+                delete tReflections;
+            }
+            catch(MyException eE)
+            {
+                cout << eE.what() << "\n";
+            }            
+}
+/*
     try
     {
         char* tNextLine;
@@ -68,12 +107,9 @@ int main (int argc, const char * argv[])
         
             Tables tTables(&tHeadings, &tConditions);
             tTables.readFrom(tFile);
+            tFile.close(); 
             
-          /*  Table* tTable = new Table("Monoclinic", &tHeadings, &tConditions, 3, 3);
-            tTable->readColumnHeadings("0, 1, 3\t2, 4, 6\t5	2\tm\t2/m");
-
-            tTable->readFrom(tFile);*/
-            tFile.close();
+            
         
         cout << tHeadings << "\n";
         cout << tConditions << "\n";
@@ -84,6 +120,6 @@ int main (int argc, const char * argv[])
         cout << e.what() << "\n";
     }
     return 0;
-}
+}*/
 
 

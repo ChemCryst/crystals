@@ -77,19 +77,20 @@ bool containsOnly(char* pString, char* pChars)
         char* tEndPointer;
         char tempString[10];
         
+        tHKL = new Matrix<float>(1, 3);
         if (containsOnly(pString, " 0123456789.-+"))
         {
             throw MyException(kBadlyFormatedStringN, kBadlyFormatedString);
         }
         strncpy(tempString, pString, 4);
         tempString[4] = 0;
-        h = strtol(tempString, &tEndPointer, 10);
+        tHKL->setValue((float)strtol(tempString, &tEndPointer, 10), 0);
         strncpy(tempString, pString+4, 4);
         tempString[4] = 0;
-        k = strtol(tempString, &tEndPointer, 10);
+        tHKL->setValue((float)strtol(tempString, &tEndPointer, 10), 1);
         strncpy(tempString, pString+8, 4);
         tempString[4] = 0;
-        l = strtol(tempString, &tEndPointer, 10);
+        tHKL->setValue((float)strtol(tempString, &tEndPointer, 10), 2);
         strncpy(tempString, pString+12, 8);
         tempString[8] = 0;
         i = strtod(tempString, &tEndPointer);
@@ -99,6 +100,15 @@ bool containsOnly(char* pString, char* pChars)
   //      printf("%d, %d, %d, %f, %f\n", h, k, l, i, iSE);
     }
     
+    Matrix<float>* Reflection::getHKL()
+    {
+        return tHKL;
+    }
+    
+    Reflection::~Reflection()
+    {
+        delete tHKL;
+    }
     /*double Reflection::intSigmaRatio();
     bool Reflection::intLess3Sigma();
     bool Reflection::kPlusLEven();	
@@ -252,4 +262,14 @@ void HKLData::centeringTypeInfo()
     }
     cout << "A " << tA << "B " << tB << "C " << tC << "I " << tI << "All " << tAll;
     cout << "Ro " << tRO << "Rr " << tRR << "H " << tH;
+}
+
+Reflection* HKLData::getReflection(int pIndex)
+{
+    return tReflectionList->get(pIndex);
+}
+
+int HKLData::numberOfReflections()
+{
+    return tReflectionList->length();
 }

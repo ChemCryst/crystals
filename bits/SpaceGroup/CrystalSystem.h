@@ -36,6 +36,7 @@
  */
 #include "Matrices.h"
 #include "Collections.h"
+#include "HKLData.h"
 #include <fstream>
 using namespace std;
 
@@ -148,12 +149,23 @@ class Column
         void setHeading(char* pHeading);
 };
 
+class ConditionIndexs:public Indexs
+{
+    private:
+        Matrix<float>* iStats;	//[Total intensity excepted, Total intensity rejected, Total intensity, Number excepted, Number rejected, Number of Int>3*sigma excepted, Number of Int<=3*sigma excepted]
+    public:
+        ConditionIndexs(signed char pValue);
+        ConditionIndexs(ConditionIndexs& pObject);
+        void addReflection(Reflection* pReflection, Conditions* pCondtions);
+        ostream& ConditionIndexs::output(ostream& pStream);
+};
+
 /* to be implemented */
 class ConditionColumn:virtual public Column
 {
     private:
         ArrayList<Index>* iHeadingConditions;
-        ArrayList<Indexs>* iConditions;	
+        ArrayList<ConditionIndexs>* iConditions;	
     public:
         ConditionColumn();
         ~ConditionColumn();
@@ -162,9 +174,11 @@ class ConditionColumn:virtual public Column
         int getHeading(const int pIndex);
         void addCondition(signed char pIndex, int pRow);
         void addEmptyCondition(int pRow);
-        Indexs* getCondition(int pIndex);
+        ConditionIndexs* getCondition(int pIndex);
         int countCondition();
         int countHeadings();
+        void addReflection(Reflection* pReflection, Headings* pHeadings, Conditions* pConditions);
+        ostream& output(ostream& pStream, Headings* pHeadings, Conditions* pConditions);
 };
 
 class SpaceGroup
@@ -212,8 +226,11 @@ class Table
         void addLine(char* pLine);
 	void readColumnHeadings(char* pHeadings);
         void readFrom(filebuf& pFile);
+        void addReflection(Reflection* pReflection);
+        char* getName();
         ostream& output(ostream& pStream);
         ostream& outputLine(int pLineNum, ostream& pStream);
+        ostream& outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
 };
 
 ostream& operator<<(ostream& pStream, Table& pTable);
@@ -229,6 +246,7 @@ class Tables
         ~Tables();
         void addTable(Table* pTable);
         void readFrom(filebuf& pFile);
+        Table* findTable(char* pName);
         ostream& output(ostream& pStream);
 };
 

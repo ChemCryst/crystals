@@ -38,6 +38,8 @@
 #include "CrystalSystem.h"
 #include "regex.h"
 #include <fstream>
+#include "StringClassses.h"
+
 using namespace std;
 
 Heading::Heading(char* pLine)
@@ -570,10 +572,78 @@ ostream& operator<<(ostream& pStream, Indexs& pIndexs)
     return pIndexs.output(pStream);
 }
 
+ConditionIndexs::ConditionIndexs(signed char pValue):Indexs(pValue)
+{    
+    iStats = new Matrix<float>(7, 1, 0.0f);
+}
+
+ConditionIndexs::ConditionIndexs(ConditionIndexs& pObject):Indexs((Indexs)pObject)
+{
+    iStats = new Matrix<float>((*pObject.iStats));
+}
+
+void ConditionIndexs::addReflection(Reflection* pReflection, Conditions* pConditions)
+{
+    Matrix<float>* tHKLM = pReflection->getHKL();
+    Matrix<float>* tConditionM;
+    int tNumConditions = this->number();
+    bool tReject = false;
+        
+    for (int i = 0; i <  tNumConditions && !tReject;  i++)
+    {
+        tConditionM = pConditions->getMatrix(i);
+      //  cout << (*tConditionM) << "\n";
+      //  cout << (*tHKLM) << "\n";
+        Matrix<float> tMatrix = (*tConditionM)*(*tHKLM);
+        if (((int)tMatrix.getValue(0)) % ((int)pConditions->getMult(i)) != 0)
+        {
+            iStats->setValue(iStats->getValue(0) + pReflection->i, 0);	//Add the intensity
+            iStats->setValue(iStats->getValue(3) + 1, 3);	//Add to count
+            if (pReflection->i/pReflection->iSE > 3)
+            {
+                iStats->setValue(iStats->getValue(5) + 1, 5);	//Add to count
+            }
+            else
+            {
+                iStats->setValue(iStats->getValue(6) + 1, 6);	//Add to count
+            }
+        }
+        else
+        {
+            iStats->setValue(iStats->getValue(1) + pReflection->i, 1);	//Add the intensity
+            iStats->setValue(iStats->getValue(4) + 1, 4);	//Add to count
+        }
+        iStats->setValue(iStats->getValue(2) + pReflection->i, 2);	//Add the intensity
+    }
+}
+
+ostream& ConditionIndexs::output(ostream& pStream)
+{
+    ((Indexs*)this)->output(pStream);
+    pStream << "\nAverage Excepted Reflections Int: " << iStats->getValue(0)/iStats->getValue(3) << "\n";
+    pStream << "Average Rejected Reflections Int: " << iStats->getValue(1)/iStats->getValue(4) << "\n";
+    pStream << "Average Intensity: " << iStats->getValue(2)/(iStats->getValue(4)+iStats->getValue(3)) << "\n";
+    pStream << "Number of Int<3*sigma excepted: " << iStats->getValue(5) << "\n";
+    pStream << "Number of Int>=3*sigma excepted: " << iStats->getValue(6) << "\n";
+   /* 0: Total intensity excepted, 
+    1: Total intensity rejected,
+    2: Total intensity, 
+    3: Number excepted, 
+    4: Number rejected, 
+    5: Number of Int<3*sigma excepted, 
+    6: Number of Int<3*sigma excepted, */
+    return pStream;
+}
+
+ostream& operator<<(ostream& pStream, ConditionIndexs& pIndexs)
+{
+    return pIndexs.output(pStream);
+}
+        
 ConditionColumn::ConditionColumn()
 {
     iHeadingConditions = new ArrayList<Index>(1);
-    iConditions = new ArrayList<Indexs>(1);
+    iConditions = new ArrayList<ConditionIndexs>(1);
 }
 
 ConditionColumn::~ConditionColumn()
@@ -589,7 +659,7 @@ ConditionColumn::~ConditionColumn()
             delete tValue;
         }
     }
-    Indexs* tValue2;
+    ConditionIndexs* tValue2;
     for (int i = 0; i < tSize; i++)
     {
         tValue2 = iConditions->remove(i);
@@ -609,10 +679,10 @@ void ConditionColumn::addHeading(signed char pIndex)
 
 void ConditionColumn::addCondition(signed char pIndex, int pRow)
 {
-    Indexs* tIndexs = iConditions->get(pRow);
+    ConditionIndexs* tIndexs = iConditions->get(pRow);
     if (tIndexs==NULL)
     {
-        iConditions->setWithAdd(new Indexs(pIndex), pRow);
+        iConditions->setWithAdd(new ConditionIndexs(pIndex), pRow);
     }
     else
     {
@@ -625,7 +695,7 @@ void ConditionColumn::addEmptyCondition(int pRow)
     iConditions->setWithAdd(NULL, pRow);
 }
 
-Indexs* ConditionColumn::getCondition(int pIndex)
+ConditionIndexs* ConditionColumn::getCondition(int pIndex)
 {
     return iConditions->get(pIndex);
 }
@@ -664,6 +734,41 @@ int ConditionColumn::countHeadings()
 int ConditionColumn::countCondition()
 {
     return iConditions->length();
+}
+
+void ConditionColumn::addReflection(Reflection* pReflection, Headings* pHeadings, Conditions* pConditions)
+{
+    int tNumHeader = iHeadingConditions->length();
+    bool tValid = false;
+    
+    for (int j = 0; j < tNumHeader && !tValid; j++)
+    {
+        Matrix<float>* tHeading = pHeadings->getMatrix(getHeading(j));
+        Matrix<float>* tHKL = pReflection->getHKL();
+        Matrix<float> tResult(1, 3);
+        tResult = (*tHeading)*(*tHKL);
+        if (tResult == (*tHKL))
+        {
+            tValid = true;
+        }
+    }
+    if (tValid)
+    {
+        int tNumConditions = iConditions->length();
+        for (int i = 0; i <= tNumConditions; i++)
+        {
+            ConditionIndexs*  tCondition = iConditions->get(i);
+            if (tCondition)
+            {
+                tCondition->addReflection(pReflection, pConditions);
+            }
+        }
+    }
+}
+
+ostream& ConditionColumn::output(ostream& pStream, Headings* pHeadings, Conditions* pConditions)
+{
+    return pStream;
 }
         
 SpaceGroup::SpaceGroup(char* pSymbols)
@@ -739,46 +844,47 @@ char* SpaceGroups::getPointGroup()
 
 Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNumColumns, int pNumPointGroups)
 {
-    iName = new char[strlen(pName)+1];
-    strcpy(iName, pName);
-    iHeadings = pHeadings;
-    iConditions = pConditions;
-    iColumns = new ArrayList<ConditionColumn>(pNumColumns);
+    iName = new char[strlen(pName)+1];	//Allocate enought space for the name
+    strcpy(iName, pName);	//Copy the name into the classes storage
+    upcase(iName);		//Make sure that the name is in upper case
+    iHeadings = pHeadings;	//Keep a reference to the headers
+    iConditions = pConditions;	//Keep a reference to the conditions
+    iColumns = new ArrayList<ConditionColumn>(pNumColumns);	//Allocate the space for the condition columns of the table
     for (int i = 0; i < pNumColumns; i++)
     {
-        iColumns->add(new ConditionColumn());
+        iColumns->add(new ConditionColumn());	//Allocate and initalise the condition columns
     }
-    iSpaceGroups = new ArrayList<SpaceGroups>(pNumPointGroups);
+    iSpaceGroups = new ArrayList<SpaceGroups>(pNumPointGroups);  //Allocate the space for the space group columns of the table
     for (int i = 0; i < pNumPointGroups; i++)
     {
-        iSpaceGroups->add(new SpaceGroups());
+        iSpaceGroups->add(new SpaceGroups());	//Allocate and initalise the space group columns
     }
 }
         
 Table::~Table()
 {
-    delete[] iName;
+    delete[] iName;	//Release the space used by the name
     
-    int tSize = iSpaceGroups->length();
-    for (int i = 0; i<tSize; i++)
+    int tSize = iSpaceGroups->length();	//Find the number of space group columns
+    for (int i = 0; i<tSize; i++)	//Go though each deallocating the memory which they use up
     {
         SpaceGroups* tGroups = iSpaceGroups->remove(i);
-        if (tGroups)
+        if (tGroups)	//Make sure that there is some memory to be deallocated
         {
             delete tGroups;
         }
     }
-    tSize = iColumns->length();
-    for (int i = 0; i<tSize; i++)
+    tSize = iColumns->length(); //Find the number of condition columns to be deallocated.
+    for (int i = 0; i<tSize; i++) //Run though each condition column deallocating as you go.
     {
-        ConditionColumn* tConditions = iColumns->remove(i);
-        if (tConditions)
+        ConditionColumn* tConditions = iColumns->remove(i); 
+        if (tConditions)	//Make sure that there is some memory to be deallocated.
         {
             delete tConditions;
         }
     }
-    delete iColumns;
-    delete iSpaceGroups;
+    delete iColumns;	//Deallocate the arrays which stored the columns
+    delete iSpaceGroups;  //Deallocate the arrays which stored the columns
 }
 
 void Table::columnHeadings(char* pHeadings, int pColumn)
@@ -903,6 +1009,11 @@ bool emptyLine(char* pLine)
     return true;
 }
 
+char* Table::getName()
+{
+    return iName;
+}
+
 void Table::readFrom(filebuf& pFile)
 {
     istream tFile(&pFile);
@@ -918,6 +1029,16 @@ void Table::readFrom(filebuf& pFile)
     }
 }
 
+void Table::addReflection(Reflection* pReflection)
+{
+    int tCount = iColumns->length();
+    for (int i = 0; i < tCount; i++)
+    {
+        ConditionColumn* tColumn = iColumns->get(i);
+        tColumn->addReflection(pReflection, iHeadings, iConditions);
+    }
+}
+        
 ostream& Table::outputLine(int pLineNum, ostream& pStream)
 {
     int tLengthConditions = iColumns->length();
@@ -974,6 +1095,21 @@ ostream& Table::output(ostream& pStream)
         {
             outputLine(i, pStream);
         }
+    }
+    return pStream;
+}
+
+ostream& Table::outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions)
+{
+    if (pColumn < iColumn->length())
+    {
+        ConditionColumn* tColumn = iColumns->get(pColumn);
+        tColumn->output(pStream, pHeadings, pConditions);
+    }
+    else
+    {
+        SpaceGroups* tSpaceGroups = iSpaceGroups->get(pColumn - iColumn->length());
+        tSpaceGroups->output(pStream);
     }
     return pStream;
 }
@@ -1055,6 +1191,35 @@ void Tables::readFrom(filebuf& pFile)
             addTable(tTable);
         }
     }
+}
+
+/* Returns name which was found in pName*/
+Table* Tables::findTable(char* pName)
+{
+    int tNumber = iTables->length();
+    Table* tTable; 
+    bool tFound = false;
+    
+    for (int i = 0; i < tNumber; i++)
+    {
+        tTable = iTables->get(i);
+        if (tTable)
+        {
+            char* tName = tTable->getName();
+            upcase(pName);
+            if (strcmp(pName, tName) == 0)
+            {
+                tFound = true;
+                break;
+            }
+        }	
+    }
+    if (tFound == false)
+    {
+        pName[0] = 0;
+        return NULL;
+    }
+    return tTable;
 }
 
 ostream& Tables::output(ostream& pStream)
