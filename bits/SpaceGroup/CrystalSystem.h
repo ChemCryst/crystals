@@ -42,6 +42,7 @@
 #include "SpaceGroups.h"
 #include "Wrappers.h"
 #include "HKLData.h"
+#include "Conditions.h"
 #include <fstream>
 
 using namespace std;
@@ -80,43 +81,6 @@ class Headings:public MyObject
 
 std::ostream& operator<<(std::ostream& pStream, Heading& pHeader);
 std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
-
-class Condition:public MyObject
-{
-    private:
-        Matrix<short>* iMatrix;
-        char* iName;
-        int iID;
-        float iMult;
-    public:
-        Condition(char* pLine);
-        ~Condition();
-        char* getName();
-        Matrix<short>* getMatrix();
-        float getMult();
-        int getID();
-        std::ostream& output(std::ostream& pStream);
-};
-
-std::ostream& operator<<(std::ostream& pStream, Condition& pCondition);
-
-class Conditions:public MyObject
-{
-    private:
-        ArrayList<Condition>* iConditions;
-    public:
-        Conditions();
-        ~Conditions();
-        char* getName(int pIndex);
-        float getMult(int pIndex);
-        Matrix<short>* getMatrix(int pIndex);
-        std::ostream& output(std::ostream& pStream);
-        char* addCondition(char* pLine);
-        void readFrom(filebuf& pFile);
-        int length();
-};
-
-std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions);
 
 //This is just my own rapper class for an integer type.
 class Index
@@ -204,8 +168,8 @@ class Table:public MyObject
         int numberOfColumns();
         int numberOfRows();
         int chiralPointGroups(int pPointGroupIndeces[]);
-        int dataUsed(signed char pIndices[], int pMax);
-        int conditionsUsed(signed char pIndices[], int pMax);
+        int dataUsed(signed char pIndices[], const int pMax) const;
+        int conditionsUsed(signed char pIndices[], const int pMax) const;
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
