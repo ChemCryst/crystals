@@ -507,7 +507,7 @@ void CxModel::Start()
                              
 }
 
-void CxModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw)
+void CxModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw, int x11, int x12, int x13, int x21, int x22, int x23, int x31, int x32, int x33 )
 {
       glPushMatrix();
 		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
@@ -521,11 +521,35 @@ void CxModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vd
 		glTranslated(x,y,z);
 		GLUquadricObj* sphere = gluNewQuadric();
 		gluQuadricDrawStyle(sphere,GLU_FILL);
-		if(m_radius == COVALENT)
-			gluSphere(sphere, (float)cov * m_radscale,16,16);
-		else if(m_radius == VDW)
-			gluSphere(sphere, (float)vdw * m_radscale,16,16);
+            if(m_radius == COVALENT)
+                gluSphere(sphere, (float)cov * m_radscale,16,16);
+            else if(m_radius == VDW)
+                gluSphere(sphere, (float)vdw * m_radscale,16,16);
+            else if(m_radius == THERMAL)
+            {
+                  float* localmatrix = new float[16];
+                  localmatrix[0]=(float)x11;
+                  localmatrix[1]=(float)x12;
+                  localmatrix[2]=(float)x13;
+                  localmatrix[3]=(float)0;
+                  localmatrix[4]=(float)x21;
+                  localmatrix[5]=(float)x22;
+                  localmatrix[6]=(float)x23;
+                  localmatrix[7]=(float)0;
+                  localmatrix[8]=(float)x31;
+                  localmatrix[9]=(float)x32;
+                  localmatrix[10]=(float)x33;
+                  localmatrix[11]=(float)0;
+                  localmatrix[12]=(float)0;
+                  localmatrix[13]=(float)0;
+                  localmatrix[14]=(float)0;
+                  localmatrix[15]=(float)1;
+                  glMultMatrixf(localmatrix);
+                  gluSphere(sphere, (float)1.0*m_radscale,16,16);
+                  delete [] localmatrix;
+            }
       glPopMatrix();
+
 
 }
 
@@ -571,12 +595,20 @@ void CxModel::PaintBuffer()
 		GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
 //		GLfloat LightSpecular[] ={ 0.0f, 0.0f, 0.0f, 0.1f };
 		GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
-		GLfloat LightPosition[] = {10000.0f, 10000.0f, 10000.0f, 0.0f};
+
+            GLfloat LightPosition[] = {10000.0f, 10000.0f, 10000.0f, 0.0f};
 		glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);	
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);	
 		glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);	
 		glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);	
 		glEnable(GL_LIGHT0);
+
+            GLfloat LightPosition1[] = {-10000.0f, -10000.0f, 10000.0f, 0.0f};
+            glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient); 
+            glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse); 
+            glLightfv(GL_LIGHT1, GL_SPECULAR, LightSpecular); 
+            glLightfv(GL_LIGHT1, GL_POSITION, LightPosition1); 
+            glEnable(GL_LIGHT1);
 	
 		matrix[12] = 0.0;
 		matrix[13] = 0.0;
