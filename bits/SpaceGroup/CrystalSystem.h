@@ -48,25 +48,21 @@
 using namespace std;
 struct ElemStats;
 
-class Heading:public MyObject
+class Heading:public Matrix<short>
 {
     private:
-        Matrix<short>* iMatrix;
         char*	iName;
         int 	iID;
     public:
         Heading(char* pLines);
         ~Heading();
-        Matrix<short>* getMatrix();
         char* getName();
         int getID();
         std::ostream& Heading::output(std::ostream& pStream);
 };
 
-class Headings:public MyObject
+class Headings:public ArrayList<Heading>
 {
-    private:
-        ArrayList<Heading>* iHeadings;
     public:
         Headings();
         ~Headings();
@@ -76,41 +72,29 @@ class Headings:public MyObject
         std::ostream& output(std::ostream& pStream);
         char* addHeading(char* pLine);
         void readFrom(filebuf& pFile);
-        int length();
 };
 
 std::ostream& operator<<(std::ostream& pStream, Heading& pHeader);
 std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
 
 //This is just my own rapper class for an integer type.
-class Index:public MyObject
+class Index:public Number<signed char>
 {
-    private:
-        signed char iValue;
     public:
         Index(signed char pValue);
         Index(Index& pObject);
         signed char get();
-        void set(signed char pValue);
-        Index& operator=(Index& pObject);
-        bool operator<(Index& pObject);
-        bool operator>(Index& pObject);
-        bool operator==(Index& pObject);
         std::ostream& output(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Index& pIndex);
 
-class Indexs:public MyObject
+class Indexs:public ArrayList<Index>
 {
-    private:
-        ArrayList<Index>* iIndexs;
     public:
         Indexs(signed char pIndex);
         ~Indexs();
         void addIndex(signed char pIndex);
-        int number();
-        Index* getIndex(int pIndex);
         signed char getValue(int pIndex);
         std::ostream& output(std::ostream& pStream);
 };
@@ -157,12 +141,7 @@ class Table:public MyObject
         void readFrom(filebuf& pFile);
         char* getName();
         ArrayList<Index>* getHeadings(int pI) const;
-        std::ostream& output(std::ostream& pStream);
-        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
-        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[]);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
-        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnCount=8);
-        int getNumPointGroups();	//Needs doing
+        int getNumPointGroups();	
         SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
@@ -170,19 +149,22 @@ class Table:public MyObject
         int chiralPointGroups(int pPointGroupIndeces[]);
         int dataUsed(signed char pIndices[], const int pMax) const;
         int conditionsUsed(signed char pIndices[], const int pMax) const;
+        std::ostream& output(std::ostream& pStream);
+        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
+        std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[]);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
+        std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnCount=8);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
 
-class Tables:public MyObject
+class Tables:public ArrayList<Table>
 {
     private:
-        ArrayList<Table>* iTables;
         Headings* iHeadings;
         Conditions* iConditions;
     public:
         Tables(char* pFileName);
-        //Tables(Headings* pHeadings, Conditions* pConditions);
         ~Tables();
         Headings* getHeadings();
 	Conditions* getConditions();
