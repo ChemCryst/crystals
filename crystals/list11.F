@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2001/02/26 10:26:49  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XPR11C
       SUBROUTINE XPR11C
@@ -738,7 +741,7 @@ C--RETURN
 C
 C--SET UP A NEW MATRIX
 1100  CONTINUE
-      IOLD=-1
+c      IOLD=-1
 \IDIM11
 C--ZERO THE LIST 11 COMMON BLOCK
       CALL XZEROF(ICOM11,IDIM11)
