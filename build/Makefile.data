@@ -52,8 +52,7 @@ clean :
 	rm -Rf $(BUILDDIR)
 	rm -f commands.dsc
 	rm -f $(SRTFILES)
-	rm -Rf $(COPYDEST) demo
+	rm -Rf $(COPYDEST) demo mce
 
 tidy :
-
 
