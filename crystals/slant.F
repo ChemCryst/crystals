@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/03/13 12:35:22  richard
+C Added extra argument to calls to KDIST1.
+C
 C Revision 1.13  2001/08/08 12:36:16  ckp2
 C Ignore Q atoms when doing slant void maps.
 C
@@ -1508,7 +1511,7 @@ C------ RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
             NFL=JE
             JFNVC = 0
 C------ COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0)
+            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0, 4)
             NBONDS = NDIST
             DIST = AC
             DO K = JE, JE+(JT*(NBONDS-1)),JT
@@ -1599,7 +1602,7 @@ C-------LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
         M5=L5
         JFNVC = 0
         ITRANS = 0 !Allow translation
-        NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0)
+        NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0, 4)
 
         WRITE(NCFPU1,2802)NDIST,MD5
         DO K = JE, JE+(JT*(NDIST-1)),JT

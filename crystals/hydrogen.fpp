@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2002/06/28 16:13:10  Administrator
+C ensure that the field NEW can hold characters
+C
 C Revision 1.15  2002/03/13 12:35:22  richard
 C Added extra argument to calls to KDIST1.
 C
@@ -810,7 +813,7 @@ C --- CHECK NITROGEN ALLOWED
       NHYB=0
       NBONDS=0
 C --  COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0)
+      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4)
 C---- JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
       NFL=JL
       JK=JL-JT
@@ -1204,7 +1207,7 @@ C--- THE START OF THE NEW STACK
         JJE = JL
         M5 = L5
 C
-        NDTEMP = KDIST1 (N5, JJE, JT, 0, TOLER, ITRANS, 0)
+        NDTEMP = KDIST1 (N5, JJE, JT, 0, TOLER, ITRANS, 0, 4)
 C   NOT TOO SURE IF THIS NEXT CONTINUE IS REQUIRED
         CONTINUE
 C       RESTORE OLD TARGET
@@ -1277,7 +1280,7 @@ C    THE START OF THE NEW STACK
         JJE=JL
         M5=L5
 C
-        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS, 0)
+        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4)
         WRITE (NCAWU,3) NDTEMP
 3       FORMAT ('NDTEMP=', I10)
         IF (NDTEMP .LT. 2) GOTO 1631
@@ -1567,7 +1570,7 @@ C        THE START OF THE NEW STACK
          JJE=JL
          M5=L5
 C
-         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0)
+         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4)
          IF (NDTEMP .LT. 2)    GOTO 1630
 C
 C
