@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2001/02/26 10:28:02  richard
+C RIC: Added changelog to top of file
+C
 C
 CODE FOR XPRT6C
       SUBROUTINE XPRT6C(M1)
@@ -948,31 +951,39 @@ C--CHECK IF THERE ARE ANY SLICE CONDITIONS
 C--PASS THROUGH THE SLICE CONDITIONS
 1450  CONTINUE
       DO 1550 I=L28RC,M28RC,MD28RC
-      A=STORE(M6)*STORE(I  )+STORE(M6+1)*STORE(I+1)+STORE(M6+2)
-     2 *STORE(I+2)
-C--CHECK THE MINIMUM
-      IF(A-STORE(I+3))1520,1500,1500
-C--CHECK THE MAXIMUM
-1500  CONTINUE
-      IF(A-STORE(I+4))1550,1550,1520
-1520  CONTINUE
+        A=STORE(M6)  *STORE(I  )
+     1   +STORE(M6+1)*STORE(I+1)
+     2   +STORE(M6+2)*STORE(I+2)
+C--CHECK THE MINIMUM AND MAXIMUM
+        IF( (A .GE. STORE(I+3)).AND.(A .LE. STORE(I+4)) ) THEN
+C We have a match. If reject, then disallow this reflection.
+C If accept, stop processing slice directives.
 C----- REJECT OR ACCEPT?
-      IF (ISTORE(I+5) .EQ. 0) GOTO 1650
+          IF (ISTORE(I+5) .EQ. 0) THEN
+            GOTO 1650 !Reject this reflection outright
+          ELSE
+            GOTO 1600 !Accept as far as SLICE is concerned.
+          ENDIF
+        ENDIF
 1550  CONTINUE
 1600  CONTINUE
       IF(N28CD)1800, 1800, 1700
 C--PASS THROUGH THE REFLECTION CONDITIONS
 1700  CONTINUE
       DO 1750 I = L28CD, M28CD, MD28CD
-      A = STORE(M6)*STORE(I  )+STORE(M6+1)*STORE(I+1)+STORE(M6+2)
-     2 *STORE(I+2) + STORE(I+3)
-C--CHECK THE CONDITION
-C----- REJECT OR ACCEPT?
-      IF (ISTORE(I+5) .EQ. 0) THEN
-        IF (MOD (ABS(A), STORE(I+4) ) .LE. ZERO) GOTO 1650
-      ELSE
-        IF (MOD (ABS(A), STORE(I+4) ) .GT. ZERO) GOTO 1650
-      ENDIF
+        A = STORE(M6  )*STORE(I  )
+     1    + STORE(M6+1)*STORE(I+1)
+     2    + STORE(M6+2)*STORE(I+2) + STORE(I+3)
+        IF (MOD (ABS(A), STORE(I+4) ) .LE. ZERO) THEN
+C We have a match. If reject, then disallow this reflection.
+C If accept, stop processing condition directives.
+C-- REJECT OR ACCEPT?
+          IF (ISTORE(I+5) .EQ. 0) THEN
+            GOTO 1650    !Reject this reflection outright.
+          ELSE
+            GOTO 1800    !Accept as far as CONDITIONS are concerned.
+          ENDIF
+        ENDIF
 1750  CONTINUE
 1800  CONTINUE
 C
