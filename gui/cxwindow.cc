@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2001/06/17 14:26:37  richard
+//   Re-jig window creation.
+//   New CxDestroyWindow function to ensure correct destruction sequence.
+//   wx Support for toolbars.
+//
 //   Revision 1.21  2001/03/27 15:15:00  richard
 //   Added a timer to the main window that is activated as the main window is
 //   created.
@@ -31,6 +36,9 @@
 #include    "crtoolbar.h"
 #include    "cccontroller.h"
 
+#ifdef __LINUX__
+#include "wincrys.xpm"
+#endif
 
 int CxWindow::mWindowCount = kWindowBase;
 
@@ -58,7 +66,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
       theWindow->mParentWnd = (wxWindow*) parentWindow;
       theWindow->Create( theWindow->mParentWnd, -1, "Window",
                          wxPoint(0, 0), wxSize(-1,-1),
-                         (attributes & kSize)?wxDEFAULT_FRAME_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?NULL:wxFRAME_TOOL_WINDOW) :wxDEFAULT_DIALOG_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?NULL:wxFRAME_TOOL_WINDOW) );
+                         (attributes & kSize)?wxDEFAULT_FRAME_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?0:wxFRAME_TOOL_WINDOW) :wxDEFAULT_DIALOG_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?0:wxFRAME_TOOL_WINDOW) );
       theWindow->SetIcon( wxICON (IDI_ICON1) );
   #endif
 
