@@ -1,4 +1,4 @@
-%SCRIPT PLATONC
+%SCRIPT PLATONA
 %  VARIABLE CHARACTER CDIR CFILE
 %  VARIABLE LOGICAL T
 %%
@@ -40,11 +40,7 @@
 %%
 %%
 %  EVALUATE CDIR = GETPATH ( CFILE )
-%  TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY
-%  TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS
-%  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO DISPLAY
-%  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO CRYSTALS
+%  TRANSFER '#SPAWN + "' // CFILE // '" publish.cif' TO DISPLAY
+%  TRANSFER '#SPAWN + "' // CFILE // '" publish.cif' TO CRYSTALS
 %%
-%%
-%  COPY '#spawn notepad publish.chk'
 %END SCRIPT

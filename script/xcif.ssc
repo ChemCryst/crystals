@@ -1,7 +1,7 @@
 %SCRIPT XCIF
 %% The variables needed by XQUESTIO
 %    VARIABLE CHARACTER CFILE
-%    VARIABLE LOGICAL TWINNED
+%    VARIABLE LOGICAL JUSTRUNIT TWINNED
 %%
 %    EVALUATE TWINNED = FALSE
 %    BLOCK
@@ -45,9 +45,10 @@
 ^^WI  {
 ^^WI    @ 1,1 RADIOBUTTON CFNONE 'None' STATE=ON
 ^^WI    @ 2,1 RADIOBUTTON CFNOTE 'Notepad' 
-^^WI    @ 3,1 RADIOBUTTON CFCCDC 'Encifer' 
+^^WI    @ 3,1 RADIOBUTTON CFCCDC 'EnCIFer' 
 ^^WI    @ 1,3 RADIOBUTTON CFPLAT 'Platon' 
 ^^WI    @ 2,3 RADIOBUTTON CFCHKC 'Platon checkcif' 
+^^WI    @ 3,3 RADIOBUTTON CFCCDM 'Mercury' 
 ^^WI  }
 ^^WI }
 ^^WI SHOW
@@ -173,25 +174,38 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
+{I Starting notepad to display publish.cif
 %      COPY '#SPAWN notepad publish.cif'
 %    ELSE
 ^^??   CFCCDC STATE
 %      VERIFY ON OFF
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %      IF ( VALUE .EQ. 1 ) THEN
-%        COPY '#SPAWN encifer publish.cif'
+{I Starting enCIFer to edit publish.cif
+%        COPY '#SCRIPT encifer'
 %      ELSE
 ^^??     CFPLAT STATE
 %        VERIFY ON OFF
 %        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %        IF ( VALUE .EQ. 1 ) THEN
-%          COPY '#SPAWN platon publish.cif'
+{I Starting Platon with publish.cif
+%          COPY '#SCRIPT platona'
 %        ELSE
 ^^??       CFCHKC STATE
 %          VERIFY ON OFF
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %          IF ( VALUE .EQ. 1 ) THEN
-%            COPY '#SPAWN platon -u publish.cif'
+{I Starting Platon to check publish.cif
+%            COPY '#SCRIPT platonc'
+%          ELSE
+^^??         CFCCDM STATE
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%            IF ( VALUE .EQ. 1 ) THEN
+%              EVALUATE JUSTRUNIT = TRUE
+{I Starting Mercury with publish.cif
+%              COPY '#SCRIPT mercury'
+%            END IF
 %          END IF
 %        END IF
 %      END IF

@@ -1,30 +1,23 @@
-%SCRIPT MERCURY
+%SCRIPT ENCIFER
 %% JustRunIt is set TRUE if publish.cif already exists.
 % VARIABLE LOGICAL JUSTRUNIT
 %%
-% VARIABLE CHARACTER FMERC
+% VARIABLE CHARACTER FENCI
 %
 %%
-%% Check registry for location of Mercury 1.2.1, 1.2, then manual set
+%% Check for Encifer 1.1, then manually set
 %%
-^^CO GETREG "Software\CCDC\Mercury\1.2.1\" "InstallDir"
-% GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-% EVALUATE FMERC = CVALUE // 'mercury.exe'
-% TRANSFER FMERC TO DISPLAY
+% EVALUATE FENCI = 'C:\Program Files\CCDC\enCIFer 1.1\encifer.exe'
+% TRANSFER FENCI TO DISPLAY
 %%
-% IF ( .NOT. FILEEXISTS FMERC ) THEN
-^^CO GETREG "Software\CCDC\Mercury\1.2\" "InstallDir"
-%  GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
-%  EVALUATE FMERC = CVALUE // 'mercury.exe'
-%  TRANSFER FMERC TO DISPLAY
+% IF ( .NOT. FILEEXISTS FENCI ) THEN
 %%
-%  IF ( .NOT. FILEEXISTS FMERC ) THEN
-^^CO GETKEY MERCURYDIR
+^^CO GETKEY ENCIFERDIR
 %   GET SILENT NOSTORE FINAL TEXT '1' '1'
-%   EVALUATE FMERC = CVALUE
-%   IF FMERC .EQ. '1' .OR. FILEEXISTS ( FMERC ) .EQ. FALSE THEN
+%   EVALUATE FENCI = CVALUE
+%   IF FENCI .EQ. '1' .OR. FILEEXISTS ( FENCI ) .EQ. FALSE THEN
 %%
-^^WI WINDOW MERCMISS 'Mercury missing' MODAL KEEP SIZE LARGE
+^^WI WINDOW ENCFMISS 'Encifer missing' MODAL KEEP SIZE LARGE
 ^^WI COMMIT='MM_OK' CANCEL='MM_OK' POSITION=CENTRED '_MAINTEXTOUTPUT'
 ^^WI GRID MMM NROWS=5 NCOLS=3
 ^^WI {
@@ -36,17 +29,17 @@
 ^^WI     }
 ^^WI     @ 1,3 GRID HOLD NROWS=1 NCOLS=1
 ^^WI     {
-^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the Mercury executable.'
+^^WI       @ 1,1 TEXTOUT MMEXPLAIN 'Could not find the enCIFer executable.'
 ^^WI NROWS=10 NCOLS=40 TRANSPARENT
 ^^WI TEXT ' '
 ^^WI TEXT ' Is it installed?'
 ^^WI TEXT ' '
-^^WI TEXT ' Mercury is a free program from CCDC for easy crystal structure'
-^^WI TEXT ' visualisation and exploration.'
+^^WI TEXT ' EnCIFer is a free program from CCDC for checking CIF syntax'
+^^WI TEXT ' and safely editing CIF values.'
 ^^WI TEXT ' It can be downloaded from: '
-^^WI TEXT '  {&http://www.ccdc.cam.ac.uk/products/csd_system/mercury/{&'
+^^WI TEXT '  {&http://www.ccdc.cam.ac.uk/free_services/encifer/{&'
 ^^WI TEXT ' '
-^^WI TEXT ' Close this dialog, download and install Mercury then try again.'
+^^WI TEXT ' Close this dialog, download and install enCIFer then try again.'
 ^^WI TEXT ' '
 ^^WI VIEWTOP
 ^^WI     }
@@ -55,7 +48,7 @@
 ^^WI   {
 ^^WI     @ 1,1 STRETCH S1 HORIZONTAL
 ^^WI     @ 1,2 BUTTON MM_OK 'Close' COMMIT CANCEL DEFAULT
-^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for mercury.exe...'
+^^WI     @ 1,4 BUTTON MM_BRWS 'Browse for enCIFer.exe...'
 ^^WI     @ 1,5 STRETCH S2 HORIZONTAL
 ^^WI   }
 ^^WI }
@@ -74,27 +67,27 @@
 %           SEND
 %         END BLOCK
 %         BLOCK                                %XX
-^^CO        DISPOSE MERCMISS
+^^CO        DISPOSE ENCFMISS
 %           FINISH
 %         END BLOCK
 %         BLOCK                                %MM_BRWS
 
-  Where is the mercury executable (mercury.exe)?
+  Where is the mercury executable (encifer.exe)?
   Hint: Try looking in c:\program files\ccdc\
 
-^^CO SYSOPENFILE 'mercury*.exe' 'Mercury executable'
+^^CO SYSOPENFILE 'encifer*.exe' 'Encifer executable'
 
 %           CLEAR
-%           INSERT '^^CO SETKEY MERCURYDIR "'
-%           GET SILENT TEXT 'Mercury location:'
+%           INSERT '^^CO SETKEY ENCIFERDIR "'
+%           GET SILENT TEXT 'Encifer location:'
 %           IF CVALUE .NE. 'CANCEL' THEN
-%             EVALUATE FMERC = CVALUE
+%             EVALUATE FENCI = CVALUE
 %             INSERT '"'
 %             OUTPUT
 %             EVALUATE LOOPEND = LOOPCOUNTER
-^^CO          DISPOSE MERCMISS
+^^CO          DISPOSE ENCFMISS
 %           ELSE
-^^CO          DISPOSE MERCMISS
+^^CO          DISPOSE ENCFMISS
 %             FINISH
 %           END IF
 %         END BLOCK
@@ -135,7 +128,7 @@
 %%
 %%
 {I Creating a CIF
-%   COPY "#STORE CSYS CIF 'mercury.cif'"
+%   COPY "#STORE CSYS CIF 'encifer.cif'"
 %   COPY '#APPEND PUNCH '
 %   COPY '#CIF '
 %   COPY 'END'
@@ -146,11 +139,11 @@
 %   COPY 'END'
 %%  
 %%
-%   TRANSFER '#SPAWN "' // FMERC // '" mercury.cif' TO DISPLAY
-%   TRANSFER '#SPAWN "' // FMERC // '" mercury.cif' TO CRYSTALS
+%   TRANSFER '#SPAWN "' // FENCI // '" encifer.cif' TO DISPLAY
+%   TRANSFER '#SPAWN "' // FENCI // '" encifer.cif' TO CRYSTALS
 % ELSE
-%   TRANSFER '#SPAWN "' // FMERC // '" publish.cif' TO DISPLAY
-%   TRANSFER '#SPAWN "' // FMERC // '" publish.cif' TO CRYSTALS
+%   TRANSFER '#SPAWN "' // FENCI // '" publish.cif' TO DISPLAY
+%   TRANSFER '#SPAWN "' // FENCI // '" publish.cif' TO CRYSTALS
 % END IF
 %%
 %END SCRIPT
