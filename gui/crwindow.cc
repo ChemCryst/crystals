@@ -48,7 +48,7 @@ CcList CrWindow::mModalWindowStack;
 	mCommitText = "";
 	mCancelText = "";
 	mCommandText= "";
-	m_relativePosition = 0;
+      m_relativePosition = kTCentred;
 	m_relativeWinPtr = nil;
       mWindowWantingSysKeys = nil;
       mSafeClose=0;
@@ -232,8 +232,13 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 			this->Align();
 			
 
-			//If relative position, then work out where.
-		
+                  if (!m_relativeWinPtr)
+                  {
+// Either no posn specified (in which case centre over _MAIN)
+// or invalid window name given, (in which case position relative to _MAIN)
+                        m_relativeWinPtr = (CcController::theController)->FindObject( "_MAIN" );
+                  }
+
 			if(m_relativeWinPtr)
 			{
 				CcRect winRect(m_relativeWinPtr->GetGeometry());
@@ -274,14 +279,6 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 						newPosn.mBottom = winRect.Bottom() + EMPTY_CELL + thisRect.Height();
 						break;
 					}
-					case kTCentred:
-					{
-						newPosn.mLeft   = winRect.Left() + ( ( winRect.Width()  - thisRect.Width()  ) / 2 );
-						newPosn.mTop    = winRect.Top()  + ( ( winRect.Height() - thisRect.Height() ) / 2 );
-						newPosn.mRight  = newPosn.Left() + thisRect.Width() ;
-						newPosn.mBottom = newPosn.Top()  + thisRect.Height();
-						break;
-					}
 					case kTCascade:
 					{
 						newPosn.mLeft   = winRect.Left() + EMPTY_CELL;
@@ -290,7 +287,15 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 						newPosn.mBottom = newPosn.Top()  + thisRect.Height();
 						break;
 					}
-
+					case kTCentred:
+                              default:
+					{
+						newPosn.mLeft   = winRect.Left() + ( ( winRect.Width()  - thisRect.Width()  ) / 2 );
+						newPosn.mTop    = winRect.Top()  + ( ( winRect.Height() - thisRect.Height() ) / 2 );
+						newPosn.mRight  = newPosn.Left() + thisRect.Width() ;
+						newPosn.mBottom = newPosn.Top()  + thisRect.Height();
+						break;
+					}
 				}
 
 				//Check the right.
@@ -319,11 +324,10 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 				}
 
 				((CxWindow*)mWidgetPtr)->SetGeometry(	newPosn.Top(),
-														newPosn.Left(),
-														newPosn.Bottom(),
-														newPosn.Right()   );
+                                                                  newPosn.Left(),
+                                                                  newPosn.Bottom(),
+                                                                  newPosn.Right() );
 			}
-				
 
 			//For now show self. Children are shown automagically.
 			this->Show(true);
@@ -346,10 +350,15 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 		}
 		case kTDefineMenu:
 		{
+//June1999. The port to wxWindows requires that the MenuBar
+//in a window be a different type of object from the actual
+//pull-down menus. Makes sense really. So we will pass a flag
+//to the CrMenu constructor so that it can contain a CxMenuBar
+//instead of a CxMenu.
 			tokenList->GetToken();
 			LOGSTAT("Defining Menu...");
 
-			mMenuPtr = new CrMenu( this );
+                  mMenuPtr = new CrMenu( this, MENU_BAR );
 			if ( mMenuPtr != nil )
 			{
 				// ParseInput generates all objects in the menu
@@ -389,6 +398,10 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 			break;
 		}
 	}
+
+#ifdef __LINUX__
+      cerr << "Exiting CrWindow::ParseInput";
+#endif
 
 	return (retVal);
 }
