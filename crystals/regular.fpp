@@ -1,4 +1,10 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.22  2003/09/24 09:44:25  rich
+c Added routine XMXUIJ to matrix.src to apply a transformation to
+c a vector of Uijs. Added new vector to store Uijs for the "new"
+c list of atoms in \REGULARISE, and apply rotation at appropriate
+c point.
+c
 c Revision 1.21  2003/09/16 19:52:38  rich
 c Fixed bug in #MATCH/RENAME. No idea how it worked before. Now fixed.
 c
@@ -278,6 +284,7 @@ C----- INDICATE THAT A MATRIX HAS NOT BEEN COMPUTED YET
       IMATRIX = -1
 C----- INITIALISE THE POOR-FIT COUNTER
       NUMDEV = 0
+      IPCHRE = -1
 C -- READ THE INPUT DATA
       I=KLEXAN(IULN,IFIRST,LENGTH)
       IF (I) 9500,1000,1000
@@ -754,7 +761,8 @@ C
       DATA CELEMT/'23461m'/
       DATA CAXIS/'X','Y','Z'/
       DATA CFUNC/'Replacement','Comparison','Renaming'/
-C 
+C
+C
 C
 CDJWAPR2001
 C----- CHECK THE NUMBER OF NEW AND OLD ATOMS
@@ -819,6 +827,10 @@ Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
          CALL XPRVDU (NCVDU,2,0)
 200      FORMAT (1X,'Centroids of old and new groups ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
+        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+     1   (CHAR(9),CENTO(I),I=1,3),(CHAR(9),CENTN(I),I=1,3)
+        CALL XCREMS(CPCH,CPCH,LENFIL)
+
 C 
 C -- CALCULATE THE BEST PLANE THROUGH THE ATOMS IN EACH GROUP
 C 
@@ -838,6 +850,9 @@ C-----
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') (CMON(II)(:),II=1,2)
 300      FORMAT (1X,'Principal moments of inertia of old and new groups'
      1    ,/1X,2(3F8.3,3X))
+         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+     1   (CHAR(9),ROOTO(I),I=1,3),(CHAR(9),ROOTN(I),I=1,3)
+         CALL XCREMS(CPCH,CPCH,LENFIL)
 
 C -- CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE
 C    AND BACK
@@ -961,12 +976,18 @@ C
          CALL XPRVDU (NCVDU,2,0)
 900      FORMAT (1X,'Average and difference of centroids ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
+         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+     1   (CHAR(9),AVCNT(I),I=1,3),(CHAR(9),DELCNT(I),I=1,3)
+         CALL XCREMS(CPCH,CPCH,LENFIL)
 C 
          WRITE (NCAWU,950)
 950      FORMAT (/1X,'Tranformation matrix between new and old ',
      1 'coordinates',/' in crystal system'/)
          WRITE (NCAWU,1000) ((WSPAC3(I,J),I=1,3),J=1,3)
 1000     FORMAT (3(6X,3F10.6,/))
+         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(9(A,F9.4))')
+     1   ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
+         CALL XCREMS(CPCH,CPCH,LENFIL)
 CDJWMAR2000
 C FIND PSEUDO OPERATOR - GIACOVAZZO, PAGE 43
 C      GET THE DETERMINANT AND TRACE
@@ -984,8 +1005,15 @@ C      GET THE DETERMINANT AND TRACE
             END IF
             WRITE (CMON,1050) CSYM(1:2)
             CALL XPRVDU (NCVDU,1,0)
+            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1      CHAR(9),CSYM(1:2)
+            CALL XCREMS(CPCH,CPCH,LENFIL)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1050        FORMAT (' Pseudo-symmetry element ',A2,' detected')
+         ELSE
+            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1      CHAR(9),'none'
+            CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 C 
          DO 1150 J=1,3
@@ -1008,9 +1036,16 @@ C
 1200        CONTINUE
             WRITE (CMON,1250) (ATEMP(J),CTEMP(J),J=1,3)
             CALL XPRVDU (NCVDU,1,0)
+            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),
+     1       '(A,3(F6.2,A2,2X))') CHAR(9),(ATEMP(J),CTEMP(J),J=1,3)
+            CALL XCREMS(CPCH,CPCH,LENFIL)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1250        FORMAT (' Pseudo-symmetry operator of form :-  ',
      1       3(F6.2,A2,2X))
+         ELSE
+            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1      CHAR(9),'none'
+            CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 C -- ROTATE COORDINATES BACK TO ORTHOGONAL SYSTEM DEFINED BY
 C    CRYSTAL
@@ -2113,6 +2148,9 @@ C
      4 1X , 'RMS deviations          ' , 3F8.3 ,
      5 2X , 'Mean' , F8.3 )
 
+            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(8(A,F9.4))')
+     1      (CHAR(9),SUM(I),I=1,4),(CHAR(9),RMSDEV(I),I=1,4)
+            CALL XCREMS(CPCH,CPCH,LENFIL)
 C
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
@@ -2694,7 +2732,7 @@ C-- TO FIND THE BEST ONE.
 \STORE
 \XSTR11
 \XDSTNC
-      COMMON /XPROCM/ILISTL
+c      COMMON /XPROCM/ILISTL
 \XLEXIC
 \XPDS
 \XLISTI
@@ -2713,12 +2751,13 @@ C-- TO FIND THE BEST ONE.
 \XOPVAL
 \XIOBUF
 \XRGCOM
+\XCOMPD 
 C
 \QSTORE
 C
-      EQUIVALENCE (ILISTL,PROCS(1))
+c      EQUIVALENCE (ILISTL,PROCS(1))
 C
-      DATA IDIMN /2/
+      DATA IDIMN /3/
 C
       DATA IVERSN /100/
 
@@ -2735,12 +2774,16 @@ C
       JCOMBF = ICOMBF+JDIMBF      ! START OF ADDRESSED ARGS
 
       CALL XZEROF( ISTORE(ICOMBF), IDIMBF)  !  ZERO THE BUFFER
-      ZORIG=0.0
-      IEQATM=0
+      ZORIG  = 0.0
+      IPCHRE = -1
+      IEQATM = 0
+      WRITE (CPCH,'(15A4)') (KTITL(I),I=1,15)
+
+
 C INSTRUCTION READING LOOP
       DO WHILE (.TRUE.)
-        WRITE (CMON,'(A)') ' Reading instruction '
-        CALL XPRVDU(NCVDU,1,0)
+C        WRITE (CMON,'(A)') ' Reading instruction '
+C        CALL XPRVDU(NCVDU,1,0)
         IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD) ! READ A DIRECTIVE
         IF (IDIRNM .LT. 0) CYCLE
         IF (IDIRNM .EQ. 0) EXIT
@@ -2750,9 +2793,7 @@ C INSTRUCTION READING LOOP
         CASE(1)     ! 'OUTPUT'
 
         CASE(6)     ! 'MATCH'
-          WRITE (CMON,'(A)') ' Processing #MATCH optional args '
-          CALL XPRVDU(NCVDU,1,0)
-          IULN= ISTORE(JCOMBF+1)   
+          IULN = ISTORE(JCOMBF+1)   
           IULN = KTYP05 (IULN)
           CALL XLDR05 (IULN)       ! LOAD LIST 5/10
           IF (IERFLG .LT. 0) GOTO 9900
@@ -2777,8 +2818,8 @@ C INSTRUCTION READING LOOP
           END DO
 
         CASE (2)    ! 'MAP' DIRECTIVE
-          WRITE (CMON,'(A)') ' Processing MAP directive '
-          CALL XPRVDU(NCVDU,1,0)
+C          WRITE (CMON,'(A)') ' Processing MAP directive '
+C          CALL XPRVDU(NCVDU,1,0)
           KATV(1) = 0
           KATV(2) = 1
           KATV(3) = 0
@@ -2787,8 +2828,8 @@ C INSTRUCTION READING LOOP
           CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 1 , KATV)
 
         CASE (3)    ! 'ONTO' DIRECTIVE
-          WRITE (CMON,'(A)') ' Processing ONTO directive '
-          CALL XPRVDU(NCVDU,1,0)
+C          WRITE (CMON,'(A)') ' Processing ONTO directive '
+C          CALL XPRVDU(NCVDU,1,0)
           KATV(1) = 0
           KATV(2) = 0
           KATV(3) = 1
@@ -2808,10 +2849,13 @@ C INSTRUCTION READING LOOP
         END SELECT
       END DO              ! COMMAND INPUT COMPLETE. CHECK FOR ERRORS:
 
+      IPCHRE = ISTORE(JCOMBF+2)
+      WRITE(CMON,'(A,I4)') ' IPCHRE = ', IPCHRE
+      CALL XPRVDU(NCVDU,1,0)
 
       IF ( LEF .GT. 0 ) GO TO 9910
 
-      CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN) ! RELOCATE COMMONBLOCK DATA
+C      CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN) ! RELOCATE COMMONBLOCK DATA
 
       IF ( IEQATM .EQ. 0 ) THEN
         IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
@@ -2911,6 +2955,8 @@ C Ensure fragments are 2D identical.
       IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
         WRITE (CMON,'(A)') '{E Fragments are different sizes.'
         CALL XPRVDU(NCVDU,1,0)
+        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1   CHAR(9)//'Residues_different_sizes'
         GOTO 9900
       END IF
 
@@ -2927,6 +2973,8 @@ c        CALL XPRVDU(NCVDU,1,0)
      1      (ISTORE(4+LMAP+I*MDATVC).NE. ISTORE(4+LONTO+I*MDATVC)))THEN
           WRITE (CMON,'(A)') '{E Fragment bonding is different.'
           CALL XPRVDU(NCVDU,1,0)
+          IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1     CHAR(9)//'Residues_bonding_different'
           GOTO 9900
         END IF
       END DO
@@ -2942,13 +2990,23 @@ c        CALL XPRVDU(NCVDU,1,0)
           CALL XREGQK
         END IF
       ELSE IF ( IDOUB .EQ. 1 ) THEN ! Try to break sym. Twice.
-          JOBDON = 0
+        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1   CHAR(9)//'Internal_symmetry_2'
+        JOBDON = 0
 
       ELSE IF ( ITRIP .EQ. 1 ) THEN ! Try to break sym. Three times.
-          JOBDON = 0
+        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1   CHAR(9)//'Internal_symmetry_3'
+        JOBDON = 0
 
       ELSE IF ( IQUAD .EQ. 1 ) THEN ! Try to break sym. Four times.
-          JOBDON = 0
+        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1   CHAR(9)//'Internal_symmetry_4'
+        JOBDON = 0
+
+      ELSE
+        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1   CHAR(9)//'Internal_symmetry_lots'
 
       END IF
 
@@ -2970,6 +3028,7 @@ c        CALL XPRVDU(NCVDU,1,0)
 
 C--TERMINATION MESSAGES
 6050  CONTINUE
+      IF ( IPCHRE .GE. 0 ) WRITE(NCPU,'(A)')CPCH(1:LEN_TRIM(CPCH))
       CALL XOPMSG ( IOPDIS, IOPEND, IVERSN )
       CALL XTIME2(2)
       RETURN
@@ -2977,10 +3036,14 @@ C
 9900  CONTINUE
 C -- ERRORS
       CALL XOPMSG ( IOPDIS , IOPABN , 0 )
+      IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1 CHAR(9)//'errors'
       GO TO 6050
 9910  CONTINUE
 C -- INPUT ERRORS
       CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
+      IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1 CHAR(9)//'command_input_error'
       GO TO 9900
       END
 
@@ -3175,6 +3238,8 @@ C
       CALL XTIME1(2)
 
       NUMDEV = 0      ! INITIALISE THE POOR-FIT COUNTER
+      IPCHSA = IPCHRE ! Hide IPCHRE counter
+      IPCHRE = -1
 
 \IDIM12
       DO I = 1,IDIM12     
@@ -3187,6 +3252,7 @@ C -- SET INITIAL VALUES IN COMMON
       MDOLD = 4
       NOLD = 0
       MDNEW = 4
+      MDUIJ = 7
       NNEW = 0
 
       IMETHD=1       ! DEFAULT METHOD 1 (ROTATION COMPONENT OF ROTATION-DILATION MATRIX ONLY)
@@ -3202,6 +3268,7 @@ C -- SET UP BLOCKS
       LATMD=KSTALL(NMAP*MDATMD)
       LOLD=KSTALL(NMAP*MDOLD)
       LNEW=KSTALL(NMAP*MDNEW)
+      LUIJ=KSTALL(NMAP*MDUIJ)
       LRENM = KSTALL(MDRENM*NMAP)  ! ALLOCATE SPACE FOR RENAMING
 
 C     SAVE NFL and LFL
@@ -3409,6 +3476,7 @@ c          CALL XPRVDU(NCVDU,1,0)
           MRENM = MRENM + 6
         END DO
 
+        IPCHRE = IPCHSA ! Restore IPCHRE counter
 
         IMAT = -1
         CALL XRGCLC(IMAT,0)
@@ -3420,6 +3488,7 @@ C     Restore NFL and LFL
 
         WRITE ( CMON,'(A)') 'Do final mapping.'
         CALL XPRVDU(NCVDU, 1,0)
+
 
 C Use the better matrix to do a final mapping:
         NATMD= NMAP
@@ -3455,6 +3524,10 @@ C Use the better matrix to do a final mapping:
           MRENM = MRENM + 6
         END DO
         IMAT = 2
+
+
+        IPCHRE = -1 ! Hide punch flag
+
         CALL XRGCLC(IMAT,1)
 
       END IF
@@ -3474,6 +3547,8 @@ C     Restore NFL and LFL
 
 C -- THIS IS THE ONLY WAY OUT OF THE ROUTINE
 C -- WRITE FINAL MESSAGE
+      IPCHRE = IPCHSA ! Restore IPCHRE counter
+
       CALL XOPMSG( IOPREG, IOPEND, IVERS)
       CALL XTIME2(2)
       RETURN
