@@ -20,10 +20,16 @@ static float AbsentAISD = 0.01289479f;
 static float PresentAIM = 0.49585336f;
 static float PresentAISD = 0.16645043f;
 //Num Int < 3sigma
+/* Old from when the second ratting only used the matched values
 static float Absent3SM = 0.00360566f;
 static float Absent3SSD = 0.00859224f;
 static float Present3SM = 0.63777005f;
-static float Present3SSD = 0.21934966f;
+static float Present3SSD = 0.21934966f;*/
+//Num Matched Int > 3sigma + Num Not Matched Int <= 3sigma
+static float Absent3SM = 0.11234;
+static float Absent3SSD = 0.079361f;
+static float Present3SM = 0.46642f;
+static float Present3SSD = 0.079361f;
 
 Stats::Stats(Regions* pRegions, Conditions* pConditions):iRegions(pRegions), iConditions(pConditions)
 {
@@ -91,6 +97,14 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short
         {
             tStats->tMTotInt += (float)pReflection->i;	//Total intensity matched. 
             tStats->tNumM ++;	//Number matched
+			if (pReflection->i/pReflection->iSE >= 3)
+            {
+                tStats->tNumMGrInt ++;	//Number Int>=3*sigma non-matched
+            }
+            else
+            {
+                tStats->tNumMLsInt ++;
+            }
         }
     }
 }
@@ -101,7 +115,7 @@ ElemStats* Stats::getElem(const int pHeadIndex, const int pCondIndex) const
     return &(iStats[(pHeadIndex*tCCount)+pCondIndex]);
 }
 
-void Stats::addReflection(Reflection* pReflection, JJLaueGroup &pLaueGroup)
+void Stats::addReflection(Reflection* pReflection, LaueGroup &pLaueGroup)
 {
     static Matrix<short> tResult(1, 3);
     iTotalNum ++;
@@ -119,7 +133,7 @@ void Stats::addReflection(Reflection* pReflection, JJLaueGroup &pLaueGroup)
     }
 }
 
-void Stats::addReflections(HKLData &pHKLs, JJLaueGroup &pLaueGroup)
+void Stats::addReflections(HKLData &pHKLs, LaueGroup &pLaueGroup)
 {
 	vector<Reflection*>::iterator tIter;
 
@@ -156,7 +170,7 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
                 if (pStats->tNumNonM == 0)
                     pStream << "NaN";
                 else
-                    pStream << pStats->tNonMTotInt/pStats->tNumNonM;
+                    pStream << (pStats->tNonMTotInt/pStats->tNumNonM);
             break;
             case 4:	//%I < 3u(I) 
                 if (pStats->tNumNonMLsInt+pStats->tNumNonMGrInt == 0)
@@ -170,6 +184,8 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
             case 6:  //Score2
                 pStream << pStats->tRating2;
             break;
+			//case 7:
+				
         }
     }
     return pStream;
@@ -229,9 +245,9 @@ void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumn
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
         {
             if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM == 0)
-                            pStream << " " << setw(pOtherColumns) << "NaN";
+				pStream << " " << setw(pOtherColumns) << "NaN";
             else
-                            pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Ave intensity non-matched.
+				pStream << " " << setw(pOtherColumns) << setprecision (4) << (iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM);	//Ave intensity non-matched.
         }
         else
         {
@@ -267,7 +283,55 @@ void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumn
             pStream << " " << setw(pOtherColumns) << " ";
         }
     }
-    pStream << "\nScore2" << setw(pFirstColumnWidth-6);
+	pStream << "\nMatch >=" << setw(pFirstColumnWidth-8);
+    for (int i = 0; i < pNumOfColums; i++)
+    {
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumMGrInt;	
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
+    }
+	pStream << "\nMatch <" << setw(pFirstColumnWidth-7);
+    for (int i = 0; i < pNumOfColums; i++)
+    {
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumMLsInt;	
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
+    }
+	pStream << "\nNot Match >=" << setw(pFirstColumnWidth-12);
+    for (int i = 0; i < pNumOfColums; i++)
+    {
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;	
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
+    }
+	pStream << "\nNot Match <" << setw(pFirstColumnWidth-11);
+    for (int i = 0; i < pNumOfColums; i++)
+    {
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;	
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
+    }
+	pStream << "\nScore2" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
         if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
@@ -301,18 +365,25 @@ void Stats::calProbs()
         {
             float tValue1 = iStats[i].tNonMTotInt/iStats[i].tNumNonM;
             float tValue2 = iStats[i].tMTotInt/iStats[i].tNumM;
-            tValue1 = tValue1/(tValue2+tValue1);			//Calculate Ave int non-matched over total.
-            
-            tCurrentStat->tRating1 = evaluationFunction(tValue1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD);
-            
-            tValue1 = (float)iStats[i].tNumNonMGrInt/((float)iStats[i].tNumNonMGrInt+(float)iStats[i].tNumNonMLsInt);
-            
-            tCurrentStat->tRating2= evaluationFunction(tValue1, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
+			
+			float tRating1 = (tValue1)/(tValue2+tValue1);
+		//	float tRating2 = (float)iStats[i].tNumNonMGrInt/(float)iStats[i].tNumNonM;
+		//	float tRating3 = (float)iStats[i].tNumMLsInt/(float)iStats[i].tNumM;
+			float tRating2 = ((float)iStats[i].tNumMLsInt+(float)iStats[i].tNumNonMGrInt)/(float)(iStats[i].tNumNonM+iStats[i].tNumM);
+
+			
+		/*	if ((tValue2+tValue1) != 0 && (iStats[i].tNumNonMGrInt+iStats[i].tNumNonMLsInt) != 0 
+				&& (iStats[i].tNumMGrInt+iStats[i].tNumMLsInt) != 0)
+					std::cerr << evaluationFunction(tRating1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD) << "\t" << tRating1 << "\t" << tRating2 << "\t" << tRating3 << "\t" << tRating4 << "\n";*/
+				
+            tCurrentStat->tRating1 = evaluationFunction(tRating1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD);
+            tCurrentStat->tRating2= evaluationFunction(tRating2, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
+			//tCurrentStat->tRating3= evaluationFunction(tRating4, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
         }
         else
         {
             tCurrentStat->tRating1 = 0;
-            tCurrentStat->tRating1 = 0;
+            tCurrentStat->tRating2 = 0;
         }
     }
     int tColumns[] = {0};
@@ -366,13 +437,14 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
     pStream << "NREGIONS " << tColumnCount << "\n";
     for (int i = 0; i< tColumnCount; i++)
     {
-        ArrayList<Index>* tRegions = pTable.getRegions(i);
+        vector<Index>* tRegions = pTable.getRegions(i);
         
-        for (int j = 0; j < tRegions->length(); j ++)
+        for (size_t j = 0; j < tRegions->size(); j ++)
         {
-            pStream << iRegions->getID(tRegions->get(j)->get()) << " ";
-            outputMatrix(pStream, iRegions->getMatrix(tRegions->get(j)->get()));
-            pStream << " " << iRegions->getName(tRegions->get(j)->get()) << "\n";
+			signed char tIndex = (*tRegions)[j].get();
+            pStream << iRegions->getID(tIndex) << " ";
+            outputMatrix(pStream, iRegions->getMatrix(tIndex));
+            pStream << " " << iRegions->getName(tIndex) << "\n";
         }
     }
     pStream << "NTESTS " << tCount << "\n";
