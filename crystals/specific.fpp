@@ -33,6 +33,9 @@ C
 &&DVFGID      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
 &&DVFGID      CALL XCTRIM( REASON, MSGEND )
 &DVF      CALL PERROR (' perror message ')
+&GIL      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
+&GIL      CALL XCTRIM( REASON, MSGEND )
+&GIL      CALL PERROR (' perror message ')
 &LIN      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
 &LIN      CALL XCTRIM( REASON, MSGEND )
 &LIN      CALL PERROR (' perror message ')
@@ -893,6 +896,8 @@ C
 &DOS      IF (IOS .EQ. -1) GOTO 3000
 &LIN      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
 &LIN      IF (IOS .EQ. -1) GOTO 3000
+&GIL      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
+&GIL      IF (IOS .EQ. -1) GOTO 3000
 &&DVFGID      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
 &&DVFGID      IF (IOS .EQ. -1) GOTO 3000
 &VAX      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
@@ -958,14 +963,14 @@ C
 &DOS            K = 0
 &DOS20          CONTINUE
 &DOS            I = K
-&LINC----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
-&LIN            J = LEN (CNAME)
-&LIN            DO 10 K = J, 1, -1
-&LIN              IF (CNAME(K:K) .EQ. '/') GOTO 20
-&LIN10          CONTINUE
-&LIN            K = 0
-&LIN20          CONTINUE
-&LIN            I = K
+&&GILLINC----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
+&&GILLIN            J = LEN (CNAME)
+&&GILLIN            DO 10 K = J, 1, -1
+&&GILLIN              IF (CNAME(K:K) .EQ. '/') GOTO 20
+&&GILLIN10          CONTINUE
+&&GILLIN            K = 0
+&&GILLIN20          CONTINUE
+&&GILLIN            I = K
 &&DVFGIDC----- UNDER WIN, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 &&DVFGID            J = LEN (CNAME)
 &&DVFGID            DO 10 K = J, 1, -1
@@ -1311,7 +1316,7 @@ C
 C
 C&&DVFGID      RTIME = RTC()
 &&DVFGID      CALL CPU_TIME(RTIME)
-&LIN      CALL CPU_TIME(RTIME)
+&&LINGIL      CALL CPU_TIME(RTIME)
 C
 &PPCC -- FOR MAC OS, WE WILL RETURN 0
 &PPC      RTIME = 0.0
@@ -1352,8 +1357,8 @@ C
 C&&DVFGID      A = RTC()
 C&&DVFGID      I = NINT (A)
 &&DVFGID      I = TIME()
-&LIN      CALL CPU_TIME(A)
-&LIN      I = NINT ( A )
+&&GILLIN      CALL CPU_TIME(A)
+&&GILLIN      I = NINT ( A )
 &DOS      CALL CLOCK@ (A)
 &DOS      I = NINT (A)
 C
@@ -1500,12 +1505,12 @@ C
 &DGV      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
 &DGV      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 
-&LIN      DIMENSION IDAT(3)
-&LIN      CALL IDATE ( IDAT )
-&LIN      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(3) ,
-&LIN     2      IDAT(2) , MOD ( IDAT(1) , 100 )
-&LIN      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
-&LIN      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
+&&LINGIL      DIMENSION IDAT(3)
+&&LINGIL      CALL IDATE ( IDAT )
+&&LINGIL      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
+&&LINGIL     2      IDAT(2) , MOD ( IDAT(3) , 100 )
+&&LINGIL      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
+&&LINGIL      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
 &H-P      call get_time (tmbuf)
 &H-P      char_ptr=format_time(tmbuf)
@@ -2879,28 +2884,35 @@ CODE FOR GETCOM
 &GID                    END SUBROUTINE CINEXTCOMMAND
 &GID            END INTERFACE
 &GID      INTEGER ISTAT
-&GID      CHARACTER*200 CALINE
+&&GIDGIL      CHARACTER*200 CALINE
 \XSSVAL
 \UFILE
 \CAMPAR
 \CAMBLK
 \CAMGRP
       CHARACTER *(*) CLINE
+
+&VAX      READ( NCUFU(1), 1) CLINE
+&LIN      READ( NCUFU(1), 1) CLINE
+&DVF      READ( NCUFU(1), 1) CLINE
+
+&GIL      CALINE = ' '
+&GIL      ISTAT = 0
+&GIL      CALL CINEXTCOMMAND(ISTAT,CALINE)
+&GIL      READ(CALINE,'(A80)') CLINE
 &GID      DATA CALINE(1:40) /'                                        '/
 &GID      DATA CALINE(41:80)/'                                        '/
 &GID      ISTAT = 0
 &GID      CALL CINEXTCOMMAND(ISTAT,CALINE)
 &GID      READ(CALINE,'(A80)') CLINE
-##GIDDOS      READ( NCUFU(1), 1) CLINE
-#GID1     FORMAT ( A )
+
 &DOS      IF ( LCLOSE ) THEN
 &DOS         READ( NCUFU(1), 1) CLINE
 &DOS      ELSE
-C&DOS         IMESSG = -1
-C&DOS         IYPOS = 2.0*YCENS + 5
-C&DOS         CALL ZTXT (10,IYPOS,CLINE,IMESSG)
 &DOS         CALL ZTXT (CLINE)
 &DOS      ENDIF
+
+1     FORMAT ( A )
       RETURN
       END
 C
@@ -3211,7 +3223,7 @@ C---- MACHINE SPECIFIC WRITE TO THE SCREEN
 \XDRIVE
 \XSSVAL
 \CAMBLK
-&GID      CHARACTER *80 CTEMP
+&&GIDGIL      CHARACTER *80 CTEMP
       CHARACTER*(*) CBUF(LINBUF)
       CHARACTER*1 CFIRST, CLAST
       CHARACTER*10 CFRMAT
@@ -3241,12 +3253,12 @@ C                       CBUF(J)(LENBUF:LENBUF) = CHAR(13)
 C                       N = LENBUF
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
-#GID                    CFRMAT = '(1X,A)'
+##GIDGIL                    CFRMAT = '(1X,A)'
 &VAX                    N = N - 1
 &VAX                    CFRMAT = '(''+'',A)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
-&GID                        CALL CALLCCODE ( CBUF(J)(1:N))
+##GIDGIL                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
+&&GIDGIL                        CALL CALLCCODE ( CBUF(J)(1:N))
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
                   ELSEIF ( CFIRST .EQ. '+' ) THEN
@@ -3256,15 +3268,14 @@ C-----------------FORTRAN CARRIAGE RETURN WITHOUT LINE FEED
                         CFRMAT = '(A)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 Cdjw[      enable thermometer etc in non-vga mode
-#GID                WRITE(NCDEV ,'(A,$)') char(13)
-#GID                WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
-C#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+##GIDGIL                WRITE(NCDEV ,'(A,$)') char(13)
+##GIDGIL                WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
 Cdjw99]
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
-&GID                              CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
-&GID                              CALL CALLCCODE ( CTEMP )
-&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF) )
+&&GIDGIL                          CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
+&&GIDGIL                          CALL CALLCCODE ( CTEMP )
+&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF) )
                   ELSEIF (CLAST .EQ. '$') THEN
 C-----------------LEAVE CURSOR AT CURRENT POSITION
 &DOSC------             SWITCH OFF LINE FEEDS
@@ -3272,7 +3283,7 @@ C-----------------LEAVE CURSOR AT CURRENT POSITION
                     CFRMAT = '(A,A1)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 &DOS                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
-&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
 &VAX                    CFRMAT = '(A,$)'
 &VAX                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOSC------             SWITCH ON LINE FEEDS
@@ -3280,13 +3291,13 @@ C-----------------LEAVE CURSOR AT CURRENT POSITION
                   ELSEIF ( CFIRST .EQ. '0' ) THEN
                         CFRMAT = '(/,A)'
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-#GID                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+##GIDGIL                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
                   ELSE
                         CFRMAT = '(A)'
-#GID                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+##GIDGIL                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOS                    IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
-&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&&GIDGIL                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
                   ENDIF
 C
             CBUF(J) = ' '

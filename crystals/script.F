@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  1999/05/27 11:35:41  dosuser
+C djw  Echo users input to text window
+C
 C Revision 1.13  1999/05/25 16:52:06  dosuser
 C RIC: PATH splitting functions look for / on unix versions.
 C FILEDELETE function calls 'rm' on unix versions.
@@ -2942,6 +2945,7 @@ C
 &DVF          CALL XDETCH ('del ' // CWORK1(1:LEN1))
 &VAX          CALL XDETCH ('del ' // CWORK1(1:LEN1))
 &LIN          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
+&GIL          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
       ENDIF
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
