@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `basename #1 .tif`.png}
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+\title{Class Reference and Description}
+\author{Stefan Pantos}
+\begin{document}
+\maketitle
+\section{Introduction}
+This document is a description of all the files and classes used in the space group determination program, TheDeterminator . It is meant as a reference to the code of the program for improved maintenance. When an alteration is made to the source code this document should be updated.
+\section{File Descriptions}
+\subsection{ComClasses}
+{\footnotesize ComClasses.h modified  30/04/2003 \\ ComClasses.cpp modified 30/04/2003}\\\\
+This file was created for my third year undergraduate project and was used for classes which had a general use. Classes which cannot be obviosly grouped together and can be used in any type of project should be up into this file.\\\\
+In ComClasses.h there is a preprocessor flag __DEBUGGING__. This should be defined when the project is being debugged.
+\subsubsection{MyObject}
+\begin{table}[h]\begin{tabular}{|l|}\hline\textbf{MyObject}\\ \hline
+-iObjectNumber:long\\
+\hline
++MyObject():\\
+\textit{+$\sim$MyObject():}\\
+\textit{+void toString(char* pChars, unsigned int pSize): void}\\
++static objectCount(): long\\
++static totalObjectNumber():long\\
+\hline\end{tabular}\label{default}\end{table}\\
+This object should be used to extend from every
+
+\subsection{Matrices}
+
+ \end{document}
