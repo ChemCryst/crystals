@@ -1,0 +1,107 @@
+%SCRIPT XFOPTWT
+%% SCRIPT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT
+%%
+^^WI WINDOW XFWEIGH 'Chebychev Weights for F' KEEP SIZE MODAL
+^^WI COMMIT='XFW_BOK' CANCEL='XFW_BXX'
+^^WI GRID MAIN NROWS=7 NCOLS=3
+^^WI {
+^^WI  @ 2,2 GRID XFPL NROWS=8 NCOLS=2
+^^WI  {
+^^WI   @ 1,1 STATIC XFW1
+^^WI 'We will try 5, 4 and 3 parameter schemes, in that order since the 3'
+^^WI   @ 2,1 STATIC XFW1
+^^WI 'parameter scheme is most often satisfactory, and will by default be'
+^^WI   @ 3,1 STATIC XFW1
+^^WI 'left in force. You will be given a chance to over-ride the choice.'
+^^WI   @ 5,1 STATIC XFW2
+^^WI 'First you will be shown a curve of estimated delta(F)**2 as a function'
+^^WI   @ 6,1 STATIC XFW2
+^^WI 'of F. This should vary smoothly, and normally not show any pronounced'
+^^WI   @ 7,1 STATIC XFW2
+^^WI 'local maxima. The values in the column headed Delta**2 should'
+^^WI   @ 8,1 STATIC XFW2
+^^WI 'parallel those in the column <Delta**2> in the agreement analysis.'
+^^WI  }
+^^WI  @ 4,2 TEXTOUT XFTT '' NROWS=40 NCOLS=10
+^^WI  @ 6,2 GRID XFBT NROWS=1 NCOLS=3
+^^WI  {
+^^WI   @ 1,1 BUTTON XFW_BOK 'Keep last scheme' DEFAULT
+^^WI   @ 1,3 BUTTON XFW_BXX 'Change'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDTEXTTO XFTT
+{S * Chebychev weighting with 5 parameters
+{I   Estimated delta(F)**2 as a function of F:
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=5'
+%          COPY 'END'
+%          COPY '#ANALYSE'
+{I   Agreement analysis:
+%          COPY 'END'
+-GID%          COPY '#PAUSE 2'
+{S * Chebychev weighting with 4 parameters
+{I   Estimated delta(F)**2 as a function of F:
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=4'
+%          COPY 'END'
+%          COPY '#ANALYSE'
+{I   Agreement analysis:
+%          COPY 'END'
+-GID%          COPY '#PAUSE 2'
+{S * Chebychev weighting with 3 parameters
+{I   Estimated delta(F)**2 as a function of F:
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=3'
+%          COPY 'END'
+%          COPY '#ANALYSE'
+{I   Agreement analysis:
+%          COPY 'END'
+{I Scroll back up to examine the results.
+{I Resize this window as necessary.
+%          LOOP
+%            VERIFY XFW_BOK XFW_BXX
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'XFW_BXX'
+%            IF ( VALUE .EQ. 1 ) THEN
+^^CO           DISPOSE XFWEIGH
+%              FINISH
+%            ELSE
+^^WI WINDOW XNP 'Number of parameters' MODAL COMMIT='XNPOK' CANCEL='XNPOK'
+^^WI GRID M NROWS=4 NCOLS=7
+^^WI {
+^^WI   @ 2,2 STATIC T1 'Number of parameters?'
+^^WI   @ 3,2 STATIC T1 '(Zero for unit weights)'
+^^WI   @ 2,4 EDITBOX E1 '4' CHARS=10 INTEGER
+^^WI   @ 2,6 BUTTON XNPOK 'OK' DEFAULT CANCEL COMMIT
+^^WI }
+^^WI SHOW
+^^CR
+%             VERIFY XNPOK
+%             GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%             COPY '#LIST 4'
+%             CLEAR
+^^?? E1 TEXT
+%             GET SILENT NOSTORE INTEGER 'Number of parameters' '3'
+^^CO          DISPOSE XNP
+%             IF VALUE .GT. 1 THEN
+%                INSERT 'SCHEME NUMBER=14'
+%                INSERT ' NPARAM='
+%                STORE INTEGER VALUE
+%                SEND
+%                CLEAR
+%                INSERT '{S * Chebychev weighting with '
+%                STORE INTEGER VALUE
+%                INSERT ' parameters'
+%                OUTPUT
+{I   Estimated delta(F)**2 as a function of F:
+%             ELSE
+{S * Resetting to unit weights:
+%             END IF
+%             COPY 'END'
+%            END IF
+%            COPY '#ANALYSE'
+{I   Agreement analysis:
+%            COPY 'END'
+%          END LOOP
+%END SCRIPT
