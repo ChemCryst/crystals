@@ -1,4 +1,8 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.16  2003/07/15 09:32:52  rich
+c When doing #MATCH output atom lists to regular.dat for use by scripts (if
+c they want).
+c
 c Revision 1.15  2003/04/04 09:05:51  rich
 c Changes for #MATCH: (1) directive EQUALATOMS makes it treat all atoms
 c as equal so that you can match structures onto Q peaks, or wrongly assigned
@@ -1836,7 +1840,7 @@ C
 C
       CHARACTER*12 PRTTYP(2)
       CHARACTER*24 PRTUNT(2)
-      CHARACTER*12 CAMATM
+c      CHARACTER*21 CAMATM
 C
       DIMENSION DELTA(5)
       DIMENSION SUM(4)
@@ -2476,7 +2480,7 @@ C
 \XOPVAL
 \XIOBUF
 \XLST05
-      CHARACTER*12 CAMATM
+      CHARACTER*21 CAMATM
       DIMENSION JFRN(4,2)
 C 
 \QSTORE
