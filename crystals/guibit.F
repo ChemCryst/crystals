@@ -620,9 +620,11 @@ C----- UPDATE THE GRAPHICS DATA BASE
 C      PREPARE FOR GUI
       CHARACTER CTXT*(*)
       LOGICAL LDOFOU
+      DIMENSION JDEV(4)
 \ISTORE
 \STORE
 \XUNITS
+\UFILE
 \XIOBUF
 \XSSVAL
 \XOPVAL
@@ -778,8 +780,13 @@ C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
                  GOTO 90
              ENDIF
 C             OPEN (UNIT=87,FILE=CFILEN(1:ILENG),STATUS='OLD')
-             IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-     1       1) .EQ. -1) GOTO 9900
+CDJWMAR99[
+C             IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
+C     1       1) .EQ. -1) GOTO 9900
+              CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
+              CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
+              IF ( IERFLG .LT. 0) GOTO 9900
+CDJWMAR99]
 85           CONTINUE
                READ(NCARU,'(A80)',END=89) WCLINE
              IF((WCLINE(1:3).EQ.'CON').OR.(WCLINE(1:3).EQ.'   '))

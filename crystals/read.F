@@ -523,6 +523,8 @@ CODE FOR KRDSYS
 C -- CHECK IF THE CURRENT CARD CONTAINS A SYSTEM INSTRUCTION. IF IT
 C    DOES, EXECUTE THE INSTRUCTION.
 C
+CDJWMAR99 Add APPEND as system function - implies 'OPEN'
+C
 C  INPUT :-
 C
 C      IN          DUMMY ARGUMENT.
@@ -564,7 +566,7 @@ C
       DATA IOPEN  / 5 / , IRELES /  6 / , IUSE   /  7 / , IMANUL /  8 /
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
-      DATA IDOLLA / 17 /
+      DATA IDOLLA / 17 /, IAPEND / 18 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -606,7 +608,7 @@ C
 C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
-C      SPAW(N)     $
+C      SPAW(N)     $           APPE(ND)
 C
 C----- DO NOT LOG SCRIPT INSTRUCTIONS
       IF ( ISYSIN .NE. ISCRIP) THEN
@@ -617,10 +619,12 @@ C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
       END IF
 C
 C
+CDJWMAR99
       GO TO ( 1100 , 1200 , 1300 , 1400 , 1500 ,
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
-     3        2100 , 2200 , 2300 , 2400 , 2500 , 2600 , 2600,
-     4        9920 ) , ISYSIN
+     3        2100 , 2200 , 2300 , 2400 , 2500 , 
+     4        2600 , 2600 , 1550 ,
+     5        9920 ) , ISYSIN
       GO TO 9920
 C
 C
@@ -685,6 +689,15 @@ C -- 'OPEN'
 C
       CALL XRDOPN ( 2, IDEV, CFILE, LFILE )
       GO TO 9000
+C
+CDJWMAR99
+C
+1550  CONTINUE
+C
+C--- 'APPEND'
+C
+      CALL XRDOPN ( 4, IDEV, CFILE, LFILE )
+      GOTO 9000
 C
 C
 1600  CONTINUE
@@ -1737,6 +1750,8 @@ CODE FOR XRDOPN
       SUBROUTINE XRDOPN ( JFUNC , JDEV, CFILE, LFILE)
 C -- PROCESS SYSTEM INSTRUCTIONS WHICH PERFORM OPERATIONS ON CRYSTALS
 C    'DEVICES'.
+cdjwmar99
+c      Add APPEND function. This implies OPEN
 C
 C
 C      INPUT :-
@@ -1745,9 +1760,12 @@ C            JFUNC       OPEN FUNCTION REQUIRED
 C                          1      IMPLEMENT 'RELEASE' INSTRUCTION
 C                          2      IMPLEMENT 'OPEN' INSTRUCTION
 C                          3      IMPLEMENT 'CLOSE' INSTRUCTION
-C                          4      RELEASE SPECIFIED FILE AND DEVICE
-C                          5      OPEN SPECIFIED FILE AND DEVICE
-C                          6      CLOSE SPECIFIED FILE AND DEVICE
+c                          4      IMPLEMENT 'APPEND' INSTRUCTION
+C
+C                          5      RELEASE SPECIFIED FILE AND DEVICE
+C                          6      OPEN SPECIFIED FILE AND DEVICE
+C                          7      CLOSE SPECIFIED FILE AND DEVICE
+C                          8      APPEND TO SPECIFIED FILE AND DEVICE
 C
 C            JDEV                 DEVICE
 C            CFILE,LFILE          FILE NAME AND LENGTH
@@ -1758,7 +1776,9 @@ C
       PARAMETER (LNMMAX = 63)
       CHARACTER *(LNMMAX)  OLDFIL, NEWFIL, INQFIL
 C
-      PARAMETER ( MAXFNC = 3 )
+CDJWMAR99
+C      PARAMETER ( MAXFNC = 3 )
+      PARAMETER ( MAXFNC = 4 )
 C
       CHARACTER*14 COPER(MAXFNC)
       CHARACTER*8 CRESLT(MAXFNC) , CACTN(MAXFNC)
@@ -1787,21 +1807,36 @@ C
 &PPC      INTEGER*2     theLength
 &PPCCE***
 C
-      DATA COPER / 'output sent to', ' connected to ', 'closed'/
-      DATA CRESLT / 'released' , ' opened ' , ' closed '/
-      DATA CACTN  / 'releases' , ' opens  ' , ' closes ' /
-      DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' /
+CDJWMAR99[
+      DATA COPER / ' output sent to ', ' connected to ', 'closed', 
+     1 ' appended to '/
+      DATA CRESLT / 'released ' , 'opened ' , 'closed '
+     1 , 'appended ' /
+      DATA CACTN  / ' releases ' , ' opens  ' , ' closes ', 
+     1 ' appends ' /
+      DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND '/
 C
-      DATA IRQARG / 2 , 2 , 1  /
+      DATA IRQARG / 2 , 2 , 1, 2  /
+CDJWMAR99]
 C
       DATA MCHNAM / 4 / , LNAM / 8 /
 C
+CDJWMAR99 - SET APPEND OFF
+            IAPPND = 0
 C----- MAKE INTERNAL CALL LOOK LIKE AN EXTERNAL
       IF (JFUNC .GT. MAXFNC) THEN
         IFUNC = JFUNC - MAXFNC
       ELSE
         IFUNC = JFUNC
       ENDIF
+CDJWMAR99[
+C      A TEMPORARY BODGE TO TEST THE THE IDEA
+      KFUNC = IFUNC
+      IF (IFUNC .EQ. 4) THEN
+            IFUNC = 2
+            IAPPND = ISSAPP
+      ENDIF
+CDJWMAR99]
 C
 C -- CHECK PARAMETERS TO THE ROUTINE
       IF ((IFUNC .LE. 0 ) .OR. ( IFUNC .GT. MAXFNC ) ) GO TO 9920
@@ -1850,6 +1885,13 @@ C
       ELSE IF ( IFUNC .EQ. 2 ) THEN
         IF ( ILOCK .EQ. 2 ) GO TO 9960
       ENDIF
+CDJWMAR99
+C----- CHECK THAT APPEND TYPE FILES ARE SET FOR WRITING
+      IRWOPN = IRDWRI
+      IF (IAPPND .EQ. ISSAPP) THEN
+       IF (IRDWRI .NE. 2) GOTO 9950
+       IRWOPN = IAPPND
+      ENDIF
 C----- GET THE OLDFILE NAME IF IT IS NAMED
       INQUIRE (UNIT=IDEV, IOSTAT=IOS, ERR=9000, EXIST=LEXIST,
      1  OPENED=LOPEN, NUMBER=INUMB, NAMED=LNAMED, NAME=INQFIL)
@@ -1869,13 +1911,16 @@ C
           IF (LENNAM .GT. 0) THEN
             IF (( ISSFLM .GT. 0 ) .AND. ( JFUNC .LE. MAXFNC)) THEN
              WRITE ( CMON,2340)
-     1       CSSPRG(1:LSSPRG), CACTN(IFUNC), OLDFIL(1:LENNAM)
+CDJWMAR99
+     1       CSSPRG(1:LSSPRG), CACTN(kFUNC), OLDFIL(1:LENNAM)
              CALL XPRVDU(NCVDU, 1,0)
               IF (ISSPRT .EQ. 0) THEN
-                WRITE ( NCWU, 2340 ) CSSPRG(1:LSSPRG), CACTN(IFUNC),
+CDJWMAR99
+                WRITE ( NCWU, 2340 ) CSSPRG(1:LSSPRG), CACTN(kFUNC),
      2                         OLDFIL(1:LENNAM)
               ENDIF
-              WRITE ( NCAWU, 2340 ) CSSPRG(1:LSSPRG), CACTN(IFUNC),
+CDJWMAR99
+              WRITE ( NCAWU, 2340 ) CSSPRG(1:LSSPRG), CACTN(kFUNC),
      2                         OLDFIL(1:LENNAM)
 2340          FORMAT ( 1X , A , ' ' , A , ' ' , A )
             ENDIF
@@ -1939,7 +1984,8 @@ C
 C----- GENERATE NAME IF NECESSARY - NOT FOR D/A FILES
       IF (ISSGEN .GE. 1)
      1 CALL XGENNM ( IDEV, NEWFIL, OLDFIL, IRDWRI, ISTTUS )
-        ISTAT = KFLOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI , IFORMT )
+CDJWMAR99        ISTAT = KFLOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI , IFORMT )
+        ISTAT = KFLOPN ( IDEV , NEWFIL , ISTTUS , IRWOPN , IFORMT )
         IF ( ISTAT .LE. 0 ) GO TO 9980
       ELSE IF ( IACCSS .EQ. 2 ) THEN
 &PPC        IF ( IDEV .EQ. NCDFU ) THEN
@@ -1963,20 +2009,22 @@ C
 C
       LENNAM = INDEX ( NEWFIL//' ' , ' ' ) - 1
 C
+CDJWMAR99[
 C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       IF (LENNAM .EQ. 0) LENNAM = 1
       IF (( ISSFLM .GT. 0 ) .AND. ( JFUNC .LE. MAXFNC)) THEN
       WRITE ( CMON,2345) (KEYFIL(I,IFIND),I=1,LNAM),
-     2                          COPER(IFUNC), NEWFIL(1:LENNAM)
+     2                          COPER(kFUNC), NEWFIL(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
-     2    COPER(IFUNC), NEWFIL(:LENNAM)
+     2    COPER(kFUNC), NEWFIL(:LENNAM)
         ENDIF
         WRITE ( NCAWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
-     2  COPER(IFUNC), NEWFIL(:LENNAM)
+     2  COPER(kFUNC), NEWFIL(:LENNAM)
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
       ENDIF
+CDJWMAR99]
 C
 C
       IFLOPN(IFIND) = 1
@@ -1991,10 +2039,19 @@ C
 C
 C
 C
+CDJWMAR99[
 9900  CONTINUE
-      WRITE ( CMON,9905) CCRCHR(1:2), IH , CINSTR(IFUNC)
+CDJWMAR99[
+      IF (JFUNC .GT. MAXFNC) THEN
+       CALL XCTRIM( CFILE, NCHARS )
+       WRITE(CMON,
+     1 '('' Internal file handling - '', I4,2X,4A1,2X,A,2X,I4)') 
+     2 JFUNC , JDEV, CFILE(1:NCHARS), NCHARS
+      CALL XPRVDU(NCVDU, 1,0)
+      ENDIF
+      WRITE ( CMON,9905) CCRCHR(1:2), IH , CINSTR(kFUNC)
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE ( NCAWU , 9905 ) IH , CINSTR(IFUNC)
+      WRITE ( NCAWU , 9905 ) IH , CINSTR(kFUNC)
 9905  FORMAT ( 1X , 'The correct format for this instruction is :-' ,/
      2 11X , A1 , A , ' devicename [ filename ] ' )
       IF ( NFLUSD .GT. 0 ) THEN
@@ -2018,11 +2075,12 @@ C
 97531   CONTINUE
         WRITE ( NCAWU , 9907 ) (( KEYFIL(J,I),J=1,LNAM),I=1,NFLUSD)
 9907    FORMAT ( 5( 2X , 8A1 ) )
-        WRITE ( CMON,9908) CRESLT(IFUNC)
+        WRITE ( CMON,9908) CRESLT(kFUNC)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE ( NCAWU , 9908 ) CRESLT(IFUNC)
+        WRITE ( NCAWU , 9908 ) CRESLT(kFUNC)
 9908    FORMAT ( 1X , 'NOTE not all devices may be ' , A )
       ENDIF
+CDJWMAR99]
       GO TO 9000
 9910  CONTINUE
       CALL XMONTR ( 0 )
@@ -2035,14 +2093,16 @@ C
 9915  FORMAT(1X,'Illegal or missing parameter for this Instruction' )
       GO TO 9900
 9920  CONTINUE
-      WRITE ( CMON,9925) IFUNC
+CDJWMAR99[
+      WRITE ( CMON,9925) kFUNC
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) IFUNC
+      WRITE ( NCWU , 9925 ) kFUNC
       ENDIF
-      WRITE ( NCAWU , 9925 ) IFUNC
+      WRITE ( NCAWU , 9925 ) kFUNC
 9925  FORMAT ( 1X , 'Illegal value supplied to routine' , I10 )
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
+CDJWMAR99]
       GO TO 9900
 9930  CONTINUE
       CALL XCTRIM( CFILE, NCHARS )
@@ -2056,33 +2116,34 @@ C
      1 ' is too long. Maximum is ', I5, ' characters',/)
       GOTO 9000
 9950  CONTINUE
+CDJWMAR99[
       CALL XMONTR ( 0 )
-      WRITE ( CMON,9955) CRESLT(IFUNC)
+      WRITE ( CMON,9955) CRESLT(kFUNC)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9955 ) CRESLT(IFUNC)
+      WRITE ( NCWU , 9955 ) CRESLT(kFUNC)
       ENDIF
-      WRITE ( NCAWU , 9955 ) CRESLT(IFUNC)
+      WRITE ( NCAWU , 9955 ) CRESLT(kFUNC)
 9955  FORMAT ( 1X , 'Only WRITEABLE SEQUENTIAL files may be ' , A )
       GO TO 9000
 9960  CONTINUE
       CALL XMONTR ( 0 )
-      WRITE ( CMON,9965) CRESLT(IFUNC)
+      WRITE ( CMON,9965) CRESLT(kFUNC)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9965 ) CRESLT(IFUNC)
+      WRITE ( NCWU , 9965 ) CRESLT(kFUNC)
       ENDIF
-      WRITE ( NCAWU , 9965 ) CRESLT(IFUNC)
+      WRITE ( NCAWU , 9965 ) CRESLT(kFUNC)
 9965  FORMAT ( 1X , 'The specified file may not be ' , A )
       GO TO 9000
 9970  CONTINUE
       CALL XMONTR ( 0 )
-      WRITE ( CMON,9975) CRESLT(IFUNC)
+      WRITE ( CMON,9975) CRESLT(kFUNC)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9975 ) CRESLT(IFUNC)
+      WRITE ( NCWU , 9975 ) CRESLT(kFUNC)
       ENDIF
-      WRITE ( NCAWU , 9975 ) CRESLT(IFUNC)
+      WRITE ( NCAWU , 9975 ) CRESLT(kFUNC)
 9975  FORMAT ( 1X , 'A name may not be specified when DIRECT ACCESS' ,
      2 ' files are ' , A )
       GO TO 9000

@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  1999/02/23 19:51:09  dosuser
+C RIC: Changed the Cameron linkage. Allow scripts to be used in Cameron.
+C      Simply: Cameron gets input from KRDREC, which allows SCRIPTS
+C      to be used. Also #USE, $ and other system commands.
+C
 C Revision 1.6  1999/02/16 11:14:05  dosuser
 C RIC: Commented out 'END' checking for GID version when running Cameron
 C
@@ -691,7 +696,7 @@ C
 C
 C
 1000  CONTINUE
-      CALL XRDOPN ( 4 , JFRN(1,JFILE) ,
+      CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
      1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
      2 LPATH+LFILE(IFILE))
 C------ EXIT ON ERROR
@@ -964,11 +969,11 @@ C
 C---- GET THE PATH NAME
       LPATH  = KPATH( CPATH)
 C----- NOW OPEN THEM WITH THE MULTAN84 FILES
-      CALL XRDOPN ( 4 , JFRN1 ,
+      CALL XRDOPN ( 5 , JFRN1 ,
      1 CPATH(1:LPATH)//'MULTAN.CDR ', LPATH+11)
       IDEV = NCFPU1
       IF (IERROR .LE. 0) GOTO 9930
-      CALL XRDOPN ( 4 , JFRN2 ,
+      CALL XRDOPN ( 5 , JFRN2 ,
      1 CPATH(1:LPATH)//'MULTAN.RFL ', LPATH+11)
       IDEV = NCFPU2
       IF (IERROR .LE. 0) GOTO 9930

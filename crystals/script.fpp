@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  1999/03/05 17:16:37  dosuser
+C *** empty log message ***
+C
 C Revision 1.6  1999/02/23 20:05:13  dosuser
 C RIC: Stopped the IBM box characters from going to the screen, in DOS
 C      version, if Cameron is running. (They will be printed on a non-
@@ -4023,7 +4026,7 @@ C
         IF ( IFLIND .GE. IFLMAX ) GO TO 9920
 C
             LFILE = 1
-            CALL XRDOPN( 5, JDEV, ' ', LFILE)
+            CALL XRDOPN( 6, JDEV, ' ', LFILE)
             IF (IERFLG .LT. 0) GOTO 9930
 C
         IFLIND = IFLIND + 1

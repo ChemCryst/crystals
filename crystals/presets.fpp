@@ -655,12 +655,13 @@ C
       DATA NWCHAR/4/
 C
 C -- DEFINE SYSTEM INSTRUCTIONS
-      DATA NWHF / 4 / , NHF / 17 / , LHF / 4 /
+cdjwmar99
+      DATA NWHF / 4 / , NHF / 18 / , LHF / 4 /
 C
 C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
 C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
 C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
-C      'SPAW'      '$   '
+C      'SPAW'      '$   '      'APPE'
 C
 C
       DATA IHF / 'P', 'A', 'U', 'S', 'H', 'E', 'L', 'P',
@@ -671,7 +672,7 @@ C
      6           'S', 'T', 'O', 'R', 'S', 'T', 'A', 'R',
      7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
      8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
-     9           '$', ' ', ' ', ' '/
+     9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E' /
 C
 C
 C
@@ -905,6 +906,7 @@ C      ISSFNF      IOSTAT INDICATING FILE NOT FOUND
 C      ISSERF      IOSTAT INDICATING OTHER ERROR (NOT USED)
 C      ISSREA      OPEN FILE FOR READ
 C      ISSWRI      OPEN FILE FOR WRITE
+C      ISSAPP      OPEN FILE FOR APPEND
 C
 C      ISSNBF      NUMBER OF DISC BUFFERS
 C      ISSBFS      SPACE AVAILABLE FOR DISC BUFFERS ( SIZE OF 'LINK' )
@@ -973,7 +975,7 @@ C
       DATA ISSSCR / 4 / , ISSUNK / 5 / , ISSGEN / 0 /
       DATA ISSFLM / 0 / , ISSPAS / 0 /
 C
-      DATA ISSREA / 1 /, ISSWRI / 2 /
+      DATA ISSREA / 1 /, ISSWRI / 2 /, ISSAPP /3/
 &PPC      DATA ISSFNF /  29 /
 &H-P      DATA ISSFNF / 940 /
 &DOS      DATA ISSFNF / 128 /

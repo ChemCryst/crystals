@@ -1,30 +1,26 @@
 %SCRIPT PUBLISH
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT helps with production of tables for publication. The output    บ
-บ is displayed on the screen and listing file, together with a 'flat'        บ
-บ ASCII file suitable for sending to a laser printer or inputting to a       บ
-บ word processor.                                                            บ
-บ The esds of coordinates and distance-angles are derived from the full      บ
-บ least squares matrix. After the final round of least squares, DO NOT       บ
-บ MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise      บ
-บ CRYSTALS will detect a mis match with the matrix and abort the             บ
-บ calculation.                                                               บ
-บ The ASCII data is in the PUBLISH.LIS                                       บ
-บ A full analysis of residuals may reveal remaining deficiencies in the      บ
-บ refinement.                                                                บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ This SCRIPT helps with production of tables for publication. The output
+ is displayed on the screen and listing file, together with a 'flat'    
+ ASCII file suitable for sending to a laser printer or inputting to a   
+ word processor.                                                       
+ The esds of coordinates and distance-angles are derived from the full 
+ least squares matrix. After the final round of least squares, DO NOT  
+ MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise 
+ CRYSTALS will detect a mis match with the matrix and abort the        
+ calculation.                                                          
+ The ASCII data is in the PUBLISH.LIS                                  
+ A full analysis of residuals may reveal remaining deficiencies in the 
+ refinement.                                                           
 % ELSE
 The SCRIPT to help produce tables for publication
 % END IF
 % VARIABLE INTEGER PFLAG
 % EVALUATE PFLAG = 0
 %%
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ        The publication tables are in a file 'PUBLISH.LIS'                 บ
-บ                  The cif file is in  'PUBLISH.CIF'                        บ
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+       The publication tables are in a file 'PUBLISH.LIS'
+                 The cif file is in  'PUBLISH.CIF'
 %  LOOP
 %    ON ERROR TERMINATE ABANDONED
 %    CLEAR
@@ -97,19 +93,14 @@ The SCRIPT to help produce tables for publication
 %%
 %     END LOOP
 %%
-%%&VAX%      COPY '#RELEASE PUNCH '
-%     COPY '#RELEASE PUNCH crfile.pch'
 %  VERIFY YES NO
 %    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'
 %    IF VALUE .EQ. 2 THEN
 %            FINISH
 %    ELSE 
-%     COPY '#RELEASE PUNCH PUBLISH.CIF'
 %      BLOCK                                         %CIF%
 %        COPY '#SCRIPT CIF'
 %        COPY 'END'
 %      END BLOCK
-%%&VAX%      COPY '#RELEASE PUNCH '
-%     COPY '#RELEASE PUNCH crfile.pch'
 %    END IF
 %END SCRIPT
