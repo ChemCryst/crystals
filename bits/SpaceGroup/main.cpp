@@ -68,12 +68,11 @@ void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRa
 {
     if (pRunData.iOutputFile.getCString()[0] != 0)
     {
-        filebuf tOutputFile;
-        if (tOutputFile.open(pRunData.iOutputFile.getCString(), ios::out) != NULL)
+        ofstream tOutputFile(pRunData.iOutputFile.getCString(), ofstream::out);
+        if (!tOutputFile.fail())
         {
-            ostream tOutputStream(&tOutputFile);
-            tOutputStream << *pStats << "\n";
-            tOutputStream << *pRanking << "\n";
+            tOutputFile << *pStats << "\n";
+            tOutputFile << *pRanking << "\n";
             tOutputFile.close();
         }
         else
@@ -141,10 +140,6 @@ void runTest(RunParameters& pRunData)
     gettimeofday(&time2, NULL);
     std::cout <<"\n" << (float)(time2.tv_sec - time1.tv_sec)+(float)(time2.tv_usec-time1.tv_usec)/1000000 << "s\n";
     std::cout << "\n" << *tRankings << "\n";
-    if (tStats->filtered())
-    {
-        std::cout << "\nThis data may have already been filtered!\n";
-    }
     outputToFile(pRunData, tStats, tRankings);
     if (pRunData.iInteractiveMode)
     {
