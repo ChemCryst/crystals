@@ -325,8 +325,8 @@ C the TO atoms are held IRLAST + NDIST1 -> IRLAST + NDIST2 - 1
 C OUTPUT THE CURRENT RANGE
       WRITE (CLINE,1) DISBEG,DISEND
       CALL ZMORE(CLINE,1)
-1     FORMAT ('The current range for the distance calculation is ',
-     c F6.2 ,' to ', F6.2, ' angstroms.')
+1     FORMAT ('Distances in range ',
+     c F5.2 ,' to ', F5.2, ' A')
 C IDOUT WILL BE SET ONCE A DISTANCE HAS BEEN OUTPUTTED
       IDOUT = 0
       INPOS = IRLAST + NDIST2*4
@@ -450,7 +450,7 @@ C WORK OUT THE PACK LABEL FROM THE ATOM POSITION
             CALL ZMORE(CLINE,2)
             ENDIF
 cdjwjan99         CALL ZMORE(' ',2)
-12            FORMAT ('Operator ',A,' translations ',3I5)
+12            FORMAT ('Operator ',A,' translations ',3I3)
             IDOUT = 1
           ENDIF
 140         CONTINUE
@@ -1260,7 +1260,7 @@ C      WRITE (ISTOUT,*) 'FINISHED'
       INLINE = 2
       CALL ZMORE(CLINE,0)
       ENDIF
-11    FORMAT ('Current value of scale is ',F7.2, ' (',2F7.2,')')
+11    FORMAT (' Scale is ',F7.2, ' (',2F7.2,')')
 C ---- GET A TITLE
       IF (ITITLE.GT.0) CALL ZCAPT
       IF (IMENCN.EQ.2) CALL ZMENUS
