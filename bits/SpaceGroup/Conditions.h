@@ -41,6 +41,7 @@ class Conditions:public MyObject
         char* getName(int pIndex);
         float getMult(int pIndex);
         Matrix<short>* getMatrix(int pIndex);
+        int getID(int pIndex);
         std::ostream& output(std::ostream& pStream);
         char* addCondition(char* pLine);
         void readFrom(filebuf& pFile);
