@@ -1,0 +1,22 @@
+%SCRIPT XGUIDE
+%%
+%% Determine current state of analysis.
+%% Call appropriate Sub-Guide.
+%
+%% May be set by calling scripts to recommend refinement:
+%  VARIABLE LOGICAL REFREQD
+%
+% IF EXISTS ( 6 ) .LT. 1 THEN
+%   COPY '#SCRIPT XGUIDEI'
+% ELSE IF EXISTS ( 1 ) .LT. 1 THEN
+%   COPY '#SCRIPT XGUIDEI'
+% ELSE IF EXISTS ( 2 ) .LT. 1 THEN
+%   COPY '#SCRIPT XGUIDEI'
+% ELSE IF EXISTS ( 3 ) .LT. 1 THEN
+%   COPY '#SCRIPT XGUIDEI'
+% ELSE IF EXISTS ( 5 ) .LT. 1 THEN
+%   COPY '#SCRIPT XGUIDES'
+% ELSE
+%   COPY '#SCRIPT XGUIDER'
+% END IF
+%END SCRIPT

@@ -1,0 +1,103 @@
+%SCRIPT XGUIDECI
+%%
+%%  1 Run KCCDIN
+%%  2 Run RC93
+%%  3 Run DIPIN
+%%  4 Inport KCCDIN output.
+%%  5 Import RC93 output
+%%  6 Import DIPIN output.
+%%  7 Import SHELX data.
+%%  8 Input cell
+%%  9 Input cell contents
+%%  10 Input space group.
+%%  11 Input reflection data.
+%%  12 Edit CIF type data
+%%  13 Read in CRYSTALS instructions.
+%%
+%  VERIFY GI_BOK GI_BXX GI_BHELP
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' ' '
+%  CASE VALUE
+%    BLOCK  %BOK%
+^^?? AUTOLIST SELECTED
+%      GET SILENT NOSTORE INTEGER 'Choice number'
+%      CASE VALUE
+%%
+%        BLOCK % 1
+%          COPY '#SCRIPT KCCD'
+%        END BLOCK
+%%
+%        BLOCK % 2
+%          COPY '#SCRIPT RC93'
+%        END BLOCK
+%%
+%        BLOCK % 3
+%          COPY '#SCRIPT DIP'
+%        END BLOCK
+%%
+%        BLOCK % 4
+%          COPY '#SCRIPT XKCCDIN'
+%        END BLOCK
+%%
+%        BLOCK % 5
+%          COPY '#SCRIPT XINRC93'
+%        END BLOCK
+%%
+%        BLOCK % 6
+%          COPY '#SCRIPT XDIPIN'
+%        END BLOCK
+%%
+%        BLOCK % 7
+%          COPY '#SCRIPT XSHELXIN'
+%        END BLOCK
+%%
+%        BLOCK % 8
+%          COPY '#SCRIPT XCELLIN'
+%        END BLOCK
+%%
+%        BLOCK % 9
+%          COPY '#SCRIPT XINLIST3'
+%        END BLOCK
+%%
+%        BLOCK % 10
+%          COPY '#SCRIPT XINSPACE'
+%        END BLOCK
+%%
+%        BLOCK % 11
+%          COPY '#SCRIPT XINLIST6'
+%        END BLOCK
+%%
+%        BLOCK % 12
+%          COPY '#SCRIPT ED30'
+%        END BLOCK
+%%
+%        BLOCK % 13
+%          COPY '#SCRIPT XUSE'
+%        END BLOCK
+%%
+%      END CASE
+%    END BLOCK
+%%
+%%
+%    BLOCK  %BXX%
+^^WI   DISPOSE XGUIDEI
+^^CR
+%      FINISH
+%    END BLOCK
+%%
+%%
+%    BLOCK  %BHELP%
+%      COPY '#SCRIPT XHELP12'
+%      GET SILENT NOSTORE TEXT ' ' ' '
+%    END BLOCK
+%%
+%  END CASE
+%%
+%%
+%%
+%%
+%%
+%%
+%% Back to the GUIDE:
+%%
+%  COPY '#SCRIPT XGUIDE'
+%END SCRIPT

@@ -1,0 +1,291 @@
+%SCRIPT XGUIDER
+%%
+%% Determine current state of analysis.
+%% Decide on a course of action.
+%% Display non-modal window with available options. 
+%% Exit. - The window will callback XGUIDERC.SCP with events.
+%%
+%  VARIABLE LOGICAL HDONE EDONE WDONE HINCELL
+%  VARIABLE INTEGER ADP 
+%%
+%  VARIABLE INTEGER KTDEFA
+%% KTDEFA  = 
+%%  1 View structure
+%%  2 Fourier refinement 
+%%  3 Refine Postitions
+%%  4 Refine pos and Uiso
+%%  5 Refine pos and Uaniso
+%%  6 Locate H
+%%  7 Check extinction.
+%%  8 Check weighting scheme.
+%%
+%% 11 Validate
+%% 12 Publish
+%%
+%%
+%%
+%  VARIABLE INTEGER ISTAGE
+%  VARIABLE REAL R1 R2 R3 R4 RMIN
+%% R, OSCALE, RATIO are set in SCRIPT RFACTOR
+%  VARIABLE REAL R OSCALE RATIO
+%%
+%% May be set by calling scripts to recommend refinement:
+%  VARIABLE LOGICAL REFREQD
+%% May be set by calling scripts to recommend publication stage or
+%% further refinement:
+%  VARIABLE LOGICAL VALIDPASS
+%  VARIABLE LOGICAL VALIDFAIL
+%%
+%  EVALUATE ISTAGE = 0
+%%
+%% --- R-FACTOR THRESHOLDS FOR VARIOUS CASES ---
+%% Fourier might be better
+%  EVALUATE R1 = 40.0
+%% Isotropic refinement
+%  EVALUATE R2 = 20.0
+%% Aniso 
+%  EVALUATE R3 = 10.0
+%% Tidy up
+%  EVALUATE R4 = 6.0
+%% 
+%% Find EDONE, HDONE and WDONE. These are stored in L30.
+%  COPY '#SCRIPT XGETINFO'
+%%
+%% Determine how much refinement has been done (ADP)
+%  COPY '#SCRIPT ASSESS5'
+%%
+%% Find out if  H is in list 29.
+%  COPY '#SCRIPT CHECK29'
+%  IF ( HINCELL .EQ. FALSE ) THEN
+%% Set this to true, so that the logic thinks we've already found H's.
+%    EVALUATE HDONE = TRUE
+%  END IF
+%%
+%% Try to guess what stage we are at
+%  EVALUATE ISTAGE = ADP 
+%%
+%%
+
+{S * Checking R-factor.
+%  COPY '#SCRIPT RFACTOR'
+%  IF RATIO .GE. 1.3 THEN
+{R   We need the R factor on a good scale.
+
+{S * Recomputing overall scale factor and phases.
+%    COPY '#SFLS'
+%    COPY 'SCALE'
+%    COPY 'END'
+%    COPY '#SFLS'
+%    COPY 'SCALE'
+%    COPY 'END'
+{S * Checking R-factor again.
+%    COPY '#SCRIPT RFACTOR'
+%  END IF
+%  EVALUATE RMIN = R
+%  IF RMIN .LE. R4 THEN
+%    EVALUATE ISTAGE = 3
+%  END IF
+%%
+%% Check for window already open
+%%
+^^?? XGUIDEI EXISTS
+%  VERIFY TRUE FALSE
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF VALUE .EQ. 1  THEN
+^^CO DISPOSE XGUIDEI
+%  END IF
+^^?? XGUIDES EXISTS
+%  VERIFY TRUE FALSE
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF VALUE .EQ. 1  THEN
+^^CO DISPOSE XGUIDES
+%  END IF
+^^?? XGUIDER EXISTS
+%  VERIFY TRUE FALSE
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF VALUE .EQ. 2  THEN
+%    CLEAR
+%    ON ERROR TERMINATE
+%%
+^^WI WINDOW XGUIDER 'Supervisor' POSITION CENTRED 'MODEL01'
+^^WI COMMIT='GR_BOK' CANCEL='GR_BXX'
+^^WI COMMAND='#SCRIPT XGUIDERC' DISABLEIF='IN'
+^^WI GRID HO NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 2,2 GRID OUTER NROWS=1 NCOLS=5
+^^WI  {
+^^WI   @ 1,1 BITMAP GUIDEB FILE 'guide3.bmp'
+^^WI   @ 1,3 LISTBOX AUTOLIST VISLINES=11 ADDTOLIST
+^^WI     'View structure'
+^^WI     'Fourier refinement'
+^^WI     'Refine positions'
+^^WI     'Refine posn and iso'
+^^WI     'Refine posn and aniso'
+^^WI     'Add hydrogen'
+^^WI     'Check extinction'
+^^WI     'Optimise weights'
+^^WI     'n-Cycles'
+^^WI     '6-Cycles'
+^^WI     'Validate'
+^^WI     'Publish'
+^^WI     NULL
+^^WI   @ 1,5 GRID BTNS NROWS=9 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON GR_BOK '&Ok' DEFAULT COMMIT
+^^WI     @ 4,1 BUTTON GR_BXX '&Hide' CANCEL
+^^WI     @ 6,1 BUTTON GR_BHELP '&Help'
+^^WI     @ 9,1 BUTTON GR_BRESET '&Known facts'
+^^WI   }
+^^WI  }
+^^WI  @ 4,2 STATIC SUPT
+^^WI 'You can continuing working while this window is open.'
+^^WI }
+^^WI SHOW
+^^CR
+%  END IF
+
+{S * Deciding on the best course of action...
+
+%  CLEAR
+%%___________________________________________________________________
+%%
+%  IF R .GT. R1 THEN
+%%
+ Large R factor.
+   Recommended:   Fourier refinement.
+   Other options: Refine positions only.
+                  View the structure.
+%      EVALUATE KTDEFA = 2
+%%___________________________________________________________________
+%%
+%  ELSE IF ( R .GT. R2 ) .OR. ( ISTAGE .LE. 1 ) THEN
+%%
+ Medium R factor. 
+   Recommended:   Refine positions and Uiso.
+   Other options: View the structure
+%      EVALUATE KTDEFA = 4
+%%___________________________________________________________________
+%%
+%  ELSE IF ( R .GT. R3 ) .AND. ( ISTAGE .LE. 2 ) THEN
+%%
+ Low R factor 
+   Recommended:   Refine positions and Uaniso
+   Other options: View the structure
+%      EVALUATE KTDEFA = 5
+%%___________________________________________________________________
+%%
+%  ELSE IF ( R .GT. R3 ) .AND. ( EDONE .EQ. TRUE ) THEN
+%%
+ R factor is large after aniso refinement. 
+   Possible problems: Missing solvent.
+                      Disorder.
+                      Extinction.
+   Recommended:       Get help.
+   Other options:     View the structure.
+
+{0,4  CRYSTALS cannot guide you futher with this analysis.
+{0,4  Please consult a professional crystallographer
+
+ You may find the CRYSTALS primer has some useful ideas and
+ instructions for handling non-routine structures.
+ {&www.xtl.ox.ac.uk/primer.html{&
+
+%    EVALUATE KTDEFA = 1
+%%___________________________________________________________________
+%%
+%  ELSE IF ( R .GT. R3 ) THEN
+%%
+ R factor is large after aniso refinement.
+   Possible problems: Missing solvent.
+                      Disorder.
+                      Extinction.
+   Recommended:       Try extinction correction.
+   Other options:     View the structure.
+%      EVALUATE KTDEFA = 7
+%%___________________________________________________________________
+%%
+%  ELSE IF ( REFREQD ) THEN
+%      EVALUATE KTDEFA = 5
+%      EVALUATE REFREQD = FALSE
+%%
+ Very low R factor, but model recently changed...
+    Recommended:   A few cycles of refinement.
+    Other options: Locate or place all hydrogen atoms.
+                   Refine positions and Uaniso.
+                   View the structure.
+ 
+%%___________________________________________________________________
+%%
+%  ELSE IF ( HDONE .EQ. FALSE ) THEN
+%%
+%% Not all H found yet, but R < R3
+%      EVALUATE KTDEFA = 6
+ Very low R factor - Begin to tidy up
+    Recommended:   Locate or place all hydrogen atoms.
+    Other options: Refine positions and Uaniso.
+                   View the structure.
+%%___________________________________________________________________
+%%
+%  ELSE IF EDONE .EQ. FALSE THEN
+%%
+%% All H are found and R < R3 default to checking extinction.
+%      EVALUATE KTDEFA = 7
+    Recommended:   Check for extinction.
+    Other options: Refine positions and Uaniso.
+                   View the structure.
+                   Locate or place all hydrogen atoms.
+%%___________________________________________________________________
+%%
+%  ELSE IF ( WDONE .EQ. FALSE  ) .AND. ( R .LE. R4 ) THEN
+%%
+%% H are found, extinction checked, R < R4 default to weights
+%      EVALUATE KTDEFA = 8
+    Recommended:   Optimise least squares weights.
+    Other options: Refine positions and Uaniso.
+                   View the structure.
+                   Relocate or replace all hydrogen atoms.
+                   Check for extinction.
+%%___________________________________________________________________
+%%
+%  ELSE IF ( VALIDPASS )
+%      EVALUATE KTDEFA = 12
+    Recommended:   Produce publication material.
+    Other options: Validate.
+                   Refine positions and Uaniso.
+                   View the structure.
+                   Relocate or replace all hydrogen atoms.
+                   Check for extinction.
+                   Optimise least squares weights.
+
+%  ELSE IF ( VALIDFAIL )
+%      EVALUATE KTDEFA = 11
+    Recommended:   Fix the problems with the structure.
+    Options:       Re-validate.
+                   Refine positions and Uaniso.
+                   View the structure.
+                   Relocate or replace all hydrogen atoms.
+                   Check for extinction.
+                   Optimise least squares weights.
+%%
+%  ELSE
+%%
+%% H are found, extinction checked, R < R4 weights set. Validate.
+%      EVALUATE KTDEFA = 11
+    Recommended:   Validate the structure.
+                   Refine positions and Uaniso.
+    Other options: View the structure.
+                   Relocate or replace all hydrogen atoms.
+                   Check for extinction.
+                   Optimise least squares weights.
+%  END IF
+%%
+%%___________________________________________________________________
+%%
+%%
+%  CLEAR
+%  INSERT '^^CO SET AUTOLIST SELECTION='
+%  STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA
+%  OUTPUT
+% END SCRIPT
+%%
+%%  $Log: not supported by cvs2svn $
