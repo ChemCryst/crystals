@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2004/02/06 16:58:28  rich
+C Make #SET TIME OFF turn off all time routines.
+C
 C Revision 1.44  2003/11/19 15:17:21  rich
 C Linux ver: call C++ routine to spawn other programs.
 C
@@ -1552,9 +1555,14 @@ C
 &VAX      CHARACTER*9 CDATE2
 &VAX      CHARACTER*36 CMONTH
 &VAX      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
+&PPC      CHARACTER*9 CDATE2
+&PPC      CHARACTER*36 CMONTH
+&PPC      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
 &PRI      CHARACTER*16 CDATE2
 &DGV      DIMENSION IDATE(3)
 &DOS      CHARACTER*8 EDATE@
+&&LINGIL      DIMENSION IDAT(3)
+&WXS      DIMENSION IDAT(3)
 
 
       IF ( ISSTIM .EQ. 0 ) THEN
@@ -1564,9 +1572,6 @@ C
 
 &ICL      CALL ICL9LGGDATE ( CDATE2 )
 &ICL      CDATE = CDATE2(7:8)//'.'//CDATE2(5:6)//'.'//CDATE2(3:4)
-&PPC      CHARACTER*9 CDATE2
-&PPC      CHARACTER*36 CMONTH
-&PPC      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
 &PPC      CALL getlsdate( %loc(CDATE2) )
 &PPC      CDATE = CDATE2(1:6)//CDATE2(8:9)
 &PPC      I = INDEX (CMONTH, CDATE(4:6))
@@ -1593,13 +1598,11 @@ C
 &DGV      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
 &DGV      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 
-&&LINGIL      DIMENSION IDAT(3)
 &&LINGIL      CALL IDATE ( IDAT )
 &&LINGIL      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
 &&LINGIL     2      IDAT(2) , MOD ( IDAT(3) , 100 )
 &&LINGIL      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
 &&LINGIL      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
-&WXS      DIMENSION IDAT(3)
 &WXS      CALL IDATE ( IDAT )
 &WXS      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
 &WXS     2      IDAT(2) , MOD ( IDAT(3) , 100 )
