@@ -23,6 +23,9 @@
 
 #endif
 
+
+#define WM_STUFFTOPROCESS ( WM_USER + 100 )
+
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp:
 // See gcrystals.cpp for the implementation of this class
@@ -47,13 +50,16 @@ public:
 	//{{AFX_VIRTUAL(CCrystalsApp)
 	public:
 	virtual BOOL InitInstance();
-	virtual BOOL OnIdle(LONG lCount);
+      virtual BOOL OnIdle(LONG lCount);
 	virtual int ExitInstance();
 	//}}AFX_VIRTUAL
 
 // Implementation
 
 	//{{AFX_MSG(CCrystalsApp)
+
+//      afx_msg void OnStuffToProcess();
+
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -61,7 +67,7 @@ public:
 #ifdef __LINUX__
 	virtual bool OnInit();
 	virtual int OnExit();
-	virtual void OnIdle(wxIdleEvent & event);
+      virtual void OnIdle(wxIdleEvent & event);
       DECLARE_EVENT_TABLE()
 #endif
 protected:
