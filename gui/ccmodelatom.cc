@@ -15,22 +15,44 @@ CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
   Init();
 }
 
+CcModelAtom::CcModelAtom(CcString llabel,int lx1,int ly1,int lz1, 
+                          int lr, int lg, int lb, int locc,int lcov, int lvdw,
+                          int lspare, int lflag,
+                          int u1,int u2,int u3,int u4,int u5,
+                          int u6,int u7,int u8,int u9, CcModelDoc* parentptr)
+{
+  mp_parent = parentptr;
+  Init();
+  x = lx1; y = ly1; z = lz1;
+  r = lr; g = lg; b = lb;
+  occ = locc;
+  covrad = lcov; vdwrad = lvdw; sparerad = lspare;
+  x11 = u1; x12 = u2; x13 = u3;
+  x21 = u4; x22 = u5; x23 = u6;
+  x31 = u7; x32 = u8; x33 = u9;
+  m_label = llabel;
+  m_IsADP = ( lflag == 0 );
+
+
+}
+
+
 void CcModelAtom::Init()
 {
-  type = CC_ATOM;
+  m_type = CC_ATOM;
   x = y = z = 0;
   r = g = b = 0;
   id = 0;
   occ = 1;
   sparerad = covrad = vdwrad = 1000;
   x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
-  label = "Err";
+  m_label = "Err";
   m_selected = false;
   m_disabled = false;
   m_IsADP = true;
   m_excluded = false;
   spare = false;
-  glID = 0;
+  m_glID = 0;
 }
 
 CcModelAtom::~CcModelAtom()
@@ -49,7 +71,7 @@ void CcModelAtom::ParseInput(CcTokenList* tokenList)
 // UISO or X11
 // X12, x13, x22, x23, x31, x32, x33
       id        = atoi ( tokenList->GetToken().ToCString() );
-      label     =        tokenList->GetToken();    //LABEL
+      m_label     =        tokenList->GetToken();    //LABEL
       x         = atoi ( tokenList->GetToken().ToCString() );
       y         = atoi ( tokenList->GetToken().ToCString() );
       z         = atoi ( tokenList->GetToken().ToCString() );
@@ -170,7 +192,7 @@ void CcModelAtom::Render(CcModelStyle *style)
   }
   else if(style->radius_type == SPARE)
   {
-    if ( label.Length() && ( label.Sub(1,1) == "Q" ) )
+    if ( m_label.Length() && ( m_label.Sub(1,1) == "Q" ) )
     {
       gluSphere(sphere, ((float)sparerad + extra ) * style->radius_scale,detail,detail);
     }
@@ -260,29 +282,29 @@ void CcModelAtom::SendAtom(int style, Boolean output)
     }
     case CR_APPEND:
     {
-      ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+label+" ");
+      ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+m_label+" ");
       break;
     }
     case CR_SENDA:
     {
-      (CcController::theController)->SendCommand(label);
+      (CcController::theController)->SendCommand(m_label);
       break;
     }
     case CR_SENDB:
     {
       CcString element, number;
       int pos1 = 1, pos2 = 1;
-      for (int i = 1; i < label.Length(); i++)
+      for (int i = 1; i < m_label.Length(); i++)
       {
-        if ( label[i] == '(' )
+        if ( m_label[i] == '(' )
         {
           pos1 = i+1;
-          element = label.Sub(1,pos1-1);
+          element = m_label.Sub(1,pos1-1);
         }
-        if ( label[i] == ')' )
+        if ( m_label[i] == ')' )
         {
           pos2 = i+1;
-          number = label.Sub(pos1+1, pos2-1);
+          number = m_label.Sub(pos1+1, pos2-1);
         }
       }
       if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
@@ -293,24 +315,24 @@ void CcModelAtom::SendAtom(int style, Boolean output)
     }
     case CR_SENDC:
     {
-      (CcController::theController)->SendCommand("ATOM_N" + label);
+      (CcController::theController)->SendCommand("ATOM_N" + m_label);
       break;
     }
     case CR_SENDD:
     {
       CcString element, number;
       int pos1 = 1, pos2 = 1;
-      for (int i = 1; i < label.Length(); i++)
+      for (int i = 1; i < m_label.Length(); i++)
       {
-        if ( label[i] == '(' )
+        if ( m_label[i] == '(' )
         {
           pos1 = i+1;
-          element = label.Sub(1,pos1-1);
+          element = m_label.Sub(1,pos1-1);
         }
-        if ( label[i] == ')' )
+        if ( m_label[i] == ')' )
         {
           pos2 = i+1;
-          number = label.Sub(pos1+1, pos2-1);
+          number = m_label.Sub(pos1+1, pos2-1);
         }
       }
       if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
@@ -323,7 +345,7 @@ void CcModelAtom::SendAtom(int style, Boolean output)
     {
       CcString cSet = (Select()) ? "SET" : "UNSET" ;
       mp_parent->DrawViews();
-      (CcController::theController)->SendCommand("ATOM_N" + label + "_N" + cSet);
+      (CcController::theController)->SendCommand("ATOM_N" + m_label + "_N" + cSet);
       break;
     }
   }

@@ -14,6 +14,13 @@ class CcModelAtom : public CcModelObject
 {
   public:
     CcModelAtom(CcModelDoc* parentptr);
+    CcModelAtom(CcString label,int x1,int y1,int z1, 
+                    int r, int g, int b, int occ,int cov, int vdw,
+                    int spare, int flag,
+                    int u1,int u2,int u3,int u4,int u5,
+                    int u6,int u7,int u8,int u9,
+                    CcModelDoc* parentptr);
+
     void Init();
     ~CcModelAtom();
 

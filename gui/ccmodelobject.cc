@@ -11,7 +11,7 @@ CcModelObject::CcModelObject(CcModelDoc* pointer)
 
 CcModelObject::CcModelObject()
 {
-   type = 0;
+   m_type = 0;
 }
 
 CcModelObject::~CcModelObject()
@@ -20,10 +20,10 @@ CcModelObject::~CcModelObject()
 
 CcString CcModelObject::Label()
 {
-  return label;
+  return m_label;
 }
 
 int CcModelObject::Type()
 {
-  return type;
+  return m_type;
 }

@@ -31,11 +31,11 @@ class CcModelObject
      virtual void ParseInput ( CcTokenList* tokenlist) = 0;
      CcString Label();
      int Type();
-    GLuint glID;
+     GLuint m_glID;
    protected:
      CcModelDoc * mp_parent;
-     CcString label;
-     int type;
+     CcString m_label;
+     int m_type;
 };
 
 #include	"ccmodelatom.h"
