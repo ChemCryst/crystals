@@ -1,4 +1,4 @@
-%SCRIPT XCCDIN  %Script for quick input of KCCD data%
+%SCRIPT XKCCDIN  %Script for quick input of KCCD data%
 %  VARIABLE INTEGER INBASICS SOLVEMETHOD
 %  VARIABLE LOGICAL LFILE IFILE
 %%
@@ -66,7 +66,12 @@
 %    END BLOCK
 %    BLOCK             %RUN KCCDIN%
 {S * Running KCCDIN.
-%      COPY '#SPAWN "CRYSDIR:KCCDIN.BAT"'
+^^WI   WINDOW BLOCKK 'Waiting' MODAL CANCEL='^^CO DISPOSE BLOCKK'
+^^WI   GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting KCCDIN.'
+^^WI   @ 3,2 STATIC T1 'Complete or close KCCDIN to continue.' } SHOW
+^^CR
+%      COPY '#SPAWN + "CRYSDIR:KCCDIN.BAT"'
+^^CO   DISPOSE BLOCKK
 ^^CO   SET BTNOK DISABLED=NO
 ^^CO   SET BTNRR TEXT = 'Run KCCDin again'
 ^^CO   SET T1 TEXT 'Click OK to read in data'
