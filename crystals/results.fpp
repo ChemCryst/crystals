@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2001/08/15 08:23:34  ckp2
+C Two new scan types for LIST 30. Six new absorption correction types.
+C (Currently these new types all store min+max in PSIMIN and PSIMAX).
+C
 C Revision 1.22  2001/08/09 07:29:40  ckp2
 C It helps if _atom_site_type_symbol is uppercase for certain programs. (WinGX).
 C
@@ -3146,7 +3150,7 @@ C----- VALUE AND ESD
             WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
             CALL XCRAS (CBUF,N)
             WRITE (NCFPU1,600) CCELL(I)(1:1),CBUF(1:N)
-600         FORMAT ('_cell_length_',A,1X,A)
+600         FORMAT ('_cell_length_',A,T35,A)
             WRITE (CPAGE(3+I,1)(:),'(A,17X,A)') CCELL(I)(1:1),CBUF(1:N)
             CALL XFILL (IB,IVEC,16)
             CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,7,IVEC)
@@ -3157,12 +3161,12 @@ C----- VALUE AND ESD
             TEMP=STORE(M1P1+3)-INT(STORE(M1P1+3))
             IF (TEMP.LE.ZERO) N=MAX(1,J-1)
             WRITE (NCFPU1,650) CANG(I)(1:5),CBUF(1:N)
-650         FORMAT ('_cell_angle_',A,1X,A)
+650         FORMAT ('_cell_angle_',A,T35,A)
             WRITE (CPAGE(3+I,2)(:),'(A,16X,A)') CANG(I)(1:5),CBUF(1:N)
             M1P1=M1P1+1
 700      CONTINUE
          WRITE (NCFPU1,750) STORE(L1P1+6)
-750      FORMAT ('_cell_volume ',F8.1)
+750      FORMAT ('_cell_volume ',T35,F8.1)
          WRITE (CPAGE(7,1)(:),'(A,10X,F8.1)') 'Volume',STORE(L1P1+6)
       END IF
 C 
@@ -3179,7 +3183,7 @@ C----- CRYSTAL CLASS - FROM LIST 2
          CBUF(1:1)=CTEMP(1:1)
          CALL XCTRIM (CBUF,J)
          WRITE (CLINE,850) CBUF(1:J)
-850      FORMAT ('_symmetry_cell_setting   ''',A,'''')
+850      FORMAT ('_symmetry_cell_setting',T35,'''',A,'''')
          WRITE (CPAGE(3,1)(:),'(A,5X,A)') 'Crystal Class',CBUF(1:J)
          CALL XPCIF (CLINE)
 C 
@@ -3192,7 +3196,7 @@ C ----- DISPLAY SPACE GROUP SYMBOL
          CBUF(1:1)=CTEMP(1:1)
          CALL XCTRIM (CBUF,J)
          WRITE (CLINE,950) CBUF(1:J)
-950      FORMAT ('_symmetry_space_group_name_H-M   ''',A,'''')
+950      FORMAT ('_symmetry_space_group_name_H-M',T35,'''',A,'''')
 CRicMay99 Changed 10X to 1X: CPAGE is only 35 chars wide so it is
 C         easy to overflow with eg. 17 character spacegroup symbols.
 C         This will spoil the formatting. Maybe it would be better
@@ -3323,9 +3327,9 @@ Cdjw NOV97
          CALL XCTRIM (CLINE,J)
 1700  CONTINUE
 C 
-      WRITE (NCFPU1,'(A,/A,A,A)') '_chemical_formula_sum','''',
+      WRITE (NCFPU1,'(A,T35,A,A,A)') '_chemical_formula_sum','''',
      1CLINE(1:J),''''
-      WRITE (NCFPU1,'(A,/A,A,A)') '_chemical_formula_moiety','''',
+      WRITE (NCFPU1,'(A,T35,A,A,A)') '_chemical_formula_moiety','''',
      1CLINE(1:J),''''
       WRITE (NCFPU1,'(''_chemical_compound_source'',                    
      1  /,'';''/''?''/'';'')')
@@ -3341,16 +3345,16 @@ C----- LIST 30
 C 
       IF (JLOAD(9).GE.1) THEN
 C 
-         WRITE (NCFPU1,'(''_chemical_formula_weight '',F8.2)')
+         WRITE (NCFPU1,'(''_chemical_formula_weight '',T35,F8.2)')
      1    STORE(L30GE+4)
          CLINE(1:18)='_cell_measurement_'
-         WRITE (NCFPU1,'(A18, ''reflns_used '', I8)') CLINE(1:18),
+         WRITE (NCFPU1,'(A18, ''reflns_used '',T35,I8)') CLINE(1:18),
      1    NINT(STORE(L30CD+3))
-         WRITE (NCFPU1,'(A18, ''theta_min '', I8)') CLINE(1:18),
+         WRITE (NCFPU1,'(A18, ''theta_min '',T35,I8)') CLINE(1:18),
      1    NINT(STORE(L30CD+4))
-         WRITE (NCFPU1,'(A18, ''theta_max '', I8)') CLINE(1:18),
+         WRITE (NCFPU1,'(A18, ''theta_max '',T35,I8)') CLINE(1:18),
      1    NINT(STORE(L30CD+5))
-         WRITE (NCFPU1,'(A18, ''temperature '', I6)') CLINE(1:18),
+         WRITE (NCFPU1,'(A18, ''temperature '',T35,I8)') CLINE(1:18),
      1    NINT(STORE(L30CD+6))
          WRITE (CPAGE(9,2)(:),'(A,17X,F8.2)') 'Mr ',STORE(L30GE+4)
          WRITE (CPAGE(13,1)(:),'(A,5X,I6,A)') 'Cell from',
@@ -3368,7 +3372,7 @@ C
             WRITE (CTEMP,1650) SUM
          END IF
          CALL XCRAS (CTEMP,LENGTH)
-         WRITE (NCFPU1,'(''_cell_formula_units_Z '', A)')
+         WRITE (NCFPU1,'(''_cell_formula_units_Z '',T42, A)')
      1    CTEMP(1:LENGTH)
          WRITE (CPAGE(7,2)(:),'(A,19X,A)') 'Z ',CTEMP(1:LENGTH)
 C 
@@ -3376,7 +3380,7 @@ C
          WRITE (CLINE,'(3X,8A4)') (ISTORE(K),K=L30SH,L30SH+MD30SH-1)
          CALL XCCLWC (CLINE(1:),CTEMP(1:))
          CALL XCTRIM (CTEMP,J)
-         WRITE (CLINE,'(A,''description '',A,A,A)') CBUF(1:15),'''',
+         WRITE (CLINE,'(A,''description '',T35,A,A,A)') CBUF(1:15),'''',
      1    CTEMP(1:J),''''
          CALL XPCIF (CLINE)
          WRITE (CPAGE(12,2)(:),'(A,2X,A)') 'Shape',CTEMP(1:J)
@@ -3384,47 +3388,48 @@ C
          WRITE (CLINE,'(3X,8A4)') (ISTORE(K),K=L30CL,L30CL+MD30CL-1)
          CALL XCCLWC (CLINE(1:),CTEMP(1:))
          CALL XCTRIM (CTEMP,J)
-         WRITE (CLINE,'(A,''colour '', A,A,A)') CBUF(1:15),'''',
+         WRITE (CLINE,'(A,''colour '',T35,A,A,A)') CBUF(1:15),'''',
      1    CTEMP(1:J),''''
          CALL XPCIF (CLINE)
          WRITE (CPAGE(12,1)(:),'(A,1X,A)') 'Colour',CTEMP(1:J)
 C 
          DO 1800 I=1,3
-            WRITE (CLINE,'(A,''size_'', A, F5.2)') CBUF(1:15),CSIZE(I),
+            WRITE(CLINE,'(A,''size_'', A,T35,F5.2)')CBUF(1:15),CSIZE(I),
      1       STORE(L30CD+I-1)
             CALL XPCIF (CLINE)
 1800     CONTINUE
          WRITE (CPAGE(11,1)(:),'(A,13X,F5.2,''x'',F5.2,''x'',F5.2)') 'Si
      1ze',STORE(L30CD),STORE(L30CD+1),STORE(L30CD+2)
 C 
-         WRITE (CLINE,'(A,''density_diffrn'',  F6.3)') CBUF(1:15),
+         WRITE (CLINE,'(A,''density_diffrn'',T35,F6.3)') CBUF(1:15),
      1    STORE(L30GE+1)
          CALL XPCIF (CLINE)
          WRITE (CPAGE(9,1)(:),'(A,17X,F5.2)') 'Dx',STORE(L30GE+1)
 C 
          IF (STORE(L30GE).GT.ZERO) THEN
-            WRITE (CLINE,'(A,''density_meas'', F6.3)') CBUF(1:15),
+            WRITE (CLINE,'(A,''density_meas'',T35,F6.3)') CBUF(1:15),
      1       STORE(L30GE)
          ELSE
             WRITE (CLINE,1850) CBUF(1:15),'density_meas','''','not measu
      1red',''''
-1850        FORMAT (A,A,6X,A,A,A)
+1850        FORMAT (A,A,T35,A,A,A)
             CALL XPCIF (CLINE)
          END IF
 C 
-         WRITE (CLINE,'(A,''F_000'', F13.3)') CBUF(1:15),STORE(L30GE+2)
+        WRITE (CLINE,'(A,''F_000'',T35,F13.3)')CBUF(1:15),STORE(L30GE+2)
          CALL XPCIF (CLINE)
 C 
          CBUF(1:15)='_exptl_absorpt_'
 C 
-         WRITE (CLINE,'(A,''coefficient_mu'',  F10.3)') CBUF(1:15),0.1*
+         WRITE (CLINE,'(A,''coefficient_mu'',T35,F10.3)')CBUF(1:15),0.1*
      1    STORE(L30GE+3)
          CALL XPCIF (CLINE)
          WRITE (CPAGE(10,1)(:),'(A,13X,F9.3)') 'Mu',0.1*STORE(L30GE+3)
 C      THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
          TMAX=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
          TMIN=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
-         WRITE (CLINE,'(''# Sheldrick geometric definitions '', 2F8.2)')
+         WRITE (CLINE,'(''# Sheldrick geometric definitions'',
+     1     T35,2F8.2)')
      1     TMIN,TMAX
          CALL XPCIF (CLINE)
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING
@@ -3843,7 +3848,7 @@ C
 &LIN       WRITE(CBUF, '(''>'',F6.2,''\\s(I)'')') STORE(L30RF+3)
 &GIL       WRITE(CBUF, '(''>'',F6.2,''\\s(I)'')') STORE(L30RF+3)
          CALL XCRAS (CBUF,NCHAR)
-         WRITE (NCFPU1,'(''_reflns_threshold_expression  '',A)')
+         WRITE (NCFPU1,'(''_reflns_threshold_expression  '',T35,A)')
      1    CBUF(1:NCHAR)
          CBUF(1:11)='_refine_ls_'
 C 
@@ -4016,9 +4021,9 @@ C
 ##LINGIL            CBUF(1:8) = '''Cu K\a'''
 &&LINGIL            CBUF(1:8) = '''Cu K\\a'''
          END IF
-         WRITE (NCFPU1,'(''_diffrn_radiation_type       '', A)')
+         WRITE (NCFPU1,'(''_diffrn_radiation_type       '', T35, A)')
      1    CBUF(1:8)
-         WRITE (NCFPU1,'(''_diffrn_radiation_wavelength '', F12.5)')
+         WRITE (NCFPU1,'(''_diffrn_radiation_wavelength '', T35,F12.5)')
      1    STORE(L13DC)
          WRITE (CPAGE(8,1)(:),'(A,4X,A)') 'Radiation type',CBUF(2:7)
          WRITE (CPAGE(8,2)(:),'(A,5X,F10.6)') 'Wavelength',STORE(L13DC)
@@ -4078,14 +4083,38 @@ CODE FOR XPCIF
       SUBROUTINE XPCIF(CLINE)
 C----- COMPRESS AND PUNCH THE STRING CLINE
       CHARACTER *(*) CLINE
-      CHARACTER *80 CTEMP
+      CHARACTER *80 CTEMP, CTEMP2
 \XUNITS
-        CALL XCREMS (CLINE, CTEMP, NCHAR)
-        K = KHKIBM(CTEMP)
-        CALL XCTRIM (CTEMP, NCHAR)
-        WRITE(NCFPU1, '(A)') CTEMP(1:NCHAR)
+      CTEMP = ''
+      CTEMP2 = ''
+
+      CALL XCREMS (CLINE, CTEMP, NCHAR)
+      K = KHKIBM(CTEMP)
+      CALL XCTRIM (CTEMP, NCHAR)
+
+C If line starts with _ try to line up data in col 35. (if present).
+      IF (CTEMP (1:1) .EQ. '_') THEN
+           IDNM = KCCEQL(CLINE,1,' ')
+C Check that data will fit into 80 chars if tabbed to col 35.
+           IF ( ( NCHAR - IDNM .GT. 45 ) .OR. ( IDNM .GT. 34 ) ) THEN
+C It won't:
+             WRITE(CTEMP2,'(A)') CTEMP
+           ELSE IF ( NCHAR - IDNM .LE. 0 ) THEN
+C There is no extra data:
+             WRITE(CTEMP2,'(A)') CTEMP
+           ELSE
+C It will:
+             WRITE(CTEMP2,'(A,T35,A)') CTEMP(1:IDNM),CTEMP(IDNM+1:NCHAR)
+           ENDIF
+      ELSE
+           WRITE (CTEMP2,'(A)') CTEMP
+      END IF
+
+      CALL XCTRIM (CTEMP2, NCHAR)
+      WRITE(NCFPU1, '(A)') CTEMP2(1:NCHAR)
       RETURN
       END
+
 CODE FOR CREFMK
       CHARACTER *(*) FUNCTION CREFMK(ITAB, NTAB, MDTAB, IVAL)
 C----- MARK A REFERENCE AS BEING USED
