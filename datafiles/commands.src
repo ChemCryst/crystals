@@ -1074,8 +1074,8 @@ CONDITIONS THAT MUST BE MET AFTER EACH CYCLE IF REFINEMENT IS TO CONTINUE
     .MAX-R              0    0    1    0    0 100.
     .MIN-WR             0    0    1    0    0 0.0
     .MAX-WR             0    0    1    0    0 100.
-    .MIN-SUMSQ          0    0    1    0    0 0.0
-    .MAX-SUMSQ          0    0    1    0    0 10000.
+    .MIN-SHIFT/ESD      0    0    1    0    0 0.01
+    .MAX-SHIFT/ESD      0    0    1    0    0 10000.
     .MIN-MINFUNC        0    0    1    0    0 0.0
     .MAX-MINFUNC        0    0    1    0    0              1.0E15
     .U[MIN]             0    0    1    0    0              0.0
@@ -1089,8 +1089,8 @@ CONDITIONS THAT MUST BE MET BETWEEN EACH CYCLE IF REFINEMENT IS TO CONTINUE
     .MAX-DR             0    0    1    0    0 100.
     .MIN-DWR            0    0    1    0    0 0.0
     .MAX-DWR            0    0    1    0    0 100.
-    .MIN-DSUMSQ         0    0    1    0    0 0.0
-    .MAX-DSUMSQ         0    0    1    0    0 10000.
+    .MIN-DSHIFT/ESD     0    0    1    0    0 0.01
+    .MAX-DSHIFT/ESD     0    0    1    0    0 10000.
     .MIN-DMINFUNC       0    0    1    0    0 0.0
     .MAX-DMINFUNC       0    0    1    0    0              1.0E15
    5.REFINE             6    1    0    0    6    1  106   21   23

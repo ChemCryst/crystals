@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2002/02/13 15:32:20  Administrator
+C Reduce calls to SPECIAL in multicycle SFLS, enable shift reversal monitoring, and fix Lachlans shift bounding
+C
 C Revision 1.11  2002/02/13 12:12:13  ckp2
 C Store extinction param su in List 30.
 C
@@ -59,6 +62,8 @@ C--THIS FORMAT IS REPEATED FOR ALL THE REFINED PARAMETERS
 C
 C--
       CHARACTER *21 CTEXT, CSAVE
+      CHARACTER *14 CLST23(4)
+
 \TYPE11
 C
 C
@@ -112,9 +117,14 @@ C
       DATA MW/6/
 C
 C----- SET THE PRINT THRESHOLDS
-      DATA RMAX/3./, SOESD/1./, CCOEF/.8/, RMSSM/ .3/
+      DATA RMAX/3./, SOESD/1./, CCOEF/.8/
+C      DATA RMSSM/ 0.3/
+      DATA RMSSM/ 0.0/
+      DATA CLST23 /'R-factor', 'Rw', 'shift/esd', 
+     1 'Min function'/
+
 C
-      DATA IVERSN /402/
+      DATA IVERSN /404/
 C
 C
 C--INITIALISE THE TIMING FUNCTION
@@ -516,43 +526,28 @@ C
 C
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
-      WRITE(NCAWU,3550) JA, F
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) JA, F
-      WRITE ( CMON, 3550) JA, F
+      WRITE(NCAWU,3550) F
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F
+      WRITE ( CMON, 3550) F
       CALL XPRVDU(NCVDU, 2,0)
-3550  FORMAT( ' There are ',I4,' singularities',/
-     1 ' Sum of the squares of the ratio',
-     2 ' (Shift/e.s.d.)  =',F16.4)
+3550  FORMAT( 
+     1 ' Sum of the squares of the ratio',' (Shift/e.s.d.) =',F16.4)
 C
-C----- RMS SHIFT/ESD
+C----- TIDY UP PARAMETER NAME
+      CALL XCRAS ( CSAVE, LENNAM )
+C----- COMPUTE AND STORE RMS SHIFT/ESD
       RMSS=SQRT(F/STORE(L11P+23))
+CDJW0202      STORE(M33V+3)=RMSS
+C----- STORE MAXIMUM SHIFT/ESD
+      STORE(M33V+3) = SMAX
       WRITE( NCAWU,3556) RMSS
       IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS
       WRITE ( CMON, 3556) RMSS
       CALL XPRVDU(NCVDU, 1, 0)
-3556  FORMAT(' The rms (shift/esd) =', F16.6)
-      IF(RMSS .LE. 1.0) THEN
-            IF(RMSS .LE.  RMSSM) THEN
-                  WRITE( NCAWU,3558) RMSSM
-                  IF (ISSPRT .EQ. 0) WRITE( NCWU,3558) RMSSM
-                  WRITE ( CMON, 3558) RMSSM
-                  CALL XPRVDU(NCVDU, 2, 0)
-3558          FORMAT(' The rms (shift/esd) ',
-     1            'is less than the target (',F10.6,' ).',/
-     2            ' Futher cycles abandoned')
-                  ICONVG = 1
-            ELSE
-                  IF (ISSPRT .EQ. 0) WRITE(NCWU,3554)RMSS
-                  WRITE(NCAWU,3554)RMSS
-                  WRITE ( CMON, 3554) RMSS
-                  CALL XPRVDU(NCVDU, 1,0)
-3554              FORMAT(' The rms (shift/esd) is ',F10.6,'.',
-     1             ' Do you need to continue refinement?')
-            ENDIF
-      ENDIF
-      WRITE(CMON,'('' Largest shift/esd (='',F10.6,
-     1 ''), for Parameter '', I5, 1X, A)')
-     1 SMAX, JSAVE, CSAVE
+3556  FORMAT(27X,' The rms (shift/esd) =', F16.7)
+      WRITE(CMON,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
+3557  FORMAT(' The largest (shift/esd) =',F10.6,
+     1 ', for Parameter ', I4,', ', A)
       CALL XPRVDU(NCVDU, 1,0)
       WRITE (NCAWU,'(A)') CMON(1)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)
@@ -598,7 +593,6 @@ C----- SINGULARITY SITUATION IS OKAY
       ENDIF
 C--UPDATE THE VALUES OF THE VARIOUS DETERMINED FUNCTIONS
 3700  CONTINUE
-      STORE(M33V+3)=F
       JU=1
 C--CHECK IF THIS IS THE FIRST CYCLE TO SEE IF DIFFERENCES CAN BE CALCULA
       IF(ISTORE(L33CB+1))3800,3800,3750
@@ -657,13 +651,23 @@ C--ALL OKAY  -  BRANCH OUT
 C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
 4300  CONTINUE
       ISTORE(L33CB)=N33IB
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,4350) I,J
-      WRITE(NCAWU,4350) I,J
-      WRITE ( CMON, 4350) I,J
-      CALL XPRVDU(NCVDU, 1,0)
-4350  FORMAT(' Forced terminating after this cycle ',
-     2 ' ***** LIST 23 condition.' /,
-     3 ' All-cycle condition No ', I4, 'Inter-cycle condition No ',I4)
+      IF (I .GT. 0) THEN
+       WRITE(CMON,4350) CLST23(I)(:)
+4350  FORMAT(' Forced termination after this cycle: ',
+     3 ' All-cycle condition on ',   A)
+       CALL XPRVDU(NCVDU, 1,0)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+       WRITE(NCAWU,'(A)') CMON(1)
+      ENDIF
+      IF (J .GT. 0) THEN
+       WRITE(CMON,4350) CLST23(J)(:)
+4351  FORMAT(' Forced termination after this cycle: ',
+     3 ' Inter-cycle condition on ',   A)
+       CALL XPRVDU(NCVDU, 1,0)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+       WRITE(NCAWU,'(A)') CMON(1)
+      ENDIF
+C
 C--REWRITE LIST 33 TO THE DISC
 4400  CONTINUE
       IF ((ICONVG .EQ. 1) .OR. ( JA .NE. 0)) ISTORE(L33CB) = N33IB
