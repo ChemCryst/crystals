@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2002/07/18 16:51:49  richard
+// For LISTTEXT queries, use 1-based indexing as for CrListbox objects. Also
+// catch and limit unacceptable values for LISTTEXT argument.
+//
 // Revision 1.13  2001/06/18 12:47:26  richard
 // *** empty log message ***
 //
@@ -103,6 +107,23 @@ void CxDropDown::CxSetSelection(int select)
 #endif
 }
 
+void CxDropDown::CxRemoveItem ( int item )
+{
+#ifdef __CR_WIN__
+    if ( item > 0 )
+    {
+       DeleteString ( item - 1 );
+       mItems = max(0,mItems-1);
+    }
+    else
+    {
+       ResetContent();
+       mItems=0;
+    }
+#endif
+}
+
+
 void    CxDropDown::Selected()
 {
 #ifdef __CR_WIN__
@@ -134,6 +155,14 @@ void    CxDropDown::SetGeometry( const int top, const int left, const int bottom
 #ifdef __BOTHWX__
     SetSize(left,top,right-left,bottom-top);
 #endif
+}
+
+void CxDropDown::ResetHeight()
+{
+  CRect wR; GetWindowRect(&wR);
+
+  SetWindowPos( &wndTop, 0,0, wR.Width(), GetDroppedHeight(), SWP_NOMOVE );
+
 }
 
 

@@ -5,6 +5,10 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2002/03/16 18:08:23  richard
+// Removed old CrGraph class (now obsolete given Steven's work).
+// Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
+//
 // Revision 1.15  2002/02/19 16:34:52  ckp2
 // Menus for plots.
 //
@@ -94,6 +98,8 @@
 #define kSItem          "ITEM"
 #define kSEndGrid             "}"
 #define kSOpenGrid            "{"
+#define kSRemove   "REMOVE"
+
 
 // Query types:
 #define kSQExists   "EXISTS"
@@ -159,7 +165,8 @@ enum
  kTHorizontal,
  kTVertical,
  kTBoth,
- kTDefinePopupMenu
+ kTDefinePopupMenu,
+ kTRemove
 };
 
 

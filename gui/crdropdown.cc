@@ -87,15 +87,23 @@ CcParse CrDropDown::ParseInput( CcTokenList * tokenList )
                         LOGSTAT("Adding DropDown text '" + theToken + "'");
                     }
                 }
+                ((CxDropDown*)ptr_to_cxObject)->ResetHeight();
                 break;
             }
-                  case kTSetSelection:
-                  {
-                        tokenList->GetToken(); //Remove that token!
-                        int select = atoi ( tokenList->GetToken().ToCString() );
-                        ((CxDropDown*)ptr_to_cxObject)->CxSetSelection(select);
-                        break;
-                  }
+            case kTSetSelection:
+            {
+                  tokenList->GetToken(); //Remove that token!
+                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  ((CxDropDown*)ptr_to_cxObject)->CxSetSelection(select);
+                  break;
+            }
+            case kTRemove:
+            {
+                  tokenList->GetToken(); //Remove that token!
+                  int select = atoi ( tokenList->GetToken().ToCString() );
+                  ((CxDropDown*)ptr_to_cxObject)->CxRemoveItem(select);
+                  break;
+            }
             default:
             {
                 hasTokenForMe = false;
