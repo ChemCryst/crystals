@@ -76,8 +76,7 @@
 %        END BLOCK
 %%
 %        BLOCK % PUBLISH 12
-%          COPY '#SCRIPT TIDYUP'
-%          COPY '#SCRIPT XPUBLISH'
+%          COPY '#SCRIPT XPUBL'
 %          FINISH
 %        END BLOCK
 %%

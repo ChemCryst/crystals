@@ -1,6 +1,6 @@
 %SCRIPT TIDYUP
 %%
-%% A final difference map
+%% A penultimate difference map
 %  COPY '#FOUR'
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'PEAK HEIGHT=1 '
@@ -14,7 +14,7 @@
 %  IF ( EXISTS 30 .NE. 1 ) THEN
 {E There in no LIST 30 with the general details available
 {I Type #SCRIPT ED30 to input general details.
-%    FINISH
+%    COPY '#SCRIPT DIRECT'
 %  END IF
 %  COPY '#GENERALEDIT 30'
 %  COPY 'LOCATE RECORDTYPE = 103'
@@ -23,20 +23,10 @@
 %  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '
 %  COPY 'END'
 %%
-%  IF NPARAM .LE. 0.0 THEN
-{R You have changed something since the last refinement cycle.
-%    VERIFY YES NO
-%    GET NOSTORE FINAL ABBREVIATED -
-                          'Do you want to run a final refinement' 'YES'
-%    IF VALUE .EQ. 1 THEN
-%      COPY '#SCRIPT NCYCLES'
-%    END IF
-%    FINISH
-%  END IF
 %  IF ( NREF / NPARAM )  .LE. 5.0 THEN
 {E You have {RFAR{E too few X-ray observations for the number of variables
 {E you are trying to refine. Think again or seek help.
-%     FINISH
+%    COPY '#SCRIPT DIRECT'
 %  END IF
 %%
 %  IF RHOMAX .GE. 0.3 THEN
@@ -91,5 +81,10 @@
 %    COPY 'SHIFT GENERAL=0.0'
 %    COPY 'END'
 %  END IF
+%% A final difference map.
+%  COPY '#FOUR'
+%  COPY 'MAP TYPE=DIFF'
+%  COPY 'PEAK HEIGHT=1 '
+%  COPY 'END'
 %%
 %END SCRIPT
