@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  1999/07/02 17:53:36  richard
+C RIC: Changed bond determining routine to ignore bonds shorter than
+C      0.7 * (sum of covalent radii). This makes things a little clearer
+C      when there are lots of atoms.
+C
 C Revision 1.15  1999/07/01 18:09:41  dosuser
 C RIC: Changed the largest possible bonding distance of two atoms
 C to (COVALENT(1) + COVALENT(2)) * 1.1 to
@@ -833,16 +838,12 @@ C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
                  NATINF = NATINF + 6
                  GOTO 90
              ENDIF
-C             OPEN (UNIT=87,FILE=CFILEN(1:ILENG),STATUS='OLD')
-CDJWMAR99[
-C             IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-C     1       1) .EQ. -1) GOTO 9900
-              CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
-              CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
-              IF ( IERFLG .LT. 0) GOTO 9900
-CDJWMAR99]
+             CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
+             CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
+             IF ( IERFLG .LT. 0) GOTO 9900
+C Read the properties file and extract cov, vdw and colour.
 85           CONTINUE
-               READ(NCARU,'(A80)',END=89) WCLINE
+             READ(NCARU,'(A80)',END=89) WCLINE
              IF((WCLINE(1:3).EQ.'CON').OR.(WCLINE(1:3).EQ.'   '))
      1                                                    GOTO 85
                IF(WCLINE(1:2).EQ.CATTYP) THEN
@@ -850,16 +851,15 @@ CDJWMAR99]
                   READ(WCLINE(35:38),'(F4.2)') VDW
                   READ(WCLINE(13:16),'(F4.2)') COV
                   CLOSE(NCARU)
-C                  WRITE(6,'(A)')'^^TXLoading colours^^EN'
+C Now get the colour definition for this colour from colour.cmn
                   CFILEN = 'CRYSDIR:COLOUR.CMN'
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
-                  IF(.NOT.WEXIST) GOTO 89
-C                  OPEN (UNIT=87,FILE=CFILEN(1:ILENG),STATUS='OLD')
+                  IF(.NOT.WEXIST) GOTO 88
                   IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
      1            1) .EQ. -1) GOTO 9900
 95                CONTINUE
-                  READ(NCARU,'(A21)',END=89) WCLINE
+                  READ(NCARU,'(A21)',END=88) WCLINE
                         IF(CCOL.EQ.WCLINE(1:6))THEN
                               READ(WCLINE(7:21),'(3I5)')IRED,IGRE,IBLU
                               IATINF((NATINF*6)+1) = IATTYP
@@ -875,8 +875,21 @@ C                  OPEN (UNIT=87,FILE=CFILEN(1:ILENG),STATUS='OLD')
                ENDIF
                GOTO 85
 C
-89           CONTINUE !Reached end of file with no success
+88           CONTINUE !Reached end of colour file with no success.
+                         IRED = 0
+                         IGRE = 0
+                         IBLU = 0
+                         IATINF((NATINF*6)+1) = IATTYP
+                         ATINF((NATINF*6)+2)  = VDW
+                         ATINF((NATINF*6)+3)  = COV
+                         IATINF((NATINF*6)+4) = IRED
+                         IATINF((NATINF*6)+5) = IGRE
+                         IATINF((NATINF*6)+6) = IBLU
+                         NATINF = NATINF + 1
+                         GOTO 90
+89           CONTINUE !Reached end of properties file with no success
 C Add a black atom...
+                  WRITE(99,'(2A)') 'Not Found ', CATTYP
                          IRED = 0
                          IGRE = 0
                          IBLU = 0
