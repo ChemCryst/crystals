@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2000/07/11 11:04:10  ckp2
+C Extra argument to KFLOPN, for specifying SEQUENTIAL or DIRECT access
+C
 C Revision 1.18  2000/01/20 16:56:22  ckp2
 C djw  remove old diagnostic
 C
@@ -271,12 +274,16 @@ C
 1420  CONTINUE
 C
 C
+C RICJUL00 KRDLIN returns ISTAT=2 if the line is a shell ($) command
+C These can be processed immediately, as they cannot have any effect
+C on the running script.
+
       IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
         IFLAG = KSCPRC ( CRDLWC , IFIN )
         IF ( IFLAG .LE. 0 ) THEN
           GO TO 1000
         ELSE IF ( IFLAG .EQ. 1 ) THEN
-        ELSE IF ( IFLAG .EQ. 2 ) THEN
+        ELSE IF (( IFLAG .EQ. 2 ) .OR. ( ISTAT .EQ. 2 )) THEN
           CALL XCCUPC ( CRDLWC , CRDUPC )
           IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
               WRITE ( NCLU , 1450 ) CRDLWC(1:IFIN)
@@ -455,7 +462,7 @@ C
 C      -1      ERROR READING LINE
 C       0      END OF FILE DETECTED
 C      +1      SUCCESS
-C
+C      +2      SHELL COMMAND
 C
       CHARACTER*(*) CLINE
       CHARACTER *1 CDOLAR
@@ -480,6 +487,7 @@ C       IN FORTRAN
 C
 C----- INITIALISE BUFFER
       CLINE = ' '
+      KRDLIN = 1
 C
 &PPCCS*** For any event driven system we have to hook in to respond to
 &PPCC**** some events (menu, high-level or keypress). The called routine
@@ -501,6 +509,9 @@ C If in script mode, set flag.
 &&GILGID        INSTRC = .FALSE.
 &&GILGID        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
 &&GILGID          INSTRC = .TRUE.
+&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
+&&GILGID          CALL XPRVDU (NCVDU,1,0)
+
 &&GILGID        END IF
 
 &&GILGIDC Update status information for UI.
@@ -517,6 +528,7 @@ C If in script mode, set progress text.
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
       ENDIF
+
 1015  FORMAT ( A )
 1002  CONTINUE
 &PPCCS***
@@ -536,6 +548,7 @@ C----- SPOT LINES BEGINNING WITH $, AND CONVERT TO # FUNCTIONS
         CLINE(J:J) = CLINE(I:I)
 1200    CONTINUE
         CLINE(1:5) = CTRAN1(1:1)//CDOLAR//'   '
+        KRDLIN = 2
       END IF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C This section is used to test the CSDCODE.
@@ -583,7 +596,6 @@ C -- CONVERT FIRST CHARACTER IF NECESSARY
 C
 C
       I =  KHKIBM (CLINE)
-      KRDLIN = 1
       RETURN
 C
 C
@@ -4381,10 +4393,12 @@ C--PRINT THE CARD AND ITS NUMBER
          WRITE ( CMON,1151) NUMB(K+1),NUMB(L+1),NUMB(M+1),
      2   NUMB(N+1),(LCMAGE(I),I=1,MIN(72,IFIN))
 1151     FORMAT(1X,4A1,1X,80A1,2A1)
-         IF (IND .GE. 0) CMON(1)(65:) = 'IGNORED/ERRORS'
+         IF (IND .GE. 0) CMON(1)(60:) = ' IGNORED/ERRORS'
 cdjwdec99 slightly re-organied
       IF ( ICAT .GT. 0 ) THEN
+         CALL OUTCOL(8)
          CALL XPRVDU(NCVDU, 1, 0)
+         CALL OUTCOL(1)
       ENDIF
       IF ((ISCVER .GT. 0) .OR. (ICAT .GT. 0)) THEN
          WRITE(NCAWU,'(A)') CMON(1)(:)
