@@ -9,11 +9,11 @@
 %    COPY '#LIST 22'
 %    COPY 'END'
 %% 
-{R  CRYSTALS has valid refinement directives  (LIST 12)
+%%{R  CRYSTALS refinement directives (LIST 12):
 %% 
 %    COPY '#PRINT 12'
 %    COPY 'END'
-{R  Remember that 'valid' does not necessarily mean 'suitable'!
+{R  Directives are valid, but that does not necessarily mean 'suitable'!
 %    FINISH
 %  END BLOCK
 {E  CRYSTALS DOES NOT have valid refinement directives (LIST 12)

@@ -309,14 +309,11 @@
 ^^CO SENDPROGRESSTO _CHECKPR
 %%
 % LOOP
-{I Computing completeness.
 ^^CO SET PROGOUTPUT TEXT 'Computing completeness'
 %  COPY '#THLIM'
 %  COPY 'OUTPUT PLOT=YES GLIST=YES'
 %  COPY 'END'
-{I Done.
 %%
-{I Computing Wilson statistics.
 ^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics'
 %  COPY '#WILSON'
 %  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
@@ -326,12 +323,10 @@
 %    COPY 'FILTER LIST28 = NO'
 %  END IF
 %  COPY 'END'
-{I Done.
 %%
 %  IF ( ABSENT .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA absences.dat'
 ^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'
-{I About to get absence data.
 ^^WI WINDOW XABORT 'Absences' MODAL GRID MAIN NROWS=5 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Reading absence data.'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO
@@ -352,15 +347,12 @@
 ^^PL SHOW
 ^^CR
 ^^CO DISPOSE XABORT
-{I Done.
 %  END IF
 %%
 ^^CO SET PROGOUTPUT TEXT 'Calculating I/u(I) and I/u(I) vs rho distribution'
-{I Calculating I/u(I) distribution.
 %  COPY '#SIGMADIST'
 %  COPY 'OUTPUT PLOT=YES RES=YES'
 %  COPY 'END'
-{I Done.
 %%
 %  IF ( LMAONCE ) THEN
 %    COPY '#GENERALEDIT 30'
@@ -440,7 +432,6 @@
 ^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'
 %  IF ( MERGER .AND. LMAONCE ) THEN
 %    COPY '#OPEN SCPDATA mergingr.dat'
-{I Fetching merging R data.
 %    EXTRACT REWIND
 %% Skip first three lines:
 %    EXTRACT NEXT
@@ -481,7 +472,6 @@
 ^^PL SHOW
 ^^CR
 %    COPY '#CLOSE SCPDATA'
-{I Done.
 %  END IF
 %  EVALUATE LMAONCE = FALSE
 %%
