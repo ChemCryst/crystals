@@ -5,13 +5,19 @@ VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
         ../bits/dipin   ../bits/hklf5    ../bits/kccdin  ../bits/rc93 \
         ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92
 
-EXECS = cif2cry    convplat    csd2cry    delred \
-        dipin      ctwin       kccdin     rc93   \
-        reindex    shelxs      sxtocry    sir92
-OBJS =  cif2cry.o  convplat.o  csd2cry.o  delred.o \
-        dipin.o    ctwin.o     kccdin.o   rc93.o  \
-        reindex.o  shelxs.o    sxtocry.o  sir92.o norm92.o sir92X11.o \
-        nobuf.o
+EXECS := cif2cry    convplat    csd2cry    delred \
+         dipin      ctwin       kccdin     rc93   \
+         reindex    shelxs      sxtocry
+OBJS :=  cif2cry.o  convplat.o  csd2cry.o  delred.o \
+         dipin.o    ctwin.o     kccdin.o   rc93.o  \
+         reindex.o  shelxs.o    sxtocry.o  nobuf.o
+
+ifneq ($(COMPCODE),GID)
+ifneq ($(COMPCODE),WXS)
+OBJS := $(OBJS) sir92.o norm92.o sir92X11.o
+EXECS := $(EXECS) sir92
+endif
+endif
 
 LD = g77
 
@@ -50,8 +56,12 @@ shelxs : shelxs.o nobuf.o
 sxtocry : sxtocry.o nobuf.o
 	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
+ifneq ($(COMPCODE),GID)
+ifneq ($(COMPCODE),WXS)
 sir92 : sir92.o norm92.o sir92X11.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES)  -lX11 -L/usr/X11R6/lib $(OPT) -o $@ $^
+	$(LD) $(CLFLAGS) $(CLLIBRARIES)  $(NATIVEXLIBS) $(OPT) -o $@ $^
+endif
+endif
 
 form.dat : 
 	cp ../bits/sir92/form.sda $@
