@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  1999/02/16 11:14:05  dosuser
+C RIC: Commented out 'END' checking for GID version when running Cameron
+C
 
 CODE FOR XLNKFP
       SUBROUTINE XLNKFP
@@ -73,7 +76,7 @@ C----- FOR SHELXS86
       CHARACTER *32 DECML
 C
 C----- FOR SIR**
-      CHARACTER *80 CSOURC, CSPACE, CL29, CRESLT
+      CHARACTER *80 CSOURC, CSPACE, CL29, CRESLT, CHARTC
 C
       REAL MAT(3)
 C
@@ -549,7 +552,7 @@ C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
 C - Only GID and DOS support Cameron's graphics.
 ##GIDDOS        GOTO 9000 !Skip this Cameron part.
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
-      IF (ISSTML .EQ. 4) THEN
+C      IF (ISSTML .EQ. 4) THEN
         LCLOSE = .FALSE.
 C - Only GID needs funny text strings to initialise the graphics.
 C - Could move these to ZCAMER.
@@ -563,40 +566,34 @@ C - Could move these to ZCAMER.
 C       OLNCRU = NCRU
 C       NCRU = 5
 8025  CONTINUE
-         IF (LCLOSE) THEN
-            LCLOSE = .FALSE.
-C Dispose of the current picture.
-C            WRITE(NCAWU,'(A)')'^^CH NEWCHART ^^EN'
-C            WRITE(NCAWU,'(A)')'^^CH UPDATE ^^EN'
-C            NCRU = OLNCRU
+        IF (LCLOSE) THEN
             GOTO 9000 !Cameron has shutdown
-         ENDIF
-                IIIIIN = 1
-                ISTAT = KRDREC(IIIIIN)
-C         ISTAT = KRDLIN(NCRU,CHR,ILENRD)
+        ENDIF
+        IIIIIN = 1
+        ISTAT = KRDREC(IIIIIN)
 C Replace 0 with 32 along the string
-         DO 8029 I = 1,80
-             IF(LCMAGE(I) .EQ. 0) LCMAGE(I)=32
-8029     CONTINUE
-         WRITE(CHRBUF,'(80A1)')LCMAGE
-&GID           CALL ZMORE(CHRBUF,0)
+C        DO 8029 I = 1,80
+C           IF(LCMAGE(I) .EQ. 0) LCMAGE(I)=32
+C8029    CONTINUE
+        WRITE(CHRBUF,'(80A1)')LCMAGE
+C&&GIDDOS           CALL ZMORE(CHRBUF,0)
 &&GIDDOS         CALL ZCONTR
-cdjwjan99
-#GID         if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
-#GID     1   lclose = .true.
-cdjwjan99
+Ccdjwjan99
+C         if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
+C     1   lclose = .true.
+Ccdjwjan99
       GOTO 8025
 C
-      ELSE IF (ISSTML .EQ. 3) THEN
-       CALL ZCAMER ( 1, 0 , 0 , 0)
-C       CALL VGACOL ('BOL', 'WHI', 'BLU')
-       CALL OUTCOL(1)
-C----- FLUSH THE SCREEN BUFFER AFTER GRAPHICS MODE - OBSOLETE IN WIN32
-CDOS      CALL TEXT_MODE@
-CDOS      WRITE(NCAWU,'(78X,A,///)') (' ',I=1,18)
-      ELSE
-       CALL ZCAMER ( 1, 0 , 0 , 0)
-      ENDIF
+C      ELSE IF (ISSTML .EQ. 3) THEN
+C       CALL ZCAMER ( 1, 0 , 0 , 0)
+CC       CALL VGACOL ('BOL', 'WHI', 'BLU')
+C       CALL OUTCOL(1)
+CC----- FLUSH THE SCREEN BUFFER AFTER GRAPHICS MODE - OBSOLETE IN WIN32
+CCDOS      CALL TEXT_MODE@
+CCDOS      WRITE(NCAWU,'(78X,A,///)') (' ',I=1,18)
+C      ELSE
+C       CALL ZCAMER ( 1, 0 , 0 , 0)
+C      ENDIF
       GOTO 9000
 C
 8030  CONTINUE
