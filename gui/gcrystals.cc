@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include <stdlib.h>
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/event.h>
 #include <wx/app.h>
 #endif
@@ -200,7 +200,7 @@ int CCrystalsApp::ExitInstance()
 }
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 
 CCrystalsApp::CCrystalsApp()
 {
@@ -223,7 +223,7 @@ END_EVENT_TABLE()
 bool CCrystalsApp::OnInit()
 {
 
-      theCrApp = new CrApp(0,(char**)nil);
+      theCrApp = new CrApp("","crfilev2.dsc");
       return true;
 }
 
@@ -236,13 +236,10 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
 	bool sysret = event.MoreRequested();
 	bool appret = false;
 
-      cerr << "idling... \n";
-
 	char theLine[255];
 
 	if(theCrApp->mController->GetInterfaceCommand(theLine))
 	{
-            cerr << "idling, but what's this, a line " << theLine << "\n";
 		appret = true;
 
 		int theLength = 0;
@@ -259,14 +256,10 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
 	// 2. sysret is false (no more idle processing needed by framework).
 	if((!appret) && (!sysret)) 
       {
-            cerr << "Fed up idling... \n";
-            cerr << "but let me idle more anyway. \n";
-		event.RequestMore();
 		return;
       }
       else
       {
-            cerr << "Let me idle more... \n";
 		event.RequestMore();
       }
 	return;

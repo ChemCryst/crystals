@@ -32,7 +32,7 @@ CxMultiEdit * 	CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid *
 //      theMEdit->SetBackgroundColor(false,RGB(255,255,255));
 	theMEdit->SetColour(0,0,0);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theMEdit->Create(guiParent, -1, "EditBox", wxPoint(0,0), wxSize(10,10), wxTE_MULTILINE); 
 #endif
 	return theMEdit;
@@ -61,17 +61,17 @@ void  CxMultiEdit::SetText( CcString cText )
       SetSel( oldend, oldend );
       ReplaceSel(cText.ToCString());
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       AppendText(cText.ToCString());
 #endif
 
+#ifdef __WINDOWS__
       int charheight = mHeight;
       int ll = GetLineCount();
-
-#ifdef __LINUX__
+#endif
+#ifdef __BOTHWX__
       int charheight = GetCharHeight();
-
-      ll = GetNumberOfLines();
+      int ll = GetNumberOfLines();
 #endif
 
 	//Prune the length or it slows down big time.
@@ -85,7 +85,7 @@ void  CxMultiEdit::SetText( CcString cText )
 		SetSel(0,li);
 		Clear();
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             int li = XYToPosition(0,500);
             Remove( 0, li );
 #endif
@@ -96,7 +96,7 @@ void  CxMultiEdit::SetText( CcString cText )
 #ifdef __WINDOWS__
       LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)( (float)GetHeight() / (float)charheight ) );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       ShowPosition ( GetLastPosition () );
 #endif
 }
@@ -120,7 +120,7 @@ void CxMultiEdit::SetIdealHeight(int nCharsHigh)
 //      mIdealHeight = nCharsHigh * textMetric.tmHeight;
       mIdealHeight = nCharsHigh * mHeight;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       mIdealHeight = nCharsHigh * GetCharHeight();
 #endif      
 }
@@ -136,7 +136,7 @@ void CxMultiEdit::SetIdealWidth(int nCharsWide)
 //      mIdealWidth = (int)(nCharsWide * owidth * mHeight / (float)oheight);
       mIdealWidth = nCharsWide * owidth;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       mIdealWidth = nCharsWide * GetCharWidth();
 #endif      
 }
@@ -164,7 +164,7 @@ void  CxMultiEdit::SetGeometry( int top, int left, int bottom, int right )
 		MoveWindow(left,top,right-left,bottom-top,true);
 	}
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 
@@ -183,15 +183,15 @@ int   CxMultiEdit::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -208,7 +208,7 @@ int   CxMultiEdit::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -228,7 +228,7 @@ int   CxMultiEdit::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -241,7 +241,7 @@ int   CxMultiEdit::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -261,7 +261,7 @@ BEGIN_MESSAGE_MAP(CxMultiEdit, CRichEditCtrl)
       ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Table
 BEGIN_EVENT_TABLE(CxMultiEdit, wxTextCtrl)
       EVT_CHAR( CxMultiEdit::OnChar )
@@ -291,7 +291,7 @@ void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxMultiEdit::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
@@ -470,7 +470,7 @@ void CxMultiEdit::Spew()
     {
        int cp = GetLine(line, theLine, 79);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
     for (int i=0; i<GetNumberOfLines(); i++)
     {
        wxString aline = GetLineText(i);
@@ -492,8 +492,13 @@ void CxMultiEdit::SetOriginalSizes()
 
 void CxMultiEdit::Empty()
 {
+#ifdef __WINDOWS__
       SetSel( 0, GetWindowTextLength() );
       Clear();
+#endif
+#ifdef __BOTHWX__
+      Clear();
+#endif
 }
 
 void CxMultiEdit::SetFontHeight( int height )

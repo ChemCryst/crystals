@@ -29,13 +29,13 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
 #ifdef __WINDOWS__
 	const char* wndClass = AfxRegisterWndClass(
-									CS_HREDRAW|CS_VREDRAW,
-									NULL,
-									(HBRUSH)(COLOR_MENU+1),
-                                                                        AfxGetApp()->LoadIcon(IDI_ICON1)
-									);
+                                            CS_HREDRAW|CS_VREDRAW,
+                                            NULL,
+                                            (HBRUSH)(COLOR_MENU+1),
+                                            AfxGetApp()->LoadIcon(IDI_ICON1)
+                                        );
 
-        theWindow->mParentWnd = (CWnd*) parentWindow;
+	theWindow->mParentWnd = (CWnd*) parentWindow;
 
         theWindow->Create(                      wndClass,
 						"Window",
@@ -43,7 +43,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 						CRect(0,0,10,10),
 						theWindow->mParentWnd);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theWindow->mParentWnd = (wxWindow*) parentWindow;
       theWindow->Create( NULL, -1, "Window");
 
@@ -61,7 +61,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
                 theWindow->ModifyStyle(WS_MINIMIZEBOX,NULL,SWP_NOZORDER); //No Minimize box for modal windows with parents.
             }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             if ( theWindow->mParentWnd )
             {
                 theWindow->mParentWnd->Enable(false);
@@ -75,7 +75,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
             theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theWindow->Show(true);
 #endif
 
@@ -107,7 +107,7 @@ CxWindow::~CxWindow()
             mParentWnd->SetFocus(); //Focus the parent.
 	}
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             mParentWnd->Enable(true); //Re-enable the parent.
 #endif
 }
@@ -118,7 +118,7 @@ void	CxWindow::SetText( char * text )
 #ifdef __WINDOWS__
 	SetWindowText(text);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetTitle(text);
 #endif
 }
@@ -129,7 +129,7 @@ void	CxWindow::CxShowWindow()
       ShowWindow(SW_SHOW);
 	UpdateWindow();
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       Show(true);
 #endif
 }
@@ -144,7 +144,7 @@ void	CxWindow::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
 		MoveWindow(left, top, (right-left), (bottom-top),true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             SetSize(left,top,right-left,bottom-top);
 #endif
 	}
@@ -170,15 +170,15 @@ int   CxWindow::GetTop()
 //        }
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -195,7 +195,7 @@ int   CxWindow::GetLeft()
 //        }
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -215,7 +215,7 @@ int   CxWindow::GetScreenTop()
       GetWindowRect(&windowRect);
       return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -234,7 +234,7 @@ int   CxWindow::GetScreenLeft()
       GetWindowRect(&windowRect);
       return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -254,7 +254,7 @@ int   CxWindow::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -267,7 +267,7 @@ int   CxWindow::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -295,7 +295,7 @@ void CxWindow::Hide()
 	if (mParentWnd)
             mParentWnd->EnableWindow(true); //Re-enable the parent.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       Show(false);
 	if (mParentWnd)
             mParentWnd->Enable(true); //Re-enable the parent.
@@ -322,7 +322,7 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
       ON_WM_KEYUP()
 END_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_CLOSE( CxWindow::OnClose ) 
@@ -355,7 +355,7 @@ void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
             pCmdUI->Enable(false);
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
 {
       CxMenu* theXMenu = (CxMenu*) pCmdUI.m_eventObject;
@@ -386,7 +386,7 @@ void CxWindow::OnClose()
 //	CFrameWnd::OnClose();
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxWindow::OnClose(wxCloseEvent & event) 
 {
 	((CrWindow*)mWidget)->CloseWindow();
@@ -407,7 +407,7 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
 	int cH = GetSystemMetrics(SM_CYCAPTION);
 	int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxWindow::OnSize(wxSizeEvent & event)
 {
       int cx = event.GetSize().x;
@@ -463,7 +463,7 @@ void CxWindow::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxWindow::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
@@ -496,7 +496,7 @@ void CxWindow::SetMainMenu(CxMenu * menu)
 #ifdef __WINDOWS__
       int i = (int)SetMenu(menu);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetMenuBar( (wxMenuBar*) menu );
 #endif
 }
@@ -507,7 +507,7 @@ void CxWindow::OnMenuSelected(int nID)
 {
 	TRACE("Menu ID %d\n", nID);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxWindow::OnMenuSelected(wxCommandEvent & event)
 {
       int nID = event.m_id;
@@ -609,7 +609,7 @@ void CxWindow::AdjustSize(CcRect * size)
 	int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
 //              This the test      ?       value if test is true : value if false
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxSystemSettings ss;
       int mN = ( GetMenuBar() != NULL ) ? ss.GetSystemMetric(wxSYS_MENU_Y) : 0;
       int cH = ss.GetSystemMetric(wxSYS_CAPTION_Y);
@@ -714,7 +714,7 @@ void CxWindow::OnKeyUp ( UINT nChar, UINT nRepCnt, UINT nFlags )
 }
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxWindow::OnKeyDown( wxKeyEvent & event )
 {
       int key = -1;

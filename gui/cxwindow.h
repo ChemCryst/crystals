@@ -16,7 +16,7 @@
 #include	"crwindow.h"
 #include	"cxbutton.h"
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/frame.h>
 #include <wx/window.h>
 #include <wx/settings.h>
@@ -80,7 +80,7 @@ protected:
 #endif
 
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 
       void OnClose( wxCloseEvent & event ); 
       void OnSize ( wxSizeEvent & event );

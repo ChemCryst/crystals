@@ -23,7 +23,7 @@ CxProgress *	CxProgress::CreateCxProgress( CrProgress * container, CxGrid * guiP
 	theProgress->Create( WS_CHILD|WS_VISIBLE,CRect(0,0,20,20),guiParent,mProgressCount++);
 	theProgress->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theProgress->Create( guiParent, -1, 100, wxPoint(0,0), wxSize(10,10));
 #endif
 	return theProgress;
@@ -60,8 +60,8 @@ void	CxProgress::SetText( char * text )
 		m_TextOverlay->Create( text, WS_VISIBLE|WS_CHILD, rectangle, this, 54999) ;
 		m_TextOverlay->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
-            cerr << "NOT Making new static text overlay for the Progress Bar.\n";
+#ifdef __BOTHWX__
+            LOGERR("NOT Making new static text overlay for the Progress Bar.\n");
 //            m_TextOverlay = new wxStaticText();
 //            cerr << "Creating new static text overlay for the Progress Bar.\n";
 //            m_TextOverlay->Create( (wxWindow*)this, -1, text, wxPoint(0,0), GetSize() );
@@ -71,7 +71,7 @@ void	CxProgress::SetText( char * text )
 #ifdef __WINDOWS__
 		m_TextOverlay->SetWindowText(text);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             m_TextOverlay->SetLabel(text);
 #endif
 }
@@ -88,7 +88,7 @@ void	CxProgress::SetGeometry( int top, int left, int bottom, int right )
 		m_TextOverlay->MoveWindow(rectangle) ;
 	}
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 	if(m_TextOverlay != nil)
 	{
@@ -110,15 +110,15 @@ int   CxProgress::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -135,7 +135,7 @@ int   CxProgress::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -155,7 +155,7 @@ int   CxProgress::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -168,7 +168,7 @@ int   CxProgress::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -187,7 +187,7 @@ int	CxProgress::GetIdealWidth()
 	cdc.SelectObject(oldFont);         //Select the old font back into the DC.
 	return mCharsWidth * textMetric.tmAveCharWidth;  //Work out the ideal width.
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return mCharsWidth * GetCharWidth();
 #endif      
 }
@@ -205,7 +205,7 @@ int	CxProgress::GetIdealHeight()
 	dc.SelectObject(oldFont);
 	return ( size.cy + 5);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return GetCharHeight() + 5;
 #endif      
 
@@ -235,7 +235,7 @@ void CxProgress::SetProgress(int complete)
 #ifdef __WINDOWS__
 	SetPos ( complete );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetValue( complete );
 #endif
 }
@@ -248,9 +248,11 @@ void CxProgress::SwitchText ( CcString * text )
             {
                   if ( m_TextOverlay )
                   {
+#ifdef __WINDOWS__
                         CString temp;
                         m_TextOverlay->GetWindowText(temp);
                         m_oldText = (LPCTSTR) temp;
+#endif
                   }
                   else
                   {

@@ -24,7 +24,7 @@ CxText *	CxText::CreateCxText( CrText * container, CxGrid * guiParent )
       theText->Create("Text", SS_LEFTNOWORDWRAP| WS_CHILD| WS_VISIBLE, CRect(0,0,20,20), guiParent);
 	theText->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theText->Create(guiParent, -1, "text");
 #endif
       return theText;
@@ -44,7 +44,7 @@ CxText::~CxText()
 
 void	CxText::SetText( char * text )
 {
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetLabel(text);
 #endif
 #ifdef __WINDOWS__
@@ -58,7 +58,7 @@ void  CxText::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
 #endif
 
@@ -76,15 +76,15 @@ int   CxText::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -101,15 +101,15 @@ int   CxText::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-	}
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.x -= parentRect.x;
+//	}
       return ( windowRect.x );
 #endif
 
@@ -121,7 +121,7 @@ int   CxText::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -134,7 +134,7 @@ int   CxText::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -154,7 +154,7 @@ int	CxText::GetIdealWidth()
 	dc.SelectObject(oldFont);
 	return ( size.cx );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return cx; 
@@ -172,7 +172,7 @@ int	CxText::GetIdealHeight()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 	return ( size.cy );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       return GetCharHeight();
 #endif
 }

@@ -14,7 +14,7 @@
 
 #include "crystalsinterface.h"
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/textctrl.h>
 #define BASEMULTIEDIT wxTextCtrl
 #endif
@@ -81,7 +81,7 @@ class CxMultiEdit : public BASEMULTIEDIT
 
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       public:
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()

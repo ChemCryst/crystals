@@ -15,7 +15,7 @@
 #include	"crguielement.h"
 #include    "ccstring.h"
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/gauge.h>
 #include <wx/stattext.h>
 #define BASEPROGRESS wxGauge
@@ -66,7 +66,7 @@ private:
 #ifdef __WINDOWS__
             CStatic* m_TextOverlay;
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             wxStaticText* m_TextOverlay;
 #endif
 
