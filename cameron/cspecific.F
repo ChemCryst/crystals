@@ -590,8 +590,11 @@ C &&GILGID      CHARACTER*80 CHARTC
 
 &DOS      ICOL2 = ICOL
 
+&GIL      WRITE(6,*) 'ZPOLGN, N: ', N
+
 C &&GILGID      ID = KQUICKDATA(N*2)
 
+&GIL      WRITE(6,*) 'ZPOLGN2, N: ', N
 
       DO 10 I = 1 , N
 &DOS        ixx2(i) = nint(float(ix(i))*scale_X)
@@ -601,6 +604,8 @@ C &&GILGID        CALL ADDDATA(ID,IY(I))
 &&GILGID        IPTS(I*2 - 1) = IX(I)
 &&GILGID        IPTS(I*2    ) = IY(I)
 10    CONTINUE
+
+&GIL      WRITE(6,*) 'ZPOLGN3, N: ', N
 
 &DOS      CALL CREATE_POLYGON@(IXX2,IYY2,N,HANDLE,ERROR)
 &DOS      CALL FILL_POLYGON@(HANDLE,ICOL2,ERROR)
@@ -620,6 +625,8 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 C &&GILGID      WRITE(CHARTC,3)'^^CH FPOLYF',N,ID
 C &&GILGID3     FORMAT(A,2(1X,I6))
 C &&GILGID      CALL ZMORE(CHARTC,0)
+
+&GIL      WRITE(6,*) 'ZPOLGN4, N: ', N
 
 &&GIDGIL              CALL FSTFPO ( N, IPTS )
 
@@ -780,7 +787,8 @@ C          Update the mouse position variables
 &GID      END INTERFACE
 &&GILGID      INTEGER ISIZ,IRES
 &&GILGID      IRES = 0
-&&GILGID      CALL NEWDATA(ISIZ, IRES)
+&GID      CALL NEWDATA(ISIZ, IRES)
+&GIL      CALL NEWDATA(%VAL(ISIZ), IRES)
 &&GILGID      KQUICKDATA = IRES
 &&GILGID      RETURN
 &&GILGID      END
@@ -797,7 +805,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE DATAIN
 &GID      END INTERFACE
 &&GILGID      INTEGER ID, IDATA, IOFF, ILEN
-&&GILGID      CALL DATAIN(ID, IDATA, IOFF, ILEN)
+&GID      CALL DATAIN(ID, IDATA, IOFF, ILEN)
+&GIL      CALL DATAIN(%VAL(ID), IDATA, %VAL(IOFF), %VAL(ILEN))
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -813,7 +822,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTLINE
 &GID      END INTERFACE
 &&GILGID      INTEGER IX1, IX2, IY1, IY2
-&&GILGID      CALL FASTLINE(IX1, IY1, IX2, IY2)
+&GIL      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
+&GID      CALL FASTLINE(IX1, IY1, IX2, IY2)
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -829,7 +839,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTFELLI
 &GID      END INTERFACE
 &&GILGID      INTEGER IX, IY, IW, IH
-&&GILGID      CALL FASTFELLI(IX, IY, IW, IH)
+&GIL      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+&GID      CALL FASTFELLI(IX, IY, IW, IH)
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -845,7 +856,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTEELLI
 &GID      END INTERFACE
 &&GILGID      INTEGER IX, IY, IW, IH
-&&GILGID      CALL FASTEELLI(IX, IY, IW, IH)
+&GID      CALL FASTEELLI(IX, IY, IW, IH)
+&GIL      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -859,7 +871,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTFPOLY
 &GID      END INTERFACE
 &&GILGID      INTEGER NV, IPTS(2000)
-&&GILGID      CALL FASTFPOLY(NV, IPTS)
+&GID      CALL FASTFPOLY(NV, IPTS)
+&GIL      CALL FASTFPOLY(%VAL(NV), IPTS)
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -873,7 +886,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTEPOLY
 &GID      END INTERFACE
 &&GILGID      INTEGER NV, IPTS(2000)
-&&GILGID      CALL FASTEPOLY(NV, IPTS)
+&GIL      CALL FASTEPOLY(%VAL(NV), IPTS)
+&GID      CALL FASTEPOLY(NV, IPTS)
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -892,7 +906,8 @@ C          Update the mouse position variables
 &&GILGID      CHARACTER*(*) CTEXT
 &&GILGID      CHARACTER*80  NTEXT
 &&GILGID      NTEXT = CTEXT
-&&GILGID      CALL FASTTEXT(IX, IY, NTEXT)    
+&GIL      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT)    
+&GID      CALL FASTTEXT(IX, IY, NTEXT)    
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -907,7 +922,8 @@ C          Update the mouse position variables
 &GID          END SUBROUTINE FASTCOLOUR
 &GID      END INTERFACE
 &&GILGID      INTEGER IR, IG, IB
-&&GILGID      CALL FASTCOLOUR(IR, IG, IB)
+&GIL      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
+&GID      CALL FASTCOLOUR(IR, IG, IB)
 &&GILGID      RETURN
 &&GILGID      END
 
@@ -937,7 +953,8 @@ C Suits you.
 C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
 &DOS\CAMWIN
-      character*(*) text
+#GIL      character*(*) text
+&GIL      character*70 text
       CHARACTER*80 ntext
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
