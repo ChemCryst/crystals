@@ -16,6 +16,7 @@
 %%        1 ISO
 %%        2 ANISO
 %  EVALUATE ADP = - 1
+%       EVALUATE CLAST = " LAST"
 %%
 %  IF EXISTS 5 .LE. 0 THEN
 WARNING - You have no atoms to refine
