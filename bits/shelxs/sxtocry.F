@@ -28,7 +28,7 @@ C
 C get compound code from instruction line - UNIX specific! 
 C      CALL SXNM(CPCODE,LN)
 C general input - change this as needed.....
-#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_)
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
       call no_stdout_buffer()
 #endif
       WRITE(6,'('' Compound code (filename without .INS) : A6'')') 

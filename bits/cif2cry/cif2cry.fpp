@@ -44,7 +44,7 @@ C<ric02/>
       data noutf    /10/
       data noutr    /11/
 
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(_GIL_) || defined(_LIN_) || defined(_MAC_) || defined(_WXS_)
       call no_stdout_buffer()
 #endif      
 

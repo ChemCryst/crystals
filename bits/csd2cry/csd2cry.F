@@ -287,7 +287,7 @@ C      Non-standard settings common in the CSD
      4            ,'P b c 21  ','P b 21 a  ','P 21 a b  '
      5            ,'P n 21 a  ','P 21 c n  ','P b n 21  '/
  
-#if defined(GIL) || defined (MAC) || defined (LIN)
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
         call no_stdout_buffer()
 #endif
 c

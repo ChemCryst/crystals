@@ -4,6 +4,10 @@ C
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO,IF,LT,LP,LZ
       CHARACTER *80 FILENM
       DATA IY/'Y','N','O','y','n','o'/
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
+      call no_stdout_buffer()
+#endif
+
       LT = 6
       LP = 1
       LZ=5

@@ -17,8 +17,7 @@ C
       CHARACTER *8 CTIME, CDATGB, CDATUS
 #endif
       EXTERNAL BLKDAT
-
-#if defined(_LIN_) || defined(_GIL_)
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
       call no_stdout_buffer()
 #endif
 
@@ -5309,3 +5308,5 @@ C                  +VE     POSITION IN 'CDATA' OF CMATCH
       RETURN
       END
 #endif
+
+

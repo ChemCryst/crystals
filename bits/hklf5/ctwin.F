@@ -9,8 +9,9 @@
       character*(9) crystals_element
       character*20 ctrim,cnew
    
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)  || defined (_WXS_)
       call no_stdout_buffer()
- 
+#endif
       write(6,*) 
      1 '  CTWIN - read HKLF5 and write List 6. Simon Parsons 2003. '
       write(6,*) ' '
