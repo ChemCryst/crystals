@@ -5,6 +5,10 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2002/07/25 16:00:13  richard
+//
+// Resize dropdown listbox if number of items changes.
+//
 // Revision 1.16  2002/03/16 18:08:23  richard
 // Removed old CrGraph class (now obsolete given Steven's work).
 // Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
@@ -63,6 +67,7 @@
 #define     __CrConstants_H__
 
 // General purpose
+#define kSAttachModel       "ATTACH"
 #define kSState     "STATE"
 #define kSOn        "ON"
 #define kSOff       "OFF"
@@ -166,7 +171,8 @@ enum
  kTVertical,
  kTBoth,
  kTDefinePopupMenu,
- kTRemove
+ kTRemove,
+ kTAttachModel
 };
 
 
