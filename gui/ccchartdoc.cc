@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2002/06/25 11:56:43  richard
+// Initialise some local variables. Could have been causing Cameron no black bonds bug.
+//
 // Revision 1.11  2002/04/30 20:13:43  richard
 // Get font size right and dependent on window/canvas size.
 //
@@ -434,10 +437,23 @@ void CcChartDoc::FastEPoly( int nv, int * points )
 
 void CcChartDoc::FastText( int x, int y, CcString text, int fs )
 {
-      int yoffs = fs * 5;
-      int xoffs = yoffs * 10;
+      int xoffs = 0;
+      int yoffs = 0;
+
       CcChartText* item = new CcChartText();
-      item->Init(x-xoffs, y-yoffs, x+xoffs, y+yoffs, text );
+
+      if ( fs > 0 )
+      {
+         yoffs = fs * 5;
+         xoffs = yoffs * 10;
+         item->Init(x-xoffs, y-yoffs, x+xoffs, y+yoffs, text );
+      }
+      else
+      {
+         yoffs = -fs * 10;
+         xoffs = yoffs * 10;
+         item->Init(x, y, x+xoffs, y+yoffs, text , false );
+      }
 
       mCommandList->AddItem(item);
 }

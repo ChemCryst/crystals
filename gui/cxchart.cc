@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2002/05/08 08:56:13  richard
+//   Added support for wmf AND emf file output to Chart objects (Cameron). Reason:
+//   emf doesn't work on Windows 95. Bah.
+//
 //   Revision 1.17  2002/04/30 20:13:43  richard
 //   Get font size right and dependent on window/canvas size.
 //
@@ -884,6 +888,10 @@ void CxChart::UseIsotropicCoords(Boolean iso)
 
 void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated)
 {
+
+    Boolean centred = ( x2>0 );
+    x2 = abs(x2);
+
 #ifdef __CR_WIN__
     CcPoint      coord = DeviceToLogical(x1,y1);
     CcPoint       coord2 =DeviceToLogical(x2,y2);
@@ -917,8 +925,14 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
         {
             //Output the text, and exit.
             fontIsTooBig = false;
-            int xcrd = ( coord2.x + coord.x - size.cx ) / 2;
-            int ycrd = ( coord2.y + coord.y - size.cy ) / 2;
+            int xcrd= coord.x;
+            int ycrd= coord.y;
+            if ( centred )
+            {
+               //Centre the text.
+                  xcrd = ( coord2.x + coord.x - size.cx ) / 2;
+                  ycrd = ( coord2.y + coord.y - size.cy ) / 2;
+            }
             memDC->SetBkMode(TRANSPARENT);
             memDC->TextOut(xcrd,ycrd,theText.ToCString(),theText.Len());
             memDC->SelectObject(oldpen);
@@ -960,11 +974,16 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
         {
             //Output the text, and exit.
             fontIsTooBig = false;
-//Centre the text.
-                  int xcrd = ( coord2.x + coord.x - cx ) / 2;
-                  int ycrd = ( coord2.y + coord.y - cy ) / 2;
-                  memDC->SetBackgroundMode( wxTRANSPARENT );
-                  memDC->DrawText(wtext, xcrd , ycrd );
+            int xcrd= coord.x;
+            int ycrd= coord.y;
+            if ( centred )
+            {
+               //Centre the text.
+                  xcrd = ( coord2.x + coord.x - cx ) / 2;
+                  ycrd = ( coord2.y + coord.y - cy ) / 2;
+            }
+            memDC->SetBackgroundMode( wxTRANSPARENT );
+            memDC->DrawText(wtext, xcrd , ycrd );
         }
         else
         {

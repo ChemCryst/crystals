@@ -43,7 +43,7 @@ void CcChartText::Draw(CrChart* chartToDrawOn)
 {
 	if(xm == 0)
 		chartToDrawOn->DrawText(x,y,text);
-	else
+        else
 		chartToDrawOn->FitText(x,y,xm,ym,text);
 }
 
@@ -55,7 +55,7 @@ void CcChartText::Init(int xp, int yp, CcString theText)
 	text = theText;
 }
 
-void CcChartText::Init(int x1, int y1, int x2, int y2, CcString theText)
+void CcChartText::Init(int x1, int y1, int x2, int y2, CcString theText, Boolean centred)
 {
 // Must fit the text inside the box.
 	x = x1;
@@ -63,4 +63,5 @@ void CcChartText::Init(int x1, int y1, int x2, int y2, CcString theText)
 	xm = x2;
 	ym = y2;
 	text = theText;
+        if ( !centred ) xm = -xm;
 }

@@ -10,7 +10,7 @@ class CcTokenList;
 class CcChartText : public CcChartObject
 {
 	public:
-		void Init(int x1, int y1, int x2, int y2, CcString theText);
+                void Init(int x1, int y1, int x2, int y2, CcString theText, Boolean centred=true);
 		void Init(int xp, int yp, CcString theText);
 		CcChartText();
             CcChartText(int ix, int iy, CcString itext );
