@@ -1,0 +1,68 @@
+%script prefour
+%%
+%% Prepare for a Fourier map. This script exits leaving a hanging
+%% '#FOURIER' command open. 
+%%
+%% If Friedel pairs are not merged, the merge them.
+%%
+%% If Twinned, then calculate FO for primary domain.
+%%
+%  VARIABLE INTEGER ITMP
+%  VARIABLE LOGICAL TWINNED MERGED
+%%
+%  COPY '#GENERALEDIT 13'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'TRANSFER FROM OFFSET=0 TO ITMP'
+%  IF ( ITMP .GE. 0 ) THEN
+%    EVALUATE MERGED = TRUE
+%  ELSE
+%    EVALUATE MERGED = FALSE
+%  END IF
+%  COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%  IF ( ITMP .GE. 0 ) THEN
+%    EVALUATE TWINNED = TRUE
+%  ELSE
+%   EVALUATE TWINNED = FALSE
+%  END IF
+%  COPY 'END'
+%%
+%  IF ( MERGED ) THEN
+%%
+%    IF ( TWINNED ) THEN
+%%
+%      COPY '#SFLS'
+%      COPY 'CALC /FO/=SCALED-/FOT/'
+%      COPY 'END'
+%%
+%    END IF
+%%
+%    COPY '#FOURIER'
+%%
+%  ELSE
+%%
+{I Copying reflection list to temporary storage.
+%    COPY '#COPY 6 7'
+%    COPY 'END'
+{I Calculating unique reflections applying Friedel's law.
+%    COPY '#SYST 7 FRIEDEL=YES FILTER=YES'
+%    COPY 'END'
+{I Sorting temporary reflection list.
+%    COPY '#SORT 7'
+%    COPY 'END'
+{I Merging temporary reflection list.
+%    COPY '#MERGE 7'
+%    COPY 'REF LIST=OFF'
+%    COPY 'END'
+{I Calculating structure factors for temporary reflection list.
+%    COPY '#SFLS 7'
+%    IF ( TWINNED ) THEN
+%       COPY 'CALC /FO/=SCALED-/FOT/'
+%    ELSE
+%      COPY 'CALC'
+%    END IF
+%    COPY 'END'
+{I Computing Fourier summation using temporary reflection list.
+%    COPY '#FOURIER 7'
+%  END IF
+%%
+%END SCRIPT

@@ -1,0 +1,20 @@
+%script postfour
+%%
+%% Cleans up after script PREFOUR.
+%%
+%  VARIABLE INTEGER ITMP
+%  VARIABLE LOGICAL MERGED
+%%
+%  COPY '#GENERALEDIT 13'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'TRANSFER FROM OFFSET=0 TO ITMP'
+%  IF ( ITMP .LT. 0 ) THEN
+{I Removing temporary reflection storage.
+%    COPY '#DISK'
+%    COPY 'DELETE 7'
+%    COPY '#PURGE LIST=7 MON=LOW'
+%    COPY 'END'
+%  END IF
+%  COPY 'END'
+%END SCRIPT
+
