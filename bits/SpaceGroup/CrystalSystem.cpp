@@ -44,6 +44,7 @@
 #include <fstream>
 #include "StringClasses.h"
 #include "MathFunctions.h"
+#include <iomanip>
 #include "Stats.h"
 
 using namespace std;
@@ -944,6 +945,10 @@ void Table::addCondition(char* pCondition, ConditionColumn* pColumn, int pRow)
         return;
     }
     pColumn->addCondition((signed char)tNumber, pRow);
+    if (tNextNumber[0] == 0)
+    {
+        return;
+    }
     addCondition(tNextNumber+1, pColumn, pRow);
 }
 
@@ -979,17 +984,17 @@ char* Table::getName()
 
 int Table::getNumPointGroups()
 {
-	return	iSpaceGroups->length();
+    return iSpaceGroups->length();
 }
 
 SpaceGroup* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
 {
-	SpaceGroups* tGroups = iSpaceGroups->get(pPointGroupNum);
-	if (tGroups)
-	{
-		return tGroups->get(pLineNum);
-	}
-	return NULL;
+    SpaceGroups* tGroups = iSpaceGroups->get(pPointGroupNum);
+    if (tGroups)
+    {
+            return tGroups->get(pLineNum);
+    }
+    return NULL;
 }
 
 ArrayList<Index>* Table::getHeadings(int pI)
@@ -1023,19 +1028,19 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
         Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
-            pStream << "- ";
+            pStream << setw(1) << "-\t";
         }
         else
         {
-           pStream << *(tIndexs) << " ";
+           pStream << setw(1) << *(tIndexs) << "\t";
         }
     }
-    pStream << "SG: ";
+    pStream << "| ";
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SpaceGroups* tSpaceGroups = iSpaceGroups->get(i);
         SpaceGroup* tSpaceGroup = tSpaceGroups->get(pLineNum);
-        pStream << *(tSpaceGroup) << " ";
+        pStream << setw(6) << *(tSpaceGroup);
         pStream << "\t";
     }
     pStream << "\n";
@@ -1050,11 +1055,11 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointG
         Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
-            pStream << "- ";
+            pStream << setw(7) <<  "-";
         }
         else
         {
-           pStream << *(tIndexs) << " ";
+           pStream << setw(7) << *(tIndexs);
         }
     }
     pStream << "SG: ";
@@ -1081,12 +1086,12 @@ std::ostream& Table::output(std::ostream& pStream)
         int tHeadingNumber = iColumns->get(i)->countHeadings();
         for (int j = 0; j < tHeadingNumber; j ++)
         {
-            pStream << iColumns->get(i)->getHeading(j) << " ";
+            pStream << iColumns->get(i)->getHeading(j) << "\t";
         }
     }
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        pStream << iSpaceGroups->get(i)->getPointGroup() << " ";
+        pStream << iSpaceGroups->get(i)->getPointGroup() << "\t";
         pStream << "\t";
     }
     pStream << "\n";
@@ -1332,23 +1337,24 @@ void RankedSpaceGroups::addConditionRatings(RowRating* pRating, Stats& pStats, I
         for (int i = 0; i < tCount; i++)
         {
             int tRow = tIndexs->getValue(i);
-            ElemStats* tElement = pStats.getElem(pHeadingIndex->get(), tRow);
-            addRating(pRating, tElement->tRating1, tElement->tRating2);
+            const ElemStats* tElement = pStats.getElem(pHeadingIndex->get(), tRow);
+            addRating(pRating, tElement);
         }
     }
     else
     {
-        addRating(pRating, 0.0, 0.0);
+        pRating->iTotNumVal++;
     }
 }
 
-void RankedSpaceGroups::addRating(RowRating* pRating, const float pRating1, const float pRating2)
+void RankedSpaceGroups::addRating(RowRating* pRating, const ElemStats* pStats)
 {
     pRating->iTotNumVal++;
-    pRating->iSumRat1 += pRating1;
-    pRating->iSumRat2 += pRating2;
-    pRating->iSumSqrRat1 += sqr(pRating1);
-    pRating->iSumSqrRat2 += sqr(pRating2);
+    pRating->iSumRat1 += pStats->tRating1;
+    pRating->iSumRat2 += pStats->tRating2;
+    pRating->iSumSqrRat1 += sqr(pStats->tRating1);
+    pRating->iSumSqrRat2 += sqr(pStats->tRating2);
+    pRating->iFiltered |= pStats->iFiltered ;
 }
 
 bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
@@ -1388,6 +1394,7 @@ RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)
 		iRatings[i].iSumSqrRat1 = 0;
 		iRatings[i].iSumSqrRat2 = 0;
 		iRatings[i].iMean= 0;
+                iRatings[i].iFiltered = false;
 		calcRowRating(&(iRatings[i]), i, pTable, pStats);
                 addToList(&(iRatings[i]));	//Add the rating for the current row into the order list of rows.
         }
@@ -1403,6 +1410,10 @@ void RankedSpaceGroups::addToList(RowRating* pRating)
         
     iRatingList.reset();
     pRating->iMean = (pRating->iSumRat1+pRating->iSumRat2)/(2*pRating->iTotNumVal);
+    if (pRating->iFiltered)
+    {
+        pRating->iMean += 1;	//If we think that this has been filtered then we try and move it to the top
+    }
     tCurrentRat = iRatingList.next();
     while (tCurrentRat != NULL && tCurrentRat->iMean > pRating->iMean)
     {
@@ -1427,16 +1438,22 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
     {
         iTable->chiralPointGroups(tPointGroups);
     }
+    pStream << "A '*' indicates that the row has been promoted because it seems that the data has been previously filtered for the centering.\n\n";
+     
     iRatingList.reset();
     while ((tCurrentRating = iRatingList.next()) != NULL)
     {
-        pStream << tCurrentRating->iRowNum << ": " << tCurrentRating->iMean << " ";
+        pStream << setw(3) << tCurrentRating->iRowNum << " " << setprecision(4) << setw(9) << tCurrentRating->iMean << " ";
+        if (tCurrentRating->iFiltered)
+            pStream << " * ";
+        else
+            pStream << " + ";
         if (iChiral)
             iTable->outputLine(tCurrentRating->iRowNum, pStream, tPointGroups);	//Make output space group only.
         else
             iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
-	delete tPointGroups;
+    delete tPointGroups;
     return pStream;
 }
 
