@@ -58,7 +58,7 @@
 ^^WI             @ 1,4 DROPDOWN LCOLOR INFORM=YES ADDTOLIST
 ^^WI              'Default' 'B&W' 'B&W-2' 'NULL'
 ^^WI             @ 3,2 DROPDOWN LPACK INFORM=YES ADDTOLIST
-^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
+^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'Window' 'NULL'
 ^^WI             @ 3,4 BUTTON COLBUT 'Colours'
 ^^WI           }
 ^^WI           @ 7,1 GRID STUFF NROWS=5 NCOLS=2
@@ -121,6 +121,7 @@
 ^^WI   ITEM _COMP 'Com&plete' 'PACK CELL COMP VIEW _N'
 ^^WI   ITEM _CENT '&Centroid' 'PACK CELL CENT VIEW _N'
 ^^WI   ITEM _COMP 'Cu&t'      'PACK CELL CUT  VIEW _N'
+^^WI   ITEM _COMP '&Window'   '#SCRIPT XCWINDOW'
 ^^WI   SPLIT
 ^^WI   ITEM _UNPK '&Unpack'   'UNPACK VIEW _N'
 ^^WI   SPLIT
