@@ -1442,10 +1442,10 @@ Various bits and pieces
     .Z                  0    0    1    0    1 0.
     .FLACK              0    0    1    0    1 0.
     .ESD                0    0    1    0    1 0.
-    .SIGMACUT           0    0    1    0    1 0.
-    .CALC-NREF          0    0    1    0    1 0.
-    .CALC-R             0    0    1    0    1 0.
-    .CALC-RW            0    0    1    0    1 0.
+    .ANALYSE-SIGMA      0    0    1    0    1 0.
+    .ANALYSE-NREF       0    0    1    0    1 0.
+    .ANALYSE-R          0    0    1    0    1 0.
+    .ANALYSE-RW         0    0    1    0    1 0.
     .SOLUTION           0    0    1    7    0 UNKNOWN
      UNKNOWN        SHELXS         SIR88          SIR92          PATTERSON
      SIR97          DIRDIF
