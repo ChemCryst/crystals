@@ -36,6 +36,11 @@ ________________________________________________________________________
 % ELSE
 {S * The Space Group is not available for the Model window
 % END IF
+%% Read in L23 in order to get correct F/F2 info in summary window.
+% IF ( EXISTS  23 .EQ. 1 ) THEN
+%            COPY '#SUM L 23'
+%            COPY 'END'
+% END IF
 % IF ( EXISTS  5 .NE. 1 ) THEN
 %% Make the model disappear in case we are restarting in a new directory.
 ^^GR MODEL L5
