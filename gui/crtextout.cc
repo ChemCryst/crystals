@@ -126,7 +126,7 @@ CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
 
 void CrTextOut::SetText ( CcString cText )
 {
-                   ((CxTextOut*)ptr_to_cxObject)->SetText(cText);
+   ((CxTextOut*)ptr_to_cxObject)->SetText(cText);
 }
 
 

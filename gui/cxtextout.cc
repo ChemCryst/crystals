@@ -1090,39 +1090,39 @@ int CxTextOut::GetColourCodes( CcString& strData, COLOURCODE* pColourCode )
         pColourCode->nUnder = true;
         m_bInLink = true;
       }
-      nBytesToSkip = 2;                 // Skip the &
+      nBytesToSkip = 2;                       // Skip the &
       strData = strData.Sub( 2,-1 ) + " ";    // Remove the &
     }
     else if ( strData.Match( ERROR_BYTE ) == 1 )
     {
         m_bInLink = false;
-        pColourCode->nFore = 0;
-        pColourCode->nBack = 4;
-        nBytesToSkip = 2;                 // Skip the E
+        pColourCode->nFore = 0;                 //white on
+        pColourCode->nBack = 4;                 //red
+        nBytesToSkip = 2;                       // Skip the E
         strData = strData.Sub( 2,-1 ) + " ";    // Remove the E
     }
     else if ( strData.Match( INFO_BYTE ) == 1 )
     {
         m_bInLink = false;
-        pColourCode->nFore = 2;
-        pColourCode->nBack = 15;
-        nBytesToSkip = 2;                 // Skip the I
+        pColourCode->nFore = 12;                // lblue on
+        pColourCode->nBack = 15;                // lgrey
+        nBytesToSkip = 2;                       // Skip the I
         strData = strData.Sub( 2,-1 ) + " ";    // Remove the I
     }
     else if ( strData.Match( STATUS_BYTE ) == 1 )
     {
-        m_bInLink = false;
-        pColourCode->nFore = 11;
-        pColourCode->nBack = 10;
-        nBytesToSkip = 2;                 // Skip the S
+        m_bInLink = false;                      
+        pColourCode->nFore = 0;                 // white on
+        pColourCode->nBack = 6;                 // magenta
+        nBytesToSkip = 2;                       // Skip the S
         strData = strData.Sub( 2,-1 ) + " ";    // Remove the S
     }
     else if ( strData.Match( RESULT_BYTE ) == 1 )
     {
         m_bInLink = false;
-        pColourCode->nFore = 4;
-        pColourCode->nBack = 15;                      
-        nBytesToSkip = 2;                 // Skip the R
+        pColourCode->nFore = 5;                 // maroon on
+        pColourCode->nBack = 15;                // lgrey      
+        nBytesToSkip = 2;                       // Skip the R
         strData = strData.Sub( 2,-1 ) + " ";    // Remove the R
     }
     else
