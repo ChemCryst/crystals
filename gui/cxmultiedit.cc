@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2004/05/13 17:21:43  rich
+//   Fix build problem following today's checkins.
+//
 //   Revision 1.20  2004/05/13 09:14:49  rich
 //   Re-invigorate the MULTIEDIT control. Currently not used, but I have
 //   something in mind for it.
@@ -116,7 +119,7 @@ void  CxMultiEdit::SetText( CcString cText )
       int nUpLine = 0;
 
       if (nTotalLines > 0  &&  si.nMax > 0  &&  si.nMax / nTotalLines > 0) {      
-	nUpLine = (si.nMax - si.nPos - (si.nPage - 1)) / (si.nMax / nTotalLines);
+    nUpLine = (si.nMax - si.nPos - (si.nPage - 1)) / (si.nMax / nTotalLines);
       }
 
       if (nUpLine > 0) {
@@ -325,11 +328,19 @@ void CxMultiEdit::Init()
 
 }
 
+#ifdef __BOTHWX__
+void CxMultiEdit::SaveAs(CcString filename)
+{
+    SaveFile( filename.ToCString() );
+}
+#endif
+
+#ifdef __CR_WIN__
 void CxMultiEdit::SaveAs(CcString filename)
 {
     CFile file;
     file.Open(filename.ToCString(), CFile::modeCreate | CFile::modeWrite);
-	
+    
     EDITSTREAM es;
     es.dwCookie = (DWORD) &file;
     es.pfnCallback = CxMultiEdit::MyStreamOutCallback; 
@@ -338,7 +349,6 @@ void CxMultiEdit::SaveAs(CcString filename)
     file.Close();
 }
 
-#ifdef __CR_WIN__
 DWORD CALLBACK CxMultiEdit::MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 {
    CFile* pFile = (CFile*) dwCookie;
