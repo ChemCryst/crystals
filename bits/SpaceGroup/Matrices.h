@@ -366,7 +366,11 @@ class Matrix<float>
                     }
                     pStream << this->getValue(j, i);
                 }
-                pStream << "]\n";
+                pStream << "]";
+                if (i+1 != iYSize)
+                {
+                    pStream << "\n";
+                }
             }
             return pStream;
         }
