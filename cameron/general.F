@@ -921,79 +921,90 @@ cdjwjan00      CALL ZMORE(' ',-1)
       END
  
 CODE FOR ZFORTF
+
+C RICaug2000
+C This subroutine is vexatious. There is no need to limit
+C the filename to DOS length, if the filename is bad, the
+C Fortran OPEN instruction will spot the problem.
+C I've changed it so it just returns the same filename.
       SUBROUTINE ZFORTF (FILENM,CBUILD,IERR)
       CHARACTER*(*) FILENM,CBUILD
-C This routine takes the filename and converts it into the standard
-C form .ie. up to 8 characters in the main name and 3 characters in the
-C extension.
-C It looks for \ (DOS-UNIX) and ] (VAX) characters to find the
-C beginning of the true name. : characters are also allowed.
-      INTEGER ILEN
-      INTEGER INDDIR
-      INTEGER INDDOT
-      INTEGER INDEND
+      CBUILD = FILENM
       IERR = 0
-      ILEN = LEN(FILENM)
-      IPOS = 1
-      CBUILD = ' '
-C Find the end of the filename
-      DO 10 J = ILEN , 1 , -1
-      IF (FILENM(J:J).NE.' ') THEN
-        INDEND = J
-        GOTO 20
-      ENDIF
-10    CONTINUE
-20    CONTINUE
-C First look for the \ character - allow more than 1 of these.
-30    CONTINUE
-      INDDIR = INDEX (FILENM(IPOS:ILEN),'/')
-      IF (INDDIR.NE.0) THEN
-      IPOS = IPOS + INDDIR
-      GOTO 30
-      ENDIF
-      IF (IPOS.GE.2) THEN
-C WE HAVE FOUND A START POINT
-      INDDIR = IPOS-1
-      ELSE
-C LOOK FOR :
-      INDDIR = INDEX(FILENM,':')
-      IF (INDDIR.EQ.0) THEN
-C LOOK FOR ]
-        INDDIR = INDEX(FILENM,']')
-      ENDIF
-      ENDIF
-C Now look for the .
-      INDDOT = INDEX (FILENM,'.')
-C Begin to build the filename.
-      IPOS = 1
-      IF (INDDIR.GT.0) THEN
-      CBUILD = FILENM(IPOS:INDDIR)
-      IPOS = INDDIR+1
-      ENDIF
-      IF (INDDOT.LE.INDDIR+1 .AND. INDDOT.NE.0) THEN
-C THIS IS AN ERROR
-      IERR = 1
-      RETURN
-      ENDIF
-C Now find the length of the filename
-      IF (INDDOT-INDDIR.GE.9) THEN
-      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+9)
-      IPOS = IPOS + 8
-      ELSE IF (INDDOT.GT.0) THEN
-      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDOT-1)
-      IPOS = IPOS + INDDOT - INDDIR -1
-      ELSE IF (INDEND-INDDIR.GE.8) THEN
-      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+8)
-      ELSE
-      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDEND)
-      ENDIF
-C NOW ADD ON THE EXTENSION
-      IF (INDDOT.GT.0) THEN
-      IF (INDEND-INDDOT.GE.3) THEN
-        CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDDOT+3)
-      ELSE
-        CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDEND)
-      ENDIF
-      ENDIF
       RETURN
       END
+CC This routine takes the filename and converts it into the standard
+CC form .ie. up to 8 characters in the main name and 3 characters in the
+CC extension.
+CC It looks for \ (DOS-UNIX) and ] (VAX) characters to find the
+CC beginning of the true name. : characters are also allowed.
+C      INTEGER ILEN
+C      INTEGER INDDIR
+C      INTEGER INDDOT
+C      INTEGER INDEND
+C      IERR = 0
+C      ILEN = LEN(FILENM)
+C      IPOS = 1
+C      CBUILD = ' '
+CC Find the end of the filename
+C      DO 10 J = ILEN , 1 , -1
+C      IF (FILENM(J:J).NE.' ') THEN
+C       INDEND = J
+C        GOTO 20
+C      ENDIF
+C10    CONTINUE
+C20    CONTINUE
+CC First look for the \ character - allow more than 1 of these.
+C30    CONTINUE
+C      INDDIR = INDEX (FILENM(IPOS:ILEN),'/')
+C      IF (INDDIR.NE.0) THEN
+C      IPOS = IPOS + INDDIR
+C      GOTO 30
+C      ENDIF
+C      IF (IPOS.GE.2) THEN
+CC WE HAVE FOUND A START POINT
+C      INDDIR = IPOS-1
+C      ELSE
+CC LOOK FOR :
+C      INDDIR = INDEX(FILENM,':')
+C      IF (INDDIR.EQ.0) THEN
+CC LOOK FOR ]
+C        INDDIR = INDEX(FILENM,']')
+C      ENDIF
+C      ENDIF
+CC Now look for the .
+C      INDDOT = INDEX (FILENM,'.')
+CC Begin to build the filename.
+C      IPOS = 1
+C      IF (INDDIR.GT.0) THEN
+C      CBUILD = FILENM(IPOS:INDDIR)
+C      IPOS = INDDIR+1
+C      ENDIF
+C      IF (INDDOT.LE.INDDIR+1 .AND. INDDOT.NE.0) THEN
+CC THIS IS AN ERROR
+C      IERR = 1
+C      RETURN
+C      ENDIF
+CC Now find the length of the filename
+C      IF (INDDOT-INDDIR.GE.9) THEN
+C      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+9)
+C      IPOS = IPOS + 8
+C      ELSE IF (INDDOT.GT.0) THEN
+C      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDOT-1)
+C      IPOS = IPOS + INDDOT - INDDIR -1
+C      ELSE IF (INDEND-INDDIR.GE.8) THEN
+C      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDDIR+8)
+C      ELSE
+C      CBUILD(IPOS:IPOS+8) = FILENM(INDDIR+1:INDEND)
+C      ENDIF
+CC NOW ADD ON THE EXTENSION
+C      IF (INDDOT.GT.0) THEN
+C      IF (INDEND-INDDOT.GE.3) THEN
+C        CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDDOT+3)
+C      ELSE
+C        CBUILD(IPOS:IPOS+4) = '.'//FILENM(INDDOT+1:INDEND)
+C      ENDIF
+C      ENDIF
+C      RETURN
+C      END
+C
