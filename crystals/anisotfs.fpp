@@ -40,6 +40,7 @@ C
 C 
 \QSTORE
 C 
+      DATA XHYD /'H   '/
 C 
 C--SET UP THE TIMING
 C----- SET SWITCH FOR NON-POSITIVE DEFINATE ATOM CAPTION
@@ -234,6 +235,9 @@ C-C-C-   ISOTROPIC ATOMS/SPHERE/LINE/RING
 C----- SET TO U[ISO]
                STORE(JBASE)=STORE(M5B+7)
             END IF
+CFEB00
+C-----      DONT BOTHER WITH H
+            IF (STORE(M5B) .EQ. XHYD) GOTO 850
 C-----      CHECK FOR SPLITTING
             CSHAPE = ' '
             CTEXT=' '
