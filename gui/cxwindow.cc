@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.29  2003/01/14 10:27:19  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -109,8 +115,8 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
       theWindow->Create( theWindow->mParentWnd, -1, "Window",
                          wxPoint(0, 0), wxSize(-1,-1),
                          ((attributes & kSize)  ? wxDEFAULT_FRAME_STYLE : wxDEFAULT_DIALOG_STYLE) |
-                         ( parentWindow         ? wxFRAME_FLOAT_ON_PARENT : 0) |
-                         ((attributes & kModal) ? 0 : wxFRAME_TOOL_WINDOW) );
+                         ( parentWindow         ? wxFRAME_FLOAT_ON_PARENT : 0) );// |
+//                         ((attributes & kModal) ? 0 : wxFRAME_TOOL_WINDOW) );
       theWindow->SetIcon( wxICON (IDI_ICON1) );
   #endif
 
