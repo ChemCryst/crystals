@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2002/06/25 11:55:29  richard
+C New commands to output to the GUI: (a) wDelSq during agreement analysis, and (b) number
+C of outliers during chebychev weighting.
+C
 C Revision 1.40  2002/06/24 15:32:44  richard
 C Add new auto-statistical weighting (Scheme 17).
 C Removed old XNAP04 subroutine. (17&18).
@@ -1847,7 +1851,7 @@ C
 C--
       CHARACTER *12 CTEMP
       CHARACTER *16 CNNN, COUT
-	CHARACTER *4  CSHK(2)
+      CHARACTER *4  CSHK(2)
 \ICOM30
 \ISTORE
       DIMENSION NOPE(4,30),KN(5),KM(5)
@@ -2443,7 +2447,8 @@ C--PRINT THE FINAL CAPTION FOR THIS GROUP
       IF ( PLHKL .EQ. 1 ) THEN
         HKLMX = MAX(1.0,HKLMX)
         HKLMX = LOG10(HKLMX)
-        IHKLMX = CEILING(HKLMX)
+        IHKLMX = NINT(HKLMX)
+        IF(FLOAT(IHKLMX).LT.HKLMX)IHKLMX=IHKLMX+1
         IHKLMX = 10**HKLMX
         WRITE(CMON,'(A,I10,A/A)')'^^PL YAXIS ZOOM 0.01 ',IHKLMX,' SHOW',
      1   '^^CR'
