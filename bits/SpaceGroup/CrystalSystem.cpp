@@ -380,8 +380,10 @@ Headings::~Headings()
     int iSize = iHeadings->length();
     for (int i = 0; i < iSize; i++)
     {
-        iHeadings->remove(i);
+        Heading* tHeading = iHeadings->remove(i);
+        delete tHeading;
     }
+    delete iHeadings;
 }
 
 int Headings::length()
@@ -446,7 +448,7 @@ char* Headings::addHeading(char* pLine)	//Returns the point which the line at th
     Heading* tHeading = NULL;
     if (tNext == NULL)
     {
-		tHeading = new Heading(pLine);
+        tHeading = new Heading(pLine);
     }
     else
     {
@@ -555,7 +557,7 @@ Indexs::Indexs(signed char pIndex)
     iIndexs = new ArrayList<Index>(1);
     iIndexs->add(new Index(pIndex));
 }
-        
+
 void Indexs::addIndex(signed char pIndex)
 {
     iIndexs->add(new Index(pIndex));
@@ -623,16 +625,17 @@ ConditionColumn::~ConditionColumn()
     for (int i = 0; i < tSize; i++)
     {
         tValue = iHeadingConditions->remove(i);
-        if (tValue)
+        if (tValue !=NULL)
         {
             delete tValue;
         }
     }
     Indexs* tValue2;
+    tSize = iConditions->length();
     for (int i = 0; i < tSize; i++)
     {
         tValue2 = iConditions->remove(i);
-        if (tValue2)
+        if (tValue2!=NULL)
         {
             delete tValue2;
         }
@@ -779,6 +782,7 @@ SpaceGroups::~SpaceGroups()
             delete tSpace;
         }
     }
+    delete iSpaceGroups;
 }
 
 void SpaceGroups::add(char* pSpaceGroup,  int pRow)
@@ -1011,6 +1015,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream)
            pStream << *(tIndexs) << " ";
         }
     }
+    pStream << "SG: ";
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SpaceGroups* tSpaceGroups = iSpaceGroups->get(i);

@@ -128,7 +128,7 @@ HKLData::HKLData(char* pPath)
     }
     long tFileSize = fsize(pPath);
     
-    tReflectionList = new ArrayList<Reflection>(tFileSize/34);
+    iReflectionList = new ArrayList<Reflection>(tFileSize/34);
     bool tHadZeros = false;
     while (fgets(tLine, 255, tFile))
     {
@@ -143,20 +143,21 @@ HKLData::HKLData(char* pPath)
             }
             tHadZeros = true;;
         }
-        tReflectionList->add(tReflection);
+        iReflectionList->add(tReflection);
     }
     fclose(tFile);
 }
 
 HKLData::~HKLData()
 {
-    long tReflections = tReflectionList->length();
+    long tReflections = iReflectionList->length();
     
     std::cout << "Removing " << tReflections << " reflections\n";
     for (long i = tReflections-1; i >= 0; i--)
     {
-        delete tReflectionList->remove(i);
+        delete iReflectionList->remove(i);
     }
+    delete iReflectionList;
 }
 
 typedef struct __CenteringType
@@ -187,10 +188,10 @@ void addReflection(CenteringType* pInfo, float pIntensity, int pSum1, int pSum2,
 
 Reflection* HKLData::getReflection(int pIndex)
 {
-    return tReflectionList->get(pIndex);
+    return iReflectionList->get(pIndex);
 }
 
 int HKLData::numberOfReflections()
 {
-    return tReflectionList->length();
+    return iReflectionList->length();
 }
