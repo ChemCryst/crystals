@@ -8,7 +8,7 @@
 %%
 %% Variables used by the script:
 %%
-% VARIABLE INTEGER CLAS UNIQ CHIR 
+% VARIABLE INTEGER CLAS CHIR 
 % VARIABLE REAL A B C AL BE GA 
 % VARIABLE CHARACTER CLASS1
 %%
@@ -30,14 +30,17 @@
 %%
 ^^WI WINDOW SG 'Space group determination' MODAL COMMIT='SGOK' CANCEL='SGXX'
 ^^WI GRID 'top' NROWS=7 NCOLS=3 {
-^^WI    @ 2,2 GRID 'options' NROWS=1 NCOLS=7 {
+^^WI    @ 2,2 GRID 'options' NROWS=1 NCOLS=3 {
 ^^WI       @ 1,1 STATIC 'T' 'Crystal class:'
-^^WI       @ 1,3 DROPDOWN 'CLASS' INFORM=YES ADDTOLIST
-^^WI         'Triclinic' 'Monoclinic' 'Orthorhombic' 'Tetragonal'
-^^WI         'Rhombohedral' 'Trigonal' 'Hexagonal' 'Cubic' NULL
-^^WI       @ 1,5 STATIC 'T2' 'Unique axis:'
-^^WI       @ 1,7 DROPDOWN 'UNIQUE' DISABLED=YES ADDTOLIST
-^^WI         ' ' 'a' 'b' 'c' NULL
+^^WI       @ 1,3 DROPDOWN 'CLASS' ADDTOLIST
+^^WI         'Automatic' '-1 Triclinic' '2/m 1 1 Monoclinic'
+^^WI         '1 2/m 1 Monoclinic' '1 1 2/m Monoclinic'
+^^WI         '2/m 2/m 2/m Orthorhombic' '4/m Tetragonal'
+^^WI         '4/m m m Tetragonal'
+^^WI         '-3 Rhombohedral' '-3 m 1 Rhombohedral'
+^^WI         '-3 Trigonal' '-3 m 1 Trigonal' '-3 1 m Trigonal'
+^^WI         '6/m Hexagonal' '6/m m m Hexagonal'
+^^WI         'm -3 Cubic' 'm -3 m Cubic' NULL
 ^^WI    }
 ^^WI
 ^^WI    @ 4,2 CHECKBOX 'CHIRAL' 'Material is definitely chirally pure.'
@@ -51,39 +54,14 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-%% Step 1a - if SG already entered, get class
 %%
-% IF ( EXISTS 2 .GT. 0 ) THEN
-%   COPY '#GENERALEDIT 2'
-%   COPY 'LOCATE RECORDTYPE = 107'
-%   COPY 'TRANSFER FROM OFFSET = 0 TO CLASS1'
-%   COPY 'END'
-%   IF UPPERCASE CLASS1 STARTSWITH 'TRIC' THEN
-^^CO  SET CLASS SELECTION=1
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'MONO' THEN
-^^CO  SET CLASS SELECTION=2 SET UNIQUE SELECTION=3 DISABLED=NO
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'ORTH' THEN
-^^CO  SET CLASS SELECTION=3
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'TETR' THEN
-^^CO  SET CLASS SELECTION=4
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'RHOM' THEN
-^^CO  SET CLASS SELECTION=5
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'TRIG' THEN
-^^CO  SET CLASS SELECTION=6
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'HEXA' THEN
-^^CO  SET CLASS SELECTION=7
-%   ELSE IF UPPERCASE CLASS1 STARTSWITH 'CUBI' THEN
-^^CO  SET CLASS SELECTION=8
-%   END IF
-% END IF
-%%
-%% Step 1b - Read their responses.
+%% Step 1 - Read their responses.
 %%
 % LOOP
 %%
-%% Here are the four possible responses from the dialog:
+%% Here are the 3 possible responses from the dialog:
 %%
-%   VERIFY SGXX SGHELP CLASS SGOK
+%   VERIFY SGXX SGHELP SGOK
 %%
 %% We read one, the variable VALUE is assigned its index in the Verify list:
 %%
@@ -102,24 +80,15 @@
  This dialog runs a program to help you to determine the space group
  of a crystal by analysing the systematic absences in the data.
 
- You must specify the crystal class, and optionally, if the
- class requires it you can specify the unique axis.
+ You may specify the Laue class to force the program to search
+ for spacegroups in that class, otherwise the class will be
+ determined automatically from merging statistics.
 
  If you KNOW that your material is chirally pure, you may check the
  'chirally pure' check box.
 %       COPY '#SCRIPT XHELP2'
 %     END BLOCK
-%     BLOCK     % CLASS - the class has been changed.
-%       GET SILENT NOSTORE INTEGER ' '
-%       IF VALUE .EQ. 2 THEN
-%% Monoclinic
-^^CO      SET UNIQUE SELECTION=1 DISABLED=NO
-%       ELSE
-%% Other
-^^CO      SET UNIQUE SELECTION=1 DISABLED=YES
-%       END IF
-%     END BLOCK
-%     BLOCK     % SGOK - user pressed OK, carry on.
+%     BLOCK     % SGOK - exit this loop and continue
 %       EVALUATE LOOPEND = LOOPCOUNTER
 %     END BLOCK
 %   END CASE
@@ -139,9 +108,6 @@
 ^^?? CLASS SELECTED
 % GET NOSTORE SILENT INTEGER ' '
 % EVALUATE CLAS = VALUE
-^^?? UNIQUE SELECTED
-% GET NOSTORE SILENT INTEGER ' '
-% EVALUATE UNIQ = VALUE
 ^^?? CHIRAL STATE
 % VERIFY OFF ON
 % GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
@@ -176,26 +142,28 @@
 %%
 %% The CLASS line
 %%
-%%         'Triclinic' 'Monoclinic' 'Orthorhombic' 'Tetragonal'
-%%         'Rhombohedral' 'Trigonal' 'Hexagonal' 'Cubic' NULL
+%%     'Automatic'   '-1'     '2/m 1 1' '1 2/m 1' '1 1 2/m'
+%%     '2/m 2/m 2/m' '4/m'    '4/m m m' '-3 rhom' '-3 m 1 rhom'
+%%     '-3'          '-3 m 1' '-3 1 m'  '6/m'     '6/m m m'
+%%     'm -3'        'm -3 m' 
 % CASE CLAS
-%   TRANSFER 'CLASS TRICLINIC' TO PUNCH
-%   TRANSFER 'CLASS MONOCLINIC' TO PUNCH
-%   TRANSFER 'CLASS ORTHORHOMBIC' TO PUNCH
-%   TRANSFER 'CLASS TETRAGONAL' TO PUNCH
-%   TRANSFER 'CLASS RHOMBOHEDRAL' TO PUNCH
-%   TRANSFER 'CLASS TRIGONAL' TO PUNCH
-%   TRANSFER 'CLASS HEXAGONAL' TO PUNCH
-%   TRANSFER 'CLASS CUBIC' TO PUNCH
-% END CASE
-%%
-%% The UNIQUE line, if reqd
-%%
-% CASE UNIQ
-%   TRANSFER 'UNIQUE NONE/UNKNOWN' TO PUNCH
-%   TRANSFER 'UNIQUE A' TO PUNCH
-%   TRANSFER 'UNIQUE B' TO PUNCH
-%   TRANSFER 'UNIQUE C' TO PUNCH
+%   TRANSFER 'Laue class will be determined automatically' TO DISPLAY
+%   TRANSFER 'SYMMETRY -1' TO PUNCH
+%   TRANSFER 'SYMMETRY 2/m 1 1' TO PUNCH
+%   TRANSFER 'SYMMETRY 1 2/m 1' TO PUNCH
+%   TRANSFER 'SYMMETRY 1 1 2/m' TO PUNCH
+%   TRANSFER 'SYMMETRY 2/m 2/m 2/m' TO PUNCH
+%   TRANSFER 'SYMMETRY 4/m' TO PUNCH
+%   TRANSFER 'SYMMETRY 4/m m m' TO PUNCH
+%   TRANSFER 'SYMMETRY -3 rhom' TO PUNCH
+%   TRANSFER 'SYMMETRY -3 m 1 rhom' TO PUNCH
+%   TRANSFER 'SYMMETRY -3' TO PUNCH
+%   TRANSFER 'SYMMETRY -3 m 1' TO PUNCH
+%   TRANSFER 'SYMMETRY -3 1 m' TO PUNCH
+%   TRANSFER 'SYMMETRY 6/m' TO PUNCH
+%   TRANSFER 'SYMMETRY 6/m m m' TO PUNCH
+%   TRANSFER 'SYMMETRY m -3' TO PUNCH
+%   TRANSFER 'SYMMETRY m -3 m' TO PUNCH
 % END CASE
 %%
 %% The CHIRAL line:
