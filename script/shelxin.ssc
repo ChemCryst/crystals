@@ -1,0 +1,499 @@
+%SCRIPT SHELX
+%%
+%% Read in a the cell, symm and atoms from a shelx file.
+%%
+ --                                                      --
+ SHELX Script version 0.25 by Richard Cooper, University of 
+ Oxford, April 1999. Based on the fortran program SXTOCA by 
+ R.O. Gould, The University of Edinburgh, March 1994.
+ --                                                      --
+ Read in the cell, symmetry operators and atomic parameters
+ from a variety of standard SHELX res or ins files.
+ --
+ This operation will overwrite your current model structure
+ Are you sure that you want to proceed?
+%%
+%%
+% VARIABLE CHARACTER CFILE
+% VARIABLE INTEGER ILATT
+% VARIABLE CHARACTER CENTRO CLATYP
+% GET NOSTORE TEXT 'Shelx file?' ' '
+% TRANSFER '#OPEN SCPDATA ' // CVALUE TO CRYSTALS
+% VARIABLE LOGICAL SFILERR
+%%
+%% Cell card is the first thing to look for.
+%%
+ Looking for CELL instruction.
+% EVALUATE SFILERR = TRUE
+% LOOP
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%   IF CVALUE .EQ. 'CELL' THEN
+ CELL card found .
+%      GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%      GET NOSTORE NOPROMPT TEXT 'a,b,c,al,be,ga' 
+%      COPY '#LIST 1'
+%      TRANSFER 'REAL ' // CVALUE TO CRYSTALS
+%      COPY 'END'
+%      EVALUATE SFILERR = FALSE
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+% END LOOP
+% IF SFILERR .EQ. TRUE THEN
+ *** No valid "CELL" card found in SHELX file.
+%    FINISH
+% END IF
+ CELL card processed.
+%%
+%% Now look for the LATT card. If not there default to P and centric.
+ Looking for LATT instruction.
+%%
+% EVALUATE SFILERR = TRUE
+% EVALUATE CENTRO = 'YES'
+% LOOP
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%   IF CVALUE .EQ. 'LATT' THEN
+ LATT card found.
+%      GET NOSTORE NOPROMPT INTEGER 'LATT?' ' '
+%      EVALUATE ILATT = VALUE
+%      IF ILATT .LT. 0 THEN
+%         EVALUATE ILATT = 0 - ILATT
+%         EVALUATE CENTRO = 'NO'
+%      END IF
+%      CASE ILATT
+%         EVALUATE CLATYP = 'P'
+%         EVALUATE CLATYP = 'I'
+%         EVALUATE CLATYP = 'R'
+%         EVALUATE CLATYP = 'F'
+%         EVALUATE CLATYP = 'A'
+%         EVALUATE CLATYP = 'B'
+%         EVALUATE CLATYP = 'C'
+%      END CASE
+%      EVALUATE SFILERR = FALSE
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+% END LOOP
+%%
+% IF SFILERR .EQ. TRUE THEN
+ No LATT card found. Defaulting to primitive centosymmetric lattice.
+%   EVALUATE CLATYP = 'P'
+ Rewinding SHELX file.
+%   EXTRACT REWIND
+% END IF
+%%
+%% Now look for those SYMM cards.
+%%
+ Looking for SYMM instructions.
+% EVALUATE SFILERR = TRUE
+% LOOP
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%   IF CVALUE .EQ. 'SYMM' THEN
+ First SYMM card found.
+%% Find out how many SYMM cards there are.
+%      VARIABLE INTEGER NSYMS
+%      EVALUATE NSYMS = 1
+%      LOOP 
+%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
+%         ON ERROR TERMINATE
+%         ON END TERMINATE
+%         EXTRACT NEXT
+%         CLEAR
+%         EXTRACT TRANSFER COMMAND
+%         EXECUTE SEND
+%         EXTRACT TRANSFER INPUT
+%         CLEAR
+%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%         IF CVALUE .NE. 'SYMM' THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%            CLEAR
+%            INSERT ' A total of '
+%            STORE FORMAT /(I4)/ LENGTH 4 INTEGER NSYMS
+%            INSERT ' SYMM card(s) were found.'
+%            OUTPUT
+%            CLEAR
+%            EXTRACT REWIND
+ Rewinding SHELX file.
+%         ELSE
+%            EVALUATE NSYMS = NSYMS + 1
+%         END IF
+%      END LOOP
+%      COPY '#LIST 2'
+%      INSERT 'CELL   NSYM='
+%      STORE FORMAT /(I3)/ LENGTH 3 INTEGER NSYMS + 1
+%      TRANSFER ' LATTICE=' // CLATYP TO BUFFER
+%      TRANSFER ' CENTRIC=' // CENTRO TO BUFFER
+%      SEND
+%% ShelX assumes identity operation. Crystals doesn't.
+%      COPY 'SYM X,Y,Z'
+%      VARIABLE INTEGER SCOUNT
+%      EVALUATE SCOUNT = 0
+%      LOOP 
+%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
+%         ON ERROR TERMINATE
+%         ON END TERMINATE
+%         EXTRACT NEXT
+%         CLEAR
+%         EXTRACT TRANSFER COMMAND
+%         EXECUTE SEND
+%         EXTRACT TRANSFER INPUT
+%         CLEAR
+%         GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%         IF CVALUE .EQ. 'SYMM' THEN
+%            CLEAR
+%            INSERT 'SYM '
+%            GET NOPROMPT TEXT 'SYM OP'
+%            SEND
+%            EVALUATE SCOUNT = SCOUNT + 1
+%            IF SCOUNT .EQ. NSYMS THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%         END IF
+%      END LOOP
+%      COPY 'END'
+%      EVALUATE SFILERR = FALSE
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+% END LOOP
+% IF SFILERR .EQ. TRUE THEN
+ No SYMM cards found. Defaulting to P -1.
+% COPY '#SPACE'
+% COPY 'SYMBOL P -1'
+% COPY 'END'
+ Rewinding SHELX file.
+%   EXTRACT REWIND
+% END IF
+ Looking for atoms and peaks in SHELX file.
+% VARIABLE LOGICAL LNOTAT LFIRST LPEAK
+% VARIABLE CHARACTER CLINE
+% VARIABLE INTEGER SXF
+% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22
+% VARIABLE REAL SXU33 SXU23 SXU13 SXU12
+%%
+% EVALUATE SFILERR = TRUE
+% EVALUATE LFIRST = TRUE
+% SET VERIFY FALSE
+% LOOP
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   EVALUATE LNOTAT = FALSE
+%   EVALUATE LPEAK = FALSE
+%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING ' '
+%   EVALUATE CLINE = CVALUE
+%%
+%% Check that the keyword starts with alpha-numeric chars.
+%%
+%   IF FIRSTSTR ( CLINE ) .EQ. NULLSTRING THEN
+%     EVALUATE LNOTAT = TRUE
+%   END IF
+
+%   IF FIRSTSTR ( CLINE ) .EQ. 'Q' THEN
+%     EVALUATE LPEAK = TRUE
+%   END IF
+%%  
+%% Check for the first 20 SHELX commands.
+%%  
+%   IF LNOTAT .EQ. FALSE THEN
+%     VERIFY TITL CELL ZERR LATT SYMM SFAC UNIT -
+             TEMP SIZE HKLF OMIT EXTI MERG MOVE -
+             ANIS AFIX HFIX FRAG FEND EQIV
+%     LOOP 20 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%       END IF
+%     END LOOP
+%   END IF
+%   IF LNOTAT .EQ. FALSE THEN
+%%  
+%% Check for the second 20 SHELX commands.
+%%  
+%     VERIFY CONN PART BIND FREE DFIX SAME FLAT -
+             ISOR L.S. BLOC DAMP WGHT FVAR BOND -
+             CONF MPLA LIST FMAP GRID PLAN
+%     LOOP 20 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%       END IF
+%     END LOOP
+%   END IF
+%%  
+%% Check for the third 20 SHELX commands.
+%%  
+%   IF LNOTAT .EQ. FALSE THEN
+%     VERIFY MOLE ACTA END  DISP LAUE REM  MORE -
+             TIME SHEL BASF TWIN SWAT SPEC RESI -
+             RTAB EXYZ EADP BUMP SADI CHIV
+%     LOOP 20 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%       END IF
+%     END LOOP
+%   END IF
+%%
+%% Check for the last 6 SHELX commands.
+%%
+%   IF LNOTAT .EQ. FALSE THEN
+%     VERIFY DELU SIMU DEFS SUMP CGLS SLIM WPDB
+%     LOOP 6 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%       END IF
+%     END LOOP
+%   END IF
+%%
+%% If this is the first atom to be found, start adding atoms.
+%%
+%   IF LNOTAT .EQ. FALSE THEN
+%     TRANSFER 'Found ' // CLINE TO DISPLAY
+%     IF LFIRST .EQ. TRUE THEN
+%       EVALUATE LFIRST = FALSE
+%       COPY '#EDIT'
+%       COPY 'DELETE FIRST UNTIL LAST'
+%       COPY 'END'
+%       COPY '#EDIT'
+%     END IF
+%%
+%% Get the first number which is the element number as
+%% defined by the SFAC command. (This is not used yet.)
+%%
+%     GET NOSTORE NOPROMPT INTEGER 'Elem #' '0'
+%     EVALUATE SXF = VALUE
+%     IF SXF .EQ. 0 THEN
+ Valid element number (from SFAC) not found.
+%        FINISH
+%     END IF
+%%
+%% Get the x co-ordinate of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'X coord' '-10.000'
+%     EVALUATE SXX = VALUE
+%     IF SXX .LT. ( - 5.0 ) THEN
+ X-coordinate not found.
+%        FINISH
+%     END IF
+%     IF SXX .GT. 5.0 THEN
+ Warning X-coordinate was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXX = SXX - 10.0
+%     END IF
+%%
+%% Get the y co-ordinate of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'Y coord' '-10.000'
+%     EVALUATE SXY = VALUE
+%     IF SXY .LT. ( - 5.0 ) THEN
+ Y-coordinate not found.
+%        FINISH
+%     END IF
+%     IF SXY .GT. 5.0 THEN
+ Warning Y-coordinate was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXY = SXY - 10.0
+%     END IF
+%%
+%% Get the z co-ordinate of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'Z coord' '-10.000'
+%     EVALUATE SXZ = VALUE
+%     IF SXZ .LT. ( - 5.0 ) THEN
+ Z-coordinate not found.
+%        FINISH
+%     END IF
+%     IF SXZ .GT. 5.0 THEN
+ Warning Z-coordinate was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXZ = SXZ - 10.0
+%     END IF
+%%
+%% Get the occupancy of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'Occ' '-10.0'
+%     EVALUATE SXO = VALUE
+%     IF SXO .LT. 0.0 THEN
+ Occupancy not present. Set to 1.0.
+%        EVALUATE SXO = 11.00
+%     END IF
+%     IF SXO .LT. 5.0 THEN
+ Warning occupancy was not fixed in SHELX file.
+ This must be set to be refined in CRYSTALS list 12.
+%     ELSE
+%        EVALUATE SXO = SXO - 10.0
+%     END IF
+%%
+%% Get U[11] or U[ISO]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[11] or U[iso]' '-10.000'
+%     EVALUATE SXU11 = VALUE
+%     IF SXU11 .LT. ( - 5.0 ) THEN
+%% No more info. Process now.
+%        CLEAR
+%        INSERT 'ATOM '
+%        TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%        STORE FORMAT /(I4)/ LENGTH 5 INTEGER FIRSTINT ( CLINE )
+%        STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%        INSERT " 1.0 "
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%        SEND
+%     ELSE
+%        IF SXU11 .GT. 5.0 THEN
+ Warning U[11] was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%           EVALUATE SXU22 = SXU22 - 10.0
+%        END IF
+%%
+%% Get U[22] 
+%%
+%        GET NOSTORE NOPROMPT NOREMOVE KEYWORD 'U[22]?' '-10.000'
+%        IF ( CVALUE .EQ. NULLSTRING ) .OR. ( CVALUE .EQ. '-10.000' ) -
+            .OR. ( CVALUE .EQ. CLINE ) .OR. ( CVALUE .EQ. '=' ) THEN
+%           EVALUATE SXU22 = - 10.0
+%        ELSE
+%           GET NOSTORE NOPROMPT REAL 'U[22]?' '-10.000'
+%           EVALUATE SXU22 = VALUE
+%        END IF
+%        IF ( SXU22 .LT. ( - 5.0 ) ) .OR. ( LPEAK .EQ. TRUE ) THEN
+%% No more info. Last value was U[ISO]. Process now.
+%% or this value is peak height. Process now.
+%           CLEAR
+%           INSERT 'ATOM '
+%           TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%           STORE FORMAT /(I4)/ LENGTH 5 INTEGER FIRSTINT ( CLINE )
+%           STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%           INSERT " 1.0 "
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%           SEND
+%           CLEAR
+%           INSERT 'CONT U[11]= '
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU11
+%           SEND
+%        ELSE
+%           IF SXU22 .GT. 5.0 THEN
+ Warning U[22] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%              EVALUATE SXU22 = SXU22 - 10.0
+%           END IF
+%%
+%% Get U[33] 
+%%
+%           EXTRACT NEXT
+%           CLEAR
+%           EXTRACT TRANSFER COMMAND
+%           EXECUTE SEND
+%           EXTRACT TRANSFER INPUT
+%           CLEAR
+%           GET NOSTORE NOPROMPT REAL 'U[33]?' '-10.000'
+%           EVALUATE SXU33 = VALUE
+%           IF SXU33 .LT. ( - 5.0 ) THEN
+ Error. U[22] found, but no U[33].
+%              FINISH
+%           END IF
+%           IF SXU33 .GT. 5.0 THEN
+ Warning U[33] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%              EVALUATE SXU33 = SXU33 - 10.0
+%           END IF
+%%
+%% Get U[23] 
+%%
+%           GET NOSTORE NOPROMPT REAL 'U[23]?' '-10.000'
+%           EVALUATE SXU23 = VALUE
+%           IF SXU23 .LT. ( - 5.0 ) THEN
+ Error. U[33] found, but no U[23].
+%              FINISH
+%           END IF
+%           IF SXU23 .GT. 5.0 THEN
+ Warning U[23] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%              EVALUATE SXU23 = SXU23 - 10.0
+%           END IF
+%%
+%% Get U[13] 
+%%
+%           GET NOSTORE NOPROMPT REAL 'U[13]?' '-10.000'
+%           EVALUATE SXU13 = VALUE
+%           IF SXU13 .LT. ( - 5.0 ) THEN
+ Error. U[23] found, but no U[13].
+%              FINISH
+%           END IF
+%           IF SXU13 .GT. 5.0 THEN
+ Warning U[13] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%              EVALUATE SXU13 = SXU13 - 10.0
+%           END IF
+%%
+%% Get U[12] 
+%%
+%           GET NOSTORE NOPROMPT REAL 'U[12]?' '-10.000'
+%           EVALUATE SXU12 = VALUE
+%           IF SXU12 .LT. ( - 5.0 ) THEN
+ Error. U[23] found, but no U[12].
+%              FINISH
+%           END IF
+%           IF SXU12 .GT. 5.0 THEN
+ Warning U[12] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%              EVALUATE SXU12 = SXU12 - 10.0
+%           END IF
+%%
+%% Process this aniso atom...
+%%
+%           CLEAR
+%           INSERT 'ATOM '
+%           TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%           STORE FORMAT /(I4)/ LENGTH 5 INTEGER FIRSTINT ( CLINE )
+%           STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%           INSERT " 0.0 "
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%           SEND
+%           CLEAR
+%           INSERT 'CONT U[11]= '
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU11
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU22
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU33
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU23
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU13
+%           STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU12
+%           SEND
+%        END IF
+%     END IF
+%   END IF
+% END LOOP
+% IF LFIRST .EQ. FALSE THEN
+%     COPY 'END'
+% END IF
+ Shelx file processed.
+%END SCRIPT
