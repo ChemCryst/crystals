@@ -1,0 +1,13 @@
+%SCRIPT CIFPROC
+%%
+%% A call to this script is inserted between each
+%% structure extracted from a CIF by ciftocry.
+%%
+%% This script checks for the existence of cifproc.dat
+%% and uses it if it is present.
+%%
+% IF FILEEXISTS "cifproc.dat" THEN
+%   COPY "#use cifproc.dat"
+% END IF
+%END SCRIPT
+
