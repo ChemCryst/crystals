@@ -7,6 +7,12 @@
 //   Filename:  CxResizeBar.h
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:04:49  richard
+//   New resizebar class. A resize control has two panes and the bar between them
+//   can be dragged to change their relative sizes. If one of the panes is of fixed
+//   width or height in the relevant direction, then the resize-bar contains a button
+//   which will show or hide the fixed size item.
+//
 
 #ifndef     __CxResizeBar_H__
 #define     __CxResizeBar_H__
@@ -14,6 +20,7 @@
 #ifdef __BOTHWX__
 #include <wx/window.h>
 #include <wx/dcclient.h>
+#include <wx/dcscreen.h>
 #include <wx/font.h>
 #define BASERESIZEBAR wxWindow
 #endif
@@ -36,6 +43,7 @@ class CxResizeBar : public BASERESIZEBAR
 
     CxResizeBar( CrResizeBar * container );
     ~CxResizeBar();
+    void CxDestroyWindow();
 
     static  CxResizeBar * CreateCxResizeBar( CrResizeBar * container, CxGrid * guiParent );
     static int AddResizeBar( void) { mResizeBarCount++; return mResizeBarCount; };
@@ -82,6 +90,7 @@ public:
     void OnLButtonDown(wxMouseEvent & evt);
     void OnLButtonUp(wxMouseEvent & evt);
     void OnMouseMove(wxMouseEvent & evt);
+    void OnPaint(wxPaintEvent & event );
     DECLARE_EVENT_TABLE()
 
 #endif
