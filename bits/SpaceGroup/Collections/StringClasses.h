@@ -16,6 +16,11 @@
 
 using namespace std;
  
+#ifndef REG_STARTEND
+#define __NO_REG_STARTEND_SUPPORT__
+#define REG_STARTEND 100000 /*This is to support a feature which is available on Darwin but not on other platforms.*/ 
+#endif
+
 class String:public MyObject
 {
 protected:
@@ -86,8 +91,9 @@ class RegexException:public exception
 {
 	protected:
 		int iError;
+		char* iMessage;
 	public:
-		RegexException(int pError);
+		RegexException(int pError, const regex_t* pRegEx);
 		~RegexException() throw();
 		char* what() const throw();
 };
