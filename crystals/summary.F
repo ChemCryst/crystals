@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2003/12/02 11:54:40  rich
+C Code to output summary of LIST 42 figure field. (May produce
+C excessive output for high resolution fields).
+C
 C Revision 1.51  2003/09/10 21:18:28  djw
 C Correct mis-formatting of Sheldrick weighting formula in .cifs
 C
@@ -3346,7 +3350,8 @@ C
        WRITE(CMON,'(/A,I5)')'Mask section ',I
        CALL XPRVDU(NCVDU,2,0)
        DO J = 1, NINT(STORE(L42L+4))
-        CMON = ' '
+C CDD For g77 changed       CMON = ' '   to:
+        WRITE(CMON,'(A)') ' '
         DO K = 1, MIN(80,NINT(STORE(L42L+1)))
          WRITE(CMON(1)(K:K),'(I1)')ISTORE(M42M+K-1)
         END DO
