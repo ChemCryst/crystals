@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.36  2004/06/29 15:15:30  rich
+//   Remove references to unused kTNoMoreToken. Protect against reading
+//   an empty list of tokens.
+//
 //   Revision 1.35  2004/06/28 15:13:50  rich
 //
 //   Remove write to STDERR.
@@ -122,6 +126,8 @@ CrWindow::~CrWindow()
 {
    
     if (mName == "_MAIN") { LOGSTAT("Closing the main window"); }
+
+    LOGSTAT("Closing window: " + mName);
 
     if ( m_Keep )
     {
@@ -773,9 +779,10 @@ void CrWindow::Cancelled()
       if (mSafeClose > 6)
       {
 #ifdef __CR_WIN__
-            MessageBox(NULL,"Script not responding","Closing window",MB_OK);
+          MessageBox(NULL,"Script not responding","Closing window",MB_OK);
 #endif
-            SendCommand( "^^CO DISPOSE " + mName );
+          LOGERR("Script not responding, window closed. " + mName);
+          SendCommand( "^^CO DISPOSE " + mName );
       }
       SendCommand(mCancelText);
       mSafeClose ++;

@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.99  2004/10/06 13:57:26  rich
+// Fixes for WXS version.
+//
 // Revision 1.98  2004/09/17 14:03:54  rich
 // Better support for accessing text in Multiline edit control from scripts.
 //
@@ -976,12 +979,15 @@ bool CcController::ParseInput( deque<string> & tokenList )
                     retVal = wPtr->ParseInput( tokenList );
                     if ( retVal.OK() )
                     {
-                        LOGSTAT("CcController: Adding window to list.");
+                        LOGSTAT("CcController: Adding window to list: " + wPtr->mName );
                         mWindowList.push_back( wPtr );
                         mCurrentWindow = wPtr;
                     }
                     else
+                    {
+                        LOGERR("CcController: Failed to create window: " + wPtr->mName );
                         delete wPtr;
+                    }
                 }
                 break;
             }
@@ -991,6 +997,9 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 LOGSTAT("CcController: Disposing window " + tokenList.front());
                 CrWindow* mWindowToClose = (CrWindow*)FindObject(tokenList.front()); //Find window by name.
                 tokenList.pop_front();
+                ostringstream strstrm;
+                strstrm << (int) mWindowToClose;
+                LOGSTAT("CcController: Found window " + strstrm.str() );
                 mWindowList.remove(mWindowToClose);
                 delete mWindowToClose;
                 mCurrentWindow = mWindowList.back();
@@ -1786,6 +1795,7 @@ CrGUIElement* CcController::FindObject(const string & Name)
     list<CrWindow*>::iterator mw;
     for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
     {
+      LOGSTAT("Find object, testing: " + (*mw)->mName);
       if ( theElement = (*mw)->FindObject(Name) ) return theElement;
     }
     return nil;
@@ -1868,6 +1878,7 @@ void CcController::RemoveWindowFromList(CrWindow* window)
 // method, so to be safe, all dying windows call this function
 // to 'de-register' themselves from the Controller's list.
       mWindowList.remove(window);
+      LOGSTAT("CcController: Window destroyed by framework?" );
 }
 
 
@@ -2140,6 +2151,7 @@ void CcController::ScriptsExited()
      if ( (*mw)->mIsModal && !(*mw)->mStayOpen )
      {
         if ( (*mw) == mCurrentWindow ) mCurrentWindow = nil;
+        LOGSTAT("CcController: ScriptsExited, destroying: " + (*mw)->mName );
         delete *mw;
         mw = mWindowList.erase(mw);
      }
