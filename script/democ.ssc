@@ -33,7 +33,7 @@
 ^^WI      @ 6,8 BUTTON CURSO 'Cursor'
 ^^WI     }
 ^^WI     @ 4,2 GRID STYLE NROWS=3 NCOLS=7
-^^WI                COMMAND='#SCRIPT xcstyle'
+^^WI                COMMAND='#SCRIPT xnstyle'
 ^^WI     {
 ^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST
 ^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
@@ -42,7 +42,7 @@
 ^^WI      @ 2,6 BUTTON BSTYLE 'Apply'
 ^^WI     }
 ^^WI     @ 6,2 GRID PACK NROWS=3 NCOLS=5
-^^WI                COMMAND='#SCRIPT xcpack'
+^^WI                COMMAND='#SCRIPT xnstyle'
 ^^WI     {
 ^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST
 ^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
