@@ -94,7 +94,7 @@ void  CxEditBox::SetText( CcString text )
 void  CxEditBox::AddText( CcString text )
 {
 #ifdef __WINDOWS__
-      SetSel(-1,-1);       //Set the selection at the end of the text buffer.
+      SetSel(GetWindowTextLength(),GetWindowTextLength());       //Set the selection at the end of the text buffer.
       ReplaceSel(text.ToCString());    //Replace the selection (nothing) with the text to add.
       SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
       SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
