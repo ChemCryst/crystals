@@ -1,0 +1,13 @@
+%SCRIPT UPDTON
+% COPY '#SET AUTOUPDT OFF'
+^^GR MODEL L5 SHOW
+^^CR
+
+To update the model window manually, either type:
+
+{0,2 #SUM L 5 {1,0
+{0,2 END      {1,0
+
+or choose "Update model" from the popup menu in the model window.
+
+%END SCRIPT
