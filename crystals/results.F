@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2003/11/03 10:42:38  rich
+C Make \PARAM output a list of twin element scales if present,
+C along with their ESD's. Also output to CIF, but using the
+C _oxford prefix, as the twin data names aren't defined yet.
+C
 C Revision 1.65  2003/10/31 09:22:14  rich
 C New #PARAM/LAYOUT parameter, 'ESD'. Yes by default, no causes esd
 C calcs to be skipped, and L11 is not required.
@@ -2538,7 +2543,7 @@ C--THE NUMBER OF PLACES FOR THE E.S.D. HAS BEEN FOUND
 1150  CONTINUE
 C----- 'RULE OF 19'
       IF ( (NINT(B*(10.0**(N1+1))) .LE. 19) .AND.
-     1     (NINT(B*(10.0**(N1+1))) .GT. 10) ) N1 = N1+1
+     1     (NINT(B*(10.0**(N1+1))) .GE. 10) ) N1 = N1+1
       J1=J+ND+N1
 C--CHECK IF THE DECIMAL POINT IS TO BE PRINTED
       IF(NP)1450,1450,1200
@@ -2586,7 +2591,7 @@ C      THE DECIMAL POINT, OR BACKFILL THE TRAILING ZEROS.
       CTEMP = ' '
       NND= MIN(ABS(ND),N1)
       NND = N1
-      IF (B .LE. ZERO) THEN
+      IF (B .LE. ZEROSQ) THEN
 C----- NO ESD - WRITE TO REQUESTED PRECISION
         WRITE(CFORM,'(A,I2,A,A,A)')  
      1  '(F20.',
@@ -4348,6 +4353,7 @@ C
           WRITE (CLINE,'(A,''coefficient_mu'',T35,F10.3)')CBUF(1:15),
      1     0.1*STORE(L30GE+3)
           CALL XPCIF (CLINE)
+          CALL XPCIF (' ')
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
           WRITE (CPAGE(10,1)(:),'(A,13X,F9.3)') 'Mu',0.1*STORE(L30GE+3)
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
@@ -4355,17 +4361,6 @@ C
      1        '' mm<sup>-1</sup></TD></TR> '')') 0.1*STORE(L30GE+3)
         END IF
 
-C      THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
-        TMAX=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
-        TMIN=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
-        IF ( IPUNCH .EQ. 0 ) THEN
-           WRITE (CLINE,'(''# Sheldrick geometric definitions'',
-     1     T35,2F8.2)')
-     1     TMIN,TMAX
-           CALL XPCIF (CLINE)
-           CALL XPCIF (' ')
-           CALL XPCIF (' ')
-        END IF
 
         IF ( IPUNCH .EQ. 2 ) THEN
            WRITE (NCPU,'(''</TABLE>'')')
@@ -4528,8 +4523,10 @@ C RIC2001 New scan types. Use IVAL, not char string.
              CVALUE = '?'
            END IF
            CLINE=' '
+           CALL XPCIF (' ')
            WRITE (CLINE,'( ''_diffrn_measurement_method '',A)') CVALUE
            CALL XPCIF (CLINE)
+           CALL XPCIF (' ')
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
            IF ( IVAL .EQ. 1 ) THEN
               WRITE(NCPU,2)'Scan type','2&theta;/&omega; scans'
@@ -4678,6 +4675,18 @@ C-----   A FIX IN THE ABSENCE OF REAL INFO
              WRITE (NCPU,3)'T<sub>max</sub>',TMAX
            END IF
         END IF
+
+C THE ABSORPTION DETAILS - ASSUME NO PATH ALONG AXIS!
+        TMAX=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD))
+        TMIN=EXP(-0.1*STORE(L30GE+3)*STORE(L30CD+1))
+        IF ( IPUNCH .EQ. 0 ) THEN
+           WRITE (CLINE,'(''# Sheldrick geometric definitions'',
+     1     T35,2F8.2)')
+     1     TMIN,TMAX
+           CALL XPCIF (CLINE)
+           CALL XPCIF (' ')
+        END IF
+
 C 
         IF ( IPUNCH .EQ. 0 ) THEN
            CALL XPCIF (' ')
