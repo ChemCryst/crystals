@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:20
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/10/10 12:44:50  ckp2
+//   The PLOT classes!
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -161,14 +164,27 @@ void CrPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
     ((CxPlot*)ptr_to_cxObject)->DrawPoly(nVertices, vertices, fill);
 }
 
-void CrPlot::DrawText(int x, int y, CcString text)
+//STEVE added a justification parameter
+//RICHARD added a fontsize
+void CrPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 {
-    ((CxPlot*)ptr_to_cxObject)->DrawText(x, y, text);
+    ((CxPlot*)ptr_to_cxObject)->DrawText(x, y, text, param, fontsize);
 }
 
-void CrPlot::DrawLine(int x1, int y1, int x2, int y2)
+CcPoint CrPlot::GetTextArea(int size, CcString text, int param)
 {
-    ( (CxPlot *)ptr_to_cxObject)->DrawLine(x1, y1, x2, y2);
+	return ((CxPlot*)ptr_to_cxObject)->GetTextArea(size,text,param);
+}
+
+int CrPlot::GetMaxFontSize(int width, int height, CcString text, int param)
+{
+    return ((CxPlot*)ptr_to_cxObject)->GetMaxFontSize(width, height, text, param);
+}
+
+// STEVE changed cx plot to accept a line thickness
+void CrPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
+{
+    ( (CxPlot *)ptr_to_cxObject)->DrawLine(thickness, x1, y1, x2, y2);
 }
 
 void CrPlot::Clear()
@@ -176,6 +192,11 @@ void CrPlot::Clear()
     ((CxPlot*)ptr_to_cxObject)->Clear();
 }
 
+// STEVE added this function
+void CrPlot::SetColour(int r, int g, int b)
+{
+	((CxPlot*)ptr_to_cxObject)->SetColour(r,g,b);
+}
 
 
 void CrPlot::Display()

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/10/10 12:44:51  ckp2
+//   The PLOT classes!
+//
 //
 
 #ifndef     __CxPlot_H__
@@ -38,10 +41,11 @@ class CxPlot : public BASEPlot
 // Public interface exposed to the CrClass:
     public:
 
-        void DrawLine (int x1, int y1, int x2, int y2);
+        void DrawLine (int thickness, int x1, int y1, int x2, int y2); // STEVE added a line thickness parameter
         void DrawPoly(int nVertices, int* vertices, Boolean fill);
-        void DrawText(int x, int y, CcString text);
+        void DrawText(int x, int y, CcString text, int param, int fontsize);// STEVE added a parameter (justification of text)
         void DrawEllipse(int x, int y, int w, int h, Boolean fill);
+		void SetColour(int r, int g, int b);							// STEVE added this function
         void Clear();
 
         static CxPlot *    CreateCxPlot( CrPlot * container, CxGrid * guiParent );
@@ -53,6 +57,7 @@ class CxPlot : public BASEPlot
         void SetIdealWidth(int nCharsWide);
         void SetIdealHeight(int nCharsHigh);
         CcPoint DeviceToLogical(int x, int y);
+		CcPoint LogicalToDevice(int x, int y);
         void SetGeometry( int top, int left, int bottom, int right );
         int GetTop();
         int GetLeft();
@@ -60,6 +65,8 @@ class CxPlot : public BASEPlot
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
+		int GetMaxFontSize(int width, int height, CcString text, int param);
+		CcPoint GetTextArea(int size, CcString text, int param);
         void Focus();
         void Display();
 

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2001/11/08 10:52:38  ckp2
+C New graphical analyses output - parity group and sin theta/lambda.
+C Trim text labels before passing to the GUI.
+C
 C Revision 1.16  2001/10/17 14:48:53  ckpgroup
 C Fix some errors.
 C
@@ -2664,10 +2668,11 @@ C--AGREEEMNT ANALYSIS ON REFLECTION CLASSES
       WRITE(NCWU,1000)(NOPE(J,30),J=1,4),KM
       ENDIF
 
-      WRITE(CMON,'(A,/,A)')
-     1              '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS',
-     1              '^^PL NSERIES=2 LENGTH=16'
-      CALL XPRVDU(NCVDU, 2,0)
+      WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS XTITLE HKL_Class',
+     1	'^^PL NSERIES=2 LENGTH=16 LOG YTITLE <Fo-Fc>**2',
+     1  '^^PL ZOOM 0 0 0.01 100'
+      CALL XPRVDU(NCVDU, 3,0)
 
       L=ICLS
 C**   ASSIGN 4400 TO K3 ! MARKUS NEUBURGER
@@ -2722,8 +2727,8 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
       ENDIF
 
       WRITE(CMON,'(A,/,A)')
-     1              '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR',
-     1              '^^PL NSERIES=2 LENGTH=8'
+     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR YTITLE <Fo-Fc>**2',
+     1 '^^PL LOG NSERIES=2 LENGTH=8 XTITLE Parity_Group',
       CALL XPRVDU(NCVDU, 2,0)
 
       L=IPAR
@@ -2788,7 +2793,7 @@ C--- OUTPUT TO SCREEN
       ENDIF
 
       WRITE(CMON,'(A,/,A)') '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO',
-     1                      '^^PL NSERIES=2 LENGTH=16'
+     1 '^^PL NSERIES=2 LENGTH=16 LOG XTITLE Fo_Range YTITLE <Fo-Fc>**2'
       CALL XPRVDU(NCVDU, 2,0)
 
 4910  FORMAT ( 1X , '  Range  Number  <FO>     <FC>    ' ,
@@ -2895,8 +2900,8 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
       ENDIF
 
       WRITE(CMON,'(A,/,A)')
-     1              '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT',
-     1              '^^PL NSERIES=2 LENGTH=8'
+     1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT YTITLE <Fo-Fc>**2',
+     1 '^^PL LOG NSERIES=2 LENGTH=8 XTITLE Sin(theta)/lambda'
       CALL XPRVDU(NCVDU, 2,0)
 
       IF (MONIT .NE. 1) THEN

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/10/10 12:44:51  ckp2
+//   The PLOT classes!
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -19,6 +22,7 @@
 #include    "crplot.h"
 #include    "ccpoint.h"
 #include    "ccrect.h"
+#include	<math.h>
 
 #ifdef __CR_WIN__
  #include    <afxwin.h>
@@ -144,6 +148,24 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
      return newpoint;
 }
 
+CcPoint CxPlot::LogicalToDevice(int x, int y)
+{
+	CcPoint newpoint;
+
+#ifdef __CR_WIN__
+	CRect		wwindowext;
+	GetClientRect(&wwindowext);
+	CcRect		windowext(wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+#endif
+#ifdef __BOTHWX__
+	wxRect wwindowext = GetRect();
+	CcRect windowext(wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
+#endif
+
+	newpoint.x = (int)(2400*x / windowext.mRight);
+	newpoint.y = (int)(2400*y / windowext.mBottom);
+	return newpoint;
+}
 
 void CxPlot::Display()
 {
@@ -193,14 +215,26 @@ void CxPlot::Clear()
 #endif
 }
 
-void CxPlot::DrawLine(int x1, int y1, int x2, int y2)
+// STEVE added this function
+void CxPlot::SetColour(int r, int g, int b)
+{
+#ifdef __CR_WIN__
+    mfgcolour = PALETTERGB(r,g,b);
+#endif
+#ifdef __BOTHWX__
+    mfgcolour = wxColour(r,g,b);
+#endif
+}
+
+// STEVE added a line thickness parameter
+void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
 {
     CcPoint cpoint1, cpoint2;
     cpoint1 = DeviceToLogical(x1,y1);
     cpoint2 = DeviceToLogical(x2,y2);
 
 #ifdef __CR_WIN__
-    CPen pen(PS_SOLID,1,mfgcolour), *oldpen;
+    CPen pen(PS_SOLID,thickness,mfgcolour), *oldpen;		// changed 1 to thickness
     oldpen = m_memDC->SelectObject(&pen);
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
 
@@ -208,6 +242,7 @@ void CxPlot::DrawLine(int x1, int y1, int x2, int y2)
     m_memDC->LineTo(CPoint(cpoint2.x,cpoint2.y));
     m_memDC->SelectObject(m_oldMemDCBitmap);
     m_memDC->SelectObject(oldpen);
+	pen.DeleteObject();										// added by steve - clean up resources
 #endif
 #ifdef __BOTHWX__
     m_memDC->SetPen( *m_pen );
@@ -230,15 +265,18 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 
 #ifdef __CR_WIN__
     CRgn        rgn;
-    CBrush      brush;
+    CBrush      brush, *oldbrush;
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
     brush.CreateSolidBrush(mfgcolour);
+	oldbrush = (CBrush*)m_memDC->SelectObject(brush);
     if(fill)
         m_memDC->FillRgn(&rgn,&brush);
     else
         m_memDC->FrameRgn(&rgn,&brush,1,1);
     m_memDC->SelectObject(m_oldMemDCBitmap);
+	m_memDC->SelectObject(oldbrush);
+	brush.DeleteObject();			
 #endif
 #ifdef __BOTHWX__
       m_memDC->SetPen( *m_pen );
@@ -251,19 +289,95 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 #endif
 }
 
-void CxPlot::DrawText(int x, int y, CcString text)
+// STEVE added the fourth parameter, to allow for justification of text
+// param can be:	TEXT_VCENTRE	y is the coordinate of the CENTRE of the text
+//					TEXT_HCENTRE	x is the centre coordinate
+//					TEXT_RIGHT		y is the right hand side (RH justified)
+//					TEXT_TOP		x is the top of the text
+//					TEXT_BOTTOM		x is the bottom of the text
+//					TEXT_VERTICAL   string is written one character above the next (for y axis label)
+//					TEXT_BOLD		text drawn in black (else grey)
+//					TEXT_ANGLE		text is drawn at an angle (for crowded axes...)
+//	All coordinates in the range 0 - 2400
+void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 {
-    CcPoint      coord = DeviceToLogical(x,y);
+	CcPoint      coord = DeviceToLogical(x,y);
+
 #ifdef __CR_WIN__
-    CPen        pen(PS_SOLID,1,mfgcolour);
+   CPen        pen(PS_SOLID,1,mfgcolour);
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     CPen        *oldpen = m_memDC->SelectObject(&pen);
-    CFont       *oldFont = m_memDC->SelectObject(CcController::mp_font);
-    m_memDC->SetBkMode(TRANSPARENT);
-    m_memDC->TextOut(coord.x,coord.y,text.ToCString());
+
+    CFont  theFont;
+	CFont* oldFont;
+	int thickness = 400;
+
+    char face[32] = "Arial";//"Times New Roman";
+
+	if(param & TEXT_BOLD) thickness = 600;
+
+	if(param & TEXT_ANGLE)
+	{
+		theFont.CreateFont(fontsize, 0, 450, 450, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+		oldFont = m_memDC->SelectObject(&theFont);
+		CSize temp = m_memDC->GetTextExtent(text.ToCString(), text.Len());
+		CSize move;
+
+		move.cx = temp.cx/sqrt(2);
+		move.cy = temp.cx/sqrt(2);
+
+		coord.x -= move.cx + temp.cy/2;
+		coord.y += move.cy; 
+	}
+	else
+	{
+		if(param & TEXT_VERTICAL)
+		{
+			theFont.CreateFont(fontsize, 0, 900,900, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+			oldFont = m_memDC->SelectObject(&theFont);
+			int len = text.Len();
+			CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
+			coord.y = coord.y + temp.cy*2;
+		}
+		else
+		{
+			theFont.CreateFont(fontsize, 0, 0,0, thickness, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+			oldFont = m_memDC->SelectObject(&theFont);
+		}
+	}
+
+    CSize size = m_memDC->GetTextExtent(text.ToCString(), strlen(text.ToCString()));
+
+	if(param & TEXT_VCENTRE)
+	{
+		  coord.y -= size.cy/2;                                                   // centre the text
+	}
+	if(param & TEXT_HCENTRE)
+	{
+		  coord.x -= size.cx/2;    
+	}
+	if(param & TEXT_RIGHT)
+	{ 
+			coord.x -= size.cx;
+	}
+	if(param & TEXT_TOP)
+	{
+			coord.y += size.cy/2;
+	}
+	if(param & TEXT_BOTTOM)
+	{
+		coord.y -= size.cy/2;
+	}
+
+	m_memDC->SetBkMode(TRANSPARENT);
+	m_memDC->TextOut(coord.x,coord.y,text.ToCString());
+
     m_memDC->SelectObject(oldpen);
+	pen.DeleteObject();
     m_memDC->SelectObject(oldFont);
+	theFont.DeleteObject();
     m_memDC->SelectObject(m_oldMemDCBitmap);
+
 #endif
 #ifdef __BOTHWX__
       wxString wtext = wxString(text.ToCString());
@@ -273,6 +387,149 @@ void CxPlot::DrawText(int x, int y, CcString text)
       m_memDC->DrawText(wtext, coord.x, coord.y );
       m_memDC->SetBrush( wxNullBrush );
 #endif
+}
+
+// get the size of a text string on screen
+// NB param is same as above - only TEXT_ANGLE, TEXT_VERTICAL currently dealt with / needed
+CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
+{
+	CcPoint tsize;
+	CSize size;
+	CFont theFont;
+	CFont* oldFont;
+    char face[32] = "Arial";//"Times New Roman";
+
+	if(param & TEXT_ANGLE)
+	{
+		theFont.CreateFont(fontsize,0,450,450, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES,	PROOF_QUALITY, DEFAULT_PITCH, face);
+		oldFont = m_memDC->SelectObject(&theFont);
+
+		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+
+		tsize.x = size.cx/sqrt(2);
+		tsize.y = size.cx/sqrt(2);
+	}
+	else if(param & TEXT_VERTICAL)
+	{
+		theFont.CreateFont(fontsize,0,900,900, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES,	PROOF_QUALITY, DEFAULT_PITCH, face);
+		oldFont = m_memDC->SelectObject(&theFont);
+
+		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+		tsize.x = size.cy;
+		tsize.y = size.cx;
+	}
+	else
+	{
+		theFont.CreateFont(fontsize,0,0,0, 400,false,false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_LH_ANGLES,	PROOF_QUALITY, DEFAULT_PITCH, face);
+		oldFont = m_memDC->SelectObject(&theFont);
+
+		size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+		tsize.x = size.cx;
+		tsize.y = size.cy;
+	}
+
+	m_memDC->SelectObject(oldFont);
+	theFont.DeleteObject();
+
+	return (LogicalToDevice(tsize.x, tsize.y));
+}
+
+int CxPlot::GetMaxFontSize(int width, int height, CcString text, int param)
+{
+    m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
+    CFont  theFont;
+    char face[32] = "Times New Roman";
+    CcPoint coord = DeviceToLogical(width,height);
+    CSize size;
+
+    int fontsize = 14; //our maximum possible fontsize...
+
+	if(param & TEXT_ANGLE)
+	{
+		while (fontsize > 40)
+		{
+	//		theFont.CreatePointFont(fontsize, face, m_memDC);
+			theFont.CreateFont(fontsize, 0, 450, 450, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+			CFont* oldFont = m_memDC->SelectObject(&theFont);
+
+			size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+
+			size.cx = size.cx/sqrt(2);//cos(size.cx*3.1415/180);
+			size.cy = size.cx/sqrt(2);//sin(size.cy*3.1415/180);
+
+			if ((size.cy < coord.y ))//&&(size.cx < coord.x))
+			{
+				m_memDC->SelectObject(oldFont);
+				theFont.DeleteObject(); //Free memory associated with font.
+				break;
+			}
+			else
+			{
+				//Reduce the logfont height, put the oldfont back into the DC and repeat.
+				fontsize -= 1;
+				m_memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
+				theFont.DeleteObject(); //Free memory associated with font.
+			}
+		}
+	
+	}
+	else
+	{
+		if(param & TEXT_VERTICAL)
+		{
+			while (fontsize > 4)
+			{
+		//		theFont.CreatePointFont(fontsize, face, m_memDC);
+				theFont.CreateFont(fontsize, 0, 900, 900, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+				CFont* oldFont = m_memDC->SelectObject(&theFont);
+
+				size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+
+				if (size.cy < coord.y)		// only worried about vertical dimension here
+				{
+					m_memDC->SelectObject(oldFont);
+					theFont.DeleteObject(); //Free memory associated with font.
+					break;
+				}
+				else
+				{
+					//Reduce the logfont height, put the oldfont back into the DC and repeat.
+					fontsize -= 1;
+					m_memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
+					theFont.DeleteObject(); //Free memory associated with font.
+				}
+			}
+		}
+		else
+		{
+			while (fontsize > 4)
+			{
+		//		theFont.CreatePointFont(fontsize, face, m_memDC);
+				theFont.CreateFont(fontsize, 0, 0, 0, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+		//		theFont.CreateFont(fontsize, 0, 450, 450, 400, false, false,false, ANSI_CHARSET, OUT_DEFAULT_PRECIS,CLIP_LH_ANGLES, PROOF_QUALITY, DEFAULT_PITCH, face);
+				CFont* oldFont = m_memDC->SelectObject(&theFont);
+
+				size = m_memDC->GetOutputTextExtent(text.ToCString(), text.Len());
+
+				if ((size.cx < coord.x )) //&&(size.cy < coord.y))	// only need worry about horizontal
+				{
+					m_memDC->SelectObject(oldFont);
+					theFont.DeleteObject(); //Free memory associated with font.
+					break;
+				}
+				else
+				{
+					//Reduce the logfont height, put the oldfont back into the DC and repeat.
+					fontsize -= 1;
+					m_memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
+					theFont.DeleteObject(); //Free memory associated with font.
+				}
+			}
+		}
+	}
+    m_memDC->SelectObject(m_oldMemDCBitmap);
+
+    return fontsize;
 }
 
 void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
@@ -295,7 +552,9 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
         }
         m_memDC->Polygon( (LPPOINT) points, nVertices );
         m_memDC->SelectObject(oldBrush);
+		brush.DeleteObject();
         m_memDC->SelectObject(oldpen);
+		pen.DeleteObject();
         delete [] points;
     }
     else
@@ -315,6 +574,7 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
 
         m_memDC->SelectObject(oldBrush);
         m_memDC->SelectObject(oldpen);
+		pen.DeleteObject();
         delete [] points;
     }
 
