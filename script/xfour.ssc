@@ -287,6 +287,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %         END IF
 %       END IF
 %% See if any atoms were found
+%       copy '#set moni off'
 %       COPY '#GENERALEDIT 10'
 %       COPY 'LOCATE RECORDTYPE=101'
 %       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
@@ -455,4 +456,5 @@ Diff  -  Subtract model structure factors from the observed
 %   END BLOCK
 % END CASE
 % END LOOP
+% copy '#set moni off'
 %END SCRIPT

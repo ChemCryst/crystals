@@ -3,8 +3,8 @@
 %% Read in a the cell, symm and atoms from a shelx file.
 %%
  --                                                      --
- SHELX Script version 0.25 by Richard Cooper, University of 
- Oxford, April 1999. Based on the fortran program SXTOCA by 
+ SHELX Script version 0.25 by Richard Cooper, University of
+ Oxford, April 1999. Based on the fortran program SXTOCA by
  R.O. Gould, The University of Edinburgh, March 1994.
  --                                                      --
  Read in the cell, contents and atomic parameters
@@ -12,7 +12,7 @@
  --                                                      --
  This operation will overwrite your current model structure
  Be sure that you want to proceed.
-
+ 
 %%
 %%
 % VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM
@@ -21,6 +21,9 @@
 % VARIABLE LOGICAL SFILERR LCANCEL LCRY
 % VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22
 % VARIABLE REAL SXU33 SXU23 SXU13 SXU12
+%% variables used by the question box below
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+% VARIABLE LOGICAL ANSWER 
 %%
 % EVALUATE LCRY = FALSE
 %%
@@ -88,10 +91,10 @@
 %%
 %% Cell card is the first thing to look for.
 %%
-
+ 
 Please be patient while the SHELX file is scanned for
 information. This may take some time...
-
+ 
  Looking for CELL instruction.
 % EVALUATE SFILERR = TRUE
 % LOOP
@@ -107,7 +110,7 @@ information. This may take some time...
 %   IF CVALUE .EQ. 'CELL' THEN
  CELL card found .
 %      GET NOSTORE NOPROMPT KEYWORD NULLSTRING
-%      GET NOSTORE NOPROMPT TEXT 'a,b,c,al,be,ga' 
+%      GET NOSTORE NOPROMPT TEXT 'a,b,c,al,be,ga'
 %      COPY '#LIST 1'
 %      TRANSFER 'REAL ' // CVALUE TO CRYSTALS
 %      COPY 'END'
@@ -119,10 +122,10 @@ information. This may take some time...
  *** No valid "CELL" card found in SHELX file.
 %    FINISH
 % END IF
-
+ 
  CELL card processed.
  Now give the spacegroup...
-
+ 
 %%
 %  EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'
 %  COPY '#SCRIPT XSPACE'
@@ -213,8 +216,8 @@ information. This may take some time...
 %%%% Find out how many SYMM cards there are.
 %%%%
 %%%%%      EVALUATE NSYMS = 1
-%%%      LOOP 
-%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
+%%%      LOOP
+%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING
 %%%         ON ERROR TERMINATE
 %%%         ON END TERMINATE
 %%%         EXTRACT NEXT
@@ -249,8 +252,8 @@ information. This may take some time...
 %%%% ShelX assumes identity operation. Crystals doesn't.
 %%%      COPY 'SYM X,Y,Z'
 %%%      EVALUATE SCOUNT = 0
-%%%      LOOP 
-%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING 
+%%%      LOOP
+%%%         GET NOSTORE NOPROMPT TEXT NULLSTRING
 %%%         ON ERROR TERMINATE
 %%%         ON END TERMINATE
 %%%         EXTRACT NEXT
@@ -285,12 +288,12 @@ information. This may take some time...
 %%% COPY 'END'
 %%
 %% End of the symmetry bit, which is commented out.
-
+ 
  Rewinding SHELX file.
-
+ 
 %   EXTRACT REWIND
 %%% END IF
-
+ 
 %%
 %%
 %% Find the SFAC and UNIT cards which give respectively, a
@@ -298,9 +301,9 @@ information. This may take some time...
 %% is in the unit cell.
 %%
 %%
-
+ 
  Looking for cell contents.
-
+ 
 %%
 %%
 %% STEP1: Store the SFAC and UNIT cards in CSFAC and CUNIT.
@@ -319,18 +322,18 @@ information. This may take some time...
 %   CLEAR
 %   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
 %   IF CVALUE .EQ. 'SFAC' THEN
-
+ 
  SFAC card found.
-
+ 
 %      GET NOSTORE TEXT ' ' ' '
 %      EVALUATE CSFAC = CVALUE
-
+ 
 %      EVALUATE LEND = LEND + 1
 %   END IF
 %   IF CVALUE .EQ. 'UNIT' THEN
-
+ 
  UNIT card found.
-
+ 
 %      GET NOSTORE TEXT ' ' ' '
 %      EVALUATE CUNIT = CVALUE
 %      EVALUATE LEND = LEND + 1
@@ -340,10 +343,10 @@ information. This may take some time...
 %   END IF
 % END LOOP
 % IF LEND .LT. 2 THEN
-
+ 
  *** No valid "SFAC and UNIT" card pair found in SHELX file.
      You must enter your own LIST3 and LIST29.
-
+ 
 % ELSE
 %%
 %%
@@ -431,7 +434,7 @@ information. This may take some time...
 %%
 %   TRANSFER '#OPEN SCPDATA ' // CFILE TO CRYSTALS
 % END IF
-
+ 
  Rewinding SHELX file.
 %   EXTRACT REWIND
 %%
@@ -445,6 +448,37 @@ information. This may take some time...
 %  COPY '#SCRIPT ZSHELXIN'
  Shelx file processed.
 %  COPY '#CLOSE SCPDATA'
+
+here we are again
+%      BLOCK
+%      EVALUATE QTITLE = 'Change Q atoms?'
+%      EVALUATE QLINE1 = 'Do you want to change all Q'
+%      EVALUATE QLINE2 = 'atoms to Carbon?'
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%      COPY '#EDIT'
+%      COPY 'TYPECHANGE TYPE EQ Q C'
+%      COPY 'END'
+%      END IF
+%      END BLOCK
+%%
+%%
+%      BLOCK
+%      EVALUATE QTITLE = 'Use Cameron?'
+%      EVALUATE QLINE1 = 'Do you want to use CAMERON '
+%      EVALUATE QLINE2 = 'to examine the model '
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%       COPY '#SCRIPT XCAM'
+%      END IF
+%      END BLOCK
+%%
+%%
+%%
 %      BLOCK
 %       COPY '#SCRIPT XRENUMB'
 %      END BLOCK

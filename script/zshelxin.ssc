@@ -1,5 +1,5 @@
 %SCRIPT ZSHELXIN
-%% 
+%%  
 %% This script reads in just the atoms. It is called by XSHELXIN,
 %% and also by INEMAP to read a the results of direct methods.
 %% The SCPDATA channel must be open already.

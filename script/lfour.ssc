@@ -198,6 +198,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       QUEUE PROCESS
 %       COPY 'END'
 %% See if any atoms were found
+%       copy '#set moni off'
 %       COPY '#GENERALEDIT 10'
 %       COPY 'LOCATE RECORDTYPE=101'
 %       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
@@ -208,6 +209,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           EVALUATE PEAKS = LOOPCOUNTER
 %       END LOOP
 %       COPY 'END'
+%       copy '#set moni off'
 %       COPY '#GENERALEDIT 5'
 %       COPY 'LOCATE RECORDTYPE=101'
 %       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
@@ -316,4 +318,5 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %   END BLOCK
 % END CASE
 % END LOOP
+% copy '#set moni on'
 %END SCRIPT
