@@ -389,9 +389,9 @@ void CrModel::Start()
 	((CxModel *)mWidgetPtr)->Start();
 }
 
-void CrModel::DrawAtom(int x, int y, int z, int r, int g, int b, int cov, int vdw, int x11, int x12, int x13, int x21, int x22, int x23, int x31, int x32, int x33 )
+void CrModel::DrawAtom(CcModelAtom* anAtom)
 {
-      ((CxModel *)mWidgetPtr)->DrawAtom(x, y, z, r, g, b, cov, vdw,x11,x12,x13,x21,x22,x23,x31,x32,x33);
+      ((CxModel*)mWidgetPtr)->DrawAtom(anAtom);
 }
 
 void CrModel::Display()
@@ -427,10 +427,6 @@ void CrModel::ReDrawHighlights()
 		mAttachedModelDoc->ReDrawHighlights(false);
 }
 
-void CrModel::ClearHighlights()
-{
-	((CxModel*)mWidgetPtr)->ClearHighlights();
-}
 
 void CrModel::HighlightAtom(CcModelAtom * theAtom)
 {
@@ -640,7 +636,13 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 
 void CrModel::Reset()
 {
-    
     ((CxModel*)mWidgetPtr)->Reset();
-
+}
+void CrModel::StartHighlights()
+{
+    ((CxModel*)mWidgetPtr)->StartHighlights();
+}
+void CrModel::FinishHighlights()
+{
+    ((CxModel*)mWidgetPtr)->FinishHighlights();
 }
