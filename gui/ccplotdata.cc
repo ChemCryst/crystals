@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2002/03/07 10:46:43  DJWgroup
+// SH: Change to fix reversed y axes; realign text labels.
+//
 // Revision 1.16  2002/02/21 15:23:11  DJWgroup
 // SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -1042,7 +1045,8 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 				fontsize--;
 				if (fontsize <= 8)
 				{
-					step *= 2; //smalltext = true; //Bail out.
+				//	step *= 2; // try skipping labels
+					smalltext = true;
 					fontsize = 12;
 				}
 				if(step >= 5)
@@ -1071,11 +1075,11 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 			}
 		}
 		
-		// if the above methods couldn't fit the text without making it too small, plot every other label
+		// if the above methods couldn't fit the text without making it too small, plot vertically
 		//		NB this doesn't matter too much (I think) since mouse-over shows all labels...
 		if(smalltext)
 		{
-			fontsize = 8;
+			fontsize = 10;
 
 			for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=1)
 			{
