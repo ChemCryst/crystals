@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+
 CODE FOR KSCPRC
       FUNCTION KSCPRC ( CINPUT , IUSLEN )
 C
@@ -6193,6 +6195,7 @@ C
 C -- MOST DATA ITEMS ARE TERMINATED BY A SPACE
 C
       NSTART = KCCNEQ ( CLINPB , IINPPS , ' ' )
+      IF ( NSTART .LE. 0 ) NSTART = 1
       NENDIN = IINPLN
       NDATA = NSTART
 C
