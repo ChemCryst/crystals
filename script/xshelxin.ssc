@@ -446,6 +446,7 @@ information. This may take some time...
  Shelx file processed.
 %  COPY '#CLOSE SCPDATA'
 %      BLOCK
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 %      EVALUATE QTITLE = 'Re-number the atoms'
 %      EVALUATE QLINE1 = 'If the structure looks OK, do you want to '
 %      EVALUATE QLINE2 = 're-number the atoms based on connectivity?'

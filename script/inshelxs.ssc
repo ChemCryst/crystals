@@ -15,7 +15,6 @@
 % ELSE
 Input a coordinate list in SHELX.CRY or SHELXS.RES format.
 % END IF
-%  COPY '#PAUSE 2'
 %  VARIABLE INTEGER ATOMCOUNT SOLVEMETHOD LOOPCOUNT SERIAL EXPECTED
 %% call a script to get the expected number of atoms into EXPECTED
 %  copy '#script getexp'
