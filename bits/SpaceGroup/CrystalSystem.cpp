@@ -156,21 +156,23 @@ std::ostream& operator<<(std::ostream& pStream, Heading& pHeader)
     return pHeader.output(pStream);
 }
 
-Headings::Headings():ArrayList<Heading>(5)
+Headings::Headings():vector<Heading*>()
 {}
 
 Headings::~Headings()
 {
-    for (int i = iItemCount-1; i >=0; i--)
+	vector<Heading*>::iterator tIter;
+	
+    for (tIter = begin(); tIter != end(); tIter++)
     {
-        Heading* tHeading = remove(i);
+        Heading* tHeading = *tIter;
         delete tHeading;
     }
 }
 
 Matrix<short>* Headings::getMatrix(int pIndex)
 {
-    Heading* tHeading = get(pIndex);
+    Heading* tHeading = (*this)[pIndex];
     if (!tHeading)
     {
         throw MyException(kUnknownException, "Heading with that ID doesn't exist.");
@@ -180,7 +182,7 @@ Matrix<short>* Headings::getMatrix(int pIndex)
 
 char* Headings::getName(int pIndex)
 {
-    Heading* tHeading = get(pIndex);
+    Heading* tHeading = (*this)[pIndex];
     
     if (!tHeading)
     {
@@ -191,7 +193,7 @@ char* Headings::getName(int pIndex)
 
 int Headings::getID(int pIndex)
 {
-    Heading* tHeading = get(pIndex);
+    Heading* tHeading = (*this)[pIndex];
     
     if (!tHeading)
     {
@@ -202,10 +204,10 @@ int Headings::getID(int pIndex)
 
 std::ostream& Headings::output(std::ostream& pStream)
 {
-    int tSize = length();
+    int tSize = size();
     for (int i = 0; i < tSize; i++)
     {
-        Heading* tHeading = get(i);
+        Heading* tHeading = (*this)[i];
         if (tHeading)
         {
             std::cout << *tHeading << "\n";
@@ -235,7 +237,18 @@ char* Headings::addHeading(char* pLine)	//Returns the point which the line at th
         tNext++;
 		delete[] tString;
     }
-    setWithAdd(tHeading, tHeading->getID());
+	if (size() < (size_t)tHeading->getID()+1)
+	{
+		resize(tHeading->getID()+1);
+	}
+	if ((*this)[tHeading->getID()])
+	{
+		delete tHeading;
+	}
+	else
+	{
+		(*this)[tHeading->getID()] = tHeading;
+	}
     return tNext;
 }
 
@@ -1300,3 +1313,27 @@ std::ofstream& operator<<(std::ofstream& pStream, RankedSpaceGroups& pRank)
 {
     return pRank.output(pStream);
 }
+
+/*class CrystalSystem
+{
+	protected:
+		CrystalSystemID iID;
+		string iName;
+		list<LaueGroups*> iLaueGroups;
+		Table* iTables;
+	public:
+		CrystalSystem::CrystalSystem(Table* pTable,   
+		bool CrystalSystem::contains(LaueGroup* )
+		{
+			
+		}
+};
+
+class CrystalSystems:protected list<CrystalSystem*>
+{
+	public:
+		CrystalSystems(char* pFileName);
+		static CrystalSystems* defaultObject();
+		CrystalSystem* crystalSystemForLaueGroup(LaueGroup*);
+};*/
+
