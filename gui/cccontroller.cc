@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.58  2003/03/12 17:59:48  rich
+// Fix to yesterday's mods to SAFESET, it wasn't pulling new tokens from the queue, so
+// was looping infinitely in some situations.
+//
 // Revision 1.57  2003/03/12 13:38:42  rich
 // WHen text output is redirected to a new window, e.g. when Cameron is running,
 // it has traditionally been echoed in the base text output window. I think
@@ -1992,6 +1996,32 @@ void  CcController::SetProgressText(CcString * theText)
 
 void CcController::StoreKey( CcString key, CcString value )
 {
+
+#ifdef __CR_WIN__
+ // Use the registry to store keys.
+
+ CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+
+ HKEY hkey;
+ DWORD dwdisposition, dwtype, dwsize;
+
+
+ int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+                              0, NULL,  0, KEY_WRITE, NULL,
+                              &hkey, &dwdisposition );
+                              
+ if ( result == ERROR_SUCCESS )
+ {
+    dwtype = REG_SZ;
+    dwsize = ( _tcslen(value.ToCString()) + 1) * sizeof(TCHAR);
+
+    RegSetValueEx(hkey, key.ToCString(), 0, dwtype,
+                  (PBYTE)value.ToCString(), dwsize);
+
+    RegCloseKey(hkey);
+ }
+
+#else
   FILE * szfile;
   FILE * tempf;
   char * tempn;
@@ -2185,15 +2215,49 @@ void CcController::StoreKey( CcString key, CcString value )
   fputs ( "\n", szfile );
   fclose ( szfile );
 
+#endif
+
   return;
 
 }
 
 CcString CcController::GetKey( CcString key )
 {
+  CcString value;
+
+#ifdef __CR_WIN__
+ // Use the registry to fetch keys.
+
+ CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+
+ HKEY hkey;
+ DWORD dwdisposition, dwtype, dwsize;
+
+
+ int result = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+                              0, NULL,  0, KEY_READ, NULL,
+                              &hkey, &dwdisposition );
+                              
+ if ( result == ERROR_SUCCESS )
+ {
+
+    dwtype=REG_SZ;
+    dwsize = 1024; // NB limits max key size to 1K of text.
+    char buf [ 1024];
+
+    result = RegQueryValueEx( hkey, key.ToCString(), 0, &dwtype,
+                             (PBYTE)buf,&dwsize);
+    if ( result == ERROR_SUCCESS )
+    {
+      value = CcString(buf);
+    }
+    RegCloseKey(hkey);
+ }
+
+#else
+
   FILE * szfile;
   char buffer[256];
-  CcString value;
 
   key += " "; //ensure a space at the end of the key.
 
@@ -2245,6 +2309,7 @@ CcString CcController::GetKey( CcString key )
     fclose( szfile );
   }
 
+#endif
   return value;
 
 }
@@ -2879,18 +2944,36 @@ void CcController::OpenDirDialog(CcString* result)
 {
 #ifdef __CR_WIN__
 
-      CString pathname;
-
+      CcString lastPath;
       char buffer[MAX_PATH];
+
+#ifdef __CR_WIN__
+ // Use the registry to fetch keys.
+      CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+      HKEY hkey;
+      DWORD dwdisposition, dwtype, dwsize;
+      int dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+                     0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
+      if ( dwresult == ERROR_SUCCESS )
+      {
+         dwtype=REG_SZ;
+         dwsize = 1024; // NB limits max key size to 1K of text.
+         char buf [ 1024];
+         dwresult = RegQueryValueEx( hkey, TEXT("Strdir"), 0, &dwtype,
+                                     (PBYTE)buf,&dwsize);
+         if ( dwresult == ERROR_SUCCESS )  lastPath = CcString(buf);
+         RegCloseKey(hkey);
+      }
+#else
+
       GetWindowsDirectory( (LPTSTR) &buffer[0], MAX_PATH );
       CcString inipath = buffer;
       inipath += "\\WinCrys.ini";
       ::GetPrivateProfileString ( "Latest",   "Strdir",
                                   NULL,      (LPTSTR)&buffer[0],
                                   MAX_PATH,       inipath.ToCString()  );
-      CcString lastPath = buffer;
-
-
+      lastPath = buffer;
+#endif
 
       BROWSEINFO bi;
       LPITEMIDLIST chosen; //The chosen directory as an IDLIST(?)
@@ -2917,9 +3000,26 @@ void CcController::OpenDirDialog(CcString* result)
           if ( SHGetPathFromIDList(chosen, buffer))
           {
              *result = CcString(buffer);
+
+
+             dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.ToCString(),
+                                        0, NULL,  0, KEY_WRITE, NULL,
+                                        &hkey, &dwdisposition );
+                               
+#ifdef __CR_WIN__
+             if ( dwresult == ERROR_SUCCESS )
+             {
+                dwtype=REG_SZ;
+                dwsize = ( _tcslen(result->ToCString()) + 1) * sizeof(TCHAR);
+                RegSetValueEx(hkey, TEXT("Strdir"), 0, dwtype,
+                          (PBYTE)result->ToCString(), dwsize);
+                RegCloseKey(hkey);
+             }
+#else
              ::WritePrivateProfileString ( "Latest",   "Strdir",
                                           result->ToCString(),
                                           inipath.ToCString()   );
+#endif
           }
           else
           {

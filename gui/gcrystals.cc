@@ -67,6 +67,26 @@ BOOL CCrystalsApp::InitInstance()
 
       if ( getenv("USECRYSDIR") == nil )
       {
+
+#ifdef __CR_WIN__
+ // Use the registry to fetch keys.
+      CcString location;
+      CcString subkey = "Software\\Chem Cryst\\Crystals\\";
+      HKEY hkey;
+      DWORD dwdisposition, dwtype, dwsize;
+      int dwresult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, subkey.ToCString(),
+                     0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
+      if ( dwresult == ERROR_SUCCESS )
+      {
+         dwtype=REG_SZ;
+         dwsize = 1024; // NB limits max key size to 1K of text.
+         char buf [ 1024];
+         dwresult = RegQueryValueEx( hkey, TEXT("Crysdir"), 0, &dwtype,
+                                     (PBYTE)buf,&dwsize);
+         if ( dwresult == ERROR_SUCCESS )  location = CcString(buf);
+         RegCloseKey(hkey);
+      }
+#else
          char buffer[255];
          GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
          CcString inipath = buffer;
@@ -86,6 +106,8 @@ BOOL CCrystalsApp::InitInstance()
 
          m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
          CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Crysdir", NULL );
+#endif
+
          _putenv( ("CRYSDIR="+location).ToCString() );
 
       }
