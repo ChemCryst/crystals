@@ -11,7 +11,7 @@
 %  COPY '#RELEASE PUNCH scplst16.dat'
 %  COPY '#PUNCH 16'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH crfile.pch'
+%  COPY '#RELEASE PUNCH bfile.pch'
 %  COPY '#OPEN SCPDATA scplst16.dat'
 %  COPY '#RELEASE SCPQUEUE scplst16a.dat'
 %  QUEUE REWIND

@@ -232,7 +232,7 @@ Metric tensor written to top of ATOMS.DAT
 %   COPY '#RELEASE PUNCH L6.IN'
 %   COPY '#PUNCH 6 C'
 %   COPY 'END'
-%   COPY '#RELEASE PUNCH CRFILE.PCH'
+%   COPY '#RELEASE PUNCH bfile.pch'
 %%%%%%   COPY '#SPAWN DEL L6.OUT'
 %%
 %% Add random variations to the Fobs.
