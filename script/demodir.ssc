@@ -1,0 +1,37 @@
+%SCRIPT DEMODIR
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX CDIR CFDIR
+% VARIABLE LOGICAL   ANSWER
+% EVALUATE QTITLE = 'Run demo'
+% EVALUATE QLINE1 = 'CRYSTALS will close the current structure and'
+% EVALUATE QLINE2 = 're-start in the demo directory.'
+% EVALUATE BUTTOK = '&Proceed'
+% EVALUATE BUTTXX = '&Cancel'
+% COPY '#SCRIPT XQUESTIO'
+% IF ANSWER .EQ. FALSE THEN
+%   FINISH
+% END IF
+% EVALUATE CDIR = 'CRYSDIR:demo\demo\'
+% EVALUATE CFDIR = GETENV ( CDIR ) 
+% IF ( .NOT. ( FILEEXISTS CFDIR ) ) THEN
+%   TRANSFER '{E Cannot find ' // CFDIR TO DISPLAY
+ {I Suggest that you reinstall CRYSTALS to correct this error.
+%   FINISH
+% END IF
+% EVALUATE T = FILEDELETE ( CFDIR // 'crfilev2.dsc' )
+% TRANSFER '#RELE PUNCH ' // CFDIR // '\CRYSTART.DAT' TO CRYSTALS
+% TRANSFER '#SCRIPT DEMO' TO PUNCH
+^^WI    SET _MAIN TEXT=
+% TRANSFER "^^WI 'Crystals - " // CFDIR // "'" TO DISPLAY
+^^CR
+% TRANSFER "^^CO RESTART '" // CFDIR // "' NEWFILE=crfilev2.dsc" TO DISPLAY
+%% A value will not return until the GUI has caught up:
+^^?? _MAIN EXISTS
+% GET NOSTORE TEXT 'About to restart in new directory...' ' '
+^^CO  SET _MAINTEXTOUTPUT EMPTY
+% COPY '#END'
+% FINISH
+% END SCRIPT
+
+
+
