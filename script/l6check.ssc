@@ -1,0 +1,39 @@
+%SCRIPT L6CHECK
+%%
+%%
+% IF ( EXISTS  1 .NE. 1 ) THEN
+% COPY '#SCRIPT RTEXT'
++----------------------------------------------------+
+|                                                    |
+|  You have not loaded cell paramters into CRYSTALS  |
+|  Use 'X-ray Data' off the tool bar to input them   |
+|                                                    |
++----------------------------------------------------+
+% COPY '#SCRIPT NTEXT'
+% FINISH
+% END IF
+%%
+% IF ( EXISTS  2 .NE. 1 ) THEN
+% COPY '#SCRIPT RTEXT'
++----------------------------------------------------+
+|                                                    |
+|  You have not loaded a Space Group into CRYSTALS   |
+|  Use 'X-ray Data' off the tool bar to input one    |
+|                                                    |
++----------------------------------------------------+
+% COPY '#SCRIPT NTEXT'
+% FINISH
+% END IF
+%%
+% IF ( EXISTS  6 .NE. 1 ) THEN
+% COPY '#SCRIPT RTEXT'
++-----------------------------------------------------+
+|                                                     |
+|  You have not loaded any reflections into CRYSTALS  |
+|  Use 'X-ray Data' off the tool bar to input them    |
+|                                                     |
++-----------------------------------------------------+
+% COPY '#SCRIPT NTEXT'
+% FINISH
+% END IF
+%END SCRIPT
