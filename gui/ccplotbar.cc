@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2002/07/18 16:45:53  richard
+// Bugfix: Crash on mouse over, if there were no data points in the graph.
+//
 // Revision 1.21  2002/07/15 12:19:13  richard
 // Reorder headers to improve ease of linking.
 // Update program to use new standard C++ io libraries.
@@ -576,7 +579,8 @@ void CcPlotBar::CreateSeries(int numser, int* type)
 void CcPlotBar::AllocateMemory()
 {
 	// an array of pointers to CcString text labels
-	m_Axes.m_Labels = new CcString[m_Axes.m_NumberOfLabels];
+	if ( m_Axes.m_NumberOfLabels )
+    	m_Axes.m_Labels = new CcString[m_Axes.m_NumberOfLabels];
 	for(int j=0; j<m_Axes.m_NumberOfLabels; j++)
 		m_Axes.m_Labels[j] = j;
 	
