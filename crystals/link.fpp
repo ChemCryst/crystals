@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  1999/07/16 16:42:35  dosuser
+C djw       restore SHEXS reflection scaling.
+C
 C Revision 1.13  1999/06/06 19:34:45  dosuser
 C RIC: Added call to GUWAIT() after commands for creation of a Cameron
 C chartdoc are sent to the interface. This blocks until the GUI has
@@ -102,7 +105,8 @@ C----- FOR SHELXS86
       CHARACTER *32 DECML
 C
 C----- FOR SIR**
-      CHARACTER *80 CSOURC, CSPACE, CL29, CRESLT, CHARTC
+cdjw aug99
+      CHARACTER *160 CSOURC, CSPACE, CL29, CRESLT, CHARTC
 C
       REAL MAT(3)
 C
@@ -439,21 +443,23 @@ C----- DISPLAY SPACE GROUP SYMBOL
       ENDIF
       CALL XCREMS (CRESLT, CSPACE, ISP )
 C
-      IF (N29 .GT. 8) THEN
+      IF (N29 .GT. 16) THEN
         WRITE(NCAWU,1910)
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU, 1910)
         ENDIF
         WRITE ( CMON, 1910)
         CALL XPRVDU(NCVDU, 1,0)
-1910  FORMAT ( ' Maximum of 8 atom types permitted for SIR link')
+c1910  FORMAT ( ' Maximum of 8 atom types permitted for SIR link')
+cdjwaug99
+1910  FORMAT ( ' Maximum of 16 atom types permitted for SIR link')
         GOTO 9900
       END IF
       IF ( N29 .GT. 0 ) THEN
         CSOURC = ' '
         WRITE ( CSOURC , 1920 ) ( STORE(J), NINT(T2*STORE(J+4)),
      1  J = L29 , M29 , MD29 )
-1920    FORMAT(8(1X, A4, I4))
+1920    FORMAT(16(1X, A4, I4))
       IF (ILINK .EQ. 5 ) THEN
             CRESLT = CSOURC
       ELSE
