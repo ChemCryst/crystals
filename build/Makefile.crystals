@@ -14,10 +14,18 @@ FOBJ     = $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp
 COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
 DEP      = $(patsubst %.d, obj/%.d, $(GUIFILES:.cc=.d))
 
+ifeq ($(COMPCODE),WXS)
+  COBJ := $(COBJ) obj/resource.o
+endif
+
 all : obj crystals$(SUFFIX)
 
 crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 	$(LD) $(GUIFLAGS) $(FOBJ) $(COBJ) $(GUILIBRARIES) $(OPT) -o $@
+
+obj/resource.o : ../gui/wx.rc
+	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config --prefix`/include
+
 
 # This lapack module contains routines for compting machine precision, and must be compiled without optimisation.
 obj/lapack.o : lapack.f
