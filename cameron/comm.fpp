@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  1999/05/07 15:26:19  dosuser
+C RIC: Added support for cursor rotation in the GID version.
+C      Changed label size (ILSIZE) by a factor of ~6 for GID version.
+C      (Makes it much easier to click on the labels with the mouse.
+C
 
 CRYSTALS CODE FOR COMM.FOR
 CAMERON CODE FOR COMMAND
@@ -642,7 +647,7 @@ C      CALL ZATMUL(0,0,0)
       CALL ZDOVI
       ANG = -5.0*PI/180.0
 
-&GID      CALl ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES')
+&GID      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
 &GID      IUNIT = 5
 1150  CONTINUE
 &DOS      CALL ZGETKY(K)
