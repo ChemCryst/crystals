@@ -6,8 +6,8 @@
 ^^WI {
 ^^WI   @ 2,2 GRID LT NROWS=4 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 STATIC T0 'Reject relections whose'
-^^WI     @ 2,1 STATIC T1 'intesity is less than'
+^^WI     @ 1,1 STATIC T0 'Reject reflections whose'
+^^WI     @ 2,1 STATIC T1 'intensity is less than'
 ^^WI     @ 3,1 GRID LEFT NROWS=3 NCOLS=3
 ^^WI     {
 ^^WI       @ 3,1 EDITBOX E2 '4.0' CHARS=9 REAL

@@ -678,7 +678,7 @@
 %            COPY 'LOCATE RECORDTYPE = 101'
 %%
 %            IF FNREFS THEN
- * Updating Number of relections measured.
+ * Updating Number of reflections measured.
 ^^?? NREFS TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE NREFS = VALUE
