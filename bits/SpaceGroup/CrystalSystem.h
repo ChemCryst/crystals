@@ -83,7 +83,7 @@ std::ostream& operator<<(std::ostream& pStream, Heading& pHeader);
 std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
 
 //This is just my own rapper class for an integer type.
-class Index
+class Index:public MyObject
 {
     private:
         signed char iValue;
@@ -156,7 +156,7 @@ class Table:public MyObject
 	void readColumnHeadings(char* pHeadings);
         void readFrom(filebuf& pFile);
         char* getName();
-        ArrayList<Index>* getHeadings(int pI);
+        ArrayList<Index>* getHeadings(int pI) const;
         std::ostream& output(std::ostream& pStream);
         std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
         std::ofstream& outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[]);
