@@ -8,6 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.34  2003/07/01 16:38:21  rich
+//   Three small changes. (1) Set flag to indicate CRYSTALS thread exit, and
+//   exit from the GUI thread accordingly. (2) Make GETKEY a special case for
+//   input queries. This allows the registry to be queried without losing
+//   synchronisation of the input queue. (3) In the debug output file "Script.log"
+//   prefix every line with the elapsed time in seconds since the program
+//   started. Useful for simple profiling info.
+//
 //   Revision 1.33  2003/05/12 11:55:50  rich
 //   Remove Boolean type.
 //
@@ -228,6 +236,7 @@ class   CcController
 
     void     ChangeDir (CcString newDir);
 
+    void     ReadStartUp( FILE * file, CcString crysdir );
     int      EnvVarCount( CcString dir );
     CcString EnvVarExtract ( CcString dir, int i );
 

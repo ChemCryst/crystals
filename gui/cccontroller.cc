@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.72  2003/09/17 14:38:53  rich
+// On fatal CRYSTALS error jump into the debugger.
+//
 // Revision 1.71  2003/09/12 14:13:17  rich
 //
 // WXversion: Protect acquisition of Thread_Alive mutex with a signal.
@@ -573,7 +576,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 // Source an external menu definition file - "GUIMENU.SRT"
 
     FILE * file;
-    char charline[256];
+//    char charline[256];
     CcString crysdir ( getenv("CRYSDIR") );
     if ( crysdir.Length() == 0 )
     {
@@ -590,20 +593,11 @@ CcController::CcController( CcString directory, CcString dscfile )
       CcString dir = EnvVarExtract( crysdir, i );
       i++;
 
-#ifdef __BOTHWIN__
       CcString buffer = dir + "guimenu.srt" ;
-#endif
-#ifdef __LINUX__
-      CcString buffer = dir + "guimenu.srt" ;
-#endif
 
       if( file = fopen( buffer.ToCString(), "r" ) ) //Assignment witin conditional - OK
       {
-        while ( ! feof( file ) )
-        {
-          if ( fgets( charline, 256, file ) ) Tokenize(charline);
-        }
-        fclose( file );
+        ReadStartUp(file,crysdir);
         noLuck = false;
       }
       else
@@ -614,7 +608,7 @@ CcController::CcController( CcString directory, CcString dscfile )
           Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
           Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
           Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
-          Tokenize("^^WI NROWS=20 IGNORE DISABLED=YES FIXEDFONT=YES } @ 3,1 PROGRESS ");
+          Tokenize("^^WI NROWS=20 IGNORE DISABLED=YES } @ 3,1 PROGRESS ");
           Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
           Tokenize("^^WI _MAINTEXTINPUT '' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
           Tokenize("^^CR  ");
@@ -726,6 +720,61 @@ CcController::CcController( CcString directory, CcString dscfile )
     StartCrystalsThread();
 
     LOGSTAT ( "Crystals thread started.\n") ;
+}
+
+
+void CcController::ReadStartUp( FILE * file, CcString crysdir )
+{
+  char charline[256];
+  int nEnv = EnvVarCount( crysdir );
+
+  LOGSTAT("Entering ReadStartUp");
+
+  while ( ! feof( file ) )
+  {
+    if ( fgets( charline, 256, file ) )
+    {
+      CcString inputline = charline;
+      if ( inputline.Compare("!",1) )
+      {
+        inputline = inputline.Chop(1,1); // Remove that shriek.
+        int newl = inputline.Find("\n");
+        if ( newl ) inputline = inputline.Chop(newl,newl);
+        FILE * newfile;
+        //Remove trailing spaces:
+        inputline.Trim();
+        //Remove leading spaces:
+        while ( inputline.Sub(1,1) == ' ' )
+        {
+          inputline = inputline.Chop(1,1);
+        }
+        LOGSTAT("Trimmed: "+inputline);
+        int i = 0;
+        bool noLuck = true;
+        while ( noLuck && i < nEnv )
+        {
+          CcString dir = EnvVarExtract( crysdir, i++ );
+          CcString buffer = dir + inputline ;
+          LOGSTAT("Trying: "+buffer);
+          if( newfile = fopen( buffer.ToCString(), "r" ) ) //Assignment witin conditional - OK
+          {
+            LOGSTAT("Success, reading file");
+            ReadStartUp( newfile, crysdir );
+            noLuck = false;
+          }
+          else
+          {
+            LOGSTAT("Failed.");
+          }
+        }
+      }
+      else if ( ! (inputline.Compare("%",1) ))  // Not a comment
+      {
+        Tokenize(inputline);
+      }
+    }
+  }
+  fclose( file );
 }
 
 
