@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/02/06 15:35:05  CKP2
+C Atom-only output in PCH
+C
 C Revision 1.24  2001/01/12 15:09:59  CKP2
 C enable CAMERON to use old lists
 C
@@ -1254,7 +1257,7 @@ CODE FOR KLNKIO
 C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
-      CHARACTER *32 CPATH
+      CHARACTER *64 CPATH
       PARAMETER (NFILE = 10)
       CHARACTER *16 CFILE(NFILE)
 C
