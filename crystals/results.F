@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.84  2004/06/10 16:15:10  djw
+C Change back to computing cell properties from L5, but include L29 values in CIF as comments
+C
 C Revision 1.83  2004/06/10 07:52:24  djw
 C Tidy up loose ends in cif output for absorption correction.  NOTE that the keywords PSIMIN/MAX have been replaced by ANALMIN/MAX.
 C
@@ -2895,48 +2898,48 @@ C
 1250  CONTINUE
       RETURN
       END
-C
-CODE FOR SET0
-      SUBROUTINE SET0(J1,J2,IVET)
-C
-C
-      DIMENSION IVET(118)
-C
-\XCHARS
-C
-C
-      J=J1
-1000  CONTINUE
-      IF(J2-J)1100,1050,1050
-1050  CONTINUE
-      IVET(J)=NUMB(1)
-      J=J+1
-      GOTO 1000
-1100  CONTINUE
-      RETURN
-      END
-C
-CODE FOR SID
-      SUBROUTINE SID(A,N,IX,ID)
-C--CONVERT THE NUMBER 'A' INTO INTEGER AND FRACTIONAL PARTS
-C
-C  A   NUMBER TO CONVERT
-C  N   NUMBER OF DECIMAL PLACES REQUIRED
-C  IX  THE INTEGER PART OF 'A'
-C  ID  THE FRACTIONAL PART OF 'A'
-C
-C--
-C
-C
-      AM = 10.0**IABS(N)
-      X  = FLOAT( NINT(ABS(A)*AM)) / AM
-      IX=INT(X)
-      XD=X-FLOAT(IX)
-      ID=NINT(XD*(10.0**IABS(N)))
-      RETURN
-      END
-C
-C
+
+cCODE FOR SET0
+c      SUBROUTINE SET0(J1,J2,IVET)
+cC
+cC
+c      DIMENSION IVET(118)
+cC
+c\XCHARS
+cC
+cC
+c      J=J1
+c1000  CONTINUE
+c      IF(J2-J)1100,1050,1050
+c1050  CONTINUE
+c      IVET(J)=NUMB(1)
+c      J=J+1
+c      GOTO 1000
+c1100  CONTINUE
+c      RETURN
+c      END
+
+cCODE FOR SID
+c      SUBROUTINE SID(A,N,IX,ID)
+cC--CONVERT THE NUMBER 'A' INTO INTEGER AND FRACTIONAL PARTS
+cC
+cC  A   NUMBER TO CONVERT
+cC  N   NUMBER OF DECIMAL PLACES REQUIRED
+cC  IX  THE INTEGER PART OF 'A'
+cC  ID  THE FRACTIONAL PART OF 'A'
+cC
+cC--
+cC
+cC
+c      AM = 10.0**IABS(N)
+c      X  = FLOAT( NINT(ABS(A)*AM)) / AM
+c      IX=INT(X)
+c      XD=X-FLOAT(IX)
+c      ID=NINT(XD*(10.0**IABS(N)))
+c      RETURN
+c      END
+
+
 CODE FOR SI
       SUBROUTINE SI(A,N,ID)
 C--EXPRESS THE NUMBER 'A' AS AN INTEGER
