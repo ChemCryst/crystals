@@ -1,4 +1,4 @@
-%SCRIPT YDIST
+%SCRIPT DSCCHECK
 %%
 %%
 %  VARIABLE REAL UISOF
@@ -47,13 +47,13 @@
              format is correct. ( Your old list 5
              will be written to disk for safety ).
 
-% GET NOSTORE FINAL ABBREVIATED 'Do you want me to -
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want me to -
 automatically reformat LIST 5 for you?' 'YES'
-% IF VALUE .EQ. 2 THEN
-%  COPY 'RELEASE PUNCH OLDLIST5.DAT'
-%  COPY 'PUNCH 5'
-%  COPY 'END'
-%  COPY 'RELEASE PUNCH CRFILE.PCH'
+%   IF VALUE .EQ. 2 THEN
+%    COPY '#RELEASE PUNCH OLDLIST5.DAT'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+%    COPY '#RELEASE PUNCH CRFILE.PCH'
 
  A copy of your current atom list has been saved in
  the current directory as 'OLDLIST5.DAT'
@@ -62,12 +62,13 @@ automatically reformat LIST 5 for you?' 'YES'
  of CRYSTALS, then type '#USE OLDLIST5.DAT' when
  you start up CRYSTALS.
 
-%  COPY '#EDIT'
-%  COPY 'REFORMAT ALL'
-%  COPY 'END'
+%    COPY '#EDIT'
+%    COPY 'REFORMAT ALL'
+%    COPY 'END'
 
  Your present LIST 5 has been converted to the new
  format. You may now continue safely.
 
-% END IF
+%   END IF
+%  END IF
 %END SCRIPT
