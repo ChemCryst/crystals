@@ -21,18 +21,6 @@
 %%
 %%
 %    EVALUATE QTITLE = 'CIF routine'
-%    EVALUATE QLINE1 = 'Do you want to include'
-%    EVALUATE QLINE2 = 'a reflection listing?'
-%    EVALUATE BUTTOK = '&Yes'
-%    EVALUATE BUTTXX = '&No'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. TRUE THEN
-%      COPY '#PUNCH 6 B'
-%      COPY 'END'
-%    END IF
-%%
-%%
-%    EVALUATE QTITLE = 'CIF routine'
 %    EVALUATE QLINE1 = 'Do you want to open'
 %    EVALUATE QLINE2 = 'the CIF for editing?'
 %    EVALUATE BUTTOK = '&Yes'
@@ -41,4 +29,18 @@
 %    IF ANSWER .EQ. TRUE THEN
 %      COPY '#SPAWN +notepad publish.cif'
 %    END IF
+%%
+%    EVALUATE QTITLE = 'CIF routine'
+%    EVALUATE QLINE1 = 'Do you want to produce'
+%    EVALUATE QLINE2 = 'a reflection listing?'
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%      COPY '#OPEN FRN1 publish.fcf'
+%      COPY '#PUNCH 6 B'
+%      COPY 'END'
+%      COPY '#RELEASE FRN1 BFILE.FRN'
+%    END IF
+%%
 %END SCRIPT
