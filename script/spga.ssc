@@ -1,0 +1,38 @@
+%SCRIPT SPGA
+^^WI WINDOW xspga 'Absence analysis' MODAL LARGE KEEP SIZE
+^^WI COMMIT='SPGA_BOK' CANCEL='SPGA_BOK'
+^^WI GRID MAIN NROWS=2 NCOLS=1
+^^WI {
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
+^^WI  {
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI   {
+^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=1
+^^WI    {
+^^WI     @ 1,1 STATIC XFW1
+^^WI ''
+^^WI     @ 2,1 STATIC XFW2
+^^WI ''
+^^WI     @ 3,1 STATIC XFW3
+^^WI ''
+^^WI     @ 4,1 STATIC XFW4
+^^WI ''
+^^WI    }
+^^WI    @ 1,1 ICON IM INFO
+^^WI   }
+^^WI   @ 4,2 PLOTWINDOW _SPGA NROWS=20 NCOLS=64
+^^WI  }
+^^WI  @ 2,1 PROGRESS _SPGPR 'Please wait'
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDPROGRESSTO _SPGPR
+%        COPY '#SGPLOT'
+%        COPY 'OUTPUT PLOT=YES'
+%        COPY 'CLASS 1 0 0 0 0 0 0 0 1'
+%        COPY 'CONDITION 1 0 1 2'
+%        COPY 'END'
+%        GET NOSTORE SILENT TEXT ' ' ' '
+^^CO DISPOSE xspga
+%END SCRIPT
+                                  
