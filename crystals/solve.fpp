@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2004/09/29 11:57:18  rich
+C Compress the output the happens during each cycle of SFLS.
+C
 C Revision 1.22  2004/07/08 15:25:33  rich
 C Updated \MASK code to include mask generation for solvent accessible volume.
 C (It wasn't finished before.) Mask is stored in list 42.
@@ -769,7 +772,7 @@ c     3 /' Number of observations   ',3I16,
 c     5 /' Hamilton weighted R-value',3F16.3)
 4451  FORMAT(5X,I7,' reflections + ',I7,' restraints = ',I7,
      1           ' observations',/,
-     2 X,'Weighted-R:',1X,G10.4,12X,G10.4,12X,G10.4)
+     2 1X,'Weighted-R:',1X,G10.4,12X,G10.4,12X,G10.4)
 C
 C>DJWSEP96
 C----- UPDATE LIST 30
@@ -852,7 +855,7 @@ c      CALL XPRVDU(NCVDU, 1,0)
      1 ' U[22] U[33] U[23] U[13] U[12]')
       CALL XPRVDU(NCVDU, 1,0)
       WRITE(CMON,4702)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
-4702  FORMAT(' Reversals',3(X,F5.1),3(F5.1),6(X,F5.1))
+4702  FORMAT(' Reversals',3(1X,F5.1),3(F5.1),6(1X,F5.1))
       CALL XPRVDU(NCVDU, 1,0)
 C4750  FORMAT(/10H Reversals,12F9.2///
 C     2 44H Reversals is the percentage of shifts whose,
