@@ -25,6 +25,7 @@ typedef struct ElemStats
     float tRating1;
     float tRating2; 
     bool iFiltered;
+    bool iShouldDo;
 }ElemStats;
 
 class Stats:public MyObject
@@ -42,6 +43,7 @@ class Stats:public MyObject
         void handleFilteredData(int pColumns[], int pNumColumns);
         int numberOfOutElementValues();
         std::ostream& outputElementValue(std::ostream& pStream, ElemStats* pStats , int pValues);
+        void setShouldDos(Headings* pHeadings, Conditions* pConditions);
     public:
         Stats(Headings* pHeadings, Conditions* pConditions);
         ~Stats();

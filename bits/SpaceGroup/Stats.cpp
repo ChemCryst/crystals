@@ -35,7 +35,8 @@ Stats::Stats(Headings* pHeadings, Conditions* pConditions)
     iHeadings = pHeadings;
     iConditions = pConditions;
     iStats = new ElemStats[pHeadings->length()*pConditions->length()];
-	bzero((void*)iStats, sizeof(ElemStats)*pHeadings->length()*pConditions->length());
+    bzero((void*)iStats, sizeof(ElemStats)*pHeadings->length()*pConditions->length());
+    setShouldDos(pHeadings, pConditions);
     iTotalNum = 0; 
     iTotalIntensity = 0;
 }
@@ -43,6 +44,25 @@ Stats::Stats(Headings* pHeadings, Conditions* pConditions)
 Stats::~Stats()
 {
     delete[] iStats;
+}
+
+void Stats::setShouldDos(Headings* pHeadings, Conditions* pConditions)
+{
+    int tHeadingCount = pHeadings->length();
+    int tCondCount = pConditions->length();
+    
+    for (int i = 0; i < tCondCount; i++)	//Conditions
+    {
+        Matrix<short>* tConditionMat = pConditions->getMatrix(i);
+        for (int j = 0; j < tHeadingCount; j++) //Headings.
+        {
+            Matrix<short>* tHeadingMat = pHeadings->getMatrix(j);
+            Matrix<short> tResult(3, 1);
+            Matrix<short> tZeros(3, 1, (short)0);
+            tConditionMat->mul(*tHeadingMat, tResult);
+            iStats[(j*tCondCount)+i].iShouldDo = !tZeros.operator==(tResult);
+        }
+    }
 }
 
 void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>* pHKLM)	//Goes through the rows down the specified Column adding the reflection to the stats.
@@ -168,16 +188,30 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     pStream << tName << setw(pFirstColumnWidth-tName.length()) ;
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
     }
     pStream << "\n<I>" << setw(pFirstColumnWidth-3);
     for (int i = 0; i < pNumOfColums; i++)
     {
       //Average int of matched refelections
-		if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM == 0)
-			pStream << " " << setw(pOtherColumns) << "NaN";
-		else
-			pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+                if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+                {
+                    if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM == 0)
+                            pStream << " " << setw(pOtherColumns) << "NaN";
+                    else
+                            pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+                }
+                else
+                {
+                    pStream << " " << setw(pOtherColumns) << " ";
+                }
     }
     String tEq("==");
     String tNE("<>");
@@ -185,43 +219,79 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     pStream << "\n" << tName << setw(pFirstColumnWidth-tName.length());
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
     }
     pStream << "\n<I>" << setw(pFirstColumnWidth-3);
     for (int i = 0; i < pNumOfColums; i++)
-    {	if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM == 0)
-			pStream << " " << setw(pOtherColumns) << "NaN";
+    {	
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            if (iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM == 0)
+                            pStream << " " << setw(pOtherColumns) << "NaN";
+            else
+                            pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Ave intensity non-matched.
+        }
         else
-			pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Ave intensity non-matched.
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
     }
     pStream << "\n% I < 3u(I)" << setw(pFirstColumnWidth-11);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        float tLess = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
-        float tGreater = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
-		if (tLess+tGreater == 0)
-			pStream << " " << setw(pOtherColumns) << "NaN";
-		else
-			pStream << " " << setw(pOtherColumns) << setprecision (4) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            float tLess = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
+            float tGreater = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
+            if (tLess+tGreater == 0)
+                    pStream << " " << setw(pOtherColumns) << "NaN";
+            else
+                    pStream << " " << setw(pOtherColumns) << setprecision (4) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
     }
     pStream << "\nScore1" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
     }
     pStream << "\nScore2" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
-         pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
+        if (iStats[pColumnsToPrint[i]*tCCount+pRow].iShouldDo)
+        {
+            pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
+        }
+        else
+        {
+            pStream << " " << setw(pOtherColumns) << " ";
+        }
     }
 }
 
 void Stats::outputHeadings(std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums)
 {
-    pStream << setw(12);
+    pStream << setw(9);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << "" << setw(8) << iHeadings->getName(pColumnsToPrint[i]) << "(" << (int)pColumnsToPrint[i] << ")";
+        pStream << "" << setw(7) << iHeadings->getName(pColumnsToPrint[i]) << "(" << (int)pColumnsToPrint[i] << ")";
     }
     pStream << "\n";
 }
@@ -232,15 +302,23 @@ void Stats::calProbs()
     for (int i = 0; i < tTotalNum; i ++)
     {
         ElemStats* tCurrentStat = &(iStats[i]);
-        float tValue1 = iStats[i].tNonMTotInt/iStats[i].tNumNonM;
-        float tValue2 = iStats[i].tMTotInt/iStats[i].tNumM;
-        tValue1 = tValue1/(tValue2+tValue1);			//Calculate Ave int non-matched over total.
-        
-        tCurrentStat->tRating1 = evaluationFunction(tValue1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD);
-        
-        tValue1 = (float)iStats[i].tNumNonMGrInt/((float)iStats[i].tNumNonMGrInt+(float)iStats[i].tNumNonMLsInt);
-        
-        tCurrentStat->tRating2= evaluationFunction(tValue1, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
+        if (tCurrentStat->iShouldDo)
+        {
+            float tValue1 = iStats[i].tNonMTotInt/iStats[i].tNumNonM;
+            float tValue2 = iStats[i].tMTotInt/iStats[i].tNumM;
+            tValue1 = tValue1/(tValue2+tValue1);			//Calculate Ave int non-matched over total.
+            
+            tCurrentStat->tRating1 = evaluationFunction(tValue1, AbsentAIM, AbsentAISD, PresentAIM, PresentAISD);
+            
+            tValue1 = (float)iStats[i].tNumNonMGrInt/((float)iStats[i].tNumNonMGrInt+(float)iStats[i].tNumNonMLsInt);
+            
+            tCurrentStat->tRating2= evaluationFunction(tValue1, Absent3SM, Absent3SSD, Present3SM, Present3SSD);
+        }
+        else
+        {
+            tCurrentStat->tRating1 = 0;
+            tCurrentStat->tRating1 = 0;
+        }
     }
     int tColumns[] = {0};
     handleFilteredData(tColumns, 1);
