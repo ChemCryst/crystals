@@ -543,17 +543,20 @@ C
 C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
-#GID        GOTO 9000 !Skip this Cameron part.
+C - Only GID and DOS support Cameron's graphics.
+##GIDDOS        GOTO 9000 !Skip this Cameron part.
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
       IF (ISSTML .EQ. 4) THEN
         LCLOSE = .FALSE.
-        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
+C - Only GID needs funny text strings to initialise the graphics.
+C - Could move these to ZCAMER.
+&GID        WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
 &GID        CALL ZMORE(CHARTC,0)
-        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
+&GID        WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
 &GID        CALL ZMORE(CHARTC,0)
-        WRITE(CHARTC,'(A)') '^^CR'
+&GID        WRITE(CHARTC,'(A)') '^^CR'
 &GID        CALL ZMORE(CHARTC,0)
-&GID        CALL ZCAMER ( 1, 0 , 0 , 0)
+&&GIDDOS        CALL ZCAMER ( 1, 0 , 0 , 0)
 C       OLNCRU = NCRU
 C       NCRU = 5
 8025  CONTINUE
@@ -574,7 +577,7 @@ C Replace 0 with 32 along the string
 8029     CONTINUE
          WRITE(CHRBUF,'(80A1)')LCMAGE
 &GID           CALL ZMORE(CHRBUF,0)
-&GID         CALL ZCONTR
+&&GIDDOS         CALL ZCONTR
 cdjwjan99
          if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
      1   lclose = .true.
