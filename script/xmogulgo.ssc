@@ -135,9 +135,6 @@
 %  COPY '#FOREIGN MOL2'
 %  COPY 'END'
 {R * Done.
-{I * Copying mogul library info file...
-%  COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
-{R * Done.
 {I * Writing instructions for MoGuL...
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
@@ -145,7 +142,12 @@
 %  TRANSFER 'MOGUL MOLECULE crystals.mol2' TO PUNCH
 %  COPY '#RELEASE PUNCH bfile.pch'
 {I * Running Mogul.
-%  COPY '#SPAWN + "CRYSDIR:mogul.bat" -ins crystals.qf'
+^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
+%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
+%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
+ '\" Executable' TO DISPLAY
+% GET SILENT NOSTORE TEXT 'Exec?' ' '
+% TRANSFER '#SPAWN + "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
 {R * Done.
 ^^CO DISPOSE XMOGULGO
 %  FINISH
@@ -178,9 +180,6 @@
 %  COPY '#FOREIGN MOL2'
 %  COPY 'END'
 {R * Done.
-{I * Copying mogul library info file...
-%  COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
-{R * Done.
 {I * Writing instructions for MoGuL...
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
@@ -211,7 +210,12 @@
 %  COPY '#RELEASE PUNCH bfile.pch'
 {R * Done.
 {I * Running Mogul.
-%  COPY '#SPAWN + "CRYSDIR:mogul.bat" -ins crystals.qf'
+^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
+%GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
+%TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
+ '\" Executable' TO DISPLAY
+% GET SILENT NOSTORE TEXT 'Exec?' ' '
+% TRANSFER '#SPAWN + "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
 {R * Done.
 ^^CO DISPOSE XMOGULGO
 %  COPY '#SCRIPT MOGULRES'
