@@ -1,5 +1,5 @@
 %SCRIPT XRENUM
- * Manual renumbering of structure using mouse.
+%% * Manual renumbering of structure using mouse.
 ^^WI WINDOW XRENUM 'Renumber' MODAL LARGE KEEP SIZE COMMIT='BOK' CANCEL='BXX'
 ^^WI POSITION=CENTRED 'MODEL01'
 ^^WI GRID MAIN NROWS=7 NCOLS=3
@@ -63,6 +63,7 @@
 %  EVALUATE ICOUNTER = 0
 %  EVALUATE INEXTS   = - 1
 %  COPY '#EDIT'
+%  COPY 'MONITOR OFF'
 %  CLEAR
 %  INSERT 'MOVE '
 %  EVALUATE LSEND = TRUE
@@ -92,6 +93,7 @@
 %          VERIFY ON OFF
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %          COPY '#EDIT'
+%          COPY 'MONITOR OFF'
 %          TRANSFER 'ADD ' // CHARACTER ( 10 * N5 ) // -
                     ' ALL(SERIAL)' TO CRYSTALS
 %          COPY 'END'
@@ -114,11 +116,13 @@
 %%
 %          IF ( VALUE .EQ. 1 ) THEN
 %            COPY '#EDIT'
+%            COPY 'MONITOR OFF'
 %            TRANSFER 'DELETE ' // CFIRST // '(' // -
                       CHARACTER INTEGER RFIRST // ') UNTIL LAST' TO CRYSTALS
 %            COPY 'END'
 %          ELSE
 %            COPY '#EDIT'
+%            COPY 'MONITOR OFF'
 %            TRANSFER 'AFTER ' // CFIRST // '(' // -
                       CHARACTER INTEGER RFIRST // ')' TO CRYSTALS
 %            TRANSFER 'MOVE ' // CHARACTER INEXTS // ' ' // CFIRST // '(' // -
@@ -140,6 +144,7 @@
 %          COPY 'END'
 %%
 %          COPY '#EDIT'
+%          COPY 'MONITOR OFF'
 %          TRANSFER 'ADD ' // CHARACTER ( 10 * N5 ) // -
                     ' FIRST(SERIAL) UNTIL ' // CLAST // -
                     '(' // CHARACTER INTEGER RLAST // ')' TO CRYSTALS
