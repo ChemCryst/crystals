@@ -432,9 +432,9 @@ void CxEditBox::Disable(Boolean disable)
 {
 #ifdef __WINDOWS__
       if(disable)
-		EnableWindow(FALSE);
-	else
-		EnableWindow(TRUE);
+            EnableWindow(false);
+      else               
+            EnableWindow(true);
 #endif
 #ifdef __LINUX__
       if(disable)

@@ -306,9 +306,9 @@ void CxCheckBox::Disable(Boolean disabled)
 {
 #ifdef __WINDOWS__
 	if(disabled)
-		EnableWindow(FALSE);
+            EnableWindow(false);
 	else
-		EnableWindow(TRUE);
+            EnableWindow(true);
 #endif
 #ifdef __LINUX__
 	if(disabled)

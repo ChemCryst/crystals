@@ -47,11 +47,11 @@ void CcStatus::SetNumSelectedAtoms(int nSelected)
 Boolean CcStatus::ShouldBeEnabled(int enableFlags, int disableFlags)
 {
 	if( disableFlags & statusFlags )           //If any bits match, then should be disabled.
-		return FALSE;
+            return false;
 	if ( enableFlags & ( ~statusFlags) ) //If any 0's in the statusFlag match any 1's in the enableFlags, then should be disabled.
-		return FALSE;
+            return false;
 
-	return TRUE;   //Otherwise, enable.
+      return true;   //Otherwise, enable.
 }
 
 
