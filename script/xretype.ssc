@@ -25,7 +25,7 @@
 ^^WI   }
 ^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3
 ^^WI   {
-^^WI      @ 1,1 GRID OPTIONS NROWS=3 NCOLS=1
+^^WI      @ 1,1 GRID OPTIONS NROWS=5 NCOLS=1
 ^^WI      {
 ^^WI        @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'
 ^^WI        {
@@ -41,6 +41,14 @@
 ^^WI          @ 5,1 STATIC T1 'click the "Edit '
 ^^WI          @ 6,1 STATIC T1 'Elements" button.'
 ^^WI          @ 8,1 BUTTON BED 'Edit Elements'
+^^WI        }
+^^WI        @ 5,1 GRID CLICK NROWS=6 NCOLS=1
+^^WI        {
+^^WI          @ 1,1 STATIC T1 'If you want to assemble'
+^^WI          @ 2,1 STATIC T1 'the atoms into bonded'
+^^WI          @ 3,1 STATIC T1 'residues, click the'
+^^WI          @ 4,1 STATIC T1 '"Collect Atoms" button.'
+^^WI          @ 6,1 BUTTON BCOLL 'Collect Atoms'
 ^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
@@ -97,7 +105,7 @@
 %     COPY 'GUI HIGH'
 %     COPY 'EXEC'
 %   END IF
-%   VERIFY BOK BXX ATOM BHELP BED NULL
+%   VERIFY BOK BXX ATOM BHELP BED BCOLL NULL
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %    BLOCK      %BOK
@@ -160,6 +168,14 @@
 %       COPY 'monitor OFF'
 %       COPY 'END'
 %       COPY '#SCRIPT XINLIST3'
+%    END BLOCK
+%    BLOCK     %BCOLL
+%       EVALUATE BROKENEDIT = TRUE
+%       COPY 'monitor OFF'
+%       COPY 'END'
+%       COPY '#COLLECT'
+%       COPY 'END'
+{I Atoms collected by symmetry.
 %    END BLOCK
 %    BLOCK     %NULL
 Call from add H script.
