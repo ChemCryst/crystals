@@ -16,17 +16,26 @@ class CcModelDoc;
 #include <GL/glu.h>
 #endif
 
+#define CC_ATOM 1
+#define CC_BOND 2
+
+class CcModelStyle;
+
 class CcModelObject
 {
    public:
      CcModelObject(CcModelDoc* pointer);
      CcModelObject();
      virtual ~CcModelObject();
-     virtual void Render( CrModel* view, bool detailed ) = 0;
+     virtual void Render( CcModelStyle * style ) = 0;
      virtual void ParseInput ( CcTokenList* tokenlist) = 0;
+     CcString Label();
+     int Type();
+    GLuint glID;
    protected:
      CcModelDoc * mp_parent;
-
+     CcString label;
+     int type;
 };
 
 #include	"ccmodelatom.h"
