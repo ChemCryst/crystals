@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2001/10/17 15:14:05  Administrator
+C Changes to allow PARTS in list 5
+C
 C Revision 1.15  2001/10/08 16:09:06  ckp2
 C Fix bug reading #BONDING MAKE command
 C
@@ -87,7 +90,8 @@ C----- CONTROL VARIABLES IN XPROCD
 C
 C  IALL    DISTANCE CONTROL FLAG :
 C          -1  PRINT CONTACTS TO THOSE ATOMS BELOW THE CURRENT ONE IN LI
-C           0  PRINT ALL CONTACTS TO THE CURRENT ATOM.
+C           0  AUTO (No, UNLESS INCLUDE, PIVOT OR BONDED GIVEN)
+C           1  PRINT ALL CONTACTS TO THE CURRENT ATOM.
 C  IP      PRINT CONTROL FLAG FOR COORDINATES :
 C          -1  DO NOT PRINT GENERATED COORDINATE FOR A DISTANCE.
 C           0  PRINT GENERATED COORDINATES FOR A DISTANCE.
@@ -129,6 +133,7 @@ C             0 RESTRAINTS
 C             1 PUBLICATION
 C             2 CIF
 C             3 SCRIPT READ-ABLE DATA
+C             4 MOGUL query file.
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -141,37 +146,31 @@ C            0 DO APPLY UNIT CELL TRANSLATIONS
 C
 C
 C
-C----- A FUNCTION VECTOR IS DEFINED TO INDICATE THE TREATMENT OF ATOMS
+C----- A VECTOR MAY BE DEFINED TO INDICATE THE TREATMENT OF ATOMS
 C
-C----- JFNVC - 0 DONOT USE THE FUNCTION VECTOR
-C              1 DO    USE THE FUNCTION VECTOR
-C             -1 USE THE FUNCTION VECTOR FOR INCLUDE/EXCLUDE ONLY
-C      LFNVC,MFNVC ECT, THE FUNCTION VECTOR POINTERS
+C----- JATVC - 0 DO NOT USE A FUNCTION VECTORS
+C               1 USE THE VECTORS
 C
-C      (MFNVC +0)      USE FLAG
-C                        -1      DO NOT USE ATOM
-C                         0      CAN BE USED
-C                         1      DO USE ATOM
-C                         2      USE ONLY AS A PIVOT ATOM
-C                         3      USE ONLY AS A BONDED ATOM
-C      (MFNVC +1)      RADIUS FOR CONTACT
+C      LATMVC, MATMVC, ETC. - THE FUNCTION VECTOR POINTERS FOR ATOMS
 C
-C      IDEFFN      THE VALUE TO BE USED FOR ATOMS WHOSE INCLUDE/EXCLUDE
-C                  STATUS IS NOT EXPLICITLY STATED.
-C                    -1      EXCLUDE UNSPECIFIED ATOMS
-C                     0      INITIAL VALUE. IF STILL 0 WHEN INPUT IS
-C                            COMPLETE, THIS IS CHANGED TO 1.
-C                     1      INCLUDE SPECIFIED ATOMS
+C      THE VECTOR WILL BE N5*3 IN LENGTH
 C
-C -- THE POSSIBLE INCLUSION / EXCLUSION SPECIFICATIONS ARE:-
+C      (MATVC+0) USE FLAG FOR PIVOT ATOM 
+C      (MATVC+1) USE FLAG FOR BONDED ATOM 
+C      (MATVC+2) USE FLAG FOR 3RD ATOM IN ANGLE SEARCH
 C
-C            DIRECTIVES USED   IDEFFN      ACTION
-C            ---------- ----   ------      ------
-C            NONE              0           ALL ATOMS INCLUDED
-C            INCLUDE ONLY      -1          UNSPECIFIED ATOMS EXCLUDED
-C            EXCLUDE ONLY      +1          UNSPECIFIED ATOMS INCLUDED
-C            INCLUDE + EXCLUDE -1          UNSPECIFIED ATOMS EXCLUDED
+C      MEANINGS OF USE FLAG
+C             -1     DO NOT USE AT THIS POSITION
+C              0     ATOM ALLOWED AT THIS POSITION
 C
+C----- A FUNCTION VECTOR IS DEFINED TO INDICATE THE RADIUS OF ATOMS
+C
+C----- JFNVC - 0 DO NOT USE THE RADIUS VECTOR
+C              1 USE THE RADIUS INFO.
+C
+C      LFNVC,MFNVC, ETC - THE RADIUS FUNCTION VECTOR POINTERS
+C
+C      (MFNVC)    RADIUS FOR CONTACT
 C
 C
 C--THE COMMON BLOCK XWORKA IS USED AS :
@@ -231,6 +230,7 @@ C
       CHARACTER *32 CATOM1, CATOM2, CATOM3, CBLANK
 C
       LOGICAL LDISTI, LDISTE, LDISTP, LDISTB ! Directives given.
+      LOGICAL PIVINI, BONINI !Atom vector initialised by directive.
       LOGICAL LHFIXD(3)
 C
 \TYPE11
@@ -277,6 +277,7 @@ C
       EQUIVALENCE (B(1),C)
       EQUIVALENCE (CC(1),AC),(TT(1),AT)
       EQUIVALENCE (APD(1),IAPD(1))
+      DIMENSION KATV(3)
 C
 C
       DATA RESTR1 /'DIST'/, RESTR2 /'ENER'/
@@ -302,6 +303,8 @@ C----- MAXIMUM PARTS PER PARAMETER
 
       DATA KHYD /'H   '/
 
+      PIVINI = .FALSE.
+      BONINI = .FALSE.
       LDISTI = .FALSE.
       LDISTE = .FALSE.
       LDISTP = .FALSE.
@@ -311,6 +314,7 @@ C--SET THE TIMING FUNCTION
       CALL XCSAE
 C----- INITIALISE FUNCTION VECTOR USE
       JFNVC = 1
+      JATVC = 1
 C -- ALLOCATE A BUFFER FOR COMMAND PROCESSING
       MQ = KSTALL ( 100 )
 C----- INITIALISE LEXICAL INPUT
@@ -330,121 +334,184 @@ C--READ THE INITIAL CONSTANTS
 C----- INSTRUCTION READING LOOP
 100   CONTINUE
 C----- READ A DIRECTIVE
-      IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
-      IF (IDIRNM .LT. 0) GOTO 100
-      IF (IDIRNM .EQ. 0) GOTO 1000
-      GOTO( 100,100,100,100, 220, 230, 240, 250, 260, 200, 9910), IDIRNM
-      GOTO 9910
-C
-C
+        IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
+        IF (IDIRNM .LT. 0) GOTO 100
+        IF (IDIRNM .EQ. 0) GOTO 1000
+        GOTO( 100,100,100,100, 220, 230, 240, 250, 260, 200,9910),IDIRNM
+        GOTO 9910
+
+
 200   CONTINUE
 C------ LOAD LIST 5/10
-      IULN= ISTORE(JCOMBF+11)
-      IULN = KTYP05 (IULN)
-      CALL XLDR05 (IULN)
-      IF (IERFLG .LT. 0) GOTO 9900
+        IULN= ISTORE(JCOMBF+11)
+        IULN = KTYP05 (IULN)
+        CALL XLDR05 (IULN)
+        IF (IERFLG .LT. 0) GOTO 9900
+C----- ALLOCATE A RADIUS VECTOR
+        MDFNVC = 1
+        NFNVC = N5
+        I=N5*MDFNVC
+        LFNVC = KSTALL (I)
+        CALL XZEROF ( ISTORE(LFNVC) , I )
+        IDEFFN = 0
 C----- ALLOCATE A FUNCTION VECTOR
-      MDFNVC = 2
-      NFNVC = N5
-      I=N5*MDFNVC
-      LFNVC = KSTALL (I)
-      CALL XZEROF ( ISTORE(LFNVC) , I )
-      IDEFFN = 0
-      GOTO 100
+        MDATVC = 3
+        NATVC = N5
+        I=N5*MDATVC
+        LATVC = KSTALL (I)
+        CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
+        GOTO 100
+
 220   CONTINUE
 C -- 'INCLUDE' DIRECTIVE
-C When including atoms, you expect the default to be to
-C exclude all other atoms.
-      CALL XDSSEL ( ISTORE(LFNVC) , MDFNVC , NFNVC , 1 , IDEFFN )
-C----- SET SELECT ALLDIST=YES IF INCLUDE GIVEN
-      IF (ISTORE(JCOMBF+4) .NE. 1 ) THEN
-       ISTORE(JCOMBF+4) = 1
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,221)
-       WRITE(NCAWU,221)
-221    FORMAT(' ALLDIST  set to YES. Use the SELECT Directive after'/
-     1  ,' the INCLUDE/ONLY directive if you want ALLDIST set to NO')
-      ENDIF
-      LDISTI=.TRUE.
-      GO TO 100
+C Set all 3 atom vectors to exclude by default.
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          IF ( .NOT. PIVINI ) ISTORE(MATVC)   = -1
+          IF ( .NOT. BONINI ) ISTORE(MATVC+1) = -1
+          IF ( .NOT. BONINI ) ISTORE(MATVC+2) = -1
+        ENDDO
+        PIVINI = .TRUE.
+        BONINI = .TRUE.
+        KATV(1) = 1
+        KATV(2) = 1
+        KATV(3) = 1
+        CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 0 , KATV)
+
+c        DO KKI = 0, NATVC-1
+c          MATVC = LATVC+MDATVC*KKI
+c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
+        LDISTI=.TRUE.
+        GO TO 100
+
 230   CONTINUE
 C -- 'EXCLUDE' DIRECTIVE
-C When excluding atoms, you expect the default to be to include
-C all other atoms, unless some have already been included.
-      CALL XDSSEL ( ISTORE(LFNVC) , MDFNVC , NFNVC , -1 , IDEFFN )
-      LDISTE=.TRUE.
-      GO TO 100
-C----- ONLY. INDICATE FUNCTION VECTOR ONLY USED FOR INCLUDE/EXCLUDE
+C Set all 3 atom vectors to include by default.
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
+        ENDDO
+        PIVINI = .TRUE.
+        BONINI = .TRUE.
+        KATV(1) = 1
+        KATV(2) = 1
+        KATV(3) = 1
+        CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , -1 , KATV )
+c        DO KKI = 0, NATVC-1
+c          MATVC = LATVC+MDATVC*KKI
+c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
+        LDISTE=.TRUE.
+        GO TO 100
+
+C----- ONLY. ORIGINAL USE NOW LOST IN MISTS OF TIME. ONLY SETS THE
+C----- 3RD ATOM VECTOR TO INCLUDE ANY ATOM. SO, WITHOUT ONLY, THE COMMAND
+C----- "BONDED H" WOULD RETURN, SAY, "H-C-H", WITH ONLY IT CAN RETURN
+C----- "H-C-O" FOR EXAMPLE.
 240   CONTINUE
-      JFNVC = -1
-      GOTO 100
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          ISTORE(MATVC+2) = 0
+        ENDDO  
+c        DO KKI = 0, NATVC-1
+c          MATVC = LATVC+MDATVC*KKI
+c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
+        GOTO 100
+
 250   CONTINUE
 C----- 'PIVOT'
-C When choosing atoms for pivots, you expect the default to be to
-C allow (not include) all other atoms as bonded.
-      CALL XDSSEL ( ISTORE(LFNVC) , MDFNVC , NFNVC , 2 , IDEFFN )
-      IDEFFN=3
-C----- SET SELECT ALLDIST=YES IF INCLUDE GIVEN
-      IF (ISTORE(JCOMBF+4) .NE. 1 ) THEN
-       ISTORE(JCOMBF+4) = 1
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,221)
-       WRITE(NCAWU,221)
-      ENDIF
-      LDISTP=.TRUE.
-      GOTO 100
+C Set first vector (pivot) to -1, and the other 2 to 0:
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          IF ( .NOT. PIVINI ) ISTORE(MATVC)   = -1
+          IF ( .NOT. BONINI ) ISTORE(MATVC+1) = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+2) = 0
+        ENDDO
+        PIVINI = .TRUE.
+        KATV(1) = 1
+        KATV(2) = 0
+        KATV(3) = 0
+        CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 0 , KATV)
+c        DO KKI = 0, NATVC-1
+c          MATVC = LATVC+MDATVC*KKI
+c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
+        LDISTP=.TRUE.
+        GOTO 100
+
 260   CONTINUE
 C----- 'BONDED'
-C When choosing atoms for bonded, you expect the default to be to
-C allow (not include) other atom as pivots.
-      CALL XDSSEL ( ISTORE(LFNVC) , MDFNVC , NFNVC , 3 , IDEFFN )
-      IDEFFN=2
-C----- SET SELECT ALLDIST=YES IF INCLUDE GIVEN
-      IF (ISTORE(JCOMBF+4) .NE. 1 ) THEN
-       ISTORE(JCOMBF+4) = 1
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,221)
-       WRITE(NCAWU,221)
-      ENDIF
-      LDISTB=.TRUE.
-      GOTO 100
+C Set first vector (pivot) to 0, and the other 2 to -1:
+        DO MATVC = LATVC,LATVC+NATVC*MDATVC,MDATVC
+          IF ( .NOT. PIVINI ) ISTORE(MATVC)   = 0
+          IF ( .NOT. BONINI ) ISTORE(MATVC+1) = -1
+          IF ( .NOT. BONINI ) ISTORE(MATVC+2) = -1
+        ENDDO
+        BONINI = .TRUE.
+        KATV(1) = 0
+        KATV(2) = 1
+        KATV(3) = 1
+        CALL XDSSEL ( ISTORE(LATVC) , MDATVC , NATVC , 0 , KATV)
+c        DO KKI = 0, NATVC-1
+c          MATVC = LATVC+MDATVC*KKI
+c          WRITE (CMON,'(4I10)') KKI,(ISTORE(MATVC+KKR),KKR=0,2)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
+        LDISTB=.TRUE.
+        GOTO 100
+
 C--SET A FEW INITIAL CONSTANTS AND PRINT THE CAPTION
 1000  CONTINUE
-C
-C -- COMMAND INPUT COMPLETE. CHECK FOR ERRORS
+
+C COMMAND INPUT COMPLETE. CHECK FOR ERRORS
       IF ( LEF .GT. 0 ) GO TO 9910
-C
-&PPCCS***
-&PPC      CALL SETSTA( 'Distance' )
-&PPC      CALL nextcursor
-&PPCCE***
+
 C----- RELOCATE THE COMMON BLOCK DATA
       CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN)
-C----- EXTRACT THE FUNCTION FLAG
-      JFNVC = MIN0(JFNVC, IRDUS)
-      IRDUS = MAX0(1,IRDUS)
+
+      IF ( IALL .EQ. 0 ) THEN
+        IALL = -1
+        IF ( LDISTI .OR. LDISTP .OR. LDISTB ) IALL=1
+      END IF
+
+      IF ( IPUNCH .EQ. 4 ) THEN
+C CSD format requires atom sequence number excluding H's:
+         INHVEC = KSTALL ( N5 )
+         NNHAT  = 0
+         DO I = 0,N5-1
+            IF ( ISTORE(L5+I*MD5) .NE. KHYD ) THEN
+              NNHAT = NNHAT + 1
+              ISTORE ( INHVEC + I ) = NNHAT
+            ELSE
+              ISTORE ( INHVEC + I ) = 0
+            END IF
+         END DO
+      END IF    
+
+
+
+c      WRITE(CMON,'(A,I4)') 'IALL = ',IALL
+c        CALL XPRVDU(NCVDU,1,0)
+
+
+C----- EXTRACT THE FUNCTION FLAG (0 for no radii, 1 for radii):
+      JFNVC = MIN0(1,IRDUS)  !IRDUS: 0 limits, 1 covalent, 2 vdw, 3 ionic
+C                            !JFNVC: 0 limits, -1 list41, 1 some radius
+      IRDUS = MAX0(1,IRDUS)  !Set to valid value.
       CHECK = VALUE + ZERO
 C----- SET RESTRAINT DIRECTIVE NAME AND DISTANCE TOLERANCE
       IF (IRDUS .EQ. 2) THEN
-            RESTR = RESTR2
-            TOLER = TOLER2
+            RESTR = RESTR2 !ENER
+            TOLER = TOLER2 !.5
       ELSE
-            RESTR = RESTR1
-            TOLER = TOLER1
+            RESTR = RESTR1 !DIST
+            TOLER = TOLER1 !.2
       ENDIF
-C
-C -- SET DEFAULT VALUE FOR 'IDEFFN'     Piv Bon Inc Exc  Action
-      IF ( LDISTB .AND. LDISTP ) THEN !  Y   Y   N   ?   Exclude rest.
-         IDEFFN = -1
-      ELSE IF ( LDISTI ) THEN         !  N   N   Y   ?   Exclude rest.
-         IDEFFN = -1
-      ELSE IF ( LDISTB ) THEN         !  N   Y   N   ?   Pivot rest.
-         IDEFFN = 2
-      ELSE IF ( LDISTP ) THEN         !  Y   N   N   ?   Bonded rest.
-         IDEFFN = 3
-      ELSE IF ( LDISTE ) THEN         !  N   N   N   Y   Include rest.
-         IDEFFN = 1
-      ELSE                            !  N   N   N   N   Include all.
-        IDEFFN = 1
-      END IF
-
+                                              
 C----- LOAD LIST 29
       CALL XFAL29
 C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
@@ -453,27 +520,20 @@ C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
       I5 = L5 + (N5-1)*MD5
       BMAX = 0.
       BMIN = 0.
-      DO 7450 M5=L5,I5,MD5
-      DO 7250 M29= L29,I29,MD29
-      JZ=M29+IRDUS
-      IF (ISTORE(M5) - ISTORE(M29)) 7250,7350,7250
-7250  CONTINUE
-C----- NO MATCH - POINT TO DEFAULT ATOM
-      JZ = L29 + IRDUS
-7350  CONTINUE
-C----- MATCH
-      STORE(IFNVC+1) = STORE(JZ)
-      BMAX = AMAX1( BMAX, STORE(JZ))
-C -- SET USE FLAG FOR THIS ATOM TO THE DEFAULT, IF THE FLAG IS NOT
-C    ALREADY SET.
-      IF ( ISTORE(IFNVC) .EQ. 0 ) ISTORE(IFNVC) = IDEFFN
-C debug - print out atoms, and their incl/excl status.
-c      WRITE (CMON,'(A4,2I10)') STORE(M5),NINT(STORE(m5+1)),istore(ifnvc)
-c      CALL XPRVDU(NCVDU, 1,0)
-C
-      IFNVC = IFNVC + MDFNVC
-7450  CONTINUE
-C
+
+      DO M5=L5,I5,MD5
+        JZ = L29 + IRDUS    !IF NO MATCH - POINT TO DEFAULT (FIRST) ATOM
+        DO M29= L29,I29,MD29
+          IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
+            JZ=M29+IRDUS
+            EXIT
+          END IF
+        END DO
+        STORE(IFNVC) = STORE(JZ)
+        BMAX = AMAX1( BMAX, STORE(JZ))
+        IFNVC = IFNVC + MDFNVC
+      END DO
+
       AT = DISTS(1)
       AC = DISTS(2)
       BT = DISTS(3)
@@ -490,10 +550,10 @@ C----- DONT COMPUTE ANGLES IF USING VDW RADII
 C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
       CALL XDIST2
       IF( IERFLG .LT. 0 ) GOTO 9900
-C
+
 C----- REDUCE SYMMETRY IF NECESSARY
       CALL KSYMOD (ISYMOD, IC, IL, N2P, L2C, L2, N2, MD2)
-C
+
 C----- WRITE OUT THE CELL CONTENT PROPERTIES
 C----- SKIP THE MOLECULAR PROPERTIES CALCULATION - FOR NOW
       JZ=IESD+2
@@ -525,129 +585,126 @@ C----- SET LEVEL TO HIGH IF COORDINATES REQUESTED
       IF ((IP .GE. 0) .AND. (LEVEL . GE. 0)) LEVEL = 1
 C----- WRITE HEADER IF RESTRAINTS TO BE GENERATED
       IF (IPUNCH .EQ. 0) CALL XPCHLH (16)
-C
+
 C----- ALLOCATE ONE SLOT FOR THE MOMENT
       JF = KSTALL(1)
+
 C--CHECK IF E.S.D.'S ARE TO CALCULATED
-      IF(IESD)1150,1200,1200
+      IF ( IESD .LT. 0 ) THEN
 C--E.S.D.'S ARE NOT TO BE CALCULATED
-1150  CONTINUE
-      NW=12
+        NW=12
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
-      IF (IPUNCH .EQ. 0) NW = 14
-      NCOL=9
+        IF (IPUNCH .EQ. 0) NW = 14
+        NCOL=9
 C----- RESET COLUMNS FOR BRIEF O/P
-      IF (LEVEL .LE. 0) NCOL = 11
-      L12=-1
-      JU=2
-      JV=2
-      GOTO 1800
+        IF (LEVEL .LE. 0) NCOL = 11
+        L12=-1
+        JU=2
+        JV=2
+      ELSE
 C--SET UP THE SYSTEM FOR E.S.D.'S
-1200  CONTINUE
-      JQ=0
-      JS=1
+        JQ=0
+        JS=1
 C--LOAD LIST 12
-      CALL XFAL12(JS,JQ,JU,JV)
+        CALL XFAL12(JS,JQ,JU,JV)
 C--CHECK IF THE E.S.D.'S OF THE CELL PARAMETERS ARE TO INCLUDED
-      IF(ICELL)1250,1300,1300
+        IF(ICELL.LT.0)THEN
 C--DO NOT INCLUDE THE CELL ERRORS
-1250  CONTINUE
-      NWDT=6
-      NWAT=9
-      GOTO 1350
+          NWDT=6
+          NWAT=9
+        ELSE
 C--INCLUDE THE CELL ERRORS
-1300  CONTINUE
-      NWDT=12
-      NWAT=15
+          NWDT=12
+          NWAT=15
+        END IF
 C--SET VARIOUS CONSTANTS FOR E.S.D. CALCULATIONS
-1350  CONTINUE
-      NWD=6
-      NWA=9
-      NWS=4
-      NW=13
+        NWD=6
+        NWA=9
+        NWS=4
+        NW=13
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
-      IF (IPUNCH .EQ. 0) NW = 14
-      JU=1
-      JV=3
-      NCOL=5
+        IF (IPUNCH .EQ. 0) NW = 14
+        JU=1
+        JV=3
+        NCOL=5
 C----- RESET COLUMN FOR BRIEF O/P
-      IF (LEVEL .LE. 0) NCOL = 6
+        IF (LEVEL .LE. 0) NCOL = 6
 C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
-      JA=NFL
-      JD = JA + NWA * NWS * MXPPP
-      NO=JD+NWAT*3-1
-      NZ=NWAT*NWAT
-      JE=JD+NZ
-      JF=JE+NZ
-      JG=JF+NZ
-      JH=JG
-      JJ=JG+NWD*NWD
-      JK=JJ
-      JM=JJ+NWA*NWA
-      JN=JM
-      JP=JM+NWDT*NWDT
-      JQ=JP
+        JA=NFL
+        JD = JA + NWA * NWS * MXPPP
+        NO=JD+NWAT*3-1
+        NZ=NWAT*NWAT
+        JE=JD+NZ
+        JF=JE+NZ
+        JG=JF+NZ
+        JH=JG
+        JJ=JG+NWD*NWD
+        JK=JJ
+        JM=JJ+NWA*NWA
+        JN=JM
+        JP=JM+NWDT*NWDT
+        JQ=JP
 C--COMPUTE THE LENGTH OF THE DATA AREA
-      JS=JP+NWAT*NWAT-NFL
+        JS=JP+NWAT*NWAT-NFL
 C--ALLOCATE THE SPACE
-      LN=9
-      IREC=1001
-      I=KCHNFL(JS)
+        LN=9
+        IREC=1001
+        I=KCHNFL(JS)
 C--ZERO THE AREA INITIALLY
-      CALL XZEROF(STORE(JA),JS)
+        CALL XZEROF(STORE(JA),JS)
 C--SET UP THE UNIT MATRIX SYMMETRY OPERATOR FOR THE FIRST ATOM
 C  IN THE AREA FOR DISTANCES AND ANGLES
-      DO 1400 I=1,3
-      STORE(JH)=1.
-      STORE(JK)=1.
-      JH=JH+NWD+1
-      JK=JK+NWA+1
-      JN=JN+2*(NWDT+1)
-      JQ=JQ+2*(NWAT+1)
-1400  CONTINUE
-      JL=JK+3*(NWA+1)
+        DO I=1,3
+          STORE(JH)=1.
+          STORE(JK)=1.
+          JH=JH+NWD+1
+          JK=JK+NWA+1
+          JN=JN+2*(NWDT+1)
+          JQ=JQ+2*(NWAT+1)
+        END DO
+        JL=JK+3*(NWA+1)
 C--LOAD LIST 11
-      CALL XFAL11(1,1)
-      IF ( IERFLG .LT. 0 ) THEN
+        CALL XFAL11(1,1)
+        IF ( IERFLG .LT. 0 ) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,1405)
            WRITE(NCAWU,1405)
            WRITE ( CMON ,1405)
            CALL XPRVDU(NCVDU, 3,0)
-1405  FORMAT(
-     1 'The covariance matrix does not correspond to the atom list'/
-     2 'You have changed LIST 12 or LIST 5'/
-     3 'You must do another cycle of refinement')
+1405       FORMAT(
+     1     'The covariance matrix does not correspond to the atom list'/
+     2     'You have changed LIST 12 or LIST 5'/
+     3     'You must do another cycle of refinement')
            GO TO 9900
-      ENDIF
-      IF(ISTORE(L11P+15))1600,1450,1450
-1450  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
-      WRITE(NCAWU,1500)
-      WRITE ( CMON ,1500)
-      CALL XPRVDU(NCVDU, 3,0)
-1500  FORMAT(' Matrix is wrong type for e.s.d.''s')
-      CALL XERHND ( IERWRN )
-      IESD=-1
-      GOTO 1000
+        ENDIF
+        IF(ISTORE(L11P+15).GE.0) THEN
+           IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
+           WRITE(NCAWU,1500)
+           WRITE ( CMON ,1500)
+           CALL XPRVDU(NCVDU, 3,0)
+1500       FORMAT(' Matrix is wrong type for e.s.d.''s')
+           CALL XERHND ( IERWRN )
+           IESD=-1
+           GOTO 1000
+        END IF
+
 C--APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
-1600  CONTINUE
-      C=STORE(L11P+17)/STORE(L11P+16)
-      M11=L11+N11-1
-      DO 1650 I=L11,M11
-      STR11(I)=STR11(I)*C
-1650  CONTINUE
+        C=STORE(L11P+17)/STORE(L11P+16)
+        M11=L11+N11-1
+        DO I=L11,M11
+           STR11(I)=STR11(I)*C
+        END DO
+
 C--PREPARE TO INITIATE THE CELL ERROR AREA IF NECESSARY
-      IF(ICELL)1750,1700,1700
-1700  CONTINUE
-      CALL XFAL31(JM,JP)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      GOTO 1800
-C--RESET THE FIRST ATOM ADDRESSES FOR NO CELL ERRORS
-1750  CONTINUE
-      JN=JM
-      JQ=JP
+        IF(ICELL.GE.0)THEN
+           CALL XFAL31(JM,JP)
+           IF ( IERFLG .LT. 0 ) GO TO 9900
+        ELSE
+           JN=JM !RESET THE FIRST ATOM ADDRESSES FOR NO CELL ERRORS
+           JQ=JP
+        END IF
+      END IF
+
 C--SET THE NUMBER OF WORDS PER ATOM IN THE DISTANCES STACK
-1800  CONTINUE
       JT=NW
 C----- GET A LINE BUFFER
       IJW=NFL
@@ -664,478 +721,527 @@ C--PREPARE A SORT BUFFER AT THE TOP OF CORE
 C--PREPARE ONE EMPTY SLOT AT THE TOP AS WELL
       IREC=1003
       I=KCHLFL(JT)
-C
-C
-C
+
+
+
 C --             **** MAIN DISTANCE / ANGLES LOOP ****
-C
-C
-C
+
       M5A=L5
       M12A=L12
       MFNVCA = LFNVC
-C
-C
+      MATVCA = LATVC
 C----- SAVE THE NEXT FREE ADDRESS
       NFLBAS = NFL
-      DO 6000 I=1,N5
+
+
+
+
+      MAINLOOP: DO I=1,N5
+
+        IF ( I .GT. 1 ) THEN 
+          M5A=M5A+MD5A
+          MFNVCA = MFNVCA + MDFNVC
+          MATVCA = MATVCA + MDATVC
+          IF ( M12A .GT. 1 ) M12A=ISTORE(M12A)
+        END IF
+
 C----- RESTORE THE NEXT FREE ADDRESS
-      NFL = NFLBAS
-C
+        NFL = NFLBAS
+
 C -- CAN WE USE THIS ATOM ?
-      IF ( (ABS(JFNVC).EQ.1).AND.
-     1     ((ISTORE(MFNVCA).LE.-1).OR.(ISTORE(MFNVCA).EQ.3))) GOTO 5900
-      M12=L12
-      M5=L5
-      MFNVC = LFNVC
+        IF ((ABS(JATVC).GE.1).AND.(ISTORE(MATVCA).LE.-1)) CYCLE
+        M12=L12
+        M5=L5
+        MFNVC = LFNVC
+        MATVC = LATVC
 
 C--CALCULATE ALL THE DISTANCES AND ANGLES ABOUT THIS ATOM
 1850  FORMAT(/,' Distances about atom  ',A4,F5.0,10X,'X =',F9.5,5X,
      2 'Y =',F9.5,5X,'Z =',F9.5)
 C--CHECK IF ANY DISTANCES OR ANGLES HAVE BEEN FOUND AT THIS ATOM
-C
-      K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS)
-C
+
+        K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
+
+c        DO MMMI=NFLBAS,NFLBAS+JT*(K-1),JT
+c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
+c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1))
+c         CALL XPRVDU(NCVDU,1,0)
+c        END DO
+
 C----- DISTANCE STACK STARTS AT NFL AND RUNS TO JS
 C----- RESET NFL (ITS BEEN CHECKED) TO UPPER  LIMIT
-      NFL = JS
+        NFL = JS
 C--CHECK THE REPLY
-      IF ( K ) 9920 , 5900 , 1950
-1950  CONTINUE
-      IF (IALL .LE. 0) THEN
+        IF ( K .LT. 0 ) GOTO 9920
+        IF ( K .EQ. 0 ) CYCLE
+c        WRITE(CMON,'(A,I4)') 'IALL = ',IALL
+c        CALL XPRVDU(NCVDU,1,0)
+        IF (IALL .LE. 0) THEN
 C----- ELIMINATE DUPLICATE ATOMS
-      IF (K .GE. 2) THEN
-        L = NFLBAS
-1960    CONTINUE
-        J = L + NW
-        LV = J
-        LU = JS - NW
-        NREJ = 0
-          DO 1970 M =  J, LU, NW
-C-----    ARE ATOM ADDRESSES SAME?
-          IF   (ISTORE(L) .EQ. ISTORE(M))  THEN
-C-----      ARE DISTANCES SAME?
-            IF (ABS(STORE(L+10) - STORE(M+10)) .LE. CHECK) THEN
-C-----      ARE ATOMS COINCIDENT?
-              IF ( XDSTN2 (STORE(L+7), STORE(M+7)) .LE. CHECK) THEN
-                NREJ = NREJ + 1
-                GOTO 1970
+          IF (K .GE. 2) THEN   !If there are more than two atoms found:
+            L = NFLBAS
+1960        CONTINUE
+            J = L + NW    !L points to 1st atom, J the next
+            LV = J
+            LU = JS - NW  !JS is the end of the stom stack.
+            NREJ = 0
+            DO M =  J, LU, NW !Go from atom after L, to the end of the stack:
+C-----        ARE ATOM ADDRESSES SAME?
+              IF   (ISTORE(L) .EQ. ISTORE(M))  THEN
+C-----          ARE DISTANCES SAME?
+                IF (ABS(STORE(L+10) - STORE(M+10)) .LE. CHECK) THEN
+C-----          ARE ATOMS COINCIDENT?
+                  IF ( XDSTN2 (STORE(L+7), STORE(M+7)) .LE. CHECK) THEN
+                    NREJ = NREJ + 1
+c         WRITE(CMON,'(A,2(A4,I4))')'Rejecting same atoms:',
+c     1   ISTORE(ISTORE(L)),NINT(STORE(ISTORE(L)+1)),
+c     1   ISTORE(ISTORE(M)),NINT(STORE(ISTORE(M)+1))
+c         CALL XPRVDU(NCVDU,1,0)
+                    CYCLE
+                  ENDIF
+                ENDIF
               ENDIF
-            ENDIF
+              IF (LV .NE. M) THEN
+C-----          SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
+                CALL XMOVE (STORE(M), STORE(LV), NW)
+              ENDIF
+              LV = LV + NW
+            END DO
+            L = L + NW        !Invcrement L atom pointer.
+            JS = JS - NREJ*NW !Shorten stack if atoms were rejected.
+            K = K - NREJ      !Reduce number of finds.
+            IF (L .LT. JS-NW) GOTO 1960
           ENDIF
-          IF (LV .NE. M) THEN
-C-----      SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
-            CALL XMOVE (STORE(M), STORE(LV), NW)
-          ENDIF
-          LV = LV + NW
-1970      CONTINUE
-        L = L + NW
-        JS = JS - NREJ*NW
-        K = K - NREJ
-        IF (L .LT. JS-NW) GOTO 1960
-      ENDIF
-      ENDIF
+        ENDIF
 C----- SAVE THE PIVOT ADDRESS
-      M5P = M5A
+        M5P = M5A
 C----- INDICATE NO CAPTION YET FOR THIS PIVOT
-      LEVEL2 = 0
+        LEVEL2 = 0
 C--CHECK IF WE SHOULD SORT THE DISTANCES
-      IF(ISORT)2050,2000,2000
+        IF(ISORT.GE.0)THEN
 C--THAT OUTPUT DISTANCES MUST BE SORTED
-2000  CONTINUE
-      ITEMP2=JT*K
-       CALL XSHELQ( STORE(NFLBAS), JT, 11, K, ITEMP2, STORE(ITEMP1) )
+          ITEMP2=JT*K
+          CALL XSHELQ( STORE(NFLBAS), JT, 11, K, ITEMP2, STORE(ITEMP1) )
 C--SET UP THE PROCESSING FLAGS
-2050  CONTINUE
-      JS=JS-NW
-      K = NFLBAS
-      N=0
+        END IF
+        JS=JS-NW
+        K = NFLBAS
+        N=0
 C--CHECK IF ERRORS ARE TO BE CALCULATED
-      IF(IESD)2150,2100,2100
+        IF(IESD.GE.0)THEN
 C--SET UP THE ATOM STACK FOR THE PIVOT ATOM
-2100  CONTINUE
-      JB=JA
-      CALL XFPCES( M12A, JB, NWS, IPART(1) )
-      LHFIXD(1) = .FALSE.
-      IF ( ( ISTORE(JA) .LT. 0 ) .AND. ( ISTORE(M5P).EQ.KHYD ) ) THEN
-        LHFIXD(1) = .TRUE.
-      ENDIF
-2150  CONTINUE
+          JB=JA
+          CALL XFPCES( M12A, JB, NWS, IPART(1) )
+          LHFIXD(1) = .FALSE.
+          IF ( ( ISTORE(JA) .LT. 0 ) .AND. ( ISTORE(M5P).EQ.KHYD))THEN
+            LHFIXD(1) = .TRUE.   
+          ENDIF
+        END IF
 C----- INITIALIZE BUFFER
-      IJX=IJW
-      IF (IPUNCH .EQ. 3) THEN
+        IJX=IJW
+        IF (IPUNCH .EQ. 3) THEN
 C----- SCRIPT DATA PUBLICATION
-2185  FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
-         WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
-     1   (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
-      ENDIF
+2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
+          WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
+     1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+        ENDIF
+
+
 C--PRINT THE CALCULATED DISTANCES
-      DO 3750 J = NFLBAS, JS, NW
-      M=J+1
+        PRINTLOOP: DO J = NFLBAS, JS, NW
+          M=J+1
+
 C--CHECK IF WE WANT ALL DISTANCES
-      IF(INTRA)2400,2200,2300
+          IF(INTRA.EQ.0)THEN 
 C--INTRA-MOLECULAR DISTANCES ONLY
-2200  CONTINUE
-      DO 2250 L=1,5
-      M=M+1
-      IF(ISTORE(M)-INTRAD(L))3750,2250,3750
-2250  CONTINUE
-      GOTO 2400
+            DO L=1,5
+              M=M+1
+              IF(ISTORE(M).NE.INTRAD(L)) CYCLE PRINTLOOP
+            END DO
+          ELSE IF ( INTRA.GT.1 ) THEN
 C--ONLY INTER-MOLECULAR DISTANCES REQUIRED
-2300  CONTINUE
-      DO 2350 L=1,5
-      M=M+1
-      IF(ISTORE(M)-INTRAD(L))2400,2350,2400
-2350  CONTINUE
-      GOTO 3750
+            DO L=1,5
+              M=M+1
+              IF(ISTORE(M).EQ.INTRAD(L))CYCLE
+              GOTO 2400
+            END DO
+            CYCLE
+2400        CONTINUE
+          END IF
+
 C--PROCESS THIS DISTANCE
-2400  CONTINUE
-      L=ISTORE(J+1)
-      M=J+4
-C--BRANCH ON THE TYPE OF DISTANCE FOUND
-      GOTO(3750,2450,3600,2450),L
+          L=ISTORE(J+1)
+          M=J+4
+
+
+C--CHECK THAT THE ATOM INCL/EXCL/BOND VECTORS ALLOW THIS BONDED ATOM
+C  (The pivot atom has already have been okayed - check the 2nd)
+          IA2 = (( ISTORE(J)  - L5 ) / MD5 ) 
+          IL2 = LATVC + IA2 * MDATVC
+
+          IF ((ISTORE(IL2+1).EQ.-1 ).AND.(L.EQ.2 .OR. L.EQ.4))THEN
+             L = 3
+c             WRITE(CMON,'(A,A4,I4)')'Atom rejected in (bonded) print:',
+c     1       ISTORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1))
+c             CALL XPRVDU(NCVDU,1,0)
+          ENDIF
+
+C-- Check if this bond would be acceptable the other way around, if
+C   it's one where L.LT.M5A. To avoid duplication.
+
+          IF ((ISTORE(J).LT.M5A).AND.(ISTORE(MATVCA+1).EQ.0)
+     1                          .AND.(ISTORE(IL2     ).EQ.0)) THEN
+             L=3
+c             WRITE(CMON,'(A,A4,I4)')'Duplication removed:',
+c     1       ISTORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1))
+c             CALL XPRVDU(NCVDU,1,0)
+          ENDIF
+
+
+C--BRANCH ON THE TYPE OF DISTANCE FOUND (AND ACCEPTANCE BY "BONDED" VECTOR):
+          IF ( L .EQ. 1 ) CYCLE !Acceptable to none ( dist or angle ).
+          IF ( L .EQ. 2 .OR. L .EQ. 4 ) THEN !Acceptable to dist or both.
 C--DISTANCE ACCEPTABLE
-2450  CONTINUE
-      L=ISTORE(J)
+            L=ISTORE(J)
 C--CHECK IF ALL THE DISTANCES ARE  REQUIRED
-      IF(IALL)2500,2550,2550
-2500  CONTINUE
-      IF(M5A-L)2550,2550,3550
+            IF(IALL.GE.0 .OR. M5A.LE.L)THEN
+
 C--CHECK IF THE ERRORS ARE TO BE CALCULATED
-2550  CONTINUE
 C----- SET ESD TO ZERO
-      STORE(IJX+3)=.00000001
-      STORE(JF)=0.0
-      IF(IESD)2800,2600,2600
+              STORE(IJX+3)=.00000001
+              STORE(JF)=0.0
+              IF(IESD.GE.0)THEN
 C--CALCULATE THE E.S.D.
-2600  CONTINUE
-      JC=JB
+                JC=JB
 C--ADD THE SECOND ATOM INTO THE STACK
-      CALL XFPCES( ISTORE(J+12), JC, NWS, IPART(2) )
-      LHFIXD(2) = .FALSE.
-      IF ( ( ISTORE(JB) .LT. 0 ) .AND. ( ISTORE(L).EQ.KHYD ) ) THEN
-        LHFIXD(2) = .TRUE.
-      ENDIF
+                CALL XFPCES( ISTORE(J+12), JC, NWS, IPART(2) )
+                LHFIXD(2) = .FALSE.
+                IF ( (ISTORE(JB) .LT. 0) .AND. (ISTORE(L).EQ.KHYD)) THEN
+                   LHFIXD(2) = .TRUE.
+                ENDIF
 C--SET UP THE V/CV MATRIX AT 'JD'
-      CALL XCOVAR( JA, NWD, NWS, JD, JE, IPART, 2)
+                CALL XCOVAR( JA, NWD, NWS, JD, JE, IPART, 2)
 C--SET UP THE RELEVANT SYMMETRY MATRIX  AT JH
-      CALL XMVCSP(J,JH,NWD)
+                CALL XMVCSP(J,JH,NWD)
 C--APPLY THE SYMMETRY MATRIX AND STORE THE TRANSFORMATION MATRIX AT 'JF'
-      CALL XMD3B(JE,JG,JF,2,NWD)
+                CALL XMD3B(JE,JG,JF,2,NWD)
 C--MOVE THE V/CV MATRIX TO DISTANCE V/CV AREA  (THIS WILL INCLUDE CELL)
-      CALL XMVCD(JD,NWD,JN,NWDT)
+                CALL XMVCD(JD,NWD,JN,NWDT)
 C--CALCULATE 'DX','DY' AND 'DZ'
-      CALL XSUBTR(STORE(M5A+4),STORE(J+7),B(1),3)
-C--CALCULATE THE RECIPROCAL OF THE DISTANCE
-      F=1./STORE(J+10)
-      NY=JD
+                CALL XSUBTR(STORE(M5A+4),STORE(J+7),B(1),3)
+C--CAL CULATE THE RECIPROCAL OF THE DISTANCE
+                F=1./STORE(J+10)
+                NY=JD
 C--CHECK IF THE CELL ERRORS ARE TO BE USED
-      IF(ICELL)2700,2650,2650
+                IF(ICELL.GE.0)THEN 
 C--CALCULATE THE CELL ERRORS
-2650  CONTINUE
-      CALL XAPP31(NY)
-      NY=NY+6
+                  CALL XAPP31(NY)
+                  NY=NY+6
+                END IF
 C--CALCULATE THE ERROR CONTRIBUTIONS FOR ATOM ONE
-2700  CONTINUE
-      CALL XMULTR(B(1),F,B(1),3)
-      CALL XMLTMM(STORE(L1M1),B(1),BPD(4),3,3,1)
+                CALL XMULTR(B(1),F,B(1),3)
+                CALL XMLTMM(STORE(L1M1),B(1),BPD(4),3,3,1)
 C--APPLY THE DERIVATIVE VECTOR TO THE TRANSFORMATION MATRIX
-      J1=JF
-      DO 2750 I1=1,3
-      STORE(NY)=STORE(J1)*BPD(4)+STORE(J1+6)*BPD(5)+STORE(J1+12)*BPD(6)
-      STORE(NY+3)=-STORE(J1+21)*BPD(4)-STORE(J1+27)*BPD(5)-STORE(J1+33)
-     2 *BPD(6)
-      NY=NY+1
-      J1=J1+1
-2750  CONTINUE
+                J1=JF
+                DO I1=1,3
+                  STORE(NY)=STORE(J1)*BPD(4)+STORE(J1+6)*BPD(5)
+     2                                      +STORE(J1+12)*BPD(6)
+                  STORE(NY+3)=-STORE(J1+21)*BPD(4)-STORE(J1+27)*BPD(5)
+     1                                            -STORE(J1+33)*BPD(6)
+                  NY=NY+1
+                  J1=J1+1
+                END DO
 C--CALCULATE THE VARIANCE
-      CALL XMLTMM(STORE(JM),STORE(JD),STORE(JE),NWDT,NWDT,1)
-      CALL XMLTTM(STORE(JD),STORE(JE),STORE(JF),1,NWDT,1)
+                CALL XMLTMM(STORE(JM),STORE(JD),STORE(JE),NWDT,NWDT,1)
+                CALL XMLTTM(STORE(JD),STORE(JE),STORE(JF),1,NWDT,1)
 C--CALCULATE THE E.S.D.
 C -- CALCULATE E.S.D. FROM THE VARIANCE, PRODUCING NEGATIVE E.S.D.'S
 C    FROM 'NEGATIVE VARIANCES'
-      STORE(JF) = XDSESD ( STORE(JF) , STORE(JN) , NWDT )
-      STORE(IJX+3)=STORE(JF)
-2800  CONTINUE
+                STORE(JF) = XDSESD ( STORE(JF) , STORE(JN) , NWDT )
+                STORE(IJX+3)=STORE(JF)
+              END IF
 C----- COMPRESS ATOMS INTO CHARACTER FORM
-      CALL CATSTR (STORE(M5P), STORE(M5P+1),1,1,0,0,0, CATOM1, LATOM1)
-      CALL CATSTR (STORE(L), STORE(L+1),
-     1 ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
-     2 ISTORE(J+6), CATOM2, LATOM2)
-C
-      IF (IDSPDA .EQ. 1  .OR. IDSPDA .EQ. 3 ) THEN
-      LATOM1 = MIN(10, LATOM1)
-      IF (STORE(JF) .GT. ZERO) THEN
-        WRITE ( CMON ,2806)
-     1 CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CATOM2(1:25),
-     2 STORE(J+10), STORE(JF)
-      ELSE
-        WRITE ( CMON ,2806)
-     1 CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CATOM2(1:25),
-     2 STORE(J+10)
-      ENDIF
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
-2806    FORMAT (1X,A, A, ' to ', A, F6.3, F6.3)
-      ENDIF
-C
-      IF (IPUNCH .EQ. 0) THEN
+              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+     1                      CATOM1,LATOM1)
+              CALL CATSTR (STORE(L), STORE(L+1),
+     1         ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+     2         ISTORE(J+6), CATOM2, LATOM2)
+
+              IF (IDSPDA .EQ. 1  .OR. IDSPDA .EQ. 3 ) THEN
+                LATOM1 = MIN(10, LATOM1)
+                IF (STORE(JF) .GT. ZERO) THEN
+                  WRITE ( CMON ,2806)
+     1            CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CATOM2(1:25),
+     2            STORE(J+10), STORE(JF)
+                ELSE
+                  WRITE ( CMON ,2806)
+     1           CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CATOM2(1:25),
+     2           STORE(J+10)
+                ENDIF
+                CALL XPRVDU(NCVDU, 1,0)
+                WRITE(NCAWU, '(A)') CMON( 1)(:)
+2806            FORMAT (1X,A, A, ' to ', A, F6.3, F6.3)
+              ENDIF
+
+              IF (IPUNCH .EQ. 0) THEN
 C----- WRITE RESTRAINT
-            WRITE (NCPU,'(A,'' '', F7.3, '',.01= '', A,'' to '',A)' )
-     1      RESTR, STORE(J+13), CATOM1(1:LATOM1),
-     2      CATOM2(1:LATOM2)
-      ELSE IF (IPUNCH .EQ. 1) THEN
-C----- WRITE UNFORMATTED PUBLICATION LIST
-c            IF (STORE(JF) .GT. ZERO) THEN
-c                WRITE(NCPU,2806)
-c     1          CBLANK(1: 23-LATOM1), CATOM1(1:LATOM1), CATOM2(1:21),
-c     2          STORE(J+10), STORE(JF)
-c            ELSE
-c                WRITE(NCPU,2806)
-c     1          CBLANK(1: 23-LATOM1), CATOM1(1:LATOM1), CATOM2(1:21),
-c     2          STORE(J+10)
-c            ENDIF
-      ENDIF
-      IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
+                WRITE (NCPU,'(A,'' '', F7.3, '',.01= '', A,'' to '',A)')
+     1          RESTR, STORE(J+13), CATOM1(1:LATOM1),
+     2          CATOM2(1:LATOM2)
+              ELSE IF (IPUNCH .EQ. 1) THEN
+              ENDIF
+              IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
 C----- CIF AND FORMATTED PUBLICATION
-            IF ((IHFIXD.EQ.1).AND.(LHFIXD(1).OR.LHFIXD(2))) THEN
-              STORE(JF) = 0.0
-            ENDIF
-            WRITE( MTE) 'D',STORE(J+10),STORE(JF),
-     1      STORE(M5A), STORE(M5A+1), 1,1,0,0,0,
+                IF ((IHFIXD.EQ.1).AND.(LHFIXD(1).OR.LHFIXD(2))) THEN
+                  STORE(JF) = 0.0
+                ENDIF
+                WRITE( MTE) 'D',STORE(J+10),STORE(JF),
+     1          STORE(M5A), STORE(M5A+1), 1,1,0,0,0,
 C--- ATOM 2
-     2      STORE(L), STORE(L+1), ISTORE(J+2),
-     3      ISTORE(J+3), ISTORE(J+4), ISTORE(J+5), ISTORE(J+6),
+     2          STORE(L), STORE(L+1), ISTORE(J+2),
+     3          ISTORE(J+3), ISTORE(J+4), ISTORE(J+5), ISTORE(J+6),
 C----- DUMMY WRITES AT END FOR COMPATIBILITY WITH TORSION
-     4      IB, ZERO, 1,1,0,0,0,
-     5      IB, ZERO, 1,1,0,0,0
-      ENDIF
+     4          IB, ZERO, 1,1,0,0,0,
+     5          IB, ZERO, 1,1,0,0,0
+              ENDIF
+              IF (IPUNCH.EQ.4 .AND.(IDSPDA.EQ.1.OR.IDSPDA.EQ.3)) THEN
+C CSD ignores bonds to H, instead uses an NCH key for atoms with H's.
+C We've made a vector at INHVEC that stores the sequential number for
+C the atom, excluding any H in the structure.
+                INH1 = ISTORE ( INHVEC + (M5P-L5)/MD5 )
+                INH2 = ISTORE ( INHVEC +   (L-L5)/MD5 )
+                IF ( INH1 .GT. 0 .AND. INH2 .GT. 0 ) THEN
+                  WRITE(NCPU,'(A,2(1X,I4),1X,F7.4,2(1X,A))')
+     1            'DIST ',INH1,INH2,STORE(J+10),CATOM1(1:LATOM1),
+     2            CATOM2(1:LATOM2)
+                END IF
+              END IF
 C
-      IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
+              IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
 C----- WRITE A CAPTION
-        IF (LEVEL .EQ. 0) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
-      ENDIF
-2825  FORMAT(/,1X,'Pivot atom   ',A4,F5.0)
-        ELSE IF (LEVEL .GE. 1) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
-     1  (STORE(MMN),MMN=M5P+4,M5P+6)
-      ENDIF
-        ENDIF
-        LEVEL2 = 1
-      ENDIF
-      IF (LEVEL) 3500, 2830, 2860
-2830  CONTINUE
+                IF (LEVEL .EQ. 0) THEN
+                  IF (ISSPRT .EQ. 0) THEN
+                    WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
+                  ENDIF
+2825              FORMAT(/,1X,'Pivot atom   ',A4,F5.0)
+                ELSE IF (LEVEL .GE. 1) THEN
+                  IF (ISSPRT .EQ. 0) THEN
+                    WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
+     1                    (STORE(MMN),MMN=M5P+4,M5P+6)
+                  ENDIF
+                ENDIF
+                LEVEL2 = 1
+              ENDIF
+              IF (LEVEL.EQ.0)THEN
+
 C----- STORE CURRENT DISTANCE IN BUFFER
-      STORE(IJX)=STORE(L)
-      STORE(IJX+1)= STORE(L+1)
-      STORE(IJX+2)=STORE(J+10)
-      IJX=IJX+4
-      IF(IJX-IJY) 3500,3500,2840
-2840  CONTINUE
+                STORE(IJX)=STORE(L)
+                STORE(IJX+1)= STORE(L+1)
+                STORE(IJX+2)=STORE(J+10)
+                IJX=IJX+4
+                IF(IJX.GT.IJY) THEN
 C----- PRINT BUFFER
-      IJX=IJX-4
+                  IJX=IJX-4
 C -- CHECK FOR E.S.D.
-      IF (IESD .LT. 0) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,2850) ((STORE(IJZ),IJZ=I1,I1+2),I1=IJW,IJX,4)
-      ENDIF
-2850    FORMAT(11X,4(5X,A4,F5.0,F7.3,6X))
-      ELSE
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,2851) ((STORE(IJZ),IJZ=I1,I1+3),I1=IJW,IJX,4)
-      ENDIF
-2851    FORMAT(11X,4(5X,A4,F5.0,F7.3,F6.3))
-      ENDIF
-      IJX=IJW
-      GOTO 3500
-2860  CONTINUE
-C----- FULL PRINT
+                  IF (IESD .LT. 0) THEN
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,2850)
+     1                      ((STORE(IJZ),IJZ=I1,I1+2),I1=IJW,IJX,4)
+                    ENDIF
+2850                FORMAT(11X,4(5X,A4,F5.0,F7.3,6X))
+                  ELSE
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,2851)
+     1                      ((STORE(IJZ),IJZ=I1,I1+3),I1=IJW,IJX,4)
+                    ENDIF
+2851                FORMAT(11X,4(5X,A4,F5.0,F7.3,F6.3))
+                  ENDIF
+                  IJX=IJW
+                END IF
+
+              ELSE IF ( LEVEL.GT.0 ) THEN                      !  FULL PRINT
+
 C----- CHECK IF THE TRANSFORMED COORDINATES ARE TO BE PRINTED
-      IF(IP) 2870,3200,3200
-C----- CHECK IF THIS IS FIRST DISTANCE
-2870  CONTINUE
-      IF(N)2900,2900,3000
+                IF(IP.LT.0)THEN       
+
+                  IF(N.LE.0)THEN        !CHECK IF THIS IS FIRST DISTANCE
 C--PRINT THE CAPTION HEADING
-2900  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2950)IB
-      ENDIF
-2950  FORMAT(/1X,A4,2X,'Atom',3X,'Serial',3X,'S(I)',2X,'L',2X,'T(X)',
-     2 1X,'T(Y)',1X,'T(Z)',A4,25X,'X''',8X,'Y''',8X,'Z''')
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3100)
-      ENDIF
-C--CHECK IF THE ERRORS ARE TO BE PRINTED
-3000  CONTINUE
-      IF(IESD)3050,3150,3150
-C--NO ERRORS TO BE PRINTED
-3050  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3100)STORE(L),STORE(L+1),(ISTORE(NX+2),NX=J,M),
-     2 STORE(J+10)
-      ENDIF
-3100  FORMAT(7X,A4,F8.0,4X,I3,I4,3I5,F11.3,14X,3F10.5)
-      GOTO 3500
-C--ERRORS TO BE PRINTED
-3150  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3450)STORE(L),STORE(L+1),(ISTORE(NY+2),NY=J,M),
-     2 STORE(J+10),STORE(JF)
-      ENDIF
-      GOTO 3500
-C--PRINT THE GENERATED COORDINATES  -  CHECK IF THIS IS THE FIRST ATOM
-3200  CONTINUE
-      IF(N)3250,3250,3300
-3250  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2950)IB,IB
-      ENDIF
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3100)
-      ENDIF
-C--CHECK IF THE ERRORS ARE TO BE PRINTED
-3300  CONTINUE
-      NX=J+2
-      IF(IESD)3350,3400,3400
-C--NO ERRORS
-3350  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3100)STORE(L),STORE(L+1),(ISTORE(NY+2),NY=J,M),
-     2 STORE(J+10),(STORE(NY+7),NY=J,NX)
-      ENDIF
-      GOTO 3500
-C--PRINT THE ERRORS
-3400  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3450)STORE(L),STORE(L+1),(ISTORE(NY+2),NY=J,M),
-     2 STORE(J+10),STORE(JF),(STORE(NY+7),NY=J,NX)
-      ENDIF
-3450  FORMAT(7X,A4,F8.0,4X,I3,I4,3I5,F11.3,F7.3,7X,3F10.5)
-3500  CONTINUE
-      N=N+1
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,2950)IB
+                    ENDIF
+2950                FORMAT(/1X,A4,2X,'Atom',3X,'Serial',3X,'S(I)',
+     1                     2X,'L',2X,'T(X)',1X,'T(Y)',1X,'T(Z)',A4,
+     2                     25X,'X''',8X,'Y''',8X,'Z''')
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,3100)
+                    ENDIF
+                  ENDIF
+
+                  IF(IESD.LT.0)THEN       !NO ERRORS TO BE PRINTED
+                    IF (ISSPRT .EQ. 0) THEN
+                    WRITE(NCWU,3100)STORE(L),STORE(L+1),
+     1               (ISTORE(NX+2),NX=J,M),STORE(J+10)
+                    ENDIF
+3100                FORMAT(7X,A4,F8.0,4X,I3,I4,3I5,F11.3,14X,3F10.5)
+
+                  ELSE IF (ISSPRT .EQ. 0) THEN      !ERRORS TO BE PRINTED
+                      WRITE(NCWU,3450)STORE(L),STORE(L+1),
+     1                 (ISTORE(NY+2),NY=J,M),STORE(J+10),STORE(JF)
+                  END IF
+
+                ELSE                         !PRINT THE GENERATED COORDINATES
+
+                  IF(N.LE.0)THEN             !CHECK IF THIS IS THE FIRST ATOM
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,2950)IB,IB
+                    ENDIF
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,3100)
+                    ENDIF
+                  END IF
+         
+                  NX=J+2
+                  IF(IESD.LT.0)THEN             !NO ERRORS TO BE PRINTED
+                    IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,3100)STORE(L),STORE(L+1),
+     1                 (ISTORE(NY+2),NY=J,M),STORE(J+10),
+     2                 (STORE(NY+7),NY=J,NX)
+                    ENDIF
+
+                  ELSE IF (ISSPRT .EQ. 0) THEN    ! PRINT THE ERRORS
+                    WRITE(NCWU,3450)STORE(L),STORE(L+1),
+     1               (ISTORE(NY+2),NY=J,M),
+     2                 STORE(J+10),STORE(JF),(STORE(NY+7),NY=J,NX)
+3450                FORMAT(7X,A4,F8.0,4X,I3,I4,3I5,F11.3,F7.3,7X,3F10.5)
+                  END IF
+                END IF
+              END IF
+
+              N=N+1
+            END IF
+          END IF
+
+
 C--CHECK WHETHER THIS DISTANCE IS ACCEPTABLE FOR ANGLES.
 C  IF THIS IS GOOD FOR ANGLES MOVE IT UP SO THAT ALL NON-ANGLES
 C  DISTANCE ENTRIES ARE EXCLUDED BY THE END OF THE DISTANCE PRINT
-3550  CONTINUE
-      IF(ISTORE(J+1)-3)3750,3600,3600
+
 C--CHECK IF IT IS NECESSARY TO MOVE THE DISTANCE BLOCK
-3600  CONTINUE
-      IF(K-J)3650,3700,3650
+          IF(ISTORE(J+1).LT.3)CYCLE
+
+          IF(K.NE.J)THEN
 C--MOVE THE DATA
-3650  CONTINUE
-      CALL XMOVE(STORE(J),STORE(K),NW)
+            CALL XMOVE(STORE(J),STORE(K),NW)
+          ENDIF
 C--UPDATE THE CURRENT LAST POINTER
-3700  CONTINUE
-      K=K+NW
-3750  CONTINUE
+          K=K+NW
+        END DO PRINTLOOP
+
 C----- EMPTY PRINT BUFFER
-      IF(IJX-IJW) 3790,3790,3760
-3760  CONTINUE
-      IJX=IJX-4
+        IF(IJX.GT.IJW) THEN
+          IJX=IJX-4
 C -- CHECK FOR E.S.D.
-      IF (IESD .LT. 0) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,2850) ((STORE(IJZ),IJZ=I1,I1+2),I1=IJW,IJX,4)
-      ENDIF
-      ELSE
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,2851) ((STORE(IJZ),IJZ=I1,I1+3),I1=IJW,IJX,4)
-      ENDIF
-      ENDIF
-3790  CONTINUE
-      IJX=IJW
+          IF (IESD .LT. 0) THEN
+            IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,2850) ((STORE(IJZ),IJZ=I1,I1+2),I1=IJW,IJX,4)
+            ENDIF
+          ELSE
+            IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,2851) ((STORE(IJZ),IJZ=I1,I1+3),I1=IJW,IJX,4)
+            ENDIF
+          ENDIF
+        END IF
+        IJX=IJW
 C
 C--START OF THE ANGLES PRINT LOOP
-      M=1
-      L = NFLBAS
-      K=K-NW
+        M=1
+        L = NFLBAS
+        K=K-NW
+
 C--CHECK IF ANY ANGLES REMAIN TO BE CALCULATED AND PRINTED
-3800  CONTINUE
-      IF(K-L)5900,5900,3850
-3850  CONTINUE
+
+c        WRITE (CMON,'(A,2I8)')'Angle K and L: ',K,L
+c        CALL XPRVDU(NCVDU,1,0)
+
+        ANGLELOOP: DO WHILE ( K .GT. L )
+
 C--CHECK IF THIS IS THE FIRST TIME OR A CONTINUATION
-      IF (NFLBAS - L) 3890, 3990, 3990
-C
-C----- CONTINUATION
-3890  CONTINUE
-      IF (LEVEL) 4110, 3900, 3900
-3900  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3950)
-      ENDIF
-3950  FORMAT(//,' Continuation')
-      IF (LEVEL) 4110, 4110, 4100
-C
-C----- FIRST TIME
-3990  CONTINUE
-      IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
+
+
+          IF (NFLBAS .GE. L) THEN                           ! FIRST TIME
+            IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
 C----- WRITE A CAPTION
-        IF (LEVEL .EQ. 0) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
-      ENDIF
-        ELSE IF (LEVEL .GE. 1) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
-     1  (STORE(MMN),MMN=M5P+4,M5P+6)
-      ENDIF
-        ENDIF
-        LEVEL2 = 1
-      ENDIF
-      IF (LEVEL) 4110, 4110, 4000
-4000  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4050)STORE(M5A),STORE(M5A+1)
-      ENDIF
-4050  FORMAT(//,' Angles about atom  ',A4,F5.0)
-4100  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2950)JAKEY
-      ENDIF
-4110  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3100)
-      ENDIF
-      N=M
-      NX=L+4
-      NY=ISTORE(L)
-      IF (LEVEL) 4165, 4160, 4140
-4140  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4150)N,STORE(NY),STORE(NY+1),(ISTORE(NZ+2),NZ=L,NX)
-      ENDIF
-4150  FORMAT(I4,3X,A4,F8.0,4X,I3,I4,3I5,3X,9F8.2)
-      GOTO 4180
-4160  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4170) N,STORE(NY),STORE(NY+1)
-      ENDIF
-      GOTO 4180
-4165  CONTINUE
-4170  FORMAT(I4,2X,A4,F5.0,3X,13F8.2)
-4180  CONTINUE
-      NX=L+(NCOL-1)*NW
-      NY=L+NW
-C--MAIN PRINT AND CALCULATION LOOP
-      DO 5550 NZ=NY,K,NW
-      N=N+1
-      NB=NZ-NW
-      NB=MIN0(NB,NX)
-      NC=0
+              IF (LEVEL .EQ. 0) THEN
+                IF (ISSPRT .EQ. 0) THEN
+                  WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
+                ENDIF
+              ELSE IF (LEVEL .GE. 1) THEN
+                IF (ISSPRT .EQ. 0) THEN
+                  WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
+     1              (STORE(MMN),MMN=M5P+4,M5P+6)
+                ENDIF
+              ENDIF
+              LEVEL2 = 1
+            ENDIF
+            IF (LEVEL.GT.0)THEN
+              IF (ISSPRT .EQ. 0) THEN
+                WRITE(NCWU,4050)STORE(M5A),STORE(M5A+1)
+              ENDIF
+4050          FORMAT(//,' Angles about atom  ',A4,F5.0)
+              IF (ISSPRT .EQ. 0) WRITE(NCWU,2950)JAKEY
+            END IF
+
+          ELSE                                              ! CONTINUATION
+            IF (LEVEL.GE.0) THEN 
+              IF (ISSPRT .EQ. 0) THEN
+                WRITE(NCWU,3950)
+              ENDIF
+3950          FORMAT(//,' Continuation')
+            ENDIF
+            IF (LEVEL.GT.0)THEN  
+              IF (ISSPRT .EQ. 0) WRITE(NCWU,2950)JAKEY
+            END IF
+
+          END IF
+
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,3100)
+          N=M
+          NX=L+4
+          NY=ISTORE(L)
+
+          IF (ISSPRT .EQ. 0) THEN
+            IF (LEVEL.GT.0)THEN 
+              WRITE(NCWU,4150)N,STORE(NY),STORE(NY+1),
+     1                        (ISTORE(NZ+2),NZ=L,NX)
+4150          FORMAT(I4,3X,A4,F8.0,4X,I3,I4,3I5,3X,9F8.2)
+            ELSE IF (LEVEL.EQ.0) THEN
+              WRITE(NCWU,4170) N,STORE(NY),STORE(NY+1)
+4170          FORMAT(I4,2X,A4,F5.0,3X,13F8.2)
+            END IF
+          END IF
+
+
+          NX=L+(NCOL-1)*NW
+          NY=L+NW
+
+c        WRITE (CMON,'(A,2I8)')'Angleprint NY and K: ',NY,K
+c        CALL XPRVDU(NCVDU,1,0)
+
+C--MAIN ANGLE PRINT AND CALCULATION LOOP
+          ANGLEPRINT: DO NZ=NY,K,NW
+            N=N+1
+            NB=NZ-NW
+            NB=MIN0(NB,NX)
+            NC=0
 C--CHECK IF E.S.D.'S ARE REQUIRED
-      IF(IESD)4250,4200,4200
+            IF(IESD.GE.0)THEN
 C--INSERT THE SECOND ATOM  -  ATOM (B)
-4200  CONTINUE
-      JC=JB
-      CALL XFPCES( ISTORE(NZ+12), JC, NWS, IPART(2) )
-      LHFIXD(2) = .FALSE.
-      IF ( (ISTORE(JB).LT.0).AND.(ISTORE(ISTORE(NZ)).EQ.KHYD) ) THEN
-        LHFIXD(2) = .TRUE.
-      ENDIF
-      CALL XMVCSP(NZ,JK,NWA)
+              JC=JB
+              CALL XFPCES( ISTORE(NZ+12), JC, NWS, IPART(2) )
+              LHFIXD(2) = .FALSE.
+              IF((ISTORE(JB).LT.0).AND.
+     1           (ISTORE(ISTORE(NZ)).EQ.KHYD)) LHFIXD(2) = .TRUE.
+              CALL XMVCSP(NZ,JK,NWA)
 C--STARTING FROM THE FIRST ATOM OF THE CURRENT LIST ,
 C  CALCULATE ALL THE ANGLES TO THE PRESENT ATOM
 C
@@ -1143,348 +1249,391 @@ C  ATOM A IS AT M5A
 C  ATOM B IS AT ISTORE(NZ)
 C  ATOM C IS AT ISTORE(NA)
 C
-4250  CONTINUE
-      DO 5350 NA=L,NB,NW
+            END IF
+
+            DO 5350 NA=L,NB,NW
 C--CHECK THAT A AND B ARE NOT THE SAME ATOM
-      IF(STORE(NZ+10)-CHECK)4300,4300,4350
-C--EITHER B OR C DUPLICATES A  -  ANGLE IS SET TO 0.0
-4300  CONTINUE
-      APD(NC+1)=0.
-      APD(NC+2)=0.
-      NC=NC+3-JU
-      GOTO 5350
+              IF(STORE(NZ+10).LE.CHECK)THEN   ! EITHER B OR C DUPLICATES A  
+                APD(NC+1)=0.                  ! ANGLE IS SET TO 0.0
+                APD(NC+2)=0.
+                NC=NC+3-JU
+                CYCLE
+              END IF
+
 C--CHECK THAT A AND C ARE NOT THE SAME ATOM
-4350  CONTINUE
-      IF(STORE(NA+10)-CHECK)4300,4300,4400
+              IF(STORE(NA+10).LE.CHECK) THEN
+                APD(NC+1)=0.
+                APD(NC+2)=0.
+                NC=NC+3-JU
+                CYCLE
+              END IF
+
+C--CHECK THAT THE ATOM INCL/EXCL/PIV/BOND VECTORS ALLOW THIS ANGLE
+C  (The pivot atom has already have been okayed - check the 2nd and 3rd)
+
+
+              IA2 = (( ISTORE(NZ)  - L5 ) / MD5 )
+              IA3 = (( ISTORE(NA)  - L5 ) / MD5 ) 
+              IL2 = LATVC + IA2 * MDATVC
+              IL3 = LATVC + IA3 * MDATVC
+
+c              WRITE(CMON,'(A,2(A4,I4,1X))')'Bonded atoms: ',
+c     1      ISTORE(ISTORE(NZ)), NINT(STORE(ISTORE(NZ)+1)),
+c     2      ISTORE(ISTORE(NA)), NINT(STORE(ISTORE(NA)+1))
+c              CALL XPRVDU(NCVDU,1,0)
+
+
+              IF (( ISTORE(IL2+1).EQ.-1 .OR. ISTORE(IL3+2).EQ.-1) .AND.
+     1            ( ISTORE(IL2+2).EQ.-1 .OR. ISTORE(IL3+1).EQ.-1)) THEN
+c                WRITE(CMON,'(2(A,A4,I4))')
+c     1          'Atom rejected in (angle) print:',
+c     1          ISTORE(ISTORE(NZ)),NINT(STORE(ISTORE(NZ)+1)),' or ',
+c     1          ISTORE(ISTORE(NA)),NINT(STORE(ISTORE(NA)+1))
+c                CALL XPRVDU(NCVDU,1,0)
+                CYCLE
+              END IF
+
+              NSWAP = 0
+              IF ( ISTORE(IL2+1).EQ.-1 ) THEN !Swap atoms over for consistent printing
+                NSWAP = 1
+              ENDIF
+
 C--COMPUTE THE COORDINATES OF 'E'  -  AE BISECTS THE ANGLE AT A.
-4400  CONTINUE
-      F=STORE(NZ+10)/STORE(NA+10)
-      B(1)=0.5*(STORE(M5A+4)+STORE(NZ+7)+F*(STORE(NA+7)-STORE(M5A+4)))
-      B(2)=0.5*(STORE(M5A+5)+STORE(NZ+8)+F*(STORE(NA+8)-STORE(M5A+5)))
-      B(3)=0.5*(STORE(M5A+6)+STORE(NZ+9)+F*(STORE(NA+9)-STORE(M5A+6)))
+              F=STORE(NZ+10)/STORE(NA+10)
+              B(1)=0.5*(STORE(M5A+4)+STORE(NZ+7)
+     1              +F*(STORE(NA+7)-STORE(M5A+4)))
+              B(2)=0.5*(STORE(M5A+5)+STORE(NZ+8)
+     1              +F*(STORE(NA+8)-STORE(M5A+5)))
+              B(3)=0.5*(STORE(M5A+6)+STORE(NZ+9)
+     1              +F*(STORE(NA+9)-STORE(M5A+6)))
 C--SET L1 AS THE DISTANCES FROM A TO B
-      DIST(1)=STORE(NZ+10)
-      DISTSQ(1)=STORE(NZ+11)
+              DIST(1)=STORE(NZ+10)
+              DISTSQ(1)=STORE(NZ+11)
 C--COMPUTE 'DX', 'DY' AND 'DZ' FOR THE BOND B TO E.
-      CALL XSUBTR(STORE(NZ+7),B(1),BPD(7),3)
+              CALL XSUBTR(STORE(NZ+7),B(1),BPD(7),3)
 C--CALCULATE THE DISTANCE BETWEEN THE TWO NON-PIVOT ATOMS
-      DISTSQ(2)=XDSTN2(STORE(NZ+7),B(1))
+              DISTSQ(2)=XDSTN2(STORE(NZ+7),B(1))
 C--CALCULATE THE DISTANCE FROM 'A' TO 'E'
-      DISTSQ(3)=XDSTN2(STORE(M5A+4),B(1))
+              DISTSQ(3)=XDSTN2(STORE(M5A+4),B(1))
 C--COMPUTE THE DISTANCES
-      DO 4450 NF=2,3
-      DIST(NF)=SQRT(DISTSQ(NF))
-4450  CONTINUE
+              DO NF=2,3
+                DIST(NF)=SQRT(DISTSQ(NF))
+              END DO
 C--CHECK IF THE POINTS 'B' AND 'E' ARE COINCIDENT
-      IF(DIST(2)-CHECK)4300,4300,4500
+              IF(DIST(2).LE.CHECK)THEN
+                APD(NC+1)=0.
+                APD(NC+2)=0.
+                NC=NC+3-JU
+                CYCLE
+              END IF
+
 C--CALCULATE THE OUTPUT ANGLE
-4500  CONTINUE
-      F=DIST(2)/DIST(1)
+              F=DIST(2)/DIST(1)
 C--CHECK IF THE SIN OR COS SHOULD BE USED
-      IF(F-SIN45)4550,4550,4600
-4550  CONTINUE
-      ANGLE(2)=ASIN(F)
-      GOTO 4650
+              IF(F.LE.SIN45)THEN
+                ANGLE(2)=ASIN(F)
+              ELSE
 C--USE THE COS
-4600  CONTINUE
-      ANGLE(2)=ACOS(DIST(3)/DIST(1))
-4650  CONTINUE
-      NC=NC+1
-      APD(NC)=ANGLE(2)*G
+                ANGLE(2)=ACOS(DIST(3)/DIST(1))
+              END IF
+              NC=NC+1
+              APD(NC)=ANGLE(2)*G
+
 C--CHECK IF THE E.S.D. IS TO BE CALCULATED
-      IF(IESD) 5345,4700,4700
+              IF(IESD.GE.0)THEN
 C--CALCULATE THE E.S.D.
-4700  CONTINUE
-      NF=JC
+                NF=JC
 C--ADD THE THIRD ATOM (C) INTO THE STACK
-      CALL XFPCES( ISTORE(NA+12), NF, NWS, IPART(3) )
-      LHFIXD(3) = .FALSE.
-      IF ( (ISTORE(JC).LT.0).AND.(ISTORE(ISTORE(NA)).EQ.KHYD) ) THEN
-        LHFIXD(3) = .TRUE.
-      ENDIF
+                CALL XFPCES( ISTORE(NA+12), NF, NWS, IPART(3) )
+                LHFIXD(3) = .FALSE.
+                IF ( (ISTORE(JC).LT.0).AND.
+     1                  (ISTORE(ISTORE(NA)).EQ.KHYD))THEN
+                  LHFIXD(3) = .TRUE.
+                ENDIF
 C--CALCULATE THE V/CV MATRIX FOR THE POSITIONAL ERRORS
-      CALL XCOVAR( JA, NWA, NWS, JD, JE, IPART, 3)
+                CALL XCOVAR( JA, NWA, NWS, JD, JE, IPART, 3)
 C--MOVE THE V/CV MATRIX TO THE FINAL AREA, WHICH CONTAIN THE CELL ERRORS
-      CALL XMVCD(JD,NWA,JQ,NWAT)
+                CALL XMVCD(JD,NWA,JQ,NWAT)
 C--ADD THE SYMMETRY MATRIX OF THE LAST ATOM
-      CALL XMVCSP(NA,JL,NWA)
+                CALL XMVCSP(NA,JL,NWA)
 C--APPLY THE SYMMETRY INFORMATION
-      CALL XMD3B(JE,JJ,JD,3,NWA)
+                CALL XMD3B(JE,JJ,JD,3,NWA)
 C--CALCULATE 'DX' ETC. FOR BOND 1 (A - B)
-      CALL XSUBTR(STORE(M5A+4),STORE(NZ+7),BPD(4),3)
+                CALL XSUBTR(STORE(M5A+4),STORE(NZ+7),BPD(4),3)
 C--CALCULATE 'DX' ETC. FOR BOND 3 (C - A)
-      CALL XSUBTR(STORE(NA+7),STORE(M5A+4),BPD(10),3)
+                CALL XSUBTR(STORE(NA+7),STORE(M5A+4),BPD(10),3)
 C--SET UP THE MATRIX TO TRANFORM FROM V/CV MATRIX OF 'ABC' TO 'ABE'
-      CALL XZEROF(STORE(JE),54)
+                CALL XZEROF(STORE(JE),54)
 C--ADD THE TRANSFORMATIONS FOR A AND B.
-      STORE(JE)=1.
-      STORE(JE+10)=1.
-      STORE(JE+20)=1.
-      STORE(JE+30)=1.
-      STORE(JE+40)=1.
-      STORE(JE+50)=1.
+                STORE(JE)=1.
+                STORE(JE+10)=1.
+                STORE(JE+20)=1.
+                STORE(JE+30)=1.
+                STORE(JE+40)=1.
+                STORE(JE+50)=1.
 C--CALCULATE THE DERIVATIVES WITH RESPECT TO 'AB' AND 'CA'
-      CALL XMLTMM(STORE(L1M1),BPD(4),STORE(JF),3,3,1)
-      CALL XMLTMM(STORE(L1M1),BPD(10),STORE(JF+3),3,3,1)
+                CALL XMLTMM(STORE(L1M1),BPD(4),STORE(JF),3,3,1)
+                CALL XMLTMM(STORE(L1M1),BPD(10),STORE(JF+3),3,3,1)
 C--FINISH OFF THE DERIVATIVES BY DIVIDING BY THE BOND LENGTHS
-      NF=JF+2
-      DO 4750 NE=JF,NF
-      STORE(NE)=STORE(NE)/STORE(NZ+10)
-      STORE(NE+3)=STORE(NE+3)/STORE(NA+10)
-4750  CONTINUE
-      NL=JE+54
+                NF=JF+2
+                DO NE=JF,NF
+                  STORE(NE)=STORE(NE)/STORE(NZ+10)
+                  STORE(NE+3)=STORE(NE+3)/STORE(NA+10)
+                END DO
+                NL=JE+54
 C--COMPUTE AB/AC
-      F=0.5*STORE(NZ+10)/STORE(NA+10)
+                F=0.5*STORE(NZ+10)/STORE(NA+10)
 C--LOOP OVER THE COORDINATES OF E  -  'X' FIRST ETC..
-      DO 4850 NF=1,3
-      B(1)=0.5*BPD(NF+9)/STORE(NA+11)
-      B(2)=0.5*BPD(NF+9)/STORE(NA+10)
-      B(3)=0.5*BPD(NF+9)*STORE(NZ+10)/STORE(NA+11)
-      NG=JF
+                DO NF=1,3
+                  B(1)=0.5*BPD(NF+9)/STORE(NA+11)
+                  B(2)=0.5*BPD(NF+9)/STORE(NA+10)
+                  B(3)=0.5*BPD(NF+9)*STORE(NZ+10)/STORE(NA+11)
+                  NG=JF
 C--LOOP OVER THE COORDINATES OF A, B AND C
-      DO 4800 NE=1,3
+                  DO NE=1,3
 C--DERIVATIVES FOR A
-      STORE(NL)=B(1)*(STORE(NG)*STORE(NA+10)+STORE(NZ+10)*STORE(NG+3))
+                    STORE(NL)=B(1)*(STORE(NG)*STORE(NA+10)
+     1                      +STORE(NZ+10)*STORE(NG+3))
 C--DERIVATIVES FOR B
-      STORE(NL+3)=-B(2)*STORE(NG)
+                    STORE(NL+3)=-B(2)*STORE(NG)
 C--DERIVATIVES FOR C
-      STORE(NL+6)=-B(3)*STORE(NG+3)
-      NG=NG+1
-      NL=NL+1
-4800  CONTINUE
+                    STORE(NL+6)=-B(3)*STORE(NG+3)
+                    NG=NG+1
+                    NL=NL+1
+                  END DO
 C--ADD IN THE ODD TERMS FOR X W.R.T. X, ETC..
-      NL=NL-4+NF
-      STORE(NL)=STORE(NL)+0.5-F
-      STORE(NL+3)=STORE(NL+3)+0.5
-      STORE(NL+6)=STORE(NL+6)+F
-      NL=NL+10-NF
-4850  CONTINUE
+                  NL=NL-4+NF
+                  STORE(NL)=STORE(NL)+0.5-F
+                  STORE(NL+3)=STORE(NL+3)+0.5
+                  STORE(NL+6)=STORE(NL+6)+F
+                  NL=NL+10-NF
+                END DO
 C--APPLY THE TRANSFORMATION AT 'JE' TO THE TRANSFORMATION MATRIX AT 'JD'
-      L1=JE
-      M1=JF
-      DO 4950 I1=1,NWA
-      K1=JD
-      DO 4900 J1=1,3
-      STORE(M1)=STORE(L1)*STORE(K1)+STORE(L1+1)*STORE(K1+9)+STORE(L1+2)
-     2 *STORE(K1+18)
-      STORE(M1+3)=STORE(L1+3)*STORE(K1+30)+STORE(L1+4)*STORE(K1+39)
-     2 +STORE(L1+5)*STORE(K1+48)
-      STORE(M1+6)=STORE(L1+6)*STORE(K1+60)+STORE(L1+7)*STORE(K1+69)
-     2 +STORE(L1+8)*STORE(K1+78)
-      M1=M1+1
-      K1=K1+1
-4900  CONTINUE
-      L1=L1+NWA
-      M1=M1+6
-4950  CONTINUE
+                L1=JE
+                M1=JF
+                DO I1=1,NWA
+                  K1=JD
+                  DO J1=1,3
+                    STORE(M1)=STORE(L1)*STORE(K1)
+     1                       +STORE(L1+1)*STORE(K1+9)
+     1                       +STORE(L1+2)*STORE(K1+18)
+                    STORE(M1+3)=STORE(L1+3)*STORE(K1+30)
+     1                         +STORE(L1+4)*STORE(K1+39)
+     2                         +STORE(L1+5)*STORE(K1+48)
+                    STORE(M1+6)=STORE(L1+6)*STORE(K1+60)
+     1                         +STORE(L1+7)*STORE(K1+69)
+     2                         +STORE(L1+8)*STORE(K1+78)
+                    M1=M1+1
+                    K1=K1+1
+                  END DO
+                  L1=L1+NWA
+                  M1=M1+6
+                END DO
 C--COMPUTE 'DX', ETC., FOR THE BOND E - A.
-      BPD(10)=-BPD(4)-BPD(7)
-      BPD(11)=-BPD(5)-BPD(8)
-      BPD(12)=-BPD(6)-BPD(9)
+                BPD(10)=-BPD(4)-BPD(7)
+                BPD(11)=-BPD(5)-BPD(8)
+                BPD(12)=-BPD(6)-BPD(9)
 C
 C--BEGIN TO COMPUTE THE V/CV MATRIX FOR THREE BONDS  -  AB, BE AND EA.
-      I1=JE
-      NF=JD
+                I1=JE
+                NF=JD
 C--CLEAR THE AREA TO ZERO
-      DO 5000 NE=JD,NO
-      STORE(NE)=0.
-5000  CONTINUE
+                DO NE=JD,NO
+                   STORE(NE)=0.
+                END DO
 C--ADD IN THE TERMS FOR EACH OF THE THREE BONDS IN TURN
-      DO 5150 NE=1,3
-      ND=NE*3
+                DO NE=1,3
+                  ND=NE*3
 C--MOVE 'DX' ETC.
-      CALL XMOVE(BPD(ND+1),B(1),3)
-      F=1./DIST(NE)
+                  CALL XMOVE(BPD(ND+1),B(1),3)
+                  F=1./DIST(NE)
 C--APPLY THE CELL ERRORS IF NEC.
-      IF(ICELL)5100,5050,5050
-5050  CONTINUE
-      CALL XAPP31(I1)
-      I1=I1+6
-5100  CONTINUE
-      J1=NF
-      NF=NF+IS(ND-2)
-      CALL XMULTR(B(1),F,B(1),3)
+                  IF(ICELL.GE.0)THEN
+                    CALL XAPP31(I1)
+                    I1=I1+6
+                  END IF
+                  J1=NF
+                  NF=NF+IS(ND-2)
+                  CALL XMULTR(B(1),F,B(1),3)
 C--CALCULATE THE CONTRIBUTIONS FOR THE FIRST ATOM
-      CALL XMLTMM(STORE(L1M1),B(1),STORE(NF),3,3,1)
+                  CALL XMLTMM(STORE(L1M1),B(1),STORE(NF),3,3,1)
 C--CALCULATE THE CONTRIBUTIONS FOR THE SECOND ATOM
-      NG=NF
-      NF=NF+IS(ND-1)
-      CALL XNEGTR(STORE(NG),STORE(NF),3)
-      NF=NF+IS(ND)
+                  NG=NF
+                  NF=NF+IS(ND-1)
+                  CALL XNEGTR(STORE(NG),STORE(NF),3)
+                  NF=NF+IS(ND)
 C--CALCULATE THE FINAL TRANSFORMATION MATRIX AND STORE IT AT JE
-      CALL XMLTTT(STORE(J1),STORE(JF),STORE(I1),1,NWA,NWA)
-      I1=I1+NWA
-5150  CONTINUE
+                  CALL XMLTTT(STORE(J1),STORE(JF),STORE(I1),1,NWA,NWA)
+                  I1=I1+NWA
+                END DO
 C--MULTIPLY THE DERIVATIVES ONTO THE V/CV MATRIX
-      CALL XMLTMM(STORE(JP),STORE(JE),STORE(JD),NWAT,NWAT,3)
-      CALL XMLTTM(STORE(JE),STORE(JD),STORE(JF),3,NWAT,3)
+                CALL XMLTMM(STORE(JP),STORE(JE),STORE(JD),NWAT,NWAT,3)
+                CALL XMLTTM(STORE(JE),STORE(JD),STORE(JF),3,NWAT,3)
 C--CHECK IF THE SIN OR COS HAS BEEN USED
-      IF(APD(NC)-90.)5200,5200,5250
+                IF(APD(NC).LT.90.)THEN
 C--THE SIN WAS USED  -  ANGLE IS LESS THAN 90
-5200  CONTINUE
-      BPD(6)=COS(ANGLE(2))
+                  BPD(6)=COS(ANGLE(2))
 C--CALCULATE THE DERIVATIVES FOR AB AND BE.
-      BPD(4)=-2.*DIST(2)/(DISTSQ(1)*BPD(6))
-      BPD(5)=2./(DIST(1)*BPD(6))
-      BPD(6)=0.
-      GOTO 5300
+                  BPD(4)=-2.*DIST(2)/(DISTSQ(1)*BPD(6))
+                  BPD(5)=2./(DIST(1)*BPD(6))
+                  BPD(6)=0.
+                ELSE
 C--THE COS WAS USED  -  ANGLE IS GREATER THAN 90
-5250  CONTINUE
-      BPD(5)=SIN(ANGLE(2))
+                  BPD(5)=SIN(ANGLE(2))
 C--CALCULATE THE DERIVATIVES FOR AB AND AE
-      BPD(4)=2.*DIST(3)/(DISTSQ(1)*BPD(5))
-      BPD(6)=-2./(DIST(1)*BPD(5))
-      BPD(5)=0.
+                  BPD(4)=2.*DIST(3)/(DISTSQ(1)*BPD(5))
+                  BPD(6)=-2./(DIST(1)*BPD(5))
+                  BPD(5)=0.
+                END IF
 C--CALCULATE THE VARIANCE OF THE ANGLE
-5300  CONTINUE
-      NC=NC+1
-      CALL XMLTMM(STORE(JF),BPD(4),STORE(JD),3,3,1)
-      CALL XMLTTM(BPD(4),STORE(JD),APD(NC),1,3,1)
+                NC=NC+1
+                CALL XMLTMM(STORE(JF),BPD(4),STORE(JD),3,3,1)
+                CALL XMLTTM(BPD(4),STORE(JD),APD(NC),1,3,1)
 C -- CALCULATE E.S.D. FROM THE VARIANCE, PRODUCING NEGATIVE E.S.D.'S
 C    FROM 'NEGATIVE VARIANCES'
-      APD(NC) = GS * XDSESD ( APD(NC) , STORE(JP) , NWAT )
-5345  CONTINUE
-      IZZ = ISTORE(NZ)
-      IXX = ISTORE(NA)
-      TERM = APD(NC-1-IESD)
-      IF (IESD .LT. 0) THEN
-        ESD = 0.0
-      ELSE
-        ESD = APD(NC)
-      ENDIF
+                APD(NC) = GS * XDSESD ( APD(NC) , STORE(JP) , NWAT )
+              ENDIF
+              IZZ = ISTORE(NZ)
+              IXX = ISTORE(NA)
+              TERM = APD(NC-1-IESD)
+              IF (IESD .LT. 0) THEN
+                ESD = 0.0
+              ELSE
+                ESD = APD(NC)
+              ENDIF
 C----- STRIP AND PACK ATOM NAMES
-      CALL CATSTR (STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
-     1 ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
-     2 CATOM1, LATOM1)
-      CALL CATSTR (STORE(M5A), STORE(M5A+1),
-     1 1,1,0,0,0, CATOM2, LATOM2)
-      CALL CATSTR (STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
-     1 ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
-     2 CATOM3, LATOM3)
-      IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
+              IF ( NSWAP .EQ. 1) THEN
+                 CALL CATSTR (STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
+     1           ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
+     2           CATOM1, LATOM1)
+                 CALL CATSTR (STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
+     1           ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
+     2           CATOM3, LATOM3)
+              ELSE
+                 CALL CATSTR (STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
+     1           ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
+     2           CATOM3, LATOM3)
+                 CALL CATSTR (STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
+     1           ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
+     2           CATOM1, LATOM1)
+              END IF
+
+              CALL CATSTR (STORE(M5A), STORE(M5A+1),
+     1         1,1,0,0,0, CATOM2, LATOM2)
+
+              IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
-        IF ((IHFIXD.EQ.1).AND.(LHFIXD(1).OR.LHFIXD(2).OR.LHFIXD(3)))THEN
-          ESD = 0.0
-        ENDIF
-        WRITE(MTE) 'A',TERM,ESD,
-     *  STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
-     1  ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
+                IF ((IHFIXD.EQ.1).AND.
+     1                (LHFIXD(1).OR.LHFIXD(2).OR.LHFIXD(3))) ESD = 0.0
+                WRITE(MTE) 'A',TERM,ESD,
+     1          STORE(IXX), STORE(IXX+1), ISTORE(NA+2),
+     1          ISTORE(NA+3), ISTORE(NA+4), ISTORE(NA+5), ISTORE(NA+6),
 C--- PIVOT
-     2  STORE(M5A), STORE(M5A+1), 1,1,0,0,0,
+     2          STORE(M5A), STORE(M5A+1), 1,1,0,0,0,
 C--- ATOM 3
-     3  STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
-     4  ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
+     3          STORE(IZZ), STORE(IZZ+1), ISTORE(NZ+2),
+     4          ISTORE(NZ+3), ISTORE(NZ+4), ISTORE(NZ+5), ISTORE(NZ+6),
 C--- DUMMY
-     5  IB, ZERO, 1,1,0,0,0
-C
-      ELSE IF (IPUNCH .EQ. 0) THEN
-        NANG = NINT (TERM)
-      WRITE(NCPU, '(''ANGL '',I3,'',1= '',A,'' to '',A,'' to '',A)')
-     1  NANG, CATOM1(1:LATOM1), CATOM2(1:LATOM2), CATOM3(1:LATOM3)
-      ENDIF
-      IF (IDSPDA .GE. 2 ) THEN
-        CBUFF = ' '
-        NANG = MAX((12 - LATOM2) /2, 1)
-        CBUFF(NANG:NANG+LATOM2-1) = CATOM2(1:LATOM2)
-        IF( ESD .GE. ZERO) THEN
-          WRITE(CMON,5348)
-     1 CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CBUFF(1:12),
-     2 CATOM3(1:21), TERM, ESD
-        ELSE
-          WRITE(CMON,5348)
-     1 CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CBUFF(1:12),
-     2 CATOM3(1:21), TERM
-        ENDIF
-        CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCAWU, '(A)') CMON( 1)(:)
-      ENDIF
-5348    FORMAT (1X,A, A, ' to ', A, ' to ', A,  F7.2, F5.2)
-C
-C
-5350  CONTINUE
-C--START OF THE PRINT LOOP
-      ND=ISTORE(NZ)
-      NE=NZ+4
+     5          IB, ZERO, 1,1,0,0,0
+C       
+              ELSE IF(IPUNCH.EQ.4.AND.(IDSPDA.EQ.2.OR.IDSPDA.EQ.3)) THEN
+C CSD ignores bonds to H, instead uses an NCH key for atoms with H's. 
+                INH1 = ISTORE ( INHVEC + (M5A-L5)/MD5 )
+                INH2 = ISTORE ( INHVEC + (IZZ-L5)/MD5 )
+                INH3 = ISTORE ( INHVEC + (IXX-L5)/MD5 )
+                IF ( INH1.GT.0 .AND. INH2.GT.0 .AND. INH3.GT.0) THEN
+                  WRITE(NCPU,'(A,3(1X,I4),1X,F7.2,3(1X,A))')
+     1            'ANGLE ',INH1,INH2,INH3,TERM,
+     2            CATOM2(1:LATOM2),CATOM1(1:LATOM1),CATOM3(1:LATOM3)
+                END IF
+              ELSE IF (IPUNCH .EQ. 0) THEN
+                NANG = NINT (TERM)
+                WRITE(NCPU,
+     1          '(''ANGL '',I3,'',1= '',A,'' to '',A,'' to '',A)')
+     1          NANG,CATOM1(1:LATOM1),CATOM2(1:LATOM2),CATOM3(1:LATOM3)
+              ENDIF
+              IF (IDSPDA .GE. 2 ) THEN
+                CBUFF = ' '
+                NANG = MAX((12 - LATOM2) /2, 1)
+                CBUFF(NANG:NANG+LATOM2-1) = CATOM2(1:LATOM2)
+                IF( ESD .GE. ZERO) THEN
+                  WRITE(CMON,5348)
+     1             CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CBUFF(1:12),
+     2             CATOM3(1:21), TERM, ESD
+                ELSE
+                  WRITE(CMON,5348)
+     1             CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CBUFF(1:12),
+     2             CATOM3(1:21), TERM
+                ENDIF
+                CALL XPRVDU(NCVDU, 1,0)
+                WRITE(NCAWU, '(A)') CMON( 1)(:)
+              ENDIF
+5348          FORMAT (1X,A, A, ' to ', A, ' to ', A,  F7.2, F5.2)
+
+5350        CONTINUE
+
+            ND=ISTORE(NZ)
+            NE=NZ+4
+
 C--CHECK IF THE E.S.D.'S ARE TO BE PRINTED
-      IF(IESD)5400,5450,5450
+            IF(IESD.LT.0 .AND. ISSPRT.EQ.0)THEN
 C--NO ERRORS TO BE PRINTED
-5400  CONTINUE
-      IF (LEVEL) 5550, 5410, 5440
-5410  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4170)N,STORE(ND),STORE(ND+1),
-     1 (APD(NF),NF=1,NC)
-      ENDIF
-      GOTO 5550
-5440  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4150)N,STORE(ND),STORE(ND+1),(ISTORE(NF+2),NF=NZ,NE),
-     2 (APD(NF),NF=1,NC)
-      ENDIF
-      GOTO 5550
+              IF (LEVEL.EQ.0)THEN
+                WRITE(NCWU,4170)N,STORE(ND),STORE(ND+1),
+     1                             (APD(NF),NF=1,NC)
+              ELSE IF (LEVEL.GT.0) THEN
+                WRITE(NCWU,4150)N,STORE(ND),STORE(ND+1),
+     1               (ISTORE(NF+2),NF=NZ,NE),(APD(NF),NF=1,NC)
+              ENDIF
+            ELSE IF ( ISSPRT .EQ. 0 ) THEN
 C--PRINT WITH ERRORS
-5450  CONTINUE
-      IF (LEVEL) 5550, 5510, 5540
-5510  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5520)N,STORE(ND),STORE(ND+1),
-     1 (APD(NF),NF=1,NC)
-      ENDIF
-5520  FORMAT(I4,2X,A4,F5.0,3X,7(F8.2,F6.2))
-      GOTO 5550
-5540  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5500)N,STORE(ND),STORE(ND+1),(ISTORE(NF+2),NF=NZ,NE),
-     2 (APD(NF),NF=1,NC)
-      ENDIF
-5500  FORMAT(I4,3X,A4,F8.0,4X,I3,I4,3I5,3X,5(F8.2,F6.2))
-5550  CONTINUE
-      DO 5600 NA=1,NC
-      IAPD(NA)=NA+M-1
-5600  CONTINUE
+              IF (LEVEL.EQ.0)THEN
+                WRITE(NCWU,5520)N,STORE(ND),STORE(ND+1),
+     1                                       (APD(NF),NF=1,NC)
+5520            FORMAT(I4,2X,A4,F5.0,3X,7(F8.2,F6.2))
+              ELSE IF ( LEVEL .GT. 0 ) THEN
+                WRITE(NCWU,5500)N,STORE(ND),STORE(ND+1),
+     1               (ISTORE(NF+2),NF=NZ,NE),(APD(NF),NF=1,NC)
+5500            FORMAT(I4,3X,A4,F8.0,4X,I3,I4,3I5,3X,5(F8.2,F6.2))
+              END IF
+            ENDIF
+          END DO ANGLEPRINT
+
+          DO NA=1,NC
+             IAPD(NA)=NA+M-1
+          END DO
 C--CHECK FOR E.S.D.'S
-      IF(IESD)5650,5750,5750
+          IF(IESD.LT.0)THEN
 C--NO E.S.D.'S
-5650  CONTINUE
-      IF (LEVEL) 5850, 5840, 5660
-5660  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5700)JAKEY,(IAPD(NA),NA=1,NC)
-      ENDIF
-5700  FORMAT(/1X,A4,41X,9I8)
-      GOTO 5850
+            IF (LEVEL.GT.0 .AND. ISSPRT .EQ. 0)THEN
+              WRITE(NCWU,5700)JAKEY,(IAPD(NA),NA=1,NC)
+5700          FORMAT(/1X,A4,41X,9I8)
+            ELSE IF (LEVEL.EQ.0 .AND. ISSPRT.EQ.0) THEN
+              WRITE(NCWU,5500)
+            END IF
+          ELSE
 C--E.S.D.'S HAVE BEEN PRINTED
-5750  CONTINUE
-      NC=NC/2
-      IF (LEVEL) 5850, 5840, 5760
-5760  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5800)JAKEY,(IAPD(NA),NA=1,NC)
-      ENDIF
-5800  FORMAT(/1X,A4,41X,I9,4I14)
-      GOTO 5850
-5840  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,5500)
-      ENDIF
-5850  CONTINUE
-      M=M+NCOL
-      L=L+NCOL*NW
-      GOTO 3800
-5900  CONTINUE
-      M5A=M5A+MD5A
-      MFNVCA = MFNVCA + MDFNVC
-      IF(M12A)6000,6000,5950
-5950  CONTINUE
-      M12A=ISTORE(M12A)
-6000  CONTINUE
-C
-C
-C
+            NC=NC/2
+            IF (LEVEL.GT.0 .AND. ISSPRT.EQ.0)THEN 
+              WRITE(NCWU,5800)JAKEY,(IAPD(NA),NA=1,NC)
+5800          FORMAT(/1X,A4,41X,I9,4I14)
+            ELSE IF (LEVEL.EQ.0 .AND. ISSPRT.EQ.0) THEN
+            WRITE(NCWU,5500)
+            ENDIF
+          ENDIF
+          M=M+NCOL
+          L=L+NCOL*NW
+
+        END DO ANGLELOOP
+
+      END DO MAINLOOP
+
+
+
 C --                   **** MAIN LOOP COMPLETED ****
-C
-C
-C
+
+
+
 C -- WRITE PUBLICATION LISTING
       IF (IPUNCH .EQ. 0) THEN
 C----- FINISH RESTRAINT LIST
@@ -1528,7 +1677,7 @@ C
 C
 C
 CODE FOR XDSSEL
-      SUBROUTINE XDSSEL ( IFUNC , MDFUNC , NFUNC , IMARK , IDEFLT )
+      SUBROUTINE XDSSEL ( IFUNC , MDFUNC , NFUNC , IMARK , KATV )
 C
 C
 C      IFUNC(MDFUNC,NFUNC)  FUNCTION VECTOR. IFUNC(1,*) IS MARKED WITH
@@ -1536,121 +1685,88 @@ C                           THE FLAG TO INDICATE WHETHER ATOM IS TO BE
 C                           INCLUDED
 C      IMARK       MARK TO PLACE IN FUNCTION VECTOR FOR ATOMS INDICATED
 C                  BY INPUT
-C      IDEFLT      MARK TO PLACE ON UNSPECIFIED ATOMS. SET BY THIS
-C                  ROUTINE IF APPROPRIATE. ( IN GENERAL, IF SOME ATOMS
-C                  ARE INCLUDED BY THIS ROUTINE, THE REMAINDER WILL BE
-C                  ASSUMED TO BE EXCLUDED, AND VICE VERSA )
-C                    INITIAL VALUE     IMARK       FINAL VALUE
-C                    0                 <ANY>       - 'IMARK'
-C                   -1                 <ANY>       -1
-C                    1                 <ANY>       - 'IMARK'
-C                  <ANY>               <.GE.2>      0
+C      KATV(3)     FLAGS INDICATING WHICH VECTORS TO UPDATE
 C
       DIMENSION IFUNC(MDFUNC,NFUNC)
-C
+      DIMENSION KATV(3)
       LOGICAL SETTHS
-C
+
 \ISTORE
-C
 \STORE
 \XLST05
 \XLEXIC
 \XUNITS
 \XSSVAL
 \XERVAL
-C
 \QSTORE
-C
-C
+
+
 C -- SEARCH INPUT FOR TYPE/ATOM SPECIFIERS
-C
+
 1000  CONTINUE
-C
       ISAVME = ME
       ISAVMF = MF
-C
+
       IF ( ME .LE. 0 ) GO TO 9000
-C
       IF ( ISTORE(MF) .GE. 0 ) GO TO 9910
-C
+
 C -- CHECK FOR A ATOM HEADER
-C
       ITYPE = ISTORE(MF+2)
       ME = ME - 1
       MF = MF + LK2
-C
       IOPER = 1
       LSCAN = L5
       MSCAN = L5 + ( N5 - 1 ) * MD5
-C
+
 C -- TRY FOR '(', INDICATING AN ATOM SPECIFICATION
       IF ( KOP(6) .EQ. 0 ) THEN
         ME = ISAVME
         MF = ISAVMF
-C
-      IN = 0
+        IN = 0
         ISTAT = KATOMU ( IN )
-        IF ( ISTAT .LE. 0 ) GO TO 9900
+        IF ( ISTAT .LE. 0 ) GO TO 9000
         IOPER = 2
         LSCAN = M5A
         MSCAN = LSCAN + ( N5A - 1 ) * MD5A
       ENDIF
-C
+
       MFUNC = 1 + ( LSCAN - L5 ) / MD5
-      DO 1100 J = LSCAN , MSCAN , MD5
+
+      DO J = LSCAN , MSCAN , MD5
         SETTHS = .FALSE.
-C
+
         IF ( IOPER .EQ. 1 ) THEN
           SETTHS = ( ISTORE(J) .EQ. ITYPE )
         ELSE
           SETTHS = .TRUE.
         ENDIF
-C
-C
-        IF ( SETTHS ) THEN
-          IF ((IMARK .GE. 2).AND.(IFUNC(1,MFUNC).GE.2)) THEN
-C If atom is 2, and is IMARK is 3, then set to 1 and vice versa.
-C ie. if atom is 'bonded' and 'pivot' it's just 'included'.
-            IF ( IFUNC(1,MFUNC) .NE. IMARK ) IFUNC(1,MFUNC) = 1
-          ELSE
-            IFUNC(1,MFUNC) = IMARK
+
+
+        DO I = 1,3
+          IF ( ( KATV(I) .NE. 0 ).AND.( SETTHS ) ) THEN
+            IFUNC(I,MFUNC) = IMARK
           ENDIF
-        ENDIF
-C
+        END DO
+
         MFUNC = MFUNC + 1
-1100  CONTINUE
-C
+      END DO
+
 C -- CHECK FOR ',' BETWEEN ARGUMENTS
       ISTAT = KOP ( 8 )
-C
+
       GO TO 1000
-C
-C
+
+
 9000  CONTINUE
-C
-C -- SET ASSUMED MARK FOR REMAINING ATOMS
-      IF ( IMARK .GE. 2) THEN
-        IDEFLT = 0
-      ELSE IF ( IDEFLT .GE. 0 ) THEN
-        IDEFLT = - IMARK
-      END IF
-C
       RETURN
-C
-C
-9900  CONTINUE
-      RETURN
+
 9910  CONTINUE
       CALL XILOPD ( ISTORE(MF+1) )
       CALL XERHND ( IERWRN )
-      GO TO 9900
-C
+      GO TO 9000
       END
-C
-C
-C
-C
-C
+
+
 CODE FOR XDSESD
       FUNCTION XDSESD ( VARIAN , VCVMAT , NVCV )
 C
@@ -1878,7 +1994,7 @@ cdjwoct2001
       NFL=JE
       JJ=M5
 C -- CHECK SPACE AVAILABLE
-      IF (KDIST1(JF, J, JT, 0, TOLER, ITRANS)) 9920, 3350, 1550
+      IF (KDIST1(JF, J, JT, 0, TOLER, ITRANS,0)) 9920, 3350, 1550
 C--REMOVE DUPLICATE ENTRIES FOR EACH ATOM, LEAVING THE MIN. CONTACT DIST
 1550  CONTINUE
       NFL=J
@@ -2025,37 +2141,33 @@ C--BEGIN MOVING NON-DELETED ATOMS
 3000  CONTINUE
       NFL=JD
 C--MAIN ATOM MOVING LOOP
-      DO 3300 I=JE,JS,JT
-      IF (STORE(I+10) .LE. -1.) GOTO 3300
-      IF(STORE(I+10)-D2)3050,3050,3300
+      DO I=JE,JS,JT
+        IF (STORE(I+10) .LE. -1.) CYCLE
+        IF(STORE(I+10).GT.D2)CYCLE
 C--CHECK IF WE ARE PRINTING THE MOVED ATOMS
-3050  CONTINUE
-      CALL XPRTCD ( I , J , CMOVED )
-      JK=-1
+        CALL XPRTCD ( I , J , CMOVED )
+        JK=-1
 C--SHIFT THE SYMMETRY OPERATORS TO THE HEADER PLACE
-      CALL XMOVE(STORE(I+2),STORE(JC+7),5)
+        CALL XMOVE(STORE(I+2),STORE(JC+7),5)
 C--SHIFT THE ATOM TO TEMP. STORAGE
-      CALL XMOVE(STORE(J),STORE(JB),MD5)
+        CALL XMOVE(STORE(J),STORE(JB),MD5)
 C--MOVE THE REST OF THE ATOMS DOWN TO MAKE ROOM FOR THIS ATOM AT THE TOP
-      K=J
-      L=J-MD5
-C--CHECK IF WE HAVE REACHED THE TOP
-3150  CONTINUE
-      IF(L-JJ)3250,3200,3200
-C--MOVE THE NEXT ATOM DOWN
-3200  CONTINUE
-      CALL XMOVE(STORE(L),STORE(K),MD5)
-      K=K-MD5
-      L=L-MD5
-      GOTO 3150
+        K=J
+        L=J-MD5
+        DO WHILE (L.GE.JJ)             !CHECK IF WE HAVE REACHED THE TOP
+          CALL XMOVE(STORE(L),STORE(K),MD5)     !MOVE THE NEXT ATOM DOWN
+          K=K-MD5
+          L=L-MD5
+        END DO
+
 C--MOVE THE NEW ATOM FROM TEMP. STORAGE TO THE TOP OF THE STACK
-3250  CONTINUE
 cdjwoct2001
-      if (igroup .ge. 0) then
-       if (istore(jb+14) .le. 0) istore(jb+14)=ifrag
-      endif
-      JJ=KATOMS(JC,JB,JJ)
-3300  CONTINUE
+        if (igroup .ge. 0) then
+         if (istore(jb+14) .le. 0) istore(jb+14)=ifrag
+        endif
+        JJ=KATOMS(JC,JB,JJ)
+      END DO
+
 C--UPDATE FOR THE NEXT PIVOT ATOM
 3350  CONTINUE
       IF(ISEQ)3370,3360,3360
@@ -2225,12 +2337,21 @@ C--LOAD THE INPUT LIST
 C--FIND THE OUTPUT LIST TYPE
       LN2=KTYP05(LN2)
 C
-C----- ALLOCATE A FUNCTION VECTOR TO HOLD RADII OF EACH ATOM AND STATUS
-      MDFNVC = 2
+C----- ALLOCATE FUNCTION VECTORS TO HOLD RADII OF EACH ATOM AND STATUS
+
+C----- ALLOCATE A RADIUS VECTOR
+      MDFNVC = 1
       NFNVC = N5
-      IRIC=N5*MDFNVC
-      LFNVC = KSTALL (IRIC)
-      CALL XZEROF ( ISTORE(LFNVC) , IRIC )
+      I=N5*MDFNVC
+      LFNVC = KSTALL (I)
+      CALL XZEROF ( ISTORE(LFNVC) , I )
+      IDEFFN = 0
+C----- ALLOCATE A FUNCTION VECTOR
+      MDATVC = 3
+      NATVC = N5
+      I=N5*MDATVC
+      LATVC = KSTALL (I)
+      CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
 C
 C----- LOAD THE FUNCTION VECTOR WITH RADIUS 1 (VDW)
       JFNVC = 1
@@ -2243,21 +2364,21 @@ C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
       I5 = L5 + (N5-1)*MD5
       BMAX = 0.
       BMIN = 0.
-      DO 7450 M5=L5,I5,MD5
-      DO 7250 M29= L29,I29,MD29
-      JZ=M29+IRDUS
-      IF (ISTORE(M5) - ISTORE(M29)) 7250,7350,7250
-7250  CONTINUE
-C----- NO MATCH - POINT TO DEFAULT ATOM
-      JZ = L29 + IRDUS
-7350  CONTINUE
-C----- MATCH
-      STORE(MFNVC+1) = STORE(JZ)
-      BMAX = AMAX1( BMAX, STORE(JZ))
-C----- SET THE FUNCTION TO 'USE'  I.E.  +1
-      ISTORE(MFNVC ) = 1
-      MFNVC = MFNVC + MDFNVC
-7450  CONTINUE
+
+      DO M5=L5,I5,MD5
+        JZ = L29 + IRDUS    !IF NO MATCH - POINT TO DEFAULT (FIRST) ATOM
+        DO M29= L29,I29,MD29
+          IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
+            JZ=M29+IRDUS
+            EXIT
+          END IF
+        END DO
+        STORE(MFNVC) = STORE(JZ)
+        BMAX = AMAX1( BMAX, STORE(JZ))
+        MFNVC = MFNVC + MDFNVC
+      END DO
+
+
       IF (ILIST .GE. 0) THEN
         WRITE(NCAWU,7460) TOLER
       IF (ISSPRT .EQ. 0) THEN
@@ -2297,157 +2418,165 @@ C      A CONTACT TO AN UNFOUND ATOM
 C----- SET CUTTENT LEVEL OF ACTIVITY (NEGATIVE)
       ICURR = -1
 C----- MARK FIRST ATOM AS FOUND
-      ISTORE(LFNVC) = ICURR
+      DO I = 0,MDATVC-1
+        ISTORE(LATVC+I) = ICURR
+      END DO
       IF (ITYPE .EQ. 0) THEN
 C----- ONLY MOVE PEAKS - MARK ALL NON-PEAKS AS FOUND
-            I5 = L5 + (N5-1)*MD5
-            MFNVC = LFNVC
-            DO 1360 M5 = L5, I5, MD5
-            IF(ISTORE(M5) .NE. IPEAK) ISTORE(MFNVC) = ICURR
-            MFNVC = MFNVC + MDFNVC
-1360        CONTINUE
+          I5 = L5 + (N5-1)*MD5
+          MATVC = LATVC
+          DO M5 = L5, I5, MD5
+              IF(ISTORE(M5) .NE. IPEAK) THEN
+                DO I = 0,MDATVC-1
+                  ISTORE(MATVC+I) = ICURR
+                END DO
+              END IF
+              MATVC = MATVC + MDATVC
+          END DO
       ENDIF
 C----- FRAGMENT PRINT FLAG
       IFRGPT = -1
-1370  CONTINUE
+      ICHNG = 1
+      DO WHILE ( ICHNG .NE. 0 )
 C----- LOOP BACK HERE IF ICHNG NOT ZERO
 C--SET UP THE CONTROL VARIABLES FOR THIS PASS
 C----- SET NO NEW CHANGES YET
-      ICHNG = 0
-      MATOM = 0
+        ICHNG = 0
+        MATOM = 0
 C----- OUTER PIVOT LOOP ALWAYS RE-START FROM BEGINNING
-      M5A = L5
-      MFNVCA = LFNVC
-1400  CONTINUE
+        M5A = L5
+        MFNVCA = LFNVC
+        MATVCA = LATVC
+1400    CONTINUE
 C----- INNER CONTACT LOOP, STARTING FROM M5, ALWAYS GOES OVER ALL ATOMS
-      M5=L5
-      MFNVC = LFNVC
-      IF (MATOM  .GE. N5) GOTO 3400
+        M5=L5
+        MFNVC = LFNVC
+        MATVC = LATVC
+        IF (MATOM  .GE. N5) GOTO 3400
 C----- DONT REUSE PREVIOUS FOUND OR UNFOUND ATOMS AS PIVOT.
-      IF (ISTORE(MFNVCA) .NE. ICURR) GOTO 3350
-      NFL=JE
+        IF (ISTORE(MATVCA) .NE. ICURR) GOTO 3350
+        NFL=JE
 C -- COMPUTE DISTANCE STACK
-      NDIST = KDIST1( N5, JRIC, JT, 1, TOLER, ITRANS)
-      IF(NDIST .LE. -1 ) THEN
-C----- ERROR
-            GOTO 9920
-      ELSE IF (NDIST .EQ. 0) THEN
-        IF (ITYPE .LT. 0) THEN
-            IF (ISTORE(MFNVCA) .EQ. 1) THEN
+        NDIST = KDIST1( N5, JRIC, JT, 1, TOLER, ITRANS,1)
+        IF(NDIST .LE. -1 ) GOTO 9920 !Error
+
+        IF (NDIST .EQ. 0) THEN
+          IF (ITYPE .LT. 0) THEN
+            IF (ISTORE(MATVCA) .EQ. 0) THEN
 C----- AN ISOLATED ATOM
-                  WRITE(NCAWU,1451) ISTORE(M5A), STORE(M5A+1)
-      IF (ISSPRT .EQ. 0) THEN
-                  WRITE(NCWU,1451) ISTORE(M5A), STORE(M5A+1)
-      ENDIF
-1451              FORMAT(' Isolated atom : ', A4,F6.0)
+              WRITE(NCAWU,1451) ISTORE(M5A), STORE(M5A+1)
+              IF (ISSPRT .EQ. 0) THEN
+                WRITE(NCWU,1451) ISTORE(M5A), STORE(M5A+1)
+              ENDIF
+1451          FORMAT(' Isolated atom : ', A4,F6.0)
             ELSE IF ( (ICHNG .EQ. 0) .AND. ( IFRGPT .LT. 0) ) THEN
 C----- START OF A NEW FRAGMENT - SET FLAG TO 'PRINT'
-                  IFRGPT = +1
+              IFRGPT = +1
             END IF
-        END IF
-            GOTO 3350
-      ENDIF
+          END IF
+          GOTO 3350
+        ENDIF
 C--REMOVE DUPLICATE ENTRIES FOR EACH ATOM, LEAVING THE MIN. CONTACT DIST
-      NFL=JRIC
-      IRIC=JE
-      JS=JE
+        NFL=JRIC
+        IRIC=JE
+        JS=JE
 C--CHECK IF THERE ARE ANY MORE ATOMS IN THE STACK
-1600  CONTINUE
-      IF(IRIC-JRIC)1650,2000,2000
+1600    CONTINUE
+        IF(IRIC.LT.JRIC)THEN
 C--BEGIN THE SEARCH FOR ALL CONTACTS TO THIS CURRENT ATOM
-1650  CONTINUE
-      E=STORE(IRIC+10)
-      K=IRIC
+          E=STORE(IRIC+10)
+          K=IRIC
 C--CHECK IF THERE ARE ANY MORE ATOMS IN THE STACK
-1700  CONTINUE
-      IF(IRIC-JRIC)1750,1950,1950
+1700      CONTINUE
+          DO WHILE (IRIC .LT. JRIC)
 C--CHECK IF THIS IS THE SAME ATOM
-1750  CONTINUE
-      IF(ISTORE(IRIC)-ISTORE(K))1950,1800,1950
-C--CHECK THE DISTANCE
-1800  CONTINUE
-      IF(STORE(IRIC+10)-E)1850,1900,1900
-1850  CONTINUE
-      E=STORE(IRIC+10)
-      K=IRIC
-C--MOVE TO THE NEXT ATOM
-1900  CONTINUE
-      IRIC=IRIC+JT
-      GOTO 1700
-C--MOVE THE STACK INFORMATION
-1950  CONTINUE
-      CALL XMOVE(STORE(K),STORE(JS),JT)
-      K=K+JT
-      JS=JS+JT
-      GOTO 1600
-C--CHECK IF ANY ATOMS HAVE BEEN FOUND
-2000  CONTINUE
-      IF(JS-JE)3350,3350,2050
+            IF(ISTORE(IRIC).NE.ISTORE(K)) EXIT
+
+            IF(STORE(IRIC+10).LT.E)THEN     !CHECK THE DISTANCE
+              E=STORE(IRIC+10)
+              K=IRIC
+            END IF
+            IRIC=IRIC+JT                    !MOVE TO THE NEXT ATOM
+          END DO
+
+          CALL XMOVE(STORE(K),STORE(JS),JT) !MOVE THE STACK INFORMATION
+          K=K+JT
+          JS=JS+JT
+          GOTO 1600
+        END IF
+
+
+        IF(JS.GT.JE)THEN          !CHECK IF ANY ATOMS HAVE BEEN FOUND
 C--ATOMS FOUND  -  CHECK FOR ATOMS TO BE DELETED
-2050  CONTINUE
-      JK=0
-      JS=JS-JT
-      IPOINT=NOWT
+          JK=0
+          JS=JS-JT
+          IPOINT=NOWT
 C
 C--BEGIN MOVING NON-DELETED ATOMS
-      NFL=JD
+          NFL=JD
 C--MAIN ATOM MOVING LOOP
-      DO 3300 I=JE,JS,JT
+          DO I=JE,JS,JT
 C----- CHECK IF ACCEPTABLE
-      IF(ISTORE(I+1) .LE. 1) GOTO 3300
+            IF(ISTORE(I+1) .LE. 1) CYCLE
 C--CHECK IF WE ARE PRINTING THE MOVED ATOMS
-      IF (IFRGPT .GT. 0) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,'(A)' ) ' Start of a new fragment '
-      ENDIF
-            WRITE(NCAWU,'(A)' ) ' Start of a new fragment '
-C            NOW INHIBIT PRINTING
-            IFRGPT = -1
-      ENDIF
-      CALL XPRTCD(I,J,CMOVED)
-      JK=-1
+            IF (IFRGPT .GT. 0) THEN                             
+              IF (ISSPRT .EQ. 0) THEN
+                WRITE(NCWU,'(A)' ) ' Start of a new fragment '
+              ENDIF
+              WRITE(NCAWU,'(A)' ) ' Start of a new fragment '
+C   NOW INHIBIT PRINTING
+              IFRGPT = -1
+            ENDIF
+            CALL XPRTCD(I,J,CMOVED)
+            JK=-1
 C--SHIFT THE SYMMETRY OPERATORS TO THE HEADER PLACE
-      CALL XMOVE(STORE(I+2),STORE(JC+7),5)
+            CALL XMOVE(STORE(I+2),STORE(JC+7),5)
 C--SHIFT THE ATOM TO TEMP. STORAGE
-      CALL XMOVE(STORE(J),STORE(JB),MD5)
+            CALL XMOVE(STORE(J),STORE(JB),MD5)
 C
 C----- LIST 5 ADDRESS
-      IADDR = ISTORE(I)
+            IADDR = ISTORE(I)
 C----- WHICH ATOM
-      IATOM = (IADDR-L5)/MD5 + 1
+            IATOM = (IADDR-L5)/MD5
 C----- FUNCTION VECTOR ADDRESS
-      IADDF = LFNVC + (IATOM-1)*MDFNVC
+            IADDF = LATVC + IATOM*MDATVC
 C--MOVE THE NEW ATOM FROM TEMP. STORAGE TO CORRECT POSITION
-3250  CONTINUE
-      JJ=KATOMS(JC,JB,IADDR)
-      ISTORE(IADDF) = ICURR -1
-      ICHNG = ICHNG + 1
-3300  CONTINUE
-C--UPDATE FOR THE NEXT PIVOT ATOM
-3350  CONTINUE
-      M5A = M5A + MD5
-      MFNVCA = MFNVCA + MDFNVC
-      MATOM = MATOM + 1
-      GOTO 1400
-C
-C
-3400  CONTINUE
-C----- SEE IF THERE ARE ANY UNMOVED ATOMS LEFT
-      ICURR = ICURR - 1
-      IF (ICHNG .EQ. 0) THEN
-            K = LFNVC + MDFNVC*(NFNVC-1)
-            DO 3370 I = LFNVC, K, MDFNVC
-            IF (ISTORE(I) .EQ. 1) THEN
-                  ISTORE(I) = ICURR
-                  ICHNG = ICHNG + 1
-                  GOTO 3380
+            JJ=KATOMS(JC,JB,IADDR)
+            DO II=0,MDATVC-1
+              ISTORE(IADDF+II) = ICURR-1
+            END DO
+            ICHNG = ICHNG + 1
+          END DO
+        ENDIF
+
+3350    CONTINUE               !UPDATE FOR THE NEXT PIVOT ATOM
+
+        M5A = M5A + MD5
+        MFNVCA = MFNVCA + MDFNVC
+        MATVCA = MATVCA + MDATVC
+        MATOM = MATOM + 1
+        GOTO 1400
+
+
+3400    CONTINUE        !SEE IF THERE ARE ANY UNMOVED ATOMS LEFT
+
+        ICURR = ICURR - 1
+        IF (ICHNG .EQ. 0) THEN
+          K = LATVC + MDATVC*(NATVC-1)
+          DO I = LATVC, K, MDATVC
+            IF (ISTORE(I) .EQ. 0) THEN
+              DO II=0,MDATVC-1
+                ISTORE(I+II) = ICURR
+              ENDDO
+              ICHNG = ICHNG + 1
+              EXIT
             END IF
-3370        CONTINUE
-3380  CONTINUE
-      END IF
-      IF (ICHNG .NE. 0) GOTO 1370
-C
-C
+          END DO
+        END IF
+
+      END DO !End of do while ichng .ne. 0
+
+
 C--END OF THE CONDENSING LOOP  -  OUTPUT THE NEW LIST
 C--CREATE THE OUTPUT LIST TYPE WHERE NECESSARY
       N=N5
@@ -2617,7 +2746,7 @@ C--PRESERVE THE LIST 12 POINTERS
 C--SET THE ENTRY LENGTH
       KD=12
 C--COMPUTE SOME DISTANCES
-      IF(KDIST1( 1, I, KD, 0, .2, 0)) 1000, 1050, 1150
+      IF(KDIST1( 1, I, KD, 0, .2, 0, 0)) 1000, 1050, 1150
 C--NOT ENOUGH CORE
 1000  CONTINUE
       XOCC=-1.
@@ -2646,19 +2775,20 @@ C--UPDATE THE POINTER
       END
 C
 CODE FOR KDIST1
-      FUNCTION KDIST1( IN, JS, JT, JFNVC, TOLER, ITRANS)
+      FUNCTION KDIST1( IN, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
 C--ENTRY THAT CALCULATES DISTANCES AND STORES THE RESULTS AT NFL
 C
 C  IN    THE NUMBER OF ATOMS TO BE MOVED AROUND.
 C  JS    POINTER TO THE DISTANCES STACK  -  ORIGINALLY SET TO 'NFL'
 C        AND POINTING TO THE NEXT FREE LOCATION AFTER THE STACK ON EXIT.
 C  JT    HE NUMBER OF WORDS PER ENTRY IN THE DISTANCES STACK.
-C  JFNVC ZERO IF NO FUNCTION VECTOR SUPPLIED
-C  JFNVC  -1  IF VCTOR ONLY USED FOR INCLUDE/EXCLUDE STATUS
-C  JFNVC  +1  IF VCTOR USED FOR STATUS AND BOND DISTANCE
+C  JFNVC ZERO OR LESS IF NO BOND RADIUS VECTOR SUPPLIED
+C  JFNVC  +1  IF VCTOR USED BONDING RADIUS
 C  JFNVC NOWT NO VECTOR, AND ONLY FIRST CONTACT TO BE RETURNED
 C  TOLER SET TO TOTAL TOLERANCE IF FUNCTION VECTOR SUPPLIED
 C  ITRANS SET TO -1 TO SUPPRESS UNIT CELL TRANSLATIONS
+C  JATVC ZERO IF NO FUNCTION VECTOR SUPPLIED
+C  JATVC  +1  IF VCTOR CONTAINING 3 ATOM FLAGS SUPPLIED
 C
 C--THE RETURN VALUES OF 'KDIST1' ARE :
 C
@@ -2789,10 +2919,10 @@ C----- LOOP BACK HERE FOR NEXT ATOM
 
       DO ND = 1, IN
 
-C----- CHECK IF THIS ATOM IS EXCLUDED from being a BONDED type (-VE or 2)
-        IF ( ABS(JFNVC) .EQ. 1 ) THEN
-          IF ( ( ISTORE(MFNVC) .LE. -1 ) .OR.
-     1         ( ISTORE(MFNVC) .EQ.  2 ) ) GOTO 2725
+C----- CHECK IF THIS ATOM IS EXCLUDED from being a BONDED type 
+        IF ( ABS(JATVC) .EQ. 1 ) THEN
+          IF ( ( ISTORE(MATVC+1) .LE. -1 ) .AND.
+     1         ( ISTORE(MATVC+2) .LE. -1 ) ) GOTO 2725
         END IF
 
 C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
@@ -2893,7 +3023,7 @@ C--CHECK FOR ANGLE ACCEPTABLE
 
 C-----  CHECK THE DISTANCE AGAINST FUNC. VECTOR RADII
 C----- DONT PUT INTO STACK IF TOO LONG COMPARED WITH FUNCTION VECTOR
-                    BOND = STORE(MFNVC+1) + STORE(MFNVCA+1)
+                    BOND = STORE(MFNVC) + STORE(MFNVCA)
                     IF ((E.GT.(BOND+TOLER)).OR.( E.LE.AT))GOTO 2570
                     ISTORE(JS+1) = 4
                   END IF
@@ -2916,7 +3046,7 @@ C--SET THE REMAINING FLAGS
               ISTORE(JS+12)=M12
               IF (JT .EQ. 14) STORE(JS+13) = BOND
               JS=JS+JT
-C When JFNVC .EQ. NOWT then only find one contact at a time.
+C When JFNVC .EQ. NOWT then only find one contact at a time. (Voids only?)
               IF ( JFNVC .EQ. NOWT ) GOTO 2800
 
 2570          IF (ITRANS .EQ. 0) GOTO 1500
@@ -2928,34 +3058,34 @@ C When JFNVC .EQ. NOWT then only find one contact at a time.
           M2=M2+MD2
         END DO
 2725    CONTINUE
-        IF (JFNVC .NE. 0) MFNVC = MFNVC+MDFNVC
+        IF (JFNVC .GT. 0) MFNVC = MFNVC+MDFNVC
+        IF (JATVC .GT. 0) MATVC = MATVC+MDATVC
+        IF (M12 .GT. 0)   M12=ISTORE(M12)        !IF L12 PTR NEEDS UPDATING
         M5=M5+MD5
-C-- IF LIST 12 NEEDS UPDATING, UPDATE THE LIST 12 POINTER
-        IF (M12 .GT. 0)   M12=ISTORE(M12)
       END DO
 
 2800  CONTINUE
       KDIST1=NJ
       RETURN
       END
-C
+
 CODE FOR XDSTN2
       FUNCTION XDSTN2(A,B)
 C--COMPUTE THE DISTANCE SQUARED BETWEEN TWO POINTS
-C
+
 C  A  VECTOR CONTAINING THE COORDINATES OF THE FIRST POINT.
 C  B  VECTOR CONTAINING THE COORDINATES OF THE SECOND POINT.
-C
+
 C--THE RETURN VALUE OF 'XDSTN2' IS THE DISTANCE SQUARED.
-C
+
 C--
-C
+
       DIMENSION A(3),B(3),C(3),D(3)
-C
+
 \STORE
 \XCONST
 \XLST01
-C
+
 C--SUBTRACT THE VECTORS
       CALL XSUBTR(A(1),B(1),C(1),3)
 C--ORTHOGONALISE THE DIFFERENCE VECTOR
@@ -4177,7 +4307,7 @@ C ----- SET JFNVC TO 'NOWT' TO REDUCE SEARCH TIME
             JFNVC = NOWT
             NBONDS = 0
 C-------COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
+            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0)
             NBONDS = NDIST
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
             NFL = JL
@@ -4220,7 +4350,7 @@ C
 C
                   MBONDS = 0
 C-------COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-                  MDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
+                  MDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0)
                   MBONDS = MDIST
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
                   NFL = JL
@@ -4328,7 +4458,6 @@ C--INPUT OR EXTEND A LIST 40 (BONDING INFO)
 \XSTR11
 \XDSTNC
 \XLEXIC
-\XWORKA
 \XPDS
 \XLISTI
 \XCONST
@@ -4482,7 +4611,7 @@ C PAIR directive takes up 5 words. Allocate 7 words:
 
 240   CONTINUE
 C -- 'MAKE' DIRECTIVE
-C MAKE directive takes up 15 words. Allocate 16 words:
+C MAKE directive takes up 15 words. Allocate 17 words:
       I = 15
       LLSTL = LNXTL
       LNXTL = KSTALL ( I + 2 )
@@ -4652,13 +4781,52 @@ C -- Then the new MAKE cards.
       DO WHILE (IPLACE .NE. 0)
 C Check flag for this link. If it is a MAKE then add into new L40.
          IF ( ISTORE(IPLACE+1).EQ.3 ) THEN
-            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD40M )
-            I = I + MD40M
-            N40M = N40M + 1
+C Check if this "make" already exists...
+           ISTAT = 0
+           OUTER1: DO J = NEWDAT, NEWDAT+(N40M*MD40M), MD40M
+              INNER1: DO K = 0,MD40M-2 !ignore bondtype
+                 IF ( ISTORE(IPLACE+2+K) .NE. ISTORE(J+K) ) THEN
+                    CYCLE OUTER1
+                 ENDIF
+              END DO INNER1
+              ISTAT = J
+              EXIT OUTER1
+           END DO OUTER1
+           IF ( ISTAT.EQ.0 ) THEN
+C Try testing atom names the other way around.
+             OUTER2: DO J = NEWDAT, NEWDAT+(N40M*MD40M), MD40M
+                INNER2: DO K = 0,6
+                   IF ( ISTORE(IPLACE+2+K) .NE. ISTORE(J+K+7) ) THEN
+                      CYCLE OUTER2
+                   ENDIF
+                END DO INNER2
+                INNER3: DO K = 0,6
+                   IF ( ISTORE(IPLACE+2+K+7) .NE. ISTORE(J+K) ) THEN
+                      CYCLE OUTER2
+                   ENDIF
+                END DO INNER3
+                ISTAT = J
+                EXIT OUTER2
+             END DO OUTER2
+           END IF
+           IF ( (ISTAT .EQ. 0) .AND. (ISTORE(IPLACE+16).GE.0) ) THEN
+C Normal MAKE card.
+             CALL XMOVE( STORE(IPLACE+2), STORE(I), MD40M )
+             I = I + MD40M
+             N40M = N40M + 1
+           ELSE IF ( ISTAT .EQ. 0 ) THEN
+C Make card with -ve bond type, but can't find bond type to remove - do nothing.
+             CONTINUE
+           ELSE IF ( ISTORE(IPLACE+2+14).GE.0 ) THEN
+C Record already exists. Just change the bondtype.
+             ISTORE(J+14) = ISTORE(IPLACE+2+14)
+           ELSE
+C Record already exists, and is to be removed.
+             CALL XMOVE( STORE(J+MD40M), STORE(J), NEWDAT+N40M*MD40M-J)
+           END IF
          END IF
          IPLACE = ISTORE(IPLACE)
       END DO
-
 
 
 C -- L40B - the BREAK cards.
@@ -4823,7 +4991,7 @@ C -- Input complete
 
 
 CODE FOR XBCALC
-      SUBROUTINE XBCALC
+      SUBROUTINE XBCALC(INTERN)
 C
 C       ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
 C       WHICH HAS THE FOLLOWING FORMAT :
@@ -4839,12 +5007,19 @@ C       8  TRANSFORMED Y
 C       9  TRANSFORMED Z
 C      10  DISTANCE
 C      11  DISTANCE SQUARED
+C
+C  INTERN = 0 -> #BONDCALC command issued (use procs)
+C         = 1 -> internal call. Don't read commands, force update.
+C
 C--
       PARAMETER (NPROCS = 1)
       DIMENSION PROCS(NPROCS)
       DIMENSION IPROCS(NPROCS)
       DIMENSION TXYZ(6)
-      DIMENSION ID(2)
+      DIMENSION ID(2), JDEV(4)
+      LOGICAL WEXIST
+      CHARACTER WCLINE*80, CFILEN*80, CATTYP*4
+
 
 \STORE
 \QSTORE
@@ -4855,7 +5030,6 @@ C--
 \XTAPES
 \XSSVAL
 \XWORK
-\XWORKA
 \XCHARS
 \XLST01
 \XLST02
@@ -4888,25 +5062,40 @@ C--
 C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(1)
 
+      IF ( INTERN .EQ. 0 ) THEN
+
 C--READ THE DATA
-      ISTAT = KRDDPV ( PROCS, NPROCS)
-      IF ( ISTAT .LT. 0 ) GO TO 9910
+        ISTAT = KRDDPV ( PROCS, NPROCS)
+        IF ( ISTAT .LT. 0 ) GO TO 9910
+        CALL XRSL
+        CALL XCSAE
+
+      ELSE
+
+        IPROCS(1) = 1
+
+      END IF
 
 C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
-      CALL XRSL
-      CALL XCSAE
-      CALL XFAL01 !Cell parameters
-      CALL XFAL02 !Space group
-      CALL XFAL05 !Atomic (and other) parameters
-      CALL XFAL29 !Atomic properties (radii)
+
+
+      IF ( KEXIST(1) .LT. 1 ) GOTO 9900
+      IF ( KEXIST(2) .LT. 1 ) GOTO 9900
+      IF ( KEXIST(5) .LT. 1 ) GOTO 9900
+      IF ( KEXIST(29) .LT. 1 ) GOTO 9900
+      
+      IF (KHUNTR ( 1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
       IF ( IERFLG .LT. 0 ) GO TO 9900
 
       IF ( KEXIST(40) .GE. 1 ) THEN
 C -- Load existing list forty:
-         CALL XFAL40
+         IF (KHUNTR (40,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL40
          IF ( IERFLG .LT. 0 ) GO TO 9900
       ELSE
-C -- C R E A T E   A   N E W   L I S T   4 0:
+C -- C R E A T E   A   N E W   ( N U L L )   L I S T   4 0:
          IDWZAP = 0
          CALL XFILL (IDWZAP, ICOM40, IDIM40)
          N40T = 1
@@ -4915,7 +5104,7 @@ C -- C R E A T E   A   N E W   L I S T   4 0:
          N40M = 0
          N40B = 0
          CALL XCELST ( 40, ICOM40, IDIM40 )
-         CALL XWLSTD ( 40, ICOM40, IDIM40, 0, 1)
+          CALL XWLSTD ( 40, ICOM40, IDIM40, 0, 1)
       ENDIF
 
       IF ( KEXIST(41) .GE. 1 ) THEN
@@ -4939,7 +5128,6 @@ C -- C R E A T E   A   N E W   L I S T   4 1:
          CALL XPRVDU(NCVDU,2,0)
          GOTO 3350
       ENDIF
-
 
 
 C -- The ELEMENT records (L40E) will override the covalent
@@ -4967,24 +5155,94 @@ C -- Overwrite vdw with maxbonds info
               EXIT
            END IF
          END DO
+C If not it L29, check if we have found already.
+         IF ( KFOUND .EQ. 0 ) THEN
+           DO M29= NEWL29,NEWL29 + NOTFND*MD29,MD29
+             IF ( STORE(M40E) .EQ. STORE(M29) ) THEN
+                KFOUND = 1
+                WRITE(CMON,'(2A)')
+     1           'FYI: Element in L40 twice (using 1st): ',ISTORE(M40E)
+                CALL XPRVDU(NCVDU,1,0)
+                EXIT
+             END IF
+           END DO
+         END IF
          IF ( KFOUND .EQ. 0 ) THEN
 C -- Add this extra element in L29 style at NEWL29.
             NEWM29 = NEWL29 + NOTFND*MD29
             CALL XZEROF(STORE(NEWM29),MD29)
-            CALL XMOVE (STORE(L40E),STORE(NEWM29),3)
+            CALL XMOVE (STORE(M40E),STORE(NEWM29),3)
             NOTFND = NOTFND + 1
-            WRITE(CMON,'(2A)')'FYI: Element in L40, but not in L29',
-     1                        ISTORE(L40E)
+            WRITE(CMON,'(2A)')'FYI: Element in L40, but not in L29: ',
+     1                        ISTORE(M40E)
             CALL XPRVDU(NCVDU,1,0)
          END IF
       END DO
+      DO M5=L5,L5+(N5-1)*MD5,MD5
+         KFOUND = 0
+         DO M29= L29,I29,MD29
+           IF ( ISTORE(M5) .EQ. ISTORE(M29) ) THEN
+              KFOUND = 1
+              EXIT
+           END IF
+         END DO
+C If not in L29, check if we have found already.
+         IF ( KFOUND .EQ. 0 ) THEN
+           DO M29= NEWL29,NEWL29 + NOTFND*MD29,MD29
+             IF ( STORE(M5) .EQ. STORE(M29) ) THEN
+                KFOUND = 1
+                EXIT
+             END IF
+           END DO
+         END IF
+         IF ( KFOUND .EQ. 0 ) THEN
+C -- Element found in L5 that is missing from L29 and L40
+C -- Add this extra element in L29 style at NEWL29.
+            NEWM29 = NEWL29 + NOTFND*MD29
+            CALL XZEROF(STORE(NEWM29),MD29)
+            CALL XMOVE (STORE(M5),STORE(NEWM29),1)
+            STORE(NEWM29+1) = 0.8
+            STORE(NEWM29+2) = STORE(L40T+2)
+
+C -- Have to get proper covalent radii from file if possible.
+##LINGIL            CFILEN = 'CRYSDIR:\script\propwin.dat'
+&&LINGIL            CFILEN = 'CRYSDIR:/script/propwin.dat'
+            CALL MTRNLG(CFILEN,'OLD',ILENG)
+            INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
+            IF(WEXIST) THEN
+              WRITE(CATTYP,'(A4)')ISTORE(M5)
+              CALL XMOVEI(KEYFIL(1,2), JDEV, 4)
+              CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
+              IF ( IERFLG .LT. 0) GOTO 9900
+C Read the properties file and extract cov, vdw and colour.
+              DO WHILE ( .TRUE. )
+                 READ(NCARU,'(A80)',END=89) WCLINE
+                 IF((WCLINE(1:3).NE.'CON').AND.
+     1              (WCLINE(1:3).NE.'   ').AND.
+     1              (WCLINE(1:4).EQ.CATTYP)) THEN
+                    READ(WCLINE(13:16),'(F4.2)') COV
+                    STORE(NEWM29+1) = COV
+                    EXIT
+                 END IF
+              END DO
+89            CONTINUE !End of file
+              CLOSE(NCARU)
+            END IF
+            NOTFND = NOTFND + 1
+            WRITE(CMON,'(2A)')'FYI: Element not in L40 or L29: ',
+     1                        ISTORE(M5)
+            CALL XPRVDU(NCVDU,1,0)
+         END IF
+      END DO
+
       IF ( NOTFND .GT. 0 ) THEN
 C -- There are extra elements in L40 that are not in L29 - this is
 C -- perfectly acceptable, though refinement cannot proceed. We should
 C -- print a warning. For now we need to extend L29 in order to fit
 C -- in the information.
+C -- NB we have already put stuff above NFL, this call allows for that:
          NEWL29 = KSTALL ( (N29+NOTFND)*MD29 )
-C -- NB we have already put stuff above NFL, this call allows for that.
+
          NEWM29 = NEWL29 + NOTFND*MD29
          CALL XMOVE(STORE(L29),STORE(NEWM29),N29*MD29)
          L29 = NEWL29
@@ -5133,12 +5391,16 @@ C -- Search L41B records for this bond to see if already found.
      8     .AND.(ISTORE(M41B+4).EQ.ISTORE(M40M+12))
      9     .AND.(ISTORE(M41B+5).EQ.ISTORE(M40M+13))))THEN
 
-          WRITE(CMON,'(2(A,A4,I4))')
-     1    'No need to make    ',ISTORE(M40M  ),ISTORE(M40M+1),
-     1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
-            CALL XPRVDU(NCVDU, 1,0)
-
 C -- We have a match. No need to make this bond.
+C -- But, set the type:
+
+          ISTORE(M41B+12) = ISTORE(M40M+14)
+
+c          WRITE(CMON,'(2(A,A4,I4))')
+c     1    'No need to make    ',ISTORE(M40M  ),ISTORE(M40M+1),
+c     1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
+c            CALL XPRVDU(NCVDU, 1,0)
+
               LBEX = 1
               EXIT
             END IF
@@ -5162,7 +5424,7 @@ C --    Calculate bond length
 C -- Apply symmetry to atom 1:
           M2 = L2 + ( MIN(N2,ABS(ISTORE(M40M+2))) - 1) * MD2
           M2P =L2P+ ( MIN(N2P,ISTORE(M40M+3))     - 1) * MD2P
-C -- Transform
+C -- Transform     
           CALL XMLTTM(STORE(M2),STORE(4+L5+KAT1*MD5),TXYZ(1),3,3,1)
 C -- Invert
           IF ( ISTORE(M40M+2) .LT. 0 ) CALL XNEGTR(TXYZ(1),TXYZ(1),3)
@@ -5272,6 +5534,8 @@ C -- Possibly shorten L41B.
         NWN41B = KN41B
       END DO
 
+      L41B = NWL41B
+
 C TODO -- Include L41A list of atoms, CRC and so on.
 
       ISTAT = KHUNTR(41,101,IADDL,IADDR,IADDD,-1)
@@ -5284,7 +5548,7 @@ C TODO -- Include L41A list of atoms, CRC and so on.
       IF ( ISTAT.NE.0 ) GOTO 9900
 
       N41A = N5
-      L41A = KCHLFL( N5 * MD41A )
+      L41A = KSTALL( N5 * MD41A )
       DO I = 0,N5-1
          M5 = L5 + 4 + I*MD5
          M41A = L41A + I*MD41A
@@ -5301,6 +5565,9 @@ C TODO -- Include L41A list of atoms, CRC and so on.
       ISTORE(L41D+2) = IL05SR
       ISTORE(L41D+3) = IL40SR
 
+C -- Work out bond types:
+
+      CALL BONDTY
 
 C -- Write new list back to disk.
 
@@ -5568,7 +5835,7 @@ C -- Checks whether list 41 needs updating.
 
 C-- If there is no L41, we need to update.
       IF ( KEXIST(41) .LE. 0 ) THEN
-         WRITE(CMON,'(a)')'Update required - There is no list 41'
+         WRITE(CMON,'(a)')'Bonds: Update required - There is no list 41'
          CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
@@ -5585,7 +5852,7 @@ C-- If there is no L41, we need to update.
 C-- If the number of atoms in L5 has changed, we need to update.
 
       IF ( N5 .NE. ISTORE(L41D) ) THEN
-         WRITE(CMON,'(a)')'Update required - List 5 length changed'
+         WRITE(CMON,'(a)')'Bonds: Update required - List5 length change'
          CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
@@ -5593,7 +5860,7 @@ C-- If the number of atoms in L5 has changed, we need to update.
 C-- If the serial of L40 has changed, we need to update.
 
       IF ( IL40SR .NE. ISTORE(L41D+3) ) THEN
-         WRITE(CMON,'(a)')'Update required - List 40 has changed'
+         WRITE(CMON,'(a)')'Bonds: Update required - List 40 has changed'
          CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
@@ -5601,7 +5868,8 @@ C-- If the serial of L40 has changed, we need to update.
 C-- If the original serial of List 5 has changed, we need to update.
 
       IF ( IL05SR .NE. ISTORE(L41D+2) ) THEN
-         WRITE(CMON,'(a)')'Update required - List 5 base serial changed'
+         WRITE(CMON,'(a)')
+     1  'Bonds: Update required - List 5 base serial changed'
          CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
@@ -5613,7 +5881,8 @@ C -- Calculate a 16-bit CRC for List 5:
 C -- See if the CRC has changed.
 
       IF ( L5CRC .NE. ISTORE(L41D+1) ) THEN
-         WRITE(CMON,'(a)')'Update required - List 5 checksum changed'
+         WRITE(CMON,'(a)')
+     + 'Bonds: Update required - List 5 checksum changed'
          CALL XPRVDU(NCVDU,1,0)
          RETURN
       ENDIF
@@ -5631,8 +5900,10 @@ C -- to look for a 'significant' change in co-ordinates.
 
 C Significant Shift ( F is dist squared ):
          IF ( F .GT. STORE(L40T+4)**2 ) THEN
-           WRITE(CMON,'(a)')'Update required - Significant change in L5'
-           CALL XPRVDU(NCVDU,1,0)
+           WRITE(CMON,'(a/a,I4,2F15.8)')
+     + 'Bonds: Update required - Significant change in L5',
+     + 'Atom#, tol^2, F^2 = ',I+1,STORE(L40T+4)**2,F
+           CALL XPRVDU(NCVDU,2,0)
          RETURN
       ENDIF
          
