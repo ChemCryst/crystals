@@ -22,45 +22,33 @@
 
 int CxMultiEdit::mMultiEditCount = kMultiEditBase;
 
-// OPSignature: CxMultiEdit * CxMultiEdit:CreateCxMultiEdit( CrGrid *:container  CxGrid *:guiParent ) 
 CxMultiEdit * 	CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent )
 {
-//Insert your own code here.
 	CxMultiEdit *theMEdit = new CxMultiEdit (container);
-	theMEdit->Create(ES_LEFT|ES_AUTOHSCROLL|ES_AUTOVSCROLL|WS_VSCROLL|WS_VISIBLE|WS_CHILD|ES_MULTILINE,CRect(0,0,10,10),guiParent,mMultiEditCount++);
+        theMEdit->Create(ES_LEFT|ES_AUTOHSCROLL|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL|WS_VISIBLE|WS_CHILD|ES_MULTILINE,CRect(0,0,10,10),guiParent,mMultiEditCount++);
 	theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theMEdit->SetFont(CxGrid::mp_font);
 	theMEdit->SetBackgroundColor(FALSE,RGB(255,255,255));
 	theMEdit->SetColour(0,0,0);
 
 	return theMEdit;
-//End of user code.         
 }
 
-// OPSignature:  CxMultiEdit:CxMultiEdit( CrMultiEdit *:container  SPaneInfo:&inPaneInfo ) 
-	CxMultiEdit::CxMultiEdit( CrMultiEdit * container )
-//Insert your own initialization here.
-	: CRichEditCtrl ()
-//End of user initialization.         
+CxMultiEdit::CxMultiEdit( CrMultiEdit * container )
+: CRichEditCtrl ()
 {
-//Insert your own code here.
 	mWidget = container;
 #ifdef __LINUX__
 	connect ( this, SIGNAL(textChanged()), this, SLOT(Changed()) );
 #endif
 	mIdealHeight = 30;
 	mIdealWidth  = 70;
-//End of user code.         
 }
-// OPSignature:  CxMultiEdit:~CxMultiEdit() 
 	CxMultiEdit::~CxMultiEdit()
 {
-//Insert your own code here.
 	RemoveMultiEdit();
-//End of user code.         
 }
 
-// OPSignature: void CxGrid:SetText( char *:text ) 
 void	CxMultiEdit::SetText( char * text )
 {
 	int leng = GetWindowTextLength();
@@ -200,7 +188,6 @@ void CxMultiEdit::Focus()
 
 BEGIN_MESSAGE_MAP(CxMultiEdit, CRichEditCtrl)
 	ON_WM_CHAR()
-	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
@@ -300,12 +287,7 @@ void CxMultiEdit::SetItalic(Boolean italic)
 
 }
 
-void CxMultiEdit::OnLButtonUp( UINT nFlags, CPoint point )
-{
-	TRACE("Left Button up at %d,%d \n",point.x,point.y);
-}
-
-
+                  
 void CxMultiEdit::SetFixedWidth(Boolean fixed)
 {
 	CHARFORMAT cf;

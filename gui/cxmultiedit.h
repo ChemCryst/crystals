@@ -73,7 +73,6 @@ class	CxMultiEdit : public CRichEditCtrl
 		int		mIdealWidth;
 
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-		afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
 
 		DECLARE_MESSAGE_MAP()
 
