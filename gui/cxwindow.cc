@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.31  2003/09/03 20:55:38  rich
+//   Fix border of non-modal windows under Linux.
+//
 //   Revision 1.30  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -95,28 +98,27 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
   #ifdef __CR_WIN__
     HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_ARROW);
-
     const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,
                                        hCursor, (HBRUSH)(COLOR_3DFACE+1),
                                       AfxGetApp()->LoadIcon(IDI_ICON1));
-      
     theWindow->mParentWnd = (CWnd*) parentWindow;
-
     theWindow->Create(wndClass, "Window",
 //    theWindow->Create(NULL, "Window",
         (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX|WS_CLIPCHILDREN :
                               WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_CLIPCHILDREN,
         CRect(0,0,1000,1000), theWindow->mParentWnd);
-
 //    theWindow->SetIcon(AfxGetApp()->LoadIcon(IDI_ICON1),true);
   #endif
+
   #ifdef __BOTHWX__
       theWindow->mParentWnd = (wxWindow*) parentWindow;
-      theWindow->Create( theWindow->mParentWnd, -1, "Window",
-                         wxPoint(0, 0), wxSize(-1,-1),
-                         ((attributes & kSize)  ? wxDEFAULT_FRAME_STYLE : wxDEFAULT_DIALOG_STYLE) |
-                         ( parentWindow         ? wxFRAME_FLOAT_ON_PARENT : 0) );// |
-//                         ((attributes & kModal) ? 0 : wxFRAME_TOOL_WINDOW) );
+      theWindow->Create( 
+        theWindow->mParentWnd, -1, "Window",
+        wxPoint(0, 0), wxSize(-1,-1),
+        wxSYSTEM_MENU |         
+        ((attributes & kSize) ? wxDEFAULT_FRAME_STYLE   : wxDEFAULT_DIALOG_STYLE) |
+        ( parentWindow        ? wxFRAME_FLOAT_ON_PARENT : wxFRAME_FLOAT_ON_PARENT) 
+      );
       theWindow->SetIcon( wxICON (IDI_ICON1) );
   #endif
 
