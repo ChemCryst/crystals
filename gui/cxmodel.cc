@@ -971,3 +971,9 @@ void CxModel::UpdateHighlights()
 {
 	InvalidateRect(NULL,FALSE);
 }
+
+
+void CxModel::Reset()
+{
+	m_LitAtom = nil;
+}
