@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.55  2004/02/16 16:40:28  rich
+C Add a plot of phase distribution to the increasingl inappropriately named
+C #SIGMADIST command. Use #SIGM/OUT PHASE=YES/END graph is drawn on
+C PLOTWINDOW _VPHASED if it's there.
+C
 C Revision 1.54  2004/02/16 14:17:05  rich
 C Output list of missing reflections to GUI during #THLIM calculation, if
 C requested.
@@ -881,7 +886,7 @@ C
          CALL XPRVDU(NCVDU, 1,0)
 1035     FORMAT ( 5X , 6G12.3 )
         endif
-        WRITE ( ctext(4) , 1035 ) ( STORE(J) , J = L4 , M4 )
+        WRITE ( ctext(4) , 1035 ) ( STORE(J) , J = L4 , MIN(L4+5,M4) )
       ENDIF
 C
       if (imode .ge.1) then
