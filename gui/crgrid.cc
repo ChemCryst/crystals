@@ -22,6 +22,7 @@
 #include	"crmultiedit.h"
 #include	"creditbox.h"
 #include	"crtext.h"
+#include    "cricon.h"
 #include	"crprogress.h"
 #include	"crcheckbox.h"
 #include	"crchart.h"
@@ -281,6 +282,13 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 						retVal = InitElement( texttPtr, tokenList, xpos, ypos );
 					break;
 				}
+                        case kTCreateIcon:                              // Create a caption
+				{
+                              CrIcon * iconPtr = new CrIcon( this );
+                              if ( iconPtr != nil )
+                                    retVal = InitElement( iconPtr, tokenList, xpos, ypos );
+					break;
+				}
 				case kTCreateProgress:					// Create a progress bar
 				{
 					CrProgress * progressPtr = new CrProgress( this );
@@ -456,27 +464,22 @@ void	CrGrid::CalcLayout()
 	theRect.Set(0,0,runningTotalHeight,runningTotalWidth);		
 	SetGeometry( &theRect );
 
-//End of user code.         
 }
-// OPSignature: void CrGrid:SetText( CcString:item ) 
+
 void	CrGrid::SetText( CcString item )
 {
-//Insert your own code here.
 	char theText[256];
 	strcpy( theText, item.ToCString() );
 
 	if (mOutlineWidget != nil )
 		mOutlineWidget->SetText( theText );
-//End of user code.         
 }
-// OPSignature: Boolean CrGrid:GridComplete() 
+
 Boolean	CrGrid::GridComplete()
 {
-//Insert your own code here.
 	return mGridComplete;
-//End of user code.         
 }
-// OPSignature: Boolean CrGrid:InitElement( CrGUIElement *:element  CcTokenList *:tokenList ) 
+
 Boolean	CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos)
 {
 	tokenList->GetToken(); //This is the element type (e.g. BUTTON). Remove it.
@@ -484,6 +487,7 @@ Boolean	CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, in
 	if(!mXCanResize) mXCanResize = element->mXCanResize; // if an element in the grid can
 	if(!mYCanResize) mYCanResize = element->mYCanResize; // resize, then the grid can aswell.
 //BUT if the element is a grid, it doesn't yet know if it can resize!!!!
+//This is why things in non-top level grids often don't resize.
 
 	if(element->mTabStop)
 		( (CrWindow*)GetRootWidget() )->AddToTabGroup(element);

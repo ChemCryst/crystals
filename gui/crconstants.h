@@ -6,6 +6,12 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.8  1999/05/28 17:53:11  dosuser
+// RIC: Attempted world record for most number of files
+// checked in at once. Most changes are to do with adding
+// support for a LINUX windows library. Nothing has broken
+// in the windows version. As far as I can see.
+//
 // Revision 1.7  1999/05/13 17:53:06  dosuser
 // RIC: Added kSSysRestart=RESTART and kSRestartFile=FILE
 //
@@ -45,6 +51,7 @@
 #define kSCreateGrid          "GRID"
 #define kSCreateMultiEdit	"MULTIEDIT"
 #define kSCreateText		"STATIC"
+#define kSCreateIcon          "ICON"
 #define kSCreateProgress	"PROGRESS"
 #define kSCreateRadioButton	"RADIOBUTTON"
 #define kSCreateCheckBox	"CHECKBOX"
@@ -184,6 +191,14 @@
 #define kSVisibleLines		"VISLINES"
 #define kSAlign				"ALIGN"
 #define	kSTextSelector		"TEXT"
+#define     kSIconSelector          "ICON"
+#define     kSIconInfo              "INFO"
+#define     kSIconError             "ERROR"
+#define     kSIconWarn              "WARN"
+#define     kSIconQuery             "QUERY"
+
+
+
 #define kSNull				"NULL"
 
 #define	kSYes				"YES"
@@ -242,6 +257,7 @@ enum {
 	kTCreateGrid,
 	kTCreateMultiEdit,
 	kTCreateText,
+      kTCreateIcon,
 	kTCreateProgress,
 	kTCreateRadioButton,
 	kTCreateCheckBox,
@@ -346,7 +362,12 @@ enum {
 	kTSendIndex,
       kTAt,
       kTOpenGrid,
-      kTSpew
+      kTSpew,
+      kTIconSelector,
+      kTIconInfo,
+      kTIconError,
+      kTIconWarn,
+      kTIconQuery
 };
 
 enum {
