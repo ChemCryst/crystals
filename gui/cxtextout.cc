@@ -207,7 +207,7 @@ void  CxTextOut::SetText( CcString cText )
 void  CxTextOut::ViewTop()
 {
 // Scrolls to the top of the text.
-        SetHead(min(GetLineCount(),GetMaxViewableLines())-1);
+        SetHead(GetMaxViewableLines()-1);
 #ifdef __CR_WIN__
         Invalidate();
 #endif
