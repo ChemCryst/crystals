@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/02/27 19:40:10  ckp2
+C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
+C this extra length. In general the program continues to ignore everything beyond
+C column 80. The "system" commands (OPEN, RELEASE, etc.) do know about the extra length
+C and can take extra long filenames as a result. The script processor also knows: lines
+C in script files, the script input buffer and text output may now run up to 256 chars.
+C RIC: THe system commands respect double-quotes around arguments, so that filenames can be
+C given which contain spaces.
+C
 C Revision 1.32  2002/02/20 14:37:56  ckp2
 C RIC: Changes to XDETCH to do with allowing quotes around filenames.
 C RIC: Do not remove spaces from filenames in MTRNLG.
@@ -2568,9 +2577,9 @@ C NOW WE SEARCH FOR THE LENGTH OF OUR FILE NAME AND REMOVE BLANKS.
 C
 C      WRITE(6,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
 C     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
-      WRITE(CMON,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
-     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
-      CALL XPRVDU(NCVDU,1,0)
+c      WRITE(CMON,*) 'MTRNLG:  Input="',FILNAM(1:KSTRLN(FILNAM)),
+c     & '":',LEN(FILNAM),', Status="',STATUS(1:KSTRLN(STATUS)),'"'
+c      CALL XPRVDU(NCVDU,1,0)
       LEVEL=1
 c      J=0
 c      DO 1 I=1,LEN(FILNAM)
@@ -2754,8 +2763,8 @@ C
 8888  CONTINUE
       LENNAM = KSTRLN(FILNAM)
 C      WRITE(6,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
-      WRITE(CMON,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
-      CALL XPRVDU(NCVDU,1,0)
+c      WRITE(CMON,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
+c      CALL XPRVDU(NCVDU,1,0)
 
 
 C
