@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2003/08/05 11:11:10  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.52  2003/07/16 16:02:58  rich
 C Added code to \REGROUP, so that if the MOVE parameter is -ve, then
 C a covalent radius vector is provided to KDIST1, and the absolute
@@ -3816,8 +3819,9 @@ C Calculate transformed co-ordinates
      1                                    +ISTORE(JS+4+L)
           END DO
 
-          STORE(JS+10)=STORE(M41B+13)
-          STORE(JS+11)=STORE(M41B+13)**2
+
+          STORE(JS+11)=XDSTN2(STORE(JS+7),STORE(I52+4))
+          STORE(JS+10)=SQRT(STORE(JS+11))
 
 
           IF ( L12 .GT. 0 ) THEN
