@@ -44,8 +44,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#if !defined(_WIN32)
 #include <sys/time.h>
+#endif
 #include <errno.h>
+#include "PCPort.h"
 #include "HKLData.h"
 #include "Exceptions.h"
 #include "CrystalSystem.h"
@@ -59,11 +62,6 @@
 using namespace std;
 
 #if !defined(_WIN32)
-#define _TCHAR const char
-#define TCHAR char
-//define kDefaultTables "/Tables.txt"
-#else
-//define kDefaultTables "\\Tables.txt"
 #define PATH_MAX _MAX_PATH
 #endif
 
@@ -145,16 +143,16 @@ void runTest(RunParameters& pRunData)
                 {
                     if (!pRunData.iCrystalSys.contains(tResult))
                     {
-                            cout << tLaueGroups << "\n";
-                            cout << "Merging Identifys the system to be " << tResult << "\n";
-                            pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
+						std::cout << tLaueGroups << "\n";
+                        std::cout << "Merging Identifys the system to be " << tResult << "\n";
+						pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
                     }
                 }
         }
         else
         {
-            cout << tLaueGroups << "\n";
-            cout << "Merging Identifys the system to be " << tResult << "\n";
+			std::cout << tLaueGroups << "\n";
+            std::cout << "Merging Identifys the system to be " << tResult << "\n";
             pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
         }
     }
@@ -197,11 +195,7 @@ void runTest(RunParameters& pRunData)
     std::cout << MyObject::objectCount() << " objects left.\n";
 }
 
-#if !defined(_WIN32)
-int main(int argc, _TCHAR * argv[])
-#else
-int _tmain(int argc, _TCHAR* argv[])
-#endif
+int main(int argc, const char* argv[])
 { 
     std::cout << "The Determinator Version " << kVersion << "\n";
     std::cout << "Written by Stefan Pantos\n";
@@ -214,7 +208,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	 * If there are any parameters needed where where not passed 
 	 * then the user is prompted.
 	 */
-	tRunStruct.handleArgs(argc, argv);  
+		tRunStruct.handleArgs(argc, argv);  
         tRunStruct.getParamsFromUser(); // Not all the run parameters have been filled in the user will need to add some more.
         runTest(tRunStruct);
     }
