@@ -3043,8 +3043,8 @@ FOURIER            6    6
      NO             YES            MAPVIEW
    2.REFLECTIONS        4    1    0    0
          3    3    2    3
-    .WEIGHT             3    0    1    3   -1 NO
-     SIM            NO             LIST-6
+    .WEIGHT             3    0    1    4   -2 NO
+     MAIN           SIM            NO             LIST-6
     .REJECT             7    0    1    4    0 SMALL
      NONE           SMALL          QUARTER        HALF
     .F000              17    0    1    0    0 0.0
@@ -4115,8 +4115,8 @@ MASK               3    4
     1    2    5   29
    1.LIMITS            10    1    0    0
          3    2    2    2    2    2    2    2    2    2
-    .SOURCE             3    0    1    3   -1 EXISTING
-     EXISTING       RANGE          DEFAULTS
+    .SOURCE             3    0    1    4   -1 EXISTING
+     EXISTING       RANGE          DEFAULTS       MOD14
     .XMINIMUM           4    0    1    0    0 0.0
     .XDIVS              5    0    1    0    0 0.3
     .XMAXIMUM           6    0    1    0    0 1.0
@@ -4135,7 +4135,8 @@ MASK               3    4
     .VOIDATOM          16    0    1    0    0 0.77
    3.MASK               2    1    0    0
          3    1
-    .OPERATION          1    0    1    4    0 ACCESSIBLE
-     ACCESSIBLE     OUTSIDE        INSIDE         SHRINK
+    .OPERATION          1    0    1    7    0 ACCESSIBLE
+     ACCESSIBLE     OUTSIDE        INSIDE         CLOSETO        SHRINK
+     SHOW           SETFC
     .INPUTLIST          2    0    1    2    1         5
               5        10

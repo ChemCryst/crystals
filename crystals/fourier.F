@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2004/07/08 15:25:33  rich
+C Updated \MASK code to include mask generation for solvent accessible volume.
+C (It wasn't finished before.) Mask is stored in list 42.
+C
 C Revision 1.21  2004/07/02 13:26:01  rich
 C Remove dependency on HARWELL and NAG libraries. Replaced with LAPACK
 C and BLAS code (and a home-made bessel function approximation).
@@ -59,15 +63,19 @@ C
 C          1  /FO/ FOURIER, WITH REJECTION IF /FC/<0.001
 C          2  /FC/ FOURIER, WITH REJECTION IF /FC/<0.001
 C          3   DF  FOURIER, WITH REJECTION IF /FC/<0.001
-C           4  2FO-FC FOURIER
-C           5  'OPTIMAL' (WEIGHTED) FOURIER
-C           6  FO PATTERSON
-C           7  FC PATTERSON
-C           8  'E' MAP WITH DATA FROM TAPE
+C          4  2FO-FC FOURIER
+C          5  'OPTIMAL' (WEIGHTED) FOURIER
+C          6  FO PATTERSON
+C          7  FC PATTERSON
+C          8  (FO-FC)**2 PATTERSON
+C          9  FO**2-FC**2 PATTERSON
+C         10  'E' MAP WITH DATA FROM TAPE
+C         
 C
 C  NE      NUMBER OF THE E-MAP TO COMPUTE.
 C  NWT     WEIGHTING PARAMETER :
 C
+C          -2  MAIN's WEIGHTS
 C          -1  SIM WEIGHTED.
 C           0  NO WEIGHTS.
 C           1  WEIGHTS TAKEN FROM LIST 6.
@@ -271,6 +279,7 @@ C--
       CHARACTER *10 CRADTP
       CHARACTER *25 CSERI
       DIMENSION KDEV(4)
+      DIMENSION THKL(3)
 \ICOM30
 \FOURTP
 \ISTORE
@@ -291,7 +300,9 @@ C
 \XLST30
 \XLST01
 \XLST02
+\XLST03
 \XLST05
+\XLST42
 \XTAPES
 \XERVAL
 \XPDS
@@ -342,7 +353,6 @@ C--CLEAR THE CORE CONTROL FLAGS
       IF( (IFCALC .EQ. 0) .AND. (NTYP .LT. IPMAP) ) THEN
          IF (KEXIST(33) .LE. 0) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU, 1151)
-CFWB03            WRITE(NCAWU, 1151)
             WRITE ( CMON ,1151)
             CALL XPRVDU(NCVDU, 1,0)
 1151        FORMAT(' This option NOT available unless SFLS ',
@@ -366,12 +376,20 @@ C----- GET LIST 13 FOR THE RADIATION TYPE
             IRADTP = ISTORE(L13DT+1)
       ENDIF
 CDJW99]
-C--LOAD LIST 5 AND SET UP LIST 10
+C--LOAD LIST 5 AND SET UP LIST 10, and load 3,23,29
       CALL XFOURI
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--LOAD LISTS 1, 2, 6 AND 14, SORT LIST 5, AND SET UP LIST 10
       CALL XFOURJ(ITYP06)
       IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      IF ( NWT .EQ. -2 ) THEN   ! Load stuff required for Main's weights
+        IF (KEXIST(42) .LE. 0) GOTO 9942
+        IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+        IF (KHUNTR (42,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL42
+c        CALL XFSWOP(STORE(L42),9,3,1,3)
+      END IF
+
 C--PRESERVE THE CORE LIMITS AT THIS POINT
       NFL1=NFL
       LFL1=LFL
@@ -672,26 +690,36 @@ C--CHECK IF THIS WAS A WEIGHTED FOURIER
       IF (NWT .EQ. 0) GOTO 2450
       IF (ABS(SSU - 1.) .GT. ZERO) THEN
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2310) SSU
-CFEB03        WRITE(NCAWU,2310) SSU
 2310    FORMAT(
      1 ' Peak height multiplier tries to scale weighted map peaklist',
      2 /,' to unweighted map peak heights',
      2 /' Peak height multiplier is ',G15.5//)
       ENDIF
       IF (NWT) 2350, 2450, 2450
-C--SIM WEIGHTED FOURIER  -  PRINT SOME STATISTICS
+C--SIM or MAIN WEIGHTED FOURIER  -  PRINT SOME STATISTICS
 2350  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2400)SSV,((HWMIN(I,J),I=1,6),J=1,2)
       ENDIF
-2400  FORMAT(/48H Sum of squares of light atom atomic numbers is ,
+2400  FORMAT(/' Sum of squares of light atom atomic numbers is ',
      2 G15.3,/,
-     3 37H Minimum sim weight for reflection : ,3F4.0,2F9.2,E15.5//
-     4 37H Maximum sim weight for reflection : ,3F4.0,2F9.2,E15.5)
+     3 ' Minimum weight for reflection : ',3F4.0,2F9.2,E15.5//
+     4 ' Maximum weight for reflection : ',3F4.0,2F9.2,E15.5)
+      IF ( NWT .EQ. -2 ) THEN
+        IF ( MAINWL .GT. 0 ) THEN
+           WRITE(CMON,'(4X,I7,A)')MAINWL,
+     1 ' weights set to 1: tiny scattering power in given direction.'
+           CALL XPRVDU(NCVDU,1,0)
+        END IF
+        IF ( MAINWS .GT. 0 ) THEN
+           WRITE(CMON,'(4X,I7,A)')MAINWS,
+     1 ' weights set to -1: cause large negative Fo?'
+           CALL XPRVDU(NCVDU,1,0)
+        END IF
+      END IF
 C--FORM LIST 5 OR 10, WHICHEVER IS APPROPIATE
 2450  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU, 2451) APEAKH
-CFEB03      WRITE(NCAWU, 2451) APEAKH
       WRITE ( CMON , 2451) APEAKH
       CALL XPRVDU(NCVDU, 1,0)
 2451  FORMAT(1X, 'Minimum peak height for search is ', F8.2)
@@ -726,7 +754,6 @@ C----- NEGATED MAP
      1' map densities are ',2G10.3,A,'/A^3',
      2 / 17X,' The deepest hole is at ', 3F8.3)
       IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
-CFEB03      WRITE (NCAWU,'(A)') CMON(1),CMON(2)
 C----- STORE IN LIST30 IF DIFFERENCE MAP
       IF (NTYP .EQ. 3) THEN
 C--DIFFERENCE MAP  -  PRINT THE AVERAGE ELECTRON DENSITY AT AN ATOMIC SI
@@ -740,7 +767,6 @@ CFEB03 - WAS STORED AT L30RF
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 C--CHECK IF WE CAN PRINT THE MEAN ELECTION DENSITY
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2550)AAA,DDD
-C       WRITE(NCAWU,2550)AAA,DDD
         WRITE(CMON,2550)AAA,DDD
         CALL XPRVDU(NCVDU, 2,0)
 2550  FORMAT(' Mean electron density at original atomic sites is' ,
@@ -762,7 +788,6 @@ C -- INPUT ERRORS
 9920  CONTINUE
 C -- ILLEGAL MAP TYPE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
-CFEB03      WRITE ( NCAWU , 9925 )
       WRITE ( CMON , 9925 )
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X , ' Impossible Fourier type ' )
@@ -771,11 +796,16 @@ CFEB03      WRITE ( NCAWU , 9925 )
 9930  CONTINUE
 C -- NO OPERATION
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
-CFEB03      WRITE ( NCAWU , 9935 )
       WRITE ( CMON , 9935 )
       CALL XPRVDU(NCVDU, 1,0)
 9935  FORMAT ( 1X , 'Flags set for no map, no scan, ' ,
      1 'and no output tape' )
+      CALL XERHND ( IERERR )
+      GO TO 9900
+9942  CONTINUE
+      WRITE ( CMON , 9943 )
+      CALL XPRVDU(NCVDU, 1,0)
+9943  FORMAT ( 1X , ' No list of type 42 stored, run #MASK first. ' )
       CALL XERHND ( IERERR )
       GO TO 9900
       END
@@ -790,6 +820,7 @@ C  LOADS LISTS 3 AND 29 AND SETS UP THE NECESSARY SIM WEIGHTING CONSTANT
 C
 C  NWT   THE TYPE OF WEIGHTING TO BE USED :
 C
+C          -2  MAIN'S WEIGHTS
 C          -1  SIM WEIGHTED.
 C           0  NO WEIGHTS.
 C           1  WEIGHTS TAKEN FROM LIST 6.
@@ -852,176 +883,174 @@ C--CHECK IF THIS MAP REQUIRES /FC/'S AND THUS A LIST 5
       L10A=LFL+1
       N10A = 0
       IF (NTYP .LT. IPMAP)  GOTO 1050
-C--PATTERSON OR E-MAP  -  SUPPRESS SIM WEIGHTING
-      NWT=IABS(NWT)
+C--PATTERSON OR E-MAP  -  SUPPRESS SIM or MAIN WEIGHTING
+      IF ( NWT .LT. 0 ) NWT=1
       GOTO 1950
 C--A MAP USING PHASES AND POSSIBLY /FC/'S
 1050  CONTINUE
-C----- 'OPTIMAL' MAP SET WEIGHTING
+C----- 'OPTIMAL' MAP, SET WEIGHTING to SIM
       IF (NTYP .EQ. 5) NWT = -1
-      IF(NWT)1100,1200,1200
-1100  CONTINUE
-C----- LOAD 29, FOR SIM WEIGHTING
-      CALL XFAL29
-      IF (IERFLG .LT. 0) GOTO 9900
-C----- SHORTEN AND REORGANISE LIST 29
-      M5=L29
-      N5=N29
-      MD5=MD29
+
+      IF( NWT .LT. 0) THEN
+C----- LOAD 29, FOR SIM or MAIN WEIGHTING
+         CALL XFAL29
+         IF (IERFLG .LT. 0) GOTO 9900
+C----- SHORTEN AND REORGANISE LIST 29 into 'Quick list 29' at LQ29, with
+C      step MDQ29 (to avoid losing pointers to the original list 29).
+         M5=L29
+         N5=N29
+         MD5=MD29
 C--ALLOCATE SOME SPACE
-      LN=29
-      IREC=1001
-      MD29=3
-      L29=KCHLFL(MD29*N29)
-      LFL = L29 - 1
+         LN=29
+         IREC=1001
+         MDQ29=3
+         LQ29=KCHLFL(MD29*N29)
+         LFL = LQ29 - 1
 C--MOVE THE DATA AROUND
-      M29=L29
-      DO 1150 I=1,N29
+         M29=LQ29
+         DO I=1,N29
 C--SECOND COPY OF THE ATOM TYPE
-      CALL XMOVE(STORE(M5),STORE(M29),1)
-      CALL XMOVE(STORE(M5),STORE(M29+1),1)
+            CALL XMOVE(STORE(M5),STORE(M29),1)
+            CALL XMOVE(STORE(M5),STORE(M29+1),1)
 C----- AND RELOCATE THE CELL CONTENTS
-      CALL XMOVE(STORE(M5+4),STORE(M29+2),1)
-      M29=M29+MD29
-      M5=M5+MD5
-1150  CONTINUE
-      GOTO 1300
+            CALL XMOVE(STORE(M5+4),STORE(M29+2),1)
+            M29=M29+MDQ29
+            M5=M5+MD5
+         END DO
+      ELSE
 C--THIS OPERATION IS UNWEIGHTED  -  CHECK IF LIST 5 IS OBLIGATORY
-1200  CONTINUE
-      IF (NTYP .LT. IPMAP) GOTO 1300
+         IF (NTYP .GE. IPMAP) THEN
 C--CHECK IF THERE IS A LIST 5 TO USE
-      IF(KEXIST(5))1950,1950,1300
+            IF(KEXIST(5).LE.0) GOTO 1950
+         END IF
+      END IF
 C
 C--BRING DOWN LIST 5 TO FIND THE SCALE FACTOR
-1300  CONTINUE
       CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--CHECK IF THERE ARE ANY ATOMS IN LIST 5
-      IF(N5)1450,1450,1350
-C--SET THE ATOMS UP AT THE TOP OF CORE
-C     IN A LIST 10
-1350  CONTINUE
-      LN=10
-      IREC=1002
-      N10A=N5
-      MD10A=7
-      L10A=KCHLFL(MD10A*N10A)
-      M10A=L10A
+      IF(N5.GT.0)THEN
+C--SET THE ATOMS UP AT THE TOP OF CORE IN A LIST 10
+         LN=10
+         IREC=1002
+         N10A=N5
+         MD10A=7
+         L10A=KCHLFL(MD10A*N10A)
+         M10A=L10A
 C--SET THE POINTERS TO LOOP OVER ALL THE ATOMS
-      M5=L5
-      DO 1400 I=1,N5
+         M5=L5
+         DO I=1,N5
 C--MOVE THE TYPE AND SERIAL
-      CALL XMOVE(STORE(M5),STORE(M10A),2)
+            CALL XMOVE(STORE(M5),STORE(M10A),2)
 C--MOVE THE COORDINATES
-      CALL XMOVE(STORE(M5+4),STORE(M10A+2),3)
+            CALL XMOVE(STORE(M5+4),STORE(M10A+2),3)
 C--SET THE INITIAL PEAK HEIGHT TO ZERO
-      STORE(M10A+5)=0.0
+            STORE(M10A+5)=0.0
 C--INITIALISE THE SECTION FLAG
-      ISTORE(M10A+6)=-1
-      M10A=M10A+MD10A
-      M5=M5+MD5
-1400  CONTINUE
+            ISTORE(M10A+6)=-1
+            M10A=M10A+MD10A
+            M5=M5+MD5
+         END DO
 C----- LOAD DATA IF NOT ALREADY IN CORE
-      IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-      IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
-      IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
-      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
-      IF (IERFLG .LT. 0) GOTO 9900
+         IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+         IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+         IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
+         IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+         IF (IERFLG .LT. 0) GOTO 9900
 C----- SAVE THE TOLERANCE AND UPDATE VALUES
-      STOLER = STORE(L23SP+5)
-      IUPDAT = ISTORE(L23SP+1)
+         STOLER = STORE(L23SP+5)
+         IUPDAT = ISTORE(L23SP+1)
 C----- SET THE OCCUPANCIES
-      IF (IUPDAT .GE. 0) THEN
-        I = KSPINI( -1, STOLER)
-      NUPDAT = 0
+         IF (IUPDAT .GE. 0) THEN
+            I = KSPINI( -1, STOLER)
+            NUPDAT = 0
 C----- SAVE SOME WORK SPACE
-        J =NFL
-        I = KCHNFL(40)
-        M5 = L5
-        DO 3350 I = 1, N5
-          IF (IUPDAT .GE. 0)
-     1      IGSTAT =KSPGET ( STORE(J), STORE(J+10), ISTORE(J+20),
-     2      STORE(J+30), MGM, M5, IUPDAT, NUPDAT)
-          M5 = M5 + MD5
-3350  CONTINUE
+            J =NFL
+            I = KCHNFL(40)
+            M5 = L5
+            DO I = 1, N5
+               IF (IUPDAT .GE. 0)
+     1            IGSTAT =KSPGET ( STORE(J), STORE(J+10), ISTORE(J+20),
+     2                            STORE(J+30), MGM, M5, IUPDAT, NUPDAT)
+               M5 = M5 + MD5
+            END DO
 C----- RESTORE WORKSPACE
-        NFL= J
-      ENDIF
+            NFL= J                            
+         ENDIF
+      END IF
 C
 C--ASSIGN THE SCALE FACTOR FROM LIST 5
-1450  CONTINUE
       SCALE=STORE(L5O)
 C
 C--CHECK IF THIS IS A SIM WEIGHTED FOURIER
-      IF(NWT)1500,1950,1950
-C
+      IF( NWT .LT. 0 ) THEN
 C--FIND THE ATOM TYPES IN LIST 5 AND ADJUST LIST 29 ACCORDINGLY
-1500  CONTINUE
 C -- CHECK THAT THERE ARE ATOMS IN LIST 5
-      IF ( N5 .LE. 0 ) GO TO 9910
+         IF ( N5 .LE. 0 ) GO TO 9910
 C--LOOP OVER EACH ATOM
-      L5A=L5
-      MD5A=MD5
-      M5A=L5A
-      DO 1850 I=1,N5
-      J=KCOMP(1,STORE(M5A),STORE(L29+1),N29,MD29)
+         L5A=L5
+         MD5A=MD5
+         M5A=L5A
+         DO I=1,N5
+            J=KCOMP(1,STORE(M5A),STORE(LQ29+1),N29,MDQ29)
 C--CHECK IF THIS ATOM IS IN LIST 29
-      IF ( J .LE. 0 ) GO TO 9920
+            IF ( J .LE. 0 ) GO TO 9920
 C--ADJUST THE CONTENTS OF LIST 29 TO ELIMINATE THIS ATOM
-      J=L29+(J-1)*MD29
-      STORE(J+2)=AMAX1(0.0,STORE(J+2)-STORE(M5A+2)* STORE(M5A+13))
-      M5A=M5A+MD5A
-1850  CONTINUE
+            J=LQ29+(J-1)*MDQ29
+            STORE(J+2)=AMAX1(0.0,STORE(J+2)-STORE(M5A+2)* STORE(M5A+13))
+            M5A=M5A+MD5A
+         END DO
 C----- CHECK IF ANY ATOMS TO BE FOUND
-      M29=L29
-      SSV=0.0
-      DO 1870 I=1,N29
-      SSV=SSV+STORE(M29+2)
-      M29=M29+MD29
-1870  CONTINUE
-      IF (SSV - ZERO) 9930,9930,1880
-1880  CONTINUE
-      HWMIN(6,1)=10.
-      HWMIN(6,2)=0.
-      SSU=1./SCALE
+         M29=LQ29
+         SSV=0.0
+         DO I=1,N29
+            SSV=SSV+STORE(M29+2)
+            M29=M29+MDQ29
+         END DO
+         IF (SSV .LT. ZERO) GOTO 9930
+         HWMIN(6,1)=10.
+         HWMIN(6,2)=0.
+         SSU=1./SCALE
+      END IF
+
 C--RESET THE CORE LIMITS TO REASONABLE VALUES
 1950  CONTINUE
       CALL XRSL
       CALL XCSAE
       IF (NWT .LT. 0) THEN
-C----- LOAD LIST 3 AND LINK IT TO LIST 29 AS A LIST5
-        CALL XFAL03
-        IF ( IERFLG .LT. 0) GOTO 9900
-        N5 = N29
-        M5 = L29
-        L5 = L29
-        MD5 = MD29
-        J = 0
-        I = KSET53(J)
-        IF ( IERFLG .LT. 0) GOTO 9900
+C----- LOAD LIST 3 AND LINK IT TO QLIST 29 (PRETEND IT IS A LIST5 for KSET53)
+         CALL XFAL03
+         IF ( IERFLG .LT. 0) GOTO 9900
+         N5 = N29
+         M5 = LQ29
+         L5 = LQ29
+         MD5 = MDQ29
+         J = 0
+         I = KSET53(J)
+         IF ( IERFLG .LT. 0) GOTO 9900
 C--COMPUTE THE SIM WEIGHT MULTILPIER
-      CALL XSCATT(0.0)
-      SSV=0.
-      M29=L29
+         CALL XSCATT(0.0)
+         SSV=0.
+         M29=LQ29
 C--FORM THE SUM OF THE SQUARES OF THE FORM FACTORS
-      DO 1900 I=1,N29
-      J=L3TR+ISTORE(M29)*MD3TR
-      SSV = SSV + STORE(M29+2) * STORE(J) * STORE(J)
-      M29=M29+MD29
-1900  CONTINUE
-      IF ( SSV .LE. ZERO) SSV = 1.
+         DO I=1,N29
+            J=L3TR+ISTORE(M29)*MD3TR
+            SSV = SSV + STORE(M29+2) * STORE(J) * STORE(J)
+            M29=M29+MDQ29
+         END DO
+         IF ( SSV .LE. ZERO) SSV = 1.
       ENDIF
 C----- SAVE LIST 29 AND L10 AT TOP OF STORE
       LFL=L10A-1
 C----- AND NOW RETURN OK
-C
+
 9900  CONTINUE
-C -- ERRORS
       RETURN
+
+C -- ERRORS
 9910  CONTINUE
 C -- NO ATOMS IN LIST 5 FOR SIM WEIGHTS
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-CFEB03      WRITE ( NCAWU , 9915 )
       WRITE ( CMON , 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT(
@@ -1032,7 +1061,6 @@ CFEB03      WRITE ( NCAWU , 9915 )
 9920  CONTINUE
 C -- ATOM NOT IN LIST 29
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
-CFEB03      WRITE ( NCAWU , 9925 )
       WRITE ( CMON , 9925 )
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X , 'Atom in list 5 but not in list 29' )
@@ -1043,7 +1071,6 @@ C
 9930  CONTINUE
 C----- NO ATOMS LEFT IN LIST 29
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9935)
-CFEB03      WRITE(NCAWU,9935)
       WRITE ( CMON ,9935)
       CALL XPRVDU(NCVDU, 3,0)
 9935  FORMAT('  Sim weighting inapplicable.',/,
@@ -1091,6 +1118,7 @@ C
 \XLST05
 \XLST06
 \XLST14
+\XLST42
 \XTAPES
 \XERVAL
 \XIOBUF
@@ -1128,7 +1156,6 @@ C----- SET THE NUMBER OF PEAKS, ASSUMING AN ATOMIC VOLUME OF AVOL
       AVOL = 15.0
       IF (NPEAK .LE. 0) NPEAK = NINT((VOL )/(AVOL))/ T2
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050) NPEAK
-CFEB03      WRITE(NCAWU,1050) NPEAK
       WRITE ( CMON ,1050) NPEAK
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Number of new peaks to be retained is : ', I6)
@@ -1156,7 +1183,7 @@ C--CHECK THAT THE ORIENTATION PARAMETERS ARE VALID
 C--INTERCHANGE THE LIST 14 DIRECTIVES
       CALL XFSWOP(STORE(L14),3*MD14,MD14,1,MD14)
 C--KEEP ORIGINAL CELL PARAMS
-      CALL XMOVE(STORE(L1P1),L1ORIG,6)
+      CALL XMOVE(STORE(L1P1),C1ORIG,6)
 C--SORT THE CELL PARAMETERS
       CALL XFSWOP(STORE(L1P1),6,1,3,2)
 C--SORT THE D/A CONTROL BLOCK
@@ -1276,15 +1303,23 @@ C--NEXT AXIAL DIRECTION
       M14=M14+MD14
 2200  CONTINUE
 C--INTERCHANGE THE SYMMETRY OPERATORS FOR THE DIFFERENT AXIAL PROJECTION
+      IF ( NWT .EQ. -2 ) THEN
+C  Store the original ones if using List 42.
+         L42I=NFL
+         N42I=N2I
+         MD42I=MD2I
+         I=KCHNFL(N2I*MD2I)
+         CALL XMOVE(STORE(L2I),STORE(L42I),N2I*MD2I)
+      END IF
       M2=L2
-      DO 2250 K=L2I,M2I,MD2I
-      CALL XFSWOP(STORE(K),12,1,3,4)
-      CALL XFSWOP(STORE(K),9,3,1,3)
+      DO K=L2I,M2I,MD2I
+         CALL XFSWOP(STORE(K),12,1,3,4)
+         CALL XFSWOP(STORE(K),9,3,1,3)
 C--NOW THE TRUE SYMMETRY OPERATORS, NOT THE INVERSE ONES
-      CALL XFSWOP(STORE(M2),12,1,3,4)
-      CALL XFSWOP(STORE(M2),9,3,1,3)
-      M2=M2+MD2
-2250  CONTINUE
+         CALL XFSWOP(STORE(M2),12,1,3,4)
+         CALL XFSWOP(STORE(M2),9,3,1,3)
+         M2=M2+MD2
+      END DO
 C--SORT THE NON-PRIMITIVE LATTICE OPERATORS
       CALL XFSWOP(STORE(L2P),MD2P*N2P,1,MD2P,N2P)
 C--SET UP THE EQUIVALENT INDICES FLAGS
@@ -1358,7 +1393,6 @@ C--PRINT THE OMITTED ATOMS
 2800  FORMAT(//9(' *** Warning'),' *** '//' The following atoms',
      2 ' do not fit in the',
      3 ' volume of the cell to be calculated :' //(5(3X,A4,F8.0,7X)))
-CFEB03      WRITE(NCAWU,2801)(STORE(I),I=M,NFL)
       WRITE ( CMON ,2801)(STORE(I),I=M,NFL)
       CALL XPRVDU(NCVDU, 2,0)
 2801  FORMAT(' *** Warning ***  Some atoms ',
@@ -1541,7 +1575,7 @@ C WRITE THE M/T HEADER  DETAILS
           WRITE (NCFPU1,3751) 'TRAN'
           WRITE (NCFPU1,3752) (STORE(I), I=NFL,NFL+8),0.0,0.0,0.0
           WRITE (NCFPU1,3751) 'CELL'
-          WRITE (NCFPU1,3752) (L1ORIG(I), I = 1, 6)
+          WRITE (NCFPU1,3752) (C1ORIG(I), I = 1, 6)
           WRITE (NCFPU1,3751) 'L14 '
           WRITE (NCFPU1,3752) ((STORE(J),J=I,I+3),I=L14,2*MD14+L14,MD14)
           WRITE (NCFPU1,3751) 'SIZE'
@@ -1614,7 +1648,6 @@ C -- ERRORS
 9905  CONTINUE
 C -- FILE OPEN ERROR
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9908 ),IOS
-CFEB03      WRITE ( NCAWU , 9915 ),IOS
       WRITE ( CMON , 9915 ) ,IOS
       CALL XPRVDU(NCVDU, 1,0)
 9908  FORMAT ( 1X , 'Failed to open direct access mapview file ', I4 )
@@ -1623,7 +1656,6 @@ CFEB03      WRITE ( NCAWU , 9915 ),IOS
 9910  CONTINUE
 C -- INVALID ORIENTATION PARAMETER
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) IAXIS
-CFEB03      WRITE ( NCAWU , 9915 ) IAXIS
       WRITE ( CMON , 9915 ) IAXIS
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'Illegal orientation parameters ' , 3I4 )
@@ -1632,7 +1664,6 @@ CFEB03      WRITE ( NCAWU , 9915 ) IAXIS
 9920  CONTINUE
 C -- ILLEGAL NUMBER OF POINTS
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 ) IXYZ(J) , NUM(J)
-CFEB03      WRITE ( NCAWU , 9925 ) IXYZ(J) , NUM(J)
       WRITE ( CMON , 9925 ) IXYZ(J) , NUM(J)
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X , 'Number of points along ' , A1 , ' is ' , I8 ,
@@ -1656,6 +1687,10 @@ C
 \XUNITS
 \XSSVAL
 \XLST02
+
+Ctemp
+\XLST03
+
 \XLST06
 \XLST14
 \XERVAL
@@ -1664,11 +1699,14 @@ C
 C
 \QSTORE
 \QFOURC
+
+      ININFL = NFL
+
 C
 C--START OF THE INITIAL SEARCH TO SET UP THE 'HK' PAIR FLAGS
       KA=LFL
       JY=1
-      JZ=0
+      JZ=0   ! Max value of H
 C--SET THE LIST AND RECORD TYPE
       LN=8
       IREC=1001
@@ -1682,74 +1720,73 @@ C--SET UP THE POINTER TO THE START OF THE 'K' CHAIN
       K=KCHLFL(1)
 C--FETCH THE NEXT REFLECTION
 1000  CONTINUE
-      IF(KFOURC(I))1600,1050,1050
+      DO WHILE ( KFOURC(I) .GE. 0 )
 C--COMPUTE THE EQUIVALENT SETS OF INDICES
-1050  CONTINUE
-      DO 1550 N=L2I,M2I,MD2I
+        DO 1550 N=L2I,M2I,MD2I
 C--COMPUTE THE NEW H
-      M=NINT(STORE(M6)*STORE(N)+STORE(M6+1)*STORE(N+3)+STORE(M6+2)
-     2 *STORE(N+6))
+          M=NINT(STORE(M6)*STORE(N)+STORE(M6+1)*STORE(N+3)
+     2                             +STORE(M6+2)*STORE(N+6))
 C--COMPUTE THE NEW K
-      L=NINT(STORE(M6)*STORE(N+1)+STORE(M6+1)*STORE(N+4)+STORE(M6+2)
-     2 *STORE(N+7))
+          L=NINT(STORE(M6)*STORE(N+1)+STORE(M6+1)*STORE(N+4)
+     2                               +STORE(M6+2)*STORE(N+7))
 C--CHECK THE SIGN OF H
-      IF(M)1100,1150,1150
+          IF(M)1100,1150,1150
 C--H IS NEGATIVE  -  REVERSE THE SIGNS OF BOTH INDICES
 1100  CONTINUE
-      M=-M
-      L=-L
+          M=-M
+          L=-L
 C--COMPUTE THE MAXIMUM VALUE OF H
 1150  CONTINUE
-      JZ=MAX0(JZ,M)
+          JZ=MAX0(JZ,M)
 C--START THE SEARCH THROUGH THE H CHAIN
-      J=I
+          J=I
 C--MOVE ONTO THE NEXT H VALUE
-1200  CONTINUE
-      K=J
-      J=ISTORE(K)
+1200      CONTINUE
+          K=J
+          J=ISTORE(K)
 C--CHECK FOR THE END OF THE CHAIN
-      IF(J)1300,1300,1250
+          IF(J)1300,1300,1250
 C--CHECK THE CURRENT VALUE OF H AGAINST THE VALUE IN THE CHAIN
-1250  CONTINUE
-      IF(ISTORE(J-1)-M)1200,1350,1300
+1250      CONTINUE
+          IF(ISTORE(J-1)-M)1200,1350,1300
 C--INSERT THIS VALUE OF H IN THE CHAIN
-1300  CONTINUE
-      ISTORE(K)=LFL
-      ISTORE(LFL)=J
-      J=LFL
-      K=KCHLFL(5)
+1300      CONTINUE
+          ISTORE(K)=LFL
+          ISTORE(LFL)=J
+          J=LFL
+          K=KCHLFL(5)
 C--SET UP THE REMAINDER OF THE HEADER
-      ISTORE(J-1)=M
-      ISTORE(J-2)=NOWT
-      ISTORE(J-3)=NOWT
-      ISTORE(J-4)=1000000
+          ISTORE(J-1)=M
+          ISTORE(J-2)=NOWT
+          ISTORE(J-3)=NOWT
+          ISTORE(J-4)=1000000
 C--ALTER THE FLAGS TO CHECK FOR THIS VALUE OF K WITH THE CURRENT H
-1350  CONTINUE
-      M=J
-      J=J-2
+1350      CONTINUE
+          M=J
+          J=J-2
 C--MOVE TO THE NEXT K VALUE IN THE CHAIN
-1400  CONTINUE
-      K=J
-      J=ISTORE(K)
+1400      CONTINUE
+          K=J
+          J=ISTORE(K)
 C--CHECK FOR THE END OF THE K CHAIN
-      IF(J)1500,1500,1450
+          IF(J)1500,1500,1450
 C--CHECK FOR THE VALUE OF INTEREST
-1450  CONTINUE
-      IF(ISTORE(J-1)-L)1400,1550,1500
+1450      CONTINUE
+          IF(ISTORE(J-1)-L)1400,1550,1500
 C--INSERT THIS VALUE OF K IN THE CHAIN
-1500  CONTINUE
-      JY=JY+1
-      ISTORE(K)=LFL
-      ISTORE(LFL)=J
+1500      CONTINUE
+          JY=JY+1
+          ISTORE(K)=LFL
+          ISTORE(LFL)=J
 C--SET THE REST OF THE HEADER
-      ISTORE(LFL-1)=L
-      K=KCHLFL(2)
+          ISTORE(LFL-1)=L
+          K=KCHLFL(2)
 C--SET UP THE MAXIMUM VALUE OF K FOUND FOR THIS VALUE OF H
-      ISTORE(M-3)=MAX0(ISTORE(M-3),L)
+          ISTORE(M-3)=MAX0(ISTORE(M-3),L)
 C--SET UP THE MINIMUM VALUE OF K FOUND FOR THIS VALUE OF H
-      ISTORE(M-4)=MIN0(ISTORE(M-4),L)
-1550  CONTINUE
-      GOTO 1000
+          ISTORE(M-4)=MIN0(ISTORE(M-4),L)
+1550    CONTINUE
+      END DO
 C
 C--START OF THE LOOP THAT UNRAVELS THE H STACK AND SETS UP ITS TABLE
 1600  CONTINUE
@@ -1874,7 +1911,6 @@ C -- ERRORS
 C -- NOT ENOUGH SPACE
       N = ( JW + 2 ) * JY + NFL - LFL + 1
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-CFEB03      WRITE ( NCAWU , 9915 )
       WRITE ( CMON , 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT(1X, ' Insufficient memory for 1 layer')
@@ -1893,7 +1929,7 @@ C--
 \ISTORE
 C
 C
-      DIMENSION RFL(3)
+      DIMENSION RFL(3), HKL42(3)
 C
 \STORE
 \XFOURC
@@ -1903,9 +1939,9 @@ C
 \XSSVAL
 \XLST01
 \XLST02
+\XLST03
 \XLST06
 \XLST14
-\XLST03
 \XLST29
 \XERVAL
 \XIOBUF
@@ -1924,16 +1960,30 @@ C----- INITIALISE SUM WEIGHTED FO AND FO
       SSU = 0.0
       SST = 0.0
 C----- SYMMETRY DEPENDANT MULTIPLICITY
-      SSC = (G2 * FLOAT(N2) ) / FLOAT(2-IC)
+      SSC = G2 * FLOAT(N2)                    ! Correct
+c       SSC = (G2 * FLOAT(N2) ) / FLOAT(2-IC)    ! Now wrong
+
+
+      IF ( NWT .LT. 0 ) THEN
+        MAINWL = 0
+        MAINWS = 0
+        DO I=0,N29-1
+          WRITE(CMON,'(A,F8.2,2A)')'Missing ',STORE(LQ29+MDQ29*I+2),
+     1    'atoms of type ', ISTORE(L3+MD3*I)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+      END IF
+
+
 C--ZERO THE ACCUMULATION AREA FOR THE HK PAIRS
       W=0.
-      DO 1050 I=JT,JU,JV
-      K=I+JW
-      L=K+JZ
-      DO 1000 M=K,L
-      FSTORE(M)=0.
-1000  CONTINUE
-1050  CONTINUE
+      DO I=JT,JU,JV
+        K=I+JW
+        L=K+JZ
+        DO M=K,L
+          FSTORE(M)=0.
+        END DO
+      END DO
       NORFL=0
       KB=KJ*KH+JC
 C--SET UP THE ENTRIES IN THE 'HK' STACK FOR THE NEXT FEW LAYERS
@@ -1944,248 +1994,368 @@ C--GENERATE THE EQUIVALENT REFLECTIONS FOR THESE INDICES
 1150  CONTINUE
       KS=KR
       A=0.
-      DO 1500 I=L2I,M2I,MD2I
+      DO I=L2I,M2I,MD2I
 C--CALCULATE THE NEW INDICES
-      RFL(1)=STORE(M6)*STORE(I)+STORE(M6+1)*STORE(I+3)+STORE(M6+2)
-     2 *STORE(I+6)
-      RFL(2)=STORE(M6)*STORE(I+1)+STORE(M6+1)*STORE(I+4)+STORE(M6+2)
-     2 *STORE(I+7)
-      RFL(3)=STORE(M6)*STORE(I+2)+STORE(M6+1)*STORE(I+5)+STORE(M6+2)
-     2 *STORE(I+8)
-      J=KS
-      K=KS+KU
+        RFL(1)=STORE(M6)*STORE(I)+STORE(M6+1)*STORE(I+3)+STORE(M6+2)
+     2         *STORE(I+6)
+        RFL(2)=STORE(M6)*STORE(I+1)+STORE(M6+1)*STORE(I+4)+STORE(M6+2)
+     2         *STORE(I+7)
+        RFL(3)=STORE(M6)*STORE(I+2)+STORE(M6+1)*STORE(I+5)+STORE(M6+2)
+     2         *STORE(I+8)
+        J=KS
+        K=KS+KU
 C--FIX AND STORE THIS SET OF EQUIVALENT INDICES
-      DO 1200 L=1,3
-      ISTORE(J)=NINT(RFL(L))
-      ISTORE(K)=-ISTORE(J)
-      J=J+1
-      K=K+1
-1200  CONTINUE
+        DO L=1,3
+          ISTORE(J)=NINT(RFL(L))
+          ISTORE(K)=-ISTORE(J)
+          J=J+1
+          K=K+1
+        END DO
 C--COMPUTE THE PHASE SHIFT FOR THIS SET OF EQUIV. INDICES
-      STORE(KS+3)=-TWOPI*(RFL(1)*STORE(I+9)+RFL(2)*STORE(I+10)+RFL(3)
+        STORE(KS+3)=-TWOPI*(RFL(1)*STORE(I+9)+RFL(2)*STORE(I+10)+RFL(3)
      2 *STORE(I+11))
 C--COMPUTE THE LAUE GROUP MULTIPLICITY FOR THIS REFLECTION
-      KT=KS+KU
+        KT=KS+KU
 C--LOOP OVER THE NEW INDICES AND THEIR FRIEDEL RELATED SET
-      DO 1350 J=KS,KT,KU
-      IF(ISTORE(J)-ISTORE(KR))1350,1250,1350
-1250  CONTINUE
-      IF(ISTORE(J+1)-ISTORE(KR+1))1350,1300,1350
-1300  CONTINUE
-      IF(ISTORE(J+2)-ISTORE(KR+2))1350,1400,1350
-1350  CONTINUE
-      GOTO 1450
+        DO 1350 J=KS,KT,KU
+          IF(ISTORE(J)-ISTORE(KR))1350,1250,1350
+1250      CONTINUE
+          IF(ISTORE(J+1)-ISTORE(KR+1))1350,1300,1350
+1300      CONTINUE
+          IF(ISTORE(J+2)-ISTORE(KR+2))1350,1400,1350
+1350    CONTINUE
+        GOTO 1450
 C--THIS GROUP DUPLICATES THE FIRST SET OF EQUIVALENT INDICES
-1400  CONTINUE
-      A=A+1.
+1400    CONTINUE
+        A=A+1.
 C--UPDATE FOR THE NEXT SET OF EQUIVALENT INDICES
-1450  CONTINUE
-      KS=KS+KU+KU
-1500  CONTINUE
+1450    CONTINUE
+        KS=KS+KU+KU
+      END DO
       A=1./A
 C
 C--CHECK IF THE NEXT REFLECTION SHOULD BE WEIGHTED
-      U=STORE(M6+3)/SCALE
+      U=STORE(M6+3)/SCALE   ! FO
 C----- SUM FO
       SST = SST + U
-      V=STORE(M6+5)
-      IF(NWT)1550,2300,1850
-C--SIM WEIGHTED FOURIER  -  CALCULATE THE WEIGHT TERM
-1550  CONTINUE
+      V=STORE(M6+5)         ! FC
+
+
+
+      IF ( NWT .EQ. -1 ) THEN            ! SIM WEIGHTED FOURIER
 C----- SET DEFAULT TO CENTRO-SYMMETRIC SIM WEIGHTING
-      ISMWT = 1
-      STORE(M6+4) = 1.
+         ISMWT = 1
+         STORE(M6+4) = 1.
 C--COMPUTE THE SIM WEIGHT MULTILPIER
 C----- GET SINTH/LAM**2 AND HENCE SIG (F**2)
-      IN = 0
-      SSW = SNTHL2(IN)
-C----- GET AN AVERAGE TEMPERATURE FACTOR CORRECTION
-      BT = EXP(4.*SSW)
-      SSW = SQRT( SSW)
-      CALL XSCATT(SSW)
-      SSW=0.
-      M29=L29
+         IN = 0
+c         SSW = SNTHL2(IN)
+         SSW = STORE(M6+16)   ! Already computed by KALLOW
+C----- GET AN AVERAGE TEMPERATURE FACTOR CORRECTION. DON'T.
+         BT = EXP(4.*SSW)    ! Assume U of 0.05? (and positive?)
+c         BT = 1.0
+         SSW = SQRT( SSW)
+         CALL XSCATT(SSW)
+         SSW=0.
+         M29=LQ29
 C--FORM THE SUM OF THE SQUARES OF THE FORM FACTORS
-      DO 1555 I=1,N29
-      J=L3TR+ISTORE(M29)*MD3TR
-      SSW= SSW + STORE(M29+2) * STORE(J) * STORE(J)
-      M29=M29+MD29
-1555  CONTINUE
-      SSW = SSW * SSC * BT
-      IF (SSW .LE. ZERO)   GOTO 1700
-      B = U * V / SSW
+         DO I=1,N29
+            J=L3TR+ISTORE(M29)*MD3TR
+            SSW= SSW + STORE(M29+2) * STORE(J) * STORE(J)
+            M29=M29+MDQ29
+         END DO
+         SSW = SSW * SSC * BT
+         IF (SSW .LE. ZERO)   GOTO 1700
+         B = U * V / SSW
 C--CHECK IF THE STRUCTURE IS CENTRO OR NOT
-      IF(IC)1600,1600,1650
-C--NON-CENTRO STRUCTURE
-1600  CONTINUE
+         IF(IC)1600,1600,1650
+
+1600     CONTINUE                    ! NON-CENTRO STRUCTURE
 C----- MODIFY WEIGHTS FOR OPTIMAL MAPS
-      IF (NTYP .EQ. 5) THEN
+         IF (NTYP .EQ. 5) THEN
 C----   CHECK IF ALMOST CENTRO
-        Q = STORE(M6+6)/PI + 2.
-        Q = Q - AINT(Q)
+            Q = STORE(M6+6)/PI + 2.
+            Q = Q - AINT(Q)
 C-----  CHECK LE 12 DEGREES ( IN RADIANS)
-        IF (Q .LE. .07) GOTO 1650
-        ISMWT = -1
-      ENDIF
-      B = 2.* B
-      IF (B .GT. 6.) GOTO 1700
-cC----- ACCCEPT A SOFT FAILURE
-c      IFAIL = 1
-c      STORE(M6+4)=S18AFF(B,IFAIL)/S18AEF(B,IFAIL)
-C Replace NAG routines (above) with this polynomial approximation.
-       CALL MDBESL(B,BS0,BS1)
-       STORE(M6+4)=BS1/BS0
+            IF (Q .LE. .07) GOTO 1650
+            ISMWT = -1
+         ENDIF
+         B = 2.* B
+         IF (B .GT. 600.) GOTO 1700  ! Bessel function would overflow.
+c         IF (B .GT. 6.) GOTO 1700  ! Old statement (not so good).
+c         IFAIL = 1
+c         STORE(M6+4)=S18AFF(B,IFAIL)/S18AEF(B,IFAIL)
 C----- SIMPLER CALC USING FUNCTION STATEMENT FROM MULTAN
-C      STORE(M6+4) = VEC(B)
-      GOTO 1700
-C
-C--CENTRO STRUCTURE
-1650  CONTINUE
-      STORE(M6+4)=TANH(B)
-C
-C--CHECK FOR MAX. AND MIN. WEIGHTS
-1700  CONTINUE
-      I=2
-      IF(STORE(M6+4)-HWMIN(6,2))1750,1750,1800
+C         STORE(M6+4) = VEC(B)
+C Replace NAG routines (above) with this polynomial approximation.
+         CALL MDBESL(B,BS0,BS1)
+c         STORE(M6+4)=MAX(0.0,BS1/BS0)  !Min w zero
+         STORE(M6+4)=BS1/BS0  !Old code
+         GOTO 1700
+
+1650     CONTINUE                     ! CENTRO STRUCTURE
+c         STORE(M6+4)=MAX(0.0,TANH(B))   ! Min w zero
+         STORE(M6+4)=TANH(B)    !Old code
+
+1700     CONTINUE                 ! STORE MAX. AND MIN. WEIGHTS
+         I=2
+         IF(STORE(M6+4)-HWMIN(6,2))1750,1750,1800
 C--CHECK FOR A NEW MINIMUM
-1750  CONTINUE
-      I=1
-      IF(STORE(M6+4)-HWMIN(6,1))1800,2250,2250
+1750     CONTINUE
+         I=1
+         IF(STORE(M6+4)-HWMIN(6,1))1800,1810,1810
 C--NEW WEIGHT LIMIT
-1800  CONTINUE
-      HWMIN(IX,I)=STORE(M6)
-      HWMIN(IY,I)=STORE(M6+1)
-      HWMIN(IZ,I)=STORE(M6+2)
-      HWMIN(4,I)=U
-      HWMIN(5,I)=V
-      HWMIN(6,I)=STORE(M6+4)
-      U = U * STORE(M6+4)
-C----- IF 'OPTIMAL' DONT WEIGHT FC
-      IF (NTYP .NE. 5) V = V * STORE(M6+4)
-      GOTO 2300
+1800     CONTINUE
+         HWMIN(IX,I)=STORE(M6)
+         HWMIN(IY,I)=STORE(M6+1)
+         HWMIN(IZ,I)=STORE(M6+2)
+         HWMIN(4,I)=U
+         HWMIN(5,I)=V
+         HWMIN(6,I)=STORE(M6+4)
+c         U = U * STORE(M6+4)
+c         IF (NTYP .NE. 5) V = V * STORE(M6+4)   ! 'OPTIMAL' DON'T WEIGHT FC
+1810     CONTINUE
+         U = U * STORE(M6+4)
+         V = V * STORE(M6+4)                    ! RIC: 'OPTIMAL' DO WEIGHT FC
+
+c         WRITE(99,'(2F15.8)') STORE(M6+4)
+
+      ELSE IF ( NWT .EQ. -2 ) THEN             ! MAIN'S WEIGHTS
+
+         STL = STORE(M6+16)
+         BT = 1.0
+         STL = SQRT(STL)
+         CALL XSCATT(STL)
+         SSW=0.
+         SSF=0.
+C--
+         DO I=0,N29-1 ! FORM THE SUM OF THE SQUARES OF THE FORM FACTORS
+            J=L3TR+ISTORE(LQ29+MDQ29*I)*MD3TR
+            SSF= SSF + STORE(LQ29+MDQ29*I+2) * STORE(J)
+            SSW= SSW + STORE(LQ29+MDQ29*I+2) * STORE(J) * STORE(J)
+         END DO
+         SSW = SSW * SSC * BT
+         SSF = SSF * SSC * BT
+
+         CALL XMASKF( FA, FB, STORE(M6), STORE(M6+16), 1 ) ! Tell XMASKF to unswap axes.
+         FMAG = SQRT(FA**2+FB**2)
+         IF ( FMAG .LT. ZERO ) THEN
+           FPHI = 0.0
+         ELSE
+           FPHI = ATAN2(FB,FA)
+         END IF
+
+         AP=V*COS(STORE(M6+6))
+         BP=V*SIN(STORE(M6+6))
+
+         FPS1F = SQRT((AP+SSF*FA)**2 + (BP+SSF*FB)**2)
+         RDEN = SSW * ( 1 - FMAG )**2
+
+         IF ( ISCNTRC(STORE(M6)) .EQ. 0 ) THEN
+
+           RNUM = 2 * U * FPS1F
+
+           IF ( RDEN .LT. ZERO ) THEN
+             BSRAT = 1.0
+             B = 99999.99
+             MAINWL = MAINWL + 1
+           ELSE
+             B = RNUM / RDEN
+             IF ( B > 600.0 )  THEN
+                MAINWL = MAINWL + 1
+                BSRAT = 1.0
+             ELSE IF ( B < -600.0 )  THEN
+                MAINWS = MAINWS + 1
+                BSRAT = -1.0
+             ELSE
+                CALL MDBESL(B,BS0,BS1)
+                BSRAT = BS1 / BS0
+             END IF
+           END IF
+
+c           WRITE(CMON,'(3I3,1X,F5.2,F7.2,F7.0,7F7.3)')
+c     2   (NINT(STORE(M6+I)),I=0,2),STL,SSF,SSW,FA,FB,FMAG,FPHI,RNUM,
+c     2   RDEN,B
+c           CALL XPRVDU(NCVDU,1,0)
+
+
+           TNUM = SSF * FMAG * SIN ( FPHI - STORE(M6+6) )
+           TDEN = V + SSF * FMAG * COS ( FPHI - STORE(M6+6) )
+      
+           IF ( TNUM**2 + TDEN**2 .LT. ZEROSQ ) THEN
+             TPHI = 0.0
+           ELSE
+             TPHI = ATAN2(TNUM,TDEN)
+           END IF
+
+           U = BSRAT * U
+           V = BSRAT * V
+           STORE(M6+6) = STORE(M6+6) + TPHI
+
+         ELSE
+
+           RNUM = U * FPS1F
+           TPHI = 0.0
+
+           IF ( RDEN .LT. ZERO ) THEN
+             BSRAT = 1.0
+             MAINWL = MAINWL + 1
+           ELSE
+             B = RNUM / RDEN
+             IF ( B > 600.0 )  THEN
+                BSRAT = 1.0
+                MAINWL = MAINWL + 1
+             ELSE IF ( B < -600.0 )  THEN
+                BSRAT = -1.0
+                MAINWS = MAINWS + 1
+             ELSE
+                BSRAT = TANH(B)
+             END IF
+           END IF
+
+           U = BSRAT * U
+           V = BSRAT * V
+
+         END IF
+
+c         WRITE(CMON,'(A,2F15.8)')'Main''s corrections:',BSRAT,TPHI
+c         CALL XPRVDU(NCVDU,1,0)
+
+c         WRITE(99,'(2F15.8)') BSRAT, STORE(M6+6)
+
+      ELSE IF ( NWT .EQ. 1 ) THEN             ! LIST-6 WEIGHTS
+
 C--WEIGHTS FROM LIST 6  -  CHECK IF THIS IS AN E-MAP
-1850  CONTINUE
-      IF (NTYP .NE. IEMAP) GOTO 2250
+         IF (NTYP .EQ. IEMAP) THEN
 C--THIS IS AN E-MAP  -  COMPUTE THE WEIGHTS
-      B=0.
-      KS=KR
-      DO 2200 I=L2I,M2I,MD2I
-      KT=KS+KU*IC
+            B=0.
+            KS=KR
+            DO I=L2I,M2I,MD2I
+               KT=KS+KU*IC
 C--LOOP OVER THE NECESSARY NUMBER OF REFLECTIONS
-      DO 2050 J=KS,KT,KU
-      IF(ISTORE(J)-ISTORE(KR))2050,1950,2050
-1950  CONTINUE
-      IF(ISTORE(J+1)-ISTORE(KR+1))2050,2000,2050
-2000  CONTINUE
-      IF(ISTORE(J+2)-ISTORE(KR+2))2050,2100,2050
-2050  CONTINUE
-      GOTO 2150
+               DO 2050 J=KS,KT,KU
+                  IF(ISTORE(J).NE.ISTORE(KR)) CYCLE
+                  IF(ISTORE(J+1).NE.ISTORE(KR+1))CYCLE
+                  IF(ISTORE(J+2).EQ.ISTORE(KR+2))GOTO 2100
+2050           CONTINUE
+               GOTO 2150
+
+2100           CONTINUE
 C--THIS REFLECTION DUPLICATES THE FIRST SET OF EQUIVALENT INDICES
-2100  CONTINUE
-      B=B+1.
-2150  CONTINUE
-      KS=KS+KU+KU
-2200  CONTINUE
-      STORE(M6+4)=SQRT(B)
-C--COMPUTE THE WEIGHTED MULTIPLICITY TERM
-2250  CONTINUE
-      U=U*STORE(M6+4)
-      V=V*STORE(M6+4)
-2300  CONTINUE
+               B=B+1.
+
+2150           CONTINUE
+               KS=KS+KU+KU
+            END DO
+            STORE(M6+4)=SQRT(B)
+         END IF
+
+C--COMPUTE THE WEIGHTED MULTIPLICITY TERM / APPLY LIST 6 WEIGHTS
+         U=U*STORE(M6+4)
+         V=V*STORE(M6+4)
+      END IF
+
 C---- SUM THE (NOW POSSIBLY WEIGHTED) FO
       SSU = SSU + U
 C--LOOP OVER EACH EQUIVALENT AND ADD IN ITS CONTRIBUTION
       KS=KR
-      DO 3000 I=L2I,M2I,MD2I
+      DO I=L2I,M2I,MD2I
+
 C--BRANCH ON THE TYPE OF FOURIER
-      GOTO (2450, 2500, 2550, 2555, 2557,
-     1 2600, 2650, 2657, 2658, 2500, 2400), NTYP
+c     F-OBS          F-CALC         DIFFERENCE     2FO-FC         OPTIMAL
+c     FO-PATTERSON   FC-PATTERSON   FO-FC-SQP      FOSQ-FCSQ-P
+c     EXTERNAL
+         GOTO (2450, 2500, 2550, 2555, 2557,
+     1         2600, 2650, 2657, 2658,
+     2         2500, 2400), NTYP
+
 2400  STOP 265
+
 C--'FO' FOURIER
-2450  CONTINUE
-      F=U
-      GOTO 2750
+2450     CONTINUE
+         F=U
+         GOTO 2750
 C--'FC' FOURIER
-2500  CONTINUE
-      F=V
-      GOTO 2750
+2500     CONTINUE
+         F=V
+         GOTO 2750
 C--'DF' FOURIER
-2550  CONTINUE
-      F=U-V
-      GOTO 2750
+2550     CONTINUE
+         F=U-V
+         GOTO 2750
 C----- 2Fo - FC MAP
-2555  CONTINUE
-      F = 2.*U - V
-      GOTO 2750
+2555     CONTINUE
+         F = 2.*U - V
+         GOTO 2750
 C----- OPTIMAL - WTD FO OR WTD 2 FO - FC
-2557  CONTINUE
-      IF (ISMWT .GT. 0) THEN
-            F = U
-      ELSE
-            F = 2.*U - V
-      ENDIF
-      GOTO 2750
+2557     CONTINUE
+         IF (ISMWT .GT. 0) THEN
+               F = U
+         ELSE
+               F = 2.*U - V
+         ENDIF
+         GOTO 2750
 C--'FO' PATTERSON
-2600  CONTINUE
-      F=U*U
-      GOTO 2700
+2600     CONTINUE
+         F=U*U
+         GOTO 2700
 C--'FC' PATTERSON
-2650  CONTINUE
-      F=V*V
-      GOTO 2700
-2657  CONTINUE
+2650     CONTINUE
+         F=V*V
+         GOTO 2700
+2657     CONTINUE
 C---- (FO-FC)**2 PATTERSON
-      F = (U-V)**2
-      GOTO 2700
-2658  CONTINUE
+         F = (U-V)**2
+         GOTO 2700
+2658     CONTINUE
 C----- FO**2 - FC**2 PATTERSON
-      F = U*U - V*V
-      GOTO 2700
+         F = U*U - V*V
+         GOTO 2700
 C--ACCUMULATE THE ORIGIN FOR SCALING
-2700  CONTINUE
-      F=F*A
-      P=F
-      Q=0.
-      GOTO 2800
+2700     CONTINUE
+         F=F*A
+         P=F
+         Q=0.
+         GOTO 2800
 C--COMPUTE A AND B
-2750  CONTINUE
-      H=STORE(M6+6)+STORE(KS+3)
-      F=F*A
-      P=F*COS(H)
-      Q=F*SIN(H)
+2750     CONTINUE
+         H=STORE(M6+6)+STORE(KS+3)
+         F=F*A
+         P=F*COS(H)
+         Q=F*SIN(H)
 C--SUM THE TERMS USED
-2800  CONTINUE
-      W=W+F
+2800     CONTINUE
+         W=W+F
 C--ADD IN THE CONTRIBUTIONS FOR THIS 'HK' PAIR
-      S=1.
-      L=ISTORE(KS)
-      M=ISTORE(KS+1)
+         S=1.
+         L=ISTORE(KS)
+         M=ISTORE(KS+1)
 C--CHECK THE SIGN OF  'H'
-      IF(L)2850,2900,2900
+         IF(L)2850,2900,2900
 C--'H' IS NEGATIVE
-2850  CONTINUE
-      L=-L
-      M=-M
-      S=-1.0
+2850     CONTINUE
+         L=-L
+         M=-M
+         S=-1.0
 C--FIND THE ADDRESS OF THE 'H' AND 'K' TABLES
-2900  CONTINUE
-      L=L+JS
-      K=ISTORE(L)+M
-      K=ISTORE(K)+JW
+2900     CONTINUE
+         L=L+JS
+         K=ISTORE(L)+M
+         K=ISTORE(K)+JW
 C--COMPUTING THE STARTING POINT FOR THIS Z LAYER
-      KL=KB*ISTORE(KS+2)
-      KM=KH*ISTORE(KS+2)
+         KL=KB*ISTORE(KS+2)
+         KM=KH*ISTORE(KS+2)
 C--LOOP OVER EACH SECTION TO BE COMPUTED IN THIS PASS
-      DO 2950 L=1,JZ,2
-      N=MOD(KL,JF)+JL
-      M=N+JO
-      FSTORE(K)=FSTORE(K)+P*STORE(N)+Q*STORE(M)
-      FSTORE(K+1)=FSTORE(K+1)+S*(Q*STORE(N)-P*STORE(M))
-      K=K+2
-      KL=KL+KM
-2950  CONTINUE
-      KS=KS+KU+KU
-3000  CONTINUE
+         DO 2950 L=1,JZ,2
+            N=MOD(KL,JF)+JL
+            M=N+JO
+            FSTORE(K)=FSTORE(K)+P*STORE(N)+Q*STORE(M)
+            FSTORE(K+1)=FSTORE(K+1)+S*(Q*STORE(N)-P*STORE(M))
+            K=K+2
+            KL=KL+KM
+2950     CONTINUE
+         KS=KS+KU+KU
+      END DO
       GOTO 1100
 C
 C--PROCESS THE NEXT GROUP OF SECTIONS
@@ -2205,7 +2375,6 @@ C--INCREMENT THE SCAN COUNTER
       NV=NV+1
 C--PRINT THE NUMBER OF REFLECTIONS USED ON THIS SCAN
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3250)N6D,NORFL,NV
-CFEB03      WRITE(NCAWU,3250)N6D,NORFL,NV
       WRITE ( CMON ,3250)N6D,NORFL,NV
       CALL XPRVDU(NCVDU, 2,0)
 3250  FORMAT( ' Total number of reflections is ',I6,/,
@@ -2227,7 +2396,6 @@ C -- ERRORS
 9910  CONTINUE
 C -- NO REFLECTIONS
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-CFEB03      WRITE ( NCAWU , 9915 )
       WRITE ( CMON , 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'No reflections for Fourier' )
@@ -2360,6 +2528,7 @@ C--CONVERT TO LOGS
       DO 1450 I=1,3
       DO 1400 J=1,3
       DO 1350 K=1,3
+
 C--CHECK IF THE RHO VALUE IS LESS THAN 1.
       IF(RHO(K,J,I)-1.)1800,1300,1300
 C--TAKE LOGS
@@ -2605,7 +2774,6 @@ C--CAPTION FOR THE LIST 5 AND PEAK SCAN RESULTS
      3 'Minimum peak height = ',F10.1,5X,
      4 'Maximum number of peaks allowed = ',I5//' Type',3X,'Serial',
      5 4X,'X',9X,'Y',9X,'Z',11X, 'Height'/)
-CFEB03      WRITE ( NCAWU , 1305 ) LNOUT
 C----- NEED A PRINT?
       IF (IPKMON .GE. 0) THEN
       WRITE ( CMON , 1305 ) LNOUT
@@ -2645,8 +2813,6 @@ C--PRINT THE RESULTS
      1 WRITE(NCWU,1500)STORE(M5),STORE(M5+1),(APD(J),J=1,3),
      2 STORE(M5+13), CFOUND(1:N)
 1500  FORMAT ( 1X,A4,F8.0,1X,3F10.5,1X,F10.1,2X,A )
-CFEB03      WRITE(NCAWU,1501)STORE(M5),STORE(M5+1),STORE(M5+13),
-CFEB03     1 (APD(J),J=1,3), CFOUND(1:N)
       IF (IPKMON .GT. 0) THEN
       WRITE ( CMON ,1501)STORE(M5),STORE(M5+1),STORE(M5+13),
      1 (APD(J),J=1,3), CFOUND(1:N)
@@ -2734,8 +2900,6 @@ CNOV <
       WRITE(NCWU,1500)STORE(K),STORE(K+1),( STORE(M+4),M=K,L ),
      2 STORE(K+13), CFIT(N)
       ENDIF
-CFEB03      WRITE(NCAWU,1501) STORE(K),STORE(K+1),STORE(K+13),
-CFEB03     1 ( STORE(M+4),M=K,L ) , CFIT(N)
       IF (IPKMON .GE. 0) THEN
       WRITE(CMON,1501) STORE(K),STORE(K+1),STORE(K+13),
      1 ( STORE(M+4),M=K,L ) , CFIT(N)
@@ -2790,7 +2954,6 @@ C--UPDATE THE POINTERS
 2400  CONTINUE
       N5=MIN0(N5,KE+NPEAK)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2450)LNOUT,N5
-CFEB03      WRITE(NCAWU,2450)LNOUT,N5
       WRITE ( CMON ,2450)LNOUT,N5
       CALL XPRVDU(NCVDU, 1,0)
 2450  FORMAT(' The new list ',I3,' contains ',I5,' atoms')
@@ -2806,7 +2969,6 @@ C--NO PEAKS FOUND  -  SEE IF WE SHOULD OUTPUT A LIST 5 INSTEAD
 C--NO ATOMS EITHER  -  NO LIST 10 TO OUTPUT
 2600  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2650)
-CFEB03      WRITE(NCAWU,2650)
       WRITE ( CMON ,2650)
       CALL XPRVDU(NCVDU, 1,0)
 2650  FORMAT(' No peaks found, so no LIST 10 formed')
@@ -3060,8 +3222,8 @@ C--
 \ISTORE
 C
 C
-      CHARACTER *16 CTYPE(10)
-      CHARACTER*8 CWEIGH(2), CDENMN(2)
+      CHARACTER*16 CTYPE(10)
+      CHARACTER*8 CWEIGH(4), CDENMN(2)
 C
 \STORE
 \XFOURC
@@ -3082,9 +3244,10 @@ C
 C
 C
       DATA CDENMN / 'Negated ', '        ' /
-      DATA CWEIGH / '        ' , 'Weighted' /
+      DATA CWEIGH / '    Main','     Sim','        ' , 'Weighted' /
       DATA CTYPE / 'Fobs - map' , 'FC - map' , 'Difference map' ,
-     2             '2FO - FC map' , 'Optimal Fo map', 'FO Patterson' ,
+     2             '2FO - FC map' , 'Optimal Fo map',
+     2 'FO Patterson' ,
      3 'Fc Patterson', '(Fo-Fc)**2 Patt', '(FoSQ-FcSQ) Patt',
      4 'E - map' /
 C
@@ -3093,20 +3256,18 @@ C--SET UP THE INITIAL FLAGS
       IF (KJ) 1000, 1050, 1000
 C--FIRST SECTION  -  PRINT THE MAP TYPE
 1050  CONTINUE
-      L=2*IABS(NWT)+1
-      K=L+1
-      J=NTYP+1
+c      L=2*IABS(NWT)+1
+c      K=L+1
+c      J=NTYP+1
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1101)
       WRITE ( NCWU , 1100 ) CDENMN((NGMAP+3)/2),
-     1 CWEIGH(IABS(NWT)+1) , CTYPE(NTYP)
+     1 CWEIGH(NWT+3) , CTYPE(NTYP)
       WRITE(NCWU,1101)
 1101  FORMAT(//)
       ENDIF
-CFEB03      WRITE ( NCAWU , 1100 ) CDENMN((NGMAP+3)/2),
-CFEB03     1 CWEIGH(IABS(NWT)+1) , CTYPE(NTYP)
       WRITE ( CMON , 1100 ) CDENMN((NGMAP+3)/2),
-     1 CWEIGH(IABS(NWT)+1) , CTYPE(NTYP)
+     1 CWEIGH(NWT+3) , CTYPE(NTYP)
       CALL XPRVDU(NCVDU, 1,0)
 1100  FORMAT ( ' Computed map is ',
      1   A,A, 1X , A )
@@ -3125,13 +3286,12 @@ C--PRINT THE NEXT PART OF THE CURRENT SECTION
 C--PRINT OUT THE PAGE HEADINGS
       M=NINT(STORE(L14+12)*STORE(L14+15))
       CALL XPRTCN
-      L=2*IABS(NWT)+1
-      K=L+1
-      J=NTYP+1
+c      L=2*IABS(NWT)+1
+c      K=L+1
+c      J=NTYP+1
       IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,1300) IXYZ,M,MY,CDENMN((NGMAP+3)/2),
-     1 CWEIGH(IABS(NWT)+1),CTYPE(NTYP),
-     2 SS , NV
+        WRITE (NCWU,1300) IXYZ,M,MY,CDENMN((NGMAP+3)/2),
+     1                    CWEIGH(NWT+3),CTYPE(NTYP), SS, NV
       ENDIF
 1300  FORMAT ( 1X,A1,' Down,  ',A1, ' Across,  ','Section at ',A1,
      2 ' = ' , I4, ', Part ', I2,/,A, A, 1X, A, 4X, 'Multiplied by',
@@ -3167,71 +3327,65 @@ C--AND NOW THE '*' UNDERNEATH
 C--NOW PRINT THE SECTION  -  A LINE AT A TIME
       M81=L81+MX
       I=JA
-      DO 2000 NN=1,JG
-      J=M81
-      K=MM
-      L=MOD(I,JD)
+      DO NN=1,JG
+        J=M81
+        K=MM
+        L=MOD(I,JD)
 C--SET UP THE LEFT HAND MARGIN
-      CALL XNUMB(L,K,MF,MN,MO)
-      CALL XMVSPD(IB,ISTORE(K),MG)
-      K=K+MG
-      CALL XMVSPD(IA,ISTORE(K-1),1)
+        CALL XNUMB(L,K,MF,MN,MO)
+        CALL XMVSPD(IB,ISTORE(K),MG)
+        K=K+MG
+        CALL XMVSPD(IA,ISTORE(K-1),1)
 C--NOW LOOP OVER EACH GRID POINT TO BE PRINTED
-      DO 1700 N=1,MW
+        DO N=1,MW
 C--CHECK IF THIS NUMBER IS BELOW THE ALLOWED MINIMUM
-      IF(STORE(J)-THRES1)1550,1550,1500
+          IF(STORE(J)-THRES1)1550,1550,1500
 C--CHECK IF THE NUMBER IS OVER THE MAXIMUM
-1500  CONTINUE
-      IF(STORE(J)-THRES2)1600,1550,1550
+1500      CONTINUE
+          IF(STORE(J)-THRES2)1600,1550,1550
 C--NUMBER IS OUT OF RANGE  -  OUTPUT BLANKS
-1550  CONTINUE
-      CALL XMVSPD(IB,ISTORE(K),MA)
-      K=K+MA
-      GOTO 1650
+1550      CONTINUE
+          CALL XMVSPD(IB,ISTORE(K),MA)
+          K=K+MA
+          GOTO 1650
 C--NUMBER CAN BE PRINTED
-1600  CONTINUE
-      M=NINT(STORE(J))
-      CALL XNUMB(M,K,MA,MB,MC)
+1600      CONTINUE
+          M=NINT(STORE(J))
+          CALL XNUMB(M,K,MA,MB,MC)
 C--UPDATE FOR THE NEXT POINT
-1650  CONTINUE
-      J=J+1
-1700  CONTINUE
+1650      CONTINUE
+          J=J+1
+        END DO
 C--CHECK FOR A RIGHT HAND MARGIN
-      IF(MT)1800,1800,1750
+        IF(MT)1800,1800,1750
 C--RIGHT MARGIN REQUIRED
 1750  CONTINUE
-      CALL XMVSPD(IB,ISTORE(K),MG)
-      K=K+MG
-      CALL XMVSPD(IA,ISTORE(K-1),1)
-      CALL XNUMB(L,K,MF,MN,MO)
+        CALL XMVSPD(IB,ISTORE(K),MG)
+        K=K+MG
+        CALL XMVSPD(IA,ISTORE(K-1),1)
+        CALL XNUMB(L,K,MF,MN,MO)
 C--CHECK IF MORE THAN ONE LINE IS REQUIRED PER ROW
 1800  CONTINUE
-      IF(MD-1)1950,1950,1850
+        IF(MD-1)1950,1950,1850
 C--OUTPUT SOME BLANK LINES
-1850  CONTINUE
-      DO 1900 J=2,MD
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1450)
-      ENDIF
-1900  CONTINUE
+1850    CONTINUE
+        DO J=2,MD
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)
+        END DO
 C--PRINT THE CURRENT LINE
-1950  CONTINUE
-      K=K-1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1450)(ISTORE(J),J=MM,K)
-      ENDIF
-      M81=M81+MD8
-      I=I+KF
-2000  CONTINUE
+1950    CONTINUE
+        K=K-1
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)(ISTORE(J),J=MM,K)
+        M81=M81+MD8
+        I=I+KF
+      END DO
 C--CHECK FOR MORE THAN ONE PER ROW
       IF(MD-1)2150,2150,2050
 C--PRINT THE BLANK LINES
 2050  CONTINUE
-      DO 2100 J=2,MD
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1450)
-      ENDIF
-2100  CONTINUE
+      DO J=2,MD
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)
+      END DO
 C--CAPTIONS AT THE BOTTOM OF THE PAGE
 2150  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
@@ -3492,16 +3646,15 @@ C
 C
       KFRRSN = 1
 C
-      DO 2000 I = 1 , 3
+      DO I = 1 , 3
         IF ( GRID(I) .LT. AXSMIN ) KFRRSN = -1
         IF ( GRID(I) .GT. AXSMAX ) KFRRSN = -1
-2000  CONTINUE
+      END DO
 C
 C
       IF ( KFRRSN .LT. 0 ) THEN
        IF (ISSPRT .EQ. 0) WRITE(NCWU,2005) COORD1,COORD2,COORD3
        IF (IPRINT .GT. 0 ) THEN
-CFEB03        WRITE(NCAWU,2005) COORD1,COORD2,COORD3
         WRITE ( CMON ,2005) COORD1,COORD2,COORD3
         CALL XPRVDU(NCVDU, 1,0)
        ENDIF
@@ -3520,6 +3673,7 @@ C
 C--
       PARAMETER (NPROCS = 16)
       DIMENSION PROCS(NPROCS)
+      CHARACTER CSRQ*80
 \STORE
 \QSTORE
 \ISTORE
@@ -3533,9 +3687,11 @@ C--
 \XLST01
 \XLST02
 \XLST05
+\XLST06
 \XLST14
 \XLST12
 \ICOM12
+\XLST23
 \XLST29
 \XDSTNC 
 \XLST42
@@ -3553,6 +3709,7 @@ C--
       DIMENSION IIND3(3)
       DIMENSION STEPS(3)
       DIMENSION XJ(3)
+      DIMENSION X(10), XO(10), KEY(9), COEF(9)
 
 \ICOM42
 
@@ -3585,8 +3742,12 @@ C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
       IF (KHUNTR ( 1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
       IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      IF (KHUNTR (23,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL23
       IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
       IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      STOLER = STORE(L23SP+5)
+      I = KSPINI( -1, STOLER)
 
       IF ( ( ILIMIT .EQ. -1 ) .AND. 
      1  ( KEXIST(42) .GE. 1 ) )THEN ! Use existing L42.
@@ -3640,13 +3801,19 @@ C -- Set limits
           END IF
 
           IF (KHUNTR ( 14,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL14
+
+          IF ( ILIMIT .EQ. 2 ) THEN   ! Modified L14, use limits, but
+                                      ! get resolution from command line.
+            DO I = 0,2
+              STORE(L14+1+I*MD14) = PROCS(5+I*3)
+            END DO
+          END IF
+
           DO I = 0,2
             STORE(L42L+I*3)   = STORE(L14+I*MD14)
             STORE(L42L+I*3+2) = STORE(L14+I*MD14+2)
             RANGE = ABS(STORE(L42L+I*3+2)-STORE(L42L+I*3))
             ARANGE = STORE(L1P1+I)*RANGE
-            WRITE(CMON,'(A,2F9.3)') 'Range A=', ARANGE, RANGE
-            CALL XPRVDU(NCVDU,1,0)
             STORE(L42L+I*3+1)=NINT(0.49999+(ARANGE/STORE(L14+I*MD14+1)))
             WRITE(CMON,'(3(A,F8.3),A)')
      1      'Limits are', STORE(L42L+I*3),
@@ -3659,7 +3826,7 @@ C -- Set limits
         ENDIF
 
         N42M = IDIVS(1) * IDIVS(2) * IDIVS(3)
-        N42V = N42M
+c        N42V = N42M  ! Not needed yet
 
         IF ( NFL + N42M + N42V .GT. LFL ) GOTO 9920
 
@@ -3706,17 +3873,25 @@ C   1 - OUTSIDE     Mark 1 all areas outside molecules. Assume all ones
 C                      and put zeroes inside the atoms.
 C   2 - INSIDE      Mark 1 all areas inside molecules. Assume all zeroes
 C                      and put ones inside the atoms.
-C   3 - SHRINK      Change limits to trim any layers with all zeroes in MASK.
+C   3 - CLOSETO     Mark 1 all areas just outside molecules.
+C                   Assume all zeroes, put ones inside (atom+voidatom)
+C                   radius, then zeroes inside the atoms.
+C   4 - SHRINK      Change limits to trim any layers with all zeroes in MASK.
+C   5 - SHOW        Extend L5 with QH peaks corresponding to ones in MASK.
+C   6 - SETFC       Set FC and phase in L6 to Fourier transform of MASK.
 
-      IF ( IMSKOP .LE. 2 ) THEN ! All masking cases start here.
+      IF ( IMSKOP .LE. 3 ) THEN ! All masking cases start here.
 
-         MASKIN = 1
-         MASKOU = 0
+         MASKIN = 1  ! Inside molecule
+         MASKOU = 0  ! Outside molecule
+         MASKST = 0  ! Initial value for whole array
 
          IF ( IMSKOP .EQ. 1 ) THEN
            MASKIN = 0
            MASKOU = 1
+           MASKST = 1
          END IF
+
 
 C Run through grid, mask areas as inside or outside the molecule, given
 C the tolerances supplied.
@@ -3789,8 +3964,10 @@ C-------SET UP A FEW STACK CONSTANTS
          STORE(IABAT+3)=.05
 
 
-        CALL XFILL (MASKOU, ISTORE(L42M), N42M) !Outside by default
+         CALL XFILL (MASKST, ISTORE(L42M), N42M) !Outside by default
 
+         NNZ = 0
+         NNZS = 0
 
 C----- LOOP OVER ALL SECTIONS
          DO IZSECT = 0, IDIVS(3)-1
@@ -3801,7 +3978,7 @@ C----- LOOP OVER ALL SECTIONS
              DO IYSECT = 0, IDIVS(2)-1
                STORE(IABAT+5) = STORE(L42L+3) + STEPS(2) * IYSECT
 C GET ADDRESS of THIS POINT in L42M array.
-               M42M=L42M+IIND3(1)*IXSECT+IIND3(2)*IYSECT+IIND3(3)*IZSECT
+               M42M=L42M+IXSECT+IIND3(2)*IYSECT+IIND3(3)*IZSECT
 
                M5=L5  ! RESET THE CONTACT ATOM
                NFL=JE ! RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
@@ -3816,19 +3993,24 @@ c                CALL XPRVDU(NCVDU,1,0)
                   DO K = JE, JE+(JT*(NBONDS-1)),JT
                     IAD5 = ISTORE(K)
                     IF ( ISTORE(IAD5) .NE. IPEAK ) THEN
-                      IF ( STORE(K+10) .LT.
+                      IF ( IMSKOP .EQ. 3 ) THEN
+                         IF ( STORE(K+10) .LT.
      1    STORE(ISTORE(K)+13) * ATMULT + ATCNST ) THEN   ! Inside molecule
-                        ISTORE(M42M) = MASKIN
-                        EXIT
+                             ISTORE(M42M) = MASKOU
+                             EXIT
+                          ELSE IF ( STORE(K+10) .LT.
+     1    STORE(ISTORE(K)+13) * ATMULT + ATCNST + ATVOID ) THEN   ! Close to molecule
+                             ISTORE(M42M) = MASKIN
+                          END IF
+                      ELSE IF ( STORE(K+10) .LT.
+     1    STORE(ISTORE(K)+13) * ATMULT + ATCNST ) THEN   ! Inside molecule
+                         ISTORE(M42M) = MASKIN
+                         EXIT
                       END IF
                     END IF
                   END DO
                ELSE ! Solvent accessible region
                   IACCES = 1
-
-c                  WRITE(99,'(3I4,3F9.3)')IXSECT,IYSECT,IZSECT,
-c     1            STORE(IABAT+4),STORE(IABAT+5),STORE(IABAT+6)
-
                   DO K = JE, JE+(JT*(NBONDS-1)),JT
                     IAD5 = ISTORE(K)
                     IF ( ISTORE(IAD5) .NE. IPEAK ) THEN
@@ -3846,7 +4028,7 @@ c                   CALL XPRVDU(NCVDU,1,0)
 C If we are doing accessible volume and no contacts to this point,
 C then need to set MASKIN for this point, and all points within a
 C radius of ATVOID
-                    ISTORE(M42M) = 2
+                    ISTORE(M42M) = 1
 C Work out steps equivalent to ATVOID in each axial direction.
                     JXSTPS = NINT(.5+(ATVOID /(STORE(L1P1)*STEPS(1))))
                     JYSTPS = NINT(.5+(ATVOID /(STORE(L1P1+1)*STEPS(2))))
@@ -3859,7 +4041,6 @@ C Truncate wrt edges of mask region.
                     JYMAX = MIN(IDIVS(2)-1,IYSECT+JYSTPS)
                     JZMAX = MIN(IDIVS(3)-1,IZSECT+JZSTPS)
 
-                    NZERO=0
                     NTOT=(JXMAX-JXMIN+1)*(JYMAX-JYMIN+1)*(JZMAX-JZMIN+1)
 
 C For each included point test distance to central point vs ATVOID.
@@ -3868,7 +4049,7 @@ C For each included point test distance to central point vs ATVOID.
                       DO JXSECT = JXMIN,JXMAX
                         XJ(1) = STORE( L42L ) + STEPS(1) * JXSECT
                         DO JYSECT = JYMIN,JYMAX
-                          J42M=L42M+IIND3(1)*JXSECT+IIND3(2)*JYSECT+
+                          J42M=L42M+JXSECT+IIND3(2)*JYSECT+
      1                              IIND3(3)*JZSECT
                           IF ( ISTORE(J42M) .EQ. 0 ) THEN
                             XJ(2) = STORE(L42L+3) + STEPS(2) * JYSECT
@@ -3876,29 +4057,100 @@ C Test distance.
                             IF (XDSTN2(STORE(IABAT+4),XJ)
      1                                           .LT.ATVOID**2) THEN
                               ISTORE(J42M) = MASKIN
-                              NZERO = NZERO+1
                             END IF
                           END IF
                         END DO
                       END DO
                     END DO
-
-                    WRITE(99,'(11I6)')JXMIN,JXMAX,JYMIN,JYMAX,
-     1               JZMIN,JZMAX,JXSTPS,JYSTPS,JZSTPS,NTOT,NZERO
-
                   END IF
                END IF
 
+C If mask is set, do special position calc
+               IF ( ISTORE( M42M ) .NE. 0 ) THEN
+                 NNZ = NNZ + 1
+C X,XO,KEY & COEF are used/set by KSPGET, and need not be initialised.
+C MGM is 1/occ. M5S points to atom record.
+C -1 tells it not to update parameters.
+C JUNK is the number that were updated.
+C Return value = -1 if on a special position.
+                 IF (KSPGET(X,XO,KEY,COEF,MGM,IABAT,1,JUNK).LE.0) THEN
+                   NNZS = NNZS + 1
+                   ISTORE( M42M )  = MGM
+                 END IF
+               END IF
 C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
                NFL = JL
                JK = JL - JT
              END DO
            END DO
          END DO
-      ELSE
 
+         WRITE(CMON,'(4X,I7,A)') NNZ, ' points set in the mask'
+         CALL XPRVDU(NCVDU,1,0)
+         IF ( NNZS .GT. 0 ) THEN
+           WRITE(CMON,'(4X,A,I7,A)') ' including ',
+     1                        NNZS, ' on or near special positions.'
+           CALL XPRVDU(NCVDU,1,0)
+         END IF
+
+      ELSE IF ( IMSKOP .EQ. 4 ) THEN
 C Shrink the storage.
+C Not done yet.
+         WRITE(CMON,'(4X,A)') 'Shrink storage feature not implemented.'
+         CALL XPRVDU(NCVDU,1,0)
+      ELSE IF ( IMSKOP .EQ. 5 ) THEN
+C Show the mask as a series of QH peaks.
+         NNZ = 0
+         CALL XSSRQ(IADSRQ,NSRQ)   ! Save current SRQ.
+         DO IZSECT = 0, IDIVS(3)-1
+           CALL SLIDER(IZSECT,IDIVS(3)-1)
+           RZ = STORE(L42L+6) + STEPS(3) * IZSECT
+           DO IXSECT = 0, IDIVS(1)-1
+             RX = STORE( L42L ) + STEPS(1) * IXSECT
+             DO IYSECT = 0, IDIVS(2)-1
+               RY = STORE(L42L+3) + STEPS(2) * IYSECT
+C GET ADDRESS of THIS POINT in L42M array.
+               M42M=L42M+IXSECT+IIND3(2)*IYSECT+IIND3(3)*IZSECT
 
+               IF ( ISTORE(M42M) .NE. 0 ) THEN
+                  NNZ = NNZ + 1
+                  IF( NNZ .EQ. 1 ) THEN ! Write header to SRQ
+                    WRITE(CSRQ,'(A)')'#EDIT'
+                    CALL XISRC(CSRQ)
+                  END IF
+
+                  WRITE(CSRQ,'(A,I5,5(1X,F11.6))')'ATOM R ', NNZ, 
+     2               1.0,1.0, RX, RY, RZ
+                  CALL XISRC(CSRQ)
+               END IF
+             END DO
+           END DO
+         END DO
+         IF (NNZ.GT.0) THEN
+            WRITE(CSRQ,'(A)')'END'
+            CALL XISRC(CSRQ)
+         END IF
+
+         WRITE(CMON,'(4X,I7,A)') NNZ, ' points added to atom list.'
+         CALL XPRVDU(NCVDU,1,0)
+
+         CALL XRSRQ(IADRSQ,NSRQ)   !Reinstate previous SRQ
+
+      ELSE IF ( IMSKOP .EQ. 6 ) THEN
+C Set Fc and phase in L6 based on current mask.
+         IULN = KTYP06(1)   ! 1=L6, 2=L7.
+         CALL XFAL06(IULN,1)   ! Load list 6, ready for updating.
+         DO WHILE ( KFNR(1) .GE. 0 )
+           CALL XMASKF ( FA, FB, STORE(M6), STORE(M6+16), 0 ) 
+           STORE(M6+5)= SQRT( FA**2 + FB**2 )
+           STORE(M6+6)= ATAN2( FB, FA )
+           CALL XSLR(1)   ! Store last reflection
+           CALL XACRT(6)  ! Keep running totals for FC
+           CALL XACRT(7)  ! Keep running totals for phase
+         END DO
+         CALL XERT(IULN)  ! Write updated L6 to disk.
+         WRITE(CMON,'(4X,A)') 'Fc values in L6 updated to FT of mask.'
+         CALL XPRVDU(NCVDU,1,0)
       END IF
 
 1111  CONTINUE
@@ -3923,7 +4175,6 @@ C -- INPUT ERROR
 C -- NOT ENOUGH STORE
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
 9925  FORMAT ( 1X ,
      1'Not enough stack to allocate the resolution of mask specified' )
@@ -3937,8 +4188,293 @@ C-------INSUFFICIENT SPACE
 
       END
 
+
+CODE FOR XMASKF
+      SUBROUTINE XMASKF(FA, FB, HKL, STL2, ICAXES)
+
+C Compute the Fourier transform of the mask using the HKL indices.
+C Some lists must be loaded: 2, 42
+C
+C FA - real component of FT of list 42.
+C FB - imag component of FT of list 42.
+C HKL(3) - the indices that you want.
+C STL2 - (sin(theta)/lambda)^2. Set to zero for no temp factor correction.
+C ICAXES -  0 Do nothing special
+C           1 Swap HKL back to original axis system. L42I must be
+C             pointing to an original copy of L2I.
+C
+C--
+\STORE
+\ISTORE
+\XCONST
+\XUNITS
+\XLST02
+\XLST42
+\XFOURC
+\XIOBUF
+      REAL HKL(3), THKL(3), HKL42(3)
+      DIMENSION IIND3(3)
+      DIMENSION STEPS(3)
+      DIMENSION XJ(3)
+\QSTORE
+      EQUIVALENCE (IX,IAXIS(1)),(IY,IAXIS(2)),(IZ,IAXIS(3))
+
+
+      DO I = 0,2
+       STEPS(I+1)=(STORE(L42L+I*3+2)-STORE(L42L+I*3))/STORE(L42L+I*3+1)
+      END DO
+
+
+      BT = EXP(-4.*STL2)    ! Assume U of 0.05? (and positive?)
+
+c      WRITE(CMON(1),'(A,3F8.5)')'Steps=',(STEPS(I),I=1,3)
+c      CALL XPRVDU(NCVDU,1,0)
+
+C Set up matrix for mapping indices onto the MASK and VALUE arrays.
+      IIND3(1) = 1
+      IIND3(2) = NINT(STORE(L42L+1))
+      IIND3(3) = NINT(STORE(L42L+4)) * IIND3(2)
+
+c      WRITE(CMON(1),'(A,3I5)')'IndexV=',(IIND3(I),I=1,3)
+c      CALL XPRVDU(NCVDU,1,0)
+
+
+C NB. Lattice translations are ignored as the effect is constant, and
+C would be normalised out.
+
+      TNNZ = 0.0   ! Number of non-zeroes in the whole cell
+      FA  = 0.0 ! A-part
+      FB  = 0.0 ! B-part
+
+C----- LOOP OVER ALL SECTIONS
+
+c      WRITE(CMON(1),'(A,3I5)')'Divs ',NINT(STORE(L42L+7)),
+c     1 NINT(STORE(L42L+4)),NINT(STORE(L42L+1))
+c      CALL XPRVDU(NCVDU,1,0)
+
+      IF ( ICAXES .EQ. 1 ) THEN
+         HKL42(IX)=HKL(1)         ! Unswap the indices for
+         HKL42(IY)=HKL(2)       ! list 42 contribution.
+         HKL42(IZ)=HKL(3)
+      ELSE
+         CALL XMOVE(HKL(1),HKL42(1),3)
+         L42I = L2I
+         N42I = N2I
+         MD42I = MD2I
+      END IF
+
+      DO IZSECT = 0, NINT(STORE(L42L+7))-1
+         DO IYSECT = 0, NINT(STORE(L42L+4))-1
+            DO IXSECT = 0, NINT(STORE(L42L+1))-1
+C GET ADDRESS of THIS POINT in L42M array.
+               M42M=L42M+IXSECT+IIND3(2)*IYSECT+IIND3(3)*IZSECT
+               IF ( ISTORE(M42M) .NE. 0) THEN
+                 XJ(1) = STORE( L42L ) + STEPS(1) * IXSECT
+                 XJ(2) = STORE(L42L+3) + STEPS(2) * IYSECT
+                 XJ(3) = STORE(L42L+6) + STEPS(3) * IZSECT
+                 DO ISYM = L42I, L42I+MD42I*(N42I-1), MD42I
+                   CALL XMLTMM(STORE(ISYM),HKL42,THKL,3,3,1)
+                   CALL VPROD(STORE(ISYM+9),HKL42,PSHIF)
+                   CALL VPROD(XJ,THKL,FI)
+                   FA=FA + (cos( TWOPI*(FI+PSHIF) )/FLOAT(ISTORE(M42M)))
+                   IF(IC.EQ.0)
+     1               FB=FB+(sin( TWOPI*(FI+PSHIF) )/FLOAT(ISTORE(M42M)))
+                   TNNZ = TNNZ + 1
+                 END DO
+               END IF
+            END DO
+         END DO
+      END DO
+
+C NB, for centro structures FA will be half the actual value,
+C but TNNZ is too, so the normalized answer is correct without
+C introducing further operations. (Same principle as lattice translations).
+
+      IF ( TNNZ .GT. 0 ) THEN
+        FA = FA * BT / TNNZ
+        FB = FB * BT / TNNZ   ! Normalise
+      END IF
+
+c      WRITE(CMON(1),'(A,F9.1)')'Nnonzero=',TNNZ
+c      CALL XPRVDU(NCVDU,1,0)
+
+      RETURN
+      END
+
+
+
+cCODE FOR KATMIS
+c      FUNCTION KATMIS(NADR3)
+cC Compute the number of missing atoms in a structure,
+cC using lists 29 and 5. Store the results in a vector
+cC at L3Q, the same length as N3.
+c
+c\XLST02
+c\XLST03
+c\XLST05
+c\XLST23
+c\XLST29
+c
+c\XIOBUF
+c\XUNITS
+c
+c\XFOURC
+c
+c\STORE
+c\ISTORE
+c\QSTORE
+c
+cC Dor each atom in L3 (scattering factors), find
+cC the difference between the number of atoms supposed to be
+cC in the cell, L29, and the number in L5 * multipliciy. Store this
+cC value in the order of L3 at NFL.
+c
+c
+c      IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) GOTO 9902
+c      IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) GOTO 9903
+c      IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) GOTO 9905
+c      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) GOTO 9923
+c      IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .LT. 0) GOTO 9929
+c
+c      toler = store(l23sp+5)
+c      call xprc17 (0, 0, TOLER, -1) ! Update special position
+c
+c      L3Q = NADR3
+c
+c      DO I = 0, N3-1
+cC Find this atom type in L29.
+c         J=KCOMP(1,ISTORE(L3+MD3*I),ISTORE(L29),N29,MD29)-1
+c         IF(J.LT.0)THEN
+c           STORE(L3Q+I) = 0.0
+c         ELSE
+c           STORE(L3Q+I) = STORE(L29+MD29*J+4) * STORE(L2C+3)
+c         END IF
+c      END DO
+c
+c      DO I = 0, N5-1
+cC Find this atom type in L3.
+c         J=KCOMP(1,ISTORE(L5+MD5*I),ISTORE(L3),N3,MD3)-1
+c         IF(J.LT.0)THEN
+cC This error should not be possible.
+c            WRITE(CMON,'(2A)')
+c     1     '{E Error List3 scattering factor missing: ',ISTORE(L5+MD5*I)
+c            CALL XPRVDU(NCVDU,1,0)
+c         ELSE IF ( istore(l23sp+1) .ge. 0 ) THEN
+c           STORE(L3Q+J) = STORE(L3Q+J) -
+c     1      (STORE(L5+MD5*I+2) * STORE(L5+MD5*I+13) * STORE(L2C+3))
+c         ELSE
+c           STORE(L3Q+J) = STORE(L3Q+J) -
+c     1      (STORE(L5+MD5*I+2) * STORE(L2C+3))
+c         END IF
+c      END DO
+c
+c      NMISS = 0
+c      NNEGA = 0
+c      DO I = 0, N3-1
+c         NMISS = NMISS + STORE(L3Q+I)
+c         IF ( STORE(L3Q+I) .LT. 0.0 ) NNEGA = NNEGA + 1
+c      END DO
+c
+c      IF ( NNEGA .GT. 0 ) THEN
+c         WRITE(CMON,'(4(A/))')
+c     1 'The number of missing atoms of some types negative. This is ',
+c     2 'either due to having too many atoms in the model, or ',
+c     3 'specifying the wrong formula in list 29.',
+c     4 'Number of missing atoms of each type:'
+c         CALL XPRVDU(NCVDU,4,0)
+c         DO I = 0, N3-1
+c           WRITE(CMON,'(3X,A,F8.3)')ISTORE(L3+MD3*I),STORE(L3Q+I)
+c           CALL XPRVDU(NCVDU,1,0)
+c         END DO
+c         GOTO 9900
+c      END IF
+c      IF ( NMISS .EQ. 0 ) THEN
+c         WRITE(CMON,'(4(A/))')
+c     1 '{IThe number of missing atoms is zero, based on the',
+c     2 '{Idifference between the model and the formula specified',
+c     3 '{Iin list 29. The Fourier will proceed, but no weights will',
+c     4 '{Ibe used.'
+c         CALL XPRVDU(NCVDU,4,0)
+c      END IF
+c
+c      WRITE(CMON,'(/A/)')
+c     1 ' Atom type    Number missing'
+c      CALL XPRVDU(NCVDU,3,0)
+c      DO I = 0, N3-1
+c        WRITE(CMON,'(4X,A,10X,F8.3)')ISTORE(L3+MD3*I),STORE(L3Q+I)
+c        CALL XPRVDU(NCVDU,1,0)
+c      END DO
+c
+c      KATMIS = 0
+c      RETURN
+c
+c9900  CONTINUE
+c      KATMIS = -1
+c      RETURN
+c9902  CONTINUE
+c      WRITE(CMON,'(A)')'{E List 2 must be loaded when calling ATMISS'
+c      CALL XPRVDU(NCVDU,1,0)
+c      GOTO 9900
+c9903  CONTINUE
+c      WRITE(CMON,'(A)')'{E List 3 must be loaded when calling ATMISS'
+c      CALL XPRVDU(NCVDU,1,0)
+c      GOTO 9900
+c9905  CONTINUE
+c      WRITE(CMON,'(A)')'{E List 5 must be loaded when calling ATMISS'
+c      CALL XPRVDU(NCVDU,1,0)
+c      GOTO 9900
+c9923  CONTINUE
+c      WRITE(CMON,'(A)')'{E List 23 must be loaded when calling ATMISS'
+c      CALL XPRVDU(NCVDU,1,0)
+c      GOTO 9900
+c9929  CONTINUE
+c      WRITE(CMON,'(A)')'{E List 29 must be loaded when calling ATMISS'
+c      CALL XPRVDU(NCVDU,1,0)
+c      GOTO 9900
+c      END
+
+
+cCODE FOR XSSSF
+c      SUBROUTINE XSSSF(STL2,SSF,SSSF)
+c
+c\STORE
+c\ISTORE
+c\XLST02
+c\XLST03
+c\XLST29
+c\XFOURC
+c\XIOBUF
+c\XUNITS
+c\QSTORE
+c
+c
+cC Compute sum of scattering factors (SSF) and the sum of the
+cC squares of the scattering factors (SSSF) of missing atoms
+cC at given angle (STL2) = (sin(theta)/lambda)**2.
+c
+c
+cC The values at L3Q are the total number of atoms in the cell,
+cC so no symmetry correction is necessary.
+c
+cc      BT = EXP(-4.*STL2)   ! Average temperature factor correction (U=0.05)
+c      ST = SQRT(STL2)
+c      CALL XSCATT(ST)   ! Puts form factors at L3TR
+c      SSF = 0.0
+c      SSSF = 0.0
+c
+cC--FORM THE SUM OF THE SQUARES OF THE FORM FACTORS AND THE SUM
+c      DO I=0,N3-1
+c         J=L3TR+I*MD3TR
+c         SSSF= SSSF + STORE(L3Q+I) * STORE(J) * STORE(J)
+c         SSF = SSF  + STORE(L3Q+I) * STORE(J)
+cc         WRITE(CMON,'(A,2F9.4)') ISTORE(L3+I*MD3),STORE(L3Q+I),STORE(J)
+cc         CALL XPRVDU(NCVDU,1,0)
+c      END DO
+c
+c      END
+
 CODE FOR MDBESL
-        SUBROUTINE MDBESL(X,BSLI0,BSLI1)
+      SUBROUTINE MDBESL(X,BSLI0,BSLI1)
 C Polynomial approximation to modified Bessel functions I0(x), I1(x)
 C BSLI0 - first order modified bessel function I0(x)
 C BSLI1 - second order modified bessel function I1(x)
@@ -3968,3 +4504,5 @@ C BSLI1 - second order modified bessel function I1(x)
         ENDIF
         RETURN
         END
+
+
