@@ -9,6 +9,9 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2002/10/02 13:43:17  rich
+//   New ModList class added.
+//
 //   Revision 1.7  2001/06/17 15:14:13  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -279,7 +282,7 @@ void CrModList::Update(int newsize)
 
 void CrModList::DocToList()
 {
-    if(m_ModelDoc) return m_ModelDoc->DocToList(this);
+    if(m_ModelDoc) m_ModelDoc->DocToList(this);
 }
 
 void CrModList::DocRemoved()
