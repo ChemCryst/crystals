@@ -192,6 +192,14 @@ Optimise the weights
 
 
 % copy '#script democ'
+% copy '#script btext'
+Create a 'cif' file 
+% copy '#cif'
+% copy 'end'
+% copy '#script ntext'
+% copy '#script xpause'
+
+
 % COPY '#SCRIPT BTEXT'
 
 CRYSTALS has features to assist in the understanding

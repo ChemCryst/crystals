@@ -21,7 +21,7 @@ This demonstration is in *** stages
 
 Phase 1: Input basic crystallographic information
 % COPY '#PAUSE 5'
-% copy '#use crysdir:\script\demo1.sda'
+% copy '#use crysdir:\script\demo1.dat'
 
 Note that the mean value for the systematic absences is +ve
 This is was common knowledge in the days of Weissenberg 
@@ -31,7 +31,7 @@ reflections 'strong'?
 
 Now input the structure from SIR92
 % copy '#pause 5'
-% copy '#use crysdir:\script\demo2.sda'
+% copy '#use crysdir:\script\demo2.dat'
 
 
 The SIR92 structure is almost completely correct 
@@ -46,8 +46,8 @@ we will:
       change some atom types
       add a spurious atom
 % copy '#pause 5'
-% copy '#use crysdir:\script\demo3.sda'
-% copy '#use crysdir:\script\demo4.sda'
+% copy '#use crysdir:\script\demo3.dat'
+% copy '#use crysdir:\script\demo4.dat'
 
 
 Now try refining just the positions. 
@@ -62,7 +62,7 @@ Leave the ADPs alone for the moment.
 Do Fourier Refinement. Try a 2Fo-Fc map
 
 % copy '#pause 5'
-%%copy '#use crysdir:\script\demo5.sda'
+%%copy '#use crysdir:\script\demo5.dat'
 % copy '#four'
 % copy 'map type=2fo'
 % copy 'end'
@@ -84,23 +84,23 @@ using the 'crystallographic' editor.
 Atoms and peaks with lerge serial numbers will have 
 small peak heights, so are suspect.
 % copy  '#pause 5'
-% copy '#use crysdir:\script\demo6.sda'
+% copy '#use crysdir:\script\demo6.dat'
 
 Now some ADP refinement. First iso, then aniso.
 
 % copy '#pause 5'
-% copy '#use crysdir:\script\demo7.sda'
+% copy '#use crysdir:\script\demo7.dat'
 
 The structure looks OK, but the numbering is
 erratic. Let CRYSTALS sort it out
 
-%copy '#use crysdir:\script\demo8.sda'
+%copy '#use crysdir:\script\demo8.dat'
 
 Compute Hydrogen atoms based on geometry, and compare
 them with the difference Fourier
 
 % copy '#pause 5'
-% copy '#use crysdir:\script\demo9.sda'
+% copy '#use crysdir:\script\demo9.dat'
 % copy '#list 12'
 % copy "full first(x's, u's) until o(20)"
 % copy 'end'
@@ -144,8 +144,13 @@ Optimise the weights
 % copy 'ref'
 % copy 'ref'
 % copy 'end'
-
-
+% copy '#script btext'
+% copy '#script btext'
+Create a 'cif' file 
+% copy '#cif'
+% copy 'end'
+% copy '#script ntext'
+% copy '#pause 5'
 % copy '#script democ'
 
 CRYSTALS has features to assist in the understanding
@@ -154,5 +159,5 @@ of molecular packing
 
 % COPY '#PAUSE 5'
 
-#use crysdir:\script\demo10.sda
+#use crysdir:\script\demo10.dat
 % END SCRIPT
