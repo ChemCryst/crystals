@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2002/08/28 14:38:03  richard
+C Added two new binary operators: IAND and IOR to do bitwise logical operations
+C on integers. (Reals are just NINT'd first). E.g. 6 IAND 2 = 2, 4 IOR 2 = 6.
+C
 C Revision 1.37  2002/08/23 09:01:19  richard
 C Put script name in the status bar.
 C
@@ -2427,7 +2431,7 @@ CAUG02  2 NEW BINARY OPS:
 C       INT = INT IOR INT
 C       INT = INT IAND INT
 C
-      PARAMETER ( NOPER = 51 , NUBASE = 27 )
+      PARAMETER ( NOPER = 52 , NUBASE = 28 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2466,7 +2470,7 @@ C
 C
       DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
      2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
-     3              6 , 7 , 11, 11, 2,  2 , 2 ,
+     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 ,
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
@@ -2563,7 +2567,7 @@ C
      3        4050 , 4050 , 4050 , 4050 , 4050 ,
      4        4050 , 4050 , 4050 , 4100 , 4110 ,
      5        8000 , 4120 , 4130 , 4140 , 4150 ,
-     6        4160 , 4170 ,
+     6        4160 , 4170 , 4180 ,
      6        9940 ) , IOPER
       GO TO 9940
 C
@@ -2784,6 +2788,43 @@ C
           ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
             XCODE(JVALUE,IARG(2)) = IAND ( NINT(XCODE(JVALUE,IARG(2))), 
      2                                     NINT(XCODE(JVALUE,IARG(1))) )
+          ENDIF
+C
+      GO TO 8000
+C
+4180  CONTINUE
+C
+C -- 'IDECMASK'
+C What is this strange op? The decimal number on the left (an integer) is
+C masked by any zeroes in the decimal number on the right. Hence:
+C 1234 IDECMASK 0101 = 204. Useful?
+C Only the leftmost 9 digits of each number are used.
+
+          IF ( ITYPE(1) .EQ. 1 ) THEN
+            IMASK = ICODE(JVALUE,IARG(1))
+            IDEC  = ICODE(JVALUE,IARG(2))
+            IRES  = 0
+            DO IDM = 0,8
+              IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
+                IRES = IRES + ( MOD(IDEC,10) * 10**IDM )
+              END IF
+              IMASK = FLOOR ( IMASK / 10.0 )
+              IDEC  = FLOOR ( IDEC  / 10.0 )
+            END DO
+            ICODE(JVALUE,IARG(2)) = IRES
+          ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
+
+            IMASK = NINT(XCODE(JVALUE,IARG(1)))
+            IDEC  = NINT(XCODE(JVALUE,IARG(2)))
+            IRES  = 0
+            DO IDM = 0,8
+              IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
+                IRES = IRES + ( MOD(IDEC,10) * 10**IDM )
+              END IF
+              IMASK = FLOOR ( IMASK / 10.0 )
+              IDEC  = FLOOR ( IDEC  / 10.0 )
+            END DO
+            XCODE(JVALUE,IARG(2)) = IRES
           ENDIF
 C
       GO TO 8000
@@ -3429,7 +3470,7 @@ C
       PARAMETER ( NOUTVL = 100 , NOPERS = 20 )
 C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
-      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 25 )
+      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
 CJAN99
       PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 24 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
@@ -3466,16 +3507,17 @@ C
      4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
      5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
      6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
-     7                '//'    , 'STARTSWITH' , '**','IOR','IAND',  !23-27
+     7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
+     7                'IAND'  , 'IDECMASK',                        !27,28
 C
-     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !28-31
-     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !32-35
+     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32
+     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36
 CJAN99
-     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!36-39
-     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !40-43
-     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !44-46
-     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !47-50
-     4                'GETENV'/                                    !51
+     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40
+     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44
+     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47
+     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51
+     4                'GETENV'/                                    !52
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3484,7 +3526,7 @@ C
      5                   80   ,    80   ,    80   ,    80   ,
      6                   50   ,    60   ,    30   ,    20   ,
      7                  100   ,    80   ,   190   ,    90   ,
-     8                   90   ,
+     8                   90   ,    90   ,
 C
      8                   90   ,   180   ,   180   ,   180   ,
      9                   40   ,   180   ,   180   ,   180   ,
