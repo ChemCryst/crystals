@@ -2,31 +2,14 @@
 %%
 %%
 % IF ( EXISTS  1 .NE. 1 ) THEN
-{9,1 +----------------------------------------------------+
-{9,1 |                                                    |
-{9,1 |  You have not loaded cell paramters into CRYSTALS  |
-{9,1 |  Use 'X-ray Data' off the tool bar to input them   |
-{9,1 |                                                    |
-{9,1 +----------------------------------------------------+
+{I No cell paramters - Use 'X-ray Data' on the menu bar to input them.
 % END IF
-
 %%
 % IF ( EXISTS  2 .NE. 1 ) THEN
-{9,1 +----------------------------------------------------+
-{9,1 |                                                    |
-{9,1 |  You have not loaded a Space Group into CRYSTALS   |
-{9,1 |  Use 'X-ray Data' off the tool bar to input one    |
-{9,1 |                                                    |
-{9,1 +----------------------------------------------------+
+{I No Space Group    - Use 'X-ray Data' on the menu bar to input one.
 % END IF
-
 %%
 % IF ( EXISTS  6 .NE. 1 ) THEN
-{9,1 +-----------------------------------------------------+
-{9,1 |                                                     |
-{9,1 |  You have not loaded any reflections into CRYSTALS  |
-{9,1 |  Use 'X-ray Data' off the tool bar to input them    |
-{9,1 |                                                     |
-{9,1 +-----------------------------------------------------+
+{I No reflections    - Use 'X-ray Data' on the menu bar to input them.
 % END IF
 %END SCRIPT
