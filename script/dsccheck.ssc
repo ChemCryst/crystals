@@ -38,15 +38,16 @@
   |                                                |
   +------------------------------------------------+
 
-% VERIFY IGNORE REFORMAT
+% VERIFY NO YES
   You have two options:
 
-  IGNORE -   Carry on working with this DSC file.
-             Any calculation using Uiso will be
-             incorrect.
-  REFORMAT - Change the current LIST 5 so that its
-             format is correct. ( Your old list 5
-             will be written to disk for safety ).
+  Ignore this warning - Carry on working with this
+                        DSC file. Any calculation
+                        using Uiso will be incorrect.
+  Reformat the list 5 - Change the current LIST 5 so
+                        that its format is correct.
+                        (Your old list 5 will be written
+                         to disk for safety).
 
 %  GET NOSTORE FINAL ABBREVIATED 'Do you want me to -
 automatically reformat LIST 5 for you?' 'YES'
