@@ -5,6 +5,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2001/06/17 15:14:12  richard
+// Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 // Revision 1.10  2001/03/08 15:32:42  richard
 // Limit=n token prevents user entering more than n characters.
 //
@@ -88,15 +91,15 @@ CrEditBox::~CrEditBox()
 CRSETGEOMETRY(CrEditBox,CxEditBox)
 CRGETGEOMETRY(CrEditBox,CxEditBox)
 
-CcRect CrEditBox::CalcLayout(bool recalc)                                                            \
-{                                                                          \
-  if(!recalc) return CcRect(0,0,m_InitHeight,m_InitWidth);                 \
+CcRect CrEditBox::CalcLayout(bool recalc)
+{                                                                          
+  if(!recalc) return CcRect(0,0,m_InitHeight,m_InitWidth);
   if (m_IsInput)
   {
     ((CxEditBox*)ptr_to_cxObject)->UpdateFont();
   }
-  return CcRect(0,0,(int)(m_InitHeight=((CxEditBox*)ptr_to_cxObject)->GetIdealHeight()),  \
-                          m_InitWidth =((CxEditBox*)ptr_to_cxObject)->GetIdealWidth());   \
+  return CcRect(0,0,(int)(m_InitHeight=((CxEditBox*)ptr_to_cxObject)->GetIdealHeight()),
+                          m_InitWidth =((CxEditBox*)ptr_to_cxObject)->GetIdealWidth());
 };
 
 
