@@ -1,12 +1,15 @@
 %SCRIPT XSAVEAS
-%  VARIABLE CHARACTER CTITLE CPATH CEXTN
+%  VARIABLE CHARACTER FTITLE CPATH CEXTN
 %% Get the name of a new DISCFILE from the user and purge
 %% to it and restart with it.
 ^^WI SYSSAVEFILE 'v2save.dsc' '*.dsc' 'CRYSTALS database (*.dsc)'
-^^CR
-%    GET SILENT KEYWORD 'New disk filename:'
+^^CW
+Please give the new dsc file name.
+%    GET SILENT TEXT 'New disk filename:' 'CANCEL'
+%
+% TRANSFER 'File is: ' // CVALUE TO DISPLAY
 %    IF CVALUE .NE. 'CANCEL' THEN
-%      EVALUATE CTITLE = GETTITLE ( CVALUE )
+%      EVALUATE FTITLE = GETTITLE ( CVALUE )
 %      EVALUATE CPATH = GETPATH ( CVALUE )
 %      EVALUATE CEXTN = GETEXTN ( CVALUE )
 %%
@@ -14,7 +17,7 @@
 %%
 %      IF FILEEXISTS ( CVALUE ) THEN
 
-%         TRANSFER CTITLE // '.DSC' TO DISPLAY
+%         TRANSFER FTITLE // '.DSC' TO DISPLAY
   Error: File exists already.
 
 %         FINISH
@@ -27,13 +30,13 @@
 %      END IF
 
 %%      TRANSFER "#STORE CSYS NEWD '" // CVALUE // "'" TO CRYSTALS
-%      TRANSFER "#PURGE " // CTITLE TO CRYSTALS
+%      TRANSFER "#PURGE " // FTITLE TO CRYSTALS
 %%      COPY '#PURGE DSC'
 %      COPY 'END'
 ^^WI RESTART
-%      TRANSFER '^^WI ' // CPATH TO DISPLAY
+%      TRANSFER '^^WI "' // CPATH // '"' TO DISPLAY
 ^^WI NEWFILE=
-%      TRANSFER '^^WI ' // CTITLE // '.DSC' TO DISPLAY
+%      TRANSFER '^^WI "' // FTITLE // '.DSC"' TO DISPLAY
 ^^CR
 ^^WI SET _MAIN TEXT=
 % TRANSFER "^^WI 'Crystals - " // CVALUE // "'" TO DISPLAY
@@ -43,9 +46,11 @@
 %% We query the value of any object by name.
 %% There won't be an object called _ANYTHING_ so the
 %% GUI returns FALSE.
-^^WI GETVALUE _ANYTHING_
-^^CR
-% GET NOSTORE TEXT 'Waiting to restart' ' '
+%% This works because ?? commands force the emptying of any queued
+%% commands before allowing CRYSTALS to continue.
+Waiting to restart...
+^^?? _ANYTHING_ EXISTS
+% GET SILENT NOSTORE TEXT 'Waiting to restart' ' '
 %      COPY '#END'
 %    END IF
 %END SCRIPT
