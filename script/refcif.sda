@@ -73,11 +73,16 @@ _publ_section_exptl_refinement   # Some potentially useful phrases are:
 ;
 Because the data were collected with molybdenum radiation, there were no 
 measurable anomalous differences, as a consequence of which it was
-admissible to merge Freidel pairs of reflections.
+admissible to merge Friedel pairs of reflections.
 
 All hydrogen atoms were found in difference density syntheses.
 
 Hydrogen atoms were placed geometrically after each cycle.
+
+Hydrogen atoms were placed geometrically after each cycle, the preferred
+orientations of those groups whose conformations could not be assigned
+unambiguously having been previously identified by examination of a 
+difference Fourier map.  
 
 Hydrogen atoms were seen in a difference density synthesis. Those
 attached to carbon atoms were repositioned geometrically.
@@ -87,6 +92,17 @@ bonds to regularise their geometry (bond lengths to accepted values,
 angles either set by symmetry or to accepted values, and 
 U[iso] dependent upon the adjacent bonded atom),
 after which they were refined with riding constraints only.
+
+
+donated by Bill Clegg:
+
+The H atoms were all located in a difference map, but those 
+attached to carbon atoms were repositioned geometrically.  
+The H atoms were initially refined with soft restraints on the 
+bond lengths and angles to regularise their geometry (C---H = 0.97--1.01,
+O---H = 0.94 \%A), after which they were refined as riding, with U(H) =
+1.2U~eq~(C) for those bonded to carbon, and U(H) = 0.05 \%A^2^ for the 
+hydroxy group. 
 ;
 
 _publ_section_exptl_prep
