@@ -53,7 +53,7 @@ C
       GO TO 1000
 2600  CONTINUE
 C----- CIFOUT CIF OUTPUT
-      CALL XCIFX
+      CALL XCIF
       GO TO 1000
 C
       END
