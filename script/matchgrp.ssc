@@ -1,0 +1,79 @@
+%SCRIPT MATCHGRP
+%%
+%% Quick script to 'get it working'
+%   VARIABLE CHARACTER CATM CELE CCHK
+%   VARIABLE INTEGER ISER IFRAG
+%   VARIABLE REAL RCHK
+%% Re-assign fragment numbers.
+%   COPY '#EDIT'
+%   COPY 'INSERT FRAG'
+%   COPY 'END'
+%%
+%   QUEUE REWIND
+%   QUEUE COPY #MATCH
+%% Need this to be able map onto Q's
+%   QUEUE COPY EQUALATOM
+%%
+%   QUEUE COPY MAP
+%%
+%   LOOP
+%    ON END TERMINATE
+%    CLEAR
+%    INSERT 'CONTINUE '
+%    GET SILENT TEXT 'Atom?' ' '
+%    QUEUE SEND
+%   END LOOP
+%%
+^^WI WINDOW XMATCH 'Map ... Onto... ' COMMIT='CANCEL' CANCEL='CANCEL'
+^^WI POSITION CENTRED _MAINTEXTOUTPUT
+^^WI GRID GRIDM NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 STATIC T1 'First choose offset for renumbering:'
+^^WI   @ 2,4 EDITBOX MOFFS '100' INTEGER CHARS=10
+^^WI   @ 3,2 STATIC T2 'Then click an atom in the fragment'
+^^WI   @ 4,2 STATIC T3 'to be mapped onto.'
+^^WI   @ 5,2 GRID G NROWS=2 NCOLS=1
+^^WI   {
+^^WI     @ 2,1 BUTTON CANCEL 'Cancel' CANCEL DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%   VERIFY CANCEL ATOM
+%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%   IF VALUE .EQ. 2 THEN
+%       EVALUATE IFRAG = - 1
+%       GET NOSTORE SILENT TEXT ' ' ' '
+%       EVALUATE CATM = CVALUE
+%       EVALUATE CELE = FIRSTSTR ( CATM )
+%       EVALUATE ISER = FIRSTINT ( CATM ) 
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDTYPE=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       LOOP 
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%         COPY 'TRANSFER FROM OFFSET=16 TO IFRAG'
+%         COPY 'END'
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%        END IF
+%        COPY 'NEXT'
+%       END LOOP
+%       IF ( IFRAG .LT. 0 ) THEN
+{E Cannot find the atom you clicked on. Sounds like an error.
+%       ELSE
+%         QUEUE PROCESS
+%         TRANSFER 'ONTO FRAG (' // CHARACTER ( IFRAG ) // ')' TO CRYSTALS
+%         CLEAR
+%         INSERT 'RENAME '
+^^?? MOFFS TEXT
+%         GET TEXT ' ' ' '
+%         SEND
+%         COPY 'END'
+%       END IF
+%   END IF
+^^CO DISPOSE XMATCH
+%END SCRIPT
