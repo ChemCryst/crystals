@@ -1,0 +1,14 @@
+%SCRIPT HUSAK
+% VARIABLE CHARACTER FNAME CFILE
+%   GET FINAL FILENAME 'Map File' 'slant.fou'
+%   EVALUATE CFILE = CVALUE
+%      BLOCK    %Run marchingcubesELD viewer
+ * Starting Michal Husak's 3D ELD viewer. Wait while it loads up.
+% IF FILEEXISTS 'CRYSDIR:mce/mce.exe' THEN
+%   TRANSFER '#SPAWN "CRYSDIR:mce/mce.exe" ' // CFILE  -
+    TO CRYSTALS
+% ELSE
+MCE contouring  program not found.
+% END IF
+%      END BLOCK
+%END SCRIPT
