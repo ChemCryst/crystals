@@ -29,8 +29,6 @@
  */
 inline bool greaterHKL(const Matrix<short>& pMat1, const Matrix<short>& pMat2)
 {
-    
-//      cout << ((int)pMat1.getValue(1)) << "\n";
     if (pMat1.getValue(2) > pMat2.getValue(2))
         return true;
     else if (pMat1.getValue(2) < pMat2.getValue(2))
@@ -64,7 +62,7 @@ class LaueClassMatrices
 /*
  * Creates a large array containing all the unique matrices.
  */
-LaueClassMatrices::LaueClassMatrices()
+LaueClassMatrices::LaueClassMatrices():iMatrices(NULL)
 {
     MatrixReader* tMatrices[39];
  
@@ -144,6 +142,18 @@ public:
         strcpy(iLaueGroup, pLaueGroup);
     }
     
+    
+    ~LaueGroup()
+    {
+        if (iMergedData != NULL)
+        {
+            delete iMergedData;
+            iMergedData = NULL;
+        }
+        delete iMatIndices;
+        delete[] iLaueGroup;
+    }
+    
     LaueGroups::systemID getCrystalSystem() const
     {
         return iCrystalSystem;
@@ -151,7 +161,7 @@ public:
     
     Array<unsigned short>& getMatIndices() const
     {
-        return *iMatIndices;
+       return *iMatIndices;
     }
     
     std::ostream& output(std::ostream& pStream) const
@@ -184,7 +194,7 @@ public:
     void buildMergedData(const HKLData& pHKLs, const RunParameters& pRunPara)
     {        
        // const static short kMin[] = {SHRT_MIN, SHRT_MIN, SHRT_MIN}; 
-        size_t tReflNum = pHKLs.numberOfReflections();
+        size_t tReflNum = pHKLs.length();
          Matrix<short> tCurHKL(1, 3);
          Matrix<short> tTempHKL(1, 3);
          Matrix<short> tZero(1, 3, 0);
@@ -208,11 +218,11 @@ public:
         {
             if (tHLimit > 0)    //If it is filtering
             {
-                if (pHKLs.getReflection(j)->tHKL->getValue(0) < tHLimit)
+                if (pHKLs.get(j)->tHKL->getValue(0) < tHLimit)
                 {
-                    if (pHKLs.getReflection(j)->tHKL->getValue(1) < tKLimit)
+                    if (pHKLs.get(j)->tHKL->getValue(1) < tKLimit)
                     {
-                            if (pHKLs.getReflection(j)->tHKL->getValue(2) > tKLimit)
+                            if (pHKLs.get(j)->tHKL->getValue(2) > tKLimit)
                                 continue;
                     }
                     else
@@ -225,10 +235,10 @@ public:
                     continue;
                 }
             }
-            tCurHKL = (*pHKLs.getReflection(j)->tHKL);
+            tCurHKL = (*pHKLs.get(j)->tHKL);
             for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
             {
-                (gLaueMatrices.getMatrix((*iMatIndices)[i]))->mul(*pHKLs.getReflection(j)->tHKL, tTempHKL); //Multiply the hkl value with the current matrix
+                (gLaueMatrices.getMatrix((*iMatIndices)[i]))->mul(*pHKLs.get(j)->tHKL, tTempHKL); //Multiply the hkl value with the current matrix
                 for (int j = 0; j < 2; j++) //Do this twice
                 {
                     if (greaterHKL(tTempHKL, tCurHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
@@ -238,7 +248,7 @@ public:
                     tZero.sub(tTempHKL, tTempHKL); //Invert the hkl value.
                 }
             }
-            iMergedData->add(tCurHKL, *pHKLs.getReflection(j));
+            iMergedData->add(tCurHKL, *pHKLs.get(j));
         }
     }
     
@@ -263,20 +273,9 @@ public:
         }
         return tScalarDiff;
     }
-
-    ~LaueGroup()
-    {
-        if (iMergedData != NULL)
-        {
-            delete iMergedData;
-            iMergedData = NULL;
-        }
-        delete iMatIndices;
-        delete[] iLaueGroup;
-    }
 };
 
-LaueGroups::LaueGroups()
+LaueGroups::LaueGroups()//:Array<LaueGroup*>(14)
 {
     LaueGroup* tArray[14];
     const unsigned short tIndices[] = {37, //Triclinic
@@ -308,6 +307,7 @@ LaueGroups::LaueGroups()
     tArray[11] = new LaueGroup(kHexagonalID, "6/m m m", &(tIndices[34]), 11); //6/m m m
     tArray[12] = new LaueGroup(kCubicID, "m -3", &(tIndices[45]), 11); //m -3
     tArray[13] = new LaueGroup(kCubicID, "m -3 m", &(tIndices[56]), 23); //m -3 m
+//    set(tArray, 14);
     iGroups = new Array<LaueGroup*>(tArray, 14);
 }
 
