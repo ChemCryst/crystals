@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/07/16 07:37:19  ckp2
+//   wx: Get better guess at ideal toolbar size. Sub-class native toolbar class in
+//   order to process ON_CHAR messages.
+//
 //   Revision 1.2  2001/06/17 14:27:40  richard
 //   wx Support.
 //   Catch bad bitmaps.
@@ -262,7 +266,7 @@ int CxToolBar::GetIdealWidth()
 #ifdef __CR_WIN__
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
-   return tbs.cx;
+   return min(1600,tbs.cx);
 #endif
 #ifdef __BOTHWX__
 //   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
@@ -277,7 +281,7 @@ int CxToolBar::GetIdealHeight()
 #ifdef __CR_WIN__
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
-   return tbs.cy+2;
+   return min(200,tbs.cy+2);
 #endif
 #ifdef __BOTHWX__
    return 15 + 10;
