@@ -1,27 +1,26 @@
 %SCRIPT XNEWDIR
-%  VARIABLE CHARACTER CPATH
+%    VARIABLE CHARACTER CPATH
 %% Get the name of a new directory from the user and restart
 %% Crystals in that directory.
 ^^WI SYSGETDIR
 ^^CR
-%    GET SILENT KEYWORD 'New directory:'
+%    GET SILENT TEXT 'New directory:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 ^^WI RESTART
-%      TRANSFER '^^WI ' // CVALUE TO DISPLAY
-^^WI NEWFILE=crfilev2.dsc
+%      TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY
+^^WI   NEWFILE=crfilev2.dsc
 ^^CR
-^^WI SET _MAIN TEXT=
-% TRANSFER "^^WI 'Crystals - " // CVALUE // "'" TO DISPLAY
+^^WI   SET _MAIN TEXT=
+%      TRANSFER "^^WI 'Crystals - " // CVALUE // "'" TO DISPLAY
 ^^CR
 %% MAKE SURE THE GUI HAS RECEIVED THESE COMMANDS
 %% BEFORE CLOSING DOWN!
 %% We query the value of any object by name.
 %% A value will not return until the GUI has caught up.
 %% FYI: There won't be an object called _ANYTHING_ so the
-%% GUI just returns FALSE.
-^^WI GETVALUE _ANYTHING_
-^^CR
-% GET NOSTORE TEXT 'Waiting to restart' ' '
+%% GUI will just return FALSE:
+^^??   _ANYTHING_ EXISTS
+%      GET NOSTORE TEXT 'Waiting to restart' ' '
 %      COPY '#END'
 %    END IF
 %END SCRIPT
