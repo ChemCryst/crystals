@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2005/02/10 15:07:04  djw
+C Warn user if scalefactor goes out of range
+C
 C Revision 1.5  2005/01/17 14:08:03  rich
 C Bring new repository into line up-to-date with old. (Remove debugging output,
 C correct a variable name, output warning message.).
@@ -682,13 +685,6 @@ cdjw0302 - allow twin with extparam:  NA=-1
             CALL XSET11(-1,1,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
             if (ISTORE(L33CD+13) .EQ. 0) then ! See if sparse is set to bond
-               if (n12b .gt. 1) then ! if there is more than 1 block
-                  write (cmon, 2350) 
- 2350             format ('Sparse set to bond does not work',
-     1             'with multipule blocks of data')
-                  call XERHND(IERERR)
-                  goto 9900
-               endif
                iresults = nfl
                i = KCHNFL(N11)
                NRESULTS = param_list_make(istore(IRESULTS), n11, JR, 
@@ -1043,7 +1039,7 @@ C
 CODE FOR XSFLSC
       SUBROUTINE XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS)
       DIMENSION DERIVS(NDERIV)
-      DIMENSION IRESULTS(NRESULTS)
+      DIMENSION IRESULTS(NRESULTS)  !Parameter list if there is one
 C--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
 C
 C--USEAGE OF CONTROL VARIABLES :
@@ -1881,7 +1877,8 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
             IF (ISTORE(L33CD+12).EQ.0) THEN    ! Just a normal accumulation.
                if (ISTORE(L33CD+13).EQ.0) THEN
                   CALL PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, STR11(L11), 
-     1             N11, istore(l12b+1), iresults, nresults)
+     1             N11, iresults, nresults, 
+     2             STORE(L12B), N12B*MD12B, MD12B)
                else
                   CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
      1                 STORE(L12B), N12B*MD12B, MD12B )
