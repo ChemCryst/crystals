@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.14  2003/07/01 16:46:09  rich
 C
 C If a call to #DISK/EXTEND does not require a DSC length extension,
@@ -1513,7 +1516,8 @@ C----- 8M - THE BIGGEST DISK ADDRESS WE CAN EXPECT (1995). WAS 1M
       PARAMETER (MADRES = 8 000 000)
 c
 CDJWAPR99
-      CHARACTER *16 COLDD, CNEWD
+      CHARACTER*16 COLDD, CNEWD
+      DIMENSION IRECOR(ISSRLI)
 C--
 C
 \TSSCHR
@@ -1567,32 +1571,45 @@ C---- NO NEW FILE
 C -- SET NEW FILE FLAG
             NEWFIL = 1
       ENDIF
+
+C----- SET TYPE OF LIST TO BE PURGED
+      IPGTYP = ISTORE(ICOMBF+6)
+
+      IF ( (NEWFIL .EQ. 0) .AND. (IPGTYP .NE. 0) ) THEN
+        NEWFIL=2
+        WRITE (CMON,'(A,I3)') 'Specific list type purge: ', IPGTYP
+        CALL XPRVDU(NCVDU, 1,0)
+        CSSNDA=''
+        LSSNDA = 0
+        WRITE (CMON,'(A)') 'Opening temporary dsc file '
+        CALL XPRVDU(NCVDU, 1,0)
+      END IF
 C
 CDJWOCT20000 - THE 'NEW DSC' NAME SET IN CSSNDA IS NO LONGER USED
 CDJWAPR99{
       IF (NEWFIL .EQ. 1) THEN
-       LNEWD = LEN(CNEWD)
-       CALL XCRAS(CNEWD(1:LNEWD), JLEN)
-       DO 1710 ISTAT = 1,JLEN
+        LNEWD = LEN(CNEWD)
+        CALL XCRAS(CNEWD(1:LNEWD), JLEN)
+        DO 1710 ISTAT = 1,JLEN
 C----- REMOVE ANY '.'
-       IF (CNEWD(ISTAT:ISTAT) .EQ. '.') THEN
-         CNEWD(ISTAT:) = ' '
-         JLEN = ISTAT - 1
-         GOTO 1715
-       ENDIF
-1710   CONTINUE
-1715   CONTINUE
-       CSSNDA=CNEWD(1:JLEN)//'.dsc'
-       LSSNDA = JLEN+4
-       CALL XCRAS(CSSNDA(1:LSSNDA), LSSNDA)
-       CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
-       WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
-       CALL XPRVDU(NCEROR, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
-CDJWAPR99}
+        IF (CNEWD(ISTAT:ISTAT) .EQ. '.') THEN
+          CNEWD(ISTAT:) = ' '
+          JLEN = ISTAT - 1
+          GOTO 1715
+        ENDIF
+1710    CONTINUE
+1715    CONTINUE
+        CSSNDA=CNEWD(1:JLEN)//'.dsc'
+        LSSNDA = JLEN+4
+        CALL XCRAS(CSSNDA(1:LSSNDA), LSSNDA)
+        CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
+        WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
+        CALL XPRVDU(NCEROR, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
       ENDIF
-C
-C
+CDJWAPR99}
+
+
 C -- INITIAL SIZE REQUESTED
       IRQSIZ = ISTORE(ICOMBF+4)
 C -- SET LOG FLAG
@@ -1600,15 +1617,13 @@ C -- SET LOG FLAG
 C -- SET TOTAL LENGTH OF FILE REQUIRED FOR NEW LISTS
       LENTOT = 0
 CDJWMAY99
-C----- SET TYPE OF LIST TO BE PURGED
-      IPGTYP = ISTORE(ICOMBF+6)
-C
+
 C -- OLD AND NEW FILE UNITS = 'NCDFU'
       NUOLD = NCDFU
       NUNEW = NCDFU
 C -- UNLESS A NEW FILE IS REQUIRED, IN WHICH CASE NEW FILE UNIT = NCNDU
       IF ( NEWFIL .GT. 0 ) NUNEW = NCNDU
-C
+
 C -- CHECK INITIAL SIZE VALUE
       IF ( IRQSIZ .LT. 0 ) GO TO 9910
       IF ( IRQSIZ .EQ. 0 ) GO TO 910
@@ -1716,7 +1731,11 @@ C -- CREATE NEW FILE IF REQUIRED
 C
       IF ( NEWFIL .LE. 0 ) GO TO 1740
 C -- CREATE NEW FILE
-      ISTAT = KDAOPN ( NUNEW , CSSNDA(1:LSSNDA) , ISSNEW , ISSWRI )
+      IF ( NEWFIL .EQ. 1 ) THEN
+        ISTAT = KDAOPN ( NUNEW , CSSNDA(1:LSSNDA) , ISSNEW , ISSWRI )
+      ELSE
+        ISTAT = KDAOPN ( NUNEW , CSSNDA(1:LSSNDA) , ISSSCR , ISSWRI )
+      END IF
 C -- CALCULATE THE SPACE REQUIRED FOR THE NEW FILE. THIS IS THE MAXIMUM
 C    OF 0 , ( 'IRQSIZ'- 'MINSIZ' ) , AND 'LSTLEN'
 C
@@ -1854,6 +1873,32 @@ C
       CALL XPRTFI ( 0, 0 )
 C
 2720  CONTINUE
+C Close new DA file / copy back from scratch.
+      IF (NEWFIL .EQ. 1) THEN
+        ISTAT = KFLCLS(NUNEW)
+      ELSE IF ( NEWFIL .EQ. 2 ) THEN  ! Copy back over current dsc
+        NRECOR = 1
+        IOS = ISSOKF
+        DO WHILE ( IOS .EQ. ISSOKF )          
+          READ ( NUNEW, REC = NRECOR, ERR = 2740, IOSTAT = IOS ) IRECOR
+          WRITE( NUOLD, REC = NRECOR, ERR = 2735, IOSTAT = IOS ) IRECOR
+          NRECOR = NRECOR + 1
+        END DO
+        GOTO 2740
+2735    CONTINUE
+        WRITE (CMON,'(A,I4)') 'Error copying scratch back to dsc: ',IOS
+        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+2740    CONTINUE
+        WRITE (CMON,'(1X,A,I6,A)') 'Copied: ',NRECOR,' dsc records.'
+        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+        ISTAT = KFLCLS(NUNEW)     ! and then close scratch.
+      ENDIF
+
+C FLUSH DISK BUFFERS
+      CALL XGIVE
+
 C -- PROCESSING COMPLETED. RESTORE LIST 50 INDEX ENTRY
       KA = KSWPDU ( NCIFU )
 C--LOAD THE INDICES
@@ -1869,11 +1914,8 @@ C--RELOAD ITS INDICES
       CALL XLOADL
 C--WRITE THE INDEX DATA FOR LIST 50 INTO THIS INDEX
       CALL XWCLI(LN50,LSN50,NFW50,NLW50,IOWF50,NOS50,ISTORE(NFL))
+
 C -- FINAL MESSAGE
-CDJWAPR99 CLOSE A NEW DA FILE
-      IF (NEWFIL .GE. 1) THEN
-            ISTAT = KFLCLS(NUNEW)
-      ENDIF
       CALL XOPMSG ( IOPPUR , IOPEND , 610 )
       CALL XTIME2(2)
       CALL XRSL
