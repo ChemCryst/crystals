@@ -17,6 +17,14 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2002/07/04 13:04:44  richard
+//
+// glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
+// mode, which means that it can't be stuck into the display lists which are used
+// for drawing aswell. Instead, added feedback logical parameter into all Render calls, when
+// true it does a "feedback" render rather than a display list render. Will slow down polygon
+// selection a negligble amount.
+//
 // Revision 1.18  2002/07/03 16:44:05  richard
 // Implemented polygon selection in model window.
 //
@@ -485,6 +493,7 @@ CcString CcModelDoc::Compress(CcString atomname)
     }
 
 //Find next non-number.
+    numbend = leng;
     for ( i = numbstart + 1; i <= leng; i++)
     {
         if (    (atoi(atomname.Sub(i,i).ToCString())==0)
