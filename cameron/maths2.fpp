@@ -291,16 +291,18 @@ CDJWMAR97      YMAX = (0.9*XCEN)/SCALE + YCP
       ICOL = 0
 C LOOP OVER THE ATOMS - CHECK TO SEE IF THEY ARE TO BE LABELLED.
         DO 10 I = ISVIEW,IFVIEW-1,IPACKT
-          IF (MOD((I-ISVIEW)/IPACKT,10).EQ.0) THEN
-            J = LBUFF()
-            IF (J.EQ.0) THEN
-              CALL ZHOME
-              CALL ZMORE('ESCAPE',0)
-              CALL ZMORE(' ',0)
-              IPROC = 0
-              RETURN
-            ENDIF
-          ENDIF
+C THIS USED TO CHECK FOR ESCAPE EVERY 10th ATOM.
+C NOW IT DOESN'T.
+C          IF (MOD((I-ISVIEW)/IPACKT,10).EQ.0) THEN
+C            J = LBUFF()
+C            IF (J.EQ.0) THEN
+C              CALL ZHOME
+C              CALL ZMORE('ESCAPE',0)
+C              CALL ZMORE(' ',0)
+C              IPROC = 0
+C              RETURN
+C            ENDIF
+C          ENDIF
 C VIEW MATRIX HAS CHANGED - NEED TO RECALCULATE LABELS
           IF (IVCHAN.EQ.1) THEN
             RSTORE (I+ILAB) = 0.0

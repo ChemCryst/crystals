@@ -36,7 +36,8 @@ CDJW99 this upsets FTN95      EXTERNAL ZBLOCK
 &DOS      font=1
 &DOS      italic=0.
 &DOS      rotation=0.
-&DOS      Status$Text=' '
+C Not used anymore.
+C&DOS      Status$Text=' '
 &DOS      Cursor$Number=1
 &DOS      call GetWindowSize(xwin,ywin)
 &DOS      size=0.9*float(xwin)/640.

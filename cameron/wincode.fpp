@@ -34,9 +34,12 @@ C
       I=WINIO@('%ff%`80rs&',buffer(1))
       I=WINIO@('%ff%`80rs&',buffer(2))
       I=WINIO@('%ff%`80rs&',buffer(3))
-      I=WINIO@('%ff%`80rs&',buffer(4))
-      i=winio@('%ff%tc[blue]%fn[Times New Roman]%ts%ob[status,scored]%`6
-     10rs%cb',1.0d0,Status$Text)
+C Removed status box, as there are now four lines of visible text
+      I=WINIO@('%ff%`80rs',buffer(4))
+C      I=WINIO@('%ff%`80rs&',buffer(4))
+C      i=winio@('%ff%tc[blue]%fn[Times New Roman]%ts%ob[status,scored]%`6
+C     10rs%cb',1.0d0,Status$Text)
+
       end
 C
 C----------------------------------------------------------------------C
