@@ -6,6 +6,9 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  1999/04/26 12:19:44  dosuser
+// RIC: Added kT/kSSetSelection for CrListBox to use.
+//
 
 #ifndef		__CrConstants_H__
 #define		__CrConstants_H__
@@ -81,6 +84,7 @@
 #define kSChartE			"E"
 #define kSChartW			"W"
 #define kSChartHighlight	"HIGHLIGHT"
+#define kSSpew                "SPEW"
 
 #define kSWantReturn		"SENDONRETURN"
 #define kSIntegerInput		"INTEGER"
@@ -123,6 +127,7 @@
 #define	kSRadiusType		"RADTYPE"
 #define	kSRadiusScale		"RADSCALE"
 #define	kSVDW				"VDW"
+#define     kSThermal               "THERMAL"
 #define	kSCovalent			"COV"
 #define kSSelectAction		"MOUSEACTION"
 #define kSSendLine			"SENDLINE"
@@ -279,6 +284,7 @@ enum {
 	kTRadiusType,
 	kTRadiusScale,
 	kTVDW,
+      kTThermal,
 	kTCovalent,
 	kTSelectAction,
 	kTGetAction,
@@ -315,7 +321,8 @@ enum {
 	kTSendLine,
 	kTSendIndex,
       kTAt,
-      kTOpenGrid
+      kTOpenGrid,
+      kTSpew
 };
 
 enum {
