@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2000/07/17 13:53:25  CKP2
+C Chime output
+C
 C Revision 1.7  2000/02/23 12:18:05  ckp2
 C djw  Add .XYZ (Chime) output, fix bug with setunit
 C
@@ -3187,10 +3190,10 @@ C
 CODE FOR ZOUTCS
       SUBROUTINE ZOUTCS (IORTH)
 C This routine outputs the current data in CSSR format.
-CDJWFEB2000 or CHIME .XYZ format
+CDJWFEB2000 or CHIME .pdb format
 C IORTH = 1 ORTHOGONAL
 C IORTH = 0 FRACTIONAL
-C IORTH = -1 .XYZ FORMAT      
+C IORTH = -1 .pdb FORMAT      
 \CAMPAR
 \CAMCOM
 \CAMANA
@@ -3221,7 +3224,7 @@ C IORTH = -1 .XYZ FORMAT
       IF (IORTH .GE. 0) THEN
        CALL ZGTTXT ( FILENM , 60 , NPOS )
       ELSE
-       FILENM = 'CHIME.XYZ'
+       FILENM = 'CHIME.pdb'
       ENDIF
       INQUIRE (FILE=FILENM,EXIST=LEXIST)
       IF (.NOT.LEXIST) THEN
@@ -3251,6 +3254,10 @@ C OUTPUT THE UNIT CELL INFORMATION
      c RSTORE(ICRYST+5)
 100    FORMAT (38X,3F8.3)
 101    FORMAT (21X,3F8.3)
+      else
+CDJWJUL2000
+       write(ifstar-1,9100) (rstore(icryst+i),i=0,5)
+9100  format('CRYST1',3F9.3,3F7.2)
       ENDIF
 C NOW WE NEED TO FIND OUT THE NUMBER OF THE ATOMS AND GENERATE AN
 C ATOM LIST.
@@ -3267,10 +3274,11 @@ C NOW OUTPUT THE LINE CONTAINING THE NUMBER OF ATOMS
        WRITE (IFSTAR-1, 102) INATOM, IORTH
 102    FORMAT (I4,3X,I1,/)
       ELSE
-       WRITE (IFSTAR-1, 102) INATOM
-       WRITE (IFSTAR-1, '(A)') '  Chime file created by CAMERON '
+C       WRITE (IFSTAR-1, 102) INATOM
+C       WRITE (IFSTAR-1, '(A)') '  Chime file created by CAMERON '
       ENDIF
 C NOW WORK THROUGH THE LIST OF ATOMS
+      IATOUT = 0
       DO 20 I = IRLAST , IRLAST + INATOM - 1
 C GET THE COORDS IN THE CORRECT FORM
         DO 24 J = 1 , 3
@@ -3312,13 +3320,10 @@ C LOOP OVER THE LIST TO FIND THIS ATOMS NUMBER
 30      CONTINUE
 C GET THE LABEL
         KK = (N - IRATOM ) / IPACKT + ICATOM
-C FIND OUT IF WE HAVE A ONE OR TWO CHARACTER ELEMENT NAME.
-C        III = YCCREA ( CSTORE(KK)(2:2) , VALUE)
-C        IF (III.EQ.1) THEN
-C          CLAB = ' '//CSTORE(KK)
-C        ELSE
-C          CLAB = CSTORE(KK)
-C        ENDIF
+C----- RIGHT ADJUST NAME
+        WRITE(CLINE,'(A,A,A)') '/', CSTORE(KK),'/'
+        CALL ZMORE (CLINE,0)
+        
         if (cstore(kk)(2:2) .eq. ' ') then
          CLAB = ' '//CSTORE(KK)(1:1)
         else
@@ -3329,13 +3334,21 @@ C        ENDIF
      c  X , BONDS
 104     FORMAT (I4,A6,3F10.5,1X,8I4)
         ELSE
-            DO 106 IL = 6,1,-1
-            IF (INDEX (CNUM(:), CLAB(il:il)) .EQ. 0) GOTO 107
-106         CONTINUE
-            IL = 2
-107         CONTINUE
-            WRITE(IFSTAR-1,  105) CLAB(1:IL), X
-105         FORMAT(1X,A2, 3F10.5)
+CJUL2000 .PDB OUTPUT
+            IATOUT = IATOUT + 1
+            DO 9104 ILL = 1,6
+              IF (INDEX(CNUM, CSTORE(KK)(ILL:ILL)) .NE. 0) GOTO 9105
+9104        CONTINUE
+            ILL = 6
+9105        CONTINUE
+            IF (ILL .LT. 3) THEN
+C-           RIGHT SHIFT LABEL
+             CLAB(1:6) = ' '//CSTORE(KK)(1:5)
+            ELSE
+             CLAB(1:6) = CSTORE(KK)(1:6)
+            ENDIF
+            WRITE(IFSTAR-1,  105) IATOUT, CLAB, X
+105         FORMAT('ATOM',I7,1X,A6,7X,'0',4X,3F8.3)
         ENDIF
 20    CONTINUE
       IF (.NOT.LFILES (0, ' ',IFSTAR-1))
