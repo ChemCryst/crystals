@@ -44,6 +44,7 @@ class CcModelAtom;
 class	CxModel : public CWnd
 {
 	public:
+            void Reset();
 		void UpdateHighlights();
 		HDC hDC;
 		GLuint mNormal;
