@@ -63,6 +63,7 @@
 ^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT_N_X'
+^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _Y' 'SIGCUT_N_Y'
 ^^WI      ENDDEFINEMENU
 ^^WI    }
 ^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3
@@ -124,7 +125,7 @@
 ^^WI     }
 % END IF
 ^^WI    }
-^^WI     TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=5 NCOLS=3
+^^WI     TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=7 NCOLS=3
 ^^WI    {
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
@@ -141,8 +142,15 @@
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI        ITEM _SDELA '&Reject data: rho > _Y ' 'RHOMIT_N_Y'
 ^^WI      ENDDEFINEMENU
+^^WI     @ 6,2 GRID GSTAT NROWS=1 NCOLS=7
+^^WI     {
+^^WI       @ 1,1 STATIC WBFS 'B factor:'
+^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'
+^^WI       @ 1,5 STATIC WBFS 'Scale:'
+^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'
+^^WI     }
 ^^WI    }
-^^WI    TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=5 NCOLS=3
+^^WI    TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=6 NCOLS=3
 ^^WI    {
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI     {
@@ -156,6 +164,11 @@
 ^^WI      @ 1,1 ICON IM INFO
 ^^WI     }
 ^^WI     @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64
+^^WI     @ 6,2 GRID GSTAT2 NROWS=1 NCOLS=3
+^^WI     {
+^^WI       @ 1,1 STATIC WBFS 'MOD(E**2-1)'
+^^WI       @ 1,3 STATIC _MW_E2MIN1 '000000.000'
+^^WI     }
 ^^WI    }
 ^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=5 NCOLS=3
 ^^WI    {
@@ -227,7 +240,7 @@
 %%
 % LOOP
 %  COPY '#WILSON'
-%  COPY 'OUTPUT PLOT=YES NZ=YES'
+%  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'
 %  COPY 'END'
 %%
 %  IF ( ABSENT .AND. LMAONCE ) THEN
