@@ -17,6 +17,7 @@
 #include "ccthread.h"
 #endif
 
+#include    "ccsafedeque.h"
 #include    "ccstatus.h"
 #include    "ccrect.h"
 #include    "crystals.h"
@@ -176,8 +177,8 @@ class   CcController
     list<CrWindow*> mDisableableWindowsList;
     list<CrButton*> mDisableableButtonsList;
 
-    deque<string> mCrystalsCommandDeq;
-    deque<string> mInterfaceCommandDeq;
+    CcSafeDeque<string> mCrystalsCommandDeq;
+    CcSafeDeque<string> mInterfaceCommandDeq;
 
 };
 
@@ -305,6 +306,10 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.46  2005/01/23 10:20:24  rich
+//   Reinstate CVS log history for C++ files and header files. Recent changes
+//   are lost from the log, but not from the files!
+//
 //   Revision 1.2  2004/12/20 11:41:31  rich
 //   Added support for non-MFC windows version. (WXS)
 //
