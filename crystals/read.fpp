@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2001/10/23 15:23:38  ckp2
+C Send filenames regardless of ISSUPD status (this should only affect the sending of the model).
+C
 C Revision 1.28  2001/07/11 10:17:31  ckpgroup
 C Change Format statement in BENCH
 C
@@ -1075,16 +1078,21 @@ C
 2600  CONTINUE
 C----- BREAK OUT TO JCL
 C -- IDENTIFY ARGUMENT
-      IREQUI = 1
-      LENGTH = KRDARG ( IREQUI  , 2 )
+
+c      IREQUI = 1
+c      LENGTH = KRDARG ( IREQUI  , 2 )
+      LSTART = KCCEQL ( CRDLWC, 1,' ' )
+      LLAST  = KCLNEQ ( CRDLWC,-1,' ' )
+      LENGTH = 1 + LLAST - LSTART
       CCMND  = ' '
       LCMND = 7
       CCMND(1:LCMND) = 'EXIT '
       IF ( LENGTH .GT. 0 ) THEN
 C----- COPY AS MUCH OF LINE AS POSSIBLE
-        LENGTH = 80 - NC
-        LCMND = LENGTH - 1
-        CCMND(1:LCMND) = CRDLWC(NC:NC+LENGTH-1)
+c        LENGTH = 80 - NC
+        LENGTH = 80 - LSTART
+        LCMND = LENGTH + 1
+        CCMND(1:LCMND) = CRDLWC(LSTART:80)
       ENDIF
       CALL XDETCH ( CCMND(1:LCMND) )
       GOTO 9000
@@ -1188,6 +1196,7 @@ CODE FOR KRDARG
       FUNCTION KRDARG ( ICOUNT , IEXACT )
 C
 C -- ISOLATE THE NEXT ARGUMENT ON THE CARD, DELIMITED BY SPACES.
+C -- RIC 2002: or also CONTAINED BY DOUBLE QUOTES - allows spaces in file names.
 C
 C -- INPUTS :-
 C      ICOUNT      NUMBER OF ARGUMENTS REQUIRED ( THIS VALUE IS CHANGED
@@ -1212,6 +1221,8 @@ C
 \XCHARS
 \XERVAL
 \XIOBUF
+
+      DATA KQUOT /'"'/
 C
 C
 C -- LOCATE NEXT CHARACTER FOLLOWING SPACE
@@ -1223,18 +1234,35 @@ C -- CHECK FOR PRESENCE OF ARGUMENT
         NFOUND = 0
         LENGTH = 0
       ELSE
-C
-C -- FIND OTHER END OF ARGUMENT
+
         NFOUND = 1
-        ND = KEQUAL ( NC , IB )
-        IF ( ND .LE. 0 ) ND = LASTCH
-C
+C -- Check if this argument starts with a quote
+        IF (IMAGE(NC).EQ.KQUOT)THEN
+C -- Skip over the quote
+          NC = MIN(NC+1,LASTCH)
+C -- FIND OTHER END OF ARGUMENT (next quote)
+          ND = KEQUAL ( NC, KQUOT )
+          IF ( ND .LE. 0 ) THEN
+            ND = LASTCH
+          ELSE
+C -- Remove second quote completely.
+            IMAGE(ND)=IB
+          END IF
+
+        ELSE
+
+C -- FIND OTHER END OF ARGUMENT (next space)
+          ND = KEQUAL ( NC , IB )
+          IF ( ND .LE. 0 ) ND = LASTCH
+        END IF
+
         LENGTH = ND - NC
         IF ( LENGTH .LE. 0 ) NFOUND = 0
 C
 C -- SEARCH FOR ANOTHER ARGUMENT
         NE = KNEQUL ( ND , IB )
         IF ( NE .GT. 0 ) NFOUND = 2
+C
 C
       ENDIF
 C
@@ -2232,7 +2260,8 @@ C
       I = KFLNAM ( IDEV , NEWFIL )
       IF ( I .LE. 0 ) GO TO 9900
 C
-      LENNAM = INDEX ( NEWFIL//' ' , ' ' ) - 1
+C      LENNAM = INDEX ( NEWFIL//' ' , ' ' ) - 1
+       LENNAM = MAX(1,KCLNEQ ( NEWFIL, -1, ' ' ))
 C
 CDJWMAR99[
 C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
