@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2000/09/20 12:43:40  ckp2
+C New OP - GETCWD - returns current directory to script variable.
+C
 C Revision 1.20  2000/01/20 17:00:37  ckp2
 C djw  remove old diagnostic messages
 C
@@ -3024,7 +3027,7 @@ C
 C Get the current crystals working directory.
 C e.g. GETCWD might return 'c:\demo\nket\'  
       CALL GETCWD ( CWORK1 )
-      WRITE (99,'(A)') CWORK1
+c      WRITE (99,'(A)') CWORK1
       ISTAT = KSCSCD ( CWORK1(1:) , ICODE(JVALUE,IARG(1)) )
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
