@@ -1711,6 +1711,8 @@ void CxModel::PaintBannerInstead( CPaintDC * dc )
         int w = bm.bmWidth;
         int h = bm.bmHeight;
 
+        dc->SetStretchBltMode(COLORONCOLOR);
+
         dc->StretchBlt(0,0,rcWnd.Width(),rcWnd.Height(),
                    &banDC,
                    0, 0, bm.bmWidth, bm.bmHeight,
