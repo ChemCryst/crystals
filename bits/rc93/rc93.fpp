@@ -6,6 +6,9 @@ C                   Written By Paul Lilley 1993/94                     *
 C                                                                      *
 C*********************************************************************
       PROGRAM RC93
+#if defined(_GID_) || defined(_DVF_)
+      USE DFLIB
+#endif
 C OCT99 - ierfil UNIT to handle catastrophic errors
 C     This is the main controlling program section.
 C
@@ -25,7 +28,7 @@ C Is CRYSDIR set on command line?
       CDLEN = 0
 #if defined(_GID_) || defined(_DVF_)
       if ( NARGS() .gt. 0 ) then
-         CALL GetArg(N,CRYSDIR,CDLEN)
+         CALL GetArg(1,CRYSDIR,CDLEN)
       END IF
 #endif
 

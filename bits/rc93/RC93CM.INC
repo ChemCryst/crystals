@@ -50,6 +50,7 @@ C     Beneath are the declarations for the pointers to the chained list.
       CHARACTER*62 CDTCOL(3)
       CHARACTER*2  CATOMS(80)
       CHARACTER*256 CRYSDIR
+      INTEGER*4 CDLEN
       COMMON /INTEG1/ INIFIL, LISFIL, ISCRN, IKEYBD, INPFIL, ISCFFL, IHK 
      +LFL, IABSFL, MACHIN, NCODE, LCAPPR, KERR, LOVRWR, MARK, IRAD, 
      2 IERFIL
