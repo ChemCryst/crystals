@@ -1,6 +1,7 @@
 %SCRIPT SIR92
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 %   VARIABLE LOGICAL ANSWER
+%   VARIABLE INTEGER IRUN
 %   IF EXISTS 6 .LT. 1 THEN
             You do not have any reflections stored.
             It is impossible to proceed without data.
@@ -14,7 +15,7 @@
 ^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2
 ^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=3 NCOLS=3
+^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3
 ^^WI   {
 ^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir92 parameters'
 ^^WI           STATE=ON
@@ -22,6 +23,8 @@
 ^^WI           STATE=OFF
 ^^WI     @ 3,2 CHECKBOX CED '&Edit Sir92 file before processing'
 ^^WI           STATE=OFF
+^^WI     @ 4,2 CHECKBOX CRUN '&Run Sir92 now'
+^^WI           STATE=ON
 ^^WI   }
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
 ^^WI   {
@@ -48,6 +51,10 @@
 %          COPY '#FOREIGN SIR92 DIFFICULT'
 %          COPY 'END'
 %      END IF
+^^??   CRUN STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'ON=Run sir92 now'
+%      EVALUATE IRUN = VALUE
 ^^??   CED STATE
 %      VERIFY ON OFF
 %      GET SILENT NOSTORE ABBREVIATED 'On=Edit first'
@@ -65,7 +72,10 @@
 %               FINISH
 %           END IF
 %      END IF
-%      COPY '#SPAWN  SIR92'
+%      IF ( IRUN .EQ. 2 ) THEN
+%           FINISH
+%      END IF
+%      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:SIR92.BAT'
 %   END BLOCK
 %   BLOCK
 %      EVALUATE QTITLE = 'Sir92 Results'
@@ -78,7 +88,7 @@
 %          COPY '#SCRIPT XHELP1'
    If the structure will not solve:
    1) Try the "Alternative Sir92 parameters" option.
-   2) Try SHELXS.
+   2) Try SHELXS or DirDif.
    3) Read the Sir92 guide in SIR92/GUIDE92.TXT for help.
    4) Be sure that the space group is correct.
 %          COPY '#SCRIPT XHELP2'
