@@ -1,9 +1,9 @@
-%SCRIPT XCONT
+%SCRIPT VCONT
 %%
 % VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
 % VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER WIDTH 
 % VARIABLE CHARACTER CFILE
-% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER
+% VARIABLE INTEGER  RUNVIEWER
 %%
 % COPY '#MOLAX'
 % COPY 'ATOM '
@@ -21,49 +21,36 @@
 % COPY 'END'
 %%
 %%
-^^WI WINDOW XCONT 'Slant Fourier' MODAL
+^^WI WINDOW VCONT 'Void map' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID GRIDM NROWS=3 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
 ^^WI  {
-^^WI   @ 1,2 GRID GRIDB NROWS=10 NCOLS=3
+^^WI   @ 1,2 GRID GRIDB NROWS=6 NCOLS=3
 ^^WI   {
 ^^WI     @ 2,2 BUTTON BOK '&Ok' DEFAULT
 ^^WI     @ 4,2 BUTTON BXX '&Cancel'
 ^^WI     @ 6,2 BUTTON BHELP    '&Help'
-^^WI     @ 10,2 BUTTON BMOLAX  '&Define plane'
 ^^WI   }
-^^WI   @ 1,1 GRID GRIDA NROWS=7 NCOLS=3
+^^WI   @ 1,1 GRID GSIZE NROWS=4 NCOLS=6
 ^^WI   {
-^^WI    @ 4,2 GRID GRIDAB NROWS=2 NCOLS=5
-^^WI    {
-^^WI      @ 1,1 STATIC TEXT1 'Compute a'
-^^WI      @ 1,3 DROPDOWN XFLIST 
-^^WI            ADDTOLIST 'F-Obs'        'Difference'
-^^WI                      'F-Calc'       'Fo-Patterson'
-^^WI                      'Fc-Patterson' 'NULL'
-^^WI      @ 1,5 STATIC TEXT1 'map'
-^^WI    }
-^^WI    @ 6,2 GRID GSIZE NROWS=3 NCOLS=5
-^^WI    {
-^^WI      @ 1,1 STATIC T1 'Section width'
-^^WI      @ 1,3 EDITBOX EW '16.4' CHARS=8 REAL
-^^WI      @ 1,5 STATIC T2 'angstroms.'
-^^WI      @ 2,1 STATIC T3 'Resolution'
-^^WI      @ 2,3 EDITBOX ER '0.25' CHARS=8 REAL
-^^WI      @ 2,5 STATIC T4 'angstroms.'
-^^WI      @ 3,1 STATIC T5 'Compute an extra'
-^^WI      @ 3,3 EDITBOX ES '2' CHARS=8 INTEGER
-^^WI      @ 3,5 STATIC T5 'sections each side.'
-^^WI    }
+^^WI      @ 2,2 STATIC T1 'Section width'
+^^WI      @ 2,4 EDITBOX EW '9.0' CHARS=8 REAL
+^^WI      @ 2,6 STATIC T2 'angstroms.'
+^^WI      @ 3,2 STATIC T3 'Resolution'
+^^WI      @ 3,4 EDITBOX ER '0.25' CHARS=8 REAL
+^^WI      @ 3,6 STATIC T4 'angstroms.'
+^^WI      @ 4,2 STATIC T5 'Compute an extra'
+^^WI      @ 4,4 EDITBOX ES '2' CHARS=8 INTEGER
+^^WI      @ 4,6 STATIC T5 'sections each side.'
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 GRID BOTTOM NROWS=2 NCOLS=3
 ^^WI  {
 ^^WI   @ 1,2 GRID GMAPS NROWS=1 NCOLS=4 OUTLINE='Save map as'
 ^^WI   {
-^^WI    @ 1,2 EDITBOX E1 'slant.fou' CHARS=50 INFORM=NO
+^^WI    @ 1,2 EDITBOX E1 'void.fou' CHARS=50 INFORM=NO
 ^^WI    @ 1,4 BUTTON BROWSE '&Choose'
 ^^WI   }
 ^^WI  }
@@ -81,11 +68,11 @@
 ^^WI SHOW
 ^^CR
 % LOOP
-%   VERIFY BXX BROWSE BMOLAX BHELP BOK
+%   VERIFY BXX BROWSE BHELP BOK
 %   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %     BLOCK                       % BXX
-^^WI    DISPOSE XCONT
+^^WI    DISPOSE VCONT
 ^^CR
 %       FINISH
 %     END BLOCK
@@ -99,25 +86,19 @@
 %         TRANSFER "^^CO SET E1 TEXT " // CVALUE TO DISPLAY
 %       END IF
 %     END BLOCK
-%     BLOCK                       % BMOLAX
-
-This feature is missing. Write it into xcont.scp.
-
-%     END BLOCK
 %     BLOCK                       % BHELP
 %       COPY '#SCRIPT XHELP1'
-A slant fourier is one that is calculated through any general
-plane of the unit cell. For such a fourier the normal Beevers-
-Lipson expansion of the fourier summation cannot be used, so
-that such fouriers take many orders of magnitude longer than a
-conventional one.
+Define a plane for a voids map.
+Set the width of the section.
+Set the number of additional sections above and below the plane.
+Press OK.
 
-This script allows you to define a plane in which to calculate
-a fourier section. You may also specify the width of the plane,
-and the number of sections on each side of the plane to include.
+A voids map is like a contour map. The distance to the nearest VDW
+surface is represented by at each point in the figure field. Points
+inside the VDW surface of an atom have negative values.
 
-Choose one of the programs "Contour" or "MarchingCubesELD" to
-view the generated sections.
+Choose appropriate levels of contouring to get an idea of the shape
+of any voids in your structure.
 %       COPY '#SCRIPT XHELP2'
 %     END BLOCK
 %     BLOCK                       % BOK
@@ -130,11 +111,8 @@ view the generated sections.
 ^^??    ES TEXT
 %       GET NOSTORE SILENT REAL ' ' '2'
 %       EVALUATE ZSECT = VALUE
-^^??    XFLIST SELECTED
-%       GET NOSTORE SILENT INTEGER ' ' '2'
-%       EVALUATE IMAP = VALUE
 ^^??    E1 TEXT
-%       GET NOSTORE SILENT TEXT ' ' 'slant.fou'
+%       GET NOSTORE SILENT TEXT ' ' 'void.fou'
 %       EVALUATE CFILE = CVALUE
 %       TRANSFER "#STORE CSYS MAP '" // CFILE // "'" TO CRYSTALS
 ^^??    XC STATE  
@@ -156,7 +134,7 @@ view the generated sections.
 %             EVALUATE RUNVIEWER = 0
 %          END IF
 %       END IF
-^^WI    DISPOSE XCONT
+^^WI    DISPOSE VCONT
 ^^CR
 %       BLOCK
 %         EVALUATE XMIN = 0.0 - WIDTH
