@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2002/12/05 11:51:51  rich
+C Things look better without the debugging messages.
+C
 C Revision 1.8  2002/12/04 14:31:11  rich
 C Reformat output during refinement.
 C
@@ -272,10 +275,7 @@ C----- SET MONITOR LEVEL
       IMON = ISTORE(NFL)
 C--WRITE OUT A COUPLE OF CAPTIONS
       CALL XPRTCN
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)
-      ENDIF
-      WRITE(NCAWU,1000)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)
 1000  FORMAT(26H  Restraints checking  -  ,/,
      2 42H  restraints that produce no contributions,
      3 22H are marked with a '?')
@@ -346,13 +346,7 @@ C--NO DERIVATIVES
 C--CALCULATE THE COMPUTED VALUE AND PRINT THE RESULTS
 1450  CONTINUE
       D=B-STORE(L22PD+2)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)A,B,C,KF,D,STORE(L22PD+2)
-      ENDIF
-      WRITE(NCAWU,1501)A,B,C,KF,D,STORE(L22PD+2)
-1501  FORMAT(//1X,F4.0,' Restrain to be   ',G12.5,
-     2 ' with an E.S.D. of ',G12.5//2X,A1,2X,' Calculated value ',
-     3 G12.5,' giving a delta of ',G12.5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)A,B,C,KF,D,STORE(L22PD+2)
 1500  FORMAT(//1H ,F4.0,26H  General restraint to be ,E20.10,
      2 19H  with an E.S.D. of,E20.10//2X,A1,2X,18H  Calculated value,
      3 8X,E20.10,19H  giving a delta of,E20.10)
@@ -365,7 +359,6 @@ C--'SINGLE DISTANCE' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1600)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1600)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
 1600  FORMAT(/1X,F4.0,' Restrain these ',2A4,A1,' to be',
      2 F9.3,1X,2A4,',',/15X,' with an E.S.D. of',F8.3)
       WRITE(CMON,1610)NINT(A+1), '      given distance', B,C
@@ -379,10 +372,6 @@ C
       ENDIF
 1700  FORMAT(/5X,2(7X,4HAtom,2X,A1,4X,15HS(I) L TX TY TZ),3X,2A4,A1,
      2 2A1,2X,5HDelta)
-      WRITE(NCAWU,1701)(NUMB(M),M=2,3),(DIST(M),M=1,3),(IB,M=1,N)
-1701  FORMAT(/4X,2(3X,4HAtom,2X,A1),3X,2A4,A1,
-     2 2A1,3X,5HDelta,5X,6H Sigma)
-      GOTO 2500
 C
 C
 C--'ENERGY ' RESTRAINTS
@@ -392,7 +381,6 @@ C--'ENERGY ' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1720)A,(CONT(M),M=1,3),B,(STROM(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1720)A,(CONT(M),M=1,3),B,(STROM(M),M=1,2),C
 1720  FORMAT(//1H ,F4.0,16H Restrain these ,2A4,A1,6H to be,
      2 F9.3,1X,2A4,22H, with Power Factor of,F4.1)
       WRITE(CMON,1610)NINT(A+1), ' non-bonded distance', B,C
@@ -406,7 +394,6 @@ C--'DISTANCE DIFFERENCE' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1800)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1800)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
 1800  FORMAT(/1X ,F4.0,
      2 '   Restrain the differences between the following ',2A4,A1,
      3 ' to be' /,F9.3,2X,2A4,',',' with an E.S.D. of ',F8.3)
@@ -422,7 +409,6 @@ C--'MEAN DISTANCE' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1900)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1900)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
 1900  FORMAT(/1H ,F4.0,'   Restrain the following ',2A4,A1,
      2 ' to their common mean of '/,F9.3,
      3 2X,2A4,15X,'with an E.S.D. of', F8.3)
@@ -438,7 +424,6 @@ C--'SINGLE ANGLE' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1600)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1600)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       WRITE(CMON,1960)NINT(A+1), '         given angle', B,C
       CALL XPRVDU(NCVDU, 1,0)
 1960  FORMAT(I5, 1X, A, '. ', 'Target ',F7.2, ' esd ', F7.2)
@@ -460,7 +445,6 @@ C--'ANGLE DIFFERENCE' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1800)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1800)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       WRITE(CMON,1960)NINT(A+1), '    angle difference', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 2000
@@ -475,7 +459,6 @@ C--'MEAN ANGLE' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1900)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       ENDIF
-      WRITE(NCAWU,1900)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       WRITE(CMON,1960)NINT(A+1), '          mean angle', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 2000
@@ -486,7 +469,6 @@ C--'VIBRATION' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2250)A,(MSD(M),M=1,3),B,C
       ENDIF
-      WRITE(NCAWU,2250)A,(MSD(M),M=1,3),B,C
 2250  FORMAT(/1X ,F4.0,'   Restrain the difference in the' ,2A4,A1,
      2 ' along a bond to be',/,F9.5,
      3 '  angstrom squared, with an E.S.D. of',F9.5)
@@ -518,7 +500,6 @@ C--'U(IJ)' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2250)A,(UIJ(M),M=1,3),B,C
       ENDIF
-      WRITE(NCAWU,2250)A,(UIJ(M),M=1,3),B,C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2300)(NUMB(N),(UIJ(M),M=1,3),N=2,3),IB
       ENDIF
@@ -725,7 +706,6 @@ C--CHECK IF WE SHOULD PRINT THE MEAN DELTA AND R.M.S. DEVIATION
       O=O*R
       P=SQRT(P*R)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3700)Q,O,P
-      WRITE(NCAWU,3700) Q, O ,P
       WRITE(CMON,3700) Q, O ,P
       CALL XPRVDU(NCVDU, 1,0)
 3700  FORMAT('      Mean value =',F9.4,'  Mean delta =',F9.4,
@@ -745,10 +725,7 @@ C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
 C
 C--ERRORS
 3900  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3950)A
-      ENDIF
-      WRITE(NCAWU,3950)A
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,3950)A
 3950  FORMAT(/1H ,F4.0,20H   Restraint ignored)
       GOTO 1050
 C
@@ -761,10 +738,7 @@ C--COMPUTE THE PLANE AND DERIVATIVES
       IF(KPLANE(IDWZAP))3900,4050,4050
 C--PRINT THE HEADER
 4050  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,4100)A,B,(STROM(M),M=1,2),C
-      ENDIF
-      WRITE(NCAWU,4101)A,B,C
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,4100)A,B,(STROM(M),M=1,2),C
 4101  FORMAT(//1H ,F4.0,'  Restrain these atoms to be ',F8.3,
      2 2X,' A',' from their mean plane',/' with an E.S.D. of ',F8.3)
 4100  FORMAT(//1H ,F4.0,37H   Restrain the following atoms to be,F8.3,
