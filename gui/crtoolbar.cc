@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   26.1.2001 17:10 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/03/08 16:44:07  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 //   Revision 1.1  2001/02/26 12:02:15  richard
 //   New toolbar classes.
 //
@@ -31,7 +35,10 @@ CrToolBar::~CrToolBar()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxToolBar*)ptr_to_cxObject)->DestroyWindow(); delete (CxToolBar*)ptr_to_cxObject;
+        ((CxToolBar*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxToolBar*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 

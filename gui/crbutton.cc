@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2001/03/21 16:59:51  richard
+// Ensure button removes itself from controllers list of disableable buttons, if appropriate,
+// when it is destroyed.
+//
 // Revision 1.6  2001/03/08 15:30:50  richard
 // Now DISABLEIF and ENABLEIF flags allow buttons to appear in non-modal windows
 // without worry of interfering with scripts.
@@ -51,7 +55,10 @@ CrButton::~CrButton()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxButton*)ptr_to_cxObject)->DestroyWindow(); delete (CxButton*)ptr_to_cxObject;
+        ((CxButton*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxButton*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
     if ( m_AddedToDisableAbleButtonList ) CcController::theController->RemoveDisableableButton(this);

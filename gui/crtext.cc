@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/03/08 15:44:10  richard
+//   Allow script to query (^^??) what the text is.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -27,7 +30,10 @@ CrText::~CrText()
 {
     if ( ptr_to_cxObject )
     {
-        ((CxText*) ptr_to_cxObject)->DestroyWindow(); delete (CxText*) ptr_to_cxObject;
+        ((CxText*) ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxText*) ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

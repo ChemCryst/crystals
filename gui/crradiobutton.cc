@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/03/08 15:42:39  richard
+//   Included a DISABLED= token for radiobutton (at last).
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -30,7 +33,10 @@ CrRadioButton::~CrRadioButton()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxRadioButton*)ptr_to_cxObject)->DestroyWindow(); delete (CxRadioButton*)ptr_to_cxObject;
+        ((CxRadioButton*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxRadioButton*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

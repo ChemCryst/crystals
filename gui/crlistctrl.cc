@@ -9,6 +9,10 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/03/08 16:44:05  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -33,8 +37,10 @@ CrListCtrl::~CrListCtrl()
 {
     if ( ptr_to_cxObject != nil )
     {
+#ifdef __CR_WIN__
         ((CxListCtrl*)ptr_to_cxObject)->DestroyWindow();
         delete (CxListCtrl*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

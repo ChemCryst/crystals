@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/03/08 16:44:05  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -29,7 +33,10 @@ CrIcon::~CrIcon()
 {
     if ( ptr_to_cxObject != nil )
     {
-            ((CxIcon*) ptr_to_cxObject)->DestroyWindow(); delete (CxIcon*) ptr_to_cxObject;
+            ((CxIcon*) ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+            delete (CxIcon*) ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

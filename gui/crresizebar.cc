@@ -7,6 +7,10 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/03/16 11:08:00  richard
+//   Delete the window's children before deleting the window. Otherwise, the window
+//   automatically deletes it's children as it is destroyed, leaving us in confusion.
+//
 //   Revision 1.1  2001/02/26 12:04:48  richard
 //   New resizebar class. A resize control has two panes and the bar between them
 //   can be dragged to change their relative sizes. If one of the panes is of fixed
@@ -49,7 +53,10 @@ CrResizeBar::~CrResizeBar()
   (CcController::theController)->StoreKey( mName, CcString ( m_offset ) );
   if ( ptr_to_cxObject )
   {
-    ((CxResizeBar*)ptr_to_cxObject)->DestroyWindow(); delete (CxResizeBar*)ptr_to_cxObject;
+    ((CxResizeBar*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+    delete (CxResizeBar*)ptr_to_cxObject;
+#endif
     ptr_to_cxObject = nil;
   }
 }

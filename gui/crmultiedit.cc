@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2001/03/08 16:44:06  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include "ccstring.h"
@@ -33,7 +37,10 @@ CrMultiEdit::~CrMultiEdit()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxMultiEdit*)ptr_to_cxObject)->DestroyWindow(); delete (CxMultiEdit*)ptr_to_cxObject;
+        ((CxMultiEdit*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxMultiEdit*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
       mControllerPtr->RemoveTextOutputPlace(this);

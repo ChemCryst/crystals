@@ -5,6 +5,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2001/03/08 15:32:42  richard
+// Limit=n token prevents user entering more than n characters.
+//
 // Revision 1.9  2001/01/16 15:34:57  richard
 // wxWindows support.
 // Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
@@ -71,7 +74,10 @@ CrEditBox::~CrEditBox()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxEditBox*)ptr_to_cxObject)->DestroyWindow(); delete (CxEditBox*)ptr_to_cxObject;
+        ((CxEditBox*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxEditBox*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 

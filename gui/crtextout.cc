@@ -31,7 +31,10 @@ CrTextOut::~CrTextOut()
     mControllerPtr->RemoveTextOutputPlace(this);
     if ( ptr_to_cxObject != nil )
     {
-        ((CxTextOut*)ptr_to_cxObject)->DestroyWindow(); delete (CxTextOut*)ptr_to_cxObject;
+        ((CxTextOut*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxTextOut*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

@@ -6,6 +6,11 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.1  2001/02/26 12:07:06  richard
+//   New stretch class. Probably the simplest class ever written, it has no functionality
+//   except that it can be put in a grid of non-resizing items, and it will make that
+//   row, column or both appear to be able to resize, thus spreading out fixed size items.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -29,7 +34,10 @@ CrStretch::~CrStretch()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxStretch*) ptr_to_cxObject)->DestroyWindow(); delete (CxStretch*) ptr_to_cxObject;
+        ((CxStretch*) ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxStretch*) ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

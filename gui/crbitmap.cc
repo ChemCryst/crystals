@@ -29,7 +29,10 @@ CrBitmap::~CrBitmap()
 {
     if ( ptr_to_cxObject != nil )
     {
-                ((CxBitmap*) ptr_to_cxObject)->DestroyWindow(); delete (CxBitmap*) ptr_to_cxObject;
+                ((CxBitmap*) ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+                delete (CxBitmap*) ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

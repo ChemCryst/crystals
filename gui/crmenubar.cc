@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   08.6.1998 02:01 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/03/08 16:44:06  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -44,11 +48,13 @@ CrMenuBar::~CrMenuBar()
         theItem = (CcMenuItem*)mMenuList.GetItem();
     }
 
+#ifdef __CR_WIN__
     if ( ptr_to_cxObject != nil )
     {
         delete (CxMenuBar*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
+#endif
 
 }
 

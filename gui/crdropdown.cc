@@ -25,7 +25,10 @@ CrDropDown::~CrDropDown()
 {
     if ( ptr_to_cxObject != nil )
     {
-        ((CxDropDown*)ptr_to_cxObject)->DestroyWindow(); delete (CxDropDown*)ptr_to_cxObject;
+        ((CxDropDown*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+        delete (CxDropDown*)ptr_to_cxObject;
+#endif
         ptr_to_cxObject = nil;
     }
 }

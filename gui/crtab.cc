@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/03/08 15:43:42  richard
+//   Minor bug fixes.
+//
 //   Revision 1.1  2001/01/25 17:17:05  richard
 //   A new control for tabbed property sheets.
 //
@@ -55,7 +58,10 @@ CrTab::~CrTab()
 
     if ( ptr_to_cxObject != nil )
     {
-      ((CxTab*)ptr_to_cxObject)->DestroyWindow(); delete (CxTab*)ptr_to_cxObject;
+      ((CxTab*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+      delete (CxTab*)ptr_to_cxObject;
+#endif
       ptr_to_cxObject = nil;
     }
 }

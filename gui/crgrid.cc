@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2001/03/23 11:35:53  richard
+//   Initialise some pointers to zero to avoid crash if grid fails
+//   to initialise and then gets deleted.
+//
 //   Revision 1.14  2001/03/08 15:36:03  richard
 //   Completely re-written the window sizing and layout code. Now much simpler.
 //   Calclayout works out and returns the size of a GUI object, so that the
@@ -35,6 +39,7 @@
 #include        "crprogress.h"
 #include        "crcheckbox.h"
 #include        "crchart.h"
+#include        <GL/glu.h>
 #include        "crmodel.h"
 #include        "crradiobutton.h"
 #include        "crwindow.h"
@@ -77,7 +82,7 @@ CrGrid::CrGrid( CrGUIElement * mParentPtr )
   m_ColCanResize = 0;
   m_RowCanResize = 0;
 
-}         
+}
 
 CrGrid::~CrGrid()
 {
@@ -97,8 +102,10 @@ CrGrid::~CrGrid()
 
   if ( ptr_to_cxObject != nil )
   {
-    ((CxGrid*)ptr_to_cxObject)->DestroyWindow(); 
-	delete (CxGrid*)ptr_to_cxObject;
+    ((CxGrid*)ptr_to_cxObject)->CxDestroyWindow();
+#ifdef __CR_WIN__
+    delete (CxGrid*)ptr_to_cxObject;
+#endif
     ptr_to_cxObject = nil;
   }
 
@@ -614,7 +621,7 @@ CcParse CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, in
   {
     delete element;
   }
-  
+
   return retVal;
 }
 
@@ -849,4 +856,3 @@ void CrGrid::CrShowGrid(bool state)
 {
   ((CxGrid*)ptr_to_cxObject)->CxShowWindow(state);
 }
-
