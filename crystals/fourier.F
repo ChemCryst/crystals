@@ -1,4 +1,25 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2004/08/09 11:33:42  rich
+C Updated Fourier code with support for Main's weights. This version passes
+C regression tests with the following exceptions:
+C 1. The OPTIMAL Fourier type had a bug which caused Fc not to be weighted
+C    each time a new min or max weight was found.
+C 2. The Sim weights were incorrect (X doubled) for non-centro structures,
+C    this overweighted all reflections, so the maps don't change much.
+C 3. Sim weights were set to units for X>6. This has been increased without
+C    danger of overflow to 600, and gives a more continous function as X->large.
+C
+C Routine XMASKF returns the Fourier transform of List 42.
+C
+C List 42 operations extended: #MASK CLOSETO sets points in L42 to one if they
+C are within RADIUS+VOID of an atom, but outside RADIUS - use to find atoms
+C close to other atoms. #MASK SHOW puts 'R' atoms into L5 at points where the
+C mask is non-zero - warning, could take forever, intended for testing only.
+C #MASK SETFC sets the FC and phase slots in List 6 to the Fourier transform
+C of the mask. New L42 source option allows the mask to be specified based on
+C the current L14, but at a different resolution: SOURCE MOD14 XD=.1 YD=.1 ZD=.1
+C creates a mask using .1 Angstrom divisions in each direction.
+C
 C Revision 1.22  2004/07/08 15:25:33  rich
 C Updated \MASK code to include mask generation for solvent accessible volume.
 C (It wasn't finished before.) Mask is stored in list 42.
@@ -2118,13 +2139,13 @@ c         IF (NTYP .NE. 5) V = V * STORE(M6+4)   ! 'OPTIMAL' DON'T WEIGHT FC
          U = U * STORE(M6+4)
          V = V * STORE(M6+4)                    ! RIC: 'OPTIMAL' DO WEIGHT FC
 
-c         WRITE(99,'(2F15.8)') STORE(M6+4)
+c         WRITE(99,'(F15.8)') STORE(M6+4)
 
       ELSE IF ( NWT .EQ. -2 ) THEN             ! MAIN'S WEIGHTS
 
-         STL = STORE(M6+16)
+         STL2 = STORE(M6+16)
          BT = 1.0
-         STL = SQRT(STL)
+         STL = SQRT(STL2)
          CALL XSCATT(STL)
          SSW=0.
          SSF=0.
@@ -2153,7 +2174,8 @@ C--
 
          IF ( ISCNTRC(STORE(M6)) .EQ. 0 ) THEN
 
-           RNUM = 2 * U * FPS1F
+           RNUM = 2 * U * FPS1F 
+c           RNUM = 2 * U * FPS1F * EXP(4.*STL2)  ! Sharpen Fo.
 
            IF ( RDEN .LT. ZERO ) THEN
              BSRAT = 1.0
@@ -2195,6 +2217,7 @@ c           CALL XPRVDU(NCVDU,1,0)
          ELSE
 
            RNUM = U * FPS1F
+c           RNUM = U * FPS1F * EXP(4.*STL2) ! Sharpen Fo.
            TPHI = 0.0
 
            IF ( RDEN .LT. ZERO ) THEN
@@ -4225,7 +4248,8 @@ C--
       END DO
 
 
-      BT = EXP(-4.*STL2)    ! Assume U of 0.05? (and positive?)
+      BT = EXP(-4.*STL2)    ! Assume U of 0.05
+c       BT = 1.               ! No temp fac.
 
 c      WRITE(CMON(1),'(A,3F8.5)')'Steps=',(STEPS(I),I=1,3)
 c      CALL XPRVDU(NCVDU,1,0)
