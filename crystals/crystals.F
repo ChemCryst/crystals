@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:07  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -39,13 +43,13 @@ C      winapp 500000,1000000
 #if defined(_GID_) 
       SUBROUTINE CRYSTL
 #endif
-#if defined(_GIL_) 
+#if defined(_GIL_)  || defined(_MAC_)
       SUBROUTINE CRYSTL
 #endif
 #if defined(_WXS_) 
       SUBROUTINE CRYSTL
 #endif
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_) 
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)
       PROGRAM CRYSTL
 C
 C
