@@ -1449,8 +1449,8 @@ void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 
 void CxTextOut::SetTransparent()
 {
-    SetBackColour( GetSysColor(COLOR_3DFACE) );
 #ifdef __CR_WIN__
+    SetBackColour( GetSysColor(COLOR_3DFACE) );
     ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,SWP_NOSIZE|SWP_NOMOVE);
 #endif
 }

@@ -271,11 +271,19 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
       glRenderMode ( GL_RENDER ); //Switching to render mode.
 
+#ifdef __CR_WIN__
       int col = GetSysColor(COLOR_3DFACE);
+      glClearColor( GetRValue(col)/255.0f,
+                    GetGValue(col)/255.0f,
+                    GetBValue(col)/255.0f,  0.0f);
+#endif
+#ifdef __BOTHWX__
+      wxColour col = wxSystemSettings::GetSystemColour( wxSYS_COLOUR_3DFACE );
+      glClearColor( col.Red()/255.0f,
+                    col.Green()/255.0f,
+                    col.Blue()/255.0f,  0.0f);
+#endif
 
-      glClearColor( GetRValue(col)/256.0f,
-                    GetGValue(col)/256.0f,
-                    GetBValue(col)/256.0f,  0.0f);
 //      glClearColor( 1.0f,1.0f,1.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       glMatrixMode ( GL_PROJECTION );

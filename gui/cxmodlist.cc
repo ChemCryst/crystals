@@ -1136,9 +1136,9 @@ void CxModList::Update(int newsize)
        Invalidate(FALSE);
 #endif
 #ifdef __BOTHWX__
-       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
-       ((CrModList*)ptr_to_crObject)->DocToList();
-       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
+//       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
+//       ((CrModList*)ptr_to_crObject)->DocToList();
+//       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
        Refresh();
 #endif
 
