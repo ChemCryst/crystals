@@ -6,6 +6,11 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
+
+/*
+ * RunParameter class stores all the parameters which the program was run with.
+ * These could be input through a batch file or the command line.
+ */
 //#include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -21,8 +26,10 @@
 #else
 #include <regex.h>
 #endif
-
-
+#include <errno.h>
+#include <unistd.h>
+#include <sys/param.h>
+#include <stdlib.h>
 
 RunParameters::RunParameters()
 {
@@ -41,6 +48,10 @@ RunParameters::RunParameters()
     iInteractiveMode = false;
 }
 
+/* Individule arguments from the command line are passed to 
+ * this function. The arguments are used to set up the way the 
+ * program is to run.
+ */
 bool RunParameters::handleArg(int *pPos, int pMax, _TCHAR * argv[])
 {
     if (strcmp(argv[(*pPos)], "-c") == 0)
@@ -129,13 +140,17 @@ bool RunParameters::handleArg(int *pPos, int pMax, _TCHAR * argv[])
     return false;
 }
 
+/*
+ * All command line arguments are passed to this method to set up 
+ * the object so that the program is run correctly.
+ */
 void RunParameters::handleArgs(int pArgc, _TCHAR* argv[])
 {
     int tCount = 1;
-    while (tCount < pArgc)
-    {
-        if (!handleArg(&tCount, pArgc, argv))
-        {
+    while (tCount < pArgc) //Run through all the arguments
+	{
+	  if (!handleArg(&tCount, pArgc, argv)) //if the argument is not recognised then error.
+		{
             std::cout << "Usage: " << argv[0] << "[-f hklfile] [-t tablefile] [-e extradatafile] [-c|-nc] [-s system]\n";
             std::cout << "-f hklfile: The path of the hkl file to read in.\n";
             std::cout << "-t tablefile: The path of the table file.\n";
@@ -159,24 +174,30 @@ void RunParameters::handleArgs(int pArgc, _TCHAR* argv[])
             throw exception();
         }
     }
-    readParamFile();
+    readParamFile(); //If there was a parameter files specifed then read it and over right any of the comman line arguments.
+    getParamsFromUser(); //If not all the prameters needed where supplied prompt the user.
 }
 
+/*
+ * This method does the following. If there where any parameters which 
+ * are needed and the user hasn't entered them then promet the user 
+ * for them.
+ */
 void RunParameters::getParamsFromUser()
 {
-    if (iFileName.empty())
+    if (iFileName.empty()) //Get the path of the hkl file from the user.
     {
-        char tString[255];
-        std::cout << "Enter hkl file path: ";
-        std::cin >> tString;
-        
-        iFileName.init(tString);
-        iFileName.removeOutterQuotes();
+	char tString[255];
+	std::cout << "Enter hkl file path: ";
+	std::cin >> tString;
+	
+	iFileName.init(tString);
+	iFileName.removeOutterQuotes();
     }
     char tReply[10];
     while (iRequestChirality)
     {
-        std::cout << "Is the crystal chiral? [y/n]";
+	std::cout << "Is the crystal chiral? [y/n]";
         std::cin >> tReply;
         
         String::upcase(tReply);
@@ -198,12 +219,14 @@ void RunParameters::getParamsFromUser()
     }
 }
 
+
 void RunParameters::readParamFile()
 {
     if (!iParamFile.empty())
     {
         try
         {
+	    // The regular expression for parsing the param file.
             char tClassRE[] = "CLASS[[:space:]]+([[:alpha:]]+)";
             char tUniqueRE[] = "UNIQUE[[:space:]]+(A|B|C|(NONE/UNKNOWN))";
             char tChiralRE[] = "CHIRAL[[:space:]]+((YES)|(UNKNOWN))";
@@ -213,41 +236,46 @@ void RunParameters::readParamFile()
             filebuf tParamFile;
             if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
             {
-                throw FileException(errno);
+                throw FileException(errno); //Throw the exception if the files couldn't be opened.
             }
             std::istream tFileStream(&tParamFile);
+	    //Allocate space for all the regular expressions
             regex_t* tClassFSO = new regex_t;
             regex_t* tUniqueFSO = new regex_t;
             regex_t* tChiralFSO = new regex_t;
             regex_t* tOutputFSO = new regex_t;
             regex_t* tHKLFSO = new regex_t;
             regex_t* tCommentSO = new regex_t;
+	    //Set up all the regular expressions for parsing the param file.
             regcomp(tClassFSO, tClassRE, REG_EXTENDED | REG_ICASE);
             regcomp(tUniqueFSO, tUniqueRE, REG_EXTENDED | REG_ICASE);
             regcomp(tChiralFSO, tChiralRE, REG_EXTENDED | REG_ICASE);
             regcomp(tOutputFSO, tOutputRE, REG_EXTENDED | REG_ICASE);
             regcomp(tHKLFSO, tHKLRE, REG_EXTENDED | REG_ICASE);
             regcomp(tCommentSO, tCommentRE, REG_EXTENDED | REG_ICASE);
+
             regmatch_t tMatchs[13];
             char tLine[255];
             int tLineNum = 0;
             String* tUniqueAxis = NULL;
             String* tClass = NULL;
-            while (!tFileStream.eof())
+
+            while (!tFileStream.eof())//While there are still lines to be read
             {
                 tFileStream.getline(tLine, 255);
                 String::trim(tLine);
                 tLineNum ++;
-                if (strlen(tLine) == 0)
+
+                if (strlen(tLine) == 0) //Ignore an empty line
                 {}
-                else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0)
+                else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0) 
                 {
                     tClass = new String(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     if (tUniqueAxis)
                     {
                         if (tUniqueAxis->cmp("NONE/UNKNOWN")==0)
                             tUniqueAxis->init("B");
-                        int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
+                        int tClassIndex = indexOfSystem(*tClass, *tUniqueAxis);
                         if (tClassIndex < 0)
                         {
                             throw MyException(kUnknownException, "Unknown crystal class.");
@@ -263,7 +291,7 @@ void RunParameters::readParamFile()
                     {	
                         if (tUniqueAxis->cmp("NONE/UNKNOWN")==0)
                             tUniqueAxis->init("B");
-                        int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
+                        int tClassIndex = indexOfSystem(*tClass, *tUniqueAxis);
                         if (tClassIndex < 0)
                         {
                             throw MyException(kUnknownException, "Unknown crystal class.");
@@ -289,12 +317,14 @@ void RunParameters::readParamFile()
                     String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     iFileName.copy(tTemp);
                 }
+
                 else if (iUnitCell.init(tLine))
                 {
-                    iUnitCell.guessCrystalSystem();
+		    // iUnitCell.guessCrystalSystem();
                 }
                 else if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
                 {
+
                 }
                 else
                 {
@@ -312,7 +342,8 @@ void RunParameters::readParamFile()
             {
                 delete tClass;
             }
-            tParamFile.close();
+            tParamFile.close(); //Close the file.
+	    //Get ride of all the memory for the regex I allocated.
             delete tClassFSO;
             delete tUniqueFSO;
             delete tChiralFSO;
