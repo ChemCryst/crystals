@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2002/10/16 09:07:31  rich
+// Make the graphs a bit trendier.
+//
 // Revision 1.17  2002/07/15 12:19:13  richard
 // Reorder headers to improve ease of linking.
 // Update program to use new standard C++ io libraries.
@@ -117,16 +120,25 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 			{
 				tokenList->GetToken(); // "LABEL"
 
+// For independent series (added separately using ADDSERIES), the labels should
+// be stored independently:
+
+                                int sernum = 0;
+				if ( m_CompleteSeries > 0 ) {
+					sernum = m_CompleteSeries;
+				}
+
+
 				// check there is enough space for this data item
-				if(m_NextItem >= m_Series[0]->m_SeriesLength)
+				if(m_NextItem >= m_Series[sernum]->m_SeriesLength)
 				{
 					LOGSTAT("Series length needs extending: reallocating memory");
 
-					ExtendSeriesLength(0);
+					ExtendSeriesLength(sernum);
 				}
 
 				CcString nlabel = tokenList->GetToken();
-				((CcSeriesScatter*)m_Series[0])->m_Label[m_NextItem] = nlabel;
+				((CcSeriesScatter*)m_Series[sernum])->m_Label[m_NextItem] = nlabel;
 
 				break;
 			}
@@ -339,7 +351,7 @@ void CcPlotScatter::DrawView(bool print)
 						x2 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i+1]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
 						y2 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 
-						attachedPlot->DrawLine(1,x1,y1,x2,y2);
+                                                attachedPlot->DrawLine(2,x1,y1,x2,y2);
 					}
 					break;
 				}
