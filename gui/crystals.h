@@ -1,6 +1,10 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2005/01/23 10:20:24  rich
+// Reinstate CVS log history for C++ files and header files. Recent changes
+// are lost from the log, but not from the files!
+//
 // Revision 1.1.1.1  2004/12/13 11:16:18  rich
 // New CRYSTALS repository
 //
@@ -75,6 +79,8 @@ class CcController;
 //
 
 #ifdef __CR_WIN__
+#define WM_CRYSTALS_COMMAND (WM_USER + 1)
+
 class CCrystalsApp : public CWinApp
 {
 #endif
@@ -95,6 +101,7 @@ public:
 
     virtual BOOL InitInstance();
     virtual BOOL OnIdle(LONG lCount);
+	virtual void OnCrystCommand(UINT wp, LONG p);
     virtual int ExitInstance();
     afx_msg LRESULT OnStuffToProcess(WPARAM wp, LPARAM lp);
     DECLARE_MESSAGE_MAP()
@@ -105,8 +112,7 @@ public:
 
     virtual bool OnInit();
     virtual int OnExit();
-    virtual void OnIdle(wxIdleEvent & event);
-    void OnKickTimer(wxTimerEvent & evt);
+	virtual void OnCrystCommand(wxCommandEvent & event);
     DECLARE_EVENT_TABLE()
 
 #endif
