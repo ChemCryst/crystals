@@ -1,0 +1,51 @@
+%SCRIPT XSPLIT
+%  VARIABLE CHARACTER CATM CELE CCHK
+%  VARIABLE INTEGER ISER
+%  VARIABLE REAL RCHK RFLG
+%%
+%% Get Atom name
+%%
+%  GET NOSTORE TEXT 'Atom to split?' ' '
+%  EVALUATE CATM = CVALUE
+%  EVALUATE CELE = FIRSTSTR ( CATM )
+%  EVALUATE ISER = FIRSTINT ( CATM ) 
+%%
+%% Check atom is aniso
+%%
+%  EVALUATE RFLG = - 100.0
+%  COPY '#GENERALEDIT 5'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  LOOP 
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%    COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%    IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%      COPY 'TRANSFER FROM OFFSET=3 TO RFLG'
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%    COPY 'NEXT'
+%  END LOOP
+%  COPY 'END'
+%%
+%% Check atom was found
+%%
+%  IF ( RFLG .LT. - 99.0 ) THEN
+%   TRANSFER '{E Atom not found: ' // CELE // CHARACTER ( ISER ) TO DISPLAY
+%   FINISH
+%  END IF
+%%
+%% Check atom is ANISO.
+%%
+%  IF ( INTEGER ( RFLG ) .NE. 0 ) THEN
+{E You can only split elliptical (anisotropic) atoms.
+%   TRANSFER '{E Not aniso: ' // CELE // CHARACTER ( ISER ) TO DISPLAY
+%   FINISH
+%  END IF
+%%
+%% Split the atom
+%%
+%  COPY '#EDIT'
+%  TRANSFER 'SPLIT 10 ' // CATM TO CRYSTALS
+%  COPY 'END'
+%END SCRIPT
