@@ -61,9 +61,9 @@ class MatrixException:public MyException
 template <class type>
 class Matrix:public MyObject
 {
-    private:
+    protected:
         type* 	iMatrix;
-        short 	iXSize, iYSize, iSize;
+        size_t 	iXSize, iYSize, iSize;
     public:
         Matrix()
         {
@@ -73,7 +73,7 @@ class Matrix:public MyObject
             iMatrix = new type[iSize];
         }
         
-        Matrix(short pXSize, short pYSize) //uninitalised matrix constructor
+        Matrix(const size_t pXSize, const size_t pYSize) //uninitalised matrix constructor
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
@@ -82,14 +82,14 @@ class Matrix:public MyObject
             iMatrix = new type[iSize];
         }
         
-        Matrix(short pXSize, short pYSize, type pC) //initalised matrix constructor with c
+        Matrix(const size_t pXSize, const size_t pYSize, const type pC) //initalised matrix constructor with c
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
             iYSize = pYSize;
             
             iMatrix = new type[iSize];
-            for (short i = 0; i < iSize; i++)
+            for (size_t i = 0; i < iSize; i++)
             {
                 iMatrix[i] = pC;
             }
@@ -100,18 +100,24 @@ class Matrix:public MyObject
             iMatrix = new type[pMatrix.iSize];
             memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(type));
         }
-
+        
+	Matrix(const type pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
+        {
+            iMatrix = new type[iSize];
+            memcpy(iMatrix, pMatrix, iSize*sizeof(type));
+        }
+        
         ~Matrix()
         {	
             delete[] iMatrix;
         }
         
-        short sizeX()
+        short sizeX() const
         {
             return iXSize;
         }
         
-        short sizeY()
+        short sizeY() const
         {
             return iYSize;
         }
@@ -167,12 +173,12 @@ class Matrix:public MyObject
             return *this;
         }
         
-        inline type getValue(const short pIndex)
+        inline type getValue(const short pIndex) const
         {
             return iMatrix[pIndex];
         }
         
-        inline type getValue(const short pXIndex, const short pYIndex)
+        inline type getValue(const short pXIndex, const short pYIndex) const
         {
             return iMatrix[pXIndex*iYSize+pYIndex];
         }
@@ -187,12 +193,14 @@ class Matrix:public MyObject
             iMatrix[pXIndex*iYSize+pYIndex] = pValue;
         }
         
+        
+        
         std::ostream& output(std::ostream& pStream)
         {
-            for (int i = 0; i < iYSize; i++)
+            for (size_t i = 0; i < iYSize; i++)
             {
                 pStream << "[";
-                for (int j = 0; j < iXSize; j++)
+                for (size_t j = 0; j < iXSize; j++)
                 {
                     if (j != 0)
                     {
@@ -219,7 +227,18 @@ class Matrix:public MyObject
             return *this;
         }
         
-        void add(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        template <class otherType>
+        Matrix<type>& operator=(const Matrix<otherType>& pMatrix)
+        {
+            resize(pMatrix.sizeX(), pMatrix.sizeY());
+            for (size_t i = 0; i< iSize; i++)
+            {
+                iMatrix[i] = (type)pMatrix.getValue(i);
+            }
+            return *this;
+        }
+        
+        inline void add(const Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             for (int i = 0; i < iSize; i++)
             {
@@ -227,24 +246,24 @@ class Matrix:public MyObject
             }
         }
            
-        void sub(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        inline void sub(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
-            for (int i = 0; i < iSize; i++)
+            for (size_t i = 0; i < iSize; i++)
             {
-                pResult[i] = iMatrix[i] - pMatrix1.iMatrix[i];
+                pResult.iMatrix[i] = iMatrix[i] - pMatrix1.iMatrix[i];
             }
         }
           
-        void mul(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
+        inline void mul(const Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
         {
             pResult.iXSize = pMatrix1.iXSize;
             pResult.iYSize = iYSize;
-            for (int i = 0; i < iYSize; i ++)
+            for (size_t i = 0; i < iYSize; i ++)
             {
-                for (int j = 0; j < pMatrix1.iXSize; j ++)
+                for (size_t j = 0; j < pMatrix1.iXSize; j ++)
                 {
                     pResult.iMatrix[j*iYSize+i] = getValue(0, i)*pMatrix1.getValue(j, 0); 
-                    for (int k = 1; k < iXSize; k++)
+                    for (size_t k = 1; k < iXSize; k++)
                     {
                         pResult.iMatrix[j*iYSize+i] += getValue(k, i)*pMatrix1.getValue(j, k);
                     }
@@ -254,20 +273,20 @@ class Matrix:public MyObject
         
         void resize(const short pXSize, const short pYSize)
         {
-            short tSize = pXSize*pYSize;
-            type* tMatrix = (type*)malloc(sizeof(type) * tSize);
+            size_t tSize = pXSize*pYSize;
+            type* tMatrix = new type[tSize];//malloc(sizeof(type) * tSize);
             
             memcpy(tMatrix, iMatrix, sizeof(type)* (tSize < iSize?tSize:iSize));
-            free(iMatrix);
+            delete[] iMatrix;
             iMatrix = tMatrix;
             iXSize = pXSize;
             iYSize = pYSize;
-			iSize = iXSize * iYSize;
+            iSize = iXSize * iYSize;
         }
         
         void fill(const type& pValue)
         {
-            for (int i = 0; i < iSize; i++)
+            for (size_t i = 0; i < iSize; i++)
             {
                 iMatrix[i] = pValue;
             }
@@ -300,7 +319,7 @@ class Matrix:public MyObject
 
         }
         
-        type sum()
+        inline type sum()
         {
             type tSum = 0;
             
@@ -309,6 +328,20 @@ class Matrix:public MyObject
                 tSum += iMatrix[i];
             }
             return tSum;
+        }
+        
+        void makeDiagonal(type pDiag, type pOuter)
+        {
+            fill(pOuter);
+            for (size_t i = 0; i < iXSize && i < iYSize; i++)
+            {
+                setValue(pDiag, i, i);
+            }
+        }
+        
+        int bytecmp(const Matrix<type>& pValue2)
+        {
+            return memcmp(iMatrix, pValue2.iMatrix, sizeof(type)*iSize);
         }
 };
 
@@ -319,7 +352,7 @@ class Matrix<float>:public MyObject
 {
     private:
         float* 	iMatrix;
-        short 	iXSize, iYSize, iSize;
+        size_t 	iXSize, iYSize, iSize;
     public:
         Matrix()
         {
@@ -329,7 +362,7 @@ class Matrix<float>:public MyObject
             iMatrix = (float*)malloc(sizeof(float)*iSize);
         }
 
-        Matrix(short pXSize, short pYSize) //uninitalised matrix constructor
+        Matrix(const size_t pXSize, const size_t pYSize) //uninitalised matrix constructor
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
@@ -338,14 +371,14 @@ class Matrix<float>:public MyObject
             iMatrix = (float*)malloc(sizeof(float)*iSize);
         }
         
-        Matrix(short pXSize, short pYSize, float pC) //initalised matrix constructor with c
+        Matrix(const size_t pXSize, const size_t pYSize, const float pC) //initalised matrix constructor with c
         {
             iSize = pXSize * pYSize;
             iXSize = pXSize;
             iYSize = pYSize;
             
             iMatrix = (float*)malloc(sizeof(float)*iSize);
-            for (short i = 0; i < iSize; i++)
+            for (size_t i = 0; i < iSize; i++)
             {
                 iMatrix[i] = pC;
             }
@@ -357,17 +390,23 @@ class Matrix<float>:public MyObject
             memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(float));
         }
         
+        Matrix(const float pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
+        {
+            iMatrix = (float*)malloc(sizeof(float)*iSize);
+            memcpy(iMatrix, pMatrix, iSize*sizeof(float));
+        }
+        
         ~Matrix()
         {
             free(iMatrix);
         }
         
-        short sizeX()
+        short sizeX() const
         {
             return iXSize;
         }
         
-        short sizeY()
+        short sizeY() const
         {
             return iYSize;
         }
@@ -380,7 +419,7 @@ class Matrix<float>:public MyObject
         
         Matrix<float>& operator-=(const Matrix<float>& pMatrix)
         {
-            vsub(iMatrix, 1, pMatrix.iMatrix, 1, iMatrix, 1, iSize);
+            vsub(pMatrix.iMatrix, 1, iMatrix, 1, iMatrix, 1, iSize);
             return *this;
         }
         
@@ -388,9 +427,9 @@ class Matrix<float>:public MyObject
         {
             float* tNewMatrix = (float*)malloc(iYSize*pMatrix.iXSize*sizeof(float));
             
-            for (int i = 0; i < iYSize; i++)
+            for (size_t i = 0; i < iYSize; i++)
             { 
-                for (int j = 0; j < pMatrix.iXSize; j++)
+                for (size_t j = 0; j < pMatrix.iXSize; j++)
                 {
                     dotpr(&(iMatrix[i]), iYSize, &(pMatrix.iMatrix[j*pMatrix.iYSize]), 1, &(tNewMatrix[j*iYSize+i]), iXSize);
                 }
@@ -402,12 +441,12 @@ class Matrix<float>:public MyObject
             return *this;
         }
         
-        inline float getValue(const short pIndex)
+        inline float getValue(const short pIndex) const
         {
             return iMatrix[pIndex];
         }
         
-        inline float getValue(const short pXIndex, const short pYIndex)
+        inline float getValue(const short pXIndex, const short pYIndex) const
         {
             return iMatrix[pXIndex*iYSize+pYIndex];
         }
@@ -424,10 +463,10 @@ class Matrix<float>:public MyObject
         
         std::ostream& output(std::ostream& pStream)
         {
-            for (int i = 0; i < iYSize; i++)
+            for (size_t i = 0; i < iYSize; i++)
             {
                 pStream << "[";
-                for (int j = 0; j < iXSize; j++)
+                for (size_t j = 0; j < iXSize; j++)
                 {
                     if (j != 0)
                     {
@@ -458,23 +497,34 @@ class Matrix<float>:public MyObject
             return *this;
         }
         
-        void add(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        template <class otherType>
+        Matrix<float>& operator=(const Matrix<otherType>& pMatrix)
+        {
+            resize(pMatrix.sizeX(), pMatrix.sizeY());
+            for (size_t i = 0; i< iSize; i++)
+            {
+                iMatrix[i] = (float)pMatrix.getValue(i);
+            }
+            return *this;
+        }
+        
+        inline void add(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
             vadd(iMatrix, 1, pMatrix1.iMatrix, 1, pResult.iMatrix, 1, iSize);
         }
            
-        void sub(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
+        inline void sub(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster subtraction this doesn't check to see if the result matrix is the correct size before inserting the results it is assumed to be the correct size already
         {
-            vsub(iMatrix, 1, pMatrix1.iMatrix, 1, pResult.iMatrix, 1, iSize);
+            vsub(pMatrix1.iMatrix, 1, iMatrix, 1, pResult.iMatrix, 1, iSize);
         }
           
-        void mul(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
+        inline void mul(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
         {
             pResult.iXSize = pMatrix1.iXSize;
             pResult.iYSize = iYSize;
-            for (int i = 0; i < iYSize; i++)
+            for (size_t i = 0; i < iYSize; i++)
             { 
-                for (int j = 0; j < pMatrix1.iXSize; j++)
+                for (size_t j = 0; j < pMatrix1.iXSize; j++)
                 {
                     dotpr(&(iMatrix[i]), iYSize, &(pMatrix1.iMatrix[j*pMatrix1.iYSize]), 1, &(pResult.iMatrix[j*iYSize+i]), iXSize);
                 }
@@ -483,7 +533,7 @@ class Matrix<float>:public MyObject
         
         void resize(const short pXSize, const short pYSize)
         {
-            short tSize = pXSize*pYSize;
+            size_t tSize = pXSize*pYSize;
             float* tMatrix = (float*)malloc(sizeof(float) * tSize);
             
             memcpy(tMatrix, iMatrix, sizeof(float)* (tSize < iSize?tSize:iSize));
@@ -496,7 +546,7 @@ class Matrix<float>:public MyObject
         
         void fill(const float pValue)
         {
-            for (int i = 0; i < iSize; i++)
+            for (size_t i = 0; i < iSize; i++)
             {
                 iMatrix[i] = pValue;
             }
@@ -511,15 +561,29 @@ class Matrix<float>:public MyObject
             return false;
         }
         
-        float sum()
+        inline float sum()
         {
             float tSum = 0;
             
-            for (int i = 0;  i < iSize; i ++)
+            for (size_t i = 0;  i < iSize; i ++)
             {
                 tSum += iMatrix[i];
             }
             return tSum;
+        }
+        
+        void makeDiagonal(float pDiag = 1.0f, float pOuter = 0.0f)
+        {
+            fill(pOuter);
+            for (size_t i = 0; i < iXSize && i < iYSize; i++)
+            {
+                setValue(pDiag, i, i);
+            }
+        }
+        
+        int bytecmp(const Matrix<float>& pValue2)
+        {
+            return memcmp(iMatrix, pValue2.iMatrix, sizeof(float)*iSize);
         }
 };
 #endif
@@ -541,6 +605,12 @@ Matrix<type> operator*(Matrix<type>& pMatrix1, Matrix<type>& pMatrix2)
 {
     return Matrix<type>(pMatrix1) *= pMatrix2;;
 }
+
+/*template <class fromType, class toType>
+Matric<toType> convertTo(Matrix<fromType>& pMatrix)
+{
+
+}*/
 
 template <class type>
 std::ostream& operator<<(std::ostream& pStream, Matrix<type>& pMatrix)
