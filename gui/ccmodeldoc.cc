@@ -17,6 +17,15 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2001/06/17 15:24:19  richard
+//
+//
+// Lot of functions which used to be called from CxModel and CrModel removed and
+// now CcModelDoc does these for itself (lists of selected atoms etc.)
+//
+// Render groups atoms by drawing style and sends GL attributes only once at beginning
+// of each set (e.g. disabled atoms, selected atoms, normal atoms, excluded atoms.)
+//
 // Revision 1.11  2001/03/08 15:12:17  richard
 // Added functions for excluding atoms and bonds, and excluding fragments based on
 // known bonding.
@@ -409,6 +418,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
       {
 //High res normal atoms:
         mAtomList->Reset();
+        glDeleteLists(ATOMLIST,1);
         glNewList( ATOMLIST, GL_COMPILE);
         {
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -460,6 +470,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
         }
         glEndList();
 //High res normal bonds:
+        glDeleteLists(BONDLIST,1);
         glNewList( BONDLIST, GL_COMPILE);
         {
           GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
@@ -482,6 +493,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
         glEndList();
 
 //High res excluded atoms and bonds:
+        glDeleteLists(XOBJECTLIST,1);
         glNewList( XOBJECTLIST, GL_COMPILE);
         mAtomList->Reset();
         while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
@@ -510,6 +522,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
       else
       {
 //Low res (non-excluded) atoms
+        glDeleteLists(QATOMLIST,1);
         glNewList( QATOMLIST, GL_COMPILE);
         mAtomList->Reset();
         {
@@ -563,6 +576,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style )
         glEndList();
 
 //Low res (non-excluded) bonds
+        glDeleteLists(QBONDLIST,1);
         glNewList( QBONDLIST, GL_COMPILE);
         {
           GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };

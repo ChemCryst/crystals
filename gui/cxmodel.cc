@@ -322,6 +322,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
 void CxModel::DoDrawingLists()
 {
+    glDeleteLists(STYLIST,1);
     glNewList( STYLIST, GL_COMPILE);
 
     if ( m_DrawStyle == MODELSMOOTH )
