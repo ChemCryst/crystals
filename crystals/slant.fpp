@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2000/10/31 15:37:12  ckp2
+C New subroutine XVSLANT for slant void calculations...
+C
 CODE FOR XTRIAL
       SUBROUTINE XTRIAL
 C--MOVE A MOLECULE AROUND AND PLOT SUM(FO*FC) AT EACH POINT
@@ -583,8 +586,15 @@ C--PICK UP THE NEXT REFLECTION
       END
 C
 CODE FOR XSLANT
-      SUBROUTINE XSLANT
+      SUBROUTINE XSLANT(inproc,inn)
 C--SLANT FOURIER SUBROUTINE
+cdjwdec2000  make into subroutine.
+c      inproc(inn) can either be a dummy, dimension 1, with value
+c      -100 indicating that the contants of [rocin should be loaded
+c      by a read from the user-input
+c      or a real array dimensioned to NPROCS (see below) with values 
+c      set by a calling routine.
+
 C
 C  IN     TYPE OF FOURIER :
 C         1  FO
@@ -611,6 +621,7 @@ C
 C--
 \ISTORE
 C
+      dimension inproc(inn)
       PARAMETER (NPROCS = 28)
       DIMENSION PROCS(NPROCS)
       DIMENSION IPROCS(NPROCS)
@@ -670,15 +681,24 @@ C
       NW=7
 C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(1)
+cdec2000 make internally callable
+      if (inproc(1) .le. -100) then
 C--READ THE DATA
       ISTAT = KRDDPV ( PROCS, NPROCS)
       IF ( ISTAT .LT. 0 ) GO TO 9910
-C--LOAD LISTS ONE AND TWO
       CALL XRSL
       CALL XCSAE
-      CALL XFAL01
-      CALL XFAL02
-      CALL XFAL20
+      else
+       if (inn .eq. nprocs) then
+            call xmovei(inproc, iprocs, nprocs)
+       else
+            goto 9910
+       endif
+      endif
+C--LOAD LISTS ONE AND TWO
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 20,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL20
 C----- CHECK IF WE USE THE MOLAX MATRIX -
       IF (IMODE .GE. 1) THEN
       CALL XMOVE (STORE(L20V+ IMODE * MD20V), PROCS(14), 3)

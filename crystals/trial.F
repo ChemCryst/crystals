@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2000/10/31 15:38:04  ckp2
+C Link to XVSLANT code.
+C
 CODE FOR TRIAL
       SUBROUTINE TRIAL
       CALL XSYSDC(-1,1)
@@ -17,6 +20,8 @@ C    r = [SIG{(Fo-<Fo>)(Fc-<Fc>)}] / [SIG(Fo-<Fo>)**2. SIG(Fc->Fc>)**2]
 C         all coefficients are moduli
 C
 C--
+C      ST UP A DUMMY ARRAY SO THAT XSLANT CAN BE CALLED INTERNALLY
+      DIMENSION IDJW(1)
 \ISTORE
 C
 \STORE
@@ -45,7 +50,8 @@ C--'#TRIAL' INSTRUCTION
 C
 C--'#SLANT' INSTRUCTION
 2200  CONTINUE
-      CALL XSLANT
+      IDJW(1) = -100
+      CALL XSLANT(IDJW,1)
       GOTO 1000
 
 C--'#VSLANT' INSTRUCTION
