@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2001/06/17 15:30:06  richard
+//   ScriptsExited function loops through window list and closes any MODAL windows
+//   without the STAYOPEN attribute. (Prevents that problem where scripts crash
+//   and leave a window open blocking the input.)
+//
 //   Revision 1.19  2001/03/27 15:14:59  richard
 //   Added a timer to the main window that is activated as the main window is
 //   created.
@@ -137,8 +142,11 @@ class   CcController
 //    Boolean GetInterfaceCommand( CcString * line );
 
     void LogError( CcString errString , int level);
+
+    bool Completing();
     void CompleteProcessing();
     void ProcessingComplete();
+
     void UpdateToolBars();
     void ScriptsExited();
 
