@@ -52,18 +52,23 @@ ________________________________________________________________________
  Before you start CRYSTALS make a new directory and copy your data into it.
  Choose this directory when you start CRYSTALS.
 
- For SHELX files, you will need to know the space group. Using the menus
- above choose X-ray data -> SHELX ins or res and follow the instructions.
- Then choose X-ray data -> Reflections and read in the HKL file.
+ For {2,14SHELX{1,0 files, you will need to know the space group. Using the
+ menus above choose X-ray data -> SHELX ins or res and follow the
+ instructions. Then choose X-ray data -> Reflections and read in the HKL file.
 
- For CAD4 data, use the external program RC93 ( choose X-ray data ->
+ For {2,14CAD4{1,0 data, use the external program RC93 ( choose X-ray data ->
  Pre-process -> Cad4 data -> Run RC93. When done, choose X-ray data ->
  Pre-process -> Cad4 data -> Input processed data and follow the
  instructions.
 
- For DIP data, use the external program DIPIN ( choose X-ray data ->
+ For {2,14DIP{1,0 data, use the external program DIPIN ( choose X-ray data ->
  Pre-process -> Dip2000 data -> Run Dipin. When done, choose X-ray data ->
  Pre-process -> Dip2000 data -> Input processed data and follow the
+ instructions.
+
+ For {2,14Kappa CCD{1,0 data, use the external program KCCDIN ( choose X-ray
+ data -> Pre-process -> KCCD data -> Run KCCDin. When done, choose X-ray
+ data -> Pre-process -> KCCD data -> Input processed data and follow the
  instructions.
 
  Once your data has been read in by CRYSTALS, it is stored in a binary file
@@ -79,4 +84,3 @@ ________________________________________________________________________
 % END IF
 
 %END SCRIPT
- 
