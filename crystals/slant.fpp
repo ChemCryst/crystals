@@ -772,9 +772,9 @@ C Transpose the matrix...
         DO 1348 IINX = 1,3
                 TRANS(IINX+9) = PROCS(IINX+13)
 1348    CONTINUE
-      if (isstml .eq.4) then
-      CALL FOUR3DI(TRANS,STORE(L1P1),NUM(1),START(1),STEPS(1),.TRUE.)
-      endif
+&GID      if (isstml .eq.4) then
+&GID      CALL FOUR3DI(TRANS,STORE(L1P1),NUM(1),START(1),STEPS(1),.TRUE.)
+&GID      endif
 cjan99
       ENDIF
 C
@@ -968,9 +968,9 @@ C--MAIN MAP PRINTING ROUTINES
       IF (IOUTAP .GT. 0) THEN
         WRITE(MT1) NXNY, (STORE(I)*W, I= L8, L8+NXNY-1)
 cjan99
-          if (isstml .eq.4 ) then
-          CALL FOUR3D(NXNY,STORE(L8),W)
-          endif
+&GID          if (isstml .eq.4 ) then
+&GID          CALL FOUR3D(NXNY,STORE(L8),W)
+&GID          endif
 cjan99
       ENDIF
       JA=MINY

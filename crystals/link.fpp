@@ -543,16 +543,17 @@ C
 C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
+#GID        GOTO 9000 !Skip this Cameron part.
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
       IF (ISSTML .EQ. 4) THEN
         LCLOSE = .FALSE.
         WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
-        CALL ZMORE(CHARTC,0)
+&GID        CALL ZMORE(CHARTC,0)
         WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
-        CALL ZMORE(CHARTC,0)
+&GID        CALL ZMORE(CHARTC,0)
         WRITE(CHARTC,'(A)') '^^CR'
-        CALL ZMORE(CHARTC,0)
-        CALL ZCAMER ( 1, 0 , 0 , 0)
+&GID        CALL ZMORE(CHARTC,0)
+&GID        CALL ZCAMER ( 1, 0 , 0 , 0)
 C       OLNCRU = NCRU
 C       NCRU = 5
 8025  CONTINUE
@@ -572,8 +573,8 @@ C Replace 0 with 32 along the string
              IF(LCMAGE(I) .EQ. 0) LCMAGE(I)=32
 8029     CONTINUE
          WRITE(CHRBUF,'(80A1)')LCMAGE
-           CALL ZMORE(CHRBUF,0)
-         CALL ZCONTR
+&GID           CALL ZMORE(CHRBUF,0)
+&GID         CALL ZCONTR
 cdjwjan99
          if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
      1   lclose = .true.

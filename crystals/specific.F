@@ -2777,16 +2777,16 @@ C LUPDAT IS SET WHEN GUMTRX IS INITIALISED AND GUI IS ENABLED
       END
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)
-&DVFC{
-&DVF      INTERFACE
-&DVF                    SUBROUTINE CINEXTCOMMAND (istat, caline)
-&DVF                    !DEC$ ATTRIBUTES C :: cinextcommand
-&DVF                    INTEGER ISTAT
-&DVF                    CHARACTER*80 CALINE
-&DVF                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
-&DVF                    END SUBROUTINE CINEXTCOMMAND
-&DVF            END INTERFACE
-&DVFC}
+&GIDC{
+&GID      INTERFACE
+&GID                    SUBROUTINE CINEXTCOMMAND (istat, caline)
+&GID                    !DEC$ ATTRIBUTES C :: cinextcommand
+&GID                    INTEGER ISTAT
+&GID                    CHARACTER*80 CALINE
+&GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
+&GID                    END SUBROUTINE CINEXTCOMMAND
+&GID            END INTERFACE
+&GIDC}
 C
       INTEGER ISTAT
       CHARACTER*200 CALINE
@@ -2796,11 +2796,11 @@ C      !Padded for safety!#
       DATA CALINE(1:40) /'                                        '/
       DATA CALINE(41:80)/'                                        '/
       ISTAT = 0
-#DVF            call dumio(cline)
-&DVFC{
-&DVF            CALL CINEXTCOMMAND(ISTAT,CALINE)
-&DVF            READ(CALINE,'(A80)') CLINE
-&DVFC}
+#GID            call dumio(cline)
+&GIDC{
+&GID            CALL CINEXTCOMMAND(ISTAT,CALINE)
+&GID            READ(CALINE,'(A80)') CLINE
+&GIDC}
       RETURN
       END
 C
@@ -3043,18 +3043,18 @@ C
 CODE FOR XPRTDV
       SUBROUTINE XPRTDV(NCDEV, CBUF, LINBUF, NLINES)
 C---- MACHINE SPECIFIC WRITE TO THE SCREEN
-&DVFC{
-&DVF      INTERFACE
-&DVF                SUBROUTINE CALLCCODE (CALINE)
-&DVF                    !DEC$ ATTRIBUTES C :: CALLCCODE
-&DVF                    CHARACTER*(*) CALINE
-&DVF                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
-&DVF                    END SUBROUTINE CALLCCODE
-&DVF            END INTERFACE
-&DVFC}
+&GIDC{
+&GID      INTERFACE
+&GID                SUBROUTINE CALLCCODE (CALINE)
+&GID                    !DEC$ ATTRIBUTES C :: CALLCCODE
+&GID                    CHARACTER*(*) CALINE
+&GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
+&GID                    END SUBROUTINE CALLCCODE
+&GID            END INTERFACE
+&GIDC}
 \XDRIVE
 \XSSVAL
-&DVF      CHARACTER *80 CTEMP
+&GID      CHARACTER *80 CTEMP
       CHARACTER*(*) CBUF(LINBUF)
       CHARACTER*1 CFIRST, CLAST
       CHARACTER*10 CFRMAT
@@ -3084,11 +3084,11 @@ C                       CBUF(J)(LENBUF:LENBUF) = CHAR(13)
 C                       N = LENBUF
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
-#DVF                    CFRMAT = '(1X,A)'
+#GID                    CFRMAT = '(1X,A)'
 &VAX                    N = N - 1
 &VAX                    CFRMAT = '(''+'',A)'
-#DVF                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
-&DVF                        CALL CALLCCODE ( CBUF(J)(1:N))
+#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
+&GID                        CALL CALLCCODE ( CBUF(J)(1:N))
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
                   ELSEIF ( CFIRST .EQ. '+' ) THEN
@@ -3096,41 +3096,41 @@ C-----------------FORTRAN CARRIAGE RETURN WITHOUT LINE FEED
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
                         CFRMAT = '(A)'
-#DVF                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
-&DVFC{
-&DVF                              CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
-&DVF                              CALL CALLCCODE ( CTEMP )
-&DVFC                             CTEMP = '^^CR'
-&DVFC                             CALL CALLCCODE ( CTEMP )
-&DVF                    CALL CALLCCODE ( CBUF(J)(1:LENBUF) )
-&DVFC}
+&GIDC{
+&GID                              CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
+&GID                              CALL CALLCCODE ( CTEMP )
+&GIDC                             CTEMP = '^^CR'
+&GIDC                             CALL CALLCCODE ( CTEMP )
+&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF) )
+&GIDC}
                   ELSEIF (CLAST .EQ. '$') THEN
 C-----------------LEAVE CURSOR AT CURRENT POSITION
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
                     CFRMAT = '(A,A1)'
 &DOS                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
-&DVFC{
-&DVF                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
-&DVFC}
+&GIDC{
+&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&GIDC}
 &VAX                    CFRMAT = '(A,$)'
 &VAX                    WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
                   ELSEIF ( CFIRST .EQ. '0' ) THEN
                         CFRMAT = '(/,A)'
-#DVF                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&DVFC{
-&DVF                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
-&DVFC}
+#GID                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+&GIDC{
+&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&GIDC}
                   ELSE
                         CFRMAT = '(A)'
-#DVF                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-&DVFC{
-&DVF                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
-&DVFC}
+#GID                  WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+&GIDC{
+&GID                    CALL CALLCCODE ( CBUF(J)(1:LENBUF))
+&GIDC}
                   ENDIF
 C
             CBUF(J) = ' '
