@@ -2053,27 +2053,37 @@ c              iy1 = 21
 #if defined(_DOS_) 
                   File = fname(1)(1:k-1)//'.pcx'
 #endif
-#if defined(_DVF_) || defined (_GID_) 
+
+#if defined(_DVF_) || defined (_GID_)
                   File = fname(1)(1:k-1)//'.bmp'
+
 #endif
-#if defined(_DOS_) 
+
+#if defined(_DOS_)
                   call SCREEN_BLOCK_TO_PCX@(File, iBuffer, Error_Code)
 #endif
-#if defined(_DVF_) || defined (_GID_) 
+
+#if defined(_DVF_) || defined (_GID_)
                   res = SAVEIMAGE(File,ix1,iy1,ix2,iy2)
 #endif
+
 c                  return
-#if defined(_DOS_) 
+
+#if defined(_DOS_)
                else
                 write(Message,'(a)') ' Sorry. Not enough memory ...'
                   lMess = 29
                   call PrintMess
 #endif
+
 c                  return
-#if defined(_DOS_) 
+
+#if defined(_DOS_)
                end if
 #endif
+
             end if
+
          endif
          if ( i .eq. 31 ) then        !  Geometry
             if (jpres .gt. 0) then
