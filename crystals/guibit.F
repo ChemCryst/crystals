@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2000/07/11 11:04:08  ckp2
+C Extra argument to KFLOPN, for specifying SEQUENTIAL or DIRECT access
+C
 C Revision 1.25  2000/07/04 13:43:32  ckp2
 C RIC: Better colours for bond deviations using csd checks.
 C
@@ -614,6 +617,8 @@ C--
 \XPDS
 C
       KDIST2=-1
+C--JUMP THE ATOM TO AT LEAST JUST BEFORE THE REQUIRED VOLUME
+      APD(NOC+6)=MAX(APD(NOC+6),MOD(APD(NOC+6),1.)+NINT(BPD(NOC+3))-1)
 C--MOVE FORWARD ONE UNIT CELL
 1000  CONTINUE
       APD(NOC+6)=APD(NOC+6)+1.
