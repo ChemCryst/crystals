@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2000/09/20 15:34:09  ckp2
+C Removed debug statement
+C
 C Revision 1.21  2000/09/20 12:43:40  ckp2
 C New OP - GETCWD - returns current directory to script variable.
 C
@@ -3821,7 +3824,7 @@ C
 \PSCSTK
 \PSCMSG
 C
-      PARAMETER ( MAXIDN = 100 )
+      PARAMETER ( MAXIDN = 200 )
 C
       CHARACTER*(MAXLAB) CIDENT(MAXIDN)
       DIMENSION ITYPEI(MAXIDN) , IVALUI(MAXIDN) , ISBTPI(MAXIDN)
@@ -5883,7 +5886,7 @@ C
       GO TO 9900
       END
 CODE FOR KSCTRN
-      FUNCTION KSCTRN ( IDIREC , CVARIB , IVALUE )
+      FUNCTION KSCTRN ( IDIREC , CVARIB , IVALUE, ILGTH )
 C
 C -- MOVE VALUE TO OR FROM SCRIPT VARIABLE
 C
@@ -5897,6 +5900,7 @@ C                    2      MOVE DATA TO 'IVALUE' FROM VARIABLE
 C      CVARIB      NAME OF VARIABLE. IF THIS IS ALL BLANK, NO ACTION
 C                  IS TAKEN, AND THE ROUTINE IMMEDIATELY RETURNS.
 C      IVALUE      VALUE
+C      ILGTH       LENGTH IN BYTES TO TRANSFER, IF CHARACTER VARIABLE
 C
 C      RETURN VALUES OF KSCTRN
 C
@@ -5906,6 +5910,8 @@ C
 \XUNITS
 \XIOBUF
 C
+      DIMENSION IVALUE(ILGTH)
+
       CHARACTER*(*) CVARIB
       CHARACTER *64 CBUFF
 C
@@ -5928,21 +5934,26 @@ C
       IF ( IDIREC .EQ. 1 ) THEN
         IF (ITYPE .EQ. 4) THEN
 C         A CHARACTER VARIABLE - CONVERT TO HOLLERITH
-          WRITE (CBUFF, '(A4)') IVALUE
+C          WRITE (CBUFF, '(A4)') IVALUE
+         DO J = 1, ILGTH
+          READ (CBUFF((J*4)-3:(J*4)), '(A4)') IVALUE(J)
+         END DO
 CDJW JUL 98 REPLACE CALL TO KSCSCD WITH CALL TO REPLACEMENT ROUTINE
-          ISTAT = KSCREP (ICVAL, CBUFF(1:4), 4)
-          JVALUE = ICVAL
-          ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, JVALUE , -1)
+         ISTAT = KSCREP (ICVAL, CBUFF(1:(ILGTH*4)), 4)
+         JVALUE = ICVAL
+         ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, JVALUE , -1)
         ELSE
-          ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, IVALUE , -1)
+          ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, IVALUE(1), -1)
         END IF
       ELSE
         IF (ITYPE .EQ. 4) THEN
 C            A CHARACTER VARIABLE - RECOVER FROM HOLLERITH
-             ISTAT = KSCSDC (ICVAL, CBUFF, I )
-             READ (CBUFF, '(A4)') IVALUE
+          ISTAT = KSCSDC (ICVAL, CBUFF, I )
+          DO J=1,ILGTH
+             READ (CBUFF((J*4)-3:(J*4)), '(A4)') IVALUE(J)
+          END DO
         ELSE
-             CALL XMOVEI ( ICVAL , IVALUE , 1 )
+             CALL XMOVEI ( ICVAL , IVALUE(1) , 1 )
         ENDIF
       ENDIF
 C
