@@ -20,7 +20,7 @@
 %  COPY '#GENERALEDIT 5'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 3 TO MD'
-%  IF ( MD .GT. 150 ) THEN
+%  IF ( MD .GT. 300 ) THEN
 %     EVALUATE SLOWDSC = TRUE
 %  END IF
 %  COPY 'END'
@@ -42,7 +42,7 @@
 {R                        END
 
 %   EVALUATE QTITLE = 'Disable updates'
-%   EVALUATE QLINE1 = 'Lots of atoms. Updates of model window will be slow.'
+%   EVALUATE QLINE1 = 'Lots of atoms. Updates of model window may be slow.'
 %   EVALUATE QLINE2 = 'Disable automatic updates?'
 %   EVALUATE BUTTOK = '&Disable updates'
 %   EVALUATE BUTTXX = '&Update automatically'
