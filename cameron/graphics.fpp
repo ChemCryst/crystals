@@ -1018,8 +1018,6 @@ C SCALE COORDINATES
       IRAD = INT(R*SCALE)
       IF (IFILL.GE.1)  THEN
 cdjw040804
-       write(cline,'(a,i6)') 'irad= ', irad
-       call zmore (cline, 0)
        if ((itype .ne. 2) .and. (irad .ge. 20))then
          CALL ZDRELL(3,IX,IY,IRAD,IRAD,IDEVCL(ICOL+1),ITYPE,I)
        else
