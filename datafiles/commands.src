@@ -1494,9 +1494,9 @@ New CIF extensions
     .ALL-R              0    0    1    0    1 0.
     .ALL-RW             0    0    1    0    1 0.
     .EXTNCTN-SU         0    0    1    0    1 0.
-    .ZZ10               0    0    1    0    1 0.
-    .ZZ11               0    0    1    0    1 0.
-    .ZZ12               0    0    1    0    1 0.
+    .COMPLETENESS       0    0    1    0    1 0.
+    .THETA-FULL         0    0    1    0    1 0.
+    .COMPL-FULL         0    0    1    0    1 0.
     .ZZ13               0    0    1    0    1 0.
     .ZZ14               0    0    1    0    1 0.
     .ZZ15               0    0    1    0    1 0.
@@ -3455,6 +3455,9 @@ GENERALEDIT       22    0
     .TYPE               1   -1    1    0
 CIFOUT             0    0    
    5    4096 CRYSTALSPUBLISH
+THLIM              0    3
+   6    4096 CRYSTALSPUBLISH
+    1    2   13
 VSLANT             7    5
    3    4096 CRYSTALSTRIAL
     1    2    5    6   20
