@@ -96,6 +96,7 @@ protected:
     int* m_colTypes;
     int WhichType(CcString text);
 
+    int * m_originalIndex;
 
     int nSortedCol;
     Boolean bSortAscending;

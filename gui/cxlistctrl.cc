@@ -51,6 +51,7 @@ CxListCtrl::CxListCtrl( CrListCtrl * container )
     nSortedCol = -1;
     bSortAscending = true;
     m_ProgSelecting = 0;
+    m_originalIndex = nil;
 }
 
 CxListCtrl::~CxListCtrl()
@@ -164,7 +165,18 @@ void CxListCtrl::AddColumn(CcString colHeader)
 
 void CxListCtrl::AddRow(CcString * rowOfStrings)
 {
+
     int nItem = InsertItem(mItems++, _T(""));
+
+    int *newIndex = new int[mItems+1];
+    for ( int i=1; i < (mItems); i++ )
+    {
+        newIndex[i] = m_originalIndex[i];
+    }
+    newIndex[mItems] = mItems;
+    delete [] m_originalIndex;
+    m_originalIndex = newIndex;
+
     for (int j = 0; j < m_numcols; j++)
     {
         SetItemText(nItem, j, rowOfStrings[j].ToCString());
@@ -494,11 +506,11 @@ void CxListCtrl::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 
         if (pnmv->uNewState <= 1 && pnmv->uOldState >= 2) //Unselect Item.
         {
-                        ((CrListCtrl*)ptr_to_crObject)->SendValue("UNSELECTED_N" + CcString((int)pnmv->iItem + 1) ); //Send the index
+                        ((CrListCtrl*)ptr_to_crObject)->SendValue("UNSELECTED_N" + CcString( m_originalIndex[(int)pnmv->iItem+1]) ); //Send the index
         }
         else if (pnmv->uNewState >= 2 && pnmv->uOldState <= 1) //Select Item
         {
-                        ((CrListCtrl*)ptr_to_crObject)->SendValue("SELECTED_N" + CcString((int)pnmv->iItem + 1) ); //Send the index only.
+                        ((CrListCtrl*)ptr_to_crObject)->SendValue("SELECTED_N" + CcString( m_originalIndex[(int)pnmv->iItem+1]) ); //Send the index only.
         }
 
     }
@@ -606,7 +618,8 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
             break;
         }
         int hold = index[element];
-            Boolean repeat = true;
+        int hold2 = m_originalIndex[element];
+        Boolean repeat = true;
         int place;
         for ( place = element - 1; repeat; place-- )
         {
@@ -620,11 +633,13 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
                     {
                         repeat              = false;
                         index[place+1]      = hold;
+                        m_originalIndex[place+1] = hold2;
                         intsToSort[place+1] = intsToSort[0];
                     }
                     else
                     {
                         index[place+1]      = index[place];
+                        m_originalIndex[place+1] = m_originalIndex[place];
                         intsToSort[place+1] = intsToSort[place];
                     }
                     break;
@@ -634,11 +649,13 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
                     {
                         repeat                = false;
                         index[place+1]        = hold;
+                        m_originalIndex[place+1]  = hold2;
                         floatsToSort[place+1] = floatsToSort[0];
                     }
                     else
                     {
                         index[place+1]        = index[place];
+                        m_originalIndex[place+1] = m_originalIndex[place];
                         floatsToSort[place+1] = floatsToSort[place];
                     }
                     break;
@@ -648,11 +665,13 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
                     {
                         repeat                 = false;
                         index[place+1]         = hold;
+                        m_originalIndex[place+1]         = hold2;
                         stringsToSort[place+1] = stringsToSort[0];
                     }
                     else
                     {
                         index[place+1]         = index[place];
+                        m_originalIndex[place+1]         = m_originalIndex[place];
                         stringsToSort[place+1] = stringsToSort[place];
                     }
                     break;
@@ -673,6 +692,7 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
                     break;
                 }
                 index[1] = hold;
+                m_originalIndex[1] = hold2;
                 repeat = false;
             }
         }
