@@ -30,43 +30,56 @@ all : obj $(EXECS) rc93.srt form.dat
 
 cif2cry$(SUFFIX) : obj/cif2cry.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 convplat$(SUFFIX) : obj/convplat.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 csd2cry$(SUFFIX) : obj/csd2cry.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 delred$(SUFFIX) : obj/delred.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 dipin$(SUFFIX) : obj/dipin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 ctwin$(SUFFIX) : obj/ctwin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 kccdin$(SUFFIX) : obj/kccdin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 rc93$(SUFFIX) : obj/rc93.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 reindex$(SUFFIX) : obj/reindex.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 shelxs$(SUFFIX) : obj/shelxs.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 sxtocry$(SUFFIX) : obj/sxtocry.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	strip $@
 
 crysload$(SUFFIX) : obj/crysload.o
 	$(LD) $(CLFLAGS) $(CLLIBRARIES) -mwindows $(OPT) -o $@ $^
+	strip $@
 
 ifneq ($(COMPCODE),WXS)
 sir92 : obj/sir92.o obj/norm92.o obj/sir92X11.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES)  $(NATIVEXLIBS) $(OPT) -o $@ $^
+	strip $@
 endif
 
 form.dat : 
