@@ -29,16 +29,18 @@
 ^^WI      {
 ^^WI        @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'
 ^^WI        {
-^^WI           @ 1,1 RADIOBUTTON _ELT 'Change to' STATE=ON
-^^WI           @ 1,3 DROPDOWN _ELS ADDTOLIST 'Q' 'NULL'
-^^WI          @ 2,1 RADIOBUTTON _DEL 'Delete atom' STATE=OFF
+^^WI           @ 1,1 STATIC _ELT 'change to:'
+^^WI           @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST 'Q' 'NULL'
 ^^WI        }
-^^WI        @ 3,1 GRID CLICK NROWS=5 NCOLS=1
+^^WI        @ 3,1 GRID CLICK NROWS=8 NCOLS=1
 ^^WI        {
-^^WI          @ 1,1 STATIC T1 'If you want an element type that is not'
-^^WI          @ 2,1 STATIC T1 'available in the drop down list above'
-^^WI          @ 3,1 STATIC T1 'click the "Edit Elements" button.'
-^^WI              @ 5,1 BUTTON BED 'Edit Elements'
+^^WI          @ 1,1 STATIC T1 'If you want an element'
+^^WI          @ 2,1 STATIC T1 'type that is not'
+^^WI          @ 3,1 STATIC T1 'available in the drop '
+^^WI          @ 4,1 STATIC T1 'down list above'
+^^WI          @ 5,1 STATIC T1 'click the "Edit '
+^^WI          @ 6,1 STATIC T1 'Elements" button.'
+^^WI          @ 8,1 BUTTON BED 'Edit Elements'
 ^^WI        }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
@@ -87,7 +89,7 @@
 %       END LOOP
 %       COPY 'END'
 %     END IF
-^^WI   'Q' 'NULL'
+^^WI   'Q' 'Delete' 'NULL'
 ^^CR
 %     EVALUATE RESET29 = FALSE
 %     COPY '#EDIT'
@@ -124,20 +126,18 @@
 %      GET SILENT NOSTORE TEXT ' ' ' '
 ^^CW
 %      EVALUATE CATOM = CVALUE
-^^??   _DEL STATE
-%      VERIFY ON OFF
-%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%      IF VALUE .EQ. 1 THEN
+%
+%      CLEAR
+%      INSERT '^^?? _ELS LISTTEXT '
+^^??     _ELS SELECTED
+%      GET SILENT INTEGER ' '
+%      OUTPUT
+%      GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
+%      EVALUATE CEL = CVALUE
+%      IF ( ( UPPERCASE CEL ) .EQ. 'DELETE' ) THEN
 %        TRANSFER 'DELETE ' // CATOM TO CRYSTALS
 %        COPY 'EXEC'
 %      ELSE
-%        CLEAR
-%        INSERT '^^?? _ELS LISTTEXT '
-^^??     _ELS SELECTED
-%        GET SILENT INTEGER ' '
-%        OUTPUT
-%        GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
-%        EVALUATE CEL = CVALUE
 %        TRANSFER 'DRENAME ' // CATOM // ' ' // CEL // '(' // -
          CHARACTER ( FIRSTINT ( CATOM ) ) // ')' TO CRYSTALS
 %        COPY 'EXEC'
@@ -149,6 +149,9 @@
   type to the current selection, or delete them.
 
   Click done when complete.
+
+
+
 %      COPY '#SCRIPT XHELP2'
 %    END BLOCK
 %    BLOCK     %BED
