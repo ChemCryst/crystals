@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2001/02/26 10:25:31  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XUPF
       SUBROUTINE XUPF(I,IA,J)
@@ -917,7 +920,7 @@ C
 C
 C
 CODE FOR XDASUM
-      SUBROUTINE XDASUM
+      SUBROUTINE XDASUM ( IPUNCH )
 C
 C -- PRINT A SUMMARY OF DISC USAGE
 C
@@ -964,6 +967,7 @@ C
       WRITE ( NCWU , 1010 ) CPLACE(1) , NRCUSE , NBLUSE , NKBUSE
       ENDIF
       WRITE ( NCAWU , 1010 ) CPLACE(1) , NRCUSE , NBLUSE , NKBUSE
+      IF(IPUNCH.EQ.1)WRITE(NCPU,1010) CPLACE(1),NRCUSE,NBLUSE,NKBUSE
 1010  FORMAT ( 1X , A , 4X , I5 , 5X , I5 , 8X , I5 )
 C
       IF ( NRCFIL .LE. 0 ) GO TO 9000

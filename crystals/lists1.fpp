@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2001/02/26 10:28:03  richard
+C RIC: Added changelog to top of file
+C
 C
 CODE FOR XALTES
       SUBROUTINE XALTES(LN,IV)
@@ -768,20 +771,22 @@ C      STOP
       END
 C
 CODE FOR XPRTLI
-      SUBROUTINE XPRTLI
+      SUBROUTINE XPRTLI( IPUNCH )
 C--PRINT THE CURRENT LIST INDEX
+C--OR PUNCH IF IPUNCH .EQ. 1
 C
 \XLISTS
 C
       CALL XLC
-      CALL XPRT(1,LIST)
+      CALL XPRT(1,LIST,IPUNCH)
       CALL XLOADL
       RETURN
       END
 C
 CODE FOR XPRTFI
-      SUBROUTINE XPRTFI
+      SUBROUTINE XPRTFI( IPUNCH )
 C--PRINT THE COMPLETE FILE INDEX
+C--OR PUNCH IF IPUNCH .EQ. 1
 C
 \XFILE
 C
@@ -789,17 +794,19 @@ C
 C
       CALL XLC
       CALL XFCFI(1,(IL+1))
-      CALL XPRT(2,INDEXF)
+      CALL XPRT(2,INDEXF,IPUNCH)
       RETURN
       END
 C
 CODE FOR XPRT
-      SUBROUTINE XPRT(IN,ID)
+      SUBROUTINE XPRT(IN,ID,IPUNCH)
 C--COMMON PRINT ROUTINES FOR THE CURRENT LIST INDEX AND THE FILE INDEX
 C
 C  IN=1  PRINT THE CURRENT LIST INDEX
 C  IN=2  PRINT THE FILE INDEX
 C  ID    THE INDEX ENTRY THAT IS TO BE PRINTED
+C  IPUNCH = 0 Don't punch.
+C  IPUNCH = 1 To Punch file.
 C
 C--
 C
@@ -809,6 +816,7 @@ C
       CHARACTER*20 CINDEX(2)
       CHARACTER*20 CDELET(3)
       CHARACTER*10 CERROR(2)
+      CHARACTER*24 CDT
 C
 \XFILE
 \XFILEC
@@ -855,7 +863,7 @@ C
       WRITE ( NCWU , 1100 )
       ENDIF
 1100  FORMAT ( 17X , 'List type    Serial no.       Address        ' ,
-     2 'Use flag    Orig. serial    Date created' / )
+     2 'Use flag  Orig. serial    Date created' / )
       WRITE ( NCAWU , 1110 )
       WRITE ( CMON, 1110)
       CALL XPRVDU(NCVDU, 1,0)
@@ -889,16 +897,47 @@ C
 C -- WRITE DETAILS FOR THIS LIST
 C
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1450 ) CDELET(IDELET),(ID(L),L=I,J),CERROR(IERROR)
+       IF ( ID(I+6) .NE. 0 ) THEN
+C Old style date format:
+       WRITE (NCWU , 1450) CDELET(IDELET),(ID(L),L=I,J),CERROR(IERROR)
+       ELSE
+       CALL XCDATE(ID(I+7),CDT)
+C New style date format:
+       WRITE(NCWU,1451)CDELET(IDELET),(ID(L),L=I,I+5),CDT,CERROR(IERROR)
+       END IF
       ENDIF
-1450  FORMAT ( A , I6 , I11 , I13, ' to' , I8, I9, I14, 9X, 2A4, 6X, A )
+1450  FORMAT ( A , I6 , I11 , I13, ' to' , I8, I9, I11,12X, 2A4, 6X, A )
+1451  FORMAT ( A , I6 , I11 , I13, ' to' , I8, I9, I11, 1X, A24, 1X, A )
 C
-      WRITE ( NCAWU, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
-     2 ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
-      WRITE ( CMON, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
-     2 ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
-      CALL XPRVDU(NCVDU, 1,0)
-1452  FORMAT ( 1X,I4, 1X, I6, 1X, I3, 2X, I6, 3X, 2A4, 1X, A5, A20)
+      IF ( ID(I+6) .NE. 0 ) THEN
+C Old style date format:
+        WRITE ( NCAWU, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
+     2   ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
+        WRITE ( CMON, 1452) ID(I), ID(I+1), ID(I+4), ID(I+5),
+     2   ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
+        CALL XPRVDU(NCVDU, 1,0)
+        IF ( IPUNCH .EQ. 1 )
+     2     WRITE ( NCPU,1454 ) ID(I),ID(I+1),ID(I+4),ID(I+5),
+     3                        IERROR-1,IDELET-1,ID(I+6),ID(I+7)
+      ELSE
+C New style date format:
+        CALL XCDATE(ID(I+7),CDT)
+        WRITE ( NCAWU, 1453) ID(I), ID(I+1), ID(I+4), ID(I+5),
+     2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
+        WRITE ( CMON, 1453) ID(I), ID(I+1), ID(I+4), ID(I+5),
+     2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
+        CALL XPRVDU(NCVDU, 1,0)
+        IF ( IPUNCH .EQ. 1 )
+     2     WRITE ( NCPU,1455 ) ID(I),ID(I+1),ID(I+4),ID(I+5),
+     3                        IERROR-1,IDELET-1,CDT
+      ENDIF
+1452    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5, 7X, 2A4,13X, A5, A20)
+1453    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5, 3X, A24, 1X, A5, A20)
+1454    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5,7X, I1, 1X, I1, 1X, 2A4)
+1455    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5,7X, I1, 1X, I1, 1X, A24)
+
+C NB Punch format has date at the end, and a 1 or 0 representation of
+C error and delete flags. This makes it easier to read with a script.
 C
 C
 1650  CONTINUE
@@ -925,7 +964,7 @@ C--EMPTY  -  CHECK THE NEXT
       GOTO 1750
 C--END OF THE COMPLETE INDEX  -  PRINT THE NEXT FREE WORD
 1900  CONTINUE
-      CALL XDASUM
+      CALL XDASUM(0)
 C
       CALL XLINES
       RETURN
@@ -1138,7 +1177,10 @@ C
       LOC(5)=IOW
       LOC(6)=IABS(NOS)
 C**MACHINE SPECIFIC
-      CALL XDATE(LOC(7),LOC(8))
+C      CALL XDATE(LOC(7),LOC(8))
+C RIC2001 - use new date format (nsecs since 01/01/1970)
+      LOC(7) = 0
+      CALL XNDATE(LOC(8))
       RETURN
       END
 C

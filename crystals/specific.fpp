@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2001/06/18 13:01:03  richard
+C Removed SNGL(x) function in RAND() because it now gets its value from FRAND
+C which returns a single anyway.
+C
 C Revision 1.29  2001/03/15 11:02:36  richard
 C Comment out some old gui instructions fom XPRTDEV
 C
@@ -3459,3 +3463,22 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
       IGDAT = I
       RETURN
       END
+
+CRIC2001:
+CODE FOR XNDATE
+      SUBROUTINE XNDATE(ISECS)
+&GID      USE DFPORT
+C--SET THE # SECS SINCE 1970 IN ISECS
+      ISECS = TIME()
+      RETURN
+      END
+CODE FOR XCDATE
+      SUBROUTINE XCDATE(ISECS,CT)
+&GID      USE DFPORT
+C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING
+C e.g. "Fri Sep 07 04:37:23 2001"
+      CHARACTER*24 CT
+      CT = CTIME(ISECS)
+      RETURN
+      END
+
