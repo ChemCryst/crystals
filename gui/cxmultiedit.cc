@@ -10,6 +10,9 @@
 //   Modified:  25.2.1998 15:27 Uhr
 
 #include	"crystalsinterface.h"
+#include    "ccstring.h"
+#include    "cclist.h"
+#include    "cclink.h"
 #include	"cxmultiedit.h"
 //insert your own code here.
 #include	"cxgrid.h"
@@ -49,16 +52,17 @@ CxMultiEdit::CxMultiEdit( CrMultiEdit * container )
 	RemoveMultiEdit();
 }
 
-void	CxMultiEdit::SetText( char * text )
+void  CxMultiEdit::SetText( CcString cText )
 {
-	int leng = GetWindowTextLength();
-	SetSel( leng, leng );
-	ReplaceSel(text);
-	CClientDC cdc(this);
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+      int oldend = GetWindowTextLength();
+      SetSel( oldend, oldend );
+      ReplaceSel(cText.ToCString());
+
+      CClientDC cdc(this);
+// /* Need height of current font, not our ideal */ CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
-	cdc.SelectObject(oldFont);
+//      cdc.SelectObject(oldFont);
 
 	//Prune the length or it slows down big time.
 	//If more than 1500 lines, chop the first 500. Harsh, but fair.
@@ -68,11 +72,63 @@ void	CxMultiEdit::SetText( char * text )
 		int li = LineIndex(500);
 		SetSel(0,li);
 		Clear();
+      //Now inform the mHyperLinks list of how many characters we've chopped.
+
+            mHyperLinks.Reset();
+            CcLink* alink;
+            while ( ( alink = (CcLink*)mHyperLinks.GetItem() ) != nil  )
+            {
+                  if ( alink->ReIndex(li))
+                  {
+                        mHyperLinks.RemoveItem();
+                  }
+
+                  mHyperLinks.GetItemAndMove();
+            }
+
 	}
 	//Now scroll the text so that the last line is at the bottom of the screen.
 	//i.e. so that the line at lastline-firstvisline is the first visible line.
 	LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)((float)GetHeight() / (float)textMetric.tmHeight) + 1 );
+
 }
+
+void  CxMultiEdit::SetHyperText( CcString cText, CcString cCommand  )
+{
+      int oldend = GetWindowTextLength();
+      SetSel( oldend, oldend );
+      ReplaceSel(cText.ToCString());
+
+      CHARFORMAT cf, ocf;
+
+      GetSelectionCharFormat( ocf );
+
+      cf.dwMask = CFM_COLOR|CFM_UNDERLINE;
+      cf.crTextColor= RGB(0,0,200);
+      cf.dwEffects = CFE_UNDERLINE;
+      int newend = GetWindowTextLength();
+      SetSel( oldend, newend );
+      SetSelectionCharFormat ( cf );
+
+      SetSel(GetTextLength(),-1);
+      SetSelectionCharFormat( ocf );
+
+
+      CClientDC cdc(this);
+	TEXTMETRIC textMetric;
+	cdc.GetTextMetrics(&textMetric);
+
+
+      CcLink * newLink = new CcLink( oldend, cText.Length(), cCommand );
+
+      mHyperLinks.AddItem(newLink);
+
+	//Now scroll the text so that the last line is at the bottom of the screen.
+	//i.e. so that the line at lastline-firstvisline is the first visible line.
+	LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)((float)GetHeight() / (float)textMetric.tmHeight) + 1 );
+}
+
+
 void	CxMultiEdit::Changed()
 {
 //	mWidget->Changed();
@@ -170,16 +226,6 @@ int	CxMultiEdit::GetHeight()
 	return ( windowRect.Height() );
 }
 
-//void	CxMultiEdit::SetMaxLines(int nLines)
-//{
-//
-//}
-
-//void	CxMultiEdit::ChangeColour(CrColour colour)
-//{
-//
-//}
-
 
 void CxMultiEdit::Focus()
 {
@@ -188,6 +234,8 @@ void CxMultiEdit::Focus()
 
 BEGIN_MESSAGE_MAP(CxMultiEdit, CRichEditCtrl)
 	ON_WM_CHAR()
+      ON_WM_LBUTTONUP()
+      ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
@@ -210,6 +258,34 @@ void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 
+
+void CxMultiEdit::OnLButtonUp( UINT nFlags, CPoint point )
+{
+	NOTUSED(nFlags);
+
+      int iCharIndex = (int)SendMessage(EM_CHARFROMPOS,0,(LPARAM) &point);
+
+      mHyperLinks.Reset();
+      CcLink* pLink = (CcLink*)mHyperLinks.GetItemAndMove();
+      while ( pLink != nil  )
+      {
+            if ( pLink->IsClicked(iCharIndex))
+            {
+                  mWidget->SendCommand( pLink->GetLinkCommand() );      
+                  pLink = nil;
+            }
+            else
+            {
+                  pLink = (CcLink*)mHyperLinks.GetItemAndMove();
+            }
+      }
+}
+
+void CxMultiEdit::OnLButtonDown( UINT nFlags, CPoint point )
+{
+      if( !(mWidget->mDisabled))
+            CRichEditCtrl::OnLButtonDown( nFlags, point );
+}
 
 void CxMultiEdit::SetColour(int red, int green, int blue)
 {

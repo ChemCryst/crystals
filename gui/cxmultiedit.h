@@ -43,13 +43,13 @@ class	CxMultiEdit : public CRichEditCtrl
 		void SetBold(Boolean bold);
 		void SetColour (int red, int green, int blue);
 		void Focus();
+
 		// methods
 		static	CxMultiEdit * CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent );
 			CxMultiEdit( CrMultiEdit * container );
 			~CxMultiEdit();
-		void	SetText( char * text );
-//		void	ChangeColour( CrColour colour );
-//		void	SetMaxLines(int nLines);
+            void  SetText( CcString cText );
+            void  SetHyperText( CcString cText, CcString cCommand  );
 		void	SetIdealWidth(int nCharsWide);
 		void	SetIdealHeight(int nCharsHigh);
 		int	GetIdealWidth();
@@ -66,6 +66,8 @@ class	CxMultiEdit : public CRichEditCtrl
 		// attributes
 		static int mMultiEditCount;
 
+            CcList mHyperLinks;            
+
 	private:
 		// attributes
 		CrMultiEdit *	mWidget;
@@ -73,6 +75,8 @@ class	CxMultiEdit : public CRichEditCtrl
 		int		mIdealWidth;
 
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+		afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
+            afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
 
 		DECLARE_MESSAGE_MAP()
 
