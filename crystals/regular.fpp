@@ -1,5 +1,9 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.38  2004/12/10 11:06:13  rich
+c Get rid of warnings when matching two molecules and there are
+c extra molecular species in the model.
+c
 c Revision 1.37  2004/12/09 13:09:01  rich
 c Fixed #match renumbering code after breaking it while improving
 c the match robustness.
@@ -1562,16 +1566,22 @@ c     2    STORE(LRENM+(J-1)*MDRENM+4),NINT(STORE(LRENM+(J-1)*MDRENM+5))
 c          CALL XPRVDU(NCVDU,1,0)
 c      END DO
 
-      DO 1520 J = 1, NATMD
-       DO 1748 I = 1,N5
-         KTYPE = ISTORE(L5+(I-1)*MD5)
-         KSERIL = NINT(STORE(L5+(I-1)*MD5+1))
-         IF( KTYPE .NE. ISTORE(LRENM+(J-1)*MDRENM) ) GOTO 1748
-         IF( KSERIL.NE. NINT(STORE(LRENM+(J-1)*MDRENM+1)) ) GOTO 1748
-         CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4), STORE(L5+(I-1)*MD5),2)
-         GOTO 1520 !Only match once.
-1748    CONTINUE
-1520  CONTINUE
+      DO 1748 I = 1,N5
+        KTYPE = ISTORE(L5+(I-1)*MD5)
+        KSERIL = NINT(STORE(L5+(I-1)*MD5+1))
+        DO J = 1, NATMD
+         IF( KTYPE .NE. ISTORE(LRENM+(J-1)*MDRENM) ) CYCLE
+         IF( KSERIL.NE. NINT(STORE(LRENM+(J-1)*MDRENM+1)) ) CYCLE
+c         WRITE(CMON,'(A,2I5,A,I5,A,I5)') 'Changing: ',I,J,
+c     1    KTYPE,KSERIL,
+c     2    STORE(LRENM+(J-1)*MDRENM+4),NINT(STORE(LRENM+(J-1)*MDRENM+5))
+c          CALL XPRVDU(NCVDU,1,0)
+c         CALL XMOVE (STORE(LRENM+(J-1)*MDRENM+4), STORE(L5+(I-1)*MD5),2)
+         ISTORE(LRENM+(J-1)*MDRENM) = 0
+         ISTORE(LRENM+(J-1)*MDRENM+1) = 0 
+         GOTO 1748                         !Only match once.
+        END DO
+1748  CONTINUE
 C -- SET FLAG TO SHOW NEW LIST 5 IS TO BE PRODUCED
       NEWLIS=1
       GOTO 1800
@@ -4587,6 +4597,7 @@ c      CALL XPRVDU(NCVDU,3,0)
           STORE(MNEW+3) = 1.0
           CALL XMOVE (STORE(I5),STORE(MRENM+2),2)
           ISTORE(MRENM+5) = I5
+
           MNEW = MNEW + 4
           MRENM = MRENM + 6
           MATMD = MATMD + MDATMD
