@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2000/12/05 12:36:42  CKP2
+C Reformat FORMAT statements
+C
 C Revision 1.4  1999/05/13 17:54:58  dosuser
 C RIC: Added new function KCLEQL to find the last occurence of
 C      a substring in a string. Complements KCCEQL.
@@ -73,7 +76,6 @@ C
       ENDIF
 
       RETURN
-      RETURN
       END
 C
 C
@@ -111,6 +113,46 @@ C
         IF ( CDATA(I:I+LENMAT-1) .EQ. CMATCH ) GO TO 1100
         KCCNEQ = I
         RETURN
+1100  CONTINUE
+C
+      RETURN
+      END
+C
+C
+CODE FOR KCLNEQ
+      FUNCTION KCLNEQ ( CDATA , ISTART , CMATCH )
+C
+C -- FIND LAST POSITION IN STRING NOT CORRESPONDING TO CHARACTER
+C
+C -- THIS FUNCTION IS SIMILAR TO FORTRAN 'INDEX' BUT BACKWARDS
+C
+C      CDATA       STRING IN WHICH TO SEARCH
+C      ISTART      STARTING POSITION IN 'CDATA' (near end), or -ve for END.
+C      CMATCH      STRING TO SEARCH FOR ( ALWAYS LENGTH = 1 )
+C
+C      KCLNEQ      -1      NO MATCH
+C                  +VE     POSITION IN 'CDATA' OF LAST MISMATCH
+C
+C
+      CHARACTER*(*) CDATA
+      CHARACTER*1   CMATCH
+C
+C
+      KCLNEQ = -1
+      ISTR = ISTART
+C
+      LENDAT = LEN ( CDATA )
+      IFINSH = LENDAT
+C
+      IF ( ISTR .EQ. 0 ) RETURN
+      IF ( ISTR .LT. 0 ) ISTR = IFINSH
+      IF ( ISTR .GT. IFINSH ) RETURN
+C
+      DO 1100 I = ISTR, 1, -1
+        IF ( CDATA(I:I) .NE. CMATCH ) THEN
+          KCLNEQ = I
+          RETURN
+        END IF
 1100  CONTINUE
 C
       RETURN
