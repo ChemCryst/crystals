@@ -7,6 +7,8 @@
 //   Created:   22.2.1998 14:43 Uhr
 //   Modified:  6.3.1998 10:10 Uhr
 
+// $Log: not supported by cvs2svn $
+
 #include	"crystalsinterface.h"
 #include	"cxlistbox.h"
 
@@ -250,5 +252,13 @@ void CxListBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 			mWidget->FocusToInput((char)nChar);
 		}
 	}
+}
+
+
+void CxListBox::SetSelection( int select )
+{
+
+    SetCurSel ( select - 1 );
+
 }
 
