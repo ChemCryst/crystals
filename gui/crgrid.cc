@@ -242,13 +242,17 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 						retVal = InitElement( listPtr, tokenList, xpos, ypos );
 					break;
 				}
-				case kTCreateListCtrl:				// Create a List Control
+#ifdef __WINDOWS__
+//The ListCtrl is not yet supported
+// under linux due to lack of demand.
+                        case kTCreateListCtrl:                    // Create a List Control
 				{
 					CrListCtrl * listPtr = new CrListCtrl( this );
 					if ( listPtr != nil )
 						retVal = InitElement( listPtr, tokenList, xpos, ypos );
 					break;
 				}
+#endif
 				case kTCreateDropDown:				// Create a DropDown
 				{
 					CrDropDown * dropDownPtr = new CrDropDown( this );

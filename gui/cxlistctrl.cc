@@ -18,7 +18,7 @@
 #include	"cxwindow.h"
 #include	"crlistctrl.h"
 #include	"cccontroller.h"
-#include	"math.h"
+#include    <math.h>
 
 int	CxListCtrl::mListCtrlCount = kListCtrlBase;
 
@@ -49,7 +49,7 @@ CxListCtrl::CxListCtrl( CrListCtrl * container )
 	m_colTypes = nil;
 	m_nHighlight = HIGHLIGHT_ROW;
     nSortedCol = -1; 
-    bSortAscending = TRUE; 
+    bSortAscending = true; 
 	m_ProgSelecting = 0;  
 }
 
@@ -499,7 +499,7 @@ void CxListCtrl::RepaintSelectedItems()
                 GetItemRect(nItem, rcLabel, LVIR_LABEL);
                 rcBounds.left = rcLabel.left;
 
-                InvalidateRect(rcBounds, FALSE);
+                InvalidateRect(rcBounds, false);
         }
 
         // Invalidate selected items depending on LVS_SHOWSELALWAYS
@@ -512,7 +512,7 @@ void CxListCtrl::RepaintSelectedItems()
                         GetItemRect(nItem, rcLabel, LVIR_LABEL);
                         rcBounds.left = rcLabel.left;
 
-                        InvalidateRect(rcBounds, FALSE);
+                        InvalidateRect(rcBounds, false);
                 }
         }
 
@@ -541,7 +541,7 @@ void CxListCtrl::OnPaint()
                         rcClip.left = min(rcBounds.right-1, rcClip.left);
                         rcClip.right = rcClient.right;
 
-                        InvalidateRect(rcClip, FALSE);
+                        InvalidateRect(rcClip, false);
                 }
         }
 
@@ -646,7 +646,7 @@ void CxListCtrl::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
                 if( phdn->iItem == nSortedCol )
                         bSortAscending = !bSortAscending;
                 else
-                        bSortAscending = TRUE;
+                        bSortAscending = true;
 
                 nSortedCol = phdn->iItem;
                 SortTextItems( m_colTypes[nSortedCol], nSortedCol, bSortAscending );
@@ -665,7 +665,7 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
 {
 	int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
 	if( nCol >= nColCount)
-		return FALSE;
+            return false;
 
 	int size = GetItemCount();
 
@@ -862,7 +862,7 @@ Boolean CxListCtrl::SortTextItems( int colType, int nCol, Boolean bAscending)
 	delete [] stringsToSort;
 	delete [] sorted;
 
-	return TRUE;
+      return true;
 
 }
 		

@@ -1,3 +1,4 @@
+#ifdef __WINDOWS__
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CrListCtrl
@@ -289,3 +290,5 @@ void CrListCtrl::SendValue(CcString message)
             SendCommand(mName + " " + message);
 	}
 }
+
+#endif
