@@ -13,6 +13,7 @@ class CcModelAtom : public CcModelObject
 	public:
             void Render(CrModel* view, Boolean detailed);
 		void Select(Boolean select);
+                void Disable(Boolean select);
 		Boolean IsSelected();
 		Boolean Select();
 		int X();
@@ -37,6 +38,7 @@ class CcModelAtom : public CcModelObject
             int x11, x12, x13, x21, x22, x23, x31, x32, x33;
 		CcString label;
 		Boolean m_selected;
+                Boolean m_disabled;
 };
 
 #endif
