@@ -1,0 +1,107 @@
+%SCRIPT ASSESS5
+%% A Script to determine the current state of the list 5 refinement.
+
+{S * Checking the state of the atomic parameters list (5).
+%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT
+%  VARIABLE INTEGER ADP ISER HCOUNT
+%  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST 
+%  VARIABLE CHARACTER CTYPE
+%% Return values:
+%%    ADP      0 NO LIST 5
+%%             1 NOT REFINED
+%%             2 ISO
+%%             3 ANISO
+%%
+%%    DOEXTNC  TRUE Extinction param is non-zero.
+%%
+%%    DOFLACK  TRUE Flack param is non-zero.
+%%
+%%    DOSORT   TRUE if H are mixed with non-H
+%%
+%%    HFIRST   serial number of first H found, or -1 if no H
+%% 
+%  EVALUATE ADP     = 0
+%  EVALUATE DOFLACK = FALSE
+%  EVALUATE DOEXTNC = FALSE
+%  EVALUATE HFIRST  = - 1.0
+%  EVALUATE HCOUNT  = 0
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done. 
+%    FINISH
+%  END IF
+%%
+%  EVALUATE ISER = - 1
+%  EVALUATE DOSORT = FALSE
+%  COPY "#GENERALEDIT 5"
+%  COPY "LOCATE RECORDTYPE=101" 
+%  COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" 
+%  COPY "TOP" 
+%  COPY 'LOCATE RECORDTYPE=102'
+%  COPY 'TOP'
+%  COPY 'TRANSFER FROM OFFSET=4 TO FLACKP'
+%  IF ( FLACKP .GE. 0.001 ) .OR. ( FLACKP .LE. - 0.001 ) THEN
+%    EVALUATE DOFLACK = TRUE
+%  END IF
+%  COPY 'TRANSFER FROM OFFSET=5 TO EXTP'
+%  IF EXTP .GE. 0.001 THEN
+%    EVALUATE DOEXTNC = TRUE
+%  END IF
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%  COPY 'TOP'
+%  COPY 'TRANSFER FROM OFFSET=7 TO UONE'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPy 'NEXT'
+%    COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%    COPY 'TRANSFER FROM OFFSET=3 TO FLAG'
+%    COPY 'TRANSFER FROM OFFSET=7 TO U11'
+%    IF ( CTYPE .NE. 'H' ) THEN
+%      IF  ( FLAG .LE. 0.0 ) THEN
+%        EVALUATE ADP = 3
+%      ELSE IF ( ADP .LT. 3 ) .AND. ( UONE .NE. U11 ) THEN
+%        EVALUATE ADP = 2
+%      ELSE IF ( ADP .LT. 2 ) THEN
+%        EVALUATE ADP = 1
+%      END IF
+%      IF ISER .GE. 1 THEN
+%%       LIST IS IN WRONG ORDER wrt H's.
+%        EVALUATE ISER = 0
+%        EVALUATE DOSORT = TRUE
+%      END IF
+%    ELSE IF ISER .NE. 1 THEN
+%% Indicate H found, should be no more non-h after here.
+%      EVALUATE ISER = 1
+%      COPY 'TRANSFER FROM OFFSET=1 TO HFIRST'
+%      EVALUATE HCOUNT = 1
+%    ELSE
+%      EVALUATE HCOUNT = HCOUNT + 1
+%    END IF
+%  END LOOP
+%  COPY 'END'
+{S * Done. State of the current refinement:
+%  CASE ( ADP + 1 )
+%    TRANSFER '{E   Cannot determine state. No atoms?' TO DISPLAY
+%    TRANSFER '{R   Thermal parameters not refined yet.' TO DISPLAY
+%    TRANSFER '{R   Some atoms are isotropic.' TO DISPLAY
+%    TRANSFER '{R   Some atoms are anisotropic.' TO DISPLAY
+%  END CASE
+%  IF ( DOEXTNC .EQ. TRUE ) THEN
+%    CLEAR
+%    INSERT ' {R   Extinction  has been refined to '
+%    STORE FORMAT /(F15.5)/ LENGTH 15 REAL EXTP
+%    OUTPUT
+%  END IF
+%  IF ( DOFLACK .EQ. TRUE ) THEN
+%    CLEAR
+%    INSERT '  {R   Flack param has been refined to '
+%    STORE FORMAT /(F15.5)/ LENGTH 15 REAL FLACKP
+%    OUTPUT
+%  END IF
+%  IF ( DOSORT .EQ. TRUE ) THEN
+  {R The hydrogens in the list are not at the end. They may
+  {R be resorted in a moment.
+%  END IF
+%END SCRIPT
