@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2003/07/08 10:08:03  rich
+C
+C New #TWINPLOT instruction. Given a twin-law, it
+C builds a histogram of deviation of transformed lattice
+C points, h' (=R.h), from integer lattice points.
+C The units are A-1, the same as ROTAX and the TWINTOL
+C parameter used for reading in twin laws. This graph may
+C be used to choose a suitable TWINTOL.
+C
 C Revision 1.7  2002/02/28 18:04:20  ckp2
 C New command #SIGMADIST for producing sigma distribution graph. It doesn't
 C do anything else.
@@ -49,7 +58,7 @@ C--CHECK IF WE SHOULD RETURN
 C--BRANCH ON THE TYPE OF OPERATION
 
       GOTO (1500,2200,2300,2400,2500,2550,2600,2700,4000,4100,
-     2      4200,4300,1500),NUM
+     2      4200,4300,4400,1500),NUM
 1500  CALL GUEXIT(324)
 
 C--'#SYST' INSTRUCTION
@@ -106,6 +115,11 @@ C--'#SIGMADIST' INSTRUCTION
 C--'#TWINPLOT' INSTRUCTION
 4300  CONTINUE
       CALL XTWINP
+      RETURN
+
+C--'#SGPLOT' INSTRUCTION
+4400  CONTINUE
+      CALL XSPGPL
       RETURN
 
       END

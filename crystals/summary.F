@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/07/09 11:34:23  rich
+C Ensure theta_full is always at least 3/4 of theta_max.
+C
 C Revision 1.46  2003/07/08 10:49:43  rich
 C
 C Completely changed the SIGMA vs RES graph - it takes far
@@ -3245,4 +3248,123 @@ C -- INPUT ERRORS
 
       END
 
+
+CODE FOR XSPGPL
+      SUBROUTINE XSPGPL
+      DIMENSION KSIGS(25,2), GM(3)
+\ISTORE
+\STORE
+\XLST06
+\XLST01
+\ICOM30
+\XLST30
+\XUNITS
+\XSSVAL
+\XERVAL
+\XOPVAL
+\XCONST
+\XIOBUF
+\QSTORE
+\QLST30
+      DATA ICOMSZ / 15 /
+      DATA IVERSN /100 /
+
+C -- SET THE TIMING AND READ THE CONSTANTS
+
+      CALL XTIME1 ( 2 )
+      CALL XCSAE
+
+C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
+      ICOMBF = KSTALL( ICOMSZ )
+      CALL XZEROF (STORE(ICOMBF), ICOMSZ)
+      I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
+      IF ( I .LT. 0 ) GO TO 9910
+
+      IPLOT = ISTORE(ICOMBF+9)
+      ITYP06 = ISTORE(ICOMBF+10)
+      IULN = KTYP06(ITYP06)
+      CALL XFAL06 (IULN, 0)
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+
+      DO I = 1,25
+        KSIGS(I,1) = 0
+        KSIGS(I,2) = 0
+      END DO
+
+C Find max value of SQRT(Fo)
+
+      RFOMAX = SQRT(STORE(L6DTL+3*MD6DTL+1))
+
+C SCAN LIST 6 FOR REFLECTIONS
+
+
+      ISTAT = KLDRNR(0)
+
+      DO WHILE ( ISTAT .GE. 0 )
+
+        CALL XMLTMM(STORE(ICOMBF),STORE(M6),GM,3,3,1)
+C If indices are unchanged under op, then this ref is in the group.
+        CALL XSUBTR(STORE(M6),GM,GM,3)
+        CALL VPROD(GM,GM,D)
+        IF ( D .LT. ZERO ) THEN
+C Work out which bin.
+          RFO = SQRT(ABS(STORE(M6+3))) * SIGN (1.0,STORE(M6+3))
+          JSIGS = 6 + ( 20. * RFO / RFOMAX )
+          JSIGS = MAX(JSIGS,1)
+          JSIGS = MIN(JSIGS,25)
+C Work out whether inc or exc.
+          CALL VPROD(STORE(ICOMBF+11),STORE(M6),D)
+
+c          WRITE(CMON,'(4F4.0)')STORE(M6),
+c     1 STORE(M6+1),STORE(M6+2),D
+c          CALL XPRVDU(NCVDU,1,0)
+
+          IF ( MOD ( NINT(D), ISTORE(ICOMBF+14) ) .EQ. 0 ) THEN
+               KSIGS(JSIGS,1) = KSIGS(JSIGS,1) + 1
+          ELSE
+               KSIGS(JSIGS,2) = KSIGS(JSIGS,2) + 1
+          END IF
+        END IF
+        ISTAT = KLDRNR(0)
+      END DO
+
+      IF (IPLOT .EQ. 1) THEN
+        WRITE(CMON,'(A,3(/A))')
+     1  '^^PL PLOTDATA _XSPGA BARGRAPH ATTACH _SPGA',
+     1  '^^PL XAXIS TITLE ''sqrt(Fobs)'' NSERIES=2 LENGTH=25',
+     1  '^^PL YAXIS TITLE ''Number of observations''',
+     1  '^^PL SERIES 1 SERIESNAME ''Number of reflections with Fo '''
+        CALL XPRVDU(NCVDU, 4,0)
+
+        DO I = 1, 25
+          WRITE(CMON,'(A,1X,F9.5,1X,A,1X,I6,1X,I6)')
+     1    '^^PL LABEL',(I-6)*RFOMAX/20.0,'DATA',KSIGS(I,1),KSIGS(I,2)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+
+      END IF
+
+9000  CONTINUE
+C -- FINAL MESSAGE
+      CALL XOPMSG ( IOPDSP , IOPEND , IVERSN )
+      CALL XTIME2 ( 2 )
+      CALL XRSL
+      CALL XCSAE
+      RETURN
+
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPDSP , IOPABN , 0 )
+      GO TO 9000
+
+9910  CONTINUE
+C -- INPUT ERRORS
+      CALL XOPMSG ( IOPDSP , IOPCMI , 0 )
+      GO TO 9900
+      RETURN
+
+      END
 
