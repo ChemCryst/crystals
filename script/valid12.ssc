@@ -17,7 +17,6 @@
 %% 
 %    COPY '#PRINT 12'
 %    COPY 'END'
- 
 {R  Remember that a 'valid' list may not be a 'suitable' list
 %%
 %      FINISH
@@ -32,13 +31,7 @@
 %  COPY 'END'
 %  COPY '#PRINT 12'
 %  COPY 'END'
- 
 {R  This 'valid' list may not be suitable for refinement, but
 {R  will be fine for calculating scale factor and R-factor.
-% END IF
-%%
-%%
-
-{S * Done
 %END SCRIPT
  
