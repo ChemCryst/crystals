@@ -1,20 +1,19 @@
 %SCRIPT LEXTINC
-%  VARIABLE INTEGER LEXTINCT 
+%  VARIABLE INTEGER LEXTINCT
 ^^WI WINDOW _EXTINC 'Extinction analysis' SIZE MODAL
 ^^WI GRID MAIN NROWS=6 NCOLS=3
 ^^WI {
 ^^WI  @ 1,2 GRID TOP NROWS=2 NCOLS=1
 ^^WI  {
-^^WI   @ 2,1 STATIC T1 
+^^WI   @ 2,1 STATIC T1
 ^^WI 'Analysis of residuals. Col 3 is FObs and col 4 is FCalc.'
 ^^WI  }
-^^WI  @ 2,2 MULTIEDIT _ANALTEXT '' NROWS=10 NCOLS=80 
-^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI  @ 2,2 TEXTOUT _ANALTEXT '' NROWS=10 NCOLS=80
 ^^WI  @ 3,2 GRID MID NROWS=3 NCOLS=1
 ^^WI  {
-^^WI   @ 2,1 STATIC T3 
+^^WI   @ 2,1 STATIC T3
 ^^WI  'If the last 5 or 6 entries in column 3 are generally lower'
-^^WI   @ 3,1 STATIC T4 
+^^WI   @ 3,1 STATIC T4
 ^^WI  'than those in column 4, then you need to model extinction.'
 ^^WI  }
 ^^WI  @ 4,2 GRID LOW NROWS=3 NCOLS=3
