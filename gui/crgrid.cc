@@ -7,98 +7,110 @@
 //   Filename:  CrGrid.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
-//   Modified:  30.3.1998 11:49 Uhr
+//   $Log: not supported by cvs2svn $
 
-#include	"crystalsinterface.h"
-#include	"crconstants.h"
-#include	"crgrid.h"
-#include	"cxgrid.h"
-#include	"cctokenlist.h"
-#include	"cccontroller.h"
-#include	"crbutton.h"
-#include	"crlistbox.h"
-#include	"crlistctrl.h"
-#include	"crdropdown.h"
-#include	"crmultiedit.h"
+#include        "crystalsinterface.h"
+#include        "crconstants.h"
+#include        "crgrid.h"
+#include        "cxgrid.h"
+#include        "cctokenlist.h"
+#include        "cccontroller.h"
+#include        "crbutton.h"
+#include        "crlistbox.h"
+#include        "crlistctrl.h"
+#include        "crdropdown.h"
+#include        "crmultiedit.h"
 #include        "crtextout.h"
-#include	"creditbox.h"
-#include	"crtext.h"
-#include    "cricon.h"
-#include	"crprogress.h"
-#include	"crcheckbox.h"
-#include	"crchart.h"
-#include	"crmodel.h"
-#include	"crradiobutton.h"
-#include	"crwindow.h"
-#include	"ccrect.h"
-#include	"cxgroupbox.h"
+#include        "creditbox.h"
+#include        "crtext.h"
+#include        "cricon.h"
+#include        "crprogress.h"
+#include        "crcheckbox.h"
+#include        "crchart.h"
+#include        "crmodel.h"
+#include        "crradiobutton.h"
+#include        "crwindow.h"
+#include        "ccrect.h"
+#include        "cxgroupbox.h"
 #include        "crbitmap.h"
 #include        "crtab.h"
+#include        "crtoolbar.h"
+#include        "crstretch.h"
+#include        "crresizebar.h"
 
 
 
 CrGrid::CrGrid( CrGUIElement * mParentPtr )
-	:	CrGUIElement( mParentPtr )
+    :   CrGUIElement( mParentPtr )
 {
-	mGridComplete = false;
-	mActiveSubGrid = nil;
-	mOutlineWidget = nil;
-        mXCanResize = true;
-        mYCanResize = true;
+  m_GridComplete = false;
+  m_ActiveSubGrid = nil;
+  m_OutlineWidget = nil;
+  mXCanResize = false;
+  mYCanResize = false;
 
-	// We have to create a GUI representation of the grid only, if we
-	// need to outline it
-        ptr_to_cxObject = CxGrid::CreateCxGrid( this, (CxGrid *)(mParentPtr->GetWidget()) );
-	mTheGrid = nil;
-	mTabStop = false;
-	mRows = 0;
-	mColumns = 0;
-	mCommandSet = false;
-      mCommandText = "";
-}
+  // We have to create a GUI representation of the grid only, if we
+  // need to outline it
+  ptr_to_cxObject = CxGrid::CreateCxGrid( this, (CxGrid *)(mParentPtr->GetWidget()) );
+  m_TheGrid = nil;
+  mTabStop = false;
+  m_Rows = 0;
+  m_Columns = 0;
+  m_CommandSet = false;
+  m_CommandText = "";
+
+  m_ContentWidth = 0;
+  m_ContentHeight = 0;
+  m_InitContentWidth = 0;
+  m_InitContentHeight = 0;
+
+}         
 
 CrGrid::~CrGrid()
 {
-	CrGUIElement * theItem;
-	
-	mItemList.Reset();
-	theItem = (CrGUIElement *)mItemList.GetItem();
-	
-	while ( theItem != nil )
-	{
-		delete theItem;
-		mItemList.RemoveItem();
-		theItem = (CrGUIElement *)mItemList.GetItem();
-	}
-	
-	if ( mOutlineWidget != nil )
-	{
-		delete (CxGroupBox*)mOutlineWidget;
-		mOutlineWidget = nil;
-	}
-        if ( ptr_to_cxObject != nil )
-	{
-                delete (CxGrid*)ptr_to_cxObject;
-                ptr_to_cxObject = nil;
-	}
+  m_ItemList.Reset();
+  CrGUIElement * theItem = (CrGUIElement *)m_ItemList.GetItem();
+  while ( theItem != nil )
+  {
+    delete theItem;
+    m_ItemList.RemoveItem();
+    theItem = (CrGUIElement *)m_ItemList.GetItem();
+  }
+  if ( m_OutlineWidget != nil )
+  {
+    delete (CxGroupBox*)m_OutlineWidget;
+    m_OutlineWidget = nil;
+  }
+
+  if ( ptr_to_cxObject != nil )
+  {
+    ((CxGrid*)ptr_to_cxObject)->DestroyWindow(); 
+	delete (CxGrid*)ptr_to_cxObject;
+    ptr_to_cxObject = nil;
+  }
 
 
-	delete [] mTheGrid;
+  delete [] m_TheGrid;
+  delete [] m_InitialColWidths;
+  delete [] m_InitialRowHeights;
+  delete [] m_ColCanResize;
+  delete [] m_RowCanResize;
+
 }
 
-Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
+CcParse CrGrid::ParseInput( CcTokenList * tokenList )
 {
-  Boolean retVal = false;
-  Boolean hasTokenForMe = true;
+  CcParse retVal(false, mXCanResize, mYCanResize);
+  bool hasTokenForMe = true;
   CcString theString;
-	
+
 // Initialization for the first time
+
   if( ! mSelfInitialised )
   {
     CcController::debugIndent ++;
-    LOGSTAT("*** Grid *** Initing...");
     retVal = CrGUIElement::ParseInputNoText( tokenList );
-    LOGSTAT( "*** Created Grid        " + mName );
+    LOGSTAT( "Created Grid " + mName );
 
     while ( hasTokenForMe )
     {
@@ -108,7 +120,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
         {
           tokenList->GetToken(); // Remove the keyword
           theString = tokenList->GetToken();
-          mRows = atoi( theString.ToCString() );
+          m_Rows = atoi( theString.ToCString() );
           LOGSTAT( "Setting Grid Rows: " + theString );
           break;
         }
@@ -116,7 +128,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
         {
           tokenList->GetToken(); // Remove the keyword
           theString = tokenList->GetToken();
-          mColumns = atoi( theString.ToCString() );
+          m_Columns = atoi( theString.ToCString() );
           LOGSTAT( "Setting Grid Columns: " + theString );
           break;
         }
@@ -129,7 +141,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
         case kTOutline:
         {
           tokenList->GetToken(); // Remove that token!
-          mOutlineWidget = CxGroupBox::CreateCxGroupBox( this, (CxGrid *)GetWidget() );
+          m_OutlineWidget = CxGroupBox::CreateCxGroupBox( this, (CxGrid *)GetWidget() );
           mText = tokenList->GetToken();
           SetText( mText );
           LOGSTAT( "Setting Grid outline" );
@@ -156,6 +168,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
           LOGSTAT( "Setting Grid alignment BOTTOM" );
           break;
         }
+
         case kTOpenGrid:
         {
           tokenList->GetToken();
@@ -168,40 +181,54 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
           break; // We leave the token in the list and exit the loop
         }
       }
-    } 
-	
- // Create the array holding the elements
-    mTheGrid = (CrGUIElement **) new int [ mRows * mColumns ];
-    for (int i = 0; i < mRows*mColumns; i++) mTheGrid[i] = nil;
-	
+    }
+
+// Create the array holding the elements
+
+    m_TheGrid = (CrGUIElement **) new int [ m_Rows * m_Columns ];
+    m_InitialColWidths = new int [ m_Columns ];
+    m_InitialRowHeights = new int [ m_Rows ];
+    m_ColCanResize = new bool [ m_Columns ];
+    m_RowCanResize = new bool [ m_Rows ];
+
+    int i;
+    for (i = 0; i < m_Rows*m_Columns; i++) m_TheGrid[i] = nil;
+    for (i = 0; i < m_Columns; i++)
+    {
+      m_InitialColWidths[i] = EMPTY_CELL;
+      m_ColCanResize[i] = false;
+    }
+    for (i = 0; i < m_Rows; i++)
+    {
+      m_InitialRowHeights[i] = EMPTY_CELL;
+      m_RowCanResize[i] = false;
+    }
+
     mSelfInitialised = true;
   }
- // End of Init, now comes the general parser
+// End of Init, now comes the general parser
 
- // If a child grid is incomplete pass the tokenlist straight down.
- //(This is rare, but it is possible for tokenLists to become fragmented
- //if some other command accidentally causes them to be processed before
- //they are complete.)
+// If a child grid is incomplete pass the tokenlist straight down.
+//(This is rare, but it is possible for tokenLists to become fragmented
+//if some other command accidentally causes them to be processed before
+//they are complete.)
 
-  if(mActiveSubGrid != nil)
+  if(m_ActiveSubGrid != nil)
   {
-    // Sub Grid exists, testing for completeness...
-    if (!mActiveSubGrid->GridComplete())
+    if (!m_ActiveSubGrid->GridComplete()) // Sub Grid exists, testing for completeness...
     {
-      // Sub Grid incomplete passing tokenList...
-      return retVal = mActiveSubGrid->ParseInput(tokenList);
+      return retVal = m_ActiveSubGrid->ParseInput(tokenList); // Sub Grid incomplete passing tokenList...
     }
     else
     {
-      mActiveSubGrid = nil;
+      m_ActiveSubGrid = nil;
     }
   }
 
-  if( tokenList->GetDescriptor( kInstructionClass ) == kTNoMoreToken )
-              return true;
+  if( tokenList->GetDescriptor( kInstructionClass ) == kTNoMoreToken ) return true;
 
-  // This is either the end of this grid, the start of a new sub grid or
-  // a sub element.
+// This is either the end of this grid, the start of a new sub grid or
+// a sub element.
 
   hasTokenForMe = true;
 
@@ -212,16 +239,16 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
       case kTEndGrid:                                         // End this grid.
       {
         tokenList->GetToken();
-        mGridComplete = true;
+        m_GridComplete = true;
         LOGSTAT("CrGrid:ParseInput:EndGrid Grid closed");
-        retVal = true;
+        retVal = CcParse(true,mXCanResize,mYCanResize);
         hasTokenForMe = false;
         CcController::debugIndent --;
         break;
       }
       case kTAt:
       {
-        tokenList->GetToken(); 
+        tokenList->GetToken();
         CcString theString;
         theString = tokenList->GetToken();              // the next must be the row number
         int ypos = atoi( theString.ToCString() );
@@ -234,7 +261,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
             CrGrid * gridPtr = new CrGrid( this );
             if ( gridPtr != nil )
             {
-              mActiveSubGrid = gridPtr;
+              m_ActiveSubGrid = gridPtr;
               retVal = InitElement( gridPtr, tokenList, xpos, ypos );
             }
             break;
@@ -350,11 +377,34 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
               retVal = InitElement( bitPtr, tokenList, xpos, ypos );
             break;
           }
-          case kTCreateTabCtrl:                                 // Create a Bitmap
+          case kTCreateTabCtrl:                                 // Create a Tab control
           {
             CrTab * tabPtr = new CrTab( this );
             if ( tabPtr != nil )
               retVal = InitElement( tabPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateToolBar:                                 // Create a Toolbar
+          {
+            CrToolBar * toolPtr = new CrToolBar( this );
+            if ( toolPtr != nil )
+              retVal = InitElement( toolPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateStretch:                                 // Create a Stretch
+          {
+            CrStretch * sPtr = new CrStretch( this );
+            if ( sPtr != nil )
+              retVal = InitElement( sPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateResize:                                 // Create a Resize control
+          {
+            CrResizeBar * barPtr = new CrResizeBar( this );
+            if ( barPtr != nil )
+            {
+               retVal = InitElement( barPtr, tokenList, xpos, ypos );
+            }
             break;
           }
           default:
@@ -366,7 +416,7 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
             LOGWARN("CrGrid:ParseInput:default No command after @location in grid:" + badtoken );
           }
         }
-        break;   
+        break;
       }  // End of kTAt switch.
       default:
       {
@@ -383,464 +433,354 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
   return (retVal);
 }
 
+
+
 void CrGrid::SetGeometry( const CcRect * rect )
 {
   ((CxGrid*)ptr_to_cxObject)->SetGeometry( rect->mTop,    rect->mLeft,
                                            rect->mBottom, rect->mRight );
-  if ( mOutlineWidget != nil )
+  if ( m_OutlineWidget != nil )
   {
-    mOutlineWidget->SetGeometry( 0, 0, rect->mBottom - rect->mTop, rect->mRight - rect->mLeft );
+    m_OutlineWidget->SetGeometry( 0, 0, rect->mBottom - rect->mTop, rect->mRight - rect->mLeft );
   }
-}
 
-CcRect	CrGrid::GetGeometry()
-{
-	CcRect retVal( 
-                        ((CxGrid*)ptr_to_cxObject)->GetTop(), 
-                        ((CxGrid*)ptr_to_cxObject)->GetLeft(),
-                        ((CxGrid*)ptr_to_cxObject)->GetTop()+((CxGrid*)ptr_to_cxObject)->GetHeight(),
-                        ((CxGrid*)ptr_to_cxObject)->GetLeft()+((CxGrid*)ptr_to_cxObject)->GetWidth() );
-	return retVal;
-}
+  int xp, yp;
+  CrGUIElement *vtemp;
+  int* ColWidths = new int [ m_Columns ];
+  int* RowHeights = new int [ m_Rows ];
+  int runTotHeight = 0;  int runTotWidth = 0;
+  if(m_OutlineWidget) runTotWidth += EMPTY_CELL;
 
-void	CrGrid::CalcLayout()
-{
-        CcController::debugIndent++;
-        LOGSTAT("CrGrid: " + mName + " CalcLayout Step 1: Calculating size of all children");
-	
-//STEP1 Call calclayout for child elements.
-	int xp, yp;
-	CrGUIElement *vtemp;
-	
-	for ( xp = 1; xp <= mColumns ; xp++)
-	{
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			vtemp = GetPointer(xp,yp);
-			if (vtemp != nil)
-				((CrGUIElement*)vtemp)->CalcLayout();
-		}
-	}
-        LOGSTAT("CrGrid: " + mName + " CalcLayout Step 2: find max height");
+  float deltaWidth = (float)((rect->mRight - rect->mLeft)  - m_InitWidth);
+  float deltaHeight = (float)((rect->mBottom - rect->mTop) - m_InitHeight);
 
-//STEP2 Loop along each row and find the maxHeight. Set height to this.
-	int runningTotalHeight = 0;
-	if(mOutlineWidget) runningTotalHeight += 2*EMPTY_CELL;
-	for ( yp = 1; yp <= mRows ; yp++)
-	{
-		int maxHeight = GetHeightOfRow( yp );
-		
-		//We have now established maxHeight for this row
-		//Now go back and set the height and position of all these elements.
-		for ( xp = 1; xp <= mColumns ; xp++)
-		{
-			vtemp = GetPointer(xp,yp);
-			if ( vtemp != nil )
-			{
-				CcRect rect;
-				rect = vtemp->GetGeometry();
-				CcRect newrect(runningTotalHeight,
-							   rect.Left(),				// This specifies not to redraw the thing yet.
-							   runningTotalHeight+maxHeight,
-							   rect.Right() );
-				vtemp->SetGeometry(&newrect);
-			}
-		}
-		runningTotalHeight += maxHeight;
-	}
-	if(mOutlineWidget) runningTotalHeight += EMPTY_CELL;
-        LOGSTAT("CrGrid: " + mName + " CalcLayout Step 3");
+//Share out the available space between all resizeable elements.
 
-//STEP3 Loop down each column and find the maxWidth. Set width to this.
+  for ( xp = 0; xp < m_Columns ; xp++)
+  {
+    ColWidths[xp] = m_InitialColWidths[xp];
+    if ( m_ColCanResize[xp] ) ColWidths[xp] += (int)((float)ColWidths[xp]*((deltaWidth/m_resizeableWidth)));
+    ColWidths[xp] = max ( ColWidths[xp], EMPTY_CELL ); //Limit
+  }
+  for ( yp = 0; yp < m_Rows ; yp++)
+  {
+    RowHeights[yp] = m_InitialRowHeights[yp];
+    if ( m_RowCanResize[yp] ) RowHeights[yp] += (int)((float)RowHeights[yp]*((deltaHeight/m_resizeableHeight)));
+    RowHeights[yp] = max ( RowHeights[yp], EMPTY_CELL ); //Limit
+  }
 
-	int runningTotalWidth = 0;
-	if(mOutlineWidget) runningTotalWidth += EMPTY_CELL;
-	for ( xp = 1; xp <= mColumns ; xp++)
-	{
-		int maxWidth = GetWidthOfColumn( xp );
-		//We have now established maxWidth for this column
-		//Now go back and set the width and position of all these elements.
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			vtemp = GetPointer(xp,yp);
-			if ( vtemp != nil )
-			{
-				CcRect rect;
-				rect = vtemp->GetGeometry();
-                                CcRect newrect (rect.Top(),
-                                                runningTotalWidth,
-                                                rect.Bottom(),
-                                                runningTotalWidth+maxWidth);
-				vtemp->SetGeometry(&newrect);
-			}
-		}
-		runningTotalWidth += maxWidth;
-	}
+//Call SetGeometry on all children.
 
-	if(mOutlineWidget) runningTotalWidth += EMPTY_CELL;
-	
-
-//STEP4 Set Size to total size of children when placed.
-	CcRect theRect, oldRect;
-	theRect.Set(0,0,runningTotalHeight,runningTotalWidth);		
-	SetGeometry( &theRect );
-
-        LOGSTAT("CrGrid: " + mName + " Set to " + theRect.AsString() );
-
-        CcController::debugIndent--;
-
-}
-
-void  CrGrid::SetOriginalSizes()
-{
-// Call SetOriginalSizes() for child elements.
-	int xp, yp;
-	CrGUIElement *vtemp;
-	
-	for ( xp = 1; xp <= mColumns ; xp++)
-	{
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			vtemp = GetPointer(xp,yp);
-			if (vtemp != nil)
-                        ((CrGUIElement*)vtemp)->SetOriginalSizes();
-		}
-	}
-}
-
-void	CrGrid::SetText( CcString item )
-{
-	char theText[256];
-	strcpy( theText, item.ToCString() );
-
-	if (mOutlineWidget != nil )
-		mOutlineWidget->SetText( theText );
-}
-
-Boolean	CrGrid::GridComplete()
-{
-	return mGridComplete;
-}
-
-Boolean	CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos)
-{
-	tokenList->GetToken(); //This is the element type (e.g. BUTTON). Remove it.
-	
-	if(!mXCanResize) mXCanResize = element->mXCanResize; // if an element in the grid can
-	if(!mYCanResize) mYCanResize = element->mYCanResize; // resize, then the grid can aswell.
-//BUT if the element is a grid, it doesn't yet know if it can resize!!!!
-//This is why things in non-top level grids often don't resize.
-
-	if(element->mTabStop)
-		( (CrWindow*)GetRootWidget() )->AddToTabGroup(element);
-
-	this->SetPointer ( xpos, ypos, element );
-
-	// Parse the item specific stuff
-	Boolean retVal = element->ParseInput( tokenList );
-	if ( retVal )
-		mItemList.AddItem( element );
-	else
-		delete element;
-	
-	return retVal;
-
-}
-
-void	CrGrid::Align()
-{
-
-	CcRect rect, newrect, gridRect;
-	Boolean done = false;
-	CrGUIElement * vtemp;
-	
-//        if ( mAlignment &  kExpand )
-//        {
-//		if ( doAdjust )
-//		{
-//			SetGeometry( &newrect );
-//                 
-//                        // If we have an outline widget we have to adjust that too
-//			if ( mOutlineWidget != nil )
-//				mOutlineWidget->SetGeometry(	0,
-//												0,
-//												newrect.Height(),
-//												newrect.Width() );
-//		}
-//                done = false;
-//        }
-
-	if ( mAlignment & kRightAlign )
-	{
-		int xp, yp;
-		
-		gridRect = GetGeometry();
-		int totalWidth = 0;
-		for ( xp = 1; xp <= mColumns ; xp++)
-		{
-			totalWidth += GetWidthOfColumn( xp );
-		}
-
-		int delta = gridRect.Width() - totalWidth;
-		
-		for ( xp = 1; xp <= mColumns ; xp++)
-		{
-			for ( yp = 1; yp <= mRows ; yp++)
-			{
-				vtemp = GetPointer(xp,yp);
-				if ( vtemp != nil )
-				{
-					rect = vtemp->GetGeometry();
-					newrect = CcRect(	rect.Top()    - gridRect.Top(),
-										rect.Left()   - gridRect.Left()    + delta,
-										rect.Bottom() - gridRect.Top(),
-										rect.Right()  - gridRect.Left()    + delta );
-					vtemp->SetGeometry( &newrect );
-					vtemp->Align();
-				}
-			}
-		}
-		done = true;
-	}
-
-	if ( mAlignment & kBottomAlign )
-	{
-		int xp, yp;
-		
-		gridRect = GetGeometry();
-		int totalHeight = 0;
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			totalHeight += GetHeightOfRow( yp );
-		}
-
-		int delta = gridRect.Height() - totalHeight;
-		
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			for ( xp = 1; xp <= mColumns ; xp++)
-			{
-				vtemp = GetPointer(xp,yp);
-				if ( vtemp != nil )
-				{
-					rect = vtemp->GetGeometry();
-					newrect = CcRect(	rect.Top()    - gridRect.Top()    + delta,
-										rect.Left()   - gridRect.Left(),
-										rect.Bottom() - gridRect.Top()    + delta,
-										rect.Right()  - gridRect.Left() );
-					vtemp->SetGeometry( &newrect );
-					vtemp->Align();
-				}
-			}
-		}
-		done = true;
-	}
-		
-	if ( ! done )
-	{
-		int xp, yp;
-		
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			for ( xp = 1; xp <= mColumns ; xp++)
-			{
-				vtemp = GetPointer(xp,yp);
-				if ( vtemp != nil )
-					vtemp->Align();
-			}
-		}
-	}
-}
-
-int	CrGrid::GetHeightOfRow( int row )
-{
-	CrGUIElement * elemPtr;
-	int maxHeight = EMPTY_CELL, xp;
-	for ( xp = 1; xp <= mColumns ; xp++)
-	{
-		elemPtr = GetPointer(xp,row);
-		CcRect rect(0,0,EMPTY_CELL,EMPTY_CELL);
-		if ( elemPtr != nil )
-			rect = elemPtr->GetGeometry();
-		if (rect.Height() > maxHeight)
-				maxHeight = rect.Height();
-	}
-	return maxHeight;
-}
-
-int	CrGrid::GetWidthOfColumn( int col )
-{
-	CrGUIElement * elemPtr;
-	int maxWidth = EMPTY_CELL, yp;
-	for ( yp = 1; yp <= mRows ; yp++)
-	{
-		elemPtr = GetPointer(col,yp);
-		CcRect rect(0,0,EMPTY_CELL,EMPTY_CELL);
-		if ( elemPtr != nil )
-			rect = elemPtr->GetGeometry();
-		if (rect.Width() > maxWidth)
-				maxWidth = rect.Width();
-	}
-	return maxWidth;
-}
-
-CrGUIElement *	CrGrid::FindObject( CcString Name )
-{
-	CrGUIElement * theElement = nil, * theItem;
-	
-	mItemList.Reset();
-	theItem = (CrGUIElement *)mItemList.GetItemAndMove();
-	
-	while ( theItem != nil && theElement == nil )
-	{
-		theElement = theItem->FindObject( Name );
-		theItem = (CrGUIElement *)mItemList.GetItemAndMove();
-	}
-		
-	return ( theElement );
-}
-
-Boolean	CrGrid::SetPointer( int xpos, int ypos, CrGUIElement * ptr )
-{
-      if ((xpos > mColumns) || (ypos > mRows))
+  for ( xp = 1; xp <= m_Columns ; xp++)
+  {
+    runTotHeight=0;
+    if(m_OutlineWidget) runTotHeight += 2*EMPTY_CELL;
+    for ( yp = 1; yp <= m_Rows ; yp++)
+    {
+      if ( ( vtemp = GetPointer(xp,yp) ) )
       {
-            LOGWARN("Position of element out of range of grid size");
-            return false;
+        CcRect newRect(runTotHeight, runTotWidth, runTotHeight+ RowHeights[yp-1], runTotWidth + ColWidths[xp-1]);
+        CcController::debugIndent++;
+        ((CrGUIElement*)vtemp)->SetGeometry(&newRect);
+        CcController::debugIndent--;
       }
-	*(mTheGrid + ( (xpos-1) + (ypos-1) * mColumns)) = ptr;
-	return true;
+      runTotHeight += RowHeights[yp-1];
+    }
+    runTotWidth += ColWidths[xp-1];
+  }
+
+  delete [] ColWidths;
+  delete [] RowHeights;
 }
 
-CrGUIElement *	CrGrid::GetPointer( int xpos, int ypos )
+CRGETGEOMETRY(CrGrid,CxGrid)
+
+CcRect CrGrid::CalcLayout(bool recalc)
 {
-	return *(mTheGrid + (xpos-1 + (ypos-1) * mColumns));
+  int totHeight = 0; int totWidth = 0; int xp, yp;
+  CrGUIElement *vtemp;
+  int*  ColWidths = new int [ m_Columns ];
+  int*  RowHeights = new int [ m_Rows ];
+
+  CcController::debugIndent++;
+  LOGSTAT("CrGrid: " + mName + " CalcLayout: Calculating sizes of all children");
+
+// Initialise column widths and heights.
+  for (xp = 0; xp < m_Columns; xp++) { ColWidths[xp]  = EMPTY_CELL; };
+  for (yp = 0; yp < m_Rows; yp++)    { RowHeights[yp] = EMPTY_CELL; };
+
+// Call calclayout for child elements. Store their sizes.
+  for ( xp = 1; xp <= m_Columns ; xp++)
+  {
+    for ( yp = 1; yp <= m_Rows ; yp++)
+    {
+      if ( ( vtemp = GetPointer(xp,yp) ) == nil ) continue;  //(Skip loop).
+
+      CcController::debugIndent++;
+      CcRect rect;
+      rect = ((CrGUIElement*)vtemp)->CalcLayout(recalc);
+      ColWidths[xp-1] = max ( ColWidths[xp-1], rect.Width() );
+      RowHeights[yp-1] = max ( RowHeights[yp-1], rect.Height() );
+      CcController::debugIndent--;
+    }
+  }
+
+// Add up heights and widths
+  for (xp = 0; xp < m_Columns; xp++) { totWidth  += ColWidths[xp];  };
+  for (yp = 0; yp < m_Rows; yp++)    { totHeight += RowHeights[yp]; };
+
+// If there is an outline, add some space for it.
+  if(m_OutlineWidget) { totHeight += 3*EMPTY_CELL; totWidth += 2*EMPTY_CELL; }
+
+  LOGSTAT("CrGrid: " + mName + " Total size, h: "+CcString(totHeight)+" w: "+CcString(totWidth) );
+  CcController::debugIndent--;
+
+  if ( recalc )
+  {
+    m_InitContentWidth = totWidth; m_InitContentHeight = totHeight;
+    m_resizeableWidth = 0;         m_resizeableHeight = 0;
+
+    for ( xp = 0; xp < m_Columns ; xp++)
+    {
+      m_InitialColWidths[xp] = ColWidths[xp];
+      if ( m_ColCanResize[xp] ) m_resizeableWidth += (float)ColWidths[xp];
+    }
+    for ( yp = 0; yp < m_Rows ; yp++)
+    {
+      m_InitialRowHeights[yp] = RowHeights[yp];
+      if ( m_RowCanResize[yp] ) m_resizeableHeight += (float)RowHeights[yp] ;
+    }
+
+    m_InitWidth = totWidth;
+    m_InitHeight = totHeight;
+  }
+
+  delete [] ColWidths;
+  delete [] RowHeights;
+
+  return CcRect( 0,0, totHeight, totWidth);
 }
 
-void CrGrid::Resize(int newWidth, int newHeight, int origWidth, int origHeight)
+
+void    CrGrid::SetText( CcString item )
 {
-	int xp, yp;
-	CrGUIElement *vtemp;
-	int resizeableWidth = 0;
-	int resizeableHeight = 0;
-	int * colWidths = new int[mColumns];
-	int * rowHeights= new int[mRows];
+  char theText[256];
+  strcpy( theText, item.ToCString() );
 
-//Find out the width of each resizeable column
-	
-	for ( xp = 1; xp <= mColumns ; xp++)
-	{
-		int tempMaxWidth = 0;
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			vtemp = GetPointer(xp,yp);
-			if (vtemp != nil)
-			{
-				if( ((CrGUIElement*)vtemp)->mXCanResize ) 
-				{
-					tempMaxWidth = max( tempMaxWidth,((CrGUIElement*)vtemp)->GetIdealWidth() );
-				}
-			}
-		}
-		colWidths[xp-1] =  tempMaxWidth;
-		resizeableWidth += tempMaxWidth;
-	}
-	
-//Find out the height of each resizeable row
-	for ( yp = 1; yp <= mRows ; yp++)
-	{
-		int tempMaxHeight = 0;
-		for ( xp = 1; xp <= mColumns ; xp++)
-		{
-			vtemp = GetPointer(xp,yp);
-			if (vtemp != nil)
-			{
-				if( ((CrGUIElement*)vtemp)->mYCanResize ) 
-				{
-					tempMaxHeight = max( tempMaxHeight,((CrGUIElement*)vtemp)->GetIdealHeight() );
-				}
-			}
-		}
-		rowHeights[yp-1] =  tempMaxHeight;
-		resizeableHeight += tempMaxHeight;
-	}
-
-
-//Adjust each element to take up the available space.
-	for ( xp = 1; xp <= mColumns ; xp++)
-	{
-		for ( yp = 1; yp <= mRows ; yp++)
-		{
-			if (colWidths[xp-1] || rowHeights[yp-1])
-			{
-				vtemp = GetPointer(xp,yp);
-				if (vtemp != nil)
-				{
-					int newColWidth  = int( (float)colWidths[xp-1] *(((float)(newWidth -origWidth) /(float)resizeableWidth) +1.0) );
-					int newRowHeight = int( (float)rowHeights[yp-1]*(((float)(newHeight-origHeight)/(float)resizeableHeight)+1.0) );
-					((CrGUIElement*)vtemp)->Resize(newColWidth,newRowHeight,colWidths[xp-1],rowHeights[yp-1]);
-				}
-			}
-		}
-	}
-
-
-	delete colWidths;
-	delete rowHeights;
+  if (m_OutlineWidget != nil ) m_OutlineWidget->SetText( theText );
 }
+
+CcParse CrGrid::InitElement( CrGUIElement * element, CcTokenList * tokenList, int xpos, int ypos)
+{
+  tokenList->GetToken(); //This is the element type (e.g. BUTTON). Remove it.
+
+  if(element->mTabStop) ((CrWindow*)GetRootWidget())->AddToTabGroup(element);
+
+  CcParse retVal(false);
+
+  if ( this->SetPointer ( xpos, ypos, element ))
+  {
+// Parse the item specific stuff
+    retVal = element->ParseInput( tokenList );
+  }
+
+  if ( retVal.OK() )
+  {
+    m_ItemList.AddItem( element );
+    m_ColCanResize[xpos-1] = m_ColCanResize[xpos-1] || retVal.CanXResize();
+    m_RowCanResize[ypos-1] = m_RowCanResize[ypos-1] || retVal.CanYResize();
+    mXCanResize = mXCanResize || retVal.CanXResize();
+    mYCanResize = mYCanResize || retVal.CanYResize();
+
+    if ( retVal.CanXResize() ) LOGSTAT ( "CrGrid: "+element->mName+" can resize in X" );
+    else LOGSTAT ( "CrGrid: "+element->mName+" can not resize in X" );
+    if ( retVal.CanYResize() ) LOGSTAT ( "CrGrid: "+element->mName+" can resize in Y" );
+    else LOGSTAT ( "CrGrid: "+element->mName+" can not resize in Y" );
+  }
+  else
+  {
+    delete element;
+  }
+  
+  return retVal;
+}
+
+void    CrGrid::Align()
+{
+/*
+    CcRect rect, newrect, gridRect;
+    bool done = false;
+    CrGUIElement * vtemp;
+
+//    if ( mAlignment &  kExpand )
+//    {
+//      if ( doAdjust )
+//      {
+//        SetGeometry( &newrect );
+//
+//// If we have an outline widget we have to adjust that too
+//        if ( m_OutlineWidget != nil )
+//             m_OutlineWidget->SetGeometry(0,0,newrect.Height(),newrect.Width() );
+//      }
+//      done = false;
+//    }
+
+  if ( mAlignment & kRightAlign )
+  {
+    int xp, yp;
+    gridRect = GetGeometry();
+    int totalWidth = 0;
+    for ( xp = 1; xp <= m_Columns ; xp++)
+    {
+      totalWidth += GetWidthOfColumn( xp );
+    }
+    int delta = gridRect.Width() - totalWidth;
+
+    for ( xp = 1; xp <= m_Columns ; xp++)
+    {
+      for ( yp = 1; yp <= m_Rows ; yp++)
+      {
+        vtemp = GetPointer(xp,yp);
+        if ( vtemp != nil )
+        {
+          rect = vtemp->GetGeometry();
+          newrect = CcRect(   rect.Top()    - gridRect.Top(),
+                              rect.Left()   - gridRect.Left()    + delta,
+                              rect.Bottom() - gridRect.Top(),
+                              rect.Right()  - gridRect.Left()    + delta );
+          vtemp->SetGeometry( &newrect );
+          vtemp->Align();
+        }
+      }
+    }
+    done = true;
+  }
+
+  if ( mAlignment & kBottomAlign )
+  {
+    int xp, yp;
+    gridRect = GetGeometry();
+    int totalHeight = 0;
+    for ( yp = 1; yp <= m_Rows ; yp++)
+    {
+      totalHeight += GetHeightOfRow( yp );
+    }
+    int delta = gridRect.Height() - totalHeight;
+
+    for ( yp = 1; yp <= m_Rows ; yp++)
+    {
+      for ( xp = 1; xp <= m_Columns ; xp++)
+      {
+        vtemp = GetPointer(xp,yp);
+        if ( vtemp != nil )
+        {
+          rect = vtemp->GetGeometry();
+          newrect = CcRect(   rect.Top()    - gridRect.Top()    + delta,
+                              rect.Left()   - gridRect.Left(),
+                              rect.Bottom() - gridRect.Top()    + delta,
+                              rect.Right()  - gridRect.Left() );
+          vtemp->SetGeometry( &newrect );
+          vtemp->Align();
+        }
+      }
+    }
+    done = true;
+  }
+
+  if ( ! done )
+  {
+    int xp, yp;
+    for ( yp = 1; yp <= m_Rows ; yp++)
+    {
+      for ( xp = 1; xp <= m_Columns ; xp++)
+      {
+        vtemp = GetPointer(xp,yp);
+        if ( vtemp != nil ) vtemp->Align();
+      }
+    }
+  }
+*/
+}
+
+int CrGrid::GetHeightOfRow( int row )
+{
+  CrGUIElement * elemPtr;
+  int maxHeight = EMPTY_CELL, xp;
+  for ( xp = 1; xp <= m_Columns ; xp++)
+  {
+    elemPtr = GetPointer(xp,row);
+    CcRect rect(0,0,EMPTY_CELL,EMPTY_CELL);
+    if ( elemPtr != nil )
+        rect = elemPtr->GetGeometry();
+    if (rect.Height() > maxHeight)
+            maxHeight = rect.Height();
+  }
+  return maxHeight;
+}
+
+int CrGrid::GetWidthOfColumn( int col )
+{
+  CrGUIElement * elemPtr;
+  int maxWidth = EMPTY_CELL, yp;
+  for ( yp = 1; yp <= m_Rows ; yp++)
+  {
+    elemPtr = GetPointer(col,yp);
+    CcRect rect(0,0,EMPTY_CELL,EMPTY_CELL);
+    if ( elemPtr != nil )
+        rect = elemPtr->GetGeometry();
+    if (rect.Width() > maxWidth)
+            maxWidth = rect.Width();
+  }
+  return maxWidth;
+}
+
+CrGUIElement *  CrGrid::FindObject( CcString Name )
+{
+  CrGUIElement * theElement = nil, * theItem;
+  m_ItemList.Reset();
+  theItem = (CrGUIElement *)m_ItemList.GetItemAndMove();
+  while ( theItem != nil && theElement == nil )
+  {
+    theElement = theItem->FindObject( Name );
+    theItem = (CrGUIElement *)m_ItemList.GetItemAndMove();
+  }
+  return ( theElement );
+}
+
+bool CrGrid::SetPointer( int xpos, int ypos, CrGUIElement * ptr )
+{
+  if ((xpos > m_Columns) || (ypos > m_Rows))
+  {
+    LOGERR("Position of element out of range of grid size");
+    return false;
+  }
+  *(m_TheGrid + ( (xpos-1) + (ypos-1) * m_Columns)) = ptr;
+  return true;
+}
+
+CrGUIElement *  CrGrid::GetPointer( int xpos, int ypos )
+{
+  return *(m_TheGrid + (xpos-1 + (ypos-1) * m_Columns));
+}
+
 
 int CrGrid::GetIdealWidth()
 {
-	int xp, yp;
-	CrGUIElement *vtemp;
-	int resizeableWidth = 0;
-
-//Find out the total resizeable width of grid
-	
-	for ( xp = 1; xp <= mColumns ; xp++)	//loop each column
-	{
-		int tempMaxWidth = 0;
-		for ( yp = 1; yp <= mRows ; yp++)   //loop each row
-		{
-			vtemp = GetPointer(xp,yp);
-			if (vtemp != nil)
-			{
-				if( ((CrGUIElement*)vtemp)->mXCanResize ) 
-				{
-					tempMaxWidth = max( tempMaxWidth,((CrGUIElement*)vtemp)->GetIdealWidth() );
-				}
-			}
-		} //end loop each row
-		resizeableWidth += tempMaxWidth;
-	} //end loop each column
-
-	return resizeableWidth;
+  int resizeableWidth = 0;
+  for ( int xp = 0; xp < m_Columns; xp++ )
+  {
+    if ( m_ColCanResize[xp] ) resizeableWidth += m_InitialColWidths[xp] ;
+  }
+  return resizeableWidth;
 }
 int CrGrid::GetIdealHeight()
 {
-	int xp, yp;
-	CrGUIElement *vtemp;
-	int resizeableHeight = 0;
-
-//Find out the total resizeable width of grid
-	
-	for ( yp = 1; yp <= mRows ; yp++)   //loop each row
-	{
-		int tempMaxHeight = 0;
-		for ( xp = 1; xp <= mColumns ; xp++)	//loop each column
-		{
-			vtemp = GetPointer(xp,yp);
-			if (vtemp != nil)
-			{
-				if( ((CrGUIElement*)vtemp)->mYCanResize ) 
-				{
-					tempMaxHeight = max( tempMaxHeight,((CrGUIElement*)vtemp)->GetIdealHeight() );
-				}
-			}
-		} //end loop each row
-		resizeableHeight += tempMaxHeight;
-	} //end loop each column
-
-	return resizeableHeight;
+  int resizeableHeight = 0;
+  for ( int yp = 0; yp < m_Rows; yp++ )
+  {
+    if ( m_RowCanResize[yp] ) resizeableHeight += m_InitialRowHeights[yp] ;
+  }
+  return resizeableHeight;
 }
 
 void CrGrid::CrFocus()
@@ -860,44 +800,40 @@ void CrGrid::SendCommand(CcString theText, Boolean jumpQueue)
 // e.g. in xmodel.scp COMMAND='xmodelhand.scp'
 
 //For certain commands it is useful to bypass this
-//mechanism and pass the command straight to 
+//mechanism and pass the command straight to
 //CRYSTALS (#) or to GUI (^).
 
-      if ( theText.Len() == 0 ) //It may be that objects or commands have empty strings.
-      {                         //in which case it would be bad to check the text at position(1).
-            if ( mCommandSet )
-            {
-                  mControllerPtr->SendCommand(mCommandText);
-                  mControllerPtr->SendCommand(theText);
-            }
-            else
-            {
-                  mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
-            }
-      }
-      else
-      {
-            if (       ( mCommandSet                )
-                   &&  (!( theText.Sub(1,1) == '#' ))
-                   &&  (!( theText.Sub(1,1) == '^' ))   )
-            {
-                  mControllerPtr->SendCommand(mCommandText);
-                  mControllerPtr->SendCommand(theText);
-            }
-            else
-            {
-                  mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
-            }
-      }
+ if ( theText.Len() == 0 ) //It may be that objects or commands have empty strings.
+ {                         //in which case it would be bad to check the text at position(1).
+   if ( m_CommandSet )
+   {
+     mControllerPtr->SendCommand(m_CommandText);
+     mControllerPtr->SendCommand(theText);
+   }
+   else
+   {
+     mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
+   }
+ }
+ else if ((m_CommandSet)&&(!(theText.Sub(1,1)=='#'))&&(!(theText.Sub(1,1)=='^'))   )
+ {
+     mControllerPtr->SendCommand(m_CommandText);
+     mControllerPtr->SendCommand(theText);
+ }
+ else
+ {
+   mParentElementPtr->SendCommand(theText, jumpQueue); //Keep passing the text up the tree.
+ }
 }
 
 void CrGrid::SetCommandText(CcString theText)
 {
-	mCommandText = theText;
-	mCommandSet = true;
+  m_CommandText = theText;
+  m_CommandSet = true;
 }
 
 void CrGrid::CrShowGrid(bool state)
 {
-   ((CxGrid*)ptr_to_cxObject)->CxShowWindow(state);
+  ((CxGrid*)ptr_to_cxObject)->CxShowWindow(state);
 }
+
