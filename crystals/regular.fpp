@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.30  2004/02/26 09:47:55  rich
+c Add three new closed set testing measures for Anna.
+c
 c Revision 1.29  2004/02/24 16:28:08  rich
 c Anna: Fix generation of potential pseudo-operators in space groups
 c containing lattice centerings.
@@ -761,7 +764,7 @@ C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
 C 
       DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3)
-      DIMENSION OPM(4,4), OPN(4,4)
+      DIMENSION OPM(4,4), OPN(4,4), OTEMP(4)
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       COMMON/REGTMP/ 
@@ -1104,14 +1107,13 @@ C    times the 'new' potential operator.
 
 C Store potential new operator in OPN
           DO K2 = 1,3
-            CALL XMOVE(WSPAC3(1,K2),OPN(1,K2),3)
-            OPN(4,K2) = 0.0
+           DO K3 = 1,3
+            OPN(K3,K2) = NINT(WSPAC3(K3,K2))
+           END DO
+           OPN(4,K2) = 0.0
           END DO
-
 C Anna: Work out translation part by applying rotation to the NEW centroid
 C (CENTN) and then subtracting from the OLD centroid (CENTO).
-C
-
           CALL XMLTMM(WSPAC3,CENTN,ATEMP,3,3,1)
           CALL XSUBTR (CENTO,ATEMP,OPN(1,4),3)
           OPN(4,4) = 1.0
@@ -1152,13 +1154,16 @@ C Multiply new op by old one, and store in 2nd half of LSGT array.
 C Debug: Print out the generators.
 
 
-          DO K1 = LSGT,LSGT+(MLTPLY-1)*16,16
-            WRITE(CMON,'(/4(4F9.3/))')
-     1          ((STORE(K1+J2+J3),J2=0,12,4),J3=0,3)
-            CALL XPRVDU(NCVDU,5,0)
+          DO K1 = 0, (MLTPLY/2) - 1
+            K2 = LSGT + K1 * 16
+            K3 = LSGT + ( K1+(MLTPLY/2) ) * 16 
+            WRITE(CMON,'(/2X,2(I4,'':'',42X))'),K1, K1 + (MLTPLY/2)
+            CALL XPRVDU(NCVDU,2,0)
+            WRITE(CMON,'(4(2(4F9.3,8X)/))')
+     1          ( (STORE(K2+J2+J3),J2=0,12,4),
+     1            (STORE(K3+J2+J3),J2=0,12,4), J3=0,3)
+            CALL XPRVDU(NCVDU,4,0)
           END DO
-
-
 
 C 2) We now have N operators. We know that the first N/2, multiplied
 C    by themselves will give only existing ops, so they can be ignored.
@@ -1167,69 +1172,89 @@ C    all generators.
 C 3) For each product, find the best match among all the generators,
 C    store the worst of the best matches so far.
 
-          WORST = 9999999.0
-          AVERAGE = 0.0
-          NCOMPS = 0
+C Store potential new operator in OPN
+          DO K2 = 1,3
+            CALL XMOVE(WSPAC3(1,K2),OPN(1,K2),3)
+            OPN(4,K2) = 0.0
+          END DO
+C Anna: Work out translation part by applying rotation to the NEW centroid
+C (CENTN) and then subtracting from the OLD centroid (CENTO).
 
-          DO K1 = LSGT+MLTPLY*8,LSGT+(MLTPLY-1)*16,16  ! New generators
+          CALL XMLTMM(WSPAC3,CENTN,ATEMP,3,3,1)
+          CALL XSUBTR (CENTO,ATEMP,OPN(1,4),3)
+          OPN(4,4) = 1.0
 
-            RWORST = 9999999.0
-            RAVERAGE = 0.0
-            NRCOMP = 0
 
+          RWORST = -9999999.0
+          RAVERAGE = 0.0
+          NRCOMP = 0
+
+          DO K1 = 1,2  ! Once for the new gen (OPN), once for its inverse
+
+C Form product (OPM) of new OP (OPN) with all generators (LSGT 1-N):
 
             DO K2 = LSGT,LSGT+(MLTPLY-1)*16,16            ! All generators
+              CALL XMLTMM(OPN(1,1),STORE(K2),OPM(1,1),4,4,4) ! Product
 
-              CALL XMLTMM(STORE(K1),STORE(K2),OPM(1,1),4,4,4) ! Product
 
-              BEST = -9999999.0
+C Find best match for product (OPM) with all generators (LSGT 1-N)
 
+              BEST = 9999999.0
               DO K3 = LSGT,LSGT+(MLTPLY-1)*16,16             ! All generators
 
-C Shift trans bits of matrix in OPM so that they are as close as
-C poss to the entries at K3. (e.g. All values may be 0<t<1 to start with,
-C but 0.01 and 0.98 *should* be close)
+C Shift translations of matrix in OPM so that they are as close as
+C poss to the entries at K3. (e.g. 0.01 and 0.98 *should* be close)
+C The largest possible delta in a periodic function like this is 0.5.
 
                   DO K4 = 1,3
-
                     DO WHILE ( OPM(K4,4) - STORE(K3+11+K4) .LT. -0.5 )
                       OPM(K4,4) = OPM(K4,4) + 1.0
                     END DO
                     DO WHILE ( OPM(K4,4) - STORE(K3+11+K4) .GT. 0.5 )
                       OPM(K4,4) = OPM(K4,4) - 1.0
                     END DO
-
                   END DO
+
 C Do the comparison.
-                  BEST = MAX(BEST,CMPMAT(STORE(K3),OPM(1,1),16)) 
+                  BEST = MIN(BEST,CMPMAT(STORE(K3),OPM(1,1),16)) 
               END DO
 
-              WRITE(CMON,'(A,2I4,A,F9.4)')'Best match for ',
-     1        (K1-LSGT)/16,(K2-LSGT)/16,' is:',BEST
+              WRITE(CMON,'(A,I2,A,F9.4)')'Best match for ( OP#',
+     1        (K2-LSGT)/16,' ) x OPN is:',BEST
               CALL XPRVDU(NCVDU,1,0)
 
-
-              WORST = MIN(WORST,BEST)   ! Worst of the best matches overall
-              RWORST = MIN(RWORST,BEST) ! Worst of the best for latest row
-              AVERAGE = AVERAGE + BEST  ! Average of best overall
-              NCOMPS = NCOMPS + 1
-              RAVERAGE = RAVERAGE + BEST  ! Average of best for latest row
+              RWORST = MAX(RWORST,BEST) ! Worst of the best for row
+              RAVERAGE = RAVERAGE + BEST  ! Average of best for row
               NRCOMP = NRCOMP + 1
 
             END DO
+
+
+
+C Invert new op (OPN) ready for second loop.
+            CALL XMOVE ( OPN(1,1), OPM(1,1), 16 )
+c            CALL XMXMPI ( OPM(1,1), OPN(1,1), 4 )
+            I=KINV2(4,OPM(1,1),OPN(1,1),16,0,OTEMP,OTEMP,4)
+
+            WRITE(CMON,'(/2X,''OPN:'',42X,''inv(OPN):'')')
+            CALL XPRVDU(NCVDU,2,0)
+            WRITE(CMON,'(4(2(4F9.3,8X)/))')
+     1            ( (OPM(J2,J3),J3=1,4),
+     1              (OPN(J2,J4),J4=1,4), J2=1,4)
+            CALL XPRVDU(NCVDU,4,0)
+
+            IF ( I .GT. 0 ) THEN
+              WRITE(CMON,'(/''Singular operator matrix found'')')
+              CALL XPRVDU(NCVDU,2,0)
+              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1    CHAR(9),'ERROR_SINGULAR_OPERATOR_CANNOT_BE_INVERTED'
+              CALL XCREMS(CPCH,CPCH,LENFIL)
+              EXIT
+            END IF
           END DO
 
 
-          AVERAGE = AVERAGE / FLOAT(NCOMPS)
           RAVERAGE = RAVERAGE / FLOAT(NRCOMP)
-
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
-     1    CHAR(9),WORST
-          CALL XCREMS(CPCH,CPCH,LENFIL)
-
-          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
-     1    CHAR(9),AVERAGE
-          CALL XCREMS(CPCH,CPCH,LENFIL)
 
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
      1    CHAR(9),RWORST
@@ -1239,16 +1264,15 @@ C Do the comparison.
      1    CHAR(9),RAVERAGE
           CALL XCREMS(CPCH,CPCH,LENFIL)
 
-          WRITE(CMON,'(A,F9.4)')'Lowest of the best matches: ',WORST
-          CALL XPRVDU(NCVDU,1,0)
-          WRITE(CMON,'(A,F9.4)')'Average of the best matches: ',AVERAGE
-          CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A,F9.4)')'Lowest best match in last row: ',RWORST
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A,F9.4)')'Average best in last row: ',RAVERAGE
           CALL XPRVDU(NCVDU,1,0)
 
+
+
          ENDIF
+
 
          IF (IPCHRE.GE.0)THEN
            IF ( (ABS(1.-ABS(DET)).LE..05) .AND.
@@ -1352,7 +1376,7 @@ C Output space group symbol.
 C Output cell.
          IF (IPCHRE.GE.0)THEN
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
-     1    (CHAR(9),ISTORE(I), I = L1P1, L1P1+5)
+     1    (CHAR(9),STORE(I), I = L1P1, L1P1+5)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 
@@ -4248,7 +4272,7 @@ c        CMPMAT = SUMAB/DENOM
 c      END IF
 
 
-C R = 1 - SQRT( { SUMi ( [Ai-Bi]**2 ) } / N )
+C R = SQRT( { SUMi ( [Ai-Bi]**2 ) } / N )
 
       DEVS = 0.0
 
@@ -4256,7 +4280,7 @@ C R = 1 - SQRT( { SUMi ( [Ai-Bi]**2 ) } / N )
         DEVS = DEVS + ( A(I)-B(I) )**2
       END DO
 
-      CMPMAT = 1.0 - SQRT ( ABS ( DEVS / FLOAT(N) ) )
+      CMPMAT = SQRT ( ABS ( DEVS / FLOAT(N) ) )
 
       RETURN
       END
