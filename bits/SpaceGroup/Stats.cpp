@@ -236,6 +236,22 @@ void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an ar
     }
 }
 
+std::ostream& outputMatrix(std::ostream& pStream, Matrix<short>* pMatrix)
+{
+    short tXMax = pMatrix->sizeX(), tYMax = pMatrix->sizeY();
+    
+    for (int i = 0; i < tYMax; i++)
+    {
+        for (int j = 0; j < tXMax; j++)
+        {
+            pStream << pMatrix->getValue(j, i);
+            if (j+1 < tXMax || i+1 < tYMax)
+            	pStream << " ";
+        }
+    }
+    return pStream;
+}
+
 std::ofstream& Stats::output(std::ofstream& pStream, Table& pTable)
 {
     pStream << "TOTAL " << iTotalNum <<"\n";
@@ -250,12 +266,16 @@ std::ofstream& Stats::output(std::ofstream& pStream, Table& pTable)
     pStream << "NREGIONS " << tColumnCount << "\n";
     for (int i = 0; i< tColumnCount; i++)
     {
-        pStream << (int)tColumns[i] << " " << iHeadings->getName(tColumns[i]) << "\n";
+        pStream << (int)tColumns[i] << " ";
+        outputMatrix(pStream, iHeadings->getMatrix(tColumns[i]));
+        pStream << " " << iHeadings->getName(tColumns[i]) << "\n";
     }
     pStream << "NTESTS " << tCount << "\n";
     for (int i = 0; i < tCount; i++)
     {
-        pStream << (int)tConditions[i] << " " << iConditions->getName(tConditions[i]) << "\n";
+        pStream << (int)tConditions[i] << " ";
+        outputMatrix(pStream, iConditions->getMatrix(tConditions[i]));
+        pStream << " " << iConditions->getMult(tConditions[i]) << " " << iConditions->getName(tConditions[i]) << "\n";
     }
     pStream << "DATA " << tCount*tColumnCount << " " << numberOfOutElementValues() << "\n";
     int tNumOfElemsValues = numberOfOutElementValues();
