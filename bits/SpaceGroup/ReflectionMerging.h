@@ -56,10 +56,12 @@ private:
     
     class LaueGroup;
     Array<LaueGroup*>* iGroups;
+    
+    Array<unsigned short>& getGroupIndice(const unsigned int pSystemRef, const unsigned short pGroupNum) const;
  public:
     LaueGroups();
     unsigned int getSystemRef(unsigned short* pNumGroup, const unsigned short pSystemID) const; //Returns a reference to the first system LaueGroup and the number of groups for that system in pNumGroups
     MergedData mergeSystemGroup(const HKLData& pHKLData, const unsigned short pSystem, const unsigned short pGroup) const;
-    Array<unsigned short>& getGroupIndice(const unsigned int pSystemRef, const unsigned short pGroupNum) const;
+    
     ~LaueGroups();
 };
