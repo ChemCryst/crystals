@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/07/08 10:04:37  rich
+C
+C On input of the twintol parameter, convert it internaly
+C from 1/d (input) to (sintheta/lambda)^2. This speeds
+C up the comparison.
+C
 C Revision 1.18  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -766,6 +772,7 @@ C--END OF FILE DURING THE READ  -  CHECK IF THIS IS ON THE INPUT UNIT
 C----- ERROR DURING READ -
 3100  CONTINUE
       IF (NCARDS.LE.0) THEN
+        if (iuln .ne. 7) then
          WRITE(CMON,'(A)') 'No reflections found'
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(A)') CMON(1)
@@ -774,6 +781,7 @@ C----- ERROR DURING READ -
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(A)') CMON(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+        end if
 CDJW2003         LEF=-1
       ELSE
          WRITE (CMON,3150)
