@@ -23,7 +23,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %% This gets a passed in argument so that the menus
 %% can call the same script to do four different map types.
 %%
-%  VERIFY FO DIFF 2FO-FC FC
+%  VERIFY FO DIFF 2FO-FC FC OPT FO-PAT FC-PAT
 %  GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
 %  EVALUATE MTYPE = VALUE
 %%
@@ -49,10 +49,11 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%
 ^^WI GRID     GRIDM NROWS=1 NCOLS=2
 ^^WI {
-^^WI  @ 1,2 GRID GRIDB NROWS=5 NCOLS=3
+^^WI  @ 1,2 GRID GRIDB NROWS=7 NCOLS=3
 ^^WI  {
 ^^WI    @ 2,2 BUTTON BUTTONOK '&Ok' DEFAULT
 ^^WI    @ 4,2 BUTTON BUTTONXX '&Cancel'
+^^WI    @ 6,2 BUTTON BHELP    '&Help'
 ^^WI  }
 ^^WI  @ 1,1 GRID GRIDA NROWS=12 NCOLS=3
 ^^WI  {
@@ -74,7 +75,8 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI     @ 1,1 STATIC TEXT1 'Map type:'
 ^^WI     @ 1,3 DROPDOWN XFLIST INFORM=YES
 ^^WI           ADDTOLIST 'F-Obs' 'Difference' '2Fo-Fc'
-^^WI                     'F-Calc' 'NULL'
+^^WI                     'F-Calc' 'Optimal' 'Fo-Patterson'
+^^WI                     'Fc-Patterson' 'NULL'
 ^^WI    }
 ^^WI    @ 3,2 GRID GRIDABB NROWS=1 NCOLS=5
 ^^WI    {
@@ -120,11 +122,12 @@ a SCRIPT to help with the computation and processing of Fourier maps
 % OUTPUT
 ^^CR
 % END IF
-% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT BUTTONOK BUTTONXX BSETMAP
+% VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT -
+  BUTTONOK BUTTONXX BHELP BSETMAP
 % GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 % CASE VALUE
 %   BLOCK           %XFLIST Change default peak height?%
-%       VERIFY 1 2 3 4
+%       VERIFY 1 2 3 4 5 6 7
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %       IF PEAKCHANGE .EQ. FALSE THEN
 %           IF VALUE .EQ. 2 THEN
@@ -164,7 +167,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       EVALUATE DOCALC = VALUE
 %% map type
 ^^??    XFLIST SELECTED
-%       VERIFY 1 2 3 4
+%       VERIFY 1 2 3 4 5 6 7
 %       GET SILENT FINAL NOSTORE ABBREVIATED ' '
 %       EVALUATE IMAP = VALUE
 %% min peak height
@@ -231,11 +234,20 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           EVALUATE MAPTYPE = 'DIF'
 %           INSERT 'DIF'
 %       ELSE IF IMAP .EQ. 3 THEN
-%             EVALUATE MAPTYPE = '2FO'
+%           EVALUATE MAPTYPE = '2FO'
 %           INSERT '2FO'
-%       ELSE
+%       ELSE IF IMAP .EQ. 4 THEN
 %           EVALUATE MAPTYPE = 'FC'
 %           INSERT 'F-C'
+%       ELSE IF IMAP .EQ. 5 THEN
+%           EVALUATE MAPTYPE = 'OPT'
+%           INSERT 'OPT'
+%       ELSE IF IMAP .EQ. 6 THEN
+%           EVALUATE MAPTYPE = 'FO-PAT'
+%           INSERT 'FO-PAT'
+%       ELSE 
+%           EVALUATE MAPTYPE = 'FC-PAT'
+%           INSERT 'FC-PAT'
 %       END IF
 %       QUEUE SEND
 %       CLEAR
@@ -376,6 +388,55 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    DISPOSE FOURIER
 ^^CR
 %       FINISH
+%   END BLOCK
+%   BLOCK                   %BHELP%
+%       COPY '#SCRIPT XHELP1'
+Fourier maps.
+
+The data required to control the calculation and printing
+of a Fourier map are split into two parts.
+
+The first part, which should remain essentially unchanged
+from job to job, is stored in LIST 14, and describes the
+limits of the Fourier along each of the axes and the
+orientation of the map on the paper.
+To change this click on the 'Set Map Ranges' button.
+
+The second part of the information, such as the type of map,
+is provided by this dialog. 
+
+In the ouput listing, new peaks are labelled, with the
+following meanings
+
+GOOD PEAK - The peak centre was determined by Least-Squares.
+POOR PEAK - The peak centre was determined by interpolation.
+DUBIUOS PEAK - The peak centre is only a local maximum.
+
+Options
+==========
+
+Recompute scale factor:
+If there is a check mark next to this item, the overall scale
+factor will be re-calculated before the Fourier is calculated.
+This is necessary if you have input a new model.
+
+Recompute phases:
+If there is a check mark next to this item, structure factors
+will be re-calculated for all reflections before the Fourier
+is calculated.
+This is advisable if you have made any changes to the
+model (e.g. deleting atoms) since the last least squares
+refinement.
+
+Map Type:
+F-Obs -  Compute the map using observed structure factors. 
+Diff  -  Subtract model structure factors from the observed
+         structure factors. This will show up differences
+         between  the model and the 'observed' structure -
+         such as missing atoms.
+2Fo-Fc - 
+
+%       COPY '#SCRIPT XHELP2'
 %   END BLOCK
 %   BLOCK                   %BSETMAP%
 %       COPY '#SCRIPT XSECTION'
