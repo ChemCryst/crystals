@@ -1329,6 +1329,7 @@ C
 &H-P      I = NINT(FLOAT(I)/60.)
 C
 &&DVFGID      A = RTC()
+&&DVFGID      I = NINT (A)
 &DOS      CALL CLOCK@ (A)
 &DOS      I = NINT (A)
 C
