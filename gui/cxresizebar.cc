@@ -7,6 +7,12 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/11/15 10:44:15  ckp2
+//   Yesterday's changes resulted in the resizebar not showing up over it's
+//   children as you dragged to resize - fixed by temporarily turning CLIPCHILDREN
+//   style off for the duration of the drag. (CLIPCHILDREN prevents flicker when repainting
+//   windows underneath other child windows.)
+//
 //   Revision 1.5  2001/11/14 10:30:41  ckp2
 //   Various changes to the painting of the background of Windows as some of the
 //   dialogs suddenly went white under XP.
@@ -49,6 +55,9 @@
 #include <wx/settings.h>
 #include <wx/cmndata.h>
 #include <wx/fontdlg.h>
+#define MK_CONTROL 1
+#define MK_SHIFT 2
+
 #endif
 
 int CxResizeBar::mResizeBarCount = kResizeBarBase;
@@ -268,7 +277,7 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
         int x = event.m_x;
         int y = event.m_y;
         int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
-        int nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
+        nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
 #endif
 
  if ( nFlags & MK_CONTROL )
@@ -291,11 +300,10 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
       if ( m_type == kTHorizontal ) m_startDrag = y;
       else                          m_startDrag = x;
 
+#ifdef __CR_WIN__
 // turn off WS_CLIPCHILDREN
       ModifyStyle(WS_CLIPCHILDREN, 0);
 
-
-#ifdef __CR_WIN__
       SetCapture();
 #endif
 #ifdef __BOTHWX__
@@ -330,6 +338,8 @@ void CxResizeBar::OnLButtonUp( UINT nFlags, CPoint point )
   int y = point.y;
   int xoff = 0;
   int yoff = 0;
+// turn on WS_CLIPCHILDREN
+  ModifyStyle(0, WS_CLIPCHILDREN);
 #endif
 #ifdef __BOTHWX__
 void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
@@ -340,9 +350,6 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
   int xoff = 0; //mainR.Left();
   int yoff = 0; //mainR.Top();
 #endif
-
-// turn on WS_CLIPCHILDREN
-  ModifyStyle(0, WS_CLIPCHILDREN);
 
 
  x = min(x,GetWidth()-SIZE_BAR);
@@ -678,7 +685,7 @@ void CxResizeBar::AlreadyCollapsed()
   m_Collapsed = true;
 }
 
-
+#ifdef __CR_WIN_
 BOOL CxResizeBar::OnEraseBkgnd(CDC* pDC)
 {
 
@@ -701,3 +708,4 @@ BOOL CxResizeBar::OnEraseBkgnd(CDC* pDC)
 
   return TRUE;
 }
+#endif

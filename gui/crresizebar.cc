@@ -7,6 +7,9 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2002/01/16 14:12:40  ckp2
+//   Further fix of resize bar woes.
+//
 //   Revision 1.5  2002/01/16 10:02:37  ckp2
 //   Fix bug where resizing panes makes whole 'resize-control' jump to top
 //   left of parent window. Never noticed before because in all cases the resize
@@ -370,7 +373,12 @@ void CrResizeBar::MoveResizeBar(int offset)
 
 // Set new sizes
    CcRect child    = GetGeometry();
+#ifdef __CR_WIN__
    CcRect parent   = mParentElementPtr->GetGeometry();
+#endif
+#ifdef __BOTHWX__
+   CcRect parent   = CcRect(0,0,0,0);
+#endif
    CcRect relative;
 
    relative.Set(child.Top()  - parent.Top(),

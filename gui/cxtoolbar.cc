@@ -5,6 +5,11 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2002/07/15 12:19:13  richard
+//   Reorder headers to improve ease of linking.
+//   Update program to use new standard C++ io libraries.
+//   Update to use new version of MFC (5.0 with .NET.)
+//
 //   Revision 1.7  2002/07/08 11:37:36  richard
 //   Remove text from toolbars to save screen space, instead added "tooltips"
 //   to say what each button does.
@@ -76,9 +81,9 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 
     CxToolBar *theCxToolBar = new CxToolBar( container );
 
-    theCxToolBar->EnableToolTips(TRUE);
 
 #ifdef __CR_WIN__
+    theCxToolBar->EnableToolTips(TRUE);
     theCxToolBar->Create(NULL, NULL, WS_CHILD| WS_VISIBLE, CRect(0,0,5,5), guiParent, ++mToolBarCount);
     theCxToolBar->SetFont(CcController::mp_font);
 
@@ -332,6 +337,7 @@ END_EVENT_TABLE()
 
 
 
+#ifdef __CR_WIN__
 BOOL CxToolBar::OnToolTipNotify( UINT id, NMHDR * pNMHDR, LRESULT * pResult )
 {
  // need to handle both ANSI and UNICODE versions of the message
@@ -358,7 +364,7 @@ BOOL CxToolBar::OnToolTipNotify( UINT id, NMHDR * pNMHDR, LRESULT * pResult )
 
    return TRUE;    // message was handled
 }
-
+#endif
 
 void CxToolBar::Focus()
 {

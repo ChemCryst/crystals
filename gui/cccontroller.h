@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2002/07/19 08:08:17  richard
+//   Remove backwards incompatibilty of new std C++ library.
+//
 //   Revision 1.25  2002/07/18 16:57:52  richard
 //   Upgrade to use standard c++ library, rather than old C libraries.
 //
@@ -65,6 +68,7 @@
 #include    "cccommandqueue.h"
 #include    "ccstatus.h"
 #include    "ccrect.h"
+#include    "crystals.h"
 #include    <cstdio> //For FILE definition
 
 
@@ -77,7 +81,6 @@
 #include <wx/app.h>
 #include "crystals.h"
 #include "ccthread.h"
- DECLARE_APP(CCrystalsApp)
 #endif
 
 

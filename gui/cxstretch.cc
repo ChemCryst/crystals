@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.3  2001/07/16 07:35:32  ckp2
 //   Process ON_CHAR messages.
 //
@@ -80,6 +84,7 @@ int CxStretch::GetIdealWidth()  { return EMPTY_CELL; }
 
 int CxStretch::GetIdealHeight() { return EMPTY_CELL; }
 
+#ifdef __CR_WIN__
 BOOL CxStretch::OnEraseBkgnd(CDC* pDC)
 {
 
@@ -102,4 +107,4 @@ BOOL CxStretch::OnEraseBkgnd(CDC* pDC)
 
   return TRUE;
 }
-
+#endif

@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/06/17 14:41:05  richard
+//   CxDestroyWindow function.
+//   Icons not available under wx - replace with text strings for now - could eventually
+//   use bitmaps instead.
+//
 //   Revision 1.4  2001/03/08 16:44:09  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -131,17 +136,17 @@ void CxIcon::SetIconType( int iIconId )
       switch ( iIconId )
       {
             case kTIconInfo:
-                 SetLabel("INFORMATION:");
+//                 SetLabel("INFORMATION:");
                  break;
             case kTIconWarn:
-                 SetLabel("WARNING:");
+//                 SetLabel("WARNING:");
                  break;
             case kTIconError:
-                 SetLabel("STOP:");
+//                 SetLabel("STOP:");
                  break;
             case kTIconQuery:
             default:
-                 SetLabel("QUESTION:");
+//                 SetLabel("QUESTION:");
                  break;
       }
 #endif

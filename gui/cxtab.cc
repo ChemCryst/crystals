@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.6  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.5  2001/07/16 07:25:31  ckp2
 //   Make sure (in the wx version) that all the grids in the tab control are removed
 //   from the tab control before it is destroyed.
@@ -135,7 +139,9 @@ int CxTab::GetTabsHeight()
   return -work.top + 2;
 #endif
 #ifdef __BOTHWX__
-  return 20;
+   wxSize mySize;
+   mySize = CalcSizeFromPage(wxSize(0,0));
+   return mySize.y;
 #endif
 }
 
@@ -153,7 +159,7 @@ int CxTab::GetTabsExtraVSpace()
   return work.bottom + 10; //Good space at bottom.
 #endif
 #ifdef __BOTHWX__
-  return 10;
+  return 0;
 #endif
 }
 

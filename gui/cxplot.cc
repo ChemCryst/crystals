@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2002/10/16 09:07:31  rich
+//   Make the graphs a bit trendier.
+//
 //   Revision 1.22  2002/07/18 16:57:52  richard
 //   Upgrade to use standard c++ library, rather than old C libraries.
 //
@@ -101,11 +104,11 @@
 #include    "ccpoint.h"
 #include    "ccrect.h"
 #include	<math.h>
-#include <direct.h>
 #include <cstdlib>
 #include <cstdio>
 
 #ifdef __CR_WIN__
+#include <direct.h>
  #include    <afxwin.h>
 #endif
 #ifdef __BOTHWX__
@@ -308,7 +311,6 @@ void CxPlot::OnPaint(wxPaintEvent & event)
       wxRect rect = GetRect();
       dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),m_memDC,0,0,wxCOPY,false);
 }
-
 #endif
 
 
@@ -533,8 +535,10 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 #endif
 }
 
+
 // get the size of a text string on screen
 // NB param is same as above - only TEXT_ANGLE, TEXT_VERTICAL currently dealt with / needed
+#ifdef __CR_WIN__
 CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 {
 	CcPoint tsize;
@@ -577,6 +581,26 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 
 	return (LogicalToDevice(tsize.x, tsize.y));
 }
+#endif
+#ifdef __BOTHWX__
+CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
+{
+
+        int cx,cy,cs;
+        GetTextExtent( text.ToCString(), &cx, &cy );
+
+	if(param & TEXT_ANGLE)
+	{
+		cx = (int)(cx/sqrt(2));
+		cx = (int)(cx/sqrt(2));
+	}
+	else if(param & TEXT_VERTICAL)
+	{
+		cs=cx; cx=cy; cy=cs;
+	}
+	return (LogicalToDevice(cx, cy));
+}
+#endif
 
 void CxPlot::DrawPoly(int nVertices, int * vertices, Boolean fill)
 {
@@ -768,11 +792,10 @@ END_MESSAGE_MAP()
 //wx Message Table
 BEGIN_EVENT_TABLE(CxPlot, wxControl)
       EVT_CHAR( CxPlot::OnChar )
-      EVT_KEY_DOWN( CxPlot::OnKeyDown )
       EVT_PAINT( CxPlot::OnPaint )
-      EVT_LEFT_UP( CxPlot::OnLButtonUp )
       EVT_RIGHT_UP( CxPlot::OnRButtonUp )
       EVT_MOTION( CxPlot::OnMouseMove )
+      EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000, wxEVT_COMMAND_MENU_SELECTED, CxPlot::OnMenuSelected )
 END_EVENT_TABLE()
 #endif
 
@@ -782,12 +805,14 @@ void CxPlot::Focus()
     SetFocus();
 }
 
+#ifdef __CR_WIN__
 LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
 	DeletePopup();
 	mMouseCaptured = false;
     return TRUE;
 }
+#endif
 
 // the mouse-movement code
 #ifdef __CR_WIN__
@@ -854,7 +879,7 @@ void CxPlot::DeletePopup()
 #endif
 #ifdef __BOTHWX__
     m_TextPopup->Destroy();
-    m_DoNotPaint = false;
+//    m_DoNotPaint = false;
 #endif
     m_TextPopup=nil;
 	moldPPos.x = 0;
@@ -866,7 +891,7 @@ void CxPlot::DeletePopup()
 void CxPlot::CreatePopup(CcString text, CcPoint point)
 {
 #ifdef __BOTHWX__
-  m_DoNotPaint = true;
+//  m_DoNotPaint = true;
 #endif
   if(m_TextPopup) 
 	 DeletePopup();
@@ -931,6 +956,16 @@ void CxPlot::DeleteKey()
   }
 }
 
+#ifdef __BOTHWX__
+void CxPlot::PrintPicture() 
+{
+}
+void CxPlot::MakeMetaFile(int w, int h)
+{
+}
+#endif
+
+#ifdef __CR_WIN__
 // create a wmf of the graph
 void CxPlot::MakeMetaFile(int w, int h)
 {
@@ -972,6 +1007,7 @@ void CxPlot::MakeMetaFile(int w, int h)
     m_memDC = backup_memDC;
     m_client = backup_m_client;
 }
+
 
 // allow the user to print this graph
 void CxPlot::PrintPicture() 
@@ -1031,7 +1067,18 @@ void CxPlot::PrintPicture()
     return;
 
 }
+#endif
 
+#ifdef __BOTHWX__
+void CxPlot::OnRButtonUp( wxMouseEvent & event )
+{
+    CcPoint point = LogicalToDevice(event.m_x,event.m_y);
+	
+    if(m_FlippedPlot) point.y = 2400-point.y;
+    ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,point.x,point.y);
+}
+#endif
+#ifdef __CR_WIN__
 void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
 {
     CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
@@ -1041,13 +1088,21 @@ void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
     ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
     ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,wpoint.x,wpoint.y);
 }
+#endif
 
-
+#ifdef __CR_WIN__
 void CxPlot::OnMenuSelected(UINT nID)
 {
     ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
 }
-
+#endif
+#ifdef __BOTHWX__
+void CxPlot::OnMenuSelected(wxCommandEvent & event)
+{
+      int nID = event.m_id;
+     ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
+}
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1061,6 +1116,14 @@ BEGIN_MESSAGE_MAP(CxPlotKey, CWnd)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
 #endif
+
+#ifdef __BOTHWX__
+//wx Message Table
+BEGIN_EVENT_TABLE(CxPlotKey, wxControl)
+      EVT_PAINT( CxPlotKey::OnPaint )
+END_EVENT_TABLE()
+#endif
+
 
 CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 {
@@ -1134,10 +1197,10 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 	// get the new client area, and store this.
 	GetClientRect(&clientsize);
 
-	m_WinPosAndSize.left = 0;
-	m_WinPosAndSize.right = clientsize.right;//size.cx;
-	m_WinPosAndSize.top = 0;
-	m_WinPosAndSize.bottom = clientsize.bottom;//size.cy;
+	m_WinPosAndSize.mLeft = 0;
+	m_WinPosAndSize.mRight = clientsize.right;//size.cx;
+	m_WinPosAndSize.mTop = 0;
+	m_WinPosAndSize.mBottom = clientsize.bottom;//size.cy;
 
   newDC.SelectObject(oldFont);
 
@@ -1154,13 +1217,19 @@ CxPlotKey::~CxPlotKey()
 	delete [] m_Colours;
 }
 
+#ifdef __BOTHWX__
+void CxPlotKey::OnPaint(wxPaintEvent & event)
+{ 
+}
+#endif
+
+#ifdef __CR_WIN__
 void CxPlotKey::OnPaint()
 {
-#ifdef __CR_WIN__
 
   SIZE size;
-  size.cx = m_WinPosAndSize.right;
-  size.cy = m_WinPosAndSize.bottom;
+  size.cx = m_WinPosAndSize.mRight;
+  size.cy = m_WinPosAndSize.mBottom;
 
   CPaintDC newDC(this);
   COLORREF col = newDC.GetBkColor();
@@ -1198,5 +1267,6 @@ void CxPlotKey::OnPaint()
   delete [] temp;
   newDC.SelectObject(oldFont);
 
-#endif
 }
+#endif
+

@@ -101,7 +101,7 @@ void CxMenu::SetTitle(CcString theText, CxMenu* ptr)
     }
 #endif
 #ifdef __BOTHWX__
-      SetLabel( id, theText.ToCString() );
+      wxMenu::SetTitle( theText.ToCString() );
 #endif
 }
 

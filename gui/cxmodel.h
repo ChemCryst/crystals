@@ -7,6 +7,12 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.29  2002/07/03 16:44:05  richard
+//  Implemented polygon selection in model window.
+//
+//  Improved "genericness" of ccmodelobject class to simplify calls to common
+//  functions in atom, sphere and donut derived classes.
+//
 //  Revision 1.28  2002/07/03 14:23:21  richard
 //  Replace as many old-style stream class header references with new style
 //  e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -230,8 +236,11 @@ class CxModel : public BASEMODEL
     void CreatePopup(CcString atomname, CcPoint point);
 
     void LoadDIBitmap(CcString filename);
+
+#ifdef __CR_WIN__
     BYTE * m_bitmapbits;
     BITMAPINFO * m_bitmapinfo;
+#endif
 
 
     int m_DrawStyle;         // Rendering style

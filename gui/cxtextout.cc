@@ -24,6 +24,7 @@
 #include <wx/settings.h>
 #include <wx/cmndata.h>
 #include <wx/fontdlg.h>
+#include <wx/event.h>
 #endif
 #ifdef __LINUX__
 #define RGB wxColour
@@ -639,88 +640,76 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
         int nUBound = max(GetLineCount() - 1, GetMaxViewableLines() - 1);
         if ( evt.GetOrientation() == wxVERTICAL )
         {
-          switch( evt.m_eventType )
-          {
-              case wxEVT_SCROLLWIN_TOP:
+          if ( evt.m_eventType == wxEVT_SCROLLWIN_TOP ) {
                  SetHead( GetMaxViewableLines() - 1 );
-                 break;
-             case wxEVT_SCROLLWIN_BOTTOM:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_BOTTOM ) {
                  SetHead( nUBound );
-                 break;
-             case wxEVT_SCROLLWIN_PAGEUP:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEUP ) {
                  if( m_nHead > GetMaxViewableLines() - 1 )
                  {
                    m_nHead -= GetMaxViewableLines()/2;
                    m_nHead = max(0,m_nHead);
                    SetHead( m_nHead );
                  }
-                 break;
-             case wxEVT_SCROLLWIN_LINEUP:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEUP ) {
                  if( m_nHead > GetMaxViewableLines() - 1 )
                  {
                    m_nHead--;
                    SetHead( m_nHead );
                  }
-                 break;
-
-             case wxEVT_SCROLLWIN_PAGEDOWN:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEDOWN ) {
                  if( m_nHead < nUBound )
                  {
                    m_nHead += GetMaxViewableLines()/2;
                    m_nHead = min (m_nHead, nUBound);
                    SetHead( m_nHead );
                  };
-                 break;
-             case wxEVT_SCROLLWIN_LINEDOWN:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEDOWN ) {
                  if( m_nHead < nUBound )
                  {
                    m_nHead++;
                    SetHead( m_nHead );
                  };
-                 break;
+          }
 
-             case wxEVT_SCROLLWIN_THUMBRELEASE:
-             case wxEVT_SCROLLWIN_THUMBTRACK:
+          else if (( evt.m_eventType == wxEVT_SCROLLWIN_THUMBRELEASE )|| ( evt.m_eventType == wxEVT_SCROLLWIN_THUMBTRACK )) {
                  SetHead( evt.GetPosition() + GetMaxViewableLines() - 1 );
-                 break;
-           };
+          }
         }
         else
         {
           wxSize clientRc = GetClientSize( );
           int nMax = m_nMaxWidth - clientRc.GetWidth();
-          switch( evt.m_eventType )
-          {
-             case wxEVT_SCROLLWIN_TOP:
+
+          if ( evt.m_eventType == wxEVT_SCROLLWIN_TOP ) {
                  m_nXOffset = 0;
-                 break;
-
-             case wxEVT_SCROLLWIN_BOTTOM:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_BOTTOM ) {
                  m_nXOffset = nMax;
-                 break;
-
-             case wxEVT_SCROLLWIN_PAGEUP:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEUP ) {
                  m_nXOffset -= clientRc.GetWidth()/2;
                  if( m_nXOffset < 0 ) m_nXOffset = 0;
-                 break;
-             case wxEVT_SCROLLWIN_LINEUP:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEUP ) {
                  m_nXOffset -= m_nAvgCharWidth;
                  if( m_nXOffset < 0 ) m_nXOffset = 0;
-                 break;
-
-             case wxEVT_SCROLLWIN_PAGEDOWN:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_PAGEDOWN ) {
                  m_nXOffset += clientRc.GetWidth()/2;
                  if( m_nXOffset > nMax ) m_nXOffset = nMax;
-                 break;
-             case wxEVT_SCROLLWIN_LINEDOWN:
+          }
+          else if ( evt.m_eventType == wxEVT_SCROLLWIN_LINEDOWN ) {
                  m_nXOffset += m_nAvgCharWidth;
                  if( m_nXOffset > nMax ) m_nXOffset = nMax;
-                 break;
-
-             case wxEVT_SCROLLWIN_THUMBRELEASE:
-             case wxEVT_SCROLLWIN_THUMBTRACK:
+          }
+          else if (( evt.m_eventType == wxEVT_SCROLLWIN_THUMBRELEASE ) || (evt.m_eventType == wxEVT_SCROLLWIN_THUMBTRACK )) {
                  m_nXOffset = evt.GetPosition();
-                 break;
           }
           SetScrollbar( wxHORIZONTAL, m_nXOffset, min(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
           Refresh();
@@ -851,7 +840,7 @@ Boolean CxTextOut::IsAHit( CcString & commandString, int x, int y )
 #endif
 #ifdef __BOTHWX__
     wxSize clientRc = GetClientSize( );
-        int line = m_nHead - ( ( clientRc.GetHeight() - y ) / m_nFontHeight );
+     int line = m_nHead - ( ( clientRc.GetHeight() - y ) / m_nFontHeight );
 #endif
 
         CcString strToRender;
@@ -867,7 +856,8 @@ Boolean CxTextOut::IsAHit( CcString & commandString, int x, int y )
 #endif
         }
         int nPos;
-        int cx=0, nX=0, nWidth=0, oldnX=0;
+        int cx=0, nWidth=0, oldnX=0, cy=0;
+        int nX = - m_nXOffset;
 
         m_bInLink = false; //Beginning new line.
         bool wasInLink = false;
@@ -882,7 +872,12 @@ Boolean CxTextOut::IsAHit( CcString & commandString, int x, int y )
                 commandText = strToRender;
                 if( strToRender.Length() > 0 )
                 {
+#ifdef __CR_WIN__
                     cx = strToRender.Length() * m_nAvgCharWidth;
+#endif
+#ifdef __BOTHWX__
+                    GetTextExtent( strToRender.ToCString(), &cx, &cy );
+#endif
                     nX += cx;
                     nWidth += cx;
                 };
@@ -891,9 +886,14 @@ Boolean CxTextOut::IsAHit( CcString & commandString, int x, int y )
                 GetColourCodes( strTemp, &code );
             }
             else
-            {
+            { 
                 commandText = strTemp;
+#ifdef __CR_WIN__
                 cx = strTemp.Length() * m_nAvgCharWidth;
+#endif
+#ifdef __BOTHWX__
+                GetTextExtent( strTemp.ToCString(), &cx, &cy );
+#endif
                 nWidth += cx;
                 nX += cx;
                 break;
@@ -1000,7 +1000,7 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
     CcString strTemp = strLine;
     CcString strToRender;
 
-    int cx;
+    int cx,cy;
     int nPos;
     int nWidth = 0;
     Boolean bUnderline = false;
@@ -1021,8 +1021,12 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
                     cx = sz.cx;
                 }
                 else
+                    cx = strToRender.Length() * m_nAvgCharWidth;
 #endif
-                cx = strToRender.Length() * m_nAvgCharWidth;
+#ifdef __BOTHWX__
+                GetTextExtent( strToRender.ToCString(), &cx, &cy );
+#endif
+
 
 #ifdef __CR_WIN__
                 pDC->TextOut( nX, nY, strToRender.ToCString() );
@@ -1081,8 +1085,11 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
                 cx = sz.cx;
             }
             else
-#endif
                 cx = strTemp.Length() * m_nAvgCharWidth;
+#endif
+#ifdef __BOTHWX__
+            GetTextExtent( strTemp.ToCString(), &cx, &cy );
+#endif
             nWidth += cx;
 #ifdef __CR_WIN__
             pDC->TextOut( nX, nY, strTemp.ToCString() );
@@ -1094,14 +1101,15 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
 
             // Pad out rest of line with solid colour:
 
-
 #ifdef __CR_WIN__
             CRect solidRc( nX, nY, clientRc.right, nY + m_nFontHeight );
             pDC->FillSolidRect( &solidRc, m_ColTable[ lastcol ]);
 #endif
 #ifdef __BOTHWX__
-            m_brush->SetColour( m_BackCol );
-            m_pen->SetColour( m_BackCol );
+            m_brush->SetColour( m_ColTable[ lastcol ] );
+            m_pen->SetColour( m_ColTable[ lastcol ] );
+            pDC->SetTextForeground( m_ColTable[ lastcol ] );
+            pDC->SetTextBackground( m_ColTable[ lastcol ] ) ;
             pDC->SetPen( *m_pen );
             pDC->SetBrush( *m_brush );
             pDC->DrawRectangle( nX,nY, clientRc.GetWidth(), m_nFontHeight );
@@ -1346,6 +1354,7 @@ void CxTextOut::ChooseFont()
 
 }
 
+#ifdef __CR_WIN__
 BOOL CxTextOut::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 // Accumulate delta's until 120 is reached in either direction.
@@ -1367,7 +1376,7 @@ BOOL CxTextOut::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 
 }
-
+#endif
 
 void CxTextOut::ScrollPage(bool up)
 {

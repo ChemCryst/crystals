@@ -1,5 +1,3 @@
-#ifdef __CR_WIN__
-
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CxModList
@@ -28,7 +26,7 @@ CxModList *    CxModList::CreateCxModList( CrModList * container, CxGrid * guiPa
     theModList->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theModList->SetFont(CcController::mp_font);
 #endif
-#ifdef nnLINUXnn
+#ifdef __BOTHWX__
       theModList->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
                           wxLC_REPORT);
 #endif
@@ -75,8 +73,16 @@ void CxModList::AddCols()
     for ( int i = 0; i < m_numcols ; i++ )
     {
       m_colTypes[i] = COL_INT; //Always start with INT. This will fail to REAL, and then to TEXT.
+#ifdef __CR_WIN__
       m_colWidths[i] = max(10,GetStringWidth(colHeader[i].ToCString())+5);
       InsertColumn( i, colHeader[i].ToCString(), LVCFMT_LEFT, 10, i );
+#endif
+#ifdef __BOTHWX__
+      int w,h;
+      GetTextExtent(colHeader[i].ToCString(),&w,&h);
+      m_colWidths[i] = max(10,w);
+      InsertColumn( i, colHeader[i].ToCString(), wxLIST_FORMAT_LEFT, 10 );
+#endif
       SetColumnWidth( i, m_colWidths[i]);
     }
 }
@@ -121,7 +127,7 @@ int CxModList::GetIdealHeight()
     cdc.SelectObject(oldFont);
     return lines * ( textMetric.tmHeight + 2 );
 #endif
-#ifdef nnLINUXnn
+#ifdef __BOTHWX__
       return mVisibleLines * ( GetCharHeight() + 2 );
 #endif
 }
@@ -148,20 +154,11 @@ BEGIN_MESSAGE_MAP(CxModList, CListCtrl)
     ON_NOTIFY_REFLECT( NM_RCLICK,  RightClick )
 END_MESSAGE_MAP()
 #endif
-#ifdef nnLINUXnn
-//wx Message Map
-BEGIN_EVENT_TABLE(CxButton, wxButton)
-      EVT_CHAR( CxButton::OnChar )
-      EVT...
-      EVT...
-      EVT...
-      ECT...
-      EVT...
-      EVT_LIST_COL_CLICK
+#ifdef __BOTHWX__
+BEGIN_EVENT_TABLE(CxModList, wxListCtrl)
+     EVT_CHAR( CxModList::OnChar )
 END_EVENT_TABLE()
 #endif
-
-
 
 
 void CxModList::Focus()
@@ -184,12 +181,27 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
         if ( IDlist[i] == id )
         {
             for( int j=0; j<m_numcols; j++)
+#ifdef __CR_WIN__
                 SetItemText( i, j, rowOfStrings[j].ToCString());
+#endif
+#ifdef __BOTHWX__
+                SetItem( i, j, rowOfStrings[j].ToCString());
+#endif
 
             if ( selected )
+#ifdef __CR_WIN__
                SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
+#endif
+#ifdef __BOTHWX__
+               SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+#endif
             else
+#ifdef __CR_WIN__
                SetItemState(i, 0, LVIS_SELECTED);
+#endif
+#ifdef __BOTHWX__
+               SetItemState(i, 0, wxLIST_STATE_SELECTED);
+#endif
             return;
         }
 
@@ -199,7 +211,8 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
 
 // A new item. Extend id list.
     int * newIDlist = new int[id];
-    for ( int i = 0; i < mItems; i++ )
+    int i;
+    for ( i = 0; i < mItems; i++ )
     {
        newIDlist[i] = IDlist[i];
     }
@@ -211,21 +224,40 @@ void CxModList::AddRow(int id, CcString * rowOfStrings, bool selected,
     int nItem = InsertItem(mItems, _T(""));
     for (int j = 0; j < m_numcols; j++)
     {
+#ifdef __CR_WIN__
         SetItemText(nItem, j, rowOfStrings[j].ToCString());
         int width = GetStringWidth(rowOfStrings[j].ToCString());
+#endif
+#ifdef __BOTHWX__
+        SetItem( nItem, j, rowOfStrings[j].ToCString());
+        int width,h;
+        GetTextExtent(rowOfStrings[j].ToCString(),&width,&h);
+#endif
         m_colWidths[j] = max(m_colWidths[j],width + 15);
         SetColumnWidth(j,m_colWidths[j]);
         int type = WhichType(rowOfStrings[j]);
         m_colTypes[j] = max(m_colTypes[j], type);
     }
     if ( selected )
+#ifdef __CR_WIN__
        SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
+#endif
+#ifdef __BOTHWX__
+       SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+#endif
     else
+#ifdef __CR_WIN__
        SetItemState(i, 0, LVIS_SELECTED);
+#endif
+#ifdef __BOTHWX__
+       SetItemState(i, 0, wxLIST_STATE_SELECTED);
+#endif
 
     return;
 }
 
+
+#ifdef __CR_WIN__
 void CxModList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
         CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
@@ -349,8 +381,9 @@ void CxModList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
         // Restore dc
         pDC->RestoreDC( nSavedDC );
 }
+#endif
 
-
+#ifdef __CR_WIN__
 void CxModList::RepaintSelectedItems()
 {
         CRect rcBounds, rcLabel;
@@ -383,12 +416,14 @@ void CxModList::RepaintSelectedItems()
 
         UpdateWindow();
 }
+#endif
 
 //BOOL CxModList::OnEraseBkgnd( CDC* pDC )
 //{
 //    return ( TRUE ) ; //prevent flicker
 //}
 
+#ifdef __CR_WIN__
 void CxModList::OnPaint()
 {
 
@@ -417,8 +452,9 @@ void CxModList::OnPaint()
 
         CListCtrl::OnPaint();
 }
+#endif
 
-
+#ifdef __CR_WIN__
 void CxModList::OnKillFocus(CWnd* pNewWnd)
 {
         CListCtrl::OnKillFocus(pNewWnd);
@@ -431,7 +467,10 @@ void CxModList::OnKillFocus(CWnd* pNewWnd)
         if((GetStyle() & LVS_TYPEMASK) == LVS_REPORT)
                 RepaintSelectedItems();
 }
+#endif
 
+
+#ifdef __CR_WIN__
 void CxModList::OnSetFocus(CWnd* pOldWnd)
 {
         CListCtrl::OnSetFocus(pOldWnd);
@@ -444,10 +483,11 @@ void CxModList::OnSetFocus(CWnd* pOldWnd)
         if((GetStyle() & LVS_TYPEMASK)==LVS_REPORT)
                 RepaintSelectedItems();
 }
+#endif
 
 
 
-
+#ifdef __CR_WIN__
 void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 {
     NM_LISTVIEW* pnmv = (NM_LISTVIEW FAR *) pNMHDR;
@@ -490,7 +530,7 @@ void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 
     }
 }
-
+#endif
 
 //         Copyright 1997-1998 CodeGuru
 //         Contact : webmaster@codeguru.com
@@ -505,6 +545,7 @@ void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 //         which is then applied to the whole list. This saves an incredible
 //         amount of time.                              R.Cooper Nov 98.
 
+#ifdef __CR_WIN__
 void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 {
         HD_NOTIFY *phdn = (HD_NOTIFY *) pNMHDR;
@@ -523,13 +564,14 @@ void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
         }
         *pResult = 0;
 }
-
+#endif
 
 // SortItems            - Sort the list based on column text
 // Returns              - Returns true for success
 // colType              - INT, REAL or TEXT. Makes sure correct sort is done.
 // nCol                 - column that contains the text to be sorted
 // bAscending           - indicate sort order
+#ifdef __CR_WIN__
 Boolean CxModList::SortItems( int colType, int nCol, Boolean bAscending)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
@@ -747,12 +789,7 @@ Boolean CxModList::SortItems( int colType, int nCol, Boolean bAscending)
     return true;
 
 }
-
-
-
-
-
-
+#endif
 
 
 
@@ -845,9 +882,10 @@ int CxModList::WhichType(CcString text)
 
 }
 
+
+#ifdef __CR_WIN__
 void CxModList::SelectAll(Boolean select)
 {
-
     int size = GetItemCount();
     m_ProgSelecting = size;
     LV_ITEM moveItem;
@@ -869,15 +907,24 @@ void CxModList::SelectAll(Boolean select)
     }
 
 }
+#endif
 
-
+#ifdef __CR_WIN__
 CcString CxModList::GetCell(int row, int col)
 {
     CString temp = GetItemText(row, col);
     CcString retVal = temp.GetBuffer(temp.GetLength());
     return retVal;
 }
+#endif
+#ifdef __BOTHWX__
+CcString CxModList::GetCell(int row, int col)
+{
+ return CcString("Unimplemented");
+}
+#endif
 
+#ifdef __CR_WIN__
 void CxModList::SelectPattern(CcString * strings, Boolean select)
 {
     int size = GetItemCount();
@@ -950,7 +997,16 @@ void CxModList::SelectPattern(CcString * strings, Boolean select)
         }
     }
 }
+#endif
 
+#ifdef __BOTHWX__
+CcString CxModList::GetListItem(int item)
+{
+ return CcString("unimplemented");
+}
+#endif
+
+#ifdef __CR_WIN__
 CcString CxModList::GetListItem(int item)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
@@ -962,7 +1018,9 @@ CcString CxModList::GetListItem(int item)
     CcString result = textresult.GetBuffer(textresult.GetLength());
     return result;
 }
+#endif
 
+#ifdef __CR_WIN__
 void    CxModList::InvertSelection()
 {
     int size = GetItemCount();
@@ -989,9 +1047,17 @@ void    CxModList::InvertSelection()
     }
 
 }
+#endif
 
 
+#ifdef __BOTHWX__
+int CxModList::GetNumberSelected()
+{
+  return -1;
+}
+#endif
 
+#ifdef __CR_WIN__
 int CxModList::GetNumberSelected()
 {
     int size = GetItemCount();
@@ -1012,7 +1078,15 @@ int CxModList::GetNumberSelected()
     }
     return count;
 }
+#endif
 
+#ifdef __BOTHWX__
+void CxModList::GetSelectedIndices(  int * values )
+{
+  return;
+}
+#endif
+#ifdef __CR_WIN__
 void CxModList::GetSelectedIndices(  int * values )
 {
     int size = GetItemCount();
@@ -1036,7 +1110,7 @@ void CxModList::GetSelectedIndices(  int * values )
     }
     return;
 }
-
+#endif
 
 void CxModList::Update(int newsize) 
 {
@@ -1055,6 +1129,7 @@ void CxModList::Update(int newsize)
 }
 
 
+#ifdef __CR_WIN__
 void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
 {
  NMITEMACTIVATE* lpnmitem = (LPNMITEMACTIVATE) pNMHDR;
@@ -1100,11 +1175,13 @@ void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
  *pResult = 1;
 
 }
+#endif
 
+
+#ifdef __CR_WIN__
 void CxModList::OnMenuSelected(UINT nID)
 {
     ((CrModList*)ptr_to_crObject)->MenuSelected( nID );
 }
-
-
 #endif
+

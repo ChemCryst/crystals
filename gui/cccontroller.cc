@@ -9,6 +9,12 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.51  2002/11/24 13:33:05  rich
+// (1) Fix serious bug that erased some keys during winsizes.ini writing.
+//
+// (2) Preliminary support for using USERPROFILE directory to store
+// winsizes.ini.
+//
 // Revision 1.50  2002/07/23 15:49:42  richard
 // Small rarely manifested bugette discovered in queue locking behaviour. Now
 // fixed. (I said max, I meant min).
@@ -989,7 +995,7 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                               _putenv( (LPCTSTR) newdsc.ToCString() );
 #endif
 #ifdef __BOTHWX__
-                              putenv(  newdsc.ToCString() );
+                              putenv( (char *) newdsc.ToCString() );
 #endif
                         }
                         break;
@@ -1918,17 +1924,17 @@ void CcController::StoreKey( CcString key, CcString value )
       CcString dir = EnvVarExtract( crysdir, i );
       i++;
 
+#ifdef __CR_WIN__
       HANDLE hDir;
-
 // Check directory exists, if not, create it.
       hDir = CreateFile( dir.ToCString(),
             FILE_LIST_DIRECTORY, FILE_SHARE_READ|FILE_SHARE_DELETE,
             NULL,OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL );
-
       if ( hDir == INVALID_HANDLE_VALUE )
       {
         CreateDirectory( dir.ToCString() , NULL );
       }
+#endif
 
 #ifdef __BOTHWIN__
       dir += "script\\";
@@ -1937,6 +1943,7 @@ void CcController::StoreKey( CcString key, CcString value )
       dir += "script/";
 #endif
 
+#ifdef __CR_WIN__
 // Check directory exists, if not, create it.
       hDir = CreateFile( dir.ToCString(),
     FILE_LIST_DIRECTORY, FILE_SHARE_READ|FILE_SHARE_DELETE, NULL,OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL );
@@ -1945,6 +1952,7 @@ void CcController::StoreKey( CcString key, CcString value )
       {
         CreateDirectory( dir.ToCString() , NULL );
       }
+#endif
 
 #ifdef __BOTHWIN__
       dir += "winsizes.ini";
@@ -3043,14 +3051,13 @@ extern "C" {
 
   void FORCALL(callccode) ( char* theLine)
   {
-      long thelength = 262;
       char * str = new char[263];
       memcpy(str,theLine,262);
       *(str+262) = '\0';
-//      ciflushbuffer(&thelength, str);
-      CcString temp = CcString(theLine);
+      CcString temp = CcString(str);
+      LOGSTAT("Tempuntrimmed:\""+temp+"\"");
       temp.Trim();
-//      LOGSTAT("Temp, trimmed:"+temp);
+      LOGSTAT("Temp, trimmed:\""+temp+"\"");
       (CcController::theController)->AddInterfaceCommand( temp );
       delete [] str;
   }

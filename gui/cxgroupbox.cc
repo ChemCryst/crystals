@@ -59,6 +59,7 @@ void    CxGroupBox::SetText( char * text )
 
 CXSETGEOMETRY(CxGroupBox)
 
+#ifdef __CR_WIN__
 BOOL CxGroupBox::OnEraseBkgnd(CDC* pDC)
 {
 
@@ -81,3 +82,4 @@ BOOL CxGroupBox::OnEraseBkgnd(CDC* pDC)
 
   return TRUE;
 }
+#endif

@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/09/07 14:35:19  ckp2
+//   LENGTH='a string' option lets the button length be based on a string other
+//   than the one actually displayed. Useful for making professional looking
+//   buttons in a given row, e.g.
+//
+//   @ 1,1 BUTTON BOK '&OK' LENGTH='Cancel'
+//   @ 1,3 BUTTON BXX '&Cancel'
+//
+//   makes both buttons equal width.
+//
 //   Revision 1.7  2001/06/17 14:46:47  richard
 //   CxDestroyWindow function.
 //   Size wx buttons so the match MFC buttons.
@@ -50,6 +60,7 @@ class CxButton : public BASEBUTTON
 // The interface exposed to the CrClass
     public:
         void Disable(Boolean disabled);
+        void CxSetState(Boolean highlight);
         void Focus();
         // methods
         static CxButton *   CreateCxButton( CrButton * container, CxGrid * guiParent );

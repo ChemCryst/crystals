@@ -1,4 +1,3 @@
-#ifdef __CR_WIN__
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CrModList
@@ -9,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2002/11/18 17:28:36  djw
+//   Fix function returning a value when it should not.
+//
 //   Revision 1.1  2002/10/02 13:43:17  rich
 //   New ModList class added.
 //
@@ -293,6 +295,7 @@ void CrModList::DocRemoved()
 void CrModList::AddRow( int id, CcString* rowOfStrings, bool s, bool d )
 {
   ((CxModList*)ptr_to_cxObject)->AddRow( id, rowOfStrings, s, d);
+   LOGSTAT("Added row: " + rowOfStrings[0] + rowOfStrings[1] + rowOfStrings[2]);
 }
 
 void CrModList::SelectAtomByPosn(int id, bool select)
@@ -362,6 +365,5 @@ void CrModList::MenuSelected(int id)
     return;
 }
 
-#endif
 
 

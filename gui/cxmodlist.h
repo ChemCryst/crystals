@@ -17,8 +17,10 @@
 #endif
 
 #ifdef __BOTHWX__
+#include <wx/event.h>
+#include <wx/imaglist.h>
 #include <wx/listctrl.h>
-#define BASELISTCTRL wxListCtrl
+#define BASEMODLIST wxListCtrl
 #endif
 
 #include "ccstring.h"   // added by ClassView
@@ -57,9 +59,8 @@ class CxModList : public BASEMODLIST
         int GetValue();
         void Update(int newsize) ;
 
-        void RepaintSelectedItems();
-
 #ifdef __CR_WIN__
+        void RepaintSelectedItems();
 
         afx_msg void OnKillFocus(CWnd* pNewWnd);
         afx_msg void OnSetFocus(CWnd* pOldWnd);
@@ -73,9 +74,11 @@ class CxModList : public BASEMODLIST
         afx_msg void RightClick( NMHDR * pNMHDR, LRESULT* pResult );
 //        afx_msg BOOL OnEraseBkgnd( CDC* pDC );
         afx_msg void OnMenuSelected (UINT nID);
-
         DECLARE_MESSAGE_MAP()
-
+#endif
+#ifdef __BOTHWX__
+    void OnChar(wxKeyEvent & event );
+    DECLARE_EVENT_TABLE()
 #endif
 
         // attributes

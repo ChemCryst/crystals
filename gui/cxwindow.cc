@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2002/12/16 18:26:40  rich
+//   Fix breaking Cameron menus. Add some debugging for debug version.
+//
 //   Revision 1.27  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
 //   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -788,9 +791,6 @@ void CxWindow::OnTimer(UINT nID)
 {
   ((CrWindow*)ptr_to_crObject)->TimerFired();
 }
-#endif
-
-
 
 
 BOOL CxWindow::OnEraseBkgnd(CDC* pDC)
@@ -812,6 +812,7 @@ BOOL CxWindow::PreTranslateMessage(MSG* pMsg)
   return CWnd::PreTranslateMessage(pMsg);
   // call the base class here
 }
+#endif
 
 
 

@@ -1,6 +1,12 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2002/07/29 13:03:47  richard
+// Proxy routines avoid loading the real OLEACC.DLL - this file isn't present
+// on some older platforms (95/98/NT) unless Active Accessibility is installed.
+// Since CRYSTALS uses no Active Accessibility features, this DLL is not required,
+// but due to a bug in MFC70.DLL it is always loaded.
+//
 // Revision 1.10  2002/07/15 12:19:13  richard
 // Reorder headers to improve ease of linking.
 // Update program to use new standard C++ io libraries.
@@ -95,8 +101,6 @@ public:
     virtual int OnExit();
     virtual void OnIdle(wxIdleEvent & event);
     void OnKickTimer(wxTimerEvent & evt);
-
-
     DECLARE_EVENT_TABLE()
 
 #endif
@@ -105,7 +109,14 @@ public:
     CcController* theControl;
 };
 
+#ifdef __CR_WIN__
 extern CCrystalsApp theApplication;
+#endif
+
+#ifdef __BOTHWX__
+   DECLARE_APP(CCrystalsApp)
+#endif
+
 
 #ifdef __CR_WIN__
 

@@ -24,8 +24,19 @@
 #endif
 
 
+/* Critical Sections and Signals 
 
-CcLock::CcLock(bool isMutex )
+Both use mutexes, but it is useful to think of them differently:
+
+  A CS may be Entered and Left. A thread will wait forever to enter
+  a critical section if the other thread doesn't leave it.
+
+  A signal may be 'signalled' or 'wait'ed for. There is a timeout
+  on the wait - just in case.
+*/
+
+
+CcLock::CcLock(bool isMutex )   //true for CS, false for signal.
 {
   if (isMutex)
   {
@@ -44,8 +55,8 @@ CcLock::CcLock(bool isMutex )
     m_Mutex = CreateEvent(NULL, true, false, NULL);
 #endif
 #ifdef __BOTHWX__
-    m_EvMutex = new wxCondition();
-    m_CSMutex = nil;
+    m_CSMutex = new wxMutex();
+    m_EvMutex = new wxCondition(*m_CSMutex);
 #endif
   }
 
@@ -93,9 +104,7 @@ bool CcLock::Wait(int timeout_ms)
     return ( WaitForSingleObject( m_Mutex, INFINITE ) == WAIT_OBJECT_0 );
 #endif
 #ifdef __BOTHWX__
-    int secs = timeout_ms / 1000;
-    int nano = (timeout_ms - ( secs * 1000 )) * 1000000;
-    if ( timeout_ms ) return m_EvMutex -> Wait( secs, nano ); //wx version is in nanoseconds.
+    if ( timeout_ms ) return m_EvMutex -> WaitTimeout( timeout_ms );
     m_EvMutex -> Wait();
     return true;
 #endif

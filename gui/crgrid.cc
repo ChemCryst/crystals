@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2002/10/02 13:43:17  rich
+//   New ModList class added.
+//
 //   Revision 1.19  2002/07/23 08:27:02  richard
 //
 //   Extra parameter during GRID creation: "ISOLATE" - grid won't expand when the
@@ -329,8 +332,7 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
               retVal = InitElement( listPtr, tokenList, xpos, ypos );
             break;
           }
-//The ModList is not yet supported
-// under linux
+#endif
           case kTCreateModList:                    // Create a List Control
           {
             CrModList * listPtr = new CrModList( this );
@@ -338,7 +340,6 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
               retVal = InitElement( listPtr, tokenList, xpos, ypos );
             break;
           }
-#endif
           case kTCreateDropDown:                          // Create a DropDown
           {
             CrDropDown * dropDownPtr = new CrDropDown( this );

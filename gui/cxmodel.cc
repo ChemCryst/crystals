@@ -112,6 +112,8 @@ CxModel::CxModel(CrModel* container)
   ptr_to_crObject = container;
   m_hGLContext = NULL;
   m_hPalette = 0;
+  m_bitmapbits = NULL;
+  m_bitmapinfo = NULL;
 #endif
   m_bMouseLeaveInitialised = false;
   m_bitmapok = false;
@@ -151,8 +153,6 @@ CxModel::CxModel(CrModel* container)
   m_selectRect.Set(0,0,0,0);
   m_mouseMode = CXROTATE;
 
-  m_bitmapbits = NULL;
-  m_bitmapinfo = NULL;
 }
 
 
@@ -319,7 +319,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       if ( m_selectionPoints.ListSize() > 0 )
       {
 //Draw in polygon so far:
-         CcPoint* nextPoint;
+         CcPoint* nextPoint, *fromPoint;
          m_selectionPoints.Reset();
          nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
 #ifdef __CR_WIN__
@@ -332,10 +332,11 @@ void CxModel::OnPaint(wxPaintEvent &event)
 #endif
 #ifdef __BOTHWX__
           dc.SetLogicalFunction( wxCOPY );
-          dc.MoveTo(nextPoint->x, nextPoint->y);
+          fromPoint = nextPoint;
           while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
           {
-            dc.LineTo(nextPoint->x,nextPoint->y);
+            dc.DrawLine(fromPoint->x,fromPoint->y,nextPoint->x,nextPoint->y);
+            fromPoint = nextPoint;
           }  
 #endif
       }
@@ -346,8 +347,9 @@ void CxModel::OnPaint(wxPaintEvent &event)
       PaintBannerInstead ( &dc );
     }
 
-	wglMakeCurrent( hOldDC, hOldRC );
-
+#ifdef __CR_WIN__
+    wglMakeCurrent( hOldDC, hOldRC );
+#endif
 }
 
 
@@ -550,7 +552,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
           CcPoint* newPoint = new CcPoint(*firstPoint);
           m_selectionPoints.AddItem(newPoint);
 
-          PolyCheck();
+          CxModel::PolyCheck();
           ModelChanged(false);
 
           m_selectionPoints.Reset();
@@ -577,14 +579,13 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
           dc.LineTo(m_movingPoint.x,m_movingPoint.y);
 #endif
 #ifdef __BOTHWX__
-          CClientDC dc(this);
+          wxClientDC dc(this);
           dc.SetLogicalFunction( wxINVERT );
-          dc.MoveTo(oldPoint->x,oldPoint->y);
-          dc.LineTo(m_movingPoint->x,m_movingPoint->y);
+          dc.DrawLine(oldPoint->x,oldPoint->y,m_movingPoint.x,m_movingPoint.y);
 #endif
 
 //Draw in polygon so far:
-          CcPoint* nextPoint;
+          CcPoint* nextPoint, *fromPoint;
           m_selectionPoints.Reset();
           nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove();
 #ifdef __CR_WIN__
@@ -597,10 +598,11 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 #endif
 #ifdef __BOTHWX__
           dc.SetLogicalFunction( wxCOPY );
-          dc.MoveTo(nextPoint->x, nextPoint->y);
+          fromPoint = nextPoint;
           while ( nextPoint = (CcPoint*)m_selectionPoints.GetItemAndMove() )
           {
-            dc.LineTo(nextPoint->x,nextPoint->y);
+            dc.DrawLine(fromPoint->x,fromPoint->y,nextPoint->x,nextPoint->y);
+            fromPoint = nextPoint;
           }  
 #endif
         }
@@ -652,15 +654,14 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 
 }
 
+
+#ifdef __CR_WIN__
 LRESULT CxModel::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
 	DeletePopup();
 	m_bMouseLeaveInitialised = false;
         return TRUE;
 }
-
-
-#ifdef __CR_WIN__
 
 void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
@@ -681,6 +682,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
   bool ctrlDown = event.m_controlDown;
 #endif
 
+#ifdef __CR_WIN__
     // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
   if(!m_bMouseLeaveInitialised)
   {
@@ -691,6 +693,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
 	_TrackMouseEvent(&tme);
 	m_bMouseLeaveInitialised = true;
   }
+#endif
 
   switch ( m_mouseMode )
   {
@@ -862,10 +865,9 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
         dc.LineTo(m_movingPoint.x,m_movingPoint.y);
 #endif
 #ifdef __BOTHWX__
-        CClientDC dc(this);
+        wxClientDC dc(this);
         dc.SetLogicalFunction( wxINVERT );
-        dc.MoveTo(m_movingPoint.x,m_movingPoint.y);
-        dc.LineTo(oldPoint->x,oldPoint->y);
+        dc.DrawLine(m_movingPoint.x,m_movingPoint.y,oldPoint->x,oldPoint->y);
 #endif
         m_movingPoint.Set(point.x,point.y);
 //Draw new line
@@ -876,7 +878,7 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
         dc.SetROP2( R2_COPYPEN );
 #endif
 #ifdef __BOTHWX__
-        dc.LineTo(m_movingPoint.x,m_movingPoint.y);
+        dc.DrawLine(oldPoint->x,oldPoint->y,m_movingPoint.x,m_movingPoint.y);
 #endif
       }
       break;
@@ -1007,9 +1009,7 @@ void CxModel::Setup()
 #ifdef __BOTHWX__
 
    if( !GetContext() ) return;
-   
    m_NotSetupYet = false;
-
    SetCurrent();
 
 #endif
@@ -1125,7 +1125,9 @@ void CxModel::NewSize(int cx, int cy)
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
 
-	wglMakeCurrent( hOldDC, hOldRC );
+#ifdef __CR_WIN__
+    wglMakeCurrent( hOldDC, hOldRC );
+#endif
 
 }
 
@@ -1150,6 +1152,7 @@ void CxModel::ModelSetup()
 
 void CxModel::ModelBackground()
 {
+#ifdef __CR_WIN__
    int ic = 5000;
    if (m_bitmapinfo)
    {
@@ -1161,11 +1164,10 @@ void CxModel::ModelBackground()
                   m_bitmapinfo->bmiHeader.biHeight,
                   GL_BGR_EXT, GL_UNSIGNED_BYTE, m_bitmapbits);
    }
+#endif
 }
 
-
 #ifdef __CR_WIN__
-
 BOOL CxModel::SetWindowPixelFormat(HDC hdc)
 {
     PIXELFORMATDESCRIPTOR pixelDesc;
@@ -1282,10 +1284,15 @@ BOOL CxModel::CreateViewGLContext(HDC hDC)
 
 int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly)
 {
+#ifdef __CR_WIN__
    HDC hOldDC = wglGetCurrentDC();
    HGLRC hOldRC = wglGetCurrentContext();
    HDC hdc = ::GetDC ( GetSafeHwnd() );
    wglMakeCurrent(hdc, m_hGLContext);
+#endif
+#ifdef __BOTHWX__
+      SetCurrent();
+#endif
 
    GLint viewport[4];
    glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
@@ -1367,8 +1374,9 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
      *outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( highest_name );
 
+#ifdef __CR_WIN__
      wglMakeCurrent( hOldDC, hOldRC );
-
+#endif
 
      if ( *outObject )
      {
@@ -1378,249 +1386,6 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
    }
    return 0;
-}
-
-
-void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
-{
-   HDC hOldDC = wglGetCurrentDC();
-   HGLRC hOldRC = wglGetCurrentContext();
-   HDC hdc = ::GetDC ( GetSafeHwnd() );
-   wglMakeCurrent(hdc, m_hGLContext);
-
-   GLint viewport[4];
-   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
-
-   GLuint * selectbuf;
-
-   bool repeat = true;
-   int hits = 0;
-  
-   while ( repeat )
-   {
-     selectbuf = new GLuint[m_sbsize];
-     glSelectBuffer ( m_sbsize, selectbuf );
-       
-     glRenderMode ( GL_SELECT ); //Instead of rendering, tell OpenGL to put stuff in the SelectBuffer.
-
-     glInitNames();  //Initialise names stack (names are just INTs, but will be unique for each atom and bond.)
-     glPushName( 0 ); //Push a value onto the stack, it is replaced by each LoadName call during rendering.
-
-     glMatrixMode ( GL_PROJECTION );
-     glPushMatrix();
-     glLoadIdentity();
-     gluPickMatrix ( rectangle.MidX(), viewport[3] - rectangle.MidY(), rectangle.Sort().Width(), rectangle.Sort().Height(), viewport );
-     CameraSetup();
-     ModelSetup();
-     glCallList( ATOMLIST );
-     glMatrixMode ( GL_PROJECTION );
-     glPopMatrix();
-     glMatrixMode ( GL_MODELVIEW );
-
-     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
-
-     if ( hits >= 0 )
-     {
-       repeat = false;
-     }
-     else
-     {
-       repeat = true;
-       delete [] selectbuf;
-       m_sbsize = m_sbsize * 2;
-       LOGSTAT ( "Select buffer overflows, doubling size to " + CcString (m_sbsize) );
-     }
-   }
-
-//Hit records in selectbuf have the form:
-// uint Number of names (this will always be 1, because we are careful only to call PushName once.)
-// uint Min depth of hit primitive
-// uint Max depth of hit primitive
-// uint Name
-
-   CcModelAtom* atom;
-   for ( int i = 0; i<hits; i++ )
-   {
-     atom = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName(selectbuf[(i*4)+3]);
-     if ( atom ) atom->Select();
-   }
-   delete [] selectbuf;
-
-   wglMakeCurrent( hOldDC, hOldRC );
-
-}
-
-void CxModel::PolyCheck()
-{
-   if ( m_selectionPoints.ListSize() < 3 ) return;
-
-   HDC hOldDC = wglGetCurrentDC();
-   HGLRC hOldRC = wglGetCurrentContext();
-   HDC hdc = ::GetDC ( GetSafeHwnd() );
-   wglMakeCurrent(hdc, m_hGLContext);
-
-   GLint viewport[4];
-   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
-
-   GLfloat *feedbuf;
-
-   Boolean bigger_buf_needed = true;
-   int hits = 0;
-
-   while ( bigger_buf_needed )
-   {
-
-     feedbuf = new GLfloat[m_fbsize];
-
-     glFeedbackBuffer ( m_fbsize, GL_2D, feedbuf ); 
-  
-     glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
-
-
-     glMatrixMode ( GL_PROJECTION );
-     glLoadIdentity();
-     CameraSetup();
-     ModelSetup();
-     ((CrModel*)ptr_to_crObject)->RenderModel(true,true);
-
-//     glCallList( ATOMLIST );
-
-     glMatrixMode ( GL_PROJECTION );
-     glMatrixMode ( GL_MODELVIEW );
-
-     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
-
-     if ( hits < 0 )
-     {
-       delete [] feedbuf;
-       m_fbsize = m_fbsize * 2;
-       LOGSTAT ( "Feedback buffer overflows, doubling size to " + CcString (m_fbsize) );
-       bigger_buf_needed = true;
-     }
-     else
-     {
-       bigger_buf_needed = false;
-     }        
-   }
-
-   int point = hits, nVert, token;
-
-   int currentGLID = 0, lastGLID = -1;
-   int curX = 0, curY = 0;
-
-   while ( point > 0 )
-   {
-     token = (int)feedbuf [ hits - point ];
-     switch ( token ) {
-     case GL_PASS_THROUGH_TOKEN:
-       point--;
-       currentGLID = (int) feedbuf [ hits - point ];
-       point--;
-       break;
-     case GL_POINT_TOKEN:
-     case GL_BITMAP_TOKEN:
-     case GL_DRAW_PIXEL_TOKEN:
-     case GL_COPY_PIXEL_TOKEN:
-       point--;
-       curX = (int) feedbuf [ hits - point ];
-       point--;
-       curY = (int) feedbuf [ hits - point ];
-       point--;
-       break;
-     case GL_LINE_TOKEN:
-     case GL_LINE_RESET_TOKEN:
-       point--;
-       curX = (int) feedbuf [ hits - point ];
-       point--;
-       curY = (int) feedbuf [ hits - point ];
-       feedbuf [ hits - point ] = (float) RC_NEXT_LINE_TOKEN;
-       break;
-     case RC_NEXT_LINE_TOKEN:
-       point--;
-       curX = (int) feedbuf [ hits - point ];
-       point--;
-       curY = (int) feedbuf [ hits - point ];
-       point--;
-       break;
-     case GL_POLYGON_TOKEN:
-       point--;
-       nVert = (int)feedbuf[hits-point];
-       point--;
-       nVert--;
-       curX = (int) feedbuf [ hits - point ];
-       if ( nVert > 0 ) feedbuf [ hits - point ] = (float) GL_POLYGON_TOKEN;
-	   else point--;
-       curY = (int) feedbuf [ 1 + hits - point ];
-       if ( nVert > 0 ) feedbuf [ 1 + hits - point ] = (float) nVert;
-	   else point--;
-       break;
-     default:
-       LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
-       point--;
-     }
-
-     if ( ( currentGLID > 0 ) && ( currentGLID != lastGLID ) && ( curX > 0 ) )
-     {
-
-// Imagine a horizontal line drawn from the current polygon of the
-// current atom to the right. If it cuts the polygon an odd number
-// of times, then it is inside.
-// Check each polygon segment in turn and add up the number of crossings.
-// A crossing occurs if:
-//   1. The y-coord of the atom lies inbetween the y-coords of
-//      the ends of the line.
-//   2. The point of intersection of our imaginary horizonatal line and
-//      the extrapolated polygon line lies on the polygon line.
-//   3. The x-coord of our atom is less than the x-coord of intersection.
-
-       curY = viewport[3] - curY; // Correct for sense of OpenGL coord system.
-
-       int crossings = 0;
-       CcPoint *p1, *p2;
-
-       m_selectionPoints.Reset();
-       p1 = (CcPoint*)m_selectionPoints.GetItemAndMove();
-
-       while ( p2 = (CcPoint*)m_selectionPoints.GetItemAndMove() )
-       {
-         if (  ( ( p1->y < curY ) && ( p2->y > curY ) ) ||
-               ( ( p1->y > curY ) && ( p2->y < curY ) )    )
-         {
-            float invgrad = 1000000.0f; // Avoid divide by zero:
-            if ( p2->y - p1->y != 0 ) invgrad = (float)(p2->x - p1->x) / (float)(p2->y - p1->y);
-
-            float xCut = ( p1->x + ( (curY - p1->y) * invgrad ) );
-
-            if ( ( ( ( p1->x < xCut ) && ( p2->x > xCut ) ) ||
-                   ( ( p1->x > xCut ) && ( p2->x < xCut ) )    ) &&
-                 ( curX < xCut ) )
-            {
-              crossings++;
-            }
-         }
-         p1 = p2;
-       }
-
-       if ( crossings % 2 != 0 )
-       {
-         CcModelObject* atom;
-         atom = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( currentGLID );
-         if ( atom )
-         {
-           atom->Select(true);
-           lastGLID = currentGLID;
-         }
-       }
-     }
-
-     curX = -1;
-
-   }
-
-   delete [] feedbuf;
-
-   wglMakeCurrent( hOldDC, hOldRC );
-
 }
 
 
@@ -2043,10 +1808,9 @@ void CxModel::CreatePopup(CcString atomname, CcPoint point)
 }
 
 
-
 void CxModel::LoadDIBitmap(CcString filename)
 {
-
+#ifdef __CR_WIN__
     if ( m_bitmapbits ) delete [] m_bitmapbits;
     if ( m_bitmapinfo ) delete [] m_bitmapinfo;
     m_bitmapbits = NULL;
@@ -2141,7 +1905,267 @@ void CxModel::LoadDIBitmap(CcString filename)
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
 
+#endif
     return;
 }
+
+void CxModel::PolyCheck()
+{
+   if ( m_selectionPoints.ListSize() < 3 ) return;
+
+#ifdef __CR_WIN__
+   HDC hOldDC = wglGetCurrentDC();
+   HGLRC hOldRC = wglGetCurrentContext();
+   HDC hdc = ::GetDC ( GetSafeHwnd() );
+   wglMakeCurrent(hdc, m_hGLContext);
+#endif
+#ifdef __BOTHWX__
+      SetCurrent();
+#endif
+
+   GLint viewport[4];
+   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
+
+   GLfloat *feedbuf;
+
+   Boolean bigger_buf_needed = true;
+   int hits = 0;
+
+   while ( bigger_buf_needed )
+   {
+
+     feedbuf = new GLfloat[m_fbsize];
+
+     glFeedbackBuffer ( m_fbsize, GL_2D, feedbuf ); 
+  
+     glRenderMode ( GL_FEEDBACK ); //Instead of rendering, tell OpenGL to put stuff in the FeedBackBuffer.
+
+
+     glMatrixMode ( GL_PROJECTION );
+     glLoadIdentity();
+     CameraSetup();
+     ModelSetup();
+     ((CrModel*)ptr_to_crObject)->RenderModel(true,true);
+
+//     glCallList( ATOMLIST );
+
+     glMatrixMode ( GL_PROJECTION );
+     glMatrixMode ( GL_MODELVIEW );
+
+     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
+
+     if ( hits < 0 )
+     {
+       delete [] feedbuf;
+       m_fbsize = m_fbsize * 2;
+       LOGSTAT ( "Feedback buffer overflows, doubling size to " + CcString (m_fbsize) );
+       bigger_buf_needed = true;
+     }
+     else
+     {
+       bigger_buf_needed = false;
+     }        
+   }
+
+   int point = hits, nVert, token;
+
+   int currentGLID = 0, lastGLID = -1;
+   int curX = 0, curY = 0;
+
+   while ( point > 0 )
+   {
+     token = (int)feedbuf [ hits - point ];
+     switch ( token ) {
+     case GL_PASS_THROUGH_TOKEN:
+       point--;
+       currentGLID = (int) feedbuf [ hits - point ];
+       point--;
+       break;
+     case GL_POINT_TOKEN:
+     case GL_BITMAP_TOKEN:
+     case GL_DRAW_PIXEL_TOKEN:
+     case GL_COPY_PIXEL_TOKEN:
+       point--;
+       curX = (int) feedbuf [ hits - point ];
+       point--;
+       curY = (int) feedbuf [ hits - point ];
+       point--;
+       break;
+     case GL_LINE_TOKEN:
+     case GL_LINE_RESET_TOKEN:
+       point--;
+       curX = (int) feedbuf [ hits - point ];
+       point--;
+       curY = (int) feedbuf [ hits - point ];
+       feedbuf [ hits - point ] = (float) RC_NEXT_LINE_TOKEN;
+       break;
+     case RC_NEXT_LINE_TOKEN:
+       point--;
+       curX = (int) feedbuf [ hits - point ];
+       point--;
+       curY = (int) feedbuf [ hits - point ];
+       point--;
+       break;
+     case GL_POLYGON_TOKEN:
+       point--;
+       nVert = (int)feedbuf[hits-point];
+       point--;
+       nVert--;
+       curX = (int) feedbuf [ hits - point ];
+       if ( nVert > 0 ) feedbuf [ hits - point ] = (float) GL_POLYGON_TOKEN;
+	   else point--;
+       curY = (int) feedbuf [ 1 + hits - point ];
+       if ( nVert > 0 ) feedbuf [ 1 + hits - point ] = (float) nVert;
+	   else point--;
+       break;
+     default:
+       LOGERR ( "Unknown GL feedback token - contact richard.cooper@chem.ox.ac.uk");
+       point--;
+     }
+
+     if ( ( currentGLID > 0 ) && ( currentGLID != lastGLID ) && ( curX > 0 ) )
+     {
+
+// Imagine a horizontal line drawn from the current polygon of the
+// current atom to the right. If it cuts the polygon an odd number
+// of times, then it is inside.
+// Check each polygon segment in turn and add up the number of crossings.
+// A crossing occurs if:
+//   1. The y-coord of the atom lies inbetween the y-coords of
+//      the ends of the line.
+//   2. The point of intersection of our imaginary horizonatal line and
+//      the extrapolated polygon line lies on the polygon line.
+//   3. The x-coord of our atom is less than the x-coord of intersection.
+
+       curY = viewport[3] - curY; // Correct for sense of OpenGL coord system.
+
+       int crossings = 0;
+       CcPoint *p1, *p2;
+
+       m_selectionPoints.Reset();
+       p1 = (CcPoint*)m_selectionPoints.GetItemAndMove();
+
+       while ( p2 = (CcPoint*)m_selectionPoints.GetItemAndMove() )
+       {
+         if (  ( ( p1->y < curY ) && ( p2->y > curY ) ) ||
+               ( ( p1->y > curY ) && ( p2->y < curY ) )    )
+         {
+            float invgrad = 1000000.0f; // Avoid divide by zero:
+            if ( p2->y - p1->y != 0 ) invgrad = (float)(p2->x - p1->x) / (float)(p2->y - p1->y);
+
+            float xCut = ( p1->x + ( (curY - p1->y) * invgrad ) );
+
+            if ( ( ( ( p1->x < xCut ) && ( p2->x > xCut ) ) ||
+                   ( ( p1->x > xCut ) && ( p2->x < xCut ) )    ) &&
+                 ( curX < xCut ) )
+            {
+              crossings++;
+            }
+         }
+         p1 = p2;
+       }
+
+       if ( crossings % 2 != 0 )
+       {
+         CcModelObject* atom;
+         atom = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( currentGLID );
+         if ( atom )
+         {
+           atom->Select(true);
+           lastGLID = currentGLID;
+         }
+       }
+     }
+
+     curX = -1;
+
+   }
+
+   delete [] feedbuf;
+
+#ifdef __CR_WIN__
+   wglMakeCurrent( hOldDC, hOldRC );
+#endif
+
+}
+
+
+
+void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
+{
+#ifdef __CR_WIN__
+   HDC hOldDC = wglGetCurrentDC();
+   HGLRC hOldRC = wglGetCurrentContext();
+   HDC hdc = ::GetDC ( GetSafeHwnd() );
+   wglMakeCurrent(hdc, m_hGLContext);
+#endif
+#ifdef __BOTHWX__
+      SetCurrent();
+#endif
+
+   GLint viewport[4];
+   glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
+
+   GLuint * selectbuf;
+
+   bool repeat = true;
+   int hits = 0;
+  
+   while ( repeat )
+   {
+     selectbuf = new GLuint[m_sbsize];
+     glSelectBuffer ( m_sbsize, selectbuf );
+       
+     glRenderMode ( GL_SELECT ); //Instead of rendering, tell OpenGL to put stuff in the SelectBuffer.
+
+     glInitNames();  //Initialise names stack (names are just INTs, but will be unique for each atom and bond.)
+     glPushName( 0 ); //Push a value onto the stack, it is replaced by each LoadName call during rendering.
+
+     glMatrixMode ( GL_PROJECTION );
+     glPushMatrix();
+     glLoadIdentity();
+     gluPickMatrix ( rectangle.MidX(), viewport[3] - rectangle.MidY(), rectangle.Sort().Width(), rectangle.Sort().Height(), viewport );
+     CameraSetup();
+     ModelSetup();
+     glCallList( ATOMLIST );
+     glMatrixMode ( GL_PROJECTION );
+     glPopMatrix();
+     glMatrixMode ( GL_MODELVIEW );
+
+     hits = glRenderMode ( GL_RENDER ); //Switching back to render mode, return value is number of objects hit.
+
+     if ( hits >= 0 )
+     {
+       repeat = false;
+     }
+     else
+     {
+       repeat = true;
+       delete [] selectbuf;
+       m_sbsize = m_sbsize * 2;
+       LOGSTAT ( "Select buffer overflows, doubling size to " + CcString (m_sbsize) );
+     }
+   }
+
+//Hit records in selectbuf have the form:
+// uint Number of names (this will always be 1, because we are careful only to call PushName once.)
+// uint Min depth of hit primitive
+// uint Max depth of hit primitive
+// uint Name
+
+   CcModelAtom* atom;
+   for ( int i = 0; i<hits; i++ )
+   {
+     atom = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName(selectbuf[(i*4)+3]);
+     if ( atom ) atom->Select();
+   }
+   delete [] selectbuf;
+
+#ifdef __CR_WIN__
+   wglMakeCurrent( hOldDC, hOldRC );
+#endif
+}
+
+
 
 

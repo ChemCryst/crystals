@@ -8,6 +8,13 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2001/12/12 14:06:36  ckp2
+// RIC: Give buttons the "INFORM=NO" attribute and they'll not inform you that
+// they've been pressed. Instead you can query them using ^^?? BTNNAME STATE and
+// get "ON" if they've been pressed. Use SET INFORM=NO to reset the state if you
+// want to use them again. Can be used for an "ABORT" type of button which can be
+// checked again and again during long operations.
+//
 // Revision 1.9  2001/09/07 14:35:19  ckp2
 // LENGTH='a string' option lets the button length be based on a string other
 // than the one actually displayed. Useful for making professional looking
@@ -122,7 +129,7 @@ CcParse CrButton::ParseInput( CcTokenList * tokenList )
                 }
                 else {
                     LOGSTAT( "CrCheckBox:ParseInput INFORM off (reset)");
-                    ((CxButton*)ptr_to_cxObject)->SetState(false);
+                    ((CxButton*)ptr_to_cxObject)->CxSetState(false);
                 }
                 mCallbackState = inform;
                 m_ButtonWasPressed=false;
@@ -214,7 +221,7 @@ void    CrButton::ButtonClicked()
     else
     {
         m_ButtonWasPressed = true;
-        ((CxButton*)ptr_to_cxObject)->SetState(true);
+        ((CxButton*)ptr_to_cxObject)->CxSetState(true);
     }
 }
 

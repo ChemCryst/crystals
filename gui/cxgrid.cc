@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2001/11/16 15:12:51  ckp2
+//   Useful debugging tip.
+//
 //   Revision 1.11  2001/11/14 10:30:40  ckp2
 //   Various changes to the painting of the background of Windows as some of the
 //   dialogs suddenly went white under XP.
@@ -177,7 +180,7 @@ void CxGrid::CxShowWindow(bool state)
 #endif
 }
 
-
+#ifdef __CR_WIN__
 BOOL CxGrid::OnEraseBkgnd(CDC* pDC)
 {
 
@@ -201,3 +204,4 @@ BOOL CxGrid::OnEraseBkgnd(CDC* pDC)
 
   return TRUE;
 }
+#endif

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2002/05/08 08:56:13  richard
+//   Added support for wmf AND emf file output to Chart objects (Cameron). Reason:
+//   emf doesn't work on Windows 95. Bah.
+//
 //   Revision 1.11  2002/01/30 10:58:43  ckp2
 //   RIC: Printing and WMF capability for CxChart object. - NB. Steve, this can easily
 //   be copied to CxPlot to do same thing.
@@ -141,6 +145,9 @@ private:
             wxMemoryDC *memDC;
             wxPen      * m_pen;
             wxBrush    * m_brush;
+
+        void MakeMetaFile(int w, int h, bool enhanced);
+        void PrintPicture();
 
             void OnLButtonUp(wxMouseEvent & event);
             void OnRButtonUp(wxMouseEvent & event);

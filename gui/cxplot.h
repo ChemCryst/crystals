@@ -9,6 +9,16 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2002/07/03 14:23:21  richard
+//   Replace as many old-style stream class header references with new style
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+//   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+//   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+//   Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+//   warning messages.
+//
 //   Revision 1.14  2002/03/07 10:46:45  DJWgroup
 //   SH: Change to fix reversed y axes; realign text labels.
 //
@@ -69,6 +79,7 @@
 #include <wx/colour.h>
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
+#include <wx/stattext.h>
 #define BASEPlot wxControl
 #endif
 
@@ -92,29 +103,36 @@ class mywxStaticText : public wxStaticText
 
 class CxPlot;
 
-#ifdef __CR_WIN__
 class CxPlotKey : public BASEPlot
 {
 public:
 		CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col);
 		~CxPlotKey();
 		int GetNumberOfSeries() {return m_NumberOfSeries;};
+#ifdef __CR_WIN__
 		afx_msg void OnPaint();
 		DECLARE_MESSAGE_MAP()
-
-		CDC * m_memDC;
+#endif
+#ifdef __BOTHWX__
+                void OnPaint(wxPaintEvent & event );
+                DECLARE_EVENT_TABLE()
+#endif
 
 		CxPlot* m_Parent;
 		bool mDragging;
 		CcPoint mDragPos;
 
-		CRect m_WinPosAndSize;
+		CcRect m_WinPosAndSize;
 
 		int m_NumberOfSeries;
 		CcString* m_Names;
 		int** m_Colours;
-};
+
+#ifdef __CR_WIN__
+		CDC * m_memDC;
 #endif
+
+};
 
 class CrPlot;
 class CxGrid;
@@ -160,6 +178,8 @@ class CxPlot : public BASEPlot
 		void CreateKey(int numser, CcString* names, int** col);
 		void CreateKeyWindow(int x, int y);
 		void FlipGraph(bool flipped);
+		void MakeMetaFile(int w, int h);
+		void PrintPicture();
 
 		CcRect m_client;
         CrGUIElement *  ptr_to_crObject;
@@ -175,41 +195,42 @@ private:
 		bool		mMouseCaptured;
 		Boolean		m_FlippedPlot;	// if the plot is flipped upside down (eg by ZOOM 4 0), change the LogicalToDevice() and vv. functions
 
+		CxPlotKey*	m_Key;
+
 //Machine specific parts:
 #ifdef __CR_WIN__
       public:
 		CStatic* m_TextPopup;
-		CxPlotKey*	m_Key;
 
         COLORREF mfgcolour;
         CBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
         CDC * m_memDC;
 	
-		void MakeMetaFile(int w, int h);
-		void PrintPicture();
 
         afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();
-		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
-		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
-                afx_msg void OnMenuSelected (UINT nID);
+	afx_msg void OnMouseMove( UINT nFlags, CPoint point );
+	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
+        afx_msg void OnMenuSelected (UINT nID);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
       public:
     
-		mywxStaticText * m_TextPopup;
+	mywxStaticText * m_TextPopup;
         wxColour mfgcolour;
-        wxBitmap *oldMemDCBitmap, *newMemDCBitmap;
-        wxMemoryDC *memDC;
+        wxBitmap *m_oldMemDCBitmap, *m_newMemDCBitmap;
+        wxMemoryDC *m_memDC;
         wxPen      * m_pen;
         wxBrush    * m_brush;
 
         void OnChar(wxKeyEvent & event );
         void OnPaint(wxPaintEvent & event );
-		void OnMouseMove(wxMouseEvent & event);
-		void OnMouseLeave();
+	void OnMouseMove(wxMouseEvent & event);
+	void OnMouseLeave();
+        void OnMenuSelected(wxCommandEvent &event );
+        void OnRButtonUp(wxMouseEvent & event);
         DECLARE_EVENT_TABLE()
 #endif
 };

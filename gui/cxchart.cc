@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2002/08/30 10:32:19  richard
+//   This should fix some font-not-appearing problems that Foxman was having under
+//   Win95.
+//
 //   Revision 1.21  2002/07/18 16:57:52  richard
 //   Upgrade to use standard c++ library, rather than old C libraries.
 //
@@ -68,13 +72,15 @@
 #include    "ccrect.h"
 #include    "crchart.h"
 #include    "ccpoint.h"
-#include <direct.h>
+
+
 #include <cstdlib>
 #include <cstdio>
 
 
 #ifdef __CR_WIN__
 #include    <afxwin.h>
+#include <direct.h>
 #endif
 #ifdef __BOTHWX__
 #include <wx/font.h>
@@ -222,7 +228,6 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
       memDC->SetPen( *wxBLACK_PEN );
       memDC->Clear();
 
-      m_client.Set(top,left,bottom,right);
       SetSize(left,top,right-left,bottom-top);
       ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
@@ -1115,6 +1120,15 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 }
 #endif
 
+#ifdef __BOTHWX__
+void CxChart::MakeMetaFile(int w, int h, bool enhanced)
+{
+}
+void CxChart::PrintPicture() 
+{
+}
+#endif
+#ifdef __CR_WIN__
 void CxChart::MakeMetaFile(int w, int h, bool enhanced)
 {
     CDC * backup_memDC = memDC;
@@ -1244,3 +1258,4 @@ void CxChart::PrintPicture()
     return;
 
 }
+#endif

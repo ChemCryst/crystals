@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.23  2002/12/16 18:26:40  rich
+// Fix breaking Cameron menus. Add some debugging for debug version.
+//
 // Revision 1.22  2002/09/27 14:49:04  rich
 // New marker for modlistbase.
 //
@@ -195,6 +198,10 @@ typedef bool Boolean;
 #else
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
+#ifdef __BOTHWX__   //For the time being on Linux
+ #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+#endif
+
 #endif
 
 
@@ -237,7 +244,7 @@ CcRect a##::CalcLayout(bool recalc)                                             
 
 
 #define CRGETGEOMETRY(a,b)                         \
-CcRect a##::GetGeometry()                          \
+CcRect a##:: GetGeometry()                          \
 {   \
 if ( ptr_to_cxObject ) \
 return CcRect(((##b*)ptr_to_cxObject)->GetTop(),   \

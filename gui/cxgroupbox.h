@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/11/14 10:30:41  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.6  2001/03/08 16:44:09  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -45,8 +49,11 @@ class CxGroupBox : public BASEGROUPBOX
 
         // attributes
         static int mGroupBoxCount;
+
+#ifdef __CR_WIN__
     protected:
         afx_msg BOOL OnEraseBkgnd(CDC* pDC);
         DECLARE_MESSAGE_MAP()
+#endif
 };
 #endif

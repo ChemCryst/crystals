@@ -22,3 +22,4 @@ class CcChartObject
 #include	"ccchartcolour.h"
 
 #endif
+
