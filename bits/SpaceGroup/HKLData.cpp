@@ -152,7 +152,7 @@ HKLData::~HKLData()
 {
     long tReflections = tReflectionList->length();
     
-    cout << "Removing " << tReflections << " reflections\n";
+    std::cout << "Removing " << tReflections << " reflections\n";
     for (long i = tReflections-1; i >= 0; i--)
     {
         delete tReflectionList->remove(i);
