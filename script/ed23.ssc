@@ -146,14 +146,14 @@
 ^^WI   {
 ^^WI    @ 1,1  STATIC TD1 'R <' 
 ^^WI    @ 3,1  STATIC TD2 'Rw <'
-^^WI    @ 5,1  STATIC TD3 's/esd**2 <'
+^^WI    @ 5,1  STATIC TD3 'shft/esd <'
 ^^WI    @ 1,5  STATIC TD4 '%' 
 ^^WI    @ 3,5  STATIC TD5 '%'
 ^^WI    @ 1,11 STATIC TD6 '%' 
 ^^WI    @ 3,11 STATIC TD7 '%'
 ^^WI    @ 1,7  STATIC TD8 'R >' 
 ^^WI    @ 3,7  STATIC TD9 'Rw >'
-^^WI    @ 5,7  STATIC TD10 's/esd**2 >'
+^^WI    @ 5,7  STATIC TD10 'shft/esd >'
 ^^WI    @ 7,1  STATIC TD11 'min(Uij) <'
 ^^WI    @ 1,3 EDITBOX RRMIN 
 %              CLEAR
@@ -321,7 +321,7 @@
 %     GET SILENT REAL ' ' ' '
 %     SEND
 %     CLEAR
-%     INSERT 'CONT MIN-SUMSQ='
+%     INSERT 'CONT MIN-SHIFT='
 ^^??  RSMIN TEXT
 %     GET SILENT REAL ' ' ' '
 ^^??  RSMAX TEXT
