@@ -170,16 +170,22 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
                 else
                     pStream << (pStats->tNonMTotInt/pStats->tNumNonM);
             break;
-            case 4:	//%I < 3u(I) 
+            case 4:	//%I < 3u(I) not matched
                 if (pStats->tNumNonMLsInt+pStats->tNumNonMGrInt == 0)
                     pStream << "NaN";
                 else
                     pStream << (float)100.0f*((float)pStats->tNumNonMLsInt/(float)(pStats->tNumNonMLsInt+pStats->tNumNonMGrInt));
             break;
-            case 5:	//Score1
+			case 5:	//%I >= 3u(I) matched
+                if (pStats->tNumMLsInt+pStats->tNumMGrInt == 0)
+                    pStream << "NaN";
+                else
+                    pStream << (float)100.0f*((float)pStats->tNumMGrInt/(float)(pStats->tNumMLsInt+pStats->tNumMGrInt));
+            break;
+            case 6:	//Score1
                 pStream << pStats->tRating1;
             break;
-            case 6:  //Score2
+            case 7:  //Score2
                 pStream << pStats->tRating2;
             break;
 			//case 7:
