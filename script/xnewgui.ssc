@@ -7,31 +7,24 @@
 % ELSE
 
 
-WARNING: The cell parameters are not available for the Model window
-
-
+ * The cell parameters are not available for the Model window
 % END IF
 % IF ( EXISTS  2 .EQ. 1 ) THEN
 %            COPY '#SUM L 2'
 %            COPY 'END'
 % ELSE
 
-WARNING: The Space Group is not available for the Model window
-
-
+ * The Space Group is not available for the Model window
 % END IF
 % IF ( EXISTS  5 .EQ. 1 ) THEN
 %            COPY '#SUM L 5 LOW'
 %            COPY 'END'
 % ELSE
-%% Create an empty L5 so that the model will disappear if we
-%% are restarting in a new directory.
-%  COPY '#LIST 5'
-%  COPY 'READ NATOM=0'
-%  COPY 'END'
+%% Make the model disappear in case we are restarting in a new directory.
+^^GR MODEL L5
+^^GR SHOW
+^^CR
 
-WARNING: There are no atoms available for the Model window
-
-
+ * There are no atoms available for the Model window
 % END IF
 %END SCRIPT
