@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.77  2004/02/18 14:20:21  rich
+C In XDATER, change order from American to UK (reqd to get CIF audit_creation_date
+C in the correct order).
+C Use current version number to add a version suffix to the audit_creation_method
+C key in the CIF.
+C
 C Revision 1.76  2004/02/17 09:47:01  rich
 C Avoid putting assembly and group numbers in CIF if the PART entry appears to
 C be invalid (>999999). This can occur with OLD L5's since the xwrite5 script
@@ -4862,7 +4868,7 @@ C----- FRIEDELS LAW USED
            CTEMP(1:)=CLINE(1:15)
            WRITE (CLINE(22:),'(I10)') J
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A, ''av_R_equivalents '', F10.2)')
+           WRITE (CLINE,'(A, ''av_R_equivalents '', F10.3)')
      1      CBUF(1:15), STORE(L30DR+1+I)
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A,I6)')
