@@ -103,7 +103,7 @@
 ^^WI         STATE=ON
 %      EVALUATE DOREFINE = FALSE
 %     END IF
-^^WI   @ 2,1 GRID OR NROWS=6 NCOLS=1 OUTLINE='General'
+^^WI   @ 2,1 GRID OR NROWS=5 NCOLS=1 OUTLINE='General'
 ^^WI   {
 ^^WI     @ 1,1 RADIOBUTTON REFPXO 'Refine &positions only' STATE=OFF
 ^^WI     @ 2,1 RADIOBUTTON REFPUI 'Refine positions and U&iso' STATE=OFF
@@ -112,7 +112,7 @@
 ^^WI           '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
-^^WI   @ 3,1 GRID HR NROWS=6 NCOLS=1 OUTLINE='Hydrogens'
+^^WI   @ 3,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Hydrogens'
 ^^WI   {
 ^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix H atoms'
 % IF HRTYP .LE. 0 THEN
@@ -132,26 +132,26 @@
 % END IF
 ^^WI   }
 % END IF
-^^WI   @ 4,1 GRID XP NROWS=6 NCOLS=1 OUTLINE='Other parameters'
+^^WI   @ 4,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF
 % IF ( CENTRO .GT. 0.9 ) THEN
 ^^WI           DISABLED=YES
 % END IF
-^^WI    @ 3,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF
-^^WI    @ 5,1 CHECKBOX TWINS 'Twin element scales (2 component)'
+^^WI    @ 2,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF
+^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales (2 component)'
 % IF ( DOTWIN ) THEN
 ^^WI     STATE = ON
 % ELSE
 ^^WI     STATE = OFF
 % END IF
 ^^WI   }
-^^WI   @ 5,1 GRID RN NROWS=3 NCOLS=1
+^^WI   @ 5,1 GRID RN NROWS=2 NCOLS=1
 ^^WI   {
-^^WI    @ 2,1 CHECKBOX ALTER
+^^WI    @ 1,1 CHECKBOX ALTER
 ^^WI      'Advanced: Edit directives or restraints before proceeding'
 ^^WI      STATE=OFF
-^^WI    @ 3,1 CHECKBOX SXFOUR
+^^WI    @ 2,1 CHECKBOX SXFOUR
 ^^WI      'Follow refinement with difference Fourier'
 ^^WI      STATE=OFF
 ^^WI   }
