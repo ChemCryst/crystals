@@ -53,7 +53,7 @@ C
       END
 C
 CODE FOR KFLOPN
-      FUNCTION KFLOPN( IUNIT, CFNAME, IFSTAT, IFMODE, IFFORM)
+      FUNCTION KFLOPN( IUNIT, CFNAME, IFSTAT, IFMODE, IFFORM, ISEQDA)
 C
 C -- OPEN A SEQUENTIAL FILE
 C
@@ -78,6 +78,11 @@ C                    ISSAPP      WRITE/APPEND
 C      IFFORM      FORMATTED/UNFORMATTED FILE
 C                    ISSFRM      FORMATTED FILE
 C                    ISSUFM      UNFORMATTED FILE
+CRICJUL00
+C      ISEQDA      SEQUENTIAL/DIRECT ACCESS FILE
+C                    ISSSEQ      SEQUENTIAL ACCESS
+C                    ISSDAF      DIRECT ACCESS
+C
 C
 C  RETURN VALUES :-
 C      -1          ERROR OPENING FILE
@@ -98,6 +103,7 @@ C
       CHARACTER*7 FLSTAT(NFLSTT)
       CHARACTER*7 ACSTAT,TESTAT
       CHARACTER *11 FLFORM(2), CFORM
+      CHARACTER *11 FLSQDA(2)
 C
 \XUNITS
 \XSSVAL
@@ -108,6 +114,8 @@ C
       DATA FLSTAT(3) / 'CIF    ' / , FLSTAT(4) / 'SCRATCH' /
       DATA FLSTAT(5) / 'UNKNOWN' /
       DATA FLFORM(1) / 'FORMATTED  ' / , FLFORM(2) / 'UNFORMATTED' /
+CRICJUL00
+      DATA FLSQDA(1) / 'SEQUENTIAL ' / , FLSQDA(2) / 'DIRECT     ' /
 C
 C
 C
@@ -116,6 +124,8 @@ C -- CHECK DATA TO SOME EXTENT
       IF ( IFSTAT .GT. NFLSTT) GOTO 9910
 CDJWMAR99
       IF ( IFMODE .GT. ISSAPP ) GO TO 9910
+CRICJUL00
+      IF ( ISEQDA .GT. ISSDAF ) GO TO 9910
       IF ( IFFORM .GT. 2 ) GO TO 9910
       CLCNAM = ' '
       FILNAM = CFNAME
@@ -177,6 +187,7 @@ C
         OPEN ( UNIT   = IUNIT ,
      1         STATUS = ACSTAT ,
      1         FORM   = CFORM ,
+     1         ACCESS = FLSQDA(ISEQDA) ,
 &VAX     1         CARRIAGECONTROL = CCONT,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
@@ -195,6 +206,7 @@ C
 &PPC     1         STATUS = TESTAT ,
 #PPC     1         STATUS = ACSTAT ,
      1         FORM   = CFORM ,
+     1         ACCESS = FLSQDA(ISEQDA) ,
 &VAX     1         CARRIAGECONTROL = CCONT,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
@@ -233,6 +245,7 @@ C
 #DOS     1         STATUS = ACSTAT ,
 &DOS     1         STATUS ='READONLY' ,
      1         FORM   = CFORM ,
+     1         ACCESS = FLSQDA(ISEQDA) ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ELSE
@@ -256,6 +269,7 @@ C
 #DOS     1         STATUS = ACSTAT ,
 &DOS     1         STATUS = 'READONLY' ,
      1         FORM   = CFORM ,
+     1         ACCESS = FLSQDA(ISEQDA) ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ENDIF
@@ -277,7 +291,13 @@ C
       IF ( IFSTAT .EQ. ISSSCR ) GO TO 9900
       IF ( IFSTAT .EQ. ISSUNK ) GO TO 9900
       IF ( IFSTAT .EQ. ISSOLD ) GO TO 9900
-      IF ( IOS .NE. ISSFNF ) GO TO 9900
+CRICJUL00
+C NT returns a BADFILENAME error instead of file not found, if
+C it is passed a string like "CRDSC:", so we must either check
+C for FNF and BADFILENAME, or better still, just let the system
+C try again with a NEW file, if that still fails, then there is an
+C error.
+#GID      IF ( IOS .NE. ISSFNF ) GO TO 9900
 C
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
 C    'OLD' . TRY AGAIN WITH STATUS = 'NEW'
@@ -550,7 +570,13 @@ C
 &PPC         GO TO 2000
 &PPC      ENDIF
 &PPCCE***
-      IF ( IOS .NE. ISSFNF ) GO TO 9900
+CRICJUL00
+C NT returns a BADFILENAME error instead of file not found, if
+C it is passed a string like "CRDSC:", so we must either check
+C for FNF and BADFILENAME, or better still, just let the system
+C try again with a NEW file, if that still fails, then there is an
+C error.
+#GID      IF ( IOS .NE. ISSFNF ) GO TO 9900
 C
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
 C    'OLD' . TRY AGAIN WITH STATUS = 'NEW'
