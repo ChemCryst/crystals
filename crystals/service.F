@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2001/03/08 14:38:36  richard
+C Two new colours for the rainbow.
+C
 C Revision 1.23  2001/02/06 15:35:09  CKP2
 C Atom-only output in PCH
 C
@@ -29,8 +32,8 @@ C--SYSTEM TYPE ERROR, PRODUCED BY A PROGRAMMING MISTAKE
       CALL XPRVDU(NCEROR, 3,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)
       WRITE(NCAWU,1100)
-1100  FORMAT(/
-     1 ' Programming error, not a user error.'
+1100  FORMAT(/,
+     1 ' Programming error, not a user error.',
      2 ' Consult a CRYSTALS expert '/)
       CALL OUTCOL(1)
       GOTO 1350
