@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2003/01/14 10:27:18  rich
+// Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 // Revision 1.15  2002/07/25 16:00:13  richard
 //
 // Resize dropdown listbox if number of items changes.
@@ -243,7 +246,7 @@ int CxDropDown::GetIdealWidth()
 int CxDropDown::GetIdealHeight()
 {
 #ifdef __CR_WIN__
-    return GetItemHeight(-1);
+    return max ( GetItemHeight(-1) + 2, GetSystemMetrics(SM_CYVSCROLL) + 2 ) ;
 #endif
 #ifdef __BOTHWX__
 // May need to base this on font size if it returns the dropped
@@ -322,3 +325,20 @@ CcString CxDropDown::GetDropDownText(int index)
     return result;
 #endif
 }
+
+void CxDropDown::Disable(bool disable)
+{
+#ifdef __CR_WIN__
+      if(disable)
+            EnableWindow(false);
+      else
+            EnableWindow(true);
+#endif
+#ifdef __BOTHWX__
+      if(disable)
+            Enable(false);
+    else
+            Enable(true);
+#endif
+}
+

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/07/25 16:00:13  richard
+//
+//   Resize dropdown listbox if number of items changes.
+//
 //   Revision 1.8  2001/06/17 14:44:39  richard
 //   CxDestroyWindow function.
 //
@@ -56,6 +60,7 @@ class CxDropDown : public BASEDROPDOWN
         void CxDestroyWindow();
             void  CxSetSelection ( int select );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
+        void    Disable (bool disable);
         int GetTop();
         int GetLeft();
         int GetWidth();
