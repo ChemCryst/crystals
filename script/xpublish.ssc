@@ -19,7 +19,7 @@
 ^^WI     @ 3,1 STATIC T2 'for a full listing.'
 ^^WI   }
 ^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
-^^WI         'Cif' 'XYZ' 'Aniso' 'Reflections' 'Distances'
+^^WI         'Cif' 'XYZ' 'Aniso' 'Distances' 'Reflections' 
 ^^WI         'Summary' 'Residuals' 'Save'
 ^^WI         NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
@@ -57,8 +57,9 @@
  CIF         Produce a CIF file
  XYZ         Coordinate listing
  ANISO       Temperature factor listing
- REFLECTIONS Reflection listing
  DISTANCES   Distance-angle listing
+ CHIME       Output a CHIME .XYZ file
+ REFLECTIONS Reflection listing
  SUMMARY     A summary of all data stored
  RESIDUALS   A full analysis of residuals (Fo-Fc)
  GEOMETRY    The SCRIPT for evaluating molecular parameters.
@@ -93,14 +94,18 @@
 %                COPY '#SCRIPT PUBANISO'
 %          END BLOCK
 %%
-%          BLOCK                                         %REFLECTIONS%
-%            COPY '#SCRIPT PUBREFL'
-%          END BLOCK
-%%
 %          BLOCK                                         %DISTANCES%
 %            COPY '#SCRIPT PUBDIST'
 %          END BLOCK
 %%      
+%          BLOCK                                         %CHIME%
+%            COPY '#PUNCH 5 D'
+%          END BLOCK
+%%      
+%          BLOCK                                         %REFLECTIONS%
+%            COPY '#SCRIPT PUBREFL'
+%          END BLOCK
+%%
 %          BLOCK                                         %SUMMARY%
 %            COPY '#SUMMARY EVERYTHING'
 %            COPY 'END'
