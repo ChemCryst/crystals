@@ -92,8 +92,11 @@
 %    BLOCK        %BOK%
 %      COPY '#LIST 13'
 %      COPY 'END'
-%      COPY '#COMPOSITION'
+
+{I * Getting composition contents info
+
 %      CLEAR
+%      QUEUE REWIND
 %      INSERT 'CONTENTS'
 ^^??   LE TEXT
 %      GET SILENT KEYWORD 'Element' 'fini'
@@ -105,7 +108,7 @@
             ( CELEM .EQ. 'fini' ) .OR. ( CNUMB .EQ. 'fini' ) THEN
 %          EVALUATE LOOPEND = LOOPCOUNTER
 %        ELSE
-%          SEND
+%          QUEUE SEND
 %          OUTPUT
 %          CLEAR
 %          INSERT 'CONTINUE '
@@ -113,16 +116,17 @@
 %          EVALUATE CELEM = CVALUE
 %        END IF
 %      END LOOP
-%      CLEAR
-%      COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
-%      COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT'
-%      COPY 'END'
-%      EVALUATE CLTYPE = CVALUE
+%%
+%      QUEUE COPY SCATT CRYSDIR:\SCRIPT\SCATT.DAT
+%      QUEUE COPY PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT
+
+{I * Updating List 13 info
+
+%      COPY '#LIST 13'
 ^^??   COP STATE
 %      VERIFY ON OFF
 %      GET SILENT NOSTORE VERIFIED 'ON or Off' ' '
 %      EVALUATE RADIATION = VALUE
-%      QUEUE REWIND
 %      CLEAR
 ^^??   FRIE STATE
 %      VERIFY ON OFF
@@ -132,13 +136,13 @@
 %      ELSE
 %        INSERT 'CRYSTAL FRIEDEL = NO '
 %      END IF
-%      QUEUE SEND
+%      SEND
 %      CLEAR
 %      CASE RADIATION
 %     INSERT 'CONDITION 1.5418 13.218 90 0.5871488 0.6425348 0.0001788'  %CU%
 %     INSERT 'CONDITION 0.71073 6.05  90 0.5871488 0.6425348 0.0001788'  %MO%
 %      END CASE
-%      QUEUE SEND
+%      SEND
 %      CLEAR
 ^^??   MATR STATE
 %      VERIFY ON OFF
@@ -153,7 +157,7 @@
 NOTE - 'ROLLETT' is a theoretical geometry described in Crystallographic
 Computing, 1969, and gives approximate corrections for most machines.
 %        EVALUATE CTYPE = CVALUE
-%        QUEUE SEND
+%        SEND
 %        CLEAR
 %        IF CTYPE .EQ. 'EQUI' THEN
 Give the zone axis, ( P, Q, R, S)
@@ -164,7 +168,7 @@ Give the zone axis, ( P, Q, R, S)
 %          GET INTEGER 'Q'
 %          GET INTEGER 'R'
 %          GET FINAL INTEGER 'S'
-%          QUEUE SEND
+%          SEND
 %          CLEAR
 %        END IF
 %        VERIFY MATRIX TWO THREE
@@ -180,19 +184,19 @@ You must specify nine elements for the orientation matrix (R11 - R33)
 %            GET REAL 'R11'
 %            GET REAL 'R12'
 %            GET REAL 'R13'
-%            QUEUE SEND
+%            SEND
 %            CLEAR
 %            INSERT 'CONTINUE'
 %            GET REAL 'R21'
 %            GET REAL 'R22'
 %            GET REAL 'R23'
-%            QUEUE SEND
+%            SEND
 %            CLEAR
 %            INSERT 'CONTINUE'
 %            GET REAL 'R31'
 %            GET REAL 'R32'
 %            GET FINAL REAL 'R33'
-%            QUEUE SEND
+%            SEND
 %          END BLOCK
 %          BLOCK
 Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
@@ -203,7 +207,7 @@ Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
 %              GET INTEGER 'H'
 %              GET INTEGER 'K'
 %              GET INTEGER 'L'
-%              QUEUE SEND
+%              SEND
 %              CLEAR
 %              INSERT 'CONTINUE'
 %              GET REAL 'THETA'
@@ -212,17 +216,18 @@ Give index and seting angles (H,K,L, theta, omega, chi, phi, kappa, psi)
 %              GET REAL 'PHI'
 %              GET REAL 'KAPPA'
 %              GET FINAL REAL 'PSI'
-%              QUEUE SEND
+%              SEND
 %              CLEAR
 %            END LOOP
 %          END BLOCK
 %        END CASE
 %      END IF
-%      CLEAR
-%      COPY '#LIST 13'
+%      COPY 'END'
+{I * Updating composition info
+%      COPY '#COMPOSITION'
 %      QUEUE PROCESS
 %      COPY 'END'
-%%
+
 %      COPY '#SUM L 29'
 %      COPY 'END'
 %%
