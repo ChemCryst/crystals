@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  1999/08/23 13:24:48  dosuser
+C djw  Increase permitted number of atom types to 16 for SIR92
+C
 C Revision 1.14  1999/07/16 16:42:35  dosuser
 C djw       restore SHEXS reflection scaling.
 C
@@ -60,7 +63,7 @@ C
       ITYPE = ISTORE(ICOMBF + 1)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                5:SIR88,
+C-                5:SIR88, 6:SIR92, 7:SIR97
       CALL XLNK (ISTORE(ICOMBF), ITYPE)
 C
 C
@@ -86,7 +89,7 @@ C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
 C-     ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                 5:SIR88,  6:SIR92
+C-                 5:SIR88,  6:SIR92,   7:SIR97
 C      IEFORT SELECTS POWER SETTING OF FOREIGN CALL
 C           FOR SHELXS86     IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
@@ -96,7 +99,7 @@ C
 C           FOR SIR**        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
 C
-      PARAMETER (NLINK=6, NLIST=7)
+      PARAMETER (NLINK=7, NLIST=7)
 C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
       DIMENSION LISTS(NLIST, NLINK)
 C
@@ -106,6 +109,7 @@ C----- FOR SHELXS86
 C
 C----- FOR SIR**
 cdjw aug99
+      CHARACTER *1 CARROW
       CHARACTER *160 CSOURC, CSPACE, CL29, CRESLT, CHARTC
 C
       REAL MAT(3)
@@ -133,14 +137,15 @@ C
 \QSTORE
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-             5:SIR88,  6:SIR92
+C-             5:SIR88,  6:SIR92,   7:SIR97
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,
      3            1, 2, 3, 0, 6, 13, 29,
      4            1, 2, 3, 0, 6, 13, 29,
      5            1, 2, 3, 0, 6, 13, 29,
-     6            1, 2, 3, 0, 6, 13, 29/
+     6            1, 2, 3, 0, 6, 13, 29,
+     7            1, 2, 3, 0, 6, 13, 29/
 C
 C
       IF ((ILINK .LE. 0) .OR. (ILINK .GT. NLINK)) GOTO 9100
@@ -202,8 +207,8 @@ C----- OPEN THE OUTPUT DEVICES
 &PPC      CALL stcrys
 C
 C
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92
-      GOTO (1600, 1700, 1800, 2000, 1900, 1900), ILINK
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97
+      GOTO (1600, 1700, 1800, 2000, 1900, 1900, 1900), ILINK
 C
 1600  CONTINUE
 C
@@ -494,26 +499,464 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
        IF (IEFORT .EQ. 2) WRITE(NCFPU1, '(''PSEUDO'')')
        IF (IEFORT .EQ. 2) WRITE(NCFPU1, '(''%INVARIANT'',/''PTEN'')' )
        WRITE(NCFPU1, '(''%CONTINUE'')' )
-      ELSE
-C SIR92
+      ELSE IF ((ILINK .EQ. 6) .OR. (ILINK .EQ. 7)) THEN
+C
+C
+C SIR92, SIR97
+C
 C----- SET UP THE FILE SPECIFICATIONS
-&DOS      WRITE(NCFPU1, '(''%Window '')')
-        WRITE(NCFPU1, '(''%structure  SIR92 '')')
+      WRITE(NCFPU1, '(''%Window '')')
+        WRITE(NCFPU1, '(''%structure  SIR9x '')')
 C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
         WRITE(NCFPU1, '(''%init'', /, ''%job '',20A4)')
      1 (KTITL(I),I=1,20)
+cdjw1999------ List the commands as comments
+      GOTO 19400
+       write(ncfpu1,'('
+     *'>%JOB               a caption is printed in the output '
+     2 ')')
+       write(ncfpu1,'('
+     *'>%STRUCTURE string  this command is used to  specify the  name'
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   of  the  structure  to  investigate.   The '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   program creates  the  name  of  the  files '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   needed by adding the appropriate extension '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   to the structure name. The file names are: '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                      string.bin -> direct access file'
+     2 ')')
+       write(ncfpu1,'('
+     *'>                      string.ins -> final coordinates file'
+     2 ')')
+       write(ncfpu1,'('
+     *'>                      string.plt -> file for graphics'
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   If this command  is  not  used the default '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   string "STRUCT" (instead of the name of the'
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   structure) is used to create file names. '
+     2 ')')
+       write(ncfpu1,'('
+     *'>%WINDOW [ x y ]    graphic window is required.  Optionally '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   it is possible  to increase the dimensions '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   using x and y. Default values are 720,500.'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%NOWINDOW          graphic window is suppressed'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%INITIALIZE        initialize the direct access file '
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   (to override previous results and data)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%END               end of the input file'
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>%CONTINUE          the  program  runs  in  default conditions'
+     2 ')')
+       write(ncfpu1,'('
+     *'>                   from the last given command up to the end '
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>        Preparation  of  data  for  DATA   routine           '
+     2 ')')
+       write(ncfpu1,'('
+     *'> ----------------------------------------------------------- '
+     2 ')')
+       write(ncfpu1,'('
+     *'>%DATA              Data input routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>CELL  a  b  c  alpha  beta  gamma'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SPACEGROUP string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SHIFT  sx sy sz  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>CONTENTS  El1  n1  El2   n2   El3  n3   .........'
+     2 ')')
+       write(ncfpu1,'('
+     *'>RHOMAX x  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>RECORD n'
+     2 ')')
+       write(ncfpu1,'('
+     *'>FORMAT string '
+     2 ')')
+       write(ncfpu1,'('
+     *'>GENER  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>NOSIGMA'
+     2 ')')
+       write(ncfpu1,'('
+     *'>REFLECTIONS string '
+     2 ')')
+       write(ncfpu1,'('
+     *'>FOSQUARE'
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>        Preparation  of  data  for  NORMAL routine            '
+     2 ')')
+       write(ncfpu1,'('
+     *'> ------------------------------------------------------------ '
+     2 ')')
+       write(ncfpu1,'('
+     *'>%NORMAL            normalization routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>NREF n'
+     2 ')')
+       write(ncfpu1,'('
+     *'>NZRO n'
+     2 ')')
+       write(ncfpu1,'('
+     *'>BFAC x  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>PSEUDO n(1,1) n(2,1) n(3,1) n(4,1) n(1,2)  . . .  n(4,3)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>PARTIAL'
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>       Preparation  of  data  for  SEMINVARIANTS  routine     '
+     2 ')')
+       write(ncfpu1,'('
+     *'> ------------------------------------------------------------ '
+     2 ')')
+       write(ncfpu1,'('
+     *'>%SEMINV            seminvariants routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>FIRST '
+     2 ')')
+       write(ncfpu1,'('
+     *'>NRS1 n '
+     2 ')')
+       write(ncfpu1,'('
+     *'>LIST     '
+     2 ')')
+       write(ncfpu1,'('
+     *'>NUMK n  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>NRS2 n  '
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>         Preparation  of  data  for  INVARIANTS  routine    '
+     2 ')')
+       write(ncfpu1,'('
+     *'> -----------------------------------------------------------'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%INVARIANTS        invariants routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>NRTRIPLETS n   '
+     2 ')')
+       write(ncfpu1,'('
+     *'>GMIN  x    '
+     2 ')')
+       write(ncfpu1,'('
+     *'>EMIN x   '
+     2 ')')
+       write(ncfpu1,'('
+     *'>NRPSIZERO n '
+     2 ')')
+       write(ncfpu1,'('
+     *'>EMAX x    '
+     2 ')')
+       write(ncfpu1,'('
+     *'>COCHRAN '
+     2 ')')
+       write(ncfpu1,'('
+     *'>NUMK n  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>CORRECTION x  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>BIG n'
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>           Preparation  of  data  for  PHASE  routine       '
+     2 ')')
+       write(ncfpu1,'('
+     *'> -----------------------------------------------------------'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%PHASE             converge-tangent routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>LIST n     '
+     2 ')')
+       write(ncfpu1,'('
+     *'>TWOPHASE x   '
+     2 ')')
+       write(ncfpu1,'('
+     *'>ONEPHASE n     '
+     2 ')')
+       write(ncfpu1,'('
+     *'>ORIGIN n(i) phi(i)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>ENANTIOMORPH n '
+     2 ')')
+       write(ncfpu1,'('
+     *'>SYMBOLS n   '
+     2 ')')
+       write(ncfpu1,'('
+     *'>PERMUTE n(i)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SPECIALS n     '
+     2 ')')
+       write(ncfpu1,'('
+     *'>PHASE n(i) phi(i) wt(i)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>TABLE'
+     2 ')')
+       write(ncfpu1,'('
+     *'>TRIALS n(i) '
+     2 ')')
+       write(ncfpu1,'('
+     *'>MINFOM  x n  '
+     2 ')')
+       write(ncfpu1,'('
+     *'>RANDOM n '
+     2 ')')
+       write(ncfpu1,'('
+     *'>SEED n'
+     2 ')')
+       write(ncfpu1,'('
+     *'>NOREJECT'
+     2 ')')
+       write(ncfpu1,'('
+     *'>TEST'
+     2 ')')
+       write(ncfpu1,'('
+     *'>MAXTRIALS'
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>   Preparation  of  data  for  FOURIER/LEAST-SQUARES  routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'> ------------------------------------------------------------'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%FOURIER           Fourier/Least-Squares routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SET n      '
+     2 ')')
+       write(ncfpu1,'('
+     *'>MAP '
+     2 ')')
+       write(ncfpu1,'('
+     *'>LEVEL n   '
+     2 ')')
+       write(ncfpu1,'('
+     *'>GRID x       '
+     2 ')')
+      write(ncfpu1,'('
+     *'>LIMITS  l1  l2  l3  '
+     2 ')')
+      write(ncfpu1,'('
+     *'>PEAKS n   '
+     2 ')')
+       write(ncfpu1,'('
+     *'>LAYX'
+     2 ')')
+       write(ncfpu1,'('
+     *'>LAYY'
+     2 ')')
+       write(ncfpu1,'('
+     *'>LAYZ'
+     2 ')')
+       write(ncfpu1,'('
+     *'>RADIUS El x'
+     2 ')')
+       write(ncfpu1,'('
+     *'>COORDINATION El  dmin  dmax  [n]'
+     2 ')')
+       write(ncfpu1,'('
+     *'>FOMIN x'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SIGMA x'
+     2 ')')
+       write(ncfpu1,'('
+     *'>DMAX x'
+     2 ')')
+       write(ncfpu1,'('
+     *'>RECYCLE n'
+     2 ')')
+       write(ncfpu1,'('
+     *'>FRAGMENT string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>     '
+     2 ')')
+       write(ncfpu1,'('
+     *'>          Preparation  of  data  for  EXPORT   routine       '
+     2 ')')
+       write(ncfpu1,'('
+     *'> ------------------------------------------------------------'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%EXPORT'
+     2 ')')
+       write(ncfpu1,'('
+     *'>CRYSTALS string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>COMPLETE'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SHELX string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>MOLDRAW string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>SCHAKAL string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>MOLPLOT string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>XYZ string'
+     2 ')')
+       write(ncfpu1,'('
+     *'>'
+     2 ')')
+       write(ncfpu1,'('
+     *'>          Preparation  of  data  for  RESTART  routine       '
+     2 ')')
+       write(ncfpu1,'('
+     *'> ------------------------------------------------------------'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%RESTART           Fourier/Least-Squares restart routine'
+     2 ')')
+       write(ncfpu1,'('
+     *'>COMPLETE'
+     2 ')')
+       write(ncfpu1,'('
+     *'>RELABEL string species (or RENAME string species)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>DELETE string'
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+       write(ncfpu1,'('
+     *'>          Preparation  of  data  for  PATTERSON routine      '
+     2 ')')
+       write(ncfpu1,'('
+     *'> ------------------------------------------------------------'
+     2 ')')
+       write(ncfpu1,'('
+     *'>%PATTERSON'
+     2 ')')
+       write(ncfpu1,'('
+     *'>LAYX, LAYY, LAYZ, MAP, PEAKS, LIMIT, GRID: See Fourier '
+     2 ')')
+      write(ncfpu1,'('
+     *'>E**2 (or E*E)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>F**2 (or F*F)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>E*F  (or F*E)'
+     2 ')')
+       write(ncfpu1,'('
+     *'>  '
+     2 ')')
+       write(ncfpu1,'('
+     *'> '
+     2 ')')
+19400  CONTINUE
+cdjw1999
         WRITE(NCFPU1, '(''%data '',/,8X,''cell '', 3F7.3, 3F8.3)')
      1 (STORE(I),I=L1P1,L1P1+5)
        WRITE(NCFPU1, '(8X,''space '', A )') CSPACE(1:ISP)
        WRITE ( NCFPU1 , '(8X,''content '', A)' ) CL29(1:I29)
-      WRITE(NCFPU1,1941)
-1941  FORMAT( 8X,'reflection follow',/,
+      WRITE(NCFPU1,1945)
+1945  FORMAT( 8X,'reflection follow',/,
      1 8X, 'format (3i4, f10.3, f7.2)')
-      IF (IEFORT .EQ. 2) WRITE(NCFPU1, '(
-     1 ''%normal'',/ ''%seminv'',/ ''%invariant'',/ ''%phase'',/
-     2 ''      random'')')
-      WRITE(NCFPU1, '(''%continue'')' )
+       IF (ILINK .EQ. 6) THEN
+            CARROW = '>'
+       ELSE
+            CARROW = ' '
+       ENDIF
+       IF (IEFORT .EQ. 1) THEN
+      WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,CARROW
+1941  FORMAT('>  rhomax 0.33'/
+     1 A,'%normal'/'>  pseudo'/'>   bfac 4'/A,'%seminv'/A,
+     2 '%invatiant'/A,'%phase'/'>  random'/A,'%fourier'/
+     3'>  recycle  n')
+      ELSE IF (IEFORT .EQ. 2) then 
+       WRITE(NCFPU1, 1942) CARROW,CARROW,CARROW,CARROW
+1942  FORMAT('>  rhomax 0.33'/
+     1 A,'%normal'/'>  pseudo'/'>   bfac 4'/A,'%seminv'/A,
+     2 '%invatiant'/'%phase'/'  random'/A,'%fourier'/
+     3'>  recycle  n')
       ENDIF
+      If (ilink . eq. 7) then
+          write(ncfpu1,'(''%menu''/''  crystals sir97.cry'')')
+      endif
+      WRITE(NCFPU1, '(''%continue'')' )
 C
       SCALE = 1.0
 C----- LOOP OVER DATA
@@ -542,12 +985,13 @@ C----- LOOP OVER DATA
       ENDIF
       GOTO 1950
 1960  CONTINUE
-      IF (ILINK .EQ. 5) THEN
-        CONTINUE
-      ELSE
         WRITE(NCFPU1,1961)
-1961    FORMAT('   0   0   0   -.00001  0.0',/,
-     1 '%export',/,8X,'crystals sir92.cry',/,'%end')
+1961    FORMAT('   0   0   0   -.00001  0.0')
+      IF (ILINK .EQ. 6) THEN
+      write(ncfpu1,'(''%export''/8X,''crystals sir92.cry''/''%end'')')
+      else
+        continue
+      endif
       ENDIF
       GOTO 8000
 C
@@ -561,7 +1005,7 @@ C
 C----- TIDY UP
 C
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIRxx
-      GOTO ( 8010, 8020, 8030, 9000, 8030, 8030), ILINK
+      GOTO ( 8010, 8020, 8030, 9000, 8030, 8030, 8030), ILINK
       GOTO 9100
 C
 8010  CONTINUE
@@ -650,7 +1094,7 @@ C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
       CHARACTER *32 CPATH
-      PARAMETER (NFILE = 7)
+      PARAMETER (NFILE = 8)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -663,8 +1107,8 @@ C
       DATA CFILE / 'SNOOPI.INI' ,  'SNOOPI.L5' ,
      1             'SHELXS.INS' ,  'SIRDATA.DAT',
      2             'CAMERON.INI' ,  'CAMERON.L5I',
-     3             'SIR92.INI' /
-      DATA LFILE / 10,  9,  10,  11, 11, 11, 9 /
+     3             'SIR92.INI', 'SIR97.INI' /
+      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9 /
 C
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
@@ -674,11 +1118,11 @@ C
       KLOOP = 1
       KLNKIO = -1
       LPATH  = KPATH( CPATH)
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97
 C
 C----- OPEN THE FIRST FILE
       JFILE = 1
-      GOTO ( 110, 120, 130, 140, 150, 160 ), ILINK
+      GOTO ( 110, 120, 130, 140, 150, 160, 170 ), ILINK
 C
 110   CONTINUE
       IFILE = 1
@@ -699,6 +1143,9 @@ C
       GOTO 1000
 160   CONTINUE
       IFILE=7
+      GOTO 1000
+170   CONTINUE
+      IFILE=8
       GOTO 1000
 C
 C
