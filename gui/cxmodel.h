@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.25  2001/12/12 16:02:26  ckpgroup
+//  SH: Reorganised script to allow right-hand y axes.
+//  Added floating key if required, some redraw problems.
+//
 //  Revision 1.24  2001/12/03 14:25:49  ckp2
 //  RIC: Bug fixes. Release version no longer crashes on mouse leave.
 //
@@ -219,8 +223,9 @@ class CxModel : public BASEMODEL
     float m_stretchX ;
     float m_stretchY ;
     bool  m_bitmapok;
-	bool m_bMouseLeaveInitialised;
+    bool m_bMouseLeaveInitialised;
 #ifdef __CR_WIN__
+    HPALETTE m_hPalette;
     CStatic* m_TextPopup;
 
     HGLRC m_hGLContext;                                  //The rendering context handle.

@@ -111,6 +111,7 @@ CxModel::CxModel(CrModel* container)
 {
   ptr_to_crObject = container;
   m_hGLContext = NULL;
+  m_hPalette = 0;
 #endif
   m_bMouseLeaveInitialised = false;
   m_bitmapok = false;
@@ -164,6 +165,7 @@ CxModel::~CxModel()
 #ifdef __CR_WIN__
   wglMakeCurrent(NULL,NULL);
   wglDeleteContext(m_hGLContext);
+  if ( m_hPalette ) DeleteObject(m_hPalette);
 #endif
 }
 
@@ -958,6 +960,10 @@ void CxModel::ModelSetup()
 BOOL CxModel::SetWindowPixelFormat(HDC hdc)
 {
     PIXELFORMATDESCRIPTOR pixelDesc;
+    int n, GLPixelIndex;
+    LOGPALETTE* lpPal;
+
+
     memset(&pixelDesc, 0, sizeof(pixelDesc));
 
     pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -973,7 +979,7 @@ BOOL CxModel::SetWindowPixelFormat(HDC hdc)
     pixelDesc.cDepthBits = 32;
     pixelDesc.iLayerType = PFD_MAIN_PLANE;
 
-    int GLPixelIndex = ChoosePixelFormat (hdc, &pixelDesc);
+    GLPixelIndex = ChoosePixelFormat (hdc, &pixelDesc);
 
     if (GLPixelIndex == 0 )
     {
@@ -992,6 +998,47 @@ BOOL CxModel::SetWindowPixelFormat(HDC hdc)
         dw);
       MessageBox ( sz, "ERROR", MB_OK);
       return false;
+    }
+
+
+    DescribePixelFormat(hdc, GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc);
+
+    if (pixelDesc.dwFlags & PFD_NEED_PALETTE) {
+	n = 1 << pixelDesc.cColorBits;
+	if (n > 256) n = 256;
+
+	lpPal = (LOGPALETTE*)malloc(sizeof(LOGPALETTE) +
+				    sizeof(PALETTEENTRY) * n);
+	memset(lpPal, 0, sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * n);
+	lpPal->palVersion = 0x300;
+	lpPal->palNumEntries = n;
+
+	GetSystemPaletteEntries(hdc, 0, n, &lpPal->palPalEntry[0]);
+    
+	/* The pixel type is RGBA, so we want to make an RGB ramp */
+        int redMask = (1 << pixelDesc.cRedBits) - 1;
+	int greenMask = (1 << pixelDesc.cGreenBits) - 1;
+	int blueMask = (1 << pixelDesc.cBlueBits) - 1;
+	int i;
+
+        /* fill in the entries with an RGB color ramp. */
+	for (i = 0; i < n; ++i) {
+	  lpPal->palPalEntry[i].peRed = 
+	    (((i >> pixelDesc.cRedShift)   & redMask)   * 255) / redMask;
+	  lpPal->palPalEntry[i].peGreen = 
+	    (((i >> pixelDesc.cGreenShift) & greenMask) * 255) / greenMask;
+	  lpPal->palPalEntry[i].peBlue = 
+	    (((i >> pixelDesc.cBlueShift)  & blueMask)  * 255) / blueMask;
+	  lpPal->palPalEntry[i].peFlags = 0;
+	}
+
+	m_hPalette = CreatePalette(lpPal);
+	if (m_hPalette) {
+	    SelectPalette(hdc, m_hPalette, FALSE);
+	    RealizePalette(hdc);
+	}
+
+	free(lpPal);
     }
 
     return true;
