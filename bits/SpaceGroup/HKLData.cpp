@@ -130,6 +130,19 @@ Reflection::~Reflection()
     delete tHKL;
 }
 
+bool Reflection::operator<(const Reflection& pReflection)
+{
+	//cout << "WOrked!\n";
+	Matrix<short>* tHKL1 = this->getHKL();
+	Matrix<short>* tHKL2 = pReflection.getHKL();
+	int tValue = tHKL1->bytecmp(*tHKL2);
+	if (tValue > 0)
+	{
+		return true;
+	}
+	return false;
+}
+
 std::ostream& operator<<(std::ostream& pStream, const Reflection& pReflection)
 {
     pStream << "[" << pReflection.tHKL->getValue(0) << ", " << pReflection.tHKL->getValue(1) << ", " << pReflection.tHKL->getValue(2) << "] ";

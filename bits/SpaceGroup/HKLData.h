@@ -53,6 +53,7 @@ public:
     Reflection(char* pString);
     Reflection(const Reflection& pReflection);
     Reflection& operator=(const Reflection& pReflection);
+	bool operator<(const Reflection& pReflecton);
     ~Reflection();
     Matrix<short>* getHKL() const;
     void setHKL(const Matrix<short>& pMatrix);
