@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  1999/12/23 17:29:25  ckp2
+C djw  fix unwanted output in Monitor file
+C
 C Revision 1.18  1999/07/15 10:56:31  richard
 C RIC: Added INPUT as an option for the "TRANSFER XXX TO" command. This fills
 C the users input buffer with the value XXX so that it can be got with GET.
@@ -847,7 +850,7 @@ C    EXECUTED.
 C
       IF ( ( ISCVER .GT. 0 ) .AND. ( ISCSER .LE. 0 ) .AND.
      2     ( IEXECU .GT. 0 ) ) THEN
-        WRITE ( NCAWU , 1005 ) CLOWER(1:IDIRLN)
+        IF (ISCVER .GT. 0) WRITE ( NCAWU , 1005 ) CLOWER(1:IDIRLN)
         WRITE ( CMON, 1005) CLOWER(1:IDIRLN)
         CALL XPRVDU(NCVDU, 1,0)
 1005    FORMAT ( 1X , A )
