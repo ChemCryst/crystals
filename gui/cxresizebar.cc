@@ -7,6 +7,9 @@
 //   Filename:  CxResizeBar.cc
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2003/01/14 10:27:19  rich
+//   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
+//
 //   Revision 1.6  2001/11/15 10:44:15  ckp2
 //   Yesterday's changes resulted in the resizebar not showing up over it's
 //   children as you dragged to resize - fixed by temporarily turning CLIPCHILDREN
@@ -685,7 +688,7 @@ void CxResizeBar::AlreadyCollapsed()
   m_Collapsed = true;
 }
 
-#ifdef __CR_WIN_
+#ifdef __CR_WIN__
 BOOL CxResizeBar::OnEraseBkgnd(CDC* pDC)
 {
 
