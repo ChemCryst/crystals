@@ -967,7 +967,7 @@ C
      1                  NINT(XX*GSCALE),
      1                  NINT(XY*GSCALE),
      1                  NINT(XZ*GSCALE),
-     3                  255,255,255,
+     3                  0,0,0,
      1                  NINT(GSCALE*0.25)
                   CALL XPRVDU(NCVDU, 1,0)
                ENDIF
