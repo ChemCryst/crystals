@@ -27,7 +27,7 @@
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
 ^^WI  {
-^^WI   @ 1,2 GRID GRIDB NROWS=10 NCOLS=3 RIGHT
+^^WI   @ 1,2 GRID GRIDB NROWS=10 NCOLS=3
 ^^WI   {
 ^^WI     @ 2,2 BUTTON BOK '&Ok' DEFAULT
 ^^WI     @ 4,2 BUTTON BXX '&Cancel'
@@ -75,7 +75,7 @@
 ^^WI  }
 ^^WI  @ 3,1 GRID VBOTTOM NROWS=2 NCOLS=7
 ^^WI  {
-% IF FILEEXISTS 'c:\progra~1\marchi~1\marchi~1.exe' .EQ. TRUE THEN
+% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' .EQ. TRUE THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
 ^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer' STATE=ON
 % ELSE
