@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2002/11/07 17:35:13  rich
+C THLIM upgraded so that it works. (With Friedel unmerged data and data
+C that hasn't been SYSTEMATIC'd). It now also writes things to the listing
+C file (missing reflection indices) and draws graphs.
+C
 C Revision 1.43  2002/11/06 12:58:22  rich
 C If the theta_full value in L30 is negative, then the program will use its absolute
 C value as theta_full and compute the completeness, rather than trying to find
@@ -3072,7 +3077,7 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
          CALL XSFLSB(-1)
       ENDIF
 
-      WRITE(99,'(A,2F15.6)')'Pre: ',STORE(L30CF+7),STORE(L30RF+1)
+C      WRITE(99,'(A,2F15.6)')'Pre: ',STORE(L30CF+7),STORE(L30RF+1)
  
       CALL XRSL
       CALL XCSAE
@@ -3180,7 +3185,7 @@ C----- LOADED BY XFAL06          CALL XFAL28
             CALL XFAL29
          ELSE IF (LSTYPE.EQ.30) THEN
             CALL XFAL30
-      WRITE(99,'(A,2F15.6)')'Post:',STORE(L30CF+7),STORE(L30RF+1)
+C      WRITE(99,'(A,2F15.6)')'Post:',STORE(L30CF+7),STORE(L30RF+1)
  
          ELSE IF (LSTYPE.EQ.31) THEN
 \IDIM31
