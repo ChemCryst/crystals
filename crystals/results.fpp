@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.58  2003/06/24 13:01:04  djw
+C Change SHELX weighting text to keep Acta happy
+C
 C Revision 1.57  2003/06/19 16:29:50  rich
 C
 C Store, in L30, the number of restraints that L16 is generating.
@@ -5046,7 +5049,7 @@ C------ SIGMA WEIGHTS
              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
                 ival = 34
                 write(cline,'(a)') 
-     1          ' p=P(3)*max(Fo^2,0) + (1-P(3))Fc^2'
+     1          ' p=P(6)*max(Fo^2,0) + (1-P(6))Fc^2'
                 call xpcif (cline)
                 write(ctext(3),'(a)') 
      1          ' P(i) are:'
