@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.97  2004/12/07 14:37:41  djw
+C Hydrogen bond D-A distance now in cif. esd not yet computed - use the value from the checkcif error !
+C
 C Revision 1.96  2004/12/03 15:01:24  djw
 C Fix number of decimal places for H geometry in CIF.  Still working on H-bonds!
 C
@@ -5940,10 +5943,10 @@ c               SHELX type
 cdjw090804^
                 if (nint(1000. * store(l4+5)) .ne. 333) then
                  write(cline,'(a)') 
-     1           ' p=P(6)*max(Fo^2^,0) + (1-P(6))Fc^2^'
+     1           ' P=p(6)*max(Fo^2^,0) + (1-p(6))Fc^2^'
                 else
                  write(cline,'(a)') 
-     1           ' p=(max(Fo^2^,0) + 2Fc^2^)/3'
+     1           ' P=(max(Fo^2^,0) + 2Fc^2^)/3'
                 endif
 c                call xpcif (cline)
 cdjw011104
@@ -5951,24 +5954,29 @@ cdjw011104
 cdjw090804^
                 if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
      1          .le. 0.0) then
+c-----            writeout simplified equation
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
 ##LINGIL     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
 &&LINGIL     1            ' w=1/[\\s^2^(F^2^) +', store(l4),' +',
-     2              store(l4+1),'p]'
+     2              store(l4+1),'P]'
                   ctext(3) = ' '
                   ctext(4) = ' '
                 else
                   write(ctext(3),'(a)') 
-     1            ' P(i) are:'
+     1            ' p(i) are:'
                 endif
              endif
               if (ival .ne. 0 ) then     
                 ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
                 call xctrim (ctemp,nchar)
                 write (cline,'(a,a )') ' Method = ', ctemp(1:nchar)
-                call xpcif (cline)
-cdjw011104
-                if (ival .eq. 34) call xpcif(ctext(1))
+cdjw091204
+                if (ival .eq. 34) then 
+                    ctext(3) = 'where '//ctext(1)
+                    ctext(1) = ' '
+                else
+                    call xpcif (cline)
+                endif
               else
                 call xpcif(ctext(1))
               endif
