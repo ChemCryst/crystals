@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.81  2004/02/06 13:49:26  rich
+// Some debugging messages when spawning programs.
+//
 // Revision 1.80  2003/12/04 09:53:53  rich
 //
 // Fix $ and SPAWN on Linux for "quoted" commands.
@@ -465,7 +468,7 @@
 
 #ifdef __WINMSW__
   #include <stdio.h>
-  #include <direct.h>
+//  #include <direct.h>
   #define F77_STUB_REQUIRED
 //  #include <math.h>
   #include <wx/fontdlg.h>
@@ -740,10 +743,10 @@ CcController::CcController( CcString directory, CcString dscfile )
 
     if ( envv == NULL )
     {
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
        _putenv( "CRDSC=crfilev2.dsc" );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
        putenv( "CRDSC=crfilev2.dsc" );
 #endif
        Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
@@ -3375,10 +3378,10 @@ int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpD
 
 void CcController::ChangeDir (CcString newDir)
 {
-#ifdef __BOTHWIN__
+#ifdef __CR_WIN__
       _chdir ( newDir.ToCString());
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       chdir ( newDir.ToCString());
 #endif
 }
