@@ -1,6 +1,7 @@
 %SCRIPT GFINDH                                                                  
-% VARIABLE CHARACTER CATOM CEL                                                  
-% VARIABLE LOGICAL HQEXEC                                                       
+% VARIABLE CHARACTER CATOM CEL CTYPE
+% VARIABLE REAL SX SY SZ SS SERI
+% VARIABLE LOGICAL HQEXEC
 % VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND                                   
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
@@ -122,24 +123,62 @@
 % ELSE                                                                          
 %    COPY 'CALC'                                                                
 % END IF                                                                        
-^^CO SET GFT1 TEXT 'Adding geometric H (white).'                                
-% COPY '#PERHYDRO'                                                              
-% COPY 'ACTION BOTH'                                                            
-% COPY 'END'                                                                    
 %%                                                                              
-^^CO SET GFT1 TEXT 'Difference Fourier map.'                                    
-% COPY '#FOUR'                                                                  
-% COPY 'MAP TYPE=DIFF'                                                          
-% COPY 'PEAK HEIGHT=1'                                                          
-^^CO SET GFT1 TEXT 'Collecting peaks.'                                          
-% COPY '#COLL 10 5'                                                             
-% COPY 'SEL TYPE=PEAK'                                                          
-%%                                                                              
-^^CO SET GFT1 TEXT 'Changing Q to QH.'                                          
-% COPY '#EDIT'                                                                  
-% COPY 'GUI HIGH'                                                               
-% COPY 'TYPECHANGE TYPE EQ Q QH'                                                
-% COPY 'CLASH FIXLATTER'                                                        
+^^CO SET GFT1 TEXT 'Difference Fourier map.'
+% COPY '#FOUR'        
+% COPY 'MAP TYPE=DIFF'
+% COPY 'PEAK HEIGHT=1'
+% COPY 'END'
+^^CO SET GFT1 TEXT 'Rejecting coincident peaks.'
+% COPY '#PEAKS 10 10'
+% COPY 'SEL TYPE=PEAK'
+% COPY 'END'
+^^CO SET GFT1 TEXT 'Collecting peaks (pink).'
+% COPY '#COLL 10 10'
+% COPY 'SEL TYPE=PEAK'
+% COPY 'END'
+^^CO SET GFT1 TEXT 'Adding geometric H (white).'
+% COPY '#PERHYDRO 5 5'
+% COPY 'ACTION BOTH'
+% COPY 'END'
+%% Copy peaks from L10 into L5
+% QUEUE REWIND
+% COPY '#GENERALEDIT 10'
+% COPY "LOCATE RECORDTYPE=101"
+% COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"
+% COPY "TOP"
+% LOOP
+%   ON EDITERROR TERMINATE
+%   COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%   IF ( CTYPE .EQ. 'Q' ) THEN
+%     COPY 'TRANSFER FROM OFFSET=1 TO SERI'
+%     COPY 'TRANSFER FROM OFFSET=4 TO SX'
+%     COPY 'TRANSFER FROM OFFSET=5 TO SY'
+%     COPY 'TRANSFER FROM OFFSET=6 TO SZ'
+%     COPY 'TRANSFER FROM OFFSET=13 TO SS'
+%     CLEAR
+%     INSERT 'ATOM QH'
+%     STORE INTEGER INTEGER SERI
+%     INSERT ' X='
+%     STORE REAL SX
+%     STORE REAL SY
+%     STORE REAL SZ
+%     INSERT ' SPAR='
+%     STORE REAL SS
+%     QUEUE SEND
+%   END IF
+%   COPY 'NEXT'
+% END LOOP
+% COPY 'END'
+% COPY '#EDIT'
+% QUEUE PROCESS
+% COPY 'END'
+%%
+^^CO SET GFT1 TEXT 'Changing Q to QH.'
+% COPY '#EDIT'
+% COPY 'GUI HIGH'
+% COPY 'TYPECHANGE TYPE EQ Q QH'
+% COPY 'CLASH FIXLATTER'
 % COPY 'EXEC'                                                                  
 ^^CO DISPOSE XABORT                                                             
 % LOOP                                                                          
