@@ -1501,8 +1501,8 @@ Various bits and pieces
 Crystal colour
 (6X,8A4)
          5    5    5    5    5    5    5    5
-     COL(1)             0    0    1    0    1 WHIT
-     COL(2)             0    0    1    0    1 E
+     COL(1)             0    0    1    0    1 ?
+     COL(2)             0    0    1    0    1 
      COL(3)             0    0    1    0    1 
      COL(4)             0    0    1    0    0
      COL(5)             0    0    1    0    0
@@ -1514,8 +1514,8 @@ Crystal colour
 Crystal shape
 (6X,8A4)
          5    5    5    5    5    5    5    5
-     SHAPE(1)           0    0    1    0    1 PRIS
-     SHAPE(2)           0    0    1    0    0 M
+     SHAPE(1)           0    0    1    0    1 ?
+     SHAPE(2)           0    0    1    0    0 
      SHAPE(3)           0    0    1    0    0
      SHAPE(4)           0    0    1    0    0
      SHAPE(5)           0    0    1    0    0
