@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.3  2001/02/26 10:30:23  richard
 C Added changelog to top of file
 C
@@ -1984,11 +1987,9 @@ C
         WRITE ( CMON, 12000) POLAR(NPOL)
         CALL XPRVDU(NCVDU, 1,1)
       ENDIF
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,13000)
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,13000)
       WRITE ( CMON, 13000)
-      CALL XPRVDU(NCVDU, 2,0)
+      CALL XPRVDU(NCVDU, 1,0)
 10000 FORMAT (1X,' Space Group ',10A1/
      $        '  The Space Group is ',A1,'Centric',6A4,
      $        '  Laue Symmetry ',2A4/
@@ -2030,8 +2031,8 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,14000)
       ENDIF
-      WRITE ( CMON, 14000)
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE ( CMON, 14000)
+c      CALL XPRVDU(NCVDU, 1,0)
 C----- SAVE THE CRYSTAL CLASS
       CLINE = SYST(1,LSYS)(1:4)//SYST(2,LSYS)(1:4)
      1 //SYST(3,LSYS)(1:4)
