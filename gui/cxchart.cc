@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2002/07/15 12:19:13  richard
+//   Reorder headers to improve ease of linking.
+//   Update program to use new standard C++ io libraries.
+//   Update to use new version of MFC (5.0 with .NET.)
+//
 //   Revision 1.19  2002/06/26 11:57:48  richard
 //   Label mouse fixes.
 //
@@ -61,8 +66,8 @@
 #include    "crchart.h"
 #include    "ccpoint.h"
 #include <direct.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 
 #ifdef __CR_WIN__

@@ -3,7 +3,7 @@
 
 #ifdef __CR_WIN__
 #include "stdafx.h"
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 #ifdef __BOTHWX__
 #include <wx/event.h>

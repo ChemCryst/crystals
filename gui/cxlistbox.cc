@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2002/03/05 12:12:58  ckp2
+// Enhancements to listbox for my List 28 project.
+//
 // Revision 1.12  2001/09/11 08:31:10  ckp2
 // Protect the program from invalid list index numbers being
 // passed to a LISTTEXT query.
@@ -249,6 +252,9 @@ CXONCHAR(CxListBox)
 
 void CxListBox::CxSetSelection( int select )
 {
+   if ( mItems < 1 ) return;
+   select = min ( select, mItems );
+   select = max ( select, 1 );
 #ifdef __CR_WIN__
     SetCurSel ( select - 1 );
 #endif
@@ -261,7 +267,16 @@ void CxListBox::CxSetSelection( int select )
 void CxListBox::CxRemoveItem ( int item )
 {
 #ifdef __CR_WIN__
-    DeleteString ( item - 1 );
+    if ( item > 0 )
+    {
+       DeleteString ( item - 1 );
+       mItems = max(0,mItems-1);
+    }
+    else
+    {
+       ResetContent();
+       mItems=0;
+    }
 #endif
 }
 
@@ -269,11 +284,12 @@ void CxListBox::CxRemoveItem ( int item )
 
 CcString CxListBox::GetListBoxText(int index)
 {
+   if ( mItems < 1 ) return CcString(' ');
    index = min ( index, mItems );
    index = max ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
-      GetText(index-1, temp);
+    GetText(index-1, temp);
     CcString result = temp.GetBuffer(temp.GetLength());
     return result;
 #endif

@@ -14,7 +14,7 @@
 #ifdef __CR_WIN__
 #include <iostream>
 #include <iomanip>
-#include <stdio.h>
+#include <cstdio>
 #include <direct.h>
 #include <process.h>
 #endif

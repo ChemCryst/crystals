@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2002/03/16 18:08:23  richard
+//   Removed old CrGraph class (now obsolete given Steven's work).
+//   Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
+//
 //   Revision 1.23  2002/03/13 12:30:25  richard
 //   Speed up search for ^^ symbols.
 //   Introduce new ^^ command: ^^CW - like ^^CR it causes execution of anything
@@ -58,7 +62,7 @@
 #include    "cccommandqueue.h"
 #include    "ccstatus.h"
 #include    "ccrect.h"
-#include    <stdio.h> //For FILE definition
+#include    <cstdio> //For FILE definition
 
 
 #ifdef __CR_WIN__
@@ -228,7 +232,7 @@ class   CcController
     CcTokenList *   mCurTokenList;
 
     CrWindow *      mModelWindow;
-    FILE *  mErrorLog;
+    std::FILE *  mErrorLog;
 
     CcList  mWindowList;
     CcList  mTextOutputWindowList;

@@ -9,6 +9,16 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2002/07/03 14:23:21  richard
+//   Replace as many old-style stream class header references with new style
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+//   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+//   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+//   Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+//   warning messages.
+//
 //   Revision 1.20  2002/03/07 14:00:41  DJWgroup
 //   SH: fix menus for inverted graphs.
 //
@@ -89,8 +99,8 @@
 #include    "ccrect.h"
 #include	<math.h>
 #include <direct.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 #ifdef __CR_WIN__
  #include    <afxwin.h>
