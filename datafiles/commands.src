@@ -246,13 +246,13 @@ OVERALL PARAMETERS
     .NCELL             31    0    1    0    0         0
     .NPROFILE          35    0    1    0    0         0
     .NEXTINCT          39    0    1    0    0         0
-   3.ATOM              16   -4    0    0   16   -4  101    1    5
+   3.ATOM              18   -4    0    0   18   -4  101    1    5
          1    1    1    1    1    1    0    0    0    0
 ATOMIC PARAMETERS
 (1X,120A1/85X,36A1,12A1)
-(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/F5.0,1X,A4)
+(1X,A4,F13.0,1X,8F12.5/79X,3F12.5,F8.1/4F12.1)
          3    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-         2
+         2    2    2
     .TYPE               0   -1    1    0    0
     .SERIAL             0   -1    1    0    0
     .OCC                0    0    1    0    0 1.0
@@ -268,7 +268,9 @@ ATOMIC PARAMETERS
     .U[12]              0    0    1    0    0 0.0
     .SPARE              0    0    1    0    0 0.0
     .PART               0    0    1    0    0 0.0
-    .NAME               0    0    1    0    0 
+    .REF                0    0    1    0    0 0.0
+    .HYBRID             0    0    1    0    0 0.0
+    .NEW                0    0    1    0    0 0.0
    4.INDEX              5    1    0    0    5    1  103    9    5
          1    1    1    1    1    1    0    0    0    0
 THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING
