@@ -18,14 +18,14 @@
 ^^WI     @ 2,1 STATIC T1 '"CIF" - for CIF files, "Summary" '
 ^^WI     @ 3,1 STATIC T2 'for a full listing.'
 ^^WI   }
-^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
+^^WI   @ 2,4 LISTBOX PUB_LIST VISLINES=10 ADDTOLIST
 ^^WI         'Cif' 'XYZ' 'Aniso' 'Distances' 'Chime' 'Reflections' 
 ^^WI         'Summary' 'Residuals' 'Save'
 ^^WI         NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
-^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 3,1 BUTTON BXX '&Close' CANCEL
 ^^WI     @ 5,1 BUTTON BHH '&Help'
 ^^WI   }
 ^^WI }
@@ -69,7 +69,7 @@
 %        COPY '#SCRIPT XHELP2'
 %      END BLOCK
 %      BLOCK        %BOK%
-^^??     AUTOLIST SELECTED
+^^??     PUB_LIST SELECTED
 %        GET SILENT NOSTORE FINAL INTEGER ' ' '1'
 ^^WI     DISPOSE XPUB
 ^^CR
