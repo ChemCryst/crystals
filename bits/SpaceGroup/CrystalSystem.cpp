@@ -103,7 +103,7 @@ void deinitRE()
     }
 }
 
-Heading::Heading(char* pLine)
+Heading::Heading(char* pLine):Matrix<short>(3, 3)
 {
     const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
@@ -124,25 +124,20 @@ Heading::Heading(char* pLine)
     tTempString = new char[(int)(tMatch[3].rm_eo - tMatch[3].rm_so +1)];
     strncpy(tTempString, (int)tMatch[3].rm_so+pLine, (int)tMatch[3].rm_eo - tMatch[3].rm_so);
     tTempString[(int)(tMatch[3].rm_eo - tMatch[3].rm_so)] = 0;
-    iMatrix = new MatrixReader(tTempString);
+    MatrixReader tMatrix(tTempString);
+    (*(Matrix<short>*)this) = tMatrix;
     delete[] tTempString;
 }
 
 Heading::~Heading()
 {
     delete[] iName;
-    delete iMatrix;
 }
 
 
 char* Heading::getName()
 {
     return iName;
-}
-
-Matrix<short>* Heading::getMatrix()
-{
-    return iMatrix;
 }
   
 int Heading::getID()
@@ -152,7 +147,7 @@ int Heading::getID()
 
 std::ostream& Heading::output(std::ostream& pStream)
 {
-    pStream << iID << "\t" << iName << "\t" << *iMatrix << "\n";
+    pStream << iID << "\t" << iName << "\t" << (*(Matrix<short>*)this) << "\n";
     return pStream;
 }
 
@@ -161,41 +156,31 @@ std::ostream& operator<<(std::ostream& pStream, Heading& pHeader)
     return pHeader.output(pStream);
 }
 
-Headings::Headings()
-{
-    iHeadings = new ArrayList<Heading>(1);
-}
+Headings::Headings():ArrayList<Heading>(5)
+{}
 
 Headings::~Headings()
 {
-    int iSize = iHeadings->length();
-    for (int i = 0; i < iSize; i++)
+    for (int i = iItemCount-1; i >=0; i--)
     {
-        Heading* tHeading = iHeadings->remove(i);
+        Heading* tHeading = remove(i);
         delete tHeading;
     }
-    delete iHeadings;
-}
-
-int Headings::length()
-{
-    return iHeadings->length();
 }
 
 Matrix<short>* Headings::getMatrix(int pIndex)
 {
-    Heading* tHeading = iHeadings->get(pIndex);
-    
+    Heading* tHeading = get(pIndex);
     if (!tHeading)
     {
         throw MyException(kUnknownException, "Heading with that ID doesn't exist.");
     }
-    return tHeading->getMatrix();
+    return tHeading;
 }
 
 char* Headings::getName(int pIndex)
 {
-    Heading* tHeading = iHeadings->get(pIndex);
+    Heading* tHeading = get(pIndex);
     
     if (!tHeading)
     {
@@ -206,7 +191,7 @@ char* Headings::getName(int pIndex)
 
 int Headings::getID(int pIndex)
 {
-    Heading* tHeading = iHeadings->get(pIndex);
+    Heading* tHeading = get(pIndex);
     
     if (!tHeading)
     {
@@ -217,10 +202,10 @@ int Headings::getID(int pIndex)
 
 std::ostream& Headings::output(std::ostream& pStream)
 {
-    int tSize = iHeadings->length();
+    int tSize = length();
     for (int i = 0; i < tSize; i++)
     {
-        Heading* tHeading = iHeadings->get(i);
+        Heading* tHeading = get(i);
         if (tHeading)
         {
             std::cout << *tHeading << "\n";
@@ -250,7 +235,7 @@ char* Headings::addHeading(char* pLine)	//Returns the point which the line at th
         tNext++;
 		delete[] tString;
     }
-    iHeadings->setWithAdd(tHeading, tHeading->getID());
+    setWithAdd(tHeading, tHeading->getID());
     return tNext;
 }
 
@@ -273,7 +258,7 @@ void Headings::readFrom(filebuf& pFile)
         try
         {
             if (tLine[0] != '\0')
-                    addHeading(tLine);
+                addHeading(tLine);
         }
         catch (MyException eE)
         {
@@ -419,45 +404,15 @@ std::ostream& ConditionColumn::output(std::ostream& pStream, Headings* pHeadings
     return pStream;
 }
 
-Index::Index(signed char pValue)
-{
-    iValue = pValue;
-}
+Index::Index(signed char pValue):Number<signed char>(pValue)
+{}
         
-Index::Index(Index& pObject)
-{
-    *this = pObject;
-}
+Index::Index(Index& pObject):Number<signed char>(pObject)
+{}
 
 signed char Index::get()
 {
-    return iValue;
-}
-
-void Index::set(signed char pValue)
-{
-    iValue = pValue;
-}
-
-Index& Index::operator=(Index& pObject)
-{
-    iValue = pObject.iValue;
-    return *this;
-}
-
-bool Index::operator<(Index& pObject)
-{
-    return iValue < pObject.iValue;
-}
-
-bool Index::operator>(Index& pObject)
-{
-    return iValue > pObject.iValue;
-}
-
-bool Index::operator==(Index& pObject)
-{
-    return iValue == pObject.iValue;
+    return value();
 }
 
 std::ostream& Index::output(std::ostream& pStream)
@@ -470,60 +425,47 @@ std::ostream& operator<<(std::ostream& pStream, Index& pIndex)
     return pIndex.output(pStream);
 }
 
-Indexs::Indexs(signed char pIndex)
+Indexs::Indexs(signed char pIndex):ArrayList<Index>(1)
 {
-    iIndexs = new ArrayList<Index>(1);
-    iIndexs->add(new Index(pIndex));
+    add(new Index(pIndex));
 }
 
 void Indexs::addIndex(signed char pIndex)
 {
-    iIndexs->add(new Index(pIndex));
-}
-
-int Indexs::number()
-{
-    return iIndexs->length();
-}
-
-Index* Indexs::getIndex(int pIndex)
-{
-    return iIndexs->get(pIndex);
+    add(new Index(pIndex));
 }
 
 signed char Indexs::getValue(int pIndex)
 {
-    return iIndexs->get(pIndex)->get();
+    return get(pIndex)->get();
 }
 
 Indexs::~Indexs()
 {
-    int tCount = iIndexs->length();
-    for (int i = 0; i < tCount;  i++)
+    for (int i = iItemCount-1; i >= 0;  i--)
     {
-        Index* tTemp = iIndexs->remove(i);
+        Index* tTemp = remove(i);
         if (tTemp)
         {
             delete tTemp;
         }
     }
-    delete iIndexs;
 }
 
 std::ostream& Indexs::output(std::ostream& pStream)
 {
-    int tCount = iIndexs->length();
+    int tCount = length();
     char* tString = new char[tCount*2+3];
     tString[0] = '\0';
     for (int i = 0; i < tCount;  i++)
     {
         if (i+1==tCount)
         {
-            sprintf(tString, "%s%d", tString, iIndexs->get(i)->get());
+            sprintf(tString, "%s%d", tString, get(i)->get());
         }
         else
         {
-            sprintf(tString, "%s%d ", tString, iIndexs->get(i)->get());
+            sprintf(tString, "%s%d ", tString, get(i)->get());
         }
     }
     pStream << tString;
@@ -986,7 +928,7 @@ int Table::conditionsUsed(signed char pIndices[], const int pMax) const
             Indexs* tIndexs = tColumn->getConditions(j);
             if (tIndexs)
             {
-                int tNumIndices = tIndexs->number();
+                int tNumIndices = tIndexs->length();
                 for (int k = 0; k < tNumIndices; k++)
                 {
                     signed char tIndex = tIndexs->getValue(k);
@@ -1016,7 +958,7 @@ std::ostream& operator<<(std::ostream& pStream, Table& pTable)
     return pTable.output(pStream);
 }
 
-Tables::Tables(char* pFileName)
+Tables::Tables(char* pFileName):ArrayList<Table>(3)
 {
     filebuf tFile;
     initCrysRegEx();
@@ -1028,18 +970,15 @@ Tables::Tables(char* pFileName)
     iHeadings = new Headings();
     iHeadings->readFrom(tFile);
     iConditions->readFrom(tFile);
-    iTables = new ArrayList<Table>(1);
     readFrom(tFile);
     tFile.close(); 
 }
         
 Tables::~Tables()
 {
-    int tNumTables = iTables->length();
-    
-    for (int i = 0; i < tNumTables; i++)
+    for (int i = iItemCount-1; i >=0; i--)
     {
-        Table* tTable = iTables->remove(i);
+        Table* tTable = remove(i);
         if (tTable)
         {
             delete tTable;
@@ -1047,7 +986,6 @@ Tables::~Tables()
     }
     delete iHeadings;
     delete iConditions;
-    delete iTables;
     deinitRE();
 }
 
@@ -1063,7 +1001,7 @@ Conditions* Tables::getConditions()
 
 void Tables::addTable(Table* pTable)
 {
-	iTables->add(pTable);
+	add(pTable);
 }
 
 void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, int *pNumOfSGCols)
@@ -1134,13 +1072,13 @@ void Tables::readFrom(filebuf& pFile)
 /* Returns name which was found in pName*/
 Table* Tables::findTable(char* pName)
 {
-    int tNumber = iTables->length();
+    int tNumber = length();
     Table* tTable; 
     bool tFound = false;
     
     for (int i = 0; i < tNumber; i++)
     {
-        tTable = iTables->get(i);
+        tTable = get(i);
         if (tTable)
         {
             char* tName = tTable->getName();
@@ -1162,11 +1100,11 @@ Table* Tables::findTable(char* pName)
 
 std::ostream& Tables::output(std::ostream& pStream)
 {
-    int tNumTables = iTables->length();
+    int tNumTables = length();
     
     for (int i = 0; i < tNumTables; i++)
     {
-        Table* tTable = iTables->get(i);
+        Table* tTable = get(i);
         if (tTable)
         {
             pStream << *tTable;
@@ -1195,10 +1133,10 @@ bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
     return true;
 }
 
-RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)
+RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral):iChiral(pChiral)
 {	
     int* tPGroupNumbers =  NULL;
-    iChiral = pChiral;
+   
     if (iChiral)  	//If this is a chiral structure then get the information for filtering the list.
     {
         const int tPGroupNumber = pTable.getNumPointGroups();
@@ -1253,7 +1191,7 @@ void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tI
 {
     if (tIndexs)
     {
-        int tCount = tIndexs->number();
+        int tCount = tIndexs->length();
         for (int i = 0; i < tCount; i++)
         {
             int tRow = tIndexs->getValue(i);
