@@ -228,8 +228,8 @@ class Matrix
           
         void mul(Matrix<type>& pMatrix1, Matrix<type>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
         {
-            pResult.iXSize = iXSize;
-            pResult.iYSize = pMatrix1.iYSize;
+            pResult.iXSize = pMatrix1.iXSize;
+            pResult.iYSize = iYSize;
             for (int i = 0; i < iYSize; i ++)
             {
                 for (int j = 0; j < iXSize; j ++)
@@ -451,6 +451,8 @@ class Matrix<float>
           
         void mul(Matrix<float>& pMatrix1, Matrix<float>& pResult)	//A faster multiply this doesn't check to see if the result matrix is the correct size before inserting the results
         {
+            pResult.iXSize = pMatrix1.iXSize;
+            pResult.iYSize = iYSize;
             for (int i = 0; i < iYSize; i++)
             { 
                 for (int j = 0; j < pMatrix1.iXSize; j++)
@@ -458,7 +460,6 @@ class Matrix<float>
                     dotpr(&(iMatrix[i]), iYSize, &(pMatrix1.iMatrix[j*pMatrix1.iYSize]), 1, &(pResult.iMatrix[j*iYSize+i]), iXSize);
                 }
             }
-            free(iMatrix);
         }
         
         void resize(const short pXSize, const short pYSize)
