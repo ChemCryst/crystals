@@ -94,18 +94,16 @@ Reflection::Reflection(char* pString)
     iSE = (float)strtod(tempString, &tEndPointer);
 }
 
-Reflection::Reflection(const Reflection& pReflection)
+Reflection::Reflection(const Reflection& pReflection):i(pReflection.i), iSE(pReflection.iSE)
 {
     tHKL = new Matrix<short>(*pReflection.tHKL);
     i = pReflection.i;
     iSE = pReflection.iSE;
 }
 
-Reflection::Reflection()
+Reflection::Reflection():i(0), iSE(0)
 {
     tHKL = new Matrix<short>();
-    i = 0;
-    iSE = 0;
 }
 
 Reflection& Reflection::operator=(const Reflection& pReflection)
@@ -122,7 +120,7 @@ Matrix<short>* Reflection::getHKL() const
     return tHKL;
 }
 
-void Reflection::setHKL(const Matrix<short> pMatrix)
+void Reflection::setHKL(const Matrix<short>& pMatrix)
 {
    (*tHKL) = pMatrix; 
 }
@@ -147,7 +145,7 @@ long fsize(char* pPath)
     return tFileStat.st_size;
 }
 
-HKLData::HKLData(char* pPath)
+HKLData::HKLData(char* pPath):ArrayList<Reflection>(1)
 {
     char tLine[255];
     FILE* tFile = fopen(pPath, "r");
@@ -157,9 +155,8 @@ HKLData::HKLData(char* pPath)
         throw FileException(errno);
     }
     long tFileSize = fsize(pPath);
-    
-    iReflectionList = new ArrayList<Reflection>(tFileSize/34);
     bool tHadZeros = false;
+    resize(tFileSize/34);
     while (fgets(tLine, 255, tFile))
     {
         Reflection* tReflection= new Reflection(tLine);
@@ -173,21 +170,18 @@ HKLData::HKLData(char* pPath)
             }
             tHadZeros = true;;
         }
-        iReflectionList->add(tReflection);
+        add(tReflection);
     }
     fclose(tFile);
 }
 
 HKLData::~HKLData()
 {
-    long tReflections = iReflectionList->length();
-    
-    std::cout << "Removing " << tReflections << " reflections\n";
-    for (long i = tReflections-1; i >= 0; i--)
+    std::cout << "Removing " << iItemCount << " reflections\n";
+    for (long i = iItemCount-1; i >= 0; i--)
     {
-        delete iReflectionList->remove(i);
+        delete remove(i);
     }
-    delete iReflectionList;
 }
 
 typedef struct __CenteringType
@@ -214,16 +208,6 @@ void addReflection(CenteringType* pInfo, float pIntensity, int pSum1, int pSum2,
             pInfo->iIntTotal += pIntensity;
         }
     }
-}
-
-Reflection* HKLData::getReflection(const int pIndex) const
-{
-    return iReflectionList->get(pIndex);
-}
-
-int HKLData::numberOfReflections() const
-{
-    return iReflectionList->length();
 }
 
 float resipSphVol(float pAngRad, float pWaveLength)
