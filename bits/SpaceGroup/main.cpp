@@ -53,12 +53,17 @@ typedef struct RunStruct
 {
     char* iFileName;		//File name for the hkl data.
     char* iTablesFile;		//The file name of the tables file.
+    char* iOtherInfoFile;	//The name of a file for more informtion.
     bool iChiral;		//false is not nessaseraly chiral. false chiral
     char* iCrystalSys;		//Crystal System
 }RunStruct;
 
 void runTest(RunStruct *pRunData)
 {
+    if (tRunStruct.iCrystalSys[0] == 0)
+    {
+        strcpy(tRunStruct.iCrystalSys, getCrystalSystem());
+    }
     std::cout << "Reading in tables...";
     Tables tTables(pRunData->iTablesFile);
     std::cout << "\nReading in hkl data...";
@@ -75,7 +80,7 @@ void runTest(RunStruct *pRunData)
     }
     tStats.calProbs();
     std::cout << "\nRanking space groups...";
-    RankedSpaceGroups tRankings(*tTable, tStats);
+    RankedSpaceGroups tRankings(*tTable, tStats, pRunData->iChiral);
     std::cout << "\n" << tRankings << "\n";
 }
 
@@ -180,10 +185,6 @@ int main(int argc, const char * argv[])
     {
         std::cout << "Enter hkl file path: ";
         cin >> tRunStruct.iFileName;
-    }
-    if (tRunStruct.iCrystalSys[0] == 0)
-    {
-        strcpy(tRunStruct.iCrystalSys, getCrystalSystem());
     }
     try
     {
