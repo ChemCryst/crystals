@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2003/08/12 19:14:05  rich
+C KDIST4: SEL RAN=L41 - recompute distance, don't rely on stored value.
+C
 C Revision 1.53  2003/08/05 11:11:10  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -610,6 +613,7 @@ C---- In MOGUL mode, grow the fragment to allow polymeric structures.
         IPUNCH = ISTORE(JCOMBF+14)
         IF ( IPUNCH .EQ. 4 ) THEN
          NORIG5 = N5
+         IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL41
          CALL GROWFR
          WRITE (CMON,'(A4,2I6)') 'Grown: ',NORIG5,N5
          CALL XPRVDU(NCVDU,1,0)
