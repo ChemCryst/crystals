@@ -1,12 +1,16 @@
 %SCRIPT XCAM
-%% find out if the caller wants CRYSTALS to write new files
-% VERIFY YES NO
-% GET NOSTORE FINAL ABBREVIATED -
-  'Send current structure to CAMERON?' 'YES'
-% VARIABLE LOGICAL LNEWL5
+% VARIABLE LOGICAL NOXCAMQ LNEWL5
 % EVALUATE LNEWL5 = TRUE
-% IF VALUE .NE. 1 THEN
-%      EVALUATE LNEWL5 = FALSE
+% IF ( NOXCAMQ ) THEN
+%    EVALUATE LNEWL5 = FALSE
+% ELSE
+%%   find out if the caller wants CRYSTALS to write new files
+%    VERIFY YES NO
+%    GET NOSTORE FINAL ABBREVIATED -
+     'Send current structure to CAMERON?' 'YES'
+%    IF VALUE .NE. 1 THEN
+%       EVALUATE LNEWL5 = FALSE
+%    END IF
 % END IF
 ^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
 %% The first grid splits the main area from the status bar.
