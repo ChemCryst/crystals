@@ -106,6 +106,11 @@ Reflection::Reflection():i(0), iSE(0)
     tHKL = new Matrix<short>();
 }
 
+Reflection::Reflection(const Matrix<short>& pHKL, float pI, float pSE):i(pI), iSE(pSE)
+{
+	tHKL = new Matrix<short>(pHKL);
+}
+
 Reflection& Reflection::operator=(const Reflection& pReflection)
 {
     delete tHKL;
@@ -118,6 +123,11 @@ Reflection& Reflection::operator=(const Reflection& pReflection)
 Matrix<short>* Reflection::getHKL() const
 {
     return tHKL;
+}
+
+const Matrix<short>& Reflection::hkl() const
+{
+	return *tHKL;
 }
 
 void Reflection::setHKL(const Matrix<short>& pMatrix)
@@ -158,18 +168,32 @@ long fsize(char* pPath)
     return tFileStat.st_size;
 }
 
-HKLData::HKLData(char* pPath):ArrayList<Reflection>(1)
+HKLData::HKLData():vector<Reflection*>()
+{
+
+}
+
+HKLData::HKLData(HKLData& pHKLs):vector<Reflection*>()
+{
+	vector<Reflection*>::iterator tIter;
+	
+	for (tIter = pHKLs.begin(); tIter != pHKLs.end(); tIter++)
+	{
+		push_back(new Reflection(*(*tIter)));
+	}
+}
+		
+HKLData::HKLData(char* pPath):vector<Reflection*>()
 {
     char tLine[255];
+	size_t tNumRef = 0;
     FILE* tFile = fopen(pPath, "r");
     
     if (tFile == NULL)
     {
         throw FileException(errno);
     }
-    long tFileSize = fsize(pPath);
     bool tHadZeros = false;
-    resize(tFileSize/34);
     while (fgets(tLine, 255, tFile))
     {
         Reflection* tReflection= new Reflection(tLine);
@@ -183,17 +207,26 @@ HKLData::HKLData(char* pPath):ArrayList<Reflection>(1)
             }
             tHadZeros = true;;
         }
-        add(tReflection);
+        push_back(tReflection);
+		tNumRef ++;
     }
     fclose(tFile);
 }
 
+/*Reflection* HKLData::operator[](size_type __n)
+{
+
+}*/
+
 HKLData::~HKLData()
 {
-    std::cout << "Removing " << iItemCount << " reflections\n";
-    for (long i = iItemCount-1; i >= 0; i--)
+	#ifdef __DEBUG__
+		std::cout << "Removing " << size() << " reflections\n";
+	#endif
+    while (!empty())
     {
-        delete remove(i);
+        delete back();
+		pop_back();
     }
 }
 
