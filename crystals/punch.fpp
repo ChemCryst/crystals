@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2001/10/16 11:23:32  Administrator
+C Add missing common block to punch 41
+C
 C Revision 1.21  2001/10/09 10:34:40  ckp2
 C Punch 41 for Simon's project.
 C
@@ -1288,8 +1291,8 @@ C--LOAD LISTS 5 and 41 FROM THE DISC
 
 
       DO M41B = L41B, L41B + (N41B-1)*MD41B, MD41B
-        IA1 = ISTORE(M41B)*MD5
-        IA2 = ISTORE(M41B+6)*MD5
+        IA1 = L5 + ISTORE(M41B)*MD5
+        IA2 = L5 + ISTORE(M41B+6)*MD5
 
         WRITE (NCPU,'(A4,6I6,2X,A4,6I6,2X,F10.5)')
      1   ISTORE(IA1), NINT(STORE(IA1+1)),
