@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2005/03/03 18:10:09  stefan
+C 1. Made the punching of the normal matrix a little more advanced so that it now outputs all the different blocks of the matrix
+C
 C Revision 1.27  2005/01/23 08:29:12  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -132,7 +135,7 @@ C----------------------------
       INCLUDE 'TYPE11.INC'
 C
 C
-      DIMENSION A1(6),B1(3)
+      DIMENSION A1(6),B1(3),C1(3)
       INCLUDE 'ICOM11.INC'
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ICOM24.INC'
@@ -972,6 +975,14 @@ C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
       IF(M24)4800,4800,4780
 4780  CONTINUE
       Z=Z/Y*100.
+CDJW0105
+      DO I =1,3
+       C1(I) = STORE(JE+4+(I+1)*MW)
+      ENDDO
+C- USED WHEN TRYING TO OPTIMISE THE LS WEIGHTING
+C- OUTPUTS THE SHIFT INFO FOR CURRENT CYCLE TO PUNCH FILE
+C      CALL XLSDEL (A1,B1,C1)
+CDJW0105
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4785)(STORE(I+4),I=JC+14*MW,JC+23*MW,MW),Z
       ENDIF
@@ -2413,12 +2424,26 @@ C -- CORE OVEFLOW
       GO TO 9900
 C
       END
-
-
-
-
-
-
+CODE FOR XLSDEL
+      SUBROUTINE XLSDEL(A,B,C)
+c----- output shift summary info to punch
+      DIMENSION A(6), B(3), C(3)
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      WRITE(NCPU,100)
+     1 (A(I),I=1,3),
+     1 (A(3+I),I=1,3),
+     2 (B(I),I=1,3),
+     3 (C(I),I=1,3)
+100   FORMAT ('# ', 4(3F9.5,3X))
+      RETURN
+      END      
+C
+C
+C
+C
+C
+C
 C BLAS & LAPACK routines including and for supporting SSYEV:
 C Some BLAS routines must not be optimized, they are in LAPACK.SRC
 
