@@ -8,10 +8,13 @@
 %% Remove LIST 25
 %%
 {S * Removing the twin laws - deleting list 25.
+% IF EXISTS 25 .EQ. 1 THEN
 % COPY '#DISK'
 % COPY 'DELETE 25'
 % COPY 'END'
+% END IF
 {R Done.
+
 
 {S * Removing FOT and element tags from LIST 6.
 % COPY '#LIST 6'
