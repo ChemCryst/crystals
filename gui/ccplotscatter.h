@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/02/18 11:21:12  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.8  2002/01/22 16:12:27  ckpgroup
 //   Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
 //
@@ -72,7 +75,6 @@ public:
 
 	float *		m_Data[2];					// pointer to a this series' data (x and y)
 	CcString*	m_Label;					// pointer to the label for each data point
-
 };
 
 #endif

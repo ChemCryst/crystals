@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2002/02/18 11:21:12  DJWgroup
+// SH: Update to plot code.
+//
 // Revision 1.11  2002/01/22 16:12:26  ckpgroup
 // Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
 //
@@ -120,7 +123,7 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 				}
 
 				// now save the data (x1 y1 x2 y2 ...)
-				for(int i=0; i< m_NumberOfSeries; i++)
+				for(int i=m_CompleteSeries; i< m_NumberOfSeries; i++)
 				{
 					for(int j=0; j<2; j++)
 					{
@@ -142,9 +145,12 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 						// and copy this to m_Series[i]->m_Data[j][n]
 						((CcSeriesScatter*)m_Series[i])->m_Data[j][m_NextItem] = tempdata;
 					}
+					
+					// let the series know we've added an item
+					((CcSeriesScatter*)m_Series[i])->m_NumberOfItems++;
 				}
 				m_NextItem++;		// make sure next label / data pair goes into the next slot
-
+				if(m_NextItem > m_MaxItem) m_MaxItem = m_NextItem;
 				break;
 			}
 
@@ -233,7 +239,7 @@ void CcPlotScatter::DrawView(bool print)
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 
 		// don't draw the graph if no data is present
-		if(m_NextItem == 0)
+		if(m_MaxItem == 0)
 			return;
 		
 		// gap between division markers on x and y axes
@@ -269,7 +275,7 @@ void CcPlotScatter::DrawView(bool print)
 		// now loop through the data items, drawing each one
 		// if there are 'm_Next' data items, each will use 2200/m_Next as an offset
 		// NB draw data bars FIRST, so axes / markers are always visible
-		int offset = (2400-m_XGapLeft-m_XGapRight) / m_NextItem;
+		int offset = (2400-m_XGapLeft-m_XGapRight) / m_MaxItem;
 
 		int x1 = 0;
 		int y1 = 0;
@@ -289,7 +295,7 @@ void CcPlotScatter::DrawView(bool print)
 				default:
 				{
 					// loop through the data members of this series
-					for(i=0; i<m_NextItem; i++)
+					for(i=0; i<m_Series[j]->m_NumberOfItems; i++)
 					{
 						x1 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
 						y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
@@ -303,7 +309,7 @@ void CcPlotScatter::DrawView(bool print)
 				// draw this data series as a connected line of points
 				case Plot_SeriesLine:
 				{
-					for(i=0; i<m_NextItem-1; i++)
+					for(i=0; i<m_Series[j]->m_NumberOfItems-1; i++)
 					{
 						x1 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
 						y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
@@ -320,7 +326,7 @@ void CcPlotScatter::DrawView(bool print)
 				{
 					int vert[8] = {0,0,0,0,0,0,0,0};
 
-					for(i=0; i<m_NextItem-1; i++)
+					for(i=0; i<m_Series[j]->m_NumberOfItems-1; i++)
 					{
 						vert[0] = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax- m_Axes.m_AxisData[Axis_X].m_AxisMin))));
 						vert[1] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));

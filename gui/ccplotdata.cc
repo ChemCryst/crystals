@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2002/02/18 11:21:11  DJWgroup
+// SH: Update to plot code.
+//
 // Revision 1.12  2002/01/22 16:12:24  ckpgroup
 // Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
 //
@@ -87,9 +90,8 @@ CcPlotData::CcPlotData( )
 	m_Series = 0;
 	m_SeriesLength = 0;
 	m_CompleteSeries = 0;	// no data present
-	m_NewSeriesNextItem = 0;
 	m_NextItem = 0;
-	m_NewSeries = false;
+	m_MaxItem = 0;
 	m_CurrentSeries = -1;	// all series selected
 	m_CurrentAxis = -1;		// also all axes selected
 	
@@ -452,6 +454,12 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				// followed by the type itself
 				next = tokenList->GetToken();
 
+				// set all previous series as complete
+				m_CompleteSeries = m_NumberOfSeries;
+				if(m_MaxItem < m_NextItem) m_MaxItem = m_NextItem;
+				m_NextItem = 0;
+
+				// now add the series.
 				AddSeries(FindSeriesType(next));
 				break;
 			}
@@ -562,6 +570,7 @@ CcSeries::CcSeries()
 {
 	m_YAxis = Axis_YL;
 	m_DrawStyle = -1;
+	m_NumberOfItems = 0;
 }
 
 CcSeries::~CcSeries()

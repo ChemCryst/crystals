@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2002/02/18 11:21:11  DJWgroup
+// SH: Update to plot code.
+//
 // Revision 1.13  2002/01/16 10:28:37  ckpgroup
 // SH: Updated memory reallocation for large plots. Added optional labels to scatter points.
 //
@@ -137,19 +140,14 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 					}
 
 					// and copy this to m_Series[i]->m_Data[n]
-					((CcSeriesBar*)m_Series[i])->m_Data[m_NextItem - m_NewSeriesNextItem] = tempdata;
+					((CcSeriesBar*)m_Series[i])->m_Data[m_NextItem] = tempdata;
+					// let the series know we've added an item
+					((CcSeriesBar*)m_Series[i])->m_NumberOfItems++;
 				}
 
-				if(m_NewSeries == false)
-					m_NextItem++;		// make sure next label / data pair goes into the next slot
-				else m_NewSeriesNextItem--;
-				
-				if(m_NewSeriesNextItem == 0 && m_NewSeries == true)
-				{
-					m_CompleteSeries++; 
-					m_NewSeriesNextItem = m_NextItem;
-					m_NewSeries = false;
-				}
+				m_NextItem++;		// make sure next label / data pair goes into the next slot
+				if(m_NextItem > m_MaxItem) m_MaxItem = m_NextItem;
+
 
 				// make sure the x axis knows how many items there are...
 				if(m_NextItem > m_Axes.m_AxisData[Axis_X].m_Max) m_Axes.m_AxisData[Axis_X].m_Max++;
@@ -240,7 +238,7 @@ void CcPlotBar::DrawView(bool print)
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 
 		// don't draw graph if no data present
-		if(m_NextItem == 0)
+		if(m_MaxItem == 0)
 			return;
 
 		// gap between division markers on x and y axes
@@ -284,7 +282,7 @@ void CcPlotBar::DrawView(bool print)
 		// now loop through the data items, drawing each one
 		// if there are 'm_Next' data items, each will use axiswidth/m_Next as an offset
 		// NB draw data bars FIRST, so axes / markers are always visible
-		int offset = (2400-m_XGapLeft-m_XGapRight) / m_NextItem;
+		int offset = (2400-m_XGapLeft-m_XGapRight) / m_MaxItem;
 
 		// now work out the number of *bar* graphs
 		m_NumberOfBarSeries = 0;
@@ -326,7 +324,7 @@ void CcPlotBar::DrawView(bool print)
 				// draw this series as a set of vertical bars
 				case Plot_SeriesBar:
 				{
-					for(i=0; i<m_NextItem; i++)
+					for(i=0; i<m_Series[j]->m_NumberOfItems; i++)
 					{
 						x1 = m_XGapLeft + i*offset + j*xseroffset + 5;
 						x2 = x1 + xseroffset - 5;
@@ -341,7 +339,7 @@ void CcPlotBar::DrawView(bool print)
 				// draw this series as a set of straight lines connecting the points
 				case Plot_SeriesLine:
 				{
-					for(i=0; i<m_NextItem-1; i++)
+					for(i=0; i<m_Series[j]->m_NumberOfItems-1; i++)
 					{
 						x1 = m_XGapLeft + (int)((i+0.5)*offset);
 						x2 = x1 + offset;
@@ -398,7 +396,7 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 						float y = m_Axes.m_AxisData[axis].m_AxisMax + (m_Axes.m_AxisData[axis].m_AxisMin-m_Axes.m_AxisData[axis].m_AxisMax)*(point->y - m_YGapTop) / axisheight;
 						int x = point->x - m_XGapLeft;
 
-						int bar = axiswidth / m_NextItem;
+						int bar = axiswidth / m_MaxItem;
 
 						if((y > ((CcSeriesBar*)m_Series[i])->m_Data[j]-0.1) && (y < ((CcSeriesBar*)m_Series[i])->m_Data[j]+0.1))
 						{
@@ -430,7 +428,7 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 			int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
 			
 			// work out the width of each label...
-			int width = axiswidth / (m_NextItem);
+			int width = axiswidth / (m_MaxItem);
 
 			// now work out the label which contains point.x
 			int num = (point->x - m_XGapLeft)/width;
@@ -440,7 +438,7 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 			int lowerlimit = num*width;	
 			int bar = m_NumberOfBarSeries*(point->x - m_XGapLeft - lowerlimit)/width;
 
-			if(num < (m_NextItem))
+			if(num < (m_MaxItem))
 			{
 				// put together a text string to describe the data under the mouse pointer
 				if(!(m_Series[bar]->m_SeriesName == ""))
@@ -485,8 +483,8 @@ void CcPlotBar::AddSeries(int type)
 
 	m_CompleteSeries = m_NumberOfSeries;
 	m_NumberOfSeries++;
-	m_NewSeriesNextItem = m_SeriesLength;	
-	m_NewSeries = true;
+//	m_NewSeriesNextItem = m_SeriesLength;	
+//	m_NewSeries = true;
 }
 
 // create the data series

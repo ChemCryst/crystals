@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2002/02/18 11:21:14  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.8  2002/01/14 12:19:56  ckpgroup
 //   SH: Various changes. Fixed scatter graph memory allocation.
 //   Fixed mouse-over for scatter graphs. Updated graph key.
@@ -142,10 +145,12 @@ class CxPlot : public BASEPlot
 		void CreateKey(int numser, CcString* names, int** col);
 		void CreateKeyWindow(int x, int y);
 
-		CcRect m_client;
 
+		CcRect m_client;
         CrGUIElement *  ptr_to_crObject;
-        int mIdealHeight;
+
+private:
+		int mIdealHeight;
         int mIdealWidth;
         static int mPlotCount;
         int mPolyMode;

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2002/02/18 11:21:12  DJWgroup
+//   SH: Update to plot code.
+//
 //   Revision 1.9  2002/01/22 16:12:26  ckpgroup
 //   Small change to allow inverted axes (eg for Wilson plots). Use 'ZOOM 4 0'.
 //
@@ -61,7 +64,7 @@ public:
 	float m_Min;					// the lowest data value associated with this axis
 	float m_Max;					// and the highest
 
-	float m_AxisMin;				// the axis limits
+	float m_AxisMin;				// the axis limits (not the same as m_M**. Rounded to multiples of m_Delta).
 	float m_AxisMax;
 
 	float m_Delta;					// the division spacing for this axis
@@ -83,7 +86,7 @@ public:
 
 	Boolean CalculateDivisions();
 
-	void CheckData(int axis, float data);
+	void CheckData(int axis, float data);	// check data against min/max, alter graph bounds if necessary
 	void DrawAxes(CrPlot* attachedPlot);	// draw lines, markers and text
 
 	CcString*		m_Labels;		// one label per data item (only for bar graphs)
@@ -99,7 +102,7 @@ public:
 class CcPlotData
 {
 public:
-    virtual void DrawView(bool print) =0;
+    virtual void DrawView(bool print) =0;		// draw the actual graphical data
     void Clear();
     virtual Boolean ParseInput( CcTokenList * tokenList );
     CcPlotData();
@@ -110,21 +113,23 @@ public:
     static CcList  sm_PlotList;
     static CcPlotData* sm_CurrentPlotData;
 
-	virtual CcString GetDataFromPoint(CcPoint* point) = 0;
+	virtual CcString GetDataFromPoint(CcPoint* point) = 0; // returns a string from a point, for mouse-over messages
 
-	virtual void CreateSeries(int numser, int* type) = 0;
-	virtual void AllocateMemory(int length) = 0;
-	virtual void AddSeries(int type) = 0;
-	virtual void ExtendSeriesLength() = 0;
+	virtual void CreateSeries(int numser, int* type) = 0;	// controls memory allocation for a series
+	virtual void AllocateMemory(int length) = 0;			// this one allocates the memory
+	virtual void AddSeries(int type) = 0;					// add a series (after data transfer for previous ones complete)
+	virtual void ExtendSeriesLength() = 0;					// reallocate memory to hold more data
 
-	void DrawKey();
+	void DrawKey();											// get the key redrawn.
 	int FindSeriesType(CcString textstyle);
 
+protected:
     CcSeries**		m_Series;		// array of series
-	int				m_SeriesLength; // length of the data series (NB all the same)
-	int				m_NextItem;		// number of data items added so far to each series
-	CcPlotAxes		m_Axes;
-	Boolean			m_AxesOK;
+	int				m_SeriesLength; // length of the data series (IE the memory allocated so far...)
+	int				m_NextItem;		// number of data items added so far to the current series
+	int				m_MaxItem;		// the maximum number of data items present in any one series
+	CcPlotAxes		m_Axes;			// the graph axes
+	Boolean			m_AxesOK;		// do graph axes need recalculating? (only if changed)
 
 	Boolean			m_DrawKey;		// draw a key of the series names / colours?
 
@@ -139,8 +144,6 @@ public:
 	int				m_YGapBottom;
 
 	int				m_CompleteSeries;// number of series with all data present (eg to let ADDSERIES work...)
-	int				m_NewSeriesNextItem;// number of data items given to the new series
-	bool			m_NewSeries;	// true if there is an incomplete series present
 
 protected:
     CcString mName;					// internal name
@@ -161,6 +164,7 @@ public:
 	CcString		m_SeriesName;	// one name per series
 	int				m_DrawStyle;	// how to draw this series (scatter / bar / line / etc)
 	int				m_YAxis;		// which y axis is this series attached to (left or right)
+	int				m_NumberOfItems;// how many data items there are in this series
 
 	virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
 
