@@ -54,23 +54,44 @@
 ^^WI   }
 ^^WI   @ 2,2 GRID GRAPHS NROWS=1 NCOLS=5
 ^^WI   {
-^^WI     @ 1,1 GRID PAR5 NROWS=5 NCOLS=1 OUTLINE='5 parameters'
+^^WI     @ 1,1 GRID PAR5 NROWS=7 NCOLS=1 OUTLINE='5 parameters'
 ^^WI     {
 ^^WI       @ 1,1 PLOTWINDOW _RWGHT NROWS=20 NCOLS=48
 ^^WI       @ 3,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48
-^^WI       @ 5,1 BUTTON BTPAR5 'Use 5 parameter scheme'
-^^WI     }
-^^WI     @ 1,3 GRID PAR4 NROWS=5 NCOLS=1 OUTLINE='4 parameters'
+^^WI       @ 5,1 GRID BTNS NROWS=1 NCOLS=9
+^^WI       {                               
+^^WI         @ 1,2 STATIC _TSWD '<w(del**2)>: '
+^^WI         @ 1,4 STATIC _WDSQ '     .0   '
+^^WI         @ 1,6 STATIC _TSWD 'Outliers: '
+^^WI         @ 1,8 STATIC _COUT '   0   '
+^^WI       }
+^^WI       @ 7,1 BUTTON BTPAR5 'Use 5 parameter scheme'
+^^WI     }                     
+^^WI     @ 1,3 GRID PAR4 NROWS=7 NCOLS=1 OUTLINE='4 parameters'
 ^^WI     {
 ^^WI       @ 1,1 PLOTWINDOW _RWGH2 NROWS=20 NCOLS=48
 ^^WI       @ 3,1 PLOTWINDOW _VF2 NROWS=20 NCOLS=48
-^^WI       @ 5,1 BUTTON BTPAR4 'Use 4 parameter scheme'
+^^WI       @ 5,1 GRID BTNS NROWS=1 NCOLS=9
+^^WI       {                               
+^^WI         @ 1,2 STATIC _TSWD '<w(del**2)>: '
+^^WI         @ 1,4 STATIC _WDS2 '     .0   '
+^^WI         @ 1,6 STATIC _TSWD 'Outliers: '
+^^WI         @ 1,8 STATIC _COU2 '   0   '
+^^WI       }
+^^WI       @ 7,1 BUTTON BTPAR4 'Use 4 parameter scheme'
 ^^WI      }
-^^WI     @ 1,5 GRID PAR3 NROWS=5 NCOLS=1 OUTLINE='3 parameters'
+^^WI     @ 1,5 GRID PAR3 NROWS=7 NCOLS=1 OUTLINE='3 parameters'
 ^^WI     {
 ^^WI       @ 1,1 PLOTWINDOW _RWGH3 NROWS=20 NCOLS=48
 ^^WI       @ 3,1 PLOTWINDOW _VF3 NROWS=20 NCOLS=48
-^^WI       @ 5,1 BUTTON BTPAR3 'Use 3 parameter scheme' COMMIT DEFAULT
+^^WI       @ 5,1 GRID BTNS NROWS=1 NCOLS=9
+^^WI       {                               
+^^WI         @ 1,2 STATIC _TSWD '<w(del**2)>: '
+^^WI         @ 1,4 STATIC _WDS3 '     .0   '
+^^WI         @ 1,6 STATIC _TSWD 'Outliers: '
+^^WI         @ 1,8 STATIC _COU3 '   0   '
+^^WI       }
+^^WI       @ 7,1 BUTTON BTPAR3 'Use 3 parameter scheme' COMMIT DEFAULT
 ^^WI     }
 ^^WI   }
 ^^WI   @ 3,2 GRID STUFF NROWS=1 NCOLS=2
@@ -94,41 +115,45 @@
 %          COPY 'SCHEME NUMBER=14, NPARAM=5'
 %          COPY 'END'
 %          COPY '#WEIGHT'
-%          COPY 'GUI GRAPH=ON'
+%          COPY 'GUI GRAPH=ON OUTL=ON'
 %          COPY 'END'
 %          COPY '#ANALYSE'
 %          COPY 'LIST LEVEL=HIGH'
-%          COPY 'PLOTFO DELTA ON'
+%          COPY 'PLOTFO DELTA ON WDELSQ'
 {I   Agreement analysis:
 %          COPY 'END'
 ^^CO RENAME _VFO _VF1      RENAME _VF2 _VFO
 ^^CO RENAME _RWGHT _RWGH1  RENAME _RWGH2 _RWGHT
+^^CO RENAME _COUT _COU1  RENAME _COU2 _COUT
+^^CO RENAME _WDSQ _WDS1  RENAME _WDS2 _WDSQ
 {S * Chebychev weighting with 4 parameters
 {I   Estimated delta(F)**2 as a function of F:
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=4'
 %          COPY 'END'
 %          COPY '#WEIGHT'
-%          COPY 'GUI GRAPH=ON'
+%          COPY 'GUI GRAPH=ON OUTL=ON'
 %          COPY 'END'
 %          COPY '#ANALYSE'
 %          COPY 'LIST LEVEL=HIGH'
-%          COPY 'PLOTFO DELTA'
+%          COPY 'PLOTFO DELTA OFF WDELSQ'
 {I   Agreement analysis:
 %          COPY 'END'
 ^^CO RENAME _VFO _VF2       RENAME _VF3 _VFO
 ^^CO RENAME _RWGHT _RWGH2   RENAME _RWGH3 _RWGHT
+^^CO RENAME _COUT _COU2  RENAME _COU3 _COUT
+^^CO RENAME _WDSQ _WDS2  RENAME _WDS3 _WDSQ
 {S * Chebychev weighting with 3 parameters
 {I   Estimated delta(F)**2 as a function of F:
 %          COPY '#LIST 4'
 %          COPY 'SCHEME NUMBER=14, NPARAM=3'
 %          COPY 'END'
 %          COPY '#WEIGHT'
-%          COPY 'GUI GRAPH=ON'
+%          COPY 'GUI GRAPH=ON OUTL=ON'
 %          COPY 'END'
 %          COPY '#ANALYSE'
 %          COPY 'LIST LEVEL=HIGH'
-%          COPY 'PLOTFO DELTA'
+%          COPY 'PLOTFO DELTA OFF WDELSQ'
 {I   Agreement analysis:
 %          COPY 'END'
 %%

@@ -9,30 +9,49 @@
 ^^WI  @ 2,2 BUTTON H H
 ^^WI  @ 2,15 BUTTON Q Q
 ^^WI  @ 2,19 STATIC He He
-^^WI  @ 3,2 BUTTON Li Li
-^^WI  @ 3,3 BUTTON Be Be
+^^WI  @ 3,2 GRID Lithium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Li Li @ 2,1 BUTTON Lip1 Li+ }
+^^WI  @ 3,3 GRID Berylium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Be Be @ 2,1 BUTTON Bep2 Be+2 }
 ^^WI  @ 3,14 BUTTON B B
 ^^WI  @ 3,15 BUTTON C C
 ^^WI  @ 3,16 BUTTON N N
-^^WI  @ 3,17 BUTTON O O
-^^WI  @ 3,18 BUTTON F F
+^^WI  @ 3,17 GRID Oxygen NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON O O @ 2,1 BUTTON OM1 O- }
+^^WI  @ 3,18 GRID Oxygen NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON F F @ 2,1 BUTTON FM1 F- }
 ^^WI  @ 3,19 STATIC Ne Ne
-^^WI  @ 4,2 BUTTON Na Na
-^^WI  @ 4,3 BUTTON Mg Mg
-^^WI  @ 4,14 BUTTON Al Al
+^^WI  @ 4,2 GRID Sodium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Na Na @ 2,1 BUTTON NAP1 Na+ }
+^^WI  @ 4,3 GRID Magnesium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Mg Mg @ 2,1 BUTTON MGP2 Mg+2 }
+^^WI  @ 4,14 GRID Aluminium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Al Al @ 2,1 BUTTON ALP3 Al+3 }
 ^^WI  @ 4,15 BUTTON Si Si
 ^^WI  @ 4,16 BUTTON P P
 ^^WI  @ 4,17 BUTTON S S
-^^WI  @ 4,18 BUTTON Cl Cl
+^^WI  @ 4,18 GRID Chlorine NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Cl Cl @ 2,1 BUTTON CLM1 Cl- }
 ^^WI  @ 4,19 STATIC Ar Ar
-^^WI  @ 5,2 BUTTON K K 
-^^WI  @ 5,3 BUTTON Ca Ca
-^^WI  @ 5,4 BUTTON Sc Sc
-^^WI  @ 5,5 BUTTON Ti Ti 
-^^WI  @ 5,6 BUTTON V V
-^^WI  @ 5,7 BUTTON Cr Cr
-^^WI  @ 5,8 BUTTON Mn Mn
-^^WI  @ 5,9 BUTTON Fe Fe
+^^WI  @ 5,2 GRID Potassium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON K K @ 2,1 BUTTON KP1 K+ }
+^^WI  @ 5,3 GRID Calcium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Ca Ca @ 2,1 BUTTON CAP2 Ca+2 }
+^^WI  @ 5,4 GRID Scandium NROWS=2 NCOLS=1
+^^WI  { @ 1,1 BUTTON Sc Sc @ 2,1 BUTTON SCP3 Sc+3 }
+^^WI  @ 5,5 GRID Titanium NROWS=2 NCOLS=2
+^^WI  { @ 1,1 BUTTON Ti Ti @ 2,1 BUTTON TIP2 Ti+2 
+^^WI    @ 1,2 BUTTON TIP3 Ti+3 @ 2,2 BUTTON TIP4 Ti+4 }
+^^WI  @ 5,6 GRID Vanadium NROWS=2 NCOLS=2
+^^WI  { @ 1,1 BUTTON V V @ 2,1 BUTTON VP2 V+2
+^^WI    @ 1,2 BUTTON VP3 V+3 @ 2,2 BUTTON VP5 V+5 }
+^^WI  @ 5,7 GRID Chromium NROWS=2 NCOLS=2
+^^WI  { @ 1,1 BUTTON Cr Cr @ 2,1 BUTTON CRP2 Cr+2 @ 1,2 BUTTON CRP3 Cr+3 }
+^^WI  @ 5,8 GRID Manganese NROWS=2 NCOLS=2
+^^WI  { @ 1,1 BUTTON Mn Mn @ 2,1 BUTTON MNP2 Mn+2
+^^WI    @ 1,2 BUTTON MNP3 Mn+3 @ 2,2 BUTTON MNP4 Mn+4 }
+^^WI  @ 5,9 GRID Iron NROWS=2 NCOLS=2
+^^WI  { @ 1,1 BUTTON Fe Fe @ 2,1 BUTTON FEP2 Fe+2 @ 1,2 BUTTON FEP3 Fe+3 }
 ^^WI  @ 5,10 BUTTON Co Co 
 ^^WI  @ 5,11 BUTTON Ni Ni 
 ^^WI  @ 5,12 BUTTON Cu Cu 
