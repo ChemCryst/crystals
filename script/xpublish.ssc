@@ -141,18 +141,18 @@
 %%
 %  IF CIFDONE .EQ. FALSE THEN
  
- * You have not saved a CIF file.
+{I * Info: You have not saved a CIF file.
  
-%    VERIFY YES NO
-%    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'
-%    IF VALUE .EQ. 2 THEN
-%            FINISH
-%    ELSE
-%      BLOCK                                         %CIF%
-%        COPY '#SCRIPT XCIF'
-%        COPY 'END'
-%      END BLOCK
-%    END IF
+%%    VERIFY YES NO
+%%    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'
+%%    IF VALUE .EQ. 2 THEN
+%%            FINISH
+%%    ELSE
+%%      BLOCK                                         %CIF%
+%%        COPY '#SCRIPT XCIF'
+%%        COPY 'END'
+%%      END BLOCK
+%%    END IF
 %  END IF
 %  COPY '#CLOSE FRN1'
 %END SCRIPT
