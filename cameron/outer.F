@@ -729,9 +729,10 @@ C Initialising menus, pass line to ZMNINI
       ELSE
 C
 C Normal use, interpret the line
-            IF (LLINE(ILINE)(LEN_TRIM(LLINE(ILINE)):) .EQ. '+') THEN
+            LT = MAX(1,LEN_TRIM(LLINE(ILINE)))
+            IF (LLINE(ILINE)(LT:LT) .EQ. '+') THEN
               KMORE = 1
-              WRITE(LLINE(ILINE)(LEN_TRIM(LLINE(ILINE)):),'(A)')' '
+              WRITE(LLINE(ILINE)(LT:LT),'(A)')' '
             ELSE
               KMORE = 0
             END IF
