@@ -58,10 +58,10 @@ class MergedData
                 return calculateRFactor();
             return iRFactor;
         }
-    std::ostream& output(std::ostream& pStream);
+    std::ostream& output(std::ostream& pStream) const;
 };
 
-std::ostream& operator<<(std::ostream& pStream, MergedData& tData);
+std::ostream& operator<<(std::ostream& pStream, const MergedData& tData);
 
 class LaueGroups
 {
