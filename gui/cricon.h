@@ -31,4 +31,18 @@ class CrIcon : public CrGUIElement
 		// attributes
 		
 };
+
+#define     kSIconInfo          "INFO"
+#define     kSIconError         "ERROR"
+#define     kSIconWarn          "WARN"
+#define     kSIconQuery         "QUERY"
+
+enum 
+{
+ kTIconInfo = 1200,
+ kTIconError,
+ kTIconWarn, 
+ kTIconQuery
+};
+
 #endif
