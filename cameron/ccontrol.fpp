@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2001/03/08 16:46:48  richard
+C Reads and writes new format list 5. (Ints at end).
+C
 C Revision 1.13  2000/12/13 19:14:07  richard
 C Linux support.
 C
@@ -3649,14 +3652,14 @@ C THIS IS CALLED EVERY TIME A DATA FILE IS LOADED.
       LOGICAL LFILES
       IFPATH = 1
 CNOV      INQUIRE (FILE='CAMERON.OBY',EXIST=LEXIST)
-      FILENM = 'CAMERON.SRT'
+      FILENM = 'cameron.srt'
       CALL ZMORE ('1 OBY FILE IS '//FILENM, 0)
       CALL ZMORE1 ('1 OBY FILE IS '//FILENM, 0)
       INQUIRE (FILE=FILENM,EXIST=LEXIST)
       IF (.NOT.LEXIST) THEN
 C INQUIRE FOR THE MAIN FILE
 cnov98
-        FILENM = 'CAMERON.SRT'
+        FILENM = 'cameron.srt'
         CALL ZMORE ('2 OBY FILE IS '//FILENM, 0)
         CALL ZMORE1 ('2 OBY FILE IS '//FILENM, 0)
         CALL ZFPATH (FILENM)
