@@ -396,6 +396,21 @@ C
       RETURN
       END
 C
+CODE FOR XCSHR 
+      SUBROUTINE XHSHR (A, COUT)
+C     SHIFT A HOLLERITH REPRESENTAION TO RIGHT OF WORD
+      CHARACTER *4 COUT, CTEMP
+            WRITE(CTEMP(1:4) ,'(A4)') A
+            COUT = ' '
+            J = INDEX (CTEMP(1:4), ' ')
+            IF (J .GT. 1 )THEN
+                  COUT(6-J:4) = CTEMP(1:J-1)
+            ELSE
+                  COUT = CTEMP
+            ENDIF
+            READ(COUT, '(A4)') A
+      RETURN
+      END
 C
 CODE FOR KGTNUM
       FUNCTION KGTNUM( CTEXT, CTERM, NCHAR)
