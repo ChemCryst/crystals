@@ -608,8 +608,9 @@ C CALCULATE WEIGHTED AVERAGES AND LOGS
         DIV=1.0/AMAX1(1.0,WT)                                             
         AVI=SI(I)*DIV                                                     
         AVR(I)=SR(I)*DIV                                                  
-        FLGW(I)=ALOG(SW(I)*DIV)
-        IF ( E5) FLGWC(I)=ALOG(SWC(I)*DIV)   
+
+        FLGW(I)          =ALOG(MAX(SW(I) *DIV,0.00000000001))
+        IF ( E5) FLGWC(I)=ALOG(MAX(SWC(I)*DIV,0.00000000001))
 
 c        WRITE(95,'(2F15.8)')FLGW(I), FLGWC(I)
 
