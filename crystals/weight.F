@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2002/03/16 19:07:47  richard
+C Removed #VISUALISE command - originally present as prototype for Steve, but
+C now graphs are built into other commands.
+C
 C Revision 1.5  2001/10/08 12:25:59  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -39,6 +43,7 @@ C--BRANCH ON THE TYPE OF OPERATION
 
 C--ROUTINE TO APPLY THE PARAMETERS IN LIST 4
 2000  CONTINUE
+      CALL XFAL06(0) !Get N6D for dynamic arrays in XAPP04
       CALL XAPP04
       RETURN
 
