@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.59  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.58  2003/03/20 16:10:36  rich
 C
 C Output bond types to the popup labels in the model window.
@@ -1452,6 +1458,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
            IF ( ILST .EQ. 12 ) THEN
              IF(KEXIST(12).LE.0) THEN
+               IF ( ISERnn(12) .EQ. -1 ) CYCLE
+               ISERnn(12) = -1
                WRITE (CMON,'(''^^CO SAFESET [ _MT_L12 EMPTY ]'')')
                CALL XPRVDU(NCVDU,1,0)
                CYCLE
@@ -1464,6 +1472,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
              END IF
            ELSE IF ( ILST .EQ. 16 ) THEN
              IF(KEXIST(16).LE.0) THEN
+               IF ( ISERnn(16) .EQ. -1 ) CYCLE
+               ISERnn(16) = -1
                WRITE (CMON,'(''^^CO SAFESET [ _MT_L16 EMPTY ]'')')
                CALL XPRVDU(NCVDU,1,0)
                CYCLE
@@ -1531,7 +1541,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
          ELSE IF (ILST .EQ. 25) THEN   ! Twinning
 
+
            IF(KEXIST(25).LE.0) THEN
+              IF ( ISERnn(25) .EQ. -1 ) CYCLE
+              ISERnn(25) = -1
               WRITE (CMON,
      1 '(''^^CO SAFESET [ _MT_L25 EMPTY TEXT "No twin laws" ]'')')
               CALL XPRVDU(NCVDU,1,0)
@@ -1569,6 +1582,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
          ELSE IF (ILST .EQ. 13) THEN   ! Radiation
 
            IF(KEXIST(13).LE.0) THEN
+              IF ( ISERnn(13) .EQ. -1 ) CYCLE
+              ISERnn(13) = -1
               WRITE (CMON,
      1         '(''^^CO SAFESET [ _MT_WAVE TEXT "Not set" ]'')')
               CALL XPRVDU(NCVDU,1,0)
