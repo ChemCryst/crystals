@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+
 CODE FOR XLNKFP
       SUBROUTINE XLNKFP
 C
@@ -580,8 +582,8 @@ C Replace 0 with 32 along the string
 &GID           CALL ZMORE(CHRBUF,0)
 &&GIDDOS         CALL ZCONTR
 cdjwjan99
-         if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
-     1   lclose = .true.
+#GID         if ((chrbuf(1:3) .eq. 'end') .or. (chrbuf(1:3) .eq. 'END'))
+#GID     1   lclose = .true.
 cdjwjan99
       GOTO 8025
 C
