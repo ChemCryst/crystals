@@ -1,0 +1,220 @@
+%SCRIPT XADDH2
+% VARIABLE INTEGER LOOPAGAIN HTYPE NARGS
+% VARIABLE CHARACTER CATOM CATOM1 CATOM2 CATOM3 CATOM4 CATOM5 CATOM6
+% LOOP
+%    EVALUATE LOOPAGAIN = 0
+%    EVALUATE NARGS = 3
+%    IF HTYPE .EQ. 3 THEN
+%      EVALUATE NARGS = 4
+%    END IF
+%    IF HTYPE .EQ. 6 THEN
+%      EVALUATE NARGS = 2
+%    END IF
+%    IF HTYPE .EQ. 7 THEN
+%      EVALUATE NARGS = 6
+%    END IF
+^^WI WINDOW ADDH 'Add hydrogen'
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
+^^WI GRID M NROWS=7 NCOLS=3 {
+^^WI   @ 2,2 GRID E NROWS=2 NCOLS=1 {
+^^WI     @ 1,1 STATIC S1 'Choose nearby atoms to define the'
+^^WI     @ 2,1 STATIC S2 'geometry of the additional atoms.'
+^^WI   }
+^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {
+^^WI     @ 1,1 BITMAP H33 FILE
+%    CASE HTYPE
+%         BLOCK
+^^WI       'h33.bmp'
+%         END BLOCK
+%         BLOCK
+^^WI       'h23.bmp'
+%         END BLOCK
+%         BLOCK
+^^WI       'h13.bmp'
+%         END BLOCK
+%         BLOCK
+^^WI       'h22.bmp'
+%         END BLOCK
+%         BLOCK
+^^WI       'h21.bmp'
+%         END BLOCK
+%         BLOCK
+^^WI       'h11.bmp'
+%         END BLOCK
+%         BLOCK
+^^WI       'hphen.bmp'
+%         END BLOCK
+%    END CASE
+^^WI     @ 1,3 GRID F NROWS=11 NCOLS=5 {
+^^WI       @ 1,1 STATIC A1 'X'
+^^WI       @ 3,1 STATIC A2 'R1'
+%    CASE HTYPE
+%           BLOCK
+^^WI         @ 5,1 STATIC A3 'R2'
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+%           END BLOCK
+%           BLOCK
+^^WI         @ 5,1 STATIC A3 'R2'
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+%           END BLOCK
+%           BLOCK
+^^WI         @ 5,1 STATIC A3 'R2' 
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 7,1 STATIC A4 'R3'
+^^WI         @ 7,3 EDITBOX E4 '' CHARS=6
+%           END BLOCK
+%           BLOCK
+^^WI         @ 5,1 STATIC A3 'R2'
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+%           END BLOCK
+%           BLOCK
+^^WI         @ 5,1 STATIC A3 'R2'
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+%           END BLOCK
+%           BLOCK
+^^WI
+%           END BLOCK
+%           BLOCK
+^^WI         @ 5,1 STATIC A3 'R2' 
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 7,1 STATIC A4 'R3'
+^^WI         @ 7,3 EDITBOX E4 '' CHARS=6
+^^WI         @ 9,1 STATIC A5 'R4'
+^^WI         @ 9,3 EDITBOX E5 '' CHARS=6
+^^WI         @ 11,1 STATIC A6 'R5'
+^^WI         @ 11,3 EDITBOX E6 '' CHARS=6
+%           END BLOCK
+%    END CASE
+^^WI       @ 1,5 STATIC T1 ''
+^^WI       @ 3,5 STATIC T2 '< Click atom to go here'
+^^WI       @ 5,5 STATIC T3 ''
+^^WI       @ 7,5 STATIC T4 ''
+^^WI       @ 9,5 STATIC T5 ''
+^^WI       @ 11,5 STATIC T6 ''
+^^WI       @ 1,3 EDITBOX E1 '' CHARS=6
+^^WI       @ 3,3 EDITBOX E2 '' CHARS=6 
+^^WI     }
+^^WI   }
+^^WI   @ 6,2 GRID B NROWS=1 NCOLS=7 {
+^^WI     @ 1,1 BUTTON BBB '< &Back'
+^^WI     @ 1,3 BUTTON BOK '&Next' DISABLED=YES COMMIT DEFAULT
+^^WI     @ 1,5 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 1,7 BUTTON UNDO '&Undo'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%    TRANSFER "^^CO SET E1 TEXT '" // CATOM // "'" TO DISPLAY
+%    VARIABLE INTEGER POSN OPOSN 
+%    EVALUATE POSN = 2
+%    EVALUATE OPOSN = 1
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%    LOOP
+%     VERIFY BOK BBB BXX UNDO ATOM
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       BLOCK       %Next%
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%         CLEAR
+^^??      E1 TEXT
+%         GET SILENT NOSTORE TEXT ' ' ' '
+%         EVALUATE CATOM1 = CVALUE
+^^??      E2 TEXT
+%         GET SILENT NOSTORE TEXT ' ' ' '
+%         EVALUATE CATOM2 = CVALUE
+%         IF NARGS .GE. 3 THEN
+^^??        E3 TEXT
+%           GET SILENT NOSTORE TEXT ' ' ' '
+%           EVALUATE CATOM3 = CVALUE
+%         END IF
+%         IF NARGS .GE. 4 THEN
+^^??        E4 TEXT
+%           GET SILENT NOSTORE TEXT ' ' ' '
+%           EVALUATE CATOM4 = CVALUE
+%         END IF
+%         IF NARGS .EQ. 6 THEN
+^^??        E5 TEXT
+%           GET SILENT NOSTORE TEXT ' ' ' '
+%           EVALUATE CATOM5 = CVALUE
+^^??        E6 TEXT
+%           GET SILENT NOSTORE TEXT ' ' ' '
+%           EVALUATE CATOM6 = CVALUE
+%         END IF
+^^CO      DISPOSE ADDH
+%       END BLOCK
+%       BLOCK       %BACK BBB%
+%         EVALUATE LOOPAGAIN = 1
+^^CO      DISPOSE ADDH
+%         FINISH
+%       END BLOCK
+%       BLOCK       %CANCEL BXX%
+^^CO      DISPOSE ADDH
+%         FINISH
+%       END BLOCK
+%       BLOCK       %UNDO - back one
+%         EVALUATE OPOSN = POSN
+%         EVALUATE POSN = POSN - 1
+%         IF POSN .LT. 1 THEN
+%           EVALUATE POSN = 1
+%         END IF
+%%
+%%         Put together this command: ^^CO SET En TEXT ' '
+%%
+%         CLEAR
+%         INSERT "^^CO SET E"
+%         STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%         INSERT " TEXT ' '"
+%         OUTPUT
+%       END BLOCK
+%       BLOCK       %ATOM - fill in atom name
+%         GET SILENT TEXT ' ' ' '
+%         CLEAR
+%         INSERT '^^CO SET E'
+%         STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%         TRANSFER " TEXT '" // CVALUE // "'" TO BUFFER
+%         OUTPUT
+%         EVALUATE OPOSN = POSN
+%         EVALUATE POSN = POSN + 1
+%       END BLOCK
+%     END CASE
+%%
+%% Check for completion
+%%
+%     IF POSN .EQ. 1 THEN
+^^CO    SET UNDO  DISABLED=YES
+%     ELSE
+^^CO    SET UNDO  DISABLED=NO
+%     END IF
+%%
+%% Update "Click Next Atom" prompt
+%%
+%     IF OPOSN .LE. NARGS THEN
+%       CLEAR
+%       INSERT "^^CO SET T"
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER OPOSN
+%       INSERT " TEXT ''"
+%       OUTPUT
+%     END IF
+%     IF POSN .LE. NARGS THEN
+%       CLEAR
+%       INSERT "^^CO SET T"
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN
+%       INSERT " TEXT '< Click atom to go here'"
+%       OUTPUT
+^^CO    SET BOK DISABLED=YES
+%     ELSE
+%       EVALUATE POSN = NARGS + 1
+%       CLEAR
+%       INSERT "^^CO SET T"
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER ( POSN - 1 )
+%       INSERT " TEXT ' Click Next'"
+%       OUTPUT
+^^CO    SET BOK DISABLED=NO
+%     END IF
+%    END LOOP
+%    COPY '#SCRIPT XADDH3'
+%    IF LOOPAGAIN .EQ. 0 THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+% END LOOP
+%END SCRIPT
