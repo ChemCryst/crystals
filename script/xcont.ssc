@@ -201,6 +201,7 @@ view the generated sections.
 %           COPY '#EDIT'
 %           COPY 'SELECT TYPE NE Q'
 %           COPY 'END'
+%           COPY '#SCRIPT VALID12'
 %           IF DOSCALE .EQ. 1 THEN
 %             COPY '#SFLS'
 %             IF TWINNED .EQ. TRUE THEN

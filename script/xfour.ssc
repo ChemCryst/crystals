@@ -223,6 +223,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %%
 %       IF DOSCALE .EQ. 1 THEN
 %           COPY '#SCRIPT XDELQ'
+%           COPY '#SCRIPT VALID12'
 %           COPY '#SFLS'
 %           IF TWINNED .EQ. TRUE THEN
 %             COPY 'SCALE /FO/=SCALED-/FOT/'
@@ -233,6 +234,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       END IF
 %       IF DOCALC .EQ. 1 .OR. TWINNED .EQ. TRUE THEN
 %           COPY '#SCRIPT XDELQ'
+%           COPY '#SCRIPT VALID12'
 %           COPY '#SFLS'
 %           IF TWINNED .EQ. TRUE THEN
 %             COPY 'CALC /FO/=SCALED-/FOT/'
