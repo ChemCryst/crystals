@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2002/05/08 08:51:50  richard
+C New EDIT directive GRAPH OF=SPARE
+C plots a graph of whatever is in the SPARE column in L5. (You need to have
+C an appropriate plot window open or nothing happens.)
+C
 C Revision 1.22  2002/01/09 14:44:38  Administrator
 C correct caption for shifted atoms
 C
@@ -276,7 +281,8 @@ C-C-C-INTRODUCTION OF ADDITIONAL DIRECTIVE-ADDRESSES FOR "SPECIALS"
       GO TO (650, 4700, 500,3000,5500,5500,5500,5500,6500,3650,
      1       3800,1000,1050, 900,1100, 400,5100, 100, 200, 300,
      2        250, 600,2700,2850,2300,1150,6950,6300,6800,3950,
-     3       5450,4100,4300,4500,2900,350,15500, 460, 150,8250), IDIRNM
+     3       5450,4100,4300,4500,2900,350,15500, 460,1160, 150,
+     4       8250), IDIRNM
       GO TO 8250
 C
 150   CONTINUE
@@ -536,6 +542,11 @@ C
 C      'TYPECHANGE'     SET FLAG
       ISTCF=1
       GO TO 1200
+
+1160  CONTINUE
+C      'GUISELECT'     SET FLAG
+      ISTCF=0
+      GO TO 1200
 C
 1200  CONTINUE
 C -- CHECK FOR SOME DATA
@@ -626,7 +637,7 @@ C--'GREATER THAN OR EQUAL'
 C--ELIMINATE THE CURRENT ATOM
 1950     CONTINUE
 C----- CHECK IF TYPECHANGE
-         IF (ISTCF.EQ.1) THEN
+         IF (ISTCF.GE.0) THEN
 C-----  NOTHING TO BE DONE - ACCEPT ATOM
             M5A=M5A+MD5A
             GO TO 2200
@@ -658,10 +669,16 @@ C----- CHECK IF TYPECHANGE
 C----- TYPE CHANGE
             CALL XMOVEI (ITYPE,ISTORE(M5A),1)
             CALL XMDMON (M5A,MD5A,1,1,1,4,1,MONLVL,2,0,ISTORE(IMONBF))
-         ELSE
+            ICHNG=ICHNG+1
+         ELSE IF ( ISTCF .EQ. 0 ) THEN
+            WRITE(CMON,'(A,A,I5,A)')'^^CO SET MODEL01 SELECT ''',
+     1      ISTORE(M5A), NINT(STORE(M5A+1)), ''' YES'
+            CALL XPRVDU(NCVDU,1,0)
+            CALL XMDMON (M5A,MD5A,1,1,1,4,1,MONLVL,2,0,ISTORE(IMONBF))
+         ELSE 
             CALL XMDMON (M5A,MD5A,1,1,1,10,1,MONLVL,2,0,ISTORE(IMONBF))
+            ICHNG=ICHNG+1
          END IF
-         ICHNG=ICHNG+1
          M5A=M5A+MD5A
 2200  CONTINUE
       GO TO 1250
