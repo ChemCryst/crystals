@@ -1,11 +1,12 @@
-%SCRIPT XLIST28
+%SCRIPT XLIST28 s
 % VARIABLE LOGICAL LNEWRAT LNEWRHO
 % VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT
-% VARIABLE INTEGER NOMITS  NCONDS  FTYPE
+% VARIABLE INTEGER NOMITS  NCONDS  FTYPE NINDCD OMU
 % VARIABLE CHARACTER CW
-% VARIABLE REAL RW OMH OMK OML
+% VARIABLE REAL RW OMH OMK OML OMP OMQ OMR OMS OMT
 % EVALUATE NOMITS = 0
 % EVALUATE NCONDS = 0
+% EVALUATE NINDCD = 0
 % EVALUATE SIGMACUT = - 10.0
 %%
 %%
@@ -30,9 +31,9 @@
 %%
 ^^WI WINDOW XLIST28 'Filter reflections' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID MAIN NROWS=9 NCOLS=3 
+^^WI GRID MAIN NROWS=7 NCOLS=3 
 ^^WI {
-^^WI   @ 4,2 GRID M NROWS=10 NCOLS=9 COMMAND='UPDATE'
+^^WI   @ 2,2 GRID M NROWS=10 NCOLS=9 COMMAND='UPDATE'
 ^^WI         OUTLINE='Min and max acceptable limits'
 ^^WI   {
 ^^WI     @ 1,1 STATIC SBH  'H' 
@@ -86,53 +87,134 @@
 ^^WI     @ 9,9 EDITBOX TSQRW '' DISABLED = YES
 ^^WI     @ 10,9 EDITBOX TTHET '' DISABLED = YES
 ^^WI   }
-^^WI   @ 6,2 GRID OMIT NROWS=1 NCOLS=5 OUTLINE='Omit'
+^^WI   @ 4,2 GRID CONS NROWS=1 NCOLS=3
 ^^WI   {
-^^WI     @ 1,1 LISTBOX L28OMIT VISLINES=4 ADDTOLIST
-% BLOCK
-%    ON EDITERROR TERMINATE
-%    COPY '#GENERALEDIT 28'
-%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%    COPY 'LOCATE RECORDTYPE = 104'
-%    COPY 'TOP'
-%    LOOP
-%     ON EDITERROR TERMINATE
-%     COPY 'TRANSFER FROM OFFSET = 0 TO OMH'
-%     COPY 'TRANSFER FROM OFFSET = 1 TO OMK'
-%     COPY 'TRANSFER FROM OFFSET = 2 TO OML'
-%     CLEAR
-%     INSERT "^^WI '"
-%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMH
-%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMK
-%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OML
-%     INSERT "'"
-%     OUTPUT
-%     EVALUATE NOMITS = NOMITS + 1
-%     COPY 'NEXT'
-%    END LOOP
-% END BLOCK
-% COPY 'END'
-% IF NOMITS .GT. 0 THEN
-^^WI  NULL
-% ELSE
-^^WI '  0   0   0 ' NULL
-% END IF
-^^WI     @ 1,3 GRID OMITB NROWS=3 NCOLS=1
+^^WI     @ 1,1 GRID OMIT NROWS=5 NCOLS=1 OUTLINE='Omit'
 ^^WI     {
-^^WI         @ 1,1 BUTTON BADD '<<Add'
-^^WI         @ 3,1 BUTTON BREM 'Remove>>'
-% IF NOMITS .EQ. 0 THEN
-^^WI         DISABLED = YES
-% END IF
+^^WI       @ 5,1 LISTBOX L28OMIT VISLINES=4 ADDTOLIST
+%          BLOCK
+%          ON EDITERROR TERMINATE
+%          COPY '#GENERALEDIT 28'
+%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%          COPY 'LOCATE RECORDTYPE = 104'
+%          COPY 'TOP'
+%          LOOP
+%           ON EDITERROR TERMINATE
+%           COPY 'TRANSFER FROM OFFSET = 0 TO OMH'
+%           COPY 'TRANSFER FROM OFFSET = 1 TO OMK'
+%           COPY 'TRANSFER FROM OFFSET = 2 TO OML'
+%           CLEAR
+%           INSERT "^^WI '"
+%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMH
+%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OMK
+%           STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER OML
+%           INSERT "'"
+%           OUTPUT
+%           EVALUATE NOMITS = NOMITS + 1
+%           COPY 'NEXT'
+%          END LOOP
+%          END BLOCK
+%          COPY 'END'
+%          IF NOMITS .GT. 0 THEN
+^^WI        NULL
+%          ELSE
+^^WI        '  0   0   0 ' NULL
+%          END IF
+^^WI       @ 3,1 GRID OMITB NROWS=1 NCOLS=3
+^^WI       {
+^^WI         @ 1,1 BUTTON BADD 'Add'
+^^WI         @ 1,3 BUTTON BREM 'Remove'
+%            IF NOMITS .EQ. 0 THEN
+^^WI           DISABLED = YES
+%            END IF
+^^WI       }
+^^WI       @ 1,1 GRID OMITI NROWS=1 NCOLS=8
+^^WI       {
+^^WI         @ 1,1 EDITBOX OMH '' CHARS=5
+^^WI         @ 1,2 STATIC OMHT ' h'
+^^WI         @ 1,4 EDITBOX OMK '' CHARS=5
+^^WI         @ 1,5 STATIC OMHT ' k'
+^^WI         @ 1,7 EDITBOX OML '' CHARS=5
+^^WI         @ 1,8 STATIC OMHT ' l'
+^^WI       }
 ^^WI     }
-^^WI     @ 1,5 GRID OMITI NROWS=1 NCOLS=5
+%%
+%%
+^^WI     @ 1,3 GRID OMIT NROWS=6 NCOLS=1 OUTLINE='Index conditions'
 ^^WI     {
-^^WI         @ 1,1 EDITBOX OMH ''
-^^WI         @ 1,3 EDITBOX OMK ''
-^^WI         @ 1,5 EDITBOX OML ''
+^^WI @ 5,1 STATIC T1 'Conditions tested in order, until a match occurs.'
+^^WI       @ 6,1 STATIC T2 'If no matches, refln is accepted.'
+^^WI       @ 3,1 LISTBOX L28INDCD VISLINES=4 ADDTOLIST
+%          BLOCK
+%          ON EDITERROR TERMINATE
+%          COPY '#GENERALEDIT 28'
+%          COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%          COPY 'LOCATE RECORDTYPE = 105'
+%          COPY 'TOP'
+%          LOOP
+%           ON EDITERROR TERMINATE
+%           COPY 'TRANSFER FROM OFFSET = 0 TO OMP'
+%           COPY 'TRANSFER FROM OFFSET = 1 TO OMQ'
+%           COPY 'TRANSFER FROM OFFSET = 2 TO OMR'
+%           COPY 'TRANSFER FROM OFFSET = 3 TO OMS'
+%           COPY 'TRANSFER FROM OFFSET = 4 TO OMT'
+%           COPY 'TRANSFER FROM OFFSET = 5 TO OMU'
+%           CLEAR
+%           INSERT "^^WI '"
+%           CASE OMU + 1
+%             INSERT 'Reject'
+%             INSERT 'Accept'
+%           END CASE
+%%      
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
+%           STORE CHARACTER 'h +'
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMQ
+%           STORE CHARACTER 'k +'
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMR
+%           STORE CHARACTER 'l +'
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMS
+%           STORE CHARACTER ' ='
+%           STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMT
+%           STORE CHARACTER 'n'
+%           INSERT "'"
+%           OUTPUT
+%           EVALUATE NINDCD = NINDCD + 1
+%           COPY 'NEXT'
+%          END LOOP
+%          END BLOCK
+%          COPY 'END'
+%%          IF NINDCD .GT. 0 THEN
+^^WI        'NULL'
+%%          END IF
+^^WI       @ 1,1 GRID OMITI NROWS=3 NCOLS=1
+^^WI       {
+^^WI         @ 1,1 GRID OMITC NROWS=1 NCOLS=10
+^^WI         {
+^^WI           @ 1,1 EDITBOX OMP '' CHARS=5
+^^WI           @ 1,2 STATIC OMPT ' h + '
+^^WI           @ 1,3 EDITBOX OMQ '' CHARS=5
+^^WI           @ 1,4 STATIC OMPT ' k + '
+^^WI           @ 1,5 EDITBOX OMR '' CHARS=5
+^^WI           @ 1,6 STATIC OMPT ' l + '
+^^WI           @ 1,7 EDITBOX OMS '' CHARS=5
+^^WI           @ 1,8 STATIC OMPT ' = '
+^^WI           @ 1,9 EDITBOX OMT '' CHARS=5
+^^WI           @ 1,10 STATIC OMPT ' n'
+^^WI         }
+^^WI         @ 3,1 GRID OMITD NROWS=1 NCOLS=5
+^^WI         {
+^^WI           @ 1,1 DROPDOWN OMU
+^^WI           ADDTOLIST 'Reject' 'Accept' 'NULL'
+^^WI           @ 1,3 BUTTON CADD 'Add'
+^^WI           @ 1,5 BUTTON CREM 'Remove'
+%              IF NINDCD .EQ. 0 THEN
+^^WI             DISABLED = YES
+%              END IF
+^^WI         }
+^^WI       }
 ^^WI     }
 ^^WI   }
-^^WI   @ 8,2 GRID RIGHT NROWS=1 NCOLS=8
+^^WI   @ 6,2 GRID RIGHT NROWS=1 NCOLS=8
 ^^WI   {
 ^^WI     @ 1,1 STRETCH SSS HORIZONTAL
 ^^WI     @ 1,4 BUTTON BOK '&OK' COMMIT DEFAULT
@@ -140,7 +222,7 @@
 ^^WI     @ 1,8 BUTTON BHH '&Help'
 ^^WI   }
 ^^WI }
-^^WI  SHOW
+^^WI SHOW
 ^^CR
 % IF NOMITS .EQ. 0 THEN
 ^^CO SET L28OMIT REMOVE 1
@@ -302,7 +384,7 @@
 % END IF
 %%
 % LOOP
-%  VERIFY BXX BHH BADD BREM BOK UPDATE
+%  VERIFY BXX BHH BADD BREM CADD CREM BOK UPDATE
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  CASE VALUE
 %   BLOCK                      %BXX
@@ -374,6 +456,56 @@ or uncheck all the boxes in the dialog.
 %     END IF
 %     IF NOMITS .EQ. 0 THEN
 ^^CO SET BREM DISABLED = YES
+%     END IF
+%   END BLOCK
+%   BLOCK               %CADD
+%     EVALUATE NINDCD = NINDCD + 1
+%     CLEAR
+%     INSERT "^^WI    '"
+^^??  OMU SELECTED
+%     VERIFY 1 2
+%     GET SILENT FINAL NOSTORE ABBREVIATED ' '
+%     CASE VALUE
+%       INSERT 'Reject'
+%       INSERT 'Accept'
+%     END CASE
+^^?? OMP TEXT
+%     GET NOSTORE SILENT INTEGER ' ' '0'
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
+%     STORE CHARACTER 'h +'
+^^?? OMQ TEXT
+%     GET NOSTORE SILENT INTEGER ' ' '0'
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
+%     STORE CHARACTER 'k +'
+^^?? OMR TEXT
+%     GET NOSTORE SILENT INTEGER ' ' '0'
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
+%     STORE CHARACTER 'l +'
+^^?? OMS TEXT
+%     GET NOSTORE SILENT INTEGER ' ' '0'
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
+%     STORE CHARACTER ' = '
+^^?? OMT TEXT
+%     GET NOSTORE SILENT INTEGER ' ' '0'
+%     STORE FORMAT /(I3)/ LENGTH 3 INTEGER VALUE
+%     STORE CHARACTER 'n'
+%     INSERT "' NULL"
+^^WI SET L28INDCD ADDTOLIST
+%     OUTPUT
+^^CR
+^^CO SET CREM DISABLED = NO
+%   END BLOCK
+%   BLOCK               %CREM
+^^?? L28INDCD SELECTED
+%     CLEAR
+%     INSERT "^^CO SET L28INDCD REMOVE "
+%     GET SILENT INTEGER ' ' '0'
+%     IF VALUE .GT. 0 .AND. NINDCD .GT. 0 THEN
+%       OUTPUT
+%       EVALUATE NINDCD = NINDCD - 1
+%     END IF
+%     IF NINDCD .EQ. 0 THEN
+^^CO SET CREM DISABLED = YES
 %     END IF
 %   END BLOCK
 %   BLOCK               %BOK
@@ -604,18 +736,57 @@ or uncheck all the boxes in the dialog.
 %      SEND
 %    END IF
 %%
+%    IF ( NOMITS .GT. 0 ) .OR. ( NINDCD .GT. 0 ) THEN
+%      CLEAR
+%      INSERT 'READ NOMISSION='
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NOMITS
+%      INSERT ' NCOND='
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NINDCD
+%      SEND
+%    END IF
+%
+%%
 %    IF NOMITS .GT. 0 THEN
-%     CLEAR
-%     INSERT 'READ NOMISSION='
-%     STORE FORMAT /(I5)/ LENGTH 5 INTEGER NOMITS
-%     SEND
-%     LOOP NOMITS TIMES
-%       CLEAR
-%       INSERT "OMIT "
+%      LOOP NOMITS TIMES
+%        CLEAR
+%        INSERT "OMIT "
 % TRANSFER '^^?? L28OMIT LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
-%       GET TEXT ' ' '0 0 0'
-%       SEND
-%     END LOOP
+%        GET TEXT ' ' '0 0 0'
+%        SEND
+%      END LOOP
+%    END IF
+%%
+%    IF NINDCD .GT. 0 THEN
+%      LOOP NINDCD TIMES
+%        CLEAR
+% TRANSFER '^^?? L28INDCD LISTTEXT ' // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
+%        VERIFY ACCEPT REJECT
+%        GET NOSTORE KEYWORD 'Accept' 'Accept'
+%        EVALUATE CW = CVALUE
+%        INSERT "COND "
+%        GET NOSTORE KEYWORD ' ' '0'
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
+%        GET NOSTORE KEYWORD ' ' '0'
+%        GET NOSTORE KEYWORD ' ' '0'
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
+%        GET NOSTORE KEYWORD ' ' '0'
+%        GET NOSTORE KEYWORD ' ' '0'
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
+%        GET NOSTORE KEYWORD ' ' '0'
+%        GET NOSTORE KEYWORD ' ' '0'
+%        EVALUATE OMP = REAL FIRSTINT  ( CVALUE )
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
+%        GET NOSTORE KEYWORD ' ' '0'
+%        GET NOSTORE KEYWORD ' ' '0'
+%        EVALUATE OMP = REAL FIRSTINT ( CVALUE )
+%        STORE FORMAT /(I3)/ LENGTH 3 INTEGER INTEGER OMP
+%        INSERT 'TYPE='
+%        STORE CHARACTER CW
+%        SEND
+%      END LOOP
 %    END IF
 %%
 %    COPY 'END'
