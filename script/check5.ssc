@@ -50,12 +50,7 @@ WARNING - You have no atoms to refine
 % TRANSFER "END" TO CRYSTALS
 % IF ISER .EQ. 0 THEN
   CRYSTALS is sorting the atoms to put Hydrogens last
-%  COPY '#EDIT'
-%  COPY 'MONITOR OFF'
-%  COPY 'INSERT ELECTRON'
-%  COPY 'DSORT SPARE'
-%  COPY 'MONITOR MEDIUM'
-%  COPY 'END'
+% copy '#script hlast'
 % END IF
 %%
 %%

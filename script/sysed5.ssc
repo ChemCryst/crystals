@@ -1,0 +1,17 @@
+%SCRIPT SYSED5
+      This SCRIPT puts you into a system editor to modify the atomic
+      parameters.
+%%
+%    COPY '#RELEASE PUNCH SCPLST5.DAT'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+%    COPY '#RELEASE PUNCH crfile.pch'
+%%
+%    CLEAR
+%    INSERT '#use crysdir:\script\edlist5.dat'
+%    SEND
+%    COPY '# Inputting new list5'
+%    COPY '#USE SCPLST5.DAT'
+%    COPY '#DISP'
+%    COPY 'END'
+%END SCRIPT

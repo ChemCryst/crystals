@@ -1,0 +1,44 @@
+%SCRIPT INLIST25
+% VARIABLE INTEGER NELEM
+% VARIABLE REAL M1 M2 M3 M4 M5 M6 M7 M8 M9
+% GET FINAL INTEGER 'Number of twin components'
+% EVALUATE NELEM = VALUE - 1
+
+{4,0 A unit matrix is automatically included for the first element.
+%  QUEUE REWIND
+%  LOOP NELEM TIMES 
+%  TRANSFER 'Element ' // CHARACTER ( LOOPCOUNTER + 1 ) // ':' TO DISPLAY
+%    BLOCK
+%      CLEAR
+%      INSERT 'MATRIX '
+%        GET APPEND REAL 'M11' '1.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M12' '0.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M13' '0.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M21' '0.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M22' '1.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M23' '0.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M31' '0.0'
+%        INSERT ' '
+%        GET APPEND REAL 'M32' '0.0'
+%        INSERT ' '
+%        GET FINAL APPEND REAL 'M22' '1.0'
+%        INSERT ' '
+%    END BLOCK
+%    QUEUE SEND
+%  END LOOP
+%    COPY '#LIST 25'
+%    CLEAR
+%    INSERT 'READ NELEMENT = '
+%    EVALUATE NELEM = NELEM + 1
+%    STORE INTEGER NELEM
+%    SEND
+%    COPY 'MATRIX 1 0 0  0 1 0  0 0 1'
+%    QUEUE PROCESS
+%    COPY 'END'
+% END SCRIPT
