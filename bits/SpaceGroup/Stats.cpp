@@ -104,51 +104,88 @@ void Stats::addReflection(Reflection* pReflection)
     }
 }
 
-void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums)
+inline int Stats::numberOfOutElementValues()
+{
+    return kNumberOfOutputValues;
+}
+
+std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats , int pValues)
+{
+    if (pValues < kNumberOfOutputValues)
+    {
+        switch (pValues)
+        {
+            case 0:	//Condition matched count
+                pStream << pStats->tNumM;
+            break;
+            case 1:	//<I> matched
+                pStream << pStats->tMTotInt/pStats->tNumM;
+            break;
+            case 2:	//Condition not-matched count
+                pStream << pStats->tNumNonM;
+            break;
+            case 3:	//<I> not matched
+                pStream << pStats->tNonMTotInt/pStats->tNumNonM;
+            break;
+            case 4:	//%I < 3u(I) 
+                pStream << (float)100.0f*((float)pStats->tNumNonMLsInt/(float)(pStats->tNumNonMLsInt+pStats->tNumNonMGrInt));
+            break;
+            case 5:	//Score1
+                pStream << pStats->tRating1;
+            break;
+            case 6:  //Score2
+                pStream << pStats->tRating2;
+            break;
+        }
+    }
+    return pStream;
+}
+        
+void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPrint[], int pNumOfColums,  int pFirstColumnWidth, int pOtherColumns)
 {
     int tCCount = iConditions->length();
     String tName(iConditions->getName(pRow));
-    
-    pStream << tName << setw(12-tName.length()) ;
+    pStream << pRow << "\n";
+    pStream << tName << setw(pFirstColumnWidth-tName.length()) ;
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(7) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
+        pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;
     }
-    pStream << "\n<I>" << setw(9);
+    pStream << "\n<I>" << setw(pFirstColumnWidth-3);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(7) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;	//Total intensity matched. 
+        pStream << " " << setw(pOtherColumns) << setprecision (4) << iStats[pColumnsToPrint[i]*tCCount+pRow].tMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumM;	//Total intensity matched. 
     }
     String tEq("==");
     String tNE("<>");
     tName.replace(tEq, tNE);
-    pStream << "\n" << tName << setw(12-tName.length());
+    pStream << "\n" << tName << setw(pFirstColumnWidth-tName.length());
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(7) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;
+        pStream << " " << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;
     }
-    pStream << "\n<I>" << setw(9);
+    pStream << "\n<I>" << setw(pFirstColumnWidth-3);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setprecision (4) << setw(7) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Total intensity non-matched.
+        pStream << " " << setprecision (4) << setw(pOtherColumns) << iStats[pColumnsToPrint[i]*tCCount+pRow].tNonMTotInt/iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonM;	//Total intensity non-matched.
     }
-    pStream << "\n% I < 3u(I)" << setw(1);
+    pStream << "\n% I < 3u(I)" << setw(pFirstColumnWidth-11);
     for (int i = 0; i < pNumOfColums; i++)
     {
         float tLess = iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
         float tGreater = iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
-        pStream << " " << setw(7) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
+        pStream << " " << setw(pOtherColumns) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
     }
-    pStream << "\nScore1" << setw(6);
+    pStream << "\nScore1" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setprecision (4) << setw(7) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
+        pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating1;
     }
     
-    pStream << "\nScore2" << setw(6);
+    pStream << "\nScore2" << setw(pFirstColumnWidth-6);
     for (int i = 0; i < pNumOfColums; i++)
     {
-         pStream << " " << setprecision (4) << setw(7) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
+         pStream << " " << setprecision (4) << setw(pOtherColumns) << (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tRating2;	
     }
 }
 
@@ -157,7 +194,7 @@ void Stats::outputHeadings(std::ostream& pStream, signed char pColumnsToPrint[],
     pStream << setw(12);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        pStream << " " << setw(7) << iHeadings->getName(pColumnsToPrint[i]);
+        pStream << "" << setw(8) << iHeadings->getName(pColumnsToPrint[i]) << "(" << (int)pColumnsToPrint[i] << ")";
     }
     pStream << "\n";
 }
@@ -199,21 +236,64 @@ void Stats::handleFilteredData(int pColumns[], int pNumColumns)	//pColumns an ar
     }
 }
 
+std::ofstream& Stats::output(std::ofstream& pStream, Table& pTable)
+{
+    pStream << "TOTAL " << iTotalNum <<"\n";
+    pStream << "AVINT " << iTotalIntensity/iTotalNum << "\n";
+    
+    const int tConditionNum = iConditions->length();
+    signed char* tConditions = new signed char[tConditionNum];
+    int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
+    const int tColumnsNum = iHeadings->length();
+    signed char* tColumns = new signed char[tColumnsNum];
+    int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
+    pStream << "NREGIONS " << tColumnCount << "\n";
+    for (int i = 0; i< tColumnCount; i++)
+    {
+        pStream << (int)tColumns[i] << " " << iHeadings->getName(tColumns[i]) << "\n";
+    }
+    pStream << "NTESTS " << tCount << "\n";
+    for (int i = 0; i < tCount; i++)
+    {
+        pStream << (int)tConditions[i] << " " << iConditions->getName(tConditions[i]) << "\n";
+    }
+    pStream << "DATA " << tCount*tColumnCount << " " << numberOfOutElementValues() << "\n";
+    int tNumOfElemsValues = numberOfOutElementValues();
+    for (int i = 0; i < tColumnCount; i++)
+    {
+        for (int j = 0; j < tCount; j++)
+        {
+            ElemStats* tElement = &(iStats[tColumns[i]*tConditionNum+tConditions[j]]);
+            for (int k=0; k < tNumOfElemsValues; k++)
+            {
+                outputElementValue(pStream, tElement, k);
+                if (k+1 < tNumOfElemsValues)
+                {
+                    pStream << "\n";
+                }
+            }
+        }
+    }
+    delete[] tConditions;
+    delete[] tColumns;
+    return pStream;
+}
+
 std::ostream& Stats::output(std::ostream& pStream, Table& pTable)
 {
     pStream << "Total: " << iTotalNum <<"\n";
     pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
     
     const int tConditionNum = iConditions->length();
-    signed char tConditons[tConditionNum];
-    int tCount = pTable.conditionsUsed(tConditons, tConditionNum);
+    signed char tConditions[tConditionNum];
+    int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
     const int tColumnsNum = iHeadings->length();
     signed char tColumns[tColumnsNum];
     int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
     outputHeadings(pStream, tColumns, tColumnCount);
     for (int i = 0; i < tCount; i++)
     {
-        outputRow(tConditons[i], pStream, tColumns, tColumnCount);
+        outputRow(tConditions[i], pStream, tColumns, tColumnCount);
         pStream << "\n\n";
     }
     return pStream;
