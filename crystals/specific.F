@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2004/06/24 08:57:05  rich
+C Append null character to strings when passing to GUI.
+C Reduces numbers of passes of string required.
+C
 C Revision 1.52  2004/05/17 15:40:04  rich
 C Linux: Ending thread from FORTRAN failed due to a wrongly placed
 C STOP statement.
@@ -3075,10 +3079,8 @@ C----- CREATE NEW SEQUENCE
 &VAX          SEED = NINT(SECNDS(0.0))
 &DOS          CALL DATE_TIME_SEED@
 &&DVFGID          CALL SRAND(RND$TIMESEED )
-&&LINGIL          CALL SYSTEM_CLOCK(ISEED,IDV,IDV2)
-&&LINGIL          CALL SRAND(ISEED)
-&WXS          CALL SYSTEM_CLOCK(ISEED,IDV,IDV2)
-&WXS          CALL SRAND(ISEED)
+&&&WXSLINGIL          KSEED = MOD (TIME(),2**30)
+&&&WXSLINGIL          CALL SRAND(KSEED)
         ENDIF
       ENDIF
       IF (ISET .EQ. 0) THEN
