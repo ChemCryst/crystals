@@ -22,6 +22,12 @@
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 %  VARIABLE LOGICAL   ANSWER
 %%
+%% Variables needed by XREFINE
+%  VARIABLE LOGICAL XREFINE
+%  VARIABLE INTEGER NCYCLE NFORCE
+%  EVALUATE NCYCLE = 5
+%  EVALUATE NFORCE = 1
+%%
 %%
 %% XGuideR sets DOEXTNC to indicate that extinction should be refined.
 %% Assess5 resets DOEXTNC so that it indicates if ext is being refined.
@@ -69,7 +75,7 @@
 %  COPY 'GETSERIAL ISER'
 %  COPY 'END'
 %%
-%  IF ( ISER .NE. L12SER ) THEN
+%  IF ( ISER .NE. L12SER .AND. L12SER .NE. 0 ) THEN
 %    EVALUATE QTITLE = 'List 12 has changed'
 %    EVALUATE QLINE1 = 'This script will overwrite any refinement'
 %    EVALUATE QLINE2 = 'instructions that you may have written (List 12)'
@@ -133,6 +139,12 @@
 % ELSE
 ^^WI     STATE = OFF
 % END IF
+^^WI   }
+^^WI   @ 4,1 GRID RN NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 2,1 CHECKBOX ALTER
+^^WI      'Advanced: Edit directives or restraints before proceeding'
+^^WI      STATE=OFF
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,4 GRID R NROWS=3 NCOLS=1
@@ -267,12 +279,14 @@
 %  ELSE
 %    EVALUATE DOFLACK = FALSE
 %  END IF
+%%
 ^^?? EXTNC STATE
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  IF ( VALUE .EQ. 1 ) THEN
 %    EVALUATE DOEXTNC = TRUE
 %  END IF
+%%
 ^^?? TWINS STATE
 %  VERIFY ON OFF
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
@@ -281,6 +295,15 @@
 %      COPY '#SCRIPT ADDTWIN'
 %      EVALUATE DOTWIN = TRUE
 %    END IF
+%  END IF
+%%
+^^?? ALTER STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    EVALUATE XREFINE = FALSE
+%  ELSE
+%    EVALUATE XREFINE = TRUE
 %  END IF
 %%
 %%
