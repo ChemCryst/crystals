@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2003/09/03 20:58:56  rich
+C g77 compiler does not allow addressing of sections of array using string
+C notation. Fixed.
+C
 C Revision 1.61  2003/07/01 16:43:34  rich
 C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
 C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
@@ -5075,7 +5079,7 @@ C------ SIGMA WEIGHTS
              else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
                 ival = 34
                 write(cline,'(a)') 
-     1          ' p=P(6)*max(Fo^2,0) + (1-P(6))Fc^2'
+     1          ' p=P(6)*max(Fo^2^,0) + (1-P(6))Fc^2^'
                 call xpcif (cline)
                 write(ctext(3),'(a)') 
      1          ' P(i) are:'

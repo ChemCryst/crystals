@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2003/09/03 21:03:09  rich
+C Add key to space group analysis plot. Reduce sig figs on x-axis labels.
+C
 C Revision 1.49  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -762,16 +765,16 @@ C
      2 'P(1)/FO, FO > P(1)' ,
      3 '1.0 , FO < P(1) or FO = P(1)' ,
      4 'P(1)/FO, FO > P(1)' ,
-     5 '1/(1 + [(FO - P(2))/P(1)]**2)' ,
-     6 '1/[P(1) + FO + P(2)*FO**2 + . . + P(NP)*FO**NP]' ,
+     5 '1/(1 + [(FO - P(2))/P(1)]^2^)' ,
+     6 '1/[P(1) + FO + P(2)*FO^2^ + . . + P(NP)*FO^NP^]' ,
      7 '(Data with the key WEIGHT in list 6)' ,
      8 '1/(Data with the key SIGMA(/FO/) in list 6)' ,
      9 '1.0 or 1./2F' ,
      + '1.0/[A[0]*T[0]''(X)+A[1]*T[1]''(X) ... +A[NP-1]*T[NP-1]''(X)]',
-     1 '[SIN(theta)/lambda]^P(1)' ,
-     2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)^2]' ,
-     3 '[weight] * [1-(deltaF/6*sigmaF)^2]^2 ' ,
-     4 '1. / [Sigma^2(F*)+(P(1)p)^2+P(2)p+P(4)+P(5)Sin(theta) ]' /
+     1 '[SIN(theta)/lambda]^P(1)^' ,
+     2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)^2^]' ,
+     3 '[weight] * [1-(deltaF/6*sigmaF)^2^]^2^ ' ,
+     4 '1. / [Sigma^2^(F*)+(P(1)p)^2^+P(2)p+P(4)+P(5)Sin(theta) ]' /
 C
       DATA IEXPRS / 1 , 2 , 3 , 4 , 5 , 0 , 6 , 0 , 7 , 0 ,
      2 7 , 0 , 8 , 0 , 8 , 0 , 9 , 0 , 10 , 0 , 10 , 0 , 11 , 0 ,
