@@ -9,6 +9,8 @@
 //   Created:   22.2.1998 15:02 Uhr
 //   Modified:  30.3.1998 12:23 Uhr
 
+// $Log: not supported by cvs2svn $
+
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"cccontroller.h"
@@ -1038,4 +1040,16 @@ void CcController::GetValue(CcTokenList * tokenList)
 		}
 
 	}
+}
+
+
+void  CcController::SetProgressText(CcString theText)
+{
+      CrGUIElement* theElement = nil;
+      theElement = GetProgressOutputPlace();
+      if (theElement != nil)
+      {
+            theElement->SetText( theText );
+      }
+
 }

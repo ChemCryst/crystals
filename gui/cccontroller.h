@@ -66,7 +66,7 @@ class	CcController
 		void	AddInterfaceCommand( char * line );
 		Boolean	GetInterfaceCommand( char * line );
 		void	LogError( CcString errString , int level);
-		
+            void  SetProgressText(CcString theText);       
 		CxApp *	mAppContext;
 		CrWindow *	mCurrentWindow;
 		CrGUIElement *	mInputWindow;
