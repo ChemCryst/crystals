@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/06/09 13:47:03  rich
+C Preserve original bond types when expanding the network by symmetry (this is
+C a MOGUL issue.)
+C
 C Revision 1.43  2003/05/14 13:02:45  rich
 C Ensure correct bond indices for TRIPOS mol2 file.
 C
@@ -2130,9 +2134,11 @@ C care if we extend it. L40 should also be loaded as bonds will be calculated.
 \XUNITS
 \STORE
 \ISTORE
-\XDSTNC 
+\XDSTNC
+\XLST12
 \XLST40
 \XLST41
+\XCONST
 \QSTORE
 
       LLATVC = LATVC
@@ -2141,6 +2147,8 @@ C care if we extend it. L40 should also be loaded as bonds will be calculated.
       JNEWAT = 0
       JBASAT = NFL
       ININ5 = N5
+      L12 = NOWT   ! KDIST4 mustn't use L12.
+
 
 
 C Allocate space at top of store for whole of L41B three times over,
