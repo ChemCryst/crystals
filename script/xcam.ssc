@@ -9,7 +9,7 @@
 ^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=90
 ^^WI         INFORM=YES
 %% The inner grid splits the text output from the tools
-^^WI   @ 2,4 GRID INNER NROWS=2 NCOLS=1 
+^^WI   @ 2,4 GRID INNER NROWS=2 NCOLS=1
 ^^WI   {
 ^^WI    @ 1,1 MULTIEDIT _CAMTEXT '' NROWS=20 NCOLS=20
 ^^WI          IGNORE FIXEDFONT=YES DISABLED=YES
@@ -34,16 +34,16 @@
 ^^WI     @ 4,2 GRID STYLE NROWS=3 NCOLS=7 OUTLINE='Style'
 ^^WI                            COMMAND='#SCRIPT xcstyle'
 ^^WI     {
-^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST 
+^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST
 ^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
-^^WI      @ 2,4 DROPDOWN LCOLOR ADDTOLIST 
+^^WI      @ 2,4 DROPDOWN LCOLOR ADDTOLIST
 ^^WI      'Normal' 'Publish' 'NULL'
 ^^WI      @ 2,6 BUTTON BSTYLE 'Apply'
 ^^WI     }
 ^^WI     @ 6,2 GRID PACK NROWS=3 NCOLS=5 OUTLINE='Packing'
 ^^WI                            COMMAND='#SCRIPT xcpack'
 ^^WI     {
-^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST 
+^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST
 ^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
 ^^WI      @ 2,4 BUTTON BPACK 'Apply'
 ^^WI     }
@@ -155,37 +155,28 @@
 %       FINISH
 %   END IF
 %% COUNT THE NUMBER OF ATOMS PASSED BACK FROM CAMERON.
-%   COPY '#GENERALEDIT 5'
-%   COPY 'LOCATE RECORDTYPE=101'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   EVALUATE ATOMSOUT = 0
-%   LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'NEXT'
-%       EVALUATE ATOMSOUT = LOOPCOUNTER
-%   END LOOP
-%   COPY 'END'
+%   COPY '#SCRIPT NATOMS'
 %       EVALUATE ATOMCHANGE = ATOMSOUT - ATOMSIN
 %   IF ATOMCHANGE .GT. 0 THEN
-
-
+ 
+ 
   WW    WW   AAAA   RRRR   NN   NN  IIIIII  NN   NN   GGGG
   WW    WW  AA  AA  RR RR  NNN  NN    II    NNN  NN  GG  GG
-  WW WW WW  AAAAAA  RRRR   NN N NN    II    NN N NN  GG   
+  WW WW WW  AAAAAA  RRRR   NN N NN    II    NN N NN  GG
   WW WW WW  AA  AA  RR RR  NN  NNN    II    NN  NNN  GG GGGG
    WW  WW   AA  AA  RR RR  NN   NN  IIIIII  NN   NN   GGGG
-
+ 
   Very Important:
-
+ 
   The number of atoms that has returned to CRYSTALS is larger
   than the number that was sent to CAMERON....
-
+ 
   This could mean that the structure was PACKed when you exited
   Cameron. It is strongly recommended that you revert to the
   previous structural model, and run CAMERON again.
-
+ 
 %    EVALUATE QTITLE = 'Too many atoms?'
-%    EVALUATE QLINE1 = 'The number of atoms returned is larger than' 
+%    EVALUATE QLINE1 = 'The number of atoms returned is larger than'
 %    EVALUATE QLINE2 = 'the number sent. Restore previous atom list?'
 %    EVALUATE BUTTOK = '&Yes'
 %    EVALUATE BUTTXX = '&No'
