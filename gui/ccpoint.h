@@ -23,6 +23,8 @@ class CcPoint
             int   X();
             int   Y();
             CcPoint&     operator=( const CcPoint &inPoint );
+            bool operator==(const CcPoint& p0);
+            bool operator!=(const CcPoint& p0);
 		
 		// attributes
             int   x;

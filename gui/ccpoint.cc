@@ -57,3 +57,15 @@ CcPoint& CcPoint::operator=( const CcPoint &inPoint )
 	}
 	return *this;
 }
+
+bool CcPoint::operator==(const CcPoint& p0)
+{
+   return( ( p0.x == x ) && ( p0.y == y )  );
+}
+
+bool CcPoint::operator!=(const CcPoint& p0)
+{
+   return( ( p0.x != x ) || ( p0.y != y )  );
+}
+
+
