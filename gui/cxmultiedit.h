@@ -43,8 +43,8 @@ class CxMultiEdit : public BASEMULTIEDIT
 
 		// methods
 		static	CxMultiEdit * CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent );
-			CxMultiEdit( CrMultiEdit * container );
-			~CxMultiEdit();
+            CxMultiEdit( CrMultiEdit * container );
+            ~CxMultiEdit();
             void  SetText( CcString cText );
             void  SetHyperText( CcString cText, CcString cCommand  );
 		void	SetIdealWidth(int nCharsWide);
@@ -58,6 +58,7 @@ class CxMultiEdit : public BASEMULTIEDIT
 		void	SetGeometry(int top, int left, int bottom, int right );
 		static int AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
 		static void RemoveMultiEdit( void) { mMultiEditCount--; };
+            void SetOriginalSizes();
 		
 		// attributes
 		static int mMultiEditCount;
