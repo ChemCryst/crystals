@@ -20,7 +20,7 @@
 % VARIABLE LOGICAL LCONTOUR LSECTION COLLECTNEW
 % VARIABLE LOGICAL PEAKCHANGE REDRAW XFCALLED
 % VARIABLE INTEGER DOSCALE DOCALC DOMAP NPEAKS IMAP
-% VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE
+% VARIABLE INTEGER PEAKS ATOMS DOPEAKS DOCOLLECT MTYPE DOALL DOXPR
 %%
 %% The variables needed by XQUESTIO
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
@@ -374,27 +374,41 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       END IF
 ^^WI WINDOW PEAKS 'Peaks found' MODAL
 ^^WI COMMIT='BTNOK' CANCEL='BTNXX'
-^^WI GRID MYMAIN NROWS=1 NCOLS=3
+^^WI GRID MYMAIN NROWS=7 NCOLS=3
 ^^WI {
-^^WI  @ 1,1 GRID GRIDL NROWS=3 NCOLS=2
+^^WI   @ 2,2 GRID GRIDT NROWS=1 NCOLS=5
 ^^WI   {
-^^WI     @ 2,2 ICON IM INFO
-^^WI   }
-^^WI   @ 1,2 GRID GRIDL NROWS=7 NCOLS=3
-^^WI   {
+^^WI     @ 1,1 ICON IM INFO
+^^WI     @ 1,3 GRID GRIDI NROWS=2 NCOLS=1
+^^WI     {
 % CLEAR
-% INSERT !^^WI @ 2,2 STATIC TEXT1 'Found !
-% STORE FORMAT /(I4)/ LENGTH 4 INTEGER NPEAKS
-% INSERT ! peaks.' !
+% INSERT   !^^WI @ 1,1 STATIC TEXT1 'Found !
+% STORE   FORMAT /(I4)/ LENGTH 4 INTEGER NPEAKS
+% INSERT   ! peaks.' !
 % OUTPUT
-^^WI   @ 3,2 STATIC XPEAKS 'Convert them into an atom list?'
-^^WI   @ 5,2 CHECKBOX XCOLLECT 'Collect the peaks into fragments.'
-^^WI                                         STATE=ON
+^^WI       @ 2,1 STATIC XPEAKS 'Transfer peaks to model?'
+^^WI     }
+^^WI     @ 1,4 STRETCH _H HORIZONTAL
+^^WI     @ 1,5 GRID GRIDR NROWS=1 NCOLS=3
+^^WI     {
+^^WI       @ 1,1 BUTTON BTNOK '&Transfer' DEFAULT
+^^WI       @ 1,3 BUTTON BTNXX '&Discard'
+^^WI     }
 ^^WI   }
-^^WI   @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
+^^WI   @ 4,2 GRID COLL NROWS=3 NCOLS=1 OUTLINE='During transfer:'
 ^^WI   {
-^^WI     @ 2,2 BUTTON BTNOK '&Ok' DEFAULT
-^^WI     @ 4,2 BUTTON BTNXX '&Cancel'
+^^WI      @ 1,1 RADIOBUTTON XNEW
+^^WI         'use symmetry to put peaks near existing fragments.'
+^^WI                                           STATE=ON IGNORE
+^^WI      @ 2,1 RADIOBUTTON XNON 'leave peaks where they are.'
+^^WI                                           STATE=OFF IGNORE
+^^WI      @ 3,1 RADIOBUTTON XALL
+^^WI         'use symmetry to build all atoms into fragments.'
+^^WI                                           STATE=OFF IGNORE
+^^WI   }
+^^WI   @ 6,2 GRID PRUNE NROWS=1 NCOLS=1 OUTLINE='After transfer:'
+^^WI   {
+^^WI     @ 1,1 CHECKBOX XPR 'Show peak results dialog' STATE=ON
 ^^WI   }
 ^^WI }
 ^^WI SHOW
@@ -405,16 +419,33 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %             BLOCK                %BUTTONOK%
 %                 QUEUE REWIND
 %                 CLEAR
-^^??              XCOLLECT STATE
+^^??              XPR STATE
 %                 VERIFY ON OFF
 %                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%                 EVALUATE DOXPR = VALUE
+^^??              XNON STATE
+%                 VERIFY OFF ON 
+%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %                 EVALUATE DOCOLLECT = VALUE
-^^WI              DISPOSE PEAKS
-^^CR
+%                 IF DOCOLLECT .EQ. 1 THEN
+^^??                XNEW STATE
+%                   VERIFY OFF ON
+%                   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%                   EVALUATE DOALL = VALUE
+%                 END IF
+^^CO              DISPOSE PEAKS
 %                 COPY '#SCRIPT XPEAKS'
 %                 IF DOCOLLECT .EQ. 1 THEN
-%                     EVALUATE COLLECTNEW = TRUE
-%                     COPY '#SCRIPT XCOLLECT'
+%                   COPY '#COLLECT'
+%                   IF DOALL .EQ. 1 THEN
+%                     COPY 'SELECT TYPE=ALL'
+%                   ELSE
+%                     COPY 'SELECT TYPE=PEAKS'
+%                   END IF 
+%                   COPY 'END'
+%                 END IF
+%                 IF DOXPR .EQ. 1 THEN
+%                   COPY '#SCRIPT XPRUNE'
 %                 END IF
 %                 FINISH
 %             END BLOCK
