@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2004/09/27 13:38:28  rich
+// Protect mCommandList (Cameron drawing commands) with a critical
+// section lock, since this list is added to from either thread.
+//
 // Revision 1.18  2004/06/28 13:26:56  rich
 // More Linux fixes, stl updates.
 //
@@ -495,7 +499,7 @@ void CcChartDoc::FastText( const int &x, const int &y,
       }
       else
       {
-         yoffs = -fs * 10;
+         yoffs = -fs * 13.333;
          xoffs = yoffs * 10;
          item->Init(x, y, x+xoffs, y+yoffs, text , false );
       }

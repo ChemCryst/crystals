@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.28  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.27  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -942,7 +945,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotat
     while (fontIsTooBig)
     {
       CFont  theFont;
-      if ( theFont.CreatePointFont(lfHeight, "Arial", memDC) )
+      if ( theFont.CreatePointFont(lfHeight, "Arial Bold", memDC) )
       {
         CFont* oldFont = memDC->SelectObject(&theFont);
 
