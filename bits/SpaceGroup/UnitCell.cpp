@@ -262,7 +262,7 @@ char* getCrystalSystem()
     return tString;
 }
 
-int indexOf(String& pClass, String& pUnique)
+int indexOfClass(String& pClass, String& pUnique)
 {
     pClass.upcase();
     pUnique.upcase();
