@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.68  2003/08/13 16:01:10  rich
+// Find unix equiv of GetTickCount().
+// Comment out registry related functions on Linux.
+//
 // Revision 1.67  2003/07/04 16:33:38  rich
 // Fix recently introduced bug, which prevented CRYSTALS from restarting in
 // new directories.
@@ -467,7 +471,10 @@ int CcController::debugIndent = 0;
 
 CcController::CcController( CcString directory, CcString dscfile )
 {
-#ifdef __WIN_MSW__
+#ifdef __CR_WIN__
+    m_start_ticks = GetTickCount();
+#endif
+#ifdef __WINMSW__
     m_start_ticks = GetTickCount();
 #endif
 #ifdef __LINUX__
@@ -1798,7 +1805,10 @@ void    CcController::LogError( CcString errString , int level )
       fprintf( mErrorLog, "  ");
     }
 
-#ifdef __WIN_MSW__
+#ifdef __CR_WIN__
+    int now_ticks = GetTickCount();
+#endif
+#ifdef __WINMSW__
     int now_ticks = GetTickCount();
 #endif
 #ifdef __LINUX__
