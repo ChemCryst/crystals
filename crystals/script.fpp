@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  1999/05/21 15:40:48  dosuser
+C RIC: Commented out debugging writes to unit 99.
+C
 C Revision 1.11  1999/05/13 18:03:13  dosuser
 C RIC: Seven new unary operators:
 C      CHAR = GETFILE (CHAR) Extracts the filename from a full path.
@@ -2839,7 +2842,12 @@ C
 C Extract the directory from a full pathname.
 C e.g. GETPATH 'c:\structures\nket\crfile.dsc' will return
 C 'c:\structures\nket\'  e.g. everything up to the last slash.
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&DOS      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&VAX      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&DVF      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+&GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 C      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
       IF ( IECF .LE. 0 ) THEN
             CWORK1 = ' '
@@ -2858,7 +2866,12 @@ C
 C Extract the filename from a full pathname.
 C e.g. GETFILE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile.dsc'  e.g. everything after the last slash if there is one.
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&DOS      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&VAX      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&DVF      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+&GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
 C      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
@@ -2878,7 +2891,12 @@ C Extract the filetitle from a full pathname.
 C e.g. GETTITLE 'c:\structures\nket\crfile.dsc' will return
 C 'crfile'  e.g. everything after the last slash if there is one,
 C up to the last dot.
-      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&DOS      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&VAX      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&DVF      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&GID      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+&LIN      IECF = KCLEQL(CWORK1(1:LEN1),'/')
+&GIL      IECF = KCLEQL(CWORK1(1:LEN1),'/')
       IF ( IECF .LE. 0 ) THEN
             IECF = 0
       END IF
@@ -2919,7 +2937,7 @@ C
 &DOS          CALL XDETCH ('del ' // CWORK1(1:LEN1))
 &DVF          CALL XDETCH ('del ' // CWORK1(1:LEN1))
 &VAX          CALL XDETCH ('del ' // CWORK1(1:LEN1))
-&LNX          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
+&LIN          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
       ENDIF
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
       IF ( LRESLT ) THEN
