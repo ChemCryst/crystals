@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/07/08 10:09:24  rich
+C
+C Two changes:
+C 1) The implementation of the #TWINPLOT command.
+C 2) Changed the completeness graph to output the full
+C theta range for the data, and also the completeness in
+C every shell. Interpret carefully, the graph uses two axes.
+C
 C Revision 1.44  2003/06/24 13:01:04  djw
 C Change SHELX weighting text to keep Acta happy
 C
@@ -2929,6 +2937,7 @@ C
 CODE FOR XSGDST
       SUBROUTINE XSGDST
       DIMENSION KSIGS(110)
+      DIMENSION LSIGS(25,3)
       CHARACTER *15 HKLLAB
 \ISTORE
 \STORE
@@ -2969,7 +2978,11 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       DO I = 1,110
         KSIGS(I) = 0
       END DO
-
+      DO I = 1,3
+        DO J = 1,25
+          LSIGS(J,I) = 0
+        END DO
+      END DO
 
 C -- SCAN LIST 6 FOR REFLECTIONS
 
@@ -2979,13 +2992,6 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       ISTAT = KLDRNR(0)
       IF ( KALLOW(IN).EQ. 0 ) NALLOW = NALLOW + 1 
 
-      IF (IPLOT2 .EQ. 1) THEN
-        WRITE(CMON,'(A,6(/A))')
-     1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES',
-     1  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=1',
-     1  '^^PL LENGTH=2000 YAXIS TITLE ''I/sigma(I)'''
-        CALL XPRVDU(NCVDU, 3,0)
-      END IF
 
 
       DO WHILE ( ISTAT .GE. 0 )
@@ -2994,25 +3000,40 @@ C -- SCAN LIST 6 FOR REFLECTIONS
         JSIGS = 10 + NINT( (2.*FOS)/SIGMA )
         JSIGS = MAX(JSIGS,1)
         IF ( JSIGS .LE. 110 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
-        IF ( IPLOT2 .EQ. 1 ) THEN
-          WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
-     1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
-          CALL XCRAS(HKLLAB, IHKLLEN)
-          WRITE(CMON,'(3A,F10.2,F8.3)')
-     1     '^^PL LABEL ''', HKLLAB(1:IHKLLEN),
-     2     ''' DATA ', STORE(M6+16) , FOS/SIGMA
-          CALL XPRVDU(NCVDU, 1,0)
-        END IF
+
+        SIGNOI = FOS/SIGMA
+        JSIGS = 3
+        IF ( SIGNOI .LT. 10 ) JSIGS = 2
+        IF ( SIGNOI .LT. 3 ) JSIGS = 1
+        MSIGS = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
+        MSIGS = MAX ( 1,MSIGS )
+        MSIGS = MIN ( 25,MSIGS )
+        LSIGS(MSIGS,JSIGS) = LSIGS(MSIGS,JSIGS) + 1
         ISTAT = KLDRNR(0)
         IF ( KALLOW (IN) .EQ. 0 ) NALLOW = NALLOW + 1
       END DO
 
-      IF ( IPLOT2 .EQ. 1 ) THEN
+
+
+      IF (IPLOT2 .EQ. 1) THEN
+        WRITE(CMON,'(A,5(/A))')
+     1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
+     1  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=3',
+     1  '^^PL LENGTH=25 YAXIS TITLE ''Frequency''',
+     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I)<3.0'' TYPE LINE ',
+     1  '^^PL SERIES 2 SERIESNAME ''I/sigma(I)<10.0'' TYPE LINE ',
+     1  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE '
+        CALL XPRVDU(NCVDU, 6,0)
+
+        DO I = 1,25
+          WRITE(CMON,'(A,3(F7.3,1X,I8,1X))')
+     1     '^^PL DATA ',((I*0.4/25.0),LSIGS(I,J),J=1,3)
+          CALL XPRVDU(NCVDU, 1,0)
+        END DO
+ 
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       END IF
-
- 
 
       IF (IPLOT1 .EQ. 1) THEN
         WRITE(CMON,'(A,6(/A))')
