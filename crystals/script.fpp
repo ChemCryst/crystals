@@ -1,4 +1,14 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2003/09/04 14:14:28  rich
+C Modify FIRSTINT function, so that it returns ZERO if no integer is
+C found in the current string. This make the SHELX input work if there
+C is an atom label with no digits in it.
+C
+C Modified the SPGTOCRY function to remove leading spaces before going
+C to work on the Xprep style space group. Leads to a nicer formatting
+C and allows us to at least ensure that there is a space after the
+C lattice symbol.
+C
 C Revision 1.47  2003/07/03 10:41:04  rich
 C Bug fixed: When top level scripts were called, the status bar shows them
 C as being called from the last top level script that was run. Fix: Clear
@@ -2857,7 +2867,7 @@ C Only the leftmost 9 digits of each number are used.
 
           IF ( ITYPE(1) .EQ. 1 ) THEN
             IMASK = ICODE(JVALUE,IARG(1))
-            IDEC  = ICODE(JVALUE,IARG(2))
+            IDEC  = ABS(ICODE(JVALUE,IARG(2)))
             IRES  = 0
             DO IDM = 0,8
               IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
@@ -2872,7 +2882,7 @@ C Only the leftmost 9 digits of each number are used.
           ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
 
             IMASK = NINT(XCODE(JVALUE,IARG(1)))
-            IDEC  = NINT(XCODE(JVALUE,IARG(2)))
+            IDEC  = ABS(NINT(XCODE(JVALUE,IARG(2))))
             IRES  = 0
             DO IDM = 0,8
               IF ( MOD ( IMASK, 10 ) .NE. 0 ) THEN
