@@ -22,7 +22,7 @@ class LStdPopupMenu;
 #include	<LStdControl.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/choice.h>
 #define BASEDROPDOWN wxChoice
 #endif
@@ -46,7 +46,7 @@ class CxDropDown : public BASEDROPDOWN
 			CxDropDown( CrDropDown * container );
 			~CxDropDown();
 		void	AddItem( char * text );
-            void  SetSelection ( int select );
+            void  CxSetSelection ( int select );
 		void	SetGeometry( const int top, const int left, const int bottom, const int right );
 		int	GetTop();
 		int	GetLeft();
@@ -68,7 +68,7 @@ class CxDropDown : public BASEDROPDOWN
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void Selected();
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
