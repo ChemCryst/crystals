@@ -3,6 +3,7 @@
 %  VARIABLE INTEGER INBASICS
 %  VARIABLE INTEGER SHELX FS NCOEF FMT
 %  VARIABLE LOGICAL LCANCEL
+%  VARIABLE LOGICAL XQMERGE
 %  EVALUATE LCANCEL = FALSE
  Input reflection data from  file containing h,k,l Fo, sigma (HKLI file)
  ----- ---------- ---- ---------- ---------- ----- --- ----- -----------
@@ -22,6 +23,7 @@
  
 %    FINISH
 %  END IF
+%% XInBasic returns LCANCEL as TRUE if the user cancels the dialog.
 %  IF LCANCEL .EQ. TRUE THEN
  
 {0,3   Basic Cell, Space Group or composition information is missing.
@@ -210,25 +212,24 @@
 %       END IF
 %       MESSAGE USER1 ' Error during reflection processing'
 %       ON ERROR TERMINATE USER1
-            * Removing systematically absent reflections
+{S * Removing systematically absent reflections
 %       COPY '#SYSTEMATIC'
 %       COPY 'END'
 %       CLEAR
-            * Sorting reflections
+{S * Sorting reflections
 %       COPY '#SORT'
 %       COPY 'END'
 %       CLEAR
-%       VERIFY YES NO
-%       GET  NOSTORE FINAL ABBREVIATED  -
-  'Do you wish to merge reflections?'  'YES'
-%       IF VALUE .EQ. 1 THEN
-            * Merging equivalent reflections
+%% Ask user if they want to merge reflections:
+%       COPY '#SCRIPT XQMERGE'
+%       IF ( XQMERGE ) THEN
+{S * Merging equivalent reflections
 %         CLEAR
 %         COPY '#MERGE'
 %         COPY 'END'
 %       END IF
 %
-            * Final copy to DSC file
+{S * Final copy to DSC file
 %       COPY '#LIST 6'
 %       COPY 'READ TYPE = COPY'
 %       COPY 'END'
@@ -286,6 +287,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.13  2001/02/06 10:18:33  richard
+%% Changed "IGNORE" token after CHECKBOX to "INFORM=NO"
+%%
 %% Revision 1.12  2000/10/31 15:18:16  ckp2
 %% New text colour method
 %%
