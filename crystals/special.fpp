@@ -1,4 +1,4 @@
-CODE FOR XSPECM
+CODE FOR XSPECM 
       SUBROUTINE XSPECM
 C
 C----- THIS IS THE MASTER SUBROUTINE FOR HANDLING SPECIAL POSITIONS
@@ -244,6 +244,7 @@ C
 C
           WRITE ( CMON,522) STORE(M5), NINT(STORE(M5+1)),
      2                        MPOS, NGMULT, 1./FLOAT(MGM)
+          CALL XPRVDU(NCVDU, 1,0)
           WRITE(NCAWU, '(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 522       FORMAT(1X,' Atom ', A4, I4, ',  Multiplicity =', I3,
@@ -473,6 +474,8 @@ C               NON - FLOATING DIRECTION
 C               FLOATING DIRECTION
                 IHM(K) = 1
 C
+                WRITE(CMON,13) AXIS(K)
+                CALL XPRVDU(NCVDU, 1,0)
                 WRITE(NCAWU,13) AXIS(K)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,13) AXIS(K)
 13      FORMAT(' Floating origin in ', A2, ' direction')
