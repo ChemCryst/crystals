@@ -85,10 +85,6 @@
 %    ON ERROR TERMINATE
 %%   
 %%
-^^?? EXISTS XAUTO12
-%    VERIFY TRUE FALSE
-%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
-%    IF VALUE .EQ. 2 THEN
 ^^WI WINDOW XAUTO12 'Supervisor' SIZE
 ^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID OUTER NROWS=3 NCOLS=7
@@ -115,9 +111,6 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-%    ELSE
-^^CO    SET AUTO12TEXT EMPTY
-%    END IF
 ^^WI SENDTEXTTO AUTO12TEXT
 ^^CR
 %    CLEAR
@@ -196,8 +189,6 @@
 %    STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA
 %    OUTPUT
 ^^CR
-^^WI SENDTEXTTO _MAINTEXTOUTPUT
-^^CR
 %    CLEAR
 %    EVALUATE EXEREFN = FALSE
 %    VERIFY BOK BXX
@@ -206,8 +197,8 @@
 %      BLOCK  %BOK%
 ^^?? AUTOLIST SELECTED
 %         GET SILENT NOSTORE INTEGER 'Choice number'
-%%^^WI DISPOSE XAUTO12
-%%^^CR
+^^WI DISPOSE XAUTO12
+^^CR
 %         CASE VALUE
 %           BLOCK % KSVIEW 1
 %             COPY '#SCRIPT PLOT'
@@ -276,8 +267,6 @@ Remember - the data may not be good enough to reveal all H atoms
 %             COPY '#SCRIPT ACTA'
 %           END BLOCK
 %           BLOCK % PUBLISH 10
-^^WI DISPOSE XAUTO12
-^^CR
 %             COPY '#SCRIPT TIDYUP'
 %             COPY '#SCRIPT PUBLISH'
 %             FINISH

@@ -97,6 +97,7 @@
 %      GET NOSTORE VERIFIED 'ON or Off' ' '
 %      EVALUATE RADIATION = VALUE
 %      QUEUE REWIND
+%      CLEAR
 ^^??   FRIE STATE
 %      VERIFY ON OFF
 %      GET NOSTORE VERIFIED 'ON or Off' ' '
