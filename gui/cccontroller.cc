@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.56  2003/03/11 15:43:56  rich
+// Avoid printing uneccessary warning in SAFESET code.
+//
 // Revision 1.55  2003/02/25 15:34:29  rich
 // For lines passed up from CRYSTALS (^^lines), allow "" and !!
 // and <> to be delimiter pairs aswell as the trad ''.
@@ -814,9 +817,9 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                     theElement = GetTextOutputPlace();
                     if(theElement != GetBaseTextOutputPlace() )
                     {
-                        tokenList->Lock(); //Prevents the tokenList from emptying as it is read.
-                        GetBaseTextOutputPlace()->ParseInput( tokenList );
-                        tokenList->UnLock(); //Restores the tokenList and allows emptying.
+//                        tokenList->Lock(); //Prevents the tokenList from emptying as it is read.
+//                        GetBaseTextOutputPlace()->ParseInput( tokenList );
+//                        tokenList->UnLock(); //Restores the tokenList and allows emptying.
                     }
                     theElement->ParseInput( tokenList );
                 }
@@ -2701,11 +2704,12 @@ void CcController::ProcessOutput( CcString line )
 {
     CrGUIElement* element = GetTextOutputPlace();
     if( element != nil ) element->SetText(line);
-    if( element != GetBaseTextOutputPlace() )
-    {
-        //Always log text to the base window. It is the only permanent visible record.
-        (CcController::theController)->GetBaseTextOutputPlace()->SetText(line);
-    }
+// No longer log everything to the base window. IT'S MESSY.
+//    if( element != GetBaseTextOutputPlace() )
+//    {
+//        //Always log text to the base window. It is the only permanent visible record.
+//        (CcController::theController)->GetBaseTextOutputPlace()->SetText(line);
+//    }
 }
 
 
