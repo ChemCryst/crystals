@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2001/03/08 14:40:43  richard
+C Split the random function up so that it is possible to obtain a random
+C number with uniform distribution for scripts. The original function gives
+C a gaussian, and now uses the new function FRAND to access the compiler
+C library random number function.
+C
 C Revision 1.27  2000/10/31 14:36:54  ckp2
 C Log changes
 C
@@ -3375,9 +3381,9 @@ Cdjw[      enable thermometer etc in non-vga mode
 Cdjw99]
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
-&&GIDGIL                          CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
-&&GIDGIL                          CALL CALLCCODE ( CTEMP )
-&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6) )
+C&&GIDGIL                          CTEMP = '^^CO SET TEXTOUTPUT BACKLINE'
+C&&GIDGIL                          CALL CALLCCODE ( CTEMP )
+C&&GIDGIL                    CALL CALLCCODE ( CEXTRA(1:LENBUF+6) )
                   ELSEIF (CLAST .EQ. '$') THEN
 C-----------------LEAVE CURSOR AT CURRENT POSITION
 &DOSC------             SWITCH OFF LINE FEEDS
