@@ -1,5 +1,5 @@
 %SCRIPT XFOUR
-% VARIABLE CHARACTER FNAME
+% VARIABLE CHARACTER FNAME CFILE
 % VARIABLE LOGICAL TWINNED NOINI5
 % EVALUATE TWINNED = FALSE
 % EVALUATE NOINI5 = FALSE
@@ -136,10 +136,16 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    @ 1,2 STATIC TEXT4 'Rejection limit for co-incident peaks'
 ^^WI    @ 1,4 EDITBOX FCREJECT '0.01' REAL CHARS=6
 ^^WI   }
-^^WI   @ 10,2 GRID GMAPS NROWS=1 NCOLS=3 OUTLINE='Maps'
+^^WI   @ 10,2 GRID GMAPS NROWS=3 NCOLS=1 OUTLINE='Maps'
 ^^WI   {
-^^WI     @ 1,1 CHECKBOX XMAP 'Save a map plotting file' INFORM=NO
-^^WI     @ 1,3 BUTTON BSETMAP '&Set Map Ranges...'
+^^WI     @ 1,1 GRID VBOTTOM NROWS=2 NCOLS=3
+^^WI     {
+^^WI      @ 1,1 RADIOBUTTON XMCON 'Save CONTOUR file'
+^^WI      @ 2,1 RADIOBUTTON XMMCE 'Save MCE file' 
+^^WI      @ 1,3 RADIOBUTTON XMLOU 'Save Mapview file' 
+^^WI      @ 2,3 RADIOBUTTON XMNON 'No map output' STATE=ON
+^^WI     }
+^^WI     @ 3,1 BUTTON BSETMAP '&Set Map Ranges...'
 ^^WI   }
 ^^WI  }
 ^^WI }
@@ -222,10 +228,28 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       GET SILENT NOSTORE REAL ' '
 %       EVALUATE REJLIMIT = VALUE
 %% map file
-^^??    XMAP STATE
+^^??    XMCON STATE
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%       EVALUATE DOMAP = VALUE
+%       IF VALUE .EQ. 1 THEN
+%        EVALUATE DOMAP = 1
+%       ELSE
+^^??     XMMCE STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%        IF VALUE .EQ. 1 THEN
+%         EVALUATE DOMAP = 2
+%        ELSE
+^^??      XMLOU STATE
+%         VERIFY ON OFF
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%         IF VALUE .EQ. 1 THEN
+%          EVALUATE DOMAP = 3
+%         ELSE
+%          EVALUATE DOMAP = 0
+%         END IF
+%        END IF
+%       END IF
 ^^WI    DISPOSE FOURIER
 ^^CR
 %%
@@ -276,21 +300,35 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %           EVALUATE MAPTYPE = 'FC-PAT'
 %           INSERT 'FC-PAT'
 %       END IF
-%       IF DOMAP .EQ. 1 THEN
-%           INSERT ' FILE=YES'
-%           EVALUATE LCONTOUR = TRUE
+%       IF DOMAP .EQ. 3 THEN
 %           BLOCK
-%               ON ERROR REPEAT
-^^WI SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'
-^^CR
-%               GET SILENT NOSTORE FILENAME 'Save as' 'MAP.FOU'
-%               EVALUATE FNAME = CVALUE
-%               IF ( FNAME .EQ. 'CANCEL' ) THEN
-%                 EVALUATE DOMAP = 0
-%               ELSE
-%                 TRANSFER "#STORE CSYS MAP '" //  FNAME  // -
-                  "'" TO CRYSTALS
-%               END IF
+%              ON ERROR REPEAT
+^^CO SYSSAVEFILE 'Mapfile' 'Mapfile' 'Binary MapView format (Mapfile)'
+%              GET SILENT NOSTORE FILENAME 'Save as' 'MAPVIEW'
+%              EVALUATE FNAME = CVALUE
+%              IF ( FNAME .EQ. 'CANCEL' ) THEN
+%                EVALUATE DOMAP = 0
+%              ELSE
+%                INSERT ' FILE=MAPVIEW'
+%                EVALUATE LCONTOUR = TRUE
+%                TRANSFER "#STORE CSYS MAP '" //  FNAME  // -
+                 "'" TO CRYSTALS
+%              END IF
+%           END BLOCK
+%       ELSE IF DOMAP .GE. 1 THEN
+%           BLOCK
+%              ON ERROR REPEAT
+^^CO SYSSAVEFILE 'Map.fou' '*.fou' 'Fourier map ASCII file (*.fou)'
+%              GET SILENT NOSTORE FILENAME 'Save as' 'MAP.FOU'
+%              EVALUATE FNAME = CVALUE
+%              IF ( FNAME .EQ. 'CANCEL' ) THEN
+%                EVALUATE DOMAP = 0
+%              ELSE
+%                INSERT ' FILE=YES'
+%                EVALUATE LCONTOUR = TRUE
+%                TRANSFER "#STORE CSYS MAP '" //  FNAME  // -
+                 "'" TO CRYSTALS
+%              END IF
 %           END BLOCK
 %       END IF
 %       QUEUE SEND
@@ -318,8 +356,91 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %         COPY '#SCRIPT XQUESTIO'
 %         IF ANSWER .EQ. TRUE THEN
  * Starting Fourier map viewer.
-%               TRANSFER '#SPAWN START "CRYSDIR:CONTOUR.EXE" ' // -
+%               TRANSFER '#SPAWN "CRYSDIR:CONTOUR.EXE" ' // -
  FNAME TO CRYSTALS
+%         END IF
+%       END IF
+%       IF ( DOMAP .EQ. 2 ) THEN
+%         EVALUATE QTITLE = 'Run MCE'
+%         EVALUATE QLINE1 = 'Do you want to view the new map file'
+%         EVALUATE QLINE2 = 'in the MCE program?'
+%         EVALUATE BUTTOK = '&Yes'
+%         EVALUATE BUTTXX = '&No'
+%         COPY '#SCRIPT XQUESTIO'
+%         IF ANSWER .EQ. TRUE THEN
+ * Starting MCE map viewer.
+%%
+^^CO        GETKEY MCEDIR
+%%
+%           GET SILENT NOSTORE FINAL TEXT '1' '1'
+%           EVALUATE CFILE = CVALUE
+%           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
+%             IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' THEN
+^^CO            SETKEY MCEDIR c:\progra~1\marchi~1\MarchingCubeELD.exe
+%               EVALUATE CFILE = "c:\progra~1\marchi~1\MarchingCubeELD.exe"
+%             ELSE IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' THEN
+^^CO            SETKEY MCEDIR crysdir:MarchingCubeELD.exe
+%               EVALUATE CFILE = "crysdir:MarchingCubeELD.exe"
+%             ELSE
+
+  Where is the MCE executable?
+
+^^CO SYSOPENFILE 'MarchingCubesELD.exe' 'MCE executable'
+
+%               CLEAR
+%               INSERT '^^CO SETKEY MCEDIR '
+%               GET SILENT TEXT 'MCE location:'
+%               IF CVALUE .NE. 'CANCEL' THEN
+%                 EVALUATE CFILE = CVALUE
+%                 OUTPUT
+%               ELSE
+
+{E MCE not found. Map is saved, but can't find viewer.
+
+%               END IF
+%             END IF
+%           END IF
+%           TRANSFER '#SPAWN "' // CFILE // '" ' // FNAME TO CRYSTALS
+%         END IF
+%       END IF
+%       IF ( DOMAP .EQ. 3 ) THEN
+%         EVALUATE QTITLE = 'Run Mapview'
+%         EVALUATE QLINE1 = 'Do you want to view the new map file'
+%         EVALUATE QLINE2 = 'in the Mapview program?'
+%         EVALUATE BUTTOK = '&Yes'
+%         EVALUATE BUTTXX = '&No'
+%         COPY '#SCRIPT XQUESTIO'
+%         IF ANSWER .EQ. TRUE THEN
+ * Starting Mapview map viewer.
+%%
+^^CO        GETKEY MAPVIEWDIR
+%%
+%           GET SILENT NOSTORE FINAL TEXT '1' '1'
+%           EVALUATE CFILE = CVALUE
+%           IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
+%             IF FILEEXISTS 'WINGXDIR:\for_prog\mapview.exe' THEN
+^^CO            SETKEY MCEDIR WINGXDIR:\for_prog\mapview.exe
+%               EVALUATE CFILE = "WINGXDIR:\for_prog\mapview.exe"
+%             ELSE
+
+  Where is the Mapview executable?
+
+^^CO SYSOPENFILE 'Mapview.exe' 'Mapview executable'
+
+%               CLEAR
+%               INSERT '^^CO SETKEY MAPVIEWDIR '
+%               GET SILENT TEXT 'MAPVIEW location:'
+%               IF CVALUE .NE. 'CANCEL' THEN
+%                 EVALUATE CFILE = CVALUE
+%                 OUTPUT
+%               ELSE
+
+{E Mapview.exe not found. Map is saved, but can't find viewer.
+
+%               END IF
+%             END IF
+%           END IF
+%           TRANSFER '#SPAWN "' // CFILE // '" ' // FNAME TO CRYSTALS
 %         END IF
 %       END IF
 %% See if any atoms were found
