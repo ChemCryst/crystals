@@ -237,7 +237,6 @@ C      ATOM CHANGES
 CRICAUG98> This bit crashes if you delete two atoms in a row.
 CDJWAPR99 TRY TO FIX IT
 &&DVFGID      IF (LA .EQ. 5) THEN
-&&DVFGID            WRITE(99,'(3I10)') LA, L5, N5
 &&DVFGID            CALL XGDBUP('WRITE', L5, N5, MD5, ILOOP, .FALSE.,4)
 &&DVFGID      ENDIF
 CRICAUG98<
