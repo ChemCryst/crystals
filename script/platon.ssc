@@ -1,35 +1,47 @@
-%SCRIPT PLATON
-%  VARIABLE CHARACTER CDIR CFILE
-%  COPY '#FOREIGN PLATON'
-%  COPY 'END'
-%%
-%%
-^^CO GETKEY PLATONDIR
-%%
-%%
-%  GET SILENT NOSTORE FINAL TEXT '1' '1'
-%  EVALUATE CFILE = CVALUE
-%  IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN
-
-  Where is the Platon executable?
-
-^^CO SYSOPENFILE 'Platon*.exe' 'Platon executable'
-
-%    CLEAR
-%    INSERT '^^CO SETKEY PLATONDIR "'
-%    GET SILENT TEXT 'Platon location:'
-%    IF CVALUE .NE. 'CANCEL' THEN
-%      EVALUATE CFILE = CVALUE
-%      INSERT '"'
-%      OUTPUT
-%    ELSE
-%      FINISH
-%    END IF
-%  END IF
-%%
-%%
-%  TRANSFER '#SPAWN "' // CFILE // '" platon.res' TO DISPLAY
-%  TRANSFER '#SPAWN "' // CFILE // '" platon.res' TO CRYSTALS
-%%
-%%
-%END SCRIPT
+%SCRIPT PLATON                                                                  
+%  VARIABLE CHARACTER CDIR CFILE                                                
+%  VARIABLE LOGICAL T                                                           
+%%                                                                              
+%  IF FILEEXISTS ( 'publish.cif' ) .EQ. FALSE THEN                              
+                                                                                
+{E            No CIF file present.                                              
+{I First run "Results"->"Output CIF file"                                       
+                                                                                
+%     FINISH                                                                    
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  EVALUATE T = FILEDELETE ( 'publish.chk' )                                    
+%%                                                                              
+%%                                                                              
+^^CO GETKEY PLATONDIR                                                           
+%%                                                                              
+%%                                                                              
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  EVALUATE CFILE = CVALUE                                                      
+%  IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN                  
+                                                                                
+  Where is the Platon executable?                                               
+                                                                                
+^^CO SYSOPENFILE 'Platon*.exe' 'Platon executable'                              
+                                                                                
+%    CLEAR                                                                      
+%    INSERT '^^CO SETKEY PLATONDIR "'                                           
+%    GET SILENT TEXT 'Platon location:'                                         
+%    IF CVALUE .NE. 'CANCEL' THEN                                               
+%      EVALUATE CFILE = CVALUE                                                  
+%      INSERT '"'                                                               
+%      OUTPUT                                                                   
+%    ELSE                                                                       
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%  TRANSFER '#SPAWN + "' // CFILE // '" publish.cif' TO DISPLAY              
+%  TRANSFER '#SPAWN + "' // CFILE // '" publish.cif' TO CRYSTALS             
+%%                                                                              
+%  COPY '#spawn notepad publish.lis'                                            
+%%                                                                              
+%END SCRIPT                                                                     
