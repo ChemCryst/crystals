@@ -10,25 +10,51 @@
 #include "ReflectionMerging.h"
 #include "MathFunctions.h"
 #include "Collections.h"
+#include "UnitCell.h"
+#include "RunParameters.h"
 #include <math.h>
 #include <iostream>
 #include <iterator.h>
 
+#define kGuessThreshHold 30
+#define kRFactorAcceptValue 0.1
+
 /*
- * A class which simply stores a list of all the matrices.
+ * returns whether the HKL pMat1 is greater then HKL pMat2
+ * (H1 > H2) || ((H1 == H2) && ((K1 >K2) || ((K1 == K2) && (L1 > L2)))  
  */
-
-class LaueClassMatrices:public MyObject
+inline bool greaterHKL(Matrix<short> pMat1, Matrix<short> pMat2)
 {
-private:
-  Array<MatrixReader*>* iMatrices;
-public:
-  LaueClassMatrices();
-  ~LaueClassMatrices();
-  Matrix<short>* getMatrix(unsigned int pIndex) const;
-  //  Array<Matrix<short>*>* getList(unsigned int pIndex) const;
-};
+    if (pMat1.getValue(0) < pMat2.getValue(0))
+        return true;
+    else if (pMat1.getValue(0) > pMat2.getValue(0))
+        return false;
+    else
+    {
+        if (pMat1.getValue(1) < pMat2.getValue(1))
+            return true;
+        else if (pMat1.getValue(1) > pMat2.getValue(1))
+            return false;
+        else
+        {
+            if (pMat1.getValue(2) < pMat2.getValue(2))
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
+}
 
+class LaueClassMatrices
+{
+    private:
+        Array<MatrixReader*>* iMatrices;
+    public:
+        LaueClassMatrices();
+        ~LaueClassMatrices();
+        Matrix<short>* getMatrix(unsigned int pIndex) const;
+};
 /*
  * Creates a large array containing all the unique matrices.
  */
@@ -92,46 +118,174 @@ LaueClassMatrices::~LaueClassMatrices()
     delete iMatrices;
 }
 
+static LaueClassMatrices gLaueMatrices;
 /*
  * the laue group of matrices
  */
 class LaueGroups::LaueGroup
 {
 public:
-  unsigned short iCrystalSystem;
-  Array<unsigned short>* iMatIndices;
+    
+    LaueGroups::systemID iCrystalSystem;
+    Array<unsigned short>* iMatIndices;
+    MergedData* iMergedData;
+    char* iLaueGroup;
+    
+    LaueGroup(const LaueGroups::systemID pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys), iMergedData(NULL)
+    {
+        iMatIndices = new Array<unsigned short>(pIndices, pNumMat);
+        iLaueGroup = new char[strlen(pLaueGroup)+1];
+        strcpy(iLaueGroup, pLaueGroup);
+    }
+    
+    LaueGroups::systemID getCrystalSystem() const
+    {
+        return iCrystalSystem;
+    }
+    
+    Array<unsigned short>& getMatIndices() const
+    {
+        return *iMatIndices;
+    }
+    
+    std::ostream& output(std::ostream& pStream)
+    {
+        pStream.width(13);
+        pStream << iLaueGroup;
+        pStream << "  |";
+        if (getRFactor() == -1)
+        {
+            pStream.width(13);
+            return pStream << right << " - ";
+        }
+        pStream.width(13);
+        pStream.precision(4);
+        return pStream << (float)getRFactor() << "   " ;
+    }
+    
+    float getRFactor() const
+    {
+        if (iMergedData)
+            return iMergedData->getRFactor();
+        return -1;
+    }
   
-  LaueGroup(const unsigned short pSys, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys)
-  {
-      iMatIndices = new Array<unsigned short>(pIndices, pNumMat);
-  }
-  
-  unsigned short getCrystalSystem() const
-  {
-      return iCrystalSystem;
-  }
-  
-  Array<unsigned short>& getMatIndices() const
-  {
-      return *iMatIndices;
-  }
-  
-  std::ostream& output(std::ostream& pStream)
-  {
-      return pStream << "LaueGroup System " << iCrystalSystem << "\n";
-  }
+    char* laueGroup()
+    {
+        return iLaueGroup;
+    }
+    
+    void releaseMReflectionMem()	//This release any of the reflections sored my the MergedData object if there are any to release.
+    {
+        if (iMergedData != NULL)
+        {
+            iMergedData->releaseReflections();
+        }
+    }
+    
+    void buildMergedData(const HKLData& pHKLs, const RunParameters& pRunPara)
+    {
+        
+        const static short kMin[] = {0x8000, 0x8000, 0x8000}; 
+        size_t tReflNum = pHKLs.numberOfReflections();
+        static Matrix<short> tCurHKL(1, 3);
+        static Matrix<short> tTempHKL(1, 3);
+        static Matrix<short> tZero(1, 3, 0);
+        short tHLimit = 0;
+        short tKLimit;
+        short tLLimit;
+        
+        if (pRunPara.iUnitCell.getA() != 0)
+        {
+            tHLimit = lrintf(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getA()));
+            tKLimit = lrintf(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getB()));
+            tLLimit = lrintf(pRunPara.iUnitCell.calcMaxIndex(10000, pRunPara.iUnitCell.getC()));
+        }
+        if (iMergedData != NULL)
+        {
+            delete iMergedData;
+        }
+        iMergedData = new MergedData(tReflNum);
+        
+        for (unsigned int j = 0; j < tReflNum; j++)
+        {
+            if (tHLimit > 0)    //If it is filtering
+            {
+                if (pHKLs.getReflection(j)->tHKL->getValue(0) < tHLimit)
+                {
+                    if (pHKLs.getReflection(j)->tHKL->getValue(1) < tKLimit)
+                    {
+                            if (pHKLs.getReflection(j)->tHKL->getValue(2) > tKLimit)
+                                continue;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {   
+                    continue;
+                }
+            }
+            tCurHKL.setValues(kMin, 3);
+            for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
+            {
+                (gLaueMatrices.getMatrix((*iMatIndices)[i]))->mul(*pHKLs.getReflection(j)->tHKL, tTempHKL); //Multiply the hkl value with the current matrix
+                for (int j = 0; j < 2; j++) //Do this twice
+                {
+                    if (!greaterHKL(tTempHKL, tCurHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
+                    {
+                        tCurHKL = tTempHKL;
+                    }
+                    tZero.sub(tTempHKL, tTempHKL); //Invert the hkl value.
+                }
+            }
+            iMergedData->add(tCurHKL, *pHKLs.getReflection(j));
+        }
+    }
+    
+    float unitCellGuessRating(const RunParameters& pRunPara)const
+    {
+        Matrix<float> tMetricTensor(pRunPara.iUnitCell.metricTensor());
+        Matrix<float> tDiff(3,3);
+        Matrix<float> tOperator(3, 3);
+        Matrix<float> tOperatorTranspose(3, 3);
+        float tScalarDiff = 0;
+        for (size_t i = 0; i < iMatIndices->size(); i++) //Run through all the matrices.
+        {   
+            tOperator = (*gLaueMatrices.getMatrix((*iMatIndices)[i])); //Multiply the hkl value with the current matrix
+            tOperatorTranspose = tOperator;
+            tOperatorTranspose.transpose();
+            
+            tOperatorTranspose.mul(tMetricTensor, tDiff);
+            tDiff.mul(tOperator, tOperatorTranspose);
+            
+            tMetricTensor.sub(tOperatorTranspose, tDiff);
+            tScalarDiff = max(tDiff.abssum(), tScalarDiff);
+        }
+        return tScalarDiff;
+    }
 
-  ~LaueGroup()
-  {
-      delete iMatIndices;
-  }
+    ~LaueGroup()
+    {
+        if (iMergedData != NULL)
+        {
+            delete iMergedData;
+            iMergedData = NULL;
+        }
+        delete iMatIndices;
+        delete[] iLaueGroup;
+    }
 };
 
 LaueGroups::LaueGroups()
 {
-    LaueGroup* tArray[12];
+    LaueGroup* tArray[14];
     const unsigned short tIndices[] = {37, //Triclinic
-				       3, //1 2/m 1
+				       31, //2/m 1 1
+                                       3, //1 2/m 1
+                                       1, //1 1 2/m
 				       4, 32, 1, //2/m 2/m 2/m
 				       11, 1, 22, //4/m
 				       12, 1, 4, 22, 28, 32, 8,//4/m m m
@@ -142,25 +296,106 @@ LaueGroups::LaueGroups()
 				       30, 10, 1, 5, 23, 7, 28, 38, 29, 8, 0, //6/m m m
 				       26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31,//m -3
 				       26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31, 28, 18, 35, 27, 17, 34, 13, 2, 33, 21, 16, 11};//m -3 m
-    
-    tArray[0] = new LaueGroup(kTriclinicID, tIndices, 1); //Triclinic
-    tArray[1] = new LaueGroup(kMonoclinicBID, &(tIndices[1]), 1); //1 2/m 1
-    tArray[2] = new LaueGroup(kOrtharombicID, &(tIndices[2]), 3); //2/m 2/m 2/m
-    tArray[3] = new LaueGroup(kTetragonalID, &(tIndices[5]), 3); //4/m
-    tArray[4] = new LaueGroup(kTetragonalID, &(tIndices[8]), 7); //4/m m m
-    tArray[5] = new LaueGroup(kTrigonalID, &(tIndices[15]), 2); //-3
-    tArray[6] = new LaueGroup(kTrigonalID, &(tIndices[17]), 5); //-3 m 1
-    tArray[7] = new LaueGroup(kTrigonalID, &(tIndices[22]), 5); //  -3 1 m
-    tArray[8] = new LaueGroup(kHexagonalID, &(tIndices[27]), 5); //6/m
-    tArray[9] = new LaueGroup(kHexagonalID, &(tIndices[32]), 11); //6/m m m
-    tArray[10] = new LaueGroup(kCubicID, &(tIndices[43]), 11); //m -3
-    tArray[11] = new LaueGroup(kCubicID, &(tIndices[54]), 23); //m -3 m
-    iGroups = new Array<LaueGroup*>(tArray, 12);
+    /* The laue groups should always bin in order of symmetry as other methods rely this order on this*/
+    tArray[0] = new LaueGroup(kTriclinicID, "-1", tIndices, 1); //Triclinic
+    tArray[1] = new LaueGroup(kMonoclinicAID, "2/m 1 1", &(tIndices[1]), 1); //2/m 1 1
+    tArray[2] = new LaueGroup(kMonoclinicBID, "1 2/m 1", &(tIndices[2]), 1); //1 2/m 1
+    tArray[3] = new LaueGroup(kMonoclinicCID, "1 1 2/m", &(tIndices[3]), 1); //1 1 2/m
+    tArray[4] = new LaueGroup(kOrtharombicID, "2/m 2/m 2/m", &(tIndices[4]), 3); //2/m 2/m 2/m
+    tArray[5] = new LaueGroup(kTetragonalID, "4/m", &(tIndices[7]), 3); //4/m
+    tArray[6] = new LaueGroup(kTetragonalID, "4/m m m", &(tIndices[10]), 7); //4/m m m
+    tArray[7] = new LaueGroup(kTrigonalID, "-3", &(tIndices[17]), 2); //-3
+    tArray[8] = new LaueGroup(kTrigonalID, "-3 m 1", &(tIndices[19]), 5); //-3 m 1
+    tArray[9] = new LaueGroup(kTrigonalID, "-3 1 m", &(tIndices[24]), 5); //  -3 1 m
+    tArray[10] = new LaueGroup(kHexagonalID, "6/m", &(tIndices[29]), 5); //6/m
+    tArray[11] = new LaueGroup(kHexagonalID, "6/m m m", &(tIndices[34]), 11); //6/m m m
+    tArray[12] = new LaueGroup(kCubicID, "m -3", &(tIndices[45]), 11); //m -3
+    tArray[13] = new LaueGroup(kCubicID, "m -3 m", &(tIndices[56]), 23); //m -3 m
+    iGroups = new Array<LaueGroup*>(tArray, 14);
 }
 
-Array<unsigned short>& LaueGroups::getGroupIndice(const unsigned int pSystemRef, const unsigned short pGroupNum) const
+size_t LaueGroups::count()
+{
+    return iGroups->size();
+}
+
+Array<unsigned short>& LaueGroups::getGroupIndice(const SystemRef pSystemRef, const unsigned short pGroupNum) const
 {
     return (*iGroups)[pSystemRef+pGroupNum]->getMatIndices();
+}
+
+
+LaueGroups::systemID LaueGroups::unitCellID2LaueGroupID(const UnitCell::systemID pID)
+{
+    switch (pID)
+    {
+        case UnitCell::kTriclinic:
+            return LaueGroups::kTriclinicID;
+        break;
+        case UnitCell::kMonoclinicA:
+            return LaueGroups::kMonoclinicBID;
+        break;
+        case UnitCell::kMonoclinicB:
+            return LaueGroups::kMonoclinicBID;
+        break;
+        case UnitCell::kMonoclinicC:
+            return kMonoclinicBID;
+        break;
+        case UnitCell::kOrtharombic:
+            return LaueGroups::kOrtharombicID;
+        break;
+        case UnitCell::kTetragonal:
+            return LaueGroups::kTetragonalID;
+        break;
+        case UnitCell::kTrigonal:
+            return LaueGroups::kTrigonalID;
+        break;
+        case UnitCell::kTrigonalRhom:
+            return kTrigonalID;
+        break;
+        case UnitCell::kHexagonal:
+            return LaueGroups::kHexagonalID;
+        break ;
+        case UnitCell::kCubic:
+            return LaueGroups::kCubicID;
+        break;
+    }
+    return LaueGroups::kTriclinicID;
+}
+
+UnitCell::systemID LaueGroups::laueGroupID2UnitCellID(LaueGroups::systemID pID)
+{
+    switch (pID)
+    {
+        case LaueGroups::kTriclinicID:
+            return UnitCell::kTriclinic;
+        break;
+        case LaueGroups::kMonoclinicAID:
+            return UnitCell::kMonoclinicA;
+        break;
+        case LaueGroups::kMonoclinicBID:
+            return UnitCell::kMonoclinicB;
+        break;
+        case LaueGroups::kMonoclinicCID:
+            return UnitCell::kMonoclinicC;
+        break;
+        case LaueGroups::kOrtharombicID:
+            return UnitCell::kOrtharombic;
+        break;
+        case LaueGroups::kTetragonalID:
+            return UnitCell::kTetragonal;
+        break;
+        case LaueGroups::kTrigonalID:
+            return UnitCell::kTrigonal;
+        break;
+        case LaueGroups::kHexagonalID:
+            return UnitCell::kHexagonal;
+        break ;
+        case LaueGroups::kCubicID:
+            return UnitCell::kCubic;
+        break;
+    };
+    return UnitCell::kTriclinic;
 }
 
 LaueGroups::~LaueGroups()
@@ -172,7 +407,43 @@ LaueGroups::~LaueGroups()
     delete iGroups;
 }
 
-unsigned int LaueGroups::getSystemRef(unsigned short* pNumGroup, const unsigned short pSystem) const
+void LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const
+{
+    for (size_t i = 0; i < iGroups->size(); i++)
+    {
+        if ((*iGroups)[i]->unitCellGuessRating(pRunParam) < kGuessThreshHold)
+        {
+            (*iGroups)[i]->buildMergedData(pHKLs, pRunParam);
+            if (pThrowRefl)
+            {
+                (*iGroups)[i]->releaseMReflectionMem();
+            }
+        }
+    }
+}
+
+LaueGroups::systemID LaueGroups::guessSystem(const HKLData& pHKLs, const RunParameters& pRunParam)
+{
+    unsigned int tBest = 0;
+    float tLowestRF;
+    LaueGroups::mergeForAll(pHKLs, true, pRunParam);
+    
+    tLowestRF = (*iGroups)[0]->getRFactor();
+    for (size_t i = 1; i < iGroups->size(); i++)
+    {
+        float tRFactor = (*iGroups)[i]->getRFactor();
+        if (tRFactor >= 0)
+        {
+            if (tRFactor/tLowestRF < 10)
+            {
+                tBest = i;
+            }
+        }
+    }
+    return (*iGroups)[tBest]->getCrystalSystem();
+}
+
+SystemRef LaueGroups::getSystemRef(unsigned short* pNumGroup, const LaueGroups::systemID pSystem) const
 {
     unsigned short i = 0;
     unsigned short tResult;
@@ -190,10 +461,33 @@ unsigned int LaueGroups::getSystemRef(unsigned short* pNumGroup, const unsigned 
     return 0;
 }
 
-MergedData LaueGroups::mergeSystemGroup(const HKLData& pHKLData, const unsigned short pSystemRef, const unsigned short pGroupID) const
+LaueGroups::systemID LaueGroups::getCrystalSystemFor(const SystemRef pSystemRef)
 {
-    MergedData tResult(pHKLData, (*iGroups)[pSystemRef+pGroupID]->getMatIndices());
-    return tResult;
+    return (*iGroups)[pSystemRef]->getCrystalSystem();
+}
+
+void LaueGroups::mergeSystemGroup(const HKLData& pHKLData, const SystemRef pSystemRef, const unsigned short pGroupID, const RunParameters& pRunPara)
+{
+    (*iGroups)[pSystemRef+pGroupID]->buildMergedData(pHKLData, pRunPara);
+}
+
+void LaueGroups::releaseMemoryFor(const SystemRef pSystemRef, const unsigned short pGroupID)
+{
+    (*iGroups)[pSystemRef+pGroupID]->releaseMReflectionMem();
+}
+
+std::ostream& LaueGroups::output(std::ostream& pStream)
+{
+    pStream.width(15);
+    cout << "  Laue Group   |    R-Factor   \n";
+    for (size_t i = 0; i < iGroups->size(); i++)
+    {
+        if ((*iGroups)[i]->getRFactor() >= 0)
+        {
+            (*iGroups)[i]->output(pStream) << "\n";
+        }
+    }
+    return pStream;
 }
 
 /*
@@ -210,40 +504,80 @@ float sumdiff(Array<float>& pValues, float pMean)
     return tTotal;
 }
 
-MergedData::MergedData(const HKLData& pData, Array<unsigned short>& pMatIndices)
+MergedData::MergedData(const size_t pNumRefl):iNumRefl(pNumRefl), iUpto(0), iReflections(NULL), iRFactor(-1)
 {
-    long tReflNum = pData.numberOfReflections();
-    multiset<Reflection*, lsreflection>* tSortedReflections = new multiset<Reflection*, lsreflection>();
-    Reflection* tReflections = new Reflection[tReflNum];
+    iSortedReflections = new multiset<Reflection*, lsreflection>();
+}
 
-    for (int i = 0; i < tReflNum; i++)
+MergedData::~MergedData()
+{
+    if (iReflections != NULL)
     {
-        //Reflection tNewReflection =
-        equivalentise(*pData.getReflection(i), pMatIndices, &(tReflections[i]));
-        tSortedReflections->insert(&(tReflections[i]));
+        for (size_t i = 0; i < iUpto; i++)
+        {
+            delete iReflections[iUpto];
+        }
+        delete[] iReflections;
+        iReflections = NULL;
     }
-    
-    if (tReflNum > 0) //Just in case there are no reflections. Shouldn't happen but you never know 
+    delete iSortedReflections;
+    iSortedReflections = NULL;
+}
+
+void MergedData::add(const Matrix<short>& pHKL, const Reflection& pRefl)
+{
+    if (iReflections == NULL)
     {
-        Matrix<short> tCurHKL;
-        Array<float> tValues(20); //This will more than likley be enough space so that there won't be any more memory needing allocating.
-        tCurHKL = *((*(tSortedReflections->begin()))->tHKL);
-        tValues.add((*tSortedReflections->begin())->i);
-        set<Reflection*>::iterator tIter = tSortedReflections->begin(); 
+        iReflections = new Reflection*[iNumRefl];
+        iRFactor = -1;
+    }
+    iReflections[iUpto] = new Reflection();
+    iReflections[iUpto]->setHKL(pHKL);
+    iReflections[iUpto]->i = pRefl.i;
+    iReflections[iUpto]->iSE = pRefl.iSE;
+    iSortedReflections->insert(iReflections[iUpto++]);
+}
+
+void MergedData::releaseReflections()
+{
+    if (iRFactor == -1)
+    {
+        calculateRFactor();
+    }
+    if (iReflections != NULL)
+    {
+        for (size_t i = 0; i < iUpto; i++)
+        {
+            delete iReflections[iUpto];
+        }
+        delete[] iReflections;
+        iReflections = NULL;
+        iSortedReflections->clear();
+    }
+}
+
+float MergedData::calculateRFactor()
+{
+	static Matrix<short>* tCurHKL;
+        static Array<float> tValues(23); //I don't think that this should need to be any greater then 23 elements long.
+        tCurHKL = (*(iSortedReflections->begin()))->tHKL;
+        tValues.add((*iSortedReflections->begin())->i);
+        set<Reflection*>::iterator tIter = iSortedReflections->begin(); 
         float tSumSum = 0;
         float tMeanDiffSum = 0;
+        float tSum;
         
-        while (tIter != tSortedReflections->end()) //Run through all the reflections
+        while (tIter != iSortedReflections->end()) //Run through all the reflections
         {
-            if (!(*((*tIter)->tHKL) == tCurHKL))//If the HKL value has changed then 
+            if (!(*((*tIter)->tHKL) == (*tCurHKL)))//If the HKL value has changed then 
 	    {
 		if (tValues.size()>1) //As long as there are more then one reflection
 		{
-		    float tSum = sum(tValues.getPointer(), tValues.size());
+		    tSum = sum(tValues.getPointer(), tValues.size());
 		    tSumSum += tSum;
 		    tMeanDiffSum += sumdiff(tValues, tSum/tValues.size());
 		}
-		tCurHKL = *((*tIter)->tHKL); //Save the next hkl value
+		tCurHKL = (*tIter)->tHKL; //Save the next hkl value
 		tValues.clear();   //Remove all the old intensities
 	    }
             tValues.add((*tIter)->i);  //Save the intensity
@@ -251,72 +585,7 @@ MergedData::MergedData(const HKLData& pData, Array<unsigned short>& pMatIndices)
         }
         iRFactor = tMeanDiffSum/tSumSum; //In the desciption this is multiplied by
 	//But as these values are for comparison there isn't much point
-    }
-    delete[] tReflections;
-}
-
-MergedData::MergedData(const MergedData& pMergedData) //Copy constructure
-{
-    iRFactor = pMergedData.iRFactor;
-}
-
-/*
- * returns whether the HKL pMat1 is greater then HKL pMat2
- * (H1 > H2) || ((H1 == H2) && ((K1 >K2) || ((K1 == K2) && (L1 > L2)))  
- */
-inline bool greaterHKL(Matrix<short> pMat1, Matrix<short> pMat2)
-{
-    if (pMat1.getValue(0) < pMat2.getValue(0))
-        return true;
-    else if (pMat1.getValue(0) > pMat2.getValue(0))
-        return false;
-    else
-    {
-        if (pMat1.getValue(1) < pMat2.getValue(1))
-            return true;
-        else if (pMat1.getValue(1) > pMat2.getValue(1))
-            return false;
-        else
-        {
-            if (pMat1.getValue(2) < pMat2.getValue(2))
-                return true;
-            else
-                return false;
-        }
-    }
-    return false;
-}
-
-LaueClassMatrices gLaueMatrices;
-/*
- *  Applies a vector of matrices to the hkl values of a reflection.
- * The greatest of these results are returned in pResult with the same 
- * I and sigma(I) values passed.
- */
-void MergedData::equivalentise(const Reflection& pReflection, Array<unsigned short>& pMatIndices, Reflection* pResult) const
-{
-    Matrix<short> tMaxHKL;
-    tMaxHKL = *(pReflection.getHKL()); //Get a copy of the HKL values
-    Matrix<short> tCurrentHKL;
-    tCurrentHKL = *(pReflection.getHKL()); //Make another copy of the HKL values
-    Matrix<short> tTempHKL(1, 3); //for storing the results in.
-    static Matrix<short> tZero(1, 3, 0);  //inverting the hkl values
-
-    for (size_t i = 0; i < pMatIndices.size(); i++) //Run through all the matrices.
-    {
-        (gLaueMatrices.getMatrix(pMatIndices[i]))->mul(tCurrentHKL, tTempHKL); //Multiply the hkl value with the current matrix
-        for (int j = 0; j < 2; j++) //Do this twice
-        {
-            if (!greaterHKL(tTempHKL, tMaxHKL)) //see if this new HKL value is greater then the last. This is just for consistancy could just as well be least hkl value or something.
-            {
-                tMaxHKL = tTempHKL;
-            }
-            tZero.sub(tTempHKL, tTempHKL); //Invert the hkl value.
-        }
-    }
-    pResult->i = pReflection.i; //Copy I for result
-    pResult->iSE = pReflection.iSE; //Copy sigma(I) for result
-    (*pResult->tHKL) = tMaxHKL; //Set new HKL value
+        return iRFactor;
 }
 
 std::ostream& MergedData::output(std::ostream& pStream)
@@ -329,3 +598,7 @@ std::ostream& operator<<(std::ostream& pStream, MergedData& tData)
     return tData.output(pStream);
 }
 
+std::ostream& operator<<(std::ostream& pStream,  LaueGroups& tData)
+{
+    return tData.output(pStream);
+}
