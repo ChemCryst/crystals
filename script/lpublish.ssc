@@ -19,6 +19,7 @@
 %  COPY '#RELEASE PUNCH crfile.pch'
 %  COPY '#SPAWN echo open galena.xtl.ox.ac.uk >galena.ftp'
 %  COPY '#SPAWN echo user student >>galena.ftp'
+%% NB This is an old password, contact the demonstrator for a new one...
 %  COPY '#SPAWN echo askthede >>galena.ftp'
 %  COPY '#SPAWN echo put publish.cif printout.cif >>galena.ftp'
 %  COPY '#SPAWN echo bye >>galena.ftp'
