@@ -5,69 +5,91 @@
 %  COPY 'MAP TYPE=DIFF'
 %  COPY 'PEAK HEIGHT=1 '
 %  COPY 'END'
-%
+%%
 %  VARIABLE REAL NREF NPARAM RHOMAX
-%
-%    IF ( EXISTS 30 .NE. 1 ) THEN
-There in no LIST 30 with the general details available
-%      FINISH
-%    END IF
+%% The variables needed by XQUESTIO
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+%  VARIABLE LOGICAL   ANSWER
+%%
+%  IF ( EXISTS 30 .NE. 1 ) THEN
+{E There in no LIST 30 with the general details available
+{I Type #SCRIPT ED30 to input general details.
+%    FINISH
+%  END IF
 %  COPY '#GENERALEDIT 30'
 %  COPY 'LOCATE RECORDTYPE = 103'
 %  COPY 'TRANSFER FROM OFFSET =  2 TO NPARAM'
 %  COPY 'TRANSFER FROM OFFSET =  6 TO RHOMAX '
 %  COPY 'TRANSFER FROM OFFSET =  8 TO NREF '
 %  COPY 'END'
-%
-%
+%%
 %  IF NPARAM .LE. 0.0 THEN
-You have changed something since the last refinement cycle.
+{R You have changed something since the last refinement cycle.
 %    VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
-  'Do you want to run the final refinement' 'YES'
-%      IF VALUE .EQ. 1 THEN
-%        COPY '#SCRIPT NCYCLES'
-%      END IF
+%    GET NOSTORE FINAL ABBREVIATED -
+                          'Do you want to run a final refinement' 'YES'
+%    IF VALUE .EQ. 1 THEN
+%      COPY '#SCRIPT NCYCLES'
+%    END IF
 %    FINISH
 %  END IF
 %  IF ( NREF / NPARAM )  .LE. 5.0 THEN
-You have too few X-ray observations for the number of variables
-you are trying to refine. Think again or seek help.
+{E You have {RFAR{E too few X-ray observations for the number of variables
+{E you are trying to refine. Think again or seek help.
 %     FINISH
 %  END IF
 %%
 %  IF RHOMAX .GE. 0.3 THEN
-The residual density is rather high. Do you have disorder, a missing
-solvent or an absorption problem?
+{R The residual density is rather high. Could you have disorder,
+{R missing solvent or an absorption problem?
 %%
-%    VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
-  'Do you want to see the residual peaks' 'YES'
-%      IF VALUE .EQ. 1 THEN
-%        COPY '#COLL 10 5'
-%        COPY 'SEL TYPE=PEAK'
-%        COPY 'END'
-%%       RUN CAMERON
-%        COPY '#SCRIPT PLOT'
-%      END IF
-%    VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
-  'Are you sure that the residuals peaks are not important?' 'YES'
-%      IF VALUE .EQ. 2 THEN
-The 'ROUTINE' script cannot handle this problem. Consult an experienced
-user or the Guide.
-%        COPY '#SCRIPT DIRECT'
-%      ELSE 
-%         COPY '#DISK'
-%         COPY 'RESET 5 0 -1'
-%         COPY 'END'
-%      END IF
+%    EVALUATE QTITLE = 'Tidy up'
+%    EVALUATE QLINE1 = 'Do you want to view the residual peaks?'
+%    EVALUATE QLINE2 = ' '
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%      COPY '#COLL 10 5'
+%      COPY 'SEL TYPE=PEAK'
+%      COPY 'END'
+%% RUN CAMERON
+%      COPY '#SCRIPT PLOT'
+%    END IF
+%    EVALUATE QTITLE = 'Tidy up'
+%    EVALUATE QLINE1 = 'Do you want to ignore these peaks? (you must'
+%    EVALUATE QLINE2 = 'be sure that they are not important)'
+%    EVALUATE BUTTOK = '&Ignore'
+%    EVALUATE BUTTXX = '&Back'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. FALSE THEN
+{R The 'ROUTINE' script cannot handle this problem.
+{R Consult an experienced user or the User Guide.
+%      COPY '#SCRIPT DIRECT'
+%    ELSE 
+%      COPY '#DISK'
+%      COPY 'RESET 5 0 -1'
+%      COPY '#DISP'
+%      COPY 'END'
+%    END IF
 %  END IF
 %%
-%      VERIFY YES NO
-%      GET NOSTORE FINAL ABBREVIATED  -
-  'Do you want to 6 final cycles of refinement' 'YES'
-%      IF VALUE .EQ. 1 THEN
-%        COPY '#SCRIPT SIXCYCLE'
-%      END IF
+%  EVALUATE QTITLE = 'Tidy up'
+%  EVALUATE QLINE1 = 'Do you want to carry out 6 final cycles of refinement?'
+%  EVALUATE QLINE2 = '(Grind the structure into a minimum!)'
+%  EVALUATE BUTTOK = '&Yes'
+%  EVALUATE BUTTXX = '&No'
+%  COPY '#SCRIPT XQUESTIO'
+%  IF ANSWER .EQ. TRUE THEN
+%    COPY '#SCRIPT SIXCYCLE'
+%  ELSE
+{S You have requested no final cycles of refinement.
+{I This is one cycle of least squares with NO SHIFTS. Your model won't
+{I be changed, it's just that the parameter su's need recalculating.
+%    COPY '#SFLS'
+%    COPY 'REFINE'
+%    COPY 'SHIFT GENERAL=0.0'
+%    COPY 'END'
+%  END IF
+%%
 %END SCRIPT
