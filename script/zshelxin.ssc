@@ -13,7 +13,7 @@
 % VARIABLE LOGICAL   SFILERR LFIRST LPEAK LNOTAT LCRY
 % VARIABLE CHARACTER CLINE
  
- Looking for atoms and peaks in SHELX file.
+{I * Looking for atoms and peaks in SHELX file.
  
 %%
 %  VARIABLE INTEGER ATOMCOUNT EXPECTED
@@ -132,10 +132,10 @@
 %   END IF
 %%
 %   IF LNOTAT .EQ. FALSE THEN
-%% Note that YSHELXIN shares the variables ATOMCOUNT, EXPECTED and
+%% Note that SXATOMRD shares the variables ATOMCOUNT, EXPECTED and
 %% updates them
 %%     TRANSFER 'Found ' // CLINE TO DISPLAY
-%     COPY '#SCRIPT YSHELXIN'
+%     COPY '#SCRIPT SXATOMRD'
 %   END IF
 %   IF ATOMCOUNT .GE. EXPECTED THEN
 %% force end

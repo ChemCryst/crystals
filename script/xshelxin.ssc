@@ -3,15 +3,15 @@
 %% Read in a the cell, symm and atoms from a shelx file.
 %%
  --                                                      --
- SHELX Script version 0.25 by Richard Cooper, University of
- Oxford, April 1999. Based on the fortran program SXTOCA by
- R.O. Gould, The University of Edinburgh, March 1994.
+{R SHELX Script version 0.25 by Richard Cooper, University of
+{R Oxford, April 1999. Based on the fortran program SXTOCA by
+{R R.O. Gould, The University of Edinburgh, March 1994.
  --                                                      --
- Read in the cell, contents and atomic parameters
- from a variety of standard SHELX res or ins files.
+{I Read in the cell, contents and atomic parameters
+{I from a variety of standard SHELX res or ins files.
  --                                                      --
- This operation will overwrite your current model structure
- Be sure that you want to proceed.
+{R This operation will overwrite your current model structure
+{R Be sure that you want to proceed.
  
 %%
 %%
@@ -19,7 +19,7 @@
 % VARIABLE CHARACTER SPACEHOOK
 % VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND
 % VARIABLE LOGICAL SFILERR LCANCEL LCRY
-% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22
+% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE
 % VARIABLE REAL SXU33 SXU23 SXU13 SXU12
 %% variables used by the question box below
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
@@ -109,7 +109,19 @@ information. This may take some time...
 %   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
 %   IF CVALUE .EQ. 'CELL' THEN
  CELL card found .
-%      GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%      GET NOSTORE NOPROMPT REAL NULLSTRING '-0.5'
+%      EVALUATE WAVE = VALUE
+%      IF ( WAVE .GT. 0.0 ) THEN
+%         IF ( EXISTS ( 13 ) .NE. 1 ) THEN
+%            COPY '#LIST 13'
+%            COPY 'END'
+%         END IF
+%         COPY '#GENERALEDIT 13'
+%         COPY 'LOCATE RECORDTYPE=103'
+%         COPY 'TRANSFER TO OFFSET=0 FROM WAVE'
+%         COPY 'WRITE'
+%         COPY 'END'
+%      END IF
 %      GET NOSTORE NOPROMPT TEXT 'a,b,c,al,be,ga'
 %      COPY '#LIST 1'
 %      TRANSFER 'REAL ' // CVALUE TO CRYSTALS
@@ -323,28 +335,44 @@ information. This may take some time...
 %   GET NOSTORE NOPROMPT KEYWORD NULLSTRING
 %   IF CVALUE .EQ. 'SFAC' THEN
  
- SFAC card found.
- NB. There must only be one SFAC card with all the elements on it.
-     You may need to edit your SHELX file if this is not the case.
- 
-%      GET NOSTORE TEXT ' ' ' '
-%      EVALUATE CSFAC = CVALUE
- 
-%      EVALUATE LEND = LEND + 1
+{I * SFAC card found.
+
+%% First token is always an element.
+%      GET NOSTORE KEYWORD ' ' ' '
+%      EVALUATE CSFAC = CSFAC // ' ' // CVALUE
+
+%% Second token may be a number or an element or nothing.
+%      GET NOSTORE NOREMOVE KEYWORD ' ' '0'
+%      IF CVALUE STARTSWITH '0' .OR. CVALUE STARTSWITH '1' .OR. -
+          CVALUE STARTSWITH '2' .OR. CVALUE STARTSWITH '3' .OR. -
+          CVALUE STARTSWITH '4' THEN
+%% This is an old-fashioned card with actual sfac details on. Carry on looping.
+%         EVALUATE LEND = LEND + 1
+%       ELSE IF CVALUE STARTSWITH '5' .OR. CVALUE STARTSWITH '6' .OR. -
+               CVALUE STARTSWITH '7' .OR. CVALUE STARTSWITH '8' .OR. -
+               CVALUE STARTSWITH '9' THEN
+%% This is an old-fashioned card with actual sfac details on. Carry on looping.
+%         EVALUATE LEND = LEND + 1
+%      ELSE
+%% This is a new fangled card with all the elements on one line.
+%         EVALUATE LEND = LEND + 1
+%         GET NOSTORE TEXT ' ' ' '
+%         EVALUATE CSFAC = CSFAC // ' ' // CVALUE
+%      END IF
 %   END IF
 %   IF CVALUE .EQ. 'UNIT' THEN
  
- UNIT card found.
+{I * UNIT card found.
  
 %      GET NOSTORE TEXT ' ' ' '
 %      EVALUATE CUNIT = CVALUE
-%      EVALUATE LEND = LEND + 1
+%      EVALUATE LEND = LEND + 1000
 %   END IF
-%   IF LEND .EQ. 2 THEN
+%   IF LEND .GT. 1000 THEN
 %     EVALUATE LOOPEND = LOOPCOUNTER
 %   END IF
 % END LOOP
-% IF LEND .LT. 2 THEN
+% IF LEND .LT. 1001 THEN
  
  *** No valid "SFAC and UNIT" card pair found in SHELX file.
      You must enter your own LIST3 and LIST29.
@@ -368,6 +396,7 @@ information. This may take some time...
 %%
 %%
 %   COPY '#COMPOSIT'
+{R #COMPOSITION
 %   CLEAR
 %   INSERT 'CONTE '
 %%
@@ -419,6 +448,10 @@ information. This may take some time...
 %     END IF
 %   END LOOP
 %   SEND
+%   OUTPUT
+{R SCATT CRYSDIR:\SCRIPT\SCATT.DAT
+{R PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT
+{R END
 %   COPY 'SCATT CRYSDIR:\SCRIPT\SCATT.DAT'
 %   COPY 'PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT'
 %   COPY 'END'
@@ -441,10 +474,9 @@ information. This may take some time...
 %% at an HKLF instruction.
 %%
 %  COPY '#SCRIPT ZSHELXIN'
- Shelx file processed.
+
+{I Shelx file processed.
 %  COPY '#CLOSE SCPDATA'
- 
-here we are again
 %      BLOCK
 %      EVALUATE QTITLE = 'Change Q atoms?'
 %      EVALUATE QLINE1 = 'Do you want to change all Q'

@@ -1,0 +1,254 @@
+%SCRIPT SXATOMRD
+%%
+%% Called by ZSHELXIN, this script gets all the atom information.
+%%
+%     VARIABLE REAL SXU11 SXU22 SXU33 SXU12 SXU13 SXU23
+%     VARIABLE REAL SXX SXY SXZ SXO
+%     VARIABLE INTEGER SXF ISERI
+%     VARIABLE LOGICAL LFIRST LCRY SXEOL LPEAK
+%     VARIABLE CHARACTER CLINE
+%%
+%% shared with ZSHELXSIN
+%     VARIABLE INTEGER ATOMCOUNT EXPECTED
+%%
+%% If this is the first atom to be found, start adding atoms.
+%%
+%     IF LFIRST .EQ. TRUE THEN
+%       EVALUATE LFIRST = FALSE
+%       COPY '#LIST 5'
+%       COPY 'END'
+%       COPY '#EDIT'
+%     END IF
+%%
+%% If this is a SHELXS.CRY file, there is a space between elem and serial:
+%%
+%     IF LCRY .EQ. TRUE THEN
+%       GET NOSTORE NOPROMPT INTEGER '1'
+%       EVALUATE ISERI = VALUE
+%     ELSE
+%       EVALUATE ISERI = FIRSTINT ( CLINE )
+%     END IF
+%%
+%% Get the first number, which is the element number as
+%% defined by the SFAC command. (This is not used yet.)
+%% (but it is checked!)
+%%
+%     GET NOSTORE NOPROMPT INTEGER 'Elem #' '0'
+%     EVALUATE SXF = VALUE
+%     IF SXF .EQ. 0 THEN
+ Valid element number (from SFAC) not found.
+%        FINISH
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get the x co-ordinate of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'X coord' '-10.000'
+%     EVALUATE SXX = VALUE
+%     IF SXX .LT. ( - 5.0 ) THEN
+ X-coordinate not found.
+%        FINISH
+%     END IF
+%     IF SXX .GT. 5.0 THEN
+ Warning X-coordinate was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXX = SXX - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get the y co-ordinate of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'Y coord' '-10.000'
+%     EVALUATE SXY = VALUE
+%     IF SXY .LT. ( - 5.0 ) THEN
+ Y-coordinate not found.
+%        FINISH
+%     END IF
+%     IF SXY .GT. 5.0 THEN
+ Warning Y-coordinate was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXY = SXY - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get the z co-ordinate of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'Z coord' '-10.000'
+%     EVALUATE SXZ = VALUE
+%     IF SXZ .LT. ( - 5.0 ) THEN
+ Z-coordinate not found.
+%        FINISH
+%     END IF
+%     IF SXZ .GT. 5.0 THEN
+ Warning Z-coordinate was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXZ = SXZ - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get the occupancy of the atom.
+%%
+%     GET NOSTORE NOPROMPT REAL 'Occ' '-10.0'
+%     EVALUATE SXO = VALUE
+%     IF SXO .LT. 0.0 THEN
+ Occupancy not present. Set to 1.0.
+%        EVALUATE SXO = 11.00
+%     END IF
+%     IF SXO .LT. 5.0 THEN
+ Warning occupancy was not fixed in SHELX file.
+ This must be set to be refined in CRYSTALS list 12.
+%     ELSE
+%        EVALUATE SXO = SXO - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%     IF ( SXEOL ) THEN
+%% No more info for this atom. Process now.
+%        CLEAR
+%        INSERT 'ATOM '
+%        TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%        STORE FORMAT /(I4)/ LENGTH 5 INTEGER ISERI
+%        STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%        INSERT " 1.0 "
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%        SEND
+%        EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%        FINISH
+%     END IF
+%%
+%% Get U[11] or U[ISO]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[11] or U[iso]' '-10.000'
+%     EVALUATE SXU11 = VALUE
+%     IF SXU11 .LT. ( - 5.0 ) THEN
+ Error. Continuation character found, but nothing relevant on next line.
+%        FINISH
+%     END IF
+%     IF SXU11 .GT. 5.0 THEN
+ Warning U[11] was fixed in SHELX file.
+ This must be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXU22 = SXU22 - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%     IF ( SXEOL .OR. LPEAK ) THEN
+%% No more info. Last value was U[ISO]
+%% or this is a  peak height. Process now.
+%        CLEAR
+%        INSERT 'ATOM '
+%        TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%        STORE FORMAT /(I4)/ LENGTH 5 INTEGER ISERI
+%        STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%        INSERT " 1.0 "
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%        EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%        SEND
+%        CLEAR
+%        IF SXU11 .LE. ( - 1.0 ) THEN
+%           EVALUATE SXU11 = 0.05
+%        END IF
+%        INSERT 'CONT U[11]= '
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU11
+%        SEND
+%        FINISH
+%     END IF
+%%
+%% Get U[22]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[22]?' '-10.000'
+%     EVALUATE SXU22 = VALUE
+%     IF ( SXU22 .LT. ( - 5.0 ) ) THEN
+ Error. Continuation character found, but nothing relevant on next line.
+%        FINISH
+%     END IF
+%     IF SXU22 .GT. 5.0 THEN
+ Warning U[22] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXU22 = SXU22 - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get U[33]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[33]?' '-10.000'
+%     EVALUATE SXU33 = VALUE
+%     IF SXU33 .LT. ( - 5.0 ) THEN
+ Error. U[22] found, but no U[33].
+%        FINISH
+%     END IF
+%     IF SXU33 .GT. 5.0 THEN
+ Warning U[33] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXU33 = SXU33 - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get U[23]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[23]?' '-10.000'
+%     EVALUATE SXU23 = VALUE
+%     IF SXU23 .LT. ( - 5.0 ) THEN
+ Error. U[33] found, but no U[23].
+%        FINISH
+%     END IF
+%     IF SXU23 .GT. 5.0 THEN
+ Warning U[23] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXU23 = SXU23 - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get U[13]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[13]?' '-10.000'
+%     EVALUATE SXU13 = VALUE
+%     IF SXU13 .LT. ( - 5.0 ) THEN
+ Error. U[23] found, but no U[13].
+%        FINISH
+%     END IF
+%     IF SXU13 .GT. 5.0 THEN
+ Warning U[13] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXU13 = SXU13 - 10.0
+%     END IF
+%     COPY '#SCRIPT SXEOLCHK'
+%%
+%% Get U[12]
+%%
+%     GET NOSTORE NOPROMPT REAL 'U[12]?' '-10.000'
+%     EVALUATE SXU12 = VALUE
+%     IF SXU12 .LT. ( - 5.0 ) THEN
+ Error. U[23] found, but no U[12].
+%        FINISH
+%     END IF
+%     IF SXU12 .GT. 5.0 THEN
+ Warning U[12] was fixed in SHELX file.
+ This may need to be manually fixed in CRYSTALS list 12.
+%        EVALUATE SXU12 = SXU12 - 10.0
+%     END IF
+%%
+%% Process this aniso atom...
+%%
+%     CLEAR
+%     INSERT 'ATOM '
+%     TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%     STORE FORMAT /(I4)/ LENGTH 5 INTEGER ISERI
+%     STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%     INSERT " 0.0 "
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%     EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%     SEND
+%     CLEAR
+%     INSERT 'CONT U[11]= '
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU11
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU22
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU33
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU23
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU13
+%     STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU12
+%     SEND
+%END SCRIPT
