@@ -32,4 +32,12 @@ class	CrButton : public CrGUIElement
 		
 		// attributes
 };
+
+#define kSDefault	"DEFAULT"
+
+enum 
+{
+ kTDefault = 600
+};
+
 #endif
