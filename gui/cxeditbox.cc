@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2001/06/17 14:43:40  richard
+//   CxDestroyWindow function.
+//   Get font from winsizes file. (Can be set via "Appearence" menu.)
+//
 //   Revision 1.13  2001/03/08 15:51:30  richard
 //   Limit number of characters if required.
 //
@@ -93,7 +97,9 @@ void  CxEditBox::SetText( CcString text )
     if ( (text.Len()) &&( text.Len() > m_Limit) )
     {
       text = text.Sub(1,m_Limit);
+#ifdef __BOTHWIN__
       MessageBeep(MB_ICONASTERISK);
+#endif
     }
 //    for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
 //    if ( text[i] == ' ' )    text[i] = '\0';
