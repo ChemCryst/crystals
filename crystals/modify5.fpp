@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/07/25 15:58:05  richard
+C New DRENAME directive for #EDIT, renames an atom, but moves any existing clashes
+C out of the way. (Next unused serial for that atom type.)
+C
 C Revision 1.30  2002/07/23 15:55:45  richard
 C Load lists 3,29,40 and 41 *BEFORE* the ordered list 5, otherwise what's going
 C to happen when you add an ATOM? That's right: a mess.
@@ -978,7 +982,7 @@ CDJW JAN2000 JVO IS THE EXTENDED PARAMETER NUMBER
 C--CHECK THE TYPE
 cdjwjun02
       write(ctemp,'(a,i9)')' jvo = ', jvo
-      call zmore(ctemp,0)
+&&GIDGIL      call zmore(ctemp,0)
 c      IF (JV) 3250,3250,3300
       if ((jv .eq. 0) .or.(jv.eq.17)) then
 C--ALPHA-NUMERIC VALUE EXPECTED

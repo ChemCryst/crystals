@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2002/06/21 09:49:03  Administrator
+C Fix zero esds on bonds across a symmetry operator between atoms on special positions
+C
 C Revision 1.3  2001/12/12 17:48:59  Administrator
 C matrix calculator
 C
@@ -116,7 +119,7 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-      CALL ZMORE(CMON,0)
+&&GIDGIL      CALL ZMORE(CMON,0)
       GOTO 1100
 C
 C
@@ -150,7 +153,7 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-      CALL ZMORE(CMON,0)
+&&GIDGIL      CALL ZMORE(CMON,0)
       GOTO 1100
 C
 C--ERROR IN THE INPUT NUMBER
@@ -197,11 +200,11 @@ C-----INV
 8     CONTINUE
       CALL MATINV(A,ACC,D)
       WRITE(CMON,'(A, F12.5)') 'Determinant = ', D
-      CALL ZMORE(CMON,0)
+&&GIDGIL      CALL ZMORE(CMON,0)
       GOTO 101
 C-----EIG     
 9     CONTINUE
-      call zmore('Not yet implemented',0)
+&&GIDGIL      call zmore('Not yet implemented',0)
       GOTO 101
 C-----ACC2A 
 10     CONTINUE
@@ -214,7 +217,7 @@ C-----ACC2B
 C
 101    CONTINUE
       WRITE(CMON,'(9F8.3)') ACC
-      CALL ZMORE(CMON,0)
+&&GIDGIL      CALL ZMORE(CMON,0)
       GOTO 1100
 C
 C--MAIN TERMINATION ROUTINES

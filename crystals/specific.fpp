@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2002/08/23 11:25:30  richard
+C Output script names to progress bar.
+C
 C Revision 1.37  2002/05/15 17:16:48  richard
 C Removed out of place subroutine header comment.
 C
@@ -3537,14 +3540,14 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
 CRIC2001:
 CODE FOR XNDATE
       SUBROUTINE XNDATE(ISECS)
-&GID      USE DFPORT
+&&DVFGID      USE DFPORT
 C--SET THE # SECS SINCE 1970 IN ISECS
       ISECS = TIME()
       RETURN
       END
 CODE FOR XCDATE
       SUBROUTINE XCDATE(ISECS,CT)
-&GID      USE DFPORT
+&&DVFGID      USE DFPORT
 C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING
 C e.g. "Fri Sep 07 04:37:23 2001"
       CHARACTER*24 CT

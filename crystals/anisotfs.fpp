@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2002/02/27 19:30:18  ckp2
+C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
+C RIC: Ensure consistent use of backslash after CRYSDIR:
+C
 C Revision 1.8  2001/12/14 14:44:28  Administrator
 C
 C DJW Combine TLS amd MOLAX into new module GEOEMTRY. This enables angles
@@ -1330,7 +1334,7 @@ C---OUTPUT NEW TENSORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,1750)
       WRITE (NCAWU,1750)
       WRITE(CMON,1750)
-      CALL ZMORE(CMON,0)
+&&GIDGIL      CALL ZMORE(CMON,0)
 1750  FORMAT (' Tensors with respect to principal axes of L')
       CALL RSUB11 (2)
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/08/23 09:02:26  richard
+C Change for script names in status bar.
+C
 C Revision 1.33  2002/03/15 16:50:01  richard
 C Type #SET BONDTYPE OFF to suppress bond type calculation.
 C
@@ -2314,16 +2317,16 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       ENDIF
 CRICFEB01[
 2346    FORMAT ( '^^CO SET ', A , ' TEXT ''', A , '''' )
-      IF ( IDEV .EQ. NCPU ) THEN
-        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
-        CALL XPRVDU ( NCVDU, 1, 0 )
-      ELSE IF ( IDEV .EQ. NCWU ) THEN
-        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
-        CALL XPRVDU ( NCVDU, 1, 0 )
-      ELSE IF ( IDEV .EQ. NCLU ) THEN
-        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
-        CALL XPRVDU ( NCVDU, 1, 0 )
-      ENDIF
+&&GIDGIL      IF ( IDEV .EQ. NCPU ) THEN
+&&GIDGIL        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
+&&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
+&&GIDGIL      ELSE IF ( IDEV .EQ. NCWU ) THEN
+&&GIDGIL        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
+&&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
+&&GIDGIL      ELSE IF ( IDEV .EQ. NCLU ) THEN
+&&GIDGIL        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
+&&GIDGIL        CALL XPRVDU ( NCVDU, 1, 0 )
+&&GIDGIL      ENDIF
 CRICFEB01]
 CDJWMAR99]
 C
