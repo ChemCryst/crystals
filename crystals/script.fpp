@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  1999/07/02 17:56:09  richard
+C RIC: If there is a USER ERROR, then SCRIPTS ignores the SILENT keyword
+C and prints allowed values and prompts anyway. Stops you from getting
+C mysteriously stuck in GUI scripts.
+C
 C Revision 1.16  1999/06/06 15:43:58  dosuser
 C RIC: Added a SILENT keyword to the GET command. This inhibits output
 C of allowed value list, prompt string and the echoing of the command
@@ -5721,7 +5726,7 @@ C
       CHARACTER*(LTO) CTO(NTO)
 C
 CJAN99
-      PARAMETER ( LDEST = 12 , NDEST = 4 )
+      PARAMETER ( LDEST = 12 , NDEST = 5 )
       CHARACTER*(LDEST) CDEST(NDEST)
 C
       PARAMETER ( LENDSP = 80 )
@@ -5736,7 +5741,7 @@ C
 C
       DATA CTO / 'TO' /
 CJAN99
-      DATA CDEST / 'DISPLAY' , 'CRYSTALS' , 'SCRIPT', 'BUFFER' /
+      DATA CDEST / 'DISPLAY','CRYSTALS','SCRIPT','BUFFER','INPUT' /
 C
 C
 C
@@ -5790,15 +5795,15 @@ C
         ISTAT = KSCSDC ( IVALUE , CTEXT , IUSLEN )
         IF ( IUSLEN .GT. 0 ) KSCTRA = 3
 CJAN99
-        ELSE IF ( IDEST .EQ. 4 ) THEN
+      ELSE IF ( IDEST .EQ. 4 ) THEN
 C
 C -- 'BUFFER'
 C
 C Purpose: To transfer text strings to the command buffer.
 C This is a bit of a hack for the moment. Because I'm not sure how
 C the script processor /really/ works.
-C We process the text as for DISPLAY, then tack %INSERT { on the beginni
-C and } on the end, then set KSCTRA to 3 so that the command is copied b
+C We process the text as for DISPLAY, then tack %INSERT ! on the beginni
+C and ! on the end, then set KSCTRA to 3 so that the command is copied b
 C to the script processor.
         ISTAT = KSCSDC ( IVALUE , CTEXT , IUSLEN )
           IF ( IUSLEN .GT. 0 ) THEN
@@ -5813,6 +5818,20 @@ C Add the pretext
 C Add the posttext
                 CTEXT(IUSLEN-1:IUSLEN) = ' !'
           END IF
+      ELSE IF ( IDEST .EQ. 5 ) THEN
+C
+C -- 'INPUT'
+C
+C Purpose: To transfer text strings to the user input buffer.
+C Remarks: Any existing unprocessed user input is overwritten.
+        ISTAT = KSCSDC ( IVALUE , CTEXT , IUSLEN )
+        IF ( IUSLEN .GT. 0 ) THEN
+            IUSLEN = MIN(80,IUSLEN)
+            CLINPB = CTEXT(1:IUSLEN)
+            CUINPB = CTEXT(1:IUSLEN)
+            IINPPS = 1
+            IINPLN = IUSLEN
+        END IF
       ENDIF
 C
 C
@@ -6330,6 +6349,7 @@ C -- IF INPUT IS EXHAUSTED, PROMPT THE USER FOR INPUT WITH THE
 C    APPROPRIATE PROMPT STRING. CONVERT INPUT TO UPPERCASE FOR
 C    PROCESSING.
 C
+
       IF ( ( IINPPS .GT. IINPLN ) .AND.
      2     ( INOPMT .LE. 0 ) )       THEN
 C
