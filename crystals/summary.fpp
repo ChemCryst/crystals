@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2002/02/18 11:20:30  DJWgroup
+C SH: Update to plot code.
+C
 C Revision 1.17  2002/02/13 12:12:13  ckp2
 C Store extinction param su in List 30.
 C
@@ -891,8 +894,8 @@ C--SETUP A GRAPH HERE
       IF (LEVEL .EQ. 4) THEN
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
-     1  '^^PL XAXIS TITLE Fc',
-     1  '^^PL NSERIES=1 LENGTH=2000 YAXIS TITLE Fo'
+     1  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE Fo'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 
@@ -940,12 +943,16 @@ C
       WBOT = 0.0
       IFSQ = ISTORE(L23MN+1)
       N6ACC = 0
+	FCMAX = 0
 1100  CONTINUE
         ISTAT = KFNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
         N6ACC = N6ACC + 1
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
+      IF (FC .GT. FCMAX) THEN 
+        FCMAX = FC
+      ENDIF
       IF ( LEVEL .EQ. 4 ) THEN
         WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1  NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -981,6 +988,19 @@ C
 C -- BEGIN OUTPUT
 C
 1200  CONTINUE
+c -- ADD A SERIES FOR STRAIGHT LINE
+      IF ( LEVEL .EQ. 4) THEN
+        WRITE(CMON,'(A)')
+     1  '^^PL ADDSERIES L TYPE LINE'
+        CALL XPRVDU(NCVDU,1,0)
+        WRITE(CMON, '(A)')
+     1  '^^PL DATA 0 0'
+        CALL XPRVDU(NCVDU, 1, 0)
+        WRITE(CMON, '(A, 2F10.2)')
+     1  '^^PL DATA ', FCMAX, FCMAX
+        CALL XPRVDU(NCVDU, 1, 0)
+      ENDIF
+
 C -- ALLOCATE SPACE FOR MATRICES
       IALPHA = KSTALL(4)
       IBETA = KSTALL(2)
