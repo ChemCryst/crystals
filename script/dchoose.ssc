@@ -1,7 +1,7 @@
 %SCRIPT DCHOOSE
-%% Create a CONTINUED list in the Script Queue 
+%% Create a CONTINUED list in the Script Queue
 %%
-%% Returns the number of atoms selected in NCHOSEN 
+%% Returns the number of atoms selected in NCHOSEN
 %%
 %% CTEXT1 is the text to be displayed in the window frame
 %%
@@ -26,8 +26,8 @@
 ^^WI     @ 4,1 STATIC T4 'Click "Done" when selection is'
 ^^WI     @ 5,1 STATIC T5 'completed'
 ^^WI     @ 6,1 STATIC T6 ' '
-^^WI     @ 7,1 STATIC T7'Click "Abort to" '
-^^WI     @ 8,1 STATIC T8'abort whole operation'
+^^WI     @ 7,1 STATIC T7 'Click "Abort to" '
+^^WI     @ 8,1 STATIC T8 'abort whole operation'
 ^^WI   }
 ^^WI   @ 2,4 GRID BTNS NROWS=5 NCOLS=1
 ^^WI   {
