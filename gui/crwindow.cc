@@ -169,12 +169,12 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
                         LOGWARN("CrWindow:ParseInput:POSITION Couldn't find window to position near: "+nearWindow);
                     break;
                 }
-                                case kTKeep:
-                                {
-                                      tokenList->GetToken();
-                                      m_Keep = true;
-                                      break;
-                                }
+                case kTKeep:
+                {
+                    tokenList->GetToken();
+                    m_Keep = true;
+                    break;
+                }
                 default:
                 {
                     hasTokenForMe = false;

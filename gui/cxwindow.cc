@@ -45,7 +45,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 #endif
 #ifdef __BOTHWX__
       theWindow->mParentWnd = (wxWindow*) parentWindow;
-      theWindow->Create( NULL, -1, "Window", wxPoint(0, 0), wxSize(500, 400), wxDEFAULT_FRAME_STYLE );
+      theWindow->Create( NULL, -1, "Window", wxPoint(0, 0), wxSize(-1,-1), wxDEFAULT_FRAME_STYLE );
 #endif
 
     //if the window is modal, disable the parent:
@@ -136,21 +136,22 @@ void    CxWindow::CxShowWindow()
 
 void    CxWindow::SetGeometry( int top, int left, int bottom, int right )
 {
-      TEXTOUT( "CxWindow::SetGeom called " + CcString(top) + " " + CcString(left)+ " " + CcString(bottom) + " " + CcString(right) );
+      LOGSTAT( "CxWindow::SetGeom called " + CcString(top) + " " + CcString(left)+ " " + CcString(bottom) + " " + CcString(right) );
 
     if(mProgramResizing)  //Only move the window, if the program is resizing it.
     {
-      TEXTOUT(" Progresizing is TRUE ");
+      LOGSTAT(" Progresizing is TRUE ");
 #ifdef __CR_WIN__
         MoveWindow(left, top, (right-left), (bottom-top),true);
 #endif
 #ifdef __BOTHWX__
         SetSize(left,top,right-left,bottom-top);
+        Refresh();
 #endif
     }
     else // if the user is resizing, then the window is already the right size.
     {
-      TEXTOUT(" Progresizing is FALSE ");
+      LOGSTAT(" Progresizing is FALSE ");
     }
 }
 
@@ -278,12 +279,6 @@ void    CxWindow::SetDefaultButton( CxButton * inButton )
 }
 
 
-// ---------------------------------------------------------------------------
-//          HandleKeyPress
-// ---------------------------------------------------------------------------
-//
-//      Default Button: Enter, Return
-
 void CxWindow::Hide()
 {
 
@@ -388,7 +383,7 @@ void CxWindow::OnClose(wxCloseEvent & event)
 void CxWindow::OnSize(UINT nType, int cx, int cy)
 {
 
-    TEXTOUT( "OnSize called " + CcString(cx) + " " + CcString(cy) );
+    LOGSTAT( "OnSize called " + CcString(cx) + " " + CcString(cy) );
     CFrameWnd::OnSize(nType, cx, cy);
     mProgramResizing = false;
     if ( nType == SIZE_MINIMIZED ) return;
@@ -400,7 +395,7 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
 #ifdef __BOTHWX__
 void CxWindow::OnSize(wxSizeEvent & event)
 {
-      TEXTOUT( "OnSize called " + CcString(event.GetSize().x) + " " + CcString(event.GetSize().y) );
+      LOGSTAT( "OnSize called " + CcString(event.GetSize().x) + " " + CcString(event.GetSize().y) );
       mProgramResizing = false;
       int cx = event.GetSize().x;
       int cy = event.GetSize().y;
