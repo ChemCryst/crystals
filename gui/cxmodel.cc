@@ -695,6 +695,13 @@ void CxModel::PaintBuffer()
             glLightfv(GL_LIGHT1, GL_SPECULAR, LightSpecular); 
             glLightfv(GL_LIGHT1, GL_POSITION, LightPosition1); 
             glEnable(GL_LIGHT1);
+
+            GLfloat LightPosition2[] = {0.0f, 0.0f, -10000.0f, 0.0f};
+            glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient); 
+            glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse); 
+            glLightfv(GL_LIGHT2, GL_SPECULAR, LightSpecular); 
+            glLightfv(GL_LIGHT2, GL_POSITION, LightPosition1); 
+            glEnable(GL_LIGHT2);
 	
 		matrix[12] = 0.0;
 		matrix[13] = 0.0;
