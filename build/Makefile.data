@@ -10,14 +10,20 @@ CRYSEDIT = ../editor/cryseditor
 SSRCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\# strip
 SSRFILES = $(notdir $(wildcard ../datafiles/*.ssr))
 SRTFILES = $(SSRFILES:.ssr=.srt)
+
+#All possible files in the precomp heirarchy
 COPYFILES = $(wildcard ../precomp/all/*.*) $(wildcard ../precomp/$(COMPCODE)/*.*)\
  $(wildcard ../precomp/all/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*.*)\
  $(wildcard ../precomp/all/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*.*)\
  $(wildcard ../precomp/all/*/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*/*.*)
-TEMPTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
+
+#Remove prefixes
 COPYTEMP = $(COPYFILES:../precomp/all/%=%)
 COPYDEST = $(COPYTEMP:../precomp/$(COMPCODE)/%=%)
-COPYDIRS = $(filter-out $(COPYFILES) %CVS,$(TEMPTOP))
+
+#Top-level files and dirs only
+TEMPTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
+COPYDIRS = $(filter-out %CVS,$(TEMPTOP))
 
 all : commands.dsc $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
 
@@ -40,7 +46,7 @@ $(CRYSEDIT) :
 	$(CRYSEDIT) $< $@ $(SSRCRYEDFLAGS)
 
 $(COPYDEST) : $(COPYFILES)
-	cp -fR $(COPYDIRS) .
+	cp -fR $(COPYDIRS) .	
 
 clean :
 	rm -Rf $(BUILDDIR)
