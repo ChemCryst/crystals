@@ -242,9 +242,12 @@ BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
       EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
 END_EVENT_TABLE()
 
+#include <X11/Xlib.h>
+
 bool CCrystalsApp::OnInit()
 {
 
+      XInitThreads();
 
       CcString directory;
       CcString dscfile;
