@@ -18,11 +18,11 @@
 /********************************************************/
 DataMerger::DataMerger(const HKLData& pData, const float pUnitCellThreshHold, const LaueGroupRange pLaueGroupRange, const UnitCell& pUnitCell):list<JJMergedDataResult*>()
 {
-	JJLaueGroups* tLaueGroups = new JJLaueGroups();
+	LaueGroups* tLaueGroups = new LaueGroups();
 	
 	for (size_t tCurCrySysID = pLaueGroupRange.location; tCurCrySysID < (size_t)pLaueGroupRange.length+pLaueGroupRange.location; tCurCrySysID++)
 	{
-		JJLaueGroup *tCurLaueGroup;
+		LaueGroup *tCurLaueGroup;
 		for (size_t j = 0; (tCurLaueGroup = tLaueGroups->laueGroupAfterFirst((SystemID)tCurCrySysID, j)) != NULL; j ++)
 		{
 			if (tCurLaueGroup->ratingForUnitCell(pUnitCell) < pUnitCellThreshHold) //If the unit cell fits well enough then do the merge
@@ -36,11 +36,11 @@ DataMerger::DataMerger(const HKLData& pData, const float pUnitCellThreshHold, co
 
 DataMerger::DataMerger(const HKLData& pData, const SystemID pForLaueGroups[], const unsigned int pNumberOfLaueGroups, const UnitCell& pUnitCell):list<JJMergedDataResult*>()
 {
-	JJLaueGroups* tLaueGroups = new JJLaueGroups();
+	LaueGroups* tLaueGroups = new LaueGroups();
 	
 	for (size_t i = 0; i < pNumberOfLaueGroups; i++)
 	{
-		JJLaueGroup *tCurLaueGroup;
+		LaueGroup *tCurLaueGroup;
 		for (size_t j = 0; (tCurLaueGroup = tLaueGroups->laueGroupAfterFirst(pForLaueGroups[i], j)) != NULL; j ++)
 		{
 			push_back(new JJMergedDataResult(pData, *tCurLaueGroup, pUnitCell));
@@ -119,7 +119,7 @@ std::ostream& operator<<(std::ostream& pStream, DataMerger& pMergerResults)
 /* JJMergedDataResult									*/
 /********************************************************/
 
-JJMergedDataResult::JJMergedDataResult(const HKLData& pData, const JJLaueGroup& pForLaueGroup, const UnitCell& pUnitCell)
+JJMergedDataResult::JJMergedDataResult(const HKLData& pData, const LaueGroup& pForLaueGroup, const UnitCell& pUnitCell)
 {
 	const size_t tStrLen = strlen(pForLaueGroup.laueGroup())+1;
 	
@@ -155,7 +155,7 @@ float JJMergedDataResult::rFactor()const
 /********************************************************/
 /* MergedData										    */
 /********************************************************/
-MergedReflections::MergedReflections(float pRFactor, JJLaueGroup* pLaueGroup):iLaueGroup(pLaueGroup), iRFactor(pRFactor)
+MergedReflections::MergedReflections(float pRFactor, LaueGroup* pLaueGroup):iLaueGroup(pLaueGroup), iRFactor(pRFactor)
 {}
 
 float MergedReflections::rFactor()
@@ -163,7 +163,7 @@ float MergedReflections::rFactor()
 	return iRFactor;
 }
 
-JJLaueGroup *MergedReflections::laueGroup()
+LaueGroup *MergedReflections::laueGroup()
 {
 	return iLaueGroup;
 }
@@ -172,7 +172,7 @@ JJLaueGroup *MergedReflections::laueGroup()
 /* MergedData										    */
 /********************************************************/
 
-JJMergedData::JJMergedData(const HKLData& pHKLs, const JJLaueGroup& pForLaueGroup, Matrix<short>* pTransformation):iRFactor(-1)
+JJMergedData::JJMergedData(const HKLData& pHKLs, const LaueGroup& pForLaueGroup, Matrix<short>* pTransformation):iRFactor(-1)
 {
 	size_t tSize = pHKLs.size();
 	iUnsortedReflections = new Reflection[tSize];

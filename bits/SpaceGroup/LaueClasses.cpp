@@ -1,5 +1,5 @@
 /*
- *  JJLaueClasses.cpp
+ *  LaueClasses.cpp
  *  Space Groups
  *
  *  Created by Stefan Pantos on Mon Apr 19 2004.
@@ -40,13 +40,13 @@ inline bool greaterHKL(const Matrix<short>& pMat1, const Matrix<short>& pMat2)
 }
 
 /********************************************************/
-/* JJLaueClassMatrices									*/
+/* LaueClassMatrices									*/
 /********************************************************/
 
 /*
  * Creates a large array containing all the unique matrices.
  */
-JJLaueClassMatrices::JJLaueClassMatrices():vector<MatrixReader>(39)
+LaueClassMatrices::LaueClassMatrices():vector<MatrixReader>(39)
 {
   //  MatrixReader* tMatrices[39];
 	
@@ -93,92 +93,92 @@ JJLaueClassMatrices::JJLaueClassMatrices():vector<MatrixReader>(39)
    // iMatrices = new Array<MatrixReader*>(tMatrices, 39);
 }
 
-static JJLaueClassMatrices* gDefaultMatrices = NULL;
+static LaueClassMatrices* gDefaultMatrices = NULL;
 
-JJLaueClassMatrices* JJLaueClassMatrices::defaultInstance()
+LaueClassMatrices* LaueClassMatrices::defaultInstance()
 {
 	if (gDefaultMatrices == NULL)
 	{
-		gDefaultMatrices = new JJLaueClassMatrices();
+		gDefaultMatrices = new LaueClassMatrices();
 	}
 	return gDefaultMatrices;
 }
 
-void JJLaueClassMatrices::releaseDefault()
+void LaueClassMatrices::releaseDefault()
 {
 	delete gDefaultMatrices;
 	gDefaultMatrices = NULL;
 }
 
-Matrix<short>& JJLaueClassMatrices::getMatrix(unsigned int pIndex) const
+Matrix<short>& LaueClassMatrices::getMatrix(unsigned int pIndex) const
 {
     return (Matrix<short>&)((*this)[pIndex]);
 }
 
 /********************************************************/
-/* JJLaueGroup										    */
+/* LaueGroup										    */
 /********************************************************/
 
-JJLaueGroup::JJLaueGroup():iCrystalSystem(kTriclinicID), iJJLaueGroup(NULL), iLaueGroupMatrices(JJLaueClassMatrices::defaultInstance())
+LaueGroup::LaueGroup():iCrystalSystem(kTriclinicID), iLaueGroup(NULL), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
 {
 	iMatIndices = NULL;
 }
    
-JJLaueGroup::JJLaueGroup(const SystemID pSys, const char* pJJLaueGroup, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys),iJJLaueGroup(NULL), iLaueGroupMatrices(JJLaueClassMatrices::defaultInstance())
+LaueGroup::LaueGroup(const SystemID pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat):iCrystalSystem(pSys),iLaueGroup(NULL), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
 {
 	iMatIndices = new vector<unsigned short>(pIndices, &pIndices[pNumMat]);
-	iJJLaueGroup = new char[strlen(pJJLaueGroup)+1];
-	strcpy(iJJLaueGroup, pJJLaueGroup);
+	iLaueGroup = new char[strlen(pLaueGroup)+1];
+	strcpy(iLaueGroup, pLaueGroup);
 	
 }
 
-JJLaueGroup::JJLaueGroup(const JJLaueGroup& pJJLaueGroup):iCrystalSystem(pJJLaueGroup.iCrystalSystem), iJJLaueGroup(NULL), iLaueGroupMatrices(JJLaueClassMatrices::defaultInstance())
+LaueGroup::LaueGroup(const LaueGroup& pLaueGroup):iCrystalSystem(pLaueGroup.iCrystalSystem), iLaueGroup(NULL), iLaueGroupMatrices(LaueClassMatrices::defaultInstance())
 {
-	if (pJJLaueGroup.iMatIndices != NULL)
+	if (pLaueGroup.iMatIndices != NULL)
 	{
-		iMatIndices = new vector<unsigned short>(*(pJJLaueGroup.iMatIndices));
+		iMatIndices = new vector<unsigned short>(*(pLaueGroup.iMatIndices));
 	}
 	else
 	{
 		iMatIndices = NULL;
 	}
-	if (pJJLaueGroup.iJJLaueGroup != NULL)
+	if (pLaueGroup.iLaueGroup != NULL)
 	{
-		iJJLaueGroup = new char[strlen(pJJLaueGroup.iJJLaueGroup)+1];
-		strcpy(iJJLaueGroup, pJJLaueGroup.iJJLaueGroup);
+		iLaueGroup = new char[strlen(pLaueGroup.iLaueGroup)+1];
+		strcpy(iLaueGroup, pLaueGroup.iLaueGroup);
 	}
 }
 
-JJLaueGroup::~JJLaueGroup()
+LaueGroup::~LaueGroup()
 {
 	if (iMatIndices != NULL)
 	{
 		delete iMatIndices;
 		iMatIndices = NULL;
 	}
-	if (iJJLaueGroup != NULL)
+	if (iLaueGroup != NULL)
 	{
-		delete[] iJJLaueGroup;
-		iJJLaueGroup = NULL;
+		delete[] iLaueGroup;
+		iLaueGroup = NULL;
 	}
 }
 
-SystemID JJLaueGroup::crystalSystem() const
+SystemID LaueGroup::crystalSystem() const
 {
 	return iCrystalSystem;
 }
 
-Matrix<short>& JJLaueGroup::getMatrix(const int i) const
+Matrix<short>& LaueGroup::getMatrix(const int i) const
 {
 	return iLaueGroupMatrices->getMatrix((*iMatIndices)[i]);
 }
 
-size_t JJLaueGroup::numberOfMatrices() const
+size_t LaueGroup::numberOfMatrices() const
 {
 	return iMatIndices->size();
 }
 
-float JJLaueGroup::ratingForUnitCell(const UnitCell& pUnitCell)const
+float LaueGroup::ratingForUnitCell(const UnitCell& pUnitCell)const
 {
 	Matrix<float> tMetricTensor(pUnitCell.metricTensor());
 	Matrix<float> tDiff(3,3);
@@ -200,7 +200,7 @@ float JJLaueGroup::ratingForUnitCell(const UnitCell& pUnitCell)const
 	return tScalarDiff;
 }
 
-Matrix<short> JJLaueGroup::maxEquivilentHKL(const Matrix<short>& pHKL) const
+Matrix<short> LaueGroup::maxEquivilentHKL(const Matrix<short>& pHKL) const
 {
 	Matrix<short> tTempHKL(1, 3);
 	Matrix<short> tZero(1, 3, 0);
@@ -221,27 +221,27 @@ Matrix<short> JJLaueGroup::maxEquivilentHKL(const Matrix<short>& pHKL) const
 	return tCurHKL;
 }
 
-char* JJLaueGroup::laueGroup() const
+char* LaueGroup::laueGroup() const
 {
-	return iJJLaueGroup;
+	return iLaueGroup;
 }
 
-std::ostream& JJLaueGroup::output(std::ostream& pStream) const
+std::ostream& LaueGroup::output(std::ostream& pStream) const
 {
 	pStream.width(13);
-	return pStream << iJJLaueGroup;
+	return pStream << iLaueGroup;
 }
 
-std::ostream& operator<<(std::ostream& pStream, const JJLaueGroup& pLaueGroup)
+std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup)
 {
 	return pLaueGroup.output(pStream);
 }
 
 /********************************************************/
-/* JJLaueGroups										    */
+/* LaueGroups										    */
 /********************************************************/
 
-JJLaueGroups::JJLaueGroups():vector<JJLaueGroup*>()
+LaueGroups::LaueGroups():vector<LaueGroup*>()
 {	
 	const unsigned short tIndices[] = {37, //Triclinic
 				       37, 31, //2/m 1 1
@@ -263,29 +263,29 @@ JJLaueGroups::JJLaueGroups():vector<JJLaueGroup*>()
 				       37, 26, 20, 36, 25, 19, 24, 15, 14, 3, 9, 31, 28, 18, 35, 27, 17, 34, 13, 2, 33, 21, 16, 11};//m -3 m
 					   
     /* The laue groups should always bin in order of symmetry as other methods rely this order on this*/
-	insert(end(), new JJLaueGroup(kTriclinicID, "-1", tIndices, 1)); //Triclinic
-	insert(end(), new JJLaueGroup(kMonoclinicAID, "2/m 1 1", &(tIndices[1]), 2)); //2/m 1 1
-	insert(end(), new JJLaueGroup(kMonoclinicBID, "1 2/m 1", &(tIndices[3]), 2)); //1 2/m 1
-	insert(end(), new JJLaueGroup(kMonoclinicCID, "1 1 2/m", &(tIndices[5]), 2)); //1 1 2/m
-	insert(end(), new JJLaueGroup(kOrtharombicID, "2/m 2/m 2/m", &(tIndices[7]), 4)); //2/m 2/m 2/m
-	insert(end(), new JJLaueGroup(kTetragonalID, "4/m", &(tIndices[11]), 3)); //4/m
-	insert(end(), new JJLaueGroup(kTetragonalID, "4/m m m", &(tIndices[15]), 8)); //4/m m m
-	insert(end(), new JJLaueGroup(kTrigonalID, "-3", &(tIndices[23]), 3)); //-3
-	insert(end(), new JJLaueGroup(kTrigonalID, "-3 m 1", &(tIndices[26]), 6)); //-3 m 1
-	insert(end(), new JJLaueGroup(kTrigonalID, "-3 1 m", &(tIndices[32]), 6)); //-3 1 m
+	insert(end(), new LaueGroup(kTriclinicID, "-1", tIndices, 1)); //Triclinic
+	insert(end(), new LaueGroup(kMonoclinicAID, "2/m 1 1", &(tIndices[1]), 2)); //2/m 1 1
+	insert(end(), new LaueGroup(kMonoclinicBID, "1 2/m 1", &(tIndices[3]), 2)); //1 2/m 1
+	insert(end(), new LaueGroup(kMonoclinicCID, "1 1 2/m", &(tIndices[5]), 2)); //1 1 2/m
+	insert(end(), new LaueGroup(kOrtharombicID, "2/m 2/m 2/m", &(tIndices[7]), 4)); //2/m 2/m 2/m
+	insert(end(), new LaueGroup(kTetragonalID, "4/m", &(tIndices[11]), 3)); //4/m
+	insert(end(), new LaueGroup(kTetragonalID, "4/m m m", &(tIndices[15]), 8)); //4/m m m
+	insert(end(), new LaueGroup(kTrigonalID, "-3", &(tIndices[23]), 3)); //-3
+	insert(end(), new LaueGroup(kTrigonalID, "-3 m 1", &(tIndices[26]), 6)); //-3 m 1
+	insert(end(), new LaueGroup(kTrigonalID, "-3 1 m", &(tIndices[32]), 6)); //-3 1 m
 	
-	insert(end(), new JJLaueGroup(kTrigonalRhomID, "-3 rhom", &(tIndices[38]), 3)); //-3 rhom
-	insert(end(), new JJLaueGroup(kTrigonalRhomID, "-3 m 1 rhom", &(tIndices[41]), 6)); //-3 m 1 rhom
+	insert(end(), new LaueGroup(kTrigonalRhomID, "-3 rhom", &(tIndices[38]), 3)); //-3 rhom
+	insert(end(), new LaueGroup(kTrigonalRhomID, "-3 m 1 rhom", &(tIndices[41]), 6)); //-3 m 1 rhom
 		
-	insert(end(), new JJLaueGroup(kHexagonalID, "6/m", &(tIndices[47]), 6)); //6/m
-	insert(end(), new JJLaueGroup(kHexagonalID, "6/m m m", &(tIndices[53]), 12)); //6/m m m
-	insert(end(), new JJLaueGroup(kCubicID, "m -3", &(tIndices[65]), 12)); //m -3
-	insert(end(), new JJLaueGroup(kCubicID, "m -3 m", &(tIndices[77]), 24)); //m -3 
+	insert(end(), new LaueGroup(kHexagonalID, "6/m", &(tIndices[47]), 6)); //6/m
+	insert(end(), new LaueGroup(kHexagonalID, "6/m m m", &(tIndices[53]), 12)); //6/m m m
+	insert(end(), new LaueGroup(kCubicID, "m -3", &(tIndices[65]), 12)); //m -3
+	insert(end(), new LaueGroup(kCubicID, "m -3 m", &(tIndices[77]), 24)); //m -3 
 }
 
-JJLaueGroups::~JJLaueGroups()
+LaueGroups::~LaueGroups()
 {
-	vector<JJLaueGroup*>::iterator tIterator = begin();
+	vector<LaueGroup*>::iterator tIterator = begin();
 	
 	do
 	{
@@ -294,26 +294,26 @@ JJLaueGroups::~JJLaueGroups()
 	while (++tIterator != end());
 }
 
-static JJLaueGroups* gLaueGroupsDefulatInstace = NULL;
+static LaueGroups* gLaueGroupsDefulatInstace = NULL;
 
-JJLaueGroups* JJLaueGroups::defaultInstance()
+LaueGroups* LaueGroups::defaultInstance()
 {
 	if (gLaueGroupsDefulatInstace == NULL)
 	{
-		gLaueGroupsDefulatInstace = new JJLaueGroups();
+		gLaueGroupsDefulatInstace = new LaueGroups();
 	}
 	return gLaueGroupsDefulatInstace;
 }
 
-void JJLaueGroups::releaseDefault()
+void LaueGroups::releaseDefault()
 {
 	delete gLaueGroupsDefulatInstace;
 	gLaueGroupsDefulatInstace = NULL;
 }		
 
-JJLaueGroup* JJLaueGroups::laueGroupWithSymbol(const char* pSymbol)
+LaueGroup* LaueGroups::laueGroupWithSymbol(const char* pSymbol)
 {
-	vector<JJLaueGroup*>::iterator tIterator = begin();
+	vector<LaueGroup*>::iterator tIterator = begin();
 	
 	do
 	{
@@ -327,14 +327,14 @@ JJLaueGroup* JJLaueGroups::laueGroupWithSymbol(const char* pSymbol)
 	return NULL;
 }
 
-JJLaueGroup* JJLaueGroups::firstJJLaueGroupFor(const SystemID pCrystalSystem)
+LaueGroup* LaueGroups::firstLaueGroupFor(const SystemID pCrystalSystem)
 {
 	return laueGroupAfterFirst(pCrystalSystem, 0);
 }
 
-JJLaueGroup* JJLaueGroups::laueGroupAfterFirst(const SystemID pCrystalSystem, const int i)//Returns the JJLaue Group which is i elements after the first of this system
+LaueGroup* LaueGroups::laueGroupAfterFirst(const SystemID pCrystalSystem, const int i)//Returns the Laue Group which is i elements after the first of this system
 {
-	vector<JJLaueGroup*>::iterator tIterator = begin();
+	vector<LaueGroup*>::iterator tIterator = begin();
 	int tCount = 0;
 	
 	do
@@ -353,10 +353,10 @@ JJLaueGroup* JJLaueGroups::laueGroupAfterFirst(const SystemID pCrystalSystem, co
 	return NULL;
 }
 
-size_t JJLaueGroups::numberOfLaueGroupsFor(const SystemID pCrystalSystem)
+size_t LaueGroups::numberOfLaueGroupsFor(const SystemID pCrystalSystem)
 {
 	size_t tCount = 0;
-	vector<JJLaueGroup*>::iterator tIterator = begin();
+	vector<LaueGroup*>::iterator tIterator = begin();
 	
 	do
 	{
@@ -373,10 +373,10 @@ size_t JJLaueGroups::numberOfLaueGroupsFor(const SystemID pCrystalSystem)
 /**************************
  * Returns: the index of the parameters passed or UINT_MAX if it cannot be found.
  **************************/
-size_t JJLaueGroups::indexOf(JJLaueGroup* pLaueGroup)
+size_t LaueGroups::indexOf(LaueGroup* pLaueGroup)
 {
 	size_t tCount = 0;
-	vector<JJLaueGroup*>::iterator tIterator = begin();
+	vector<LaueGroup*>::iterator tIterator = begin();
 	
 	do
 	{
@@ -392,13 +392,13 @@ size_t JJLaueGroups::indexOf(JJLaueGroup* pLaueGroup)
 		
 
 /********************************************************/
-/* JJLaueGroup selection								*/
+/* LaueGroup selection								*/
 /********************************************************/
 
 std::ostream& laueGroupOptions(std::ostream& pOutputStream)
 {
-	JJLaueGroups *tDefault = JJLaueGroups::defaultInstance();
-	vector<JJLaueGroup*>::iterator tIter;
+	LaueGroups *tDefault = LaueGroups::defaultInstance();
+	vector<LaueGroup*>::iterator tIter;
 	unsigned int i = 0;
 	
 	for (tIter = tDefault->begin(); tIter != tDefault->end(); tIter++, i++)
@@ -408,10 +408,10 @@ std::ostream& laueGroupOptions(std::ostream& pOutputStream)
 	return pOutputStream;
 }
 
-JJLaueGroup* getLaueGroup(JJLaueGroup* pDefault, std::ostream& pOutputStream)
+LaueGroup* getLaueGroup(LaueGroup* pDefault, std::ostream& pOutputStream)
 {
-	vector<JJLaueGroup*>::iterator tIter;
-	JJLaueGroups *tDefault = JJLaueGroups::defaultInstance();
+	vector<LaueGroup*>::iterator tIter;
+	LaueGroups *tDefault = LaueGroups::defaultInstance();
 	Range tAnswerRange = {0, 0};
 	
 	laueGroupOptions(pOutputStream);

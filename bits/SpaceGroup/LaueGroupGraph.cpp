@@ -88,7 +88,7 @@ void LaueGroupGraph::Link::dropReflections() //Releases all the reflections whic
 /*
  * LaueGroupGraph::Node
  */
-LaueGroupGraph::Node::Node(JJLaueGroup* pLaueGroup):iLinks(list<Link*>())
+LaueGroupGraph::Node::Node(LaueGroup* pLaueGroup):iLinks(list<Link*>())
 {
 	iLaueGroup = pLaueGroup;
 }
@@ -102,7 +102,7 @@ LaueGroupGraph::Node::~Node()
 	}
 }
 
-JJLaueGroup* LaueGroupGraph::Node::laueGroup()
+LaueGroup* LaueGroupGraph::Node::laueGroup()
 {
 	return iLaueGroup;
 }
@@ -177,7 +177,7 @@ MergedReflections*  LaueGroupGraph::Node::merge(HKLData& pReflections, Matrix<sh
  */
 LaueGroupGraph::LaueGroupGraph():iNodes(map<const char*, Node*, ltstr>())
 {
-	JJLaueGroups* tLaueGroups = JJLaueGroups::defaultInstance();
+	LaueGroups* tLaueGroups = LaueGroups::defaultInstance();
 	//Node* tTempNodePtr; //temp stores for the nodes. Just for conveniance
 	MatrixReader tRotation1("[0 0 1; 1 0 0; 0 1 0]"), tRotation2("[0 1 0; 0 0 1; 1 0 0]"), tInvRotation2("[0  0  1; 1  0  0; 0  1  0]"); //Matrices for rotating the indeces 
 	MatrixReader tTransformation("[1 0 1; -1 1 1; 0 -1 1]");

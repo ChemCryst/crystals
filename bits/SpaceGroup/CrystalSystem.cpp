@@ -146,7 +146,7 @@ int Region::getID()
     return iID;
 }
 
-bool Region::contains(Matrix<short> &pHKL, JJLaueGroup &pLaueGroup, Matrix<short>& pResultMatrix)
+bool Region::contains(Matrix<short> &pHKL, LaueGroup &pLaueGroup, Matrix<short>& pResultMatrix)
 {
 	Matrix<short> tMatrixResult;
 	Matrix<short> tNewHKLResult;

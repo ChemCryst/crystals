@@ -1,19 +1,18 @@
 /*
- *  JJLaueClasses.h
+ *  LaueClasses.h
  *  Space Groups
  *
  *  Created by Stefan Pantos on Mon Apr 19 2004.
  *  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
  *
  */
-#ifndef __JJLAUE_CLASSES_H__
-#define __JJLAUE_CLASSES_H__
+#ifndef __LAUE_CLASSES_H__
+#define __LAUE_CLASSES_H__
 #include <iostream>
 #include <vector>
 #include "Collections.h"
 #include "Matrices.h"
 #include "BaseTypes.h"
-
 
 enum SystemID
 {
@@ -38,27 +37,27 @@ typedef struct LaueGroupRange_
 	int length;
 }LaueGroupRange;
 
-class JJLaueClassMatrices:protected vector<MatrixReader>
+class LaueClassMatrices:protected vector<MatrixReader>
 {
     public:
-        JJLaueClassMatrices();
+        LaueClassMatrices();
         Matrix<short>& getMatrix(unsigned int pIndex) const;
-		static JJLaueClassMatrices* defaultInstance();
+		static LaueClassMatrices* defaultInstance();
 		static void releaseDefault();
 };
 		
-class JJLaueGroup//:public MyObject
+class LaueGroup//:public MyObject
 {
 protected:	
 	SystemID iCrystalSystem;
     vector<unsigned short>* iMatIndices;
-    char* iJJLaueGroup;
-	JJLaueClassMatrices* iLaueGroupMatrices;
+    char* iLaueGroup;
+	LaueClassMatrices* iLaueGroupMatrices;
 public:
-	JJLaueGroup();
-	JJLaueGroup(const SystemID pSys, const char* pJJLaueGroup, const unsigned short pIndices[], const int pNumMat);
-	JJLaueGroup(const JJLaueGroup& pJJLaueGroup);
-	~JJLaueGroup();
+	LaueGroup();
+	LaueGroup(const SystemID pSys, const char* pLaueGroup, const unsigned short pIndices[], const int pNumMat);
+	LaueGroup(const LaueGroup& pLaueGroup);
+	~LaueGroup();
 	SystemID crystalSystem() const;
 	Matrix<short>& getMatrix(const int i) const;
 	size_t numberOfMatrices() const;
@@ -68,23 +67,23 @@ public:
 	float ratingForUnitCell(const UnitCell& pUnitCell)const;
 };
 
-std::ostream& operator<<(std::ostream& pStream, const JJLaueGroup& pLaueGroup);
+std::ostream& operator<<(std::ostream& pStream, const LaueGroup& pLaueGroup);
 
-class JJLaueGroups:public vector<JJLaueGroup*>//:public MyObject
+class LaueGroups:public vector<LaueGroup*>//:public MyObject
 {
 	public:
-		JJLaueGroups();
-		~JJLaueGroups();
-		static JJLaueGroups* defaultInstance();
+		LaueGroups();
+		~LaueGroups();
+		static LaueGroups* defaultInstance();
 		static void releaseDefault();
-		JJLaueGroup* laueGroupWithSymbol(const char* pSymbol);
-		JJLaueGroup* firstJJLaueGroupFor(const SystemID pCrystalSystem);
-		JJLaueGroup* laueGroupAfterFirst(const SystemID pCrystalSystem, const int i); //Returns the JJLaue Group which is i elements after the first of this system
+		LaueGroup* laueGroupWithSymbol(const char* pSymbol);
+		LaueGroup* firstLaueGroupFor(const SystemID pCrystalSystem);
+		LaueGroup* laueGroupAfterFirst(const SystemID pCrystalSystem, const int i); //Returns the Laue Group which is i elements after the first of this system
 		size_t numberOfLaueGroupsFor(const SystemID pCrystalSystem);
-		size_t indexOf(JJLaueGroup* pLaueGroup);
+		size_t indexOf(LaueGroup* pLaueGroup);
 };
 
 std::ostream& laueGroupOptions(std::ostream& pOutputStream);
-JJLaueGroup* getLaueGroup(JJLaueGroup* pDefault, std::ostream& pOutputStream);
+LaueGroup* getLaueGroup(LaueGroup* pDefault, std::ostream& pOutputStream);
 
 #endif
