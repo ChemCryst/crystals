@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.27  2003/09/11 14:06:29  rich
+// Rearrange expression that gcc didn't like.
+//
 // Revision 1.26  2003/07/08 09:59:08  rich
 //
 // Fixed bug where x and y axis scales went
@@ -378,7 +381,7 @@ void CcPlotBar::DrawView(bool print)
         for(j=0; j<m_NumberOfSeries; j++)
         {
             // set to series colour
-            attachedPlot->SetColour(m_Colour[0][j],m_Colour[1][j],m_Colour[2][j]);  
+            attachedPlot->SetColour(m_Colour[0][j%NCOLS],m_Colour[1][j%NCOLS],m_Colour[2][j%NCOLS]);  
             
             int justify = m_Series[j]->m_YAxis;
 

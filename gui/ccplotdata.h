@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2003/05/07 12:18:56  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.14  2002/03/07 10:46:43  DJWgroup
 //   SH: Change to fix reversed y axes; realign text labels.
 //
@@ -56,6 +62,9 @@
 
 #ifndef     __CcPlotData_H__
 #define     __CcPlotData_H__
+
+
+#define NCOLS 7
 
 #include "ccstring.h"
 #include "ccpoint.h"

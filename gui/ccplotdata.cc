@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.25  2003/09/16 19:15:36  rich
+// Code to thin out labels on the x-axis of graphs to prevent overcrowding.
+// Seems to slow down the linux version - will investigate on Windows.
+//
 // Revision 1.24  2003/07/08 09:59:08  rich
 //
 // Fixed bug where x and y axis scales went
@@ -153,23 +157,30 @@ CcPlotData::CcPlotData( )
     m_YGapBottom = 300;     //      nb: lots of space for labels
 
     // initialise the colours
-   // nb only for 6 series currently
-   for(int i=0; i<6; i++)
+   // nb only for 7 series currently
+   for(int i=0; i<NCOLS; i++)
    {
        m_Colour[0][i] = 0;
        m_Colour[1][i] = 0;
-       m_Colour[2][i] = 0;
+       m_Colour[2][i] = 0;   //All black
    }
 
-   m_Colour[0][0] = 255;
-   m_Colour[2][1] = 255;
-   m_Colour[1][2] = 255;
+   m_Colour[0][0] = 255; //Red
+
+   m_Colour[1][2] = 255; //Blue
+
+   m_Colour[2][1] = 255; //Green
+
    m_Colour[0][3] = 255;
-   m_Colour[1][3] = 255;
+   m_Colour[1][3] = 255; //Magenta
+
    m_Colour[0][4] = 255;
-   m_Colour[2][4] = 255;
+   m_Colour[2][4] = 255; //Cyan
+
    m_Colour[1][5] = 255;
-   m_Colour[2][5] = 255;
+   m_Colour[2][5] = 255; //Yellow
+
+
 
    m_NumberOfSeries = 0;
 }
@@ -589,9 +600,9 @@ void CcPlotData::DrawKey()
     for(int i=0; i<m_NumberOfSeries; i++)
     {
         names[i] = m_Series[i]->m_SeriesName;
-        col[0][i] = m_Colour[0][i];
-        col[1][i] = m_Colour[1][i];
-        col[2][i] = m_Colour[2][i];
+        col[0][i] = m_Colour[0][i%NCOLS];
+        col[1][i] = m_Colour[1][i%NCOLS];
+        col[2][i] = m_Colour[2][i%NCOLS];
     }
 
     // pass these through the CrPlot to CxPlot, and create a key window.

@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2003/09/11 14:06:29  rich
+// Rearrange expression that gcc didn't like.
+//
 // Revision 1.21  2003/07/08 09:59:08  rich
 //
 // Fixed bug where x and y axis scales went
@@ -339,7 +342,7 @@ void CcPlotScatter::DrawView(bool print)
         for(j=0; j<m_NumberOfSeries; j++)
         {
             // set to series colour
-            attachedPlot->SetColour(m_Colour[0][j],m_Colour[1][j],m_Colour[2][j]);  
+            attachedPlot->SetColour(m_Colour[0][j%NCOLS],m_Colour[1][j%NCOLS],m_Colour[2][j%NCOLS]);  
 
             int axis = m_Series[j]->m_YAxis;
             yorigin = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[axis].m_AxisMin / (m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin))));
