@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   5.3.1998 13:51 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.14  2001/06/17 14:34:05  richard
 //
 //   CxDestroyWindow function.
@@ -40,55 +46,56 @@ class CrGUIElement;
 class CxMultiEdit : public BASEMULTIEDIT
 {
     public:
-        void BackALine();
         void Empty();
         void Spew();
-        void SetFixedWidth(bool fixed);
-        void SetItalic(bool italic);
-        void SetUnderline(bool underline);
-        void SetBold(bool bold);
-        void SetColour (int red, int green, int blue);
         void Focus();
 
-        // methods
-        static  CxMultiEdit * CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent );
-            CxMultiEdit( CrMultiEdit * container );
-            ~CxMultiEdit();
-            void  SetText( CcString cText );
-//            void  SetHyperText( CcString cText, CcString cCommand  );
-        void    SetIdealWidth(int nCharsWide);
-        void    SetIdealHeight(int nCharsHigh);
-        void CxDestroyWindow();
-        int GetIdealWidth();
-        int GetIdealHeight();
-        int GetTop();
-        int GetWidth();
-        int GetHeight();
-        int GetLeft();
-        void    SetGeometry(int top, int left, int bottom, int right );
-        static int AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
-        static void RemoveMultiEdit( void) { mMultiEditCount--; };
-        void SetFontHeight( int height );
+// methods
+        static CxMultiEdit * CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent );
+                        CxMultiEdit( CrMultiEdit * container );
+                        ~CxMultiEdit();
 
-        // attributes
-        static int mMultiEditCount;
+        void            SetText( CcString cText );
+        void            SetIdealWidth(int nCharsWide);
+        void            SetIdealHeight(int nCharsHigh);
+        void            SetFontHeight( int height );
+        void            CxDestroyWindow();
+        int             GetIdealWidth();
+        int             GetIdealHeight();
+        int             GetTop();
+        int             GetWidth();
+        int             GetHeight();
+        int             GetLeft();
+        void            SetGeometry(int top, int left, int bottom, int right );
+
+        void            SaveAs(CcString filename);
+
 
     private:
+        static int      AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
+        static void     RemoveMultiEdit( void) { mMultiEditCount--; };
+        void Init();
+
+        // attributes
+        static int      mMultiEditCount;
+
         // attributes
         CrMultiEdit *   ptr_to_crObject;
-        int     mIdealHeight;
-        int     mIdealWidth;
-        int    mHeight;
+        int             mIdealHeight;
+        int             mIdealWidth;
+        int             mHeight;
 
 #ifdef __CR_WIN__
-        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
+        static DWORD CALLBACK MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb);
+
+        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-      public:
-            void OnChar(wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+    public:
+        void OnChar(wxKeyEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
 };

@@ -5,6 +5,9 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2002/09/27 14:51:36  rich
+// Move definition of ATTACH token into crconstants.
+//
 // Revision 1.17  2002/07/25 16:00:13  richard
 //
 // Resize dropdown listbox if number of items changes.
@@ -120,6 +123,8 @@
 #define kSBoth    "BOTH"
 #define kSDefinePopupMenu   "DEFINEPOPUPMENU"
 
+#define kSSave   "EDITSAVE"
+
 
 
 enum
@@ -172,7 +177,8 @@ enum
  kTBoth,
  kTDefinePopupMenu,
  kTRemove,
- kTAttachModel
+ kTAttachModel,
+ kTSave
 };
 
 

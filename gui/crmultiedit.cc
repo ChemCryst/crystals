@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.12  2001/06/17 15:14:13  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -127,72 +133,12 @@ CcParse CrMultiEdit::ParseInput( CcTokenList * tokenList )
                 tokenList->GetToken(); // Remove that token!
                 break;
             }
-            case kTTextColour:
+            case kTSave:
             {
                 tokenList->GetToken(); // Remove that token!
-                CcString theString = tokenList->GetToken();
-                if(theString == "DEFAULT")
-                {
-                    SetColour(255,255,255);
-                    LOGSTAT( "Setting MultiEdit DEFAULT colour ");
-                }
-                else
-                {
-                    int red = atoi( theString.ToCString() );
-                    int green = atoi( tokenList->GetToken().ToCString() );
-                    int blue = atoi( tokenList->GetToken().ToCString() );
-                    SetColour (red,green,blue);
-                    LOGSTAT( "Setting MultiEdit Colourful: " + theString );
-                }
-                break;
-            }
-            case kTTextItalic:
-            {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                    ((CxMultiEdit*)ptr_to_cxObject)->SetItalic(state);
-                CcString theString = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "Setting MultiEdit Italic: " + theString  );
-                break;
-            }
-            case kTTextBold:
-            {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                    ((CxMultiEdit*)ptr_to_cxObject)->SetBold(state);
-                CcString theString = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "Setting MultiEdit Bold: " + theString  );
-                break;
-            }
-            case kTTextUnderline:
-            {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                    ((CxMultiEdit*)ptr_to_cxObject)->SetUnderline(state);
-                CcString theString = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "Setting MultiEdit Underline: " + theString );
-                break;
-            }
-            case kTTextFixedFont:
-            {
-                tokenList->GetToken(); // Remove that token!
-                bool state = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
-                    ((CxMultiEdit*)ptr_to_cxObject)->SetFixedWidth(state);
-                CcString theString = tokenList->GetToken(); // Remove that token!
-                LOGSTAT( "Setting MultiEdit Fixedfont: " + theString );
-                break;
-            }
-            case kTBackLine:
-            {
-                tokenList->GetToken(); // Remove that token!
-                if(!mNoEcho)
-                {
-                    ((CxMultiEdit*)ptr_to_cxObject)->BackALine();
-                    LOGSTAT( "Setting MultiEdit back a line ");
-                }
-                else
-                    LOGWARN( "Not setting MultiEdit back a line: it is in NOECHO state. ");
-
+                CcString filename = tokenList->GetToken();
+                ((CxMultiEdit*)ptr_to_cxObject)->SaveAs( filename );
+                LOGSTAT( "Saving MultiEdit contents as: " + filename );
                 break;
             }
             case kTNoEcho:
@@ -297,11 +243,6 @@ int CrMultiEdit::GetIdealHeight()
 void CrMultiEdit::CrFocus()
 {
     ((CxMultiEdit*)ptr_to_cxObject)->Focus();
-}
-
-void CrMultiEdit::SetColour(int red, int green, int blue)
-{
-    ((CxMultiEdit*)ptr_to_cxObject)->SetColour(red,green,blue);
 }
 
 

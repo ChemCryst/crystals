@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   6.3.1998 00:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.9  2001/03/08 16:44:06  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -29,7 +35,6 @@ class CxMultiEdit;
     public:
         bool mNoEcho;
         void NoEcho(bool noEcho);
-        void SetColour(int red, int green, int blue);
         void CrFocus();
         int GetIdealWidth();
         int GetIdealHeight();
@@ -50,23 +55,11 @@ class CxMultiEdit;
 //      CcRect mOriginalGeometry;
 };
 
-#define kSTextColour        "TEXTCOLOUR"
-#define kSTextBold      "TEXTBOLD"
-#define kSTextItalic        "TEXTITALIC"
-#define kSTextUnderline     "TEXTUNDERLINE"
-#define kSTextFixedFont     "FIXEDFONT"
-#define kSBackLine      "BACKLINE"
 #define kSNoEcho        "NOECHO"
 #define kSSpew          "SPEW"
 
 enum {
- kTTextColour = 1900,
- kTTextBold,
- kTTextItalic,
- kTTextUnderline,
- kTTextFixedFont,
- kTBackLine,
- kTNoEcho,
+ kTNoEcho     = 1900,
  kTSpew,
 };
 
