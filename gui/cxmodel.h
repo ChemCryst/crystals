@@ -7,6 +7,10 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.26  2002/03/04 13:55:15  ckp2
+//  Do something about display of model on 256 colour monitors. (Colours are now weird, instead
+//  of just black on black background.
+//
 //  Revision 1.25  2001/12/12 16:02:26  ckpgroup
 //  SH: Reorganised script to allow right-hand y axes.
 //  Added floating key if required, some redraw problems.
@@ -106,6 +110,7 @@ class CcModelObject;
 #define QATOMLIST     4
 #define QBONDLIST     5
 #define XOBJECTLIST   6
+#define TORUS         7
 
 #ifdef __BOTHWX__
 class mywxStaticText : public wxStaticText
@@ -124,13 +129,13 @@ class mywxStaticText : public wxStaticText
 class CxModel : public BASEMODEL
 {
   public:
-    void Update();
+    void Update(bool rescale=true);
     void DoDrawingLists();
     int IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject **outObject, Boolean atomsOnly=false);
     void SelectBoxedAtoms(CcRect rectangle, bool select);
     void Setup();
     void NeedRedraw(bool needrescale = false);
-    void ModelChanged();
+    void ModelChanged(bool needrescale = true);
     void NewSize(int cx, int cy);
     void ChooseCursor( int cursor );
 #ifdef __CR_WIN__
@@ -168,6 +173,7 @@ class CxModel : public BASEMODEL
     int  AdjustEnclose( CcRect* enc, GLfloat* buf, int point );
     void CameraSetup();
     void ModelSetup();
+    void ModelBackground();
 
 
 

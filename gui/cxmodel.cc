@@ -268,11 +268,11 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
       glClearColor( 1.0f,1.0f,1.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
       glMatrixMode ( GL_PROJECTION );
       glLoadIdentity();
       CameraSetup();
       ModelSetup();
+      ModelBackground();
 
       if ( m_fastrotate && !m_bModelChanged ) //If the model has changed, the QLISTS aren't ready yet.
       {
@@ -405,7 +405,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
       if ( m_MouseCaught ) { ReleaseMouse(); m_MouseCaught = false; }
 #endif
       SelectBoxedAtoms(m_selectRect, true);
-      ModelChanged();
+      ModelChanged(false);
       break;
     }
     case CXPOLYSEL:
@@ -744,41 +744,61 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 #endif
 
   CcString atomname;
+
+//Some pointers:
   CcModelObject* object;
   CcModelAtom* atom;
-  CrModel* crModel = (CrModel*)ptr_to_crObject;
+  CcModelBond* bond;
+//  CrModel* crModel = (CrModel*)ptr_to_crObject;
 
 //decide which menu to show
+  int obtype;
 
-  if( IsAtomClicked(point.x, point.y, &atomname, &object, true) )
-  {
-    atom = (CcModelAtom*)object;
-    
+  obtype = IsAtomClicked(point.x, point.y, &atomname, &object);
+
 #ifdef __CR_WIN__
-
     ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
     point = CcPoint(wpoint.x,wpoint.y);
-
 #endif
 
+  if ( obtype == CC_ATOM )
+  {
+    atom = (CcModelAtom*)object;
     if (atom->IsSelected()) // If it's selected pass the atom-clicked, and all the selected atoms.
     {
-      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, true);
+      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, 2);
     }
     else //the atom is not selected show a menu applicable to a single atom.
     {
-      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname);
+      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, 3);
+    }
+  }
+  else if ( obtype == CC_BOND )
+  {
+    bond = (CcModelBond*)object;
+    if (bond->m_bondtype == 101) //Aromatic ring:
+    {
+       atomname = "";
+       for (int i = 0; i < bond->m_np; i++ ) {
+         atomname += bond->m_patms[i]->Label() + " ";
+       }
+      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y,atomname,6);
+    }
+    else if (bond->m_bsym) //the bond crosses a symmetry element:
+    {
+      atomname = bond->m_atom1->Label() + " " + bond->m_slabel;
+      CcString atom2 = bond->m_slabel;
+      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, 5, atom2);
+    }
+    else //a normal bond:
+    {
+      atomname = bond->m_atom1->Label() + " " + bond->m_atom2->Label();
+      ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y, atomname, 4);
     }
   }
   else
   {
-#ifdef __CR_WIN__
-
-    ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
-    point = CcPoint(wpoint.x,wpoint.y);
-
-#endif
-    ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y);
+    ((CrModel*)ptr_to_crObject)->ContextMenu(point.x,point.y,nil,1);
   }
 }
 
@@ -791,17 +811,6 @@ void CxModel::Setup()
    if( !GetContext() ) return;
    
    m_NotSetupYet = false;
-
-//#ifdef __LINUX__
-//      m_glContext = new wxGLContext( true, this,
-//                                    wxNullPalette, m_sharedContext );
-//#endif
-//#ifdef __WINDOWS__
-//      m_glContext = new wxGLContext( true, this,
-//                                    wxNullPalette, NULL ); //m_sharedContext );
-//#endif
-//
-//   }
 
    SetCurrent();
 
@@ -932,28 +941,27 @@ void CxModel::ModelSetup()
 {
    glMatrixMode ( GL_MODELVIEW );
    glLoadIdentity();
-
-   int ic = 5000;
-
-   if (m_bitmapinfo)
-   {
-
-     float xscale  = (float)GetWidth() / m_bitmapinfo->bmiHeader.biWidth;
-     float yscale  = (float)GetHeight() / m_bitmapinfo->bmiHeader.biHeight;
-
-     glRasterPos3f(-ic * m_stretchX, -ic*m_stretchY, ( -ic + 10 ) * m_xScale);
-     glPixelZoom(xscale, yscale);
-
-     glDrawPixels(m_bitmapinfo->bmiHeader.biWidth,
-                  m_bitmapinfo->bmiHeader.biHeight,
-                  GL_BGR_EXT, GL_UNSIGNED_BYTE, m_bitmapbits);
-
-   }
-
    glTranslated ( m_xTrans, m_yTrans, m_zTrans );
    glMultMatrixf ( mat );
    glScalef     ( m_xScale, m_xScale, m_xScale );
 }
+
+
+void CxModel::ModelBackground()
+{
+   int ic = 5000;
+   if (m_bitmapinfo)
+   {
+     float xscale  = (float)GetWidth() / m_bitmapinfo->bmiHeader.biWidth;
+     float yscale  = (float)GetHeight() / m_bitmapinfo->bmiHeader.biHeight;
+     glRasterPos3f(-ic * m_stretchX, -ic*m_stretchY, ( -ic + 10 ) * m_xScale);
+     glPixelZoom(xscale, yscale);
+     glDrawPixels(m_bitmapinfo->bmiHeader.biWidth,
+                  m_bitmapinfo->bmiHeader.biHeight,
+                  GL_BGR_EXT, GL_UNSIGNED_BYTE, m_bitmapbits);
+   }
+}
+
 
 #ifdef __CR_WIN__
 
@@ -1098,16 +1106,15 @@ int CxModel::IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelObject
 
 
      glMatrixMode ( GL_PROJECTION );
-     glPushMatrix();
      glLoadIdentity();
      gluPickMatrix ( xPos, viewport[3] - yPos, tolerance+1, tolerance+1, viewport );
      CameraSetup();
      ModelSetup();
-     glCallList( QATOMLIST );
+     glCallList( ATOMLIST );
      if ( tolerance == 0 && !atomsOnly ) glCallList( BONDLIST ); // Only select bonds if right over them.
-     glMatrixMode ( GL_PROJECTION );
-     glPopMatrix();
-     glMatrixMode ( GL_MODELVIEW );
+//     glMatrixMode ( GL_PROJECTION );
+//     glPopMatrix();
+//     glMatrixMode ( GL_MODELVIEW );
 
 #ifdef __CR_WIN__
 //For debug uncomment next line and comment the glRenderMode line above.
@@ -1364,9 +1371,9 @@ void CxModel::OnMenuSelected(wxCommandEvent & event)
 }
 
 
-void CxModel::Update()
+void CxModel::Update(bool rescale)
 {
-   ModelChanged();
+   ModelChanged(rescale);
 }
 
 
@@ -1448,13 +1455,13 @@ void CxModel::NeedRedraw(bool needrescale)
 #endif
 }
 
-void CxModel::ModelChanged()
+void CxModel::ModelChanged(bool needrescale) 
 {
 //  TEXTOUT ( "Model changed" );
   m_bModelChanged = true;
   m_bFullListOk = false;
   m_bQuickListOk = false;
-  NeedRedraw(true);
+  NeedRedraw(needrescale);
 }
 
 void CxModel::ChooseCursor( int cursor )
@@ -1488,7 +1495,7 @@ void CxModel::ChooseCursor( int cursor )
 void CxModel::SetDrawStyle( int drawStyle )
 {
       m_DrawStyle = drawStyle;
-      ModelChanged();
+      ModelChanged(false);
 }
 void CxModel::SetAutoSize( bool size )
 {
@@ -1503,7 +1510,7 @@ void CxModel::SetHover( bool hover )
 void CxModel::SetShading( bool shade )
 {
       m_Shading = shade;
-      ModelChanged();
+      ModelChanged(false);
 }
 
 
@@ -1582,7 +1589,7 @@ void CxModel::DeletePopup()
   if ( m_TextPopup )
   {
 #ifdef __CR_WIN__
-    m_TextPopup->DestroyWindow();
+//    m_TextPopup->DestroyWindow();
     delete m_TextPopup;
 #endif
 #ifdef __BOTHWX__
@@ -1729,4 +1736,5 @@ void CxModel::LoadDIBitmap(CcString filename)
 
     return;
 }
+
 
