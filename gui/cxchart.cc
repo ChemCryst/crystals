@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/03/08 16:44:07  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -60,7 +64,6 @@ CxChart *   CxChart::CreateCxChart( CrChart * container, CxGrid * guiParent )
       theStdChart->newMemDCBitmap = new wxBitmap;
 #endif
     return theStdChart;
-//End of user code.
 }
 
 CxChart::CxChart(CrChart* container)
@@ -73,22 +76,37 @@ CxChart::CxChart(CrChart* container)
 {
     ptr_to_crObject = container;
 #ifdef __CR_WIN__
-      mfgcolour = PALETTERGB(0,0,0);
+    mfgcolour = PALETTERGB(0,0,0);
 #endif
 #ifdef __BOTHWX__
-      mfgcolour = wxColour(0,0,0);
+    mfgcolour = wxColour(0,0,0);
+    m_pen = new wxPen(mfgcolour,1,wxSOLID);
+    m_brush = new wxBrush(mfgcolour,wxSOLID);
 #endif
     mPolyMode = 0;
     m_IsoCoords = true;
     m_inverted = false;
-      m_SendCursorKeys = false;
-
+    m_SendCursorKeys = false;
 }
 
 CxChart::~CxChart()
 {
     mChartCount--;
     delete newMemDCBitmap;
+#ifdef __BOTHWX__
+    delete m_pen;
+    delete m_brush;
+#endif
+}
+
+void CxChart::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 void    CxChart::SetText( char * text )
@@ -194,18 +212,18 @@ void CxChart::DrawLine(int x1, int y1, int x2, int y2)
     oldpen = memDC.SelectObject(&pen);
     oldMemDCBitmap = memDC.SelectObject(newMemDCBitmap);
 
-      memDC.MoveTo(CPoint(cpoint1.x,cpoint1.y));
-      memDC.LineTo(CPoint(cpoint2.x,cpoint2.y));
+    memDC.MoveTo(CPoint(cpoint1.x,cpoint1.y));
+    memDC.LineTo(CPoint(cpoint2.x,cpoint2.y));
     memDC.SelectObject(oldMemDCBitmap);
     memDC.SelectObject(oldpen);
 #endif
 
 #ifdef __BOTHWX__
-      memDC.SetPen( wxPen(mfgcolour,1,wxSOLID) );
-      memDC.SelectObject( *newMemDCBitmap );
-      memDC.DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
-      memDC.SetPen( wxNullPen );
-      memDC.SelectObject( wxNullBitmap );
+    memDC.SetPen( *m_pen );
+    memDC.SelectObject( *newMemDCBitmap );
+    memDC.DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
+    memDC.SetPen( wxNullPen );
+    memDC.SelectObject( wxNullBitmap );
 #endif
 
 }
@@ -303,7 +321,6 @@ void CxChart::Display()
 {
 #ifdef __CR_WIN__
       InvalidateRect(NULL,false);
-//      OnPaint();
 #endif
 #ifdef __BOTHWX__
       Refresh();
@@ -410,7 +427,7 @@ void CxChart::Clear()
 void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 {
 
-    //NB w and h are half diameters.
+    //NB w and h are half diameters. (i.e. radii).
 
     int x1 = x - w;
     int y1 = y - h;
@@ -436,12 +453,12 @@ void CxChart::DrawEllipse(int x, int y, int w, int h, Boolean fill)
 #ifdef __BOTHWX__
 
       memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetPen( wxPen(mfgcolour,1,wxSOLID) );
+      memDC.SetPen( *m_pen );
       if ( fill )
-            memDC.SetBrush( wxBrush( mfgcolour, wxSOLID ));
+            memDC.SetBrush( *m_brush );
       else
-            memDC.SetBrush( wxBrush( mfgcolour, wxTRANSPARENT ));
-      memDC.DrawEllipse(x1,y1,w,h);
+            memDC.SetBrush( *wxTRANSPARENT_BRUSH );
+      memDC.DrawEllipse(topleft.x,topleft.y,bottomright.x-topleft.x,bottomright.y-topleft.y);
       memDC.SetPen( wxNullPen );
       memDC.SetBrush( wxNullBrush );
       memDC.SelectObject(wxNullBitmap);
@@ -467,7 +484,7 @@ void CxChart::DrawText(int x, int y, CcString text)
       wxString wtext = wxString(text.ToCString());
       memDC.SelectObject(*newMemDCBitmap);
       memDC.SetBackgroundMode( wxTRANSPARENT );
-      memDC.SetPen( wxPen(mfgcolour,1,wxSOLID) );
+      memDC.SetPen( *m_pen );
       memDC.DrawText(wtext, coord.x, coord.y );
       memDC.SetPen( wxNullPen );
       memDC.SelectObject(wxNullBitmap);
@@ -521,11 +538,11 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
 #endif
 #ifdef __BOTHWX__
       memDC.SelectObject(*newMemDCBitmap);
-      memDC.SetPen( wxPen(mfgcolour,1,wxSOLID) );
+      memDC.SetPen( *m_pen );
       if ( fill )
-            memDC.SetBrush( wxBrush( mfgcolour, wxSOLID ));
+            memDC.SetBrush( *m_brush );
       else
-            memDC.SetBrush( wxBrush( mfgcolour, wxTRANSPARENT ));
+            memDC.SetBrush( *wxTRANSPARENT_BRUSH );
       CcPoint*           points = new CcPoint[nVertices];
       for ( int j = 0; j < nVertices*2 ; j+=2 )
       {
@@ -584,6 +601,8 @@ void CxChart::SetColour(int r, int g, int b)
 #endif
 #ifdef __BOTHWX__
       mfgcolour = wxColour ( r,g,b );
+      m_pen->SetColour ( mfgcolour );
+      m_brush->SetColour ( mfgcolour );
 #endif
 }
 
@@ -852,7 +871,7 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
     memDC.SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-      memDC.SetPen( wxPen(mfgcolour,1,wxSOLID) );
+      memDC.SetPen( *m_pen );
       memDC.SelectObject( *newMemDCBitmap );
       wxFont theFont = memDC.GetFont();
 

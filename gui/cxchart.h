@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 16:44:08  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CxChart_H__
 #define     __CxChart_H__
@@ -50,6 +54,7 @@ class CxChart : public BASECHART
         void UseIsotropicCoords(Boolean iso);
         void SetPolygonDrawMode(Boolean on);
         void SetColour(int r, int g, int b);
+        void CxDestroyWindow();
         void DrawPoly(int nVertices, int* vertices, Boolean fill);
         void DrawText(int x, int y, CcString text);
         void DrawEllipse(int x, int y, int w, int h, Boolean fill);
@@ -112,6 +117,8 @@ private:
             wxColour mfgcolour;
             wxBitmap *oldMemDCBitmap, *newMemDCBitmap;
             wxMemoryDC memDC;
+            wxPen      * m_pen;
+            wxBrush    * m_brush;
 
             void OnLButtonUp(wxMouseEvent & event);
             void OnRButtonUp(wxMouseEvent & event);
