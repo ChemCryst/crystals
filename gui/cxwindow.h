@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2001/03/27 15:15:01  richard
+//   Added a timer to the main window that is activated as the main window is
+//   created.
+//   The timer fires every half a second and causes any messages in the
+//   CRYSTALS message queue to be processed. This is not the main way that messages
+//   are found and processed, but sometimes the program just seemed to freeze and
+//   would stay that way until you moved the mouse. This should (and in fact, does
+//   seem to) remedy that problem.
+//   Good good good.
+//
 //   Revision 1.10  2001/03/08 15:59:29  richard
 //   Give non-modal windows a "toolbar-style" (thin) titlebar. Distinguishes them
 //   from modal windows in users mind (eventually).
@@ -42,6 +52,7 @@ class CxWindow : public BASEWINDOW
      static CxWindow *   CreateCxWindow( CrWindow * container, void * parentWindow, int attributes );
      CxWindow( CrWindow * container, int sizeable );
      ~CxWindow();
+        void CxDestroyWindow();
 
      void SetGeometry( int top, int left, int bottom, int right );
      int GetTop();
@@ -106,6 +117,7 @@ class CxWindow : public BASEWINDOW
       void OnSize ( wxSizeEvent & event );
       void OnChar ( wxKeyEvent & event );
       void OnMenuSelected(wxCommandEvent &event );
+      void OnToolSelected(wxCommandEvent &event );
       void OnUpdateMenuItem(wxUpdateUIEvent &event );
       void OnKeyDown( wxKeyEvent & event );
       void OnKeyUp( wxKeyEvent & event );

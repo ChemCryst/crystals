@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2001/03/27 15:15:00  richard
+//   Added a timer to the main window that is activated as the main window is
+//   created.
+//   The timer fires every half a second and causes any messages in the
+//   CRYSTALS message queue to be processed. This is not the main way that messages
+//   are found and processed, but sometimes the program just seemed to freeze and
+//   would stay that way until you moved the mouse. This should (and in fact, does
+//   seem to) remedy that problem.
+//   Good good good.
+//
 //   Revision 1.20  2001/03/08 15:59:29  richard
 //   Give non-modal windows a "toolbar-style" (thin) titlebar. Distinguishes them
 //   from modal windows in users mind (eventually).
@@ -28,6 +38,8 @@ int CxWindow::mWindowCount = kWindowBase;
 CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, int attributes )
 {
 
+  LOGSTAT ( CcString("CxWindow created. Parent = ") + CcString ( (int)parentWindow ) );
+
   CxWindow *theWindow = new CxWindow( container, attributes & kSize );
 
   #ifdef __CR_WIN__
@@ -38,12 +50,16 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
     theWindow->mParentWnd = (CWnd*) parentWindow;
 
     theWindow->Create(wndClass, "Window",
-        (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX : WS_POPUP|WS_CAPTION|WS_SYSMENU,
+        (attributes & kSize)? WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX :
+                              WS_POPUP|WS_CAPTION|WS_SYSMENU,
         CRect(0,0,1000,1000), theWindow->mParentWnd);
   #endif
   #ifdef __BOTHWX__
       theWindow->mParentWnd = (wxWindow*) parentWindow;
-      theWindow->Create( NULL, -1, "Window", wxPoint(0, 0), wxSize(-1,-1), wxDEFAULT_FRAME_STYLE );
+      theWindow->Create( theWindow->mParentWnd, -1, "Window",
+                         wxPoint(0, 0), wxSize(-1,-1),
+                         (attributes & kSize)?wxDEFAULT_FRAME_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?NULL:wxFRAME_TOOL_WINDOW) :wxDEFAULT_DIALOG_STYLE|wxFRAME_FLOAT_ON_PARENT|((attributes & kModal)?NULL:wxFRAME_TOOL_WINDOW) );
+      theWindow->SetIcon( wxICON (IDI_ICON1) );
   #endif
 
   //if the window is modal, disable the parent:
@@ -72,10 +88,6 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
   #ifdef __CR_WIN__
     if ( attributes & kSize ) theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
-  #endif
-
-  #ifdef __BOTHWX__
-    theWindow->Show(true);
   #endif
 
   return (theWindow);
@@ -121,6 +133,16 @@ CxWindow::~CxWindow()
     ((CrWindow*)ptr_to_crObject)->NotifyControl();
     mWindowCount--;
     if ( !m_PreDestroyed ) CxPreDestroy(); // Should really be called earlier.
+}
+
+void CxWindow::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 void    CxWindow::SetText( char * text )
@@ -265,6 +287,9 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_COMMAND_RANGE(kMenuBase, kMenuBase+1000,
                         wxEVT_UPDATE_UI,
                         CxWindow::OnUpdateMenuItem )
+      EVT_COMMAND_RANGE(kToolButtonBase, kToolButtonBase+5000,
+                        wxEVT_COMMAND_MENU_SELECTED,
+                        CxWindow::OnToolSelected)
       EVT_KEY_DOWN( CxWindow::OnKeyDown )
 END_EVENT_TABLE()
 #endif
@@ -416,7 +441,7 @@ void CxWindow::OnToolSelected(int nID)
     TRACE("Tool ID %d\n", nID);
 #endif
 #ifdef __BOTHWX__
-void CxWindow::OnMenuSelected(wxCommandEvent & event)
+void CxWindow::OnToolSelected(wxCommandEvent & event)
 {
       int nID = event.m_id;
 #endif
@@ -673,7 +698,12 @@ void CxWindow::OnKeyDown( wxKeyEvent & event )
 
 void CxWindow::Redraw()
 {
+#ifdef __CR_WIN__
   Invalidate();
+#endif
+#ifdef __BOTHWX__
+  Refresh();
+#endif
 }
 
 void CxWindow::CxEnable(bool enable)
@@ -689,15 +719,19 @@ void CxWindow::CxEnable(bool enable)
 
 void CxWindow::CxSetTimer()
 {
+#ifdef __CR_WIN__
   if ( m_TimerActive )
   {
     LOGERR ( "Timer called more than once." );
     return; //only to be called once.
   }
   m_TimerActive = SetTimer ( 1007, 500, NULL ); // 500ms updates.
+#endif
 }
 
+#ifdef __CR_WIN__
 void CxWindow::OnTimer(UINT nID)
 {
   ((CrWindow*)ptr_to_crObject)->TimerFired();
 }
+#endif
