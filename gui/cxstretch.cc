@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper
 //   Created:   23.2.2001 11:35
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 14:31:08  richard
+//   CxDestroyWindow function. wx support.
+//
 //   Revision 1.1  2001/02/26 12:07:05  richard
 //   New stretch class. Probably the simplest class ever written, it has no functionality
 //   except that it can be put in a grid of non-resizing items, and it will make that
@@ -51,6 +54,19 @@ Destroy();
 #endif
 }
 
+#ifdef __CR_WIN__
+BEGIN_MESSAGE_MAP(CxStretch, CWnd)
+    ON_WM_CHAR()
+END_MESSAGE_MAP()
+#endif
+#ifdef __BOTHWX__
+//wx Message Table
+BEGIN_EVENT_TABLE(CxStretch, wxWindow)
+      EVT_CHAR( CxStretch::OnChar )
+END_EVENT_TABLE()  
+#endif
+
+CXONCHAR(CxStretch)
 
 CXSETGEOMETRY(CxStretch)
 
