@@ -42,7 +42,7 @@
 #include "ComClasses.h"
 #include "Exceptions.h"
 
-#if !defined(_WIN32)
+#if defined(__APPLE__)
 #include <vecLib/vDSP.h>
 #endif
 
@@ -233,7 +233,7 @@ class Matrix:public MyObject
             pResult.iYSize = iYSize;
             for (int i = 0; i < iYSize; i ++)
             {
-                for (int j = 0; j < iXSize; j ++)
+                for (int j = 0; j < pMatrix1.iXSize; j ++)
                 {
                     pResult.iMatrix[j*iYSize+i] = getValue(0, i)*pMatrix1.getValue(j, 0); 
                     for (int k = 1; k < iXSize; k++)
