@@ -15,26 +15,18 @@
 #include <regex.h>
 #endif
 #include "Symmetry.h"
+#include "StringClasses.h"
 
 SpaceGroup::SpaceGroup(string& pSymbols):CrystSymmetry(pSymbols, 1), iCentering("P")
 {
 	iCentering = pSymbols.substr(0, 1);
-   // iSymbols = new char[strlen(pSymbols)+1];
-   // strcpy(iSymbols, pSymbols);
-	
-	//string tSymbols = (iSymbols+1);
-	std::cout << getSymbol() << "\n";
 }
 
 SpaceGroup::SpaceGroup(const SpaceGroup& pSpaceGroup):CrystSymmetry(pSpaceGroup), iCentering(pSpaceGroup.iCentering)
-{
-   // iSymbols = new char[strlen(pSpaceGroup.iSymbols)+1];
-    //strcpy(iSymbols, pSpaceGroup.iSymbols);
-}
+{}
 
 SpaceGroup::~SpaceGroup()
 {
-    //delete[] iSymbols;
 }
 
 string SpaceGroup::getSymbol()
@@ -138,19 +130,13 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups):iBrackets(NULL)
 
 void SpaceGroups::addSpaceGroups(char* pSpaceGroups)
 {
-    char * tSpaceGroup;
-    
     if (regexec(gSpaceGroupsFSO, pSpaceGroups, gMatches, gMatch, 0))
     {
         throw MyException(kUnknownException, "Space groups where in bad format.");
     }
-    tSpaceGroup = new char[gMatch[1].rm_eo - gMatch[1].rm_so+1];
-    tSpaceGroup[gMatch[1].rm_eo - gMatch[1].rm_so] = '\0';
-    strncpy(tSpaceGroup, pSpaceGroups+(long)gMatch[1].rm_so, gMatch[1].rm_eo - gMatch[1].rm_so);
-	string tSymbols = tSpaceGroup;
+	string tSymbols(pSpaceGroups+(long)gMatch[1].rm_so, pSpaceGroups+(long)gMatch[1].rm_eo);
     SpaceGroup tSpaceGroupObj(tSymbols);
     insert(end(), tSpaceGroupObj);
-    delete[] tSpaceGroup;
     if ((long)gMatch[2].rm_so > -1)
     {
         addSpaceGroups(pSpaceGroups+gMatch[3].rm_so);
@@ -204,7 +190,7 @@ std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups)
     return pSpaceGroups.output(pStream);
 }
 
-SGColumn::SGColumn():ArrayList<SpaceGroups>(1), iPointGroup(NULL)
+SGColumn::SGColumn():ArrayList<SpaceGroups>(1), iPointGroup(vector<CrystSymmetry>())
 {}
 
 SGColumn::~SGColumn()
@@ -227,16 +213,26 @@ void SGColumn::add(char* pSpaceGroup,  int pRow)
 }
 
 void SGColumn::setPointGroup(char* pHeading)
-{
-    if (iPointGroup)
-    {
-        delete[] iPointGroup;
-    }
-    iPointGroup = new char[strlen(pHeading)+1];
-    strcpy(iPointGroup, pHeading);
-}
+{	
+	Regex tPoinGroupRE("[[:space:]]*([^,]*)([[:space:]]*,[[:space:]]*(.*)[[:space:]]*)?"); //Reg exp for pulling the point groups apart
+	string tPointGroups = pHeading;
+	regmatch_t tMatches[4];
+	
+	iPointGroup.clear();
+	tMatches[0].rm_so = 0;
+	tMatches[0].rm_eo = tPointGroups.length();
+	while (tMatches[0].rm_so != tMatches[0].rm_eo)
+	{
+		tPoinGroupRE.exec(tPointGroups, 4, tMatches, REG_STARTEND);
+		string tPointGroup(tPointGroups, tMatches[1].rm_so, tMatches[1].rm_eo -tMatches[1].rm_so);
+		CrystSymmetry tSymmetry(tPointGroup);
+		iPointGroup.push_back(tSymmetry);
+		tMatches[0].rm_so = tMatches[3].rm_so;
+		tMatches[0].rm_eo = tMatches[3].rm_eo;
+	} 
+ }
 
-char* SGColumn::getPointGroup()
+vector<CrystSymmetry>& SGColumn::getPointGroup()
 {
     return iPointGroup;
 }

@@ -6,31 +6,33 @@
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
-#if !defined(__SPACE_GROUPS_H__)
+#ifndef __SPACE_GROUPS_H__
 #define __SPACE_GROUPS_H__
 #include "Collections.h"
 #include "BaseTypes.h"
+#include "Symmetry.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 using namespace std;
 
-class SpaceGroup:public MyObject
+class SpaceGroup:public CrystSymmetry
 {
     private:
-        char* iSymbols;
+		string iCentering;
+        //char* iSymbols;
     public:
-        SpaceGroup(char* pSymbols);
-        SpaceGroup(const SpaceGroup& pSpaceGroup);
+		SpaceGroup(string& pSymbols);
+		SpaceGroup(const SpaceGroup& pSpaceGroup);
         ~SpaceGroup();
-        char* getSymbol();
+        string getSymbol();
         std::ostream& output(std::ostream& pStream);
         std::ostream& SpaceGroup::crystalsOutput(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup);
 
-class SpaceGroups:private vector<SpaceGroup>
+class SpaceGroups:public vector<SpaceGroup>
 {	
     private:
         char* iBrackets;
@@ -48,12 +50,12 @@ std::ostream& operator<<(std::ostream& pStream, SpaceGroups& pSpaceGroups);
 class SGColumn:public ArrayList<SpaceGroups>
 {
     private:
-        char* iPointGroup;
+        vector<CrystSymmetry> iPointGroup;
     public:
         SGColumn();
         ~SGColumn();
         void add(char* pSpaceGroup, int pRow);
         void setPointGroup(char* pHeading);
-        char* getPointGroup();
+        vector<CrystSymmetry>& getPointGroup();
 };
 #endif
