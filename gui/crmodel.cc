@@ -631,3 +631,10 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 	}
 
 }
+
+void CrModel::Reset()
+{
+    
+    ((CxModel*)mWidgetPtr)->Reset();
+
+}
