@@ -1359,7 +1359,7 @@ Data reduction details
          1    1    1    1    1    1    0    0    0    0
 Data collection details
 (8(3X,12A1))
-(8G15.3/G15.3,I15,2G15.3,I15)
+(8G15.3/G15.3,11X,A4,2G15.3,11X,A4)
          2    2    2    2    2    2    2    2    2    3    2    2    3    
     .MINSIZE            0    0    1    0    0 0.
     .MEDSIZE            0    0    1    0    0 0.
