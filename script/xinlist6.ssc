@@ -119,6 +119,8 @@
 % EVALUATE HKLTITLE = INSTITLE // '.hkl'
 % IF ( FILEEXISTS ( HKLTITLE ) ) THEN
 %   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY
+^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO
+%       EVALUATE LOKOK = TRUE
 % END IF
 %%
 %% Now the window is displayed, we wait for any of the following
@@ -411,6 +413,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.25  2003/06/27 14:44:13  rich
+%% Added option to apply a transformation matrix to HKL data as it is read in.
+%%
 %% Revision 1.24  2003/02/25 16:47:26  rich
 %%
 %% Streamline input of data. Merging question and Friedel question moved
