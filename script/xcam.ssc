@@ -66,6 +66,7 @@
 ^^WI DEFINEMENU MAIN 'NULL'
 ^^WI  MENU _FILE '&File'
 ^^WI   ITEM _SAVE '&Save Image' '#SCRIPT XPOST'
+^^WI   ITEM _CHIME 'Save &Chime' 'OUTPUT CHIME'
 ^^WI   SPLIT
 ^^WI   ITEM _CLOSE '&Exit Cameron' 'END'
 ^^WI  ENDMENU
