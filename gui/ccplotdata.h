@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/11/26 14:02:48  ckpgroup
+//   SH: Added mouse-over message support - display label and data value for the bar
+//   under the pointer.
+//
 //   Revision 1.4  2001/11/22 15:33:20  ckpgroup
 //   SH: Added different draw-styles (line / area / bar / scatter).
 //   Changed graph layout. Changed second series to blue for better contrast.
@@ -33,6 +37,31 @@ class CrPlot;
 class CcPlotdata;
 class CcSeries;
 
+class CcAxisData
+{
+public:
+	CcAxisData();
+	~CcAxisData();
+	bool CalculateLinearDivisions();
+	bool CalculateLogDivisions();
+
+	float m_Min;					// the lowest data value associated with this axis
+	float m_Max;					// and the highest
+
+	float m_AxisMin;				// the axis limits
+	float m_AxisMax;
+
+	float m_Delta;					// the division spacing for this axis
+	int	  m_NumDiv;					// number of divisions
+
+	float* m_AxisDivisions;			// and the divisions themselves
+
+	int   m_AxisScaleType;			// auto / span / zoom
+	bool  m_AxisLog;				// log if true, linear if false
+
+	CcString m_Title;			// the title of this axis
+};	
+
 class CcPlotAxes
 {
 public:
@@ -41,32 +70,15 @@ public:
 
 	Boolean CalculateDivisions();
 
-	Boolean CalculateLinearDivisions(int axis);
-	Boolean CalculateLogDivisions(int axis);
-
 	void CheckData(int axis, float data);
 	void DrawAxes(CrPlot* attachedPlot);	// draw lines, markers and text
 
 	CcString*		m_Labels;		// one label per data item (only for bar graphs)
 	CcString		m_PlotTitle;	// graph title
-	CcString		m_XTitle;		// and the x and y labels
-	CcString		m_YTitle;
 
-	float	m_Max[2];				// maximum and minimum of the DATA
-	float	m_Min[2];
+	CcAxisData		m_AxisData[3];	// the axes themselves
 
-	float	m_AxisMax[2];			// max and min of the axes (default to same as data range)
-	float	m_AxisMin[2];		
-
-	float	m_Delta[2];				// distance between divisions
-
-	int		m_NumDiv[2];			// number of divisions per axis
-
-	float *	m_AxisDivisions[2];		// storage for the division markers
-
-	int		m_AxisScaleType;		// either auto, span or zoom
-	bool	m_AxisLog[2];			// log if true, linear if false
-
+	int		m_NumberOfYAxes;		// graph can have either one or two y axes (left and right sides)
 	int		m_GraphType;			//  bargraphs - only calculate axis divisions for y axis
 									//  scatter / line - calculate axis divisions for both axes
 };
@@ -89,6 +101,8 @@ public:
 
 	virtual void CreateSeries(int numser, int* type) = 0;
 	virtual void AllocateMemory(int length) = 0;
+	virtual void AddSeries(int type) = 0;
+
 	int FindSeriesType(CcString textstyle);
 
     CcSeries**		m_Series;		// array of series
@@ -97,13 +111,18 @@ public:
 	CcPlotAxes		m_Axes;
 	Boolean			m_AxesOK;
 
+	int				m_CurrentSeries;// currently selected series (init as -1 = all)
+	int				m_CurrentAxis;	// currently selected axis (init as -1 = all)
+
 	int				m_NumberOfSeries;// number of series in the list
 	int				m_Colour[3][6];	// sequence for colours
 	int				m_XGapLeft;		// the margins around the graph
 	int				m_XGapRight;
 	int				m_YGapTop;
 	int				m_YGapBottom;
-
+	int				m_CompleteSeries;// number of series with all data present (eg to let ADDSERIES work...)
+	int				m_NewSeriesNextItem;// number of data items given to the new series
+	bool			m_NewSeries;	// true if there is an incomplete series present
 protected:
     CcString mName;					// internal name
     CrPlot* attachedPlot;
@@ -122,6 +141,7 @@ public:
 	CcString		mName;			// internal name
 	CcString		m_SeriesName;	// one name per series
 	int				m_DrawStyle;	// how to draw this series (scatter / bar / line / etc)
+	int				m_YAxis;		// which y axis is this series attached to (left or right)
 
 	virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
 
@@ -148,10 +168,13 @@ private:
 #define kSPlotLog		   "LOG"
 #define kSPlotTitle		   "PLOTTITLE"
 #define kSPlotSeriesName   "SERIESNAME"
-#define kSPlotXTitle	   "XTITLE"
-#define kSPlotYTitle	   "YTITLE"
-#define kSPlotSeriesType   "SERIESTYPE"
-
+#define kSPlotAxisTitle	   "TITLE"
+#define kSPlotSeriesType   "TYPE"
+#define kSPlotAddSeries	   "ADDSERIES"
+#define kSPlotXAxis		   "XAXIS"
+#define kSPlotYAxis		   "YAXIS"
+#define kSPlotYAxisRight   "YAXISRIGHT"
+#define kSPlotUseRightAxis "USERIGHTAXIS"
 enum
 {
  kTPlotAttach = 300,
@@ -170,10 +193,13 @@ enum
  kTPlotLog,
  kTPlotTitle,
  kTPlotSeriesName,
- kTPlotXTitle,
- kTPlotYTitle,
- kTPlotSeriesType
-
+ kTPlotAxisTitle,
+ kTPlotSeriesType,
+ kTPlotAddSeries,
+ kTPlotXAxis,
+ kTPlotYAxis,
+ kTPlotYAxisRight,
+ kTPlotUseRightAxis
 };
 
 
@@ -197,7 +223,8 @@ enum
 enum
 {
 	Axis_X = 0,
-	Axis_Y
+	Axis_YL,
+	Axis_YR
 };
 
 // how the axis is scaled

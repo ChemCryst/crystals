@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2001/11/26 16:47:34  ckpgroup
+// SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
+// Remove labels when mouse leaves window.
+//
 // Revision 1.7  2001/11/26 14:02:47  ckpgroup
 // SH: Added mouse-over message support - display label and data value for the bar
 // under the pointer.
@@ -51,6 +55,7 @@ CcPlotBar::CcPlotBar( )
 {
 	m_Axes.m_GraphType = Plot_GraphBar;
 	m_NumberOfBarSeries = 0;
+	m_AxesOK = false;
 }
 
 CcPlotBar::~CcPlotBar()
@@ -130,15 +135,15 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken();
 
 				// now record the data itself
-				for(int i=0; i< (m_NumberOfSeries); i++)
+				for(int i=m_CompleteSeries; i< (m_NumberOfSeries); i++)
 				{
 					CcString ndata = tokenList->GetToken();
 					float tempdata = atof(ndata.ToCString());
 
 					// changes axis range if necessary
-					m_Axes.CheckData(Axis_Y, tempdata);			
+					m_Axes.CheckData(Axis_YL, tempdata);			
 				
-					if(m_Axes.m_AxisLog[Axis_Y])
+					if(m_Axes.m_AxisData[Axis_YL].m_AxisLog)
 					{
 						if(tempdata <= 0)
 						{
@@ -148,13 +153,22 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 					}
 
 					// and copy this to m_Series[i]->m_Data[n]
-					((CcSeriesBar*)m_Series[i])->m_Data[m_NextItem] = tempdata;
+					((CcSeriesBar*)m_Series[i])->m_Data[m_NextItem - m_NewSeriesNextItem] = tempdata;
 				}
 
-				m_NextItem++;		// make sure next label / data pair goes into the next slot
+				if(m_NewSeries == false)
+					m_NextItem++;		// make sure next label / data pair goes into the next slot
+				else m_NewSeriesNextItem--;
 				
+				if(m_NewSeriesNextItem == 0 && m_NewSeries == true)
+				{
+					m_CompleteSeries++; 
+					m_NewSeriesNextItem = m_NextItem;
+					m_NewSeries = false;
+				}
+
 				// make sure the x axis knows how many items there are...
-				if(m_NextItem > m_Axes.m_Max[Axis_X]) m_Axes.m_Max[Axis_X]++;
+				if(m_NextItem > m_Axes.m_AxisData[Axis_X].m_Max) m_Axes.m_AxisData[Axis_X].m_Max++;
 
 				break;
 			}
@@ -181,12 +195,14 @@ void CcPlotBar::DrawView()
 			m_YGapTop = 300;
 
 		// if x axis has a title make the bottom gap bigger
-		if(!(m_Axes.m_XTitle == ""))
+		if(!(m_Axes.m_AxisData[Axis_X].m_Title == ""))
 			m_YGapBottom = 500;
 
 		// if y axis has a title make the lhs gap bigger
-		if(!(m_Axes.m_YTitle == ""))
+		if(!(m_Axes.m_AxisData[Axis_YL].m_Title == ""))
 			m_XGapLeft = 300;
+		if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
+			m_XGapRight = 200;
 
 		// variables used for loops
 		int i=0;
@@ -196,25 +212,25 @@ void CcPlotBar::DrawView()
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
 
 		// gap between division markers on x and y axes
-		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_NumDiv[Axis_X]);			
-		int ydivoffset = (2400-m_YGapTop-m_YGapBottom) / (m_Axes.m_NumDiv[Axis_Y]);			
+		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_AxisData[Axis_X].m_NumDiv);			
+		int ydivoffset = (2400-m_YGapTop-m_YGapBottom) / (m_Axes.m_AxisData[Axis_YL].m_NumDiv);			
 
 		// axis dimensions after rounding
-		int axisheight = ydivoffset * (m_Axes.m_NumDiv[Axis_Y]);
-		int axiswidth = xdivoffset * (m_Axes.m_NumDiv[Axis_X]);
+		int axisheight = ydivoffset * (m_Axes.m_AxisData[Axis_YL].m_NumDiv);
+		int axiswidth = xdivoffset * (m_Axes.m_AxisData[Axis_X].m_NumDiv);
 		
 		int xseroffset=0;
 
 		// take the axis height, work out where zero is...
-		int xorigin = 2400 - m_XGapLeft + ((axiswidth * m_Axes.m_Min[Axis_X]) / (m_Axes.m_Max[Axis_X] - m_Axes.m_Min[Axis_X]));
-		int yorigin = 2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisMin[Axis_Y] / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
+		int xorigin = 2400 - m_XGapLeft + ((axiswidth * m_Axes.m_AxisData[Axis_X].m_Min) / (m_Axes.m_AxisData[Axis_X].m_Max - m_Axes.m_AxisData[Axis_X].m_Min));
+		int yorigin = 2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YL].m_AxisMin / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
 		float yoriginvalue = 0;
-		if(m_Axes.m_AxisScaleType == Plot_AxisSpan && m_Axes.m_AxisMin[Axis_Y] > 0) 
+		if(m_Axes.m_AxisData[Axis_YL].m_AxisScaleType == Plot_AxisSpan && m_Axes.m_AxisData[Axis_YL].m_AxisMin > 0) 
 		{
 			yorigin = 2400 - m_YGapBottom;
-			yoriginvalue = m_Axes.m_AxisDivisions[Axis_Y][0];
+			yoriginvalue = m_Axes.m_AxisData[Axis_YL].m_AxisDivisions[0];
 		}
 		
 		// draw a grey background
@@ -253,7 +269,7 @@ void CcPlotBar::DrawView()
 						x1 = m_XGapLeft + i*offset + j*xseroffset + 5;
 						x2 = x1 + xseroffset - 5;
 						y1 = yorigin;
-						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
+						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
 
 						attachedPlot->DrawRect(x1,y1,x2,y2, true);
 					}
@@ -267,8 +283,8 @@ void CcPlotBar::DrawView()
 					{
 						x1 = m_XGapLeft + (i+0.5)*offset;
 						x2 = x1 + offset;
-						y1 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
-						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i+1] - yoriginvalue) / (m_Axes.m_AxisMax[Axis_Y] - m_Axes.m_AxisMin[Axis_Y])));
+						y1 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
+						y2 = yorigin - (axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin)));
 
 						attachedPlot->DrawLine(1, x1,y1,x2,y2);
 					}
@@ -310,13 +326,37 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint point)
 		{
 			ret = m_Axes.m_Labels[num];
 			ret += "; ";
-			if(m_Axes.m_AxisLog[Axis_Y])
+			if(m_Axes.m_AxisData[Axis_YL].m_AxisLog)
 				ret += pow(10,((CcSeriesBar*)m_Series[bar])->m_Data[num]);
 			else ret += ((CcSeriesBar*)m_Series[bar])->m_Data[num];
 		}
 	}
 
 	return ret;
+}
+
+// add a series (note: can be called after the rest of the graph is initialised)
+void CcPlotBar::AddSeries(int type)
+{
+	// need to re-allocate memory for the series list, transfer pointers over, and delete old memory
+	CcSeries** temp = new CcSeries*[m_NumberOfSeries + 1];
+	for(int i=0; i<m_NumberOfSeries; i++)
+	{
+		temp[i] = m_Series[i];
+	}
+
+	temp[m_NumberOfSeries] = new CcSeriesBar;
+	temp[m_NumberOfSeries]->m_DrawStyle = type;
+	temp[m_NumberOfSeries]->AllocateMemory(m_SeriesLength);
+
+	delete [] m_Series;
+	
+	m_Series = temp;
+
+	m_CompleteSeries = m_NumberOfSeries;
+	m_NumberOfSeries++;
+	m_NewSeriesNextItem = m_SeriesLength;	
+	m_NewSeries = true;
 }
 
 // create the data series

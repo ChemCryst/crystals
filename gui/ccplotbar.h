@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/11/26 16:47:35  ckpgroup
+//   SH: More MouseOver changes. Scatterplots display the graph coordinates of the mouse pointer.
+//   Remove labels when mouse leaves window.
+//
 //   Revision 1.4  2001/11/26 14:02:48  ckpgroup
 //   SH: Added mouse-over message support - display label and data value for the bar
 //   under the pointer.
@@ -43,6 +47,7 @@ class CcPlotBar : public CcPlotData
 		CcString GetDataFromPoint(CcPoint point);	
 		void CreateSeries(int numser, int* type);		// creates all data series (type is a block of numser series types)
 		void AllocateMemory(int length);				// calls AllocateMemory for each series.
+		void AddSeries(int type);						// add a series to the graph
 
 		int m_NumberOfBarSeries;						// bar-series are drawn next to one another, others overlap.
 };

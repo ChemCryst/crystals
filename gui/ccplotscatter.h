@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2001/11/26 14:02:49  ckpgroup
+//   SH: Added mouse-over message support - display label and data value for the bar
+//   under the pointer.
+//
 //   Revision 1.3  2001/11/19 16:32:21  ckpgroup
 //   SH: General update, bug-fixes, better text alignment. Removed a lot of duplicate code.
 //
@@ -40,6 +44,7 @@ class CcPlotScatter : public CcPlotData
 		CcString GetDataFromPoint(CcPoint point);
 		void CreateSeries(int numser, int* type);
 		void AllocateMemory(int length);
+		void AddSeries(int type);
 };
 
 class CcSeriesScatter : public CcSeries

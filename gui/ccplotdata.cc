@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2001/11/26 14:02:48  ckpgroup
+// SH: Added mouse-over message support - display label and data value for the bar
+// under the pointer.
+//
 // Revision 1.6  2001/11/22 15:33:19  ckpgroup
 // SH: Added different draw-styles (line / area / bar / scatter).
 // Changed graph layout. Changed second series to blue for better contrast.
@@ -64,11 +68,16 @@ CcPlotData::CcPlotData( )
 	m_AxesOK = false;
 	m_Series = 0;
 	m_SeriesLength = 0;
+	m_CompleteSeries = 0;	// no data present
+	m_NewSeriesNextItem = 0;
 	m_NextItem = 0;
+	m_NewSeries = false;
+	m_CurrentSeries = -1;	// all series selected
+	m_CurrentAxis = -1;		// also all axes selected
 	
 	m_XGapRight = 160;		// horizontal gap between graph and edge of window
-	m_XGapLeft = 200;			//		nb: leave enough space for labels
-	m_YGapTop = 200;			// and the vertical gap
+	m_XGapLeft = 200;		//		nb: leave enough space for labels
+	m_YGapTop = 200;		// and the vertical gap
 	m_YGapBottom = 300;		//		nb: lots of space for labels
 
 	// initialise the colours
@@ -150,7 +159,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				break;
 			}
 
-			// display all of this graph
+			// display this graph
 			case kTPlotShow:
 			{
 				tokenList->GetToken(); // Remove that token!
@@ -161,18 +170,28 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 			// use linear axis scaling
 			case kTPlotLinear:
 			{
-				tokenList->GetToken();
-				m_Axes.m_AxisLog[Axis_X] = false;
-				m_Axes.m_AxisLog[Axis_Y] = false;
+				tokenList->GetToken();	// "LINEAR"
+				if(m_CurrentAxis != -1)
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisLog = false;
+				else
+				{
+					for(int i=0; i<3; i++)
+						m_Axes.m_AxisData[i].m_AxisLog = false;
+				}
 				break;
 			}
 
 			// use log axis scaling (for y axis only...)
 			case kTPlotLog:
 			{
-				tokenList->GetToken();
-				m_Axes.m_AxisLog[Axis_X] = false;	// x axis always linear
-				m_Axes.m_AxisLog[Axis_Y] = true;	// set y axis to be logarithmic (sp?)
+				tokenList->GetToken();	// "LOG"
+				if(m_CurrentAxis != -1)
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisLog = true;	
+				else
+				{
+					for(int i=0; i<3; i++)
+						m_Axes.m_AxisData[i].m_AxisLog = true;
+				}
 				break;
 			}
 
@@ -187,43 +206,58 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 			// use automatic axis scaling: 0 -> max if all +ve, min -> max if not.
 			case kTPlotAuto:		// this mode sets y axis range to 0 < y < ymax
 			{
-				tokenList->GetToken();
-				m_Axes.m_AxisScaleType = Plot_AxisAuto;
+				tokenList->GetToken();	// "AUTO"
+				if(m_CurrentAxis != -1)
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisAuto;
+				else
+				{
+					for(int i=0; i<3; i++)
+						m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisAuto;
+				}
 				break;
 			}
 
 			// uses axis scaling of min->max always.
 			case kTPlotSpan:		// this mode sets y axis range to ymin < y < ymax
 			{
-				tokenList->GetToken();
-				m_Axes.m_AxisScaleType = Plot_AxisSpan;
+				tokenList->GetToken();	// "SPAN"
+		
+				if(m_CurrentAxis != -1)
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisSpan;
+				else
+				{
+					for(int i=0; i<3; i++)
+						m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisSpan;
+				}
 				break;
 			}
 
 			// lets the user specify an axis range.
 			case kTPlotZoom:
 			{
-				tokenList->GetToken();
-				m_Axes.m_AxisScaleType = Plot_AxisZoom;
-				
-				// next four tokens should be: xmin, xmax, ymin, ymax
-				float xmin = atof(tokenList->GetToken().ToCString());
-				float xmax = atof(tokenList->GetToken().ToCString());
-				float ymin = atof(tokenList->GetToken().ToCString());
-				float ymax = atof(tokenList->GetToken().ToCString());
+				tokenList->GetToken();	//"ZOOM"
 
-				// check bounds: if min/max pair both zero don't change limits for that axis
-				if(ymin != 0 && ymax != 0)
-				{
-					m_Axes.m_AxisMin[Axis_Y] = ymin;
-					m_Axes.m_AxisMax[Axis_Y] = ymax;
-				}
-				if(xmin != 0 && xmax != 0)
-				{
-					m_Axes.m_AxisMin[Axis_X] = xmin;
-					m_Axes.m_AxisMax[Axis_X] = xmax;
-				}
+				// next two tokens should be: min, max
+				float min = atof(tokenList->GetToken().ToCString());
+				float max = atof(tokenList->GetToken().ToCString());
 
+				if(m_CurrentAxis != -1)
+				{
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisSpan;
+
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisMin = min;
+					m_Axes.m_AxisData[m_CurrentAxis].m_AxisMax = max;
+				}
+				else
+				{
+					for(int i=0; i<3; i++)
+					{
+						m_Axes.m_AxisData[i].m_AxisScaleType = Plot_AxisSpan;
+
+						m_Axes.m_AxisData[i].m_AxisMin = min;
+						m_Axes.m_AxisData[i].m_AxisMax = max;
+					}
+				}
 				// specify that axes need rescaling
 				m_AxesOK = false;
 
@@ -249,12 +283,12 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 
 				// create series here, 
 				CreateSeries(num, types);
-
+		
 				break;
 			}
 
 			// set the number of data items in each series (semi-optional, since series is extended if necessary)
-		    case kTPlotLength:				// length of series specified
+		    case kTPlotLength:
 			{
 			    tokenList->GetToken();
 			    CcString plotlength = tokenList->GetToken();
@@ -266,88 +300,151 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				break;
 			}
 
-			// set the series names, for a key (not used yet)
+			// set the series names, for a key (not yet present...)
 			case kTPlotSeriesName:
 			{
-				tokenList->GetToken();
+				tokenList->GetToken();	// "NAME"
 
-				for(int i=0; i<m_NumberOfSeries; i++)
-				{
-					m_Series[i]->m_SeriesName = tokenList->GetToken();
-				}
+				CcString name = tokenList->GetToken();
+
+				if(m_CurrentSeries != -1)
+					m_Series[m_CurrentSeries]->m_SeriesName = name;
+				else LOGWARN("Can't apply the same name to all series...");
 				break;
 			}
 
-			// set the x-axis label
-			case kTPlotXTitle:
+			// set the title of this axis (drawn next to it)
+			case kTPlotAxisTitle:
 			{
-				tokenList->GetToken();
-				m_Axes.m_XTitle = tokenList->GetToken();
+				tokenList->GetToken();	// "TITLE"	
+
+				CcString title = tokenList->GetToken();
+
+				if(m_CurrentAxis != -1)
+					m_Axes.m_AxisData[m_CurrentAxis].m_Title = title;
+				else LOGWARN("Same title applied to all axes...");
 				break;
 			}
-
-			// set the y axis label
-			case kTPlotYTitle:
-			{
-				tokenList->GetToken();
-				m_Axes.m_YTitle = tokenList->GetToken();
-				break;
-			}
-
+				
 			// set the drawing style for a series
 			case kTPlotSeriesType:
 			{
 				CcString name;						// the series name (if given)
 				CcString textstyle;					// the drawing style, in text
 				int style = Plot_SeriesBar;			// the style in Plot_SeriesX form
-				bool seriesfound = false;	
 				int series = 0;
 		
-				tokenList->GetToken();				// 'SERIESTYPE'
+				tokenList->GetToken();				// 'TYPE'
 
-				// first check that at least one series has a name...
-				int numnames = 0;
-				for(series=0; series<m_NumberOfSeries; series++)
+				style = FindSeriesType((tokenList->GetToken()).ToCString());
+
+				// if current series is -1, apply to all series
+				if(m_CurrentSeries == -1)
 				{
-					if(!(m_Series[series]->m_SeriesName == ""))
-						numnames++;
+					for(int i=0; i<m_NumberOfSeries; i++)
+						m_Series[i]->m_DrawStyle = style;
 				}
-
-				// if no series are named, set all series to this style
-				if(numnames == 0)
-				{
-					style = FindSeriesType(tokenList->GetToken());
-
-					for(int series=0; series<m_NumberOfSeries; series++)
-						m_Series[series]->m_DrawStyle = style;
-				}
-				// otherwise search for the specified series
 				else
 				{
-					name = tokenList->GetToken();		// the series name (NB: identify by number too?)
-					style = FindSeriesType(tokenList->GetToken());	// the drawing style
-
-					series = 0;					
-
-					while(!seriesfound && series < m_NumberOfSeries)
-					{
-						if(m_Series[series]->m_SeriesName == name)	// compare the names
-						{
-							seriesfound = true;
-							
-							m_Series[series]->m_DrawStyle = style;
-						}
-
-						series++;
-					}
-
-					// if seriesfound is still false, series does not exist
-					if(!seriesfound)
-						LOGWARN("Specified series doesn't exist: " + name);
+					m_Series[m_CurrentSeries]->m_DrawStyle = style;
 				}
+				break;
+			}
+
+			// select a series
+			case kTPlotSeries:
+			{
+				tokenList->GetToken();	// "SERIES"
+
+				CcString sname = tokenList->GetToken();
+
+				if(sname == "ALL") m_CurrentSeries = -1;
+		
+				bool seriesfound = false;
+
+				// now search series names for the token sname
+				for(int i=0; i<m_NumberOfSeries; i++)
+				{
+					if((sname == m_Series[i]->m_SeriesName) && !(m_Series[i]->m_SeriesName == ""))
+					{
+						m_CurrentSeries = i;
+						seriesfound = true;
+					}
+				}
+				
+				// if name doesn't match, try getting a number
+				if(!seriesfound)
+				{
+					m_CurrentSeries = atoi(sname.ToCString()) - 1;				
+					// nb - the -1 means that series 0 in the array is series 1 to the user
+				}
+
+				// if still not found, select all...
+				if((m_CurrentSeries > m_NumberOfSeries) || (m_CurrentSeries < 0))
+					m_CurrentSeries = -1;
 
 				break;
 			}
+
+			// select an axis
+			case kTPlotXAxis:
+			{
+				tokenList->GetToken();	// "XAXIS"
+				m_CurrentAxis = Axis_X;
+				break;
+			}
+			case kTPlotYAxis:
+			{
+				tokenList->GetToken();	// "YAXIS"
+				m_CurrentAxis = Axis_YL;
+				break;
+			}
+			case kTPlotYAxisRight:
+			{
+				tokenList->GetToken();	// "YAXISRIGHT"
+				m_CurrentAxis = Axis_YR;
+				break;
+			}
+
+			// add a series to the graph
+			case kTPlotAddSeries:
+			{
+				tokenList->GetToken();	// "ADDSERIES"
+
+				CcString sname;
+
+				// next token should be the name of the series (but is optional so scan for type instead
+				CcString next = tokenList->PeekToken();
+
+				if(!(next == "TYPE"))
+					sname = tokenList->GetToken();
+
+				// next token should be "TYPE"
+				tokenList->GetToken();
+				// followed by the type itself
+				next = tokenList->GetToken();
+
+				AddSeries(FindSeriesType(next));
+				break;
+			}
+
+			// set the current series to use the right-hand y axis
+			case kTPlotUseRightAxis:
+			{
+				tokenList->GetToken();	// "USERIGHTAXIS"
+
+				if(m_CurrentAxis != -1)
+					m_Series[m_CurrentSeries]->m_YAxis == Axis_YR;
+				else
+				{
+					for(int i=0; i<m_NumberOfSeries; i++)
+					{
+						m_Series[i]->m_YAxis == Axis_YL;
+					}
+				}
+				break;
+			}
+
 			default:
 			{
 				hasTokenForMe = false;
@@ -358,6 +455,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 	return true;
 }
 
+// returns the series type identifier corresponding to the text string supplied
 int CcPlotData::FindSeriesType(CcString textstyle)
 {
 	int style;
@@ -397,6 +495,7 @@ void CcPlotData::Clear()
 
 CcSeries::CcSeries()
 {
+	m_YAxis = Axis_YL;
 }
 
 CcSeries::~CcSeries()
@@ -421,6 +520,164 @@ Boolean CcSeries::ParseInput( CcTokenList * tokenList )
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
+//	The AxesData stuff
+//
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// set all values to default
+CcAxisData::CcAxisData()
+{
+	m_Max = 0;
+	m_Min = 10000;
+
+	m_AxisMax = 0;
+	m_AxisMin = 0;
+
+	m_Delta = 0;
+
+	m_NumDiv = 0;
+
+	m_AxisDivisions = 0;
+
+	m_AxisScaleType = Plot_AxisAuto; 
+	m_AxisLog = false;
+}
+
+CcAxisData::~CcAxisData()
+{
+}
+
+// calculate a linear set of axis divisions, make them fall on 'nice' numbers with sensible delta
+Boolean CcAxisData::CalculateLinearDivisions()
+{
+	// initial delta value - too high? Can be reduced if any lower is needed, but use either ...1, ...2 or ...5
+	m_Delta = 0.001;
+	m_NumDiv = (m_AxisMax - m_AxisMin) / m_Delta;	// initial number of divisions based on delta
+
+	int numinc = 0;							// number of increments of delta
+
+	// increment the delta, so reducing the number of divisions needed.
+	// x2, x2.5, x2, x2, x2.5, x2, x2 etc
+	// this gives 'nice' delta values - 1,2,5,10,20,50,100,200,500,1000 etc.
+	while(m_NumDiv > 15)				// max 15 divisions
+	{
+		if((numinc+2)%3 == 0)				// every third increment is x2.5
+		{
+			m_Delta *= 2.5f;
+		}
+		else m_Delta *= 2;			// others are x2
+
+		numinc++;
+		m_NumDiv = (m_AxisMax - m_AxisMin) / m_Delta;// find new number of divisions
+	}
+
+	// move all divisions such that they are multiples of the delta
+	bool smallerthan = false;
+	float absdelta = m_Delta;
+	float absmin = m_AxisMin;
+	if(absmin < 0) absmin = -absmin;
+
+	while(!smallerthan)
+	{
+		if(absdelta < absmin)
+			absdelta += m_Delta;
+		else smallerthan = true;
+	}
+
+	if(m_AxisMin < 0)	m_AxisMin = -absdelta;
+
+//	// adjust modulus so there are enough divisions
+//	if(m_AxisScaleType != Plot_AxisZoom && m_AxisMin < 0) modulus += m_Delta;
+
+	// make sure there are enough divisions
+	if(m_AxisScaleType != Plot_AxisZoom)
+		while (m_AxisMin + (m_NumDiv * m_Delta) < m_Max) 
+			(m_NumDiv)++;
+
+	// allocate space for data 
+	m_AxisDivisions = new float[m_NumDiv+1];
+
+	// loop through points, fill with data
+	for(int i=0; i<(m_NumDiv+1); i++)
+	{
+		m_AxisDivisions[i] = m_AxisMin + m_Delta*i;
+
+		if(m_AxisDivisions[i] > -0.0001 && m_AxisDivisions[i] < 0.0001)
+			m_AxisDivisions[i] = 0;
+	}
+
+	m_AxisMin = m_AxisDivisions[0];
+	m_AxisMax = m_AxisDivisions[m_NumDiv];
+
+	return true;
+}
+
+// now the division calculations for a log axis.
+// Does linear scaling of the log values, then logs all the labels.
+Boolean CcAxisData::CalculateLogDivisions()
+{
+	// now do log y axis
+	m_Delta = 1;
+	if(m_AxisMin <= 0) m_AxisMin = 1;
+
+	m_NumDiv = (log10(m_AxisMax) - log10(m_AxisMin)) / m_Delta;	// initial number of divisions based on delta
+
+	int numinc = 0;									// number of increments of delta
+
+	// increment the delta, so reducing the number of divisions needed.
+	// x2, x2.5, x2, x2, x2.5, x2, x2 etc
+	// this gives 'nice' delta values - 1,2,5,10,20,50,100,200,500,1000 etc.
+	while(m_NumDiv > 15)				// max 15 divisions
+	{
+		if((numinc+2)%3 == 0)						// ever third increment is x2.5
+		{
+			m_Delta *= 2.5f;
+		}
+		else m_Delta *= 2;						// others are x2
+
+		numinc++;
+		m_NumDiv = (log10(m_AxisMax) - log10(m_AxisMin)) / m_Delta;// find new number of divisions
+	}
+
+	// move all divisions such that they are multiples of the delta
+	bool smallerthan = false;
+	float absdelta = m_Delta;
+	float absmin = m_AxisMin;
+	if(absmin < 0) absmin = -absmin;
+
+	while(!smallerthan)
+	{
+		if(absdelta < absmin)
+			absdelta += m_Delta;
+		else smallerthan = true;
+	}
+
+	if(m_AxisMin < 0)	m_AxisMin = -absdelta;
+
+	// make sure there are enough divisions
+	while((log10(m_AxisMin) + (m_NumDiv * m_Delta) < log10(m_Max)))
+		m_NumDiv++;
+
+	// allocate space for data (changed to new)
+	m_AxisDivisions = new float[m_NumDiv+1];
+
+	// loop through points, fill with data
+	for(int i=0; i<(m_NumDiv+1); i++)
+	{
+		m_AxisDivisions[i] = pow(10,(log10(m_AxisMin) + m_Delta*i));
+
+		if(m_AxisDivisions[i] > -0.000001 && m_AxisDivisions[i] < 0.000001)
+			m_AxisDivisions[i] = 0;
+	}
+
+	m_AxisMin = log10(m_AxisDivisions[0]);
+	m_AxisMax = log10(m_AxisDivisions[m_NumDiv]);
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//
 //	The CcPlotAxes stuff
 //
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -428,44 +685,27 @@ Boolean CcSeries::ParseInput( CcTokenList * tokenList )
 // set all variables to initial default values
 CcPlotAxes::CcPlotAxes()
 {
-	m_Max[0] = 0;
-	m_Max[1] = 0;
-	m_Min[0] = 10000;
-	m_Min[1] = 10000;
-
-	m_AxisMax[0] = 0;
-	m_AxisMin[0] = 10000;
-	m_AxisMax[1] = 0;
-	m_AxisMin[1] = 10000;
-
-	m_Delta[0] = 0;
-	m_Delta[1] = 0;
-
-	m_NumDiv[0] = 0;
-	m_NumDiv[1] = 0;
-
-	m_AxisDivisions[0] = 0;
-	m_AxisDivisions[1] = 0;
-
-	m_AxisScaleType = Plot_AxisAuto; 
-	m_AxisLog[0] = false;
-	m_AxisLog[1] = false;
-
 	m_Labels = 0;
+	m_NumberOfYAxes = 1;	// only one y axis (left) is default
 }
 
 // free any allocated memory
 CcPlotAxes::~CcPlotAxes()
 {
-	if(m_AxisDivisions[Axis_X])
+	if(m_AxisData[Axis_X].m_AxisDivisions)
 	{
-		delete [] m_AxisDivisions[Axis_X];
-		m_AxisDivisions[Axis_X] = 0;
+		delete [] m_AxisData[Axis_X].m_AxisDivisions;
+		m_AxisData[Axis_X].m_AxisDivisions = 0;
 	}
-	if(m_AxisDivisions[Axis_Y])
+	if(m_AxisData[Axis_YL].m_AxisDivisions)
 	{
-		delete [] m_AxisDivisions[Axis_Y];
-		m_AxisDivisions[Axis_Y] = 0;
+		delete [] m_AxisData[Axis_YL].m_AxisDivisions;
+		m_AxisData[Axis_YL].m_AxisDivisions = 0;
+	}
+	if(m_AxisData[Axis_YR].m_AxisDivisions)
+	{
+		delete [] m_AxisData[Axis_YR].m_AxisDivisions;
+		m_AxisData[Axis_YR].m_AxisDivisions = 0;
 	}
 
 	if(m_Labels) delete [] m_Labels;
@@ -477,40 +717,44 @@ CcPlotAxes::~CcPlotAxes()
 Boolean CcPlotAxes::CalculateDivisions()
 {
 	Boolean tempx = false;
-	Boolean tempy = false;
+	Boolean tempyl = false;
+	Boolean tempyr = false;
 
-	// change axis limits if required
-	if(m_AxisScaleType == Plot_AxisAuto)
+	for(int i=1; i<3; i++)
 	{
-		if((m_Min[Axis_Y] > 0) && !m_AxisLog[Axis_Y])
-			m_AxisMin[Axis_Y] = 0;
-		else m_AxisMin[Axis_Y] = m_Min[Axis_Y];
+		// change axis limits if required
+		if(m_AxisData[i].m_AxisScaleType == Plot_AxisAuto)
+		{
+			if((m_AxisData[i].m_Min > 0) && !m_AxisData[i].m_AxisLog)
+				m_AxisData[i].m_AxisMin = 0;
+			else m_AxisData[i].m_AxisMin = m_AxisData[i].m_Min;
 
-		m_AxisMax[Axis_Y] = m_Max[Axis_Y];
+			m_AxisData[i].m_AxisMax = m_AxisData[i].m_Max;
+		}
+		if(m_AxisData[i].m_AxisScaleType == Plot_AxisSpan)
+		{
+			//m_AxisMin[Axis_Y] = m_Min[Axis_Y];
+			//m_AxisMax[Axis_Y] = m_Max[Axis_Y];
+		}
+		if(m_AxisData[i].m_AxisScaleType == Plot_AxisZoom)
+		{}// leave things as they were.
+		;
 	}
-	if(m_AxisScaleType == Plot_AxisSpan)
-	{
-		//m_AxisMin[Axis_Y] = m_Min[Axis_Y];
-		//m_AxisMax[Axis_Y] = m_Max[Axis_Y];
-	}
-	if(m_AxisScaleType == Plot_AxisZoom)
-	{}// leave things as they were.
-	;
 
 	// for bar graphs, the x axis is different. One division per data item.
 	if(m_GraphType == Plot_GraphBar)
 	{
 		// do the x axis first - one division per data item
 		// x axis always linear so can do it here...
-		m_Delta[Axis_X] = 1;
-		m_NumDiv[Axis_X] = (int)m_Max[Axis_X];
+		m_AxisData[Axis_X].m_Delta = 1;
+		m_AxisData[Axis_X].m_NumDiv = (int)m_AxisData[Axis_X].m_Max;
 
 		// allocate space for data
-		m_AxisDivisions[Axis_X] = new float[m_NumDiv[Axis_X]];
+		m_AxisData[Axis_X].m_AxisDivisions = new float[m_AxisData[Axis_X].m_NumDiv];
 
-		for(int i=0; i<m_NumDiv[Axis_X]; i++)
+		for(int i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 		{
-			m_AxisDivisions[Axis_X][i] = i;
+			m_AxisData[Axis_X].m_AxisDivisions[i] = i;
 		}
 
 		tempx = true;
@@ -518,174 +762,48 @@ Boolean CcPlotAxes::CalculateDivisions()
 	// for scatter graphs calculate divisions for both axes
 	else if(m_GraphType == Plot_GraphScatter)
 	{
-		if(m_AxisScaleType == Plot_AxisAuto)
+		if(m_AxisData[Axis_X].m_AxisScaleType == Plot_AxisAuto)
 		{
-			if(m_Min[Axis_X] > 0)
-				m_AxisMin[Axis_X] = 0;
-			else m_AxisMin[Axis_X] = m_Min[Axis_X];
+			if(m_AxisData[Axis_X].m_Min > 0)
+				m_AxisData[Axis_X].m_AxisMin = 0;
+			else m_AxisData[Axis_X].m_AxisMin = m_AxisData[Axis_X].m_Min;
 
-			m_AxisMax[Axis_X] = m_Max[Axis_X];
+			m_AxisData[Axis_X].m_AxisMax = m_AxisData[Axis_X].m_Max;
 		}
 
-		if(m_AxisLog[Axis_X]) tempx = CalculateLogDivisions(Axis_X);
-		else tempx = CalculateLinearDivisions(Axis_X);
+		if(m_AxisData[Axis_X].m_AxisLog) tempx = m_AxisData[Axis_X].CalculateLogDivisions();
+		else tempx = m_AxisData[Axis_X].CalculateLinearDivisions();
 	}
 
 	// now the y axis
-	if(m_AxisLog[Axis_Y]) tempy = CalculateLogDivisions(Axis_Y);
-	else tempy = CalculateLinearDivisions(Axis_Y);
+	if(m_AxisData[Axis_YL].m_AxisLog) tempyl = m_AxisData[Axis_YL].CalculateLogDivisions();
+	else tempyl = m_AxisData[Axis_YL].CalculateLinearDivisions();
+	if(m_AxisData[Axis_YR].m_AxisLog) tempyr = m_AxisData[Axis_YR].CalculateLogDivisions();
+	else tempyr = m_AxisData[Axis_YR].CalculateLinearDivisions();
 
-	return (tempx & tempy);
-}
 
-// calculate a linear set of axis divisions, make them fall on 'nice' numbers with sensible delta
-Boolean CcPlotAxes::CalculateLinearDivisions(int axis)
-{
-	// initial delta value - too high? Can be reduced if any lower is needed, but use either ...1, ...2 or ...5
-	m_Delta[axis] = 0.001;
-	m_NumDiv[axis] = (m_AxisMax[axis] - m_AxisMin[axis]) / m_Delta[axis];	// initial number of divisions based on delta
-
-	int numinc = 0;							// number of increments of delta
-
-	// increment the delta, so reducing the number of divisions needed.
-	// x2, x2.5, x2, x2, x2.5, x2, x2 etc
-	// this gives 'nice' delta values - 1,2,5,10,20,50,100,200,500,1000 etc.
-	while(m_NumDiv[axis] > 15)				// max 15 divisions
-	{
-		if((numinc+2)%3 == 0)				// every third increment is x2.5
-		{
-			m_Delta[axis] *= 2.5f;
-		}
-		else m_Delta[axis] *= 2;			// others are x2
-
-		numinc++;
-		m_NumDiv[axis] = (m_AxisMax[axis] - m_AxisMin[axis]) / m_Delta[axis];// find new number of divisions
-	}
-
-	// move all divisions such that they are multiples of the delta
-	bool smallerthan = false;
-	float absdelta = m_Delta[axis];
-	float absmin = m_AxisMin[axis];
-	if(absmin < 0) absmin = -absmin;
-
-	while(!smallerthan)
-	{
-		if(absdelta < absmin)
-			absdelta += m_Delta[axis];
-		else smallerthan = true;
-	}
-
-	if(m_AxisMin[axis] < 0)	m_AxisMin[axis] = -absdelta;
-
-//	// adjust modulus so there are enough divisions
-//	if(m_AxisScaleType != Plot_AxisZoom && m_AxisMin[axis] < 0) modulus += m_Delta[axis];
-
-	// make sure there are enough divisions
-	if(m_AxisScaleType != Plot_AxisZoom)
-		while (m_AxisMin[axis] + (m_NumDiv[axis] * m_Delta[axis]) < m_Max[axis]) 
-			(m_NumDiv[axis])++;
-
-	// allocate space for data 
-	m_AxisDivisions[axis] = new float[m_NumDiv[axis]+1];
-
-	// loop through points, fill with data
-	for(int i=0; i<(m_NumDiv[axis]+1); i++)
-	{
-		m_AxisDivisions[axis][i] = m_AxisMin[axis] + m_Delta[axis]*i;
-
-		if(m_AxisDivisions[axis][i] > -0.0001 && m_AxisDivisions[axis][i] < 0.0001)
-			m_AxisDivisions[axis][i] = 0;
-	}
-
-	m_AxisMin[axis] = m_AxisDivisions[axis][0];
-	m_AxisMax[axis] = m_AxisDivisions[axis][m_NumDiv[axis]];
-
-	return true;
-}
-
-// now the division calculations for a log axis.
-// Does linear scaling of the log values, then logs all the labels.
-Boolean CcPlotAxes::CalculateLogDivisions(int axis)
-{
-	// now do log y axis
-	m_Delta[axis] = 1;
-	if(m_AxisMin[axis] <= 0) m_AxisMin[axis] = 1;
-
-	m_NumDiv[axis] = (log10(m_AxisMax[axis]) - log10(m_AxisMin[axis])) / m_Delta[axis];	// initial number of divisions based on delta
-
-	int numinc = 0;									// number of increments of delta
-
-	// increment the delta, so reducing the number of divisions needed.
-	// x2, x2.5, x2, x2, x2.5, x2, x2 etc
-	// this gives 'nice' delta values - 1,2,5,10,20,50,100,200,500,1000 etc.
-	while(m_NumDiv[axis] > 15)				// max 15 divisions
-	{
-		if((numinc+2)%3 == 0)						// ever[axis] third increment is x2.5
-		{
-			m_Delta[axis] *= 2.5f;
-		}
-		else m_Delta[axis] *= 2;						// others are x2
-
-		numinc++;
-		m_NumDiv[axis] = (log10(m_AxisMax[axis]) - log10(m_AxisMin[axis])) / m_Delta[axis];// find new number of divisions
-	}
-
-	// move all divisions such that they are multiples of the delta
-	bool smallerthan = false;
-	float absdelta = m_Delta[axis];
-	float absmin = m_AxisMin[axis];
-	if(absmin < 0) absmin = -absmin;
-
-	while(!smallerthan)
-	{
-		if(absdelta < absmin)
-			absdelta += m_Delta[axis];
-		else smallerthan = true;
-	}
-
-	if(m_AxisMin[axis] < 0)	m_AxisMin[axis] = -absdelta;
-
-	// make sure there are enough divisions
-	while((log10(m_AxisMin[axis]) + (m_NumDiv[axis] * m_Delta[axis]) < log10(m_Max[axis])))
-		m_NumDiv[axis]++;
-
-	// allocate space for data (changed to new)
-	m_AxisDivisions[axis] = new float[m_NumDiv[axis]+1];
-
-	// loop through points, fill with data
-	for(int i=0; i<(m_NumDiv[axis]+1); i++)
-	{
-		m_AxisDivisions[axis][i] = pow(10,(log10(m_AxisMin[axis]) + m_Delta[axis]*i));
-
-		if(m_AxisDivisions[axis][i] > -0.000001 && m_AxisDivisions[axis][i] < 0.000001)
-			m_AxisDivisions[axis][i] = 0;
-	}
-
-	m_AxisMin[axis] = log10(m_AxisDivisions[axis][0]);
-	m_AxisMax[axis] = log10(m_AxisDivisions[axis][m_NumDiv[axis]]);
-
-	return true;
+	return (tempx & tempyl & tempyr);
 }
 
 // check a data item, change axis range if necessary
 void CcPlotAxes::CheckData(int axis, float data)
 {
-	if(data > m_Max[axis]) m_Max[axis] = data;
-	if(data < m_Min[axis]) m_Min[axis] = data;
+	if(data > m_AxisData[axis].m_Max) m_AxisData[axis].m_Max = data;
+	if(data < m_AxisData[axis].m_Min) m_AxisData[axis].m_Min = data;
 
-	switch(m_AxisScaleType)
+	switch(m_AxisData[axis].m_AxisScaleType)
 	{
 		case Plot_AxisAuto:
 		{
-			if(data > m_AxisMax[axis]) m_AxisMax[axis] = data;
+			if(data > m_AxisData[axis].m_AxisMax) m_AxisData[axis].m_AxisMax = data;
 			break;
 		}
 		case Plot_AxisSpan:
 		{
-			if(data > m_AxisMax[axis])
-				m_AxisMax[axis] = data;
-			if(data < m_AxisMin[axis])
-				m_AxisMin[axis] = data;
+			if(data > m_AxisData[axis].m_AxisMax)
+				m_AxisData[axis].m_AxisMax = data;
+			if(data < m_AxisData[axis].m_AxisMin)
+				m_AxisData[axis].m_AxisMin = data;
 			break;
 		}
 		case Plot_AxisZoom:
@@ -712,12 +830,14 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 			ygaptop = 300;
 
 		// if x axis has a title make the bottom gap bigger
-		if(!(m_XTitle == ""))
+		if(!(m_AxisData[Axis_X].m_Title == ""))
 			ygapbottom = 500;
 
 		// if y axis has a title make the lhs gap bigger
-		if(!(m_YTitle == ""))
+		if(!(m_AxisData[Axis_YL].m_Title == ""))
 			xgapleft = 300;
+		if(!(m_AxisData[Axis_YR].m_Title == ""))
+			xgapright = 200;
 
 		// variables used for loops
 		int i=0;
@@ -727,23 +847,23 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		CcString ylabel;
 		
 		// gap between division markers on x and y axes
-		int xdivoffset = (2400-xgapleft-xgapright) / (m_NumDiv[Axis_X]);
-		int ydivoffset = (2400-ygaptop-ygapbottom) / (m_NumDiv[Axis_Y]);			
+		int xdivoffset = (2400-xgapleft-xgapright) / (m_AxisData[Axis_X].m_NumDiv);
+		int ydivoffset = (2400-ygaptop-ygapbottom) / (m_AxisData[Axis_YL].m_NumDiv);			
 
 		// axis dimensions after rounding
-		int axisheight = ydivoffset * (m_NumDiv[Axis_Y]);				
-		int axiswidth = xdivoffset * (m_NumDiv[Axis_X]);
+		int axisheight = ydivoffset * (m_AxisData[Axis_YL].m_NumDiv);				
+		int axiswidth = xdivoffset * (m_AxisData[Axis_X].m_NumDiv);
 		
 		// take the axis height, work out where zero is...
-		int xorigin = 2400 - xgapleft + ((axiswidth * m_Min[Axis_X]) / (m_Max[Axis_X] - m_Min[Axis_X]));
-		int yorigin = 2400 - ygapbottom + (axisheight * (m_AxisMin[Axis_Y] / (m_AxisMax[Axis_Y] - m_AxisMin[Axis_Y])));
+		int xorigin = 2400 - xgapleft + ((axiswidth * m_AxisData[Axis_X].m_Min) / (m_AxisData[Axis_X].m_Max - m_AxisData[Axis_X].m_Min));
+		int yorigin = 2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin)));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
 		float yoriginvalue = 0;
-		if(m_AxisScaleType == Plot_AxisSpan && m_AxisMin[Axis_Y] > 0) 
+		if(m_AxisData[Axis_YL].m_AxisScaleType == Plot_AxisSpan && m_AxisData[Axis_YL].m_AxisMin > 0) 
 		{
 			yorigin = 2400 - ygapbottom;
-			yoriginvalue = m_AxisDivisions[Axis_Y][0];
+			yoriginvalue = m_AxisData[Axis_YL].m_AxisDivisions[0];
 		}
 
 		// now draw the axes in black: overwrite bars
@@ -764,7 +884,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 			while(!textOK && !smalltext)
 			{
 				// find the maximum screen area occupied by a label at this font size
-				for(i=0; i<m_NumDiv[Axis_X]; i++)
+				for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 				{
 					textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], 0);
 					if(textextent.x > maxhorizontaltextextent.x) maxhorizontaltextextent.x = textextent.x;
@@ -774,7 +894,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 				// if the text fits at this size, draw normally
 				if((maxhorizontaltextextent.x < xdivoffset))
 				{
-					for(i=0; i<m_NumDiv[Axis_X];i++)
+					for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i++)
 					{
 						attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset,2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_TOP, fontsize);
 					}
@@ -786,7 +906,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 					// find the maximum screen area occupied by a label at this font size
 					maxangletextextent.x = 0;
 					maxangletextextent.y = 0;
-					for(i=0; i<m_NumDiv[Axis_X]; i++)
+					for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 					{
 						textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_ANGLE);
 						if(textextent.x > maxangletextextent.x) maxangletextextent.x = textextent.x;
@@ -795,7 +915,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 					// if this angled text fits, draw it
 					if(maxangletextextent.y < 3*ygapbottom/4 && maxhorizontaltextextent.y < xdivoffset*2)
 					{
-						for(i=0; i<m_NumDiv[Axis_X]; i++)
+						for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 						{
 							attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset, 2400-ygapbottom, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
 						}
@@ -810,19 +930,20 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		// for scatter graphs use horizontal text always
 		else if(m_GraphType == Plot_GraphScatter)
 		{
-			for(i=0; i<m_NumDiv[Axis_X]+1; i++)
+			for(i=0; i<m_AxisData[Axis_X].m_NumDiv+1; i++)
 			{
-				ylabel = m_AxisDivisions[Axis_X][i];
+				ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
 				attachedPlot->DrawText(xgapleft+i*xdivoffset, 2400-ygapbottom, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
 			}
 		}
 		
 		// if the above methods couldn't fit the text without making it too small, plot every other label
+		//		NB this doesn't matter too much (I think) since mouse-over shows all labels...
 		if(smalltext)
 		{
 			fontsize = 8;
 
-			for(i=0; i<m_NumDiv[Axis_X]; i+=2)
+			for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=2)
 			{
 				attachedPlot->DrawText(xgapleft+(i+0.5)*xdivoffset, 2400-ygapbottom, m_Labels[i].ToCString(), TEXT_ANGLE, fontsize);
 			}
@@ -831,31 +952,36 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		fontsize = 12;
 
 		// now draw the y axis labels, again without worrying about overlap
-		for(i=0; i<m_NumDiv[Axis_Y]+1; i++)
+		for(i=0; i<m_AxisData[Axis_YL].m_NumDiv+1; i++)
 		{
-			ylabel = m_AxisDivisions[Axis_Y][i];
+			ylabel = m_AxisData[Axis_YL].m_AxisDivisions[i];
 			attachedPlot->DrawText(xgapleft-10, (2400-ygapbottom)-i*ydivoffset, ylabel.ToCString(), TEXT_VCENTRE|TEXT_RIGHT, fontsize);
 		}		
 		
 		// draw marker lines in grey
 		attachedPlot->SetColour(150,150,150);
 
-		// now loop through the divisions on each axis, drawing each one and putting text labels in...
-		// first x axis:
-		for(i=0; i<m_NumDiv[Axis_X]; i++)
+		// now loop through the divisions on each axis, drawing each one
+		// first x axis
+		for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i++)
 		{
 			attachedPlot->DrawLine(1, xgapleft+i*xdivoffset, ygaptop, xgapleft + i*xdivoffset, 2400-ygapbottom );
 		}
 	
 		// and the y axis
-		for(i=0; i<m_NumDiv[Axis_Y]+1; i++)
+		for(i=0; i<m_AxisData[Axis_YL].m_NumDiv+1; i++)
 		{
-			attachedPlot->DrawLine(1, xgapleft, (2400-ygapbottom)-i*ydivoffset, 2400-xgapright, (2400-ygapbottom)-i*ydivoffset);
+			// if only one axis, draw markers across the whole graph
+			if(m_NumberOfYAxes == 1)
+				attachedPlot->DrawLine(1, xgapleft, (2400-ygapbottom)-i*ydivoffset, 2400-xgapright, (2400-ygapbottom)-i*ydivoffset);
+			// otherwise only draw blips on the axis
+			else
+				attachedPlot->DrawLine(1, xgapleft-20, (2400-ygapbottom)-i*ydivoffset, xgapleft, (2400-ygapbottom)-i*ydivoffset);
 		}
 		
 		// write the labels for each axis, and the graph title
 		attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.ToCString(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
-		attachedPlot->DrawText(1200, 2400-ygapbottom/6, m_XTitle.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
-		attachedPlot->DrawText(xgapleft/6, 1200, m_YTitle.ToCString(), TEXT_VERTICAL, 16);
+		attachedPlot->DrawText(1200, 2400-ygapbottom/6, m_AxisData[Axis_X].m_Title.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
+		attachedPlot->DrawText(xgapleft/6, 1200, m_AxisData[Axis_YL].m_Title.ToCString(), TEXT_VERTICAL, 16);
 	}
 }
