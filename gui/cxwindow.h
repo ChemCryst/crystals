@@ -46,6 +46,8 @@ class CxWindow : public BASEWINDOW
 		void	SetGeometry( int top, int left, int bottom, int right );
 		int	GetTop();
 		int	GetLeft();
+                int     GetScreenTop();
+                int     GetScreenLeft();
 		int	GetWidth();
 		int	GetHeight();
 //		LTabGroup *	GetTabCommander();

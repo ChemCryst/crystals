@@ -208,6 +208,45 @@ int   CxWindow::GetLeft()
 #endif
 
 }
+int   CxWindow::GetScreenTop()
+{
+#ifdef __WINDOWS__
+      RECT windowRect;
+      GetWindowRect(&windowRect);
+      return ( windowRect.top );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.y -= parentRect.y;
+	}
+      return ( windowRect.y );
+#endif
+}
+int   CxWindow::GetScreenLeft()
+{
+#ifdef __WINDOWS__
+      RECT windowRect;
+      GetWindowRect(&windowRect);
+      return ( windowRect.left );
+#endif
+#ifdef __LINUX__
+      wxRect windowRect, parentRect;
+      windowRect = GetRect();
+      wxWindow* parent = GetParent();
+	if(parent != nil)
+	{
+            parentRect = parent->GetRect();
+            windowRect.x -= parentRect.x;
+	}
+      return ( windowRect.x );
+#endif
+
+}
 int   CxWindow::GetWidth()
 {
 #ifdef __WINDOWS__
