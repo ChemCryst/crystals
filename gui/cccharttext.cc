@@ -14,6 +14,15 @@ CcChartText::CcChartText()
 	text = " ";
 }
 
+CcChartText::CcChartText(int ix, int iy, CcString itext )
+{
+      x=ix;
+      y=iy;
+	xm = 0;
+	ym = 0;
+      text = itext;
+}
+
 CcChartText::~CcChartText()
 {
 }

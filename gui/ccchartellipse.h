@@ -12,6 +12,7 @@ class CcChartEllipse : public CcChartObject
 	public:
 		Boolean fill;
 		CcChartEllipse(Boolean filled = TRUE);
+            CcChartEllipse(Boolean filled, int ix, int iy, int iw, int ih );
 		~CcChartEllipse();
 		void Draw(CrChart* chartToDrawOn);
 		Boolean ParseInput(CcTokenList* tokenList);

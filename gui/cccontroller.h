@@ -46,6 +46,7 @@ class	CcController
 		CcModelDoc* mCurrentModelDoc;
 		CcQuickData* mQuickData;
 		Boolean mThisThreadisDead;
+            Boolean m_Completing;
 
 		CcStatus status;
 
@@ -69,13 +70,16 @@ class	CcController
             Boolean     GetInterfaceCommand( CcString * line );
 		void	LogError( CcString errString , int level);
             void  SetProgressText(CcString theText);       
+            void CompleteProcessing();
+            void ProcessingComplete();
+
+		// attributes
+		
 		CxApp *	mAppContext;
 		CrWindow *	mCurrentWindow;
 		CrGUIElement *	mInputWindow;
 		CrGUIElement *	mTextWindow;
 		CrGUIElement *	mProgressWindow;
-		// attributes
-		
             CcString m_newdir;
             Boolean m_restart;
 

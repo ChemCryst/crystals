@@ -13,6 +13,14 @@ CcChartLine::CcChartLine()
 	y2=0;
 }
 
+CcChartLine::CcChartLine(int ix1, int iy1, int ix2, int iy2)
+{
+      x1=ix1;
+      x2=ix2;
+      y1=iy1;
+      y2=iy2;
+}
+
 CcChartLine::~CcChartLine()
 {
 }

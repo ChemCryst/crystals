@@ -10,6 +10,7 @@ class CcChartColour : public CcChartObject
 {
 	public:
 		CcChartColour();
+            CcChartColour(int ir, int ig, int ib);
 		~CcChartColour();
 		void Draw(CrChart* chartToDrawOn);
 		Boolean ParseInput(CcTokenList* tokenList);

@@ -11,6 +11,10 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.9  1999/06/03 16:53:15  dosuser
+// RIC: Fixed an error that was lopping the last character off
+// any Interface command before it was processed.
+//
 // Revision 1.8  1999/06/03 14:35:49  dosuser
 // RIC: Changed ParseLine and ParseInput to use CcStrings rather than
 // char*'s. Same for ProcessOutput. Changed TRUE and FALSE to
@@ -92,6 +96,7 @@ CcController::CcController( CxApp * appContext )
 	mAppContext = appContext;
 	mErrorLog = nil;
       mThisThreadisDead = false;
+      m_Completing = false;
 
       m_newdir = "";
       m_restart = false;
@@ -644,69 +649,50 @@ void	CcController::Tokenize( char * text )
 //	TRACE("This is the text after first flight %s \n",text);
 	
       if ( cText.Len() >= 4 && cText.Sub(1,2) == "^^" )
-//      if ( strlen( text ) >= 4 && strncmp( text, "^^", 2 ) == 0 )
 	// It is definitely tagged text
 	{
 		// Get the selector and determine list to use
-//            if       ( strncmp( (char *)(text + 2), kSWindowSelector, 2 ) == 0 )  //Windows
             if      ( cText.Sub(3,4) == kSWindowSelector ) 
 		{
 			mCurTokenList = mWindowTokenList;
-//                  ParseLine( (char *)(text + 4) );
                   ParseLine( cText.Chop(1,4) );
 		}
-//            else if  ( strncmp( (char *)(text + 2), kSChartSelector, 2 ) == 0 )   //Charts (ChartDoc)
             else if      ( cText.Sub(3,4) == kSChartSelector ) 
 		{
 			mCurTokenList = mChartTokenList;
-//                  ParseLine( (char *)(text + 4) );
                   ParseLine( cText.Chop(1,4) );
 		}
-//            else if  ( strncmp( (char *)(text + 2), kSModelSelector, 2 ) == 0 )   //Models (ModelDoc)
             else if      ( cText.Sub(3,4) == kSModelSelector ) 
 		{
 			mCurTokenList = mModelTokenList;
-//                  ParseLine( (char *)(text + 4) );
                   ParseLine( cText.Chop(1,4) );
 		}
-//            else if  ( strncmp( (char *)(text + 2), kSStatusSelector, 2 ) == 0 )  //Status (CcStatus)
             else if      ( cText.Sub(3,4) == kSStatusSelector ) 
 		{
 			mCurTokenList = mStatusTokenList;
-//                  ParseLine( (char *)(text + 4) );
                   ParseLine( cText.Chop(1,4) );
 		}
-//            else if ( strncmp( (char *)(text + 2), kSControlSelector, 2 ) == 0 )  //CR closes any input stream.
             else if      ( cText.Sub(3,4) == kSControlSelector ) 
 		{
 			while ( ParseInput( mCurTokenList ) );
 		}
-//            else if  ( strncmp( (char *)(text + 2), kSOneCommand, 2 ) == 0 ) //Quick one liner commands, usually from Crystals itself rather than scripts.
             else if      ( cText.Sub(3,4) == kSOneCommand ) 
 		{																 //Avoids breaking up (and corrupting) the incoming streams from scripts.
 			mTempTokenList = mCurTokenList;
 			mCurTokenList  = mQuickTokenList;
-//                  ParseLine( (char *)(text + 4) );
                   ParseLine( cText.Chop(1,4) );
 			while ( ParseInput( mQuickTokenList ) );
 			mCurTokenList  = mTempTokenList;
 		}
-//            else if  ( strncmp( (char *)(text + 2), kSQuerySelector, 2 ) == 0 )  //Windows
             else if      ( cText.Sub(3,4) == kSQuerySelector ) 
 		{
 			mTempTokenList = mCurTokenList;
 			mCurTokenList  = mQuickTokenList;
-//                  ParseLine( (char *)(text + 4) );
                   ParseLine( cText.Chop(1,4) );
 			GetValue( mQuickTokenList ) ;
 			mCurTokenList  = mTempTokenList;
 			//We must now signal the waiting Crystals thread that it's input is ready.
-#ifdef __WINDOWS__
-			ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //We always hold this. Crystals thread is waiting for it.
-			WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE ); //Crystals thread gets the mLCQDQMutex, releases it, then releases this one.
-			WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); //We want this back.
-			ReleaseMutex( mCrystalsThreadIsLocked ); //Crystals thread needs this next time.
-#endif
+                  ProcessingComplete();
 		}
 	}
 	else                                             // Simple output text or comment
@@ -717,6 +703,87 @@ void	CcController::Tokenize( char * text )
 #ifdef __LINUX__
             cerr << "Exiting Tokenize\n";
 #endif
+}
+
+void CcController::CompleteProcessing()
+{
+
+// This function is called by the CRYSTALS thread and
+// will not return until the interface has processed all
+// pending commands in the command queue.
+
+#ifdef __WINDOWS__
+			WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE );
+#endif
+//This MUTEX is not normally owned. It stops the interface thread from
+//reclaiming the LockCrystalsQueue...Mutex before this thread gets it.
+                  if(mThisThreadisDead) endthread(0);
+
+                  m_Completing = true;
+
+//We (CRYSTALS) must wait here until the answer to this query has been put at the front
+//of the command queue.
+#ifdef __WINDOWS__
+			WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE );
+#endif
+//This MUTEX is always held by the interface thread. It is released
+//temporarily by the interface thread after processing a ^^?? instruction.
+//It is reclaimed once the mCrystalsThreadIsLocked mutex is released by this thread.
+                  if(mThisThreadisDead) endthread(0);
+
+#ifdef __WINDOWS__
+			ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //Release and continue
+			ReleaseMutex( mCrystalsThreadIsLocked );            //Release to allow the interface thread to continue.
+#endif
+}
+
+
+
+void CcController::ProcessingComplete()
+{
+// This is called by the interface to signal that it has finished
+// processing all pending commands in the command queue.
+
+                  m_Completing=false;
+#ifdef __WINDOWS__
+                  ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); // (1) We always hold this. Crystals thread is waiting for it.
+
+                  WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE ); // (2) Crystals thread gets the mLCQDQMutex, releases it, then releases this one.
+
+                  WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); // (3) We want this back.
+
+                  ReleaseMutex( mCrystalsThreadIsLocked ); // (4) Crystals thread needs this next time.
+#endif
+
+// This is a complicated bit of thread handshaking!
+// CRYSTALS is paused in the function above, CompleteProcessing(),
+// CRYSTALS has got hold of the mCrystalsThreadisLocked mutex.
+// CRYSTALS is waiting for the mLockCrystalsQueueDuringQueryMutex mutex,
+// which is held by this thread.
+// Now that we've finished processing, we release the
+// mLockCrystalsQueueDuringQueryMutex mutex. (1).
+// We then have to wait for the mCrystalsThreadisLocked mutex (2), this
+// is to ensure that it is CRYSTALS that gets the
+// mLockCrystalsQueueDuringQueryMutex mutex, before we reclaim it at (3).
+// Once CRYSTALS has got the mLockCrystalsQueueDuringQueryMutex it
+// immediately releases it, and also the mCrystalsThread is locked
+// mutex, so that we can continue to (4).
+//
+//             CRYSTALS                INTERFACE (US)
+//        --------------------     ---------------------
+//           Obtain mCTIL
+//        Waiting for mLCQDQM
+//                                  (Finish processing.)
+//                                    Release mLCQDQM
+//                                   Waiting for mCTIL
+//          Obtain mLCQDQM
+//         Release mLCQDQM
+//          Release mCTIL
+//        (Continue running.)
+//                                      Obtain mCTIL
+//                                     Obtain mLCQDQM
+//                                      Release mCTIL
+//
 }
 
 Boolean	CcController::IsSpace( char c )
@@ -858,27 +925,7 @@ void	CcController::AddInterfaceCommand( char * line )
 		{
 			stop = true;
 			LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Locked");
-#ifdef __WINDOWS__
-			WaitForSingleObject( mCrystalsThreadIsLocked, INFINITE );
-#endif
-//This MUTEX is not normally owned. It stops the interface thread from
-//reclaiming the LockCrystalsQueue...Mutex before this thread gets it.
-                  if(mThisThreadisDead) endthread(0);
-
-//We (CRYSTALS) must wait here until the answer to this query has been put at the front
-//of the command queue.
-#ifdef __WINDOWS__
-			WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE );
-#endif
-//This MUTEX is always held by the interface thread. It is released
-//temporarily by the interface thread after processing a ^^?? instruction.
-//It is reclaimed once the mCrystalsThreadIsLocked mutex is released by this thread.
-                  if(mThisThreadisDead) endthread(0);
-
-#ifdef __WINDOWS__
-			ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //Release and continue
-			ReleaseMutex( mCrystalsThreadIsLocked );            //Release to allow the interface thread to continue.
-#endif
+                  CompleteProcessing();
                   LOGSTAT("!!!Crystals thread: CcController:AddInterfaceCommand: Crystals Output Queue Unlocked");
 		}
 	}
@@ -974,6 +1021,11 @@ Boolean	CcController::GetInterfaceCommand( char * line )
 	if ( ! mInterfaceCommandQueue.GetCommand( line ) )
 	{
 		strcpy( line, "" );
+            if ( m_Completing )
+            {
+                  ProcessingComplete();
+            }
+
 #ifdef __WINDOWS__
 		ReleaseMutex( mInterfaceCommandQueueMutex );
 #endif

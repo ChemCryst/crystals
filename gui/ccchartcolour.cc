@@ -12,6 +12,13 @@ CcChartColour::CcChartColour()
 	b=0;
 }
 
+CcChartColour::CcChartColour(int ir, int ig, int ib)
+{
+      r=ir;
+      g=ig;
+      b=ib;
+}
+
 CcChartColour::~CcChartColour()
 {
 }

@@ -34,6 +34,16 @@ class CcChartDoc
 		CcChartDoc();
 		~CcChartDoc();
 		Boolean	ParseInput( CcTokenList * tokenList );
+
+            void FastLine( int x1, int y1, int x2, int y2 );
+            void FastFElli( int x, int y, int w, int h );
+            void FastEElli( int x, int y, int w, int h );
+            void FastFPoly( int nv, int * points );
+            void FastEPoly( int nv, int * points );
+            void FastText( int x, int y, CcString text );
+            void FastColour( int r, int g, int b );
+
+            void Clear();
 	private:
 		CrGraph* mGraphPointer;
 		void ReadDirections( CcTokenList* tokenList, Boolean *north,Boolean *south,Boolean *east,Boolean *west);
@@ -41,6 +51,10 @@ class CcChartDoc
 		CcString mName;
 		CrChart* attachedChart;
 		CcList* mCommandList;
+            int current_r;
+            int current_g;
+            int current_b;
+
 };
 
 #endif

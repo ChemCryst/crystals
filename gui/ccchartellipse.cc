@@ -14,6 +14,15 @@ CcChartEllipse::CcChartEllipse(Boolean filled)
 	fill = filled;
 }
 
+CcChartEllipse::CcChartEllipse(Boolean filled, int ix, int iy, int iw, int ih )
+{
+      x=ix;
+      y=iy;
+      w=iw;
+      h=ih;
+	fill = filled;
+}
+
 CcChartEllipse::~CcChartEllipse()
 {
 }

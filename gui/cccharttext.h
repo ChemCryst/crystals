@@ -13,6 +13,7 @@ class CcChartText : public CcChartObject
 		void Init(int x1, int y1, int x2, int y2, CcString theText);
 		void Init(int xp, int yp, CcString theText);
 		CcChartText();
+            CcChartText(int ix, int iy, CcString itext );
 		~CcChartText();
 		void Draw(CrChart* chartToDrawOn);
 		Boolean ParseInput(CcTokenList* tokenList);

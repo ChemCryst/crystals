@@ -14,6 +14,17 @@ CcChartPoly::CcChartPoly(Boolean filled)
 	fill = filled;
 }
 
+CcChartPoly::CcChartPoly(Boolean filled, int iv, int* points )
+{
+      nVerts = iv;
+	fill = filled;
+	verts = new int[nVerts*2];
+	for ( int i = 0; i<nVerts*2; i++)
+	{
+            verts[i] = points[i] ;
+	}
+}
+
 CcChartPoly::~CcChartPoly()
 {
 	if(verts!=nil)

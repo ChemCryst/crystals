@@ -157,16 +157,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartClear:
 			{
 				tokenList->GetToken(); // Remove that token!
-				mCommandList->Reset();
-				CcChartObject* theItem = (CcChartObject *)mCommandList->GetItem();
-				while ( theItem != nil )
-				{
-					mCommandList->RemoveItem();
-					delete theItem;
-					theItem = (CcChartObject *)mCommandList->GetItem();
-				}
-				if(attachedChart)
-					attachedChart->Clear();
+                        Clear();
 				break;
 			}
 			case kTChartFlow:
@@ -383,3 +374,193 @@ void CcChartDoc::ReadDirections(CcTokenList* tokenList,Boolean * north, Boolean 
 		}
 	}
 }
+
+//////////////////////////////////////////////////////
+// Because updating Cameron pictures using the normal
+// ^^CH commands can be very slow for big structures,
+// we provided a direct interface here. This means
+// more Fortran -> C++ interfaces, so the old calls
+// have been left commented in the Cameron code
+// should this interface prove unusable in the future.
+//////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////
+// In order to mix old style (^^CH) commands and direct
+// calls to the CcChartDoc from the Fortran, you must
+// call GUWAIT after sending any ^^CH commands, before
+// calling a direct function. This allows the interface
+// to 'catch-up' with CRYSTALS, so that the direct calls
+// insert objects at the correct spot in the drawing list.
+//////////////////////////////////////////////////////////
+
+
+void CcChartDoc::FastLine( int x1, int y1, int x2, int y2 )
+{
+      CcChartLine* item = new CcChartLine(x1,y1,x2,y2);
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::FastFElli( int x, int y, int w, int h )
+{
+      CcChartEllipse* item = new CcChartEllipse(true,x,y,w,h);
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::FastEElli( int x, int y, int w, int h )
+{
+      CcChartEllipse* item = new CcChartEllipse(false,x,y,w,h);
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::FastFPoly( int nv, int * points )
+{
+      CcChartPoly* item = new CcChartPoly ( true, nv, points );
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::FastEPoly( int nv, int * points )
+{
+      CcChartPoly* item = new CcChartPoly ( false, nv, points );
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::FastText( int x, int y, CcString text )
+{
+      CcChartText* item = new CcChartText( x, y, text );
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::FastColour( int r, int g, int b )
+{
+      if ( ( r == current_r) && ( g == current_g ) && ( b == current_b ) )
+      {
+            return;
+      }
+
+      CcChartColour* item = new CcChartColour(r,g,b);
+      mCommandList->AddItem(item);
+}
+
+void CcChartDoc::Clear()
+{
+      mCommandList->Reset();
+      CcChartObject* theItem = (CcChartObject *)mCommandList->GetItem();
+      while ( theItem != nil )
+      {
+            mCommandList->RemoveItem();
+            delete theItem;
+            theItem = (CcChartObject *)mCommandList->GetItem();
+      }
+      if(attachedChart)
+            attachedChart->Clear();
+}
+
+
+// The global functions that are called directly from the Fortran,
+// they will always direct commands to the current chart i.e.
+// whichever one was addressed last using a ^^CH command.
+
+extern "C" {
+
+#ifdef __WINDOWS__
+void fastline  ( int x1, int y1, int x2, int y2 );
+void fastfelli ( int x,  int y,  int w,  int h  );
+void fasteelli ( int x,  int y,  int w,  int h  );
+void fastfpoly ( int nv, int * points );
+void fastepoly ( int nv, int * points );
+void fasttext  ( int x,  int y,  char theText[80] );
+void fastcolour( int r,  int g, int b );
+void fastclear     ( );
+void fastshow      ( );
+void complete      ( );
+#endif
+#ifdef __LINUX__
+void fastline_  ( int x1, int y1, int x2, int y2 );
+void fastfelli_ ( int x,  int y,  int w,  int h  );
+void fasteelli_ ( int x,  int y,  int w,  int h  );
+void fastfpoly_ ( int nv, int * points );
+void fastepoly_ ( int nv, int * points );
+void fasttext_  ( int x,  int y,  char theText[80] );
+void fastcolour_( int r,  int g, int b );
+void fastclear_     ( );
+void fastshow_      ( );
+void complete_      ( );
+#endif
+
+void fastline  ( int x1, int y1, int x2, int y2 )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastLine( x1, y1, x2, y2 );
+}
+
+void fastfelli  ( int x, int y, int w, int h )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastFElli( x, y, w, h );
+}
+void fasteelli  ( int x, int y, int w, int h )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastEElli( x, y, w, h );
+}
+
+void fastfpoly ( int nv, int * points )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastFPoly( nv, points );
+}
+void fastepoly ( int nv, int * points )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastEPoly( nv, points );
+}
+
+void fasttext  ( int x,  int y,  char theText[80] )
+{
+      theText[80] = '\0';
+      for ( int i = 80; i >= 0; i-- )
+      {
+            if ( (theText[i]==' ') || (theText[i]=='\0') )
+                  theText[i] = '\0';
+            else
+                  i = -1;
+      }
+      CcString text = theText;
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastText( x,y,text );
+}
+
+void fastcolour( int r, int g, int b )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->FastColour( r,g,b );
+}
+
+void fastclear ( )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->Clear( );
+}
+
+void fastshow ( )
+{
+      CcChartDoc * doc = (CcController::theController)->mCurrentChartDoc;
+      if ( doc )
+            doc->DrawView( );
+}
+
+void complete ( )
+{
+// Make sure the command queue is emptied before returning.
+      (CcController::theController)->CompleteProcessing();
+}
+
+} //extern "C"

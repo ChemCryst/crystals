@@ -173,37 +173,30 @@ Boolean	CrChart::ParseInput( CcTokenList * tokenList )
 	}	
 	
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrChart:SetGeometry( const CcRect *:rect ) 
+
 void	CrChart::SetGeometry( const CcRect * rect )
 {
-//Insert your own code here.
 	((CxChart*)mWidgetPtr)->SetGeometry(	rect->mTop,
 											rect->mLeft,
 											rect->mBottom,
 											rect->mRight );
-//End of user code.         
 }
-// OPSignature: CcRect CrChart:GetGeometry() 
+
 CcRect	CrChart::GetGeometry()
 {
-//Insert your own code here.
 CcRect retVal (	((CxChart*)mWidgetPtr)->GetTop(), 
 				((CxChart*)mWidgetPtr)->GetLeft(),
 				((CxChart*)mWidgetPtr)->GetTop()+ ((CxChart*)mWidgetPtr)->GetHeight(),
 				((CxChart*)mWidgetPtr)->GetLeft()+((CxChart*)mWidgetPtr)->GetWidth()   );
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrChart:CalcLayout() 
+
 void	CrChart::CalcLayout()
 {
-//Insert your own code here.
 	int w = (int)(mWidthFactor  * (float)((CxChart*)mWidgetPtr)->GetIdealWidth() );
 	int h = (int)(mHeightFactor * (float)((CxChart*)mWidgetPtr)->GetIdealHeight());
 	((CxChart*)mWidgetPtr)->SetGeometry(-1,-1,h,w);	
-//End of user code.         
 }
 
 void CrChart::CrFocus()
@@ -213,12 +206,10 @@ void CrChart::CrFocus()
 
 void	CrChart::SetText( CcString text )
 {
-//Insert your own code here.
 	char theText[256];
 	strcpy( theText, text.ToCString() );
 
 	( (CxChart *)mWidgetPtr)->SetText( theText );
-//End of user code.         
 }
 
 
