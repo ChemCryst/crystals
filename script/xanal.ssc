@@ -3,7 +3,7 @@
   No reflections have been stored.
   Agreement analysis is not possible.
 % ELSE
-^^WI WINDOW A1 'Agreement analysis' SIZE KEEP MODAL
+^^WI WINDOW A1 'Agreement analysis' SIZE LARGE KEEP MODAL
 ^^WI GRID MAIN NROWS=8 NCOLS=3
 ^^WI {
 ^^WI  @ 2,2 GRID TOP NROWS=1 NCOLS=1
