@@ -22,6 +22,7 @@ typedef struct ElemStats
     int tNumNonMGrInt;	//Number Int>=3*sigma non-matched
     float tRating1;
     float tRating2; 
+    bool iFiltered;
 }ElemStats;
 
 class Stats:public MyObject
