@@ -25,6 +25,7 @@ class SpaceGroup:public MyObject
         ~SpaceGroup();
         char* getSymbol();
         std::ostream& output(std::ostream& pStream);
+        std::ostream& SpaceGroup::crystalsOutput(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, SpaceGroup& pSpaceGroup);
