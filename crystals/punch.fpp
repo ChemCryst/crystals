@@ -638,6 +638,7 @@ C -- ERRORS
 CODE FOR XPCH6C
       SUBROUTINE XPCH6C
 C----- CIF FORMAT PUNCH
+CDJWMAY99 - OUTPUT TO fOREIGN PUNCH UNIT
       CHARACTER*8 CBUF
 \ISTORE
 \STORE
@@ -661,14 +662,14 @@ C----- CIF FORMAT PUNCH
       CALL XFAL06(IN)
       IF (IERFLG .LT. 0) GOTO 9900
       SCALE = STORE(L5O)
-      WRITE(NCPU, '(''# data_CRYSTALS_cif '')')
-      WRITE(NCPU, '(''#  '',10A4)') (TITLE(I),I=1,10)
+      WRITE(NCFPU1, '(''# data_CRYSTALS_cif '')')
+      WRITE(NCFPU1, '(''#  '',10A4)') (TITLE(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
-      WRITE(NCPU,'(''# _audit_creation_date  '',6X, 3(A2,A))')
+      WRITE(NCFPU1,'(''# _audit_creation_date  '',6X, 3(A2,A))')
      1 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
-      WRITE(NCPU, '(''# _audit_creation_method      CRYSTALS '')')
-      WRITE(NCPU, '(''# NOTE Fc on scale of Fo, '', F12.5)')SCALE
-      WRITE(NCPU,1000)
+      WRITE(NCFPU1, '(''# _audit_creation_method      CRYSTALS '')')
+      WRITE(NCFPU1, '(''# NOTE Fc on scale of Fo, '', F12.5)')SCALE
+      WRITE(NCFPU1,1000)
 1000  FORMAT ( 'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
      1 '_refln_index_l'/,'_refln_F_meas'/,'_refln_F_calc'/,
      2 '_refln_F_sigma' )
@@ -685,12 +686,12 @@ C----- CIF FORMAT PUNCH
       ELSE
       S =  STORE(M6+12)
       ENDIF
-      WRITE(NCPU, '(3I4, 3F12.2)') I, J, K, FO, FC, S
+      WRITE(NCFPU1, '(3I4, 3F12.2)') I, J, K, FO, FC, S
       GOTO 1840
 1850  CONTINUE
       GOTO 9999
 9900  CONTINUE
-      WRITE(NCPU,'(''#  '',10A4)') (TITLE(I),I=1,10)
+      WRITE(NCFPU1,'(''#  '',10A4)') (TITLE(I),I=1,10)
 9999  RETURN
       END
 C
