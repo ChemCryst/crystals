@@ -206,14 +206,15 @@ void  CxTextOut::Empty( )
 {
 #ifdef __CR_WIN__
         m_Lines.RemoveAll();
-        m_nHead=-1;
+//        SetHead(-1);
+        m_nHead=-1;    
         UpdateVScroll();
         Invalidate();
 #endif
 #ifdef __BOTHWX__
         m_Lines.Clear();
-        m_nHead=-1;
-        UpdateVScroll();
+        SetHead(-1);
+//        UpdateVScroll();
         if ( mbOkToDraw )  Refresh();
 #endif
 }
@@ -311,7 +312,7 @@ void CxTextOut::AddLine( CcString& strLine )
     m_nHead = max(GetLineCount(),GetMaxViewableLines());
     // Update the vertical scroll bar:
 
-    UpdateVScroll();
+//    UpdateVScroll();
     SetHead( m_nHead );
 };
 
@@ -416,7 +417,7 @@ void CxTextOut::SetBackColour( COLORREF col )
 void CxTextOut::SetHead( int nPos )
 {
     if( nPos < -1 ) nPos = -1;
-        if( nPos > GetLineCount() - 1 ) nPos = max( GetLineCount() - 1, GetMaxViewableLines() -1 );
+    if( nPos > GetLineCount() - 1 ) nPos = max( GetLineCount() - 1, GetMaxViewableLines() -1 );
     m_nHead = nPos;
 #ifdef __CR_WIN__
     if( GetSafeHwnd() )
@@ -426,9 +427,9 @@ void CxTextOut::SetHead( int nPos )
     };
 #endif
 #ifdef __BOTHWX__
-        if ( mbOkToDraw )
+    if ( mbOkToDraw )
     {
-        SetScrollbar( wxVERTICAL, m_nHead, GetMaxViewableLines(), GetLineCount() );
+        SetScrollbar( wxVERTICAL, max(0,m_nHead+1-GetMaxViewableLines()), GetMaxViewableLines(), GetLineCount() );
         Refresh();
     }
 #endif
@@ -631,6 +632,13 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  SetHead( nUBound );
                  break;
              case wxEVT_SCROLLWIN_PAGEUP:
+                 if( m_nHead > GetMaxViewableLines() - 1 )
+                 {
+                   m_nHead -= GetMaxViewableLines()/2;
+                   m_nHead = max(0,m_nHead);
+                   SetHead( m_nHead );
+                 }
+                 break;
              case wxEVT_SCROLLWIN_LINEUP:
                  if( m_nHead > GetMaxViewableLines() - 1 )
                  {
@@ -640,6 +648,13 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  break;
 
              case wxEVT_SCROLLWIN_PAGEDOWN:
+                 if( m_nHead < nUBound )
+                 {
+                   m_nHead += GetMaxViewableLines()/2;
+                   m_nHead = min (m_nHead, nUBound);
+                   SetHead( m_nHead );
+                 };
+                 break;
              case wxEVT_SCROLLWIN_LINEDOWN:
                  if( m_nHead < nUBound )
                  {
@@ -669,12 +684,18 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  break;
 
              case wxEVT_SCROLLWIN_PAGEUP:
+                 m_nXOffset -= clientRc.GetWidth()/2;
+                 if( m_nXOffset < 0 ) m_nXOffset = 0;
+                 break;
              case wxEVT_SCROLLWIN_LINEUP:
                  m_nXOffset -= m_nAvgCharWidth;
                  if( m_nXOffset < 0 ) m_nXOffset = 0;
                  break;
 
              case wxEVT_SCROLLWIN_PAGEDOWN:
+                 m_nXOffset += clientRc.GetWidth()/2;
+                 if( m_nXOffset > nMax ) m_nXOffset = nMax;
+                 break;
              case wxEVT_SCROLLWIN_LINEDOWN:
                  m_nXOffset += m_nAvgCharWidth;
                  if( m_nXOffset > nMax ) m_nXOffset = nMax;
@@ -685,8 +706,8 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
                  m_nXOffset = evt.GetPosition();
                  break;
           }
-          SetScrollbar( wxHORIZONTAL, m_nXOffset, (int)m_nMaxWidth/clientRc.GetWidth() , m_nMaxWidth );
-//          Refresh();
+          SetScrollbar( wxHORIZONTAL, m_nXOffset, min(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
+          Refresh();
         }
         LOGSTAT("CxTextOut::OnScroll ends");
 }
@@ -751,7 +772,8 @@ void CxTextOut::OnSize(UINT nType, int cx, int cy)
 void CxTextOut::OnSize(wxSizeEvent & event)
 {
     UpdateHScroll();
-    UpdateVScroll();
+//    UpdateVScroll();
+    SetHead ( m_nHead );
 }
 #endif
 
@@ -928,7 +950,8 @@ void CxTextOut::UpdateHScroll()
         int nMax = m_nMaxWidth - clientRc.GetWidth();
     if( nMax <= 0 )
         m_nXOffset = 0;
-    SetScrollbar( wxHORIZONTAL, 0, (int)m_nMaxWidth/max(clientRc.GetWidth(),1) , m_nMaxWidth );
+    SetScrollbar( wxHORIZONTAL, m_nXOffset, min(clientRc.GetWidth(),m_nMaxWidth) , m_nMaxWidth );
+//  SetScrollbar( wxHORIZONTAL, 0, (int)m_nMaxWidth/max(clientRc.GetWidth(),1) , m_nMaxWidth );
 #endif
 
 };
@@ -940,7 +963,8 @@ void CxTextOut::UpdateVScroll()
         SetScrollRange( SB_VERT, GetMaxViewableLines()-1, max(GetMaxViewableLines()-1,GetLineCount()-1));
 #endif
 #ifdef __BOTHWX__
-        SetScrollbar( wxVERTICAL, GetMaxViewableLines()-1, 16, max(GetMaxViewableLines()-1,GetLineCount()-1));
+//        SetScrollbar( wxVERTICAL, min(0,m_nHead-GetMaxViewableLines()), GetMaxViewableLines(), GetLineCount() );
+//        SetScrollbar( wxVERTICAL, GetMaxViewableLines()-1, 16, max(GetMaxViewableLines()-1,GetLineCount()-1));
 #endif
 };
 
