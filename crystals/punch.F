@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2001/10/09 10:34:40  ckp2
+C Punch 41 for Simon's project.
+C
 C Revision 1.20  2001/10/05 13:31:52  ckp2
 C
 C Implementation of Lists 40 and 41.
@@ -1258,6 +1261,7 @@ C--PUNCH LIST 41 IN SIMON BORWICK FORMAT
 \ISTORE
 \STORE
 \XUNITS
+\XIOBUF
 \XSSVAL
 \XUSLST
 \XLST41
