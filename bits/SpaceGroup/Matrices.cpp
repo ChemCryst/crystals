@@ -43,28 +43,64 @@
 #include <regex.h>
 #endif
 
+static regex_t* iFirstLineRE = NULL;
+static regex_t* iMatFormRE = NULL;
+static regex_t* iFirstNumRE = NULL;
+static regex_t* iFirstNum2RE = NULL;
+
+void initRegEx()	//This function constructs the finite state automata which are used in the matrix reader. This must be called before any of the global reg exp are used.
+{
+    if (iFirstLineRE == NULL)
+    {
+        char tFirstLineRE[] = "^\\[?[[:space:]]*(-?[[:digit:]]+(\\.[[:digit:]]+)?[[:space:]]*)+;|\\]";	
+            //Returns the first line of a matrix in $1.
+            //It matchs from the start of the string to the first occurence of ; or ]
+            //It could be assumed that the matrix is in the correct format
+        char tMatFormRE[] = "^\\[((-?[[:digit:]]+(\\.[[:digit:]]+)?(;|[[:space:]])[[:space:]]*)*-?[[:digit:]]+(\\.[[:digit:]]+)?\\])$";			//Regular expression which checks to see if the matrix had the correct format.
+        char tFirstNumRE[] = "^\\[?[[:space:]]*-?[[:digit:]]+(\\.[[:digit:]]+)?[[:space:]]*\\]?";
+            //Matchs the first float in a string.
+        char tFirstNum2RE[] = "[[:space:]]*(-?[[:digit:]]+(\\.[[:digit:]]+)?)([[:space:]]*)(;)?";
+            //Takes the first number in the string and puts it in $1. If the number is post seeded by a ; then $4 should point to a valid point
+        iFirstLineRE = new regex_t;
+        iMatFormRE = new regex_t;
+        iFirstNumRE = new regex_t;
+        iFirstNum2RE = new regex_t;
+        regcomp(iFirstLineRE, tFirstLineRE, REG_EXTENDED);
+        regcomp(iMatFormRE, tMatFormRE, REG_EXTENDED);
+        regcomp(iFirstNumRE, tFirstNumRE, REG_EXTENDED);
+        regcomp(iFirstNum2RE, tFirstNum2RE, REG_EXTENDED);
+    }
+}
+
+void deinitRegEx()
+{
+    if (iFirstLineRE != NULL)
+    {
+        delete iFirstLineRE;
+        delete iMatFormRE;
+        delete iFirstNumRE;
+        delete iFirstNum2RE;
+        iFirstLineRE= NULL;
+        iMatFormRE= NULL;
+        iFirstNumRE= NULL;
+        iFirstNum2RE= NULL;
+    }
+}
+
 MatrixException::MatrixException(int pErrNum, char* pErrType):MyException(pErrNum, pErrType)
 {
 }
 
-/*
- * The format for the matrix should be the same as the format used in MatLab.
- * Matrix can be matched using this regular expression ^\\[(<float>(;|[[:space:]])[[:space:]]*)*<float>\\]$
- * where <float> := -?[[:digit:]]+(\\.[[:digit:]]+)?
- */ 
 MatrixReader::MatrixReader(char *pLine)
 {
-    char tRegExp[] = "^\\[((-?[[:digit:]]+(\\.[[:digit:]]+)?(;|[[:space:]])[[:space:]]*)*-?[[:digit:]]+(\\.[[:digit:]]+)?\\])$";	//Regular expression which checks to see if the matrix had the correct format.
-
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
+    initRegEx();	//Init the regular expression before using them later in the class.
     
     size_t tMatches = 6;
     regmatch_t tMatch[6];
     bzero(tMatch, sizeof(regmatch_t)*6);
-    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    if (regexec(iMatFormRE, pLine, tMatches, tMatch, 0))
     {
-        throw MyException(kUnknownException, "Matrix had an invalid format!");
+        throw MyException(kUnknownException, "Matrix had an invalid format.");
     }
     char* tString = pLine+tMatch[1].rm_so;
     //Workout the size of the matrix
@@ -77,17 +113,17 @@ MatrixReader::MatrixReader(char *pLine)
     fillMatrix(pLine);
 }
 
+MatrixReader::~MatrixReader()
+{
+    deinitRegEx();
+}
+
 int MatrixReader::countNumberOfRows(char* pString)
 {
-    char tRegExp[] = "^[[:space:]]*(-?[[:digit:]]+(\\.[[:digit:]]+)?[[:space:]]*)+;|\\]";	//Regular expression which checks to see if the matrix had the correct format.
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
-    size_t tMatches = 2;
-    regmatch_t tMatch[2];
-    bzero(tMatch, sizeof(regmatch_t)*2);
-    if (regexec(&tRegEx, pString, tMatches, tMatch, 0))
+    size_t tMatches = 3;
+    regmatch_t tMatch[tMatches];
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iFirstLineRE, pString, tMatches, tMatch, 0))
     {
         return 0;
     }
@@ -96,15 +132,10 @@ int MatrixReader::countNumberOfRows(char* pString)
 
 int MatrixReader::countNumberOfColumns(char** pString)	//Returns the place where it reached the end of the row
 {
-    char tRegExp[] = "^\\[?[[:space:]]*-?[[:digit:]]+(\\.[[:digit:]]+)?[[:space:]]*\\]?";	//Regular expression which checks to see if the matrix had the correct format.
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
-    size_t tMatches = 2;
-    regmatch_t tMatch[2];
-    bzero(tMatch, sizeof(regmatch_t)*2);
-    if (regexec(&tRegEx, *pString, tMatches, tMatch, 0))
+    size_t tMatches = 5;
+    regmatch_t tMatch[tMatches];
+    bzero(tMatch, sizeof(regmatch_t)*tMatches);
+    if (regexec(iFirstNumRE, *pString, tMatches, tMatch, 0))
     {
         return 0;
     }
@@ -115,7 +146,7 @@ int MatrixReader::countNumberOfColumns(char** pString)	//Returns the place where
 int MatrixReader::countMaxNumberOfColumns(char* pString)
 {
     char* tString = pString;
-    
+
     if (pString[0] == 0)
     {
         return 0;
@@ -133,16 +164,11 @@ int MatrixReader::countMaxNumberOfColumns(char* pString)
 }
 
 void MatrixReader::fillMatrix(char* pLine, int pX, int pY)
-{
-    char tRegExp[] = "[[:space:]]*(-?[[:digit:]]+(\\.[[:digit:]]+)?)([[:space:]]*)(;)?";	//Regular expression which checks to see if the matrix had the correct format.
-    
-    regex_t tRegEx;
-    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
-    
+{    
     size_t tMatches = 6;
     regmatch_t tMatch[6];
     bzero(tMatch, sizeof(regmatch_t)*6);
-    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    if (regexec(iFirstNum2RE, pLine, tMatches, tMatch, 0))
     {
         return;
     }
