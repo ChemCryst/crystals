@@ -209,7 +209,7 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 				CcString theString = tokenList->GetToken();
 				int menuNumber = atoi( theString.ToCString() );
 
-				CrMenu* mMenuPtr = new CrMenu( this, TRUE );
+                        CrMenu* mMenuPtr = new CrMenu( this, POPUP_MENU );
 				if ( mMenuPtr != nil )
 				{
 					// ParseInput generates all objects in the menu
