@@ -39,7 +39,7 @@ CcModelAtom::~CcModelAtom()
 {
 }
 
-CcCoord CcModelAtom::ParseInput(CcTokenList* tokenList)
+void CcModelAtom::ParseInput(CcTokenList* tokenList)
 {
 	CcString theString;
 //Just read ID, LABEL,
@@ -91,21 +91,6 @@ CcCoord CcModelAtom::ParseInput(CcTokenList* tokenList)
       x32 = atoi ( theString.ToCString() );
       theString = tokenList->GetToken();    //X33 * 1000
       x33 = atoi ( theString.ToCString() );
-      CcCoord retVal(x,y,z);
-	return retVal;
-}
-
-void CcModelAtom::Draw(CrModel* ModelToDrawOn)
-{
-      ModelToDrawOn->DrawAtom(this);
-}
-
-
-void CcModelAtom::Centre(int nx, int ny, int nz)
-{
-	x = 5000 + ox - nx; 
-	y = 5000 + oy - ny; 
-	z = 5000 + oz - nz;
 }
 
 int CcModelAtom::X()
@@ -143,11 +128,11 @@ void CcModelAtom::Select(Boolean select)
 	m_selected = select;
 }
 
-void CcModelAtom::Highlight(CrModel * aView)
-{
-	if(m_selected)
-		aView->HighlightAtom(this);
-}
+//void CcModelAtom::Highlight(CrModel * aView)
+//{
+//      if(m_selected)
+//            aView->HighlightAtom(this);
+//}
 
 int CcModelAtom::Vdw()
 {
@@ -157,5 +142,106 @@ int CcModelAtom::Vdw()
 Boolean CcModelAtom::IsSelected()
 {
 	return m_selected;
+}
+
+void CcModelAtom::Render(CrModel* view, Boolean detailed)
+{
+      glPushMatrix();
+		GLUquadricObj* sphere = gluNewQuadric();
+		gluQuadricDrawStyle(sphere,GLU_FILL);
+            glTranslated(x,y,z);
+
+            float extra = 0.0;
+            int detail = (detailed)? view->m_NormalRes  : view->m_QuickRes ;
+
+            if ( view->LitAtom() == this ) // hover over
+		{
+                  if ( m_selected )  // hover over a selected atom
+                  {
+                        GLfloat Surface[] = { 1.0f-(float)r/255.0f, 1.0f-(float)g/255.0f, 1.0f-(float)b/255.0f, 1.0f };
+                        GLfloat Diffuse[] = { 0.9f,0.9f,0.9f,1.0f };
+                        GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
+                        GLfloat Shinine[] = {0.0f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 20.0;
+                  }
+                  else //hover over a normal atom
+                  {
+                        GLfloat Surface[] = { 1.0f-(float)r/255.0f, 1.0f-(float)g/255.0f, 1.0f-(float)b/255.0f, 1.0f };
+                        GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
+                        GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+                        GLfloat Shinine[] = {89.6f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 20.0;
+                  }
+		}
+            else   // No hover over
+            {
+                  if ( m_selected ) // highlighted
+                  {
+                        GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
+                        GLfloat Diffuse[] = { 0.9f,0.9f,0.9f,1.0f };
+                        GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
+                        GLfloat Shinine[] = {0.0f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 10.0;
+                  }
+                  else  // normal
+                  {
+                        GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
+                        GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
+                        GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+                        GLfloat Shinine[] = {89.6f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                  }
+            }
+
+            if(view->RadiusType() == COVALENT)
+            {
+                gluSphere(sphere, ((float)covrad + extra ) * view->RadiusScale(),detail,detail);
+            }
+            else if(view->RadiusType() == VDW)
+            {
+                gluSphere(sphere, ((float)vdwrad + extra ) * view->RadiusScale(),detail,detail);
+            }
+            else if(view->RadiusType() == THERMAL)
+            {
+                  float * localmatrix = new float[16];
+                  localmatrix[0]=(float)x11;
+                  localmatrix[1]=(float)x21;
+                  localmatrix[2]=(float)x31;
+                  localmatrix[3]=0.0;
+                  localmatrix[4]=(float)x12;
+                  localmatrix[5]=(float)x22;
+                  localmatrix[6]=(float)x32;
+                  localmatrix[7]=0.0;
+                  localmatrix[8]=(float)x13;
+                  localmatrix[9]=(float)x23;
+                  localmatrix[10]=(float)x33;
+                  localmatrix[11]=0.0;
+                  localmatrix[12]=0.0;
+                  localmatrix[13]=0.0;
+                  localmatrix[14]=0.0;
+                  localmatrix[15]=1.0;
+                  glMultMatrixf(localmatrix);
+                  delete [] localmatrix;
+                  gluSphere(sphere, ( 1.0f + ((float)extra / 1000.0f) )* view->RadiusScale(), detail,detail);
+            }
+
+            gluDeleteQuadric(sphere);
+
+      glPopMatrix();
 }
 
