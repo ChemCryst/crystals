@@ -256,6 +256,7 @@ C
 C -- DETERMINE LIST NUMBERS
       LA = KTYP05 ( ISTORE(ICOMBF+IMDINP) )
       LB = KTYP05 ( ISTORE(ICOMBF+IMDOUT) )
+      IF ( IERFLG .LT. 0 ) GO TO 19900
 C -- LOAD LISTS
       CALL XFAL01
       CALL XFAL02
@@ -2216,6 +2217,7 @@ C
       DIMENSION ICONTL(5)
 C
 C
+      CHARACTER *4 CTEMP
 C
 C
       DIMENSION INUM(3,3) , IMAX(3,3) , IOFF(3,3) , ILEN(3,3)
@@ -2238,11 +2240,13 @@ C
       DATA IMDLVL / 1 / , IMDITM / 2 / , IMDFUN / 3 /
       DATA IMDTYP / 4 / , IMDNDA / 5 /
 C
-      DATA INUM(1,1) /  2 / , INUM(2,1) /  7 / , INUM(3,1) / 14 /
+cdjwmap99 output 8 items for brief atoms
+      DATA INUM(1,1) /  2 / , INUM(2,1) /  8 / , INUM(3,1) / 14 /
       DATA INUM(1,2) /  2 / , INUM(2,2) /  3 / , INUM(3,2) /  3 /
       DATA INUM(1,3) /  3 / , INUM(2,3) /  4 / , INUM(3,3) /  4 /
 C
-      DATA IMAX(1,1) / 14 / , IMAX(2,1) / 14 / , IMAX(3,1) / 14 /
+cdjwmap99 output 8x2 items for brief atoms
+      DATA IMAX(1,1) / 14 / , IMAX(2,1) / 16 / , IMAX(3,1) / 14 /
       DATA IMAX(1,2) / 16 / , IMAX(2,2) / 12 / , IMAX(3,2) / 12 /
       DATA IMAX(1,3) / 15 / , IMAX(2,3) / 16 / , IMAX(3,3) / 16 /
 C
@@ -2250,7 +2254,8 @@ C
       DATA IOFF(1,2) /  0 / , IOFF(2,2) /  3 / , IOFF(3,2) /  3 /
       DATA IOFF(1,3) /  0 / , IOFF(2,3) /  4 / , IOFF(3,3) /  4 /
 C
-      DATA ILEN(1,1) /  2 / , ILEN(2,1) /  7 / , ILEN(3,1) / 14 /
+cdjwmap99 output 8 items for brief atoms
+      DATA ILEN(1,1) /  2 / , ILEN(2,1) /  8 / , ILEN(3,1) / 14 /
       DATA ILEN(1,2) /  0 / , ILEN(2,2) /  1 / , ILEN(3,2) /  1 /
       DATA ILEN(1,3) /  0 / , ILEN(2,3) /  1 / , ILEN(3,3) /  1 /
 C
@@ -2361,6 +2366,10 @@ C
 1350    CONTINUE
         IF ( MOVLEN .GT. 0 ) THEN
               CALL XMOVE ( STORE(JSTART) , A(ITEM+MOVOFF) , MOVLEN )
+        ENDIF
+CDJWMAR99 - PACK UP TYPE AND SERIAL 
+        IF (ICLASS .EQ. 1) THEN
+            CALL XHSHR (A(ITEM+MOVOFF), CTEMP)
         ENDIF
 C
         ITEM = ITEM + ITMLEN
@@ -2482,23 +2491,22 @@ C
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' )  CMON(1)
         WRITE ( NCAWU , '(A)' )  CMON(1)
 C
+CDJWMAR99[
         IF (ICONTL(IMDLVL) .EQ. 2) THEN
-         WRITE (CMON,1106) 'OCC','FLAG','X','Y','Z',
-     2                     'OCC','FLAG','X','Y','Z'
+         WRITE (CMON,1106)
          CALL XPRVDU(NCVDU ,1, 0)
          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' )  CMON(1)
          WRITE ( NCAWU , '(A)' )  CMON(1)
         ELSE IF (ICONTL(IMDLVL) .EQ. 3) THEN
-         WRITE (CMON,1107) 'OCC','FLAG','X','Y','Z',
-     2   'U[11]','U[22]','U[33]','U[23]','U[13]','U[12]',
-     3   'U[ISO]','SIZE','D/100','A/100'
+         WRITE (CMON,1107)
           CALL XPRVDU(NCVDU, 2,0)
           IF (ISSPRT .EQ. 0) WRITE ( NCWU ,'(A)') CMON(1),CMON(2)
           WRITE ( NCAWU , '(A)' )  CMON(1),CMON(2)
         ENDIF
-1106    FORMAT (2(11X,A3,2X,A4,2X,3(A1,5X)))
-1107    FORMAT (11X,A3,2X,A4,1X,3(A1,5X),6(A5,1X),
-     2          /,39X,A6,A4,2X,2(A5,1X))
+1106     FORMAT(2(9X,'Occ',4X, 'x', 5X, 'y',5X,'z',7X,'U',3X))
+1107     FORMAT(9X,'Occ',4X,'x',5X,'y',5X,'z',6X,
+     1  'U11',3X,'U22',3X,'U33',2X,'U23',2X,'U13',2X,'U12',6X,'Spare'
+     2   /35X,'Uiso',2X,'Size',1X,'D/100',1X,'A/100')
       ELSE
 C
 C -- SELECT THE OPERATION THAT WILL BE PERFORMED
@@ -2512,25 +2520,19 @@ C
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' )  CMON(1)
         WRITE ( NCAWU , '(A)' )  CMON(1)
- 
+C
         IF (ICONTL(IMDLVL) .EQ. 2) THEN
-         WRITE (CMON,1206) 'OCC','FLAG','X','Y','Z',
-     2                      'OCC','FLAG','X','Y','Z'
+         WRITE (CMON,1106)
          CALL XPRVDU(NCVDU ,1, 0)
          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' )  CMON(1)
          WRITE ( NCAWU , '(A)' )  CMON(1)
         ELSE IF (ICONTL(IMDLVL) .EQ. 3) THEN
-         WRITE (CMON,1207) 'OCC','FLAG','X','Y','Z',
-     2   'U[11]','U[22]','U[33]','U[23]','U[13]','U[12]',
-     3   'U[ISO]','SIZE','D/100','A/100'
+         WRITE (CMON,1107)
           CALL XPRVDU(NCVDU, 2,0)
           IF (ISSPRT .EQ. 0) WRITE ( NCWU ,'(A)') CMON(1),CMON(2)
           WRITE ( NCAWU , '(A)' )  CMON(1),CMON(2)
         ENDIF
-1206    FORMAT (/,2(11X,A3,2X,A4,2X,3(A1,5X)),/)
-1207    FORMAT (/,11X,A3,2X,A4,1X,3(A1,5X),6(A5,1X),
-     2          /,39X,A6,A4,2X,2(A5,1X),/)
- 
+CDJWMAR99]
 1205    FORMAT ( 1X , 'The following' , A , ' will be ' , A )
       ENDIF
 C
@@ -2555,37 +2557,28 @@ C -- BRIEF PRINT
 C
 8200  CONTINUE
 C -- MEDIUM PRINT
-      IF (ISSPRT .EQ. 0)
-     1   WRITE ( NCWU , 8205 )
-     1  ( A(I) , NINT(A(I+1)), A(I+2),A(I+3),A(I+4),A(I+5),A(I+6),
-     2  I=1,NA,7 )
-      WRITE ( NCAWU , 8205 )
-     1  ( A(I) , NINT(A(I+1)), A(I+2),A(I+3),A(I+4),A(I+5),A(I+6),
-     2  I=1,NA,7 )
+
+cdjwmar99 print Uiso/Uii - 8 items
       WRITE ( CMON,   8205 )
-     1  ( A(I) , NINT(A(I+1)), A(I+2),A(I+3),A(I+4),A(I+5),A(I+6),
-     2  I=1,NA,7 )
+     1  ( A(I) , NINT(A(I+1)), A(I+2), 
+     2  A(I+4),A(I+5),A(I+6),nint(A(I+3)),a(I+7),
+     3  I=1,NA,8 )
         CALL XPRVDU(NCVDU, 1, 0)
-8205  FORMAT ( 2 ( 1X , A4 , I4 ,  F6.2 , 4F6.3, 1X ) )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)')  CMON(1)(:)
+      WRITE ( NCAWU , '(A)')  CMON(1)(:)
+8205  FORMAT ( 2 ( A4, I4,  F5.2, 3F6.3, I2, F6.3, 1X ) )
       GO TO 9000
 C
 8300  CONTINUE
 C -- FULL PRINT
-      IF (ISSPRT .EQ. 0)
-     1  WRITE ( NCWU , 8305 )
-     1  ( A(I) , NINT(A(I+1)), A(I+2),A(I+3),A(I+4),A(I+5),A(I+6),
-     2  A(I+7),A(I+8),A(I+9),A(I+10),A(I+11),A(I+12),A(I+13),
-     3  I=1,NA,14 )
-      WRITE ( NCAWU , 8305 )
-     1  ( A(I) , NINT(A(I+1)), A(I+2),A(I+3),A(I+4),A(I+5),A(I+6),
-     2  A(I+7),A(I+8),A(I+9),A(I+10),A(I+11),A(I+12),A(I+13),
-     3  I=1,NA,14 )
       WRITE ( CMON, 8305 )
-     1  ( A(I) , NINT(A(I+1)), A(I+2),A(I+3),A(I+4),A(I+5),A(I+6),
+     1  ( A(I), NINT(A(I+1)), A(I+2),A(I+4),A(I+5),A(I+6),NINT(A(I+3)),
      2  A(I+7),A(I+8),A(I+9),A(I+10),A(I+11),A(I+12),A(I+13),
      3  I=1,NA,14 )
       CALL XPRVDU(NCVDU, 1,0)
-8305  FORMAT ( 1X, A4, I4, F5.2, F5.2, 6F6.3, 3F5.2, F10.3 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)')  CMON(1)(:)
+      WRITE ( NCAWU , '(A)')  CMON(1)(:)
+8305  FORMAT ( A4, I4, F5.2, 3F6.3, I2, 3F6.3, 3F5.2, F10.3 )
       GO TO 9000
 8400  CONTINUE
 C -- LOW LEVEL PRINT FOR OVERALL PARAMETERS
