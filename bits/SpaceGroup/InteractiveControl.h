@@ -7,16 +7,40 @@
  *
  */
 
+#if !defined(__INTERACTIVE_CONTROL_H__)
+#define __INTERACTIVE_CONTROL_H__
+
+#include "Stats.h"
+#include "CrystalSystem.h"
+#include "StringClasses.h"
+#if defined(_WIN32)
+#include <Boost/regex.h>
+#else
+#include <regex.h>
+#endif
+
+class Command:public String
+{
+    public:
+        Command();
+	Command(char* pCommand);
+        Command(Command& pCommand);
+        Command& getCommand(int i);
+};
+
 class InteractiveControl
 {
     private:
         Stats* iStats;
-        Ranking* iRanking;
+        RankedSpaceGroups* iRanking;
         Table* iTable;
         void printHelp();
-        void handleCommand(String& pCommand);
+        bool handleCommand(Command& pCommand);
     public:
-        InteractiveContol(Stats pStats, Ranking* pRankings, Table* pTable);
-        goInteractive();
-}
+        InteractiveControl(Stats* pStats, RankedSpaceGroups* pRankings, Table* pTable);
+        void goInteractive();
+};
+
+
+#endif
 
