@@ -22,7 +22,7 @@
 #include	"cccontroller.h"	// for sending commands
 #include	"creditbox.h"      //appends could be done through cccontroller for better separation.
 #include	"ccmodelatom.h"
-
+#include        "crwindow.h"      // for getting syskeys
 
 CrModel::CrModel( CrGUIElement * mParentPtr )
  :     CrGUIElement( mParentPtr )
@@ -37,6 +37,9 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
 	m_AtomSelectAction = CR_SELECT;
 	mWidgetPtr = CxModel::CreateCxModel( this,
 								(CxGrid *)(mParentPtr->GetWidget()) );
+        ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this );
+      m_NormalRes = 15;
+      m_QuickRes = 5;
 
 }
 
@@ -291,7 +294,65 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 
 				break;
 			}
-
+                  case kTNRes:
+			{
+				tokenList->GetToken();
+                        CcString theString = tokenList->GetToken();
+                        m_NormalRes = atoi( theString.ToCString() );
+				break;
+                  }
+                  case kTQRes:
+			{
+				tokenList->GetToken();
+                        CcString theString = tokenList->GetToken();
+                        m_QuickRes = atoi( theString.ToCString() );
+				break;
+                  }
+                  case kTStyle:
+			{
+				tokenList->GetToken();
+                        switch ( tokenList->GetDescriptor(kAttributeClass) )
+                        {
+                              case kTStyleSmooth:
+                                    ((CxModel*)mWidgetPtr)->SetDrawStyle( MODELSMOOTH );
+                                    tokenList->GetToken();
+                                    break;
+                              case kTStyleLine:
+                                    ((CxModel*) mWidgetPtr)->SetDrawStyle( MODELLINE );
+                                    tokenList->GetToken();
+                                    break;
+                              case kTStylePoint:
+                                    ((CxModel*) mWidgetPtr)->SetDrawStyle( MODELPOINT );
+                                    tokenList->GetToken();
+                                    break;
+                        }
+				break;
+                  }
+                  case kTAutoSize:
+			{
+				tokenList->GetToken();
+                        Boolean size = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+				tokenList->GetToken(); // Remove that token!
+                        ((CxModel*) mWidgetPtr)->SetAutoSize( size );
+				break;
+                  }
+                  case kTHover:
+			{
+				tokenList->GetToken();
+                        Boolean hover = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+				tokenList->GetToken(); // Remove that token!
+                        ((CxModel*) mWidgetPtr)->SetHover( hover );
+				break;
+                  }
+                  case kTShading:
+			{
+				tokenList->GetToken();
+                        Boolean shading = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
+				tokenList->GetToken(); // Remove that token!
+                        ((CxModel*) mWidgetPtr)->SetShading( shading );
+				break;
+                  }
+                              
 			default:
 			{
 				hasTokenForMe = false;
@@ -301,37 +362,28 @@ Boolean	CrModel::ParseInput( CcTokenList * tokenList )
 	}	
 	
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrModel:SetGeometry( const CcRect *:rect ) 
 void	CrModel::SetGeometry( const CcRect * rect )
 {
-//Insert your own code here.
 	((CxModel*)mWidgetPtr)->SetGeometry(	rect->mTop,
 											rect->mLeft,
 											rect->mBottom,
 											rect->mRight );
-//End of user code.         
 }
-// OPSignature: CcRect CrModel:GetGeometry() 
 CcRect	CrModel::GetGeometry()
 {
-//Insert your own code here.
-CcRect retVal (	((CxModel*)mWidgetPtr)->GetTop(), 
+      CcRect retVal (   ((CxModel*)mWidgetPtr)->GetTop(), 
 				((CxModel*)mWidgetPtr)->GetLeft(),
 				((CxModel*)mWidgetPtr)->GetTop()+ ((CxModel*)mWidgetPtr)->GetHeight(),
 				((CxModel*)mWidgetPtr)->GetLeft()+((CxModel*)mWidgetPtr)->GetWidth()   );
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrModel:CalcLayout() 
+
 void	CrModel::CalcLayout()
 {
-//Insert your own code here.
 	int w = (int)(mWidthFactor  * (float)((CxModel*)mWidgetPtr)->GetIdealWidth() );
 	int h = (int)(mHeightFactor * (float)((CxModel*)mWidgetPtr)->GetIdealHeight());
 	((CxModel*)mWidgetPtr)->SetGeometry(-1,-1,h,w);	
-//End of user code.         
 }
 
 void CrModel::CrFocus()
@@ -341,19 +393,17 @@ void CrModel::CrFocus()
 
 void	CrModel::SetText( CcString text )
 {
-//Insert your own code here.
 	char theText[256];
 	strcpy( theText, text.ToCString() );
 
 	( (CxModel *)mWidgetPtr)->SetText( theText );
-//End of user code.         
 }
 
-void CrModel::ReDrawView()
-{
-	if(mAttachedModelDoc)
-		mAttachedModelDoc->DrawView(this);
-}
+//void CrModel::ReDrawView()
+//{
+//      if(mAttachedModelDoc)
+//            mAttachedModelDoc->DrawView(this);
+//}
 
 int CrModel::GetIdealWidth()
 {
@@ -384,54 +434,54 @@ void CrModel::DocRemoved()
 	mAttachedModelDoc = nil;	
 }
 
-void CrModel::Start()
-{
-	((CxModel *)mWidgetPtr)->Start();
-}
+//void CrModel::Start()
+//{
+ //     ((CxModel *)mWidgetPtr)->Start();
+//}
 
-void CrModel::DrawAtom(CcModelAtom* anAtom)
-{
-      ((CxModel*)mWidgetPtr)->DrawAtom(anAtom);
-}
+//void CrModel::DrawAtom(CcModelAtom* anAtom)
+//{
+//      ((CxModel*)mWidgetPtr)->DrawAtom(anAtom);
+//}
 
-void CrModel::Display()
-{
-	((CxModel *)mWidgetPtr)->Display();
-}
-
-
+//void CrModel::Display()
+//{
+//      ((CxModel *)mWidgetPtr)->Display();
+//}
 
 
 
-void CrModel::DrawBond(int x1, int y1, int z1, int x2, int y2, int z2, int r, int g, int b, int rad)
-{
-	((CxModel*)mWidgetPtr)->DrawBond(x1,y1,z1,x2,y2,z2,r,g,b,rad);
-}
 
-void CrModel::DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int r, int g, int b, Boolean fill)
-{
-	((CxModel*)mWidgetPtr)->DrawTri(x1,y1,z1,x2,y2,z2,x3,y3,z3,r,g,b,fill);
-}
+
+//void CrModel::DrawBond(int x1, int y1, int z1, int x2, int y2, int z2, int r, int g, int b, int rad)
+//{
+ //     ((CxModel*)mWidgetPtr)->DrawBond(x1,y1,z1,x2,y2,z2,r,g,b,rad);
+//}
+
+//void CrModel::DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int r, int g, int b, Boolean fill)
+//{
+//      ((CxModel*)mWidgetPtr)->DrawTri(x1,y1,z1,x2,y2,z2,x3,y3,z3,r,g,b,fill);
+//}
 
 CcModelAtom* CrModel::GetModelAtom()
 {
-	if(mAttachedModelDoc)
-		return mAttachedModelDoc->GetModelAtom();
-	else
-		return nil;
+      if(mAttachedModelDoc)
+            return mAttachedModelDoc->GetModelAtom();
+      else
+            return nil;
 }
 
-void CrModel::ReDrawHighlights()
-{
-	if(mAttachedModelDoc)
-		mAttachedModelDoc->ReDrawHighlights(false);
-}
+//void CrModel::ReDrawHighlights()
+//{
+ //     if(mAttachedModelDoc)
+//           mAttachedModelDoc->ReDrawHighlights(false);
+//}
 
 
-void CrModel::HighlightAtom(CcModelAtom * theAtom)
-{
-	((CxModel*)mWidgetPtr)->HighlightAtom(theAtom);
-}
+//void CrModel::HighlightAtom(CcModelAtom * theAtom)
+//{
+//      ((CxModel*)mWidgetPtr)->HighlightAtom(theAtom);
+//}
 
 void CrModel::ContextMenu(int x, int y, CcString atomname, int nSelected, CcString* atomNames)
 {
@@ -497,41 +547,40 @@ void CrModel::MenuSelected(int id)
 
 void CrModel::PrepareToGetAtoms()
 {
-	if(mAttachedModelDoc)
-		mAttachedModelDoc->PrepareToGetAtoms();
-
+      if(mAttachedModelDoc)
+            mAttachedModelDoc->PrepareToGetAtoms();
 }
 
-void CrModel::UpdateHighlights()
+void CrModel::Update()
 {
-	((CxModel*)mWidgetPtr)->UpdateHighlights();
+      ((CxModel*)mWidgetPtr)->Update();
 }
 
 CcModelAtom* CrModel::GetSelectedAtoms(int * nSelected)
 {
 
-	CcModelAtom *atom;
-	int i=0;
+      CcModelAtom *atom;
+      int i=0;
 
-	*nSelected = 0;
-	//Count the number of selected atoms.
-	PrepareToGetAtoms();
-	while ( (atom = GetModelAtom()) != nil )
-	{
-		if(atom->IsSelected()) (*nSelected)++;
-	}
+      *nSelected = 0;
+      //Count the number of selected atoms.
+      PrepareToGetAtoms();
+      while ( (atom = GetModelAtom()) != nil )
+      {
+            if(atom->IsSelected()) (*nSelected)++;
+      }
 
-	CcModelAtom *atoms = new CcModelAtom[*nSelected];
+      CcModelAtom *atoms = new CcModelAtom[*nSelected];
 
-	//Get all the selected atoms. Store pointers to them.
-	PrepareToGetAtoms();
-	while ( (atom = GetModelAtom()) != nil )
-	{
-		if(atom->IsSelected())
-			atoms[i++] = *atom;
-	}
+      //Get all the selected atoms. Store pointers to them.
+      PrepareToGetAtoms();
+      while ( (atom = GetModelAtom()) != nil )
+      {
+            if(atom->IsSelected())
+                  atoms[i++] = *atom;
+      }
 
-	return atoms;
+     return atoms;
 }
 
 void CrModel::GetValue()
@@ -559,12 +608,13 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 		case CR_SELECT:
 		{
 			atom->Select();
-			ReDrawHighlights();
+//                  ReDrawHighlights();
+                  Update();
 			break;
 		}
 		case CR_APPEND:
 		{
-                  ((CrEditBox*)(CcController::theController)->mInputWindow)->AddText(" "+atomname+" ");
+                  ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+atomname+" ");
 			break;
 		}
 		case CR_SENDA:
@@ -626,7 +676,8 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 		case CR_SENDC_AND_SELECT:
 		{
 			CcString cSet = (atom->Select()) ? "SET" : "UNSET" ;
-			ReDrawHighlights();
+//                  ReDrawHighlights();
+                  Update();
 			SendCommand("ATOM_N" + atomname + "_N" + cSet);
 			break;
 		}
@@ -634,15 +685,67 @@ void CrModel::SendAtom(CcModelAtom * atom, Boolean output)
 
 }
 
-void CrModel::Reset()
+//void CrModel::Reset()
+//{
+//    ((CxModel*)mWidgetPtr)->Reset();
+//}
+//void CrModel::StartHighlights()
+//{
+//    ((CxModel*)mWidgetPtr)->StartHighlights();
+//}
+//void CrModel::FinishHighlights()
+//{
+//    ((CxModel*)mWidgetPtr)->FinishHighlights();
+//}
+
+
+
+void CrModel::RenderModel(Boolean detailed)
 {
-    ((CxModel*)mWidgetPtr)->Reset();
+    if(mAttachedModelDoc)
+            mAttachedModelDoc->RenderModel(this,detailed);
+}      
+
+
+CcModelAtom* CrModel::LitAtom()
+{
+      return ((CxModel*)mWidgetPtr)->m_LitAtom;
 }
-void CrModel::StartHighlights()
+
+int CrModel::RadiusType()
 {
-    ((CxModel*)mWidgetPtr)->StartHighlights();
+      return ((CxModel*)mWidgetPtr)->m_radius;
 }
-void CrModel::FinishHighlights()
+
+float CrModel::RadiusScale()
 {
-    ((CxModel*)mWidgetPtr)->FinishHighlights();
+      return ((CxModel*)mWidgetPtr)->m_radscale;
+}
+
+void CrModel::SysKey ( UINT nChar )
+{
+      switch (nChar)
+      {
+            case CRCONTROL:
+                  ((CxModel*)mWidgetPtr)->ChooseCursor(1);
+                  break;
+            case CRSHIFT:
+                  ((CxModel*)mWidgetPtr)->ChooseCursor(2);
+                  break;
+            default:
+                  break;
+      }
+}
+
+void CrModel::SysKeyUp ( UINT nChar )
+{
+      switch (nChar)
+      {
+            case CRCONTROL:
+            case CRSHIFT:
+                  ((CxModel*)mWidgetPtr)->ChooseCursor(0);
+                  break;
+            default:
+                  break;
+      }
 }
