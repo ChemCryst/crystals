@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2001/01/25 11:34:42  richard
+C RIC: FIxed bug. Array bounds error in FIRSTSTR and FIRSTINT if there was nothing
+C to read.
+C
 C Revision 1.26  2001/01/19 12:55:07  richard
 C Fixed call to KSCMSG when GET buffer overflows.
 C
@@ -2367,8 +2371,10 @@ CMAY99  1 NEW UNARY OPERATOR:
 C       CHAR=GETEXTN(CHAR)
 CAUG00  1 NEW OPERATOR
 C       CHAR=GETCWD()
+CFEB01  1 NEW BINARY OPERATOR 'POWER'
+C       REAL = REAL ** REAL 
 C
-      PARAMETER ( NOPER = 46 , NUBASE = 24 )
+      PARAMETER ( NOPER = 47 , NUBASE = 25 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 13 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2407,7 +2413,7 @@ C
 C
       DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
      2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
-     3           6 , 7 , 11 , 11 ,
+     3              6 , 7 , 11, 11, 2,
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 , 12,
      5          12 , 12,  4 , 12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 /
@@ -2421,7 +2427,7 @@ C
      4 JANY   , JLOGIC , JNONE  ,   JANY   , JSAME  , JLOGIC ,
      5 JLOGIC , JNONE  , JNONE  ,   JNUMER , JNONE  , JNONE  ,
      6 JINTEG , JNONE  , JNONE  ,     JCHAR  , JCHAR  , JNONE   ,
-     7 JCHAR  , JNONE  , JNONE  ,     JANY   , JNONE  , JNONE   /
+     7 JCHAR  , JNONE  , JNONE  ,     JANY   , JNONE  , JNONE /
 C
       DATA CDATAT / 'none' , 'integer' , 'real' , 'logical' ,
      2              'character' , 'any' , 'same' , 'numeric' /
@@ -2501,7 +2507,7 @@ C
      2        4040 , 4050 , 4050 , 4050 , 4050 ,
      3        4050 , 4050 , 4050 , 4050 , 4050 ,
      4        4050 , 4050 , 4050 , 4100 , 4110 ,
-     5        8000 , 4120 , 4130 , 4140 ,
+     5        8000 , 4120 , 4130 , 4140 , 4150 ,
      6        9940 ) , IOPER
       GO TO 9940
 C
@@ -2680,6 +2686,22 @@ C
       ICODE(JVTYPE,IARG(2)) = 3
 C
       GO TO 8000
+C
+C
+4150  CONTINUE
+C
+C -- '**'
+C
+          IF ( ITYPE(1) .EQ. 1 ) THEN
+            ICODE(JVALUE,IARG(2)) = ICODE(JVALUE,IARG(2)) **
+     2                              ICODE(JVALUE,IARG(1))
+          ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
+            XCODE(JVALUE,IARG(2)) = XCODE(JVALUE,IARG(2)) **
+     2                              XCODE(JVALUE,IARG(1))
+          ENDIF
+C
+      GO TO 8000
+C
 C
 C
 C
@@ -3303,7 +3325,7 @@ C
       PARAMETER ( NOUTVL = 100 , NOPERS = 20 )
 C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
-      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 22 )
+      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 23 )
 CJAN99
       PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 22 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
@@ -3334,20 +3356,21 @@ C
 C
       DATA IVARIB(JCTYPE) / 1 /
 C
-      DATA COPER /                '('   ,   ')'   ,
-     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,
-     3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,
-     4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,
-     5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,
-     6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,
-     7                '//'    , 'STARTSWITH' ,
-     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,
-     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',
+      DATA COPER /                '('   ,   ')'   ,                ! 0-2
+     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6
+     3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
+     4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
+     5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
+     6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
+     7                '//'    , 'STARTSWITH' , '**',                !23-25
+C
+     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !26-29
+     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !30-33
 CJAN99
-     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',
-     1                'FIRSTINT','SQRT','GETPATH','GETFILE',
-     2                'GETTITLE','FILEEXISTS','FILEDELETE',
-     3                'FILEISOPEN','GETEXTN','GETCWD'          /
+     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!34-37
+     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !38-41
+     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !42-44
+     3                'FILEISOPEN','GETEXTN','GETCWD'          /   !45-47
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3355,7 +3378,8 @@ C
      4                   80   ,    80   ,    80   ,    80   ,
      5                   80   ,    80   ,    80   ,    80   ,
      6                   50   ,    60   ,    30   ,    20   ,
-     7                  100   ,    80   ,
+     7                  100   ,    80   ,   190   ,
+C
      8                   90   ,   180   ,   180   ,   180   ,
      9                   40   ,   180   ,   180   ,   180   ,
 CJAN99
