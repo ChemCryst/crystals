@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2002/10/02 13:39:51  rich
+C KDIST1 call requires extra param.
+C
 C Revision 1.7  2002/03/13 12:35:21  richard
 C Added extra argument to calls to KDIST1.
 C
@@ -6625,7 +6628,7 @@ C             NERRFI = NERRFI_SHOULD_BE_THERE_BUT_ISN'T
 2560  CONTINUE
 C
 C --  COMPUTE DISTANCE STACK
-      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS, 0, 4)
+      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS, 0, 4, 0)
       NFL    = JS
 C
       IF (NDISTA .GT. 0) THEN
@@ -6915,7 +6918,7 @@ C     LOOPS BACK TO 2500 UNTIL MATOM=N5
       JS     = NFL
 C
 C --  COMPUTE DISTANCE STACK
-      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS, 0, 4)
+      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS, 0, 4, 0)
       NFL    = JS
 C
       IF (NDISTA .GT. 0) THEN
