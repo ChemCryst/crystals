@@ -9,6 +9,7 @@
 #include "ccrect.h"
 #include "crmodel.h"
 #include "cxmodel.h"
+#include "creditbox.h"
 #include "cccontroller.h"
 #include "ccstring.h"
 
@@ -285,3 +286,30 @@ void CcModelBond::SelfExclude()
 
 
 
+void CcModelBond::SendAtom(int style, bool output)
+{
+  style = (output) ? CR_SENDA : style;
+
+  if (m_disabled) return;
+
+  if (!m_bsym) return;
+
+  switch ( style )
+  {
+    case CR_APPEND:
+    {
+      ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+m_slabel+" ");
+      break;
+    }
+    case CR_SENDA:
+    {
+      (CcController::theController)->SendCommand(m_slabel);
+      break;
+    }
+    case CR_SENDC:
+    {
+      (CcController::theController)->SendCommand("ATOM_N" + m_slabel);
+      break;
+    }
+  }
+}

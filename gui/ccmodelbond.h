@@ -24,6 +24,7 @@ class CcModelBond : public CcModelObject
     void SelfExclude();
     bool m_excluded;
     CcModelAtom *m_atom1, *m_atom2, **m_patms;
+    void SendAtom(int style, bool output=false); 
 
     int m_bondtype;
     int m_np;

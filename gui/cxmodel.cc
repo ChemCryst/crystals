@@ -514,7 +514,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
       CcString atomname;
       CcModelObject* object;
       int type = 0;
-      if( type = IsAtomClicked(point.x, point.y, &atomname, &object, true))
+      if( type = IsAtomClicked(point.x, point.y, &atomname, &object, false))
       {
 //        LOGERR( CcString(point.x) + ", " + CcString(point.y) + " " + atomname);
         if ( type == CC_ATOM )
@@ -523,6 +523,8 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
          ((CcModelSphere*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         else if ( type == CC_DONUT )
          ((CcModelDonut*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
+        else if ( type == CC_BOND )
+         ((CcModelBond*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
       }
       m_ptLDown = point;  //maybe start rotating from here.
       break;
