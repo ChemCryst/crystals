@@ -1,0 +1,304 @@
+%SCRIPT AUTO12
+%  VARIABLE LOGICAL SCRIPTEXT
+%  VARIABLE LOGICAL EXTINCT PURGE
+%  VARIABLE LOGICAL EXEREFN
+%  VARIABLE INTEGER ADP
+%  EVALUATE EXTINCT = FALSE
+%  EVALUATE PURGE  = FALSE
+%  VARIABLE CHARACTER CLAST CPARAM CPARAM2
+%%
+%%%%%%
+%% The possible next steps to take.
+%  VARIABLE INTEGER KTDEFA
+%  VARIABLE INTEGER KSVIEW KSFOUR KSEXIT KSWEIG KSEXTN
+%  VARIABLE INTEGER KSABSN KSLSQ1 KSLSQ2 KSLSQ3 KSHYDR
+%%
+%%
+%  VARIABLE LOGICAL OPTIM HPOS
+%  EVALUATE OPTIM = FALSE
+%  EVALUATE HPOS = FALSE
+%  VARIABLE INTEGER ISTAGE
+%%
+%  EVALUATE ISTAGE = 0
+%%
+%%%%%%
+%% R-FACTOR THRESHOLDS FOR VARIOUS CASES
+%  VARIABLE REAL R1 R2 R3 R4 RMIN
+%% Fourier might be better
+%  EVALUATE R1 = 40.0
+%% Isotropic refinement
+%  EVALUATE R2 = 20.0
+%% Aniso 
+%  EVALUATE R3 = 10.0
+%% Tidy up
+%  EVALUATE R4 = 6.0
+%% 
+%% 
+%% R, OSCALE, RATIO are set in SCRIPT RFACTOR
+%  VARIABLE REAL R OSCALE RATIO
+%  VARIABLE CHARACTER CRVAL
+%  VARIABLE REAL ELECTRON 
+%% Make sure we have a valid LIST 12 of some sort
+%% and find the last non- hydrogen atom
+%  COPY '#SCRIPT CHECK12'
+%% Try to guess what stage we are at
+%% ISTAGE 1 - X'S
+%% ISTAGE 2 - X'S, U[ISO]
+%% ISTAGE 3 - X'S, U'S
+%  EVALUATE ISTAGE = ADP + 1
+%    EVALUATE KSVIEW = 1
+%    EVALUATE KSFOUR = 2
+%    EVALUATE KSLSQ1 = 3
+%    EVALUATE KSLSQ2 = 4
+%    EVALUATE KSLSQ3 = 5
+%    EVALUATE KSHYDR = 6
+%    EVALUATE KSEXTN = 7
+%    EVALUATE KSWEIG = 8
+%%
+%  LOOP
+%    COPY '#SCRIPT RFACTOR'
+%    IF RATIO .GE. 1.3 THEN
+%%     We need the R factor on a good scale
+       Recomputing overall scale factor and phases
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
+%      COPY '#SCRIPT RFACTOR'
+%    END IF
+%    EVALUATE RMIN = R
+%    CLEAR
+%    ON ERROR TERMINATE
+%%   
+^^WI WINDOW XAUTO12 'Supervisor' SIZE
+^^WI GRID OUTER NROWS=3 NCOLS=7
+^^WI {
+^^WI   @ 2,2 MULTIEDIT AUTO12TEXT '' NROWS=10 NCOLS=80
+^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI   @ 2,6 GRID BTNS NROWS=3 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
+^^WI     @ 3,1 BUTTON BXX '&Close' CANCEL
+^^WI   }
+^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
+^^WI     'View structure'
+^^WI     'Fourier refinement'
+^^WI     'Refine positions'
+^^WI     'Refine posn and iso'
+^^WI     'Refine posn and aniso'
+^^WI     'Add hydrogen'
+^^WI     'Check extinction'
+^^WI     'Optimise weights'
+^^WI     NULL
+^^WI }
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO AUTO12TEXT
+^^CR
+%    CLEAR
+%    INSERT 'Checking R factor... '
+%    STORE FORMAT /(F7.2)/ LENGTH 7 REAL R
+%    INSERT '%'
+%    OUTPUT
+%    CLEAR
+%    IF R .GT. R1 THEN
+ Large R factor. 
+   Recommended:   Fourier refinement.
+   Other options: Refine positions only.
+                  View the structure.
+%      EVALUATE KTDEFA = KSFOUR
+%    ELSE IF ( R .GT. R2 ) .OR. ( ISTAGE .LE. 1 ) THEN
+ Medium R factor. 
+   Recommended:   Refine positions and Uiso.
+   Other options: View the structure
+%      EVALUATE KTDEFA = KSLSQ2
+%%     
+%    ELSE IF ( R .GT. R3 ) .AND. ( ISTAGE .LE. 2 ) THEN
+ Low R factor 
+   Recommended:   Refine positions and Uaniso
+   Other options: View the structure
+%      EVALUATE KTDEFA = KSLSQ3
+%%     
+%    ELSE
+%      IF ( R .GT. R3 ) THEN 
+ R factor is large after aniso refinement. 
+   Possible problems: Missing solvent.
+                      Disorder.
+                      Extinction.
+   Recommended:       Try extinction correction.
+   Other options:     View the structure.
+%        EVALUATE KTDEFA = KSEXTN
+%      ELSE
+ Very low R factor - Begin to tidy up
+%        IF HPOS .EQ. FALSE THEN
+%% Default to finding hydrogen
+%          EVALUATE KTDEFA = KSHYDR
+    Recommended:   Locate or place all hydrogen atoms.
+    Other options: Refine positions and Uaniso.
+                   View the structure.
+%        ELSE
+%          IF EXTINCT .EQ. FALSE THEN
+%% If H are all found, default to checking extinction.
+%            EVALUATE KTDEFA = KSEXTN
+    Recommended:   Check for extinction.
+    Other options: Refine positions and Uaniso.
+                   View the structure.
+                   Locate or place all hydrogen atoms.
+%          ELSE
+%            IF ( OPTIM .EQ. FALSE  ) .AND. ( R .LE. R4 ) THEN
+%% If H are found, extinction is checked and low R, default to weights
+%              EVALUATE KTDEFA = KSWEIG
+    Recommended:   Optimise least squares weights.
+    Other options: Refine positions and Uaniso.
+                   View the structure.
+                   Locate or place all hydrogen atoms.
+                   Check for extinction.
+%            ELSE
+%              EVALUATE KTDEFA = KSLSQ3
+    Recommended:   Refine positions and Uaniso.
+    Other options: View the structure.
+                   Locate or place all hydrogen atoms.
+                   Check for extinction.
+                   Optimise least squares weights.
+%            END IF  % HPOS TRUE, EXTINCT TRUE, OPTIM FALSE
+%          END IF  % HPOS TRUE, EXTINCT FALSE
+%        END IF  % HPOS is false
+%      END IF  % V.low r factor
+%    END IF
+%%% 
+%    CLEAR
+%    INSERT '^^WI SET AUTOLIST SELECTION='
+%    STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA
+%    OUTPUT
+%    CLEAR
+^^WI SET TEXTOUTPUT NOECHO
+^^CR
+%    EVALUATE EXEREFN = FALSE
+%    VERIFY BOK BXX
+%    GET FINAL NOSTORE ABBREVIATED 'Continue?' ' '
+%    CASE VALUE
+%      BLOCK  %BOK%
+^^WI SET TEXTOUTPUT NOECHO
+^^CR
+^^?? AUTOLIST SELECTED
+%         GET NOSTORE INTEGER 'Choice number'
+^^WI DISPOSE XAUTO12
+^^CR
+%         CASE VALUE
+%           BLOCK % KSVIEW 1
+%             COPY '#SCRIPT PLOT'
+%           END BLOCK
+%           BLOCK % KSFOUR 2
+%             COPY '#SCRIPT AFOUR'
+%             EVALUATE ISTAGE = 1
+%           END BLOCK
+%           BLOCK % KSLSQ1 3
+%             EVALUATE CPARAM = " X'S "
+%             EVALUATE EXEREFN = TRUE
+%           END BLOCK
+%           BLOCK % KSLSQ2 4
+%             COPY '#EDIT'
+%             COPY 'MONITOR OFF'
+%%            Just in case we get here from aniso
+%             COPY 'UEQUIV FIRST UNTIL LAST'
+%             COPY 'MONITOR MEDIUM'
+%             COPY 'END'
+%             EVALUATE CPARAM = " X'S, U[ISO] "
+%             EVALUATE ISTAGE = 2
+%             EVALUATE EXEREFN = TRUE
+%           END BLOCK
+%           BLOCK % KSLSQ3 5
+%             EVALUATE CPARAM = " X'S, U'S "
+%             EVALUATE ISTAGE = 3
+%             EVALUATE EXEREFN = TRUE
+%           END BLOCK
+%           BLOCK % KSHYDR 6
+%             COPY '#SCRIPT FINDH'
+%             COPY '#SCRIPT CHECK12'
+%             VERIFY YES NO
+%             GET NOSTORE FINAL ABBREVIATED -
+'Have all H atoms been located?' 'YES'
+Remember - the data may not be good enough to reveal all H atoms
+%             IF VALUE .EQ. 1 THEN
+%               EVALUATE HPOS = TRUE
+%             END IF
+%             COPY '#SFLS'
+%             COPY 'CALC'
+%             COPY 'END'
+%           END BLOCK
+%           BLOCK % KSEXTN 7
+ You will be shown an analysis of residuals.
+%             EVALUATE EXTINCT = TRUE
+%             COPY '#ANALYSE'
+%             COPY 'END'
+                 <--->    <--->
+                 Col 3    Col 4
+ If the entries near the bottom of column 3 are generally lower than
+ those in column 4, you need to refine an extinction parameter.
+%             EVALUATE CPARAM = " X'S, U'S "
+%             VERIFY YES NO
+%             GET NOSTORE FINAL ABBREVIATED -
+ 'Do you want to refine an extinction parameter?' 'YES'
+%             IF VALUE .EQ. 1 THEN
+%               EVALUATE CPARAM2 =  ' EXTPARAM'
+%             END IF
+%             EVALUATE EXEREFN = TRUE
+%           END BLOCK
+%           BLOCK % KSWEIG 8
+%             COPY '#SCRIPT WEIGHTS'
+%             EVALUATE OPTIM = TRUE
+%           END BLOCK
+%         END CASE
+%      END BLOCK
+%      BLOCK  %BXX%
+^^WI     DISPOSE XAUTO12
+^^CR
+%        FINISH
+%      END BLOCK
+%    END CASE
+%    IF ( EXEREFN .EQ. TRUE ) THEN
+%      QUEUE REWIND
+%      QUEUE COPY #LIST 12
+%      CLEAR
+%      STORE CHARACTER -
+      'FULL ' // cparam2 // ' First(' // CPARAM // ') until '
+%      QUEUE SEND
+%      CLEAR
+%      STORE CHARACTER "CONTINUE " // CLAST
+%      QUEUE SEND 
+%      TRANSFER "END" TO CRYSTALS
+%%
+%      QUEUE COPY END
+%      QUEUE PROCESS
+%      COPY '#SUM LIST 12'
+%      COPY 'END'
+%      IF ( EXTINCT .EQ. TRUE ) .AND. ( PURGE .EQ. FALSE ) THEN
+%        COPY '#DISK'
+%        COPY 'DELETE 11'
+%        COPY 'END'
+%        COPY '#PURGE'
+%        COPY 'END'
+%        EVALUATE PURGE = TRUE
+%      END IF
+%      COPY '#LIST 22'
+%      COPY 'END'
+%%
+%      COPY '#SCRIPT REFINE'
+%      COPY '#SCRIPT RFACTOR'
+ Test for near convergence of the R factor...
+%      CLEAR
+%      INSERT 'Old R factor = '
+%      STORE FORMAT /(F7.2)/ LENGTH 7 REAL RMIN
+%      INSERT '%. New R factor = '
+%      STORE FORMAT /(F7.2)/ LENGTH 7 REAL R
+%      OUTPUT
+%      CLEAR
+%      IF R .GE. RMIN * 0.99 THEN
+ The refinement has probably converged.
+%      END IF
+%      EVALUATE RMIN = R
+%    END IF
+%  END LOOP
+%END SCRIPT
