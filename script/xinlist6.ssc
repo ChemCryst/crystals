@@ -249,7 +249,7 @@
 %       FINISH
 %     END BLOCK
 %     BLOCK                         %BROWSE%
-^^WI    SYSOPENFILE '*.hkl' 'HKL file (*.hkl)'
+^^WI    SYSOPENFILE '*.hkl;*.hkp' 'HKL file (*.hkl,*.hkp)'
 ^^CR
 %       GET SILENT KEYWORD 'New filename:'
 %       IF CVALUE .NE. 'CANCEL' THEN
@@ -288,6 +288,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.15  2001/09/11 11:18:07  ckp2
+%% Option not to merge friedel pairs.
+%%
 %% Revision 1.14  2001/03/27 15:06:23  richard
 %% Use XQMERGE to ask the MERGE question.
 %%
