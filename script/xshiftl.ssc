@@ -1,0 +1,86 @@
+%SCRIPT XSHIFTL
+% VARIABLE CHARACTER CLINE1
+% VARIABLE REAL LIMIT
+^^WI WINDOW XSHIFTL 'Restrain shifts' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID MAIN NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID LT NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC T0 'Limit all parameter shifts'
+^^WI    @ 2,1 STATIC T1 'to control singularities.'
+^^WI   }
+^^WI   @ 4,2 GRID LEFT NROWS=3 NCOLS=3
+^^WI   {
+^^WI     @ 3,1 STATIC T3 'E.s.d.'
+^^WI     @ 3,3 EDITBOX E2 '0.01' CHARS=9 REAL
+^^WI   }
+^^WI   @ 2,4 GRID RIGHT NROWS=7 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&OK' COMMIT DEFAULT
+^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 5,1 BUTTON BEE '&Edit restraints'
+^^WI     @ 7,1 BUTTON BHH '&Help'
+^^WI   }
+^^WI }
+^^WI  SHOW
+^^CR  
+% LOOP
+%  VERIFY BXX BHH BEE BOK
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  CASE VALUE
+%   BLOCK                      %BXX
+^^WI DISPOSE XSHIFTL
+^^CR
+%    FINISH
+%   END BLOCK
+%   BLOCK                      %BHH
+%    COPY '#SCRIPT XHELP1'
+  Shift limiting restraints can be used to control certain
+singularities.
+  This restraint limits the shift to be computed for the specified
+parameters.
+  Since it modifies the normal matrix, it does not have the same
+effect as partial shifts (SHIFT,MAXIMUM,and FORCE in SFLS).
+In particular, the e.s.d. on the parameter will depend upon the
+E.S.D. given to this restraint. The default for E.S.D. is .01.
+Reducing this to about .00001 will have almost the same effect as
+FIX in LIST 12. Increasing it to 10.0 will cause the restraint to
+have almost no effect unless the parameter involved is almost
+singular with respect to some other parameter.
+%    COPY '#SCRIPT XHELP2'
+%   END BLOCK
+%   BLOCK                      %BEE
+%    COPY '#SCRIPT EDLIST16'
+%   END BLOCK
+%   BLOCK                      %BOK
+^^?? E2 TEXT
+%    GET NOSTORE SILENT REAL 'Shift' '0.001'
+%    EVALUATE LIMIT = VALUE
+^^WI DISPOSE XSHIFTL
+^^CR
+%    ON ERROR CONTINUE
+%    COPY '#RELEASE SCPQUEUE LIMIT.C16'
+%    VERIFY U[ISO] X Y Z U[11] U[22] U[33] U[12] U[13] U[23] OCC
+%    LOOP 11 TIMES
+%     CLEAR
+%     INSERT 'LIMIT '
+%     STORE FORMAT /(F15.8)/ LENGTH 16 REAL LIMIT
+%     STORE KEYWORD LOOPCOUNTER
+%     QUEUE SEND
+%    END LOOP
+%    CLEAR
+%    INSERT '#USE LAST'
+%    QUEUE SEND
+%    CLEAR
+%    INSERT '#   '
+%    QUEUE SEND
+%    COPY '#RELEASE SCPQUEUE betacrys.spq'
+%    EVALUATE CLINE1 = '#USE LIMIT.C16'
+%    COPY '#SCRIPT YADDLI16'
+
+ * Done. Shift limiting restraints added.
+%    FINISH
+%   END BLOCK
+%  END CASE
+% END LOOP
