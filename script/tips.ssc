@@ -21,7 +21,7 @@
 ^^WI SENDTEXTTO XTIPTEXT
 ^^CR
 % LOOP
-%  EVALUATE NTIPS = 24
+%  EVALUATE NTIPS = 25
 ^^CO  GETKEY TIP#
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'
 %  EVALUATE CTIP = VALUE
@@ -237,6 +237,14 @@ LIMIT .01 U[ISO].
 This will limit the shifts in U[iso] to about .01 per cycle.
 The effects of successive cycles are cumulative. All parameters
 can be limited like this. The units are the same as the parameters. 
+%   END BLOCK
+%   BLOCK     %TIP25%
+To quickly see a slant Fourier map through a plane of atoms
+in your structure:
+1) Select the atoms to define a plane. (Click each once)
+2) Right click one of the selected atoms for a context-menu.
+3) Choose 'Slant Fourier Map'
+
 %   END BLOCK
 %  END CASE
 %  EVALUATE CTIP = CTIP + 1
