@@ -1,6 +1,12 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/05/07 12:18:53  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.18  2002/11/04 12:21:43  rich
 C Write SPARE out to .l5 in same format (F11.2) that it was read, otherwise
 C very large values of spare may be fuddled.
@@ -2161,7 +2167,7 @@ C STORE THE RESULT
         IPSTCL(I,IPOS) = IVALS(I+3)
 20    CONTINUE
       IPOS = IPOS + 1
-      IF (IPOS.LE.16) GOTO 10
+      IF (IPOS.LE.17) GOTO 10
 C CLOSE THE FILE
       IF (.NOT.LFILES(0,' ',IINPT)) THEN
         CALL ZMORE('Error on closing COLOUR.CMN',0)

@@ -1872,7 +1872,7 @@ C This subroutine sets the colours of the 16 palette registers
       INTEGER IRED,IG,IB,IREG
       IF (ITCOL.EQ.1) THEN
 C SET COLOURS TO NORMAL
-        DO 10 I = 1 , 16
+        DO 10 I = 1 , ICLMAX
           IRED = IVGACL(1,I)
           IG = IVGACL(2,I)
           IB = IVGACL(3,I)
@@ -1881,7 +1881,7 @@ C SET COLOURS TO NORMAL
 10      CONTINUE
       ELSE
 C SET COLOURS TO GREY
-        DO 20 I = 1 , 16
+        DO 20 I = 1 , ICLMAX
           IRED = IGREYC (1,I)
           IG = IGREYC (2,I)
           IB = IGREYC (3,I)
