@@ -59,17 +59,17 @@ Heading::Heading(char* pLine)
     {
         throw MyException(kUnknownException, "Heading had an invalid format!");
     }
-    iName = new char[tMatch[2].rm_eo - tMatch[2].rm_so +1];
-    iName[tMatch[2].rm_eo - tMatch[2].rm_so] = 0;
+    iName = new char[(int)(tMatch[2].rm_eo - tMatch[2].rm_so +1)];
+    iName[(int)(tMatch[2].rm_eo - tMatch[2].rm_so)] = 0;
     strncpy(iName, tMatch[2].rm_so+pLine, tMatch[2].rm_eo - tMatch[2].rm_so);
-    char* tTempString = new char[tMatch[1].rm_eo - tMatch[1].rm_so +1];
+    char* tTempString = new char[(int)(tMatch[1].rm_eo - tMatch[1].rm_so +1)];
     strncpy(tTempString, tMatch[1].rm_so+pLine, tMatch[1].rm_eo - tMatch[1].rm_so);
-    tTempString[tMatch[1].rm_eo - tMatch[1].rm_so] = 0;
+    tTempString[(int)(tMatch[1].rm_eo - tMatch[1].rm_so)] = 0;
     iID = strtol(tTempString, NULL, 10);
     delete[] tTempString;
-    tTempString = new char[tMatch[3].rm_eo - tMatch[3].rm_so +1];
+    tTempString = new char[(tMatch[3].rm_eo - tMatch[3].rm_so +1)];
     strncpy(tTempString, tMatch[3].rm_so+pLine, tMatch[3].rm_eo - tMatch[3].rm_so);
-    tTempString[tMatch[3].rm_eo - tMatch[3].rm_so] = 0;
+    tTempString[(int)(tMatch[3].rm_eo - tMatch[3].rm_so)] = 0;
     iMatrix = new MatrixReader(tTempString);
     delete[] tTempString;
 }
@@ -134,16 +134,16 @@ Condition::Condition(char* pLine)
     {
         throw MyException(kUnknownException, "Condition had an invalid format!");
     }
-    char* tString = new char[tMatch[4].rm_eo-tMatch[4].rm_so+1];	//Get the matrix for the condition
-    tString[tMatch[4].rm_eo-tMatch[4].rm_so] = 0;
+    char* tString = new char[(int)(tMatch[4].rm_eo-tMatch[4].rm_so+1)];	//Get the matrix for the condition
+    tString[(int)(tMatch[4].rm_eo-tMatch[4].rm_so)] = 0;
     strncpy(tString, pLine+tMatch[4].rm_so, tMatch[4].rm_eo-tMatch[4].rm_so);  
     iMatrix = new MatrixReader(tString);
     delete[] tString;
-    iName = new char[tMatch[2].rm_eo-tMatch[2].rm_so+1];		//Get the name of the condition
-    iName[tMatch[2].rm_eo-tMatch[2].rm_so] = 0;
+    iName = new char[(int)(tMatch[2].rm_eo-tMatch[2].rm_so+1)];		//Get the name of the condition
+    iName[(int)(tMatch[2].rm_eo-tMatch[2].rm_so)] = 0;
     strncpy(iName, pLine+tMatch[2].rm_so, tMatch[2].rm_eo-tMatch[2].rm_so);  
-    iID = strtol(pLine+tMatch[1].rm_so, NULL, 10);			//Get the id of the condition
-    iMult = strtod(pLine+tMatch[12].rm_so, NULL);			//Get the multiplier 
+    iID = strtol((const char*)(pLine+tMatch[1].rm_so), NULL, 10);			//Get the id of the condition
+    iMult = strtod((const char*)(pLine+tMatch[12].rm_so), NULL);			//Get the multiplier 
 }
 
 Condition::~Condition()
@@ -298,7 +298,7 @@ void Conditions::readFrom(filebuf& pFile)
         }
         catch (MyException& e)
         {
-            cout << e.what() << "\n";;
+            std::cout << e.what() << "\n";;
         }
     }
     while (!tFile.eof() && strlen(tLine)>0);
@@ -317,11 +317,11 @@ ostream& Conditions::output(ostream& pStream)
         Condition* tCondition = iConditions->get(i);
         if (tCondition)
         {
-            cout << *tCondition << "\n";
+            std::cout << *tCondition << "\n";
         }
         else
         {
-            cout << "null\n";
+            std::cout << "null\n";
         }
     }
     return pStream;
@@ -405,11 +405,11 @@ ostream& Headings::output(ostream& pStream)
         Heading* tHeading = iHeadings->get(i);
         if (tHeading)
         {
-            cout << *tHeading << "\n";
+            std::cout << *tHeading << "\n";
         }
         else
         {
-            cout << "null\n";
+            std::cout << "null\n";
         }
     }
     return pStream;
@@ -468,7 +468,7 @@ void Headings::readFrom(filebuf& pFile)
         }
         catch (MyException& e)
         {
-            cout << e.what() << "\n";;
+            std::cout << e.what() << "\n";;
         }
     }
     while (!tFile.eof() && strlen(tLine)>0);
@@ -856,8 +856,8 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
     {
         return;
     }
-    char* tString = new char[tMatch[1].rm_eo-tMatch[1].rm_so+1];
-    tString[tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
+    char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
+    tString[(int)(tMatch[1].rm_eo-tMatch[1].rm_so)] = 0;
     strncpy(tString, pHeadings+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);	//get the first element on the line
     if (pColumn < iColumns->length())
     {
@@ -901,7 +901,7 @@ void Table::addLine(char* pLine, int pColumn)
     {
         return;
     }
-    char* tString = new char[tMatch[1].rm_eo-tMatch[1].rm_so+1];
+    char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
     tString[tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
     strncpy(tString, pLine+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);	//Get the first element in the line
     int pRow = iColumns->get(0)->countCondition();	//Get the row which we are at.
@@ -1098,12 +1098,29 @@ ostream& operator<<(ostream& pStream, Table& pTable)
     return pTable.output(pStream);
 }
 
-Tables::Tables(Headings* pHeadings, Conditions* pConditions)
+Tables::Tables(char* pFileName)
 {
-    iHeadings = pHeadings;
-    iConditions = pConditions;
+    filebuf tFile;
+    if (tFile.open(pFileName, std::ios::in) == NULL)
+    {
+        throw FileException(errno);
+    }
+    iConditions = new Conditions();
+    iHeadings = new Headings();
+    
+    iHeadings->readFrom(tFile);
+    iConditions->readFrom(tFile);
     iTables = new ArrayList<Table>(1);
+    readFrom(tFile);
+    tFile.close(); 
 }
+    
+//Tables::Tables(Headings* pHeadings, Conditions* pConditions)
+//{
+//    iHeadings = pHeadings;
+//    iConditions = pConditions;
+//    
+//}
         
 Tables::~Tables()
 {
@@ -1117,7 +1134,19 @@ Tables::~Tables()
             delete tTable;
         }
     }
+    delete iHeadings;
+    delete iConditions;
     delete iTables;
+}
+
+Headings* Tables::getHeadings()
+{
+    return iHeadings;
+}
+
+Conditions* Tables::getConditions()
+{
+    return iConditions;
 }
 
 void Tables::addTable(Table* pTable)
@@ -1142,7 +1171,7 @@ void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, in
     }
     *pNumOfCondCols = strtol(pLine+tMatch[2].rm_so, NULL, 10);
     *pNumOfSGCols = strtol(pLine+tMatch[3].rm_so, NULL, 10);
-    pSystemName[tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
+    pSystemName[(int)(tMatch[1].rm_eo-tMatch[1].rm_so)] = 0;
     strncpy(pSystemName, pLine+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);
 }
 
@@ -1264,7 +1293,7 @@ void RankedSpaceGroups::addRating(RowRating* pRating, const float pRating1, cons
     pRating->iSumSqrRat2 += sqr(pRating2);
 }
 
-RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats)
+RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral)	//Chiral still needs handling. Needs doing
 {
     iRatings = new RowRating[pTable.numberOfRows()];		//Allocate space for all the ratings.s
     
@@ -1277,6 +1306,7 @@ RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats)
         iRatings[i].iSumRat2 = 0;
         iRatings[i].iSumSqrRat1 = 0;
         iRatings[i].iSumSqrRat2 = 0;
+        //If chiral is try make sure that row has a chiral space group in it. Needs doing
         calcRowRating(&(iRatings[i]), i, pTable, pStats);
         addToList(&(iRatings[i]));	//Add the rating for the current row into the order list of rows.
     }
