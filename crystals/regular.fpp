@@ -1,5 +1,9 @@
 
 c $Log: not supported by cvs2svn $
+c Revision 1.41  2005/03/01 21:45:20  rich
+c Fix renumbering of alike molecules. I'd commented out one line too many
+c at some recent point. R.
+c
 c Revision 1.40  2005/01/23 08:29:11  rich
 c Reinstated CVS change history for all FPP files.
 c History for very recent (January) changes may be lost.
@@ -3715,11 +3719,12 @@ C the EQUALATOM approach.
         DO I = 0, N5-1         ! Loop over all the atoms, check for Q
           IF ( ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) .OR.  
      1         ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) ) THEN
-            IF ( ISTORE(L5+I*MD5) .EQ. IPEAK ) THEN
+            
+            IF ( ISTORE(L5+ISTORE(LATVC+I*MDATVC)*MD5) .EQ. IPEAK ) THEN
               IEQATM = 1
             END IF
           ELSE ! Atom not included in fragment
-            STORE(L5+13+I*MD5) = 0.0
+            STORE(L5+13+ISTORE(LATVC+I*MDATVC)*MD5) = 0.0
           END IF
         END DO
       END IF
@@ -3985,10 +3990,9 @@ C Sort each set of atoms into index order.
            DO I = 0, N5-1         ! Loop over all the atoms
              IF ( ( ISTORE(1+LATVC+I*MDATVC) .NE. 1 ) .AND.  
      1            ( ISTORE(2+LATVC+I*MDATVC) .NE. 1 ) ) THEN
-               STORE(L5+13+I*MD5) = 0.0 ! Atom not included in fragments.
+               STORE(L5+13+ISTORE(LATVC+I*MDATVC)*MD5) = 0.0 ! Atom not included in fragments.
              END IF
            END DO
-
 
 C Triple the cardinality of the two found atoms.
 
@@ -4388,7 +4392,7 @@ C are not touched again.
         NCYCLE = NCYCLE + 1
 
         DO I = 0, N5-1    ! Copy existing SPARE into STORE(LTEMP)
-          IF ( IMAXSP .GT. 999999 ) THEN
+          IF ( IMAXSP .GT. 999999 ) THEN   ! Scale down the large values
             I51 = L5 + I * MD5
             IF ( STORE(I51+13) .GT. 9999 )
      1         STORE(I51+13) = NINT(STORE(I51+13) / 10.0)
@@ -4415,6 +4419,21 @@ c          WRITE(CMON,'(A,I5,F16.2))')ISTORE(L5+I*MD5),
 c     1        NINT(STORE(L5+I*MD5+1)),STORE(L5+I*MD5+13)
 c          CALL XPRVDU(NCVDU,1,0)
         END DO
+
+c        DO I = 0, N5       ! Debug
+c          IF ( ISTORE(LTEMP+I) .EQ. 0 ) THEN
+c            WRITE(CMON,'(A,A4,I8)')
+c     1          'Excluded atom ',ISTORE(L5+I*MD5),
+c     2           NINT(STORE(L5+I*MD5+1))
+c              CALL XPRVDU(NCVDU,1,0)
+c            CYCLE  ! Don't consider excluded atoms
+c          END IF
+c          WRITE(CMON,'(A,A4,2I8)')
+c     1          'Included atom ',ISTORE(L5+I*MD5),
+c     2           NINT(STORE(L5+I*MD5+1)),ISTORE(LTEMP+I)
+c          CALL XPRVDU(NCVDU,1,0)
+c        END DO
+
 
         CALL SSORTI(LTEMP,N5,1,1) ! Sort data at LTEMP
  
