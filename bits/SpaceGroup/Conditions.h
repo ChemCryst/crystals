@@ -12,10 +12,9 @@
 #include "Collections.h"
 #include "Matrices.h"
 
-class Condition:public MyObject
+class Condition:public Matrix<short>
 {
     private:
-        Matrix<short>* iMatrix;
         char* iName;
         int iID;
         float iMult;
@@ -23,7 +22,6 @@ class Condition:public MyObject
         Condition(char* pLine);
         ~Condition();
         char* getName();
-        Matrix<short>* getMatrix();
         float getMult();
         int getID();
         std::ostream& output(std::ostream& pStream);
@@ -31,10 +29,8 @@ class Condition:public MyObject
 
 std::ostream& operator<<(std::ostream& pStream, Condition& pCondition);
 
-class Conditions:public MyObject
+class Conditions:public ArrayList<Condition>
 {
-    private:
-        ArrayList<Condition>* iConditions;
     public:
         Conditions();
         ~Conditions();
@@ -42,10 +38,9 @@ class Conditions:public MyObject
         float getMult(int pIndex);
         Matrix<short>* getMatrix(int pIndex);
         int getID(int pIndex);
-        std::ostream& output(std::ostream& pStream);
         char* addCondition(char* pLine);
         void readFrom(filebuf& pFile);
-        int length();
+        std::ostream& output(std::ostream& pStream);
 };
 
 std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions);
