@@ -1,0 +1,20 @@
+%SCRIPT xpolar
+^^WI WINDOW PICTURE 'Polaroid'
+^^WI GRID  GRIDM NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,4 BITMAP WATKIN FILE 'polaroid.bmp'
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 STATIC T1 'Notice that for a'
+^^WI    @ 2,1 STATIC T1 'strong diffractor'
+^^WI    @ 3,1 STATIC T1 'the absences are '
+^^WI    @ 4,1 STATIC T1 'weakly present'
+^^WI    @ 5,1 BUTTON BOK 'Close' COMMIT CANCEL DEFAULT
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% GET NOSTORE SILENT TEXT ' ' ' '
+^^CO DISPOSE PICTURE
+%END SCRIPT
+ 

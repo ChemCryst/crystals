@@ -1,0 +1,6 @@
+%SCRIPT KCCD
+
+ * Running KCCDIN.
+%      COPY '#SPAWN  COMMAND.COM /c CRYSDIR:KCCDIN.EXE'
+ * Done.
+%END SCRIPT

@@ -93,19 +93,53 @@
 %     END BLOCK
 %     BLOCK         %BHH
 %       COPY '#SCRIPT XHELP1'
- The table of reflection conditions shown here can be found
- in International Tables for Crystallography Volume A.
+ The space-group of a crystal is determined by looking for patterns of 
+ systematically absent reflections in the diffraction data -  the 
+{0,12'systematic absences' {1,0.
+
+For the common space-groups, there are 5 steps to follow:
+
+1 Look for patterns of absences involving all reflections with no zero 
+  indices, e.g 3,2,5. These {0,12general{1,0reflections determine the lattice 
+  type. A typical patterns might be: reflections with h+k odd are all
+  absent.
+2 Look for patterns of absences in those reflections with one index 
+  zero. These {0,12zones{1,0 identify glide planes. Keep the okl, hol, and hko 
+  reflections separate since these will identify glides perpendicular
+  to a, b and c. A typical pattern might be: In the hol reflections, those 
+  with l odd are all absent.
+3 Look for patterns of absences in those reflections with two indices 
+  zero. These {0,12axes{1,0  identify screw axes. Keep the hoo, oko, and ool 
+  reflections separate since these will identify screws parallel to a, 
+  b and c.A typical pattern might be: In the oko reflections, those 
+  with k odd are all absent.
+4 Invert the 'absence' conditions to get the 'presence' conditions, e.g.
+  h+k odd absent implies h+k even present
+5 Turn to table 3.2 in International Tables, Volume A, pp 40-47. Locate 
+  the part appropriate for your crystal class, and work from left to 
+  right to locate the line which corresponds to your reflection 
+  conditions. The space group or groups are given for the actual 
+  indexing you have chosen for your crystal. These may be non-standard 
+  settings.
+
+NOTE. In tetragonal and trigonal and hexagonal crystals, reflections of
+  type hhl and h-hl may also have systematic absences.
+
 
  A condition such as l=4n in the column 00l indicates that
  reflections only occur in the 00l row when l is a multiple
  of 4.
-
+ 
  A condition such as l is shorthand for l=2n.
-
+ 
  A condition such as h+k indicates that the sum of h and k must
  equal 2n for reflection to occur.
-
+ 
  A condition such as h,k means that h=2n and k=2n for reflection.
+
+{0,4 Space-group determination and diffraction symbols are explained
+{0,4 fully in International Tables, Vol A, pp 40-47.
+%       COPY '#SCRIPT XPICCY'
 %       COPY '#SCRIPT XHELP2'
 %     END BLOCK
 %     BLOCK         %BXX
@@ -115,4 +149,4 @@
 %   END CASE
 % END LOOP
 %END SCRIPT
-
+ 
