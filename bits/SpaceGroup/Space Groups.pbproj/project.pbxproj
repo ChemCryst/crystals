@@ -86,6 +86,7 @@
 		};
 		08FB7794FE84155DC02AAC07 = {
 			children = (
+				F8C4E88C03DDB93000011915,
 				08FB7795FE84155DC02AAC07,
 				C6859E8C029090F304C91782,
 				0249A662FF388D9811CA2CEA,
@@ -266,6 +267,8 @@
 				F5C51573037812A901011915,
 				F502A8140394EF7001011915,
 				F53957B303AF80960101B5AE,
+				F8C4E88F03DDB96000011915,
+				F8C4E89003DDB96100011915,
 			);
 			isa = PBXCopyFilesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 1;
@@ -639,6 +642,50 @@
 		};
 		F5DE4339036EE5910101B5AE = {
 			fileRef = F5DE4337036EE5910101B5AE;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//F50
+//F51
+//F52
+//F53
+//F54
+//F80
+//F81
+//F82
+//F83
+//F84
+		F8C4E88C03DDB93000011915 = {
+			children = (
+				F8C4E88D03DDB95600011915,
+				F8C4E88E03DDB95600011915,
+			);
+			isa = PBXGroup;
+			name = Data;
+			refType = 4;
+		};
+		F8C4E88D03DDB95600011915 = {
+			isa = PBXFileReference;
+			name = Tables.xls;
+			path = Data/Tables.xls;
+			refType = 4;
+		};
+		F8C4E88E03DDB95600011915 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = Tables.txt;
+			path = Data/Tables.txt;
+			refType = 4;
+		};
+		F8C4E88F03DDB96000011915 = {
+			fileRef = F8C4E88D03DDB95600011915;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F8C4E89003DDB96100011915 = {
+			fileRef = F8C4E88E03DDB95600011915;
 			isa = PBXBuildFile;
 			settings = {
 			};

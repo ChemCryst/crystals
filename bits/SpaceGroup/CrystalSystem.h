@@ -36,6 +36,8 @@
  */
 #include "Matrices.h"
 #include "Collections.h"
+#include <fstream>
+using namespace std;
 
 class Heading
 {
@@ -64,6 +66,7 @@ class Headings
         int getID(int pIndex);
         ostream& output(ostream& pStream);
         char* addHeading(char* pLine);
+        void readFrom(filebuf& pFile);
 };
 
 ostream& operator<<(ostream& pStream, Heading& pHeader);
@@ -100,6 +103,7 @@ class Conditions
         Matrix<float>* getMatrix(int pIndex);
         ostream& output(ostream& pStream);
         char* addCondition(char* pLine);
+        void readFrom(filebuf& pFile);
 };
 
 ostream& operator<<(ostream& pStream, Conditions& pConditions);
@@ -190,9 +194,6 @@ class SpaceGroups:virtual public Column
         char* getPointGroup();
 };
 
-/* This isn't the best way of storing the tables. I think they should be stored as trees.
- * It has been done this way to keep it simple to start of with.
- */
 class Table
 {
     private:
@@ -210,9 +211,25 @@ class Table
         ~Table();
         void addLine(char* pLine);
 	void readColumnHeadings(char* pHeadings);
+        void readFrom(filebuf& pFile);
         ostream& output(ostream& pStream);
         ostream& outputLine(int pLineNum, ostream& pStream);
 };
 
 ostream& operator<<(ostream& pStream, Table& pTable);
 
+class Tables
+{
+    private:
+        ArrayList<Table>* iTables;
+        Headings* iHeadings;
+        Conditions* iConditions;
+    public:
+        Tables(Headings* pHeadings, Conditions* pConditions);
+        ~Tables();
+        void addTable(Table* pTable);
+        void readFrom(filebuf& pFile);
+        ostream& output(ostream& pStream);
+};
+
+ostream& operator <<(ostream& pStream, Tables& pTables);

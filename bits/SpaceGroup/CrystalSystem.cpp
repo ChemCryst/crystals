@@ -37,6 +37,8 @@
 
 #include "CrystalSystem.h"
 #include "regex.h"
+#include <fstream>
+using namespace std;
 
 Heading::Heading(char* pLine)
 {
@@ -103,7 +105,7 @@ ostream& operator<<(ostream& pStream, Heading& pHeader)
 
 Condition::Condition(char* pLine)
 {
-    char tRegExp[] = "^([[:digit:]]+)\t(([[:alnum:]]|[ =+-])+)\t(\\[( *([[:digit:]]+(\\.[[:digit:]]+)?) *(;)?)*( *([[:digit:]]+(\\.[[:digit:]]+)?) *)\\])\t([[:digit:]]+)[[:space:]]*$";//This checks to see if the line is in the correct format and get the offsets for all the needed information.
+    char tRegExp[] = "^([[:digit:]]+)\t(([[:alnum:]]|[- =+])+)\t(\\[( *([-+]?[[:digit:]]+(\\.[[:digit:]]+)?) *(;)?)*( *([-+]?[[:digit:]]+(\\.[[:digit:]]+)?) *)\\])\t([[:digit:]]+)[[:space:]]*$";//This checks to see if the line is in the correct format and get the offsets for all the needed information.
     
     /* Match Index 	Description
      * 0 	 	Line
@@ -273,6 +275,31 @@ char* Conditions::addCondition(char* pLine)	//Returns the point which the line a
     return tNext;
 }
 
+void Conditions::readFrom(filebuf& pFile)
+{
+    char tHeaderLine[] = "ID	Name	Vector	Multiplier";
+    istream tFile(&pFile);
+    char tLine[255];
+    
+    do
+    {
+        tFile.getline(tLine, 255);
+    }while (strstr(tLine, tHeaderLine) == NULL && !tFile.eof());
+    do
+    {
+        tFile.getline(tLine, 255);
+        try
+        {
+            addCondition(tLine);
+        }
+        catch (MyException& e)
+        {
+            cout << e.what() << "\n";;
+        }
+    }
+    while (!tFile.eof() && strlen(tLine)>0);
+}
+
 ostream& Conditions::output(ostream& pStream)
 {
     int tSize = iConditions->length();
@@ -408,6 +435,30 @@ char* Headings::addHeading(char* pLine)	//Returns the point which the line at th
     return tNext;
 }
 
+void Headings::readFrom(filebuf& pFile)
+{
+    char tHeaderLine[] = "ID	Name	Matrix";
+    istream tFile(&pFile);
+    char tLine[255];
+    
+    do
+    {
+        tFile.getline(tLine, 255);
+    }while (strstr(tLine, tHeaderLine) == NULL && !tFile.eof());
+    do
+    {
+        tFile.getline(tLine, 255);
+        try
+        {
+            addHeading(tLine);
+        }
+        catch (MyException& e)
+        {
+            cout << e.what() << "\n";;
+        }
+    }
+    while (!tFile.eof() && strlen(tLine)>0);
+}
 
 ostream& operator<<(ostream& pStream, Headings& pHeaders)
 {
@@ -457,7 +508,7 @@ bool Index::operator==(Index& pObject)
 
 ostream& Index::output(ostream& pStream)
 {
-    return pStream << iValue;
+    return pStream << (int)iValue;
 }
 
 ostream& operator<<(ostream& pStream, Index& pIndex)
@@ -468,7 +519,7 @@ ostream& operator<<(ostream& pStream, Index& pIndex)
 Indexs::Indexs(signed char pIndex)
 {
     iIndexs = new ArrayList<Index>(1);
-    iIndexs->set(new Index(pIndex), 0);
+    iIndexs->add(new Index(pIndex));
 }
         
 void Indexs::addIndex(signed char pIndex)
@@ -698,7 +749,7 @@ Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNum
         iColumns->add(new ConditionColumn());
     }
     iSpaceGroups = new ArrayList<SpaceGroups>(pNumPointGroups);
-    for (int i = 0; i < pNumColumns; i++)
+    for (int i = 0; i < pNumPointGroups; i++)
     {
         iSpaceGroups->add(new SpaceGroups());
     }
@@ -754,7 +805,13 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
     }
     else
     {
-        iSpaceGroups->get(pColumn-iColumns->length())->setHeading(tString);
+        int tSpaceGroupLen = pColumn-iColumns->length();
+        
+        if (iSpaceGroups->length()<=tSpaceGroupLen)
+        {
+            throw MyException(kUnknownException, "Table has bad format!");
+        }
+        iSpaceGroups->get(tSpaceGroupLen)->setHeading(tString);
     }
     delete[] tString;
     if (tMatch[2].rm_so==-1)
@@ -771,7 +828,7 @@ void Table::readColumnHeadings(char* pHeadings)
 
 void Table::addLine(char* pLine, int pColumn)
 {
-    char tRegExp[] = "([^\t]+\t?)([^\t].+)?";
+    char tRegExp[] = "([^\t]+\t?)([^\t].*)?";
     
     regex_t tRegEx;
     regcomp(&tRegEx, tRegExp, REG_EXTENDED);
@@ -831,6 +888,36 @@ void Table::addLine(char* pLine)
     addLine(pLine, 0);
 }
 
+#include <ctype.h>
+
+bool emptyLine(char* pLine)
+{
+    int i = 0;
+    while (pLine[i] != 0)
+    {
+        if (!isspace(pLine[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Table::readFrom(filebuf& pFile)
+{
+    istream tFile(&pFile);
+    char tLine[255];
+    do
+    {
+        tFile.getline(tLine, 255);
+    }while (!tFile.eof() && emptyLine(tLine));
+    while (!tFile.eof() && strlen(tLine)>0)
+    {
+        addLine(tLine);
+        tFile.getline(tLine, 255);
+    }
+}
+
 ostream& Table::outputLine(int pLineNum, ostream& pStream)
 {
     int tLengthConditions = iColumns->length();
@@ -858,10 +945,14 @@ ostream& Table::outputLine(int pLineNum, ostream& pStream)
     return pStream;
 }
 
+
+
 ostream& Table::output(ostream& pStream)
 {	
     int tLengthConditions = iColumns->length();
     int tLengthSpaceGroup = iSpaceGroups->length();
+    
+    pStream << iName << "\n";
     for (int i = 0; i < tLengthConditions; i++)
     {
         int tHeadingNumber = iColumns->get(i)->countHeadings();
@@ -869,7 +960,6 @@ ostream& Table::output(ostream& pStream)
         {
             pStream << iColumns->get(i)->getHeading(j) << " ";
         }
-        
     }
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
@@ -882,7 +972,7 @@ ostream& Table::output(ostream& pStream)
         int tNumOfLines = iColumns->get(0)->countCondition();
         for (int i =0; i < tNumOfLines; i++)
         {
-            pStream << outputLine(i, pStream);
+            outputLine(i, pStream);
         }
     }
     return pStream;
@@ -892,3 +982,97 @@ ostream& operator<<(ostream& pStream, Table& pTable)
 {
     return pTable.output(pStream);
 }
+
+Tables::Tables(Headings* pHeadings, Conditions* pConditions)
+{
+    iHeadings = pHeadings;
+    iConditions = pConditions;
+    iTables = new ArrayList<Table>(1);
+}
+        
+Tables::~Tables()
+{
+    int tNumTables = iTables->length();
+    
+    for (int i = 0; i < tNumTables; i++)
+    {
+        Table* tTable = iTables->remove(i);
+        if (tTable)
+        {
+            delete tTable;
+        }
+    }
+    delete iTables;
+}
+
+void Tables::addTable(Table* pTable)
+{
+    iTables->add(pTable);
+}
+
+void tableAttributesLine(char* pLine, char* pSystemName, int *pNumOfCondCols, int *pNumOfSGCols)
+{
+    char tRegExp[] = "([^\t]+)\t([[:digit:]]+), ([[:digit:]]+)";
+    
+    regex_t tRegEx;
+    regcomp(&tRegEx, tRegExp, REG_EXTENDED);
+    
+    size_t tMatches = 4;
+    regmatch_t tMatch[4];
+    
+    bzero(tMatch, sizeof(regmatch_t)*4);
+    if (regexec(&tRegEx, pLine, tMatches, tMatch, 0))
+    {
+        throw MyException(kUnknownException, "Table has bad format!");
+    }
+    *pNumOfCondCols = strtol(pLine+tMatch[2].rm_so, NULL, 10);
+    *pNumOfSGCols = strtol(pLine+tMatch[3].rm_so, NULL, 10);
+    pSystemName[tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
+    strncpy(pSystemName, pLine+tMatch[1].rm_so, tMatch[1].rm_eo-tMatch[1].rm_so);
+}
+
+void Tables::readFrom(filebuf& pFile)
+{
+    istream tFile(&pFile);
+    char tLine[255];
+ 
+    while (!tFile.eof())
+    {
+        tFile.getline(tLine, 255);
+        if (!emptyLine(tLine))
+        {
+            char tSystemName[255]; // This it either monoclinic orthorombic etc. 
+            int tNumOfCondCols, tNumOfSGCols;
+            
+            tableAttributesLine(tLine, tSystemName, &tNumOfCondCols, &tNumOfSGCols);
+            Table* tTable = new Table(tSystemName, iHeadings, iConditions, tNumOfCondCols, tNumOfSGCols); 
+            tFile.getline(tLine, 255);
+            if (!emptyLine(tLine))
+            {
+                tTable->readColumnHeadings(tLine);
+                tTable->readFrom(pFile);
+            }
+            addTable(tTable);
+        }
+    }
+}
+
+ostream& Tables::output(ostream& pStream)
+{
+    int tNumTables = iTables->length();
+    
+    for (int i = 0; i < tNumTables; i++)
+    {
+        Table* tTable = iTables->get(i);
+        if (tTable)
+        {
+            pStream << *tTable;
+        }
+    }
+    return pStream;
+}
+
+ostream& operator <<(ostream& pStream, Tables& pTables)
+{
+    return pTables.output(pStream);
+};
