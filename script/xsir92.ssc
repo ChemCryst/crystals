@@ -107,6 +107,33 @@
 %      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
 %        FINISH
 %      END IF
+%%
+%      BLOCK
+%      EVALUATE QTITLE = 'Use Cameron?'
+%      EVALUATE QLINE1 = 'Do you want to use CAMERON '
+%      EVALUATE QLINE2 = 'to examine the model '
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%       COPY '#SCRIPT XCAM'
+%      END IF
+%      END BLOCK
+%%
+%      BLOCK
+%      EVALUATE QTITLE = 'Re-number the atoms'
+%      EVALUATE QLINE1 = 'If the structure looks OK, do you want to '
+%      EVALUATE QLINE2 = 're-number the atoms based on connectivity?'
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%       COPY '#REGROUP'
+%       COPY 'SELECT TYPE=ALL SEQUENCE = YES'
+%       COPY 'END'
+%      END IF
+%      END BLOCK
+%%
 %      BLOCK
 %        COPY '#DISTANCES'
 %        COPY 'END'
@@ -121,6 +148,6 @@
 %      COPY 'END'
 %   END BLOCK
 %END SCRIPT
-
-
-
+ 
+ 
+ 

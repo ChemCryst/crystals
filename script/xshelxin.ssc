@@ -445,6 +445,31 @@ information. This may take some time...
 %  COPY '#SCRIPT ZSHELXIN'
  Shelx file processed.
 %  COPY '#CLOSE SCPDATA'
+%      BLOCK
+%      EVALUATE QTITLE = 'Re-number the atoms'
+%      EVALUATE QLINE1 = 'If the structure looks OK, do you want to '
+%      EVALUATE QLINE2 = 're-number the atoms based on connectivity?'
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. TRUE THEN
+%       COPY '#REGROUP'
+%       COPY 'SELECT TYPE=ALL SEQUENCE = YES'
+%       COPY 'END'
+%      END IF
+%      END BLOCK
+%%
+%      BLOCK
+%        COPY '#DISTANCES'
+%        COPY 'END'
+%      END BLOCK
+%% SET Solution type
+%%
+%      COPY '#GENERALEDIT 30'
+%      COPY 'LOCATE RECORDTYPE=106'
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
+%      COPY 'WRITE'
+%      COPY 'END'
 % FINISH
 % END BLOCK
 % END CASE

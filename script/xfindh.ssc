@@ -4,16 +4,16 @@
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
 %%
-
- * This SCRIPT permits you to remove all existing hydrogen atoms before       º
-   starting the placement.                                                    
- * It computes the positions of hydrogen atoms on carbon atoms but does                
-   not include them in the structure factor calculation.             
+ 
+ * This SCRIPT permits you to remove all existing hydrogen atoms before
+   starting the placement.
+ * It computes the positions of hydrogen atoms on carbon atoms but does
+   not include them in the structure factor calculation.
  * It then searches to confirm them in a difference map. Calculated (H)
    and found (QH) atoms are displayed, and the model may be edited.
  * Finally, any peaks close to a calculated H atom are eliminated, and
    any remaining peaks deleted.
-
+ 
 % EVALUATE QTITLE = 'Delete Hydrogen'
 % EVALUATE QLINE1 = 'Do you want to delete'
 % EVALUATE QLINE2 = 'existing hydrogen atoms?'
@@ -44,15 +44,17 @@
 % COPY 'TYPECHANGE TYPE EQ Q QH'
 % COPY 'END'
 %%
-^^WI WINDOW CONTINUE 'Continue' 
+^^WI WINDOW CONTINUE 'Continue'
 ^^WI COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID MAIN NROWS=3 NCOLS=5
 ^^WI {
-^^WI   @ 2,2 GRID L NROWS=2 NCOLS=1
+^^WI   @ 2,2 GRID L NROWS=4 NCOLS=1
 ^^WI   {
 % IF ( XAUTO12 ) THEN
 ^^WI     @ 1,1 STATIC T0 'Choose "Continue" to carry on'
 ^^WI     @ 2,1 STATIC T1 'with the guided refinement.'
+^^WI     @ 3,1 STATIC T2 '(You can still choose CAMERON'
+^^WI     @ 4,1 STATIC T3 ' and return here later)'
 ^^WI   }
 ^^WI   @ 2,4 GRID R NROWS=3 NCOLS=1 COMMAND='#SCRIPT FINH_NAUTO'
 % ELSE
@@ -68,8 +70,8 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-
+ 
  * Rename any QH peaks that you wish to keep to 'H'.
-
+ 
 % COPY '#SCRIPT DIRECT'
 %END SCRIPT
