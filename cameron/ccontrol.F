@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2000/08/04 14:41:50  CKP2
+C More chime/pdb edits
+C
 C Revision 1.8  2000/07/17 13:53:25  CKP2
 C Chime output
 C
@@ -3321,9 +3324,6 @@ C LOOP OVER THE LIST TO FIND THIS ATOMS NUMBER
 C GET THE LABEL
         KK = (N - IRATOM ) / IPACKT + ICATOM
 C----- RIGHT ADJUST NAME
-        WRITE(CLINE,'(A,A,A)') '/', CSTORE(KK),'/'
-        CALL ZMORE (CLINE,0)
-        
         if (cstore(kk)(2:2) .eq. ' ') then
          CLAB = ' '//CSTORE(KK)(1:1)
         else
