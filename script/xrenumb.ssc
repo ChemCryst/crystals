@@ -46,7 +46,7 @@
 %       COPY '#SCRIPT XRENUM'
 %     END BLOCK
 %     BLOCK    %NOTHING
- Renumbering skipped. Any atom name/serial clashes will be removed.
+{I Renumbering skipped. Any atom name/serial clashes will be removed.
 %       COPY '#EDIT'
 %       COPY 'CLASH FIXLATTER'
 %       COPY 'END'
