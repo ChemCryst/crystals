@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  1999/06/03 17:23:42  dosuser
+C RIC: Added Linux Graphical Interface support.
+C
 C Revision 1.8  1999/05/26 17:26:46  dosuser
 C djw  add CSYS identifier 'CIF' for cif file names
 C
@@ -182,16 +185,25 @@ C
 &GID          CALL XPRVDU(NCVDU,1,0)
 &GIL          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=SELECTATOM'
 &GIL          CALL XPRVDU(NCVDU,1,0)
+&&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&&GILGID          WRITE (CMON,1515) '''Enter Commands'''
+&&GILGID          CALL XPRVDU (NCVDU,1,0)
           ELSE
           CALL XPRMPT ( NCVDU , '>' )
 &GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
 &GID          CALL XPRVDU(NCVDU,1,0)
 &GIL          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
 &GIL          CALL XPRVDU(NCVDU,1,0)
+&&GILGID          WRITE (CMON,1515) '''Enter Directives'''
+&&GILGID          CALL XPRVDU (NCVDU,1,0)
         ENDIF
 C If in script mode, set flag.
-          INSTRC = .FALSE.
-          IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
+        INSTRC = .FALSE.
+        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+            INSTRC = .TRUE.
+&&GILGID          WRITE (CMON,1515) '''Script awaiting input...'''
+&&GILGID          CALL XPRVDU (NCVDU,1,0)
+        END IF
 C Update status information for GUI.
         IF (ISSTML .EQ. 4) CALL MENUUP
       ENDIF
@@ -450,12 +462,7 @@ C If in script mode, set flag.
 &&GILGID            IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
 &&GILGIDC Update status information for UI.
 &&GILGID            CALL MENUUP
-&&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&&GILGID            WRITE (CMON,1515) 'Ready'
-&&GILGID            CALL XPRVDU (NCVDU,1,0)
             CALL GETCOM(CLINE)
-&&GILGID            WRITE (CMON,1515) 'Working...'
-&&GILGID            CALL XPRVDU (NCVDU,1,0)
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
       ENDIF
