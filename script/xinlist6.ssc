@@ -11,32 +11,27 @@
 %  COPY '#SCRIPT XINBASIC'
 %  IF INBASICS .NE. 1 THEN
  
-  Basic Cell, Space Group or composition information is missing.
-  This SCRIPT will be abandoned without reading the reflections.
-% copy '#script btext'
-  EITHER:
-         a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off
-             the X-ray data menu,
-  OR:
-         b - choose the Shelx (INS of RES) option off 
-             the X-ray data menu,
-% copy '#script ntext'
+{0,3   Basic Cell, Space Group or composition information is missing.
+{0,3   This SCRIPT will be abandoned without reading the reflections.
+   EITHER:
+{0,2          a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off
+{0,2              the X-ray data menu,
+   OR:
+{0,2          b - choose the Shelx (INS of RES) option off 
+{0,2              the X-ray data menu,
  
 %    FINISH
 %  END IF
 %  IF LCANCEL .EQ. TRUE THEN
  
-  Basic Cell, Space Group or composition information is missing.
-  You must provide this information before data reduction can be
-  performed.
-% copy '#script btext'
-  EITHER:
-         a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off
-             the X-ray data menu,
-  OR:
-         b - choose the Shelx (INS of RES) option off 
-             the X-ray data menu,
-% copy '#script ntext'
+{0,3   Basic Cell, Space Group or composition information is missing.
+{0,3   This SCRIPT will be abandoned without reading the reflections.
+   EITHER:
+{0,2          a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off
+{0,2              the X-ray data menu,
+   OR:
+{0,2          b - choose the Shelx (INS of RES) option off 
+{0,2              the X-ray data menu,
  
 %    FINISH
 %  END IF
@@ -289,4 +284,5 @@ e.g. a file processed by RC93 will contain intensities.
 %   END CASE
 % END LOOP
 %END SCRIPT
- 
+%%
+%% $Log: not supported by cvs2svn $
