@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/05/07 12:18:55  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.42  2003/02/27 11:41:16  rich
 C
 C Changes to KSCTRN so that it can be called safely when SCRIPTS aren't running.
@@ -2449,8 +2455,11 @@ C       REAL = RANDOM
 CAUG02  2 NEW BINARY OPS:
 C       INT = INT IOR INT
 C       INT = INT IAND INT
+CJUN03  2 NEW UNARY OPS:
+C       CHAR=COMPRESS(CHAR) - removes extra spaces
+C       CHAR=SPGTOCRY(CHAR) - tries to fix up Xprep style space groups
 C
-      PARAMETER ( NOPER = 52 , NUBASE = 28 )
+      PARAMETER ( NOPER = 54 , NUBASE = 28 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2493,7 +2502,7 @@ C
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 /
+     6          12 ,12 , 13,  12 , 12 , 12 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -2871,7 +2880,8 @@ C
 CJAN99
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
-     4        5190 , 5200,  5210 , 5220 , 9940 ) , IUOPER
+     4        5190 , 5200,  5210 , 5220 , 5230 ,
+     5        5240,  9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3339,6 +3349,51 @@ C Expand any environment variables.
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
 C
+C
+5230  CONTINUE
+C
+C -- 'COMPRESS'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      CALL XCREMS( CWORK1, CWORK1, LEN1)
+      LEN1 = MAX ( LEN1, 1 )
+      ISTAT = KSCSCD ( CWORK1(1:LEN1) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
+C
+5240  CONTINUE
+C
+C -- 'SPGTOCRY'
+C
+C Some basic things to try to ensure that the H-M space
+C group read from an external source is correct:
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      CALL XCREMS( CWORK1, CWORK1, LEN1)
+      LEN1 = MAX ( LEN1, 1 )
+
+C (1) Second character must be a space:
+      IF ( CWORK1(2:2) .NE. ' ' ) CWORK1(2:) = ' ' // CWORK1(2:)
+
+C (2) Any opening brackets must be removed.
+C (3) Any closing brackets become spaces, unless followed by '/'
+
+      IED=1
+      DO IES = 1,LEN(CWORK1)
+        IF ( CWORK1(IES:IES) .NE. '(' ) THEN    ! All but open brackets
+          CWORK1(IED:IED) = CWORK1(IES:IES)     ! are copied.
+          IF ( CWORK1(IED:IED) .EQ. ')' ) THEN  ! If copied a close bracket
+            CWORK1(IED:IED) = ' '               ! replace with space unless:
+            IF ( CWORK1(IES+1:IES+1).EQ.'/' ) IED = IED - 1   !Cause overwrite.
+          END IF
+          IED = IED + 1
+        END IF
+      END DO
+      CALL XCTRIM(CWORK1,IED)
+      ISTAT = KSCSCD ( CWORK1(1:IED) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
 8000  CONTINUE
 C
 C
@@ -3588,7 +3643,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
 CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 24 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 26 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3633,7 +3688,7 @@ CJAN99
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47
      3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51
-     4                'GETENV'/                                    !52
+     4                'GETENV','COMPRESS','SPGTOCRY'/              !52-54
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3651,7 +3706,7 @@ CJAN99
      1                  180   ,   180   ,   180   ,   180   ,
      2                  180   ,   180   ,   180   ,
      3                  180   ,   180   ,   180   ,   200   ,
-     4                  180 /
+     4                  180   ,   180   ,   180 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
