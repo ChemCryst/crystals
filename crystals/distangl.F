@@ -1,5 +1,11 @@
 
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2002/07/23 10:02:09  richard
+C
+C INSERT NCONN and INSERT RELAX use L41 to work out bonding. L41 is dangerously
+C useless if L5 has been sorted in #EDIT. One can now call XBCALC(2) to recalculate
+C bonds. L5 is not reloaded in this mode.
+C
 C Revision 1.24  2002/07/19 08:56:25  Administrator
 C Typo.
 C
@@ -5477,6 +5483,7 @@ C--
 \XSSCHR
 \UFILE
 \XPDS
+\XLIMIT
 
       EQUIVALENCE (PROCS(1), IPROCS(1))
 \IDIM40
@@ -6000,9 +6007,12 @@ C -- Work out bond types:
         CALL BONDTY(1)
       END IF
 
-C -- Write new list back to disk.
+C -- Write new list back to disk, unless INTERN == 2, in which case
+C -- the list can be used as is.
 
-      CALL XWLSTD (41,ICOM41,IDIM41,0,1)
+      IF ( INTERN .NE. 2 ) THEN
+        CALL XWLSTD (41,ICOM41,IDIM41,0,1)
+      END IF
 
 
 3350  CONTINUE
