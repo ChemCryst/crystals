@@ -621,6 +621,7 @@ C      PREPARE FOR GUI
       CHARACTER CTXT*(*)
       LOGICAL LDOFOU
       DIMENSION JDEV(4)
+      REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
 \ISTORE
 \STORE
 \XUNITS
@@ -700,6 +701,7 @@ C Calculate sum of x, y and z as we go.
              TSTORE(IPLACE+2) = GUMTRX(7) * STORE(J+IOFF)
      1                       + GUMTRX(8) * STORE(J+IOFF+1)
      2                       + GUMTRX(9) * STORE(J+IOFF+2)
+
 C
 C            WRITE(6,'(A,3F8.3,A)')'^^TXOrtho coords ',TSTORE(IPLACE),
 C     1      TSTORE(IPLACE+1),TSTORE(IPLACE+2),'^^EN'
@@ -744,6 +746,7 @@ C         CALL XPRVDU(NCVDU, 1,0)
          WRITE ( CMON, '(A)')'^^GR MODEL L5'
          CALL XPRVDU(NCVDU, 1,0)
 C
+
          IPLACE = 1
          J = L5
 C         WRITE(NCAWU,'(A)')'^^TXMain loop^^EN'
@@ -863,8 +866,52 @@ C
                  WRITE(CLAB(ILEN:),'(A1,I4,A1)')
      1           '(', NINT(STORE(J+1)), ')'
              ENDIF
-C
-             WRITE ( CMON, '(A,I4,1X,A,/,A,8(1X,I6),/,A,8(1X,I6))')
+
+
+
+             TENSOR(1,1) = STORE(J+IOFF+3)
+             TENSOR(2,2) = STORE(J+IOFF+4)
+             TENSOR(3,3) = STORE(J+IOFF+5)
+             TENSOR(2,3) = STORE(J+IOFF+6)
+             TENSOR(1,3) = STORE(J+IOFF+7)
+             TENSOR(1,2) = STORE(J+IOFF+8)
+             TENSOR(3,2) = TENSOR(2,3)
+             TENSOR(3,1) = TENSOR(1,3)
+             TENSOR(2,1) = TENSOR(1,2)
+
+C             WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
+C             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+                     
+             CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
+
+             CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
+C We now have an orthogonal tensor in TENSOR(3,3).
+
+C             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+
+             CALL ZEIGEN(TENSOR,ROTN)
+
+C Filter out tiny axes
+             TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
+             TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
+             TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
+             TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
+             TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
+             TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
+
+             DO 93 KI=1,3
+              DO 94 KJ=1,3
+               AXES(KI,KJ) = ROTN(KJ,KI)*SQRT(ABS(TENSOR(KJ,KJ)))*GSCALE
+94            CONTINUE
+93           CONTINUE
+
+C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+
+C           WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
+
+
+96           FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,2(1X,I6),/,A,9(1X,I6))
+             WRITE ( CMON,96 )
      1       '^^GR ATOM ',
      2       1,  CLAB,
      3       '^^GR ',
@@ -875,8 +922,9 @@ C
      8       NINT(1000*STORE(J+2)), NINT(COV*GSCALE),
      1       '^^GR',
      2       NINT(VDW*GSCALE),1,
-     3       NINT(STORE(J+3)*GSCALE), 0, 0, 0, 0, 0
-             CALL XPRVDU(NCVDU, 3,0)
+     1       '^^GR',
+     3       ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
+             CALL XPRVDU(NCVDU, 4,0)
 C       WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
 C
              J = J + MD5
