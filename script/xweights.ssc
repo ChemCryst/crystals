@@ -1,0 +1,123 @@
+%SCRIPT XWEIGHTS
+% VARIABLE LOGICAL SCRIPTEXT
+A SCRIPT to assist with the weighting of least squares refinement
+%  IF EXISTS 6 .LT. 1 THEN
+ * You have no reflection data stored. You cannot use this script!
+%    FINISH
+%  END IF
+%% FIND OUT IF F OR FSQ REFINEMENT
+%  VARIABLE INTEGER FTYPE
+%  COPY '#GENERALEDIT 23'
+%  COPY 'LOCATE RECORDTYPE=103'
+%  COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
+%  COPY 'END'
+^^WI WINDOW XWEIGHT 'Weighting schemes' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID OUTER NROWS=3 NCOLS=7
+^^WI {
+^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme, or'
+^^WI     @ 2,1 STATIC T1 'Analyse to see the current'
+^^WI     @ 3,1 STATIC T2 'agreement analysis.'
+^^WI   }
+^^WI   @ 2,4 LISTBOX AUTOLIST VISLINES=10 ADDTOLIST
+^^WI         'Unit' 'Statistical' 'Chebychev' 'Optimal' NULL
+^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
+^^WI     @ 3,1 BUTTON BAA '&Analyse'
+^^WI     @ 5,1 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 7,1 BUTTON BHH '&Help'
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%  LOOP
+%    VERIFY BXX BHH BAA BOK
+%    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'
+%    CLEAR
+%    CASE VALUE
+%      BLOCK                            %BXX%
+^^WI       DISPOSE XWEIGHT
+^^CR
+%          FINISH
+%      END BLOCK
+%      BLOCK                            %BHH%
+%          COPY '#SCRIPT XHELP1'
+Analysis of residuals w(Fo - Fc)**2 versus /Fo/
+In the following table, examine the weighted residual
+(headed w(delta)**2, column 3 from the right). Towards
+the end of a refinement, this should be approximately
+constant as a function of Fo (or any other systematic
+ranking). If there is a systematic trend, then there
+is a systematic trend in the data which has not been
+modeled in the structure. You should verify that the
+structure is essentially correct, i.e. not in a false
+minimum. In particular, check columns 2 and 3, sum Fo
+and sum Fc. If, towards the bottom (i.e. strong
+reflections), sum Fo is less than sum Fc, you may need
+to include an isotropic EXTINCTION parameter in the least
+squares. Restore unit weights before starting the
+extinction parameter refinement.
+
+If the parameters you are refining have 'reasonable'
+values, you should attempt to correct the data for this
+trend, or introduce suitable additional parameters to
+the model. See, for example, DIFABS.
+
+If you can do neither of these, then you should modify
+the refinement weights to minimise the problem.
+
+In the absence of specific technical advice, try automatic
+weighting. CRYSTALS  uses different methods for F snd Fsq
+refinement. Choose the scheme which gives a sufficiently
+constant distribution with the minimum number of parameters.
+
+Occasional ranges having a large residual can be ignored in
+routine work.
+%          COPY '#SCRIPT XHELP2'
+%      END BLOCK
+%      BLOCK                                          %BAA%
+%          COPY '#ANALYSE'
+%          COPY 'END'
+%      END BLOCK
+%      BLOCK                                          %BOK%
+^^?? AUTOLIST SELECTED
+%         GET SILENT NOSTORE INTEGER 'Choice number'
+^^WI DISPOSE XWEIGHT
+^^CR
+%         CASE VALUE
+%            BLOCK                                    %UNIT%
+ *   Unit weighting
+%                COPY '#LIST 4'
+%                COPY 'END'
+%                COPY '#ANALYSE'
+%                COPY 'END'
+%                COPY '#PAUSE 5'
+%            END BLOCK
+%            BLOCK                                    %STATISTICAL%
+%                COPY '#SCRIPT STATWT'
+%            END BLOCK
+%            BLOCK                                    %CHEBYCHEV%
+%                IF FTYPE .NE. 0 THEN
+%% Fo refinement
+%                    COPY '#SCRIPT FOPTWT'
+%                ELSE
+%                    COPY '#SCRIPT FSQWT'
+%                END IF
+%            END BLOCK
+%            BLOCK                                    %OPTIMAL%
+%                IF FTYPE .NE. 0 THEN
+%% Fo refinement
+%                    COPY '#SCRIPT FOPTWT'
+%                ELSE
+%                    COPY '#SCRIPT FSQWT'
+%                END IF
+%           END BLOCK
+%         END CASE
+%         FINISH
+%      END BLOCK
+%    END CASE
+%  END LOOP
+%END SCRIPT
