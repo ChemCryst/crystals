@@ -199,7 +199,7 @@ class Table:public MyObject
         std::ostream& outputLine(int pLineNum, std::ostream& pStream, int pColumnCount=8);
         std::ostream& outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnCount=8);
         int getNumPointGroups();	//Needs doing
-        SpaceGroup* getSpaceGroup(int pLineNum, int pPointGroupNum);
+        SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
         Indexs* getConditions(int pRow, int pColumn);
         int numberOfColumns();
         int numberOfRows();
