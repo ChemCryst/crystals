@@ -342,7 +342,7 @@ void ConditionColumn::addRegion(signed char pIndex)
     iRegionConditions->push_back(tIndex);
 }
 
-void ConditionColumn::addCondition(signed char pIndex, int pRow)
+void ConditionColumn::addCondition(signed char pIndex, size_t pRow)
 {
 	if (pRow+1 > iConditions->size())
 	{
@@ -358,7 +358,7 @@ void ConditionColumn::addCondition(signed char pIndex, int pRow)
     }
 }
 
-void ConditionColumn::addEmptyCondition(int pRow)
+void ConditionColumn::addEmptyCondition(size_t pRow)
 {
 	if (pRow+1 > iConditions->size())
 	{
@@ -383,7 +383,7 @@ void ConditionColumn::setRegion(char* pRegion)
     }
 }
 
-int ConditionColumn::getRegion(const int pIndex)
+int ConditionColumn::getRegion(const size_t pIndex)
 {
     return (*iRegionConditions)[pIndex].get();
 }
@@ -403,7 +403,7 @@ int ConditionColumn::length()
     return iConditions->size();
 }
 
-Indexs* ConditionColumn::getConditions(int pIndex)
+Indexs* ConditionColumn::getConditions(size_t pIndex)
 {
     return iConditions->at(pIndex);
 }

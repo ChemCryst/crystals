@@ -118,11 +118,11 @@ class ConditionColumn:virtual public Column
         ~ConditionColumn();
         void addRegion(signed char pIndex);
         void setRegion(char* pRegion);
-        int getRegion(const int pIndex);
+        int getRegion(const size_t pIndex);
         vector<Index>* getRegions();
-        void addCondition(signed char pIndex, int pRow);
-        void addEmptyCondition(int pRow);
-        Indexs* getConditions(int pIndex);
+        void addCondition(signed char pIndex, size_t pRow);
+        void addEmptyCondition(size_t pRow);
+        Indexs* getConditions(size_t pIndex);
         int length();
         int countRegions();
         std::ostream& output(std::ostream& pStream, Regions* pRegions, Conditions* pConditions);
