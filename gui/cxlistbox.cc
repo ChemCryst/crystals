@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2002/07/18 16:57:52  richard
+// Upgrade to use standard c++ library, rather than old C libraries.
+//
 // Revision 1.13  2002/03/05 12:12:58  ckp2
 // Enhancements to listbox for my List 28 project.
 //
@@ -253,6 +256,9 @@ CXONCHAR(CxListBox)
 void CxListBox::CxSetSelection( int select )
 {
    if ( mItems < 1 ) return;
+
+   if ( select < 1 ) select = mItems+select+1;
+
    select = min ( select, mItems );
    select = max ( select, 1 );
 #ifdef __CR_WIN__
