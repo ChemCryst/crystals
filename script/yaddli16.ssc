@@ -38,7 +38,7 @@
 %       END IF
 %  END LOOP
 % 
-%  COPY '#RELEASE SCPQUEUE betacrys.spq'
+%  COPY '#RELEASE SCPQUEUE bfile.spq'
 %  EXTRACT CLOSE
 %  COPY '#USE scplst16a.dat'
 %  COPY '#SUM L 16'

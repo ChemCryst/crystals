@@ -78,7 +78,7 @@ singular with respect to some other parameter.
 %    CLEAR
 %    INSERT '#   '
 %    QUEUE SEND
-%    COPY '#RELEASE SCPQUEUE betacrys.spq'
+%    COPY '#RELEASE SCPQUEUE bfile.spq'
 %    EVALUATE CLINE1 = '#USE LIMIT.C16'
 %    COPY '#SCRIPT YADDLI16'
 
