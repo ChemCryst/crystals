@@ -25,15 +25,8 @@ static float Absent3SSD = 0.00859224f;
 static float Present3SM = 0.63777005f;
 static float Present3SSD = 0.21934966f;
 
-float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD)
+Stats::Stats(Headings* pHeadings, Conditions* pConditions):iHeadings(pHeadings), iConditions(pConditions)
 {
-    return 1-cumlNormal(pX, AbsentM, AbsentSD)-cumlNormal(pX, PresentM, PresentSD);
-}
-
-Stats::Stats(Headings* pHeadings, Conditions* pConditions)
-{
-    iHeadings = pHeadings;
-    iConditions = pConditions;
     iStats = new ElemStats[pHeadings->length()*pConditions->length()];
     bzero((void*)iStats, sizeof(ElemStats)*pHeadings->length()*pConditions->length());
     setShouldDos(pHeadings, pConditions);
@@ -44,6 +37,11 @@ Stats::Stats(Headings* pHeadings, Conditions* pConditions)
 Stats::~Stats()
 {
     delete[] iStats;
+}
+
+float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD)
+{
+    return 1-cumlNormal(pX, AbsentM, AbsentSD)-cumlNormal(pX, PresentM, PresentSD);
 }
 
 void Stats::setShouldDos(Headings* pHeadings, Conditions* pConditions)
@@ -74,10 +72,7 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short
     {
         Matrix<short>* tMultiMat = NULL;
         tMultiMat = iConditions->getMatrix(i);
-        //Matrix<float> tMatrix = (*tMultiMat)*(*pHKLM);
         tMultiMat->mul(*pHKLM, tMatrix);
-      //  cout << tMatrix << "\n";
-//        tMatrix*=(*pHKLM);
         ElemStats* tStats = &(iStats[(pColumn*tCCount)+i]);
         if (((int)tMatrix.getValue(0)) % ((int)iConditions->getMult(i)) != 0)
         {
@@ -170,15 +165,6 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
     }
     return pStream;
 }
- 
-/*std::ostream& outputFloat(std::ostream& pStream, float pValue, int pOtherColumns)
-{
-    if (__isnanf(pValue))
-        pStream << " " << setw(pOtherColumns) << "NaN";
-    else
-        pStream << " " << setw(pOtherColumns) << setprecision (4) << pValue;
-    return pStream;
-}*/
 
 void Stats::outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums,  const int pFirstColumnWidth, const int pOtherColumns)
 {
@@ -379,13 +365,6 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
             outputMatrix(pStream, iHeadings->getMatrix(tHeadings->get(j)->get()));
             pStream << " " << iHeadings->getName(tHeadings->get(j)->get()) << "\n";
         }
-     /*   ArrayList<Index>* tHeads;
-        if (int j = 0; j < tHeads->length(); j++)
-        {
-            pStream << iHeadings->getID(tHeadings->get(i)->get()) << " ";
-            outputMatrix(pStream, iHeadings->getMatrix(tHeadings->get(i)->get()));
-            pStream << " " << iHeadings->getName(tHeadings->get(i)->get()) << "\n";
-        }*/
     }
     pStream << "NTESTS " << tCount << "\n";
     for (int i = 0; i < tCount; i++)
