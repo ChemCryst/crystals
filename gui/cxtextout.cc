@@ -754,11 +754,11 @@ void CxTextOut::OnHScroll( UINT nSBCode,
         break;
     case SB_PAGEDOWN:
         m_nXOffset += clientRc.Width()/2;
-        if( m_nXOffset > m_nMaxWidth ) m_nXOffset = m_nMaxWidth;
+        if( m_nXOffset > nMax ) m_nXOffset = nMax;
         break;
     case SB_LINEDOWN:
         m_nXOffset += m_nAvgCharWidth;
-        if( m_nXOffset > m_nMaxWidth ) m_nXOffset = m_nMaxWidth;
+        if( m_nXOffset > nMax) m_nXOffset = nMax;
         break;
     case SB_THUMBPOSITION:
     case SB_THUMBTRACK:
@@ -956,8 +956,11 @@ void CxTextOut::UpdateHScroll()
     CRect clientRc; GetClientRect( &clientRc );
         int nMax = m_nMaxWidth - clientRc.Width();
     if( nMax <= 0 )
+    {
         m_nXOffset = 0;
-    SetScrollRange( SB_HORZ, 0, m_nMaxWidth  );
+        nMax = 0;
+    }
+    SetScrollRange( SB_HORZ, 0, nMax );
 #endif
 #ifdef __BOTHWX__
     wxSize clientRc = GetClientSize();
@@ -984,6 +987,7 @@ void CxTextOut::UpdateVScroll()
 
 void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, int nY )
 {
+	int lastcol = 0;
 #ifdef __CR_WIN__
     CRect clientRc; GetClientRect( &clientRc );
     SIZE sz;
@@ -1046,7 +1050,11 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
             GetColourCodes( strTemp, &code );
 #ifdef __CR_WIN__
             if( code.nFore != -1 ) pDC->SetTextColor( m_ColTable[ code.nFore ] );
-            if( code.nBack != -1 ) pDC->SetBkColor( m_ColTable[ code.nBack ] );
+            if( code.nBack != -1 )
+            {
+              pDC->SetBkColor( m_ColTable[ code.nBack ] );
+              lastcol = code.nBack;
+            }
 #endif
 #ifdef __BOTHWX__
             if( code.nFore != -1 )
@@ -1089,7 +1097,7 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
 
 #ifdef __CR_WIN__
             CRect solidRc( nX, nY, clientRc.right, nY + m_nFontHeight );
-            pDC->FillSolidRect( &solidRc, m_BackCol );
+            pDC->FillSolidRect( &solidRc, m_ColTable[ lastcol ]);
 #endif
 #ifdef __BOTHWX__
             m_brush->SetColour( m_BackCol );
