@@ -27,8 +27,6 @@
 CrModel::CrModel( CrGUIElement * mParentPtr )
  :     CrGUIElement( mParentPtr )
 {
-	mWidgetPtr = CxModel::CreateCxModel( this,
-								(CxGrid *)(mParentPtr->GetWidget()) );
 	mTabStop = true;
 	mXCanResize = true;
 	mYCanResize = true;
@@ -37,6 +35,8 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
 	popupMenu2 = nil;
 	popupMenu3 = nil;
 	m_AtomSelectAction = CR_SELECT;
+	mWidgetPtr = CxModel::CreateCxModel( this,
+								(CxGrid *)(mParentPtr->GetWidget()) );
 
 }
 
