@@ -21,7 +21,7 @@
 ^^WI SENDTEXTTO XTIPTEXT
 ^^CR
 % LOOP
-%  EVALUATE NTIPS = 25
+%  EVALUATE NTIPS = 27
 ^^CO  GETKEY TIP#
 %  GET SILENT NOSTORE FINAL INTEGER '1' '1'
 %  EVALUATE CTIP = VALUE
@@ -31,7 +31,7 @@ Did you know?
 To automatically renumber atoms so that adjacent atoms
 have adjacent serial numbers, type:
 #REGROUP
-SELECT SEQUENCE=YES
+SELECT TYPE=ALL SEQUENCE=YES
 END
 %   END BLOCK
 %   BLOCK     %TIP2%
@@ -162,12 +162,16 @@ Use
 #LIST 28
 MINIMA RATIO=n
 END
-to set the threshold ratio for 'unobserved' reflections.
+to set the threshold ratio I/sigma(I) for 'unobserved' reflections.
 %   END BLOCK
 %   BLOCK     %TIP20%
 Order the atoms in the atom list so that atoms which
 need to be addressed together are adjacent in the list.
 You can then use an 'UNTIL' sequence to refer to them.
+These commands contain facilities to help with this:
+#COLLECT
+#REGROUP
+#EDIT
 %   END BLOCK
 %   BLOCK     %TIP21%
 If you have multiple similar fragments (e.g. phenyl
@@ -226,6 +230,11 @@ for hydrogens in hydrogen bonds), but to delete them and
 recompute ideal positions after every 2 or 3 cycles. Put
 the instructions to delete and create the H atoms in a
 file, which can be #USEd as required.
+PERHYDRO also creates a pro-forma files for hydrogen re-
+placement and refinement - 
+RIDEH.DAT
+PERH.DAT
+If you edit these for future use, remember to also change their name.
 %   END BLOCK
 %   BLOCK     %TIP24%
 Refinements of highly correlated parameters or ones ill-defined
@@ -244,7 +253,35 @@ in your structure:
 1) Select the atoms to define a plane. (Click each once)
 2) Right click one of the selected atoms for a context-menu.
 3) Choose 'Slant Fourier Map'
+%   END BLOCK
+%   BLOCK     %TIP26%
+If the R factor is sticking at a high value, Use DIFABS in
+analyse mode. (Click Analyse, DIFABS)
+The map shows a functio of the ratio Fo/Fc as a function of
+Crystal orientation. If thre are high peaks or troughs, there 
+may be something wrong with the data, e.g.
+Absorption
+Anisotropic extinction
+Crystal not centred
+Crystal badly mounted
+Crystal damaged
+%   END BLOCK
+%   BLOCK     %TIP27%
+For large structures, the time taken to update the model window 
+may be excessive. It can be inhibited by creating a 
+      CRYSINIT.DAT
+file in the current directory. This file can contain anything
+you wish to execute every time you start CRYSTALS on that 
+compound - e.g.
 
+#set autoupdate off
+#set export on
+#set watch 5
+#set lists both
+
+Note: #set autoupdate on/off can be issued at any time CRYSTALS
+is running. The autoupdate flag is not used by #DISPLAY, which
+always updates the model.
 %   END BLOCK
 %  END CASE
 %  EVALUATE CTIP = CTIP + 1
