@@ -30,15 +30,19 @@ CrTextOut::~CrTextOut()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxTextOut*)ptr_to_cxObject;
+        ((CxTextOut*)ptr_to_cxObject)->DestroyWindow(); delete (CxTextOut*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
       mControllerPtr->RemoveTextOutputPlace(this);
 }
 
-Boolean CrTextOut::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrTextOut,CxTextOut)
+CRGETGEOMETRY(CrTextOut,CxTextOut)
+CRCALCLAYOUT(CrTextOut,CxTextOut)
+
+CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -125,30 +129,6 @@ void CrTextOut::SetText ( CcString cText )
                    ((CxTextOut*)ptr_to_cxObject)->SetText(cText);
 }
 
-void CrTextOut::SetGeometry( const CcRect * rect )
-{
-    ((CxTextOut*)ptr_to_cxObject)->SetGeometry(  rect->mTop,
-                                                rect->mLeft,
-                                                rect->mBottom,
-                                                rect->mRight );
-}
-
-CcRect CrTextOut::GetGeometry ()
-{
-    CcRect retVal(
-            ((CxTextOut*)ptr_to_cxObject)->GetTop(),
-            ((CxTextOut*)ptr_to_cxObject)->GetLeft(),
-            ((CxTextOut*)ptr_to_cxObject)->GetTop()+((CxTextOut*)ptr_to_cxObject)->GetHeight(),
-            ((CxTextOut*)ptr_to_cxObject)->GetLeft()+((CxTextOut*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-
-void CrTextOut::CalcLayout()
-{
-    int w = int( mWidthFactor * (float)((CxTextOut*)ptr_to_cxObject)->GetIdealWidth() );
-    int h = int( mHeightFactor* (float)((CxTextOut*)ptr_to_cxObject)->GetIdealHeight() );
-    ((CxTextOut*)ptr_to_cxObject)->SetGeometry(-1,-1,h,w);
-}
 
 int CrTextOut::GetIdealWidth()
 {
@@ -164,13 +144,7 @@ void CrTextOut::CrFocus()
     ((CxTextOut*)ptr_to_cxObject)->Focus();
 }
 
-void CrTextOut::SetOriginalSizes()
-{
-      ((CxTextOut*)ptr_to_cxObject)->SetOriginalSizes();
-      return;
-}
-
 void CrTextOut::ProcessLink( CcString aString )
 {
-      SendCommand("$start " + aString,TRUE);
+      SendCommand("$ " + aString,TRUE);
 }
