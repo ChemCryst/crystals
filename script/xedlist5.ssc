@@ -79,6 +79,7 @@ Current atom list backed up as EDATOMS.BAK
 Atoms deleted.
 %  END IF
 %  COPY '#EDIT'
+%  COPY 'GUI LOW'
 ^^WI SENDTEXTTO TEXT5
 ^^CR
 EOFXXX
