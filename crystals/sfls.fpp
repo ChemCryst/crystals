@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2002/12/04 14:31:11  rich
+C Reformat output during refinement.
+C
+C Allow punching to MATLAB files, including restraints.
+C
+C Tidy some routines.
+C
 C Revision 1.26  2002/10/31 13:27:53  rich
 C
 C Two changes: Default I/u(I) cutoff is now 2.0 when called from RESULTS.
@@ -314,7 +321,6 @@ C--THIS U[ISO] VALUE IS OUT OF RANGE
           CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0)
      1    WRITE(NCWU, '(A)') CMON(1)(:)
-          WRITE(NCAWU, '(A)') CMON(1)(:)
 3120  FORMAT(/, ' Atom ', A4, I5, ' has U-iso too small, ', F8.4)
 C          A=AMIN1(A,STORE(M5+3))
           A=AMIN1(A,STORE(M5+7))
@@ -329,7 +335,6 @@ C-C-C-CHECK OF SIZE FOR ALL SPECIAL FIGURES
           IF (ISSPRT .EQ. 0) THEN
            WRITE(NCWU, 3130) STORE(M5),NINT(STORE(M5+1)),STORE(M5+8)
           ENDIF
-          WRITE(NCAWU, 3130) STORE(M5),NINT(STORE(M5+1)),STORE(M5+8)
 3130      FORMAT(/,' Spec.Fig. ',A4,I5,' has SIZE too small:',F8.4,/,
      2           31X,'Reset to:  0.001',/,
      3           21X,'(in LIST 5 only in case of refinement !)')
@@ -345,7 +350,6 @@ C-C-C-OF ANGLES IS ALWAYS IN UNITS OF 100 DEGREES.)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU, 3140) STORE(M5),NINT(STORE(M5+1)),STORE(M5+9)
            ENDIF
-           WRITE(NCAWU, 3140) STORE(M5),NINT(STORE(M5+1)),STORE(M5+9)
 3140       FORMAT(/,' Line/Ring ',A4,I5,' has DECLINAT probably',
      2       ' given in degrees: ', F8.4,/,
      3       21X,'Value devided by 100 to get units of 100 degrees',/,
@@ -369,7 +373,6 @@ C-C-C-PRINT WARNING, GIVE AZIMUTH ARBITRARY VALUE
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU, 3145) STORE(M5),NINT(STORE(M5+1))
            ENDIF
-           WRITE(NCAWU, 3145) STORE(M5),NINT(STORE(M5+1))
 3145       FORMAT(/,' Line/Ring ',A4,I5,' has DECLINAT = n*180.0 deg.',
      2            /,21X,'==> AZIMUTH is not defined !!!',
      3            /,    ' It is reset to an arbitrary value (0.0)',
@@ -386,7 +389,6 @@ C-C-C-OF ANGLES IS ALWAYS IN UNITS OF 100 DEGREES.)
             IF (ISSPRT .EQ. 0) THEN
              WRITE(NCWU, 3150) STORE(M5),NINT(STORE(M5+1)),STORE(M5+10)
             ENDIF
-            WRITE(NCAWU, 3150) STORE(M5),NINT(STORE(M5+1)),STORE(M5+10)
 3150        FORMAT(/,' Line/Ring ',A4,I5,' has AZIMUTH  probably',
      2        ' given in degrees: ', F8.4,/,
      3        21X,'Value devided by 100 to get units of 100 degrees',/,
@@ -412,7 +414,6 @@ C--CHECK IF THE T.F.'S ARE ALL OKAY
       IF (N .NE. 0) THEN
 C -- INVALID TEMPERATURE FACTOR
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 ) N , UMIN , A
-      WRITE(NCAWU,9935) N, UMIN, A
 9935  FORMAT ( 1X , I6 , ' temperature factors less ' ,
      1 'than the lowest allowed value of ' , F10.5 ,
      2 /1X,' The minimum value  was ', F10.5)
@@ -424,7 +425,6 @@ C -- INVALID TEMPERATURE FACTOR
       WRITE ( CMON, 3320) STORE(L5O+4)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
 3320  FORMAT(1X,'Enantiopole parameter out of range. (',F6.3,' ) ')
 C      STORE(L5O+4) = MAX (STORE(L5O+4), 0.0)
 3340  CONTINUE
@@ -432,8 +432,7 @@ CDJWFEB00
       IF (STORE(L5O+5) .LT. -ZERO) THEN
       WRITE ( CMON, 3345) STORE(L5O+5)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0)  WRITE(NCAWU, '(A)') CMON(1)(:)
-      WRITE(NCAWU, '(A)') CMON(1)(:)
+      WRITE(NCWU, '(A)') CMON(1)(:)
 3345  FORMAT(1X,'Extinction parameter out of range. (',F6.3,' ) ')
       STORE(L5O+5) = -ZERO
       ENDIF
@@ -461,7 +460,6 @@ C--CHECK THAT THE SCALE FACTOR GIVEN IS NOT ZERO
       IF (SCALE .LE. 0.000001) THEN
 C--SCALE FACTOR IS UNREASONABLE  -  RESET IT TO 1.0
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1420)
-        WRITE(NCAWU,1420)
         WRITE ( CMON, 1420)
         CALL XPRVDU(NCVDU, 1,0)
 1420  FORMAT(10X,' The overall scale factor has been set to 1.0' )
@@ -535,7 +533,6 @@ C--CHECK IF WE ARE UPDATING THE PARTIAL DERIVATIVES
      1       'It is unwise to refine extinction for twinned data'
              CALL XPRVDU(NCVDU, 1,0)
              IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-             WRITE(NCAWU,'(A)') CMON(1)
              CALL OUTCOL(1)
 cdjw0302 - allow twin with extparam:  NA=-1
            END IF
@@ -563,7 +560,6 @@ C--SET UP THE VALUES
            K=L5ES
            DO I=1,MD5ES
              IF (STORE(K) .LT. 0) THEN
-               WRITE(NCAWU,2301) I,STORE(K)
                IF (ISSPRT .EQ. 0) WRITE(NCWU,2301) I, STORE(K)
                WRITE ( CMON, 2301)  I, STORE(K)
                CALL XPRVDU(NCVDU, 1,0)
@@ -925,7 +921,6 @@ C -- ERRORS
 9910  CONTINUE
 C -- NUMBERS DON'T MATCH
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-      WRITE ( NCAWU , 9915 )
       WRITE ( CMON, 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'The number of elements in lists 5 and 25 is' ,
@@ -935,7 +930,6 @@ C -- NUMBERS DON'T MATCH
 9920  CONTINUE
 C -- NOTHING TO REFINE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
-      WRITE ( NCAWU , 9925 )
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X , 'List 12 indicates that no parameters ' ,
@@ -944,7 +938,6 @@ C -- NOTHING TO REFINE
       GO TO 9900
 9940  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9945 )
-      WRITE ( NCAWU , 9945 )
       WRITE ( CMON, 9945 )
       CALL XPRVDU(NCVDU, 1,0)
 9945  FORMAT(1X ,'LIST 5 contains no atoms')
@@ -2719,7 +2712,6 @@ C
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 5850  CONTINUE
       IF (NT .LE. 0) THEN
-      WRITE(NCAWU,5851)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,5851)
       WRITE ( CMON, 5851)
       CALL XPRVDU(NCVDU, 1,0)
@@ -2770,11 +2762,9 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
      2    ' Rt = 100x abs(F+ - F-)/<F+,F-> ')
           WRITE ( CMON, 6110) IENPRT
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU, '(A)') CMON(1)(:)
           WRITE(CMON,6111)
 6111      FORMAT
      1    (2('   h   k   l    F+     Fo     F-     Rt  '))
-          WRITE(NCAWU, '(A)') CMON(1)(:)
           CALL XPRVDU(NCVDU, 1,0)
           DO 12 MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
           WRITE ( CMON,
@@ -2783,7 +2773,6 @@ C----- ENATIOMER SENSITIVE REFLECTIONS
      2 (STORE(IXAP), IXAP= JXAP+3,JXAP+5), STORE(JXAP+6),
      3 JXAP= MENAN, MENAN+MDENAN, MDENAN)
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU, '(A)') CMON(1)(:)
 12    CONTINUE
       ENDIF
 C
@@ -2821,10 +2810,10 @@ C
 C
 6150  FORMAT(/,' New scale factor (G) is ',F10.5,
      1 ',  ',I6,' reflections used in refinement')
-      WRITE ( NCAWU, 6253) JI
-      WRITE ( NCAWU, 6254)
-      WRITE ( NCAWU, 6256) R,RW,A,S,T
-      WRITE ( NCAWU,6257)
+      WRITE ( NCWU, 6253) JI
+      WRITE ( NCWU, 6254)
+      WRITE ( NCWU, 6256) R,RW,A,S,T
+      WRITE ( NCWU, 6257)
      2 FOT,FCT,DFT,AMINF,STORE(L5O),NT
 6253  FORMAT(' Results of structure factor calculation ',I5)
 6254  FORMAT(' R-value Weighted-R  Sum /FO/  ',
@@ -3030,7 +3019,6 @@ C -- ERRORS
 19910 CONTINUE
 C -- INCORRECT ELEMENT NUMBER
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 19915 ) JX , PH , PK , PL
-      WRITE ( NCAWU , 19915 ) JX , PH , PK , PL
       WRITE ( CMON, 19915) JX , PH , PK , PL
       CALL XPRVDU(NCVDU, 1,0)
 19915 FORMAT ( 1X , I5 , ' is an incorrect element number for ' ,
@@ -3041,7 +3029,6 @@ C
 19920 CONTINUE
 C -- TOO MANY ELEMENTS
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 19925 ) PH , PK , PL
-      WRITE ( NCAWU , 19925 ) PH , PK , PL
       WRITE ( CMON , 19925 ) PH , PK , PL
       CALL XPRVDU(NCVDU, 1,0)
 19925 FORMAT ( 1X , 'Too many elements given for reflection ', 3F5.0 )
@@ -3050,7 +3037,6 @@ C -- TOO MANY ELEMENTS
 C
 19930 CONTINUE
 C------ SIGMA W*FO*FO .LE. ZERO ---- SUGGESTS PROBABLY NO WEIGHTS
-      WRITE(NCAWU,19935)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,19935)
       WRITE ( CMON, 19935)
       CALL XPRVDU(NCVDU, 2,0)
@@ -3062,7 +3048,6 @@ C------ SIGMA W*FO*FO .LE. ZERO ---- SUGGESTS PROBABLY NO WEIGHTS
 C
 19940 CONTINUE
 C------ SIGMA FO .LE. ZERO ---- SUGGESTS PROBABLY NO CALCULATION
-      WRITE(NCAWU,19945)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,19945)
       WRITE ( CMON, 19945)
       CALL XPRVDU(NCVDU, 2,0)
@@ -3119,8 +3104,6 @@ C--ILLEGAL LAYER SCALE VALUE
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,1200)NINT(STORE(M6)),NINT(STORE(M6+1)),
      2 NINT(STORE(M6+2)),I
-       WRITE(NCAWU,1200)NINT(STORE(M6)),NINT(STORE(M6+1)),
-     2 NINT(STORE(M6+2)),I
        WRITE(CMON,1200)NINT(STORE(M6)),NINT(STORE(M6+1)),
      2 NINT(STORE(M6+2)),I
       CALL XPRVDU(NCVDU, 1,0)
@@ -3176,8 +3159,6 @@ C--ILLEGAL BATCH SCALE VALUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,1100)NINT(STORE(M6)),NINT(STORE(M6+1)),
-     2 NINT(STORE(M6+2)),I
-       WRITE(NCAWU,1100)NINT(STORE(M6)),NINT(STORE(M6+1)),
      2 NINT(STORE(M6+2)),I
        WRITE(CMON,1100)NINT(STORE(M6)),NINT(STORE(M6+1)),
      2 NINT(STORE(M6+2)),I

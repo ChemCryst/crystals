@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/09/28 10:51:32  ckp2
+C New date format when printing lists.
+C
 C Revision 1.10  2001/09/11 16:27:51  Administrator
 C Show record sizes in #disk checkdisk
 C
@@ -201,10 +204,7 @@ C -- COMMAND INPUT ERRORS
       GO TO 9900
 9920  CONTINUE
 C -- SINGULAR MATRIX
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) I , IULN
-      ENDIF
-      WRITE ( NCAWU , 9925 ) I , IULN
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 ) I , IULN
       WRITE ( CMON, 9925 ) I , IULN
       CALL XPRVDU(NCEROR, 1,0)
 9925  FORMAT ( 1X, 'Matrix ' , I2 , ' in list ' , I3 , ' is singular' )
@@ -290,7 +290,6 @@ C--NO MATCH  -  PRINT THE RECORD NAME ONLY
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1450)IBUFF(7),IBUFF(5),IBUFF(6)
       ENDIF
-      WRITE(NCAWU,1450) IBUFF(7),IBUFF(5),IBUFF(6)
       WRITE ( CMON, 1450) IBUFF(7),IBUFF(5),IBUFF(6)
       CALL XPRVDU(NCEROR, 1,0)
 1450  FORMAT(' No details available for record ',I5,'  LGRP ',I4,
@@ -410,10 +409,7 @@ C--DATA NOT IN CORE  -  CHECK THAT THE DISC ADDRESS IS VALID
       IF(LLN)2650,2650,2750
 C--DATA NOT ON DISC
 2650  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2700)
-      ENDIF
-       WRITE(NCAWU,2700)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2700)
       WRITE ( CMON, 2700)
       CALL XPRVDU(NCEROR, 1,0)
 2700  FORMAT(' Data is not on disc')
@@ -913,13 +909,11 @@ C--NOT THE FIRST CARD
       CALL XCTRIM (CLINE, NCHARS)
       KK = MIN0 ( 78, NCHARS)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:KK)
-         WRITE ( NCAWU, '(1X,A)') CLINE(1:KK)
          WRITE ( CMON, '(1X,A)') CLINE(1:KK)
          CALL XPRVDU(NCVDU, 1,0)
       IF (NCHARS .GE. 79) THEN
        KK = KK + 1
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(9X,A)')  CLINE(KK:NCHARS)
-          WRITE ( NCAWU, '(9X,A)') CLINE(KK:NCHARS)
           WRITE ( CMON, '(9X,A)') CLINE(KK:NCHARS)
           CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -1036,10 +1030,7 @@ C--RESET THE UPPER CORE LIMIT
 C
 9900  CONTINUE
 C -- ERRORS
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9905 ) IULN , ISTORE(MR61+11)
-      ENDIF
-      WRITE ( NCAWU , 9905 ) IULN , ISTORE(MR61+11)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) IULN , ISTORE(MR61+11)
       WRITE ( CMON, 9905 ) IULN , ISTORE(MR61+11)
       CALL XPRVDU(NCEROR, 1,0)
 9905  FORMAT ( 1X , 'Error while creating list type ' , I3 ,
@@ -1136,10 +1127,7 @@ C--ERROR DURING PROCESSING OF THE NEW TITLE
 1150  CONTINUE
       CALL XMONTR(0)
       CALL XERHDR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1200)
-      ENDIF
-      WRITE ( NCAWU , 1200 )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
       WRITE ( CMON, 1200 )
       CALL XPRVDU(NCEROR, 1,0)
 1200  FORMAT ( 1X, 'Illegal TITLE card. A new title must be specified')
@@ -1307,10 +1295,7 @@ C -- ADD REQUIRED EXTRA RECORDS TO FILE
 C -- CALCULATE THE NUMBER OF WORDS THAT HAVE BEEN ADDED TO THE FILE
       IWORDS = IADD * NWDRCI
 C -- WRITE A MESSAGE TO INFORM THE USER
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1877 ) IADD , IWORDS
-      ENDIF
-      WRITE ( NCAWU , 1877 ) IADD , IWORDS
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1877 ) IADD , IWORDS
 1877  FORMAT ( 1X,'Disc file extended by ',I3, ' record(s)' ,
      1 ' ( ' , I6 , ' integer words ) ' )
       GO TO 4000
@@ -1359,8 +1344,6 @@ C
       WRITE ( NCWU , 2815 ) ITYPE , ISER , MINLST , MAXLST
      1 ,MAXLST-MINLST+1
       ENDIF
-      WRITE ( NCAWU , 2815 ) ITYPE , ISER , MINLST , MAXLST
-     1 ,MAXLST-MINLST+1
 2815  FORMAT ( 1X , 'List type ' , I3 , ' serial ' , I3 ,
      2 ' uses from ' , I10 , ' to ' , I10, I10 )
 2817  CONTINUE
@@ -1389,8 +1372,6 @@ C
       WRITE ( NCWU , 2825 ) IRECNM , ISTART , IEND
      1 ,IEND-ISTART+1
       ENDIF
-      WRITE ( NCAWU , 2825 ) IRECNM , ISTART , IEND
-     1 ,IEND-ISTART+1
 2825  FORMAT ( 1X , 'Record type ' , I5 , '  Data from ' , I10 ,
      2 ' to ' , I10, I10 )
 2827  CONTINUE
@@ -1403,7 +1384,6 @@ C
 2890  CONTINUE
       NLSTER = NLSTER + 1
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2891 )ITYPE,ISER
-      WRITE ( NCAWU , 2891 )ITYPE,ISER
       WRITE ( CMON, 2891 )ITYPE,ISER
       CALL XPRVDU(NCVDU, 1,0)
 2891  FORMAT (1X,'List',I3,' Serial',I6,
@@ -1412,7 +1392,6 @@ C
 2892  CONTINUE
       NLSTER = NLSTER + 1
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2893 )ITYPE,ISER
-      WRITE ( NCAWU , 2893 )ITYPE,ISER
       WRITE ( CMON, 2893 )ITYPE,ISER
       CALL XPRVDU(NCVDU, 1,0)
 2893  FORMAT (1X,'List',I3,' Serial',I6,
@@ -1421,7 +1400,6 @@ C
 2894  CONTINUE
       NLSTER = NLSTER + 1
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2895 )ITYPE,ISER
-      WRITE ( NCAWU , 2895 )ITYPE,ISER
       WRITE ( CMON, 2895 )ITYPE,ISER
       CALL XPRVDU(NCVDU, 1,0)
 2895  FORMAT (1X, 'List',I3,' Serial',I6,
@@ -1433,7 +1411,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2885 )
       ENDIF
-      WRITE ( NCAWU , 2885 )
       WRITE ( CMON, 2885 )
       CALL XPRVDU(NCVDU, 1,0)
 2885  FORMAT ( 1X , 'List scan complete' )
@@ -1443,7 +1420,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2887 ) NLISTS , NRCRDS  , NLSTER
       ENDIF
-      WRITE ( NCAWU , 2887 ) NLISTS , NRCRDS  , NLSTER
       WRITE ( CMON, 2887 ) NLISTS , NRCRDS  , NLSTER
       CALL XPRVDU(NCVDU, 1,0)
 2887  FORMAT ( 1X , I5 , ' list(s) containing ' , I5 ,
@@ -1466,7 +1442,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2200 )
       ENDIF
-      WRITE ( NCAWU , 2200 )
       WRITE ( CMON, 2200 )
       CALL XPRVDU(NCEROR, 1,0)
 2200  FORMAT ( 1X , 'Disc control error(s). Processing abandoned' )
@@ -1479,7 +1454,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9905 ) IRECS
       ENDIF
-      WRITE ( NCAWU , 9905 ) IRECS
       WRITE ( CMON, 9905 ) IRECS
       CALL XPRVDU(NCEROR, 1,0)
 9905  FORMAT ( 1X,I5 , ' is an invalid number of records for EXTEND' )
@@ -1492,7 +1466,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9935 )
       ENDIF
-      WRITE ( NCAWU , 9935 )
       WRITE ( CMON, 9935 )
       CALL XPRVDU(NCEROR, 1,0)
 9935  FORMAT ( 1X , 'Continuation cards are not allowed for this' ,
@@ -1597,7 +1570,6 @@ C----- REMOVE ANY '.'
        CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
        WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
        CALL XPRVDU(NCEROR, 1,0)
-       WRITE(NCAWU,'(A)') CMON(1)(:)
        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
 CDJWAPR99}
       ENDIF
@@ -1737,7 +1709,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1732 ) LSTLEN
       ENDIF
-      WRITE ( NCAWU , 1732 ) LSTLEN
 1732  FORMAT ( 1X , 'The space required for the lists to be saved is ',
      2 I5 , ' record(s)' )
 C
@@ -1745,10 +1716,7 @@ C
       IEXTND = MAX0 ( IEXTND , LSTLEN )
       CALL XDAXTN ( NUNEW , -1 , IEXTND )
 C --
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1735 ) IEXTND
-      ENDIF
-      WRITE ( NCAWU , 1735 ) IEXTND
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1735 ) IEXTND
 1735  FORMAT ( 1X , 'The new file has been extended by ' , I5 ,
      1 ' record(s)' )
 C --
@@ -1907,7 +1875,6 @@ C -- INPUT ERRORS
 CDJWAPR99
       WRITE(CMON,'(A)') 'Filename limited to 16 characters'
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
       CALL XOPMSG ( IOPPUR , IOPCMI , 0 )
       GO TO 9900
@@ -2065,7 +2032,6 @@ C
 2010  CONTINUE
 C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2015 )
-      WRITE ( NCAWU , 2015 )
       WRITE ( CMON, 2015)
       CALL XPRVDU(NCEROR, 2,0)
 2015  FORMAT ( 1X , 'An initial size has been requested even though ',
@@ -2075,10 +2041,7 @@ C
       GO TO 8000
 C
 2020  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2025 ) IPARAM
-      ENDIF
-      WRITE ( NCAWU , 2025 ) IPARAM
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2025 ) IPARAM
       WRITE ( CMON, 2025 ) IPARAM
       CALL XPRVDU(NCEROR, 1,0)
 2025  FORMAT ( 1X , 'An illegal initial size of ' , I8 ,
@@ -2104,7 +2067,6 @@ C
 2053  FORMAT ( 1X , 'List type  ' , I3 , '  serial number ' , I4 ,
      2 ' from ' , I8 , ' to ' , I8 ,
      3 ' will not be copied ' , A )
-      WRITE ( NCAWU , 2055 ) IULN , IULSN , REASON(IREASN)
       WRITE ( CMON, 2055 ) IULN , IULSN , REASON(IREASN)
       CALL XPRVDU(NCEROR, 1,0)
 2055  FORMAT ( 1X , 'List type ' , I3 , ' serial number ' , I4 ,
@@ -2121,10 +2083,7 @@ C
 C
 2110  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2115 ) FILNAM
-      ENDIF
-      WRITE ( NCAWU , 2115 ) FILNAM
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2115 ) FILNAM
       WRITE ( CMON, 2115 ) FILNAM
       CALL XPRVDU(NCVDU, 1,0)
 2115  FORMAT ( 1X , 'Disc index completely restored' , // ,
@@ -2133,10 +2092,7 @@ C
 C
 2120  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1750 ) FILNAM
-      ENDIF
-      WRITE ( NCAWU , 1750 ) FILNAM
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1750 ) FILNAM
       WRITE ( CMON, 1750 ) FILNAM
       CALL XPRVDU(NCEROR, 2,0)
 1750  FORMAT (' The ' , A10 , ' file is being rebuilt -'
@@ -2144,10 +2100,7 @@ C
       GO TO 8000
 C
 2130  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2135 )
-      ENDIF
-      WRITE ( NCAWU , 2135 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2135 )
       WRITE ( CMON, 2135 )
       CALL XPRVDU(NCEROR, 1,0)
 2135  FORMAT ( 1X , 'The new disc index has been re-written ')
@@ -2161,10 +2114,7 @@ C
 C
 C
 9910  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 ) MSGNUM
-      ENDIF
-      WRITE ( NCAWU , 9915 ) MSGNUM
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) MSGNUM
       WRITE ( CMON, 9915 ) MSGNUM
       CALL XPRVDU(NCEROR, 1,0)
 9915  FORMAT ( 1X , 'Illegal or unexpected message code ' , I8 )
@@ -2345,7 +2295,6 @@ C
 C -- 'CHECKDISC' DIRECTIVE
 C    CHECK THE INTEGRITY OF THE DISC STRUCTURE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2891 )
-      WRITE ( NCAWU , 2891 )
       WRITE ( CMON, 2891 )
       CALL XPRVDU(NCVDU, 1,0)
 2891  FORMAT (1X,' Now a function in #DISK')
@@ -2359,7 +2308,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2915 ) KTITL
       ENDIF
-      WRITE ( NCAWU , 2915 ) KTITL
       WRITE ( CMON, 2915 ) KTITL
       CALL XPRVDU(NCVDU, 1,0)
 2915  FORMAT ( / , 1X , 'Data file is :- ' , / , 1X , 20A4 , // )
@@ -2387,7 +2335,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3015 ) ( ISTORE(I) , I = ITMPBF , IENDBF )
       ENDIF
-      WRITE ( NCAWU , 3015 ) ( ISTORE(I) , I = ITMPBF , IENDBF )
       WRITE ( CMON, 3015 ) ( ISTORE(I) , I = ITMPBF , IENDBF )
       CALL XPRVDU(NCVDU, 1,0)
 3015  FORMAT ( 1X , 8I10 )
@@ -2396,7 +2343,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3025 ) ( STORE(I) , I = ITMPBF , IENDBF )
       ENDIF
-      WRITE ( NCAWU , 3025 ) ( STORE(I) , I = ITMPBF , IENDBF )
       WRITE ( CMON, 3025 ) ( STORE(I) , I = ITMPBF , IENDBF )
       CALL XPRVDU(NCVDU, 1,0)
 3025  FORMAT ( 1X , 8F10.4 )
@@ -2405,7 +2351,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3035 ) ( STORE(I) , I = ITMPBF , IENDBF )
       ENDIF
-      WRITE ( NCAWU , 3035 ) ( STORE(I) , I = ITMPBF , IENDBF )
       WRITE ( CMON, 3035 ) ( STORE(I) , I = ITMPBF , IENDBF )
       CALL XPRVDU(NCVDU, 1,0)
 3035  FORMAT ( 1X , 16A4 )
@@ -2416,7 +2361,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3045 ) ( DSTORE(I) , I = IDBLBF , IDBEND )
       ENDIF
-      WRITE ( NCAWU , 3045 ) ( DSTORE(I) , I = IDBLBF , IDBEND )
       WRITE ( CMON, 3045 ) ( DSTORE(I) , I = IDBLBF , IDBEND )
       CALL XPRVDU(NCVDU, 1,0)
 3045  FORMAT ( 1X , 8F10.4 )
@@ -2483,10 +2427,7 @@ C
       CALL XOPMSG ( IOPSIM , IOPCMI , 0 )
       GO TO 9900
 9930  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 )
-      ENDIF
-      WRITE ( NCAWU , 9935 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
       WRITE ( CMON, 9935 )
       CALL XPRVDU(NCVDU, 1,0)
 9935  FORMAT ( 1X , 'CONTINUE is not allowed in SIMULATE' )
@@ -2641,10 +2582,7 @@ C--PRINT THE LIST TYPE AND DETAILS
 C
 9900  CONTINUE
 C -- ERRORS
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9905 ) LN
-      ENDIF
-      WRITE ( NCAWU , 9905 ) LN
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) LN
       WRITE ( CMON, 9905 ) LN
       CALL XPRVDU(NCEROR, 1,0)
 9905  FORMAT ( 1X, 'List type ' ,I5, ' is not available for printing' )
@@ -2713,10 +2651,7 @@ C
 \XSSVAL
 \XIOBUF
 C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)
-      ENDIF
-      WRITE(NCAWU,1000)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)
       WRITE ( CMON, 1000)
       CALL XPRVDU(NCEROR, 1,0)
 1000  FORMAT(' Insufficient core available')
