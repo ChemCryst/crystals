@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2001/06/18 13:36:08  richard
+C Replace explicit 131072 with ISIZST from /XSIZES/
+C
 C Revision 1.4  2000/12/08 16:02:33  richard
 C RIC: Modify generaledit so that it can be passed a record length, in
 C order to copy data in long text strings into list records.
@@ -38,6 +41,7 @@ C
 \XOPVAL
 \XIOBUF
 \XSIZES
+\UFILE
 C
 \QSTORE
 C
@@ -75,6 +79,12 @@ C
       MDATA = 0
       NMAX = 0
 C
+C Turn logging off, temporarily, as logged GENERALEDITS are worse
+C than useless.
+
+      INLOG = IRDLOG(IFLIND)
+      IRDLOG(IFLIND) = 0
+      WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
 C
 C
 C -- ENSURE THAT THE ALL THE DIRECTIVES APPEAR TO HAVE BEEN READ ONCE
@@ -356,6 +366,7 @@ C
 C
 3000  CONTINUE
 C -- 'WRITE' DIRECTIVE
+      WRITE(NCLU,'(A)')'# This list was updated during this generaledit'
       IOWF = 0
       INEW = 1
       CALL XWLSTD ( ILTYPE , ISTORE(ILSTCM) , LLSTCM , IOWF , INEW )
@@ -575,6 +586,9 @@ C
 C
 C -- RELEASE RESOURCES
       CALL XSTRLL ( ICOMBL )
+
+      WRITE(NCLU,'(A)')'END'
+      IRDLOG(IFLIND) = INLOG
 C
 C -- FINAL MESSAGE
       CALL XOPMSG ( IOPDSP , IOPEND , IVERSN )
