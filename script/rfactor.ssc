@@ -6,7 +6,7 @@
 %      EVALUATE RATIO = 100.
 %      VARIABLE CHARACTER CR CR2
 %      VARIABLE REAL  FO FC
-%      VARIABLE LOGICAL ERROR6 
+%      VARIABLE LOGICAL ERROR6
 %      EVALUATE ERROR6 = TRUE
 %      ON END TERMINATE
 %      ON ERROR TERMINATE
@@ -33,9 +33,6 @@
 %        COPY "END"
 %        IF FC .GT. 0.0 THEN
 %          EVALUATE RATIO = FO / ( FC * OSCALE )
-%          IF RATIO .LT. 1.0 THEN
-%            EVALUATE RATIO = 1.0 / RATIO
-%          END IF
 %        END IF
 %      EVALUATE ERROR6 = FALSE
 %      END BLOCK
@@ -47,6 +44,9 @@
 %        STORE FORMAT '(F8.4)' LENGTH 8 REAL RATIO
 %        OUTPUT
 %      END BLOCK
+%      IF RATIO .LT. 1.0 THEN
+%            EVALUATE RATIO = 1.0 / RATIO
+%      END IF
 %      IF ERROR6 .EQ. TRUE THEN
 %            COPY '#SCRIPT XDELQ'
 %            COPY '#SFLS'
