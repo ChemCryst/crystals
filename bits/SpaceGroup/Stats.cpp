@@ -9,21 +9,8 @@
 
 #include "Stats.h"
 #include "MathFunctions.h"
-/*
-    float tNonMTotInt;	//Total intensity non-matched.
-    float tMTotInt;	//Total intensity matched. 
-    int tNumNonM;	//Number non-matched
-    int tNumM;	//Number matched
-    int tNumNonMLsInt;	//Number Int<3*sigma non-matched 
-    int tNumNonMGrInt;	//Number Int>=3*sigma non-matched
-}ElemStats;
+#include "Collections.h"
 
-        int iTotalNum;
-        float iTotalIntensity;
-        ElemStats[][] iStats;
-        Headings* iHeadings;
-        Conditions* iConditions;
-        */
 //Average Int
 static float AbsentAIM = 0.00834789;
 static float AbsentAISD = 0.01289479;
@@ -40,12 +27,11 @@ float Stats::evaluationFunction(float pX, float AbsentM, float AbsentSD, float P
     return 1-cumlNormal(pX, AbsentM, AbsentSD)-cumlNormal(pX, PresentM, PresentSD);
 }
 
-Stats::Stats(Headings* tHeadings, Conditions* tConditions)
+Stats::Stats(Headings* pHeadings, Conditions* pConditions)
 {
-    iHeadings = tHeadings;
-    iConditions = tConditions;
-    iStats = new ElemStats[tHeadings->length()*tConditions->length()];
-    bzero(iStats, tHeadings->length()*tConditions->length()*sizeof(ElemStats));
+    iHeadings = pHeadings;
+    iConditions = pConditions;
+    iStats = new ElemStats[pHeadings->length()*pConditions->length()];
     iTotalNum = 0; 
     iTotalIntensity = 0;
 }
@@ -88,10 +74,10 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float
     }
 }
 
-ElemStats* getElem(int pHeadIndex, int pCondIndex)
+ElemStats* Stats::getElem(int pHeadIndex, int pCondIndex)
 {
     int tCCount = iConditions->length();    //Cache lengths of the table.
-    return iStats[(pHeadIndex*tCCount)+pCondIndex];
+    return &(iStats[(pHeadIndex*tCCount)+pCondIndex]);
 }
 
 void Stats::addReflection(Reflection* pReflection)
@@ -144,13 +130,13 @@ void Stats::outputRow(int pRow, ostream& pStream)
     {
         printf("| Rat1: %0.4f\t", iStats[i*tCCount+pRow].tRating1);	
     }
-    pStream << "\n\t\t";
+    /*pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
     {
         float tValue1 = iStats[i*tCCount+pRow].tNonMTotInt/iStats[i*tCCount+pRow].tNumNonM;
         float tValue2 = iStats[i*tCCount+pRow].tMTotInt/iStats[i*tCCount+pRow].tNumM;
         printf("| Rat1: %0.4f\t", tValue1/(tValue2+tValue1));	//Total intensity matched. 
-    }
+    }*/
     pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
     {
@@ -176,11 +162,11 @@ void Stats::outputRow(int pRow, ostream& pStream)
     {
         printf("| Rat2: %0.4f\t", (float)iStats[i*tCCount+pRow].tRating2);	
     }
-    pStream << "\n\t\t";
+   /* pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
     {
         printf("| Rat2: %0.4f\t", (float)iStats[i*tCCount+pRow].tNumNonMLsInt/((float)iStats[i*tCCount+pRow].tNumNonMGrInt+(float)iStats[i*tCCount+pRow].tNumNonMLsInt));	
-    }
+    }*/
 }
 
 void Stats::outputHeadings(ostream& pStream)
