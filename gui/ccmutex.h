@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.1  2005/02/02 15:27:23  stefan
+ // 1. Initial addition to crystals. A group of classes for threading.
+ //
 #if !defined(CcMutex_H__)
 #define CcMutex_H__
 

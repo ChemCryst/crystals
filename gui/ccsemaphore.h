@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.2  2005/02/07 14:27:16  stefan
+ // 1. Removed a warning which was a reminder as vc doesn't like #warning as a preprocessor instruction
+ //
  // Revision 1.1  2005/02/02 15:27:23  stefan
  // 1. Initial addition to crystals. A group of classes for threading.
  //

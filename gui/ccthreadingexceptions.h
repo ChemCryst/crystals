@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.1  2005/02/02 15:27:23  stefan
+ // 1. Initial addition to crystals. A group of classes for threading.
+ //
  
 // Not using __ prefix for this as they are usualy resurved for the system libraries I think
 #if !defined(CcThreadingExceptions_H__) 
