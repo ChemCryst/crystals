@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2005/02/25 17:25:20  stefan
+C 1. Added some preprocessor if defined lines for the mac version.
+C
 C Revision 1.14  2005/02/10 15:13:49  djw
 C eror in INV in #MATRIX
 C
@@ -1156,7 +1159,8 @@ C
       INCLUDE 'QSTR11.INC'
 C
 C
-      DATA ONE/0.1D1/
+      DATA ONE/1.0/
+C      DATA ONE/0.1D1/
 C      DATA ONE/0.1Q1/
 C
 C--ASSIGN THE SINGULARITY CHECK LIMITS
