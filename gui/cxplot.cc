@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2003/09/04 16:49:54  rich
+//   Make graphs work on the Linux version. We're getting there.
+//
 //   Revision 1.25  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -455,6 +458,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 //                  TEXT_BOLD       text drawn in black (else grey)
 //                  TEXT_ANGLE      text is drawn at an angle (for crowded axes...)
 //  All coordinates in the range 0 - 2400
+
 void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 {
     if(m_FlippedPlot)
@@ -551,8 +555,61 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
       m_memDC->SetBrush( *m_brush );
       m_memDC->SetPen( *m_pen );
       m_memDC->SetBackgroundMode( wxTRANSPARENT );
-      m_memDC->DrawText(wtext, coord.x, coord.y );
-      m_memDC->SetBrush( wxNullBrush );
+      int tx, ty, mx, my;
+
+      wxFont aFont = m_memDC->GetFont();
+
+      aFont.SetPointSize(fontsize);
+      m_memDC->SetFont(aFont);
+
+
+      m_memDC->GetTextExtent(wtext,&tx,&ty);
+
+      if(param & TEXT_ANGLE)
+      {
+        mx = (long)(tx/sqrt(2.0));          // must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
+        my = (long)(tx/sqrt(2.0));          //      for both sin and cos.
+
+        coord.x -= mx + ty/2;
+        coord.y += my + ty/2; 
+        m_memDC->DrawRotatedText(wtext, coord.x, coord.y, 45.0 );
+        m_memDC->SetBrush( wxNullBrush );
+      }
+      else if(param & TEXT_VERTICALDOWN)
+      {
+         coord.y = coord.y - tx/2;     // nb swapping of cx and cy - GetTextEntent doesn't handle rotations
+         coord.x = coord.x + ty/2;
+         m_memDC->DrawRotatedText(wtext, coord.x, coord.y, 90.0 );
+         m_memDC->SetBrush( wxNullBrush );
+      }
+      else if(param & TEXT_VERTICAL)
+      {
+            coord.y = coord.y + tx/2;     // nb swapping of cx and cy - GetTextEntent doesn't handle rotations
+            coord.x = coord.x - ty/2;
+            m_memDC->DrawRotatedText(wtext, coord.x, coord.y, 90.0 );
+            m_memDC->SetBrush( wxNullBrush );
+      }
+      else
+      {
+
+        if(param & TEXT_VCENTRE)
+             coord.y -= ty/2;  // centre the text
+        if(param & TEXT_HCENTRE)
+             coord.x -= tx/2;    
+        if(param & TEXT_RIGHT)
+             coord.x -= tx;
+        if(param & TEXT_TOP)
+             coord.y += ty/2;
+        if(param & TEXT_BOTTOM)
+             coord.y -= ty;
+        m_memDC->SetBackgroundMode( wxTRANSPARENT );
+        m_memDC->DrawText(wtext, coord.x, coord.y );
+        m_memDC->SetBrush( wxNullBrush );
+      }
+
+      m_memDC->SetFont(wxNullFont);
+      return;
+
 #endif
 }
 
@@ -607,9 +664,13 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 {
 
-        int cx,cy,cs;
-        GetTextExtent( text.ToCString(), &cx, &cy );
+    int cx,cy,cs;
 
+    wxFont aFont = m_memDC->GetFont();
+    aFont.SetPointSize(fontsize);
+    m_memDC->SetFont(aFont);
+    m_memDC->GetTextExtent( text.ToCString(), &cx, &cy );
+    
     if(param & TEXT_ANGLE)
     {
         cx = (int)(cx/sqrt(2));

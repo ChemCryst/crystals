@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.24  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.23  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -983,51 +989,61 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, bool rot
     memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
-      memDC->SetPen( *m_pen );
-      wxFont theFont = memDC->GetFont();
+    memDC->SetBrush( *m_brush );
+    memDC->SetPen( *m_pen );
+    wxFont theFont = memDC->GetFont();
+    wxString wtext (theText.ToCString());
 
-      wxString wtext (theText.ToCString());
+    theFont.SetPointSize(48);
 
-      theFont.SetPointSize(80);
+    CcPoint coord = DeviceToLogical(x1,y1);
+    CcPoint coord2= DeviceToLogical(x2,y2);
 
-      CcPoint      coord = DeviceToLogical(x1,y1);
-      CcPoint       coord2 =DeviceToLogical(x2,y2);
+    int cwide = coord2.x - coord.x;
+    int chigh = coord2.y - coord.y;
 
-      int cwide = coord2.x - coord.x;
-      int chigh = coord2.y - coord.y;
+    if(rotated)
+    {
+      chigh = cwide;
+      cwide = coord2.y - coord.y;
+    }
+
 
     bool fontIsTooBig = true;
-
     while (fontIsTooBig)
     {
-            memDC->SetFont(theFont);
-            int cx,cy;
-            GetTextExtent( wtext, &cx, &cy );
+       memDC->SetFont(theFont);
+       int cx,cy;
+       memDC->GetTextExtent( wtext, &cx, &cy );
 
-        if ((( cx < cwide )&&( cy < chigh ))||(theFont.GetPointSize()<=8))
-        {
-            //Output the text, and exit.
-            fontIsTooBig = false;
-            int xcrd= coord.x;
-            int ycrd= coord.y;
-            if ( centred )
-            {
+       if ((( cx < cwide )&&( cy < chigh ))||(theFont.GetPointSize()<=8))
+       {
+           //Output the text, and exit.
+           fontIsTooBig = false;
+           int xcrd= coord.x;
+           int ycrd= coord.y;
+           if ( centred )
+           {
                //Centre the text.
                   xcrd = ( coord2.x + coord.x - cx ) / 2;
                   ycrd = ( coord2.y + coord.y - cy ) / 2;
-            }
-            memDC->SetBackgroundMode( wxTRANSPARENT );
-            memDC->DrawText(wtext, xcrd , ycrd );
-        }
-        else
-        {
-                  //Reduced the font height and repeat.
-                  theFont.SetPointSize( theFont.GetPointSize()-1 );
-                  memDC->SetFont( wxNullFont );
-        }
+           }
+           memDC->SetBackgroundMode( wxTRANSPARENT );
+
+           if(rotated)
+              memDC->DrawRotatedText(wtext, xcrd , ycrd, 90.0 );
+           else             
+              memDC->DrawText(wtext, xcrd , ycrd );
+       }
+       else
+       {
+           //Reduced the font height and repeat.
+           theFont.SetPointSize( theFont.GetPointSize()-1 );
+           memDC->SetFont( wxNullFont );
+       }
     }
-      memDC->SetFont( wxNullFont );
-//      memDC->SetPen( wxNullPen );
+    memDC->SetFont( wxNullFont );
+    memDC->SetBrush( wxNullBrush );
 #endif
 }
 

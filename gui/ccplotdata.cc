@@ -11,6 +11,12 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.24  2003/07/08 09:59:08  rich
+//
+// Fixed bug where x and y axis scales went
+// slightly wrong for graphs with data scaled
+// on a second y-axis.
+//
 // Revision 1.23  2003/05/07 12:18:56  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -1037,94 +1043,233 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 
         // the following tries to find an optimal font size
         int fontsize = 12;          // 14 is the max 
+        int largest_label_index = -1;
         CcPoint maxangletextextent;
         CcPoint maxhorizontaltextextent;
         CcPoint textextent;
         bool textOK = false;
         bool smalltext = false;  // true if text gets too small
 
-        // step: used to skip labels if overlap occurs at smallest font size
-        int step = 1;
 
         if(m_GraphType == Plot_GraphBar)
         {
-            while(!textOK && !smalltext)
+// First try reducing font size to make fit:
+          while(!textOK && !smalltext)
+          {
+            if ( largest_label_index < 0 )
             {
-                // find the maximum screen area occupied by a label at this font size
-                for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=step)
+              for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=1)  // find the maximum screen area occupied by a label at this font size
+              {
+                textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], 0);
+                if(textextent.x > maxhorizontaltextextent.x) 
                 {
-                    textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], 0);
-                    if(textextent.x > maxhorizontaltextextent.x) maxhorizontaltextextent.x = textextent.x;
-                    if(textextent.y > maxhorizontaltextextent.y) maxhorizontaltextextent.y = textextent.y;
+                  largest_label_index = i;
+                  maxhorizontaltextextent.x = textextent.x;
                 }
-
-                // if the text fits at this size, draw normally
-                if((maxhorizontaltextextent.x < 0.9*xdivoffset*step))
-                {
-                    if(!m_Flipped)
-                    {
-                        for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i+=step)
-                        {
-                            attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset),2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_TOP, fontsize);
-                        }
-                        textOK = true;
-                    }
-                    else
-                    {
-                        for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i+=step)
-                        {
-                            attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset),2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, fontsize);
-                        }
-                        textOK = true;
-                    }
-                }
-
-                // if the text didn't fit, try again with smaller font
-                fontsize--;
-                if (fontsize <= 8)
-                {
-                //  step *= 2; // try skipping labels
-                    smalltext = true;
-                    fontsize = 12;
-                }
-                if(step >= 5)
-                    smalltext = true;
-            }
-            
-        }
-        // for scatter graphs use horizontal text always
-        else if(m_GraphType == Plot_GraphScatter)
-        {
-            if(!m_Flipped)
-            {
-                for(i=0; i<m_AxisData[Axis_X].m_NumDiv+1; i++)
-                {
-                    ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
-                    attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
-                }
+                if(textextent.y > maxhorizontaltextextent.y) maxhorizontaltextextent.y = textextent.y;
+              }
             }
             else
             {
-                for(i=0; i<m_AxisData[Axis_X].m_NumDiv+1; i++)
-                {
-                    ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
-                    attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_BOTTOM|TEXT_HCENTRE, fontsize);
-                }
-            }
-        }
-        
-        // if the above methods couldn't fit the text without making it too small, plot vertically
-        //      NB this doesn't matter too much (I think) since mouse-over shows all labels...
-        if(smalltext)
-        {
-            fontsize = 10;
-
-            for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=1)
+              textextent = attachedPlot->GetTextArea(fontsize, m_Labels[largest_label_index], 0);
+              maxhorizontaltextextent.x = textextent.x;
+              maxhorizontaltextextent.y = textextent.y;
+            } 
+            if((maxhorizontaltextextent.x < 0.9*xdivoffset))     // if the text fits at this size, draw normally
             {
-                textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_VERTICAL);
-                attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset), (int)(2400-ygapbottom+textextent.y/2+ygapbottom/6), m_Labels[i].ToCString(), TEXT_VERTICAL, fontsize);
+              textOK = true;
+              for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i+=1)
+              {
+                if (m_Flipped)
+                  attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset),2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, fontsize);
+                else
+                  attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset),2400-ygapbottom, m_Labels[i].ToCString(), TEXT_HCENTRE|TEXT_TOP, fontsize);
+              }
             }
+
+            if ( --fontsize <= 8)  // if the text didn't fit, try again with smaller font
+            {
+              smalltext = true;
+              fontsize = 12;
+            }
+          }
+      
+          int step = 1;
+// if the above method couldn't fit the text without making it too small, plot vertically
+          if(!textOK && smalltext)
+          {
+            smalltext=false;
+            while(!textOK && !smalltext)
+            {
+              if ( largest_label_index < 0 )
+              {
+                for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=step)  // find the maximum screen area occupied by a label at this font size
+                {
+                  textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], 0);
+                  if(textextent.x > maxhorizontaltextextent.x) 
+                  {
+                    largest_label_index = i;
+                    maxhorizontaltextextent.x = textextent.x;
+                  }
+                  if(textextent.y > maxhorizontaltextextent.y) maxhorizontaltextextent.y = textextent.y;
+                }
+              }
+              else
+              {
+                textextent = attachedPlot->GetTextArea(fontsize, m_Labels[largest_label_index], 0);
+                maxhorizontaltextextent.x = textextent.x;
+                maxhorizontaltextextent.y = textextent.y;
+              }
+
+              if((maxhorizontaltextextent.x < 0.9*xdivoffset*step))                  // if the text fits at this size, draw normally
+              {
+                textOK = true;
+                for(i=0; i<m_AxisData[Axis_X].m_NumDiv;i+=step)
+                {
+                  attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset), (int)(2400-ygapbottom), m_Labels[i].ToCString(), TEXT_VERTICAL, fontsize);
+                }
+              }
+
+              // if the text didn't fit, try again with smaller font.
+              fontsize--;
+              if (fontsize <= 8) // try skipping labels
+              {
+                step++;
+                largest_label_index = -1;
+                fontsize = 12;
+              }
+              if(step >= 9) smalltext = true;
+            }
+            
+            if ( ! textOK )    //Just draw anyway.
+            {
+              fontsize = 8;
+              for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=step)
+              {
+                textextent = attachedPlot->GetTextArea(fontsize, m_Labels[i], TEXT_VERTICAL);              
+                attachedPlot->DrawText((int)(xgapleft+(i+0.5)*xdivoffset), (int)(2400-ygapbottom+textextent.y/2+ygapbottom/6), m_Labels[i].ToCString(), TEXT_VERTICAL, fontsize);
+              }
+            }
+          }
         }
+
+        else if(m_GraphType == Plot_GraphScatter)
+        {
+// First try reducing font size to make fit:
+          while(!textOK && !smalltext)
+          {
+            if ( largest_label_index < 0 )
+            {
+              for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=1)  // find the maximum screen area occupied by a label at this font size
+              {
+                ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
+                textextent = attachedPlot->GetTextArea(fontsize, ylabel, 0);
+                if(textextent.x > maxhorizontaltextextent.x) 
+                {
+                  largest_label_index = i;
+                  maxhorizontaltextextent.x = textextent.x;
+                }
+                if(textextent.y > maxhorizontaltextextent.y) maxhorizontaltextextent.y = textextent.y;
+              }
+            }
+            else
+            {
+              ylabel = m_AxisData[Axis_X].m_AxisDivisions[largest_label_index];
+              textextent = attachedPlot->GetTextArea(fontsize, ylabel, 0);
+              maxhorizontaltextextent.x = textextent.x;
+              maxhorizontaltextextent.y = textextent.y;
+            }
+
+            if((maxhorizontaltextextent.x < 0.9*xdivoffset))        // if the text fits at this size, draw normally
+            {
+              textOK=true;
+              for(i=0; i<m_AxisData[Axis_X].m_NumDiv+1; i++)
+              {
+                ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
+                if(m_Flipped)
+                  attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_BOTTOM|TEXT_HCENTRE, fontsize);
+                else
+                  attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
+              }
+            }
+
+            // if the text didn't fit, try again with smaller font
+            fontsize--;
+            if (fontsize <= 8) 
+            {
+                smalltext = true;
+                fontsize = 12;
+            }
+          }
+      
+          int step = 1;
+// if the above method couldn't fit the text without making it too small, plot vertically
+          if(!textOK && smalltext)
+          {
+            smalltext=false;
+            while(!textOK && !smalltext)
+            {
+              if ( largest_label_index < 0 )
+              {
+                for(i=0; i<m_AxisData[Axis_X].m_NumDiv; i+=step)  // find the maximum screen area occupied by a label at this font size
+                {
+                  ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
+                  textextent = attachedPlot->GetTextArea(fontsize, ylabel, 0);
+                  if(textextent.x > maxhorizontaltextextent.x) 
+                  {
+                    largest_label_index = i;
+                    maxhorizontaltextextent.x = textextent.x;
+                  }
+                  if(textextent.y > maxhorizontaltextextent.y) maxhorizontaltextextent.y = textextent.y;
+                }
+              }
+              else
+              {
+                ylabel = m_AxisData[Axis_X].m_AxisDivisions[largest_label_index];
+                textextent = attachedPlot->GetTextArea(fontsize, ylabel, 0);
+                maxhorizontaltextextent.x = textextent.x;
+                maxhorizontaltextextent.y = textextent.y;
+              }
+
+              if((maxhorizontaltextextent.x < 0.9*xdivoffset*step))                   // if the text fits at this size, draw normally
+              {
+                textOK=true;
+                for(i=0; i<m_AxisData[Axis_X].m_NumDiv+1; i+=step)
+                {
+                  ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
+                  if(!m_Flipped)
+                    attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_BOTTOM|TEXT_HCENTRE, fontsize);
+                  else
+                    attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
+                }
+              }
+              fontsize--;                   // if the text didn't fit, try again with smaller font
+              if (fontsize <= 8)            // try skipping labels
+              {
+                step++ ; 
+                fontsize = 12;
+              }
+              if(step >= 9)  smalltext = true;
+            }
+            
+            if ( ! textOK )    //Just draw anyway.
+            {
+              fontsize = 8;
+              textOK=true;
+              for(i=0; i<m_AxisData[Axis_X].m_NumDiv+1; i+=step)
+              {
+                ylabel = m_AxisData[Axis_X].m_AxisDivisions[i];
+                if(m_Flipped)
+                  attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_BOTTOM|TEXT_HCENTRE, fontsize);
+                else
+                  attachedPlot->DrawText((int)(xgapleft+i*xdivoffset), 2400-ygapbottom, ylabel.ToCString(), TEXT_TOP|TEXT_HCENTRE, fontsize);
+              }
+            }
+          }
+        }
+
+
+
 
         fontsize = 12;
 
