@@ -947,7 +947,7 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
         CcString temp;
         if ( IsAHit ( temp, x, y ) )
         {
-          TEXTOUT ( CcString ( "The link is: " + temp ) );
+          TEXTOUT ( CcString ( "Opening link: " + temp ) );
           ((CrTextOut*)ptr_to_crObject)->ProcessLink( temp );
         }
 
@@ -1062,8 +1062,11 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
                 {
 
 #ifdef __CR_WIN__
-                     pDC->MoveTo(nX,nY+m_nFontHeight);
-                     pDC->LineTo(nX+cx,nY+m_nFontHeight);
+                     CPen pen(PS_SOLID,1,m_ColTable[ COLOUR_BLUE ]), *oldpen;
+                     oldpen = pDC->SelectObject(&pen);
+                     pDC->MoveTo(nX,nY-1+m_nFontHeight);
+                     pDC->LineTo(nX+cx,nY-1+m_nFontHeight);
+                     pDC->SelectObject(oldpen);
 #endif
 #ifdef __BOTHWX__
                      pDC->DrawLine(nX,nY+m_nFontHeight,nX+cx,nY+m_nFontHeight);
