@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/03/15 16:50:01  richard
+C Type #SET BONDTYPE OFF to suppress bond type calculation.
+C
 C Revision 1.32  2002/03/15 11:30:09  richard
 C Fix problem where bond types are not calculated on opening a new structure.
 C
@@ -561,8 +564,8 @@ C If in script mode, set flag.
 &&GILGID        INSTRC = .FALSE.
 &&GILGID        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
 &&GILGID          INSTRC = .TRUE.
-&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
-&&GILGID          CALL XPRVDU (NCVDU,1,0)
+c&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
+c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 
 &&GILGID        END IF
 
