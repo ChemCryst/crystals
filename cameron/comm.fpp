@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2000/12/22 12:15:05  CKP2
+C Add common block XUNITS, change ipage to jpage
+C
 C Revision 1.14  2000/12/13 19:15:00  richard
 C Bug fix - Return value of logical function LFILES was being assigned to an INTEGER
 C value.
@@ -5403,8 +5406,8 @@ CODE FOR CAMPRESETS
      1              'TEKT',      'POST',         'ENCAP',
      1              'VGA',       'CPOST',        'CENCA' /
 
-#GID      DATA RCAMDV / 320.0, 240.0, 30.0,
-&GID      DATA RCAMDV /1200.0,1200.0, 30.0,
+##GILGID      DATA RCAMDV / 320.0, 240.0, 30.0,
+&&GILGID      DATA RCAMDV /1200.0,1200.0, 30.0,
      2                  480.0, 360.0, 50.0,
      3                 5200.0,3700.0,300.0,
      4                  550.0, 360.0, 40.0,
