@@ -41,7 +41,7 @@
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
 %   CASE VALUE
 %     BLOCK                         %BROWSE%
-^^WI    SYSOPENFILE '*.cif;*.cmf' 'CIF format (*.cif,*.cmf)'
+^^WI    SYSOPENFILE '*.cif;*.cmf;*.fcf' 'CIF format (*.cif,*.cmf,*.fcf)'
 ^^CR
 %       GET SILENT TEXT 'New filename:'
 %       IF CVALUE .NE. 'CANCEL' THEN
