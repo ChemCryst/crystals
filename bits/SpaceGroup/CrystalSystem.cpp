@@ -155,13 +155,13 @@ bool Region::contains(Matrix<short> &pHKL, LaueGroup &pLaueGroup, Matrix<short>&
 	Matrix<short> tWorkHKL(pHKL);
 	Matrix<short> tZero(1, 3, 0);
 	
-	size_t tNumMat = pLaueGroup.numberOfMatrices();
+	size_t tNumMat = pLaueGroup.matrixCount();
 	
 	for (int j = 0; j < 2; j++)
 	{
 		for (uint i = 0; i < tNumMat; i++)
 		{ 
-			tNewHKLResult = pLaueGroup.getMatrix(i) * pHKL;
+			tNewHKLResult = pLaueGroup.matrix(i) * pHKL;
 			tMatrixResult = (*this) * tNewHKLResult;	//Multiply the two matrices to see if this reflection satisfy the condition
 			if (tMatrixResult == tNewHKLResult)
 			{
