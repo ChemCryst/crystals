@@ -315,6 +315,8 @@ C -- SET INITIAL ADDRESSES , FLAGS , AND COUNTS FOR 'MOVE' AND 'KEEP'
       NKEEP = 0
 C -- SET INITIAL MONITOR LEVEL
       MONLVL = 2
+cdjwmay99 if is't a small strucuture, reset gui monitor as hi
+      if (n5 .le. 50) mongui = +1
       N5A = N5
       GO TO 1200
 C
