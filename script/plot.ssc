@@ -3,14 +3,12 @@
 % VARIABLE INTEGER PRINTOUT
 % VARIABLE CHARACTER CRDEVICE CRFILE
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ The script PLOT uses the CRYSTALS command MOLAX, which computes the        บ
-บ best planes and lines (molecular axes) through groups of atoms, and the    บ
-บ angles between these important molecular parameters.                       บ
-บ MOLAX may additionally, as in this script, produce simple join-the-dots    บ
-บ type diagrams on the screen and the printer file.                          บ
-บ In some implementations (DOS, VAX), a full graphics mode may be available  บ
-ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+  The script PLOT uses the CRYSTALS command MOLAX, which computes the        
+  best planes and lines (molecular axes) through groups of atoms, and the    
+  angles between these important molecular parameters.                       
+  MOLAX may additionally, as in this script, produce simple join-the-dots    
+  type diagrams on the screen and the printer file.                          
+  In some implementations (DOS, VAX), a full graphics mode may be available  
 % END IF
 %%&VAX%  EVALUATE GRAPHICS = FALSE
 %  EVALUATE GRAPHICS = TRUE

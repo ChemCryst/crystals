@@ -1,17 +1,17 @@
-%SCRIPT FOURIER 
+%SCRIPT FOURIER
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This script implements the CRYSTALS command FOURIER, and may be used to    บ
-บ compute a variety of real and vector space Fourier syntheses.              บ
-บ  In this script you are only offered a limited selection of syntheses      บ
-บ together with a peak search. The underlying COMMAND includes options       บ
-บ for formatting and printing the map, various weighting schemes, and        บ
-บ special treatment of reflections.                                          บ
-บ After computing the map, this script enables you to process the peak       บ
-บ search into an atoms list.                                                 บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This script implements the CRYSTALS command FOURIER, and may be used to
+  compute a variety of real and vector space Fourier syntheses.
+   In this script you are only offered a limited selection of syntheses
+  together with a peak search. The underlying COMMAND includes options
+  for formatting and printing the map, various weighting schemes, and
+  special treatment of reflections.
+  After computing the map, this script enables you to process the peak
+  search into an atoms list.
+ 
 % ELSE
 a SCRIPT to help with the computation and processing of Fourier maps
 % END IF
@@ -132,10 +132,10 @@ The default, 0.01A, causes CRYSTALS to reject coincident or split peaks
 %      END IF
 %  END IF
 %  IF LCONTOUR .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ    The map has been stored in a file 'MAP.MT1'. To plot this map, close    บ
-บ    down CRYSTALS and type CONTOUR                                          บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+     The map has been stored in a file 'MAP.MT1'. To plot this map, close
+     down CRYSTALS and type CONTOUR
+ 
 %    COPY '#PAUSE 3'
 %    COPY '#CLOSE MT1'
 % BLOCK

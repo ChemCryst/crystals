@@ -4,16 +4,16 @@
 % GET NOSTORE FINAL ABBREVIATED -
  'Do you want information about this routine?' 'NO'
 % IF ( SCRIPTEXT .EQ. TRUE ) .OR. ( VALUE .EQ. 1 ) THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT permits you to remove all existing hydrogen atoms before       บ
-บ starting the placement.                                                    บ
-บ It computes the positions of hydrogen atoms on carbon atoms                บ
-บ but does not include them in the structure factor calculation.             บ
-บ It then searches to confirm them in a difference map.                      บ
-บ Calculated (H) and found (Q) atoms are displayed with CAMERON, and the     บ
-บ model may be edited. Finaly, any peaks close to a calculated H atom are    บ
-บ eliminated, and any remaining peaks deleted                                บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This SCRIPT permits you to remove all existing hydrogen atoms before
+  starting the placement.
+  It computes the positions of hydrogen atoms on carbon atoms
+  but does not include them in the structure factor calculation.
+  It then searches to confirm them in a difference map.
+  Calculated (H) and found (Q) atoms are displayed with CAMERON, and the
+  model may be edited. Finaly, any peaks close to a calculated H atom are
+  eliminated, and any remaining peaks deleted
+ 
 %   COPY '#PAUSE 10'
 % ELSE
       Location of hydrogen atoms
@@ -46,7 +46,7 @@
 %% RUN CAMERON
 % COPY '#SCRIPT PLOT'
 %%
-  You can now choose to keep only the geometrically placed H atoms, or 
+  You can now choose to keep only the geometrically placed H atoms, or
   to convert well-placed peaks into H atoms.
 % VERIFY GEOMETRIC MAP
 %   GET NOSTORE FINAL ABBREVIATED  -
@@ -59,7 +59,7 @@
 %       COPY 'SEL TYPE NE Q'
 %       COPY 'END'
 %   ELSE
-
+ 
 %       COPY '#PEAK 5 5'
 %       COPY 'SEL REJECT = .0001 TYPE=PEAK'
 %       COPY 'REFINE DIST = .3'

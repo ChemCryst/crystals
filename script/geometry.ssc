@@ -1,9 +1,9 @@
 %SCRIPT GEOMETRY
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ  A SCRIPT to help with the calculation of molecular parameters.            บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+   A SCRIPT to help with the calculation of molecular parameters.
+ 
 %   COPY '#PAUSE 10'
 % ELSE
 The SCRIPT to help with the calculation of molecular parameters.

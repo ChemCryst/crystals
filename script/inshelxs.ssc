@@ -1,17 +1,17 @@
 %SCRIPT INSHELXS
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ In Oxford, a locally modified version of SHELXS is normally used which     บ
-บ produces an atom list with the atom TYPE separate from the SERIAL.         บ
-บ This file is called SHELXS.CRY to distinguish it from the standard         บ
-บ SHELXS.RES file.                                                           บ
-บ If you have a standard SHELXS atom list, the atom serial numbers be        บ
-บ lost on input to CRYSTALS.                                                 บ
-บ This SCRIPT will NOT process a SHELX76 coordinate list if this contains    บ
-บ anything other than simple atom coordinates. Beware of atoms 'fixed' by    บ
-บ modifying their coordinates by adding 10.                                  บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  In Oxford, a locally modified version of SHELXS is normally used which
+  produces an atom list with the atom TYPE separate from the SERIAL.
+  This file is called SHELXS.CRY to distinguish it from the standard
+  SHELXS.RES file.
+  If you have a standard SHELXS atom list, the atom serial numbers be
+  lost on input to CRYSTALS.
+  This SCRIPT will NOT process a SHELX76 coordinate list if this contains
+  anything other than simple atom coordinates. Beware of atoms 'fixed' by
+  modifying their coordinates by adding 10.
+ 
 % ELSE
 Input a coordinate list in SHELX.CRY or SHELXS.RES format.
 % END IF

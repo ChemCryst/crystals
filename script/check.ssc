@@ -1,13 +1,13 @@
 %SCRIPT CHECK
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT verifys that the refinement variable definitions are valid     บ
-บ and displays the size of the normal matrix, in words. If this exceeds      บ
-บ       262,144 the matrix will be to big for this version of CRYSTALS       บ
-บ If restraints are defined (LIST 16), the observed and computed values      บ
-บ are displayed.                                                             บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This SCRIPT verifys that the refinement variable definitions are valid
+  and displays the size of the normal matrix, in words. If this exceeds
+        262,144 the matrix will be to big for this version of CRYSTALS
+  If restraints are defined (LIST 16), the observed and computed values
+  are displayed.
+ 
 %   COPY '#PAUSE 10'
 % ELSE
       Check that the refinement is validly defined

@@ -3,7 +3,7 @@
 % VARIABLE CHARACTER CAT1 CAT2 CAT3 CLINE1 RSVAL RSESD CATM
 %%
 %%
-% VERIFY DIST ANGLE PLANE
+% VERIFY DIST ANGLE PLANE VIB SIM
 % GET NOSTORE SILENT FINAL ABBREVIATED 'Restraint type?' 'DIST'
 % CASE VALUE
 %   BLOCK %DIST%
@@ -38,7 +38,7 @@
 ^^WI   }
 ^^WI }
 ^^WI  SHOW
-^^CR  
+^^CR
 %     VERIFY BOK BXX
 %     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
 %     CASE VALUE
@@ -103,7 +103,7 @@
 ^^WI   }
 ^^WI }
 ^^WI  SHOW
-^^CR  
+^^CR
 %     VERIFY BOK BXX
 %     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
 %     CASE VALUE
@@ -158,7 +158,7 @@
 ^^WI   }
 ^^WI }
 ^^WI  SHOW
-^^CR  
+^^CR
 %     VERIFY BOK BXX
 %     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
 %     CASE VALUE
@@ -166,8 +166,111 @@
 ^^??      E2 TEXT
 %         GET SILENT NOSTORE REAL 'Esd' '1.8'
 %         EVALUATE RSESD = CVALUE // ' '
-
+ 
 %         EVALUATE CLINE1 = 'PLANAR ' // RSESD // CATM
+%         COPY '#SCRIPT YADDLI16'
+^^WI      DISPOSE XRESTRD
+^^CR
+%       END BLOCK
+%       BLOCK %BXX%
+^^WI      DISPOSE XRESTRD
+^^CR
+%         FINISH
+%       END BLOCK
+%     END CASE
+%   END BLOCK
+%   BLOCK %VIB%
+%% Get two values and an END.
+^^WI WINDOW XRESTRD 'Restrain Vibration' MODAL
+^^WI GRID RESMAIN NROWS=6 NCOLS=5
+^^WI {
+%     CLEAR
+^^WI  @ 2,2 STATIC Tx 'Restrain mean square displacement'
+%     INSERT "^^WI @ 3,2 STATIC T0 'along "
+%     GET SILENT TEXT 'Atom 1'
+%     EVALUATE CAT1 = CVALUE
+%     INSERT "to"
+%     GET SILENT TEXT 'Atom 2'
+%     EVALUATE CAT2 = CVALUE
+%     INSERT "'"
+%     GET SILENT NOSTORE TEXT 'type end...'
+%     OUTPUT
+%     CLEAR
+^^WI   @ 5,2 GRID LEFT NROWS=3 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'to be zero'
+^^WI     @ 3,1 STATIC T3 ' with an e.s.d.'
+^^WI     @ 3,3 EDITBOX E2 '0.02' CHARS=6 REAL
+^^WI   }
+^^WI   @ 5,4 GRID RIGHT NROWS=3 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&Ok' COMMIT DEFAULT
+^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI   }
+^^WI }
+^^WI  SHOW
+^^CR
+%     VERIFY BOK BXX
+%     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
+%     CASE VALUE
+%       BLOCK %BOK%
+^^??      E2 TEXT
+%         GET SILENT NOSTORE REAL 'Esd' '0.002'
+%         EVALUATE RSESD = CVALUE
+%         EVALUATE CLINE1 = 'VIBRATION 0.0, ' // RSESD -
+ // ' = ' // CAT1 // ' to ' // CAT2
+%         COPY '#SCRIPT YADDLI16'
+^^WI      DISPOSE XRESTRD
+^^CR
+%       END BLOCK
+%       BLOCK %BXX%
+^^WI      DISPOSE XRESTRD
+^^CR
+%         FINISH
+%       END BLOCK
+%     END CASE
+%   END BLOCK
+%   BLOCK %SIM%
+%% Get two values and an END.
+^^WI WINDOW XRESTRD 'Thermal similarity' MODAL
+^^WI GRID RESMAIN NROWS=7 NCOLS=5
+^^WI {
+%     CLEAR
+^^WI  @ 2,2 STATIC Tx 'Restrain difference between'
+^^WI  @ 3,2 STATIC Tx 'corresponding u[ii] and u[ij] parameters'
+%     INSERT "^^WI @ 4,2 STATIC T0 'on atoms "
+%     GET SILENT TEXT 'Atom 1'
+%     EVALUATE CAT1 = CVALUE
+%     INSERT "to"
+%     GET SILENT TEXT 'Atom 2'
+%     EVALUATE CAT2 = CVALUE
+%     INSERT "'"
+%     GET SILENT NOSTORE TEXT 'type end...'
+%     OUTPUT
+%     CLEAR
+^^WI   @ 6,2 GRID LEFT NROWS=3 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'to be zero'
+^^WI     @ 3,1 STATIC T3 ' with an e.s.d.'
+^^WI     @ 3,3 EDITBOX E2 '0.01' CHARS=8 REAL
+^^WI   }
+^^WI   @ 6,4 GRID RIGHT NROWS=3 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&Ok' COMMIT DEFAULT
+^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI   }
+^^WI }
+^^WI  SHOW
+^^CR
+%     VERIFY BOK BXX
+%     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
+%     CASE VALUE
+%       BLOCK %BOK%
+^^??      E2 TEXT
+%         GET SILENT NOSTORE REAL 'Esd' '0.02'
+%         EVALUATE RSESD = CVALUE
+%         EVALUATE CLINE1 = "U(IJ)'S  0.0, " // RSESD -
+ // ' = ' // CAT1 // ' to ' // CAT2
 %         COPY '#SCRIPT YADDLI16'
 ^^WI      DISPOSE XRESTRD
 ^^CR

@@ -1,10 +1,10 @@
 %SCRIPT PUBREFL
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This script produces publication listings of reflections suitable for      บ
-บ output either on an 80 column printer, or a 120 column printer             บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This script produces publication listings of reflections suitable for
+  output either on an 80 column printer, or a 120 column printer
+ 
 %   COPY '#PAUSE 10'
 % ELSE
     Publication listings of reflections

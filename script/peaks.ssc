@@ -1,14 +1,14 @@
 %SCRIPT PEAKS
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ The script PEAKS uses the CRYSTALS command PEAKS, which combines a         บ
-บ Fourier peaks list with the existing atoms list. Peaks corresponding to    บ
-บ existing atoms may be eliminated, or used as the basis for Fourier         บ
-บ refinement. The electron density at atom or peak sites is stored in the    บ
-บ atom list under the key 'SPARE', so that atom lists can be sorted in       บ
-บ terms of electron density.                                                 บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  The script PEAKS uses the CRYSTALS command PEAKS, which combines a
+  Fourier peaks list with the existing atoms list. Peaks corresponding to
+  existing atoms may be eliminated, or used as the basis for Fourier
+  refinement. The electron density at atom or peak sites is stored in the
+  atom list under the key 'SPARE', so that atom lists can be sorted in
+  terms of electron density.
+ 
 % ELSE
 A SCRIPT to help convert a Fourier peak search into an atom list
 % END IF

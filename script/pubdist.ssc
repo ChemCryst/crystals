@@ -1,12 +1,12 @@
 %SCRIPT PUBDIST
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ Produce a file of interatomic distances suitable for editing into a        บ
-บ document for publication. No serious attempt has been made to format       บ
-บ the file since it will almost always need hand editing.                    บ
-บ Hydrogen atoms are usually excluded from this listing                      บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  Produce a file of interatomic distances suitable for editing into a
+  document for publication. No serious attempt has been made to format
+  the file since it will almost always need hand editing.
+  Hydrogen atoms are usually excluded from this listing
+ 
 %   COPY '#PAUSE 10'
 % ELSE
       Prepare a file of distances and angles for publication

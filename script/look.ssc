@@ -1,11 +1,11 @@
 %SCRIPT LOOK
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ The CRYSTALS data base, *.dsc, is in binary format and so cannot be        บ
-บ viewed directly. This SCRIPT permits you to get a brief summary of any     บ
-บ data on te screen or have a full listing sent to a file.                   บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  The CRYSTALS data base, *.dsc, is in binary format and so cannot be
+  viewed directly. This SCRIPT permits you to get a brief summary of any
+  data on te screen or have a full listing sent to a file.
+ 
 %   COPY '#PAUSE 10'
 % ELSE
  CRYSTALS data summary script

@@ -21,17 +21,17 @@
 %  END BLOCK
 %%
 %  BLOCK
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ                               WARNING                                     บ
-บ       Automatic .DSC file extension is enabled. CRYSTALS will not check   บ
-บ on the growth of the .DSC file. Take care not to fill your hard disk.     บ
-บ                                                                           บ
-บ      There is no way to make the .DSC file smaller.                       บ
-บ                                                                           บ 
-บ      The 'PURGE' option, in the SCRIPT 'DISK' under 'DATA' enables you to บ 
-บ release space inside your diskfile for re-use. The PURGE NEW option       บ 
-บ creates a new .DSC file (CRFILE.NEW) containing only the active data.     บ 
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+                                WARNING
+        Automatic .DSC file extension is enabled. CRYSTALS will not check
+  on the growth of the .DSC file. Take care not to fill your hard disk.
+ 
+       There is no way to make the .DSC file smaller.
+ 
+       The 'PURGE' option, in the SCRIPT 'DISK' under 'DATA' enables you to
+  release space inside your diskfile for re-use. The PURGE NEW option
+  creates a new .DSC file (CRFILE.NEW) containing only the active data.
+ 
 %      COPY '#DISK'
 %      COPY 'EXTEND SIZE = 10 TRIES = 1000'
 %      COPY 'END'
@@ -49,7 +49,7 @@
     DIRECT          Go to CRYSTALS command mode
 %  ELSE IF VALUE .EQ. 2 THEN
 %    COPY '#SCRIPT ROUTINE'
-The SCRIPTS will return you to command mode in case there is anything 
+The SCRIPTS will return you to command mode in case there is anything
 unusual you still want to do. Issue '#FINISH' to stop CRYSTALS
 %    FINISH
 %

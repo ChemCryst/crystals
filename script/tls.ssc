@@ -1,17 +1,17 @@
 %SCRIPT TLS
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ A SCRIPT to compute the molecular thermal tensors T, L and S               บ
-บ The minimum number of atoms in a group should be 5. The bigger the         บ
-บ group the more stable the computation, provided that the atoms really      บ
-บ do form a rigid group. In any case, the computation is notoriously         บ
-บ unstable. If you get negative values on the diagonals of T, L or S, or     บ
-บ if CRYSTALS warns you it is having difficulties, look at a thermal         บ
-บ ellipsiod plot. If any atoms look suspicious, do not include them in       บ
-บ the group. If the centroid is far from the origin, try centroid            บ
-บ re-cycling.                                                                บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  A SCRIPT to compute the molecular thermal tensors T, L and S
+  The minimum number of atoms in a group should be 5. The bigger the
+  group the more stable the computation, provided that the atoms really
+  do form a rigid group. In any case, the computation is notoriously
+  unstable. If you get negative values on the diagonals of T, L or S, or
+  if CRYSTALS warns you it is having difficulties, look at a thermal
+  ellipsiod plot. If any atoms look suspicious, do not include them in
+  the group. If the centroid is far from the origin, try centroid
+  re-cycling.
+ 
 % ELSE
 A SCRIPT to compute the molecular thermal tensors T, L and S
 % END IF

@@ -2,15 +2,15 @@
 % VARIABLE LOGICAL EXSLANT
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ The script PLANE uses the CRYSTALS command MOLAX, which computes the       บ
-บ best planes and lines (molecular axes) through groups of atoms, and the    บ
-บ angles between these important molecular parameters.                       บ
-บ Each plane normal and best line is given a serial number as it is          บ
-บ computed. If you want to compute the angle between any of these vectors    บ
-บ make a note  of their serial numbers                                       บ
-บ The angle between two plane normals is the dihedral angle of the planes    บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  The script PLANE uses the CRYSTALS command MOLAX, which computes the
+  best planes and lines (molecular axes) through groups of atoms, and the
+  angles between these important molecular parameters.
+  Each plane normal and best line is given a serial number as it is
+  computed. If you want to compute the angle between any of these vectors
+  make a note  of their serial numbers
+  The angle between two plane normals is the dihedral angle of the planes
+ 
 % ELSE
 A SCRIPT to compute best lines and planes
 % END IF

@@ -1,27 +1,27 @@
 %SCRIPT MAPS
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This script gives access to the basic CRYSTALS commands needed to          บ
-บ compute and interpret Fourier syntheses.                                   บ
-บ  To compute a Fourier map, you must have some atoms from an E-map or       บ
-บ an an earlier Fouroer or least squares cycle. These must be used to        บ
-บ compute structure factors (to get new phase angles), which are in turn     บ
-บ used with the observed structure amplitudes to compute the new map. The    บ
-บ map is normally only computed for one asymmetric unit of the cell, as      บ
-บ defined in LIST14. This is set up automatically when you input the         บ
-บ space  group, but can be changed for special purposes. Because a           บ
-บ chemical molecule may lie across the boundaries of the asymmetric unit,    บ
-บ the molecule will appear as fragments in the fourier map. The fragments    บ
-บ can be assembled into a single molecuule using REGROUP or COLLECT. The     บ
-บ electron density figure fields caan be examined by hand if required,       บ
-บ but for most purposes the automatic peak search finds suitable local       บ
-บ maxima, corresponding to atomic sites. The command PEAKS converts the      บ
-บ peaks list into atoms.                                                     บ
-บ     Slant Fouriers are sections lying in arbitary orientations, often      บ
-บ chosen to correspond to molecular planes. There are no peak search         บ
-บ facilities for slant Fouriers                                              บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This script gives access to the basic CRYSTALS commands needed to
+  compute and interpret Fourier syntheses.
+   To compute a Fourier map, you must have some atoms from an E-map or
+  an an earlier Fouroer or least squares cycle. These must be used to
+  compute structure factors (to get new phase angles), which are in turn
+  used with the observed structure amplitudes to compute the new map. The
+  map is normally only computed for one asymmetric unit of the cell, as
+  defined in LIST14. This is set up automatically when you input the
+  space  group, but can be changed for special purposes. Because a
+  chemical molecule may lie across the boundaries of the asymmetric unit,
+  the molecule will appear as fragments in the fourier map. The fragments
+  can be assembled into a single molecuule using REGROUP or COLLECT. The
+  electron density figure fields caan be examined by hand if required,
+  but for most purposes the automatic peak search finds suitable local
+  maxima, corresponding to atomic sites. The command PEAKS converts the
+  peaks list into atoms.
+      Slant Fouriers are sections lying in arbitary orientations, often
+  chosen to correspond to molecular planes. There are no peak search
+  facilities for slant Fouriers
+ 
 % ELSE
 A SCRIPT to help with the computation and processing of Fourier maps
 % END IF

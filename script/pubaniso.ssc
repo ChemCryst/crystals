@@ -2,11 +2,11 @@
 % VARIABLE INTEGER NLINE NCHAR
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ The anisotropic temperature factor list is a bit cramped on A4 paper       บ
-บ in portrait mode (80 columns). If your printer supports landscape mode     บ
-บ (120) columns, the table can be rotated through 90 degrees.                บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  The anisotropic temperature factor list is a bit cramped on A4 paper
+  in portrait mode (80 columns). If your printer supports landscape mode
+  (120) columns, the table can be rotated through 90 degrees.
+ 
 %   COPY '#PAUSE 10'
 % ELSE
       Publication tables of anisotropic temperature factors

@@ -3,15 +3,15 @@
 % VARIABLE REAL WIDTH XMIN STEPX ZSECT MINZ STEPZ
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT helps with the computation of arbitarily orientated Fourier    บ
-บ sections.                                                                  บ
-บ The orientation of the section is defined by a 3x3 matrix. The extent      บ
-บ of the section is defined in terms of an origin and minimum and maximum    บ
-บ limits in the x' and y' directions.                                        บ
-บ   If the section lies parallel to a molecular plane, a best plane          บ
-บ calculation is performed to get the necessary matrix and centroid.         บ
-ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This SCRIPT helps with the computation of arbitarily orientated Fourier
+  sections.
+  The orientation of the section is defined by a 3x3 matrix. The extent
+  of the section is defined in terms of an origin and minimum and maximum
+  limits in the x' and y' directions.
+    If the section lies parallel to a molecular plane, a best plane
+  calculation is performed to get the necessary matrix and centroid.
+ 
 %   COPY '#PAUSE 2'
 % BLOCK
 %   ON ERROR REPEAT
@@ -34,9 +34,9 @@
 %  COPY '#MOLAX'
    You have the opportunity to compute the best plane through groups of
    atoms defined by an 'UNTIL' sequence, or the individual atoms.
-
+ 
    DEFINE A NEW PLANE.
-
+ 
 %    VERIFY YES NO
 %    ON ERROR TERMINATE
 %    COPY 'ATOM '
@@ -84,7 +84,7 @@
 %  COPY 'PLANE'
 %  COPY 'SAVE'
 %  COPY 'END'
-
+ 
 % CLEAR
 %%
 % BLOCK

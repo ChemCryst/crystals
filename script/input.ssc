@@ -1,18 +1,18 @@
 %SCRIPT INPUT
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ  This SCRIPT assists in loading numeric data into the CRYSTALS database    บ
-บ *.dsc. The data is grouped by function, and each group is called a LIST    บ
-บ The SCRIPTS DATA and DISK explain which LISTS contain which data.          บ
-บ In general, input of a new data list over writes a previous list. If       บ
-บ you make an error inputting a LIST, terminate that input and start over    บ
-บ again. The SCRIPT MODIFY permits some lists to be edited in situ.          บ
-บ       If you prefer to use a system editor to prepare files containing     บ
-บ your data, you will need to refer to the printed manual for details.       บ
-บ Files containing data can be read into CRYSTALS using the SCRIPT 'USE',    บ
-บ which is on the menu from this script.                                     บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+   This SCRIPT assists in loading numeric data into the CRYSTALS database
+  *.dsc. The data is grouped by function, and each group is called a LIST
+  The SCRIPTS DATA and DISK explain which LISTS contain which data.
+  In general, input of a new data list over writes a previous list. If
+  you make an error inputting a LIST, terminate that input and start over
+  again. The SCRIPT MODIFY permits some lists to be edited in situ.
+        If you prefer to use a system editor to prepare files containing
+  your data, you will need to refer to the printed manual for details.
+  Files containing data can be read into CRYSTALS using the SCRIPT 'USE',
+  which is on the menu from this script.
+ 
 %   COPY '#PAUSE 5'
 % ELSE
  CRYSTALS LIST input controlling script

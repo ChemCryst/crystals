@@ -1,23 +1,23 @@
 %SCRIPT DISK
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ The file *.dsc is a binary data base which accumulates data for a given    บ
-บ structure analysis. It cannot be printed or edited directly. In it,data    บ
-บ is stored in logical groups called LISTS, each with an identifying TYPE    บ
-บ and SERIAL number. A single copy is kept of most LISTS, new versions       บ
-บ over-writing old ones. An important excepion is LIST 5, the atom           บ
-บ coordinates.                                                               บ
-บ The newest version of a LIST is normally active. A previous version can    บ
-บ be made active with RESET, if it exists.                                   บ
-บ The .dsc file grows automatically for small lists. For large lists,        บ
-บ like the normal matrix (LIST 11) the .dsc file must be extended by hand    บ
-บ or unlimited extension enabled. The .dsc file cannot be shortened, but     บ
-บ unused space within it can be recovered with PURGE.                        บ
-บ In the event of user error (eg operating on a non existant LIST, this      บ
-บ SCRIPT is abandoned                                                        บ
-บ Do not use .dsc files as a form of archiving. They are machine specific    บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  The file *.dsc is a binary data base which accumulates data for a given
+  structure analysis. It cannot be printed or edited directly. In it,data
+  is stored in logical groups called LISTS, each with an identifying TYPE
+  and SERIAL number. A single copy is kept of most LISTS, new versions
+  over-writing old ones. An important excepion is LIST 5, the atom
+  coordinates.
+  The newest version of a LIST is normally active. A previous version can
+  be made active with RESET, if it exists.
+  The .dsc file grows automatically for small lists. For large lists,
+  like the normal matrix (LIST 11) the .dsc file must be extended by hand
+  or unlimited extension enabled. The .dsc file cannot be shortened, but
+  unused space within it can be recovered with PURGE.
+  In the event of user error (eg operating on a non existant LIST, this
+  SCRIPT is abandoned
+  Do not use .dsc files as a form of archiving. They are machine specific
+ 
 %   COPY '#PAUSE 10'
 % ELSE
 A SCRIPT to help with management of the DSC file

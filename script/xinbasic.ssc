@@ -4,19 +4,19 @@
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 % VARIABLE LOGICAL ANSWER
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ     Before you start data reduction, you should have loaded the basic      บ
-บ     data lists for your structure. Your DATA-BASE should contain data      บ
-บ     on the following :-                                                    บ
-บ     LIST  1  The crystal's unit cell parameters                            บ
-บ     LIST  2  The crystal's symmetry                                        บ
-บ     LIST  3  The scattering factors for elements in the structure          บ
-บ     LIST 13  The diffraction conditions used in the experiment             บ
-บ     LIST 23  The refinement conditions                                     บ
-บ     LIST 29  The elemental properties and composition                      บ
-บ     LIST 30  The general experimantal conditions                           บ
-บ     LIST 31  The cell parameter e.s.d.s                                    บ
-ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+      Before you start data reduction, you should have loaded the basic
+      data lists for your structure. Your DATA-BASE should contain data
+      on the following :-
+      LIST  1  The crystal's unit cell parameters
+      LIST  2  The crystal's symmetry
+      LIST  3  The scattering factors for elements in the structure
+      LIST 13  The diffraction conditions used in the experiment
+      LIST 23  The refinement conditions
+      LIST 29  The elemental properties and composition
+      LIST 30  The general experimantal conditions
+      LIST 31  The cell parameter e.s.d.s
+ 
 %   COPY '#PAUSE 10'
 % ELSE
     Checking the basic data, LISTS 1, 2, 3, 13, 23, 29, 30  and 31
@@ -41,12 +41,12 @@
 %  CLEAR
 %  BLOCK
 %   LOOP
-%    IF ( EXISTS 30 .NE. 1 ) THEN 
+%    IF ( EXISTS 30 .NE. 1 ) THEN
      General Information  (LIST 30) is missing
 %     COPY '#SCRIPT LIST30'
 %    END IF
 %%
-%    IF ( EXISTS 1 .NE. 1 ) THEN 
+%    IF ( EXISTS 1 .NE. 1 ) THEN
      Cell parameters (LIST 1)  are missing
 %     COPY '#SCRIPT XCELLIN'
 %     IF ( LCANCEL .EQ. TRUE ) THEN
@@ -66,7 +66,7 @@
 %     END IF
 %    END IF
 %%
-%    IF ( EXISTS 2 .NE. 1 ) THEN 
+%    IF ( EXISTS 2 .NE. 1 ) THEN
      Symmetry information  (LIST 2)  is missing
 %     COPY '#SCRIPT XSPACE'
 %     IF ( LCANCEL .EQ. TRUE ) THEN
@@ -79,7 +79,7 @@
 %     COPY '#SCRIPT XINLIST3'
 %    END IF
 %%
-%    IF ( EXISTS 23 .NE. 1 ) THEN 
+%    IF ( EXISTS 23 .NE. 1 ) THEN
      Structure Factor control list (LIST 23)  is missing
 %%     Put in a default LIST 23
 %      COPY '#LIST 23'
@@ -98,12 +98,12 @@
 %      COPY 'END'
 %    END IF
 %%
-%    IF ( EXISTS 29 .NE. 1 ) THEN 
+%    IF ( EXISTS 29 .NE. 1 ) THEN
      Elemental properties (LIST 29)  is missing
 %     COPY '#SCRIPT INCOMP'
 %    END IF
 %%
-%    IF ( EXISTS 31 .NE. 1 ) THEN 
+%    IF ( EXISTS 31 .NE. 1 ) THEN
      Cell parameter esds (LIST 31)  is missing
 %     COPY '#SCRIPT LIST31'
 %    END IF

@@ -1,14 +1,14 @@
 %SCRIPT TORSION
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT computes the torsion angles defined by groups of four atoms    บ
-บ A positive angle rotates the plane defined by atoms 1,2 amd 3 into the     บ
-บ plane defined by atoms 3,4 and 4 in a clockwise direction about the        บ
-บ vector defined by atoms 2 and 3 in that order.                             บ
-บ Atoms 1,2 amd 3 must be given explicitly. Atom 4 can either be a single    บ
-บ atom or a series of atoms defined by an until sequence                     บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This SCRIPT computes the torsion angles defined by groups of four atoms
+  A positive angle rotates the plane defined by atoms 1,2 amd 3 into the
+  plane defined by atoms 3,4 and 4 in a clockwise direction about the
+  vector defined by atoms 2 and 3 in that order.
+  Atoms 1,2 amd 3 must be given explicitly. Atom 4 can either be a single
+  atom or a series of atoms defined by an until sequence
+ 
 % ELSE
 A SCRIPT to compute torsion angles
 % END IF

@@ -1,15 +1,15 @@
 %SCRIPT FGUIDE
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT guides you through computing Fourier maps, using the           บ
-บ results to refine existing atoms or find new atoms, assigning chemical     บ
-บ types on the basis of electron density, applying symmetry operators to     บ
-บ atoms so that they form a 'molecule', reordering the atom list so that     บ
-บ bonded atoms are adjacent, and resequencing the atom serial numbers.       บ
-บ It makes use only of SCRIPTS which can be selected manually from the       บ
-บ MAPS menu.                                                                 บ
-ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This SCRIPT guides you through computing Fourier maps, using the
+  results to refine existing atoms or find new atoms, assigning chemical
+  types on the basis of electron density, applying symmetry operators to
+  atoms so that they form a 'molecule', reordering the atom list so that
+  bonded atoms are adjacent, and resequencing the atom serial numbers.
+  It makes use only of SCRIPTS which can be selected manually from the
+  MAPS menu.
+ 
 % ELSE
       a SCRIPT to guide you through the computation and processing of
       Fourier maps
@@ -33,7 +33,7 @@
 %      END BLOCK
 %%
 %      BLOCK                                         %INFO%
-
+ 
 PHASE 1
       Remove any atoms of type 'Q' or 'PEAK' from the atom list, offer
       the opportunity to recompute phases or the scale factor, compute
@@ -45,7 +45,7 @@ PHASE 2
       with Rho below a given threshold, rename any atoms and convert
       any remaining peaks (Q) to carbon.
       Phases 1 and 2 may be repeated until, sometimes, a full structure
-      is resolved. 
+      is resolved.
 %     COPY '#PAUSE 5'
 PHASE 3
       Phase 3 can be used to reorder the atom list so that

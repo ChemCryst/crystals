@@ -7,28 +7,28 @@
 % VARIABLE LOGICAL QANSWER
 % VARIABLE CHARACTER QLINE3
 % VARIABLE CHARACTER QLIST1 QLIST2 QLIST3 QLIST4 QLIST5
-% VARIABLE CHARACTER QLIST6 
-% VARIABLE CHARACTER QHELP1 QHELP2 QHELP3 QHELP4 QHELP5 
-% VARIABLE CHARACTER QHELP6 
+% VARIABLE CHARACTER QLIST6
+% VARIABLE CHARACTER QHELP1 QHELP2 QHELP3 QHELP4 QHELP5
+% VARIABLE CHARACTER QHELP6
 % VARIABLE INTEGER   QIANSWER
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ CRYSTALS can prepare data in a suitable format for the Direct Methods      บ
-บ programs  SHELXS and SIR.                                                  บ
-บ It can also prepare data for a SHELXS Patterson, or compute a Patterson    บ
-บ itself.                                                                    บ
-บ The programs SHELXS and SIR may not all be available in all                บ
-บ implementations of CRYSTALS. In some cases, the 'foreign' program can      บ
-บ run from within CYSTALS, other wise the user must initialise its           บ
-บ execution.                                                                 บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  CRYSTALS can prepare data in a suitable format for the Direct Methods
+  programs  SHELXS and SIR.
+  It can also prepare data for a SHELXS Patterson, or compute a Patterson
+  itself.
+  The programs SHELXS and SIR may not all be available in all
+  implementations of CRYSTALS. In some cases, the 'foreign' program can
+  run from within CYSTALS, other wise the user must initialise its
+  execution.
+ 
 % ELSE
 A SCRIPT to initiate or input the results of Direct Methods computations
 % END IF
 %  IF EXISTS 6 .LT. 1 THEN
   You have no reflection data stored. You cannot solve this structure !
-%    EVALUATE QLINE1 = 'You have no reflection data stored.'  
+%    EVALUATE QLINE1 = 'You have no reflection data stored.'
 %    EVALUATE QLINE2 = 'You can not solve this structure yet!'
 %    EVALUATE QTITLE = 'Structure Solution'
 %    EVALUATE BUTTOK = '&Ok'
@@ -37,7 +37,7 @@ A SCRIPT to initiate or input the results of Direct Methods computations
 %  END IF
 %
 %  IF EXISTS 5 .EQ. 1 THEN
-%    EVALUATE QLINE1 = 'You already have a model stored.'  
+%    EVALUATE QLINE1 = 'You already have a model stored.'
 %    EVALUATE QLINE2 = 'Are you sure you want to continue?'
 %    EVALUATE QTITLE = 'Structure Solution / Input'
 %    EVALUATE BUTTOK = '&Cancel'

@@ -2,10 +2,10 @@
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE INTEGER NLINE
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ Publication listing of positional parameters                               บ
-บ The format is suitable for printing on A4 pages                            บ
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  Publication listing of positional parameters
+  The format is suitable for printing on A4 pages
+ 
 %   COPY '#PAUSE 10'
 % ELSE
       Publication listing of positional parameters

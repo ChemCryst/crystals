@@ -4,20 +4,20 @@
 %  EVALUATE RECOMPUTE = FALSE
 %  VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ In principle, DIFABS should be applied to data which has not had the       บ
-บ reflection indices modified in any way, including applying symmetry        บ
-บ or Friedels Law. Exactly equivalent reflections (multiple observations)    บ
-บ may have been merged.                                                      บ
-บ     The refinement should have been completed with as many atoms as can    บ
-บ be located or geometrically placed, with ISOTROPIC temperature factors.    บ
-บ HOWEVER _                                                                  บ
-บ     If the original data were bye and large from one asymmetric part of    บ
-บ the lattice only, i.e. only a small percentage equivalent reflections      บ
-บ (perhaps the -1 zones in Oxford), then DIFABS may give an acceptable       บ
-บ result on merged data. If anisotropic refinement has been performed,       บ
-บ the script can restore equivalent isotropic atoms.                         บ
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  In principle, DIFABS should be applied to data which has not had the
+  reflection indices modified in any way, including applying symmetry
+  or Friedels Law. Exactly equivalent reflections (multiple observations)
+  may have been merged.
+      The refinement should have been completed with as many atoms as can
+  be located or geometrically placed, with ISOTROPIC temperature factors.
+  HOWEVER _
+      If the original data were bye and large from one asymmetric part of
+  the lattice only, i.e. only a small percentage equivalent reflections
+  (perhaps the -1 zones in Oxford), then DIFABS may give an acceptable
+  result on merged data. If anisotropic refinement has been performed,
+  the script can restore equivalent isotropic atoms.
+ 
 %   COPY '#PAUSE 10'
 % ELSE
     Script to help running DIFABS in CRYSTALS

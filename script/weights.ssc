@@ -1,8 +1,8 @@
 %SCRIPT WEIGHTS
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+ 
 % ELSE
 A SCRIPT to assist with the weighting of least squares refinement
 % END IF
@@ -18,7 +18,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 %  COPY 'END'
 %  LOOP
 %    VERIFY BACK HELP DESCRIPTION ANALYSE UNIT STATISTICAL CHEBYCHEV -
-     OPTIMAL 
+     OPTIMAL
 %    GET FINAL FILL ABBREVIATED -
    'Script required' 'BACK'
 %    CLEAR
@@ -53,7 +53,7 @@ parameters to the model. See, for example, DIFABS.
    If you can do neither of these, then you should modify the refinement
 weights to minimise the problem.
  In the absence of specific technical advice, try automatic weighting
-CRYSTALS  uses different methods for F snd Fsq refinement. Choose the scheme 
+CRYSTALS  uses different methods for F snd Fsq refinement. Choose the scheme
 which gives a sufficiently constant distribution with the minimum number of
 parameters.
 Occasional ranges having a large residual can be ignored in routine work.

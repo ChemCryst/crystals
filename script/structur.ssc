@@ -2,16 +2,16 @@
 %VARIABLE INTEGER SOLVEMETHOD
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ CRYSTALS can prepare data in a suitable format for the Direct Methods      บ
-บ programs  SHELXS and SIR.                                                  บ
-บ It can also prepare data for a SHELXS Patterson, or compute a Patterson    บ
-บ itself.                                                                    บ
-บ The programs SHELXS and SIR may not all be available in all                บ
-บ implementations of CRYSTALS. In some cases, the 'foreign' program can      บ
-บ run from within CYSTALS, other wise the user must initialise its           บ
-บ execution.                                                                 บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  CRYSTALS can prepare data in a suitable format for the Direct Methods
+  programs  SHELXS and SIR.
+  It can also prepare data for a SHELXS Patterson, or compute a Patterson
+  itself.
+  The programs SHELXS and SIR may not all be available in all
+  implementations of CRYSTALS. In some cases, the 'foreign' program can
+  run from within CYSTALS, other wise the user must initialise its
+  execution.
+ 
 % ELSE
 A SCRIPT to initiate or input the results of Direct Methods computations
 % END IF

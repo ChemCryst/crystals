@@ -207,9 +207,9 @@ A SCRIPT to help you input a new trial model
 %      END IF
 %%
 %    VERIFY YES NO
-  This section resequences the atoms so that adjacent atoms have 
-  sequential serial numbers - its usually a good idea to do it now 
-%    GET NOSTORE FINAL ABBREVIATED - 
+  This section resequences the atoms so that adjacent atoms have
+  sequential serial numbers - its usually a good idea to do it now
+%    GET NOSTORE FINAL ABBREVIATED -
  'Do you want to resequence the atoms' 'YES'
 %    IF VALUE .EQ. 1 THEN
 %      COPY '#REGROUP'
@@ -244,13 +244,13 @@ A SCRIPT to help you input a new trial model
 %      END IF
 %  END BLOCK
 %%
-ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ If the structure looked more-or-less complete, then for routine work      บ
-บ                   continue with LEAST SQUARES                             บ
-บ                                                                           บ
-บ   If the structure is incomplete or fragmented, then try Fourier maps     บ
-บ                                                                           บ
-ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  If the structure looked more-or-less complete, then for routine work
+                    continue with LEAST SQUARES
+ 
+    If the structure is incomplete or fragmented, then try Fourier maps
+ 
+ 
 %  VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED -
  'Is the structure more or less correct?' 'YES'
