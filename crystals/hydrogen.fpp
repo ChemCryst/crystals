@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2004/05/18 10:28:03  djw
+C More robust H13 action in response to comments by Alison Edwards
+C
 C Revision 1.22  2003/10/31 17:21:27  rich
 C Remove debugging prints.
 C
@@ -181,10 +184,7 @@ C--'DISTANCE' INSTRUCTION
       IF(ME)1300,1300,1400
 1300  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1350)
-      ENDIF
-      WRITE(NCAWU,1350)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1350)
       WRITE ( CMON, 1350)
       CALL XPRVDU(NCVDU, 1,0)
 1350  FORMAT(' No arguments found')
@@ -194,10 +194,7 @@ C--READ THE DISTANCE
       IF(KSYNUM(Z))1450,1550,1450
 1450  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)ISTORE(MF+1)
-      ENDIF
-      WRITE(NCAWU,1500) ISTORE(MF+1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)ISTORE(MF+1)
       WRITE ( CMON, 1500) ISTORE(MF+1)
       CALL XPRVDU(NCVDU, 1,0)
 1500  FORMAT(' New value of wrong type or missing',
@@ -266,10 +263,7 @@ C--CHECK THAT NO COORDINATES HAVE BEEN GIVEN
       IF(ISTORE(MQ+5))2300,2400,2300
 2300  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2350)
-      ENDIF
-      WRITE(NCAWU,2350)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2350)
       WRITE ( CMON, 2350)
       CALL XPRVDU(NCVDU, 1,0)
 2350  FORMAT(' Parameters are illegal for this instruction')
@@ -319,10 +313,7 @@ C2900  CONTINUE
       IF (JC .EQ. JJ) GOTO 3000
 CDJW2000<
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2950)
-      ENDIF
-      WRITE(NCAWU,2950)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2950)
       WRITE ( CMON, 2950)
       CALL XPRVDU(NCVDU, 1,0)
 2950  FORMAT(' The number of atoms is wrong')
@@ -380,10 +371,7 @@ C--CHECK FOR ANY ERRORS
 3500  CONTINUE
       IF ( LEF .NE. 0 ) GO TO 9920
 C--FORM AND OUTPUT THE RESULTANT LIST
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3600)N5
-      ENDIF
-       WRITE(NCAWU,3600) N5
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,3600)N5
       WRITE ( CMON, 3600) N5
       CALL XPRVDU(NCVDU, 1,0)
 3600  FORMAT (1X , 'List now contains' , I6 , ' atoms' )
@@ -398,10 +386,7 @@ C--'AFTER' INSTRUCTION
 3700  CONTINUE
       IF(JS)3750,3750,3850
 3750  CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3800)
-      ENDIF
-      WRITE(NCAWU,3800)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,3800)
       WRITE ( CMON, 3800)
       CALL XPRVDU(NCVDU, 1,0)
 3800  FORMAT(' No hydrogen atom(s) have been placed')
@@ -603,6 +588,7 @@ C----- CLEAR A BUFFER
       JU=NFL
       NFL=NFL+5
 C
+      IF (ISSPRT.EQ.0) WRITE (NCWU,50)
       WRITE (CMON,50)
       CALL XPRVDU (NCVDU,2,1)
 50    FORMAT (10X,' Per-hydrogenation of Carbon atoms')
@@ -614,11 +600,6 @@ C--LOAD THE INPUT LIST
       IF (IERFLG.LT.0) GO TO 2550
 C--FIND THE OUTPUT LIST TYPE
       LN2=KTYP05(MY)
-C
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,50)
-      END IF
-C
 C----- SET THE DEFAULT TEMPERATURE FACTOR OR MULTIPLIER
       UFACT=1.2
       CHECK = VALUE + ZERO
@@ -680,10 +661,7 @@ C--'DISTANCE' INSTRUCTION
       IF (ME) 400,400,500
 400   CONTINUE
       CALL XPCLNN (LN)
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,450)
-      END IF
-      WRITE (NCAWU,450)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,450)
       WRITE (CMON,450)
       CALL XPRVDU (NCVDU,1,0)
 450   FORMAT (' No arguments found')
@@ -693,10 +671,7 @@ C--READ THE DISTANCE
       IF (KSYNUM(Z)) 550,650,550
 550   CONTINUE
       CALL XPCLNN (LN)
-      IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,600) ISTORE(MF+1)
-      END IF
-      WRITE (NCAWU,600) ISTORE(MF+1)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,600) ISTORE(MF+1)
       WRITE (CMON,600) ISTORE(MF+1)
       CALL XPRVDU (NCVDU,1,0)
 600   FORMAT (' New value of wrong type or missing',' at about column',
@@ -924,13 +899,11 @@ C----- GET THE ATOM ID
       IF (NBONDS.GT.4) THEN
          IF (ISSPRT.EQ.0) WRITE (NCWU,1550) NBONDS,ISTORE(M5A),
      1    CTEMP(1:LTEMP)
-         WRITE (NCAWU,1550) NBONDS,ISTORE(M5A),CTEMP(1:LTEMP)
          WRITE (CMON,1550) NBONDS,ISTORE(M5A),CTEMP(1:LTEMP)
          CALL XPRVDU (NCVDU,1,0)
 1550     FORMAT (10X,I3,' valent',A4,' - ',A)
       ELSE IF (NBONDS.LE.0) THEN
          IF (ISSPRT.EQ.0) WRITE (NCWU,1600) ISTORE(M5A),CTEMP(1:LTEMP)
-         WRITE (NCAWU,1600) ISTORE(M5A),CTEMP(1:LTEMP)
          WRITE (CMON,1600) ISTORE(M5A),CTEMP(1:LTEMP)
          CALL XPRVDU (NCVDU,1,0)
 1600     FORMAT (10X,' Non-bonded',A4,' - ',A)
@@ -1007,9 +980,6 @@ C         3 ON SP3 , 2 ON SP2 OR 1 ON SP1
             IF (NHYB.NE.0) THEN
                WRITE (CMON,1700) CTEMP(1:LTEMP),NHYB,LHYB,NBONDS,LHYB
                CALL XPRVDU (NCVDU,1,0)
-               WRITE (NCAWU,'(A)') CMON(1)(:)
-               WRITE (NCAWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,DELTA2,
-     1          DEV,DELTAA
                IF (ISSPRT.EQ.0) THEN
                   WRITE (NCWU,'(A)') CMON(1)(:)
                   WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,
@@ -1028,7 +998,6 @@ C----   WRITE COMMAND TO FILE.
      1       ISEC)
          ELSE
             IF (ISSPRT.EQ.0) WRITE (NCWU,1750) CTEMP(1:LTEMP)
-            WRITE (NCAWU,1750) CTEMP(1:LTEMP)
             WRITE (CMON,1750) CTEMP(1:LTEMP)
             CALL XPRVDU (NCVDU,1,0)
 1750        FORMAT (' Unassignable carbon - ',A)
@@ -1041,7 +1010,6 @@ C
       ELSE IF ((ISTORE(M5A).EQ.INTRO).AND.(ITYPEF.EQ.2)) THEN
         WRITE (CMON,3261) istore(m5a), store(m5a+1)
         CALL XPRVDU (NCVDU,1,0)
-        write(ncawu,'(a)') cmon(1)
 3261    FORMAT ('NITROGEN H-PLACEMENT ', a4, f6.0)
          IF (NBONDS.EQ.1) THEN
             IF (STORE(IADD(1)+10).GT.1.43) THEN
@@ -1343,8 +1311,6 @@ C--- ONLY LOOK FOR SHORT CONTACTS
         AC=AOTEMP
         AP=APTEMP
         DCURT=STORE(JE+10)
-        WRITE (NCAWU,1) DCURT
-1       FORMAT ('DCURT=', F10.3)
 C--SET UP A DAFT DISTANCE
         DMIN=1000
 C
@@ -1355,10 +1321,8 @@ C-- THE ADDRESS OF THE NEW PIVOT IS IN ISTORE(IADD(I))
 C
 C CONSIDER ONLY THOSE ATOMS WITHIN 1.9 ANGSTROM WHEN DECIDING A PIVOT
 C FOR THE SECOND STACK
-        WRITE (NCAWU,21) STORE(M5S+10)
 21       FORMAT ('M5S+10=', F10.3)
         IF (STORE(M5S+10) . LT. 1.9) THEN
-        WRITE (NCAWU,31) ISTORE(M5A), STORE(M5A+1)
 31      FORMAT ('ATOM',A4, F10.2)
 C
 C   ------ENSURE THAT NFL POINTS TO THE END OF THE OLD DISTANCE STACK
@@ -1368,8 +1332,6 @@ C    THE START OF THE NEW STACK
         M5=L5
 C
         NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
-        WRITE (NCAWU,3) NDTEMP
-3       FORMAT ('NDTEMP=', I10)
         IF (NDTEMP .LT. 2) GOTO 1631
 C
 C
@@ -1381,7 +1343,6 @@ CHECK IT IS A CARBON
 CHECK ITS THE CURRENT SMALLEST
         IF (STORE(IJJE+10) .LT. DMIN) THEN
         DMIN=STORE(IJJE+10)
-        WRITE (NCAWU,25) DMIN
 25       FORMAT ('DMIN=', F10.3)
         ISEC=IJJE
         ENDIF
@@ -1715,17 +1676,11 @@ C
 C
        CWRITE(IEND:IEND+1)=') '
 C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,100) CWRITE(1:IEND)
-      ENDIF
-      WRITE(NCAWU,100) CWRITE(1:IEND)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,100) CWRITE(1:IEND)
       WRITE ( CMON, 100) CWRITE(1:IEND)
       CALL XPRVDU(NCVDU, 1,0)
 100   FORMAT(10X, ' CRYSTALS cannot place Hydrogen atoms on ',A)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,200) CTYPE
-      ENDIF
-      WRITE(NCAWU,200) CTYPE
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,200) CTYPE
       WRITE ( CMON, 200) CTYPE
       CALL XPRVDU(NCVDU, 1,0)
 200   FORMAT(10X,' - no suitable third atom for H',A2,' card.')
@@ -2188,10 +2143,7 @@ C----- EVADE OCCASIONAL INEXPLICABLE SINGULARITIES
       IF(I)1100,1200,1100
 1100  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1150)
-      ENDIF
-      WRITE(NCAWU,1150)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1150)
       WRITE ( CMON, 1150)
       CALL XPRVDU(NCVDU, 1,0)
 1150  FORMAT(' Given atoms do not define a unique plane')
@@ -2269,6 +2221,10 @@ CODE FOR SH13
 c----- mostly re-written by DJW May 2004 in response to 
 c      problems noted by Alison Edwards
 c
+c      MODE  1 FOR ORIGINAL SPAGNA CENTROID METHOD
+C            2 FOR ROLLETT EQUAL-ANGLE METHOD
+      PARAMETER(MODE=2)
+c
       dimension ACC(3,3)
 C
 \ISTORE
@@ -2305,36 +2261,78 @@ C--WE USE THE T.F. OF THE BONDED ATOM
       KPR = ISTORE(JB+14)
       SY = STORE(JU) * STORE(JU+4)
 1050  CONTINUE
-c----- find the vectors
-      DO 100 I = 0,2
-                  STORE(JE+3+I) = STORE(JE+I) - STORE(JE+3+I)
-                  STORE(JE+6+I) = STORE(JE+I) - STORE(JE+6+I)
-                  STORE(JE+9+I) = STORE(JE+I) - STORE(JE+9+I)
-100   CONTINUE
+
+      IF (MODE .EQ. 1) THEN
+C----- SPAGNA CENTROID METHOD.  FINDS CENTROID OF 3 ADJACENT ATOMS AND 
+C      PROJECTS A LINE THROUGH THE PIVOT ATOM.  
 C----- NORMALISE THE ATOMIC DISTANCES
-      I = NORM3(STORE(JE+3))
-      I = NORM3(STORE(JE+6))
-      I = NORM3(STORE(JE+9))
-c----- invert the matrix of coordinates
-      call matinv(store(je+3), acc, det)
-      IF (abs(det) .Le. zero) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,1150)
-        WRITE(NCAWU,1150)
-        WRITE ( CMON, 1150)
-        CALL XPRVDU(NCVDU, 1,0)
-1150    FORMAT(' The 4 atoms are co-planar')
-        LEF=LEF+1
-        JS=0
-        RETURN
-      endif
-c----- mutliply matrix onto unit vector
-      store(jp  )= acc(1,1)+acc(2,1)+acc(3,1)
-      store(jp+1)= acc(1,2)+acc(2,2)+acc(3,2)
-      store(jp+2)= acc(1,3)+acc(2,3)+acc(3,3)
-      i = norm3(store(jp))
-      DO 1200 N=0,2
-        STORE(JQ+N)=STORE(JE+n)+STORE(JP+N)*SX
-1200  CONTINUE
+        DO 100 I = 0,2
+          STORE(JE+3+I) = STORE(JE+3+I) - STORE(JE+I)
+          STORE(JE+6+I) = STORE(JE+6+I) - STORE(JE+I)
+          STORE(JE+9+I) = STORE(JE+9+I) - STORE(JE+I)
+100     CONTINUE
+        I = NORM3(STORE(JE+3))
+        I = NORM3(STORE(JE+6))
+        I = NORM3(STORE(JE+9))
+        CALL SETV(STORE(JP),0.0)
+C-----  FIND THE CENTROID
+        DO 210 N = 3,9,3
+          DO 200 I = 0,2
+            STORE(JP+I) = STORE(JP+I) + STORE(JE+N+I)
+200       CONTINUE
+210     CONTINUE
+        I = NORM3(STORE(JP))
+        IF (I .LT. 0) THEN
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,1150)
+          WRITE ( CMON, 1150)
+          CALL XPRVDU(NCVDU, 1,0)
+1150      FORMAT(' The 4 atoms are co-planar')
+C-----    TRY TO FORM A CROSS PRODUCT
+          I = NCROP3(STORE(JE+3), STORE(JE+6), STORE(JP))
+          IF (I .LT. 0) THEN
+C           TRY ANOTHER PAIR
+            I = NCROP3(STORE(JE+3), STORE(JE+9), STORE(JP))
+              IF (I .LT. 0) THEN
+                LEF=LEF+1
+                JS=0
+                RETURN
+              ENDIF
+          ENDIF
+        ENDIF
+        DO 300 N=0,2
+          STORE(JQ+N)=STORE(JE+n)-STORE(JP+N)*SX
+300     CONTINUE
+      ELSE
+C-----  ROLLETT METHOD
+c-----  find the vectors
+        DO 2100 I = 0,2
+          STORE(JE+3+I) = STORE(JE+I) - STORE(JE+3+I)
+          STORE(JE+6+I) = STORE(JE+I) - STORE(JE+6+I)
+          STORE(JE+9+I) = STORE(JE+I) - STORE(JE+9+I)
+2100    CONTINUE
+C-----  NORMALISE THE ATOMIC DISTANCES
+        I = NORM3(STORE(JE+3))
+        I = NORM3(STORE(JE+6))
+        I = NORM3(STORE(JE+9))
+c-----  invert the matrix of coordinates
+        call matinv(store(je+3), acc, det)
+        IF (abs(det) .Le. zero) THEN
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,1150)
+          WRITE ( CMON, 1150)
+          CALL XPRVDU(NCVDU, 1,0)
+          LEF=LEF+1
+          JS=0
+          RETURN
+        ENDIF
+c-----  mutliply matrix onto unit vector
+        store(jp  )= acc(1,1)+acc(2,1)+acc(3,1)
+        store(jp+1)= acc(1,2)+acc(2,2)+acc(3,2)
+        store(jp+2)= acc(1,3)+acc(2,3)+acc(3,3)
+        i = norm3(store(jp))
+        DO 2200 N=0,2
+          STORE(JQ+N)=STORE(JE+n)+STORE(JP+N)*SX
+2200    CONTINUE
+      ENDIF
       CALL XMLTMM(STORE(L1O2),STORE(JQ),STORE(JG),3,3,1)
       CALL SAPR
       RETURN
@@ -2594,10 +2592,7 @@ C----- EVADE OCCASIONAL INEXPLICABLE SINGULARITIES
       IF(I)1250,1350,1250
 1250  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1300)
-      ENDIF
-      WRITE(NCAWU,1300)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)
       WRITE ( CMON, 1300)
       CALL XPRVDU(NCVDU, 1,0)
 1300  FORMAT(' Given atoms do not define a unique plane')
@@ -2721,9 +2716,7 @@ C      CALL XZEROF(STORE(JT+7),6)
       ISTORE(JT+14)=KPR
 C--PRINT THE RESULT
       JTEMP=JT+6
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)(STORE(I),I=JT,JTEMP)
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)(STORE(I),I=JT,JTEMP)
 1000  FORMAT(11X,A4,F10.1,F11.5,4F10.5)
       JT=JT+MD5
 C--UPDATE THE REMAINING POINTERS
@@ -2751,9 +2744,7 @@ C
 C
 C
 C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1100 ) CTYPES(JK)
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1100 ) CTYPES(JK)
 1100  FORMAT ( // 1X , 'Hydrogen atom(s) calculated for the ' , A ,
      2 ' group :' , // ,
      3 10X , 'Type      Serial    Occ       U[Iso]      ' ,
@@ -2808,9 +2799,7 @@ c\QSTORE
 cC
 c      EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
 cC
-c      IF (ISSPRT .EQ. 0) THEN
-c      WRITE(NCWU,1000)STORE(N),STORE(N+1),STORE(N+2)
-c      ENDIF
+c      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)STORE(N),STORE(N+1),STORE(N+2)
 c1000  FORMAT(10X,3F10.5)
 c      RETURN
 c      END
