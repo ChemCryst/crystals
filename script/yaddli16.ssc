@@ -3,16 +3,22 @@
 %  VARIABLE INTEGER N
 %  VARIABLE CHARACTER CLINE1
 %  EXTRACT CLOSE
+%  IF ( EXISTS 16 .NE. 1 ) THEN
+%   COPY '#LIST 16'
+%   COPY 'NO'
+%   COPY 'END'
+%  END IF
 %  COPY '#RELEASE PUNCH scplst16.dat'
 %  COPY '#PUNCH 16'
 %  COPY 'END'
 %  COPY '#RELEASE PUNCH crfile.pch'
 %  COPY '#OPEN SCPDATA scplst16.dat'
+%  COPY '#RELEASE SCPQUEUE scplst16a.dat'
 %  QUEUE REWIND
 %% Get the length of the file
 %  LOOP
-%       CLEAR
 %       ON ERROR TERMINATE
+%       CLEAR
 %       EXTRACT NEXT
 %       EXTRACT TRANSFER COMMAND
 %       EVALUATE N = LOOPCOUNTER
@@ -31,7 +37,9 @@
 %          TRANSFER '%QUEUE COPY ' // CLINE1 TO SCRIPT
 %       END IF
 %  END LOOP
-%  QUEUE PROCESS
+% 
+%  COPY '#RELEASE SCPQUEUE betacrys.spq'
+%  COPY '#USE scplst16a.dat'
 %  COPY '#SUM L 16'
 %  COPY 'END'
 %END SCRIPT
