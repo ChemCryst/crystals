@@ -1,6 +1,6 @@
 %SCRIPT XLIST14
 %% A SCRIPT TO UPDTE LIST 14
-%  VARIABLE CHARACTER CLAST CPARAM CPARAM2
+%  VARIABLE INTEGER ORIENT
 %%
 %  VARIABLE REAL XMAX YMAX ZMAX
 %  VARIABLE INTEGER D14 A14 T14
@@ -85,12 +85,12 @@
 %    END IF
 %%
 %% CREATE LIST 14
-%%^
+%%
 %% CRYSTALS cell parameter input script
 ^^WI WINDOW INLIST14 'Asymmetric Unit' MODAL COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID             GRIDM NROWS=1 NCOLS=2
 ^^WI {
-^^WI  @ 1,1 GRID GRIDL NROWS=7 NCOLS=2
+^^WI  @ 1,1 GRID GRIDL NROWS=9 NCOLS=2
 ^^WI  {
 ^^WI   @ 2,2 GRID GRIDML NROWS=1 NCOLS=6
 ^^WI   {
@@ -153,6 +153,13 @@
 % OUTPUT
 ^^WI CHARS=8 REAL INFORM=YES
 ^^WI   }
+^^WI   @ 8,2 GRID ORIENT NROWS=4 NCOLS=1 OUTLINE='Orientation'
+^^WI   {
+^^WI     @ 1,1 RADIOBUTTON OPT 'Optimal (fastest calculation)' STATE=ON
+^^WI     @ 2,1 RADIOBUTTON XYZ 'XY planes'
+^^WI     @ 3,1 RADIOBUTTON YZX 'YZ planes'
+^^WI     @ 4,1 RADIOBUTTON ZXY 'XZ planes'
+^^WI   }
 ^^WI  }
 ^^WI  @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI  {
@@ -208,11 +215,29 @@
 %     FINISH
 %    END BLOCK
 %    BLOCK             %BOK%
-%     CLEAR
-^^WI       DISPOSE INLIST14
-^^CR
-
-%%^
+%      VERIFY ON OFF
+^^??   OPT STATE
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      IF VALUE .EQ. 1 THEN
+%       EVALUATE ORIENT = 1
+%      ELSE
+^^??    XYZ STATE
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       IF VALUE .EQ. 1 THEN
+%         EVALUATE ORIENT = 2
+%       ELSE
+^^??     YZX STATE
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%        IF VALUE .EQ. 1 THEN
+%          EVALUATE ORIENT = 3
+%        ELSE
+%          EVALUATE ORIENT = 4
+%        END IF
+%       END IF
+%      END IF
+%      CLEAR
+^^CO   DISPOSE INLIST14
+%%
 %% NOW WRITE NEW LIST 14
 %  BLOCK
 %    ON END   TERMINATE
@@ -268,38 +293,49 @@ Details for asymmetric part of vector space (Patterson)
 %    STORE FORMAT /(F6.3)/ LENGTH 6 REAL ZPM
 %    QUEUE SEND
 %    CLEAR
+%    CASE ORIENT
+%      BLOCK
 %% optimise the map orientation
-%    BLOCK
-%     EVALUATE XMAX = ( XFM - XFN ) * A
-%     EVALUATE YMAX = ( YFM - YFN ) * B
-%     EVALUATE ZMAX = ( ZFM - ZFN ) * C
-%     INSERT 'ORIENT '
-%     IF XMAX .GE. YMAX THEN
-%      IF XMAX .GE. ZMAX THEN
-%        INSERT 'X '
-%          IF YMAX .GE. ZMAX THEN
-%            INSERT 'Y Z'
-%          ELSE
-%            INSERT 'Z Y'
-%          END IF
-%      ELSE
-%          INSERT 'Z X Y'
-%      END IF
-%     ELSE
-%      IF YMAX .GE. ZMAX THEN
-%        INSERT 'Y '
-%        IF XMAX .GE. ZMAX THEN
-%          INSERT 'X Z'
+%        EVALUATE XMAX = ( XFM - XFN ) * A
+%        EVALUATE YMAX = ( YFM - YFN ) * B
+%        EVALUATE ZMAX = ( ZFM - ZFN ) * C
+%        INSERT 'ORIENT '
+%        IF XMAX .GE. YMAX THEN
+%         IF XMAX .GE. ZMAX THEN
+%           INSERT 'X '
+%             IF YMAX .GE. ZMAX THEN
+%               INSERT 'Y Z'
+%             ELSE
+%               INSERT 'Z Y'
+%             END IF
+%         ELSE
+%             INSERT 'Z X Y'
+%         END IF
 %        ELSE
-%          INSERT 'Z X'
+%         IF YMAX .GE. ZMAX THEN
+%           INSERT 'Y '
+%           IF XMAX .GE. ZMAX THEN
+%             INSERT 'X Z'
+%           ELSE
+%             INSERT 'Z X'
+%           END IF
+%         ELSE
+%           INSERT 'Z Y X'
+%         END IF
 %        END IF
-%      ELSE
-%        INSERT 'Z Y X'
-%      END IF
-%     END IF
-%     QUEUE SEND
-%     CLEAR
-%    END BLOCK
+%      END BLOCK
+%      BLOCK
+%        INSERT 'ORIENT X Y Z'
+%      END BLOCK
+%      BLOCK
+%        INSERT 'ORIENT Y Z X'
+%      END BLOCK
+%      BLOCK
+%        INSERT 'ORIENT Z X Y'
+%      END BLOCK
+%    END CASE
+%    QUEUE SEND
+%    CLEAR
 %    INSERT 'SCALE '
 %    STORE FORMAT /(F10.3)/ LENGTH 10 REAL S14
 %    QUEUE SEND
