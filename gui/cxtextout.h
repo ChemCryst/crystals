@@ -89,11 +89,14 @@ class CxTextOut : public BASETEXTOUT
     void    SetGeometry(int top, int left, int bottom, int right );
         void CxDestroyWindow();
 
+    void SetTransparent();
+
         // attributes
         static int mTextOutCount;
 
         void  SetText( CcString cText );
         void  Empty();                      // Set the Head
+        void  ViewTop();                    // Set the Head
         void  ChooseFont();
     void ScrollPage(bool up);
 

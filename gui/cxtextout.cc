@@ -204,6 +204,18 @@ void  CxTextOut::SetText( CcString cText )
     AddLine( cText );
 }
 
+void  CxTextOut::ViewTop()
+{
+// Scrolls to the top of the text.
+        SetHead(min(GetLineCount(),GetMaxViewableLines())-1);
+#ifdef __CR_WIN__
+        Invalidate();
+#endif
+#ifdef __BOTHWX__
+        if ( mbOkToDraw )  Refresh();
+#endif
+}
+
 void  CxTextOut::Empty( )
 {
 #ifdef __CR_WIN__
@@ -988,7 +1000,7 @@ void CxTextOut::UpdateVScroll()
 
 void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, int nY )
 {
-	int lastcol = 0;
+        COLORREF lastcol = m_BackCol;
 #ifdef __CR_WIN__
     CRect clientRc; GetClientRect( &clientRc );
     SIZE sz;
@@ -1058,7 +1070,7 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
             if( code.nBack != -1 )
             {
               pDC->SetBkColor( m_ColTable[ code.nBack ] );
-              lastcol = code.nBack;
+              lastcol = m_ColTable[ code.nBack ];
             }
 #endif
 #ifdef __BOTHWX__
@@ -1104,13 +1116,13 @@ void CxTextOut::RenderSingleLine( CcString& strLine, PlatformDC* pDC, int nX, in
 
 #ifdef __CR_WIN__
             CRect solidRc( nX, nY, clientRc.right, nY + m_nFontHeight );
-            pDC->FillSolidRect( &solidRc, m_ColTable[ lastcol ]);
+            pDC->FillSolidRect( &solidRc, lastcol);
 #endif
 #ifdef __BOTHWX__
-            m_brush->SetColour( m_ColTable[ lastcol ] );
-            m_pen->SetColour( m_ColTable[ lastcol ] );
-            pDC->SetTextForeground( m_ColTable[ lastcol ] );
-            pDC->SetTextBackground( m_ColTable[ lastcol ] ) ;
+            m_brush->SetColour( lastcol );
+            m_pen->SetColour(  lastcol  );
+            pDC->SetTextForeground( lastcol  );
+            pDC->SetTextBackground( lastcol  ) ;
             pDC->SetPen( *m_pen );
             pDC->SetBrush( *m_brush );
             pDC->DrawRectangle( nX,nY, clientRc.GetWidth(), m_nFontHeight );
@@ -1421,3 +1433,11 @@ void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
       CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
 #endif
+
+void CxTextOut::SetTransparent()
+{
+    SetBackColour( GetSysColor(COLOR_3DFACE) );
+    ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,SWP_NOSIZE|SWP_NOMOVE);
+}
+
+

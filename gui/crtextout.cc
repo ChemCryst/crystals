@@ -77,13 +77,19 @@ CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
                 LOGSTAT( "Setting TextOut Text: " + mText );
                 break;
             }
-                        case kTEmpty:
-                        {
-                                tokenList->GetToken(); //Remove kTEmpty tokens.
-                                ((CxTextOut*)ptr_to_cxObject)->Empty();
-                                break;
-                        }
-                        case kTDisabled:
+            case kTEmpty:
+            {
+                    tokenList->GetToken(); //Remove kTEmpty tokens.
+                    ((CxTextOut*)ptr_to_cxObject)->Empty();
+                    break;
+            }
+            case kTViewTop:
+            {
+                    tokenList->GetToken(); //Remove token.
+                    ((CxTextOut*)ptr_to_cxObject)->ViewTop();
+                    break;
+            }
+            case kTDisabled:
             {
                 tokenList->GetToken(); // Remove that token!
                 mDisabled = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
@@ -114,6 +120,13 @@ CcParse CrTextOut::ParseInput( CcTokenList * tokenList )
                 int chars = atoi( theString.ToCString() );
                 ((CxTextOut*)ptr_to_cxObject)->SetIdealWidth( chars );
                 LOGSTAT( "Setting TextOut Chars Width: " + theString );
+                break;
+            }
+            case kTTextTransparent:
+            {
+                tokenList->GetToken(); // Remove that token!
+                LOGSTAT( "Setting TextOut Transparent " );
+                ((CxTextOut*)ptr_to_cxObject)->SetTransparent();
                 break;
             }
             default:

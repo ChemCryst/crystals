@@ -40,9 +40,13 @@ class CxTextOut;
 
 
 #define kSFontSelect            "FONT"
+#define kSTextTransparent           "TRANSPARENT"
+#define kSViewTop                "VIEWTOP"
 
 enum {
- kTFontSelect = 1700
+ kTFontSelect = 1700,
+ kTTextTransparent,
+ kTViewTop
 };
 
 
