@@ -22,7 +22,6 @@ to set up a non-default (i.e. more comprehensive) task.
 %          COPY 'END'
 %          IF VAX .EQ. FALSE THEN
             CRYSTALS will now close down. To run SHELXS, type SHELXS
-%            COPY '#PAUSE 5'
 %            COPY '#FINISH'
 %          END IF
 %        VERIFY YES NO
@@ -50,7 +49,6 @@ to set up a non-default (i.e. more comprehensive) task.
 %        COPY 'END'
 %          IF VAX .EQ. FALSE THEN
             CRYSTALS will now close down. To run SHELXS, type SHELXS
-%            COPY '#PAUSE 5'
 %            COPY '#FINISH'
 %          END IF
 %        EXTERNAL COPY @CRPROC:SCPBATCH SHELXS SHELXS CRSLOW

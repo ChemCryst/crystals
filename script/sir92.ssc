@@ -13,8 +13,8 @@ input files to set up a non-default (i.e. more comprehensive) task.
 %  END IF
 %% write a SIR92 data file
 %    BLOCK
-%      VERIFY YES NO
-%      GET NOSTORE YESNO -
+%      VERIFY YES NO HELP
+%      GET NOSTORE ABBREVIATED -
     'Is this your first try on this compound with SIR92' 'YES'
 %%
 %      IF ( VALUE .EQ. 1 ) THEN
@@ -22,7 +22,6 @@ input files to set up a non-default (i.e. more comprehensive) task.
 %          COPY 'END'
 %          IF VAX .EQ. FALSE THEN
             CRYSTALS will now close down. To run SIR92, type SIR92
-%            COPY '#PAUSE 5'
 %            COPY '#FINISH'
 %          END IF
 %        VERIFY YES NO
@@ -45,12 +44,11 @@ input files to set up a non-default (i.e. more comprehensive) task.
       Alternatively, you could try SHELXS.
 %        COPY '#FINISH'
 %        END IF
-%      ELSE
+%      ELSE IF ( VALUE .EQ. 2 ) THEN
 %        COPY '#FOREIGN SIR92 DIFFICULT'
 %        COPY 'END'
 %          IF VAX .EQ. FALSE THEN
             CRYSTALS will now close down. To run SIR92, type SIR92
-%            COPY '#PAUSE 5'
 %            COPY '#FINISH'
 %          END IF
 %        EXTERNAL COPY @CRPROC:SCPBATCH SIR92 SIR92 CRSLOW
@@ -62,6 +60,19 @@ input files to set up a non-default (i.e. more comprehensive) task.
       must read the SIR92 manual, modify SIR92.INI, and submit
       a free standing SIR92 job.
 %        COPY '#FINISH'
+%      ELSE
+  The First run will use the standard SIR92 default parameters
+  The second run will include parameters recommended by the Sir-team for 
+    difficult structures.
+
+   If the structure still will not solve, try SHELX, or read the SIR92 
+     manual, SIR92\GUIDE92.TXT
+%       VERIFY YES NO
+%       GET  NOSTORE YESNO -
+'Do you want a brief summary of the SIR92 commands?' 'YES'
+%       IF VALUE .EQ. 1 THEN
+%         COPY '#HELP SIR92'
+%       END IF
 %      END IF
 %      END BLOCK
 %

@@ -491,7 +491,7 @@ APPEND and NOSTORE will be tested with COPY, INSERT etc.
 %  SEND
 6) CLEAR, INSERT '#TYPE CRSCP:', GET APPEND, SEND
 %  CLEAR
-%  INSERT '#TYPE CRSCP:'
+%  INSERT '#TYPE CRYSDIR:SCRIPT\'
 %  GET APPEND FILENAME 'Script'
 %  SEND
   Test selection function : INDEX

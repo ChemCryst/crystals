@@ -11,7 +11,8 @@ A script to help you set up molecular geometry restraints
 %
 %    ON ERROR TERMINATE ABANDONED
 %    CLEAR
-%    VERIFY END HELP DISTANCE ANGLE MEANDIST MEANANG PLANE TPP CLEAR DIRECT
+%    VERIFY END HELP DISTANCE ANGLE MEANDIST MEANANG PLANE -
+      TPP PHENYL CLEAR DIRECT
 %    GET NOSTORE FINAL ABBREVIATED 'Next restraint ' 'HELP'
 %    EVALUATE SWITCH = VALUE
 %%
@@ -31,8 +32,8 @@ A script to help you set up molecular geometry restraints
   MEANDIST  Restrain several bonds to their mean
   MEANANG   Restrain several angles to their mean
   PLANE     Restrain atoms to be co-planar
-  PHENYL    Restrain a phenyl group to have 2-fold symmetry
   TPP       Distance and thermal restraints for triphenyl phosphine
+  PHENYL    Restrain a phenyl group to have 2-fold symmetry
   CLEAR     Remove all restraints
   DIRECT    Abandon SCRIPT and return to CRYSTALS direct command input.
 %      END BLOCK

@@ -1,18 +1,34 @@
 %SCRIPT REFINE
 %% RUN REFINEMENT CYCLES
-%  VARIABLE INTEGER NCYCLE
+%  VARIABLE INTEGER NCYCLE IVALUE
+%  VARIABLE LOGICAL VAX
+%%&VAX%  EVALUATE VAX = TRUE
+%  EVALUATE VAX = FALSE
+%  EVALUATE IVALUE = 2
 % CLEAR
-%          GET FINAL INTEGER ' How many cycles' '5'
-%          EVALUATE NCYCLE = VALUE
-%          IF NCYCLE .GT. 5 THEN
-%            EVALUATE NCYCLE = 5
-%          END IF
-%          IF NCYCLE .GT.  0 THEN
-%            COPY '#SFLS'
-%            LOOP NCYCLE TIMES
-%              ON ERROR TERMINATE
-%              COPY 'REFINE'
-%            END LOOP
-%            COPY 'END'
-%          END IF
+%  IF VAX .EQ. TRUE THEN
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+%   'Refine on-line ?' 'YES'
+5      EVALUATE IVALUE = VALUE
+%  END IF
+%  IF IVALUE .EQ. 1 .OR. VAX .EQ. FALSE  THEN
+%       GET FINAL INTEGER ' How many cycles' '5'
+%       EVALUATE NCYCLE = VALUE
+%       IF NCYCLE .GT. 5 THEN
+ The maximum number if cycles in this SCRIPT is 5
+ For more cycles, use the SCRIPT 'NCYCLES'
+%         EVALUATE NCYCLE = 5
+%       END IF
+%       IF NCYCLE .GT.  0 THEN
+%         COPY '#SFLS'
+%         LOOP NCYCLE TIMES
+%           ON ERROR TERMINATE
+%           COPY 'REFINE'
+%         END LOOP
+%         COPY 'END'
+%       END IF
+%  ELSE
+%    COPY '#SCRIPT BATCHLSQ'
+%  END IF
 %END SCRIPT

@@ -1,38 +1,37 @@
-%SCRIPT FSQWT
-For Fsq refinement, weights based in 1/n Sigma(Fsq) may be suitable. 
-Values of n = 3, 6 and 12 are often suitable. In the agreement analysis,
-check that the column <wdeltasq>, the weighted residual, is 
-approximately constant, and that the final value is about unity.
+%SCRIPT FOPTWT
+%% WEIGHT FOR OPTIMISING WIGHTS FOR Fo REFINEMENT
+%%
+We will try 8, 7 and 6 parameter schemes, in that order since the 6 parameter
+scheme is most often satisfactory, and will by default be left in force. You
+will be given a chance to over-ride the choice.
+  First you will be shown a curve of the estimated delta(F)**2 as a function
+of F. This should be smoothly varying, and normally not showing any pronounced
+local maxima. The values in the column headed Delta**2 should parallel those
+in the column <Delta**2> in the agreement analysis.
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=3'
-%          COPY 'PARAM .001 3. 1'
+%          COPY 'SCHEME NUMBER=14, NPARAM=8'
 %          COPY 'END'
-            Quasi-statistical weighting , 3 sigma
+            Chebychev weighting with 8 parameters
 %          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
-%%
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=3'
-%          COPY 'PARAM .001 6. 1'
+%          COPY 'SCHEME NUMBER=14, NPARAM=7'
 %          COPY 'END'
-            Quasi-statistical weighting , 6 sigma
+            Chebychev weighting with 7 parameters
 %          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
-%%
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=3'
-%          COPY 'PARAM .001 12. 1'
+%          COPY 'SCHEME NUMBER=14, NPARAM=6'
 %          COPY 'END'
-            Quasi-statistical weighting , 12 sigma
+            Chebychev weighting with 6 parameters
 %          COPY '#PAUSE 2'
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
-%%
 %          LOOP
 %            ON END TERMINATE
 %            VERIFY YES NO
@@ -40,17 +39,20 @@ approximately constant, and that the final value is about unity.
   'Do you want to change the final parameter' 'NO'
 %            IF ( VALUE .EQ. 2 ) THEN
 %              FINISH
+%            ELSE
+%             COPY '#LIST 4'
+%             CLEAR
+%              GET NOSTORE INTEGER 'Number of parameters'
+%              IF VALUE .NE. 0 THEN
+%                INSERT 'SCHEME NUMBER=14'
+%                INSERT ' NPARAM='
+%                STORE INTEGER VALUE
+%                SEND
+%              ELSE
+   Resetting to unit weights
+%              END IF
+%             COPY 'END'
 %            END IF
-%            COPY '#LIST 4'
-%            CLEAR
-%              GET NOSTORE REAL 'Sigma scale' '6.0'
-%              COPY 'SCHEME NUMBER=16 NPARAM=3'
-%              CLEAR
-%              INSERT 'PARAM .001 '
-%              STORE REAL VALUE
-%              INSERT ' 1'
-%              SEND
-%            COPY 'END'
 %            COPY '#ANALYSE'
 %            COPY 'END'
 %          END LOOP

@@ -19,7 +19,6 @@
 %       END IF
 %       COPY 'NEXT'
 %    END LOOP
-%    COPY 'END'
 %%
 %    EVALUATE CTNATM = CHARACTER TNATM
 %    TRANSFER 'CRYSTALS is looking for ' // CTNATM // ' atoms' TO DISPLAY

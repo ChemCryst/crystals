@@ -20,6 +20,16 @@ There in no LIST 30 with the general details available
 %  COPY 'END'
 %
 %
+%  IF NPARAM .LE. 0.0 THEN
+You have changed something since the last refinement cycle. 
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to run the final refinement' 'YES'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SCRIPT NCYCLES'
+%      END IF
+%    FINISH
+%  END IF
 %  IF ( NREF / NPARAM )  .LE. 5.0 THEN
 You have too few X-ray observations for the number of variables
 you are trying to refine. Think again or seek help.

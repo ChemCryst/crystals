@@ -1,45 +1,29 @@
 %SCRIPT CIF
-%    VARIABLE LOGICAL SCRIPTEXT
-%    VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-%    VARIABLE LOGICAL ANSWER
-%    ON ERROR TERMINATE
-%    BLOCK
-%	VARIABLE CHARACTER FILENAME
-%	ON ERROR REPEAT
-%	CLEAR
-^^DI GETFILENAME SAVE Crystals.cif CIF File^^EN^^ER
-%	GET FINAL FILENAME 'Filename for cif' 'Crystals.cif'
-%       EVALUATE FILENAME = CVALUE
-%       TRANSFER '#RELEASE PUNCH ' //  FILENAME  // ' ' TO CRYSTALS
-%    END BLOCK
-%    BLOCK 
-%      ON ERROR TERMINATE ABANDONED
-You must not have altered any lists since the last round of 
-least squares.
-You should have done a final difference fourier map.
-%      COPY '#CIF '
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ Publication listing of positional parameters 
+ The format is suitable for electronic submission to Acta Cryst 
+%   COPY '#PAUSE 10'
+% ELSE
+      CIF listing of all data
+% END IF
+%    COPY '#CIF '
+%    COPY 'END'
+%    COPY '#PARAMETERS'
+%    COPY 'LAYOUT INSET = 1 NCHAR = 120'
+%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
+%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
+%    COPY 'END'
+%    COPY '#DIST'
+%    COPY 'E.S.D YES'
+%    COPY 'OUTPUT MON=DIST PUNCH = CIF'
+%    COPY 'END'
+ 
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+  'Include reflection listing?' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%      COPY '#PUNCH 6 B'
 %      COPY 'END'
-%      COPY '#PARAMETERS'
-%      COPY 'LAYOUT INSET = 1 NCHAR = 120'
-%      COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=18'
-%      COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=18"
-%      COPY 'END'
-%%
-%      COPY '#DIST'
-%      COPY 'E.S.D YES'
-%      COPY 'OUTPUT MON=DIST PUNCH = CIF'
-%      COPY 'END'
-%      EVALUATE QLINE1 = 'Do you want to include a reflection listing'
-%      EVALUATE QLINE2 = 'in the cif file?'
-%      EVALUATE QTITLE = 'CIF'
-%      EVALUATE BUTTOK = '&No'
-%      EVALUATE BUTTXX = '&Yes'
-%      EVALUATE ANSWER = FALSE
-%      COPY '#SCRIPT ZQUESTIO'
-%      IF ANSWER .EQ. FALSE THEN 
-%        COPY '#PUNCH 6 B'
-%        COPY 'END'
-%      END IF
-%      COPY '#RELEASE PUNCH CRFILE.PCH'
-%    END BLOCK
+%  END IF
 %END SCRIPT

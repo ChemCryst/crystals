@@ -1,5 +1,5 @@
 %SCRIPT SIXCYCLE
-%% DO 6 unconditional cycles of refinement
+ DO 6 unconditional cycles of refinement
 %        COPY '#EDIT'
 %        COPY 'SELECT TYPE NE Q'
 %        COPY 'END'

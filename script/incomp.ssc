@@ -44,8 +44,8 @@ Input Cell Contents  (symbol, number)
 %      COPY '#COMPOSITION'
 %      CLEAR
 %      QUEUE PROCESS
-%      COPY 'SCATT  CRSCP:SCATT'
-%      COPY 'PROPER CRSCP:PROPERTIES'
+%      COPY 'SCATT  CRYSDIR:SCRIPT\SCATT.DAT'
+%      COPY 'PROPER CRYSDIR:SCRIPT\PROPERTI.DAT'
 %      COPY 'END'
 %    ELSE
 You have not specified any elements. No data has been stored

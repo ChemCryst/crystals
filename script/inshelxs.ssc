@@ -186,6 +186,9 @@ You have not input any new atoms. No model has been stored
 %    QUEUE PROCESS
 %    COPY 'END'
 %    COPY '#CLOSE SCPDATA'
+%    COPY '#EDIT'
+%    COPY 'TYPECHANGE TYPE EQ Q C'
+%    COPY 'END'
 %  END IF
 %%
 %%

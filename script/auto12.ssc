@@ -12,14 +12,16 @@
 It may sort LIST 5 so that hydrogen atoms come after all other types of 
                    atom in the atom list.
 % END IF
-%  VARIABLE LOGICAL EXTINCT OPTIM HPOS
+%  VARIABLE LOGICAL EXTINCT PURGE
+%  VARIABLE INTEGER ADP
 %  EVALUATE EXTINCT = FALSE
+%  EVALUATE PURGE  = FALSE
+%  VARIABLE CHARACTER CLAST CPARAM CPARAM2
+%
+%  VARIABLE LOGICAL OPTIM HPOS
 %  EVALUATE OPTIM = FALSE
 %  EVALUATE HPOS = FALSE
 %  VARIABLE INTEGER ISTAGE
-%  VARIABLE CHARACTER CLAST
-%  VARIABLE CHARACTER CPARAM CPARAM2
-%        EVALUATE CPARAM2 =  ' '
 %        EVALUATE ISTAGE = 0
 %%
 %% R-FACTOR THRESHOLDS FOR VARIOUS CASES
@@ -41,6 +43,11 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
 %% make sure we have a valid LIST 12 of some sort
 %% and find the last non- hydrogen atom
 %  COPY '#SCRIPT CHECK12'
+%% try to guess what stage we are at
+%% ISTAGE 1 - X'S
+%% ISTAGE 2 - X'S, U[ISO]
+%% ISTAGE 3 - X'S, U'S
+%  EVALUATE ISTAGE = ADP + 1
 % LOOP
 %    COPY '#SCRIPT RFACTOR'
 %    IF RATIO .GE. 1.3 THEN
@@ -67,9 +74,7 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
   'Do you want to do Fourier refinement' 'YES'
 %      IF VALUE .EQ. 1 THEN
 %        COPY '#SCRIPT AFOUR'
-%        EVALUATE CPARAM = "   "
-%      ELSE
-%        EVALUATE CPARAM = " X'S "
+%        EVALUATE CPARAM = " X'S  "
 %      END IF
 %      EVALUATE ISTAGE = 1
 %    ELSE IF ( R .GT. R2 ) .OR. ( ISTAGE .LE. 1 ) THEN
@@ -94,6 +99,7 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
       solvent, disorder or some other problem. CRYSTALS will try an 
       extinction correction, but it may make matters worse.
 %        EVALUATE CPARAM2 =  ' EXTPARAM'
+%        EVALUATE CPARAM = " X'S, U'S "
 %        EVALUATE EXTINCT = TRUE
 %      ELSE
           Very low R factor - Begin to tidy up
@@ -104,6 +110,7 @@ It may sort LIST 5 so that hydrogen atoms come after all other types of
   'Do you want to try to locate Hydrogen atoms?' 'YES'
 %        IF VALUE .EQ. 1 THEN
 %          COPY '#SCRIPT FINDH'
+%          COPY '#SCRIPT CHECK12'
 %          VERIFY YES NO
 %          GET NOSTORE FINAL ABBREVIATED  -
  'Have all H atoms been located?' 'YES'
@@ -142,7 +149,7 @@ Remember - the data may not be good enough to reveal all H atoms
 %    QUEUE COPY #LIST 12
 %    CLEAR
 %    STORE CHARACTER -
-    'FULL ' // cparam2 // ' first(' // CPARAM // ') until '
+    'FULL ' // cparam2 // ' First(' // CPARAM // ') until '
 %    QUEUE SEND
 %    CLEAR
 %    STORE CHARACTER "CONTINUE " // CLAST
@@ -153,6 +160,14 @@ Remember - the data may not be good enough to reveal all H atoms
 %    QUEUE PROCESS
 %   COPY '#SUM LIST 12'
 %   COPY 'END'
+%   IF ( EXTINCT .EQ. TRUE ) .AND. ( PURGE .EQ. FALSE ) THEN
+%      COPY '#DISK'
+%      COPY 'DELETE 11'
+%      COPY 'END'
+%      COPY '#PURGE'
+%      COPY 'END'
+%     EVALUATE PURGE = TRUE
+%   END IF
 %   COPY '#LIST 22'
 %   COPY 'END'
 %%
@@ -175,7 +190,7 @@ Remember - the data may not be good enough to reveal all H atoms
       'Do you want to continue refinement?' 'YES'
 %     IF VALUE .EQ. 2 THEN
  You will be shown your structure again.  If you need to, edit it and 
- continue refinenent.
+ continue refinement.
 %       COPY '#SCRIPT PLOT'
 
 %       VERIFY YES NO

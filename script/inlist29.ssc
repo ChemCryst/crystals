@@ -13,7 +13,7 @@ Input details of the elements in the asymmetric unit
 %    EVALUATE RADIATION = VALUE
 %  END IF
 %  EVALUATE ELEMENTCOUNT = 0
-%    COPY '#OPEN SCPDATA CRSCP:PROPERTIES'
+%    COPY '#OPEN SCPDATA CRYSDIR:SCRIPT\PROPERTI.DAT'
 %
 %  MESSAGE USER1 'An invalid element name was given ( ignored )'
 %

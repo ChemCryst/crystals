@@ -34,7 +34,7 @@ A SCRIPT to compute the molecular thermal tensors T, L and S
 %      VERIFY YES NO
 %      COPY 'ATOM '
 %      GET NOSTORE FINAL ABBREVIATED  -
-           'Atoms linked by UNTIL ?' 'NO'
+           'Atoms linked by UNTIL ?' 'YES'
 %      IF VALUE .EQ. 1 THEN
 %        LOOP
 %          ON END TERMINATE
@@ -54,15 +54,17 @@ A SCRIPT to compute the molecular thermal tensors T, L and S
 %      END IF
 %%
 %      GET NOSTORE FINAL ABBREVIATED  -
-           'Individual atoms ?' 'YES'
+           'Individual atoms ?' 'NO'
 %      IF VALUE .EQ. 1 THEN
 %        ON END TERMINATE
 %        CLEAR
 %        INSERT 'CONTINUE '
-^^GR STATUS SENDB
 %        LOOP
 %          ON END TERMINATE
-%          GET TEXT 'Atom (END to finish)'
+%          GET KEYWORD 'Atom type (END to finish)'
+%          INSERT '('
+%          GET INTEGER 'serial'
+%          INSERT ') '
 %        END LOOP
 %        SEND
 %        CLEAR

@@ -25,8 +25,8 @@
 %    COPY '#EDIT'
 %    COPY 'SELECT TYPE NE H'
 %    COPY 'END'
-%    COPY '#CLEAR 12'
 % END IF
+% COPY '#SCRIPT CHECK12'
 % COPY 'END'
 % COPY '#SFLS'
 % COPY 'CALC'

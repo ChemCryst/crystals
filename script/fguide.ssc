@@ -19,7 +19,7 @@
 %
 %    ON ERROR REPEAT
 %    CLEAR
-%    VERIFY HELP INFO START END
+%    VERIFY HELP INFO START PLOT END
 %    GET NOSTORE FINAL ABBREVIATED 'Script required?' 'HELP'
 %    CASE VALUE
 %      BLOCK                                         %HELP%
@@ -27,6 +27,7 @@
       HELP          Display this help text
       INFO          An explanation of the action of this SCRIPT
       START         Start the Fourier SCRIPT
+      PLOT          View the structure and edit it
       END           Exit from this SCRIPT
       DIRECT        Go to CRYSTALS direct command input
 %      END BLOCK
@@ -60,6 +61,9 @@ PHASE 2
 %      COPY '#SCRIPT EDLIST5'
 PHASE 3
 %      COPY '#SCRIPT REGROUP'
+%     END BLOCK
+%     BLOCK                                          %PLOT%
+%      COPY '#SCRIPT PLOT'
 %     END BLOCK
 %     BLOCK                                          %END%
 %      FINISH

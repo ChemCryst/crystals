@@ -12,8 +12,8 @@ Input scattering factors
 %  END IF
 %
 %  CASE RADIATION
-%    COPY '#OPEN SCPDATA CRSCP:SCATCU'
-%    COPY '#OPEN SCPDATA CRSCP:SCATMO'
+%    COPY '#OPEN SCPDATA CRYSDIR:SCRIPT\SCATCU.DAT'
+%    COPY '#OPEN SCPDATA CRYSDIR:SCRIPT\SCATMO.DAT'
 %  END CASE
 %
 %  MESSAGE USER1 'An invalid element name was given ( ignored )'

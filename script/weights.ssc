@@ -47,7 +47,6 @@ particular, check columns 2 and 3, sum Fo and sum Fc. If, towards the
 bottom (i.e. strong reflections), sum Fo is less than sum Fc, you may
 need to include an isotropic EXTINCTION parameter in the least squares.
 Restore unit weights before starting the extinction parameter refinement.
-% COPY '#PAUSE 3'
    If the parameters you are refining have 'reasonable' values, you should
 attempt to correct the data for this trend, or introduce suitable additional
 parameters to the model. See, for example, DIFABS.
@@ -58,7 +57,7 @@ CRYSTALS  uses different methods for F snd Fsq refinement. Choose the scheme
 which gives a sufficiently constant distribution with the minimum number of
 parameters.
 Occasional ranges having a large residual can be ignored in routine work.
-%  COPY '#PAUSE 10'
+%  COPY '#PAUSE 5'
 %      END BLOCK
 %%
 %      BLOCK                                          %ANALYSE%
@@ -73,15 +72,20 @@ Occasional ranges having a large residual can be ignored in routine work.
 %        COPY 'END'
 %        COPY '#ANALYSE'
 %        COPY 'END'
-%        COPY '#PAUSE 10'
+%        COPY '#PAUSE 5'
 %      END BLOCK
 %%
 %      BLOCK                                          %STATISTICAL%
-%        COPY '#SCRIPT FSQWT'
+%        COPY '#SCRIPT STATWT'
 %      END BLOCK
 %%
 %      BLOCK                                          %CHEBYCHEV%
-%        COPY '#SCRIPT FOPTWT'
+%        IF FTYPE .NE. 0 THEN
+%% Fo refinement
+%          COPY '#SCRIPT FOPTWT'
+%        ELSE
+%          COPY '#SCRIPT FSQWT'
+%        END IF
 %      END BLOCK
 %%
 %      BLOCK                                          %OPTIMAL%

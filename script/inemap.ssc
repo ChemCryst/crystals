@@ -3,6 +3,8 @@ A SCRIPT to help you input a new trial model
 %  VARIABLE INTEGER ATOMCOUNT SOLVEMETHOD LOOPCOUNT PRINTOUT TYPE SERIAL
 %  VARIABLE LOGICAL FILESCAN QUERY
 %  VARIABLE CHARACTER CRDEVICE CRFILE
+%  VARIABLE INTEGER SOLVEFLAG
+%  EVALUATE SOLVEFLAG = 0
 %  CLEAR
 %  EVALUATE QUERY = FALSE
 %  IF EXISTS 6 .LT. 1 THEN
@@ -38,8 +40,10 @@ A SCRIPT to help you input a new trial model
 %  IF SOLVEMETHOD .EQ. 2 THEN
 %    VERIFY SHELXS CRYSTALS
 %    GET NOSTORE FINAL ABBREV 'How was the Patterson solved' 'SHELXS'
+%    EVALUATE SOLVEFLAG = 4
 %    IF VALUE .EQ. 1 THEN
 %      EVALUATE SOLVEMETHOD = 3
+%      EVALUATE SOLVEFLAG = 1
 %    END IF
 %  END IF
 %
@@ -116,6 +120,7 @@ A SCRIPT to help you input a new trial model
 %      COPY '#SCRIPT INATOMS'
 %  ELSE IF SOLVEMETHOD .EQ. 3 THEN                          %SHELXS%
 %%
+%    EVALUATE SOLVEFLAG = 1
 %    COPY '#SCRIPT INSHELXS'
 %    IF ATOMCOUNT .EQ. 0 THEN
 %      FINISH
@@ -132,15 +137,18 @@ A SCRIPT to help you input a new trial model
 %    VERIFY SIR88 SIR92
 %    GET NOSTORE FINAL ABBREV 'Which version of SIR' 'SIR92'
 %    IF VALUE .EQ. 1 THEN
+%      EVALUATE SOLVEFLAG = 2
 %      COPY '#USE SIR.CRY'
 %      COPY '#LIST 28'
 %      COPY 'MINIMA RATIO=3'
 %      COPY 'END'
 %    ELSE
+%      EVALUATE SOLVEFLAG = 3
 %      COPY '#USE SIR92.INS'
 %    END IF
 %    COPY '#EDIT'
 %    COPY 'MON OFF'
+%    COPY 'REFORMAT ALL'
 %    COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
 %    COPY 'MON MEDIUM'
 %    COPY 'END'
@@ -155,22 +163,33 @@ A SCRIPT to help you input a new trial model
 %      COPY 'END'
 %    END BLOCK
 %%
+%     COPY '#GENERALEDIT 30'
+%     COPY 'LOCATE RECORDTYPE=106'
+%%    SET Solution type
+%     CLEAR
+%     INSERT 'CHANGE OFFSET=12 MODE=INTEGER INTEGER= '
+%     STORE FORMAT "(I4)" INTEGER SOLVEFLAG
+%     SEND
+%     CLEAR
+%     COPY 'WRITE'
+%     COPY 'END'
+%%
 %  ON ERROR REPEAT
 %  BLOCK
-%    IF SOLVEMETHOD .NE. 4 THEN
-                         EDIT THE PEAK LIST
+%%    IF SOLVEMETHOD .NE. 4 THEN
+%%                         EDIT THE PEAK LIST
 %%
-  You now have a chance to edit the input peak list. Remember the the
-  peaks may have a 'TYPE' of either 'PEAK' or 'Q'. You will probably not
-  have scattering factors for these types, and so need to change the peaks
-  to TYPE 'C'.
-%      VERIFY YES NO
-%        GET NOSTORE FINAL ABBREVIATED  -
-      'Do you want to edit the peak list ? ' 'YES'
-%      IF ( VALUE .EQ. 1 ) THEN
-%        COPY '#SCRIPT EDLIST5'
-%      END IF
-%    END IF
+%%  You now have a chance to edit the input peak list. Remember the the
+%%  peaks may have a 'TYPE' of either 'PEAK' or 'Q'. You will probably not
+%%  have scattering factors for these types, and so need to change the peaks
+%%  to TYPE 'C'.
+%%      VERIFY YES NO
+%%        GET NOSTORE FINAL ABBREVIATED  -
+%%      'Do you want to edit the peak list ? ' 'YES'
+%%      IF ( VALUE .EQ. 1 ) THEN
+%%        COPY '#SCRIPT EDLIST5'
+%%      END IF
+%%    END IF
 %%
 %%  SEE WHAT IT LOOKS LIKE
 %      COPY '#SCRIPT PLOT'
@@ -232,7 +251,6 @@ A SCRIPT to help you input a new trial model
 บ   If the structure is incomplete or fragmented, then try Fourier maps     บ
 บ                                                                           บ
 ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
-%COPY '#PAUSE 3'
 %  VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED -
  'Is the structure more or less correct?' 'YES'

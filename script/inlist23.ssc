@@ -37,7 +37,7 @@ Structure factor control list
 %    STORE KEYWORD VALUE
 %      GET NOSTORE FINAL ABBREVIATED  -
  'Do you wish to refine against F squared? ' 'NO'
-%    EVALUATE FSQ = VALUE
+%    EVALUATE FSQ =  VALUE
 %    INSERT ' F-SQ='
 %    STORE KEYWORD VALUE
 %    QUEUE SEND
@@ -55,18 +55,49 @@ Structure factor control list
 %    INSERT ' TOLER ='
 %    STORE REAL VALUE
 %    QUEUE SEND
+%%
+%    BLOCK
+%    VARIABLE INTEGER FOLD
+%    EVALUATE FOLD = 10
+%      IF EXISTS 23 .GE. 1 THEN
+%       COPY '#GENERALEDIT 23'
+%       COPY 'LOCATE RECORDTYPE = 103'
+%       COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'
+%       COPY 'END'
+%       EVALUATE FOLD = 1 - FOLD
+%      END IF
+%      IF FSQ .NE. FOLD THEN
+%       IF FSQ .EQ. 1 THEN
+    The weights have been adjusted for F sq refinement.
+    Check the manual for details
+%        COPY '#LIST 4'
+%        COPY 'SCHEME 9 '
+%        COPY 'END'
+%        COPY '#GENERALEDIT 30'
+%        COPY 'LOCATE RECORDTYPE=103'
+%%       SET modify fsq=yes
+%        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=2'
+%        COPY 'WRITE'
+%        COPY 'END'
+%       ELSE
+    The weights have been adjusted for F  refinement.
+    Check the manual for details
+%        COPY '#LIST 4'
+%        COPY 'SCHEME 9 '
+%        COPY 'END'
+%        COPY '#GENERALEDIT 30'
+%        COPY 'LOCATE RECORDTYPE=103'
+%%       SET modify fsq=yes
+%        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
+%        COPY 'WRITE'
+%        COPY 'END'
+%       END IF
+%      END IF
+%   END BLOCK
+%%
 %    COPY '#LIST 23'
 %    QUEUE PROCESS
 %    COPY  'END'
-%%
-%   IF FSQ .EQ. 1 THEN
-    The weights have been adjusted for F sq refinement.
-    Check the manual for details
-%     COPY '#LIST 4'
-%     COPY 'SCHEME 9 TYPE=1/2F'
-%     COPY 'END'
-%   END IF
-%%
 % END BLOCK
 %%
 %END SCRIPT

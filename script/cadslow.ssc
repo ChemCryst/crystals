@@ -183,17 +183,9 @@ Please rerun this SCRIPT when the information is available
 %    QUEUE REWIND
             * Storing reflection data on disc for later use
 %    VERIFY YES NO
-%    GET FINAL YESNO -
-     'Do you wish to store SIGMA(/FO/)?' 'NO'
-%
 %    COPY '#LIST 6'
 %    COPY 'READ TYPE=COPY'
-%    IF  VALUE .EQ. 1  THEN
-%    COPY 'STORE NCOEF=7'
-%  COPY 'OUTPUT INDICES /FO/ WEIGHT /FC/ SIGMA(/FO/) BATCH/PHASE RATIO/JCODE'
-%    ELSE
 %    COPY 'END'
-%    END IF
             * A copy of the reflection data in compressed format
             will be punched out into your filestore.
 %CLEAR
