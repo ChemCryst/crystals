@@ -138,7 +138,7 @@ Now some ADP refinement. First iso, then aniso.
 % COPY '#pause 5'
 
 % copy '#use crysdir:\script\demo7.dat'
-% COPY '#SCRIPT BTEXT'
+% COPY '#SCRIPT BTEXT'       
 
 The structure looks OK, but the numbering is
 erratic. Let CRYSTALS sort it out
