@@ -4,15 +4,14 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-//   Filename:  CrProgress.cc
-//   Authors:   Richard Cooper and Ludwig Macko
-//   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 10:38 Uhr
+//   Filename:  CrProgress.cpp
+//   Authors:   Richard Cooper
+//   Created:   22.2.1998 14:43 Hours
+//   Modified:  3.6.1999 16:46 Hours 
 
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
 #include	"crprogress.h"
-//insert your own code here.
 #include	"crgrid.h"
 #include	"cxprogress.h"
 #include	"ccrect.h"
@@ -45,7 +44,7 @@ Boolean	CrProgress::ParseInput( CcTokenList * tokenList )
 	Boolean retVal = true;
 	Boolean hasTokenForMe = true;
 	
-	// Initialization for the first time
+// Initialization for the first time
 	if( ! mSelfInitialised )
 	{	
             LOGSTAT("*** ProgressBar *** Initing...\n");
@@ -56,7 +55,7 @@ Boolean	CrProgress::ParseInput( CcTokenList * tokenList )
             LOGSTAT( "*** Created ProgressBar    " + mName + "\n");
 	}
 	
-	// End of Init, now comes the general parser
+// End of Init, now comes the general parser
 	while ( hasTokenForMe )
 	{
 		switch ( tokenList->GetDescriptor(kAttributeClass) )
@@ -97,48 +96,38 @@ Boolean	CrProgress::ParseInput( CcTokenList * tokenList )
 	}	
 	
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrProgress:SetText( CcString:text ) 
+
 void	CrProgress::SetText( CcString text )
 {
-//Insert your own code here.
 	char theText[256];
 	strcpy( theText, text.ToCString() );
 
 	( (CxProgress *)mWidgetPtr)->SetText( theText );
-//End of user code.         
 }
-// OPSignature: void CrProgress:SetGeometry( const CcRect *:rect ) 
+
 void	CrProgress::SetGeometry( const CcRect * rect )
 {
-//Insert your own code here.
 	((CxProgress*)mWidgetPtr)->SetGeometry(		rect->mTop,
 											rect->mLeft,
 											rect->mBottom,
 											rect->mRight );
-//End of user code.         
 }
-// OPSignature: CcRect CrProgress:GetGeometry() 
 CcRect	CrProgress::GetGeometry()
 {
-//Insert your own code here.
 	CcRect retVal (
 			((CxProgress*)mWidgetPtr)->GetTop(), 
 			((CxProgress*)mWidgetPtr)->GetLeft(),
 			((CxProgress*)mWidgetPtr)->GetTop()+((CxProgress*)mWidgetPtr)->GetHeight(),
 			((CxProgress*)mWidgetPtr)->GetLeft()+((CxProgress*)mWidgetPtr)->GetWidth()   );
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrProgress:CalcLayout() 
+
 void	CrProgress::CalcLayout()
 {
-//Insert your own code here.
 	int w =  ((CxProgress*)mWidgetPtr)->GetIdealWidth();
 	int h =  ((CxProgress*)mWidgetPtr)->GetIdealHeight();
 	((CxProgress*)mWidgetPtr)->SetGeometry(0,0,h,w);	
-//End of user code.         
 }
 
 void CrProgress::CrFocus()
