@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.93  2004/11/16 16:18:36  rich
+C Need to escape backslash on unix.
+C
 C Revision 1.92  2004/11/16 16:16:02  rich
 C Allow \ instead of # in reftab.dat
 C
@@ -4067,8 +4070,8 @@ C
           J=LREFS
 200       CONTINUE
           READ (NCARU,'(a)',ERR=200,END=250) CTEMP
-##LINGIL          IF (CTEMP(1:1).EQ.'\') THEN CTEMP(1:1)='#'
-&&LINGIL          IF (CTEMP(1:1).EQ.'\\') THEN CTEMP(1:1)='#'
+##LINGIL          IF (CTEMP(1:1).EQ.'\') CTEMP(1:1)='#'
+&&LINGIL          IF (CTEMP(1:1).EQ.'\\') CTEMP(1:1)='#'
           IF (CTEMP(1:1).EQ.'#') THEN
             READ (CTEMP,'(1x,i3,19a4)') (ISTORE(K),K=J+1,J+MDREFS-1)
             J=J+MDREFS
@@ -5916,7 +5919,8 @@ cdjw090804^
                 if (abs(store(l4+2))+abs(store(l4+3))+abs(store(l4+4))
      1          .le. 0.0) then
                   write(ctext(2),'(a,f5.2,a,f5.2,a)')
-     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
+##LINGIL     1            ' w=1/[\s^2^(F^2^) +', store(l4),' +',
+&&LINGIL     1            ' w=1/[\\s^2^(F^2^) +', store(l4),' +',
      2              store(l4+1),'p]'
                   ctext(3) = ' '
                   ctext(4) = ' '
