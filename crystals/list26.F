@@ -2835,6 +2835,9 @@ C--COMPUTE THE ACTUAL WEIGHT TO USE
 1300  CONTINUE
       C=STORE(L16)*B
       D=STORE(L16+1)
+cdjwmay2000 - note problems with Rfactor when target is zero!
+c      write(ncawu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
+c      write(ncwu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
       STORE(L11P+27)=STORE(L11P+27)+1.
       STORE(L11P+28)=STORE(L11P+28)+D*D*C
       STORE(L11P+29)=STORE(L11P+29)+STORE(L16+2)*C
