@@ -52,7 +52,7 @@ Trying to delete old Squeeze files
 %     COPY '#SPAWN +DEL LIST6.ABC'
 Deleted old Squeeze files
 %  END IF
-%  COPY '#SPAWN "CRYSDIR:oshell.bat" "CRYSDIR:CONVPLAT"'
+%  COPY '#SPAWN "CRYSDIR:CONVPLAT.EXE"'
 %  COPY '#USE LIST6.ABC'
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit

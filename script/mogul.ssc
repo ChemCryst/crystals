@@ -18,6 +18,6 @@
 %  COPY 'END'
 %  TRANSFER 'CLOSE' TO PUNCH
 %  COPY '#RELEASE PUNCH bfile.pch'
-%  COPY '#SPAWN + "CRYSDIR:oshell.bat" "CRYSDIR:mogul.bat" qf crystals.qf'
+%  COPY '#SPAWN + "CRYSDIR:mogul.bat" qf crystals.qf'
 %  COPY '#SCRIPT MOGULRES'
 %END SCRIPT

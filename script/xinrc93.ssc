@@ -57,7 +57,7 @@
 %    END BLOCK
 %    BLOCK             %RUN RC93%
 {S * Running RC93.
-%      COPY '#SPAWN + "CRYSDIR:oshell.bat" "CRYSDIR:RC93.BAT"'
+%      COPY '#SPAWN + "CRYSDIR:ERC93.EXE"'
 {R   Done.
 % copy '#type rc93.err'
 %    END BLOCK

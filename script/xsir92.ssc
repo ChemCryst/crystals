@@ -124,7 +124,7 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
-%      COPY '#SPAWN + "CRYSDIR:oshell.bat" "CRYSDIR:SIR92.BAT"'
+%      COPY '#SPAWN + "CRYSDIR:ESIR92.EXE" sir92.ini sir92.lis'
 %   END BLOCK
 %   BLOCK
 %      EVALUATE QTITLE = 'Sir92 Results'

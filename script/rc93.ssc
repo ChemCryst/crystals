@@ -1,7 +1,7 @@
 %SCRIPT RC93
 
  * Running RC93.
-%      COPY '#SPAWN + "CRYSDIR:oshell.bat" "CRYSDIR:RC93.BAT"'
+%      COPY '#SPAWN + "CRYSDIR:ERC93.EXE"'
  * Done.
 % copy '#type rc93.err'
 

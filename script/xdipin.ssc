@@ -52,7 +52,7 @@
 %    BLOCK             %RUN DIPIN%
 
 {S * Running DIPIN.
-%      COPY '#SPAWN "CRYSDIR:oshell.bat" "CRYSDIR:DIPIN.EXE"'
+%      COPY '#SPAWN "CRYSDIR:DIPIN.EXE"'
 {R   Done.
 %    END BLOCK
 %    BLOCK      %BROWSE%

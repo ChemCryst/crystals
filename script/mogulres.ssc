@@ -262,7 +262,7 @@
 %           COPY '#FOREIGN CSD'
 %           COPY 'END'
 % COPY '#spawn +copy \mogul\develop\mogul\bin\moguldatfil.txt .'
-% COPY '#SPAWN "CRYSDIR:oshell.bat" "CRYSDIR:mogul.bat" qf crystals.qf'
+% COPY '#SPAWN "CRYSDIR:mogul.bat" qf crystals.qf'
 %           FINISH
 %         END BLOCK
 %         BLOCK        %%RT_BRR
