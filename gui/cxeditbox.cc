@@ -7,7 +7,7 @@
 //   Filename:  CxEditBox.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  9.3.1998 10:08 Uhr
+//   $Log: not supported by cvs2svn $
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -34,7 +34,7 @@ CxEditBox * CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
 #ifdef __CR_WIN__
         theEditBox->Create(ES_LEFT| ES_AUTOHSCROLL| WS_VISIBLE| WS_CHILD| ES_WANTRETURN, CRect(0,0,10,10), guiParent, mEditBoxCount++);
     theEditBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);  //Sink it into the window.
-    theEditBox->SetFont(CxGrid::mp_font);
+    theEditBox->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
       theEditBox->Create(guiParent, -1, "EditBox", wxPoint(0,0), wxSize(10,10));
@@ -44,9 +44,11 @@ CxEditBox * CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
 CxEditBox::CxEditBox( CrEditBox * container )
       :BASEEDITBOX()
 {
-    ptr_to_crObject = container;      //This is the container (CrEditBox)
-      mCharsWidth = 50;          //This is the default width if none is specified.
-    allowedInput = CXE_TEXT_STRING;  //This is the default allowed input. See header file for other types.
+   ptr_to_crObject = container;      //This is the container (CrEditBox)
+  mCharsWidth = 50;          //This is the default width if none is specified.
+  allowedInput = CXE_TEXT_STRING;  //This is the default allowed input. See header file for other types.
+  m_Limit = 32767; //Stupidly long limit for unlimited edit boxes.
+  m_IsInput = false;
 }
 
 CxEditBox::~CxEditBox()
@@ -57,32 +59,32 @@ CxEditBox::~CxEditBox()
 void  CxEditBox::SetText( CcString text )
 {
 
-//If we have an integer, read it in then write it out again to check.
-    if(allowedInput == CXE_INT_NUMBER)
+    if(allowedInput == CXE_INT_NUMBER)        //If we have an integer, read it in then write it out again to check.
     {
-            int number = atoi(text.ToCString());
-//            sprintf(text.ToCString(),"%-d",number);
-            text = CcString ( number );
-        //Remove spaces.
-            for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
-            if ( text[i] == ' ' )
-                text[i] = '\0';
-            else
-                i = 0;
+      int number = atoi(text.ToCString());
+      text = CcString ( number );
     }
-//If we have an real, read it in then write it out again to check.
-    else if( allowedInput == CXE_REAL_NUMBER)
+    else if( allowedInput == CXE_REAL_NUMBER) //If we have an real, read it in then write it out again to check.
     {
             double number = atof(text.ToCString());
-//            sprintf(text.ToCString(),"%-8.5g",number);     //LOOK OUT. Precision limited to 5 places. (Width will probably not truncate though.)
             text = CcString ( number );
-        //Remove spaces.
-            for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
-            if ( text[i] == ' ' )
-                text[i] = '\0';
-            else
-                i = 0;
     }
+
+    int j=0;
+    for ( int i = 0; i < text.Len(); i++ )
+    {
+      if ( text[i] != ' ' ) j=i;
+    }
+    if (text.Len()) text = text.Sub(1,j+1); //Don't try this on zero length strings.
+
+    if ( (text.Len()) &&( text.Len() > m_Limit) )
+    {
+      text = text.Sub(1,m_Limit);
+      MessageBeep(MB_ICONASTERISK);
+    }
+//    for ( int i = strlen(text.ToCString()) - 1; i > 0; i-- )
+//    if ( text[i] == ' ' )    text[i] = '\0';
+//    else                     i = 0;
 
 #ifdef __BOTHWX__
       SetValue( text.ToCString() );
@@ -96,10 +98,17 @@ void  CxEditBox::SetText( CcString text )
 void  CxEditBox::AddText( CcString text )
 {
 #ifdef __CR_WIN__
-      SetSel(GetWindowTextLength(),GetWindowTextLength());       //Set the selection at the end of the text buffer.
-      ReplaceSel(text.ToCString());    //Replace the selection (nothing) with the text to add.
-      SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
-      SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
+  if (GetWindowTextLength() + text.Len() > m_Limit)
+  {
+    MessageBeep(MB_ICONASTERISK);
+  }
+  else
+  {
+    SetSel(GetWindowTextLength(),GetWindowTextLength());       //Set the selection at the end of the text buffer.
+    ReplaceSel(text.ToCString());    //Replace the selection (nothing) with the text to add.
+    SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
+    SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
+  }
 #endif
 #ifdef __BOTHWX__
       AppendText(text.ToCString());
@@ -107,97 +116,10 @@ void  CxEditBox::AddText( CcString text )
 #endif
 }
 
-void    CxEditBox::SetGeometry( int top, int left, int bottom, int right )
-{
-#ifdef __CR_WIN__
-    MoveWindow(left,top,right-left,bottom-top,true); //Move the edit box
-#endif
-#ifdef __BOTHWX__
-      SetSize(left,top,right-left,bottom-top);
-#endif
-//      LOGSTAT ("I am the editbox " + CcString((int)this));
-//      LOGSTAT ("My top is set to " + CcString(top) );
-}
+CXSETGEOMETRY(CxEditBox)
 
-int   CxEditBox::GetTop()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-      if(parent != nil)
-      {
-              parent->GetWindowRect(&parentRect);
-              windowRect.top -= parentRect.top;
-      }
-    return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-    }
-      LOGSTAT ("I am the editbox " + CcString((int)this));
-      LOGSTAT ("My top is " + CcString(windowRect.y) );
-      return ( windowRect.y );
-#endif
-}
-int   CxEditBox::GetLeft()
-{
-#ifdef __CR_WIN__
-      RECT windowRect, parentRect;
-    GetWindowRect(&windowRect);
-    CWnd* parent = GetParent();
-    if(parent != nil)
-    {
-        parent->GetWindowRect(&parentRect);
-        windowRect.left -= parentRect.left;
-    }
-    return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect, parentRect;
-      windowRect = GetRect();
-      wxWindow* parent = GetParent();
-    if(parent != nil)
-    {
-            parentRect = parent->GetRect();
-            windowRect.x -= parentRect.x;
-    }
-      return ( windowRect.x );
-#endif
+CXGETGEOMETRIES(CxEditBox)
 
-}
-int   CxEditBox::GetWidth()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-    return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetWidth() );
-#endif
-}
-int   CxEditBox::GetHeight()
-{
-#ifdef __CR_WIN__
-    CRect windowRect;
-    GetWindowRect(&windowRect);
-      return ( windowRect.Height() );
-#endif
-#ifdef __BOTHWX__
-      wxRect windowRect;
-      windowRect = GetRect();
-      return ( windowRect.GetHeight() );
-#endif
-}
 
 int CxEditBox::GetIdealWidth()
 {
@@ -208,7 +130,7 @@ int CxEditBox::GetIdealHeight()
 {
 #ifdef __CR_WIN__
     CClientDC cdc(this);   //See GetIdealWidth for how this works.
-    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font);
+    CFont* oldFont = cdc.SelectObject( (m_IsInput ? CcController::mp_inputfont : CcController::mp_font) );
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
@@ -281,7 +203,7 @@ void    CxEditBox::SetVisibleChars( int count )
 {
 #ifdef __CR_WIN__
     CClientDC cdc(this);    //Get the device context for this window (edit box).
-    CFont* oldFont = cdc.SelectObject(CxGrid::mp_font); //Select the standard font into the device context, save the old one for later.
+    CFont* oldFont = cdc.SelectObject(CcController::mp_font); //Select the standard font into the device context, save the old one for later.
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
     cdc.SelectObject(oldFont);         //Select the old font back into the DC.
@@ -503,8 +425,43 @@ void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 }
 #endif
 
-void CxEditBox::SetOriginalSizes()
+void CxEditBox::LimitChars(int limit)
 {
-      mCharsWidth = GetWidth();
+   m_Limit = limit;
+   SetLimitText(limit);
+}
 
+void CxEditBox::IsInputPlace()
+{
+   if (CcController::mp_inputfont == nil)
+   {
+     LOGFONT lf;
+     ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+     CcString temp;
+     temp = (CcController::theController)->GetKey( "MainFontHeight" );
+     if ( temp.Len() )  lf.lfHeight = atoi( temp.ToCString() ) ;
+     temp = (CcController::theController)->GetKey( "MainFontWidth" );
+     if ( temp.Len() )  lf.lfWidth = atoi( temp.ToCString() ) ;
+     temp = (CcController::theController)->GetKey( "MainFontFace" );
+     for (int i=0;i<32;i++)
+     {
+       if ( i < temp.Len() )   lf.lfFaceName[i] = temp[i];
+       else                    lf.lfFaceName[i] = 0;
+     }
+     CcController::mp_inputfont = new CFont();
+     if (CcController::mp_inputfont->CreateFontIndirect(&lf))
+       SetFont(CcController::mp_inputfont);
+     else
+       ASSERT(0);
+     }
+   else
+   {
+     SetFont(CcController::mp_inputfont);
+   }
+   m_IsInput = true;
+}
+
+void CxEditBox::UpdateFont()
+{
+  SetFont(CcController::mp_inputfont);
 }

@@ -7,7 +7,7 @@
 //   Filename:  CxEditBox.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  9.3.1998 10:08 Uhr
+//   $Log: not supported by cvs2svn $
 
 #ifndef     __CxEditBox_H__
 #define     __CxEditBox_H__
@@ -56,7 +56,6 @@ class CxEditBox : public BASEEDITBOX
             void  AddText( CcString text );
             void  SetText( CcString text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
-            void  SetOriginalSizes();
         int GetTop();
         int GetLeft();
         int GetWidth();
@@ -67,17 +66,21 @@ class CxEditBox : public BASEEDITBOX
         static void RemoveEditBox( void ) { mEditBoxCount--; };
         int GetText(char* theText, int maxlen = 256);
             CcString GetText();
+        void    LimitChars(int nChars);
         void    SetVisibleChars( int count );
+        void    IsInputPlace();
+        void    UpdateFont();
 
 // The private parts:
       public:
-            static int mEditBoxCount;
+        static int mEditBoxCount;
         CrGUIElement *  ptr_to_crObject;
         int mCharsWidth;
+        int m_Limit;
 
       private:
-            int allowedInput;
-
+        int allowedInput;
+        bool m_IsInput;
 
 // The private machine specific parts:
             void EditChanged();
