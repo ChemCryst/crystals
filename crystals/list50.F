@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2002/01/17 17:03:03  Administrator
+C fix parameter type mismachs
+C
 C Revision 1.5  2001/09/27 09:46:14  ckp2
 C This natty little modification echoes data from commands.src to the listing file
 C as a dsc file is generated. Enables you to see exactly where errors are if define crashes half-way through.
@@ -384,6 +387,7 @@ C
 \XCOMPD
 \XERVAL
 \XLSVAL
+\XIOBUF
 C
 C
       EQUIVALENCE (NWPAR,MDR62N),(NWPART,MDR62D)
@@ -1033,6 +1037,8 @@ C--PRINT A MESSAGE TO INDICATE THE END OF THIS INSTRUCTION
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,6150)(ISTORE(I+1),I=J,K),(IB,I=1,JRPLCE)
       ENDIF
+      WRITE(CMON,6150)(ISTORE(I+1),I=J,K),(IB,I=1,JRPLCE)
+      CALL XPRVDU(NCVDU,1,0)
 6150  FORMAT(' Instruction processed : ',14A1,'Replacement')
       GOTO 1550
 C
