@@ -156,7 +156,6 @@ void runTest(RunParameters& pRunData)
             pRunData.iCrystalSys.init(getCrystalSystem(LaueGroups::laueGroupID2UnitCellID(tResultID)));
         }
     }
-    
     std::cout << "\nCalculating probabilities...";
     std::cout.flush();
     gettimeofday(&time1, NULL);
@@ -192,29 +191,27 @@ void runTest(RunParameters& pRunData)
     delete tStats;
     delete tHKL;
     delete tTables;
-    std::cout << MyObject::objectCount() << " objects left.\n";
 }
 
 int main(int argc, const char* argv[])
 { 
     std::cout << "The Determinator Version " << kVersion << "\n";
     std::cout << "Written by Stefan Pantos\n";
-
-    RunParameters tRunStruct;
-
     try
     {
-	/* Handle all the arguments which were passed to the program.
-	 * If there are any parameters needed where where not passed 
-	 * then the user is prompted.
-	 */
-		tRunStruct.handleArgs(argc, argv);  
+        RunParameters tRunStruct;
+        /* Handle all the arguments which were passed to the program.
+        * If there are any parameters needed where where not passed 
+        * then the user is prompted.
+        */
+        tRunStruct.handleArgs(argc, argv);  
         tRunStruct.getParamsFromUser(); // Not all the run parameters have been filled in the user will need to add some more.
         runTest(tRunStruct);
     }
     catch (MyException eE)
     {
         std::cout << "\n" << eE.what() << "\n";
-    }   
+    }
+    std::cout << MyObject::objectCount() << " objects left.\n";
     return 0;
 }
