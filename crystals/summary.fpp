@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.67  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2004/12/13 16:16:09  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -1515,7 +1519,7 @@ C Loop through ALL possible indices:
             STORE(M6+1) = IK
             STORE(M6+2) = IL
 C Check refln is within theta range
-            IF ( XTHETA(IH) .LE. THMAX ) THEN
+            IF ( XTHETA(IH) .LT. THMAX ) THEN
 C Check if it is systematically absent.
               IF ( KSYSAB(2) .GE. 0 ) THEN
 C Only consider 'allowed' if indices were not changed by KSYSAB:
