@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/10/10 12:44:50  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.8  2001/03/08 15:36:04  richard
 //   Completely re-written the window sizing and layout code. Now much simpler.
 //   Calclayout works out and returns the size of a GUI object, so that the
@@ -105,6 +108,7 @@ class   CrGrid : public CrGUIElement
 #define kSCreateToolBar         "TOOLBAR"
 #define kSCreateResize          "RESIZE"
 #define kSCreateStretch          "STRETCH"
+#define kSCreateHidden          "HIDDENSTRING"
 
 enum
 {
@@ -132,7 +136,9 @@ enum
  kTCreateToolBar,
  kTCreateResize,
  kTCreateStretch,
- kTCreatePlot
+ kTCreatePlot,
+ kTCreateHidden
+
 };
 
 

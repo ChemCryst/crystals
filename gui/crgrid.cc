@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2001/10/10 12:44:50  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.16  2001/06/17 15:14:13  richard
 //   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
 //
@@ -54,7 +57,7 @@
 #include        "crtoolbar.h"
 #include        "crstretch.h"
 #include        "crresizebar.h"
-
+#include        "crhidden.h"
 
 
 CrGrid::CrGrid( CrGUIElement * mParentPtr )
@@ -427,6 +430,13 @@ CcParse CrGrid::ParseInput( CcTokenList * tokenList )
             CrStretch * sPtr = new CrStretch( this );
             if ( sPtr != nil )
               retVal = InitElement( sPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateHidden:                                 // Create a Hidden String
+          {
+            CrHidden * hPtr = new CrHidden( this );
+            if ( hPtr != nil )
+              retVal = InitElement( hPtr, tokenList, xpos, ypos );
             break;
           }
           case kTCreateResize:                                 // Create a Resize control
