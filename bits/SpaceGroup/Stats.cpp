@@ -44,14 +44,14 @@ Stats::~Stats()
     delete[] iStats;
 }
 
-void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float>* pHKLM)	//Goes through the rows down the specified Column adding the reflection to the stats.
+void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<short>* pHKLM)	//Goes through the rows down the specified Column adding the reflection to the stats.
 {
-    static Matrix<float> tMatrix(1, 1);
+    static Matrix<short> tMatrix(1, 1);
     
     int tCCount = iConditions->length();    //Cache lengths of the table.
     for (int i= 0; i < tCCount; i++)
     {
-        Matrix<float>* tMultiMat = NULL;
+        Matrix<short>* tMultiMat = NULL;
         tMultiMat = iConditions->getMatrix(i);
         //Matrix<float> tMatrix = (*tMultiMat)*(*pHKLM);
         tMultiMat->mul(*pHKLM, tMatrix);
@@ -87,12 +87,12 @@ ElemStats* Stats::getElem(int pHeadIndex, int pCondIndex)
 
 void Stats::addReflection(Reflection* pReflection)
 {
-    static Matrix<float> tResult(1, 3);
+    static Matrix<short> tResult(1, 3);
     iTotalNum ++;
     iTotalIntensity += (float)pReflection->i;	
     int tHCount = iHeadings->length();			//Cache lengths of the table.
-    Matrix<float>* tHKLMat = pReflection->getHKL();	//Get the HKL matrix from the reflection.
-    Matrix<float>* tMultiMat = NULL;			// Matrix pointer to be used generaly when needed.
+    Matrix<short>* tHKLMat = pReflection->getHKL();	//Get the HKL matrix from the reflection.
+    Matrix<short>* tMultiMat = NULL;			// Matrix pointer to be used generally when needed.
     for (int i = 0; i < tHCount; i++)			//Go through Columns in the table.
     {
         tMultiMat = iHeadings->getMatrix(i);
@@ -116,7 +116,7 @@ std::ostream& Stats::outputElementValue(std::ostream& pStream, ElemStats* pStats
         switch (pValues)
         {
             case 0:	//Condition matched count
-                pStream << pStats->tNumM;
+                pStream << setprecision(0) << pStats->tNumM;
             break;
             case 1:	//<I> matched
                 pStream << pStats->tMTotInt/pStats->tNumM;
@@ -267,10 +267,8 @@ std::ofstream& Stats::output(std::ofstream& pStream, Table& pTable)
             for (int k=0; k < tNumOfElemsValues; k++)
             {
                 outputElementValue(pStream, tElement, k);
-                if (k+1 < tNumOfElemsValues)
-                {
+                if (i+1 < tColumnCount || j+1 < tCount || k+1 < tNumOfElemsValues)
                     pStream << "\n";
-                }
             }
         }
     }
