@@ -29,16 +29,17 @@
 ^^WI            @ 1,1 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=45
 ^^WI            INFORM=YES
 ^^WI         }
-^^WI         ITEM GRID _CAMBTNS NROWS=9 NCOLS=1
+^^WI         ITEM GRID _CAMBTNS NROWS=6 NCOLS=3
 ^^WI         {
-^^WI           @ 1,1 GRID INCRE NROWS=3 NCOLS=3
+^^WI           @ 1,2 GRID INCRE NROWS=3 NCOLS=5
 ^^WI           {
-^^WI               @ 2,1 STATIC   TH 'Increment'
+^^WI               @ 2,1 STATIC TH 'Increment'
 ^^WI               @ 2,3 DROPDOWN XC_BL ADDTOLIST
 ^^WI               '.1' '.2' '.5' '1.' '5.' '10.' '45.'
 ^^WI               'NULL'
+^^WI               @ 2,5 STATIC TD 'degrees'
 ^^WI           }
-^^WI           @ 2,1 GRID MOVE NROWS=3 NCOLS=5
+^^WI           @ 2,2 GRID MOVE NROWS=3 NCOLS=5
 ^^WI                 COMMAND='#SCRIPT xcrotate'
 ^^WI           {
 ^^WI             @ 1,1 BUTTON XROTP '+X'     @ 1,2 BUTTON XROTN '-X'
@@ -50,18 +51,22 @@
 ^^WI             @ 2,4 BUTTON AXISB 'Axis b' @ 2,5 BUTTON HKL   'hkl'
 ^^WI             @ 3,4 BUTTON AXISC 'Axis c' @ 3,5 BUTTON CURSO 'Cursor'
 ^^WI           }
-^^WI           @ 4,1 GRID STYLE NROWS=4 NCOLS=7
+^^WI           @ 4,2 GRID STYLE NROWS=6 NCOLS=3
 ^^WI                 COMMAND='#SCRIPT xnstyle'
 ^^WI           {
-^^WI             @ 1,2 DROPDOWN LSTYLE INFORM=YES ADDTOLIST
+^^WI             @ 1,1 DROPDOWN LSTYLE INFORM=YES ADDTOLIST
 ^^WI             'Spheres' 'Lines' 'Ellipses' 'NULL'
-^^WI             @ 1,4 DROPDOWN LCOLOR INFORM=YES ADDTOLIST
+^^WI             @ 1,3 DROPDOWN LCOLOR INFORM=YES ADDTOLIST
 ^^WI              'Default' 'B&W' 'B&W-2' 'NULL'
-^^WI             @ 3,2 DROPDOWN LPACK INFORM=YES ADDTOLIST
+^^WI             @ 3,1 DROPDOWN LPACK INFORM=YES ADDTOLIST
 ^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'Window' 'NULL'
-^^WI             @ 3,4 BUTTON COLBUT 'Colours'
+^^WI             @ 3,3 BUTTON COLBUT 'Colours'
+^^WI             @ 5,1 DROPDOWN LFONT INFORM=YES ADDTOLIST
+^^WI             'Font 8' 'Font 9' 'Font 10' 'Font 12' 'Font 16'
+^^WI             'Font 20' 'Font 24' 'Font 28' 'Font 32'
+^^WI             'Font 48' 'Font 72' 'NULL'
 ^^WI           }
-^^WI           @ 7,1 GRID STUFF NROWS=5 NCOLS=2
+^^WI           @ 6,2 GRID STUFF NROWS=5 NCOLS=2
 ^^WI                 COMMAND='#SCRIPT xcalter'
 ^^WI           {
 ^^WI              @ 1,1 BUTTON OHCONT 'Find O---H'
@@ -204,8 +209,9 @@
 ^^CR
 ^^WI SENDTEXTTO _CAMTEXT
 ^^CR
-%% Set increment default to 10 degrees
-^^CO SET XC_BL SELECTION=6
+%% Set increment default to 5 degrees
+^^CO SET XC_BL SELECTION=5
+^^CO SET LFONT SELECTION=6
 %VARIABLE INTEGER ATOMSIN ATOMSOUT ATOMCHANGE
 %%
 %% COUNT THE NUMBER OF ATOMS PASSED TO CAMERON.
