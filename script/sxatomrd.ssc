@@ -33,9 +33,9 @@
 %% defined by the SFAC command. (This is not used yet.)
 %% (but it is checked!)
 %%
-%     GET NOSTORE NOPROMPT INTEGER 'Elem #' '0'
+%     GET NOSTORE NOPROMPT INTEGER 'Elem #' '-1'
 %     EVALUATE SXF = VALUE
-%     IF SXF .EQ. 0 THEN
+%     IF SXF .EQ. - 1 THEN
  Valid element number (from SFAC) not found.
 %        FINISH
 %     END IF
