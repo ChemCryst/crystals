@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2003/01/15 15:26:38  rich
+C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
+C anywhere will benefit from less IO, it's here.
+C
 C Revision 1.37  2003/01/14 10:13:22  rich
 C g77 spots missing comma in Format statement.
 C
@@ -1241,11 +1245,11 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
                 IF (STORE(JF) .GT. ZERO) THEN
                   WRITE ( CMON ,2806)
      1            CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CATOM2(1:25),
-     2            STORE(J+10), STORE(JF),(STORE(J+JJ),JJ=7,9)
+     2            STORE(J+10), STORE(JF),(STORE(J+JAR),JAR=7,9)
                 ELSE
                   WRITE ( CMON ,2807)
      1           CBLANK(1: 21-LATOM1), CATOM1(1:LATOM1), CATOM2(1:25),
-     2           STORE(J+10),(STORE(J+JJ),JJ=7,9)
+     2           STORE(J+10),(STORE(J+JAR),JAR=7,9)
                 ENDIF
                 CALL XPRVDU(NCVDU, 1,0)
                 WRITE(NCAWU, '(A)') CMON( 1)(:)
