@@ -10,12 +10,13 @@
 {&crysdir:\manual\faq-2.html{& or {&http://www.xtl.ox.ac.uk/faq-2.html{&
 
  If you are encountering problems using or installing crystals please
- don't give up yet. Email {&mailto:david.watkin@chem.ox.ac.uk{& or
- {&mailto:richard.cooper@chem.ox.ac.uk{& and quickly explain the problem.
+ don't give up yet. Email {&mailto:richard.cooper@chem.ox.ac.uk{& or
+ {&mailto:david.watkin@chem.ox.ac.uk{& and quickly explain the problem.
  There may be a simple remedy. Feedback also helps us to improve the
  ease of use of the software and maintain the FAQ list.
- Bugs may be reported through the CRYSTALS web site at
- {&http://www.xtl.ox.ac.uk/bug.html{&
+
+{R       Bugs may be reported through the CRYSTALS web site at
+                {&http://www.xtl.ox.ac.uk/bug.html{&
 
 ________________________________________________________________________
 
@@ -25,15 +26,13 @@ ________________________________________________________________________
 %            COPY 'END'
 % ELSE
  
- 
- * The cell parameters are not available for the Model window
+{S * The cell parameters are not available for the Model window
 % END IF
 % IF ( EXISTS  2 .EQ. 1 ) THEN
 %            COPY '#SUM L 2'
 %            COPY 'END'
 % ELSE
- 
- * The Space Group is not available for the Model window
+{S * The Space Group is not available for the Model window
 % END IF
 % IF ( EXISTS  5 .EQ. 1 ) THEN
 %            COPY '#SUM L 5 LOW'
@@ -43,43 +42,33 @@ ________________________________________________________________________
 ^^GR MODEL L5
 ^^GR SHOW
 ^^CR
- 
- * There are no atoms available for the Model window
+{S * There are no atoms available for the Model window
 
- The easiest data formats to start with are CAD4 data, DIP data, or
- SHELX ins or res and hkl files.
+{I The easiest data formats to start with are CAD4 data, DIP data, or
+{I SHELX ins or res and hkl files.
 
- Before you start CRYSTALS make a new directory and copy your data into it.
- Choose this directory when you start CRYSTALS.
+{R Before you start CRYSTALS make a new directory and copy your data into it.
+{R Choose this directory when you start CRYSTALS.
 
- For {2,14SHELX{1,0 files, you will need to know the space group. Using the
- menus above choose X-ray data -> SHELX ins or res and follow the
- instructions. Then choose X-ray data -> Reflections and read in the HKL file.
+{I For {2,14SHELX{I files, you will need to know the space group. On the
+{I menu choose X-ray Data -> SHELX ins or res and follow the instructions.
+{I Then choose X-ray Data -> Reflections to read in the HKL file.
 
- For {2,14CAD4{1,0 data, use the external program RC93 ( choose X-ray data ->
- Pre-process -> Cad4 data -> Run RC93. When done, choose X-ray data ->
- Pre-process -> Cad4 data -> Input processed data and follow the
- instructions.
+{I For {2,14CAD4{I data, use the external program RC93 ( choose X-ray Data ->
+{I Pre-process -> Run RC93. 
 
- For {2,14DIP{1,0 data, use the external program DIPIN ( choose X-ray data ->
- Pre-process -> Dip2000 data -> Run Dipin. When done, choose X-ray data ->
- Pre-process -> Dip2000 data -> Input processed data and follow the
- instructions.
+{I For {2,14DIP{I data, use the external program DIPIN ( choose X-ray Data ->
+{I Pre-process -> Run Dipin. 
 
- For {2,14Kappa CCD{1,0 data, use the external program KCCDIN ( choose X-ray
- data -> Pre-process -> KCCD data -> Run KCCDin. When done, choose X-ray
- data -> Pre-process -> KCCD data -> Input processed data and follow the
- instructions.
+{I For {2,14Kappa CCD{I data, use the external program KCCDIN ( choose X-ray
+{I Data -> Pre-process -> Run KCCDin. 
 
- Once your data has been read in by CRYSTALS, it is stored in a binary file
- in your working directory. Next time you start CRYSTALS, you can continue
- where you left off.
+{I Once your data has been read in by CRYSTALS, it is stored in a binary file
+{I in your working directory. Next time you start CRYSTALS, you can continue
+{I where you left off.
 
- If you have no model structure use the Solve menu to initiate Direct
- Methods programs.
-
- If you have a trial or partially refined model, choose Refinement ->
- Guided-Automatic for structure refinement and publication listings.
+{R             Click "Guide" on the toolbar (or "Refinement->The Guide"
+{R                  in the menu), for advice on what to do next.
 
 % END IF
 
