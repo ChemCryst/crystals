@@ -512,52 +512,36 @@ std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs)
     return pIndexs.output(pStream);
 }
 
-Table::Table(char* pName, Regions* pRegions, Conditions* pConditions, int pNumColumns, int pNumPointGroups)
+Table::Table(char* pName, Regions* pRegions, Conditions* pConditions, int pNumColumns, int pNumPointGroups):iSGColumn(vector<SGColumn>(pNumPointGroups))
 {
     iName = new char[strlen(pName)+1];	//Allocate enought space for the name
     strcpy(iName, pName);	//Copy the name into the classes storage
     String::upcase(iName);	//Make sure that the name is in upper case
     iRegions = pRegions;	//Keep a reference to the headers
     iConditions = pConditions;	//Keep a reference to the conditions
-    iColumns = new ArrayList<ConditionColumn>(pNumColumns);	//Allocate the space for the condition columns of the table
+    iColumns = new vector<ConditionColumn*>(pNumColumns, (ConditionColumn*)NULL);	//Allocate the space for the condition columns of the table
     for (int i = 0; i < pNumColumns; i++)
     {
-        iColumns->add(new ConditionColumn());	//Allocate and initalise the condition columns
-    }
-    iSGColumn = new ArrayList<SGColumn>(pNumPointGroups);  //Allocate the space for the space group columns of the table
-    for (int i = 0; i < pNumPointGroups; i++)
-    {
-        iSGColumn->add(new SGColumn());	//Allocate and initalise the space group columns
+        iColumns->at(i) = new ConditionColumn();	//Allocate and initalise the condition columns
     }
 }
         
 Table::~Table()
 {
+	vector<ConditionColumn*>::iterator tColIter;
     delete[] iName;	//Release the space used by the name
     
-    int tSize = iSGColumn->length();	//Find the number of space group columns
-    for (int i = 0; i<tSize; i++)	//Go though each deallocating the memory which they use up
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++) //Run though each condition column deallocating as you go.
     {
-        SGColumn* tGroups = iSGColumn->remove(i);
-        if (tGroups)	//Make sure that there is some memory to be deallocated
+		if (*tColIter)	//Make sure that there is some memory to be deallocated.
         {
-            delete tGroups;
-        }
-    }
-    tSize = iColumns->length(); //Find the number of condition columns to be deallocated.
-    for (int i = 0; i<tSize; i++) //Run though each condition column deallocating as you go.
-    {
-        ConditionColumn* tConditions = iColumns->remove(i); 
-        if (tConditions)	//Make sure that there is some memory to be deallocated.
-        {
-            delete tConditions;
+            delete (*tColIter);
         }
     }
     delete iColumns;	//Deallocate the arrays which stored the columns
-    delete iSGColumn;  //Deallocate the arrays which stored the columns
 }
 
-void Table::columnRegions(char* pRegions, int pColumn)
+void Table::columnRegions(char* pRegions, size_t pColumn)
 {
     const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
@@ -570,19 +554,19 @@ void Table::columnRegions(char* pRegions, int pColumn)
     char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
     tString[(int)(tMatch[1].rm_eo-tMatch[1].rm_so)] = 0;
     strncpy(tString, pRegions+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//get the first element on the line
-    if (pColumn < iColumns->length())
+    if (pColumn < iColumns->size())
     {
-        iColumns->get(pColumn)->setRegion(tString);
+        iColumns->at(pColumn)->setRegion(tString);
     }
     else
     {
-        int tSpaceGroupLen = pColumn-iColumns->length();
+        size_t tSpaceGroupLen = pColumn-iColumns->size();
         
-        if (iSGColumn->length()<=tSpaceGroupLen)
+        if (iSGColumn.size()<=tSpaceGroupLen)
         {
             throw MyException(kUnknownException, "Table heading has bad format.");
         }
-        iSGColumn->get(tSpaceGroupLen)->setPointGroup(tString);
+        iSGColumn.at(tSpaceGroupLen).setPointGroup(tString);
     }
     delete[] tString;
     if (tMatch[2].rm_so==-1)
@@ -597,7 +581,7 @@ void Table::readColumnRegions(char* pRegions)
     columnRegions(pRegions, 0);
 }
 
-void Table::addLine(char* pLine, int pColumn)
+void Table::addLine(char* pLine, size_t pColumn)
 {
     const size_t tMatches = 3;
     regmatch_t tMatch[tMatches];
@@ -610,25 +594,25 @@ void Table::addLine(char* pLine, int pColumn)
     char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
     tString[(int)tMatch[1].rm_eo-tMatch[1].rm_so] = 0;
     strncpy(tString, pLine+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//Get the first element in the line
-    int pRow = iColumns->get(0)->length();	//Get the row which we are at.
+    int pRow = iColumns->at(0)->length();	//Get the row which we are at.
     if (pColumn != 0)
     {
         pRow --;
     }
-    if (pColumn < iColumns->length())
+    if (pColumn < iColumns->size())
     {
-        addCondition(tString, iColumns->get(pColumn), pRow);
+        addCondition(tString, iColumns->at(pColumn), pRow);
     }
     else
     {
-        addSpaceGroup(tString, iSGColumn->get(pColumn-iColumns->length()), pRow);
+        iSGColumn.at(pColumn-iColumns->size()).add(tString, pRow);
     }
     addLine(pLine+(int)tMatch[1].rm_eo , pColumn+1);
     delete tString;
 }
 
 
-void Table::addCondition(char* pCondition, ConditionColumn* pColumn, int pRow)
+void Table::addCondition(char* pCondition, ConditionColumn* pColumn, size_t pRow)
 {
     char* tNextNumber;
     long tNumber = strtol(pCondition, &tNextNumber, 10);
@@ -648,12 +632,7 @@ void Table::addCondition(char* pCondition, ConditionColumn* pColumn, int pRow)
     }
     addCondition(tNextNumber+1, pColumn, pRow);
 }
-
-void Table::addSpaceGroup(char* pSpaceGroup, SGColumn* pSGColumn, int pRow)
-{
-    pSGColumn->add(pSpaceGroup, pRow);
-}
-        
+ 
 void Table::addLine(char* pLine)
 {
     addLine(pLine, 0);
@@ -681,22 +660,17 @@ char* Table::getName()
 
 size_t Table::numSGColumns()
 {
-    return iSGColumn->length();
+    return iSGColumn.size();
 }
 
 SpaceGroups* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
 {
-    SGColumn* tGroups = iSGColumn->get(pPointGroupNum);
-    if (tGroups)
-    {
-            return tGroups->at(pLineNum);
-    }
-    return NULL;
+	return iSGColumn.at(pPointGroupNum).at(pLineNum);
 }
 
 vector<Index>* Table::getRegions(int pI) const
 {
-    return iColumns->get(pI)->getRegions();
+    return iColumns->at(pI)->getRegions();
 }
         
 void Table::readFrom(filebuf& pFile)
@@ -735,7 +709,7 @@ bool Table::hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber)
 	
 	for (tIter = pColumnNums.begin(); tIter != pColumnNums.end(); tIter++)
 	{
-		if (iSGColumn->get((*tIter))->at(pRowNumber)->count() > 0) 
+		if (iSGColumn.at((*tIter)).at(pRowNumber)->count() > 0) 
 		{
 			return true;
 		}
@@ -745,11 +719,11 @@ bool Table::hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber)
 
 std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
 {
-    int tLengthConditions = iColumns->length();
-    int tLengthSpaceGroup = iSGColumn->length();
-    for (int i = 0; i < tLengthConditions; i++)
+    vector<ConditionColumn*>::iterator tColIter;
+   
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
-        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        Indexs* tIndexs = (*tColIter)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
             pStream << "-\n";
@@ -760,18 +734,17 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
         }
     }
     long tNumSGs = 0;
+	int tLengthSpaceGroup = iSGColumn.size();
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
+        SpaceGroups* tSpaceGroups = iSGColumn.at(i).at(pLineNum);
         tNumSGs += tSpaceGroups->count();
     }
     pStream << "SPACEGROUPS " << tNumSGs << "\n";
 
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
+        SpaceGroups* tSpaceGroups = iSGColumn.at(i).at(pLineNum);
         if (tSpaceGroups->count() > 0)
             pStream << *(tSpaceGroups) << "\n";
     }
@@ -780,10 +753,11 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
 
 std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, set<int, ltint>& tPointGroups)
 {
-    int tLengthConditions = iColumns->length();
-    for (int i = 0; i < tLengthConditions; i++)
+    vector<ConditionColumn*>::iterator tColIter;
+   
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
-        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        Indexs* tIndexs = (*tColIter)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
             pStream << "-\n";
@@ -798,15 +772,13 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, set<int, 
 	
     for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
-        SGColumn* tSGColumn = iSGColumn->get((*tIter));
-        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
+        SpaceGroups* tSpaceGroups = iSGColumn.at((*tIter)).at(pLineNum);
         tNumSGs += tSpaceGroups->count();
     }
     pStream << "SPACEGROUPS " << tNumSGs << "\n";
     for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
-        SGColumn* tSGColumn = iSGColumn->get((*tIter));
-        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
+        SpaceGroups* tSpaceGroups = iSGColumn.at((*tIter)).at(pLineNum);
         if (tSpaceGroups->count() > 0)
             pStream << *(tSpaceGroups) << "+ \n";
     }
@@ -815,11 +787,11 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, set<int, 
 
 std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumnSize)
 {
-    int tLengthConditions = iColumns->length();
-    int tLengthSpaceGroup = iSGColumn->length();
-    for (int i = 0; i < tLengthConditions; i++)
+    vector<ConditionColumn*>::iterator tColIter;
+   
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
-        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        Indexs* tIndexs = (*tColIter)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
             pStream << setw(pColumnSize) << "-" << " ";
@@ -829,10 +801,11 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumn
            pStream << setw(pColumnSize) << *(tIndexs) << " ";
         }
     }
+	
+	int tLengthSpaceGroup = iSGColumn.size();
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroups* tSpaceGroup = tSGColumn->at(pLineNum);
+        SpaceGroups* tSpaceGroup = iSGColumn.at(i).at(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -841,10 +814,11 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumn
 
 std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, set<int, ltint>& tPointGroups, int pColumnSize = 8)
 {
-    int tLengthConditions = iColumns->length();
-    for (int i = 0; i < tLengthConditions; i++)
+    vector<ConditionColumn*>::iterator tColIter;
+   
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
-        Indexs* tIndexs = iColumns->get(i)->getConditions(pLineNum);
+        Indexs* tIndexs = (*tColIter)->getConditions(pLineNum);
         if (tIndexs == NULL)
         {
             pStream << setw(pColumnSize) <<  "-";
@@ -858,8 +832,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, set<int, lt
 	
     for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
-        SGColumn* tSGColumn = iSGColumn->get((*tIter));
-        SpaceGroups* tSpaceGroup = tSGColumn->at(pLineNum);
+        SpaceGroups* tSpaceGroup = iSGColumn.at((*tIter)).at(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -867,28 +840,28 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, set<int, lt
 }
 
 std::ostream& Table::output(std::ostream& pStream)
-{	
-    int tLengthConditions = iColumns->length();
-    int tLengthSpaceGroup = iSGColumn->length();
-    
+{
+    vector<ConditionColumn*>::iterator tColIter;
+	
     pStream << iName << "\n";
-    for (int i = 0; i < tLengthConditions; i++)
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
-        int tRegionNumber = iColumns->get(i)->countRegions();
+        int tRegionNumber = (*tColIter)->countRegions();
         for (int j = 0; j < tRegionNumber; j ++)
         {
-            pStream << iColumns->get(i)->getRegion(j) << "\t";
+            pStream << (*tColIter)->getRegion(j) << "\t";
         }
     }
+    int tLengthSpaceGroup = iSGColumn.size();
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
-        pStream << iSGColumn->get(i)->getPointGroup() << "\t";
+        pStream << iSGColumn.at(i).getPointGroup() << "\t";
         pStream << "\t";
     }
     pStream << "\n";
-    if (tLengthConditions > 0)
+    if (iColumns->size() > 0)
     {
-        int tNumOfLines = iColumns->get(0)->length();
+        int tNumOfLines = iColumns->at(0)->length();
         for (int i =0; i < tNumOfLines; i++)
         {
             outputLine(i, pStream);
@@ -897,9 +870,9 @@ std::ostream& Table::output(std::ostream& pStream)
     return pStream;
 }
 
-Indexs* Table::getConditions(int pRow, int pColumn)
+Indexs* Table::getConditions(int pRow, size_t pColumn)
 {
-    ConditionColumn* tColumn = iColumns->get(pColumn);
+    ConditionColumn* tColumn = iColumns->at(pColumn);
     if (tColumn)
     {
         return tColumn->getConditions(pRow);
@@ -909,12 +882,12 @@ Indexs* Table::getConditions(int pRow, int pColumn)
 
 int Table::numberOfColumns()
 {
-    return iColumns->length();
+    return iColumns->size();
 }
 
 int Table::numberOfRows()
 {
-    return iSGColumn->get(0)->size();
+    return iSGColumn.at(0).size();
 }
 
 set<int, ltint>& Table::columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pColumnIndeces)
@@ -926,8 +899,8 @@ set<int, ltint>& Table::columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pCol
 	{
 		vector<CrystSymmetry>::iterator tPointGroupIter;
 		
-		 for (tPointGroupIter = iSGColumn->get(i)->getPointGroup().begin(); 
-			tPointGroupIter != iSGColumn->get(i)->getPointGroup().end();
+		 for (tPointGroupIter = iSGColumn.at(i).getPointGroup().begin(); 
+			tPointGroupIter != iSGColumn.at(i).getPointGroup().end();
 				tPointGroupIter++)
 		{
 			//Is the point group a subgroup of the laue group.
@@ -950,8 +923,8 @@ set<int, ltint>& Table::chiralColumns(set<int, ltint>& pPointGroupIndeces)
 	{
 		vector<CrystSymmetry>::iterator tPointGroupIter;
 		
-		 for (tPointGroupIter = iSGColumn->get(i)->getPointGroup().begin(); 
-			tPointGroupIter != iSGColumn->get(i)->getPointGroup().end();
+		 for (tPointGroupIter = iSGColumn.at(i).getPointGroup().begin(); 
+			tPointGroupIter != iSGColumn.at(i).getPointGroup().end();
 				tPointGroupIter++)
 		{
 			//Is it a chiral point group
@@ -964,45 +937,36 @@ set<int, ltint>& Table::chiralColumns(set<int, ltint>& pPointGroupIndeces)
 	return pPointGroupIndeces;
 }
 
-int Table::dataUsed(signed char pIndices[], const int pMax) const
+int Table::dataUsed(signed char pIndices[], const size_t pMax) const
 {
-    int tNumColumns = iColumns->length();
-    TreeSet<signed char> tIndices;
-    
-    for (int i = 0; i < tNumColumns; i++)
+	set<signed char> tIndices;
+    vector<ConditionColumn*>::iterator tColIter;
+   
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
         vector<Index>::iterator tIndexsIter;
-        for (tIndexsIter = iColumns->get(i)->getRegions()->begin(); tIndexsIter != iColumns->get(i)->getRegions()->end(); tIndexsIter ++)
+        for (tIndexsIter = (*tColIter)->getRegions()->begin(); tIndexsIter != (*tColIter)->getRegions()->end(); tIndexsIter ++)
         {
 			signed char tIndex =tIndexsIter->get();
-            tIndices.add(tIndex);
+            tIndices.insert(tIndex);
         }
     }
-    Iterator<signed char>* tIterator = tIndices.createIterator();
-    int j = 0;
-    tIterator->reset();
-    while (tIterator->hasNext() && j < pMax)
+	if (tIndices.size() < pMax)
     {
-        pIndices[j] = *tIterator->next();
-        j++;
+        pIndices[tIndices.size()] = -1;
     }
-    if (j < pMax)
-    {
-        pIndices[j] = -1;
-    }
-    delete tIterator;
-    return j; 
+	copy(tIndices.begin(), tIndices.end(), pIndices); 
+    return tIndices.size();
 }
 
-int Table::conditionsUsed(signed char pIndices[], const int pMax) const
-{
-    int tNumColumns = iColumns->length();
-    TreeSet<signed char> tIndices;
-//	multiset<signed char> tIndices;
-    
-    for (int i = 0; i < tNumColumns; i++)
+int Table::conditionsUsed(signed char pIndices[], const size_t pMax) const
+{    
+	set<signed char> tIndices;
+    vector<ConditionColumn*>::iterator tColIter;
+   
+    for (tColIter = iColumns->begin(); tColIter != iColumns->end(); tColIter++)
     {
-        ConditionColumn* tColumn = iColumns->get(i);
+        ConditionColumn* tColumn = (*tColIter);
         int tLength = tColumn->length();
         for (int j = 0; j < tLength; j++)
         {
@@ -1013,25 +977,18 @@ int Table::conditionsUsed(signed char pIndices[], const int pMax) const
                 for (int k = 0; k < tNumIndices; k++)
                 {
                     signed char tIndex = tIndexs->getValue(k);
-                    tIndices.add(tIndex);
+                    tIndices.insert(tIndex);
                 }
             }
         }
     }
-    Iterator<signed char>* tIterator = tIndices.createIterator();
-    int j = 0;
-    tIterator->reset();
-    while (tIterator->hasNext() && j < pMax)
+    
+    if (tIndices.size() < pMax)
     {
-        pIndices[j] = *tIterator->next();
-        j++;
+        pIndices[tIndices.size()] = -1;
     }
-    if (j < pMax)
-    {
-        pIndices[j] = -1;
-    }
-    delete tIterator;
-    return j;
+	copy(tIndices.begin(), tIndices.end(), pIndices); 
+    return tIndices.size();
 }
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable)

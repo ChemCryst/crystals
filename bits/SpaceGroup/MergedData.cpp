@@ -235,7 +235,7 @@ MergedData::~MergedData()
 /*
  * Calculates the sum of the abs differences in an array of floats.
  */
-float JJsumdiff(Array<float>& pValues, float pMean)
+float sumdiff(vector<float>& pValues, float pMean)
 {
     float tTotal = 0;
     
@@ -249,7 +249,7 @@ float JJsumdiff(Array<float>& pValues, float pMean)
 float MergedData::rFactor() 
 {
 	static Matrix<short>* tCurHKL;
-	static Array<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
+	static vector<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
 	tValues.clear();                                //Clear the values from the last time they were used.
 	multiset<Reflection*, lsreflection>::iterator tIter;//Start at the first 
 	register float tSumSum = 0;                              //Make sure that every thing is set to 0
@@ -267,15 +267,15 @@ float MergedData::rFactor()
 			if (tValues.size()>1) //As long as there are more then one reflection
 			{
 				tNumMerged += tValues.size();  
-				tSum = fabsf(sum(tValues.getPointer(), 0.0f, tValues.size()));
+				tSum = fabsf(sum(tValues, 0.0f, tValues.size()));
 				tSumSum += tSum;
-				tMeanDiffSum += JJsumdiff(tValues, tSum/tValues.size());
+				tMeanDiffSum += sumdiff(tValues, tSum/tValues.size());
 			}
 			tCurHKL = (*tIter)->tHKL; //Save the next hkl value
 			tValues.clear();   //Remove all the old intensities
 			tNumResRef  ++;
 		}
-		tValues.add((*tIter)->i);  //Save the intensity
+		tValues.push_back((*tIter)->i);  //Save the intensity
 	}
 
 	if (tSumSum == 0)

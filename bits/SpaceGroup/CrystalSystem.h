@@ -38,7 +38,6 @@
 #define __CRYSTAL_SYSTEM_H__
 #include "Matrices.h"
 #include "BaseTypes.h"
-#include "Collections.h"
 #include "SpaceGroups.h"
 #include "Wrappers.h"
 #include "HKLData.h"
@@ -132,14 +131,14 @@ class Table:public MyObject
 {
     private:
         char* iName;
-        ArrayList<ConditionColumn>* iColumns;	//The conditions. Null means that there is no condition.
-        ArrayList<SGColumn>* iSGColumn;			//Columns of space groups.
+        vector<ConditionColumn*>* iColumns;	//The conditions. Null means that there is no condition.
+        vector<SGColumn> iSGColumn;			//Columns of space groups.
         Regions* iRegions;
         Conditions* iConditions;
-	void columnRegions(char* pRegions, int pColumn);
-        void addLine(char* pLine, int pColumn);
-        void addCondition(char* pCondition, ConditionColumn* pColumn, int pRow);
-        void addSpaceGroup(char* pSpaceGroup, SGColumn* pSGColumn, int pRow);
+	void columnRegions(char* pRegions, size_t pColumn);
+        void addLine(char* pLine, size_t pColumn);
+        void addCondition(char* pCondition, ConditionColumn* pColumn, size_t pRow);
+        void addSpaceGroup(char* pSpaceGroup, SGColumn* pSGColumn, size_t pRow);
     public:
         Table(char* pName, Regions* pRegions, Conditions* pConditions, int pNumColumns, int pNumPointGroups);
         ~Table();
@@ -151,13 +150,13 @@ class Table:public MyObject
 		size_t numSGColumns();
 //        int getNumPointGroups();	
         SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
-        Indexs* getConditions(int pRow, int pColumn);
+        Indexs* getConditions(int pRow, size_t pColumn);
         int numberOfColumns();
         int numberOfRows();
 		set<int, ltint>& chiralColumns(set<int, ltint>& pColumnIndeces);
 		set<int, ltint>& columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pColumnIndeces);
-        int dataUsed(signed char pIndices[], const int pMax) const;
-        int conditionsUsed(signed char pIndices[], const int pMax) const;
+        int dataUsed(signed char pIndices[], const size_t pMax) const;
+        int conditionsUsed(signed char pIndices[], const size_t pMax) const;
 		bool hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber);
         std::ostream& output(std::ostream& pStream);
         std::ofstream& outputLine(int pLineNum, std::ofstream& pStream);
