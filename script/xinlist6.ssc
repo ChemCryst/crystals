@@ -6,6 +6,11 @@
 %  VARIABLE LOGICAL LCANCEL
 %  VARIABLE LOGICAL XQMERGE
 %  EVALUATE LCANCEL = FALSE
+%% variables used by the question box
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%  VARIABLE LOGICAL ANSWER
+
+
  Input reflection data from  file containing h,k,l Fo, sigma (HKLI file)
  ----- ---------- ---- ---------- ---------- ----- --- ----- -----------
 %%
@@ -134,8 +139,18 @@
 %           GET SILENT NOSTORE FINAL ABBREVIATED 'Fs?' 'OFF'
 %           IF VALUE .EQ. 1 THEN
 %             EVALUATE FS = 1
+%             EVALUATE QTITLE = 'Format warning'
+% EVALUATE QLINE1 = 'You have stated that your hkl file contains F values.'
+% EVALUATE QLINE2 = 'This is unlikely to be the case in modern times...'
+%             EVALUATE BUTTOK = 'I meant F squared'
+%             EVALUATE BUTTXX = 'I really did mean F values'
+%             COPY '#SCRIPT XQUESTIO'
+%             IF ANSWER .EQ. TRUE THEN
+%               EVALUATE FS = 2
+%             END IF
 %           ELSE
 ^^??          RFS2 STATE
+%             VERIFY ON OFF
 %             GET SILENT NOSTORE FINAL ABBREVIATED 'Fsq?' 'ON'
 %             IF VALUE .EQ. 1 THEN
 %               EVALUATE FS = 2
@@ -143,6 +158,7 @@
 %               EVALUATE FS = 3
 %             END IF
 %           END IF
+%           VERIFY ON OFF
 ^^??        RDF1 STATE
 %           GET SILENT NOSTORE FINAL ABBREVIATED 'Free format?' 'OFF'
 %%
@@ -318,6 +334,11 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.21  2002/05/15 08:02:56  richard
+%% Little update using new HIDDENSTRING GUI control - the stem of the .ins
+%% filename is remembered and used for the default .hkl filename if the file
+%% exists.
+%%
 %% Revision 1.20  2002/03/12 17:57:18  ckp2
 %% Warn about the meaning of F and F2 in this context.
 %%
