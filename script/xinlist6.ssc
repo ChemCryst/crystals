@@ -242,7 +242,7 @@
 %       COPY '#WEIGHT'
 %       COPY 'END'
 %       COPY '#LIST 28'
-%       COPY 'MINIMA RATIO=0.0
+%       COPY 'MINIMA RATIO=0.0'
 %       COPY 'END'
 %       FINISH
 %     END BLOCK
