@@ -6,6 +6,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.19  2001/06/17 15:06:48  richard
+//   Rename member variables so that they are prefixed "m_".
+//   Moved a lot of code over into CcModelDoc - such as sending lists of atoms
+//   to the scripts. The ModelDoc holds the lists so is a simpler place to do this.
+//   This removed a lot of pointless "call throughs" from CxModel to CcModelDoc.
+//
 //   Revision 1.18  2001/03/15 11:05:41  richard
 //   Error checking. Ensure that if ptr_to_cxObject is NULL then we don't call
 //   any of the Cx object's functions. (This allows CxModel to fail gracefully, and
@@ -598,6 +604,6 @@ void CrModel::SelectFrag(CcString atomname, bool select)
 CcModelObject * CrModel::FindObjectByGLName(GLuint name)
 {
   if(m_ModelDoc) return m_ModelDoc->FindObjectByGLName(name);
-  return false;
+  return NULL;
 }
 
