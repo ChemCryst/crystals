@@ -1,4 +1,57 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2003/01/14 18:31:35  rich
+C Right - this is a useful one and I'm quite pleased with it.
+C
+C Added a new lexical token PART to the scanner. The following
+C examples show what you might do with it:
+C ----
+C Get distances between all atoms in part 1:
+C   #DIST
+C   INCLUDE PART(1)
+C   END
+C ----
+C Competitively refine the occupancy of two parts, e.g. in disorder:
+C   #LIST 12
+C   FULL X'S U'S
+C   EQUIV PART(1,OCC) PART(2,OCC)
+C   WEIGHT -1 PART(1,OCC)
+C   END
+C ----
+C Quickly id whole fragments in regularise:
+C   #REGUL
+C   target c(1) to c(6)
+C   ideal c(11) to c(16)
+C   cameron
+C   map part(2)
+C   onto part(1)
+C   END
+C ----
+C Move a part of the structure:
+C   #EDIT
+C   ADD 0.2 PART(3,X)
+C   END
+C ----
+C Have different regimes for refining e.g. a host and a guest molecule:
+C   #LIST 12
+C   FULL PART(0,X'S,U'S) PART(1,X'S,U[ISO])
+C   END
+C ----
+C So it's quite handy. Part numbers are stored in the 15th slot of LIST 5, and
+C are defined as follows:
+C   ( 1000 * GROUPNUMBER ) + COMPONENTNUMBER.
+C     e.g. 123456 is group 123 and component 456.
+C   The same syntax is used to select a part in the lexical input:
+C     e.g. PART(123456) selects atoms in group 123, component 456.
+C   BUT, if the value of the group or component is 999, all atoms in that
+C   group or component are selected.
+C     e.g. PART(999003) selects all atoms with component 3 in their partnumber and
+C     PART(4999) selects all atoms in group 4.
+C
+C The reason for having groups and parts is to enable logical grouping of, for example
+C a disorder where all affected atoms are group 1, with each component being part 0,1,2 etc.
+C
+C NB. #script xparts runs a useful tool for defining part numbers.
+C
 C Revision 1.14  2002/11/06 10:50:57  rich
 C Bug reading ATOM card in REGULARISE. Fixed.
 C
@@ -411,13 +464,11 @@ C    COMBINATIONS OF ARGUMENTS
       ISTORE(MC+1)=NC+ME-1
 C--CHECK THAT THE LAST OPERAND IS ALLOWED
       IF(KBITS(MA,KB(I)))2400,2550,2400
+
 2400  CONTINUE
       J=NC-1
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2450)J
-      ENDIF
-      WRITE(NCAWU,2450)J
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2450)J
       WRITE ( CMON, 2450) J
       CALL XPRVDU(NCEROR, 1,0)
 2450  FORMAT(' Illegal combination of arguments or characters',
@@ -426,7 +477,9 @@ C--ERROR TERMINATION FOR THIS DIRECTIVE
       LEF=LEF+1
       IDIRFL=-1
       MB=-1000000
-      GOTO 7000
+CRIC0103      GOTO 7000   !No good - keeps going but with invalid pointers.
+      GOTO 9900
+
 C--SET THE LAST ARGUMENT CHECK VALUE
 2550  CONTINUE
       MA=KC(I)
@@ -489,7 +542,6 @@ C----- CREATE A CONTINUATION CARD
             READ (CMOUSE(MMOUSE:), '(75A1)')
      1      (IMAGE(J+6-MMOUSE),J=MMOUSE,JMOUSE)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,7010) (IMAGE(J),J=1,75)
-            WRITE(NCAWU,7010) (IMAGE(J),J=1,75)
             WRITE ( CMON, 7010) (IMAGE(J),J=1,75)
             CALL XPRVDU(NCEROR, 1,0)
 7010        FORMAT (1X,75A1)
@@ -539,10 +591,7 @@ C -- INTERNAL ERROR
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
-      WRITE ( NCAWU , 9935 )
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 )
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
       WRITE ( CMON, 9935 )
       CALL XPRVDU(NCEROR, 1,0)
 9935  FORMAT ( 1X , 'The numbers of ( and ) do not match ' )
@@ -720,8 +769,10 @@ C
 \XLEXIC
 \XLST05
 \XLST12
+\XCONST
 \XAPK
 \XIOBUF
+\XLXPRT
 C
 \QSTORE
 C
@@ -731,28 +782,30 @@ C
 C
       IDWZAP = IN
       II=KATOMH(MQ)
-C--CHECK THAT AN ATOM HAS BEEN FOUND CORRECTLY
-      IF(II)1000,1050,1200
-C--END OF CARD  -  BACKSPACE ONE ARGUMENT
-1000  CONTINUE
+      IF(II)1000,1050,1200   !CHECK THAT AN ATOM HAS BEEN FOUND CORRECTLY
+
+1000  CONTINUE     !END OF CARD  -  BACKSPACE ONE ARGUMENT
       MF=MF-LK2
-C--ERROR IN ATOM DEFINITION
-1050  CONTINUE
+
+1050  CONTINUE     !ERROR IN ATOM DEFINITION
       CALL XADE(ISTORE(MF+1))
-C--SET THE RETURN VALUE AND EXIT
-1100  CONTINUE
+
+1100  CONTINUE     !SET THE RETURN VALUE AND EXIT
       KATOMU=II
 1150  CONTINUE
       RETURN
-C--CHECK IF WE SHOULD LOOK FOR THIS ATOM IN LIST 5
+
 1200  CONTINUE
-      IF(L5)1400,1400,1250
+      INPART = 0
+      IF ( NPTCUR .GE. 0 ) INPART = 1   !Are we processing a part.
+      IF(L5)1400,1400,1250 !CHECK IF WE SHOULD LOOK FOR THIS ATOM IN LIST 5
 C--SEARCH FOR THE ATOM IN LIST 5
 1250  CONTINUE
       M5A=L5
       N5A=N5
       L12A=L12
       IF(KATOMF(STORE(MQ+2),M5A,N5A,MD5A,L12A))1300,1400,1300
+
 C--ATOM NOT IN LIST 5
 1300  CONTINUE
       II=MQ+2
@@ -762,49 +815,51 @@ C--SET THE ERROR FLAG
 1350  CONTINUE
       KATOMU=0
       GOTO 1150
+
 C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
 1400  CONTINUE
       IF(ME)1450,1450,1500   !END OF CARD - NOT AN 'UNTIL' SEQUENCE
+
 1450  CONTINUE
       N5A=1
       GOTO 1100
-C--CHECK THE TYPE OF THE NEXT ARGUMENT
+
 1500  CONTINUE
-      IF(ISTORE(MF))1550,1450,1450
-C--SEARCH FOR THE 'UNTIL' COMMAND
+      IF(ISTORE(MF))1550,1450,1450   !CHECK THE TYPE OF THE NEXT ARGUMENT
+
 1550  CONTINUE
-      JJ=KCOMP(1,ISTORE(MF+2),IOPS,NOPS,LOPS)
+      JJ=KCOMP(1,ISTORE(MF+2),IOPS,NOPS,LOPS) !SEARCH FOR 'UNTIL' COMMAND
       IF(JJ)1450,1450,1600
-C--CHECK FOR AN END OF CARD AFTER 'UNTIL'
+
 1600  CONTINUE
       ME=ME-1
-      IF(ME)1700,1700,1800
-C--ERROR IN AN 'UNTIL' SEQUENCE
-1650  CONTINUE
+      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs, please.
+      IF(ME)1700,1700,1800        !CHECK FOR AN END OF CARD AFTER 'UNTIL'
+
+1650  CONTINUE                   !ERROR IN AN 'UNTIL' SEQUENCE
       MF=MF-LK2
 1700  CONTINUE
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1750)ISTORE(MF+1)
-      ENDIF
-      WRITE(NCAWU,1750) ISTORE(MF+1)
-      WRITE ( CMON, 1750) ISTORE(MF+1)
-      CALL XPRVDU(NCEROR, 1,0)
-1750  FORMAT(' Illegal ''UNTIL'' sequence at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1750)BLANKS(1:ISTORE(MF+1)+6),
+     1                                   ISTORE(MF+1)
+      WRITE ( CMON, 1750) BLANKS(1:ISTORE(MF+1)+6),ISTORE(MF+1)
+      CALL XPRVDU(NCEROR, 2,0)
+1750  FORMAT(A,'*',/,' Illegal ''UNTIL'' sequence at about column',I5)
       LEF=LEF+1
       GOTO 1350
-C--COMPILE THE DATA FOR THE SECOND ATOM
-1800  CONTINUE
+
+1800  CONTINUE                      !COMPILE THE DATA FOR THE SECOND ATOM
       MF=MF+LK2
       JJ=MQ
       ISTORE(MQ+1)=STORE(MQ+1)+1024
       MQ=II
       II=KATOMH(MQ)
-C--CHECK THE REPLY
-      IF(II)1000,1050,1850
-C--CHECK THAT NO PARAMETERS HAVE BEEN READ FOR THIS ATOM
+      IF(II)1000,1050,1850 !CHECK THE REPLY
+
 1850  CONTINUE
-      IF(ISTORE(MQ+5))1650,1900,1650
+      IF ( INPART .EQ. 1 ) GOTO 1650 !No UNTILs with PARTs, please.
+      IF(ISTORE(MQ+5))1650,1900,1650 !CHECK NO PARAMS READ FOR THIS ATOM
+
 C--LINK THE ATOM HEADERS AND CHECK IF WE MUST SEARCH THROUGH LIST 5
 1900  CONTINUE
       ISTORE(JJ)=MQ
@@ -1217,8 +1272,8 @@ C--CHECK THE REPLY
 C IPTVAL = requested part. NPTTOT = # matching atoms. NPTCUR = Current atom.
         IPT = MOD(IPTVAL,1000)
         IGR = ( IPTVAL - IPT ) / 1000
-        WRITE(CMON,'(2(A,I4))') 'Group: ',IGR,' part: ',IPT
-        CALL XPRVDU(NCVDU,1,0)
+c        WRITE(CMON,'(2(A,I4))') 'Group: ',IGR,' part: ',IPT
+c        CALL XPRVDU(NCVDU,1,0)
         IF ( NPTCUR .LE. 1 ) THEN   !First time.
            NPTCUR = 1
            NPTTOT = 0
@@ -1230,8 +1285,8 @@ C Count the parts
              IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
      1      .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) NPTTOT=NPTTOT+1
            END DO
-           WRITE(CMON,'(A,I4)') 'Npttot: ',NPTTOT
-           CALL XPRVDU(NCVDU,1,0)
+c           WRITE(CMON,'(A,I4)') 'Npttot: ',NPTTOT
+c           CALL XPRVDU(NCVDU,1,0)
         END IF
         II = 0
         DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
@@ -1242,16 +1297,15 @@ C Count the parts
      1    .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
            IF ( II .GE. NPTCUR ) THEN
               M5F = I
-
               IF ( NPTCUR .GE. NPTTOT ) THEN
-                WRITE(CMON,'(A,I4)') 'Final Nptcur: ',NPTCUR
-                CALL XPRVDU(NCVDU,1,0)
+c                WRITE(CMON,'(A,I4)') 'Final Nptcur: ',NPTCUR
+c                CALL XPRVDU(NCVDU,1,0)
                 NPTCUR = -1
               ELSE
                 ME=OME    !Backspace to trick calling routine
                 MF=OMF
-                WRITE(CMON,'(A,I4)') 'Nptcur: ',NPTCUR
-                CALL XPRVDU(NCVDU,1,0)
+c                WRITE(CMON,'(A,I4)') 'Nptcur: ',NPTCUR
+c                CALL XPRVDU(NCVDU,1,0)
               END IF
 
               GOTO 1050
@@ -1713,10 +1767,7 @@ C--'UNTIL' SEQUENCE ERROR
 1600  CONTINUE
       LEF=LEF+1
       MF=MF-LK2
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1650)ISTORE(MF+1)
-      ENDIF
-      WRITE(NCAWU,1650) ISTORE(MF+1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1650)ISTORE(MF+1)
       WRITE ( CMON, 1650) ISTORE(MF+1)
       CALL XPRVDU(NCEROR, 1,0)
 1650  FORMAT(' Illegal ''UNTIL'' sequence for a scale factor',
@@ -2078,10 +2129,7 @@ C--AN ATOM IS MISSING  -  CHECK IF THE DATA INDICATES 'FIRST' OR 'LAST'
       IF(KCOMP(1,STORE(IPOINT),IFIRST,2,1))1350,1350,1250
 C--SOME FORM OF ILLEGAL 'FIRST' OR 'LAST' DIRECTIVE
 1250  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1300)(IFIRST(I),I=1,2)
-      ENDIF
-      WRITE(NCAWU,1300)(IFIRST(I),I=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)(IFIRST(I),I=1,2)
       WRITE ( CMON, 1300) (IFIRST(I),I=1,2)
       CALL XPRVDU(NCEROR, 1,0)
 1300  FORMAT(' Misplaced ''',A4,'T'' or ''',A4,
@@ -2089,10 +2137,7 @@ C--SOME FORM OF ILLEGAL 'FIRST' OR 'LAST' DIRECTIVE
       GOTO 1800
 C--A SPECIFIC ATOM IS MISSING FROM LIST 5
 1350  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1400)LN5
-      ENDIF
-      WRITE(NCAWU,1400)LN5
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1400)LN5
       WRITE ( CMON, 1400) LN5
       CALL XPRVDU(NCEROR, 1,0)
 1400  FORMAT(' Atom not in list ',I5,
@@ -2101,10 +2146,7 @@ C--A SPECIFIC ATOM IS MISSING FROM LIST 5
       GOTO 1800
 C--SIMPLE OVERALL PARAMETER NOT IN LIST 5
 1450  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)LN5,(KVP(J,IPOINT),J=1,NWKO)
-      ENDIF
-      WRITE(NCAWU,1500)LN5,(KVP(J,IPOINT),J=1,NWKO)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)LN5,(KVP(J,IPOINT),J=1,NWKO)
       WRITE ( CMON, 1500) LN5,(KVP(J,IPOINT),J=1,NWKO)
       CALL XPRVDU(NCEROR, 1,0)
 1500  FORMAT(' Overall parameter not in list ',I5,5X,': ',5A4)
@@ -2116,20 +2158,14 @@ C----- INCREMENT TO FIRST REAL PARAMETER
       IF(IPOINT)1600,1600,1700
 C--THE COMPLETE GROUP IS MISSING
 1600  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1650)(KSCAL(J,JTYPE),J=1,2),LN5
-      ENDIF
-      WRITE(NCAWU,1650) (KSCAL(J,JTYPE),J=1,2),LN5
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1650)(KSCAL(J,JTYPE),J=1,2),LN5
       WRITE ( CMON, 1650) (KSCAL(J,JTYPE),J=1,2),LN5
       CALL XPRVDU(NCEROR, 1,0)
 1650  FORMAT(' No ',2A4,'Scales in list ',I5)
       GOTO 1800
 C--AN INDIVIDUAL SCALE FACTOR IS MISSING
 1700  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1750)(KSCAL(J,JTYPE),J=1,2),IPOINT,LN5
-      ENDIF
-      WRITE(NCAWU,1750) (KSCAL(J,JTYPE),J=1,2),IPOINT,LN5
+      IF(ISSPRT.EQ.0)WRITE(NCWU,1750)(KSCAL(J,JTYPE),J=1,2),IPOINT,LN5
       WRITE ( CMON, 1750) (KSCAL(J,JTYPE),J=1,2),IPOINT,LN5
       CALL XPRVDU(NCEROR, 1,0)
 1750  FORMAT(1X,2A4,'Scale factor number ',I3,' is not in list ',I3)
@@ -2171,20 +2207,14 @@ C--BRANCH ON THE TYPE OF PRINT
 1000  CONTINUE
       CALL XERHND ( IERCAT )
 1050  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1100)STORE(MQ)
-      ENDIF
-      WRITE(NCAWU,1100) STORE(MQ)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)STORE(MQ)
       WRITE ( CMON, 1100) STORE(MQ)
       CALL XPRVDU(NCVDU, 1,0)
 1100  FORMAT(' Atom type : ',A4,A4,'serial no. : ',F6.0,A4,
      2 'Parameter : ',5A4)
       GOTO 1350
 1150  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1100)STORE(MQ),IB,STORE(MQ+1)
-      ENDIF
-      WRITE(NCAWU,1100) STORE(MQ),IB,STORE(MQ+1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)STORE(MQ),IB,STORE(MQ+1)
       WRITE ( CMON, 1100) STORE(MQ),IB,STORE(MQ+1)
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 1350
@@ -2193,8 +2223,6 @@ C--BRANCH ON THE TYPE OF PRINT
       WRITE(NCWU,1100)STORE(MQ),IB,STORE(MQ+1),IB,(ICOORD(I,MT),I=1,
      2 NWKA)
       ENDIF
-      WRITE(NCAWU,1100) STORE(MQ),IB,STORE(MQ+1),IB,
-     2 (ICOORD(I,MT),I=1,NWKA)
       WRITE ( CMON, 1100) STORE(MQ),IB,STORE(MQ+1),IB,
      2 (ICOORD(I,MT),I=1,NWKA)
       CALL XPRVDU(NCVDU, 1,0)
@@ -2221,10 +2249,7 @@ C--
 \XOPK
 \XIOBUF
 C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)(KVP(I,IN),I=1,NWKO)
-      ENDIF
-      WRITE(NCAWU,1000) (KVP(I,IN),I=1,NWKO)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)(KVP(I,IN),I=1,NWKO)
       WRITE ( CMON, 1000) (KVP(I,IN),I=1,NWKO)
       CALL XPRVDU(NCVDU, 1,0)
 1000  FORMAT(' Overall parameter : ',5A4)
@@ -2258,10 +2283,7 @@ C--NO ARGUMENTS FOUND
 1000  CONTINUE
       KFDARG=-1
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1050)
-      ENDIF
-      WRITE(NCAWU,1050)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
       WRITE ( CMON, 1050)
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' No arguments found')
@@ -2524,6 +2546,7 @@ C
 \XLISTI
 \XLEXIC
 \XIOBUF
+\XCONST
 C
 \QSTORE
 C
@@ -2535,14 +2558,13 @@ C--THE NUMBER OF PARAMETERS IS WRONG
       KNPAR=-1
       MF=MF-LK2
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1050)ISTORE(MF+1)
-      ENDIF
-      WRITE(NCAWU,1050) ISTORE(MF+1)
-      WRITE ( CMON, 1050) ISTORE(MF+1)
-      CALL XPRVDU(NCEROR, 1,0)
-1050  FORMAT(' Incorrect number of atomic parameters given',
+      IF (ISSPRT .EQ. 0)
+     1             WRITE(NCWU,1050)BLANKS(1:ISTORE(MF+1)+6),ISTORE(MF+1)
+      WRITE ( CMON, 1050) BLANKS(1:ISTORE(MF+1)+6),ISTORE(MF+1)
+      CALL XPRVDU(NCEROR, 2,0)
+1050  FORMAT(A,'*',/,' Incorrect number of atomic parameters given',
      2 ' at about column',I5)
+
       LEF=LEF+1
 1100  CONTINUE
       RETURN
@@ -2592,15 +2614,14 @@ C
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000) IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Error in scale factor definition at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,
+     1 ' Error in scale factor definition at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2613,15 +2634,13 @@ C
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000)IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Error in atom definition at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,' Error in atom definition at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2634,15 +2653,13 @@ C
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000)IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Compiler requires more core at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,' Compiler requires more core at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2659,10 +2676,7 @@ C
 C
       IDWZAP = IN
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)
-      ENDIF
-      WRITE(NCAWU,1000)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)
       WRITE ( CMON, 1000)
       CALL XPRVDU(NCEROR, 1,0)
 1000  FORMAT(' Processing of the card above has been abandoned')
@@ -2678,15 +2692,13 @@ C
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000) IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Illegal number at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,' Illegal number at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2699,15 +2711,13 @@ C
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000) IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Illegal operator at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,' Illegal operator at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2724,15 +2734,13 @@ C--
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000) IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Illegal operand or variable at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,' Illegal operand or variable at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2749,15 +2757,13 @@ C--
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)IN
-      ENDIF
-      WRITE(NCAWU,1000) IN
-      WRITE ( CMON, 1000) IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' An argument is incorrect or has been',
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*',/,' An argument is incorrect or has been',
      2 ' omitted at or just after column',I5)
       LEF=LEF+1
       RETURN
@@ -2771,15 +2777,13 @@ C
 \XUNITS
 \XSSVAL
 \XIOBUF
+\XCONST
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)OP,IN
-      ENDIF
-      WRITE(NCAWU,1000) OP,IN
-      WRITE ( CMON, 1000) OP,IN
-      CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Operator ''',A1,''' not found at about column',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),OP,IN
+      WRITE ( CMON, 1000) BLANKS(1:IN+6),OP,IN
+      CALL XPRVDU(NCEROR, 2,0)
+1000  FORMAT(A,'*'/' Operator ''',A1,''' not found at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2810,10 +2814,7 @@ C--CHECK IF IT IS NECESSARY TO PRINT THE HEADING
 C--PRINT THE INITIAL HEADING
 1050  CONTINUE
       CALL XPRTCN
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1100)IN
-      ENDIF
-      WRITE(NCAWU,1100) IN
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IN
       WRITE ( CMON, 1100) IN
       CALL XPRVDU(NCEROR, 1,0)
 1100  FORMAT(' Print symbolic list ',I5)
@@ -2856,10 +2857,7 @@ C --
       XLXRDV=VALUE
       RETURN
 9500  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9510)
-      ENDIF
-      WRITE (NCAWU,9510)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,9510)
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
 9510  FORMAT ( ' The item given is not a number ')
@@ -2887,10 +2885,7 @@ C -- READ A VALUE
       RETURN
 9500  CONTINUE
 C -- ERROR NO VALUE HAS BEEN GIVEN
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9510)
-      ENDIF
-      WRITE (NCAWU,9510)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,9510)
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
 9510  FORMAT (' No default value is availible for parameter ')
@@ -2920,10 +2915,7 @@ C --
 3000  CONTINUE
       RETURN
 9500  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9510)
-      ENDIF
-      WRITE (NCAWU,9510)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,9510)
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
 9510  FORMAT ( ' The item given is not a number ')
