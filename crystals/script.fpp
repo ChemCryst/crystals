@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2000/01/20 17:00:37  ckp2
+C djw  remove old diagnostic messages
+C
 C Revision 1.19  1999/12/23 17:29:25  ckp2
 C djw  fix unwanted output in Monitor file
 C
@@ -2341,8 +2344,10 @@ C        LOGICAL=FILEDELETE(CHAR)
 C        LOGICAL=FILEISOPEN(CHAR)
 CMAY99  1 NEW UNARY OPERATOR:
 C       CHAR=GETEXTN(CHAR)
+CAUG00  1 NEW OPERATOR
+C       CHAR=GETCWD()
 C
-      PARAMETER ( NOPER = 45 , NUBASE = 24 )
+      PARAMETER ( NOPER = 46 , NUBASE = 24 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 13 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2384,7 +2389,7 @@ C
      3           6 , 7 , 11 , 11 ,
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 , 12,
-     5          12 , 12,  4 , 12 , 12 , 12 , 12 , 12 , 12 , 12 /
+     5          12 , 12,  4 , 12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 /
 C
       DATA NARGS  / 0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1 /
       DATA NRESLT / 0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1 /
@@ -2673,7 +2678,7 @@ C
 CJAN99
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
-     4        5190 , 9940 ) , IUOPER
+     4        5190 , 5200,  9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3012,6 +3017,17 @@ C 'dsc'  e.g. everything after the last dot if there is one.
       ICODE(JVTYPE,IARG(1)) = 4
       GO TO 8000
 C
+5200  CONTINUE
+C
+C -- 'GETCWD'
+C
+C Get the current crystals working directory.
+C e.g. GETCWD might return 'c:\demo\nket\'  
+      CALL GETCWD ( CWORK1 )
+      WRITE (99,'(A)') CWORK1
+      ISTAT = KSCSCD ( CWORK1(1:) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
 
 
 C
@@ -3264,7 +3280,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 22 )
 CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 21 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 22 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3306,7 +3322,7 @@ CJAN99
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',
      2                'GETTITLE','FILEEXISTS','FILEDELETE',
-     3                'FILEISOPEN','GETEXTN'                   /
+     3                'FILEISOPEN','GETEXTN','GETCWD'          /
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3321,7 +3337,7 @@ CJAN99
      *                  180   ,   180   ,   180   ,   180   ,
      1                  180   ,   180   ,   180   ,   180   ,
      2                  180   ,   180   ,   180   ,   180   ,
-     3                  180    /
+     3                  180   ,   180 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
