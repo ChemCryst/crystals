@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\cygwin\home\Administrator\regexpp3;C:\cygwin\home\Administrator\CodeLibrary\Headers;C:\cygwin\home\Administrator\SpaceGroup"
+				AdditionalIncludeDirectories="C:\cygwin\home\Administrator\regexpp3;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\CodeLibrary\Headers&quot;;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\SpaceGroup&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -104,9 +104,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="..\..\BaseTypes.cpp">
-			</File>
-			<File
 				RelativePath="..\..\Conditions.cpp">
 			</File>
 			<File
@@ -119,16 +116,19 @@
 				RelativePath="..\..\HKLData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\InteractiveControl.cpp">
+				RelativePath="..\..\LaueClasses.cpp">
+			</File>
+			<File
+				RelativePath="..\..\LaueGroupGraph.cpp">
 			</File>
 			<File
 				RelativePath="..\..\Matrices.cpp">
 			</File>
 			<File
-				RelativePath="..\..\PCPort.cpp">
+				RelativePath="..\..\MergedData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\ReflectionMerging.cpp">
+				RelativePath="..\..\PCPort.cpp">
 			</File>
 			<File
 				RelativePath="..\..\RunParameters.cpp">
@@ -150,9 +150,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="..\..\BaseTypes.h">
-			</File>
-			<File
 				RelativePath="..\..\Conditions.h">
 			</File>
 			<File
@@ -168,13 +165,22 @@
 				RelativePath="..\..\InteractiveControl.h">
 			</File>
 			<File
+				RelativePath="..\..\LaueClasses.h">
+			</File>
+			<File
+				RelativePath="..\..\LaueGroupGraph.h">
+			</File>
+			<File
 				RelativePath="..\..\Matrices.h">
 			</File>
 			<File
-				RelativePath="..\..\PCPort.h">
+				RelativePath="..\..\MergedData.h">
 			</File>
 			<File
-				RelativePath="..\..\ReflectionMerging.h">
+				RelativePath="..\..\PCF.h">
+			</File>
+			<File
+				RelativePath="..\..\PCPort.h">
 			</File>
 			<File
 				RelativePath="..\..\RunParameters.h">
@@ -194,7 +200,7 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 		<Filter
-			Name="CodeLibrary"
+			Name="Code Library"
 			Filter="">
 			<Filter
 				Name="Headers"
@@ -218,26 +224,36 @@
 					RelativePath="..\..\..\CodeLibrary\Headers\StringClasses.h">
 				</File>
 				<File
+					RelativePath="..\..\..\CodeLibrary\Headers\Threads.h">
+				</File>
+				<File
 					RelativePath="..\..\..\CodeLibrary\Headers\Trees.h">
 				</File>
 				<File
 					RelativePath="..\..\..\CodeLibrary\Headers\Wrappers.h">
 				</File>
+			</Filter>
+			<Filter
+				Name="C"
+				Filter="">
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\Wrappers.h">
+					RelativePath="..\..\..\CodeLibrary\C\MathFunctions.cpp">
 				</File>
 			</Filter>
 			<Filter
-				Name="Source"
+				Name="C++"
 				Filter="">
+				<File
+					RelativePath="..\..\..\CodeLibrary\CPP\BaseTypes.cpp">
+				</File>
 				<File
 					RelativePath="..\..\..\CodeLibrary\CPP\ComClasses.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\C\MathFunctions.cpp">
+					RelativePath="..\..\..\CodeLibrary\CPP\StringClasses.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\StringClasses.cpp">
+					RelativePath="..\..\..\CodeLibrary\CPP\Timer.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\CodeLibrary\CPP\Trees.cpp">
