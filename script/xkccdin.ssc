@@ -1,9 +1,9 @@
 %SCRIPT XCCDIN  %Script for quick input of KCCD data%
 %  VARIABLE CHARACTER FILENAME SCFNAME HKLNAME ABSNAME
-%  VARIABLE INTEGER INBASICS SOLVEMETHOD MERGE 
+%  VARIABLE INTEGER INBASICS SOLVEMETHOD  
 %%
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-%  VARIABLE LOGICAL ANSWER LCANCEL
+%  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE
 %  VARIABLE CHARACTER CNULL CDLINE
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ^^WI WINDOW XKCCDIN 'Input KccD data' MODAL
@@ -140,13 +140,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  END BLOCK
 %%
 %%   INDICATE THAT NO FUTURE PROCESSING EXPECTED
-%    EVALUATE MERGE = 0
-%    VERIFY YES NO
-%    GET NOSTORE FINAL ABBREVIATED  -
-     'Will  you want to MERGE the reflections' 'NO'
-%    IF VALUE .EQ. 1 THEN
-%      EVALUATE MERGE = 1
-%    END IF
+%% Ask user if they want to merge data.
+%% Logical variable XQMERGE is set by this script.
+%  COPY '#SCRIPT XQMERGE'
 %%
 %%
 %  BLOCK
@@ -187,7 +183,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  COPY '#SORT'
 %  COPY 'END'
 %  CLEAR
-%  IF MERGE .EQ. 1 THEN
+%  IF ( XQMERGE ) THEN
 {S * Merging equivalent reflections
 %      CLEAR
 %      COPY '#MERGE'
@@ -204,13 +200,13 @@ Files INITIAL.* will be created in your directory. They may be important.
 
 {I Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be 
 {I used in refinement. They can be changed at any time later
-% COPY '#LIST 28'
-% INSERT 'MINIMA RATIO='
-% GET REAL  'I/sigma(I) ' '3.0'
-% INSERT ' SINTH='
-% GET  FINAL REAL  '[Sin(theta)/lambda]sq ' '.01'
-% SEND
-% COPY 'END'
+{I using the menu item "X-ray Data" -> "Filter Reflections".
+
+{R Recommended settings for F refinement:
+{R   Fo/sigma(Fo)              is at least 3.0    eliminates noise
+{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop
+
+% COPY '#SCRIPT XLIST28'
 %%
 %  IF ( EXISTS 23 .NE. 1 ) THEN
 %    COPY '#LIST 23'
