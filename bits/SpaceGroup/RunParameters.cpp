@@ -242,7 +242,7 @@ void RunParameters::readParamFile()
             char tOutputRE[] = "OUTPUT[[:space:]]+\"([^\"]+)\"";
 	    char tMergeRE[] = "MERGE[[:space:]]+((YES)|(NO))";
             char tHKLRE[] = "HKL[[:space:]]+\"([^\"]+)\"";
-            char tCommentRE[] = "^#";
+            char tCommentRE[] = "(#.+)$";
             filebuf tParamFile;
             if (tParamFile.open(iParamFile.getCString(), std::ios::in) == NULL)
             {
@@ -274,9 +274,14 @@ void RunParameters::readParamFile()
             while (!tFileStream.eof())//While there are still lines to be read
             {
                 tFileStream.getline(tLine, 255);
-                String::trim(tLine);
                 tLineNum ++;
-
+                //Look for comments
+                if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
+                {
+                    tLine[tMatchs[1].rm_so] = '\0';
+                }
+                String::trim(tLine);
+                
                 if (strlen(tLine) == 0) //Ignore an empty line
                 {}
                 else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0) 
@@ -338,9 +343,6 @@ void RunParameters::readParamFile()
                 else if (iUnitCell.init(tLine))
                 {
                 }
-                else if (regexec(tCommentSO, tLine, 13, tMatchs, 0) == 0)
-                {
-                }
                 else
                 {
                     tParamFile.close();
@@ -352,6 +354,7 @@ void RunParameters::readParamFile()
             if (tUniqueAxis)
             {
                 delete tUniqueAxis;
+                
             }
             if (tClass)
             {
