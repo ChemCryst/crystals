@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  1999/06/06 15:43:58  dosuser
+C RIC: Added a SILENT keyword to the GET command. This inhibits output
+C of allowed value list, prompt string and the echoing of the command
+C line. Used when a script is querying the UI. The user doesn't want to
+C see all that rubbish on the screen.
+C
 C Revision 1.15  1999/06/03 17:24:43  dosuser
 C RIC: Added Linux graphical interface support.
 C
@@ -6075,6 +6081,9 @@ C            INOMSG      IF SET, NO MESSAGE IS PRODUCED FOR A 'USER
 C                        ERROR'
 C            ISILNT      IF SET, NO SCREEN OUTPUT IS PRODUCED AT ALL.
 C
+C            IFAILS      INDICATES A USER INPUT ERROR OCCURED. IF SET,
+C                        OVERRIDE THE SILENT FLAG SO THAT THE USER OR
+C                        PROGRAMMER FIGURE OUT THE PROBLEM
 C
 C
 C
@@ -6168,7 +6177,10 @@ C
 C
 C -- SET INITIAL VALUE FOR VALUE FOUND
 C
-      CALL XMOVEI ( 0 , ISCVAL , 1 )
+C This seems to be causing memory problems:
+C      CALL XMOVEI ( 0 , ISCVAL , 1 )
+C Try this instead:
+      ISCVAL = 0
 C
 C -- READ MODIFIERS IF ANY
 C -- SET INITIAL VALUES
@@ -6309,6 +6321,7 @@ C
         ICOMLN = ICOMLN + 1
       ENDIF
 C
+      IFAILS = 0
 C
 1100  CONTINUE
 C
@@ -6323,7 +6336,7 @@ C
 C -- OUTPUT ALLOWED VALUE LIST IF ANY
 C
 C -- SKIP IF IN SILENT MODE...
-       IF ( ISILNT .EQ. 0 ) THEN
+       IF ( ( ISILNT .EQ. 0 ) .OR. ( IFAILS .EQ. 1 ) ) THEN
         IF ( ICHECK .GT. 0 ) THEN
 C---- CHECK FOR  TERMINAL TYPE, AND INSTRUCTION VERIFIED OR ABBREVIATED
           IF( ((ISSTML .NE. 1) .AND. (ISSTML .NE. 2))  .OR.
@@ -6408,7 +6421,7 @@ C
         ISTAT = KRDLIN ( NCUFU(1) , CLINPB , IINPLN )
 C -- IF NOT IN SILENT MODE ECHO THE TEXT TO THE OUTPUT FOR THE 
 C    GUI VERSION
-&GID        IF ( ISILNT .EQ. 0 ) THEN
+&GID        IF ( ( ISILNT .EQ. 0 ) .OR. ( IFAILS .EQ. 1 ) ) THEN
 &GID         WRITE(CMON,'(A)') CLINPB(1:IINPLN)
 &GID         CALL XPRVDU(NCVDU,1,0)
 &GID        ENDIF
@@ -6647,6 +6660,7 @@ C
 C -- ERROR IN USER'S INPUT
 C    GET USER TO TRY AGAIN, IF ERROR CAN BE HANDLED HERE
       IINPLN = 0
+      IFAILS = 1
       IF ( INTERR .GT. 0 ) GO TO 1100
 C -- IF USER MESSAGES ARE BEING PRODUCED, START ERROR SEARCH
       IF ( INOMSG .LE. 0 ) CALL XERHND ( IERSFL )
