@@ -1,0 +1,23 @@
+include makefile.in
+
+VPATH = ../manual
+
+MANFILES = faq.man primer.man guide.man crystals.man cameron.man menu.man readme.man workshop.man
+OUTPUT = manual/crystalsmanual-intro.html
+MANDIR = ./manual
+
+all : $(MANDIR) $(OUTPUT)
+
+$(MANDIR) : 
+	mkdir $(MANDIR)
+
+$(OUTPUT) : $(MANFILES)
+	cd $(MANDIR); export CRYSSRC=../..; perl -w $ ../../manual/mangen.pl $(MANFILES)
+	cp $(MANDIR)/html/* $(MANDIR)
+	cp ../manual/*.jpg $(MANDIR)
+	cp ../manual/*.gif $(MANDIR)
+	cp ../manual/*.css $(MANDIR)
+	rm -Rf $(MANDIR)/html $(MANDIR)/latex $(MANDIR)/website
+
+clean :
+	rm -Rf $(MANDIR)

@@ -12,7 +12,7 @@ ifeq ($(COMPCODE),MAC)
     CC = gcc
     LD = g++
     F77 = g77
-    F77FLAGS = -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D $(COMPCODE)
+    F77FLAGS = -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
 
 else
@@ -29,12 +29,29 @@ else
     CC = gcc
     LD = g++
     F77 = g77
-    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D $(COMPCODE)
+    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
  else
+  ifeq ($(COMPCODE),LIN)
+    GUIFLAGS = -fno-inline -fexceptions
+    GUILIBRARIES = -lg2c
+    CLFLAGS = 
+    CLLIBRARIES = -lg2c
+
+    CPPFLAGS = -s -fexceptions -I /usr/local/include
+    CFLAGS = -s -I /usr/local/include 
+
+    CXX = g++
+    CC = gcc
+    LD = g77
+    F77 = g77
+    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    OPT = -O2
+  else
 
     $(error COMPCODE not specified)
 
+  endif
  endif
 endif
 

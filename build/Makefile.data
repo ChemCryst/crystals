@@ -5,6 +5,7 @@ SRCFILE = $(BUILDDIR)commands.src
 ORIG_SRTFILE = ../datafiles/crysdef.srt
 
 VPATH = ../datafiles
+
 CRYSEDIT = ../editor/cryseditor
 SSRCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\# strip
 SSRFILES = $(notdir $(wildcard ../datafiles/*.ssr))
@@ -13,9 +14,9 @@ COPYFILES = $(wildcard ../precomp/all/*.*) $(wildcard ../precomp/$(COMPCODE)/*.*
  $(wildcard ../precomp/all/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*.*)\
  $(wildcard ../precomp/all/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*.*)\
  $(wildcard ../precomp/all/*/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*/*.*)
-COPYTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
+TEMPTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
 COPYDEST = $(COPYFILES:../precomp/all/%=%)
-COPYDIRS = $(filter-out $(COPYFILES),$(COPYTOP))
+COPYDIRS = $(filter-out $(COPYFILES) %CVS,$(TEMPTOP))
 
 all : commands.dsc $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
 
