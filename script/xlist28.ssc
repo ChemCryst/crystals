@@ -12,10 +12,10 @@
 % IF ( EXISTS 28 .NE. 1 ) THEN
 %%   No list 28 - recommended defaults:
 {R There are no conditions in the current list 28.
-{R A default sigma cutoff and sin theta/lambda squared cutoff
-{R will be set.
+%%{R A default sigma cutoff and sin theta/lambda squared cutoff
+%%{R will be set.
 %    COPY '#LIST 28'
-%    COPY 'MINIMA RATIO=3.0 SINT=0.01'
+%%%    COPY 'MINIMA RATIO=3.0 SINT=0.01'
 %    COPY 'END'
 % END IF
 %%
@@ -288,9 +288,9 @@
 %   EVALUATE NCONDS = 1
 % END IF
 % IF ( NCONDS .EQ. 0 ) THEN
-{I No filter conditions found in List 28, recommended 
-{I I/sigma(I) ratio of three will be set by default.
-^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT 3.0
+{I No filter conditions found in List 28
+%% {I I/sigma(I) ratio of three will be set by default.
+%% ^^CO SET LBRATI STATE=ON SET BRATI DISABLED=NO TEXT 3.0
 % END IF
 %%
 % LOOP
