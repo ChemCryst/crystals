@@ -220,7 +220,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str());
       m_ToolBar->Realize();
       m_ImageIndex++;
-      m_totWidth += 28;
+      m_totWidth += 23;
     }
     else
     {
@@ -356,7 +356,7 @@ int CxToolBar::GetIdealWidth()
 //   LOGSTAT ( "m_ImageIndex = " + string ( m_ImageIndex ) );
 //   return (( 18 + 5 ) * m_ImageIndex ) ;
 //   LOGSTAT ("CxToolbar: Returning ideal width: " + string(m_totWidth) );
-   return ( m_totWidth ) + 50;
+   return ( m_totWidth ) ;
 #endif
 }
 

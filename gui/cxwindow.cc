@@ -633,13 +633,13 @@ void CxWindow::AdjustSize(CcRect * size)
 #endif
 #ifdef __BOTHWX__
 // The system metrics aren't implemented yet!
-       int mN = ( GetMenuBar() ) ? 20 : 0;
-       int cH = 15;
-       int bT = 4;
+//       int mN = ( GetMenuBar() ) ? 20 : 0;
+//       int cH = 15;
+//       int bT = 4;
 // They are now:
-//      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetMetric(wxSYS_MENU_Y) : 0;
-//      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
-//      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
+      int mN = ( GetMenuBar() != NULL ) ? wxSystemSettings::GetMetric(wxSYS_MENU_Y) : 0;
+      int cH = wxSystemSettings::GetMetric(wxSYS_CAPTION_Y);
+      int bT = wxSystemSettings::GetMetric(wxSYS_FRAMESIZE_X);
 #endif
  
     size->mRight  = size->Right()  + (2*bT);

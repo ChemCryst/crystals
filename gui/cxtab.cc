@@ -152,9 +152,7 @@ int CxTab::GetTabsHeight()
 #ifdef __BOTHWX__
    wxSize mySize;
    mySize = CalcSizeFromPage(wxSize(0,0));
-   // std::cout << "mySize.y " << mySize.y;
-   //return mySize.y;
-   return 0;
+   return mySize.y;
 #endif
 }
 
@@ -172,7 +170,7 @@ int CxTab::GetTabsExtraVSpace()
   return work.bottom + 10; //Good space at bottom.
 #endif
 #ifdef __BOTHWX__
-  return 30;
+  return 10;
 #endif
 }
 

@@ -530,39 +530,36 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
    nRes = CRMAX ( 4,  nRes );
    style->normal_res = nRes;
 
-#if !defined(__WXMAC__)
    if ( !feedback ) {
       glDeleteLists(ATOMLIST,1);
       glNewList( ATOMLIST, GL_COMPILE);
    }
-#endif
 
    retval |= RenderAtoms(style, feedback);
-#if !defined(__WXMAC__)
+
    if ( !feedback )
    {
       glEndList();
       glDeleteLists(BONDLIST,1);
       glNewList( BONDLIST, GL_COMPILE);
    }
-#endif
 
    retval |= RenderBonds(style, feedback);
-#if !defined(__WXMAC__)
+
    if ( !feedback )
    {
       glEndList();
       glDeleteLists(XOBJECTLIST,1);
       glNewList( XOBJECTLIST, GL_COMPILE);
    }
-#endif
+
    retval |= RenderExcluded(style, feedback);
-#if !defined(__WXMAC__)
+
    if ( !feedback )
    {
       glEndList();
    }
-#endif
+
    return retval;
 }
 
