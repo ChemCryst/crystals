@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.41  2003/03/20 16:10:11  rich
 C
 C Moved SYMMETRY expansion code into a subroutine so it can be applied
@@ -816,11 +822,35 @@ c        END IF
 c      END DO
 
 
+C Count the number of bonds (excluding across sym ops):
+      IBI = 0
+      DO I = 0,N41B-1
+        M41B = L41B+I*MD41B
+        IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
+         IF ( ( ISTORE(M41B+1) .EQ. 1 ) .AND.
+     1        ( ISTORE(M41B+2) .EQ. 1 ) .AND.
+     1        ( ISTORE(M41B+3) .EQ. 0 ) .AND.
+     1        ( ISTORE(M41B+4) .EQ. 0 ) .AND.
+     1        ( ISTORE(M41B+5) .EQ. 0 ) .AND.
+     1        ( ISTORE(M41B+7) .EQ. 1 ) .AND.
+     1        ( ISTORE(M41B+8) .EQ. 1 ) .AND.
+     1        ( ISTORE(M41B+9) .EQ. 0 ) .AND.
+     1        ( ISTORE(M41B+10) .EQ. 0 ) .AND.
+     1        ( ISTORE(M41B+11) .EQ. 0 ) ) THEN
+          IBI = IBI + 1
+         END IF
+        END IF
+      END DO
+
+
+C Write the header
 
       WRITE(NCFPU1,'(//,''@<TRIPOS>MOLECULE'',/,10A4)')(KTITL(I),I=1,10)
-      WRITE(NCFPU1,'(2I5)') N5, N41B
+      WRITE(NCFPU1,'(2I5)') N5, IBI
       WRITE(NCFPU1,'(''SMALL'',/,''NO CHARGES'',/,
      1               ''****'',/,''No Comment'',/,''@<TRIPOS>ATOM'')')
+
+C Write out the atoms
 
       DO I = 0, N5-1
         CALL XMLTTM(STORE(L1O1),STORE(L5+I*MD5+4),ANGV,3,3,1)
@@ -832,8 +862,11 @@ c      END DO
      1  I+1, CLAB, ANGV, CLAB2
       END DO
 
+C Write out the bonds
+
       WRITE(NCFPU1,'(''@<TRIPOS>BOND'')')
 
+      IBI = 0
       DO I = 0,N41B-1
         M41B = L41B+I*MD41B
         IBT = MAX(1,ISTORE(L41B+12+I*MD41B))
@@ -849,7 +882,8 @@ c      END DO
      1        ( ISTORE(M41B+9) .EQ. 0 ) .AND.
      1        ( ISTORE(M41B+10) .EQ. 0 ) .AND.
      1        ( ISTORE(M41B+11) .EQ. 0 ) ) THEN
-          WRITE(NCFPU1,'(3I5,1X,A)') I+1,ISTORE(L41B+I*MD41B)+1,
+          IBI = IBI + 1
+          WRITE(NCFPU1,'(3I5,1X,A)') IBI,ISTORE(L41B+I*MD41B)+1,
      1    ISTORE(L41B+6+I*MD41B)+1, CBONDS(IBT)
          END IF
         END IF
@@ -2151,21 +2185,42 @@ C Find entries where sym ops are applied
           IF ((ISTORE(J+2).NE.1).OR.(ISTORE(J+3).NE.1).OR.
      1        (ISTORE(J+4).NE.0).OR.(ISTORE(J+5).NE.0).OR.
      1                              (ISTORE(J+6).NE.0)    ) THEN
+              ICOINC = 0
+              DO K = 0,N5-1
+                IF ( ABS(STORE(J+7)-STORE(L5+K*MD5+4))
+     1              +ABS(STORE(J+8)-STORE(L5+K*MD5+5))
+     1              +ABS(STORE(J+9)-STORE(L5+K*MD5+6)).LT. 0.0001)
+     1               THEN
+                  ICOINC = 1
+                  EXIT
+                END IF
+              END DO
+              DO K = 0,JNEWAT-1
+                IF ( ABS(STORE(J+7)-STORE(JBASAT+K*MD5+4))
+     1              +ABS(STORE(J+8)-STORE(JBASAT+K*MD5+5))
+     1              +ABS(STORE(J+9)-STORE(JBASAT+K*MD5+6)).LT.0.0001)
+     1               THEN
+                  ICOINC = 1
+                  EXIT
+                END IF
+              END DO
+              IF ( ICOINC .EQ. 0 ) THEN
 
 C Add entry to our "new L5 in memory".
 
-              CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
-              CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
-              STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
-              TOPSER=TOPSER+1
-              JNEWAT = JNEWAT + 1
+                CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
+                CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
+                STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
+                TOPSER=TOPSER+1
+                JNEWAT = JNEWAT + 1
 
-              WRITE ( CMON,'(2A,6I4,3F9.3)')'new atom (1) ',
-     1               ISTORE(I5),NINT(STORE(I5+1)),
-     1               (ISTORE(J+L),L=2,6),
-     1               (STORE(J+L),L=7,9)  
-              CALL XPRVDU(NCVDU, 1,0)  
-           END IF
+                WRITE ( CMON,'(2A,6I4,3F9.3)')'new atom (1) ',
+     1                 ISTORE(I5),NINT(STORE(I5+1)),
+     1                 (ISTORE(J+L),L=2,6),
+     1                 (STORE(J+L),L=7,9)  
+                CALL XPRVDU(NCVDU, 1,0)
+              END IF
+          END IF
         END DO
       END DO
 
@@ -2303,8 +2358,8 @@ C Add entry to our "new L5 in memory".
      1               (ISTORE(J+L),L=2,6),
      1               (STORE(J+L),L=7,9)  
                    CALL XPRVDU(NCVDU, 1,0)  
-                END IF
-              END IF
+                 END IF
+             END IF
            END DO
          END DO
 
