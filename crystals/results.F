@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2003/02/17 13:28:43  djw
+C Remove writes to .mon from FOURIER, save Rho and positions in LIST 30 CIFEXTRA (was in REFINEMENT), adjust output of 30
+C
 C Revision 1.48  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -2977,7 +2980,7 @@ C
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=7)
+      PARAMETER (IDIFMX=8)
       DIMENSION IREFCD(3,IDIFMX)
       PARAMETER (ISOLMX=7)
       DIMENSION ISOLCD(ISOLMX)
@@ -3038,7 +3041,7 @@ C
 C 
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
-     1 26,27,27, 20,19,20 /
+     1 26,27,27, 20,19,20,  37,36,36 /
 C------ REFERENCE CODES FOR DIRECT METHODS
       DATA ISOLCD /1,18,30,11,22,28,29/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
@@ -3681,8 +3684,8 @@ C DIFFRACTOMETER MAKE
          IVAL=ISTORE(L30CD+IPARAM-1)
          IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
-C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS
-C    1     2       3     4    5     6    7
+C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR
+C    1     2       3     4    5     6    7   8
          IDIFNO = IVAL+1
          CALL XCREMS (CVALUE,CVALUE,NCHAR)
          CALL XCTRIM (CVALUE,NCHAR)
@@ -3709,6 +3712,9 @@ C- SMART
       ELSE IF (IDIFNO .EQ. 7) THEN
 C- IPDS
         CTEMP='Stoe IPDS'
+      ELSE IF (IDIFNO .EQ. 8) THEN
+C- XCALIBUR
+        CTEMP='Oxford Diffraction XCALIBUR'
       ELSE IF (IDIFNO .GT. IDIFMX) THEN
         WRITE(CMON,'(A)') 'Unknown Diffractometer type'
         CALL XPRVDU(NCVDU,1,0)
