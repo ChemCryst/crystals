@@ -990,6 +990,8 @@ C
 C
       IF (IPOS .LT. 0) THEN
 C----- INITIALISATION
+cdjw take abs value
+            IPOS = IABS(IPOS)
             LSORT = NFL
             NFL = KCHNFL(NSORT*MDSORT)
             call xzerof (store(lsort), nsort*mdsort)
@@ -1000,7 +1002,8 @@ C----- INITIALISATION
               ELSE
                   DEF = 0.0
               ENDIF
-            ITEMP = LSORT + IABS(IPOS) -1
+cdjw            ITEMP = LSORT + IABS(IPOS) -1
+            ITEMP = LSORT + IPOS -1
             DO 100 I = 1, NSORT
               STORE(ITEMP) = DEF
               ITEMP = ITEMP + MDSORT
