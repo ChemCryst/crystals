@@ -772,9 +772,9 @@ C STORE K-CURVE
   170   FORMAT(100A1)
   190   FORMAT(100A1,2X,3HRHO)                                              
         IF ( I.EQ.25 ) THEN
-          WRITE(NCWU,190)(M(I),I=18,117)
+          WRITE(NCWU,190)(M(II),II=18,117)
         ELSE
-          WRITE(NCWU,170)(M(I),I=18,117)
+          WRITE(NCWU,170)(M(II),II=18,117)
         ENDIF
 
         DO L=1,117
