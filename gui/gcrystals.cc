@@ -144,7 +144,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 
     if ( CWinApp::OnIdle(lCount) ) return TRUE; // Allow system processing first.
 
-    if ( DoCommandTransferStuff() ) return TRUE;
+    if ( theControl->DoCommandTransferStuff() ) return TRUE;
 
     return FALSE;
 
@@ -153,7 +153,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 
 LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM lp)
 {
-  DoCommandTransferStuff();
+  theControl->DoCommandTransferStuff();
   return 0;
 }
 
@@ -206,7 +206,7 @@ void CCrystalsApp::OnIdle(wxIdleEvent & event)
 
     for ( int i=0; i<25; i++ )
     {
-       if ( ! appret = DoCommandTransferStuff() ) break;
+       if ( ! appret = theControl->DoCommandTransferStuff() ) break;
     }
 
 
@@ -236,13 +236,13 @@ void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
 {
         for ( int i=0; i<25; i++ )
         {
-           if ( ! DoCommandTransferStuff() ) break;
+           if ( ! theControl->DoCommandTransferStuff() ) break;
         }
 }
 
 #endif
 
-
+/*
 bool CCrystalsApp::DoCommandTransferStuff()
 {
   char theLine[255];
@@ -263,3 +263,4 @@ bool CCrystalsApp::DoCommandTransferStuff()
 
   return appret;
 }
+*/

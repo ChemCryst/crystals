@@ -1,6 +1,10 @@
 // crystals.h : main header file for the CRYSTALS application
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2001/03/08 16:44:07  richard
+// General changes - replaced common functions in all GUI classes by macros.
+// Generally tidied up, added logs to top of all source files.
+//
 // Revision 1.7  2001/01/25 17:12:28  richard
 // Changed from BOOL to bool!
 //
@@ -54,13 +58,14 @@ class CCrystalsApp : public wxApp
 
 public:
 
-        bool CCrystalsApp::DoCommandTransferStuff();
+//        bool CCrystalsApp::DoCommandTransferStuff();
 
 #ifdef __CR_WIN__
 // Overrides
     public:
 
     CCrystalsApp();
+
     virtual BOOL InitInstance();
     virtual BOOL OnIdle(LONG lCount);
     virtual int ExitInstance();

@@ -3,6 +3,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2001/03/15 11:05:41  richard
+// Error checking. Ensure that if ptr_to_cxObject is NULL then we don't call
+// any of the Cx object's functions. (This allows CxModel to fail gracefully, and
+// the application to continue working). NB. BECAUSE OF CHANGE TO CRYSTALSINTERFACE.H
+// I'D RECOMMEND AT LEAST A 'code gui', IF NOT A 'code' or 'buildall'.
+//
 // Revision 1.13  2001/03/08 15:48:56  richard
 // A lot of code was repeated across the Cr and Cx classes. I've moved it here
 // in the form of #define macros. Mainly geometry getting and setting stuff.
@@ -193,6 +199,7 @@ return CcRect(((##b*)ptr_to_cxObject)->GetTop(),   \
 ((##b*)ptr_to_cxObject)->GetHeight(),              \
 ((##b*)ptr_to_cxObject)->GetLeft()+                \
 ((##b*)ptr_to_cxObject)->GetWidth());              \
+return CcRect(0,0,0,0);                            \
 };
 
 #define CRSETGEOMETRY(a,b)                         \

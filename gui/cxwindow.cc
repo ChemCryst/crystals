@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.20  2001/03/08 15:59:29  richard
+//   Give non-modal windows a "toolbar-style" (thin) titlebar. Distinguishes them
+//   from modal windows in users mind (eventually).
+//
 
 #include    "crystalsinterface.h"
 #include    "cxwindow.h"
@@ -87,6 +91,7 @@ CxWindow::CxWindow( CrWindow * container, int sizeable )
     mSizeable = (sizeable==0) ? false : true;
     mWindowWantsKeys = false;
     m_PreDestroyed = false;
+    m_TimerActive = 0;
 }
 
 void CxWindow::CxPreDestroy()
@@ -94,12 +99,19 @@ void CxWindow::CxPreDestroy()
     if (mParentWnd)
 #ifdef __CR_WIN__
     {
-            mParentWnd->EnableWindow(true); //Re-enable the parent.
-            mParentWnd->SetFocus(); //Focus the parent.
+      mParentWnd->EnableWindow(true); //Re-enable the parent.
+      mParentWnd->SetFocus(); //Focus the parent.
+    }
+    if ( m_TimerActive )
+    {
+      if ( KillTimer ( m_TimerActive ) == 0 )
+      {
+        LOGERR ( "Kill Timer failed to find timer." );
+      }
     }
 #endif
 #ifdef __BOTHWX__
-            mParentWnd->Enable(true); //Re-enable the parent.
+    mParentWnd->Enable(true); //Re-enable the parent.
 #endif
     m_PreDestroyed = true;
 }
@@ -238,6 +250,7 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
     ON_UPDATE_COMMAND_UI_RANGE(kMenuBase,kMenuBase+5000,OnUpdateMenuItem)
     ON_WM_KEYDOWN()
     ON_WM_KEYUP()
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
@@ -673,3 +686,18 @@ void CxWindow::CxEnable(bool enable)
 #endif
 }
 
+
+void CxWindow::CxSetTimer()
+{
+  if ( m_TimerActive )
+  {
+    LOGERR ( "Timer called more than once." );
+    return; //only to be called once.
+  }
+  m_TimerActive = SetTimer ( 1007, 500, NULL ); // 500ms updates.
+}
+
+void CxWindow::OnTimer(UINT nID)
+{
+  ((CrWindow*)ptr_to_crObject)->TimerFired();
+}

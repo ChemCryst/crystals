@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2001/03/08 16:44:03  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 //   Revision 1.17  2001/03/08 14:57:19  richard
 //   Moved all CXAPP and CRAPP functions into this class, to try to make the
 //   whole thing more understandable. This one class has one instance, and it
@@ -143,6 +147,9 @@ class   CcController
 
     int      EnvVarCount( CcString dir );
     CcString EnvVarExtract ( CcString dir, int i );
+
+    void TimerFired();
+    bool DoCommandTransferStuff();
 
 // attributes
 

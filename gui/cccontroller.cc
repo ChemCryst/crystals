@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.27  2001/03/23 11:35:07  richard
+// Don't set mCurrentWindow pointer if window fails to be created.
+//
 // Revision 1.26  2001/03/21 16:58:43  richard
 // If ShellExectue fails to launch a program of file, then have a go with the
 // old spawnvp method instead. As a knock on effect this fixes the Cameron PRINT command
@@ -375,6 +378,9 @@ CcController::CcController( CcString directory, CcString dscfile )
       ASSERT(0);
 #endif
     }
+    ((CrWindow*)theElement)->SetTimer(); //Start timer events - a sort of
+                                         //pacemaker for the GUI to stop
+                                         //it freezing up so often ;)
 
 #ifdef __CR_WIN__
     AfxGetApp()->m_pMainWnd = (CWnd*)(theElement->GetWidget());
@@ -526,6 +532,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 
 Boolean CcController::ParseInput( CcTokenList * tokenList )
 {
+    CcController::debugIndent = 0;
 
     CcParse retVal(false, false, false);
     int infiniteLoopCheck = 0;
@@ -1853,7 +1860,10 @@ void CcController::StoreKey( CcString key, CcString value )
         LOGERR ( "Could not open "+dir+" for writing: "+CcString(strerror( errno ))+" No more CRYSDIRs to try. ");
         return;
       }
-          LOGSTAT ( "Couldn't open "+dir+" for writing: "+CcString(strerror( errno ))+" - Retrying with next CRYSDIR directory"   );
+      else
+      {
+        LOGSTAT ( "Couldn't open "+dir+" for writing: "+CcString(strerror( errno ))+" - Retrying with next CRYSDIR directory"   );
+      }
     }
 
   }
@@ -2680,6 +2690,30 @@ CcString CcController::EnvVarExtract ( CcString dir, int i )
 }
 
 
+void CcController::TimerFired()
+{
+  DoCommandTransferStuff();
+}
+
+
+bool CcController::DoCommandTransferStuff()
+{
+  char theLine[255];
+  bool appret = false;
+
+  if( GetInterfaceCommand(theLine) )
+  {
+    appret = true;
+    int theLength = 0;
+
+    if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+    {
+      theLine[theLength+1]='\0';
+      Tokenize(theLine);
+    }
+  }
+  return appret;
+}
 
 
 
@@ -2942,9 +2976,9 @@ extern "C" {
   {
       *(theLine + *theLength) = '\0';
       (CcController::theController)->AddInterfaceCommand( theLine );
-  #ifdef __CR_WIN__
-      AfxGetMainWnd()->PostMessage(WM_TIMER); //Force idle processing to (re)start so
-  #endif                                          //that the GetInterfaceCommand is called.
+//  #ifdef __CR_WIN__
+//      AfxGetMainWnd()->PostMessage(WM_TIMER); //Force idle processing to (re)start so
+//  #endif                                          //that the GetInterfaceCommand is called.
   }
 
   void FORCALL(cinextcommand) ( long *theStatus, char *theLine )

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/03/08 15:59:29  richard
+//   Give non-modal windows a "toolbar-style" (thin) titlebar. Distinguishes them
+//   from modal windows in users mind (eventually).
+//
 
 #ifndef     __CxWindow_H__
 #define     __CxWindow_H__
@@ -58,6 +62,7 @@ class CxWindow : public BASEWINDOW
      void CxEnable(bool state=true);
      void Redraw();
      void CxPreDestroy();
+     void CxSetTimer();
 
 // attributes
      CrGUIElement *  ptr_to_crObject;
@@ -67,6 +72,7 @@ class CxWindow : public BASEWINDOW
      Boolean mSizeable;
      static int mWindowCount;
      bool m_PreDestroyed;
+     UINT m_TimerActive;
   protected:
      Boolean mProgramResizing;
 
@@ -85,6 +91,7 @@ class CxWindow : public BASEWINDOW
     afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnMenuSelected(int nID);
     afx_msg void OnToolSelected(int nID);
+    afx_msg void OnTimer(UINT nID);
 
     DECLARE_MESSAGE_MAP()
 

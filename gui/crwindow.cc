@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2001/03/08 15:46:00  richard
+//   Re-written sizing and resizing code. DISABLEIF= and ENABLEIF= flags let
+//   you disable a whole non-modal window based on current status.
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -806,5 +810,15 @@ void CrWindow::Redraw()
 void CrWindow::Enable(bool enable)
 {
   ((CxWindow*)ptr_to_cxObject)->CxEnable(enable);
+}
+
+void CrWindow::SetTimer()
+{
+  ((CxWindow*)ptr_to_cxObject)->CxSetTimer();
+}
+
+void CrWindow::TimerFired()
+{
+  CcController::theController->TimerFired();
 }
 
