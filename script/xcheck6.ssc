@@ -83,7 +83,6 @@
 ^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT_N_X'
-^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _Y' 'SIGCUT_N_Y'
 ^^WI      ENDDEFINEMENU
 ^^WI    }
 ^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3
