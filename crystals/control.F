@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2004/03/10 10:31:05  rich
+C Catch buffer overflow during the printing of the error condition:
+C "This directive may not follow a card containing the directive ...."
+C
 C Revision 1.6  2003/11/06 17:02:06  rich
 C Try to avoid skipping spaces when parsing long strings in
 C e.g. space group class, crystal colour and shape fields.
@@ -1251,7 +1255,9 @@ C--CHECK IF THIS DIRECTIVE HAS ALREADY BEEN DEFAULTED
 C--CHECK IF THIS DIRECTIVE HAS BEEN REPEATED TOO MANY TIMES
 2400  CONTINUE
       ISTORE(MR61+8)=ISTORE(MR61+8)+1
-      IF(ISTORE(MR61+7)-ISTORE(MR61+8))2450,2550,2550
+C RIC: If max directive count is 9999, then ignore this check.      
+      IF((ISTORE(MR61+7)-ISTORE(MR61+8)).AND.
+     1   (ISTORE(MR61+7).LT.9999)) 2450,2550,2550
 C--THIS DIRECTIVE HAS APPEARED TOO MANY TIMES
 2450  CONTINUE
       CALL XMONTR(0)

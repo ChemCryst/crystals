@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/09/29 15:38:34  rich
+C Added \DEFINE system instruction for building the command file. No
+C need for separate executable anymore. This command is \REMOVEd in
+C the normal startup file to prevent accidents.
+C
 C Revision 1.46  2003/06/27 11:59:04  rich
 C Globally replace FRAGMENT (slot in L5) and FRAGMENT(...) lexical keyword
 C with RESIDUE. This should reduce confusion about what it is, and as FRAGMENT
@@ -296,7 +301,7 @@ C----- INITIALISE THE VMS SCREEN MANAGER
 C
       DATA IACC/-1/,MLSS/15/
 C
-      DATA ISIZST / 8388608 /, ISIZ11 / 8388608 /
+      DATA ISIZST / 16777216 /, ISIZ11 / 16777216 /
 C
 &PPCC      SET INTERACTIVE UNDER MAC OS
 &PPC      DATA IQUN /2/, JQUN/2/
