@@ -7,6 +7,17 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.19  2001/06/17 14:39:36  richard
+//  Error checking and warning messages on OpenGL window creation in case of error.
+//  Removal of draw_to_bitmap method, instead using compiled GL displaylists, and the
+//  SwapBuffers function.
+//  wx support.
+//  Use GL select and feedback buffers for sizing and hit testing rather than trying to emulate it's
+//  calculations.
+//  Support for spotting mouse over bonds as well as over atoms - bond name and length
+//  is displayed.
+//  Change way popup boxes are displayed to avoid GL repaint when the popup is CREATED.
+//
 //  Revision 1.18  2001/03/12 13:53:26  richard
 //  Fixed pixel format when only 256 colours. Removed unused accumulation buffers from
 //  OpenGL window, speeding up drawing, I think.
@@ -193,6 +204,8 @@ class CxModel : public BASEMODEL
 #ifdef __BOTHWX__
     wxStaticText * m_TextPopup;
     bool m_DoNotPaint;
+    bool m_NotSetupYet;
+    bool m_MouseCaught;
     wxBitmap m_bitmap;
 
     void OnEraseBackground(wxEraseEvent & evt);

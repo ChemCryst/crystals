@@ -14,6 +14,9 @@
 #include    "cccontroller.h"
 #include    "resource.h"
 #include    <GL/glu.h>
+#ifdef __LINUX__
+#include "idb_splash.xpm"
+#endif
 
 int CxModel::mModelCount = kModelBase;
 
@@ -73,6 +76,8 @@ CxModel::CxModel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSi
 {
 
     m_DoNotPaint = false;
+    m_NotSetupYet = true;
+    m_MouseCaught = false;
 
 #endif
 #ifdef __CR_WIN__
@@ -196,6 +201,11 @@ void CxModel::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc (this);
     dc.SetUserScale( 1.0,1.0 );
+
+    if ( m_NotSetupYet ) Setup();
+
+    if ( m_NotSetupYet ) return;
+
     SetCurrent();
     if ( m_DoNotPaint )
     {
@@ -345,7 +355,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
       ReleaseCapture();
 #endif
 #ifdef __BOTHWX__
-      ReleaseMouse();
+      if ( m_MouseCaught ){ ReleaseMouse(); m_MouseCaught = false; }
 #endif
       if(m_fastrotate)
       {
@@ -360,7 +370,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
       ReleaseCapture();
 #endif
 #ifdef __BOTHWX__
-      ReleaseMouse();
+      if ( m_MouseCaught ) { ReleaseMouse(); m_MouseCaught = false; }
 #endif
       SelectBoxedAtoms(m_selectRect, true);
       ModelChanged();
@@ -379,7 +389,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
       ReleaseCapture();
 #endif
 #ifdef __BOTHWX__
-      ReleaseMouse();
+      if ( m_MouseCaught ) { ReleaseMouse(); m_MouseCaught = false; }
 #endif
       NeedRedraw();
       break;
@@ -428,7 +438,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
       SetCapture();
 #endif
 #ifdef __BOTHWX__
-      CaptureMouse();
+      if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
 #endif
       CcString atomname;
       CcModelObject* object;
@@ -445,7 +455,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
       SetCapture();
 #endif
 #ifdef __BOTHWX__
-      CaptureMouse();
+      if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
 #endif
       m_selectRect.Set(point.y,point.x,point.y,point.x); //start dragging box from here.
       break;
@@ -461,7 +471,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
       SetCapture();
 #endif
 #ifdef __BOTHWX__
-      CaptureMouse();
+      if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
 #endif
       m_ptLDown = point;  //zoom from here.
       break;
@@ -730,11 +740,21 @@ void CxModel::Setup()
 
 #ifdef __BOTHWX__
 
-   if( !GetContext() )
-   {
-      m_glContext = new wxGLContext( true, this,
-                                    wxNullPalette, NULL ); //m_sharedContext );
-   }
+   if( !GetContext() ) return;
+   
+   m_NotSetupYet = false;
+
+//#ifdef __LINUX__
+//      m_glContext = new wxGLContext( true, this,
+//                                    wxNullPalette, m_sharedContext );
+//#endif
+//#ifdef __WINDOWS__
+//      m_glContext = new wxGLContext( true, this,
+//                                    wxNullPalette, NULL ); //m_sharedContext );
+//#endif
+//
+//   }
+
    SetCurrent();
 
 #endif
