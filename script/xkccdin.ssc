@@ -19,8 +19,8 @@
 ^^WI   }
 ^^WI   @ 1,2 GRID RIGHT NROWS=8 NCOLS=10
 ^^WI   {
-^^WI    @ 2,9 BUTTON BTNOK '&Ok' DEFAULT
-^^WI    @ 4,9 BUTTON BTNXX '&Cancel'
+^^WI    @ 2,9 BUTTON BTNOK '&Ok' DEFAULT COMMIT
+^^WI    @ 4,9 BUTTON BTNXX '&Cancel' CANCEL
 ^^WI    @ 6,9 BUTTON BTNRR '&Run KCCDIN now'
 ^^WI   }
 ^^WI  }
