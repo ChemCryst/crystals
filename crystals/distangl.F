@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2003/12/11 13:32:44  rich
+C KDIST4: Loop backwards through L41 (which is constructed upside-down in
+C the first place) so that SEL RAN=L41 doesn't have (much) effect on the
+C order of distances output.
+C
 C Revision 1.61  2003/12/03 08:24:58  djw
 C Change VIB to REST for hydrogen U[iso] restraints.  Enables a scale factor to be used
 C
@@ -1629,7 +1634,7 @@ C----- DUMMY WRITES AT END FOR COMPATIBILITY WITH TORSION
                 INH1 = 1+ (M5P-L5)/MD5 
                 INH2 = 1+ (L-L5)/MD5
                   WRITE(NCPU,'(A,2(1X,I4),A,F7.4,2(1X,A))')
-     1            'DIST ',INH1,INH2,' # ',STORE(J+10),CATOM1(1:LATOM1),
+     1            'BOND ',INH1,INH2,' # ',STORE(J+10),CATOM1(1:LATOM1),
      2            CATOM2(1:LATOM2)
               ELSE IF (IPUNCH .EQ. 5) THEN
 C----- WRITE SIMPLE FORM
@@ -7076,7 +7081,10 @@ C--A SUCCESSFUL FIND.
 C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS. 
 C--We want A->B and not B->A, however we want both A->B' and B->A'.
                       IF ((MPIV.GT.I5).OR.(NE.NE.1).OR.(NF.NE.1)
-     1                                       .OR.(NG.NE.1)) THEN
+     1                 .OR.(NG.NE.1)
+     2                 .OR.(NINT(APD(7)-APD(4)).NE.0)
+     3                 .OR.(NINT(APD(8)-APD(5)).NE.0)
+     4                 .OR.(NINT(APD(9)-APD(6)).NE.0) ) THEN
 
 C Check that this atom has not just been duplicated by symmetry
 C because it is on a special position.
