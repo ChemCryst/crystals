@@ -143,7 +143,7 @@
 %        IF NCYCLE .GT. 5 THEN
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after at most 5 more cycles).'
-^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT } SHOW
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
 ^^CR
 %          LOOP
 %            COPY '#SFLS'
@@ -187,7 +187,7 @@
 ^^CO SETKEY XREFINE_CONVERGE 0
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
-^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT } SHOW
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
 ^^CR
 %        LOOP NCYCLE TIMES
 %          COPY '#SFLS'
