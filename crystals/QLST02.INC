@@ -1,0 +1,2 @@
+      EQUIVALENCE (IC,ICOM02(1)) 
+

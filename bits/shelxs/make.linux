@@ -1,0 +1,5 @@
+touch empty
+crysedit shelxs.src shelxs.for code=DVF macro=empty
+crysedit sxtocry.src sxtocry.for code=DVF macro=empty
+g77 shelxs.for -O3 -o shelxs
+g77 sxtocry.for -O3 -o sxtocry

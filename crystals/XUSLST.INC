@@ -1,0 +1,2 @@
+      COMMON/XUSLST/LN5,LN6 
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (ITEMP,ISIZST)
+

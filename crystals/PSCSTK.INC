@@ -1,0 +1,5 @@
+      PARAMETER ( JVARIB =  1 , JNVARI =  2 , JNFDAT =  3 )
+      PARAMETER ( JNFCHR =  4 , JEXECU =  5 , JBTYPE =  6 )
+      PARAMETER ( JBSTRT =  7 , JBLEND =  8 , JNSTAT =  9 )
+      PARAMETER ( JREQST = 10 , JWASEX = 11 , JSTLVL = 12 )
+

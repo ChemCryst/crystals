@@ -1,0 +1,206 @@
+
+THE CRYSTALLOGRAPHIC SYSTEM 'CRYSTALS' LICENCE AGREEMENT
+--------------------------------------------------------
+
+BY INSTALLING THIS SOFTWARE YOU ACCEPT ALL THE TERMS AND
+CONDITIONS OF THIS AGREEMENT.
+
+All material in the CRYSTALS distribution kit, including the
+Documentation, is Copyright Chemical Crystallography Laboratory, Oxford. 
+
+This AGREEMENT is made between The Head of Laboratory, Chemical
+Crystallography Laboratory, Oxford ("CCLO") on behalf of the 
+University of Oxford and the end user of the 'CRYSTALS' Software.
+
+1. All the intellectual property and copyright in CRYSTALS is and 
+   will remain the property of CCLO.
+
+2. CCLO and the authors of 'CRYSTALS' accept no responsibility for 
+   any limitations of the program and documentation or for any liabilities 
+   or claims arising from its use.
+
+3. You undertake to indemnify CCLO against claims arising in any way
+   whatsoever, whether from negligence or otherwise, out of your use of
+   'CRYSTALS'.
+
+4. CCLO is under no obligation whatsoever to correct errors nor to notify 
+   you of errors in 'CRYSTALS'. Wherever practicable such errors will be 
+   corrected or users notified.
+
+5. Any modifications to 'CRYSTALS' supplied by or on behalf of CCLO will 
+   be covered by the terms of this AGREEMENT.
+
+6. You may on your own initiative make modifications to 'CRYSTALS' subject 
+   to the following conditions: You will notify CCLO of the modifications 
+   as soon as practicable.You will provide CCLO with full details of the 
+   modifications if requested to.
+
+7. All intellectual property in the modification will vest in CCLO who will 
+   have the right to distribute it to other institutions under the same terms 
+   as 'CRYSTALS'.The symbolic and executable versions of the program 'CRYSTALS' 
+   will not be shown to nor distributed to any third party without written 
+   permission of CCLO.
+
+8. This release of CRYSTALS is provided without charge to not-for-profit
+   organisations. Individuals at for-profit organisations may install this 
+   release of CRYSTALS for evaluation purposes only. After evaluating the 
+   release the software must either be uninstalled, or permission obtained from 
+   the head of the CCLO to continue using it.
+
+9. You may make such copies of the disks containing CRYSTALS as you reasonably 
+   require for your own working and back-up purposes.
+
+10. The manual and user guides may be copied and distributed to users
+   of CRYSTALS.
+
+11. You are responsible for devising job control language procedures
+    providing suitable environments for running CRYSTALS, and for devising 
+    suitable machine-specific modifications to the code where these are not 
+    already available from CCLO.
+
+12.  Published references to 'CRYSTALS' will be:
+
+   Betteridge, P. W.,  Carruthers, J. R.,  Cooper, R. I.,
+   Prout, K., Watkin, D. J. (2003). J. Appl. Cryst. 36, 1487.
+
+13.  Published references to 'CAMERON' will be:
+
+  Watkin D.J., Prout C.K., Pearce L.J. (1996). CAMERON, Chemical Crystallography
+  Laboratory, University of Oxford, Oxford.
+
+14.  CRYSTALS uses some functions from the LAPACK and BLAS mathematical libraries. 
+     See the LAPACK user's guide, Anderson, E. and Bai, Z. and Bischof, C. and 
+     Blackford, S. and Demmel, J. and Dongarra, J. and Du Croz, J. and Greenbaum, A. 
+     and Hammarling, S. and McKenney, A. and Sorensen, D. Third edition published
+     by Society for Industrial and Applied Mathematics, 1999.
+
+15.  This Agreement shall be governed by English law.
+
+
+By installing this software you indicate acceptance of this agreement.
+
+
+
+             THE CRYSTALLOGRAPHIC SYSTEM SIR92 LICENCE AGREEMENT
+            -----------------------------------------------------              
+ This AGREEMENT is made between:  
+
+     Istituto di Ricerca per lo Sviluppo di Metodologie Cristallografiche,
+     CNR, Bari, Italy
+
+ representative also of
+
+     Dipartimento di Scienze della Terra, Universita' di Perugia, 
+     Ist. di Strutturistica Chimica "G. Giacomello", CNR, Roma  
+                                       (ISMEC from now on) 
+
+ and 
+                                       You ( the user )
+
+ By installing this software, you agree to the following licencing
+ conditions.
+
+ 1.  'SIR92' is free of charge to academics for non-commercial use only, 
+     subject to the condition that it is acknowledged in all publications 
+     which report structures solved with it.
+
+ 2.  'SIR92' will normally be distributed on 1.4 Mb or via E-Mail. 
+
+ 3.  Any modifications to 'SIR92' supplied by or an behalf of ISMEC will be covered by the
+     terms of this AGREEMENT.
+
+ 4.  ISMEC and the authors of 'SIR92' accept no responsability for any limitations of the
+     program and documentation or for any liabilities or claims arising from its use.
+
+ 5.  ISMEC is under no obligation whatsoever to correct errors nor to notify the
+     end user of errors in 'SIR92'.  Whenever practicable such errors will be corrected
+     or the end users notified.
+
+ 6.  You may on your own initiative make modifications to 'SIR92' subject to the
+     following conditions:
+      You will notify ISMEC of the modifications as practicable.
+      You will provide ISMEC with full details of the modifications if requested to.
+      All intellectual property in the modification will rest in ISMEC who will 
+      have the right to distribute it to other institutions under the same terms 
+      as 'SIR92'. 
+      ISMEC will clearly show in the distribution of such modifications the authorship 
+      of the modification.
+
+ 7.  The program system 'SIR92' will not be distributed to any third party without written
+     permission of ISMEC.
+
+ 8.  The user guide may be copied and distributed to users of Sir92.
+
+ 9.  Published references to 'SIR92' will be:   
+
+  A. Altomare, M. C. Burla, M. Camalli, G. Cascarano, C. Giacovazzo, A. Guagliardi,G. Polidori,
+  (1994). J. Appl. Cryst., in preparation.
+
+10.       This Agreement shall be governed by Italian law.   
+
+                     Agent for ISMECAgent for the INSTITUTION  
+
+
+ By installing this software you indicate acceptance of this agreement.
+
+
+             THE SHELX-86/PATSEE LICENCE AGREEMENT
+            ---------------------------------------              
+
+SHELXS-86/PATSEE USER REGISTRATION FORM     | Do not write here
+!
+---------------------------------------     | Date sent:
+Title/Name:                                 | Version:
+Institute:                                  | Documentation:
+Full postal address:                         ----------------------------
+
+                                            Computer Network if available
+                                            (e.g. EARN, BITNET):
+                                            User ID:
+                                            Node name:
+Telephone:
+-------------------------------------------------------------------------
+Please return this form completed and signed to: Prof. George Sheldrick,
+Institut fuer Anorganische Chemie der Universitaet, Tammannstrasse 4,
+D-3400 Goettingen, Federal Republic of Germany.
+-------------------------------------------------------------------------
+Computer(s) on which programs will be used:
+Source of X-ray data (e.g. diffractometer type):
+-------------------------------------------------------------------------
+Please tick ONE ONLY of the following options:
+[ ]A: Please add my name to the mailing list for updates & new releases,
+      but do not send anything (I already have access to the programs).
+[ ]B: As [A], but please send a set of documentation (one free set is
+      allowed per institute; paying customers all receive three sets).
+[ ]C: Please send the files by network transfer to the above ID/node
+      (7 files, largest 6600 lines). Documentation is sent by post.
+[ ]D: Please send the files on [ ]360kB / [ ]1.2MB MSDOS/PCDOS diskettes
+      (tick which).  The precompiled PC version of SHELXS-86 is included.
+[ ]E: Industry standard 1/2" magnetic tape (ASCII, record=80, block=4000
+      bytes, unlabelled). please specify [ ]1600 / [ ]800 bpi.
+[ ]F: VMS $COPY format on 1600 bpi tape.
+[ ]G: VMS $COPY format on TK50 cassette ($40 extra).
+-------------------------------------------------------------------------
+In addition, please send [  ] extra sets of documentation at $10 per set.
+-------------------------------------------------------------------------
+SHELXS and PATSEE are PUBLIC DOMAIN programs and may be freely
+copied.
+The charge of $99 for academics and $999 for profit-making institutions
+just covers our costs, including sending the programs free to third
+world and other countries which have difficulty finding foreign exchange.
+Payment is requested in DM at the current exchange rate; add $10 nuisance
+value if $ sent.  There is NO CHARGE for academics for options A, B or C.
+-------------------------------------------------------------------------
+[ ] I enclose a contribution of DM___ made payable to "Institut fuer
+    Anorganische Chemie der Universitaet Goettingen, Prof. Sheldrick".
+[ ] I have transferred the sum of DM___ to the Regierungshauptkasse, acc.
+    811 703 at the Norddeutsche Landesbank Braunschweig (BLZ 270 500 00),
+    for the "Institut fuer Anorg. Chemie der Universitaet Goettingen,
+    Prof. Sheldrick, Titelgruppe 11165-476000", purpose "Unkostenbeitrag"
+[ ] I am unable to contribute, and appreciate that my request may be
+    delayed until the account is sufficiently in credit to cover costs.
+-------------------------------------------------------------------------
+I agree to inform the authors of any errors found in the programs and
+documentation, and accept that the authors have no liabilities in respect
+of such errors.
+             Signed:                           Date:

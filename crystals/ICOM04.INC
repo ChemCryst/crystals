@@ -1,0 +1,2 @@
+      DIMENSION ICOM04(24) 
+

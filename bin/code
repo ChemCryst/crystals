@@ -1,0 +1,221 @@
+echo MAKING DIRECTORIES ...
+
+mkdir $CRYSBUILD
+cd $CRYSBUILD || builderr COULD_NOT_cd_to_CRYSBUILD $CRYSBUILD
+mkdir errors
+mkdir code
+
+cd $CRYSBUILD/code || builderr COULD_NOT_cd_to_CRYSBUILD_CODE
+mkdir frel
+mkdir fdbg
+mkdir crel
+mkdir cdbg
+
+echo Compiling for the $EDCODE platform ...
+
+
+if [ "$1" = "" ] || [ "$1" = "fortran" ]; then
+ buildfile absorb
+ buildfile accumula
+ buildfile alter5
+ buildfile aniso
+ buildfile anisotfs
+ buildfile bari
+ buildfile calcul
+ buildfile characte
+ buildfile control
+ buildfile crystals
+ buildfile csdcode
+ buildfile difabs
+ buildfile disc
+ buildfile distan
+ buildfile distangl
+ buildfile empabs
+ buildfile execute
+ buildfile fiddle
+ buildfile findfrag
+ buildfile foreig
+ buildfile fourie
+ buildfile fourier
+ buildfile genedit
+ buildfile geomet
+ buildfile geometry
+ buildfile guibit
+ buildfile hydrogen
+ buildfile input
+ buildfile input6
+ buildfile invert
+ buildfile lapack
+ buildfile lexical
+ buildfile link
+ buildfile list4
+ buildfile list6
+ buildfile list11
+ buildfile list12
+ buildfile list16
+ buildfile list26
+ buildfile list50
+ buildfile lists1
+ buildfile lists2
+ buildfile lists3
+ buildfile lists4
+ buildfile matrix
+ buildfile modify5
+ buildfile mtapes
+ buildfile planes
+ buildfile prcss
+ buildfile prcss6
+ buildfile presets
+ buildfile publsh
+ buildfile punch
+ buildfile read
+ buildfile read6
+ buildfile reductio
+ buildfile regular
+ buildfile restr
+ buildfile results
+ buildfile script
+ buildfile service
+ buildfile setting
+ buildfile sfls
+ buildfile slant
+ buildfile solve
+ buildfile sort
+ buildfile spacegrp
+ buildfile specific
+ buildfile summary
+ buildfile special
+ buildfile syntax
+ buildfile torsion
+ buildfile trial
+ buildfile weight
+ buildfile rotax
+ buildfile normal
+
+ buildfile altered
+ buildfile block
+ buildfile button
+ buildfile ccontrol
+ buildfile comm
+ buildfile cspecific
+ buildfile general
+ buildfile graphics
+ buildfile maths1
+ buildfile maths2
+ buildfile mouse
+ buildfile outer
+ buildfile vander
+
+
+fi
+
+if [ "$1" = "" ] || [ "$1" = "gui" ] ; then  
+ buildfile ccchartcolour
+ buildfile ccchartdoc
+ buildfile ccchartellipse
+ buildfile ccchartline
+ buildfile ccchartobject
+ buildfile ccchartpoly
+ buildfile cccharttext
+ buildfile cccontroller
+ buildfile cccoord
+ buildfile ccmenuitem
+ buildfile ccmodelatom
+ buildfile ccmodelbond
+ buildfile ccmodeldoc
+ buildfile ccmodelobject
+ buildfile ccrect
+ buildfile ccstatus
+ buildfile crbutton
+ buildfile crchart
+ buildfile crcheckbox
+ buildfile crdropdown
+ buildfile creditbox
+ buildfile crguielement
+ buildfile crgrid
+ buildfile crlistbox
+ buildfile crlistctrl
+ buildfile crmenu
+ buildfile crmodel
+ buildfile crmultiedit
+ buildfile crprogress           
+ buildfile crradiobutton
+ buildfile crtext
+ buildfile crwindow
+ buildfile cxbutton
+ buildfile cxchart
+ buildfile cxcheckbox
+ buildfile cxdropdown
+ buildfile cxeditbox
+ buildfile cxgrid
+ buildfile cxgroupbox
+ buildfile cxlistbox
+ buildfile cxlistctrl
+ buildfile cxmenu
+ buildfile cxmodel
+ buildfile cxmultiedit
+ buildfile cxprogress
+ buildfile cxradiobutton
+ buildfile cxtext
+ buildfile cxwindow
+ buildfile stdafx
+ buildfile gcrystals
+ buildfile ccpoint
+ buildfile cxmenubar
+ buildfile cxtextout
+ buildfile crtextout
+ buildfile crmenubar
+ buildfile crbitmap
+ buildfile cxbitmap
+ buildfile crtab
+ buildfile cxtab
+ buildfile crtoolbar
+ buildfile cxtoolbar
+ buildfile crresizebar
+ buildfile cxresizebar
+ buildfile crstretch
+ buildfile cxstretch
+ buildfile cclock
+ buildfile ccthread
+ buildfile cxicon
+ buildfile cricon
+ buildfile ccplotscatter
+ buildfile ccplotdata
+ buildfile ccplotbar
+ buildfile crhidden 
+ buildfile cxplot
+ buildfile crplot
+ buildfile cxmodlist
+ buildfile crmodlist
+ buildfile ccmodelsphere
+ buildfile ccmodeldonut
+fi
+
+if [ "$COMPCODE" = "GIL" ]; then
+echo LINKING GIL release
+g++    frel/*.obj crel/*.obj `wx-config --libs --gl-libs` -lg2c -o ../crystals.exe > \
+       rlink.lis || builderr LINK_FAILED g77 rlink.lis
+echo LINKING GIL debug
+g++ -g fdbg/*.obj cdbg/*.obj `wx-config --libs --gl-libs` -lg2c -o ../crystalsd.exe > \
+       dlink.lis || builderr LINKD_FAILED g77 dlink.lis
+
+elif [ "$COMPCODE" = "WXS" ]; then
+
+windres -o crel/resource.obj -i $CRYSSRC/guisrc/wx.rc --include-dir=$CRYSSRC/guisrc --include-dir `wx-config --prefix`/include
+windres -o cdbg/resource.obj -i $CRYSSRC/guisrc/wx.rc --include-dir=$CRYSSRC/guisrc --include-dir `wx-config --prefix`/include
+
+echo LINKING WXS release
+g++    frel/*.obj crel/*.obj `wx-config --libs --gl-libs` -lg2c -mwindows -o ../crystals.exe > \
+       rlink.lis || builderr LINK_FAILED g77 rlink.lis
+echo LINKING WXS debug
+g++ -g fdbg/*.obj cdbg/*.obj `wx-config --libs --gl-libs` -lg2c -mwindows -o ../crystalsd.exe > \
+       dlink.lis || builderr LINKD_FAILED g77 dlink.lis
+
+elif [ "$COMPCODE" = "LIN" ]; then
+
+echo LINKING LIN release
+g77    frel/*.obj -o ../crystals.exe
+echo LINKING LIN debug
+g77 -g fdbg/*.obj -o ../crystalsd.exe
+
+fi

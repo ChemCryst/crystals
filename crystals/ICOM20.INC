@@ -1,0 +1,2 @@
+      DIMENSION ICOM20(12) 
+

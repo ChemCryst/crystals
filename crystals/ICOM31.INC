@@ -1,0 +1,2 @@
+      DIMENSION ICOM31(12) 
+

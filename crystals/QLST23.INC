@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM23(1),L23M) 
+

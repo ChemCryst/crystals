@@ -1,0 +1,2 @@
+      COMMON/XWSCAT/GIW(142),NK,NAT
+

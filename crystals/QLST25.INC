@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM25(1),L25) 
+

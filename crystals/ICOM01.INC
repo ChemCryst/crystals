@@ -1,0 +1,2 @@
+      DIMENSION ICOM01(36) 
+

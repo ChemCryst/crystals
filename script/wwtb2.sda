@@ -1,0 +1,121 @@
+!QUESTION
+The 112 reflection of an "ordinary" material has Fobs=10 and 
+Fcalc=500. The R factor is 8%. What is the likely cause?
+!ANSWERS
+Beam trap in way
+Extinction
+Power failure
+Noisy data
+!EXPLAIN
+As the R-factor is quite low it is highly likely that something
+is wrong with the measurement of Fobs. Give that the reflection
+is at a low angle, the beam trap is the most likely explanation.
+!QUESTION
+The 112 reflection of an "ordinary" material has Fobs=400 and 
+Fcalc=500. The R factor is 8%. What is the likely cause?
+!ANSWERS
+Extinction
+Beam trap in way
+Power fluctuations
+Noisy data
+!EXPLAIN
+As the R-factor is quite low, and the difference between Fo and Fc
+is not huge, it is likely that extinction is affecting this reflection. 
+The best way to test this explanation is to examine other strong
+reflections for signs of extinction.
+!QUESTION
+An oxygen atom is being modelled as a carbon. What
+effect on the model would you expect to see?
+!ANSWERS
+Thermal ellipse very small
+Thermal ellipse very large
+Nothing
+Severe distortions in the model
+!EXPLAIN
+The carbon atom is two electrons short of the oxygen
+that it is trying to model. As a result the thermal 
+ellipse will be very small (creating a model with
+high electron density) in order to compensate.
+!QUESTION
+Which of these is a non-standard
+setting of space group P 1 ?
+!ANSWERS
+A 1
+P -1
+C c
+P 2
+!EXPLAIN
+A1.
+A1 is a centred  non-standard setting of P1.   Though the
+cell is  bigger,  the  number of  reflections is the same
+(because of the systematic absences), and the extra atoms
+in the cell are generated from the asymmetric unit by the
+additional   symmetry   operator.   The   observation  to
+parameter ratio is unaltered.   Non-standard settings may
+be chosen  either to achieve a cell with angles  close to
+90, or to preserve a relationship  with another  material
+or phase.
+!QUESTION
+The flack parameter of a novel inorganic phosphate
+in P 21 refines to 0.47 with a standard uncertainty
+of 0.05. What do we know?
+!ANSWERS
+Structure is an inversion twin.
+Flack parameter is undefined.
+Model is probably correct hand.
+Model is probably wrong hand.
+!EXPLAIN
+The su (0.05) tells us that the flack parameter
+is well determined. The flack parameter refines
+towards 0.5 when the structure is an inversion
+twin. 
+!QUESTION
+What is the Bragg angle (theta) for molybdenum 
+corresponding to the Bragg angle of 90 for copper?
+!ANSWERS
+27
+17
+37
+47
+!EXPLAIN
+Use d = n.lambda/2Sin(theta). Hence 
+lambda1/Sin(theta1) = lambda2/Sin(theta2)
+!QUESTION
+An organic material in P-1 does not solve with your favourite 
+Direct Methods program. What should be your next move
+!ANSWERS
+Try P1
+Try a different program
+Check the space group
+Check the elemental analysis
+!EXPLAIN
+For centrosymmetric space groups, the only phase change permitted during 
+the Direct Methods calculation is 180 degrees, so that the strcucture 
+can get trapped in false solutions. For non-centro space groups, the 
+phase can be continuously variable, providing an escape route.
+!QUESTION
+Which of the following space groups 
+has NO floating origins
+!ANSWERS
+P-1
+P1
+P21
+Pn
+!EXPLAIN
+A suitable origin in P-1 is on the centre of inversion
+P21 has 1 floating origin
+P n has 2 floating origins
+P 1 has 3 floating origins
+!QUESTION
+Which of the following space groups 
+has ONE floating origin
+!ANSWERS
+P 43
+P 2 2 21
+P m
+P 21 21 2
+!EXPLANATION
+The 43 axis is located in the a-b plane, but has an 
+arbitary origin along c
+P m has 2 floating origins, the others none.
+!END

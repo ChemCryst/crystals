@@ -1,0 +1,2 @@
+      DIMENSION ICOM38(24)
+

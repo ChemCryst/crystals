@@ -1,0 +1,2 @@
+      EQUIVALENCE (IATINF(1),ATINF(1))
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM04(1),ITYPE4) 
+

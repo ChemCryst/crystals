@@ -1,0 +1,1 @@
+g77 convplat.for -O3 -o convplat

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$COMPCODE" = "WXS" ]; then
+  ${$0%%crysedit}editor.exe $*
+elif [ "$COMPCODE" = "GIL" ] || [ "$COMPCODE" = "LIN" ]; then
+  ${0%%crysedit}editor-linux $*
+fi

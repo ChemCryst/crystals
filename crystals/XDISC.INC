@@ -1,0 +1,2 @@
+      COMMON/XDISC/NU 
+

@@ -1,0 +1,5 @@
+Error opening CRYSDIR:/rc93.srt
+ ERROR: THE FILE 'RC93.INI' COULD NOT BE OPENED
+This file contains information necessary to set up RC93.
+This information will be the same each time RC93 is
+run so it is recommended to create the RC93.INI file.

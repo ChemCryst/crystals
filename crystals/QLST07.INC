@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM07(1),L7) 
+

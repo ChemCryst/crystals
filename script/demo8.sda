@@ -1,0 +1,19 @@
+#script xqcam
+label all 
+view
+#pause 5
+view
+#script xqcame
+#edit
+move c(13)
+end
+#regroup
+sel type=all seq=yes
+end
+#script xqcam
+label all 
+view
+#pause 5
+view
+#script xqcame
+

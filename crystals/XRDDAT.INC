@@ -1,0 +1,2 @@
+      COMMON /XRDDAT/ CRDLWC , CRDUPC
+

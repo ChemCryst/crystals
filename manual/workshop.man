@@ -1,0 +1,469 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TCrystals Worked Examples#
+#Ccrysworkshop#
+#ZGetting Started#
+#HCgettingstarted#
+#YStarting the program#
+#Q
+#PDouble click on the CRYSTALS icon on the desktop, the "Browse for Folder" dialog 
+will be displayed. The selected directory should already be demo, if it isn't then 
+browse to find it: c:\wincrys\demo\demo, highlight it and then click OK.
+#HIbrowseforfolder.jpg#
+
+#PCRYSTALS will start, and the demo / workshop dialog will open automatically.
+#HIdemodialog.jpg#
+
+#PChoose Cyclo from the list of workshop structures and click "Open workshop structure".
+
+#PWe will use this starting point throughout the workshop to choose different starting structures. 
+To bring this dialog either close and restart CRYSTALS, or choose "Demo" from the "Help" menu.
+
+ 
+#YCustomising CRYSTALS to suit your screen size#
+#HIstartup.jpg#
+
+#PIt is important to be able to read the text output in the left hand pane of the CRYSTALS window.
+#PFrom the menus choose "Appearance"->"Set Text Font"
+Choose the smallest font size that you can read.
+
+#PI would recommend Lucida Console in size 7.
+#HIdrag.jpg#
+
+Now make sure that you can see the full width of a line of text in the output pane.
+You can drag the bar situated between the text area on the left and the CRYSTALS logo 
+screen on the right, to adjust the relative sizes of these two areas.#
+#
+The area on the right will eventually display a representation of the atomic co-ordinates, 
+so leave it at least a little bit of space.
+# 
+
+#ZSolving and refining a routine structure in CRYSTALS#
+
+#YSome information about the structure you are about to solve and refine#
+
+#PThis natty material was supplied as very poor colourless crystals found congealed 
+in the bottom of a half-abandoned flask.
+
+#PA fragment of crystal (0.3 x 0.4 x 0.4 mm) was mounted in oil 
+on a KCCD diffractometer at 190K and  a data set collected in two hours. 
+
+#PThe space group is P 21 21 21#
+
+#HIcyclo.jpg#
+
+#YStep one: Import cell and crystal data#
+
+#P
+#HIguidetool.jpg#
+Click the GUIDE button at the top left of the toolbar.
+#
+The GUIDE provides a list of options. To carry out the current 
+recommended action you would just click OK. You can change the 
+action by clicking the little arrow to the right of where it says 
+“Run KCCDIN”, and choosing a new action from the list.
+
+#P
+#HIchangeguide.jpg#
+Change the action from "Run KCCDIN" to "Import SHELX file (ins,res)". 
+Click OK on the GUIDE dialog to import the SHELX data file.#
+
+#P
+#HIloadres.jpg#
+Click "Browse" and open the cyclo.ins file, then click OK.#
+
+#P
+#HIspaceinput.jpg#
+Enter the space group symbol. In this case, "P 21 21 21".#
+
+ 
+#YStep two: Import reflection data#
+
+#PThe GUIDE will now suggest "Import reflections". 
+Click OK.#
+
+#HIforf2.jpg#
+
+#PBefore importing reflections, CRYSTALS needs to know whether you plan to use F or F2 in the least squares minimisation. (You may change this option later).
+Click No. (for now).#
+
+#HIinhkl.jpg#
+
+Find the reflection file:
+Click "Browse" and open the cyclo.hkl file, then click OK.
+
+#HIfriedel.jpg#
+
+#PThe next dialog advises you about treatment of Friedel opposites.
+Read, and then click OK.#
+
+#PWhen asked "Do you want to merge the data", click Yes.#
+
+#HIfilter.jpg#
+
+#PThe filter reflection dialog then appears. This lets you omit reflections based on various thresholds.
+Click OK to accept an
+I>3 sigma(I) cutoff.#
+ 
+#YStep three: Initial assessment of the data#
+#PIt is useful to get an idea of the
+quality of your data before proceeding.#
+
+#HIinitguide.jpg#
+
+#PThe guide has moved onto the "Solve" stage, but is
+recommending "Initial analyses" so that you can check the data.#
+Click OK.#
+The initial analyses window appears:#
+
+#HIinitanal.jpg#
+
+
+#PClick on each tab, and convince yourself that the data looks reasonable. 
+Some of the graphs allow you to choose cut-off limits for the
+data (based on I/sigma(I) or ((sin theta)/lambda)**2) if you click with the
+right mouse button. However, don't do this for now.
+# The last tab is particularly useful as it checks that the cell
+contents are reasonable given the cell volume, and that the number
+of observations is reasonable given the expected number of final
+parameters.#
+
+#PDismiss the window by clicking Close at the bottom right.#
+ 
+#YStep four: Structure solution.#
+
+#PThe guide should now be recommending Run Sir92.#
+Click OK#
+
+#HIsirini.jpg#
+
+#PThere are four preset jobs for Sir92. Usually the
+default method will work.#
+
+#HIsir92.jpg#
+
+#PSIR 92 should solve the structure in under a minute,
+depending on the processor speed of your machine.
+Click the "Quit" button (top left) twice to close down SIR.#
+
+#HIsirimp.jpg#
+
+#PClick Yes to import SIR's solution back into CRYSTALS.#
+
+#HIrenumber.jpg#
+
+#PClick Yes.#
+The atoms will be numbered, so that as far as possible, adjacent
+atoms have sequential serial numbers.#
+ 
+#YStep five: Check atom types#
+
+#PYou will see that the GUIDE is now recommending "Refine posn and aniso",
+but first we need to sort out the structure using the graphical model
+interface.
+
+#PChange the types of the two incorrect atoms so that the model
+matches the expected chemical diagram (see top of page for chemical
+diagram).
+
+#PTo rotate the structure:#
+Point into some empty space, hold down the left-mouse
+button and drag the mouse around.#
+
+#PTo change an element:#
+Point at the incorrect atom with your mouse. Press the
+right-mouse button. Move the pointer down to
+"Change type", and then choose the new element
+type from the sub-menu:#
+
+#HIrename.jpg#
+
+#PMake sure the model matches the expected structure before continuing.#
+
+
+#YStep six: Commence refinement...#
+
+#PYou may wish to change the model style from Ball to
+Ellipse so that you can see how the anisotropic temperature
+factors are behaving as the structure refines.#
+To do this click the Ellipse button on the toolbar above the model:#
+
+#HIballelli.jpg#
+                
+#PThe guide is recommending refinement. (Refn posn and aniso)#
+Click OK to start.#
+
+#HIlsqsetup.jpg#
+
+#PClick OK to set up the least squares directives as specified.#
+Refinement will start automatically (unless you check the Advanced
+box, in which case you can edit the directives and choose the number
+of cycles).#
+
+#PCRYSTALS will carry out some rounds of refinement, the R-factor
+should drop to somewhere around 8%:#
+
+#HIinfotabs.jpg#
+
+
+#YStep seven: Adding Hydrogen Atoms#
+#PThe GUIDE has decided that it is time to add hydrogen atoms.#
+#HIaddhguid.jpg#
+#PClick OK to do this.#
+
+#PWhite atoms: Geometrically placed H#
+Pink atoms: Difference Fourier map H#
+
+#HIaddhpic.jpg#
+
+#PYou can see that in general the hydrogen atoms have been
+computed correctly (co-incident white and pink atoms), but that
+there is still a hydrogen missing from the Nitrogen atom.
+(The double C=N bond is an artefact of the number of
+Q peaks bonded to the neighbouring C atom -
+it will go away in a minute!)
+
+#PThere is still one H atom missing. Click Continue.#
+
+#PFollow the GUIDE, it will recommend more refinement, then
+Add Hydrogen again.#
+
+#PThis time the missing hydrogen atom will be found in the
+Fourier map. It is currently labelled QH(1). Using the right-click
+method from step five, change the element type to Hydrogen.#
+
+#PCheck the box that says "All H atoms have been found".#
+Click Continue.#
+ 
+#YStep eight: More refinement & Extinction#
+
+#PCarry out some more refinement by clicking OK on the GUIDE.#
+
+#PThis time, the refinement setup offers a choice of how to
+treat the H atoms:#
+
+#HIlsqsetup2.jpg#
+
+#PEither leave the H's unrefined (fixed) or Ride them.#
+
+#PSet up and carry out the refinement by clicking OK.#
+
+#PNext the GUIDE recommends an extinction check:#
+#HIextguid.jpg#
+
+#PClick OK#
+
+#PThe extinction check graph is displayed:
+#HIfovsfc.jpg#
+
+#PIt plots Fo against Fc. If extinction is a problem for the
+crystal, the graph will flatten out (drop under the blue Fo=Fc
+line) at high values of Fc.#
+Extinction isn't a problem here, however, two of the reflections
+are clearly outliers.#
+
+#PRemove the outliers by right-clicking on the offending points and
+choosing "Omit".#
+FYI: Likely cause - beam trap partially obscuring the image on the
+diffractometer - now fixed!#
+#PClick the "Do not" button to close the window and continue without
+an extinction correction.#
+
+#YStep nine: Choose a nice weighting scheme#
+
+#PCarry out one more cycle of refinement to account for the reflections
+just omitted.#
+We now have an opportunity to pick an optimal weighting scheme.
+The GUIDE recommends "Optimise Weights"#
+Click OK#
+This dialog lets us choose between calculated and statistical weights:#
+#HIscheme.jpg#
+
+#PWe will go with calculated for the time being. (Assumption: the
+model is more or less correct, therefore the residual gives a good estimate
+of any errors - let's fit a function to it.)#
+
+#PMake sure the Optimal is selected in the list, then click OK.#
+
+ 
+#PRead the information and pick a function to use for weights:#
+#HIchebychev.jpg#
+
+#PIn this case the 3 parameter calculated scheme is fine:#
+Click Use 3 parameter scheme.#
+
+
+#YStep ten: Validation and CIF archival.#
+
+#PClick OK on the GUIDE to carry out a few last cycles of refinement.#
+
+
+#PThe GUIDE now recommends "Validate" (this means that it's happy that
+the structure is complete).#
+Click OK to validate the structure.#
+
+#PA list of tests and any failures will
+appear in the text window on the left:#
+#HIvalid.jpg#
+
+#PIf the shift/esd is causing a warning then:#
+#PChange the GUIDE default option to Refine posn and aniso and click OK.#
+	
+#PThen carry out the validation again.#
+This time, there should be no problems with the structure.#
+
+
+#PIf all checks passed, the GUIDE will recommend Publish.#
+In any case, ensure that Publish is the selected option in the
+GUIDE and click OK.#
+
+#HItidyup.jpg#
+
+#PWhen asked if you want 6 final cycles of least squares, click Yes.#
+
+#HIpubtable.jpg#
+
+#PA variety of data formats are available for publication/archiving.#
+Choose CIF, which contains just about everything that you need.#
+Click OK to write a CIF.#
+
+#POpen the CIF for editing if you want to. Close the Publish dialog.#
+
+#PFrom the menus choose "Results"->"Checkcif on the web" for further
+checks.#
+The cif is c:\wincrys\demo\cyclo\publish.cif.#
+
+
+#PTo close CRYSTALS choose Exit Crystals from the File menu.#
+
+#PAlternatively, to get back to the workshop starting point,
+choose Demo from the Help menu.#
+ 
+#ZPoor quality data - Tetraphenylene#
+
+#YBackground#
+
+#PThis is a hard, well crystalline organic material. Melting point 232-235 C.
+The crystals are in the form of prisms terminated with brilliant pyramidal
+faces. It was selected as a potential test crystal for analysing data
+collection and processing strategies, since its internal symmetry
+permits non-crystallographic statistical tests to be applied.  A
+crystal 0.04 x 0.05 x 0.17 mm was Araldited to a fine glass capilliary.
+A hemisphere of data was collected using the parameter settings selected
+by the Nonius COLLECT software.  Further equivalent data sets were collected
+with exposure times doubled, halved and quartered.#
+The data we have here is for the very fast data collection.
+The full hemisphere of data took 48 minutes to collect (15519
+reflections).  The average redundancy is 3, with 4000 reflections having
+a redundancy of 5 or more.#
+#PChemical formula C24 H16,  Space group monoclinic C2/c.#
+
+#YAnalysis and solution#
+
+#PGet started as in Exercise 1, with the following differences:
+#J
+This time:
+       Choose the workshop structure "Quick"
+       the SHELX format input file is called veryfast.ins 
+       choose F2 refinement instead of F. (Click Yes).
+       the reflection file is called veryfast.hkl
+       when the filter dialogue opens, change the minimum
+            I/sigma(I) from 3.0 to -10.0 (i.e. only reject
+            very negative data).
+#
+
+#PFoolishly ignore the "Initial analysis" selection, then solve
+the structure with SIR92, using the default settings.
+It will not be very successful.#
+
+#PQuit SIR, and when asked do not use the solution from Sir92.
+Close the advice dialog that follows.#
+
+#PNow re-select the "Initial Analysis" option in the GUIDE. (OK)#
+
+#PThere may be a few moments delay while the systematic absences
+are loaded.
+
+#PSelect the "Absences" tab - you should see that they are
+fairly symmetrically distributed about 0,0.
+
+#PSelect "Sigma freq." - you will see that there are only about 500
+reflections with I>3sigma(I).
+
+#PSelect "Wilson Plot" - the high-angle data don't make any sense. 
+
+#PRight-click a blue cross on the Wilson plot somewhere near
+rho ((sin theta/lambda)**2) = 0.35. Then click the "Reject data"
+menu item that pops up.
+
+#PIn the filter dialogue, round the (sin theta/lambda)**2 upper limit
+to exactly 0.35.
+
+#PClose this dialogue, close the Initial Analyses window and then
+re-run SIR92, but this time click the radio-button that says "Filter
+Reflections using List28 conditions".
+
+#PThe structure should now solve.
+
+#PNote that setting a minimum I/sigma(I) threshold instead of a
+resolution threshold will not help solve the structure.  This
+is because while high-angle weak reflections are just noise,
+low angle weak reflections have high information content and
+are needed for the negative quartets.
+
+
+#YRefinement#
+
+#PThe Guide will now invite you to perform Isotropic refinement.
+#PTry it.  
+#PBecause of the high R factor, the Guide will not advance past
+isotropic refinement.
+#PForce anisotropic refinement.  
+#PThere is little improvement in R, but if you enable ellipses
+in the model window they look fair.
+#PNow choose "Filter Reflections" from the "Refinement" menu.
+
+#PChange the I/sigma(I) threshold from -10.0 to 3.0, and then try
+some aniso refinement.
+#PThe R factor will be quite small, but in the Refinement summary
+tab, you will see that there are less than 3 reflections per parameter!
+#PAccept the GUIDE's invitation to Add Hydrogen atoms.  
+#PYou should see that the ones found in the difference map are reasonably
+near to the predicted positions.
+#PSelect more anisotropic refinement, but in the dialog box, also
+enable hydrogen position refinement.
+
+#PYou now have a stable refinement with no restraints yet an
+observation:parameter ratio of little over two.
+
+#YBut what of the e.s.d's?#
+
+#PType the following into the CRYSTALS command line box (below
+the information tabs):
+
+#HJ
+\DIST
+E.S.D. YES
+END
+#
+
+#PEach of the bond lengths will be listed, with its associated e.s.d.
+
+#PThere will be an optimum I/sigma(I) cutoff and weighting scheme
+to minimize the e.s.d's:
+#J
+Cutoff too high => not enough data.
+Cutoff too low	=> too much noise.
+#
+
+#PYou can use the reflection filter dialogue box to experiment with
+different filters, and use the optimise weights dialogue to experiment
+with weighting.
+ 
+#ZSpacegroup Quiz#
+
+#PFrom the Development menu, choose Space group quiz.#
+
+ 
+
+

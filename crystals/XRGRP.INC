@@ -1,0 +1,3 @@
+      COMMON /XRGRP/ GRPATM(3,22),
+     2 IHEX(6),ISQR(4),IOCT(7),ITBP(6),ITET(5),ICPR(5)
+

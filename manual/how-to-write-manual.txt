@@ -1,0 +1,90 @@
+#Tstring# string=Title for the volume of the manual, e.g. crystals, cameron, primer, etc.
+Closing # is optional.
+
+#Cfilename# filename=the base part of the filename for output files, eg. cameron will result in files called
+cameron-1.html cameron-2.html, etc. Closing # is optional.
+(This line must appear somewhere after #Z, before the end of the document, otherwise the default name will
+be "manual0")
+
+The HTML is produced in two versions: one for the web-site in a form that may be processed by
+xtlweb.pl (i.e. many sub-directories with content.dat and name.dat files); and one stand-alone version
+that may be distributed with the software. 
+The HTML is produced on a one-file-per-chapter basis, whereas the LaTeX output (which goes on to
+produce the postscript and PDF) in produced on a one-file-per-volume basis.
+
+
+#Zchaptername# chaptername=title of chapter. e.g. Getting Started, Introduction, etc. Closing # is optional.
+
+#Ysectiontitle# sectiontitle=title of chapter sections. Numbered (e.g for chapter 1) 1.1, 1.2, 1.3, etc. Closing #
+is optional.
+
+
+_b{word or _B{word = word appears in bold.
+_i{word or _I{word = word appears in italics. 
+
+There were lots of _{i and _{b in the text that have been fixed to be _i{ and _{b.
+
+#P new paragraph.
+
+#N....# ignored.
+
+#J begin preformatted text. The next # anywhere will end the pre-formatted section.
+
+#Iinstruction# An instruction more text may appear after the closing #, it will 
+be placed on a new line. If there is no closing #, the instruction is all text up 
+to the end of the line.
+
+#Ddirective# A directive more text may appear after the closing #, it will be 
+placed on a new line. If there is no closing #, the directive is all text up 
+to the end of the line.
+
+#Kkeyword# A keyword. Again, closing # is optional.
+
+#Uhttp://www.xtl.ox.ac.uk/crystals.html# A url. This will appear as plain text in the manual, but in 
+HTML documents, it will also appear as a hyperlink.
+
+#Xindexword# indexword will appear in the index with a link to the point in the manual where the #X occurs.
+Best to put these just above the chapter or section heading you are linking to, otherwise you jump in
+to the document with the heading just off the top of the screen.
+
+#Alabelanchor# Put in a label anchor called "labelanchor".
+
+#Rlabellink# Put in a link to "labellink". The text that appears is just the chapter and section number,
+but in html and pdf it is also a link to that section.
+
+For example.
+
+   #TTitle#
+   #ZFirst Chapter#
+   #YIntroduction# 
+   ...
+   #Y Getting Started#
+   Here is some text. #Agstarted# Here is some more.
+   ...
+   #YAnother section#
+   Here some text. See section #Rgstarted# for more information.
+
+
+Nothing will appear where the #A command is, and a hyperlinked "1.2" will appear
+where the #R is.
+
+#Q and #  are turned into newlines.
+
+There are several places in the CRYSTALS, CAMERON, GUIDE, and PRIMER, where I've found
+things like
+
+   #REGULARISE 
+
+and had to change them to \REGULARISE, and also
+
+   #Attempt to compile these modules
+
+must be changed to # Attempt .....
+
+There is no way of including a # symbol in the manuals. Excessive use of
+< > & \ / should probably be avoided aswell, though they are generally okay.
+
+The first two lines of every file are ignored as they contain page size info.
+
+I think Lisa's program should retain backwards compatibility, as long as it can be made to ignore
+#X...# #C...# #U...# #A....# and #R....#

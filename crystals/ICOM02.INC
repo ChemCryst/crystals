@@ -1,0 +1,2 @@
+      DIMENSION ICOM02(32)
+

@@ -1,0 +1,2 @@
+      COMMON/XDIRTP/IDTYPE(3,4) 
+

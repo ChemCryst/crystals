@@ -1,0 +1,137 @@
+
+QUICKSTART
+==========
+
+Type "buildall"
+Type "inst"
+Release \relbuild\output\output\setup.exe 
+
+SLOWSTART
+=========
+
+1a. Set up CVS
+    ----------
+
+ Get CVS. CVS is GPL software available from
+ http://www.cyclic.com/ 
+ http://www.cvshome.org/ 
+ http://www.loria.fr/~molli/cvs-index.html
+
+ set CVSROOT=:pserver:crystalsanon@darkstar.xtl.ox.ac.uk\crystals\ 
+ cvs login
+
+at the password prompt, just hit return. (Crystalsanon does not have
+write access to the repository.)
+The firewall on darkstar is very restrictive. Search the file
+"fire2" in root's home directory for CVS and add you machine to
+the list allowed to connect. Then run "./fire2" to update the firewall.
+ 
+
+1b. Get and install the setup.exe builder
+    --------------------------------------   
+
+ Inno Setup, from http://www.jrsoftware.org/isinfo.htm
+
+1c. Get and install perl
+    --------------------
+
+ Perl, from http://www.cpan.org/
+
+2. Checkout out the entire repository to a new release directory
+   -------------------------------------------------------------
+
+ mkdir \relsrc
+ cd \relsrc
+ cvs checkout cryssrc camsrc scriptsrc guisrc bin precomp manual
+
+3. Set the environment 
+   -------------------
+
+ mkdir \relbuild
+
+ set COMPCODE=GID
+ set CRYSSRC=c:\relsrc
+ set CRYSBUILD=c:\relbuild
+ set CRYSDIR=c:\relbuild\
+ set USECRYSDIR=TRUE
+
+ The path should include the fortran tools, the C++ tools, the development suite tools and
+ the repository tools (these paths may differ on your machine):
+ NB. c:\relsrc\bin should be before any other \source\bin\ directories on your path.
+ 
+ set path=c:\progra~1\micros~2\df98\bin;%path%
+ set path=c:\progra~1\micros~2\vc98\bin;%path%
+ set path=c:\progra~1\micros~2\common\msdev98\bin;%path%
+ set path=c:\relsrc\bin;%path%
+ 
+ The INCLUDE and LIB variables should be on one line each, they are split here for clarity:
+
+ set INCLUDE=c:\progra~1\micros~2\vc98\include;
+              c:\progra~1\micros~2\vc98\mfc\include;
+              c:\progra~1\micros~2\df98\include;
+
+ set LIB=c:\progra~1\micros~2\vc98\lib;
+         c:\progra~1\micros~2\vc98\mfc\lib;
+         c:\progra~1\micros~2\df98\lib;
+
+4. Build the whole lot.
+   --------------------
+
+   From any directory, type "buildall".
+
+     FYI, buildall calls the following:
+        code.bat     -  builds and links CRYSTALS.
+        script.bat   -  processes all the scripts from .ssc to .scp
+        local.bat    -  generates all .srt, .dat and .cmn files
+        dsc.bat      -  produces commands.dsc
+        precomp.bat  -  copies all foreign programs to build folder.
+        buildman.bat -  builds the manuals.
+
+5. Test the build thoroughly:
+   --------------------------
+
+ Check the linker logs \relbuild\code\link.lis, dlink.lis and deflink.lis
+ Check through the error logs in \relbuild\errors
+   
+ Check that crystals.exe, crystalsd.exe, define.exe, commands.dsc and so on 
+ are all present in \relbuild\
+
+ Run the program through various tests. Hexample. It is a good idea to take
+ a structure from diffractomer data through to published results.
+
+6. Prepare the setup.exe compiler options:
+   ---------------------------------------
+
+ Edit \relsrc\bin\inst.bat and change the following two options to
+ suit the current release:
+        echo AppVerName=CRYSTALS 11.50 (December 2000)
+        echo BackColor=$101268
+
+ ensure that this is the path to the inno setup compiler:
+        c:\progra~1\innose~1.3\compil32.exe /cc crystals.iss
+
+ The files instimage.bmp, licence.txt, postinst.txt and preinst.txt may 
+ be edited. They are displayed during installation.
+ 
+7.  Quick test 
+    ----------
+
+ If you have Perl installed (www.cpan.org), you may run
+ "scpcheck.bat" to test for calls from scripts and from guimenu.srt
+ to missing scripts.
+ This may occur because a new script has not been checked in, or if it
+ is missing from script.bat
+
+8.  Build setup.exe
+    ---------------
+
+ Run "inst.bat".
+
+ This will delete files from the build directory that are not for release.
+ The output setup.exe is placed in the \build\output\output subdirectory.
+
+ Test it before placing on the web-server. Ideally it should be installed
+ on a virgin machine, but that isn't always possible.
+
+Richard 16/2/2001
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM6A(1),L6IMP)
+

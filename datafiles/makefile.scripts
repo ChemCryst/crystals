@@ -1,0 +1,48 @@
+# Makefile for building $(PROG) on *nix using gnu make
+# Written by Stefan Pantos 22/11/2004
+
+#Compilers
+CRYSED = ../bin/crysedit
+
+SRTMACROFILE = empty
+CMNMACROFILE = empty
+
+#Crysedit flags
+CEDSRTFLAGS = macro=$(SRTMACROFILE) code=$(COMPCODE) incl=+ excl=- comm=\# strip
+CEDCMNFLAGS = macro=$(CMNMACROFILE) code=$(COMPCODE) incl=+ excl=- comm=?? strip
+
+#Source
+SRTSRC =
+CMNSRC = button.scm\
+	colour.scm\
+	command.scm\
+	genhelp.scm\
+	order.scm\
+	prop.scm\
+	title.scm
+
+#Objects
+SRTOBJ = $(SRTSRC:.ssr=.srt)
+CMNOBJ = $(CMNSRC:.scm=.cmn)
+
+%.srt : %ssr
+	$(CRYSED) $< $@ $(CEDSRTFLAGS)
+
+%.cmn : %.scm
+	$(CRYSED) $< $@ $(CEDCMNFLAGS)
+
+all : $(CMNMACROFILE) $(SRTMACROFILE) $(SRTOBJ) $(CMNOBJ) 
+	rm -f $(CMNMACROFILE)
+	rm -f $(SRTMACROFILE)
+
+install : $(INSTALLDIR)
+	cp $(SRTOBJ) $(CMNOBJ) $(INSTALLDIR)
+
+$(INSTALLDIR) :
+	mkdir -p $(INSTALLDIR)
+
+$(CMNMACROFILE) :
+	touch $(CMNMACROFILE)
+
+clean :
+	rm -f $(SRTOBJ) $(CMNOBJ)

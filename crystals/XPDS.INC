@@ -1,0 +1,2 @@
+      COMMON/XPDS/APD(14),BPD(14) 
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (L22,ICOM22(1)) 
+

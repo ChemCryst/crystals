@@ -1,0 +1,3 @@
+touch empty
+crysedit reindex.src reindex.for code=DVF macro=empty 
+g77 reindex.for -O3 -o reindex

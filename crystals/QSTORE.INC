@@ -1,0 +1,2 @@
+      EQUIVALENCE (STORE(1),ISTORE(1)) 
+

@@ -1,0 +1,248 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TGetting started with the GUI#
+#Cgui#
+#ZGetting started with CRYSTALS - using the GUI#
+
+#PThis is based on teaching material by R.I.Cooper ("Life without the GUIDE"
+ and "Hands-on Introduction to CRYSTALS")
+#
+#PIt is assumed that the user has already downloaded CRYSTALS from the website.  
+If this is not the case, go to http://www.xtl.ox.ac.uk/download.html and follow the instructions.
+#
+#YStarting CRYSTALS#
+#PDouble-click on the CRYSTALS icon on the desktop.   Browse to 
+find the directory containing your data files (.HKL and .INS files are 
+recommended).  Click ‘OK’.  CRYSTALS will start.
+For an example data set, choose "C:wincrys\demo\cyclo\".
+#
+#YPre-process data#
+#PThe first step of the structure determination process is to convert the diffractometer output file into a format that CRYSTALS can read.#
+#PFrom the menus choose:#
+#J  “X-ray data” 
+  => “Pre-process”
+    => “Run Kccdin – Kccd data”.#
+#PTwo windows will open, a dialogue box titled “Input KccD data” and a command window.#
+#PIn the command window:#
+#J 1. Enter the number corresponding to the crystal class of the material (look at the cell parameters given at the top of the screen).
+ 2. Look at the systematic absence analysis and enter the space group (it is worth checking the analysis using a copy of the _i{International _i{Tables _i{Vol. _i{A if you can).
+Don’t forget the spaces.
+ 3. Check and confirm (if appropriate) the value of Z, the number of molecules in the      unit cell, by entering “yes”.  As a guide, reasonable values for space groups with only 2-fold axes are 1, 2, 4 and 8.  However, if there is internal molecular symmetry or there are two or more independent molecules in the cell, the value of Z may be different.
+ 4. Enter the dimensions of the crystal in mm in the order: smallest, medium, largest, with a space between each.
+ 5. Enter the temperature of the data collection in Kelvin.
+ 6. Enter the colour of the crystal.#
+#PThe command window will then close automatically.
+#
+#YImport experiment and reflection data#
+#PThe “Input KccD data” dialogue is still open.  Click ‘OK’ to import the output from Kccdin.
+#
+# The “Minimisation function” dialogue will appear.  This is used to set up the type of refinement that will be carried out later on.  You are asked to chose between refining against F (click ‘No’) or F-squared (click ‘Yes’).  Personal preference dictates which option you choose; the dialogue gives a little information about each.
+#
+#YMerging data#
+#PThe “Merge equivalent data” dialogue follows.  Click ‘Yes’.
+#
+#PNext, the “Merge” dialogue offers some advice over whether or not to merge Friedel opposite reflections.  
+Friedel pairs will always be merged in centrosymmetric space groups.
+#
+#YFiltering data#
+#PThe “Filter reflections” dialogue allows you to ignore reflections above or below certain thresholds.  
+For refinement against F, accept the default option (“I/sigma(I) is at least 3.0”).
+For refinement against F-squared, leave all boxes unchecked (ie include all data).
+#
+#PIf you chose not to merge Friedel pairs, then you should turn on the anomalous scattering contributions to the structure factor calculations.  From the menus choose:
+#J  “Refinement”
+  => “F or Fsq and Advanced options”.#
+#PCheck the first box in the dialogue ("Anomalous scattering") and then click 'OK'.  
+This dialogue will also allow you to change between F and F-squared refinement.
+#
+#YInitial assessment of the data set#
+#PFrom the menus choose:
+#J  “Analyse”
+  => “Tabbed initial analyses".#
+#PThe “Initial analyses” dialogue box will open.#
+#PThere are eight tabs, and each can provide useful information about the quality of the data.  
+Experience is the best guide to spotting possible problems with the data.  In the meantime, the following tips may help:#
+#J 1. Completeness.  This is a graph of the completeness of the data set (as a percentage) across the range (0.75 to 1.00)*theta(max).
+    Here, the percentage completeness should be high (a low value may indicate that a full data set was not collected).  Check also that there is no sudden drop in completeness at high angle.
+
+ 2. Sigma frequency.  This plots the frequency of values of I/sigma(I) as red bars.  The blue line gives the number of reflections that are above the given I/sigma(I) ratio.
+    The distribution should be across a wide range.  A narrow frequency range indicates that the I/sigma(I) cut-off is too high.
+
+ 3. Sigma vs Res.  This plots a graph of the distribution of I(sigma) vs (sin(theta)/lambda)**2.
+    Look out for a fall-off at high values of (sin theta/lambda)**2 (high angle reflections).
+
+ 4. Merging R
+
+ 5. Absences.  This gives an analysis of the systematic absences.
+    Things to check are that the distribution of absences is symmetrical about 0.  
+    Large differences between Fo**2 and (Fo**2/sigma(Fo**2)) for reflections with low hkl values may indicate a problem.
+
+ 6. Wilson.  This is a Wilson plot for the reflections.
+    Make sure that the red line has a positive gradient.
+
+ 7. N(Z) distribution.  These are plots of the N(Z) cumulative distributions.
+    Compare all data (red crosses) with the solid lines to see the type distribution of the data.
+
+ 8. Cell content.  This has two parts:
+     cell contents  - check how well the 18 angstrom**3 rule applies (remember that this applies best to organic molecules).
+     observation/parameter ratio - advice is given within the dialogue.
+#
+#POnce you have checked through each tab, click 'Close'.#
+
+#YStructure Solution#
+#PCRYSTALS has no routine for direct methods, but don't worry.  For direct methods structure solution, SIR is integrated into CRYSTALS.
+From the menus choose:
+#J  "Solve"
+  => "Sir92".#
+#PThe "Sir92 options" dialogue box will open.  Accept the default settings by clicking 'OK'.
+Sir92 will run, and for routine analyses it will solve the structure.  To close the Sir92 window, click 'QUIT' twice (this is the button at the top left of the window).  A dialogue box, "Sir92 results", will appear.  Click 'Yes' to import the solution from Sir.
+If Sir92 fails, try again, this time choosing the option "Alternative 1" in the "Sir92 options" dialogue (and so on, until the structure is solved, or all options are exhausted).
+Note that Sir may not find all the atoms of a structure, but this might not be a problem.  It will not find H atoms.
+#
+#PWhen importing the structure, CRYSTALS will automatically open the "Rename" dialogue.  If there are any extra atoms, these can be deleted.  Wrongly-assigned element types can be corrected.  Select the required option from the list below "Click action" (on the left of the screen).  To rotate the molecule, hold down the left mouse button, and drag across the screen.
+If you make any serious errors, click 'Cancel'.
+Click 'Done' when finished.
+#
+#PA "Renumber" dialogue box appears.  To get a sensible numbering scheme, chose 'Automatic' or 'Manual'.  'Manual' takes longer as you need to click on each atom in sequence, but is the option to choose if a specific numbering system is required.  Otherwise, 'Automatic' is perfectly adequate.
+#
+#PNow, calculate an initial R-factor.  First, get the data onto the correct scale by refining the R-factor.  From the menu choose:#
+#J  "Refinement"
+  => "Calculate scale factor".#
+#PIgnore the R-factor in the output window, as this was calculated before the scale factor was refined.  From the menus choose:
+#J  "Refinement"
+  => "Recalculate phases".#
+#PThis calculates the model structure factors for each reflection, and the R-factor will be updated.
+#
+#PR is one of the validation criteria for assessing the correctness of the model. It is based on the difference between the observed and calculated structure factor amplitudes, the lower the R-value the better.  Starting values after structure solution are generally in the 10-30% range.  After refinement, expect R of 1-5%.
+#
+#YStructure completion#
+#PIf the there are any missing atoms in the structure (excluding H atoms), now is the time to find them, as in order to carry out refinement, all non-hydrogen atoms must be present.  Least squares refinement only works when the starting model is approximately correct.  
+From the menus, choose:
+#J  “Fourier”
+  => “Difference”.#
+#PThis starts a Fourier map calculation.  It will find peaks in the difference Fourier map and add them to the model.  They will be given the atomic type “Q” and are coloured pink.  Not all of these peaks may correspond to atomic positions.  To keep those peaks that correspond to atomic positions, use the window that opens to change their atomic type to the correct element.  On closing this window, any remaining “Q atoms” will be deleted.
+Note that some H atoms may be found at this stage.
+#
+#YInitial Refinement#
+#PAbove the window which displays the model there is a toolbar.  The last icon on the right is an ellipse.  Click this icon to display the thermal parameters of the atoms.  They will still be spherical at this stage.
+#
+#PParameters should be introduced into refinement gradually, starting with those parameters that are least sensitive to errors in the model, eg positional parameters of heavy atoms.  Then the positions of light atoms and the isotropic temperature factors should also be included.    The most sensitive parameters (eg atomic displacement parameters of non-hydrogen atoms, and extinction and Flack parameters) should be added in last.
+#
+#PHowever, for a well-behaved organic molecule, a two-step approach will probably work.
+#
+#PFirst, refine the positions of atoms and the isotropic temperature factors.  From the menu choose:
+#J  “Refinement”
+  => “Setup and refine”.#
+#PThe “Least squares directives” dialogue appears.  Select “Refine positions and Uiso” and click ‘OK’ to start the refinement.  The R-factor should drop a little.
+#
+#PThen refine the positions and the atomic displacement parameters.   From the menu choose:
+#J  “Refinement”
+  => “Setup and refine”.#
+#PSelect the “Refine positions and Uijs” option and click ‘OK’.  The R-factor should drop some more and in the model window you can see the thermal ellipsoids refine.  Watch out that they do not become too severely elliptical.  Neighbouring ellipsoids should also be approximately the same size.  At the edges of the molecule the thermal ellipsoids can be expected to be bigger due to increased thermal motion.
+#
+#YAdding Hydrogens#
+#PFrom the menus choose:#
+#J  “Structure”
+  => “Add hydrogen + fourier”.#
+#PTwo sets of molecules will be added to the molecule, and the “Continue” dialogue appears.  The first set of atoms, in white, are placed geometrically at a distance of 1 angstrom from carbon atoms, based on a simple assessment of the hybridisation state of that carbon atom.  The second set of atoms, in pink, are peaks found in a difference Fourier map.  The two sets should be roughly coincident.  When you click ‘Continue’, the pink atoms will be deleted.
+#
+#PIgnore the “All H have been found” option.  Also ignore the “Advanced: Fourier refinement” option.
+#
+#POther H atoms (OH and NH) must be found from the set of pink peaks.  Rename any peaks that you see that should be H atoms by clicking ‘Rename’.  In the next dialogue click the peaks to be renamed to H, and then click ‘Done’.
+#
+#PDon’t panic if not all the H atoms have been found.  Click ‘Continue’ then choose:
+#J  “Structure”
+  => “Add hydrogen + fourier”#
+#Pfrom the menu again.  Click ‘No’ to keep the H atoms that have already been found.
+The missing H atoms should now be found as pink peaks (as the other H’s improve the model and so also improve the quality of the difference Fourier map).  Rename these peaks to H as described above.
+#
+#PIf there are still hydrogen atoms missing, try some more refinement before trying to add hydrogens again.
+#
+#PBecause the model has changed it is a good idea to refine it.  Choose:#
+#J  “Refinement”
+  => “Setup and refine”#
+#Pfrom the menu.  Select “Refine positions and Uijs” and click ‘OK’ to carry out the refinement.
+#
+#YExtinction and Outliers#
+#PFrom the menus choose:#
+#J  “Analyse”
+  => “Fo vs Fc graph”.#
+#PLeast squares refinement is designed to minimise the differences between your observations Fo or Fo-squared and the calculated diffraction Fc or Fc-squared.  Thus the graph of Fo against Fc will reveal how the refinement is doing.  It should be a straight line since ideally Fo=Fc.
+#
+#PThere are two common problems:#
+#J 1. Outliers: some observations are unreasonable and these will lie will away from the Fo-Fc line.  In some cases, these will be low angle reflections (small values of hkl) which have been partially obscured from the detector by the X-ray beam stop.  These must lie below the Fo=Fc line as the intensity of these observations is attenuated.  they can be omitted from the refinement:
+Right-click on the outlier with the mouse and choose ‘Omit’ from the pop-up menu.
+Remember, justification must be given for each of the omitted reflections.
+
+ 2. Extinction: very strong diffraction planes scatter so much of the incoming beam that it is severely diminished by the time it gets deep into the crystal.  The overall scattering intensity is therefore somewhat reduced as only the front of the crystal is scattering X-rays.  In this case, the reflection will still be very strong, so Fo will be large, but it will not be a strong as it should be, so will drop below the Fo=Fc line.  All the strong reflections will be affected by extinction, so the points of the graph will curve below the Fo=Fc line at high values of Fo.
+#
+#PTo dismiss the analysis window, click ‘Close’.
+#
+#PIf you have omitted reflections, then the data has changed so you need to carry out another refinement.  From the menu, choose:#
+#J  “Refinement”
+  => “Refine”.#
+#PClick ‘OK’ to carry out the refinement.
+#
+#PIf you need to refine an extinction parameter, choose:#
+#J  “Refinement”
+  => “Setup and refine”#
+#Pfrom the menus.  Select “Refine positions and Uijs” and check the box labelled “Extinction parameter” and click ‘OK’ to carry out the refinement.
+If the extinction parameter becomes negative it will be excluded automatically next time you use “Setup and refine”.
+#
+#YWeighting scheme#
+#PThe structure should now be complete.  To get reliable estimates of the parameter errors, you need a good weighting scheme.  The weighting scheme may also reduce the influence of bad reflections on the results, though you should have spotted these as outliers.
+#
+#PIf you trust the diffractometer’s software estimates of the uncertainty of the reflecitions, then use 1/sigma(Fo)-squared or 1/sigma(Fo-squared)-squared to weight each data point.  This method will account for random errors in the measurements.
+#PIf you do not trust the diffractometer’s estimate of the uncertainty, then use a function of the residual (Fo-Fc) to weight each data point.  You must then be certain that the model is correct.  The advantage of this method is that it will account for both systematic and random errors in the data.
+#
+#PAlternatively, choose a weighting scheme that does a bit of both.
+#
+#PFrom the menu, choose:#
+#J  “Refinement”
+  => “Choose weights”.#
+#PThe “Weighting scheme” dialogue box will appear.
+#
+#PTo use a function of the residual only, choose “Chebychev” and click ‘OK’.  Three sets of graphs will appear, representing 5-, 4- or 3-term Chebychev polynomial fits to the residual.  On the top graph, the red columns are the function fitted to that residual on a linear scale.  On the bottom graph, the function in red is the residual on a log scale.  In blue is the weighted residual (w(Fo-Fc)), where 1/w is generated from the Chebychev function in the top graph.
+#PThere are four rules for choosing a good weighting scheme:#
+#J 1. The top graph should be smoothly shaped.  There should be no local maxima (ie the graph is U-shaped, not W-shaped).
+ 2. The blue bars in the bottom graph should be flat and approximately unity.
+ 3. The value of <w(del**2)>, the average of the residual, should be about 1.
+ 4. The number of outliers should be small.
+ 5. Favour the lower number of parameters.
+#
+#PClick on the button “Use n parameter scheme” below the scheme you wish to use.
+#
+#PTo use a combination of estimated uncertainty and residual fits, choose “Autostatistical” and click ‘OK’.
+#PAn “Agreement analysis” window will open.  The red bars are the residual and the blue bars are the weighted residual generated from a function containing both sigma(Fo-squared) and calculated parameters.  The blue bars should be flat and approximately unity across both the Fo range and the (sin(theta)/lambda) range.  Click ‘Close’.  The parameters used can be found by typing in the command line “\SUM L 4<return>”, then “END<return>”.  Of the six parameters shown, only the first two are calculated.  
+#PThis scheme works well for F-squared refinement, but not always so well for F refinement.  It is almost identical to the SHELX method of calculating weights.
+#
+#PWith the new weighting scheme in place, it is necessary to carry out some more refinement.  From the menus choose:#
+#J  “Refinement”
+  => “Refine”.#
+#PClick ‘OK’ to carry out the refinement.
+#
+#YValidation#
+#PCarry out some checks that would be applied to the crystallographic journals you plan to submit this data to.  For example, from the menu choose:
+#J  “Analyse”
+  => “Publication checks”
+    => “Acta checks”.#
+#PThis carries out checks applied by _i{Acta _i{Crystallographica journals.
+#
+#PIn the “Refinement” tab (at the bottom left of the screen), note the final R-factor (“R”), weighted R-factor (Rw), goodness-of-fit (GooF) and the maximum shift/esd (max shift).
+#PThe “GooF” should be one, but this is rather meaningless as the weighting scheme will aim to make it so.
+#PThe “max shift” should be small, indicating convergence (0.005 or less).
+#
+#YArchive or Publish#
+#PThe standard crystallographic archival file format is called CIF (crystallographic information file).  To produce a CIF (called ‘publish.cif’ by default) choose:
+#J  “Results”
+  => “CIF file”.#
+#PSelect “CIF” from the list of options and click ‘OK’.  When asked, open the CIF for editing.  You may change some of the contact details.  Look out for “CHOOSE FROM” for other options that may need to be changed.  Save any changes you make to the CIF then close the file.  Click ‘Yes’ to add the reflection list to another CIF.  Then click ‘Close’ on the “Publish tables” dialogue box.
+#
+#PIf you want to carry out more validation, you can email your CIF to Chester to have it checked by their checkcif software.  From the menus choose:
+#J  “Analyse”
+  => “Publication checks”
+    => “Checkcif on the web”.#
+#PThis should open a web browser.  Click the ‘Browse’ button to locate the file ‘publish.cif’ in your working directory.  Then click ‘Send file for checking’.  After a few seconds, the results will appear.  The first section, “Validation checks” may contain a few minor alerts.  Click on each alert for more information about it.  The second section, “Platon checking report”, is usually stricter.  The alerts are described in more detail at the bottom of the page.
+#
+#PFor archiving, keep the input data (‘import.cif’ in this case), the CRYSTALS file (‘crfile.dsc’) and the CIFs (‘publish.cif’ and ‘publish.fcf’).  Files starting with ‘bfile’ are logs and listing files and can probably be deleted.
+#

@@ -1,0 +1,3 @@
+      COMMON /CAMIMN/ LINPMN
+      LOGICAL LINPMN
+

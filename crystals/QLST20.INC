@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM20(1),L20M) 
+

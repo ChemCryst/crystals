@@ -1,0 +1,2 @@
+      DIMENSION KCHAR(10) 
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (LR50,ICOM50(1)) 
+

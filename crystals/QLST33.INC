@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM33(1),L33CD) 
+

@@ -1,0 +1,49 @@
+include makefile.in
+
+BUILDDIR = dscbuild/
+SRCFILE = $(BUILDDIR)commands.src
+ORIG_SRTFILE = ../datafiles/crysdef.srt
+
+VPATH = ../datafiles
+CRYSEDIT = ../editor/cryseditor
+SSRCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\# strip
+SSRFILES = $(notdir $(wildcard ../datafiles/*.ssr))
+SRTFILES = $(SSRFILES:.ssr=.srt)
+COPYFILES = $(wildcard ../precomp/all/*.*) $(wildcard ../precomp/$(COMPCODE)/*.*)\
+ $(wildcard ../precomp/all/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*.*)\
+ $(wildcard ../precomp/all/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*.*)\
+ $(wildcard ../precomp/all/*/*/*/*.*) $(wildcard ../precomp/$(COMPCODE)/*/*/*/*.*)
+COPYTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
+COPYDEST = $(COPYFILES:../precomp/all/%=%)
+COPYDIRS = $(filter-out $(COPYFILES),$(COPYTOP))
+
+all : commands.dsc $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
+
+commands.dsc : $(BUILDDIR) $(SRCFILE) $(BUILDDIR)crystals.srt
+	cd $(BUILDDIR); export USECRYSDIR=TRUE; export CRYSDIR=./; ../crystals; cp commands.dsc ..
+
+$(BUILDDIR) :
+	mkdir -p $(BUILDDIR)
+
+$(SRCFILE) :
+	cp ../datafiles/commands.src $@
+
+$(BUILDDIR)crystals.srt :
+	cp $(ORIG_SRTFILE) $@
+
+$(CRYSEDIT) :
+	cd ../editor; $(MAKE)
+
+%.srt : %.ssr
+	$(CRYSEDIT) $< $@ $(SSRCRYEDFLAGS)
+
+$(COPYDEST) : $(COPYFILES)
+	cp -fR $(COPYDIRS) .
+
+clean :
+	rm -Rf $(BUILDDIR)
+	rm -f commands.dsc
+	rm -f $(SRTFILES)
+	rm -Rf $(COPYDEST) demo
+
+

@@ -1,0 +1,118 @@
+#!/bin/sh
+
+if [ "${CRYSSRC}" = "" ]  
+then
+  echo -----------------------------------------------------;
+  echo Set CRYSSRC environment variable before running $0;
+  echo e.g. SET CRYSSRC=~/src ;
+  echo -----------------------------------------------------;
+  builderr CRYSSRC_NOT_SET buildfile
+  exit 1
+fi
+
+if [ "${CRYSBUILD}" = "" ]
+then
+  echo -----------------------------------------------------
+  echo Set CRYSBUILD environment variable before running $0
+  echo e.g. SET CRYSBUILD=~/build 
+  echo -----------------------------------------------------
+  builderr CRYSBUILD_NOT_SET buildfile
+  exit 1
+fi
+
+if [ "${COMPCODE}" = "" ] 
+then
+  echo ----------------------------------------------------------------
+  echo Set COMPCODE environment variable before running make.
+  echo type   SET COMPCODE=DOS    for FTN77 version.
+  echo type   SET COMPCODE=DVF    for text-only Digital Fortran version.
+  echo type   SET COMPCODE=F95    for FTN95 version.
+  echo type   SET COMPCODE=GID    for GUI version [Digital and Microsoft]
+  echo type   SET COMPCODE=LIN    for Linux Version [g77]
+  echo type   SET COMPCODE=GIL    for GUI version [Linux g77 and gcc]
+  echo ----------------------------------------------------------------
+  builderr COMPCODE_NOT_SET buildfile
+  exit 1
+fi
+
+
+EDCODE=$COMPCODE
+if [ "${COMPCODE}" = "F95" ] 
+then  
+  EDCODE=DOS  
+fi
+export EDCODE
+FILEFOUND=
+
+#  Find the file:
+
+if [ "$1" = "" ] 
+then
+  echo -----------------------------------------------------
+  echo buildfile.bat requires a filename as an argument...
+  echo -----------------------------------------------------
+  builderr NO_FILE_SPECIFIED buildfile
+  exit 1
+fi
+
+# CRYSSRC FORTRAN FILES
+
+if [ -f $CRYSSRC/cryssrc/$1.src ] 
+then
+  cd $CRYSBUILD/code
+  SRCDIR=$CRYSSRC/cryssrc
+  export SRCDIR
+  cryf $1
+  FILEFOUND=OK
+fi
+
+# GUISRC CPP FILES
+if [ -f $CRYSSRC/guisrc/$1.cpp ] 
+then
+  cd $CRYSBUILD/code
+  SRCDIR=$CRYSSRC/guisrc
+  export SRCDIR
+  cryc $1
+  FILEFOUND=OK
+fi
+
+# SCRIPTSRC SCRIPT AND DATA FILES
+if [ -f $CRYSSRC/scriptsrc/$1.ssc ] 
+then
+  cd $CRYSBUILD/script
+  SRCDIR=$CRYSSRC/scriptsrc
+  export SRCDIR
+  crys $1
+  FILEFOUND=OK
+fi
+
+# SCRIPTSRC SCRIPT AND DATA FILES
+if [ -f $CRYSSRC/scriptsrc/$1.sda ] 
+then
+  cd $CRYSBUILD/script
+  SRCDIR=$CRYSSRC/scriptsrc
+  export SRCDIR
+  crys $1
+  FILEFOUND=OK
+fi
+
+# CAMSRC FORTRAN FILES
+if [ -f $CRYSSRC/camsrc/$1.src ] 
+then
+  cd $CRYSBUILD/code
+  SRCDIR=$CRYSSRC/camsrc
+  export SRCDIR
+  cryf $1
+  FILEFOUND=OK
+fi
+
+# check
+
+if [ "${FILEFOUND}" = "" ] 
+then
+  echo -----------------------------------------------------
+  echo File $1 not found in any source directories...
+  echo -----------------------------------------------------
+  builderr NO_FILE_OF_THIS_STEM_FOUND_$1 buildfile
+  exit 1
+fi

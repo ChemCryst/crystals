@@ -1,0 +1,2 @@
+      EQUIVALENCE ( L41B , ICOM41(1) )
+

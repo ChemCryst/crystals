@@ -1,0 +1,26 @@
+#edit
+sort u[iso]           
+keep 1 all 
+end
+#script xqcam
+label all view
+#pause 5
+text "Change some peaks to atoms     " posi 10 10
+rena q20 c20 q21 c21 q22 c22
+view
+#pause 10
+text number 1  posi 100 100 view
+text "Remove spurious peaks and atoms" posi 10 10
+excl q
+view
+EXCL C19
+VIEW
+#pause 5
+text numb 2 posi 100 100 view
+text "Rename some old atoms          " posi 10 10
+rena o14 n14 n2 c2 n13 o13  
+view
+#pause 10
+#script xqcame
+#use cameron.l5
+#use last

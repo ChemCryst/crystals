@@ -1,0 +1,2 @@
+      DIMENSION ICOM23(24) 
+

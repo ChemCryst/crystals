@@ -1,0 +1,2 @@
+      EQUIVALENCE (KCHAR(1),IPLUS) 
+

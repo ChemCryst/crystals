@@ -1,0 +1,770 @@
+ 120  64  20   0    0    0    0   10  748   72   18   18  108  514  780
+#T'CRYSTALS' Refinement Against Geometry
+#ZBackground#
+#Q
+#PThe least squares routine in CRYSTALS may be used to refine structures
+ even in the absence of diffraction data, but using geometric
+ restraints only . Such a procedure might be useful for 
+ regularising a structure towards a geometric ideal. 
+ 
+#PIf the unit cell size and the space group symmetry are compatible
+ with the ideal structure 
+ (as is often the case for molecular structures),
+ then the user could use 'REGULARISE' to
+ simply regularise the model. If this procedure alone leads to some
+ unacceptable intermolecular contacts, the model can be refined as a 'GROUP'
+ and least squares with distance and/or angle restraints be
+ used to improve the non-bonded contacts. 
+ (Remember that distance restraints know nothing of the concept
+ of chemical connectivity, and so can be used either to hold atoms close
+ together, or apart.)
+ 
+#PFor extended lattice structures (e.g. minerals) the symmetry 
+ may require that
+ as some inter atomic distances are shortened, others are lengthened, and
+ there may be similar complex inter relationships for the angles. In these
+ situations it is quite possible that the idealised structure is incompatible
+ with the cell geometry and space group, and some distortion of the idealised
+ structure is required. Least squares provides a means for obtaining such a
+ compromise structure.
+ 
+#PThere are both mathematical and practical difficulties with these procedures.
+#Q
+#IMATHEMATICS#
+#Q
+#PEach restraint provides one 'observation'. An atom in a general position
+ has three coordinates, so that three independant restraints are needed to
+ define its position. Even so, there may be more than one solution to the
+ equations. Consider an atom (A) bonded to three others (Bn) to form a pyramid. 
+ The three distances A-Bn will only uniquely define the position of A relative
+ to Bn if A and Bn are all co-planar. Otherwise, a 'positive' or a 'negative'
+ pyramid can be chosen. Even after the choice has been made, the whole 
+ pyramid is still free to translate and rotate in space. In effect, the
+ 'origin' for the structure needs fixing. If the relationship of A is known
+ to more than 3 atoms (say 4 bonds, or 3 bonds and one non-bonded distance)
+ then there is a unique solution to the equations, but only if the relative
+ dispositions of the Bn atoms are fixed. If any of the Bn are free to move, 
+ then additional restraints will be needed to define the problem. Angles
+ can also be used as restraining observations. While the user is free to
+ include whatever distance and angle restraints he wishes, he should be aware
+ that not all the observations need be independant. For example, giving all
+ the sides and all the angles of a triangle provides no more evidence than
+ only three sides, or two sides and the included angle. Note that giving three
+ angles does not define a solution. If the values given for the three 
+ angles can be computed exactly from the given sides, then no real harm is
+ done (except that the effective weight of the unique observations is
+ increased in some ill defined way). If the angles are not compatible with
+ the distances, then the maths sees the observations as independant but with
+ errors. It has no way of locating the errors, but seeks a geometry which best
+ (in the least squares sense) distributes the errors over the observations.
+ In order to set up the restraints list, the user needs to have a clear 
+ picture of what he is trying to achieve. Because the number of restraints
+ rarely exceeds the number of variables by more than a factor of 2, every
+ restraint plays a big part in defining the solution. Introducing or removing
+ a restraint, or changing the value of a restraint, or its weight, can
+ sometimes greatly affect the final solution.
+ 
+#PThe minimisation function may have more than one local minimum (i.e. the
+ refinement may converge to different solutions depending upon the starting
+ model), especially if the restraints are in some way incompatible. The user
+ may then have to decide whether he wants the minimum closest to his starting
+ model, or the global minimum. Unfortunately, there seems to be no way of
+ guaranteeing the global solution. The best that can be done is to try the
+ refinement starting with very different or highly perturbed models and
+ hoping that one will refine to a global minimum. Remember that there may be
+ several equally low minima. Minima close to the starting model are more easily
+ achieved by using shift limiting restraints. Since the LS matrix is almost
+ always ill conditioned, these should normally be included as a matter of
+ course in the refinement proper (but see also origin fixing).
+ 
+#PShift limiting restraints also provide a way of fixing the origin 
+ and orientation if these cannot
+ be fixed using symmetry. For molecular crystals, the SUM restraint can also
+ usefully be applied. If any of the atoms lie on special positions, then the
+ number of degrees of freedom for the structure is diminished. One atom
+ having no refinable coordinates (say lying on an inversion centre) will fix
+ the origin, though the local coodinate system could still rotate about that
+ atom. If the fixed atom is linked, through a set of restraints, to one or
+ more of its symmetry equivalent positions, then the orientation may also be
+ defined. For highly symmetrical extended lattice structures where some of 
+ the atoms are on special positions having some coordinates fixed (e.g. 0,y,z)
+ or related to each other (e.g. x,x,z), the origin and orientation may indeed
+ be defined, though not always in an obvious way. Computing a trial round of
+ refinement without shift limiting or sum fixing restraints should show if the
+ origin is fixed. If it is not, some of the final x, y and z coordinates
+ in the LS  matrix will be singular. 
+ 
+#Q
+#IPRACTICE#
+#Q
+#PThe most important thing is to have a clear understanding of what you are
+ trying to achieve. Use of drawings, models and computer graphics really
+ help at this stage, and in evaluating the results.
+ 
+#PThe basic strategy is to define the unit cell, space group and trial model
+ coodinates. The atoms in the trial model should lie at those equivalent
+ positions which best display the structural features without the use
+ of complex symmetry operators. Use COLLECT or REGROUP to help with this.
+ Then the refinement is defined (in LIST 12). Usually only
+ positional parameters are refined, though for high symmetry systems it may
+ be possible to refine anisotropic temperature factors given suitable
+ assumptions. Use FIX, EQUIVALENCE and WEIGHT for atoms on special positions.
+ Consider using LINK, RIDE  and GROUP as ways of reducing variables, and 
+ defining certain geometric relationships. If the LIST 12 looks complex, use
+ PRINT 22 to verify that the normal matrix will be constructed in the way
+ you require.
+#PFinally, set up the restraining observations. Use DISTANCES to set up a
+ restraint list corresponding to  the trial model. 
+ The DISTANCE routine in CRYSTALS produces ALL unique distances and angles
+ that satisfy
+ the range selecting criteria, and will therefore define the structure if
+ it can be defined from the geometry alone.
+ Use a local editor to modify this list to the desired restraints.
+ Any of the restraints
+ in LIST 16 can be used.  The GENERAL RESTRAINT, where the
+ user writes FORTRAN like expressions to generate special restraining 
+ conditions, may be useful for some problems, e.g. defining energy restraints.
+ Use CHECK to verify that the restraints have been correctly defined (i.e.
+ the values computed from the trial model are similar to those requested
+ as the restraint).
+ Do a trial cycle of refinement without shift limiting restraints (to check
+ for singularities, and then introduce the LIMITs. Because of the LIMITS,
+ you may well have to compute 20 cycles. Watch the R factor, minimisation
+ function and shifts. We have observed that refinements sometimes settle into
+ a stable oscillation. To fix this, reduce the esd on the LIMITS for a few 
+ cycles.
+#Q
+#IEXAMPLE 1 --- Dimethyl cyclohexane#
+#Q
+#PDimethyl cyclohexane lies at the centre of symmetry in P2(1)/a, with half
+ a molecule in the asymmetric unit. The ring is of course in a chair 
+ configuration, but we can try flattening it out!
+ 
+#PThe asymmetric unit atoms in LIST 5 already lie in 
+ positions which enable them to be bonded to each other without the use of
+ symmetry operators. We need to find the bonded and non-bonded distances 
+ between all the atoms in the complete molecule, and the non-bonded distances
+ between molecules.
+#PThe following job produces a proforma LIST 16 for the molecule and its
+ environment. The two LIST 16s should be concatenated into one, 
+ the bond lengths set to ideal values, the non-bonded (1-3) distances
+ set to their mean, and inter molecular distances be selected to fix
+ the orientation of the molecule.
+#J
+ 
+ 
+ 
+ 
+ \ find the lengths we need to restrain in the molecule
+ \DISTANCES
+ SELECT RANGE=LIMIT
+ LIMIT  0 2.6 0 0
+ OUT MONITOR=DISTANCES  PUNCH=RESTRAINTS
+ END
+ \ find some inter molecular contacts
+ \DISTANCES
+ SELECT RANGE=LIMITS TYPE=INTER
+ LIMITS 3.0 4.0 0 0
+ OUT MONITOR=DISTANCES PUNCH=RESTRAINTS
+ END
+ \END
+ 
+ 
+ The putput LIST 16s. 
+ 
+   \
+   \ Punched on 12-DEC85 at 15:30:38
+   \
+   \LIST     16
+   DIST   1.525 ,.01 = C   (   1) to C   (   2,   1,1, 0, 0, 0)
+   DIST   2.535 ,.01 = C   (   1) to C   (   2,  -1,1, 0, 0, 0)
+   DIST   1.523 ,.01 = C   (   1) to C   (   3,   1,1, 0, 0, 0)
+   DIST   2.532 ,.01 = C   (   1) to C   (   3,  -1,1, 0, 0, 0)
+   DIST   1.527 ,.01 = C   (   1) to C   (   7,   1,1, 0, 0, 0)
+   DIST   2.494 ,.01 = C   (   2) to C   (   3,   1,1, 0, 0, 0)
+   DIST   1.527 ,.01 = C   (   2) to C   (   3,  -1,1, 0, 0, 0)
+   DIST   2.520 ,.01 = C   (   2) to C   (   7,   1,1, 0, 0, 0)
+   DIST   2.522 ,.01 = C   (   3) to C   (   7,   1,1, 0, 0, 0)
+   \USE LAST
+   \
+   \ Punched on 12-DEC85 at 15:32:48
+   \
+   \LIST     16
+   DIST   3.958 ,.01 = C   (   2) to C   (   3,  -2,1, 0, 0,-1)
+   DIST   3.965 ,.01 = C   (   2) to C   (   7,  -1,1,-1, 0, 0)
+   DIST   3.890 ,.01 = C   (   2) to C   (   7,  -1,1, 0, 0, 0)
+   DIST   3.886 ,.01 = C   (   3) to C   (   7,  -1,1, 0, 0, 0)
+   DIST   3.971 ,.01 = C   (   7) to C   (   7,   2,1,-1,-1, 0)
+   DIST   3.971 ,.01 = C   (   7) to C   (   7,   2,1,-1, 0, 0)
+   \USE LAST
+   
+ 
+ Set up LIST 12 and LIST 23, and a LIST 16 created from the above listing. 
+ 
+   \LIST 12
+   BLOCK X'S
+   \LIST 23
+   MINIMISE REFLECTION=NO RESTRAIN=YES
+   END
+   \ Punched on 12-DEC85 at 15:30:38
+   \ modified for planar model
+   \LIST     16
+   \ the bond lengths, with tight restraints. The C(2)-C(3') bond involves
+   \ a symmetry operator, and with the C(1)-C(2') and C(1)-C(3') non-bonded
+   \ restraints below, fixes the origin.
+   DIST   1.525,.001 = C   (   1) to C   (   2,   1,1, 0, 0, 0)
+   cont                C   (   1) to C   (   3,   1,1, 0, 0, 0)
+   cont                C   (   1) to C   (   7,   1,1, 0, 0, 0)
+   cont                C   (   2) to C   (   3,  -1,1, 0, 0, 0)
+   \ the 1 - 3 distances (we could have used angles)   
+   DIST   0.0 ,.01 = mean C   (   1) to C   (   2,  -1,1, 0, 0, 0)
+   cont                   C   (   1) to C   (   3,  -1,1, 0, 0, 0)
+   cont                   C   (   2) to C   (   3,   1,1, 0, 0, 0)
+   cont                   C   (   2) to C   (   7,   1,1, 0, 0, 0)
+   cont                   C   (   3) to C   (   7,   1,1, 0, 0, 0)
+   \
+   \ The inter molecular contacts, with weak restraints.
+   \ These serve to fix the orientation of the molecule.
+   \ Two which are really intra molecular are commented out.
+   DIST   3.958 ,.1 = C   (   2) to C   (   3,  -2,1, 0, 0,-1)
+   DIST   3.965 ,.1 = C   (   2) to C   (   7,  -1,1,-1, 0, 0)
+   \ DIST   3.890 ,.1 = C   (   2) to C   (   7,  -1,1, 0, 0, 0)
+   \ DIST   3.886 ,.1 = C   (   3) to C   (   7,  -1,1, 0, 0, 0)
+   DIST   3.971 ,.1 = C   (   7) to C   (   7,   2,1,-1,-1, 0)
+   DIST   3.971 ,.1 = C   (   7) to C   (   7,   2,1,-1, 0, 0)
+   \ the planar restraint
+   planar C(1) UNTIL C(7) C(1,-1) UNTIL C(7)
+   \USE LAST
+   
+#Q
+#PThis is the RESTRAINT checking produced before refinement. There is asymmetry
+ in the 1 - 3 distances, and the ring is distinctly not flat.
+#Q
+#J
+ 
+ 
+   0.   Restrain the following distances to be    1.525  Angstrom,
+                                                  with an E.S.D. of   0.001
+      C      1  C      2      1.525     0.000
+      C      1  C      3      1.523     0.002
+      C      1  C      7      1.527    -0.002
+      C      2  C      3      1.527    -0.002
+ 
+ Mean value =   1.52522  Mean delta =  -0.00022  R.M.S. delta =   0.00160
+ 
+ 
+   1.   Restrain the following distances to the common mean of 2.521  Angstrom
+                                                   with an E.S.D. of   0.010
+      C      1  C      2      2.535    -0.014
+      C      1  C      3      2.532    -0.012
+      C      2  C      3      2.494     0.027
+      C      2  C      7      2.520     0.000
+      C      3  C      7      2.522    -0.001
+ 
+ Mean value =   2.52076  Mean delta =   0.00000  R.M.S. delta =   0.01474
+ 
+ 
+   2.   Restrain the following distances to be    3.958  Angstrom,
+                                                  with an E.S.D. of   0.100
+      C      2  C      3      3.958     0.000
+ 
+ Mean value =   3.95794  Mean delta =   0.00006  R.M.S. delta =   0.00006
+ 
+ 
+   3.   Restrain the following distances to be    3.965  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      2  C      7      3.965     0.000
+ 
+ Mean value =   3.96488  Mean delta =   0.00012  R.M.S. delta =   0.00012
+ 
+ 
+   4.   Restrain the following distances to be    3.971  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      7  C      7      3.971     0.000
+ 
+ Mean value =   3.97081   Mean delta =   0.00019   R.M.S. delta =   0.00019
+ 
+ 
+   5.   Restrain the following distances to be    3.971  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      7  C      7      3.971     0.000
+ 
+ Mean value =   3.97081  Mean delta =   0.00019    R.M.S. delta =   0.00019
+ 
+ 
+   6.   Restrain the following atoms to be   0.000  Angstrom 
+        from their mean plane, with an E.S.D. of   0.010
+  C      1     0.328
+  C      2    -0.177
+  C      3    -0.178
+  C      7    -0.073
+  C      1    -0.328
+  C      2     0.177
+  C      3     0.178
+  C      7     0.073
+ 
+ 
+#Q
+ 
+#PAfter two cycles of refinement, the ring had flattened out, but the non-
+ bonded distances were not too good. 5 more cycles produced the following
+ model.
+#Q
+#J
+ 
+   0.   Restrain the following distances to be    1.525  Angstrom, 
+                                                  with an E.S.D. of   0.001
+      C      1  C      2      1.525     0.000
+      C      1  C      3      1.525     0.000
+      C      1  C      7      1.525     0.000
+      C      2  C      3      1.525     0.000
+ 
+ Mean value =   1.52500  Mean delta =   0.00000  R.M.S. delta =   0.00000
+ 
+ 
+   1.   Restrain the following distances to the common mean of 2.641  Angstrom,
+                                                with an E.S.D. of   0.010
+      C      1  C      2      2.641     0.000
+      C      1  C      3      2.642     0.000
+      C      2  C      3      2.641     0.000
+      C      2  C      7      2.641     0.000
+      C      3  C      7      2.642     0.000
+ 
+ Mean value =   2.64137   Mean delta =   0.00000  R.M.S. delta =   0.00031
+ 
+ 
+   2.   Restrain the following distances to be    3.958  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      2  C      3      3.942     0.016
+ 
+ Mean value =   3.94154  Mean delta =   0.01646   R.M.S. delta =   0.01646
+ 
+ 
+   3.   Restrain the following distances to be    3.965  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      2  C      7      3.675     0.290
+ 
+ Mean value =   3.67517   Mean delta =   0.28983   R.M.S. delta =   0.28983
+ 
+ 
+   4.   Restrain the following distances to be    3.971  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      7  C      7      3.919     0.052
+ 
+ Mean value =   3.91877   Mean delta =   0.05223  R.M.S. delta =   0.05223
+ 
+ 
+   5.   Restrain the following distances to be    3.971  Angstrom, 
+                                                  with an E.S.D. of   0.100
+      C      7  C      7      3.919     0.052
+ 
+ Mean value =   3.91877  Mean delta =   0.05223  R.M.S. delta =   0.05223
+ 
+ 
+   6.   Restrain the following atoms to be   0.000  Angstrom 
+        from their mean plane, with an E.S.D. of   0.010
+  C      1     0.001
+  C      2     0.000
+  C      3     0.000
+  C      7     0.000
+  C      1    -0.001
+  C      2     0.000
+  C      3     0.000
+  C      7     0.000
+ 
+#Q
+#PIn CRYSTALS there are often several ways for approaching a problem. 
+ The cyclohexane structure could have been flattened by setting up an
+ appropriate model in RESTRAINT, or via the best plane instruction, MOLAX.
+ MOLAX would have made the structure exactly planar, but would have
+ foreshortened the bonds, and not symmetricised the 1 - 3 contacts. The
+ orientation of the new model would still need refining, though in a 
+ real case that might be done against the reflection data.
+#Q
+#J
+   \MOLAX
+   \  compute the best plane through the whole structure, i.e.
+   \  including the symmetry equivalent half.
+   ATOM FIRST UNTIL LAST FIRST(-1) UNTIL LAST
+   PLANE
+   \  replace the asymmetric part.
+   REPLACE FIRST UNTIL LAST
+   END
+ 
+#
+#Q
+#IEXAMPLE 2 --- A Distorted Zeolite#
+#Q
+#
+#PThe starting coordinates for this refinement are from a profile
+ refinement. Some of the silicon has been replaced by aluminium, 
+ giving Si/Al = 1.67. The space group is Fd3m, with the 'silicon'
+ in a general position, one oxygen at the Wycoff site 'h' and the other
+ three which form the skeleton at sites 'g'. The remaining oxygen and two
+ sodium atoms are at sites 'e', but do not form part of the silicate 
+ framework, so will not be considered futher. In the original description
+ of the structure, the three oxygens are at sites 'g' (x,x,z), and so cannot
+ all be bound to the same silicon. If we leave the oxygen 'h' (0,x,-x)
+ where it is, we need to move 'g' oxygens to the alternative 'g' sites
+ which give a tetrahedron about the silicon. This can be done using
+ COLLECT. A DISTANCE calculation will then let us get a restraint list,
+ LIST 16, for the current model, which we can modify if we wish. We are
+ using the symmetry positions given on page 341 of International Tables
+ Volume 1. Only the first 24 positions need be given.
+#Q
+#J
+ 
+   \ Trial structure from Mike Eddy's thesis for Sodium zeolite-Y
+   \ in Fd3m with the origin at the centre. The cation is disordered
+   \ (Si/Al = 1.67)
+   \ sites are:
+   \ 192i, 96h, 96g, 96g, 96g
+   \LIST 5
+   READ NATOM=5
+   ATOM Si 1 x= -.0540  .1254  .0353
+   ATOM O 1  x=      0 -.1064  .1064
+   ATOM O 2  x= -.0016 -.0016  .1408
+   ATOM O 3  x=  .0739  .0739 -.0328
+   ATOM O 4  x=  .0702  .0702  .3183
+   END
+   
+#
+#Q
+#PIn the list from the literature, the oxygen are at (x,x,z). The 
+ following instruction collected them into a tetrahedron about the 
+ silicon.
+#Q
+#J
+ 
+   \COLLECT
+   END
+ 
+ 
+#Q
+#PBelow is an external representation of the LIST 5 produced above. The
+ oxygen are now in various positions, and a refinement list, LIST 12, 
+ must be defined to give the correct relationships between variables.
+ We can devise a restraint list to try and give ideal interatomic 
+ distances and angles.
+#Q
+#J
+   
+   \
+   \ LIST 5 collected from original LIST 5
+   \ The oxygen now form a tetrahedron around Si
+   \
+   \LIST      5
+   READ NATOM = 5
+   ATOM SI 1   x= -0.0540   0.1254   0.0353
+   ATOM O  1   x= -0.1064   0.1064   0.0000
+   ATOM O  2   x= -0.0016   0.1408  -0.0016
+   ATOM O  3   x= -0.0328   0.0739   0.0739
+   ATOM O  4   x= -0.0683   0.1798   0.0702
+   END
+   \LIST 12
+   \ Fd3m page 341. The oxygen are on special positions so the list is complex.
+   \ O(1) at  X,-X, 0
+   \ O(2) at  X, Y, X
+   \ O(3) at  X, Y, Y
+   \ O(4) at  X, Y, 1/4-Y
+   \
+   BLOCK SI(1,X'S) O(1,X) O(2,X,Y) UNTIL O(4)
+   EQUIV O(1,X) O(1,Y)
+   EQUIV O(2,X) O(2,Z)
+   EQUIV O(3,Y) O(3,Z)
+   EQUIV O(4,Y) O(4,Z)
+   WEIGHT -1 O(1,Y)
+   WEIGHT -1 O(4,Z)
+   END
+   \LIST 23
+   MINIMISE REFLECTION=NO RESTRAIN=YES
+   END
+   \LIST 16
+   \ Since we can now use all the atoms at the sites given in the parameter list,
+   \ LIST 5, we can simply make up the restraints list.
+   \
+   \ Try to make the Si-O distances the usual value, 1.60
+   DIST 1.60, .001 =  SI(1)to O(1), SI(1) to O(2), Si(1) to O(3), Si(1) to O(4)
+   \ and the angles tetrahedral, 109.47
+   ANGLE 109.47,.1  = O(1) to Si(1) to O(2), O(1) to Si(1) to O(3),
+   CONT               O(1) to Si(1) to O(4), O(2) to Si(1) to O(3),
+   CONT               O(2) to Si(1) to O(4), O(3) to Si(1) to O(4)
+   \ use shift limiting restraints to keep solution close to starting values
+   LIMIT .0001 X
+   LIMIT .0001 Y
+   LIMIT .0001 Z
+   END
+   
+#
+#Q   
+#PBefore we start the refinement, use CHECK to see how far we are from
+ the ideal structure. Note that one distance is particularly stretched,
+ and the angles are erratic.
+#Q
+#J
+   
+      0.   Restrain the following distances to be    1.600  Angstrom,
+                                                 with an E.S.D. of   0.001
+ 
+         SI     1  O      1      1.643    -0.043
+         SI     1  O      2      1.642    -0.042
+         SI     1  O      3      1.688    -0.088
+         SI     1  O      4      1.649    -0.049
+   
+    Mean value =   1.65536  Mean delta =  -0.05536  R.M.S. delta =   0.05849
+   
+   
+      1.   Restrain the following  angles   to be  109.470  degrees,
+                                                 with an E.S.D. of   0.100
+ 
+         O      1  SI     1  O      2 113.53  -4.06
+         O      1  SI     1  O      3 109.54  -0.07
+         O      1  SI     1  O      4 110.31  -0.84
+         O      2  SI     1  O      3 104.34   5.13
+         O      2  SI     1  O      4 105.96   3.51
+         O      3  SI     1  O      4 113.07  -3.60
+   
+    Mean value = 109.45747  Mean delta =   0.01253  R.M.S. delta =   3.38478
+   
+   
+#
+#Q
+#PThe refinement converged in 15 cycles, but not to a satisfactory model.
+ Note that the original long bond has now become the shortest. There is
+ a basic incompatibility between the requested restraints, the space
+ group and the cell parameters.
+#Q
+#J
+ 
+   
+      0.   Restrain the following distances to be    1.600  Angstrom, 
+                                                with an E.S.D. of   0.001
+         SI     1  O      1      1.631    -0.031
+         SI     1  O      2      1.626    -0.026
+         SI     1  O      3      1.614    -0.014
+         SI     1  O      4      1.639    -0.039
+   
+    Mean value =   1.62730  Mean delta =  -0.02730  R.M.S. delta =   0.02877
+   
+   
+      1.   Restrain the following  angles   to be  109.470  degrees, 
+                                                     with an E.S.D. of   0.100
+         O      1  SI     1  O      2 108.70   0.77
+         O      1  SI     1  O      3 108.30   1.17
+         O      1  SI     1  O      4 111.98  -2.51
+         O      2  SI     1  O      3 109.25   0.22
+         O      2  SI     1  O      4 110.22  -0.75
+         O      3  SI     1  O      4 108.33   1.14
+   
+    Mean value = 109.46481  Mean delta =   0.00519  R.M.S. delta =   1.30031
+   
+   
+#
+#Q
+#PSince we know that the Si site is partially occupied by Al, we might
+ expect the apparent Si-O distance to differ from the ideal value. Let
+ it relax so that all four are equal to thier mean. Keep the angles
+ strictly tetrahedral.
+#Q
+#J
+ 
+   
+   \LIST 16
+   \
+   \ Let the Si-O distances relax to a mean value
+   DIST 0., .001 = MEAN SI(1)to O(1), SI(1) to O(2), Si(1) to O(3), Si(1) to O(4)
+   \ and the angles tetrahedral, 109.47
+   ANGLE 109.47,.1  = O(1) to Si(1) to O(2), O(1) to Si(1) to O(3),
+   CONT               O(1) to Si(1) to O(4), O(2) to Si(1) to O(3),
+   CONT               O(2) to Si(1) to O(4), O(3) to Si(1) to O(4)
+   \ use shift limiting restraints to keep solution close to starting values
+   LIMIT .0001 X
+   LIMIT .0001 Y
+   LIMIT .0001 Z
+   END
+ 
+#Q
+#PThe refinement quickly converged preserving the tetrahedral angles, and
+ giving all 'Si-O' distances equal.
+#Q
+#J
+ 
+      0.   Restrain the following distances to their common mean 
+                              of 1.640  Angstrom, with an E.S.D. of   0.001
+ 
+         SI     1  O      1      1.640     0.000
+         SI     1  O      2      1.640     0.000
+         SI     1  O      3      1.640     0.000
+         SI     1  O      4      1.640     0.000
+   
+    Mean value =   1.64007  Mean delta =   0.00000  R.M.S. delta =   0.00000
+   
+   
+      1.   Restrain the following  angles   to be  109.470  degrees,
+                                                   with an E.S.D. of   0.100
+         O      1  SI     1  O      2 109.47   0.00
+         O      1  SI     1  O      3 109.47   0.00
+         O      1  SI     1  O      4 109.47   0.00
+         O      2  SI     1  O      3 109.47   0.00
+         O      2  SI     1  O      4 109.47   0.00
+         O      3  SI     1  O      4 109.47   0.00
+   
+    Mean value = 109.47121  Mean delta =  -0.00121  R.M.S. delta =   0.00125
+   
+#Q
+#PIt is up to the user to comment on the value of this refinement, and
+ to consider further relaxations. One is to reduce the cell symmetry
+ to Fd3, in which case we have two independant tetrahedral sites, and
+ the oxygen are in general positions. The increased flexibility in
+ this space group may permit us to form a model with acceptable bond
+ lengths. We need to input the symmetry positions for F3d, page 313.
+ Only the first 3 lines of poritions are needed (the others are due to
+ the inversion centre). Then we need to generate an Al atom on the
+ site corresponding to the original operator (x,z,y). The relationship
+ between this atom and the original oxygens is complex, and we should
+ use DISTANCES to form the proforma restraint list. A new LIST 12 is
+ needed with all coordinates of all atoms refined.
+#PUse EDIT to generate Si(11) from Si, rename it to Al(1) and then
+ operate on it with (x,z,y). Use DISTANCES to get LIST 16.
+#
+#J
+      \DISK
+      RESET 5 99
+      \EDIT
+      \ Generate new atom on same site as Si(1) with serial incremented by 10
+      CREATE Si(1) 10
+      RENAME Si(11) Al(1)
+      ROTATE 1 0 0  0 0 1  0 1 0  Al(1)
+      \ Move Al after the Si
+      KEEP SI(1) AL(1) O(1) UNTIL O(4)
+      END
+      \
+      \DISTANCE
+      SELECT RANGE=LIMITS
+      LIMIT 0 2.0 0 2.0
+      OUTPUT PUNCH = RESTRAIN
+      END
+ 
+#
+#Q
+#JThe resulting LIST 16 has all Si-O and Al-O distances equal, since
+ the new model is stil really the same as the original. We modify it
+ to let the Si-O distances and the Al-O distances relax to their
+ separate means.
+#Q
+#J
+ 
+ \LIST     16
+ \  note the complex symmetry operators in the Al restraints
+ \  and the firm restraint on the distances.
+ DIST   1.60 ,.001 =    SI  (   1) to O   (   1,   1,1, 0, 0, 0)
+ cont                  SI  (   1) to O   (   2,   1,1, 0, 0, 0)
+ cont                  SI  (   1) to O   (   3,   1,1, 0, 0, 0)
+ cont                  SI  (   1) to O   (   4,   1,1, 0, 0, 0)
+ \
+ DIST   1.74 ,.001 =    AL  (   1) to O   (   1,  -9,1, 0, 0, 0)
+ cont                  AL  (   1) to O   (   2,   5,1, 0, 0, 0)
+ cont                  AL  (   1) to O   (   3,   1,1, 0, 0, 0)
+ cont                  AL  (   1) to O   (   4,   2,1, 0, 0, 0)
+ \ 
+ ANGL 0.,.1= mean O(1,  1,1, 0, 0, 0) to SI  (   1) to O   (   2,  1,1, 0, 0, 0)
+ cont O(1,  1,1, 0, 0, 0) to SI  (   1) to O   (   3,  1,1, 0, 0, 0)
+ cont O(2,  1,1, 0, 0, 0) to SI  (   1) to O   (   3,  1,1, 0, 0, 0)
+ cont O(1,  1,1, 0, 0, 0) to SI  (   1) to O   (   4,  1,1, 0, 0, 0)
+ cont O(2,  1,1, 0, 0, 0) to SI  (   1) to O   (   4,  1,1, 0, 0, 0)
+ cont O(3,  1,1, 0, 0, 0) to SI  (   1) to O   (   4,  1,1, 0, 0, 0)
+ \
+ ANGL 0.,.1= mean O(1, -9,1, 0, 0, 0) to AL  (   1) to O   (   2,  5,1, 0, 0, 0)
+ cont O(1, -9,1, 0, 0, 0) to AL  (   1) to O   (   3,  1,1, 0, 0, 0)
+ cont O(2,  5,1, 0, 0, 0) to AL  (   1) to O   (   3,  1,1, 0, 0, 0)
+ cont O(1, -9,1, 0, 0, 0) to AL  (   1) to O   (   4,  2,1, 0, 0, 0)
+ cont O(2,  5,1, 0, 0, 0) to AL  (   1) to O   (   4,  2,1, 0, 0, 0)
+ cont O(3,  1,1, 0, 0, 0) to AL  (   1) to O   (   4,  2,1, 0, 0, 0)
+ LIMIT .0001 X
+ LIMIT .0001 Y
+ LIMIT .0001 Z
+    
+#Q
+#PThe following CHECK shows by what amount the current model deviates from 
+ the requested distance restraints. The angle restraints are of course
+ satisfied at this stage.
+#Q
+#J
+ 
+ 
+   0.   Restrain the following distances to be    1.600  Angstrom, 
+                                                with an E.S.D. of   0.010
+      SI     1  O      1      1.640    -0.040
+      SI     1  O      2      1.640    -0.040
+      SI     1  O      3      1.640    -0.040
+      SI     1  O      4      1.640    -0.040
+ 
+ Mean value =   1.64007  Mean delta =  -0.04007  R.M.S. delta =   0.04007
+ 
+ 
+   1.   Restrain the following distances to be    1.740  Angstrom, 
+                                                with an E.S.D. of   0.010
+      AL     1  O      1      1.640     0.100
+      AL     1  O      2      1.640     0.100
+      AL     1  O      3      1.640     0.100
+      AL     1  O      4      1.640     0.100
+ 
+ Mean value =   1.64007  Mean delta =   0.09993  R.M.S. delta =   0.09993
+ 
+#Q
+#PAfter many cycles, refinement converged as shown below. The distance 
+ restraints, because of their firm weighting (e.s.d = .001), are now
+ satisfied, but the angles deviate from their means by several times the
+ requested e.s.d.  It is infact not possible to combine the requested
+ bond lengths and regular tetrahedra in this cell and space group. The
+ user must decide which condition he wishes to relax.
+#Q
+#J
+ 
+ 
+   0.   Restrain the following distances to be    1.600  Angstrom, 
+                                                with an E.S.D. of   0.001
+      SI     1  O      1      1.602    -0.002
+      SI     1  O      2      1.598     0.002
+      SI     1  O      3      1.603    -0.003
+      SI     1  O      4      1.601    -0.001
+ 
+ Mean value =   1.60083  Mean delta =  -0.00083  R.M.S. delta =   0.00173
+ 
+ 
+   1.   Restrain the following distances to be    1.740  Angstrom, 
+                                                with an E.S.D. of   0.001
+      AL     1  O      1      1.737     0.003
+      AL     1  O      2      1.741    -0.001
+      AL     1  O      3      1.737     0.003
+      AL     1  O      4      1.738     0.002
+ 
+ Mean value =   1.73857  Mean delta =   0.00143  R.M.S. delta =   0.00212
+ 
+ 
+   2.   Restrain the following  angles   to their common mean 
+                               of  109.472  degrees , with an E.S.D. of   0.100
+      O      1  SI     1  O      2 109.67  -0.20
+      O      1  SI     1  O      3 110.31  -0.84
+      O      2  SI     1  O      3 108.47   1.00
+      O      1  SI     1  O      4 108.61   0.87
+      O      2  SI     1  O      4 109.81  -0.34
+      O      3  SI     1  O      4 109.96  -0.48
+ 
+ Mean value = 109.47232  Mean delta =   0.00001  R.M.S. delta =   0.68884
+ 
+ 
+   3.   Restrain the following  angles   to their common mean
+                               of  109.472  degrees , with an E.S.D. of   0.100
+      O      1  AL     1  O      2 109.29   0.18
+      O      1  AL     1  O      3 108.58   0.89
+      O      2  AL     1  O      3 110.60  -1.13
+      O      1  AL     1  O      4 110.31  -0.83
+      O      2  AL     1  O      4 109.09   0.38
+      O      3  AL     1  O      4 108.96   0.51
+ 
+ Mean value = 109.47240  Mean delta =   0.00000  R.M.S. delta =   0.73154
+ 
+ 
+#Q
+#Q

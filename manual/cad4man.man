@@ -1,0 +1,1112 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#T CAD4 Brief Notes#
+#Z CAD4 BRIEF NOTES#
+#YINTRODUCTION#
+#Q
+#PThere are two CAD4 diffractometers in Chemical Crystallography. 
+ Both use the same crystallographic programs on te VAX computer, and so both
+ have the same crystallographic commands. Both collect data at the same  
+ rate, but the newer machine (MACH3) has a higher slewing speed, so 
+ initial orientation is more rapid. 
+#PThe software available is
+#ICAD4 software#
+ This is the underlying control program. It is not menu driven, and the 
+ user controls it via short nemonic keywords. It gives very dteailed 
+ control of the machine 
+#IEXPRESS software#
+ This is menu driven, and has two modes of operation
+#DGO mode#
+The user fills details into a 'form', and the diffractometer then tries 
+to complete data collection itself.
+#DINTERACTIVE mode#
+The user selects items from a hierarchical menu system, fills in values 
+in forms, and selects strategies.
+#IBeginning work#
+#Q
+#PAS SOON AS YOU START, ENTER IN THE DIARY
+#J
+ Your name
+ Your laboratory and phone number
+ The molecular formula, empirical formula or some other means of identifying
+ the material.
+ The names of the files you are using on the CAD4, usually beginning 
+ with your initials. 
+#
+#PAs work proceeds, also enter the unit cell and space group, the number of
+ data you expect to collect, and the time you start automatic data collection.
+ Periodically, also enter the current reflection number and the time, to help
+ you predict when data collection will finish. Notify the next user about one day
+ before you intend to finish.
+#
+#Q
+#P
+ In this text, lines beginning
+#J
+      ->
+#
+indicate lines typed by the operator.
+#
+#YThe Computer#
+#P
+ The same programs control data collection both diffractometers. The 
+main differences in using the machines are the different handsets for 
+manual control
+#ILogging in#
+You can control either machine from any VT100 terminal (or PC) which can 
+connect to the host crystal.xtl.ox.ac.uk. Login with the appropriate 
+username. For the virtual diffractometer, you can login as eithe MACH3 
+or ESSEX
+#P
+For the Mach3, the Username is MACH3, password MACH3
+#P
+For ESSEX, the username is ESSEX, password ESSEX
+#P
+      The different controllong programs are stated:
+#J
+      RCAD4     starts the machine in CAD4 mode
+      REXPRESS  starts the machine in EXPRESS mode
+      VCAD4     starts the virtual CAD4
+      VEXPRESS  starts the virtual EXPRESS
+#
+#P
+ Three kinds of data file are  involved in data collection. 
+ One (CRYST) holds general
+ information (cell,REFDUMP etc), one (DATA) the intensity observations, and,
+ sometimes, one (HKL) to hold  a list of
+ reflections selected for special purposes. In the table below, lowercase
+ indicates that the user can choose any letters, * an integer number.
+#N  9
+#J
+        FCRYST        FILHKL       FILDAT       FILDAT
+                                 (main data) (absorption)
+
+       xtl*.CRY      xtl*.HKL   xtl*_col.DAT  xtl*_psi.DAT
+
+#
+#KGONCON#
+#P  For each new structure, it is necessary to assign files.
+ Activate the file manager by typing GONCON.
+#P
+ You will be prompted: 
+#J
+ GCONST, FCRYST, FILDAT, FILHKL?
+ FCRYST: File 1 Crystal data
+ FILDAT: File 2 Intensity data
+ FILHKL: File 3 HKL indices
+#
+#PAssign the data files.
+ TYPE the name of file you want to change - 
+ one of FCRYST, FILDAT, FILHKL. Type Q to quit this process.
+#DFCRYST#
+#PFCRYST containing crystal data and data collection parameters.
+#Pe.g. XTL2.CRY
+#DFILDAT#
+#PFILDAT containing intensity data
+#Pe.g. XTL2.DAT
+#DFILHKL
+#PFILHKL containing list of indices for use in 'File' mode of data collection
+#Pe.g. XTL2.HKL
+#
+#PData files may  be deleted  1 month after data
+ collection was finished, so transfer them from the VAX to your PC as 
+soon as possible 
+#PIf you get the message
+#J
+ERROR  PROBLEM 38
+#
+#Pthis means that the disk QUOTA is exceeded. Delete your old data files,
+ or get a
+ supervisor to delete files belonging to other users.
+
+#IManual control#
+#PManual control is by means of the 'pocket calculator' control box. 
+These are different for ESSEx and MACH3. On ESSEX press the
+ buttons slowly and firmly.
+#DTo interrupt the CAD4#
+Type CTRL/C (control-C). 
+The CAD4 will respond
+#J
+Enter Switch Option
+#
+Resond
+#J
+0001
+#
+The
+ CAD4 will complete current intensity  measurement then will respond  
+#J
+Switch xxx1
+#
+You should respond
+#J
+ /
+#
+
+  and then answer Y or N as required
+#
+
+#KTo continue data collection if halted:#
+Type
+#J
+DATCON
+#
+#P
+If data collection has been interrupted by e.g. machine failure,
+Ensure that orientation and intensity controls are still flagged using LCO and LCI.
+Check status of orientation controls using LCH.  These should be flagged H and not N.
+Check switch setting on handset.
+Re-enter by pressing: 5200 move switch.
+
+#P
+#IThe stages in data collection#
+#J
+ Centre the crystal on the diffractometer and take a polaroid photo
+
+ Determine the unit cell and crystals class
+
+ Determine the data collection conditions
+
+ Collect the intensity data
+
+ Collect an absorption profile
+
+ Optionally, refine the unit cell.
+#
+#DCrystal Mounting#
+#P
+  For organic crystals, the sample should be about 0.8mm cube, rather
+ smaller for
+ crystals containing heavy metal.  They should be mounted on an oil loop
+for low temperture work, or in a
+ Lindemann tube sealed by fusion, or on the tip of a hand drawn capillary
+ fibre for room temperature work.
+#DCentring the Crystals#
+#POptical  centring of the crystal.  This is the one opportunity to
+ to display practical ability.  Be careful and thorough.  The rest of the
+ work depends on this.  The phi axis is orthogonal to the telescope at
+ two positions, kappa= -60 and 140 degrees.  Check at both of these views.
+ The command VIEW  sets the diffractometer at a suitable position for
+ centring. Omega may have to be rotated to bring the telescope
+ towards the user. On the MACH3, the VIEW positions are preset on the 
+manual control box.
+
+#DUnit Cell Determination#
+#P
+Determination of the unit cell is performed by analysis of up
+ to 25 reflections stored in a list called the REFDUMP.
+#P
+New reflections can be put in this list by two methods, the choice of
+ which depends on radiation used, crystal size, crystal orientation and
+ unit cell size.  An initial polaroid photo will help you make a correct
+ choice.
+#PIf necessary, this list may be cleared by issuing a list kill command.
+#J
+      -> LK
+      -> 1 25
+#
+
+
+#DPolaroid Photos#
+#P
+ The film is kept in the chemical fridge.
+ The casette has a plastic window which faces the crystal.  The 'expose'
+ control should be pushed in whenever a film is being loaded or unloaded.
+ The rear of the casette has a lever labelled 'load' and 'process'.  Put
+ the lever so that 'load' can be seen. Near the lever is a red label
+ warning you to load the film with the 'this side towards lens' away
+ from the front of the casette.  Slide the film right into the casette,
+ and then gently withdraw the film cover until resistance is felt.
+ Take care not to catch the small lever at the base of the casette in
+ your clothes while doing this. Pull the 'expose' control up
+ prior to fitting the casette onto the CAD4.  Position
+ the diffractometer in the correct position for taking the photo by
+ issuing the polaroid command.
+#J
+      -> POLA
+#
+
+#PCheck that the screens are in place round the X-ray enclosure, that
+ the X-rays are on and the Kv and mA settings are correct.  Expose
+ the film by issuing a command to scan the phi axis
+#J
+      -> SCAN
+         MM
+      -> P
+         SA N R
+      -> 360 0
+#
+
+#P
+ After the exposure is complete, remove the casette from the diffractometer
+ push the 'expose' control down, push the film cover back into the casette,
+ move the rear lever to 'process', and withdraw the film with a steady
+ pull.  Wait 30 seconds before opening the film cover.  The processing
+ chemicals are caustic so dispose of the film cover safely.  Hold the
+ film with its long axis horizonal.
+ Check
+#J
+ That there is a dark central spot with a grey halo.  This
+ means the film has been correctly exposed to X-rays.
+
+ That there are discreet spots with mm symmetry, and not
+ powder diffraction rings.
+
+ That the spots are of a fair intensity - see examples
+ on wall.
+
+ That the spots have a clear outline (not diffuse or split)
+
+ Whether the spots fall in clearly defined horizontal bands
+ (i.e. crystal is in a special orientation.)
+#
+
+#ISearching for Reflections#
+#P
+      The REFDUMP must be filled with a representative sample of
+ reflections.  Use the following decision tree to choose an appropriate
+ method
+#N 14
+#J
+                  ----------Mo--< radiation >--Cu----------
+                 |                                         |
+                 |                                         |
+                 |---------------------------yes----<  lots of
+                 |                                    reflections
+            reflections                                    |
+       no--< in bands >-------yes                          no
+       |                       |                           |
+       |                       |                           |
+  Use 'simple'          Use 'interrupted'              Use photo
+     search                 search
+
+#
+
+#IPhoto method. #
+#P
+ For each reflection in the upper right hand
+ quadrant of the film, measure (in mm) the distance x to its equivalent
+ in the left hand quadrant, and y to its equivalent in the lower right hand
+ quadrant.
+
+#P
+ Use the 'list photo' command to load these measurements into the
+ REFDUMP
+#J
+      -> L P H
+         1 X Y
+      -> x y
+         2 X Y
+      .....
+
+ Use ctrl/Z to end input if you have not measured 25 reflections. Start
+ the centring procedure with:
+
+      -> PHOTO
+         SP  DF ?
+      -> 12  4
+#
+#P
+ If 25 reflections are centred by this procedure, go
+ directly to section 4, otherwise ask the diffractometer to search
+ out more reflections using a 'Simple Search', section 3.2.2.
+
+#ISimple Search. #
+#P
+ Ask the diffractometer to do a spiral
+ search of reciprocal space using the search instruction.  Use a theta
+ value of 10 degrees for Mo  radiaton, 20 for  Cu radiation
+#J
+      -> SEARCH                        SEARCH
+         T C P                         T C P
+      -> 10 0 180             or       20 0 180
+         SP DF                         SP DF
+      -> 12 4                          12 4
+
+#
+
+ The search will stop when the Refdump contains 25 reflections.
+
+#IInterupted search. #
+#P
+ If the crystal is approximately axially
+ orientated on the diffractometer, the reflections will fall into bands,
+ and the search procedure may not find a good representative sample of
+ data.  The search can be interrupted and restarted in another region.
+ After about 7 - 10 reflections have been collected, interrupt the
+ search, by setting 0001  on the switch register.  Eventually the
+ terminal will respond
+#J
+      SWITCH xxx1
+
+#
+
+ The user replies
+#J
+    /
+
+#
+
+ The terminal responds
+#J
+      GO AGAIN?
+
+#
+
+ and the user replies
+#J
+       NO 
+#
+ to    halt the process
+
+ Reset the switch register to 5200.
+ Insert a new start for the chi axis, say 35 degrees.
+ After a further 7 - 10 reflections have been collected, this procedure
+ is repeated with a chi value of 60 - 70 degrees.
+#J
+      e.g.
+      -> SEARCH                    SEARCH
+         T C P                     T C P
+      -> 10 35 180        or       20 35 180
+         SP DF                     SP DF
+      -> 12 4                      12 4
+
+#
+
+
+#ICell Determination.#
+#P
+  When the REFDUMP is full (terminal shows LIST FULL), the
+ approximate setting angles should be improved.  In REFDUMP each
+ reflection has flags set to indicate the refelctions status.  The list
+ is displayed or modified with the LIST and LIST CHANGE, L* and LC* commands.
+
+#P
+ To enable re-centring of the setting angles, the ANGLE STATUS must be
+ changed from S (i.e. scanned) to A (i.e. approximate).  Enter LIST
+ CHANGE ANGLES
+#J
+      -> LCA
+      -> 1 25
+         SSSSSS........SS OK
+      -> AAAAAA.........A
+         AAA..............OK
+      -> Y
+
+#
+ and LIST CHANGE THETA
+#J
+      -> LCT
+      -> 1 25
+         TTT...........T OK (or perhaps ****.....)
+      -> ***               *
+         ***               * OK
+      -> Y
+
+ and re-determine the angles and theta with
+
+      -> DETTH
+
+ When the re-determination halts, list the contents of the REFDUMP with
+
+      -> LO
+      -> 1 25
+
+#
+
+ The output is 25 lines with the format
+#J
+      N I H K L TS T AS P O K OC IC SS SP SA NI
+  where
+      n = reflection No.
+      I = index status. * No information; N do not use in INDG*, LS, etc;
+      H = OK to use
+      H,K,L=index
+      TS= Theta status. *not determined by DETTH; T determined by DETTH
+      T = theta value
+      AS= Angle status. *not determined; P determined from PHOTO; S
+            from search, A computed or approximate.
+      P = phi.
+      O = omega
+      K = kappa.
+      OC= orientation control.* do not use; O do use for check;
+                                            R do use if re-orientating.
+      IC= intensity control. * do not use; I do use for check.
+      SS= scan status. * not determined; S determined by SCAN;
+                                         I determined as intensity control.
+      SP= scan speed. Units are 20/SP degree per min - indicated
+            alternator set (x20)
+      SA= scan angle.  A measure of the peak width.
+      NI= net intensity.  Background corrected peaks intensity.
+
+#
+
+#P
+ Look quickly down this list and check that there are no duplicate
+ entries, i.e. two lines with T,P,O and K values all within about 1 degree
+ of each other.  If there are, note the reflection number (n) of the
+ weaker, and inhibit its use by issuing
+#J
+      -> LCH
+      -> n
+         H OK
+      -> N
+         N OK
+      -> Y
+
+#
+
+ Check the switch register is at 5200 and start the auto-indexing by
+ issuing
+#J
+      -> INDEX
+         SHORT VECTORS
+      -> 20
+         SHORT VECTOR ANGLES
+      -> N
+         CHANGE VECTORS
+      -> N
+  If the printout says
+              SHORT LIST
+      or      SINGULAR FIXGRD
+#
+the indexing has failed and you should seek advice.
+#P
+If the printout says
+#J
+      DETERMINANT n
+#
+
+ with n greater than 2 you should seek advice, otherwise examine the
+ output.  After the list of vectors, there is a table listing the
+ proposed (non-integer) index for each reflection, and in the final column
+ the discrepancy between the actual reflection and that computed by
+ rounding the indices.  These errors should be less than 0.05.
+ Reflections with very large errors are automatically
+ eliminated from the list.  If the list
+ becomes  very short, or a lot of reflections have large errors, seek advice.
+#IChecking the metric symmetry#
+#P
+ Look at the Niggli matrix (2 rows of 3 numbers).  Look for relationships
+ between the values (i.e. approximate zeros, equal values, or doubled
+ values).  Two or more approximately zero values on the second line
+ indicate monoclinic or higher symmetry.  In any case, ask the computer
+ to check the symmetry for you by issuing.
+#J
+       -> TRANS
+          M R C
+          C
+#
+
+
+ The output consists of a code number, a figure of merit, and a description.
+ If there is a non-primitive transformation with a figure of merit less than
+ 0.01, enter the code number, and when asked if you want to save the matrix
+ and reindex the data, answer Yes
+#J
+       TRANSFORMATION NUMBER
+      -> n
+         SAVE THIS MATRIX
+      -> Y
+         REINDEX
+      -> Y
+#
+
+ It would be wise at this stage to ask someone to check what you have done.
+#IChecking the cell reduction.#
+#P
+ There is an independant program ( DELRED) for checking the cell
+ reduction on the VAX computer. Log into the username CAD4, password CAD4,
+ and issue
+#J
+       DELRED.
+#
+#P
+ You will be asked to give a file name (for the output), and then the cell
+ parameters. Enter the parameters with their full significance. The program will
+ try to reduce the cell, and if it can, will give you the necessary matrix.
+ It will then ask if you want to re-cycle with a different delta (an error
+ tolerance). Reply YES and increase the delta by a factor of 2. After this cycle,
+ try once more increasing delta by a factor of 5. If the results are inconsistent,
+ seek advice.
+#P
+ If the original cell or Niggli matrix was suspiciously pseudo symmetric (i.e.
+ parameters approximately related to each other), run DELRED again entering a
+ cell with averaged values for the related parameters, or exact 90's for
+ near right angles. If any of these operations indicate a transformation is
+ needed, seek advice.
+#
+#IImproving the cell.#
+
+ To get a reliable cell, you need good resolution in all directions, which
+ implies some index values equal to about half the corresponding cell
+ length, or greater.  If the REFDUMP doesn't contain suitable
+ reflections, some should be found manually.  Select a 4 mm aperture, and
+ then examine reflection of type (a/2 k l); (h b/2 l); (h k c/2)
+ where hkl are small values and a,b c are the cell edges.
+ Make  the sum of the indices for each reflection +ve.
+#J
+      ->SAP
+      -> 4
+      -> HP
+         H K L
+      -> 6 2 0       for a 12 Angstrom 'a' axis
+         PSI
+      -> O
+      -> SO          open shutter If the reflection sounds
+                     loud, do a scan with:
+      -> SCAN
+         MM
+      -> OT ........ scan omega and theta.
+         SA N R
+      -> 2 3 6       2 degree scan at speed 3
+
+#
+#N  9
+#J
+ The output looks like:
+
+ TOTAL=  100940 NET= 91276. WIDTH= 0.494 PEAK= 0.021 GRAV=-0.003
+                             11111
+                        147022208532211
+                     14888339350777063941
+        111111 1112111241963152008268267203441112111 121
+      901447702223787913816639133543699307395836448846  1 O 3  1 T 6  30
+
+#
+#N  9
+#J
+ If the reflection is too strong, the shutter closes to prevent damage to the
+ detector, and the output looks like:
+
+ TOTAL=  100940 NET= 91276. WIDTH= 0.494 PEAK= 0.021 GRAV=-0.003
+                         11
+                      14702
+                    1488833
+       111111 1112111241963
+     901447702223787913816639133543699307395836448846  1 O 3  1 T 6  30
+
+#
+
+ Check that the net intensity is several thousand, and that the peak has a
+ good shape.  If not, try adjacent reflections (e.g. 602, 622) or
+ non-symmetry equivalents (e.g. 60-2 for monoclinic b unique).  Perform
+ similar operations for the b and c axis.  Use the table in the appendix to
+ work out the equivalent reflections, and make a list of them. Find 24 
+ reflections and equivalents, and insert them in the REFDUMP.
+#P
+  KILL all the REFDUMP reflections using the LIST KILL
+ instruction
+
+#J
+      -> LK
+      -> 1 25
+#
+
+ The new reflections are entered into the REFDUMP with the LIST INDEX
+ instruction.
+#J
+      -> LH
+         HKL
+      -> h k l
+         PSI
+      -> 0
+         ...
+         ...
+         ...
+#
+
+ The usual FULL LIST  message occurs when the list is full.  Reissue the LCA
+ and LCT instructions (described above) to clear the angle and theta flags,
+ and issue a new DETTH.  When the centring is complete, refine the cell by
+ least squares.
+#J
+      -> LCA
+      -> 1 25
+         SSS**.................. OK
+      -> AAAAA.................. OK
+         AAAAA.................. OK
+      -> Y
+      -> LCT
+      -> 1 25
+         TTT***TTT.............. OK
+      -> *********..............
+         *********.............. OK
+      -> Y
+      -> DETTH
+      -> LS
+#
+
+
+ The output is much the same as for INDEX.  Check that the errors in setting
+ are small (less than .05), that any equivalent cell edges are similar (with
+ 3 esds) and that 90 or 120 degree angles are within .05 of being exact.
+ If not, check that the crystals is still well centred. If not, recentre
+ it, otherwise seek advice.
+#P
+ If the cell appears to have become more symmetric, run TRANS again to see if
+ the cell needs transforming.
+#P
+ Print out the REFDUMP so that you can choose the orientation and intensity
+ controls.
+#J
+      -> LO
+      -> 1 25
+#
+#IChecking the Laue Symmetry#
+ Look at the intensities of equivalent reflections in the refdump. They 
+may help you decide between orthorhombic and monoclinic with beta 
+approximately 90, or 4/m and 4/mmm etc.
+#IData Collection Parameters#
+
+#KAperture and Scan width.#
+
+ Once the cell and orientation matrix have been determined, it is necessary
+ to optimise the main data collection parameters.  The aim is to choose the
+ smallest scan and aperture which will accommodate the reflections without
+ clipping the edges.  The tests should be done with a very strong
+ low index reflection,
+ often  200, 020, 002 etc.  Use the procedure you used earlier in selecting
+ cell refinement reflections to find a suitable reflection.
+
+#J
+       > SAP
+      -> 4      4 mm aperture
+      -> HP
+         HKL
+      -> h O O  e.g. 200
+         PSI
+      -> O
+      -> SCAN
+         MM
+      -> OT
+         SA N R
+      -> 2 3 6   2 degree scan at speed 3
+#
+ The net intensity should be some tens of thousands of counts.  Check that
+ the peak is more or less centred and symmetrical.  Determine its width (in
+ steps).  The angular width (DOMA) is then width x 2/48 degrees.
+#N 14
+#J
+ e.g.
+
+TOTAL=  100940 NET= 91276. WIDTH= 0.494 PEAK= 0.021 GRAV=-0.003
+                         11111
+                    147022208532211
+                  14888339350777063941
+     111111 1112111241963152008268267203441112111 121
+   901447702223787913816639133543699307395836448846  1 O 3  1 T 6  30
+                 ----------------------
+
+The peak (underlined) is 22 steps wide, so DOMA = 2*22/48 ,i.e. about 1 degree.
+It is slightly asymmetric.
+
+#
+#P
+ Repeat
+ with 3.5 and 3 mm apertures.  Note the minimum aperture (APTA) which does
+ not clip the peak.  With this minimum aperture, repeat the scans with
+ psi=180  in order to 'see' the same reflection
+ from different angles and so get an impression of crystal quality.  If the
+ computer responds 'COLLISION' or 'CHI HIGH', try psi=+90 and -90. If these
+ are also inaccessible, read the section on absorption profiles to find out
+ how to locate a chi = 90 reflection.
+#P
+ If the
+ peak width changes dramatically, seek advice.
+
+#KIndex Ranges#
+
+ Use the table in the appendix to determine what is the index range required
+ to get a complete data set.  This depends on the crystal system (triclinic,
+ monoclinic etc.).  In some systems you will have alternatives, e.g.
+ monoclinic 'b' unique could be (all h, half k, half l) or (half h, half k, all
+ l). When there is a choice, do all of the shortest axes.
+ In this example, if a < c
+ (we have no choice about k) do half h, half k, all l.
+
+#KTheta Ranges#
+
+ A typical `full' data set is the `copper sphere' i.e. theta=90 for Cu (= 27.5
+ degree for Mo).  The practical limits are 72  and 24.0 for Mo.  Use the
+ table in the appendix to find the multiplicity (m) of your crystal system,
+ and then find the maximum number of data observable.
+#J
+       > TH
+      -> O 75 for Cu  or O  24.0 for Mo
+         h=hmax  k=kmax l=lmax  No of reflections = N
+#
+
+
+ The unique data set (n) is the total divided by m.  If n is less than about
+ 2500 and the crystal is fairly stable, the whole set can be collected in a
+ single run, otherwise the data should be collected in shells of increasing
+ theta.  Calculate f=2500/n and use the table to choose the theta  limits for each
+ shell.
+.N 13
+#J
+      f       Mo        Cu
+      .2      15.5      35.5
+      .3      18.0      42.0
+      .4      20.0      48.0
+      .5      21.5      53.0
+      .6      23.0      58.0
+      .7      24.0      62.0
+      .8      25.5      69.0
+      1.0     27.5      75.0
+
+#
+
+ For example, if n=5000, then f=.5 and the shells are 0-50 and 50-75 for Cu.
+ (Note that it is only with exceptionally good crystals that intense data
+ can be observed beyond theta=24 with Mo radiation.) If you decide to collect
+ data in shells, issue a TH instruction for each shell.
+#J
+
+      ->TH
+      ->0 50
+        (answers)
+      ->TH
+      ->49 75
+        (answers)
+
+#
+
+#IDATCIN - data collection setup#
+
+ The values determined above can now be stored in the computer to control
+ the automatic data collection using the Data Collection Initiation Command,
+ DATCIN
+
+#J
+       > DATCIN       (I=input all)
+         IMOST        M=modify, O=output, S=store
+         "            (note the prompt)
+      -> O
+            (list of current values.
+      (
+        "
+      -> M
+         TEXT
+         old title
+      -> A line of text, e.g. name of crystal
+      -> THLIM
+           x  x                (old values)
+      -> Newmin  Newmax  (as determined above)
+      -> SCAN
+           x x x x x            (old values)
+      -> DOMA DOMB APTA O 6 (DOMB=0.35 for Mo, 0.15 for Cu)
+                            (DOMA and APTA determined above)
+      -> INT
+           x x x x x
+      -> .3 .1 3 60 0
+      -> FLAG
+           x x x            NOTE - If you need to determine the absolute
+      -> 0 0 0            configuration, enter 0 1 0
+      -> PSI
+            x
+            x x x x x
+      -> BISECT          normal data collection mode
+      -> MODE
+            x
+            x x x x x x
+            x x x
+            xxx
+      -> ZIGZAG
+      -> hmin  hmax  kmin  kmax  lmin  lmax  (determined above)
+      -> hmin  kmin  lmin
+      -> a1  a2  a3  (where a1 is index letter of longest axis, a3 of shortest)
+
+      -> ABSENT
+      -> 0            seek advice if your cell is not primitive
+      -> INTCR
+            x x x
+      -> 3600  .03  .75
+      -> ORIENT
+            x x
+      -> 250 0.2
+
+      -> ctrl/Z  (to end input mode)
+         IMOST
+      -> O            (to output the whole list)
+         IMOST
+      -> S            (to save the list if it is OK, otherwise M to re-enable
+                       modifications)
+#
+
+
+#KIntensity and Orientation checks#
+
+ 3 or 4 reflections must be chosen from the REFDUMP to monitor the stability of
+ the data collection. Choose reflections with large h, k and l, and fairly
+ strong (e.g. those chosen for cell refinement above).  If, say, the 3rd, 11th
+ and 12th reflections are chosen, change their intensity status with LCI, and
+ their orientation status with LCO.
+
+#J
+       > LCI
+      -> 3 12
+         ********** OK?
+      -> I*******II
+         I*******II OK
+      -> Y
+      -> LCO
+      -> 1 25
+         ********************** OK?
+      -> RRRRRRRRRRRRRRRRRRRRRR
+         RRRRRRRRRRRRRRRRRRRRRR OK?
+      -> Y
+      -> LCO
+      -> 3 12
+         ********** OK?
+      -> ORRRRRRROO
+         ORRRRRRROO OK
+      -> Y
+#
+
+
+#KAutomatic Data Collection#
+
+ Two commands are availabke, DATCOL and DATCON.  DATCOL initiates data
+ collection, and should be used for the first (perhaps only) shell of each
+ crystal.  DATCON continues data collection, and will either append it to
+ existing data, or overwrite existing data.  It should be used for subsequent
+ shells and absorption corrections.  On CAD4 I only about 6000 reflections can
+ be stored in the PDP8, so transfer partial data sets to the VAX if necessary.
+
+#J
+       > DATCOL      To start new data collection
+      -> DATCON      to continue data collection
+      -> Y
+         START WITH CONTROLS
+      -> Y
+#
+
+
+#IAbsorption Profile#
+
+ When automatic data collection is complete,
+ you should measure an absorption profile.  Associate the correct
+ file with the program (
+ name.psi for FILDAT  - see the section on changing file
+ specifications).  For the
+ profile, you need a strong reflection (>3000 at speed 3) with chi near 90.
+
+#J
+       > BH
+         T P C
+      -> 10 0 90      to get reflection at theta 10, Chi 90
+         h k l        These indices will be non integer.
+                      multiply by a constant and round as necessary,
+                      e.g. .5  .9  0  becomes 1 2 0
+      -> HB
+      -> h'k'l'       the rounded indices
+                      theta phi chi check 80<Chi <100
+      -> HP           position the diffractometer
+      -> h'k'l'
+      -> SAP
+      -> 4
+      -> SO           open the shutter and listen.  If it sounds strong,
+                      do a scan
+      -> SCAN
+         MM
+      -> OT
+         SA N R
+      -> 2 3 6        check the peak is strong.  If not, check related
+                      indices, i.e. 2h', 2k', 2l'
+
+#
+
+
+ The DATCIN parameters must be modified
+
+#J
+      -> DATCIN
+         IMOST
+      -> M
+         "
+      -> THLIM
+         x x
+      -> 0 75
+         "
+      -> FLAG
+         x x x
+      -> 0 0 0
+      -> PSI
+         BISECT
+         x x x x x x
+
+      -> AZIMUT
+      -> 74 0 5 0 0 0       do a scan every 5degree in psi
+      -> MODE
+           ZIGZAG
+           x x x x x
+           x x x
+           xxx
+      -> SEPHKL
+           "
+      -> Ctrl/Z
+           IMOST
+      -> S
+      -> DATCON             Continue the data collection.  The data will go into
+                            the file you specified earlier.
+           H K L PSI
+      -> h'k'l' 0           the index you determined above
+      -> Ctrl/Z             to end the collection
+#
+
+
+#IData Pre-processing #
+#P
+ The output from the CAD4 must be pre-processed before it can be incorporated
+ into the CRYSTALS programs. It is transfered from the VAX
+ onto your PC and should be processed with RC93
+ as soon as possible to
+ give the unified data files. All files pertaining to each structure should
+ be archived to floppy disk.
+#IRC93#
+#P
+The program RC93 takes the raw CAD4 output and converts it to a compacted
+ and unified format. Before running the program, you will need an estimate of
+ the crystal dimensions, and a good guess at the molecular formula. The program
+ prompts for information, and generally the default answers are suitable. If
+ the main data file and the absorption profile are processed during the same run,
+ RC93 remembers the absorption coefficient, mu*t, for the minimum dimension
+ of the crystal, otherwise the user is prompted for it so that the theta
+ dependant component of the absorption correction can be computed.
+#P
+ The program is started by issuing
+#J
+      RC93
+#
+
+#IAPPENDIX CRYSTAL SYSTEMS#
+
+ For data collection, you will need to identify the crystal system. If the
+ system is higher than orthorhombic, seek assistance.  The selections depend
+ upon your assesment whether cell edges are alike, and angles are 90 or 120
+ degrees.  Look at the esds on the edges and angles, and the general `quality'
+ of the cell determination.
+
+#N 24
+#J
+ if no angles 90 then
+      if 3 angles similar and 3 sides similar then
+            RHOMBOHEDRAL
+      else
+            TRICLINIC
+      end if
+ else if 2 angles 90 then
+      if 3rd angle 120 and adjacent sides similar then
+            HEXAGONAL
+            TRIGONAL
+      else
+            MONOCLINIC
+      end if
+ else if 3 angles 90 then
+      if 3 edges equal then
+            CUBIC
+      else if 2 edges equal then
+            TETRAGONAL
+      else
+            ORTHORHOMBIC
+      end if
+ end if
+
+ If the cell is hexagonal, trigonal or tetragonal, ensure the `c' axis is unique.
+#
+
+#IAPPENDIX EQUIVALENT REFLECTIONS#
+#P
+ This table illustrates the permutations needed to generate reflections
+ equivalent to a user chosen reflection, h,k,l. Note that any or all of h,k,l
+ may be negative, and remember that -(-h) = +h, and -(0) = +0. Remember also 
+ that
+ the whole index may negated.
+#J
+
+e.g. triclinic   2,3,4 = -2,-3,-4
+        and     2,3,-4 = -2,-3, 4
+        but      2,3,4 # 2,3,-4
+
+#
+#N 46
+#J
+ SYSTEM        Unique
+               axis
+ _______________________________________________________________________________
+
+ TRICLINIC      none      h,k,l
+
+ _______________________________________________________________________________
+
+ MONOCLINIC     h         h,k,l    -h,k,l
+                k         h,k,l     h,-k,l
+                l         h,k,l     h,k,-l
+
+ _______________________________________________________________________________
+
+ ORTHORHOMBIC  none       h,k,l    -h,k,l   h,-k,l  h,k,-l
+
+ _______________________________________________________________________________
+
+ TETRAGONAL      The situation for tetragonal, trigonal and hexagonal is
+                 complicated by the possibilities of having symmetry operators
+                 in different orientations, or missing.
+                 The following list of 4 equivalent positions (plus their
+                 inverses) covers the least symmetric case. Note that since
+                 h and k interchange, only one of them need be approximately a/2
+
+               none       h,k,l    -k,h,l  -h,-k,l   k,-h,l
+
+      If the following group of reflections and their inverses are
+      equivalent to the first group, then the Laue group is 4mm.
+      If not, it is 4/m.
+
+                          k,h,l    -h,k,l  -k,-h,l   h,-k,l
+
+ _______________________________________________________________________________
+
+ TRIGONAL      The following list of 12 equivalent
+ HEXAGONAL      positions (plus their inverses) covers the most symmetric case.
+            If the measured intensities fall into two or more groups, this
+            will help you determine the real space group. Note that since h
+            and k interchange, only one of them need be approximately a/2
+
+               none       h,k,l    -h-k,h,l   k,-h-k,l   k,h,l
+                         -h-k,k,l  h,-h-k,l  -k,-h,l     h+k,-k,l
+                         -h,h+k,l  -h,-k,l    h+k,-h,l   -k,h+k,l
+ _______________________________________________________________________________
+
+#
+#IAPPENDIX REFLECTION RANGES#
+#N 28
+#J
+ SYSTEM    Multiplicity   UNIQUE   Index range
+                (m)        AXIS      h k l             Notes
+ _______________________________________________________________________________
+ TRICLINIC       2          -    -1>h -k>k -L>L
+                                 -h>h -1>k -L>L
+                                 -h>h -k>k -1>L
+ _______________________________________________________________________________
+ MONOCLINIC      4          a    -1>h -1>k -L>L
+                                 -1>h -k>k -1>L
+
+                            b    -1>h -1>k -L>L       standard
+                                 -h>h -1>k -1>L       setting
+
+                            c    -1>h -k>k -1>L
+                                 -h>h -1>k -1>L
+ _______________________________________________________________________________
+ ORTHORHOMBIC    8          -    -1>h -1>k -1>L
+
+ TETRAGONAL                                          For tetragonal and
+ CUBIC                                               cubic, the true smallest
+                                                     values may be less than 
+                                                     these.
+ _______________________________________________________________________________
+ HEXAGONAL       6          c    -1>h -k>k -1>L      Unique part may
+ TRIGONAL                                            be less than this.
+ _______________________________________________________________________________
+#
+#

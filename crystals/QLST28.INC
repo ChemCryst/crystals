@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM28(1),L28MN) 
+

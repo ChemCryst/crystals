@@ -1,0 +1,15 @@
+
+echo building $1.obj
+crysedit $SRCDIR/$1.src $1.for code=$EDCODE macro=$CRYSSRC/cryssrc/macrofil.mac > $CRYSBUILD/errors/ed$1.lis || builderr CRYSEDIT_ERROR_CRYF $1  $CRYSBUILD/errors/ed$1.lis
+
+
+if [ $1 = "lapack" ]; then
+  g77 -c $1.for -fexceptions -fno-automatic -fno-globals -Wno-globals -o frel/$1.obj -O0 || builderr F77_ERROR_CRYF $1
+  echo "Building unoptimised lapack"
+else
+  g77 -c $1.for -fexceptions -fno-automatic -fno-globals -Wno-globals -o frel/$1.obj -O2 || builderr F77_ERROR_CRYF $1
+fi
+
+g77 -c $1.for -fexceptions -fno-automatic -fno-globals -Wno-globals -o fdbg/$1.obj -g || builderr F77_ERROR_CRYF $1
+
+    

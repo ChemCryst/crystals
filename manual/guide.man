@@ -1,0 +1,2421 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TCrystals User Guide#
+#Cguide#
+#ZTHE CRYSTALS USER GUIDE#
+#J
+*************************************************************************
+This document is still under revision
+*************************************************************************
+#
+#PThe CRYSTALS package is being developed to meet the need of both
+ experienced and new crystallographers. Because it is  a very large system,
+ the range of options available  may daunt newcomers. 
+ For such users,  CRYSTALS is distributed with a worked example,
+ on-line HELP files (which may of course
+ be printed out) and this Guide. 
+#PThe new \SCRIPT instructions are prototypes
+ for an interogative interface, in which the user is offered short menus
+ of commands, and prompted for data. THESE ARE STILL ONLY PROTOTYPES
+   to what we hope will be a computer aided teaching system, but even in their
+ present form they may help  beginners get going.
+#PThere is a myth that CRYSTALS is more difficult to use than SHELX. We hope
+ the following example will correct this misunderstanding. This
+ example does not, of
+ course, show any of the advanced features of CRYSTALS nor the easy links
+ between CRYSTALS  and direct Methods programs.
+#
+#IEmulation of SHELX#
+#DA Worked example#
+#PCRYSTALS will not emulate SHELX completely - in particular there is no
+ direct methods code, but for most other SHELX operations, there is a good 
+ correspondence plus many other options.
+ The input to CRYSTALS is longer, but the directive names
+ should make it easier to remember what must be input. Once the basic data
+ has been loaded, many operations are very quickly requested.
+#
+#PIn these examples, comments have been added to the data file in lower case.
+#
+#DSHELX example#
+#PThis example is based on a SHELX manual example. The space group is Pbcn
+ with four molecules of C13,H8,O,I2 per cell. Systematic absences are
+ rejected, equivalent reflections averaged, and reflections less than 2.5
+ sigma(F) suppressed. The structure is refined by 4 cycles of full matrix
+ least squares with anisotropic I and weight 'optimisation'.
+ C7 and O1 lie on special positions with crystallographic
+ site occupancy of .5. Since the chemical occupancy is unity, no special
+ action is needed in CRYSTALS.
+ C1, C3 and C5  are used to define a regular hexagon
+ which is refined as a rigid group. Bond lengths, angles and esd's are 
+ computed,
+ followed be a weighted difference map, peak search and molecule assembly. The
+ atoms and peaks are plotted on the line printer, and 2 copies of the structure
+ factors are printed. Site occupation factors are 1 and U[iso] is .05 for the
+ phenyl group.
+#N  50#
+#J
+ TITL 3,3'-DIIODOBENZOPHENONE
+ CELL 0.71069 4.05 11.74 24.80 90 90 90
+ SYMM .5-X, .5-Y, .5+Z
+ SYMM .5+X, .5-Y, -Z
+ SYMM -X, Y, .5-Z
+                    scattering factors built into program
+ SFAC C H O
+ SFAC I 20.1472 4.347 18.9949 .3814 7.5138 27.766 2.2735 =
+     66.8776 4.0712 -.726 1.812 7246 1.5 (MOKALPHA)
+ UNIT 52 32 4 8
+ HKLF 4
+                                minimum F/sigma(F) is 2.5
+ MERGE -2 2.5
+ L.S. -4
+ WGHT -.001 2
+ FVAR .879 1.0
+              fix the I occupation number, and refine the 
+                          anisotropic temperature factors
+ ANIS 1
+ I 4 .342 .158 .044 11 .054
+                            generate a phenyl nucleus and 
+                                     refine it as a group
+ AFIX 76
+ C1 1 .009 .074 .197
+                                             a dummy atom
+ C2 1 0 0 0
+ C3 1 -.128 -.082 .139
+                                             a dummy atom
+ C4 1 0 0 0
+ C5 1 .156 .018 .103
+                                             a dummy atom
+ C6 1 0 0 0
+                                            refine freely
+ AFIX 0
+                          fix next two atoms at x=0,z=.25 
+                       with fixed occupation number of .5
+ C7 1 10 .136 10.25 10.5 .056
+ O1 3 10 .239 10.25 10.5 .071
+ BOND .5
+                           specify details of Fourier map
+ FMAP 2 1 13 50 0.3
+                         specify volume of map to compute
+ GRID -5 -2 -1 5 2 1
+                            assemble molecule and plot it
+ PLAN 15
+ LIST 1 -2
+ END
+#
+#N  50#
+#DCRYSTALS example#
+#PThe corresponding CRYSTALS input file. The reflections are in the file
+ REFLECTIONS.DAT
+#J
+ \TITLE 3,3'-DIIODOBENZOPHENONE
+ \ load the basic crystallographic data. 
+ \ This is only done once.
+ \QUICKSTART
+ CELL 4.05 11.74 24.80
+ SPACEGROUP P b c n
+ CONTENT C 13 H 8 O I 2
+ DATA 1.5418 I
+ FILE CRDIR:REFLECTIONS.DAT
+ FORMAT (3F4, 2X, 2F8.2)
+ END
+ \ set the minimum I/sigma(I) to be used. 
+ \ This can be reset at any time
+ \LIST 28
+ MINIMA RATIO=2.5
+ \LIST 5
+ OVERALL SCALE=.879
+ READ NATOM=6
+ \ Input the known model. 
+ \ Some of the 'keyword =' are redundant
+ ATOM I 1 U[ISO]=.054 X=.342 Y=.158 Z=.044 
+ ATOM O 1 U[ISO]= .071  0 .239 0.25 
+ ATOM C 7 U[ISO]= .056 0. .136 0.25 
+ ATOM C 1 X= .009 .074 .197
+ ATOM C 3 X= -.128 -.082 .139
+ ATOM C 5 X= .156 .018 .103
+ \ generate the phenyl nucleus
+ \REGULARISE REPLACE
+ GROUP 6
+ OLD C(1) C(2) C(3) C(4) C(5) C(6)
+ PHENYL
+ \LIST 12
+ FULL I(1,X'S,U'S) C(7,X'S) O(1,Y) O(1,U[ISO]) UNTIL C(6)
+ GROUP C(1) UNTIL C(6)
+ \ generate the special position restraints
+ \SPECIAL
+ END
+ \SFLS
+ REFINE
+ REFINE
+ REFINE
+ \LIST 4
+ \ automatic re-weighting before the final cycle
+ SCHEME 10 NPARAM=4
+ \SFLS
+ REFINE
+ \DIST
+ E.S.D YES
+ \ compute final structure factors for the latest model
+ \SFLS
+ CALC
+ \FOURIER
+ MAP TYPE=DIFF
+ REFLECT WEIGHT=SIM
+ PEAKS HEIGHT=.3 NPEAK=50 
+ \PEAKS
+ \ assemble a molecule
+ \COLLECT
+ \ plot all the atoms and peaks onto their best plane
+ \MOLAX
+ ATOM FIRST UNTIL LAST
+ PLOT
+ \ analysis of variance
+ \ANALYSE
+ \ reflection listing
+ \REFLECTIONS
+ \FINISH
+#
+#IFacilities available#
+#
+#PCRYSTALS contains routines for performing most parts of a structure analysis
+ with the exceptions of diffractometer data pre-processing, analytical 
+ absorption corrections and direct methods.
+ Excellent programs for direct methods are available from 
+ groups specialising in those areas, and initial data processing tend to be
+ rather site specific. 
+#PThe code has been written to be efficient in the maths and data handling,
+ and robust and informative in the user interaction. There are no intrinsic
+ limits on the numbers of atoms, reflections or refined parameters. 
+ Only one array need be redimensioned to increase the size of matrix handled.
+ The current limit is 512 variables in a single block. However, such a task
+ would probably be ill-considered. CRYSTALS has been used to refine large
+ molecules, such as Insulin.
+#
+#PPlain language keyed free format input, unified command syntax 
+ for batch and interactive modes, parameter defaults, data checking,
+ plain text error messages, 'data subroutine' libraries, data 
+ libaries, data-base management and an optional interogative user 
+ interface.
+#
+#PExtensive documentation, including a manual, this Guide,
+ user modifiable HELP files, interactive querying for instructions 
+ and keywords, examples and frequently asked questions.
+#
+#PSimple syntax for refering to individual atoms, and to groups of
+ atoms, with or without the application of symmetry.
+#
+#PData reduction of photographic and diffractometer data, including
+ empirical absorption corrections. Application of decay curves,
+ rejection of systematic absences, merging of equivalent reflections
+ with special treatment of outliers, processing of both X-ray and
+ neutron diffraction data.
+#
+#PStructural parameter editor for modifying individual parameters,
+ atoms or groups of atoms. Modifications available include: 
+ addition, subtraction, multiplication, division of parameters;
+ application of matrices to coodinates; renaming, deletion, reordering
+ generation of atoms; application of symmetry operators; selection by
+ type or parameter value; interconversion between U[aniso] and U[equiv]
+#
+#PStructural analysis and model building. Best line and plane through
+ groups of atoms, projection of other atoms onto these planes, forcing
+ planarity onto parts of structure. TLS analysis of groups of atoms,
+ forcing U[aniso] for groups to conform to rigid body motion. Comparison
+ between a group of atoms and another group, a geometric figure or
+ structure from the literature. Model a group of atoms onto another
+ group, figure or structure. Geometric hydrogen and other atom placing.
+#
+#PReflections to be skipped or included are selected individually or
+ by tests. Testable parameters include Fo, Fc, sigma, I/sigma(I), phase,
+ sin theta, index, zone, etc. The test conditions can be changed at any 
+ time without loss of data.
+#
+#PRestrained refinement. Distances and angles restrained to numeric
+ values or their mean values; components of U[aniso] along bonds;
+ planarity of groups; sums and averages of parameters; shift limiting
+ restraints; and user defined FORTRAN-like expressions given as data.
+#
+#PHighly flexible least-squares process. User can define up to 256 blocks
+ per cycle. Blocks can be as small as one parameter per block, one atom
+ per block, or full matrix, or any intermediate combination of parameters.
+ Any atom parameter shifts (X's, U's, Occ) can be equivalenced, linked, 
+ made to ride. Parameters can be redefined as sums and diferences. Atoms
+ can be refined as rigid groups. Shift multipliers can be applied, the
+ current matrix can be re-used, structure factors need only be calculated
+ for partial structures. Data for up to 8 twin components can be refined.
+ Refinable parameters include overall scale, overall Uiso, Dummy Uiso,
+ Larson extinction, Rogers polarity, Flack enantiopole, batch scales,
+ layer scales, twin components, x, y, z, Occ, Uiso, Uaniso.
+#
+#P15 weighting schemes are available, including statistical, unit, Hughes
+ Cruickshank and Dunitz schemes. Weighting optimisation via a Chebychev
+ polynomial, checking for outliers by the method of
+ Tukey and Prince,
+ can be used to to get 'correct' parameter esds. Analysis of
+ residuals by Fo, sintheta, index, class, parity.
+#
+#PFourier maps are computed with any number of points at any resolution
+ along x, y, z. Map types are Fo, Fc, Fo-Fc, 2Fo-Fc, Fo**2, Fc**2. Maps
+ can be weighted, including Sim weighting. Peak search gives indication 
+ of peak quality. Automatic Fourier refinement, peak rejection  and 
+ molecule assembly.  Lineprinter and VDU plots of atoms and peaks.
+#
+#PComprehensive distance and angle calculation, with selection by atom 
+ type, interatomic distance, connectivity, inter molecular, intramolecular.
+ Symmetry included. Esds from the full variance-covariance matrix. Torsion
+ angles, planes, lines, TLS (with bond correction), principal axes of 
+ Uaniso.
+#
+#PPublication listings of atomic parameters, distances, angles, torsion
+ angles, reflections.
+#
+#N  38#
+#IA strategy for structure analysis#
+#
+#PAn over all scheme for a well behaved structure analaysis is:
+#J
+ 1. Select the best crystal you can find. This is your primary
+ data source, and determines the quality and ease of the rest
+ of the procedure. Complex mathematics is a poor substitute 
+ for good experimental practices.
+ 
+ 2. Collect the best data you can. Collect some (at least 10%)
+ equivalent reflections for an indication of the data quality.
+ Collect systematic absences for glide planes  and screw axes.
+ Collect systematic absences for centred cells out to theta =
+ theta(max)/2.
+ 
+ 3. Preprocess the reflection data with some local software to 
+ get a file of h, k, l, I, sigma(I), and setting angles if 
+ these are needed for some geometry dependent absorption 
+ correction.
+ 
+ 4. Use CRYSTALS to do data reduction, and submit a Direct 
+ Methods job with MULTAN, SHELXS, or SIR.
+ 
+ 5. If Direct Methods fail, check the data, space group, 
+ crystal density, data reduction process. If these are all 
+ OK, use CRYSTALS or SHELXS to compute a Patterson  map. 
+ Seek help.
+ 
+ 6. Input the trial structure to CRYSTALS and perform Fourier 
+ refinement. IT IS IMPORTANT to realize that though least 
+ squares refinement is often used early in a refinement, there
+ is no guarantee that it will converge, and in fact the results
+ may actually be mis-leading. Proceed to refinement with care.
+ 
+ 7. Compare the final results critically with your expectations.
+ An unusual effect in part of the structure, even if of no 
+ direct interest for the current investigation, may be 
+ symptomatic of a faulty refinement.
+#
+#IOver-view of CRYSTALS#
+#
+#PThe CRYSTALS system can be used in many ways.
+ The program can be used in batch and interactively - the best
+ solution probably being a combination of both modes. Each CRYSTALS job
+ may be made independent of preceeding jobs by inputing all numeric data
+ from card image files at the start of each job, or the analysis may be
+ carried out as a cumulative process, with the results of each stage 
+ being held in a binary data file. Data is inserted into this file
+ by reading it from a card image file, from the terminal, or as a result
+ of a succesful calculation. Data in this file can always be listed to 
+ a terminal or printer, or output as a card image file for archiving and
+ communication with other programs.
+#PCommands to CRYSTALS may include some numeric data as part of the
+ command, but in general they require that the data has been input
+ previously. The crystallographic routines check for the existence of
+ the necessary data before they start computations, and generate
+ error messages if the data is not available. Batch jobs 
+ consisting of multiple commands, which fail 
+ through lack of some resource (time, disk space),  may usually be 
+ restarted after the last succesful command. 
+#PThe numeric data for CRYSTALS is collected into groups of related 
+ parameters, called LISTS. The data is both stored on the disk
+ and represented to the user as LISTS. Thus LIST 5 contains all the refinable
+ parameters, so that the model under  refinement is often refered to as
+ 'LIST 5'. In their character representatons, these LISTS may either be
+ typed directly into a running CRYSTALS system, or put into character
+ files using some method provided by the computers operating system. 
+#PThe following table, which can be displayed online from a running
+ CRYSTALS program by typing \MANUAL LISTS, gives the function of most lists.
+#J
+ Lists marked * cannot be input by the User
+ 
+ List  Volume   Type of data
+ Number  Name
+         
+   1    VOL2    Cell parameters
+   2    VOL2    Unit cell symmetry
+   3    VOL2    Atomic scattering factors
+   4    VOL5    Weighting parameters
+   5    VOL4    Atomic parameters
+   6    VOL3    Reflection data
+  10*   VOL6(4) Peak coordinates from Fourier
+  11    VOL5    Least squares matrix
+  12    VOL5    Refinement directives
+  13    VOL2    Crystal and collection data
+  14    VOL6    Fourier directives
+  16    VOL5    General Restraint instructions
+  17    VOL5    Special Restraint instructions
+  22    VOL5    Refinement directives in internal format
+  23    VOL5    Structure factor calculation control list
+  24*   VOL5    Least squares shift list
+  25    VOL5    Twin component operators
+  26*   VOL5    Constraints in internal format
+  27    VOL3    Diffractometer scales
+  28    VOL5    Reflection condition list
+  29    VOL2    Contents of asymmetric unit 
+                and elemental properties
+  31    VOL2    Cell parameter E.S.D.'s
+  33*   VOL5    Internal - Refinement control
+#
+#PThis table, available via \MANUAL COMMANDS, lists the commands currently
+ implemented in CRYSTALS.
+#N  39#
+#J
+              Available INSTRUCTIONS
+ 
+ Introduction to the system
+ 
+ \FINISH       \ text     \TITLE        \COMMANDS     
+ \HIDE         \SHOW      \LOG          \USE          
+ \PAUSE        \TYPE      \MANUAL       \DISK      
+ \PURGE        \RELEASE   \SUMMARY      \FOREIGN
+ 
+ Initial data input
+ 
+ \SPACEGROUP  \COMPOSITION \QUICKSTART
+ 
+ Reflection handling
+ 
+ \HKLI         \LP        \SYSTEMATIC   \SORT         
+ \MERGE        \REORDER   \REFLECTIONS  \DIFABS
+ 
+ Atomic and structural parameters
+ 
+ \EDIT         \CONVERT   \HYDROGENS    \REGULARISE
+ 
+ Structure factors and refinement
+ 
+ \SFLS         \LIST 22   \LIST 26      \SPECIAL      
+ \CHECK        \TRIAL     \ANALYSE      \WEIGHT       
+ \CLEAR
+ 
+ Fourier maps
+ 
+ \FOURIER      \SLANT     \PEAKS        \COLLECT      
+ \REGROUP
+ 
+ Analysis of results
+ 
+ \AXES         \DISTANCES \MOLAX        \TORSION      
+ \PARAMETERS   \ANISO
+#
+#IThe SCRIPT processor#
+# 
+#PBy default, interactive running of CRYSTALS starts up in 'SCRIPT' mode,
+ in which the user is offered short menues of possible actions, and prompted
+ for required data. The action of the program, including the  questions posed,
+ the defaults offered and the actions taken, is under the joint control
+ of the user and of data files called SCRIPTS. However, they are only data, and the users are encouraged to modify and
+ extend them. Changing these files CANNOT corrupt the CRYSTALS program, though
+ they can of course be made to corrupt data.
+#PThe master script, CONTROL, calls other scripts in a tree like way, and is
+ perhaps useful for beginners. However, if the user knows the name and
+ function of a sub-script, he can enter it directly from command level with
+ the command '\SCRIPT scriptname'. This list (June 1988) shows what scripts
+ are available.
+#N  16#
+#J
+ CONTROL        CRYSHELP       DATRED         DEVELOP        
+ DIFABS         DIFFOUR        DIRECT         EDEMAP         
+ EDLIST1        EDLIST29       EDPEAKS        ENDLSQ         
+ EXECUTE        FINISH         FOURDEVEL      FOURREF        
+ GENERAL        HELP           INCAD4         INFORN         
+ INHKLI         INITIALLSQ     INLIST1        INLIST12       
+ INLIST13       INLIST14       INLIST2        INLIST23       
+ INLIST29       INLIST3        INLIST5        INPUT          
+ INSPACE        LISTS          LOOK           MITHRIL        
+ MODIFY         MULTAN         NEWMODEL       NEWSTRUCTURE   
+ PATTERSON      QUESTIONS      REDFOR         REFINE         
+ RENAME         SHELXS         SIR            SOLVE          
+ SPAWN          STARTUP        TYPE           USE            
+ WEIGHTS        
+#
+#IRunning CRYSTALS#
+# 
+#PCRYSTALS can be run in a mixed mode. In this mode, the user initiates an
+ interactive job and then via the USE instruction directs CRYSTALS
+ to take input from the nominated file. If the file ends with \USE CONTROL,
+ control is returned to the interactive terminal, where the user may issue
+ the next instruction, which indeed could be another \USE. 
+ USE files may call other files, to a depth of 5, though any file already
+ being USEd may not be called from another in-use USE file (the data stack
+ may not be used recursively). Note that the file being USEd need not be a
+ complete LIST or INSTRUCTION block. It can for example be a single line of
+ data, such as a scattering factor to be included into a LIST 3 from a library.
+ The USE instruction is also available in batch mode.
+#YEXAMPLE#
+#PThe user has files of the type 'atom.cu' containing the scattering factor
+ for the given atom with the anomalous component for Cu radiation.
+#N  14#
+#J
+      C.CU contains:
+      
+ SCATT C 0 0 1.930 12.72 1.878 28.65 1.57 .59 .37 65.03 0.25
+# 
+#P  The CRYSTALS commands are:
+#
+#J 
+ \LIST 3
+ READ NSCAT=3
+ \USE H.CU
+ \USE C.CU
+ SCATT F 0 0 3.304 11.265 3.017 4.665 1.357 .338 .836 27.99
+ END
+#
+#PThe user has in his file store four files: his DISK file, his initial
+ data (LISTINPUT), his compressed reflections (PLANES), and his current
+ parameters (ATOMS). His aim is to compute structure factors.
+#IOPTION 1#
+# Use a system facility (such as an editor) to append PLANES and
+ ATOMS to LISTINPUT, and add a final instruction to compute structure factors.
+ Use the resulting file (BIG) as the control file for a batch job.
+#IOPTION 2#
+#PInitiate an on-line job with BIG as the control file. In an on-line
+ job the user is computing in real time, but the course of the calculation
+ is pre-determined by the control file.
+#IOPTION 3#
+#PInitiate an interactive job and issue the instruction \USE BIG.
+ An interactive job is one in which control returns to the
+ users terminal at the completion of each task
+#IOPTION 4#
+#PIssue 4 sequential batch jobs being respectively controlled by
+ LISTINPUT, PLANES, ATOMS and a file requesting the structure factors.
+#IOPTION 5#
+#PInitiate an interactive job issuing sequentially \USE LISTINPUT,
+ \USE PLANES, \USE ATOMS and then the instruction to compute structure factors.
+#IOPTION 6#
+#PInitiate an interactive job and type in all the information from a
+ plain-language listing!
+# 
+#PThe last option is normally the least attractive. However, in the quite
+ possible situation where the reflections are available in a machine-readable
+ form and the atomic coordinates and other data are available in
+ plain-language, the user might well introduce his reflections via a
+ \USE command and type the other data directly into the system.
+ Such a procedure has an advantage
+ over preparing the data file independently (using an editor for example) since
+ CRYSTALS will monitor the input. However, since only syntactically correct
+ information is transfered to the DISK, typing errors lead to the loss
+ of the current item of data. CRYSTALS provides a mechanism  for retrieving
+ the partially correct data through the LOG file. Unless the user specifically
+ inhibits it, all data input to CRYSTALS is copied verbatim to a LOG file.
+ Because this is an exact copy of instructions presented to the system, it
+ can itself be used as a control file for a subsequent job. If it is error 
+ free, it can be used unmodified, otherwise a service editor may be used to
+ correct it. The basic data file for a structure can thus be assembled
+ by running an interactive job, hooking in via \USE previously archived
+ data such as scattering factors and space group information, and typing
+ in data specific to the compound. The LOG file produced can then be edited
+ to remove the \USE lines leaving only those lines either read from files
+ or input directly. This file would probably end \USE LAST so that it could
+ itself be USEd later. 
+#
+#YThe disk file#
+# 
+#PDuring a given run of CRYSTALS, the program MUST be linked to a 
+ direct access file (DISK) holding the 
+ data-base for the current structure. This file provides the mechanism
+ for data transfer between different stages of the task, one stage of
+ which may well be the input of the data itself. On sites where users
+ are allocated sufficient file store to preserve their DISK file between
+ jobs, the DISK also  provides a mechanism for communicating between
+ jobs.
+ In fact, if the DISK is preserved, CRYSTALS makes no distinction between
+ successive tasks run in the same job and the same tasks
+ run in successive jobs.
+ Instructions exist in CRYSTALS for 'punching' out files containing reflections
+ in various formats, including a compressed format, and the structure 
+ coordinates.
+ In most systems, the 'punched' files will remain in the filestore as character
+ (ASCII) files  in a format suitable for direct re-input to a 
+ subsequent job. If therefore, the user keeps a file of his initial data, such
+ as cell parameters and scattering factors, and terminates each job by 
+ outputting his current parameters as a 'punched' file, he is in a
+ position to create a scratch DISK file for the 
+ duration of a job, and then delete it at the end. Even if the user is able to
+ preserve his DISK between jobs, it is prudent to punch out the parameters
+ from time to time and keep these in a safe place, together with the initial
+ data and the compressed reflections.
+#YThe output files#
+#PCRYSTALS plain-language output to a number of devices. Depending on the
+ installation and mode of use, one or more of these devices may be a VDU.
+ In the list below, the default file extension is given in parenthesis.
+#IPRINTER  (.LIS)#
+#PThis is the main output stream for the system, and contains detailed
+ accounts of the calculation performed.
+#IMONITOR  (.MON)#
+#PThis is an abbreviated output, suitable for directing to the VDU in online
+ or interactive modes. For batch mode jobs, it provides a summary of the
+ computation performad.
+#IPUNCH    (.PCH)#
+#PUse for ouputting LISTs in a format suitable for later re-input to CRYSTALS.
+ These files can be used for archiving or communication with other systems.
+ (This is a FORTRAN card image file, so column 1 may not be displayed on
+ some operating systems - it is there though)
+#ILOG      (.LOG)#
+#PA verbatim copy of the input presented to CRYSTALS. It can be used as 
+ input for a subsequent job, and is thus a mechanism for rescuing partially
+ correct user input.
+#IERRORS   (.ERR)#
+#PThis only contains operating system error information.
+#
+#PThe \USE instruction permits the user to feed in input from several
+ different files. The \RELEASE instruction permits the user to disconnect
+ the current PRINTER,PUNCH or MONITOR files from CRYSTALS (new ones are
+ automatically connected). The \TYPE instruction permits the user to
+ examine any file available to him, including a previously RELEASEd file,
+ so that he may examine the output from some earlier part of a task without
+ exiting from CRYSTALS. A long batch job can RELEASE its MONITOR file
+ after, say, each round of refinement so that the user can see how the job
+ is progressing. 
+#YThe work files
+# 
+#PCRYSTALS uses a number of work files in the course of most calculations. Of
+ particular interest are the sequential files. Their use in initial reflection processing is explained in
+ the Manual. The system manager will provide a
+ suitable JCL procedure 
+ or program environment to assign these files to scratch files. The user
+ should however be aware of the existence of these files on systems where
+ file store quotas operate. Similar watch should be kept on output files if
+ these are attributed to the user while waiting to be listed.
+#PIn general, however, on a well regulated system the user should normally
+ only be concerned with his primary source of reflection data, his initial
+ crystallographic data, his DISK file and those files he creates
+ for controlling individual jobs.
+#YThe HELP facility 
+#PThe help facility in CRYSTALS is neither a computer-aided learning
+ facility nor a substitute for the manuals, but rather an aide-memoire
+ for the interactive user.
+#PThe instruction \HELP HELP lists those facilities for which some 
+ descriptive help is provided in the form of hints or tips. 
+#PThe instruction \MANUAL INDEX explains where definitions
+ of LISTS and INSTRUCTIONS can be found in the manual. The manual is
+ indexed by Volume, Chapter, Section and Page number.
+#PIf he can remember which INSTRUCTION he needs
+ to use, the \COMMAND facility will tell
+ the user  what DIRECTIVES, KEYWORDS and
+ PARAMETERS are available for that INSTRUCTION.
+ Where appropriate, it will also show default values.
+ In addition, it also gives the values of some data-base and system parameters
+ mainly of use to programmers.
+#PThe 'query' facility enables the user to interrogate the data-base.
+ Lines beginning with '?' are not interpreted as data, but generate brief
+ output from the database.
+ The user curious about the workings of the 
+ input processing routines should read the volume  DATABASE in the manual.  
+#
+#YThe manual#
+# 
+#PThe manual is extensive, but its completeness means it is the best place to look for detailed instructions and more unusual commands. The manual  occasionally refers to 'default' values. These values are set
+ at the discretion
+ of the system manager, who may well wish to change them for specfic reasons. 
+ The file COMMANDS should be available to show the values currently installed,
+ and the user can always use the \COMMAND facility to obtain unequivocal
+ values.
+#YSYSTEM instructions#
+#PThe manual defines the main system INSTRUCTIONS:
+#
+#N   5#
+#J
+ \FINISH \TITLE     \ comment   \SET     \OPEN      
+ \HELP   \USE       \PAUSE      \RELEASE \TYPE    
+ \MANUAL    \$
+#
+#PThe instruction 'SET MONITOR OFF'
+ might well be the first instruction in a file
+ to be USEd to recreate a DISK file, 
+ and 'SET MONITOR ON' the penultimate. They would inhibit the listing of
+ information the user knows to be valid, and restore it before returning
+ to the main control stream. Comment lines,
+ which begin \<space>, can be inserted anywhere in the control channel
+ data except in the body of a LIST 6 (reflections), and should be 
+ included in all files that are to be  archived.
+#PThe introduction also defines the LIST input and output instructions:
+#
+#J
+ \LIST     \PRINT     \PUNCH     \SUMMARY
+#
+#PThe \LIST instruction is used to introduce a discrete group of data, called
+ a LIST, into CRYSTALS, which validates it and then stores it on the DISK.
+ Lists can be introduced to the DISK in any order
+ and whenever the user likes,
+ provided that the lists required for a calculation are on the DISK when that
+ calculation is asked for. The program checks that the necessary lists are
+ present before the calculation is started, and warns the user of omissions.
+ All lists stored on the DISK can be PRINTed, though the format is rarely
+ useful for publication purposes (for that, see RESULTS). These listings do
+ however show the value associated with every element of the LIST, including
+ those taken by default or modified by a calculation. 
+ \SUMMARY produces a summary of the required LIST.
+ The \PUNCH instruction
+ produces character files suitable for archiving or re-input to CRYSTALS.
+#PThe DISK house-keeping can be altered by the instructions:-
+#
+#J
+ \DISK     \PURGE
+#
+#PWhen the DISK is created,  special code is run to allocate space in the
+ file to hold two indices, the DISK index and the CURRENT index.
+ An entry is put into the DISK index for each LIST subsequently added to the
+ DISK. In general, when a new LIST is input or generated by calculation
+ or modification, this new list is 
+ put after the last  existing list on the DISK, and its address entered
+ into the DISK index. This index will now contain two or more entries for
+ lists of the given type, and so that subsequent calculations will know
+ which one to use, the address of the most recent is inserted into the CURRENT
+ index. Thus the CURRENT index is of fixed length, with one slot for each 
+ possible list type, and the DISK index is of variable length with a slot
+ for each list present on the DISK. The DISK index itself consists of fixed
+ length blocks. In the event that a block becomes full, a new block is chained
+ to the old one. This new block will be after the last list which was written.
+ The indexing of the DISK, and hence the addressing of the lists, may become
+ undefined if the last DISK index block extends beyond the physical end of the 
+ file. Neither the DISK nor the CURRENT index is updated until a list is 
+ safely written to the DISK, so that in the event of a system failure or
+ a crash of the program, no evidence remains of the incomplete list, i.e. 
+ the integrity of the DISK is preserved. Exceptions to this are during
+ access to the reflection list (LIST 6) and the normal matrix (LIST 11).
+ Because these lists are so large, the system will either try to update or
+ overwrite them. If a job fails during an update, the list cannot be accessed
+ again until a job has been run to complete the update. For example, if
+ a job fails during a round of least squares, there may be some Fc values
+ present for the current atomic parameters, and some left from a previous
+ calculation. The user will not be able to access LIST 6 for, say, a FOURIER
+ synthesis until he has recomputed structure factors for all the reflections.
+#PBecause new lists are usually added to the end of the DISK, the user has
+ on his DISK a short term archive and record of the calculations he has done.
+ In order to return to some previous state of the calculation, he merely has
+ to enter the address of the list he wishes to use into the CURRENT index.
+ To simplify this, each list is given a SERIAL number when it is written to the
+ DISK. The serial number for LIST 5 (parameters) is usually
+ displayed whenever the list is written to the
+ DISK, and the user can RESET a LIST to a previous SERIAL 
+ if it is prefered to the current list. Other lists can be monitored by
+ the instructions \SET WATCH and \SET LIST.
+ Eventually there may be so many versions of lists on the DISK
+ that it risks becomming full. The user can PURGE his DISK of old lists, only
+ the current or spacially marked
+ ones remaining. If there are some particularly important early
+ versions, the user can RETAIN them during the purge. A purge rewrites
+ the required files at the beginning of the DISK, releasing space for new ones.
+ It does not physically shorten the file. During a purge the DISK is in a very
+ delicate state, possibly with some of the vital information only existing
+ in the computer memory. A machine or job failure during a purge could well
+ produce a DISK file that is unusable. The system may during certain types
+ of machine or calculation failure mark lists as being in error, or alter
+ their write/overwrite ststus. Such lists cannot normally be accessed for
+ calculations, but if the user is convinced he understands why the flags were
+ set, he can if he wishes reset them with MARK or USAGE.  Thus the status
+ of LIST 6 may reasonably be reset if a failure occurs during the calculation
+ of structure factors, since the Fo values will still be valid, and new Fc
+ values can be recomputed. It would be quite unreasonable to reset the status
+ of a LIST 6 marked as in error during data reduction. The EXTEND directive
+ in \DISK allows the user to control the growth of the disk file.
+# 
+#IThe environment#
+# 
+#PIn addition to being familiar  with the organisation of CRYSTALS, the user
+ will profit from being familiar with his operating environment. In particular,
+ a fluency with the system editor will simplify many tasks. Editors with
+ means of repeating blocks of instructions may prove particularly useful
+ for processing large files, such as reflection lists, and should be mastered.
+ The facilities in CRYSTALS for modifying atomic parameters are very powerfull,
+ but the user should always be alert for ways of achieving particular results
+ by using system editors if that would be more efficient.  It is important
+ to see CRYSTALS as only part of the whole system available to the user.
+ On systems offering hierarchic filenames, much of the management and control
+ of files for different users and structures can be automatically achieved
+ by intelligent use of system services. It is the system manager's task to
+ provide the JCL procedures needed to profit from the system services,
+ and the users task to understand them.
+#
+#ZGETTING STARTED#
+#
+#PThe CRYSTALS system contains no routines for initial processing of the 
+ user's raw diffractometer data. Some other program must be used to prepare
+ a file containing at least h,k,l and I for each reflection. If there is a
+ serial number or X-ray exposure time
+ associated with each reflection, the reflections need not be 
+ on a common scale, and a list of scale factors can be input to CRYSTALS
+ (LIST 27) to perform the scaling as a function of serial or time.
+ If reflections fall into a number of
+ distinct batches each on its own absolute scale
+ (from two crystals for example)
+ a batch serial number may be associated with each reflection,
+ and batch scale factors refined later during least-squares.
+ There is no mechanism provided for extracting scale factors from intersecting
+ data sets (Hamilton, Rollet, Sparks, Acta Cryst (1965) 18, 129). If absorption
+ corrections are going to be applied, the user can either let CRYSTALS
+ compute the reflection setting angles, or if a non-standard geometry was used
+ he can input the actual observed angles.
+ If the user wishes to use the standard
+ deviations of his reflection in some future calculation, they should be
+ provided in the input data and keys set to store them on the DISK.
+#PIf Patterson methods are not the most suitable for solving the structure,
+ the user must use some other program (for example SIR, SHELXS, MULTAN). 
+ The instructions \PUNCH 6 and \FOREIGN enable
+ structure factors to  be output
+ from CRYSTALS after data reduction in a variety of fixed and variable
+ formats, some suitable for direct input to other programs.
+#
+ The compressed format provides a suitable method for economical archiving  
+ of the reflections. This file could perhaps be appended to a file containing
+ the other basic data for the structure, thus providing a source for rebuilding
+ the DISK file should that be necessary. From time to time the user could 
+ append his latest coordinates to this file . 
+#
+#YINITIALISATION file#
+#POn program startup, CRYSTALS tries to obey an initialisation file,
+  CRYSINIT.DAT, if it exists. This file may contain any valid CRYSTALS
+ commands. Typically it contains 'system' commands like \SET <parameters>.
+ It may also contain instructions to perform disk house keeping, or pass
+ control to other files. In particular, the command \USE 
+ CRDIR:CRYSINIT.DAT will pass control to a CRYSINIT file in the current 
+ subdirectory, so that different subdirectories can have different
+ initialisation files. The commands \USE CONTROL passes control to the 
+ terminal or batch control file without obeying futher CRYSINIT commands,
+ and can be used to terminate the SCRIPT mode of working. A command like
+ \USE CRDIR:INITIAL.DAT causes the file INITIAL to be processed, and so
+ provides a mechanism for loading the disk file on systems where it cannot
+ be preserved between jobs.
+#
+#YThe basic data file
+# 
+#PThe basic data file contains those data which are unlikely to change 
+ during the course of the refinement. If subsequent events indicate that
+ the original data were in error (for example, space group ambiguity) the
+ new data could be appended to this file so that a record is kept of the
+ initial tries. Details of most of the LISTS are found in VOL2,  INITIAL.
+#N  30#
+#P
+ The basic data file should contain:-
+#J
+ TITLE   A line giving the compound name, source, formula, 
+          date etc.
+ LIST 1  The cell parameters. 
+ LIST 2  The space group information. This is more 
+          conveniently input with the SPACEGROUP command.
+ LIST 3  The scattering factors. This list may contain 
+          coefficients for atom types not in the current 
+          structure, but since every atom type entry occupies 
+          space in the users DISK, it would be unwise to use
+          a single LIST 3 containing more than a dozen atom 
+          types, unless the structure contained about that 
+          many different atom types.
+ LIST 4  The weighting scheme. The default is unit weights.
+          Statistical weights are also available, but they
+          are rarely suitable for the least-squares refinement 
+          without extensive modification (Huml, Computing in 
+          Crystallography, (1980), 12.15,  Indian Academy of 
+          Sciences, Bangalore). 
+ LIST 13 Details of the data collection procedure.
+ LIST 14 The Fourier map limits. Remember the unique volume for
+          a Patterson synthesis may be different to that for a 
+          Fourier. Both are usually set with the SPACEGROUP 
+          command.
+ LIST 23 Mainly concerned with details for structure factors 
+          and least-squares, but worth setting up here in case 
+          it's forgotten later.
+ LIST 29 Elemental properties, such as radii, weight.
+#
+#PThe command \SPACEGROUP can be used to generate operators for most
+ spacegroups in most settings and will also generate the Fourier limits,
+ and \COMPOSITION will generate LISTS 3 and 29
+ from standard data files provided with the program.
+
+#YMigration from other program systems
+#
+#PIf the basic data processing has been done in some other program system,
+ the command \QUICKSTART provides a convenient way to transfer the data to
+ CRYSTALS. If intensity
+ data, i.e. I not F or F**2, are given, data reduction for four circle
+ geometry is automatically performed.
+  This is an example taken from VOL2 of the manual.
+#N  10#
+#J
+ \QUICKSTART
+ SPACEGROUP P 21 21 2
+ FORMULA C 6 H 4 N O 2 CL
+ FILE CRDIR:REFLECT.DAT
+ FORMAT (3F3.0, 2X, 2F8.2)
+ DATA 1.5418
+ CELL 10.2 12.56 4.1
+ END
+#
+#
+#YThe SCRIPT 'NEWSTRUCTURE'#
+#
+#PAt sites where some on-line working is permitted, the SCRIPT NEWSTRUCTURE
+ (which call the scripts STARTUP and DATRED, and hence many other sub-scripts)
+ will guide the user into getting his initial data into the 
+ CRYSTALS data base.
+#
+#YData reduction#
+#
+#PIntensity data can be introduced to CRYSTALS either by embedding it in a 
+ control file, or from an auxilliary file read by the instruction \LIST 6 or
+ \HKLI. This is the only time in CRYSTALS that users data are read in
+ from an auxilliary device. If the data are in a compact form,
+ say lines with four reflections
+ per line, and there are not too many reflections, it would be best to enter them directly into the command line. If the reflections are in an extended form
+ with, say, setting angles and other information for each
+ reflection, it is probably more efficient to read them from the auxilliary 
+ file. The user has the option of FIXED or FREE format
+ reads. With the exception of CRYSTALS compressed data, FIXED format reads
+ are always more efficient. Remember that a figure of -512 or less for
+ the first value on a reflection line terminates reflection input.
+#PThe section REFLECTIONS in the manual describes the options available
+ and explains why work files are used at this stage. The user has already
+ been cautioned (above) about the work files, he should also remember that
+ sorting many thousand records can be time consuming. At the end of data
+ reduction the user must copy his data from the work file onto his DISK
+ (using READ TYPE=COPY in LIST 6)
+ otherwise all it will contain is information pointing to the (possibly
+ deleted!) work file. Some installations may provide means to preserve
+ the work files, but this should only be necessary when processing large
+ data sets. The reflection handling procedures in CRYSTALS are powerful
+ but for many purposes a simple strategy will suffice. If multi-batch
+ data is being processed, e.g. from several crystals, the user will need
+ to change the data keys.
+ REFLECTIONS bears reading several times.
+#PThe instruction \SYSTEMATIC should always be used, since it may provide
+ confirmation of the space group, and moves reflections, by the permitted
+ symmetry operators, into a standard segment of reciprocal space. This
+ is a prerequisite for \SORT and \MERGE, which should also usually be applied
+ since the computation of Fourier maps and structure factors is speeded
+ up if the reflections are in a standard order. The user should not MERGE
+ his reflections or apply Friedel's law if subsequent computations are geometry
+ (e.g. analytic absorption) or polarity (e.g. anomalous scattering) dependent,
+ or if he has multi-batch data and intends to refine batch scale factors.
+#PA user doing many crystals structures might prepare himself a standard
+ data reduction file which he could USE for all structures.
+#
+#YEXAMPLE 1#
+#
+#PIntensity data are available on a common scale, 4 reflections per line, having been collected on a Weissenberg diffractometer, and are to
+ be embedded in the input stream. The INSTRUCTONS, DIRECTIVES and keywords
+ are written out more or less in full, though the experienced user might
+ wish to omit or abreviate them.
+#N  22#
+#J 
+ \LIST 13
+ DIFFRACTION GEOMETRY=EQIUINCLINATION
+ CONDITIONS WAVELENGTH=1.5418
+ AXIS 1 0 0
+ \LIST 6
+ READ NCOEF=4 TYPE=FIXED F'S=NO NGROUP=4 UNIT=DATAFILE
+ FORMAT (4(3F4.0,F8.0))
+ END
+ 1   0   0    1234   2   0   0   24600   
+ 4   0   0    5000   6   0   0    100
+ (etc)
+ -512 
+ \ a dummy reflection to end the list
+ \LP
+ \SYST
+ \SORT
+ \MERGE
+ \LIST 6
+ READ TYPE=COPY
+ \FINISH
+#
+#YEXAMPLE 2#
+#PThe reflection data output from a CAD4 are in a separate file produced 
+ by a pre-processor and in a format defined in the manual. No geometry
+ dependent calculations are being done, so the default null orientation matrix
+ can be used.
+#N  22#
+#J
+ \LIST 13
+ DIFF GEOM=CAD4
+ MATRIX
+ COND
+ \ the standard conditions on this site are 
+ \ monochromatic Mo radiation
+ \HKLI
+ \LP
+ \SYST
+ \SORT
+ \MERGE
+ WEIGHT SCHEME=2 NPARAM=6
+ \ this scheme filters out outliers
+ PARAM .05 3.0 1.0 2.0 .01 .0001
+ REFLECTIONS LIST=MEDIUM
+ \ contributors more than 3 sigma from the 
+ \ mean are listed with a *
+ \LIST 6
+ READ TYPE=COPY
+ \FINISH
+#
+#PThe keyword RATIO should be used in LIST 28 to limit the minimum ratio of
+ I/sigma(I) used in calculations.
+#
+#YEXAMPLE 3#
+#PThe data are in a free format, and the user wishes to carry weights 
+ based on sigma(Fo)
+ through into least-squares. The reflections are embedded in the control data.
+#N  35#
+#J
+ \HKLI
+ READ 5 FREE UNIT=DATAFILE F'S=YES
+ INPUT H K L /FO/ SIGMA(/FO/)
+ STORE 7
+ OUTPUT INDICES /FO/ WEIGHT /FC/ BATCH/PHASE 
+ CONT   SIGMA(/FO/) RATIO
+ \ note that a slot is left for the weight later
+ END
+ 1 0 0 123 10
+ 2  0 0 24600 130
+ 3  1 0 15420  70
+ -512 0 0 0 0
+ \LP
+ \SYST
+ \SORT
+ \MERGE
+ \LIST 4
+ SCHEME 7
+ \ to generate weights from sigma
+ \WEIGHT
+ \ this generates the weights from sigma, and stores 
+ \ them in the weight slot. NOTE  that after the COPY, 
+ \ the sigma slot does not exist by default, so that a 
+ \ reWEIGHTing with scheme 7 will loose the weights.
+ \LIST 6
+ READ TYPE=COPY
+ END
+ \LIST 4
+ SCHEME 5
+ \ this ensures that we dont loose the weights by an 
+ \ accidental reweight.
+ END
+ \USE LAST
+#
+#PIn this example the weights are calculated and applied while the data is
+ on the scratch files. The LIST 4 could equally well have been applied after
+ the LIST 6, i.e. at some much later stage of the process, if we had preserved
+ the sigmas.
+#PThe instruction \HKLI enables the user to apply some simple absorption 
+ corrections. All are only approximate, but do prove to be cost effective 
+ for routine work. The PHI and THETA corrections involve interpolation. The 
+ interval between  the points should reflect the rate at which the curve
+ is changing. This is particularly important for the PHI correction (NORTH,
+ PHILLIPS, MATHEWS, Acta Cryst (1968) A24, 351) when the sample is plate-like.
+ A plan for preparing a phi curve is to observe the intensity of a reflection
+ whose scattering vector is close to the diffractometer phi axis at a number
+ of phi values (say, at 10 degree intervals). For the calculation to be even
+ approximately valid, the I vs phi curve should have two-fold symmetry, so
+ that the two halves of the curve (0-180 and 180-360) can be superimposed
+ and a smooth curve drawn through them. Values of I and phi are taken from this
+ curve for a range rather less than 180 degrees and input to CRYSTALS.
+ The user should note that he must give PHI 
+ Eulerian values, and not psi or phi-Kappa values.
+#PThe 'tube' correction, originally devised for cases where the sample was
+ in a capilliary tube inclined at a substantial angle to the phi axis,
+ (Watkin, J. Appl. Cryst. (1975) 8, 491),
+ can be used to provide an approximate correction for needle-like crystals
+ inclined to the phi axis. In this case the parameter 'MU' should be something
+ like 0.8*mu*r, where r is the needle diameter. A[max] in this case would be
+ the correction for a ray passing along the axis of needle. The 'plate'
+ correction is similar, with 'MU' being mu*t, where t is the plate 
+ thickness. A[max] is rather less than the correction for a ray passing along 
+ a diameter of the plate.
+#PThe theta correction is suitable for any correction which is a smooth
+ function of theta only, for example the spherical or cylindrical corrections
+ tabulated in International Tables. Expect to see your temperature factors
+ increase if you apply this correction!
+#PIf the user has measured standard reflections from time to time, he can 
+ compute decay or stability corrections. These are introduced to CRYSTALS as 
+ a LIST 27. Each reflection must have an associated sequence number.
+ This can either be a serial number or a figure derived from, say, the X-ray
+ exposure time. 
+ The scale factors in LIST 27 are associated with the the sequence
+ number of the first of each batch of standard reflections. The scale factor
+ for general reflections is then obtained by interpolation in this table.
+ To avoid interpolation across scale discontinuities, two different scale
+ factors may be given with the same sequence number. If the reflection sequence
+ numbers do not rise continuously, (for example data from two experiments)
+ interpolation will continue safely if scale factors are present in LIST 27
+ for the two reflections at the discontinuity. The scale factor scalenumbers
+ are not used by CRYSTALS. Remember that there is a maximum value for
+ the sequence numbers (try (X-ray time in secs)*0.1). 
+#
+#N  19#
+#YEXAMPLE 4#
+#J
+ \LIST 27
+ READ NSCALE=10
+ SCALE 1 1.00 1.00 2
+ SCALE 2 1.01 1.00 30
+ SCALE 3 1.00 1.00 60
+ \ reflection sequence 60 is the first with 
+ \ the larger scale factor
+ SCALE 4 3.00 3.00 60
+ SCALE 5 3.01 3.01 90
+ SCALE 6 3.02 3.02 120
+ SCALE 7 3.03 3.03 147 
+ \ reflection sequence 147 is the last in 
+ \ the old experiment
+ \ reflection sequence 3 is the first in the new
+ SCALE 8 3.03 3.03 3
+ SCALE 9 3.02 3.03 50
+ SCALE 10 3.03 3.03 100
+ END
+#
+#ZATOMS and PEAKS, PARAMETERS, and parameter VALUES.
+#PFor the user, it is probably the highly stylised and powerful methods
+ for refering to atoms and structural parameters which provide the 
+ greatest conveniences in CRYSTALS. Atoms can be refered to either by
+ a simple symbolic string, or by a more complex string which includes
+ symmetry information.
+ Parameters can  be refered to either explicitly or implicitly.
+#
+#YATOMS and PEAKS#
+#PAtoms are identified by their TYPE (up to four alphanumeric characters
+ beginning with a letter) and their SERIAL number.
+ Atoms with the same type are distinguished from one another by having
+ different serial numbers. However, at no stage is a check made to ensure
+ that there is not more than one atom in LIST 5 with the same type and
+ serial number. If a routine is searching for an atom with a given type
+ and serial number, the first atom so specified will always be taken, and any
+ subsequent atoms with the same type and serial number will be ignored.
+#PThe atom 
+ TYPE is used as the key when looking for scattering factors in LIST 3.
+ The atom type PEAK is used by the system to identify peaks taken from a 
+ map peak search. Users wishing to compute structure factors on peaks lists
+ must either have a scattering factor for an atom type PEAK in their LIST 3,
+ or use \EDIT to change PEAKS into some other atom type.
+#
+#N   3#
+#J
+ EXAMPLES
+        C(14)   PB(2)    PEAK(64)   Ca(12)
+#
+#PSometimes it is necessary to inform CRYSTALS that it must use an atom
+ equivalent by space group symmetry to one actually occuring in LIST 5
+ (for example, in defining a constraint), or CRYSTALS may wish inform the 
+ user that an output atom is an equivalent (for example, in the distance
+ angles output). On these occasions, the extended atom definition 
+ (which conveys the symmetry information) is used. The specification is
+#PTYPE(SERIAL,S,L,TX,TY,TZ)
+#PTYPE and SERIAL were defined above, and have no default values. The other
+ terms are optional, taking default values if omitted. Terms that are omitted
+ must be indicated by their delimiting ",", except that the last given term may
+ be delimited by a right parenthesis and the other default term delimiters be
+ omitted.  Default values are given after the examples.
+#
+#N   6#
+#J
+ EXAMPLES
+ C(14,-1,2,1,0,1)
+ ZN(1,-2,,1,,1)   equivalent to       ZN(1,-2,1,1,0,1)
+ CU(3,-1)         equivalent to	     CU(3,-1,1,0,0,0)
+#
+#PS specifies the symmetry matrix from
+ LIST 2 which should be used. If S is negative, the atom coordinates from LIST
+ 5 are negated before the operator is applied. The default value for S is one
+ corresponding to the first symmetry operator given in LIST 2. THIS NEED NOT
+ BE THE UNIT MATRIX, though it will be if the user takes care to make his
+ first  operator in LIST 2 the identity matrix.
+#PL specifies the non-primative lattice translation to be applied AFTER the S
+ operation. The translations for the various centrings are listed in  
+ VOL4. The default value for L is 1, corresponding to no translation.
+#PTX, TY, and TZ are whole cell translation parallel to the cell edges, and 
+ are applied after S and L. Their default values are zero
+#PThus if the user makes the unit matrix his first operator in LIST 2,
+ atom specifications of the form
+#PC(2) FE(16)
+#Pwill refer to the atoms at the actual positions given in LIST 5. Two special
+ 'atoms' are permitted in CRYSTALS to enable users to handle LIST 5s in which
+ they are not sure of the atom order. These are FIRST and LAST, refering to
+ the first and last atoms in the list. A  SERIAL cannot be given for these 
+ atoms, but S, L and the Ts can.
+#PGroups of atoms can be referenced by a composite atom specification, the
+ UNTIL sequence.
+#PTYPE1(SERIAL1,S,L,TX,TY,TZ) UNTIL TYPE2(SERIAL2)
+#PIn this definition, all atoms between and including TYPE1(SERIAL1) and
+ TYPE2(SERIAL2) in LIST 5 are referenced. Clearly, a sensibly ordered 
+ LIST 5 will enable the user to profit from this construction.
+ If any operators 
+ are specified for the first atom, these operators are applied to all the atoms
+ in the sequence. The atoms FIRST and LAST may be used in an UNTIL sequence.
+#
+#YParameters#
+#PParameters may be given either implicitly or explicitly.
+#YIMPLICIT parameters
+#PIn an implicit reference, all parameters 
+ of a given type are invoked merely by giving the parameter name.
+#N   5#
+#YEXAMPLE 1#
+#J
+ \LIST 12
+ FULL X Y Z U'S
+ END
+#
+#PThis instruction, which will be discussed more fully under Least-Squares,
+ causes full matrix refinement to be carried out on the x, y, z and all the
+ anisotropic temperature factors of all the atoms.
+#
+#YEXPLICIT parameters#
+#PIn an explicit reference to atomic or overall parameters,
+ the individual parameters must be individually defined, though the UNTIL
+ sequence, discussed above, provides a method for referencing groups of atoms.
+#PThe CRYSTALS system allows the user to associate  parameter names 
+ with parameter values. These names are used in symbolic references to the
+ parameter itself. 
+ Thus, to refer to the X coordinate of carbon(1), the user would type
+#PC(1,X)
+#PMultiple parameter references are permitted in some instances, for example in
+ defining matrix blocks for least-squares. e.g.
+#PCL(17,X,Z) indicating that the operation will be applied to both X and Z of the Cl atom with serial number 17.
+#
+#YParameter values#
+#
+#PValues corresponding to parameters are stored 
+ either in LIST 5 or in LIST 10. LIST 5
+ is either input by the user, or may be generated by system operations
+ on an existing LIST 5 or LIST 10. LIST 10 has a similar format to LIST 5
+ and is produced either by a peak search on a Fourier map or by an operation on
+ an existing LIST 10. Default values are provided by the system for some 
+ parameters.
+#
+#PThe parameters stored for an atom are:
+#
+#N  16#
+#J
+ TYPE - Described above under ATOMS and PEAKS.
+ SERIAL - Described above under ATOMS and PEAKS
+ OCC - The chemical site occupation factor, defaults to 1.0 
+      (excluding symmetry effects).
+ U[ISO]  - The isotropic temperature factor, defaults to 0.05.
+ X -  The fractional x coordinate.
+ Y -  The fractional y coordinate.
+ Z -  The fractional z coordinate.
+ U[11] | 
+ U[22] |
+ U[33] | The components of the atomic displacement parameters.
+ U[23] |
+ U[13] |
+ U[12] |
+#
+#PThe temperature factors are defined by:
+#N   3#
+#J
+ T[ISO] = EXP(-8*PI*PI*U[ISO]*S**2) 
+ where S = sin(theta)/lambda
+#
+#Pand
+#N   6#
+#J
+ T[ANISO] = EXP(-2*PI*PI*(h*h*as*as*U[11]
+             +k*k*bs*bs*U[22]+l*l*cs*cs*U[33]
+             +2.0*k*l*bs*cs*U[23]+2.0*h*l*as*cs*U[13]
+             +2.0*h*k*as*bs*U[12])).
+#
+#Pwhere 'xs' are the reciprocal cell parameters
+ and h, k and l are the Miller indices of the current reflection.
+#PAn atom is considered to be isotropic when  abs(U[ISO])>0.00005.
+ If an atom is isotropic and one or more of the anisotropic temperature
+ factors is to be refined, the anisotropic terms are calculated from
+ U[ISO]  and then  U[ISO]  is set to zero. The conversion in the
+ other direction is also made, except that  U[ISO]  assumes its default
+ setting. \EDIT can be used to generate U[EQUIV] from U[ANISO]. The
+ minimum (most negative) permitted value for U[ISO] or U[ii] is set in
+ LIST 23.
+#YCAUTION#
+#PBeware the U[ISO] default when inputting a LIST 5!
+ It should be noted that if a set of anisotropic atoms are input with no
+ U[ISO]  key or  U[ISO]  data, then the default value of 0.05 will be
+ inserted. This implies that all such atoms are
+ isotropic, so that the anisotropic temperature factors will be treated as
+ zero, and the calculation will proceed for isotropic atoms.
+#PAlthough it is possible to input an overall temperature factor as one
+ of the overall parameters, it is not possible to use it under all
+ circumstances. In fact, the structure factor routines always take the
+ temperature factor of an individual atom as the value or values stored
+ for that atom. If the overall temperature factor is to be refined, the
+ system will ensure that the current value of the overall temperature
+ factor is inserted for the temperature factor of all the atoms. When the
+ new parameters are computed after the solution of the normal equations,
+ this substitution is again made, so that all the atoms have the same
+ overall isotropic temperature factor. However, if the overall temperature
+ factor is not refined, or no refinement is done, the individual temperature
+ factor for each atom will be used, and the overall temperature factor ignored.
+#PThe dummy overall temperature factor is in no way related to the overall
+ temperature factor, and its use is explained in the section on refinement.
+#
+#N   6#
+#YEXAMPLE 2#
+#J
+ \LIST 5
+ READ NATOM=2
+ ATOM  PB 1 U[ISO]=0 X=.89 .78 .97 .11 .22 .33 .23 .13 .12
+ ATOM  C  2          X=.45 .56 .46
+#
+#PThe overall structural parameters are:
+#N  10#
+#J
+ SCALE    - The overall scale factor. Defaults to 1.0
+ DU[ISO]  - The dummy overall temperature factor. 
+           See the section on L.S.
+ OU[ISO]  - The overall isotropic temperature factor. 
+           Default is .05
+ POLARITY - The Rogers polarity parameter. Default is 1.
+ ENANTIO  - The Flack polarity parameter. Default is zero.
+ EXTPARAM - The Larson extinction parameter. Default is zero.
+#
+#PThe remaining parameters are:
+#N   3#
+#J
+ LAYERS - The layer scale factors.
+ BATCH - The batch scale factors.
+#
+#YLIST 5#
+#
+#PLIST 5 holds the parameter values, and the user should go to the Manual
+  to find the full specifications. It can best be regarded as a table
+ in which the column headings define the types of parameter, and the row
+ labels the types of entity to which the paramertes belong. Certain entries
+ in the table are mandatory, e.g. parameter type SERIAL for entity type
+ ATOM, and others are optional, e.g. U[ISO], for which there is already
+ a default value entered.
+# 
+ As an aid to beginners, some examples are given here.
+#
+#N  18#
+#YEXAMPLE 3#
+#J
+ \LIST 5\
+ \ no overall parameters. DU[ISO],OU[ISO] and SCALE 
+ \ all have default values
+ \ 5 atoms
+ READ NATOM = 5
+ ATOM C 1 X=0.094,Y=0.343,Z=0.890
+ ATOM C 2 1 0.05 0.149 0.411 0.651 0 0 0 0 0 0
+ ATOM C 3 X=0.050 0.406 0.648
+ ATOM TYPE=C,SERIAL=4,OCC=1,U[ISO]=0,
+ CONT X=0.027,Y=0.384,Z=0.725,
+ CONT U[11]=0.075,U[22]=0.048,U[33]=.069,
+ CONT U[23]=-.007,U[13]=.043,U[12]=-.001
+ ATOM C 5 U[ISO]=0.0 .108,.365,.815,.074 
+ CONT .051 .065 -.015 .048 -.014
+ END
+#
+#N  26#
+#YEXAMPLE 4#
+#J
+ \LIST 5
+ READ NATOM = 2, NLAYER =   6
+ \ the zone axis is (H00)
+ INDEX 1 0 0 1
+ \ there are 6 layers, 0 to MOD(5)
+ \ layer 3 (H=2) had the X-rays turned down!
+ LAYERS 1 1 1.3 1 1 1
+ OVERALL     20.821314   EXTPARAM=21.2
+ ATOM C 1  U[ISO]=0. X=-0.231   0.085   0.066 
+ CONT .038 .043 .041 .001 -.006 .003
+ ATOM H 73           X=-0.443   0.231   0.219
+ END
+ \LIST 23
+ \ note that layer scales are not applied unless
+ \ set in LIST 23
+ MODIFY EXTINCTION=YES LAYERSCALES=YES ANOMALOUS=YES
+ \LIST 12
+ \ remember that 'FULL' implies the overall scale factor.
+ FULL LAYER(3)
+ END
+ \SFLS
+ REFINE
+ END
+#
+#PIn this example we have some parameters defined by position, (SCALE,
+ TYPE, SERIAL, Y, Z, and the temperature factors), and some by keyword
+ (U[ISO], EXTPARAM and X). Although only layer 3, h=2, is anomalous,
+ layer scales must be given for all layers. The layer scale factors and
+ the extinction parameter are
+ not applied during the computation of structure factors unless LIST 23
+ requests them.
+#PBatch scale factors are handled in the same way as layer scales, except
+ that the BATCH parameter must be set for each reflection in LIST 6.
+ Remember that the BATCH parameter will be undefined if reflections 
+ from different BATCHES have been merged together.
+#
+#YModifying LIST 5#
+#
+#PAs mentioned elsewhere, LIST 5 can be output from the binary database
+ as a character file. The instruction \PUNCH 5 produces a file in a form
+ suitable for re-input to CRYSTALS. '\PUNCH 5 D' produces a file in the
+ SHELX format. These files can be edited using the manufacturer's editor,
+ and such a procedure might be appropriate in an environment where interactive
+ processing is restricted. In general however, the user is advised to use the
+ \EDIT instruction in CRYSTALS. This is a purpose-built editor for manipulating
+ parameters. Like all editors, it seems to get better as the user becomes more
+ familiar with the facilities.
+ Before editing a LIST 5, the user will usually wish to know something about
+ its contents. Information can be extracted in several ways.
+#I1. What is the order of the atoms in LIST 5?#
+#PThis must be known in order to use the UNTIL construct effectively. Possible
+ solutions are:-
+#N   3#
+#J
+   \SUMMARY LIST 5 LOW
+   END
+#
+#PThis produces an ordered listing of the atom types and serial numbers
+ on the terminal and output listing.
+#N   4#
+#J
+   \MOLAX
+   ATOM FIRST UNTIL LAST
+   END
+#
+#PThis produces an ordered list of the atom types, serial numbers and 
+ 'best plane' coordinates onthe terminal and output listing.
+#N   4#
+#I2.  What are the atomic coordinates?#
+#J
+   \DISPLAY HIGH
+   END
+#PThis displays LIST 5 on the terminal.
+#N   4#
+#J
+   \EDIT
+   LIST HIGH
+   END
+#
+#PThis produces an ordered listing of the atom types and serial numbers
+ and parameters in an abbreviated form on the terminal.
+#N   3#
+#J
+    \PRINT 5
+    END
+#
+#PThis produces a full listing of LIST 5 in the line printer file.
+#N   5#
+#I3. What is the connectivity?#
+#J
+   \DISTANCE
+   OUTPUT MONITOR=DISTANCE
+   END
+#
+#PThis produces a  listing on the terminal and in the printer file.
+#N   5#
+#J
+    \MOLAX
+    ATOM FIRST UNTIL LAST
+    PLOT
+    END
+#
+#PThis produces a labelled line diagram on the terminal and the printer file.
+#
+#ZFOURIER AND PATTERSON FUNCTIONS#
+#PFourier summations are computed by the instruction \FOURIER with
+ an appropriate keyword. Patterson functions can be computed directly
+ from the observed structure amplitudes, Fourier summations require that
+ phase angles have been computed previously. This may be done by issuing
+ the instruction \SFLS with the directive SCALE or CALCULATE. Remember, if you
+ have been doing Least-Squares refinement, that after a new parameter list
+ has been generated the structure factors will need recomputing if they are to
+ reflect these new parameters.
+#PIf the user has not used the SPACEGROUP command, he
+ is required to choose for himself that fraction of the unit cell
+ which must be computed, and enter this information as a LIST 14. Where there
+ are alternative choices possible, computational efficiency is the 
+ main factor to be concidered if the map is not going to be printed. 
+ If the X-ray intensity data are to the same resolution along all axes, the 
+ user should, if the space-group permits, choose an asymmetric volume in 
+ the form of a thin 'slab', and use an ORIENT directive to compute sections
+ parallel to the slab face to minimise computation time. For example, in
+ an orthorhombic  cell 16x11x24, a volume 1/2 x 1/4 x 1 computed in
+ 3min 27secs, and a volume 1 x 1/2 x 1/4 computed in 1min 40secs.
+#PWhen the map is to be printed, then convenience in handling the final 
+ map is the main consideration. For example, if the structure has an
+ essentially
+ planar fragment which needs looking at, the sections should be chosen 
+ approximately parallel to the plane. Also, though CRYSTALS will compute maps
+ with any number of points in each direction, and will split the sections up
+ onto several sheets of paper if they are too wide to fit directly, the output
+ is clearly more manageable if the user can arrange the width to fit onto
+ a single page.
+ The fraction of the cell chosen should be such that it contains at 
+ least an asymmetric unit, with a small additional border if the user 
+ is explicitly defining the volume and grid intervals. Failure to include
+ this border may lead to the peak-search routine finding (during the 
+ least-squares peak fitting) very large or small peaks several
+ Angstroms beyond the edge of the volume computed.
+ Such spurious peaks are easily found by inspection, but could be troublesome
+ if
+ some sort of automatic interpretation of the map was being attempted. When
+ the system is allowed to chose its own sampling interval, a border is 
+ automatically included, and these spurious peaks seldom occur.
+#PParameters on the \FOURIER instruction enable the figure
+ fields to be scaled and formatted, and the user should well consider
+ what precision he requires in the output map. If he is looking for features
+ that can be represented to two integer places, and there are other
+ previosly characterised features requiring three places, a format permitting
+ printing printing of signed two digit integers will be adequate if rho-max
+ is set to 99.
+#PThe default
+ map type is an F-OBS map.
+ The peak search routines automatically reject all but one peak 
+ from sets of peaks related by a symmetry element. Additionally, if an atoms
+ list, LIST 5, is present, the program evaluates the electron density at atomic
+ sites. The message 'NOT FOUND IN THE MAP' inevitably means that the user has
+ used an inappropriate LIST 14, and has not computed a complete asymmetric
+ volume (though he may have computed some part twice!).
+#
+#N   8#
+#YEXAMPLE 1#
+#J
+ \FOURIER
+ MAP PRINT=YES
+ LAYOUT NLINE=1 NCHAR=3 MARGIN=2 NSPACE=2 MIN-RHO=0 MAX-RHO=99
+ END
+#
+#YPatterson maps#
+#PPatterson functions are computed by the instruction FOURIER
+ with the directive MAP TYPE = FO-PATTERSON.  CRYSTALS 
+ automatically modifies the symmetry information taken from  LIST 2 
+ into that appropriate for a Patterson map, i.e. includes a centre of symmetry
+ and drops the translational components. In some space groups this may lead
+ to an origin shift, so that the user will have to 
+ input appropriate values in  LIST 14. 
+#PThe modified LIST 2 is used for the implied distance-angle calculation called
+ by FOURIER to detect degenerate peaks, but it is not written back to the DISK,
+ which retains the original LIST 2. If the user wishes to explicitly
+ compute distances and angles on the Patterson peaks list, he must include
+ the parameter SYMMETRY=PATTERSON in the distance calculation.
+#YSharpened Patterson maps
+#
+#PAny of the weighting schemes described for LIST 4 can be applied to
+ the Patterson coefficients. Unit weights can be  modified using  Scheme 13
+ to sharpen the map. The formula of Dunitz (Acta Cryst(1973), B29, 589) 
+ should be used with P(1)=1 and P(2)=10 to avoid over-sharpening. The weight
+ for a reflection at theta=30 will be 50 for Mo radiation. Do not forget
+ you will probably wish to restore the original weighting scheme.
+#N  14#
+#J
+ \LIST 4
+ \ Use the default scheme, which produces unit weights.
+ END
+ \WEIGHT
+ \ To apply unit weights
+ \LIST 4
+ SCHEME NUMBER=13 NPARAM=2
+ PARAM 1 10
+ END
+ \WEIGHT
+ \ To apply weights for sharpening
+ END
+#
+#YFourier refinement#
+#PCRYSTALS provides a mechanism for performing elementary Fourier refinement.
+ Such a procedure is very cost-effective during the initial development of
+ poorly phased structures, such as those based on E-maps or heavy-atom phased 
+ maps. At that stage, non-linearities degrade the convergence of simple
+ least-squares, though the use of constraints may substantially improve the
+ situation (see the section on Least-squares). Fourier refinement has a
+ good range of convergence and is relatively insensitive to errors in the
+ model, though it does require the atomic sites to be resolved.
+#N  22#
+#J
+ \SFLS
+ \ we will compute phases and put Fo on an 
+ \ approximately absolute scale
+ SCALE
+ END
+ \FOURIER
+ \ set the reject limit very small so that peaks 
+ \ which lie close to input atomic sites are not 
+ \ rejected
+ PEAKS HEIGHT=10 NPEAK=16 REJECT=.0005
+ END
+ \PEAKS
+ \ hang on to all the peaks again
+ SELECT REJECT=.0005
+ \ this does the refinement.
+ \ peaks within .15 of an input atomic site are 
+ \ identified with that atom.
+ \ The positional coordinates of the atom are computed 
+ \ from the corresponding peak coordinates
+ REFINE DISTANCE=.15
+ END
+#
+#PIn addition to maps computed with /Fo/, /Fc/ or /Fo-Fc/ as coefficients,
+ maps can be based on /2*Fo-Fc/. Such maps are commonly used in protein
+ crystals structure analysis, and are useful in small structure analyses
+ when there is disorder. The reduced contribution from /Fc/ means that
+ a diminished image of the 'known' structure is retained in the map, and
+ serves as a guide through those features due to /Fo/.
+#YAssembling a single molecule#
+#PIt is rare that the user can use LIST 14 to choose a fraction of his cell 
+ so that the resulting map will contain a discrete and connected molecule.
+ In general, the peaks taken from the map must have symmetry operators applied 
+ to them to generate a unified molecule. This can often be done automatically
+ for organic molecules using the instruction \REGROUP. By using \REGROUP with
+ different collection ranges, it may be possible to construct a very acceptable
+ molecule.
+#N  10#
+#J
+ \REGROUP
+ \ build up the main frame of non-hydrogens first
+ SELECT MOVE=1.6
+ END
+ \REGROUP
+ \ now re-move the hydrogens, important if the 
+ \ molecule is crowded or distorted
+ SELECT MOVE=1.1
+ END
+#
+#PThe REGROUP instruction reorders (and optionally renumbers) LIST 5.
+ \COLLECT, which computes connectivity based on radii taken from LIST 29,
+ leaves the order of LIST 5 unchanged, but applies any necessary symmetry
+ to the coordinates. COLLECT with the parameter TYPE=PEAK is useful for
+ moving new found peaks as close as possible to existing atoms.
+#PWhile the user can often get some idea of the shape of his structure by
+ looking at peaks lists and inter-atomic distances and angles, simple line
+ diagrams may also be useful. In CRYSTALS, these are obtained via the
+ molecular axes (q.v.) calculation \MOLAX. This instruction enables a
+ plot
+ to be made onto the best plane through a specified list of atoms or peaks.
+ The list may include all the items in LIST 5, only selected items, and
+ symmetry operators may be introduced if the user thinks that this may
+ produce a more interpretable figure. The example below is based on trans-1,4 
+ dimethyl cyclohexane, which lies on a centre of symmetry and
+ has 4 unique carbon atoms and 8 hydrogen atoms. 
+#N  13#
+#J
+ \MOLAX
+ \ use the whole of LIST 5, together with its 
+ \ image in the centre at 0,0,0
+ ATOM FIRST UNTIL LAST FIRST(-1) UNTIL LAST
+ PLOT
+ EXEC
+ \ now just look at the methyl group
+ ATOM C(4) H(41) H(42) H(43)
+ PLOT
+ EXEC
+ END
+#
+#N  50#
+#P
+ The output from these calculation is:
+ 
+#J ATOM FIRST UNTIL LAST FIRST(-1) UNTIL LAST
+ 
+ 
+                   H32                     H22
+                      .                    .
+                       .                 ..
+                       H+13..........CH*1
+                        ..            ..
+ H43                  ..                .                  H42
+   ..                .                   ..                .
+     .             ..                      .             ..
+     H+14........+1*                       H+11.......C.4
+      .           ..                       ...         H41
+    ..              .                     .               .
+   .                 ..                  .                 ..
+ H42                   .               ..                   H43
+                       H+12..........C.3
+                       ...            H31
+                      ..                .
+                     .                   .
+                   H22                   H32
+ # 
+#N  45#
+#J
+ ATOM C(4) H(41) H(42) H(43)                
+                                                
+                           H43                  
+                             ..                 
+                               ..               
+                                C.4.......H42   
+                                .
+                               .
+                            H41
+#P Note that atom types are abbreviated to their
+ initial letter only, and serials are represented
+ by only the last two digits. The symbols + and * 
+ mark character overlap.  
+#
+#ZGENERALISED FOURIER SECTIONS#
+#PGeneralised Fourier sections, that is sections not parallel to a cell face,
+ are computed by a special program (\SLANT), rather than by interpolation into 
+ the normal map. Such maps are useful for detailed examination of special
+ problems, such as disorder, poor resolution  or large thermal motion. 
+ Features identified in the map can be converted back to crystal coordinates
+ for inclusion in the model.
+ In spite of special computing techniques, the generalised Fourier
+ is about 10 times as slow as the normal Fourier, for which the Beevers-Lipson
+ method is used.
+#PThe position, orientation and extent of the map must be specified in a 
+ consistent coodinate system. This is most conveniently found from a MOLAX
+ calculation on atoms or points in the required plane. The required position
+ is then the centroid in orthogonal angstrom, and the matrix is the
+ transformation from crystals fractions w.r.t. this
+ centroid to best plane co-ordinates in Angstrom,
+ and the extent is defined by the number of steps and the step lengths
+ parallel to XP and YP. There are no formatting parameters available 
+ for the instruction \SLANT.
+#PThe editor \EDIT can be used to apply the rotation and translation needed
+ to transform points back from map to cell coordinates.
+#ZREGULARISATION#
+#PAs explained above (Part 4), Fourier techniques provide a powerful way 
+ for initiating the refinement of a structure. When the geometry of fragments
+ are well known from previous analyses, for example phenyl groups, the initial
+ refinement can be speeded even futher by forcing the observed fragment to
+ adopt an idealised geometry. This process, common in protein crystallography,
+ is known as regularisation, and can be used not only to tidy up a poor
+ geometry, but also to postulate sites for missing atoms.
+#
+#YEXAMPLE 1#
+#
+#PRegularising a cyclopentadienyl ring. The idealised coordinates are from
+ the literature.
+#N  10#
+#J
+ \REGULARISE REPLACE
+ GROUP 5
+ OLD C(1) C(2) C(3) C(4) C(5)
+ ATOM 0 0 0
+ ATOM .846  1.165 0
+ ATOM .846 -1.165 0
+ ATOM 2.216  0.72 0
+ ATOM 2.216 -0.72 0
+#
+#PCompleting and regularising a phenyl ring. C(3) is very poorly placed,
+ and so will first be deleted, and C(6) has not been found at all. 
+ New atoms will be generated for them.
+#N   8#
+#J
+ \EDIT
+ DELETE C(3)
+ \REGULARISE REPLACE
+ OLD C(1) C(2) C(3) C(4) C(5) C(6)
+ PHENYL
+ END
+#
+#N   3#
+#p
+ BE SURE THAT THE GIVEN ATOMS ARE ALL IN THE SAME MOLECULAR 
+ FRAGMENT, OTHERWISE YOU WILL NEED TO GIVE SYMMETRY OPERATORS.
+#
+#ZHYDROGEN PLACING#
+#PA special case of regularisation is the computation of the position of
+ hydrogen atoms in an organic structure. Unless there is likely to be 
+ some ambiguity over the nature of the bonding, there is generally little
+ to be gained in searching for hydrogen atoms in difference Fourier maps.
+ Instead, their coordinates can (and should) be computed geometrically.
+ CRYSTALS has routines for placing sp1, sp2, sp3 and phenyl
+ hydrogens, taking proper account of symmetry, bond lengths and angles.
+#YEXAMPLE 1#
+#PPlace the hydrogen atoms on carbons C(2) to C(6) of a phenyl group and
+ the two hydrogens on C(31) of an aliphatic chain.
+#N   6#
+#J
+ \HYDROGEN
+ \ note that the pivot atom C(1) must be given
+ PHENYL C(1) UNTIL C(6)
+ \ two H atoms on an sp3 C(31) atom
+ H23 C(30) C(31) C(32)
+#
+#PAlthough the default bond length is suitable for placing hydrogen atoms
+ as seen with X-rays, it can be changed to that suitable for neutrons,
+ and \HYDROGENS can even be used to place non-hydrogen atoms, such as
+ the oxygens in borate groups.
+#ZREFINEMENT#
+#PThe refinement of  crystal structures is  complex and rarely a well
+ behaved process, and only occasionally
+ can it  be performed reliably without some human supervision.
+ In CRYSTALS we have tried to provide a structure that will reduce the
+ amount of supervision necessary under normal circumstances, and still be
+ very flexible for use in difficult or unusual cases.
+#PBefore discussing the facilities available in CRYSTALS, some of the
+ aims and factors relevent to refinement need considering.
+#YAims of Refinement#
+#PThe overall aim is to find an explanation of some observable phenomena
+ in terms of a model which is intellectually acceptable. Inevitably, the
+ thresholds for acceptability will change from observer to observer,
+ and from time to time. However, certain norms exist for the models,
+ and it is deviations from these norms that increase our understanding
+ of the physical process. The steps in arriving at a suitable model are:
+#
+#P1. Deciding what the observations are, and what errors are associated
+  with them.#
+#PPostulating a model that will enable the observations to be simulated.#
+#PDeciding if the differences between the actual and the simulated 
+ observations are acceptably small. If they are, then we understand
+ the phenomena, otherwise we must try to modify the model.
+#
+#PStep 1 poses the problem of resolving the 'observation' from the 'model'.
+ In X-ray crystallography, are the observations 'I' or 'F'? If an absorption
+ correction is applied, is the correction part of the observation, or of the
+ model? The answer to these questions really depends on what additional
+ questions the model must answer.
+#
+#YFactors Influencing Refinement#
+#PThe refinement process cannot be made to yield more information than
+ that present in the data (though the data may include items other than
+ the diffraction observations). Deficiencies in the data may include:
+#ISystematic Errors#
+#PThese really are short-commings in the model. If the model being refined
+ contains parameters highly correlated with the systematic errors, then the
+ model will be prejudiced in a way depending upon the form of the systematic
+ error. For example, failure to correct the diffraction data for the theta
+ dependent component of the absorption effect will systematically reduce
+ the atomic temperature factors.
+#IRandom Errors#
+#PThese are inevitable in any experimental observation. They should be
+ minimised by careful design of the experiment (e.g. choosing appropriate
+ crystal size,  counting times and radiation). Often reducing random errors
+ is something that must be purchased (by increasing the time spent in
+ performing the experiment), or is in conflict with reducing systematic errors
+ (large crystals giving good counting statistics may introduce non-random
+ errors).
+#IShortage of Data#
+#PIf some of the data is unobservable in a way that is not
+ highly correlated with 
+ the model, then the result is that the random errors in the data lead to
+ random errors in the model. Increasing the amount of data, or its quality,
+ will improve the model. Note that reducing the number of parameters in 
+ the model implies increasing the amount of data, since those parameters
+ not refined will be given (either explicitly or implicitly) values that
+ are themselves observations of high precision. Their accuracy will depend
+ upon the approximation made in simplifying the model. The user should
+ always apply Occams Razor (The Principal of Minimum Assumption) to any
+ new model.
+#ILack of Resolution#
+#PIf some of the data is not observable in a systematic way, this may
+ mean that it will not adequately define some parameters in the model. The
+ most common example is the   link between the angular range of the diffraction
+ data and the detail that can be resolved in the structure. Lack of resoluton
+ in the data usually shows itself as large e.s.d.s in the refined parameters,
+ though these can also arise from a very inadequate model. For example,
+ an anisotropic temperature factor may fail to give a satisfactory
+ representation for an atom that is disordered over two widely separated sites.
+#
+#YRestraints and Constraints#
+ The term 'Restraint' has come to mean the introduction of non-diffraction
+ data into the refinement process in such a way that it guides the refinement
+ towards some goal, rather than forcing it to that goal. Then, if there is
+ an intrinsic conflict between the diffraction data and the restraining data,
+ the user can be given useful warnings. A 'Constraint' imposes a restriction
+ that cannot be violated on the process. If, for example, we have a structure
+ in which both Na and K atoms can lie on the same site, then we can apply
+ the constraint (via LIST 12) that the sum of their occupancies will be 1.0
+ exactly, or we can apply the restraint, (via LIST 16) that the sum will be
+ approximately 1.0, and thus admit the possibility that not all equivalent sites
+ are 
+ occupied by metal atoms. Note that if the total occupancy was less than unity
+ and yet LIST 12 had been used to impose a constraint, this erroneous
+ assumption could not have revealed itself explicitly via the refined
+ occupancies, but would probably have lead to incorrect values for temperature
+ factors, scale factors, or extinction parameters. The LIST 16 approach would
+ have revealed, through the sum of occupancies being far from unity, the real
+ nature of the problem if the diffraction data contained the information
+ needed to resolve these parameters. 
+#PGenerally restraints, also called 'soft constraints', are used to test the
+ hypothesis that the diffraction data will yield parameters not
+ incompatible with those taken from some other source. For example, the
+ restraint may request the refinement to verify that the diffraction data
+ is not incompatible with a certain bond having a length of 1.39(1)A.
+ The user should realise that just because a restraint is satisfied, he has
+ no guarantee that no  other hypothesis would fit the data just as  well. 
+#PRestraints may be used to help speed up the convergence of a refinement.
+ If the restraints are imposed with large weights (i.e. small e.s.d.s)
+ in the initial stages, they will force the refinement rapidly towards the 
+ preconceived structure, possibly helping to keep it from false minima.
+ As convergence approaches, the weights can be reduced, or the restraints 
+ removed altogether. 
+#
+#YNotes on Weights#
+#PThe reflection weights for least squares must reflect errors
+ in BOTH Fo and the model since we are using (Fo-Fc) as the argument
+ in the LS procedure. The most serious approximations in the model 
+ are usually made in:
+#J
+ 1. Absorption corrections.
+ 2. The form of the temperature factors.
+ 3. Atomic scattering factors.
+ 4. Extinction corrections.
+#
+#PErrors in the diffraction data should ideally follow Poisson statistics.
+ However, it has been our experience that except in the case of painstaking
+ work on very high quality crystals, other errors are present. These generally
+ seem to be approximately correlated with the reflection intensity, and can
+ be represented by an expression like:
+#J
+ sigma(F) = a*sigma(I) + b*I + c*I**2
+#
+#PSince values for the constants a, b and c are arrived at by inspired guesses,
+ we now prefer to represent sigma(F) by a smooth function in Fo. The function
+ chosen is a Chebychev polynomial with the minimum number of coefficients
+ needed to make w(Fo-Fc)**2 constant as a function of Fo. This procedure
+ only yields weights appropriate for the current model, and so is inappropriate
+ for intermediate stages of the analysis. 
+ Futher, introduction of a model dependent weighting scheme too early in a
+ structure analysis may lead to important features being concealed.
+ Until all the parameters that need to
+ be refined have been identified, unit weights or the scheme due to Hughes are
+ used. A valid weighting of the reflections makes w(Fo-Fc)**2 constant for all
+ rational samplings of the data. Changes of weighting scheme usually have
+ the most dramatic effects on thermal and extinction parameters, which should
+ be re-refined whenever the scheme is modified.
+#PThe user should not be unduly surprised to find his normal R factor
+ increasing after the application of weights (he is not trying to minimise
+ 'R'), and will generally find Rw higher than R (Rw uses delta squared).
+ If Rw is much higher than R, then the model may be very inadequate in 
+ some aspects, or there may be a few 'rogue' reflectins in the data. These
+ should be found, considered, and possibly rejected.
+#
+#YA Strategy#
+#PCurrently, the only effective way for completing the refinement of a
+ crystal structure at atomic resolution is by the method of least-squares
+ in which we minimise w(Fo-Fc)**2 summed over the diffraction data. In
+ restrained refinement we also simultaneously minimise w(Pt-Pc) ( where
+ Pt and Pc are the theoretical and calculated values for some structural
+ parameter) summed over the required parameters. 
+ In both cases 'w' is the weight appropriate for the term in the summation.
+ Fc and Pc are usually
+ non-linear functions of the atomic parameters. The functions are thus expanded
+ as a Taylor series, and the second and higher order terms neglected. The
+ zero'th order terms (Fc and Pc) depend upon the current model, and the
+ neglected terms only really become insignificant as the process approaches
+ convergence. e.g.
+#N   3#
+#J
+ Fc(i) + [x(k).d(Fc(i))/d(p(k))] = Fo(i) 
+ Pc(i) + [x(k).d(Pc(i))/d(p(k))] = Po(i) 
+#
+#Pwhere the terms k in [] are summed over the parameters being varied and we
+ solve for the shifts x(k) in parameter p(k). The terms Fc(i) and Pc(i) are 
+ effectively observations for the current model, and can be moved to the 
+ right hand side.
+#PBecause of the approximations made, the process need not be
+ convergent, but this becomes more likely the better the starting model.
+ Fc is more sensitive to reasonable errors in some types of parameter
+ (e.g. x,y,z) than in others (e.g. U's). At the outset of refinement therefore
+ the least sensitive parameters can be given reasonable values (e.g. 0.05
+ for U[iso] of a carbon atom) which is not refined until the more volatile
+ parameters have stabilised. In this example, the
+ refinement is heavily constrained with
+ the constraint that U[iso] = 0.05. Once the model for the geometry has begun
+ to stabilise, the thermal model can be refined, though here again it is
+ generally wise to constrain the temperature factors to be isotropic initially.
+ Because all the parameters are correlated, it makes no sense to refine these
+ intermediate models to convergence. An r.m.s.(shift/e.s.d.) of about 1 to 3
+ is adequate before the model can be relaxed (though any individual
+ anomalies should be investigated).
+#PAs convergence approaches, the gradient terms (d(F)/d(p)) change only slowly
+ compared with Fc, and it is thus appropriate in large structures only to 
+ recompute Fo-Fc (the Right Hand Side) every cycle, and re-use
+ the matrix of derivatives for alternate cycles, thus saving considerable
+ machine time.
+#PThroughout this section, the importance of the starting model has been 
+ emphasised. The user should now see why Fourier refinement and Regularisation
+ were discussed in detail earlier. Non-linear least-squares is a powerful
+ method for acheiving a satisfactory result only when it is given a good
+ starting model. While it can give some indications as to redundant parameters
+ (by refining them to absurd values or attributing them large e.s.d.s),
+ it cannot introduce new parameters. The final test of a 'good' structure
+ is not a low 'R' factor or minimisation function - it is more likely to be
+ an intuitive assesment based on the relationship between the current model and
+ similar structures, and a critical examination of difference Fourier
+ syntheses.
+#YA Practical Scheme#
+#PThe following list is a flow diagram for a typical
+ crystal structure refinement assuming that there are no problems with
+ disorder, pseudo-symmetry, twinning etc.
+#N  32#
+#J
+ 1.  Get a trial structure (Patterson or direct methods)
+ 2.  Calculate structure factors and a Scale Factor.
+ 3.  Do an Fo map and Fourier refinement.
+ 4.  Regularise if you can. Use REGULARIZE or MOLAX
+ 5.  If you have found new atoms, go to 2.
+ 6.  Refine the positional parameters.
+ 7.  Refine isotropic temperature factors.
+ 8.  Locate or compute hydrogen atoms.
+ 9.  Refine positions again.
+ 10. Refine aniso temperature factors.
+ 11. Locate or compute any missing hydrogen atoms.
+ 12. Enter the final stages of refinement
+  a. If a small structure, FULL matrix.
+  b. If a medium structure, LARGE BLOCK approximation.
+     If refinement is stable and correlation coefficients  
+     are small, then use DIAGONAL approximation
+  c. If a large structure, DIAGONAL approximation or 
+     CASCADE refinement.
+ 13. Look at the agreement (variance) analysis (\ANALYSE).
+     If <w(Fo-Fc)**2> not constant, change weights to SCHEME 1 
+     with a parameter P(1) = F(min<w delsq>).
+ 14. Do 1 cycle of refinement of temperature factors plus 
+     a CALCULATION.
+ 15. Look at the agreement analysis again, and decide if you 
+    need a Chebychev weighting scheme.
+ 16. Refine to convergence, re-using matrix on alternate cycles.
+ 17. If there are unusual features (distances, angles, planarity, 
+     Uaniso) use REGULARIZE, MOLAX, ANISO to correct the feature, 
+     and use restrained refinement to test the hypothesis that 
+     the 'corrected' model is compatible with the X-ray data.
+# 
+#YStructure Factor Control List - LIST 23# 
+#PThe overall conditions governing the calculation of structure factors
+ and monitoring the refinement process are generally kept constant throughout
+ a refinement, and so have been collected together into the Structure
+ Factor Control List, LIST 23, which should be input with the other initial
+ data. The directive MODIFY consists of a series of switches for causing the
+ application (or not) of data contained in other lists, thus removing the
+ need to re-input those lists as circumstances change. Note that, for example,
+ though LAYER scale factors or an EXTINCTION parameter may be present
+ in LIST 5, they will only be included in the calculation of Fc if the switches
+ are set in LIST 23.
+#PThe MINIMISE directive controls whether or not the restraints are to be
+ added into the minimisation function (i.e. a LIST 16 may be present on
+ the DISK but will not be actioned unless LIST 23 requests it), and whether
+ F or F**2 is to be used for the diffraction data. Note that if you request
+ F**2, you will probably need to concider changing the weighting scheme.
+#PThe directives ALLCYCLES and INTERCYCLE control the convergence-divergence
+ parameters.
+#YDefining the Matrix - LIST 12#
+#PIn PART 5 we introduced the definitions for parameter names and showed
+ how these were associated with parameter values via LIST 5.  For least -
+ squares we need to set out a table showing the relationship between
+ least-squares parameter names, least-squares parameter shifts, and 
+ the physical parameters. This table is held as LIST 22, which the 
+ interested user may care to print (for a small matrix!). For those
+ cases where there is one least-squares parameter per physical parameter
+ and the refinement is full matrix, this table is relatively trivial. For
+ refinements in which physical parameters are EQUIVALENCed or RIDING,
+ or where the parameters are divided into several matrix blocks, it
+ would be unreasonably complex for the user to have to construct this table for
+ himself. The information which CRYSTALS needs to construct this table is
+ presented in a symbolic form as a LIST 12.
+#PLIST 12 consists of directives that define matrix blocks (FULL, BLOCK,
+ DIAGONAL) and directives that modify the contents of the current block
+ (RIDE, EQUIVALENCE, FIX, WEIGHT, PLUS). The directive CONTINUE merely extends
+ the directive begun on the previous line.
+#
+#YSimple examples#
+#PFor many simple structures a simple full, large-block or atom-block
+ diagonal matrix refinement may be sufficient. Parameters implicitly
+ included by a preceding FULL, BLOCK or DIAGONAL card may be removed from the
+ refinement by the FIX directive.
+#IRules for parameters#
+#PIn the examples, 'parameters' may be either EXPLICIT (e.g. C(1,X)
+ C(3,X,Y,Z) C(2,X'S) ) or IMPLICIT (e.g. X  Y U'S ). Parameters defined
+ by an 'UNTIL' sequence (e.g. C(1,U[11],U[22]) UNTIL C(6) )
+ are regarded as implicit for LIST 12 processing.
+#PNo parameter may be given implicitly twice, nor given explicitly twice,
+ in the same LIST 12.
+#IRules for FULL, BLOCK, DIAGONAL, FIX and PLUS#
+#PLIST 12 must begin with FULL, BLOCK or DIAGONAL.
+#PLIST 12 must not contain any two of FULL, BLOCK or DIAGONAL.
+#PLIST 12 must not contain more than 1 FULL directive. 
+#
+#PParameters on a BLOCK card must not appear on another BLOCK or DIAGONAL card.
+#PParameters on a DIAGONAL card must not appear on another DIAGONAL or
+ BLOCK card.
+#PParameters on a PLUS card must not appear on another PLUS, FULL, BLOCK or
+ DIAGONAL card.
+#J
+ \LIST 12            This defines a single matrix block          
+ FULL parameters     containing all the specified parameters 
+ END                 PLUS the overall scale factor.
+ 
+ \LIST 12            This defines two independant matrix blcks,
+ BLOCK parameters(1) one containing parameters(1), the other
+ BLOCK parameters(2) containing parameters(2) and (3), i.e. the
+ PLUS  parameters(3) PLUS directive is acting rather like CONTINUE.
+ END                 The overall scale factor is not implied, and
+                    must be specified explicitly in the appropriate
+                    block if required. Note that the same parameter
+                    must not occur more than once.
+#
+#N  20#
+#YEXAMPLES#
+#J
+ \LIST 12            Refine the positions and anisotropic 
+ FULL X'S U'S        temperature factors of all atoms in a single
+ END                 matrix block with the overall scale factor.
+ 
+ \LIST 12            As above, only now don't refine the y 
+ FULL X'S U'S        coordinate of the lead atom (polar axis? 
+ FIX PB(1,Y)         see also restraints).
+ END
+ 
+ \LIST 12              Refine the positions for all the carbon 
+ BLOCK C(1,X,Y,Z) UNTIL LAST                         one block
+ BLOCK C(1,U'S) UNTIL C(10) SCALE          and the anisotropic 
+ PLUS  H(11,U[ISO]) UNTIL LAST           t.f.s for the carbons 
+ CONT UNTIL LAST      together with an isotropic t.f.s for the
+ END            hydrogen atom and the scale factor in another. 
+ 
+ Note that PLUS could be replaced by CONTINUE.
+#
+#YAdvanced examples#
+#PIn some situations a simple one-to-one relationship between structural and
+ least squares parameters is not suitable. For example, the x and y coordinates
+ of an atom on the special position X,X,1/6 must move synchronously, that is,
+ be represented by a single least squares parameter. Similarly, an atom on
+ X,-X,11/12 has the x and y coordinates linked, but here the shift to y is in
+ the opposite sense of that for x.
+#PSometimes the relationship between parameters is not due to space group
+ symmetry, but to some other physical requirement. In the example given above
+ (Restraints),
+ where either Na or K can occupy the same site, we may have site occupancy
+ disorder such that the total occupancy for the ions is fixed, but the ratio
+ is to be determined. In this case, the shifts in the occupation
+ factors for the two ions are equivalenced to a single least squares parameter,
+ but made to move in opposite senses.
+#PLinking of physical parameters like this provides a powerfull way for
+ dealing with certain types of instability in the refinement, and for reducing
+ the cost by reducing the number of parameters refined. For example, the
+ hydrogen atoms on a carbon can be shifted synchronously with it, thus 
+ preserving the local geometry (but watch second neighbour relationships).
+ This procedure is sometimes known as a 'riding' refinement. Another use
+ for riding parameters is to give a poorly defined residue a single overall
+ anisotropic temperature factor (not as good as proper TLS of course, but
+ perhaps more realistic than individual atomic temperature factors).
+#PFor EQUIVALENCED LINKED or RIDING parameters, the partial derivative for each
+ parameter is computed, multiplied by the WEIGHT if requested, and added into
+ the normal equations. After solution of the equations, the resultant shifts
+ are multiplied by the same weights and then applied to the corresponding 
+ structural parameters.
+#IRules for FIX, EQUIVALENCE, LINK, COMBINE, GROUP, RIDE, WEIGHT#
+#PParameters on a FIX, EQUIVALENCE,  LINK, COMBINE, GROUP,
+ RIDE or WEIGHT card are added to or modify
+ the action of parameters on the last previous FULL, BLOCK or DIAGONAL card.
+#PParameters given explicitly over ride those given implicitly.
+#PParameters on an EQUIVALNCE, LINK, COMBINE, GROUP
+  or RIDE card must not occur on another
+ EQUIVALENCE, LINK, COMBINE, GROUP,  RIDE or a PLUS card.
+#PParameters on a FIX card may not appear on another FIX or a WEIGHT card.
+#PParameters on a WEIGHT card may not appear on another WEIGHT or a FIX card.
+#PParameters on an EQUIVALENCE, LINK, COMBINE, GROUP,
+  or RIDE card need not have been  given on a
+ preceeding FULL, BLOCK or DIAGONAL card.
+#PParameters on an EQUIVALENCE, LINK, COMBINE, GROUP,
+  or RIDE card will modify the action of
+ parameters given on a preceeding FULL, BLOCK or DIAGONAL card.
+#PParameters on a WEIGHT card should also occur on an EQUIVALENCE, LINK,
+ COMBINE, GROUP,  or
+ RIDE card.
+#PParameters on a RIDE card must be either explicit definitions or UNTIL
+ sequences. There must be the same number of parameters in each argument
+ list.
+#PParameters on a LINK card must be either explicit definitions or UNTIL
+ sequences. There must be the same number of parameters in each argument
+ list.
+#PParameters on a COMBINE card must be either explicit definitions or UNTIL
+ sequences. There must be the same number of parameters in each argument
+ list.
+#POnly atom names can be given on a GROUP card
+#
+#YEXAMPLES#
+#PThis example is also given in the MANUAL. The structure contains C,N and O
+ in the space group P6122, with N at x,-x,11/12, O at x,x,1/6 and C isotropic.
+ The refinement will be by full matrix. The following 3 LIST 12s all lead to
+ the same matrix. The example in the manual has only 9 directives.
+#J10
+ \LIST 12                \LIST 12                  \LIST 12
+ FULL C(1,X'S)           FULL X'S                  FULL X'S U'S
+                                                  FIX C(1,U'S)
+ PLUS C(1,U[ISO])        PLUS C(1,U[ISO])          PLUS C(1,U[ISO])
+ PLUS N(1,U[33],U[12])   PLUS N(1,U[33],U[12])
+ EQUIV N(1,X) N(1,Y)     EQUIV N(1,X) N(1,Y)       EQUIV N(1,X) N(1,Y)
+ WEIGHT -1. N(1,Y)       WEIGHT -1. N(1,Y)         WEIGHT -1. N(1,Y)
+                        FIX N(1,Z)                FIX N(1,Z)
+ EQUIV N(1,U[11],U[22])  EQUIV N(1,U[11],U[22])    EQUIV N(1,U[11],U[22])
+ EQUIV N(1,U[23],U[13])  EQUIV N(1,U[23],U[13])    EQUIV N(1,U[23],U[13])
+ PLUS O(1,U[33],U[12])   PLUS O(1,U[33],U[12])
+ EQUIV O(1,X) O(1,Y)     EQUIV O(1,X) O(1,Y)       EQUIV O(1,X) O(1,Y)
+                        FIX O(1,Z)                FIX O(1,Z)
+ EQUIV O(1,U[11],U[22])  EQUIV O(1,U[11],U[22])    EQUIV O(1,U[11],U[22])
+ EQUIV O(1,U[23],U[13])  EQUIV O(1,U[23],U[13])    EQUIV O(1,U[23],U[13])
+ WEIGHT -1. O(1,U[13])   WEIGHT -1. O(1,U[13])     WEIGHT -1. O(1,U[13])
+ END                     END                       END 
+#
+#PThe next example is for H(11) H(12) and H(13) riding upon C(1). Note
+ that the hydrogen atoms are all given the same temperature factor shifts.
+ They would also probably start with the same temperature factor values,
+ though for the isotropic refinement of a phenyl group (for example)
+ the investigator may have some a priori reason for starting the atoms off
+ with slightly differing values. We are not concerned here with the rest of
+ the structure.
+#N   7#
+#J
+ \LIST 12
+ FULL (parameters)                    The x, y and z coordinates for 
+ RIDE C(1,X'S) H(11,X'S) UNTIL H(13)  the four atoms are handled by
+ EQUIV H(11,U[ISO]) UNTIL H(13)       3 ls parameters. The 3 U(iso)s
+ END                                  are handled by 1 parameter.
+#
+#YMatrix blocking schemes#
+#PThere are no fixed rules for deciding how or even whether a given structure
+ should be refined by full or block approximations to the matrix. The choice
+ will change from institution to institution and from time to time.
+#PBroadly, full matrix methods are the most certain to converge. They are
+ also likely to require less cycles of refinement than a block matrix method.
+ However, the time per cycle will always be more than for a block matrix
+ method, and there will be increased storage requirements. Thus, small
+ structures should be refined using the full matrix, and large ones using a
+ block approximation. On computing machinery where time is paid for whether 
+ the machine is idle or not (perhaps the users own machine) it makes sense
+ to use the largest approximations to the full matrix compatible with other
+ users of the machine and its efficiency of operation. At some stage, for
+ large structures, a substantial number of the off-diagonal elements of the
+ matrix will be negligable, and the cost of accumulating and paging these
+ may not be justified. Such large structures need a special strategy.
+#PFor medium large structures, it is probably convenient to break the matrix
+ into a small number of largish blocks. Experience has shown what parameters
+ can be expected to be correlated: these MUST be included in the same matrix
+ block.
+#ICorrelated Parameters#
+#PThere is no definative way for predicting which parameters will be highly
+ correlated, but experience has shown that the groups of parameters in the
+ following table should normally be refined together.
+#N   8#
+#J
+ - bonded atoms
+ - non-orthogonal coordinates
+ - scale factors, extinction parameters and 
+   temperature factors.
+ - molecules or fragments related by a pseudo
+   symmetry operator.
+#
+ The program always lists those parameters from the current blocking
+ structure which are highly correlated. These parameters must be refined
+ together from time to time to preserve their proper interdependance.
+ If this results in matrix blocks that
+ are too large,then the blocking scheme should be changed between cycles
+ to ensure that all significant cross terms appear at some stage 
+ ('cascade refinement').
+ For example
+ if there are N atoms to be refined in 2 blocks, the following LIST 12s might
+ be suitable. 
+#
+#N  12#
+#J
+ \LIST 12
+ BLOCK ATOM(1,X'S) UNTIL ATOM(1n/2)
+ BLOCK ATOM(1n/2+1,X'S) UNTIL ATOM(n)
+ END
+ 
+ \LIST 12
+ BLOCK ATOM(1,X'S) UNTIL ATOM(1n/4)
+ PLUS  ATOM(3n/4+1,X'S) UNTIL LAST
+ BLOCK ATOM(1n/4+1,X'S) UNTIL ATOM(3n/4)
+ END
+#
+#ISingularities#
+#P High correlation in itself does not necessarily lead to invalid
+ parameter estimates. For example, the effect of bond length restraints is
+ to deliberately increase the off-diagonal terms between the coordinates
+ of the atoms involved. If some parameters are so highly correlated that
+ the ill-conditioning of the matrix makes it (almost) singular, the user is
+ left with few solutions. Essentially his problem is that he has an 
+ inapropriate model, or that his data are not resolving or defining his model.
+ The first approach is to ascertain whether more or different
+ data would cure the problem, for example collecting data to a higher theta
+ value, at a lower temperature, or by adding restraints. If no solution
+ of this type is possible, then the approximate relationship implied
+ between the highly correlated parameters should be formalised, that is
+ a new model is required. For example, if the temperature factor and 
+ occupation factor for an atom fail to refine properly, the user may choose
+ to define one and refine the other, and perhaps later reverse the roles.
+ He should be aware however that he is not performing a free refinement of
+ both parameters, and that in the final cycle he is making the statement
+ that he 'knows' the correct value for the unrefined parameter. Separating
+ correlated parameters into different refinement cycles (or into different
+ matrix blocks in the same cycle - the effect is almost mathemtically
+ equivalent) is an extremely hazardous way of avoiding singularities, and
+ implies effectively uncontrolled assumptions on the part of the user. 
+ Reparameterisation may help with pseudosymmetry problems, using the COMBINE
+ instruction to combine the approximately equivalent parameters.
+#
+#YSpecial positions and floating origins#
+#
+#PAtoms on special positions can be handled either through constraint 
+ or through restraints. The latter method can be applied automatically, and
+ is to be prefered if LIST 12 is already complex because of GROUPed, LINKed
+ RIDING or COMBINed parameters.
+#IConstraints#
+#PConstraining atomic parameters to remain in fixed positions or have 
+ certain relationships between them is done in LIST 12 with the directives
+ FIX, EQUIVALENCE and WEIGHT. See VOL5 for examples. The special
+ atomic coordinates
+ must have correct values or relationships before starting the refinement
+#IRestraints#
+#PRestraining atomic parameters to remain in fixed positions or have 
+ certain relationships between them is done in LIST 17 using the RESTRAIN
+ directive. LIST 12 must be set up to let the special parameters refine, 
+ but their refinement is controlled by the restraints. The instruction
+ \SPECIAL APPLY automatically generates the correct restraints and warns of
+ non-unity site occupancies. The special atomic parameters need not be
+ exactly correct before refinement starts - the restraint will correct them.
+# 
+#IFloating Origins#
+#PThese can be fixed by not refining the appropriate coordinates of a heavy
+ atom, using FIX in LIST 12. However, a much better solution is to restrain
+ the centroid of the structure, using SUM in either LIST 16 or LIST 17
+#
+#YTips for least squares#
+#
+ 1) Look at the output.
+#
+ 2) If refinement is going well, consider using the DIAGONAL approximation.
+#
+ 3) If refinement is slow to converge, or gives poor molecular parameters,
+   or temperature factors are anomalous, use a large block approximation to 
+   identify correlated parameters.
+#
+ 4) Watch out for high correlations or physically implausible parameters.
+#
+ 5) Do NOT 'FIX' an unexpected singularity by putting the related parameters 
+   into different matrix blocks. Make a better guess at the parameter values, 
+   or use restraints.
+#
+ 6) If your data dont define a parameter, dont try to refine it.
+#
+ 7) Consider using EQUIVALENCE to reduce the number of refined parameters.
+#
+ 8) Look at mean shifts and 'reversals'. At convergence, shifts should be 
+   small, and reversals ca. 50%. If reversals are <50% and shifts are large, 
+   structure is still converging. If reversals are large and shifts are 
+   large, structure is not converging. If the model is the best you can think 
+   of, use geometric restraints and the LIMIT restraint to stabilise 
+   divergence or oscillations.
+#
+ 9)  Think. Use LIST 22 and CHECK online before issuing batch jobs. Use AXES
+    and DISTANCES to verify molecular reasonableness.
+#
+ 10) Remember that the mathematical 'best solution' depends on the maths you 
+    use, and may not be the intellectually best solution.
+#
+ 11) Get good data. If you know the data are bad, consider a partial refinement
+    only.
+#
+#ZRESULTS#
+#PIncreasingly, the aim of a crystal structure analysis is not to produce
+ a detailed description of a single structure, but either to determine
+ the gross structure of a compound, or obtain geometric details of a series
+ of compounds.  Few crystallographers now have the time to make friends with
+ all their structures. None the less, since most published structures now find
+ their way into computer readable data banks, from which they may be retrieved
+ by programs with less insight than human researchers, it has become more vital
+ than ever that structures are processed in a well defined and documented way,
+ and that the results are published without additional errors. CRYSTALS does
+ watch what the user is doing, and may alert him to real or potential problems,
+ but eventually the user is responsible for his own work. The following list
+ gives some of the points to be checked, and the facilities available for
+ doing this.
+#
+#YDifference electron density#
+#PThis provides a broad and largely unbiassed view in an intuitatively 
+ interpretable form  of the differences between the observed and calculated
+ structure factors. An entirely featureless map indicates that the model
+ can simulate the observations well, though other models may do almost as
+ well, and there may be errors in the data that it would be preferable that
+ the model didn't emulate (e.g. temperature factors concealing the need for
+ an absorption correction). In any case, since most refinements will be 
+ conducted with some sort of weighting of the observations, it is unlikely
+ that the map will be without features of any kind. What is important is that
+ any features observed can be explained.
+#
+#YAnalysis of differences#
+#PFor a formally valid least squares refinement, the average value of
+ w(Fo-Fc)**2 must be constant for any systematic sectioning of the data. In 
+ CRYSTALS the instruction \ANALYSE provides an analysis  by sectioning as
+ a function of h, k, l, parity, class, /Fo/ and sign(theta). The entries in
+ the column <w(Fo-Fc)**2>  should be approximately constant 
+ throughout the table. If this condition is  not satisfied,
+ then systematic variations in <(Fo-Fc)>
+ as a function of one or more of the sectionings may throw light on serious
+ failures in the model. For example, if Fo is less than Fc for strong
+ reflections and also for low angle reflections, then an extinction correction
+ may be necessary. Systematic variations as a function of index may indicate
+ the need for an absorption correction or an anisotropic extinction correction.
+#YPhysical reasonableness#
+#PA refinement which converges to physically unreasonable parameter values
+ cannot be regarded as satisfactory. Positional parameters usually need
+ translating into molecular parameters before their significance becomes
+ apparent. Several translations available in CRYSTALS.
+#I\DISTANCES#
+#PThis instruction computes inter and intra atomic distances and angles. All
+ necessary symmetry operators are automatically applied to ensure that values
+ within the specified limits are generated. The user should check that there
+ are no inexplicably short inter molecular contacts, as well as checking the
+ ususal bond lengths and angles. The program will also compute e.s.d.s
+ from the full covarience matrix (including symmetry effects). The information
+ for this is taken from the least squares matrix, and the program will not
+ permit this information to be applied to any other LIST 5 than that produced
+ be the corresponding round refinement. It is thus fairly important to give
+ your atoms systematic names and serial numbers, and to get the list into
+ a convenient order AS SOON AS POSSIBLE. Even just changing the serial of
+ an atom will inhibit the linking of the LIST 5 and the matrix.
+#I\MOLAX#
+#PThis procedure computes the principal axes of inertia of a group of atoms.
+ If they have unit weights or weights derived from their standard deviations,
+ then the shortest axis is parallel to the normal to the best plane, and
+ the longest is parallel to the best line. 
+#I\TORSION#
+#PThis procedure computes the torsion angles for the specified atoms. e.s.d.s
+ are not currently computed.
+#I\CHECK#
+#PThis procedure compares the current values of parameters with those 
+ requested in the restraint definitions. Current values differing
+ significantly  from those required should be carefully reappraised, since
+ they indicate a conflict between the diffraction data and the hypotheses.
+#YThermal parameters#
+#I\AXES#
+#PThe six components of the anisotropic temperature factor can be transformed
+ to define a three dimensional ellipsoid representing the harmonic motion of
+ the atom. If free refinement of the U's leads to an ellipsoid with a negative
+ volume, then the transformation becomes meaningless, usually indicating that
+ there are grave deficiencies in the model or the data. For data collected
+ at very low temperatures, the volume may go marginally negative, and
+ restraints on the U's should stabilise the situation. The procedure AXES
+ is called automatically after every round of refinement, to give warning
+ of non-positive definite U's. Refinement will however continue even if
+ some atoms are unsatisfactory. The result is generally a rapidly diverging
+ process with rapidly increasing R factors.
+#I\ANISO#
+#PThis procedure tries to fit the atomic temperature factors to a rigid body
+ composite temperature factor. This is partitioned into three parts, T
+ representing the rectilinear vibration of the body, L representing its
+ torsional libration, and S representing the coordination between these two
+ parts. There are 20 independant terms to be evaluated in TLS for an
+ unsymmetrical fragment not lying on a symmetry operator, so that a rigid
+ body of this sort cannot be defined for less than 4 atoms. For a body
+ of six atoms, the calculation might just be meaningfull, though there are
+ problems with the conditioning of the matrix if the atoms lie close to a conic
+ section. Under these conditions the maths cannot distinguish two correlated
+ motions in T space from a corresponding libration in L space. The user
+ should be aware that good agreement between U(obs) and U(calc) does not mean
+ that the values of T, L and S have any physical significance.
+#YComputer Graphics#
+#PCRYSTALS comes with the graphics program Cameron for visualising structures.
+#ZCONCLUSION#
+#PCRYSTALS contains many more options than have been mentioned in this Guide.
+ We know of no easy way to pass on knowledge about the system. It is big, and
+ it is powerful, and for the users who have come to terms with the disk and
+ parameter handling facilities, it is an enjoyable system to work with. When
+ you begin to use it, use keywords frequently and in full. This will help
+ you to remember the syntax of the instructions. Use your imagination in
+ trying to break the system, and so learn its useful limits.
+#
+#

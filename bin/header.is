@@ -1,0 +1,50 @@
+[Dirs]
+Name: {app}\Example
+Name: {app}\Nket
+Name: {app}\Manual
+Name: {app}\Script
+Name: {app}\user
+Name: {app}\user\Script
+Name: {app}\demo\demo
+Name: {app}\demo\cyclo
+Name: {app}\demo\ylid
+Name: {app}\demo\disorder
+Name: {app}\demo\kpenv
+Name: {app}\demo\peach
+Name: {app}\demo\editor
+Name: {app}\demo\twin
+Name: {app}\demo\quick
+Name: {app}\demo\keen
+Name: {app}\demo\mogul
+
+[Messages]
+SelectDirLabel=Select a folder for [name] to be installed in.
+
+[Setup]
+
+MinVersion=4.0,4.0
+;
+;Adjust the program names and version here as appropriate:
+;
+AppName=CRYSTALS
+AppCopyright=Copyright ¸ Chemical Crystallography Laboratory, Oxford
+AppPublisher=Chemical Crystallography Laboratory, University of Oxford
+AppPublisherURL=http://www.xtl.ox.ac.uk/
+Bits=32
+BackSolid=0
+ChangesAssociations=Yes
+Compression=bzip
+DisableDirExistsWarning=0
+DisableDirPage=0
+DisableStartupPrompt=yes
+CreateAppDir=1
+DisableProgramGroupPage=yes
+OverwriteUninstRegEntries=1
+Uninstallable=1
+AllowNoIcons=0
+AlwaysRestart=0
+DefaultDirName={sd}\Wincrys
+DefaultGroupName=Crystals
+;These files display during the installation:
+MessagesFile=compiler:default.isl
+DiskSpanning=0

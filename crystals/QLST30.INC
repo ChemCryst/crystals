@@ -1,0 +1,2 @@
+      EQUIVALENCE (L30DR,ICOM30(1)) 
+

@@ -1,0 +1,6 @@
+echo An error occured at $1
+echo Last file: $2
+echo Error file: $3
+echo Build abandoned
+errmail.pl $1 $2 $3
+exit 1

@@ -1,0 +1,33 @@
+include makefile.in
+
+CAMDIR = ../cameron
+GUIDIR = ../gui
+CRYSDIR = ../crystals
+
+VPATH = $(CAMDIR) $(CRYSDIR) $(GUIDIR)
+
+CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.fpp))
+CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.fpp))
+GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
+
+FOBJ     = $(notdir $(CAMFILES:.fpp=.o) $(CRYFILES:.fpp=.o)) lapack.o
+COBJ     = $(notdir $(GUIFILES:.cc=.o))
+DEP      = $(GUIFILES:.cc=.d)
+
+all : crystals
+
+crystals : $(FOBJ) $(COBJ)
+	$(LD) $(GUIFLAGS) $(GUILIBRARIES) $(OPT) -o $@$(SUFFIX) $(FOBJ) $(COBJ)
+
+# This lapack module contains routines for compting machine precision, and must be compiled without optimisation.
+lapack.o : lapack.f
+	$(F77) -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
+
+clean :
+	rm -f $(FOBJ) $(COBJ) crystals $(DEP)
+
+
+
+ifneq ($(MAKECMDGOALS),clean)
+include $(DEP)
+endif

@@ -1,0 +1,1457 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TCRYSTALS IMPLEMENTATION  GUIDE
+#ZCRYSTALS IMPLEMENTATION  GUIDE
+#Q
+#PCRYSTALS has been implemented on many machines. However, all current
+ development work in Oxford takes place on a DIGITAL EQUIPMENT VAX under
+ VAX/VMS.
+ Considerable effort is made to make the code machine independant, the
+ language following closely to FORTRAN 77.
+ The cost of making the code and internal data structures clear, flexible
+ and robust is that the program and data areas are large. A version with
+ the two major arrays dimensioned to reasonable values gives a program of
+ about 2 Mb. A lot of space could be saved by redimensioning it for small
+ problems, and some by overlaying the code. These techniques have been used
+ on ICL machines, but with physical memory now very inexpensive, and most
+ major systems having virtual memory, such techniques are not cost effective.
+ Care has been taken to try to optimise memory access, and so lead to efficient
+ paging of virtual machines. Internal disk caches and a learning algorithm
+ reduce disk traffic.
+#PA package  of this type must
+ contain some machine specific routines. These have been collected together
+ to facilitate implementations on non-DIGITAL machines.
+#PFor VAX sites, special distribution kits are available which bring up the
+ system with minimal user intervention. For non-VAX sites, the user must
+ provide a JCL environment, and probably make minor modifications to the code.
+ We much value notification of changes that are made, since these may help
+ us to make the system more machine independant.
+#PThe major problem facing implementors on non-VAX sites is the large number
+ of files involved. To simplify subsequent organisation, some of the
+ files have been appended to each other to form composite files.
+ The 'joins' in the composite files are identified by the text:
+#J
+
+         CRYSTALS CODE FOR  filename
+
+#Pwhere filename is the name of the original file.
+#PIf the original file contained FOTRAN, each
+ subroutine starts with the text:
+#J
+
+         CODE FOR procedurename
+
+
+#PThe source is provided as five files of subroutines, and the  MASTER
+ segments for CRYSTALS and DEFINE. In general, the FORTRAN files
+ will not need to be split into subroutines since the
+ 'CODE FOR' and 'CRYSTALS CODE FOR' lines are treated as COMMENTS. For
+ other material,  these composite files
+ MUST  be subdivided and the 'CODE' or 'CRYSTALS' lines
+ be removed  using a local facility.
+#PThe distribution tape contains the following files:
+#J
+
+Some documentation
+                              IMPLEMENT.LIS
+                              PRIMER.MEM
+                              GUIDE.LIS
+                              OPTIONS.LIS
+The FORTRAN
+                              CRYSFORTS.SAV.
+                              CRYSFORT1.SAV.
+                              CRYSFORT2.SAV.
+                              CRYSFORT3.SAV.
+                              CRYSFORT4.SAV.
+                              CRYSTALS.SAV.
+                              DEFINE.SAV.
+
+The system Database
+                              COMMANDS.SRC.
+
+The startup files and examples of procedures
+                              PROCEDURE.SAV	
+
+Some procedures and files for the H-P implementation
+                              ALIEN.SAV
+Some sample data
+                              EXAMPLE.SAV.
+
+Some more documentation
+	                      MANUAL.SAV.	
+
+The sources for the full manuals
+                              MANUALSRC.SAV.
+
+The SCRIPT files and data
+                              SCRIPT.SAV.	
+
+The graphics program
+                              SNOOPI.SAV.	
+
+The program SHELXS
+                              SHELXS.SAV.	
+
+The program SIR88
+                              SIR.SAV	
+
+#
+#POn systems with branching directory structures, it would be advisable
+ to load each of the above files into a subdirectory before unpacking them.
+#
+#ZCOMPONENTS OF THE SYSTEM#
+#PThe components of the system are:
+#DCRYSTALS
+#PCRYSTALS is the crystallographic program. There are about 130,000 lines
+ of text. The text is well commented, and no improper  tricks have been used
+ to try to reduce the size of the code. Approximately half the code is
+ concerned with data management, error reporting and file handling. This code
+ may not be easy to modify. The mathematical sections are very modular, and
+ should be easily modified.
+#DDEFINE
+#PDEFINE is the program which converts an ASCII format data definition file
+ into a direct access system data-base. This program shares much code with
+ CRYSTALS.
+#DCOMMANDS
+#PThe data base is called the COMMAND file. The ASCII version may be edited
+ by the system manager to change  facilities, default values, or character
+ representations (eg accept  non-English commands). This must be processed
+ by DEFINE to produce a direct access file, a version of which
+  must be available to all users. Note that users may have tailored versions
+ of the command file if necessary. If the Command file is extracted from a
+ composite file, make sure that the first line is:
+#J
+
+
+                      ' This is the main command definition file'
+
+#and not a 'CODE FOR' or 'CRYSTALS CODE FOR' line.
+#DSTARTUP
+#PThe STARTUP file contains instructions to initialise CRYSTALS, e.g.
+ assigning files, loading system constants. The system manager can use this
+ file to control some startup defaults, and
+ to instruct CRYSTALS to use the Users own STARTUP files in addition to the
+ system one. This MUST be defined at startup time either through a JCL
+ assignment, or by being set in PRESETS.
+#DMANUALS
+#PThe manuals are stored in  unformatted ASCII files. The program PAGINATE
+ (based on a program of G M Sheldrick) paginates the text, and at the same
+ time produces files for the on-line INDEX facility
+#DHELP
+#PThe HELP facility uses character files provided by the local manager. Some
+ example are distributed with CRYSTALS.
+#DSCRIPT
+#PThis is a new and undeveloped facility to permit interogative operation.
+ It should not normally be made available to users except as an experiment.
+ The control scripts are packed together, and must be split into separate
+ files. Lines 'CODE FOR' or 'CRYSTALS CODE FOR' must be removed.
+#DDATA FILES
+#PThe data files SCATT.DAT, SCATCU.DAT, SCATMO.DAT and PROPERTIES.DAT contain
+ elemental properties data. They are not necessary for the program, but are
+ accessed by some SCRIPTS  and the Instructions QUICKSTART and COMPOSITION.
+ No elemental properties are stored in the program itself.
+#DCRYSPY
+#PCRYSPY is a small program that copies the CRYSTALS audit file (SPY) to some
+ other secure place. This will only be usefull if the system manager wishes
+ to accumulate statistics on the use and running of CRYSTALS. It will be
+ environment specific and is not normally distributed.
+#Q
+#ZDESCRIPTION OF THE SOURCE CODE#
+#PThe code is largely pure FORTRAN 7, and held in the 5 files
+#J
+             CRYSFORT4
+             CRYSFORT3
+             CRYSFORT2
+             CRYSFORT1
+             CRYSFORTS
+
+#
+#
+ One consequence of the long history
+ of CRYSTALS is the use of INTEGERS to hold text. The initialisation of
+ these integers in DATA statements may be compiler sensitive, and so all
+ such initialisation statements have been specially marked with the string
+ '&HOL' of '~HOL'
+#PIf your compiler accepts data statements of the type:
+#J
+      DATA      ITEXT      /'TEXT'/
+
+#
+#Pthen do a global edit to remove all occurances of '~HOL', and convert
+ all occurances of '&HOL' to 'CHOL'.
+#PIf your compiler prefers data statements of the type:
+#J
+      DATA      ITEXT      /4HTEXT/
+
+#
+#Pthen do a global edit to remove all occurances of '&HOL', and convert
+ all occurances of '~HOL' to 'CHOL'.
+#P
+ Where code is known to be machine
+ specific, this has been indicated in the files. The implementor must use a
+ local editor to look for all lines beginning
+#
+#J
+                   ~zzz or  &zzz
+#
+#Pzzz is a code for a particular machine/ operating system or option.
+ For an option  of type zzz, all lines beginning &zzz must have the &zzz
+ removed, so that the line can be compiled.
+ All lines beginning ~zzz must have the ~ replaced by C, so
+ that they become comments.
+ All lines beginning &yyy, where yyy is not the same as zzz, must also be
+ converted to comments.
+ Lines beginning ~yyy must have the ~yyy removed so that they can be compiled
+#PIf no previous
+ implementation exists for your machine, you should initially regard your
+ machine as type VAX for files CRYSFORT1,2,3,4,
+ and as XXX for CRYSFORTS, (the highly machine specific code)
+ for which sample code exists.
+#J
+
+            if (&XXX) then substitute "nothing"            ! activate
+      else  if (&)    then substitute "C"                  ! comment out
+      else  if (~XXX) then substitute "C"                  ! comment out
+      else  if (~)    then substitute "nothing"            ! activate
+      end   if
+#
+#PPlease keep a note of the changes needed for your machine, and let us have
+ them for incorporation into future releases.
+#PA sequential listing of environment specific options is available in
+ OPTIONS.LIS. The key 'H-P' is for the implementation on a Hewlet Packard
+ machine under UNIX, and may by helpful.
+#ZDESCRIPTION OF COMPONENTS#
+#Q
+#DCRYSTALS SUBROUTINES
+#PFor distribution, the very many source files are appended to make a smaller
+ number of composite files. The original filenames can be found by searching
+ for lines begining
+#J
+      CRYSTALS CODE FOR filename
+#
+#PSuch lines are otherwise compiled as COMMENTS.
+ There are four major files, with names like
+ CRYSFORT1, CRYSFORT2 etc. These files are almost pure FORTRAN 77, and can be
+ expected to compile without serious problems.
+#PThe file CRYSFORTS contains the original files DISC, LINK,
+ PRESETS, SERVICE and
+ SPECIFIC. These are the files containing most machine-specific code.
+#PIt is recommended that the major files CRYSFORT1 - 4 are compiled initially
+ without optimisation and with bound checking and overflow detection enabled,
+ and the relocatable binary (object, semi-compiled) be kept in libraries.
+ It is our hope that modules in CRYSFORTm only call modules from CRYSFORTn
+ where n is less than m, so that the linker search path should be simple.
+#
+#Q
+#DCRYSTALS MASTER SEGMENTS
+#PThe master segments are CRYSTALS and DEFINE. These may contain
+ machine specific code. They should be compiled and linked with the
+  subroutines.
+#
+#Q
+#DCOMMAND FILE
+#PThis is distributed as a fixed format source file, which must be processed
+ to a direct access file using the program DEFINE. MAKE sure you remove
+ the CRYSTALS CODE FOR line.
+#
+#Q
+#ZINPUT/OUTPUT CHANNELS#
+#
+#PCRYSTALS is normally attatched to very many I/O channels, and in full
+ implementations, the users have considerable freedom assign and deassign
+ files and devices to these channels from within the running program. It
+ is problems concerned with passing file and device names to
+ the system  file and device handling mechanisms which will cause the
+ implementor his major difficulties.
+#POn startup, CRYSTALS reads from the channel NCRU, which must be the same
+ physical device as NCUFU(2). NCUFU(1) is the main users control device, and
+ in batch mode will be a file, and the keyboard in interactive mode. The name
+  of the file on this unit may either be assigned at JCL level, or set in
+ PRESETS.
+#PAt the same time, the sole active text output channel is NCAWU, the monitor,
+ which by default is assigns to channel 6. A channel NCWU, will be required
+ for bulk printer listings. By default this is assigned to channel 9,
+ but no output is sent there until a \SET PRINTER ON command is issued,
+ either in the STARTUP file, or by the user. This gives the implementor time
+ to ATTATCH and/or OPEN an alternative channel and file.
+#Q
+#PThe following table lists the values set out in the VAX
+ implementation of  'PRESETS'.  DATA  statements initialise the relationships
+ between the FORTRAN logical names (FORLOGNAM), the FORTRAN
+ unit numbers (FORNU), the character string name of the device
+ as used in \RELEASE or \OPEN (KEYFIL),
+ and the initial status of the channels.
+#PThe
+ FORTRAN logical names are used throughout the code, and their association
+ with actual I/O units can be changed either through the definitions in
+ BLOCKDATA (in PRESETS), or via a STORE command in the STARTUP file. The
+ attributes of the file on the device KEYFIL can be changed via an ATTACH
+ instruction.
+ The master CONTROL stream (i.e. terminal or users control file) must be
+ assigned to the unit on NCUFU(1), and the STARTUP file to the unit
+ on NCRU, which must be the same as NCUFU(2). The STARTUP file ends with
+ ~USE CONTROL, which passes input to the top most USE file, i.e. NCUFU(1).
+#
+#J
+
+ In this table, the CAPITAL characters in FORLOGNAM are used to identify that
+ unit in STORE instructions.
+
+
+IFLUNI FORNU  FORLOGNAM     KEYFIL   IFLACC IFLSTA  IFLFRM IFLREA IFLOPN ILFLCK
+
+  1     1   NCDFu,NCRRu    DISCFILE    2      3      2      2      0      2
+  2     2   NCARu          HKLI        1      1      1      1      0      1
+  3     5   ncufu(1)       CONTROL     1      1      1      1      0      2
+  4     9   NCWU           PRINTER     1      2      1      2      0      1
+  5     7   NCPU           PUNCH       1      2      1      2      0      1
+  6     8   NCLU           LOG         1      2      1      2      0      1
+  7     6   NCAWu          MONITOR     1      2      1      2      0      1
+  8    11   NCSU           SPY         1      2      1      2      0      2
+  9    12   NCNDu          NEWDISC     2      2      2      2      0      1
+ 10    14   NCCBu          EXCOMMON    1      4      1      2      0      2
+ 11    15   NCIFu,NCLDu    COMMANDS    2      1      2      1      0      2
+ 12    20   ncufu(2)(NCRU) USE1        1      1      1      1      0      1
+ 13    21   ncufu(3)       USE2        1      1      1      1      0      1
+ 14    22   ncufu(4)       USE3        1      1      1      1      0      1
+ 15    23   ncufu(5)       USE4        1      1      1      1      0      1
+ 16    32   MTA            M32         1      4      2      2      0      1
+ 17    33   MTB            M33         1      4      2      2      0      1
+ 18    48   MT1            MT1         1      4      2      2      0      1
+ 19    49   MT2            MT2         1      4      2      2      0      1
+ 20    50   MT3            MT3         1      4      2      2      0      1
+ 21    51   MTE            MTE         1      4      2      2      0      1
+ 22    63   nusrq          SRQ         1      4      1      2      0      2
+ 23    71   NCFpu1         FORN1       1      2      1      2      0      2
+ 24    72   NCFpu2         FORN2       1      2      1      2      0      2
+ 25    88   NCeXTr         SCPDATA     1      1      1      1      0      1
+ 26    89   NCQUe          SCPQUEUE    1      3      1      2      0      1
+ 27     4   NUCoM          COMSRC      1      1      1      1      0      1
+ 28    24   ncufu(6)       USE5        1      1      1      1      0      1
+ 29    25   ncufu(7)       USE6        1      1      1      1      0      1
+ 30    26   ncufu(8)       USE7        1      1      1      1      0      1
+ 31    27   ncufu(9)       USE8        1      1      1      1      0      1
+ 32    28   ncufu(10)      USE9        1      1      1      1      0      1
+
+        Keywords used in ATTATCH instructions to change the above values
+
+           Value
+
+             1                       SEQU   OLD    FORM   READ          FREE
+             2                       DIRE   NEW    UNFO   WRIT          LOCK
+             3                              CIF
+             4                              SCRA
+
+#
+#Q
+#PThe implementor must ensure that the monitor output (UNIT6, NCAWU) and  the
+ startup file (UNIT20, NCRU) are assigned either in PRESETS of in JCL before
+ the program is started.
+ Once CRYSTALS is running, the system manager (in STARTUP) or the user may
+ reassign some of the channels during the course of the task.
+ The USEn files are optional, and may be attatched
+ by the user during program execution.
+#PThere are two major methods of associating files or devices with
+ FORTRAN channels,
+ and on most implementations a mixture of the methods may be appropriate.
+#PIn one method, the implementor uses a JCL procedure to associate files or
+ devices with the operating system/compiler preset UNIT numbers. Thus UNIT
+ 6 often defaults to a line printer or printer file. In the VAX
+ implementation 6 is assigned to NCAWU, the terminal or monitor file, and
+ 9 (NCWU) is used for the line printer file. Activation of the third of the
+ following three lines (found in CODE FOR PRESETS)
+ will send both monitor and printer output to device 6,
+ and an ATTATCH instruction in the STARTUP file can then be used to
+ redirect one or the other once CRYSTALS is running.
+#J
+
+C      MONITOR, PRINTER, PUNCH, LOG
+&VAX      DATA NCAWU /6/, NCWU /9/, NCPU /7/, NCLU /8/
+~VAX      DATA NCAWU /6/, NCWU /6/, NCPU /7/, NCLU /8/
+
+#
+#P If the default usage is in conflict with
+ CRYSTALS, the implementor may either change the system defaults if this is
+ possible, or edit the DATA statements for IFLUNI in PRESETS.
+
+#PIn the other method, the implementor uses the ATTATCH and/or OPEN
+ instruction in
+ CRYSTALS. When CRYSTALS is activated, it starts by reading from only one
+ channel, on the UNIT defined by NCRU in PRESETS. This UNIT must have been
+ connected to the system STARTUP file, which is then executed
+ as data by CRYSTALS. In this file may be ATTATCH instructions, which can be
+ used to modify the file properties associated with an I/O channel, and
+ OPEN instructions, which cause
+ CRYSTALS to open specified files on
+ specified units. For this mechanism to be really usefull, the operating
+ system must permit the JCL procedure to pass values into symbols defined
+ in the STARTUP file, the values being the actual names of the data files
+ to be used.
+#Q
+#DMAJOR CHANNELS FOR CRYSTALS
+#
+ The properties  of the channels are as defined in PRESETS.
+#KNCRU, NCUFU(2) - Unit 20
+#PThis channel accesses the CRYSTALS STARTUP file. If a startup file is not
+ being used, NCRU must be assigned to the same channel as NCUFU(1), the
+ CONTROL channel.
+#KNCUFU(1) - Unit 5
+#PThis is the users master control channel, and may be assigned either to a
+ file, or to a terminal keyboard. It is the channel to which control is passed
+ from 'USE' files and the STARTUP file, if present.
+#KNCDFU, NCRRU - Unit 1
+#PThis is the users binary data file for the current structure. It may be a
+ permanent file, or a work file created for each  job.
+ If this file has not been accessed before, it
+ must be initialised before the first user transfer to or from it.
+ In the VAX implementation, this is done by having an \START DISC in the
+ STARTUP file, which causes execution of the subroutines XRDOPN in READ,
+ and KDAOPN in DISC. If the implementor does not wish to use a STARTUP file,
+ he should consider including a call to KDAOPN  from the CRYSTALS master
+ segment. A similar situation exists for the COMMAND data base, which is
+ initialised in DEFINE. Implementors needing to write their own initialisation
+ routines should be aware that because CRYSTALS buffers I/O to and from its
+ disk files, it may try to read from records it has not yet written to (though
+ it will not try to use data from the unwritten records). It may be necessary
+ to write junk records to the file before passing it to the CRYSTALS routines.
+ Care may have to be exercised over what CRYSTALS does when the users data
+ tries to go beyond the declared end of the file, and some mechanism may need
+ to be devised for detecting the 'end' of the file if the operating system
+ automatically extends such files.
+#PIf a work file is used,
+ the system manager
+ may be able to ensure the reading of an initialisation file (containing
+ the basic crystallographic data and reflectons) before passing control to the
+ users control channel. This could be done either in JCL or
+ by a 'USE' in a STARTUP file.
+#KNCIFU, NCLDU - Unit 15
+#PThis channel accesses the system wide binary data base, 'COMMANDS'. This
+ file is mandatory, and must be open for reading by all users, possibly
+ simultaneously.
+#KNUCOM _  Unit 4
+#PThis is the input channel for the fixed-format COMMANDS source file
+ processed by the program DEFINE. If
+ you are not using a STARTUP file, you could make this the default input file
+ for DEFINE.
+#KNCARU -  Unit 2
+#PThis is the auxilliary input channel, called HKLI, and may be used for the
+ input of reflection data. The user may also input reflections from the control
+ channel, but this is not recommended unless there are few reflections and they
+ are in the compressed format.
+#KNCWU - Unit 9
+#PThis is the main plain language output channel, and should go either to a
+ line printer or a printable file.
+#KNCAWU - Unit 6
+#PThis is the monitor file, a shortened form of the full output. It is normally
+ assigned to a terminal screen, or a printable file. In some environments it
+ may be appropriate to assign it to a 'black hole' device.
+#KNCPU - Unit 7
+#PThis is the punch unit, usually assigned to a card image file. CRYSTALS can
+ output data on this channel suitable for input in a subsequent job, e.g. for
+ archiving or communication between jobs if the diskfile in not permenant.
+ Publication listings are also sent here.
+#KNCNDU - Unit 12
+#PThis is used for the generation of a new user database file (diskfile) with
+ the user instruction PURGE NEW.
+#KNCFPU - Unit 71, Unit 72
+#PThese units are used for outputting data to link with 'foreign' programs,
+ such as SNOOPI.
+#KNCSU - Unit 11
+#PThis is the system managers logging file, the SPY file, which may be used to
+ get system statistics.
+#P
+#DWORK FILES
+#
+#PCRYSTALS may use the following work files. The table above indicates whether
+ they are formatted or not.
+#KNUSRQ - Unit 63
+#PThis is the 'system request queue', and is used when  CRYSTALS issues
+ instructions to itself to be obeyed later.
+#KNCCBU - Unit 14
+#PThis file is used to hold COMMON BLOCK information in segmented
+ implementations and may not always be necessary.
+#KNCQUE - Unit 89
+#PThis is the 'script queue', used by the script processor to communicate
+ with CRYSTALS.
+#KM32, M33 - Units 32, 33
+#PThese are sequential files used during data reduction. If they are assigned
+ to permenant files, data reduction can be restarted from intermediate stages.
+#KMT1 to MT3 - Unit 48 to 50
+#PWorkfiles which may be used for Fourier computations.
+#KMTE - Unit 51
+#PThis can be used for the  final Fourier figure field. Also used as a workfile
+ for publication listings.
+#
+#Q
+#DMAJOR CHANNELS FOR DEFINE
+#
+#PThe implementor assigns input channels to units in a JCL procedure.
+
+#KNCRU, NCUFU(2) - Unit 20
+#PThis channel accesses the CRYSTALS STARTUP file and MUST BE allocated
+ before the program starts.
+ If a startup file is not
+ being used, NCRU must be assigned to the same channel as NCUFU(1), the
+ CONTROL channel.
+#KNUCOM - Unit 4
+#PThis channel is the fixed format input source file for processing by
+ DEFINE. If a STARTUP file is being ised, it can be allocated there.
+#KNCIFU, NCLDU - Unit 15
+#PThis channel accesses the system wide binary data base, 'COMMANDS'. This
+ file is mandatory, and once created must be open for reading by all
+ users, possibly  simultaneously.
+ If this file has not been accessed before, it
+ must be initialised before the first user transfer to or from it.
+ In the VAX implementation, this is done by having an \START DISC in the
+ STARTUP file, which causes execution of the subroutines XRDOPN in READ,
+ and KDAOPN in DISC. If the implementor does not wish to use a STARTUP file,
+ he should consider including a call to KDAOPN  from the DEFINE master
+ segment.  Implementors needing to write their own initialisation
+ routines should be aware that because DEFINE buffers I/O to and from its
+ disk files, it may try to read from records it has not yet written to (though
+ it will not try to use data from the unwritten records). It may be necessary
+ to write junk records to the file before passing it to the DEFINE routines.
+ Care may have to be exercised over what DEFINE does when the users data
+ tries to go beyond the declared end of the file, and some mechanism may need
+ to be devised for detecting the 'end' of the file if the operating system
+ automatically extends such files.
+#KNCWU - Unit 9
+#PThis is the main plain language output channel, and should go either to a
+ line printer or a printable file.
+#KNCAWU - Unit 6
+#PThis is the monitor file, a shortened form of the full output. It is normally
+ assigned to a terminal screen, or a printable file. In some environments it
+ may be appropriate to assign it to a 'black hole' device.
+#KNCSU - Unit 11
+#PThis is the system managers logging file, the SPY file, which may be used to
+ get system statistics.
+#KNCCBU - Unit 14
+#PThis file is used to hold COMMON BLOCK information in segmented
+ implementations and may not always be necessary.
+
+#ZTHE STARTUP FILE#
+ the COMMAND file. However, a small set of instructions, the SYSTEM
+ INSTRUCTIONS, are regarded as a more imperative form of input, and are
+ interpreted directly from data held in the program. This data is generally
+ in common block variables, and is initialised in PRESETS. So that the
+ implementor/user can have some degree of dynamic control over these values,
+ there are SYSTEM INSTRUCTIONS to modify the values, and act upon them.
+#PA system STARTUP file consisting of SYSTEM INSTRUCTIONS
+ gives the system manager a method for tailoring
+ the operation of CRYSTALS, and  may also be used to execute users own STARTUP
+ files.
+#PIn implementations  where files can be associated with units at JCL level,
+ the name of the STARTUP file, held in CSSCST and of length LSSCST, are
+ set at ' ' and 1 in DATA in PRESETS. If there is no JCL facility for forming
+ the association, the actual filename and length must be set in PRESETS (see
+ the H-P patches). If a STARTUP file is not being used, ISSSFI must be set to
+ 0 (see the PRI patches).
+#ISYSTEM INSTRUCTIONS#
+#PSystem instructions, like all instructions to CRYSTALS are preceeded by
+ a special character which activates instruction processing. This charater,
+ which only has its special significance if it falls in column 1, is set
+ to 'hash' (~)  in PRESETS. An alternative definition useful under UNIX
+ is to define it as 'backslash'.
+#PThe available SYSTEM INSTRUCTIONS (for which full details are given in
+ VOL1) are:
+#J
+
+ \ ..... COMMENTS ....                 \OPEN devicename filename
+ \PAUSE interval                       \RELEASE  devicename filename
+ \TYPE  'filename'                     \USE source
+ \SET FILE type                        \SET LIST   state
+ \SET LOG state                        \SET MESSAGE state
+ \SET MONITOR state                    \SET PAGE length
+ \SET PRINTER state                    \SET SPEED speed
+ \SET SRQ state                        \SET TERMINAL device
+ \SET TIME state                       \SET WATCH number
+
+
+#
+#DSET something
+#PThe SET Instruction sets system flags to control activities. The default
+ values are set in DATA statements in XRDSET, but it is rarely necessary to
+ edit these directly.
+ The permitted 'somethings' are :-
+#KFILE type
+#PThis instruction is used to control the case of file names generated by
+ CRYSTALS. Possible values for 'type' are:
+#J
+        LOWER        Filenames are converted to all lower case.
+        UPPER        Filenames are converted to all upper case.
+        MIXED        Filenames are left as input or defined.
+
+#KLIST   state
+#PThis instruction controls the monitoring LIST movement to the disc.
+#Possible values for 'type' are:
+#J
+        WRITE   Monitor writes.          READ      Monitor read
+        BOTH    Monitor read/write.      OFF       No monitoring
+
+#KLOG state
+#PThis instruction controls writing to the LOG file. States are ON or OFF
+#KMESSAGE state
+#PThis instruction controls writing termination messages. States are ON or OFF
+#KMONITOR state
+#PThis instruction controls echoing input to the screen. States are ON or OFF
+#KPAGE length
+#PThis instruction set the terminal page length, in lines.
+#KPRINTER state
+#PThis instruction controls writing to the PRINTER file. States are ON or OFF
+#KSPEED speed
+#PThis instruction informs CRYSTALS of the terminal line speed. Values are
+ FAST or SLOW. Slow suppresses some output
+#KSRQ state
+#PThis instruction controls echoing the SRQ to the screen. States are ON or OFF
+#KTERMINAL device
+#PThis instruction informs CRYSTALS of the sort of terminal you are using
+ (under VAX/VMS). Devices are:
+        UNKNOWN,     VT52,      VT100
+#KTIME state
+#PThis instruction controls writing timing messages. States are ON or OFF
+#KWATCH number
+#PThis instruction controls which LISTS are monitored. The number is either
+ an actual LIST number, or 0 which implies all lists.
+#
+#
+#DUSE SOURCE
+#PThis instructs CRYSTALS to switch to taking control input from the 'SOURCE'.
+ There are three possible sources.
+#KFILENAME#
+#PCRYSTALS starts reading data from the named file. The file may end with
+ \FINISH, which terminates the CRYSTALS job, or with \USE LAST or \USE CONTROL,
+ described below. It the file does not exist, control remians at the calling
+ level. If the file becomes exhausted, control returns to the calling level.
+ If the file causes a CRYSTALS error, control passes to the calling level, or
+ the task aborts, depending on the CRYSTALS error severity. USE 'filename' is
+ rather like a FORTRAN subroutine call. In the standard system, calls can be
+ stacked to a depth of 5. Recursive calls are not normally permitted.
+#KLAST#
+#PThis returns control to the next instruction after the USE instruction in
+ the calling level. Rather like a FORTRAN 'return' statement.
+#KCONTROL#
+#PThis returns control to the master control level, NCUFU(1), which is either
+ the control file for batch, or the terminal for interactive working.
+#
+#DATTATCH UNIT KEYWORD ACCESS STATUS FORMATED READ/WRITE LOCKED
+#PThis instruction associates physical attributes with an I/O unit. The table
+ above gives the names of the devices (KEYFIL) and the keywords for the
+ attributes, as well as the default values. This instruction may be used to
+ define new attributes or change old ones.
+#KUNIT
+#PThe numeric, integer, value of the FORTRAN unit
+#KKEYWORD
+#PThe plain language name by which the device is known in CRYSTALS.
+#KACCESS
+#PSequential or direct access.
+#KSTATUS
+#POld, new,  create-if-fail-to-open, scratch. For this to work correctly,
+ the status value returned by the operating system when a file is not found
+ should be assigned to  ISSFNF in PRESETS either by editing the source, or
+      by using a STORE command in the STARTUP file.
+#KFORMTTED
+#PFormatted or unformatted.
+#KREAD/WRITE
+#PRead only, shared or write (implies read).
+#KLOCKED
+#PFree or locked.
+#DTYPE FILENAME
+#PThis instructs CRYSTALS to read the nominated file and copy it without
+ interpretation to the monitor channel. CRYSTALS only reads up to the first
+ 80 characters on each line.
+#DSET CHARACTERISTIC
+#P
+#DSTART ACTIVITY
+#PThe only activity for CRYSTALS on startup is to read the STARTUP file.
+ The START instruction permits the implementor to start additional activities
+ in a controled way. The permitted 'activities' are :-
+#KENVIRONMENT
+#PThis calls the procedure XQUEN (in SPECIFIC),  to determine the users
+ environment, e.g. interactive, online or batch.
+#KERROR
+#PThis calls the procedure XERINI (in SERVICE), to initialise the error
+ handling.
+#KMESSAGE
+#PThis calls the procedure XSYINI (in SERVICE), to output the initialisation
+ messages.
+#KDISC
+#PThis calls the procedure XSYSDC (in CONTROL), to compute some system
+ constants and allocate disc cache buffers.
+#KSPY
+#PThis calls the procedure XSPY (in SERVICE), to initiate the CRYSTALS
+ monitoring facility.
+#KINDEX
+#PThis again call XSYSDC , this time to load the list control data. This
+ call assumes that the users disk and the COMMAND disk are properly
+ created and assigned. This is most easily achieved with  preceeding
+ OPEN DISCFILE and OPEN COMMANDS instructions.
+#DOPEN DEVICENAME FILENAME
+#PThe OPEN instruction opens the named file on the named device. If a file
+ name is not given, the FORTRAN channel assigned to the DEVICENAME must already
+ have been allocated to a file or real device in a previous OPEN, or in the JCL
+ procedure surrounding CRYSTALS. The characteristics with which the DEVICENAME
+ is opened are as specified in the table given above. The implementor may have
+ changed the characteristics in PRESETS, or by a preceeding ATTATCH instruction.
+#DSTORE 'common block' 'variable' 'value' .....
+#PThe STORE instruction permits the implementor to change the values stored in
+ certain common blocks. The table below gives the symbolic names of the common
+ blocks, the type of variables permitted and the symbolic names
+ of the variables.
+#J
+
+
+
+Common   Data Type            Variable nemonic
+Block    (integer,
+         floating or
+         Hollerith)
+
+
+SYSTem   (I/F/H)      'VERS', 'KFNF', 'NBUF', 'RCLI', 'BLLI'
+                      'WDLI', 'RCLF', 'BLLF', 'WDLF', 'LSMN'
+                      'SPEE', 'TMNG', 'LMNT', 'INIT', 'STRT'
+                      'BANN', 'DARL'
+INPList                not used
+COORdinate             not used
+UNITs    (I/F/H)      'NCRU', 'NCRR', 'NCWU', 'NCPU', 'NCAR', 'NCAW',
+                      'NCSU', 'NCXT', 'NCQU', 'NCCB', 'NCF1', 'NCF2',
+                      'NCUM'
+TAPEs    (I/F/H)      'MTA ', 'MTB ', 'MT1 ', 'MT2 ', 'MT3 ', 'MTE '
+DISCs    (I/F/H)      'NCDF', 'NCIF', 'NCLD', 'NCND'
+UFILe    (I/F/H)      'FLMX', 'NCLU'
+DEVIces (character)   'HLPD', 'HLPE', 'INDD', 'INDE', 'SCPD', 'SCPE'
+                       ***D = directory name, ***E = file extension
+CSYStem (character)   'MACH', 'OPER', 'DATE', 'PROG', 'CMND', 'NEWD'
+                      'SCAT', 'ELEM'
+
+
+#
+#Q
+#PThe following tables give the relationships between the symbolic variables
+ the actual variables, and their meaning. The current values of the variables
+ are also given, but these should be checked against those found in PRESETS.
+#J
+
+
+
+ Symbolic code definitions for SYSTem control values
+
+9             ISSISS      ISSUE NUMBER
+900      VERS ISSVER      VERSION NUMBER
+*             ISSMAC      MACHINE TYPE
+*             ISSOPS      OPERATING SYSTEM
+*             ISSDAT      DATE OF THIS VERSION
+-1            ISSSEG      SEGMENTED PROGRAM FLAG ( 1 = YES , -1 = MONOLITHIC )
+
+1             ISSOLD      OPEN OLD FILE
+2             ISSNEW      CREATE NEW FILE
+3             ISSCIF      OPEN OLD FILE IF POSSIBLE, OTHERWISE CREATE FILE
+29       KFNF ISSFNF      IOSTAT INDICATING FILE NOT FOUND
+1             ISSREA      OPEN FILE FOR READ
+2             ISSWRI      OPEN FILE FOR WRITE
+
+6        NBUF ISSNBF      NUMBER OF DISC BUFFERS
+3200          ISSBFS      SPACE AVAILABLE FOR DISC BUFFERS ( SIZE OF 'LINK' )
+
+128           ISSPAG      SYSTEM PAGE LENGTH ( INTEGER WORDS )
+512      RCLI ISSRLI      RECORD LENGTH IN INTEGER WORDS. This need to match
+                          RECL in the disk opening call (in KDAOPN).
+128      BLLI ISSBLI      DISK BLOCK LENGTH IN INTEGER WORDS
+4        WDLI ISSWLI      INTEGER LENGTH IN BYTES
+512           ISSRLF,ISSBLF,ISSWLF      FLOATING POINT EQUIVALENTS
+*             ISSPRG      PROGRAM NAME ( DIMENSION = 2 )
+3             ISSLSM      MONITOR LIST OPERATIONS ( 1 = NO , 2 = READ ,
+                          3 = WRITE , 4 = BOTH )
+2        SPEE ISSSPD      TERMINAL SPEED INDICATOR ( 1 = SLOW , 2 = FAST )
+1        TMNG ISSTIM      TIMING MESSAGE INDICATOR ( 0 = DISABLE , 1 = ENABLE)
+1             ISSL11      LENGTH OF WORD IN LIST 11 ( 1 = SINGLE PRECISION,
+                          2 = DOUBLE PRECISION )
+5        LMNT ISSLNM      LIST NUMBER TO MONITOR ( 0 = ALL LISTS )
+1        INIT ISSINI      SYSTEM INITIALISATION IN PROGRESS ( 0 = NO, 1 = YES)
+1             ISSSTA      STARTUP FILE EXECUTION IN PROGRESS ( 0 = NO,1 = YES)
+0        BANN ISSBAN      PRINT INITIAL BANNER HEADING ( 0 = NO , 1 = YES )
+1        STRT ISSSFI      STARTUP FILE FLAG ( 0 = NO , 1 = YES )
+512      DARL ISSDAR      LENGTH OF DIRECT ACCESS FILE RECORD IN
+                          'STORAGE UNITS', WHOSE SIZE IS MACHINE DEPENDENT.
+                          ON THE VAX, THE RECORD LENGTH IS GIVEN IN LONGWORDS,
+                          SO THAT
+                                  ISSDAR = ISSRLI = 512
+                          ON THE HEWLET PACKARD, IT IS IN BYTES, SO THAT
+                                  ISSDAR = 4 * ISSRLI = 2048
+                          NOTE THAT TOO SHORT A RECORD (E.G. 1024 ON THE H-P)
+                          LEADS TO DATA LOSS DURING '\PURGE'
+
+              ISSTML      TERMINAL TYPE (UNKNOWN, VT52, VT100)
+              ISSFLC      FILE NAME CHARACTERISTICS (LOWER, UPPER, MIXED CASE)
+              ISSMSG      SET TERMINATION MESSAGES (OFF, ON)
+              ISSPRT      SET PRINTER (OFF, ON)
+
+
+
+Entries marked with a '*' have been replaced by the character equivalent in CSYS
+
+ The following variables are used to store in character form certain system
+constants. (Their lengths are stored in variables called L..... )
+They may be changed by assignments in CSYS
+
+C*16 / 'DEC VAX' /        CSSMAC      TARGET MACHINE TYPE
+C*16 / 'VMS 3.0' /        CSSOPS      TARGET OPERATING SYSTEM
+C*16 / 'September 1985' / CSSDAT      ISSUE DATE
+C*16 / 'CRYSTALS' /       CSSPRG      PROGRAM NAME
+C*32 / ' ' /              CSSCMD      COMMAND FILE NAME FOR USE IN 'DEFINE'
+C*32 / ' ' /              CSSNDA      NEW DISCFILE NAME FOR USE IN 'PURGE NEW'
+C*32 / ' ' /              CSSCST      'CRYSTALS' STARTUP FILE NAME
+C*32 / ' ' /              CSSDST      'DEFINE' STARTUP FILE NAME
+C*32 / 'CRSCP:SCATT.DAT'/ CSSSCT      SCATTERING FACTOR FILE
+C*32 / 'CRSCP:PROPERTIES' CSSELE      ELEMENTAL PROPERTIES FILE
+
+#DREMOVE INSTRUCTION
+#PSystem instructions can be disabled by 'REMOVing' them. This is normally
+ done for some instructions before exiting from the startup file. In particular,
+ the REMOVE instruction itself is usually removed.
+#Q
+#
+#IEXAMPLES#
+#PThe implementor should also look at the files VAX.JCL and DATAGENERAL.JCL
+ to see the relationship between the JCL procedures and startup files.
+#DVAX
+#PThis startup file is used in a situation where most files are named and
+ associated at DCL level, i.e. before entering the program.
+ Under VMS a FORTRAN OPEN can be issued
+ without a filename parameter if the file is associated with the I/O unit
+ at DCL level
+#J
+
+\ Startup file for CRYSTALS under VAX VMS
+\ Type the news-of-the-day
+\TYPE CRUTIL:CRYSNEWS.LIS
+\
+\SET PRINT ON
+\STORE SYST VERS 801
+\STORE CSYS OPER 'VAX/VMS 4.0'
+\
+\START ENVIRONMENT
+\START ERRORS
+\START MESSAGE
+\START DISC
+\START SPY
+\
+\OPEN DISCFILE
+\OPEN COMMANDS
+\
+\START INDEX
+\
+\OPEN CONTROL
+\
+\STORE SYST INIT 0
+\SET MESSAGE OFF
+\SET TIME OFF
+\SET LIST WRITE
+\SET WATCH 5
+\
+\REMOVE START
+\REMOVE STORE
+\REMOVE REMOVE
+\
+\ Use the users own CRYSINIT file, if it exists
+\USE SYS#LOGIN:CRYSINIT.DAT
+\
+\ Activate (by removing the blank) the following COMMAND
+\ if you want to start up in SCRIPT mode.
+\ SCRIPT CONTROL
+\USE CONTROL
+
+
+#Q
+#DDATA_GENERAL
+#PThe JCL can be used to associate filenames with variables that are
+ substituted in the data stream at run time.
+#J
+
+
+~ CRYSTALS startup file for Data General AOS/VS implementation
+~
+~
+~ '+n+' is substituted by a parameter value from the JCL, - a filename.
+~START ERROR
+~START ENVIRONMENT
+~STORE SYST KFNF 21 DARL 2048
+~STORE CSYS MACH 'Data General' OPER 'AOS/VS' NEWD 'DISCFILE.NEW'
+~STORE DEVI HLPD ':UDD:CRY:HELP:' INDD ':UDD:CRY:HELP:'
+~STORE DEVI SCPD ':UDD:CRY:SCRIPT:'
+~
+~ATTACH 12 PRINTER SEQUENTIAL NEW FORMATTED   WRITEABLE FREE
+~ATTACH 6  MONITOR SEQUENTIAL NEW FORMATTED   WRITEABLE FREE
+~ATTACH 60 NEWDISC DIRECT     NEW UNFORMATTED WRITEABLE FREE
+~ATTACH 61 SPY     SEQUENTIAL NEW FORMATTED   WRITEABLE LOCK
+~
+~OPEN   SPY       +3+.SPY
+~OPEN   SRQ       +3+.SRQ
+~
+~OPEN   LOG       +2+.LOG
+~OPEN   PUNCH     +2+.PCH
+~
+~OPEN   M32       +3+.M32
+~OPEN   M33       +3+.M33
+~OPEN   MT1       +3+.MT1
+~OPEN   MT2       +3+.MT2
+~OPEN   MT3       +3+.MT3
+~OPEN   MTE       +3+.MTE
+~OPEN   EXCOMMON  +3+.XCB
+~
+~START MESSAGE
+~START DISC
+~
+~OPEN   DISCFILE  +2+.DSC
+~OPEN   COMMANDS  :UDD:CRY:CRYS4:COMMANDS.DSC
+~OPEN   CONTROL   +1+
+~
+~START INDEX
+~START SPY
+~
+~STORE SYST INIT 0
+~
+~REMOVE STORE
+~REMOVE START
+~REMOVE REMOVE
+~
+~USE CONTROL
+
+
+#Q
+#DNON-JCL implementation.
+#PThe following STARTUP files are simulations under
+ VAX VMS of an environment where there is not much  JCL available, e.g. under
+ UNIX.
+#PThe STARTUP file for DEFINE needs to associate the source file and the
+ output binary disc file.
+#J
+\ Startup file for DEFINE under UNIX
+\ This assumes that this file is named as the startup file for
+\ DEFINE in PRESETS. All other file associations are done at run time.
+\
+\ On some systems you may initially need to assign both NCAWU and NCWU
+\ to the same default output channel by editing  PRESETS,
+\ and then use ATTACH and OPEN to  assign them to different channels.
+\STORE UNIT NCWU 9
+\
+\ Formatted output files.
+\ATTACH 9 PRINTER SEQUENTIAL CIF FORMATTED WRITE FREE
+\OPEN PRINTER COMMANDS.LIS
+\
+\ If you want the monitor output to come to the screen, set it here.
+\STORE UNIT NCAWU 6
+\ATTACH 6 MONITOR SEQUENTIAL CIF FORMATTED WRITE FREE
+\ OPEN MONITOR COMMANDS.MON
+\ tt: is VMS for the terminal
+\OPEN MONITOR tt:
+\
+\
+\ Unit 4 has the data source file.
+\ATTACH 4 COMSRC SEQUENTIAL OLD FORMATTED READ FREE
+\OPEN COMSRC CRE:COMMANDS.SRC
+\
+\ATTACH 15 DISCFILE DIRECT NEW UNFORMATTED WRITEABLE FREE
+\OPEN DISCFILE COMMANDS.DSC
+\
+\STORE SYST INIT 0
+\
+\REMOVE START
+\REMOVE STORE
+\REMOVE REMOVE
+\
+\ This file should end with a \instruction other than a system instruction
+\FINISH
+
+#PThe STARTUP file for CRYSTALS under UNIX
+
+#J
+
+\
+\ The initial read device, which will read this file, must either be assigned
+\ in PRESETS, or in an external JCL procedure.
+\
+\ On some systems you may initially need to assign both NCAWU and NCWU
+\ to the same default output channel (typically 6) by editing  PRESETS.
+\ Then use STORE, ATTACH and OPEN to  assign them to different channels.
+\
+\ If you want the printer output to go to a file, the value of NCWU
+\ may need changing in PRESETS or here.
+\ hook the screen to channel 6
+\STORE UNIT NCAWU 6
+\ATTACH 6 MONITOR SEQUENTIAL CIF FORMATTED WRITE FREE
+\ TT: is a VMS symbol for the terminal.
+\RELEASE  MONITOR TT:
+\
+\ hook the printer file to channel 9 - some systems may force you to use 6
+\STORE UNIT NCWU 9
+\ATTACH 9 PRINTER SEQUENTIAL CIF FORMATTED WRITE FREE
+\ ensure that filenames are all lower case
+\SET FILE LOWER
+\ the filename ZAP.LIS will be system dependant
+\OPEN PRINTER ZAP.LIS
+\
+\ Attach 5 to data file for batch-only mode by removing space after \
+\ and putting filenmame onto OPEN command.
+\ATTACH 5 CONTROL SEQUENTIAL OLD FORMATTED READ FREE
+\ TT: is a VMS symbol for the terminal.
+\OPEN CONTROL TT:
+\
+\STORE SYST VERS 900
+\STORE CSYS OPER 'UNIX' MACH 'VAX-3800'
+\
+\ Hook up the HELP, MANUAL and SCRIPT files
+\STORE DEVI HLPD 'CRMAN:' HLPE '.HEL'
+\STORE DEVI INDD 'CRMAN:' INDE '.IND'
+\STORE DEVI SCPD 'CRSCP:' SCPE '.SCP'
+\
+\ Store the names of the elemental properties and scatteringfactor files
+\STORE CSYS SCAT 'CRSCP:SCATT.DAT'
+\STORE CSYS ELEM 'CRSCP:PROPERTIES.DAT'
+\
+\ activate this if you can pass the environment into XQUEN in SPECIFIC
+\ START ENVIRONMENT
+\START ERRORS
+\START MESSAGE
+\
+\ Formatted output files.
+\ the filenames ZAP.PCH and .LOG  will be system dependant
+\STORE UNIT NCPU 7
+\ATTACH 7 PUNCH SEQUENTIAL CIF FORMATTED WRITE FREE
+\OPEN PUNCH ZAP.PCH
+\STORE UFIL NCLU 8
+\ATTACH 8 LOG SEQUENTIAL CIF FORMATTED WRITE FREE
+\OPEN LOG ZAP.LOG
+\
+\
+\ The reflection data. User should issue \OPEN HKLI if he needs to read it.
+\STORE UNIT  NCAR 2
+\ATTACH 2 HKLI SEQUENTIAL OLD FORMATTED READ FREE
+\ User could issue this manually if he is doing data reduction
+\ OPEN HKLI ZAP.HKL
+\
+\ set up scratch files - you may want to make some of them permanent to
+\ preserve data between runs.
+\STORE UNIT NCSU 11
+\ATTACH 11 SPY SEQUENTIAL SCRATCH FORMATTED WRITE FREE
+\STORE UNIT NCCB 14
+\ATTACH 14 EXCOMMON SEQUENTIAL SCRATCH FORMATTED WRITE FREE
+\STORE TAPE  MTA 32
+\ATTACH 32 M32 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\STORE TAPE  MTB 33
+\ATTACH 33 M33 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\STORE  TAPE MT1 48
+\ATTACH 48 MT1 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\STORE  TAPE MT2 49
+\ATTACH 49 MT2 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\STORE  TAPE MT3 50
+\ATTACH 50 MT3 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\STORE  TAPE MTE 51
+\ATTACH 51 MTE SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ATTACH 63 SRQ SEQUENTIAL SCRATCH FORMATTED WRITE LOCK
+\OPEN SPY
+\OPEN EXCOMMON
+\OPEN M32
+\OPEN M33
+\OPEN MT1
+\OPEN MT1
+\OPEN MT3
+\OPEN MTE
+\OPEN SRQ
+\
+\ only if you want to accumulate running statistics
+\ START SPY
+\
+\ The foriegn files
+\STORE  UNIT  NCF1 71
+\ATTACH 71 FORN1 SEQUENTIAL CIF FORMATTED WRITE FREE
+\STORE  UNIT  NCF2 72
+\ATTACH 72 FORN2 SEQUENTIAL CIF FORMATTED WRITE FREE
+\ the filenames ZAP.LFN1, .FN2  will be system dependant
+\OPEN FORN1 ZAP.FN1
+\OPEN FORN2 ZAP.FN2
+\ THE SCRIPT FILES
+\STORE  UNIT NCXT 88
+\ATTACH 88 SCPDATA SEQUENTIAL OLD FORMATTED READ FREE
+\STORE  UNIT NCQU 89
+\ATTACH 89 SCPQUEUE SEQUENTIAL CIF FORMATTED WRITE FREE
+\
+\
+\ set up the disc files with the system and users data bases.
+\STORE  DISC NCIF 15
+\STORE  DISC NCLD 15
+\ATTACH 15 COMMANDS DIRECT OLD UNFORMATTED READ LOCK
+\STORE  DISC NCDF 1
+\ATTACH 1 DISCFILE DIRECT CIF UNFORMATTED WRITE FREE
+\STORE  DISC NCND 12
+\ATTACH 12 NEWDISC DIRECT CIF UNFORMATTED WRITE FREE
+\START DISC
+\
+\ the file ZAP.DSC  is the users data base, and will be system dependant
+\OPEN DISCFILE ZAP.DSC
+\ the file CRIMAGES:COMMANDS.DSC is a CRYSTALS system file all users must be
+\ able to access.
+\OPEN COMMANDS CRIMAGES:COMMANDS.DSC
+\ Dont open the new disk for PURGE NEW, but store its name in case its needed.
+\STORE CSYS NEWD 'ZAP.NEWD'
+\
+\START INDEX
+\
+\OPEN CONTROL
+\
+\STORE SYST INIT 0
+\
+\REMOVE START
+\REMOVE STORE
+\ HELP and SCRIPT make no sense in a batch-only mode. If you want to use them,
+\ set the directory and extension using STORE DEVI or by editing PRESETS.
+\ REMOVE HELP
+\ REMOVE MANUAL
+\ REMOVE SCRIPT
+\ REMOVE REMOVE
+\
+\
+\ Note that in the users personal STARTUP file he may reassign files to
+\ channels via \RELEASE and \OPEN. SYS#LOGIN  points to the users filestore.
+\ USE SYS#LOGIN:CRYSINIT.DAT
+\
+\ Start monitoring and logging input
+\SET MONITOR ON
+\SET LOG ON
+\ Activate the SCRIPT processor in interactive mode by not removing it above
+\ and removing the space after \ in the next instruction
+\ SCRIPT CONTROL
+\ USE CONTROL
+
+
+#
+#Q
+#ZMACHINE DEPENDENT CODE#
+#PAs explained above, most of CRYSTALS is written in FORTRAN 77 and should
+ be machine independent. All of the crystallographic routines should
+ compile without problems. However, there are some routines which comtain
+ code which may be machine or implementation dependent. These bye and large
+ are concerned with file handling, interrupt handling,
+ spawning sub-processes, array dimensioning
+ and getting the time and date. Some of them may be replaced by dummy
+ routines without affecting the scope of the crystallographic facilities
+ offered, though perhaps having some impact on the convenience of interactive
+ users.
+#PWhere we know the code to be machine specific, this is indicated by markers in
+ columns 1 to 4. The following list gives the location of these statements,
+ with notes about their relevence.
+#J
+
+                              CRYSFORT1
+
+
+CRYSTALS CODE FOR CONTROL
+CODE FOR XCONT1
+~ICL      EQUIVALENCE (ITEMP,ISIZST)           In the ICL implementation the
+&ICL      EQUIVALENCE (ITEMP,STORE(1))         arrays STORE and ISTORE are
+CODE FOR XSYSDC                                dimensioned at run-time
+~ICL      EQUIVALENCE (ITEMP,ISIZST)
+&ICL      EQUIVALENCE (ITEMP,STORE(1))
+
+CRYSTALS CODE FOR READ
+CODE FOR KRDREC
+~PRI      IF ( IFLIND .LE. 1 ) ISSSTA = 0
+CODE FOR XRDOPN
+~PRI      LENGTH = KRDARG ( IREQUI , 2 )
+&PRI      LENGTH = KRDARG ( IREQUI , 1 )       No optional arguments
+
+
+                              CRYSFORTS
+
+
+CRYSTALS CODE FOR DISC
+CODE FOR KFETCH
+      Read statement to fetch data from disc.
+CODE FOR KDAOPN
+      Open the direct access file.
+CODE FOR XDAEND
+      Find how many records available in direct access file. Needs to
+      be able to identify end of file.
+CODE FOR XDANAM
+      Set direct access I/O chanels
+
+CRYSTALS CODE FOR PRESETS
+CODE FOR DATA
+      Various initialisations
+
+CRYSTALS CODE FOR SERVICE
+CODE FOR XSPY
+      Get hold of user details - optional if spy facility not to be used.
+CODE FOR XERIOM
+      Get hold of system error messages - probably optional.
+CODE FOR XFINAL
+      Get trace back after catastrophic error - probably optional.
+CODE FOR KORE
+      Set array dimensions.
+CODE FOR KIGC
+      Load next module for segmented implementation.
+CODE FOR XQUIT
+      Quit current module for segmented implementation.
+CODE FOR KFLOPN
+      Open file.
+CODE FOR XFLUNW
+      Close auxiliary files.
+CODE FOR XPRMPT
+      The CRYSTALS prompt.
+
+CRYSTALS CODE FOR SPECIFIC
+CODE FOR XQUEN
+      Determine whether interactive or batch. Optional.
+CODE FOR XRDKEY
+      Read data from JCL. Only for Data General.
+CODE FOR MTIME
+      Get processor time. Optional.
+CODE FOR ITIME
+      Get elapsed time. Optional.
+CODE FOR XTIMER
+      Get time. Optional.
+CODE FOR XDATER
+      Get date. Optional.
+CODE FOR KOR
+      Bitwise OR. Mandatory.
+CODE FOR KAND
+      bitwise ZAND. Mandatory.
+CODE FOR XMOVE
+      Move data without type checking. Mandatory.
+CODE FOR XMOVEF
+      Move data without type checking. Mandatory.
+CODE FOR XPAUSE
+      Set a pause. Optional
+CODE FOR KFLCHR
+      Determine file characteristics.
+CODE FOR XDETCH
+      Spawn a detatched process. Optional.
+CODE FOR STCTLC
+      Initialise interrupt handling. Optional.
+CODE FOR EXCTLC
+      Execute interrupt handling. Optional.
+CODE FOR XOUTPT
+      Special I/O for interrupted mode.
+
+
+
+                        CRYSFORT2
+
+
+CRYSTALS CODE FOR LIST11
+CODE FOR XIN11
+~ICL      EQUIVALENCE (ITEMP,ISIZ11)           See CRYSFORT1
+&ICL      EQUIVALENCE (ITEMP,XSTR11(1))
+
+
+#
+#Q
+#PIn addition to these segments, it may be necessary to make changes in the
+ Master segments, CRYSTALS and DEFINE.
+#
+#ZFILES
+#IFILE NAMES#
+#PFor the simplest implementation, files need only be identified and assigned
+ to I/O channels at the JCL level, and such an implementation might be
+ suitable in a batch only environment. For a more flexible implementation,
+ the program needs to be able to handle file names. File naming on the VAX
+ is both simple and powerful, and will be described inorder to shed some light
+ on the fuctioning of the program.
+#IVAX FILENAMES#
+#PA VAX file specification is built up as follows:
+#
+#J
+                  source:[directory]filename.extension;generation
+
+#Q
+#DSOURCE
+#PThis can be a physical device (disk), a logical name assigned to a
+ device, or a logical name assigned to a directory on a device. In this
+ latter case, the [directory] part of the file specification must be omitted.
+#J
+      e.g.
+                  DMA1:          An RK07 physical disk
+                  USER_DISK_1:   A logical name for a disk, assigned
+                                   to a physical disk externaly to CRYSTALS
+                  CRMAN:         A logical name assigned to a directory on a
+                                 disk, e.g. DMA1:[CRYSTALS.MANUAL]
+#Q
+#DDIRECTORY
+#PThis points to an index holding the physical address of the required file.
+ If a directory is not given nor implied by the source, then the users
+ default directory is used.
+#J
+      e.g.
+                  [JONES]            The users own directory
+                  [CRYSTALS.MANUAL]  A sub-directory holding the manuals
+#Q
+#DFILENAME
+#PThis is the actual name of the file.
+#Q
+#DEXTENSION
+#PThis is a code usually used to indicate the type of information in the file.
+#J
+      e.g.
+                  .DAT               A data file.
+                  .HEL               A CRYSTALS 'HELP' file
+#Q
+#DGENERATION
+#PThis is a number distinguishing a file from another one with an otherwise
+ identical specification. The operating system usually automatically increments
+ this value to avoid clashes, e.g. when a file is generated from an old one
+ using an editor. The operating system always uses the highest generation if
+ the file specification does not include a specific value.
+#J
+      e.g.
+             [JONES.ORGANOMETALIC]MOCPD.LIS.1      An output file from CRYSTALS.
+             [JONES.ORGANOMETALIC]MOCPD.LIS.2      An output file from a second
+                                                   CRYSTALS run.
+#Q
+#Q
+#IHELP, MANUAL and SCRIPT#
+#PThe HELP, MANUAL and SCRIPT facilities all expect the user only to give the
+ 'filename' part of the specification, CRYSTALS filling in the rest. The
+ 'source' part is assumed to be a logical pointing to a device and a directory,
+ the 'extension' part is just a simple code.
+#J
+      e.g.
+            CRMAN:filename.HEL      is a file containing HELP information.
+            CRMAN:filename.IND      is a file containing an index to the manual.
+
+#Q
+ The values for the sources and extensions are held in the COMMON block
+ 'CFILE' and initialised by PRESETS, or may be modified during execution of
+ the startup file by storing
+ values in the symbolic common block 'DEVIces'. See STORE, above.
+#IOUTPUT FILES#
+#PUnder VAX VMS the user need not be concerned about over writing out put
+ from previous jobs, since VMS creates new files with a higher generation
+ if necessary. Under other systems, the implementor may need to force the
+ user to use unique names for output files, particularly if the RELEASE
+ instruction is implemented.
+#IWORK FILES#
+#PCRYSTALS uses work files. If the implementor wishes users to be able to
+ run several tasks quasi-simultaneously (e.g. a batch and an online job),
+ then care must be taken to avoid conflict with the work files.
+#IDISK FILES#
+#PThe implementor needs to set up the relationship between the disk
+ physical block lengths and the CRYSTALS record sizes. The values are held in
+ the COMMON block XSSVAL, and may be set in PRESETS, or at startup in the
+ symbolic common block SYST. See STORE, above.
+#Q
+#Q
+#ZSTRATEGY
+#PYou must decide whether you wish to use a STARTUP file or not. It is
+ probably easiest if you do use one.
+#INO STARTUP FILE#
+#PEdit the system wide COMMON block definitions, BLOCK DATA, in PRESETS
+ so that I/O units have values permitted  on your machine (see the section
+ MAJOR UNITS above). Edit IFLIND = 1 and ISSSFI = 0 to indicate that a
+ STARTUP file is not being used. Check that the direct access file details
+ are correct.
+ Write a JCL procedure to assign suitable
+ files or devices to the I/O units.
+#IWITH STARTUP FILE#
+#PIf necessary, edit BLOCK DATA, in PRESETS, so that NCRU (default = 20)
+ points to a unit available for
+ reading the STARTUP FILE. Initially, this could be the terminal, otherwise
+ create a STARTUP FILE attatching and opening the CRYSTALS devices to the
+ appropriate I/O units. You may need to use STORE to assign unit values to
+ CRYSTALS devices.
+#IAll cases#
+#PCheck that the direct access file parameters are correct. CRYSTALS write
+ records ISSRLI (default = 512) longwords (I*4) long to direct access
+ files. ISSDAR is the length defined in the OPEN statement, and is machine
+ dependent. If the record length is in long words, ISSDAR  = ISSRLI, if
+ it is in bytes, ISSDAR = 4*ISSRLI. Either edit BLOCK DATA, or insert
+ a STORE command in the STARTUP file.
+#PProvide code to implement XMOVE, XMOVEF, KAND and KOR (in CRYSFORTS).
+#PUse a local editor to activate or COMMENT out the & and ~ cards in
+ CRYSFORT1,2,3,4.
+#PCompile and save CRYSFORT1, 2, 3, 4 in object (relocatable) libraries.
+#PUse a local editor to activate &XXX cards in  CRYSFORTS and then to
+ split it up into modules headed by
+#J
+            CRYSTALS CODE FOR
+#
+#Attempt to compile these modules. The activation or deactivation of the &
+ and ~ cards should provide code which almost runs, though some bells and
+ whistles will be missing. These will be machine specific, and can be
+ implemented later.
+#PCreate a STARTUP file.  This may begin with some STORE instructions,
+ to assign values to BLOCK DATA variables, ATTATCH instructions to set
+ file attributes to I/O units, and OPEN instructions to open actual files
+ on I/O units. Do not use REMOVE instructions at this stage, so that you
+ can issue START instructions from the terminal or from a control file. End
+ the STARTUP file with USE CONTROL.
+#PLink and execute CRYSTALS. If the STARTUP file contains no START
+ instructions, CRYSTALS will sit waiting.
+#PIf you have implemented XQUEN (in SPECIFIC) to determine whether the job is
+ interactive or batch,
+ issue START ENVIRONMENT so that
+ CRYSTALS can determine its operating environment.
+#PIssue START ERROR  to activate the error handling, even if this is only
+ rudimentary at this stage.
+#PIssue SET PRINTER ON. This enables messages to the printer file.
+#PIssue START MESSAGE. This outputs the startup messages.
+#PIssue START DISK to prepare to handle the users disk file.
+#PIssue START INDEX to load the disk file index. This will fail because
+ you have not yet created a COMMAND file, but should indicate whether other
+ system functions are working.
+#PCreate a STARTUP file for DEFINE, link and execute DEFINE to create a COMMAND
+ disk file.
+#PUpdate the CRYSTALS STARTUP file to include all the necessary START
+ instructions, re-run CRYSTALS, which should now run OK. When it does,
+ include  STORE SYST INIT 0 in the STARTUP file to indicate that startup
+ is complete, and issue REMOVE instructions to remove system instructions
+ you dont want users to use. A USE filename instuction may be included before
+ the final USE CONTROL, where the filename refers to a file which the user may
+ (optionaly) have in his filestore (e.g. CRYSINIT) to contain tailoring
+ instructions.
+#Q
+#Q
+#ZUSERS STARTUP FILES#
+#PIf the system STARTUP file USEs users startup files, these can be set to
+ tailor the users environment. At a simplest level, these may issue SET
+ instructions, but they may infact issue any CRYSTALS instruction. For example,
+ in environments where users cannot keep their direct access files between jobs,
+ a STARTUP file can be used to extend a scratch disc to a suitable size, and
+ then load the 'static' crystallographic data, before loading the 'dynamic'
+ data and then performing computations. Static data might include cell
+ parameters, scatering factors, reflections
+ (in compressed format from a PUNCH 6 instruction)
+ etc, and dynamic data might include
+ current atomic parameters and refinement conditions. Each task would end by
+ issuing a PUNCH 5 instruction to produce a parameter file for the next job.
+#Q
+#ZASSEMBLER LANGUAGE ROUTINES#
+#PIn the past, it was often found advantageous to machine code some
+ routines to get additional speed. The mose cost effective place for this
+ was in the accumulation of the left hand side of the normal equations.
+ However, most modern FORTRAN compilers will generate almost optimal
+ code from correctly written FORTRAN, and in general there is little that
+ can be gained by hand assembler coding.
+#PAn exception to this may be in the case of array and vector processing
+ machines, where an understanding of the function of the code may enable
+ a programmer to produce faster machine code than the compiler. Anyone wishing
+ to investigate this possibility should concentrate their attention on the
+ subroutine
+#Q
+#J
+
+           XADLHS, in the segment ACCUMULAT, in CRYSFORT3
+
+#Q
+ A futher area perhaps worth examining is in the summation of partial
+ derivatives, which can become time consuming when there are many rigid
+ bodies being refined. This code lies between labels 9500 and 10600 in
+#Q
+#J
+
+          XSFLSC, in the segment SFLS, in CRYSFORT3
+
+#Q
+ In view of the small total amount of time spent on Fourier summations,
+ it is probably not worth attempting to optimise these.
+#
+#

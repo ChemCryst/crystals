@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM13(1),L13CD) 
+

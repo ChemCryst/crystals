@@ -1,0 +1,2 @@
+      DIMENSION ICOM24(8) 
+

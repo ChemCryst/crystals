@@ -1,0 +1,2 @@
+      EQUIVALENCE (ILEXCM(1),LK) 
+

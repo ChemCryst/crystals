@@ -1,0 +1,2 @@
+      EQUIVALENCE ( ICOM39(1) , L39I )
+

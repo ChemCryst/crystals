@@ -1,0 +1,2 @@
+      DIMENSION ICOM27(4) 
+

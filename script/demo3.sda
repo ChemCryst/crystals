@@ -1,0 +1,12 @@
+#edit
+pert .25 x
+#edit
+pert .25 y
+#edit
+pert .25 z
+#edit
+del c(13) c(19) c(15)
+#edit
+rena c(20) n(20)
+end
+#use last

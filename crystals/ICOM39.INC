@@ -1,0 +1,2 @@
+      DIMENSION ICOM39(12)
+

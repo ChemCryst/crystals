@@ -1,0 +1,2 @@
+      DIMENSION ICNTRL(12) 
+

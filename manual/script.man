@@ -1,0 +1,1562 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#T'CRYSTALS' script processor 
+ 
+ 
+ 
+#ZTHE FORM OF SCRIPT FILES# 
+ 
+#PScripts are read by CRYSTALS from ordinary text files. The
+ first instruction in the file should be 'SCRIPT', and the last
+ should be 'END SCRIPT'. 
+ 
+#YTypes of lines 
+ 
+#PThree types of lines are recognised in script files. These are
+ comment lines which begin with the characters '%%', script
+ command lines which begin with the character '%', and plain text.
+ Comment lines are ignored. Plain text lines are displayed
+ immediately on the terminal. Script commands lines are executed
+ by the script processor. 
+ 
+#PScript command lines may have any number 
+ of spaces between the '%' and the command name. Continuations of 
+ the command line are possible, if the last character on the 
+ command line is '-'. Command names, other keywords, identifiers, 
+ and other components of script commands may be 
+ specified using either upper or lower case letters. All input is 
+ converted to uppercase before processing. The case of data 
+ transfered to CRYSTALS or written to files is preserved however.
+ 
+#YArguments for commands 
+ 
+#PScript commands take arguments which are in general delimited
+ by spaces. Some commands require text strings as arguments, and
+ these can be delimited by any character not appearing in the
+ string. THe delimiting characters do not form part of the string.
+ In general command names and keywords should not be abbreviated,
+ athough some commands do allow abbreviated keywords. 
+ 
+ 
+#ZSTRUCTURES# 
+ 
+#PThere are five commands which define 'structures', which are
+ groups of commands on which various elements of script
+ processing, such as the scope of identifiers, is based. The
+ structure defining commands are SCRIPT, BLOCK, LOOP, CASE, and
+ IF. Because each script must begin with a SCRIPT command, all
+ script files are executed in their own structure. Further
+ commands may be used to define new structure within the file. 
+ 
+ 
+#ZIDENTIFIERS# 
+ 
+#PThose objects which can be given names are known by the general
+ term of 'identifiers'. Five classes of identifiers are used, of
+ which one is only available for internal use by the script
+ processor. The types of identifiers available to th user are
+ variables, labels, error labels, and contingencies. The name of
+ the identifier is qualified by its type, so that the same name
+ can be used for two distinct objects of different types. This
+ means that, for example, a variable and a label may have the same
+ name. 
+ 
+#YScope 
+ 
+#PEach identifier is associated with a structure level in which
+ it was created, and identifiers are only considered to be defined
+ in that level and in those created within it. Further, the system
+ provided three different methods of searching the identifier
+ table for a particular name, and these will define which
+ identifiers are accessed at a particular point during the
+ execution of a script. There are three search methods defined,
+ which are called 'local', 'global', and 'outwards'. 
+ 
+#PIn 'local' searches, only those identifiers defined in the
+ current structure are considered. In 'global' searches, all
+ identifiers which have been defined from the outermost level to
+ the current one are considered. Using this method of search, the
+ first identifier with the correct name and type will be the one
+ found. The 'outwards' search method considers the identifiers
+ defined in each structure, starting with the current one and
+ working back to the outermost one. Using this search method, the
+ most recently defined occurence of the identifier will be used. 
+ 
+#PThe 'global' search is no longer used by the script processor.
+ 'Local' searches are used for labels, error labels, and
+ contingencies. Searches for variables are conducted using the
+ 'outwards' method. 
+ 
+#YVariables 
+ 
+#PThese are used to hold data for later use in calculations etc.
+ There are 4 types of variables, 'integer', 'real', 'logical', and
+ 'character'. Integer and real variables are used to hold integer
+ and real numeric data respectively. Logical variables can have
+ the value 'true' or 'false'. Character variables hold text of any
+ length up to 80 characters. Variables are defined by the VARIABLE
+ command, and used in a number of commands as variables, and in
+ expressions generally. 
+ 
+#YLabels 
+ 
+#PLabels and error labels can be used to control the flow of
+ execution of the script. However they should not be necessary, as
+ the structure defining instructions such as LOOP and IF, and the
+ contingency mechanism provide a much more powerful method of
+ control and error recovery. Labels are defined using the LABEL
+ command, and error labels using the ERROR command. 
+ 
+#YContingencies 
+ 
+#PContingencies are used to define the action to be taken when
+ certain events, such as errors detected by CRYSTALS, occur. They
+ each have a name, an action, and an optional message.
+ Contingencies are defined using the ON command. 
+ 
+#ZEXPRESSIONS# 
+ 
+#PExpressions are strings of values and operators which can be
+ evaluated to give a result. The result of an expression also has
+ an associated type, which may be integer, real, logical, or
+ character. These terms have the same meanings as for variables.
+ The values in an expression may be constants, variables, or
+ 'standard values'. The operators may be either unary or binary.
+ Brackets may be used to alter the order of evaluation of
+ expressions. If brackets appear in an expressions there must be
+ equal numbers of left and right brackets. 
+ 
+#PEach item in an expression must be separated from its
+ neighbours by at least one space. Data types are enforced rigidly
+ in expressions. It is not possible, for instance, to add a real
+ and an integer value. Operators are provided for converting from
+ one data type to another however. 
+ 
+#YValues 
+ 
+#PConstants are integer numbers, real numbers, or character
+ constants. Real constants should include a decimal point or an
+ 'E' to distinguish them from integers. Character constants are
+ strings delimitied by a pair of special characters. The
+ delimiting characters may be either ' or ". 
+ 
+#PVariables are included in an expression using the name of the
+ variable. The value of the variable used is given the same type
+ as the variable. 
+ 
+#P'Standard values' are special values, identified by keywords,
+ which are substituted by the script processor which the expresion
+ is evaluated. The script processor provides 6 standard values.
+ TRUE and FALSE are logical values which provide logical constants
+ for true and false. VALUE is used to access the last user input
+ value. It may be integer or real depending on the type of input.
+ USERLENGTH is an integer value, equal to the number of characters
+ remaining in the user input buffer. NULLSTRING is a character
+ value, and is an empty string. CVALUE is a character value, equal
+ to the character representation of the last use input value
+ processed. 
+ 
+#YOperators 
+ 
+#J 
+ 
+       The following unary operators are defined:- 
+ 
+       Operator          Operand type            Result type      
+       --------          ------- ----            ------ ----       
+       .NOT.             logical                 logical       
+       + , -             numeric                 same       
+       EXISTS            integer                 integer       
+       REAL              integer                 real       
+       INTEGER           real                    integer  
+       CHARACTER         any                     character      
+       KEYWORD           integer                 character 
+       .VALUE.           character               ( see below )
+       UPPERCASE         character               character
+ 
+# 
+ 
+#PThe unary arithmetic and logical operators '+', '-', and
+ '.NOT.', have their usual meaning. 'REAL' and 'INTEGER' are used
+ to convert integer values to real values and vice versa. for
+ example, the value of 'REAL 1' is '1.0' and the value of 'INTEGER
+ 2.3' is '2'. 
+ 
+#P'EXISTS' returns the value of the CRYSTALS function KEXIST for
+ the CRYSTALS list type corresponding to its operand's value. Thus
+ 'EXISTS 1' has the value '1' if list type 1 is available. 
+ 
+#P'CHARACTER' converts its operand into a character string
+ representation. Real and integer operands are converted to
+ numeric strings, logical operands are converted to the strings
+ 'TRUE' or 'FALSE', and character operands are unchanged.
+ 'KEYWORD' converts an integer operand into the corresponding
+ allowed value string, defined using the VERIFY command described
+ below. '.VALUE.' replaces a character expression by the value of 
+ the variable whose name is the value of character expression. The 
+ type of the resulting value will be the type of the variable.
+ 'UPPERCASE'  converts any lowercase letters in a character string 
+ to uppercase.
+ 
+ 
+#J 
+ 
+       The following binary operators are defined:- 
+ 
+       Operator          Operand 1       Operand 2       Result   
+       --------          ------- -       ------- -       ------      
+       + , - , * , /     numeric         same            same 
+ 
+       .EQ. , =          any             same            logical  
+       .NE. , <> 
+ 
+       .LE. , =<         numeric         same            logical  
+       .GE. , >=       
+       .LT. , <       
+       .GT. , > 
+ 
+       .OR.              logical         logical         logical  
+       .AND. 
+ 
+       //                character       character       character
+ 
+       STARTSWITH        character       character       logical 
+ 
+# 
+ 
+#PThe arithmetic operators '+', '-', '*', and '/' have the same 
+ meaning as in FORTRAN.
+ Note that the two operands must be of the same type, so 
+ that an expression such as '2.3 + 3' is illegal while '2.3 + 3.0',
+ '2.3 + REAL 3', or 'INTEGER 2.3 + 3' are all legal. 
+ 
+#PThe relational operators have the same meaning as in FORTRAN. 
+ Either form of the operators can be used, so that '2 .NE. 3' is 
+ equivalent to '2 <> 3'. Relational operators which determine the 
+ order of their operands can only be used for numeric values. 
+ 
+#P'.OR. and '.AND.' are used combine logical values. '//' is used 
+ to concatenate character values. 'STARTSWITH' compares two 
+ character values, and if the first string starts with the second 
+ string gives the value TRUE, and otherwise Hgives FALSE. Thus 
+ '"ABCDEF" STARTSWITH "ABC"' is TRUE, and 
+ '"ABCDEF" STARTSWITH "XYZ"' is FALSE.
+ 
+#ZERROR HANDLING# 
+ 
+#PWhen errors in the syntax of script commands are detected, a 
+ message is displayed indicating the nature of the error and its 
+ location. For some errors, such as incorrect expressions, further 
+ information may be displayed. When an error is detected, 
+ execution of the script continues. However further errors will 
+ usually follow.
+ 
+#PThe script processor provides a means of handling errors 
+ detected by CRYSTALS. There are two mechanisms by which this 
+ facility can be used, depending on whether the control of the 
+ program is by structure blocks or by labels. 
+ 
+#PFor the block 
+ control structure, error handling is specified by means of 
+ contingencies. The action to be taken when an error is detected 
+ in a block is determined by the value of a contingency named 
+ ERROR declared in that block. If no contingency of that type has 
+ been declared, execution of the current block is disabled, and 
+ processing of the current file continues. When the end of th 
+ block is found, the outer block will also be checked for an ERROR
+ contingency, and so on. If no ERROR contingency exists in the outermost 
+ (SCRIPT) block in the file, the file is closed, and processing of 
+ the calling file begins.
+ 
+#PWhen labels are used as the control mechanism, the error action 
+ is determined by error label declarations, made with the ERROR 
+ command. The argument of the ERROR command is an label, which 
+ need not appear before the ERROR command in the script, to which 
+ control is transferred if an error occurs. If no error label has 
+ been given, execution of the script file is abandoned. This error 
+ handling mechanism is only available in the outer (SCRIPT) block 
+ of a script.
+ 
+#PThe error handling mechanisms are activated if the script 
+ processor is called when the CRYSTALS error flag is set. This 
+ flag will be set by those conditions which generate CRYSTALS 
+ ERRORS. It can also be set by the script GET command, 
+ when an invalid answer to a question is found in data that was
+ entered in response to a question asked by a previous GET 
+ command, or by the EXTRACT command when an error occurs.
+ 
+#ZCOMMANDS# 
+ 
+#PThe script commands will be described in the following 
+ classes:-
+ 
+#J
+ 
+       Structure manipulating commands
+ 
+       SCRIPT      BLOCK       LOOP        IF          CASE  
+       END         ELSE        
+ 
+       Command line generation
+ 
+       COPY        CLEAR       INSERT      SEND        STORE 
+       QUEUE       EXTERNAL    EXECUTE     EXTRACT
+ 
+       User interface
+ 
+       GET         VERIFY      MESSAGE      
+ 
+       Expressions
+ 
+       EVALUATE    VARIABLE    INDEX       
+ 
+       Contingencies
+ 
+       ACTIVATE    ON          
+ 
+       Miscellaneous
+ 
+       FINISH      SET         SHOW
+ 
+       Jumps etc.
+ 
+       LABEL       ERROR       JUMP        BRANCH      DECREMENT
+       SELECT
+ 
+#
+ 
+#ZStructure manipulating commands#
+ 
+#PThese commands create, end, and control execution in strcuture 
+ blocks. They form the basis of the recommended method for control 
+ of execution. The following commands are available:-
+ 
+#J
+ 
+       SCRIPT      Initiates processing of a script file
+       BLOCK       Creates a simple block of commands
+       LOOP        Allows repeated execution of a block of commands
+       IF          Allows conditional execution of commands
+       CASE        Allows execution of one out of a series of commands
+ 
+       END         Denotes the end of a structure
+ 
+       ELSE        Allows for alternatives in IF blocks
+ 
+#
+ 
+#PEach of the structure defining commands SCRIPT, BLOCK, LOOP, 
+ IF, and CASE must be paired with an appropriate END. For 
+ example:-
+ 
+#J
+ 
+       BLOCK
+         LOOP
+         .
+         .
+         .
+         END LOOP
+       END BLOCK
+ 
+#
+ 
+#YSCRIPT and END SCRIPT
+ 
+#PSCRIPT must be the first command in each script 
+ file. (Comments and plain text may precede it). It initiates 
+ the processing of a new script file. Each file should have only 
+ one SCRIPT command. The SCRIPT keyword must be followed by a 
+ script name, which contains up to 12 characters
+ 
+#PEND SCRIPT causes execution of the current script to end. (This 
+ can also be done with the FINISH command described below).
+ 
+#YBLOCK and END BLOCK
+ 
+#PThe BLOCK command can be used to create a simple block of 
+ commands which can be executed as one unit, or as a compound 
+ statement. This command is useful in CASE blocks, to allow a set 
+ of commands to be executed on one condition, or to restrict the 
+ scope of a contingency.
+ 
+#PThe END BLOCK command is used to indicate the end of the 
+ structure defined by a corresponding BLOCK. There must be exactly 
+ one END BLOCK for each BLOCK.
+ 
+#YLOOP and END LOOP
+ 
+#PThe LOOP command defines the start of a block of commands to be 
+ executed repeatedly. The simple LOOP command, with no other 
+ arguments, causes indefinite execution. The loop can only be 
+ terminated by a FINISH command, or by the action of a 
+ contingency.
+ 
+#PThe 'LOOP n TIMES' form of the command causes the loop to be 
+ executed 'n' times, where 'n' is an integer expression. If 'n' is 
+ less then or equal to zero, the loop is not executed. 
+ 
+#PThe END LOOP command denotes the end of the loop. When this 
+ command is found, the processor either restarts execution at the 
+ beginning of the loop body, or continues to the next command, 
+ depending of whether the loop termination condition has been met.
+ The loop is controlled by two local variables, called 
+ LOOPCOUNTER and LOOPEND, created by the 
+ LOOP command. LOOPCOUNTER is given the initial value 1. LOOPEND 
+ end is given the value 0 for a simple 'LOOP', and 'n' for a 'LOOP 
+ n TIMES' type loop. The loop is terminated when an 'END LOOP' is 
+ encountered and the value of LOOPCOUNTER is equal to LOOPEND. 
+ This will never be true for a simple LOOP, since LOOPCOUNTER is 
+ always greater than LOOPEND in this case. LOOPCOUNTER is 
+ incremented each time the END LOOP statement is encountered, and 
+ can be used as an indicator of the number of times the loop has 
+ been executed.
+ 
+ 
+#YIF and END IF
+ 
+#PThe IF command is used to start a block of conditionally 
+ executed commands, terminated by an END IF command. The format of 
+ the IF command is:-
+ 
+#J
+ 
+       IF logical-expression THEN 
+ 
+#
+ 
+#PIf the value of the logical expression is TRUE, then the 
+ following block of commands is executed. Alternative blocks of
+ commands can be specified with the ELSE command, described below
+ 
+#YCASE and END CASE
+ 
+#PThe CASE command introduces a block of commands, one of which 
+ may be executed depending on the value of the controlling 
+ expression, and the specified conditions. The END CASE command 
+ ends the CASE block. There ar three possibles forms for the CASE 
+ command:-
+ 
+#J
+ 
+       CASE integer-expression
+ or
+       CASE integer-expression RANGE [ lower [ upper ] ]
+ or
+       CASE expression AMONG expression1 expression2 ... expressionn
+ 
+#
+ 
+ 
+#PThe simple CASE command and the CASE ... RANGE command both use 
+ integer expressions. The CASE ... AMONG command can use any type 
+ of expression, but all the expressions must be of the same type. 
+ In each type of command an index is calculated which indicates 
+ which of the following commands is to be executed. The index for 
+ the simple CASE instruction is the value of the expression.
+ 
+#PThe index for the CASE ... RANGE instruction is calculated by 
+ comparing the first expression with the lower and upper limits. 
+ If the expression is less than the lower limit, the index is 0. 
+ If the expression is between the lower and upper limits, the 
+ index is calculated using 'index = expression- lower+1'.
+ If the expression is greater than the upper limit, the index is 
+ calculated as if the expression were equal to the upper limit. If 
+ both limit expressions are omitted, they are given the values 1 
+ and 1000 respectively. If the upper limit is omitted, it is given 
+ the value 'lower+1000'.
+ 
+#PThe index for the CASE ... AMONG instruction is determined by 
+ calculating each of the test expressions, expression1, 
+ expression2,  etc. in turn. If the case expression is equal to the ith 
+ expression from the list, the index is given the value 'i'. If no 
+ expression from the list is equal to the case expression, the 
+ index is zero. 
+ 
+#PThe case block is processed by executing the statement 
+ corresponding to the index value, counting the first statement 
+ following the CASE instruction as number 1. Thus if the index is 
+ zero, no commands are executed. If the index is 1 or 2, the first 
+ or second 
+ command is executed. If there is no command corresponding to the 
+ index, because the CASE block ends before the required number of 
+ statements have been found, no message is produced. Blocks of 
+ statements formed using the BLOCK, LOOP, IF, and CASE  
+ instructions count as a single instruction.
+ 
+#J
+ 
+       Examples of index calculation
+ 
+       Command                                   Index value
+       -------                                   ----- -----
+       CASE 2                                    2
+       CASE 2 RANGE 2 3                          1
+       CASE 2 AMONG 4 3 2                        3
+       CASE 2.0 AMONG 1.0 3.0                    0
+ 
+ 
+ 
+       Examples of execution
+ 
+ 
+       CASE I
+         COPY '\HELP ERRORS'         Executed if I equals 1
+         COPY '\HELP NEWS'           Executed if I equals 2
+       END CASE
+ 
+       CASE I
+         BLOCK 
+           ...                       Executed if I equals 1
+         END BLOCK
+         BLOCK 
+           ...                       Executed if I equals 2
+         END BLOCK
+       END CASE
+ 
+#
+ 
+ 
+#YELSE 
+ 
+#PThe ELSE command, which can only be used in IF statement 
+ blocks, allows conditional execution of parts of IF blocks. There 
+ are two forms of this command:-
+ 
+#J
+ 
+             ELSE
+       or
+             ELSE IF logical-expression THEN
+ 
+#
+ 
+#PThe simple ELSE causes execution of the IF block to begin if no 
+ part of the current IF block has been executed. The ELSE IF form 
+ will cause execution to begin if no previous part of the IF block 
+ has been executed and the value of the logical expressions is TRUE.
+ 
+ 
+ 
+#ZCommand line generation#
+ 
+#PThe script processor provides a number of ways of generating 
+ commands. Data can be sent from the script to CRYSTALS either 
+ directly or via an intermediate file. Alternatively command lines 
+ can be built up in an 'internal command buffer'. These can then 
+ be sent to CRYSTALS, or used as script command lines. Data can 
+ also be extrcted from files, and transferred to various 
+ destinations.
+ The following commands are available:-
+ 
+#J
+ 
+       TRANSFER    Transfer data to destination
+ 
+       COPY        Copy command to CRYSTALS
+ 
+       CLEAR       Clear command buffer
+       INSERT      Insert text in command buffer
+       SEND        Send command buffer to CRYSTALS
+       STORE       Store expression value in command buffer
+       EXECUTE     Generate script commands
+ 
+       QUEUE       Manipulate SCPQUEUE - allows deferred commands
+ 
+       EXTERNAL    Execute operating system commands
+ 
+       EXTRACT     Manipulate SCPDATA - allows simple file editing
+ 
+#
+ 
+#PNote that the GET command, which is described below, can also 
+ affect the command buffer, by inserting the final user's input 
+ into it. 
+ 
+#YTRANSFER
+ 
+#PThe TRANSFER command transfers character data to a specified 
+ destination. The format of this command is:-
+ 
+#J
+ 
+       TRANSFER character-expression TO destination
+ 
+       where 'destination' is one of:-
+ 
+             DISPLAY     
+             CRYSTALS    
+             SCRIPT      
+ 
+#
+ 
+ When the 'destination' is DISPLAY, the value of the character 
+ expression is displayed on the terminal. If the value is an empty 
+ string, a blank line is output. If the destination is CRYSTALS, 
+ the value of the expression is sent to CRYSTALS for execution as 
+ a command. If the destination is SCRIPT, the value of the
+ expression is used as the next input for the script processor. 
+ Note that unless the character expression begins with '%', the 
+ script processor will treat it as a plain text line rather than a 
+ script command.
+ 
+#YCOPY
+ 
+#PThe COPY command is used to send text to CRYSTALS. The command 
+ must be followed by a text string, delimitted by any character. 
+ For example:-
+ 
+#J
+ 
+       COPY '\HELP BASICS'
+ 
+#
+ copies the command \HELP BASICS to CRYSTALS.
+ 
+#YCLEAR
+ 
+#PThe CLEAR command clears the internal command buffer.
+ 
+#YINSERT
+ 
+#PThe INSERT command is used to inset text in the internal 
+ command buffer. The command must be followed by a text string, 
+ delimitted by any character. For example:-
+ 
+ 
+#J
+ 
+       CLEAR
+       INSERT '\HELP '
+       INSERT 'BASICS'
+ 
+       The command buffer now contains:- \HELP BASICS
+ 
+#
+ 
+#YSEND
+ 
+#PThe SEND command causes the internal command buffer to be sent 
+ to CRYSTALS for execution as a command. For example:-
+ 
+#J
+ 
+       CLEAR
+       INSERT '\HELP BASICS'
+       SEND
+ 
+       Sends \HELP BASICS to CRYSTALS
+ 
+#
+ 
+#YSTORE
+ 
+#The STORE command is used to convert expression values into 
+ character representations, and to store the result in the internal 
+ command buffer. The format of this command is:-
+ 
+#J
+ 
+             STORE [modifiers] type expression1 [ expression2 ... ]
+ 
+ 
+       Modifiers:-
+ 
+             LENGTH integer-expression
+             FORMAT text
+ 
+ 
+       Type:-
+ 
+             INTEGER
+             REAL
+             LOGICAL
+             KEYWORD
+ 
+#
+ 
+#PThe conversion to character form is performed either with
+ built-in format statements, or with the format expression
+ following the FORMAT modifier. The length of each data item
+ stored is either a default value, appropriate to the built-in
+ formats, or that specifier using the LENGTH modifier. 
+ 
+#PThe 'type' 
+ keyword is used to indicate the type of the expressions 
+ following, and how the conversion is to be performed. The 
+ meanings of the various keywords can be summarised as follows:-
+ 
+#J
+ 
+       Type        Expression  Format      Action
+       ----        ----------  ------      ------
+       INTEGER     integer     (I12)       Store integer data
+       REAL        real        (F12.6)     Store real data
+       LOGICAL     logical     A           Store either TRUE or FALSE
+       KEYWORD     integer     A           Store keyword from current 
+                                           allowed value list
+ 
+#
+ 
+#PThe FORMAT and LENGTH modifiers can only affect STORE INTEGER 
+ and STORE REAL. The FORMAT modifier must be followed by a text 
+ string, delimitted by any character, containing a valid FORTRAN 
+ format statement. The LENGTH modifier is used in conjunction with 
+ FORMAT to specify the length of the result of applying the format 
+ expression. If it is omitted, a length of 12 is assumed.
+ For example, to store the values of the integer variables I, J, and K
+ in the internal command buffer, using 'I6' fields:-
+ 
+#J
+ 
+       STORE FORMAT /(I6)/ LENGTH 6 INTEGER I J K
+ 
+#
+ 
+#YQUEUE
+ 
+#PThe QUEUE command provides a means for manipulating a external 
+ formetted file, referred to by the CRYSTALS device name SCPQUEUE. 
+ Data can be written to this file which can later be processed as 
+ a command stream. This provides a mechanism for deferring the 
+ execution of commands. For example, if a long input sequence is 
+ likely to be abandoned in the middle, the system can be left in a 
+ consistent state if the commands are written to the queue before 
+ processing. When all the commands have been read in, they can 
+ all be executed at once.
+ 
+#PThere are four subcommands of the QUEUE command:-
+ 
+#J
+ 
+       QUEUE SEND        Copy command buffer to queue
+       QUEUE COPY        Copy text to queue 
+       QUEUE REWIND      Rewind queue file
+       QUEUE PROCESS     Process commands in queue file
+ 
+#
+ 
+#PThe QUEUE SEND command is used to write a new record at the end 
+ of the queue file containing a copy of the current internal command 
+ buffer. The QUEUE COPY command copies the remainder of the 
+ command line to 
+ the end of the queue file. The format is:-
+ 
+#J
+ 
+       QUEUE COPY text to be copied
+ 
+#
+ 
+ The QUEUE REWIND command writes an ENDFILE record to the queue 
+ file, and rewinds the file. The QUEUE PROCESS rewinds the queue 
+ file and starts execution of the queue as a series of CRYSTALS 
+ commands. It is equivalent to the CRYSTALS #USE command.
+ 
+#YEXTERNAL
+ 
+#PThe EXTERNAL command is used to send commands to the operating 
+ system for execution. This facility is only available if an 
+ implemetation of XDETCH is available. It might be used to submit 
+ batch jobs for instance, or to call other programs. There are two 
+ subcommands:-
+ 
+#J
+ 
+       EXTERNAL COPY     Use remainder of command line as external command
+       EXTERNAL SEND     Use internal command buffer as external command
+ 
+#
+ 
+#YEXECUTE
+ 
+#PThe EXECUTE command is used to create new command lines for the 
+ script processor. The internal command buffer is sent to 
+ CRYSTALS, with instructions to send it back to the script 
+ processor for interpretation. For example:-
+ 
+#J
+ 
+       VARIABLE INTEGER A B C SELECT NEW
+       EVALUATE NEW = 99
+       EVALUATE SELECT = 3
+ 
+       CLEAR
+       INSERT '%EVALUATE '
+       VERIFY A B C
+       STORE KEYWORD SELECT
+       INSERT ' = NEW'
+       EXECUTE
+ 
+ generates the script command line
+ 
+       %EVALUATE C = NEW
+ 
+ The second part might also be written
+ 
+       VERIFY A B C
+       TRANSFER '%EVALUATE ' // KEYWORD SELECT // ' = NEW' TO SCRIPT
+ 
+#
+ 
+#YEXTRACT
+ 
+#PThe EXTRACT command is used to perform simple editing tasks on 
+ a data file, referred to by the CRYSTALS device name SCPDATA. The 
+ command has the 
+ following subcommands:-
+ 
+#J
+ 
+       EXTRACT NEXT            Read next record from file
+       EXTRACT FIND            Find specified record
+       EXTRACT TRANSFER        Transfer data from read buffer
+ 
+       EXTRACT REWIND          Rewind SCPDATA file
+       EXTRACT CLOSE           Close SCPDATA file
+ 
+#
+ 
+#PThe EXTRACT NEXT and EXTRACT FIND command cause records from 
+ the external file to be read into an input buffer. The contents 
+ of this buffer can be moved to other parts of the script system 
+ by using EXTRACT TRANSFER.
+ 
+#PThe EXTRACT NEXT command causes the next record of the data 
+ file to be read into the internal command buffer. If there is no 
+ next record, because the end of file has been found, the CRYSTALS 
+ error flag is set but no message is produced. This condition can 
+ therefore be handled by an ERROR contingency.
+ 
+#The EXTRACT FIND command allows records to be located on the 
+ basis of the initial characters. The search string can be reAd in 
+ two ways:-
+ 
+#J
+ 
+       EXTRACT FIND STRING      Search string is read from command line
+       EXTRACT FIND BUFFER      Search string is found in command buffer
+ 
+#
+ 
+ If the EXTRACT FIND STRING form is used, the search string must 
+ be specified on the command line, as a text string delimitted by 
+ any character. If the EXTRACT FIND BUFFER form is used, the 
+ contents of the internal command buffer is used as the search 
+ string. In both cases, the data file is rewound and each line of 
+ the file is compared with the search string. If a line from the 
+ file starts with the search string, the line is transferred to 
+ the input buffer. If the end of file is reached, it is handled in 
+ the same way as for EXTRACT NEXT.
+ 
+#PThe EXTRACT TRANSFER subcommand is used to transfer data from 
+ the EXTRACT input buffer, where it is placed by the EXTRACT NEXT 
+ and EXTRACT FIND commands, to a selected destination. The 
+ destination is indicated by a keyword on the command, which can 
+ have the values COMMAND or INPUT. If the value COMMAND is used, 
+ th contents of the EXTRACT input buffer is copied to the end of 
+ the internal command buffer. If the value is INPUT, the contents 
+ of the EXTRACT input buffer is copied to the user input buffer 
+ used by the GET command, completely replacing any existing 
+ contents.
+ 
+#The EXTRACT REWIND command is used to rewind the SCPDATA file. 
+ The EXTRACT CLOSE command is used to close the SCPDATA file.
+ 
+#ZUser interface#
+ 
+#PThis class of commands controls what the final user of s script 
+ sees. When combined with suitable plain text in the script file, 
+ these commands should allow complete control over questions and 
+ messages produced by the script. The following commands are 
+ available:-
+ 
+#J
+ 
+       GET         Ask the user a question
+       VERIFY      Define list of allowed values 
+       MESSAGE     Change messages displayed to the user
+ 
+#
+ 
+#YGET
+ 
+#PThe GET command provides the main interface between the script 
+ processor and the final user. It provides a means of asking 
+ questions of the final user, and automatically checking the 
+ results. This should provide a consistent command interface. The 
+ format of the GET command is:-
+ 
+#J
+ 
+       GET [modifiers] datatype prompt [default-value][validator]
+ 
+       'modifiers' are one or more of the following keywords:-
+ 
+       FINAL       APPEND      FILL        NOSTORE     NOPROMPT
+       NOREMOVE    NOMESSAGE
+ 
+       'datatype' is one of the following keywords:-
+ 
+       INTEGER     REAL        TEXT        KEYWORD     VERIFIED
+       FILENAME    ABBREVIATED YESNO
+ 
+       'prompt' and 'default-value' are text strings containing the
+       prompt given to the user, and the default which will be inserted
+       in response to 'carriage-return'. The speciual default-value 
+       NULLSTRING translates to a null value.
+       
+       'validator' is a logical expression which if evaluated to false
+       causes the GET instruction  to be re-issued, e.g.
+ 
+       GET FINAL INTEGER 'Number of atoms' NULLSTRING (VALUE > 0)
+      
+       requires the number of atoms to be greater than zero.
+ 
+#
+ 
+#PThe normal operation of the GET command, which can be modified 
+ using one or more of the 'modifiers' in the command line, is as 
+ follows. A prompt string is generated. This includes a list of 
+ allowed values, if the user's input is to be checked against such 
+ a list, and a prompt made up of the string specified in the 
+ command line, a description of the type of data required, and the 
+ default value, or '-' if no default value is available. For 
+ example:-
+ 
+#J
+ 
+       VERIFY A B C
+       GET VERIFIED 'Letter' 'C'
+ 
+ generates the prompt
+ 
+       (A B C)
+       Letter (keyword) [ C ]
+ 
+#
+ 
+ The user's input is then read. It is checked for interrupt 
+ strings, described below. If no input was given, the default 
+ value is used if one was provided in the GET command line. The 
+ user's input is checked against the requirements specified in the 
+ GET command. If it is not correct, the user is prompted again. If 
+ it is correct, a copy is placed in the internal command buffer, 
+ with a space following any existing contents of that buffer.
+ 
+#PThe 'modifiers' change the above scheme. If NOPROMPT is
+ specified, no prompt is produced, and no input occurs, if the the
+ user's input buffer (described below) is empty. In this case the
+ default value is used. If NOMESSAGE is used, no message is
+ produced if the input is in error. This will probably be combined
+ with NOPROMPT. If FINAL is specified, no text is allowed to
+ remain in the buffer once the current item has been removed. If
+ any does remain, an error is caused. If APPEND is specified, the
+ user's input is appended to the internal command buffer with no
+ intervening spaces. The usual action is to place one space
+ between the current contents and the new input. If FILL is
+ specified with the ABBREVIATED data-type, the data transferred to
+ the internal command buffer is the complete keyword, rather than
+ any abbreviated form actually typed in. If NOSTORE is specified,
+ no data is transferred to the internal command buffer. If
+ NOREMOVE is specified, the data processed is not removed from the
+ user's input buffer, and so it can be processed again 
+ 
+#PAn internal buffer is used to hold the text actually typed in, 
+ and prompts are only displayed to the user when this buffer is 
+ empty. The buffer is empty initially, and is also emptied when an 
+ error occurs.
+ 
+#PProvision is made for 'interrupts', which are indications from 
+ the user that the current flow of the script should be changed. 
+ These consist of a single word typed in response to a prompt from 
+ the GET command. This must match exactly one of the interrupt 
+ strings. Interrupts ERROR and DIRECT are always activated. ERROR 
+ causes the script to behave as if an CRYSTALS error had just been 
+ detected. DIRECT immediately stops all script processing and 
+ allows the user to enter CRYSTALS commands directly. One 
+ additional interrupt, END, is available when an END contingency 
+ exists in the current structure block. The effect of this is to 
+ activate the END contingency. 
+ 
+#PThe following types of data are processed by GET:-
+ 
+#J
+ 
+       Keyword     Default text in prompt        Required value
+       -------     ------- ---- -- ------        -------- -----
+       INTEGER     (integer)                     An integer number
+       REAL        (real number)                 A real number
+       TEXT        (text)                        Any text
+       KEYWORD     (text)                        A single word
+       VERIFIED    (keyword)                     A single word which must match 
+                                                 exactly one of the current 
+                                                 allowed value list
+       FILENAME    (filename)                    A single word
+       ABBREVIATED (keyword)                     A single word which must be an 
+                                                 abbreviation of one of the 
+                                                 current allowed value list
+       YESNO       (YES or NO)                   ( as for VERIFIED )
+ 
+#
+ 
+#PThe 'text in prompt' strings are the initial values. They can 
+ be changed using the MESSAGE command. The following user error 
+ messages, produced when an error is detected in the user's input, 
+ can also be changed with MESSAGE.
+ 
+#J
+ 
+       'Too much data has been provided'
+       'No default value is available - Please give an appropriate answer'
+       'An illegal real number has been given'
+       'An illegal integer has been given'
+       'The value given is not allowed'
+ 
+#
+ 
+#YVERIFY
+ 
+#PThe VERIFY command is used to define a new list of allowed 
+ values for use with the GET command. Up to 20 allowed values may 
+ be given. The list remains in force until the next VERIFY 
+ command. The format of the command is:-
+ 
+#J
+ 
+       VERIFY keyword1 [ keyword2 ... keywordn ]
+ 
+#
+ 
+#YMESSAGE
+ 
+#PThe MESSAGE command is used to change the text associated with 
+ various output produced by scripts. The format of the command is:-
+ 
+#J
+ 
+       MESSAGE keyword new-text
+ 
+ where 'keyword' is one of:-
+ 
+       EXTRA       DEFAULT     REAL        INTEGER     VALUE
+       ABANDONED   USER1       USER2       USER3       USER4
+       PRINTEGER   PRREAL      PRTEXT      PRKEYWORD   PRVERIFIED
+       PRFILENAME  PRABBREV    PRYESNO
+ 
+#
+ 
+#PThe keywords EXTRA to VALUE change messages output by the GET 
+ command. The keywords ABANDONED to USER4 change messages used 
+ with contingency actions. The keywords PRINTEGER to PRYESNO 
+ change the text used in prompt string generated by GET describing 
+ the type of data required. The initial values of each message are:-
+ 
+#J
+ 
+ EXTRA       "Too much data has been provided"
+ DEFAULT     "No default value is available. Please give an appropriate answer"
+ REAL        "An illegal real number has been given"
+ INTEGER     "An illegal integer has been given"
+ VALUE       "The value given is not allowed"
+ 
+ ABANDONED   "Processing of this section has been abandoned"
+ USER1       "User message 1"
+ USER2       "User message 2"
+ USER3       "User message 3"
+ USER4       "User message 4"
+ 
+ PRINTEGER   " (integer)"
+ PRREAL      " (real number)"
+ PRTEXT      " (text)"
+ PRKEYWORD   " (text)"
+ PRVERIFIED  " (keyword)"
+ PRFILENAME  " (file name)"
+ PRABBREV    " (keyword)"
+ PRYESNO     " (YES or NO)"
+ 
+#
+ 
+#ZExpressions#
+ 
+#PThis class of instructions allow the use of variables and the 
+ evaluation of expressions.  The following instructions are 
+ available:-
+ 
+#J
+ 
+       EVALUATE    Evaluate expression and assign result to variable
+       VARIABLE    Declare new variables
+       INDEX       Assign one expression value to a variable from a list 
+ 
+#
+ 
+#YEVALUATE
+ 
+#PThe EVALUATE instruction assigns the value of an expression to 
+ a variable. The type of the expresion must be the same as that of 
+ the variable, and the variable must have been declared previously. 
+ The format of the instruction is:-
+ 
+#J
+ 
+       EVALUATE variable = expression
+ 
+#
+ 
+#YVARIABLE    
+ 
+#PThe VARIABLE instruction is used to declare new variables. The 
+ format of the instruction is:-
+ 
+#J
+ 
+       VARIABLE type name1 [ name2 ... namen ]
+ 
+ where 'type' is one of
+ 
+       INTEGER     REAL        LOGICAL     CHARACTER
+ 
+#
+ 
+#PIf a variable with the same name as that specified in the 
+ command has been declared in an outer structure, its type is 
+ checked against that requested. If the types do not match, an 
+ error occurs. If the variable exists and has a consistent type no 
+ further action is taken, and all future references to the variable will 
+ be to the previously declared one. 
+ 
+#PIf no variable of the same name has been declared in any outer 
+ structure, a new variable is declared, and given an initial value 
+ of zero, 'false', or the empty string, depending on its type. The 
+ variable remains declared throughout the current block and any 
+ structure block contained by it. It becomes undefined once the 
+ current block ends.
+ 
+#YINDEX
+ 
+#PThe INDEX instruction can be used to assign the value of one 
+ out of a list of instructions to a variable. The format of the 
+ instruction is:-
+ 
+#J
+ 
+       INDEX variable index-expression expression1 ... expressionn
+ 
+#
+ 
+#PThe index-expression, which must have an integer value, is evaluated. 
+ If the value of this expression is 'm', the value of the 'mth' 
+ following expression is assigned to the variable. If the value of 
+ 'm' is not in the range 1 to n, the variable is not changed. The 
+ type of the expression must be the same as that of the variable.
+ 
+#ZContingencies#
+ 
+#PContingencies provide a mechanism for handling events which 
+ disturb the normal flow of control, such as errors detected by 
+ CRYSTALS. The error handling mechanism is described above. Two 
+ instructions using contingencies are available:-
+ 
+#J
+ 
+       ON          Define a contingency
+       ACTIVATE    Activate a contingency
+ 
+#
+ 
+ Contingencies are normally activated by components of the script
+ processor, or by the main CRYSTALS program when the script
+ procedure KSCACT is called. 
+ 
+#YON
+ 
+#PThe ON command defines a new contingency for the current block.
+ Contingencies are located using the 'local' search method, so
+ that the new contingency will not affect any inner block. Note
+ however that the script processor error handling mechanism will
+ find any ERROR contingency declared, deleting structure blocks if
+ necessary. The format of the ON command is:-
+ 
+#J
+ 
+       ON name action [ message ]
+ 
+ where 'action' is one of:-
+ 
+       RESTART     REPEAT      TERMINATE   CONTINUE
+ 
+ and 'message' is one of:-
+ 
+       ABANDONED   USER1       USER2       USER3       USER4
+ 
+#
+ 
+ The 'name' may be any valid identifier name. The value of 
+ 'action' identifies the action to be taken if the contingency 
+ is activated. RESTART indicates that the current structure block 
+ is to be restarted. The current level is terminated and execution 
+ of the script continues from the instruction which defined the 
+ current block. Anything done inside the current block, such as 
+ variable or contingency declarations, is lost when the block is 
+ deleted. In a loop, the loop counter will be reset to zero.
+ 
+#PIf the action specified is REPEAT, execution of the script 
+ continues from the line following that which started the current 
+ block. Compare this with RESTART. None of the declarations in the 
+ current block is lost. In a loop, the loop counter will not be 
+ changed. 
+ 
+#PIf the action is TERMINATE, execution will continues from the 
+ instruction following the END of the current structure block. No 
+ more instructions in the current block, or any inner block, are 
+ executed. If the action is CONTINUE, no change is made to the 
+ flow of the script.
+ 
+#PAn optional message can be associated with a contingency by 
+ specifying the appropriate keyword. The initial texts of these 
+ messages are described under MESSAGE above. If a message is 
+ specified, it will be displayed on the terminal when the 
+ contingency is activated. 
+ 
+#YACTIVATE    
+ 
+#PThe ACTIVATE command is used to cause execution of a 
+ contingency. This contingency must have been declared in the 
+ current block using the ON command. The ACTIVATE instruction is 
+ most useful when testing contingencies.
+ 
+#ZMiscellaneous#
+ 
+#PThree instructions are included in this category:-
+ 
+#J
+ 
+       FINISH      End execution of the current script
+ 
+       SET         Set script control flag
+ 
+       SHOW        Display value of script variables
+ 
+#
+ 
+#YFINISH
+ 
+#PThe FINISH instruction causes execution of the current script 
+ fie to be terminated. It provides a convenient way out of 
+ indefinite loops, for example:-
+ 
+#J
+       LOOP
+         VERIFY END ...
+         GET ABBREV 'Option' ...
+         CASE VALUE
+           FINISH                                          %END%
+           BLOCK                                           %Instr. 1%
+             ...
+           END BLOCK
+           ...                                             %Instr. 2 ...%
+         END CASE
+       END LOOP
+ 
+#
+ 
+#YSET         
+ 
+#PThe SET command allows certain script control variables to be 
+ set. These internal variables control the behaviour of various 
+ script functions in ways that may be useful during debugging of 
+ scripts. In normal use the SET instruction should not be needed.
+ The format of the instruction is:-
+ 
+#J
+ 
+       SET keyword logical-expression
+ 
+ where 'keyword' is one of:-
+ 
+       MESSAGE     VERIFY      FAST        EVALUATE    STACK
+       IDENT       
+ 
+#
+ 
+#PThe keywords identify the function, which can be enabled by 
+ specifying a logical expression is 'true' and disabled by giving 
+ an expression which is 'false'. The keyword MESSAGE
+ enables or disables display of script error messages, produced 
+ when syntax errors are detected. The function is initially 
+ enabled. VERIFY enables or disables the verification of input 
+ command lines. In addition new variable declarations are 
+ displayed. The initial state is 'disabled'.
+ 
+#PFAST enables or disabled a faster label location method. This
+ is only of relevance for scripts based on labels (not
+ recommended). The initial state is 'enabled'. EVALUATE, STACK,
+ and IDENT enable or disable of verification of expression
+ interpretation, stack frame creation and deletion, and identifier
+ manipulation respectively. The initial state of each of these
+ flags is 'disabled'. 
+ 
+#YSHOW
+ 
+#PThe SHOW command is used to display the value of one or more 
+ variables. The format of the instruction is:-
+ 
+#J
+ 
+       SHOW variable1 [ variable2 ... variablen ]
+ 
+#
+ 
+ The values of the variables are displayed on the terminal in the 
+ format:-
+ 
+#J
+ 
+       'variable name' = 'value'
+ 
+#
+ 
+ The values of integer and real values are converted to text. 
+ Logical values are shown as 'true' or 'false'.
+ 
+ 
+#ZJumps and labels#
+ 
+#PThis class of commnands provides an alternative method of 
+ defining the control structure of the script. It is recommended 
+ that the method based on structure blocks described above is 
+ used. 
+ 
+#PThe two methods cannot satisfactorily be mixed in the same 
+ script. In particular labels are considered to be strictly local, 
+ so that a jump of the the type:-
+ 
+#J
+ 
+       BLOCK
+         JUMP DEST
+       END BLOCK
+       LABEL DEST
+ 
+#
+ 
+ will fail. The commands available for use with labels are in 
+ general more primitive, being based on single variables and 
+ constants rather than expressions. The follow instructions are 
+ available:-
+ 
+#J
+ 
+       LABEL       Define a label
+       ERROR       Set error destination label
+       JUMP        Jump to a label
+       BRANCH      Conditional jump to label
+       DECREMENT   Decrement variable, and conditional jump to label
+       SELECT      Jump to one label from a list
+ 
+#
+ 
+#YLABEL
+ 
+#PThe LABEL command defines a label in the current block. This 
+ label can be referred to by ERROR, JUMP, BRANCH, DECREMENT, and 
+ SELECT instructions. The format of the instruction is:-
+ 
+#J
+ 
+       LABEL name
+ 
+#
+ 
+#YERROR       
+ 
+#PThe ERROR instruction selects a new error-processing label. 
+ Control is passed to the specified label when an error is 
+ detected. The script processor's error handling mechanism is 
+ described above. The label specified on the command need not 
+ already have been defined.
+ 
+#J
+ 
+       ERROR label
+ 
+#
+ 
+#YJUMP
+ 
+#PThe JUMP command causes control to be passed to the specified 
+ label, which need not have been previously defined. The label 
+ should appear in the current script.
+ 
+#J
+ 
+       JUMP label
+ 
+#
+ 
+#YBRANCH      
+ 
+#PThe BRANCH instruction transfers control to the specified label 
+ if the value of the integer variable is equal to the value of the 
+ integer constant. Otherwise execution continues normally.
+ 
+#J
+ 
+       BRANCH integer-variable integer-constant label
+ 
+#
+ 
+#YDECREMENT
+ 
+#PThe DECREMENT instruction reduces the value of the integer 
+ variable by one. If the resulting value is positive, control is 
+ transferred to the specified label. Otherwise execution continues 
+ normally. This instruction can be used to implement loops
+ 
+#J
+ 
+       DECREMENT integer-variable label
+ 
+#
+ 
+#YSELECT
+ 
+#PThe SELECT instruction transfers control to one of the list of 
+ labels if the value of the integer variable is in the range 1 to 
+ n, where 'n' is the number of labels. Otherwise execution 
+ continues normally. This is analogous to the FORTRAN computed 
+ GOTO.
+ 
+#J
+ 
+       SELECT integer-variable label1 [ label2 ... labeln ]
+ 
+#
+#ZGENERALEDIT - General list editing facility
+#ZINTRODUCTION#
+#P	This command provides access by the SCRIPT processor 
+ to records and values in the users d/a file. 
+#P A record consists of one or more groups of data. Each
+ group contains items which are keyed by their offset from the beginning
+ of the group, offset 0.
+#PThe record identification numbers and the names and positions of items in
+ records in specified in the COMMAND source file.
+ 
+#J
+ 
+ GENERALEDIT      list_number
+       1. LOCATE                    finds the record to be used
+           RECORDTYPE  Default 101
+ 
+       2. KEY                       specifies which item to use
+           OFFSET      Default 0
+           LENGTH      Default 1
+           MODE                     type of item
+                         INTEGER       Default value
+                         REAL         
+                         CHARACTER    
+ 
+       3. DISPLAY                   displays the specified data
+           TYPE        
+                         KEYS         the names of the keys
+                         GROUP        all the items in the group
+                         RECORD       the current record
+ 
+       4. FORMAT                    the format for displaying data
+           TYPE        
+                         KEYS         
+                         GROUP        
+                         RECORD       
+           EXPRESSION               a FORTRAN format statement for the data
+ 
+       5. SEARCH                    find the first group containing the 
+                                    specified value in the field selected by
+                                    KEY
+           INTEGER     Default 1
+           REAL        Default 0.10000E+01
+           CHARACTER   Default AAAA
+ 
+       6. GROUP                     Indicates how the GROUP data is stored
+           OFFSET      Default 0
+           LENGTH      Default 1
+           MODE        
+                         INTEGER       Default value
+                         REAL         
+                         CHARACTER    
+ 
+       7. ERROR                     define error handlers
+           MESSAGE                  whether on not message
+                         NO           
+                         YES           Default value
+           SIGNAL                   signal passed to user
+                         NONE         
+                         WARNING       Default value
+                         ERROR        
+           ACTION                   action performad by CRYSTALS
+                         NONE          Default value
+                         VARIABLE     
+                         CONTINGENCY  
+           NAME                     a name recognised by the SCRIPT 
+ 
+       8. INSERT           insert an item at the current key position
+ 
+       9. DELETE           delete an item at the current key position
+ 
+      10. WRITE            write an item at the current key position
+ 
+      11. TRANSFER                  transfer items between the d/a file and
+                                    SCRIPT variables
+           DIRECTION                
+                         FROM         
+                         TO           
+           OFFSET          d/a item identifier
+                       Default value = None
+                             
+                         FROM         
+                         TO           
+           VARIABLE        SCRIPT item name
+                       Default value = None
+                    (note. if the item is a character, it should be
+                     declared, TRANSFERED and used in a BLOCK otherwise
+                     the descriptor stack overflows)
+ 
+      12. CHANGE                    Change the value of specified item
+           OFFSET           
+           MODE        
+                         INTEGER       Default value
+                         REAL         
+                         CHARACTER    
+           INTEGER     Default 1
+           REAL        Default 0.10000E+01
+           CHARACTER   Default AAAA
+ 
+      13. RECORD                    Indicate how RECORD data is stored
+           OFFSET      Default 0
+           LENGTH      Default 1
+           MODE        
+                         INTEGER       Default value
+                         REAL         
+                         CHARACTER    
+ 
+      14. CHECK                     check that the record exists
+ 
+      15. OPERATE                   do algebra on items
+           OPERATION   
+                         ADD          
+                         SUBTRACT     
+                         MULTIPLY     
+                         DIVIDE       
+           OFFSET      Default 0
+           MODE        
+                         INTEGER       Default value
+                         REAL         
+           INTEGER     Default 0
+           REAL        Default 0.10000E+01
+ 
+      16. TOP                      reset to first group in a record
+      18. NEXT                     move to next group in record
+ 
+#
+
+#

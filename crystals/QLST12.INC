@@ -1,0 +1,2 @@
+      EQUIVALENCE (L12,ICOM12(1)) 
+

@@ -1,0 +1,144 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TDOC (T)
+#ZINTRODUCTION (Z)#
+This document describes the mark-up codes that can be used with Lisa 
+Pearce's txt-to-postscript program.  Several new codes have been 
+introduced for generating html documents.  
+#J
+A, C, HC, HS, R, X, U 
+#
+They are ignored by 'paginate'
+#P
+_B{Z creates a new page with a centred serialised chapter number, folowed
+on the next line by the text in the 'Z' line.
+#PDOC (P) is a program to convert CRYSTALS 'Paginate' style files into 
+Post Script Documents. Formatting is indicated by 'codes'. Normal, 
+_b{Bold, and _i{Italic faces are available.
+#YHOW TO CONTROL THE PROGRAM (Y)#
+#PThe program is controlled by page and font defining information at the
+head of the file. This information is:
+#J
+Line 1, A2,2I3
+      paper size               A4, A5 or US
+      Font point size          10
+      Page Nunber offset        0
+      Chapter number offset     0
+      Litteral point size       8
+
+Line 2 7F7.2
+      Left margin            1.50
+      Right margin           1.00
+      Top margin             1.00
+      Bottom margin          1.00
+      line gap               0.15
+      indent                 0.15
+      title                  0.50
+
+#
+#YCODES (Y)#
+#PThere are about one dozen formatting codes.  Each code is preceeded by
+a 'hash', and items marked with a '*' must be a single line of text
+terminated with a 'hash'. Items I,D,K are entered into the Index. Items 
+Z and Y are in the table of contents.
+#N  15#
+#J
+      T      document title  *   
+      Z      chapter heading *  Content
+      Y      section heading *  Content
+      I      instruction     *  Index indent level 1
+      D      directive       *  Index indent level 2
+      K      keyword         *  Index indent level 3
+      P      paragraph
+      Q      new line
+      ' '    new line
+      N   n  Verfiy n lines left
+      Jnnn   literal, point size
+      F      Figure filename * (not implemented)
+    _b{      bold
+    _i{      italic
+#
+
+#PDESCRIPTION OF CODES (P)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a chapter heading.
+#YSECTION HEADER (Y)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a section heading.
+#IINSTRUCTION (I)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of an instruction.
+#DDIRECTIVE (D)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a directive.
+
+
+#ZDESCRIPTION OF CODES (Z)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a chapter heading.
+#YSECTION HEADER (Y)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a section heading.
+#IINSTRUCTION (I)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of an instruction.
+#DDIRECTIVE (D)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a directive.
+
+#KKEYWORD (K)#
+This is just some plain text at the current level. It is repeated 
+several times. This is just some plain text at the current level. It is 
+repeated several times. This is just some plain text at the current level.
+ It is repeated several times. 
+#PThis is a paragraph (P) used at the level of a keyword.
+This is some more text to show what happens to         extra      
+spaces,
+      and spaces at the beginning of lines.
+#
+ This should be text starting a new line after a single blank line,
+#Q (Q) and this should just start a new line. 
+#N  10#
+ Nxxxx verifies that there are xxxx lines left on the curent page, or 
+forces a page throw. The number of lines is in 
+format I4.
+#JLITERAL (J)
+This
+    should
+          just
+              copy
+                  out
+                     the text
+#
+#YBold and Italic (Y)#
+Currently, this is only applied to single words.
+#KBold (K)#
+Bold is introduced by #J_b{#, for example _b{Bold. 
+#DItalic (D)#
+Italic is introduced by #J_i{#, for example _i{Italic. We need to change 
+the program to change face between paired braces {...}.
+#

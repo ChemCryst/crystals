@@ -1,0 +1,32 @@
+#!/bin/sh
+cd $CRYSBUILD
+mkdir errors
+touch empty
+
+rm -Rf dscbuild || builderr COULDNOT_REMOVE_DSCBUILD
+mkdir dscbuild || builderr COULDNOT_MAKE_DSCBUILD_DIR
+crysedit $CRYSSRC/cryssrc/commands.ssr dscbuild/commands.src code=$EDCODE incl=+ excl=- comm=#  macro=empty strip || builderr CRYSEDIT_ERR_DSC
+cp $CRYSSRC/cryssrc/crysdef.srt dscbuild/crystals.srt || builderr COPY_FAILED dsc
+cd $CRYSBUILD/dscbuild || builderr CD_FAILED dsc
+
+export CRYSDIR=./
+export USECRYSDIR=TRUE
+
+set > envlist
+
+if [ "$COMPCODE" = "LIN" ] || [ -n "$DISPLAY" ] ; then
+  touch assuming_X_server_present_or_not_needed 
+  # Either the command line version or running under X
+  # so no need for a virtual framebuffer
+  ../crystalsd.exe >dscoutput
+else
+  touch using_virtual_frame_buffer_to_run_program 
+  # Use a virtual frame buffer to enable this X program to
+  # be run in batch mode by cron.
+  # Run CRYSTALS in vfb
+  xvfb-run ../crystalsd.exe >dscoutput 2>&1
+fi
+cat deleteme.lis >> dscoutput
+
+# Copy resulting file back
+cp commands.dsc .. || builderr DSC_MOVE_FAILED dsc dscoutput

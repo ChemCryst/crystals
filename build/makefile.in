@@ -1,0 +1,54 @@
+ifeq ($(COMPCODE),MAC)
+
+    GUIFLAGS = -fno-inline `wx-config --libs --gl-libs` 
+    GUILIBRARIES = -framework OpenGL -lg2c
+    CLFLAGS =  
+    CLLIBRARIES = -lg2c
+
+    CPPFLAGS = -s -fexceptions -I /usr/local/include -I/Developer/Headers/FlatCarbon -I/usr/X11R6/include `wx-config --cppflags`
+    CFLAGS = -s -I /usr/local/include -I/Developer/Headers/FlatCarbon -I/usr/X11R6/include
+
+    CXX = g++
+    CC = gcc
+    LD = g++
+    F77 = g77
+    F77FLAGS = -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D $(COMPCODE)
+    OPT = -O2
+
+else
+ ifeq ($(COMPCODE),GIL)
+    GUIFLAGS = -fno-inline -fexceptions `wx-config --libs --gl-libs` 
+    GUILIBRARIES = -lg2c
+    CLFLAGS = 
+    CLLIBRARIES = -lg2c
+
+    CPPFLAGS = -s -fexceptions -I /usr/local/include `wx-config --cppflags`
+    CFLAGS = -s -I /usr/local/include 
+
+    CXX = g++
+    CC = gcc
+    LD = g++
+    F77 = g77
+    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D $(COMPCODE)
+    OPT = -O2
+ else
+
+    $(error COMPCODE not specified)
+
+ endif
+endif
+
+
+%.o : %.fpp
+	$(F77) -c $(F77FLAGS) $(OPT) -o $@ $<
+
+%.o: %.cc
+	$(CXX) -c $(CPPFLAGS) $(OPT) -o $@ $<
+
+%.d: %.cc
+	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $(OPT) $< \
+	| sed "s/$*\.o/& $@/g" ' > $@
+
+%.o : %.c
+	$(CC) -c $(CFLAGS) $(OPT) -o $@ $<
+

@@ -1,0 +1,2 @@
+      DIMENSION ICOM26(16) 
+

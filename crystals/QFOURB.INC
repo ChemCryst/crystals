@@ -1,0 +1,2 @@
+      EQUIVALENCE (PROCS(1), NTYP)
+

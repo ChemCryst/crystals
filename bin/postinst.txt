@@ -1,0 +1,61 @@
+
+Warning: CRYSTALS is experimental software in beta testing.
+It is distributed without charge to academic and not-for-profit
+users. The University may one day insist that we charge a
+nominal fee for future versions.
+
+The distribution only contains the executables, manuals and essential 
+data. Sources may be available by special arrangement.
+
+It is essential that problems and bugs are reported:
+        http://www.xtl.ox.ac.uk/bug.html
+ 
+If you have any problems installing or using it then please
+drop me an email - richard.cooper@chem.ox.ac.uk
+
+We appreciate feedback, good and bad, which can greatly
+enhance the development of the program, though we cannot
+offer any official support or promise to fix any errors
+as quickly as you might like.
+
+Users of ancient versions of CRYSTALS should backup their data
+before using the new version, in case they wish to return to the
+old version at some point. This is due to a slight difference
+in the format of some data lists which means that new DSC files will
+not work correctly with the old program. (NB This is not
+an insurmountable problem, but it is worth being aware of
+it).
+
+The rapid feedback-development cycle, means that the software
+will probably be updated frequently. Check back for updates -
+see the fixes.html file on the server for details.
+
+Web site: http://www.xtl.ox.ac.uk/
+Bug report: http://www.xtl.ox.ac.uk/bug.html
+
+Bob Gould in Edinburgh has donated the program SXTOCRY, which
+will generate a file in CRYSTALS format from SHELX.INS files. 
+SXTOCRY has been superceded by the 'Import SHELX' script in
+the File menu in CRYSTALS - this script based on a translation
+of Bob's Fortran program into CRYSTALS' scripting language.
+It may not work completely for very complex SHELX.INS files,
+but it is a quick way to get started in CRYSTALS.
+
+Please note the references for CRYSTALS and CAMERON, and
+give them with each structure you publish. In the current difficult 
+financial atmosphere in the UK, employers have begun to count the 
+numbers of citations for work, as well as publications, so we will 
+need clear support from the user community if the work is to continue.
+
+CRYSTALS
+
+     Betteridge, P. W.,  Carruthers, J. R.,  Cooper, R. I.,
+     Prout, K., Watkin, D. J. (2003). J. Appl. Cryst. 36, 1487.
+
+CAMERON
+     Watkin, D.J. Prout, C.K., Pearce, L.J. (1996). CAMERON, Chemical
+     Crystallography Laboratory, University of Oxford, Oxford. 
+
+RC93
+     Watkin, D.J., Prout, C.K., Lilley, P.M.deQ. (1994), RC93, Chemical
+     Crystallography Laboratory, University of Oxford, Oxford. 

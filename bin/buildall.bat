@@ -1,0 +1,13 @@
+MKDIR %CRYSBUILD%
+CD %CRYSBUILD%
+call code
+CD %CRYSBUILD%
+call script
+CD %CRYSBUILD%
+call local
+CD %CRYSBUILD%
+call dsc
+CD %CRYSBUILD%
+call precomp
+CD %CRYSBUILD%
+call buildman

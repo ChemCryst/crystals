@@ -1,0 +1,16 @@
+^^WI  MENU _FILE    '&File'
+^^WI   ITEM NEW     '&New Working Dir' '#SCRIPT XNEWDIR' DISABLEIF='IN'
+^^WI   ITEM OPEND   '&Open CRYSTALS DSC file' '#SCRIPT XOPENDSC'
+^^WI                DISABLEIF='IN'
+^^WI   ITEM XIN5    'Open S&helx structure (INS or RES)'
+^^WI                '#SCRIPT XSHELXIN' DISABLEIF='IN'
+^^WI   ITEM XCIF    'Convert and open CIF'
+^^WI                '#SCRIPT CIF2CRY' DISABLEIF='IN'
+^^WI   ITEM SAVE    '&Save Datafile' '#SCRIPT XSAVEEXP' DISABLEIF='IN'
+^^WI   ITEM SAVEAS  'Save Datafile &As' '#SCRIPT XSAVEAS' DISABLEIF='IN'
+^^WI   SPLIT
+^^WI   ITEM FH      'File menu &help'
+^^WI        '$"crysdir:manual/tools-menus.html#menus.file"'
+^^WI   SPLIT
+^^WI   ITEM EXIT    'E&xit Crystals'        '_MAIN CLOSE'
+^^WI  ENDMENU

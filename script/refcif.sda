@@ -1,0 +1,124 @@
+
+# Check this file using the IUCr facility at:
+# http://checkcif.iucr.org/
+
+# The content below is held in the file 'script/refcif.dat'. This is a text
+# file which you may edit to reflect local conditions.
+# Items which need looking at are represented by a '?'.
+# Items for which there are choices are prefixed with 'choose from'.
+
+_publ_contact_letter
+;
+                                 Please consider this CIF submission for
+                                 publication as a Short Format Paper in Acta
+                                 Crystallographica E.  The figures have been
+                                 sent by mail.
+;
+_publ_contact_author_name        'Anthony Other'
+_publ_contact_author_address
+;
+                                 Chemical Crystallography Laboratory,
+                                 Department of Chemistry,
+                                 University of Nowhere,
+                                 Nowhere, NO1 4T, UK.
+;
+
+_publ_contact_author_phone       '+44 1865 000000'
+_publ_contact_author_fax         '+44 1865 000000'
+_publ_contact_author_email       'a.n.other@chem.no.ac.uk'
+_publ_requested_journal          'Section C'
+_publ_requested_category         CO # choose from: FI FM FO CI CM CO AD
+_publ_requested_coeditor_name    'Prof William Clegg'
+
+_publ_section_title              # Title of paper
+; ?
+;
+
+# The loop structure below should contain the names and addresses of all
+# authors, in the required order of publication. Repeat as necessary.
+loop_
+  _publ_author_name
+  _publ_author_address
+  _publ_author_footnote
+  'Other, Anthony N.'  # Author 1
+;
+  ?                    # Address for author 1
+;
+;
+  ?                    # Footnote for author 1
+;
+  'Else, S. O.'        # Author 2
+; 
+  ?                    # Address 2
+;
+; 
+  ?                    # Footnote 2
+;
+
+
+_publ_section_abstract                                # Text of the abstract
+;                                ?
+;
+_publ_section_comment                                 # Text of the paper
+;                                ?
+;
+_publ_section_acknowledgements                        # Acknowledgments
+;                                ?
+;
+_publ_section_figure_captions                         # Captions to figures
+;                                ?
+;
+
+_publ_section_exptl_refinement   # Some potentially useful phrases are:
+;
+Because the data were collected with molybdenum radiation, there were no 
+measurable anomalous differences, as a consequence of which it was
+admissible to merge Freidel pairs of reflections.
+
+All hydrogen atoms were found in difference density syntheses.
+
+Hydrogen atoms were placed geometrically after each cycle.
+
+Hydrogen atoms were seen in a difference density synthesis. Those
+attached to carbon atoms were repositioned geometrically.
+
+Hydrogen were initially refined with soft restraints on the 
+bonds to regularise their geometry (bond lengths to accepted values, 
+angles either set by symmetry or to accepted values, and 
+U[iso] dependent upon the adjacent bonded atom),
+after which they were refined with riding constraints only.
+;
+
+_publ_section_exptl_prep
+;                                ?
+;
+
+
+# PROCESSING SUMMARY (IUCr Office Use Only):
+_journal_date_recd_electronic     ?
+_journal_date_to_coeditor         ?
+_journal_date_from_coeditor       ?
+_journal_date_accepted            ?
+_journal_date_printers_first      ?
+_journal_date_printers_final      ?
+_journal_date_proofs_out          ?
+_journal_date_proofs_in           ?
+_journal_coeditor_name            ?
+_journal_coeditor_code            ?
+_journal_coeditor_notes           ?
+_journal_techeditor_code          ?
+_journal_techeditor_notes         ?
+_journal_coden_ASTM               ?
+_journal_name_full                ?
+_journal_year                     ?
+_journal_volume                   ?
+_journal_issue                    ?
+_journal_page_first               ?
+_journal_page_last                ?
+_journal_suppl_publ_number        ?
+_journal_suppl_publ_pages         ?
+
+#  End of 'script/refcif.dat'
+
+
+

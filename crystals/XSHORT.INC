@@ -1,0 +1,2 @@
+      COMMON/XSHORT/NWXS,NXS,LXS,MXS(2,5) 
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM27(1),L27) 
+

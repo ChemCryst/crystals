@@ -1,0 +1,19 @@
+^^WI  MENU CAME '&Graphics'
+^^WI   ITEM CAM '&Cameron Graphics'
+^^WI            '#SCRIPT XCAMNORM'
+^^WI             ENABLEIF='L1 L2 L5' DISABLEIF='IN'
+^^WI   MENU SCAM '&Special'
+^^WI    ITEM CAM '&Cameron (use existing input files)'
+^^WI             '#SCRIPT XCAMSPEC'
+^^WI              DISABLEIF='IN'
+^^WI   ENDMENU
+^^WI   SPLIT
+^^WI   ITEM CIN5 'Import last Cameron output'
+^^WI             '#USE CAMERON.L5' DISABLEIF='IN'
+^^WI   ITEM CIN5 'Import last Cameron input'
+^^WI             '#USE CAMERON.L5I' DISABLEIF='IN'
+^^WI   ITEM CHIME 'View CHIME file'  '#SPAWN chime.pdb'
+^^WI   SPLIT
+^^WI   ITEM XH      'Graphics menu &help'
+^^WI        '$ "crysdir:manual/tools-menus.html#menus.graphics"'
+^^WI  ENDMENU

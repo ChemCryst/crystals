@@ -1,0 +1,2 @@
+      EQUIVALENCE (L31K,ICOM31(1)) 
+

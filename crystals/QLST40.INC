@@ -1,0 +1,2 @@
+      EQUIVALENCE ( L40T , ICOM40(1) )
+

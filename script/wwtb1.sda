@@ -1,0 +1,191 @@
+!QUESTION
+Which of these space groups is centrosymmetric?
+!ANSWERS
+P 21/c
+P c
+P 21
+P 21 21 21
+!EXPLAIN
+P 21/c is centrosymmetric since the 21 (screw) axis perpendicular
+to the c (glide plane) generates a centre of symmetry.
+!QUESTION
+Which of these space groups is the mirror image of P41?
+!ANSWERS
+P 43
+P 41
+P 4m
+P 14
+!EXPLAIN
+P 43.
+P 41 contains a four fold screw axis along the c-axis of the crystal.
+Given a screw axis, Nm, N denotes the rotational symmetry of the screw
+axis. The translation along the axis is m/N. Changing the translation
+from 1/4 to 3/4 effectively mirrors the screw axis in this case.
+!QUESTION
+Which of the following space groups P21, P21/c and Pc,
+can contain a molecule with a chiral centre?
+!ANSWERS
+P21, P21/c and Pc
+Only P21
+Only P21/c and Pc
+Only P21/c
+!EXPLAIN
+All of them.
+A chiral centre can exist in a molecule in any space group.
+If the substance were enantomerically pure, then P21 would be
+the only possible space group from the three choices. P21/c and
+Pm must contain a racemic mixture due to their centre of symmetry
+and mirror plane respectively.
+!QUESTION
+Which of these is a benefit of using Molybdenum 
+X-rays rather than Copper?
+!ANSWERS
+Less absorption
+Can use smaller crystals
+Absolute configuration of organics
+Cheaper to run
+!EXPLAIN
+In general, Mo is less strongly absorbed, so large crystals
+containing absorbant elements can be handled.
+Cu X-rays have stronger anomolous differences for C,N and O, 
+so are better for absolute configuration of light atom structures.
+Cu X-rays have a longer wave length, and diffract more effectively,
+so that smaller crystals may be used.
+!QUESTION
+The flack parameter of a material in P 21,
+refines to 0.0 with a standard uncertainty
+of 0.5. What do we know about the chirality?
+!ANSWERS
+Nothing.
+Model is probably correct hand.
+Model probably needs inverting.
+Material is a racemate.
+!EXPLAIN
+The su (0.5) is so large that the value
+of the flack parameter is not really
+determined, so we know nothing about
+the chirality of the material.
+!QUESTION
+The flack parameter of a material in P 43,
+refines to 1.0 with a standard uncertainty
+of 0.05. What do we know about the chirality?
+!ANSWERS
+Model probably needs inverting.
+Nothing.
+Model is probably correct hand.
+Material is a racemate.
+!EXPLAIN
+The su (0.05) tells us that the flack parameter
+is well determined. The flack parameter refines
+towards 1.0 when the model is the opposite hand
+to the material on the diffractometer.
+!QUESTION
+The Bragg equation states that lambda (the wavelength
+of the X-rays) multiplied by an integer, n, is:
+!ANSWERS
+Twice interplanar spacing multiplied by sin (theta)
+Half interplanar spacing multiplied by sin (theta)
+Zero
+Interplanar spacing multiplied by sin (theta)
+!EXPLAIN
+n * lambda = 2 d sin (theta)
+Reinforcement of X-ray beams occur at this angle because the
+path length between beams diffracted from successive layers
+is an integer number.
+!QUESTION
+Which of the following facts is NOT
+TRUE for a rhombohedral (or trigonal)
+crystal system?
+!ANSWERS
+a is the same length as b, but not c
+a is the same length as b and c
+alpha is not a right angle
+alpha is equal to beta
+!EXPLAIN
+a is the same length as b, but not c is not
+true for a rhombohedral system.
+For a rhombohedral system a = b = c and
+alpha = beta = gamma = not 90 degrees
+If all the angles were 90, we would have a cubic system.
+!QUESTION
+Which of the following facts is TRUE
+for a tetragonal crystal system?
+!ANSWERS
+All angles are 90
+All lengths are the same
+The beta angle is 120
+The beta angle is not 90
+!EXPLAIN
+All angles are 90 degrees.
+A tetragonal cell has all angles 90 and a = b but not c.
+!QUESTION
+What is the minimum d spacing that can be observed with Cu
+radiation assuming a maximum Bragg angle of 90 degrees?
+!ANSWERS
+0.77
+0.99
+0.88
+1.10
+!EXPLAIN
+Use wavelength = 2.d.Sin(theta).  
+Sin(90)=1.0, so d = wavelength/2
+!QUESTION
+For a small spherical sample, mu.R = 4.0. If no correction 
+is made for this, what is the effect on the final analysis
+!ANSWERS
+Small or -ve apds
+Large apds
+Large extinction
+-ve extinction
+!EXPLAIN
+The low angle reflections are most attenuated, making the high 
+angle reflections seem stronger, leading to small adps.
+!QUESTION
+Cubic space groups MUST contain which symmetry elements
+!ANSWERS
+3 or -3
+4 or -4
+m
+2
+!EXPLAIN
+The cubic Point Groups are: 
+Centrosymmetric     m-3, m-3m
+Non-centrosymmetric 23,  432, -43m, 
+!QUESTION
+X-rays do not give very reliable positions 
+for hydrogen atoms because:
+!ANSWERS
+The H atom has only one electron
+The H atom has only one proton
+The H atom has no neutrons
+Liquid H has a very low boiling point 
+!EXPLAIN
+X-rays are diffracted by interaction with electrons in elements.
+The single electron from H is largely located in the bond.
+!QUESTION
+If when a structure with a pseudo centre of symmetry is being refined, 
+the refinement either blows up or repeatedly has maximal shifs imposed by 
+the program, which of the following scenarios SHOULD NOT be used.
+!ANSWERS
+Refine each half in alternate cycles
+Apply shift limiting restraints
+Apply thermal similarity restraints
+Apply geometric similarity restraints
+!EXPLAIN
+This strategy, like refinement in separate matrix blocks, 
+looses the normal matrix cross terms, which are the ones 
+needed to achive a valid analysis
+!QUESTION
+Just the x,y & z atomic coordinates have been refined for a
+structure. If now the 6 Uij parameters are also refined, by
+what factor will the size of the Normal Matrix increase
+!ANSWERS
+x9
+x3
+x2
+x81
+!EXPLAIN
+If n parameters are being refined, the
+Normal Matrix contains n.n elements.
+3x3 = 9,  9x9 = 81 thus factor is x9
+!END

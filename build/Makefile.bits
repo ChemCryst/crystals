@@ -1,0 +1,63 @@
+include makefile.in
+
+
+VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
+        ../bits/dipin   ../bits/hklf5    ../bits/kccdin  ../bits/rc93 \
+        ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92
+
+EXECS = cif2cry    convplat    csd2cry    delred \
+        dipin      ctwin       kccdin     rc93   \
+        reindex    shelxs      sxtocry    sir92
+OBJS =  cif2cry.o  convplat.o  csd2cry.o  delred.o \
+        dipin.o    ctwin.o     kccdin.o   rc93.o  \
+        reindex.o  shelxs.o    sxtocry.o  sir92.o norm92.o sir92X11.o \
+        nobuf.o
+
+LD = g77
+
+all : $(EXECS) rc93.srt form.dat
+
+cif2cry : cif2cry.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+convplat : convplat.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+csd2cry : csd2cry.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+delred : delred.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+dipin : dipin.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+ctwin : ctwin.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+kccdin : kccdin.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+rc93 : rc93.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+reindex : reindex.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+shelxs : shelxs.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+sxtocry : sxtocry.o nobuf.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+sir92 : sir92.o norm92.o sir92X11.o
+	$(LD) $(CLFLAGS) $(CLLIBRARIES)  -lX11 -L/usr/X11R6/lib $(OPT) -o $@ $^
+
+form.dat : 
+	cp ../bits/sir92/form.sda $@
+
+rc93.srt:
+	cp ../bits/rc93/rc93.ssr $@
+
+clean :
+	rm -f $(EXECS) $(OBJS)

@@ -1,0 +1,58 @@
+^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE LARGE KEEP
+^^WI CANCEL='_MAIN CLOSE'
+^^WI GRID _MAINGRID NROWS=3 NCOLS=1 {
+^^WI   @ 3,1 PROGRESS  _MAINPROGRESS 'Initialising' CHARS=20
+^^WI   @ 1,1 RESIZE _RSZ1 HORIZONTAL {
+^^WI     ITEM GRID _GRTOOLS NROWS=1 NCOLS=1 {
+!          maintoolbar.srt
+^^WI     }
+^^WI     ITEM GRID _GR_TEXT_MODL_AND_INPUT NROWS=1 NCOLS=1 {
+^^WI       @ 1,1 RESIZE _RSZ2 VERTICAL {
+^^WI         ITEM GRID _GR_TEXT_AND_INPUT NROWS=1 NCOLS=1 {
+^^WI           @ 1,1 RESIZE _RSZ3 HORIZONTAL {
+^^WI             ITEM GRID _GR_TEXT NROWS=2 NCOLS=1 {
+^^WI               @ 1,1 TEXTOUT _MAINTEXTOUTPUT ' ' NCOLS=45 NROWS=20
+^^WI               @ 2,1 GRID GRIDAAA NROWS=1 NCOLS=3 {
+^^WI                 @ 1,2 STATIC XPRMPT 'Wait'
+^^WI                 @ 1,3 EDITBOX _MAINTEXTINPUT '' NCOLS=45 LIMIT=80
+^^WI                             SENDONRETURN=YES INPUT
+^^WI               }
+^^WI             }
+^^WI             ITEM GRID _GR_INFOTABS NROWS=1 NCOLS=1 {
+!                   infotabs.srt
+^^WI             }
+^^WI           }
+^^WI         }
+^^WI         ITEM GRID _GR_MODEL NROWS=1 NCOLS=1 {
+^^WI           @ 1,1 RESIZE _RSZ4 HORIZONTAL {
+^^WI             ITEM GRID _GR_PICTOOLS NROWS=1 NCOLS=1 {
+!                  modeltools.srt
+^^WI             }
+^^WI             ITEM GRID _GR_MODEL NROWS=1 NCOLS=1 {
+^^WI               @ 1,1 RESIZE _RSZ5 HORIZONTAL {
+^^WI                 ITEM GRID _GR_MODANDLIST NROWS=1 NCOLS=1 {
+^^WI                   @ 1,1 MODELWINDOW MODEL01 'N' NROWS=5 NCOLS=65
+^^WI                   ATTACH L5 RADSCALE=250 RADTYPE=COV
+^^WI                   MOUSEACTION SELECTATOM
+!                      popup-noatom.srt
+!                      popup-selection.srt
+!                      popup-atom.srt
+!                      popup-bond.srt
+^^WI                 }
+^^WI                 ITEM GRID _GR_LISTBIT NROWS=1 NCOLS=1 {
+^^WI                   @ 1,1 MODLIST MODLI01 VISLINES=5 ATTACH L5
+!                      popup-noatom.srt
+!                      popup-selection.srt
+!                      popup-atom.srt
+^^WI                 }
+^^WI               }
+^^WI             }
+^^WI           }
+^^WI         }
+^^WI       }
+^^WI     }
+^^WI   }
+^^WI }
+!    mainmenu.srt
+^^WI SHOW
+^^CR

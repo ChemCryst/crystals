@@ -1,0 +1,2 @@
+      COMMON/XWISYM/PTS,KSYS,ICENT,LATT           
+

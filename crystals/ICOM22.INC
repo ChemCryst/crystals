@@ -1,0 +1,2 @@
+      DIMENSION ICOM22(20) 
+

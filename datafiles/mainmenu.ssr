@@ -1,0 +1,15 @@
+^^WI DEFINEMENU MAIN 'NULL'
+!     menu-file.srt
+!     menu-xray.srt
+!     menu-solve.srt
+!     menu-structure.srt
+!     menu-fourier.srt
+!     menu-refine.srt
+!     menu-analyse.srt
+!     menu-results.srt
+!     menu-graphics.srt
+!     menu-appearance.srt
+!     menu-tools.srt
+!     menu-help.srt
+^^WI ENDDEFINEMENU
+

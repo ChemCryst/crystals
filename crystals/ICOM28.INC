@@ -1,0 +1,2 @@
+      DIMENSION ICOM28(40)
+

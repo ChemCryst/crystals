@@ -1,0 +1,2 @@
+      EQUIVALENCE (L14,ICOM14(1)) 
+

@@ -1,0 +1,95 @@
+US 10  0  0  8
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+#TGetting Started#
+#Creadme#
+
+It's easy.
+
+#ZData organisation#
+
+It's always a good idea to keep your data organised, and it will also
+help for the purposes of running CRYSTALS.
+
+#P1. Organise your computer. Create a master folder to
+hold all your structures and keep each structure in a sub-folder of this:
+e.g. _I{c:\strs\compound1\
+
+#P2. Copy the crystallographic data in to the sub-folder. CRYSTALS likes
+data from Nonius CAD4, DIP or KappaCCD machines, or
+alternatively simply a SHELX format .INS/RES and .HKL file.
+
+#_B{Take _B{care: _B{If _B{you _B{open _B{a _B{data _B{file _B{with _B{WORD,
+_B{you _B{may _B{accidentally _B{save _B{it _B{as _B{a _B{WORD _B{document.
+Use notepad, EDIT, or some other _I{ASCII text editor.
+
+#P3. Click the CRYSTALS icon, and use the folder browser to find the
+folder containing your data. Click OK.
+
+#P4. The CRYSTALS window is divided into several areas:
+# On the right: _B{The _B{model _B{window, initially filled with a pretty
+backdrop of Oxford (submissions of new backdrops for future releases
+are welcome!). This will display the model once the structure is solved.
+
+# Above the model: _B{The _B{model _B{toolbar, lets you change the appearance
+and functioning of the model window.
+
+# At the very top: _B{The _B{menu _B{bar. The pull down menus represent
+the principal stages of structure analysis, working from left to right.
+
+# Below that: _B{The _B{main _B{toolbar, provides quick access to some
+common options that should also be in the menus.
+
+# On the upper left:_B{The _B{text _B{output _B{window. This
+displays the results of calculations, or asks the user questions.
+It has a large scroll-back capability.
+
+# Below that: _B{The _B{information _B{tabs. This panel can be hidden away,
+as can the toolbars, by clicking the little triangles in the bar that
+divides them from their neighbouring elements.
+
+# And below that: _B{The _B{text _B{input _B{line. This is below the
+output window. The cursor automatically moves to this area when you type.
+The 'arrow' keys enable you to recover previous input (like the DOSKEY
+utility). If you are a new user, you shouldn't worry too much about
+the text input line.
+
+# At the very bottom: _B{A _B{status _B{bar. Shows progress during long
+calculations, and status as CRYSTALS is doing different things.
+
+#P5. CRYSTALS creates many files:
+# _B{A _B{binary _B{database for each structure,
+always named CRFILEV2.DSC. _B{NEVER _B{try _B{to _B{edit _B{this _B{file. This
+file enables CRYSTALS jobs to be restarted from where they were left
+off. All other files may be opened with a text editor e.g.
+notepad, wordpad, or edit.
+# Double clicking on the .DSC file will start CRYSTALS in that folder, using
+that .DSC file.
+# _B{Text _B{files BETACRYS.L_I{nn and BETACRYS.M_I{nn. The number _I{nn
+is automatically incremented with each run of the program. These files can
+generally be deleted without looking at them unless the analysis begins to go
+wrong. They provide post-mortem information.
+The currently in use files may be opened quickly using the "Files" tab on the
+information panel.
+# _B{PUBLISH.* files. These are final listings for preparing papers.
+
+#ZUsing the GUIDE#
+#P Once you have started CRYSTALS in a given folder, nothing much happens.
+To make things happen, try clicking the "GUIDE" button in the
+toolbar. The GUIDE assesses where a structure analysis has got to, and
+will provide a list of possible options in a pull-down menu. Choose the
+required option and click OK.
+
+#ZImporting SHELX data#
+#P It is best to import the .INS or .RES file first. You can import
+a file with or without atoms depending on where the data is from - CRYSTALS
+will just grab all the information that it can.
+# From the X-ray data menu, choose "Import SHELX file". You will need
+to know the space group symbol since this information is not
+present in the SHELX file format.
+# Type in the file name, or find it using "Browse", click OK and the file
+will be imported. (You will be asked for the spacegroup).
+# Next import the reflection file. Choose "X-ray data"->"Import reflections".
+The default settings are for a SHELX hkl file, so just type or browse
+for the required file, and click OK.
+
+

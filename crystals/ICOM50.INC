@@ -1,0 +1,2 @@
+      DIMENSION ICOM50(32) 
+

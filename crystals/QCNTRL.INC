@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICNTRL(1),LCG) 
+

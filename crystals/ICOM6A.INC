@@ -1,0 +1,2 @@
+      DIMENSION ICOM6A(84)
+

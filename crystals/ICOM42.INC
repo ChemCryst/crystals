@@ -1,0 +1,2 @@
+      DIMENSION ICOM42(12)
+

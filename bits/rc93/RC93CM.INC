@@ -1,0 +1,71 @@
+C     These variables are in common blocks.
+C     The channel numbers:
+C     6     ISCRN   -the channel number for output to the screen
+C     5     IKEYBD  -the channel number for input from the keyboard
+C    10     INIFIL  -the channel number for the RC93.INI file
+C    11     LISFIL  -the channel number for the .LIS output file
+C    12     INPFIL  -for the file to be processed      
+C    13     ISCFFL  -for the .SCF output file
+C    14     IHKLFL  -for the .HKL
+C    16     IHLPFL  -for the HELP file
+C    17     IATTFL  -for the attenuator coefficient data file
+C    18     ISPABS  -the spherical absorption correction factors file
+C    19     ISCATT  -the atomic scattering factors file
+C    20     IATPRO  -the atomic properties data file
+C    21     ITMPFL  -temp file for abs processing
+C    22     IERFIL  -error messages
+      INTEGER NMACHS
+      PARAMETER (NMACHS = 9)
+      INTEGER MARK, IRAD
+      INTEGER INIFIL, LISFIL, INPFIL, ISCFFL, IHKLFL, IHLPFL
+      INTEGER ISCRN, IKEYBD, LCAPPR, LABPRO, MN2ABS, ITMPFL, IERFIL
+      INTEGER MACHIN, NCODE, NRUNS, NREFDP
+      INTEGER NOBS, NLGTR, NRGTR, NFLAGS
+      INTEGER NEGTH, MINSP, MAXSP
+      INTEGER NLINE, IREC, INPLIN, LENINP
+      INTEGER IATTFL, ISPABS, ISCATT, IATPRO
+C     NLINE is the line no in the RC93.INI file in case of errors,
+      INTEGER KERR, ISKIP, NGROUP
+      INTEGER LOVRWR, LTIDY, NUMGSF
+      INTEGER NATOMS(80), IBATCH
+C     Beneath are the declarations for the pointers to the chained list.
+      INTEGER NFREEP, NMAXP
+      INTEGER IR21P, IR22P, IR24P
+      INTEGER IFLAGP, MINITP, MLASTP, ISTDSP, LSTDSP
+      INTEGER IGSCFP, ICELLP, NWCELP, L30P, IESDSP
+      INTEGER ISTATP
+      REAL DISFAC, RCON2
+      REAL XSECT(80)
+      REAL ATOMWT(80)
+      CHARACTER*80 CLGFL
+      CHARACTER*28 CCARD
+      CHARACTER*15 CMACHS (NMACHS), CMACH
+      CHARACTER*80 CLINE, CULINE
+      CHARACTER*80 CINPFL, COUTFL, CHLPFL, CCOND
+      CHARACTER*80 CATTFL, CSPABS, CSCATT, CATPRO, CBUFFR, CNULL
+      CHARACTER*80 COLOUR, CSHAPE
+      CHARACTER*64 CARD1, CARD2
+      CHARACTER*8  CFORMT
+      CHARACTER*1  CRESP
+      CHARACTER*62 CDTCOL(3)
+      CHARACTER*2  CATOMS(80)
+      COMMON /INTEG1/ INIFIL, LISFIL, ISCRN, IKEYBD, INPFIL, ISCFFL, IHK 
+     +LFL, IABSFL, MACHIN, NCODE, LCAPPR, KERR, LOVRWR, MARK, IRAD, 
+     2 IERFIL
+      COMMON /INTEG2/ LTIDY, NLINE, ISKIP, IHLPFL, IATTFL, ISPABS,
+     +ISCATT, IATPRO, LABPRO, IREC, INPLIN, NRUNS, LENINP, MN2ABS
+      COMMON /INTEG3/ NOBS, NLGTR, NRGTR, NEGTH, NFLAGS, NGROUP, NUMGSF,
+     +NATOMS, NREFDP, ITMPFL, MINSP, MAXSP, IBATCH
+      COMMON /PNTERS/ IR21P, IR22P, IR24P, IFLAGP, NFREEP, NMAXP, 
+     +MINITP, MLASTP, ISTDSP, LSTDSP, IGSCFP, ICELLP, L30P, ISTATP, 
+     +NWCELP, IESDSP
+      COMMON /REALS1/ DISFAC, XSECT, ATOMWT, RCON2, FSQNEG
+      COMMON /CHARS1/ CMACHS, CMACH, CINPFL, COUTFL, CNULL, CLINE, 
+     +CULINE, CRESP, CHLPFL, CATTFL, CSPABS, CSCATT, CATPRO 
+      COMMON /CHARS2/ CARD1, CARD2, CFORMT, CBUFFR, CDTCOL, CCOND, 
+     +CATOMS, COLOUR, CSHAPE
+      COMMON /WHYNOT/ CLGFL, CCARD
+      COMMON /XSTORE/ STORE(65536)
+      DIMENSION ISTORE (65536)
+      EQUIVALENCE (STORE(1), ISTORE(1))
+

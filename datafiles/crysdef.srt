@@ -1,0 +1,109 @@
+# Startup file for DEFINE
+#  $Log: not supported by cvs2svn $
+#  Revision 1.10  2003/09/29 15:38:34  rich
+#  Added \DEFINE system instruction for building the command file. No
+#  need for separate executable anymore. This command is \REMOVEd in
+#  the normal startup file to prevent accidents.
+#
+#  Revision 1.9  2003/05/07 12:18:53  rich
+#
+#  RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+#  using only free compilers and libraries. Hurrah, but it isn't very stable
+#  yet (CRYSTALS, not the compilers...)
+#
+#  Revision 1.8  2003/01/16 11:32:07  rich
+#  Cosmetic changes - more useful output during DSC building, and pauses at
+#  the end.
+#
+#  Revision 1.7  2001/07/15 08:13:58  ckp2
+#  Spaces after #'s to appease the linux version. In the long run this should
+#  be run through the editor before use, as that would remove the spurious DOS EOL
+#  characters that upset the linux version. (In fact if I cvs'ed it directly into linux
+#  things should be fine).
+#
+#  Revision 1.6  2001/06/18 08:23:12  richard
+#  Use MIXED case files - under Linux this is essential to allow access to all
+#  files and under Windows case doesn't matter.
+# 
+#  Revision 1.5  2000/10/31 15:33:14  ckp2
+#  Set printer and monitor on, in order to aid debugging.
+# 
+#SET FILE MIXE
+#set message on
+#set generat off
+#set export off
+#STORE UNIT NCWU 9
+#ATTACH 9 PRINTER SEQUENTIAL NEW FORMATTED WRITE FREE
+#STORE UNIT NCAW 3
+#ATTACH  3 MONITOR SEQUENTIAL NEW FORMATTED WRITE FREE
+#open monitor deleteme.mon
+#STORE UNIT NCAD 6
+#STORE UNIT NCMU 6
+#STORE UNIT NCCH 6
+#STORE UNIT NCPD 6
+#STORE UNIT NCDB 6
+#STORE SYST VERS 5.12
+#STORE CSYS OPER 'DOS' MACH 'PC-486/Pentium'
+#STORE CSYS DATE 'February, 1997'
+#STORE DEVI HLPD 'CRMAN:' HLPE '.hel'
+#STORE DEVI INDD 'CRMAN:' INDE '.ind'
+#STORE DEVI SCPD 'CRSCP:' SCPE '.scp'
+#STORE CSYS SCAT 'CRSCP:scatt.dat'
+#STORE CSYS ELEM 'CRSCP:properti.dat'
+#set term unknown
+#START ENVIRONMENT
+#START ERRORS
+#START MESSAGE
+#ATTACH 63 SRQ SEQUENTIAL SCRATCH   FORMATTED WRITE LOCK
+#OPEN SRQ
+#OPEN EXCOMMON
+#OPEN M32
+#OPEN M33
+#OPEN MT1
+#OPEN MT2
+#OPEN MT3
+#OPEN MTE
+#ATTACH 71 FORN1 SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+#ATTACH 72 FORN2 SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+#ATTACH 89 SCPQUEUE SEQUENTIAL CIF FORMATTED WRITE FREE
+#OPEN SCPQUEUE deleteme.spq
+#OPEN PRINTER deleteme.lis
+#SET PRINT ON
+# 
+# STORE CSYS CMND 'D:\BETACRYS\IMAGES\betacom.dsc'
+#STORE CSYS CMND 'commands.dsc'
+# Allocate some disc buffers
+#START DISC
+# 
+# 
+# ATTACH 4 COMSRC SEQUENTIAL OLD FORMATTED READ FREE
+# Replace COMMANDS.SRC with (pathname)COMMANDS.SRC if it is to be held under a
+# different pathname than the default
+# OPEN COMSRC d:\BETACRYS\src\betacom.src
+#OPEN COMSRC commands.src
+# 
+#STORE SYST INIT 0
+# 
+# set pause 0
+# Must finish with a #instruction
+# set moni off
+#
+#
+#
+#
+#TYPE crystals.srt
+#
+#
+# ################################################## #
+#                                                    #
+#        About to build COMMANDS.DSC...              #
+#                                                    #
+# ################################################## #
+#
+#   The next command (FINISH) causes the DSCfile to
+#   be built. Using 'FINISH' is slightly confusing,
+#          please close eyes if distressed.
+#
+#PAUSE 3
+#DEFINE
+#FINISH

@@ -1,0 +1,1619 @@
+
+
+
+      *****************************************************************
+      *                                                               *
+      * MM     MM  UU    UU  LL     TTTTTTTTTT    AAAA     NNN     NN *
+      * MMM   MMM  UU    UU  LL         TT       AA  AA    NNNN    NN *
+      * MMMM MMMM  UU    UU  LL         TT      AA    AA   NN NN   NN *
+      * MM MMM MM  UU    UU  LL         TT     AA      AA  NN  NN  NN *
+      * MM  M  MM  UU    UU  LL         TT     AAAAAAAAAA  NN   NN NN *
+      * MM     MM   UU  UU   LL         TT     AA      AA  NN    NNNN *
+      * MM     MM    UUUU    LLLLLLLL   TT     AA      AA  NN     NNN *
+      *                                                               *
+      *                                        88888             44   *
+      *                                      88     88          444   *
+      *                                     8         8        4444   *
+      *                                      88     88        44 44   *
+      *                                        88888         44  44   *
+      *                                      88     88      44   44   *
+      *                                     8         8    4444444444 *
+      *                                     8         8    4444444444 *
+      *                                      88     88           44   *
+      *                                        88888             44   *
+      *                                                               *
+      *****************************************************************
+
+
+
+                       A  COMPUTER  PROGRAM  FOR  THE
+                AUTOMATIC  SOLUTION  OF  CRYSTAL  STRUCTURES
+                       FROM  X-RAY  DIFFRACTION  DATA.
+
+
+                              PRINCIPAL AUTHOR:
+
+                                 PETER MAIN
+
+        DEPARTMENT OF PHYSICS,  UNIVERSITY OF YORK,  YORK,  ENGLAND.
+
+
+              OTHERS ASSOCIATED WITH THE DEVELOPMENT OF MULTAN:
+
+                        G. GERMAIN,  M. M. WOOLFSON.
+
+
+                                  MAY  1984
+     MULTAN 84 Writeup                                          Page 2
+
+
+                              ************
+                              * CONTENTS *
+                              ************
+
+
+                     SECTION                                  PAGE
+
+           Introduction                             . . . .     3
+
+           Preparation of data for Multan           . . . .     5
+
+           Parameters for Normal                    . . . .     7
+
+           Parameters for First                     . . . .     9
+
+           Parameters for Last                      . . . .    10
+
+           Parameters for Exfft                     . . . .    11
+
+           Parameters for Search                    . . . .    12
+
+           Examples of data files                   . . . .    13
+
+           Running the program                      . . . .    14
+
+           Overlay structure of MULTAN 84           . . . .    16
+
+           Description of Normal part of Multan     . . . .    18
+
+           Description of First part of Multan      . . . .    20
+
+           Description of Last part of Multan       . . . .    23
+
+           Figures of merit                         . . . .    25
+
+           Description of Fourier procedure         . . . .    27
+
+           Check-list for difficult structures      . . . .    29
+
+           Summary of keyword instructions          . . . .    31
+     MULTAN 84 Writeup                                          Page 3
+
+
+                            ****************
+                            * INTRODUCTION *
+                            ****************
+
+
+           MULTAN 84  is  a  development   of  the  previously   issued
+      MULTAN11/82.   The  different  progams have been joined together,
+      making  them  easier  to  use,  and  they  are  more  efficiently
+      programmed  for  mini-computers.  MULTAN 84  incorporates  Rantan
+      which assigns random phase values to all reflexions at the  start
+      of phase refinement.  This procedure is a powerful alternative to
+      the more usual development of phases from a very  small  starting
+      point.
+
+           Acknowledgement is due to the many people who have passed on
+      helpful  suggestions  and given constructive criticism of earlier
+      versions  of  Multan.   Without   this   feedback   from   users,
+      development of the programs would take very much longer.
+
+           The program will perform all the necessary calculations from
+      the  normalisation  of  structure  factors  to  the  output  of a
+      'picture' of  the  structure  on  the  lineprinter  in  a  single
+      computer run.  It has been developed on a Systime5000 computer at
+      York which is equivalent to a PDP11/34.  The program  is  written
+      in  Fortran IV  and  should run, with a minimum of alteration, on
+      any computer with a 32k store of 16-bit words and a  single  disc
+      of at least 1Mbyte capacity.
+
+           To help the implementation of the program, it is distributed
+      with test data and the lineprinter output the data is expected to
+      produce.  As  MULTAN 84  is not completely  machine  independent,
+      the actual output obtained may not be identical in all details to
+      the one supplied.  There can be no guarantee that the program  is
+      free  of  bugs or crystallographer traps and, indeed, the authors
+      will  be  pleased  to  hear  of  any  misbehaviour   or   special
+      difficulties   in   implementing   MULTAN 84   on   a  particular
+      computer.
+
+           Phase determination is carried out using a  modification  of
+      the statistically weighted tangent formula (Hull and Irwin, 1978,
+      Acta Cryst., A34,  863-870),  (Karle  and  Hauptman,  1956,  Acta
+      Cryst.,  9,  635-651)  which  is  based on the sigma2 probability
+      formula of Cochran (1955, Acta Cryst., 8, 473-478).  The  tangent
+      formula   as  used  in  Multan  works  most  satisfactorily  with
+      equal-atom structures but the presence of a heavy atom  does  not
+      invalidate  the  theory.  In fact, the easiest way to determine a
+      heavy-atom structure is probably to use Multan to  determine  the
+      heavy  atom  positions  and  as  much  of  the  remainder  of the
+      structure as the E-map gives.  The remaining atoms  can  then  be
+      found using the normal Fourier techniques.
+
+           MULTAN 84  consists  of five logical sections:
+
+                a) 'Normal' computes  normalised  structure  amplitudes
+      from  F(obs)  values  using  either  a  K-curve or a Debye curve.
+     MULTAN 84 Writeup                                          Page 4
+
+
+      Outputs intensity statistics as a check on the scaling and an aid
+      to  space group determination.  Can also be used to prepare files
+      for Fourier calculations.
+
+                b) 'First' sets up the phase relationships.  These  are
+      used in the convergence procedure to pick the best reflexions for
+      phase determination.  Either a small number of reflexions may  be
+      chosen  to  fix  origin  and  enantiomorph plus a small number of
+      others to give a 'good start'  or  the  majority  of  the  strong
+      reflexions may form the starting set.
+
+                c) 'Last' determines the phases for all reflexions from
+      the  starting  set  found  by the convergence procedure.  Initial
+      values for unknown phases are assigned  by  magic  integer  phase
+      permutation.   Figures  of  merit are computed for each phase set
+      produced.
+
+                d) 'Exfft' computes an E-map from a set  of  normalised
+      structure  factors.   This  program uses the Cooley-Tukey Fourier
+      transform  algorithm  and  is  adapted  from  a  crystallographic
+      program written by L. F. Ten Eyck.
+
+                e) 'Search' finds the coordinates of the highest  peaks
+      in  the  E-map  and  looks for groups of peaks which could form a
+      molecule or a molecular  fragment.   Computes  bond  lengths  and
+      angles for each molecular fragment and outputs on the lineprinter
+      a properly scaled view of the peaks plotted on the least  squares
+      plane.   Other  orthogonal projections can be output if required.
+      Each fragment is interpreted in terms of bonded atoms by applying
+      simple stereochemical constraints and alternative interpretations
+      are output if found.
+     Preparation of data for Multan                             Page 5
+
+
+                   **********************************
+                   * PREPARATION OF DATA FOR MULTAN *
+                   **********************************
+
+
+      Line 1 in format (40A2).  A title up to 80 characters long.   The
+            title  is  reproduced  at a number of places in the output.
+            It is recommended that it include useful  information  such
+            as  name  or  mnemonic of compound, chemical formula, space
+            group symbol and number of molecules per unit cell.
+
+      Line  2  onward,  free  format  input.   Program  parameters  are
+            identified  by  the keywords set out below.  Only the first
+            three characters of a keyword are significant and  then  it
+            is  followed  (if  appropriate)  by  the  value(s)  of  the
+            parameter(s).  A keyword may appear at any  position  on  a
+            line,  but  need only be given at all if the user wishes to
+            change a default value  or  to  use  a  facility  not  used
+            automatically  by  the  program.   The  four exceptions are
+            CELL, SYMMETRY, CONTENTS and FORMAT which have no defaults.
+            Keywords  may  be  input in any logical order, but CELL and
+            CONTENTS  should  be  input  before  any   atomic   groups.
+            Comments  may  be  included  in the input file by enclosing
+            them in quotes as in 'comment'.  Examples of data files are
+            given in the next section.
+
+      NORMAL        Path specification.  NORMAL runs the zeroth part of
+      FIRST         Multan   which   calculates   normalised  structure
+      LAST          amplitudes  and  phases  for  partial   structures.
+                    FIRST  runs  Normal  and  the  First part of Multan
+                    which  sets  up   the   phase   relationships   and
+                    determines    the    starting   point   for   phase
+                    determination.  LAST runs the program to the end of
+                    phase  determination  (Normal + First + Last).  The
+                    default is  to  run  the  whole  program  which  is
+                    Normal, First, Last, Exfft and Search.
+
+      CELL  A  B  C  ALPHA  BETA  GAMMA   Cell dimensions.  A, B and  C
+                    are in Angstroms, ALPHA, BETA and GAMMA in degrees.
+                    This keyword must be given as no default exists.
+
+      CENTRO        Centrosymmetric    space    group    (default    is
+                    non-centrosymmetric).
+
+      LATTICE  C    C is the lattice type (P, A, B, C, I, F or R).  The
+                    default  is P.  If the lattice type is R, the space
+                    group  symmetry  may   be   described   by   either
+                    rhombohedral or hexagonal axes.
+
+      SYMMETRY      Symmetry  in  the  form   of   general   equivalent
+                    positions  as  in  International  Tables.  They are
+                    typed, for example, as
+                                1/4-X, Y, 1/2+Z
+                    The three fields are separated by  commas  and  the
+                    different   positions  by  asterisks.   Spaces  and
+     Preparation of data for Multan                             Page 6
+
+
+                    newline characters are ignored.  Always include the
+                    identity  X,Y,Z as the first element.  If the space
+                    group is centrosymmetric, do not include equivalent
+                    positions  related  by  the centre of symmetry.  If
+                    the space group  is  centred,  include  only  those
+                    general  equivalent  positions  associated with one
+                    lattice point,
+                    e.g.  C2/c:  SYMM X, Y, Z * X, -Y, 1/2+Z
+                    This keyword must be given as no default exists.
+
+      CONTENTS  C1  N1  C2  N2  C3  N3  ...   Unit cell contents.
+                    C1 is the chemical symbol of atomic type 1.
+                    N1 is the number of atoms of this type in the  unit
+                    cell, etc.  to a maximum of 8 atomic types.
+                    e.g.  CONTENTS C 20 H 34 S 1
+                    Input the total contents of the unit cell - include
+                    all   atoms  whether  the  lattice  is  centred  or
+                    primitive.  Include all atoms whether  input  later
+                    as  part  of  a group or not.  This keyword must be
+                    given as no default exists.
+
+                    The scattering factors for 50  different  kinds  of
+                    atom are stored in the program.  In order of atomic
+                    number, their symbols are:
+                    H, LI, BE, B, C, N, O, F, NA, MG, AL, SI, P, S, CL,
+                    K,  CA,  TI, V, CR, MN, FE, CO, NI, CU, ZN, AS, SE,
+                    BR, RB, SR, ZR, MO, RU, RH, PD, AG, CD, SN, SB,  I,
+                    CS, BA, W, OS, PT, AU, HG, PB, BI
+
+                    If an atom type  is  not  one  of  the  above,  the
+                    constants  for  the  analytical  scattering  factor
+                    should be input using the FACTORS keyword below.
+
+      FACTORS  C1  A  A'  B  B'  C     Analytical   scattering   factor
+                    constants  for  atomic  type  C1 not present in the
+                    above  list.   The  scattering  factor   curve   is
+                    represented by:
+                      f = A * exp(-A'*s**2) + B * exp(-B'*s**2) + C
+                    where s = sin(theta)/lambda.   For  values  of  the
+                    constants  see,  for  example,  Forsyth  and  Wells
+                    (1959) Acta Cryst., 12, 412.
+
+      FORMAT  N  (...)    Format of reflexion data on  the  input  file
+                    MULTAN.RFL.   This  keyword  must  be  given  as no
+                    default  exists.   The  input   file   contains   N
+                    reflexions  per  line  in  the  format  enclosed in
+                    brackets,
+                    e.g.  FORMAT 3 (3(3I3,F6.2,I1)).
+                    Each reflexion consists of  h,  k,  l,  F(obs),  id
+                    where all are integer except F(obs).
+
+                    id = 0 for observed reflexions, = 1 for unobserved.
+                    The program will not allow unobserved reflexions to
+                    be used for phase determination no matter how large
+                    the   E-value.   Because  of  packing  the  maximum
+     Preparation of data for Multan                             Page 7
+
+
+                    magnitude of h, k or l is 128.
+
+                    The data are terminated with a dummy reflexion with
+                    a  negative F(obs).  The program expects a complete
+                    set (observed and unobserved) of unique  reflexions
+                    (those  not  related by symmetry).  It assumes that
+                    systematically absent reflexions (caused  by  screw
+                    axes,  glide planes and lattice centrings) will not
+                    be input.  Failure to  observe  these  points  will
+                    result in inaccurate calculation of the E's.
+
+
+                         Parameters for Normal
+                         ---------------------
+
+      NREF  N       Number of reflexions with largest  E-values  to  be
+                    considered  for phase determination.  Default = 4 *
+                    number of independent atoms + 50  if  monoclinic  +
+                    100 if triclinic + 100 + 10% to a maximum of 800.
+
+      DETERMINE  N  The program will attempt to  determine  phases  for
+                    the  best  N  reflexions  chosen by the convergence
+                    procedure.  This eliminates  the  reflexions  whose
+                    phases are the most poorly defined.  The default is
+                    11% fewer reflexions than the number  specified  by
+                    NREF or its default value.
+
+      NZRO  N       Number  of  smallest  E-values  for  use   in   the
+                    psi(zero)  figure  of merit (see section on Figures
+                    of Merit).  Default is 100.
+
+      ELIST         List  the  complete  set  of  E's  used  in   phase
+                    determination  and  psi(zero).   The  default is to
+                    list the 30 strongest and 12 weakest  E's  used  in
+                    phase determination and none of the psi(zero)'s.
+
+      RHOMAX  X     Maximum   value   of   (sin(theta)/lambda)**2    of
+                    reflexions accepted by the program.  The default is
+                    that all data may be accepted.
+
+      GROUP         Specify index groups for rescaling  E-values.   The
+                    E's  are always rescaled such that average E**2 = 1
+                    for  each  group  separately.   The  default  index
+                    groups  depend upon the space group and are printed
+                    in the output.  If these groups are unsuitable, the
+                    user  may  define  more  appropriate  groups  here.
+                    Index groups are defined using the expression
+                            pH + qK + rL = sN + t
+                    where p, q, r,  s,  t  are  integers  (positive  or
+                    negative).   If  any integer is zero, that term may
+                    be left out.   Spaces  inside  the  expression  are
+                    ignored.   For  example,  the hhl reflexions may be
+                    specified as  GROUP  H-K = 0.  Several  expressions
+                    may  be  used  in  a  group  definition if they are
+                    separated by commas, e.g.   GROUP  H=2N+1,  K = 2N,
+     Preparation of data for Multan                             Page 8
+
+
+                    L=2N  defines  the  parity  group  odd, even, even.
+                    Note  that  all  conditions   must   be   satisfied
+                    simultaneously  for  a  reflexion to be a member of
+                    the group.  Several  groups  may  be  specified  by
+                    separating the group definitions by asterisks, e.g.
+                    GROUP  L=0 * H - 2K = 3N, L=2N-1  will  define  two
+                    groups,   the   first   one   containing   the  hk0
+                    reflexions.  Reflexions which are  not  members  of
+                    any of the groups specified will form an additional
+                    group.  The maximum number of groups which  can  be
+                    defined  is  7,  giving 8 index groups in all.  The
+                    maximum number of expressions used  to  define  any
+                    group is 4.
+
+            It is possible to input atomic groups of known geometry  to
+            Multan.   For  a  group  whose  orientation and position is
+            unknown, the  spherically  averaged  scattering  factor  is
+            calculated  to  aid the scaling by the Debye curve.  If the
+            orientation or position of the group is known, it  is  used
+            in  the  estimation  of  the  phase  and variance of sigma2
+            relationships.
+
+      RANDOM        This  keyword  heads  information  referring  to  a
+                    randomly oriented and randomly positioned molecular
+                    group.
+
+      MULTIPLICITY  X   Number of times this 'random' group appears  in
+                    the unit cell.
+
+      CELL  A  B  C  ALPHA  BETA  GAMMA    The cell to which the  group
+                    atomic coordinates are referred (random type only).
+                    The default is an orthogonal system with A = B =  C
+                    = 1.0 and ALPHA = BETA = GAMMA = 90.0
+
+      ORIENTED      This  keyword  heads  information  referring  to  a
+                    correctly    oriented   but   randomly   positioned
+                    molecular group.
+
+      POSITIONED    This  keyword  heads  information  referring  to  a
+                    correctly positioned molecular group.
+
+      KARLE         This  keyword  heads  information  referring  to  a
+                    molecular group for Karle recycling through Multan.
+
+      WFOURIER      This  keyword  heads  information  referring  to  a
+                    molecular  group  for  weighted  Fourier recycling.
+                    The coefficients used in the map are  2*WTS*FO - FC
+                    for  reflexions with unrestricted phases and WTW*FO
+                    if the phase is restricted by space group symmetry,
+                    where  WTS  is the Sim weight and WTW is the weight
+                    calculated from Woolfson's formula.
+
+      DFOURIER      This  keyword  heads  information  referring  to  a
+                    molecular  group  for difference Fourier recycling.
+                    As with WFOURIER, structure factors are  calculated
+     Preparation of data for Multan                             Page 9
+
+
+                    in  Normal  and  the  Fourier coefficients are then
+                    input to Exfft.
+
+      PLOT          This keyword heads  atomic  coordinates  which  are
+                    input  directly to Search.  The atoms are assembled
+                    into clusters and plotted on the lineprinter.  Bond
+                    lengths  and angles are also calculated and output.
+                    Neither CONTENTS nor FORMAT is  required  for  this
+                    calculation.
+
+      C1 X1 Y1 Z1 O1 C2 X2 Y2 Z2 O2 ...  Atomic symbol (one of the list
+                    specified   by   CONTENTS)   followed   by   atomic
+                    parameters x, y, z, occupation factor, to a maximum
+                    of  250 atoms.  If fewer than three coordinates are
+                    supplied for an atom, the missing ones are  assumed
+                    to  be  zero.   If  more  than  three  numbers  are
+                    supplied,  the  first  three  are  assumed  to   be
+                    coordinates,  the  fourth  will  be  taken  as  the
+                    occupation factor  only  if  it  is  <= 1  and  the
+                    remainder  ignored.   This  allows  the output file
+                    SEARCH.PKS,  which  contains  a  peak   number   in
+                    addition  to  the  parameters,  to  be  input  here
+                    without alteration.  The occupation  factor  always
+                    defaults  to unity if it is not specifically given.
+                    If PLOT is used, CONTENTS need not be given, so the
+                    atomic  symbol  is  merely  used  to  separate  the
+                    information for individual atoms.
+
+
+                          Parameters for First
+                          --------------------
+
+      KMIN  X       All phase relationships  with  a  kappa-value  less
+                    than  X  are  rejected.   The  default is 0.6.  The
+                    number of phase relationships which may be  set  up
+                    is unlimited.
+
+      LIST          LIST produces a full  listing  of  the  convergence
+      NOLIST        map.  NOLIST suppresses all the listing of the map.
+                    The default is a listing of the bottom 40 places.
+
+      SPECIALS  N   The number of special reflexions  required  in  the
+                    starting  set.   Special reflexions are those whose
+                    phases are restricted to two values such as zero or
+                    pi.  Note that in centrosymmetric space groups, all
+                    reflexions are special.
+
+      GENERALS  N   The number of general reflexions  required  in  the
+                    starting  set.   General reflexions are those whose
+                    phases may take on any value.
+
+      ANY  N        The number of reflexions of any  sort  required  in
+                    the  starting  set.   If SPECIALS, GENERALS and ANY
+                    are not specified, the program will choose its  own
+                    starting set.
+     Preparation of data for Multan                            Page 10
+
+
+      MAXSET  N     Maximum number  of  phase  sets  to  be  generated.
+                    Reflexions  are added to the starting set according
+                    to the numbers requested by SPECIALS, GENERALS  and
+                    ANY  so  as  to generate phase sets up to a maximum
+                    given by MAXSET.   The  default  is  300.   If  the
+                    starting  set  is  not  specified  in  any way, the
+                    default becomes 3/2 times the number of independent
+                    atoms.
+
+
+                          Parameters for Last
+                          -------------------
+
+      RANTAN  N     Requests that starting values be  assigned  to  all
+                    phases  instead  of  a small subset.  The integer N
+                    (>0) may  be  changed  on  different  runs  of  the
+                    program  to  generate  different  starting  phases.
+                    Since all phases have a unique value from the start
+                    of tangent formula refinement, it is unnecessary to
+                    choose specific reflexions to  define  the  origin.
+                    RANTAN   thus   avoids   all   problems  of  origin
+                    definition.  The number of phase sets  produced  is
+                    the   maximum   of  the  number  of  atoms  in  the
+                    asymmetric unit and 50, unless changed by MAXSET.
+
+      MAXSET  N     Maximum number of phase sets to be generated -  see
+                    'Parameters for First' for a fuller description.
+
+      ALL           Continue to generate phase sets even if a very good
+                    one  has  been found.  The default is to assume the
+                    correct set has been generated if psi(zero)  < 1.25
+                    and  resid < 20.0.   In this case, the program will
+                    calculate the map and  do  a  peak  search  without
+                    generating any more phase sets.
+
+      SKIP  N       When rerunning a job that ran  out  of  time,  SKIP
+                    should  be  specified  where N is the number of the
+                    last phase set to be written  to  the  output  file
+                    MULFOR.DAT.  The job will be restarted at phase set
+                    N+1 provided that  the  file  MULFOR.DAT  has  been
+                    retained   from   the   previous  run.   Note  that
+                    buffering  may  mean  that  the  last  set  on  the
+                    lineprinter  listing may not be the last set on the
+                    output file.
+
+      ABSFOM  X     The weight of the absolute figure of merit  in  the
+                    calculation  of  the combined figure of merit.  The
+                    default is 0.6.
+
+      PSIZERO  X    The weight of the psi(zero) figure of merit in  the
+                    calculation  of  the combined figure of merit.  The
+                    default is 1.2.
+
+      RESIDUAL  X   The weight of the residual figure of merit  in  the
+                    calculation  of  the combined figure of merit.  The
+     Preparation of data for Multan                            Page 11
+
+
+                    default is 1.2.
+
+      CODES  N1 N2 ...  The code numbers  of  reflexions  to  be  input
+                    directly  to the tangent formula.  Phases for these
+                    reflexions are assigned using the  PHASES  keyword.
+                    The  code  numbers are obtained from a previous run
+                    of the program, but make sure  that  identical  E's
+                    are calculated on this run.
+
+      PHASES  N1 N2 ...  Phase values, in degrees, corresponding to the
+                    reflexions  previously  specified  using  the CODES
+                    keyword.   As  many  sets  of  starting  phases  as
+                    desired  may  be  input,  heading  each  set by the
+                    keyword PHASES.  (CODES may be used only once.)
+
+      SETS  N1 N2 ...  The numbers of  the  phase  sets,  in  ascending
+                    order,  required  to  be  generated.  This facility
+                    allows the generation of particular sets of  phases
+                    from  a  previous run of the program.  A maximum of
+                    12 phase set numbers may be specified.
+
+
+                          Parameters for Exfft
+                          --------------------
+
+      MAPS  N       The number of best E-maps to be examined (according
+                    to combined figure of merit).  Default = 1.
+
+      PRINT         Output the map to the lineprinter.  It  is  printed
+                    in sections of constant y with x running across the
+                    page and z down it.  The  maximum  number  of  grid
+                    points across the page is 36.  Extra pages are used
+                    automatically if needed.  The default grid  spacing
+                    is  0.34A,  but  it  can  be altered by the keyword
+                    GRID.
+
+      LEVEL  N      Numerical values in the map greater than N will  be
+                    underlined  with  **** in the lineprinter output to
+                    help contouring.  The default is 100.  The  map  is
+                    automatically  scaled  between  +&-999 (approx.) at
+                    the  grid  points  where  it  is  evaluated.   Note
+                    however, that it is printed between +&-99.
+
+      GRID  X       The grid on which the map is evaluated will have  a
+                    spacing  of approximately X Angstroms.  The default
+                    spacing is 0.34A.
+
+      XMAX  A       The E-map will be printed from 0.0 to  A  along  x.
+                    Default = 1.0.
+
+      YMAX  A       The E-map will be printed from 0.0 to  A  along  y.
+                    Default = 1.0.
+
+      ZMAX  A       The E-map will be printed from 0.0 to  A  along  z.
+                    Default = 1.0.
+     Preparation of data for Multan                            Page 12
+
+
+                         Parameters for Search
+                         ---------------------
+
+      PEAKS  N      The number of peaks to be searched for in the  map.
+                    The   default  is  22%  more  than  the  number  of
+                    independent atoms (excluding  hydrogens).   If  two
+                    clusters  of  peaks  are within 2.8A of each other,
+                    the default is automatically increased to 50% more.
+
+      NOJOIN        Suppresses  interpretation  of  the   peaks.    The
+                    program  stops after printing a list of the highest
+                    peaks.  This condition is set automatically  if  no
+                    chemical  bonds  can  be  found;   useful also when
+                    searching Patterson maps.
+
+      PROJECTIONS  N   The number of  orthogonal  projections  of  each
+                    cluster to be plotted (to a maximum of three).  The
+                    default  is  always  to  plot   the   least-squares
+                    projection and to plot the projection orthogonal to
+                    the least- and most-squares planes if  the  cluster
+                    is  cylindrical  or  spherical.   N  equal  to zero
+                    suppresses all plotting.
+
+      PLOT          Plot picture of molecule whose  atomic  coordinates
+                    follow  -  see 'Parameters for Normal' for a fuller
+                    description.
+
+      DOUT  X       Interpeak distances less than X are tabulated.  The
+                    default is 2.4 Angstroms.
+
+      DMIN  X       Minimum allowed bond length in the  interpretation.
+                    The default is 1.1 Angstroms.
+
+      DMAX  X       Maximum allowed bond length in the  interpretation.
+                    The default is 1.95 Angstroms.
+
+      AMIN  X       Minimum allowed bond angle in  the  interpretation.
+                    The default is 85 degrees.
+
+      AMAX  X       Maximum allowed bond angle in  the  interpretation.
+                    The default is 145 degrees.
+
+      METAL  N      The number of heavy atoms in the  asymmetric  unit.
+                    During  the  E-map interpretation, the program will
+                    assume that the N highest peaks correspond to heavy
+                    atoms.   They  will not be included in the molecule
+                    and all peaks within the  maximum  bond  length  of
+                    them   will   be   deleted.   This  is  useful  for
+                    organo-metallic compounds  since  it  will  prevent
+                    diffraction  ripples  round  the  heavy atoms being
+                    interpreted as light atoms.
+
+      END           Termination of the free-format read.  This  keyword
+                    is always necessary.
+     Examples of data files                                    Page 13
+
+
+                       **************************
+                       * EXAMPLES OF DATA FILES *
+                       **************************
+
+
+      defaults only:
+
+      FICTITIOUS PEPTIDE   C62 H74 N10 O10   P2(1)2(1)2(1)   Z=4
+      CELL  15.87  28.12  14.38  90  90  90
+      SYMMETRY  X,Y,Z*1/2-X,-Y,1/2+Z*1/2+X,1/2-Y,-Z*-X,1/2+Y,1/2-Z
+      CONTENTS  C 248  H 296  N 40  O 40
+      FORMAT  3  (3(3I4,F8.2,I2,3X))
+      END
+
+
+      change some default values:
+
+      FICTITIOUS PEPTIDE   C62 H74 N10 O10   P2(1)2(1)2(1)   Z=4
+      CELL  15.87  28.12  14.38  90  90  90
+      SYMMETRY  X,Y,Z * 1/2-X,-Y,1/2+Z * 1/2+X,1/2-Y,-Z *
+      -X,1/2+Y,1/2-Z
+      CONTENTS  C 248  H 296  N 40  O 40
+      FORMAT  3  (3(3I4,F8.2,I2,3X))
+      NREF  500   DETERMINE  450   RHOMAX  0.235
+      'RANTAN 1   MAX 200   try this next if structure not solved'
+      END
+
+
+      weighted Fourier:
+
+      FICTITIOUS PEPTIDE   C62 H74 N10 O10   P2(1)2(1)2(1)   Z=4
+      CELL   15.87  28.12  14.38  90  90  90
+      SYMMETRY  X,Y,Z * 1/2-X,-Y,1/2+Z * 1/2+X,1/2-Y,-Z *
+      -X,1/2+Y,1/2-Z
+      CONTENTS  C 248  H 296  N 40  O 40
+      FORMAT  3  (3(3I4,F8.2,I2,3X))
+      WFOUR   'use PLOT here to obtain plot of input atoms'
+      C  0.3254 0.0056 0.4512   O  0.4536 0.2578 -0.8945
+      C  0.1256 0.4536 0.3579    N   0.3476   0.5691  -0.0347
+                 . . . . . .
+       C  -0.1306  0.5680  -.0985     END
+     Running the program                                       Page 14
+
+
+                        ***********************
+                        * RUNNING THE PROGRAM *
+                        ***********************
+
+
+      The permanent files used by Multan are set  out  in  the  diagram
+      below:
+
+
+                                     I
+      reflexions   MULTAN.RFL        V
+                                     I
+                                     I
+                                  ********
+      parameters   MULTAN.CDR ->--*MULTAN*-->- MULTAN.LPT   printed o/p
+                                  ********
+                                     I
+                                     I
+      peak coords  SEARCH.PKS        V
+                                     I
+
+
+      All the above files are formatted and are named in  the  program.
+      A number of binary files are created while the program is running
+      and are deleted when it terminates normally.  All  operations  to
+      open,  name,  close  and delete files are carried out in a single
+      subroutine called CLOPEN.  Unfortunately  the  necessary  Fortran
+      statements  are  non-standard and may have to be changed slightly
+      when using a different compiler.  This should be the  only  place
+      in the program where the Fortran has to be altered.
+
+           The file containing the  phases  generated  by  the  tangent
+      formula  is  MULFOR.DAT.   If  the program runs out of time, this
+      file will not be deleted.  The  program  can  then  be  restarted
+      where  it  left  off  using  the  keyword SKIP and the phase file
+      MULFOR.DAT.
+
+           A sensible way of trying to solve a structure  would  be  to
+      start  with a run of the program using default values only.  This
+      will solve many simple structures with a minimum of computer time
+      and  little  effort by the user.  If the structure is not solved,
+      rerun the program with new values  for  some  of  the  parameters
+      either  to  give  better  E's or to improve the set of reflexions
+      used to start phase determination or to give  more  relationships
+      per reflexion according to what is required.  After achieving the
+      best available conditions for  phase  determination  and  if  the
+      structure  is  still unsolved, use RANTAN with the best parameter
+      values found so far.  Only the  most  difficult  structures  will
+      remain  unsolved  after a small number of runs using RANTAN.  For
+      more details on how to proceed  with  difficult  structures,  see
+      'Check-list  for  difficult  structures'  towards the end of this
+      manual.
+     Running the program                                       Page 15
+
+
+           Normally none of the E-maps will be printed.  The 'pictures'
+      output  by  Search  together  with  their interpretations will be
+      found  satisfactory  for  the  elucidation  of  most  structures.
+      Several E-maps may be produced in a single job by specifying MAPS
+      3, for example, to get the best  3  maps.   The  E-maps  will  be
+      computed  in  order  of  the  combined  figure of merit.  Further
+      E-maps can be obtained in subsequent  jobs  by  specifying  which
+      phase  sets  are  to be reproduced, e.g.  SETS 11 36 41 42 MAPS 4
+      wil give 4 E-maps from phase sets 11, 36, 41, 42 from a  previous
+      run.
+
+           If only a partial structure appears in an E-map, it  may  be
+      used  to  compute  starting  phases  for  a  rerun of the tangent
+      formula.  This is done using the keyword  KARLE  on  a  rerun  of
+      Multan.   Alternatively, if the partial structure is in the wrong
+      position in the cell, it can be used to estimate  the  phase  and
+      variance  of  sigma2  relationships  in  a redetermination of the
+      structure.  Such oriented groups of atoms can be input to  Multan
+      as already described using the keyword ORIENTED.
+
+           If only a minority of the atoms are missing from the  E-map,
+      it  will  usually be better to find them using a weighted Fourier
+      synthesis than to use the tangent  formula  recycling  procedure.
+      Multan  can  be  used  for  this  purpose  by  heading the atomic
+      coordinates by the keyword WFOURIER.
+
+           Heavy-atom structures can also be solved using Multan.   The
+      E-map  will  normally reveal the heavy atom positions and a small
+      number of the light atoms.  Weighted Fouriers can then be used to
+      complete the structure.  If the complete structure is not quickly
+      revealed, it is often a  good  idea  to  refine  the  heavy  atom
+      positions  and  obtain  their  anisotropic temperature factors by
+      least squares before trying to find the last  few  atoms  in  the
+      maps.
+     Overlay structure of MULTAN 84                            Page 16
+
+
+                   **********************************
+                   * OVERLAY STRUCTURE OF MULTAN 84 *
+                   **********************************
+
+
+                                  MULTAN
+                                    I
+           ---------------------------------------------------
+          I       I       I       I     I      I      I       I
+        CLOPEN  TRANSL  NORMAL  FIRST  LAST  EXFFT  SEARCH  PEKOUT
+                  I       I       I     I      I      I
+                -----    (1)     (2)   (3)    (4)    (5)
+               I     I
+             INSYM INGRO
+
+
+
+      (1)
+                                  NORMAL
+                                    I
+         --------------------------------------------------------
+        I      I       I      I       I      I      I     I      I
+      ATREC  PRELIM  INPUT  FFTOUT  WILSON  ECAL  STATS  FORM  RECYC
+               I                             I
+             -----                          SORT
+            I     I
+          PTSYS DEBYE
+
+
+
+      (2)
+                                  FIRST
+                                    I
+          ------------------------------------------------------
+         I     I      I      I      I      I      I      I      I
+      CLOPEN SETUP  SIGMA2 GROUP  CALPHA CONVEG START  SORT2  OUTPT1
+                      I      I             I
+                    SINV   TEST         -------
+                      I                I       I
+                    KCOMP            ORIGIN  NSET
+
+
+
+      (3)
+                                   LAST
+                                    I
+                   -----------------------------------
+                  I         I       I        I        I
+                INPUT3    PHASE    SWTR    FMERIT   UNIQUE
+                                                      I
+                                                    RTAPE
+
+
+     Overlay structure of MULTAN 84                            Page 17
+
+
+      (4)
+                                   EXFFT
+                                     I
+                                -----------
+                               I           I
+                             INPUT4       PP1
+                                           I
+                 ---------------------------------------
+                I       I       I       I       I       I
+              READKL  CMPLFT  WRITEY  READHL  HERMFT  OUTPUT
+                        I                       I
+                       (4A)                   CMPLFT
+                                                I
+                                               (4A)
+
+
+      (4A)
+                                 CMPLFT
+                                   I
+                         ---------------------
+                        I          I          I
+                      DIPRP      MDFTKD      SRFP
+                                   I
+                     -----------------------------
+                    I         I         I         I
+                  R2CFTK    R3CFTK    R4CFTK    R5CFTK
+
+
+
+      (5)
+                                   SEARCH
+                                     I
+             --------------------------------------------------
+            I         I                I            I          I
+          INPUT1    PKSRCH           PLINCO       BONGLE     INCLBO
+                      I                I            I          I
+             ----------------          I           QUAD     -------
+            I      I    I    I         I                   I       I
+          RDSECT SORT3 OPER QUAD       I                 JSYMM   QUAD
+                                       I                   I
+                                       I                 OPER
+                                       I
+                ---------------------------------------------------
+               I               I             I             I       I
+             CLSTRS          INTERP       SHFFLE        PICTUR   OUTERP
+               I               I             I             I
+         --------------       ----      -----------       ----------
+        I     I    I    I    I    I    I     I     I     I    I     I
+      ISORT JSYMM OPER QUAD ELIM QUAD OPER JSYMM QUAD  EIGEN PLOT SORT3
+              I                              I
+            OPER                           OPER
+     Description of Normal                                     Page 18
+
+
+                       *************************
+                       * DESCRIPTION OF NORMAL *
+                       *************************
+
+
+           The  program  Normal  converts  F(obs)  values   to   E(obs)
+      according to the formula
+                        E(obs)**2 = F(obs)**2 / <I>
+      where <I> is the expected intensity of that particular reflexion.
+
+           For randomly positioned atoms in the unit cell, <I> is given
+      by Wilson's statistics as
+            <I> = sum over i (f(i)**2) * (Debye-Waller factor))
+      where f(i) is the scattering factor of the ith atom.
+
+           This formula is modified slightly for particular  reflexions
+      by  space  group  symmetry  elements as indicated by Wilson.  For
+      example, in P2(1) the 0k0 reflexions are expected to  have  twice
+      the average intensity of other reflexions because of the two-fold
+      screw axis.  The above formula is then modified to
+           <I> = 2.0 * sum over i (f(i)**2) * (Debye-Waller factor))
+      for these reflexions.   Normal  automatically  uses  the  correct
+      formula for the space group.
+
+           If something is  known  about  the  stereochemistry  of  the
+      structure,  the assumption of randomly distributed atoms need not
+      be made in calculating <I>.  Instead, it can be assumed there are
+      randomly  distributed  groups of atoms in the unit cell.  In this
+      case, f(i) in the formula  for  <I>  is  replaced  by  g(i),  the
+      spherically averaged scattering factor of the ith group.  g(i) is
+      calculated from the Debye scattering formula
+       g(i)**2 = sum over j and k (f(j) * f(k) * sin(t*rjk) / (t*rjk))
+      where  t = 4 * pi * sin(theta) / lambda
+      and  rjk = distance between the jth and kth atoms (in ith group)
+
+           The Wilson  plot  is  printed  out  with  the  symbols  WWWW
+      following a smooth curve through the points and the least squares
+      straight line is printed out using asterisks.  The  symbols  DDDD
+      follow  a  smooth  curve  through the 'Debye' points, i.e.  those
+      obtained using molecular rather than atomic  scattering  factors.
+      If  no  atomic  groups  have been input to Normal, the two curves
+      WWWW and DDDD will coincide.  If the correct stereochemistry  has
+      been  input,  the  Debye  curve will be closer to a straight line
+      than the Wilson plot.  The program always uses the least  squares
+      straight line through the Debye points to obtain the Debye-Waller
+      factor and the scale factor needed to put <I>  and  F(obs)**2  on
+      the same scale.
+
+           The  lineprinter  output  of   Normal   includes   intensity
+      distributions  of  reflexions  in  principal zones as well as the
+      distribution for general reflexions.  This is not only a check on
+      the  scaling  of  the  E's but also a valuable aid to space group
+      determination if the symmetry is  not  completely  determined  by
+      systematic  absences.   For Normal to produce correct statistics,
+      all unique reflexions to a maximum value of sin(theta) should  be
+     Description of Normal                                     Page 19
+
+
+      supplied, leaving out systematic absences.
+
+           The strong reflexions selected by Normal are  assigned  code
+      numbers  in  order of E-value and, in much of the program output,
+      only the code number appears.  A short listing of E's  is  always
+      given  and  a  complete  list  can  be obtained using the keyword
+      ELIST.
+
+           Normal includes a facility for  applying  a  separate  scale
+      factor  to  reflexions  in  different  index groups.  The default
+      groups depend upon the space group symmetry and are given in  the
+      program output.  If these are unsuitable, the user may define his
+      own index groups using the keyword GROUP.  The scale factors  are
+      computed  to  make  the  average value of E**2 equal to unity for
+      each group separately.  Phase determination is  greatly  assisted
+      by  having  the  same average E**2 in all major reflexion groups.
+      If the expected  intensity  <I>  is  a  function  of  index,  the
+      structure  may  be difficult to solve, hence this facility.  Even
+      the simple expedient of rescaling the h0l  reflexions  separately
+      has made one particular difficult structure much more simple.
+
+           It is always wise to check the distribution of average  E**2
+      as a function of sin(theta).  If this distribution indicates that
+      the E's at high angles are generally too  strong,  i.e.   average
+      E**2  much greater than unity, this can give trouble during phase
+      determination in Multan.  This is usually due to a fault in  data
+      collection  and  high  angle reflexions should be discarded using
+      RHOMAX.  A more dangerous fault is when E's  at  low  angles  are
+      systematically over-estimated.  These E's will normally take part
+      in a large number of phase relationships which will  appear  more
+      reliable  than  they  actually  are.  Inclusion of some molecular
+      geometry using RANDOM will often ease this problem.
+
+           The use of molecular scattering factors in  the  calculation
+      of   E-values   is   especially  valuable  for  planar  molecules
+      consisting of fused six-membered rings.  These structures can  be
+      awkward  to solve and the E-map may reveal a hexagonal net rather
+      than a picture of a discrete molecule.  Making use of  the  known
+      stereochemistry  of  such molecules in the calculation of the E's
+      has the effect of reducing the height of the spurious  peaks  and
+      sometimes completely removing the central peak in each ring.  The
+      success (or otherwise) of the structure determination depends  to
+      a  large extent upon the E's which are produced here and a little
+      care and intelligent  thought  in  their  calculation  is  always
+      handsomely repaid.
+     Description of First                                      Page 20
+
+
+                        ************************
+                        * DESCRIPTION OF FIRST *
+                        ************************
+
+
+           The  First  part  of  Multan  performs   three   operations:
+      a) setting  up  the  phase  relationships  which will be used for
+      phase determination, b) setting up  the  psi(zero)  relationships
+      which  will  be  used  in  a  figure  of  merit,  c) finding good
+      reflexions to be used for phase determination.
+
+           Three-phase structure invariants are set up of the form
+
+                  phi(-h) + phi(k) + phi(h-k) = q(h,k)
+
+      where q(h,k) is the estimated  phase  of  the  invariant  with  a
+      weight ka(h,k) given by
+
+           ka(h,k) = 2 * s3 * s2**(-1.5) * E(h) * E(k) * E(h-k)
+      where     sn = sum over j (z(j)**n)
+
+      All relationships with ka(h,k) less than 0.6, or KMIN  if  it  is
+      specified,  are  rejected.   The  value of ka(h,k) is modified by
+      space group symmetry  as  described  by  Giacovazzo  (1974,  Acta
+      Cryst.,  A30,  631-634)  according to the algorithm given by Main
+      (Acta Cryst., to be published).  The quantity q(h,k) will be zero
+      unless groups of atoms of known orientation or position have been
+      input to Normal.  In this case, q(h,k) is estimated as  described
+      by   Main   (1976,  Crystallographic  Computing  Techniques,  ed.
+      F. R. Ahmed, pp. 97-105, Munksgaard) and the value of ka(h,k)  is
+      also modified.
+
+           The converge section of the program selects from  among  the
+      strong  E's  the  reflexions  to be used for phase determination.
+      This is done  using  an  algorithm  described  by  Germain,  Main
+      Woolfson  (Acta  Cryst., 1970, B26, 274-285).  An estimate of the
+      reliability of each phase expressed as a function of  all  others
+      is given by the quantity aa(h) where
+
+      aa(h) = 2*s3*s2**(-3/2)*magnitude of(sum over k(E(k)E(h-k)E(-h)))
+
+      i.e.  proportional to the magnitude of the tangent  formula  sum.
+      The  larger  the  value  of  aa(h),  the better determined is the
+      phase.  Without knowledge of the phases, aa(h) may  be  estimated
+      from  the  probability distributions of the 3-phase invariants to
+      give the 'estimated alpha'.
+
+           A short table of estimated alpha's is output with the  codes
+      of  each reflexion.  The complete table can be obtained using the
+      keyword ELIST.  The average estimated alpha is also  output.   If
+      it  is  less than about 20 and the structure is difficult, try to
+      set up more relationships.  Also in the table are  the  reflexion
+      type  and  phase  restrictions  in the columns headed 'MK'.  If a
+      phase value is unrestricted by space group symmetry, the value of
+      MK  is  1.  Any other value of MK denotes a restricted phase, one
+     Description of First                                      Page 21
+
+
+      of whose possible values is 15 * (MK  -  1)  degrees,  the  other
+      being 15 * (MK - 1) + 180 degrees.  All reflexions marked with an
+      asterisk (*) are structure seminvariants.
+
+           The convergence procedure is now used to eliminate  the  10%
+      of  reflexions  (or NREF - DET, if DET is specified) whose phases
+      will be most poorly determined.  These reflexions take no further
+      part in the phase determination process.
+
+           At this point there are two alternative ways  of  proceeding
+      with   the   program.   The  default  is  to  continue  with  the
+      convergence procedure until all reflexions have been  eliminated.
+      A small number of reflexions can be chosen from among the last to
+      be eliminated to define the origin and to form a  starting  point
+      for  phase  determination.   The  alternative  is  to begin phase
+      determination immediately by  including  all  reflexions  in  the
+      starting  set,  making  it unnecessary to pick out a subset.  The
+      former leads to  more  efficient  phase  determination,  but  the
+      latter is more powerful and is recommended for larger structures.
+
+           To find good origin-defining reflexions and a  small  number
+      of others to begin phase determination, the convergence procedure
+      is used again.  The exact number and  type  of  these  additional
+      reflexions  may  be  set using the keywords SPEC, GEN and ANY.  A
+      good starting point will be one which uses  the  strongest  phase
+      relationships  and  leads  quickly  to  multiple  indications for
+      unknown  phases,  thus  increasing  the  reliability   of   phase
+      determination during the initial crucial stages.
+
+           If a convergence mapping has been requested, this is printed
+      out  next.   Each  reflexion is listed as it is eliminated in the
+      convergence procedure with its estimated alpha computed from  the
+      reflexions  remaining.   Also  listed  are  all the relationships
+      contributing to this estimated alpha, printed, for example, as  1
+      -97  12 1.88.  If the reflexion just eliminated has a code number
+      of 277, this relationship  is  phi(277)  =  phi(1)  -  phi(97)  +
+      12*(pi/12) with a ka(h,k) value of 1.88.
+
+           The program tries to find origin fixing  reflexions  as  low
+      down  the  map  as  possible,  and  in  any  case  below the 25th
+      position.  If this is not possible with the restrictions on phase
+      values  (the program will try to use as many specials as possible
+      in origin definition), these restrictions are  gradually  relaxed
+      until all reflexions in origin definition can be general.  If the
+      program still cannot define the origin, it prints out  a  message
+      and  allows  all reflexions to be tested, not just the bottom 25.
+      The usual cause of this is that a whole class  of  reflexions  is
+      systematically  weak  and so is completely eliminated well before
+      the end of convergence.  Multan  will  still  continue  with  the
+      tangent  formula  and  may  determine the structure successfully.
+      However, if a solution is not found, a better starting point  may
+      be  found  by  renormalising  the F's so that <E**2> = 1 for each
+      class of reflexions separately using GROUP,  thus  enhancing  the
+      effect of the systematically weak reflexions.
+     Description of First                                      Page 22
+
+
+           After the origin defining reflexions have  been  found,  the
+      other  reflexions  in  the  starting  set  (requested by keywords
+      SPECIALS, GENERALS and ANY) are chosen.  As the phases  of  these
+      are  unknown,  they  are assigned a number of different values as
+      determined by the appropriate  'magic  integer'  sequence  (Main,
+      1977,  Acta  Cryst.,  A33,  750-757  and  1978, Acta Cryst., A34,
+      31-38), or given the two values allowed by space  group  symmetry
+      if  the  phase  is restricted, thus producing a multiple starting
+      point for the tangent formula.  The phase values assigned to  the
+      starting  reflexions  are evenly distributed over the whole range
+      thus covering all possibilities as efficiently as possible.   The
+      number of starting sets is given by
+                            (nsets) * (2**ns) * (ef)
+      where nsets is the number of phase sets  produced  by  the  magic
+      integers,  ns  is  the  number of reflexions whose phases take on
+      just two values and ef is an enantiomorph factor which will  have
+      one  of  the  values  1/2,  1,  2  or 4.  the value of nsets as a
+      function of ngen, the number of general phases to be permuted  in
+      the  starting set, is given in the following table along with the
+      r.m.s.  error of the 'best' set of starting phases:
+
+           ngen        0   1   2   3   4   5   6   7   8   9  10
+           nsets       1   4  14  20  32  50  80 128 206 332 536
+           rms error   0  26  28  39  42  45  47  48  49  50  50
+
+      The value of ef depends upon how the program decides to  fix  the
+      origin  and  enantiomorph for a particular space group and set of
+      data, but it will normally be 1/2 or 1.  The values of  2  and  4
+      occur  when  general  reflexions  are  used for origin definition
+      where special reflexions could have been used,  as  indicated  in
+      the following table:
+
+      ef = 1/2  if an unknown phase is used to define the  enantiomorph
+                -  the  range  of  permutation is restricted to 1/2 the
+                phase circle.
+         = 1    if the enantiomorph can be defined by  restricting  the
+                origin-defining  phases  to  fixed  values,  or  if the
+                enantiomorph is fixed by the space group.
+         = 2    if the  enantiomorph  is  defined  by  restricting  the
+                origin-defining phases to two sets of values (one phase
+                must take on two values).
+         = 4    if the  enantiomorph  is  defined  by  restricting  the
+                origin-defining  phases  to  four  sets  of values (two
+                phases each take on two values).
+
+           The reflexions which are eliminated last in the  convergence
+      procedure  will be the most important for phase determination and
+      will appear at the end of the convergence map.  It will  be  seen
+      that, starting from the bottom of the convergence map and working
+      upwards, each phase may be computed from the relationships listed
+      with  it,  since  these  relationships  use only the starting set
+      reflexions and phases already determined.  The program  therefore
+      remembers the order in which reflexions appear in the convergence
+      map and tries to determine their phases in reverse order  by  the
+      tangent  formula .  It follows that any reflexion near the bottom
+     Description of First                                      Page 23
+
+
+      of the convergence  map  with  a  zero  estimated  alpha  and  no
+      contributing  relationships  represents  a weak link during phase
+      determination and so  convergence  acts  to  minimise  such  weak
+      links.
+
+           The final  lineprinter  output  from  this  section  of  the
+      program  is  a complete listing of all reflexions chosen to start
+      phase determination.
+
+
+
+
+
+
+
+
+
+
+                        ***********************
+                        * DESCRIPTION OF LAST *
+                        ***********************
+
+
+           The tangent formula section of the  program  generates  each
+      starting  set  of  phases  by either of two methods.  The default
+      method assigns phase values given by a magic integer sequence  to
+      those reflexions chosen by converge.  If requested by RANTAN, the
+      program will assign magic integer values to all phases, making it
+      unnecessary  to use the origin-defining and convergence routines.
+      In either case, the starting phases are developed and refined  by
+      the  tangent  formula  using  the  phase  relationships  found in
+      Sigma2.  Starting phases may also be input  by  the  user  if  so
+      desired.  Together with each set of phases are output a number of
+      figures of merit to enable the program (or the  user)  to  decide
+      which phases should be used in the computation of E-maps.
+
+           Phases are determined and refined using the weighted tangent
+      formula:
+
+         phi(h) = phase of (sum over k (w(k)w(h-k)E(k)E(h-k)))
+
+      where w(h) is the weight associated with the phase  phi(h).   The
+      weights are determined as
+
+        w(h)  =  amin1(0.2*aa(h), 1.0, (ae(h)+5.0)/aa(h))
+      where
+        aa(h) = 2*s3*s2**(-1.5)*magnitude of(tangent formula sum*E(h))
+
+      and ae(h) is  the  expected  value  of  aa(h)  as  calculated  in
+      converge.   This  is  based on the statistically weighted tangent
+      formula described by Hull and  Irwin  (Acta  Cryst.,  1978,  A34,
+      863-870).   It gives a more stable refinement process in cases of
+      pseudosymmetry and where the phases would otherwise correspond to
+      a mixture of the two enantiomorphs.  Since the tangent formula is
+      weighted, there is no rejection criterion for a phase other  than
+     Description of Last                                       Page 24
+
+
+      the weight being calculated as very small or zero.
+
+           When groups of atoms of known orientation or  position  have
+      been  input, the tangent formula is modified as described by Main
+      (1976, Crystallographic Computing Techniques,  ed.   F. R. Ahmed,
+      pp. 97-105, Munksgaard).
+
+           For a small  starting  set,  the  weights  of  all  starting
+      reflexions  are initially set at unity, the remainder being zero.
+      The program determines initial phases values  for  the  best  100
+      phases  from the convergence map and refines them before going on
+      to determine  phases  for  the  complete  data  set.   These  are
+      determined in the order indicated by converge and also refined in
+      the same order.  The phases of the reflexions in the starting set
+      are  kept  constant  until  the  tangent  formula  refinement has
+      essentially converged;  they are then allowed to refine to  their
+      final values, in one more cycle.
+
+           For a large starting set (using RANTAN),  all  phases  start
+      with  equal weights.  These are set at a level which gives a wide
+      range of calculated weights at the end of  the  first  refinement
+      cycle.   Only  those  phases  whose  weights  are  above  a  high
+      threshold are accepted with their new values  and  weights.   The
+      other phases are kept fixed at their old values and their weights
+      are reduced.  The  threshold  is  lowered  on  each  cycle,  thus
+      including more phases in the refinement each time.
+
+           It has been found that phase  sets  with  sufficiently  good
+      psi(zero)  and residual figures of merit almost always reveal the
+      structure.  The program will therefore check the figures of merit
+      and  if psi(zero) is less than 1.25 and the residual is less than
+      20 per cent, no further sets will be investigated.   The  program
+      prints   out   a   message   and  the  Fourier  procedure  begins
+      immediately.  This  can  be  overidden  using  the  keyword  ALL,
+      whereupon  all  phase sets will be generated no matter what their
+      figures of merit.
+     Figures of merit                                          Page 25
+
+
+                          ********************
+                          * FIGURES OF MERIT *
+                          ********************
+
+
+           In order to identify the phase sets with  the  best  phases,
+      three  basic  figures  of  merit,  absfom,  psizero and resid are
+      computed.  These are used to decide if the correct  solution  has
+      been found or to decide in which order to compute the E-maps.
+
+           The 'absolute figure of merit',  absfom,  is  a  measure  of
+      internal  consistency  among  the  sigma2  relationships  and  is
+      calculated from
+
+       absfom = sum over h (aa(h)-ar(h)) / sum over h (ae(h)-ar(h))
+
+      where aa(h) is defined in the  previous  section,  ae(h)  is  the
+      estimated  value  of  aa(h)  calculated  during  the  convergence
+      procedure and ar(h) is the value of aa(h)  expected  from  random
+      phases, i.e.
+                       ar(h)**2 = sum over k (ka(h,k)**2)
+
+      Absfom is zero for random phases, unity if the  sum  of  all  the
+      aa(h) is equal to its expectation value and greater than unity if
+      there are systematic phase errors.  It is a useful check  on  the
+      distribution  of phases, but is a poor discriminator between good
+      and bad phase sets.  This is the least reliable of the figures of
+      merit.
+
+           The next figure of  merit,  psi(zero),  was  first  used  by
+      Cochran  and  Douglas (Proc.  Roy.  Soc., 1957, A243, 281) and is
+      defined as
+
+          psi(zero) = sum over h (psi(h)) / psi(rand)
+      where  psi(h) = magnitude of sum over k (E(k) * E(h-k))
+      and psi(rand) = sum over h (sqrt(sum over k ((magnitude of
+                                                    E(k)*E(h-k))**2))
+
+      The terms in the summation for psi(h) are those for which  phases
+      are  known  and  the values of h in the first summation are those
+      for which the corresponding E-value is either very small or zero,
+      hence  the psi(zero) reflexions selected by Normal.  Since psi(h)
+      is essentially the right hand side of Sayre's equation for  small
+      E(h),  it  should  have  a low value for the correct phases.  The
+      value of psi(zero) should therefore  be  as  small  as  possible.
+      Practical  experience  shows  this to be a powerful discriminator
+      against incorrect sets of  phases  -  it  is  very  sensitive  to
+      molecular  position  and is completely independent of the tangent
+      formula.  The weak reflexions are chosen  such  that  each  takes
+      part  in  at  least  15  psi(zero)  relationships.   The value of
+      psi(zero) should be small for the correct set.  However  it  will
+      also  be  small  for random phase sets, typified by low absfom's,
+      and it will tend to be large for a correct solution with a  heavy
+      atom  present,  typified  by  a  high  absfom.   Hence  the final
+      psi(zero) is calculated as
+     Figures of merit                                          Page 26
+
+
+             psizro(final)  =  psi(zero) / min(absfom,1.3)
+
+           The third figure of merit, resid, is a measure of  how  well
+      the   sigma2   relationships   have   followed   the  statistical
+      expectations.  It is calculated as
+
+                        sum over h (abs(sc*ae(h) - aa(h))
+          resid = 100 * ---------------------------------
+                               sum over h (ae(h))
+
+      where sc is a scale factor calculated as follows
+         if there is no heavy atom in the structure, then sc = 1.0
+         if there is a heavy atom present, the  expected  alphas  ae(h)
+      tend  to  be  too  low  and  so  need  scaling  up.   Then  sc  =
+      min(1.3,sqrt(max(absfom,1.0))).
+
+           A cutoff of 1.25 in the psi(zero) figure of merit  and  20.0
+      in  the  residual  is  applied  such that if a set has figures of
+      merit below both values, the program  will  take  this  to  be  a
+      correct solution and immediately calculate the E-map.
+
+           After all sets of phases have been generated, Multan outputs
+      a summary of the figures of merit including a 'combined figure of
+      merit', C, calculated from
+
+               af - af(min)         ps(max) - ps         r(max) - r
+       C = w1*--------------- + w2*--------------- + w3*-------------
+              af(max)-af(min)      ps(max)-ps(min)      r(max)-r(min)
+
+      where af is absfom, ps is psi(zero) and r is resid.  The  weights
+      w1, w2 and w3 given to each term have default values of 0.6, 1.2,
+      1.2  respectively.   Clearly,  C   has   a   maximum   value   of
+      w1 + w2 + w3,  a  minimum of zero and is a maximum for the 'best'
+      set of phases.  The combined figure of merit has been found to be
+      a  more  reliable  indicator  of  the  correct set of phases than
+      either  of  the  other  three  figures   of   merit   separately.
+      Therefore,  it  is  used  by  Exfft  to  decide  on  the order of
+      computation of E-maps.  If the user alters  the  weights  of  the
+      figures of merit, the program will still normalise the weights so
+      that w1 + w2 + w3 = 3.0.  In general, sets with  a  cfom  greater
+      than  2  are  worth  examining.  However, the converse, that sets
+      with a cfom less than 2.0 are not worth looking at, is not always
+      true.
+     Description of the Fourier procedure                      Page 27
+
+
+                ****************************************
+                * DESCRIPTION OF THE FOURIER PROCEDURE *
+                ****************************************
+
+
+           E-maps are calculated and  examined  by  Exfft  and  Search.
+      Using  default  values,  Exfft will always produce the E-map with
+      the largest combined figure of merit which has so  far  not  been
+      computed.   Alternatively,  the particular set of phases which is
+      to be used in the E-map calculation may be specified using  SETS.
+      The E-map may be printed, if desired, using the keyword PRINT.
+
+           Search looks for the highest  peaks  in  the  map,  normally
+      about  22  per  cent  more than the number of atoms to be located
+      unless the actual number is specified using PEAKS.   Search  then
+      looks for bonded sequences of peaks among those located, taking a
+      default value of 1.95A as the maximum bonding  distance  allowed.
+      These  sequences  are  sorted  into  uniquely  numbered molecular
+      clusters.  Peaks which are not within  bonding  distance  of  any
+      other  are  given  a  cluster  number  of  zero.  If two clusters
+      containing at least five peaks each are found to be  within  2.8A
+      of  each other, Search assumes they are joined by a weak peak not
+      yet found.  It then automatically increases the number  of  peaks
+      to  50  per cent more than the number of atoms and this increased
+      number of peaks is used throughout the rest of the program.  This
+      automatic  increase  in  the number of peaks is only given if the
+      default number of peaks has been used.
+
+           The simple stereochemical criteria of  maximum  and  minimum
+      bond lengths and angles are applied to each cluster in an attempt
+      to identify molecular fragments.  If two or more  such  fragments
+      appear in the same cluster, the program checks to see if they can
+      bond together by symmetry,  and  if  so,  rebuilds  this  cluster
+      around  the  largest combined fragment.  This prevents a molecule
+      becoming split in two by weak correct peaks and wrongly joined by
+      strong  spurious  peaks.   The  program  searches  for  different
+      interpretations by assuming different peaks are spurious, and  up
+      to  three  significantly different interpretations of the cluster
+      may be printed.
+
+           For each  cluster  containing  more  than  8  peaks,  Search
+      projects  the  peaks onto the least squares plane and plots their
+      positions  on  the  lineprinter.   Up  to  two  more   orthogonal
+      projections  can be output if requested or if the program decides
+      it is desirable.  These are on the plane orthogonal to the  least
+      and  most  squares  planes and on the most squares plane, in that
+      order.  If the default option is used, Search  will  always  give
+      the first projection and will output the second if the cluster is
+      cylindrical or globular.  All three projections can be output for
+      any fragment by using PROJ 3.
+
+           The program  outputs  the  interpretation(s)  of  a  cluster
+      immediately  after  the  picture(s)  of  the  cluster  have  been
+      printed.  After all clusters have been dealt with, it then prints
+      a  list  of  the peak coordinates, together with the peak heights
+     Description of the Fourier procedure                      Page 28
+
+
+      and cluster  numbers.   Interpeak  distances  are  tabulated  and
+      output  in  two  tables,  one  for  peaks related by the identity
+      operation and one for peaks related by other symmetry operations.
+      Bond angles are also tabulated.
+
+           It may sometimes happen that the peaks corresponding to  one
+      or  two atoms are quite small and so are not plotted.  This could
+      have the effect of splitting the molecule into  two  disconnected
+      fragments  making  it  almost  unrecognisable  in  the  way it is
+      presented by Search.  The user should be aware of this and, if he
+      suspects  it  is  happening,  may  wish  to  plot the two or more
+      clusters on the same picture.  This can be done  by  artificially
+      joining  the  clusters together by adding false peaks to the list
+      output in SEARCH.PKS.   Putting  these  peaks  back  into  Multan
+      headed by PLOT will result in a single picture containing all the
+      clusters.  As a last resort,  the  complete  map  can  be  output
+      directly  from  Exfft.  This should be rarely necessary, however,
+      and is usually reserved for cases where the data are poor and the
+      atoms are not properly resolved.
+     Check-list for difficult structures                       Page 29
+
+
+                ***************************************
+                * CHECK-LIST FOR DIFFICULT STRUCTURES *
+                ***************************************
+
+
+           If Multan has failed to solve the  structure  and  the  data
+      have  been checked for errors, the following points may suggest a
+      possible course of further action.
+
+           (1) After normalisation, check the distribution  of  average
+      E**2  with  sin(theta).   If the E's at high angles are too large
+      (average E**2 > 1.0) it may be necessary  to  reject  high  angle
+      reflexions using RHOMAX.  If the E's at low angles are too large,
+      it may help to input any knowledge of the stereochemistry of  the
+      structure  using  RANDOM.   The larger the atomic groups input to
+      Normal for the calculation of molecular scattering  factors,  the
+      more effective they are.
+
+           (2) If there are too few phase relationships per  reflexion,
+      increase the number of reflexions.  This will result in many more
+      relationships being set  up  and  will  increase  the  number  of
+      relationships per reflexion.  A satisfactory ratio is about 15 or
+      20 relationships for each reflexion.
+
+           (3) If there are 'gaps' near the bottom of  the  convergence
+      map,  i.e.  reflexions eliminated with a zero estimated alpha and
+      no sigma2 contributors, it  may  be  necessary  to  increase  the
+      number  of reflexions in the starting set.  Even without gaps, an
+      extra starting set reflexion may help, but only at the expense of
+      increased computing time.
+
+           (4) If the convergence map is very 'thin' near  the  bottom,
+      i.e.  many phases are determined by only one or two relationships
+      each at the very start of phase  determination,  this  may  be  a
+      cause  of failure to solve the structure.  The remedy for this is
+      to  increase  the  number  of  reflexions   and   use   all   the
+      relationships the program sets up.
+
+           (5) Check to see if all the reflexions at the bottom of  the
+      convergence  map  have something obvious in common, i.e.  do they
+      all have the l index even, or h divisible by 3 or h+k even,  etc.
+      if  so, then make sure that the average value of E**2 is equal to
+      unity   for   all   such   reflexion   groups   separately,    by
+      renormalisation using GROUP.
+
+           (6) Having obtained good E's, selected a suitable number  of
+      the  strongest  and found the best origin for phase determination
+      starting with phase permutation,  repeat  these  conditions  when
+      running  RANTAN.  Be prepared to generate 1000 or more phase sets
+      using RANTAN, perhaps in runs of about 200 sets each.
+
+           (7) For a difficult structure, the combined figure of  merit
+      may  not  indicate the 'correct' set of phases very reliably.  Be
+      sure to examine E-maps further down the  ranking  order  than  is
+      usually necessary.
+     Check-list for difficult structures                       Page 30
+
+
+           (8) When certain  atoms  are  missing  from  an  E-map,  the
+      molecule  quickly  becomes  unrecognisable.   It  may happen that
+      these key atoms are present as rather weak peaks and so  are  not
+      plotted  by  Search.   By  plotting more peaks (using the keyword
+      PEAKS in the data for Search), parts of the E-map may become more
+      easily interpretable.
+
+           (9) A common incorrect  solution  is  a  correctly  oriented
+      molecular   fragment  misplaced  with  respect  to  the  symmetry
+      elements.  Such fragments can be used to  help  Multan  determine
+      the  structure by including them in the atomic groups in the data
+      for Normal and rerunning the program system in the usual way.
+
+           (10) When  everything  else  has  failed,  the  authors  are
+      usually  willing  either  to discuss a particular structure or to
+      attempt a  solution  of  the  structure  themselves.   As  Multan
+      continues to develop, the version of the program available to the
+      authors may be more powerful than that available to  the  general
+      user.
+     Summary of keyword instructions                           Page 31
+
+
+                  ***********************************
+                  * SUMMARY OF KEYWORD INSTRUCTIONS *
+                  ***********************************
+
+
+           Only  the  first  three  characters  of  the  keywords   are
+      significant.  Keywords (except those marked *) need only be given
+      if the user wishes to change the values of parameters or  to  use
+      facilities not used automatically by the program.
+
+      MULTAN
+      ------
+         NOR                run Normal only
+         FIR                run Normal and First sections of Multan
+         LAS                run Normal, First and Last
+         CEL X X X X X X    cell dimensions                * no default
+         CEN                centrosymmetric space group
+         LAT C              lattice type (P,A,B,C,I,F,R)
+         SYM X,Y,Z ...      symmetry operations            * no default
+         CON C1 N1 ...      unit cell contents             * no default
+         FAC X X X X X      scattering factor constants
+         FOR N (...)        format for reflexion data      * no default
+      NORMAL
+      ------
+         NRE N              use N strong E's for phase determination
+         DET N              determine N phases
+         NZR N              use N weak reflexions for psi(zero)
+         ELI                list all strong E's and psi(zero)'s
+         RHO X              limit of rho on reflexions used by program
+         GRO pH+qK+rL=sN+t  index groups for rescaling
+         RAN                randomly oriented group
+         MUL X              multiplicity of group (random)
+         CEL X X X X X X    cell to which coordinates refer
+         ORI                correctly oriented group
+         POS                correctly positioned group
+         KAR                group for Karle recycling
+         WFO                group for weighted Fourier recycling
+         DFO                group for difference Fourier recycling
+         PLO                plot atoms, output bond lengths and angles
+         C1 X1 Y1 Z1 O1 ... input of atomic parameters
+      FIRST
+      -----
+         KMI X              minimum value of ka(h,k)
+         LIS                list whole of convergence map
+         NOL                list none of convergence map
+         SPE N              number of specials required in starting set
+         GEN N              number of generals required in starting set
+         ANY N              number of any type required in starting set
+         MAX N              max number of phase sets to be generated
+      LAST
+      ----
+         RAN N              assign starting values to all phases
+         ALL                generate all phase sets
+         SKI N              skip to after set N on MULFOR.DAT
+         ABS X              weight of absfom
+     Summary of keyword instructions                           Page 32
+
+
+         PSI X              weight of psi(zero)
+         RES X              weight of residual
+         COD N1 N2 ...      reflexions input to tangent formula
+         PHA N1 N2 ...      phases input to tangent formula
+         SET N1 N2 ...      specified phase sets to be generated
+      EXFFT
+      -----
+         MAP N              examine best N maps
+         PRI                print the map on the lineprinter
+         LEV N              underline all points above N
+         GRI X              sample unit cell at a grid spacing of X
+         XMA X              print from 0 to X along x
+         YMA X              print from 0 to X along y
+         ZMA X              print from 0 to X along z
+      SEARCH
+      ------
+         PEA N              search for N peaks
+         NOJ                do not interpret peaks
+         PRO N              output N projections of each cluster
+         DOU X              print interpeak distances less than X
+         DMI X              minimum bond length
+         DMA X              maximum bond length
+         AMI X              minimum bond angle
+         AMA X              maximum bond angle
+         MET N              N heavy atoms in the asymmetric unit
+         END                end of free format read
+
+         ****  END  OF  MULTAN 84  WRITE-UP  ****

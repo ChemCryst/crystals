@@ -1,0 +1,2 @@
+      COMMON/XCOMPD/KTITL(20) 
+

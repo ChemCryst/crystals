@@ -1,0 +1,35 @@
+CRYSEDIT = ../editor/cryseditor
+SDACRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\#
+SSCCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\%\%
+SSCSRC := $(wildcard ../script/*.ssc)
+SDASRC := $(wildcard ../script/*.sda)
+INSTALLDIR = 
+SSCOUT := $(SSCSRC:.ssc=.scp)
+SDAOUT := $(SDASRC:.sda=.dat)
+SCPOUT := $(subst ../script,script,$(SSCOUT))
+DATOUT := $(subst ../script,script,$(SDAOUT))
+
+SCPDIR = script/
+
+VPATH = ../script
+
+all : $(SCPDIR) $(CRYSEDIT) $(SCPOUT) $(DATOUT)
+
+$(CRYSEDIT) :
+	cd ../../editor; $(MAKE)
+
+script/%.scp : %.ssc
+	$(CRYSEDIT) $< $@ $(SSCCRYEDFLAGS)
+
+script/%.dat : %.sda	
+	$(CRYSEDIT) $< $@ $(SDACRYEDFLAGS)
+
+$(SCPDIR) :
+	mkdir $(SCPDIR)
+
+install : $(INSTALLDIR) 
+	cp $(SSCOUT) $(SDAOUT) $(INSTALLDIR)
+
+clean :
+	rm -f $(SSCOUT) $(SDAOUT)
+	rm -Rf $(SCPDIR)

@@ -1,0 +1,2 @@
+      DIMENSION ICOM40(20)
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM26(1),L26D) 
+

@@ -1,0 +1,2 @@
+      EQUIVALENCE (ICOM06(1),L6) 
+

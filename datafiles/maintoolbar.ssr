@@ -1,0 +1,43 @@
+%
+% The main toolbar
+%
+^^WI       @ 1,1 TOOLBAR _MAINBAR
+^^WI       {
+^^WI         TOOL _MGU 'tool_guid.bmp' 'Guide' '#SCRIPT XGUIDE'
+^^WI           DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _MFO toolfour.bmp 'Fourier'
+^^WI          '#SCRIPT XFOUR_NDIFF' DISABLEIF='IN QS' ENABLEIF='L5 L1 L2'
+^^WI         TOOL _MADDH tl_perh.bmp 'Add H' '#SCRIPT GFINDH'
+^^WI          DISABLEIF='IN QS'  ENABLEIF='L5'
+^^WI         TOOL _MREMQ tl_delq.bmp 'Kill Qs' '#SCRIPT XDELQ'
+^^WI          DISABLEIF='IN'  ENABLEIF='QS L5'
+^^WI         TOOL _MREMH tl_delh.bmp 'Kill H' '#EDIT_NSELECT TYPE NE H_NEND'
+^^WI          DISABLEIF='IN'  ENABLEIF='L5'
+^^WI         SPLIT
+^^WI         TOOL _UN05 undo.bmp 'Undo/backup model'
+^^WI          '#SCRIPT XDSCMAN' DISABLEIF='IN'
+^^WI         TOOL _ED05 ed5.bmp 'Manually edit parameters'
+^^WI          '#SCRIPT SYSED5' DISABLEIF='IN' ENABLEIF='L5'
+^^WI         TOOL _ED12 ed12.bmp 'Manually edit refinement directives'
+^^WI          '#SCRIPT EDLIST12' DISABLEIF='IN' ENABLEIF='L5'
+^^WI         TOOL _ED16 ed16.bmp 'Manually edit restraints'
+^^WI          '#SCRIPT EDLIST16' DISABLEIF='IN' ENABLEIF='L5'
+^^WI         TOOL _DO33 refine.bmp 'Refine'
+^^WI          '#SCRIPT XREFINE' DISABLEIF='IN' 
+^^WI         SPLIT
+^^WI         TOOL _MCA toolcam.bmp 'Cameron' '#SCRIPT XCAMNORM'
+^^WI          DISABLEIF='IN' ENABLEIF='L5 L1 L2'
+^^WI         TOOL _MRC 'mercury.bmp' 'Mercury' '#SCRIPT MERCURY' 
+^^WI          DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _MNP 'notepad.bmp' 'Notepad' '$notepad'
+^^WI          DISABLEIF='IN'
+^^WI         TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'
+^^WI          APPICON DISABLEIF='IN'
+^^WI         TOOL _MEX 'explorer.bmp' 'Explore' '$explorer ./'
+^^WI          DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _MHL 'tool_help.bmp' 'Help'
+^^WI         '$ "CRYSDIR:manual/readme.html"' DISABLEIF='IN'
+^^WI       }

@@ -1,0 +1,11 @@
+#four                                                                           
+map type=2fo
+end
+#peak                                                                           
+end
+#pause 5
+#coll                                                                           
+sel type=peak
+end
+#pause 5
+#use last

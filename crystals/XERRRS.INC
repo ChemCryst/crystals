@@ -1,0 +1,3 @@
+      DIMENSION KDAT(9)
+      COMMON /XERRRS/ NXWAVE
+

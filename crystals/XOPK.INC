@@ -1,0 +1,2 @@
+      COMMON/XOPK/NWKO,NKO,LKO,KVP(2,6) 
+
