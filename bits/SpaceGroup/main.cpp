@@ -214,7 +214,7 @@ int main(int argc, const char* argv[])
     cout << "Written by Stefan Pantos\n";
     try
     {
-        RunParameters tRunStruct;
+        RunParameters tRunStruct(argv[0]);
         /* Handle all the arguments which were passed to the program.
         * If there are any parameters needed where where not passed 
         * then the user is prompted.
