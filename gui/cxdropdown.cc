@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2001/06/18 12:47:26  richard
+// *** empty log message ***
+//
 // Revision 1.12  2001/06/17 14:44:39  richard
 // CxDestroyWindow function.
 //
@@ -273,14 +276,16 @@ void CxDropDown::Focus()
 
 CcString CxDropDown::GetDropDownText(int index)
 {
+   index = min ( index, mItems );
+   index = max ( index, 1 );
 #ifdef __CR_WIN__
     CString temp;
-    GetLBText(index,temp);
+    GetLBText(index-1,temp);
     CcString result = temp.GetBuffer(temp.GetLength());
     return result;
 #endif
 #ifdef __BOTHWX__
-      wxString temp = GetString( index );
+      wxString temp = GetString( index-1 );
       CcString result ( temp.c_str() );
     return result;
 #endif
