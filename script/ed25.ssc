@@ -9,15 +9,15 @@
 %% Set up variables:
 %%
 % VARIABLE LOGICAL IS25 MATCHG TWINNED
-% VARIABLE INTEGER N25 NEL CURMAT LOOPCOUNTER N25I ITMP
+% VARIABLE INTEGER N25 NEL CURMAT LOOPCOUNTER N25I ITMP ORIGSER DPV
 %% The element scales from L5:
-% VARIABLE REAL    EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 RVAL
+% VARIABLE REAL    EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 RVAL VOLF
 %% Whether the user has changed the twin law:
 % VARIABLE LOGICAL CH1 CH2 CH3 CH4 CH5 CH6 CH7 CH8 CH9
 %% Matrix operations
 % VARIABLE REAL MATRIX:M11 MATRIX:M12 MATRIX:M13
 % VARIABLE REAL MATRIX:M21 MATRIX:M22 MATRIX:M23
-% VARIABLE REAL MATRIX:M31 MATRIX:M32 MATRIX:M33
+% VARIABLE REAL MATRIX:M31 MATRIX:M32 MATRIX:M33 MATRIX:DET
 % VARIABLE REAL MATRIX:A11 MATRIX:A12 MATRIX:A13
 % VARIABLE REAL MATRIX:A21 MATRIX:A22 MATRIX:A23
 % VARIABLE REAL MATRIX:A31 MATRIX:A32 MATRIX:A33
@@ -28,11 +28,13 @@
 %% Get some initial information:
 %%
 % EVALUATE CURMAT = 1
+% EVALUATE DPV = 1
 % EVALUATE MATCHG = TRUE
 % EVALUATE IS25 =  ( ( EXISTS 25 ) .NE. 0 )
 % IF ( IS25 ) THEN
 %   COPY '#GENERALEDIT 25'
 %   COPY 'TRANSHEAD FROM OFFSET=3 TO N25'
+%   COPY 'GETSERIAL ORIGSER'
 %   COPY 'END'
 % ELSE
 %   COPY '#LIST 25'
@@ -96,29 +98,32 @@
 %   OUTPUT
 % END LOOP
 ^^WI              'NULL'
-^^WI       @ 3,1 BUTTON ADD25 'A&dd twin law'
+^^WI       @ 3,1 BUTTON ADD25 '&New twin law'
 ^^WI     }
-^^WI     @ 1,3 GRID GB NROWS=3 NCOLS=1 OUTLINE='Details for this twin law:'
+^^WI     @ 1,3 GRID GB NROWS=5 NCOLS=1 OUTLINE='Details for this twin law:'
 ^^WI     {
 ^^WI       @ 1,1 GRID GBB NROWS=5 NCOLS=5
 ^^WI       {
 %% First time I've tried this: the editboxes have spaces in their
 %% names so when they are changed I can handle them all in one switch -
 %% just detecting the 'M' and then reading the number.
-^^WI           @ 1,1 EDITBOX 'M25 1' '1.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 1,3 EDITBOX 'M25 2' '0.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 1,5 EDITBOX 'M25 3' '0.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 3,1 EDITBOX 'M25 4' '0.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 3,3 EDITBOX 'M25 5' '1.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 3,5 EDITBOX 'M25 6' '0.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 5,1 EDITBOX 'M25 7' '0.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 5,3 EDITBOX 'M25 8' '0.000' CHARS=9 REAL INFORM=YES
-^^WI           @ 5,5 EDITBOX 'M25 9' '1.000' CHARS=9 REAL INFORM=YES
+^^WI           @ 1,1 EDITBOX 'M25 1' '1.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 1,3 EDITBOX 'M25 2' '0.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 1,5 EDITBOX 'M25 3' '0.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 3,1 EDITBOX 'M25 4' '0.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 3,3 EDITBOX 'M25 5' '1.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 3,5 EDITBOX 'M25 6' '0.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 5,1 EDITBOX 'M25 7' '0.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 5,3 EDITBOX 'M25 8' '0.000' CHARS=7 REAL INFORM=YES
+^^WI           @ 5,5 EDITBOX 'M25 9' '1.000' CHARS=7 REAL INFORM=YES
 ^^WI       }                   
-^^WI       @ 3,1 GRID GBC NROWS=1 NCOLS=5 {
+^^WI       @ 3,1 GRID GBC NROWS=1 NCOLS=3 {
 ^^WI           @ 1,1 STATIC RT_T4 'Volume fraction'
-^^WI           @ 1,3 EDITBOX VOLF '1.0' CHARS=9 REAL INFORM=YES
-^^WI           @ 1,5 BUTTON REM25 '&Remove twin law'
+^^WI           @ 1,3 EDITBOX VOLF '1.0' CHARS=7 REAL INFORM=YES
+^^WI       }
+^^WI       @ 5,1 GRID GBD NROWS=1 NCOLS=3 {
+^^WI           @ 1,1 BUTTON ANA25 '&Analyse twin law'
+^^WI           @ 1,3 BUTTON REM25 '&Remove twin law'
 ^^WI       }
 ^^WI     }
 ^^WI   }
@@ -126,9 +131,9 @@
 ^^WI   {
 ^^WI     @ 1,1 STATIC T_T4 'Overlap tolerance'
 ^^WI     @ 1,3 EDITBOX TOL25 '0.005' CHARS=9 REAL
-^^WI     @ 1,5 STATIC T_T4 'Angstrom**-2'
+^^WI     @ 1,5 STATIC T_T4 'recip. Angstroms'
 ^^WI     @ 1,6 STRETCH T_STR2 HORIZONTAL
-^^WI     @ 1,7 BUTTON BOK25 '&Apply twin law' DEFAULT COMMIT
+^^WI     @ 1,7 BUTTON BOK25 '&Apply twin laws' DEFAULT COMMIT
 ^^WI     @ 1,9 BUTTON BXX25 '&Cancel' CANCEL
 ^^WI   }
 ^^WI }
@@ -140,12 +145,36 @@
 % COPY 'LOCATE RECORDTYPE=101'
 % COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 % LOOP
+%  IF ( DPV .GT. 5000 ) THEN
+%    COPY '#GENERALEDIT 25'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    EVALUATE DPV = 1
+%    COPY 'TOP'
+%    LOOP ( CURMAT - 1 ) TIMES
+%      COPY 'NEXT'
+%    END LOOP
+%  END IF  
 %  IF ( MATCHG ) THEN
 %% current matrix changed - dig out details and change
 %   EVALUATE MATCHG = FALSE
 ^^?? TLAWS SELECTED
 %   GET NOSTORE SILENT INTEGER ' ' ' '
 %   EVALUATE CURMAT = VALUE
+%% If twin law 1, disable lots of things
+%   IF ( CURMAT .EQ. 1 ) THEN
+^^CO SET 'M25 1' DISABLED=YES SET 'M25 2' DISABLED=YES
+^^CO SET 'M25 3' DISABLED=YES SET 'M25 4' DISABLED=YES
+^^CO SET 'M25 5' DISABLED=YES SET 'M25 6' DISABLED=YES
+^^CO SET 'M25 7' DISABLED=YES SET 'M25 8' DISABLED=YES
+^^CO SET 'M25 9' DISABLED=YES SET REM25 DISABLED=YES SET ANA25 DISABLED=YES
+%   ELSE
+^^CO SET 'M25 1' DISABLED=NO SET 'M25 2' DISABLED=NO
+^^CO SET 'M25 3' DISABLED=NO SET 'M25 4' DISABLED=NO
+^^CO SET 'M25 5' DISABLED=NO SET 'M25 6' DISABLED=NO
+^^CO SET 'M25 7' DISABLED=NO SET 'M25 8' DISABLED=NO
+^^CO SET 'M25 9' DISABLED=NO SET REM25 DISABLED=NO SET ANA25 DISABLED=NO
+%   END IF
 %   COPY 'TOP'
 %   LOOP ( CURMAT - 1 ) TIMES
 %     COPY 'NEXT'
@@ -163,6 +192,7 @@
 %     STORE REAL RVAL
 %     OUTPUT
 %   END LOOP
+%   EVALUATE DPV = DPV + 9
 %   CASE CURMAT
 %     TRANSFER '^^CO SET VOLF TEXT ' // CHARACTER EL1 TO DISPLAY
 %     TRANSFER '^^CO SET VOLF TEXT ' // CHARACTER EL2 TO DISPLAY
@@ -174,13 +204,25 @@
 %     TRANSFER '^^CO SET VOLF TEXT ' // CHARACTER EL8 TO DISPLAY
 %     TRANSFER '^^CO SET VOLF TEXT ' // CHARACTER EL9 TO DISPLAY
 %   END CASE
-% END IF
-%   VERIFY BXX25 M25 TLAWS ADD25 REM25 VOLF BOK25
-%   GET SILENT NOSTORE ABBREVIATED ' ' ' '
-%   CASE VALUE
+%  END IF
+%  VERIFY BXX25 M25 TLAWS ADD25 REM25 VOLF BOK25 ANA25
+%  GET SILENT NOSTORE ABBREVIATED ' ' ' '
+%  CASE VALUE
 %     BLOCK       %BXX25 - close window
 %% Don't write L25, just close genedit.
 %       COPY 'END'
+%       IF ( .NOT. IS25 ) THEN
+%         COPY '#DISK'
+%         COPY 'DELETE'
+%         COPY 'END'
+%       ELSE
+%         COPY '#DISK'
+%         CLEAR
+%         INSERT 'RESET 25 '
+%         STORE INTEGER ORIGSER
+%         SEND
+%         COPY 'END'
+%       END IF
 ^^CO    DISPOSE ED25
 %       FINISH
 %     END BLOCK
@@ -193,6 +235,7 @@
 %       GET SILENT NOSTORE REAL ' ' '0.0'
 %       EVALUATE RVAL = VALUE
 %       SEND
+%       EVALUATE DPV = DPV + 1
 %     END BLOCK
 %     BLOCK       %TLAWS - indicate matrix changed
 %       GET NOSTORE SILENT INTEGER ' ' ' '
@@ -216,6 +259,7 @@
 %        COPY 'TRANSFER TO OFFSET=6 FROM RVAL'
 %        COPY 'TRANSFER TO OFFSET=7 FROM RVAL'
 %        EVALUATE N25 = N25 + 1
+%        EVALUATE DPV = DPV + 9
 %        CLEAR
 %        INSERT '^^CO SET TLAWS ADDTOLIST '
 %        STORE CHARACTER COMPRESS ( "'Twin law " // CHARACTER N25 // "'" )
@@ -225,6 +269,7 @@
 %        STORE INTEGER N25
 %        OUTPUT
 %        EVALUATE CURMAT = N25
+%        EVALUATE MATCHG = TRUE
 %     END BLOCK
 %     BLOCK       %REM25 - remove element from L25 & L25I
 %        COPY 'TOP'
@@ -246,10 +291,6 @@
 %          COPY 'NEXT'
 %        END LOOP
 %        COPY 'DELETE'
-%        EVALUATE RVAL = 1.0
-%        COPY 'TRANSFER TO OFFSET=0 FROM RVAL'
-%        COPY 'TRANSFER TO OFFSET=4 FROM RVAL'
-%        COPY 'TRANSFER TO OFFSET=8 FROM RVAL'
 %        EVALUATE N25 = N25 - 1
 ^^WI     SET TLAWS REMOVE 0 ADDTOLIST
 %        LOOP N25 TIMES
@@ -259,6 +300,7 @@
 %          OUTPUT
 %        END LOOP
 ^^CR
+%        EVALUATE MATCHG = TRUE
 %     END BLOCK
 %     BLOCK       %VOLF - update vol fraction for current matrix.
 %       GET SILENT NOSTORE REAL ' ' '0.0'
@@ -305,6 +347,7 @@
 %         COPY 'TRANSFER FROM OFFSET=8 TO MATRIX:A33'
 %         COPY 'WRITE'
 %         COPY 'END'
+%         EVALUATE DPV = DPV + 9
 %         COPY '#MATRIX'
 %         COPY 'SCR2A'
 %         COPY 'INV'
@@ -325,50 +368,98 @@
 %         COPY 'TRANSFER TO OFFSET=6 FROM MATRIX:M31'
 %         COPY 'TRANSFER TO OFFSET=7 FROM MATRIX:M32'
 %         COPY 'TRANSFER TO OFFSET=8 FROM MATRIX:M33'
+%         EVALUATE DPV = DPV + 9
 %       END LOOP
 %       COPY 'WRITE'
 %       COPY 'END'
 %%
 %% Update L5 ELEMENT card.
 %%
-% IF ( ( EXISTS 5 ) .NE. 0 ) THEN
-%   COPY '#GENERALEDIT 5'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%   COPY 'LOCATE RECORDTYPE=105'
-%% Insert new record.
-%   COPY 'TRANSHEAD TO OFFSET=22 FROM N25'
-%   COPY 'INSERT'
-%   IF NEL .GT. 0 THEN
-%% Remove old record
-%     COPY 'DELETE'
-%   END IF
-%   COPY 'TRANSHEAD TO OFFSET=22 FROM N25'
-%   COPY 'TOP'
-%   LOOP N25 TIMES
-%     CASE LOOPCOUNTER
-%       COPY 'TRANSFER TO OFFSET = 0 FRO EL1'  
-%       COPY 'TRANSFER TO OFFSET = 1 FRO EL2'
-%       COPY 'TRANSFER TO OFFSET = 2 FRO EL3'
-%       COPY 'TRANSFER TO OFFSET = 3 FRO EL4'
-%       COPY 'TRANSFER TO OFFSET = 4 FRO EL5'
-%       COPY 'TRANSFER TO OFFSET = 5 FRO EL6'
-%       COPY 'TRANSFER TO OFFSET = 6 FRO EL7'
-%       COPY 'TRANSFER TO OFFSET = 7 FRO EL8'
-%       COPY 'TRANSFER TO OFFSET = 8 FRO EL9'
-%     END CASE
-%   END LOOP
-%   COPY 'WRITE'
-%   COPY 'END'
-% END IF
+%       IF ( ( EXISTS 5 ) .NE. 0 ) THEN
+%% Calculate total of vol fractions.
+%         EVALUATE VOLF = 0.0
+%         LOOP N25 TIMES
+%           CASE LOOPCOUNTER
+%             EVALUATE VOLF = VOLF + EL1
+%             EVALUATE VOLF = VOLF + EL2
+%             EVALUATE VOLF = VOLF + EL3
+%             EVALUATE VOLF = VOLF + EL4
+%             EVALUATE VOLF = VOLF + EL5
+%             EVALUATE VOLF = VOLF + EL6
+%             EVALUATE VOLF = VOLF + EL7
+%             EVALUATE VOLF = VOLF + EL8
+%             EVALUATE VOLF = VOLF + EL9
+%           END CASE
+%         END LOOP
 %%
-% IF ( TWINNED ) THEN
+%% If volume fraction is insignificant, reset all values.
+%%
+%         IF ( VOLF .LE. 0.01 ) THEN
+%           EVALUATE EL1 = 1.
+%           EVALUATE EL2 = 1.
+%           EVALUATE EL3 = 1.
+%           EVALUATE EL4 = 1.
+%           EVALUATE EL5 = 1.
+%           EVALUATE EL6 = 1.
+%           EVALUATE EL7 = 1.
+%           EVALUATE EL8 = 1.
+%           EVALUATE EL9 = 1.
+%           EVALUATE VOLF = REAL N25
+%         END IF
+%%
+%% Normalise the fractions so that they add up to 1.
+%%
+%         LOOP N25 TIMES
+%           CASE LOOPCOUNTER
+%             EVALUATE EL1 = EL1 / VOLF
+%             EVALUATE EL2 = EL2 / VOLF
+%             EVALUATE EL3 = EL3 / VOLF
+%             EVALUATE EL4 = EL4 / VOLF
+%             EVALUATE EL5 = EL5 / VOLF
+%             EVALUATE EL6 = EL6 / VOLF
+%             EVALUATE EL7 = EL7 / VOLF
+%             EVALUATE EL8 = EL8 / VOLF
+%             EVALUATE EL9 = EL9 / VOLF
+%           END CASE
+%         END LOOP
+%%
+%         COPY '#GENERALEDIT 5'
+%         COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%         COPY 'LOCATE RECORDTYPE=105'
+%% Insert new record.
+%         COPY 'TRANSHEAD TO OFFSET=22 FROM N25'
+%         COPY 'INSERT'
+%         IF NEL .GT. 0 THEN
+%% Remove old record
+%           COPY 'DELETE'
+%         END IF
+%         COPY 'TRANSHEAD TO OFFSET=22 FROM N25'
+%         COPY 'TOP'
+%         LOOP N25 TIMES
+%           CASE LOOPCOUNTER
+%             COPY 'TRANSFER TO OFFSET = 0 FRO EL1'  
+%             COPY 'TRANSFER TO OFFSET = 1 FRO EL2'
+%             COPY 'TRANSFER TO OFFSET = 2 FRO EL3'
+%             COPY 'TRANSFER TO OFFSET = 3 FRO EL4'
+%             COPY 'TRANSFER TO OFFSET = 4 FRO EL5'
+%             COPY 'TRANSFER TO OFFSET = 5 FRO EL6'
+%             COPY 'TRANSFER TO OFFSET = 6 FRO EL7'
+%             COPY 'TRANSFER TO OFFSET = 7 FRO EL8'
+%             COPY 'TRANSFER TO OFFSET = 8 FRO EL9'
+%           END CASE
+%         END LOOP
+%         COPY 'WRITE'
+%         COPY 'END'
+%       END IF
+%%
+%       IF ( TWINNED ) THEN
 %%  The reflection list may already be twinned format.
 %%  Need to revert using PRETWIN6.DAT, if it doesn't exist, it is
 %%  too risky to continue.
-%   IF FILEEXISTS 'pretwin6.dat' .EQ. TRUE THEN
-{I * Temporarily restoring orignal (untwinned) hkl data.
-%     COPY '#USE pretwin6.dat'
-%   ELSE
+%         IF FILEEXISTS 'pretwin6.dat' .EQ. TRUE THEN
+{S * Temporarily restoring orignal (untwinned) hkl data.
+%           COPY '#USE pretwin6.dat'
+%         ELSE
 {E There is a problem:
 {I  It appears that you are trying to add/change a twin law in a model that
 {I  already contains two or more twin components. (reason: the TWINNED
@@ -384,39 +475,111 @@
 
 {R  The easiest solution is to import your original reflection data (X-ray
 {R  data menu), and then run this script again.
-%   END IF
-% ELSE
+%         END IF
+%       ELSE
 %%  The reflection list is not already twinned format.
 %%  Write a pretwin6.dat for later recovery.
 {S * Backing-up the existing observations to 'pretwin6.dat'
-%   COPY '#RELEASE PUNCH pretwin6.dat'
-%           COPY '#PUNCH 6 C'
-%           COPY 'END'
-% END IF
+%         COPY '#RELEASE PUNCH pretwin6.dat'
+%         COPY '#PUNCH 6 C'
+%         COPY 'END'
+%       END IF
 {S * Converting the reflection list to twinned (FOT) format.
-%           COPY '#LIST 6'
-%           COPY 'READ TYPE=TWIN'
-%           CLEAR
-%           INSERT 'MATRIX TWINTOL='
+%       COPY '#LIST 6'
+%       COPY 'READ TYPE=TWIN'
+%       CLEAR
+%       INSERT 'MATRIX TWINTOL='
 ^^?? TOL25 TEXT
-%           GET SILENT REAL ' ' '0.0'
-%           SEND
-%           COPY 'END'
-%           EVALUATE QTITLE = 'View List 6?'
-%           EVALUATE QLINE1 = 'Do you want to look at the reflection'
-%           EVALUATE QLINE2 = 'file to verify the ELEMENT assignments?'
-%           EVALUATE BUTTOK = '&Yes'
-%           EVALUATE BUTTXX = '&No'
-%           COPY '#SCRIPT XQUESTIO'
-%           IF ANSWER .EQ. TRUE THEN
-%              COPY '#SCRIPT VULIST6' 
-%           END IF
-%           FINISH
+%       GET SILENT REAL ' ' '0.0'
+%       SEND
+%       COPY 'END'
+%       EVALUATE QTITLE = 'View List 6?'
+%       EVALUATE QLINE1 = 'Do you want to look at the reflection'
+%       EVALUATE QLINE2 = 'file to verify the ELEMENT assignments?'
+%       EVALUATE BUTTOK = '&Yes'
+%       EVALUATE BUTTXX = '&No'
+%       COPY '#SCRIPT XQUESTIO'
+%       IF ANSWER .EQ. TRUE THEN
+%          COPY '#SCRIPT VULIST6' 
+%       END IF
 ^^CO    DISPOSE ED25
 %       FINISH
 %     END BLOCK
-%   END CASE
+%     BLOCK       %ANA25 - analysis of current twin law.
+%       COPY 'TRANSFER FROM OFFSET=0 TO MATRIX:A11'
+%       COPY 'TRANSFER FROM OFFSET=1 TO MATRIX:A12'
+%       COPY 'TRANSFER FROM OFFSET=2 TO MATRIX:A13'
+%       COPY 'TRANSFER FROM OFFSET=3 TO MATRIX:A21'
+%       COPY 'TRANSFER FROM OFFSET=4 TO MATRIX:A22'
+%       COPY 'TRANSFER FROM OFFSET=5 TO MATRIX:A23'
+%       COPY 'TRANSFER FROM OFFSET=6 TO MATRIX:A31'
+%       COPY 'TRANSFER FROM OFFSET=7 TO MATRIX:A32'
+%       COPY 'TRANSFER FROM OFFSET=8 TO MATRIX:A33'
+%       COPY 'WRITE'
+%       COPY 'END'
+%       EVALUATE DPV = 5001
+%       COPY '#MATRIX'
+%       COPY 'SCR2A'
+%       COPY 'INV'
+%       COPY 'END'
+%       IF ( MATRIX:DET * MATRIX:DET .LT. 0.000001 ) THEN
+%        EVALUATE QTITLE = 'Singular matrix'
+%        EVALUATE QLINE1 = 'The matrix being analysed has a determinant of'
+%        EVALUATE QLINE2 = 'zero. This is not a valid twin law.'
+%        EVALUATE BUTTOK = 'OK'
+%        COPY '#SCRIPT XMESSAGE'
+%       ELSE
+^^WI WINDOW xtwinlaw 'Twin law analysis' MODAL LARGE KEEP SIZE
+^^WI COMMIT='TLA_BOK' CANCEL='TLA_BOK'
+^^WI GRID MAIN NROWS=2 NCOLS=1
+^^WI {
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
+^^WI  {
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI   {
+^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=1
+^^WI    {
+^^WI     @ 1,1 STATIC XFW1
+^^WI 'Every reflection is transformed by the twin law provided (R.h) and the'
+^^WI     @ 2,1 STATIC XFW2
+^^WI 'distance to the nearest reciprocal lattice point computed. The'
+^^WI     @ 3,1 STATIC XFW3
+^^WI 'distribution is plotted below (in reciprocal Angstroms).'
+^^WI     @ 4,1 STATIC XFW4
+^^WI 'Use it to estimate a tolerance parameter for assigning twin elements.'
+^^WI    }
+^^WI    @ 1,1 ICON IM INFO
+^^WI   }
+^^WI   @ 4,2 PLOTWINDOW _TLA NROWS=20 NCOLS=64
+^^WI  }
+^^WI  @ 2,1 PROGRESS _TLAPR 'Please wait'
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDPROGRESSTO _TLAPR
+%        COPY '#TWIN'
+%        COPY 'OUTPUT PLOT=YES'
+%        CLEAR
+%        INSERT 'MATRIX '
+%        STORE REAL MATRIX:A11
+%        STORE REAL MATRIX:A21
+%        STORE REAL MATRIX:A31
+%        STORE REAL MATRIX:A12
+%        SEND
+%        CLEAR
+%        INSERT 'CONT '
+%        STORE REAL MATRIX:A22
+%        STORE REAL MATRIX:A32
+%        STORE REAL MATRIX:A13
+%        STORE REAL MATRIX:A23
+%        STORE REAL MATRIX:A33
+%        SEND
+%        COPY 'END'
+%        GET NOSTORE SILENT TEXT ' ' ' '
+^^CO DISPOSE xtwinlaw
+%       END IF
+%     END BLOCK
+%  END CASE
 % END LOOP
-% GET NOSTORE TEXT ' ' ' '
 %END SCRIPT
                                   
