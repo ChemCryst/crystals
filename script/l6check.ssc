@@ -1,15 +1,23 @@
 %SCRIPT L6CHECK
 %%
+% VARIABLE LOGICAL XXX
+% EVALUATE XXX = FALSE
 %%
 % IF ( EXISTS  1 .NE. 1 ) THEN
-{I No cell paramters - Use 'X-ray Data' on the menu bar to input them.
+%  EVALUATE XXX = TRUE
 % END IF
 %%
 % IF ( EXISTS  2 .NE. 1 ) THEN
-{I No Space Group    - Use 'X-ray Data' on the menu bar to input one.
+%  EVALUATE XXX = TRUE
 % END IF
 %%
 % IF ( EXISTS  6 .NE. 1 ) THEN
-{I No reflections    - Use 'X-ray Data' on the menu bar to input them.
+%  EVALUATE XXX = TRUE
 % END IF
+%%
+% IF ( XXX ) THEN
+{I To input initial data (cell, space group, etc.) use the X-ray Data menu.
+
+% END IF
+%%
 %END SCRIPT

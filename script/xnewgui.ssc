@@ -1,50 +1,23 @@
 %SCRIPT NEWGUI
 %% SET VERIFY TRUE
- For help getting started with CRYSTALS see the primer.
-    click here:          {&"crysdir:manual/primer-1.html"{&
-    or here:      {&http://www.xtl.ox.ac.uk/primer-1.html{&
- Additional help may be available in the list of FAQs:
-                            {&"crysdir:manual/faq-1.html"{&
-    or here:         {&http://www.xtl.ox.ac.uk/faq-1.html{&
-
- Problems using or installing crystals? Click to email either:
-{&mailto:richard.cooper@chem.ox.ac.uk{& {&mailto:david.watkin@chem.ox.ac.uk{&
- and quickly explain the problem. Feedback helps us to improve the
- software and maintain the FAQ list.
- Report bugs by clicking here: {&http://www.xtl.ox.ac.uk/bug.html{&
-________________________________________________________________________
+ For getting started, reporting bugs etc. see the CRYSTALS Wiki
+ {&http://www.xtl.ox.ac.uk/wiki.html{& or check the manuals
+ {&"crysdir:manual/primer-1.html"{& and FAQs {&"crysdir:manual/faq-1.html"{&
+ Send problems or feedback to {&mailto:richard.cooper@chem.ox.ac.uk{& or
+ {&mailto:david.watkin@chem.ox.ac.uk{&.
+ ===================================================================
 % IF ( EXISTS  5 .NE. 1 ) THEN
 %% Make the model disappear in case we are restarting in a new directory.
 ^^GR MODEL L5
 ^^GR SHOW
 ^^CR
-{S * There are no atoms available for the Model window
+{I Easily imported data formats: INS/RES & HKL, CAD4, DIP, Kappa CCD cif.
+{R Run CRYSTALS in a separate folder for the each structure studied.
+{I To import SHELX INS/HKL files, choose X-ray Data->Import SHELX file.
+{I For Kappa CCD data choose X-ray Data->Pre-process->Run KCCDin. 
+{I All data is collected and stored in crfilev2.dsc in the current folder.
 
-{I The easiest data formats to start with are CAD4 data, DIP data, or
-{I SHELX ins or res and hkl files.
-
-{R Before you start CRYSTALS make a new directory and copy your data into it.
-{R Choose this directory when you start CRYSTALS.
-
-{I For {2,14SHELX{I files, you will need to know the space group. On the
-{I menu choose X-ray Data -> SHELX ins or res and follow the instructions.
-{I Then choose X-ray Data -> Reflections to read in the HKL file.
-
-{I For {2,14CAD4{I data, use the external program RC93 ( choose X-ray Data ->
-{I Pre-process -> Run RC93. 
-
-{I For {2,14DIP{I data, use the external program DIPIN ( choose X-ray Data ->
-{I Pre-process -> Run Dipin. 
-
-{I For {2,14Kappa CCD{I data, use the external program KCCDIN ( choose X-ray
-{I Data -> Pre-process -> Run KCCDin. 
-
-{I Once your data has been read in by CRYSTALS, it is stored in a binary file
-{I in your working directory. Next time you start CRYSTALS, you can continue
-{I where you left off.
-
-{R             Click "Guide" on the toolbar (or "Refinement->The Guide"
-{R                  in the menu), for advice on what to do next.
-
+{R     Click "Guide" on the toolbar (or "Refinement->The Guide"
+{R          in the menu), for advice on what to do next.
 % END IF
 %END SCRIPT
