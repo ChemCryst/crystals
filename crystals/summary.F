@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2002/03/15 11:11:25  richard
+C Ensure List 1 is loaded before calling KALLOW.
+C
 C Revision 1.24  2002/03/13 12:36:23  richard
 C Removed calls to XGDBUP (now obsolete).
 C
@@ -2283,6 +2286,7 @@ C
 CODE FOR XSGDST
       SUBROUTINE XSGDST
       DIMENSION KSIGS(100)
+      CHARACTER *15 HKLLAB
 \ISTORE
 \STORE
 \XLST06
@@ -2297,7 +2301,7 @@ CODE FOR XSGDST
 \XIOBUF
 \QSTORE
 \QLST30
-      DATA ICOMSZ / 1 /
+      DATA ICOMSZ / 2 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -2311,7 +2315,8 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF ( I .LT. 0 ) GO TO 9910
 
-      IPLOT = ISTORE(ICOMBF)
+      IPLOT1 = ISTORE(ICOMBF)
+      IPLOT2 = ISTORE(ICOMBF+1)
 
       CALL XFAL06 (0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
@@ -2328,7 +2333,16 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       NALLOW = 0
 
       ISTAT = KLDRNR(0)
-      IF ( KALLOW(IN).EQ. 0 )NALLOW = NALLOW + 1 
+      IF ( KALLOW(IN).EQ. 0 ) NALLOW = NALLOW + 1 
+
+      IF (IPLOT2 .EQ. 1) THEN
+        WRITE(CMON,'(A,6(/A))')
+     1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES',
+     1  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=1',
+     1  '^^PL LENGTH=2000 YAXIS TITLE ''I/sigma(I)'''
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+
 
       DO WHILE ( ISTAT .GE. 0 )
         N6ACC = N6ACC + 1
@@ -2336,14 +2350,28 @@ C -- SCAN LIST 6 FOR REFLECTIONS
         JSIGS = 1 + NINT( (2.*FOS)/SIGMA )
         JSIGS = MAX(JSIGS,1)
         IF ( JSIGS .LE. 100 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
+        IF ( IPLOT2 .EQ. 1 ) THEN
+          WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+          CALL XCRAS(HKLLAB, IHKLLEN)
+          WRITE(CMON,'(3A,F10.2,F8.3)')
+     1     '^^PL LABEL ''', HKLLAB(1:IHKLLEN),
+     2     ''' DATA ', STORE(M6+16) , FOS/SIGMA
+          CALL XPRVDU(NCVDU, 1,0)
+        END IF
         ISTAT = KLDRNR(0)
         IF ( KALLOW (IN) .EQ. 0 ) NALLOW = NALLOW + 1
-
       END DO
 
+      IF ( IPLOT2 .EQ. 1 ) THEN
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      END IF
+
+ 
       NTOT = N6ACC
 
-      IF (IPLOT .EQ. 1) THEN
+      IF (IPLOT1 .EQ. 1) THEN
         WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _SIGLEVL BARGRAPH ATTACH _VSIGLEVL KEY',
      1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=2 LENGTH=100',
@@ -2353,7 +2381,6 @@ C -- SCAN LIST 6 FOR REFLECTIONS
      1  '^^PL SERIES 2 SERIESNAME ''Observations > I/sigma(I)''',
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
-
 
         DO I = 1, 100
           WRITE(CMON,'(A,1X,F4.1,1X,A,1X,I6,1X,I8)')
@@ -2392,3 +2419,4 @@ C -- INPUT ERRORS
       RETURN
 
       END
+
