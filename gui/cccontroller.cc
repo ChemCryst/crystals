@@ -1,3 +1,4 @@
+
 ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CcController
@@ -10,8 +11,14 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  1999/05/28 17:52:00  dosuser
+// RIC: Attempted world record for most number of files
+// checked in at once. Most changes are to do with adding
+// support for a LINUX windows library. Nothing has broken
+// in the windows version. As far as I can see.
+//
 // Revision 1.6  1999/05/13 17:46:00  dosuser
-// RIC: Fixed argument passing to ciendthread( long )
+// RIC: Fixed argument passing to endthread( long )
 //      Added SysRestart token and a member variable to store the
 //      path of the directory to restart in.
 //      Moved Mutex to after the thread status check otherwise it is never
@@ -55,6 +62,7 @@ HANDLE mCrystalsThreadIsLocked;
 #endif
 #ifdef __LINUX__
 #include <wx/thread.h>
+#include <wx/settings.h>
 static wxMutex mInterfaceCommandQueueMutex;
 static wxMutex mCrystalsCommandQueueMutex;
 static wxMutex mCrystalsCommandQueueEmptyEvent;
@@ -62,10 +70,12 @@ static wxMutex mLockCrystalsQueueDuringQueryMutex;
 static wxMutex mCrystalsThreadIsLocked;
 #endif
 
+
+
 CcController* CcController::theController = nil;	
 
 extern "C" {
-void	ciendthread(		long theExitcode );
+void  endthread(            long theExitcode );
 }
 
 CcController::CcController( CxApp * appContext )
@@ -74,7 +84,7 @@ CcController::CcController( CxApp * appContext )
 //Things
 	mAppContext = appContext;
 	mErrorLog = nil;
-	mThisThreadisDead = FALSE;
+      mThisThreadisDead = false;
 
       m_newdir = "";
       m_restart = false;
@@ -111,13 +121,13 @@ CcController::CcController( CxApp * appContext )
 // Win32 specific: Set up MUTEXES for synchronising threads.
 // ie. Only one thread at a time can access the command and interface queues to prevent corruption.
 // (as long as they use them!) See {Add/Get}InterfaceCommand and {Add/Get}CrystalsCommand.
-	mInterfaceCommandQueueMutex        = CreateMutex(NULL, FALSE, NULL);
-	mCrystalsCommandQueueMutex         = CreateMutex(NULL, FALSE, NULL);
-	mLockCrystalsQueueDuringQueryMutex = CreateMutex(NULL, FALSE, NULL);
-	mCrystalsThreadIsLocked            = CreateMutex(NULL, FALSE, NULL);
+      mInterfaceCommandQueueMutex        = CreateMutex(NULL, false, NULL);
+      mCrystalsCommandQueueMutex         = CreateMutex(NULL, false, NULL);
+      mLockCrystalsQueueDuringQueryMutex = CreateMutex(NULL, false, NULL);
+      mCrystalsThreadIsLocked            = CreateMutex(NULL, false, NULL);
 	WaitForSingleObject( mLockCrystalsQueueDuringQueryMutex, INFINITE ); //We want this all the time.
 
-	mCrystalsCommandQueueEmptyEvent    = CreateEvent(NULL, TRUE, FALSE, NULL);
+      mCrystalsCommandQueueEmptyEvent    = CreateEvent(NULL, true, false, NULL);
 
 #endif
 
@@ -167,7 +177,9 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 		mCommandHistoryList.RemoveItem();
 	}
 
-	delete (CxGrid::mp_font);
+#ifdef __WINDOWS__
+      delete (CxGrid::mp_font);
+#endif
 
 }
 
@@ -205,6 +217,9 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 						delete wPtr;
 				}
 				break;
+#ifdef __LINUX__
+                        cerr << "Back in cccontroller::parseinput\n";
+#endif
 			}
 			case kTDisposeWindow:
 			{
@@ -272,7 +287,7 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				}
 				else
 				{
-					SendCommand("FALSE",true); //This can be used to check if an object exists.
+                              SendCommand("FALSE",true); //This can be used to check if an object exists.
 					LOGWARN( "CcController:ParseInput:GetValue couldn't find object with name '" + name + "'");
 				}
 				break;
@@ -367,12 +382,12 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				CcString description = tokenList->GetToken();	// Get the extension description
 				if ( tokenList->GetDescriptor(kAttributeClass) == kTTitleOnly)
 				{	
-					mAppContext->OpenFileDialog(&result, extension, description, TRUE);
+                              mAppContext->OpenFileDialog(&result, extension, description, true);
 					tokenList->GetToken(); //Remove token
 				}
 				else
 				{
-					mAppContext->OpenFileDialog(&result, extension, description, FALSE);
+                              mAppContext->OpenFileDialog(&result, extension, description, false);
 				}
 				SendCommand(result);
 				break;
@@ -501,23 +516,32 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 
 }
 
-Boolean	CcController::ParseLine( char * text )
+Boolean     CcController::ParseLine( CcString text )
 {
 
-	int start = 0, stop = 0, i;
+      int start = 1, stop = 1, i;
 	Boolean inSpace = true;
 	Boolean inDelimiter = false;
-	
-	for (i=1;i< (int)strlen( text ) + 1; i++ )
+
+      int clen = text.Len();
+
+      for (i=1; i <= clen; i++ )
 	{
 		if ( inDelimiter )
 		{
 			if ( IsDelimiter( text[i-1] ) )  // end of item
 			{
-				stop = i;
-				AppendToken(text, start, stop ) ;// add item to token list
-
-				// init values
+                        stop = i-1;
+// we could have an empty string ie. '' so check before crashing the program.
+						if ( stop < start )
+						{
+	                        AppendToken("") ;// add item to token list
+						}
+						else
+						{
+							AppendToken(text.Sub(start,stop) ) ;// add item to token list
+						}
+// Reset values
 				start = stop = 0;
 				inDelimiter = false;
 				inSpace = true;
@@ -530,9 +554,9 @@ Boolean	CcController::ParseLine( char * text )
 				if ( ! inSpace )
 				// end of item
 				{
-					stop = i;
+                              stop = i-1;
 					// add item to token list
-					AppendToken(text, start, stop );
+                              AppendToken(text.Sub(start,stop) );
 				
 					// init values
 					start = stop = 0;
@@ -559,10 +583,10 @@ Boolean	CcController::ParseLine( char * text )
 	if ( ! inSpace && start != 0 )
 	{
 //		stop = i-1;
-		stop = i;
+		stop = i-1;
 
 		// add item to token list
-		AppendToken(text, start, stop );
+            AppendToken(text.Sub(start,stop) );
 	}
 	return true; // *** for now
 //End of user code.         
@@ -579,68 +603,93 @@ void	CcController::SendCommand( CcString command , Boolean jumpQueue)
 void	CcController::Tokenize( char * text )
 {
 	Boolean proc = false, stop = false;
-	
+
+      CcString cText = text;
+
 //This is a considerable overhead for intensive bits of code, let's
 //leave it out for now { 
+      int j = 1;
+      int clen = cText.Len();
 
-	// First preflight for misplaced selectors
-	for ( int j=0; (stop != true) && (j < (int)strlen(text)-1); j++ )
+      for ( j = 1; ( j < clen-1 ); j++ )
 	{
-		if ( strncmp( text + j, "^^", 2) == 0 )
-//			*(text + j)		== '^'
-//			&&	*(text + j + 1) == '^')
-		{
-			char buf [256];
-			strcpy( buf, (char *)(text + j) );
-			strcpy( text, buf );
-			stop = true;
-		}
-	}
+            if ( cText.Sub(j,j+1) == "^^" )
+            {
+                  cText = cText.Sub(j,clen-1);
+                  j = clen;
+            }
+      }
 
+//      // First preflight for misplaced selectors
+//      for ( int j=0; (stop != true) && (j < (int)strlen(text)-1); j++ )
+//      {
+//            if ( strncmp( text + j, "^^", 2) == 0 )
+//            {
+//                  char buf [256];
+//                  strcpy( buf, (char *)(text + j) );
+//                  strcpy( text, buf );
+//                  stop = true;
+//            }
+//      }
+//
 
 //	TRACE("This is the text after first flight %s \n",text);
 	
-	if ( strlen( text ) >= 4 && strncmp( text, "^^", 2 ) == 0 )
+      if ( cText.Len() >= 4 && cText.Sub(1,2) == "^^" )
+//      if ( strlen( text ) >= 4 && strncmp( text, "^^", 2 ) == 0 )
 	// It is definitely tagged text
 	{
 		// Get the selector and determine list to use
-		if       ( strncmp( (char *)(text + 2), kSWindowSelector, 2 ) == 0 )  //Windows
+//            if       ( strncmp( (char *)(text + 2), kSWindowSelector, 2 ) == 0 )  //Windows
+            if      ( cText.Sub(3,4) == kSWindowSelector ) 
 		{
 			mCurTokenList = mWindowTokenList;
-			ParseLine( (char *)(text + 4) );
+//                  ParseLine( (char *)(text + 4) );
+                  ParseLine( cText.Chop(1,4) );
 		}
-		else if  ( strncmp( (char *)(text + 2), kSChartSelector, 2 ) == 0 )   //Charts (ChartDoc)
+//            else if  ( strncmp( (char *)(text + 2), kSChartSelector, 2 ) == 0 )   //Charts (ChartDoc)
+            else if      ( cText.Sub(3,4) == kSChartSelector ) 
 		{
 			mCurTokenList = mChartTokenList;
-			ParseLine( (char *)(text + 4) );
+//                  ParseLine( (char *)(text + 4) );
+                  ParseLine( cText.Chop(1,4) );
 		}
-		else if  ( strncmp( (char *)(text + 2), kSModelSelector, 2 ) == 0 )   //Models (ModelDoc)
+//            else if  ( strncmp( (char *)(text + 2), kSModelSelector, 2 ) == 0 )   //Models (ModelDoc)
+            else if      ( cText.Sub(3,4) == kSModelSelector ) 
 		{
 			mCurTokenList = mModelTokenList;
-			ParseLine( (char *)(text + 4) );
+//                  ParseLine( (char *)(text + 4) );
+                  ParseLine( cText.Chop(1,4) );
 		}
-		else if  ( strncmp( (char *)(text + 2), kSStatusSelector, 2 ) == 0 )  //Status (CcStatus)
+//            else if  ( strncmp( (char *)(text + 2), kSStatusSelector, 2 ) == 0 )  //Status (CcStatus)
+            else if      ( cText.Sub(3,4) == kSStatusSelector ) 
 		{
 			mCurTokenList = mStatusTokenList;
-			ParseLine( (char *)(text + 4) );
+//                  ParseLine( (char *)(text + 4) );
+                  ParseLine( cText.Chop(1,4) );
 		}
-		else if ( strncmp( (char *)(text + 2), kSControlSelector, 2 ) == 0 )  //CR closes any input stream.
+//            else if ( strncmp( (char *)(text + 2), kSControlSelector, 2 ) == 0 )  //CR closes any input stream.
+            else if      ( cText.Sub(3,4) == kSControlSelector ) 
 		{
 			while ( ParseInput( mCurTokenList ) );
 		}
-		else if  ( strncmp( (char *)(text + 2), kSOneCommand, 2 ) == 0 ) //Quick one liner commands, usually from Crystals itself rather than scripts.
+//            else if  ( strncmp( (char *)(text + 2), kSOneCommand, 2 ) == 0 ) //Quick one liner commands, usually from Crystals itself rather than scripts.
+            else if      ( cText.Sub(3,4) == kSOneCommand ) 
 		{																 //Avoids breaking up (and corrupting) the incoming streams from scripts.
 			mTempTokenList = mCurTokenList;
 			mCurTokenList  = mQuickTokenList;
-			ParseLine( (char *)(text + 4) );
+//                  ParseLine( (char *)(text + 4) );
+                  ParseLine( cText.Chop(1,4) );
 			while ( ParseInput( mQuickTokenList ) );
 			mCurTokenList  = mTempTokenList;
 		}
-		else if  ( strncmp( (char *)(text + 2), kSQuerySelector, 2 ) == 0 )  //Windows
+//            else if  ( strncmp( (char *)(text + 2), kSQuerySelector, 2 ) == 0 )  //Windows
+            else if      ( cText.Sub(3,4) == kSQuerySelector ) 
 		{
 			mTempTokenList = mCurTokenList;
 			mCurTokenList  = mQuickTokenList;
-			ParseLine( (char *)(text + 4) );
+//                  ParseLine( (char *)(text + 4) );
+                  ParseLine( cText.Chop(1,4) );
 			GetValue( mQuickTokenList ) ;
 			mCurTokenList  = mTempTokenList;
 			//We must now signal the waiting Crystals thread that it's input is ready.
@@ -654,9 +703,12 @@ void	CcController::Tokenize( char * text )
 	}
 	else                                             // Simple output text or comment
 	{
-			long len = strlen( text );
-			mAppContext->ProcessOutput( &len, text );
+                  mAppContext->ProcessOutput( cText );
 	}
+
+#ifdef __LINUX__
+            cerr << "Exiting Tokenize\n";
+#endif
 }
 
 Boolean	CcController::IsSpace( char c )
@@ -676,18 +728,22 @@ Boolean	CcController::IsDelimiter( char c )
 	return ( c == kQuoteChar ) ;
 }
 
-void	CcController::AppendToken( char * text, int start, int stop )
+void  CcController::AppendToken( CcString text  )
 {
 
-	char s[255];
-	strncpy( s, &text[start-1], stop - start );
+//      char s[255];
+//      strncpy( s, &text[start-1], stop - start );
 	
 	// *** TODO uppercase ? //This will uppercase all button text etc. Not pleasing. Do it in CcTokenList instead.
-	s[stop - start] = '\0';
+//      s[stop - start] = '\0';
 	
-	CcString * theString = new CcString( s );	
-	mCurTokenList->AddItem( theString );
+// Copy the string onto the heap, so that it will hang around.
 
+      CcString * theString = new CcString( text );
+
+// Add it to the tokenlist.
+
+	mCurTokenList->AddItem( theString );
 }
 
 void	CcController::AddCrystalsCommand( char * line, Boolean jumpQueue)
@@ -698,7 +754,7 @@ void	CcController::AddCrystalsCommand( char * line, Boolean jumpQueue)
 	if(strncmp(line,"_MAIN CLOSE",11) == 0)
 	{
 		AddInterfaceCommand("^^CO DISPOSE _MAIN ");
-		mThisThreadisDead = TRUE;
+            mThisThreadisDead = true;
 		return; //Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
 	}	
 // 2. Input text from the user to crystals (send text and clear the edit box).
@@ -773,7 +829,7 @@ void	CcController::AddInterfaceCommand( char * line )
 #ifdef __WINDOWS__
 	WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
 #endif
-	if(mThisThreadisDead) ciendthread(0);
+      if(mThisThreadisDead) endthread(0);
 
 	mInterfaceCommandQueue.SetCommand( CcString(line) );
 	
@@ -795,7 +851,7 @@ void	CcController::AddInterfaceCommand( char * line )
 #endif
 //This MUTEX is not normally owned. It stops the interface thread from
 //reclaiming the LockCrystalsQueue...Mutex before this thread gets it.
-			if(mThisThreadisDead) ciendthread(0);
+                  if(mThisThreadisDead) endthread(0);
 
 //We (CRYSTALS) must wait here until the answer to this query has been put at the front
 //of the command queue.
@@ -805,7 +861,7 @@ void	CcController::AddInterfaceCommand( char * line )
 //This MUTEX is always held by the interface thread. It is released
 //temporarily by the interface thread after processing a ^^?? instruction.
 //It is reclaimed once the mCrystalsThreadIsLocked mutex is released by this thread.
-			if(mThisThreadisDead) ciendthread(0);
+                  if(mThisThreadisDead) endthread(0);
 
 #ifdef __WINDOWS__
 			ReleaseMutex( mLockCrystalsQueueDuringQueryMutex ); //Release and continue
@@ -855,8 +911,8 @@ Boolean	CcController::GetCrystalsCommand( char * line )
 	LOGSTAT("!!!Crystals thread: Got command: "+ CcString(line));
 
 //Signal the text output that NOECHO has finished. (In case it was ever started.)
-	((CrMultiEdit*)GetTextOutputPlace())->NoEcho(FALSE);
-	((CrMultiEdit*)GetBaseTextOutputPlace())->NoEcho(FALSE);
+      ((CrMultiEdit*)GetTextOutputPlace())->NoEcho(false);
+      ((CrMultiEdit*)GetBaseTextOutputPlace())->NoEcho(false);
 	return (true);
 }
 
@@ -882,7 +938,7 @@ Boolean	CcController::GetInterfaceCommand( char * line )
       if(threadStatus != STILL_ACTIVE)
 #endif
 #ifdef __LINUX__
-      if ( temp->IsAlive() )
+      if ( ! (temp->IsAlive()) )
 #endif
       {
             if ( m_restart )
@@ -893,7 +949,7 @@ Boolean	CcController::GetInterfaceCommand( char * line )
                  return (false);
             }
 
-		mThisThreadisDead = TRUE;
+            mThisThreadisDead = true;
 		strcpy(line,"^^CO DISPOSE _MAIN ");
 		return (true);
 	}
@@ -922,6 +978,68 @@ Boolean	CcController::GetInterfaceCommand( char * line )
 	}
 }
 
+Boolean     CcController::GetInterfaceCommand( CcString * line )
+{
+	//This routine gets called repeatedly by the Idle loop.
+	//It needn't be highly optimised even though it is high on
+	//the profile count list.
+
+#ifdef __WINDOWS__
+	DWORD threadStatus;
+	CWinThread *temp = CxApp::mCrystalsThread;
+#endif
+#ifdef __LINUX__
+      int threadStatus;
+      wxThread *temp = CxApp::mCrystalsThread;
+#endif
+
+	if(temp != nil)
+
+#ifdef __WINDOWS__
+	GetExitCodeThread(temp->m_hThread,&threadStatus);
+      if(threadStatus != STILL_ACTIVE)
+#endif
+#ifdef __LINUX__
+      if ( ! (temp->IsAlive()) )
+#endif
+      {
+            if ( m_restart )
+            {
+                 mAppContext->ChangeDir( m_newdir );
+                 mAppContext->StartCrystalsThread();
+                 m_restart = false;
+                 return (false);
+            }
+
+            mThisThreadisDead = true;
+            *line = "^^CO DISPOSE _MAIN ";
+		return (true);
+	}
+
+	
+#ifdef __WINDOWS__
+      WaitForSingleObject( mInterfaceCommandQueueMutex, INFINITE );
+#endif 
+	
+	if ( ! mInterfaceCommandQueue.GetCommand( line ) )
+	{
+//            strcpy( line, "" );
+             *line = "";
+#ifdef __WINDOWS__
+		ReleaseMutex( mInterfaceCommandQueueMutex );
+#endif
+            return (false);
+	}
+	else
+	{
+            LOGSTAT("CcController:GetInterfaceCommand Getting this command: "+ *line);
+#ifdef __WINDOWS__
+		ReleaseMutex( mInterfaceCommandQueueMutex );
+#endif
+            return (true);
+	}
+}
+
 void	CcController::LogError( CcString errString , int level )
 {
 	if ( mErrorLog == nil )
@@ -938,6 +1056,10 @@ void	CcController::LogError( CcString errString , int level )
 	}
 	fprintf( mErrorLog, "%s\n", errString.ToCString() );
 	fflush( mErrorLog );
+
+      #ifdef __LINUX__
+            cerr << errString.ToCString() << "\n";
+      #endif
 }
 
 
@@ -1078,6 +1200,15 @@ CcRect CcController::GetScreenArea()
 				screenRect.bottom,
 				screenRect.right);
 #endif
+#ifdef __LINUX__
+      wxSystemSettings ss;
+      retVal.mTop = 0;
+      retVal.mLeft = 0;
+      retVal.mBottom = ss.GetSystemMetric(wxSYS_SCREEN_Y);
+      retVal.mRight = ss.GetSystemMetric(wxSYS_SCREEN_X);
+
+      cerr << "Screen Area: " << retVal.mRight << "," << retVal.mBottom << "\n";
+#endif
 	return retVal;
 }
 
@@ -1116,8 +1247,7 @@ void CcController::History(Boolean up)
 
 void CcController::OutputToScreen(CcString text)
 {
-			long len = text.Length();
-			mAppContext->ProcessOutput( &len, (char*) text.ToCString() );
+                  mAppContext->ProcessOutput( text );
 }
 
 void CcController::GetValue(CcTokenList * tokenList)
