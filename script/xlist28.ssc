@@ -1,7 +1,7 @@
 %SCRIPT XLIST28
 % VARIABLE LOGICAL LNEWRAT LNEWRHO
 % VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT
-% VARIABLE INTEGER NOMITS  NCONDS
+% VARIABLE INTEGER NOMITS  NCONDS  FTYPE
 % VARIABLE CHARACTER CW
 % VARIABLE REAL RW OMH OMK OML
 % EVALUATE NOMITS = 0
@@ -12,10 +12,18 @@
 % IF ( EXISTS 28 .NE. 1 ) THEN
 %%   No list 28 - recommended defaults:
 {R There are no conditions in the current list 28.
-%%{R A default sigma cutoff and sin theta/lambda squared cutoff
-%%{R will be set.
+%% FIND OUT IF F OR FSQ REFINEMENT
+%    COPY '#GENERALEDIT 23'
+%    COPY 'LOCATE RECORDTYPE=103'
+%    COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
+%    COPY 'END'
 %    COPY '#LIST 28'
-%%%    COPY 'MINIMA RATIO=3.0 SINT=0.01'
+%    IF FTYPE .NE. 0 THEN
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
+%      COPY 'MINIMA RATIO=3.0'
+%    END IF
+{I A default sin(theta)/lambda minimum of 0.01 is recommended.
+%    COPY 'MINIMA SINT=0.01'
 %    COPY 'END'
 % END IF
 %%
