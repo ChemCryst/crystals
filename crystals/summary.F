@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.54  2004/02/16 14:17:05  rich
+C Output list of missing reflections to GUI during #THLIM calculation, if
+C requested.
+C
 C Revision 1.53  2003/12/10 09:12:40  rich
 C CDD: change to summary.src in new XSUM42 code to get it to compile on Linux.
 C
@@ -2928,7 +2932,9 @@ CODE FOR XSGDST
       SUBROUTINE XSGDST
       DIMENSION KSIGS(110)
       DIMENSION LSIGS(25,3)
+      DIMENSION MSIGS(120)
       CHARACTER *15 HKLLAB
+      PARAMETER ( RTDIV = 19.09859 ) ! Radians to divisions.
 \ISTORE
 \STORE
 \XLST06
@@ -2943,7 +2949,7 @@ CODE FOR XSGDST
 \XIOBUF
 \QSTORE
 \QLST30
-      DATA ICOMSZ / 3 /
+      DATA ICOMSZ / 4 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -2960,13 +2966,17 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       IPLOT1 = ISTORE(ICOMBF)
       IPLOT2 = ISTORE(ICOMBF+1)
       ITYP06 = ISTORE(ICOMBF+2)
+      IPLOT3 = ISTORE(ICOMBF+3)
+
       IULN = KTYP06(ITYP06)
       CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
 
-
       DO I = 1,110
         KSIGS(I) = 0
+      END DO
+      DO I = 1,120
+        MSIGS(I) = 0
       END DO
       DO I = 1,3
         DO J = 1,25
@@ -2979,12 +2989,17 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       NTOT = 0
       NALLOW = 0
 
-      ISTAT = KLDRNR(0)
-      IF ( KALLOW(IN).EQ. 0 ) NALLOW = NALLOW + 1 
 
 
 
-      DO WHILE ( ISTAT .GE. 0 )
+      DO WHILE ( KLDRNR(0) .GE. 0 )
+
+        IF ( KALLOW(IN).EQ. 0 ) THEN
+          NALLOW = NALLOW + 1
+          JSIGS = MIN( 120, MAX( 1, NINT(60 + RTDIV * STORE(M6+6)) ) )
+          MSIGS(JSIGS) = MSIGS(JSIGS) + 1
+        END IF
+
         NTOT = NTOT + 1
         CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
         JSIGS = 10 + NINT( (2.*FOS)/SIGMA )
@@ -2995,12 +3010,11 @@ C -- SCAN LIST 6 FOR REFLECTIONS
         JSIGS = 3
         IF ( SIGNOI .LT. 10 ) JSIGS = 2
         IF ( SIGNOI .LT. 3 ) JSIGS = 1
-        MSIGS = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
-        MSIGS = MAX ( 1,MSIGS )
-        MSIGS = MIN ( 25,MSIGS )
-        LSIGS(MSIGS,JSIGS) = LSIGS(MSIGS,JSIGS) + 1
-        ISTAT = KLDRNR(0)
-        IF ( KALLOW (IN) .EQ. 0 ) NALLOW = NALLOW + 1
+        MSIG = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
+        MSIG = MAX ( 1,MSIG )
+        MSIG = MIN ( 25,MSIG )
+        LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
+
       END DO
 
 
@@ -3041,6 +3055,24 @@ C -- SCAN LIST 6 FOR REFLECTIONS
      1    '^^PL LABEL',(I-11)*.5,'DATA',KSIGS(I),NTOT
           CALL XPRVDU(NCVDU,1,0)
           NTOT = NTOT - KSIGS(I)
+        END DO
+
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+
+      END IF
+
+      IF (IPLOT3 .EQ. 1) THEN
+        WRITE(CMON,'(A,2(/A))')
+     1  '^^PL PLOTDATA _PHASED BARGRAPH ATTACH _VPHASED',
+     1  '^^PL XAXIS TITLE ''Phase'' NSERIES=1 LENGTH=100',
+     1  '^^PL YAXIS TITLE ''Number of observations'''
+        CALL XPRVDU(NCVDU, 3,0)
+
+        DO I = 1, 120
+          WRITE(CMON,'(A,1X,I4,1X,A,1X,I6)')
+     1    '^^PL LABEL',(I-60)*3,'DATA',MSIGS(I)
+          CALL XPRVDU(NCVDU,1,0)
         END DO
 
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
