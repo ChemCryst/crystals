@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2001/01/15 12:12:54  richard
+C RIC: Prevent array overflow if too many contacts are found to an atom during
+C a bond search. (More than 500)
+C
 C Revision 1.29  2000/12/13 17:47:38  richard
 C Support for LINUX.
 C
@@ -1002,7 +1006,7 @@ C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 C           WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
             IF ( LSPARE ) THEN
-                  ISPARE = NINT(GSCALE* STORE(J+IOFF+9) /50.0)
+                  ISPARE = NINT(1000 * STORE(J+IOFF+9))
             ELSE
                   ISPARE = NINT(COV*GSCALE)
             END IF
