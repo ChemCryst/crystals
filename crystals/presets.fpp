@@ -1,3 +1,4 @@
+C $Log: not supported by cvs2svn $
 CODE FOR DATA
       BLOCK DATA CRYBLK
 C--PRESETS FOR THE CRYSTALS SYSTEM
@@ -1042,11 +1043,11 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
 &&DVFGID      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
 &&DVFGID      DATA ISSOPS(1) / ' WIN' / , ISSOPS(2) / '95  ' /
 &&DVFGID      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
-&&DVFGID      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '98  ' /
+&&DVFGID      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 &&GILLIN      DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
 &&GILLIN      DATA ISSOPS(1) / 'Linu' / , ISSOPS(2) / 'x   ' /
 &&GILLIN      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Jun' /
-&&GILLIN      DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '99  ' /
+&&GILLIN      DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 &VAX      DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
 &VAX      DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /
 &VAX      DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
