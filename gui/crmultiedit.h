@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   6.3.1998 00:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.12  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.11  2004/05/13 09:14:49  rich
 //   Re-invigorate the MULTIEDIT control. Currently not used, but I have
 //   something in mind for it.
@@ -27,6 +31,7 @@
 #define     __CrMultiEdit_H__
 #include    "crguielement.h"
 #include    "ccrect.h"
+#include <string>
 class CxMultiEdit;
 
 #define INPLAINTEXT 1
@@ -46,6 +51,7 @@ class CxMultiEdit;
             ~CrMultiEdit();
         CcParse ParseInput( deque<string> & tokenList );
         void    SetText ( const string &text );
+        void  GetValue(deque<string> & tokenList);
         void    SetGeometry( const CcRect * rect );
         CcRect  GetGeometry ();
         CcRect CalcLayout(bool recalculate=false);
@@ -63,7 +69,7 @@ class CxMultiEdit;
 
 enum {
  kTNoEcho     = 1900,
- kTSpew,
+ kTSpew
 };
 
 

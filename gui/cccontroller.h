@@ -62,8 +62,8 @@ class   CcController
     void RemoveDisableableButton ( CrButton * aButton );
 
     CrGUIElement* GetTextOutputPlace();
-    void SetTextOutputPlace(CrTextOut* outputPane);
-    void RemoveTextOutputPlace(CrTextOut* output);
+    void SetTextOutputPlace(CrGUIElement* outputPane);
+    void RemoveTextOutputPlace(CrGUIElement* output);
 
     CrGUIElement* GetProgressOutputPlace();
     void RemoveProgressOutputPlace(CrProgress* output);
@@ -163,7 +163,7 @@ class   CcController
     FILE *  mErrorLog;
 
     list<CrWindow*>  mWindowList;
-    list<CrTextOut*>  mTextOutputWindowList;
+    list<CrGUIElement*>  mTextOutputWindowList;
     list<CrProgress*>  mProgressOutputWindowList;
     list<CrEditBox*>  mInputWindowList;
 
@@ -262,6 +262,10 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.40  2004/06/29 15:15:29  rich
+//   Remove references to unused kTNoMoreToken. Protect against reading
+//   an empty list of tokens.
+//
 //   Revision 1.39  2004/06/28 13:26:57  rich
 //   More Linux fixes, stl updates.
 //

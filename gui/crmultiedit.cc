@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   06.3.1998 00:04 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.14  2004/05/13 09:14:49  rich
 //   Re-invigorate the MULTIEDIT control. Currently not used, but I have
 //   something in mind for it.
@@ -28,6 +32,7 @@
 
 #include    "crystalsinterface.h"
 #include <string>
+#include <sstream>
 using namespace std;
 
 #include    "crconstants.h"
@@ -50,6 +55,7 @@ CrMultiEdit::CrMultiEdit( CrGUIElement * mParentPtr )
 
 CrMultiEdit::~CrMultiEdit()
 {
+    mControllerPtr->RemoveTextOutputPlace(this);
     if ( ptr_to_cxObject != nil )
     {
         ((CxMultiEdit*)ptr_to_cxObject)->CxDestroyWindow();
@@ -158,12 +164,13 @@ CcParse CrMultiEdit::ParseInput( deque<string> &  tokenList )
                         ((CxMultiEdit*)ptr_to_cxObject)->Spew();
                         break;
                   }
-                  case kTEmpty:
-                  {
-                        tokenList.pop_front(); //Remove kTEmpty tokens.
-                        ((CxMultiEdit*)ptr_to_cxObject)->Empty();
-                        break;
-                  }
+            case kTEmpty:
+            {
+                   tokenList.pop_front(); //Remove kTEmpty tokens.
+                   ((CxMultiEdit*)ptr_to_cxObject)->Empty();
+                   break;
+            }
+
             default:
             {
                 hasTokenForMe = false;
@@ -184,6 +191,30 @@ void CrMultiEdit::SetText ( const string &cText )
                    ((CxMultiEdit*)ptr_to_cxObject)->SetText(cText+"\r\n");
       }
 }
+
+void  CrMultiEdit::GetValue( deque<string> &  tokenList )
+{
+      if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQNLines )
+      {
+            tokenList.pop_front();
+            int nL =  ((CxMultiEdit*)ptr_to_cxObject)->GetNLines();
+            ostringstream strm;
+            strm << nL;
+            SendCommand( strm.str(),true);
+      }
+      else if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQText )
+      {
+            tokenList.pop_front();
+            ((CxMultiEdit*)ptr_to_cxObject)->Spew();
+      }
+      else
+      {
+            SendCommand( "ERROR",true );
+            LOGWARN( "CrMultiEdit:GetValue Error unrecognised token." + tokenList.front() );
+            tokenList.pop_front();
+      }
+}
+
 
 void CrMultiEdit::Changed()
 {

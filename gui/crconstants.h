@@ -5,6 +5,10 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2004/06/29 15:15:30  rich
+// Remove references to unused kTNoMoreToken. Protect against reading
+// an empty list of tokens.
+//
 // Revision 1.19  2004/05/13 09:14:49  rich
 // Re-invigorate the MULTIEDIT control. Currently not used, but I have
 // something in mind for it.
@@ -122,6 +126,8 @@
 #define kSQNselected    "NSELECTED"
 #define kSQSelected "SELECTED"
 #define kSQState    "STATE"
+#define kSQNLines   "NLINES"
+
 #define kSHorizontal  "HORIZONTAL"
 #define kSVertical    "VERTICAL"
 #define kSBoth    "BOTH"
@@ -182,7 +188,8 @@ enum
  kTDefinePopupMenu,
  kTRemove,
  kTAttachModel,
- kTSave
+ kTSave,
+ kTQNLines
 };
 
 

@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.97  2004/07/02 12:34:03  rich
+// Fixed mis-parsing of short tokens. (eg. ^^CW on its own).
+//
 // Revision 1.96  2004/07/02 11:56:01  rich
 // remove unused variables
 //
@@ -1801,7 +1804,7 @@ void CcController::FocusToInput(char theChar)
     }
 }
 
-void CcController::SetTextOutputPlace(CrTextOut * outputPane)
+void CcController::SetTextOutputPlace(CrGUIElement * outputPane)
 {
     mTextOutputWindowList.push_back(outputPane);
 }
@@ -1839,7 +1842,7 @@ CrEditBox* CcController::GetInputPlace()
 
 
 
-void CcController::RemoveTextOutputPlace(CrTextOut* output)
+void CcController::RemoveTextOutputPlace(CrGUIElement* output)
 {
       mTextOutputWindowList.remove(output);
 }
@@ -3104,6 +3107,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(QNselected)
                else DESCRIPTOR(QSelected)
                else DESCRIPTOR(QState)
+               else DESCRIPTOR(QNLines)
 
       default:
                DESCRIPTOR(Null)

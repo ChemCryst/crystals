@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   5.3.1998 13:51 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.16  2004/05/13 09:14:49  rich
 //   Re-invigorate the MULTIEDIT control. Currently not used, but I have
 //   something in mind for it.
@@ -63,6 +67,7 @@ class CxMultiEdit : public BASEMULTIEDIT
         void            SetIdealWidth(int nCharsWide);
         void            SetIdealHeight(int nCharsHigh);
         void            SetFontHeight( int height );
+        int             GetNLines();
         void            CxDestroyWindow();
         int             GetIdealWidth();
         int             GetIdealHeight();

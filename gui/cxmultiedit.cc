@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.22  2004/05/17 13:44:56  rich
 //   Fixed Linux build.
 //
@@ -137,6 +141,16 @@ void  CxMultiEdit::SetText( const string & cText )
 }
 
 
+int CxMultiEdit::GetNLines()
+{
+ #ifdef __CR_WIN__
+    return GetLineCount();
+ #endif          
+ #ifdef __BOTHWX__
+    return GetNumberOfLines();
+ #endif
+}
+
 int CxMultiEdit::GetIdealWidth()
 {
     return mIdealWidth;
@@ -260,7 +274,14 @@ void CxMultiEdit::Spew()
        strcpy ( (char*)&theLine, aline.c_str() );
 #endif
        theLine[cp]='\0';
-       ((CrMultiEdit*)ptr_to_crObject)->SendCommand( string( theLine ));
+       string sline = string( theLine );
+       string::size_type cut;
+       string delimiters = "\r\n\0";
+       while ( ( cut = sline.find_first_of(delimiters) ) < sline.length() )
+       {
+          sline = sline.substr(0,cut);
+       }
+       ((CrMultiEdit*)ptr_to_crObject)->SendCommand( sline );
        line++;
     }
 }
