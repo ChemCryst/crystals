@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2001/07/16 07:18:27  ckp2
+// Prevent the fast calls from Cameron from directly accessing GUI drawing functions.
+// These should be from the main thread only.
+//
 // Revision 1.8  2001/03/08 16:44:01  richard
 // General changes - replaced common functions in all GUI classes by macros.
 // Generally tidied up, added logs to top of all source files.
@@ -33,7 +37,6 @@
 #include    "crconstants.h"
 #include    "ccchartdoc.h"
 #include    "crchart.h"
-#include    "crgraph.h"
 #include    "ccchartobject.h"
 #include    "cccontroller.h"
 
@@ -46,7 +49,6 @@ CcChartDoc::CcChartDoc( )
     mCommandList = new CcList();
     attachedChart = nil;
     mSelfInitialised = false;
-    mGraphPointer = nil;
         (CcController::theController)->mChartList.AddItem(this);
 }
 
@@ -65,8 +67,6 @@ CcChartDoc::~CcChartDoc()
     }
     delete mCommandList;
 
-    if(mGraphPointer != nil)
-        delete mGraphPointer;
 }
 
 Boolean CcChartDoc::ParseInput( CcTokenList * tokenList )
@@ -308,16 +308,6 @@ Boolean CcChartDoc::ParseInput( CcTokenList * tokenList )
                 }
                 break;
             }
-            case kTGraph:
-            {
-                tokenList->GetToken();
-                mGraphPointer = new CrGraph(this);
-                                (CcController::theController)->mGraphList.AddItem( mGraphPointer );
-                                mGraphPointer->ParseInput(tokenList);
-                break;
-            }
-
-
             default:
             {
                 hasTokenForMe = false;
@@ -339,8 +329,6 @@ void CcChartDoc::DrawView()
         {
             item->Draw(attachedChart);
         }
-        if(mGraphPointer != nil)
-            mGraphPointer->Draw(attachedChart);
 
         attachedChart->Display();
     }

@@ -5,7 +5,6 @@
 #include "cctokenlist.h"
 #include "crchart.h"
 #include "cccontroller.h"
-#include "ccquickdata.h"
 
 CcChartPoly::CcChartPoly(Boolean filled)
 {

@@ -8,6 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.23  2002/03/13 12:30:25  richard
+//   Speed up search for ^^ symbols.
+//   Introduce new ^^ command: ^^CW - like ^^CR it causes execution of anything
+//   built up in the current list of commands, but it also forces the CRYSTALS thread
+//   to wait until the execution is complete.
+//   Added function to OpenDirDialog to get the last structure directory used out
+//   of the ini file.
+//
 //   Revision 1.22  2001/10/10 12:44:49  ckp2
 //   The PLOT classes!
 //
@@ -72,7 +80,6 @@ class CcModelDoc;
 class CrWindow;
 class CcTokenList;
 class CrGUIElement;
-class CcQuickData;
 class CcMenuItem;
 class CcTool;
 class CrButton;
@@ -195,7 +202,6 @@ class   CcController
     CcString m_newdir;
     Boolean m_restart;
     Boolean m_Wait;
-    CcList  mGraphList;
     CcList  mChartList;
 
 #ifdef __CR_WIN__

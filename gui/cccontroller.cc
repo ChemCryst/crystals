@@ -9,6 +9,14 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.43  2002/03/13 12:30:25  richard
+// Speed up search for ^^ symbols.
+// Introduce new ^^ command: ^^CW - like ^^CR it causes execution of anything
+// built up in the current list of commands, but it also forces the CRYSTALS thread
+// to wait until the execution is complete.
+// Added function to OpenDirDialog to get the last structure directory used out
+// of the ini file.
+//
 // Revision 1.42  2002/03/12 17:46:50  ckp2
 // Special case spawing of html files containing #'s. Trim back to before #, find
 // associated application (iexplore, netscape, etc.), and then launch with original
@@ -243,9 +251,7 @@
 #include    "ccplotdata.h"
 #include    "ccchartdoc.h"
 #include    "ccmodeldoc.h"
-#include    "ccquickdata.h"
 #include    "ccchartobject.h"
-#include    "crgraph.h"
 #include    "crprogress.h"
 #include    "ccmenuitem.h"
 #include    "crtoolbar.h"
@@ -761,20 +767,6 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                         break;
                     }
 
-                    CrGraph * theGraph = nil, * theItem;
-                    mGraphList.Reset();
-                    theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                    while ( theItem != nil && theGraph == nil )
-                    {
-                        theGraph = theItem->FindObject( name );
-                        theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                    }
-                    if ( theGraph )
-                    {
-                        theGraph->ParseInput( tokenList );
-                        break;
-                    }
-
                     CcChartDoc * theChart = nil, * theCItem;
                     mChartList.Reset();
                     theCItem = (CcChartDoc *)mChartList.GetItemAndMove();
@@ -873,18 +865,7 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                                             theChart->Rename( tokenList->GetToken() );
                                       else
                                       {
-                                              CrGraph * theGraph = nil, * theItem;
-                                              mGraphList.Reset();
-                                              theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                                              while ( theItem != nil && theGraph == nil )
-                                              {
-                                                    theGraph = theItem->FindObject( name );
-                                                    theItem = (CrGraph *)mGraphList.GetItemAndMove();
-                                              }
-                                              if ( theGraph )
-                                                    theGraph->Rename( tokenList->GetToken() );
-                                              else
-                                                    LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
+                                          LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
                                       }
                                 }
                                 break;
@@ -3396,20 +3377,6 @@ extern "C" {
   #endif
 
   }
-
-  void FORCALL(newdata) (int isize, int* id)
-  {
-      CcQuickData* newdatablock = new CcQuickData(isize);
-      *id = (int)newdatablock;
-      return;
-  }
-
-  void FORCALL(datain) (int id, int *data, int offset, int nwords)
-  {
-      CcQuickData* olddatablock = (CcQuickData*) id;
-      olddatablock->AddData(data,offset,nwords);
-  }
-
 
 } // end of C functions
 

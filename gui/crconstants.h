@@ -5,6 +5,9 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2002/02/19 16:34:52  ckp2
+// Menus for plots.
+//
 // Revision 1.14  2001/10/10 12:44:50  ckp2
 // The PLOT classes!
 //
@@ -170,7 +173,6 @@ enum {
     kChartClass,
     kModelClass,
     kStatusClass,
-    kGraphClass,
     kPositionalClass,
     kQueryClass,
     kPlotClass
