@@ -16,7 +16,7 @@
 /********************************************************/
 /* DataMerger											*/
 /********************************************************/
-DataMerger::DataMerger(const HKLData& pData, const float pUnitCellThreshHold, const LaueGroupRange pLaueGroupRange, const UnitCell& pUnitCell):list<JJMergedDataResult*>()
+DataMerger::DataMerger(const HKLData& pData, const float pUnitCellThreshHold, const LaueGroupRange pLaueGroupRange, const UnitCell& pUnitCell):list<MergedDataResult*>()
 {
 	LaueGroups* tLaueGroups = new LaueGroups();
 	
@@ -28,13 +28,13 @@ DataMerger::DataMerger(const HKLData& pData, const float pUnitCellThreshHold, co
 			if (tCurLaueGroup->ratingForUnitCell(pUnitCell) < pUnitCellThreshHold) //If the unit cell fits well enough then do the merge
 			{
 				std::cout << "Unit cell rating " << tCurLaueGroup->ratingForUnitCell(pUnitCell) << "\n";
-				push_back(new JJMergedDataResult(pData, *tCurLaueGroup, pUnitCell));
+				push_back(new MergedDataResult(pData, *tCurLaueGroup, pUnitCell));
 			}
 		}
 	}
 }
 
-DataMerger::DataMerger(const HKLData& pData, const SystemID pForLaueGroups[], const unsigned int pNumberOfLaueGroups, const UnitCell& pUnitCell):list<JJMergedDataResult*>()
+DataMerger::DataMerger(const HKLData& pData, const SystemID pForLaueGroups[], const unsigned int pNumberOfLaueGroups, const UnitCell& pUnitCell):list<MergedDataResult*>()
 {
 	LaueGroups* tLaueGroups = new LaueGroups();
 	
@@ -43,7 +43,7 @@ DataMerger::DataMerger(const HKLData& pData, const SystemID pForLaueGroups[], co
 		LaueGroup *tCurLaueGroup;
 		for (size_t j = 0; (tCurLaueGroup = tLaueGroups->laueGroupAfterFirst(pForLaueGroups[i], j)) != NULL; j ++)
 		{
-			push_back(new JJMergedDataResult(pData, *tCurLaueGroup, pUnitCell));
+			push_back(new MergedDataResult(pData, *tCurLaueGroup, pUnitCell));
 		}
 	}
 	delete tLaueGroups;
@@ -51,7 +51,7 @@ DataMerger::DataMerger(const HKLData& pData, const SystemID pForLaueGroups[], co
 
 DataMerger::~DataMerger()
 {
-	list<JJMergedDataResult*>::iterator tIterator = begin();
+	list<MergedDataResult*>::iterator tIterator = begin();
 	
 	do
 	{
@@ -69,9 +69,9 @@ DataMerger::~DataMerger()
 /*------------------------------------------------*/
 SystemID DataMerger::mostLikelyCrysSystem()
 {
-	list<JJMergedDataResult*>::iterator tIterator = begin();
+	list<MergedDataResult*>::iterator tIterator = begin();
 	float tDifference =0;
-	JJMergedDataResult *tLast, *tCurrent, *tCurrentBest;
+	MergedDataResult *tLast, *tCurrent, *tCurrentBest;
 	
 	
 	tCurrentBest = *tIterator;
@@ -99,7 +99,7 @@ SystemID DataMerger::mostLikelyCrysSystem()
 
 std::ostream& operator<<(std::ostream& pStream, DataMerger& pMergerResults)
 {
-	list<JJMergedDataResult*>::iterator tIter = pMergerResults.begin();
+	list<MergedDataResult*>::iterator tIter = pMergerResults.begin();
 	
 	pStream.width(15);
 	pStream << "  Laue Group   |    R-Factor   \n";
@@ -116,10 +116,10 @@ std::ostream& operator<<(std::ostream& pStream, DataMerger& pMergerResults)
 }
 
 /********************************************************/
-/* JJMergedDataResult									*/
+/* MergedDataResult									*/
 /********************************************************/
 
-JJMergedDataResult::JJMergedDataResult(const HKLData& pData, const LaueGroup& pForLaueGroup, const UnitCell& pUnitCell)
+MergedDataResult::MergedDataResult(const HKLData& pData, const LaueGroup& pForLaueGroup, const UnitCell& pUnitCell)
 {
 	const size_t tStrLen = strlen(pForLaueGroup.laueGroup())+1;
 	
@@ -127,27 +127,27 @@ JJMergedDataResult::JJMergedDataResult(const HKLData& pData, const LaueGroup& pF
 	strcpy(iLaueGroupSymmetry, pForLaueGroup.laueGroup());
 	pCrystalSystem = pForLaueGroup.crystalSystem();
 	std::cout << "Merging for " << pForLaueGroup << "\n";
-	JJMergedData tJJMergedData(pData, pForLaueGroup);
-	iRFactor = tJJMergedData.rFactor();
+	MergedData tMergedData(pData, pForLaueGroup);
+	iRFactor = tMergedData.rFactor();
 }
 
-JJMergedDataResult::~JJMergedDataResult()
+MergedDataResult::~MergedDataResult()
 {
 	delete []iLaueGroupSymmetry;
 	iLaueGroupSymmetry = NULL;
 }
 
-SystemID JJMergedDataResult::crystalSystem() const
+SystemID MergedDataResult::crystalSystem() const
 {
 	return pCrystalSystem;
 }
 
-char* JJMergedDataResult::laueGroup() const
+char* MergedDataResult::laueGroup() const
 {
 	return iLaueGroupSymmetry;
 }
 
-float JJMergedDataResult::rFactor()const 
+float MergedDataResult::rFactor()const 
 {
 	return iRFactor;
 }
@@ -172,13 +172,13 @@ LaueGroup *MergedReflections::laueGroup()
 /* MergedData										    */
 /********************************************************/
 
-JJMergedData::JJMergedData(const HKLData& pHKLs, const LaueGroup& pForLaueGroup, Matrix<short>* pTransformation):iRFactor(-1)
+MergedData::MergedData(const HKLData& pHKLs, const LaueGroup& pForLaueGroup, Matrix<short>* pTransformation):iRFactor(-1)
 {
 	size_t tSize = pHKLs.size();
 	iUnsortedReflections = new Reflection[tSize];
 	iSortedReflections = new multiset<Reflection*, lsreflection>();
 	
-	for (int i = 0; i < tSize; i++) //Run through all the refelctions adding them
+	for (size_t i = 0; i < tSize; i++) //Run through all the refelctions adding them
 	{
 		Reflection* tCurrentReflection = pHKLs[i];
 		iUnsortedReflections[i] = (*tCurrentReflection); //Add it to the array.
@@ -193,7 +193,7 @@ JJMergedData::JJMergedData(const HKLData& pHKLs, const LaueGroup& pForLaueGroup,
 	}
 }
 
-void JJMergedData::mergeReflections(HKLData& pReflections) //Returns the merged reflections in pHKLs
+void MergedData::mergeReflections(HKLData& pReflections) //Returns the merged reflections in pHKLs
 {
 	static Matrix<short>* tCurHKL;
 	multiset<Reflection*, lsreflection>::iterator tIter; //Start at the first 
@@ -219,7 +219,7 @@ void JJMergedData::mergeReflections(HKLData& pReflections) //Returns the merged 
 	}//Move on to the next reflection in the list.
 }
 
-JJMergedData::~JJMergedData()
+MergedData::~MergedData()
 {
 	delete[] iUnsortedReflections;
 	iUnsortedReflections = NULL;
@@ -241,7 +241,7 @@ float JJsumdiff(Array<float>& pValues, float pMean)
     return tTotal;
 }
 
-float JJMergedData::rFactor() 
+float MergedData::rFactor() 
 {
 	static Matrix<short>* tCurHKL;
 	static Array<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
