@@ -224,3 +224,9 @@ int HKLData::numberOfReflections() const
     return iReflectionList->length();
 }
 
+float resipSphVol(float pAngRad, float pWaveLength)
+{
+    float tBragg = 2*sin(pAngRad)/pWaveLength;
+    tBragg = tBragg * tBragg * tBragg;
+    return 4.1888 * tBragg; // 4/3* PI = 4.1888
+}
