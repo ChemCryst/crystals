@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2003/11/04 16:14:01  rich
+C If F000 is integer, output as integer.
+C
 C Revision 1.67  2003/11/04 15:58:26  rich
 C 1) Move 'Sheldrick geometric definitions' to correct place
 C in the CIF.
@@ -1123,7 +1126,7 @@ C
 C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
 C                         END OF PAGE.
 C
-      CHARACTER CLINE *160, CTEM *4, CHTML*20, CASRF*7
+      CHARACTER CLINE *160, CTEM *4, CHTML*20, CSGRD*4, CTU*2, CP*1
 \TSSCHR
 \ISTORE
 C
@@ -1197,7 +1200,9 @@ C----- CAPTIONS FOR CIF FILE
         WRITE( NCFPU1, 902)
 902     FORMAT ('_atom_site_occupancy'/
      1 '_atom_site_adp_type'  /
-     1 '_atom_site_refinement_flags'  /
+     1 '_atom_site_refinement_flags_posn'  /
+     1 '_atom_site_refinement_flags_adp'  /
+     1 '_atom_site_refinement_flags_occupancy'  /
      2 '_atom_site_attached_hydrogens' )
 
       ELSE IF (IPCHCO .EQ. 3) THEN    !HEADERS FOR HTML TABLE
@@ -1402,17 +1407,34 @@ C----- ORDINARY PUNCH LISTING
         ELSE IF (IPCHCO .EQ. 2) THEN
 C----- CIF PUNCH LISTING
 
-C Work out the _atom_site_refinement_flags for this atom.
-            NASRF = 0
-            WRITE(CASRF(1:1),'(A)') '.'  ! Default is '.'
-            DO MASRF = 1,7
-              IF ( AND (KBREFB(MASRF),ISTORE(M5+15)) .GT. 0 ) THEN
-                NASRF=NASRF+1
-                WRITE(CASRF(NASRF:NASRF),'(A1)')KBCIFF(MASRF:MASRF)
+C Work out the _atom_site_refinement_flags_posn for this atom.
+            NSGRD = 0
+            WRITE(CSGRD(1:1),'(A)') '.'  ! Default is '.'
+            DO MFLG = 4,1,-1
+              IF ( AND (KBREFB(MFLG),ISTORE(M5+15)) .GT. 0 ) THEN
+                NSGRD=NSGRD+1
+                WRITE(CSGRD(NSGRD:NSGRD),'(A1)')KBCIFF(MFLG:MFLG)
               END IF
             END DO
-            NASRF = MAX(NASRF,1)  ! Ensure at least one char is printed
+            NSGRD = MAX(NSGRD,1)  ! Ensure at least one char is printed
+C Work out the _atom_site_refinement_flags_adp for this atom.
+            NSGTU = 0
+            WRITE(CTU(1:1),'(A)') '.'  ! Default is '.'
+            DO MFLG = 5,6
+              IF ( AND (KBREFB(MFLG),ISTORE(M5+15)) .GT. 0 ) THEN
+                NSGTU=NSGTU+1
+                WRITE(CTU(NSGTU:NSGTU),'(A1)')KBCIFF(MFLG:MFLG)
+              END IF
+            END DO
+            NSGTU = MAX(NSGTU,1)  ! Ensure at least one char is printed
+C Work out the _atom_site_refinement_flags_occupancy for this atom.
+            WRITE(CP(1:1),'(A)') '.'  ! Default is '.'
+            IF ( AND (KBREFB(7),ISTORE(M5+15)) .GT. 0 ) THEN
+              WRITE(CP(1:1),'(A)') 'P' 
+            END IF
+C
             WRITE(CLINE,'(160A1)') LINEC
+C Ensure second character of element type is lowercase.
 C RIC01 Find second space in string:
             ISTRIC = MAX(1,KCCEQL(CLINE,1,' '))+1
             ISTRIC = MAX(1,KCCNEQ(CLINE,ISTRIC,' '))+1
@@ -1422,7 +1444,8 @@ C            IST = KCCNEQ (CLINE, 1, ' ')+1
             CALL XCTRIM (CLINE,NCHAR)
             CLINE(NCHAR+1:NCHAR+4) = CTEM
             CALL XCREMS( CLINE, CLINE, NCHAR)
-            WRITE(NCFPU1,'(A,1X,2A)') CLINE(1:NCHAR),CASRF(1:NASRF),' .'
+            WRITE(NCFPU1,'(A,4(1X,A))') CLINE(1:NCHAR),
+     1      CSGRD(1:NSGRD),CTU(1:NSGTU),CP,'.'
         ENDIF
 1550    FORMAT(2X,118A1)
         NL=NL+1
@@ -3474,7 +3497,7 @@ C----- IDENTITY
 C
 C----- VALUE AND ESD
       CALL XFILL (IB, IVEC, 20)
-      CALL SNUM ( TERM, ESD, -3, 0, 8, IVEC )
+      CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
       WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
       CALL XCRAS ( CBUF, N)
       CLINE(J:J+N-1) = CBUF(1:N)
