@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/03/28 12:49:43  richard
+C Fixed call to KDIST1 that had an 'O' instead of a '0' in the argument list.
+C This is the sort of thing that crashes spacecraft and gives Fortran a bad name.
+C
 C Revision 1.9  2001/03/26 16:40:26  richard
 C Increased possible path length from 32 to 64 for RIDEH.DAT output.
 C
@@ -1145,8 +1149,8 @@ C
 \ISTORE
 \STORE
 \XDSTNC
-        COMMON /XPROCC/DISTS(4),LN1,ITYPE,NATOM,ILIST,ISEQ,D3,AMULT,
-     2  IACT, ISYMOD, ITRANS
+      COMMON /XPROCC/DISTS(4),LN1,LN2,ITYPE,NATOM,ILIST,ISEQ,D3,AMULT,
+     2 IACT, ISYMOD, ITRANS
         COMMON /XDISTW/A,BB,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,
      2  W,X,Y
 \XWORKA
@@ -1203,8 +1207,8 @@ C
 \ISTORE
 \STORE
 \XDSTNC
-        COMMON /XPROCC/DISTS(4),LN1,ITYPE,NATOM,ILIST,ISEQ,D3,AMULT,
-     2  IACT, ISYMOD, ITRANS
+      COMMON /XPROCC/DISTS(4),LN1,LN2,ITYPE,NATOM,ILIST,ISEQ,D3,AMULT,
+     2 IACT, ISYMOD, ITRANS
         COMMON /XDISTW/A,BB,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,
      2  W,X,Y
 \XWORKA
@@ -1216,13 +1220,14 @@ C
 \QSTORE
 C
 C        EQUIVALENCE (TOLER, DISTS(4))
-        DATA TOLER /0.6/, ITRANS / 0 /
         DATA ICARB / 'C  ' /
 C       USE THE SHORTEST CONTACT FROM THE FIRST DISTANCE STACK
 C       AS A PIVOT FOR A NEW STACK. SEARCH THIS NEW STACK FOR
 C       AN ATOM IN COMMON WITH THE FIRST. CHOOSE A NON-H ATOM
 C       IF POSSIBLE. THIS COMMON ATOM IS 'R2' IN THE H22 OR
 C       H33 COMMAND.
+        TOLER = 0.6
+        ITRANS = 0
         ISEC = -1000
 C----SAVE OLD TARGET
         M5B=M5A
