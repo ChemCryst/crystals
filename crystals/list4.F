@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2001/11/13 12:16:13  ckp2
+C RC: Fix graphical output when there is no data for a given bin.
+C
 C Revision 1.19  2001/11/13 10:53:51  ckpgroup
 C SH: Log axis scaling fixed.
 C
@@ -2674,11 +2677,12 @@ C--AGREEEMNT ANALYSIS ON REFLECTION CLASSES
       WRITE(NCWU,1000)(NOPE(J,30),J=1,4),KM
       ENDIF
 
-      WRITE(CMON,'(A,/,A,/,A)')
-     1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS XTITLE HKL_Class',
+      WRITE(CMON,'(A,/,A,/,A,/,A)')
+     1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS ',
+     1  '^^PL XTITLE ''HKL Class''',
      1	'^^PL NSERIES=2 LENGTH=16 LOG YTITLE <Fo-Fc>**2',
      1  '^^PL ZOOM 0 0 0.01 100'
-      CALL XPRVDU(NCVDU, 3,0)
+      CALL XPRVDU(NCVDU, 4,0)
 
       L=ICLS
 C**   ASSIGN 4400 TO K3 ! MARKUS NEUBURGER
@@ -2734,7 +2738,7 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
 
       WRITE(CMON,'(A,/,A,/,A)')
      1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VPAR YTITLE <Fo-Fc>**2',
-     1 '^^PL LOG NSERIES=2 LENGTH=8 XTITLE Parity_Group',
+     1 '^^PL LOG NSERIES=2 LENGTH=8 XTITLE ''Parity Group''',
      1 '^^PL ZOOM 0 0 0.01 100'
       CALL XPRVDU(NCVDU, 3,0)
 
@@ -2799,11 +2803,12 @@ C--- OUTPUT TO SCREEN
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 
-      WRITE(CMON,'(A,/,A,/,A)') 
+      WRITE(CMON,'(A,/,A,/,A,/,A)') 
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO',
-     1 '^^PL NSERIES=2 LENGTH=16 LOG XTITLE Fo_Range',
+     1 '^^PL NSERIES=2 LENGTH=16 LOG ',
+     1 '^^PL XTITLE ''<-Strong            Fo Range            Weak->''',
      1 '^^PL YTITLE <Fo-Fc>**2 ZOOM 0 0 0.01 100'
-      CALL XPRVDU(NCVDU, 3,0)
+      CALL XPRVDU(NCVDU, 4,0)
 
 4910  FORMAT ( 1X , '  Range  Number  <FO>     <FC>    ' ,
      2 ' <delsq>  <wdelsq>  R    RW Log<wdelsq>' )
@@ -2908,11 +2913,12 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
       WRITE(NCWU,1000)(NOPE(J,2),J=1,4),KM
       ENDIF
 
-      WRITE(CMON,'(A,/,A,/,A)')
+      WRITE(CMON,'(A,/,A,/,A,/,A)')
      1 '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSINT YTITLE <Fo-Fc>**2',
-     1 '^^PL LOG NSERIES=2 LENGTH=8 XTITLE Sin(theta)/lambda',
+     1 '^^PL LOG NSERIES=2 LENGTH=8',
+     1'^^PL XTITLE ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1 '^^PL ZOOM 0 0 0.01 100'
-      CALL XPRVDU(NCVDU, 3,0)
+      CALL XPRVDU(NCVDU, 4,0)
 
       IF (MONIT .NE. 1) THEN
       WRITE(CMON,'(A)')' Agreement analysis on [sin(theta)/lambda]sq'
