@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2003/02/20 16:04:10  rich
+C Don't put prompt in the text output in the GUI version. However, we may
+C set the "STATIC" text object XPRMPT to the prompt text.
+C
 C Revision 1.38  2003/01/21 12:54:11  rich
 C Commented out swathes of unused code in order to shrink
 C the executable a bit.
@@ -340,6 +344,10 @@ C Update status information for GUI.
       ENDIF
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
+
+&&GIDGIL      WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
+&&GIDGIL      CALL XPRVDU(NCVDU,1,0)
+
 C
       IF ( ISTAT .LT. 0 ) GO TO 9910
       IF ( ISTAT .EQ. 0 ) GO TO 3000
