@@ -120,7 +120,7 @@ MatrixReader::~MatrixReader()
 
 int MatrixReader::countNumberOfRows(char* pString)
 {
-    size_t tMatches = 3;
+    const size_t tMatches = 3;
     regmatch_t tMatch[tMatches];
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
     if (regexec(iFirstLineRE, pString, tMatches, tMatch, 0))
@@ -132,7 +132,7 @@ int MatrixReader::countNumberOfRows(char* pString)
 
 int MatrixReader::countNumberOfColumns(char** pString)	//Returns the place where it reached the end of the row
 {
-    size_t tMatches = 5;
+    const size_t tMatches = 5;
     regmatch_t tMatch[tMatches];
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
     if (regexec(iFirstNumRE, *pString, tMatches, tMatch, 0))
@@ -165,7 +165,7 @@ int MatrixReader::countMaxNumberOfColumns(char* pString)
 
 void MatrixReader::fillMatrix(char* pLine, int pX, int pY)
 {    
-    size_t tMatches = 6;
+    const size_t tMatches = 6;
     regmatch_t tMatch[6];
     bzero(tMatch, sizeof(regmatch_t)*6);
     if (regexec(iFirstNum2RE, pLine, tMatches, tMatch, 0))
