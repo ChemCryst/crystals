@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2003/03/25 14:02:35  rich
+C Move DELRHOMIN/MAX back to their original locations in LIst 30.
+C
 C Revision 1.51  2003/02/20 16:05:21  rich
 C Ridiculous number of changes - mainly additions apropos the HTML output.
 C
@@ -4467,8 +4470,10 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
            CALL XPCIF (' ')
            CALL XPCIF (' ')
         END IF
- 
-        CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, 0, IULN)
+
+        INRIC = 0
+
+        CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, INRIC, IULN)
 
         IF ( IPUNCH .EQ. 0 ) THEN
            CBUF(1:21)='_diffrn_reflns_theta_'

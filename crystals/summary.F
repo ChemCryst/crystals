@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/03/25 14:02:35  rich
+C Move DELRHOMIN/MAX back to their original locations in LIst 30.
+C
 C Revision 1.40  2003/02/25 15:32:50  rich
 C Don't clear IERFLG on exit from summary routines - the script wants
 C to know.
@@ -957,10 +960,11 @@ C
 C
 
 CODE FOR XTHETA
-      FUNCTION XTHETA()
+      FUNCTION XTHETA(I)
 \XLST13
 \STORE
 \XCONST
+\XLST06
       ST = SQRT ( ABS ( SNTHL2(I) ) ) * STORE(L13DC)
       IF ( ST .GT. 1.0 ) THEN
         XTHETA = 90.0
@@ -1033,8 +1037,8 @@ C -- SCAN LIST 6 FOR ALL REFLECTIONS
           IKTOT = IKTOT + 1
           IKLAST = NINT(STORE(M6+1))
         END IF
-        THMAX = MAX ( THMAX, XTHETA() )
-        THMIN = MIN ( THMIN, XTHETA() )
+        THMAX = MAX ( THMAX, XTHETA(IKTOT) )
+        THMIN = MIN ( THMIN, XTHETA(IKTOT) )
       GO TO 1100
 
 1200  CONTINUE
@@ -1044,36 +1048,38 @@ C See if there is a higher possible IMAXH
       STORE(M6+1) = 0.0
       STORE(M6+2) = 0.0
       ICHG = 1
-      DO WHILE ( ICHG .NE. 0 )
+      ICOUNT = 1
+      DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
+        ICOUNT = ICOUNT + 1
         ICHG = 0
         STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA() .LT. THMAX ) THEN
+        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
           ICHG = 1
           IMAXH = NINT ( STORE(M6) )
         ELSE
           STORE(M6) = STORE(M6) - 1.0
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+1) = STORE(M6+1) + 1.0
           END IF
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+2) = STORE(M6+2) + 1.0
@@ -1086,36 +1092,38 @@ C See if there is a lower possible IMINH
       STORE(M6+1) = 0.0
       STORE(M6+2) = 0.0
       ICHG = 1
-      DO WHILE ( ICHG .NE. 0 )
+      ICOUNT = 1
+      DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
+        ICOUNT = ICOUNT + 1
         ICHG = 0
         STORE(M6) = STORE(M6) - 1.0
-        IF ( XTHETA() .LT. THMAX ) THEN
+        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
           ICHG = 1
           IMINH = NINT ( STORE(M6) )
         ELSE
           STORE(M6) = STORE(M6) + 1.0
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+1) = STORE(M6+1) + 1.0
           END IF
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+2) = STORE(M6+2) + 1.0
@@ -1128,36 +1136,38 @@ C See if there is a higher possible IMAXK
       STORE(M6+1) = IMAXK
       STORE(M6+2) = 0.0
       ICHG = 1
-      DO WHILE ( ICHG .NE. 0 )
+      ICOUNT = 1
+      DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
+        ICOUNT = ICOUNT + 1
         ICHG = 0
         STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA() .LT. THMAX ) THEN
+        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
           ICHG = 1
           IMAXK = NINT ( STORE(M6+1) )
         ELSE
           STORE(M6+1) = STORE(M6+1) - 1.0
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6) = STORE(M6) + 1.0
           END IF
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+2) = STORE(M6+2) + 1.0
@@ -1170,36 +1180,38 @@ C See if there is a higher possible IMINK
       STORE(M6+1) = IMINK
       STORE(M6+2) = 0.0
       ICHG = 1
-      DO WHILE ( ICHG .NE. 0 )
+      ICOUNT = 1
+      DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
+        ICOUNT = ICOUNT + 1
         ICHG = 0
         STORE(M6+1) = STORE(M6+1) - 1.0
-        IF ( XTHETA() .LT. THMAX ) THEN
+        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
           ICHG = 1
           IMINK = NINT ( STORE(M6+1) )
         ELSE
           STORE(M6+1) = STORE(M6+1) + 1.0
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6) = STORE(M6) + 1.0
           END IF
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+2) = STORE(M6+2) + 1.0
@@ -1212,36 +1224,38 @@ C See if there is a higher possible IMAXL
       STORE(M6+1) = 0.0
       STORE(M6+2) = IMAXL
       ICHG = 1
-      DO WHILE ( ICHG .NE. 0 )
+      ICOUNT = 1
+      DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
+        ICOUNT = ICOUNT + 1
         ICHG = 0
         STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA() .LT. THMAX ) THEN
+        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
           ICHG = 1
           IMAXL = NINT ( STORE(M6+2) )
         ELSE
           STORE(M6+2) = STORE(M6+2) - 1.0
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+1) = STORE(M6+1) + 1.0
           END IF
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6) = STORE(M6) + 1.0
@@ -1254,43 +1268,44 @@ C See if there is a lower possible IMINL
       STORE(M6+1) = 0.0
       STORE(M6+2) = IMINL
       ICHG = 1
-      DO WHILE ( ICHG .NE. 0 )
+      ICOUNT = 1
+      DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
+        ICOUNT = ICOUNT + 1
         ICHG = 0
         STORE(M6+2) = STORE(M6+2) - 1.0
-        IF ( XTHETA() .LT. THMAX ) THEN
+        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
           ICHG = 1
           IMINL = NINT ( STORE(M6+2) )
         ELSE
           STORE(M6+2) = STORE(M6+2) + 1.0
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6+1) = STORE(M6+1) + 1.0
           END IF
         END IF
 
-        STO = XTHETA()
+        STO = XTHETA(ICHG)
         STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA() .LT. STO ) THEN
+        IF ( XTHETA(ICHG) .LT. STO ) THEN
           ICHG = 1
         ELSE
           STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA() .LT. STO ) THEN
+          IF ( XTHETA(ICHG) .LT. STO ) THEN
             ICHG = 1
           ELSE
             STORE(M6) = STORE(M6) + 1.0
           END IF
         END IF
       END DO
-
 
 c      ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
       ITRSZ = IHTOT
@@ -1299,9 +1314,11 @@ c      ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
 C If THBEST is -ve, its absolute value will be used, and it
 C will not be optimised.
 
+
       IF(STORE(L30CF+10).LT.0.0) THEN
          STORE(L30CF+10)=MAX(STORE(L30CF+10),-THMAX)
          THBEST = -STORE(L30CF+10)
+
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
      1            THBEST, THBCMP, THDUM,THDUM2,-1,IULN)
          STORE(L30CF+11)=THBCMP
@@ -1322,6 +1339,7 @@ C will not be optimised.
 
       STORE(L30CF+9)=THMCMP
 
+
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 
       RETURN
@@ -1341,6 +1359,7 @@ CODE FOR XCOMPL
       DIMENSION IHKLTR ( 3, ITRSZ + 1 )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
+
 
       DO I = 1, 100
         ALLBIN(I) = 0.0
@@ -1380,7 +1399,7 @@ C Loop through ALL possible indices:
             STORE(M6+1) = IK
             STORE(M6+2) = IL
 C Check refln is within theta range
-            IF ( XTHETA() .LE. THMAX ) THEN
+            IF ( XTHETA(IH) .LE. THMAX ) THEN
 C Check if it is systematically absent.
               IF ( KSYSAB(2) .GE. 0 ) THEN
 C Only consider 'allowed' if indices were not changed by KSYSAB:
@@ -1388,7 +1407,7 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
      1              .AND.( NINT(STORE(M6+1)) .EQ. IK )
      2              .AND.( NINT(STORE(M6+2)) .EQ. IL ) ) THEN
                   NALLWD = NALLWD + 1
-                  JID = ( ( XTHETA() / THMAX ) * 400.0 ) - 300
+                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 400.0 ) - 300
                   JID = MAX ( 1,  JID )
                   JID = MIN ( 100,JID )
                   ALLBIN(JID) = ALLBIN(JID) + 1.0
@@ -1421,7 +1440,7 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
                     END IF
                     IMISSI = IMISSI + 1
                     IF ( IPLOT.GE.0 ) THEN
-                      WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA()
+                      WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA(1)
                     END IF
                   END IF
                 END IF
