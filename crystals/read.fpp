@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.44  2003/07/03 10:41:04  rich
 C Bug fixed: When top level scripts were called, the status bar shows them
 C as being called from the last top level script that was run. Fix: Clear
@@ -782,6 +785,7 @@ C    DOES, EXECUTE THE INSTRUCTION.
 C
 CDJWMAR99 Add APPEND as system function - implies 'OPEN'
 CDJWOXT00 Add BENCHMARK for timings
+CRICAPR03 Add DEFINE as system instruction. Build .dsc and exit.
 C
 C  INPUT :-
 C
@@ -809,6 +813,7 @@ C
 C
 C
 C
+\TSSCHR
 \UFILE
 \XDVNAM
 \XRDDAT
@@ -820,12 +825,14 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XDISCS
+\XSSCHR
 C
       DATA IPAUSE / 1 / , IHELP  /  2 / , ISET   /  3 / , IATTCH /  4 /
       DATA IOPEN  / 5 / , IRELES /  6 / , IUSE   /  7 / , IMANUL /  8 /
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
-      DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 /
+      DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 / , IDEFIN / 20 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -867,7 +874,7 @@ C
 C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
-C      SPAW(N)     $           APPE(ND)    BENCH
+C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
 C
 C----- DO NOT LOG SCRIPT INSTRUCTIONS
 CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
@@ -884,7 +891,7 @@ CDJWMAR99
       GO TO ( 1100 , 1200 , 1300 , 1400 , 1500 ,
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
      3        2100 , 2200 , 2300 , 2400 , 2500 , 
-     4        2600 , 2600 , 1550 , 3000,
+     4        2600 , 2600 , 1550 , 3000 , 3200 , 
      5        9920 ) , ISYSIN
       GO TO 9920
 C
@@ -1219,7 +1226,34 @@ C      WRITE(NCAWU,*) LFLD, NFLD, NVAR
      1  NVAR*NVAR, NVAR, NREF)
       ENDIF
       GO TO 9000
+
+3200  CONTINUE
+C -- Define instruction
 C
+      NCDFU = NCIFU                ! IF A STARTUP FILE IS USED, THIS  
+      ISTAT = KRDREC ( IN )        ! WILL CREATE A DISK ON UNUT NCDFU
+      NU = NCIFU          ! ALL REFERENCES ARE TO THE NEW COMMAND FILE
+C----- CREATE A NEW FILE
+      ISTAT = KDAOPN ( NCIFU , CSSCMD(1:LSSCMD) , ISSNEW , ISSWRI )
+      IF ( ISTAT .LT. 0 ) THEN
+         CALL XERIOM ( NCIFU , ISTAT )
+         CALL GUEXIT (2005)
+      ENDIF
+      CALL XDAXTN ( NCIFU, -1, 120) ! Extend disk to 120 records.
+      WRITE ( CMON, 3191 )
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+3191  FORMAT(' Create command file')
+      CALL XSYSDC(-1,-1)
+      NU=NCIFU         ! ENSURE ALL TRANSFERS ARE TO THE COMMAND FILE DISC
+      CALL XRDHI(IFIRST)
+      WRITE ( CMON, 3192 )
+      CALL XPRVDU(NCVDU,6,0)
+3192  FORMAT(//' Command file created successfully.'/
+     1         'Closing in 4 seconds'/)
+      CALL XPAUSE (4000)
+      CALL XEND
+
 C
 9000  CONTINUE
       RETURN

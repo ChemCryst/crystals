@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/06/27 11:59:04  rich
+C Globally replace FRAGMENT (slot in L5) and FRAGMENT(...) lexical keyword
+C with RESIDUE. This should reduce confusion about what it is, and as FRAGMENT
+C is only months old, no-one should notice the change anyway. So now it is
+C #EDIT
+C DELETE RESI(1) RESIDUE(2)
+C END
+C to delete residues 1 and 2.
+C
 C Revision 1.45  2003/06/27 09:19:52  rich
 C Common block XFLAGS to hold bit-masks for information (RIDE,RIGID,DIST/ANGLE
 C RESTRAINT/OCC CONSTRAINT etc) which is to be stored in L5, and later output
@@ -880,12 +889,12 @@ C
 C
 C -- DEFINE SYSTEM INSTRUCTIONS
 cdjwmar99
-      DATA NWHF / 4 / , NHF / 19 / , LHF / 4 /
+      DATA NWHF / 4 / , NHF / 20 / , LHF / 4 /
 C
 C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
 C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
 C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
-C      'SPAW'      '$   '      'APPE'      'BENC'
+C      'SPAW'      '$   '      'APPE'      'BENC'      'DEFI'
 C
 C
       DATA IHF / 'P', 'A', 'U', 'S', 'H', 'E', 'L', 'P',
@@ -897,7 +906,7 @@ C
      7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
      8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
      9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
-     1           'B', 'E', 'N', 'C'  /
+     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I'  /
 C
 C
 C
