@@ -70,27 +70,31 @@
 %       IF FSQ .EQ. 1 THEN
     The weights have been adjusted for F sq refinement.
     Check the manual for details
-%        COPY '#LIST 4'
-%        COPY 'SCHEME 9 '
-%        COPY 'END'
 %        COPY '#GENERALEDIT 30'
 %        COPY 'LOCATE RECORDTYPE=103'
 %%       SET modify fsq=yes
 %        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=2'
 %        COPY 'WRITE'
 %        COPY 'END'
+%%        COPY '#LIST 4'
+%%        COPY 'SCHEME 9 '
+%%        COPY 'END'
+%%         COPY '#WEIGHT'
+%%         COPY 'END'
 %       ELSE
     The weights have been adjusted for F  refinement.
     Check the manual for details
-%        COPY '#LIST 4'
-%        COPY 'SCHEME 9 '
-%        COPY 'END'
 %        COPY '#GENERALEDIT 30'
 %        COPY 'LOCATE RECORDTYPE=103'
-%%       SET modify fsq=yes
+%%       SET modify fsq=no
 %        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
 %        COPY 'WRITE'
 %        COPY 'END'
+%%        COPY '#LIST 4'
+%%        COPY 'SCHEME 9 '
+%%        COPY 'END'
+%%         COPY '#WEIGHT'
+%%         COPY 'END'
 %       END IF
 %      END IF
 %   END BLOCK
@@ -99,5 +103,9 @@
 %    QUEUE PROCESS
 %    COPY  'END'
 % END BLOCK
+% COPY '#WEIGHT'
+% COPY 'END'
+% COPY '#ANALYSE'
+% COPY 'END'
 %%
 %END SCRIPT

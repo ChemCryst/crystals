@@ -129,9 +129,7 @@
 %            COPY '#SUM L 5'
 %            COPY 'END'
 %            COPY '#SCRIPT LVIEW'
-%            COPY '#EDIT'
-%            COPY 'SELECT TYPE NE Q'
-%            COPY 'END'
+%            COPY '#SCRIPT XDELQ'
 
  Any remaining 'Q' atoms have been removed from the stucture.
 

@@ -46,9 +46,7 @@
 %        TRANSFER "   The Ratio Fo/Fc is :== " // CR TO DISPLAY
 %      END BLOCK
 %      IF ERROR6 .EQ. TRUE THEN
-%            COPY '#EDIT'
-%            COPY 'SELECT TYPE NE Q'
-%            COPY 'END'
+%            COPY '#SCRIPT XDELQ'
 %            COPY '#SFLS'
 %            COPY 'CALC'
 %            COPY 'END'

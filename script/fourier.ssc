@@ -1,4 +1,4 @@
-%SCRIPT FOURIER
+%SCRIPT FOURIER 
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR
 % IF SCRIPTEXT .EQ. TRUE THEN
@@ -32,9 +32,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
  'What do you want to compute ?' 'NOTHING'
 %  IF VALUE .NE. 1 THEN
 %% we need something
-%    COPY '#EDIT'
-%    COPY 'SELECT TYPE NE Q'
-%    COPY 'END'
+%    COPY '#SCRIPT XDELQ'
 %    COPY '#SFLS'
 %    IF VALUE .EQ. 2 THEN
 %      COPY 'CALCULATE'
@@ -56,22 +54,22 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %     EVALUATE MAPTYPE = 'FO'
 %     INSERT 'F-O'
 %     END BLOCK
-%%    
+%%
 %     BLOCK
 %     EVALUATE MAPTYPE = 'FC'
 %     INSERT 'F-C'
 %     END BLOCK
-%%    
+%%
 %     BLOCK
 %     EVALUATE MAPTYPE = 'DIF'
 %     INSERT 'DIF'
 %     END BLOCK
-%%    
+%%
 %     BLOCK
 %     EVALUATE MAPTYPE = '2FO'
 %     INSERT '2FO'
 %     END BLOCK
-%%    
+%%
 %    END CASE
 %    QUEUE SEND
 %    CLEAR
@@ -85,7 +83,7 @@ The default, zero, causes CRYSTALS to choose a minimum height
 %      ELSE
 %        EVALUATE HEIGHT = 15.0
 %      END IF
-%    END IF    
+%    END IF
 %%
 %    INSERT 'PEAKS HEIGHT  = '
 %    STORE FORMAT /(F7.2)/ LENGTH 7 REAL HEIGHT

@@ -202,9 +202,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^CR
 %%
 %       IF DOSCALE .EQ. 1 THEN
-%           COPY '#EDIT'
-%           COPY 'SELECT TYPE NE Q'
-%           COPY 'END'
+%           COPY '#XDELQ'
 %           COPY '#SFLS'
 %           COPY 'SCALE'
 %           COPY 'END'

@@ -161,9 +161,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    DISPOSE FOURIER
 ^^CR
 %%
-%       COPY '#EDIT'
-%       COPY 'SELECT TYPE NE Q'
-%       COPY 'END'
+%       COPY '#SCRIPT XDELQ'
 %       COPY '#SFLS'
 %       COPY 'SCALE'
 %       COPY 'END'

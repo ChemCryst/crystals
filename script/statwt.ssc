@@ -1,37 +1,34 @@
 %SCRIPT STATWT
-For Fsq refinement, weights based in 1/n Sigma(Fsq) may be suitable. 
-Values of n = 3, 6 and 12 are often suitable. In the agreement analysis,
-check that the column <wdeltasq>, the weighted residual, is 
-approximately constant, and that the final value is about unity.
+In the agreement analysis, check that the column <wdeltasq>, the 
+weighted residual, is approximately constant, and that the final 
+value is about unity.
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=3'
-%          COPY 'PARAM .001 3. 1'
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'
+%          COPY 'PARAM .1 0 0 0 0 .333'
 %          COPY 'END'
-            Quasi-statistical weighting , 3 sigma
-%          COPY '#PAUSE 2'
+            Quasi-statistical weighting , P(1)=.1
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
 %%
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=3'
-%          COPY 'PARAM .001 6. 1'
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'
+%          COPY 'PARAM 1 0 0 0 0 .333'
 %          COPY 'END'
-            Quasi-statistical weighting , 6 sigma
-%          COPY '#PAUSE 2'
+            Quasi-statistical weighting , P(1)=1
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
 %%
 %          COPY '#LIST 4'
-%          COPY 'SCHEME NUMBER=16, NPARAM=3'
-%          COPY 'PARAM .001 12. 1'
+%          COPY 'SCHEME NUMBER=16, NPARAM=6'
+%          COPY 'PARAM 10 0 0 0 0 .333'
 %          COPY 'END'
-            Quasi-statistical weighting , 12 sigma
-%          COPY '#PAUSE 2'
+            Quasi-statistical weighting , P(1)=10
 %          COPY '#ANALYSE'
 %          COPY 'END'
 %          COPY '#PAUSE 5'
+%%
 %%
 %          LOOP
 %            ON END TERMINATE
@@ -43,12 +40,12 @@ approximately constant, and that the final value is about unity.
 %            END IF
 %            COPY '#LIST 4'
 %            CLEAR
-%              GET NOSTORE REAL 'Sigma scale' '6.0'
-%              COPY 'SCHEME NUMBER=16 NPARAM=3'
+%              GET NOSTORE REAL 'Multiplier' '0.1'
+%              COPY 'SCHEME NUMBER=16 NPARAM=6'
 %              CLEAR
-%              INSERT 'PARAM .001 '
+%              INSERT 'PARAM '
 %              STORE REAL VALUE
-%              INSERT ' 1'
+%              INSERT ' 0 0 0 0 .3333'
 %              SEND
 %            COPY 'END'
 %            COPY '#ANALYSE'
