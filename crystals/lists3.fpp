@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/09/07 14:21:35  ckp2
+C Fiddled around with #DISK to allow time and date to be stored for each entry.
+C There is a year 2038 problems with the date format, it'll seem like 1970 again.
+C Also added a punch directive which will allow scripts to get hold of the DSC
+C info in a script readable format. Will write some scripts soon.
+C
 C Revision 1.7  2001/02/26 10:36:08  richard
 C Added changelog to top of file
 C
@@ -1230,11 +1236,11 @@ C
 1250  CONTINUE
       IF ( ISTORE(ICOMBL) ) 1310 , 1320 , 1330
 1310  CONTINUE
-      CALL XPRTLI(ISTORE(ICOMBL+1))
+      CALL XPRTLI(ISTORE(ICOMBL+1),ISTORE(ICOMBL+2))
       GO TO 4000
 C
 1320  CONTINUE
-      CALL XPRTFI(ISTORE(ICOMBL+1))
+      CALL XPRTFI(ISTORE(ICOMBL+1),ISTORE(ICOMBL+2))
       GO TO 4000
 C
 1330  CONTINUE
@@ -1848,7 +1854,7 @@ C--END OF THE PROCESS  -  TERMINATION MESSAGES
 C
 C
       CALL XPUMSG ( 11 , NUNEW )
-      CALL XPRTFI ( 0 )
+      CALL XPRTFI ( 0, 0 )
 C
 2720  CONTINUE
 C -- PROCESSING COMPLETED. RESTORE LIST 50 INDEX ENTRY

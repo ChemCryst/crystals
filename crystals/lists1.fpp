@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2001/09/11 08:29:29  ckp2
+C In #DISK, punch the absolute values of the list type and list serial, the delete
+C and to be retained status can be obtained from other flags further along the
+C output.
+C
 C Revision 1.6  2001/09/07 14:21:35  ckp2
 C Fiddled around with #DISK to allow time and date to be stored for each entry.
 C There is a year 2038 problems with the date format, it'll seem like 1970 again.
@@ -777,22 +782,24 @@ C      STOP
       END
 C
 CODE FOR XPRTLI
-      SUBROUTINE XPRTLI( IPUNCH )
+      SUBROUTINE XPRTLI( IPUNCH, ILISTS )
 C--PRINT THE CURRENT LIST INDEX
 C--OR PUNCH IF IPUNCH .EQ. 1
+C--ALL LISTS IF ILISTS .EQ 0, otherwise only lists ILISTS
 C
 \XLISTS
 C
       CALL XLC
-      CALL XPRT(1,LIST,IPUNCH)
+      CALL XPRT(1,LIST,IPUNCH,ILISTS)
       CALL XLOADL
       RETURN
       END
 C
 CODE FOR XPRTFI
-      SUBROUTINE XPRTFI( IPUNCH )
+      SUBROUTINE XPRTFI( IPUNCH, ILISTS )
 C--PRINT THE COMPLETE FILE INDEX
 C--OR PUNCH IF IPUNCH .EQ. 1
+C--ALL LISTS IF ILISTS .EQ 0, otherwise only lists ILISTS
 C
 \XFILE
 C
@@ -800,12 +807,12 @@ C
 C
       CALL XLC
       CALL XFCFI(1,(IL+1))
-      CALL XPRT(2,INDEXF,IPUNCH)
+      CALL XPRT(2,INDEXF,IPUNCH,ILISTS)
       RETURN
       END
 C
 CODE FOR XPRT
-      SUBROUTINE XPRT(IN,ID,IPUNCH)
+      SUBROUTINE XPRT(IN,ID,IPUNCH,ILISTS)
 C--COMMON PRINT ROUTINES FOR THE CURRENT LIST INDEX AND THE FILE INDEX
 C
 C  IN=1  PRINT THE CURRENT LIST INDEX
@@ -899,6 +906,11 @@ C
       ELSE IF ( ID(I+1) .LT. 0 ) THEN
         IDELET = 2
       ENDIF
+C
+C --- CHECK IF WE ARE PRINTING THIS TYPE OF LIST
+C
+      IF ((ILISTS.NE.0) .AND. (ILISTS.NE.ABS(ID(I)))) GOTO 1650
+
 C
 C -- WRITE DETAILS FOR THIS LIST
 C
