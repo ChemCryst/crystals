@@ -1,0 +1,71 @@
+%SCRIPT XCAMFLT
+%   VERIFY SHYDRO SLABEL HHYDRO HLABEL SCELL HCELL MLABEL -
+           INCAR INCAL EXCAR OHCONT
+%   GET NOSTORE FINAL ABBREVIATED ' ' 
+%   CASE VALUE
+%     BLOCK               %SHYDRO%
+%       COPY 'INCL H VIEW'
+%       COPY ' '
+^^WI    RENAME SHYDRO HHYDRO
+^^CR
+^^WI    SET HHYDRO TEXT 'Hide Hydrogen'
+^^CR
+%     END BLOCK
+%     BLOCK               %SLABEL%
+%       COPY 'LABEL ALL VIEW'
+%       COPY ' '
+^^WI    RENAME SLABEL HLABEL
+^^CR
+^^WI    SET HLABEL TEXT 'Hide Labels'
+^^CR
+%     END BLOCK
+%     BLOCK               %HHYDRO%
+%       COPY 'EXCL H VIEW'
+%       COPY ' '
+^^WI    RENAME HHYDRO SHYDRO
+^^CR
+^^WI    SET SHYDRO TEXT 'Show Hydrogen'
+^^CR
+%     END BLOCK
+%     BLOCK               %HLABEL%
+%       COPY 'NOLABEL ALL VIEW'
+%       COPY ' '
+^^WI    RENAME HLABEL SLABEL
+^^CR
+^^WI    SET SLABEL TEXT 'Show Labels'
+^^CR
+%     END BLOCK
+%     BLOCK               %SCELL%
+%       COPY 'INCLUDE CELL VIEW'
+%       COPY ' '
+^^WI    RENAME SCELL HCELL
+^^CR
+^^WI    SET HCELL TEXT 'Hide Cell'
+^^CR
+%     END BLOCK
+%     BLOCK               %HCELL%
+%       COPY 'EXCL CELL VIEW'
+%       COPY ' '
+^^WI    RENAME HCELL SCELL
+^^CR
+^^WI    SET SCELL TEXT 'Show Cell'
+^^CR
+%     END BLOCK
+%     BLOCK                %MLABEL%
+%       COPY 'LABEL MOUSE VIEW'
+%     END BLOCK
+%     BLOCK                %INCAR%
+%       COPY 'EXCL ALL INCLUDE AREA VIEW'
+%     END BLOCK
+%     BLOCK                %INCAL%
+%       COPY 'INCL ALL VIEW'
+%     END BLOCK
+%     BLOCK                %EXCAR%
+%       COPY 'EXCL AREA VIEW'
+%     END BLOCK
+%     BLOCK                %OHCONT%
+%       COPY 'PACK CELL COMP INCL CELL CONN HBOND O 0.0 3.0 VIEW'
+%     END BLOCK
+%   END CASE
+%   COPY ' '
+%END SCRIPT

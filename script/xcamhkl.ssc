@@ -1,0 +1,85 @@
+%SCRIPT XCAMHKL  %Script for choosing view hkl plane%
+% VARIABLE INTEGER IH IK IL
+%%
+%%
+^^WI WINDOW XORIENT 'Choose Orientation' MODAL
+^^WI GRID G1 NROWS=3 NCOLS=5
+^^WI {
+^^WI  @ 2,2 GRID GB NROWS=1 NCOLS=8
+^^WI  {
+^^WI     @ 1,1  STATIC   TH 'h:'
+^^WI     @ 1,4  STATIC   TH 'k:'
+^^WI     @ 1,7  STATIC   TH 'l:'
+^^WI     @ 1,2  EDITBOX  EH '1' CHARS=3 INTEGER 
+^^WI     @ 1,5  EDITBOX  EK '0' CHARS=3 INTEGER 
+^^WI     @ 1,8 EDITBOX  EL '0' CHARS=3 INTEGER 
+^^WI  }
+^^WI  @ 2,4 GRID   GR NROWS=5 NCOLS=3
+^^WI  {
+^^WI    @ 1,2 BUTTON      BTOK 'Ok' DEFAULT COMMIT
+^^WI    @ 3,2 BUTTON      BTPP 'Apply'
+^^WI    @ 5,2 BUTTON      BTXX 'Cancel' CANCEL
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%%
+% LOOP
+%  VERIFY BTOK BTPP BTXX
+%  GET NOSTORE FINAL ABBREVIATED ' '
+%  CASE VALUE
+%   BLOCK        %BTNOK%
+^^??              EH TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IH = VALUE
+^^??              EK TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IK = VALUE
+^^??              EL TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IL = VALUE
+%                 QUEUE REWIND
+%                 CLEAR
+%                 INSERT 'FACE '
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IH
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IK
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IL
+%                 INSERT ' VIEW'
+%                 QUEUE SEND
+%                 QUEUE PROCESS
+%                 COPY ' '
+^^WI              DISPOSE XORIENT
+^^CR   
+%                 FINISH
+%   END BLOCK
+%   BLOCK        %BTNPP%
+^^??              EH TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IH = VALUE
+^^??              EK TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IK = VALUE
+^^??              EL TEXT
+%                 GET NOSTORE INTEGER ' '
+%                 EVALUATE IL = VALUE
+%                 QUEUE REWIND
+%                 CLEAR
+%                 INSERT 'FACE '
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IH
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IK
+%                 STORE FORMAT /(I4)/ LENGTH 4 INTEGER IL
+%                 INSERT ' VIEW'
+%                 QUEUE SEND
+%                 QUEUE PROCESS
+%                 COPY ' '
+%   END BLOCK
+%   BLOCK   %XX%
+^^WI   DISPOSE XORIENT
+^^CR   
+%      FINISH
+%   END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT

@@ -1,23 +1,73 @@
 %SCRIPT XCAM
 ^^WI WINDOW _CAMWINDOW 'Cameron' SIZE MODAL CANCEL='END'
+%% The first grid splits the main area from the status bar.
 ^^WI GRID SPLIT NROWS=2 NCOLS=1
 ^^WI {
-^^WI  @ 1,1 GRID OUTER NROWS=5 NCOLS=3
+%% The outer grid splits the left 'view' area from the right
+^^WI  @ 1,1 GRID OUTER NROWS=3 NCOLS=5
 ^^WI  {
-^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=80
+^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=90
 ^^WI         INFORM=YES
-^^WI   @ 4,2 MULTIEDIT _CAMTEXT '' NROWS=10 NCOLS=80 
-^^WI         IGNORE FIXEDFONT=YES DISABLED=YES
+%% The inner grid splits the text output from the tools
+^^WI   @ 2,4 GRID INNER NROWS=2 NCOLS=1 
+^^WI   {
+^^WI    @ 1,1 MULTIEDIT _CAMTEXT '' NROWS=20 NCOLS=20
+^^WI          IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI    @ 2,1 GRID MAIN NROWS=12 NCOLS=3
+^^WI    {
+^^WI     @ 2,2 GRID MOVE NROWS=7 NCOLS=9 OUTLINE='Rotate'
+^^WI                            COMMAND='#SCRIPT xcrotate'
+^^WI     {
+^^WI      @ 2,2 BUTTON XROTP '+X'
+^^WI      @ 2,4 BUTTON XROTN '-X'
+^^WI      @ 4,2 BUTTON YROTP '+Y'
+^^WI      @ 4,4 BUTTON YROTN '-Y'
+^^WI      @ 6,2 BUTTON ZROTP '+Z'
+^^WI      @ 6,4 BUTTON ZROTN '-Z'
+^^WI      @ 2,6 BUTTON AXISA 'Axis a'
+^^WI      @ 2,8 BUTTON PLANE 'Plane'
+^^WI      @ 4,6 BUTTON AXISB 'Axis b'
+^^WI      @ 4,8 BUTTON HKL   'hkl'
+^^WI      @ 6,6 BUTTON AXISC 'Axis c'
+^^WI      @ 6,8 BUTTON CURSO 'Cursor'
+^^WI     }
+^^WI     @ 4,2 GRID STYLE NROWS=3 NCOLS=7 OUTLINE='Style'
+^^WI                            COMMAND='#SCRIPT xcstyle'
+^^WI     {
+^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST 
+^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
+^^WI      @ 2,4 DROPDOWN LCOLOR ADDTOLIST 
+^^WI      'Normal' 'Publish' 'NULL'
+^^WI      @ 2,6 BUTTON BSTYLE 'Apply'
+^^WI     }
+^^WI     @ 6,2 GRID PACK NROWS=3 NCOLS=5 OUTLINE='Packing'
+^^WI                            COMMAND='#SCRIPT xcpack'
+^^WI     {
+^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST 
+^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
+^^WI      @ 2,4 BUTTON BPACK 'Apply'
+^^WI     }
+^^WI     @ 8,2 GRID STUFF NROWS=9 NCOLS=5 COMMAND='#SCRIPT xcalter'
+^^WI     {
+^^WI       @ 2,2 BUTTON SLABEL 'Show labels'
+^^WI       @ 2,4 BUTTON SHYDRO 'Show hydrogen'
+^^WI       @ 4,2 BUTTON MLABEL 'Move labels'
+^^WI       @ 4,4 BUTTON SCELL  'Show cell'
+^^WI       @ 6,2 BUTTON INCAR  'Include area'
+^^WI       @ 6,4 BUTTON INCAL  'Show all'
+^^WI       @ 8,2 BUTTON EXCAR  'Exclude area'
+^^WI       @ 8,4 BUTTON OHCONT 'Find O--H'
+^^WI     }
+^^WI    }
+^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS  _CAMPROG 'Initialising'
 ^^WI }
 ^^WI DEFINEMENU MAIN 'NULL'
 ^^WI  MENU _FILE '&File'
 ^^WI   ITEM _SAVE '&Save Image' '#SCRIPT XPOST'
-^^WI   ITEM _TOOLS 'Show &Tools' '#SCRIPT XCAMFLT _NSHOW'
-^^WI   ITEM _TOOLS '&Hide Tools' '#SCRIPT XCAMFLT _NCANCEL'
 ^^WI   SPLIT
-^^WI   ITEM _CLOSE '&Close' 'END'
+^^WI   ITEM _CLOSE '&Exit Cameron' 'END'
 ^^WI  ENDMENU
 ^^WI  MENU STYLE '&Style'
 ^^WI   ITEM _ELLI '&Ellipse' 'ELLIPSE ALL VIEW _N'
@@ -60,15 +110,25 @@
 ^^CR
 ^^WI SENDPROGRESSTO _CAMPROG
 ^^CR
+%VARIABLE INTEGER ATOMSIN ATOMSOUT ATOMCHANGE
+%%
+%% COUNT THE NUMBER OF ATOMS PASSED TO CAMERON.
+%%
+%COPY '#GENERALEDIT 5'
+%COPY 'LOCATE RECORDTYPE=101'
+%COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%EVALUATE ATOMSIN = 0
+%LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'NEXT'
+%    EVALUATE ATOMSIN = LOOPCOUNTER
+%END LOOP
+%COPY 'END'
 %COPY '#CAM'
 %COPY 'END'
 %COPY ' '
 %COPY 'BALL ALL PLANE ALL VIEW'
 %COPY ' '
-%VARIABLE INTEGER XCAMFLTI
-%EVALUATE XCAMFLTI = 1
-%COPY '#SCRIPT XCAMFLT'
-%EVALUATE XCAMFLTI = 0
 % LOOP
 % ON END TERMINATE
 ^^WI SET _CAMTEXT NOECHO
@@ -83,4 +143,61 @@
 ^^WI DISPOSE _CAMWINDOW
 ^^WI DISPOSE _CAMFLOATER
 ^^CR
+%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%   VARIABLE LOGICAL ANSWER
+%   EVALUATE QTITLE = 'Return to Crystals'
+%   EVALUATE QLINE1 = 'Do you want to apply any'
+%   EVALUATE QLINE2 = 'changes made in CAMERON?'
+%   EVALUATE BUTTOK = '&Yes'
+%   EVALUATE BUTTXX = '&No'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ANSWER .EQ. TRUE THEN
+%           COPY '#USE CAMERON.L5'
+%   ELSE
+%       FINISH
+%   END IF
+%% COUNT THE NUMBER OF ATOMS PASSED BACK FROM CAMERON.
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   EVALUATE ATOMSOUT = 0
+%   LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'NEXT'
+%       EVALUATE ATOMSOUT = LOOPCOUNTER
+%   END LOOP
+%   COPY 'END'
+%       EVALUATE ATOMCHANGE = ATOMSOUT - ATOMSIN
+%   IF ATOMCHANGE .GT. 0 THEN
+
+
+  WW    WW   AAAA   RRRR   NN   NN  IIIIII  NN   NN   GGGG
+  WW    WW  AA  AA  RR RR  NNN  NN    II    NNN  NN  GG  GG
+  WW WW WW  AAAAAA  RRRR   NN N NN    II    NN N NN  GG   
+  WW WW WW  AA  AA  RR RR  NN  NNN    II    NN  NNN  GG GGGG
+   WW  WW   AA  AA  RR RR  NN   NN  IIIIII  NN   NN   GGGG
+
+  Very Important:
+
+  The number of atoms that has returned to CRYSTALS is larger
+  than the number that was sent to CAMERON....
+
+  This could mean that the structure was PACKed when you exited
+  Cameron. It is strongly recommended that you revert to the
+  previous structural model, and run CAMERON again.
+
+%    EVALUATE QTITLE = 'Too many atoms?'
+%    EVALUATE QLINE1 = 'The number of atoms returned is larger than' 
+%    EVALUATE QLINE2 = 'the number sent. Restore previous atom list?'
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%          COPY '#USE CAMERON.L5I'
+%    ELSE
+%          FINISH
+%    END IF
+%   ELSE
+%       FINISH
+%   END IF
 %END SCRIPT

@@ -1,0 +1,42 @@
+%SCRIPT XCrotate
+%   VERIFY XROTP XROTN YROTP YROTN ZROTP ZROTN -
+           AXISA AXISB AXISC PLANE HKL   CURSO 
+%   GET NOSTORE FINAL ABBREVIATED ' ' 
+%   CASE VALUE
+%     COPY 'XROT 10 VIEW'
+%     COPY 'XROT -10 VIEW'
+%     COPY 'YROT 10 VIEW'
+%     COPY 'YROT -10 VIEW'
+%     COPY 'ZROT 10 VIEW'
+%     COPY 'ZROT -10 VIEW'
+%     BLOCK               %AXISA%
+%          COPY 'ALONG AXIS A VIEW'
+%          COPY ' '
+%     END BLOCK
+%     BLOCK               %AXISB%
+%          COPY 'ALONG AXIS B VIEW'
+%          COPY ' '
+%     END BLOCK
+%     BLOCK               %AXISC%
+%          COPY 'ALONG AXIS C VIEW'
+%          COPY ' '
+%     END BLOCK
+%     BLOCK               %PLANE%
+%          COPY 'PLANE ALL VIEW'
+%          COPY ' '
+%     END BLOCK
+%     BLOCK               %HKL%
+%          COPY '#SCRIPT XCAMHKL'
+%     END BLOCK
+%     BLOCK               %CURSOR%
+Escape  or  return  to  finish
+cursor  rotation.  DELETE  and
+END to rotate about the Z axis.
+Cursor  keys rotate  about the
+X  and  Y  axes.
+%           COPY 'CURSOR'
+%          COPY ' '
+%     END BLOCK
+%   END CASE
+%   COPY ' '
+%END SCRIPT
