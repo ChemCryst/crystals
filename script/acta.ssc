@@ -102,7 +102,7 @@
 %    IF ( IANOMA .EQ. - 1 ) THEN
 {E *** FAIL:  You should include an anomalous dispersion correction
 {E            towards the end of the refinement.
- Turn it on with: "Refinement" -> "F of Fsq and advanced options"
+ Turn it on with: "Refinement" -> "F or Fsq and advanced options"
 %       EVALUATE ERRFLAG = ERRFLAG + 1
 %    END IF
 %  END BLOCK
