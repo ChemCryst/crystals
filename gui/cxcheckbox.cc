@@ -5,6 +5,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/17 14:45:02  richard
+//   CxDestroyWindow function.
+//
 //   Revision 1.8  2001/03/08 16:44:08  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -95,10 +98,18 @@ int   CxCheckBox::GetIdealWidth()
 #ifdef __CR_WIN__
     CString text;
     SIZE size;
-    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+//    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
+//    GetWindowText(text);
+//    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
+//    return (size.cx+20); // optimum width for Windows buttons (only joking)
+
+    CClientDC dc(this);
+    CFont* oldFont = dc.SelectObject(CcController::mp_font);
     GetWindowText(text);
-    GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
-      return (size.cx+20); // optimum width for Windows buttons (only joking)
+    size = dc.GetOutputTextExtent(text);
+    dc.SelectObject(oldFont);
+    return ( size.cx + 20); //Allow space for checkbox
+
 #endif
 #ifdef __BOTHWX__
       int cx,cy;
