@@ -92,19 +92,19 @@
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %    BLOCK             %LATTICE%
-%     GET SILENT NOSTORE KEYWORD ' ' ' '
+%     GET SILENT NOSTORE TEXT ' ' ' '
 %     EVALUATE L2 = CVALUE
 %    END BLOCK
 %    BLOCK             %A=AXIS%
-%     GET SILENT NOSTORE KEYWORD ' ' ' '
+%     GET SILENT NOSTORE TEXT ' ' ' '
 %     EVALUATE A2 = CVALUE
 %    END BLOCK
 %    BLOCK             %B-AXIS%
-%     GET SILENT NOSTORE KEYWORD ' ' ' '
+%     GET SILENT NOSTORE TEXT ' ' ' '
 %     EVALUATE B2 = CVALUE
 %    END BLOCK
 %    BLOCK             %C-AXIS%
-%     GET SILENT NOSTORE KEYWORD ' ' ' '
+%     GET SILENT NOSTORE TEXT ' ' ' '
 %     EVALUATE C2 = CVALUE
 %    END BLOCK
 %    BLOCK             %BXX%
