@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2000/07/17 13:55:03  CKP2
+C fix up stereo
+C
 C Revision 1.12  2000/02/23 12:18:09  ckp2
 C djw  Add .XYZ (Chime) output, fix bug with setunit
 C
@@ -60,6 +63,7 @@ C This is the code for the VIEW group of commands.
       CHARACTER*60 FILENM
       LOGICAL LEXIST
       LOGICAL LFILES
+      LOGICAL LITEMP
       CHARACTER*72 CTEXT
       CHARACTER*1 CANS
       CHARACTER*80 CFORT
@@ -351,7 +355,7 @@ C      RESET THE SCALE
       CALL ZCLEAR
 cdjwdec99
 c 'copy' finished - close the file
-      I = LFILES ( 0 , CFORT , IFOUT )
+      LITEMP = LFILES ( 0 , CFORT , IFOUT )
       GOTO 9999
 103   CONTINUE
 C XROT
