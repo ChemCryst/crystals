@@ -6,7 +6,7 @@
  *  Copyright (c) 2003 . All rights reserved.
  *
  */
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Stats.h"
 #include "MathFunctions.h"
 #include "Collections.h"
@@ -44,15 +44,17 @@ Stats::~Stats()
 
 void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float>* pHKLM)	//Goes through the rows down the specified Column adding the reflection to the stats.
 {
+    static Matrix<float> tMatrix(1, 1);
+    
     int tCCount = iConditions->length();    //Cache lengths of the table.
     for (int i= 0; i < tCCount; i++)
     {
         Matrix<float>* tMultiMat = NULL;
         tMultiMat = iConditions->getMatrix(i);
-        Matrix<float> tMatrix = (*tMultiMat)*(*pHKLM);
-     /*   std::cout << *tMultiMat << "\n";
-        std::cout << *pHKLM << "\n";
-        std::cout << tMatrix << "\n";*/
+        //Matrix<float> tMatrix = (*tMultiMat)*(*pHKLM);
+        tMultiMat->mul(*pHKLM, tMatrix);
+      //  cout << tMatrix << "\n";
+//        tMatrix*=(*pHKLM);
         ElemStats* tStats = &(iStats[(pColumn*tCCount)+i]);
         if (((int)tMatrix.getValue(0)) % ((int)iConditions->getMult(i)) != 0)
         {
@@ -83,6 +85,7 @@ ElemStats* Stats::getElem(int pHeadIndex, int pCondIndex)
 
 void Stats::addReflection(Reflection* pReflection)
 {
+    static Matrix<float> tResult(1, 3);
     iTotalNum ++;
     iTotalIntensity += pReflection->i;	
     int tHCount = iHeadings->length();			//Cache lengths of the table.
@@ -91,16 +94,10 @@ void Stats::addReflection(Reflection* pReflection)
     for (int i = 0; i < tHCount; i++)			//Go through Columns in the table.
     {
         tMultiMat = iHeadings->getMatrix(i);
-        Matrix<float> tResult(1, 3);
-        tResult = (*tMultiMat)*(*tHKLMat);	//Multiply the two matrices to see if this reflection satisfy the condition
+        tMultiMat->mul(*tHKLMat, tResult);	//Multiply the two matrices to see if this reflection satisfy the condition
         if (tResult == (*tHKLMat))	//if this condition is satisfy then...
         {
             addReflectionRows(i, pReflection, tHKLMat);
-            if (i == 4 && tHKLMat->getValue(1)!=0 && tHKLMat->getValue(2)!=0)
-            {
-                std::cout << *tHKLMat << "==\n";
-                std::cout << tResult << "\n";
-            }   
         }
     }
 }
@@ -130,13 +127,6 @@ void Stats::outputRow(int pRow, std::ostream& pStream)
     {
         printf("| Rat1: %0.4f\t", iStats[i*tCCount+pRow].tRating1);	
     }
-    /*pStream << "\n\t\t";
-    for (int i = 0; i < tHCount; i++)
-    {
-        float tValue1 = iStats[i*tCCount+pRow].tNonMTotInt/iStats[i*tCCount+pRow].tNumNonM;
-        float tValue2 = iStats[i*tCCount+pRow].tMTotInt/iStats[i*tCCount+pRow].tNumM;
-        printf("| Rat1: %0.4f\t", tValue1/(tValue2+tValue1));	//Total intensity matched. 
-    }*/
     pStream << "\n\t\t";
     for (int i = 0; i < tHCount; i++)
     {
@@ -162,11 +152,6 @@ void Stats::outputRow(int pRow, std::ostream& pStream)
     {
         printf("| Rat2: %0.4f\t", (float)iStats[i*tCCount+pRow].tRating2);	
     }
-   /* pStream << "\n\t\t";
-    for (int i = 0; i < tHCount; i++)
-    {
-        printf("| Rat2: %0.4f\t", (float)iStats[i*tCCount+pRow].tNumNonMLsInt/((float)iStats[i*tCCount+pRow].tNumNonMGrInt+(float)iStats[i*tCCount+pRow].tNumNonMLsInt));	
-    }*/
 }
 
 void Stats::outputHeadings(std::ostream& pStream)
