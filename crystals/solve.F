@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.27  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.2  2005/01/04 11:31:17  rich
 C Fix weird format statement.
 C
@@ -383,6 +387,10 @@ C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
       M11DB = M11S
       M11RDB = M11RS
 C
+      if (ISTORE(L33CD+5) .eq. 1) then
+            call open_normalfile(73)
+            write(73, '(''N={}'')')
+      end if
       DO 3500 JZ=1,N12B
 C---- RESET MATRIX AREA
          LFLD = LFLDS
@@ -460,25 +468,24 @@ c            ZEROED_COUNT = ZEROED_COUNT + 1
       ENDIF
 c--------------OUTPUT THE NORMAL MATRIX HERE
       IF ( ISTORE(L33CD+5) .Eq. 1 ) THEN
-         call open_normalfile(73)
-C         open(73, FILE='normal.m')
-         write (73, '(''N=['')')
+         write (73, '(''N{length(N)+1}=['')')
          DO YCOUNT=0, JY-1
             DO XCOUNT = 0, YCOUNT-1
                WRITE(73, '(G16.8,'' ...'')')0
             ENDDO
             DO XCOUNT=YCOUNT, JY-1
                WRITE(73, '(G16.8,'' ...'')')STR11(L11C+
-     1              JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)+xCOUNT);
+     1              JY*YCOUNT-(YCOUNT+(YCOUNT*(YCOUNT-1))/2)+xCOUNT)
             ENDDO
             if (YCOUNT .ne. JY-1) WRITE(73, '('';'')')
          ENDDO
-         write (73, '('']; NS = [''I4'', ''I4''];'')')JY, JY
-         write (73, '(A)')  'N = N + triu(N, 1)'';'
-         CLOSE(73)
+         write (73, '('']'')')
+         write (73, '(A)')  'N{length(N)} = N{length(N)} +
+     1     triu(N{length(N)}, 1)'';'
       END IF
 
 C----------OUTPUT THE NORMAL MATRIX 
+
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
             IF (METHOD .LE. 0) THEN
@@ -643,9 +650,9 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M11RDB = M11RDB+ISTORE(M12B+1)
          M12B=M12B+MD12B
 3500  CONTINUE
-
-
-
+      if (ISTORE(L33CD+5) .eq. 1) then
+            CLOSE(73)
+      end if
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F
