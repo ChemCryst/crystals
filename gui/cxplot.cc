@@ -9,6 +9,12 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.25  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.24  2003/01/14 10:27:19  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -358,6 +364,8 @@ void CxPlot::SetColour(int r, int g, int b)
 #endif
 #ifdef __BOTHWX__
     mfgcolour = wxColour(r,g,b);
+    m_pen->SetColour ( mfgcolour );
+    m_brush->SetColour ( mfgcolour );
 #endif
 }
 
