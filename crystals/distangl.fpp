@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/03/28 12:53:18  richard
+C Recent changes in KDIST1 (pivot and bonded related) broke Andy's void code.
+C The good news is that it's now better than ever.
+C
 C Revision 1.8  2001/03/08 14:24:13  richard
 C Revamped the way this works a bit. KDIST1 overhauled to get rid of unnecessary jumps
 C and deprecated fortran stuff - seems easier to understand now ;)
@@ -4087,7 +4091,7 @@ C
 C-------INITIALISE A DUMMY ATOM
 C
             STORE(IABAT+2)=1.0
-            STORE(IABAT+3)=.05
+            STORE(IABAT+3)=1.0     ! New format L5 - this is the flag
 C
 C-------FIX THE RADII FOR 1-2 CONTACTS
             AO = AC
