@@ -1,8 +1,16 @@
 %SCRIPT XCHECK6
-% VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO
+% VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK
 % VARIABLE REAL NEWRHO NEWRAT
+% VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'
 % EVALUATE ABSENT = FILEEXISTS 'absences.dat'
+%%
+%%
+% EVALUATE I6DONE = TRUE
+% EVALUATE I6MASK = TRUE
+% COPY '#SCRIPT XPUTINFO'
+%%
+%%
 ^^WI WINDOW XCHECK6 'Initial Analyses' MODAL KEEP SIZE
 ^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'
 ^^WI GRID MAIN NROWS=3 NCOLS=1
@@ -122,6 +130,60 @@
 ^^WI     }
 ^^WI     @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64
 ^^WI    }
+^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=5 NCOLS=3
+^^WI    {
+^^WI     @ 2,2 GRID CGRID NROWS=3 NCOLS=1 OUTLINE='Cell contents'
+^^WI     {
+^^WI      @ 1,1 GRID CGRID1 NROWS=5 NCOLS=5
+^^WI      {
+^^WI       @ 1,1 STATIC C11 'Cell contents (List 29), indicate'
+^^WI       @ 1,3 STATIC C12 '00000000'
+^^WI       @ 1,5 STATIC C13 'non-H atoms in the asymmetric unit.'
+^^WI       @ 2,1 STATIC C21 'Cell volume (List 1) is'
+^^WI       @ 2,3 STATIC C22 '00000000'
+^^WI       @ 2,5 STATIC C23 'cubic Angstroms.'
+^^WI       @ 3,1 STATIC C31 'Space group multiplicity (List 2) is'
+^^WI       @ 3,3 STATIC C32 '00000000'
+^^WI       @ 5,1 STATIC C41 'Therefore, volume per non-H atom is'
+^^WI       @ 5,3 STATIC C42 '00000000'
+^^WI       @ 5,5 STATIC C43 'cubic Angstroms. (18.0 would be typical)'
+^^WI      }
+^^WI      @ 3,1 GRID CGRID2 NROWS=1 NCOLS=4
+^^WI      {
+^^WI       @ 1,1 STRETCH CS2 HORIZONTAL
+^^WI       @ 1,2 BUTTON ED29 'Change cell contents'
+^^WI       @ 1,4 BUTTON ED02 'Change space group'
+^^WI      }
+^^WI     }
+^^WI     @ 4,2 GRID PGRID NROWS=6 NCOLS=1 OUTLINE='Obs/param ratio'
+^^WI     {
+^^WI      @ 1,1 GRID PGRID1 NROWS=1 NCOLS=7
+^^WI      {
+^^WI       @ 1,1 STATIC P11 'Based on'
+^^WI       @ 1,3 STATIC P12 '000000'
+^^WI       @ 1,5 STATIC P13
+^^WI       'non-h atoms, estimated final number of lsq parameters is'
+^^WI       @ 1,7 STATIC P14 '000000'
+^^WI      }
+^^WI      @ 2,1 GRID PGRID2 NROWS=1 NCOLS=5
+^^WI      {
+^^WI       @ 1,1 STATIC P21 'List 28 currently allows'
+^^WI       @ 1,3 STATIC P22 '00000000'
+^^WI       @ 1,5 STATIC P23 'reflections to be used for refinement.'
+^^WI      }
+^^WI      @ 4,1 GRID PGRID3 NROWS=1 NCOLS=4
+^^WI      {
+^^WI       @ 1,1 STATIC P31 'Estimated final obs:parameter ratio is'
+^^WI       @ 1,3 STATIC P32 '000000'
+^^WI       @ 1,4 STATIC P33 ':  1.        (Ideal for publication is > 8.0)'
+^^WI      }
+^^WI      @ 6,1 GRID PGRID3 NROWS=1 NCOLS=2
+^^WI      {
+^^WI       @ 1,1 STRETCH CS2 HORIZONTAL
+^^WI       @ 1,2 BUTTON ED28 'Change reflection filters'
+^^WI      }
+^^WI     }
+^^WI    }
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=5
@@ -220,34 +282,99 @@
 ^^CR
 %    COPY '#CLOSE SCPDATA'
 %  END IF
+%%
+%  COPY '#SCRIPT CHECKDENS'
+%%
+%  CLEAR
+%  INSERT "^^CO SET C12 TEXT '"
+%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL NNONHATM
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET P12 TEXT '"
+%  STORE FORMAT /(F7.2)/ LENGTH 7 REAL NNONHATM
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET C22 TEXT '"
+%  STORE FORMAT /(F9.3)/ LENGTH 9 REAL CELLVOL
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET C32 TEXT '"
+%  STORE FORMAT /(I4)/ LENGTH 4 INTEGER INTEGER SGMULT
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET C42 TEXT '"
+%  STORE FORMAT /(F6.2)/ LENGTH 6 REAL VOLPRATM
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET P14 TEXT '"
+%  STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER ESTNPARA
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET P22 TEXT '"
+%  STORE FORMAT /(I7)/ LENGTH 7 INTEGER INTEGER NALLOWREF
+%  INSERT "'"
+%  OUTPUT
+%%
+%  CLEAR
+%  INSERT "^^CO SET P32 TEXT '"
+%  STORE FORMAT /(F6.2)/ LENGTH 6 REAL ESTOTP
+%  INSERT "'"
+%  OUTPUT
+%%
 %  LOOP
-%    VERIFY XC_BOK XC_REF RHOMIT SIGCUT
+%    VERIFY XC_BOK XC_REF RHOMIT SIGCUT ED28 ED02 ED29
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %    CASE VALUE
-%     BLOCK    %XC_BOK
-^^CO   DISPOSE XCHECK6
-%      FINISH
-%     END BLOCK
-%     BLOCK    %XC_REF
-%      EVALUATE LOOPCOUNTER = LOOPEND
-%     END BLOCK
-%     BLOCK    %RHOMIT
-%%        GET SILENT NOSTORE REAL ' ' ' '
-%%        EVALUATE NEWRHO = VALUE
-%%        EVALUATE LNEWRAT = FALSE
+%      BLOCK    %XC_BOK
+^^CO     DISPOSE XCHECK6
+%        FINISH
+%      END BLOCK
+%      BLOCK    %XC_REF
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
+%      BLOCK    %RHOMIT
+%        GET SILENT NOSTORE REAL ' ' ' '
+%        EVALUATE NEWRHO = VALUE
+%        EVALUATE LNEWRAT = FALSE
 %        EVALUATE LNEWRHO = TRUE
-%%        COPY '#SCRIPT XLIST28'
-%     END BLOCK
-%     BLOCK    %SIGCUT
+%        COPY '#SCRIPT XLIST28'
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
+%      BLOCK    %SIGCUT
 %        GET NOSTORE SILENT REAL ' ' ' '
 %        EVALUATE NEWRAT = VALUE
 %        EVALUATE LNEWRAT = TRUE
 %        EVALUATE LNEWRHO = FALSE
 %        COPY '#SCRIPT XLIST28'
-%     END BLOCK
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
+%      BLOCK    %ED28
+%        EVALUATE LNEWRAT = FALSE
+%        EVALUATE LNEWRHO = FALSE
+%        COPY '#SCRIPT XLIST28'
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
+%      BLOCK    %ED02
+%        COPY '#SCRIPT XSPACE'
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
+%      BLOCK    %ED29
+%        COPY '#SCRIPT XINLIST3'
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END BLOCK
 %    END CASE
 %  END LOOP
 % END LOOP
 %END SCRIPT
-
-
