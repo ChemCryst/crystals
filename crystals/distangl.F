@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2001/09/04 14:54:54  ckp2
+C PUNCH=PUB option was outputing distances twice. Now fixed.
+C
 C Revision 1.12  2001/06/18 08:23:45  richard
 C Add missing comma to format statement.
 C
@@ -4283,4 +4286,1346 @@ C-------INSUFFICIENT SPACE
       CALL XOPMSG ( IOPHYD , IOPSPC , 0 )
       GO TO 9900
 C
+      END
+
+
+CODE FOR XBOND
+      SUBROUTINE XBOND
+C--INPUT OR EXTEND A LIST 40 (BONDING INFO)
+
+\TYPE11
+\ISTORE
+\STORE
+\XSTR11
+\XDSTNC
+\XLEXIC
+\XWORKA
+\XPDS
+\XLISTI
+\XCONST
+\XCHARS
+\XUNITS
+\XSSVAL
+\XTAPES
+\XLST01
+\XLST02
+\XLST05
+\XLST11
+\XLST12
+\XLST29
+\XERVAL
+\XOPVAL
+\XIOBUF
+\QSTORE
+\QSTR11
+\XLST40
+\ICOM40
+\QLST40
+\XLST50
+      DIMENSION PROCS(35)
+      DATA IDIMN /35/
+\IDIM40
+
+C -- Start the clock.
+      CALL XTIME1(2)
+
+C -- Clear something.
+      CALL XCSAE
+
+C -- ALLOCATE A 100 byte BUFFER in store FOR COMMAND PROCESSING.
+C -- MQ is a common block variable used by the lexical routines.
+      MQ = KSTALL ( 100 )
+
+C----- INITIALISE LEXICAL INPUT
+      ICHNG=1                       ! Ensure all directives appear read
+      CALL XLXINI (INEXTD, ICHNG)   ! This also sets INEXTD to -1
+
+
+C---- RESERVE A COMMAND LINE BUFFER OF 8 ELEMENTS
+      JDIMBF = 8
+      IDIMBF = JDIMBF+IDIMN
+      ICOMBF = KSTALL(IDIMBF)
+      JCOMBF = ICOMBF+JDIMBF
+
+C----- ZERO THE BUFFER
+      CALL XZEROF( ISTORE(ICOMBF), IDIMBF)
+
+C----- INSTRUCTION READING LOOP processes one line at a time.
+100   CONTINUE
+
+C----- READ A DIRECTIVE
+      IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
+
+      IF (IDIRNM .LT. 0) GOTO 100
+      IF (IDIRNM .EQ. 0) GOTO 1000
+
+C -- Jump depending on the directive given:
+      GOTO( 210, 220, 230, 240, 250, 200, 9910), IDIRNM
+      GOTO 9910
+
+
+
+
+
+200   CONTINUE
+C -- '#BONDING' - extra instruction line parameters:
+
+      IEXTEN = ISTORE(ICOMBF+11)    ! REPLACE or EXTEND current L40?
+      IEXIST = KEXIST(40)           ! Does L40 even exist?
+
+      IF ( ( IEXTEN .EQ. 1 ) .AND. ( IEXIST .GE. 1 ) )THEN
+C -- Load existing list forty (ready for overwriting):
+        CALL XLDLST ( 40, ICOM40, IDIM40, -1 )
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+
+        KCOM40 = KSTALL ( IDIM40 )
+C -- Copy list40 common block for safe keeping:
+        CALL XMOVEI(ICOM40(1),ISTORE(KCOM40),IDIM40)
+
+        WRITE(CMON,'(/A/)') 'Loaded existing list 40, common block is:'
+        CALL XPRVDU(NCVDU, 3,0)
+        DO I = 1, IDIM40, 4
+          WRITE(CMON,'(4I10)') ( ICOM40(I+J),J=0,3 )
+          CALL XPRVDU(NCVDU, 1,0)
+        END DO
+        WRITE(CMON,'(/A/)') 'Data dump is:'
+        CALL XPRVDU(NCVDU, 3,0)
+        K = ICOM40(1)-8
+        WRITE(CMON,'(I4,A,8I9)') K,':',(ISTORE(K+J),J=0,7)
+        CALL XPRVDU(NCVDU, 1,0)
+        DO I = 1, 21, 4
+          K = ICOM40(I)+(ICOM40(I+3)*ICOM40(I+2))
+          WRITE(CMON,'(I4,A,8I9)') K,':',(ISTORE(K+J),J=0,7)
+          CALL XPRVDU(NCVDU, 1,0)
+        END DO
+
+      ELSE
+        IEXTEN = 0 !Not extending if there was no existing list.
+
+      END IF
+
+C -- Initialise some counters/pointers.
+      LNXTL = 0  !next free store for storing data as it is read in.
+      LFRST = 0  !the beginning of the chain of stored data as read in.
+      KDEFAL = 0 !Flag - whether 'default' card is given.
+C -- The number of each type of card read in:
+      NELEM = 0
+      NPAIR = 0
+      NMAKE = 0
+      NBREAK = 0
+      NFORCE = 0
+      GOTO 100
+
+210   CONTINUE
+C -- 'DEFAULTS' DIRECTIVE
+C If the user provides their own DEFAULT card then overide the existing one.
+C DEFAULTS directive takes up 3 words. Allocate 5 words:
+      IF ( KDEFAL .EQ. 1 ) GOTO 9920
+      I = 3
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 6    ! Flag for DEFAULTS data
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      KDEFAL = 1
+      GOTO 300
+
+220   CONTINUE
+C -- 'ELEMENT' DIRECTIVE
+C ELEMENT directive takes up 3 words. Allocate 5 words:
+      I = 3
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 1    ! Flag for ELEMENT data
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      NELEM = NELEM + 1
+      GOTO 300
+
+230   CONTINUE
+C -- 'PAIR' DIRECTIVE
+C PAIR directive takes up 5 words. Allocate 7 words:
+      I = 5
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 2    ! Flag for PAIR data
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      NPAIR = NPAIR + 1
+      GOTO 300
+
+240   CONTINUE
+C -- 'MAKE' DIRECTIVE
+C MAKE directive takes up 15 words. Allocate 16 words:
+      I = 15
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 3    ! Flag for MAKE data
+C -- Read the bond info from the card e.g. C(19) TO C(20):
+      II = KLXBND ( ICOMBF+20 )
+      IF (KSYNUM(Z) .EQ. 0) THEN
+        ISTORE(ICOMBF+34)=NINT(Z)
+        ME=ME-1
+        MF=MF+LK2
+      ELSE
+        ISTORE(ICOMBF+34)=0
+      END IF
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      NMAKE = NMAKE + 1
+      GOTO 300
+
+250   CONTINUE
+C -- 'BREAK' DIRECTIVE
+C BREAK directive takes up 14 words. Allocate 16 words:
+      I = 14
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 4    ! Flag for BREAK data
+C -- Read the bond info from the card e.g. C(19) TO C(20):
+      II = KLXBND ( ICOMBF+20 )
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      NBREAK = NBREAK + 1
+      GOTO 300
+
+
+300   CONTINUE
+      IF ( LLSTL.GT.0 ) THEN
+C -- Store pointer to this new record in the last record.
+        ISTORE(LLSTL) = LNXTL
+      ELSE
+C -- This is the first record, keep a pointer.
+        LFRST = LNXTL
+      END IF
+C -- Ensure this pointer is zero. (Marks end of chain).
+      ISTORE(LNXTL) = 0 
+      GO TO 100
+
+1000  CONTINUE
+C
+C -- COMMAND INPUT COMPLETE. CHECK FOR ERRORS
+      IF ( LEF .GT. 0 ) GO TO 9910
+
+      IPLACE = LFRST
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is an element then add into new L40.
+         IF ( ISTORE(IPLACE+1).EQ.1 ) THEN
+            WRITE(CMON,'(A,I7,2A,2F12.0)')'At ',IPLACE,': ', 
+     1              ISTORE(IPLACE+2),STORE(IPLACE+3),STORE(IPLACE+4)
+            CALL XPRVDU(NCVDU, 1,0)
+         END IF
+         IPLACE = ISTORE(IPLACE)
+C         IF ( IPLACE .EQ. 0 ) EXIT
+      END DO
+
+
+      IF ( IEXTEN .EQ. 0 ) THEN
+
+C -- C R E A T E   A   N E W   L I S T   4 0:
+
+         IDWZAP = 0
+         CALL XFILL (IDWZAP, ICOM40, IDIM40)
+         N40T = 1
+         N40E = 0
+         N40P = 0
+         N40M = 0
+         N40B = 0
+         CALL XCELST ( 40, ICOM40, IDIM40 )
+      END IF
+
+
+C -- L40T - the DEFAULTS card. There is only ever one of these,
+C -- so we can overwrite this (if given).
+
+      IPLACE = LFRST
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is a DEFAULTS then add into new L40.
+         IF ( ISTORE(IPLACE+1).EQ.6 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(L40T), MD40T )
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+
+
+C -- L40E - the ELEMENT cards.
+      ISTAT = KHUNTR(40,102,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      LDATA = ISTORE(IADDR+3)
+      
+C -- Move existing ELEMENT data if there is any.
+      NEWDAT = KSTALL ((N40E + NELEM)*MD40E)
+      NMOVE = MD40E * N40E
+      IF ( NMOVE .GT. 0 ) THEN
+        CALL XMOVE( STORE(LDATA), STORE(NEWDAT), NMOVE )
+      END IF
+      ISTORE(IADDR+3) = NEWDAT        ! Change header pointer to data
+
+C -- Then the new ELEMENT cards.
+      IPLACE = LFRST
+      I = NEWDAT + NMOVE
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is an ELEMENT then add into new L40.
+         IF ( ISTORE(IPLACE+1).EQ.1 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD40E )
+            I = I + MD40E
+            N40E = N40E + 1
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+
+
+
+C -- L40P - the PAIR cards.
+      ISTAT = KHUNTR(40,103,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      LDATA = ISTORE(IADDR+3)
+      
+C -- Move existing PAIR data if there is any.
+      NEWDAT = KSTALL ((N40P + NPAIR)*MD40P)
+      NMOVE = MD40P * N40P
+      IF ( NMOVE .GT. 0 ) THEN
+        CALL XMOVE( STORE(LDATA), STORE(NEWDAT), NMOVE )
+      END IF
+      ISTORE(IADDR+3) = NEWDAT        ! Change header pointer to data
+
+C -- Then the new PAIR cards.
+      IPLACE = LFRST
+      I = NEWDAT + NMOVE
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is an PAIR then add into new L40.
+         IF ( ISTORE(IPLACE+1).EQ.2 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD40P )
+            I = I + MD40P
+            N40P = N40P + 1
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+
+
+
+C -- L40M - the MAKE cards.
+      ISTAT = KHUNTR(40,104,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      LDATA = ISTORE(IADDR+3)
+      
+C -- Move existing MAKE data if there is any.
+      NEWDAT = KSTALL ((N40M + NMAKE)*MD40M)
+      NMOVE = MD40M * N40M
+      IF ( NMOVE .GT. 0 ) THEN
+        CALL XMOVE( STORE(LDATA), STORE(NEWDAT), NMOVE )
+      END IF
+      ISTORE(IADDR+3) = NEWDAT        ! Change header pointer to data
+
+C -- Then the new MAKE cards.
+      IPLACE = LFRST
+      I = NEWDAT + NMOVE
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is a MAKE then add into new L40.
+         IF ( ISTORE(IPLACE+1).EQ.3 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD40M )
+            I = I + MD40M
+            N40M = N40M + 1
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+
+
+
+C -- L40B - the BREAK cards.
+      ISTAT = KHUNTR(40,105,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      LDATA = ISTORE(IADDR+3)
+      
+C -- Move existing BREAK data if there is any.
+      NEWDAT = KSTALL ((N40B + NBREAK)*MD40B)
+      NMOVE = MD40B * N40B
+      IF ( NMOVE .GT. 0 ) THEN
+        CALL XMOVE( STORE(LDATA), STORE(NEWDAT), NMOVE )
+      END IF
+      ISTORE(IADDR+3) = NEWDAT        ! Change header pointer to data
+
+C -- Then the new BREAK cards.
+      IPLACE = LFRST
+      I = NEWDAT + NMOVE
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is a BREAK then add into new L40.
+         IF ( ISTORE(IPLACE+1).EQ.4 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD40B )
+            I = I + MD40B
+            N40B = N40B + 1
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+
+                
+C -- Write new list back to disk.
+
+      CALL XWLSTD (40,ICOM40,IDIM40,0,1)
+
+
+
+
+C--TERMINATION MESSAGES
+6050  CONTINUE
+      CALL XOPMSG ( IOPDIS, IOPEND, IVERSN )
+C -- Stop the clock. Stop the clock!
+      CALL XTIME2(2)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPDIS , IOPABN , 0 )
+      GO TO 6050
+9910  CONTINUE
+C -- INPUT ERRORS
+      CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
+      GO TO 9900
+9920  CONTINUE
+C -- Default card more than once.
+      WRITE(CMON,'(A)')'The DEFAULTS card may only appear once.'
+      CALL XPRVDU(NCVDU, 1,0)
+      GO TO 9900
+
+
+      END
+
+
+
+
+
+
+
+CODE FOR KLXBND
+      FUNCTION KLXBND(IADDR)
+C Routine to read two atoms from the lexical input of the form
+C "C(21) TO C(22)" or "C(21,1,1,0,0,1) TO C(4,-1,0,1,2)" and place
+C them in 14 bytes of STORE. The stack format is:
+C
+C 1 & 8       TYPE
+C 2 & 9       SERIAL
+C 3 & 10      S
+C 4 & 11      L
+C 5 & 12      TX
+C 6 & 13      TY
+C 7 & 14      TZ
+C
+C      IADDR       PLACE IN STORE TO PUT THE RESULTS
+\ISTORE
+\STORE
+\XLST05
+\XLEXIC
+\XUNITS
+\XSSVAL
+\XERVAL
+\QSTORE
+      DATA ICTO/'TO  '/
+
+C -- SEARCH INPUT FOR TYPE/ATOM SPECIFIERS
+
+      IGTONE = 0
+
+1000  CONTINUE
+
+      KBDMQ = MQ
+
+      II = KATOMH(MQ)
+
+      MQ = KBDMQ
+
+      IF(II.LT.0) THEN
+C--END OF CARD - back ONE.
+        MF=MF-LK2
+        CALL XADE(ISTORE(MF+1))
+        KLXBND = II
+        RETURN
+      ELSE IF (II.EQ.0) THEN
+        CALL XADE(ISTORE(MF+1))
+        KLXBND = II
+        RETURN
+      END IF
+
+C Copy info for atom into the output stack.
+      ISTORE(IADDR)   = ISTORE(MQ+2)
+      ISTORE(IADDR+1) = NINT(STORE(MQ+3)) !Serial real->int.
+      ISTORE(IADDR+2) = ISTORE(MQ+7)
+      ISTORE(IADDR+3) = ISTORE(MQ+8)
+      ISTORE(IADDR+4) = ISTORE(MQ+9)
+      ISTORE(IADDR+5) = ISTORE(MQ+10)
+      ISTORE(IADDR+6) = ISTORE(MQ+11)
+
+      IF ( IGTONE .EQ. 0 ) THEN
+        IADDR = IADDR + 7
+        IGTONE = 1
+C -- If no more things on this CARD, then error!
+        IF (ME.LE.0) THEN
+          MF=MF-LK2
+          CALL XADE(ISTORE(MF+1))
+          KLXBND = -1
+          RETURN
+        END IF
+C -- Look for the 'TO' text.
+        IF ( ISTORE(MF).GE.0 ) THEN
+          MF=MF-LK2
+          CALL XADE(ISTORE(MF+1))
+          KLXBND = -1
+          RETURN
+        END IF
+        IF ( KCOMP(1,ISTORE(MF+2),ICTO,1,1) .LE. 0 ) THEN
+          MF=MF-LK2
+          CALL XADE(ISTORE(MF+1))
+          KLXBND = -1
+          RETURN
+        END IF
+C -- Advance to the next thing on the CARD.
+        ME = ME - 1
+        MF = MF + LK2
+        GO TO 1000
+      END IF
+
+C -- Input complete
+
+      KLXBND = 1
+      RETURN
+
+
+      END
+
+
+
+CODE FOR XBCALC
+      SUBROUTINE XBCALC
+C
+C       ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
+C       WHICH HAS THE FOLLOWING FORMAT :
+C
+C       0  ADDRESS OF THE ATOM IN LIST 5
+C       2  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM
+C       3  NON-PRIMITIVE LATTICE INDICATOR
+C       4  T(X)
+C       5  T(Y)
+C       6  T(Z)
+C       7  TRANSFORMED X
+C       8  TRANSFORMED Y
+C       9  TRANSFORMED Z
+C      10  DISTANCE
+C      11  DISTANCE SQUARED
+C--
+      PARAMETER (NPROCS = 1)
+      DIMENSION PROCS(NPROCS)
+      DIMENSION IPROCS(NPROCS)
+      DIMENSION TXYZ(6)
+      DIMENSION ID(2)
+
+\STORE
+\QSTORE
+\ISTORE
+\XCONST
+\XLISTI
+\XUNITS
+\XTAPES
+\XSSVAL
+\XWORK
+\XWORKA
+\XCHARS
+\XLST01
+\XLST02
+\XLST05
+\XLST06
+\XLST12
+\ICOM12
+\XLST20
+\XLST29
+\XLST40
+\ICOM40
+\QLST40
+\XLST41
+\ICOM41
+\QLST41
+\XERVAL
+\XOPVAL
+\XIOBUF
+\XDSTNC
+\TSSCHR
+\XSSCHR
+\UFILE
+\XPDS
+
+      EQUIVALENCE (PROCS(1), IPROCS(1))
+\IDIM40
+\IDIM41
+
+
+C--INITIALISE THE TIMING FUNCTION
+      CALL XTIME1(1)
+
+C--READ THE DATA
+      ISTAT = KRDDPV ( PROCS, NPROCS)
+      IF ( ISTAT .LT. 0 ) GO TO 9910
+
+C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
+      CALL XRSL
+      CALL XCSAE
+      CALL XFAL01 !Cell parameters
+      CALL XFAL02 !Space group
+      CALL XFAL05 !Atomic (and other) parameters
+      CALL XFAL29 !Atomic properties (radii)
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      IF ( KEXIST(40) .GE. 1 ) THEN
+C -- Load existing list forty:
+         CALL XFAL40
+         IF ( IERFLG .LT. 0 ) GO TO 9900
+      ELSE
+C -- C R E A T E   A   N E W   L I S T   4 0:
+         IDWZAP = 0
+         CALL XFILL (IDWZAP, ICOM40, IDIM40)
+         N40T = 1
+         N40E = 0
+         N40P = 0
+         N40M = 0
+         N40B = 0
+         CALL XCELST ( 40, ICOM40, IDIM40 )
+         CALL XWLSTD ( 40, ICOM40, IDIM40, 0, 1)
+      ENDIF
+
+      IF ( KEXIST(41) .GE. 1 ) THEN
+C -- Load existing list forty-one (ready for overwriting):
+         CALL XLDLST ( 41, ICOM41, IDIM41, -1 )
+         IF ( IERFLG .LT. 0 ) GO TO 9900
+      ELSE
+C -- C R E A T E   A   N E W   L I S T   4 1:
+         IDWZAP = 0
+         CALL XFILL (IDWZAP, ICOM41, IDIM41)
+         N41B = 0 !Bond list, no entries
+         N41A = 0 !Atom list, no entries
+         N41D = 1 !Dependencies, one record.
+         CALL XCELST ( 41, ICOM41, IDIM41 )
+      END IF
+
+
+      IF ( ( IPROCS(1) .EQ. 0 ) .AND. ( K41DEP() .GE. 1 ) ) THEN
+         WRITE(CMON,'(A/A)')'No need to recalculate bonds. Use ',
+     1                    '#BONDCALC FORCE to force a calculation.'
+         CALL XPRVDU(NCVDU,2,0)
+         GOTO 3350
+      ENDIF
+
+
+
+C -- The ELEMENT records (L40E) will override the covalent
+C -- radii given in L29. The vdw parameter in L29 will be over-
+C -- written with the MAXBONDS value - this L29 must not be
+C -- written back to the DISK as it is now garbage.
+
+      I29  = L29  + (N29-1) *MD29
+      I40E = L40E + (N40E-1)*MD40E
+
+C -- Overwrite vdw with maxbonds info
+      DO M29= L29,I29,MD29
+        STORE(M29+2) = STORE(L40T+2)
+      END DO
+
+      NOTFND=0
+      NEWL29=NFL
+      DO M40E=L40E,I40E,MD40E
+         KFOUND = 0
+         DO M29= L29,I29,MD29
+           IF ( STORE(M40E) .EQ. STORE(M29) ) THEN
+              KFOUND = 1
+              STORE(M29+1) = STORE(M40E+1)
+              STORE(M29+2) = STORE(M40E+2)
+              EXIT
+           END IF
+         END DO
+         IF ( KFOUND .EQ. 0 ) THEN
+C -- Add this extra element in L29 style at NEWL29.
+            NEWM29 = NEWL29 + NOTFND*MD29
+            CALL XZEROF(STORE(NEWM29),MD29)
+            CALL XMOVE (STORE(L40E),STORE(NEWM29),3)
+            NOTFND = NOTFND + 1
+            WRITE(CMON,'(2A)')'FYI: Element in L40, but not in L29',
+     1                        ISTORE(L40E)
+            CALL XPRVDU(NCVDU,1,0)
+         END IF
+      END DO
+      IF ( NOTFND .GT. 0 ) THEN
+C -- There are extra elements in L40 that are not in L29 - this is
+C -- perfectly acceptable, though refinement cannot proceed. We should
+C -- print a warning. For now we need to extend L29 in order to fit
+C -- in the information.
+         NEWL29 = KSTALL ( (N29+NOTFND)*MD29 )
+C -- NB we have already put stuff above NFL, this call allows for that.
+         NEWM29 = NEWL29 + NOTFND*MD29
+         CALL XMOVE(STORE(L29),STORE(NEWM29),N29*MD29)
+         L29 = NEWL29
+         N29 = N29 + NOTFND
+         I29 = L29  + (N29-1) *MD29
+      END IF
+
+      JT = 12
+
+      ITEMP1 = KCHLFL(JT) !reserve a sort buffer at top of store.
+
+
+C -- Allocate a N5 length vector to hold: { maxbonds, bondssofar }
+
+      LATVEC = KCHLFL( N5 * 2 ) 
+      DO I5 = 0,N5-1
+         M5 = L5 + I5*MD5
+         DO M29 = L29,I29,MD29
+            IF ( ISTORE(M29) .EQ. ISTORE(M5) ) EXIT
+         END DO
+         ISTORE(LATVEC+(I5*2))   = NINT(STORE(M29+2))
+         ISTORE(LATVEC+(I5*2)+1) = 0
+      ENDDO
+
+C -- There are two parts of list 40 that must be used within the
+C -- MAKE41 routine to determine bonding. Firstly, the DEFAULTS
+C -- record (L40T) contains the tolerance algorithm type, and the
+C -- tolerance. Secondly, the PAIR records (L40P) contain pairs of
+C -- elements which will override the TOLERANCE calculation.
+
+      NWN41B = 0
+
+      DO I5 = 0,N5-1
+         M5 = L5 + I5*MD5
+
+         NEXTLC = NFL
+         NFOUND = MAKE41( M5, NEXTLC )
+         IF ( NFOUND .GT. 0 ) THEN
+
+C Reject bonds to atoms that have reached their quota of bonds.
+            NREJ = 0
+            DO J = 0,(NFOUND-1)*JT,JT
+               K = ISTORE(NFL+J)
+               IL5 = ( K - L5 ) / MD5
+               IF ( ISTORE(LATVEC+(IL5*2)+1) .GE.
+     1              ISTORE(LATVEC+(IL5*2)))  THEN
+                  STORE(NFL+J+10) = 9999.0
+                  NREJ = NREJ + 1
+               END IF
+            END DO
+            
+C Find the maximum number of bonds for this element.
+            MAXBND = ISTORE(LATVEC+(I5*2))
+
+C should this be:?
+C           MAXBND = ISTORE(LATVEC+(I5*2)) - ISTORE(LATVEC+(I5*2)+1)
+
+C Sort bonds on ETOL.
+            IF ( NFOUND .GT. 1 )
+     1              CALL XSHELQ(STORE(NFL),JT,11,NFOUND,
+     1                               NFOUND*JT,STORE(ITEMP1))
+
+C Throw out any that are rejected.
+            NFOUND = NFOUND - NREJ
+C Limit rest to best MAXBND bonds.
+            NFOUND = MIN(NFOUND,MAXBND)
+
+            DO J = 0,(NFOUND-1)*JT,JT
+              K = ISTORE(NFL+J)
+            END DO
+
+
+C -- Add these bonds into L41 bond record. Currently descending from the top
+C -- of store.
+C -- Also add these bonds into the LATVEC vector.
+            ISTORE(LATVEC+(I5*2)+1) = ISTORE(LATVEC+(I5*2)+1) + NFOUND
+            DO J = 0,(NFOUND-1)*JT,JT
+               K = ISTORE(NFL+J)
+               IL5 = ( K - L5 ) / MD5
+               NWL41B = KCHLFL(MD41B) !Increase storage for L41B records
+               NWN41B = NWN41B + 1    !Increase number of records
+               ISTORE(NWL41B   ) = (M5-L5)/MD5            !Ptr to first atom
+               ISTORE(NWL41B+1 ) = 1
+               ISTORE(NWL41B+2 ) = 1
+               ISTORE(NWL41B+3 ) = 0
+               ISTORE(NWL41B+4 ) = 0
+               ISTORE(NWL41B+5 ) = 0
+               ISTORE(NWL41B+6 ) = IL5                    !Ptr to 2nd
+               CALL XMOVE( STORE(NFL+J+1), STORE(NWL41B+7), 5 )!Ptr to sym
+               ISTORE(NWL41B+12) = ISTORE(NFL+J+11)       !Bond type
+               STORE(NWL41B+13) = STORE(NFL+J+9)        !Bond length
+               ISTORE(LATVEC+(IL5*2)+1) = ISTORE(LATVEC+(IL5*2)+1) + 1
+            END DO
+         END IF
+      END DO
+
+C -- Make any bonds in the MAKE list.
+
+      DO M40M = L40M, L40M+(N40M-1)*MD40M, MD40M
+C -- Find these atoms in L5.
+        KAT1 = -1
+        KAT2 = -1
+        DO I5 = 0,N5-1
+          M5 = L5 + I5*MD5
+          IF (( ISTORE(M40M)   .EQ. ISTORE(M5  ) ) .AND.
+     1        ( ISTORE(M40M+1) .EQ. NINT(STORE(M5+1)) ) ) THEN
+             KAT1 = I5
+             IF ( KAT2.GE.0 ) EXIT
+          ENDIF
+          IF (( ISTORE(M40M+7) .EQ. ISTORE(M5  ) ) .AND.
+     1        ( ISTORE(M40M+8) .EQ. NINT(STORE(M5+1)) ) ) THEN
+             KAT2 = I5
+             IF ( KAT1.GE.0 ) EXIT
+          ENDIF
+        ENDDO
+C If one of the atoms not found, we can't make this bond.
+        IF ( (KAT1.LT.0) .OR. (KAT2.LT.0)) THEN
+            WRITE(CMON,'(2(A,A4,I4))')
+     1      'Cannot MAKE this bond (no such atom):',
+     1      ISTORE(M40M),  ISTORE(M40M+1),' to ',
+     2      ISTORE(M40M+7),ISTORE(M40M+8)
+            CALL XPRVDU(NCVDU,1,0)
+            CYCLE
+        END IF
+
+        LBEX = 0
+C -- Search L41B records for this bond to see if already found.
+        DO M41B = NWL41B, NWL41B+(NWN41B-1)*MD41B, MD41B
+          IF (((ISTORE(M41B).EQ.KAT1).AND.(ISTORE(M41B+6) .EQ.KAT2)
+     1 .AND.(ISTORE(M41B+1).EQ.ISTORE(M40M+2)).AND.(ISTORE(M41B+2).EQ.
+     2 ISTORE(M40M+3)).AND.(ISTORE(M41B+3).EQ.ISTORE(M40M+4)).AND.
+     3 (ISTORE(M41B+4).EQ.ISTORE(M40M+5)).AND.(ISTORE(M41B+5).EQ.
+     4 ISTORE(M40M+6)).AND.(ISTORE(M41B+7).EQ.ISTORE(M40M+9))
+     5 .AND.(ISTORE(M41B+8).EQ.ISTORE(M40M+10)).AND.(ISTORE(M41B+9).EQ.
+     6 ISTORE(M40M+11)).AND.(ISTORE(M41B+10).EQ.ISTORE(M40M+12))
+     7 .AND.(ISTORE(M41B+11).EQ.ISTORE(M40M+13)))
+     8    .OR.((ISTORE(M41B).EQ.KAT2).AND.(ISTORE(M41B+6).EQ.KAT1)
+     9     .AND.(ISTORE(M41B+7).EQ.ISTORE(M40M+2))
+     1     .AND.(ISTORE(M41B+8).EQ.ISTORE(M40M+3))
+     2     .AND.(ISTORE(M41B+9).EQ.ISTORE(M40M+4))
+     3     .AND.(ISTORE(M41B+10).EQ.ISTORE(M40M+5))
+     4     .AND.(ISTORE(M41B+11).EQ.ISTORE(M40M+6))
+     5     .AND.(ISTORE(M41B+1).EQ.ISTORE(M40M+9))
+     6     .AND.(ISTORE(M41B+2).EQ.ISTORE(M40M+10))
+     7     .AND.(ISTORE(M41B+3).EQ.ISTORE(M40M+11))
+     8     .AND.(ISTORE(M41B+4).EQ.ISTORE(M40M+12))
+     9     .AND.(ISTORE(M41B+5).EQ.ISTORE(M40M+13))))THEN
+
+          WRITE(CMON,'(2(A,A4,I4))')
+     1    'No need to make    ',ISTORE(M40M  ),ISTORE(M40M+1),
+     1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
+            CALL XPRVDU(NCVDU, 1,0)
+
+C -- We have a match. No need to make this bond.
+              LBEX = 1
+              EXIT
+            END IF
+        ENDDO
+        IF ( LBEX .EQ. 0 ) THEN
+
+          WRITE(CMON,'(2(A,A4,I4))')
+     1    'Making bond from   ',ISTORE(M40M  ),ISTORE(M40M+1),
+     1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
+            CALL XPRVDU(NCVDU, 1,0)
+
+C -- Add this bond into the L41. Still descending from the top of store.
+          NWL41B = KCHLFL(MD41B) !Increase storage for L41B records
+          NWN41B = NWN41B + 1    !Increase number of records
+          ISTORE(NWL41B  ) = KAT1            !Ptr to first atom
+          CALL XMOVE( STORE(M40M+2), STORE(NWL41B+1), 5 )!Ptr to sym
+          ISTORE(NWL41B+6) = KAT2            !Ptr to 2nd
+          CALL XMOVE( STORE(M40M+9), STORE(NWL41B+7), 5 )!Ptr to sym
+          ISTORE(NWL41B+12) = ISTORE(M40M+14)       !Bond type
+C --    Calculate bond length
+C -- Apply symmetry to atom 1:
+          M2 = L2 + ( MIN(N2,ABS(ISTORE(M40M+2))) - 1) * MD2
+          M2P =L2P+ ( MIN(N2P,ISTORE(M40M+3))     - 1) * MD2P
+C -- Transform
+          CALL XMLTTM(STORE(M2),STORE(4+L5+KAT1*MD5),TXYZ(1),3,3,1)
+C -- Invert
+          IF ( ISTORE(M40M+2) .LT. 0 ) CALL XNEGTR(TXYZ(1),TXYZ(1),3)
+C -- Translate
+          TXYZ(1) = TXYZ(1) +STORE(M2P  ) +STORE(M2+9 ) +ISTORE(M40M+4)
+          TXYZ(2) = TXYZ(2) +STORE(M2P+1) +STORE(M2+10) +ISTORE(M40M+5)
+          TXYZ(3) = TXYZ(3) +STORE(M2P+2) +STORE(M2+11) +ISTORE(M40M+6)
+C -- Apply symmetry to atom 2:
+          M2 =  L2 + (MIN(N2,ABS(ISTORE(M40M+9))) - 1) * MD2 
+          M2P = L2P+ (MIN(N2P,ISTORE(M40M+10))    - 1) * MD2P
+C -- Transform
+          CALL XMLTTM(STORE(M2),STORE(4+L5+KAT2*MD5),TXYZ(4),3,3,1)
+C -- Invert
+          IF ( ISTORE(M40M+9) .LT. 0 ) CALL XNEGTR(TXYZ(4),TXYZ(4),3)
+C -- Translate
+          TXYZ(4) = TXYZ(4) +STORE(M2P  ) +STORE(M2+9 ) +ISTORE(M40M+11)
+          TXYZ(5) = TXYZ(5) +STORE(M2P+1) +STORE(M2+10) +ISTORE(M40M+12)
+          TXYZ(6) = TXYZ(6) +STORE(M2P+2) +STORE(M2+11) +ISTORE(M40M+13)
+          F=XDSTNCR(TXYZ(1),TXYZ(4)) !Calculate distance
+          STORE(NWL41B+13) = SQRT(F)       !Bond length
+        END IF
+      ENDDO
+
+C -- Break any bonds in the BREAK list:
+
+C -- Loop over the list of bonds to be broken:
+      DO M40B = L40B, L40B+(N40B-1)*MD40B, MD40B
+C -- Find these atoms in L5.
+        KAT1 = -1
+        KAT2 = -1
+        DO I5 = 0,N5-1
+          M5 = L5 + I5*MD5
+          IF (( ISTORE(M40B)   .EQ. ISTORE(M5  ) ) .AND.
+     1        ( ISTORE(M40B+1) .EQ. NINT(STORE(M5+1)) ) ) THEN
+             KAT1 = I5
+             IF ( KAT2.GE.0 ) EXIT
+          ENDIF
+          IF (( ISTORE(M40B+7) .EQ. ISTORE(M5  ) ) .AND.
+     1        ( ISTORE(M40B+8) .EQ. NINT(STORE(M5+1)) ) ) THEN
+             KAT2 = I5
+             IF ( KAT1.GE.0 ) EXIT
+          ENDIF
+        ENDDO
+C If one of the atoms not found, we can't break this bond.
+        IF ( (KAT1.LT.0) .OR. (KAT2.LT.0)) THEN
+           WRITE(CMON,'(2(A,A4,I4))')
+     1      'Cannot BREAK this bond (no such atom):',
+     1      ISTORE(M40B),  ISTORE(M40B+1),' to ',
+     2      ISTORE(M40B+7),ISTORE(M40B+8)
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+        END IF
+
+
+C -- Find this atom in the NWL41B list:
+        KN41B = 0
+        KM41B = NWL41B
+        DO M41B = NWL41B, NWL41B+(NWN41B-1)*MD41B, MD41B
+
+          INFO51 = L5 + ISTORE(M41B) * MD5
+          INFO52 = L5 + ISTORE(M41B+6) * MD5
+          IF (((ISTORE(M41B).EQ.KAT1).AND.(ISTORE(M41B+6) .EQ.KAT2)
+     1 .AND.(ISTORE(M41B+1).EQ.ISTORE(M40B+2)).AND.(ISTORE(M41B+2).EQ.
+     2 ISTORE(M40B+3)).AND.(ISTORE(M41B+3).EQ.ISTORE(M40B+4)).AND.
+     3 (ISTORE(M41B+4).EQ.ISTORE(M40B+5)).AND.(ISTORE(M41B+5).EQ.
+     4 ISTORE(M40B+6)).AND.(ISTORE(M41B+7).EQ.ISTORE(M40B+9))
+     5 .AND.(ISTORE(M41B+8).EQ.ISTORE(M40B+10)).AND.(ISTORE(M41B+9).EQ.
+     6 ISTORE(M40B+11)).AND.(ISTORE(M41B+10).EQ.ISTORE(M40B+12))
+     7 .AND.(ISTORE(M41B+11).EQ.ISTORE(M40B+13)))
+     8    .OR.((ISTORE(M41B).EQ.KAT2).AND.(ISTORE(M41B+6).EQ.KAT1)
+     9     .AND.(ISTORE(M41B+7).EQ.ISTORE(M40B+2))
+     1     .AND.(ISTORE(M41B+8).EQ.ISTORE(M40B+3))
+     2     .AND.(ISTORE(M41B+9).EQ.ISTORE(M40B+4))
+     3     .AND.(ISTORE(M41B+10).EQ.ISTORE(M40B+5))
+     4     .AND.(ISTORE(M41B+11).EQ.ISTORE(M40B+6))
+     5     .AND.(ISTORE(M41B+1).EQ.ISTORE(M40B+9))
+     6     .AND.(ISTORE(M41B+2).EQ.ISTORE(M40B+10))
+     7     .AND.(ISTORE(M41B+3).EQ.ISTORE(M40B+11))
+     8     .AND.(ISTORE(M41B+4).EQ.ISTORE(M40B+12))
+     9     .AND.(ISTORE(M41B+5).EQ.ISTORE(M40B+13))))THEN
+
+C -- We have a match. Need to break this bond.
+C -- Copy data down.
+            WRITE(CMON,'(2(A,A4,I4))')
+     1    'Breaking bond from ',ISTORE(INFO51),NINT(STORE(INFO51+1)),
+     1               ' to ',ISTORE(INFO52),NINT(STORE(INFO52+1))
+            CALL XPRVDU(NCVDU, 1,0)
+
+            IF ( KM41B .NE. M41B ) THEN
+               CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
+            END IF
+C -- Keep K pointers same. Data will be overwritten next time.
+            KN41B = KN41B 
+            KM41B = KM41B 
+          ELSE
+C -- Copy data down.
+            IF ( KM41B .NE. M41B ) THEN
+               CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
+            END IF
+C -- Increment K pointers.
+            KN41B = KN41B + 1
+            KM41B = KM41B + MD41B
+          ENDIF
+        END DO
+
+C -- Possibly shorten L41B.
+        NWN41B = KN41B
+      END DO
+
+C TODO -- Include L41A list of atoms, CRC and so on.
+
+      ISTAT = KHUNTR(41,101,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      ISTORE(IADDR+3) = NWL41B        ! Change header pointer to new data
+      N41B = NWN41B
+
+
+      ISTAT = KHUNTR(41,102,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+
+      N41A = N5
+      L41A = KCHLFL( N5 * MD41A )
+      DO I = 0,N5-1
+         M5 = L5 + 4 + I*MD5
+         M41A = L41A + I*MD41A
+         CALL XMOVE(STORE(M5),STORE(M41A),MD41A)
+      END DO
+
+      ISTORE(IADDR+3) = L41A        ! Change header pointer to new data
+
+      CALL XRLIND( 5,ILSERI, NFW, LL, IOW,IL05SR, ID)
+      CALL XRLIND(40,IL40SR, NFW, LL, IOW, NOS, ID)
+
+      ISTORE(L41D)   = N5
+      ISTORE(L41D+1) = KL5CRC()
+      ISTORE(L41D+2) = IL05SR
+      ISTORE(L41D+3) = IL40SR
+
+
+C -- Write new list back to disk.
+
+      CALL XWLSTD (41,ICOM41,IDIM41,0,1)
+
+
+3350  CONTINUE
+      CALL XOPMSG (IOPSLA, IOPEND, 201)
+      CALL XTIME2(1)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
+      GOTO 3350
+9910  CONTINUE
+C -- INPUT ERROR
+      CALL XOPMSG ( IOPSLA , IOPCMI , 0 )
+      GO TO 9900
+9920  CONTINUE
+C -- SINGULAR MATRIX
+      WRITE ( CMON, 9925 )
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+9925  FORMAT ( 1X , 'Rotation matrix is singular' )
+      CALL XERHND ( IERERR )
+      GO TO 9900
+9930  CONTINUE
+C
+C-------INSUFFICIENT SPACE
+      CALL XOPMSG ( IOPHYD , IOPSPC , 0 )
+      GO TO 9900
+      END
+
+
+
+CODE FOR MAKE41
+      FUNCTION MAKE41( MPIV, MSADR )
+C
+C   MSADR  ADDRESS IN STORE TO PUT RESULTS
+C   MPIV    ADDRESS OF THE CURRENT PIVOT ATOM IN LIST 5
+C
+C--THE RETURN VALUES OF 'MAKE41' ARE :
+C   0  NO SUITABLE CONTACTS HAVE BEEN FOUND.
+C  >0  THE NUMBER OF ENTRIES IN THE DISTANCES STACK.
+C
+C--THE FOLLOWING VARIABLES MAY BE ADJUSTED
+C  AP     MAXIMUM ALLOWED DISTANCES SQUARED OVERALL
+C  BP     MINIMUM ALLOWED DISTANCE SQUARED OVERALL
+C
+C--ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
+C  WHICH HAS THE FOLLOWING FORMAT :
+C   0  ADDRESS OF THE ATOM IN LIST 5
+C   1  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM.)
+C   2  NON-PRIMITIVE LATTICE INDICATOR
+C   3  T(X)
+C   4  T(Y)
+C   5  T(Z)
+C   6  TRANSFORMED X
+C   7  TRANSFORMED Y
+C   8  TRANSFORMED Z
+C   9  DISTANCE
+C  10  TOLERANCE ( absolute distance from ideal cov+cov bond length )
+C  11  BONDTYPE ( if a PAIR record is given, otherwise 0 )
+C
+C--THE COMMON BLOCK /XAPD/ IS USED AS :
+C  APD(1-3)  SYMMETRY RELATED X, Y AND Z, WITH TRANSLATION PART OMITTED.
+C  APD(4-6)  INITIAL SYMMETRY RELATED X, Y AND Z.
+C  APD(7-9)  FINAL SYMMETRY RELATED X, Y AND Z AFTER A SUCCESSFUL FIND.
+C
+C--
+\ISTORE
+\STORE
+\QSTORE
+\XCONST
+\XPDS
+\XLST40
+\XLST05
+\XLST29
+
+      COMMON /PERM02/ RLIST2(1000),ICFLAG,LSYM,NSYM,MDSYM,LNONP,NNONP
+      EQUIVALENCE (STORE(1),ISTORE(1))
+
+
+      CALL CRDIST2     !Set up BPD.
+      JT= 12           !Size of atom info on stack
+      AO = 3.0
+      AP = AO * AO     !Max dist squared
+      BP = 0.5 * 0.5   !Min dist squared
+
+C--SET UP A FEW INITIAL POINTERS
+      MAKE41=0         !Return value. Number of atoms found
+      I5A=MPIV
+C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
+      DO J=1,3
+        BPD(J+3)=STORE(I5A+4)-AO/BPD(J)
+        BPD(J+6)=STORE(I5A+4)+AO/BPD(J)
+        I5A=I5A+1
+      END DO
+      DAT1 = 0.0
+      DO M29 = L29, L29+(N29-1)*MD29, MD29
+        IF ( ISTORE(MPIV) .EQ. ISTORE(M29) ) THEN
+          DAT1 = STORE(M29+1)
+          EXIT
+        END IF
+      END DO
+
+
+C--LOOP OVER ALL THE ATOMS.
+      DO I5= L5,L5+(MD5*(N5-1)),MD5
+        KPAIR = 0
+        DAT2 = 0.0
+C--Check for this atom pair on a L40 PAIR record.
+        DO M40P = L40P, L40P + (N40P-1)*MD40P, MD40P
+          IF (((STORE(M40P).EQ.STORE(I5))
+     1    .AND.(STORE(M40P+1).EQ.STORE(MPIV)))
+     2    .OR.((STORE(M40P)  .EQ.STORE(MPIV))
+     3    .AND.(STORE(M40P+1).EQ.STORE(I5)))) THEN
+            KPAIR = 1
+            EXIT
+          END IF
+        END DO
+        DO M29 = L29, L29+(N29-1)*MD29, MD29
+          IF ( ISTORE(I5) .EQ. ISTORE(M29) ) THEN
+            DAT2 = STORE(M29+1)
+            EXIT
+          END IF
+        END DO
+
+
+C--If the NOSYMM flag is set, hide all the symmetry operators:
+        IF ( ISTORE(L40T+3).EQ.1 ) THEN
+            NKSYM = 1
+            NKICF = 0
+            NKNON = 1
+        ELSE
+            NKSYM = NSYM
+            NKICF = ICFLAG
+            NKNON = NNONP
+        END IF
+
+C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
+        M2=LSYM
+        DO NE=1,NKSYM
+C--APPLY THIS SYMMETRY OPERATOR
+          CALL XMLTTM(RLIST2(M2),STORE(I5+4),APD(1),3,3,1)
+C--LOOP OVER EACH REQUIRED SIGN FOR THE CENTRE OF SYMMETRY FLAG
+          DO NF=1,2*NKICF+1,2
+C--LOOP OVER EACH OF THE NON-PRIMITIVE LATTICE TRANSLATIONS
+            M2P=LNONP
+            DO NG=1,NKNON
+C--ADD IN THE VARIOUS TRANSLATION PARTS
+              NH=M2
+              DO NI=1,3
+                APD(NI+3)=APD(NI)+RLIST2(M2P)+RLIST2(NH+9)
+                APD(NI+6)=APD(NI+3)
+                M2P=M2P+1
+                NH=NH+1
+              END DO
+              CALL XSHIFT2(1) ! Move X-coord out of required volume.
+1300          CONTINUE
+              IF(KDIST2(1).GE.0) THEN  !Advance X-coord by one or more cells.
+                CALL XSHIFT2(2) ! Move Y-coord out of required volume.
+C--ADVANCE THE Y COORDINATE BY ONE OR MORE UNIT CELLS
+1400            CONTINUE
+                IF(KDIST2(2).LT.0) GOTO 1300 !Advance Y-coord.
+                CALL XSHIFT2(3) ! Move Z-coord out of required volume.
+                IF(KDIST2(3).LT.0) GOTO 1400 !Advance Z-coord.
+C--A SUCCESSFUL FIND.
+
+                IF((I5-MPIV.NE.0).OR.(ABS(STORE(M5A+4)-APD(7)).GT.ZERO)
+     2                      .OR. (ABS(STORE(MPIV+5)-APD(8)).GT.ZERO)
+     3                   .OR. (ABS(STORE(MPIV+6)-APD(9)).GT.ZERO) )THEN
+C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS. 
+C--We want A->B and not B->A, however we want both A->B' and B->A'.
+                  IF ((MPIV.GT.I5).OR.(NE.NE.1).OR.(NF.NE.1)
+     1                                       .OR.(NG.NE.1)) THEN
+                    F=XDSTNCR(STORE(MPIV+4),APD(7)) !Calculate distance
+                    DPMIN = 0.0
+                    DPMAX = 0.0
+                    LPAIR = 0
+C -- There may be more than one PAIR record for a given pair of elements.
+C -- (they have different bond types). So search L40P again for a matching
+C -- pair AND range.
+                    IF(KPAIR.EQ.1) THEN
+                      DO M40P = L40P, L40P + (N40P-1)*MD40P, MD40P
+                        IF (((STORE(M40P).EQ.STORE(I5))
+     1                  .AND.(STORE(M40P+1).EQ.STORE(MPIV)))
+     2                  .OR.((STORE(M40P)  .EQ.STORE(MPIV))
+     3                  .AND.(STORE(M40P+1).EQ.STORE(I5)))) THEN
+                          IF (( F .GE. STORE(M40P+2)**2 ) .AND.
+     1                        ( F .LE. STORE(M40P+3)**2 )) THEN
+                            DPMIN = STORE(M40P+2)
+                            DPMAX = STORE(M40P+3)
+                            LPAIR = NINT(STORE(M40P+4))
+                            EXIT
+                          END IF
+                        END IF
+                      END DO
+                      DMIN = DPMIN**2
+                      DMAX = DPMAX**2
+                    ELSE IF ( NINT(STORE(L40T)) .EQ. 0 ) THEN
+                      DMAX = (DAT1+DAT2+STORE(L40T+1))**2
+                      DMIN = (MAX(0.0,DAT1+DAT2-STORE(L40T+1)))**2
+                    ELSE
+                      DMAX = ((DAT1 + DAT2)*STORE(L40T+1))**2
+                      DMIN = ((DAT1 + DAT2)/2.0)**2
+                    ENDIF
+
+                    IF((F .GE. DMIN).AND.(F .LE. DMAX)) THEN
+                      E=SQRT(F) ! Compute distance.
+                      ISTORE(MSADR)=I5           !0 = Pointer to atom
+                      ISTORE(MSADR+1) = (2-NF)*NE
+                      ISTORE(MSADR+2) = NG
+                      DO I = 1,3
+                        ISTORE(MSADR+I+2) = NINT(APD(I+6)-APD(I+3))
+                        STORE (MSADR+I+5) = APD(I+6)
+                      END DO
+                      STORE(MSADR+9) = E
+                      IF (KPAIR.EQ.1) THEN
+                        ETOL = ABS( E - ((DPMIN+DPMAX)/2.0))
+                      ELSE
+                        ETOL = ABS( E - (DAT1 + DAT2) )
+                      END IF
+                      STORE(MSADR+10) = ETOL
+                      ISTORE(MSADR+11) = LPAIR
+                      MAKE41=MAKE41+1                   !Atom Counter.
+                      MSADR=MSADR+JT
+                      IF (MSADR.GT.LFL) THEN
+                          MSADR=MSADR-JT
+C                          CALL ZMORE('Too many contacts in MAKE41',0)
+                          MAKE41=MAKE41-1
+                      END IF
+                    END IF
+                  END IF
+                END IF
+              END IF
+            END DO
+            CALL XNEGTR(APD(1),APD(1),3)        !Centre of symmetry.
+          END DO
+          M2=M2+MDSYM
+        END DO
+      END DO
+      RETURN
+      END
+
+
+CODE FOR K41DEP
+      FUNCTION K41DEP()
+C -- Checks whether list 41 needs updating.
+
+\XLST05
+\XLST40
+\XLST41
+\ISTORE
+\STORE
+\QSTORE
+\XUNITS
+\XSSVAL
+\XIOBUF
+      DIMENSION ID(2)
+
+      K41DEP = -1        !Return negative value for "need update".
+
+C-- If there is no L41, we need to update.
+      IF ( KEXIST(41) .LE. 0 ) THEN
+         WRITE(CMON,'(a)')'Update required - There is no list 41'
+         CALL XPRVDU(NCVDU,1,0)
+         RETURN
+      ENDIF
+
+      IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL41
+
+      IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      CALL XRLIND( 5,ILSERI, NFW, LL, IOW,IL05SR, ID)
+
+      IF (KHUNTR (40,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL40
+      CALL XRLIND(40,IL40SR, NFW, LL, IOW, NOS, ID)
+
+
+C-- If the number of atoms in L5 has changed, we need to update.
+
+      IF ( N5 .NE. ISTORE(L41D) ) THEN
+         WRITE(CMON,'(a)')'Update required - List 5 length changed'
+         CALL XPRVDU(NCVDU,1,0)
+         RETURN
+      ENDIF
+
+C-- If the serial of L40 has changed, we need to update.
+
+      IF ( IL40SR .NE. ISTORE(L41D+3) ) THEN
+         WRITE(CMON,'(a)')'Update required - List 40 has changed'
+         CALL XPRVDU(NCVDU,1,0)
+         RETURN
+      ENDIF
+
+C-- If the original serial of List 5 has changed, we need to update.
+
+      IF ( IL05SR .NE. ISTORE(L41D+2) ) THEN
+         WRITE(CMON,'(a)')'Update required - List 5 base serial changed'
+         CALL XPRVDU(NCVDU,1,0)
+         RETURN
+      ENDIF
+
+C -- Calculate a 16-bit CRC for List 5:
+
+      L5CRC = KL5CRC()
+
+C -- See if the CRC has changed.
+
+      IF ( L5CRC .NE. ISTORE(L41D+1) ) THEN
+         WRITE(CMON,'(a)')'Update required - List 5 checksum changed'
+         CALL XPRVDU(NCVDU,1,0)
+         RETURN
+      ENDIF
+
+
+C -- No change to anything obvious - we will now compare the XYZ's
+C -- to look for a 'significant' change in co-ordinates.
+
+      IF ( N41A .NE. N5 ) RETURN
+
+      DO I = 0,N41A-1
+         M5 = L5 + I*MD5
+         M41A = L41A + I*MD41A
+         F=XDSTNCR(STORE(M5+4),STORE(M41A)) !Calculate distance
+
+C Significant Shift ( F is dist squared ):
+         IF ( F .GT. STORE(L40T+4)**2 ) THEN
+           WRITE(CMON,'(a)')'Update required - Significant change in L5'
+           CALL XPRVDU(NCVDU,1,0)
+         RETURN
+      ENDIF
+         
+      END DO
+
+C -- Nothing significant changed. No need to update.
+
+      K41DEP = 1
+      RETURN
+      END
+
+
+CODE FOR KL5CRC
+      FUNCTION KL5CRC()
+C - Returns a CRC checksum for the TYPE, SERIAL and PART# of all L5 atoms.
+\XLST05
+\ISTORE
+\STORE
+\QSTORE
+      IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      L5VEC = NFL
+      DO I = 0,N5-1
+        M5 = L5 + I*MD5
+        ISTORE(L5VEC+I*3)   = ISTORE(M5)
+        ISTORE(L5VEC+I*3+1) = ISTORE(M5+1)
+        ISTORE(L5VEC+I*3+2) = ISTORE(M5+14)
+      END DO
+      KL5CRC = KCRCHK( L5VEC, N5*3 )
+      RETURN
       END

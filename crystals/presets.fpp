@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2001/09/11 08:27:43  ckp2
+C Cut down GUI traffic by only sending status updates for flags that have
+C actually changed (Flags: L1, L2, L3, L5, L6, QS, IN)
+C
 C Revision 1.29  2001/06/19 08:19:19  richard
 C Increased store limits as two people have now hit the barrier for LIST 16
 C size. A complete recompilation of all fortran sources is required for consitency.
@@ -1426,8 +1430,8 @@ C
       DATA ILSTHN / 1 , 2 , 3 , 3 , 4 , 7 , 6 , 6 , 6 , 4 ,
      2              3 , 5 , 3 , 3 , 6 , 5 , 5 , 6 , 6 , 3 ,
      3              6 , 6 , 3 , 3 , 3 , 7 , 3 , 3 , 3 , 4 ,
-     4              3 , 6 , 7 , 6 , 6 , 6 , 6 , 3 , 3 , 6 ,
-     5              6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 /
+     4              3 , 6 , 7 , 6 , 6 , 6 , 6 , 3 , 3 , 3 ,
+     5              3 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 , 6 /
 C
 C
       DATA IOLDC / 0 /

@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2001/08/14 10:22:38  ckp2
+C When punching SHELX files old scheme only allowed serials up to 99. New
+C version allows up to 999 for one character elements. Two downward counters
+C are maintained for one character and two character elements with out of
+C range serials.
+C
 C Revision 1.18  2001/06/18 08:28:49  richard
 C Array names (JFOO & JFOT) used as scalar variable in calls to KCOMP. Fixed.
 C
@@ -1084,4 +1090,145 @@ C--CHECK IF THIS IS THE FIRST CARD
 1200  FORMAT(20A4)
       J=1 + J
       GOTO 1000
+      END
+CODE FOR XPCH40
+      SUBROUTINE XPCH40(ICLASS)
+C--PUNCH LIST 40 IN LIST 40 FORMAT, OR #BONDING FORMAT
+C
+C--
+\ISTORE
+C
+\STORE
+\XUNITS
+\XSSVAL
+\XUSLST
+\XLST40
+\XOPVAL
+C
+\QSTORE
+C
+\XCHARS
+C
+      CHARACTER * 32 CATOM1, CATOM2, CBLANK
+      DATA CBLANK /' '/
+
+C--LOAD LIST 40 FROM THE DISC
+      CALL XFAL40
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+
+C--PUNCH EITHER A LIST 40, OR AN #BONDING INSTRUCTION TO CREATE A LIST 40.
+      IF ( ICLASS .EQ. 1 ) THEN
+
+C--PUNCH OUT THE LIST HEADING
+       LN40 = 40
+       CALL XPCHLH (LN40)
+
+C--OUTPUT THE DEFAULTS RECORD
+       WRITE(NCPU,10)NINT(STORE(L40T)),STORE(L40T+1),NINT(STORE(L40T+2))
+10     FORMAT('DEFAULTS TOLTYPE=',I2,' TOLERANCE=',F6.3,
+     1        ' MAXBONDS =',I4)
+     
+C--OUTPUT THE CONTENTS RECORD
+       WRITE(NCPU,11) N40E,N40P,N40M,N40B
+11     FORMAT('READ NELEM=',I5,' NPAIR=',I5,' NMAKE=',I5,' NBREAK=',I5)
+
+C--OUTPUT ANY ELEMENT CARDS
+       DO I = L40E,L40E+(MD40E*(N40E-1)),MD40E
+         WRITE(NCPU,12) ISTORE(I), STORE(I+1), NINT(STORE(I+2))
+12       FORMAT('ELEMENT ',A4,' RADIUS=',F6.3,' MAXBONDS=',I4)
+       END DO
+
+C--OUTPUT ANY PAIR CARDS
+       DO I = L40P,L40P+(MD40P*(N40P-1)),MD40P
+        WRITE(NCPU,13) ISTORE(I),ISTORE(I+1),
+     1                 STORE(I+2),STORE(I+3),NINT(STORE(I+4))
+13      FORMAT('PAIR',3X,2(1X,A4),' MIN=',F6.3,' MAX=',F6.3,' BOND=',I4)
+       END DO
+
+14     FORMAT(A,2X,2(1X,A4,1X,I4,5(1X,I3)),1X,I4)
+15     FORMAT(A,2X,2(1X,A4,1X,I4,5(1X,I3)))
+C--OUTPUT ANY BONDS TO MAKE
+       DO I = L40M,L40M+(MD40M*(N40M-1)),MD40M
+        WRITE(NCPU,14)'MAKE ',
+     1        (ISTORE(I+K),(ISTORE(I+J+K),J=1,6),K=0,7,7),ISTORE(I+14)
+       END DO
+
+C--OUTPUT ANY BONDS TO BREAK
+       DO I = L40B,L40B+(MD40B*(N40B-1)),MD40B
+        WRITE(NCPU,15)'BREAK',
+     1                (ISTORE(I+K),(ISTORE(I+J+K),J=1,6),K=0,7,7)
+       END DO
+
+
+      ELSE
+
+       CALL XDATE(A,B)
+       CALL XTIME(C,D)
+       WRITE(NCPU,20)IH,IH,A,B,C,D,IH,IH
+20     FORMAT(A1,79X/A1,' Punched on ',2A4,' at ',2A4,47X
+     1 /A1,79X/A1,'BONDING',I7,68(' '))
+
+C--OUTPUT THE DEFAULTS RECORD IN #BONDING FORMAT
+       WRITE(NCPU,21)NINT(STORE(L40T)),STORE(L40T+1),NINT(STORE(L40T+2))
+21     FORMAT('DEFAULTS TOLTYPE=',I2,' TOLERANCE=',F6.3,
+     1        ' MAXBONDS =',I4)
+     
+C--OUTPUT ANY ELEMENT CARDS
+       DO I = L40E,L40E+(MD40E*(N40E-1)),MD40E
+         WRITE(NCPU,22) ISTORE(I), STORE(I+1), NINT(STORE(I+2))
+22       FORMAT('ELEMENT ',A4,' RADIUS=',F6.3,' MAXBONDS=',I4)
+       END DO
+
+C--OUTPUT ANY PAIR CARDS
+       DO I = L40P,L40P+(MD40P*(N40P-1)),MD40P
+        WRITE(NCPU,23) ISTORE(I), ISTORE(I+1),STORE(I+2),
+     1                 STORE(I+3), NINT(STORE(I+4))
+23      FORMAT('PAIR',3X,2(1X,A4),' MIN=',F6.3,' MAX=',F6.3,
+     1         ' BOND=',I4)
+       END DO
+
+
+24      FORMAT (3A, ' to ', A, '   BOND=',I4)
+25      FORMAT (3A, ' to ', A)
+C--OUTPUT ANY BONDS TO MAKE
+       DO I = L40M,L40M+(MD40M*(N40M-1)),MD40M
+        CALL CATSTR (STORE(I),FLOAT(ISTORE(I+1)),
+     2                ISTORE(I+2),ISTORE(I+3),
+     3                ISTORE(I+4),ISTORE(I+5),ISTORE(I+6),
+     4                CATOM1, LATOM1)
+        CALL CATSTR (STORE(I+7),FLOAT(ISTORE(I+8)),
+     2                ISTORE(I+9),ISTORE(I+10),
+     3                ISTORE(I+11),ISTORE(I+12),ISTORE(I+13),
+     4                CATOM2, LATOM2)
+        WRITE (NCPU,24)'MAKE    ',CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2(1:LATOM2),ISTORE(I+14)
+       END DO
+
+C--OUTPUT ANY BONDS TO BREAK
+       DO I = L40B,L40B+(MD40B*(N40B-1)),MD40B
+        CALL CATSTR (STORE(I),FLOAT(ISTORE(I+1)),
+     2                ISTORE(I+2),ISTORE(I+3),
+     3                ISTORE(I+4),ISTORE(I+5),ISTORE(I+6),
+     4                CATOM1, LATOM1)
+        CALL CATSTR (STORE(I+7),FLOAT(ISTORE(I+8)),
+     2                ISTORE(I+9),ISTORE(I+10),
+     3                ISTORE(I+11),ISTORE(I+12),ISTORE(I+13),
+     4                CATOM2, LATOM2)
+        WRITE (NCPU,25)'BREAK   ',CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+       END DO
+
+      END IF
+
+
+
+C--AND NOW THE 'END'
+      CALL XPCHND
+      CALL XPCHUS
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
+      RETURN
       END

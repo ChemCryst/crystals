@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/05/31 16:40:20  richard
+C Fixed bug in display of L28 SLICE records in listing file.
+C
 C Revision 1.8  2001/04/11 15:27:28  CKP2
 C Fix xsymop so that .CIF entries tally
 C
@@ -41,8 +44,8 @@ C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  0 ,  0 ,  0 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
-     4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 ,
-     5               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
+     4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
+     5              41 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
       DATA IVERSN / 201 /
 C
@@ -136,8 +139,8 @@ C      +VE      SUCCESS
 C
       PARAMETER ( NSMTYP = 50 )
       DIMENSION ISMTYP(NSMTYP)
-C
-      PARAMETER (NLTYPE = 31)
+      
+      PARAMETER (NLTYPE = 41)
       CHARACTER*32 CLTYPE(NLTYPE)
       DIMENSION LLTYPE(NLTYPE)
 C
@@ -170,28 +173,29 @@ C----- SEE ALSO KSUMLN - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  0 ,  0 ,  0 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 ,  0 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
-     4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 ,
-     5               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
+     4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
+     5              41 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
 C
       DATA CLTYPE / 'Cell parameters', 'Symmetry',
      2 'Scattering factors', 'Weighting scheme', 'Parameters',
      3 'Reflection data', 3*'*', 'Peaks', '*', 'Refinement directives',
      4 'Diffraction conditions', 'Asymmetric section', '*',
-     4 'Restraints', 'Special restraints', 5*'*',
-     5 'S.F. modifications', '*', 'Twin Laws', '*',
-     5 'Raw data scale factors',
-     6 'Reflection selection conditions', 'Elemental properties',
-     7 'General details', '*' /
+     5 'Restraints', 'Special restraints', 5*'*',
+     6 'S.F. modifications', '*', 'Twin Laws', '*',
+     7 'Raw data scale factors',
+     8 'Reflection selection conditions', 'Elemental properties',
+     9 'General details', 9*'*','Bonding information', 'Bonds' /
 C
       DATA LLTYPE / 15, 8,
      2 18, 16, 10,
      3 15, 1, 1, 1,  5, 1,  21,
      4 22, 18, 1,
-     4 10, 18, 1, 1, 1, 1, 1,
-     5 18, 1, 9, 1, 22,
-     6 31, 20, 15,
-     7 1 /
+     5 10, 18, 1, 1, 1, 1, 1,
+     6 18, 1, 9, 1,
+     7 22,
+     8 31, 20,
+     9 15,1,1,1,1,1,1,1,1,1,19,5 /
 C
 C
 C
@@ -242,6 +246,10 @@ C
       IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL29
         ELSE IF ( LSTYPE .EQ. 30 ) THEN
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+        ELSE IF ( LSTYPE .EQ. 40 ) THEN
+      IF (KHUNTR (40,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL40
+        ELSE IF ( LSTYPE .EQ. 41 ) THEN
+      IF (KHUNTR (41,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL41
         ENDIF
 C
         IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -294,6 +302,10 @@ C
         CALL XSUM29
       ELSE IF ( LSTYPE .EQ. 30 ) THEN
         CALL XSUM30
+      ELSE IF ( LSTYPE .EQ. 40 ) THEN
+        CALL XSUM40
+      ELSE IF ( LSTYPE .EQ. 41 ) THEN
+        CALL XSUM41
       ENDIF
 C
       IERFLG = 1
@@ -1910,3 +1922,186 @@ C
 C
       RETURN
       END
+
+
+CODE FOR XSUM40
+      SUBROUTINE XSUM40
+C
+C -- ROUTINE TO DISPLAY SUMMARY OF LIST 40
+C
+      CHARACTER * 32 CATOM1, CATOM2, CBLANK
+      DATA CBLANK /' '/
+
+\XUNITS
+\XIOBUF
+\STORE
+\ISTORE
+\QSTORE
+\XLST40
+
+
+C--OUTPUT DEFAULTS CARD:
+       WRITE(CMON,21)NINT(STORE(L40T)),STORE(L40T+1),
+     1 NINT(STORE(L40T+2)), NINT(STORE(L40T+3)),STORE(L40T+4)
+21     FORMAT(/,' Tolerance function=',I2,' (0=sum+tol,1=sum*tol)',/,
+     2        ' Tolerance=',F6.3,/,
+     3        ' Maximum no. of bonds to an atom =',I4,/,
+     4        ' No symmetry calculation = ',I4,' (0=symm,1=nosymm)',/,
+     5        ' Significant atom movement =',F10.5,' Angstroms',//)
+       CALL XPRVDU(NCVDU,7,0)
+     
+C--OUTPUT ANY ELEMENT CARDS
+      IF ( N40E .GT. 0 ) THEN 
+        WRITE(CMON,'(A//A/)')
+     1  'Over-ride List 29 covalent radii and maximum no. of bonds:',
+     2  '  Element  Covalent Radius  Maximum Bonds'
+        CALL XPRVDU(NCVDU,4,0)
+        DO I = L40E,L40E+(MD40E*(N40E-1)),MD40E
+          WRITE(CMON,22) ISTORE(I), STORE(I+1), NINT(STORE(I+2))
+22        FORMAT(4X,A4,6X,F8.4,10X,I4)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+      ELSE
+        WRITE(CMON,'(A//A)')
+     1  'Over-ride List 29 covalent radii and maximum no. of bonds:',
+     2  '  There are no element directives.'
+        CALL XPRVDU(NCVDU,3,0)
+      ENDIF
+
+C--OUTPUT ANY PAIR CARDS
+      WRITE(CMON,'(/A//)')
+     1  'Over-ride covalent radii for a pair of elements:'
+      CALL XPRVDU(NCVDU,3,0)
+      IF (N40P .GT. 0) THEN
+        WRITE(CMON,'(A/)')
+     1    '  Element  Element  Min-Dist  Max-Dist  Bond Type'
+        CALL XPRVDU(NCVDU,2,0)
+        DO I = L40P,L40P+(MD40P*(N40P-1)),MD40P
+          WRITE(CMON,23) ISTORE(I), ISTORE(I+1),STORE(I+2),
+     1                 STORE(I+3), NINT(STORE(I+4))
+23        FORMAT(4X,A4,5X,A4,4X,F6.3,4X,F6.3,5X,I4)
+          CALL XPRVDU(NCVDU,1,0)
+         END DO
+       ELSE
+        WRITE(CMON,'(A)')'  There are no pair directives.'
+        CALL XPRVDU(NCVDU,1,0)
+       END IF
+
+
+24      FORMAT (2A, ' to ', A, I4)
+25      FORMAT (2A, ' to ', A)
+
+      WRITE(CMON,'(//A/)') 'Additional bonds to make:'
+      CALL XPRVDU(NCVDU,3,0)
+      IF (N40M.GT.0)THEN
+        WRITE(CMON,'(A/)')
+     1 '                    Bond                             Type'
+        CALL XPRVDU(NCVDU,2,0)
+C--OUTPUT ANY BONDS TO MAKE
+        DO I = L40M,L40M+(MD40M*(N40M-1)),MD40M
+          CALL CATSTR (STORE(I),FLOAT(ISTORE(I+1)),
+     2                  ISTORE(I+2),ISTORE(I+3),
+     3                  ISTORE(I+4),ISTORE(I+5),ISTORE(I+6),
+     4                  CATOM1, LATOM1)
+          CALL CATSTR (STORE(I+7),FLOAT(ISTORE(I+8)),
+     2                  ISTORE(I+9),ISTORE(I+10),
+     3                  ISTORE(I+11),ISTORE(I+12),ISTORE(I+13),
+     4                  CATOM2, LATOM2)
+          WRITE (CMON,24) CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2,ISTORE(I+14)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+      ELSE
+        WRITE(CMON,'(A)')'  There are no make directives.'
+        CALL XPRVDU(NCVDU,1,0)
+      ENDIF
+
+
+      WRITE(CMON,'(//A/)') 'Bonds to break:'
+      CALL XPRVDU(NCVDU,3,0)
+      IF (N40B.GT.0)THEN
+        WRITE(CMON,'(A/)')
+     1 '                    Bond'
+        CALL XPRVDU(NCVDU,2,0)
+C--OUTPUT ANY BONDS TO BREAK
+        DO I = L40B,L40B+(MD40B*(N40B-1)),MD40B
+          CALL CATSTR (STORE(I),FLOAT(ISTORE(I+1)),
+     2                ISTORE(I+2),ISTORE(I+3),
+     3                ISTORE(I+4),ISTORE(I+5),ISTORE(I+6),
+     4                CATOM1, LATOM1)
+          CALL CATSTR (STORE(I+7),FLOAT(ISTORE(I+8)),
+     2                ISTORE(I+9),ISTORE(I+10),
+     3                ISTORE(I+11),ISTORE(I+12),ISTORE(I+13),
+     4                CATOM2, LATOM2)
+          WRITE (CMON,25)CBLANK(1: 21-LATOM1),
+     2                   CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+      ELSE
+        WRITE(CMON,'(A)')'  There are no break directives.'
+        CALL XPRVDU(NCVDU,1,0)
+      ENDIF
+
+      RETURN
+      END
+
+
+CODE FOR XSUM41
+      SUBROUTINE XSUM41
+C
+C -- ROUTINE TO DISPLAY SUMMARY OF LIST 41
+C
+
+\XUNITS
+\XIOBUF
+\STORE
+\ISTORE
+\QSTORE
+\XLST41
+\XLST05
+      CHARACTER * 32 CATOM1, CATOM2, CBLANK
+      DATA CBLANK /' '/
+
+      IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
+
+
+      WRITE(CMON,'(/,A,//A//,2X,I6,6X,I9,5X,I5,9X,I6//)')
+     1 'Dependencies:',
+     1 ' List5 size   List5 CRC  List5 serial  List40 serial',
+     2 (ISTORE(L41D+J),J=0,3)
+      CALL XPRVDU(NCVDU,9,0)
+
+C To do - check dependencies at this point
+
+      WRITE(CMON,'(A,//,A,35x,A/)')'Bonds:',
+     1 '                    Bond','Type   Length'
+
+      CALL XPRVDU(NCVDU,4,0)
+
+24      FORMAT (2A, ' to ', A, I4,1x,F10.3)
+
+      DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+
+          I51 = L5 + ISTORE(M41B) * MD5
+          I52 = L5 + ISTORE(M41B+6) * MD5
+
+
+          CALL CATSTR (STORE(I51),STORE(I51+1),
+     2                  ISTORE(M41B+1),ISTORE(M41B+2),
+     3                  ISTORE(M41B+3),ISTORE(M41B+4),ISTORE(M41B+5),
+     4                  CATOM1, LATOM1)
+          CALL CATSTR (STORE(I52),STORE(I52+1),
+     2                  ISTORE(M41B+7),ISTORE(M41B+8),
+     3                  ISTORE(M41B+9),ISTORE(M41B+10),ISTORE(M41B+11),
+     4                  CATOM2, LATOM2)
+          WRITE (CMON,24) CBLANK(1: 21-LATOM1),
+     2                  CATOM1(1:LATOM1), CATOM2,ISTORE(M41B+12),
+     3                  STORE(M41B+13)
+          CALL XPRVDU(NCVDU,1,0)
+
+      END DO
+
+
+      RETURN
+      END
+

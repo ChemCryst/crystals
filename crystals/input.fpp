@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/02/26 10:26:48  richard
+C Added changelog to top of file
+C
 C
 CODE FOR INPUT
       SUBROUTINE INPUT
@@ -248,6 +251,7 @@ C--LIST PUNCH ROUTINE
       CALL XCSAE
 C--CHECK THAT THIS IS LIST 5
       IF (LSTNO - 5) 7100, 7300, 7400
+
 C----- NOT PERMITTED
 7100  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 7200 ) IH
@@ -257,6 +261,7 @@ C----- NOT PERMITTED
 7200  FORMAT ( 1X , 'Illegal list number for ' , A1 , 'PUNCH' )
       CALL XERHND ( IERERR )
       GO TO 1000
+
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
 DJWFEB2000      IF(ICLASS)7310,7320,7330
@@ -277,6 +282,7 @@ C--CAMBRIDGE FORMAT
 C----- 'CHIME' XYZ FORMAT
       CALL XPCH5D
       GOTO 1000
+
 7400  CONTINUE
 C----- CHECK IF LIST 12, 16 OR 17
       IF ((LSTNO .EQ. 12) .OR. (LSTNO .EQ. 16) .OR. (LSTNO .EQ. 17) )
@@ -284,6 +290,11 @@ C----- CHECK IF LIST 12, 16 OR 17
             CALL XPRTLX (LSTNO, 1)
             GOTO 1000
       ENDIF
+C----- CHECK IF LIST 40
+      IF (LSTNO.EQ.40) THEN
+            CALL XPCH40 (ICLASS+2)
+            GOTO 1000
+      END IF
 C----- CHECK IF LIST 38
       IF(LSTNO - 38) 7100, 7410, 7100
 7410  CONTINUE
