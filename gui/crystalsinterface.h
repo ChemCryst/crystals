@@ -3,6 +3,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2001/03/08 15:48:56  richard
+// A lot of code was repeated across the Cr and Cx classes. I've moved it here
+// in the form of #define macros. Mainly geometry getting and setting stuff.
+//
 // Revision 1.12  2001/01/25 17:13:32  richard
 // kTabBase added. Tidied.
 //
@@ -172,14 +176,17 @@ typedef bool Boolean;
 CcRect a##::CalcLayout(bool recalc)                                                            \
 {                                                                          \
   if(!recalc) return CcRect(0,0,m_InitHeight,m_InitWidth);                 \
+  if ( ptr_to_cxObject )                             \
   return CcRect(0,0,(int)(m_InitHeight=((##b*)ptr_to_cxObject)->GetIdealHeight()),  \
                           m_InitWidth =((##b*)ptr_to_cxObject)->GetIdealWidth());   \
+  return CcRect(0,0,0,0); \
 };
 
 
 #define CRGETGEOMETRY(a,b)                         \
 CcRect a##::GetGeometry()                          \
-{                                                  \
+{   \
+if ( ptr_to_cxObject ) \
 return CcRect(((##b*)ptr_to_cxObject)->GetTop(),   \
 ((##b*)ptr_to_cxObject)->GetLeft(),                \
 ((##b*)ptr_to_cxObject)->GetTop()+                 \
@@ -190,6 +197,7 @@ return CcRect(((##b*)ptr_to_cxObject)->GetTop(),   \
 
 #define CRSETGEOMETRY(a,b)                         \
 void a##::SetGeometry(const CcRect * rect){        \
+if ( ptr_to_cxObject ) \
 ((##b*)ptr_to_cxObject)->SetGeometry(         \
 rect->mTop,rect->mLeft,rect->mBottom,rect->mRight);\
 }                                                  \

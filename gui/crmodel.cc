@@ -6,6 +6,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.17  2001/03/08 15:41:48  richard
+//   Can switch between rotate mode, selection (box) mode. Can also select a fragment
+//   based on a single atom name, and you can zoom in on selected atoms (exclude unselected).
+//
 
 #include    "crystalsinterface.h"
 #include    "crconstants.h"
@@ -45,7 +49,7 @@ CrModel::~CrModel()
 {
   if(mAttachedModelDoc) mAttachedModelDoc->RemoveView(this);
 
-  if ( ptr_to_cxObject != nil )
+  if ( ptr_to_cxObject )
   {
     ((CxModel*)ptr_to_cxObject)->DestroyWindow(); delete (CxModel*)ptr_to_cxObject;
     ptr_to_cxObject = nil;
@@ -84,7 +88,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
           tokenList->GetToken(); // Remove that token!
           CcString theString = tokenList->GetToken();
           int chars = atoi( theString.ToCString() );
-          ((CxModel*)ptr_to_cxObject)->SetIdealHeight( chars );
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetIdealHeight( chars );
+          else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
           LOGSTAT( "Setting Model Lines Height: " + theString );
           break;
         }
@@ -93,7 +98,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
           tokenList->GetToken(); // Remove that token!
           CcString theString = tokenList->GetToken();
           int chars = atoi( theString.ToCString() );
-          ((CxModel*)ptr_to_cxObject)->SetIdealWidth( chars );
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetIdealWidth( chars );
+          else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
           LOGSTAT( "Setting Model Chars Width: " + theString );
           break;
         }
@@ -131,25 +137,29 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         {
           case kTCovalent:
           {
-            ((CxModel*)ptr_to_cxObject)->SetRadiusType( COVALENT );
+            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( COVALENT );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken(); // Remove that token!
             break;
           }
           case kTVDW:
           {
-            ((CxModel*)ptr_to_cxObject)->SetRadiusType( VDW );
+            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( VDW );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken(); // Remove that token!
             break;
           }
           case kTThermal:
           {
-            ((CxModel*)ptr_to_cxObject)->SetRadiusType( THERMAL );
+            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( THERMAL );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken(); // Remove that token!
             break;
           }
           case kTSpare:
           {
-            ((CxModel*)ptr_to_cxObject)->SetRadiusType( SPARE );
+            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusType( SPARE );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken(); // Remove that token!
             break;
           }
@@ -161,7 +171,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken(); // Remove that token!
         CcString theString = tokenList->GetToken();
         int chars = atoi( theString.ToCString() );
-        ((CxModel*)ptr_to_cxObject)->SetRadiusScale( chars );
+        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetRadiusScale( chars );
+        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTAttachModel:
@@ -317,15 +328,18 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         switch ( tokenList->GetDescriptor(kAttributeClass) )
         {
           case kTStyleSmooth:
-            ((CxModel*)ptr_to_cxObject)->SetDrawStyle( MODELSMOOTH );
+            if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SetDrawStyle( MODELSMOOTH );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken();
             break;
           case kTStyleLine:
-            ((CxModel*) ptr_to_cxObject)->SetDrawStyle( MODELLINE );
+            if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetDrawStyle( MODELLINE );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken();
             break;
           case kTStylePoint:
-            ((CxModel*) ptr_to_cxObject)->SetDrawStyle( MODELPOINT );
+            if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetDrawStyle( MODELPOINT );
+            else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
             tokenList->GetToken();
             break;
         }
@@ -336,7 +350,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken();
         Boolean size = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
-        ((CxModel*) ptr_to_cxObject)->SetAutoSize( size );
+        if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetAutoSize( size );
+        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTHover:
@@ -344,7 +359,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken();
         Boolean hover = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
-        ((CxModel*) ptr_to_cxObject)->SetHover( hover );
+        if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetHover( hover );
+        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTShading:
@@ -352,7 +368,8 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         tokenList->GetToken();
         Boolean shading = (tokenList->GetDescriptor(kLogicalClass) == kTYes) ? true : false;
         tokenList->GetToken(); // Remove that token!
-        ((CxModel*) ptr_to_cxObject)->SetShading( shading );
+        if ( ptr_to_cxObject ) ((CxModel*) ptr_to_cxObject)->SetShading( shading );
+        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTSelectTool:
@@ -362,23 +379,27 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
         if (tokenList->GetDescriptor(kLogicalClass) == kTSelectRect)
         {
           tokenList->GetToken();
-          ((CxModel*)ptr_to_cxObject)->SelectTool(CXRECTSEL);
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXRECTSEL);
+          else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         }
         else if (tokenList->GetDescriptor(kLogicalClass) == kTSelectPoly)
         {
           tokenList->GetToken();
-          ((CxModel*)ptr_to_cxObject)->SelectTool(CXPOLYSEL);
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXPOLYSEL);
+          else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         }
         else
         {
-          ((CxModel*)ptr_to_cxObject)->SelectTool(CXRECTSEL);
+          if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXRECTSEL);
+          else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         }
         break;
       }
       case kTRotateTool:
       {
         tokenList->GetToken();
-        ((CxModel*)ptr_to_cxObject)->SelectTool(CXROTATE);
+        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXROTATE);
+        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         break;
       }
       case kTZoomSelected:
@@ -432,16 +453,21 @@ CcParse CrModel::ParseInput( CcTokenList * tokenList )
 
 void CrModel::CrFocus()
 {
-  ((CxModel*)ptr_to_cxObject)->Focus();
+  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->Focus();
+  else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
 }
 
 int CrModel::GetIdealWidth()
 {
-  return ((CxModel*)ptr_to_cxObject)->GetIdealWidth();
+  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->GetIdealWidth();
+  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
+  return 0;
 }
 int CrModel::GetIdealHeight()
 {
-  return ((CxModel*)ptr_to_cxObject)->GetIdealHeight();
+  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->GetIdealHeight();
+  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
+  return 0;
 }
 
 void CrModel::LMouseClick(int x, int y)
@@ -478,7 +504,8 @@ void CrModel::ContextMenu(int x, int y, CcString atomname, int nSelected, CcStri
     if(theMenu !=nil)
     {
         theMenu->Substitute(atomname, nSelected, atomNames);
-        theMenu->Popup(x,y,(void*)ptr_to_cxObject);
+        if ( ptr_to_cxObject ) theMenu->Popup(x,y,(void*)ptr_to_cxObject);
+        else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
     }
 }
 
@@ -528,7 +555,8 @@ CcModelBond* CrModel::GetModelBond()
 
 void CrModel::Update()
 {
-  ((CxModel*)ptr_to_cxObject)->Update();
+  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->Update();
+  else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
 }
 
 CcModelAtomPtr * CrModel::GetAllAtoms(int * nAtoms)
@@ -721,17 +749,23 @@ Boolean CrModel::RenderModel(Boolean detailed)
 
 CcModelAtom* CrModel::LitAtom()
 {
-      return ((CxModel*)ptr_to_cxObject)->m_LitAtom;
+  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->m_LitAtom;
+  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
+  return nil;
 }
 
 int CrModel::RadiusType()
 {
-      return ((CxModel*)ptr_to_cxObject)->m_radius;
+  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->m_radius;
+  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
+  return nil;
 }
 
 float CrModel::RadiusScale()
 {
-      return ((CxModel*)ptr_to_cxObject)->m_radscale;
+  if ( ptr_to_cxObject ) return ((CxModel*)ptr_to_cxObject)->m_radscale;
+  LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
+  return nil;
 }
 
 void CrModel::SysKey ( UINT nChar )
@@ -739,7 +773,8 @@ void CrModel::SysKey ( UINT nChar )
       switch (nChar)
       {
             case CRCONTROL:
-                  ((CxModel*)ptr_to_cxObject)->ChooseCursor(1);
+                  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->ChooseCursor(1);
+                  else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
                   break;
             default:
                   break;
@@ -752,7 +787,8 @@ void CrModel::SysKeyUp ( UINT nChar )
       {
             case CRCONTROL:
             case CRSHIFT:
-                  ((CxModel*)ptr_to_cxObject)->ChooseCursor(0);
+                  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->ChooseCursor(0);
+                  else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
                   break;
             default:
                   break;
