@@ -1,4 +1,19 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/09/07 14:27:47  ckp2
+C Turn off logging when running the GENERALEDIT command. The log file will now look
+C something like this:
+C
+C #GENERALEDIT 30
+C # generaledit commands can not be logged.
+C END
+C
+C or, if a WRITE is performed:
+C
+C #GENERALEDIT 30
+C # generaledit commands can not be logged
+C # This list was updated during this generaledit
+C END
+C
 C Revision 1.5  2001/06/18 13:36:08  richard
 C Replace explicit 131072 with ISIZST from /XSIZES/
 C
@@ -84,7 +99,7 @@ C than useless.
 
       INLOG = IRDLOG(IFLIND)
       IRDLOG(IFLIND) = 0
-      WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
+      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
 C
 C
 C -- ENSURE THAT THE ALL THE DIRECTIVES APPEAR TO HAVE BEEN READ ONCE
@@ -366,7 +381,7 @@ C
 C
 3000  CONTINUE
 C -- 'WRITE' DIRECTIVE
-      WRITE(NCLU,'(A)')'# This list was updated during this generaledit'
+      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# An update (WRITE) occured'
       IOWF = 0
       INEW = 1
       CALL XWLSTD ( ILTYPE , ISTORE(ILSTCM) , LLSTCM , IOWF , INEW )
@@ -587,7 +602,7 @@ C
 C -- RELEASE RESOURCES
       CALL XSTRLL ( ICOMBL )
 
-      WRITE(NCLU,'(A)')'END'
+      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'END'
       IRDLOG(IFLIND) = INLOG
 C
 C -- FINAL MESSAGE
