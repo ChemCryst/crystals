@@ -7,6 +7,9 @@
  */
  
  // $Log: not supported by cvs2svn $
+ // Revision 1.1  2005/02/02 15:27:23  stefan
+ // 1. Initial addition to crystals. A group of classes for threading.
+ //
 #if !defined(CcSemaphore_H_)
 #define CcSemaphore_H_
 
@@ -36,7 +39,7 @@ class CcSemaphore
 		#if defined(__BOTHWX__)
 			wxSemaphore iSemaphore;
 		#else
-			Handle iSemaphore;
+			HANDLE iSemaphore;
 		#endif
 	public:
 		/* Creates a semaphore which will allow you to 
