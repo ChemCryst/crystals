@@ -913,7 +913,7 @@ C COMMON BLOCK ZGRAPH
       YCEN = 0
       XCEN = 0
       SCLLIM = 0
-      IPAGE = 28
+      JPAGE = 28
       RES = 0
       IPOST = 0
 C-DJW      IFSIZE = 12
