@@ -70,7 +70,8 @@
 ^^WI   GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting KCCDIN.'
 ^^WI   @ 3,2 STATIC T1 'Complete or close KCCDIN to continue.' } SHOW
 ^^CR
-%      COPY '#SPAWN + "CRYSDIR:KCCDIN.BAT"'
+--GILLIN%      COPY '#SPAWN + "CRYSDIR:KCCDIN.BAT"'
+++GILLIN%      COPY '#SPAWN + "CRYSDIR:kccdin"'
 ^^CO   DISPOSE BLOCKK
 ^^CO   SET BTNOK DISABLED=NO
 ^^CO   SET BTNRR TEXT = 'Run KCCDin again'
