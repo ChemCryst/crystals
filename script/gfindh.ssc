@@ -1,13 +1,13 @@
 %SCRIPT GFINDH                                                                  
-% VARIABLE CHARACTER CTYPE
-% VARIABLE INTEGER HFOUND
-% VARIABLE REAL SERIAL
-%%
+% VARIABLE CHARACTER CTYPE                                                      
+% VARIABLE INTEGER HFOUND                                                       
+% VARIABLE REAL SERIAL                                                          
+%%                                                                              
 % VARIABLE CHARACTER CATOM CEL CTYPE                                            
 % VARIABLE REAL SX SY SZ SS SERI                                                
-% VARIABLE LOGICAL HQEXEC L12SMASK T
-% VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL
-% VARIABLE INTEGER L12SER
+% VARIABLE LOGICAL HQEXEC L12SMASK T                                            
+% VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL                             
+% VARIABLE INTEGER L12SER                                                       
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
@@ -56,7 +56,7 @@
 ^^WI       @ 5,1 STATIC T5                                                      
 ^^WI 'If the structure is complete, check "All H atoms have been found" below.' 
 ^^WI       @ 6,1 STATIC T6                                                      
-^^WI 'Regularisation will optimise the H positions using the X-ray data' 
+^^WI 'Regularisation will optimise the H positions using the X-ray data'        
 ^^WI     }                                                                      
 ^^WI   }                                                                        
 ^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3                                          
@@ -77,8 +77,8 @@
 ^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=5                                        
 ^^WI     @ 1,1 CHECKBOX AHFOUND                                                 
 ^^WI       'All H atoms have been found' STATE=OFF                              
-^^WI     @ 1,3 CHECKBOX REGUL
-^^WI       'Advanced: Regularise the H using restraints' STATE=ON              
+^^WI     @ 1,3 CHECKBOX REGUL                                                   
+^^WI       'Advanced: Regularise the H using restraints' STATE=ON               
 ^^WI     @ 1,5 CHECKBOX FOUREF                                                  
 ^^WI       'Advanced: Fourier refinement using QH peaks' STATE=OFF              
 ^^WI   }                                                                        
@@ -204,12 +204,12 @@
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
 %        EVALUATE FOUREF = TRUE                                                 
 %      END IF                                                                   
-^^??   REGUL STATE                                                             
+^^??   REGUL STATE                                                              
 %      VERIFY ON OFF                                                            
 %      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                             
-%      EVALUATE REGUL = FALSE                                                  
+%      EVALUATE REGUL = FALSE                                                   
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-%        EVALUATE REGUL = TRUE                                                 
+%        EVALUATE REGUL = TRUE                                                  
 %      END IF                                                                   
 ^^??   AHFOUND STATE                                                            
 %      VERIFY ON OFF                                                            
@@ -241,26 +241,32 @@
 %        COPY 'SEL TYPE NE QN'                                                  
 %        COPY 'SEL TYPE NE Q'                                                   
 %        COPY 'END'                                                             
-%      END IF          
-%      IF ( REGUL .EQ. TRUE ) THEN
-%        COPY '#RELEASE PUNCH SAV1216.DAT'
-%        COPY '#PUNCH 12'
-%        COPY 'END'
-%        COPY '#PUNCH 16'
-%        COPY 'END'
-%        COPY '#RELEASE PUNCH BFILE.PCH'
+%      END IF                                                                   
+%      IF ( REGUL .EQ. TRUE ) THEN                                              
+%        COPY '#RELEASE PUNCH SAV1216.DAT'                                      
+%        COPY '#PUNCH 12'                                                       
+%        COPY 'END'                                                             
+%        COPY '#PUNCH 16'                                                       
+%        COPY 'END'                                                             
+%        COPY '#RELEASE PUNCH BFILE.PCH'                                        
 %%                                                                              
-%        COPY '#SCRIPT XREGULH'     
+%        COPY '#SCRIPT XREGULH'                                                 
 %%                                                                              
-%        COPY '#USE SAV1216.DAT'
-%        EVALUATE T = FILEDELETE ( 'SAV1216.DAT' )
-%% Store the current L12 serial, so other scripts know.
-%        COPY '#GENERALEDIT 12'
-%        COPY 'GETSERIAL L12SER'
-%        COPY 'END'
-%        EVALUATE L12SMASK = TRUE
-%        COPY '#SCRIPT XPUTINFO'
-%      END IF
+%        COPY '#USE SAV1216.DAT'                                                
+%        EVALUATE T = FILEDELETE ( 'SAV1216.DAT' )                              
+%% Store the current L12 serial, so other scripts know.                         
+%        COPY '#GENERALEDIT 12'                                                 
+%        COPY 'GETSERIAL L12SER'                                                
+%        COPY 'END'                                                             
+%        EVALUATE L12SMASK = TRUE                                               
+
+% VARIABLE LOGICAL HRMASK
+% VARIABLE INTEGER HRTYP
+% EVALUATE HRMASK = TRUE
+% EVALUATE HRTYP = 10
+
+%        COPY '#SCRIPT XPUTINFO'                                                
+%      END IF                                                                   
  * Remember - the data may not be good enough to reveal all H atoms.            
 %      IF AHFOUND .EQ. TRUE THEN                                                
 %% Store the fact that all H's have been found.                                 
