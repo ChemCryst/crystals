@@ -69,8 +69,8 @@ class CcModelDoc
 		int m_TotZ;
 		CcList* mAtomList;
 		CcList* mBondList;
-		CcList* mCellList;
-		CcList* mTriList;
+//                CcList* mCellList;
+//                CcList* mTriList;
 };
 
 #endif

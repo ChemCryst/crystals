@@ -18,6 +18,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2000/10/31 15:42:14  ckp2
+// Link to atom disabling code.
+//
 // Revision 1.8  1999/08/25 17:57:41  ckp2
 // RIC: Updates from before Glasgow
 //
@@ -65,8 +68,8 @@ CcModelDoc::CcModelDoc( )
 {
 	mAtomList = new CcList();
 	mBondList = new CcList();
-	mCellList = new CcList();
-	mTriList = new CcList();
+//        mCellList = new CcList();
+//        mTriList = new CcList();
 	m_nAtoms = 0;
 	nSelected = 0;
 }
@@ -75,8 +78,8 @@ CcModelDoc::~CcModelDoc()
 {
 	mAtomList->Reset();
 	mBondList->Reset();
-	mCellList->Reset();
-	mTriList->Reset();
+//        mCellList->Reset();
+//        mTriList->Reset();
 	CcModelObject* theItem ;
 	while ( ( theItem = (CcModelObject *)mAtomList->GetItem() ) != nil )
 	{
@@ -88,21 +91,21 @@ CcModelDoc::~CcModelDoc()
 		mBondList->RemoveItem();
 		delete theItem;
 	}
-	while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
-	{
-		mCellList->RemoveItem();
-		delete theItem;
-	}
-	while ( ( theItem = (CcModelObject *)mTriList->GetItem() ) != nil )
-	{
-		mTriList->RemoveItem();
-		delete theItem;
-	}
+//        while ( ( theItem = (CcModelObject *)mCellList->GetItem() ) != nil )
+//        {
+//                mCellList->RemoveItem();
+//                delete theItem;
+//        }
+//        while ( ( theItem = (CcModelObject *)mTriList->GetItem() ) != nil )
+//        {
+//                mTriList->RemoveItem();
+//                delete theItem;
+//        }
 
 	delete mAtomList;
 	delete mBondList;
-	delete mCellList;
-	delete mTriList;
+//        delete mCellList;
+//        delete mTriList;
 
 	attachedViews.Reset();
 	CrModel* aView;
@@ -145,23 +148,22 @@ Boolean	CcModelDoc::ParseInput( CcTokenList * tokenList )
 				mBondList->AddItem(item);
 				break;
 			}
-			case kTModelCell:
-			{
-				tokenList->GetToken(); // Remove that token!
-				CcModelCell* item = new CcModelCell();
-				item->ParseInput(tokenList);
-				mCellList->AddItem(item);
-				break;
-			}
-			case kTModelTri:    //Triangles for those 3D fourier surfaces.
-			{
-				tokenList->GetToken(); // Remove that token!
-				CcModelTri* item = new CcModelTri();
-				item->ParseInput(tokenList);
-				mTriList->AddItem(item);
-				break;
-
-			}
+//                        case kTModelCell:
+//                        {
+//                                tokenList->GetToken(); // Remove that token!
+//                                CcModelCell* item = new CcModelCell();
+//                                item->ParseInput(tokenList);
+//                                mCellList->AddItem(item);
+//                                break;
+//                        }
+//                        case kTModelTri:    //Triangles for those 3D fourier surfaces.
+//                        {
+//                                tokenList->GetToken(); // Remove that token!
+//                                CcModelTri* item = new CcModelTri();
+//                                item->ParseInput(tokenList);
+//                                mTriList->AddItem(item);
+//                                break;
+//                        }
 			case kTModelClear:
 			{
 				tokenList->GetToken(); // Remove that token!
@@ -184,8 +186,8 @@ void CcModelDoc::Clear()
 {
 	mAtomList->Reset();
 	mBondList->Reset();
-	mCellList->Reset();
-	mTriList->Reset();
+//        mCellList->Reset();
+//        mTriList->Reset();
 
 	
 	CcModelObject* theItem ;
@@ -204,11 +206,11 @@ void CcModelDoc::Clear()
 //            mCellList->RemoveItem();
 //            delete theItem;
 //      }
-	while ( ( theItem = (CcModelObject *)mTriList->GetItem() ) != nil )
-	{
-		mTriList->RemoveItem();
-		delete theItem;
-	}
+//        while ( ( theItem = (CcModelObject *)mTriList->GetItem() ) != nil )
+//        {
+//                mTriList->RemoveItem();
+//                delete theItem;
+//        }
 
 	m_nAtoms = 0;
 
@@ -401,17 +403,16 @@ void CcModelDoc::InvertSelection()
 
 Boolean CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
 {
-   if ( mAtomList->ListSize() || mBondList->ListSize() ||
-        mTriList ->ListSize() )
+   if ( mAtomList->ListSize() || mBondList->ListSize() )
    {
 	mAtomList->Reset();
 	mBondList->Reset();
 //      mCellList->Reset();
-	mTriList->Reset();
+//        mTriList->Reset();
       CcModelAtom* aitem;
       CcModelBond* bitem;
 //    CcModelCell* citem;
-      CcModelTri*  titem;
+//      CcModelTri*  titem;
 
       while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) != nil )
             aitem->Render(view,detailed);
@@ -421,9 +422,9 @@ Boolean CcModelDoc::RenderModel( CrModel* view, Boolean detailed )
 
 //      while ( (citem = (CcModelCell*)mCellList->GetItemAndMove()) != nil )
 //            citem->Render(view,detailed);
+//      while ( (titem = (CcModelTri*)mTriList->GetItemAndMove()) != nil )
+//            titem->Render(view,detailed);
 
-      while ( (titem = (CcModelTri*)mTriList->GetItemAndMove()) != nil )
-            titem->Render(view,detailed);
       return true;
    }
    return false;
