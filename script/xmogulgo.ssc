@@ -4,7 +4,7 @@
 % VARIABLE INTEGER IDIST IANG IGUI
 % VARIABLE INTEGER EXPECTED EXPECTALL NH29 NH5 
 %%
-^^WI WINDOW XMOGULGO 'Mogul Search' MODAL
+^^WI WINDOW XMOGULGO 'Mogul Search' MODAL KEEP SIZE LARGE
 ^^WI               COMMIT='MG_OK' CANCEL='MG_XX'
 ^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
 ^^WI GRID MGM NROWS=5 NCOLS=5
@@ -18,7 +18,7 @@
 ^^WI     TAB MGTAB0 'Information' GRID MGG0 NROWS=1 NCOLS=1
 ^^WI     {
 ^^WI       @ 1,1 TEXTOUT MGEXPLAIN 
-^^WI ' MoGuL is a library containing nearly all the bond length,'
+^^WI ' Mogul is a library containing nearly all the bond length,'
 ^^WI NROWS=10 NCOLS=40 TRANSPARENT
 ^^WI TEXT ' valence and torsion angles in the Cambridge Structural'
 ^^WI TEXT ' database. It is designed to allow very fast access to this'
@@ -32,7 +32,7 @@
 ^^WI TEXT ' '
 ^^WI TEXT '    2) Check geometry of a single bond or angle.'
 ^^WI TEXT ' '
-^^WI TEXT '    3) Start MoGuL and run interactively.'
+^^WI TEXT '    3) Start Mogul and run interactively.'
 ^^WI TEXT ' '
 ^^WI TEXT ' For further information see: '
 ^^WI TEXT '       {&http://www.xtl.ox.ac.uk/mogul.html{&'
@@ -71,7 +71,7 @@
 ^^WI       }
 ^^WI       @ 3,1 GRID G1L NROWS=2 NCOLS=3 OUTLINE='Mogul'
 ^^WI       {
-^^WI         @ 2,1 STATIC MGT 'Just run MoGuL.'
+^^WI         @ 2,1 STATIC MGT 'Just run Mogul.'
 ^^WI         @ 2,2 STRETCH B HORIZONTAL
 ^^WI         @ 2,3 BUTTON MG_RUN 'Mogul'
 ^^WI       }
@@ -111,7 +111,7 @@
 %    EVALUATE QLINE1 = 'Warning. Cell contents indicates: ' // -
      CHARACTER ( NH29 ) // 'H atoms'
 %    EVALUATE QLINE2 = 'Model has ' // CHARACTER ( NH5 ) -
-      // ' H atoms. Do not run MoGuL with missing H atoms.'
+      // ' H atoms. Do not run Mogul with missing H atoms.'
 %    EVALUATE BUTTOK = 'OK'
 %    COPY '#SCRIPT XMESSAGE'
 %END IF
@@ -131,11 +131,11 @@
 %    FINISH
 % END BLOCK
 % BLOCK                                %RUN
-{I * Generating mol2 structure file for MoGuL...
+{I * Generating mol2 structure file for Mogul...
 %  COPY '#FOREIGN MOL2'
 %  COPY 'END'
 {R * Done.
-{I * Writing instructions for MoGuL...
+{I * Writing instructions for Mogul...
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
 %  TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
@@ -176,11 +176,11 @@
 %   VERIFY ON OFF
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %   EVALUATE IGUI = VALUE 
-{I * Generating mol2 structure file for MoGuL...
+{I * Generating mol2 structure file for Mogul...
 %  COPY '#FOREIGN MOL2'
 %  COPY 'END'
 {R * Done.
-{I * Writing instructions for MoGuL...
+{I * Writing instructions for Mogul...
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELEASE PUNCH crystals.qf'
 %  IF IGUI .EQ. 1 THEN

@@ -171,7 +171,7 @@
 ^^CR
 ^^CO SET MGEXPLAIN VIEWTOP
 ^^WI WINDOW XABORT 'Processing:' MODAL GRID MAIN NROWS=4 NCOLS=3
-^^WI { @ 2,2 STATIC GFT1 'Please wait. Processing mogul data.'
+^^WI { @ 2,2 STATIC GFT1 'Please wait. Processing Mogul data.'
 ^^WI   @ 3,2 STATIC GFT2 'Calculating Z graph.' } SHOW
 ^^CR
 %    COPY '#edit'
@@ -548,11 +548,11 @@
 %           FINISH
 %         END BLOCK
 %         BLOCK
-{I * Generating mol2 structure file for MoGuL...
+{I * Generating mol2 structure file for Mogul...
 %           COPY '#FOREIGN MOL2'
 %           COPY 'END'
 {R * Done.
-{I * Writing instructions for MoGuL...
+{I * Writing instructions for Mogul...
 %           COPY '#CLOSE SCPDATA'
 %           COPY '#RELEASE PUNCH crystals.qf'
 %           TRANSFER 'MOGUL OPEN_GUI 3D' TO PUNCH
