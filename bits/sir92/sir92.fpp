@@ -1440,7 +1440,7 @@ c--   15  : print a message at the bottom of the window
 c--   16  : store atomic species in static array
 CHANGE RIC-OX-98:
 c--   17  : close window.
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       USE DFWIN
       INTEGER*2 RES
@@ -1452,7 +1452,7 @@ c--   17  : close window.
 #endif
       integer GraphicsHandle
       save  GraphicsHandle
-#if defined(LIN) || defined(GIL) || defined(MAC)
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_)
       integer CreateRootWindow
 #endif
 
@@ -1475,7 +1475,7 @@ c
       real*4 size,rot,ita
       integer*2 type,ix,iy,iz,ix1,iy1,icol,font,color,xo,yo,iz1
       integer*2 ixv2(100),iyv2(100),err,khead,widb,heib
-#if defined(DOS) 
+#if defined(_DOS_) 
       integer*2 handle
 #endif
       
@@ -1483,7 +1483,7 @@ c
       integer *2 cursor_def(32),button_status,ColTast
       integer *2 ix2,iy2,iwid,ihei, idev, error_code
       common /cmouse/ cursor_def
-#if defined(DOS) 
+#if defined(_DOS_) 
       include <windows.ins>
 #endif
 c
@@ -1496,10 +1496,10 @@ c
       if (ind.eq.-1) then
                      ind=-1
       else if (ind.eq.0) then
-#if defined(DOS) 
+#if defined(_DOS_) 
          call text_mode@
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call closedisplay
 #endif
       else if (ind.eq.1) then
@@ -1518,18 +1518,18 @@ c               return
 c            endif
 c         endif
       GraphicsHandle=-1
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
       GraphicsHandle = CreateRootWindow(30, 30, ix, iy, 1, 
      1    'Sir92')
       call selectwindow(GraphicsHandle)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
       i=winio@('%ca[Sir92 Native 32-bit]&')
       i=winio@('%sp&',0,0)
       i=winio@('%bg[black]&')
       i=winio@('%gr[black]%lw',ixv,iyv, GraphicsHandle)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       wc.numtextcols=80
       wc.numtextrows=30
       wc.title='Altomare et al. (1994) J. Appl. Cryst. 27, 435'
@@ -1582,13 +1582,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          ihei = iy1
          icol = 3
          ColTast = icol
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -1597,13 +1597,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          ix = 0
          ix1 = 80
          iy = 0
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -1620,13 +1620,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
             messaggio = 'SIRPOW.92'
             lm = 9
          end if
-#if defined(DOS) 
+#if defined(_DOS_) 
           call draw_text@(messaggio(1:lm),ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
           call draw_text(messaggio(1:lm),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
           RES= SETCOLOR ( icol )
           CALL MOVETO(ix,iy,xy)
           CALL OUTGTEXT(messaggio(1:lm))
@@ -1634,13 +1634,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          ix = 84
          iy = 4
          messaggio = string(1:iz)
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(messaggio(1:iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call draw_text(messaggio(1:iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
           RES= SETCOLOR ( icol )
           CALL MOVETO(ix,iy,xy)
           CALL OUTGTEXT(messaggio(1:iz))
@@ -1652,13 +1652,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          iy1=iyv(2)
          if (ix.le.deltax.or.ix1.le.deltax) khead = 1
          if (iy.le.deltay.or.iy1.le.deltay) khead = 1
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_line@(ix,iy,ix1,iy1,color)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call draw_line(ix,iy,ix1,iy1,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( color )
          CALL MOVETO(ix,iy,xy)
          RES= LINETO(ix1,iy1)
@@ -1673,13 +1673,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          ihei = iy1
          icol = 3
          ColTast = icol
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -1688,13 +1688,13 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
          icol = 4
          ix = 84
          iy = 4
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(Titolo,ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call draw_text(Titolo,ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(Titolo)
@@ -1704,7 +1704,7 @@ c         call set_mouse_position@(kscrx/2+40,kscry/2+10)
             call DrawMenu(Iz)
          end if
          if (ihcopy.eq.1) then
-#if defined(DOS) 
+#if defined(_DOS_) 
             call NEW_PAGE@
             call CLOSE_GRAPHICS_PRINTER@
 #endif
@@ -1761,13 +1761,13 @@ c
                icol = 14
                ix = 85
                iy = kscry - 20
-#if defined(DOS) 
+#if defined(_DOS_) 
                call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
                call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
                RES= SETCOLOR ( icol )
                CALL MOVETO(ix,iy,xy)
                CALL OUTGTEXT(messaggio(1:Iz))
@@ -1786,7 +1786,7 @@ c
             call drawtasto(31)
          endif
          if ( i .eq. 22 )  then       !  Delete atom
-#if defined(DOS) 
+#if defined(_DOS_) 
             call sleep@(0.1)
 #endif
             NumMsg = 1
@@ -1843,7 +1843,7 @@ c            iz = 0
 c            call DrawMenu(iz)
          end if
          if ( i .eq. 25 ) then        !  Relabel
-#if defined(DOS) 
+#if defined(_DOS_) 
             call sleep@(0.1)
             call ClearMessage
             messaggio = 'Click on atom to Relabel'
@@ -1852,13 +1852,13 @@ c            call DrawMenu(iz)
             icol = 14
             ix = 85
             iy = kscry - 20
-#if defined(DOS) 
+#if defined(_DOS_) 
             call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
             call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( icol )
             CALL MOVETO(ix,iy,xy)
             CALL OUTGTEXT(messaggio(1:Iz))
@@ -1890,13 +1890,13 @@ c
             icol = 14
             ix = 85
             iy = kscry - 20
-#if defined(DOS) 
+#if defined(_DOS_) 
             call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
             call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( icol )
             CALL MOVETO(ix,iy,xy)
             CALL OUTGTEXT(messaggio(1:Iz))
@@ -1905,7 +1905,7 @@ c
             font=1
             rot=0.0
             ita=0
-#if defined(DOS) 
+#if defined(_DOS_) 
             call set_text_attribute@(font,size,rot,ita)
 #endif
             kact = 0
@@ -1919,25 +1919,25 @@ c
                ix1 = ix + widb
                icol = i
                ColTast = icol
-#if defined(DOS) 
+#if defined(_DOS_) 
                call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
                call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
                RES= SETCOLOR ( icol )
                RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
                call Tasto (ix,iy,widb,heib,kact,3)
                icol=1
-#if defined(DOS) 
+#if defined(_DOS_) 
                call rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
                call rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
                RES= SETCOLOR ( icol )
                RES= RECTANGLE ($GBORDER,ix,iy,ix1,iy1)
 #endif
@@ -1948,13 +1948,13 @@ c
                end if
                ix2=ix+4
                iy2=iy+2
-#if defined(DOS) 
+#if defined(_DOS_) 
                call draw_text@(Species(i),ix2,iy2,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
                call draw_text(Species(i),ix2,iy2,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
                RES= SETCOLOR ( icol )
                CALL MOVETO(ix2,iy2,xy)
                CALL OUTGTEXT(Species(i))
@@ -1964,7 +1964,7 @@ c
             font=1
             rot=0.0
             ita=0
-#if defined(DOS) 
+#if defined(_DOS_) 
             call set_text_attribute@(font,size,rot,ita)
 #endif
   600       call Sorcio(ix,iy,button_status)
@@ -1996,13 +1996,13 @@ c            call DrawMenu(iz)
             icol = 14
             ix = 85
             iy = kscry - 20
-#if defined(DOS) 
+#if defined(_DOS_) 
             call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
             call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( icol )
             CALL MOVETO(ix,iy,xy)
             CALL OUTGTEXT(messaggio(1:Iz))
@@ -2031,7 +2031,7 @@ c
                lMess = 25
                call PrintMess
                idev = 1
-#if defined(DOS) 
+#if defined(_DOS_) 
                call OPEN_GPRINT_DEVICE@(idev,error_code)
 #endif
                ihcopy = 1
@@ -2045,32 +2045,32 @@ c              iy1 = 21
                iy1=0
                ix2 = kscrx
                iy2 = kscry
-#if defined(DOS) 
+#if defined(_DOS_) 
                call GET_SCREEN_BLOCK@(ix1,iy1,ix2,iy2,iBuffer)
                if (iBuffer.ne.-1) then
 #endif
                   k=index(fname(1),'.')
-#if defined(DOS) 
+#if defined(_DOS_) 
                   File = fname(1)(1:k-1)//'.pcx'
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
                   File = fname(1)(1:k-1)//'.bmp'
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
                   call SCREEN_BLOCK_TO_PCX@(File, iBuffer, Error_Code)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
                   res = SAVEIMAGE(File,ix1,iy1,ix2,iy2)
 #endif
 c                  return
-#if defined(DOS) 
+#if defined(_DOS_) 
                else
                 write(Message,'(a)') ' Sorry. Not enough memory ...'
                   lMess = 29
                   call PrintMess
 #endif
 c                  return
-#if defined(DOS) 
+#if defined(_DOS_) 
                end if
 #endif
             end if
@@ -2166,13 +2166,13 @@ c--   Info
             ix1=kscrx
             iy1=kscry
             icol=0
-#if defined(DOS) 
+#if defined(_DOS_) 
             call clear_screen_area@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
             call clear_screen_area(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( icol )
             RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -2184,13 +2184,13 @@ c        call clear_screen@
          ix1=kscrx
          iy1=kscry
          icol=0
-#if defined(DOS) 
+#if defined(_DOS_) 
          call clear_screen_area@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call clear_screen_area(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -2205,13 +2205,13 @@ c        call clear_screen@
             ix2 = 80
             iy2 = kscry
             icol = 0
-#if defined(DOS) 
+#if defined(_DOS_) 
             call clear_screen_area@(ix1,iy1,ix2,iy2,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
             call clear_screen_area(ix1,iy1,ix2,iy2,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( icol )
             RES= RECTANGLE ($GFILLINTERIOR,ix1,iy1,ix2,iy2)
 #endif
@@ -2223,30 +2223,30 @@ c        iy=iy+40
 c        iy1=iy-ivd+15
          iy1=iy+ivd-5
          icol=0
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
 
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(string(1:iz),ix,iy,color)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
          call draw_text(string(1:iz),ix,iy,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( color )
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(string(1:iz))
 #endif
          if (iarrow.eq.1) then
-#if defined(DOS) || defined(LIN) || defined(GIL) || defined(MAC)
+#if defined(_DOS_) || defined(_LIN_) || defined(_GIL_) || defined(_MAC_)
             ixv2(1) = ix - 30
             iyv2(1) = iy + 5
             ixv2(2) = ixv2(1) + 15
@@ -2265,7 +2265,7 @@ c        iy1=iy-ivd+15
             iyv2(8) = iyv2(1)
 #endif
 
-#if defined(DVF) 
+#if defined(_DVF_) 
             poly(1)%xcoord = ix - 30
             poly(1)%ycoord = iy + 5
             poly(2)%xcoord = poly(1)%xcoord + 15
@@ -2285,19 +2285,19 @@ c        iy1=iy-ivd+15
 #endif
             iz = 8
 
-#if defined(DOS) 
+#if defined(_DOS_) 
             call polyline@(ixv2,iyv2,iz,color)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC) 
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_) 
             call fill_polygon(ixv2,iyv2,iz, color)
             call polyline(ixv2,iyv2,iz,color)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
             call create_polygon@(ixv2,iyv2,iz,handle,err)
             call fill_polygon@(handle,color,err)
             call delete_polygon_definition@(handle,err)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( color )
             res = POLYGON($GBORDER, poly, iz)
             res = POLYGON($GFILLINTERIOR, poly, iz)
@@ -2312,13 +2312,13 @@ c        iy1=iy-ivd+15
          end if
          ix=ix+iz
          iy=iy+iz
-#if defined(DOS) 
+#if defined(_DOS_) 
          call ellipse@(ix,iy,iz1,iz,color)
 #endif
-#if defined(LIN) || defined(GIL) || defined(MAC)
+#if defined(_LIN_) || defined(_GIL_) || defined(_MAC_)
          call ellipse(ix,iy,iz1,iz,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          IF ((color.eq.0).or.(color.gt.7)) then
             RES= SETCOLOR ( color )
          ELSE
@@ -2335,13 +2335,13 @@ c        iy1=iy-ivd+15
          end if
          ix=ix+iz
          iy=iy+iz
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_ellipse@(ix,iy,iz1,iz,color)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call fill_ellipse(ix,iy,iz1,iz,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          IF ((color.eq.0).or.(color.gt.7)) then
             RES= SETCOLOR ( color )
          ELSE
@@ -2354,23 +2354,23 @@ c        iy1=iy-ivd+15
          color=icol
       else if (ind.eq.13)then
          do i=1,iz
-#if defined(DOS) || defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
             ixv2(i)=ixv(i)
             iyv2(i)=iyv(i)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             poly(i)%xcoord = ixv(i)
             poly(i)%ycoord = iyv(i)
 #endif
          enddo
          icol = iicol
-#if defined(DOS) 
+#if defined(_DOS_) 
          call polyline@(ixv2,iyv2,iz,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call polyline(ixv2,iyv2,iz,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          IF ((icol.eq.0).or.(icol.gt.7)) then
             RES= SETCOLOR ( icol )
          ELSE
@@ -2380,27 +2380,27 @@ c        iy1=iy-ivd+15
 #endif
       else if (ind.eq.14)then
          do i=1,iz
-#if defined(DOS) || defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
             ixv2(i)=ixv(i)
             iyv2(i)=iyv(i)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             poly(i)%xcoord = ixv(i)
             poly(i)%ycoord = iyv(i)
 #endif
          enddo
          icol = iicol
-#if defined(DOS) 
+#if defined(_DOS_) 
          call create_polygon@(ixv2,iyv2,iz,handle,err)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call fill_polygon(ixv2,iyv2,iz,icol)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_polygon@(handle,icol,err)
          call delete_polygon_definition@(handle,err)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          IF ((icol.eq.0).or.(icol.gt.7)) then
             RES= SETCOLOR ( icol )
          ELSE
@@ -2415,23 +2415,23 @@ c        iy1=iy-ivd+15
 c        iy1=iy-ivd+15
          iy1=kscry
          icol=0
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(string(1:iz),ix,iy,color)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call draw_text(string(1:iz),ix,iy,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( color )
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(string(1:iz))
@@ -2444,10 +2444,10 @@ c        iy1=iy-ivd+15
  1000    continue
       else if (ind.eq.17)then
             GraphicsHandle=0
-#if defined(DOS) 
+#if defined(_DOS_) 
                 CALL window_update@(GraphicsHandle)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call closedisplay
 #endif
       else
@@ -2509,7 +2509,7 @@ c
       end
 c-----------------------------------------------------------------------
       subroutine DrawMenu(Iz)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       USE DFWIN
       INTEGER*2 RES
@@ -2596,13 +2596,13 @@ c
          iwid = kscrx-ix
          ihei = iy1
          icol = 3
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -2622,13 +2622,13 @@ c
          end if
          messaggio = MessB(1:lm)//Titolo
          iiz = Lung(messaggio)
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(messaggio(1:iiz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call draw_text(messaggio(1:iiz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(messaggio(1:iiz))
@@ -2643,7 +2643,7 @@ c
       font=1
       rot=0.0
       ita=0
-#if defined(DOS) 
+#if defined(_DOS_) 
       call set_text_attribute@(font,size,rot,ita)
 #endif
       kact = 0
@@ -2655,13 +2655,13 @@ c
          ix1 = ix + widb
          iy1 = iy + heib
          icol=ColTast
-#if defined(DOS) 
+#if defined(_DOS_) 
          call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -2674,13 +2674,13 @@ c
          iy=iy-1
          ix1=ix1+1
          iy1=iy1+1
-#if defined(DOS) 
+#if defined(_DOS_) 
          call rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          RES= RECTANGLE ($GBORDER,ix,iy,ix1,iy1)
 #endif
@@ -2689,20 +2689,20 @@ c
             ix=ix+5
          end if
          iy2=iy1-17
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call draw_text(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          CALL MOVETO(ix,iy2,xy)
          CALL OUTGTEXT(strbox(i)(1:iiz))
 #endif
   100 continue
       size=1.0
-#if defined(DOS) 
+#if defined(_DOS_) 
       call set_text_attribute@(font,size,rot,ita)
 #endif
 c
@@ -2710,7 +2710,7 @@ c
       end
 c-----------------------------------------------------------------------
       subroutine Tasto (ix,iy,widb,heib,jact,ideep)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
       TYPE (xycoord) poly(6)
@@ -2732,7 +2732,7 @@ c-----------------------------------------------------------------------
          icol2 = ColTast + 8
       endif
       iz=6
-#if defined(DOS) || defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       ixv(1) = ix
       iyv(1) = iy+heib
       ixv(2) = ix+ideep
@@ -2747,7 +2747,7 @@ c-----------------------------------------------------------------------
       iyv(6) = iy+heib
 #endif
 
-#if defined(DVF) 
+#if defined(_DVF_) 
       poly(1)%xcoord = ix
       poly(1)%ycoord = iy+heib
       poly(2)%xcoord = ix+ideep
@@ -2763,52 +2763,52 @@ c-----------------------------------------------------------------------
 #endif
 
 
-#if defined(DOS) 
+#if defined(_DOS_) 
       call create_polygon@(ixv,iyv,iz,handle,err)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call fill_polygon(ixv,iyv,iz, icol1)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
       call fill_polygon@(handle,icol1,err)
       call delete_polygon_definition@(handle,err)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol1 )
       res = POLYGON($GFILLINTERIOR, poly, iz)
 #endif
 
-#if defined(DOS) || defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       ixv(3) = ix+ideep
       iyv(3) = iy+ideep
       ixv(6) = ix
       iyv(6) = iy
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       poly(3)%xcoord = ix+ideep
       poly(3)%ycoord = iy+ideep
       poly(6)%xcoord = ix
       poly(6)%ycoord = iy
 #endif
 
-#if defined(DOS) 
+#if defined(_DOS_) 
       call create_polygon@(ixv,iyv,iz,handle,err)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call fill_polygon(ixv,iyv,iz,icol2)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
       call fill_polygon@(handle,icol2,err)
       call delete_polygon_definition@(handle,err)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol2 )
       res = POLYGON($GFILLINTERIOR, poly, iz)
 #endif
 c
       if (kact.eq.0) goto 20
       kact = kact -1
-#if defined(dos) 
+#if defined(_DOS_) 
       call sleep@ (0.1)
 #endif
       go to 10
@@ -2869,7 +2869,7 @@ c
       end
 c-----------------------------------------------------------------------
       subroutine ClearMessage
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
 #endif
@@ -2882,13 +2882,13 @@ c
       ix1 = kscrx
       iy1 = kscry
       call hide_mouse_cursor
-#if defined(DOS) 
+#if defined(_DOS_) 
       call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol )
       RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -2898,7 +2898,7 @@ c
       end
 c -----------------------------------------------------
       subroutine Sorcio(ix,iy,button_status)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
       INTEGER*4 MX,MY
@@ -2907,33 +2907,33 @@ c -----------------------------------------------------
       integer*2 ix,iy,button_status
       integer*2 ib,ic
       character *12 File
-#if defined(DOS) 
+#if defined(_DOS_) 
       include <windows.ins>
 #endif
 c
 c flush the mouse button buffer (if there is such a thing).
       ib = 0
-#if defined(DOS) 
+#if defined(_DOS_) 
       call get_mouse_button_press_count@(ib,ic)
 #endif
 
       button_status=0
-#if defined(LIN) || defined (GIL) || defined(MAC)
+#if defined(_LIN_) || defined (_GIL_) || defined(_MAC_)
   300 call waitonmousepress_(IX, IY, button_status)
 #endif
 
-#if defined(DVF) 
+#if defined(_DVF_) 
   300 RES=WAITONMOUSEEVENT(MOUSE$LBUTTONUP,k,mx,my)
       IF ( RES .EQ. MOUSE$BADEVENT ) STOP
       IX=MX
       IY=MY
 #endif
 
-#if defined(DOS) 
+#if defined(_DOS_) 
   300 call get_mouse_position@(ix,iy,button_status)
       call temporary_yield@
 #endif
-#if defined(DOS) || defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_DOS_) || defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       if (button_status.ne.1) go to 300
 #endif
       if (ix.gt.81.and.ix.lt.400 .and. iy.lt.21) then
@@ -2941,10 +2941,10 @@ c flush the mouse button buffer (if there is such a thing).
           iy1=0
           ix2 = kscrx
           iy2 = kscry
-#if defined(DVF) 
+#if defined(_DVF_) 
           res = SAVEIMAGE('hcopy.bmp',ix1,iy1,ix2,iy2)
 #endif
-#if defined(DOS) 
+#if defined(_DOS_) 
           call GET_SCREEN_BLOCK@(ix1,iy1,ix2,iy2,iBuffer)
           File = 'hcopy.pcx'
           call SCREEN_BLOCK_TO_PCX@(File, iBuffer, Error_Code)
@@ -2956,7 +2956,7 @@ c
       end
 c -----------------------------------------------------
       subroutine CreateHelp
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
       TYPE (xycoord) xy
@@ -2985,13 +2985,13 @@ c
       iy1=kscry
       icol=0
       call hide_mouse_cursor
-#if defined(DOS) 
+#if defined(_DOS_) 
       call clear_screen_area@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call clear_screen_area(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol )
       RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -3011,13 +3011,13 @@ c
          read(jhelp, '(a)', end = 40) messaggio
          iz = Lung(messaggio)
          if (iz .gt. 0) then
-#if defined(DOS) 
+#if defined(_DOS_) 
             call draw_text@(messaggio(1:iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
             call draw_text(messaggio(1:iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( icol )
             CALL MOVETO(ix,iy,xy)
             CALL OUTGTEXT(messaggio(1:iz))
@@ -3056,7 +3056,7 @@ c
       end
 c-----------------------------------------------------------------------
       subroutine drawtasto(ntasto)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
       TYPE (xycoord) xy
@@ -3078,7 +3078,7 @@ c
       font=1
       rot=0.0
       ita=0
-#if defined(DOS) 
+#if defined(_DOS_) 
       call set_text_attribute@(font,size,rot,ita)
 #endif
 c
@@ -3092,13 +3092,13 @@ c
       iy1 = iy + heib
       icol=ColTast
       call hide_mouse_cursor
-#if defined(DOS) 
+#if defined(_DOS_) 
       call fill_rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call fill_rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol )
       RES= RECTANGLE ($GFILLINTERIOR,ix,iy,ix1,iy1)
 #endif
@@ -3110,13 +3110,13 @@ c
       ix1=ix1+1
       iy1=iy1+1
       call hide_mouse_cursor
-#if defined(DOS) 
+#if defined(_DOS_) 
       call rectangle@(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call rectangle(ix,iy,ix1,iy1,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol )
       RES= RECTANGLE ($GBORDER,ix,iy,ix1,iy1)
 #endif
@@ -3127,13 +3127,13 @@ c
          end if
          iy2 = iy1 - 17
          icol=1
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call draw_text(strbox(i)(1:iiz),ix,iy2,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          CALL MOVETO(ix,iy2,xy)
          CALL OUTGTEXT(strbox(i)(1:iiz))
@@ -3142,14 +3142,14 @@ c
       call display_mouse_cursor
 c
       size=1.0
-#if defined(DOS) 
+#if defined(_DOS_) 
       call set_text_attribute@(font,size,rot,ita)
 #endif
       return
       end
 c-----------------------------------------------------------------------
       SUBROUTINE Seleziona(ixv,iyv,iact)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
       TYPE (xycoord) xy
@@ -3193,13 +3193,13 @@ c
       ix = 85
       iy = kscry - 20
       call hide_mouse_cursor
-#if defined(DOS) 
+#if defined(_DOS_) 
       call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
       RES= SETCOLOR ( icol )
       CALL MOVETO(ix,iy,xy)
       CALL OUTGTEXT(messaggio(1:Iz))
@@ -3222,25 +3222,25 @@ c
          iyv(nel) = iy
          call hide_mouse_cursor
          if (nel.gt.1) then
-#if defined(DOS) 
+#if defined(_DOS_) 
             call draw_line@(ix,iy,ix1,iy1,color)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
             call draw_line(ix,iy,ix1,iy1,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( color )
             CALL MOVETO(ix,iy,xy)
             RES= LINETO(ix1,iy1)
 #endif
          else
-#if defined(DOS) 
+#if defined(_DOS_) 
             call draw_line@(ix,iy,ix,iy,color)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
             call draw_line(ix,iy,ix,iy,color)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
             RES= SETCOLOR ( color )
             CALL MOVETO(ix,iy,xy)
             RES= LINETO(ix+1,iy+1)
@@ -3275,7 +3275,7 @@ c      call DrawMenu(iiz)
       end
 c-----------------------------------------------------------------------
       SUBROUTINE SelectAtms(ixv,iyv,iact,NumMsg)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
       INTEGER*2 RES
       TYPE (xycoord) xy
@@ -3306,13 +3306,13 @@ c
          icol = 14
          ix = 85
          iy = kscry - 20
-#if defined(DOS) 
+#if defined(_DOS_) 
          call draw_text@(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
          call draw_text(messaggio(1:Iz),ix,iy,icol)
 #endif
-#if defined(DVF) 
+#if defined(_DVF_) 
          RES= SETCOLOR ( icol )
          CALL MOVETO(ix,iy,xy)
          CALL OUTGTEXT(messaggio(1:Iz))
@@ -3361,7 +3361,7 @@ c---       Search for the string "CHANGE"        ---
 c---       in order to modify the program        ---
 c---------------------------------------------------
       subroutine pc386(ier)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFPORT
 #endif
       character*80 cmnam,file1,file2
@@ -3386,16 +3386,16 @@ c-- P.C./386 version
       ln = 1
       lo = 2
 c--
-#if defined(DOS) 
+#if defined(_DOS_) 
      file1=cmnam()
      file2=cmnam()
 #endif
 
-#if defined(DVF) 
+#if defined(_DVF_) 
       CALL GetArg(1,file1,optlen)
       CALL GetArg(2,file2,optlen)
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call GetArg(1, file1)
       call GetArg(2, file2)      
 #endif
@@ -3437,7 +3437,7 @@ c-----------------------------------------------------------------------
 c
 CHANGE
 c-- P.C./386 version
-#if defined(DOS) 
+#if defined(_DOS_) 
      call display_mouse_cursor@
 #endif
 c
@@ -3448,7 +3448,7 @@ c-----------------------------------------------------------------------
 c
 CHANGE
 c-- P.C./386 version
-#if defined(DOS) 
+#if defined(_DOS_) 
      call hide_mouse_cursor@
 #endif
 c
@@ -3478,7 +3478,7 @@ c
       end
 c-----------------------------------------------------------------------
       subroutine sirtime(string,lstring)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFPORT
 #endif
       character *(*) string
@@ -3488,7 +3488,7 @@ c-- tranform this subroutine in a dummy one
 c-- leaving only the following lines
 c--
 C              character *(*) string
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
               lstring=0
 #endif
 c--              return
@@ -3496,21 +3496,21 @@ c--              end
 c
 CHANGE
 c----- code for P.C. - DOS
-#if defined(DOS) 
+#if defined(_DOS_) 
      character time@*8
 #endif
 
-#if !defined(DVF) && !defined(LIN) && !defined(GIL) && !defined(MAC)
+#if !defined(_DVF_) && !defined(_LIN_) && !defined(_GIL_) && !defined(_MAC_)
       string( 1:3)='At '
 #endif
 
-#if defined(DOS) 
+#if defined(_DOS_) 
      string( 4:11)=time@()
      string(12:12)=' '
      lstring=12
 #endif
 
-#if defined(DVF) 
+#if defined(_DVF_) 
       string( 1:27)=CTIME(TIME())
       string( 1:3)='On '
       string(18:28)=' '
@@ -3528,7 +3528,7 @@ c&LIN      lstring=6
       end
 c-----------------------------------------------------------------------
       subroutine sirdate(string,lstring)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFPORT
 #endif
       character *(*) string
@@ -3538,7 +3538,7 @@ c-- tranform this subroutine in a dummy one
 c-- leaving only the following lines
 c--
 c--              character *(*) string
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
               lstring=0
 #endif
 c--              return
@@ -3546,7 +3546,7 @@ c--              end
 c
 CHANGE
 c----- code for P.C. - DOS
-#if defined(DOS) 
+#if defined(_DOS_) 
      character time@*8, fdate@*30
      string( 1:30)=fdate@()
      k=0
@@ -3559,7 +3559,7 @@ c----- code for P.C. - DOS
      lstring=k+11
 #endif
 
-#if defined(DVF) 
+#if defined(_DVF_) 
       string=CTIME(TIME())
       lstring=LEN_TRIM(string)
 #endif
@@ -3577,7 +3577,7 @@ c&LIN      lstring=10
 c-----------------------------------------------------------------------
       subroutine graphs( ixv,iyv,iz,ind,str,icolor)
 CHANGE <RIC-OX-98>
-#if defined(DOS) 
+#if defined(_DOS_) 
      include <windows.ins>
 CHANGE </RIC-OX-98>
 #endif
@@ -3607,10 +3607,10 @@ c----- code for P.C. - DOS
       call xwin(ixv, iyv, iz, ind, str, icolor)
 CHANGE <RIC-OX-98>
 c----- allow screen updates while running.
-#if defined(DOS) 
+#if defined(_DOS_) 
      call temporary_yield@
 #endif
-#if defined(LIN) || defined (GIL) || defined (MAC) 
+#if defined(_LIN_) || defined (_GIL_) || defined (_MAC_) 
       call update   ! Update the screen output.
 CHANGE </RIC-OX-98>
 #endif
@@ -3901,7 +3901,7 @@ c
 c-----------------------------------------------------------------------
 CODE FOR MTRNLG
       SUBROUTINE MTRNLG(FILNAM,STATUS,LENNAM)
-#if defined(DVF) 
+#if defined(_DVF_) 
       USE DFLIB
 C
 C----- EXPAND LOGICAL NAMES (ENVIRONMENT VARIABLES) IF THEY
@@ -4006,7 +4006,7 @@ CHANGE RIC-OX-98: Use this instead.
 C&DOSC----- DOSPARAM@ ( CPARAM, CVALUE) RETURNS THE CVALUE OF THE PARAMET
 C&DOSC      CPARAM, INITIALISED WITH THE DOS COMMAND
 C&DOSC      SET CPARAM=CVALUE
-#if defined(DOS) 
+#if defined(_DOS_) 
         CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #else
         CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
@@ -37747,7 +37747,7 @@ c-- directives with numeric parameters
       return
       end
 
-#if defined(DVF) 
+#if defined(_DVF_) 
       LOGICAL FUNCTION INITIALSETTINGS( )
       USE DFLIB
       TYPE (qwinfo) qwi

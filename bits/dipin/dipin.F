@@ -15,7 +15,7 @@ c DIPIN combines them to find the overall correction per frame,
 c in an attempt to determine the 'absorption' correction inplied if the
 c thecrystal is not really decomposing.
 
-#if defined(GIL) || defined (MAC) || defined (LIN)
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)
       call no_stdout_buffer()
 #endif
 

@@ -31,7 +31,7 @@ C
 C               This reproduces transforms from the CAD4
 C                                                           JAH
 C 
-#if defined(GIL) || defined (LIN) || defined (MAC)
+#if defined(_GIL_) || defined (_LIN_) || defined (_MAC_)
       call no_stdout_buffer()
 #endif
       do 1 i=1,3

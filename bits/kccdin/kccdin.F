@@ -27,7 +27,7 @@ C
       PARAMETER (DTR=3.14159/180.)
       EQUIVALENCE (RES,IRES)
 
-#if defined(GIL) || defined (MAC) || defined (LIN)
+#if defined(_GIL_) || defined (_MAC_) || defined (_LIN_)
       call no_stdout_buffer()
 #endif
 C 

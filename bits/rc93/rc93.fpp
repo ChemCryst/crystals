@@ -11,14 +11,14 @@ C     This is the main controlling program section.
 C
       include "RC93CM.INC"
       INTEGER NADD, J
-#if defined(DOS)
+#if defined(_DOS_)
       CHARACTER *8 TIME@, DATE@, CTIME, CDATGB, CDATUS
 #else
       CHARACTER *8 CTIME, CDATGB, CDATUS
 #endif
       EXTERNAL BLKDAT
 
-#if defined(LIN) || defined(GIL)
+#if defined(_LIN_) || defined(_GIL_)
       call no_stdout_buffer()
 #endif
 
@@ -108,7 +108,7 @@ C     the .LIS file.  The subroutine CENTRE centres the output buffer
 C     for an 80 column file and writes it to the file (or screen).
 C     Convert the date from American format to British.
       LENINP = LENSTR(CINPFL)
-#if defined(DOS)
+#if defined(_DOS_)
       CDATUS = DATE@()
 #else
       CDATUS = "00/00/00"
@@ -116,7 +116,7 @@ C     Convert the date from American format to British.
       CDATGB = CDATUS
       CDATGB (1:2) = CDATUS (4:5)
       CDATGB (4:5) = CDATUS (1:2)
-#if defined(DOS)
+#if defined(_DOS_)
       CTIME = TIME@()
 #else
       CTIME = "00:00"
@@ -2024,7 +2024,7 @@ C     it is part of the path.
             CH = CINPFL(J:J)
 C *** Annoyingly the backslash may have to be 'escaped' for unix
 C     machines, ie the line for unix machines is
-#if defined (LIN) || defined(GIL) || defined (MAC) || defined (WXS)
+#if defined (_LIN_) || defined(_GIL_) || defined (_MAC_) || defined (_WXS_)
       IF (((CH .EQ.'/').OR.(CH .EQ.'\\')) .OR.(CH .EQ. ']')) THEN
 #else
       IF (((CH .EQ.'/').OR.(CH .EQ.'\')) .OR.(CH .EQ. ']')) THEN
@@ -2080,7 +2080,7 @@ C
 C LENNAM USEFUL LENGTH OF FILENAME
 C
 C      IMPLICIT NONE
-#if defined(DVF) || defined (GID)
+#if defined(_DVF_) || defined (_GID_)
       USE DFPORT
 #endif
       INTEGER MAXLVL
@@ -2141,11 +2141,11 @@ C
 C FEB04: On Win32 platform, search for forward slashes and change
 C to back slashes - this will allow consistent file and path naming
 C on all platforms.
-#if defined(DVF) || defined (GID) || defined (DOS) || defined (WXS)
+#if defined(_DVF_) || defined (_GID_) || defined (_DOS_) || defined (_WXS_)
       DO WHILE(.TRUE.)
         ISLP = KCCEQL(NAME(LEVEL),1,'/')
         IF ( ISLP .GT. 0 ) THEN
-#if defined (WXS)
+#if defined (_WXS_)
           NAME(LEVEL)(ISLP:ISLP) = '\\'
 #endif
           NAME(LEVEL)(ISLP:ISLP) = '\'
@@ -2182,7 +2182,7 @@ C
 C&DOSC----- DOSPARAM@ ( CPARAM, CVALUE) RETURNS THE CVALUE OF THE PARAMET
 C&DOSC      CPARAM, INITIALISED WITH THE DOS COMMAND
 C&DOSC      SET CPARAM=CVALUE
-#if defined(DOS)
+#if defined(_DOS_)
         CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #else
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
