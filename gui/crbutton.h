@@ -7,35 +7,39 @@
 //   Filename:  CrButton.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:25 Uhr
+//   $Log: not supported by cvs2svn $
 
-#ifndef		__CrButton_H__
-#define		__CrButton_H__
-#include	"crguielement.h"
-//Insert your own code here.
+#ifndef     __CrButton_H__
+#define     __CrButton_H__
+#include    "crguielement.h"
+
 class CcTokenList;
-//End of user code.         
- 
-class	CrButton : public CrGUIElement
+
+class   CrButton : public CrGUIElement
 {
-	public:
-		void CrFocus();
-		// methods
-			CrButton( CrGUIElement * mParentPtr );
-			~CrButton();
-		Boolean	ParseInput( CcTokenList * tokenList );
-		void	SetText( CcString text );
-		void	SetGeometry( const CcRect * rect );
-		CcRect	GetGeometry();
-		void	CalcLayout();
-		void	ButtonClicked();
-		
-		// attributes
+    public:
+        void CrFocus();
+        // methods
+            CrButton( CrGUIElement * mParentPtr );
+            ~CrButton();
+        CcParse ParseInput( CcTokenList * tokenList );
+        void    SetText( CcString text );
+        void    SetGeometry( const CcRect * rect );
+        CcRect  GetGeometry();
+        CcRect CalcLayout(bool recalculate=false);
+        void    ButtonClicked();
+        void    Enable(bool enabled);
+
+        // attributes
+        int bEnableFlags;
+        int bDisableFlags;
+    protected:
+        bool m_AddedToDisableAbleButtonList;
 };
 
-#define kSDefault	"DEFAULT"
+#define kSDefault   "DEFAULT"
 
-enum 
+enum
 {
  kTDefault = 600
 };

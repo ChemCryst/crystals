@@ -7,8 +7,12 @@
 //   Filename:  CrButton.cc
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
-//   Modified:  30.3.1998 11:25 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2001/01/16 15:34:57  richard
+// wxWindows support.
+// Revamped some of CxTextout, Cr/Cx Menu and MenuBar. These changes must be
+// checked out in conjunction with changes to \bin\
+//
 // Revision 1.4  2000/12/13 17:54:16  richard
 // Support for Linux. Changed SetDefault function in CxButton to prevent
 // it clashing with a base class function in the wx library.
@@ -34,20 +38,27 @@ CrButton::CrButton( CrGUIElement * mParentPtr )
                                 (CxGrid *)(mParentPtr->GetWidget()) );
     mTabStop = true;
     mCallbackState= true;
+    m_AddedToDisableAbleButtonList = false;
+    bEnableFlags = 0;
+    bDisableFlags = 0;
 }
 
 CrButton::~CrButton()
 {
     if ( ptr_to_cxObject != nil )
     {
-        delete (CxButton*)ptr_to_cxObject;
+        ((CxButton*)ptr_to_cxObject)->DestroyWindow(); delete (CxButton*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 }
 
-Boolean CrButton::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrButton,CxButton)
+CRGETGEOMETRY(CrButton,CxButton)
+CRCALCLAYOUT(CrButton,CxButton)
+
+CcParse CrButton::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
@@ -105,6 +116,28 @@ Boolean CrButton::ParseInput( CcTokenList * tokenList )
                 LOGSTAT( "CrButton:ParseInput Setting default button" );
                 break;
             }
+            case kTMenuDisableCondition:
+            {
+                tokenList->GetToken();
+                bDisableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+                if ( !m_AddedToDisableAbleButtonList )
+                {
+                    m_AddedToDisableAbleButtonList = true;
+                    CcController::theController->AddDisableableButton(this);
+                }
+                break;
+            }
+            case kTMenuEnableCondition:
+            {
+                tokenList->GetToken();
+                bEnableFlags = (CcController::theController)->status.CreateFlag(tokenList->GetToken());
+                if ( !m_AddedToDisableAbleButtonList )
+                {
+                  m_AddedToDisableAbleButtonList = true;
+                  CcController::theController->AddDisableableButton(this);
+                }
+                break;
+            }
             default:
             {
                 hasTokenForMe = false;
@@ -118,52 +151,22 @@ Boolean CrButton::ParseInput( CcTokenList * tokenList )
 
 void    CrButton::SetText( CcString text )
 {
-
     char theText[256];
     strcpy( theText, text.ToCString() );
-
     ( (CxButton *)ptr_to_cxObject)->SetText( theText );
-
-}
-
-void    CrButton::SetGeometry( const CcRect * rect )
-{
-
-    ((CxButton*)ptr_to_cxObject)->SetGeometry(   rect->mTop,
-                                                rect->mLeft,
-                                                rect->mBottom,
-                                                rect->mRight   );
-
-}
-
-CcRect  CrButton::GetGeometry()
-{
-
-    CcRect retVal ( ((CxButton*)ptr_to_cxObject)->GetTop(),
-                    ((CxButton*)ptr_to_cxObject)->GetLeft(),
-                    ((CxButton*)ptr_to_cxObject)->GetTop()+ ((CxButton*)ptr_to_cxObject)->GetHeight(),
-                    ((CxButton*)ptr_to_cxObject)->GetLeft()+((CxButton*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-
-}
-
-void    CrButton::CalcLayout()
-{
-
-    int w = (int)(mWidthFactor  * (float)((CxButton*)ptr_to_cxObject)->GetIdealWidth() );
-    int h = (int)(mHeightFactor * (float)((CxButton*)ptr_to_cxObject)->GetIdealHeight());
-    ((CxButton*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
-
 }
 
 void    CrButton::ButtonClicked()
 {
-
     SendCommand(mName);
-
 }
 
 void CrButton::CrFocus()
 {
     ((CxButton*)ptr_to_cxObject)->Focus();
+}
+
+void CrButton::Enable(bool enabled)
+{
+    ((CxButton*)ptr_to_cxObject)->Disable( !enabled );
 }
