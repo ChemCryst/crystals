@@ -3,6 +3,9 @@
 %% Facilitates editing of list 30. There is no other
 %% way of editing L30, it can only be overwritten.
 %%
+% VARIABLE LOGICAL LNEW30
+% VARIABLE INTEGER SWITCH
+%%
 % VARIABLE REAL NREFS NREFMG RMERGE NMGFRD RMGFRD
 % VARIABLE INTEGER IREDUC
 % VARIABLE REAL MIN MED MAX NORIEN THOMIN
@@ -510,10 +513,21 @@
 %  INSERT '^^CO SET CELLZ TEXT '
 %  STORE FORMAT /(F9.5)/ LENGTH 9 REAL CELLZ
 %  OUTPUT
+%  IF ( LNEW30 ) THEN
+%    COPY '#LIST 30'
+%    COPY 'END'
+{I The old list 30 has been deleted.
+{I Writing a new one with the existing info.
+%  END IF
 %  LOOP
 %    VERIFY OBSERVE INDICES SOFTWARE CRYSTAL ABSORPTION BXX BHELP BOK
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    CASE VALUE
+%    IF ( LNEW30 ) THEN
+%      EVALUATE SWITCH = 8
+%    ELSE
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%      EVALUATE SWITCH = VALUE
+%    END IF
+%    CASE SWITCH
 %      BLOCK %OBSERVE%
 %        VERIFY NREFS NREFMG RMERGE NMGFRD RMGFRD -
                 NORIEN THOMIN THOMAX STDS -
@@ -738,42 +752,42 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 101'
 %%
-%            IF FNREFS THEN
+%            IF FNREFS .OR. LNEW30 THEN
  * Updating Number of reflections measured.
 ^^?? NREFS TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE NREFS = VALUE
 %              COPY 'TRANSFER TO OFFSET = 0 FROM NREFS'
 %            END IF
-%            IF FNREFMG THEN
+%            IF FNREFMG .OR. LNEW30 THEN
  * Updating Number of merged reflections. (Friedels merged).
 ^^?? NREFMG TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE NREFMG = VALUE
 %              COPY 'TRANSFER TO OFFSET = 2 FROM NREFMG'
 %            END IF
-%            IF FRMERGE THEN
+%            IF FRMERGE .OR. LNEW30 THEN
  * Updating R merge. (Friedels merged).
 ^^?? RMERGE TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE RMERGE = VALUE
 %              COPY 'TRANSFER TO OFFSET = 3 FROM RMERGE'
 %            END IF
-%            IF FNMGFRD THEN
+%            IF FNMGFRD .OR. LNEW30 THEN
  * Updating Number of merged reflections. (Friedels not merged).
 ^^?? NMGFRD TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE NMGFRD = VALUE
 %              COPY 'TRANSFER TO OFFSET = 4 FROM NMGFRD '
 %            END IF
-%            IF FRMGFRD THEN
+%            IF FRMGFRD .OR. LNEW30 THEN
  * Updating R merge. (Friedels not merged).
 ^^?? RMGFRD TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE RMGFRD = VALUE
 %              COPY 'TRANSFER TO OFFSET = 5 FROM RMGFRD'
 %            END IF
-%            IF FREDUC THEN
+%            IF FREDUC .OR. LNEW30 THEN
  * Updating Data Reduction program name. 
 ^^?? REDUC SELECTED
 %              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
@@ -783,91 +797,91 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 102'
 %%
-%            IF FMIN THEN
+%            IF FMIN .OR. LNEW30 THEN
  * Updating minimum crystal size. 
 ^^?? MIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE MIN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 0 FROM MIN'
 %            END IF
-%            IF FMED THEN
+%            IF FMED .OR. LNEW30 THEN
  * Updating medium crystal size. 
 ^^?? MED TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE MED = VALUE
 %              COPY 'TRANSFER TO OFFSET = 1 FROM MED'
 %            END IF
-%            IF FMAX THEN
+%            IF FMAX .OR. LNEW30 THEN
  * Updating maximum crystal size. 
 ^^?? MAX TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE MAX = VALUE
 %              COPY 'TRANSFER TO OFFSET = 2 FROM MAX'
 %            END IF
-%            IF FNORIEN THEN
+%            IF FNORIEN .OR. LNEW30 THEN
  * Updating number cell determining reflections. 
 ^^?? NORIEN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE NORIEN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 3 FROM NORIEN'
 %            END IF
-%            IF FTHOMIN THEN
+%            IF FTHOMIN .OR. LNEW30 THEN
  * Updating theta min of cell determining reflections. 
 ^^?? THOMIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE THOMIN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 4 FROM THOMIN'
 %            END IF
-%            IF FTHOMAX THEN
+%            IF FTHOMAX .OR. LNEW30 THEN
  * Updating theta max of cell determining reflections. 
 ^^?? THOMAX TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE THOMAX = VALUE
 %              COPY 'TRANSFER TO OFFSET = 5 FROM THOMAX'
 %            END IF
-%            IF FTEMP THEN
+%            IF FTEMP .OR. LNEW30 THEN
  * Updating temperature. 
 ^^?? TEMP TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE TEMP = VALUE
 %              COPY 'TRANSFER TO OFFSET = 6 FROM TEMP'
 %            END IF
-%            IF FSTDS THEN
+%            IF FSTDS .OR. LNEW30 THEN
  * Updating number of intensity standards. 
 ^^?? STDS TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE STDS = VALUE
 %              COPY 'TRANSFER TO OFFSET = 7 FROM STDS'
 %            END IF
-%            IF FDECAY THEN
+%            IF FDECAY .OR. LNEW30 THEN
  * Updating average intensity standards decay. 
 ^^?? DECAY TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE DECAY = VALUE
 %              COPY 'TRANSFER TO OFFSET = 8 FROM DECAY'
 %            END IF
-%            IF FSCAN THEN
+%            IF FSCAN .OR. LNEW30 THEN
  * Updating scan type. 
 ^^?? SCAN SELECTED
 %              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
 %              EVALUATE SCAN = VALUE 
 %              COPY 'TRANSFER TO OFFSET = 9 FROM SCAN'
 %            END IF
-%            IF FINTRVL THEN
+%            IF FINTRVL .OR. LNEW30 THEN
  * Updating intensity standards interval time. 
 ^^?? INTRVL TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE INTRVL = VALUE
 %              COPY 'TRANSFER TO OFFSET = 10 FROM INTRVL'
 %            END IF
-%            IF FRCOUNT THEN
+%            IF FRCOUNT .OR. LNEW30 THEN
  * Updating intensity standards interval count. 
 ^^?? RCOUNT TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE RCOUNT = VALUE
 %              COPY 'TRANSFER TO OFFSET = 11 FROM RCOUNT'
 %            END IF
-%            IF FINST THEN
+%            IF FINST .OR. LNEW30 THEN
  * Updating instrument type. 
 ^^?? INST SELECTED
 %              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
@@ -877,56 +891,56 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 104'
 %%
-%            IF FHMIN THEN
+%            IF FHMIN .OR. LNEW30 THEN
  * Updating H min. 
 ^^?? HMIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE HMIN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 0 FROM HMIN'
 %            END IF
-%            IF FHMAX THEN
+%            IF FHMAX .OR. LNEW30 THEN
  * Updating H max. 
 ^^?? HMAX TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE HMAX = VALUE
 %              COPY 'TRANSFER TO OFFSET = 1 FROM HMAX'
 %            END IF
-%            IF FKMIN THEN
+%            IF FKMIN .OR. LNEW30 THEN
  * Updating K min. 
 ^^?? KMIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE KMIN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 2 FROM KMIN'
 %            END IF
-%            IF FKMAX THEN
+%            IF FKMAX .OR. LNEW30 THEN
  * Updating K max. 
 ^^?? KMAX TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE KMAX = VALUE
 %              COPY 'TRANSFER TO OFFSET = 3 FROM KMAX'
 %            END IF
-%            IF FLMIN THEN
+%            IF FLMIN .OR. LNEW30 THEN
  * Updating L min. 
 ^^?? LMIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE LMIN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 4 FROM LMIN'
 %            END IF
-%            IF FLMAX THEN
+%            IF FLMAX .OR. LNEW30 THEN
  * Updating L max. 
 ^^?? LMAX TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE LMAX = VALUE
 %              COPY 'TRANSFER TO OFFSET = 5 FROM LMAX'
 %            END IF
-%            IF FTHMIN THEN
+%            IF FTHMIN .OR. LNEW30  THEN
  * Updating theta min. 
 ^^?? THMIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE THMIN = VALUE
 %              COPY 'TRANSFER TO OFFSET = 6 FROM THMIN'
 %            END IF
-%            IF FTHMAX THEN
+%            IF FTHMAX .OR. LNEW30 THEN
  * Updating theta max. 
 ^^?? THMAX TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
@@ -936,7 +950,7 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 105'
 %%
-%             IF ( FABSTYPE .OR. FABSMIN .OR. FABSMAX ) THEN
+%             IF ( FABSTYPE .OR. FABSMIN .OR. FABSMAX .OR. LNEW30 ) THEN
  * Updating absorption infomation. 
 ^^?? ABSMIN TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
@@ -1006,35 +1020,35 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 106'
 %%
-%            IF FDOBS THEN
+%            IF FDOBS .OR. LNEW30 THEN
  * Updating observed (measured) crystal density. 
 ^^?? DOBS TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE DOBS = VALUE
 %              COPY 'TRANSFER TO OFFSET = 0 FROM DOBS'
 %            END IF
-%            IF FDCALC THEN
+%            IF FDCALC .OR. LNEW30 THEN
  * Updating calculated crystal density. 
 ^^?? DCALC TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE DCALC = VALUE
 %              COPY 'TRANSFER TO OFFSET = 1 FROM DCALC'
 %            END IF
-%            IF FMOLWT THEN
+%            IF FMOLWT .OR. LNEW30 THEN
  * Updating molecular weight. 
 ^^?? MOLWT TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE MOLWT = VALUE
 %              COPY 'TRANSFER TO OFFSET = 4 FROM MOLWT'
 %            END IF
-%            IF FCELLZ THEN
+%            IF FCELLZ .OR. LNEW30 THEN
  * Updating Z. 
 ^^?? CELLZ TEXT
 %              GET NOSTORE SILENT FINAL REAL ' ' ' '
 %              EVALUATE CELLZ = VALUE
 %              COPY 'TRANSFER TO OFFSET = 5 FROM CELLZ'
 %            END IF
-%            IF FSOLUTN THEN
+%            IF FSOLUTN .OR. LNEW30 THEN
  * Updating structure solution package name. 
 ^^?? SOLUTN SELECTED
 %              GET NOSTORE SILENT FINAL INTEGER ' ' ' '
@@ -1044,7 +1058,7 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 107'
 %%
-%            IF FCOLOUR THEN
+%            IF FCOLOUR .OR. LNEW30 THEN
  * Updating crystal colour. 
 %              VARIABLE CHARACTER CTEM
 ^^?? COLOUR TEXT
@@ -1055,7 +1069,7 @@
 %%
 %            COPY 'LOCATE RECORDTYPE = 108'
 %%
-%            IF FSHAPE THEN
+%            IF FSHAPE .OR. LNEW30 THEN
  * Updating crystal shape. 
 %              VARIABLE CHARACTER CTEM
 ^^?? SHAPE TEXT
