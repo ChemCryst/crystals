@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2002/11/12 15:12:51  rich
+C Fixed bug in special position code. U[iso] value was corrupted if atom was moved
+C by KSPECB because it thought it was a U[ij] value.
+C
 C Revision 1.5  2002/02/13 15:32:20  Administrator
 C Reduce calls to SPECIAL in multicycle SFLS, enable shift reversal monitoring, and fix Lachlans shift bounding
 C
@@ -66,7 +70,6 @@ C----- CHECK IF LIST 23 IS TO BE CHECKED
       IF (IUPDAT .GE. 0) IACTN=MAX0(0,IACTN)
       WRITE ( CMON,886) TOLER
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 886   FORMAT(5X,' Checking SPECIAL positions subject to tolerance of ',
      1 G10.5, ' Angstrom')
@@ -83,7 +86,6 @@ C-----    WRITE A LIST 22 HEADER
           CALL XISRC( CEND )
           WRITE ( CMON,1000)
 CNOV98          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU, '(A)') CMON(1 )(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1000      FORMAT(5X,' Refinement directives (LIST 12) ',
      1 'processed to activate constraints')
@@ -186,7 +188,6 @@ C----- SET THE TIMER AND LOAD THE LISTS
       IF (IERFLG .LT. 0) THEN
             WRITE ( CMON, '(A)' ) ' LIST 1, 2 or 5 not available '
             CALL XPRVDU(NCVDU, 1,0)
-            WRITE(NCAWU, '(A)') CMON( 1)(:)
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
             GOTO 9000
       ENDIF
@@ -197,21 +198,18 @@ C
       IF (IACTN .GE. 0) THEN
         WRITE ( CMON,100)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCAWU, '(A)') CMON(1 )(:)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 100     FORMAT(10X,' Notification of SPECIAL conditions ')
       ENDIF
       IF (IACTN .GE. 1) THEN
         WRITE ( CMON,110)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCAWU, '(A)') CMON(1)(:)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 110     FORMAT(10X,' Fixing of floating origins')
       ENDIF
       IF (IACTN .GE. 2) THEN
         WRITE ( CMON,120)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCAWU, '(A/)') CMON(1)(:)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A/)') CMON(1)(:)
 120     FORMAT(10X,' Restraining atomic parameters')
       ENDIF
@@ -221,7 +219,6 @@ C----- FORCE INITIALISATION OF THE SPECIAL POSITION VARIABLES
       IF (KSPINI (IFORCE, ABTOL ) .LE. 0) THEN
          WRITE ( CMON, '(A)') ' Error initialising special positions'
          CALL XPRVDU(NCVDU, 1,0)
-         WRITE(NCAWU, '(A)') CMON(1)(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
          GOTO 9000
       ENDIF
@@ -255,13 +252,11 @@ C
           WRITE ( CMON,522) STORE(M5), NINT(STORE(M5+1)),
      2                        MPOS, NGMULT, 1./FLOAT(MGM)
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCAWU, '(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 522       FORMAT(1X,' Atom ', A4, I4, ',  Multiplicity =', I3,
      2    ',  Number of positions =', I3, ' Occ = ', F6.4)
           WRITE ( CMON,523) ( PLM(K1(IK)+2), PRE(K2(IK)+1),
      2                          COORD(KEY(IK)+1) ,IK =1,9    )
-          WRITE(NCAWU, '(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 523       FORMAT (1X, 3(A1,A3,A2,1X), 6(A1,A3,A5,1X) )
       ENDIF
@@ -301,7 +296,6 @@ C----- BEGIN TO TIDY UP
             IF (NRESTR .GT. 0) THEN
              WRITE ( CMON,560) NRESTR
              CALL XPRVDU(NCVDU, 1,0)
-             WRITE(NCAWU, '(A)') CMON(1)(:)
              IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 560    FORMAT (6X, I6, ' Symmetry restraints written to LIST 17')
 C
@@ -318,7 +312,6 @@ C
              CALL XISRC( CEND )
              WRITE ( CMON,570)
              CALL XPRVDU(NCVDU, 1,0)
-             WRITE(NCAWU, '(A)') CMON(1)(:)
              IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 570          FORMAT(10X,' LIST 23 updated to include restraints')
             ELSE
@@ -329,7 +322,6 @@ C----- NO RESTRAINTS, SO WE CAN REWIND THE SRQ
         ENDIF
         IF (NUPDAT .GT. 0) THEN
           WRITE ( CMON,580) NUPDAT
-          WRITE(NCAWU, '(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
 580   FORMAT(6X,I6, ' Atoms modified.',6X,'New LIST 5 written to DISK')
 C-----    WRITE UPDATED LIST 5 TO DISK
@@ -486,7 +478,6 @@ C               FLOATING DIRECTION
 C
                 WRITE(CMON,13) AXIS(K)
                 CALL XPRVDU(NCVDU, 1,0)
-                WRITE(NCAWU,13) AXIS(K)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,13) AXIS(K)
 13      FORMAT(' Floating origin in ', A2, ' direction')
                 WRITE(CLINE,14) AXIS(K)

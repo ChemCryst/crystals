@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2003/01/14 10:13:22  rich
+C g77 spots missing comma in Format statement.
+C
 C Revision 1.36  2003/01/10 15:55:35  djw
 C Fix my mistake
 C
@@ -2277,7 +2280,7 @@ cdjwoct2001
       if (igroup .ge. 0) then
        if (istore(m5a+14) .le. 0) then
             ifrag = ifrag+1
-            istore(m5a+14)=ifrag
+            istore(m5a+14)=ifrag*1000
        endif
       endif
       NFL=JE

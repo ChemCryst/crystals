@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2003/01/15 13:50:35  rich
+C Remove all output to NCAWU as part of an ongoing project.
+C
 C Revision 1.27  2002/12/04 14:31:11  rich
 C Reformat output during refinement.
 C
@@ -2488,23 +2491,19 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
       ENDIF
       IF ( ABS(UJ-FCEXT) .GE. R*UJ .AND. IBADR .LE. 50 ) THEN
       IF (IBADR .LT. 0) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,4651)
-      ENDIF
-            IBADR = 0
-4651        FORMAT(10X,' Bad agreements ',/
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,4651)
+          IBADR = 0
+4651      FORMAT(10X,' Bad agreements ',/
      1      /1X,'   h    k    l      Fo        Fc '/)
       ELSE IF (IBADR .LT. 25) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,4652)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,FCEXT
-      ENDIF
-4652        FORMAT(1X,3F5.0,2F9.2)
+        IF (ISSPRT .EQ. 0) 
+     1       WRITE(NCWU,4652)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,FCEXT
+4652         FORMAT(1X,3F5.0,2F9.2)
       ELSE IF (IBADR .EQ. 25) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,4653)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,4653)
+4653    FORMAT(/' And so on ------------'/)
       ENDIF
-4653        FORMAT(/' And so on ------------'/)
-      ENDIF
+
       IBADR = IBADR + 1
       ENDIF
 4660  CONTINUE
@@ -2790,7 +2789,7 @@ C Only print disagreeable reflections during calc.
      2     (STORE(IXAP), IXAP= JXAP+3,JXAP+6),
      3     JXAP= MSORT, MSORT+MDSORT, MDSORT)
           CALL XPRVDU(NCVDU, 1,0)
-          WRITE(NCWU, '(A)') CMON(1)(:)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
 10      CONTINUE
       END IF
 C
@@ -2810,17 +2809,6 @@ C
 C
 6150  FORMAT(/,' New scale factor (G) is ',F10.5,
      1 ',  ',I6,' reflections used in refinement')
-      WRITE ( NCWU, 6253) JI
-      WRITE ( NCWU, 6254)
-      WRITE ( NCWU, 6256) R,RW,A,S,T
-      WRITE ( NCWU, 6257)
-     2 FOT,FCT,DFT,AMINF,STORE(L5O),NT
-6253  FORMAT(' Results of structure factor calculation ',I5)
-6254  FORMAT(' R-value Weighted-R  Sum /FO/  ',
-     2 'Sum /FC/   Delta   Minimisation function' )
-6256  FORMAT( 1X,2F7.2,/,20X,2F10.0,F8.0,16X,' Scale of /FO/  ')
-6257  FORMAT(20X,2F10.0,F8.0,F16.0,' Scale of /FC/  '/,
-     6 ' Scale factor is ',F10.4,',', 6X,I6,' reflections used')
 6250  FORMAT(/,' Structure factor least squares calculation',I5,
      2 '  ends',I3)
 C

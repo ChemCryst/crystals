@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.35  2002/10/14 12:33:24  rich
+C Support for DVF command line version.
+C
 C Revision 1.34  2002/08/23 09:02:26  richard
 C Change for script names in status bar.
 C
@@ -387,8 +390,6 @@ C----- CHANGE COLOUR TO BLUE  ON WHITE FOR COPIED TEXT
 C-----    SWITCH ON LINE FEEDS
           ICPSTS = 1
         ENDIF
-       if ((crdlwc(1:2) .ne. '^^') .OR. (ISCVER .NE. 0))
-     1 WRITE (NCAWU,1451 ) CRDLWC(1:IFIN)
        WRITE ( CMON,1451) CRDLWC(1:IFIN)
        CALL XPRVDU(NCVDU, 1,0)
 1451   FORMAT ( 1X , A )
@@ -464,7 +465,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 3005 )
       ENDIF
-        WRITE ( NCAWU , 3005 )
 3005    FORMAT ( 1X , 'Attempt to read past end of CONTROL' )
         CALL XERHND ( IERERR )
         GO TO 1000
@@ -661,10 +661,7 @@ C
 9910  CONTINUE
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 )
-      ENDIF
-      WRITE ( NCAWU , 9915 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
 9915  FORMAT ( 1X , 'Error during read. Line ignored' )
       CALL XERIOM ( IUNIT , IOS )
 C
@@ -993,7 +990,6 @@ C    WARN FOR TYPE ETC. , IGNORE FOR STARTUP )
       IF (ISSPRT .EQ. 0) THEN
             WRITE ( NCWU , 3105 ) CRFILE
       ENDIF
-            WRITE ( NCAWU , 3105 ) CRFILE
 3105        FORMAT ( 1X , 'Error opening specified file - ' , A )
             CALL XERIOM ( NCUFU(IFLIND) , I )
 C
@@ -1148,7 +1144,6 @@ C -- CONVERT VALUE READ TO INTEGER NUMBER
       ENDIF
 C      WRITE(NCAWU,*) LFLD, NFLD, NVAR
       IF ((LFLD-NFLD) .LT. NVAR*(NVAR+1)) THEN
-            WRITE(NCAWU,3050) NVAR, NREF
             WRITE(CMON,3050) NVAR,NREF
             CALL XPRVDU(NCVDU, 1,0)
 3050  FORMAT ('Too many variables requested', 2I6)
@@ -1169,22 +1164,16 @@ C -- INTERNAL ERROR
       GO TO 9000
 9930  CONTINUE
       CALL XMONTR ( 0 )
-      IF (ISSPRT .EQ. 0) THEN
       WRITE ( CMON,9935)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCWU , 9935 )
-      ENDIF
-      WRITE ( NCAWU , 9935 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
 9935  FORMAT(1X,'Illegal or missing parameter for this Instruction' )
       GO TO 9980
 9940  CONTINUE
       CALL XMONTR ( 0 )
       WRITE ( CMON,9945)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9945 )
-      ENDIF
-      WRITE ( NCAWU , 9945 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9945 )
 9945  FORMAT ( 1X, 'Attempt to exceed the maximum number of ' ,
      2 'HELP, MANUAL, TYPE, or USE files')
       CALL XERHND ( IERERR )
@@ -1193,10 +1182,7 @@ C -- INTERNAL ERROR
 C -- GENERAL HELP ON USING SYSTEM INSTRUCTIONS HANDLED BY THIS ROUTINE
       WRITE ( CMON,9985) (IH,J=1,7)
       CALL XPRVDU(NCEROR, 5,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9985 ) ( IH , J = 1 , 7 )
-      ENDIF
-      WRITE ( NCAWU , 9985 ) ( IH , J = 1 , 7 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9985 ) ( IH , J = 1 , 7 )
 9985  FORMAT ( 1X , 'Specify a filename for ',A1,'TYPE or ',A1,'USE',/,
      2 1X , 'Specify a topic for ',A1,'HELP or ',A1,'MANUAL' , / ,
      3 1X , 'Specify a script name for ', A1 , 'SCRIPT' , / ,
@@ -1313,20 +1299,14 @@ C
       CALL XMONTR ( 0 )
       WRITE ( CMON,9965)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9965 )
-      ENDIF
-      WRITE ( NCAWU , 9965 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9965 )
 9965  FORMAT ( 1X , 'A required parameter has been omitted' )
       GO TO 9900
 9970  CONTINUE
       CALL XMONTR ( 0 )
       WRITE ( CMON,9975)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9975 )
-      ENDIF
-      WRITE ( NCAWU , 9975 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9975 )
 9975  FORMAT ( 1X , 'Too many parameters have been given' )
       GO TO 9900
 C
@@ -1759,10 +1739,7 @@ C -- ERRORS DURING 'SET' INSTRUCTION
       CALL XPRVDU(NCEROR, 2,0)
 9915  FORMAT ( 1X , 'Illegal or missing keyword in SET instruction' /
      1 1X , 'The following keywords are allowed :-' )
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 )
-      ENDIF
-      WRITE ( NCAWU , 9915 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
       IF ( NFNC .GT. 0 ) THEN
         NCOL = 7
         NITEM = NFNC
@@ -1778,10 +1755,7 @@ C -- ERRORS DURING 'SET' INSTRUCTION
           CALL XPRVDU(NCEROR, NROW,0)
         NSTART = NEND+1
 97531 CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE ( NCWU , 9917 ) KEYFNC
-      ENDIF
-        WRITE ( NCAWU , 9917 ) KEYFNC
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9917 ) KEYFNC
 9917    FORMAT ( 7(2X , 8A1 ))
       ENDIF
       GO TO 9900
@@ -1791,10 +1765,7 @@ C -- ERRORS DURING 'SET' INSTRUCTION
 9930  CONTINUE
         WRITE ( CMON,9935)
         CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 )
-      ENDIF
-      WRITE ( NCAWU , 9935 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
 9935  FORMAT ( 1X , 'Illegal or missing value in SET instruction'/
      1 1X , 'The following values are allowed :-' )
       IF ( ITPVAL(IRQFNC) .EQ. 1 ) THEN
@@ -1817,7 +1788,6 @@ C -- ERRORS DURING 'SET' INSTRUCTION
       IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 9937 ) ((KEYVAL(I,J),I=1,4),J=ISTART,IEND)
       ENDIF
-        WRITE ( NCAWU , 9937 ) ((KEYVAL(I,J),I=1,4),J=ISTART,IEND)
 9937    FORMAT ( 6(2X , 4A1 ))
       ELSE IF ( ITPVAL(IRQFNC) .EQ. 2 ) THEN
         WRITE ( CMON,9942)
@@ -1825,7 +1795,6 @@ C -- ERRORS DURING 'SET' INSTRUCTION
       IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 9942 )
       ENDIF
-        WRITE ( NCAWU , 9942 )
 9942    FORMAT ( 1X , 'This instruction requires an integer value' )
       ENDIF
       GO TO 9900
@@ -2013,20 +1982,14 @@ C
       CALL XMONTR ( 0 )
       WRITE ( CMON,9935)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 )
-      ENDIF
-      WRITE ( NCAWU , 9935 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
 9935  FORMAT(1X,'Illegal parameter for this instruction' )
       GO TO 9900
 9920  CONTINUE
       CALL XMONTR ( 0 )
       WRITE ( CMON,9925)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 )
-      ENDIF
-      WRITE ( NCAWU , 9925 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
 9925  FORMAT ( 1X , 'Repeated name in ATTACH command' )
       GO TO 9900
 C
@@ -2211,8 +2174,6 @@ CDJWMAR99
      2                         OLDFIL(1:LENNAM)
               ENDIF
 CDJWMAR99
-              WRITE ( NCAWU, 2340 ) CSSPRG(1:LSSPRG), CACTN(kFUNC),
-     2                         OLDFIL(1:LENNAM)
 2340          FORMAT ( 1X , A , ' ' , A , ' ' , A )
             ENDIF
           ENDIF
@@ -2311,8 +2272,6 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
           WRITE ( NCWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
      2    COPER(KFUNC), NEWFIL(:LENNAM)
         ENDIF
-        WRITE ( NCAWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
-     2  COPER(KFUNC), NEWFIL(:LENNAM)
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
       ENDIF
 CRICFEB01[
@@ -2355,13 +2314,11 @@ CDJWMAR99[
       ENDIF
       WRITE ( CMON,9905) CCRCHR(1:2), IH , CINSTR(kFUNC)
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE ( NCAWU , 9905 ) IH , CINSTR(kFUNC)
 9905  FORMAT ( 1X , 'The correct format for this instruction is :-' ,/
      2 11X , A1 , A , ' devicename [ filename ] ' )
       IF ( NFLUSD .GT. 0 ) THEN
       WRITE ( CMON,9906)
       CALL XPRVDU(NCVDU, 1,0)
-        WRITE ( NCAWU , 9906 )
 9906    FORMAT ( 1X , 'The following device names are known :-' )
         NCOL = 5
         NITEM = NFLUSD
@@ -2377,11 +2334,9 @@ CDJWMAR99[
           CALL XPRVDU(NCVDU, NROW, 0)
           NSTART = NEND+1
 97531   CONTINUE
-        WRITE ( NCAWU , 9907 ) (( KEYFIL(J,I),J=1,LNAM),I=1,NFLUSD)
 9907    FORMAT ( 5( 2X , 8A1 ) )
         WRITE ( CMON,9908) CRESLT(kFUNC)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE ( NCAWU , 9908 ) CRESLT(kFUNC)
 9908    FORMAT ( 1X , 'NOTE not all devices may be ' , A )
       ENDIF
 CDJWMAR99]
@@ -2390,20 +2345,14 @@ CDJWMAR99]
       CALL XMONTR ( 0 )
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 )
-      ENDIF
-      WRITE ( NCAWU , 9915 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
 9915  FORMAT(1X,'Illegal or missing parameter for this Instruction' )
       GO TO 9900
 9920  CONTINUE
 CDJWMAR99[
       WRITE ( CMON,9925) kFUNC
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) kFUNC
-      ENDIF
-      WRITE ( NCAWU , 9925 ) kFUNC
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 ) kFUNC
 9925  FORMAT ( 1X , 'Illegal value supplied to routine' , I10 )
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
 CDJWMAR99]
@@ -2412,7 +2361,6 @@ CDJWMAR99]
       CALL XCTRIM( CFILE, NCHARS )
       WRITE ( CMON,9935) CFILE(1:NCHARS), LNMMAX
       CALL XPRVDU(NCEROR, 3,0)
-      WRITE(NCAWU,9935) CFILE, LNMMAX
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,9935) CFILE, LNMMAX
       ENDIF
@@ -2427,7 +2375,6 @@ CDJWMAR99[
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9955 ) CRESLT(kFUNC)
       ENDIF
-      WRITE ( NCAWU , 9955 ) CRESLT(kFUNC)
 9955  FORMAT ( 1X , 'Only WRITEABLE SEQUENTIAL files may be ' , A )
       GO TO 9000
 9960  CONTINUE
@@ -2437,7 +2384,6 @@ CDJWMAR99[
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9965 ) CRESLT(kFUNC)
       ENDIF
-      WRITE ( NCAWU , 9965 ) CRESLT(kFUNC)
 9965  FORMAT ( 1X , 'The specified file may not be ' , A )
       GO TO 9000
 9970  CONTINUE
@@ -2447,7 +2393,6 @@ CDJWMAR99[
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9975 ) CRESLT(kFUNC)
       ENDIF
-      WRITE ( NCAWU , 9975 ) CRESLT(kFUNC)
 9975  FORMAT ( 1X , 'A name may not be specified when DIRECT ACCESS' ,
      2 ' files are ' , A )
       GO TO 9000
@@ -2460,7 +2405,6 @@ CDJWMAR99[
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9985 ) ( KEYFIL(J,IFIND) , J = 1 , LNAM )
       ENDIF
-      WRITE ( NCAWU , 9985 ) NEWFIL, ( KEYFIL(J,IFIND) , J = 1 , LNAM )
 9985  FORMAT ( 1X , 'Error opening ' , A ,/ ' on ', 8A1 )
       CALL XERIOM ( IDEV , ISTAT )
       CALL XERHND ( IERERR )
@@ -2561,10 +2505,7 @@ C -- ERRORS DURING 'START' INSTRUCTION
 9910  CONTINUE
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 )
-      ENDIF
-      WRITE ( NCAWU , 9915 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
 9915  FORMAT ( 1X , 'Illegal or missing keyword in START instruction' )
       GO TO 9900
 C
@@ -2912,10 +2853,7 @@ C -- ERRORS DURING 'STORE' INSTRUCTION
 9910  CONTINUE
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 )
-      ENDIF
-      WRITE ( NCAWU , 9915 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
 9915  FORMAT ( 1X , 'Illegal or missing keyword in STORE instruction' )
       GO TO 9900
 9920  CONTINUE
@@ -2924,19 +2862,13 @@ C -- ERRORS DURING 'STORE' INSTRUCTION
 9930  CONTINUE
       WRITE ( CMON,9935)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 )
-      ENDIF
-      WRITE ( NCAWU , 9935 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
 9935  FORMAT ( 1X , 'Illegal or missing value in STORE instruction' )
       GO TO 9900
 9940  CONTINUE
       WRITE ( CMON,9945)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,9945)
-      ENDIF
-      WRITE(NCAWU,9945)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,9945)
 9945  FORMAT(1X, 'Illegal or missing address in STORE instruction' )
       GOTO 9900
 C
@@ -2993,9 +2925,8 @@ C
 C
 C -- CHECK THAT WE ARE CURRENTLY PROCESSING AN INSTRUCTION
       IF ( INSTR .LE. 0 ) THEN
-      WRITE ( CMON,1005)
-      CALL XPRVDU(NCEROR, 2,0)
-        WRITE ( NCAWU , 1005 )
+        WRITE ( CMON,1005)
+        CALL XPRVDU(NCEROR, 2,0)
 1005    FORMAT (/,1X,'No instruction is currently being processed')
         CALL XWHELP ( 1 )
       ELSE
@@ -3013,9 +2944,8 @@ C
 C
         CALL XDIRFL ( IDIRFL , ICOMMN , IDIMN )
 C
-      WRITE ( CMON,1015)
-      CALL XPRVDU(NCEROR, 1,0)
-        WRITE ( NCAWU , 1015 )
+        WRITE ( CMON,1015)
+        CALL XPRVDU(NCEROR, 1,0)
 1015    FORMAT ( 1X , 'Parameter number reset to 1' )
 C
       ENDIF
@@ -3058,9 +2988,8 @@ C
       DATA IDIMCX / 4 /
 C
       IF ( INSTR .GT. 0 ) THEN
-      WRITE ( CMON,1005)
-      CALL XPRVDU(NCEROR, 2,0)
-        WRITE ( NCAWU , 1005 )
+        WRITE ( CMON,1005)
+        CALL XPRVDU(NCEROR, 2,0)
 1005    FORMAT ( 1X , 'An instruction is being processed.' , / ,
      2           1X , 'Use the query facility for information ' ,
      3                'on the current instruction' )
@@ -3277,13 +3206,11 @@ C
 9910  CONTINUE
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9915 )
 9915  FORMAT ( 1X , 'Illegal input value for list number' )
       GO TO 9900
 9920  CONTINUE
       WRITE ( CMON,9925)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9925 )
 9925  FORMAT ( 1X , 'Unrecognised instruction' )
       GO TO 9900
 C
@@ -3333,7 +3260,6 @@ C
       ELSE
             WRITE ( CMON,1005)
             CALL XPRVDU(NCEROR, 1,0)
-            WRITE ( NCAWU , 1005 )
 1005        FORMAT ( 1X , 'Unrecognised directive' )
       ENDIF
 C
@@ -3375,7 +3301,6 @@ C
             IF ( ICONTX .LE. 0 ) THEN
                   WRITE ( CMON,1005)
                   CALL XPRVDU(NCEROR, 1,0)
-                  WRITE ( NCAWU , 1005 )
 1005              FORMAT ( 1X , 'Unrecognised parameter' )
             ENDIF
       ENDIF
@@ -3457,7 +3382,6 @@ C
 9910  CONTINUE
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9915 )
 9915  FORMAT ( 1X , 'Illegal input value' )
       GO TO 9900
 C
@@ -3513,12 +3437,10 @@ C
       IF ( NR50 .GT. 0 ) THEN
             CALL XHLPDS ( ISTORE(LR50),MDR50,NR50,MDR50-1,ICONTX(1),1 )
             IF ( ICONTX(1) .LE. 0 ) THEN
-              WRITE ( NCAWU , 985 )
             WRITE ( CMON,985)
             CALL XPRVDU(NCEROR, 2,0)
 985           FORMAT ( 1X , 'Available system instructions' ,
      2                           ' ( see manual for details )' , /)
-              WRITE ( NCAWU , 995 ) IHF
 C             LHF (AND 4A1 LATER) INRTODUCED BECAUSE TEXT STORED A1
               NCOL = 10*LHF
               NITEM = NHF*LHF
@@ -3552,7 +3474,6 @@ C
 C
       WRITE ( CMON,1002) CPTYPE(ITPVAL)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1002 ) CPTYPE(ITPVAL)
 1002  FORMAT ( 1X , 'Data type required is : ' , A )
 C
       NVAL = ISTORE(MR62D+3)
@@ -3574,9 +3495,7 @@ C
         IF ( ITPVAL .EQ. 1 ) THEN
           WRITE ( CMON,1005)
           CALL XPRVDU(NCEROR, 1, 1)
-          WRITE ( NCAWU , 1005 )
 1005      FORMAT ( 1X , 'Available input value(s)' )
-          WRITE ( NCAWU , 1015 ) ( ISTORE(J) , J = LVAL,MVAL,MDVAL )
          WRITE ( CMON,1015)(ISTORE(J), J= LVAL,MVAL,MDVAL)
          CALL XPRVDU(NCEROR, 1, 0)
 1015      FORMAT ( 1X , 6I12 )
@@ -3585,8 +3504,6 @@ C
          CALL XPRVDU(NCEROR, 1, 1)
          WRITE ( CMON,1025)(STORE(J), J= LVAL,MVAL,MDVAL)
          CALL XPRVDU(NCEROR, 1, 0)
-          WRITE ( NCAWU , 1005 )
-          WRITE ( NCAWU , 1025 ) ( STORE(J) , J = LVAL,MVAL,MDVAL )
 1025      FORMAT ( 1X , 6F12.4 )
         ELSE
           CALL XHLPDS ( ISTORE(LVAL),MDVAL,NVAL,MDVAL-1,ICONTX(4),4 )
@@ -3597,27 +3514,21 @@ C
             IF ( ITPVAL .EQ. 1 ) THEN
                   WRITE ( CMON,1017) ISTORE(IDEFAD)
                   CALL XPRVDU(NCVDU, 1,0)
-                  WRITE ( NCAWU , 1017 ) ISTORE(IDEFAD)
 1017              FORMAT ( / , 1X , 'Default value is : ' , I12 )
             ELSE IF ( ITPVAL .EQ. 2 ) THEN
                   WRITE ( CMON,1027) STORE(IDEFAD)
                   CALL XPRVDU(NCVDU, 1,0)
-                  WRITE ( NCAWU , 1027 ) STORE(IDEFAD)
 1027              FORMAT ( / , 1X , 'Default value is : ' , F12.4 )
             ELSE
                   WRITE ( CMON,1035)  ( ISTORE(J) ,
      2                                    J = IDEFAD+1,IDEFAD+MDVAL-2 )
                   CALL XPRVDU(NCVDU, 1,0)
-                  WRITE ( NCAWU , 1035 ) ( ISTORE(J) ,
-     2 J = IDEFAD+1,IDEFAD+MDVAL-2 )
 1035              FORMAT ( / , 1X , 'Default value is : ' , 12A1 )
             ENDIF
-            WRITE ( NCAWU , 1037 )
 1037        FORMAT ( 1X )
       ELSE
             WRITE ( CMON,1045)
             CALL XPRVDU(NCVDU, 1,0)
-            WRITE ( NCAWU , 1045 )
 1045        FORMAT ( / , 1X , 'There is no default value' , / )
       ENDIF
 C
@@ -3690,7 +3601,6 @@ C
       IF ( NINSTR .EQ. 0 ) THEN
             WRITE ( CMON,1005) CDTYPE(ITYPE)
             CALL XPRVDU(NCVDU, 3,0)
-            WRITE ( NCAWU , 1005 ) CDTYPE(ITYPE)
 1005        FORMAT ( / , 1X , 'Available ' , A , / )
             NCOL = 4
             NITEM = NNAME
@@ -3707,16 +3617,11 @@ C
                 CALL XPRVDU(NCVDU, NROW, 0)
               NSTART = NEND+1
 97531       CONTINUE
-            WRITE ( NCAWU , 1015 ) ( ( NAME(J,K), J = NAMBEG,NAMEND) ,
-     2 ( IB , J = INTBEG , INTEND ) ,
-     2 K = 1 , NNAME )
 1015        FORMAT ( 4(1X,16A1) )
       ELSE
             WRITE ( CMON,1025)( IB , J = 1 , 4 * ITYPE ) ,
      2                              ( NAME(J,NINSTR),J = NAMBEG,NAMEND)
             CALL XPRVDU(NCVDU, 1, 0)
-            WRITE ( NCAWU , 1025 ) ( IB , J = 1 , 4 * ITYPE ) ,
-     2 ( NAME(J,NINSTR) , J = NAMBEG , NAMEND  )
 1025        FORMAT ( 1X , 72A1 )
       ENDIF
 C
@@ -3832,10 +3737,7 @@ C
       IF ( IFLIND .EQ. IFLMAX ) THEN
         WRITE ( CMON,1005)
         CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE ( NCWU , 1005 )
-      ENDIF
-        WRITE ( NCAWU , 1005 )
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1005 )
 1005    FORMAT ( 1X,'No channel available for system request queue' )
         CALL XERHND ( IERPRG )
       ENDIF
@@ -3868,10 +3770,7 @@ C
 C -- FILE OPEN FAILED
         WRITE ( CMON,1015)
         CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-          WRITE ( NCWU , 1015 )
-      ENDIF
-          WRITE ( NCAWU , 1015 )
+          IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 )
 1015      FORMAT ( 1X , 'Error opening system request file' )
           CALL XERIOM ( NCUFU(IFLIND) , I )
           CALL XERHND ( IERSEV )
@@ -3896,7 +3795,6 @@ C--OUTPUT THE INSTRUCTION
       IF (IMNSRQ .GT. 0) THEN
            WRITE ( CMON,'(A,A)') ' SRQ write ', CLINE
            CALL XPRVDU(NCEROR, 1,0)
-           WRITE (NCAWU,'(A)') CMON(1)(:)
       ENDIF
       WRITE(NUSRQ,'(A)' ) CLINE
       ENDFILENUSRQ
@@ -4074,9 +3972,8 @@ C--THE KEYWORD INPUT IS TOO LONG
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1300)(ITEXT(I),I=1,M)
       ENDIF
-      WRITE(NCAWU,1300)(ITEXT(I),I=1,M)
-        WRITE ( CMON,1300) (ITEXT(I),I=1,M)
-        CALL XPRVDU(NCEROR, 2,0)
+      WRITE ( CMON,1300) (ITEXT(I),I=1,M)
+      CALL XPRVDU(NCEROR, 2,0)
 1300  FORMAT(' The following keyword or value is known,',
      2 ' but contains too many characters here : ',/,40A1)
       LEF=LEF+1
@@ -4116,7 +4013,6 @@ C--THE INPUT KEYWORD DEFINES MORE THAN ONE PROVIDED KEYWORD
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1000)(IDTYPE(I,ITYPFL),I=1,3),(IMAGE(I),I=NC,J)
       ENDIF
-      WRITE(NCAWU,1000)(IDTYPE(I,ITYPFL),I=1,3),(IMAGE(I),I=NC,J)
       WRITE ( CMON,1000) (IDTYPE(I,ITYPFL),I=1,3),
      2                     (IMAGE(I),I=NC,J)
       CALL XPRVDU(NCEROR, 2,0)
@@ -4476,19 +4372,14 @@ C--AND NOW THE PRINT
 1100  CONTINUE
       WRITE ( CMON,1151) (IB,J=1,I),IA
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE(NCAWU,1151)(IB,J=1,I),IA
 1151  FORMAT(5X,82A1)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1150)(IB,J=1,I),IA
       ENDIF
-      WRITE(NCAWU,1151)(IB,J=1,I),IA
 1150  FORMAT(7X,82A1)
       WRITE ( CMON,1200)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1200)
-      ENDIF
-      WRITE(NCAWU,1200)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
 1200  FORMAT(' Spurious character  (Marked by an *)')
       LEF=LEF+1
       IDIRFL=-1
@@ -4567,7 +4458,6 @@ cdjwdec99 slightly re-organied
           CALL OUTCOL(1)
       ENDIF
       IF ((ISCVER .GT. 0) .OR. (ICAT .GT. 0)) THEN
-         WRITE(NCAWU,'(A)') CMON(1)(:)
          IF (ISSPRT .EQ. 0) 
      1   WRITE(NCWU,1150)NUMB(K+1),NUMB(L+1),NUMB(M+1),NUMB(N+1),
      2   (LCMAGE(I),I=1,IFIN),(IB,I=1,J)
@@ -4675,7 +4565,6 @@ C
      1 ' 500 parameters, 5000 observations '/
      1 'Accumulation = 1824 secs, Inversion = 75 secs'/)
 C
-            WRITE(NCAWU,3060) NVAR, NREF
             WRITE(CMON,3060) NVAR,NREF
             CALL XPRVDU(NCVDU, 2,0)
 3060  FORMAT (I6, ' variables and', I6, ' reflections'/

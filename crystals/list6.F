@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2002/11/29 15:29:30  rich
+C Don't print 0 Processing 100% message in GID version.
+C
 C Revision 1.7  2002/03/29 00:10:38  richard
 C Reduce number of steps in progress bar output (from 50 to 20).
 C
@@ -317,10 +320,7 @@ C--A FEW SPARE LINES AT THE END
 C
 9900  CONTINUE
 C -- ERRORS
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9905 )
-      ENDIF
-      WRITE ( NCAWU , 9905 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 )
       WRITE ( CMON, 9905 )
       CALL XPRVDU(NCVDU, 1,0)
 9905  FORMAT ( 1X , 'Printing of list 6 abandoned' )
@@ -570,16 +570,10 @@ C--ALTER THE ERROR STATUS
 C--CHECK FOR M/T OUTPUT
       IF(L6W .LE. 0 ) THEN
 C--PRINT THE FILE NAME NOW CURRENT
-1100  CONTINUE
-      WRITE(NCAWU,1200)MTA
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1200)MTA
-      ENDIF
-1200  FORMAT (' The updated reflections are now on UNIT ', I2 )
+1100    CONTINUE
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)MTA
+1200    FORMAT (' The updated reflections are now on UNIT ', I2 )
 C--AND NOW RETURN
-      ELSE
-            WRITE(NCAWU,
-     1 '( '' Reflections on DISK updated '')')
       ENDIF
 1250  CONTINUE
       RETURN
@@ -1072,10 +1066,7 @@ C--CHECK THE INPUT VALUE
 C--TYPE IS ILLEGAL
 1000  CONTINUE
       CALL XERHDR(-1)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1050)IULN
-      ENDIF
-      WRITE(NCAWU,1050)IULN
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)IULN
       WRITE ( CMON, 1050) IULN
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Illegal list 6 type selector ',I5)
@@ -1329,7 +1320,6 @@ C      CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
       CALL OUTCOL(1)
 C------ SWITCH ON LINE FEEDS FOR DOS
           JNL77 = 1
-      WRITE(NCAWU,1560)
 C      WRITE(CMON,1560)
 C      CALL XPRVDU(NCVDU, 2,0)
 1560  FORMAT(' ')

@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2002/12/04 14:31:11  rich
+C Reformat output during refinement.
+C
+C Allow punching to MATLAB files, including restraints.
+C
+C Tidy some routines.
+C
 C Revision 1.17  2002/11/18 18:09:22  djw
 C Output Reversals on Screen
 C
@@ -161,7 +168,6 @@ C--PRINT OUT THE PAGE HEADING
       CALL XPRTCN
       I=NINT(STORE(M33V))
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)I
-      WRITE(NCAWU,1000)I
 1000  FORMAT(' Matrix inversion and calculation',
      2 ' of the shifts for S.F.L.S. cycle number ',I5)
 C--FIND THE 'MAP' PARAMETER
@@ -169,8 +175,6 @@ C--FIND THE 'MAP' PARAMETER
 C----- FIND THE 'PRINT' LEVEL
       ILEVEL=ISTORE(M33CD+7)
       IF (ILEVEL .GE. 0) THEN
-      WRITE(NCAWU,3555)
-      WRITE(NCAWU,1020) RMAX, SOESD
       IF (ISSPRT .EQ. 0) THEN
        WRITE(NCWU,3555)
        WRITE(NCWU,1020) RMAX, SOESD
@@ -226,7 +230,6 @@ C--LOAD A FEW MORE LISTS
       CALL XFAL05
       IF (METHOD .EQ. 1) THEN
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1151)  AUGFAC, FILTER, DISCRM
-        WRITE(NCAWU,1151)  AUGFAC, FILTER, DISCRM
 1151  FORMAT(1X, ' Eigen filters ', 3(G10.4,3X) )
       ENDIF
 C--FORM THE ABSOLUTE LIST 12
@@ -284,8 +287,6 @@ C--CHECK THAT THE NUMBER OF DEGREES OF FREEDOM IS POSITIVE
             CALL OUTCOL(3)
             CALL XPRVDU(NCVDU, 4,0)
             CALL OUTCOL(1)
-            WRITE( NCAWU,1351) 
-     1      I,NINT(STORE(L11P+16))
             IF (ISSPRT .EQ. 0) WRITE( NCWU,1351)
      1      I,NINT(STORE(L11P+16))
 1351        FORMAT(
@@ -542,7 +543,6 @@ C
 C
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
-      WRITE(NCAWU,3550) F
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3550) F
 
 3550  FORMAT( 
@@ -593,7 +593,6 @@ C----- CHECK FOR TOO MANY SINGULARITIES
       IF (JA .LE. ISTORE(L23MN)) THEN
 C----- SINGULARITY SITUATION IS OKAY
         IF (JA .GT. 0 ) THEN
-          WRITE(NCAWU, 3650) JA, ISTORE(L23MN)
           IF ( ISSPRT .EQ. 0 ) WRITE(NCWU, 3650) JA, ISTORE(L23MN)
           WRITE ( CMON, 3650) JA, ISTORE(L23MN)
           CALL XPRVDU(NCVDU, 1,0)
@@ -602,7 +601,6 @@ C----- SINGULARITY SITUATION IS OKAY
             JA=0
         ENDIF
       ELSE
-            WRITE(NCAWU, 3651) JA, ISTORE(L23MN)
             IF ( ISSPRT .EQ. 0 ) WRITE(NCWU, 3651) JA, ISTORE(L23MN)
             WRITE ( CMON, 3650) JA, ISTORE(L23MN)
             CALL XPRVDU(NCVDU, 2,0)
@@ -633,8 +631,9 @@ C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
       J = 0
       DO 4050 I=1,JF
 C--CHECK THE MINIMUM VALUE
-      write(ncawu,'(a,i4,3g15.3e2)') 'All cycle',i,store(m23ac),
-     1 store(m23ac+1),store(je+1)
+      IF ( ISSPRT.EQ. 0)
+     1  write(ncwu,'(a,i4,3g15.3e2)') 'All cycle',i,store(m23ac),
+     1  store(m23ac+1),store(je+1)
       if (store(je+1) .lt. store(m23ac)) goto 4300
 C--CHECK THE MAXIMUM VALUE
 3950  CONTINUE
@@ -655,8 +654,9 @@ C--LOOP OVER THE INTER-CYCLE CONDITIONS
 C--LOOP OVER EACH
       DO 4250 J = 1, JF
       A=STORE(JH+1)-STORE(JE+1)
-      write(ncawu,'(a,i4,3g15.3e2)') 'Inter cycle',j,store(m23ic),
-     1 store(m23ic+1),a
+      IF ( ISSPRT .EQ. 0 ) 
+     1  write(ncwu,'(a,i4,3g15.3e2)') 'Inter cycle',j,store(m23ic),
+     1  store(m23ic+1),a
 C--CHECK THE MIMIMUM
       if (a .lt. store(m23ic)) goto 4300
 C--CHECK THE MAXIMUM
@@ -680,7 +680,6 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
      3 ' Actual value condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-       WRITE(NCAWU,'(A)') CMON(1)
       ENDIF
       IF (J .GT. 0) THEN
        WRITE(CMON,4351) CLST23(J)(:)
@@ -688,7 +687,6 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
      3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-       WRITE(NCAWU,'(A)') CMON(1)
       ENDIF
 C
 C--REWRITE LIST 33 TO THE DISC
@@ -722,8 +720,6 @@ C--PRINT THE HEADING AND THE VARIOUS DETAILS AMASSED
           WRITE(NCWU,4448)
           WRITE(NCWU,4447)
         ENDIF
-        WRITE(NCAWU,4449)
-        WRITE(NCAWU,4447)
         WRITE ( CMON, 4447)
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -738,10 +734,6 @@ C
         WRITE(NCWU,4448)
       ENDIF
 C
-      WRITE(NCAWU,4449)
-      WRITE(NCAWU,4450)I,M,J,K,L,STORE(L11P+25),STORE(L11P+28),
-     2 STORE(L11P+17),A,B,C
-      WRITE(NCAWU,4449)
 4450  FORMAT( ' Statistics for',I6,' least squares parameters,',
      1 ' with',I6,' degrees of freedom',
      3 /' Number of observations',3I18,
@@ -901,7 +893,7 @@ C--COMPUTE THE NEW TOTALS AFTER THE NEW SHIFT FACTOR HAS BEEN APPLIED
       J=J+1
       K=K+1
 5100  CONTINUE
-      WRITE(NCWU,5105)
+      IF ( ISSPRT .EQ. 0 ) WRITE(NCWU,5105)
      2 STORE(JC),(STORE(I),I=JE,JC+23*MW,MW)
 5105  FORMAT(
      2       //' Shift',
@@ -951,7 +943,6 @@ C -- ERRORS
 9910  CONTINUE
 C -- LIST 11 WRONG TYPE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-      WRITE ( NCAWU , 9915 )
       WRITE ( CMON, 9915)
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'List 11 is the wrong type' )
@@ -1023,8 +1014,6 @@ C
 C
 C
       IF (ILEVEL .GE.2) THEN
-        WRITE (NCAWU,1000)
-        WRITE (NCAWU, 1010) (B(I),I=1,M)
         IF (ISSPRT .EQ. 0) THEN
           WRITE (NCWU,1000)
           WRITE (NCWU, 1010) (B(I),I=1,M)
@@ -1078,7 +1067,6 @@ C-----   LOOK FOR A DISCONTINUITY
          IF ( Y .GT. (DISC * X)) THEN
 C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
          IF (ISSPRT .EQ. 0) WRITE(NCWU,111) II, Y, IJ, X
-         WRITE(NCAWU,111) II, Y, IJ, X
          WRITE ( CMON,113 )
          CALL XPRVDU(NCVDU, 1,0)
 113      FORMAT(' Discontinuity in eigenvector list ')
@@ -1087,7 +1075,6 @@ C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
            DO 115 K = 1, M
              IF(B(K) .LE. X ) THEN
                   IF (ISSPRT .EQ. 0) WRITE(NCWU,112)  K, B(K)
-                  WRITE(NCAWU,112)  K, B(K)
                   WRITE ( CMON,112 ) K
                   CALL XPRVDU(NCVDU, 1,0)
  112              FORMAT(1X,' Zeroing eigen value ',I5,4X, G11.4,
@@ -1380,11 +1367,7 @@ C
         ICAPT = 1
         ENDIF
         IF (ITYPE .EQ. 1) THEN
-        WRITE(NCAWU,1952) JZ
-1952    FORMAT(6H Block,4X,I4,
-     1  /10X,5HParam,5H RELP,10H Calcshift,1X,10HShiftRatio,
-     2  9H   ESD    ,10HShift/ESD ,5H Type,7H Serial)
-        ICAPT = 1
+          ICAPT = 1
         ENDIF
       ENDIF
 C
@@ -1397,10 +1380,7 @@ C--PRINT FOR OVERALL PARAMETERS
       WRITE(CTEXT,'(2A4,I1)') (KVP(JRR,JS),JRR=1,2)
        WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
       ENDIF
-      IF (ITYPE .EQ. 1 )
-     1 WRITE(NCAWU,2790)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
 2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.2,26X,2A4,I3)
-2790  FORMAT(1X,A6,1X,2I5,2(F9.4,F9.2),12X,2A4,I3)
       GOTO 3300
 C
 C--CHECK IF THIS A SCALE OR GENERAL PARAMETER
@@ -1417,9 +1397,6 @@ C--LAYER OR ELEMENT BATCH OR PARAMETER PRINT
        WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,
      2 (KSCAL(NC,NA+2),NC=1,2),JS
       ENDIF
-      IF (ITYPE .EQ. 1)
-     1 WRITE(NCAWU,2790)FLAG,JT,JX,STORE(JO),C,A,S,
-     2 (KSCAL(NC,NA+2),NC=1,2),JS
       GOTO 3300
 C--UPDATE FOR THE NEXT SCALE
 2900  CONTINUE
@@ -1444,23 +1421,10 @@ C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
 C             WRITE(NCWU,3050)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
 C     2       STORE(M5+1),(ICOORD(JRR,JS),JRR=1,NWKA)
             ENDIF
-C            IF (ITYPE .EQ. 1)
-            IF (ITYPE .EQ. 1) THEN
-               IF((STORE(M5+3) .GE. 1.0) .AND. (JS .GE. 8)) THEN
-               WRITE(NCAWU,3090)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
-     2         NINT(STORE(M5+1)),(ICOORD(JRR,JS+NKAO),JRR=1,NWKA)
-               ELSE
-               WRITE(NCAWU,3090)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
-     2         NINT(STORE(M5+1)),(ICOORD(JRR,JS),JRR=1,NWKA)
-               ENDIF
-C     1       WRITE(NCAWU,3090)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
-C     2       STORE(M5+1),(ICOORD(JRR,JS),JRR=1,NWKA)
-            ENDIF
 3050  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.2,8X,A4,I4,1X,3A4)
-3090  FORMAT(1X,A6,1X,2I5,2(F9.4,F9.2),1X,A4,I4,1X,3A4)
       ELSE IF (IHIT .GE. 2) THEN
             IF ((ISSPRT .EQ. 0) .AND. (IPRINT .EQ. 1)) WRITE(NCWU,3051)
-            IF (ITYPE .EQ. 1) WRITE(NCAWU,3091)
+            IF (ITYPE .EQ. 1) WRITE(NCWU,3091)
 3051        FORMAT(1X,107X,'Composite',/)
 3091        FORMAT(1X,69X,'Composite',/)
       ENDIF
