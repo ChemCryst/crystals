@@ -351,13 +351,20 @@
 %   EVALUATE QTITLE = 'Minimisation function changed'
 %   IF FNEW .EQ. 0 THEN
 %     EVALUATE QTITLE = 'Min. function changed to F**2'
+%   EVALUATE QLINE2 = 'Recommended: Remove I/sigma(I) cutoff.'
 %   ELSE IF FNEW .EQ. - 1 THEN
 %     EVALUATE QTITLE = 'Min. function changed to F'
+%   EVALUATE QLINE2 = 'Recommended: Add min I/sigma(I) cutoff of 2.0'
 %   END IF
-%   EVALUATE QLINE1 = 'Do you want to re-weight the reflections?'
-%   EVALUATE QLINE2 = '(RECOMMENDED) '
+%   EVALUATE QLINE1 = 'Do you want to change the reflection filtering?'
 %   EVALUATE BUTTOK = ' &Yes '
 %   EVALUATE BUTTXX = ' &No '
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ANSWER .EQ. TRUE THEN
+%     COPY '#SCRIPT XLIST28' 
+%   END IF
+%   EVALUATE QLINE1 = 'Do you want a new weighting scheme? Recommended'
+%   EVALUATE QLINE2 = 'scheme: "Quasi-unit" until after more refinement.'
 %   COPY '#SCRIPT XQUESTIO'
 %   IF ANSWER .EQ. TRUE THEN
 %     COPY '#SCRIPT XWEIGHTS' 
