@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.21  2002/07/18 16:57:52  richard
+//   Upgrade to use standard c++ library, rather than old C libraries.
+//
 //   Revision 1.20  2002/07/15 12:19:13  richard
 //   Reorder headers to improve ease of linking.
 //   Update program to use new standard C++ io libraries.
@@ -923,8 +926,9 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
 //  int sign = theLogfont.lfHeight / abs(theLogfont.lfHeight);
     while (fontIsTooBig)
     {
-        CFont  theFont;
-        theFont.CreatePointFontIndirect(&theLogfont, memDC);
+      CFont  theFont;
+      if ( theFont.CreatePointFontIndirect(&theLogfont, memDC) )
+      {
         CFont* oldFont = memDC->SelectObject(&theFont);
 
         size = memDC->GetOutputTextExtent(theText.ToCString(), theText.Len());
@@ -952,7 +956,13 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean 
             theLogfont.lfHeight -= 10;
             memDC->SelectObject(oldFont); //Our CFont goes out of scope, and is deleted automatically
         }
-                theFont.DeleteObject(); //Free memory associated with font.
+        theFont.DeleteObject(); //Free memory associated with font.
+      }
+      else
+      {
+//Font creation failed, keep going:
+        theLogfont.lfHeight -= 10;
+      }
     }
     memDC->SelectObject(oldMemDCBitmap);
 #endif
