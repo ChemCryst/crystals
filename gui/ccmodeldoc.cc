@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.26  2003/05/12 12:01:19  rich
+// RIC: Oops; roll back some unintentional check-ins.
+//
 // Revision 1.24  2003/05/07 12:18:56  rich
 //
 // RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -235,7 +238,7 @@ bool CcModelDoc::ParseInput( CcTokenList * tokenList )
             {
                 tokenList->GetToken(); // Remove that token!
                 CcModelAtom* item = new CcModelAtom(this);
-                        item->ParseInput(tokenList);
+                item->ParseInput(tokenList);
                 mAtomList->AddItem(item);
                 m_nAtoms++;
                 item->id = m_nAtoms;
@@ -363,6 +366,17 @@ void CcModelDoc::DrawViews(bool rescaled)
         lView->Update(mAtomList->ListSize());
     }
 }
+
+void CcModelDoc::EnsureVisible(CcModelAtom* va)
+{
+    attachedLists.Reset();
+    CrModList* lView;
+    while( ( lView = (CrModList*)attachedLists.GetItemAndMove() ) != nil)
+    {
+        lView->EnsureVisible(va);
+    }
+}
+
 
 void CcModelDoc::RemoveView(CrModel * aView)
 {

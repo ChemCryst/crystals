@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.18  2003/08/13 16:01:41  rich
+//   Comment out windows header on Linux ver.
+//
 //   Revision 1.17  2003/05/07 12:18:56  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -148,6 +151,7 @@ class CcModelDoc
         void HighlightView(CrModel* aView);
         void RemoveView(CrModel* aView);
         void DrawViews(bool rescaled = false);
+        void EnsureVisible(CcModelAtom* va);
         void AddModelView(CrModel* aView);
         void AddModelView(CrModList* aView);
         void Clear();

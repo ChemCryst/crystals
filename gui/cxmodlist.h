@@ -27,6 +27,7 @@
 
 class CrModList;
 class CxGrid;
+class CcModelAtom;
 
 class CxModList : public BASEMODLIST
 {
@@ -58,6 +59,7 @@ class CxModList : public BASEMODLIST
         static void RemoveModList( void ) { mModListCount--; };
         int GetValue();
         void Update(int newsize) ;
+        void CxEnsureVisible(CcModelAtom* va);
 
 #ifdef __CR_WIN__
         void RepaintSelectedItems();

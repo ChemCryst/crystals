@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper
 //   Created:   13.08.2002 22:51
 //   $Log: not supported by cvs2svn $
+//   Revision 1.4  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.3  2003/01/14 10:27:18  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -284,6 +290,12 @@ void CrModList::Update(int newsize)
 {
   ((CxModList*)ptr_to_cxObject)->Update(newsize);
 }
+
+void CrModList::EnsureVisible(CcModelAtom* va)
+{
+  ((CxModList*)ptr_to_cxObject)->CxEnsureVisible(va);
+}
+
 
 void CrModList::DocToList()
 {

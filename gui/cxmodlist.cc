@@ -13,6 +13,7 @@
 #include    "cxgrid.h"
 #include    "cxwindow.h"
 #include    "crmodlist.h"
+#include    "ccmodelatom.h"
 #include    "cccontroller.h"
 #include    <math.h>
 
@@ -1140,7 +1141,7 @@ void CxModList::Update(int newsize)
           DeleteAllItems();
           mItems = 0;
           delete [] IDlist;
-		  m_IDlist_size = 0;
+          m_IDlist_size = 0;
           IDlist =  nil;
        }
 
@@ -1222,3 +1223,15 @@ void CxModList::OnMenuSelected(UINT nID)
     ((CrModList*)ptr_to_crObject)->MenuSelected( nID );
 }
 #endif
+
+void CxModList::CxEnsureVisible(CcModelAtom* va)
+{
+//Find atom id in list
+       int id;
+       for ( id = 0; id < mItems; id++ )
+       {
+          if ( IDlist[id] == va->id ) break;
+       }
+       EnsureVisible(id,false); //Call library function to ensure it is shown.
+}
+
