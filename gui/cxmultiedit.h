@@ -33,6 +33,7 @@ class CxMultiEdit : public BASEMULTIEDIT
 {
 	public:
 		void BackALine();
+            void Empty();
             void Spew();
 		void SetFixedWidth(Boolean fixed);
 		void SetItalic(Boolean italic);

@@ -29,7 +29,7 @@ CxMultiEdit * 	CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid *
         theMEdit->Create(ES_LEFT|ES_AUTOHSCROLL|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL|WS_VISIBLE|WS_CHILD|ES_MULTILINE,CRect(0,0,10,10),guiParent,mMultiEditCount++);
 	theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
 	theMEdit->SetFont(CxGrid::mp_font);
-      theMEdit->SetBackgroundColor(false,RGB(255,255,255));
+//      theMEdit->SetBackgroundColor(false,RGB(255,255,255));
 	theMEdit->SetColour(0,0,0);
 #endif
 #ifdef __LINUX__
@@ -71,13 +71,19 @@ void  CxMultiEdit::SetText( CcString cText )
 #ifdef __WINDOWS__
       CClientDC cdc(this);
 	TEXTMETRIC textMetric;
+      CFont * oldFont = cdc.SelectObject(CxGrid::mp_font);
 	cdc.GetTextMetrics(&textMetric);
-      charheight = textMetric.tmHeight + textMetric.tmExternalLeading;
+      charheight = (textMetric.tmHeight + textMetric.tmExternalLeading);
+      cdc.SelectObject(oldFont);
+
+      CSize convert( 10, charheight );
+      cdc.LPtoDP ( & convert );
+      charheight = convert.cy;
 
       ll = GetLineCount();
 #endif
 #ifdef __LINUX__
-      charheight = GetCharHeight();
+      int charheight = GetCharHeight();
 
       ll = GetNumberOfLines();
 #endif
@@ -116,7 +122,7 @@ void  CxMultiEdit::SetText( CcString cText )
 	//Now scroll the text so that the last line is at the bottom of the screen.
 	//i.e. so that the line at lastline-firstvisline is the first visible line.
 #ifdef __WINDOWS__
-      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)((float)GetHeight() / (float)charheight) + 1 );
+      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)( (float)GetHeight() / (float)charheight ) + 5 );
 #endif
 #ifdef __LINUX__
       ShowPosition ( GetLastPosition () );
@@ -401,7 +407,7 @@ void CxMultiEdit::OnLButtonUp( UINT nFlags, CPoint point )
 #ifdef __WINDOWS__
 void CxMultiEdit::OnLButtonDown( UINT nFlags, CPoint point )
 {
-      if( !(mWidget->mDisabled))
+//      if( !(mWidget->mDisabled))
             CRichEditCtrl::OnLButtonDown( nFlags, point );
 }
 #endif
@@ -550,4 +556,10 @@ void CxMultiEdit::SetOriginalSizes()
       mIdealHeight = GetHeight();
       mIdealWidth  = GetWidth();
       return;
+}
+
+void CxMultiEdit::Empty()
+{
+      SetSel( 0, GetWindowTextLength() );
+      Clear();
 }
