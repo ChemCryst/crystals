@@ -91,7 +91,7 @@ BOOL CCrystalsApp::InitInstance()
 
          m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
          CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Location", NULL );
-         _putenv( ("CRYSDIR="+location+"\\").ToCString() );
+         _putenv( ("CRYSDIR="+location).ToCString() );
 
       }
 
