@@ -43,7 +43,8 @@ C ---- creates ClearWin Window for standard I/O
       xpos=0
       ypos=ysize-ywin+1
       handle=create_window(caption,xpos,ypos,xwin,ywin)
-      call set_default_window@(handle)
+CDJW99 call  set_default_window@(handle)
+      I = set_default_window@(handle)
       end
 C
 C----------------------------------------------------------------------C
