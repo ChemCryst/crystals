@@ -13,6 +13,7 @@
 #include "crystalsinterface.h"
 #include "crystals.h"
 #include <string>
+#include <iostream>
 using namespace std;
 
 #include "ccrect.h"
@@ -22,57 +23,45 @@ using namespace std;
 
 #ifdef __CR_WIN__
 
-#ifdef _DEBUG
-//#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+  #ifdef _DEBUG
+    //#define new DEBUG_NEW
+    #undef THIS_FILE
+    static char THIS_FILE[] = __FILE__;
+  #endif
 
-/*
-static struct _test
-{
-  _test()
+  /*
+  static struct _test
   {
-    InitAllocCheck(ACOutput_XML);
+    _test()
+    {
+      InitAllocCheck(ACOutput_XML);
+    }
+  
+    ~_test()
+    {
+      DeInitAllocCheck();
+    }
+  } _myLeakFinder;
+  */
+
+
+  // CCrystalsApp
+  BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
+  END_MESSAGE_MAP()
+
+  // CCrystalsApp construction
+
+  CCrystalsApp::CCrystalsApp()
+  {
   }
 
-  ~_test()
+  // The one and only CCrystalsApp object
+  CCrystalsApp theApplication;
+
+  // CCrystalsApp initialization
+
+  BOOL CCrystalsApp::InitInstance()
   {
-    DeInitAllocCheck();
-  }
-} _myLeakFinder;
-*/
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CCrystalsApp
-BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
-    // Standard file based document commands
-//      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-//      ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-//      ON_MESSAGE(WM_STUFFTOPROCESS, OnStuffToProcess )
-END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CCrystalsApp construction
-
-CCrystalsApp::CCrystalsApp()
-{
-    // TODO: add construction code here,
-    // Place all significant initialization in InitInstance
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CCrystalsApp object
-
-CCrystalsApp theApplication;
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CCrystalsApp initialization
-
-BOOL CCrystalsApp::InitInstance()
-{
     // Standard initialization
     // If you are not using these features and wish to reduce the size
     //  of your final executable, you should remove from the following
@@ -82,13 +71,12 @@ BOOL CCrystalsApp::InitInstance()
 
     CWinApp::InitInstance();
 
-// The user can override the ini file settings by setting
-// CRYSDIR to the crystals directory, and USECRYSDIR to anything.
+  // The user can override the ini file settings by setting
+  // CRYSDIR to the crystals directory, and USECRYSDIR to anything.
 
-      if ( getenv("USECRYSDIR") == nil )
-      {
+    if ( getenv("USECRYSDIR") == nil )
+    {
 
-#ifdef __CR_WIN__
  // Use the registry to fetch keys.
       string location;
       string subkey = "Software\\Chem Cryst\\Crystals\\";
@@ -123,304 +111,238 @@ BOOL CCrystalsApp::InitInstance()
          }
       }
 
-#else
-         char buffer[255];
-         GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
-         string inipath = buffer;
-         inipath += "\\WinCrys.ini";
+      location = location.insert( 0, "CRYSDIR=" );
+      _putenv( location.c_str() );
 
-// First free the string
-// allocated by MFC at
-// CWinApp startup.
-// The string is allocated
-// before InitInstance is
-// called.
-         free((void*)m_pszProfileName);
+    }
 
-// Change the name of the
-// .INI file. The CWinApp destructor
-// will free the memory.
+    string directory = "";
+    string dscfile = "";
 
-         m_pszProfileName=_tcsdup(_T(inipath.c_str()));
-         string location =  (LPCTSTR)GetProfileString ( "Setup", "Crysdir", NULL );
-#endif
-         location = location.insert( 0, "CRYSDIR=" );
-         _putenv( location.c_str() );
+    for ( int i = 1; i < __argc; i++ )
+    {
+       string command = __argv[i];
 
-      }
-
-    // Parse command line for standard shell commands, DDE, file open
-//      CCommandLineInfo cmdInfo;
-//      ParseCommandLine(cmdInfo);
-
-      string directory;
-      string dscfile;
-
-
-      for ( int i = 1; i < __argc; i++ )
-      {
-         string command = __argv[i];
-
-         if ( command == "/d" )
+       if ( command == "/d" )
+       {
+         if ( i + 2 >= __argc )
          {
-           if ( i + 2 >= __argc )
-           {
-             MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
-           }
-           else
-           {
-             string envvar = __argv[i+1];
-             string value  = __argv[i+2];
-             _putenv( (envvar+"="+value).c_str() );
-             i = i + 2;
-           }
+           MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
          }
          else
          {
-//           string command = string (cmdInfo.m_strFileName.GetBuffer(cmdInfo.m_strFileName.GetLength()));
-           string command = __argv[i];
-
-           if ( command.length() > 0 )
-           {
-// we need a directory name. Look for last slash
-             string::size_type iptr;
-             string::size_type ils = -1;
-             for ( iptr = 0; iptr < command.length(); iptr++ )
-             {
-                  if ( command[iptr] == '\\' ) ils = iptr;
-             }
-//Check: is there a directory name?
-             if ( ils > 0 )
-             {
-                  directory = command.substr(0,ils);
-             }
-//Check: is there a dscfilename?
-             if ( ils < command.length()-1 )
-             {
-                  dscfile = command;
-                  dscfile.erase(0,ils+1);
-             }
-           }
-
+           string envvar = __argv[i+1];
+           string value  = __argv[i+2];
+           _putenv( (envvar+"="+value).c_str() );
+           i = i + 2;
          }
-      }
+       }
+       else
+       {
+         string command = __argv[i];
 
-      LoadStandardCursor(IDC_APPSTARTING);
+         if ( command.length() > 0 )
+         {
+// we need a directory name. Look for last slash
+           string::size_type ils = command.find_last_of('\\');
+//Check: is there a directory name?
+           if ( ils != string::npos )
+                directory = command.substr(0,ils);
+//Check: is there a dscfilename?
+           int remain = command.length() - ils - 1;
+           if ( remain > 0 )
+                dscfile = command.substr(ils+1,remain),;
+         }
+       }
+     }
 
-      theControl = new CcController(directory,dscfile);
+     LoadStandardCursor(IDC_APPSTARTING);
+     theControl = new CcController(directory,dscfile);
+     LoadStandardCursor(IDC_ARROW);
+     return true;
+  }
 
-      LoadStandardCursor(IDC_ARROW);
-
-      return true;
-}
-
-
-
-BOOL CCrystalsApp::OnIdle(LONG lCount)
-{
-
+  BOOL CCrystalsApp::OnIdle(LONG lCount)
+  {
     if ( CWinApp::OnIdle(lCount) ) return TRUE; // Allow system processing first.
-
     if ( theControl->DoCommandTransferStuff() ) return TRUE;
-
     return FALSE;
+  }
+ 
+  LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM)
+  {
+    theControl->DoCommandTransferStuff();
+    return 0;
+  }
 
-}
-
-
-LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM)
-{
-  theControl->DoCommandTransferStuff();
-//  LOGSTAT ( "Stuff To Process" );
-  return 0;
-}
-
-
-int CCrystalsApp::ExitInstance()
-{
-
+  int CCrystalsApp::ExitInstance()
+  {
     int exit = theControl->m_ExitCode;
-
     delete theControl;
     delete (CFrameWnd*)m_pMainWnd;
-
     return exit;
-}
+  }
 #endif
 
 #ifdef __BOTHWX__
 
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CCrystalsApp object
+  // The one and only CCrystalsApp object
+  IMPLEMENT_APP(CCrystalsApp)
 
-IMPLEMENT_APP(CCrystalsApp)
+  // On unix calls to putenv must have non-const strings, and
+  // the string's memory must not be freed until later.
+  list<char*> stringlist;
 
-/////////////////////////////////////////////////////////////////////////////
-// CCrystalsApp initialization
-
-BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
+  // CCrystalsApp initialization
+  BEGIN_EVENT_TABLE( CCrystalsApp, wxApp ) 
       EVT_IDLE ( CCrystalsApp::OnIdle )
       EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
-END_EVENT_TABLE()
+  END_EVENT_TABLE()
 
-#include <X11/Xlib.h>
+  #ifdef __LINUX__
+    #include <X11/Xlib.h>
+  #endif
 
-bool CCrystalsApp::OnInit()
-{
+  bool CCrystalsApp::OnInit()
+  {
+    string directory;
+    string dscfile;
 
-//      XInitThreads();
-
-      string directory;
-      string dscfile;
-
-
-      for ( int i = 1; i < argc; i++ )
+    for ( int i = 1; i < argc; i++ )
+    {
+      string command = argv[i];
+      if ( command == "/d" )
       {
-         string command = argv[i];
-
-         if ( command == "/d" )
-         {
-           if ( i + 2 >= argc )
-           {
+        if ( i + 2 >= argc )
+        {
 //             MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
-           }
-           else
-           {
-             string envvar = argv[i+1];
-             string value  = argv[i+2];
-             putenv( (char*) (envvar+"="+value).c_str() );
-             i = i + 2;
-           }
-         }
-         else
-         {
-           string command = argv[i];
-           if ( command.length() > 0 )
-           {
+        }
+        else
+        {
+          string envvar = argv[i+1];
+          envvar += "=";
+          envvar += argv[i+2];
+          char * env = new char[envvar.size()+1];
+          std::strcpy(env, envvar.c_str());
+          stringlist.push_back(env);
+          putenv( env );
+          i = i + 2;
+        }
+      }
+      else
+      {
+        string command = argv[i];
+        if ( command.length() > 0 )
+        {
 // we need a directory name. Look for last slash
-             int iptr;
-             int ils = -1;
-             for ( iptr = 0; iptr < command.length(); iptr++ )
-             {
-                  if ( command[iptr] == '/' ) ils = iptr;
-             }
+          string::size_type ils = command.find_last_of('/');
 //Check: is there a directory name?
-             if ( ils > 0 )
-             {
-                  directory = command.substr(0,ils);
-             }
+          if ( ils != string::npos )
+            directory = command.substr(0,ils);
 //Check: is there a dscfilename?
-             if ( ils < command.length()-1 )
-             {
-                  dscfile = command;
-                  dscfile.erase(0,ils+1);
-             }
-           }
-
-         }
+          int remain = command.length() - ils - 1;
+          if ( remain > 0 )
+            dscfile = command.substr(ils+1,remain);
+        }
       }
 
+      std::cerr << "DSCfile to be opened: " << dscfile << "\n";
+      std::cerr << "Working directory:    " << directory << "\n";
 
+    }
+    theControl = new CcController(directory,dscfile);
+    kickTimer = new wxTimer(this, 5241);
+    kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
+    return true;
+  }
 
-      theControl = new CcController(directory,dscfile);
-
-      kickTimer = new wxTimer(this, 5241);
-      kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
-      return true;
-}
-
-void CCrystalsApp::OnIdle(wxIdleEvent & event)
-{
+  void CCrystalsApp::OnIdle(wxIdleEvent & event)
+  {
     wxApp::OnIdle(event);
     bool sysret = event.MoreRequested();
-
-
     bool appret;
 
     for ( int i=0; i<25; i++ )
-    {
        if ( ! (appret = theControl->DoCommandTransferStuff()) ) break;
-    }
-
 
     //Only stop idle processing if:
     // 1. appret is false (no more interface commands)
     // 2. sysret is false (no more idle processing needed by framework).
-    if((!appret) && (!sysret))
-    {
-        return;
-    }
-    else
-    {
-        event.RequestMore();
-    }
+    if((appret) || (sysret))  event.RequestMore();
     return;
-}
+  }
 
-int CCrystalsApp::OnExit()
-{
-
+  int CCrystalsApp::OnExit()
+  {
     delete theControl;
+    list<char*>::iterator s = stringlist.begin();
+    while ( s != stringlist.end() )
+    {
+        delete *s;
+        s++;
+    }
     return wxApp::OnExit();
-}
+  }
 
-
-void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
-{
+  void CCrystalsApp::OnKickTimer(wxTimerEvent& event)
+  {
         for ( int i=0; i<25; i++ )
-        {
            if ( ! theControl->DoCommandTransferStuff() ) break;
-        }
-}
+  }
 
 #endif
 
+
+
+
+
+
 #ifdef __CR_WIN__
 
-//Remove dependency of new MFC library on OLEACC.DLL, by providing our own 
-//proxy functions, which do nothing if OLEACC.DLL cannot be loaded.
+  // Remove dependency of new MFC library on OLEACC.DLL, by 
+  // providing our own proxy functions, which do nothing if 
+  // OLEACC.DLL cannot be loaded.
 
-
-extern "C" LRESULT _stdcall AccessibleObjectFromWindow(HWND hwnd, DWORD dwId, 
+  extern "C" LRESULT _stdcall AccessibleObjectFromWindow(HWND hwnd, DWORD dwId, 
                                                        REFIID riid, void **ppvObject)
-{
+  {
     COleaccProxy::Init();
     return COleaccProxy::m_pfnAccessibleObjectFromWindow ? 
        COleaccProxy::m_pfnAccessibleObjectFromWindow(hwnd, dwId, riid, ppvObject) : 0;
-}
+  }
 
-extern "C" LRESULT _stdcall CreateStdAccessibleObject(HWND hwnd, LONG idObject, 
+  extern "C" LRESULT _stdcall CreateStdAccessibleObject(HWND hwnd, LONG idObject, 
                                                       REFIID riid, void** ppvObject)
-{
+  {
     COleaccProxy::Init();
     return COleaccProxy::m_pfnCreateStdAccessibleObject ? 
        COleaccProxy::m_pfnCreateStdAccessibleObject(hwnd, idObject, riid, ppvObject) : 0;
-}
+  }
 
-extern "C" LRESULT _stdcall LresultFromObject(REFIID riid, WPARAM wParam, LPUNKNOWN punk)
-{
+  extern "C" LRESULT _stdcall LresultFromObject(REFIID riid, WPARAM wParam, LPUNKNOWN punk)
+  {
     COleaccProxy::Init();
     return COleaccProxy::m_pfnLresultFromObject ? 
        COleaccProxy::m_pfnLresultFromObject(riid, wParam, punk) : 0;
-}
+  }
 
-HMODULE COleaccProxy::m_hModule = NULL;
-BOOL COleaccProxy::m_bFailed = FALSE;
+  HMODULE COleaccProxy::m_hModule = NULL;
+  BOOL COleaccProxy::m_bFailed = FALSE;
 
-pfnAccessibleObjectFromWindow COleaccProxy::m_pfnAccessibleObjectFromWindow = NULL;
-pfnCreateStdAccessibleObject COleaccProxy::m_pfnCreateStdAccessibleObject = NULL;
-pfnLresultFromObject COleaccProxy::m_pfnLresultFromObject = NULL;
+  pfnAccessibleObjectFromWindow COleaccProxy::m_pfnAccessibleObjectFromWindow = NULL;
+  pfnCreateStdAccessibleObject COleaccProxy::m_pfnCreateStdAccessibleObject = NULL;
+  pfnLresultFromObject COleaccProxy::m_pfnLresultFromObject = NULL;
 
-COleaccProxy::COleaccProxy(void)
-{
-}
+  COleaccProxy::COleaccProxy(void)
+  {
+  }
 
-COleaccProxy::~COleaccProxy(void)
-{
-}
+  COleaccProxy::~COleaccProxy(void)
+  {
+  }
 
-void COleaccProxy::Init(void)
-{
+  void COleaccProxy::Init(void)
+  {
     if (!m_hModule && !m_bFailed)
     {
         m_hModule = ::LoadLibrary(_T("oleacc.dll"));
@@ -439,5 +361,5 @@ void COleaccProxy::Init(void)
         m_pfnLresultFromObject = (pfnLresultFromObject)::GetProcAddress(m_hModule, 
                                                           _T("LresultFromObject"));
     }
-}
+  }
 #endif

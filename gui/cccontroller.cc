@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.94  2004/06/29 15:15:29  rich
+// Remove references to unused kTNoMoreToken. Protect against reading
+// an empty list of tokens.
+//
 // Revision 1.93  2004/06/28 13:26:56  rich
 // More Linux fixes, stl updates.
 //
@@ -460,19 +464,22 @@
 
 
 #include    "crystalsinterface.h"
+
 #ifdef __BOTHWX__
-#include <wx/app.h>
+  #include <wx/app.h>
 #endif
+
 #include    <string>
 #include    <vector>
 #include    <iostream>
 #include    <iomanip>
+#include    <cstdlib>
 #include    <sstream>
 #include    <deque>
 #include    <algorithm>
 using namespace std;
-#include    "crconstants.h"
 
+#include    "crconstants.h"
 #include    "crgrid.h"
 #include    "cclock.h"
 #include    "cccontroller.h"
@@ -497,9 +504,6 @@ using namespace std;
 #include    "crresizebar.h"
 #include    "crstretch.h"
 #include    "crlistctrl.h"
-
-
-
 #include    "cxeditbox.h"
 #include    "crmultiedit.h"
 #include    "crtextout.h"
@@ -512,10 +516,6 @@ using namespace std;
 #include    "crtoolbar.h"
 
 
-
-
-
-
 #ifdef __CR_WIN__
   #include <afxwin.h>
   #include <shlobj.h> // For the SHBrowse stuff.
@@ -525,8 +525,6 @@ using namespace std;
 #endif
 
 #ifdef __LINUX__
-  #include <stdio.h>
-  #include <unistd.h>
   #include <errno.h>
   #include <sys/time.h>
   #define F77_STUB_REQUIRED
@@ -557,7 +555,6 @@ using namespace std;
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
-
 #include "fortran.h"
 
 
@@ -574,6 +571,8 @@ static CcLock m_Crystals_Thread_Alive(true);
 static CcLock m_Crystals_Command_Added(false);
 static CcLock m_Complete_Signal(false);
 static CcLock m_wait_for_thread_start(false);
+
+static list<char*> stringlist;
 
 
 #ifdef __BOTHWX__
@@ -627,7 +626,6 @@ CcController::CcController( const string & directory, const string & dscfile )
 #ifdef __CR_WIN__
       mGUIThread = AfxGetThread();
 #endif
-//    mCrystalsCommandQueue.AddNewLines(true); //Make the crystals queue interpret _N as a new line.
 
     if ( directory.length() )
     {
@@ -636,7 +634,7 @@ CcController::CcController( const string & directory, const string & dscfile )
       ChangeDir( dirtemp );
     }
 
- // Setup initial windows
+// Setup initial windows
     CrGUIElement * theElement = nil;
 
 // Must call Tokenize directly when working in this thread. (Not AddInterfaceCommand,
@@ -746,30 +744,35 @@ CcController::CcController( const string & directory, const string & dscfile )
 // If specified on the command line, set the CRDSC environment variable,
 // regardless of whether it is already set...
 
-#ifdef __CR_WIN__
     LOGSTAT ( "Setting CRDSC to " + dscfile + "\n") ;
     if ( dscfile.length() > 1 )
     {
       string dsctemp = "CRDSC=" + dscfile;
-      if ( dsctemp[dsctemp.length()-1] == '""' ) dsctemp = dsctemp.substr(0,dsctemp.length()-1);
+      string::size_type qp = dsctemp.find_last_of('\"');
+      if ( qp != string::npos ) dsctemp.erase(qp,1);
+#ifdef __CR_WIN__
       _putenv( dsctemp.c_str() );
-
+#endif
+#ifdef __BOTHWX__
+      char * env = new char[dsctemp.size()+1];
+      std::strcpy(env, dsctemp.c_str());
+      stringlist.push_back(env);
+      putenv( env );
+#endif
 //For info, put DSC name in the title bar.
       Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + dscfile + "'");
     }
-#endif
 
 
 // If the CRDSC variable is set, leave it's value the same.
 // Otherwise, set it to the default value of CRFILEV2.DSC
-    char enva[6] = "CRDSC";
     char* envv;
 
 #ifdef __CR_WIN__
-    envv = getenv( (LPCTSTR) enva );
+    envv = getenv( (LPCTSTR) "CRDSC" );
 #endif
 #ifdef __BOTHWX__
-    envv = getenv( enva );
+    envv = getenv( "CRDSC" );
 #endif
 
     if ( envv == NULL )
@@ -911,6 +914,14 @@ CcController::~CcController()       //The destructor. Delete all the heap object
       delete (CcController::mp_font);
       delete (CcController::mp_inputfont);
 #endif
+
+    list<char*>::iterator s = stringlist.begin();
+    while ( s != stringlist.end() )
+    {
+        delete *s;
+        s++;
+    }
+
 
 // If the thread isn't dead yet, then kill it.
     if( mCrystalsThread && m_Crystals_Thread_Alive.IsLocked() )
@@ -1272,7 +1283,10 @@ bool CcController::ParseInput( deque<string> & tokenList )
                               _putenv( (LPCTSTR) newdsc.c_str() );
 #endif
 #ifdef __BOTHWX__
-                              putenv( (char *) newdsc.c_str() );
+                             char * env = new char[newdsc.size()+1];
+                             std::strcpy(env, newdsc.c_str());
+                             stringlist.push_back(env);
+                             putenv( env );
 #endif
                         }
                         break;
@@ -2542,6 +2556,7 @@ void CcController::ChangeDir (string newDir)
 #endif
 #ifdef __BOTHWX__
       chdir ( newDir.c_str());
+      std::cerr << "\n\n\nChanged directory to: " << newDir << "\n\n\n";
 #endif
 }
 
