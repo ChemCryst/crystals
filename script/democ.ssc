@@ -1,4 +1,4 @@
-%SCRIPT XCAM
+%SCRIPT XDEMO
 ^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
 %% The first grid splits the main area from the status bar.
 ^^WI GRID SPLIT NROWS=2 NCOLS=1
