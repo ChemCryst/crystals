@@ -7,6 +7,7 @@
 %  VARIABLE CHARACTER CNULL CDLINE
 %%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ^^WI WINDOW XKCCDIN 'Input KccD data' MODAL
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
@@ -30,6 +31,7 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^CO FOCUS E1
 %%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LOOP
 %  VERIFY BTNOK BTNXX BROWSE E1
@@ -86,7 +88,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %%
 %  BLOCK
 %      ON END TERMINATE
-%      ON ERROR REPEAT
+%      ON ERROR TERMINATE
 %      CLEAR
 %      EVALUATE FILENAME = CVALUE
 %      EVALUATE SCFNAME = FILENAME // '.INS'
@@ -98,13 +100,13 @@ Files INITIAL.* will be created in your directory. They may be important.
 %            CLEAR
 %            COPY '#SCRIPT XINBASIC'
 %            IF INBASICS .NE. 1 THEN
-  Basic Cell, Space Group or composition information is missing.
-  This SCRIPT will be abandoned without reading the reflections.
+{E  Basic Cell, Space Group or composition information is missing.
+{E  This SCRIPT will be abandoned without reading the reflections.
 %                  FINISH
 %            END IF
 %            IF LCANCEL .EQ. TRUE THEN
-  Basic Cell, Space Group or composition information is missing.
-  This SCRIPT will be abandoned without reading the reflections.
+{E  Basic Cell, Space Group or composition information is missing.
+{E  This SCRIPT will be abandoned without reading the reflections.
 %                  FINISH
 %            END IF
 %      END BLOCK
@@ -118,8 +120,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 %              IF ( VALUE .EQ. 1 ) THEN
 %                COPY '#SCRIPT XLIST14'
 %              ELSE
-  You will need this information later when you do Fourier maps. Look in
-  International Tables before then.
+{R  You will need this information later when you do Fourier maps. Look in
+{R  International Tables before then.
 %              END IF
 %            END IF
 %%
@@ -170,22 +172,22 @@ Files INITIAL.* will be created in your directory. They may be important.
 %%
 %  MESSAGE USER1 ' Error during reflection processing'
 %  ON ERROR TERMINATE USER1
-            * Removing systematically absent reflections
+{S * Removing systematically absent reflections
 %  COPY '#SYSTEMATIC'
 %  COPY 'END'
 %  CLEAR
-            * Sorting reflections
+{S * Sorting reflections
 %  COPY '#SORT'
 %  COPY 'END'
 %  CLEAR
 %  IF MERGE .EQ. 1 THEN
-            * Merging equivalent reflections
+{S * Merging equivalent reflections
 %      CLEAR
 %      COPY '#MERGE'
 %      COPY 'END'
 %  END IF
 %
-            * Final copy to DSC file
+{S * Final copy to DSC file
 %  COPY '#LIST 6'
 %  COPY 'READ TYPE = COPY'
 %  COPY 'END'
@@ -193,8 +195,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 %  COPY 'END'
 %%
 
-Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be 
-used in refinement. They can be changed at any time later
+{I Give the minimum I/sigma(i) and [sin(theta)/lambda]sq to be 
+{I used in refinement. They can be changed at any time later
 % COPY '#LIST 28'
 % INSERT 'MINIMA RATIO='
 % GET REAL  'I/sigma(I) ' '3.0'
@@ -209,5 +211,5 @@ used in refinement. They can be changed at any time later
 %  END IF
 %%
 %%
- * Done. Kccd data input complete.
+{R * Done. Kccd data input complete.
 %END SCRIPT
