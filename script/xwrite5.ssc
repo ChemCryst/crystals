@@ -346,11 +346,11 @@
 %    COPY 'LOCATE RECORDTYPE = 101'
 %    COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'
 %    IF ( IEXTIN .EQ. 0 ) THEN
+{R Extinction correction turned off - turning off calculation using List 23.
 %      EVALUATE IEXTIN = - 1
 %      COPY 'TRANSFER TO OFFSET = 1 FROM IEXTIN'
 %      COPY 'WRITE OVERWRITE=OVERWRITE'
 %    END IF
-{R Extinction turned off - turning off extinction calculation in List 23.
 %    COPY 'END'
 %  END IF
 %%
@@ -423,7 +423,7 @@
 %    IF OVERRIDE .EQ. TRUE THEN
 {S * CRYSTALS is setting refinement modes for all atoms.
 %    ELSE
-{S * CRYSTALS is setting refinement modes for non-sticky atoms.
+%%{S * CRYSTALS is setting refinement modes for non-sticky atoms.
 %    END IF
 %    IF SETADP .EQ. 1 THEN
 {R   Atomic positions will be refined
