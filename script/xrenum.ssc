@@ -15,20 +15,22 @@
 ^^WI      {
 ^^WI         @ 1,1 STATIC _TFS 'Next serial'
 %% Put Editbox into a grid to stop it stretching.
-^^WI         @ 2,1 GRID NOS NROWS=1 NCOLS=1 ISOLATE
+^^WI         @ 2,1 GRID NOS NROWS=3 NCOLS=1 ISOLATE
 ^^WI         {
-^^WI           @ 1,1 EDITBOX NFS '1' CHARS=6 INTEGER
+^^WI           @ 1,1 EDITBOX NFS '1' CHARS=4 INTEGER
+^^WI           @ 3,1 BUTTON BUNDO '&Undo' DISABLED=YES
 ^^WI         }
 ^^WI         @ 3,1 STRETCH _V VERTICAL
 ^^WI         @ 4,1 GRID OPTNS NROWS=3 NCOLS=1 OUTLINE='Remaining atoms'
+^^WI               ISOLATE
 ^^WI         {
 ^^WI           @ 1,1 RADIOBUTTON RMND 'Delete' STATE=OFF
 ^^WI           @ 2,1 RADIOBUTTON RMNN 'Number sequentially' STATE=OFF
-^^WI           @ 3,1 RADIOBUTTON RMNS 'Leave alone (except clashes)'
+^^WI           @ 3,1 RADIOBUTTON RMNS 'Unchanged except clashes'
 ^^WI                                 STATE=ON
 ^^WI         }
 ^^WI      }
-^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
+^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=120
 ^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV
 ^^WI            MOUSEACTION=HEADERATOM
 ^^WI   }
@@ -56,17 +58,23 @@
 %  VARIABLE INTEGER ICOUNTER INEXTS ISER
 %  VARIABLE REAL RLAST RFIRST
 %  VARIABLE CHARACTER CATOM CLAST CFIRST
+%  VARIABLE LOGICAL LSEND
+%  EVALUATE LSEND = FALSE
 %  EVALUATE ICOUNTER = 0
 %  EVALUATE INEXTS   = - 1
 %  COPY '#EDIT'
 %  CLEAR
 %  INSERT 'MOVE '
+%  EVALUATE LSEND = TRUE
 %  LOOP
 %   ON ERROR TERMINATE
-%   VERIFY BOK BXX ATOM BHELP
+%   VERIFY BOK BXX ATOM BHELP BUNDO
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %    BLOCK      %BOK
+%      IF ( LSEND ) THEN
+%         SEND
+%      END IF
  * Applying new numbering order
 %%
 %%     Add 10N5 to all the moved atoms. Need to find the last moved atom.
@@ -162,6 +170,12 @@
 %      FINISH
 %    END BLOCK
 %    BLOCK      %ATOM
+%      IF ( LSEND ) THEN
+%         SEND
+%      END IF
+%      CLEAR
+%      EVALUATE LSEND = TRUE
+%      INSERT 'CONTINUE '
 %      GET SILENT NOSTORE TEXT ' ' ' '
 ^^CW
 %      EVALUATE CATOM = CVALUE
@@ -172,15 +186,15 @@
 %       TRANSFER 'Skipping to serial ' // CHARACTER ( INEXTS ) TO DISPLAY
 %       STORE INTEGER ( INEXTS - 10 * N5 )
 %       INSERT ' '
+%       SEND
+%       INSERT 'CONTINUE '
 %      END IF
 %      STORE CHARACTER CATOM
-%      SEND
 %      TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CATOM // ' YES' TO DISPLAY
 %      EVALUATE ICOUNTER = ICOUNTER + 1
 %      EVALUATE INEXTS = INEXTS + 1
 %      TRANSFER '^^CO SET NFS TEXT ' // CHARACTER ( INEXTS ) TO DISPLAY
-%      CLEAR
-%      INSERT 'CONTINUE '
+^^CO   SET BUNDO DISABLED=NO
 %    END BLOCK
 %    BLOCK      %HELP
 %      COPY '#SCRIPT XHELP1'
@@ -189,6 +203,15 @@
   click DONE to apply the new numbering scheme, or
   CANCEL to keep the old numbering scheme.
 %      COPY '#SCRIPT XHELP2'
+%    END BLOCK
+%    BLOCK      %BUNDO
+%% Undo last change. Undisable atom.
+%     TRANSFER '^^CO SET MODEL01 DISABLEATOM ' // CATOM // ' NO' TO DISPLAY
+%     EVALUATE ICOUNTER = ICOUNTER - 1
+%     EVALUATE INEXTS = INEXTS - 1
+%     TRANSFER '^^CO SET NFS TEXT ' // CHARACTER ( INEXTS ) TO DISPLAY
+^^CO SET BUNDO DISABLED=YES
+%      EVALUATE LSEND = FALSE
 %    END BLOCK
 %   END CASE
 %  END LOOP
