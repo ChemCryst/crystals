@@ -226,10 +226,10 @@ C -- PRINT THE R VALUE ETC.
         WRITE ( NCWU , '(3I4,F11.3,1X,3(F11.1,1X))' ) 
      1                    (NINT(STORE(MSORT+IXAP)),     IXAP=0,2),
      3 (                        STORE(MSORT+IXAP) ,     IXAP=3,6)
-	    DISAG(1,HK)=STORE(MSORT)
-	    DISAG(2,HK)=STORE(MSORT+1)
-	    DISAG(3,HK)=STORE(MSORT+2)
-            HK = HK + 1
+        DISAG(1,HK)=STORE(MSORT)
+        DISAG(2,HK)=STORE(MSORT+1)
+        DISAG(3,HK)=STORE(MSORT+2)
+        HK = HK + 1
       END DO
 
 
@@ -343,12 +343,12 @@ C Sands' book eqn 4-42.
 c        x=d
         CALL XMLTMM(G,D,TEMP,3,3,1)
 c        temp=mvmul(G,d)
-		CALL VPROD(D,TEMP,MAG)
+        CALL VPROD(D,TEMP,MAG)
 c        mag = dot_product(d,temp)
         mag=sqrt(mag)
         DO I=1,3
            D(I)=D(I)/MAG
-		END DO
+        END DO
 c        d=d/mag
         CALL XMLTMM(G,D,R,3,3,1)
 C        r = mvmul(G,d)
@@ -363,8 +363,8 @@ c        temp=mvmul(GS,r)
 c        mag = dot_product(r,temp)
         mag=sqrt(mag)
         DO I=1,3
-		  R(I)=R(I)/MAG
-		END DO
+            R(I)=R(I)/MAG
+        END DO
 c        r=r/mag
         CALL XMLTMM(GS,R,D,3,3,1)
 c        d = mvmul(GS,r)
@@ -549,16 +549,28 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
             exit
           else
             bc=bc+1
-            jp = maxloc(dcopy)
+#GIL            jp = maxloc(dcopy)
+&GIL            jp(1) = maxpos(dcopy,30)
             dsum = dsum - dcopy(jp(1))
             dcopy(jp(1)) = 0.
             d(jp(1),1)=-d(jp(1),1)
           endif
       enddo
       fom=1000.*fom
-      q=1000*q
+#GIL      q=1000*q
+&GIL      do i=1,15
+&GIL      q(i)=1000*q(i)
+&GIL      end do
       end
 
+&GIL      FUNCTION maxpos(dcopy, n)
+&GIL      DIMENSION dcopy(n)
+&GIL      maxpos = 1
+&GIL      do i = 2,n
+&GIL        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
+&GIL      end do
+&GIL      return
+&GIL      end
 
       subroutine write_results(fom,disag, d,q,bc,m2,ipunch)
 c prints the results to rotax.out
