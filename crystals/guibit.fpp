@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2000/09/19 14:13:16  CKP2
+C find colour table in SCRIPT
+C
 C Revision 1.27  2000/07/19 11:56:56  ckp2
 C RIC: Fixed bug where GUI hangs when structure explodes...
 C      I think.
@@ -873,6 +876,8 @@ C Read the properties file and extract cov, vdw and colour.
                   READ(WCLINE(13:16),'(F4.2)') COV
                   CLOSE(NCARU)
 C Now get the colour definition for this colour from colour.cmn
+##GILLIN                  CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
+&&GILLIN                  CFILEN = 'CRYSDIR:script/colour.cmn'
                   CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
