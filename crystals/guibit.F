@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2002/10/14 12:33:24  rich
+C Support for DVF command line version.
+C
 C Revision 1.48  2002/10/02 13:39:17  rich
 C Work out Uequiv - pass info to GUI.
 C
@@ -1097,17 +1100,17 @@ c               CALL XPRVDU(NCVDU, 2,0)
                CALL XCTRIM( CMON(1), LTMN )
 
                IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
-#DVF                 CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+#DVF             CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
 #DVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
 #DVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
 #DVF     1             KR,KG,KB,NINT(GSCALE*0.25),ISTORE(M41B+12),
 #DVF     1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
                ELSE                       !Bond across symm op.
-#DVF                 CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+#DVF             CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
 #DVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
 #DVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
 #DVF     1             KR,KG,KB,NINT(GSCALE*0.25),-ISTORE(M41B+12),
-#DVF     1             2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
+#DVF     1           2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
                END IF
              END DO
 
@@ -1180,7 +1183,7 @@ c     1                            CLAB2(1:LLAB2),'''',
 c     1                  ' ''et al. Aromatic Ring'' ', 101
 c               CALL XPRVDU(NCVDU, 2,0)
 
-#DVF               CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+#DVF           CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
 #DVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
 #DVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
 #DVF     1             0,0,0,NINT(GSCALE*0.25),101,
