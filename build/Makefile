@@ -32,4 +32,17 @@ tidy :
 	$(MAKE) -f Makefile.bits tidy
 	$(MAKE) -f Makefile.manual tidy
 
+dist : crysexe data scripts bits documentation
+	$(MAKE) -f Makefile.script tidy
+	$(MAKE) -f Makefile.data tidy
+	$(MAKE) -f Makefile.crystals tidy
+	$(MAKE) -f Makefile.bits tidy
+	$(MAKE) -f Makefile.manual tidy
+	-rm -f crystals.pst cameron.pst
+	mkdir ../installer
+	cd ../installer
+	@echo "Running the setup compiler... (Inno Setup)"
+	/c/progra~1/innose~1/iscc.exe ../bin/crystals.iss
+	@echo "Setup compiler finished. Output .exe is in ../installer"
+	
 
