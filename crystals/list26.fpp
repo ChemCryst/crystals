@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2003/02/26 12:13:27  rich
+C Removed some writes to the monitor file, as part of an
+C ongoing (quite boring) project.
+C
 C Revision 1.9  2002/12/05 11:51:51  rich
 C Things look better without the debugging messages.
 C
@@ -372,6 +376,7 @@ C
       ENDIF
 1700  FORMAT(/5X,2(7X,4HAtom,2X,A1,4X,15HS(I) L TX TY TZ),3X,2A4,A1,
      2 2A1,2X,5HDelta)
+      GOTO 2500
 C
 C
 C--'ENERGY ' RESTRAINTS
