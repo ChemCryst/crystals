@@ -562,7 +562,8 @@ C
 C 
 C----- SET THE DEFAULT TEMPERATURE FACTOR OR MULTIPLIER
       UFACT=1.2
-      JACT=1
+cdjwjan01 -make default 'both'
+      JACT=2
       JNEXT=INEXT(1)
       JT=12
       BMAX=D13
