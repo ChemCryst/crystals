@@ -71,7 +71,7 @@ Reflection::Reflection(char* pString)
     char tempString[10];
     
     tHKL = new Matrix<short>(1, 3);
-    if (!containsOnly(pString, " 0123456789.-+\n"))
+    if (!containsOnly(pString, " 0123456789.-+\n\r"))
     {
         throw MyException(kBadlyFormatedStringN, kBadlyFormatedString);
     }
