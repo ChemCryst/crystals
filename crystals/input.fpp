@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2001/10/09 10:34:39  ckp2
+C Punch 41 for Simon's project.
+C
 C Revision 1.8  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -72,7 +75,7 @@ C--CHECK IF THIS IS A LIST OPERATION
 C--NOT A LIST OPERATION  -  BRANCH ON ITS TYPE
 1210  CONTINUE
       GOTO (1220, 1230, 1240, 1245, 4000, 4400, 4500,
-     1 4600, 1215), NUM
+     1 4600, 4700, 1215), NUM
 
 1215  CONTINUE
       GOTO 9920
@@ -202,6 +205,11 @@ C----- COMPOSITION
 4600  CONTINUE
 C----- FINDFRAG
       CALL XFINDR
+      RETURN
+
+4700  CONTINUE
+C----- MATRIX ARITHMETIC
+      CALL SMATRX
       RETURN
 
 C--LIST PRINT ROUTINE
