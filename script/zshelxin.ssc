@@ -18,10 +18,11 @@
 %%
 % VARIABLE INTEGER ATOMCOUNT EXPECTED EXPECTALL
 %% call a script to get the expected number of atoms into EXPECTED
-% copy '#script getexp'
 % IF ( SXGETALL ) THEN
-%   EVALUATE EXPECTED = EXPECTALL
+%% get all the atoms:
+%   EVALUATE EXPECTED = - 1 
 % ELSE
+%   copy '#script getexp'
 %   CLEAR
 %   EVALUATE EXPECTED = INTEGER ( REAL ( EXPECTED ) * 1.1 )
 %   insert "% GET INTEGER 'How many atoms do you want to keep' '"
@@ -141,10 +142,12 @@
 %%     TRANSFER 'Found ' // CLINE TO DISPLAY
 %     COPY '#SCRIPT SXATOMRD'
 %   END IF
-%   IF ATOMCOUNT .GE. EXPECTED THEN
+%   IF EXPECTED .GE. 1 THEN
+%      IF ATOMCOUNT .GE. EXPECTED THEN
 %% force end
 %            GET NOSTORE NOPROMPT TEXT NULLSTRING ' '
 %            EVALUATE LOOPEND = LOOPCOUNTER
+%      END IF
 %   END IF
 % END LOOP
 % IF LFIRST .EQ. FALSE THEN
