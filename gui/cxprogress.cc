@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2001/06/18 12:55:46  richard
+//   The wxGauge class can't have child windows inserted. For now removed text appearing
+//   on progress bar in wx versions. Long term will parent both controls in a standard
+//   wxWindow.
+//
 //   Revision 1.8  2001/06/17 14:33:30  richard
 //   CxDestroyWindow function. wx support.
 //
@@ -121,6 +126,9 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
     {
         m_TextOverlay->SetSize( GetRect() ) ;
     }
+#endif
+#ifdef __LINUX__
+    SetSize(left,top,right-left,bottom-top);
 #endif
 }
 
