@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  1999/10/07 14:34:53  ckp2
+C djw MORE sir97 bits!
+C
 C Revision 1.18  1999/10/06 14:30:59  ckp2
 C djw pdates to SIR97 difficult jobs
 C
@@ -72,7 +75,7 @@ C
       ITYPE = ISTORE(ICOMBF + 1)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                5:SIR88, 6:SIR92, 7:SIR97
+C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON
       CALL XLNK (ISTORE(ICOMBF), ITYPE)
 C
 C
@@ -98,7 +101,7 @@ C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
 C-     ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                 5:SIR88,  6:SIR92,   7:SIR97
+C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON
 C      IEFORT SELECTS POWER SETTING OF FOREIGN CALL
 C           FOR SHELXS86     IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
@@ -108,7 +111,7 @@ C
 C           FOR SIR**        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
 C
-      PARAMETER (NLINK=7, NLIST=7)
+      PARAMETER (NLINK=8, NLIST=7)
 C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
       DIMENSION LISTS(NLIST, NLINK)
 C
@@ -146,7 +149,7 @@ C
 \QSTORE
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-             5:SIR88,  6:SIR92,   7:SIR97
+C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,
@@ -154,7 +157,8 @@ C- POINTER TO LIST
      4            1, 2, 3, 0, 6, 13, 29,
      5            1, 2, 3, 0, 6, 13, 29,
      6            1, 2, 3, 0, 6, 13, 29,
-     7            1, 2, 3, 0, 6, 13, 29/
+     7            1, 2, 3, 0, 6, 13, 29,
+     8            1, 2, 3, 5, 6, 13, 29/
 C
 C
       IF ((ILINK .LE. 0) .OR. (ILINK .GT. NLINK)) GOTO 9100
@@ -216,8 +220,8 @@ C----- OPEN THE OUTPUT DEVICES
 &PPC      CALL stcrys
 C
 C
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97
-      GOTO (1600, 1700, 1800, 2000, 1900, 1900, 1900), ILINK
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON
+      GOTO (1600, 1700, 1800, 2000, 1900, 1900, 1900, 1860), ILINK
 C
 1600  CONTINUE
 C
@@ -396,7 +400,7 @@ C
 C----- JUST WRITING ATOMS - SAVE AND RESTORE IO UNITS
         J = NCPU
         NCPU = NCFPU1
-        CALL XPCH5C
+        CALL XPCH5C(0)
         NCPU = J
         GOTO 1850
       ENDIF
@@ -440,6 +444,98 @@ CDJWMAR99]
 1850  CONTINUE
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
+      GOTO 8000
+
+1860  CONTINUE
+C     LINK TO WRITE OUTPUT FOR PLATON ---------------------
+C
+C  NCFPU1 will be a SHELX format RES file with atoms.
+C  NCFPU2 will be a SHELX HKLF-4 reflection file.
+C
+C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
+      WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
+      WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
+     1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
+C----- FIND LATTICE TYPE
+      LATTYP = ((2*IC) -1) * IL
+      WRITE (NCFPU1,'( ''LATT '', I3)') LATTYP
+      DO I = L2,M2,MD2
+            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH)
+C--DO NOT PRINT UNIT MATRIX.
+            IF ( OPERAT(1:LENGTH) .NE. 'X,Y,Z') THEN
+               CALL XCONOP (OPERAT, LENGTH, DECML, LDEC)
+               WRITE(NCFPU1,'(''SYMM  '', A)') DECML(1:LDEC)
+            END IF
+      END DO
+C---- GET MULTIPLICITY
+      F = T2
+      IF ( N29 .LE. 0 ) THEN
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1830 )
+        WRITE ( NCAWU , 1830 )
+        WRITE ( CMON, 1830 )
+        CALL XPRVDU(NCVDU, 1,0)
+        GOTO 9900
+      ELSE
+C----- WRITE SFAC CARDS
+        M29 = L29 + (N29-1)*MD29
+        M3 = L3 + (N3-1)*MD3
+        DO J = L29, M29, MD29
+          DO K = L3, M3, MD3
+           IF (ISTORE(J) .EQ. ISTORE(K)) GOTO 1861
+          END DO
+        IF (ISSPRT .EQ. 0) WRITE(NCAWU,1833) ISTORE(J)
+        WRITE(NCAWU,1833) ISTORE(J)
+        WRITE ( CMON, 1833) ISTORE(J)
+        CALL XPRVDU(NCVDU, 1,0)
+        GOTO 9900
+1861    CONTINUE
+        WRITE ( NCFPU1 , 1837 ) ISTORE(J), (STORE(M), M=K+3, K+11),
+     1  STORE(K+1), STORE(K+2), STORE(J+5), STORE(J+1), STORE(J+6)
+       END DO
+
+C----- UNIT CARDS
+        WRITE (NCFPU1, ' (''UNIT '', 15F5.0)')
+     1  (F*STORE(J+4), J = L29, M29, MD29)
+      ENDIF
+
+C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
+        J = NCPU
+        NCPU = NCFPU1
+        CALL XPCH5C(1)
+        NCPU = J
+C----- END OF DATA - WRITE A BLANK LINE
+      WRITE (NCFPU1,'(/)')
+
+C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
+      IN = L6DTL + MD6DTL * 3
+      IF (STORE(IN+3) .LE. ZERO) THEN
+      SCALE = 1.0
+      ELSE
+      SCALE = 99999.0 / STORE(IN+1)**2
+      ENDIF
+C
+C      WRITE(NCFPU1, '(''HKLF  -4'' )')
+
+C----- LOOP OVER DATA
+      IN = 0
+1862  CONTINUE
+      ISTAT = KLDRNR (IN)
+      IF (ISTAT .LT. 0) GOTO 1863
+      I = NINT(STORE(M6))
+      J = NINT(STORE(M6+1))
+      K = NINT(STORE(M6+2))
+CDJWMAR99[
+      CALL XSQRF(FS, STORE(M6+3), FABS, S, STORE(M6+12))
+      FS = FS * SCALE
+      S = S * SCALE
+      IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
+     1 S = ABS(FS) / STORE(M6+20)
+CDJWMAR99]
+      WRITE(NCFPU2, '(3I4, 2F8.1)') I, J, K, FS, S
+      GOTO 1862
+1863  CONTINUE
+C----- END OF DATA - WRITE A BLANK LINE
+      WRITE (NCFPU2,'(/)')
       GOTO 8000
 C
 1900  CONTINUE
@@ -954,6 +1050,28 @@ cdjw1999
      7 A,'  random'/
      8 A,'%fourier'/
      9   '>  recycle  n')
+1942  FORMAT('>  rhomax 0.33'/
+     1 '%normal'/
+     2 '  pseudo'/
+     3 '>  bfac 4.'/
+     4 '%seminv'/
+     5 '%invariant'/
+     6 '%phase'/
+     7 '  symbols 12'/
+     8 '%fourier'/
+     9 '>  recycle  n')
+1943  FORMAT('>  rhomax 0.33'/
+     1 '%normal'/
+     2 '  pseudo'/
+     3 '>  bfac 4.'/
+     4 '%seminv'/
+     5 '%invariant'/
+     6 '%phase'/
+     7 '  random'/
+     8 '  maxtrials 2000'/
+     8 '  seed 8823'/
+     8 '%fourier'/
+     9 '>  recycle  n')
             CARROW = '>'
        IF (ILINK .EQ. 6) THEN
        IF (IEFORT .EQ. 1) THEN
@@ -962,6 +1080,10 @@ cdjw1999
       ELSE IF (IEFORT .EQ. 2) then 
        WRITE(NCFPU1, 1941) ' ', ' ',' ',
      1 ' ',' ',' ',' '
+      ELSE IF (IEFORT .EQ. 5) THEN
+       WRITE(NCFPU1, 1942)
+      ELSE IF (IEFORT .EQ. 6) THEN
+       WRITE(NCFPU1, 1943)
       ENDIF
        ELSE IF (ILINK .EQ. 7) THEN
        WRITE(NCFPU1, 1941) ' ', CARROW,' ',
@@ -1017,7 +1139,7 @@ C
 C----- TIDY UP
 C
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIRxx
-      GOTO ( 8010, 8020, 8030, 9000, 8030, 8030, 8030), ILINK
+      GOTO ( 8010, 8020, 8030, 9000, 8030, 8030, 8030, 8040), ILINK
       GOTO 9100
 C
 8010  CONTINUE
@@ -1068,6 +1190,12 @@ C - Could move these to ZCAMER.
 C----- ENSURE THE UNITS ARE CLOSED
       I = KFLCLS(NCFPU1)
       GOTO 9000
+
+8040  CONTINUE
+C----- ENSURE THE UNITS ARE CLOSED
+      I = KFLCLS(NCFPU1)
+      I = KFLCLS(NCFPU2)
+      GOTO 9000
 C
 9000  CONTINUE
       RETURN
@@ -1106,7 +1234,7 @@ C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
       CHARACTER *32 CPATH
-      PARAMETER (NFILE = 8)
+      PARAMETER (NFILE = 10)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -1119,8 +1247,9 @@ C
       DATA CFILE / 'SNOOPI.INI' ,  'SNOOPI.L5' ,
      1             'SHELXS.INS' ,  'SIRDATA.DAT',
      2             'CAMERON.INI' ,  'CAMERON.L5I',
-     3             'SIR92.INI', 'SIR97.INI' /
-      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9 /
+     3             'SIR92.INI', 'SIR97.INI',
+     4             'PLATON.RES','PLATON.HKL' /
+      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9, 10, 10 /
 C
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
@@ -1130,11 +1259,11 @@ C
       KLOOP = 1
       KLNKIO = -1
       LPATH  = KPATH( CPATH)
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON
 C
 C----- OPEN THE FIRST FILE
       JFILE = 1
-      GOTO ( 110, 120, 130, 140, 150, 160, 170 ), ILINK
+      GOTO ( 110, 120, 130, 140, 150, 160, 170, 180 ), ILINK
 C
 110   CONTINUE
       IFILE = 1
@@ -1158,6 +1287,10 @@ C
       GOTO 1000
 170   CONTINUE
       IFILE=8
+      GOTO 1000
+180   CONTINUE
+      IFILE=9
+      KLOOP = 2
       GOTO 1000
 C
 C
