@@ -1,0 +1,31 @@
+%SCRIPT XMODELBACK
+%  VARIABLE CHARACTER CFILE
+%% Get the name of a new BITMAP from the user for the model window background.
+
+{I This is an experimental feature, for showing off purposes only.
+{I Use small bitmaps for faster speed (better to have none at all).
+{I To remove background use the Appearance->Model->No Wallpaper menu
+{I option, or in an emergency delete the line
+{R MODEL01 xxxx.bmp
+{I from the file \wincrys\script\winsizes.ini
+
+{I Only 24-bit bitmaps can be used as backgrounds for the model window
+{I Ensure that your bitmap has 16 million colours.
+
+^^CO SYSOPENFILE '*.bmp' 'DIB (24-bit bitmap)'
+%    CLEAR
+%    GET SILENT TEXT 'New filename:'
+%    IF CVALUE .NE. 'CANCEL' THEN
+%      EVALUATE CFILE = CVALUE
+%%
+%% Some checks
+%%
+%      IF ( FILEEXISTS ( CFILE ) .EQ. FALSE ) THEN
+
+{E Error: Bitmap file does not exist.
+
+%         FINISH
+%      END IF
+%      TRANSFER '^^CO SET MODEL01 LOADBITMAP=' // CFILE TO DISPLAY
+%    END IF
+%END SCRIPT
