@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  1999/06/13 16:18:23  dosuser
+C RIC: Centre the molecule on 0,0,0 as it is updated.
+C
 C Revision 1.12  1999/06/01 13:00:05  dosuser
 C RIC: Added commented out debugging code for checking which bonds
 C have been found.
@@ -906,45 +909,43 @@ C
              ENDIF
 
 
-
-             TENSOR(1,1) = STORE(J+IOFF+3)
-             TENSOR(2,2) = STORE(J+IOFF+4)
-             TENSOR(3,3) = STORE(J+IOFF+5)
-             TENSOR(2,3) = STORE(J+IOFF+6)
-             TENSOR(1,3) = STORE(J+IOFF+7)
-             TENSOR(1,2) = STORE(J+IOFF+8)
-             TENSOR(3,2) = TENSOR(2,3)
-             TENSOR(3,1) = TENSOR(1,3)
-             TENSOR(2,1) = TENSOR(1,2)
+&SOO             TENSOR(1,1) = STORE(J+IOFF+3)
+&SOO             TENSOR(2,2) = STORE(J+IOFF+4)
+&SOO             TENSOR(3,3) = STORE(J+IOFF+5)
+&SOO             TENSOR(2,3) = STORE(J+IOFF+6)
+&SOO             TENSOR(1,3) = STORE(J+IOFF+7)
+&SOO             TENSOR(1,2) = STORE(J+IOFF+8)
+&SOO             TENSOR(3,2) = TENSOR(2,3)
+&SOO             TENSOR(3,1) = TENSOR(1,3)
+&SOO             TENSOR(2,1) = TENSOR(1,2)
 
 C             WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
 C             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
                      
-             CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
-
-             CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
+&SOO             CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
+&SOO             CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
 C We now have an orthogonal tensor in TENSOR(3,3).
 
 C             WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
-##DVFLIN             CALL ZEIGEN(TENSOR,ROTN)
+&SOO##DVFLIN             CALL ZEIGEN(TENSOR,ROTN)
 
 C Filter out tiny axes
-             TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
-             TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
-             TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
-             TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
-             TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
-             TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
+&SOO             TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
+&SOO             TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
+&SOO             TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
+&SOO             TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
+&SOO             TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
+&SOO             TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
 
-             DO KI=1,3
-              DO KJ=1,3
-               AXES(KI,KJ) =   ROTN(KJ,KI)
-     1                       * SQRT(ABS(TENSOR(KJ,KJ)))
-     2                       * GSCALE
-     3                       * 1.5
-              END DO
-             END DO
+&SOO             DO KI=1,3
+&SOO              DO KJ=1,3
+&SOO               AXES(KI,KJ) =   ROTN(KJ,KI)
+&SOO     1                       * SQRT(ABS(TENSOR(KJ,KJ)))
+&SOO     2                       * GSCALE
+&SOO     3                       * 1.5
+&SOO              END DO
+&SOO             END DO
 
 C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 
@@ -964,7 +965,9 @@ C           WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
      1       '^^GR',
      2       NINT(VDW*GSCALE),1,
      1       '^^GR',
-     3       ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
+&SOO     3       ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
+#SOO     3       0,0,0, 0,0,0, 0,0,0
+
              CALL XPRVDU(NCVDU, 4,0)
 C       WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
 C
