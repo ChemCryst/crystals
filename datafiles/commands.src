@@ -1600,16 +1600,16 @@ INFORMATION ABOUT THE SHIFT FACTORS TO BE USED DURING SFLS
     .TYPE               0    0    0    0    0 1.0
     .SERIAL             0    0    0    0    0 1.0
     .OCC                0    0    1    0    0 1.0
-    .U[ISO]             0    0    1    0    0 1.0
+    .U[ISO]             0    0    1    0    0 0.05
     .X                  0    0    1    0    0 1.0
     .Y                  0    0    1    0    0 1.0
     .Z                  0    0    1    0    0 1.0
-    .U[11]              0    0    1    0    0 1.0
-    .U[22]              0    0    1    0    0 1.0
-    .U[33]              0    0    1    0    0 1.0
-    .U[23]              0    0    1    0    0 1.0
-    .U[13]              0    0    1    0    0 1.0
-    .U[12]              0    0    1    0    0 1.0
+    .U[11]              0    0    1    0    0 0.05
+    .U[22]              0    0    1    0    0 0.05
+    .U[33]              0    0    1    0    0 0.05
+    .U[23]              0    0    1    0    0 0.05
+    .U[13]              0    0    1    0    0 0.05
+    .U[12]              0    0    1    0    0 0.05
     .SPISO              0    0    1    0    0 1.0
     .SPSIZE             0    0    1    0    0 1.0
     .LINISO             0    0    1    0    0 1.0
@@ -1620,8 +1620,8 @@ INFORMATION ABOUT THE SHIFT FACTORS TO BE USED DURING SFLS
     .RINGSIZ            0    0    1    0    0 1.0
     .RINGDEC            0    0    1    0    0 1.0
     .RINGAZI            0    0    1    0    0 1.0
-  -6.MAXIMUM           13    0    0    0   13   10  102    5   33
-  -6.FORCE             13    0    0    0   13   10  102    5   33
+  -6.MAXIMUM           25    0    0    0   25   10  102    5   33
+  -6.FORCE             25    0    0    0   25   10  102    5   33
    9.TYPEOFSHIFT       25    0    0    0   25   10  103    9   33
          1    1    1    1    1    1    0    0    0    0
 INFORMATION ABOUT THE TYPE OF SHIFT FACTOR TO COMPUTE AND USE DURING SFLS
@@ -1633,17 +1633,17 @@ INFORMATION ABOUT THE TYPE OF SHIFT FACTOR TO COMPUTE AND USE DURING SFLS
     .OVERALL            0    0    1    0    0        -1
     .TYPE               0    0    0    0    0        -1
     .SERIAL             0    0    0    0    0        -1
-    .OCC                0    0    1    0    0        -1
-    .U[ISO]             0    0    1    0    0        -1
-    .X                  0    0    1    0    0        -1
-    .Y                  0    0    1    0    0        -1
-    .Z                  0    0    1    0    0        -1
-    .U[11]              0    0    1    0    0        -1
-    .U[22]              0    0    1    0    0        -1
-    .U[33]              0    0    1    0    0        -1
-    .U[23]              0    0    1    0    0        -1
-    .U[13]              0    0    1    0    0        -1
-    .U[12]              0    0    1    0    0        -1
+    .OCC                0    0    1    0    0         0
+    .U[ISO]             0    0    1    0    0         0 
+    .X                  0    0    1    0    0         0
+    .Y                  0    0    1    0    0         0
+    .Z                  0    0    1    0    0         0
+    .U[11]              0    0    1    0    0         0
+    .U[22]              0    0    1    0    0         0
+    .U[33]              0    0    1    0    0         0 
+    .U[23]              0    0    1    0    0         0
+    .U[13]              0    0    1    0    0         0
+    .U[12]              0    0    1    0    0         0
     .SPISO              0    0    1    0    0        -1
     .SPSIZE             0    0    1    0    0        -1
     .LINISO             0    0    1    0    0        -1
