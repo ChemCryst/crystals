@@ -5,6 +5,12 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2003/05/07 12:18:58  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.9  2003/01/14 10:27:19  rich
 //   Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -113,6 +119,7 @@ CxToolBar::CxToolBar( CrToolBar * container )
 #endif
 #ifdef __BOTHWX__
     m_ToolBar = new mywxToolBar();
+    m_totWidth = 5;
 #endif
     m_ImageIndex = 0;
 }
@@ -140,7 +147,7 @@ Destroy();
 #endif
 }
 
-void    CxToolBar::AddTool( CcTool* newTool )
+bool    CxToolBar::AddTool( CcTool* newTool )
 {
 // Check if this is a separator.
 
@@ -158,9 +165,10 @@ void    CxToolBar::AddTool( CcTool* newTool )
 #endif
 #ifdef __BOTHWX__
     m_ToolBar->AddSeparator();
-#endif
+    m_totWidth += 8;
+#endif                    
     newTool->CxID = 0;
-    return;
+    return true;
   }
 
 //Find bitmap and add to list
@@ -189,6 +197,12 @@ void    CxToolBar::AddTool( CcTool* newTool )
       m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.ToCString());
       m_ToolBar->Realize();
       m_ImageIndex++;
+      m_totWidth += 23;
+    }
+    else
+    {
+       //Something wrong
+       return false;
     }
 #endif
   }
@@ -202,7 +216,7 @@ void    CxToolBar::AddTool( CcTool* newTool )
     if ( crysdir.Length() == 0 )
     {
       std::cerr << "You must set CRYSDIR before running crystals.\n";
-      return;
+      return false;
     }
     int nEnv = (CcController::theController)->EnvVarCount( crysdir );
     int i = 0;
@@ -226,11 +240,12 @@ void    CxToolBar::AddTool( CcTool* newTool )
         m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.ToCString(), "" );
         m_ToolBar->Realize();
         m_ImageIndex++;
+        m_totWidth += 23;
       }
       else if ( i >= nEnv )
       {
         LOGERR ( "Bitmap not found " + newTool->tImage );
-        return;
+        return false;
       }
     }
 #endif
@@ -243,7 +258,7 @@ void    CxToolBar::AddTool( CcTool* newTool )
       else if ( i >= nEnv )
       {
         LOGERR ( "Bitmap not found " + newTool->tImage );
-        return;
+        return false;
       }
     }
     abitmap->Attach( hBmp );
@@ -260,6 +275,7 @@ void    CxToolBar::AddTool( CcTool* newTool )
     else
     {
        LOGERR ("Bitmap, "+newTool->tImage+" is wrong height or width, must be 16 wide and 15 high.");
+       return false;
     }
     delete abitmap;
 #endif
@@ -290,6 +306,8 @@ void    CxToolBar::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
       m_ToolBar->SetSize(0,0,right-left,bottom-top);
+ LOGSTAT ("CxToolbar: Setting width: " + CcString(right-left) );
+
 #endif
 
 }
@@ -309,7 +327,9 @@ int CxToolBar::GetIdealWidth()
 //   LOGSTAT ( "Toolsize = " + CcString ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
 //   LOGSTAT ( "Toolsep = " + CcString ( m_ToolBar->GetToolSeparation() ) );
 //   LOGSTAT ( "m_ImageIndex = " + CcString ( m_ImageIndex ) );
-   return (( 18 + m_ToolBar->GetToolSeparation() ) * m_ImageIndex ) ;
+//   return (( 18 + 5 ) * m_ImageIndex ) ;
+   LOGSTAT ("CxToolbar: Returning ideal width: " + CcString(m_totWidth) );
+   return ( m_totWidth ) ;
 #endif
 }
 

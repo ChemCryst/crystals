@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:50
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2002/07/08 11:37:36  richard
+//   Remove text from toolbars to save screen space, instead added "tooltips"
+//   to say what each button does.
+//
 //   Revision 1.4  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
 //   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -63,7 +67,7 @@ class CxToolBar : public BASETOOLBAR
      static CxToolBar *  CreateCxToolBar( CrToolBar * container, CxGrid * guiParent);
      CxToolBar( CrToolBar * container );
      ~CxToolBar();
-     void    AddTool( CcTool* newTool );
+     bool    AddTool( CcTool* newTool );
      void    SetGeometry( int top, int left, int bottom, int right );
      int GetTop();
      int GetLeft();
@@ -96,6 +100,7 @@ class CxToolBar : public BASETOOLBAR
      mywxToolBar * m_ToolBar;
      void OnChar(wxKeyEvent & event );
      void OnToolSelected(wxCommandEvent & event);
+     int m_totWidth;
      DECLARE_EVENT_TABLE()
 #endif
 
