@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/02/12 12:55:38  Administrator
+C Allow filtering of reflections in SFLS/CALC
+C
 C Revision 1.13  2002/02/01 14:41:29  Administrator
 C Enable CALC to get additional R factors and display them in SUMMARY
 C
@@ -1604,11 +1607,11 @@ C.X       .Y       .Z       .U[11]   .U[22]   .U[33]
 C.U[23]   .U[13]   .U[12]   .SPISO   .SPSIZE  .LINISO  
 C.LINSIZE .LINDEC  .LINAZI  .RINGISO .RINGSIZ .RINGDEC 
 C.RINGAZI 
-C----- FRACTIONAL
+C----- EVERYTHING FRACTIONAL
       N=MD33ST*N33ST
       M=-1
       CALL XMVSPD(M, ISTORE(L33ST),N)
-C----- MAXIMAL
+C----- NOW A FEW MAXIMAL
       M=0
       CALL XMVSPD(M, ISTORE(L33ST+4),11)
 C--SET THE FLAGS FOR THE SHIFT VALUES RECORD
@@ -1630,7 +1633,7 @@ C----- UNITY FOR FRACTIONAL
       CALL XMVSPF(A,STORE(L33SV),N)
 C----- CONVENTIONAL UNITS FOR MAXIMAL
       STORE(L33SV+4)=1.
-      STORE(L33SV+5)=0.5
+      STORE(L33SV+5)=0.05
       CALL XMVSPF(1.,STORE(L33SV+6),3)
       CALL XMVSPF(.05,STORE(L33SV+9),6)
 C

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2001/02/26 10:36:09  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XSPECM
       SUBROUTINE XSPECM
@@ -66,6 +69,8 @@ C----- CHECK IF LIST 23 IS TO BE CHECKED
      1 G10.5, ' Angstrom')
 C
       IF (IACTN .EQ. 3) THEN
+cdjw0202
+      goto 9999
 C----- WE MUST TRY FOR CONSTRAINTS
 C----- SEND 'LIST22' TO SYSTEM REQUEST QUEUE - THIS WILL ACTION CONSTRAI
           WRITE (CLINE,885) IH, 'LIST 22 '
