@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.6  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -41,15 +44,18 @@
 #define bS4     "L6"
 #define bS5     "IN"
 #define bS6     "QS"
-#define bS7
-#define bS8
-#define bS9
-#define bS10
-#define bS11
-#define bS12
-#define bS13
-#define bS14
-#define bS15
+/*
+ #define bS7
+ #define bS8
+ #define bS9
+ #define bS10
+ #define bS11
+ #define bS12
+ #define bS13
+ #define bS14
+ #define bS15
+*/
+
 //Reserved for interface.
 #define bS16    "SEL0"
 #define bS17    "SEL1"
@@ -60,13 +66,15 @@
 #define bS22    "BN"
 #define bS23    "BS"
 #define bS24    "BA"
-#define bS25
-#define bS26
-#define bS27
-#define bS28
-#define bS29
-#define bS30
-#define bS31
+/*
+ #define bS25
+ #define bS26
+ #define bS27
+ #define bS28
+ #define bS29
+ #define bS30
+ #define bS31
+*/
 
 
 #define BOND_NORM 1

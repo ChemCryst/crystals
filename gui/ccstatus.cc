@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   26.2.1998 9:36 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.10  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -154,6 +157,7 @@ int CcStatus::CreateFlag(const string & text)
        bit = GetBitByToken( *stri );
        if(bit >= 0)  SetBit(bit,&returnFlag);
     }
+ 
     return returnFlag;
 }
 
@@ -162,100 +166,100 @@ int CcStatus::GetBitByToken(string & token)
 //   newway           if(token==string(bS0))  return 0;
 //   oldway           if(token==string(bS1))  {SetBit(1,flag);return;}
 #define CHECKTOKEN(a) if(token.compare(bS##a)==0) return a;
-#ifdef bs0
+#ifdef bS0
     CHECKTOKEN(0)
 #endif
-#ifdef bs1
+#ifdef bS1
     CHECKTOKEN(1)
 #endif
-#ifdef bs2
+#ifdef bS2
     CHECKTOKEN(2)
 #endif
-#ifdef bs3
+#ifdef bS3
     CHECKTOKEN(3)
 #endif
-#ifdef bs4
+#ifdef bS4
     CHECKTOKEN(4)
 #endif
-#ifdef bs5
+#ifdef bS5
     CHECKTOKEN(5)
 #endif
-#ifdef bs6
+#ifdef bS6
     CHECKTOKEN(6)
 #endif
-#ifdef bs7
+#ifdef bS7
     CHECKTOKEN(7)
 #endif
-#ifdef bs8
+#ifdef bS8
     CHECKTOKEN(8)
 #endif
-#ifdef bs9
+#ifdef bS9
     CHECKTOKEN(9)
 #endif
-#ifdef bs10
+#ifdef bS10
     CHECKTOKEN(10)
 #endif
-#ifdef bs11
+#ifdef bS11
     CHECKTOKEN(11)
 #endif
-#ifdef bs12
+#ifdef bS12
     CHECKTOKEN(12)
 #endif
-#ifdef bs13
+#ifdef bS13
     CHECKTOKEN(13)
 #endif
-#ifdef bs14
+#ifdef bS14
     CHECKTOKEN(14)
 #endif
-#ifdef bs15
+#ifdef bS15
     CHECKTOKEN(15)
 #endif
-#ifdef bs16
+#ifdef bS16
     CHECKTOKEN(16)
 #endif
-#ifdef bs17
+#ifdef bS17
     CHECKTOKEN(17)
 #endif
-#ifdef bs18
+#ifdef bS18
     CHECKTOKEN(18)
 #endif
-#ifdef bs19
+#ifdef bS19
     CHECKTOKEN(19)
 #endif
-#ifdef bs20
+#ifdef bS20
     CHECKTOKEN(20)
 #endif
-#ifdef bs21
+#ifdef bS21
     CHECKTOKEN(21)
 #endif
-#ifdef bs22
+#ifdef bS22
     CHECKTOKEN(22)
 #endif
-#ifdef bs23
+#ifdef bS23
     CHECKTOKEN(23)
 #endif
-#ifdef bs24
+#ifdef bS24
     CHECKTOKEN(24)
 #endif
-#ifdef bs26
+#ifdef bS26
     CHECKTOKEN(25)
 #endif
-#ifdef bs26
+#ifdef bS26
     CHECKTOKEN(26)
 #endif
-#ifdef bs27
+#ifdef bS27
     CHECKTOKEN(27)
 #endif
-#ifdef bs28
+#ifdef bS28
     CHECKTOKEN(28)
 #endif
-#ifdef bs29
+#ifdef bS29
     CHECKTOKEN(29)
 #endif
-#ifdef bs30
+#ifdef bS30
     CHECKTOKEN(30)
 #endif
-#ifdef bs31
+#ifdef bS31
     CHECKTOKEN(31)
 #endif
     return -1; //Tokenn not matched.
