@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  2002/02/12 12:49:10  Administrator
+C reformat output to print new dates properly
+C
 C Revision 1.4  2001/03/08 14:33:06  richard
 C Changed call to XGDBUP, all lists now passed over.
 C
@@ -156,16 +159,6 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
       CALL XLDREC(LN,LSN,IBUFF,ICOMMN,IDIMN,-1)
       GOTO 1950
 2050  CONTINUE
-CDJWFEB97>
-c      IF (IULN .EQ. 5) THEN
-c        ISAFE1 = ICOMMN(1)
-c        ISAFE2 = ICOMMN(4)
-c        ISAFE3 = ICOMMN(3)
-c        ISAFE4 = LSN
-C        CALL XGDBUP('READ    ',ISAFE1, ISAFE2, ISAFE3, ISAFE4,.FALSE.,4)
-        CALL XGDBUP('READ    ',IULN,LSN,ICOMMN,IDIMN)
-c      ENDIF
-CDJWFEB97<
       RETURN
 9900  CONTINUE
       RETURN
@@ -493,18 +486,6 @@ C--CLEAR THE FLAGS
       CALL XLSALT ( LN , 0 , 0 , ILSOWF , ILSRDY )
       CALL XLSALT ( LN , 0 , 0 , ILSERF , ILSCLR )
 2800  CONTINUE
-CDJWFEB97>
-c      IF ((IULN .EQ. 5) .AND.
-      IF (KRCLI (LN, ISAFE4, ISAFE1, ISAFE2, ISAFE3, J, ID) .GE. 0)
-     2 THEN
-C----   ONLY ISAFE4 (LSN) REQUIRED - OTHERS DUMMIES
-c        ISAFE1 = ICOMMN(1)
-c        ISAFE2 = ICOMMN(4)
-c        ISAFE3 = ICOMMN(3)
-C        CALL XGDBUP('WRITE   ',ISAFE1, ISAFE2, ISAFE3, ISAFE4,.FALSE.,4)
-        CALL XGDBUP('WRITE   ',IULN,ISAFE4,ICOMMN,IDIMN)
-      ENDIF
-CDJWFEB97<
       RETURN
       END
 C

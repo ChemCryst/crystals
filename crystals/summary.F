@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.23  2002/03/08 11:44:19  ckp2
+C During #SIGMADIST, update L30 General, NAnalyse with the number of allowed reflections.
+C
 C Revision 1.22  2002/03/06 13:50:23  ckp2
 C Updated to check6 stuff.
 C
@@ -869,11 +872,6 @@ C
 C----- UPDATE GUIMODEL
 C----- SET ILOOP TO A DUMMY, SAVE AUTOUPDTE FLAG
       ILOOP = 0
-      ISAVE = ISSUPD
-      ISSUPD = 1
-C&&&DVFGIDLIN            CALL XGDBUP('WRITE',L5,N5,MD5,ILOOP,.FALSE.,4)
-&&&DVFGIDLIN            CALL XGDBUP('WRITE',5,0,ICOM05,IDIM05)
-      ISSUPD = ISAVE
       CALL XSTRLL ( ICONTR )
       RETURN
       END
