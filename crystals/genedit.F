@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2000/12/08 16:02:33  richard
+C RIC: Modify generaledit so that it can be passed a record length, in
+C order to copy data in long text strings into list records.
+C
 CODE FOR XGENED
       SUBROUTINE XGENED
 C
@@ -33,6 +37,7 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XSIZES
 C
 \QSTORE
 C
@@ -378,7 +383,7 @@ C -- 'TRANSHEAD' DIRECTIVE
       CTVARI = CIFORM
 C
       IF ( ILSTCM + IOFF .LE. 0 ) GO TO 8930
-      IF ( ILSTCM + IOFF .GT. 131072 ) GO TO 8930
+      IF ( ILSTCM + IOFF .GT. ISIZST ) GO TO 8930
 C
       ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1 )
 C              
