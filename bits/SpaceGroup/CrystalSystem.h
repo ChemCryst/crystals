@@ -154,19 +154,6 @@ class Column
         void setHeading(char* pHeading);
 };
 
-class ConditionIndexs:public Indexs
-{
-    private:
-        Matrix<float>* iStats;	//[Total intensity non-matched, Total intensity matched, Total intensity, Number non-matched, Number matched, Number of Int>3*sigma non-matched, Number of Int<=3*sigma non-matched]
-    public:
-        ConditionIndexs(signed char pValue);
-        ConditionIndexs(ConditionIndexs& pObject);
-        void addReflection(Reflection* pReflection, Conditions* pCondtions);
-        ostream& output(ostream& pStream);
-        ostream& output(ostream& pStream,  Conditions* pConditions);
-};
-
-/* to be implemented */
 class ConditionColumn:virtual public Column
 {
     private:
@@ -178,12 +165,12 @@ class ConditionColumn:virtual public Column
         void addHeading(signed char pIndex);
         void setHeading(char* pHeading);
         int getHeading(const int pIndex);
+        ArrayList<Index>* getHeadings();
         void addCondition(signed char pIndex, int pRow);
         void addEmptyCondition(int pRow);
-        Indexs* getCondition(int pIndex);
+        Indexs* getConditions(int pIndex);
         int countCondition();
         int countHeadings();
-        void addReflection(Reflection* pReflection, Headings* pHeadings, Conditions* pConditions);
         ostream& output(ostream& pStream, Headings* pHeadings, Conditions* pConditions);
 };
 
@@ -210,6 +197,7 @@ class SpaceGroups:virtual public Column
         ~SpaceGroups();
         void add(char* pSpaceGroup, int pRow);
         SpaceGroup* get(int pIndex);
+        int length();
         void setHeading(char* pHeading);
         char* getPointGroup();
 };
@@ -232,11 +220,14 @@ class Table
         void addLine(char* pLine);
 	void readColumnHeadings(char* pHeadings);
         void readFrom(filebuf& pFile);
-        void addReflection(Reflection* pReflection);
         char* getName();
+        ArrayList<Index>* getHeadings(int pI);
         ostream& output(ostream& pStream);
         ostream& outputLine(int pLineNum, ostream& pStream);
         ostream& outputColumn(ostream& pStream, int pColumn, Headings* pHeadings, Conditions* pConditions);
+        Indexs* getConditions(int pRow, int pColumn);
+        int numberOfColumns();
+        int numberOfRows();
 };
 
 ostream& operator<<(ostream& pStream, Table& pTable);
@@ -258,19 +249,34 @@ class Tables
 
 ostream& operator <<(ostream& pStream, Tables& pTables);
 
+class Stats;
+
 class RankedSpaceGroups
 {
     private:
         typedef struct RowRating
         {
-            int iRowNum;
+            int iRowNum;	//The number of the row in the table.
             int iTotNumVal;	//Total number of values include in these stats.
             float iSumRat1;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
             float iSumRat2;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
             float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
             float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+            float iMean;
         } RowRating;
         
-        LList<RowRating> iRatings;
+        LList<RowRating> iRatingList;	//The order list of rows.
+        RowRating* iRatings;		//Space to store the ratings
+        Table* iTable;			//The table which the rattings have been made for. Reference to the table. Table should never be released by this class.
+        static void calcRowRating(RowRating* pRating, int pRow, Table& pTable, Stats& pStats);
+        static void addConditionRatings(RowRating* pRating, Stats& pStats, Indexs* tIndexs,  Index* pHeadingIndex);
+        static void addRating(RowRating* pRating, float pRating1, float pRating2);
+        void addToList(RowRating* pRating);
+    public:
+        RankedSpaceGroups(Table& pTable, Stats& pStats);
+        ~RankedSpaceGroups();
+        ostream& output(ostream& pStream);
 };
+
+ostream& operator<<(ostream& pStream, RankedSpaceGroups& pRank);
 #endif
