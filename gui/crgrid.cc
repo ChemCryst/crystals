@@ -20,6 +20,7 @@
 #include	"crlistctrl.h"
 #include	"crdropdown.h"
 #include	"crmultiedit.h"
+#include        "crtextout.h"
 #include	"creditbox.h"
 #include	"crtext.h"
 #include    "cricon.h"
@@ -266,6 +267,13 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 					CrMultiEdit * multiEditPtr = new CrMultiEdit( this );
 					if ( multiEditPtr != nil )
 						retVal = InitElement( multiEditPtr, tokenList, xpos, ypos );
+					break;
+				}
+                                case kTCreateTextOut:                         // Create a TextOut field
+				{
+                                        CrTextOut * TextOutPtr = new CrTextOut( this );
+                                        if ( TextOutPtr != nil )
+                                                retVal = InitElement( TextOutPtr, tokenList, xpos, ypos );
 					break;
 				}
 				case kTCreateEditBox:				// Create an edit box
