@@ -37,7 +37,8 @@
 
 //#include "stdafx.h"
 #include "Exceptions.h"
-#include <String>
+#include <stdio.h>
+#include <string>
 #include <errno.h>
 
 MyException::MyException(int pErrNum, char* pErrStr)
