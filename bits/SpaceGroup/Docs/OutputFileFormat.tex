@@ -58,9 +58,11 @@ AVINT \hash . \hash & \hash . \hash average intensity of all the reflections in 
 \hline
 \end{tabular}
 \end{table}
-e.g.\\
-TOTAL 13390\\
+e.g.
+\begin{verbatim}
+TOTAL 13390
 AVINT 67.0403
+\end{verbatim}
 \subsection{Regions Used}
 \begin{table}[h]
 \begin{tabular}{|l|l|}\hline
@@ -75,11 +77,13 @@ NREGIONS \hash & \hash is the number of regions which where used in the calculat
 \hline
 \end{tabular}
 \end{table}
-e.g.\\
-NREGIONS 3\\
-0 1 0 0 0 1 0 0 0 1 hkl\\
-1 0 0 0 0 1 0 0 0 1 0kl\\
+e.g.
+\begin{verbatim}
+NREGIONS 3
+0 1 0 0 0 1 0 0 0 1 hkl
+1 0 0 0 0 1 0 0 0 1 0kl
 6 0 0 0 0 0 0 0 0 1 00l
+\end{verbatim}
 \subsection{Condtions Used}
 \begin{table}[h]
 \begin{tabular}{|l|l|}\hline
@@ -89,24 +93,27 @@ NTEST \hash & \hash is the number of conditions which where used in the calculat
 \hash index Matrix Multi Condition & \hash index is the index of the condition as is in the table file.\\
 					& Matrix is the 1x3 matrix which defines the condtion. It is in the form\\
 					& \hash  \hash  \hash.\\
-					& Multi is the multiplier used in the condition. This has the form \\hash.\\
+					& Multi is the multiplier used in the condition. This has the \\
+					& form \hash.\\
 					& Condtion is the text representation of the condition. eg. h == 2n\\
 					& \emph{There is a line like this for each region.}\\
 \hline
 \end{tabular}
 \end{table}
-e.g.\\
+e.g.
+\begin{verbatim}
 NTESTS 3
 0 1 0 0 2 h == 2n
 1 0 1 0 2 k == 2n
 8 0 0 1 4 l == 4n
-
+\end{verbatim}
 \subsection{Stats Table}
 \begin{table}[h]
 \begin{tabular}{|l|l|}\hline
-DATA \hash  \hash & First number is the number or sets of stats N. The second number is the number of stats give. Currently this is set to 7.\\
+DATA \hash   \hash & First number is the number or sets of stats N. The second number is \\
+				& the number of stats give. Currently the number of stats is set to 7.\\
 \hline
-N sets of Stats data &\\\hline
+N sets of Stats data... &\\\hline
 \end{tabular}
 \end{table}
 \subsubsection{Stats data}
@@ -122,27 +129,352 @@ N sets of Stats data &\\\hline
 \hline
 \end{tabular}
 \end{table}
-e.g.\\
-DATA 21 7\\
-6710\\
-78.0809\\
-6680\\
-55.9501\\
-38.8174\\
--0.31918\\
--0.45224\\
-6705\\
-78.17\\
-6685\\
-55.8772\\
-38.5639\\
--0.31918\\
--0.4562\\
-6702\\
-78.2019\\
-6688\\
-55.8553\\
-38.6812\\
--0.31561\\
--0.4562\\
- \end{document}
+e.g.
+\begin{verbatim}
+DATA 21 7
+6710
+78.0809
+6680
+55.9501
+38.8174
+-0.31918
+-0.45224
+6705
+78.17
+6685
+55.8772
+38.5639
+-0.31918
+-0.4562
+6702
+78.2019
+6688
+55.8553
+38.6812
+-0.31561
+-0.4562
+\end{verbatim}
+\subsection{Stats Table}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
+RESUTLS \hash & This is the number(N) of results which are to follow.\\
+\hline
+N sets of results... &\\\hline
+\end{tabular}
+\end{table}
+\subsubsection{Results}
+\begin{table}[h]
+\begin{tabular}{|l|l|}\hline
+SCORE \hash.\hash & This is the overall rating of this result.\\
+\hline
+PROMOTED [YES|NO] & This is to say wether the program thought that this result\\
+	& was effected by being filtered previous to the run.\\
+\hline
+Indexs of conditions. A line for each region... & \\
+\hline
+SPACEGROUPS \hash & This specifies how many spacegroups(S) lines will follow.\\
+\hline
+S Spacegroups...	& Has a individual space group on each line.\\
+\hline
+\end{tabular}
+\end{table}
+e.g.
+\begin{verbatim}RESULTS 2
+SCORE 0.07567
+PROMOTED NO
+-
+-
+-
+2
+SPACEGROUPS 2
+P2_13
+P4_232
+SCORE 0.0594925
+PROMOTED NO
+-
+4
+-
+2
+SPACEGROUPS 2
+Pn-3
+Pn-3m\end{verbatim}
+
+\subsection{Example File}
+\begin{verbatim}
+TOTAL 13390
+AVINT 67.0403
+NREGIONS 3
+0 1 0 0 0 1 0 0 0 1 hkl
+3 1 0 0 0 1 0 0 0 0 hk0
+6 0 0 0 0 0 0 0 0 1 00l
+NTESTS 7
+0 1 0 0 2 h == 2n
+1 0 1 0 2 k == 2n
+2 0 0 1 2 l == 2n
+3 1 1 0 2 h+k == 2n
+4 0 1 1 2 k+l == 2n
+5 1 0 1 2 h+l == 2n
+6 1 1 1 2 h+k+l == 2n
+DATA 21 7
+6710
+78.0809
+6680
+55.9501
+38.8174
+-0.31918
+-0.45224
+6705
+78.17
+6685
+55.8772
+38.5639
+-0.31918
+-0.4562
+6702
+78.2019
+6688
+55.8553
+38.6812
+-0.31561
+-0.4562
+6697
+100.748
+6693
+33.3127
+44.2402
+-0.06811
+-0.35569
+6701
+101.034
+6689
+32.9861
+44.2966
+-0.06681
+-0.35569
+6684
+100.825
+6706
+33.3661
+44.6466
+-0.06811
+-0.35197
+6679
+73.9113
+6711
+60.2021
+40.3517
+-0.38974
+-0.42465
+219
+197.808
+215
+45.2935
+62.3256
+-0.03144
+-0.11702
+220
+241.055
+214
+0.121028
+95.7944
+0.72763
+-0.00326002
+434
+122.253
+0
+NaN
+NaN
+0
+0
+215
+201.309
+219
+44.642
+59.8173
+-0.02938
+-0.14007
+220
+241.055
+214
+0.121028
+95.7944
+0.72763
+-0.00326002
+219
+197.808
+215
+45.2935
+62.3256
+-0.03144
+-0.11702
+215
+201.309
+219
+44.642
+59.8173
+-0.02938
+-0.14007
+18
+126.489
+0
+NaN
+NaN
+0
+0
+18
+126.489
+0
+NaN
+NaN
+0
+0
+8
+282.95
+10
+1.32
+90
+0.6125
+-0.00714004
+18
+126.489
+0
+NaN
+NaN
+0
+0
+8
+282.95
+10
+1.32
+90
+0.6125
+-0.00714004
+8
+282.95
+10
+1.32
+90
+0.6125
+-0.00714004
+8
+282.95
+10
+1.32
+90
+0.6125
+-0.00714004
+RESULTS 14
+SCORE 0.120728
+PROMOTED NO
+-
+4
+0
+SPACEGROUPS 1
+P2_1/n11
+SCORE 0.120728
+PROMOTED NO
+-
+4
+-
+SPACEGROUPS 2
+Pn11
+P2/n11
+SCORE 0.120728
+PROMOTED NO
+-
+1
+0
+SPACEGROUPS 1
+P2_1/b11
+SCORE 0.120728
+PROMOTED NO
+-
+1
+-
+SPACEGROUPS 2
+Pb11
+P2/b11
+SCORE 0.050095
+PROMOTED NO
+3
+1
+0
+SPACEGROUPS 3
+C211
+Cm11
+C2/m11
+SCORE 0.0380362
+PROMOTED NO
+5
+1 2
+0
+SPACEGROUPS 2
+Bb11
+B2/b11
+SCORE 0.0375713
+PROMOTED NO
+3
+1 2
+0
+SPACEGROUPS 2
+Cn11
+C2/n11
+SCORE 0
+PROMOTED NO
+-
+2
+0
+SPACEGROUPS 1
+P2_1/c11
+SCORE 0
+PROMOTED NO
+-
+2
+-
+SPACEGROUPS 2
+Pc11
+P2/c11
+SCORE 0
+PROMOTED NO
+-
+-
+0
+SPACEGROUPS 2
+P2_111
+P2_1/m11
+SCORE 0
+PROMOTED NO
+-
+-
+-
+SPACEGROUPS 3
+P211
+Pm11
+P2/m11
+SCORE -0.0112525
+PROMOTED NO
+6
+1 2
+0
+SPACEGROUPS 2
+Ic11
+I2/c11
+SCORE -0.0150033
+PROMOTED NO
+6
+4
+0
+SPACEGROUPS 3
+I211
+Im11
+I2/m11
+SCORE -0.0700133
+PROMOTED NO
+5
+2
+0
+SPACEGROUPS 3
+B211
+Bm11
+B2/m11
+\end{verbatim}\end{document}
