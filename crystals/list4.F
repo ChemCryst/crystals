@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2001/11/13 10:53:51  ckpgroup
+C SH: Log axis scaling fixed.
+C
 C Revision 1.18  2001/11/12 16:23:45  ckpgroup
 C SH: Graphical agreement analysis
 C
@@ -2843,7 +2846,7 @@ C--- OUTPUT TO SCREEN
       WRITE(CMON,4920)ACI,ISTORE(L+1)
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
-      WRITE(CMON,'(A,F7.0,1X,A)')'^^PL LABEL ',ACI,' DATA  0.0'
+      WRITE(CMON,'(A,F7.0,1X,A)')'^^PL LABEL ',ACI,' DATA  1.0 1.0'
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 5250
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
@@ -2943,7 +2946,7 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,CFN)AC,ICE,IB,ISTORE(L+1),ICE
       ENDIF
-      WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,' DATA  0.0'
+      WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,' DATA  1.0 1.0'
       CALL XPRVDU(NCVDU, 1,0)
 
 5610  FORMAT(1H ,F7.4,I6,2F9.0,2E10.2,2F5.0,13A1)
