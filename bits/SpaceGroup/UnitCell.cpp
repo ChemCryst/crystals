@@ -419,12 +419,12 @@ bool UnitCell::init(char* pLine)	//Reads in from the file provided
         String tA(pLine, (int)tMatch[7].rm_so, (int)tMatch[7].rm_eo);
         String tB(pLine, (int)tMatch[9].rm_so, (int)tMatch[9].rm_eo);
         String tC(pLine, (int)tMatch[11].rm_so, (int)tMatch[11].rm_eo);
-        iAlpha = tAlpha.toDouble();
-        iBeta = tBeta.toDouble();
-        iGamma = tGamma.toDouble();
-        iA = tA.toDouble();
-        iB = tB.toDouble();
-        iC = tC.toDouble();
+        iAlpha = (float)tAlpha.toDouble();
+        iBeta = (float)tBeta.toDouble();
+        iGamma = (float)tGamma.toDouble();
+        iA = (float)tA.toDouble();
+        iB = (float)tB.toDouble();
+        iC = (float)tC.toDouble();
         return true;
     }
     //Return that the line didn't match the regular expression.

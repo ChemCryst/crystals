@@ -11,15 +11,18 @@
 #include <fstream>
 #include "RunParameters.h"
 #include "UnitCell.h"
-#include "Exceptions.h"
-#if defined(_WIN32)
-#include <Boost/regex.h>
-#else
-#include <regex.h>
-#endif
 #if defined(__APPLE__)
 #include <vecLib/vDSP.h>
 #endif
+#include "Exceptions.h"
+#if defined(_WIN32)
+#include <Boost/regex.h>
+#include <direct.h>
+#else
+#include <regex.h>
+#endif
+
+
 
 RunParameters::RunParameters()
 {
@@ -236,7 +239,7 @@ void RunParameters::readParamFile()
                 {}
                 else if (regexec(tClassFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    tClass = new String(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    tClass = new String(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     if (tUniqueAxis)
                     {
                         int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
@@ -249,7 +252,7 @@ void RunParameters::readParamFile()
                 }
                 else if (regexec(tUniqueFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    tUniqueAxis = new String(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    tUniqueAxis = new String(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     if (tClass)
                     {
                         int tClassIndex = indexOfClass(*tClass, *tUniqueAxis);
@@ -270,12 +273,12 @@ void RunParameters::readParamFile()
                 }
                 else if (regexec(tOutputFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    String tTemp(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     iOutputFile.copy(tTemp);
                 }
                 else if (regexec(tHKLFSO, tLine, 13, tMatchs, 0) == 0)
                 {
-                    String tTemp(tLine, tMatchs[1].rm_so, tMatchs[1].rm_eo);
+                    String tTemp(tLine, (int)tMatchs[1].rm_so, (int)tMatchs[1].rm_eo);
                     iFileName.copy(tTemp);
                 }
                 else if (iUnitCell.init(tLine))

@@ -60,7 +60,7 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float
         ElemStats* tStats = &(iStats[(pColumn*tCCount)+i]);
         if (((int)tMatrix.getValue(0)) % ((int)iConditions->getMult(i)) != 0)
         {
-            tStats->tNonMTotInt += pReflection->i;	//Total intensity non-matched.
+            tStats->tNonMTotInt += (float)pReflection->i;	//Total intensity non-matched.
             tStats->tNumNonM ++;	//Number non-matched
             if (pReflection->i/pReflection->iSE >= 3)
             {
@@ -73,7 +73,7 @@ void Stats::addReflectionRows(int pColumn, Reflection* pReflection, Matrix<float
         }
         else
         {
-            tStats->tMTotInt += pReflection->i;	//Total intensity matched. 
+            tStats->tMTotInt += (float)pReflection->i;	//Total intensity matched. 
             tStats->tNumM ++;	//Number matched
         }
     }
@@ -89,7 +89,7 @@ void Stats::addReflection(Reflection* pReflection)
 {
     static Matrix<float> tResult(1, 3);
     iTotalNum ++;
-    iTotalIntensity += pReflection->i;	
+    iTotalIntensity += (float)pReflection->i;	
     int tHCount = iHeadings->length();			//Cache lengths of the table.
     Matrix<float>* tHKLMat = pReflection->getHKL();	//Get the HKL matrix from the reflection.
     Matrix<float>* tMultiMat = NULL;			// Matrix pointer to be used generaly when needed.
@@ -172,8 +172,8 @@ void Stats::outputRow(int pRow, std::ostream& pStream, signed char pColumnsToPri
     pStream << "\n% I < 3u(I)" << setw(pFirstColumnWidth-11);
     for (int i = 0; i < pNumOfColums; i++)
     {
-        float tLess = iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
-        float tGreater = iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
+        float tLess = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMLsInt;
+        float tGreater = (float)iStats[pColumnsToPrint[i]*tCCount+pRow].tNumNonMGrInt;
         pStream << " " << setw(pOtherColumns) << 100*(tLess/(tLess+tGreater));	//Number Int<3*sigma non-matched
     }
     pStream << "\nScore1" << setw(pFirstColumnWidth-6);
@@ -285,10 +285,10 @@ std::ostream& Stats::output(std::ostream& pStream, Table& pTable)
     pStream << "Average Int: " << iTotalIntensity/iTotalNum << "\n";
     
     const int tConditionNum = iConditions->length();
-    signed char tConditions[tConditionNum];
+    signed char* tConditions = new signed char[tConditionNum];
     int tCount = pTable.conditionsUsed(tConditions, tConditionNum);
     const int tColumnsNum = iHeadings->length();
-    signed char tColumns[tColumnsNum];
+    signed char* tColumns = new signed char[tColumnsNum];
     int tColumnCount = pTable.dataUsed(tColumns, tColumnsNum);
     outputHeadings(pStream, tColumns, tColumnCount);
     for (int i = 0; i < tCount; i++)
@@ -296,5 +296,6 @@ std::ostream& Stats::output(std::ostream& pStream, Table& pTable)
         outputRow(tConditions[i], pStream, tColumns, tColumnCount);
         pStream << "\n\n";
     }
+	delete tConditions;
     return pStream;
 }

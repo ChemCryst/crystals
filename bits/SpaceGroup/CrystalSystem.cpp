@@ -195,7 +195,7 @@ Condition::Condition(char* pLine)
     iName[(int)(tMatch[2].rm_eo-tMatch[2].rm_so)] = 0;
     strncpy(iName, pLine+(int)tMatch[2].rm_so, (int)tMatch[2].rm_eo-tMatch[2].rm_so);  
     iID = strtol((const char*)(pLine+tMatch[1].rm_so), NULL, 10);			//Get the id of the condition
-    iMult = strtod((const char*)(pLine+tMatch[12].rm_so), NULL);			//Get the multiplier 
+    iMult = (float)strtod((const char*)(pLine+tMatch[12].rm_so), NULL);			//Get the multiplier 
 }
 
 Condition::~Condition()
@@ -1211,19 +1211,19 @@ int Table::dataUsed(signed char pIndices[], int pMax)
         }
     }
     Iterator<signed char>* tIterator = tIndices.createIterator();
-    int i = 0;
+    int j = 0;
     tIterator->reset();
-    while (tIterator->hasNext() && i < pMax)
+    while (tIterator->hasNext() && j < pMax)
     {
-        pIndices[i] = *tIterator->next();
-        i++;
+        pIndices[j] = *tIterator->next();
+        j++;
     }
-    if (i < pMax)
+    if (j < pMax)
     {
-        pIndices[i] = -1;
+        pIndices[j] = -1;
     }
     delete tIterator;
-    return i; 
+    return j; 
 }
 
 int Table::conditionsUsed(signed char pIndices[], int pMax)
@@ -1250,19 +1250,19 @@ int Table::conditionsUsed(signed char pIndices[], int pMax)
         }
     }
     Iterator<signed char>* tIterator = tIndices.createIterator();
-    int i = 0;
+    int j = 0;
     tIterator->reset();
-    while (tIterator->hasNext() && i < pMax)
+    while (tIterator->hasNext() && j < pMax)
     {
-        pIndices[i] = *tIterator->next();
-        i++;
+        pIndices[j] = *tIterator->next();
+        j++;
     }
-    if (i < pMax)
+    if (j < pMax)
     {
-        pIndices[i] = -1;
+        pIndices[j] = -1;
     }
     delete tIterator;
-    return i;
+    return j;
 }
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable)

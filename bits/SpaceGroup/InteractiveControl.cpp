@@ -40,7 +40,7 @@ Command& Command::getCommand(int i)
     regmatch_t tMatch[4];
     
     bzero(tMatch, sizeof(regmatch_t)*4);
-    for (int j; j < i; j++)
+    for (int j = 0; j < i; j++)
     {
         if (regexec(gCommandRE, iString, 4, tMatch, 0))
         {
@@ -53,8 +53,8 @@ Command& Command::getCommand(int i)
 
 void InteractiveControl::printHelp()
 {
-    cout << "Available commands.\n";
-    cout << "Q: To exit the interactive mode.\n";
+	std::cout << "Available commands.\n";
+    std::cout << "Q: To exit the interactive mode.\n";
 }
 
 
@@ -67,7 +67,7 @@ bool InteractiveControl::handleCommand(Command& pCommand)	//Returns whether inte
     }
     catch (MyException e)
     {
-        cout << "Badly formated command.";
+        std::cout << "Badly formated command.";
     }
     pCommand.upcase();
     if (pCommand.cmp("?") == 0)
@@ -80,7 +80,7 @@ bool InteractiveControl::handleCommand(Command& pCommand)	//Returns whether inte
     }
     else
     {
-        cout << "Command not recognised.\n";
+        std::cout << "Command not recognised.\n";
     }
     return false;
 }

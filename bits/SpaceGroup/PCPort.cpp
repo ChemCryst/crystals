@@ -52,7 +52,7 @@ int gettimeofday(struct timeval *tp, struct timezone *tzp)
 	ftime(&tTime);
 	if (tp)
 	{
-		tp->tv_sec = tTime.time;
+		tp->tv_sec = (long)tTime.time;
 		tp->tv_usec = tTime.millitm;
 	}
 	if (tzp)

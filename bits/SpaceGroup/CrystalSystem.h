@@ -42,7 +42,7 @@
 #include <fstream>
 
 using namespace std;
-typedef struct ElemStats;
+struct ElemStats;
 
 class Heading:public MyObject
 {
