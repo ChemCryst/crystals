@@ -34,7 +34,7 @@ struct lsreflection
   }
 };
 
-class MergedData
+class MergedData:public MyObject
 {
  private:
     size_t iUpto;
