@@ -422,7 +422,7 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
     .L                  0    0    0    0    0         2
     ./FO/               0    0    0    0    0         3
     .SIGMA(/FO/)        0    0    0    0    0        12
-  15.XOUT-DEFAULTS      9    0    0    0    9    1 1007   57  106
+  15.XOUT-DEFAULTS      8    0    0    0    8    1 1007   57  106
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1    1    1    1    1    1
     .INDICES            0    0    0    0    0        14
@@ -433,7 +433,6 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
     .RATIO/JCODE        0    0    0    0    0        31
     .SIGMA(/FO/)        0    0    0    0    0        12
     .CORRECTIONS        0    0    0    0    0        27
-    .ELEMENTS           0    0    0    0    0        11
   16.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  106
          0    0    0    0    0    0    0    0    0    0
   17.MATRIX            11    1    0    0   11    1 1009  108  106
@@ -2773,7 +2772,7 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
     .PHI                0    0    0    0    0        24
     .OMEGA              0    0    0    0    0        22
     .KAPPA              0    0    0    0    0        25
-  14.XOUT-DEFAULTS      9    0    0    0    9    1 1007   57  106
+  14.XOUT-DEFAULTS      8    0    0    0    8    1 1007   57  106
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1    1    1    1    1    1
     .INDICES            0    0    0    0    0        14
@@ -2784,7 +2783,6 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
     .SERIAL             0    0    0    0    0        19
     .RATIO              0    0    0    0    0        20
     .BATCH/PHASE        0    0    0    0    0        15
-    .ELEMENTS           0    0    0    0    0        11
   15.XINPUT-BUFFER      0    0    0    0  -31    1 1004   41  106
          0    0    0    0    0    0    0    0    0    0
   16.CORRECTIONS        2    1    0    0

@@ -261,6 +261,9 @@ C----- set default to untwinned
       IF (ISTORE(KZ+3)) 950,950,1150
 C--NO STORAGE KEYS HAVE BEEN INPUT  -  SET THE DEFAULTS
 950   CONTINUE
+cjan2001 Reset output defaults if twin data input 
+c     l6bmp etc (twinned defaults) moved to lodfk
+      if (inft .gt. 0) call xmove (icom6a(9),icom6a(29),4)
       MD6DMP=MIN0(MD6DMP,MDODFK)
 C--CHECK IF ANY OUTPUT KEYS ARE INDICATED
       IF (MD6DMP) 1000,1000,1100
