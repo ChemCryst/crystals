@@ -96,7 +96,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
     {
         int attributes = 0;
 
-        LOGSTAT("*** Window *** Initing...");
+        LOGSTAT("Window");
 
         retVal = CrGUIElement::ParseInput( tokenList );
         mSelfInitialised = true;
@@ -188,7 +188,7 @@ Boolean CrWindow::ParseInput( CcTokenList * tokenList )
 
         SetText( mText );
 
-        LOGSTAT( "*** Created Window      " + mName );
+        LOGSTAT( "CxWindow created " + mName );
     }
 
     // If grid is created, but not finished then pass tokenlist straight down.
