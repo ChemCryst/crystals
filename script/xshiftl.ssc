@@ -3,24 +3,27 @@
 % VARIABLE REAL LIMIT
 ^^WI WINDOW XSHIFTL 'Restrain shifts' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID MAIN NROWS=5 NCOLS=5
+^^WI GRID MAIN NROWS=3 NCOLS=5
 ^^WI {
-^^WI   @ 2,2 GRID LT NROWS=2 NCOLS=1
+^^WI   @ 2,2 GRID LT NROWS=4 NCOLS=1
 ^^WI   {
-^^WI    @ 1,1 STATIC T0 'Limit all parameter shifts'
-^^WI    @ 2,1 STATIC T1 'to control singularities.'
+^^WI     @ 1,1 STATIC T0 'Limit all parameter shifts'
+^^WI     @ 2,1 STATIC T1 'to control singularities.'
+^^WI     @ 3,1 GRID LEFT NROWS=3 NCOLS=3
+^^WI     {
+^^WI       @ 3,1 STATIC T3 'E.s.d:'
+^^WI       @ 3,3 EDITBOX E2 '0.01' CHARS=9 REAL
+^^WI     }
+^^WI     @ 4,1 GRID LEFT NROWS=3 NCOLS=3
+^^WI     {
+^^WI       @ 2,2 BUTTON BEE '&Edit restraints'
+^^WI     }
 ^^WI   }
-^^WI   @ 4,2 GRID LEFT NROWS=3 NCOLS=3
-^^WI   {
-^^WI     @ 3,1 STATIC T3 'E.s.d.'
-^^WI     @ 3,3 EDITBOX E2 '0.01' CHARS=9 REAL
-^^WI   }
-^^WI   @ 2,4 GRID RIGHT NROWS=7 NCOLS=1
+^^WI   @ 2,4 GRID RIGHT NROWS=5 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK '&OK' COMMIT DEFAULT
 ^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
-^^WI     @ 5,1 BUTTON BEE '&Edit restraints'
-^^WI     @ 7,1 BUTTON BHH '&Help'
+^^WI     @ 5,1 BUTTON BHH '&Help'
 ^^WI   }
 ^^WI }
 ^^WI  SHOW
