@@ -1332,7 +1332,7 @@ The elements in the asymmetric unit
     .NUMBER             0    0    1    0    0 0
     .MUA                0    0    1    0    0 0
     .WEIGHT             0    0    1    0    0 0
-    .COLOUR             0    0    1    0    0 BLACK
+    .COLOUR             0    0    1    0    0 UNKNOWN
 GOODIES   30       9    0
    8   40960 CRYSTALSINPUT
    1.DATRED            13    1    0    0   13    1  101    1   30
@@ -2713,8 +2713,8 @@ DISTANCES         10    7
     .CELL              16    0    1   -2    1 NO
    3.SELECT             7    1    0    0
          3    3    3    3    3    3    3
-    .ALLDISTANCES      13    0    1    3   -1 NO
-     NO             ALMOST         YES
+    .ALLDISTANCES      13    0    1    3   -1 AUTO
+     NO             AUTO           YES
     .COORDINATES       14    0    1   -2    1 NO
     .SORTED            17    0    1   -2    1 NO
     .TYPE              18    0    1    3   -1 ALL
@@ -2731,8 +2731,9 @@ DISTANCES         10    7
      OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    4   -1 HIGH
      OFF            LOW            MEDIUM         HIGH
-    .PUNCH             23    0    1    5   -1 NOTHING
+    .PUNCH             23    0    1    6   -1 NOTHING
      NOTHING        RESTRAIN       PUBLISH        CIF            SCRIPT
+     MOGUL
     .HESD              26    0    1    2    0 ALL
      ALL            NONFIXED
    5.INCLUDE            0 9999    2    0    0    0  104    5  175
@@ -3572,9 +3573,9 @@ FOREIGN            1    0
    1    4096 CRYSTALSFOREIGN
    1.FOREIGN            3    1    0    0
          3    3    3
-    .PROGRAM            1   -1    1    8    1
+    .PROGRAM            1   -1    1   10    1
      SNOOPI         CAMERON        SHELXS         MULTAN         SIR88
-     SIR92          SIR97          PLATON
+     SIR92          SIR97          PLATON         CSD            MOL2
     .MODE               2    0    1    6    1 NORMAL
      NORMAL         DIFFICULT      SPECIAL        PATTERSON      HARD
      LONG

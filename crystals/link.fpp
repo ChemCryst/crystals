@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/03/08 16:01:00  ckp2
+C Second parameter for #FOREIGN. METHOD = NORMAL, METHOD = FILTERED. Controls
+C output of reflections for Sir92 only.
+C
 C Revision 1.31  2002/02/27 19:30:18  ckp2
 C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
 C RIC: Ensure consistent use of backslash after CRYSDIR:
@@ -116,7 +120,7 @@ C
       IMETH = ISTORE(ICOMBF + 2)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON
+C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON 9:CSD 10:MOL2
       CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH)
 C
 C
@@ -142,7 +146,7 @@ C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
 C-     ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON
+C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2
 C      IEFORT SELECTS POWER SETTING OF FOREIGN CALL
 C           FOR SHELXS86     IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
@@ -153,13 +157,15 @@ C           FOR SIR**        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
 c           for cameron      iefort = 1, normal
 c                                     2, dont create new cameron files
+C           FOR CSD          IEFORT = 1, normal - 2d structure
+C                                     2, special - just cell search
 C
+      PARAMETER (NLINK=10, NLIST=7)
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
 C      FOREIGN CALL.
 C           FOR SIR92 (only)  IMETHD = 0, NORMAL
 C                             IMETHD = 1, FILTERED (check refl with L28)
 C
-      PARAMETER (NLINK=8, NLIST=7)
 C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
       DIMENSION LISTS(NLIST, NLINK)
 C
@@ -173,6 +179,11 @@ cdjw aug99
       CHARACTER *160 CSOURC, CSPACE, CL29, CRESLT, CHARTC
 C
       REAL MAT(3)
+C----- FOR CSD & MOL2
+      CHARACTER *8 CLAB, CLAB2
+      REAL ANGV(3)
+      CHARACTER*2 CBONDS(9)
+
 C
 \ISTORE
 C
@@ -188,6 +199,7 @@ C
 \XLST06
 \XLST13
 \XLST29
+\XLST41
 \XOPVAL
 \XERVAL
 \XIOBUF
@@ -197,7 +209,7 @@ C
 \QSTORE
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
-C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON
+C-             5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD, 10:MOL2
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,
@@ -206,8 +218,15 @@ C- POINTER TO LIST
      5            1, 2, 3, 0, 6, 13, 29,
      6            1, 2, 3, 0, 6, 13, 29,
      7            1, 2, 3, 0, 6, 13, 29,
-     8            1, 2, 3, 5, 6, 13, 29/
+     8            1, 2, 3, 5, 6, 13, 29,
+     9            1, 3, 5,29,41,  0,  0,
+     1            1, 3, 5,29,41,  0,  0/
 C
+      DATA KHYD /'H   '/
+
+      DATA CBONDS / '1','2','3','4','ar','un','un','un','un'/
+
+
 C
       IF ((ILINK .LE. 0) .OR. (ILINK .GT. NLINK)) GOTO 9100
       IF ((ILINK .EQ. 1) .OR. (ILINK .EQ. 2)) THEN
@@ -257,6 +276,8 @@ C --        CONVERT ANGLES TO DEGREES.
             CALL XFAL13
         ELSE IF (LSTNUM .EQ. 29) THEN
             CALL XFAL29
+        ELSE IF (LSTNUM .EQ. 41) THEN
+            CALL XFAL41
         ENDIF
 1300  CONTINUE
       IF ( IERROR .LE. 0 ) GOTO 9900
@@ -268,8 +289,12 @@ C----- OPEN THE OUTPUT DEVICES
 &PPC      CALL stcrys
 C
 C
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON
-      GOTO (1600, 1700, 1800, 2000, 1900, 1900, 1900, 1860), ILINK
+C            SNOOPI, CAMERON, SHELXS86,
+C            MULTAN, SIR88,   SIR92,
+C            SIR97,  PLATON,  CSD,   MOL2
+      GOTO ( 1600,   1700,    1800,
+     1       2000,   1900,    1900,
+     2       1900,   1860,    1870,  1880), ILINK
 C
 1600  CONTINUE
 C
@@ -586,6 +611,162 @@ CDJWMAR99]
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU2,'(/)') 
       GOTO 8000
+
+
+1870  CONTINUE
+C     LINK TO WRITE OUTPUT FOR CSD ---------------------
+C
+C  NCFPU1 will be a CSD format input file with 2D structure.
+C
+      WRITE(NCFPU1,'(''rem '',10A4)') (KTITL(I),I=1,10)
+      WRITE(NCFPU1,'(A/A)') 'T1 *CONN','NFRAG 1'
+C Work out best plane projection for all non-H
+      KNFREE = KSTALL(N5*4)
+      NNH = 0
+      DO I = 0,N5-1
+         IAP = L5 + I * MD5
+         IF ( ISTORE(IAP) .NE. KHYD ) THEN
+           CALL XMOVE(STORE(IAP+4),STORE(KNFREE + NNH * 4),4)
+           STORE(KNFREE+3+NNH*4) = 1.0
+           NNH = NNH + 1
+         ENDIF
+      ENDDO
+
+      ICENT = KSTALL(3)
+      IROOT = KSTALL(3)
+      IVECT = KSTALL(9)
+      ICSNE = KSTALL(9)
+      IWORK = KSTALL(4)
+      ICF2BP = KSTALL(9)
+
+      I = KMOLAX(STORE(KNFREE),NNH,4,STORE(ICENT),STORE(IROOT),
+     1           STORE(IVECT),STORE(ICSNE),STORE(IWORK))
+
+
+C CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE AND BACK
+
+      CALL XMLTMT (STORE(IVECT),STORE(L1O1),STORE(ICF2BP),3,3,3)
+
+
+C TRANSLATE CO-ORDINATES TO PLACE CENTROIDS AT ORIGIN.
+
+      CALL XMXTRL (STORE(KNFREE),STORE(ICENT),4,NNH)
+ 
+C ROTATE GROUPS TO THEIR BEST PLANE AXES.
+
+      CALL XMXRTI (STORE(KNFREE),STORE(ICF2BP),4,NNH)
+
+C Find the min and max x and y values of the best plane:
+
+      XMIN = STORE(KNFREE)
+      XMAX = XMIN
+      YMIN = STORE(KNFREE+1)
+      YMAX = YMIN
+      DO I = 0, NNH-1
+         XMiN = MIN (XMiN, STORE(KNFREE+I*4))
+         XMaX = MAX (XMaX, STORE(KNFREE+I*4))
+         YMiN = MIN (YMiN, STORE(KNFREE+1+I*4))
+         YMaX = MAX (YMaX, STORE(KNFREE+1+I*4))
+      ENDDO
+C Apply an offset so that the minimum X and Y is zero.
+      SCA = 500.0 / MAX(XMAX-XMIN,YMAX-YMIN)
+      STORE(ICENT)   = XMIN - 30.0/SCA
+      STORE(ICENT+1) = YMIN - 30.0/SCA
+      STORE(ICENT+2) = 0.0
+      CALL XMXTRL (STORE(KNFREE),STORE(ICENT),4,NNH)
+
+C Apply a scale so that the maximum X and Y are ~500
+      CALL XZEROF (STORE(ICF2BP), 9)
+      STORE(ICF2BP) = SCA
+      STORE(ICF2BP+4) = SCA
+      STORE(ICF2BP+9) = SCA
+      CALL XMXRTI (STORE(KNFREE),STORE(ICF2BP),4,NNH)
+
+C Work out number of connected atoms and H atoms...
+      INCA = KSTALL(N5)
+      INHY = KSTALL(N5)
+
+      CALL XFILL(0,ISTORE(INCA),N5)
+      CALL XFILL(0,ISTORE(INHY),N5)
+
+      DO I = 0, N41B-1
+         IA1 = ISTORE(L41B+I*MD41B)
+         IA2 = ISTORE(L41B+6+I*MD41B)
+         IAT1P = L5 + IA1 * MD5
+         IAT2P = L5 + IA2 * MD5
+         IF ( ISTORE(IAT2P) .EQ. KHYD ) THEN
+            ISTORE(INHY+IA1) = ISTORE(INHY+IA1) + 1
+            ISTORE(L41B+I*MD41B) = -1    !Flag not to be included
+         ELSE
+            ISTORE(INCA+IA1) = ISTORE(INCA+IA1) + 1
+         ENDIF
+         IF ( ISTORE(IAT1P) .EQ. KHYD ) THEN
+            ISTORE(INHY+IA2) = ISTORE(INHY+IA2) + 1
+            ISTORE(L41B+I*MD41B) = -1    !Flag not to be included
+         ELSE
+            ISTORE(INCA+IA2) = ISTORE(INCA+IA2) + 1
+         ENDIF
+      ENDDO
+
+      J = 0
+      DO I = 0, N5-1
+        IF ( ISTORE(L5+I*MD5) .EQ. KHYD) CYCLE
+        WRITE(CLAB,'(A,I4)') 'AT',J+1
+        CALL XCRAS(CLAB,LLAB)
+        WRITE(NCFPU1,'(A,A,2I4,A,2I5)')
+     1  CLAB,ISTORE(L5+I*MD5),ISTORE(INCA+I),ISTORE(INHY+I),
+     2  ' :XY ',NINT(STORE(KNFREE+J*4)),NINT(STORE(KNFREE+1+J*4))
+        J = J + 1
+      END DO
+
+      DO I = 0,N41B-1
+        IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
+          WRITE(NCFPU1,'(A,3I5)') 'BO ',ISTORE(L41B+I*MD41B)+1,
+     1    ISTORE(L41B+6+I*MD41B)+1, ISTORE(L41B+12+I*MD41B)
+        END IF
+      END DO
+
+      WRITE(NCFPU1,'(A)')'END'
+      GOTO 8000
+
+
+1880  CONTINUE
+C     LINK TO WRITE OUTPUT IN MOL2 format ---------------------
+C
+C  NCFPU1 will be a MOL2 format file.
+C
+
+      WRITE(NCFPU1,'(//,''@<TRIPOS>MOLECULE'',/,10A4)')(KTITL(I),I=1,10)
+      WRITE(NCFPU1,'(2I5)') N5, N41B
+      WRITE(NCFPU1,'(''SMALL'',/,''NO CHARGES'',/,
+     1               ''****'',/,''No Comment'',/,''@<TRIPOS>ATOM'')')
+
+      DO I = 0, N5-1
+        CALL XMLTTM(STORE(L1O1),STORE(L5+I*MD5+4),ANGV,3,3,1)
+        WRITE(CLAB,'(A,I4)') ISTORE(L5+I*MD5),I+1
+        CALL XCRAS(CLAB,LLAB)
+        WRITE(CLAB2,'(2A)') ISTORE(L5+I*MD5),'.1'
+        CALL XCRAS(CLAB2,LLAB2)
+        WRITE(NCFPU1,'(I4,1X,A,3F8.4,1X,A,'' <1>'')')
+     1  I+1, CLAB, ANGV, CLAB2
+      END DO
+
+      WRITE(NCFPU1,'(''@<TRIPOS>BOND'')')
+
+      DO I = 0,N41B-1
+        IBT = MAX(1,ISTORE(L41B+12+I*MD41B))
+        IBT = MIN(IBT,9)
+        IF ( ISTORE(L41B+I*MD41B) .GE. 0 ) THEN
+          WRITE(NCFPU1,'(3I5,1X,A)') I+1,ISTORE(L41B+I*MD41B)+1,
+     1    ISTORE(L41B+6+I*MD41B)+1, CBONDS(IBT)
+        END IF
+      END DO
+
+      GOTO 8000
+
+
+
+
 C
 1900  CONTINUE
 C---- LINK TO WRITE OUTPUT FOR SIR%% ------------------------
@@ -1189,7 +1370,7 @@ C
 C----- TIDY UP
 C
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIRxx
-      GOTO ( 8010, 8020, 8030, 9000, 8030, 8030, 8030, 8040), ILINK
+      GOTO (8010,8020,8030,9000,8030,8030,8030,8040,8030,8030),ILINK
       GOTO 9100
 C
 8010  CONTINUE
@@ -1283,7 +1464,7 @@ C
 C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - THPE OF FOREIGN PROGRAM
       CHARACTER *256 CPATH
-      PARAMETER (NFILE = 10)
+      PARAMETER (NFILE = 12)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -1297,8 +1478,9 @@ C
      1             'SHELXS.INS' ,  'SIRDATA.DAT',
      2             'CAMERON.INI' ,  'CAMERON.L5I',
      3             'SIR92.INI', 'SIR97.INI',
-     4             'PLATON.RES','PLATON.HKL' /
-      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9, 10, 10 /
+     4             'PLATON.RES','PLATON.HKL',
+     5             'CRYSTALS.CON', 'CRYSTALS.MOL2' /
+      DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 9, 10, 10, 12, 13 /
 C
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
@@ -1308,11 +1490,11 @@ C
       KLOOP = 1
       KLNKIO = -1
       LPATH  = KPATH( CPATH)
-C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON
+C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIR88, SIR92, SIR97, PLATON,CSD,MOL2
 C
 C----- OPEN THE FIRST FILE
       JFILE = 1
-      GOTO ( 110, 120, 130, 140, 150, 160, 170, 180 ), ILINK
+      GOTO ( 110, 120, 130, 140, 150, 160, 170, 180, 190, 195 ), ILINK
 C
 110   CONTINUE
       IFILE = 1
@@ -1340,6 +1522,12 @@ C
 180   CONTINUE
       IFILE=9
       KLOOP = 2
+      GOTO 1000
+190   CONTINUE
+      IFILE=11
+      GOTO 1000
+195   CONTINUE
+      IFILE=12
       GOTO 1000
 C
 C
