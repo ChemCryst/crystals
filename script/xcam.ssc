@@ -14,66 +14,71 @@
 % END IF
 ^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
 %% The first grid splits the main area from the status bar.
-^^WI GRID SPLIT NROWS=3 NCOLS=1
+^^WI GRID SPLIT NROWS=2 NCOLS=1
 ^^WI {
-%% The outer grid splits the left 'view' area from the right
-^^WI  @ 1,1 GRID OUTER NROWS=3 NCOLS=5
-^^WI  {
-^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=25 NCOLS=45
-^^WI         INFORM=YES
-%% The inner grid splits the text output from the tools
-^^WI   @ 2,4 GRID INNER NROWS=9 NCOLS=1
+^^WI   @ 2,1 EDITBOX _CAMTEXTINPUT '' NCOLS=1
+^^WI         LIMIT=80 SENDONRETURN=YES INPUT
+^^WI   @ 1,1 RESIZE _CAMRSZ1 HORIZONTAL
 ^^WI   {
-^^WI     @ 2,1 GRID MOVE NROWS=5 NCOLS=9
-^^WI                COMMAND='#SCRIPT xcrotate'
+^^WI     ITEM GRID _CAMDISPBTNS NROWS=1 NCOLS=1
 ^^WI     {
-^^WI      @ 1,2 BUTTON XROTP '+X'
-^^WI      @ 1,4 BUTTON XROTN '-X'
-^^WI      @ 3,2 BUTTON YROTP '+Y'
-^^WI      @ 3,4 BUTTON YROTN '-Y'
-^^WI      @ 5,2 BUTTON ZROTP '+Z'
-^^WI      @ 5,4 BUTTON ZROTN '-Z'
-^^WI      @ 1,6 BUTTON AXISA 'Axis a'
-^^WI      @ 1,8 BUTTON PLANE 'Plane'
-^^WI      @ 3,6 BUTTON AXISB 'Axis b'
-^^WI      @ 3,8 BUTTON HKL   'hkl'
-^^WI      @ 5,6 BUTTON AXISC 'Axis c'
-^^WI      @ 5,8 BUTTON CURSO 'Cursor'
+^^WI       @ 1,1 RESIZE _CAMRSZ2 VERTICAL
+^^WI       {
+^^WI         ITEM GRID _CAMDISP NROWS=1 NCOLS=1
+^^WI         {
+^^WI            @ 1,1 CHARTWINDOW _CAMERONVIEW NROWS=25 NCOLS=45
+^^WI            INFORM=YES
+^^WI         }
+^^WI         ITEM GRID _CAMBTNS NROWS=9 NCOLS=1
+^^WI         {
+^^WI           @ 2,1 GRID MOVE NROWS=5 NCOLS=9
+^^WI                 COMMAND='#SCRIPT xcrotate'
+^^WI           {
+^^WI             @ 1,2 BUTTON XROTP '+X'     @ 1,4 BUTTON XROTN '-X'
+^^WI             @ 3,2 BUTTON YROTP '+Y'     @ 3,4 BUTTON YROTN '-Y'
+^^WI             @ 5,2 BUTTON ZROTP '+Z'     @ 5,4 BUTTON ZROTN '-Z'
+^^WI             @ 1,6 BUTTON AXISA 'Axis a' @ 1,8 BUTTON PLANE 'Plane'
+^^WI             @ 3,6 BUTTON AXISB 'Axis b' @ 3,8 BUTTON HKL   'hkl'
+^^WI             @ 5,6 BUTTON AXISC 'Axis c' @ 5,8 BUTTON CURSO 'Cursor'
+^^WI           }
+^^WI           @ 4,1 GRID STYLE NROWS=1 NCOLS=7
+^^WI                 COMMAND='#SCRIPT xcstyle'
+^^WI           {
+^^WI             @ 1,2 DROPDOWN LSTYLE ADDTOLIST
+^^WI             'Spheres' 'Lines' 'Ellipses' 'NULL'
+^^WI             @ 1,4 DROPDOWN LCOLOR ADDTOLIST
+^^WI             'Normal' 'Publish' 'NULL'
+^^WI             @ 1,6 BUTTON BSTYLE 'Apply'
+^^WI           }
+^^WI           @ 6,1 GRID PACK NROWS=1 NCOLS=5
+^^WI                 COMMAND='#SCRIPT xcpack'
+^^WI           {
+^^WI             @ 1,2 DROPDOWN LPACK ADDTOLIST
+^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
+^^WI             @ 1,4 BUTTON BPACK 'Apply'
+^^WI           }
+^^WI           @ 8,1 GRID STUFF NROWS=10 NCOLS=5
+^^WI                 COMMAND='#SCRIPT xcalter'
+^^WI           {
+^^WI              @ 2,2 BUTTON OHCONT 'Find O---H'
+^^WI              @ 2,4 BUTTON VIEW   'View'
+^^WI              @ 4,2 BUTTON SLABEL 'Labels on'
+^^WI              @ 4,4 BUTTON MLABEL 'Label move'
+^^WI              @ 6,2 BUTTON HHYDRO 'Hide H'
+^^WI              @ 6,4 BUTTON HPEAK  'Hide Q'
+^^WI              @ 8,2 BUTTON SCELL  'Show cell'
+^^WI              @ 8,4 BUTTON INCAL  'Show all'
+^^WI              @ 10,2 BUTTON INCAR 'Incl area'
+^^WI              @ 10,4 BUTTON EXCAR 'Excl area'
+^^WI           }
+^^WI         }
+^^WI       }
 ^^WI     }
-^^WI     @ 4,1 GRID STYLE NROWS=1 NCOLS=7
-^^WI                COMMAND='#SCRIPT xcstyle'
+^^WI     ITEM GRID _CAMTXOUT NROWS=1 NCOLS=1
 ^^WI     {
-^^WI      @ 1,2 DROPDOWN LSTYLE ADDTOLIST
-^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
-^^WI      @ 1,4 DROPDOWN LCOLOR ADDTOLIST
-^^WI      'Normal' 'Publish' 'NULL'
-^^WI      @ 1,6 BUTTON BSTYLE 'Apply'
-^^WI     }
-^^WI     @ 6,1 GRID PACK NROWS=1 NCOLS=5
-^^WI                COMMAND='#SCRIPT xcpack'
-^^WI     {
-^^WI      @ 1,2 DROPDOWN LPACK ADDTOLIST
-^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
-^^WI      @ 1,4 BUTTON BPACK 'Apply'
-^^WI     }
-^^WI     @ 8,1 GRID STUFF NROWS=10 NCOLS=5 COMMAND='#SCRIPT xcalter'
-^^WI     {
-^^WI       @ 2,2 BUTTON OHCONT 'Find O---H'
-^^WI       @ 2,4 BUTTON VIEW   'View'
-^^WI       @ 4,2 BUTTON SLABEL 'Labels on'
-^^WI       @ 4,4 BUTTON MLABEL 'Label move'
-^^WI       @ 6,2 BUTTON HHYDRO 'Hide H'
-^^WI       @ 6,4 BUTTON HPEAK  'Hide Q'
-^^WI       @ 8,2 BUTTON SCELL  'Show cell'
-^^WI       @ 8,4 BUTTON INCAL  'Show all'
-^^WI       @ 10,2 BUTTON INCAR 'Incl area'
-^^WI       @ 10,4 BUTTON EXCAR 'Excl area'
+^^WI       @ 1,1 TEXTOUT _CAMTEXT '' NROWS=40 NCOLS=10
 ^^WI     }
 ^^WI   }
-^^WI  }
-^^WI  @ 2,1 TEXTOUT _CAMTEXT '' NROWS=2 NCOLS=1
-^^WI  @ 3,1 EDITBOX _CAMTEXTINPUT '' NCOLS=1
-^^WI          SENDONRETURN=YES INPUT
 ^^WI }
 ^^WI DEFINEMENU MAIN 'NULL'
 ^^WI  MENU _FILE '&File'
@@ -105,7 +110,9 @@
 ^^WI   ITEM _EXCL '&Show labels'    '#SCRIPT XCALTER_NSLABEL'
 ^^WI   ITEM _INCL '&Hide labels'    '#SCRIPT XCALTER_NHLABEL'
 ^^WI  ENDMENU
-^^WI  ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
+^^WI  MENU _ORIE '&Orientation'
+^^WI   ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
+^^WI  ENDMENU
 ^^WI  MENU PACK '&Packing'
 ^^WI   ITEM _COMP 'Com&plete' 'PACK CELL COMP VIEW _N'
 ^^WI   ITEM _CENT '&Centroid' 'PACK CELL CENT VIEW _N'
@@ -120,8 +127,6 @@
 ^^WI SHOW
 ^^CR
 ^^WI SENDTEXTTO _CAMTEXT
-^^CR
-^^WI SENDPROGRESSTO _CAMPROG
 ^^CR
 %VARIABLE INTEGER ATOMSIN ATOMSOUT ATOMCHANGE
 %%
