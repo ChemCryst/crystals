@@ -70,6 +70,7 @@
 %% DJW MAY2000
 %% RIC AUG2000 - Add quotes around the filename...
 %        TRANSFER 'HARDCOPY ' // FILETYPE TO CRYSTALS
+%        TRANSFER 'VIEW   ' TO CRYSTALS
 %        TRANSFER 'COPY "' // FILENAME // '"' TO CRYSTALS
 %        TRANSFER '   ' TO CRYSTALS
 %            IF IPRINT .EQ. 1 THEN
