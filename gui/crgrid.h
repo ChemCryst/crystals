@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/07/23 08:27:02  richard
+//
+//   Extra parameter during GRID creation: "ISOLATE" - grid won't expand when the
+//   window resizes, even if it contains objects which might like to expand.
+//
 //   Revision 1.10  2002/05/14 17:04:49  richard
 //   Changes to include new GUI control HIDDENSTRING.
 //
@@ -90,6 +95,7 @@ class   CrGrid : public CrGUIElement
 #define kSAt            "@"
 #define kSCreateListBox     "LISTBOX"
 #define kSCreateListCtrl    "LISTCTRL"
+#define kSCreateModList    "MODLIST"
 #define kSCreateDropDown    "DROPDOWN"
 #define kSCreateEditBox     "EDITBOX"
 #define kSCreateMultiEdit   "MULTIEDIT"
@@ -119,6 +125,7 @@ enum
  kTAt,
  kTCreateListBox,
  kTCreateListCtrl,
+ kTCreateModList,
  kTCreateDropDown,
  kTCreateEditBox,
  kTCreateMultiEdit,

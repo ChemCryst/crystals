@@ -6,6 +6,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.26  2002/07/23 08:25:43  richard
+//
+//   Moved selected, disabled and excluded variables and functions into the base class.
+//   Added ALL option to DISABLEATOM to enable/disable all atoms.
+//
 //   Revision 1.25  2002/07/18 16:48:55  richard
 //   Prevent crash if some popup menus are missing/not defined from the model window.
 //
@@ -565,7 +570,7 @@ void CrModel::ContextMenu(int x, int y, CcString atomname, int selection, CcStri
 {
     if ( m_ModelDoc == nil ) return;
 
-    CcString nameOfMenuToUse;
+//    CcString nameOfMenuToUse;
     CrMenu* theMenu = nil;
 
     switch ( selection ) {
