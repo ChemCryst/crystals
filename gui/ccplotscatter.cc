@@ -11,6 +11,11 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2002/07/15 12:19:13  richard
+// Reorder headers to improve ease of linking.
+// Update program to use new standard C++ io libraries.
+// Update to use new version of MFC (5.0 with .NET.)
+//
 // Revision 1.16  2002/07/03 14:23:21  richard
 // Replace as many old-style stream class header references with new style
 // e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -283,10 +288,10 @@ void CcPlotScatter::DrawView(bool print)
 			yoriginvalue = m_Axes.m_AxisData[Axis_YL].m_AxisDivisions[0];
 		}
 		
-		// draw a grey background (not if printing....)
+                // draw a white background (not if printing....)
 		if(!print)
 		{
-			attachedPlot->SetColour(200,200,200);
+                        attachedPlot->SetColour(255,255,255);
 			attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
 		}
 

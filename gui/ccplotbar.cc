@@ -7,6 +7,10 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.23  2002/07/22 14:24:48  richard
+// Bug fix - attempt to allocate and then delete zero length array when
+// plot contains no bars.
+//
 // Revision 1.22  2002/07/18 16:45:53  richard
 // Bugfix: Crash on mouse over, if there were no data points in the graph.
 //
@@ -326,10 +330,10 @@ void CcPlotBar::DrawView(bool print)
 			yoriginvaluer = m_Axes.m_AxisData[Axis_YR].m_AxisDivisions[0];
 		}
 
-		// draw a grey background (not if printing)
+                // draw a white background (not if printing)
 		if(!print)
 		{
-			attachedPlot->SetColour(200,200,200);
+                        attachedPlot->SetColour(255,255,255);
 			attachedPlot->DrawRect(m_XGapLeft, m_YGapTop, 2400-m_XGapRight, 2400-m_YGapBottom, true);
 		}
 		

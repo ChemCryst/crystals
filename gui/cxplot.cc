@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.22  2002/07/18 16:57:52  richard
+//   Upgrade to use standard c++ library, rather than old C libraries.
+//
 //   Revision 1.21  2002/07/03 14:23:21  richard
 //   Replace as many old-style stream class header references with new style
 //   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -125,7 +128,7 @@ CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
     CxPlot *theStdPlot = new CxPlot(container);
 //    theStdPlot->Create(wndClass,"Plot",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
     theStdPlot->Create(NULL,"Plot",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
-    theStdPlot->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
+//    theStdPlot->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theStdPlot->SetFont(CcController::mp_font);
 
     CClientDC   dc(theStdPlot);
@@ -135,7 +138,12 @@ CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
     theStdPlot->GetClientRect (&rect);
     theStdPlot->m_newMemDCBitmap->CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
     theStdPlot->m_oldMemDCBitmap = theStdPlot->m_memDC->SelectObject(theStdPlot->m_newMemDCBitmap);
-    theStdPlot->m_memDC->PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
+//    theStdPlot->m_memDC->PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
+    CBrush brush;
+    brush.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
+    CBrush *oldBrush = theStdPlot->m_memDC->SelectObject(&brush);
+    theStdPlot->m_memDC->FillRect(CRect(0,0,rect.Width(),rect.Height()),&brush);
+    theStdPlot->m_memDC->SelectObject(oldBrush);
     theStdPlot->m_memDC->SelectObject(theStdPlot->m_oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
@@ -312,7 +320,12 @@ void CxPlot::Clear()
 
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
 //    m_memDC->PatBlt(0, 0, m_client.Width(), m_client.Height(), WHITENESS);
-	m_memDC->PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+//    m_memDC->PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+    CBrush brush;
+    brush.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
+    CBrush *oldBrush = m_memDC->SelectObject(&brush);
+    m_memDC->FillRect(CRect(0,0,m_client.Width(),m_client.Height()),&brush);
+    m_memDC->SelectObject(oldBrush);
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
@@ -677,6 +690,7 @@ void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
 {
 #ifdef __CR_WIN__
   MoveWindow(left,top,right-left,bottom-top,true);
+  m_client.Set(top,left,bottom,right);
   if(m_memDC)
   {
      delete m_newMemDCBitmap;
@@ -684,10 +698,16 @@ void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
      m_newMemDCBitmap = new CBitmap;
      m_newMemDCBitmap->CreateCompatibleBitmap(&dc, right-left, bottom-top);
      m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
-     m_memDC->PatBlt(0, 0, right-left, bottom-top, WHITENESS);
+//     m_memDC->PatBlt(0, 0, right-left, bottom-top, WHITENESS);
+
+     CBrush brush;
+     brush.CreateSolidBrush(GetSysColor(COLOR_3DFACE));
+     CBrush *oldBrush = m_memDC->SelectObject(&brush);
+     m_memDC->FillRect(CRect(0,0,m_client.Width(),m_client.Height()),&brush);
+     m_memDC->SelectObject(oldBrush);
      m_memDC->SelectObject(m_oldMemDCBitmap);
+
   }
-  m_client.Set(top,left,bottom,right);
   ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
 #endif
 #ifdef __BOTHWX__
