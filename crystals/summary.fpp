@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2002/07/18 17:02:29  richard
+C Limit max theta value to 90, if ASIN is going to fail.
+C
 C Revision 1.29  2002/07/15 11:59:48  richard
 C New routine XTHETA works out completeness and best theta value for
 C fullish completeness. Probably doesn't belong is SUMMARY.
@@ -652,12 +655,12 @@ C -- THE EXPRESSIONS FOR THE WEIGHTS ARE CONSTRUCTED FROM THE
 C    STRINGS CONTAINED IN 'CRESLT' AND 'CEXPRS' INDEXED BY
 C    'IRESLT' AND 'IEXPRS'.
 C
-      PARAMETER ( MAXSCH = 16 )
+      PARAMETER ( MAXSCH = 17 )
       DIMENSION IEXPRS(2,MAXSCH)
       DIMENSION IRESLT(MAXSCH)
 C
       character *(*)ctext(4)
-      CHARACTER*32 CSNAME(MAXSCH)
+      CHARACTER*40 CSNAME(MAXSCH)
       DIMENSION    LNNAME(MAXSCH)
 C
       CHARACTER*64 CFORMS(14)
@@ -684,7 +687,7 @@ C
      6 '1/[P(1) + FO + P(2)*FO**2 + . . + P(NP)*FO**NP]' ,
      7 '(Data with the key WEIGHT in list 6)' ,
      8 '1/(Data with the key SIGMA(/FO/) in list 6)' ,
-     9 '1.0' ,
+     9 '1.0 or 1./2F' ,
      + '1.0/[A[0]*T[0]''(X)+A[1]*T[1]''(X) ... +A[NP-1]*T[NP-1]''(X)]',
      1 '[SIN(theta)/lambda]^P(1)' ,
      2 '[weight] * exp[8*(p(1)/p(2))*(pi*s)^2]' ,
@@ -693,24 +696,30 @@ C
 C
       DATA IEXPRS / 1 , 2 , 3 , 4 , 5 , 0 , 6 , 0 , 7 , 0 ,
      2 7 , 0 , 8 , 0 , 8 , 0 , 9 , 0 , 10 , 0 , 10 , 0 , 11 , 0 ,
-     3 12, 0, 13, 0, 13, 0, 14, 0 /
+     3 12, 0, 13, 0, 13, 0, 14, 0, 14, 0 /
 C
 C
       DATA CRESLT / 'W' , 'SQRT(W)' /
       DATA IRESLT / 2 , 2 , 1 , 1 , 1 , 2 , 1 , 2 , 1 , 1 ,
-     2 1, 1, 1, 1, 1, 1 /
+     2 1, 1, 1, 1, 1, 1, 1 /
 C
-      DATA CSNAME / '( Modified Hughes )' , '( Hughes )' , ' ' ,
+      DATA CSNAME / '( Modified Hughes )' ,
+     1 '( Hughes )' , ' ' ,
      2 '( Cruickshank )' , ' ' ,
-     3 ' ' , ' ' , ' ' , '( Unit weights )' ,
-     4 '( Chebychev polynomial )' , '( Chebychev polynomial )' ,
-     5 ' ' , '( Dunitz and Seiler )', '( Tukey and Prince )',
-     6 '( Tukey and Prince )', '( Modified Sheldrick )' /
+     3 ' ' , ' ' , ' ' ,
+     9 '( Quasi-Unit weights )' ,
+     * '( Chebychev polynomial )' , '( Chebychev polynomial )' ,
+     2 ' ' ,
+     3 '( Dunitz and Seiler )', 
+     4 '( Prince & Tukey modified Chebyshev )',
+     5 '( Prince & Tukey modified Chebyshev )',
+     6  '( Modified Sheldrick )',
+     7  '( Modified Sheldrick )' /
       DATA LNNAME / 19 , 10 , 1 ,
      2 15 , 1 ,
-     3 1 , 1 , 1 , 16 ,
+     3 1 , 1 , 1 , 22 ,
      4 24 , 24 ,
-     5 1, 21, 20, 20, 22 /
+     5 1, 21, 40, 40, 22, 22 /
       DATA CEXPRS / 'expressions' /
       DATA LENEXP / 11 /
 C

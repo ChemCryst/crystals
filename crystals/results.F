@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2002/07/16 14:20:22  richard
+C Fix format overflow when cell is bigger than 10,000 cubic Angstroms
+C
 C Revision 1.37  2002/07/15 13:14:29  richard
 C For F000, use electron in cell count, as this is the SHELX standard, and while
 C the CIF definition allows dispersive terms to be included, it only confuses
@@ -4265,7 +4268,22 @@ C
             CALL XPCIF (CLINE)
             WRITE (NCFPU1,'('';'')')
           call xsum04(0,ctext)
-          call xpcif(ctext(1))
+          ival = 0
+          if ((itype .eq. 10) .or.  (itype .eq. 11)) then
+            ival = 12
+          else if ((itype .eq. 14) .or. (itype .eq. 15)) then
+            ival = 35
+          else if ((itype .eq. 16) .or.  (itype .eq. 17)) then
+            ival = 34
+          endif
+          if (ival .ne. 0 ) then     
+           ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+           call xctrim (ctemp,nchar)
+           write (cline,'(a,a )') 'Method = ', ctemp(1:nchar)
+           call xpcif (cline)
+          else
+           call xpcif(ctext(1))
+          endif
           call xpcif(ctext(2))
           call xpcif(ctext(3))
           call xpcif(ctext(4))
