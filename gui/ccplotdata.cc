@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2001/11/13 10:54:28  ckpgroup
+// SH: Log Axis Scaling fixed.
+//
 // Revision 1.2  2001/11/12 16:24:28  ckpgroup
 // SH: Graphical agreement analysis
 //
@@ -193,7 +196,8 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				if(m_Series) m_Series->AllocateMemory(length);
 				else LOGWARN("LENGTH: Series not yet initialised. Specify NSERIES before LENGTH");
 
-				m_Axes->m_Max[Axis_X] = length;
+//Don't assume that you'll get a full array - this gets incrmtd as data flows in anyway...
+//				m_Axes->m_Max[Axis_X] = length;
 				break;
 			}
 			case kTPlotSeriesName:
