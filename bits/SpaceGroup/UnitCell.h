@@ -71,12 +71,12 @@ public:
     float getSEAlpha();
     float getSEBeta();
     float getSEGamma();
-    char* guessCrystalSystem();
+    // char* guessCrystalSystem();
     std::ostream& output(std::ostream& pStream);
 };
 
 char* getCrystalSystem();
 char* crystalSystemConst(int pIndex);
-int indexOfClass(String& pClass, String& pUnique);
+int indexOfSystem(String& pSystem, String& pUnique);
 std::ostream& operator<<(std::ostream& pStream, UnitCell& pUnitCell);
 #endif
