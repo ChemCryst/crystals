@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2003/11/06 15:48:01  rich
+C Improved part numbering rules. The group bit of the number (digits > 1000)
+C should now be called the assembly number. The number may now be negative,
+C the -ve sign is given to the part digits (<999) and these atoms are not
+C allowed to form bonds to the same part using symmetry operators. Useful
+C for assemblies disordered across a sym op.
+C
 C Revision 1.21  2003/08/05 11:11:11  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -411,6 +418,9 @@ C -- MOVE PREVIOUS CARDS READ
 C
 1610  CONTINUE
 C----- LOOK FOR 'ALL'
+C This will turn "ALL" into "FIRST UNTIL LAST" and
+C "ALL(X's)" into "FIRST(X's)" UNTIL LAST
+
       J = KEQUAL (NC, KALL(1))
       IF (J .GT. 0) THEN
         IF (KCOMP (3, IMAGE(J), KALL(1), 1, 3) .GT. 0) THEN
@@ -423,7 +433,7 @@ C----- LOOK FOR BLANK AFTER 'ALL'
           ENDIF
           CALL XFILL (IB, IMAGE(J), 80-J+1)
           CMOUSE(6+K-J-3:)= ' UNTIL LAST '
-          IF(K+16 .GT. 80) GOTO 9920
+          IF(K+16 .GT. 240) GOTO 9920
           READ (CMOUSE, '(240A1)') (IMAGE(L),L=J, K+16)
           CALL XMOVEI ( IMAGE, LCMAGE, 80)
         ENDIF
