@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.34  2001/08/14 10:17:58  ckp2
+// The new facility for autoclosing windows when scripts crash out needs to
+// make sure the deleted window is not left as the mCurrentWindow.
+//
 // Revision 1.33  2001/07/16 07:20:41  ckp2
 // Much cleaner thread sync.
 //
@@ -1185,6 +1189,7 @@ void CcController::CompleteProcessing()
 // pending commands in the command queue.
 
    m_Protect_Completing_CS.Enter();
+   LOGSTAT("-----------Output queue locked." );
    m_Completing = true;
    m_Protect_Completing_CS.Leave();
 }
@@ -1197,6 +1202,7 @@ void CcController::ProcessingComplete()
 // processing all pending commands in the command queue.
 
    m_Protect_Completing_CS.Enter();
+   LOGSTAT("-----------Output queue released." );
    m_Completing=false;
    m_Protect_Completing_CS.Leave();
 }
@@ -1268,7 +1274,7 @@ void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
     m_Crystals_Commands_CS.Enter();
 
     mCrystalsCommandQueue.SetCommand( line, jumpQueue);
-    ProcessingComplete();
+    if (jumpQueue) ProcessingComplete();
 
     m_Crystals_Commands_CS.Leave();
 
@@ -1306,7 +1312,7 @@ void  CcController::AddInterfaceCommand( CcString line )
 
   mInterfaceCommandQueue.SetCommand( line );
 
-//  LOGSTAT("CRYSTALS puts: " + line );
+  LOGSTAT("-----------CRYSTALS has put: " + line );
 
   m_Interface_Commands_CS.Leave();
 
@@ -1336,6 +1342,7 @@ Boolean CcController::GetCrystalsCommand( char * line )
 // The queue is empty or locked so wait efficiently. 
 // Release the mutex for a while, so that someone else can write to the queue!
         m_Wait = false;
+//        LOGSTAT ("-----------Queue locked or empty..");
        m_Crystals_Commands_CS.Leave();
         if (mThisThreadisDead) return false;
 
@@ -1345,10 +1352,9 @@ Boolean CcController::GetCrystalsCommand( char * line )
 //The writer has signalled us (or we got bored of waiting) now get the mutex and read the queue.
 
         m_Crystals_Commands_CS.Enter();
-//        LOGSTAT ("Bored. Retesting queue.");
     }
 
-    LOGSTAT("!!!Crystals thread: Got command: "+ CcString(line));
+    LOGSTAT("-----------Crystals thread: Got command: "+ CcString(line));
 
     m_Crystals_Commands_CS.Leave();
 
@@ -1404,7 +1410,10 @@ Boolean CcController::GetInterfaceCommand( char * line )
     strcpy( line, "" );
 // If CRYSTALS has nothing more to say, the we'd better make sure that the
 // queue of commands for CRYSTALS isn't locked:
-    if ( Completing() ) ProcessingComplete(); 
+    if ( Completing() ) {
+       LOGSTAT ( "Unlocking the output queue for safety reasons");
+       ProcessingComplete();
+    }
     m_Interface_Commands_CS.Leave();
     return (false);
   }
