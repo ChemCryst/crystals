@@ -1827,6 +1827,7 @@ C
 C
 CODE FOR XDETCH
       SUBROUTINE XDETCH ( COMMND )
+&DVF      USE DFPORT
 C
 C -- THIS SUBROUTINE EXECUTES A SYSTEM COMMAND IN A SEPARATE PROCESS.
 C
@@ -1850,11 +1851,36 @@ C
       DIMENSION ILIMIT(2)
 C
       CHARACTER*(*) COMMND
+      CHARACTER*128 ACTUAL
+      CHARACTER*64  CTEMP
 C
 \XUNITS
+\XIOBUF
 \XSSVAL
 C
 &VAX      DATA ILIMIT(1) / 0 / , ILIMIT(2) / '7FFFFFFF'X /
+
+C Pick out each word in COMMND (space separated) and pass it to MTRNLG,
+C to check for environment labels.
+C Add the returned string onto ACTUAL.
+C ICS keeps track of position in COMMND, and ICA the position in ACTUAL
+
+#VAX      ICS = 1
+#VAX      IAS = 1
+#VAX34    CONTINUE
+#VAX         ICE = INDEX ( COMMND(ICS:) , ' ' )
+#VAX         IF (ICE.LE.0) GOTO 35
+#VAX         CTEMP = COMMND(ICS:ICS+ICE-1)
+#VAX         ICS = ICS + ICE
+#VAX         CALL MTRNLG(CTEMP,'UNKNOWN',ILENG)
+#VAX         ICE = INDEX ( CTEMP, ' ' )
+#VAX         IF (ICE.LE.0) GOTO 35
+#VAX         ACTUAL (IAS:) = CTEMP
+#VAX         IAS = IAS + ICE
+#VAX      GOTO 34
+#VAX35    CONTINUE
+#VAX      COMMND = ACTUAL
+
 &VAX      ISTAT = SYS$PURGWS ( ILIMIT )
 &VAX      IF ( .NOT. ISTAT ) CALL LIB$SIGNAL ( %VAL(ISTAT) )
 &VAXC
@@ -1913,11 +1939,15 @@ C
 C
 &DOS      CALL CISSUE (COMMND, IFAIL)
 &DOS      IF (IFAIL .EQ. 0) RETURN
-&&DVFGID      IFAIL = SYSTEMQQ(COMMND)
-&&DVFGID      IF (IFAIL .EQ. 0 ) RETURN
+C&&DVFGID      IFAIL = SYSTEMQQ(COMMND)
+
+&DVF      IFAIL = SYSTEM(COMMND)
+&DVF      IF (IFAIL .EQ. 0 ) RETURN
+&GID      CALL GDETCH(COMMND)
+&GID      RETURN
 &&LINGIL      CALL SYSTEM(COMMND,IFAIL)
 &&LINGIL      IF (IFAIL .EQ. 0 ) RETURN
-C
+
 C
 &XXX      IF (ISSPRT .EQ. 0) THEN
 &XXX      WRITE ( NCWU , 1005 ) COMMND
@@ -3329,4 +3359,19 @@ C
       ENDIF
       RETURN
       END
-C
+
+
+&GIDCODE FOR GDETCH
+&GID      SUBROUTINE GDETCH(CLINE)
+&GID      INTERFACE
+&GID                SUBROUTINE GUEXEC (CALINE)
+&GID                    !DEC$ ATTRIBUTES C :: GUEXEC
+&GID                    CHARACTER*(*) CALINE
+&GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
+&GID                    END SUBROUTINE GUEXEC
+&GID      END INTERFACE
+&GID      CHARACTER*80 CLINE
+&GID      CALL GUEXEC ( CLINE )
+&GID
+&GID      RETURN
+&GID      END
