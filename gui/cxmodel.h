@@ -7,6 +7,12 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.22  2001/09/07 14:39:06  ckp2
+//
+//  New modelwindow function lets the user choose a background bitmap to
+//  display behind the model. David is correct; I've been to too many
+//  conferences. But it's too late now, I've done it.
+//
 //  Revision 1.21  2001/07/16 07:33:57  ckp2
 //  wx version: Subclassed the little text windows that popup and tell you the atom names,
 //  in order that they pass any mouse events to the model window. Otherwise they just get
@@ -207,7 +213,7 @@ class CxModel : public BASEMODEL
     float m_stretchX ;
     float m_stretchY ;
     bool  m_bitmapok;
-
+	bool m_bMouseLeaveInitialised;
 #ifdef __CR_WIN__
     CStatic* m_TextPopup;
 
@@ -226,7 +232,7 @@ class CxModel : public BASEMODEL
     afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
     afx_msg BOOL OnEraseBkgnd( CDC* pDC );
     afx_msg void OnMenuSelected (int nID);
-
+	afx_msg void OnMouseLeave();
     DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__

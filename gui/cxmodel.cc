@@ -112,7 +112,7 @@ CxModel::CxModel(CrModel* container)
   ptr_to_crObject = container;
   m_hGLContext = NULL;
 #endif
-
+  m_bMouseLeaveInitialised = false;
   m_bitmapok = false;
   m_bNeedReScale = true;
   m_bModelChanged = true;
@@ -187,6 +187,7 @@ BEGIN_MESSAGE_MAP(CxModel, CWnd)
    ON_WM_MOUSEMOVE()
    ON_WM_ERASEBKGND()
    ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
+   ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
 END_MESSAGE_MAP()
 #endif
 
@@ -529,6 +530,11 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 
 }
 
+void CxModel::OnMouseLeave()
+{
+	DeletePopup();
+	m_bMouseLeaveInitialised = false;
+}
 
 
 #ifdef __CR_WIN__
@@ -552,6 +558,16 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
   bool ctrlDown = event.m_controlDown;
 #endif
 
+    // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
+  if(!m_bMouseLeaveInitialised)
+  {
+	TRACKMOUSEEVENT tme;
+	tme.cbSize = sizeof(tme);
+	tme.hwndTrack = m_hWnd;
+	tme.dwFlags = TME_LEAVE;
+	_TrackMouseEvent(&tme);
+	m_bMouseLeaveInitialised = true;
+  }
 
   switch ( m_mouseMode )
   {
