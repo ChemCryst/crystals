@@ -11,19 +11,23 @@
 %% write a SIR92 data file
 %%
 %   BLOCK
-^^WI WINDOW SIR92 'Sir92 Preparation'
+^^WI WINDOW SIR92 'Sir92 Options'
 ^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2
 ^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=4 NCOLS=3
+^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3
 ^^WI   {
 ^^WI     @ 1,2 RADIOBUTTON RS '&Default Sir92 parameters'
 ^^WI           STATE=ON
-^^WI     @ 2,2 RADIOBUTTON RD '&Alternative Sir92 parameters'
+^^WI    @ 2,2 RADIOBUTTON RDS '&Alternative 1 (seminv and random)'
 ^^WI           STATE=OFF
-^^WI     @ 3,2 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI     @ 3,2 RADIOBUTTON RDR '&Alternative 2 (seminv and 12 symbols)'
 ^^WI           STATE=OFF
-^^WI     @ 4,2 CHECKBOX CRUN '&Run Sir92 now'
+^^WI @ 4,2 RADIOBUTTON RD '&Alternative 3 (very long random phasing job)'
+^^WI           STATE=OFF
+^^WI     @ 6,2 CHECKBOX CED '&Edit Sir92 file before processing'
+^^WI           STATE=OFF
+^^WI     @ 7,2 CHECKBOX CRUN '&Run Sir92 now'
 ^^WI           STATE=ON
 ^^WI   }
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
@@ -48,8 +52,24 @@
 %          COPY '#FOREIGN SIR92 '
 %          COPY 'END'
 %      ELSE
+^^??     RDS STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE ABBREVIATED 'On=2nd job'
+%        IF ( VALUE .EQ. 1 ) THEN
 %          COPY '#FOREIGN SIR92 DIFFICULT'
 %          COPY 'END'
+%        ELSE
+^^??       RDR STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE ABBREVIATED 'On=3rd job'
+%          IF ( VALUE .EQ. 1 ) THEN
+%            COPY '#FOREIGN SIR92 HARD'
+%            COPY 'END'
+%          ELSE
+%            COPY '#FOREIGN SIR92 LONG'
+%            COPY 'END'
+%          END IF
+%        END IF
 %      END IF
 ^^??   CRUN STATE
 %      VERIFY ON OFF
@@ -85,13 +105,34 @@
 %      EVALUATE BUTTXX = '&No'
 %      COPY '#SCRIPT XQUESTIO'
 %      IF ANSWER .EQ. FALSE THEN
-%          COPY '#SCRIPT XHELP1'
+^^WI WINDOW SIRFAIL 'Failed to solve' SIZE MODAL POSITION=ABOVE _MAIN 
+^^WI GRID OUTER NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 TEXTOUT XSIRTEXT ''
+^^WI         NROWS=20 NCOLS=90
+^^WI   @ 2,4 GRID BTN NROWS=3 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON HELP '&View Log'
+^^WI     @ 3,1 BUTTON CLOSE '&Close' CANCEL DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDTEXTTO XSIRTEXT
    If the structure will not solve:
-   1) Try the "Alternative Sir92 parameters" option.
+   1) Try one of the alternative Sir92 parameters options.
    2) Try SHELXS or DirDif.
    3) Read the Sir92 guide in SIR92/GUIDE92.TXT for help.
    4) Be sure that the space group is correct.
-%          COPY '#SCRIPT XHELP2'
+   5) Click on 'View Log' and study the output of the 
+      Sir92 program for reasons for failure.
+^^CO SENDTEXTTO _MAINTEXTOUTPUT
+%          VERIFY CLOSE HELP
+%          GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF VALUE .EQ. 2 THEN
+%             COPY '#SPAWN start /w notepad.exe sir92.lis'
+%          END IF
+^^CO DISPOSE SIRFAIL
 %          FINISH
 %      END IF
 %%
