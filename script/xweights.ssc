@@ -47,8 +47,10 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^CR
 % IF ( LED23 ) THEN
 ^^CO SET XW_LIST SELECTION=1
-% ELSE
+% ELSE IF ( FTYPE .NE. 0 ) THEN
 ^^CO SET XW_LIST SELECTION=5
+% ELSE
+^^CO SET XW_LIST SELECTION=4
 % END IF
 %  LOOP
 %    VERIFY BXX BHH BAA BOK
