@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2003/03/05 16:53:18  rich
+C Removed dynamic arrays from weighting routine. There is no way all reflections
+C can be held in memory for large structures. Stack overflows.
+C The Sheldrick weights now use multiple passes of L6 to calculate best fits.
+C
 C Revision 1.45  2003/02/25 15:31:26  rich
 C New bug: XFAL06 called twice in a row due to merging clash. Fixed.
 C Double quotes around some graph axis titles.
@@ -516,7 +521,7 @@ C Converged!
           CALL XCSAE                     ! CLEAR THE LIST ENTRIES
           IRCZAP = 0
 \IDIM04
-          CALL XFILL (IRCZAP, ICOM04, IDIM04)
+C          CALL XFILL (IRCZAP, ICOM04, IDIM04)
           N4 = 6
           N4C = 4
           N4F = 5
@@ -529,13 +534,19 @@ C--MOVE THE PARAMETERS TO LIST 4
           STORE(L4+4) = 0.0
           STORE(L4+5) = 0.33333
           ITYPE4 = 16
-          ISTORE(L4C) = ITYPE4
-          ISTORE(L4C+1) = 3
+          ISTORE(L4C) = ITYPE4  ! New scheme number
+          ISTORE(L4C+1) = 3     ! Weight mod to be used
+          ISTORE(L4C+2) = IROBUS ! The robust flag
+          ISTORE(L4C+3) = IDUNIT ! THe Dunitz-Seiler flag
           STORE(L4F) = 2.0
           STORE(L4F+1) = 10000.0
+          STORE(L4F+2) = ROBTOL ! The Robust/Resist tolerance
+          STORE(L4F+3) = DUN01  ! DS parameters
+          STORE(L4F+4) = DUN02  ! DS parameters 
           MD4=6
 C--WRITE THE NEW LIST OUT TO DISC
           CALL XWLSTD(IULN,ICOM04,IDIM04,-1,-1)
+          ITYPEO=ITYPE4 ! Don't write list again later.
 
         CASE (10:11,14:15)  ! CHEBYSHEV TYPE WEIGHTING  - 10,11,14,15
 
