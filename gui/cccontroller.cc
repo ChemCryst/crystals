@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.55  2003/02/25 15:34:29  rich
+// For lines passed up from CRYSTALS (^^lines), allow "" and !!
+// and <> to be delimiter pairs aswell as the trad ''.
+//
 // Revision 1.54  2003/02/20 14:06:21  rich
 // Don't crash if initial window fails to open, just stop.
 //
@@ -885,14 +889,14 @@ Boolean CcController::ParseInput( CcTokenList * tokenList )
                             LOGWARN( "CcController:ParseInput:SAFESET ran off end of input.");
                             break;
                          }
-                         else
-                         {
-                            if ( tokenList->GetToken().Len() == 0 )
-                            {
-                               LOGWARN( "CcController:ParseInput:SAFESET ran out of tokens.");
-                               break;
-                            }
-                         }
+//                         else
+//                         {
+//                            if ( tokenList->GetToken().Len() == 0 )
+//                            {
+//                               LOGWARN( "CcController:ParseInput:SAFESET ran out of tokens.");
+//                               break;
+//                            }
+//                         }
                       }
                     }
                     else
