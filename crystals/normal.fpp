@@ -19,7 +19,7 @@ C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
 \XOPVAL
 \XIOBUF
 
-      DATA ICOMSZ / 3 /
+      DATA ICOMSZ / 4 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -61,6 +61,7 @@ C Store tolerance (only show fom's below this limit)
       IPLOTW = ISTORE(ICOMBF)
       IPLOTN = ISTORE(ICOMBF+1)
       ISTATP = ISTORE(ICOMBF+2)
+      IL28FL = ISTORE(ICOMBF+3)
 
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(IULN6,0)
@@ -165,7 +166,7 @@ C CALCULATE NUMBER OF REFLEXIONS TO PASS TO MULTAN
      1 3HAND,I5,14H  SMALLEST E'S)                                      
 
 C READ REFLEXION DATA FROM A CRYSTALS SHELX FORMAT FILE
-      CALL CARDIN
+      CALL CARDIN ( IL28FL )
 
       NB=8.0*ALOG10(0.05*FLOAT(MAX0(NREF,100))+0.5)
 C MAXIMUM OF 30 POINTS ON WILSON PLOT
@@ -177,7 +178,7 @@ C MAXIMUM OF 30 POINTS ON WILSON PLOT
 
 
 C OBTAIN SUMS FOR WILSON PLOT AND FIT LEAST SQUARES STRAIGHT LINE
-      CALL WILSUM(PTS,ISTATP)   
+      CALL WILSUM(PTS,ISTATP,IL28FL)   
 
 
 C PLOT WILSON CURVE AND LEAST SQUARES STRAIGHT LINE
@@ -185,10 +186,10 @@ C PLOT WILSON CURVE AND LEAST SQUARES STRAIGHT LINE
   450 BT=2.0*BT                                                         
 
 C CALCULATE SCALE FACTORS FOR APPROPRIATE REFLEXION GROUPS
-      CALL RESCA(KSYS)                                         
+      CALL RESCA(KSYS,IL28FL) 
 
 C CALCULATE FINAL E'S AND OUTPUT REFLEXION STATISTICS
-      CALL ECAL(KSYS,IPLOTN, ISTATP)
+      CALL ECAL(KSYS,IPLOTN, ISTATP, IL28FL)
 
 9000  CONTINUE
 C -- FINAL MESSAGE
@@ -330,21 +331,25 @@ C PRIMITIVE RHOMBOHEDRAL
       END                                                               
 
 C READ REFLEXIONS
-      SUBROUTINE CARDIN
+      SUBROUTINE CARDIN ( IL28FL )
+C
+C IL28FL: 0 - Use all reflections
+C         1 - Use reflections allowed by List 28.
+C
 \XWMISC
 \XLST06
 \STORE
       CALL XFAL06(6, 0)
-      ISTAT = KFNR(0)
-      DO WHILE ( ISTAT .GE. 0 )
+      DO WHILE ( KLDRNR(0) .GE. 0 )
+       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         IH = STORE(M6)               ! H
         IK = STORE(M6+1)             ! K
         IL = STORE(M6+2)             ! L
         NREF=NREF+1                                                       
         RHO   =P(1)*FLOAT(IH*IH)+P(2)*FLOAT(IK*IK)+P(3)*FLOAT(IL*IL)
      3        +P(4)*FLOAT(IH*IK)+P(5)*FLOAT(IH*IL)+P(6)*FLOAT(IK*IL)
-        RHOMAX=AMAX1(RHOMAX,RHO)                                       
-        ISTAT = KFNR(0)
+        RHOMAX=AMAX1(RHOMAX,RHO)
+       END IF
       END DO
       RETURN                                                            
       END
@@ -450,7 +455,15 @@ C 'WILSON' STRUCTURE FACTOR
 
 C ------------------------------------------------------------------
 C     LEAST SQUARES PLOT, INCLUDING SUMMATION OVER NB RANGES OF RHO     
-      SUBROUTINE WILSUM(PTS,ISTATP)  
+      SUBROUTINE WILSUM(PTS,ISTATP,IL28FL)
+C
+C IL28FL: 0 - Use all reflections
+C         1 - Use reflections allowed by L28.
+C
+C ISTATP: 0 - No GUI output
+C         1 - Set GUI elements for scale and B-factor
+C
+C
 \XWMISC
 \XWILSO
 \XCONST
@@ -496,8 +509,8 @@ C     SET INITIAL VALUES
       ENDIF
       IF(E5)SCALE = STORE(L5O)
       CALL XFAL06(6, 0)
-      ISTAT = KFNR(0)
-      DO WHILE ( ISTAT .GE. 0 )
+      DO WHILE ( KLDRNR(0) .GE. 0 )
+       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         IF(E5)THEN
           FCA  = SCALE * STORE(M6+5)    ! FC
@@ -536,7 +549,7 @@ C  INTENSITY
             SIC(N)=SIC(N)+TMUL*FCA*FCA/(EPS*PTS)
           END IF
         ENDIF
-        ISTAT = KFNR(0)
+       ENDIF
       END DO
 
 
@@ -788,7 +801,12 @@ C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
       END                                                               
 C ------------------------------------------------------------------
 C INDEX GROUP RESCALING                                             
-      SUBROUTINE RESCA(KSYS)                                   
+      SUBROUTINE RESCA(KSYS,IL28FL)
+C
+C IL28FL: 0 - Use all reflections
+C         1 - Use reflections allowed by L28.
+C
+
 \XWMISC
 \XWILSO
 \XLST06
@@ -804,8 +822,8 @@ C INDEX GROUP RESCALING
       END DO
 
       CALL XFAL06(6, 0)
-      ISTAT = KFNR(0)
-      DO WHILE ( ISTAT .GE. 0 )
+      DO WHILE ( KLDRNR(0) .GE. 0 )
+       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         MHKL(1) = STORE(M6)           ! H
         MHKL(2) = STORE(M6+1)         ! K
@@ -819,8 +837,8 @@ C UNPACK SYMMETRY FUNCTIONS
         NW=NW+MULT                                                        
         IG=MOD(IDS,100)                                                 
         SCS(IG)=SCS(IG)+ESQ*TMUL                                          
-        NG(IG)=NG(IG)+MULT                                                
-        ISTAT = KFNR(0)
+        NG(IG)=NG(IG)+MULT
+       END IF
       END DO
 
       TOT=TOT/FLOAT(NW)                                                 
@@ -887,7 +905,11 @@ C CALCULATE FINAL E-VALUES AND RESCALED F'S
 C CREATE NEW IF REQUIRED                                      
 C OUTPUT REFLEXIONS FOR MULTAN                                      
 C PREPARE TABLES OF STATISTICS                                      
-      SUBROUTINE ECAL(KSYS,IPLOTN, ISTATP) 
+      SUBROUTINE ECAL(KSYS,IPLOTN, ISTATP, IL28FL)
+C
+C IL28FL: 0 - Use all reflections
+C         1 - Use reflections allowed by L28
+C
 \XWMISC
 \XWILSO
 \XESTAT
@@ -937,8 +959,8 @@ C SET INITIAL VALUES
       RR=10.0/SQRT(RHOMAX)
      
       CALL XFAL06(6, 0)
-      ISTAT = KFNR(0)
-      DO WHILE ( ISTAT .GE. 0 )
+      DO WHILE ( KLDRNR(0) .GE. 0 )
+       IF ( ( KALLOW(0) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         SIGS = STORE(M6+12)           ! SIGF
         MHKL(1) = STORE(M6)           ! H
@@ -1045,8 +1067,7 @@ C DISTRIBUTION OF E FOR COMPLETE DATA
         IF(NET.EQ.0) GO TO 220                                            
         NU(NET)=NU(NET)+1                                                 
   220   NRW=NRW+MULT                                                      
-
-        ISTAT = KFNR(0)
+       END IF
       END DO
 
 
