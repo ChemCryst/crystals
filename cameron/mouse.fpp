@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2005/02/08 15:59:47  stefan
+C 1. Added precompiler if's for the mac source
+C
 C Revision 1.2  2004/12/13 16:16:48  rich
 C Changed GIL to _GIL_ etc.
 C
@@ -122,7 +125,6 @@ C Left mouse button has been pressed.
 #endif
         CALL ZLBUT(JX,JY)
         GOTO 10
-<<<<<<< mouse.fpp
 
 #if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
       ELSE IF ( CLINE(1:1) .EQ. 'V' ) THEN
