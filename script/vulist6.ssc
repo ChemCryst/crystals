@@ -8,6 +8,13 @@
 %  COPY '#RELEASE PUNCH SCPLST6.DAT'
 %  ON ERROR CONTINUE
 %  BLOCK
+%    TRANSFER '# This file is not automatically read back into' TO PUNCH
+%    TRANSFER '# CRYSTALS. If you want to manually edit your ' TO PUNCH
+%    TRANSFER '# reflections, you should go back to the original' TO PUNCH
+%    TRANSFER '# data. Reading this file back in will lead to' TO PUNCH
+%    TRANSFER '# rounding errors. However, if you can accept' TO PUNCH
+%    TRANSFER '# this, read back in with #USE SCPLST6.DAT' TO PUNCH
+%    TRANSFER ' ' TO PUNCH
 %    COPY '#PUNCH 6 C'
 %    COPY 'END'
 %  END BLOCK
