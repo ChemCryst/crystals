@@ -35,7 +35,7 @@ else
     F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
 
-    INSTALL=/bin/install
+    INSTALL=/usr/bin/install
 
  else
   ifeq ($(COMPCODE),WXS)
