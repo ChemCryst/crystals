@@ -374,7 +374,7 @@ void CrMenu::Substitute(CcString atomname, int nSelected, CcString* atomNames)
 					{
 						acommand += atomNames[k] + "_N";
 					}
-					acommand +=	"END _N" + lastPart;
+                              acommand += lastPart;
 				}
 			}
 
