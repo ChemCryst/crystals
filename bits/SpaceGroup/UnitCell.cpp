@@ -306,11 +306,11 @@ int indexOfClass(String& pClass, String& pUnique)
         {
             return 1;
         }
-        else if (pUnique.cmp("C"))
+        else if (pUnique.cmp("C") == 0)
         {
             return 3;
         }
-        else if (pUnique.cmp("B") || pUnique.cmp("UNKNOWN"))
+        else if (pUnique.cmp("B")==0 || pUnique.cmp("UNKNOWN")==0)
         {
             return 2;
         }
