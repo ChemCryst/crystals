@@ -2436,7 +2436,7 @@ ANALYSE            4    5
          3
     .LEVEL              8    0    1    4    0 LOW
      HIGH           LOW            MEDIUM         OFF
-DISTANCES         10    7
+DISTANCES          8    7
    1    4096 CRYSTALSDISTANCES
     1    2    5   11   12   29   31
    1.LIMITS             4    1    0    0
@@ -2470,19 +2470,15 @@ DISTANCES         10    7
      OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    4   -1 HIGH
      OFF            LOW            MEDIUM         HIGH
-    .PUNCH             23    0    1    5   -1 NOTHING
-     NOTHING        RESTRAIN       PUBLISH        CIF            DATA
+    .PUNCH             23    0    1    4   -1 NOTHING
+     NOTHING        RESTRAIN       PUBLISH        CIF
    5.INCLUDE            0 9999    0    0    0    0  104    5  175
          0    0    0    0    0    0    0    0    0    0
    6.EXCLUDE            0 9999    0    0    0    0  105    5  175
          0    0    0    0    0    0    0    0    0    0
    7.ONLY               0 9999    0    0    0    0  106    5  175
          0    0    0    0    0    0    0    0    0    0
-   8.FROM               0 9999    0    0    0    0  107    5  175
-         0    0    0    0    0    0    0    0    0    0
-   9.TO                 0 9999    0    0    0    0  108    5  175
-         0    0    0    0    0    0    0    0    0    0
-  10.DISTANCES          1    1    0    0
+   8.DISTANCES          1    1    0    0
          1
     .INPUTLIST         20    0    1    2    1         5
               5        10
