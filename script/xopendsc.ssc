@@ -33,6 +33,7 @@
 ^^WI SET _MAIN TEXT=
 % TRANSFER "^^WI 'Crystals - " // CFILE // "'" TO DISPLAY
 ^^CR
+%      COPY '#SCRIPT TABRESET'
 %% MAKE SURE THE GUI HAS RECEIVED THESE COMMANDS
 %% BEFORE CLOSING DOWN!
 %% We query the value of any object by name.
@@ -40,6 +41,7 @@
 %% GUI returns FALSE.
 ^^?? _ANYTHING_ EXISTS
 % GET NOSTORE TEXT 'Waiting to restart' ' '
+^^CO    SET _MAINTEXTOUTPUT EMPTY
 %      COPY '#END'
 %    END IF
 %END SCRIPT
