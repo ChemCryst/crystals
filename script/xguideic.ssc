@@ -59,7 +59,7 @@
 %        END BLOCK
 %%
 %        BLOCK % 10
-%          COPY '#SCRIPT XINSPACE'
+%          COPY '#SCRIPT XSPACE'
 %        END BLOCK
 %%
 %        BLOCK % 11
