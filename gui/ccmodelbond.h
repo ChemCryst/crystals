@@ -13,9 +13,9 @@ class CcModelBond : public CcModelObject
 		Boolean fill;
 		CcModelBond();
 		~CcModelBond();
-		void Draw(CrModel* ModelToDrawOn);
-		void Centre(int nx, int ny, int nz);
-		CcCoord ParseInput(CcTokenList* tokenList);
+            void ParseInput(CcTokenList* tokenList);
+            void Render(CrModel* view, Boolean detailed);
+
 	private:
 		int x1,y1,z1;
 		int x2,y2,z2;

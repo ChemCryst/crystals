@@ -3,6 +3,7 @@
 #include	"crconstants.h"
 #include "ccmodelbond.h"
 #include "cctokenlist.h"
+#include <math.h>
 #include "crmodel.h"
 
 CcModelBond::CcModelBond()
@@ -17,7 +18,7 @@ CcModelBond::~CcModelBond()
 {
 }
 
-CcCoord CcModelBond::ParseInput(CcTokenList* tokenList)
+void CcModelBond::ParseInput(CcTokenList* tokenList)
 {
 	CcString theString;
 //Just read four integers.
@@ -41,19 +42,40 @@ CcCoord CcModelBond::ParseInput(CcTokenList* tokenList)
 	b = atoi( theString.ToCString() );
 	theString = tokenList->GetToken();
 	rad = atoi( theString.ToCString() );
-	CcCoord retVal(0,0,0);
-	return retVal;
 }
 
-void CcModelBond::Draw(CrModel* ModelToDrawOn)
+void CcModelBond::Render(CrModel * view, Boolean detailed)
 {
-	ModelToDrawOn->DrawBond(x1,y1,z1,x2,y2,z2,r,g,b,rad);
-}
-
-
-void CcModelBond::Centre(int nx, int ny, int nz)
-{
-	x1 = 5000 + ox1 - nx; y1 = 5000 + oy1 - ny; z1 = 5000 + oz1 - nz;
-	x2 = 5000 + ox2 - nx; y2 = 5000 + oy2 - ny; z2 = 5000 + oz2 - nz;
+	double degToRad = 3.1415926535 / 180.0;
+      int detail = (detailed)? view->m_NormalRes : view->m_QuickRes ;
+	glPushMatrix();
+            GLUquadricObj* cylinder;
+            int bondrad = (int)((float)rad* view->RadiusScale());
+		float xlen = (float)(x2-x1), ylen = (float)(y2-y1), zlen = (float)(z2-z1);
+		float length = (float)sqrt ( xlen*xlen + ylen*ylen + zlen*zlen );
+		float centerX = (x1 + x2)/2.0f , centerY = (y1 + y2)/2.0f, centerZ = (z1 + z2)/2.0f;
+		float xrot = (float)asin ( -ylen / length );
+		float yrot = (float)acos ( zlen / (length*cos(xrot)) );
+		if ( (length*cos(xrot)*sin(yrot))/xlen < 0 )
+			yrot = -yrot;
+		xrot = xrot/(float)degToRad;
+		yrot = yrot/(float)degToRad;
+		glTranslated(centerX, centerY, centerZ);   //Translate view origin to the center of the bond
+		glRotatef(yrot,0,1,0);
+		glRotatef(xrot,1,0,0);
+		glTranslated(0, 0, -length / 2);           //shift the cylinder so it is centered at 0,0,0;
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_AMBIENT, Surface);
+		GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
+		GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+		GLfloat Shinine[] = {89.6f};
+		glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+		glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+		cylinder = gluNewQuadric();
+		gluQuadricDrawStyle(cylinder,GLU_FILL);
+            gluCylinder(cylinder,(float)bondrad,(float)bondrad,length, detail, detail);
+            gluDeleteQuadric(cylinder);
+	glPopMatrix();
 }
 
