@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2001/03/09 10:29:24  richard
+C Tweak to XPCIF to stop it crashing.
+C
 C Revision 1.14  2001/03/09 08:55:23  CKP2
 C  Missed a call in XPCIF
 C
@@ -1020,10 +1023,13 @@ cdjw99]
 C----- GET THE OCCUPANCY
         J = J + NUF
         CALL XMOVE (LINEA, LINEC, 118)
+cdjwmar2001 - Notes for Authors - dont include crystallographic
+c             occupancy contribution - keep code for future
           if (iupdat .ge.0) then
-            w = store(m5+2)*store(m5+13)
-          else
+c            w = store(m5+2)*store(m5+13)
             w = store(m5+2)
+          else
+            w = store(m5+2)/store(m5+13)
           endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
 C-C-C-SET OCC TO BE PRINTED ON SCREEN AFTER \PARAMETERS-COMMAND
@@ -3040,6 +3046,7 @@ C################################################################
      1'#=============================================================')
          ival=22
          ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+         CALL XCTRIM (CTEMP,NCHAR)
          WRITE (CLINE,'(''_computing_structure_refinement'' )') 
          CALL XPCIF (CLINE)
          CALL XPCIF (';')
@@ -3056,6 +3063,7 @@ C
 C
          ival=23
          ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
+         CALL XCTRIM (CTEMP,NCHAR)
          WRITE (CLINE,'(''_computing_molecular_graphics'' )') 
          CALL XPCIF (CLINE)
          CALL XPCIF (';')
