@@ -64,6 +64,8 @@ using namespace std;
 #define PATH_MAX _MAX_PATH
 #endif
 
+#define kVersion "1§"
+
 void outputToFile(RunParameters& pRunData, Stats* pStats, RankedSpaceGroups* pRanking, Table& pTable)	//This outputs the ranked spacegroups and the stats table to the file at the path pRunData->iOutputFile
 {
     if (pRunData.iOutputFile.getCString()[0] != 0)
@@ -159,6 +161,8 @@ int main(int argc, _TCHAR * argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 { 
+    std::cout << "The Determinator Version " << kVersion << "\n";
+    std::cout << "Written by Stefan Pantos\n";
     RunParameters tRunStruct;
     try
     {
