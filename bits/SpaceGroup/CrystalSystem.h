@@ -42,7 +42,7 @@
 #include <fstream>
 using namespace std;
 
-class Heading
+class Heading:public MyObject
 {
     private:
         Matrix<float>* iMatrix;
@@ -57,7 +57,7 @@ class Heading
         std::ostream& Heading::output(std::ostream& pStream);
 };
 
-class Headings
+class Headings:public MyObject
 {
     private:
         ArrayList<Heading>* iHeadings;
@@ -76,7 +76,7 @@ class Headings
 std::ostream& operator<<(std::ostream& pStream, Heading& pHeader);
 std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
 
-class Condition
+class Condition:public MyObject
 {
     private:
         Matrix<float>* iMatrix;
@@ -95,7 +95,7 @@ class Condition
 
 std::ostream& operator<<(std::ostream& pStream, Condition& pCondition);
 
-class Conditions
+class Conditions:public MyObject
 {
     private:
         ArrayList<Condition>* iConditions;
@@ -132,7 +132,7 @@ class Index
 
 std::ostream& operator<<(std::ostream& pStream, Index& pIndex);
 
-class Indexs
+class Indexs:public MyObject
 {
     private:
         ArrayList<Index>* iIndexs;
@@ -148,7 +148,7 @@ class Indexs
 
 std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs);
 
-class Column
+class Column:public MyObject
 {
     public:
         void setHeading(char* pHeading);
@@ -174,7 +174,7 @@ class ConditionColumn:virtual public Column
         std::ostream& output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions);
 };
 
-class SpaceGroup
+class SpaceGroup:public MyObject
 {
     private:
         char* iSymbols;
@@ -202,7 +202,7 @@ class SpaceGroups:virtual public Column
         char* getPointGroup();
 };
 
-class Table
+class Table:public MyObject
 {
     private:
         char* iName;
@@ -233,7 +233,7 @@ class Table
 
 std::ostream& operator<<(std::ostream& pStream, Table& pTable);
 
-class Tables
+class Tables:public MyObject
 {
     private:
         ArrayList<Table>* iTables;
@@ -255,7 +255,7 @@ std::ostream& operator <<(std::ostream& pStream, Tables& pTables);
 
 class Stats;
 
-class RankedSpaceGroups
+class RankedSpaceGroups:public MyObject
 {
     private:
         typedef struct RowRating

@@ -34,8 +34,11 @@
  * 	function name	
  * };
  */
- 
-class UnitCell
+#ifndef __UNIT_CELL_H__
+#define __UNIT_CELL_H__
+#include "ComClasses.h"
+
+class UnitCell:public MyObject
 {
 private:
     float iA, iB, iC, iAlpha, iBeta, iGamma;
@@ -73,3 +76,4 @@ public:
 
 char* getCrystalSystem();
 char* crystalSystemConst(int pIndex);
+#endif

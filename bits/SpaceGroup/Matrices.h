@@ -39,6 +39,7 @@
 #define __MATRICES_H__
 #include <stdio.h>
 #include <iostream.h>
+#include "ComClasses.h"
 #include "Exceptions.h"
 
 #if !defined(_WIN32)
@@ -60,7 +61,7 @@ class MatrixException:public MyException
 };
 
 template <class type>
-class Matrix
+class Matrix:public MyObject
 {
     private:
         type* 	iMatrix;
@@ -306,7 +307,7 @@ class Matrix
 #if defined (__APPLE__)
 //Specialisation of the matrxi class. This will only work on a Apple PowerMac. This needs Mac OS 10.1 or later
 template<>
-class Matrix<float>
+class Matrix<float>:public MyObject
 {
     private:
         float* 	iMatrix;

@@ -41,7 +41,7 @@
 #include <stdio.h>
 #include "Matrices.h"
 
-class Reflection
+class Reflection:public MyObject
 {
 public:
     Matrix<float>* tHKL;
@@ -52,10 +52,10 @@ public:
     Matrix<float>* getHKL();
 };
 
-class HKLData
+class HKLData:public MyObject
 {
     private:
-        ArrayList<Reflection>* tReflectionList;
+        ArrayList<Reflection>* iReflectionList;
     
     public:
         /**********************************************/
@@ -69,6 +69,5 @@ class HKLData
         int numberOfReflections();
         Reflection* getReflection(int pIndex);
         bool find(Reflection* pReflection);
-        void centeringTypeInfo();
 };
 #endif

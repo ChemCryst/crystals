@@ -24,7 +24,7 @@ typedef struct ElemStats
     float tRating2; 
 }ElemStats;
 
-class Stats
+class Stats:public MyObject
 {
     private:
         Headings* iHeadings;
