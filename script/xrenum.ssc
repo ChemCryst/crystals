@@ -14,7 +14,11 @@
 ^^WI      @ 1,1 GRID OPTIONS NROWS=4 NCOLS=1
 ^^WI      {
 ^^WI         @ 1,1 STATIC _TFS 'Next serial'
-^^WI         @ 2,1 EDITBOX NFS '1' CHARS=9 INTEGER
+%% Put Editbox into a grid to stop it stretching.
+^^WI         @ 2,1 GRID NOS NROWS=1 NCOLS=1 ISOLATE
+^^WI         {
+^^WI           @ 1,1 EDITBOX NFS '1' CHARS=6 INTEGER
+^^WI         }
 ^^WI         @ 3,1 STRETCH _V VERTICAL
 ^^WI         @ 4,1 GRID OPTNS NROWS=3 NCOLS=1 OUTLINE='Remaining atoms'
 ^^WI         {
@@ -150,6 +154,7 @@
  * Keeping old atom numbering scheme.
 %      COPY 'QUIT'
 %      COPY 'END'
+^^CO SET MODEL01 DISABLEATOM ALL NO
 %      FINISH
 %    END BLOCK
 %    BLOCK      %ATOM
