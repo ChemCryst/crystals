@@ -590,7 +590,7 @@ c prints the results to rotax.out
      4          'Figure of merit with no omissions = ',f6.2)
 5     FORMAT (i2,1X,9f7.3)
 
-      BINMAX = 0.0
+      BINMAX = 0.0001
 
       write(NCWU,1)(m2(1,i),i=1,3)
       write(NCWU,1)(m2(2,i),i=1,3)
@@ -630,7 +630,7 @@ c prints the results to rotax.out
          write(NCWU,7) (disag(j,i),j=1,3),
      1 (d(i,j),j=2,4),abs(d(i,1)),d(i,5),' Omitted from fom calculation'
         endif
-        BINMAX = MAX(BINMAX,ABS(D(I,1)))
+        BINMAX = MAX(BINMAX,ABS(D(I,1))**2)
       enddo
 
       IF ( ipunch .ge. 1 ) then
@@ -640,7 +640,7 @@ c prints the results to rotax.out
         END DO
 
         DO I = 1,30
-          N = 1 + (12.0 * abs(d(i,1)) / BINMAX)
+          N = 1 + (12.0 * abs(d(i,1)**2) / BINMAX)
           N = MAX(1,N)
           N = MIN(12,N)
           if (d(i,1)>0) then
@@ -649,8 +649,18 @@ c prints the results to rotax.out
              BINREJ(N) = BINREJ(N) + 1
           end if
         END DO
-        write (NCPU,'(F6.4,24I3)')BINMAX,(BININC(I),BINREJ(I),I=1,12)
+        IF ( BINMAX .GE. 1.0 ) THEN
+         write(NCPU,11)BINMAX*1000,(BININC(I),BINREJ(I),I=1,12)
+        ELSE IF ( BINMAX .GE. 0.1 ) THEN
+         write(NCPU,10)BINMAX*1000,(BININC(I),BINREJ(I),I=1,12)
+        ELSE
+         write(NCPU,9)BINMAX*1000,(BININC(I),BINREJ(I),I=1,12)
+        END IF
       END IF
+
+9     FORMAT(F6.4,24I3)
+10    FORMAT(F6.3,24I3)
+11    FORMAT(F6.2,24I3)
 
       write(NCWU,8)
 8     FORMAT('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
