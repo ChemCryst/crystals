@@ -2675,7 +2675,7 @@ FOURIER            5    6
     .INPUT             15    0    1    2    0 NO
      NO             YES
     .OUTPUT            16    0    1   -5    1
-HKLI              27    5
+HKLI              28    5
    1    4096 CRYSTALSINPUT6
     1    2    7   13   27
    1.READ               6    1    0    0
@@ -2855,6 +2855,23 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
          2    2
     .INTERVAL         105    0    1    0    0 12.0
     .INTERPOLATE      106    0    1    0    0 0.7
+  28.MATRIX            11    1    0    0   11    1 1009  108    6
+         1    1    1    1    1    1    0    0    0    0
+THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
+(10X,60A1)
+(1X,9F6.2)
+         2    2    2    2    2    2    2    2    2    2    2
+    .M11                0    0    1    0    0 1.0
+    .M21                0    0    1    0    0 0.0
+    .M31                0    0    1    0    0 0.0
+    .M12                0    0    1    0    0 0.0
+    .M22                0    0    1    0    0 1.0
+    .M32                0    0    1    0    0 0.0
+    .M13                0    0    1    0    0 0.0
+    .M23                0    0    1    0    0 0.0
+    .M33                0    0    1    0    0 1.0
+    .TOLERANCE          0    0    1    0    0 0.1
+    .TWINTOLER          0    0    1    0    0 0.001
 LP                 2    3
    9    4096 CRYSTALSPROCESS6
     1    6   13
