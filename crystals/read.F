@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/05/07 12:18:55  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.40  2003/03/06 12:01:59  rich
 C Clear ! prompt between reads.
 C
@@ -3854,7 +3860,7 @@ C -- FILE OPEN FAILED
         ENDIF
       ENDIF
 C
-      REWINDNUSRQ
+      REWIND(NUSRQ)
       NREC=1
 COCT98 - WIN32
 C      write(NUSRQ,1100)
@@ -3863,9 +3869,11 @@ C      write(NUSRQ,1100)
 C--ADD ONTO THE OTHER REQUESTS THAT ARE WAITING
 1050  CONTINUE
       DO 1150 I=1,NREC
-      READ(NUSRQ,1100)
+         READ(NUSRQ,1100)
 1100  FORMAT ( 1X )
+
 1150  CONTINUE
+      ENDFILE ( NUSRQ )
       NREC=NREC+1
 C--OUTPUT THE INSTRUCTION
 1200  CONTINUE
@@ -3873,8 +3881,8 @@ C--OUTPUT THE INSTRUCTION
            WRITE ( CMON,'(A,A)') ' SRQ write ', CLINE
            CALL XPRVDU(NCEROR, 1,0)
       ENDIF
-      WRITE(NUSRQ,'(A)' ) CLINE
-      ENDFILENUSRQ
+      WRITE(NUSRQ,'(A/)' ) CLINE
+      ENDFILE(NUSRQ)
 C--REPOSITON THE TAPE FOR READING
       CALL XRPSRQ
       RETURN
@@ -3905,12 +3913,18 @@ C----- CHECK IF THERE ARE ANY REQUESTS OUTSTANDING
       IADD = KCHLFL(KZ)
       LFL = IADD-1
       JADD = IADD + KZ - 1
+
       READ (NUSRQ, 1100) (ISTORE(KR), KR = IADD, JADD)
+c        DO I = 0,NREC-1
+c          KRR = IADD + ( 20 * I )
+c          READ (NUSRQ,1100) (ISTORE(KR), KR=KRR,KRR+19)
+c          WRITE(99,'(20A4)') (ISTORE(KR),KR=KRR,KRR+19)
+c        END DO
 1100  FORMAT (20A4)
       NREC = 0
       IEOF = 0
       IPOSRQ = 0
-      REWIND NUSRQ
+      REWIND(NUSRQ)
       ENDIF
       RETURN
       END
@@ -3953,7 +3967,7 @@ C
 C
       DATA I/0/
 C
-      REWINDNUSRQ
+      REWIND(NUSRQ)
       IF(IPOSRQ)1150,1150,1000
 1000  CONTINUE
       DO 1100 I=1,IPOSRQ
