@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2002/03/13 12:48:34  richard
+C Huge overhaul of distances and angles. Improved workings of INCLUDE/EXCLUDE/PIVOT
+C /BONDED. Indented whole distances subroutine so that it is readable.
+C Added lots of new L40/41 processing code.
+C
 C Revision 1.16  2001/10/17 15:14:05  Administrator
 C Changes to allow PARTS in list 5
 C
@@ -5567,7 +5572,7 @@ C TODO -- Include L41A list of atoms, CRC and so on.
 
 C -- Work out bond types:
 
-      CALL BONDTY
+      CALL BONDTY(1)
 
 C -- Write new list back to disk.
 

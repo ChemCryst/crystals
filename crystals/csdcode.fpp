@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2002/03/12 18:01:13  ckp2
+C Comment out debugging. Treat planar sp2 N's as possibly aromatic.
+C
 C Revision 1.14  2002/02/27 19:30:18  ckp2
 C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
 C RIC: Ensure consistent use of backslash after CRYSDIR:
@@ -1228,8 +1231,10 @@ C If they are equal, return 0.
 C-----+--------+---------+---------+---------+---------+---------+-----+
 
 CODE FOR BONDTY
-      SUBROUTINE BONDTY
+      SUBROUTINE BONDTY(INEW41)
 
+C     INEW41 - normally 0, set to 1 if caller is in process of creating
+C              a new L41 from scratch.
 
 C     Call CSD bond assignment routine.
 C     Setup atom arrays from list 5
@@ -1329,11 +1334,12 @@ C                      !Needed when using a compressed L5 during FOURIER.
       IF(KEXIST(1).LE.0) GOTO 9910
       IF(KEXIST(2).LE.0) GOTO 9910
       IF(KEXIST(5).LE.0) GOTO 9910
-      IF(KEXIST(41).LE.0) GOTO 9910
+      IF((INEW41.EQ.0).AND.(KEXIST(41).LE.0)) GOTO 9910
       IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
       IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
       IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0)  CALL XFAL05
-      IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
+      IF((INEW41.EQ.0).AND.(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0))
+     1     CALL XFAL41
       IF ( IERFLG .LT. 0 ) GO TO 9920
 
 

@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/02/27 19:40:10  ckp2
+C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
+C this extra length. In general the program continues to ignore everything beyond
+C column 80. The "system" commands (OPEN, RELEASE, etc.) do know about the extra length
+C and can take extra long filenames as a result. The script processor also knows: lines
+C in script files, the script input buffer and text output may now run up to 256 chars.
+C RIC: THe system commands respect double-quotes around arguments, so that filenames can be
+C given which contain spaces.
+C
 C Revision 1.30  2002/02/20 14:34:01  ckp2
 C Update KRDARG to respect double quotes when reading off arguments. Updated
 C KSYSIN not to use KRDARG, but to pass double quotes straight into KDETCH.
@@ -599,7 +608,7 @@ C----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
       IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
           LENUSE = 1
           CLINE = ' '
-          CALL BONDTY
+          CALL BONDTY(0)
 C Typing '#BONDCK' compares bond lengths and angles to the CSD data.
 C It writes quest files if the data is not available..
 cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH               
