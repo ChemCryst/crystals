@@ -6,7 +6,9 @@
 ^^WI COMMIT='WIL_BOK' CANCEL='^^CO DISPOSE XCHECK6'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
-^^WI  @ 1,1 TABCTRL _MAINTABS
+^^WI  @ 1,1 GRID TOP NROWS=3 NCOLS=3
+^^WI  {
+^^WI  @ 2,2 TABCTRL _MAINTABS
 ^^WI  {
 ^^WI   TAB _MAINTAB2 'Sigmas' GRID _MAINTG2 NROWS=5 NCOLS=3
 ^^WI   {
@@ -94,6 +96,22 @@
 ^^WI    }
 ^^WI    @ 4,2 PLOTWINDOW _VWILSON NROWS=20 NCOLS=64
 ^^WI   }
+^^WI   TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=5 NCOLS=3
+^^WI   {
+^^WI    @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
+^^WI    {
+^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC XFW1
+^^WI 'You are looking at N(Z) cumulative probability distribution functions'
+^^WI      @ 2,1 STATIC XFW2 ' '
+^^WI      @ 3,1 STATIC XFW3 ' '
+^^WI     }
+^^WI     @ 1,1 ICON IM INFO
+^^WI    }
+^^WI    @ 4,2 PLOTWINDOW _VNZDIST NROWS=20 NCOLS=64
+^^WI   }
+^^WI  }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _CHECKPR 'Please wait'
 ^^WI }
@@ -102,6 +120,7 @@
 ^^CO SENDPROGRESSTO _CHECKPR
 %%
 % COPY '#WILSON'
+% COPY 'OUTPUT PLOT=YES NZ=YES'
 % COPY 'END'
 %%
 % IF ( ABSENT ) THEN
