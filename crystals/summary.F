@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.56  2004/03/10 13:11:35  rich
+C Avoid error in summary if too many weighting parameters are given.
+C
 C Revision 1.55  2004/02/16 16:40:28  rich
 C Add a plot of phase distribution to the increasingl inappropriately named
 C #SIGMADIST command. Use #SIGM/OUT PHASE=YES/END graph is drawn on
@@ -1631,8 +1634,11 @@ C
 \XSSVAL
 \XCONST
 \XIOBUF
+\TYPE11 
+\XSTR11
 C
 \QSTORE
+\QSTR11
 \QLST30
 C
 C
@@ -1644,20 +1650,38 @@ C
       DATA CNAME/ 'H','K','L','Fo','Weight','Fc',6*' ',
      1 'Sigma',3*' ','Sth/L**2','Fo/Fc',17*' '/
 C
+      DATA MAX11 /16777216/
 C
-      DIMENSION X(N6D)
-      DIMENSION Y(N6D)
+c      DIMENSION X(N6D)
+c      DIMENSION Y(N6D)
+
+      DIMENSION TEMP(2)
+
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
 
+      IFSQ = ISTORE(L23MN+1)
+
+
 C--SETUP A GRAPH HERE
-      IF ( LEVEL .EQ. 4 ) THEN
+      IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
      1  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
      1  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
+        CALL XPRVDU(NCVDU, 3,0)
+      END IF
+      IF ( LEVEL .EQ. 5 ) THEN                 ! Normal probability plot
+        WRITE(CMON,'(A,/,A,/,A)')
+     1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
+     1  '^^PL XAXIS TITLE ''w^.5(Fo-Fc)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''Z-score'' SERIES 1 TYPE SCATTER'
+        IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
+          WRITE(CMON(2),'(A)')
+     1      '^^PL XAXIS TITLE ''w^.5(Fo^2-Fc^2)'' NSERIES=1 LENGTH=2000'
+        END IF
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 
@@ -1701,7 +1725,6 @@ C
       WTOP = 0.0
       WBOT = 0.0
       SIGTOP = 0.0
-      IFSQ = ISTORE(L23MN+1)
       N6ACC = 0
       FCMAX = 0
 1100  CONTINUE
@@ -1712,6 +1735,7 @@ C
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
         FCMAX = MAX( FCMAX, FC )
+
         IF ( LEVEL .EQ. 4 ) THEN
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -1737,6 +1761,16 @@ C - FSQ REFINENENT
         ENDIF
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
+
+        IF ( LEVEL .EQ. 5 ) THEN
+C If you have more than 8.8 million reflections you might be in trouble.
+         IF ( N6ACC .LE. MAX11/2 ) THEN
+          STR11(N6ACC*2-1) = WDEL     !Format:   [WDEL,INDICES]
+          STR11(N6ACC*2) = STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*65536.
+         END IF
+        END IF
+
+
       GO TO 1100
 1200  CONTINUE
 
@@ -1809,13 +1843,53 @@ C -- PRINT THE R VALUE ETC.
      4 5X , 'Minimisation function = ' , E15.6, / ,
      5     'Rsigma=', F6.2 )
 
+
+      IF ( LEVEL .EQ. 5 ) THEN
+
+        IF ( N6ACC .GT. MAX11/2 ) THEN
+          WRITE(CMON,'(A,I8)') '{E Too many reflections: ', N6ACC
+          CALL XPRVDU(NCVDU,1,0)
+          N6ACC = MAX11/2
+        END IF
+        WRITE(CMON,'(A,I8,A)') 'Computing normal probability plot for ',
+     1    N6ACC, 'reflections.'
+        CALL XPRVDU(NCVDU,1,0)
+C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
+        CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
+
+        DO I=1,N6ACC
+           PC = (I-0.5)/float(N6ACC)
+           A = sqrt(-2.*log(.5-abs(PC-.5)))
+           B = 0.27061*A+2.30753
+           C = A*(A*.04481+.99229)+1
+           Z = A-B/C
+C Unpack HKL
+           D=FLOAT(NINT(STR11(I*2)/256.))
+           MH=STR11(I*2)-D*256.
+           MK=FLOAT(NINT(D/256.))
+           ML=D-MK*256.
+
+           if (I.LE.N6ACC/2) Z=-Z
+c debug          WRITE(CMON,'(I5,2F15.2)') I,STR11(I*2-1),Z
+c debug          CALL XPRVDU(NCVDU,1,0)
+
+           WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
+           CALL XCRAS(HKLLAB, IHKLLEN)
+           WRITE(CMON,'(3A,2F11.3)')
+     1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',STR11(I*2-1), Z
+            CALL XPRVDU(NCVDU, 1,0)
+
+        END DO
+
+      END IF
+
 C -- FINISH THE GRAPH DEFINITION
-      IF ( LEVEL .EQ. 4 ) THEN
+      IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
-C
-C
+
+
 C----- UPDATE LIST 30
 C----- DONT UPDATE LIST 30 -  THE USER MIGHT BE FIDDLING WITH LIST 28
 C      STORE(L30RF) = RFACT
@@ -3019,6 +3093,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
         MSIG = MAX ( 1,MSIG )
         MSIG = MIN ( 25,MSIG )
         LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
+
 
       END DO
 
