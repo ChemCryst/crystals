@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2002/03/13 12:25:45  richard
+// Update variable names. Added FASTBOND and FASTATOM routines which can be called
+// from the Fortran instead of passing data through the text channel.
+//
 // Revision 1.13  2002/01/31 15:03:13  ckp2
 // RIC: Fix Alexander's OpenGL bug (at last).
 //
@@ -406,6 +410,8 @@ CcString CcModelDoc::Compress(CcString atomname)
             i = leng + 1;
         }
     }
+
+    if ( numbend < numbstart ) numbend = numbstart;
 
 //Build string in CRYSTALS format.
     CcString result;
