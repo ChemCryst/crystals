@@ -218,22 +218,22 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^CR
 %%
 %       IF DOSCALE .EQ. 1 THEN
-%           COPY '#XDELQ'
+%           COPY '#SCRIPT XDELQ'
 %           COPY '#SFLS'
 %           IF TWINNED .EQ. TRUE THEN
-%             COPY 'SCALE /FO/=SCALED-FOT' 
+%             COPY 'SCALE /FO/=SCALED-/FOT/'
 %           ELSE
 %             COPY 'SCALE'
 %           END IF
 %           COPY 'END'
 %       END IF
 %       IF DOCALC .EQ. 1 .OR. TWINNED .EQ. TRUE THEN
-%           COPY '#XDELQ'
+%           COPY '#SCRIPT XDELQ'
 %           COPY '#SFLS'
 %           IF TWINNED .EQ. TRUE THEN
-%             COPY 'SCALE /FO/=SCALED-FOT' 
+%             COPY 'CALC /FO/=SCALED-/FOT/'
 %           ELSE
-%             COPY 'SCALE'
+%             COPY 'CALC'
 %           END IF
 %           COPY 'END'
 %       END IF
@@ -258,7 +258,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %       ELSE IF IMAP .EQ. 6 THEN
 %           EVALUATE MAPTYPE = 'FO-PAT'
 %           INSERT 'FO-PAT'
-%       ELSE 
+%       ELSE
 %           EVALUATE MAPTYPE = 'FC-PAT'
 %           INSERT 'FC-PAT'
 %       END IF
@@ -382,7 +382,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 % OUTPUT
 ^^WI   @ 3,2 STATIC XPEAKS 'Convert them into an atom list?'
 ^^WI   @ 5,2 CHECKBOX XCOLLECT 'Collect the peaks into fragments.'
-^^WI                                         STATE=ON 
+^^WI                                         STATE=ON
 ^^WI   }
 ^^WI   @ 1,3 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI   {
@@ -427,34 +427,34 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %   BLOCK                   %BHELP%
 %       COPY '#SCRIPT XHELP1'
 Fourier maps.
-
+ 
 The data required to control the calculation and printing
 of a Fourier map are split into two parts.
-
+ 
 The first part, which should remain essentially unchanged
 from job to job, is stored in LIST 14, and describes the
 limits of the Fourier along each of the axes and the
 orientation of the map on the paper.
 To change this click on the 'Set Map Ranges' button.
-
+ 
 The second part of the information, such as the type of map,
-is provided by this dialog. 
-
+is provided by this dialog.
+ 
 In the ouput listing, new peaks are labelled, with the
 following meanings
-
+ 
 GOOD PEAK - The peak centre was determined by Least-Squares.
 POOR PEAK - The peak centre was determined by interpolation.
 DUBIUOS PEAK - The peak centre is only a local maximum.
-
+ 
 Options
 ==========
-
+ 
 Recompute scale factor:
 If there is a check mark next to this item, the overall scale
 factor will be re-calculated before the Fourier is calculated.
 This is necessary if you have input a new model.
-
+ 
 Recompute phases:
 If there is a check mark next to this item, structure factors
 will be re-calculated for all reflections before the Fourier
@@ -462,15 +462,15 @@ is calculated.
 This is advisable if you have made any changes to the
 model (e.g. deleting atoms) since the last least squares
 refinement.
-
+ 
 Map Type:
-F-Obs -  Compute the map using observed structure factors. 
+F-Obs -  Compute the map using observed structure factors.
 Diff  -  Subtract model structure factors from the observed
          structure factors. This will show up differences
          between  the model and the 'observed' structure -
          such as missing atoms.
-2Fo-Fc - 
-
+2Fo-Fc -
+ 
 %       COPY '#SCRIPT XHELP2'
 %   END BLOCK
 %   BLOCK                   %BSETMAP%
