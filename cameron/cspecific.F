@@ -926,24 +926,23 @@ c&WXS      END
 C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
 &DOS\CAMWIN
-##GILWXS      character*(*) text
-&&GILWXS      character*70 text
+      character*(*) text
+C&&GILWXS      character*70 text
       CHARACTER*80 ntext
+      
+      NTEXT = TEXT
+      WRITE(99,'(2A)')'zmore1:  ',text
+      WRITE(99,'(2A)')'zmore1n: ',ntext
+
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
 C&DOS      call window_update@(Status$Text)
-&&GILGID      CALL XCTRIM(TEXT,ITL)
-&&GILGID      IF ( ITL .LE. 2 ) RETURN
-&&GILGID      ITL = MIN ( ITL, 70 )
-&&GILGID      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
-&&GILGID      CALL ZMORE('^^WI '''//TEXT(1:ITL)//'''',0)
-&&GILGID      CALL ZMORE('^^CR',0)
-&WXS      CALL XCTRIM(TEXT,ITL)
-&WXS      IF ( ITL .LE. 2 ) RETURN
-&WXS      ITL = MIN ( ITL, 70 )
-&WXS      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
-&WXS      CALL ZMORE('^^WI '''//TEXT(1:ITL)//'''',0)
-&WXS      CALL ZMORE('^^CR',0)
+&&&GILGIDWXS      CALL XCTRIM(NTEXT,ITL)
+&&&GILGIDWXS      IF ( ITL .LE. 2 ) RETURN
+&&&GILGIDWXS      ITL = MIN ( ITL, 70 )
+&&&GILGIDWXS      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
+&&&GILGIDWXS      CALL ZMORE('^^WI '''//NTEXT(1:ITL)//'''',0)
+&&&GILGIDWXS      CALL ZMORE('^^CR',0)
       end
 
 CODE FOR ZGTKY1
