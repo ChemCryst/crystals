@@ -620,7 +620,7 @@ or uncheck all the boxes in the dialog.
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE=103'
 %    COPY 'TRANSFER TO OFFSET = 3 FROM SIGMACUT'
-%    COPY 'WRITE'
+%    COPY 'WRITE OVERWRITE=OVERWRITE'
 %    COPY 'END'
 %    FINISH
 %   END BLOCK

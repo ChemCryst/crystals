@@ -1110,7 +1110,7 @@
 %            END IF
 %%
 %%
-%            COPY 'WRITE'
+%            COPY 'WRITE OVERWRITE=OVERWRITE'
 %            COPY 'END'
 %            EVALUATE LOOPEND = LOOPCOUNTER
 ^^CO         DISPOSE ED30

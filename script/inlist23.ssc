@@ -79,7 +79,7 @@
 %        COPY 'LOCATE RECORDTYPE=103'
 %%       SET modify fsq=yes
 %        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=2'
-%        COPY 'WRITE'
+%        COPY 'WRITE OVERWRITE=OVERWRITE'
 %        COPY 'END'
 %%        COPY '#LIST 4'
 %%        COPY 'SCHEME 9 '
@@ -93,7 +93,7 @@
 %        COPY 'LOCATE RECORDTYPE=103'
 %%       SET modify fsq=no
 %        COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
-%        COPY 'WRITE'
+%        COPY 'WRITE OVERWRITE=OVERWRITE'
 %        COPY 'END'
 %%        COPY '#LIST 4'
 %%        COPY 'SCHEME 9 '
