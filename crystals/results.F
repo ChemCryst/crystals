@@ -2290,7 +2290,7 @@ C----- COMPUTE MU AND M
           WRITE(NCAWU,'(A)') CMON(1)(:)
           IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') CMON(1)(:)
 1545    FORMAT(1X,I6,' atoms exists in LIST 5 without details',
-     1    ' in LIST , I3)
+     1    ' in LIST ', I3)
           KCPROP = -1
         ENDIF
 C
@@ -3753,9 +3753,9 @@ C
       CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       IF (IEPROP .NE. 1) THEN
             WRITE(CMON,9931)
-9931         FORMAT('Error in computing molecular properties',/
+9931         FORMAT(' Error in computing molecular properties',/
      1       ' Re-input expected composition - #SCRIPT INCOMP')
-            CALL XPRVDU(NCVDU,2,1)
+            CALL XPRVDU(NCVDU,2,0)
       ENDIF
       RETURN
       END
