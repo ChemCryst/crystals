@@ -292,17 +292,18 @@ C FIND LENGTH
         D = SQRT (FLOAT((IX(1)-IX(2))**2 + (IY(1)-IY(2))**2))
         NSTEP = D/(0.2*SCALE)
         IRAD = NINT ( RTHICK * SCALE )
+&GID       IRAD = MAX ( 1, IRAD ) * 2
 C LOOP ALONG THE LINE
         DO 30 I = 0,NSTEP-1
           IXX(1) = IX(1) + (IX(2)-IX(1))*I/NSTEP
           IYY(1) = IY(1) + (IY(2)-IY(1))*I/NSTEP
-          IF (IRAD.EQ.0) THEN
-            IXX(2) = IXX(1)
-            IYY(2) = IYY(1)
-            CALL ZDRLIN(4,IXX,IYY,2,IDEVCL(IBCL+1),IATNO)
-          ELSE
+#GID          IF (IRAD.EQ.0) THEN
+#GID            IXX(2) = IXX(1)
+#GID            IYY(2) = IYY(1)
+#GID            CALL ZDRLIN(4,IXX,IYY,2,IDEVCL(IBCL+1),IATNO)
+#GID          ELSE
            CALL ZDRELL(2,IXX(1),IYY(1),IRAD,IRAD,IDEVCL(IBCL+1),1,IATNO)
-          ENDIF
+#GID          ENDIF
 30      CONTINUE
       ENDIF
       RETURN
