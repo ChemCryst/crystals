@@ -305,8 +305,8 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 						newPosn.mBottom = newPosn.Top()  + thisRect.Height();
 						break;
 					}
-					case kTCentred:
-                              default:
+                                        case kTCentred:
+                                        default:
 					{
 						newPosn.mLeft   = winRect.Left() + ( ( winRect.Width()  - thisRect.Width()  ) / 2 );
 						newPosn.mTop    = winRect.Top()  + ( ( winRect.Height() - thisRect.Height() ) / 2 );
@@ -489,9 +489,19 @@ CcRect	CrWindow::GetGeometry()
 {
 	CcRect retVal;
 	retVal.Set(	((CxWindow*)mWidgetPtr)->GetTop(), 
-				((CxWindow*)mWidgetPtr)->GetLeft(),
-				((CxWindow*)mWidgetPtr)->GetTop()+((CxWindow*)mWidgetPtr)->GetHeight(),
-				((CxWindow*)mWidgetPtr)->GetLeft()+((CxWindow*)mWidgetPtr)->GetWidth()   );
+                        ((CxWindow*)mWidgetPtr)->GetLeft(),
+                        ((CxWindow*)mWidgetPtr)->GetTop()+((CxWindow*)mWidgetPtr)->GetHeight(),
+                        ((CxWindow*)mWidgetPtr)->GetLeft()+((CxWindow*)mWidgetPtr)->GetWidth()   );
+	return retVal;
+}
+
+CcRect  CrWindow::GetScreenGeometry()
+{
+	CcRect retVal;
+        retVal.Set(     ((CxWindow*)mWidgetPtr)->GetScreenTop(), 
+                        ((CxWindow*)mWidgetPtr)->GetScreenLeft(),
+                        ((CxWindow*)mWidgetPtr)->GetScreenTop()+((CxWindow*)mWidgetPtr)->GetHeight(),
+                        ((CxWindow*)mWidgetPtr)->GetScreenLeft()+((CxWindow*)mWidgetPtr)->GetWidth()   );
 	return retVal;
 }
 

@@ -48,6 +48,7 @@ class	CrWindow : public CrGUIElement
 		Boolean	ParseInput( CcTokenList * tokenList );
 		void	SetGeometry( const CcRect * rect );
 		CcRect	GetGeometry();
+                CcRect  GetScreenGeometry();
 		void	CalcLayout();
             void  SetOriginalSizes();
 		void	ResizeWindow(int newWidth, int newHeight);
