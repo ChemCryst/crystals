@@ -35,12 +35,12 @@ Input reflection data from a file containing h,k,l Fo, sigma (HKLI file)
 ^^WI    @ 3,1 RADIOBUTTON RF3 'Other (fixed)' INFORM
 ^^WI    @ 3,2 EDITBOX L6FORM ' (3F4.0, 2F8.0) ' CHARS=24
 ^^WI  }
-
 ^^WI }
 ^^WI SHOW
 ^^CR
 
-
+% GET NOSTORE TEXT 'Press any key' 'Any key'
+^^CO DISPOSE XINLIST6
 
 
 
