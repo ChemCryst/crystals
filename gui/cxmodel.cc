@@ -24,23 +24,57 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 
   CxModel *theModel = new CxModel(container);
   const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
-  theModel -> Create(wndClass,"Model",WS_CHILD|WS_VISIBLE,CRect(0,0,26,28),guiParent,mModelCount++);
+
+  if ( theModel -> Create(wndClass,"Model",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,CRect(0,0,26,28),guiParent,mModelCount++) == 0 )
+  {
+    ::MessageBox (  NULL, "Create modelwindow failed", "Error", MB_OK) ;
+    delete theModel;
+    return nil;
+  }
+
   theModel -> ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
   theModel -> SetFont(CcController::mp_font);
 
   CRect rect;
   CClientDC dc(theModel);
-  theModel -> memDC.CreateCompatibleDC(&dc);
+
+  if ( theModel -> memDC.CreateCompatibleDC(&dc) == 0 )
+  {
+    ::MessageBox ( NULL, "CreateCompatibleDC in modelwindow failed", "Error", MB_OK) ;
+    delete theModel;
+    return nil;
+  }
   theModel -> newMemDCBitmap = new CBitmap;
   theModel -> GetClientRect ( &rect );
-  theModel -> newMemDCBitmap -> CreateCompatibleBitmap(&dc,rect.Width(),rect.Height());
+
+  if ( theModel -> newMemDCBitmap -> CreateCompatibleBitmap(&dc,rect.Width(),rect.Height()) == 0 )
+  {
+    ::MessageBox ( NULL, "CreateCompatibleDC in modelwindow failed", "Error", MB_OK) ;
+    delete theModel;
+    return nil;
+  }
+
   theModel -> oldMemDCBitmap = theModel -> memDC.SelectObject ( theModel -> newMemDCBitmap );
-  theModel -> memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS);
+  if ( theModel -> memDC.PatBlt(0,0,rect.Width(),rect.Height(),WHITENESS) == 0 )
+  {
+    ::MessageBox ( NULL, "PatBlt in modelwindow failed", "Error", MB_OK) ;
+    delete theModel;
+    return nil;
+  }
+
 
 ///  HDC hdc = ::GetDC(theModel->GetSafeHwnd());
 
-  if((theModel->SetWindowPixelFormat(&(theModel -> memDC) ))==false) return nil;
-  if((theModel->CreateViewGLContext(theModel -> memDC.m_hDC)) ==false) return nil;
+  if((theModel->SetWindowPixelFormat(&(theModel -> memDC) ))==false)
+  {
+    delete theModel;
+    return nil;
+  }
+  if((theModel->CreateViewGLContext(theModel -> memDC.m_hDC)) ==false)
+  {
+    delete theModel;
+    return nil;
+  }
 
 
   theModel->Setup();
@@ -750,65 +784,67 @@ BOOL CxModel::SetWindowPixelFormat(CDC* cDC)
     BITMAP bmInfo ;
     pBitmap->GetObject(sizeof(BITMAP), &bmInfo) ;
 
-    int GLPixelIndex = 0;
-
     PIXELFORMATDESCRIPTOR pixelDesc;
     memset(&pixelDesc, 0, sizeof(pixelDesc));
 
     pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     pixelDesc.nVersion = 1;
 
-    pixelDesc.dwFlags =
-//                          PFD_DRAW_TO_WINDOW |
-                        PFD_DRAW_TO_BITMAP |
-                          PFD_SUPPORT_OPENGL |
-//                            PFD_DOUBLEBUFFER |
-                          PFD_STEREO_DONTCARE;
+    pixelDesc.dwFlags = PFD_DRAW_TO_BITMAP |
+                        PFD_SUPPORT_OPENGL |
+                        PFD_STEREO_DONTCARE;
 
     pixelDesc.iPixelType = PFD_TYPE_RGBA;
     pixelDesc.cColorBits = (BYTE)bmInfo.bmBitsPixel ;
-//    pixelDesc.cColorBits = 32;
-//    pixelDesc.cRedBits = 8;
-//    pixelDesc.cRedShift = 16;
-//    pixelDesc.cGreenBits = 8;
-//    pixelDesc.cGreenShift = 8;
-//    pixelDesc.cBlueBits = 8;
-//    pixelDesc.cBlueShift = 0;
-//    pixelDesc.cAlphaBits = 0;
-//    pixelDesc.cAlphaShift = 0;
-//    pixelDesc.cAccumBits = 64;
-//    pixelDesc.cAccumRedBits = 16;
-//    pixelDesc.cAccumGreenBits = 16;
-//    pixelDesc.cAccumBlueBits = 16;
-//    pixelDesc.cAccumAlphaBits = 0;
     pixelDesc.cDepthBits = 32;
-//    pixelDesc.cAuxBuffers = 0;
     pixelDesc.iLayerType = PFD_MAIN_PLANE;
-//    pixelDesc.bReserved = 0;
-//    pixelDesc.dwLayerMask = 0;
-//    pixelDesc.dwVisibleMask = 0;
-//    pixelDesc.dwDamageMask = 0;
 
-    GLPixelIndex = ChoosePixelFormat (cDC->m_hDC, &pixelDesc);
-    if (GLPixelIndex ==0 ) //Choose a default index
+    int GLPixelIndex = ChoosePixelFormat (cDC->m_hDC, &pixelDesc);
+
+    if (GLPixelIndex == 0 )
     {
-      GLPixelIndex = 1;
-      if (DescribePixelFormat (cDC->m_hDC, GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc) == 0)
-                  return false;
+      CHAR sz[80];
+      DWORD dw = GetLastError();
+      sprintf (sz, "ChoosePixelFormat failed: Get LastError returned %u\n", dw);
+      MessageBox ( sz, "ERROR", MB_OK);
+      return false;
     }
 
-    if (SetPixelFormat(cDC->m_hDC, GLPixelIndex, &pixelDesc) == false)
-                return false;
+    if ( SetPixelFormat(cDC->m_hDC, GLPixelIndex, &pixelDesc) == FALSE)
+    {
+      CHAR sz[80];
+      DWORD dw = GetLastError();
+      sprintf (sz, "SetPixelFormat failed: Get LastError returned %u\n",
+        dw);
+      MessageBox ( sz, "ERROR", MB_OK);
+      return false;
+    }
 
-      return true;
+    return true;
 }
 
 BOOL CxModel::CreateViewGLContext(HDC hDC)
 {
   m_hGLContext = wglCreateContext(hDC);
-  if(m_hGLContext ==NULL) return false;
+  if(m_hGLContext ==NULL)
+  {
+    CHAR sz[80];
+    DWORD dw = GetLastError();
+    sprintf (sz, "SetPixelFormat failed: Get LastError returned %u\n",
+      dw);
+    MessageBox ( sz, "ERROR", MB_OK);
+    return false;
+  }
 
-  if(wglMakeCurrent(hDC, m_hGLContext) == false) return false;
+  if(wglMakeCurrent(hDC, m_hGLContext) == false)
+  {
+    CHAR sz[80];
+    DWORD dw = GetLastError();
+    sprintf (sz, "SetPixelFormat failed: Get LastError returned %u\n",
+      dw);
+    MessageBox ( sz, "ERROR", MB_OK);
+    return false;
+  }
 
   return true;
 }
