@@ -68,7 +68,8 @@ C SET UP FLAG POSITIONS FOR LARGE VERSION OF CAMERON
         ILAB = 43
         IBOND = 41
         ISYM = 48
-        IPACKT = 49
+cdjwjan99 - make room for the shape flag
+        IPACKT = 49 + 1
       ELSE
 C SET UP FLAG POSITIONS FOR SMALL VERSION OF CAMERON
         IXYZO = 4
