@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2004/08/09 11:21:15  rich
+C Uppercase variable name in KSCTRN. TRANSFER has unpredictable results
+C if lowercase variable names were given.
+C
 C Revision 1.52  2004/03/02 15:13:03  rich
 C Remove trailing zeroes after decimal point when converting floating point
 C numbers to character strings, using script's CHARACTER unary operator.
@@ -1003,7 +1007,6 @@ C    EXECUTED.
 C
       IF ( ( ISCVER .GT. 0 ) .AND. ( ISCSER .LE. 0 ) .AND.
      2     ( IEXECU .GT. 0 ) ) THEN
-        IF (ISCVER .GT. 0) WRITE ( NCAWU , 1005 ) CLOWER(1:IDIRLN)
         WRITE ( CMON, 1005) CLOWER(1:IDIRLN)
         CALL XPRVDU(NCVDU, 1,0)
 1005    FORMAT ( 1X , A )
@@ -1121,7 +1124,6 @@ C
         CLABEL = CUPPER(NLABEL:NEND)
 C
         IF ( ISCVER .GT. 0 ) THEN
-          WRITE ( NCAWU , 1015 ) CLABEL , IRDREC(IFLIND)
           WRITE ( CMON, 1015) CLABEL , IRDREC(IFLIND)
           CALL XPRVDU(NCVDU, 1,0)
 1015      FORMAT ( 1X , 'Label ' , A , ' found in record ' , I5 )
@@ -1210,7 +1212,6 @@ C
 C -- STORE AWAY ADDRESS OF LABEL IDENTIFIER
         ISTAT = KSCIDN ( 1 , 1 , 'ERROR' , 3, 0, IERROR , IIDENT , -1 )
 C
-        IF ( ISCVER .GT. 0 ) WRITE ( NCAWU , 1017 ) CLABEL
         IF ( ISCVER .GT. 0 ) THEN
            WRITE ( CMON, 1017) CLABEL
            CALL XPRVDU(NCVDU, 2,0)
@@ -1734,7 +1735,6 @@ C
 C -- OUTPUT ANY MESSAGE ASSOCIATED WITH THIS CONTINGENCY
 C
       IF ( IMSG .GT. 0 ) THEN
-        WRITE ( NCAWU , 9905 ) CSCMSG(IMSG)(1:LSCMSG(IMSG))
         WRITE ( CMON, 9905) CSCMSG(IMSG)(1:LSCMSG(IMSG))
         CALL XPRVDU(NCVDU, 3,0)
 9905    FORMAT ( / , 1X , A , / )
@@ -2730,8 +2730,8 @@ C -- 'LOGICAL OPERATIONS'
      2                       ICODE(JVALUE,IARG(1)) , ITYPE(1) ,
      3                       LEQUAL , LLESST )
           ELSE
-            ISTAT = KSCREL ( XCODE(JVALUE,IARG(2)) , ITYPE(1) ,
-     2                       XCODE(JVALUE,IARG(1)) , ITYPE(1) ,
+            ISTAT = KSCREL ( ICODE(JVALUE,IARG(2)) , ITYPE(1) ,
+     2                       ICODE(JVALUE,IARG(1)) , ITYPE(1) ,
      3                       LEQUAL , LLESST )
           ENDIF
           IF ( ( IOPER .EQ. 7 ) .OR. ( IOPER .EQ. 8 ) ) THEN
@@ -3512,7 +3512,6 @@ C -- VALUE OUT OF RANGE
 C
 C -- DESCRIBE FAILING OPERATION
 C
-      WRITE ( NCAWU , 9991 )
       WRITE ( CMON, 9991)
       CALL XPRVDU(NCVDU, 6,0)
 9991  FORMAT ( / , 1X, 'Failing components of input string are :' , // ,
@@ -3520,17 +3519,11 @@ C
      3  10X , 'Actual type'  , / )
       DO 9998 I = 1 , NARGUM
         IF ( I .EQ. NARGUM ) THEN
-          WRITE ( NCAWU , 9992 ) CTEXT(IOPPOS-6:IOPPOS-1) ,
-     2 CTEXT(IOPPOS:IOPPOS+6)
           WRITE ( CMON, 9992) CTEXT(IOPPOS-6:IOPPOS-1) ,
      2                        CTEXT(IOPPOS:IOPPOS+6)
           CALL XPRVDU(NCVDU, 1,0)
 9992      FORMAT ( 1X , 'Operator' , 8X , A , ' >>' , A )
         ENDIF
-C
-        WRITE ( NCAWU , 9995 ) I , CTEXT(IPOSIT(I)-6:IPOSIT(I)-1) ,
-     2 CTEXT(IPOSIT(I):IPOSIT(I)+6) , CDATAT(ITYPES(I,IDEFIN)) ,
-     3 CDATAT(ITYPE(I))
       WRITE ( CMON, 9995) I , CTEXT(IPOSIT(I)-6:IPOSIT(I)-1) ,
      2                              CTEXT(IPOSIT(I):IPOSIT(I)+6) ,
      3                              CDATAT(ITYPES(I,IDEFIN)) ,
@@ -3539,7 +3532,6 @@ C
 9995    FORMAT ( 1X, 'Operand', I3, 6X, A, ' >>', A, 8X, A, 8X, A )
 C
 9998  CONTINUE
-      WRITE ( NCAWU , 9999 )
       WRITE ( CMON,9999 )
       CALL XPRVDU(NCVDU, 1,0)
 9999  FORMAT ( 1X )
@@ -4029,7 +4021,6 @@ C -- DISPLAY CODE IF VERIFY ENABLED
 C
       IF ( DUMPCD ) THEN
 C
-        WRITE ( NCAWU , 7005 ) NOUTLS
         WRITE ( CMON, 7005) NOUTLS
         CALL XPRVDU(NCVDU, 1,0)
 7005    FORMAT ( 1X, 'Display of generated code - ' ,  I3 , ' item(s)' )
@@ -4038,20 +4029,17 @@ C
           IF ( IOUTLS(JCTYPE,I) .EQ. 1 ) THEN
             IDATAT = IOUTLS(JVTYPE,I)
             IF ( IDATAT .EQ. 2 ) THEN
-              WRITE ( NCAWU , 7012 ) I, CDATAT(IDATAT), XOUTLS(JVALUE,I)
               WRITE ( CMON, 7012) I, CDATAT(IDATAT),
      2                                XOUTLS(JVALUE,I)
               CALL XPRVDU(NCVDU, 1,0)
 7012          FORMAT ( 1X , 4X , I4 , ' : ' , 10X , A12 , 10X , F16.5 )
             ELSE
-              WRITE ( NCAWU , 7015 ) I, CDATAT(IDATAT), IOUTLS(JVALUE,I)
               WRITE ( CMON, 7015) I, CDATAT(IDATAT),
      2                                IOUTLS(JVALUE,I)
               CALL XPRVDU(NCVDU, 1,0)
 7015          FORMAT ( 1X , 4X , I4 , ' : ' , 10X , A12 , 10X , I16 )
             ENDIF
           ELSE IF ( IOUTLS(JCTYPE,I) .EQ. 2 ) THEN
-            WRITE ( NCAWU , 7025 ) I , COPER(IOUTLS(JVALUE,I))
             WRITE ( CMON, 7025 ) I , COPER(IOUTLS(JVALUE,I))
             CALL XPRVDU(NCVDU, 1,0)
 7025        FORMAT ( 1X , 4X , I4 , ' : ' , 32X , A16 )
@@ -4427,8 +4415,6 @@ C
 C -- VERIFY OPERATION IF REQUIRED
 C
       IF ( LVERIF ) THEN
-        WRITE ( NCAWU , 8005 ) CSCOPE(ISCOPE) , COPER(IFUNC) ,
-     2 CTYPE(ITYPE) , CNAME , IIDENT
         WRITE ( CMON, 8005 ) CSCOPE(ISCOPE) , COPER(IFUNC) ,
      2                          CTYPE(ITYPE) , CNAME , IIDENT
         CALL XPRVDU(NCVDU, 1,0)
@@ -4449,7 +4435,6 @@ C -- PRODUCE LIST OF IDENTIFIERS KNOWN WHEN AN ERROR OCCURS
 C
      2        ( LVERIF ) .AND.
      3        ( ILSEND .GE. ILSBEG ) ) THEN
-        WRITE ( NCAWU , 9905 ) CTYPE(ITYPE) , CSCOPE(ISCOPE)
         WRITE ( CMON, 9905 ) CTYPE(ITYPE), CSCOPE(ISCOPE)
         CALL XPRVDU(NCVDU, 3,0)
 9905    FORMAT ( 6X , 'The following identifiers of type "' , A ,
@@ -4459,7 +4444,6 @@ C
 C
         DO 9908 J = ILSBEG , ILSEND
           IF ( ITYPEI(J) .EQ. ITYPE ) THEN
-            WRITE ( NCAWU , 9907 ) J , CIDENT(J)
             WRITE ( CMON, 9907 ) J , CIDENT(J)
             CALL XPRVDU(NCVDU, 1,0)
 9907        FORMAT ( 6X , I5 , 8X , A )
@@ -4914,7 +4898,6 @@ C
             WRITE(CMON,1000) IDESC, NDESCR
 1000        FORMAT(' Allocating descriptor ',I5,' / ',I5)
             CALL XPRVDU(NCVDU, 1,0)
-            WRITE(NCAWU,'(A)') CMON(1)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
       ENDIF
       IF ( IDESC .GT. NDESCR ) GO TO 9910
@@ -4937,7 +4920,6 @@ C
       RETURN
 9910  CONTINUE
 C -- OUTPUT ERROR MESSAGE
-      WRITE ( NCAWU , 9915 )
       WRITE ( CMON, 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'No more descriptors' )
@@ -5791,7 +5773,6 @@ C
 C
 C -- DISPLAY VARIABLE NAME AND VALUE
 C
-      WRITE ( NCAWU , 2105 ) CVARIB(1:LENVAR) , CVALUE(1:LENVAL)
        WRITE ( CMON, 2105 ) CVARIB(1:LENVAR) , CVALUE(1:LENVAL)
        CALL XPRVDU(NCVDU, 1,0)
 2105    FORMAT ( 1X , A , ' = ' , A )
@@ -6249,13 +6230,10 @@ C -- 'DISPLAY'
 C
         ISTAT = KSCSDC ( IVALUE , CWORK , LENWRK )
         IF ( LENWRK .GT. 0 ) THEN
-          IF (CWORK(1:2) .NE. '^^')
-     1    WRITE ( NCAWU , 1105 ) CWORK(1:LENWRK)
           WRITE ( CMON, 1105 ) CWORK(1:LENWRK)
           CALL XPRVDU(NCVDU, 1,0)
 1105      FORMAT ( A )
         ELSE
-          WRITE ( NCAWU , 1115 )
           WRITE ( CMON, 1115 )
           CALL XPRVDU(NCVDU, 1,0)
 1115      FORMAT ( 1X )
@@ -6886,7 +6864,6 @@ C Don't use those funny characters in Cameron.
 &DOS                 CMENU(1:) = ' '
 &DOS                ENDIF
                 CMENU(2:IPMBRK(J)+1-JCP) = CVAL(JCP:IPMBRK(J))
-                WRITE ( NCAWU , 1102 ) CMENU(1:MLNLEN)
                 WRITE ( CMON, 1102 ) CMENU(1:MLNLEN)
                 CALL XPRVDU(NCVDU, 1,0)
                 CMENU(1:) = CBOX(1:)
@@ -6909,7 +6886,6 @@ C----- NORMAL TEXT TERMINAL
               JCP = 1
               DO 1105 I = 1,3
               IF ( IPMBRK(J) .NE. 0 ) THEN
-                WRITE ( NCAWU , 1102 ) CVAL(JCP:IPMBRK(J))
                 WRITE ( CMON, 1102 ) CVAL(JCP:IPMBRK(J))
                 CALL XPRVDU(NCVDU, 1,0)
                 JCP = IPMBRK(J) + 1
@@ -7261,18 +7237,15 @@ C -- THIS SECTION OUTPUTS MESSAGES FOLLOWING A 'USER ERROR'. THE MESSAGE
 C    TEXT CAN BE CHANGED BY THE 'MESSAGE' COMMAND. THE USER IS ALSO
 C    SHOWN THE PART OF THE INPUT THAT WAS INCORRECT
 C
-      WRITE ( NCAWU , 9995 ) CSCMSG(IERROR)(1:LSCMSG(IERROR))
       WRITE ( CMON, 9995 ) CSCMSG(IERROR)(1:LSCMSG(IERROR))
       CALL XPRVDU(NCVDU, 2,0)
 9995  FORMAT ( / , 1X , A )
 C
       IF ( NENDIN .GE. NSTART ) THEN
-        WRITE ( NCAWU , 9997 ) '"'//CUINPB(NSTART:NENDIN)//'"'
         WRITE ( CMON, 9997 ) '"'//CUINPB(NSTART:NENDIN)//'"'
         CALL XPRVDU(NCVDU, 2,0)
 9997    FORMAT ( 11X , A , / )
       ELSE
-        WRITE ( NCAWU , 9998 )
         WRITE ( CMON, 9998 )
         CALL XPRVDU(NCVDU, 1,0)
 9998    FORMAT ( 1X )
@@ -7368,7 +7341,6 @@ C
 C -- VERIFY OPERATION
 C
       IF ( ISCVER .GT. 0 ) THEN
-        WRITE ( NCAWU , 1505 ) CTYPE(ITYPE) , IADDR , CVARIB
         WRITE ( CMON, 1505 ) CTYPE(ITYPE) , IADDR , CVARIB
         CALL XPRVDU(NCVDU, 1,0)
 1505  FORMAT ( 1X, A, ' variable ( number', I3, ' ) assigned :-', A )
@@ -7479,7 +7451,6 @@ C
 C -- VERIFY OPERATION
 C
       IF ( ISCSVE .GT. 0 ) THEN
-        WRITE ( NCAWU , 1005 ) ITYPE
         WRITE ( CMON, 1005 ) ITYPE
         CALL XPRVDU(NCVDU, 1,0)
 1005    FORMAT ( 1X , 'Create stack frame of type : ' , I6 )
@@ -7516,7 +7487,6 @@ C
 C -- VERIFY OPERATION
 C
       IF ( ISCSVE .GT. 0 ) THEN
-        WRITE ( NCAWU , 1015 ) ICURLV , INEWLV
         WRITE ( CMON, 1015 ) ICURLV , INEWLV
         CALL XPRVDU(NCVDU, 1,0)
 1015    FORMAT ( 1X , 'Current level :  ' , I5 , ' New level : ' , I5 )
@@ -7555,7 +7525,6 @@ C
 C -- VERIFY OPERATION
 C
       IF ( ISCSVE .GT. 0 ) THEN
-        WRITE ( NCAWU , 2005 ) ( ISTACK(J,INEWLV) , J = 1 , LSTACK )
         WRITE ( CMON, 2005 ) ( ISTACK(J,INEWLV) , J = 1 , LSTACK)
         CALL XPRVDU(NCVDU, 3,0)
 2005    FORMAT ( 1X , 'Contents of new stack level' , / ,
@@ -7619,7 +7588,6 @@ C -- CHECK IF THIS LABEL IS KNOWN
             ILOCAT = IRECRD
 C -- VERIFY OPERATION
             IF ( ISCVER .GT. 0 ) THEN
-              WRITE ( NCAWU , 1005 ) CLABEL , IRECRD
               WRITE ( CMON, 1005 ) CLABEL , IRECRD
               CALL XPRVDU(NCVDU, 1,0)
 1005          FORMAT ( 1X, 'Fast search for label ' , A , ' at ' , I5 )
@@ -7748,9 +7716,6 @@ C
      2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
      3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
       ENDIF
-      WRITE ( NCAWU , 1005 )IRDREC(IFLIND),CCOMP(ISCCOM),
-     2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
-     3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
       WRITE ( CMON, 1005 )  IRDREC(IFLIND),CCOMP(ISCCOM),
      2                      CERROR(IERROR)(1:LNERR(IERROR)) ,
      3                      CTYPE(ITYPE)(1:LNTYPE(ITYPE))
@@ -7767,7 +7732,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 1035 ) CPARAM
       ENDIF
-        WRITE ( NCAWU , 1035 ) CPARAM
         WRITE ( CMON, 1035 ) CPARAM
         CALL XPRVDU(NCVDU, 2,0)
 1035    FORMAT ( 11X , '"' , A , '"' , / )
@@ -7775,7 +7739,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 1045 ) CPARAM
       ENDIF
-        WRITE ( NCAWU , 1045 ) CPARAM
         WRITE ( CMON, 1045 ) CPARAM
         CALL XPRVDU(NCVDU, 2,0)
 1045    FORMAT ( 1X , A , / )
@@ -7793,8 +7756,6 @@ C
         WRITE ( NCWU , 1055 ) CLOWER(IMIN:IPOS),
      2 CLOWER(IPOS+1:IMAX)
       ENDIF
-        WRITE ( NCAWU , 1055 ) CLOWER(IMIN:IPOS),
-     2 CLOWER(IPOS+1:IMAX)
         WRITE ( CMON, 1055 ) CLOWER(IMIN:IPOS), CLOWER(IPOS+1:IMAX)
         CALL XPRVDU(NCVDU, 2,0)
 1055  FORMAT ( 1X , A , '<', A,  / )
@@ -7809,7 +7770,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9915 ) IERROR , ITYPE
       ENDIF
-      WRITE ( NCAWU , 9915 ) IERROR , ITYPE
       WRITE ( CMON, 9915 ) IERROR , ITYPE
       CALL XPRVDU(NCVDU, 6,0)
 9915  FORMAT ( // , 1X , '*****' , / ,
@@ -7842,7 +7802,6 @@ C -- VERIFY OPERATION
 C
       IF ( ISCSVE .GT. 0 ) THEN
         LEVEL = ILEVEL(IFLIND)
-        WRITE ( NCAWU , 1005 ) LEVEL , ISTACK(JBTYPE,LEVEL)
         WRITE ( CMON, 1005 ) LEVEL , ISTACK(JBTYPE,LEVEL)
         CALL XPRVDU(NCVDU, 1,0)
 1005    FORMAT ( 1X , 'Delete current stack level ' , I5 ,
