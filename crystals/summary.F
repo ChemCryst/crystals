@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2004/06/17 10:29:06  rich
+C Swap axes on the normal probability plot so that they are consistent with,
+C and labelled like the plots in Abrahams & Keve (Acta A27, 157).
+C
 C Revision 1.60  2004/06/08 14:15:22  djw
 C Output all L30 info in summary
 C
@@ -1569,6 +1573,9 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
       IF ( IPLOT .GE. 0 ) THEN
         WRITE(NCWU,'(A)') ' Theta  Completeness% Expected  Found '
       ENDIF
+
+
+
       DO I = 1,100
         IF ( ALLBIN(I) .EQ. 0 ) THEN
           COMP = 1.0
@@ -1577,12 +1584,20 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
           CMPMIN = MIN (CMPMIN,COMP)
         END IF
 
+C Compute lowest reasonable value of THBEST - this is 25 degrees unless
+C THMAX < 25 degrees, in which case it is 0.75*THMAX.
+
+        THLOW = 25.0
+        IF ( THMAX .LT. 25.0 ) THEN
+           THLOW = 0.75*THMAX
+        END IF
+        
         IF ( IPLOT .GE. 0 ) THEN
           WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I)/100.0),
      1   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
         END IF
 
-        IF ( I .GE. 75 ) THEN ! Theta_full shouldn't be too low
+        IF ( THMAX*(I/100.0) .GE. THLOW ) THEN ! Theta_full shouldn't be too low
          IF ( (COMP .GE. THBCMP) .OR. (COMP .GT. 0.995) ) THEN
           THBEST = THMAX*(I/100.0)                       
           THBCMP = COMP
