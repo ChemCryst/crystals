@@ -1,0 +1,46 @@
+\subsection{Stats}
+{\footnotesize Stats.h modified  30/04/2003\\ Stats.cpp modified 30/04/2003}
+
+\subsubsection{Stats}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+\textbf{ElemStats}\\
+\hline
+\\\hline
++tNonMTotInt:float\\
++tMTotInt:float\\
++tNumNonM:int\\
++tNumM:int\\
++tNumNonMLsInt:int\\
++tNumNonMGrInt:int\\
++tRating1:float\\
++tRating2:float\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Stats}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
+\textbf{Stats}\\
+\hline
+-iHeadings:Headings*\\
+-iConditions:Conditions*\\
+-iTotalNum:int\\
+-iTotalIntensity:float\\
+-iStats:ElemStats*\\
+\hline
+-outputHeadings(std::ostream\ands\xspace pStream):void\\
+-outputRow(int pRow, std::ostream\ands\xspace pStream):void\\
+-float evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD):static\\
++Stats(Headings* pHeadings, Conditions* pConditions)\\
++\til Stats():\\
++addReflectionRows(int pColumn, Reflection* pReflection, Matrix$<$float$>$* pHKLM):void\\
++addReflection(Reflection* tReflection):void\\
++calProbs():void\\
++getElem(int pHeadIndex, int pCondIndex):ElemStats*\\
++output(std::ostream\ands\xspace pStream):std::ostream\ands\xspace\\
+\hline
+\end{tabular}
+\end{table}

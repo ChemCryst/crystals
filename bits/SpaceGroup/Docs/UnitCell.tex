@@ -1,0 +1,57 @@
+\subsection{UnitCell}
+{\footnotesize UnitCell.h modified  30/04/2003\\ UnitCell.cpp modified 30/04/2003}
+
+\subsubsection{UnitCell}
+\begin{table}[h]
+\begin{tabular}{|l|}\hline
+$<<$MyObject$>>$\\
+\textbf{UnitCell}\\
+\hline
+iA:float\\
+iB:float\\
+iC:float\\
+iAlpha:float\\
+iBeta:float\\
+iGama:float\\
+iSEA:float\\
+iSEB:float\\
+iSEC:float\\
+iSEAlpha:float\\
+iSEBeta:float\\
+iSEGamma:float\\
+\hline
++UnitCell(float a, float b, float c, float alpha, float beta, float gamma)\\
++UnitCell(char* pPath)\\
++setA(float pA):void\\
++setB(float pB):void\\
++setC(float pC):void\\
++setAlpha(float pAlpha):void\\
++setBeta(float pBeta):void\\
++setGamma(float pGamma):void\\
++getA():float\\
++getB():float\\
++getC():float\\
++getAlpha():float\\
++getBeta():float\\
++getGamma():float\\
++setSEA(float pSEA):void\\
++setSEB(float pSEB):void\\
++setSEC(float pSEC):void\\
++setSEAlpha(float pSEAlpha):void\\
++setSEBeta(float pSEBeta):void\\
++setSEGamma(float pSEGamma):void\\
++getSEA():float\\
++getSEB():float\\
++getSEC():float\\
++getSEAlpha():float\\
++getSEBeta():float\\
++getSEGamma():float\\
++guessCrystalSystem():char*\\
++readInUnitCell(char* tPath):void\\
+\hline
+\end{tabular}
+\end{table}
+
+Other functions:\\
+char* getCrystalSystem();\\
+char* crystalSystemConst(int pIndex);\\
