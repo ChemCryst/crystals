@@ -17,7 +17,7 @@
 
 %    CLEAR
 %    INSERT '^^CO SETKEY PLATONDIR '
-%    GET NOSTORE SILENT TEXT 'Platon location:'
+%    GET SILENT TEXT 'Platon location:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 %      EVALUATE CFILE = CVALUE
 %      OUTPUT
