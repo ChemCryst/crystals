@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.48  2002/07/18 16:57:52  richard
+// Upgrade to use standard c++ library, rather than old C libraries.
+//
 // Revision 1.47  2002/07/15 12:19:13  richard
 // Reorder headers to improve ease of linking.
 // Update program to use new standard C++ io libraries.
@@ -430,7 +433,7 @@ CcController::CcController( CcString directory, CcString dscfile )
 // This sets up the command line window, and the main text output window.
 // Source an external menu definition file - "GUIMENU.SRT"
 
-    std::FILE * file;
+    FILE * file;
     char charline[256];
     CcString crysdir ( getenv("CRYSDIR") );
     if ( crysdir.Length() == 0 )
@@ -455,13 +458,13 @@ CcController::CcController( CcString directory, CcString dscfile )
       CcString buffer = dir + "guimenu.srt" ;
 #endif
 
-      if( file = std::fopen( buffer.ToCString(), "r" ) ) //Assignment witin conditional - OK
+      if( file = fopen( buffer.ToCString(), "r" ) ) //Assignment witin conditional - OK
       {
         while ( ! feof( file ) )
         {
-          if ( std::fgets( charline, 256, file ) ) Tokenize(charline);
+          if ( fgets( charline, 256, file ) ) Tokenize(charline);
         }
-        std::fclose( file );
+        fclose( file );
         noLuck = false;
       }
       else
@@ -1565,7 +1568,7 @@ void    CcController::LogError( CcString errString , int level )
 {
     if ( mErrorLog == nil )
     {
-        mErrorLog = std::fopen( "Script.log", "w+" );
+        mErrorLog = fopen( "Script.log", "w+" );
     }
     if ( level == 1 ) //Warning mark with stars.
     {
@@ -1884,8 +1887,8 @@ void  CcController::SetProgressText(CcString * theText)
 
 void CcController::StoreKey( CcString key, CcString value )
 {
-  std::FILE * szfile;
-  std::FILE * tempf;
+  FILE * szfile;
+  FILE * tempf;
   char * tempn;
   char buffer[256];
 //  char filen[256];
@@ -1913,12 +1916,12 @@ void CcController::StoreKey( CcString key, CcString value )
 #ifdef __LINUX__
       dir += "script/winsizes.ini";
 #endif
-      szfile = std::fopen( dir.ToCString(), "r" );
+      szfile = fopen( dir.ToCString(), "r" );
       if ( szfile != NULL )
       {
         noLuck = false;
         readFile = dir;
-        std::fclose ( szfile );
+        fclose ( szfile );
       }
       else if ( i >= nEnv )
       {
@@ -1939,12 +1942,12 @@ void CcController::StoreKey( CcString key, CcString value )
 #ifdef __LINUX__
       dir += "script/winsizes.ini";
 #endif
-      szfile = std::fopen( dir.ToCString(), "a+" ); //Use "a+" as "w+" would empty file, and "r+" fails in no file.
+      szfile = fopen( dir.ToCString(), "a+" ); //Use "a+" as "w+" would empty file, and "r+" fails in no file.
       if ( szfile != NULL )
       {
         noLuck = false;
         writeFile = dir;
-        std::fclose ( szfile );
+        fclose ( szfile );
       }
       else if ( i >= nEnv )
       {
@@ -1976,14 +1979,14 @@ void CcController::StoreKey( CcString key, CcString value )
 
 // Open the temp file.
 
-    if ( ( tempf = std::tmpfile() ) == NULL )
+    if ( ( tempf = tmpfile() ) == NULL )
     {
       LOGERR ( "Could not get an open temp file." );
       return;
     }
 
 // Open winsizes for reading.
-    if( (szfile = std::fopen( readFile.ToCString(), "r" )) == NULL ) //Assignment witin conditional - OK
+    if( (szfile = fopen( readFile.ToCString(), "r" )) == NULL ) //Assignment witin conditional - OK
     {
       LOGERR ( "(second) Could not open "+readFile+" for reading." );
       return;
@@ -1994,25 +1997,25 @@ void CcController::StoreKey( CcString key, CcString value )
 
     while ( ! feof( szfile ) )
     {
-      if ( std::fgets( buffer, 256, szfile ) )
+      if ( fgets( buffer, 256, szfile ) )
       {
         CcString ccbuf = buffer;
         if ( ccbuf.Length() > key.Length() )
         {
           if (!(key == ccbuf.Sub( 1, key.Length() )))
           {
-            std::fputs ( buffer, tempf);
+            fputs ( buffer, tempf);
           }
         }
       }
     }
-    std::fclose( szfile );
-    std::rewind( tempf );
+    fclose( szfile );
+    rewind( tempf );
   }
 
 // Open winsizes for writing.
 
-  if( (szfile = std::fopen( writeFile.ToCString(), "w" )) == NULL ) //Assignment witin conditional - OK
+  if( (szfile = fopen( writeFile.ToCString(), "w" )) == NULL ) //Assignment witin conditional - OK
   {
     LOGERR ( "(second) Could not open "+writeFile+" for writing" );
     return;
@@ -2026,21 +2029,21 @@ void CcController::StoreKey( CcString key, CcString value )
     int doBreak = 0;
     while ( ! feof( tempf ) )
     {
-      if ( std::fgets( buffer, 256, tempf ))  std::fputs ( buffer, szfile );
+      if ( fgets( buffer, 256, tempf ))  fputs ( buffer, szfile );
       else if ( doBreak > 10 )           break;
       else                               doBreak++;
     }
-    std::fclose ( tempf );
-//    std::remove ( tempn );
+    fclose ( tempf );
+//  remove ( tempn );
 
   }
 
 // Add this key on to the end.
 
   sprintf(buffer, "%s %s", key.ToCString(), value.ToCString());
-  std::fputs ( buffer, szfile );
-  std::fputs ( "\n", szfile );
-  std::fclose ( szfile );
+  fputs ( buffer, szfile );
+  fputs ( "\n", szfile );
+  fclose ( szfile );
 
   return;
 
@@ -2048,7 +2051,7 @@ void CcController::StoreKey( CcString key, CcString value )
 
 CcString CcController::GetKey( CcString key )
 {
-  std::FILE * szfile;
+  FILE * szfile;
   char buffer[256];
   CcString value;
 
@@ -2072,7 +2075,7 @@ CcString CcController::GetKey( CcString key )
 #ifdef __LINUX__
       dir += "script/winsizes.ini";
 #endif
-      szfile = std::fopen( dir.ToCString(), "r" );
+      szfile = fopen( dir.ToCString(), "r" );
       if ( szfile != NULL )
       {
         noLuck = false;
@@ -2085,7 +2088,7 @@ CcString CcController::GetKey( CcString key )
 
     while ( ! feof( szfile ) )
     {
-      if ( std::fgets( buffer, 256, szfile ) != NULL )
+      if ( fgets( buffer, 256, szfile ) != NULL )
       {
         CcString ccbuf = buffer;
         if ( key.Length() < ccbuf.Length() )
@@ -2099,7 +2102,7 @@ CcString CcController::GetKey( CcString key )
         }
       }
     }
-    std::fclose( szfile );
+    fclose( szfile );
   }
 
   return value;
