@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2002/02/18 15:17:16  DJWgroup
+C SH: Added y=x line to Fo vs. Fc plot.
+C
 C Revision 1.18  2002/02/18 11:20:30  DJWgroup
 C SH: Update to plot code.
 C
@@ -891,7 +894,7 @@ C
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
 
 C--SETUP A GRAPH HERE
-      IF (LEVEL .EQ. 4) THEN
+      IF ( LEVEL .EQ. 4 ) THEN
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
      1  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
@@ -943,28 +946,26 @@ C
       WBOT = 0.0
       IFSQ = ISTORE(L23MN+1)
       N6ACC = 0
-	FCMAX = 0
+      FCMAX = 0
 1100  CONTINUE
         ISTAT = KFNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
         N6ACC = N6ACC + 1
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
-      IF (FC .GT. FCMAX) THEN 
-        FCMAX = FC
-      ENDIF
-      IF ( LEVEL .EQ. 4 ) THEN
-        WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
-     1  NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
-        CALL XCRAS(HKLLAB, IHKLLEN)
+        FCMAX = MAX( FCMAX, FC )
+        IF ( LEVEL .EQ. 4 ) THEN
+          WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+          CALL XCRAS(HKLLAB, IHKLLEN)
 
-        WRITE(CMON,'(3A,2F10.2)')
-     1 '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
-        CALL XPRVDU(NCVDU, 1,0)
-      ENDIF
+          WRITE(CMON,'(3A,2F10.2)')
+     1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
+          CALL XPRVDU(NCVDU, 1,0)
+        ENDIF
 C - X AND Y VARIABLES FOR LEAST-SQUARES BELOW
-        X(N6ACC) = (MAX(0.0, FO) + 2*FC)/3
-        Y(N6ACC) = ABS(FO - FC) - STORE(M6+12)
+c        X(N6ACC) = (MAX(0.0, FO) + 2*FC)/3
+c        Y(N6ACC) = ABS(FO - FC) - STORE(M6+12)
 
         WT = STORE(M6+4)
         TOP = TOP + ABS (ABS(FO) - FC)
@@ -979,10 +980,7 @@ C - FSQ REFINENENT
         ENDIF
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
-&PPCCS***
-&PPC        IF ( MOD( N6ACC ,20) .EQ. 0 ) CALL nextcursor
-&PPCCE***
-        GO TO 1100
+      GO TO 1100
 C
 C
 C -- BEGIN OUTPUT
@@ -1001,51 +999,55 @@ c -- ADD A SERIES FOR STRAIGHT LINE
         CALL XPRVDU(NCVDU, 1, 0)
       ENDIF
 
-C -- ALLOCATE SPACE FOR MATRICES
-      IALPHA = KSTALL(4)
-      IBETA = KSTALL(2)
-C -- ACCUMULATE BETA MATRIX
-      DO K=0,1
-	  STORE(IBETA+K) = 0
-	  DO I=1,N6D
-          STORE(IBETA+K) = STORE(IBETA+K) + Y(I)*FUNCT(K,X(I))
-        ENDDO
-      ENDDO				  
-C -- ACCUMULATE ALPHA MATRIX
-      DO J=0,1
-	  DO K=0,1
-	    STORE(IALPHA+J+(2*K)) = 0
-	    DO I=1,N6D
-            STORE(IALPHA+J+(2*K)) = (STORE(IALPHA+J+(2*K))
-     1	+ (FUNCT(J,X(I))*FUNCT(K,X(I))))
-	    ENDDO
-	  ENDDO
-	ENDDO
-      WRITE(CMON,'(A,2G13.6)')'A 1/2:',STORE(IALPHA),STORE(IALPHA+1)
-      WRITE(NCAWU,'(A,2G13.6)')'A 1/2:',STORE(IALPHA),STORE(IALPHA+1)
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(CMON,'(A,2G13.6)')'A 3/4:',STORE(IALPHA+2),STORE(IALPHA+3)
-      WRITE(NCAWU,'(A,2G13.6)')'A 3/4:',STORE(IALPHA+2),STORE(IALPHA+3)
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(CMON,'(A,2G13.6)')'Beta:',STORE(IBETA),STORE(IBETA+1)
-      WRITE(NCAWU,'(A,2G13.6)')'Beta:',STORE(IBETA),STORE(IBETA+1)
-      CALL XPRVDU(NCVDU, 1,0)
 
-C -- ALLOCATE STORE FOR INVERTED ALPHA AND SOLUTIONS
-      IWRK  = KSTALL(2)
-	IWRK2 = KSTALL(2)
-	IINV  = KSTALL(4)
-	ISOLN = KSTALL(2)
-C -- DO INVERSION AND GET RESULT
-      ISTAT = KINV2(2,STORE(IALPHA),STORE(IINV),4,0,STORE(IWRK),
-     1 STORE(IWRK2),2)
-      CALL XMLTMM(STORE(IBETA),STORE(IINV),STORE(ISOLN),1,2,2)
-      WRITE(CMON,'(A,2F)')'Solutions:',STORE(ISOLN),STORE(ISOLN+1)
-      CALL XPRVDU(NCVDU,1,0)
-      WRITE(CMON,'(A,2G13.6)')'I 1/2:',STORE(IINV),STORE(IINV+1)
-      CALL XPRVDU(NCVDU,1,0)
-      WRITE(CMON,'(A,2G13.6)')'I 3/4:',STORE(IINV+2),STORE(IINV+3)
-      CALL XPRVDU(NCVDU,1,0)
+
+
+cC -- ALLOCATE SPACE FOR MATRICES
+c      IALPHA = KSTALL(4)
+c      IBETA = KSTALL(2)
+cC -- ACCUMULATE BETA MATRIX
+c      DO K=0,1
+c          STORE(IBETA+K) = 0
+c          DO I=1,N6D
+c          STORE(IBETA+K) = STORE(IBETA+K) + Y(I)*FUNCT(K,X(I))
+c        ENDDO
+c      ENDDO                               
+cC -- ACCUMULATE ALPHA MATRIX
+c      DO J=0,1
+c          DO K=0,1
+c            STORE(IALPHA+J+(2*K)) = 0
+c            DO I=1,N6D
+c            STORE(IALPHA+J+(2*K)) = (STORE(IALPHA+J+(2*K))
+c     1  + (FUNCT(J,X(I))*FUNCT(K,X(I))))
+c            ENDDO
+c          ENDDO
+c        ENDDO
+c      WRITE(CMON,'(A,2G13.6)')'A 1/2:',STORE(IALPHA),STORE(IALPHA+1)
+c      WRITE(NCAWU,'(A,2G13.6)')'A 1/2:',STORE(IALPHA),STORE(IALPHA+1)
+c      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'(A,2G13.6)')'A 3/4:',STORE(IALPHA+2),STORE(IALPHA+3)
+c      WRITE(NCAWU,'(A,2G13.6)')'A 3/4:',STORE(IALPHA+2),STORE(IALPHA+3)
+c      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'(A,2G13.6)')'Beta:',STORE(IBETA),STORE(IBETA+1)
+c      WRITE(NCAWU,'(A,2G13.6)')'Beta:',STORE(IBETA),STORE(IBETA+1)
+c      CALL XPRVDU(NCVDU, 1,0)
+c
+cC -- ALLOCATE STORE FOR INVERTED ALPHA AND SOLUTIONS
+c      IWRK  = KSTALL(2)
+c        IWRK2 = KSTALL(2)
+c        IINV  = KSTALL(4)
+c        ISOLN = KSTALL(2)
+cC -- DO INVERSION AND GET RESULT
+c      ISTAT = KINV2(2,STORE(IALPHA),STORE(IINV),4,0,STORE(IWRK),
+c     1 STORE(IWRK2),2)
+c      CALL XMLTMM(STORE(IBETA),STORE(IINV),STORE(ISOLN),1,2,2)
+c      WRITE(CMON,'(A,2F)')'Solutions:',STORE(ISOLN),STORE(ISOLN+1)
+c      CALL XPRVDU(NCVDU,1,0)
+c      WRITE(CMON,'(A,2G13.6)')'I 1/2:',STORE(IINV),STORE(IINV+1)
+c      CALL XPRVDU(NCVDU,1,0)
+c      WRITE(CMON,'(A,2G13.6)')'I 3/4:',STORE(IINV+2),STORE(IINV+3)
+c      CALL XPRVDU(NCVDU,1,0)
+
 C----- COMPUTE AND STORE R-VALUES
       RFACT = 100. * TOP / BOTTOM
       IF (WBOT .LE. 0.0) THEN
@@ -2241,3 +2243,98 @@ C To do - check dependencies at this point
       RETURN
       END
 
+
+
+C
+CODE FOR XSGDST
+      SUBROUTINE XSGDST
+      DIMENSION KSIGS(100)
+\ISTORE
+\STORE
+\XLST06
+\XUNITS
+\XSSVAL
+\XERVAL
+\XOPVAL
+\XCONST
+\XIOBUF
+\QSTORE
+      DATA ICOMSZ / 1 /
+      DATA IVERSN /100/
+
+C -- SET THE TIMING AND READ THE CONSTANTS
+
+      CALL XTIME1 ( 2 )
+      CALL XCSAE
+
+C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
+      ICOMBF = KSTALL( ICOMSZ )
+      CALL XZEROF (STORE(ICOMBF), ICOMSZ)
+      I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
+      IF ( I .LT. 0 ) GO TO 9910
+
+      IPLOT = ISTORE(ICOMBF)
+
+      CALL XFAL06 (0)
+
+
+      DO I = 1,100
+        KSIGS(I) = 0
+      END DO
+
+
+C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
+
+      N6ACC = 0
+
+      ISTAT = KLDRNR(0)
+
+      DO WHILE ( ISTAT .GE. 0 )
+        N6ACC = N6ACC + 1
+        CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
+        JSIGS = 1 + NINT( (2.*FOS)/SIGMA )
+        JSIGS = MAX(JSIGS,1)
+        IF ( JSIGS .LE. 100 ) KSIGS(JSIGS) = KSIGS(JSIGS) + 1
+        ISTAT = KLDRNR(0)
+      END DO
+
+
+      IF (IPLOT .EQ. 1) THEN
+        WRITE(CMON,'(A/A/A/A)')
+     1  '^^PL PLOTDATA _SIGLEVL BARGRAPH ATTACH _VSIGLEVL KEY',
+     1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''Number of observations''',
+     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I) frequency'''
+        CALL XPRVDU(NCVDU, 4,0)
+
+        DO I = 1, 100
+          WRITE(CMON,'(A,1X,F4.1,1X,A,1X,I6)')
+     1    '^^PL LABEL',(I-1)*.5,'DATA',KSIGS(I)
+          CALL XPRVDU(NCVDU,1,0)
+        END DO
+
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+
+      END IF
+
+9000  CONTINUE
+C -- FINAL MESSAGE
+      CALL XOPMSG ( IOPDSP , IOPEND , IVERSN )
+      CALL XTIME2 ( 2 )
+      CALL XRSL
+      CALL XCSAE
+      RETURN
+
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPDSP , IOPABN , 0 )
+      GO TO 9000
+
+9910  CONTINUE
+C -- INPUT ERRORS
+      CALL XOPMSG ( IOPDSP , IOPCMI , 0 )
+      GO TO 9900
+      RETURN
+
+      END

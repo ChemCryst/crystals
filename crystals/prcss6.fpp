@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2002/02/28 11:34:46  ckp2
+C Wilson plot & E stat code.
+C
 C Revision 1.5  2001/10/08 12:25:58  ckp2
 C
 C All program sub-units now RETURN to the main CRYSTL() function inbetween commands.
@@ -41,7 +44,7 @@ C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 C--BRANCH ON THE TYPE OF OPERATION
 
-      GOTO (1500,2200,2300,2400,2500,2550,2600,2700,4000,4100,
+      GOTO (1500,2200,2300,2400,2500,2550,2600,2700,4000,4100,4200,
      2      1500),NUM
 1500  CALL GUEXIT(324)
 
@@ -89,6 +92,11 @@ C--'#LP' INSTRUCTION
 C--'#REORDER' INSTRUCTION
 4100  CONTINUE
       CALL XREORD
+      RETURN
+
+C--'#SIGMADIST' INSTRUCTION
+4200  CONTINUE
+      CALL XSGDST
       RETURN
       END
 
