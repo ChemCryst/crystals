@@ -22,7 +22,6 @@ C      SUBROUTINE ZCAMER ( ITYPE , RCRYST, NSTORE , IDEVIC)
 \CAMBLK
 \XIOBUF
 \CAMIMN
-
 C      REAL RCRYST(NSTORE)
 CDJW99 this upsets FTN95      EXTERNAL ZBLOCK
       LOGICAL LEXIST
@@ -63,16 +62,37 @@ C&DOS      Status$Text=' '
       ICAMER = ITYPE
       IF (ICAMER.LT.2) THEN
 C SET UP FLAG POSITIONS FOR LARGE VERSION OF CAMERON
-        IXYZO = 16
-        IPCK = 14
-        IATTYP = 32
-        ILAB = 43
-        IBOND = 41
-        ISYM = 48
+CDJWSEP2000  SET UP DATA SIZES SO THAT POINTERS CAN BE 
+C      MORE EASILY UPDATED.
+C        JCOORD = 13
+C   INCREASE TO MAKE ROOM FOR GROUP AND NAME VALUES
+        JCOORD = 15
+        JPCK = 2        
+        JXYZO = 16
+        JATTYP = 9
+        JBOND = 2
+        JLAB = 5
+        JSYM = 2
+C
+C        IPCK = 14
+C        IXYZO = 16
+C        IATTYP = 32
+C        IBOND = 41
+C        ILAB = 43
+C        ISYM = 48
 cdjwjan99 - make room for the shape flag
         IPACKT = 49 + 1
+C  COMPUTE THE ADDRESSES INSTEAD 
+        IPCK = 1+JCOORD
+        IXYZO = IPCK + JPCK
+        IATTYP = IXYZO + JXYZO
+        IBOND = IATTYP + JATTYP
+        ILAB = IBOND + JBOND
+        ISYM = ILAB + JLAB
+        IPACKT = ISYM + JSYM
       ELSE
 C SET UP FLAG POSITIONS FOR SMALL VERSION OF CAMERON
+CDJW SEP 2000 NOT YET UPDATED - MAY BE OBSOLETE?
         IXYZO = 4
         IPCK = 12
         IATTYP = 7

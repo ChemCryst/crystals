@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2000/08/04 15:17:48  CKP2
+C more pdb mods
+C
 C Revision 1.9  2000/08/04 14:41:50  CKP2
 C More chime/pdb edits
 C
@@ -230,7 +233,7 @@ C NOW LOOP TO FIND THE FIRST AND LAST COMMANDS IN THE GROUP
 C SEARCH THROUGH THE FILE FOR THE REQUIRED INFO
       IS = (ISTART - ICOM + 1)/ISRCOM
       IF = (IFIN - ICOM + 1)/ISRCOM
-        IF (.NOT.LFILES (-1,'COMMAND.CMN',IINPT)) THEN
+        IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
           CALL ZTXTMD
           CALL ZMORE('Error - file COMMAND.CMN not found.',0)
           CALL ZMORE('CAMERON cannot continue.',0)
@@ -466,7 +469,7 @@ C      ENDIF
 200   CONTINUE
 C HELP
 C Load in the appropriate error message
-      IF (.NOT.LFILES (-1,'COMMAND.CMN',IINPT)) THEN
+      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
         CALL ZMORE('Error on opening COMMAND.CMN.',0)
         CALL ZMORE('HELP is unavailable.',0)
         GOTO 10
@@ -1330,7 +1333,7 @@ C by two 80 character lines of help and error message.
       LOGICAL LFILES
 C MAIN LOOP TO INPUT THE INDEX
 C      OPEN (UNIT = 1,FILE = 'ORDER.DAT',STATUS = 'OLD')
-      IF (.NOT.LFILES (-1,'ORDER.CMN',IINPT)) THEN
+      IF (.NOT.LFILES (-1,'SCRIPT\ORDER.CMN',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE('Error - file ORDER.CMN cannot be opened.',0)
         CALL ZMORE('CAMERON cannot continue.',0)
@@ -1347,7 +1350,7 @@ C cljf
       IF (.NOT.LFILES (0,' ',IINPT)) THEN
         CALL ZMORE('Error on closing ORDER.CMN.',0)
       ENDIF
-      IF (.NOT.LFILES (-1,'COMMAND.CMN',IINPT)) THEN
+      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE('Error - file COMMAND.CMN cannot be opened.',0)
         CALL ZMORE('CAMERON cannot continue.',0)
@@ -1811,7 +1814,7 @@ CODE FOR ZGNHLP [ READ GENERAL HELP FILE ]
       INTEGER IFLAG
       LOGICAL LFILES
       IFLAG = 1
-      IF (.NOT.LFILES (-1,'GENHELP.CMN',12)) THEN
+      IF (.NOT.LFILES (-1,'SCRIPT\GENHELP.CMN',12)) THEN
         CALL ZMORE(
      +'Error - help information file GENHELP.CMN not available.',0)
        RETURN
@@ -2104,7 +2107,7 @@ CODE FOR ZCOLOT [ COLOUR TABLE INPUT ]
       INTEGER IPOS
       LOGICAL LSTOP,LFILES
 C CHECK FOR THE FILES EXISTENCE
-      IF (.NOT.LFILES(-1,'COLOUR.CMN',IINPT)) THEN
+      IF (.NOT.LFILES(-1,'SCRIPT\COLOUR.CMN',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE ('Error : COLOUR.CMN not available',0)
         CALL ZMORE ('CAMERON cannot continue.',0)
@@ -2171,12 +2174,12 @@ C The file contains info about NELM elements.
 \CAMBTN
 \CAMBLK
 \XIOBUF
-
       CHARACTER*2 LABEL
       CHARACTER*6 CCOL
       REAL COV,ION,VAN
       LOGICAL LFILES
-      IF (.NOT.LFILES (-1,'PROP.CMN',IINPT)) THEN
+c      IF (.NOT.LFILES (-1,'script\PROP.CMN',IINPT)) THEN
+      IF (.NOT.LFILES (-1,'SCRIPT\PROPWIN.DAT',IINPT)) THEN
         CALL ZTXTMD
         CALL ZMORE('Error - file PROP.CMN cannot be accessed.',0)
         CALL ZMORE('CAMERON cannot continue.',0)
@@ -2241,7 +2244,6 @@ CODE FOR ZQUERY
 \CAMBTN
 \CAMBLK
 \XIOBUF
-
       CHARACTER*10 WORD
       CHARACTER*80 HLPMESS
       CHARACTER*1 ANS
@@ -2317,7 +2319,7 @@ C FIRST TIME AROUND LOOK FOR HEADER
       ENDIF
 C LOAD IN THE HELP MESSAGE
 5     CONTINUE
-      IF (.NOT.LFILES (-1,'COMMAND.CMN',IINPT)) THEN
+      IF (.NOT.LFILES (-1,'SCRIPT\COMMAND.CMN',IINPT)) THEN
         CALL ZMORE('Error - cannot access COMMAND.CMN',0)
         HLPMESS = 'Help unavailable.'
         WORD = '******'
@@ -2619,7 +2621,7 @@ cnov98        IF (IUISO .EQ. 1) RSTORE(K+IXYZO+11+L) = COORDS(2)
           RSTORE(K+L*3+J) = AXESC(L,J)
 100    CONTINUE
 C STORE OCC, PACKFLAG
-      RSTORE (K+IPCK-1) = COORDS(1)
+      RSTORE (K+13) = COORDS(1)
       RSTORE (K+IPCK+1) = 1.0
 C WHAT ELEMENT IS IT?
 C      CALL ZCASCH (ELM,ICELM,ICATOM-1,1,IPOS,IPPACK,INSTRT)
