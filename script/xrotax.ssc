@@ -1,6 +1,7 @@
 %SCRIPT ROTAX
 % VARIABLE INTEGER NFOM
-% VARIABLE REAL TWINTOL
+% VARIABLE REAL TWINTOL BINMAX
+% VARIABLE LOGICAL L
 %% The variables needed by XQUESTIO
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
@@ -48,6 +49,7 @@
 %   BLOCK               %ROTAX
 %     COPY '#CLOSE SCPDATA'
 %     COPY '#RELE PUNCH rotax.pch'
+%     EVALUATE L = FILEDELETE ( 'rotax.lis' )
 %     COPY '#RELE PRINT rotax.lis'
 %     COPY '#ROTAX'
 %     COPY 'OUTPUT PUNCH=YES'
@@ -82,20 +84,12 @@
 %     COPY '#RELEASE PUNCH bfile.pch'
 %     COPY '#RELEASE PRINT bfile.lis'
 %     COPY '#OPEN SCPDATA rotax.pch'
-^^WI WINDOW ROTAX2 'Rotax results' MODAL
-^^WI POSITION=CENTRED 'MODEL01'
-^^WI GRID M NROWS=6 NCOLS=3 {
-^^WI  @ 2,2 GRID E NROWS=2 NCOLS=1 {
-^^WI   @ 1,1 GRID EXP1 NROWS=1 NCOLS=3 OUTLINE='' {
-^^WI    @ 1,1 ICON IM INFO
-^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1 {
-^^WI     @ 1,1 STATIC XRT1 'For two component twins you can use this dialog'
-^^WI     @ 2,1 STATIC XRT2 'to choose a suitable twin law and it will'
-^^WI     @ 3,1 STATIC XRT3 'be automatically included in the refinement'
-^^WI    }
-^^WI   }
-^^WI  }
-^^WI  @ 3,2 GRID F NROWS=1 NCOLS=10 {
+^^WI WINDOW ROTAX2 'Rotax results' MODAL SIZE KEEP
+^^WI POSITION=CENTRED '_MAIN'
+^^WI GRID M NROWS=3 NCOLS=5 {
+^^WI @ 2,2 GRID MN NROWS=6 NCOLS=1
+^^WI {
+^^WI  @ 2,1 GRID F NROWS=1 NCOLS=10 {
 %     BLOCK
 %       ON ERROR TERMINATE
 %       ON END TERMINATE
@@ -122,22 +116,22 @@
 %     END BLOCK
 ^^WI     @ 1,1 STATIC RT_T2 'Results for'
 ^^WI     @ 1,5 STATIC RT_T2 'degree'
-^^WI     @ 1,10 BUTTON RT_BDT '&Details'
+^^WI     @ 1,10 BUTTON RT_BDT '&View Details'
 ^^WI  }
-^^WI  @ 4,2 GRID G NROWS=3 NCOLS=3 {
+^^WI  @ 3,1 GRID G NROWS=3 NCOLS=3 {
 ^^WI     @ 2,1 GRID GA NROWS=4 NCOLS=1 {
 ^^WI        @ 1,1 STATIC RT_T4 'Choose a'
-^^WI        @ 2,1 STATIC RT_T4 'figure of merit:'
+^^WI        @ 2,1 STATIC RT_T4 'figure of merit (f.o.m):'
 ^^WI        @ 4,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
 {I About to get all the FOM's
 %     EXTRACT REWIND
+%     EXTRACT NEXT
 %     LOOP
 %       ON ERROR TERMINATE
 %       ON END TERMINATE
 %%
 %% Get the fom for each result
-%       EXTRACT NEXT
 %       EXTRACT NEXT
 %       CLEAR
 %       EXTRACT TRANSFER COMMAND
@@ -150,6 +144,8 @@
 %          INSERT !'!
 %          OUTPUT
 %       END IF
+%       EXTRACT NEXT
+%       EXTRACT NEXT
 %     END LOOP
 ^^WI              'NULL'
 ^^WI     }
@@ -180,12 +176,27 @@
 ^^WI        }
 ^^WI     }
 ^^WI  }
-^^WI  @ 5,2 GRID B NROWS=2 NCOLS=7 {
+^^WI  @ 4,1 GRID B NROWS=2 NCOLS=7 {
 ^^WI     @ 1,1 STRETCH RT_STR2 HORIZONTAL
 ^^WI     @ 1,2 BUTTON RT_BOK '&Apply twin law' DEFAULT COMMIT
 ^^WI     @ 1,4 BUTTON RT_BXX '&Cancel' CANCEL
+^^WI  }
+^^WI  @ 5,1 GRID E NROWS=2 NCOLS=1 {
+^^WI   @ 1,1 GRID EXP1 NROWS=1 NCOLS=3 OUTLINE='' {
+^^WI    @ 1,1 ICON IM INFO
+^^WI    @ 1,3 GRID EXP2 NROWS=8 NCOLS=1 {
+^^WI     @ 1,1 STATIC XRT1 'For two component twins you can use this dialog'
+^^WI     @ 2,1 STATIC XRT2 'to choose a suitable twin law and it will'
+^^WI     @ 3,1 STATIC XRT3 'be automatically included in the refinement'
+^^WI     @ 5,1 STATIC XRT3 'The graph on the right shows how far the'
+^^WI     @ 6,1 STATIC XRT3 '30 bad reflections deviate from exact lattice'
+^^WI     @ 7,1 STATIC XRT3 'points when transformed by the twin-law matrix'
+^^WI     @ 8,1 STATIC XRT3 'above. Blue bars are not included in the f.o.m.'
+^^WI    }
 ^^WI   }
+^^WI  }
 ^^WI }
+^^WI @ 2,4 PLOTWINDOW _VROTAX NROWS=20 NCOLS=64 }
 ^^WI SHOW
 ^^CR
 %     LOOP
@@ -206,8 +217,8 @@
 %       EXTRACT REWIND
 %% Skip header line.
 %       EXTRACT NEXT
-%% Skip (NFOM-1 * 2) lines
-%       LOOP ( ( NFOM - 1 ) * 2 ) TIMES
+%% Skip (NFOM-1 * 3) lines
+%       LOOP ( ( NFOM - 1 ) * 3 ) TIMES
 %         ON ERROR TERMINATE
 %         ON END TERMINATE
 %         EXTRACT NEXT
@@ -330,6 +341,58 @@
 %         INSERT !'!
 %         OUTPUT
 %       END BLOCK
+%%
+%% Get the max outlier value and the binned outlier data.
+%%
+%       BLOCK
+%         ON ERROR TERMINATE
+%         ON END TERMINATE
+%         EXTRACT NEXT
+%         CLEAR
+%         EXTRACT TRANSFER INPUT
+^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VROTAX KEY
+^^PL XAXIS TITLE 'Distance from nearest lattice point (1000*A^-1)'
+^^PL YAXIS TITLE 'Number of reflections'
+^^PL NSERIES=2 LENGTH=12
+^^PL SERIES 1 SERIESNAME 'Reflections used for f.o.m.'
+^^PL SERIES 2 SERIESNAME 'Rejected reflections'
+%         CLEAR
+%         GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%         EVALUATE BINMAX = VALUE * 1000.0
+%         IF VALUE .LT. 0.0  THEN
+{E Error reading outliers from rotax.pch. Binmax not found.
+%         ELSE
+%          LOOP 12 TIMES
+%           ON ERROR TERMINATE
+%           ON END TERMINATE
+%           CLEAR
+%           INSERT "^^PL LABEL "
+%           IF ( LOOPCOUNTER .EQ. 1 .OR. LOOPCOUNTER .EQ. 12 -
+            .OR. LOOPCOUNTER .EQ. 4 .OR. LOOPCOUNTER .EQ. 8 ) THEN
+%             STORE FORMAT /(F6.2)/ LENGTH 6 REAL -
+   (  ( REAL ( LOOPCOUNTER - 1 ) ) * BINMAX / 12.0 )
+%           ELSE
+%             INSERT "' '"
+%           END IF
+%           INSERT ' DATA '
+%           GET NOPROMPT INTEGER ' ' '-1'
+%           GET NOPROMPT INTEGER ' ' '-1'
+%           OUTPUT
+%          END LOOP
+%         END IF
+^^PL SHOW
+^^CR
+%%
+%         CLEAR
+%         INSERT !^^CO SET M11 TEXT '!
+%         GET NOPROMPT REAL ' ' '100.0'
+%         IF VALUE .GT. 99.  THEN
+%           INSERT !ERROR!
+%         END IF
+%       END BLOCK
+%%
+%%
+%%
 %       VERIFY RT_BXX RT_BDT RT_BOK RT_RES
 %       GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %       CASE VALUE
