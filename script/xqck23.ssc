@@ -25,7 +25,7 @@
 ^^WI   @ 4,1 GRID BTNS NROWS=1 NCOLS=7
 ^^WI   {
 ^^WI     @ 1,1 STRETCH MF_ST HORIZONTAL
-^^WI     @ 1,2 BUTTON MF_F2 'F &sqauared' DEFAULT COMMIT 
+^^WI     @ 1,2 BUTTON MF_F2 'F &squared' DEFAULT COMMIT 
 ^^WI     @ 1,4 BUTTON MF_FO '&F' LENGTH='F sqauared' CANCEL
 ^^WI     @ 1,5 STRETCH MF_ST HORIZONTAL
 ^^WI     @ 1,6 BUTTON MF_HELP '&Help'
