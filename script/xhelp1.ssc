@@ -1,0 +1,42 @@
+%SCRIPT XHELP1
+%%
+%% First check if this window already exsits.
+%%
+^^WI SET TEXTOUTPUT NOECHO
+^^CR
+^^?? XHELP1 EXISTS
+^^CR
+%%
+%% If it does, then simply redirect text to it.
+%% and leave a suitable blank space.
+%%
+% VERIFY TRUE FALSE
+% GET NOSTORE FINAL ABBREVIATED ' ' 'FALSE'
+% IF VALUE .EQ. 1 THEN
+^^WI  SENDTEXTTO XHELPTEXT
+^^CR
+
+
+=======================================================================
+
+%     FINISH
+% END IF
+%%
+%% Otherwise, set up the window.
+%%
+^^WI WINDOW XHELP1 'Crystals Help' SIZE
+^^WI COMMAND='^^CO DISPOSE XHELP1'
+^^WI GRID OUTER NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 MULTIEDIT XHELPTEXT '' NROWS=10 NCOLS=80
+^^WI        IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI   @ 2,4 GRID BTN NROWS=3 NCOLS=1
+^^WI   {
+^^WI     @ 3,1 BUTTON XHELPX '&Close' CANCEL DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO XHELPTEXT
+^^CR
+%END SCRIPT

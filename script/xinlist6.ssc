@@ -10,7 +10,7 @@ Input reflection data from a file containing h,k,l Fo, sigma (HKLI file)
 %%
 ^^WI WINDOW XINLIST6 'Input reflection data' MODAL
 ^^WI        COMMIT='BOK' CANCEL='BXX'
-^^WI GRID GRIDM NROWS=9 NCOLS=5
+^^WI GRID GRIDM NROWS=9 NCOLS=3
 ^^WI {
 ^^WI  @ 2,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='File'
 ^^WI  {
@@ -21,30 +21,96 @@ Input reflection data from a file containing h,k,l Fo, sigma (HKLI file)
 ^^WI  {
 ^^WI    @ 1,1 GRID GT NROWS=2 NCOLS=5
 ^^WI    {
-^^WI      @ 1,1 RADIOBUTTON RF1 'F' IGNORE
-^^WI      @ 1,3 RADIOBUTTON RF1 'F-squared' STATE=ON IGNORE
-^^WI      @ 1,5 RADIOBUTTON RF1 'I' IGNORE
+^^WI      @ 1,1 RADIOBUTTON RFS1 'F' IGNORE
+^^WI      @ 1,3 RADIOBUTTON RFS2 'F-squared' STATE=ON IGNORE
+^^WI      @ 1,5 RADIOBUTTON RFS3 'I' IGNORE
 ^^WI    }
 ^^WI    @ 2,1 CHECKBOX CS 'Data contains sigmas' STATE=ON IGNORE
 ^^WI  }
-^^WI  @ 6,2 GRID GD NROWS=3 NCOLS=2 OUTLINE='Format'
+^^WI  @ 6,2 GRID GL NROWS=1 NCOLS=2
 ^^WI  {
-^^WI    @ 1,1 RADIOBUTTON RF1 'Free format' INFORM
-^^WI    @ 2,1 RADIOBUTTON RF2 'Shelx (fixed)' INFORM
-^^WI                                         STATE=ON
-^^WI    @ 3,1 RADIOBUTTON RF3 'Other (fixed)' INFORM
+^^WI   @ 1,1 GRID GD NROWS=3 NCOLS=2 OUTLINE='Format'
+^^WI   {
+^^WI    @ 1,1 RADIOBUTTON RDF1 'Free format' INFORM
+^^WI    @ 2,1 RADIOBUTTON RDF2 'Shelx (fixed format)' 
+^^WI                               INFORM STATE=ON
+^^WI    @ 3,1 RADIOBUTTON RDF3 'Other (fixed format):'
+^^WI                               INFORM 
 ^^WI    @ 3,2 EDITBOX L6FORM ' (3F4.0, 2F8.0) ' CHARS=24
+^^WI                                         DISABLED=YES
+^^WI   }                                  
+^^WI   @ 1,2 GRID GB NROWS=6 NCOLS=2
+^^WI   {
+^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT
+^^WI    @ 4,2 BUTTON BXX '&Cancel'
+^^WI    @ 6,2 BUTTON HELP1 'Help...' 
+^^WI   }
 ^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
+%%
+%% Now the window is displayed, we wait for any of the following
+%% things to happen:
+%% "BOK" - the OK button is pressed.
+%% "BXX" - the Cancel button is pressed.    
+%% "BROWSE" - the browse button is pressed.
+%% "HELP1" - the help button is pressed.
+%% "RDF1" - free format is selected. (DISable L6FORM)
+%% "RDF2" - shelx format is selected.(DISable L6FORM)
+%% "RDF3" - other format is selected.(ENable L6FORM)
+%%
+% LOOP
+%   VERIFY BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3
+%   GET NOSTORE FINAL ABBREVIATED 'Opt' ' '
+%   CASE VALUE
+%     BLOCK                         %BOK%
+^^WI    DISPOSE XINLIST6
+^^CR
+%     END BLOCK
+%     BLOCK                         %BXX%
+^^WI    DISPOSE XINLIST6
+^^CR
+%       FINISH
+%     END BLOCK
+%     BLOCK                         %BROWSE%
+^^WI    SYSOPENFILE '*.hkl' 'HKL file (*.hkl)'
+^^CR
+%       GET KEYWORD 'New filename:'
+%       IF CVALUE .NE. 'CANCEL' THEN
+%        CLEAR
+%        TRANSFER "^^WI SET L6FILE TEXT " // CVALUE TO DISPLAY
+^^CR
+%       END IF
+%     END BLOCK
+%     BLOCK                         %HELP1%
+%       COPY '#SCRIPT XHELP1'
+X-ray observation data can be stored in several different formats:
 
-% GET NOSTORE TEXT 'Press any key' 'Any key'
-^^CO DISPOSE XINLIST6
-
-
-
-% END SCRIPT
+I's --               Intensities. The "raw" reflection data as
+                     recorded by the diffractometer.
+F's and F-squared -- Structure factor amplitudes (or their square).
+                     Data reduction and absorption corrections on
+                     I's produce F-squared or F.
+e.g. a file processed by RC93 will contain intensities.
+     a file processed by DIPIN will contain F-squared.
+%       COPY '#SCRIPT XHELP2'
+%     END BLOCK
+%     BLOCK                         %RDF1%
+^^WI SET L6FORM DISABLED=YES
+^^CR
+%     END BLOCK
+%     BLOCK                         %RDF2%
+^^WI SET L6FORM DISABLED=YES
+^^CR
+%     END BLOCK
+%     BLOCK                         %RDF3%
+^^WI SET L6FORM DISABLED=NO
+^^CR
+%     END BLOCK
+%   END CASE
+% END LOOP
+%END SCRIPT
 
 
 
