@@ -101,7 +101,7 @@ class   CcController
     string OpenFileDialog(const string & extensionFilter, const string & extensionDescription, bool titleOnly);
     string SaveFileDialog(const string & defaultName, const string & extensionFilter, const string & extensionDescription);
     string OpenDirDialog();
-    void ChooseFont();
+    void CcChooseFont();
 
     void StartCrystalsThread();
     void ProcessOutput(const string & theLine);
@@ -262,6 +262,9 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.41  2004/09/17 14:03:54  rich
+//   Better support for accessing text in Multiline edit control from scripts.
+//
 //   Revision 1.40  2004/06/29 15:15:29  rich
 //   Remove references to unused kTNoMoreToken. Protect against reading
 //   an empty list of tokens.

@@ -6,6 +6,10 @@
 //   Filename:  CxBitmap.cpp
 //   Authors:   Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.7  2002/07/15 12:19:13  richard
 //   Reorder headers to improve ease of linking.
 //   Update program to use new standard C++ io libraries.
@@ -94,7 +98,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
 #ifdef __BOTHWIN__
     string file = dir + "\\script\\" + bitmap;
 #endif
-#ifdef __LINUX__
+#ifdef __WXGTK__
     string file = dir + "/script/" + bitmap;
 #endif
 

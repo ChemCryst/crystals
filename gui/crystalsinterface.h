@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.31  2004/06/28 13:26:57  rich
+// More Linux fixes, stl updates.
+//
 // Revision 1.30  2004/06/24 09:12:02  rich
 // Replaced home-made strings and lists with Standard
 // Template Library versions.
@@ -97,8 +100,13 @@
 #ifndef     __CrystalsInterface_H__
 #define     __CrystalsInterface_H__
 
-#ifdef __LINUX__
+#ifdef __WXGTK__
 #define __BOTHWX__ 1
+#endif
+
+#ifdef __WXMSW__
+#define __BOTHWX__ 1
+#define __BOTHWIN__ 1
 #endif
 
 #ifdef __CR_WIN__

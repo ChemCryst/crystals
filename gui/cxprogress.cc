@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   05.11.1998 14:24 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.12  2003/05/07 12:18:58  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -85,7 +89,7 @@ CxProgress::~CxProgress()
         m_TextOverlay->DestroyWindow();
         delete m_TextOverlay;
 #endif
-#ifdef __WINMSW__
+#ifdef __WXMSW__
         m_TextOverlay->Destroy();
 #endif
     }
@@ -116,7 +120,7 @@ void    CxProgress::SetText( const string & text )
         m_TextOverlay->Create( text.c_str(), WS_VISIBLE|WS_CHILD, rectangle, this, 54999) ;
         m_TextOverlay->SetFont(CcController::mp_font);
 #endif
-#ifdef __WINMSW__
+#ifdef ___WXMSW__
         m_TextOverlay = new wxStaticText();
 //        cerr << "Creating new static text overlay for the Progress Bar.\n";
         m_TextOverlay->Create( (wxWindow*)this, -1, text.c_str(), wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
@@ -126,7 +130,7 @@ void    CxProgress::SetText( const string & text )
     else
         m_TextOverlay->SetWindowText(text.c_str());
 #endif
-#ifdef __WINMSW__
+#ifdef ___WXMSW__
     else
         m_TextOverlay->SetLabel(text.c_str());
 #endif
@@ -144,14 +148,14 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
         m_TextOverlay->MoveWindow(rectangle) ;
     }
 #endif
-#ifdef __WINMSW__
+#ifdef __WXMSW__
     SetSize(left,top,right-left,bottom-top);
     if(m_TextOverlay != nil)
     {
         m_TextOverlay->SetSize( GetRect() ) ;
     }
 #endif
-#ifdef __LINUX__
+#ifdef __WXGTK__
     SetSize(left,top,right-left,bottom-top);
 #endif
 }
@@ -214,7 +218,7 @@ void CxProgress::SetProgress(int complete)
         m_TextOverlay->DestroyWindow();
         delete m_TextOverlay;
 #endif
-#ifdef __WINMSW__
+#ifdef ___WXMSW__
         m_TextOverlay->Destroy();
 #endif
         m_TextOverlay = nil;
@@ -241,7 +245,7 @@ void CxProgress::SwitchText ( const string & text )
                         m_TextOverlay->GetWindowText(temp);
                         m_oldText = (LPCTSTR) temp;
 #endif
-#ifdef __WINMSW__
+#ifdef ___WXMSW__
                         m_oldText = string( m_TextOverlay->GetLabel() );
 #endif
 

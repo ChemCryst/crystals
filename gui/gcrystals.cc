@@ -199,7 +199,7 @@ using namespace std;
       EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
   END_EVENT_TABLE()
 
-  #ifdef __LINUX__
+  #ifdef __WXGTK__
     #include <X11/Xlib.h>
   #endif
 

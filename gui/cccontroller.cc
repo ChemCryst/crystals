@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.98  2004/09/17 14:03:54  rich
+// Better support for accessing text in Multiline edit control from scripts.
+//
 // Revision 1.97  2004/07/02 12:34:03  rich
 // Fixed mis-parsing of short tokens. (eg. ^^CW on its own).
 //
@@ -535,7 +538,7 @@ using namespace std;
   CWinThread * CcController::mGUIThread = nil;
 #endif
 
-#ifdef __LINUX__
+#ifdef __WXGTK__
   #include <errno.h>
   #include <sys/time.h>
   #define F77_STUB_REQUIRED
@@ -548,10 +551,11 @@ using namespace std;
   #include <wx/dirdlg.h>
   #include <wx/mimetype.h>
   #include <wx/utils.h>
+  #include <sys/wait.h>
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
-#ifdef __WINMSW__
+#ifdef __WXMSW__
   #include <stdio.h>
 //  #include <direct.h>
   #define F77_STUB_REQUIRED
@@ -567,6 +571,13 @@ using namespace std;
 #endif
 
 #include "fortran.h"
+
+#ifdef __BOTHWX__
+#include <wx/settings.h>
+wxFont* CcController::mp_inputfont = nil;
+#include <wx/msgdlg.h>
+#include <unistd.h>
+#endif
 
 
 #ifdef __CR_WIN__
@@ -586,13 +597,6 @@ static CcLock m_wait_for_thread_start(false);
 static list<char*> stringlist;
 
 
-#ifdef __BOTHWX__
-#include <wx/settings.h>
-wxFont* CcController::mp_inputfont = nil;
-#include <wx/msgdlg.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#endif
 
 CcController* CcController::theController = nil;
 int CcController::debugIndent = 0;
@@ -602,10 +606,10 @@ CcController::CcController( const string & directory, const string & dscfile )
 #ifdef __CR_WIN__
     m_start_ticks = GetTickCount();
 #endif
-#ifdef __WINMSW__
+#ifdef __WXMSW__
     m_start_ticks = GetTickCount();
 #endif
-#ifdef __LINUX__
+#ifdef __WXGTK__
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
@@ -1368,7 +1372,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
             case kTFontSet:
             {
                 tokenList.pop_front();
-                ChooseFont();
+                CcChooseFont();
                 break;
             }
 
@@ -1754,10 +1758,10 @@ void    CcController::LogError( string errString , int level )
 #ifdef __CR_WIN__
     int now_ticks = GetTickCount();
 #endif
-#ifdef __WINMSW__
+#ifdef __WXMSW__
     int now_ticks = GetTickCount();
 #endif
-#ifdef __LINUX__
+#ifdef __WXGTK__
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
@@ -1770,7 +1774,7 @@ void    CcController::LogError( string errString , int level )
     fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.c_str() );
     fflush( mErrorLog );
 
-    #ifdef __LINUX__
+    #ifdef __WXGTK__
           std::cerr << elapse << " " << errString.c_str() << "\n";
     #endif
 }
@@ -2572,7 +2576,7 @@ void CcController::ChangeDir (string newDir)
 }
 
 
-void CcController::ChooseFont()
+void CcController::CcChooseFont()
 {
 #ifdef __CR_WIN__
   LOGFONT lf;
@@ -3224,7 +3228,7 @@ extern "C" {
       eRest = CRMIN ( eRest+1, line.length()); // convert to valid 1-based index.
     }
 
-#ifdef __CR_WIN__
+#ifdef __BOTHWIN__
 
     if ( bWait )
     {
@@ -3264,8 +3268,10 @@ extern "C" {
         ShellExecuteEx ( & si );
 // It is not possible to wait for rundll32's spawned process, so
 // we just pop up a message box, to hold this app here.
+ #ifdef __CR_WIN__
         AfxGetApp()->m_pMainWnd->MessageBox("CRYSTALS is waiting.\nClick OK when external application has exited.",
                                             "#SPAWN: Waiting",MB_OK);
+ #endif
 
         CcController::theController->ProcessOutput( " ");
         CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
@@ -3304,9 +3310,9 @@ extern "C" {
           ostringstream strstrm;
           strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
           CcController::theController->ProcessOutput(strstrm.str());
-          for (i = 7; i>=0; i--)
+          for (int ij = 7; ij>=0; ij--)
           {
-             args[i+2] = args[i];
+             args[ij+2] = args[ij];
           }
 
           OSVERSIONINFO o;
@@ -3403,9 +3409,9 @@ extern "C" {
         if ( result == -1 )  //Start failed
         {
 //          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + string(errno)+" trying a command shell.");
-          for (i = 7; i>=0; i--)
+          for (int ij = 7; ij>=0; ij--)
           {
-             args[i+2] = args[i];
+             args[ij+2] = args[ij];
           }
 
           OSVERSIONINFO o;
@@ -3429,7 +3435,7 @@ extern "C" {
     }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef __WXGTK__
 
 // Check if this might be a filename, and if so find application to
 // open it with.

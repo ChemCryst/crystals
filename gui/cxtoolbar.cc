@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   27.1.2001 09:48
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2004/06/24 09:12:02  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.13  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -225,7 +229,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     string crysdir ( getenv("CRYSDIR") );
     if ( crysdir.length() == 0 )
     {
-#ifdef __LINUX__
+#ifdef __WXGTK__
 	std::cerr << "You must set CRYSDIR before running crystals.\n";
 #endif
       return false;
@@ -237,7 +241,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     {
       string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
       i++;
-#ifdef __LINUX__
+#ifdef __WXGTK__
       string file = dir + "/script/" + newTool->tImage;
 #endif
 #ifdef __BOTHWIN__

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.34  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.33  2004/06/24 09:12:02  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -91,7 +94,7 @@
 #include    <string>
 #include    <sstream>
 
-#ifdef __LINUX__
+#ifdef __WXGTK__
 #include "wincrys.xpm"
 #endif
 

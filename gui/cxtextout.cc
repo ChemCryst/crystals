@@ -38,7 +38,7 @@ using namespace std;
 #endif
 
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #define RGB wxColour
 #endif
 
