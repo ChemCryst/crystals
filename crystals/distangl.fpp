@@ -1,4 +1,9 @@
+
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2002/06/26 10:30:52  richard
+C New output punch option: "SIMPLE" punches value followed by atoms. Suitable
+C for reading by scripts.
+C
 C Revision 1.20  2002/06/21 09:49:03  Administrator
 C Fix zero esds on bonds across a symmetry operator between atoms on special positions
 C
@@ -132,6 +137,7 @@ C             2 HIGH
 C
 C  IULN    THE INPUT LIST TYPE.
 C  IRDUS     TYPE OF RADIUS TO USE
+C           -1 USE LIST 41 for BONDS
 C            0 OVERALL LIMITS
 C            N N'TH RADIUS FROM LIST 29
 C
@@ -148,6 +154,8 @@ C             2 CIF
 C             3 SCRIPT READ-ABLE RIDE INSTRUCTIONS
 C             4 MOGUL query file.
 C             5 SIMPLE SCRIPT READ-ABLE DATA
+C             6 DELU RESTRAINTS
+C             7 SIMU RESTRAINTS
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -250,7 +258,7 @@ C
 \TYPE11
 \ISTORE
 C
-      DIMENSION B(3), PROCS(18)
+      DIMENSION B(3), PROCS(22)
       DIMENSION CC(4),TT(2)
       DIMENSION IS(9),ANGLE(3),DIST(3),DISTSQ(3)
       DIMENSION IAPD(13)
@@ -263,7 +271,7 @@ C
 \XDSTNC
 C
       COMMON /XPROCD/DISTS(4),IALL,IP,IESD,ICELL,ISORT,INTRA,LEVEL,IULN
-     1 ,IRDUS,IDSPDA,IPUNCH,ISYMOD,ITRANS,IHFIXD
+     1 ,IRDUS,IDSPDA,IPUNCH,ISYMOD,ITRANS,IHFIXD,DDEV1,DDEV2,SDEV1,SDEV2
       COMMON /XDISTW/A,BB,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y
 \XLEXIC
 \XWORKA
@@ -280,6 +288,7 @@ C
 \XLST11
 \XLST12
 \XLST29
+\XLST41
 \XERVAL
 \XOPVAL
 \XIOBUF
@@ -297,7 +306,7 @@ C
       DATA RESTR1 /'DIST'/, RESTR2 /'ENER'/
       DATA TOLER1 / .2 /, TOLER2 / .5 /
 C
-      DATA IDIMN /18/
+      DATA IDIMN /22/
 C
       DATA IS(1)/0/,IS(2)/3/,IS(3)/6/
       DATA IS(4)/3/,IS(5)/3/,IS(6)/3/
@@ -374,6 +383,7 @@ C----- ALLOCATE A FUNCTION VECTOR
         I=N5*MDATVC
         LATVC = KSTALL (I)
         CALL XZEROF ( ISTORE(LATVC) , I ) !Include all by default.
+C----- LOAD L41 in case anyone might want it. (KDIST4, for example)
         GOTO 100
 
 220   CONTINUE
@@ -506,12 +516,6 @@ C CSD format requires atom sequence number excluding H's:
          END DO
       END IF    
 
-
-
-c      WRITE(CMON,'(A,I4)') 'IALL = ',IALL
-c        CALL XPRVDU(NCVDU,1,0)
-
-
 C----- EXTRACT THE FUNCTION FLAG (0 for no radii, 1 for radii):
       JFNVC = MIN0(1,IRDUS)  !IRDUS: 0 limits, 1 covalent, 2 vdw, 3 ionic
 C                            !JFNVC: 0 limits, -1 list41, 1 some radius
@@ -526,8 +530,9 @@ C----- SET RESTRAINT DIRECTIVE NAME AND DISTANCE TOLERANCE
             TOLER = TOLER1 !.2
       ENDIF
                                               
-C----- LOAD LIST 29
-      CALL XFAL29
+C----- LOAD LISTS 29&41
+      IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
+      IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL41
 C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
       IFNVC=LFNVC
       I29=L29 + (N29-1)*MD29
@@ -547,6 +552,24 @@ C----- SCAN LIST 5 SETTING FUNCTION VECTOR TO APPROPRIATE RADIUS
         BMAX = AMAX1( BMAX, STORE(JZ))
         IFNVC = IFNVC + MDFNVC
       END DO
+
+      IF ( IPUNCH .EQ. 7 ) THEN
+C We need to know about terminal atoms. (Excluding H).
+         INHVEC = KSTALL ( N5 )
+         DO I = 0,N5-1
+           ISTORE(INHVEC+I) = 0
+         END DO
+         DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+            J51 = ISTORE(M41B)
+            J52 = ISTORE(M41B+6)
+            I51 = L5 + J51 * MD5
+            I52 = L5 + J52 * MD5
+            IF (ISTORE(I52).NE.KHYD)
+     1                     ISTORE(INHVEC+J51)=ISTORE(INHVEC+J51)+1
+            IF (ISTORE(I51).NE.KHYD)
+     1                     ISTORE(INHVEC+J52)=ISTORE(INHVEC+J52)+1
+         END DO
+      END IF    
 
       AT = DISTS(1)
       AC = DISTS(2)
@@ -774,7 +797,11 @@ C--CALCULATE ALL THE DISTANCES AND ANGLES ABOUT THIS ATOM
      2 'Y =',F9.5,5X,'Z =',F9.5)
 C--CHECK IF ANY DISTANCES OR ANGLES HAVE BEEN FOUND AT THIS ATOM
 
-        K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
+        IF ( JFNVC.GE.0 ) THEN
+           K = KDIST1( N5, JS, JT, JFNVC, TOLER, ITRANS, JATVC)
+        ELSE
+           K = KDIST4( JS, JT, JATVC)
+        ENDIF
 
 c        DO MMMI=NFLBAS,NFLBAS+JT*(K-1),JT
 c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
@@ -1004,8 +1031,21 @@ C----- WRITE RESTRAINT
                 WRITE (NCPU,'(A,'' '', F7.3, '',.01= '', A,'' to '',A)')
      1          RESTR, STORE(J+13), CATOM1(1:LATOM1),
      2          CATOM2(1:LATOM2)
-              ELSE IF (IPUNCH .EQ. 1) THEN
-              ENDIF
+              ELSE IF (IPUNCH .EQ. 6) THEN
+C----- WRITE RESTRAINT
+                WRITE (NCPU,'(''VIBR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1          DDEV1, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+              ELSE IF (IPUNCH .EQ. 7) THEN
+C----- WRITE RESTRAINT
+C Get index of atoms at L and M5P in L5.
+               J51 = ( L  - L5) / MD5
+               J52 = (M5P - L5) / MD5
+               SDEV = SDEV1
+               IF ( ISTORE(INHVEC+J51) .LE. 1 ) SDEV = SDEV2
+               IF ( ISTORE(INHVEC+J52) .LE. 1 ) SDEV = SDEV2
+               WRITE (NCPU,'(''U(IJ) .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+              END IF
               IF ((IPUNCH .EQ. 1).OR.(IPUNCH.EQ.2)) THEN
 C----- CIF AND FORMATTED PUBLICATION
                 IF ((IHFIXD.EQ.1).AND.(LHFIXD(1).OR.LHFIXD(2))) THEN
@@ -1572,6 +1612,10 @@ C CSD ignores bonds to H, instead uses an NCH key for atoms with H's.
                 WRITE(NCPU,
      1          '(''ANGL '',I3,'',1= '',A,'' to '',A,'' to '',A)')
      1          NANG,CATOM1(1:LATOM1),CATOM2(1:LATOM2),CATOM3(1:LATOM3)
+              ELSE IF (IPUNCH .EQ. 6) THEN
+C----- WRITE RESTRAINT
+                WRITE (NCPU,'(''VIBR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1          DDEV2, CATOM1(1:LATOM1), CATOM3(1:LATOM3)
               ELSE IF (IPUNCH .EQ. 5) THEN
                 WRITE(NCPU,'(F7.2,3(1X,A))')
      1          TERM,CATOM1(1:LATOM1),CATOM2(1:LATOM2),CATOM3(1:LATOM3)
@@ -3092,6 +3136,184 @@ C When JFNVC .EQ. NOWT then only find one contact at a time. (Voids only?)
       KDIST1=NJ
       RETURN
       END
+
+
+CODE FOR KDIST4
+      FUNCTION KDIST4( JS, JT, JATVC)
+C--ENTRY THAT CALCULATES DISTANCES AND STORES THE RESULTS AT NFL
+
+C  JS    POINTER TO THE DISTANCES STACK  -  ORIGINALLY SET TO 'NFL'
+C        AND POINTING TO THE NEXT FREE LOCATION AFTER THE STACK ON EXIT.
+C  JT    HE NUMBER OF WORDS PER ENTRY IN THE DISTANCES STACK.
+C
+C  M5A    ADDRESS OF THE CURRENT PIVOT ATOM IN LIST 5
+C  M5     ADDRESS OF THE FIRST ATOM TO MOVE AROUND IN LIST 5
+C
+C----- JATVC - 0 DO NOT USE A FUNCTION VECTORS
+C              1 USE THE VECTORS
+C
+C      LATVC, MATVC, ETC. - THE FUNCTION VECTOR POINTERS FOR ATOMS
+C
+C      THE VECTOR WILL BE N5*3 IN LENGTH
+C
+C      (MATVC+0) USE FLAG FOR PIVOT ATOM 
+C      (MATVC+1) USE FLAG FOR BONDED ATOM 
+C      (MATVC+2) USE FLAG FOR 3RD ATOM IN ANGLE SEARCH
+C
+C      MEANINGS OF USE FLAG
+C             -1     DO NOT USE AT THIS POSITION
+C              0     ATOM ALLOWED AT THIS POSITION
+
+C--THE RETURN VALUES OF 'KDIST4' ARE :
+C
+C  -1  NOT ENOUGH CORE IS AVAILABLE.
+C   0  NO SUITABLE CONTACTS HAVE BEEN FOUND.
+C  >0  THE NUMBER OF ENTRIES IN THE DISTANCES STACK.
+C
+C-  MFNVCA  ADDRESS IN FUNVTION VECTOR OF PIVOT ATOM
+C   MFNVC   ADDRESS IN FUNCTION VECTOR OF FIRST ATOM
+C
+C--ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
+C  WHICH HAS THE FOLLOWING FORMAT :
+C
+C   0  ADDRESS OF ATOM IN L5
+C   1  ACCEPTANCE FLAG
+C
+C      1  ACCEPTABLE TO NONE
+C      2  DISTANCES ONLY
+C      3  ANGLES ONLY
+C      4  ACCEPTABLE TO BOTH
+C
+C   2  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM.)
+C   3  NON-PRIMITIVE LATTICE INDICATOR
+C   4  T(X)
+C   5  T(Y)
+C   6  T(Z)
+C   7  TRANSFORMED X
+C   8  TRANSFORMED Y
+C   9  TRANSFORMED Z
+C  10  DISTANCE
+C  11  DISTANCE SQUARED
+C  12  ADDRESS IN LIST 12  (IF USED).
+C  13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
+C
+C--THE STACK STARTS AT NFL, AND GOES UPWARDS SO THAT THE LAST ENTRY IS
+C  AT JS, AND THE STEP IS JT.
+C
+\ISTORE
+\STORE
+\XCONST
+\XPDS
+\XUNITS
+\XSSVAL
+\XLST01
+\XLST02
+\XLST05
+\XLST12
+\XLST41
+\XIOBUF
+\XDSTNC
+\QSTORE
+      CHARACTER * 32 CATOM1, CATOM2, CBLANK
+      DATA CBLANK /' '/
+
+
+C--SET UP A FEW INITIAL POINTERS
+      NJ=0
+      JS=NFL
+
+C---- LOOP THRU LIST 41
+24      FORMAT (2A, ' to ', A, I4,1x,F10.3)
+
+      DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+
+          I51 = L5 + ISTORE(M41B) * MD5
+          I52 = L5 + ISTORE(M41B+6) * MD5
+
+c          CALL CATSTR (STORE(I51),STORE(I51+1),
+c     2                  ISTORE(M41B+1),ISTORE(M41B+2),
+c     3                  ISTORE(M41B+3),ISTORE(M41B+4),ISTORE(M41B+5),
+c     4                  CATOM1, LATOM1)
+c          CALL CATSTR (STORE(I52),STORE(I52+1),
+c     2                  ISTORE(M41B+7),ISTORE(M41B+8),
+c     3                  ISTORE(M41B+9),ISTORE(M41B+10),ISTORE(M41B+11),
+c     4                  CATOM2, LATOM2)
+c          WRITE (CMON,24) CBLANK(1: 21-LATOM1),
+c     2                  CATOM1(1:LATOM1), CATOM2,ISTORE(M41B+12),
+c     3                  STORE(M41B+13)
+c          CALL XPRVDU(NCVDU,1,0)
+
+          IF ( ( I51 .NE. M5A ) .AND. ( I52 .NE. M5A ) ) CYCLE
+
+C Ensure the order is BONDED, PIVOT:
+
+          IF ( I51 .EQ. M5A ) THEN
+               DO I = 0,5
+                    ITEMP = ISTORE(M41B+I)
+                    ISTORE(M41B+I) = ISTORE(M41B+6+I)
+
+                    ISTORE(M41B+6+I) = ITEMP
+               END DO
+          END IF
+
+          J51 = ISTORE(M41B)
+          J52 = ISTORE(M41B+6)
+          I51 = L5 + J51 * MD5
+          I52 = L5 + J52 * MD5
+
+
+C Don't want pivots that are in sym-related posns.
+          IF (( ISTORE(M41B+7) .NE.1 ) .OR.
+     1        ( ISTORE(M41B+8) .NE.1 ) .OR.
+     2        ( ISTORE(M41B+9) .NE.0 ) .OR.
+     3        ( ISTORE(M41B+10).NE.0 ) .OR.
+     4        ( ISTORE(M41B+11).NE.0 )) CYCLE
+
+
+C Only consider BONDED atoms after M5 in L5 order.
+          IF ( I51 .LT. M5 ) CYCLE
+
+C-- CHECK IF THIS ATOM IS EXCLUDED from being a BONDED type 
+          IF ( ABS(JATVC) .EQ. 1 ) THEN
+             IF ( ( ISTORE(LATVC+(MDATVC*J51)+1) .LE. -1) .AND.
+     1            ( ISTORE(LATVC+(MDATVC*J51)+2) .LE. -1))CYCLE
+          END IF
+
+          IF( JS+MAX0(JT,13) .GE. LFL) THEN
+C--NOT ENOUGH CORE FOR THIS ENTRY NEGATE RETURN VALUE TO SIGNAL OVERFLOW
+             NJ = -NJ
+             EXIT
+          END IF
+
+C--SET THE FLAGS
+          ISTORE(JS)=I51
+          ISTORE(JS+1)=4
+          ISTORE(JS+2)=ISTORE(M41B+1)
+          ISTORE(JS+3)=ISTORE(M41B+2)
+
+          ISTORE(JS+4)=ISTORE(M41B+3)
+          ISTORE(JS+5)=ISTORE(M41B+4)
+          ISTORE(JS+6)=ISTORE(M41B+5)
+
+          STORE(JS+7)=STORE(I51+4)
+          STORE(JS+8)=STORE(I51+5)
+          STORE(JS+9)=STORE(I51+6)
+
+          STORE(JS+10)=STORE(M41B+13)
+          STORE(JS+11)=STORE(M41B+13)**2
+
+          ISTORE(JS+12)=-1
+          IF(JT.EQ.14) STORE(JS+13)=STORE(M41B+13)
+
+          JS=JS+JT
+          NJ=NJ+1
+
+      END DO
+
+      KDIST4=NJ
+      RETURN
+      END
+
 
 CODE FOR XDSTN2
       FUNCTION XDSTN2(A,B)

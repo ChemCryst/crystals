@@ -2447,8 +2447,8 @@ EDIT              40    5
          0    0    0    0    0    0    0    0    0    0
   27.INSERT             1 9999    0    0
          3
-    .IDENTIFIER        10    0    1    2    1 ELECTRONS
-     ELECTRONS      WEIGHT
+    .IDENTIFIER        10    0    1    4    1 ELECTRONS
+     ELECTRONS      WEIGHT         NCONNECTIONS   RELAX
   28.SHIFT              0 9999    0    0    0    0  126    5  145
          0    0    0    0    0    0    0    0    0    0
   29.DEORTHOGONAL       0 9999    0    0    0    0  127    5  145
@@ -2714,23 +2714,27 @@ DISTANCES         10    7
     .SORTED            17    0    1   -2    1 NO
     .TYPE              18    0    1    3   -1 ALL
      ALL            INTRA          INTER
-    .RANGE             21    0    1    4    0 COVALENT
-     LIMITS         COVALENT       VANDERWAALS    IONIC
+    .RANGE             21    0    1    4   -1 COVALENT
+     L41            LIMITS         COVALENT       VANDERWAALS    IONIC
     .SYMMETRY          24    0    1    3   -1 SPACEGROUP
      PATTERSON      SPACEGROUP     NONE
     .TRANSLATION       25    0    1    2   -1 YES
      NO             YES
-   4.OUTPUT             4    1    0    0
-         3    3    3    3
+   4.OUTPUT             8    1    0    0
+         3    3    3    3    2    2    2    2
     .MONITOR           22    0    1    4    0 DISTANCES
      OFF            DISTANCES      ANGLES         ALL
     .LIST              19    0    1    4   -1 HIGH
      OFF            LOW            MEDIUM         HIGH
-    .PUNCH             23    0    1    7   -1 NOTHING
+    .PUNCH             23    0    1    9   -1 NOTHING
      NOTHING        RESTRAIN       PUBLISH        CIF            SCRIPT
-     MOGUL          SIMPLE
+     MOGUL          SIMPLE         DELU           SIMU
     .HESD              26    0    1    2    0 ALL
      ALL            NONFIXED
+    .D1DEV             27    0    1    0    0 0.002
+    .D2DEV             28    0    1    0    0 0.005
+    .S1DEV             29    0    1    0    0 0.04
+    .S2DEV             30    0    1    0    0 0.08
    5.INCLUDE            0 9999    2    0    0    0  104    5  175
          0    0    0    0    0    0    0    0    0    0
          8    9 

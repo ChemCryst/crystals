@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2002/06/28 16:13:09  Administrator
+C ensure that the field NEW can hold characters
+C
 C Revision 1.24  2002/05/15 10:13:26  richard
 C New EDIT command - GUISELECT, works like select and typechange, but doesn't
 C modify L5, just selects the atoms in the window.
@@ -155,7 +158,7 @@ C----- THE INVERSE DIAGONAL MATRIX FOR TRANSFORMING UANISO
 C
       DIMENSION ICOND(6)
 C----- KEYS FOR LOADED LISTS ONLY 3 AND 29 FOR NOW
-      DIMENSION KLST(2)
+      DIMENSION KLST(4)
 C
 \STORE
 \XUNITS
@@ -166,6 +169,7 @@ C
 \XLST05
 \XLST12
 \XLST20
+\XLST41
 \XLST50
 \XLEXIC
 \XPDS
@@ -186,6 +190,8 @@ C
       DATA ICOND(1)/'EQ  '/,ICOND(2)/'NE  '/,ICOND(3)/'LT  '/
       DATA ICOND(4)/'LE  '/,ICOND(5)/'GT  '/,ICOND(6)/'GE  '/
 C
+      DATA KHYD /'H   '/
+
       DATA IMONSZ/5/
 C
 C----- LOOP COUNTER
@@ -336,6 +342,8 @@ C
 C--- LOAD LIST 3 AND 29 INCASE WE NEED THEM LATER
       KLST(1)=-1
       KLST(2)=-1
+      KLST(3)=-1
+      KLST(4)=-1
       IF (KEXIST(3).GT.0) THEN
          IF (KHUNTR(3,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL03
          KLST(1)=1
@@ -343,6 +351,11 @@ C--- LOAD LIST 3 AND 29 INCASE WE NEED THEM LATER
       IF (KEXIST(29).GT.0) THEN
          IF (KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
          KLST(2)=29
+      END IF
+      IF (KEXIST(41).GT.0) THEN
+         IF (KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
+         KLST(3)=41
+         KLST(4)=41
       END IF
 C -- SET CHANGE FLAG
       ICHNG=0
@@ -1987,9 +2000,74 @@ C
 C
 6950  CONTINUE
 C----- 'INSERT' - INSERT A VALUE FROM LIST 3 OR 29 INTO 'SPARE'
+
       I=ISTORE(ICOMBF+IMDAT1)
-      IF (KLST(I).LE.0) GO TO 7100
-      IF (KMDINS(I).LT.0) GO TO 7100
+      IF (KLST(I).LE.0) GO TO 7100 ! Reqd list failed to load.
+      IF ( MD5.LT.14 ) GO TO 7100 ! Very old List 5 form.
+
+      IF ( I .LE. 2 ) THEN    ! ELECTRON or WEIGHT
+         IF (KMDINS(I).LT.0) GO TO 7100
+      ELSE IF ( I .EQ. 3 ) THEN ! NCONNECTIONS
+C Put number of connections into SPARE
+         DO I = 0,N5-1
+           STORE(L5+13+I*MD5) = 0.0
+         END DO
+         DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+            J51 = ISTORE(M41B)
+            J52 = ISTORE(M41B+6)
+            I51 = L5 + J51 * MD5
+            I52 = L5 + J52 * MD5
+            STORE(I51+13)=STORE(I51+13)+1.0
+            STORE(I52+13)=STORE(I52+13)+1.0
+         END DO
+         ICHNG=ICHNG+1
+         CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
+       ELSE IF ( I .EQ. 4 ) THEN ! RELAXATION ID
+C Put electron count into SPARE
+         IF (KLST(1).LE.0)   GO TO 7100 ! Reqd list failed to load.
+         IF (KMDINS(I).LT.0) GO TO 7100
+C Get some workspace
+         LTEMP=KSTALL(N5)
+C Relax.
+         IDOCNT = -1
+         DO WHILE ( .TRUE. )
+C Copy existing SPARE into STORE(LTEMP)
+            DO I = 0, N5-1
+               STORE(LTEMP+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
+            END DO
+C Propagate values through the bonding network.
+            DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+               J51 = ISTORE(M41B)
+               J52 = ISTORE(M41B+6)
+               I51 = L5 + J51 * MD5
+               I52 = L5 + J52 * MD5
+               STORE(I51+13)=REAL(NINT(STORE(I51+13)+STORE(LTEMP+J52)))
+               STORE(I52+13)=REAL(NINT(STORE(I52+13)+STORE(LTEMP+J51)))
+            END DO
+C Copy new SPARE into ISTORE(LTEMP)
+            DO I = 0, N5-1
+               ISTORE(LTEMP+I) = NINT( STORE(L5+13+I*MD5) )
+            END DO
+C Sort data at LTEMP
+            CALL SSORTI(LTEMP,N5,1,1)
+C Scan through, and count number of unique ID's.
+            LASTID = -1
+            IDCOUN = 0
+            DO I = 0, N5-1
+              IF ( ISTORE(LTEMP+I) .NE. LASTID) THEN
+                 IDCOUN = IDCOUN + 1
+                 LASTID = ISTORE(LTEMP+I)
+              END IF
+            END DO
+C If unique number is unchanged or worse(?), then break.
+            IF ( IDCOUN .LE. IDOCNT ) EXIT
+            IDOCNT = IDCOUN
+         END DO
+C- RETURN WORKSPACE
+         CALL XSTRLL (LTEMP)
+         ICHNG=ICHNG+1
+         CALL XMDMON (L5,MD5,N5,3,1,1,1,MONLVL,2,1,ISTORE(IMONBF))
+      END IF
       GO TO 100
 C
 C
