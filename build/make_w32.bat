@@ -3,6 +3,7 @@
 @echo instead.
 @echo -------------------------------------------------------------------
 @if "%COMPCODE%" == "" goto edcodeerror
+@if "%1" == "debug" set CRDEBUG=TRUE&& shift && echo Building DEBUG version.
 @if "%1" == "dist" goto dist
 
 @call make_w32_crystals.bat %1
