@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2003/08/18 11:20:01  rich
+C For output of shelx hkl files - if FOsq exceeds 1E6 then output in F8.1
+C format. If Fosq exceeds 1E7 output in I8 format.
+C
 C Revision 1.35  2003/07/04 16:37:47  rich
 C Solve two problems with punch twinned list6's. (1) The element field
 C was only I3 - changed it to I10 to allow for a full 9 element twin.
@@ -981,13 +985,13 @@ C---- SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
       M1P1 = L1P1
       DO I=1,3
           CALL XFILL (IB,IVEC,16)
-          CALL SNUM (STORE(M1P1),ESD(I),-3,0,7,IVEC)
+          CALL SNUM (STORE(M1P1),ESD(I),-3,0,10,IVEC)
           WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
           CALL XCRAS (CBUF,N)
           WRITE (NCFPU1,600) CCELL(I)(1:1),CBUF(1:N)
 600       FORMAT ('_cell_length_',A,T35,A)
           CALL XFILL (IB,IVEC,16)
-          CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,7,IVEC)
+          CALL SNUM (STORE(M1P1+3),ESD(I+3),-2,0,10,IVEC)
           WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
           CALL XCRAS (CBUF,N)
           J=INDEX(CBUF(1:N),'.')
