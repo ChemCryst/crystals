@@ -1,4 +1,4 @@
-%SCRIPT FOURIER
+%SCRIPT XFOUR
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE LOGICAL LCONTOUR
 % VARIABLE LOGICAL PEAKCHANGE REDRAW
@@ -22,7 +22,8 @@ a SCRIPT to help with the computation and processing of Fourier maps
 %% This gets a passed in argument so that the menus
 %% can call the same script to do four different map types.
 %%
-%  VERIFY FO DIFF 2FO-FC FC 
+aHHHHHHHHHHHHHHHHHHHHHHHHHHHH!
+%  VERIFY FO DIFF 2FO-FC FC
 %  GET NOSTORE FINAL ABBREVIATED 'Map type?' ' '
 %  EVALUATE MTYPE = VALUE
 %%
@@ -74,7 +75,13 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI    @ 3,2 GRID GRIDABB NROWS=1 NCOLS=5
 ^^WI    {
 ^^WI     @ 1,1 STATIC TEXT2 'Min. peak height:'
-^^WI     @ 1,3 EDITBOX XFEDIT '1.5' CHARS=5 REAL INFORM=YES
+^^WI     @ 1,3 EDITBOX XFEDIT
+%    IF MTYPE .EQ. 2 THEN
+^^WI           '0.3'
+%    ELSE
+^^WI           '1.5'
+%    END IF
+^^WI           CHARS=5 REAL INFORM=YES
 ^^WI     @ 1,5 STATIC TEXT3 'electrons per cubic angstrom'
 ^^WI    }
 ^^WI   }
@@ -99,12 +106,12 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^WI }
 ^^WI SHOW
 ^^CR
-% END IF
 % CLEAR
 % INSERT '^^WI SET XFLIST SELECTION='
 % STORE FORMAT /(I2)/ LENGTH 2 INTEGER MTYPE
 % OUTPUT
 ^^CR
+% END IF
 % VERIFY XFLIST XDPEAKS XNPEAKS XFEDIT BUTTONOK BUTTONXX
 ^^WI SET _MAINTEXTOUTPUT NOECHO
 ^^CR
@@ -358,7 +365,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 % OUTPUT
 ^^WI   @ 3,2 STATIC XPEAKS 'Convert them into an atom list?'
 ^^WI   @ 5,2 CHECKBOX XCOLLECT 'Collect the peaks into fragments.'
-^^WI                                                   INFORM=NO
+^^WI                                           STATE=ON INFORM=YES
 ^^WI   }
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=3
 ^^WI   {
@@ -386,7 +393,7 @@ a SCRIPT to help with the computation and processing of Fourier maps
 ^^CR
 %                 COPY '#SCRIPT PEAKS'
 %                 IF DOCOLLECT .EQ. 1 THEN
-%                     COPY '#SCRIPT COLLECT'
+%                     COPY '#SCRIPT XCOLLECT'
 %                 END IF
 %                 FINISH
 %             END BLOCK
