@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.16  2002/03/15 11:30:09  richard
+C Fix problem where bond types are not calculated on opening a new structure.
+C
 C Revision 1.15  2002/03/12 18:01:13  ckp2
 C Comment out debugging. Treat planar sp2 N's as possibly aromatic.
 C
@@ -1391,6 +1394,7 @@ C Fill in CSD atom data structures (for asymmetric unit atoms).
          ISTORE(ATRESN+I) = 1                       !Residue # (-ve to suppress)
          WRITE ( CATTYP,'(A4)') ISTORE(I5)          !Find element #
          ISTORE(AELEM+I) = 1                        !Default to carbon
+         IF(CATTYP(1:2).EQ.'QH') CATTYP(1:2)='H '   !Remove QH's
          DO KELT = 1, 133
             IF(EL(KELT).EQ.CATTYP(1:2)) THEN
                ISTORE(AELEM+I) = KELT
@@ -3840,7 +3844,7 @@ C-- local
      +       ISTORE(IBOC+I*2-3+2).EQ.I1)) THEN
           IF ( ISTORE(IBOT+I-1) .GE. 0 ) THEN
             ISTORE(IBOT+I-1)=NBT
-          ELSE
+          ELSE IF ( NBT .NE. ABS ( ISTORE(IBOT+I-1) ) ) THEN
             WRITE(CMON,'(2(A,A2,I4),/,2(A,I2),A)')'Warning: Bond from ',
      1        ISTORE(L5+(I1-1)*MD5),NINT(STORE(L5+(I1-1)*MD5+1)),' to ',
      1        ISTORE(L5+(J1-1)*MD5),NINT(STORE(L5+(J1-1)*MD5+1)),
@@ -4611,9 +4615,9 @@ C--
 561       CONTINUE
           ENDIF
         ENDIF
-      IF(J.NE.0) THEN
-        WRITE(LU,*)'WARNING - unbalanced charge sum =', J
-        ENDIF
+c        IF(J.NE.0) THEN
+c        WRITE(LU,*)'WARNING - unbalanced charge sum =', J
+c        ENDIF
 
 
 
