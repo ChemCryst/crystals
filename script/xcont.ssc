@@ -3,9 +3,9 @@
 % VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY
 % VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER WIDTH 
 % VARIABLE CHARACTER CFILE
-% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER
+% VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO
 %%
-% VARIABLE LOGICAL TWINNED
+% VARIABLE LOGICAL TWINNED LMCE
 % EVALUATE TWINNED = FALSE
 %  BLOCK
 %    VARIABLE INTEGER ITMP
@@ -37,10 +37,18 @@
 % COPY 'SAVE'
 % COPY 'END'
 %%
+%     EVALUATE LMCE = FALSE
+-GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
+-GIL .OR. FILEEXISTS 'crysdir:mce\mce.exe' THEN
++GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' -
++GIL .EQ. TRUE THEN
+%       EVALUATE LMCE = TRUE
+%     END IF
+%%
 %%
 ^^WI WINDOW XCONT 'Slant Fourier' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID GRIDM NROWS=3 NCOLS=1
+^^WI GRID GRIDM NROWS=5 NCOLS=1
 ^^WI {
 ^^WI  @ 1,1 GRID TOP NROWS=1 NCOLS=2
 ^^WI  {
@@ -90,24 +98,35 @@
 ^^WI    @ 1,4 BUTTON BROWSE '&Choose'
 ^^WI   }
 ^^WI  }
-^^WI  @ 3,1 GRID VBOTTOM NROWS=2 NCOLS=7
+^^WI  @ 3,1 GRID VBOTTOM NROWS=1 NCOLS=7
 ^^WI  {
--GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
--GIL .OR. FILEEXISTS 'crysdir:mce\mce.exe' THEN
-+GIL% IF FILEEXISTS 'crysdir:MarchingCubeELD.exe' -
-+GIL .EQ. TRUE THEN
+% IF ( LMCE ) THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
-^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer' STATE=ON
+^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' STATE=ON
 % ELSE
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON
+^^WI   @ 1,4 RADIOBUTTON XM 'Run MCE' DISABLED=YES
 % END IF
 ^^WI   @ 1,6 RADIOBUTTON XN 'Do not run viewer'
+^^WI  }
+^^WI  @ 4,1 GRID VBOTTOM NROWS=2 NCOLS=9 OUTLINE='MCE advanced'
+^^WI  {
+^^WI   @ 1,2 CHECKBOX XMVOID 'Save void map'
+^^WI   @ 1,4 CHECKBOX XMCEPF 'HW page flipping stereo'
+% IF ( .NOT. LMCE ) THEN
+^^WI       DISABLED=YES
+% END IF
+^^WI   @ 1,6 CHECKBOX XMCEIF 'Interlaced page flipping'
+% IF ( .NOT. LMCE ) THEN
+^^WI       DISABLED=YES
+% END IF
+^^WI    @ 1,8 BUTTON XMCEHH 'MCE Help' 
 ^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
 % LOOP
-%   VERIFY BXX BROWSE BMOLAX BHELP BOK
+%   VERIFY BXX BROWSE BMOLAX BHELP BOK XMCEHH
 %   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %     BLOCK                       % BXX
@@ -147,31 +166,56 @@ view the generated sections.
 %       COPY '#SCRIPT XHELP2'
 %     END BLOCK
 %     BLOCK                       % BOK
+%%
 ^^??    EW TEXT
 %       GET NOSTORE SILENT REAL ' ' '8.5'
 %       EVALUATE WIDTH = VALUE / 2.0
+%%
 ^^??    ER TEXT
 %       GET NOSTORE SILENT REAL ' ' '0.25'
 %       EVALUATE RESOL = VALUE
+%%
 ^^??    ES TEXT
 %       GET NOSTORE SILENT REAL ' ' '2'
 %       EVALUATE ZSECT = VALUE
+%%
 ^^??    XFLIST SELECTED
 %       GET NOSTORE SILENT INTEGER ' ' '2'
 %       EVALUATE IMAP = VALUE
+%%
 ^^??    XSCALE STATE
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       EVALUATE DOSCALE = VALUE
+%%
+^^??    XMVOID STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       EVALUATE DOVOID = VALUE
+%%
+^^??    XMCEPF STATE
+%       VERIFY OFF ON
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       EVALUATE STEREO = VALUE
+%%
+^^??    XMCEIF STATE
+%       VERIFY OFF ON
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       IF VALUE .EQ. 2 THEN
+%        EVALUATE STEREO = 3
+%       END IF
+%%
 ^^??    XCALC STATE
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       EVALUATE DOCALC = VALUE
+%%
 ^^??    E1 TEXT
 %       GET NOSTORE SILENT TEXT ' ' 'slant.fou'
 %       EVALUATE CFILE = CVALUE
 %       TRANSFER "#STORE CSYS MAP '" // CFILE // "'" TO CRYSTALS
-^^??    XC STATE  
+%%
+^^??    XC STATE
 %       VERIFY ON OFF
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       IF VALUE .EQ. 1 THEN
@@ -190,8 +234,6 @@ view the generated sections.
 %             EVALUATE RUNVIEWER = 0
 %          END IF
 %       END IF
-^^WI    DISPOSE XCONT
-^^CR
 %       BLOCK
 %         ON ERROR TERMINATE
 %         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN
@@ -287,9 +329,45 @@ view the generated sections.
 %         COPY '#SLANT'
 %            QUEUE PROCESS
 %         COPY 'END'
-
 {R * Done. Slant fourier complete.
-
+%%
+%         IF DOVOID .EQ. 1 THEN
+%          BLOCK
+%           TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS
+%           QUEUE REWIND
+%           CLEAR
+%           INSERT 'MAP FILE=YES'
+%           QUEUE SEND
+%           CLEAR
+%           STORE CHARACTER 'SAVE MOLAX'
+%           QUEUE SEND
+%           CLEAR
+%           INSERT 'DOWN '
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
+%           QUEUE SEND
+%           CLEAR
+%           INSERT 'ACROSS '
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
+%           QUEUE SEND
+%           CLEAR
+%           INSERT 'SECTION '
+%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT
+%           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT
+%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
+%           QUEUE SEND
+%          END BLOCK
+%          COPY '#VSLANT'
+%            QUEUE PROCESS
+%          COPY 'END'
+{R * Done. Slant void complete.
+%         END IF
+%%
 %         IF TWINNED .EQ. TRUE THEN
 %           BLOCK
 %           ON ERROR TERMINATE
@@ -307,7 +385,7 @@ view the generated sections.
 %             END IF
 %           END BLOCK
 %         END IF
-
+^^CO    DISPOSE XCONT
 ^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.' 
 %         CASE RUNVIEWER + 1
 %           BLOCK    % Don't run
@@ -317,21 +395,31 @@ view the generated sections.
 %             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS
 %           END BLOCK
 %           BLOCK    %Run marchingcubesELD viewer
- * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
+%             CASE STEREO
+%                EVALUATE CFILE = CFILE
+%                EVALUATE CFILE = '-s ' // CFILE
+%                EVALUATE CFILE = '-i ' // CFILE
+%             END CASE
+ * Starting Michal Husak's MCE Fourier viewer. Patience while it loads ...
 -GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' THEN
 -GIL% TRANSFER '#SPAWN "C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe" ' -
--GIL    // CFILE TO CRYSTALS
+-GIL   // CFILE TO CRYSTALS
 -GIL% ELSE
 -GIL% TRANSFER '#SPAWN "CRYSDIR:mce\mce.exe" ' -
 -GIL   // CFILE TO CRYSTALS
 -GIL% END IF
+%%
 +GIL% TRANSFER '#SPAWN "CRYSDIR:MarchingCubeELD.exe" ' -
--GIL   // CFILE TO CRYSTALS
++GIL   // CFILE TO CRYSTALS
 %           END BLOCK
 %         END CASE
 %         FINISH
 %       END BLOCK
 %     END BLOCK
+%     BLOCK                        % MCE help
+%       COPY '#SPAWN http://makeashorterlink.com/?U2D6224B3'
+%     END BLOCK
 %   END CASE
 % END LOOP
 %END SCRIPT
+
