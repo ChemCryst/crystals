@@ -1,0 +1,123 @@
+%SCRIPT ZSHELXIN
+%%
+%% This script reads in just the atoms. It is called by XSHELXIN,
+%% and also by INEMAP to read a the results of direct methods.
+%% The SCPDATA channel must be open already.
+%%
+%% This loop was very long, and took some time to parse even when it is
+%% found that the card is not an atom right at the start.
+%% This has been fixed by moving the section that pulls all the
+%% atomic parameters out into another script. Like a subroutine.
+%%
+%%
+% VARIABLE LOGICAL   SFILERR LFIRST LPEAK LNOTAT LCRY
+% VARIABLE CHARACTER CLINE
+
+ Looking for atoms and peaks in SHELX file.
+
+%%
+% EVALUATE SFILERR = TRUE
+% EVALUATE LFIRST = TRUE
+% SET VERIFY FALSE
+% LOOP
+%   ON ERROR TERMINATE
+%   ON END TERMINATE
+%   EXTRACT NEXT
+%   CLEAR
+%   EXTRACT TRANSFER COMMAND
+%   EXECUTE SEND
+%   EXTRACT TRANSFER INPUT
+%   CLEAR
+%   EVALUATE LNOTAT = FALSE
+%   EVALUATE LPEAK = FALSE
+%   GET NOSTORE NOPROMPT KEYWORD NULLSTRING ' '
+%   EVALUATE CLINE = CVALUE
+%%
+%% Check that the keyword starts with alpha-numeric chars.
+%%
+%   IF FIRSTSTR ( CLINE ) .EQ. NULLSTRING THEN
+%     EVALUATE LNOTAT = TRUE
+%   END IF
+%%
+%   IF FIRSTSTR ( CLINE ) .EQ. 'Q' THEN
+%     EVALUATE LPEAK = TRUE
+%   END IF
+%%  
+%% Check for the first 20 SHELX commands.
+%%  
+%   IF LNOTAT .EQ. FALSE THEN
+%     VERIFY TITL CELL ZERR LATT SYMM SFAC UNIT -
+             TEMP SIZE HKLF OMIT EXTI MERG MOVE -
+             ANIS AFIX HFIX FRAG FEND EQIV
+%     LOOP 20 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%% This seems a bit naughty, but it speeds the script up no end:
+%          TRANSFER 'END IF' TO SCRIPT       % ENDS CURRENT IF BLOCK
+%          TRANSFER 'END LOOP' TO SCRIPT     % ENDS LOOP 20 TIMES
+%          TRANSFER 'END IF' TO SCRIPT       % ENDS IF LNOTAT LOOP
+%          TRANSFER 'END LOOP' TO SCRIPT     % JUMPS BACK TO START
+%       END IF
+%     END LOOP
+%   END IF
+%   IF LNOTAT .EQ. FALSE THEN
+%%  
+%% Check for the second 20 SHELX commands.
+%%  
+%     VERIFY CONN PART BIND FREE DFIX SAME FLAT -
+             ISOR L.S. BLOC DAMP WGHT FVAR BOND -
+             CONF MPLA LIST FMAP GRID PLAN
+%     LOOP 20 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%% This seems a bit naughty, but it speeds the script up no end:
+%          TRANSFER 'END IF' TO SCRIPT       % ENDS CURRENT IF BLOCK
+%          TRANSFER 'END LOOP' TO SCRIPT     % ENDS LOOP 20 TIMES
+%          TRANSFER 'END IF' TO SCRIPT       % ENDS IF LNOTAT LOOP
+%          TRANSFER 'END LOOP' TO SCRIPT     % JUMPS BACK TO START
+%       END IF
+%     END LOOP
+%   END IF
+%%  
+%% Check for the third 20 SHELX commands.
+%%  
+%   IF LNOTAT .EQ. FALSE THEN
+%     VERIFY MOLE ACTA END  DISP LAUE REM  MORE -
+             TIME SHEL BASF TWIN SWAT SPEC RESI -
+             RTAB EXYZ EADP BUMP SADI CHIV
+%     LOOP 20 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%% This seems a bit naughty, but it speeds the script up no end:
+%          TRANSFER 'END IF' TO SCRIPT       % ENDS CURRENT IF BLOCK
+%          TRANSFER 'END LOOP' TO SCRIPT     % ENDS LOOP 20 TIMES
+%          TRANSFER 'END IF' TO SCRIPT       % ENDS IF LNOTAT LOOP
+%          TRANSFER 'END LOOP' TO SCRIPT     % JUMPS BACK TO START
+%       END IF
+%     END LOOP
+%   END IF
+%%
+%% Check for the last 7 SHELX commands. Add more commands here
+%% if you discover any that are missing. 
+%%
+%   IF LNOTAT .EQ. FALSE THEN
+%     VERIFY DELU SIMU DEFS SUMP CGLS SLIM WPDB
+%     LOOP 7 TIMES
+%       IF ( KEYWORD LOOPCOUNTER ) .EQ. CLINE THEN
+%          EVALUATE LNOTAT = TRUE
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END LOOP
+%   END IF
+%   IF LNOTAT .EQ. FALSE THEN
+%     TRANSFER 'Found ' // CLINE TO DISPLAY
+%     COPY '#SCRIPT YSHELXIN'
+%   END IF
+% END LOOP
+% IF LFIRST .EQ. FALSE THEN
+%     COPY 'END'
+% END IF
+%END SCRIPT
