@@ -321,9 +321,9 @@ class Matrix:public MyObject
              
             for (size_t x = 0; x < iXSize; x++)
             {
-                for (size_t y = 0; y < iYSize; y++)
+                for (size_t y = 0; y < iYSize-(iXSize-x); y++)
                 {
-                    type tTemp = iMatrix[y*tYSize+x];
+                    float tTemp = iMatrix[y*tYSize+x];
                     iMatrix[y*tYSize+x] = iMatrix[x*iYSize+y];
                     iMatrix[x*iYSize+y] = tTemp;
                 }
