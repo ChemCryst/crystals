@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.109  2005/02/07 14:18:31  stefan
+// 1. Replaced the idle timer with a sequance listener which puts a message on the event queue when the crystals thread sends something for the gui. This has been done for both the windows and the wx version.
+//
 // Revision 1.108  2005/02/02 15:29:41  stefan
 // 1. Replaced the two deques which are used for comunicating between the two threads
 // with CcSafeDeque which is a thread safe version. Removing the need for two of the mutexs used
@@ -1760,8 +1763,7 @@ bool CcController::GetInterfaceCommand( string &line )
   
   try
   {
-	string tCommand = mInterfaceCommandDeq.pop_front(0);
-	line = tCommand.c_str();
+	line = mInterfaceCommandDeq.pop_front(0);
     LOGSTAT("GUI gets: "+line);
     return (true);
   }
@@ -2742,7 +2744,7 @@ string CcController::EnvVarExtract ( string & dir, int i )
 }
 void CcController::TimerFired()
 {
-  DoCommandTransferStuff();
+   DoCommandTransferStuff();
 }
 
 bool CcController::DoCommandTransferStuff()
@@ -3828,7 +3830,7 @@ bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
 			bGuexec = false;
 			return true;
 		}
-	} 
+	}
 	strcpy( line, tNextCommand.c_str());
 	  LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
   if (mThisThreadisDead) return false;
