@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/02/27 19:30:18  ckp2
+C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
+C RIC: Ensure consistent use of backslash after CRYSDIR:
+C
 C Revision 1.13  2002/02/12 12:47:13  Administrator
 C Set the 'PART' flag
 C
@@ -803,7 +807,7 @@ C --- CHECK NITROGEN ALLOWED
       NHYB=0
       NBONDS=0
 C --  COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
-      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS)
+      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0)
 C---- JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
       NFL=JL
       JK=JL-JT
@@ -1197,7 +1201,7 @@ C--- THE START OF THE NEW STACK
         JJE = JL
         M5 = L5
 C
-        NDTEMP = KDIST1 (N5, JJE, JT, 0, TOLER, ITRANS)
+        NDTEMP = KDIST1 (N5, JJE, JT, 0, TOLER, ITRANS, 0)
 C   NOT TOO SURE IF THIS NEXT CONTINUE IS REQUIRED
         CONTINUE
 C       RESTORE OLD TARGET
@@ -1270,7 +1274,7 @@ C    THE START OF THE NEW STACK
         JJE=JL
         M5=L5
 C
-        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS)
+        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS, 0)
         WRITE (NCAWU,3) NDTEMP
 3       FORMAT ('NDTEMP=', I10)
         IF (NDTEMP .LT. 2) GOTO 1631
@@ -1560,7 +1564,7 @@ C        THE START OF THE NEW STACK
          JJE=JL
          M5=L5
 C
-         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS)
+         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0)
          IF (NDTEMP .LT. 2)    GOTO 1630
 C
 C

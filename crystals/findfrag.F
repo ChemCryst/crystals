@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/06/18 08:24:22  richard
+C Replace explicit common block XSSVAL with macro.
+C
 C Revision 1.5  2001/02/26 10:25:32  richard
 C Added changelog to top of file
 C
@@ -6619,7 +6622,7 @@ C             NERRFI = NERRFI_SHOULD_BE_THERE_BUT_ISN'T
 2560  CONTINUE
 C
 C --  COMPUTE DISTANCE STACK
-      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS)
+      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS, 0)
       NFL    = JS
 C
       IF (NDISTA .GT. 0) THEN
@@ -6909,7 +6912,7 @@ C     LOOPS BACK TO 2500 UNTIL MATOM=N5
       JS     = NFL
 C
 C --  COMPUTE DISTANCE STACK
-      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS)
+      NDISTA = KDIST1( IN, JS, JT, 0, TOLER, ITRANS, 0)
       NFL    = JS
 C
       IF (NDISTA .GT. 0) THEN

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/06/27 12:15:11  richard
+C Spelling error.
+C
 C Revision 1.9  2001/02/26 10:26:47  richard
 C Added changelog to top of file
 C
@@ -1108,7 +1111,7 @@ C--SWOP THE COORDINATES OF THE CURRENT ATOM
       CALL XFSWOP(STORE(M5+4),3,1,1,1)
 C--MOVE THE ATOM AROUND
 C
-      J = KDIST1(1, K, 10, 0, .2, 0)
+      J = KDIST1(1, K, 10, 0, .2, 0, 0)
 C
       M5=M5-MD5
       IF(J)2650,2550,2600
@@ -2441,7 +2444,7 @@ C -- IF PEAK IS UNREASONABLE, MARK AS DELETED
 C--CHECK FOR ANY CONTACTS TO THIS PEAK
       M5A=M10-3
       M5=M5A+MD10
-      N = KDIST1( N10-I, KC, KD, 0, .2, 0)
+      N = KDIST1( N10-I, KC, KD, 0, .2, 0, 0)
 C--CHECK IF THERE ARE ANY CONTACTS TO THIS ATOM
       IF(N)2300,2300,2000
 C--MARK THE OTHER CONTACTS NOT TO BE USED
