@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR CRYSTL
 C      winapp 500000,1000000
 &GID      SUBROUTINE CRYSTL

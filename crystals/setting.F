@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR WSTUP
       SUBROUTINE WSTUP ( IBLOCK , IDIM0 )
 C
@@ -777,7 +779,6 @@ C
       WRITE(NCAWU, '(A)') CMON( 1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1010  FORMAT(' This geometry not available ')
- 
       CALL XOPMSG (IOPABS,IOPINT,0)
       CALL XERHND(IERPRG)
 1200  CONTINUE

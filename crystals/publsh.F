@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR PUBLSH
       SUBROUTINE PUBLSH
       CALL XSYSDC(-1,1)

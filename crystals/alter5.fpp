@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR ALTER5
       SUBROUTINE ALTER5
       CALL XSYSDC(-1,1)

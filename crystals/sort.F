@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XSORT
       SUBROUTINE XSORT
 C--TREE SORT WITH PRUNING OF TOP BRANCHES

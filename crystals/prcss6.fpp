@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR PRCSS6
       SUBROUTINE PRCSS6
       CALL XSYSDC(-1,1)

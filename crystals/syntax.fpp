@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XFCOLS
       SUBROUTINE XFCOLS(IULN)
 C--FORM COMPILER OUTPUT LIST, FOR LIST TYPE 'IN'.

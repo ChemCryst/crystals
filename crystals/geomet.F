@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR GEOMET
       SUBROUTINE GEOMET
       CALL XSYSDC(-1,1)

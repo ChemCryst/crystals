@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XLCLFP
       SUBROUTINE XLCLFP(IULN)
 C--LOAD COMPILED LIST FOR PROCESSING
@@ -516,7 +518,7 @@ C--THE ORDER OF PARAMETERS IN THE 'UNTIL' SEQUENCE IS WRONG
       WRITE(NCWU,1450)
       ENDIF
       WRITE(NCAWU,1450)
- 
+
       WRITE ( CMON, 1450)
       CALL XPRVDU(NCVDU, 1,0)
 1450  FORMAT(' Incorrect order of atoms for an ''UNTIL'' sequence',

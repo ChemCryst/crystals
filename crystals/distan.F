@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR DISTAN
       SUBROUTINE DISTAN
       CALL XSYSDC(-1,1)

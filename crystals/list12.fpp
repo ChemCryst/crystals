@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XPRC12
       SUBROUTINE XPRC12
 C--FORM THE RELOCATABLE VERSION OF LIST 12
@@ -1373,7 +1375,7 @@ C
                 CALL XRESTF (KS, XO(KS), M5S )
               ELSE
 C
-                WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)), 
+                WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CCST
                 WRITE(NCAWU,'(A)') CMON(1)(:)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
@@ -2628,7 +2630,7 @@ C
 C
       DATA ICOMSZ / 512 /
       DATA IVERSN / 210 /
- 
+
 C
 C
 CMAR98

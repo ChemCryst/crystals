@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XMLTMM
       SUBROUTINE XMLTMM(A,B,C,L,M,N)
 C--MATRIX MULTIPLICATION OF 'A' BY 'B' TO GIVE 'C'.
@@ -1192,7 +1194,6 @@ C -- RELEASE WORK SPACE
       WRITE ( CMON, 9811)
       CALL XPRVDU(NCVDU, 1,0)
 9811  FORMAT (' Trace of inverse has become zero   ')
- 
 9900  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9901)

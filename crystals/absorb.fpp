@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR MABS
       FUNCTION MABS(IPOINT)
 C--CALCULATE ABSORPTION CORRECTIONS

@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XIMTW
       SUBROUTINE XIMTW(IN)
 C--INITIATE MAGNETIC TAPE WRITE

@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XDFABS
       SUBROUTINE XDFABS
 C     **************
@@ -1107,7 +1109,7 @@ C
       NPS=(J-1)*180
       NPF=NPS+170
 CDJW99[
-      MPS = NPS/10 
+      MPS = NPS/10
 CDJW99]
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,50)NPS,NPF,MUF,MUS,(JJ,JJ=NPS,NPF,10)

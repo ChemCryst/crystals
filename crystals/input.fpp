@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR INPUT
       SUBROUTINE INPUT
       CALL XSYSDC(-1,1)
