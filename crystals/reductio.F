@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2002/03/04 13:47:25  ckp2
+C During merge, output a file called mergingr.dat for later use.
+C
 C Revision 1.11  2001/02/26 10:29:09  richard
 C Added changelog to top of file
 C
@@ -305,7 +308,10 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
-C
+      CHARACTER *12 CFILE
+      DIMENSION JFRN(4)
+      DATA CFILE / 'absences.dat' /
+      DATA JFRN /'F', 'R', 'N', '1'/
 \QSTORE
 \QLST30
 C
@@ -373,7 +379,10 @@ C----- ACCUMULATORS
       ITOT1(I) = 0
       ITOT2(I) = 0
 1410  CONTINUE
-C
+
+      CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
+      IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
+      WRITE(NCFPU1,'(A)')'   H   K   L     Fobs/Sigma(Fo)     Fobs'
 C
 C--MAIN REFLECTION READING LOOP
 1450  CONTINUE
@@ -396,6 +405,18 @@ C--REFLECTION IS NOT ALLOWED  -  CHECK IF IT IS THE FIRST
       ATOT1(NTOT1) = ATOT1(NTOT1) + FO
       ITOT1(NTOT1) = ITOT1(NTOT1) + 1
 1561  CONTINUE
+
+      CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
+
+      IF(SIGMAS.GT.2.*ZERO) THEN
+        SIGRAT = FOS/SIGMAS
+      ELSE 
+        SIGRAT = SIGMAS
+      END IF
+
+      WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=1,3),
+     1                                  SIGRAT,FOS
+
       IF (STORE(L6+12) .LE. 2.*ZERO) GOTO 1563
       RATIO = FO / STORE(L6+12)
       SUMSTN = SUMSTN + RATIO*RATIO
@@ -429,6 +450,8 @@ C--LAST REFLECTION READ
       CALL XERT(IULN)
       CALL XSWP06(IULN,MEDIUM)
 C
+      I = KFLCLS(NCFPU1)
+
       CALL XLINES
       IF (NABSNT .GT. 0) THEN
        WRITE(NCAWU,1790) NABSNT , SUMI/NABSNT, SQRT(SUMSTN/NABSNT)
