@@ -1,4 +1,9 @@
+C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2000/12/11 10:21:59  richard
+C RIC: Commented line for writing out stuff for THOMAS.EXE, the Windows version
+C of Quest.
+C
 C Revision 1.11  2000/09/20 12:21:56  ckp2
 C No more debugging output. Ignore H atoms.
 C
@@ -83,7 +88,7 @@ C           BBLK(n,3) ATOM2 element type
 C           BBLK(n,4) ATOM2 serial
 C           BBLK(n,5) bond length
 C           BBLK(n,6) csd bond type code. See CBONDS.
-C           BBLK(n,7) 0 = acyclic, 1 = cyclic 
+C           BBLK(n,7) 0 = acyclic, 1 = cyclic
 C
 C           BBLK(n,9) Flag. Non-zero indicates that this bond is not to
 C                     be checked, but it is used to generate bond codes.
@@ -182,16 +187,16 @@ C            CALL XPRVDU(NCVDU, 1,0)
             ABLK2(1) = BBLK(I,3)
             ABLK1(2) = 0.0
             ABLK2(2) = 0.0
-            
+
 C Search for contacts to AT1.
             DO 100 J = 1, NB18
               IF(I.NE.J) THEN
-                IF(       ( IAT1N.EQ.       IBLK(J,1)   ) 
+                IF(       ( IAT1N.EQ.       IBLK(J,1)   )
      1               .AND. ( IAT1S.EQ. NINT( BBLK(J,2) ) ) )THEN
                     ABLK1(2)=NINT(ABLK1(2)) + 1.0
                     ABLK1( 2 * NINT(ABLK1(2)) + 1 ) = BBLK(J,3)
                     ABLK1( 2 * NINT(ABLK1(2)) + 2 ) = BBLK(J,6)
-                ELSE IF(  ( IAT1N.EQ.       IBLK(J,3)   ) 
+                ELSE IF(  ( IAT1N.EQ.       IBLK(J,3)   )
      1               .AND. ( IAT1S.EQ. NINT( BBLK(J,4) ) ) )THEN
                     ABLK1(2)=NINT(ABLK1(2)) + 1.0
                     ABLK1( 2 * NINT(ABLK1(2)) + 1 ) = BBLK(J,1)
@@ -203,12 +208,12 @@ C Search for contacts to AT1.
 C Search for contacts to AT2.
             DO 200 J = 1, NB18
               IF(I.NE.J) THEN
-                IF(       ( IAT2N.EQ.       IBLK(J,1)   ) 
+                IF(       ( IAT2N.EQ.       IBLK(J,1)   )
      1               .AND. ( IAT2S.EQ. NINT( BBLK(J,2) ) ) )THEN
                     ABLK2(2)=NINT(ABLK2(2)) + 1.0
                     ABLK2( 2 * NINT(ABLK2(2)) + 1 ) = BBLK(J,3)
                     ABLK2( 2 * NINT(ABLK2(2)) + 2 ) = BBLK(J,6)
-                ELSE IF(  ( IAT2N.EQ.       IBLK(J,3)   ) 
+                ELSE IF(  ( IAT2N.EQ.       IBLK(J,3)   )
      1               .AND. ( IAT2S.EQ. NINT( BBLK(J,4) ) ) )THEN
                     ABLK2(2)=NINT(ABLK2(2)) + 1.0
                     ABLK2( 2 * NINT(ABLK2(2)) + 1 ) = BBLK(J,1)
@@ -231,8 +236,8 @@ C Find place to insert.
                   DO 280 K = J - 1, 1, -1
                     WRITE(CCOMP,'(A4)')ABLK1(K*2+1)
                     ICOMP = KCHCMP(CCOMP,CTEMP)
-                    IF(      ( ICOMP.LT.0 ) 
-     1                 .OR. (       ( ICOMP.EQ.0 ) 
+                    IF(      ( ICOMP.LT.0 )
+     1                 .OR. (       ( ICOMP.EQ.0 )
      1                     .AND. ( ITEMP.LT.(NINT(ABLK1(K*2+1))) )
      1                          )
      1                 ) GOTO 290
@@ -285,15 +290,15 @@ C  Compare each connection by name, and number of connections.
                   WRITE(CTEMP,'(A4)')ABLK2(K*2+1)
                   IF ( KCHCMP(CCOMP,CTEMP) .GT. 0 ) GOTO 500
                   IF ( KCHCMP(CCOMP,CTEMP) .LT. 0 ) GOTO 550
-                 IF ( NINT(ABLK1(K*2+2)).GT.NINT(ABLK2(K*2+2))) GOTO 500
-                 IF ( NINT(ABLK1(K*2+2)).LT.NINT(ABLK2(K*2+2))) GOTO 550
+                 IF ( NINT(ABLK1(K*2+2)).GT.NINT(ABLK2(K*2+2)))GOTO 500
+                 IF ( NINT(ABLK1(K*2+2)).LT.NINT(ABLK2(K*2+2)))GOTO 550
 450         CONTINUE
 
 500         CONTINUE !ATOM 1 has precedence
             RBLK(1) = ITYPE
             IPL = 1
             DO 510 K = 1, NINT(ABLK1(2)*2)+2
-                  IPL=IPL+1                     
+                  IPL=IPL+1
                   RBLK(IPL)   =  ABLK1(K)
 510         CONTINUE
             DO 520 K = 1, NINT(ABLK2(2)*2)+2
@@ -345,8 +350,8 @@ C If it is not present write out a file for obtaining the data.
             CALL MTRNLG(CFILEN,'OLD',ILENG)
             IF (KFLOPN (NCFPU1,CFILEN(1:ILENG),ISSOLD,ISSREA,1,ISSSEQ)
      1        .LE. -1) GOTO 650
-            
-C Search for this bond type in that file. 
+
+C Search for this bond type in that file.
 610         CONTINUE
               READ(NCFPU1,'(A)',END=650)CLINE
               IF(CLINE.EQ.CCODE) GOTO 680
@@ -472,7 +477,7 @@ c     1              'COMM <0570-f173-00d1-f4d2 beb4-9530-f083-2635>'
             GOTO 700
 
 C Bond type found print out data
-680         CONTINUE 
+680         CONTINUE
             READ(NCFPU1,'(A)',END=9900) CLINE
             READ(CLINE,'(F10.0,F10.0)') BMEAN, BSTDEV
             CLOSE(NCFPU1)
@@ -494,12 +499,12 @@ C Bond type found print out data
      1       CBONDS(ITYPE),
      2       IAT1N, IAT1S,
      2       IAT2N, IAT2S,
-     4       BLEN, 
+     4       BLEN,
      5       BMEAN,
      6       BSTDEV,
-     7       BOUT 
+     7       BOUT
              CALL XPRVDU(NCVDU, 1,0)
- 
+
 
 c            WRITE ( CMON, '(A,2(A,A2,I4),A,F5.3,A,/,3(A,F5.3))')
 c     1      CBONDS(ITYPE),
@@ -508,7 +513,7 @@ c     2       ' to ', IAT2N, IAT2S,
 c     4       ' is ', BLEN, 'angstroms. ',
 c     5       ' Mean is ', BMEAN,
 c     6       ' Stddev is ',BSTDEV,
-c     7       ' Devs out: ',BOUT 
+c     7       ' Devs out: ',BOUT
 
 c             CALL XPRVDU(NCVDU, 2,0)
 
@@ -559,7 +564,7 @@ C Bonds not to be checked are flagged non zero at offset 9.
             IAT1S = NINT(BBLK(I,2))
             IAT2N = IBLK(I,3)
             IAT2S = NINT(BBLK(I,4))
-                    
+
 C Search for a bond with one atom in common.
 
             DO II = I+1, NB18
@@ -628,7 +633,7 @@ C Find this angle...
                 ANG3Z = 2.0
 
                 DO J = L5,L5+((N5-1)*MD5),MD5
-                  
+
                   IF ( (     ISTORE(J)    .EQ. IANG1N ) .AND.
      1                 ( NINT(STORE(J+1)) .EQ. IANG1S ) ) THEN
                     ANG1X = GUMTRX(1) * STORE(J+4)
@@ -698,12 +703,12 @@ C Find this angle...
 C Search for contacts to AT1.
                 DO J = 1, NB18
                   IF((I.NE.J).AND.(II.NE.J)) THEN
-                    IF(    ( IANG1N.EQ.       IBLK(J,1)   ) 
+                    IF(    ( IANG1N.EQ.       IBLK(J,1)   )
      1               .AND. ( IANG1S.EQ. NINT( BBLK(J,2) ) ) )THEN
                       ABLK1(2)=NINT(ABLK1(2)) + 1.0
                       ABLK1( 2 * NINT(ABLK1(2)) + 1 ) = BBLK(J,3)
                       ABLK1( 2 * NINT(ABLK1(2)) + 2 ) = BBLK(J,6)
-                    ELSE IF(  ( IANG1N.EQ.       IBLK(J,3)   ) 
+                    ELSE IF(  ( IANG1N.EQ.       IBLK(J,3)   )
      1               .AND. ( IANG1S.EQ. NINT( BBLK(J,4) ) ) )THEN
                       ABLK1(2)=NINT(ABLK1(2)) + 1.0
                       ABLK1( 2 * NINT(ABLK1(2)) + 1 ) = BBLK(J,1)
@@ -715,12 +720,12 @@ C Search for contacts to AT1.
 C Search for contacts to AT2.
                 DO J = 1, NB18
                   IF((I.NE.J).AND.(II.NE.J)) THEN
-                    IF(       ( IANG2N.EQ.       IBLK(J,1)   ) 
+                    IF(       ( IANG2N.EQ.       IBLK(J,1)   )
      1                  .AND. ( IANG2S.EQ. NINT( BBLK(J,2) ) ) )THEN
                       ABLK2(2)=NINT(ABLK2(2)) + 1.0
                       ABLK2( 2 * NINT(ABLK2(2)) + 1 ) = BBLK(J,3)
                       ABLK2( 2 * NINT(ABLK2(2)) + 2 ) = BBLK(J,6)
-                    ELSE IF(  ( IANG2N.EQ.       IBLK(J,3)   ) 
+                    ELSE IF(  ( IANG2N.EQ.       IBLK(J,3)   )
      1                  .AND. ( IANG2S.EQ. NINT( BBLK(J,4) ) ) )THEN
                       ABLK2(2)=NINT(ABLK2(2)) + 1.0
                       ABLK2( 2 * NINT(ABLK2(2)) + 1 ) = BBLK(J,1)
@@ -732,12 +737,12 @@ C Search for contacts to AT2.
 C Search for contacts to AT3.
                 DO J = 1, NB18
                   IF((I.NE.J).AND.(II.NE.J)) THEN
-                    IF(       ( IANG3N.EQ.       IBLK(J,1)   ) 
+                    IF(       ( IANG3N.EQ.       IBLK(J,1)   )
      1                  .AND. ( IANG3S.EQ. NINT( BBLK(J,2) ) ) )THEN
                       ABLK3(2)=NINT(ABLK3(2)) + 1.0
                       ABLK3( 2 * NINT(ABLK3(2)) + 1 ) = BBLK(J,3)
                       ABLK3( 2 * NINT(ABLK3(2)) + 2 ) = BBLK(J,6)
-                    ELSE IF(  ( IANG3N.EQ.       IBLK(J,3)   ) 
+                    ELSE IF(  ( IANG3N.EQ.       IBLK(J,3)   )
      1                  .AND. ( IANG3S.EQ. NINT( BBLK(J,4) ) ) )THEN
                       ABLK3(2)=NINT(ABLK3(2)) + 1.0
                       ABLK3( 2 * NINT(ABLK3(2)) + 1 ) = BBLK(J,1)
@@ -753,7 +758,7 @@ C Debugging{
      1          (ABLK2(K),NINT(ABLK2(K+1)),K=1,NINT(ABLK2(2)+1.0)*2,2)
                 WRITE(NCWU,'(A,27(A2,I2))')'ABLK3:',
      1          (ABLK3(K),NINT(ABLK3(K+1)),K=1,NINT(ABLK3(2)+1.0)*2,2)
-C }Debugging                                                 
+C }Debugging
 
 C -- Generate unique name.
 
@@ -768,8 +773,8 @@ C Find place to insert.
                     DO K = J - 1, 1, -1
                       WRITE(CCOMP,'(A4)')ABLK1(K*2+1)
                       ICOMP = KCHCMP(CCOMP,CTEMP)
-                      IF(      ( ICOMP.LT.0 ) 
-     1                 .OR. (  ( ICOMP.EQ.0 ) 
+                      IF(      ( ICOMP.LT.0 )
+     1                 .OR. (  ( ICOMP.EQ.0 )
      1                 .AND. (ITEMP.LT.(NINT(ABLK1(K*2+1))) )
      1                   )
      1                    ) GOTO 1290
@@ -832,8 +837,8 @@ C Shift the others along.
 
 C Work out which bond has precedence:
 C  Compare ring environent
-                IF ( IBLK(I,7) .GT. IBLK(II,7) ) GOTO 1500 
-                IF ( IBLK(I,7) .LT. IBLK(II,7) ) GOTO 1550 
+                IF ( IBLK(I,7) .GT. IBLK(II,7) ) GOTO 1500
+                IF ( IBLK(I,7) .LT. IBLK(II,7) ) GOTO 1550
 C  Compare element names
                 WRITE(CCOMP,'(A4)')IANG2N
                 WRITE(CTEMP,'(A4)')IANG3N
@@ -860,7 +865,7 @@ C  Compare each connection by name, and number of connections.
                 RBLK(3) = BBLK(II,6)
                 IPL = 3
                 DO K = 1, NINT(ABLK1(2)*2)+2
-                  IPL=IPL+1                     
+                  IPL=IPL+1
                   RBLK(IPL) = ABLK1(K)
                 END DO
                 DO K = 1, NINT(ABLK2(2)*2)+2
@@ -880,7 +885,7 @@ C  Compare each connection by name, and number of connections.
                 RBLK(3) = BBLK(I,6)
                 IPL = 3
                 DO K = 1, NINT(ABLK1(2)*2)+2
-                  IPL=IPL+1                     
+                  IPL=IPL+1
                   RBLK(IPL) = ABLK1(K)
                 END DO
                 DO K = 1, NINT(ABLK3(2)*2)+2
@@ -895,7 +900,7 @@ C  Compare each connection by name, and number of connections.
 1600            CONTINUE
 
                 WRITE(CCODE,'(A4,3I2,27(A2,I2))') 'ANGLE',
-     1          NINT(RBLK(1)),NINT(RBLK(2)),NINT(RBLK(3)),  
+     1          NINT(RBLK(1)),NINT(RBLK(2)),NINT(RBLK(3)),
      1          ( RBLK(K),NINT(RBLK(K+1)), K=4,IPL,2)
 C Remove spaces from CCODE.
                 CALL XCRAS(CCODE,NDUM)
@@ -918,8 +923,8 @@ C If it is not present write out a file for obtaining the data.
                 CALL MTRNLG(CFILEN,'OLD',ILENG)
                 IF(KFLOPN(NCFPU1,CFILEN(1:ILENG),ISSOLD,ISSREA,1,ISSSEQ)
      1              .LE. -1) GOTO 1650
-            
-C Search for this angle type in that file. 
+
+C Search for this angle type in that file.
 1610            CONTINUE
                   READ(NCFPU1,'(A)',END=1650)CLINE
                   IF(CLINE.EQ.CCODE) GOTO 1680
@@ -948,7 +953,7 @@ C File might be empty. If an err now, skip to 1662
 1661            CONTINUE
                   SUMX  = SUMX  + VAL
                   NUMX  = NUMX + 1
-                  IF(NUMX.GE.4000)GOTO 1662 
+                  IF(NUMX.GE.4000)GOTO 1662
                   DO K=1,3
                     READ(NCFPU1,'(A)',END=1662)CDUM
                   END DO
@@ -1112,7 +1117,7 @@ C Write a quest input file to generate bond data.
                 GOTO 1900
 
 C Bond type found print out data
-1680            CONTINUE 
+1680            CONTINUE
                 READ(NCFPU1,'(A)',END=9900) CLINE
                 READ(CLINE,'(F10.0,F10.0)') AMEAN, ASTDEV
                 CLOSE(NCFPU1)
@@ -1136,7 +1141,7 @@ C Bond type found print out data
      2          IANG1N, IANG1S,
      2          IANG3N, IANG3S,
      4          ANGLE,  AMEAN,
-     6          ASTDEV, AOUT 
+     6          ASTDEV, AOUT
              CALL XPRVDU(NCVDU, 1,0)
 
 c                WRITE ( CMON, '(A,3(A,A2,I4),A,F7.3,A,/,3(A,F7.3))')
@@ -1147,7 +1152,7 @@ c     2          ' to ', IANG3N, IANG3S,
 c     4          ' is ', ANGLE, 'degrees. ',
 c     5          ' Mean is ', AMEAN,
 c     6          ' Stddev is ',ASTDEV,
-c     7          ' Devs out: ',AOUT 
+c     7          ' Devs out: ',AOUT
 c                CALL XPRVDU(NCVDU, 2,0)
 
 C Update FOMS.
@@ -1179,7 +1184,7 @@ C Update FOMS.
       RETURN
 
 9900  CONTINUE
-      WRITE (CMON,'(A)') 
+      WRITE (CMON,'(A)')
      1     'Bond checking requires valid bonddata.cbd file.'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
@@ -1200,9 +1205,9 @@ C Update FOMS.
 
 
 C-----+--------+---------+---------+---------+---------+---------+-----+
-      
 
-C Move this to characte.src eventually? It is a function 
+
+C Move this to characte.src eventually? It is a function
 C for comparing strings during a sort.
 
 CODE FOR XCCOMP
@@ -1239,161 +1244,44 @@ C     Setup atom arrays from list 5
 C     Calculate a bond list.
 C     Need to expand fragment using symmetry - therfore need to
 C     look out for POLYMERIC structures.
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-C-- working array used elsewhere in pluto, use same here to save memory in
-C-- static implementation
-      INTEGER IMAP
-      COMMON /PLUTW1/ IMAP(MAXATM)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
 
-C
 C ........... Molecule Viewer Atom DATa .............
 C INT  TATOM             : total number of atoms to be displayed
-C                          (may equal ASATOM, UATOM, NBATOM or PATOM - see below
-C REAL AXYZO(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C REAL AXYZF(MAXATM,3)   : atom fractional coordinates
-C INT  AELEM(MAXATM)     : element code no. (as given by MVELEM)  (set in GET3D)
-C REAL ARAD(MAXATM)      : atom radius                (MAY NOT BE SET YET???)
-C INT  ANCON(MAXATM)     : number of connections for each atom    (set in GET3D)
-C INT  ATRESN(MAXATM)    : residue number of each atom            (set in GET3D)
-C INT  ATSYM(MAXATM)     : atom symmetry code                     (set in GET3D)
-C REAL AXYZCM(3)         : (x,y,z) of centre of mass of structure (set in GET3D)
-C REAL AXMIN,AYMIN,AZMIN : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C REAL AXMAX,AYMAX,AZMAX : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C INT  ADSTYL(MAXATM)    : style of each atom
-C                          0 = DO NOT INCLUDE
-C                          1 = DRAW CROSS IF NO CONNECTIONS ELSE DRAW NOTHING
-C                          2 = DRAW BALL-AND-STICK ATOM
-C                          3 = DRAW SPACE FILLING ATOM
-C INT  ADCOL(MAXATM)     : atom color
-C                          0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                          2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                          4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  ALABEL(MAXATM)    : whether each atom should be labelled (only checked if
-C                          DATOM is .TRUE.)
-C LOG  DATOM             : should ANY atoms be drawn?
-C LOG  DALAB             : should ANY atoms be labelled?
-C INT  ACOLMD            : current ATOM colouring MODE
-C INT  ADCOLI(MAXATM)    : current colour number of each atom
-C LOG  DHYDR             : should terminal hydrogens be displayed
-C INT  ASATOM            : no. of asymmetric atoms (i.e. excluding symmetry atom
-C INT  UATOM             : no. of unique atoms (including symmetry atoms)
-C INT  NBATOM            : no. of last non-bonded atom (i.e. UATOM plus
-C                          number-of-non-bonded)
-C INT  PATOM             : number of last atom from packing
-C INT  ALABMD            : atom labelling mode (used only to determine which
-C                          button in menu should be highlighted):
-C                          1 = ALL ; 2 = NONE ; 3 = NONH ; 4 = LIST
-C INT  NO3DCD            : \"reason code\", if no 3D diagram
-C                          0=3D diag present ; 1=no coords stored ;
-C                          2=no cryst-conn   ;
-C                          3=no unit cell (currently never used)
-C INT  ATMORI(MAXATM)    : Number of original atom from which this atom was
-C                          generated by PACK3D (the packing routine).
-C                          Used to provide lookup for colour-by-highlight.
-C                          Was originally a local array LOOKUP in PACK3D.
-C LOG  DCLKEY            : Should the colour key be displayed?
-C LOG  DSUPAT            : Should \"suppressed\" atoms (ie those with atom
-C                          labels ending in ?) be displayed?
-C
-C INT APREC(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C INT AESD(MAXATM,3)    : atom fractional coordinates
-      INTEGER TATOM
-      REAL    AXYZO(MAXATM,3), AXYZF(MAXATM,3)
-      INTEGER AELEM(MAXATM)
-      REAL    ARAD(MAXATM)
-      INTEGER ANCON(MAXATM)
-      INTEGER ATRESN(MAXATM)
-      INTEGER ATSYM(MAXATM)
-      REAL    AXYZCM(3)
-      REAL    AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX
-      INTEGER ADSTYL(MAXATM)
-      INTEGER ADCOL(MAXATM)
-      LOGICAL ALABEL(MAXATM)
-      LOGICAL DATOM
-      LOGICAL DALAB
-      INTEGER ACOLMD
-      INTEGER ADCOLI(MAXATM)
-      LOGICAL DHYDR
-      INTEGER UATOM
-      INTEGER NBATOM
-      INTEGER PATOM
-      INTEGER ALABMD
-      INTEGER NO3DCD
-      INTEGER ATMORI(MAXATM)
-      LOGICAL DCLKEY
-      LOGICAL DSUPAT
-      INTEGER ASATOM
-      INTEGER APREC(MAXATM,3),AESD(MAXATM,3)
-C
-      COMMON /MVADAT/ TATOM,AXYZO,AXYZF,AELEM,ARAD,ANCON,ATSYM,
-     +  AXYZCM,AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX,ADSTYL,ADCOL,
-     +  ALABEL,ATRESN,DATOM,DALAB,ACOLMD,ADCOLI,DHYDR,UATOM,NBATOM,
-     +  PATOM,ALABMD,NO3DCD,ATMORI,DCLKEY,DSUPAT,ASATOM,APREC,AESD
+C INT  AXYZO   : ptr to atom orthogonal Angstrom coordinates
+C INT  AELEM   : ptr to element code array in store. (as given by MVELEM)  (set in GET3D)
+C INT  ATRESN  : ptr to residue number of each atom            (set in GET3D)
+      INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
+      COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
 C..........................................................................
 C
 C ........... Molecule Viewer Bond DATa .............
 C INT  TBOND          : total number of atoms to be displayed
-C                       (may equal ASBOND, UBOND, NBBOND or PBOND - see below)
-C INT  BOND(MAXBND,2) : the atom numbers at either end of BOND number i
-C INT  BTYPE(MAXBND)  : CCDC bond type number                (set in GET3D)
-C INT  BDSTYL(MAXBND) : bond styles
-C                       0 = DO NOT INCLUDE       ; 1 = SINGLE LINE ;
-C                       2 = CHEMICAL TYPE
-C INT  BDCOL(MAXBND)  : colour \"mode\" for each bond
-C                       0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                       2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                       4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  DBOND          : should any bonds be drawn?
-C INT  BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-C INT  BCOLMD         : current colour mode for structure
-C INT  ASBOND         : no. of bonds to asymmetric atoms (may include some
-C                       bonds to symmetry atoms)
-C INT  UBOND          : no. of unique bonds, including ones to symmetry atoms)
-C INT  NBBOND         : no. of last non-bonded search bond:
-C INT  PBOND          : no. of last bond from packing:
-C INT  BDCOLI(MAXBND) : colour of each bond:
-       INTEGER TBOND
-       INTEGER BOND(MAXBND,2)
-       INTEGER BTYPE(MAXBND)
-       INTEGER BDSTYL(MAXBND)
-       INTEGER BDCOL(MAXBND)
-       LOGICAL DBOND
-C  --> INTEGER BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-       INTEGER BCOLMD
-       INTEGER UBOND
-       INTEGER NBBOND
-       INTEGER PBOND
-       INTEGER BDCOLI(MAXBND)
-       INTEGER ASBOND
-       COMMON /MVBDAT/ TBOND,BOND,BTYPE,BDSTYL,BDCOL,DBOND,
-     +                 BCOLMD,UBOND,NBBOND,PBOND,BDCOLI,ASBOND
+C INT  BOND           : ptr to the atom numbers at either end of BOND number i
+C INT  BTYPE          : ptr to CCDC bond type number                (set in GET3D)
+       INTEGER TBOND, BOND, BTYPE
+       COMMON /MVBDAT/ TBOND,BOND,BTYPE
 C-- query connectivity
-      INTEGER NHYC(MAXATM),NCAC(MAXATM)
+      INTEGER NHYC,NCAC
       INTEGER NATCRY,NBOCRY
       COMMON /PLUTQY/ NHYC,NCAC,NATCRY,NBOCRY
-C RCS CHANGE LOG END *************************************************
+      INTEGER  ATCHG, AROMA, NAROMA
+      COMMON /PLUTAC/ ATCHG, AROMA, NAROMA
+
 C-- ILIST  controls output to listing file  (usually =0  off)
 C-- IDEBUG controls output to listing file  (usually =0  off)
       INTEGER ILIST, IDEBUG
       COMMON /PLUTLI/ ILIST, IDEBUG
 C
-C-- HYBR      estimate of hybridiation 1 = sp1 2=sp2 3=sp3  >100 = metal
-C--
-      INTEGER HYBR(MAXATM)
-      EQUIVALENCE(HYBR(1),IMAP(1))
-
 C-------------------- END CSDS COMMON --------------
 C----------------- START CRYSTALS COMMON ----------
 
 \XLST05
+\XLST01
+\XLST02
+\XLST41
 \STORE
 \ISTORE
 \QSTORE
@@ -1402,7 +1290,6 @@ C----------------- START CRYSTALS COMMON ----------
 \XSSVAL
 \XOPVAL
 \XGUIOV
-      DIMENSION ITSTORE(MAXAT)
 
       CHARACTER CCOL*6, WCLINE*80, CFILEN*80, CATTYP*4
       LOGICAL WEXIST
@@ -1417,11 +1304,11 @@ C----------------- START CRYSTALS COMMON ----------
       REAL    VDW, COV, ACTDST, COV1, COV2, RMXDST, RMNDST, XX, XY, XZ
       REAL  RLENTH, TMPLEN
 
+      DIMENSION TXYZ(3)
 
       REAL STACK(500)     !Space for 100 contacts.
-C
+
 \QGUIOV
-      EQUIVALENCE (TSTORE(1),ITSTORE(1)) 
       CHARACTER*2 EL(133)
 
       INTEGER IOFF
@@ -1447,319 +1334,180 @@ C                      !Needed when using a compressed L5 during FOURIER.
       STDOUTTERM = 99
 
 
-      DO I = 1, MAXATM
-            AELEM(I) = 0
-            NHYC(I) = 0
-            NCAC(I) = 0
-            ATRESN(I) = 0
-            AXYZO(I,1) = 0.0
-            AXYZO(I,2) = 0.0
-            AXYZO(I,3) = 0.0
-            HYBR(I) = 0
+      IF(KEXIST(1).LE.0) GOTO 9910
+      IF(KEXIST(2).LE.0) GOTO 9910
+      IF(KEXIST(5).LE.0) GOTO 9910
+      IF(KEXIST(41).LE.0) GOTO 9910
+      IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
+      IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0)  CALL XFAL05
+      IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
+      IF ( IERFLG .LT. 0 ) GO TO 9920
+
+
+C How many symm related atoms are in L41?
+
+      NSYM = 0
+      DO I = 0, N41B-1
+        M41B = L41B + I * MD41B
+        IF ( (ISTORE(M41B+1).NE.1 ).OR.(ISTORE(M41B+2 ).NE.1).OR.
+     +       (ISTORE(M41B+3).NE.0 ).OR.(ISTORE(M41B+4 ).NE.0).OR.
+     +       (ISTORE(M41B+5).NE.0 ) ) NSYM = NSYM + 1
+
+        IF ( (ISTORE(M41B+7) .NE.1).OR.(ISTORE(M41B+8 ).NE.1).OR.
+     +       (ISTORE(M41B+9) .NE.0).OR.(ISTORE(M41B+10).NE.0).OR.
+     +       (ISTORE(M41B+11).NE.0) ) NSYM = NSYM + 1
       END DO
-      DO I = 1, MAXBND
-            BOND(I,1) = 0
-            BOND(I,2) = 0
-            BTYPE(I) = 0
-      ENDDO
-      NATCRY = 0
-      NBOCRY = 0
+
+      WRITE(CMON,'(A,I5)')'Sym atoms: ', NSYM
+      CALL XPRVDU(NCVDU, 1,0)
+
+
+      AELEM = KSTALL(N5+NSYM)
+      NHYC  = KSTALL(N5+NSYM)
+      NCAC  = KSTALL(N5+NSYM)
+      ATRESN= KSTALL(N5+NSYM)
+      HYBR  = KSTALL(N5+NSYM)
+      ATCHG = KSTALL(N5+NSYM)
+      AXYZO = KSTALL(3*(N5+NSYM))
+      BOND  = KSTALL(2*N41B)
+      BTYPE = KSTALL(N41B)
+      AROMA = KSTALL(N41B*2) !Aromatic rings (can't be more than N41B/4!) need 7 bytes for each.
+      NAROMA = 0
+
 
 C Check for valid pointers to lists.
       IF ((.NOT.LGUIL1) .AND. (.NOT.LGUIL2)) THEN
                GOTO 9900
       ENDIF
 
-C Calculate and store orthogonal coords....
-      IPLACE = 1
-      J = L5
-      DO 30 I = 1, N5
-             TSTORE(IPLACE)  = GUMTRX(1) * STORE(J+IOFF)
-     1                       + GUMTRX(2) * STORE(J+IOFF+1)
-     2                       + GUMTRX(3) * STORE(J+IOFF+2)
-             TSTORE(IPLACE+1)= GUMTRX(4) * STORE(J+IOFF)
-     1                       + GUMTRX(5) * STORE(J+IOFF+1)
-     2                       + GUMTRX(6) * STORE(J+IOFF+2)
-             TSTORE(IPLACE+2)= GUMTRX(7) * STORE(J+IOFF)
-     1                       + GUMTRX(8) * STORE(J+IOFF+1)
-     2                       + GUMTRX(9) * STORE(J+IOFF+2)
-               AXYZO(I,1) = TSTORE(IPLACE)
-               AXYZO(I,2) = TSTORE(IPLACE+1)
-               AXYZO(I,3) = TSTORE(IPLACE+2)
-             IPLACE = IPLACE + 3
-             J = J + MD5
-30    CONTINUE
+C Fill in CSD atom data structures (for asymmetric unit atoms).
+      DO I = 0, N5-1
+         I5 = L5+I*MD5
+         IA = AXYZO+I*3
+         CALL XMLTTM(STORE(L1O1),STORE(I5+4),
+     +               STORE(IA),3,3,1)               !Ortho coords.
+         ISTORE(NCAC+I) = 0
+         ISTORE(HYBR+I) = 0
+         ISTORE(NHYC+I) = 0                         !H count - set later.
+         ISTORE(ATRESN+I) = 1                       !Residue # (-ve to suppress)
+         WRITE ( CATTYP,'(A4)') ISTORE(I5)          !Find element #
+         ISTORE(AELEM+I) = 1                        !Default to carbon
+         DO KELT = 1, 133
+            IF(EL(KELT).EQ.CATTYP(1:2)) THEN
+               ISTORE(AELEM+I) = KELT
+               EXIT
+            ENDIF
+         ENDDO
+      END DO
 
-C Fill in atom data structures.
-      IPLACE = 1
-      J = L5
-      DO 100 I = 1, N5
-             IATTYP = ISTORE(J)
-             WRITE(CATTYP,'(A4)')IATTYP
-C Lookup Element type of CATTYP(1:2)
-               DO 77 KELT = 1, 133
-                 IF(EL(KELT).EQ.CATTYP(1:2)) THEN
-                        AELEM(I) = KELT
-                        GOTO 79
-                 ENDIF
-77             CONTINUE
-78             CONTINUE
-               AELEM(I) = 1
-79             CONTINUE
-               NHYC(I) = 0
-               ATRESN(I) = 1
-             DO 80 K = 1, NATINF * 6, 6
-                   IF(IATINF(K).EQ.IATTYP) THEN
-                        VDW  = ATINF(K+1)
-                        COV  = ATINF(K+2)
-                        IRED = IATINF(K+3)
-                        IGRE = IATINF(K+4)
-                        IBLU = IATINF(K+5)
-                        GOTO 90
-                   ENDIF
-80           CONTINUE
-C Atom info not found. Load it and cache it. The info is stored
-C in common, so only needs loading once.
-&DOS             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&DVF             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&GID             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&VAX             CFILEN = 'CRYSDIR:\script\propwin.dat'
-&LIN             CFILEN = 'CRYSDIR:/script/propwin.dat'
-&GIL             CFILEN = 'CRYSDIR:/script/propwin.dat'
-             CALL MTRNLG(CFILEN,'OLD',ILENG)
-             INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
-             IF(.NOT.WEXIST) THEN              !use default values
-                 IATINF((NATINF*6)+1) = IATTYP
-                 ATINF((NATINF*6)+2)  = 1
-                 ATINF((NATINF*6)+3)  = 1
-                 IATINF((NATINF*6)+4) = 0
-                 IATINF((NATINF*6)+5) = 0
-                 IATINF((NATINF*6)+6) = 0
-                 NATINF = NATINF + 6
-                 GOTO 90
-             ENDIF
-             IF(KFLOPN(NCARU,CFILEN(1:ILENG),ISSOLD,ISSREA,
-     1       1,ISSSEQ) .LE. -1) GOTO 9900
-85           CONTINUE
-               READ(NCARU,'(A80)',END=89) WCLINE
-             IF((WCLINE(1:3).EQ.'CON').OR.(WCLINE(1:3).EQ.'   '))
-     1                                                    GOTO 85
-               IF(WCLINE(1:2).EQ.CATTYP) THEN
-                  CCOL = WCLINE(62:67)
-                  READ(WCLINE(35:38),'(F4.2)') VDW
-                  READ(WCLINE(13:16),'(F4.2)') COV
-                  CLOSE(NCARU)
-                  CFILEN = 'CRYSDIR:COLOUR.CMN'
-                  CALL MTRNLG(CFILEN,'OLD',ILENG)
-                  INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
-                  IF(.NOT.WEXIST) GOTO 89
-                  IF (KFLOPN (NCARU, CFILEN(1:ILENG), ISSOLD, ISSREA,
-     1            1,ISSSEQ) .LE. -1) GOTO 9900
-95                CONTINUE
-                  READ(NCARU,'(A21)',END=89) WCLINE
-                        IF(CCOL.EQ.WCLINE(1:6))THEN
-                              READ(WCLINE(7:21),'(3I5)')IRED,IGRE,IBLU
-                              IATINF((NATINF*6)+1) = IATTYP
-                              ATINF((NATINF*6)+2)  = VDW
-                              ATINF((NATINF*6)+3)  = COV
-                              IATINF((NATINF*6)+4) = IRED
-                              IATINF((NATINF*6)+5) = IGRE
-                              IATINF((NATINF*6)+6) = IBLU
-                              NATINF = NATINF + 6
-                              GOTO 90
-                        ENDIF
-                  GOTO 95
-               ENDIF
-               GOTO 85
-C
-89           CONTINUE !Reached end of file with no success
-C Add a black atom...
-                         IRED = 0
-                         IGRE = 0
-                         IBLU = 0
-                         COV = 0.8
-                         VDW = 1.8
-                         IATINF((NATINF*6)+1) = IATTYP
-                         ATINF((NATINF*6)+2)  = VDW
-                         ATINF((NATINF*6)+3)  = COV
-                         IATINF((NATINF*6)+4) = IRED
-                         IATINF((NATINF*6)+5) = IGRE
-                         IATINF((NATINF*6)+6) = IBLU
-                         NATINF = NATINF + 1
-                         GOTO 90
-90           CONTINUE
-             CLOSE(NCARU)
 
-             WRITE ( CMON, '(2A,4F15.3)')
-     1       'ATOM ',
-     2        STORE(J),STORE(J+1),
-     4       TSTORE(IPLACE),
-     5       TSTORE(IPLACE+1),
-     6       TSTORE(IPLACE+2)
-             CALL XPRVDU(NCVDU, 1,0)
+      NEXTRA = N5
+C Fill in CSD bond data structures + any extra symm related atoms.
+      DO I = 0,N41B-1
+        M41B = L41B + I * MD41B
+        ISTORE(BOND+2*I)   = ISTORE(L41B+MD41B*I)   + 1
+        ISTORE(BOND+2*I+1) = ISTORE(L41B+MD41B*I+6) + 1
+        ISTORE(BTYPE+I)    = - ISTORE(L41B+MD41B*I+12)
+        IF ( (ISTORE(M41B+1).NE.1 ).OR.(ISTORE(M41B+2 ).NE.1).OR.
+     +       (ISTORE(M41B+3).NE.0 ).OR.(ISTORE(M41B+4 ).NE.0).OR.
+     +       (ISTORE(M41B+5).NE.0 ) ) THEN
+            IAP = L5 + ISTORE(M41B) * MD5
+            M2 = L2 + ( MIN(N2,ABS(ISTORE(M41B+1))) - 1) * MD2
+            M2P =L2P+ ( MIN(N2P,ISTORE(M41B+2))     - 1) * MD2P
+            CALL XMLTTM(STORE(M2),STORE(4+IAP),TXYZ(1),3,3,1)
+            IF (ISTORE(M41B+1).LT.0)CALL XNEGTR(TXYZ(1),TXYZ(1),3)
+            DO L = 0,2
+              TXYZ(1+L) = TXYZ(1+L) +STORE(M2P+L) +STORE(M2+9+L)
+     1                              +ISTORE(M41B+3+L)
+            END DO
+            CALL XMLTTM(STORE(L1O1),TXYZ(1),STORE(AXYZO+NEXTRA*3),3,3,1)
+            ISTORE(NCAC+NEXTRA) = 0
+            ISTORE(HYBR+NEXTRA) = 0
+            ISTORE(NHYC+NEXTRA) = 0   
+            ISTORE(ATRESN+NEXTRA) = 1
+            ISTORE(AELEM+NEXTRA) = ISTORE(AELEM+ISTORE(M41B))
+            ISTORE(BOND+2*I)   = NEXTRA + 1
+            NEXTRA = NEXTRA + 1
+        ENDIF
+        IF ( (ISTORE(M41B+7) .NE.1 ).OR.(ISTORE(M41B+8 ).NE.1).OR.
+     +       (ISTORE(M41B+9) .NE.0 ).OR.(ISTORE(M41B+10).NE.0).OR.
+     +       (ISTORE(M41B+11).NE.0) ) THEN
+            IAP = L5 + ISTORE(M41B+6) * MD5
+            M2 = L2 + ( MIN(N2,ABS(ISTORE(M41B+7))) - 1) * MD2
+            M2P =L2P+ ( MIN(N2P,ISTORE(M41B+8))     - 1) * MD2P
+            CALL XMLTTM(STORE(M2),STORE(4+IAP),TXYZ(1),3,3,1)
+            IF (ISTORE(M41B+7).LT.0)CALL XNEGTR(TXYZ(1),TXYZ(1),3)
+            DO L = 0,2
+              TXYZ(1+L) = TXYZ(1+L) +STORE(M2P+L) +STORE(M2+9+L)
+     1                              +ISTORE(M41B+9+L)
+            END DO
+            CALL XMLTTM(STORE(L1O1),TXYZ(1),STORE(AXYZO+NEXTRA*3),3,3,1)
+            ISTORE(NCAC+NEXTRA) = 0
+            ISTORE(HYBR+NEXTRA) = 0
+            ISTORE(NHYC+NEXTRA) = 0   
+            ISTORE(ATRESN+NEXTRA) = 1
+            ISTORE(AELEM+NEXTRA) = ISTORE(AELEM+ISTORE(M41B+6))
+            ISTORE(BOND+2*I+1) = NEXTRA + 1
+            NEXTRA = NEXTRA + 1
+        END IF
+      END DO
+      NBOCRY = N41B
+      TBOND  = N41B
+      NATCRY = NEXTRA
+      TATOM  = NEXTRA
 
-             J = J + MD5
-             IPLACE = IPLACE + 3
-100   CONTINUE
-
-      NATCRY = N5
-      TATOM = NATCRY
-
-      IBCN = 1
-
-      DO 130 I = 1, N5
-         IAT1P = L5+((I-1)*MD5)
-C Ignore H
-         IF ( ISTORE(IAT1P) .EQ. KHYD ) GOTO 130
-
-         NFOUND=ICRDIST1(N5,STACK,L5,IAT1P,MD5,IOFF)
-         IAT1P = L5+((I-1)*MD5)
-         DO 120 J = 1, NFOUND
-               IAT2P = NINT(STACK((J*5)-4))   !IAT2P is a pointer to the bonded atom in STORE.
-               ACTDST= STACK(J*5)
-               IAT1 = ISTORE(IAT1P)           !IAT1 and 2 are the integer reps. of the atom name.
-               IAT2 = ISTORE(IAT2P)
-C Ignore H
-               IF ( IAT2 .EQ. KHYD ) GOTO 120
-               DO 110 K = 1, NATINF * 6, 6
-                  IF(IATINF(K).EQ.IAT1) THEN
-                     COV1  = ATINF(K+2)
-                  ENDIF
-                  IF(IATINF(K).EQ.IAT2) THEN
-                     COV2  = ATINF(K+2)
-                  ENDIF
-110            CONTINUE
-               RMXDST = (COV1 + COV2) * 1.1
-               RMNDST = (COV1 + COV2) * 0.7
-               IF((ACTDST.LT.RMXDST).AND.(ACTDST.GT.RMNDST)) THEN
-                  XX   = GUMTRX(1) * STACK((J*5)-3)
-     1                 + GUMTRX(2) * STACK((J*5)-2)
-     2                 + GUMTRX(3) * STACK((J*5)-1)
-                  XY   = GUMTRX(4) * STACK((J*5)-3)
-     1                 + GUMTRX(5) * STACK((J*5)-2)
-     2                 + GUMTRX(6) * STACK((J*5)-1)
-                  XZ   = GUMTRX(7) * STACK((J*5)-3)
-     1                 + GUMTRX(8) * STACK((J*5)-2)
-     2                 + GUMTRX(9) * STACK((J*5)-1)
-                      NCAC(I) = NCAC(I) + 1
-C Need connection number (above), but bond list must be unique, so only
-C add this atom if IAT2 > IAT1
-                        IF(IAT2P .GT. IAT1P) THEN
-                        BOND(IBCN,1) = I
-                          BOND(IBCN,2) = ((IAT2P - L5)/MD5)+1
-                          
-                          BBLK(IBCN,1) = STORE(IAT1P)
-                          BBLK(IBCN,2) = STORE(IAT1P+1)
-                          BBLK(IBCN,3) = STORE(IAT2P)
-                          BBLK(IBCN,4) = STORE(IAT2P+1)
-                          BBLK(IBCN,5) = ACTDST
-
-                    WRITE ( CMON, '(A,2(A,I4),2I4)')
-     1                  ' BOND ', STORE(IAT1P), NINT(STORE(IAT1P+1)),
-     1                             STORE(IAT2P), NINT(STORE(IAT2P+1)), 
-     1                                  BOND(IBCN,1), BOND(IBCN,2)
-                    CALL XPRVDU(NCVDU, 1,0)
-                          IBCN = IBCN + 1
-                  ENDIF
-               ENDIF
-120      CONTINUE
-130   CONTINUE
-
-      NBOCRY = IBCN - 1
-      TBOND = NBOCRY
-
-      WRITE ( CMON, '(A,I4)') ' NBOCRY = ', NBOCRY
-      CALL XPRVDU(NCVDU, 1,0)
-
+Check:
       DO I = 1,NATCRY
-            WRITE(CMON,'(I4,A3,3I4,3F15.8)')
-     1     AELEM(I), EL(AELEM(I)), 
-     2     NHYC(I), NCAC(I),
-     3     ATRESN(I), (AXYZO(I,J),J=1,3)
+            WRITE(CMON,'(A3,3F15.8)')
+     1     EL(ISTORE(AELEM-1+I)),(STORE(AXYZO+3*I-4+J),J=1,3)
+            CALL XPRVDU(NCVDU, 1,0)
+      ENDDO
+      DO I = 0,NBOCRY-1
+            I1 = ISTORE(BOND+2*I) 
+            I2 = ISTORE(BOND+2*I+1)
+            WRITE(CMON,'(2(A3,3F8.4))')
+     1     EL(ISTORE(AELEM-1+I1)),(STORE(AXYZO+3*I1-4+J),J=1,3),
+     1     EL(ISTORE(AELEM-1+I2)),(STORE(AXYZO+3*I2-4+J),J=1,3)
             CALL XPRVDU(NCVDU, 1,0)
       ENDDO
 
+Calculate bond types:
       CALL SAMABO
 
-
+Check:
       DO I = 1,NATCRY
             WRITE(CMON,'(A3,I6,3F15.8)')
-     1       EL(AELEM(I)), HYBR(I), 
-     1      (AXYZO(I,J),J=1,3)
+     1       EL(ISTORE(AELEM-1+I)), ISTORE(HYBR+I-1),
+     1      (STORE(AXYZO+3*I-4+J),J=1,3)
             CALL XPRVDU(NCVDU, 1,0)
       ENDDO
 
 
-C Quickly determine if the bond is cyclic. A backtracking search
-C is too complicated for this test. We just need one flag per atom,
-C and a list of bonds.
+Copy the bond type into L41B, and write out a summary.
+      DO I = 0,NBOCRY-1
+         IAT1P = L5+((ISTORE(BOND+2*I  )-1)*MD5)
+         IAT2P = L5+((ISTORE(BOND+2*I+1)-1)*MD5)
+         ISTORE(L41B+I*MD41B+12) = ABS(ISTORE(BTYPE+I))
 
-C 1. Flag AT1.
-C 2. Loop through the list and flag all atoms bonded to flagged atoms,
-C    ignoring the AT1-AT2 bond.
-C 3. Repeat step 2 about 6 to 12 times.
-C 4. If AT2 is flagged, then the bond is in a cycle.
-                            
-
-C For each bond in the list:
-      DO I = 1, NBOCRY
-
-C Use ITSTORE to hold the flags for each atom.
-         DO J = 1, N5
-            ITSTORE(J) = 0
-         END DO
-
-C TSTORE pointers to atom flag:
-         IAT1TP= BOND(I,1)
-         IAT2TP= BOND(I,2)
-
-C Flag atom IAT1.
-         ITSTORE(IAT1TP) = 1
-
-C Loop 12 times
-         DO J = 1, 12
-         
-C Loop through the bond list flagging all atoms bonded to flagged atoms.
-
-            DO K = 1, NBOCRY
-
-C Ignore the AT1-AT2 bond
-               IF ( I .NE. K ) THEN
-                  IATXTP = BOND (K,1)
-                  IATYTP = BOND (K,2)
-C Propogate flags to neighbours:
-                  IF (ITSTORE (IATXTP) .EQ. 1) ITSTORE (IATYTP) = 1
-                  IF (ITSTORE (IATYTP) .EQ. 1) ITSTORE (IATXTP) = 1
-               ENDIF
-            ENDDO
-         ENDDO
-
-C If AT2 is now flagged, the bond is cyclic.
-C BBLK(I,7) is 1 if the bond is cyclic, otherwise it is 0.
-C Note that is holds this as an integer representation.
-C Use IBLK to get it out again.
-
-         BBLK(I,7) = TSTORE ( IAT2TP )
-         BBLK(I,7) = TSTORE ( IAT2TP )
-
-      ENDDO
-
-C Copy the bond type into L18 store, and write out a summary.
-
-      DO I = 1,NBOCRY
-
-         IAT1P = L5+((BOND(I,1)-1)*MD5)
-         IAT2P = L5+((BOND(I,2)-1)*MD5)    
-         WRITE ( CMON, '(A,I4,2(1X,A,I4),1X,I4)')
-     1             ' BONDTYPE ', BTYPE(I), 
-     1                 STORE(IAT1P),NINT(STORE(IAT1P+1)), 
-     1                 STORE(IAT2P),NINT(STORE(IAT2P+1)),
-     1                 BBLK(I,7)
-         CALL XPRVDU(NCVDU, 1,0)
-
-         BBLK(I,6) = BTYPE(I)
+c         WRITE ( CMON, '(A,I4,2(1X,A,I4))')
+c     1             ' BONDTYPE ', ABS(ISTORE(BTYPE+I)),
+c     1                 STORE(IAT1P),NINT(STORE(IAT1P+1)),
+c     1                 STORE(IAT2P),NINT(STORE(IAT2P+1))!,
+c         CALL XPRVDU(NCVDU, 1,0)
       END DO
-      NB18 = NBOCRY
+
+Copy the aromatic rings into L41S
+      L41S = AROMA
+      N41S = NAROMA
+      ISTAT = KHUNTR(41,104,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9910
+      ISTORE(IADDR+3) = L41S   ! Change header pointer to data
+
+c      DO I = L41S, L41S+(N41S-1)*MD41S, MD41S
+c         WRITE(CMON,'(6I7)') (ISTORE(J),J=I,I+6)
+c         CALL XPRVDU(NCVDU,1,0)
+c      END DO
 
 
       RETURN
@@ -1767,8 +1515,17 @@ C Copy the bond type into L18 store, and write out a summary.
 
       WRITE (CMON,'(A)') 'Could not open file.'
       CALL XPRVDU(NCVDU, 1,0)
-
       RETURN
+
+9910  CONTINUE
+      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not loaded.'
+      CALL XPRVDU(NCVDU, 1,0)
+      RETURN
+9920  CONTINUE
+      WRITE ( CMON, '(A)')'GUI-UP: Error loading list 41.'
+      CALL XPRVDU(NCVDU, 1,0)
+      RETURN
+
       END
 
 
@@ -1800,12 +1557,12 @@ C          Lookup each bond in list 18 and list 5 and store its length
 C          Call kbndch to get a FOM for structure and for worst atom.
 C        }
 C        Decide what to search for (or whether to finish).
-C        
+C
 C A list of the bonds in the current query structure.
       INTEGER PCBNDS(1500), NCBNDS
 C A list of bonds which have been added, then rejected.
       INTEGER PRBNDS(1500), NRBNDS
-C A list of bonds used as starting points.     
+C A list of bonds used as starting points.
       INTEGER PSBNDS(1500), NSBNDS
 
       SAVE PCBNDS, NCBNDS, PRBNDS, NRBNDS, PSBNDS, NSBNDS
@@ -1848,7 +1605,7 @@ C A list of bonds used as starting points.
       REAL STACK(500)     !Space for 100 contacts.
 C
 \QGUIOV
-      EQUIVALENCE (TSTORE(1),ITSTORE(1)) 
+      EQUIVALENCE (TSTORE(1),ITSTORE(1))
 
 
       WRITE(CMON,'(A)')'EMAP: This is Emap.'
@@ -1894,7 +1651,7 @@ C         -- Read file from fixed location for now (!).
           CALL MTRNLG(CFILEN,'OLD',ILENG)
           IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1,ISSSEQ)
      1        .LE. -1) GOTO 9010
-                    
+
 100       CONTINUE
             READ (NCFPU1, '(A)', END = 200) CLINE
             CALL XCCUPC(CLINE,CUPPER)
@@ -1960,11 +1717,11 @@ c               CALL XPRVDU(NCVDU,2,0)
                GOTO 100
             ENDIF
 C Unrecognized line, ignore!
-          GOTO 100 
+          GOTO 100
 C End of file.
 200       CONTINUE
 
-C Quickly determine if the bond is cyclic:                           
+C Quickly determine if the bond is cyclic:
 C         For each bond in the list:
           DO I = 1, NB18
 C           Use ITSTORE to hold the flags for each atom.
@@ -1978,7 +1735,7 @@ C           Flag atom IAT1.
             ITSTORE(IAT1TP) = 1
 C           Loop 12 times
             DO J = 1, 12
-C             Loop through the bond list flagging 
+C             Loop through the bond list flagging
 C             all atoms bonded to flagged atoms.
               DO K = 1, NB18
 C               Ignore the AT1-AT2 bond
@@ -2076,7 +1833,7 @@ C Search start points exhausted, abort.
               RETURN
 
 210           CONTINUE !New search start point found.
-                  
+
 C Add this bond to PCBNDS list.
               NCBNDS = NCBNDS + 1
               PCBNDS(NCBNDS) = I
@@ -2146,8 +1903,8 @@ C If this leaves no current bonds, start again.
                         GOTO 10
                   END IF
                ELSE
-C Check returned FOM values. 
-                  
+C Check returned FOM values.
+
                  IF ( BESTSF .GT. 15.0 ) THEN
 
                    WRITE(76,'(2(A,I4))')'Bad bond. Structure size = ',
@@ -2180,7 +1937,7 @@ C           Must not be rejected.
 C           Must be bonded to an atom in the current bonds list.
 
 C Loop through the bonds...
-            
+
                DO I = 1, NB18
 c                  WRITE(CMON,'(A,I4,A)') 'Can I add bond - ', I, '?'
 c                  CALL XPRVDU(NCVDU,1,0)
@@ -2258,7 +2015,7 @@ C If this leaves no current bonds, start again.
 
 260            CONTINUE
 
-            
+
 C Exclude all bonds from search.
                DO I = 1, NB18
                   IBLK(I,9) = 1
@@ -2296,7 +2053,7 @@ C Restore SRQ to file from STORE..
 
             ENDIF
 
-                 
+
       ELSE
 
 C STAGE 2 -- ANALYSIS
@@ -2360,7 +2117,7 @@ C Read the 'MATCH' line
         DO I = 1, NCBNDS
 C Get bond matches.
          READ (74,'(A)',END=499) CLINE
-         NS = KCCNEQ(CLINE,1,' ')   
+         NS = KCCNEQ(CLINE,1,' ')
          IF ( NS .LE. 0 ) GOTO 9030
          K1S18 = KGTNUM(CLINE(NS:),CT,NL)
          NS = KCCNEQ(CLINE,NS+NL,' ')
@@ -2373,7 +2130,7 @@ C Get bond matches.
          K1S5 = KGTNUM(CLINE(NS:),CT,NL)
 
          READ (74,'(A)',END=499) CLINE
-         NS = KCCNEQ(CLINE,1,' ')   
+         NS = KCCNEQ(CLINE,1,' ')
          IF ( NS .LE. 0 ) GOTO 9030
          K2S18 = KGTNUM(CLINE(NS:),CT,NL)
          NS = KCCNEQ(CLINE,NS+NL,' ')
@@ -2429,7 +2186,7 @@ C Work out distance between these two atoms.
          X2(1) = STORE(PAT2+4)
          X2(2) = STORE(PAT2+5)
          X2(3) = STORE(PAT2+6)
-            
+
 
 C         WRITE(CMON,'(6F8.3)')(X1(NN),NN=1,3),(X2(NN),NN=1,3)
 C         CALL XPRVDU(NCVDU,1,0)
@@ -2478,7 +2235,7 @@ C Store the best matching structure.
         ENDIF
 
         GOTO 400
-499     CONTINUE          
+499     CONTINUE
 
 
         IF ( N .GT. 0 ) THEN
@@ -2557,7 +2314,7 @@ C Copy bond matches.
 
         CLOSE(75)
         CLOSE(74)
-        
+
 
 C Jump to stage1 -- decisions.
         ICODE = 1
@@ -2569,7 +2326,7 @@ C Jump to stage1 -- decisions.
 
       RETURN
 
-                  
+
 9010  CONTINUE
       WRITE (CMON,'(A/A)') 'File "guess.dat" must exist in your current'
      1                    ,'directory, to use this sub-program.'
@@ -2714,253 +2471,54 @@ C                                                                      C
 C RIC: From here on, it's original CCDC code, except that I've         C
 C      taken out codes which might confuse our CVS system, and         C
 C      any writes directed at unit 6.                                  C
+C
+C Oct 2001: I've also taken out any unused common blocks and variables,
+C and converted the code to use our STORE/ISTORE which removes the
+C limitations on the number of atoms and bonds.
+C
 C                                                                      C
 C-----+-------+-------+-------+-------+-------+-------+-------+-------+C
 
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/12/02  16:22:10  shields
-C Correcting limits on atom numbers.
-C
-C Revision 1.1  1998/12/02  16:13:53  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-      SUBROUTINE PLUCAL(IAT,IATLCL)
-C-- Pluto Colour Atom Label
-C-- Set label colour of atom IAT to IATLCL in pluto common PLUTZZ
-C--
-      IMPLICIT NONE
-C-- passed arguments
-      INTEGER IAT,IATLCL
-C-- global variables
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.6  1998/11/12  17:01:12  shields
-C Moving IDEBUG from PLUTZZ to PLUTLI common.
-C
-C Revision 1.5  1998/10/14  11:52:42  shields
-C Moving to mv parameter for maximum number of atoms.
-C
-C Revision 1.4  1998/07/10  10:08:54  shields
-C Removing variable IEXPM - move to common /PLBBBI/ in pluto_disp_sets.inc
-C
-C Revision 1.3  1998/07/10  09:41:31  shields
-C Removing variable NRES as it is redundant.
-C (use mv variable URES instead)
-C Storing number of link atoms NLAT in common, and status of expansion
-C IEXPM. This allows expand and sphere functions to be called in main
-C command loop in pluint, simplifying structure.
-C
-C Revision 1.2  1998/04/02  12:58:27  shields
-C Removing the common variable XPO, as it is redundant.
-C The mv array AXYZO should be used instead for atom orthogonal coordinates.
-C
-C Revision 1.1  1995/08/28  17:03:06  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-      INTEGER  INCL,ILAB,IERR,NAPTOT,NBPTOT,ICENTR,NLAT
-      COMMON/PLUTZZ/ INCL(MAXATM),ILAB(MAXATM),
-     +NAPTOT,NBPTOT,ICENTR,IERR,NLAT
-C--
-      IF((IATLCL.GT.0 .AND. IATLCL.LE.15) .AND.
-     +   (IAT.GT.0 .AND. IAT.LE.MAXATM)) THEN
-        ILAB(IAT)=IATLCL
-      ENDIF
-      RETURN
-      END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/10/14  09:43:56  shields
-C Moving to mv parameter for maximum number of atoms.
-C
-C Revision 1.1  1995/08/28  17:01:34  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==pludij.spg  processed by SPAG 4.50F  at 12:56 on  6 Dec 1994
+
+CODE FOR PLUDIJ
       SUBROUTINE PLUDIJ(IAT,JAT,AXYZO,DVAL)
 C-- Function: Calculate the distance IAT - JAT  give othor coords XO
 C-- Version:  23.5.94                  SAM MOTHERWELL 20.10.93
 C-- Notes:
 C-- 1. Iat , Jat are atom numbers inthe list of atoms with coords XO
 C--   The distance is returned as DVAL
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
+C      IMPLICIT NONE
+\STORE
+\ISTORE
+\QSTORE
 
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
+
 C
 C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-      INTEGER IAT,JAT
-      REAL AXYZO(MAXATM,3),DVAL
+      INTEGER IAT,JAT, AXYZO
+      REAL DVAL
       REAL DXO,DYO,DZO
 C-- Assume the ortho coords are available!
-      DXO=AXYZO(IAT,1)-AXYZO(JAT,1)
-      DYO=AXYZO(IAT,2)-AXYZO(JAT,2)
-      DZO=AXYZO(IAT,3)-AXYZO(JAT,3)
+      DXO=STORE(AXYZO+3*IAT-4+1)-STORE(AXYZO+3*JAT-4+1)
+      DYO=STORE(AXYZO+3*IAT-4+2)-STORE(AXYZO+3*JAT-4+2)
+      DZO=STORE(AXYZO+3*IAT-4+3)-STORE(AXYZO+3*JAT-4+3)
       DVAL=SQRT(DXO*DXO+DYO*DYO+DZO*DZO)
       RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.18  1998/12/09  15:36:32  shields
-C Removing unused commons. Moving over to include files for PLUTW1 and PLUTAC.
-C
-C Revision 1.17  1998/12/03  15:03:39  shields
-C Removing samsct as it is no longer called.
-C
-C Revision 1.16  1998/12/02  16:15:39  shields
-C Remove need for PLUTZZ common, so can use for mquest, by setting label colour
-C with new routine PLUCAL.
-C
-C Revision 1.15  1998/11/24  17:35:23  shields
-C Moving over from PLUTQY to MV variables for atom/bond list.
-C No longer require IBOC array for this routine. Changing arguments to make
-C this possible.  Only use PLUTQY for items not stored in MV, i.e. NHYC, NCAC.
-C
-C Revision 1.14  1998/11/12  17:38:09  shields
-C Reordering include files.
-C
-C Revision 1.13  1998/11/11  16:20:45  shields
-C Rationalisation of common. Remove unused common blocks and removed need
-C LIG and MIG 30000*I4 arrays. Use PLUTW1 common to communicate HYBR with
-C SAMBFG, rather than array in 2d connectivity block.
-C Add additional argument to routine SAMCON, to indicate whether pi-bonds
-C to be included in connectivity. SAMCON now used locally instead of LIG and
-C MIG in bond-assignment routines.
-C Correct bug that C=C=C bonds not set properly (only one bond was set).
-C Do not set 2-coordinate N as x-N=y if linear N.
-C Remove some redundant commented-out code.
-C
-C Revision 1.12  1998/10/14  16:13:38  shields
-C Reordering include files.
-C
-C Revision 1.11  1998/10/13  16:08:06  shields
-C Moving to mv parameters for maximum atoms and maximum bonds.
-C
-C Revision 1.10  1998/05/25  15:30:19  shields
-C Changing dimension of array dij to conform with maximum number of
-C connections, to avoid crash with array bounds error when have >10
-C connections, e.g. with disordered structures.
-C
-C Revision 1.9  1997/09/05  09:26:03  motherwell
-C Fixed BUG 377.   The value of TORAVE was previously unassigned
-C causing crash on SG in some cases.
-C
-C Revision 1.8  1997/08/14  15:32:34  macrae
-C Correct the 2nd argument to SAMRIQ.
-C (As spotted by SPAG)
-C
-C Revision 1.7  1996/12/02  11:25:31  motherwell
-C Fixed infelicity in preprocessor step of compilation on backslash character
-C being last character in line. This was used in come comment lines in
-C attempting to show simple chemical diagrams.  These have all been changed
-C to '.' character.
-C Tidied up a inexact test on integer vs reals on one line   N .eq. 64..and.
-C which possibly effected P-O bond assignment.
-C Removed unwanted local variables RADVAL and ATLAB.
-C
-C Revision 1.6  1996/11/18  16:13:24  motherwell
-C Fixed bug aon assign bond C=O to aldehyde when there is no H given.
-C Prevoius code assigned c-triple-O.  Added a specific test that carbonyl
-C c-triple-o only assigned when we have Metal - C - O.
-C
-C Revision 1.5  1996/11/04  15:00:35  motherwell
-C Fixed bug where METTOT was not initialised to zero. Luckily this
-C has not been reported as causing assignement problems with real users.
-C
-C Revision 1.4  1995/09/29  09:15:05  motherwell
-C Moved ATCHG to new common  PLUTAC   (atom charge assigned by SAMBFG)
-C
-C Revision 1.3  1995/09/26  10:03:38  motherwell
-C Added call to SAMCC3 to set up 3D connectivity arrays
-C
-C Revision 1.2  1995/09/22  16:56:09  motherwell
-C Improved performance on planar N, N=O.
-C Called major new routine SAMBFG to assign standard CSD bonds for groups
-C
-C Revision 1.1  1995/08/28  17:02:28  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samabo.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
+
+CODE FOR SAMABO
       SUBROUTINE SAMABO
 C-- Function: Assign bond types to a crystal connectivity with coordinates.
 C-- Version:  29.9.94  27.4.95           Sam Motherwell     19.8.94
 C-- Notes:
 C-- 1. This makes a best guess at the bond types using standard ranges
 C--    for various atom pairs between  C N O S P.  If a bond type can
-C--    not be assigned with confidence the type is set in BTYPE(i)=0
+C--    not be assigned with confidence the type is set in ISTORE(BTYPE+i-1)=0
 C--    The CSD bond types are:  1 = single  2= double  3=triple  4=quadruple
 C--                             5 = aromatic      6 = polymeric single
 C--                             7 = delocalised   9 = pi-bond
@@ -2993,239 +2551,39 @@ C--   NATCRY  number of atoms in cryst. arrays
 C--   NBOCRY  number of bonds in BOND
 C--   AXYZO   orthogonal coords in angstroms
 C--
-C-- 7. Output.   The bond types derived are set in BTYPE() 
+C-- 7. Output.   The bond types derived are set in ISTORE(BTYPE+-1)
 C--
 
 
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
+C      IMPLICIT NONE
 
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-C
+
 C ........... Molecule Viewer Atom DATa .............
 C INT  TATOM             : total number of atoms to be displayed
-C                          (may equal ASATOM, UATOM, NBATOM or PATOM - see below
-C REAL AXYZO(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C REAL AXYZF(MAXATM,3)   : atom fractional coordinates
-C INT  AELEM(MAXATM)     : element code no. (as given by MVELEM)  (set in GET3D)
-C REAL ARAD(MAXATM)      : atom radius                (MAY NOT BE SET YET???)
-C INT  ANCON(MAXATM)     : number of connections for each atom    (set in GET3D)
-C INT  ATRESN(MAXATM)    : residue number of each atom            (set in GET3D)
-C INT  ATSYM(MAXATM)     : atom symmetry code                     (set in GET3D)
-C REAL AXYZCM(3)         : (x,y,z) of centre of mass of structure (set in GET3D)
-C REAL AXMIN,AYMIN,AZMIN : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C REAL AXMAX,AYMAX,AZMAX : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C INT  ADSTYL(MAXATM)    : style of each atom
-C                          0 = DO NOT INCLUDE
-C                          1 = DRAW CROSS IF NO CONNECTIONS ELSE DRAW NOTHING
-C                          2 = DRAW BALL-AND-STICK ATOM
-C                          3 = DRAW SPACE FILLING ATOM
-C INT  ADCOL(MAXATM)     : atom color
-C                          0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                          2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                          4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  ALABEL(MAXATM)    : whether each atom should be labelled (only checked if
-C                          DATOM is .TRUE.)
-C LOG  DATOM             : should ANY atoms be drawn?
-C LOG  DALAB             : should ANY atoms be labelled?
-C INT  ACOLMD            : current ATOM colouring MODE
-C INT  ADCOLI(MAXATM)    : current colour number of each atom
-C LOG  DHYDR             : should terminal hydrogens be displayed
-C INT  ASATOM            : no. of asymmetric atoms (i.e. excluding symmetry atom
-C INT  UATOM             : no. of unique atoms (including symmetry atoms)
-C INT  NBATOM            : no. of last non-bonded atom (i.e. UATOM plus
-C                          number-of-non-bonded)
-C INT  PATOM             : number of last atom from packing
-C INT  ALABMD            : atom labelling mode (used only to determine which
-C                          button in menu should be highlighted):
-C                          1 = ALL ; 2 = NONE ; 3 = NONH ; 4 = LIST
-C INT  NO3DCD            : \"reason code\", if no 3D diagram
-C                          0=3D diag present ; 1=no coords stored ;
-C                          2=no cryst-conn   ;
-C                          3=no unit cell (currently never used)
-C INT  ATMORI(MAXATM)    : Number of original atom from which this atom was
-C                          generated by PACK3D (the packing routine).
-C                          Used to provide lookup for colour-by-highlight.
-C                          Was originally a local array LOOKUP in PACK3D.
-C LOG  DCLKEY            : Should the colour key be displayed?
-C LOG  DSUPAT            : Should \"suppressed\" atoms (ie those with atom
-C                          labels ending in ?) be displayed?
-C
-C INT APREC(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C INT AESD(MAXATM,3)    : atom fractional coordinates
-      INTEGER TATOM
-      REAL    AXYZO(MAXATM,3), AXYZF(MAXATM,3)
-      INTEGER AELEM(MAXATM)
-      REAL    ARAD(MAXATM)
-      INTEGER ANCON(MAXATM)
-      INTEGER ATRESN(MAXATM)
-      INTEGER ATSYM(MAXATM)
-      REAL    AXYZCM(3)
-      REAL    AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX
-      INTEGER ADSTYL(MAXATM)
-      INTEGER ADCOL(MAXATM)
-      LOGICAL ALABEL(MAXATM)
-      LOGICAL DATOM
-      LOGICAL DALAB
-      INTEGER ACOLMD
-      INTEGER ADCOLI(MAXATM)
-      LOGICAL DHYDR
-      INTEGER UATOM
-      INTEGER NBATOM
-      INTEGER PATOM
-      INTEGER ALABMD
-      INTEGER NO3DCD
-      INTEGER ATMORI(MAXATM)
-      LOGICAL DCLKEY
-      LOGICAL DSUPAT
-      INTEGER ASATOM
-      INTEGER APREC(MAXATM,3),AESD(MAXATM,3)
-C
-      COMMON /MVADAT/ TATOM,AXYZO,AXYZF,AELEM,ARAD,ANCON,ATSYM,
-     +  AXYZCM,AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX,ADSTYL,ADCOL,
-     +  ALABEL,ATRESN,DATOM,DALAB,ACOLMD,ADCOLI,DHYDR,UATOM,NBATOM,
-     +  PATOM,ALABMD,NO3DCD,ATMORI,DCLKEY,DSUPAT,ASATOM,APREC,AESD
+\STORE
+\ISTORE
+\QSTORE
+      INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
+      COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
 C..........................................................................
 C
 C ........... Molecule Viewer Bond DATa .............
 C INT  TBOND          : total number of atoms to be displayed
-C                       (may equal ASBOND, UBOND, NBBOND or PBOND - see below)
-C INT  BOND(MAXBND,2) : the atom numbers at either end of BOND number i
-C INT  BTYPE(MAXBND)  : CCDC bond type number                (set in GET3D)
-C INT  BDSTYL(MAXBND) : bond styles
-C                       0 = DO NOT INCLUDE       ; 1 = SINGLE LINE ;
-C                       2 = CHEMICAL TYPE
-C INT  BDCOL(MAXBND)  : colour \"mode\" for each bond
-C                       0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                       2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                       4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  DBOND          : should any bonds be drawn?
-C INT  BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-C INT  BCOLMD         : current colour mode for structure
-C INT  ASBOND         : no. of bonds to asymmetric atoms (may include some
-C                       bonds to symmetry atoms)
-C INT  UBOND          : no. of unique bonds, including ones to symmetry atoms)
-C INT  NBBOND         : no. of last non-bonded search bond:
-C INT  PBOND          : no. of last bond from packing:
-C INT  BDCOLI(MAXBND) : colour of each bond:
-       INTEGER TBOND
-       INTEGER BOND(MAXBND,2)
-       INTEGER BTYPE(MAXBND)
-       INTEGER BDSTYL(MAXBND)
-       INTEGER BDCOL(MAXBND)
-       LOGICAL DBOND
-C  --> INTEGER BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-       INTEGER BCOLMD
-       INTEGER UBOND
-       INTEGER NBBOND
-       INTEGER PBOND
-       INTEGER BDCOLI(MAXBND)
-       INTEGER ASBOND
-       COMMON /MVBDAT/ TBOND,BOND,BTYPE,BDSTYL,BDCOL,DBOND,
-     +                 BCOLMD,UBOND,NBBOND,PBOND,BDCOLI,ASBOND
+       INTEGER TBOND, BOND, BTYPE
+       COMMON /MVBDAT/ TBOND,BOND,BTYPE
 C..........................................................................
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1998/12/09  15:30:52  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- working array used elsewhere in pluto, use same here to save memory in
-C-- static implementation
-      INTEGER IMAP
-      COMMON /PLUTW1/ IMAP(MAXATM)
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/11/24  16:11:54  shields
-C Splitting PLUTQY into two common blocks - PLUTQY and PLUTQZ.
-C
-C Revision 1.1  1998/11/03  12:31:19  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
 C-- 3D crystal connectivity (see also plutqz)
 C-- query connectivity
-      INTEGER NHYC(MAXATM),NCAC(MAXATM)
+      INTEGER NHYC,NCAC
       INTEGER NATCRY,NBOCRY
       COMMON /PLUTQY/ NHYC,NCAC,NATCRY,NBOCRY
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/11/12  17:03:00  shields
-C Moving IDEBUG from PLUTZZ to PLUTLI common.
-C
-C Revision 1.1  1998/11/12  15:47:29  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
+      INTEGER  ATCHG, AROMA, NAROMA
+      COMMON /PLUTAC/ ATCHG, AROMA, NAROMA
 C-- ILIST  controls output to listing file  (usually =0  off)
 C-- IDEBUG controls output to listing file  (usually =0  off)
       INTEGER ILIST, IDEBUG
@@ -3233,11 +2591,9 @@ C-- IDEBUG controls output to listing file  (usually =0  off)
 C
 C-- HYBR      estimate of hybridiation 1 = sp1 2=sp2 3=sp3  >100 = metal
 C--
-      INTEGER HYBR(MAXATM)
-      EQUIVALENCE(HYBR(1),IMAP(1))
 
 
-C--  LOCAL 
+C--  LOCAL
       INTEGER  IAT,JAT,KAT,LAT,NCON,NCONA,
      +NHY,IEL,NZ,NCC
 C--   HYPRES   H total in cryst.
@@ -3251,11 +2607,11 @@ C--   ICOB list of bondtypes for ICON
       REAL AVAL,TORMAX,TORANG(30),TOR1,D1,V,DIJ(30)
       REAL DMIN,TORAVE,ANGMAX
       INTEGER LLIG(30), LMIG(30)
-     
+
 C-- Non-metals
       INTEGER NONMET(23),NNON
       DATA NNON/23/
- 
+
 C--               H  He B  C  N  O  F Ne Si P  S  Cl
       DATA NONMET/2,39,11,01,56,64,32,60,85,66,81,21,07,08,84,16,47,92,
      +     43,101,09,79,27/
@@ -3263,9 +2619,9 @@ C--               Ar As Se Br Kr Te I  Xe  At Rn D
 C----------------------------------------------------------------------
       LU=stdoutterm
       IF(IDEBUG.GT.0) WRITE (LU,*) 'DEBUG IN SAMABO'
-C-- 
+C--
 C-- set up 3D connectivity arrays NHYC, NCAC etc in common
-C-- using BOND() as input  
+C-- using BOND() as input
       CALL SAMCC3
 
 C-- Set all bond to type = 0.
@@ -3273,97 +2629,107 @@ C-- mark any bonds involving suppressed atoms with bt=99. Residue number < 0
 C-- assign single bond to all H atoms  -element code = 2
 C--
       DO 25 I=1,NBOCRY
-        IAT=BOND(I,1)
-        JAT=BOND(I,2)
-        IF (ATRESN(IAT).GT.0 .AND. ATRESN(JAT).GT.0) THEN
-          BTYPE(I)=0
-          IF (AELEM(IAT).EQ.2 .OR. AELEM(JAT).EQ.2) BTYPE(I)=1
-        ELSE
-          BTYPE(I)=99
+        IF ( ISTORE(BTYPE+I-1) .EQ. 0 ) THEN
+          IAT=ISTORE(BOND+2*I-3+1)
+          JAT=ISTORE(BOND+2*I-3+2)
+          IF (ISTORE(ATRESN+IAT-1).GT.0 .AND.
+     1        ISTORE(ATRESN+JAT-1).GT.0) THEN
+            ISTORE(BTYPE+I-1)=0
+            IF (ISTORE(AELEM+IAT-1).EQ.2 .OR.
+     1        ISTORE(AELEM+JAT-1).EQ.2) ISTORE(BTYPE+I-1)=1
+          ELSE
+            ISTORE(BTYPE+I-1)=99
+          ENDIF
         ENDIF
  25   CONTINUE
 C--
-C-- scan to see if H present in cryst conn    &  identify metal atoms 
+C-- scan to see if H present in cryst conn    &  identify metal atoms
 C--
       HYPRES=0
       METTOT=0
       DO 55 I=1,NATCRY
-        IF (ATRESN(I).LT.0) GOTO 55
-        IF (AELEM(I).EQ.2) HYPRES=HYPRES+1
+        IF (ISTORE(ATRESN+I-1).LT.0) GOTO 55
+        IF (ISTORE(AELEM+I-1).EQ.2) HYPRES=HYPRES+1
 C-- count metals --  set hybridisation number = nc + 100
 C--                  otherwise set hybr = 0
         DO 60 J=1,NNON
-          IF (AELEM(I).EQ.NONMET(J)) GOTO 61
+          IF (ISTORE(AELEM+I-1).EQ.NONMET(J)) GOTO 61
  60     CONTINUE
  61     CONTINUE
         IF (J.GT.NNON) THEN
           METTOT=METTOT+1
-          HYBR(I)=NCAC(I)+100
+          ISTORE(HYBR+I-1)=ISTORE(NCAC+I-1)+100
         ELSE
-          HYBR(I)=0
+          ISTORE(HYBR+I-1)=0
         ENDIF
- 
+
  55   CONTINUE
- 
+
 C--
 C-- Look for pi-bonds.   Only if metal present of course.
 C--                      Metals are flagged with HYBR > 100
 C--
       NPIB=0
       IF (METTOT.GT.0) THEN
-        DO 200 I=1,NBOCRY
-          IAT=BOND(I,1)
-          JAT=BOND(I,2)
-          IF (ATRESN(IAT).LT.0 .OR. ATRESN(JAT).LT.0) THEN
-            BTYPE(I)=99
-            GOTO 200
+        DO I=1,NBOCRY
+         IF ( ISTORE(BTYPE+I-1) .EQ. 0 ) THEN
+          IAT=ISTORE(BOND+2*I-3+1)
+          JAT=ISTORE(BOND+2*I-3+2)
+          IF (ISTORE(ATRESN+IAT-1).LT.0 .OR.
+     1        ISTORE(ATRESN+JAT-1).LT.0) THEN
+            ISTORE(BTYPE+I-1)=99
+            CYCLE
           ENDIF
           CALL SAMPIQ(IAT,JAT,AELEM,BOND,BTYPE,NBOCRY,IPIBON)
           IF (IPIBON.GT.0) THEN
-            BTYPE(I)=9
-            IF(IDEBUG.GT.0) WRITE (STDOUTTERM,*) 
+            ISTORE(BTYPE+I-1)=9
+            IF(IDEBUG.GT.0) WRITE (STDOUTTERM,*)
      1           'pi-bond assigned ',IAT,JAT
             NPIB=NPIB+1
-          ENDIF
- 200    CONTINUE
-      ENDIF
+          END IF
+         END IF
+        END DO
+      END IF
 
 C--
 C-- METAL - metal bonds all set to single b=1
 C--
-      IF(METTOT.GT.0) THEN 
-        DO 210 I=1,NBOCRY
-        IAT=BOND(I,1)
-        JAT=BOND(I,2)
-        IF(HYBR(IAT).GT.100 .AND. HYBR(JAT).GT.100) BTYPE(I)=1
-210     CONTINUE
-        ENDIF
+      IF(METTOT.GT.0) THEN
+        DO I=1,NBOCRY
+         IF ( ISTORE(BTYPE+I-1) .EQ. 0 ) THEN
+          IAT=ISTORE(BOND+2*I-3+1)
+          JAT=ISTORE(BOND+2*I-3+2)
+          IF(ISTORE(HYBR+IAT-1).GT.100 .AND.
+     1       ISTORE(HYBR+JAT-1).GT.100) ISTORE(BTYPE+I-1)=1
+         END IF
+        END DO
+      ENDIF
 C--
 C-- set flag for SAMCON routine to ignore pi-bonds
 C--
       IPIB=-1
 C--
- 
+
 C--
 C-- get hybridisation state for each atom
 C--
       DO 100 I=1,NATCRY
-        IF (HYBR(I).NE.0) GOTO 100
+        IF (ISTORE(HYBR+I-1).NE.0) GOTO 100
 C-- skip suppressed atoms
-        IF (ATRESN(I).LE.0) GOTO 100
+        IF (ISTORE(ATRESN+I-1).LE.0) GOTO 100
 C-- get number of connections NCONA - ignoring spuppressed atoms & pi-bonds
 C-- These connections include any H-atoms.
         CALL SAMCON(I,BOND,BTYPE,NBOCRY,NCONA,ICON,ICOB,IPIB)
-        NHY=NHYC(I)
+        NHY=ISTORE(NHYC+I-1)
 C-- reset the number of connections to non-H atoms,  NCAC
-        NCAC(I)=NCONA-NHY
+        ISTORE(NCAC+I-1)=NCONA-NHY
         NCON=NCONA
 C-- connection gt 4   just set HYBR to nc
-        IF (NCAC(I).GT.4) THEN
-          HYBR(I)=NCAC(I)
+        IF (ISTORE(NCAC+I-1).GT.4) THEN
+          ISTORE(HYBR+I-1)=ISTORE(NCAC+I-1)
           GOTO 100
         ENDIF
- 
+
 C-- if 3 connections test planarity of 4-atoms          A
 C-- use torsion angle     A-B-C-X                       |
 C-- planar groups set hybr=2                            X
@@ -3379,14 +2745,14 @@ C-- If a,b, or c are Hydrogen then relax criterion angle-max to 20
           LAT=I
           CALL SAMTOX(IAT,JAT,KAT,LAT,AXYZO,AVAL)
           ANGMAX=12.5
-          IF (NHYC(I).GT.0) ANGMAX=20.0
+          IF (ISTORE(NHYC+I-1).GT.0) ANGMAX=20.0
           IF (ABS(AVAL).LT.ANGMAX) THEN
             IF(IDEBUG.GT.0) WRITE (LU,*) '    ',I,'= planar sp2'
-            HYBR(I)=2
+            ISTORE(HYBR+I-1)=2
           ELSE
-            HYBR(I)=3
+            ISTORE(HYBR+I-1)=3
           ENDIF
-          IF(IDEBUG.GT.0) WRITE (LU,9101) I,NCON,AVAL,HYBR(I)
+          IF(IDEBUG.GT.0) WRITE (LU,9101) I,NCON,AVAL,ISTORE(HYBR+I-1)
  9101     FORMAT (' plane test atom',I3,' ncon=',I2,' aval=',F6.1,
      +            ' set hybr=',I2)
           GOTO 100
@@ -3397,40 +2763,40 @@ C-- No action if no H in cryst. conn.  HYPRES = 0
 C-- This gives a working guess for hybridisation state.
 C--
 C-- Carbon
-        IEL=AELEM(I)
-        NCON=NCAC(I)
-        IF (IEL.EQ.1 .AND. HYBR(I).EQ.0) THEN
+        IEL=ISTORE(AELEM+I-1)
+        NCON=ISTORE(NCAC+I-1)
+        IF (IEL.EQ.1 .AND. ISTORE(HYBR+I-1).EQ.0) THEN
           IF (NCON.EQ.1) THEN
-            IF (NHY.EQ.1) HYBR(I)=1
-            IF (NHY.EQ.2) HYBR(I)=2
-            IF (NHY.GE.3) HYBR(I)=3
+            IF (NHY.EQ.1) ISTORE(HYBR+I-1)=1
+            IF (NHY.EQ.2) ISTORE(HYBR+I-1)=2
+            IF (NHY.GE.3) ISTORE(HYBR+I-1)=3
           ENDIF
           IF (NCON.EQ.2) THEN
-            IF (NHY.EQ.1) HYBR(I)=2
-            IF (NHY.EQ.2) HYBR(I)=3
+            IF (NHY.EQ.1) ISTORE(HYBR+I-1)=2
+            IF (NHY.EQ.2) ISTORE(HYBR+I-1)=3
           ENDIF
           IF (NCON.EQ.3) THEN
-            IF (NHY.EQ.1) HYBR(I)=3
+            IF (NHY.EQ.1) ISTORE(HYBR+I-1)=3
           ENDIF
-          IF (NCON.EQ.4) HYBR(I)=3
+          IF (NCON.EQ.4) ISTORE(HYBR+I-1)=3
         ENDIF
 C-- Nitrogen
         IF (IEL.EQ.56) THEN
           IF (NCON.EQ.1) THEN
-            IF (HYPRES.GT.0 .AND. NHY.EQ.0) HYBR(I)=1
-            IF (NHY.EQ.1) HYBR(I)=2
-            IF (NHY.GE.2) HYBR(I)=3
+            IF (HYPRES.GT.0 .AND. NHY.EQ.0) ISTORE(HYBR+I-1)=1
+            IF (NHY.EQ.1) ISTORE(HYBR+I-1)=2
+            IF (NHY.GE.2) ISTORE(HYBR+I-1)=3
           ENDIF
           IF (NCON.EQ.2) THEN
-            IF (HYPRES.GT.0 .AND. NHY.EQ.0) HYBR(I)=2
-            IF (NHY.GE.2) HYBR(I)=3
+            IF (HYPRES.GT.0 .AND. NHY.EQ.0) ISTORE(HYBR+I-1)=2
+            IF (NHY.GE.2) ISTORE(HYBR+I-1)=3
           ENDIF
-          IF (NCON.GE.3) HYBR(I)=3
+          IF (NCON.GE.3) ISTORE(HYBR+I-1)=3
         ENDIF
 C-- Oxygen Sulfur
         IF (IEL.EQ.64 .OR. IEL.EQ.81) THEN
-          IF (HYPRES.GT.0 .AND. NHY.EQ.0) HYBR(I)=2
-          IF (NHY.GE.1) HYBR(I)=3
+          IF (HYPRES.GT.0 .AND. NHY.EQ.0) ISTORE(HYBR+I-1)=2
+          IF (NHY.GE.1) ISTORE(HYBR+I-1)=3
         ENDIF
  100  CONTINUE
 C--
@@ -3458,16 +2824,17 @@ C--
       DO 300 IAT=1,NATCRY
         CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,N1,LLIG,LMIG,IPIB)
 C-- Hydrogen & Deuterium
-        IF (AELEM(IAT).EQ.2 .OR. AELEM(IAT).EQ.27) THEN
+        IF (ISTORE(AELEM+IAT-1).EQ.2 .OR.
+     1      ISTORE(AELEM+IAT-1).EQ.27) THEN
           DO 305 J=1,N1
             JAT=LLIG(J)
             NBT=1
             CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
  305      CONTINUE
         ENDIF
- 
+
 C-- Oxygen
-        IF (AELEM(IAT).EQ.64) THEN
+        IF (ISTORE(AELEM+IAT-1).EQ.64) THEN
 C--  O terminal.
 C--   C = O         terminal O,  C nca=3,  dij < 1.30
 C--   CO  carbonyl  terminal O,  C nca=2,  dij < 1.30
@@ -3479,11 +2846,14 @@ C--   if distances longer than limits set single bond
             JAT=LLIG(1)
             CALL PLUDIJ(IAT,JAT,AXYZO,D1)
             NBT=1
-            IF (AELEM(JAT).EQ.1 .AND. D1.LT.1.30) THEN
-              IF (AELEM(JAT).EQ.1 .AND. NCAC(JAT).EQ.3) NBT=2
-              IF (AELEM(JAT).EQ.1 .AND. NCAC(JAT).EQ.2 .AND.
-     +            NHYC(JAT).EQ.1) NBT=2
-              IF (AELEM(JAT).EQ.1 .AND. NCAC(JAT).EQ.2 .AND. NHYC(JAT)
+            IF (ISTORE(AELEM-1+JAT).EQ.1 .AND. D1.LT.1.30) THEN
+              IF (ISTORE(AELEM-1+JAT).EQ.1 .AND.
+     1            ISTORE(NCAC+JAT-1).EQ.3) NBT=2
+              IF (ISTORE(AELEM-1+JAT).EQ.1 .AND.
+     1            ISTORE(NCAC+JAT-1).EQ.2 .AND.
+     +            ISTORE(NHYC+JAT-1).EQ.1) NBT=2
+              IF (ISTORE(AELEM-1+JAT).EQ.1 .AND.
+     1            ISTORE(NCAC+JAT-1).EQ.2 .AND. ISTORE(NHYC+JAT-1)
      +            .EQ.0) THEN
 C-- for carbonyl M-C.TRIPLE.O  bond we must have a metal attached to the C
 C-- as   kat-jat-iat   M-C-O
@@ -3494,14 +2864,14 @@ C-- If no metal then must set as C=O as in aldehyde
               CALL SAMCON(JAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
               DO 307 K=1,NCON
               KAT=ICON(K)
-              IF (HYBR(KAT).GT.100) M=M+1
+              IF (ISTORE(HYBR+KAT-1).GT.100) M=M+1
  307          CONTINUE
               IF(M.EQ.0) NBT=2
               ENDIF
             ENDIF
-            IF (AELEM(JAT).EQ.56 .AND. D1.LT.1.30) NBT=2
-            IF (AELEM(JAT).EQ.81 .AND. D1.LT.1.60) NBT=2
-            IF (AELEM(JAT).EQ.66 .AND. D1.LT.1.60) NBT=2
+            IF (ISTORE(AELEM-1+JAT).EQ.56 .AND. D1.LT.1.30) NBT=2
+            IF (ISTORE(AELEM-1+JAT).EQ.81 .AND. D1.LT.1.60) NBT=2
+            IF (ISTORE(AELEM-1+JAT).EQ.66 .AND. D1.LT.1.60) NBT=2
             IF (NBT.GT.0) CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
           ENDIF
 C--     A - O - B       Single bonds
@@ -3515,12 +2885,13 @@ C--     A - O - B       Single bonds
         ENDIF
 C-- Sulphur
 C--  S = C
-        IF (AELEM(IAT).EQ.81) THEN
+        IF (ISTORE(AELEM-1+IAT).EQ.81) THEN
 C--  S terminal                  S=C,   S=P
           IF (N1.EQ.1) THEN
             JAT=LLIG(1)
             NBT=2
-            IF (AELEM(JAT).EQ.1 .OR. AELEM(JAT).EQ.66)
+            IF (ISTORE(AELEM-1+JAT).EQ.1 .OR.
+     1          ISTORE(AELEM-1+JAT).EQ.66)
      +          CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
           ENDIF
 C--    a - S - b
@@ -3535,31 +2906,31 @@ C--    a - S - b
 C--
 C-- Nitrogen -       the tricky one!
 C--
-        IF (AELEM(IAT).EQ.56) THEN
+        IF (ISTORE(AELEM-1+IAT).EQ.56) THEN
 C--
-C--  N  3 connections 
+C--  N  3 connections
 C--  set  single bonds. Ignore if N - metal bonds present.
 C--  If Nitro group  then code  O = N = O
 C--                                 |
 C--
 C--  Nitroso group code only     N - O   ,leave other bonds unset.
- 
+
           IF (N1.GE.3) THEN
             NMETAL=0
             NOXY=0
             DO 3151 J=1,N1
               JAT=LLIG(J)
-              IF (HYBR(JAT).GE.100) NMETAL=NMETAL+1
-              IF (AELEM(JAT).EQ.64) NOXY=NOXY+1
+              IF (ISTORE(HYBR+JAT-1).GE.100) NMETAL=NMETAL+1
+              IF (ISTORE(AELEM-1+JAT).EQ.64) NOXY=NOXY+1
  3151       CONTINUE
             IF (NMETAL.EQ.0) THEN
               DO 317 J=1,N1
                 JAT=LLIG(J)
-                IF (HYBR(JAT).GE.100) GOTO 317
+                IF (ISTORE(HYBR+JAT-1).GE.100) GOTO 317
                 NBT=1
-                IF (NOXY.EQ.1 .AND. AELEM(JAT).NE.64) GOTO 317
-                IF (NOXY.GT.1 .AND. AELEM(JAT).EQ.64 .AND. NCAC(JAT)
-     +              .EQ.1) NBT=2
+                IF (NOXY.EQ.1 .AND. ISTORE(AELEM-1+JAT).NE.64) GOTO 317
+                IF (NOXY.GT.1 .AND. ISTORE(AELEM-1+JAT).EQ.64 .AND.
+     1           ISTORE(NCAC+JAT-1).EQ.1) NBT=2
                 CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
  317          CONTINUE
             ENDIF
@@ -3568,73 +2939,75 @@ C--
 C-- N  terminal     then  check for C triple N    < 1.25
 C--                                 C  =  N       < 1.32
 C--                                 N TRIPLE N    < 1.20
-            IF(NCAC(IAT).EQ.1) THEN 
+            IF(ISTORE(NCAC+IAT-1).EQ.1) THEN
              DO 3171 J=1,N1
              JAT=LLIG(J)
              CALL PLUDIJ(IAT,JAT,AXYZO,D1)
-             IF(AELEM(JAT).EQ.1) THEN 
+             IF(ISTORE(AELEM-1+JAT).EQ.1) THEN
                NBT=1
-               IF (HYBR(IAT).EQ.2 .AND. D1.LT.1.32) NBT=2
+               IF (ISTORE(HYBR+IAT-1).EQ.2 .AND. D1.LT.1.32) NBT=2
                IF (D1.LT.1.25) NBT=3
                CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
                ENDIF
-             IF(AELEM(JAT).EQ.56) THEN 
-               IF(D1.LT.1.20) THEN 
+             IF(ISTORE(AELEM-1+JAT).EQ.56) THEN
+               IF(D1.LT.1.20) THEN
                  NBT=3
                  CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
-                 HYBR(IAT)=1
+                 ISTORE(HYBR+IAT-1)=1
                  ENDIF
                ENDIF
-        
+
 3171         CONTINUE
              ENDIF
- 
+
         ENDIF
 C--
 C-- Phosphorus
 C-- Set single bonds.  Except if to Oxygen terminal dij < 1.50
-        IF (AELEM(IAT).EQ.66) THEN
+        IF (ISTORE(AELEM-1+IAT).EQ.66) THEN
           DO 319 J=1,N1
             JAT=LLIG(J)
             CALL PLUDIJ(IAT,JAT,AXYZO,D1)
             NBT=1
-            IF (AELEM(JAT).EQ.64 .AND. NCAC(JAT).EQ.1
+            IF (ISTORE(AELEM-1+JAT).EQ.64 .AND. ISTORE(NCAC+JAT-1).EQ.1
      +      .AND. D1.LT.1.50) NBT=2
             IF(IDEBUG.GT.0) WRITE (LU,*) 'P debug',iat,jat,d1,nbt
             CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
  319      CONTINUE
         ENDIF
- 
+
 C-- Halogen terminal
-        IF (AELEM(IAT).EQ.32 .OR. AELEM(IAT).EQ.21 .OR. AELEM(IAT)
-     +      .EQ.16 .OR. AELEM(IAT).EQ.43 .OR. AELEM(IAT).EQ.9) THEN
+        IF (ISTORE(AELEM-1+IAT).EQ.32 .OR. ISTORE(AELEM-1+IAT).EQ.21
+     + .OR. ISTORE(AELEM-1+IAT).EQ.16 .OR. ISTORE(AELEM-1+IAT).EQ.43
+     + .OR. ISTORE(AELEM-1+IAT).EQ.9) THEN
           IF (N1.EQ.1) THEN
             JAT=LLIG(J)
             NBT=1
             CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
           ENDIF
         ENDIF
- 
+
 C-- Boron, Si, As, Se, Te
-        IF (AELEM(IAT).EQ.11 .OR. AELEM(IAT).EQ.85 .OR. AELEM(IAT)
-     +      .EQ.8 .OR. AELEM(IAT).EQ.84 .OR. AELEM(IAT).EQ.92) THEN
+        IF (ISTORE(AELEM-1+IAT).EQ.11 .OR. ISTORE(AELEM-1+IAT).EQ.85
+     + .OR. ISTORE(AELEM-1+IAT).EQ.8 .OR. ISTORE(AELEM-1+IAT).EQ.84
+     + .OR. ISTORE(AELEM-1+IAT).EQ.92) THEN
           DO 320 J=1,N1
             JAT=LLIG(J)
             NBT=1
             CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
  320      CONTINUE
         ENDIF
- 
+
 C-- Carbon
-        IF (AELEM(IAT).EQ.1) THEN
-          NVAL=NCAC(IAT)+NHYC(IAT)
-          NCC=NCAC(IAT)
-          NHY=NHYC(IAT)
+        IF (ISTORE(AELEM-1+IAT).EQ.1) THEN
+          NVAL=ISTORE(NCAC+IAT-1)+ISTORE(NHYC+IAT-1)
+          NCC=ISTORE(NCAC+IAT-1)
+          NHY=ISTORE(NHYC+IAT-1)
           NBT=0
-          JAT=LLIG(1) 
- 
+          JAT=LLIG(1)
+
 C-- Only apply to terminal C - C         (others have been done e.g. C - O)
-          IF (NCC.EQ.1 .AND. AELEM(JAT).NE.1) NCC=-1
+          IF (NCC.EQ.1 .AND. ISTORE(AELEM-1+JAT).NE.1) NCC=-1
 C-- terminal C - C  check bond length.
           IF (NCC.EQ.1) THEN
             JAT=LLIG(1)
@@ -3649,7 +3022,8 @@ C-- terminal C  and no hydrogen, Use the bond length
 C-- terminal C and 1 hydrogen - probably triple bond
           IF (NCC.EQ.1 .AND. NHY.EQ.1 .AND. D1.LT.1.30) NBT=3
 C-- terminal C and 2 hydrogens - probably double bond
-          IF (NCC.EQ.1 .AND. NHY.EQ.2 .AND. HYBR(IAT).EQ.2) NBT=2
+          IF (NCC.EQ.1 .AND. NHY.EQ.2 .AND.
+     +            ISTORE(HYBR+IAT-1).EQ.2) NBT=2
           IF (NBT.GT.0) CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
 C-- carbon with 4 connections - set all to single bonds
           IF (NVAL.EQ.4) THEN
@@ -3659,41 +3033,42 @@ C-- carbon with 4 connections - set all to single bonds
               CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
  318        CONTINUE
           ENDIF
- 
-        ENDIF 
- 
+
+        ENDIF
+
  300  CONTINUE
- 
+
 C-- DEBUG LIST
-      IF(IDEBUG.GT.0) THEN 
+      IF(IDEBUG.GT.0) THEN
       DO 105 I=1,NATCRY
-        WRITE (LU,9105) I,AELEM(I),NHYC(I),NCAC(I),ATRESN(I),HYBR(I)
+        WRITE (LU,9105) I,ISTORE(AELEM-1+I),ISTORE(NHYC+I-1),
+     +    ISTORE(NCAC+I-1),ISTORE(ATRESN+I-1),ISTORE(HYBR+I-1)
  9105   FORMAT (I5,4I3,' hybr=',I3)
  105  CONTINUE
       DO 106 I=1,NBOCRY
-        WRITE (LU,9106) I,(BOND(I,K),K=1,2),BTYPE(I)
+        WRITE (LU,9106) I,(ISTORE(BOND+2*I-3+K),K=1,2),ISTORE(BTYPE+I-1)
  9106   FORMAT (' bond ',I3,6X,3I3)
  106  CONTINUE
       ENDIF
- 
- 
- 
+
+
+
 C--
 C-- If carboxyl groups detected, then set single bonds from carbon
 C--
       DO 350 I=1,NBOCRY
-        IAT=BOND(I,1)
-        JAT=BOND(I,2)
-        NBT=BTYPE(I)
+        IAT=ISTORE(BOND+2*I-3+1)
+        JAT=ISTORE(BOND+2*I-3+2)
+        NBT=ISTORE(BTYPE+I-1)
         IF (NBT.NE.2) GOTO 350
         KAT=0
-        IF (AELEM(IAT).EQ.64) KAT=JAT
-        IF (AELEM(JAT).EQ.64) KAT=IAT
+        IF (ISTORE(AELEM-1+IAT).EQ.64) KAT=JAT
+        IF (ISTORE(AELEM-1+JAT).EQ.64) KAT=IAT
         IF (KAT.EQ.0) GOTO 350
         CALL SAMCON(KAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
-        IF (AELEM(KAT).NE.1 .OR. NCON.NE.3) GOTO 350
+        IF (ISTORE(AELEM-1+KAT).NE.1 .OR. NCON.NE.3) GOTO 350
 C-- selected Carbon with 3 connections   x
-C--                                       .  
+C--                                       .
 C--                                        C = O
 C--                                       .
 C--                                      y
@@ -3704,7 +3079,7 @@ C--                                      y
             CALL SAMSBT(KAT,LAT,NBT,BOND,BTYPE,NBOCRY)
           ENDIF
  355    CONTINUE
- 
+
  350  CONTINUE
 
 C--
@@ -3719,31 +3094,30 @@ C-- First item in LTYPE array is no. of types
       LTYPE(2)=0
       LTYPE(3)=5
 C--
-      DO 220 IAT=1,NATCRY
- 
+      DO IAT=1,NATCRY
 C-- search for rings which start on atoms with 2 conections.
 C-- and with at least 2 bonds not yet assigned at type. NZ count zero btype.
         NZ=0
-        IF (NCAC(IAT).GE.2) THEN
+        IF (ISTORE(NCAC+IAT-1).GE.2) THEN
           CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
-          DO 225 K=1,NCON
+          DO K=1,NCON
             IF (ICOB(K).EQ.0) NZ=NZ+1
- 225      CONTINUE
+          END DO
         ENDIF
 C-- look for ring starting on atom Iat - at least 2 connections with bond type 0
 C-- SAMRIQ looks for a ring  restricted to bond type 0, max size 6
         TORMAX=999.
         TORAVE=999.
-        IF (NCAC(IAT).GE.2 .AND. NZ.GE.2) THEN
+        IF (ISTORE(NCAC+IAT-1).GE.2 .AND. NZ.GE.2) THEN
           CALL SAMRIQ(IAT,BOND,BTYPE,NBOCRY,RINGAT,NRING,IDEBUG,LTYPE,6)
           IF(IDEBUG.GT.0) WRITE (LU,9225) IAT,(RINGAT(K),K=1,nring)
  9225     FORMAT (' samriq iat=',I3,' ring=',10I3)
           IF (NRING.GE.4 .AND. NRING.LE.8) THEN
             CALL SAMRIT(RINGAT,NRING,AXYZO,TORANG,TORMAX)
             AVAL=0.0
-            DO 226 K=1,NRING
+            DO K=1,NRING
               AVAL=AVAL+ABS(TORANG(K))
- 226        CONTINUE
+            END DO
             TORAVE=AVAL/FLOAT(NRING)
             IF(IDEBUG.GT.0) WRITE (LU,9226) TORMAX,TORAVE,
      +      (TORANG(K),K=1,NRING)
@@ -3755,14 +3129,16 @@ C-- count hetero atoms, metals, Nitrogen, sp3 hybrid
             NNITRO=0
             NPHOSP=0
             NSP3=0
-            DO 230 K=1,NRING
+            DO K=1,NRING
               KAT=RINGAT(K)
-              IF (AELEM(KAT).NE.1 .AND. HYBR(KAT).LT.10) NHETER=NHETER+1
-              IF (AELEM(KAT).EQ.56) NNITRO=NNITRO+1
-              IF (AELEM(KAT).EQ.66) NPHOSP=NPHOSP+1
-              IF (HYBR(KAT).GT.100) NMETAL=NMETAL+1
-              IF (HYBR(KAT).EQ.3 .OR. HYBR(KAT).EQ.4) NSP3=NSP3+1
- 230        CONTINUE
+              IF (ISTORE(AELEM-1+KAT).NE.1 .AND.
+     +            ISTORE(HYBR+KAT-1).LT.10) NHETER=NHETER+1
+              IF (ISTORE(AELEM-1+KAT).EQ.56) NNITRO=NNITRO+1
+              IF (ISTORE(AELEM-1+KAT).EQ.66) NPHOSP=NPHOSP+1
+              IF (ISTORE(HYBR+KAT-1).GT.100) NMETAL=NMETAL+1
+              IF (ISTORE(HYBR+KAT-1).EQ.3 .OR.
+     +            ISTORE(HYBR+KAT-1).EQ.4) NSP3=NSP3+1
+            END DO
           ENDIF
         ENDIF
 C-- check if ring is flat   - TORAVE < 10 degrees
@@ -3780,18 +3156,20 @@ C-- if metal involved then skip!  do not assign delocalise bond type 7.
           IF(IDEBUG.GT.0) WRITE (LU,*) '  = planar ring'
           NBT=5
           IF (NMETAL.GT.0) NBT=7
-          DO 235 K=1,NRING
+          DO K=1,NRING
             I1=RINGAT(K)
             J1=RINGAT(K+1)
+            ISTORE(AROMA+K+NAROMA*7) = I1 - 1
             IF (K.EQ.NRING) J1=RINGAT(1)
             IF(IDEBUG.GT.0) WRITE (LU,9235) I1,J1,NBT
  9235       FORMAT (' set bond ',2I3,' btype',I2)
             CALL SAMSBT(I1,J1,NBT,BOND,BTYPE,NBOCRY)
- 235      CONTINUE
+          END DO
+          ISTORE(AROMA+NAROMA*7) = NRING ! Type flag 5 for five, 6 for six.
+          NAROMA = NAROMA + 1
         ENDIF
- 
- 220  CONTINUE
- 
+
+      END DO
 C--
 C-- Check pi-bond triangles             Tr
 C--                                    .  .
@@ -3800,34 +3178,37 @@ C--                                  .      .
 C--                                 C ----- C
 C--
 C-- If the C---C bond has not been assigned as aromatic then set it as
-C-- double bond.  Note that we do not test if both carbons pi-bond to same Tr. 
-C--  
-      IF(NPIB.GT.0) THEN 
-       DO 240 I=1,NBOCRY
-       IF(BTYPE(I).NE.0) GO TO 240
-       IAT=BOND(I,1)
-       JAT=BOND(I,2)
-       IF(AELEM(IAT).NE.1 .OR. AELEM(JAT).NE.1) GOTO 240
-C**       write(lu,*) 'TEST 240  C---C  pi to metal ',Iat,Jat
-       I9=0
-       J9=0
-       DO 245 J=1,NBOCRY
-       IF(BTYPE(J).NE.9) GOTO 245
-       IF(BOND(J,1).EQ.IAT .OR. BOND(J,2).EQ.IAT) I9=1
-       IF(BOND(J,1).EQ.JAT .OR. BOND(J,2).EQ.JAT) J9=1
-245    CONTINUE
-       IF(I9.GT.0 .AND.J9.GT.0) THEN
+C-- double bond.  Note that we do not test if both carbons pi-bond to same Tr.
+C--
+      IF(NPIB.GT.0) THEN
+       DO I=1,NBOCRY
+        IF(ISTORE(BTYPE+I-1).NE.0) CYCLE
+        IAT=ISTORE(BOND+2*I-3+1)
+        JAT=ISTORE(BOND+2*I-3+2)
+        IF(ISTORE(AELEM-1+IAT).NE.1 .OR.
+     +     ISTORE(AELEM-1+JAT).NE.1) CYCLE
+C**        write(lu,*) 'TEST 240  C---C  pi to metal ',Iat,Jat
+        I9=0
+        J9=0
+        DO J=1,NBOCRY
+         IF(ISTORE(BTYPE+J-1).NE.9) CYCLE
+         IF(ISTORE(BOND+2*J-3+1).EQ.IAT .OR.
+     +      ISTORE(BOND+2*J-3+2).EQ.IAT) I9=1
+         IF(ISTORE(BOND+2*J-3+1).EQ.JAT .OR.
+     +      ISTORE(BOND+2*J-3+2).EQ.JAT) J9=1
+        END DO
+        IF(I9.GT.0 .AND.J9.GT.0) THEN
            NBT=2
-           BTYPE(I)=NBT
+           ISTORE(BTYPE+I-1)=NBT
            IF(IDEBUG.GT.0) WRITE(LU,*)
      +     'Pi-bond used to assign C = C at ',IAT,JAT,NBT
-           ENDIF
-240    CONTINUE
-       ENDIF
+        ENDIF
+       END DO
+      ENDIF
 C--
 C-- check all atoms for unassigned bonds  code = 0
 C-- make reasonable guess at bond.
-C-- Allow several passes through the list, as assignment can sometimes 
+C-- Allow several passes through the list, as assignment can sometimes
 C-- not be complete at pass one through the atoms list
 C--
       NNOT=0
@@ -3836,14 +3217,14 @@ C-- count number of not-assigned bonds NNOT. Compare with previous pass, NNOT1.
         NNOT1=NNOT
         NNOT=0
         DO 690 K=1,NBOCRY
-          IF (BTYPE(K).EQ.0) NNOT=NNOT+1
+          IF (ISTORE(BTYPE+K-1).EQ.0) NNOT=NNOT+1
  690    CONTINUE
         IF (NNOT.EQ.0 .OR. NNOT.EQ.NNOT1) GOTO 701
 C--
 C-- loop on all atoms IAT  - get connection list for atom IAT in ICON, ICOB
 C--
         DO 680 I=1,NATCRY
-          IF (ATRESN(I).LT.0) GOTO 680
+          IF (ISTORE(ATRESN+I-1).LT.0) GOTO 680
           IAT=I
           CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
 C-- loop on bonds Iat - Jat
@@ -3853,14 +3234,15 @@ C-- loop on bonds Iat - Jat
             JAT=ICON(M)
             I1=IAT
             J1=JAT
- 
+
 C-- unassigned bond to metal is set as single-bond
-            IF (HYBR(I1).GT.100 .OR. HYBR(J1).GT.100) THEN
+            IF (ISTORE(HYBR+I1-1).GT.100 .OR.
+     +          ISTORE(HYBR+J1-1).GT.100) THEN
               NBT=1
               CALL SAMSBT(I1,J1,NBT,BOND,BTYPE,NBOCRY)
               GOTO 600
             ENDIF
- 
+
             V=0.
             NZ=0
             NMETAL=0
@@ -3870,12 +3252,12 @@ C-- unassigned bond to metal is set as single-bond
               IF (ICOB(K).EQ.5 .OR. ICOB(K).EQ.7) V=V+1.51
               IF (ICOB(K).EQ.6) V=V+1.0
               KAT=ICON(K)
-              IF (HYBR(KAT).GT.100) NMETAL=NMETAL+1
+              IF (ISTORE(HYBR+KAT-1).GT.100) NMETAL=NMETAL+1
               CALL PLUDIJ(IAT,KAT,AXYZO,DIJ(K))
  605        CONTINUE
 Cdebug
-            IF(IDEBUG.GT.0) WRITE (LU,9605) 
-     +      IAT,AELEM(IAT),HYBR(IAT),V,NZ,HYPRES
+            IF(IDEBUG.GT.0) WRITE (LU,9605)
+     +      IAT,ISTORE(AELEM-1+IAT),ISTORE(HYBR+IAT-1),V,NZ,HYPRES
  9605       FORMAT (' iat',I3,' ielc',I3,' hybr=',I1,' v=',F5.1,
      +              ' nzero',I2,' hypres',I2)
             DO 606 K=1,NCON
@@ -3884,14 +3266,14 @@ Cdebug
  606        CONTINUE
 C--                              .
 C-- carbon valence check      - C         set single/double bonds
-C--                              .  
-            IF (AELEM(IAT).EQ.1) THEN
+C--                              .
+            IF (ISTORE(AELEM-1+IAT).EQ.1) THEN
               NBT=0
 C-- if non-planar and 4 connections - then set single bonds
 C-- if non-planar and 3 connections - set any zero bonds as single
-              IF (HYBR(IAT).EQ.3) THEN
+              IF (ISTORE(HYBR+IAT-1).EQ.3) THEN
                 DO 607 K=1,NCON
-                IF(ICOB(K).EQ.0) THEN 
+                IF(ICOB(K).EQ.0) THEN
                   JAT=ICON(K)
                   NBT=1
                   CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
@@ -3903,7 +3285,7 @@ C-- if planar , v 2 or 3 or 4 ,  nz 1 or 2
 C-- then we must have 1 double, 2 single
 C-- set the zero-bonds with correct bondtype
 C-- Do not allow b=2 if dij > 1.46
-              IF (HYBR(IAT).EQ.2 .AND. NINT(V).GE.2) THEN
+              IF (ISTORE(HYBR+IAT-1).EQ.2 .AND. NINT(V).GE.2) THEN
                 NBT=0
                 IF (NINT(V).GE.3 .AND. NZ.EQ.1) NBT=1
                 IF (NINT(V).EQ.2 .AND. NZ.EQ.2) NBT=1
@@ -3922,7 +3304,7 @@ C-- Do not allow b=2 if dij > 1.46
               ENDIF
 C-- if planar, 1 single bond, 2 zero bonds.
 C-- Assign double bond to shorter distance, single to longer
-              IF (HYBR(IAT).EQ.2 .AND. NINT(V).EQ.1) THEN
+              IF (ISTORE(HYBR+IAT-1).EQ.2 .AND. NINT(V).EQ.1) THEN
                 NBT=0
                 DMIN=999.
                 KMIN=0
@@ -3937,7 +3319,8 @@ C-- Assign double bond to shorter distance, single to longer
                   IF (ICOB(K).EQ.0 .AND. K.NE.KMIN) NBT=1
                   IF (ICOB(K).EQ.0 .AND. K.EQ.KMIN) NBT=2
                   JAT=ICON(K)
-                  IF(NBT.GT.0)CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
+                  IF(NBT.GT.0)
+     +            CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
  610            CONTINUE
                 GOTO 600
               ENDIF
@@ -3946,7 +3329,7 @@ C-- if hybr not known and 2 connections     C -- C -- C
 C--                                         j    i    k
 C--
 C--     Possible triple bond - get angle. Set triple if > 160
-              IF (HYBR(IAT).EQ.0 .AND. NCON.EQ.2) THEN
+              IF (ISTORE(HYBR+IAT-1).EQ.0 .AND. NCON.EQ.2) THEN
                 JAT=ICON(1)
                 KAT=ICON(2)
                 CALL SAMANF(JAT,IAT,KAT,AXYZO,AVAL)
@@ -3956,7 +3339,7 @@ C--  linear  x -- C -- y
 C--
                 IF (AVAL.GT.160.0) THEN
 C--  C = C = C            current V=2
- 
+
                   IF (NINT(V).EQ.2) THEN
                     NBT=2
                     IF(ICOB(1).EQ.0)
@@ -3985,7 +3368,8 @@ C--      j-i-k  angle < 160   test for double bond  i-j by looking
 C--      at torsion angles   involving bond  i - j
                 IF (ICOB(1).EQ.0) JAT=ICON(1)
                 IF (ICOB(2).EQ.0) JAT=ICON(2)
-                CALL SAMTOB(IAT,JAT,BOND,BTYPE,NBOCRY,AXYZO,NTOR,TORANG)
+                CALL SAMTOB(IAT,JAT,BOND,BTYPE,NBOCRY,
+     +                      AXYZO,NTOR,TORANG)
                 IF(IDEBUG.GT.0) WRITE (LU,9610) IAT,JAT,
      +          (TORANG(K),K=1,NTOR)
  9610           FORMAT ('   torsion angles bond=',2I3,' tors=',10F6.1)
@@ -3995,7 +3379,7 @@ C--                                   or hybr atom j =3
                 NBT=2
                 CALL PLUDIJ(IAT,JAT,AXYZO,D1)
                 IF (D1.GT.1.46) NBT=1
-                IF (HYBR(JAT).EQ.3) NBT=1
+                IF (ISTORE(HYBR+JAT-1).EQ.3) NBT=1
                 DO 615 K=1,NTOR
                   TOR1=ABS(TORANG(K))
                   IF (TOR1.GT.20.0 .AND. TOR1.LT.160.0) NBT=1
@@ -4003,8 +3387,8 @@ C--                                   or hybr atom j =3
                 CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
                 GOTO 600
               ENDIF
- 
- 
+
+
               IF (NBT.EQ.0) THEN
                 IF (V.LT.4.0 .AND. V.GE.3.0) NBT=1
                 IF (ABS(V-2.0).LT.0.001) NBT=2
@@ -4014,11 +3398,12 @@ C-- set the bond type if assigned
                 CALL SAMSBT(I1,J1,NBT,BOND,BTYPE,NBOCRY)
                 GOTO 600
               ENDIF
- 
+
             ENDIF
 C-- nitrogen valence check = 3
 C-- case of 2 connections.           x - N = y
-            IF (AELEM(IAT).EQ.56 .AND. NMETAL.EQ.0 .AND. NCON.EQ.2) THEN
+            IF (ISTORE(AELEM-1+IAT).EQ.56 .AND. NMETAL.EQ.0 .AND.
+     +           NCON.EQ.2) THEN
               NBT=0
               JAT=ICON(1)
               KAT=ICON(2)
@@ -4032,7 +3417,7 @@ C-- hydrogens present elsewhere - therefore  x-N=y
                 IF (ABS(V-1.0).LT.0.001) NBT=2
                 CALL SAMSBT(I1,J1,NBT,BOND,BTYPE,NBOCRY)
                 IF(IDEBUG.GT.0) WRITE (STDOUTTERM,*) 'setting Nitrogen '
-                IF(IDEBUG.GT.0) WRITE (STDOUTTERM,*) 
+                IF(IDEBUG.GT.0) WRITE (STDOUTTERM,*)
      1                 'samsbt bond',I1,J1,NBT
                 GOTO 600
               ENDIF
@@ -4040,15 +3425,15 @@ C-- hydrogens not present - therefore cannot tell if x-N-y  or  x-N=y
 C-- if elements x y are the same and a significant difference in bond length
 C-- assign double bond to shorter.
               IF (HYPRES.EQ.0) THEN
-                IF (AELEM(JAT).EQ.AELEM(KAT) .AND. ABS(DIJ(1)-DIJ(2))
-     +              .GT.0.05) THEN
+                IF (ISTORE(AELEM-1+JAT).EQ.ISTORE(AELEM-1+KAT) .AND.
+     +              ABS(DIJ(1)-DIJ(2)).GT.0.05) THEN
                   IF (ICOB(1).EQ.0) THEN
                     NBT=1
                     IF (DIJ(1).LT.DIJ(2)) NBT=2
                     CALL SAMSBT(I1,JAT,NBT,BOND,BTYPE,NBOCRY)
                     IF(IDEBUG.GT.0) WRITE(STDOUTTERM,*)
      +              'samsbt N bond',I1,JAT,NBT
- 
+
                   ENDIF
                   IF (ICOB(2).EQ.0) THEN
                     NBT=1
@@ -4056,16 +3441,16 @@ C-- assign double bond to shorter.
                     CALL SAMSBT(I1,KAT,NBT,BOND,BTYPE,NBOCRY)
                     IF(IDEBUG.GT.0) WRITE (STDOUTTERM,*)
      +              'samsbt N bond',I1,KAT,NBT
- 
+
                   ENDIF
                 ENDIF
               ENDIF
- 
- 
+
+
             ENDIF
 C-- end loop on bonds Iat-Jat
  600      CONTINUE
- 
+
 C-- end loop on atoms IAT
  680    CONTINUE
 C-- end loop on pass of assignment
@@ -4073,26 +3458,26 @@ C-- end loop on pass of assignment
  701  CONTINUE
 C--
 C--
-C--   Stage 2.    Tidying up. 
+C--   Stage 2.    Tidying up.
 C--
 C--
 C-- set any unassigned bond types to single  b=1
 C--
       IF(IDEBUG.GT.0) WRITE(LU,*)'======= STAGE 2  tidy up ========='
       DO 710 I=1,NBOCRY
-      IF(BTYPE(I).EQ.0) THEN
-        BTYPE(I)=1
+      IF(ISTORE(BTYPE+I-1).EQ.0) THEN
+        ISTORE(BTYPE+I-1)=1
         IF(IDEBUG.GT.0) WRITE(LU,*)'Unassigned. Set b=1 ',
-     +  BOND(I,1),BOND(I,2)
+     +  ISTORE(BOND+2*I-3+1),ISTORE(BOND+2*I-3+2)
         ENDIF
 710   CONTINUE
-      
+
 C--
 C-- scan for functional groups and set CSD standard patterns
-C-- This also assigns charges in simple cases like  Br-   Na+   ClO4-  
+C-- This also assigns charges in simple cases like  Br-   Na+   ClO4-
 C--
-      CALL SAMBFG 
- 
+      CALL SAMBFG
+
 C--
 C-- Final check over for valence error on C N O S
 C-- Tidy up by assigning double/single or delocalised
@@ -4109,34 +3494,34 @@ C--
           IF (ICOB(K).EQ.5 .OR. ICOB(K).EQ.7) V=V+1.50
           IF (ICOB(K).EQ.6) V=V+1.0
           KAT=ICON(K)
-          IF (HYBR(KAT).GT.100) NMETAL=NMETAL+1
+          IF (ISTORE(HYBR+KAT-1).GT.100) NMETAL=NMETAL+1
 C**      CALL PLUDIJ(IAT,KAT,XO,DIJ(K))
  805    CONTINUE
 C-- valence check on elements  --  if problem set M=1
         M=0
 C-- carbon
-        IF (AELEM(I).EQ.1) THEN
-          IF (HYBR(I).EQ.2 .AND. NINT(V).NE.4) M=1
+        IF (ISTORE(AELEM-1+I).EQ.1) THEN
+          IF (ISTORE(HYBR+I-1).EQ.2 .AND. NINT(V).NE.4) M=1
           IF (NINT(V).GT.4) M=1
         ENDIF
 C-- nitrogen
-        IF (AELEM(I).EQ.56) THEN
-          IF (HYBR(I).EQ.2 .AND. NINT(V).NE.3) M=1
+        IF (ISTORE(AELEM-1+I).EQ.56) THEN
+          IF (ISTORE(HYBR+I-1).EQ.2 .AND. NINT(V).NE.3) M=1
           IF (NINT(V).GE.5) M=1
         ENDIF
 C-- oxygen & sulphur
-        IF (AELEM(I).EQ.64 .AND. NINT(V)-NMETAL.GT.2) M=1
-        IF (AELEM(I).EQ.81 .AND. NINT(V)-NMETAL.GT.2) M=1
+        IF (ISTORE(AELEM-1+I).EQ.64 .AND. NINT(V)-NMETAL.GT.2) M=1
+        IF (ISTORE(AELEM-1+I).EQ.81 .AND. NINT(V)-NMETAL.GT.2) M=1
         IF (M.EQ.1) THEN
-          IF(IDEBUG.GT.0) WRITE (LU,9805) I,AELEM(I),V
+          IF(IDEBUG.GT.0) WRITE (LU,9805) I,ISTORE(AELEM-1+I),V
  9805     FORMAT (' Valence problem atom=',I3,' ielc',I3,' v=',F6.1)
-          CALL PLUCAL(I,2)
         ENDIF
  800  CONTINUE
- 
-      IF(IDEBUG.GT.0) THEN 
+
+      IF(IDEBUG.GT.0) THEN
         DO 855 I=1,NBOCRY
-          WRITE(LU,9855) BOND(I,1),BOND(I,2),BTYPE(I)  
+          WRITE(LU,9855) ISTORE(BOND+2*I-3+1),ISTORE(BOND+2*I-3+2),
+     +                   ISTORE(BTYPE+I-1)
 9855      FORMAT(I5,' bond,bt=',3I4)
 855     CONTINUE
       ENDIF
@@ -4145,109 +3530,8 @@ C-- oxygen & sulphur
       END
 
 
-      SUBROUTINE SAMCO9(IAT,IBON,IBONT,NBONDS,I9)
-C-- Function: Check if atom Iat has a pi-bond in list IBON
-C-- Version:  26.1.95 
-C-- Arguments: 
-C-- IAT    input test atom number
-C-- IBON   input bond list for search 
-C-- IBONT  input bond type
-C-- NBONDS input count of bonds in IBON
-C-- I9     returned value = first atom found pi-bonded to Iat.  =0 no atom
-      IMPLICIT NONE 
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
 
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
-      INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
-      PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
-
-      INTEGER         STDOUTTERM
-      COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-
-      INTEGER IAT,IBON(MAXBND,2),IBONT(MAXBND),NBONDS,I9
-
-      INTEGER I
-C------------------------------------------------------------
-C-- scan the bond list looking for pi-bond type b=9
-      I9=0
-      DO 100 I=1,NBONDS
-      IF(IBONT(I).EQ.9) THEN 
-        IF(IBON(I,1).EQ.IAT) THEN 
-           I9=IBON(I,2)
-           GOTO 101
-           ENDIF
-        IF(IBON(I,2).EQ.IAT) THEN 
-           I9=IBON(I,1)
-           GOTO 101
-           ENDIF
-        ENDIF
-100   CONTINUE
-101   CONTINUE
-      RETURN
-      END
-
-**==samcon.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
- 
- 
+CODE FOR SAMCON
       SUBROUTINE SAMCON(IAT,IBON,IBONT,NBONDS,NCON,ICON,ICOB,IPIB)
 C-- Function: Get list of connected atoms for given atom Iat.
 C-- Version:  27.9.94
@@ -4255,7 +3539,7 @@ C-- Notes:
 C-- 1. This uses just the list of bonds (in any order) in IBON(*,3).
 C--    Output atoms number in ICON(), count in NCON
 C-- 2. Skip suppressed atoms   (bond type 99)
-C-- 3. Skip pi-bonds           (bond type 9 ) if IPIB <=0 
+C-- 3. Skip pi-bonds           (bond type 9 ) if IPIB <=0
 C--
 C-- Arguments:
 C-- IAT     given atom number
@@ -4266,92 +3550,35 @@ C-- NCON    output number of connected atoms for Iat
 C-- ICON    output list of atoms connected to IAT
 C-- ICOB    output bond types for each connection in ICON
 C-- IPIB    whether to include pi bonds
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
+C      IMPLICIT NONE
 
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
+\STORE
+\QSTORE
+\ISTORE
 
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
 
-      INTEGER IAT,IBON(MAXBND,2),IBONT(MAXBND),NBONDS,NCON,
+      INTEGER IAT,IBON,IBONT,NBONDS,NCON,
      +        ICON(30),ICOB(30),IPIB
 C-- local
       INTEGER I
 C-----------------------------------------------------------
       NCON=0
       DO 100 I=1,NBONDS
-        IF (IBONT(I).EQ.99) GOTO 100
-        IF (IPIB.LE.0 .AND. IBONT(I).EQ.9) GOTO 100
-        IF (IBON(I,1).EQ.IAT) THEN
+        IF (ISTORE(IBONT+I-1).EQ.99) GOTO 100
+        IF (IPIB.LE.0 .AND. ISTORE(IBONT+I-1).EQ.9) GOTO 100
+        IF (ISTORE(IBON+I*2-3+1).EQ.IAT) THEN
           NCON=NCON+1
-          ICON(NCON)=IBON(I,2)
-          ICOB(NCON)=IBONT(I)
-        ELSEIF (IBON(I,2).EQ.IAT) THEN
+          ICON(NCON)=ISTORE(IBON+I*2-3+2)
+          ICOB(NCON)=ISTORE(IBONT+I-1)
+        ELSEIF (ISTORE(IBON+I*2-3+2).EQ.IAT) THEN
           NCON=NCON+1
-          ICON(NCON)=IBON(I,1)
-          ICOB(NCON)=IBONT(I)
+          ICON(NCON)=ISTORE(IBON+I*2-3+1)
+          ICOB(NCON)=ISTORE(IBONT+I-1)
         ENDIF
         IF (NCON.GE.30) GOTO 101
  100  CONTINUE
@@ -4359,8 +3586,9 @@ C-----------------------------------------------------------
       RETURN
       END
 **==samrit.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
- 
- 
+
+
+CODE FOR SAMRIT
       SUBROUTINE SAMRIT(RINGAT,NRING,AXYZO,TORANG,TORMAX)
 C-- Function: Get torsion angles for atoms in ring given
 C-- Version:  6.10.94
@@ -4372,82 +3600,22 @@ C-- TORANG   output torsion angles for 1-2-3-4  2-3-4-5  etc
 C-- TORMAX   output max. abs. torsion angle in ring
 C--
 C--             1 --- 2
-C--            .       .  
+C--            .       .
 C--           6         3     Example of atoms for 6-membered ring
 C--            .       .
 C--             5 --- 4
 C--
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
 
       INTEGER RINGAT(30),NRING
-      REAL AXYZO(MAXATM,3),TORANG(30),TORMAX
+      REAL TORANG(30),TORMAX
+      INTEGER AXYZO
+
 C-- local
       INTEGER IAT,JAT,KAT,LAT,I,J,K,L
       REAL AVAL
@@ -4475,17 +3643,8 @@ C-------------------------------------------
         IF (AVAL.GT.TORMAX) TORMAX=AVAL
  100  CONTINUE
       END
-**==samanf.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+CODE FOR SAMANF
       SUBROUTINE SAMANF(IAT,JAT,KAT,AXYZO,AVAL)
 C--Function:  Get  angle for i-j-k in atom list coords XO.
 C--Version:  21.10.94     Sam Motherwell
@@ -4493,78 +3652,21 @@ C--Arguments:
 C-- IAT,JAT,KAT  define atom number for torsion anngle i-j-k
 C-- XO     othogonal coords
 C-- AVAL   returned angle in degrees
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
+C      IMPLICIT NONE
+\STORE
+\ISTORE
+\QSTORE
 
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
 
       INTEGER IAT,JAT,KAT
-      REAL AXYZO(MAXATM,3),AVAL
- 
+      REAL AVAL
+      INTEGER AXYZO
+
 C--local
       REAL X1(3),X2(3),X3(3)
       INTEGER K
@@ -4572,17 +3674,16 @@ C-----------------------------------------------------
       AVAL=0.0
       IF (IAT.LE.0 .OR. JAT.LE.0 .OR. KAT.LE.0) RETURN
       DO 100 K=1,3
-        X1(K)=AXYZO(IAT,K)
-        X2(K)=AXYZO(JAT,K)
-        X3(K)=AXYZO(KAT,K)
+        X1(K)=STORE(AXYZO+3*IAT-4+K)
+        X2(K)=STORE(AXYZO+3*JAT-4+K)
+        X3(K)=STORE(AXYZO+3*KAT-4+K)
  100  CONTINUE
       CALL SAMANG(X1,X2,X3,AVAL)
       RETURN
       END
-**==samtob.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
- 
- 
- 
+
+
+CODE FOR SAMTOB
       SUBROUTINE SAMTOB(IAT,JAT,IBOC,IBOT,NBOCRY,AXYZO,NTOR,TORANG)
 C--Function:  Get torsion angles about bond Iat-Jat
 C--Version:  24.10.94     Sam Motherwell
@@ -4591,87 +3692,21 @@ C-- IAT,JAT input define atom number for bond in IBOC
 C-- XO      input orthogonal coords
 C-- NTOR    output number of tor angles found
 C-- TORANG  output list of tor angles
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
+C      IMPLICIT NONE
+\STORE
+\ISTORE
+\QSTORE
 
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
 
-      INTEGER IAT,JAT,IBOC(MAXBND,2),IBOT(MAXBND),NBOCRY,NTOR
-      REAL AXYZO(MAXATM,3),TORANG(30)
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/11/12  17:03:00  shields
-C Moving IDEBUG from PLUTZZ to PLUTLI common.
-C
-C Revision 1.1  1998/11/12  15:47:29  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
+      INTEGER IAT,JAT,IBOC,IBOT,NBOCRY,NTOR
+      REAL TORANG(30)
+      INTEGER AXYZO
+
 C-- ILIST  controls output to listing file  (usually =0  off)
 C-- IDEBUG controls output to listing file  (usually =0  off)
       INTEGER ILIST, IDEBUG
@@ -4698,16 +3733,17 @@ C-- systematically generate torsion angles k-i-j-l
           IF (LAT.EQ.IAT) GOTO 150
           IF (KAT.GT.0 .AND. LAT.GT.0) THEN
             DO 200 K=1,3
-              X1(K)=AXYZO(KAT,K)
-              X2(K)=AXYZO(IAT,K)
-              X3(K)=AXYZO(JAT,K)
-              X4(K)=AXYZO(LAT,K)
+              X1(K)=STORE(AXYZO+3*KAT-4+K)
+              X2(K)=STORE(AXYZO+3*IAT-4+K)
+              X3(K)=STORE(AXYZO+3*JAT-4+K)
+              X4(K)=STORE(AXYZO+3*LAT-4+K)
  200        CONTINUE
             CALL SAMTOR(X1,X2,X3,X4,AVAL)
             NTOR=NTOR+1
             TORANG(NTOR)=AVAL
             IF (NTOR.GE.30) GOTO 101
-            IF(IDEBUG.GT.0) WRITE (STDOUTTERM,9100) kat,IAT,JAT,lat,aval
+            IF(IDEBUG.GT.0) WRITE (STDOUTTERM,9100)
+     +       kat,IAT,JAT,lat,aval
  9100       FORMAT (' samtob ',4I3,F6.1)
           ENDIF
  150    CONTINUE
@@ -4715,12 +3751,9 @@ C-- systematically generate torsion angles k-i-j-l
  101  CONTINUE
       RETURN
       END
-**==samtox.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
- 
- 
- 
- 
- 
+
+
+CODE FOR SAMTOX
       SUBROUTINE SAMTOX(IAT,JAT,KAT,LAT,AXYZO,AVAL)
 C--Function:  Get torsion angle for i-j-k-l in atom list coords XO.
 C--Version:  19.8.94     Sam Motherwell
@@ -4728,95 +3761,37 @@ C--Arguments:
 C-- IAT,JAT,KAT,LAT  define atom number for torsion anngle i-j-k-l
 C-- XO     othogonal coords
 C-- AVAL   returned angle in degrees
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
+\STORE
+\ISTORE
+\QSTORE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
 
       INTEGER IAT,JAT,KAT,LAT
-      REAL AXYZO(MAXATM,3),AVAL
- 
+      REAL AVAL
+      INTEGER AXYZO
+
 C--local
       REAL X1(3),X2(3),X3(3),X4(3)
       INTEGER K
- 
+
       IF (IAT.LE.0 .OR. JAT.LE.0 .OR. KAT.LE.0 .OR. LAT.LE.0) RETURN
- 
+
       DO 100 K=1,3
-        X1(K)=AXYZO(IAT,K)
-        X2(K)=AXYZO(JAT,K)
-        X3(K)=AXYZO(KAT,K)
-        X4(K)=AXYZO(LAT,K)
+        X1(K)=STORE(AXYZO+3*IAT-4+K)
+        X2(K)=STORE(AXYZO+3*JAT-4+K)
+        X3(K)=STORE(AXYZO+3*KAT-4+K)
+        X4(K)=STORE(AXYZO+3*LAT-4+K)
  100  CONTINUE
       CALL SAMTOR(X1,X2,X3,X4,AVAL)
       RETURN
       END
-**==samsbt.spg  processed by SPAG 4.50F  at 09:04 on  8 Dec 1994
- 
+
+CODE FOR SAMSBT
       SUBROUTINE SAMSBT(I1,J1,NBT,IBOC,IBOT,NBOCRY)
 C-- Function: Set bond type code in list for given bond.
 C-- Version:  4.10.94        Sam Motherwell
@@ -4826,100 +3801,45 @@ C--  NBT     bond type code
 C--  IBOC    bond list
 C--  IBOT    bond type
 C--  NBOCRY  number of bonds in list
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of 2500 anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
+\STORE
+\ISTORE
+\QSTORE
+\XLST05
+\XIOBUF
+\XUNITS
+\XSSVAL
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
 
-      INTEGER I1,J1,NBT,IBOC(MAXBND,2),IBOT(MAXBND),NBOCRY
+      INTEGER I1,J1,NBT,IBOC,IBOT,NBOCRY
 C-- local
       INTEGER I
       DO 100 I=1,NBOCRY
-        IF ((IBOC(I,1).EQ.I1 .AND. IBOC(I,2).EQ.J1) .OR.
-     +      (IBOC(I,1).EQ.J1 .AND. IBOC(I,2).EQ.I1)) THEN
-          IBOT(I)=NBT
+        IF ((ISTORE(IBOC+I*2-3+1).EQ.I1 .AND.
+     +       ISTORE(IBOC+I*2-3+2).EQ.J1) .OR.
+     +      (ISTORE(IBOC+I*2-3+1).EQ.J1 .AND.
+     +       ISTORE(IBOC+I*2-3+2).EQ.I1)) THEN
+          IF ( ISTORE(IBOT+I-1) .GE. 0 ) THEN
+            ISTORE(IBOT+I-1)=NBT
+          ELSE
+            WRITE(CMON,'(2(A,A2,I4),/,2(A,I2),A)')'Warning: Bond from ',
+     1        ISTORE(L5+(I1-1)*MD5),NINT(STORE(L5+(I1-1)*MD5+1)),' to ',
+     1        ISTORE(L5+(J1-1)*MD5),NINT(STORE(L5+(J1-1)*MD5+1)),
+     1        'Fixed to: ',ABS(ISTORE(IBOT+I-1)),
+     1        ' in L40, but looks like: ',NBT,' to me.'
+            CALL XPRVDU(NCVDU,2,0)
+          END IF
           GOTO 101
         ENDIF
  100  CONTINUE
  101  RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/10/23  08:48:24  shields
-C Bug pluto/272. Return out-of-range value if either vector is between
-C indentical points, to avoid error that arbitrary angle found if invalid
-C atom selection is made.
-C
-C Revision 1.1  1995/08/28  17:02:29  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samang.spg  processed by SPAG 4.50F  at 08:58 on  8 Dec 1994
+
+CODE FOR SAMANG
       SUBROUTINE SAMANG(X1,X2,X3,ANGLE)
 C-- Function:   Get angle in degrees x1-x2-x3
 C-- Version:    10.11.94   Sam Motherwell   8.12.93
@@ -4933,69 +3853,13 @@ C--
 C-- local
 C-- V, U         unit vector
 C--
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
+
       REAL X1(3),X2(3),X3(3),ANGLE
       REAL U(3),V(3),DU,DV,COSA
       REAL SAMARC, RTOL
@@ -5011,82 +3875,20 @@ C------------------------------------
       ENDIF
       RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1995/08/28  17:02:29  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samarc.spg  processed by SPAG 4.50F  at 08:58 on  8 Dec 1994
+
+CODE FOR SAMARC
       FUNCTION SAMARC(XX)
 C-- Function: Get the angle whose cosine is XX. Return angle in degrees.
 C-- Version:   8.12.94     1.2.94               Sam Motherwell
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
+
       REAL SAMARC,XX
- 
+
       IF (1.0-ABS(XX)) 10,20,20
  10   XX=SIGN(1.0,XX)
  20   IF (XX) 30,40,50
@@ -5097,291 +3899,58 @@ C
  50   SAMARC=ATAN(SQRT(1.0-XX*XX)/XX)*57.29577951
  60   RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.12  1998/12/09  15:37:17  shields
-C Removing unused commons. Moving over to include files for PLUTW1 and PLUTAC.
-C
-C Revision 1.11  1998/11/24  17:36:54  shields
-C Moving over from PLUTQY to MV variables for atom/bond list.
-C Only use PLUTQY for items not stored in MV, i.e. NHYC, NCAC.
-C  Changing arguments to make this possible.
-C
-C Revision 1.10  1998/11/12  17:40:19  shields
-C Reordering include files.
-C
-C Revision 1.9  1998/11/11  16:26:10  shields
-C Rationalise common blocks. Move to PLUTW1 for communicating HYBR with
-C SAMABO. Remove need for ATVAL array, by computing in same loop as it
-C is used. Replace LIG and MIG wit calls to SAMCON. Add extra argument to
-C SAMCON.
-C Ensure negative charge not set for carboxylate with H on oxygen.
-C Add code to set negative charge on free thiocyanate anions.
-C
-C Revision 1.8  1998/10/14  16:13:50  shields
-C Reordering include files.
-C
-C Revision 1.7  1998/10/13  16:24:19  shields
-C Moving to mv parameter for maximum number of atoms.
-C
-C Revision 1.6  1998/02/28  12:45:03  shields
-C Suppressing all debug messages for V515 release.
-C
-C Revision 1.5  1995/11/23  10:40:38  motherwell
-C Fixed bug on assign charge to perchlorate - due to a typo on
-C a test on NHYC(JAT)
-C
-C Revision 1.4  1995/10/07  17:42:51  macrae
-C Improved selectivity for the O-C=O and S-C=S cases, when setting
-C the single bond and the charge. (Not adding charge of -1 if there
-C is another connection to the O/S.
-C ClO4- and NO3 - are also more selective in adding single bond
-C and negative charge.
-C Added some comments explaining future points for improvement.
-C
-C Revision 1.3  1995/09/29  09:18:18  motherwell
-C Moved ATCHG to new common PLUTAC, atom charge assigned by SAMBFG
-C
-C Revision 1.2  1995/09/26  10:05:22  motherwell
-C Altered to stop delocalisation net when C-N bond encountered
-C
-C Revision 1.1  1995/09/22  17:01:18  motherwell
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
+
+CODE FOR SAMBFG
       SUBROUTINE SAMBFG
 C-- Function:  Bond assignment for groups. Assign standard patterns
 C--            to  certain functional groups as in CSD
 C-- Version:   29.9.95           Sam Motherwell   18.9.95
 C-- Notes:
 C-- 1. Auxiliary to SAMABO.  This is called in the stage 2 (Tidy Up)
-C--    All connectivity has been set up in  
-C--    AELEM    element type 
-C--    NHYC     number of terminal H 
-C--    NCAC     number of connections other than terminal H 
-C--    ATRESN   residue number 
-C--    BOND     list of bonds Iat, Jat   
-C      BTYPE    nbt          
+C--    All connectivity has been set up in
+C--    AELEM    element type
+C--    NHYC     number of terminal H
+C--    NCAC     number of connections other than terminal H
+C--    ATRESN   residue number
+C--    BOND     list of bonds Iat, Jat
+C      BTYPE    nbt
 C--    NATCRY   number of atoms
-C--    NBOCRY   number of bonds 
+C--    NBOCRY   number of bonds
 C--
-C-- 2. scan is made for those functional groups known to give 
+C-- 2. scan is made for those functional groups known to give
 C--    trouble with the automatic bond assignment in SAMABO. For
-C--    example  carboxylate.  Also groups like perchlorate  ClO4- are 
+C--    example  carboxylate.  Also groups like perchlorate  ClO4- are
 C--    explicity recognised and assigned a pattern of 3 double, one single bond
 C--
 C-- 3. Charges.  In some simple cases one can deduce an ionic change.
-C--    For example,   Na +    Cl-   or  ClO4 -      NR4 + 
+C--    For example,   Na +    Cl-   or  ClO4 -      NR4 +
 C--    The charge is assigned to an array  ATCHG as output COMMON PLUTAC
-C--   
-      IMPLICIT NONE
+C--
+C      IMPLICIT NONE
 
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-C
+
 C ........... Molecule Viewer Atom DATa .............
 C INT  TATOM             : total number of atoms to be displayed
-C                          (may equal ASATOM, UATOM, NBATOM or PATOM - see below
-C REAL AXYZO(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C REAL AXYZF(MAXATM,3)   : atom fractional coordinates
-C INT  AELEM(MAXATM)     : element code no. (as given by MVELEM)  (set in GET3D)
-C REAL ARAD(MAXATM)      : atom radius                (MAY NOT BE SET YET???)
-C INT  ANCON(MAXATM)     : number of connections for each atom    (set in GET3D)
-C INT  ATRESN(MAXATM)    : residue number of each atom            (set in GET3D)
-C INT  ATSYM(MAXATM)     : atom symmetry code                     (set in GET3D)
-C REAL AXYZCM(3)         : (x,y,z) of centre of mass of structure (set in GET3D)
-C REAL AXMIN,AYMIN,AZMIN : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C REAL AXMAX,AYMAX,AZMAX : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C INT  ADSTYL(MAXATM)    : style of each atom
-C                          0 = DO NOT INCLUDE
-C                          1 = DRAW CROSS IF NO CONNECTIONS ELSE DRAW NOTHING
-C                          2 = DRAW BALL-AND-STICK ATOM
-C                          3 = DRAW SPACE FILLING ATOM
-C INT  ADCOL(MAXATM)     : atom color
-C                          0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                          2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                          4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  ALABEL(MAXATM)    : whether each atom should be labelled (only checked if
-C                          DATOM is .TRUE.)
-C LOG  DATOM             : should ANY atoms be drawn?
-C LOG  DALAB             : should ANY atoms be labelled?
-C INT  ACOLMD            : current ATOM colouring MODE
-C INT  ADCOLI(MAXATM)    : current colour number of each atom
-C LOG  DHYDR             : should terminal hydrogens be displayed
-C INT  ASATOM            : no. of asymmetric atoms (i.e. excluding symmetry atom
-C INT  UATOM             : no. of unique atoms (including symmetry atoms)
-C INT  NBATOM            : no. of last non-bonded atom (i.e. UATOM plus
-C                          number-of-non-bonded)
-C INT  PATOM             : number of last atom from packing
-C INT  ALABMD            : atom labelling mode (used only to determine which
-C                          button in menu should be highlighted):
-C                          1 = ALL ; 2 = NONE ; 3 = NONH ; 4 = LIST
-C INT  NO3DCD            : \"reason code\", if no 3D diagram
-C                          0=3D diag present ; 1=no coords stored ;
-C                          2=no cryst-conn   ;
-C                          3=no unit cell (currently never used)
-C INT  ATMORI(MAXATM)    : Number of original atom from which this atom was
-C                          generated by PACK3D (the packing routine).
-C                          Used to provide lookup for colour-by-highlight.
-C                          Was originally a local array LOOKUP in PACK3D.
-C LOG  DCLKEY            : Should the colour key be displayed?
-C LOG  DSUPAT            : Should \"suppressed\" atoms (ie those with atom
-C                          labels ending in ?) be displayed?
-C
-C INT APREC(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C INT AESD(MAXATM,3)    : atom fractional coordinates
-      INTEGER TATOM
-      REAL    AXYZO(MAXATM,3), AXYZF(MAXATM,3)
-      INTEGER AELEM(MAXATM)
-      REAL    ARAD(MAXATM)
-      INTEGER ANCON(MAXATM)
-      INTEGER ATRESN(MAXATM)
-      INTEGER ATSYM(MAXATM)
-      REAL    AXYZCM(3)
-      REAL    AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX
-      INTEGER ADSTYL(MAXATM)
-      INTEGER ADCOL(MAXATM)
-      LOGICAL ALABEL(MAXATM)
-      LOGICAL DATOM
-      LOGICAL DALAB
-      INTEGER ACOLMD
-      INTEGER ADCOLI(MAXATM)
-      LOGICAL DHYDR
-      INTEGER UATOM
-      INTEGER NBATOM
-      INTEGER PATOM
-      INTEGER ALABMD
-      INTEGER NO3DCD
-      INTEGER ATMORI(MAXATM)
-      LOGICAL DCLKEY
-      LOGICAL DSUPAT
-      INTEGER ASATOM
-      INTEGER APREC(MAXATM,3),AESD(MAXATM,3)
-C
-      COMMON /MVADAT/ TATOM,AXYZO,AXYZF,AELEM,ARAD,ANCON,ATSYM,
-     +  AXYZCM,AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX,ADSTYL,ADCOL,
-     +  ALABEL,ATRESN,DATOM,DALAB,ACOLMD,ADCOLI,DHYDR,UATOM,NBATOM,
-     +  PATOM,ALABMD,NO3DCD,ATMORI,DCLKEY,DSUPAT,ASATOM,APREC,AESD
+\STORE
+\ISTORE
+\QSTORE
+      INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
+      COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
 C..........................................................................
 C
 C ........... Molecule Viewer Bond DATa .............
 C INT  TBOND          : total number of atoms to be displayed
-C                       (may equal ASBOND, UBOND, NBBOND or PBOND - see below)
-C INT  BOND(MAXBND,2) : the atom numbers at either end of BOND number i
-C INT  BTYPE(MAXBND)  : CCDC bond type number                (set in GET3D)
-C INT  BDSTYL(MAXBND) : bond styles
-C                       0 = DO NOT INCLUDE       ; 1 = SINGLE LINE ;
-C                       2 = CHEMICAL TYPE
-C INT  BDCOL(MAXBND)  : colour \"mode\" for each bond
-C                       0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                       2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                       4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  DBOND          : should any bonds be drawn?
-C INT  BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-C INT  BCOLMD         : current colour mode for structure
-C INT  ASBOND         : no. of bonds to asymmetric atoms (may include some
-C                       bonds to symmetry atoms)
-C INT  UBOND          : no. of unique bonds, including ones to symmetry atoms)
-C INT  NBBOND         : no. of last non-bonded search bond:
-C INT  PBOND          : no. of last bond from packing:
-C INT  BDCOLI(MAXBND) : colour of each bond:
-       INTEGER TBOND
-       INTEGER BOND(MAXBND,2)
-       INTEGER BTYPE(MAXBND)
-       INTEGER BDSTYL(MAXBND)
-       INTEGER BDCOL(MAXBND)
-       LOGICAL DBOND
-C  --> INTEGER BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-       INTEGER BCOLMD
-       INTEGER UBOND
-       INTEGER NBBOND
-       INTEGER PBOND
-       INTEGER BDCOLI(MAXBND)
-       INTEGER ASBOND
-       COMMON /MVBDAT/ TBOND,BOND,BTYPE,BDSTYL,BDCOL,DBOND,
-     +                 BCOLMD,UBOND,NBBOND,PBOND,BDCOLI,ASBOND
+       INTEGER TBOND, BOND, BTYPE
+       COMMON /MVBDAT/ TBOND,BOND,BTYPE
 C..........................................................................
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/11/24  16:11:54  shields
-C Splitting PLUTQY into two common blocks - PLUTQY and PLUTQZ.
-C
-C Revision 1.1  1998/11/03  12:31:19  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
 C-- 3D crystal connectivity (see also plutqz)
 C-- query connectivity
-      INTEGER NHYC(MAXATM),NCAC(MAXATM)
+      INTEGER NHYC,NCAC
       INTEGER NATCRY,NBOCRY
       COMMON /PLUTQY/ NHYC,NCAC,NATCRY,NBOCRY
 C
@@ -5393,53 +3962,18 @@ C MVMXLB : Maximum number of characters stored for each 3D atom label
 C Note: If you change this label length, please also change the
 C       declaration of the funct NAME3D, and all places where
 C       it is referenced. Thanks.
-C CHAR*(MVMXLB) ANAME     : label of each atom
-      CHARACTER*(MVMXLB) ANAME(MAXATM)
-      COMMON /MVCHAR/ ANAME
 C..........................................................................
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/11/12  17:03:00  shields
-C Moving IDEBUG from PLUTZZ to PLUTLI common.
-C
-C Revision 1.1  1998/11/12  15:47:29  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
 C-- ILIST  controls output to listing file  (usually =0  off)
 C-- IDEBUG controls output to listing file  (usually =0  off)
       INTEGER ILIST, IDEBUG
       COMMON /PLUTLI/ ILIST, IDEBUG
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1998/12/09  15:30:29  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-      INTEGER  ATCHG(MAXATM)
-      COMMON /PLUTAC/ ATCHG
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1998/12/09  15:30:52  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- working array used elsewhere in pluto, use same here to save memory in
-C-- static implementation
-      INTEGER IMAP
-      COMMON /PLUTW1/ IMAP(MAXATM)
-C-- HYBR      estimate of hybridisation 1 = sp1 2=sp2 3=sp3  >100 = metal
-C--
-      INTEGER HYBR(MAXATM)
-      EQUIVALENCE(HYBR(1),IMAP(1))
+      INTEGER  ATCHG, AROMA, NAROMA
+      COMMON /PLUTAC/ ATCHG, AROMA, NAROMA
 
 C-- ATVAL     atom valency - temporary use for checking
       INTEGER ATVAL
 
-C-- local 
+C-- local
       INTEGER  I,J,K,M,LU,CHGMIN,CHGPLU,IAT,JAT,KAT,KOXY,KMETAL
       INTEGER  JMIN,JMAX,NBT,ICASE,NZ
 
@@ -5453,68 +3987,64 @@ C CCF            before the first potential use of LU.
       LU=STDOUTTERM
 
       CHGPLU=0
-      CHGMIN=0 
+      CHGMIN=0
 C--
 C-- ignore pi-bonds
       IPIB=-1
 C--
 C-- look for single atom residues and assign charge if needed
-C-- Skip suppressed atoms  which have iarc = -1 
+C-- Skip suppressed atoms  which have iarc = -1
 C--
       CHGMIN=0
       CHGPLU=0
       DO 100 I=1,NATCRY
-      ATCHG(I)=0
-      IF(ATRESN(I).LE.0) GOTO 100 
-      IF(NCAC(I).EQ.0) THEN 
-      K=AELEM(I)
-C-- F  Cl Br I  
+      ISTORE(ATCHG+I-1)=0
+      IF(ISTORE(ATRESN+I-1).LE.0) GOTO 100
+      IF(ISTORE(NCAC+I-1).EQ.0) THEN
+      K=ISTORE(AELEM-1+I)
+C-- F  Cl Br I
       IF(K.EQ.32 .OR. K.EQ.21 .OR. K.EQ.16 .OR. K.EQ.43)THEN
-        ATCHG(I)=-1
+        ISTORE(ATCHG+I-1)=-1
         CHGMIN=CHGMIN-1
-        IF(IDEBUG.GT.0)WRITE(LU,*)'Halide charge  -1 ',ANAME(I)
         ENDIF
 C-- Li Na K  Rb Cs     (+1)
-      IF(K.EQ.49 .OR. K.EQ.57 .OR. K.EQ.46 .OR. K.EQ.76 
+      IF(K.EQ.49 .OR. K.EQ.57 .OR. K.EQ.46 .OR. K.EQ.76
      +  .OR. K.EQ.25)THEN
-        ATCHG(I)=1
+        ISTORE(ATCHG+I-1)=1
         CHGPLU=CHGPLU+1
-        IF(IDEBUG.GT.0)WRITE(LU,*)'Group I metal charge +1 ',ANAME(I)
         ENDIF
 C-- Be Mg Ca Sr Ba Ra  (+2)
       IF(K.EQ.13 .OR. K.EQ.53 .OR. K.EQ.17 .OR. K.EQ.88
-     +   .OR. K.EQ.12 .OR. K.EQ.75) THEN 
-        ATCHG(I)=2
+     +   .OR. K.EQ.12 .OR. K.EQ.75) THEN
+        ISTORE(ATCHG+I-1)=2
         CHGPLU=CHGPLU+2
-        IF(IDEBUG.GT.0)WRITE(LU,*)'Group II metal  charge +2 ',ANAME(I)
         ENDIF
 
        ENDIF
 100    CONTINUE
 C--
 C--
-C-- Loop through all atoms  --  look for specified groups 
+C-- Loop through all atoms  --  look for specified groups
 C--
 C--
       DO 500 I=1,NATCRY
-      IF(ATRESN(I).LE.0) GOTO 500
+      IF(ISTORE(ATRESN+I-1).LE.0) GOTO 500
 C--
 C--  quaternary N      e.g    -NH3 +    NH4 +    c-NH2-c   HN- (C)3   N-(C)4
-C--                    This does not apply if connected N - metal    
+C--                    This does not apply if connected N - metal
 C--
-      IF(AELEM(I).EQ.56 .AND. HYBR(I).EQ.3) THEN 
+      IF(ISTORE(AELEM-1+I).EQ.56 .AND. ISTORE(HYBR+I-1).EQ.3) THEN
         IAT=I
         CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
         KMETAL=0
         DO 110 J=1,NCON
         JAT=ICON(J)
-        IF(HYBR(JAT).GT.100) KMETAL=KMETAL+1
+        IF(ISTORE(HYBR+JAT-1).GT.100) KMETAL=KMETAL+1
 110     CONTINUE
-   
-        IF(KMETAL.EQ.0 .AND. NCON.EQ.4)THEN 
-          ATCHG(I)=+1
+
+        IF(KMETAL.EQ.0 .AND. NCON.EQ.4)THEN
+          ISTORE(ATCHG+I-1)=+1
           CHGPLU=CHGPLU+1
-          IF(IDEBUG.GT.0)WRITE(LU,*)'N(R)4 charge +1 ', ANAME(I),I
           ENDIF
         ENDIF
 C--
@@ -5522,11 +4052,11 @@ C-- Planar nitrogen with 3 connections and valence 4       C = N (R)2
 C--
 C--                                                        C = NH2
 C--
-      
-      IF(
-     +(AELEM(I).EQ.56 .AND. NCAC(I).EQ.3 .AND. HYBR(I).EQ.2)
-     +.OR.(AELEM(I).EQ.56 .AND. NCAC(I).EQ.1 .AND. NHYC(I).EQ.2)
-     + ) THEN 
+
+      IF( (ISTORE(AELEM-1+I).EQ.56 .AND. ISTORE(NCAC+I-1).EQ.3 .AND.
+     +     ISTORE(HYBR+I-1).EQ.2)
+     +.OR.(ISTORE(AELEM-1+I).EQ.56 .AND. ISTORE(NCAC+I-1).EQ.1 .AND.
+     +     ISTORE(NHYC+I-1).EQ.2)) THEN
 
         IAT=I
         CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
@@ -5534,7 +4064,7 @@ C--
         V=0.0
         DO 115 J=1,NCON
         JAT=ICON(J)
-        IF(HYBR(JAT).GT.100) KMETAL=KMETAL+1
+        IF(ISTORE(HYBR+JAT-1).GT.100) KMETAL=KMETAL+1
         IF(ICOB(J).EQ.7) THEN
           V=V+1.51
         ELSEIF(ICOB(J).EQ.5) THEN
@@ -5542,97 +4072,99 @@ C--
         ELSE
           V=V+FLOAT(ICOB(J))
         ENDIF
-115     CONTINUE   
+115     CONTINUE
         ICASE=0
-        IF(KMETAL.EQ.0 .AND. NINT(V).EQ.4 
-     +  .AND. NCAC(JAT).EQ.3) ICASE=1
-        IF(KMETAL.EQ.0 .AND. NINT(V).EQ.4 
-     +  .AND. NHYC(JAT).EQ.2) ICASE=2
+        IF(KMETAL.EQ.0 .AND. NINT(V).EQ.4
+     +  .AND. ISTORE(NCAC+JAT-1).EQ.3) ICASE=1
+        IF(KMETAL.EQ.0 .AND. NINT(V).EQ.4
+     +  .AND. ISTORE(NHYC+JAT-1).EQ.2) ICASE=2
 
-        IF(ICASE.GT.0) THEN 
-          ATCHG(I)=+1
+        IF(ICASE.GT.0) THEN
+          ISTORE(ATCHG+I-1)=+1
           CHGPLU=CHGPLU+1
-          IF(IDEBUG.GT.0)WRITE(LU,*)'C=N(R)2  charge +1 ', ANAME(I),I
           ENDIF
         ENDIF
 C--
-C-- Thiocyanate. 
+C-- Thiocyanate.
 C--
-      IF(AELEM(I).EQ.1 .AND. NCAC(I).EQ.2) THEN
+      IF(ISTORE(AELEM-1+I).EQ.1 .AND. ISTORE(NCAC+I-1).EQ.2) THEN
         IAT=I
         CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
         JAT=ICON(1)
         KAT=ICON(2)
         KOXY=0
 C-- see if C bound to N and S alone
-        IF(AELEM(JAT).EQ.56 .AND. AELEM(KAT).EQ.81) THEN
+        IF(ISTORE(AELEM-1+JAT).EQ.56 .AND.
+     +     ISTORE(AELEM-1+KAT).EQ.81) THEN
           KOXY=KAT
-        ELSEIF(AELEM(KAT).EQ.56 .AND. AELEM(JAT).EQ.81) THEN
+        ELSEIF(ISTORE(AELEM-1+KAT).EQ.56 .AND.
+     +         ISTORE(AELEM-1+JAT).EQ.81) THEN
           KOXY=JAT
 C-- swap KAT, JAT
           JAT=KAT
-          KAT=KOXY          
+          KAT=KOXY
         ENDIF
 C-- check N and S monocoordinate
-        IF(KOXY.GT.0 .AND. NCAC(JAT).EQ.1 .AND. NHYC(JAT).EQ.0 
-     +               .AND. NCAC(KAT).EQ.1 .AND. NHYC(KAT).EQ.0) THEN
+        IF(KOXY.GT.0 .AND. ISTORE(NCAC+JAT-1).EQ.1 .AND.
+     +                     ISTORE(NHYC+JAT-1).EQ.0
+     +               .AND. ISTORE(NCAC+KAT-1).EQ.1 .AND.
+     +                     ISTORE(NHYC+KAT-1).EQ.0) THEN
 C-- set charge and standard bond patterns
-          ATCHG(KAT)=-1
+          ISTORE(ATCHG+KAT-1)=-1
           CHGMIN=CHGMIN-1
-          IF(IDEBUG.GT.0)WRITE(LU,*)'S-C-N  charge -1 ', ANAME(KAT),KAT
 C-- S-C bond single
           NBT=1
           CALL SAMSBT(IAT,KAT,NBT,BOND,BTYPE,NBOCRY)
 C-- C-N bond triple
           NBT=3
-          CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY) 
+          CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
         ENDIF
-      ENDIF         
-          
+      ENDIF
+
 C--
 C-- Carboxylate.        detect    a - C - O        A - C - S
 C-- Thiocarboxylate                   |                |
 C--                                   O                S
 C--
-C--                  this can include carbonate   CO3-- 
-C-- If C connected atoms not 3  , or not planar, then skip 
-C-- Check the valence of the carbon by counting bond type 1 & 2 
-      IF(AELEM(I).EQ.1 .AND. NCAC(I).EQ.3 .AND. HYBR(I).EQ.2)THEN 
+C--                  this can include carbonate   CO3--
+C-- If C connected atoms not 3  , or not planar, then skip
+C-- Check the valence of the carbon by counting bond type 1 & 2
+      IF(ISTORE(AELEM-1+I).EQ.1 .AND. ISTORE(NCAC+I-1).EQ.3 .AND.
+     +   ISTORE(HYBR+I-1).EQ.2)THEN
         IAT=I
         CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
         V=0.0
         KOXY=0
         DO 155 J=1,NCON
         JAT=ICON(J)
-        IF(AELEM(JAT).EQ.64 .OR. AELEM(JAT).EQ.81) KOXY=KOXY+1
+        IF(ISTORE(AELEM-1+JAT).EQ.64 .OR.
+     +     ISTORE(AELEM-1+JAT).EQ.81) KOXY=KOXY+1
         V=V+FLOAT(ICOB(J))
 155     CONTINUE
-        IF( KOXY.GE.2) THEN 
-C--   Carboxylate detected. 
-        IF(IDEBUG.GT.0) WRITE(LU,*)'carboxylate Iat ',Iat,
-     +  '  ',ANAME(IAT), '  V=', V
-C--   Now look for a metal connected to either 
-C--   oxygen.  A metal is detected by the HYBR > 100.   
+        IF( KOXY.GE.2) THEN
+C--   Carboxylate detected.
+C--   Now look for a metal connected to either
+C--   oxygen.  A metal is detected by the HYBR > 100.
           KMETAL=0
           DO 160 J=1,NCON
           JAT=ICON(J)
           CALL SAMCON(JAT,BOND,BTYPE,NBOCRY,MCON,JCON,JCOB,IPIB)
           DO 165 K=1,MCON
           KAT=JCON(K)
-          IF(HYBR(KAT).GT.100) KMETAL=KMETAL+1
+          IF(ISTORE(HYBR+KAT-1).GT.100) KMETAL=KMETAL+1
 165       CONTINUE
 160       CONTINUE
           ENDIF
       ICASE=0
       IF(KOXY.GE.2 .AND. NINT(V).NE.4 .AND. KMETAL.LE.1) ICASE=1
-      IF(KOXY.GE.2 .AND. NINT(V).NE.4 .AND. KMETAL.GE.2) ICASE=2     
+      IF(KOXY.GE.2 .AND. NINT(V).NE.4 .AND. KMETAL.GE.2) ICASE=2
 
 C--
-C-- carboxylate  case 1.    Metal-O  = 0   or  =1     
+C-- carboxylate  case 1.    Metal-O  = 0   or  =1
 C-- set carboxylate  as double/single bonds     O = C - O (- charge)
-C-- with C=O assigned to the shortest bond. 
+C-- with C=O assigned to the shortest bond.
 
-      IF(ICASE.EQ.1) THEN 
+      IF(ICASE.EQ.1) THEN
          IF(IDEBUG.GT.0)write(lu,*)'carboxylate case 1 kmetal=',kmetal
          DMIN=999.
          DMAX=-999.
@@ -5641,47 +4173,44 @@ C-- with C=O assigned to the shortest bond.
          DO 170 J=1,NCON
          JAT=ICON(J)
          CALL PLUDIJ(IAT,JAT,AXYZO,DIST(J))
-         IF(AELEM(JAT).EQ.64 .OR. AELEM(JAT).EQ.81) THEN 
-           IF(DIST(J).LT.DMIN) THEN 
+         IF(ISTORE(AELEM-1+JAT).EQ.64 .OR.
+     +      ISTORE(AELEM-1+JAT).EQ.81) THEN
+           IF(DIST(J).LT.DMIN) THEN
               JMIN=JAT
               DMIN=DIST(J)
               ENDIF
-           IF(DIST(J).GT.DMAX) THEN 
+           IF(DIST(J).GT.DMAX) THEN
               JMAX=JAT
               DMAX=DIST(J)
               ENDIF
            ENDIF
 170      CONTINUE
-C-- set a double bond for shorter C-O  
+C-- set a double bond for shorter C-O
          NBT=2
          CALL SAMSBT(IAT,JMIN,NBT,BOND,BTYPE,NBOCRY)
-         IF(IDEBUG.GT.0)WRITE(LU,*)'double bond C=O '
-     +      ,ANAME(IAT),ANAME(JMIN) 
 C-- set single bond for longer C-O    and charge -1 on O
          NBT=1
          CALL SAMSBT(IAT,JMAX,NBT,BOND,BTYPE,NBOCRY)
-         IF (NCAC(JMAX).LE.1 .AND. NHYC(JMAX).LE.0) THEN
-            ATCHG(JMAX)=-1
+         IF (ISTORE(NCAC+JMAX-1).LE.1 .AND.
+     +       ISTORE(NHYC+JMAX-1).LE.0) THEN
+            ISTORE(ATCHG+JMAX-1)=-1
             CHGMIN=CHGMIN-1
          ENDIF
 C**         ATVAL(IAT)=4
-         IF(IDEBUG.GT.0)WRITE(LU,*)'single bond C-O '
-     +      ,ANAME(IAT),ANAME(JMAX), ' charge ',ATCHG(JMAX)
          ENDIF
-        
+
 C--
 C-- carboxylate case 2.    Metal connection at  both oxygens
 C--                        Set delocalised bond b=7
 C--
-      IF(ICASE.EQ.2) THEN 
+      IF(ICASE.EQ.2) THEN
         IF(IDEBUG.GT.0)write(lu,*) 'carboylate case 2 kmetal ',kmetal
         DO 175 J=1,NCON
         JAT=ICON(J)
-        IF(AELEM(JAT).EQ.64 .OR. AELEM(JAT).EQ.81) THEN 
+        IF(ISTORE(AELEM-1+JAT).EQ.64 .OR.
+     +     ISTORE(AELEM-1+JAT).EQ.81) THEN
           NBT=7
           CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
-          IF(IDEBUG.GT.0)WRITE(LU,*)'delocalised C-O ',
-     +      ANAME(IAT),ANAME(JAT)
           ENDIF
 175     CONTINUE
 C**        ATVAL(IAT)=4
@@ -5691,9 +4220,9 @@ C-- end of carboxylate section
 C--
 C--
 C-- CLO4 -    perchlorate.  Set 3 bonds double, one single with charge -1 on O
-C--                         If there is an Oxygen with more than one 
+C--                         If there is an Oxygen with more than one
 C--                         connection, give it the single bond,
-C--                         and only apply a negative charge if exactly 1 
+C--                         and only apply a negative charge if exactly 1
 C--                         connection.
 C--
 C--                         This whole code is actually still too selective,
@@ -5702,58 +4231,55 @@ C--                         if there is a valency error at the root atom.
 C--                         In cases where bonds are assigned correctly,
 C--                         the charge can never be set.
 C--
-      IF(AELEM(I).EQ.21 .AND. NCAC(I).EQ.4) THEN 
+      IF(ISTORE(AELEM-1+I).EQ.21 .AND. ISTORE(NCAC+I-1).EQ.4) THEN
         IAT=I
         KOXY=0
         CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
         JLINK=0
         DO 180 J=1,NCON
         JAT=ICON(J)
-        IF(AELEM(JAT).EQ.64) THEN
+        IF(ISTORE(AELEM-1+JAT).EQ.64) THEN
            KOXY=KOXY+1
-           IF(NCAC(JAT).GT.1)JLINK=JAT
+           IF(ISTORE(NCAC+JAT-1).GT.1)JLINK=JAT
            IF(JLINK.EQ.0 .AND. J.EQ.NCON) JLINK=JAT
         ENDIF
 180     CONTINUE
-        IF(KOXY.EQ.4) THEN 
+        IF(KOXY.EQ.4) THEN
           DO 185 J=1,NCON
           JAT=ICON(J)
           NBT=2
           IF(JAT.EQ.JLINK) NBT=1
           CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
-          IF(JAT.EQ.JLINK .AND. NCAC(JAT).EQ.1 .AND.
-     +       NHYC(JAT).EQ.0) THEN 
-             ATCHG(JAT)=-1
+          IF(JAT.EQ.JLINK .AND. ISTORE(NCAC+JAT-1).EQ.1 .AND.
+     +       ISTORE(NHYC+JAT-1).EQ.0) THEN
+             ISTORE(ATCHG+JAT-1)=-1
              CHGMIN=CHGMIN-1
-             IF(IDEBUG.GT.0)WRITE(LU,*)'ClO4 charge -1 ',
-     +          ANAME(JAT),JAT
              ENDIF
 185       CONTINUE
           ENDIF
          ENDIF
 
 C--
-C-- BF4 -         set charge -1 on B 
+C-- BF4 -         set charge -1 on B
 C--
-      IF(AELEM(I).EQ.11 .AND. NCAC(I).EQ.4) THEN 
+      IF(ISTORE(AELEM-1+I).EQ.11 .AND. ISTORE(NCAC+I-1).EQ.4) THEN
          IAT=I
          CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
          K=0
          DO 190 J=1,NCON
          JAT=ICON(J)
-         IF(AELEM(JAT).EQ.32) K=K+1
+         IF(ISTORE(AELEM-1+JAT).EQ.32) K=K+1
 190      CONTINUE
-         IF(K.EQ.4) THEN 
-            ATCHG(IAT)=-1
+         IF(K.EQ.4) THEN
+            ISTORE(ATCHG+IAT-1)=-1
             CHGMIN=CHGMIN-1
-            IF(IDEBUG.GT.0)write(lu,*)'BF4 charge -1 ', aname(iat)
             ENDIF
          ENDIF
 C--
-C-- NO3 - 
-C--        If there is an Oxygen with more than one 
+C-- NO3 -
+C--        If there is an Oxygen with more than one
 C--        connection, give it the single bond,
-C--        and only apply a negative charge if exactly 1 
+C--        and only apply a negative charge if exactly 1
 C--        connection.
 C--
 C--        This whole code is actually still too selective,
@@ -5762,127 +4288,118 @@ C--        if there is a valency error at the root atom.
 C--        In cases where bonds are assigned correctly,
 C--        the charge can never be set.
 C--
-      IF(AELEM(I).EQ.56 .AND. HYBR(I).EQ.2 .AND.
-     +   NCAC(I).EQ.3) THEN 
+      IF(ISTORE(AELEM-1+I).EQ.56 .AND. ISTORE(HYBR+I-1).EQ.2 .AND.
+     +   ISTORE(NCAC+I-1).EQ.3) THEN
          IAT=I
          CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
          KOXY=0
          JLINK=0
          DO 195 J=1,NCON
          JAT=ICON(J)
-         IF(AELEM(JAT).EQ.64) THEN
+         IF(ISTORE(AELEM-1+JAT).EQ.64) THEN
             KOXY=KOXY+1
-            IF(NCAC(JAT).GT.1)JLINK=JAT
+            IF(ISTORE(NCAC+JAT-1).GT.1)JLINK=JAT
             IF(JLINK.EQ.0 .AND. J.EQ.NCON) JLINK=JAT
          ENDIF
 195      CONTINUE
-         IF(KOXY.EQ.3) THEN 
+         IF(KOXY.EQ.3) THEN
            DO 196 J=1,NCON
            JAT=ICON(J)
            NBT=2
            IF(JAT.EQ.JLINK) NBT=1
            CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
-           IF(JAT.EQ.JLINK .AND. NCAC(JAT).EQ.1 .AND.
-     +        NHYC(JAT).EQ.0) THEN 
-             ATCHG(JAT)=-1
+           IF(JAT.EQ.JLINK .AND. ISTORE(NCAC+JAT-1).EQ.1 .AND.
+     +        ISTORE(NHYC+JAT-1).EQ.0) THEN
+             ISTORE(ATCHG+JAT-1)=-1
              CHGMIN=CHGMIN-1
-             IF(IDEBUG.GT.0)WRITE(LU,*)'nitrate NO3 charge -1 ', 
-     +         ANAME(JAT),JAT
              ENDIF
 196        CONTINUE
            ENDIF
          ENDIF
 C--
-C-- SO3   AND SO4 --      Count terminal oxygens. 
+C-- SO3   AND SO4 --      Count terminal oxygens.
 C--                       Assign S=O to first two,   S-O (minus) to rest
 C--
 C--                       Note that this is not selective enough, as the
 C--                       order of bonds to S is arbitrary.
 C--
-      IF(AELEM(I).EQ.81 .AND. NCAC(I).EQ.4) THEN 
+      IF(ISTORE(AELEM-1+I).EQ.81 .AND. ISTORE(NCAC+I-1).EQ.4) THEN
          IAT=I
          CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
          DO 200 J=1,NCON
          JAT=ICON(J)
-         IF(AELEM(JAT).EQ.64  .AND. NCAC(JAT).EQ.1) KOXY=KOXY+1
+         IF(ISTORE(AELEM-1+JAT).EQ.64  .AND.
+     +      ISTORE(NCAC+JAT-1).EQ.1) KOXY=KOXY+1
 200      CONTINUE
-         IF(KOXY.GE.3) THEN 
+         IF(KOXY.GE.3) THEN
           DO 205 J=1,NCON
           JAT=ICON(J)
-          IF(AELEM(JAT).NE.64) GOTO 205
+          IF(ISTORE(AELEM-1+JAT).NE.64) GOTO 205
           NBT=2
           IF(J.GE.3) NBT=1
           CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
 C         (but we do not know if the first two were oxygens!)
-          IF(J.GE.3 .AND. NHYC(JAT).EQ.0) THEN 
-              ATCHG(JAT)=-1
+          IF(J.GE.3 .AND. ISTORE(NHYC+JAT-1).EQ.0) THEN
+              ISTORE(ATCHG+JAT-1)=-1
               CHGMIN=CHGMIN-1
-              IF(IDEBUG.GT.0)WRITE(LU,*)'sulphate charge -1  ',
-     +          ANAME(JAT),JAT
               ENDIF
 205       CONTINUE
           ENDIF
          ENDIF
 C--
-C-- PF6 (-)      
+C-- PF6 (-)
 C--
-        IF(AELEM(I).EQ.66 .AND. NCAC(I).EQ.6) THEN
-           ATCHG(I)=-1
-           IF(IDEBUG.GT.0)WRITE(LU,*)'PF6 charge -1  ', ANAME(I)
+        IF(ISTORE(AELEM-1+I).EQ.66 .AND. ISTORE(NCAC+I-1).EQ.6) THEN
+           ISTORE(ATCHG+I-1)=-1
            CHGMIN=CHGMIN-1
-           ENDIF      
+           ENDIF
 C--
 C-- diazo group          C - N (+) triple N         diazonium salt (case 1)
 C--                      C = N (+) = N (-)          diazo          (case 2)
 C--
-        IF(AELEM(I).EQ.56 .AND. NCAC(I).EQ.1
-     +    .AND. HYBR(I).EQ.1) THEN 
+        IF(ISTORE(AELEM-1+I).EQ.56 .AND. ISTORE(NCAC+I-1).EQ.1
+     +    .AND. ISTORE(HYBR+I-1).EQ.1) THEN
          IAT=I
          CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
          K=0
          DO 206 J=1,NCON
          JAT=ICON(J)
-         IF(AELEM(JAT).EQ.56 .AND. ICOB(J).EQ.3) K=1
+         IF(ISTORE(AELEM-1+JAT).EQ.56 .AND. ICOB(J).EQ.3) K=1
 206      CONTINUE
-C-- we take a look at the bond to the Carbon (kat).  If this is 
+C-- we take a look at the bond to the Carbon (kat).  If this is
 C-- a single bond then leave it - and set case 1
 C-- if a double  then  set as case 2
          ICASE=0
-         IF(K.EQ.1) THEN 
+         IF(K.EQ.1) THEN
            ICASE=1
            CALL SAMCON(JAT,BOND,BTYPE,NBOCRY,MCON,JCON,JCOB,IPIB)
            DO 207 J=1,MCON
            KAT=JCON(J)
-           IF(JCOB(J).EQ.2)  ICASE=2 
+           IF(JCOB(J).EQ.2)  ICASE=2
 207        CONTINUE
            ENDIF
 
-         IF(ICASE.EQ.1) THEN 
-            ATCHG(JAT)=1
-            ATCHG(IAT)=0
+         IF(ICASE.EQ.1) THEN
+            ISTORE(ATCHG+JAT-1)=1
+            ISTORE(ATCHG+IAT-1)=0
             CHGPLU=CHGPLU+1
-            IF(IDEBUG.GT.0)WRITE(LU,*)'diazonium -N(+) triple N ',
-     +      ANAME(JAT),ANAME(IAT)
             ENDIF
-         IF(ICASE.EQ.2) THEN 
-            ATCHG(JAT)=1
-            ATCHG(IAT)=-1
+         IF(ICASE.EQ.2) THEN
+            ISTORE(ATCHG+JAT-1)=1
+            ISTORE(ATCHG+IAT-1)=-1
             NBT=2
             CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
-            IF(IDEBUG.GT.0)WRITE(LU,*)'diazo  C = N(+) = N(-) ',
-     +      ANAME(JAT),ANAME(IAT)
-C**            ATVAL(KAT)=4
             ENDIF
          ENDIF
 
-C-- end loop on all atoms -- fixing secified groups 
+C-- end loop on all atoms -- fixing secified groups
 500   CONTINUE
-C-- 
+C--
 C-- check over for valence error on C N O S
 C--
-C-- Fix up any delocalised C bonding problems 
+C-- Fix up any delocalised C bonding problems
 C--
-      DO 550 I=1,NATCRY        
+      DO 550 I=1,NATCRY
         CALL SAMCON(I,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
         V=0.
         NZ=0
@@ -5892,66 +4409,64 @@ C--
           IF (ICOB(K).GE.1 .AND. ICOB(K).LE.4) THEN
             V=V+FLOAT(ICOB(K))
 C**          ELSEIF (ICOB(K).EQ.5) THEN
-C**            V=V+1.34 
-          ELSEIF (ICOB(K).EQ.5 .OR. ICOB(K).EQ.7) THEN 
+C**            V=V+1.34
+          ELSEIF (ICOB(K).EQ.5 .OR. ICOB(K).EQ.7) THEN
             V=V+1.50
           ELSEIF (ICOB(K).EQ.6) THEN
             V=V+1.0
           ENDIF
           KAT=ICON(K)
-          IF (HYBR(KAT).GT.100) KMETAL=KMETAL+1
+          IF (ISTORE(HYBR+KAT-1).GT.100) KMETAL=KMETAL+1
 C**      CALL PLUDIJ(IAT,KAT,XO,DIJ(K))
  805    CONTINUE
-C-- save integer value for valence.  Ensure that 4.500   = 4 integer 
+C-- save integer value for valence.  Ensure that 4.500   = 4 integer
         ATVAL=NINT(V - 0.001)
 C-- valence check on elements  --  if problem set M=1
         M=0
 C-- carbon
-        IF (AELEM(I).EQ.1) THEN
-          IF (HYBR(I).EQ.2 .AND. NINT(V).NE.4) M=1
+        IF (ISTORE(AELEM-1+I).EQ.1) THEN
+          IF (ISTORE(HYBR+I-1).EQ.2 .AND. NINT(V).NE.4) M=1
           IF (NINT(V).GT.4) M=1
         ENDIF
 C-- nitrogen
-        IF (AELEM(I).EQ.56) THEN
-          IF (HYBR(I).EQ.2 .AND. NINT(V).NE.3) M=1
+        IF (ISTORE(AELEM-1+I).EQ.56) THEN
+          IF (ISTORE(HYBR+I-1).EQ.2 .AND. NINT(V).NE.3) M=1
           IF (NINT(V).GE.5) M=1
         ENDIF
 C-- oxygen & sulphur
-        IF (AELEM(I).EQ.64 .AND. NINT(V)-KMETAL.GT.2) M=1
-        IF (AELEM(I).EQ.81 .AND. NINT(V)-KMETAL.GT.2) M=1
+        IF (ISTORE(AELEM-1+I).EQ.64 .AND. NINT(V)-KMETAL.GT.2) M=1
+        IF (ISTORE(AELEM-1+I).EQ.81 .AND. NINT(V)-KMETAL.GT.2) M=1
         IF (M.EQ.1) THEN
-          IF(IDEBUG.GT.0) WRITE (LU,9805) I,ANAME(I),V
- 9805     FORMAT (' Valence problem atom=',I3,' ',A,' v=',F6.1)          
         ENDIF
-        IF(ATRESN(I).LE.0) GOTO 550
+        IF(ISTORE(ATRESN+I-1).LE.0) GOTO 550
 C--
 C-- detect Carbon valency problems.   These indicate delocalisation
 C--
-C-- One of the most common examples is acetylacetonate ligands. The 
-C-- principle is to fix the problem at the atom flagged by setting 
-C-- delocalised bonds type b=7  for bond dij < 1.40   
+C-- One of the most common examples is acetylacetonate ligands. The
+C-- principle is to fix the problem at the atom flagged by setting
+C-- delocalised bonds type b=7  for bond dij < 1.40
 C-- Then work outward to beta-atoms, and set any double bonds to delocalised
-C-- and any to hetero atoms  O or N 
-            
-         
-C-- carbon only 
-        IF (AELEM(I).EQ.1) THEN
+C-- and any to hetero atoms  O or N
+
+
+C-- carbon only
+        IF (ISTORE(AELEM-1+I).EQ.1) THEN
           ICASE=0
           IAT=I
 C-- check for valence 3  on   planar C
-          IF (HYBR(I).EQ.2 .AND. ATVAL.NE.4) ICASE=1
-C-- check for valence 5 
+          IF (ISTORE(HYBR+I-1).EQ.2 .AND. ATVAL.NE.4) ICASE=1
+C-- check for valence 5
           IF (ATVAL.EQ.5) ICASE=2
-C-- check for    C = C = C    and no hybridisation state known 
+C-- check for    C = C = C    and no hybridisation state known
 C-- count the double bonds b=2
-          IF (HYBR(I).EQ.0 .AND. NHYC(I).EQ.0 
-     +    .AND. NCAC(I).EQ.2) THEN 
+          IF (ISTORE(HYBR+I-1).EQ.0 .AND. ISTORE(NHYC+I-1).EQ.0
+     +    .AND. ISTORE(NCAC+I-1).EQ.2) THEN
             K=0
             KMETAL=0
             CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
             DO 210 J=1,NCON
             JAT=ICON(J)
-            IF(HYBR(JAT).GT.100) KMETAL=KMETAL+1
+            IF(ISTORE(HYBR+JAT-1).GT.100) KMETAL=KMETAL+1
             IF(ICOB(J).EQ.2) K=K+1
 210         CONTINUE
             IF(K.GT.1)  ICASE=3
@@ -5963,44 +4478,40 @@ C-- if C valence > 5   then probably in a metal cluster. Leave alone
 C-- first set delocalised b=7 for short bonds on this atom Iat
 C-- Thus   C-C=C      or  C=C=C     becomes    C..C..C
 C-- Make a note of the alpha-atoms in the list ATLIST
-C-- Exclude H atoms    el=2 from any delocalised net. 
-C-- Stop delocalisation if C - N    el=56  
-C-- Stop delocalisation if C - Metal bond found 
-C-- Stop delocalise if aromatic bond found  b=5 
-          IF(ICASE.GT.0) THEN 
-            IF(IDEBUG.GT.0)write(lu,*)'Carbon deloc. case',Icase,' ', 
-     +       ANAME(IAT), ' atval=',ATVAL
+C-- Exclude H atoms    el=2 from any delocalised net.
+C-- Stop delocalisation if C - N    el=56
+C-- Stop delocalisation if C - Metal bond found
+C-- Stop delocalise if aromatic bond found  b=5
+          IF(ICASE.GT.0) THEN
             CALL SAMCON(IAT,BOND,BTYPE,NBOCRY,NCON,ICON,ICOB,IPIB)
             DO 218 J=1,NCON
             JAT=ICON(J)
-            IF(AELEM(JAT).EQ.56 )  ICASE=-1
-            IF(HYBR(JAT).GT.100)  ICASE=-1
-            IF(ICOB(J).EQ.5)  ICASE=-1 
+            IF(ISTORE(AELEM-1+JAT).EQ.56 )  ICASE=-1
+            IF(ISTORE(HYBR+JAT-1).GT.100)  ICASE=-1
+            IF(ICOB(J).EQ.5)  ICASE=-1
 218         CONTINUE
 
             NLIST=0
             KLIST=0
-            IF(ICASE.GT.0) THEN 
+            IF(ICASE.GT.0) THEN
               DO 220 J=1,NCON
               JAT=ICON(J)
               CALL PLUDIJ(IAT,JAT,AXYZO,D1)
-              IF(D1.LT. 1.450  .AND. AELEM(JAT).NE.2)  THEN 
+              IF(D1.LT. 1.450  .AND. ISTORE(AELEM-1+JAT).NE.2)  THEN
                 NBT=7
                 CALL SAMSBT(IAT,JAT,NBT,BOND,BTYPE,NBOCRY)
                 NLIST=NLIST+1
                 ATLIST(NLIST)=JAT
-                IF(IDEBUG.GT.0)write(lu,*)'set b=7  ', 
-     +            ANAME(IAT),ANAME(JAT)
                 ENDIF
 220           CONTINUE
               ENDIF
 C--
 C-- now do the same for the alpha atoms, extending the b=7 network
-C-- the only candidates are bonds with d<1.450 
+C-- the only candidates are bonds with d<1.450
 C-- This by good luck stops expansion to metal centres, or to non-conjugated
-C-- bonds.  The distance 1.450  may need some experimental adjustment. 
+C-- bonds.  The distance 1.450  may need some experimental adjustment.
 C--
-            IF(NLIST.GT.0) THEN 
+            IF(NLIST.GT.0) THEN
               IF(IDEBUG.GT.0)WRITE(LU,*)'atlist=',(atlist(k),k=1,nlist)
                KLIST=0
                DO 230 J=1,NLIST
@@ -6010,12 +4521,10 @@ C--
                IF(JCOB(K).EQ.7) GOTO 240
                KAT=JCON(K)
                CALL PLUDIJ(JAT,KAT,AXYZO,D1)
-               
-               IF(D1.LT. 1.450  .AND. AELEM(KAT).NE.2) THEN 
+
+               IF(D1.LT. 1.450  .AND. ISTORE(AELEM-1+KAT).NE.2) THEN
                   NBT=7
                   CALL SAMSBT(JAT,KAT,NBT,BOND,BTYPE,NBOCRY)
-                  IF(IDEBUG.GT.0)write(lu,*)' set b=7  ', 
-     +               ANAME(IAT),ANAME(JAT)
                   KLIST=KLIST+1
                   ATLIST(NLIST+KLIST)=KAT
                   ENDIF
@@ -6023,10 +4532,10 @@ C--
 230            CONTINUE
                ENDIF
 C-- if beta atoms then repeat extension process ( and thats as far as we go)
-   
-            IF(KLIST.GT.0) THEN 
+
+            IF(KLIST.GT.0) THEN
                IF(IDEBUG.GT.0)write(lu,*) 'KLIST=', KLIST
-               IF(IDEBUG.GT.0)WRITE(LU,*) 'atlist=', 
+               IF(IDEBUG.GT.0)WRITE(LU,*) 'atlist=',
      +            (atlist(k),k=1,nlist+klist)
                DO 250 J=1,KLIST
                JAT=ATLIST(J+NLIST)
@@ -6035,11 +4544,9 @@ C-- if beta atoms then repeat extension process ( and thats as far as we go)
                IF(JCOB(K).EQ.7) GOTO 260
                KAT=JCON(K)
                CALL PLUDIJ(JAT,KAT,AXYZO,D1)
-               IF(D1.LT. 1.450 .AND. AELEM(KAT).NE.2) THEN 
+               IF(D1.LT. 1.450 .AND. ISTORE(AELEM-1+KAT).NE.2) THEN
                   NBT=7
                   CALL SAMSBT(JAT,KAT,NBT,BOND,BTYPE,NBOCRY)
-                  IF(IDEBUG.GT.0)write(lu,*)'set b=7  ',
-     +              ANAME(IAT),ANAME(JAT)
                   ENDIF
 260            CONTINUE
 250            CONTINUE
@@ -6058,31 +4565,30 @@ C-- end of section for Carbon delocalised
 C--
 C-- Final assignmemt of balancing charge to metal atom(s)
 C--
-C-- In cases with no metal  like  NR4(+)   Cl(-)   all OK 
-C-- Cases like    ClO4(-)   and Cu      assign  (+1) to the Cu 
+C-- In cases with no metal  like  NR4(+)   Cl(-)   all OK
+C-- Cases like    ClO4(-)   and Cu      assign  (+1) to the Cu
 C--
 C-- Count number of neutral metals, and split charge evenly among them.
 C-- Do not allow balancing charge -ve on metals, must be +1 , +2, etc
-C-- 
+C--
       K=CHGPLU+CHGMIN
       IF(IDEBUG.GT.0)WRITE(LU,*)
      +   ' chgplu ', chgplu, ' chgmin' , chgmin
       J=K
-      IF(K.LT.0 ) THEN 
+      IF(K.LT.0 ) THEN
         KMETAL=0
         J=IABS(K)
         DO 555 I=1,NATCRY
-        IF(ATRESN(I).LE.0) GOTO 555
-        IF(HYBR(I).GT.100 .AND. ATCHG(I).EQ.0) KMETAL=KMETAL+1
+        IF(ISTORE(ATRESN+I-1).LE.0) GOTO 555
+        IF(ISTORE(HYBR+I-1).GT.100 .AND.
+     +     ISTORE(ATCHG+I-1).EQ.0) KMETAL=KMETAL+1
 555     CONTINUE
-        IF(KMETAL.GT.0) THEN 
-          M=J/KMETAL  
+        IF(KMETAL.GT.0) THEN
+          M=J/KMETAL
           IF(M.EQ.0) M=1
           DO 560 I=1,NATCRY
-          IF(HYBR(I).GT.100) THEN 
-            ATCHG(I)=M
-            IF(IDEBUG.GT.0)WRITE(LU,*)'Metal charge=',
-     +        ATCHG(I),' atom ', ANAME(I)
+          IF(ISTORE(HYBR+I-1).GT.100) THEN
+            ISTORE(ATCHG+I-1)=M
             J=J-M
             IF(J.LE.0) GOTO 561
             ENDIF
@@ -6090,260 +4596,60 @@ C--
 561       CONTINUE
           ENDIF
         ENDIF
-      IF(J.NE.0) THEN 
+      IF(J.NE.0) THEN
         WRITE(LU,*)'WARNING - unbalanced charge sum =', J
         ENDIF
 
 
 
-      RETURN 
+      RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/12/09  15:37:21  shields
-C Removing unused commons for mquest.
-C
-C Revision 1.4  1998/11/24  17:39:00  shields
-C Only setting PLUTQY variables for items not available in MV common,
-C i.e. NHYC and NCAC. Correct condition on H coord. no. from .EQ. to .GE.
-C Ignoring include setting. Suppressed atoms should not have bonds in list.
-C
-C Revision 1.3  1998/11/11  18:02:02  shields
-C Only including essential common blocks.
-C
-C Revision 1.2  1998/10/14  16:13:53  shields
-C Reordering include files.
-C
-C Revision 1.1  1995/09/26  10:01:59  motherwell
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
+
+CODE FOR SAMCC3
       SUBROUTINE SAMCC3
 C-- Function:  set up 3D connectivity arrays in PLUTQY common
-C--            using MV arrays as input  
+C--            using MV arrays as input
 C-- Version:   26.9.95                 Sam Motherwell    26.9.95
 C-- Notes:
 C-- 1. This is useful in several places in Pluto / Prequest.  It works
-C--    on the 3D crystallographic connectivity data.   
+C--    on the 3D crystallographic connectivity data.
 C--    Input is the list of atoms   1 - Tatom
-C--    and  list of bonds BOND(*,2) and bond-types BTYPE().    1 - Tbond
+C--    and  list of bonds BOND(*,2) and bond-types ISTORE(BTYPE+-1).    1 - Tbond
 C--    Output:
 C--          NHYC    number of terminal hydrogens
 C--          NCAC    number of connections (excluding terminal H)
 C--
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
+C      IMPLICIT NONE
 
 
 C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-C
 C ........... Molecule Viewer Bond DATa .............
 C INT  TBOND          : total number of atoms to be displayed
-C                       (may equal ASBOND, UBOND, NBBOND or PBOND - see below)
-C INT  BOND(MAXBND,2) : the atom numbers at either end of BOND number i
-C INT  BTYPE(MAXBND)  : CCDC bond type number                (set in GET3D)
-C INT  BDSTYL(MAXBND) : bond styles
-C                       0 = DO NOT INCLUDE       ; 1 = SINGLE LINE ;
-C                       2 = CHEMICAL TYPE
-C INT  BDCOL(MAXBND)  : colour \"mode\" for each bond
-C                       0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                       2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                       4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  DBOND          : should any bonds be drawn?
-C INT  BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-C INT  BCOLMD         : current colour mode for structure
-C INT  ASBOND         : no. of bonds to asymmetric atoms (may include some
-C                       bonds to symmetry atoms)
-C INT  UBOND          : no. of unique bonds, including ones to symmetry atoms)
-C INT  NBBOND         : no. of last non-bonded search bond:
-C INT  PBOND          : no. of last bond from packing:
-C INT  BDCOLI(MAXBND) : colour of each bond:
-       INTEGER TBOND
-       INTEGER BOND(MAXBND,2)
-       INTEGER BTYPE(MAXBND)
-       INTEGER BDSTYL(MAXBND)
-       INTEGER BDCOL(MAXBND)
-       LOGICAL DBOND
-C  --> INTEGER BICON(MAXATM,MAXCON) <-- commented out CFM10 21-Dec-1993
-       INTEGER BCOLMD
-       INTEGER UBOND
-       INTEGER NBBOND
-       INTEGER PBOND
-       INTEGER BDCOLI(MAXBND)
-       INTEGER ASBOND
-       COMMON /MVBDAT/ TBOND,BOND,BTYPE,BDSTYL,BDCOL,DBOND,
-     +                 BCOLMD,UBOND,NBBOND,PBOND,BDCOLI,ASBOND
+       INTEGER TBOND, BOND, BTYPE
+       COMMON /MVBDAT/ TBOND,BOND,BTYPE
 C..........................................................................
 C
 C ........... Molecule Viewer Atom DATa .............
-C INT  TATOM             : total number of atoms to be displayed
-C                          (may equal ASATOM, UATOM, NBATOM or PATOM - see below
-C REAL AXYZO(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C REAL AXYZF(MAXATM,3)   : atom fractional coordinates
-C INT  AELEM(MAXATM)     : element code no. (as given by MVELEM)  (set in GET3D)
-C REAL ARAD(MAXATM)      : atom radius                (MAY NOT BE SET YET???)
-C INT  ANCON(MAXATM)     : number of connections for each atom    (set in GET3D)
-C INT  ATRESN(MAXATM)    : residue number of each atom            (set in GET3D)
-C INT  ATSYM(MAXATM)     : atom symmetry code                     (set in GET3D)
-C REAL AXYZCM(3)         : (x,y,z) of centre of mass of structure (set in GET3D)
-C REAL AXMIN,AYMIN,AZMIN : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C REAL AXMAX,AYMAX,AZMAX : minimum ORTHOGONAL Angstrom X, Y and Z coordinate
-C INT  ADSTYL(MAXATM)    : style of each atom
-C                          0 = DO NOT INCLUDE
-C                          1 = DRAW CROSS IF NO CONNECTIONS ELSE DRAW NOTHING
-C                          2 = DRAW BALL-AND-STICK ATOM
-C                          3 = DRAW SPACE FILLING ATOM
-C INT  ADCOL(MAXATM)     : atom color
-C                          0 = MONOCHROME          ; 1 = ELEMENT TYPE   ;
-C                          2 = FRAGMENT HIGHLIGHT  ; 3 = RESIDUE NUMBER ;
-C                          4 = SYMMETRY OPERATOR   ; 5 = BOND TYPE
-C LOG  ALABEL(MAXATM)    : whether each atom should be labelled (only checked if
-C                          DATOM is .TRUE.)
-C LOG  DATOM             : should ANY atoms be drawn?
-C LOG  DALAB             : should ANY atoms be labelled?
-C INT  ACOLMD            : current ATOM colouring MODE
-C INT  ADCOLI(MAXATM)    : current colour number of each atom
-C LOG  DHYDR             : should terminal hydrogens be displayed
-C INT  ASATOM            : no. of asymmetric atoms (i.e. excluding symmetry atom
-C INT  UATOM             : no. of unique atoms (including symmetry atoms)
-C INT  NBATOM            : no. of last non-bonded atom (i.e. UATOM plus
-C                          number-of-non-bonded)
-C INT  PATOM             : number of last atom from packing
-C INT  ALABMD            : atom labelling mode (used only to determine which
-C                          button in menu should be highlighted):
-C                          1 = ALL ; 2 = NONE ; 3 = NONH ; 4 = LIST
-C INT  NO3DCD            : \"reason code\", if no 3D diagram
-C                          0=3D diag present ; 1=no coords stored ;
-C                          2=no cryst-conn   ;
-C                          3=no unit cell (currently never used)
-C INT  ATMORI(MAXATM)    : Number of original atom from which this atom was
-C                          generated by PACK3D (the packing routine).
-C                          Used to provide lookup for colour-by-highlight.
-C                          Was originally a local array LOOKUP in PACK3D.
-C LOG  DCLKEY            : Should the colour key be displayed?
-C LOG  DSUPAT            : Should \"suppressed\" atoms (ie those with atom
-C                          labels ending in ?) be displayed?
-C
-C INT APREC(MAXATM,3)   : atom orthogonal Angstrom coordinates
-C INT AESD(MAXATM,3)    : atom fractional coordinates
-      INTEGER TATOM
-      REAL    AXYZO(MAXATM,3), AXYZF(MAXATM,3)
-      INTEGER AELEM(MAXATM)
-      REAL    ARAD(MAXATM)
-      INTEGER ANCON(MAXATM)
-      INTEGER ATRESN(MAXATM)
-      INTEGER ATSYM(MAXATM)
-      REAL    AXYZCM(3)
-      REAL    AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX
-      INTEGER ADSTYL(MAXATM)
-      INTEGER ADCOL(MAXATM)
-      LOGICAL ALABEL(MAXATM)
-      LOGICAL DATOM
-      LOGICAL DALAB
-      INTEGER ACOLMD
-      INTEGER ADCOLI(MAXATM)
-      LOGICAL DHYDR
-      INTEGER UATOM
-      INTEGER NBATOM
-      INTEGER PATOM
-      INTEGER ALABMD
-      INTEGER NO3DCD
-      INTEGER ATMORI(MAXATM)
-      LOGICAL DCLKEY
-      LOGICAL DSUPAT
-      INTEGER ASATOM
-      INTEGER APREC(MAXATM,3),AESD(MAXATM,3)
-C
-      COMMON /MVADAT/ TATOM,AXYZO,AXYZF,AELEM,ARAD,ANCON,ATSYM,
-     +  AXYZCM,AXMIN,AYMIN,AZMIN,AXMAX,AYMAX,AZMAX,ADSTYL,ADCOL,
-     +  ALABEL,ATRESN,DATOM,DALAB,ACOLMD,ADCOLI,DHYDR,UATOM,NBATOM,
-     +  PATOM,ALABMD,NO3DCD,ATMORI,DCLKEY,DSUPAT,ASATOM,APREC,AESD
+\STORE
+\ISTORE
+\QSTORE
+      INTEGER TATOM, AELEM, AXYZO, ATRESN, HYBR
+      COMMON /MVADAT/ TATOM,AXYZO,AELEM, ATRESN, HYBR
 C..........................................................................
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/11/24  16:11:54  shields
-C Splitting PLUTQY into two common blocks - PLUTQY and PLUTQZ.
-C
-C Revision 1.1  1998/11/03  12:31:19  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
 C-- 3D crystal connectivity (see also plutqz)
 C-- query connectivity
-      INTEGER NHYC(MAXATM),NCAC(MAXATM)
+      INTEGER NHYC,NCAC
       INTEGER NATCRY,NBOCRY
       COMMON /PLUTQY/ NHYC,NCAC,NATCRY,NBOCRY
-C-- local 
+C-- local
       INTEGER I,IAT,JAT
 C--------------------------------------------------------
-C-- 
+C--
 C-- set up arrays for 3D crystal connectivity
 C--
 C-- NATCRY  number of atoms,   NBOCRY  number of bonds
@@ -6352,1239 +4658,41 @@ C-- NATCRY  number of atoms,   NBOCRY  number of bonds
 C-- set element type IELC,  residue IARC,
 C-- number of connections NCAC = 0,   number of terminal hyds NHYC = 0
       DO 20 I=1,NATCRY
-        NCAC(I)=0
-        NHYC(I)=0
+        ISTORE(NCAC+I-1)=0
+        ISTORE(NHYC+I-1)=0
  20   CONTINUE
 C-- process the bonds, setting number of connections NCAC exclude terminal H
 C-- Omit any bonds involving suppressed atoms with incl < 0
       DO 21 I=1,NBOCRY
-        IAT=BOND(I,1)
-        JAT=BOND(I,2)
-        IF (AELEM(JAT).NE.2) NCAC(IAT)=NCAC(IAT)+1
-        IF (AELEM(IAT).NE.2) NCAC(JAT)=NCAC(JAT)+1
+        IAT=ISTORE(BOND+2*I-3+1)
+        JAT=ISTORE(BOND+2*I-3+2)
+        IF (ISTORE(AELEM-1+JAT).NE.2)
+     +    ISTORE(NCAC+IAT-1)=ISTORE(NCAC+IAT-1)+1
+        IF (ISTORE(AELEM-1+IAT).NE.2)
+     +    ISTORE(NCAC+JAT-1)=ISTORE(NCAC+JAT-1)+1
  21   CONTINUE
 C-- set number of terminal H ,  element code hydrogen = 2
 C-- Detect bridge H here, and add this bond to the nca for the atoms bridged.
- 
+
       DO 22 I=1,NBOCRY
-        IAT=BOND(I,1)
-        JAT=BOND(I,2)
-        IF (AELEM(IAT).EQ.2 .AND. NCAC(IAT).EQ.1) NHYC(JAT)=NHYC(JAT)+1
-        IF (AELEM(JAT).EQ.2 .AND. NCAC(JAT).EQ.1) NHYC(IAT)=NHYC(IAT)+1
-        IF (AELEM(IAT).EQ.2 .AND. NCAC(IAT).GE.2) NCAC(JAT)=NCAC(JAT)+1
-        IF (AELEM(JAT).EQ.2 .AND. NCAC(JAT).GE.2) NCAC(IAT)=NCAC(IAT)+1
+        IAT=ISTORE(BOND+2*I-3+1)
+        JAT=ISTORE(BOND+2*I-3+2)
+        IF (ISTORE(AELEM-1+IAT).EQ.2 .AND. ISTORE(NCAC+IAT-1).EQ.1)
+     +    ISTORE(NHYC+JAT-1)=ISTORE(NHYC+JAT-1)+1
+        IF (ISTORE(AELEM-1+JAT).EQ.2 .AND. ISTORE(NCAC+JAT-1).EQ.1)
+     +    ISTORE(NHYC+IAT-1)=ISTORE(NHYC+IAT-1)+1
+        IF (ISTORE(AELEM-1+IAT).EQ.2 .AND. ISTORE(NCAC+IAT-1).GE.2)
+     +    ISTORE(NCAC+JAT-1)=ISTORE(NCAC+JAT-1)+1
+        IF (ISTORE(AELEM-1+JAT).EQ.2 .AND. ISTORE(NCAC+JAT-1).GE.2)
+     +    ISTORE(NCAC+IAT-1)=ISTORE(NCAC+IAT-1)+1
  22   CONTINUE
 
       RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.13  1998/10/13  16:08:55  shields
-C Moving to mv parameters for maximum atoms and maximum bonds.
-C
-C Revision 1.12  1998/07/30  17:32:29  shields
-C Make routine order bonds properly when polymeric links are present.
-C
-C Revision 1.11  1998/07/22  16:59:59  shields
-C Fix crash if more than 9 residues in the 3d, due to IR1 being > NRES on
-C falling out of loop.
-C
-C Revision 1.10  1998/07/16  17:38:54  shields
-C Sorting out problems where base atom was matched to polymeric 2d atom.
-C Do not allow this - force swap with a SATOM matched to non-polym. 2d
-C atom. Polym matches flagged by adding IDIV to match number.
-C This avoids problems later with original bonds not matched, as non-polym.
-C atoms must have all bonds present.
-C
-C Revision 1.9  1998/07/15  17:04:40  shields
-C Changes to avoid problems matching polymers where several residues are
-C present. Only try to match polymeric residues (query and target).
-C Allow query (2d) to match more than once on target (3d) if matopt=2.
-C For matopt=2, store the appropriate matching numbers (only 2d>3d) to
-C save copying in plumat.
-C Use SAMRES common to store which residues are matched/polymeric.
-C Remove IPLOT from SAMRES as conflicted with other commons if used in other
-C routines.
-C Comment out redundant counting of atoms.
-C
-C Revision 1.8  1998/07/14  17:11:32  shields
-C Bug CM/310. Slight changes to make select-by-2d work where bridging H's
-C or D's are present, or terminal D atoms. Use coord. no. as set up in
-C plumat for 3d if matopt=2, so bonds to extra links are included.
-C Retain polymeric H in query if matopt=2 as these must be present in 3d for
-C match.
-C
-C Revision 1.7  1998/07/10  15:00:16  shields
-C Correcting debug variable to LDEBUG in write statement.
-C
-C Revision 1.6  1998/07/10  13:43:58  shields
-C Bug CM/310. Deuterium matching. Treat D same way as H.
-C Introduce matopt=2 for polymer 2d onto 3d matching, which is more
-C strict than previous version. Atoms must have exact connections and nhyd
-C unless they are polymeric atoms, i.e. only have polymeric bonds. This
-C is a preliminary to fixing bug that could select by 2d diagram which
-C omitted some links.
-C Pass argument to indicate whether bonds should be sorted. Putting high
-C coordn. metals last helps for some structures, so try this in plumat if
-C get large number of back-tracks.
-C
-C Revision 1.5  1997/08/14  15:28:31  macrae
-C Removed some unreachable code, as spotted by SPAG.
-C (Checked with Sam first)
-C
-C Revision 1.4  1996/04/17  11:41:15  motherwell
-C Fixed bug where atom type 'X' gave partial match. X always gives 'NO MATCH'
-C
-C Revision 1.3  1996/02/21  11:56:38  motherwell
-C Fixed bug which caused crash if silly input connectivity causing >30
-C connections to an atom.
-C
-C Revision 1.2  1995/12/19  10:11:39  motherwell
-C Changed to provide information in common on best-match so far NBEST.
-C Changed to use bonds connected list starting from bond 1.
-C ISTBON =0 means use bond 1 as start.   ISTBON=n means auto-find start bond.
-C
-C Revision 1.1  1995/08/28  17:02:47  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==sammaf.spg  processed by SPAG 4.50F  at 08:59 on  8 Dec 1994
-      SUBROUTINE SAMMAF(IELT,NHYT,NCAT,IART,IBONT,NATTAR,NBOTAR,IELQ,
-     +               NHYQ,NCAQ,IARQ,IBOC,NATQRY,NBOQRY,MATOPT,MATNUM,
-     +               LDEBUG,ISTBON,ISTAT,NBACKS)
-C-- Function: Search for a match for fragment in IELQ etc, looking in
-C--           connectivity structure IELT. Start may be fixed on given atom.
-C--
-C--
-C-- Version:   16.5.95 24.2.95       Sam Motherwell            13.9.93
-C--
-C-- Notes:
-C-- 1. Based on Sam's orginal 2D search routine.
-C--    (No reference to 3d coordinates).  Substructure match is allowed.
-C-- 2. Match option MATOPT controls use of bond-type =1 or ignore =0 
-C--    =2 use polymeric bond types to determine whether to use exact conn.
-C--    matching or not
-C-- 3. NBACKS returned as efficiency measurement, number of back-tracks
-C-- 4. Connection tables set to max 30 connections.   see LIG, MIG
-C-- 5. Keep the maximum list of bonds matched - even if result is no-match
-C--    See NBEST and IBC in common. 
-C--
-C-- Arguments:
-C-- IELT,NHYT,NCAT,IART  atom properties of target conn.
-C-- IBONT                bond list for target conn.
-C-- NATTAR, NBOTAR       number of atoms and bonds in target
-C-- IELQ,NHYQ,NCAQ,IARQ  properties of atoms in query conn.
-C-- IBOC                 bond list in query
-C-- NATQRY,NBOQRY        number of atoms and bonds in query
-C-- MATOPT               match option  =0 ignore bond type, =1 use bond-type
-C-- MATNUM               output list of match numbers
-C-- LDEBUG               controls output debug if > 0
-C-- ISTBON                 controls whether to sort 'metals' to end
-C-- ISTAT                output match status 0=no-match 1=partial 2=perfect
-C-- NBACKS               output total of backtrack steps in this call
-C--
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
 
 
 
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
-      INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
-      PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
-
-      INTEGER         STDOUTTERM
-      COMMON /PLUTRM/ STDOUTTERM
- 
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1998/07/09  15:30:31  shields
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- divisor/multiplier to be used when packing atoms/molecules +ortep codes
-      INTEGER IDIV
-      PARAMETER (IDIV=1000)
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-
-      INTEGER IELT(MAXATM),NHYT(MAXATM),NCAT(MAXATM),
-     +IART(MAXATM)
-      INTEGER IBONT(MAXBND,3),NATTAR,NBOTAR
-      INTEGER IELQ(MAXATM),NHYQ(MAXATM),NCAQ(MAXATM)
-     +        ,IARQ(MAXATM),IBOC(MAXBND,3),
-     +        NATQRY,NBOQRY,MATNUM(MAXATM),LDEBUG
-      INTEGER MATOPT,ISTAT,NBACKS
-C-- ISTBON   control of start bond  =0  use bond 1   >0 search via Kbond
-      INTEGER  ISTBON 
-C--
- 
-C--  target connectivity table LIG().  MIG() is corresponding bond types.
-C--  Created in this routine. Saved in common for later use.
-      INTEGER LIG(MAXATM,30),MIG(MAXATM,30),NATT
- 
-C--  query connectivity table LIGC(). MIGC() is corresponding bond types.
-C--  IBC()  is used as a buffer for the list of query bonds to be matched.
-C--  NBEST  is count of maximum bond matched in the list IBC
-C--  Conn. tables set up in this routine are saved for later use in common.
-      INTEGER IBC(MAXBND,3),NATC,NBEST,NIBC
-      INTEGER LIGC(MAXATM,30),MIGC(MAXATM,30)
-      COMMON /SAMCT1/ LIGC,MIGC
-      COMMON /SAMCT2/ LIG,MIG
-      COMMON /SAMCT3/ NIBC,NBEST,IBC
-C-- arrays to keep track of atoms in residues etc.
-C-- NRES is total number of target residues
-C-- NRESC   total number of query residues
-C-- MRES()  number of atoms in each target residue
-C-- MRESC() number of atoms in each query residue
-C-- Note: dimensioned for max of 9 target res.  and 100 query res.
-      INTEGER IRESM,KRES,LRES,MRES,LBRES,NRES
-      COMMON /SAMRES/ IRESM(9),KRES(9),LRES(9),MRES(9),
-     +                LBRES(9),NRES
-      INTEGER MRESC,NRESC
-      COMMON /SAMRSC/ MRESC(100),NRESC
-C-- Counts of non-H atoms per residue.  NONHAT target     NONHAQ  query
-C-- Counts of non-H bonds per residue   NONHBT target     NONHBQ  query
-      INTEGER NONHAT(9),NONHAQ(100),NONHBT(9),NONHBQ(100)
-C-- various match number arrays as in original
-      INTEGER MAT,MATC,MT,MTC
-      COMMON /SAMMTC/ MAT(MAXATM),MATC(MAXATM),
-     +MT(MAXATM),MTC(MAXATM)
-C-- Working arrays for keeping track of bond matching
-      INTEGER IBIT(MAXBND),IBJT(MAXBND)
-     +,IBKI(MAXBND),IBKJ(MAXBND)
-C-- KBOND()   array for Kproperty of each bond, for finding best start
-      INTEGER KBOND(MAXBND)
-C-- LUPR  LOGICAL UNIT FOR DEBUG PRINT
-C-- Logical unit for printer  LUPR  for debug
-C-- Maximum backtracks allowed  MAXBAC
-      INTEGER LUPR,MAXBAC
-
-C-- LOCAL
-      INTEGER I,J,K,L,N,II,LL,ISA,ISB,IEA,IEB,NB2,ISBC,IEBC
-      INTEGER NBACKT,NPI,IDISOR,IMAX,KMAX
-      INTEGER NBTC,NBTCH,NBIR2,IR1,IR2,IT,JT,IS,JS,I1,K1,NPCX
-      INTEGER NMATCH,NZERO,IAT,JAT,NBT,NCX,ISAC,IEAC,NB1,ICB,KI,KJ
-      INTEGER ISWAP,NCIT
-      INTEGER MTR(9),MTRC(100)
-      DATA MAXBAC/50000/
-      DATA LUPR/50/
-C-----------------------------------------------------------
-      IF (LDEBUG.GT.0) WRITE (50,*) '>>> SAMMAF entered'
-      IF(MATOPT.EQ.-1)   RETURN
-C-- force start on bond by passed argument   by control istbon
-C**      ISTBON=0
-      ISBC=1
-      IEBC=0
-      NBACKS=0
-      NBACKT=0
-      NPI=0
-      IDISOR=0
-C**      IFLAGC=0
-C**      ISKIP=0
-C-- set match numbers to zero for all query atoms
-      IF(MATOPT.LE.1) THEN
-        DO 5 I=1,NATQRY
-          MATNUM(I)=0
- 5      CONTINUE
-      ELSEIF(MATOPT.EQ.2) THEN
-        DO 6 I=1,NATTAR
-          MATNUM(I)=0
- 6      CONTINUE
-      ENDIF
-C-- test for no query atoms --  return immediately
-      IF (NATQRY.LE.0) THEN
-        IF (LDEBUG.GT.0) WRITE (50,9001)
- 9001   FORMAT (' NO QUERY ATOMS -- no match possible')
-        RETURN
-      ENDIF
-C--
-C-- get a count of the number of residues present in target NRES
-C-- and query NRESC
-      NRES=0
-      DO 10 I=1,NATTAR
-        IF (IART(I).GT.NRES) NRES=IART(I)
- 10   CONTINUE
-      NRESC=0
-      DO 11 I=1,NATQRY
-        IF (IARQ(I).GT.NRESC) NRESC=IARQ(I)
- 11   CONTINUE
-      IF (LDEBUG.GT.0) THEN
-        WRITE (50,9011) NATTAR,NBOTAR,NRES,NATQRY,NBOQRY,NRESC
- 9011   FORMAT (' target atoms,bonds=',2I4,' Residues=',I3,/,
-     +          ' query atoms,bonds=',2I4,' Residues=',I3)
-      ENDIF
-C-- abandon if NRESC > 100     grossly wrong query no bonds
-      IF (NRESC.GT.100) THEN
-        IF (LDEBUG.GT.0) WRITE (50,*) 'SAMMAF ABANDONED NRESC=',NRESC
-        RETURN
-      ENDIF
-C-- abandon if no atoms or bonds!
-      IF (NATTAR.LE.0 .OR. NATQRY.LE.0) THEN
-        IF (LDEBUG.GT.0) WRITE (50,*) 'SAMMAF ABANDONED - no atoms'
-        
-        RETURN
-      ENDIF
-C**      ISKIP=0
-      NATT=NATTAR
-      NATC=NATQRY
-C--  put safety limit on target residues 
-      IF(NRES.GT.9)  NRES=9 
-C-- MTR flags if the target residue was matched or not
-      DO 40 I=1,NRES
-        MTR(I)=0
- 40   CONTINUE
-C-- MT  flags if targetical atom matched or not
-      DO 50 I=1,NATT
-        MT(I)=0
- 50   CONTINUE
-C-- MTC  & MATC working arrays for queryal atoms matched
-C-- it will hold the equivalent targetical atom for each query atom
-      DO 60 I=1,NATC
-        MTC(I)=0
-        MATC(I)=0
- 60   CONTINUE
-C--
-C-- save count of atoms in each residue
-C-- Also save the count of non-H atoms as this is useful in eliminating
-C-- searches where there is no possible match
-C-- target   total atoms  MRES    non-H atoms  NONHAT
-C-- query   total atoms MRESC    non-H atoms  NONHAQ
-C-- Similar count for bonds not involving H
-C-- saved per residue in  NONHBT  (target)   and   NONHBQ(query)
-      DO 71 I=1,100
-        IF (I.LE.9) THEN
-          MRES(I)=0
-          NONHAT(I)=0
-          NONHBT(I)=0
-        ENDIF
-        MRESC(I)=0
-        NONHAQ(I)=0
-        NONHBQ(I)=0
- 71   CONTINUE
-      DO 72 I=1,NATTAR
-        N=IART(I)
-        IF (N.GT.0 .AND. N.LE.9) THEN
-          MRES(N)=MRES(N)+1
-          IF (IELT(I).NE.2.AND.IELT(I).NE.27) NONHAT(N)=NONHAT(N)+1
-        ENDIF
- 72   CONTINUE
-      DO 73 I=1,NATQRY
-        N=IARQ(I)
-        IF (N.GT.0 .AND. N.LE.100) THEN
-          MRESC(N)=MRESC(N)+1
-          IF (IELQ(I).NE.2.AND.IELQ(I).NE.27) NONHAQ(N)=NONHAQ(N)+1
-        ENDIF
- 73   CONTINUE
-C-- Count target bonds per residue excluding H
-      DO 731 I=1,NBOTAR
-        IAT=IBONT(I,1)
-        JAT=IBONT(I,2)
-        IF ((IELT(IAT).EQ.2 .OR. IELT(JAT).EQ.2) .OR.
-     +      (IELT(IAT).EQ.27.OR. IELT(JAT).EQ.27)) GOTO 731
-        N=IART(IAT)
-        IF (N.GT.0 .AND. N.LE.9) NONHBT(N)=NONHBT(N)+1
- 731  CONTINUE
-C-- count query bonds not involving H
-      DO 732 I=1,NBOQRY
-        IAT=IBOC(I,1)
-        JAT=IBOC(I,2)
-        IF ((IELQ(IAT).EQ.2 .OR. IELQ(JAT).EQ.2) .OR.
-     +      (IELQ(IAT).EQ.27.OR. IELQ(JAT).EQ.27)) GOTO 732
-        N=IARQ(IAT)
-        IF (N.GT.0 .AND. N.LE.100) NONHBQ(N)=NONHBQ(N)+1
- 732  CONTINUE
-      IF (LDEBUG.GT.0) THEN
-        WRITE (50,9732) (NONHAT(L),L=1,NRES)
- 9732   FORMAT (' target nonha = ',10I4)
-        WRITE (50,9733) (NONHBT(L),L=1,NRES)
- 9733   FORMAT (' target nonhb =',10I4)
-        WRITE (50,9734) (NONHAQ(L),L=1,NRESC)
- 9734   FORMAT (' query nonhac =',10I4)
-        WRITE (50,9735) (NONHBQ(L),L=1,NRESC)
- 9735   FORMAT (' query nonhbc =',10I4)
-      ENDIF
-C-- debug bond list target
-      IF (LDEBUG.GT.0) THEN
-        WRITE (50,*) 'SAMMAF Bond list for target IBON'
-        DO 1073 I=1,NBOTAR
-          WRITE (50,9073) (IBONT(I,L),L=1,3)
- 9073     FORMAT (' bond',3I3)
- 1073   CONTINUE
-        WRITE (50,*) 'SAMMAF Bond list for query  IBOC'
-        DO 1074 I=1,NBOQRY
-          WRITE (50,9073) (IBOC(I,L),L=1,3)
- 1074   CONTINUE
-      ENDIF
-C--
-C-- Setup connectivity table for target
-C--
-      DO 75 I=1,NATTAR
-        LIG(I,30)=0
- 75   CONTINUE
-      DO 76 I=1,NBOTAR
-        IAT=IBONT(I,1)
-        JAT=IBONT(I,2)
-        NBT=IBONT(I,3)
-        NCX=LIG(IAT,30)+1
-        IF (NCX.LE.30) THEN
-          LIG(IAT,NCX)=JAT
-          MIG(IAT,NCX)=NBT
-          LIG(IAT,30)=NCX
-        ENDIF
-        NCX=LIG(JAT,30)+1
-        IF (NCX.LE.30) THEN
-          LIG(JAT,NCX)=IAT
-          MIG(JAT,NCX)=NBT
-          LIG(JAT,30)=NCX
-        ENDIF
- 76   CONTINUE
-C-- debug target conn table LIG
-      IF (LDEBUG.GT.0) THEN
-        WRITE (50,*) 'SAMMAF target conn table LIG'
-        DO 1076 I=1,NATTAR
-          NCX=LIG(I,30)
-          WRITE (50,9076) I,NCX,(LIG(I,LL),LL=1,NCX)
- 9076     FORMAT (I4,'nc=',I2,' lig=',20I3)
- 1076   CONTINUE
-      ENDIF
-C--
-C-- omit if MATOPT=2 (polymer match) as NCAT set up in plumat already.
-      IF(MATOPT.EQ.2) GOTO 763
-C-- reset the number of connections NCA excluding terminal H or D
-      DO 761 I=1,NATTAR
-        NCX=LIG(I,30)
-        K=0
-        IF (NCX.GT.0) THEN
-          DO 762 L=1,NCX
-            JAT=LIG(I,L)
-            IF ((IELT(JAT).EQ.2 .OR. IELT(JAT).EQ.27)
-     +           .AND. LIG(JAT,30).EQ.1) THEN
-              GOTO 762
-            ENDIF
-            K=K+1
- 762      CONTINUE
-        ENDIF
-        NCAT(I)=K
- 761  CONTINUE
- 763  CONTINUE
-C--
-C-- and the same for query    (SKIP ANY BONDS FLAGGED -9)
-C--
-      DO 77 I=1,NATQRY
-        LIGC(I,30)=0
-        LIGC(I,29)=0
- 77   CONTINUE
-      DO 78 I=1,NBOQRY
-        IAT=IBOC(I,1)
-        JAT=IBOC(I,2)
-        NBT=IBOC(I,3)
-        IF (NBT.EQ.-9) GOTO 78
-        NCX=LIGC(IAT,30)+1
-        IF(MATOPT.EQ.2 .AND. IABS(NBT) .EQ. 6) THEN
-          NPCX=LIGC(IAT,29)+1
-          LIGC(IAT,29)=NPCX
-        ENDIF
-        LIGC(IAT,NCX)=JAT
-        MIGC(IAT,NCX)=NBT
-        LIGC(IAT,30)=NCX
-        NCX=LIGC(JAT,30)+1
-        IF(MATOPT.EQ.2 .AND. IABS(NBT) .EQ. 6) THEN
-          NPCX=LIGC(JAT,29)+1
-          LIGC(JAT,29)=NPCX
-        ENDIF
-        LIGC(JAT,NCX)=IAT
-        MIGC(JAT,NCX)=NBT
-        LIGC(JAT,30)=NCX
- 78   CONTINUE
-C-- debug print query conn table
-      IF (LDEBUG.GT.0) THEN
-        WRITE (50,*) 'SAMMAF query conn table LIGC'
-        DO 1078 I=1,NATQRY
-          NCX=LIGC(I,30)
-          WRITE (50,9076) I,NCX,(LIGC(I,LL),LL=1,NCX)
- 1078   CONTINUE
-      ENDIF
-C-- reset the NCAQ number of connections as atom prop, excluding terminal H or D
-C--
-      DO 781 I=1,NATQRY
-        NCX=LIGC(I,30)
-        K=0
-        NCAQ(I)=1
-        IF (NCX.GT.0) THEN
-C-- flag 'polymeric' atoms negative
-          IF(MATOPT.EQ.2 .AND. LIGC(I,29).EQ.LIGC(I,30) )THEN
-            IF(LDEBUG.GT.0) WRITE(50,9782) I, IELQ(I)
-9782  FORMAT(' Query atom ',I4,' type ',I4,' is polymeric')
-            NCAQ(I)=-IABS(NCAQ(I))
-C-- flag query residue as polymeric
-            IF(IARQ(I).LE.9) LRES(IARQ(I))=1
-          ENDIF
-          DO 782 L=1,NCX
-            JAT=LIGC(I,L)
-C-- if polymer match, include bond if it is polymeric (explicit in 2d query) 
-            IF((MATOPT.LE.1  .OR. MIGC(I,L).EQ.1) .AND. 
-     +         (IELQ(JAT).EQ.2 .OR. IELQ(IAT).EQ.27)
-     +          .AND. LIGC(JAT,30).EQ.1) GOTO 782
-            K=K+1
- 782      CONTINUE
-        ENDIF
-        NCAQ(I)=K*NCAQ(I)
- 781  CONTINUE
-C--
-C--  DO NOT TRY TO SELECT BEST START BOND -- SKIP THIS BIT if ISTBON = 0
-C--
-      IF(ISTBON.EQ.0) THEN 
-C-- force choice of start bond to be bond 1
-         DO 59 I=1,NBOQRY
-         KBOND(I)=1
-59       CONTINUE
-         KBOND(1)=9999
-      ELSE
-C-- To set up the query bond list in a good order for matching
-C-- we use a criterion Kbond derived from connectivity.
-C-- start with a bond with largest number of connected atoms at each end
-C-- give extra weight to non Carbon atoms
-C-- Ignore H-atoms at this stage
-C-- Also ignore bonds to atoms with high connectivity e.g. metals
-C-- Flag these bonds to high-conn atoms with bond-type -1
-      N=0
-      DO 61 I=1,NBOQRY
-        IAT=IBOC(I,1)
-        JAT=IBOC(I,2)
-        K=0
-        IF (IELQ(IAT).EQ.2 .OR. IELQ(JAT).EQ.2 .OR.
-     +      IELQ(IAT).EQ.27.OR. IELQ(JAT).EQ.27) THEN
-          K=-1
-          IBOC(I,3)=-10
-        ELSEIF (IABS(IBOC(I,3)).EQ.6) THEN
-          K=-2
-          IBOC(I,3)=-6
-        ELSEIF (IABS(NCAQ(IAT)).GT.4 .OR. IABS(NCAQ(JAT)).GT.4) THEN
-          K=-2
-C-- to be safe, do NOT change bond type if not 1 (otherwise bond types wrong
-C-- for MAT2D function on second pass)
-          IF (IABS(IBOC(I,3)).EQ.1) IBOC(I,3)=-1
-        ENDIF
-        IF (K.EQ.0) THEN
-          IF (IELQ(IAT).NE.1) K=K+10
-          IF (IELQ(JAT).NE.1) K=K+10
-          K=K*10000+IABS(NCAQ(IAT))+IABS(NCAQ(JAT))
-        ENDIF
-        KBOND(I)=K
- 61   CONTINUE
-      ENDIF
-
-      IF (LDEBUG.GT.0) THEN
-        DO 1006 I=1,NBOQRY
-          IAT=IBOC(I,1)
-          WRITE (50,9006) I,IAT,IBOC(I,2),IBOC(I,3),KBOND(I),IARQ(IAT)
- 9006     FORMAT (' KBond',I3,'=',3I4,I10,' res=',I2)
- 1006   CONTINUE
-        ENDIF
-C--
-C--
-C--
-C-- The Strategy:
-C-- Match query residues one at a time versus the target residues
-C--
-C
-C LOOP ON QUERY RESIDUES   IR2
-C
-      NMATCH=0
-      DO 460 IR2=1,NRESC
-        IF (LDEBUG.GT.0) WRITE (50,9460) IR2,MRESC(IR2)
- 9460   FORMAT ('  * * * PROCESSING QUERY RES',I2,' atoms=',I3)
-C**        IFLAG=1
-        MTRC(IR2)=0
-C--
-C-- if query is not polymeric and matopt=2, omit this query
-        IF(MATOPT.EQ.2 .AND. LRES(IR2).LE.0) THEN
-          GOTO 460
-        ENDIF
-C--
-C-- get all the bonds for this query residue organised into IBC
-C-- in an order for efficient matching
-C-- choose the START bond with highest kbond value
-        IMAX=0
-        KMAX=-2
-        NBIR2=0
-        DO 62 I=1,NBOQRY
-          IAT=IBOC(I,1)
-          IF (IARQ(IAT).NE.IR2) GOTO 62
-          NBIR2=NBIR2+1
-          IF (KBOND(I).GT.KMAX) THEN
-            IMAX=I
-            KMAX=KBOND(I)
-          ENDIF
- 62     CONTINUE
-C-- If no bonds found for the residue - then single atom residue
-C-- If bonds found but all marked exclude as in OH2  then use the bonds
-C-- as they are. Reset all bonds for this residue to +1, and set Imax to
-C-- point to first bond.
-        IF (NBIR2.GT.0 .AND. IMAX.EQ.0) THEN
-          DO 620 I=1,NBOQRY
-            IAT=IBOC(I,1)
-            IF (IARQ(IAT).EQ.IR2) THEN
-              IBOC(I,3)=1
-              IF (IMAX.EQ.0) IMAX=I
-            ENDIF
- 620      CONTINUE
-        ENDIF
-C-- if no bonds found for this residue then just do atom match
-        IF (NBIR2.EQ.0) THEN
-          NIBC=0
-          NB2=0
-          IF (LDEBUG.GT.0) WRITE (50,*) ' No bonds for this residue',IR2
-        ELSE
-C-- now move all the bonds for this residue in a connected order
-C-- into the IBC  array,   1 ... NIBC
-          IAT=IBOC(IMAX,1)
-          JAT=IBOC(IMAX,2)
-          IF (IELQ(IAT).EQ.1 .AND. IELQ(JAT).GT.2) THEN
-            IBOC(IMAX,1)=JAT
-            IBOC(IMAX,2)=IAT
-            IAT=IBOC(IMAX,1)
-            JAT=IBOC(IMAX,2)
-          ENDIF
-          IF (LDEBUG.GT.0) WRITE (50,9008) IMAX,IAT,JAT
- 9008     FORMAT (' Start tree with  bond',I3,' = ',2I4)
-C-- flag the bonds for this residue by setting IBOC(i,1)= -iboc(i,1) otherwise
-          DO 1007 I=1,NBOQRY
-            II=IBOC(I,1)
-            IF (IARQ(II).NE.IR2) IBOC(I,1)=-II
- 1007     CONTINUE
-C-- move the bonds into array IBC in a connected tree
-          CALL SAMTRE(IAT,JAT,IBOC,NBOQRY,IBC,NIBC,LDEBUG)
-C-- the list of bonds to match are now in IBC locations, start  1 -  end NIBC
-C-- set best match counter Nbest zero
-          ISBC=1
-          IEBC=NIBC
-          NBEST=0
-C-- NB2  is total number of bonds to match
-          NB2=IEBC-ISBC+1
-          IF (LDEBUG.GT.0) THEN
-            DO 1009 I=ISBC,IEBC
-              WRITE (50,9009) I,IBC(I,1),IBC(I,2),IBC(I,3)
- 9009         FORMAT (' CRYS Res bond',I3,'=',3I4)
- 1009       CONTINUE
-          ENDIF
-        ENDIF
-        IF (LDEBUG.GT.0) WRITE (50,9005) IR2,NB2
- 9005   FORMAT (' Total bonds for query residue (',I1,') =',I3)
-C-- atoms range for query  start at Isac  end at  Ieac
-        ISAC=1
-        IEAC=NATQRY
-C--
-C--
-C-- LOOP ON TARGET RESIDUES
-C-- Each targetical residue is now examined as a possible match for query
-C-- residue IR2
-C--
-        DO 420 IR1=1,NRES
-C--
-C-- if matopt=2 then only match a target once
-C--
-          IF(MATOPT.EQ.2 .AND. MTR(IR1).GT.0) THEN
-C-- omitting target  already matched
-            GOTO 420
-          ELSEIF(MATOPT.EQ.2 .AND. KRES(IR1).LE.0) THEN
-C-- omitting target as is not polymeric
-            GOTO 420
-          ENDIF
-C--
-          IF (LDEBUG.GT.0) WRITE (50,9010) IR1,MRES(IR1)
- 9010     FORMAT (//,' == TESTING TARGET RES.== ',I3,' MRES=',I3)
-          ISA=1
-          ISB=1
-          IEA=NATTAR
-          IEB=NBOTAR
-          NB1=IEB-ISB+1
-          IF (LDEBUG.GT.0) WRITE (50,*) 'ISB,IEB=',ISB,IEB,
-     +                                  ' ISBC,IEBC=',ISBC,IEBC
-C-- set match numbers to zero for this query residue
-          DO 90 I=ISAC,IEAC
-            IF (IARQ(I).EQ.IR2) MATC(I)=0
- 90       CONTINUE
-C== ALLOW substructure matches
-C-- no match possible if count of non-H atoms target .lt. query
-      IF(NONHAT(IR1).LT.NONHAQ(IR2)) GO TO 420
-C-- no match possible if total atom count target < query
-C** but some H atoms in target may be missing
-C**          IF (MRES(IR1).LT.MRESC(IR2)) GOTO 420
-C-- no match possible if count of non-H bonds target .lt. query
-      IF(NONHBT(IR1).LT.NONHBQ(IR2)) GO TO 420
- 
- 
-C-- set match numbers to zero for this target residue
-          DO 100 I=ISA,IEA
-            IF (IART(I).EQ.IR1) MAT(I)=0
- 100      CONTINUE
-C-- if no bonds to match (as in a single atom residue) skip to atom match
-          IF (NB2.EQ.0) GOTO 360
-C-- set backtrack counter to zero
-          NBACKT=0
-          ICB=ISBC-1
-C--
-C-- NEXT BOND -- this is where we select the next bond
-C-- from the query table as the search-bond
-C-- ICB  is number of current bond on trial
- 110      ICB=ICB+1
-C**      WRITE(50,*)'Checkpoint icb=icb+1  icb=',ICB
-C-- keep a record here of the BEST (maximum) set of bonds matched so far
-C-- We keep just the count NBEST of the highest bond reached in the list in 
-C-- IBC().
-          IF(ICB-1.GT.NBEST) THEN 
-             NBEST=ICB-1
-C**             write(6,*)'Nbest=', NBEST
-             ENDIF
-             
-          IF (ICB.GT.IEBC) GOTO 360
-C SET ATOM NUMBERS IS,JS  -- the atoms at ends  of the bond
-          IS=IBC(ICB,1)
-          JS=IBC(ICB,2)
-C-- if both atoms are unmatched
-C-- it is very advantageous to swap is,js so that atom is = non-carbon,
-C-- non-hydrogen.
-C-- If both is,js are carbon make is the one with higher Nca
-          IF (MATC(IS).EQ.0 .AND. MATC(JS).EQ.0) THEN
-            ISWAP=0
-            IF (IELQ(IS).EQ.1 .AND. IELQ(JS).GT.2) ISWAP=1
-            IF (IELQ(IS).EQ.1 .AND. IELQ(JS).EQ.1 .AND. 
-     +          IABS(NCAQ(IS)) .LT. IABS(NCAQ(JS))) ISWAP=1
-            IF (ISWAP.EQ.1) THEN
-              N=IBC(ICB,1)
-              IBC(ICB,1)=IBC(ICB,2)
-              IBC(ICB,2)=N
-              IS=IBC(ICB,1)
-              JS=IBC(ICB,2)
-            ENDIF
-          ENDIF
-C SET MATCHING LOCATIONS TO ZERO
-          IBIT(ICB)=0
-          IBJT(ICB)=0
-          IBKI(ICB)=ISA-1
-          IBKJ(ICB)=0
-C
-C FIND A MATCH FOR ATOM IS
-C
-C ALL ATOMS IN THE TARGET ARE SCANNED. IF THE BOND HAS BEEN ASSIGNED
-C BUT BACKTRACKING IS NECESSARY THE SCAN RESUMES FROM THE LAST ATOM I
-C WHICH WAS TESTED. THIS IS SAVED IN IBKI(ICB).
-C WE ALWAYS SKIP OVER ANY ATOM IN THE TARGET WHICH HAS ALREADY BEEN
-C ASSIGNED (FLAGGED BY MAT(I).GT.0)
-C
- 120      CONTINUE
-          IF (LDEBUG.GT.0) WRITE (50,9120) ICB,IS,JS,MATC(IS),MATC(JS)
- 9120     FORMAT (' BOND',I3,'is,js=',2I3,' MATC(IS),MATC(JS)=',2I3)
-          IF (MATC(IS).GT.0) GOTO 160
-          IF (MATC(JS).GT.0) GOTO 155
-          I1=IBKI(ICB)+1
-C**      WRITE(50,*)'I1=',I1,'  IEA=',IEA
-          IF (I1.GT.IEA) GOTO 350
-          IF (LDEBUG.GT.0) WRITE (LUPR,130) IS,I1,IELQ(IS),NHYQ(IS),
-     +                            NCAQ(IS)
- 130      FORMAT ('   Now search atom is=',I3,' I1=',I3,' props=',4I3)
-          DO 150 I=I1,IEA
-            IF (LDEBUG.GT.0) WRITE (50,9130) IART(I),MAT(I),IELT(I),
-     +                              NHYT(I),NCAT(I)
- 9130       FORMAT ('  target atom iar,mat=',2I3,' props=',4I3)
-            IF (IART(I).NE.IR1) GOTO 150
-            IF (MAT(I).GT.0) GOTO 150
-C**            IF (IDISOR.GT.0 .AND.
-C**     +         (IELQ(IS).EQ.100 .OR. IELQ(IS).EQ.104)) GOTO 140
-C-- allow only exact match of element
-            IF (IELT(I).NE.IELQ(IS)) GOTO 150
-C-- allow match provided nca target  .ge. query
- 140        IF (NCAT(I).LT.IABS(NCAQ(IS))) GOTO 150
-C-- for polymer matching, MUST HAVE exact connections 
-C-- unless ALL bonds to atom are polymeric !!
-C-- query atom has only polymeric connections if ncaq set -ncaq
-            IF(MATOPT.EQ.2 .AND. NCAT(I).NE.NCAQ(IS).AND. 
-     +         NCAQ(IS) .GE. 0) GOTO 150
-C-- allow match provided hyds in target .ge. query
-            IF(MATOPT.EQ.0) GOTO 170
-            IF(MATOPT.EQ.1 .AND. NHYT(I).GE.NHYQ(IS)) GOTO 170
-C-- care here if matching 2d to 3d. 
-C-- Query is then 3d - 2d must have at least the number of 2d connections
-            IF(MATOPT.EQ.2 .AND. NHYT(I).LE.NHYQ(IS)) GOTO 170
-
-
-            
-C FAILED TO FIND A MATCH FOR ATOM IS
- 150      CONTINUE
-          GOTO 350
-C-- atom JS was matched previously swap the atoms IS, JS
- 155      IBC(ICB,1)=JS
-          IBC(ICB,2)=IS
-          IS=JS
-          JS=IBC(ICB,2)
-C
-C ATOM IS WAS MATCHED PREVIOUSLY
-C set IT as the matched atom number.  KI set to show all connections
-C scanned
- 160      IT=MATC(IS)
-          KI=999
-          GOTO 190
-C
-C MATCH FOUND FOR ATOM IS
-C
- 170      CONTINUE
-          IT=I
-          KI=I
-          MATC(IS)=IT
-          MAT(IT)=IS
-          IF (LDEBUG.GT.0) WRITE (LUPR,180) IS,I,IELT(I),NHYT(I)
- 180      FORMAT ('   matched atom is=',I3,' it=',I3,' iel=',2I4)
-C-- save the match for atom I  as IBIT
-C-- save the connection number in the scan of connection table IBKI
-C-- set connection number to scan for atom J as zero, IBKJ
- 190      IBIT(ICB)=IT
-          IBKI(ICB)=KI
-          IBKJ(ICB)=0
-C
-C FIND A MATCH FOR ATOM JS
-C
-C THIS MUST BE ONE OF THE ATOMS CONNECTED TO ATOM IT IN THE TARGET.
-C WE SCAN THESE CONNECTIONS USING THE INDEX J OBTAINED FROM LIG(IT,KJ).
-C IF A MATCH IS FOUND WE SAVE THE KJ NUMBER SO THAT THE SCAN MAY BE RESUMED
-C IF BACKTRACKING IS NECESSARY.
-C EACH ATOM J IN THE TARGET IS TESTED AGAINST THE ATOM PROPERTIES GIVEN FOR JS
-C IN THE SEARCH FRAGMENT.
-C
- 200      CONTINUE
-          IT=IBIT(ICB)
-          JS=IBC(ICB,2)
-C**      NCIT=NCAT(IT)
-          NCIT=LIG(IT,30)
-          K1=IBKJ(ICB)+1
-          IF (MATC(JS).GT.0) K1=1
-          IF (K1.GT.NCIT) GOTO 300
-          IF (LDEBUG.GT.0) WRITE (LUPR,210) JS,K1,IT
- 210      FORMAT ('   Now searching for atom JS=',I3,
-     +            ' starting at connection',I3,' of target atom',I3)
-          IF (LDEBUG.GT.0 .AND. MATC(JS).GT.0) WRITE (LUPR,220) IT,
-     +        MATC(JS)
- 220      FORMAT ('   JS WAS MATCHED EARLIER - TEST FOR BOND IT-JT ',
-     +            2I3)
-          IF (LDEBUG.GT.0) WRITE (50,9220) IT,(LIG(IT,LL),LL=1,NCIT)
- 9220     FORMAT ('   Check connections to atom it=',I3,' Lig=',20I3)
-          IF (LDEBUG.GT.0) WRITE (50,9221) JS,IELQ(JS),NHYQ(JS),NCAQ(JS)
- 9221     FORMAT ('   query atom js',I3,' props=',3I3)
-          DO 260 KJ=K1,NCIT
-            J=LIG(IT,KJ)
-C TEST WHETHER JS WAS MATCHED EARLIER - IF THIS IS SO THEN WE ONLY
-C TEST FOR PRESENCE OF BOND IT-JT AND BOND TYPE
-            NBTC=IBC(ICB,3)
-            NBTC=MOD(NBTC,10)
-            NBTCH=MIG(IT,KJ)
-            NBTCH=MOD(NBTCH,10)
-            IF (MATC(JS).EQ.0) GOTO 240
-C-- atom js already matched , just check bond type (if matopt 1)
-            JT=MATC(JS)
-            IF (J.NE.JT) GOTO 260
-            IF (NPI.GT.0) GOTO 290
-            IF (MATOPT.EQ.1) THEN
-              IF (NBTC*NBTCH.LT.0) GOTO 260
-              IF (IABS(NBTC).NE.1 .AND. IABS(NBTCH).EQ.1) GOTO 260
-              ENDIF
-            GOTO 290
-C-- atom js unmatched -- test bond type & atom props  
-C--                   -- skip bond type if matopt 0 
- 240        IF (MAT(J).GT.0) GOTO 260
-            IF (LDEBUG.GT.0) WRITE (50,9240) J,IELT(J),NHYT(J),NCAT(J)
- 9240       FORMAT ('   target atom',I3,' props=',3I3)
-            IF (NPI.GT.0) GOTO 241
-            IF(MATOPT.EQ.1) THEN 
-              IF (NBTC*NBTCH.LT.0) GOTO 260
-              IF (IABS(NBTC).NE.1 .AND. IABS(NBTCH).EQ.1) GOTO 260
-              ENDIF
- 241        CONTINUE
-C**              IF (IDISOR.GT.0 .AND.
-C**     +          (IELQ(JS).EQ.100 .OR. IELQ(JS).EQ.104)) GOTO 250
-C-- allow only exact element match
-            IF (IELT(J).NE.IELQ(JS)) GOTO 260
-C-- allow match if nca target  .ge. query
- 250        IF (NCAT(J).LT.IABS(NCAQ(JS))) GOTO 260
-
-            IF(MATOPT.EQ.2 .AND. NCAT(J).NE.NCAQ(JS) .AND.
-     +          NCAQ(JS).GE.0 ) GOTO 260
-
-C-- allow match if nh  target  .ge. query
-            IF(MATOPT.EQ.0) GOTO 270 
-            IF(MATOPT.EQ.1 .AND. NHYT(J).GE.NHYQ(JS)) GOTO 270
-C-- if 2d to 3d match, other way round
-            IF(MATOPT.EQ.2 .AND. NHYT(J).LE.NHYQ(JS)) GOTO 270
-
-        
-C NO MATCH FOUND FOR ATOM JS - BACKTRACK
- 260      CONTINUE
-          GOTO 300
-C
-C MATCH FOR ATOM JS
-C
- 270      JT=J
-          MATC(JS)=JT
-          MAT(JT)=JS
- 272      IBJT(ICB)=JT
-          IBKJ(ICB)=KJ
-          IF (LDEBUG.GT.0) WRITE (LUPR,280) ICB,IS,JS,IT,JT,KI,KJ
- 280      FORMAT (' YES -- bond',I3,' matched is,js=',2I3,' it,jt=',2I3,
-     +            '  KI,KJ=',2I3)
-C GOTO NEXT BOND
-          GOTO 110
-C
-C BOTH IS AND JS PREVIOUSLY ASSIGNED (MATCHED BY IT AND JT)
- 290      IBIT(ICB)=IT
-          IBJT(ICB)=JT
-          IBKJ(ICB)=999
-          KJ=999
-          IF (LDEBUG.GT.0) WRITE (LUPR,280) ICB,IS,JS,IT,JT,KI,KJ
-          GOTO 110
-C
-C BACK-TRACKING
-C
-C NO MATCH HAS BEEN FOUND FOR ATOM JS
-C CHECK FIRST IF IS WAS MATCHED AT THIS ICB STEP
-C
- 300      KI=IBKI(ICB)
-          IF (KI.EQ.999) GOTO 320
-C THE MATCH FOR IS WAS FOUND DURING THIS ICB STEP
-C DELETE MATCHING INFO
-          IF (LDEBUG.GT.0) WRITE (LUPR,310)
- 310      FORMAT (' NO MATCH for atom JS - search for another atom IS')
-          MATC(IS)=0
-          IT=IBIT(ICB)
-          IF (IT.GT.0) MAT(IT)=0
-C CONTINUE THE SEARCH FOR A MATCHING ATOM FOR IS
-          GOTO 120
-C THE MATCH FOR IS WAS FOUND EARLIER
-C GO BACK TO PREVIOUS BOND
- 320      ICB=ICB-1
-C**      WRITE(50,*)'Checkpt icb=icb-1.  icb=',icb
-          NBACKT=NBACKT+1
-          NBACKS=NBACKS+1
-C**      IF(MOD(NBACKT,5000).NE.0) GOTO 321
-          N=0
-C** old clock time on IBM not used here      N=CCK3FN(J)
-C**      IF(N.GT.500) GOTO 413
-          IF (NBACKT.GE.MAXBAC) GOTO 411
-          IF (LDEBUG.GT.0) WRITE (LUPR,330) ICB
- 330      FORMAT ('   No bond match  - BACKTRACK TO BOND',I3)
-C--
-C-- if backtracked to bond zero then no match for this residue
-C--
-          IF (ICB.LT.ISBC .AND. LDEBUG.GT.0) WRITE (50,*)
-     +         ' NO MATCH ON RESIDUE -- try next target res'
-          IF (ICB.LT.ISBC) GOTO 420
-          KI=IBKI(ICB)
-          KJ=IBKJ(ICB)
-C RING CLOSURE BONDS ARE ALWAYS BACKTRACKED IMMEDIATELY
-          IF (KI.EQ.999 .AND. KJ.EQ.999) GOTO 320
-          IS=IBC(ICB,1)
-          JS=IBC(ICB,2)
-C CHECK THAT A MATCH EXISTS FOR IS
-          IF (MATC(IS).GT.0) GOTO 340
-          MATC(JS)=0
-          JT=IBJT(ICB)
-          IF (JT.GT.0) MAT(JT)=0
-          GOTO 320
-C CURRENT MATCH FOR JS IS DELETED AND SEARCH BEGINS FOR NEW MATCH
- 340      MATC(JS)=0
-          JT=IBJT(ICB)
-          IF (JT.GT.0) MAT(JT)=0
-          GOTO 200
-C
-C NO MATCH WAS FOUND FOR IS. GO BACK ONE BOND
-C
- 350      IS=IBC(ICB,1)
-          MATC(IS)=0
-          IT=IBIT(ICB)
-          IF (IT.GT.0) MAT(IT)=0
-          GOTO 320
-C--
-C-- we get here when all bonds have been matched!
-C--
- 360      CONTINUE
-          IF (LDEBUG.GT.0) THEN
-            IF (NB2.GT.0) WRITE (50,*) 'All bonds now matched!'
-            IF (NB2.EQ.0) WRITE (50,*) 'No bonds given - do atom match'
-          ENDIF
-C--
-C-- this bit does atom matching alone when there are no bonds
-C-- it looks though all atoms in the query residue which have not
-C-- yet been matched. Each unmatched atom is tested against
-C-- any remaining unmatched atoms in the target list
-C-- Loop I is on  query atoms    (with residue = ir2)
-          DO 410 I=ISAC,IEAC
-            IF (IARQ(I).NE.IR2) GOTO 410
-            IF (MATC(I).GT.0) GOTO 410
-            IF (LDEBUG.GT.0) THEN
-              WRITE (50,9405) I,IELQ(I),NHYQ(I),NCAQ(I)
- 9405         FORMAT (' query atom',I3,' props=',3I3)
-            ENDIF
-C-- loop J is on target atoms
-            DO 405 J=ISA,IEA
-              IF (MAT(J).GT.0) GOTO 405
-              IF (IART(J).NE.IR1) GOTO 405
-C**              IF (IDISOR.GT.0 .AND.
-C**     +           (IELQ(I).EQ.100 .OR. IELQ(I).EQ.104))GOTO 370
-              IF (IELT(J).NE.IELQ(I)) GOTO 405
-C-- ncaq should never be negative here but make sure
- 370          IF (NCAT(J).NE.IABS(NCAQ(I))) GOTO 405
-              IF (MATOPT.EQ.1 .AND. NHYT(J).LT.NHYQ(I)) GOTO 405
-              IF (MATOPT.EQ.2 .AND. NHYT(J).GT.NHYQ(I)) GOTO 405
-              IF (LDEBUG.GT.0) WRITE (LUPR,400) I,J,IELT(J),NHYT(J),
-     +                                IART(J)
- 400          FORMAT (' MATCHED ATOM IS=',I3,' IT=',I3,' IEL,NH=',2I4,
-     +                ' Iar=',I3)
-              MATC(I)=J
-              MAT(J)=I
-              GOTO 410
- 405        CONTINUE
-C-- end of loop on atoms J of query  if we get here then no
-C-- atom was matched, and the residue was not matched .
-C-- Go to next targetical residue.
-            IF (LDEBUG.GT.0) WRITE (50,*)
-     +                              'This target residue does not match'
-     +                              ,IR1
-            GOTO 420
-C--
-C-- we get here if all bonds & atoms are matched
-C--
- 410      CONTINUE
-          IF (LDEBUG.GT.0) WRITE (50,9410) IR2,IR1,NBACKT
- 9410     FORMAT (/,20X,' *Y*E*S*  matched query res',I2,' with target',
-     +            I2,' NBACKT=',I8,///)
-C-- matopt=2 copy over the match numbers now, then see if this query will
-C-- match another target residue
-          IF(MATOPT.LE.1) THEN
-            GOTO 430
-          ELSEIF(MATOPT.EQ.2) THEN
-            MTR(IR1)=IR2
-            DO 451 I=ISA,IEA
-              IF(IART(I).NE.IR1) GOTO 451
-              MT(I)=MAT(I)
- 451        CONTINUE
-C-- see if query matches another target
-            GOTO 420
-          ENDIF
-C--
-C-- match not found after very long search and too many backtracks!
-C-- give message and go to abandon this attempt.
- 411      IF (LDEBUG.GT.0) WRITE (50,412) IR2,NBACKT
- 412      FORMAT ('   *** (SAMMAF) QUERY RESIDUE ',I3,' NO MATCH ',
-     +            'AFTER MAXIMUM BACKTRACKS=',I8)
-          MAT(MAXATM)=NBACKT
-          GOTO 420
-C**  413 WRITE(50,414) REFCOD
-C**  414 FORMAT(' *** ',A8,' *** (MATCH) THE MATCHING STEP HAS BEEN ',
-C**     1'ABORTED BECAUSE IT USED MORE THAN 5 SECS OF CPU TIME')
-C**      ISKIP=1
-C**      GOTO 500
-C--
-C--
-C-- loop on targetical residues here
- 420    CONTINUE
-C--
-        IF(MATOPT.EQ.2 .AND. (IR1.GT.NRES .OR. MTR(IR1).GT.0)) GOTO 460
-C
-C-- we get here if all target res have been tested & no match.
-C-- Go to the next query residue
-C
-        IF (LDEBUG.GT.0) WRITE (50,9420) IR2
- 9420   FORMAT (' !!! NO MATCH found for query res. ',I2)
-        GOTO 460
-C
-C MATCH FOUND FOR QUERY RESIDUE IR2
-C
- 430    CONTINUE
-C**      IF(IFLAG.EQ.1) GOTO 434
-C**      IF((IEA-ISA+1).LT.3) GOTO 434
-C-- removed TOPLOS stuff here ...
-C--
-        NMATCH=NMATCH+1
-C-- save the matching residue number for query res ir2
-        MTRC(IR2)=IR1
-C-- count the NON-Hydrogen/D atoms  in target residue (terminal type)
-C**        NARES=0
-C**        DO 438 I=ISA,IEA
-C**          IF (IART(I).NE.IR1) GOTO 438
-C**          IF((IELT(I).EQ.2.OR.IELT(I).EQ.27).AND.NCAT(I).EQ.1)GOTO 438
-C**          NARES=NARES+1
-C** 438    CONTINUE
-C-- count NON-Hydrogen/D atoms in query residue  (terminal type)
-C**        NARESC=0
-C**        DO 439 I=ISAC,IEAC
-C**          IF (IARQ(I).NE.IR2) GOTO 439
-C**          IF((IELQ(I).EQ.2.OR.IELQ(I).EQ.27).AND.NCAQ(I).EQ.1)GOTO 439
-C**          NARESC=NARESC+1
-C** 439    CONTINUE
-C-- if less atoms in query than target res then set Iflagc
-C**        IF (NARESC.LT.NARES) IFLAGC=1
-C-- save the match numbers for query atoms
-        DO 440 I=ISAC,IEAC
-          MTC(I)=MATC(I)
- 440    CONTINUE
-        IF (MTR(IR1).GT.0) GOTO 460
-C-- save match numbers for target atoms
-        MTR(IR1)=IR2
-        DO 450 I=ISA,IEA
-          MT(I)=MAT(I)
- 450    CONTINUE
-C--
-C-- end of loop on query residues
- 460  CONTINUE
-C-- copy match numbers to MATNUM
-C-- For suspect-atoms we set the match number to be -1
-      IF(MATOPT.LE.1) THEN
-        DO 461 I=1,NATQRY
-          MATNUM(I)=MTC(I)
-          IF (IARQ(I).EQ.-1) MATNUM(I)=-1
- 461    CONTINUE
-      ELSEIF(MATOPT.EQ.2) THEN
-C-- copy matching numbers
-        DO 463 I=1,NATTAR
-          MATNUM(I)=MT(I)
-C-- mark 3d atoms which match polymeric atoms
-          IF (MATNUM(I).GT.0) THEN
-            IF(NCAQ(MT(I)).LT.0) MATNUM(I)=MATNUM(I)+IDIV
-          ENDIF
-          IF (IART(I).EQ.-1) MATNUM(I)=-1
- 463    CONTINUE
-C-- copy match status
-        DO 467 I=1,NRES
-          IRESM(I)=MTR(I)
- 467    CONTINUE
-C-- leave at this point if matopt=2
-        ISTAT=1
-        RETURN
-      ENDIF
-C
-C-- final summary message of matching
-C--
-C-- set final match status
-C--
-C-- Match status  0 = no atoms matched
-C--               1 = partial match
-C--               2 = perfect match
-      NZERO=0
-      DO 485 I=1,NATQRY
-        IF (MATNUM(I).EQ.0) NZERO=NZERO+1
- 485  CONTINUE
-C-- check that all target residues have been matched
-      N=0
-      DO 486 I=1,NRES
-        IF (MTR(I).GT.0) N=N+1
- 486  CONTINUE
-      ISTAT=0
-      IF (NZERO.EQ.0 .AND. N.EQ.NRES) ISTAT=2
-      IF (N.GT.0 .AND. N.LT.NRES) ISTAT=1
-      IF (NZERO.GT.0 .AND. NZERO.LT.NATQRY) ISTAT=1
-      IF (NZERO.EQ.NATQRY) ISTAT=0
-
-C-- final state debug messages id not polym 2d > 3d match
-      IF (LDEBUG.GT.0 .AND. MATOPT.LE.1) THEN
-      DO 480 I=1,NRESC
-        IF (MTRC(I).GT.0) THEN
-          WRITE (LUPR,470) I,MTRC(I)
- 470      FORMAT (' QUERY RESIDUE ',I2,' MATCHES TARGET RESIDUE ',I2)
-        ELSE
-          WRITE (LUPR,471) I
- 471      FORMAT (' QUERY RESIDUE ',I2,' NOT MATCHED')
-        ENDIF
- 480  CONTINUE
-      WRITE (LUPR,490) NATC,(MTC(I),I=1,NATC)
-      DO 481 I=1,NRES
-        IF (MTR(I).EQ.0) WRITE (50,*) ' TARGET. RESIDUE ',I,
-     +                                ' NOT MATCHED!'
- 481  CONTINUE
- 490  FORMAT (' Match numbers 1 - ',I4,20(/,30I4))
-      WRITE (50,*) 'FINAL MATCH STATUS =',ISTAT
-      CONTINUE
-      ENDIF
-
-
-      RETURN
-      END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.4  1998/11/24  17:43:37  shields
-C Correcting arguments to SAMPIQ, so can be called with
-C BOND(i,2) and BTYPE(i) rather than IBOC(i,3), (e.g. from SAMABO).
-C Also similarly for SAMCON.
-C
-C Revision 1.3  1998/11/11  16:33:54  shields
-C Using bond list rather than LIG array as passed argument, and use routine
-C SAMCON to get relevant row of array instead.
-C Adding parameter needed for passed array.
-C
-C Revision 1.2  1998/10/13  16:24:53  shields
-C Moving to mv parameter for maximum number of atoms.
-C
-C Revision 1.1  1995/08/28  17:02:52  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==sampiq.spg  processed by SPAG 4.50F  at 08:59 on  8 Dec 1994
+CODE FOR SAMPIQ
       SUBROUTINE SAMPIQ(IAT,JAT,IEL,IBON,IBONT,NBON,IPIBON)
 C--
 C-- Function: Pi-bond query - is bond Iat-Jat a pi-bond.
@@ -7603,78 +4711,18 @@ C-- IBON       bond list input for structure
 C-- IBONT      bond type list
 C-- NBON       number of bonds in list
 C-- IPIBON     returned answer =0 not pi-bond,  =1 pibond
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
+\STORE
+\ISTORE
+\QSTORE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-      INTEGER IAT,JAT,IEL(MAXATM),IPIBON,NBON,IBON(MAXBND,2)
-      INTEGER IBONT(MAXBND)
+
+      INTEGER IAT,JAT,IEL,IPIBON,NBON,IBON
+      INTEGER IBONT
 C-- local
       INTEGER NCX,NCK,K,L,KAT,I1,I2,IAT1,JAT1,IPIB
       INTEGER ILIG(30),LMIG(30),KLIG(30)
@@ -7693,13 +4741,13 @@ C-- check that atom IAT is a transiton metal.
       I1=0
       I2=0
       DO 50 K=1,NMTAB
-        IF (IEL(IAT).EQ.NONTR(K)) I1=K
-        IF (IEL(JAT).EQ.NONTR(K)) I2=K
+        IF (ISTORE(IEL+IAT-1).EQ.NONTR(K)) I1=K
+        IF (ISTORE(IEL+JAT-1).EQ.NONTR(K)) I2=K
  50   CONTINUE
       CONTINUE
 C**         WRITE(6,*)'sampiq iat,jat ',IAT,JAT, ' no Tr metal'
       IF (I1.GT.0 .AND. I2.GT.0) RETURN
- 
+
 C-- swap so Tr metal is Iat
       IF (I1.EQ.0) THEN
         IAT1=IAT
@@ -7709,17 +4757,17 @@ C-- swap so Tr metal is Iat
         JAT1=IAT
       ENDIF
 C**         WRITE(6,*)'sampiq iat,jat ',IAT,JAT,' no Tr-C'
-      IF (IEL(JAT1).NE.1) RETURN
+      IF (ISTORE(IEL+JAT1-1).NE.1) RETURN
 
 C-- NC is number of connections to Metal atom Iat. Search these for
-C-- a Carbon   (iel=1)  which bonds to the carbon atom Jat.
+C-- a Carbon   (istore(iel)=1)  which bonds to the carbon atom Jat.
 C-- including bonds already assigned as pi-bonds
       IPIB=1
       CALL SAMCON(IAT1,IBON,IBONT,NBON,NCX,ILIG,LMIG,IPIB)
       DO 100 K=1,NCX
         KAT=ILIG(K)
         IF (KAT.EQ.JAT1) GOTO 100
-        IF (IEL(KAT).NE.1) GOTO 100
+        IF (ISTORE(IEL+KAT-1).NE.1) GOTO 100
         CALL SAMCON(KAT,IBON,IBONT,NBON,NCK,KLIG,LMIG,IPIB)
         DO 110 L=1,NCK
           IF(KLIG(L).EQ.JAT1) IPIBON=1
@@ -7730,28 +4778,8 @@ C-- including bonds already assigned as pi-bonds
 C**      WRITE(6,*)'sampiq iat,jat', iat,jat, ' ipibon=',ipibon
       RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.4  1998/11/24  17:44:18  shields
-C Correcting arguments to SAMRIQ, so can be called with
-C BOND(i,2) and BTYPE(i) rather than IBOC(i,3), (e.g. from SAMABO).
-C Also similarly for SAMCON.
-C
-C Revision 1.3  1998/11/11  16:35:08  shields
-C Moving over to passing bond list rather than LIG and MIG arrays, and no
-C longer passing element type IEL as it was never used.
-C Generalise to use an array of acceptable bondtypes as argument, rather than
-C single integer. This means routine can replace SAMRIF also.
-C
-C Revision 1.2  1998/10/13  16:24:58  shields
-C Moving to mv parameter for maximum number of atoms.
-C
-C Revision 1.1  1995/08/28  17:02:56  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samriq.spg  processed by SPAG 4.50F  at 08:59 on  8 Dec 1994
+
+CODE FOR SAMRIQ
       SUBROUTINE SAMRIQ(IAT1,IBOC,IBOT,NBOCRY,RINGAT,NRING,LDEBUG,
      +                  IBTYPE,MAXRNG)
 C--
@@ -7770,80 +4798,17 @@ C--  IBOT     bond type
 C--  NBOCRY   number of bonds in list
 C--  RINGAT() output atom number for ring if found
 C--  NRING    output number of atoms found in RINGAT
-C--  IBTYPE() control option. If (1) > 0 then restrict ring to this bond types
+C--  IBTYPE control option. If (1) > 0 then restrict ring to this bond types
 C--           in this array.
 C--  MAXRNG   control option. restrict search to this max. ring size.
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-      INTEGER IAT1,IBOC(MAXBND,2),IBOT(MAXBND),NBOCRY,
+
+      INTEGER IAT1,IBOC,IBOT,NBOCRY,
      +        RINGAT(30),NRING,
      +        LDEBUG,IBTYPE(*),MAXRNG
 C-- local
@@ -7860,7 +4825,7 @@ C-- RINGAT is set to the trial atoms for the ring
 C-- IPT    points to the connection in use for current RINGAT
 C-- IFROM  points to atom from which we reached current RINGAT
 C-- N      is current number of atoms in RINGAT
- 
+
       IF(LDEBUG.EQ.1) WRITE(STDOUTTERM,*)
      + 'samriq entered iat1=', IAT1
       NBTEST=IBTYPE(1)
@@ -7937,16 +4902,8 @@ C**      WRITE(6,*) 'samriq start iat1=', Iat1,' Nring=',NRING
 C**      WRITE(6,*) 'ringat=', (RINGAT(N),N=1,NRING)
       RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1995/08/28  17:03:00  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samtor.spg  processed by SPAG 4.50F  at 08:59 on  8 Dec 1994
- 
- 
+
+CODE FOR SAMTOR
       SUBROUTINE SAMTOR(XI,XJ,XK,XL,OMEGA)
 C-- Function: Calculate torsion angle for a set of 4 atom coords.
 C-- Version:  10.11.94  1.2.94        Sam Motherwell (based on TORANG)
@@ -7965,69 +4922,13 @@ C--
 C-- Arguments:
 C-- XI,XJ,XK,XL   input orthog. coordinates for atoms i,j,k,l
 C-- OMEGA         output torsion angle, in degrees
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
+
       REAL XI(3),XJ(3),XK(3),XL(3),OMEGA
       REAL VIJ(3),VJK(3),VKL(3),R(3),S(3),T(3),COSW,TP
       INTEGER N
@@ -8049,347 +4950,10 @@ C----------------------------------------------------
       IF (TP.LT.0.0) OMEGA=-OMEGA
       RETURN
       END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.3  1998/10/13  16:09:20  shields
-C Moving to mv parameters for maximum atoms and maximum bonds.
-C
-C Revision 1.2  1998/07/30  17:36:08  shields
-C Changes to make routine treat polymeric bonds properly, without changing
-C bond type to 1.
-C
-C Revision 1.1  1995/08/28  17:03:01  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samtre.spg  processed by SPAG 4.50F  at 08:59 on  8 Dec 1994
-      SUBROUTINE SAMTRE(IAT,JAT,IBOC,NBOCRY,IBOUT,NB,LDEBUG)
-C-- Function:  Find tree of bonds in a connected sequence from a bond list
-C-- Version:   24.2.95    8.12.94     28.4.93     Sam Motherwell
-C-- Arguments:
-C--  IAT,JAT  atom number of start-bond.
-C--  IBOC     list of input bonds
-C--  NBOCRY   number of input bonds in IBOC
-C--  IBOUT()  is output bond list
-C--  NB       is number of output bonds
-C--  LDEBUG   controls output debug if > 0
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
 
 
 
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
-      INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
-      PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
-
-      INTEGER         STDOUTTERM
-      COMMON /PLUTRM/ STDOUTTERM
- 
-C
-C Maximum number of atoms in 3D (for both searching and display)
-      INTEGER MAXATM
-      PARAMETER (MAXATM=1000)
-C
-      INTEGER MAXBND
-      PARAMETER(MAXBND=1500)
-      INTEGER IAT,JAT,IBOC(MAXBND,3),NBOCRY,
-     +        IBOUT(MAXBND,3),NB,LDEBUG
- 
-C--
-C-- Notes:
-C-- 1. The objective is to get a list of bonds in tree-order starting
-C--    from a named atom pair.  Atom IAT  is root of the tree.
-C--    Iat-Jat is the first bond to be output.
-C-- 2. The bonds are output in complete layers of the tree.
-C--                  1
-C--                 / \
-C--                7   3
-C--               / \   \
-C--              5   2   8
-C--                  |   | \
-C--                  9 - 4  10
-C--                          \
-C--                          11
-C--  Level 1   1-7 1-3
-C--  Level 2   7-5 7-2 3-8
-C--  Level 3   2-9 8-4 8-10  9-4
-C--  Level 4   10-11
-C--
-C-- Bonds will be written to IBOUT() in the level order given, total NB.
-C--
-C-- 3. This tree is very suitable for presentation to the
-C--    bond-match algoritm in QUEST (SAM40 etc.).
-C--    The choice of starting point is important, and is left to
-C--    another routine. The strategy should be to include the less-common
-C--    types of bonds and atoms at the start of a tree, to ensure the
-C--    maximum chance of match-failure at early stages.
-C--
-C-- 4. Bonds to high-connectivity atoms  e.g. Metal in pi-bonds
-C--    have been flagged with bond type -1. These are ignored in the
-C--    tree building -- and are output at the end of the list
-C--
-C-- 5. Bonds to Hydrogen are flagged -10. These are also ignored, and
-C--    output at end.
-C-- 6. Pi-bonds flagged -9  are not output at all
-C-- 7. Bonds with IAT negative are to be ignored as not belonging to the
-C--    current residue.
-C-- 8. If the tree process finishes but there are bonds left in the
-C--    residue, then begin a new sequence on the next unprocessed bond
-C--    This enables us to form connected trees for the ligands to metal
-C--    complexes - excluding the bonds to metal at this stage.
-C--
-C-- IATLEV()    is list of atoms at current level
-C-- IATSAV()    is list of atoms at next level
-C-- NATLEV      count of atoms in IATLEV
-C-- NATSAV      count of atoms in NATSAV
-C**C-- IBOEXC      is list of bonds excluded from output by b = -1
-C-- NBEXC       count of bonds excluded in IBOEXC
-C-- IADONE()    to show atom has been added to the current tree
-      INTEGER IATLEV(100),IATSAV(100),NATLEV,NATSAV
-      INTEGER NBEXC
-      INTEGER IADONE
-      COMMON/PLUTW1/ IADONE(MAXATM)
-      INTEGER I,K,KK,L,ISAV,NBT,N1,N2,N3,L1,KEX,LEVEL,INEXT,KAT,IBT
-C--------------------------------------------------------------------
-      IF (LDEBUG.GT.0) WRITE (50,*) 'SAMTRE entered'
-      NBT=1
-      L1=1
-      DO 10 I=1,MAXATM
-        IADONE(I)=0
- 10   CONTINUE
-      NB=0
-      NBEXC=0
-C-- find start bond   and flag as the Next bond
-      DO 60 I=1,NBOCRY
-        IF (IAT.EQ.IBOC(I,1) .AND. JAT.EQ.IBOC(I,2)) GOTO 61
- 60   CONTINUE
-      IF (LDEBUG.GT.0) WRITE (50,9060) IAT,JAT
- 9060 FORMAT (' SAMTRE START-BOND NOT FOUND!',2I3)
-      RETURN
- 61   CONTINUE
-C--
-C-- make a list of the bonds to exclude, and mark them now
-C-- these will be added at the end.
-C--
-      DO 62 I=1,NBOCRY
-        IF (IBOC(I,1).GT.0 .AND. IBOC(I,3).LT.0) THEN
-          N1=IBOC(I,1)
-          N2=IBOC(I,2)
-          N3=IBOC(I,3)
-          IF (NBEXC.GE.100) GOTO 62
-          NBEXC=NBEXC+1
-          KEX=0
-          IF (N3.EQ.-1) KEX=1
-          IF (N3.EQ.-6) KEX=2
-          IF (N3.EQ.-10) KEX=3
-C**          IBOEXC(NBEXC)=1000*N1+N2+1000000*KEX
-          IF (LDEBUG.GT.0) WRITE (50,9161) N1,N2,N3
- 9161     FORMAT (' exclud bond=',3I4)
-        ENDIF
- 62   CONTINUE
-C--
-C-- there is just one atom in level 1  -- the start atom Iat
-      IATLEV(1)=IAT
-      NATLEV=1
-C--
-C-- loop here on LEVEL of tree, until no more connections found
-C--
-      DO 500 LEVEL=1,NBOCRY
-        IF (NATLEV.EQ.0) GOTO 501
-C-- find all bonds from atoms at this level to next level down
-        IF (LDEBUG.GT.0) THEN
-          WRITE (50,9500) LEVEL,NATLEV,(IATLEV(L),L=1,NATLEV)
- 9500     FORMAT (' =level=',I3,' natlev',I3,' iatlev=',20I3)
-        ENDIF
-        NATSAV=0
-        DO 100 I=1,NATLEV
-          KAT=IATLEV(I)
-          IF (LDEBUG.GT.0) WRITE (50,9150) LEVEL,KAT
- 9150     FORMAT ('  level',I3,' find bonds from atom kat=',I3)
-          DO 150 K=1,NBOCRY
-            IF (IBOC(K,1).LT.0) GOTO 150
-            IF (IBOC(K,3).LT.0) GOTO 150
-            IF (IBOC(K,1).EQ.KAT .OR. IBOC(K,2).EQ.KAT) THEN
-              IF (KAT.EQ.IBOC(K,2)) THEN
-                IAT=IBOC(K,2)
-                JAT=IBOC(K,1)
-                NBT=IBOC(K,3)
-              ELSE
-                IAT=IBOC(K,1)
-                JAT=IBOC(K,2)
-                NBT=IBOC(K,3)
-              ENDIF
-C-- save atom for next level  (unless this bond is a link to atom
-C-- at current level in a ring)
-              ISAV=1
-              DO 160 L=1,NATLEV
-                IF (JAT.EQ.IATLEV(L)) ISAV=0
- 160          CONTINUE
-              IF (ISAV.EQ.1 .AND. NATSAV.LT.100) THEN
-                NATSAV=NATSAV+1
-                IATSAV(NATSAV)=JAT
-              ENDIF
-C-- output the bond the the output array IBC
-              NB=NB+1
-              IBOUT(NB,1)=IAT
-              IBOUT(NB,2)=JAT
-              IBOUT(NB,3)=NBT
-              IF (LDEBUG.GT.0) WRITE (50,9160) IAT,JAT,NBT
- 9160         FORMAT ('   output bond=',3I4)
-C-- mark the bond as processed by setting first atom -ve
-              IADONE(IAT)=1
-              IADONE(JAT)=1
-              IBOC(K,1)=-IBOC(K,1)
-            ENDIF
-C-- and continue looking for bonds to atom KAT
- 150      CONTINUE
-C-- all bonds scanned for this atom Kat, go to the next Kat
- 100    CONTINUE
-C--
-C-- all link bonds now output for this level.
-C-- The atoms for the next level are saved in IATSAV, count NATSAV
-C-- If no saved atoms then we reached the end of a connected tree.
-C-- Check however that there is no other bond belonging to this residue
-C-- which has not been processed checking the excluded bonds.
-C-- There should be a bond in the excluded list which allows continuing
-C-- expansion.
-        IF (NATSAV.GT.0) THEN
-          DO 170 L=1,NATSAV
-            IATLEV(L)=IATSAV(L)
- 170      CONTINUE
-        ELSE
-C-- no saved atoms - look for any  bond in the excluded list which will
-C-- extend the tree
-          INEXT=0
-          DO 175 L=1,NBOCRY
-            IF (INEXT.GT.0) GOTO 176
-            IF (IBOC(L,1).GT.0 .AND. IBOC(L,3).LT.0 .AND. IBOC(L,3)
-     +          .NE.-10) THEN
-              N1=IBOC(L,1)
-              N2=IBOC(L,2)
-              IF (IADONE(N1).EQ.1 .AND. IADONE(N2).EQ.0) INEXT=N1
-              IF (IADONE(N1).EQ.0 .AND. IADONE(N2).EQ.1) INEXT=N2
-            ENDIF
-C-- if expansion bond found then make it active by setting bond type 1 or 6
-            IF (INEXT.GT.0) THEN
-              IBOC(L,3)=IABS(IBOC(L,3))
-              L1=L
-            ENDIF
- 175      CONTINUE
- 176      CONTINUE
-          IF (INEXT.GT.0) THEN
-            IF (LDEBUG.GT.0) THEN
-              WRITE (50,9176) L1,IBOC(L1,1),IBOC(L1,2),IBOC(L1,3)
- 9176         FORMAT (' Use exclud bond',I3,' iboc=',3I3)
-            ENDIF
-            NATSAV=1
-            IATSAV(1)=INEXT
-            IATLEV(1)=IATSAV(1)
-          ENDIF
-        ENDIF
-        NATLEV=NATSAV
- 500  CONTINUE
- 501  CONTINUE
-C--
-C-- all bonds processed into tree.
-C--
-C-- check for excluded bonds, and add them to the output
-C-- Excluded bonds nbt = -1       are bonds to metal etc
-C--                nbt = -6       polymeric bonds to metals
-C--                               (2d>3d match only)
-C--                nbt = -10      are bonds to Hydrogen
-C--                nbt = -9       are pi-bonds   (not output)
-C-- Output all  type -1  to metal  then all -10  to H
- 
-      DO 510 KK=1,3
-        IF (KK.EQ.1) THEN
-          NBT=-1
-          IBT=1
-        ELSEIF (KK.EQ.2) THEN 
-          NBT=-6
-          IBT=6
-        ELSEIF (KK.EQ.3) THEN
-          NBT=-10
-          NBT=1
-        ENDIF
-        DO 505 I=1,NBOCRY
-          IF (IBOC(I,1).GT.0 .AND. IBOC(I,3).EQ.NBT) THEN
-            NB=NB+1
-            IBOUT(NB,1)=IBOC(I,1)
-            IBOUT(NB,2)=IBOC(I,2)
-            IBOUT(NB,3)=IBT
-          ENDIF
- 505    CONTINUE
- 510  CONTINUE
-C--
-C-- tidy up by resetting all flagged bonds as positive
-C--
-      DO 520 I=1,NBOCRY
-        IF (IBOC(I,1).LT.0) IBOC(I,1)=-IBOC(I,1)
- 520  CONTINUE
-      IF (LDEBUG.GT.0) WRITE (50,*) 'SAMTRE finished'
-      RETURN
-      END
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.1  1995/08/28  17:03:03  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-**==samvec.spg  processed by SPAG 4.50F  at 08:59 on  8 Dec 1994
+CODE FOR SAMVEC
       SUBROUTINE SAMVEC(X1,X2,V,D12)
 C-- Function:   Get unit vector between points X1 and X2
 C-- Version:    9.11.94          Sam Motherwell  8.12.93
@@ -8398,69 +4962,13 @@ C-- X1      coords for point X1
 C-- X2      coords for point X2
 C-- V       output unit vector (in sense   X1  -->  X2)
 C-- D12     output distance X1 - X2
-      IMPLICIT NONE
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.5  1998/10/14  17:02:46  shields
-C Removing redundant parameters for maximum atoms and bonds, as these are now
-C taken directly from the mvstructure parameters MAXATM and MAXBND.
-C
-C Revision 1.4  1998/07/07  12:58:04  dbrown
-C BCCAB length definition now taken from par_szbcc.inc
-C
-C Revision 1.3  1995/11/15  13:50:58  macrae
-C Added new param PBUFSZ (2000) for max lines in BCCAB buffer.
-C
-C Revision 1.2  1995/10/06  10:26:18  macrae
-C STDOUTTERM is now a variable which is changed to 6 or 3 by SAMSET
-C
-C Revision 1.1  1995/08/28  17:03:07  macrae
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C-- Atoms, Bonds limits for Pluto. i/o units for Pluto
-
-C PBUFSZ is taken from the global define of the maximum number of lines
-C in a BCCAB buffer, in par_szbcc.inc
-C
-C RCS CHANGE LOG START ***********************************************
-C
-C Revision 1.2  1998/07/07  14:12:25  dbrown
-C Parameter statement altered to a #define, in part to see if this can
-C be done, but also to try to dispose of include file conflicts in
-C prequestlib/clipboard.F
-C
-C Revision 1.1  1998/07/07  12:48:23  dbrown
-C Initial revision
-C
-C
-C RCS CHANGE LOG END *************************************************
-C The maximum number of lines in a BCCAB entry handleable by quest,
-C prequest, and cif2bccab.
-C 
-C Needs increasing if cif2bccab core dumps in the following kind of way.
-C
-C Subscript out of range on file write_bccab.F, line 4400, procedure cif_putout.
-C Attempt to access the 2001-th element of variable buff.
-C Abort - core dumped
-
-C An unusual way, to allow the inclusion of SZBCC anywhere, in any file.
-C In particular, prequestlib/clipboard.F uses 2 include files consecutively,
-C both of which include this one...
-
-
-
-
-C
-      INTEGER    PBUFSZ
-      PARAMETER (PBUFSZ=2500)
+C      IMPLICIT NONE
       INTEGER MAXLAB,LSFILE,TEKFILE,STDINTERM
       PARAMETER(LSFILE=7,TEKFILE=6,STDINTERM=5,MAXLAB=10)
 
       INTEGER         STDOUTTERM
       COMMON /PLUTRM/ STDOUTTERM
- 
+
       REAL X1(3),X2(3),V(3)
       REAL D12
 C------------------------------------
@@ -8479,19 +4987,13 @@ C------------------------------------
       ENDIF
       RETURN
       END
-C
+
+CODE FOR VPPROD
       SUBROUTINE VPPROD(A,B,C)
-C OJ100 from GSTAT
 C Calculate C, the vector product of A & B normalised to unit length
-C
-
-      IMPLICIT NONE
-
+C      IMPLICIT NONE
 C     Passed arguments:
       REAL A(3),B(3),C(3)
-C     Funct\'ns referenced:none
-C     Global variables:none
-C     Local variables:
       INTEGER I
       REAL D,DSQ
 C
