@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  1999/06/22 13:51:27  dosuser
+C RIC: Temporarily commented out the eigen vector and axes calculation as
+C it doesn't seem to work.
+C
 C Revision 1.13  1999/06/13 16:18:23  dosuser
 C RIC: Centre the molecule on 0,0,0 as it is updated.
 C
@@ -992,7 +996,7 @@ C
                      COV2  = ATINF(K+2)
                   ENDIF
 110            CONTINUE
-               REQDST = (COV1 + COV2) * 1.1
+               REQDST = (COV1 + COV2) * 1.3
                IF(ACTDST.LT.REQDST) THEN
                   XX   = GUMTRX(1) * STACK((J*5)-3)
      1                 + GUMTRX(2) * STACK((J*5)-2)
