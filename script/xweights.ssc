@@ -27,7 +27,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI     @ 3,1 STATIC T2 'agreement analysis.'
 ^^WI   }
 ^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST
-^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' NULL
+^^WI         'Quasi-Unit' 'Statistical' 'Chebychev' 'Auto-statistical' NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
 ^^WI   {
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
@@ -69,6 +69,14 @@ CHEBYCHEV WEIGHTS
 data and poor models.  It tries to compensate for errors in both
 the data and te model, and give optimal parameters for those 
 parameters which are being refined.
+
+AUTO-STATISTICAL
+      w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3
+      or P=(Fo^2 + 2Fc^2)/3 depending on refinement against F or F^2.
+ This is a very popular weighting scheme. The parameters a and b
+ are determined automatically in order to give a goodness of fit of
+ approximately one and a flat analysis of variance across all ranges
+ of Fc.
 
 ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/
 In the table, examine the weighted residual
@@ -134,6 +142,13 @@ routine work.
 %                ELSE
 %                    COPY '#SCRIPT XFSQWT'
 %                END IF
+%            END BLOCK
+%            BLOCK                                   %AUTO-STAT%
+%                COPY '#LIST 4'
+%                COPY 'SCHEME 17'
+%                COPY 'END'
+%                COPY '#WEIGHT'
+%                COPY 'END'
 %            END BLOCK
 %         END CASE
 %         FINISH
