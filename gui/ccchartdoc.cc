@@ -18,6 +18,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2000/12/13 17:51:24  richard
+// Support for Linux.
+//
 
 
 #include	"crystalsinterface.h"
@@ -123,22 +126,6 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 				tokenList->GetToken(); // Remove that token!
                         CcChartPoly* item = new CcChartPoly(false);
 				item->ParseInput(tokenList);
-				mCommandList->AddItem(item);
-				break;
-			}
-			case kTChartFastPolyF:
-			{
-				tokenList->GetToken(); // Remove that token!
-                        CcChartPoly* item = new CcChartPoly(true);
-				item->FastInput(tokenList);
-				mCommandList->AddItem(item);
-				break;
-			}
-			case kTChartFastPolyE:
-			{
-				tokenList->GetToken(); // Remove that token!
-                        CcChartPoly* item = new CcChartPoly(false);
-				item->FastInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
 			}

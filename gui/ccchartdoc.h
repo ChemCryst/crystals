@@ -67,8 +67,6 @@ class CcChartDoc
 #define kSChartClear		"CLEAR"
 #define	kSChartPolyF		"POLYF"
 #define	kSChartPolyE		"POLYE"
-#define	kSChartFastPolyF	"FPOLYF"
-#define	kSChartFastPolyE	"FPOLYE"
 #define kSGraph			"GRAPH"
 #define	kSChartText		"TEXT"
 #define kSChartColour		"RGB"
@@ -91,8 +89,6 @@ enum
  kTChartClear,	
  kTChartPolyF,	
  kTChartPolyE,	
- kTChartFastPolyF,
- kTChartFastPolyE,
  kTGraph,	
  kTChartText,	
  kTChartColour,	
