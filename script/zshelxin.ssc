@@ -1,5 +1,5 @@
 %SCRIPT ZSHELXIN
-%%
+%% 
 %% This script reads in just the atoms. It is called by XSHELXIN,
 %% and also by INEMAP to read a the results of direct methods.
 %% The SCPDATA channel must be open already.
@@ -19,6 +19,7 @@
 %  VARIABLE INTEGER ATOMCOUNT EXPECTED
 %% call a script to get the expected number of atoms into EXPECTED
 %  copy '#script getexp'
+%  CLEAR
 %  EVALUATE EXPECTED = INTEGER ( REAL ( EXPECTED ) * 1.1 )
 %        insert "% GET INTEGER 'How many atoms do you want to keep' '"
 %        store integer EXPECTED
@@ -29,7 +30,6 @@
 %%
 % EVALUATE SFILERR = TRUE
 % EVALUATE LFIRST = TRUE
-% SET VERIFY FALSE
 % LOOP
 %   ON ERROR TERMINATE
 %   ON END TERMINATE

@@ -3,6 +3,8 @@
 %    VARIABLE INTEGER TNATM EXPECTED
 %    VARIABLE REAL OCCUR
 %    VARIABLE CHARACTER CTNATM ELEMT
+%    EVALUATE TNATM = 0
+%    EVALUATE EXPECTED = 0
 %%
 %%  Look at the list 29 to find the largest atom type present and the total
 %%  number of atoms to find
@@ -24,4 +26,5 @@
 %    TRANSFER 'CRYSTALS is looking for ' // CTNATM // ' atoms' TO DISPLAY
 %    EVALUATE EXPECTED = TNATM
 %%
+%    COPY 'END'
 %END SCRIPT

@@ -1,23 +1,21 @@
-%SCRIPT REGROUP
+%SCRIPT REGROUP 
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ REGROUP takes an atom list and orders that list so that bonded atoms       บ
-บ are adjacent to each other in the list. It the molecule branches, each     บ
-บ branch is followed to an end, after which the branch from the last         บ
-บ node is followed. This is repeated until all atoms have been processed     บ
-บ  A 'bond' is defined as existing if atoms are within a specified range     บ
-บ of each other after symmetry operators have been applied. By default       บ
-บ all symmetry operators and unit cell translations are tried.               บ
-บ  Once the list has been reordered, the atoms may retain their original     บ
-บ serial numbers, or they can be renumbered according to their position      บ
-บ in the list.                                                               บ
-บ  Since REGROUP works its way through the atom list from top to bottom,     บ
-บ the result will depend upon the original ordering of the atom list.        บ
-บ  It is often a good strategy to sort the atom list so that 'heavy'         บ
-บ are at the top.                                                            บ
-บ It is possible to leave original atoms unmoved, and only shift peaks.      บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ REGROUP takes an atom list and orders that list so that bonded atoms       
+ are adjacent to each other in the list. It the molecule branches, each     
+ branch is followed to an end, after which the branch from the last         
+ node is followed. This is repeated until all atoms have been processed     
+  A 'bond' is defined as existing if atoms are within a specified range     
+ of each other after symmetry operators have been applied. By default       
+ all symmetry operators and unit cell translations are tried.               
+  Once the list has been reordered, the atoms may retain their original     
+ serial numbers, or they can be renumbered according to their position      
+ in the list.                                                               
+  Since REGROUP works its way through the atom list from top to bottom,     
+ the result will depend upon the original ordering of the atom list.        
+  It is often a good strategy to sort the atom list so that 'heavy'         
+ are at the top.                                                            
+ It is possible to leave original atoms unmoved, and only shift peaks.      
 % ELSE
 A SCRIPT to help reorganise an atom list so that bonded atoms are adjacent
 to each other.

@@ -1,19 +1,17 @@
-%SCRIPT AFOUR
+%SCRIPT AFOUR 
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
-ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
-บ This SCRIPT is to assist with Fourier refinement if simple structures.     บ
-บ PHASE 1 computes phase angles from the existing model                      บ
-บ PHASE 2 computes an Fobs map if R is high, a 2Fo-Fc map if intermediate    บ
-บ oterwise a difference map.                                                 บ
-บ PHASE 3 performs Fourier refinement or simple elimination of redundant     บ
-บ peaks.                                                                     บ
-บ PHASE 4 assembles a molecule, reorders the atom list in decreasing         บ
-บ rho values, resequences the serial numbers and displays the result         บ
-บ PHASE 5 invites you to rename any of the atoms.                            บ
-บ PHASES 1 to 5 are repeated until you terminate them, when the atom list    บ
-บ may be reorganised to reflect atomic connectivity                          บ
-ศ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ This SCRIPT is to assist with Fourier refinement if simple structures.     
+ PHASE 1 computes phase angles from the existing model                      
+ PHASE 2 computes an Fobs map if R is high, a 2Fo-Fc map if intermediate    
+ oterwise a difference map.                                                 
+ PHASE 3 performs Fourier refinement or simple elimination of redundant     
+ peaks.                                                                     
+ PHASE 4 assembles a molecule, reorders the atom list in decreasing         
+ rho values, resequences the serial numbers and displays the result         
+ PHASE 5 invites you to rename any of the atoms.                            
+ PHASES 1 to 5 are repeated until you terminate them, when the atom list    
+ may be reorganised to reflect atomic connectivity                          
 % ELSE
       a SCRIPT to help with Fourier refinement
 % END IF
