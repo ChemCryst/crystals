@@ -5,6 +5,7 @@
 #define IDB_SPLASH                      102
 #define IDI_ICON1                       104
 #define IDC_POINTER_COPY                105
+#define IDI_ICON2                       105
 #define IDC_CURSOR1                     106
 #define IDC_CURSOR2                     107
 #define IDC_CURSOR3                     108
