@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2001/04/11 15:27:18  CKP2
+C Fix xsymop so that .CIF entries tally
+C
 C Revision 1.16  2001/03/28 12:46:13  CKP2
 C DJW  Fix up site occupancies in LIST 5 part of cif output so that the
 C effects of crystallogrpahic occupancy are explicitly removed. This is
@@ -1492,7 +1495,7 @@ C -- DISPLAY ON MONITOR CHANNEL
      1 (BPD(I), I=1,6)
       WRITE ( CMON , 2561 )( STORE(I), I = M5A, M5A+N5A-1),
      1 (BPD(I), I=1,6)
-      CALL XPRVDU(NCVDU, 1,0)
+      CALL XPRVDU(NCVDU, 2,0)
 2560  FORMAT (/,' Over-all Parameters')
 2561  FORMAT ( 6X, 6F10.3)
 C
