@@ -137,8 +137,8 @@
 %         EVALUATE T = FILEDELETE ( CFDIR // 'sir9x.ins' )
 %         EVALUATE T = FILEDELETE ( CFDIR // 'pretwin6.dat' )
 %         IF CHOICE .EQ. 1 THEN
-%TRANSFER '#SPAWN copy ' // CFDIR // 'nket.dsc ' // CFDIR // 'crfilev2.dsc' -
-TO CRYSTALS
+%TRANSFER '#SPAWN copy "' // CFDIR // 'nket.dsc" "' // CFDIR // -
+'crfilev2.dsc"' TO CRYSTALS
 %         END IF
 %     END IF
 ^^WI  SET _MAIN TEXT=
