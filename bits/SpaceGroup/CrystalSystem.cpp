@@ -50,6 +50,7 @@
 #include "Stats.h"
 #include <fcntl.h>
 #include <errno.h>
+#include <iterator>
 
 using namespace std;
 
@@ -686,7 +687,7 @@ char* Table::getName()
     return iName;
 }
 
-int Table::getNumPointGroups()
+size_t Table::numSGColumns()
 {
     return iSGColumn->length();
 }
@@ -736,6 +737,20 @@ void Table::readFrom(filebuf& pFile)
     }
 }
 
+bool Table::hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber)
+{
+	vector<int>::iterator tIter;
+	
+	for (tIter = pColumnNums.begin(); tIter != pColumnNums.end(); tIter++)
+	{
+		if (iSGColumn->get((*tIter))->get(pRowNumber)->count() > 0) 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
 {
     int tLengthConditions = iColumns->length();
@@ -771,7 +786,7 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
     return pStream;
 }
 
-std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, int tPointGroups[])
+std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, set<int, ltint>& tPointGroups)
 {
     int tLengthConditions = iColumns->length();
     for (int i = 0; i < tLengthConditions; i++)
@@ -787,16 +802,18 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, int tPoin
         }
     }
     long tNumSGs = 0;
-    for (int i = 0; tPointGroups[i]!=-1; i++)
+	set<int, ltint>::iterator tIter;
+	
+    for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
-        SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
+        SGColumn* tSGColumn = iSGColumn->get((*tIter));
         SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
         tNumSGs += tSpaceGroups->count();
     }
     pStream << "SPACEGROUPS " << tNumSGs << "\n";
-    for (int i = 0; tPointGroups[i]!=-1; i++)
+    for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
-        SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
+        SGColumn* tSGColumn = iSGColumn->get((*tIter));
         SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
         if (tSpaceGroups->count() > 0)
             pStream << *(tSpaceGroups) << "+ \n";
@@ -830,7 +847,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumn
     return pStream;
 }
 
-std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointGroups[], int pColumnSize)
+std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, set<int, ltint>& tPointGroups, int pColumnSize = 8)
 {
     int tLengthConditions = iColumns->length();
     for (int i = 0; i < tLengthConditions; i++)
@@ -845,9 +862,11 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int tPointG
            pStream << setw(pColumnSize) << *(tIndexs);
         }
     }
-    for (int i = 0; tPointGroups[i]!=-1; i++)
+	set<int, ltint>::iterator tIter;
+	
+    for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
-        SGColumn* tSGColumn = iSGColumn->get(tPointGroups[i]);
+        SGColumn* tSGColumn = iSGColumn->get((*tIter));
         SpaceGroups* tSpaceGroup = tSGColumn->get(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
@@ -906,22 +925,51 @@ int Table::numberOfRows()
     return iSGColumn->get(0)->length();
 }
 
-int Table::chiralPointGroups(int pPointGroupIndeces[])
+set<int, ltint>& Table::columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pColumnIndeces)
 {
-	int tPointGroups = this->getNumPointGroups();
-	int tIndecesPoint = 0;
-	for (int i = 0; i< tPointGroups; i++)
+	size_t tSGColNum = numSGColumns();
+	
+	pColumnIndeces.clear();
+	for (size_t i = 0; i < tSGColNum; i++)
 	{
-		char* tPointGroup = iSGColumn->get(i)->getPointGroup();
-		//Is it a chiral point group
-		if (tPointGroup != NULL && strchr(tPointGroup, '-')==NULL && strchr(tPointGroup, 'm')==NULL)
+		vector<CrystSymmetry>::iterator tPointGroupIter;
+		
+		 for (tPointGroupIter = iSGColumn->get(i)->getPointGroup().begin(); 
+			tPointGroupIter != iSGColumn->get(i)->getPointGroup().end();
+				tPointGroupIter++)
 		{
-			pPointGroupIndeces[tIndecesPoint] = i;
-			tIndecesPoint++;
+			//Is the point group a subgroup of the laue group.
+			if (pLaueGroup.contains(*tPointGroupIter))
+			{
+				pColumnIndeces.insert(pColumnIndeces.end(), i);
+			}
 		}
 	}
-	pPointGroupIndeces[tIndecesPoint] = -1;
-	return tIndecesPoint;
+	return pColumnIndeces;
+}
+
+set<int, ltint>& Table::chiralColumns(set<int, ltint>& pPointGroupIndeces)
+{
+	size_t tSGColNum = this->numSGColumns();
+	
+	pPointGroupIndeces.clear();
+	
+	for (size_t i = 0; i< tSGColNum; i++)
+	{
+		vector<CrystSymmetry>::iterator tPointGroupIter;
+		
+		 for (tPointGroupIter = iSGColumn->get(i)->getPointGroup().begin(); 
+			tPointGroupIter != iSGColumn->get(i)->getPointGroup().end();
+				tPointGroupIter++)
+		{
+			//Is it a chiral point group
+			if (tPointGroupIter->find("-", 0) == string::npos && tPointGroupIter->find("m", 0) == string::npos)
+			{
+				pPointGroupIndeces.insert(pPointGroupIndeces.end(), i);
+			}
+		}
+	}
+	return pPointGroupIndeces;
 }
 
 int Table::dataUsed(signed char pIndices[], const int pMax) const
@@ -1132,47 +1180,49 @@ std::ostream& operator <<(std::ostream& pStream, Tables& pTables)
     return pTables.output(pStream);
 };
 
-bool hasChiralSpaceGroup(int pPGroupNumbers[], Table& pTable, int pRow)
+bool hasChiralSpaceGroup(set<int, ltint>& pPGroupNumbers, Table& pTable, int pRow)
 {
-    int i = 0;
-    while (pPGroupNumbers[i] > -1)
+    set<int, ltint>::iterator tIter;
+	
+	for (tIter = pPGroupNumbers.begin(); tIter != pPGroupNumbers.end(); tIter++)
     {
-        SpaceGroups* tSpaceGroups = pTable.getSpaceGroup(pRow, pPGroupNumbers[i]);
+        SpaceGroups* tSpaceGroups = pTable.getSpaceGroup(pRow, (*tIter));
         if (tSpaceGroups->count() == 0)
         {
             return false;
         }
-        i++;
     }
     return true;
 }
 
-RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral):iChiral(pChiral)
+RankedSpaceGroups::RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral, LaueGroup& pLaueGroup):iChiral(pChiral), iLaueGroup(pLaueGroup)
 {	
-    int* tPGroupNumbers =  NULL;
-   
+  //  int* tPGroupNumbers =  NULL;
+	set<int, ltint> tLaueGPoinGColNums;
+	set<int, ltint> tChiralPGroupColNums;
+	vector<int> tResultingColumns;
+	
+	pTable.columnsFor(pLaueGroup, tLaueGPoinGColNums);
     if (iChiral)  	//If this is a chiral structure then get the information for filtering the list.
-    {
-        const int tPGroupNumber = pTable.getNumPointGroups();
-        tPGroupNumbers = new int[tPGroupNumber+1];	//The end of this list is identifed by an index of -1
-        pTable.chiralPointGroups(tPGroupNumbers);
+    {		
+		pTable.chiralColumns(tChiralPGroupColNums);
+		set_intersection(tChiralPGroupColNums.begin(), tChiralPGroupColNums.end(),
+		tLaueGPoinGColNums.begin(), tLaueGPoinGColNums.end(), tResultingColumns.begin());
     }
+	else
+	{
+		tResultingColumns.insert(tResultingColumns.begin(), tLaueGPoinGColNums.begin(), tLaueGPoinGColNums.end());
+	}
     int tCount = pTable.numberOfRows();
     for (int i = 0; i < tCount; i++)
     {
-        if (!iChiral)
-        {
-            RowRating iRating(i, pTable, pStats);
-            addToList(iRating);	//Add the rating for the current row into the order list of rows.
-        }
-        else if(hasChiralSpaceGroup(tPGroupNumbers, pTable, i))
+        if(pTable.hasSpaceGroupInColumns(tResultingColumns, i))
         {
             RowRating iRating(i, pTable, pStats);
             addToList(iRating);	//Add the rating for the current row into the order list of rows.
         }
     }
     iTable = &pTable;
-    delete tPGroupNumbers;
 }
 
 RankedSpaceGroups::RowRating::RowRating(int pRow, Table& pTable, Stats& pStats):Float(0)
@@ -1253,12 +1303,14 @@ std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when out
     RowRating* tCurrentRating;
         
     pStream << "RESULTS " << iSortedRatings.count() << "\n";
-    const int tPNum = iTable->getNumPointGroups();
-    int* tPointGroups = new int[tPNum];
+    set<int, ltint> tChiralPointGroups;
+	set<int, ltint> tLaueGroupPointGroups;
+	set<int, ltint> tPointGroups;
     
     if (iChiral)
     {
-        iTable->chiralPointGroups(tPointGroups);
+        iTable->chiralColumns(tPointGroups);
+		//iTable->laueGroupMatchingPG(iLaueGroup, tLaueGroupPointGroups);>>>>>>>>>>>
     }
     tRatingIter->reset();
     while ((tCurrentRating = tRatingIter->next()) != NULL)
@@ -1275,7 +1327,7 @@ std::ofstream& RankedSpaceGroups::output(std::ofstream& pStream)	//Used when out
             iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
     delete tRatingIter;
-    delete tPointGroups;
+  //  delete tPointGroups;
     return pStream;
 }
 
@@ -1283,12 +1335,11 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
 {
     Iterator<RowRating>* tRatingIter = iSortedRatings.createIterator();
     RowRating* tCurrentRating;
-    const int tPNum = iTable->getNumPointGroups();
-    int* tPointGroups = new int[tPNum];
+    set<int, ltint> tPointGroups;
     
     if (iChiral)
     {
-        iTable->chiralPointGroups(tPointGroups);
+        iTable->chiralColumns(tPointGroups);
     }
     pStream << "A '*' indicates that the row has been promoted because it seems that the data has been previously filtered for the centering.\n\n";
      
@@ -1306,7 +1357,6 @@ std::ostream& RankedSpaceGroups::output(std::ostream& pStream)
             iTable->outputLine(tCurrentRating->iRowNum, pStream);
     }
     delete tRatingIter;
-    delete tPointGroups;
     return pStream;
 }
 
