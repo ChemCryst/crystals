@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.40  2004/07/09 12:28:16  rich
+C \punch 12 b  writes a easy to read version of list 22
+C to the punch file. It can't be read back in, of course.
+C May develop this into something for the CIF.
+C
 C Revision 1.39  2004/04/21 13:11:45  rich
 C Added "#PUNCH 6 G" command, it outputs a SHELX format reflection
 C file, but using slightly perturbed Fcalc^2 and made-up sigma(F-calc^2).
@@ -1605,13 +1610,13 @@ C      JX            RELATIVE PARAMETER NO
 
       FLAG = IBLANK
 
-      DO WHILE(1)   ! More stuff in L12
+      DO WHILE(M12 .GE. 0)   ! More stuff in L12
         IF(ISTORE(M12+1).GT.0) THEN ! Any refined params
 C--COMPUTE THE ADDRESS OF THE FIRST PART FOR THIS GROUP
           L12A=ISTORE(M12+1)
 C--CHECK IF THIS PART CONTAINS ANY REFINABLE PARAMETERS
 2250  CONTINUE
-          DO WHILE(1) ! More parts in this param.
+          DO WHILE(L12A.GT.0) ! --CHECK IF THERE ARE ANY MORE PARTS FOR THIS ATOM OR GROUP
             IF(ISTORE(L12A+3).LT.0) EXIT
 C--SET UP THE CONSTANTS TO PASS THROUGH THIS PART
             MD12A=ISTORE(L12A+1)
@@ -1663,14 +1668,11 @@ C--INCREMENT TO THE NEXT PARAMETER OF THIS PART
             END DO
 C--CHANGE PARTS FOR THIS ATOM OR GROUP
             L12A=ISTORE(L12A)
-C--CHECK IF THERE ARE ANY MORE PARTS FOR THIS ATOM OR GROUP
-            IF(L12A.LE.0)EXIT
           END DO
         END IF
 C--MOVE TO THE NEXT GROUP OR ATOM
         M5=M5+MD5
         M12=ISTORE(M12)
-        IF (M12 .LE. 0) EXIT
       END DO
 
 C--AND NOW THE 'END'
