@@ -109,7 +109,7 @@
 %    CLEAR
 %    ON ERROR TERMINATE
 %%
-^^WI WINDOW XGUIDER 'Supervisor' POSITION CASCADE '_MAINTEXTOUTPUT'
+^^WI WINDOW XGUIDER 'The GUIDE' POSITION CASCADE '_MAINTEXTOUTPUT'
 ^^WI COMMAND='#SCRIPT XGUIDERC' DISABLEIF='IN' CANCEL='GR_BXX'
 ^^WI GRID HO NROWS=3 NCOLS=5
 ^^WI {
@@ -281,6 +281,9 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.6  2001/03/21 18:59:11  richard
+%%  Cut down output after validate, to try to keep validation stuff on the screen.
+%%
 %%  Revision 1.5  2001/03/21 17:07:16  richard
 %%  Changed window layout and bitmap.
 %%
