@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2003/05/07 12:18:53  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.9  2002/06/26 11:56:43  richard
 C Fixes for label mouse.
 C
@@ -106,7 +112,8 @@ C Left mouse button has been pressed.
 &DOSC Right mouse button has been pressed.
 &&GILGIDC Non-left click action e.g. return,
         RETURN
-      ENDIF
+&&&GILGIDWXS      ENDIF
+&DOS      ENDIF
 
 &DOSC Check the keyboard
 &DOS      CALL ZGTKY1(KK)

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.66  2003/11/07 10:43:24  rich
+C Pass the assembly and group numbers up to the GUI.
+C
 C Revision 1.65  2003/10/31 13:37:36  rich
 C Change the REFINE column in the atom list (now used for internal
 C info indecipherable by humans) into a RESIDUE column. Prints the
@@ -1020,41 +1023,41 @@ C                  STORE(I5+3) = 0.0
 
                      CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP)
 
-#DVF                 CALL FSTATM( CATTYP, NINT(STORE(I5+1)), LLAB,CLAB,
-#DVF     1           NINT(STR11(IPLACE)*GSCALE),
-#DVF     5           NINT(STR11(IPLACE+1)*GSCALE),
-#DVF     6           NINT(STR11(IPLACE+2)*GSCALE),
-#DVF     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-#DVF     8           NINT(1000*STORE(I5+2)), COV*GSCALE,
-#DVF     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-#DVF     3           AXES(1,1),AXES(2,1),AXES(3,1),
-#DVF     3           AXES(1,2),AXES(2,2),AXES(3,2),
-#DVF     3           AXES(1,3),AXES(2,3),AXES(3,3),
-#DVF     4           STORE(I5+4),STORE(I5+5),STORE(I5+6),
-#DVF     5           ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13) )
+##LINDVF                 CALL FSTATM( CATTYP, NINT(STORE(I5+1)), LLAB,CLAB,
+##LINDVF     1           NINT(STR11(IPLACE)*GSCALE),
+##LINDVF     5           NINT(STR11(IPLACE+1)*GSCALE),
+##LINDVF     6           NINT(STR11(IPLACE+2)*GSCALE),
+##LINDVF     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+##LINDVF     8           NINT(1000*STORE(I5+2)), COV*GSCALE,
+##LINDVF     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+##LINDVF     3           AXES(1,1),AXES(2,1),AXES(3,1),
+##LINDVF     3           AXES(1,2),AXES(2,2),AXES(3,2),
+##LINDVF     3           AXES(1,3),AXES(2,3),AXES(3,3),
+##LINDVF     4           STORE(I5+4),STORE(I5+5),STORE(I5+6),
+##LINDVF     5           ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13) )
 
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
-#DVF                 CALL FSTSPH( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-#DVF     5           NINT(STR11(IPLACE+1)*GSCALE),
-#DVF     6           NINT(STR11(IPLACE+2)*GSCALE),
-#DVF     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-#DVF     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-#DVF     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-#DVF     3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
-#DVF     4           NINT(STORE(I5+8) * GSCALE) )
+##LINDVF                 CALL FSTSPH( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+##LINDVF     5           NINT(STR11(IPLACE+1)*GSCALE),
+##LINDVF     6           NINT(STR11(IPLACE+2)*GSCALE),
+##LINDVF     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+##LINDVF     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+##LINDVF     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+##LINDVF     3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
+##LINDVF     4           NINT(STORE(I5+8) * GSCALE) )
 
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 
-#DVF                 CALL FSTRNG( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-#DVF     5           NINT(STR11(IPLACE+1)*GSCALE),
-#DVF     6           NINT(STR11(IPLACE+2)*GSCALE),
-#DVF     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-#DVF     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-#DVF     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-#DVF     3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
-#DVF     4           NINT(STORE(I5+8) * GSCALE),
-#DVF     5           NINT(STORE(I5+9)*100.0), NINT(STORE(I5+10)*100.0) )
+##LINDVF                 CALL FSTRNG( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+##LINDVF     5           NINT(STR11(IPLACE+1)*GSCALE),
+##LINDVF     6           NINT(STR11(IPLACE+2)*GSCALE),
+##LINDVF     7           NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+##LINDVF     8           NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+##LINDVF     2           NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+##LINDVF     3           NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
+##DVFLIN     4           NINT(STORE(I5+8) * GSCALE),
+##LINDVF     5           NINT(STORE(I5+9)*100.0), NINT(STORE(I5+10)*100.0) )
 
                END IF
 
@@ -1191,17 +1194,17 @@ c               CALL XPRVDU(NCVDU, 2,0)
                CALL XCTRIM( CMON(1), LTMN )
 
                IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
-#DVF             CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
-#DVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
-#DVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
-#DVF     1             KR,KG,KB,NINT(GSCALE*0.25),ISTORE(M41B+12),
-#DVF     1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
+##LINDVF             CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+##LINDVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+##LINDVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+##LINDVF     1             KR,KG,KB,NINT(GSCALE*0.25),ISTORE(M41B+12),
+##LINDVF     1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
                ELSE                       !Bond across symm op.
-#DVF             CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
-#DVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
-#DVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
-#DVF     1             KR,KG,KB,NINT(GSCALE*0.25),-ISTORE(M41B+12),
-#DVF     1           2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
+##LINDVF             CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+##LINDVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+##LINDVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+##LINDVF     1             KR,KG,KB,NINT(GSCALE*0.25),-ISTORE(M41B+12),
+##LINDVF     1           2,ISTR11(KNF11),LTMN,CMON(1),LLAB2,CLAB2(1:LLAB2))
                END IF
              END DO
 
@@ -1274,12 +1277,12 @@ c     1                            CLAB2(1:LLAB2),'''',
 c     1                  ' ''et al. Aromatic Ring'' ', 101
 c               CALL XPRVDU(NCVDU, 2,0)
 
-#DVF           CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
-#DVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
-#DVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
-#DVF     1             0,0,0,NINT(GSCALE*0.25),101,
-#DVF     1             ISTORE(M41S),ISTORE(M41S+1),13,
-#DVF     1             'Aromatic Ring',0,'' )
+##LINDVF           CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
+##LINDVF     1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
+##LINDVF     1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
+##LINDVF     1             0,0,0,NINT(GSCALE*0.25),101,
+##LINDVF     1             ISTORE(M41S),ISTORE(M41S+1),13,
+##LINDVF     1             'Aromatic Ring',0,'' )
 
 
 c               WRITE ( CMON,'(A,6F8.5)')

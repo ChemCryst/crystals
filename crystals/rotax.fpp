@@ -561,7 +561,7 @@ c works out the figure of merit
 
 
       do i=1,15
-	      q(i)=0
+        q(i)=0
       end do
       fom=0
       bc=0
@@ -619,28 +619,28 @@ c            d1 = sqrt(dot_product(bad,mvmul(GS,bad)))
             exit
           else
             bc=bc+1
-##GILWXS            jp = maxloc(dcopy)
-&&GILWXS            jp(1) = maxpos(dcopy,30)
+###GILWXSLIN            jp = maxloc(dcopy)
+&&&GILWXSLIN            jp(1) = maxpos(dcopy,30)
             dsum = dsum - dcopy(jp(1))
             dcopy(jp(1)) = 0.
             d(jp(1),1)=-d(jp(1),1)
           endif
       enddo
       fom=1000.*fom
-##GILWXS      q=1000*q
-&&GILWXS      do i=1,15
-&&GILWXS      q(i)=1000*q(i)
-&&GILWXS      end do
+###GILWXSLIN      q=1000*q
+&&&GILWXSLIN      do i=1,15
+&&&GILWXSLIN      q(i)=1000*q(i)
+&&&GILWXSLIN      end do
       end
 
-&&GILWXS      FUNCTION maxpos(dcopy, n)
-&&GILWXS      DIMENSION dcopy(n)
-&&GILWXS      maxpos = 1
-&&GILWXS      do i = 2,n
-&&GILWXS        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
-&&GILWXS      end do
-&&GILWXS      return
-&&GILWXS      end
+&&&GILWXSLIN      FUNCTION maxpos(dcopy, n)
+&&&GILWXSLIN      DIMENSION dcopy(n)
+&&&GILWXSLIN      maxpos = 1
+&&&GILWXSLIN      do i = 2,n
+&&&GILWXSLIN        if ( dcopy(i).gt.dcopy(maxpos) ) maxpos = i
+&&&GILWXSLIN      end do
+&&&GILWXSLIN      return
+&&&GILWXSLIN      end
 
       subroutine write_results(fom,disag, d,q,bc,m2,ipunch)
 c prints the results to rotax.out
@@ -664,8 +664,7 @@ c prints the results to rotax.out
       write(NCWU,1)(m2(2,i),i=1,3)
       write(NCWU,1)(m2(3,i),i=1,3)
       if (fom<2.) then
-        if (bc==0) then
-		  
+        if (bc==0) then 
           write(NCWU,2)fom,' ***********'
           write(NCWU,3) 
         else

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2003/11/10 10:17:53  djw
+C Set fontface to Arial and point size 20
+C
 C Revision 1.20  2003/05/07 12:18:53  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -756,17 +759,17 @@ C      CALL ZATMUL(0,0,0)
 &GID      K = KRDLIN ( IUNIT, CLINE, LENUSE )
 &GIL      K = KRDLIN ( IUNIT, CLINE, LENUSE )
 &WXS      K = KRDLIN ( IUNIT, CLINE, LENUSE )
-&DOS      IF (K.EQ.0) GOTO 1150
+&&LINDOS      IF (K.EQ.0) GOTO 1150
       CALL ZCLARE(0,IDEVCL(IBACK+1))
       ICURS = 1
-&DOS        IF (K.EQ.ICLEFT) THEN
+&&LINDOS        IF (K.EQ.ICLEFT) THEN
 &GID        IF (CLINE(1:1).EQ.'L') THEN
 &GIL        IF (CLINE(1:1).EQ.'L') THEN
 &WXS        IF (CLINE(1:1).EQ.'L') THEN
 C LEFT
         ANG = ABS(ANG)
         CALL ZROT(ANG,2)
-&DOS      ELSE IF (K.EQ.ICRGHT) THEN
+&&LINDOS      ELSE IF (K.EQ.ICRGHT) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'R') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'R') THEN
 &WXS      ELSE IF (CLINE(1:1).EQ.'R') THEN
@@ -774,34 +777,34 @@ C RIGHT
         ANG = -ABS(ANG)
         CALL ZROT(ANG,2)
 C UP
-&DOS      ELSE IF (K.EQ.ICUP) THEN
+&&LINDOS      ELSE IF (K.EQ.ICUP) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'U') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'U') THEN
 &WXS      ELSE IF (CLINE(1:1).EQ.'U') THEN
         ANG = ABS(ANG)
         CALL ZROT(ANG,1)
 C DOWN
-&DOS      ELSE IF (K.EQ.ICDOWN) THEN
+&&LINDOS      ELSE IF (K.EQ.ICDOWN) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'D') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'D') THEN
 &WXS      ELSE IF (CLINE(1:1).EQ.'D') THEN
         ANG = -ABS(ANG)
         CALL ZROT(ANG,1)
 C ANTICLOCKWISE
-&DOS      ELSE IF (K.EQ.ICANTI) THEN
+&&LINDOS      ELSE IF (K.EQ.ICANTI) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'A') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'A') THEN
 &WXS      ELSE IF (CLINE(1:1).EQ.'A') THEN
         ANG = -ABS(ANG)
         CALL ZROT(ANG,3)
 C CLOCKWISE
-&DOS      ELSE IF (K.EQ.ICCLCK) THEN
+&&LINDOS      ELSE IF (K.EQ.ICCLCK) THEN
 &GID      ELSE IF (CLINE(1:1).EQ.'C') THEN
 &GIL      ELSE IF (CLINE(1:1).EQ.'C') THEN
 &WXS      ELSE IF (CLINE(1:1).EQ.'C') THEN
         ANG = ABS(ANG)
         CALL ZROT(ANG,3)
-&DOS      ELSE IF (K.NE.0) THEN
+&&LINDOS      ELSE IF (K.NE.0) THEN
 &GID      ELSE 
 &WXS      ELSE 
 &GIL      ELSE 

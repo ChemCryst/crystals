@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.72  2003/12/05 14:58:33  rich
+C Correct CIF data names for disordered parts.
+C
 C Revision 1.71  2003/11/13 14:06:02  rich
 C Change element names to mixed case in summary and HTML output.
 C
@@ -1314,8 +1317,8 @@ C--LOOP OVER THE COORDS.
           J=J+NXF
           CALL SNUM(STORE(MP),BPD(MPD),NXD,NOP,J,LINEA)
           IF (IPCHCO .EQ. 3) THEN  
-##GILWXS            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&&GILWXS            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+###GILWXSLIN            WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&&&GILWXSLIN            WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c            CALL XCRAS(CHTML,NHTML)
             WRITE(NCPU,913)CHTML(1:)
 913         FORMAT('<TD>',A,'</TD>')
@@ -1348,8 +1351,8 @@ C----- INDICATE THAT THERE ARE SOME U[ANISO] TO PRINT
 C----- PRINT THE ISO OR EQUIV TEMPERATURE FACTOR
         CALL SNUM(BUFF(2),BPD(2),NUD,NOP,J,LINEA)
         IF (IPCHCO .EQ. 3) THEN  
-##GILWXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&&GILWXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+###GILWXSLIN          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&&&GILWXSLIN          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
           WRITE(NCPU,913)CHTML(1:)
         END IF
@@ -1368,8 +1371,8 @@ c            w = store(m5+2)*store(m5+13)
         endif
         CALL SNUM ( W, BPD(1), NUD, NOP, J, LINEC)
         IF (IPCHCO .EQ. 3) THEN  
-##GILWXS          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
-&&GILWXS          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
+###LINGILWXS          WRITE(CHTML,'(80A1)') LINEC(LOJ:J+4)
+&&&LINGILWXS          WRITE(CHTML,'(80A1)') (LINEC(JR),JR=LOJ,J+4)
 c          CALL XCRAS(CHTML,NHTML)
           WRITE(NCPU,913)CHTML(1:)//'</TR>'
         END IF
@@ -1656,8 +1659,8 @@ C--LOOP OVER THE PARAMETERS
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
 
       IF (IPCHCO .EQ. 3) THEN  
-##GILWXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
-&&GILWXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
+###LINGILWXS          WRITE(CHTML,'(80A1)') LINEA(LOJ:J+4)
+&&&LINGILWXS          WRITE(CHTML,'(80A1)') (LINEA(JR),JR=LOJ,J+4)
           WRITE(NCPU,913)CHTML(1:)
 913       FORMAT('<TD>',A,'</TD>')
       END IF
