@@ -90,7 +90,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartEllipseF:
 			{
 				tokenList->GetToken(); // Remove that token!
-				CcChartEllipse* item = new CcChartEllipse(TRUE);
+                        CcChartEllipse* item = new CcChartEllipse(true);
 				item->ParseInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
@@ -98,7 +98,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartEllipseE:
 			{
 				tokenList->GetToken(); // Remove that token!
-				CcChartEllipse* item = new CcChartEllipse(FALSE);
+                        CcChartEllipse* item = new CcChartEllipse(false);
 				item->ParseInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
@@ -106,7 +106,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartPolyF:
 			{
 				tokenList->GetToken(); // Remove that token!
-				CcChartPoly* item = new CcChartPoly(TRUE);
+                        CcChartPoly* item = new CcChartPoly(true);
 				item->ParseInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
@@ -114,7 +114,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartPolyE:
 			{
 				tokenList->GetToken(); // Remove that token!
-				CcChartPoly* item = new CcChartPoly(FALSE);
+                        CcChartPoly* item = new CcChartPoly(false);
 				item->ParseInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
@@ -122,7 +122,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartFastPolyF:
 			{
 				tokenList->GetToken(); // Remove that token!
-				CcChartPoly* item = new CcChartPoly(TRUE);
+                        CcChartPoly* item = new CcChartPoly(true);
 				item->FastInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
@@ -130,7 +130,7 @@ Boolean	CcChartDoc::ParseInput( CcTokenList * tokenList )
 			case kTChartFastPolyE:
 			{
 				tokenList->GetToken(); // Remove that token!
-				CcChartPoly* item = new CcChartPoly(FALSE);
+                        CcChartPoly* item = new CcChartPoly(false);
 				item->FastInput(tokenList);
 				mCommandList->AddItem(item);
 				break;
