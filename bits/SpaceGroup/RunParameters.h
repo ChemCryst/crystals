@@ -23,11 +23,11 @@ class RunParameters
 {
     private:
         bool iRequestChirality;	//If this is true then the user will be asked if the file crystal is chiral.
-		//SystemID iCrystalSystem;	//Crystal System
-		LaueGroup* iLaueGroup; //The LaueGroup identified
-		UnitCell iUnitCell;	//The unit cell
-		void readParamFile();
-        bool handleArg(int *pPos, int pMax, const char * argv[]);
+	//SystemID iCrystalSystem;	//Crystal System
+	LaueGroup* iLaueGroup; //The LaueGroup identified
+	UnitCell iUnitCell;	//The unit cell
+	void readParamFile();
+	bool handleArg(int *pPos, int pMax, const char * argv[]);
     public:
         Path iFileName;		//File name for the hkl data.
         Path iTablesFile;               //The file name of the tables file.
@@ -35,14 +35,14 @@ class RunParameters
         Path iParamFile;		//A path to the file which contains any further parameters.
         bool iChiral;		//False is not nessaseraly chiral. -nc, -c
         bool iVerbose;		//If this is set true the program will output the stats table after it has calculated all it's probabilits. -v
-		bool iMerge;		//If this is set true then the HKL data will be merged to try and find the laue group. Default is true. -m
+       	bool iMerge;		//If this is set true then the HKL data will be merged to try and find the laue group. Default is true. -m
         
 		
 		//void setCrystalSystem(SystemID pSystem);
-		void setLaueGroup(LaueGroup* pLaueGroup);
-		SystemID crystalSystem();
-		LaueGroup* laueGroup();
-		UnitCell& unitCell();
+	void setLaueGroup(LaueGroup* pLaueGroup);
+	SystemID crystalSystem();
+	LaueGroup* laueGroup();
+	UnitCell& unitCell();
         RunParameters();
         void handleArgs(int pArgc, const char* argv[]);
         void getParamsFromUser();
