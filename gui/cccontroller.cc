@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.64  2003/05/21 11:22:18  rich
+// Log some comments as the CRYSTALS thread dies.
+//
 // Revision 1.63  2003/05/14 13:31:01  rich
 // Diagnostic should go to log, not appear as an error.
 //
@@ -3754,12 +3757,12 @@ extern "C" {
         }
 
   #ifdef __CR_WIN__
+       (CcController::theController)->mCrystalsThread = nil;
         AfxEndThread((UINT) theExitcode);
   #endif
   #ifdef __BOTHWX__
         (CcController::theController)->mCrystalsThread->CcEndThread( theExitcode );
   #endif
-
   }
 
 } // end of C functions
