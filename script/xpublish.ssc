@@ -19,13 +19,18 @@
 ^^WI     @ 3,1 STATIC T2 'for a full listing.'
 ^^WI   }
 ^^WI   @ 2,4 LISTBOX PUB_LIST VISLINES=10 ADDTOLIST
-^^WI         'Close' 'Cif' 'XYZ' 'Aniso' 'Distances' 'Chime' 
+^^WI         'Cif' 'XYZ' 'Aniso' 'Distances' 'Chime' 
 ^^WI         'Shelx' 'Reflections' 'Summary' 'Residuals' 'Save'
 ^^WI         NULL
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1
 ^^WI   {
+%    IF LOOPCOUNTER .EQ. 1 THEN
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT
 ^^WI     @ 3,1 BUTTON BXX '&Close'  CANCEL
+%    ELSE
+^^WI     @ 1,1 BUTTON BOK '&Ok' 
+^^WI     @ 3,1 BUTTON BXX '&Close' DEFAULT COMMIT CANCEL
+%    END IF
 ^^WI     @ 5,1 BUTTON BHH '&Help'
 ^^WI   }
 ^^WI }
@@ -79,11 +84,6 @@
 %          EVALUATE PFLAG = 1
 %        END IF
 %        CASE VALUE
-%          BLOCK                                        %CLOSE%
-^^WI         DISPOSE XPUB
-^^CR
-%            EVALUATE LOOPEND = LOOPCOUNTER
-%          END BLOCK
 %          BLOCK                                         %CIF%
  
  *  The cif file is in  'PUBLISH.CIF'
