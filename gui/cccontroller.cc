@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.70  2003/09/03 20:55:17  rich
+// Fix elapse time functions under Linux.
+//
 // Revision 1.69  2003/08/14 18:18:12  rich
 // Fix bug discovered in overnight build.
 //
@@ -409,6 +412,7 @@
   #include <sys/time.h>
   #define F77_STUB_REQUIRED
   #include "ccthread.h"
+  #include <wx/thread.h>
   #include <wx/cmndata.h>
   #include <wx/fontdlg.h>
   #include <wx/filedlg.h>
@@ -461,6 +465,8 @@ static CcLock m_Protect_Completing_CS(true);
 
 static CcLock m_Crystals_Command_Added_CS(false);
 static CcLock m_Complete_Signal(false);
+
+static CcLock m_wait_for_thread_start(false);
 
 
 #ifdef __BOTHWX__
@@ -2900,8 +2906,9 @@ UINT CrystalsThreadProc( LPVOID arg );
 SUBROUTINE CRYSTL();
 UINT CrystalsThreadProc( LPVOID arg )
 {
-    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
+ 
 
+    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
     CRYSTL();
     return 0;
 }
@@ -2912,7 +2919,19 @@ int CrystalsThreadProc( void* arg );
 SUBROUTINE_F77 crystl_();
 int CrystalsThreadProc( void * arg )
 {
+
+    LOGSTAT("FORTRAN: Grabbing Crystals_Thread_Alive mutex");
     m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
+
+    LOGSTAT("FORTRAN: Grabbing wait_for_thread_start mutex");
+    m_wait_for_thread_start.Enter();
+
+    LOGSTAT("FORTRAN: Signalling wait_for_thread_start condition");
+    m_wait_for_thread_start.Signal(true);
+
+    m_wait_for_thread_start.Leave();
+
+    LOGSTAT("FORTRAN: Running CRYSTALS");
     crystl_();
     return 0;
 }
@@ -2935,9 +2954,27 @@ void CcController::StartCrystalsThread()
    mCrystalsThread = AfxBeginThread(CrystalsThreadProc,&arg);
 #endif
 #ifdef __BOTHWX__
+ 
+   LOGSTAT("GUI: Grabbing wait_for_thread_start mutex");
+   m_wait_for_thread_start.Enter();
+
    mCrystalsThread = new CcThread();
-   mCrystalsThread->Create();
-   mCrystalsThread->Run();
+   wxThreadError a =  mCrystalsThread->Create();
+   if ( a == wxTHREAD_NO_ERROR ) 
+     LOGSTAT("No create error");
+   else
+     LOGSTAT("Thread create error");
+
+   a = mCrystalsThread->Run();
+   if ( a == wxTHREAD_NO_ERROR ) 
+     LOGSTAT("No run error");
+   else
+     LOGSTAT("Thread run error");
+
+   LOGSTAT("GUI: Releasing and waiting for wait_for_thread_start signal");
+   m_wait_for_thread_start.Wait(0);
+   LOGSTAT("GUI: Continuing.");
+
 #endif
 
 //                                                            //
