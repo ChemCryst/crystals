@@ -43,6 +43,7 @@
 #else
 #include <regex.h>
 #endif
+#include "PCPort.h"
 
 static regex_t* iFirstLineRE = NULL;
 static regex_t* iMatFormRE = NULL;
