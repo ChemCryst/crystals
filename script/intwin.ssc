@@ -56,6 +56,11 @@
 %    COPY '#SCRIPT sysed5'
 %  END IF
 %%
+{S *  Backing-up the existing observations to 'pretwin6.dat'
+% COPY '#RELEASE PUNCH pretwin6.dat'
+% COPY '#PUNCH 6 C'
+% COPY 'END'
+% COPY '#RELEASE PUNCH bfile.pch'
 {S *  Converting the reflection list format
 % COPY '#LIST 6'
 % COPY 'READ TYPE=TWIN'

@@ -366,7 +366,12 @@
 %           COPY 'END'
 {S * Adding twin element scales to list 5 (to be refined).
 %           COPY '#SCRIPT addtwin'
-{S *  Converting the reflection list to twinned (FOT) format
+{S * Backing-up the existing observations to 'pretwin6.dat'
+%           COPY '#RELEASE PUNCH pretwin6.dat'
+%           COPY '#PUNCH 6 C'
+%           COPY 'END'
+%           COPY '#RELEASE PUNCH bfile.pch'
+{S * Converting the reflection list to twinned (FOT) format.
 %           COPY '#LIST 6'
 %           COPY 'READ TYPE=TWIN'
 %           CLEAR

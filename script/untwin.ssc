@@ -16,11 +16,36 @@
 {R Done.
 
 
-{S * Removing FOT and element tags from LIST 6.
-% COPY '#LIST 6'
-% COPY 'READ TYPE=COPY'
-% COPY 'END'
+{S * Recovering backed up reflection list from 'pretwin6.dat'.
+% IF FILEEXISTS 'pretwin6.dat' .EQ. TRUE THEN
+%    COPY '#USE pretwin6.dat'
 {R Done.
+% ELSE
+
+
+
+
+
+
+{E
+{E Error. Pretwin6.dat not found.
+{E
+{I All is not lost. You may recover your List 6 as follows:
+{R Choose X-ray data -> View Reflections
+{R On the line starting INPUT, change the value /FO/ to /FOT/ and
+{R change /FOT/ to /FO/. Then save the file.
+{I Type
+{R #USE scplst6.dat
+{R #LIST 6
+{R READ TYPE=COPY
+{R END
+{I Your original observations should be back in the /FO/ column.
+
+
+
+
+
+% END IF
 
 {S * Removing element scales from list 5.
 %  VARIABLE INTEGER MD5ES
