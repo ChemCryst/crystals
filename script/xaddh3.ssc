@@ -86,7 +86,7 @@
 ^^WI     @ 2,1 STATIC S2 'occupancy.'
 ^^WI   }
 ^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {
-^^WI     @ 1,1 BITMAP H33 FILE
+^^WI     @ 1,1 GRID HHH NROWS=1 NCOLS=1 { @ 1,1 BITMAP H33 FILE
 %        CASE HTYPE
 %         BLOCK
 ^^WI       'h33.bmp'
@@ -110,7 +110,7 @@
 ^^WI       'hphen.bmp'
 %         END BLOCK
 %        END CASE
-^^WI     @ 1,3 GRID F NROWS=13 NCOLS=5 {
+^^WI  }  @ 1,3 GRID F NROWS=13 NCOLS=5 {
 ^^WI       @ 1,1 STATIC A0 'Position'
 ^^WI       @ 1,3 STATIC A0 'Atom'
 ^^WI       @ 1,5 STATIC A0 'Occupancy'

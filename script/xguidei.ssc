@@ -46,7 +46,10 @@
 ^^WI COMMAND='#SCRIPT XGUIDEIC' DISABLEIF='IN' CANCEL='GI_BXX'
 ^^WI GRID HO NROWS=3 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 BITMAP GUIDEB TRANS FILE 'guide1.bmp'
+^^WI  @ 2,2 GRID BM NROWS=1 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 BITMAP GUIDEB TRANS FILE 'guide1.bmp'
+^^WI  }
 ^^WI  @ 2,4 GRID MID NROWS=3 NCOLS=3
 ^^WI  {
 ^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST
@@ -105,6 +108,9 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.6  2001/11/16 15:28:18  ckp2
+%%  Add a bit more intelligence to the import guide to help poor old SHELX users.
+%%
 %%  Revision 1.5  2001/04/03 09:52:17  richard
 %%  Changed name from 'Supervisor' to 'The GUIDE' for consistency.
 %%

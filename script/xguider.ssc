@@ -114,7 +114,10 @@
 ^^WI COMMAND='#SCRIPT XGUIDERC' DISABLEIF='IN' CANCEL='GR_BXX'
 ^^WI GRID HO NROWS=3 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 BITMAP GUIDEB TRANS FILE 'guide3.bmp'
+^^WI  @ 2,2 GRID BM NROWS=1 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 BITMAP GUIDEB TRANS FILE 'guide3.bmp'
+^^WI  }
 ^^WI  @ 2,4 GRID MID NROWS=3 NCOLS=3
 ^^WI  {
 ^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST
@@ -290,6 +293,11 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.8  2001/11/16 15:29:27  ckp2
+%%  Fix situation where R-factor is very good without aniso refinement and the guide
+%%  starts chuntering on about adding hydrogen before it's even recommended aniso
+%%  refinement.
+%%
 %%  Revision 1.7  2001/04/03 09:52:17  richard
 %%  Changed name from 'Supervisor' to 'The GUIDE' for consistency.
 %%

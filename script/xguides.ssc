@@ -42,7 +42,10 @@
 ^^WI COMMAND='#SCRIPT XGUIDESC' DISABLEIF='IN' CANCEL='GS_BXX'
 ^^WI GRID HO NROWS=3 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 BITMAP GUIDEB TRANS FILE 'guide2.bmp'
+^^WI  @ 2,2 GRID BM NROWS=1 NCOLS=1
+^^WI  {
+^^WI    @ 1,1 BITMAP GUIDEB TRANS FILE 'guide2.bmp'
+^^WI  }
 ^^WI  @ 2,4 GRID MID NROWS=3 NCOLS=3
 ^^WI  {
 ^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST
@@ -87,6 +90,10 @@
 %END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.6  2002/03/08 12:21:17  ckp2
+%%  Changed guides to offer "initial analyses" option before proceeding to solve. Added key
+%%  to put and get info scripts to store that this has been done.
+%%
 %%  Revision 1.5  2001/04/03 09:52:17  richard
 %%  Changed name from 'Supervisor' to 'The GUIDE' for consistency.
 %%
