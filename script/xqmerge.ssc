@@ -1,0 +1,30 @@
+%SCRIPT XQMERGE
+%%
+%% Ask the user if they want to merge the data.
+%% There is scope for improvement here - recommend
+%% what the user should do.
+%%
+%% Return values
+%% LOGICAL XQMERGE     TRUE - merge the data
+%%                     FALSE - don't merge.
+%%
+%  VARIABLE LOGICAL XQMERGE
+%  EVALUATE XQMERGE = FALSE
+%%
+%%
+%% The variables needed by XQUESTIO
+%%
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+%%
+%%
+% EVALUATE QTITLE = 'Merge equivalent reflections'
+% EVALUATE QLINE1 = 'Do you want to'
+% EVALUATE QLINE2 = 'merge the data?'
+% EVALUATE BUTTOK = '&Yes'
+% EVALUATE BUTTXX = '&No'
+% COPY '#SCRIPT XQUESTIO'
+% IF ANSWER .EQ. TRUE THEN
+%   EVALUATE XQMERGE = TRUE
+% END IF
+%END SCRIPT
