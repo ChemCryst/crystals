@@ -34,11 +34,15 @@
 %%
 ^^WI WINDOW XLIST28 'Filter reflections' MODAL
 ^^WI COMMIT='BOK' CANCEL='BXX'
-^^WI GRID MAIN NROWS=9 NCOLS=3 
+^^WI GRID MAIN NROWS=7 NCOLS=3 
 ^^WI {
-^^WI   @ 2,2 GRID M NROWS=10 NCOLS=9 COMMAND='UPDATE'
-^^WI         OUTLINE='Min and max acceptable limits'
+^^WI  @ 2,2 TABCTRL MOGULTABS
+^^WI  {
+^^WI   TAB MGTAB0 'Ranges' GRID X28T NROWS=1 NCOLS=1
 ^^WI   {
+^^WI    @ 1,1 GRID M NROWS=10 NCOLS=9 COMMAND='UPDATE'
+^^WI         OUTLINE='Min and max acceptable limits'
+^^WI    {
 ^^WI     @ 1,1 STATIC SBH  'H' 
 ^^WI     @ 2,1 STATIC SBK  'K' 
 ^^WI     @ 3,1 STATIC SBL  'L' 
@@ -89,9 +93,12 @@
 ^^WI     @ 8,9 EDITBOX TRATI '' DISABLED = YES
 ^^WI     @ 9,9 EDITBOX TSQRW '' DISABLED = YES
 ^^WI     @ 10,9 EDITBOX TTHET '' DISABLED = YES
+^^WI    }
 ^^WI   }
-^^WI   @ 4,2 GRID CONS NROWS=1 NCOLS=3
+^^WI   TAB MGTAB0 'Omit' GRID X28T2 NROWS=1 NCOLS=1
 ^^WI   {
+^^WI    @ 1,1 GRID CONS NROWS=1 NCOLS=3
+^^WI    {
 ^^WI     @ 1,1 GRID OMIT NROWS=5 NCOLS=1 OUTLINE='Omit'
 ^^WI     {
 ^^WI       @ 5,1 LISTBOX L28OMIT VISLINES=4 ADDTOLIST
@@ -216,19 +223,20 @@
 ^^WI         }
 ^^WI       }
 ^^WI     }
+^^WI    }
 ^^WI   }
-^^WI   @ 6,2 GRID ADVISE NROWS=4 NCOLS=1 OUTLINE='Recommended settings'
+^^WI   @ 4,2 GRID ADVISE NROWS=4 NCOLS=1 OUTLINE='Recommended settings'
 ^^WI   {
 ^^WI     @ 1,1 STATIC SBH
-^^WI 'I/sigma(I) should be at least 3.0 for initial F refinement.'
+^^WI 'Min I/sigma(I) should usually be about 3.0 for initial F refinement.'
 ^^WI     @ 2,1 STATIC SBH
-^^WI 'For F**2 refinement an I/sigma(I) cutoff is not required.'
+^^WI 'For F**2 refinement a minimum I/sigma(I) cutoff is not required.'
 ^^WI     @ 3,1 STATIC SBH
 ^^WI '[Sin theta/lambda]**2 at least 0.01 helps to eliminate reflections'
 ^^WI     @ 4,1 STATIC SBH
 ^^WI 'that may be poorly measured in the vicinity of the beam stop.'
 ^^WI   }
-^^WI   @ 8,2 GRID RIGHT NROWS=1 NCOLS=8
+^^WI   @ 6,2 GRID RIGHT NROWS=1 NCOLS=8
 ^^WI   {
 ^^WI     @ 1,1 STRETCH SSS HORIZONTAL
 ^^WI     @ 1,4 BUTTON BOK '&OK' COMMIT DEFAULT
@@ -457,6 +465,7 @@ or uncheck all the boxes in the dialog.
 ^^WI SET L28OMIT ADDTOLIST
 %     OUTPUT
 ^^CR
+^^CO SET OMH TEXT '' SET OMK TEXT '' SET OML TEXT ''
 ^^CO SET BREM DISABLED = NO
 %   END BLOCK
 %   BLOCK               %BREM
@@ -467,6 +476,7 @@ or uncheck all the boxes in the dialog.
 %     IF VALUE .GT. 0 .AND. NOMITS .GT. 0 THEN
 %       OUTPUT
 %       EVALUATE NOMITS = NOMITS - 1
+^^CO SET L28OMIT SELECTION=1
 %     END IF
 %     IF NOMITS .EQ. 0 THEN
 ^^CO SET BREM DISABLED = YES
