@@ -92,7 +92,12 @@
  Warning occupancy was not fixed in SHELX file.
  This must be set to be refined in CRYSTALS list 12.
 %     ELSE
-%        EVALUATE SXO = SXO - 10.0
+%       LOOP 100 TIMES
+%         EVALUATE SXO = SXO - 10.0
+%         IF SXO .LT. 5.0 THEN
+%           EVALUATE LOOPEND = LOOPCOUNTER
+%         END IF
+%       END LOOP
 %     END IF
 %     COPY '#SCRIPT SXEOLCHK'
 %     IF ( SXEOL ) THEN
