@@ -10,6 +10,8 @@
 
 #include    "crystalsinterface.h"
 #include    "cclock.h"
+#include    "ccstring.h"
+#include    "cccontroller.h"
 
 #ifdef __CR_WIN__
 #include <iostream>
@@ -71,34 +73,38 @@ CcLock::~CcLock()
 void CcLock::Enter()
 {
     m_Locked ++;
+//    LOGSTAT ("++++Entering critical section: " + CcString(m_Locked) + "\n");
 #ifdef __CR_WIN__
     WaitForSingleObject( m_Mutex, INFINITE );
 #endif
 #ifdef __BOTHWX__
     m_CSMutex -> Lock();
 #endif
-  
+//    LOGSTAT ("++++Critical section entered: " + CcString(m_Locked) + "\n");
 }
 
 void CcLock::Leave()
 {
     if ( m_Locked > 0 ) m_Locked --;
+//    LOGSTAT ("++++Leaving critical section: " + CcString(m_Locked) + "\n");
 #ifdef __CR_WIN__
     ReleaseMutex( m_Mutex );
 #endif
 #ifdef __BOTHWX__
     m_CSMutex -> Unlock();
 #endif
-
+//    LOGSTAT ("++++Critical section left: " + CcString(m_Locked) + "\n");
 }
 
 bool CcLock::IsLocked()
 {          
+//    LOGSTAT ("++++Is Locked: " + CcString(m_Locked) + "\n");
     return ( m_Locked > 0 );
 }
 
 bool CcLock::Wait(int timeout_ms)
 {
+//    LOGSTAT ("++++Waiting for object.");
 #ifdef __CR_WIN__
     if ( timeout_ms ) return ( WaitForSingleObject( m_Mutex, timeout_ms) == WAIT_OBJECT_0 );
     return ( WaitForSingleObject( m_Mutex, INFINITE ) == WAIT_OBJECT_0 );
@@ -113,6 +119,7 @@ bool CcLock::Wait(int timeout_ms)
 
 void CcLock::Signal(bool all)
 {
+//    LOGSTAT ("++++Signalling object." + CcString(all?"True":"False") );
 #ifdef __CR_WIN__
     PulseEvent(m_Mutex);
 #endif
