@@ -22,6 +22,7 @@
 % VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA
 % VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ
 % VARIABLE REAL SXU33 SXU23 SXU13 SXU12
+% VARIABLE REAL SXOCC CRYOCC SPECOCC
 %% variables used by the question box below
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 % VARIABLE LOGICAL ANSWER
@@ -404,19 +405,52 @@ PROPERTIES CRYSDIR:\SCRIPT\PROPWIN.DAT
 {R Shelx file processed.
 %  COPY '#CLOSE SCPDATA'
 %      BLOCK
-%      EVALUATE QTITLE = 'Change Q atoms?'
-%      EVALUATE QLINE1 = 'Do you want to change all Q'
-%      EVALUATE QLINE2 = 'atoms to Carbon?'
-%      EVALUATE BUTTOK = '&Yes'
-%      EVALUATE BUTTXX = '&No'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. TRUE THEN
-%      COPY '#EDIT'
-%      COPY 'TYPECHANGE TYPE EQ Q C'
-%      COPY 'END'
-%      END IF
-%      END BLOCK
+%       EVALUATE QTITLE = 'Change Q atoms?'
+%       EVALUATE QLINE1 = 'Do you want to change all Q'
+%       EVALUATE QLINE2 = 'atoms to Carbon?'
+%       EVALUATE BUTTOK = '&Yes'
+%       EVALUATE BUTTXX = '&No'
+%       COPY '#SCRIPT XQUESTIO'
+%       IF ANSWER .EQ. TRUE THEN
+%        COPY '#EDIT'
+%        COPY 'TYPECHANGE TYPE EQ Q C'
+%        COPY 'END'
+%       END IF
 %%
+%% Change SHELX occupancies (cryst) to CRYSTALS occupancies (chem)
+%%
+%       BLOCK
+%%
+%% Put crystallographic occupancy into 'SPARE' (offset 13)
+%%
+%        COPY '#SPEC TEST PARAMETER'
+%        COPY 'END'
+%%
+%        ON EDITERROR TERMINATE
+%        COPY '#GENERALEDIT 5'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%        LOOP 
+%         ON EDITERROR TERMINATE
+%         COPY 'TRANSFER FROM OFFSET=2 TO SXOCC'
+%         COPY 'TRANSFER FROM OFFSET=13 TO SPECOCC'
+%%
+%% Divide shelx occ by SPARE to give chemical occupancy.
+%%
+%         IF ( SPECOCC .LE. 0.0 ) THEN
+%           EVALUATE SPECOCC = 1.0
+%         END IF
+%         EVALUATE CRYOCC = SXOCC / SPECOCC
+%         COPY 'TRANSFER TO OFFSET=2 FROM CRYOCC'
+%         COPY 'NEXT'
+%        END LOOP
+%%
+%% End of list 5 - EditError jumps out of loop.
+%%
+%        COPY 'WRITE'
+%        COPY 'END'
+%       END BLOCK
+%      END BLOCK
 %%
 %      BLOCK
 %      EVALUATE QTITLE = 'Use Cameron?'
