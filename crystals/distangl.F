@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2002/06/21 09:49:03  Administrator
+C Fix zero esds on bonds across a symmetry operator between atoms on special positions
+C
 C Revision 1.19  2002/03/15 16:50:00  richard
 C Type #SET BONDTYPE OFF to suppress bond type calculation.
 C
@@ -139,12 +142,12 @@ C            2 ANGLES
 C            3 ALL
 C  IPUNCH    PUNCHED OUTPUT
 C            -1 NOTHING
-C            -1 NOTHING
 C             0 RESTRAINTS
 C             1 PUBLICATION
 C             2 CIF
-C             3 SCRIPT READ-ABLE DATA
+C             3 SCRIPT READ-ABLE RIDE INSTRUCTIONS
 C             4 MOGUL query file.
+C             5 SIMPLE SCRIPT READ-ABLE DATA
 C
 C  ISYMOD   SYMMETRY MODIFIER
 C           -1  PATTERSON
@@ -1029,6 +1032,11 @@ C the atom, excluding any H in the structure.
      2            CATOM2(1:LATOM2)
                 END IF
               END IF
+              IF (IPUNCH .EQ. 5) THEN
+C----- WRITE SIMPLE FORM
+                WRITE (NCPU,'(F7.3,2(1X,A))')
+     1          STORE(J+10), CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+              ENDIF
 C
               IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
 C----- WRITE A CAPTION
@@ -1564,6 +1572,9 @@ C CSD ignores bonds to H, instead uses an NCH key for atoms with H's.
                 WRITE(NCPU,
      1          '(''ANGL '',I3,'',1= '',A,'' to '',A,'' to '',A)')
      1          NANG,CATOM1(1:LATOM1),CATOM2(1:LATOM2),CATOM3(1:LATOM3)
+              ELSE IF (IPUNCH .EQ. 5) THEN
+                WRITE(NCPU,'(F7.2,3(1X,A))')
+     1          TERM,CATOM1(1:LATOM1),CATOM2(1:LATOM2),CATOM3(1:LATOM3)
               ENDIF
               IF (IDSPDA .GE. 2 ) THEN
                 CBUFF = ' '
