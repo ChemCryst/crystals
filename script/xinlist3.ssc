@@ -59,7 +59,6 @@
 %       END BLOCK
 %       BLOCK                   %XCOPPER%
 %               VERIFY CHECKED UNCHECKED
-^^DI NOECHO
 %               GET NOSTORE FINAL ABBREVIATED ' ' ' '
 %               IF VALUE .EQ. 1 THEN
         ^^DI UPDATEITEM XMOLY UNCHECKED
@@ -69,7 +68,6 @@
 %       END BLOCK
 %       BLOCK                   %XMOLY%
 %               VERIFY CHECKED UNCHECKED
-^^DI NOECHO
 %               GET NOSTORE FINAL ABBREVIATED ' ' ' '
 %               IF VALUE .EQ. 1 THEN
         ^^DI UPDATEITEM XCOPPER UNCHECKED
@@ -86,7 +84,6 @@
 % VARIABLE INTEGER ELEMENTCOUNT
 ^^DI GETITEM XCOPPER
 % VERIFY CHECKED UNCHECKED
-^^DI NOECHO
 % GET NOSTORE FINAL ABBREVIATED ' ' ' '
 % CASE VALUE
 %    COPY '#OPEN SCPDATA CRSCP:SCATCU'
@@ -95,7 +92,6 @@
 %
 %  MESSAGE USER1 'An invalid element name was given ( ignored )'
 ^^DI GETITEM EDATOM
-^^DI NOECHO
 % GET NOSTORE TEXT ' ' ' '
 % TRANSFER '^^MN COPYBACK ' // CVALUE // '_nEND' TO DISPLAY
 % QUEUE REWIND
@@ -105,7 +101,6 @@
 %    EXTRACT REWIND
 %    CLEAR
 %    INSERT '%EXTRACT FIND STRING "'
-^^DI NOECHO
 %    GET APPEND KEYWORD -
       'Element name ( Use END, on a line by itself, to end input )'
 %    INSERT '"'

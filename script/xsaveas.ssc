@@ -4,7 +4,7 @@
 %% to it and restart with it.
 ^^WI SYSSAVEFILE 'v2save.dsc' '*.dsc' 'CRYSTALS database (*.dsc)'
 ^^CR
-%    GET KEYWORD 'New disk filename:'
+%    GET SILENT KEYWORD 'New disk filename:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 %      EVALUATE CTITLE = GETTITLE ( CVALUE )
 %      EVALUATE CPATH = GETPATH ( CVALUE )

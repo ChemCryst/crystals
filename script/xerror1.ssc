@@ -29,9 +29,7 @@ Alternatives:
      of co-ordinates. Choose 'Input information' from
      the list, and then choose 'Other data'.
 
-^^WI       SET Q1E1 NOECHO
-^^CR
-%          GET NOSTORE TEXT ' ' ' '
+%          GET SILENT NOSTORE TEXT ' ' ' '
 ^^WI       DISPOSE HINT
 ^^CR
 %END SCRIPT

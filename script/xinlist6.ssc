@@ -70,7 +70,7 @@
 %%
 % LOOP
 %   VERIFY BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3
-%   GET NOSTORE FINAL ABBREVIATED 'Opt' ' '
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'Opt' ' '
 %   CASE VALUE
 %     BLOCK                         %BOK%
 %%
@@ -85,7 +85,7 @@
 %         CLEAR
 %         INSERT '#OPEN HKLI'
 ^^??      L6FILE TEXT
-%         GET FINAL FILENAME -
+%         GET SILENT FINAL FILENAME -
           'Reflection File (HKLI file) '
 %         IF ( .NOT. ( FILEEXISTS CVALUE ) ) THEN
  Error: Filename given does not exist.
@@ -99,12 +99,12 @@
 %       BLOCK   %REFLECTION TYPE%
 %         VERIFY ON OFF
 ^^??      RFS1 STATE
-%         GET NOSTORE FINAL ABBREVIATED 'Fs?' 'OFF'
+%         GET SILENT NOSTORE FINAL ABBREVIATED 'Fs?' 'OFF'
 %         IF VALUE .EQ. 1 THEN
 %           EVALUATE FS = 1
 %         ELSE
 ^^??        RFS2 STATE
-%           GET NOSTORE FINAL ABBREVIATED 'Fsq?' 'ON'
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Fsq?' 'ON'
 %           IF VALUE .EQ. 1 THEN
 %             EVALUATE FS = 2
 %           ELSE
@@ -112,17 +112,17 @@
 %           END IF
 %         END IF
 ^^??      RDF1 STATE
-%         GET NOSTORE FINAL ABBREVIATED 'Free format?' 'OFF'
+%         GET SILENT NOSTORE FINAL ABBREVIATED 'Free format?' 'OFF'
 %         EVALUATE FMT = VALUE
 %         IF VALUE .EQ. 2 THEN
 ^^??        RDF2 STATE
-%           GET NOSTORE FINAL ABBREVIATED 'Shelx format?' 'ON'
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Shelx format?' 'ON'
 %           EVALUATE SHELX = VALUE
 %           EVALUATE NCOEF = 5
 %         END IF
 %         IF ( FMT .EQ. 2 ) THEN
 ^^??        CS STATE
-%           GET NOSTORE FINAL ABBREVIATED 'sigmas? ' 'ON'
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'sigmas? ' 'ON'
 %           EVALUATE NCOEF = 6 - VALUE
 %         END IF
 %       END BLOCK
@@ -162,7 +162,7 @@
 %           CLEAR
 %             INSERT 'FORMAT '
 ^^?? L6FORM TEXT
-%             GET APPEND TEXT 'FORMAT' ' (3F4.0, 2F8.0) '
+%             GET SILENT APPEND TEXT 'FORMAT' ' (3F4.0, 2F8.0) '
 %             QUEUE SEND
 %           END BLOCK
 %         END IF
@@ -197,7 +197,7 @@
 %       COPY 'END'
 %       CLEAR
 %       VERIFY YES NO
-%       GET NOSTORE FINAL ABBREVIATED  -
+%       GET SILENT NOSTORE FINAL ABBREVIATED  -
   'Do you wish to merge reflections?'  'YES'
 %       IF VALUE .EQ. 1 THEN
             * Merging equivalent reflections
@@ -222,7 +222,7 @@
 %     BLOCK                         %BROWSE%
 ^^WI    SYSOPENFILE '*.hkl' 'HKL file (*.hkl)'
 ^^CR
-%       GET KEYWORD 'New filename:'
+%       GET SILENT KEYWORD 'New filename:'
 %       IF CVALUE .NE. 'CANCEL' THEN
 %        CLEAR
 %        TRANSFER "^^WI SET L6FILE TEXT " // CVALUE TO DISPLAY

@@ -9,7 +9,7 @@
 %     CLEAR
 %     INSERT 'CONTINUE '
 %     ON END TERMINATE
-%     GET TEXT 'Plane defining atom labels (END to finish)'
+%     GET SILENT TEXT 'Plane defining atom labels (END to finish)'
 %     SEND
 %   END LOOP
 %   COPY 'PLANE'

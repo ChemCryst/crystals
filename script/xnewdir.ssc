@@ -4,7 +4,7 @@
 %% Crystals in that directory.
 ^^WI SYSGETDIR
 ^^CR
-%    GET KEYWORD 'New directory:'
+%    GET SILENT KEYWORD 'New directory:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 ^^WI RESTART
 %      TRANSFER '^^WI ' // CVALUE TO DISPLAY

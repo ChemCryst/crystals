@@ -32,7 +32,7 @@
 ^^WI SHOW
 ^^CR
 %      VERIFY BOK BXX
-%      GET NOSTORE ABBREVIATED 'BOK=Process'
+%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'
 %      IF VALUE .EQ. 2 THEN
 ^^WI      DISPOSE SIR92
 ^^CR
@@ -40,7 +40,7 @@
 %      END IF
 ^^??   RS STATE
 %      VERIFY ON OFF
-%      GET NOSTORE ABBREVIATED 'On=Simple job'
+%      GET SILENT NOSTORE ABBREVIATED 'On=Simple job'
 %      IF ( VALUE .EQ. 1 ) THEN
 %          COPY '#FOREIGN SIR92 '
 %          COPY 'END'
@@ -50,7 +50,7 @@
 %      END IF
 ^^??   CED STATE
 %      VERIFY ON OFF
-%      GET NOSTORE ABBREVIATED 'On=Edit first'
+%      GET SILENT NOSTORE ABBREVIATED 'On=Edit first'
 ^^WI   DISPOSE SIR92
 ^^CR
 %      IF ( VALUE .EQ. 1 ) THEN

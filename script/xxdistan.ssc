@@ -49,10 +49,8 @@
 %  LOOP
 %      ON ERROR REPEAT
 %      ON END   TERMINATE
-^^WI SET TEXTOUTPUT NOECHO
-^^CR
 %      VERIFY AL XX ATOM
-%      GET FINAL NOSTORE ABBREVIATED ' '
+%      GET SILENT FINAL NOSTORE ABBREVIATED ' '
 %      CASE VALUE
 %         BLOCK             %ALL%
 ^^WI         DISPOSE DIST
@@ -70,9 +68,7 @@
 %            FINISH
 %         END BLOCK
 %         BLOCK             %ATOM%
-%%^^WI SET TEXTOUTPUT NOECHO
-%%^^CR
-%            GET NOSTORE TEXT ' '
+%            GET NOSTORE SILENT TEXT ' '
 %            IF ATNEXT .EQ. 1 THEN
 %               EVALUATE AT1 = CVALUE
 %               TRANSFER "^^WI SET E1 TEXT '" // AT1 // "'" TO DISPLAY

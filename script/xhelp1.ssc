@@ -2,8 +2,6 @@
 %%
 %% First check if this window already exsits.
 %%
-^^WI SET TEXTOUTPUT NOECHO
-^^CR
 ^^?? XHELP1 EXISTS
 ^^CR
 %%
@@ -11,7 +9,7 @@
 %% and leave a suitable blank space.
 %%
 % VERIFY TRUE FALSE
-% GET NOSTORE FINAL ABBREVIATED ' ' 'FALSE'
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'FALSE'
 % IF VALUE .EQ. 1 THEN
 ^^WI  SENDTEXTTO XHELPTEXT
 ^^CR

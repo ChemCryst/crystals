@@ -94,15 +94,11 @@
 %   ON ERROR REPEAT
 %   ON END   TERMINATE
 %   VERIFY E1 E2 E3 E4 E5 E6 BXX BOK
-%%^^WI SET _MAINTEXTOUTPUT NOECHO
-%%^^CR
-%   GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   EVALUATE LDISA = FALSE
-%%^^WI SET _MAINTEXTOUTPUT NOECHO
-%%^^CR
 %   CASE VALUE
 %    BLOCK             %EDIT1%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE A = VALUE
 %     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
       ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
@@ -110,7 +106,7 @@
 %     END IF
 %    END BLOCK
 %    BLOCK             %EDIT2%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE B = VALUE
 %     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
       ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
@@ -118,7 +114,7 @@
 %     END IF
 %    END BLOCK
 %    BLOCK             %EDIT3%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE C = VALUE
 %     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
       ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
@@ -126,7 +122,7 @@
 %     END IF
 %    END BLOCK
 %    BLOCK             %EDIT4%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE AL = VALUE
 %     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
       ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
@@ -134,7 +130,7 @@
 %     END IF
 %    END BLOCK
 %    BLOCK             %EDIT5%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE BE = VALUE
 %     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
       ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
@@ -142,7 +138,7 @@
 %     END IF
 %    END BLOCK
 %    BLOCK             %EDIT6%
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 %     EVALUATE GA = VALUE
 %     IF  ( A .EQ. 0.0 ) .OR. ( B .EQ. 0.0 ) .OR. ( C .EQ. 0.0 ) .OR. -
       ( AL .EQ. 0.0 ) .OR. ( BE .EQ. 0.0 ) .OR. ( GA .EQ. 0.0 ) THEN
@@ -160,22 +156,22 @@
 %     INSERT 'REAL '
 ^^?? E1 TEXT
 %          INSERT ' '
-%                  GET KEYWORD ' '
+%                  GET SILENT KEYWORD ' '
 ^^?? E2 TEXT
 %          INSERT ' '
-%                  GET KEYWORD ' '
+%                  GET SILENT KEYWORD ' '
 ^^?? E3 TEXT
 %          INSERT ' '
-%                  GET KEYWORD ' '
+%                  GET SILENT KEYWORD ' '
 ^^?? E4 TEXT
 %          INSERT ' '
-%                  GET KEYWORD ' '
+%                  GET SILENT KEYWORD ' '
 ^^?? E5 TEXT
 %          INSERT ' '
-%                  GET KEYWORD ' '
+%                  GET SILENT KEYWORD ' '
 ^^?? E6 TEXT
 %          INSERT ' '
-%                  GET KEYWORD ' '
+%                  GET SILENT KEYWORD ' '
 %          SEND
 %          COPY 'END'
 ^^WI       DISPOSE INLIST1

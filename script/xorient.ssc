@@ -32,13 +32,13 @@
 ^^CR
 % LOOP
 %  VERIFY BTOK BTPP BTXX XA XB XC XP XF
-%  GET NOSTORE FINAL ABBREVIATED ' '
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %  CASE VALUE
 %   BLOCK        %BTNOK%
 ^^WI   GETVALUE XA
 ^^CR
 %      VERIFY ON OFF
-%      GET NOSTORE FINAL ABBREVIATED ' '
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %      IF VALUE .EQ. 1 THEN
 %         COPY "Along axis A View"
 %         COPY "   "
@@ -46,7 +46,7 @@
 ^^WI      GETVALUE XB
 ^^CR      
 %         VERIFY ON OFF
-%         GET NOSTORE FINAL ABBREVIATED ' '
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %         IF VALUE .EQ. 1 THEN
 %            COPY "Along axis B View" 
 %            COPY " "
@@ -54,7 +54,7 @@
 ^^WI         GETVALUE XC
 ^^CR          
 %            VERIFY ON OFF
-%            GET NOSTORE FINAL ABBREVIATED ' '
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %            IF VALUE .EQ. 1 THEN
 %               COPY "Along axis C View" 
 %               COPY "   " 
@@ -62,19 +62,19 @@
 ^^WI            GETVALUE XP
 ^^CR          
 %               VERIFY ON OFF
-%               GET NOSTORE FINAL ABBREVIATED ' '
+%               GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %               IF VALUE .EQ. 1 THEN
 %                  COPY "Plane all View" 
 %                  COPY "   " 
 %               ELSE
 ^^??              EH TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IH = VALUE
 ^^??              EK TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IK = VALUE
 ^^??              EL TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IL = VALUE
 %                 QUEUE REWIND
 %                 CLEAR
@@ -98,7 +98,7 @@
 ^^WI   GETVALUE XA
 ^^CR
 %      VERIFY ON OFF
-%      GET NOSTORE FINAL ABBREVIATED ' '
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %      IF VALUE .EQ. 1 THEN
 %         COPY "Along axis A View"
 %         COPY "   "
@@ -106,7 +106,7 @@
 ^^WI      GETVALUE XB
 ^^CR      
 %         VERIFY ON OFF
-%         GET NOSTORE FINAL ABBREVIATED ' '
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %         IF VALUE .EQ. 1 THEN
 %            COPY "Along axis B View" 
 %            COPY " "
@@ -114,7 +114,7 @@
 ^^WI         GETVALUE XC
 ^^CR          
 %            VERIFY ON OFF
-%            GET NOSTORE FINAL ABBREVIATED ' '
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %            IF VALUE .EQ. 1 THEN
 %               COPY "Along axis C View" 
 %               COPY "   " 
@@ -122,19 +122,19 @@
 ^^WI            GETVALUE XP
 ^^CR          
 %               VERIFY ON OFF
-%               GET NOSTORE FINAL ABBREVIATED ' '
+%               GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %               IF VALUE .EQ. 1 THEN
 %                  COPY "Plane all View" 
 %                  COPY "   " 
 %               ELSE
 ^^??              EH TEXT        
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IH = VALUE
 ^^??              EK TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IK = VALUE
 ^^??              EL TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IL = VALUE
 %                 QUEUE REWIND
 %                 CLEAR

@@ -164,18 +164,14 @@
 %   ON ERROR REPEAT
 %   ON END   TERMINATE
 %   VERIFY E1 E2 E3 E4 E5 E6 E1S E2S E3S E4S E5S E6S BXX BOK
-%%^^WI SET _MAINTEXTOUTPUT NOECHO
-%%^^CR
-%   GET NOSTORE FINAL VERIFIED ' ' ' '
-%%^^WI SET _MAINTEXTOUTPUT NOECHO
-%%^^CR
+%   GET SILENT NOSTORE FINAL VERIFIED ' ' ' '
 %   EVALUATE SWITCH = VALUE
 %%
 %% This bit just checks for a change to any of the input boxes,
 %% and then enables the OK button.
 %%
 %   IF ( SWITCH .LE. 12 ) THEN
-%     GET NOSTORE REAL ' '
+%     GET SILENT NOSTORE REAL ' '
 ^^WI    SET BOK DISABLED=NO
 ^^CR
 %%
@@ -194,29 +190,29 @@
 %     INSERT 'REAL '
 ^^?? E1 TEXT
 %     INSERT ' '
-%     GET REAL 'A'
+%     GET SILENT REAL 'A'
 ^^?? E2 TEXT
 %     INSERT ' '
-%     GET REAL 'B'
+%     GET SILENT REAL 'B'
 ^^?? E3 TEXT
 %     INSERT ' '
-%     GET REAL 'C'
+%     GET SILENT REAL 'C'
 ^^?? E4 TEXT
 %     INSERT ' '
-%     GET REAL 'ALPHA'
+%     GET SILENT REAL 'ALPHA'
 ^^?? E5 TEXT
 %     INSERT ' '
-%     GET REAL 'BETA'
+%     GET SILENT REAL 'BETA'
 ^^?? E6 TEXT
 %     INSERT ' '
-%     GET REAL 'GAMMA'
+%     GET SILENT REAL 'GAMMA'
 %     SEND
 %     COPY 'END'
 %     COPY '#LIST 31'
 %     COPY 'AMULT  0.01'
 %     CLEAR
 ^^?? E1S TEXT
-%     GET NOSTORE REAL 'SIGMA (a)' '.001'
+%     GET SILENT NOSTORE REAL 'SIGMA (a)' '.001'
 %     EVALUATE VAR = VALUE * VALUE * 100.0
 %     INSERT 'MATRIX '
 %     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
@@ -224,7 +220,7 @@
 %     SEND
 %     CLEAR
 ^^?? E2S TEXT
-%     GET NOSTORE REAL 'SIGMA (b)' '.001'
+%     GET SILENT NOSTORE REAL 'SIGMA (b)' '.001'
 %     EVALUATE VAR = VALUE * VALUE * 100.0
 %     INSERT 'CONTINUE '
 %     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
@@ -232,7 +228,7 @@
 %     SEND
 %     CLEAR
 ^^?? E3S TEXT
-%     GET NOSTORE REAL 'SIGMA (c)' '.001'
+%     GET SILENT NOSTORE REAL 'SIGMA (c)' '.001'
 %     EVALUATE VAR = VALUE * VALUE * 100.0
 %     INSERT 'CONTINUE '
 %     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
@@ -240,7 +236,7 @@
 %     SEND
 %     CLEAR
 ^^?? E4S TEXT
-%     GET NOSTORE REAL 'SIGMA (alpha)' '.02'
+%     GET SILENT NOSTORE REAL 'SIGMA (alpha)' '.02'
 %     EVALUATE VAR = VALUE * VALUE * 0.03046
 %     INSERT 'CONTINUE '
 %     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
@@ -248,7 +244,7 @@
 %     SEND
 %     CLEAR
 ^^?? E5S TEXT
-%     GET NOSTORE REAL 'SIGMA (beta)' '.02'
+%     GET SILENT NOSTORE REAL 'SIGMA (beta)' '.02'
 %     EVALUATE VAR = VALUE * VALUE * 0.03046
 %     INSERT 'CONTINUE '
 %     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR
@@ -256,7 +252,7 @@
 %     SEND
 %     CLEAR
 ^^?? E6S TEXT
-%     GET NOSTORE FINAL REAL  'SIGMA (gamma)' '.02'
+%     GET SILENT NOSTORE FINAL REAL  'SIGMA (gamma)' '.02'
 %     EVALUATE VAR = VALUE * VALUE * 0.03046
 %     INSERT 'CONTINUE '
 %     STORE FORMAT /(F12.10)/ LENGTH 12 REAL VAR

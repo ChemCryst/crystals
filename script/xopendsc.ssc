@@ -5,7 +5,7 @@
 ^^WI SYSOPENFILE '*.dsc' 'CRYSTALS database'
 ^^CR
 %    CLEAR
-%    GET TEXT 'New filename:'
+%    GET SILENT TEXT 'New filename:'
 %    IF CVALUE .NE. 'CANCEL' THEN
 %      EVALUATE CFILE = CVALUE
 %      EVALUATE CPATH = GETPATH ( CFILE )

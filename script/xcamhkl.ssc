@@ -28,17 +28,17 @@
 %%
 % LOOP
 %  VERIFY BTOK BTPP BTXX
-%  GET NOSTORE FINAL ABBREVIATED ' '
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %  CASE VALUE
 %   BLOCK        %BTNOK%
 ^^??              EH TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IH = VALUE
 ^^??              EK TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IK = VALUE
 ^^??              EL TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IL = VALUE
 %                 QUEUE REWIND
 %                 CLEAR
@@ -56,13 +56,13 @@
 %   END BLOCK
 %   BLOCK        %BTNPP%
 ^^??              EH TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IH = VALUE
 ^^??              EK TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IK = VALUE
 ^^??              EL TEXT
-%                 GET NOSTORE INTEGER ' '
+%                 GET SILENT NOSTORE INTEGER ' '
 %                 EVALUATE IL = VALUE
 %                 QUEUE REWIND
 %                 CLEAR

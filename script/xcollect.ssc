@@ -29,18 +29,15 @@ to existing atoms.
 ^^WI SHOW
 ^^CR
 %    VERIFY BTNOK BTNXX
-^^WI    SET _MAINTEXTOUTPUT NOECHO
-^^CR
-%    GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %        CASE VALUE
 %             BLOCK                %BUTTONOK%
 %                 QUEUE REWIND
 %                 CLEAR
-^^WI              SET _MAINTEXTOUTPUT NOECHO
 ^^WI              GETVALUE XNEW
 ^^CR
 %                 VERIFY ON OFF
-%                 GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%                 GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %                 EVALUATE DOCOLLECT = VALUE
 %                 IF DOCOLLECT .EQ. 1 THEN
 %                    INSERT 'SELECT TYPE = ALL'

@@ -5,7 +5,7 @@
 %%
 %%
 % VERIFY DIST ANGLE PLANE
-% GET NOSTORE FINAL ABBREVIATED 'Restraint type?' 'DIST'
+% GET NOSTORE SILENT FINAL ABBREVIATED 'Restraint type?' 'DIST'
 % CASE VALUE
 %   BLOCK %DIST%
 %% Get two values and an END.
@@ -14,13 +14,13 @@
 ^^WI {
 %     CLEAR
 %     INSERT "^^WI @ 2,2 STATIC T0 'Restrain "
-%     GET TEXT 'Atom 1'
+%     GET SILENT TEXT 'Atom 1'
 %     EVALUATE CAT1 = CVALUE
 %     INSERT "to"
-%     GET TEXT 'Atom 2'
+%     GET SILENT TEXT 'Atom 2'
 %     EVALUATE CAT2 = CVALUE
 %     INSERT "'"
-%     GET NOSTORE TEXT 'type end...'
+%     GET SILENT NOSTORE TEXT 'type end...'
 %     OUTPUT
 %     CLEAR
 ^^WI   @ 4,2 GRID LEFT NROWS=3 NCOLS=5
@@ -41,14 +41,14 @@
 ^^WI  SHOW
 ^^CR  
 %     VERIFY BOK BXX
-%     GET NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
+%     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
 %     CASE VALUE
 %       BLOCK %BOK%
 ^^??      E1 TEXT
-%         GET NOSTORE REAL 'Distance' '1.0'
+%         GET SILENT NOSTORE REAL 'Distance' '1.0'
 %         EVALUATE RSVAL = CVALUE
 ^^??      E2 TEXT
-%         GET NOSTORE REAL 'Esd' '0.02'
+%         GET SILENT NOSTORE REAL 'Esd' '0.02'
 %         EVALUATE RSESD = CVALUE
 %         EVALUATE CLINE1 = 'DISTANCE ' // RSVAL // ' , ' // RSESD -
  // ' = ' // CAT1 // ' to ' // CAT2
@@ -70,13 +70,13 @@
 ^^WI {
 %     CLEAR
 %     INSERT "^^WI @ 2,2 STATIC T0 'Restrain "
-%     GET NOSTORE TEXT 'Middle atom'
+%     GET NOSTORE SILENT TEXT 'Middle atom'
 %     EVALUATE CATM = CVALUE
-%     GET NOSTORE TEXT 'Atom 1'
+%     GET NOSTORE SILENT TEXT 'Atom 1'
 %     EVALUATE CAT1 = CVALUE
-%     GET NOSTORE TEXT 'Atom 2'
+%     GET SILENT NOSTORE TEXT 'Atom 2'
 %     EVALUATE CAT2 = CVALUE
-%     GET NOSTORE TEXT 'Atom 3'
+%     GET SILENT NOSTORE TEXT 'Atom 3'
 %     EVALUATE CAT3 = CVALUE
 %     IF ( CAT1 .EQ. CATM ) THEN
 %       EVALUATE CAT1 = CAT2
@@ -85,7 +85,7 @@
 %     END IF
 %     EVALUATE CAT2 = CATM
 %     TRANSFER CAT1 // "-" // CAT2 // "-" // CAT3 // "'" TO BUFFER
-%     GET NOSTORE TEXT 'type end...'
+%     GET SILENT NOSTORE TEXT 'type end...'
 %     OUTPUT
 %     CLEAR
 ^^WI   @ 4,2 GRID LEFT NROWS=3 NCOLS=5
@@ -106,14 +106,14 @@
 ^^WI  SHOW
 ^^CR  
 %     VERIFY BOK BXX
-%     GET NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
+%     GET SILENT NOSTORE FINAL ABBREVIATED 'Ok or cancel?'
 %     CASE VALUE
 %       BLOCK %BOK%
 ^^??      E1 TEXT
-%         GET NOSTORE REAL 'Angle' '108.5'
+%         GET SILENT NOSTORE REAL 'Angle' '108.5'
 %         EVALUATE RSVAL = CVALUE
 ^^??      E2 TEXT
-%         GET NOSTORE REAL 'Esd' '1.8'
+%         GET SILENT NOSTORE REAL 'Esd' '1.8'
 %         EVALUATE RSESD = CVALUE
 %         EVALUATE CLINE1 = 'DISTANCE ' // RSVAL // ' , ' // RSESD -
  // ' = ' // CAT1 // ' to ' // CAT2 // ' to ' // CAT3
