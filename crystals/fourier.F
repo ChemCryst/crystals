@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2002/06/07 16:13:46  richard
+C Just some tidying.
+C
 C Revision 1.11  2002/03/13 12:35:21  richard
 C Added extra argument to calls to KDIST1.
 C
@@ -227,6 +230,7 @@ C  NYNZM2  THE PRODUCT OF 'NY' AND 'NZ' MINUS 2.
 C
 C--
       CHARACTER *10 CRADTP
+      CHARACTER *25 CSERI
       DIMENSION KDEV(4)
 \ICOM30
 \FOURTP
@@ -246,8 +250,13 @@ C
 \XLST14
 \XLST13
 \XLST30
+\XLST01
+\XLST02
+\XLST05
 \XTAPES
 \XERVAL
+\XPDS
+\XDSTNC
 \XOPVAL
 \XIOBUF
 C
@@ -305,6 +314,7 @@ C--CLEAR THE CORE CONTROL FLAGS
 C----- INITIALISE THE MINIMUM DENSITY
       DENMIN =  100000.
       DENMAX =  -100000.
+      JPOINT = 19
 CDJW99[
 C----- GET LIST 13 FOR THE RADIATION TYPE
       IRADTP = -1
@@ -413,7 +423,7 @@ C--OUTPUT THIS SECTION TO M/T
           WRITE(MT1)NYNZ,(FSTORE(I),I=L81,M81)
       ENDIF
 
-      IF ( IOUFIL .GT. 0 ) THEN
+      IF ( IOUFIL .EQ. 1 ) THEN
 C--OUTPUT THIS SECTION TO ASCII FILE
           M81=L81+NYNZ-1
 2051      FORMAT (A)
@@ -422,6 +432,15 @@ C--OUTPUT THIS SECTION TO ASCII FILE
           WRITE(NCFPU1,2051) 'BLOCK'
           WRITE(NCFPU1,2052) NYNZ
           WRITE(NCFPU1,2053) (FSTORE(I),I=L81,M81)
+      ENDIF
+
+      IF ( IOUFIL .EQ. 2 ) THEN
+C--OUTPUT THIS SECTION TO BINARY MAPVIEW FILE
+          M81=L81+NYNZ-1
+          DO I = L81,M81
+            JPOINT = JPOINT + 1
+            WRITE(NCFPU1,REC=JPOINT) FSTORE(I)
+          END DO
       ENDIF
 
 C--LOCATE THE MAXIMA IN THE MAP IF NECESSARY
@@ -452,7 +471,134 @@ C--CHECK IF WE HAVE BEEN DOING OUTPUT
           REWIND MT1
       ENDIF
 
-      IF( IOUFIL .GT. 0 ) THEN
+      IF( IOUFIL .EQ. 1 ) THEN
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
+      ENDIF
+
+      IF( IOUFIL .EQ. 2 ) THEN
+
+          READ(NCFPU1,REC=1) JXTOT
+          READ(NCFPU1,REC=2) JYTOT
+          READ(NCFPU1,REC=3) JZTOT
+          READ(NCFPU1,REC=4) XSTP
+          READ(NCFPU1,REC=5) YSTP
+          READ(NCFPU1,REC=6) ZSTP
+          READ(NCFPU1,REC=13) XSTAR
+          READ(NCFPU1,REC=14) YSTAR
+          READ(NCFPU1,REC=15) ZSTAR
+          XEND = XSTAR + XSTP * JXTOT
+          YEND = YSTAR + YSTP * JYTOT
+          ZEND = ZSTAR + ZSTP * JZTOT
+          XAV = ( XSTAR + XEND ) / 2.0
+          YAV = ( YSTAR + YEND ) / 2.0
+          ZAV = ( ZSTAR + ZEND ) / 2.0
+
+C Get some store:
+          MDBOX = 4
+          LBOX = NFL
+          NBOX = 6
+          I = KCHNFL(28)
+C Centroid.
+          STORE(LBOX) =   XAV
+          STORE(LBOX+1) = YAV
+          STORE(LBOX+2) = ZAV
+          STORE(LBOX+3) = 0
+
+C Six enclosing planes.
+CX
+          STORE(LBOX+4) =  -1
+          STORE(LBOX+5) =  0
+          STORE(LBOX+6) =  0
+          STORE(LBOX+7) =  XAV
+
+          STORE(LBOX+8)  = 1
+          STORE(LBOX+9)  = 0
+          STORE(LBOX+10) = 0
+          STORE(LBOX+11) = XAV
+CY
+          STORE(LBOX+12) =  0
+          STORE(LBOX+13) =  -1
+          STORE(LBOX+14) =  0
+          STORE(LBOX+15) =  YAV
+
+          STORE(LBOX+16) =  0
+          STORE(LBOX+17) =  1
+          STORE(LBOX+18) =  0
+          STORE(LBOX+19) =  YAV
+CZ
+          STORE(LBOX+20) =  0
+          STORE(LBOX+21) =  0
+          STORE(LBOX+22) =  -1
+          STORE(LBOX+23) =  ZAV
+  
+          STORE(LBOX+24) =  0
+          STORE(LBOX+25) =  0
+          STORE(LBOX+26) =  1
+          STORE(LBOX+27) =  ZAV
+
+C------ SET UP SOME CONSTANTS
+          CALL XDIST3
+
+          BPD(4) = XSTAR
+          BPD(5) = YSTAR
+          BPD(6) = ZSTAR
+          BPD(7) = XEND
+          BPD(8) = YEND
+          BPD(9) = ZEND
+
+          WRITE(CMON,'(A,9F7.3)') 'BPD1-9 ',(BPD(J),J=1,9)
+          CALL XPRVDU(NCVDU, 1,0)
+
+
+          JE=NFL
+          M5=L5
+          JFNVC = 0
+          ITRANS = 0 !Allow translation
+          NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS, 0, 2)
+
+
+          WRITE (NCFPU1,REC=JPOINT+1) NDIST
+          JPOINT = JPOINT + 2
+
+
+          WRITE(CMON,'(A,I5)') 'Natoms: ', NDIST
+          CALL XPRVDU(NCVDU, 1,0)
+
+          DO K = JE, JE+(JT*(NDIST-1)),JT
+            M5 = ISTORE(K)
+
+            CALL CATSTR (STORE(M5),STORE(M5+1),1,1,0,0,0,CSERI,LSERI)
+            WRITE ( NCFPU1,REC=JPOINT) CSERI(1:4)
+            WRITE ( NCFPU1,REC=JPOINT+1) CSERI(5:8)
+            JPOINT = JPOINT + 2
+
+C Mapview assumes XY plane origin is 0,0, so offset.
+            WRITE ( NCFPU1,REC=JPOINT)   STORE(K+7) - XSTAR
+            WRITE ( NCFPU1,REC=JPOINT+1) STORE(K+8) - YSTAR
+            WRITE ( NCFPU1,REC=JPOINT+2) STORE(K+9)
+
+            WRITE(CMON,'(a,3F15.4)') cseri(1:LSERI),(STORE(K+J+7),J=0,2)
+            CALL XPRVDU(NCVDU, 1,0)
+
+            JPOINT = JPOINT + 3
+          END DO
+
+c          DO I5 = L5, L5+(N5-1)*MD5, MD5
+c            CALL CATSTR (STORE(I5),STORE(I5+1),1,1,0,0,0,CSERI,LSERI)
+c            WRITE ( NCFPU1,REC=JPOINT) CSERI(1:4)
+c            WRITE ( NCFPU1,REC=JPOINT+1) CSERI(5:8)
+c            JPOINT = JPOINT + 2
+c            DO IN5 = 0,2
+c              WRITE ( NCFPU1,REC=JPOINT+IN5) STORE(I5+2+IN5)
+c            END DO
+c            WRITE(CMON,'(3F15.4)') (STORE(I5+J),J=2,4)
+c            CALL XPRVDU(NCVDU, 1,0)
+c            JPOINT = JPOINT + 3
+c          END DO
+
+          WRITE (NCFPU1,REC=18) DENMIN
+          WRITE (NCFPU1,REC=19) DENMAX
           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
           CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
       ENDIF
@@ -1114,7 +1260,7 @@ C--SWOP THE COORDINATES OF THE CURRENT ATOM
       CALL XFSWOP(STORE(M5+4),3,1,1,1)
 C--MOVE THE ATOM AROUND
 C
-      J = KDIST1(1, K, 10, 0, .2, 0, 0)
+      J = KDIST1(1, K, 10, 0, .2, 0, 0, 4)
 C
       M5=M5-MD5
       IF(J)2650,2550,2600
@@ -1305,7 +1451,7 @@ C WRITE THE M/T HEADER  DETAILS
           WRITE (MT1) 'SIZE', NUM
       ENDIF
 
-      IF ( IOUFIL .GT. 0 ) THEN
+      IF ( IOUFIL .EQ. 1 ) THEN
 
 C AN OUTPUT FILE IS REQUIRED
           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
@@ -1333,11 +1479,72 @@ C WRITE THE M/T HEADER  DETAILS
           WRITE (NCFPU1,3753) (NUM(I),I=1,3)
       ENDIF
 
+
+      IF ( IOUFIL .EQ. 2 ) THEN
+
+C AN OUTPUT FILE IS REQUIRED
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
+          OPEN ( UNIT   = NCFPU1,
+     1         FILE = CSSMAP(1:LSSMAP),
+     1         STATUS = 'UNKNOWN' ,
+     1         ACCESS = 'DIRECT' ,
+     1         FORM   = 'UNFORMATTED' ,
+     1         RECL   = 1 ,
+     1         IOSTAT = IOS ,
+     1         ERR    = 9905 )
+
+
+C SET UP TRANSFORMATION MATRIX  (BRIEFLY)
+          CALL XZEROF (STORE(NFL), 12)
+          STORE(NFL-1+IAXIS(1)) = 1.0
+          STORE(NFL+2+IAXIS(2)) = 1.0
+          STORE(NFL+5+IAXIS(3)) = 1.0
+          IF (XDETR3 (STORE(NFL)) .LE. 0) STORE(NFL+5+IAXIS(3)) = -1.0
+
+C WRITE THE MAPVIEW HEADER DETAILS
+C NX,NY,NZ
+          DO I = 1,3
+            WRITE (NCFPU1,REC=I) NUM(I)
+          END DO
+C STEPX,STEPY,STEPZ
+          WRITE (NCFPU1,REC=4) STORE(L14+1)
+          WRITE (NCFPU1,REC=5) STORE(L14+MD14+1)
+          WRITE (NCFPU1,REC=6) STORE(L14+MD14*2+1)
+C TRANSFORMED CELL
+          DO I = 0,2
+            WRITE (NCFPU1,REC=I+7) STORE(L1P1+I)
+          END DO
+          DO I = 3,5
+            WRITE (NCFPU1,REC=I+7) STORE(L1P1+I) * RTD
+          END DO
+C STARTX,Y,Z
+          WRITE (NCFPU1,REC=13) STORE(L14)
+          WRITE (NCFPU1,REC=14) STORE(L14+MD14) 
+          WRITE (NCFPU1,REC=15) STORE(L14+MD14*2)
+C Projection axis 1=A*,2=B*,3=C* (always C* as axes are permed to acheive this)
+          WRITE (NCFPU1,REC=16) 3
+C Mode 1=3D, 2=Slant
+          WRITE (NCFPU1,REC=17) 1
+C Min max values
+          WRITE (NCFPU1,REC=18) -100.0
+          WRITE (NCFPU1,REC=19) 100.0
+      ENDIF
+
       RETURN
 
 9900  CONTINUE
 C -- ERRORS
       GO TO 3700
+9905  CONTINUE
+C -- FILE OPEN ERROR
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9908 ),IOS
+      WRITE ( NCAWU , 9915 ),IOS
+      WRITE ( CMON , 9915 ) ,IOS
+      CALL XPRVDU(NCVDU, 1,0)
+9908  FORMAT ( 1X , 'Failed to open direct access mapview file ', I4 )
+      CALL XERHND ( IERERR )
+      GO TO 9900
 9910  CONTINUE
 C -- INVALID ORIENTATION PARAMETER
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) IAXIS
@@ -2447,7 +2654,7 @@ C -- IF PEAK IS UNREASONABLE, MARK AS DELETED
 C--CHECK FOR ANY CONTACTS TO THIS PEAK
       M5A=M10-3
       M5=M5A+MD10
-      N = KDIST1( N10-I, KC, KD, 0, .2, 0, 0)
+      N = KDIST1( N10-I, KC, KD, 0, .2, 0, 0, 4)
 C--CHECK IF THERE ARE ANY CONTACTS TO THIS ATOM
       IF(N)2300,2300,2000
 C--MARK THE OTHER CONTACTS NOT TO BE USED
