@@ -25,6 +25,7 @@ CxModList *    CxModList::CreateCxModList( CrModList * container, CxGrid * guiPa
     theModList->Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_OWNERDRAWFIXED|LVS_SHOWSELALWAYS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mModListCount++);
     theModList->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theModList->SetFont(CcController::mp_font);
+    theModList->m_listboxparent = guiParent;
 #endif
 #ifdef __BOTHWX__
       theModList->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
@@ -433,6 +434,7 @@ void CxModList::OnPaint()
         {
                 CRect rcBounds;
                 GetItemRect(0, rcBounds, LVIR_BOUNDS);
+
 
                 CRect rcClient;
                 GetClientRect(&rcClient);
@@ -1125,9 +1127,12 @@ void CxModList::Update(int newsize)
           IDlist =  nil;
        }
 
-       ::LockWindowUpdate(this->m_hWnd); 
+//       m_listboxparent->LockWindowUpdate();
+
+       SendMessage(WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
-       ::LockWindowUpdate(NULL);
+//       m_listboxparent->UnlockWindowUpdate();
+       SendMessage(WM_SETREDRAW,TRUE,0);
        Invalidate(FALSE); 
 
 }

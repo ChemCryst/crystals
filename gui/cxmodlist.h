@@ -75,6 +75,8 @@ class CxModList : public BASEMODLIST
 //        afx_msg BOOL OnEraseBkgnd( CDC* pDC );
         afx_msg void OnMenuSelected (UINT nID);
         DECLARE_MESSAGE_MAP()
+
+        CxGrid* m_listboxparent;
 #endif
 #ifdef __BOTHWX__
     void OnChar(wxKeyEvent & event );
