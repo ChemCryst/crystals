@@ -166,7 +166,7 @@ class CxTextOut : public BASETEXTOUT
 #define PlatformDC wxDC
 #endif
 
-    void RenderSingleLine( string&, PlatformDC*, int, int );
+    bool RenderSingleLine( string&, PlatformDC*, int, int );
     int  GetColourCodes( string&, COLOURCODE* );      // Remains the same
 
 #ifdef __CR_WIN__
