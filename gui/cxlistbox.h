@@ -44,6 +44,7 @@ class	CxListBox : public CListBox
 		static CxListBox *	CreateCxListBox( CrListBox * container, CxGrid * guiParent);
 			CxListBox( CrListBox * container );
 			~CxListBox();
+            void  SetSelection ( int select );
 //		void	DoubleClicked( int itemIndex );
 //		void	Selected( int itemIndex );
 		void	AddItem( char * text );
