@@ -47,7 +47,7 @@
 ^^WI         @ 1,1 RADIOBUTTON MGALL 'All fragments' STATE=ON
 ^^WI         @ 2,1 RADIOBUTTON MGDIS 'Distance fragments' 
 ^^WI         @ 3,1 RADIOBUTTON MGANG 'Angle fragments'
-^^WI         @ 4,1 CHECKBOX MGOGUI 'Open graphics' STATE=ON
+^^WI         @ 4,1 CHECKBOX MGOGUI 'Open graphics' STATE=OFF
 ^^WI         @ 6,1 BUTTON MG_SEARCH 'Run Search'
 ^^WI       }
 ^^WI       @ 1,3 GRID G1R NROWS=4 NCOLS=1 OUTLINE='Single'
