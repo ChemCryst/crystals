@@ -250,27 +250,27 @@ bool CCrystalsApp::OnInit()
       CcString dscfile;
 
 
-      for ( int i = 1; i < __argc; i++ )
+      for ( int i = 1; i < argc; i++ )
       {
-         CcString command = __argv[i];
+         CcString command = argv[i];
 
          if ( command == "/d" )
          {
-           if ( i + 2 >= __argc )
+           if ( i + 2 >= argc )
            {
 //             MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
            }
            else
            {
-             CcString envvar = __argv[i+1];
-             CcString value  = __argv[i+2];
-             _putenv( (envvar+"="+value).ToCString() );
+             CcString envvar = argv[i+1];
+             CcString value  = argv[i+2];
+             putenv( (char*) (envvar+"="+value).ToCString() );
              i = i + 2;
            }
          }
          else
          {
-           CcString command = __argv[i];
+           CcString command = argv[i];
            if ( command.Length() > 0 )
            {
 // we need a directory name. Look for last slash
