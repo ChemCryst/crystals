@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2002/03/13 12:35:22  richard
+C Added extra argument to calls to KDIST1.
+C
 C Revision 1.14  2002/02/27 19:30:18  ckp2
 C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
 C RIC: Ensure consistent use of backslash after CRYSDIR:
@@ -2587,10 +2590,11 @@ CODE FOR SAPR
       SUBROUTINE SAPR
 C
 C----- BUILD VALID ATOM LINE
-      DIMENSION IH(1)
+      DIMENSION IHH(1)
 \ISTORE
 C
 \STORE
+\XCHARS
 \XWORKA
 \XLISTI
 \XLST01
@@ -2603,9 +2607,9 @@ C
       EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV)
 C
 C
-      DATA IH(1)/'H   '/
+      DATA IHH(1)/'H   '/
 C
-      CALL XMOVE(IH(1),STORE(JT),1)
+      CALL XMOVE(IHH(1),STORE(JT),1)
       STORE(JT+1)=SW
       STORE(JT+2)=SV
 C      STORE(JT+3)=SY
@@ -2619,6 +2623,7 @@ C-C-C-PUT U[ISO] RESP. UEQUIV ON NEW PLACE
 C--ZERO THE ANISO T.F.'S AND OTHER BITS
 C      CALL XZEROF(STORE(JT+7),6)
       CALL XZEROF(STORE(JT+8),MD5-8)
+      CALL XMOVE(IB,ISTORE(JT+17),1)
 C--PRINT THE RESULT
       JTEMP=JT+6
       IF (ISSPRT .EQ. 0) THEN

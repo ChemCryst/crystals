@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2002/05/31 14:41:09  Administrator
+C Update SHELX SPECIAL output
+C
 C Revision 1.28  2002/05/15 17:20:56  richard
 C To the fcf output file, I have added:
 C 1) Cell params - useful for cross checking that fcf belongs to cif.
@@ -112,7 +115,7 @@ C ISTORE bits will only print if J=18, not if J=14.
 1150  FORMAT
      1 ('ATOM ',A4,1X,6F11.6/
      2 'CON U[11]=',6F11.6/
-     3 'CON SPARE=',F11.2,5I11)
+     3 'CON SPARE=',F11.2,3I11,7X,A4)
       M5 = M5 + MD5
 1170  CONTINUE
 C--CHECK IF THERE ARE ANY LAYER SCALES TO OUTPUT

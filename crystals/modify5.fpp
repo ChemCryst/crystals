@@ -1,4 +1,11 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2002/05/15 10:13:26  richard
+C New EDIT command - GUISELECT, works like select and typechange, but doesn't
+C modify L5, just selects the atoms in the window.
+C e.g. #EDIT/GUISEL SPARE LT 40/END selects all atoms where spare < 40.
+C Warning: if you execute a command that changes list 5 in the same #EDIT
+C block the selections will be lost on END, as the L5 is updated.
+C
 C Revision 1.23  2002/05/08 08:51:50  richard
 C New EDIT directive GRAPH OF=SPARE
 C plots a graph of whatever is in the SPARE column in L5. (You need to have
@@ -135,6 +142,7 @@ C-C-C
 C-C-C-DEFINITION OF VARIABLES FOR CHANGES BY LS
       REAL SUMUIJ,SUMOCC,SUMUISO,SIDI,SUMDI,MAXDI
       INTEGER NUMDISO,NFLSPEC
+      character *20 ctemp
       DIMENSION XCF(3), VA(3), ROF(3,3), RCA(3,3), XWORKS(4)
 C-C-C
 C
@@ -837,12 +845,17 @@ CDJW JAN2000 JVO IS THE EXTENDED PARAMETER NUMBER
       JVO=ISTORE(JU+1)
       JV = JVO-1
 C--CHECK THE TYPE
-      IF (JV) 3250,3250,3300
+cdjwjun02
+      write(ctemp,'(a,i9)')' jvo = ', jvo
+      call zmore(ctemp,0)
+c      IF (JV) 3250,3250,3300
+      if ((jv .eq. 0) .or.(jv.eq.17)) then
 C--ALPHA-NUMERIC VALUE EXPECTED
 3250  CONTINUE
       IF (ISTORE(MF).GE.0) GO TO 7500
       CALL XMOVE (STORE(MF+2),APD(1),1)
       GO TO 3350
+      endif
 C--NUMBER EXPECTED
 3300  CONTINUE
 CDJWJAN00 BEFORE WE READ THE NUMBER, FIDDLE WITH THE
