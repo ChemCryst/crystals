@@ -79,24 +79,28 @@
 %  COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
 %  COPY 'END'
 %%
-%  COPY '#GENERALEDIT 12'
-%  COPY 'GETSERIAL ISER'
-%  COPY 'END'
+%  IF ( EXISTS 12 .GT. 0 ) THEN
+%    COPY '#GENERALEDIT 12'
+%    COPY 'GETSERIAL ISER'
+%    COPY 'END'
 %%
-%  IF ( ISER .NE. L12SER .AND. L12SER .NE. 0 ) THEN
-%    EVALUATE QTITLE = 'List 12 has changed'
-%    EVALUATE QLINE1 = 'This script will overwrite any refinement'
-%    EVALUATE QLINE2 = 'instructions that you may have written (List 12)'
-%    EVALUATE BUTTOK = '&Continue'
-%    EVALUATE BUTTXX = '&Cancel'
-%    COPY '#SCRIPT XQUESTIO'
-%    IF ANSWER .EQ. FALSE THEN
+%    IF ( ISER .NE. L12SER .AND. L12SER .NE. 0 ) THEN
+%     EVALUATE QTITLE = 'List 12 has changed'
+%     EVALUATE QLINE1 = 'This script will overwrite any refinement'
+%     EVALUATE QLINE2 = 'instructions that you may have written (List 12)'
+%     EVALUATE BUTTOK = '&Continue'
+%     EVALUATE BUTTXX = '&Cancel'
+%     COPY '#SCRIPT XQUESTIO'
+%     IF ANSWER .EQ. FALSE THEN
  
 {I You have chosen to keep your existing list 12,
 {I run '#SCRIPT XREFINE' to carry out the refinement.
 
-%      FINISH
+%       FINISH
+%     END IF
 %    END IF
+%  ELSE
+%    COPY '#SCRIPT VALID12'
 %  END IF
 %%
 %%
