@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  1999/05/26 17:26:46  dosuser
+C djw  add CSYS identifier 'CIF' for cif file names
+C
 C Revision 1.7  1999/05/21 11:47:28  dosuser
 C RIC: Added section (commented out) for testing the CSD derived
 C validation code.
@@ -177,10 +180,14 @@ C
           CALL XPRMPT ( NCVDU , '!' )
 &GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=SELECTATOM'
 &GID          CALL XPRVDU(NCVDU,1,0)
+&GIL          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=SELECTATOM'
+&GIL          CALL XPRVDU(NCVDU,1,0)
           ELSE
           CALL XPRMPT ( NCVDU , '>' )
 &GID          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
 &GID          CALL XPRVDU(NCVDU,1,0)
+&GIL          WRITE(CMON,'(A)')'^^CO SET MODEL01 MOUSEACTION=APPENDATOM'
+&GIL          CALL XPRVDU(NCVDU,1,0)
         ENDIF
 C If in script mode, set flag.
           INSTRC = .FALSE.
@@ -439,16 +446,16 @@ C&PPCCE***
 
       IF (IUNIT .EQ. NCUFU(1)) THEN
 C If in script mode, set flag.
-&GID            INSTRC = .FALSE.
-&GID            IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
-&GIDC Update status information for UI.
-&GID            CALL MENUUP
-&GID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-&GID            WRITE (CMON,1515) 'Ready'
-&GID            CALL XPRVDU (NCVDU,1,0)
+&&GILGID            INSTRC = .FALSE.
+&&GILGID            IF ( IRDSCR(IFLIND) .GT. 0 ) INSTRC = .TRUE.
+&&GILGIDC Update status information for UI.
+&&GILGID            CALL MENUUP
+&&GILGID1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+&&GILGID            WRITE (CMON,1515) 'Ready'
+&&GILGID            CALL XPRVDU (NCVDU,1,0)
             CALL GETCOM(CLINE)
-&GID            WRITE (CMON,1515) 'Working...'
-&GID            CALL XPRVDU (NCVDU,1,0)
+&&GILGID            WRITE (CMON,1515) 'Working...'
+&&GILGID            CALL XPRVDU (NCVDU,1,0)
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
       ENDIF
