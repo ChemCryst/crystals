@@ -1,5 +1,6 @@
 %SCRIPT DCANON
-%% Canonical numbering.
+%%scriptdata
+%% CANONICAL NUMBERING
 %% Compare two groups of atoms, and apply names from one group
 %% to the other. User has to identify 4 matching atoms in each group
 %  VARIABLE INTEGER OLDSER N5 NCHOSEN
@@ -19,7 +20,7 @@
 % COPY '#SCRIPT DPAIR'
 % IF NPAIR .LE. 3 THEN
 %   EVALUATE CTEXT1 = 'Insufficient pairs of atoms selected'
-%   COPY '#SCRIPT DMESAGE'
+%   COPY '#SCRIPT DMESSAGE'
 %   COPY 'TERMINATE'
 %   COPY 'END'
 % END IF

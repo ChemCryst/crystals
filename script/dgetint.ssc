@@ -1,5 +1,6 @@
 %SCRIPT DGETINT
-%% obtain a single integer value
+%% GET INTEGER
+%% obtain a single integer value from user.
 %% CTEXT is the text to be displayed
 %% ININT is the initial value of the integer, and is reset by
 %% this script

@@ -1,5 +1,6 @@
 %SCRIPT DPAIR
-%%
+%%scriptdata
+%% PAIRED ATOM LISTS
 %% Subscript for returning two paired lists of atoms
 %% NPAIR is the number of pairs found
 %%
