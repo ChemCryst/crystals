@@ -38,12 +38,12 @@
 %%
 ^^WI WINDOW XGUIDES 'Supervisor' POSITION CASCADE '_MAINTEXTOUTPUT'
 ^^WI COMMAND='#SCRIPT XGUIDESC' DISABLEIF='IN' CANCEL='GS_BXX'
-^^WI GRID HO NROWS=5 NCOLS=3
+^^WI GRID HO NROWS=3 NCOLS=5
 ^^WI {
-^^WI  @ 2,2 GRID OUTER NROWS=1 NCOLS=5
+^^WI  @ 2,2 BITMAP GUIDEB TRANS FILE 'guide2.bmp'
+^^WI  @ 2,4 GRID MID NROWS=3 NCOLS=3
 ^^WI  {
-^^WI   @ 1,1 BITMAP GUIDEB FILE 'guide2.bmp'
-^^WI   @ 1,3 LISTBOX AUTOLIST VISLINES=11 ADDTOLIST
+^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST
 ^^WI     'Run Sir92'
 ^^WI     'Run ShelxS'
 ^^WI     'Run Sir97'
@@ -52,15 +52,14 @@
 ^^WI     'Use Shelx file'
 ^^WI     'Use a Cameron file'
 ^^WI     NULL
-^^WI   @ 1,5 GRID BTNS NROWS=6 NCOLS=1
+^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4
 ^^WI   {
-^^WI     @ 1,1 BUTTON GS_BOK '&Ok'
-^^WI     @ 4,1 BUTTON GS_BXX '&Hide'
-^^WI     @ 6,1 BUTTON GS_BHELP '&Help'
+^^WI     @ 1,1 STRETCH _H HORIZONTAL
+^^WI     @ 1,4 BUTTON GS_BHELP '&Help' DISABLEIF='IN'
 ^^WI   }
+^^WI   @ 1,3 BUTTON GS_BOK '&Ok' DISABLEIF='IN'
+^^WI   @ 3,3 BUTTON GS_BXX '&Hide' DISABLEIF='IN'
 ^^WI  }
-^^WI  @ 4,2 STATIC SUPT
-^^WI 'You can continuing working while this window is open.'
 ^^WI }
 ^^WI SHOW
 ^^CR
@@ -72,6 +71,9 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.3  2001/03/13 09:36:47  richard
+%%  Re-instated cancel action. Made cancel action the default in the xguide?c scripts.
+%%
 %%  Revision 1.2  2001/03/09 18:01:26  richard
 %%  Removed default actions for buttons, as these are now non-modal windows.
 %%  They were interfering with the user pressing RETURN in other scripts, while
