@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2002/08/29 15:16:07  richard
+C OVERWRITE and NEW parameters added to GeneralEdit's WRITE directive.
+C
 C Revision 1.8  2002/02/20 14:15:28  ckp2
 C RIC: Fixed ancient bug in GENERALEDIT 'INSERT' which, as far as I can see will
 C have always prevented it from working, unless you happen to be extrememly lucky.
@@ -252,6 +255,9 @@ C RICJUN99 - The XPRVDU call was only outputting one line.
 C This does not allow for format statements with linefeeds in.
 C I don't see how we can handle that really.
       NLINES = 1 + ( LIM2 - LIM1 ) / LENGRP
+      DO I = 1,NLINES
+        WRITE(CMON(I),'(A)')' ' !Clear CMON, just in case.
+      END DO
       IF ( ( IDTYPE .EQ. 1 ) .OR. ( IDTYPE .EQ. 3 ) ) THEN
         WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) ( ( ISTORE(J) ,
      2                              J = I + IOFF , I + IEND ) ,
