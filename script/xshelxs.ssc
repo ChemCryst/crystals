@@ -61,7 +61,8 @@
 ^^WI   DISPOSE SHELX
 ^^CR
 %      IF ( VALUE .EQ. 1 ) THEN
-%           COPY '#SPAWN +notepad.exe shelxs.ins'
+--GILGID%           COPY '#SPAWN +notepad.exe shelxs.ins'
+++GILGID%           COPY '#SPAWN +nedit SHELXS.INS'
 %           EVALUATE QTITLE = 'Shelxs Preparation'
 %           EVALUATE QLINE1 = 'Do you want to'
 %           EVALUATE QLINE2 = 'run SHELXS now?'
@@ -75,7 +76,8 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
-%      COPY '#SPAWN + "CRYSDIR:SHELXS.EXE"'
+--GIDGIL%      COPY '#SPAWN + "CRYSDIR:SHELXS.EXE"'
+++GIDGIL%      COPY '#SPAWN + "CRYSDIR:shelxs"'
 %      COPY '#TYPE SHELXS.LIS'
 %   END BLOCK
 %   BLOCK
