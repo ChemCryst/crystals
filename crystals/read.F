@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2001/03/08 14:36:04  richard
+C Pass file names of punch, log, list and mon files from KRDOPN, if ISSUPD is set
+C to one.
+C If error occurs, do output on white on red.
+C
 C Revision 1.24  2001/01/17 11:06:02  richard
 C Fixed logging of everything.
 C Things which aren't logged: #SCRIPT, #USE, $, #SPAWN. This should
@@ -2236,9 +2241,6 @@ CRICFEB01[
           CALL XPRVDU ( NCVDU, 1, 0 )
         ELSE IF ( IDEV .EQ. NCLU ) THEN
           WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
-          CALL XPRVDU ( NCVDU, 1, 0 )
-        ELSE IF ( IDEV .EQ. NCAWU ) THEN
-          WRITE ( CMON,2346) '_MT_MON', NEWFIL(1:LENNAM)
           CALL XPRVDU ( NCVDU, 1, 0 )
         ENDIF
       END IF
