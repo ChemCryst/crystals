@@ -23,7 +23,7 @@ C FIRST CALL THE BUTTON DRAWING ROUTINE
 
       LOGICAL LFILES
 C READ IN THE FILE
-      IF (.NOT.LFILES(-1,'BUTTON.CMN',IINPT)) THEN
+      IF (.NOT.LFILES(-1,'button.cmn',IINPT)) THEN
         CALL ZMORE('ERROR BUTTON.CMN NOT FOUND',0)
         IMENCN = 0
         RETURN
@@ -190,7 +190,8 @@ C STORE THE CORNERS IN THE ARRAY
       IXX(5) = IXX(1)
       IYY(5) = IYY(1)
 C----- DRAW A PALE POLYGON
-      CALL ZPOLGN (IXX,IYY,5,7)
+      NPVERT = 5
+      CALL ZPOLGN (IXX,IYY,NPVERT,7)
 C      CALL ZPLINE (IXX,IYY,5,IBBORD)
 C----- DRAW A DARK OFFSET POLYGON
       IXX(1) = IXX(1)+2
@@ -199,13 +200,15 @@ C----- DRAW A DARK OFFSET POLYGON
       IXX(4) = IXX(4)+2
       IXX(5) = IXX(1)
       IYY(5) = IYY(1)
-      call zpolgn (ixx, iyy, 5, 8)
+      NPVERT = 5
+      call zpolgn (ixx, iyy, NPVERT, 8)
 C----- DRAW THE BUTTON TOP
       IXX(2) = IXX(2)-3
       IXX(3) = IXX(3)-3
       IYY(3) = IYY(3)-3
       IYY(4) = IYY(4)-3
-      CALL ZPOLGN (IXX, IYY, 5, IBBACK)
+      NPVERT = 5
+      CALL ZPOLGN (IXX, IYY, NPVERT, IBBACK)
 C
 C CENTRE THE STRING IN THE BUTTON
       IF (IHEIGT.GT.10) THEN
@@ -371,7 +374,8 @@ C NOW NEED TO DRAW THE BUTTONS
         IY(4) = IY(3)
         IY(5) = IY(1)
 C----- DRAW A PALE POLYGON
-      CALL ZPOLGN (IX,IY,5,7)
+       NPVERT = 5
+       CALL ZPOLGN (IX,IY,NPVERT,7)
 C      CALL ZPLINE (IX,IY,5,IBBORD)
 C----- DRAW A DARK OFFSET POLYGON
       IX(1) = IX(1)+2
@@ -380,13 +384,15 @@ C----- DRAW A DARK OFFSET POLYGON
       IX(4) = IX(4)+2
       IX(5) = IX(1)
       IY(5) = IY(1)
-      call zpolgn (ix, iy, 5, 8)
+      NPVERT = 5
+      call zpolgn (ix, iy, NPVERT, 8)
 C----- DRAW THE BUTTON TOP
       IX(2) = IX(2)-3
       IX(3) = IX(3)-3
       IY(3) = IY(3)-3
       IY(4) = IY(4)-3
-      CALL ZPOLGN (IX, IY, 5, IBBACK)
+      NPVERT = 5
+      CALL ZPOLGN (IX, IY, NPVERT, IBBACK)
 C
 C NOW DRAW IN THE TEXT
         ISPLIT = INDEX (CBUTTS(I),'_')
@@ -436,7 +442,8 @@ C DRAW THE INPUT REGION - USE THE SCREEN COORDINATES XCENS, YCENS
       IY(4) = IY(3)
       IX(5) = IX(1)
       IY(5) = IY(1)
-      CALL ZPOLGN (IX,IY,5,IBBACK)
-      CALL ZPLINE (IX,IY,5,IBBORD)
+      NPVERT = 5
+      CALL ZPOLGN (IX,IY,NPVERT,IBBACK)
+      CALL ZPLINE (IX,IY,NPVERT,IBBORD)
       RETURN
       END
