@@ -3,7 +3,6 @@
 % VARIABLE CHARACTER CLTYPE
 % EVALUATE HINCELL = FALSE
 %%
-{S * Checking cell contents for hydrogen (list 29):
 % IF ( EXISTS 29 .EQ. 1 ) THEN
 %   COPY '#GENERALEDIT 29'
 %   COPY 'LOCATE RECORDTYPE=101'
@@ -14,7 +13,6 @@
 %       IF ( CLTYPE .EQ. "H" ) THEN
 %          EVALUATE HINCELL = TRUE
 %          EVALUATE LOOPEND = LOOPCOUNTER
-{R   Hydrogen is present in list 29.
 %       END IF
 %       COPY 'NEXT'
 %   END LOOP
