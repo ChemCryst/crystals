@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.44  2002/03/16 18:08:22  richard
+// Removed old CrGraph class (now obsolete given Steven's work).
+// Removed remains of "quickdata" interface (now obsolete, replaced by FASTPOLY etc.)
+//
 // Revision 1.43  2002/03/13 12:30:25  richard
 // Speed up search for ^^ symbols.
 // Introduce new ^^ command: ^^CW - like ^^CR it causes execution of anything
@@ -527,7 +531,6 @@ CcController::CcController( CcString directory, CcString dscfile )
 
 //For info, put DSC name in the title bar.
       Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + dscfile + "'");
-      Tokenize("^^CO SET _MT_DIR TEXT '" +dscfile + "'");
     }
 #endif
 
@@ -553,7 +556,6 @@ CcController::CcController( CcString directory, CcString dscfile )
        putenv( "CRDSC=crfilev2.dsc" );
 #endif
        Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
-       Tokenize("^^CO SET _MT_DIR TEXT 'crfilev2.dsc'");
     }
 
     LOGSTAT( "Starting Crystals Thread" );
