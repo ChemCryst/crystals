@@ -4,56 +4,107 @@
   Agreement analysis is not possible.
 % ELSE
 ^^WI WINDOW A1 'Agreement analysis' SIZE KEEP MODAL
-^^WI GRID BOSS NROWS=6 NCOLS=3
+^^WI GRID MAIN NROWS=6 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 RESIZE _XARSZ1 VERTICAL
+^^WI  @ 2,2 GRID TOP NROWS=1 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 TABCTRL _MAINTABS
 ^^WI   {
-^^WI     ITEM GRID GRAPH NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 RESIZE _XARSZ2 HORIZONTAL
-^^WI       {
-^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
-^^WI         {  
-^^WI          @ 1,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48
-^^WI         }
-^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
-^^WI         {  
-^^WI          @ 1,1 PLOTWINDOW _VSINT NROWS=20 NCOLS=64
-^^WI         }
-^^WI       }
-^^WI     }
-^^WI     ITEM GRID GRAPH NROWS=1 NCOLS=1
-^^WI     {
-^^WI       @ 1,1 RESIZE _XARSZ3 HORIZONTAL
-^^WI       {
-^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
-^^WI         {  
-^^WI          @ 1,1 PLOTWINDOW _VCLASS NROWS=20 NCOLS=64
-^^WI         }
-^^WI         ITEM GRID GRAPH NROWS=1 NCOLS=1
-^^WI         {  
-^^WI          @ 1,1 PLOTWINDOW _VPAR NROWS=20 NCOLS=64
-^^WI         }
-^^WI       }
-^^WI     }
-^^WI   }
-^^WI   @ 4,2 GRID STUFF NROWS=1 NCOLS=3
-^^WI   {
-^^WI    @ 1,1 TEXTOUT atext ' ' NROWS=5 NCOLS=78
-^^WI    @ 1,3 GRID BTNS NROWS=1 NCOLS=3
-^^WI    {
-^^WI      @ 1,1 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT
-^^WI      @ 1,3 BUTTON HELP '&Help'
+^^WI    TAB _TAB1 'Residual' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    { 
+^^WI          @ 2,2 RESIZE _XARSZ2 HORIZONTAL
+^^WI          {
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI              @ 1,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48
+^^WI            }
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI              @ 1,1 PLOTWINDOW _VSINT NROWS=20 NCOLS=64
+^^WI            }
+^^WI          }
+^^WI    }
+^^WI    TAB _TAB2 'Residual by class/parity' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    { 
+^^WI          @ 2,2 RESIZE _XARSZ3 HORIZONTAL
+^^WI          {
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI             @ 1,1 PLOTWINDOW _VCLASS NROWS=20 NCOLS=64
+^^WI            }
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI             @ 1,1 PLOTWINDOW _VPAR NROWS=20 NCOLS=64
+^^WI            }
+^^WI          }
+^^WI    }
+^^WI    TAB _TAB3 'Residual by index' GRID _MAINTG2 NROWS=7 NCOLS=3
+^^WI    { 
+^^WI      @ 2,2 PLOTWINDOW _VINDEXh NROWS=20 NCOLS=64
+^^WI      @ 4,2 PLOTWINDOW _VINDEXk NROWS=20 NCOLS=64
+^^WI      @ 6,2 PLOTWINDOW _VINDEXl NROWS=20 NCOLS=64
+^^WI    }
+^^WI    TAB _TAB4 'R factor' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    { 
+^^WI          @ 2,2 RESIZE _XARSZ2 HORIZONTAL
+^^WI          {
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI              @ 1,1 PLOTWINDOW _VFOR NROWS=20 NCOLS=48
+^^WI            }
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI              @ 1,1 PLOTWINDOW _VSINTR NROWS=20 NCOLS=64
+^^WI            }
+^^WI          }
+^^WI    }
+^^WI    TAB _TAB5 'R by class/parity' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    { 
+^^WI          @ 2,2 RESIZE _XARSZ3 HORIZONTAL
+^^WI          {
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI             @ 1,1 PLOTWINDOW _VCLASSR NROWS=20 NCOLS=64
+^^WI            }
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1
+^^WI            {  
+^^WI             @ 1,1 PLOTWINDOW _VPARR NROWS=20 NCOLS=64
+^^WI            }
+^^WI          }
+^^WI    }
+^^WI    TAB _TAB6 'R by index' GRID _MAINTG2 NROWS=7 NCOLS=3
+^^WI    { 
+^^WI      @ 2,2 PLOTWINDOW _VINDEXRh NROWS=20 NCOLS=64
+^^WI      @ 4,2 PLOTWINDOW _VINDEXRk NROWS=20 NCOLS=64
+^^WI      @ 6,2 PLOTWINDOW _VINDEXRl NROWS=20 NCOLS=64
 ^^WI    }
 ^^WI   }
+^^WI  }
+^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=5
+^^WI  {
+^^WI    @ 1,1 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT
+^^WI    @ 1,3 BUTTON HELP '&Help'
+^^WI  }
+^^WI  @ 6,2 PROGRESS _XANAPR 'Please wait'
 ^^WI }
 ^^WI SHOW
 ^^CR
-^^WI SENDTEXTTO atext
-^^CR
+^^CO SENDPROGRESSTO _XANAPR
 % COPY '#ANALYSE'
 % COPY 'LIST LEVEL=HIGH'
-% COPY 'PLOT CLASS=ON PARITY=ON FO=KEY THETA=ON'
+% COPY 'PLOTCLASS  DELTA ON'
+% COPY 'PLOTPARITY DELTA OFF'
+% COPY 'PLOTFO     DELTA ON'
+% COPY 'PLOTTHETA  DELTA OFF'
+% COPY 'PLOTINDEX  DELTA ON'
+% COPY 'END'
+% COPY '#ANALYSE'
+% COPY 'LIST LEVEL=HIGH'
+% COPY 'PLOTCLASS  RFACTOR ON'
+% COPY 'PLOTPARITY RFACTOR OFF'
+% COPY 'PLOTFO     RFACTOR ON'
+% COPY 'PLOTTHETA  RFACTOR OFF'
+% COPY 'PLOTINDEX  RFACTOR ON'
 % COPY 'END'
 ^^WI SENDTEXTTO _MAINTEXTOUTPUT
 ^^CR
