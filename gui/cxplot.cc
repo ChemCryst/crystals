@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2002/01/16 10:03:13  ckp2
+//   RC: Just meddling. Made the title bar of the key smaller.
+//
 //   Revision 1.12  2002/01/14 12:19:55  ckpgroup
 //   SH: Various changes. Fixed scatter graph memory allocation.
 //   Fixed mouse-over for scatter graphs. Updated graph key.
@@ -77,15 +80,16 @@ int CxPlot::mPlotCount = kPlotBase;
 CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
 {
 #ifdef __CR_WIN__
-    const char* wndClass = AfxRegisterWndClass(
+/*    const char* wndClass = AfxRegisterWndClass(
                                     CS_HREDRAW|CS_VREDRAW,
-                                    NULL,
+                                    IDC_ARROW,
                                     (HBRUSH)(COLOR_MENU+1),
                                     NULL
-                                    );
+                                    );*/
 
     CxPlot *theStdPlot = new CxPlot(container);
-    theStdPlot->Create(wndClass,"Plot",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
+//    theStdPlot->Create(wndClass,"Plot",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
+    theStdPlot->Create(NULL,"Plot",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
     theStdPlot->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theStdPlot->SetFont(CcController::mp_font);
 
