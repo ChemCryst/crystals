@@ -8,6 +8,16 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2002/07/03 14:23:21  richard
+//   Replace as many old-style stream class header references with new style
+//   e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
+//
+//   Removed OnStuffToProcess message from WinApp, it doesn't compile under the new
+//   stricter C++7.0 compiler. (CWinApp isn't a CWnd, so can't recieve messages?)
+//
+//   Removed some bits from Steve's Plot classes that were generating (harmless) compiler
+//   warning messages.
+//
 //   Revision 1.26  2001/12/12 14:18:40  ckp2
 //   RIC: Mousewheel support! (Guess who's just got a new mouse.)
 //   RIC: Also PGUP and PGDOWN and Mousewheel allow the textoutput to be
@@ -451,7 +461,7 @@ void CxWindow::SetMainMenu(CxMenuBar * menu)
 #ifdef __CR_WIN__
 void CxWindow::OnMenuSelected(UINT nID)
 {
-    TRACE("Menu ID %d\n", nID);
+    LOGSTAT("Menu Selected: ID: " + CcString((int) nID ));
 #endif
 #ifdef __BOTHWX__
 void CxWindow::OnMenuSelected(wxCommandEvent & event)

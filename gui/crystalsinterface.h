@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2002/09/27 14:49:04  rich
+// New marker for modlistbase.
+//
 // Revision 1.21  2002/07/23 08:27:02  richard
 //
 // Extra parameter during GRID creation: "ISOLATE" - grid won't expand when the
@@ -86,7 +89,13 @@
 //void errorlog( CcString outStr );
 // Instructions
 
+//NB Try to keep Windows ID's below 65535, I think
+//   some bits of the API use short ints.
 enum {
+    kToolBarBase        =   25000,
+    kToolButtonBase     =   30000,
+    kMenuBase           =   35000,
+
     kButtonBase         =   40000,
     kListBoxBase        =   41000,
     kDropDownBase       =   42000,
@@ -105,13 +114,10 @@ enum {
     kTextOutBase        =   56000,
     kBitmapBase         =   57000,
     kTabBase            =   58000,
-    kToolBarBase        =   59000,
-    kToolButtonBase     =   60000,
-    kMenuBase           =   65000,
-    kResizeBarBase      =   70000,
-    kStretchBase        =   71000,
-    kPlotBase           =   72000,
-    kModListBase        =   73000
+    kResizeBarBase      =   59000,
+    kStretchBase        =   60000,
+    kPlotBase           =   61000,
+    kModListBase        =   62000
 };
 #define kNoAlignment        0
 #define kIsolate            1

@@ -170,6 +170,9 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
                 menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddItem((char*)menuItem->text.ToCString());
                 mMenuList.AddItem(menuItem);
                 (CcController::theController)->AddMenuItem(menuItem);
+
+                LOGSTAT( "Menu item id: " + CcString(menuItem->id) );
+
                 break;
             }
             case kTMenuSplit:
