@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2003/12/01 09:31:36  rich
+C Use longer buffer for cell parameter output in FCF file.
+C
 C Revision 1.36  2003/08/18 11:20:01  rich
 C For output of shelx hkl files - if FOsq exceeds 1E6 then output in F8.1
 C format. If Fosq exceeds 1E7 output in I8 format.
@@ -958,12 +961,12 @@ CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       END IF
 
       SCALE6 = STORE(L5O)
-      WRITE(NCFPU1, '(''# data_CRYSTALS_cif '')')
+      WRITE(NCFPU1, '(''data_CRYSTALS_cif '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
-      WRITE(NCFPU1,'(''# _audit_creation_date  '',6X, 3(A2,A))')
+      WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 3(A2,A))')
      1 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2)
-      WRITE(NCFPU1, '(''# _audit_creation_method      CRYSTALS '',/)')
+      WRITE(NCFPU1, '(''_audit_creation_method      CRYSTALS '',/)')
 
 C --  CONVERT ANGLES TO DEGREES.
       STORE(L1P1+3)=RTD*STORE(L1P1+3)
