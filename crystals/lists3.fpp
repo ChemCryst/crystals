@@ -1,3 +1,5 @@
+C $Log: not supported by cvs2svn $
+C
 CODE FOR XRDLN
       SUBROUTINE XRDLN(IULN,IOWFLG)
 C--GENERAL LIST READING ROUTINE
@@ -1541,7 +1543,7 @@ CMAR98
 C
 CDJWAPR99
       WRITE (CNEWD ,'(4A4)') (ISTORE(ICOMBF+I),I=0,3)
-      IF ((CNEWD(1:4) .EQ. 'old ') .OR. 
+      IF ((CNEWD(1:4) .EQ. 'old ') .OR.
      1   (CNEWD(1:4) .EQ. 'OLD ')) THEN
 C---- NO NEW FILE
             NEWFIL = 0
@@ -1551,7 +1553,7 @@ C---- NO NEW FILE
             I= IGDAT(CNEWD)
             NEWFIL = 1
       ELSE
-C -- SET NEW FILE FLAG 
+C -- SET NEW FILE FLAG
             NEWFIL = 1
       ENDIF
 C
@@ -1883,7 +1885,7 @@ C -- NEGATIVE INITIAL SIZE
 9920  CONTINUE
 C -- INPUT ERRORS
 CDJWAPR99
-      WRITE(CMON,'(A)') 'Filename limited to 16 characters'       
+      WRITE(CMON,'(A)') 'Filename limited to 16 characters'
       CALL XPRVDU(NCEROR, 1,0)
       WRITE(NCAWU,'(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
