@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.46  2004/03/10 13:10:46  rich
+C 1) Do lexical scanning properly - UNTIL wasn't working.
+C 2) Report error if vector has zero length.
+C
 C Revision 1.45  2004/03/09 09:38:03  rich
 C
 C Added a 'ROTATE' directive to #EDIT. There are three modes of operation:
@@ -344,6 +348,8 @@ C
 \XLST05
 \XLST12
 \XLST20
+\XLST40
+\ICOM40
 \XLST41
 \XLST50
 \XLEXIC
@@ -358,6 +364,7 @@ C
 C
 \QSTORE
 \QLST12
+\QLST40
 C
       INTEGER PEAK,QCENT
       INTEGER QSPHERE,QLINE,QRING
@@ -532,6 +539,14 @@ C of creating huge invalid L41s.
       END IF
       IF (KEXIST(40).GT.0) THEN
          IF (KHUNTR(40,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL40
+      ELSE
+\IDIM40
+         CALL XFILL(0,ICOM40(1),IDIM40)
+         MD40T=1
+         MD40E=1
+         MD40P=1
+         MD40M=1
+         MD40B=1
       END IF
 
 C----- LOAD LIST 20 IF NOT ALREADY IN CORE
