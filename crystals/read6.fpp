@@ -201,11 +201,6 @@ C----- load list 25 to find number of twin elements
       IF (KEXIST(25).EQ.1) THEN
          CALL XFAL25
          IF (IERFLG.LT.0) GO TO 5450
-c         if (n25 .gt. 1) then
-c         DO 700 I=2,N25
-c            ELEM=10.*ELEM+FLOAT(I)
-c700      CONTINUE
-c         endif
       END IF
 Cdjwoct2000 > moved from lower down
 C--LOAD LIST 13 FOR THE TWIN DATA
@@ -254,7 +249,7 @@ C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN INPUT
 C----- determine input type from keys
 C----- set default to untwinned
       IFO=3
-      IF (INFT.GE.0) THEN
+      IF (INFT.GT.0) THEN
          IFO=10
          IF (N25.LE.1) THEN
             WRITE (CMON,'(a)') 'Warning - You have no twin law'
@@ -293,7 +288,7 @@ C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
       JNFO=KCOMP(1,JFOO,ISTORE(L6DMP),MD6DMP,1)
       JNFT=KCOMP(1,JFOT,ISTORE(L6DMP),MD6DMP,1)
 Cdjwoct200
-      IF ((INFT.GE.0).AND.(JNFT.LT.0)) THEN
+      IF ((INFT.GT.0).AND.(JNFT.LE.0)) THEN
          WRITE (CMON,'(a/a)') 'Twinned data input but not stored - ','Ch
      1eck the List 6 keys'
          call outcol(3)
@@ -301,7 +296,7 @@ Cdjwoct200
          call outcol(1)
          WRITE (NCAWU,'(a)') CMON(1),CMON(2)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1),CMON(2)
-c         GO TO 5450
+         GO TO 5450
       END IF
 Cdjwoct2000
 C--CHECK IF THE PHASE AND THE BATCH NUMBER SHOULD BE PACKED
@@ -462,11 +457,12 @@ C---- PUT SOMETING INTO FOT
       IF ((JNFT.GT.0).AND.(IRFT.LE.0).AND.(IRFO.GT.0)) STORE(M6+JFOT(1))
      1=STORE(M6+JFOO(1))
 C----- PUT SOMETHING INTO ELEMENTS
-cdec2000^
-c^^^
+cdec2000
+c
       if ((jnft.gt.0).and.(store(m6+11).le.zero)) then
-        elem = 1.
+        elem = 0.
         if (n25 .gt. 1) then
+         elem = 1.
          m25 = l25+md25
 c----- save the base index
          call xmove(store(m6), htemp1, 3)
@@ -575,6 +571,7 @@ CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
       END IF
 C--READ THE NEXT REFLECTION
 2950  CONTINUE
+      call xzerof (store(l6ib),m6ib)
       READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
@@ -727,11 +724,12 @@ c---- put someting into fot
       if ((jnft.gt.0).and.(irft.le.0).and.(irfo.gt.0)) store(m6+jfot(1))
      1=store(m6+jfoo(1))
 c----- put something into elements
-cdec2000^
-c^^^
+cdec2000
+c
       if ((jnft.gt.0).and.(store(m6+11).le.zero)) then
-        elem = 1.
+       elem = 0.
         if (n25 .gt. 1) then
+         elem = 1.
          m25 = l25+md25
 c----- save the base index
          call xmove(store(m6), htemp1, 3)
@@ -759,7 +757,7 @@ c----- restore the base index
         endif
         store(m6+11)=elem
       endif
-c^^^
+c
 C
 C--CHECK IF WE SHOULD COMPUTE SIN(THETA)/LAMBDA SQUARED
          IF (L1S) 4350,4350,4300
