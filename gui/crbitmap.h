@@ -5,37 +5,39 @@
 ////////////////////////////////////////////////////////////////////////
 
 //   Filename:  CrBitmap.h
-//   Authors:   Richard Cooper 
+//   Authors:   Richard Cooper
 
 #ifndef         __CrBitmap_H__
 #define         __CrBitmap_H__
-#include	"crguielement.h"
+#include    "crguielement.h"
 
-#include	"cctokenlist.h"
+#include    "cctokenlist.h"
 class CxBitmap;
- 
+
 class   CrBitmap : public CrGUIElement
 {
-	public:
-		void CrFocus();
-		// methods
+    public:
+        void CrFocus();
+        // methods
                         CrBitmap( CrGUIElement * mParentPtr );
                         ~CrBitmap();
-		Boolean	ParseInput( CcTokenList * tokenList );
+        CcParse ParseInput( CcTokenList * tokenList );
                 void    SetText( CcString text );
-		void	SetGeometry( const CcRect * rect );
-		CcRect	GetGeometry();
-		void	CalcLayout();
-		
-		// attributes
-		
+        void    SetGeometry( const CcRect * rect );
+        CcRect  GetGeometry();
+        CcRect CalcLayout(bool recalculate=false);
+
+        // attributes
+        bool m_Trans;
 };
 
 #define kSBitmapFile    "FILE"
+#define kSTransparent   "TRANS"
 
 enum
 {
- kTBitmapFile = 1800
+ kTBitmapFile = 1800,
+ kTTransparent
 };
 
 

@@ -22,31 +22,38 @@ CrBitmap::CrBitmap( CrGUIElement * mParentPtr )
 {
         ptr_to_cxObject = CxBitmap::CreateCxBitmap( this, (CxGrid *)(mParentPtr->GetWidget()) );
     mTabStop = false;
+    m_Trans = false;
 }
 
 CrBitmap::~CrBitmap()
 {
     if ( ptr_to_cxObject != nil )
     {
-                delete (CxBitmap*) ptr_to_cxObject;
+                ((CxBitmap*) ptr_to_cxObject)->DestroyWindow(); delete (CxBitmap*) ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
 }
 
-Boolean CrBitmap::ParseInput( CcTokenList * tokenList )
+CRSETGEOMETRY(CrBitmap,CxBitmap)
+CRGETGEOMETRY(CrBitmap,CxBitmap)
+CRCALCLAYOUT(CrBitmap,CxBitmap)
+
+CcParse CrBitmap::ParseInput( CcTokenList * tokenList )
 {
-    Boolean retVal = true;
+    CcParse retVal(true, mXCanResize, mYCanResize);
     Boolean hasTokenForMe = true;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
     {
-                LOGSTAT("*** Bitmap *** Initing...");
-
-                retVal = CrGUIElement::ParseInputNoText( tokenList );
-        mSelfInitialised = true;
-
-                LOGSTAT( "*** Created Bitmap " + mName );
+       retVal = CrGUIElement::ParseInputNoText( tokenList );
+       mSelfInitialised = true;
+       LOGSTAT( "Created Bitmap " + mName );
+       if ( tokenList->GetDescriptor(kAttributeClass) == kTTransparent )
+       {
+         m_Trans = true;
+         tokenList->GetToken(); // Remove that token!
+       }
     }
 
     // End of Init, now comes the general parser
@@ -54,11 +61,11 @@ Boolean CrBitmap::ParseInput( CcTokenList * tokenList )
     {
         switch ( tokenList->GetDescriptor(kAttributeClass) )
         {
-                        case kTBitmapFile:
+            case kTBitmapFile:
             {
                 tokenList->GetToken(); // Remove that token!
                 mText = tokenList->GetToken();
-                                ((CxBitmap*)ptr_to_cxObject)->LoadFile(mText);
+                                ((CxBitmap*)ptr_to_cxObject)->LoadFile(mText,m_Trans);
                                 LOGSTAT( "Loading bitmap " + mText );
                 break;
             }
@@ -78,28 +85,6 @@ void    CrBitmap::SetText( CcString text )
 // Do nothing - just overriding virtual void...
 }
 
-void    CrBitmap::SetGeometry( const CcRect * rect )
-{
-        ((CxBitmap*)ptr_to_cxObject)->SetGeometry( rect->mTop,
-                                            rect->mLeft,
-                                            rect->mBottom,
-                                            rect->mRight );
-}
-CcRect  CrBitmap::GetGeometry()
-{
-    CcRect retVal (
-                        ((CxBitmap*)ptr_to_cxObject)->GetTop(),
-                        ((CxBitmap*)ptr_to_cxObject)->GetLeft(),
-                        ((CxBitmap*)ptr_to_cxObject)->GetTop()+((CxBitmap*)ptr_to_cxObject)->GetHeight(),
-                        ((CxBitmap*)ptr_to_cxObject)->GetLeft()+((CxBitmap*)ptr_to_cxObject)->GetWidth()   );
-    return retVal;
-}
-void    CrBitmap::CalcLayout()
-{
-        int w =  ((CxBitmap*)ptr_to_cxObject)->GetIdealWidth();
-        int h =  ((CxBitmap*)ptr_to_cxObject)->GetIdealHeight();
-        ((CxBitmap*)ptr_to_cxObject)->SetGeometry(0,0,h,w);
-}
 
 void CrBitmap::CrFocus()
 {
