@@ -56,8 +56,10 @@
 ^^WI  }
 ^^WI  @ 3,1 GRID VBOTTOM NROWS=2 NCOLS=7
 ^^WI  {
--GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' .EQ. TRUE THEN
-+GIL% IF FILEEXISTS 'CRYSDIR:/MarchingCubeELD.exe' .EQ. TRUE THEN
+-GIL% IF FILEEXISTS 'c:\progra~1\marchi~1\MarchingCubeELD.exe' -
+-GIL  .EQ. TRUE THEN
++GIL% IF FILEEXISTS 'CRYSDIR:/MarchingCubeELD.exe' -
++GIL  .EQ. TRUE THEN
 ^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
 ^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer' STATE=ON
 % ELSE
@@ -197,9 +199,10 @@ of any voids in your structure.
  * Starting Michal Husak's 3D ELD viewer. Wait while it loads ....
 
 {0,3 * MarchingCube program must be closed before continuing ....
--GIL%             TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe ' -
-+GIL%             TRANSFER '#SPAWN CRYSDIR:/MarchingCubeELD.exe ' -
-    // CFILE TO CRYSTALS
+-GIL%  TRANSFER '#SPAWN C:\PROGRA~1\MARCHI~1\MarchingCubeELD.exe ' -
+-GIL    // CFILE TO CRYSTALS
++GIL%  TRANSFER '#SPAWN CRYSDIR:/MarchingCubeELD.exe ' -
++GIL    // CFILE TO CRYSTALS
 
  * MCE is now closed.
 
