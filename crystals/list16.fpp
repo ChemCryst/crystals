@@ -1,4 +1,52 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2003/06/24 12:48:38  rich
+C
+C RIC: The implementation of the SAME restraint. The first group on the card is the 'target'
+C all following groups are mapped onto it (in order specified) and the distances and
+C angles restrained - using the connectivity of the first group.
+C
+C The first two arguments are the e.s.d for bond length restraints and the e.s.d
+C for angle restraints. Groups are seperated by the word 'AND'.
+C I.E:
+C
+C SAME 0.01, 0.1 FOR RESI(1) AND RESI(2)
+C   maps all atoms in resi(1) onto all the atoms in resi(2) - note that
+C   although this shorthand is appealing, the order of resi(1) and resi(2)
+C   must be identical in List 5, although the residues may interpenetrate.
+C
+C SAME 0.01 , 0.1 CONT C(17)  C(18)  H(183) H(182) H(181) AND
+C CONT                 C(17)  C(18)  H(182) H(181) H(183)
+C   imposes 3-fold symmetry on a single methyl group.
+C
+C SAME 0.01 , 0.1 CONT C(17)  C(18)  H(183) H(182) H(181) AND
+C CONT                 C(17)  C(19)  H(193) H(192) H(191) AND
+C CONT                 C(8)   C(9)   H(93)  H(92)  H(91) AND
+C CONT                 C(8)   C(10)  H(103) H(102) H(101) AND
+C CONT                 C(14)  C(15)  H(153) H(152) H(151) AND
+C CONT                 C(14)  C(16)  H(163) H(162) H(161)
+C   restrains six methyl groups to have the same geometry as each
+C   other. Combining the last two restraints would make all the
+C   methyls have 3 fold symmetry, and all be the same.
+C
+C Errors are generated if
+C   1) the size of any of the groups on the SAME card is not the
+C      same as the first group.
+C   2) the element type in a group does not match the corresponding
+C      element type in the first group.
+C
+C Warnings are printed if there are zero bonds to any of the atoms
+C in the first group.
+C
+C The comma separating the e.s.d arguments, and the 'FOR' separating the
+C e.s.d.s from the atom specifications are optional.
+C The second e.s.d is optional, the default is 0.1 degrees.
+C The first e.s.d is optional unless you wish to specify the second, the
+C default is 0.01 Angstroms.
+C
+C List 41 (bonds) is loaded by the restraint generating routine, if it
+C does not exist an error will occur. (By default L41 is kept up to date
+C with the current model.)
+C
 C Revision 1.3  2003/06/19 13:22:15  rich
 C
 C To List 16, the directive 'REM' has been added. Anything following
@@ -277,6 +325,7 @@ C
 \XERVAL
 \XOPVAL
 \XIOBUF
+\XFLAGS
 C
       CHARACTER *32 CATOM1, CATOM2, CATOM3
 
@@ -317,6 +366,12 @@ c      ICOM05(I)=NOWT
 c1050  CONTINUE
 C Load list 5 into core (allows checking during processing).
        CALL XFAL05
+C - Clear all the bits that restraints could possibly set.
+      IMASK = INOT ( KBREFB(4) +  KBREFB(6) )
+      DO I = 0, N5-1
+          ISTORE(L5+MD5*I+15) = IAND ( ISTORE(L5+MD5*I+15), IMASK )
+      END DO
+
 C Grab some space for three atom list vectors (for SAME restraint).
        MDATVC = 3
        LATVC = KSTALL (N5*MDATVC)
@@ -389,7 +444,7 @@ C--'DISTANCE' CARD
       ISTORE(LCG+1)=ISTORE(LCG+1)+I
       I=1
 1700  CONTINUE
-      J=KGCAS(K,L,M)
+      J=KGCAS(K,L,M,1)
       IF(J)5850,5850,1750
 1750  CONTINUE
       MDCS=MDCS-I*J
@@ -532,6 +587,8 @@ C Check types match.
           END IF
 C Store this result.
           ISTORE(JATD) = INDATM+J
+C Set the relevant REF bit.
+          ISTORE(M5A+J*MD5+15) = IOR ( ISTORE(M5A+J*MD5+15), KBREFB(4) )
           JATD = JATD - 1
         END DO
         JATOMS = JATOMS + N5A
@@ -908,7 +965,7 @@ C--'VIBRATION' CARD
       CALL XCFE
       GOTO 5850
 2000  CONTINUE
-      IF(KGCAS(K,L,M))5850,5850,5700
+      IF(KGCAS(K,L,M,2))5850,5850,5700
 C
 C--'COMPILER LISTING' CARD
 2050  CONTINUE
@@ -1075,7 +1132,7 @@ C--IT IS AN 'AND'  -  UPDATE THE POINTERS
       GOTO 2500
 C--ALL THE LIMITS ARE PROCESSED  -  NOW READ THE ATOMS
 4000  CONTINUE
-      IF(KGCAS(-1,3,5))5850,5850,5700
+      IF(KGCAS(-1,3,5,0))5850,5850,5700
 C
 C--A 'PLANAR' CARD  -  DEFINING A MEAN PLANE OF ATOMS
 4050  CONTINUE
@@ -1113,7 +1170,7 @@ C--UPDATE THE POINTERS AFTER A 'FOR'
       MF=MF+LK2
 C--READ THE ATOMS ON THE CARD
 4500  CONTINUE
-      IF(KGCAS(0,3,5))5850,5850,5700
+      IF(KGCAS(0,3,5,0))5850,5850,5700
 C
 C--'SUM' DIRECTIVE FOR FLOATING ORIGINS
 4550  CONTINUE
@@ -1288,6 +1345,10 @@ C--TERMINATE THE COMPILER OUTPUT SEQUENCE
 6000  CONTINUE
       CALL XTCO(KE)
 6020  CONTINUE
+
+CRICJUN03 - store the list 5, with modified Spare values.
+      CALL XSTR05 (5,-1,-1)
+
       CALL XOPMSG (IOPL16, IOPEND, IVERSN)
 C--AND NOW RETURN
       CALL XTIME2(2)
@@ -1418,7 +1479,7 @@ C--CHECK AGAINST THE LIST
       END
 C
 CODE FOR KGCAS
-      FUNCTION KGCAS(IN,IM,IL)
+      FUNCTION KGCAS(IN,IM,IL,KBFLAG)
 C--GENERATE THE RESTRAINED ATOM STACK
 C
 C  IN  CONNECTOR CONTROL FLAG :
@@ -1436,6 +1497,9 @@ C
 C  IM  THE NUMBER OF PARAMETERS TO PROVIDE SLOTS FOR
 C  IL  NUMBER OF THE FIRST PARAMETER TO INCLUDE
 C      ('TYPE' IS 1, 'X' 5, ETC.)
+C  KBFLAG:
+C      0 = Not a distance restraint.
+C      1 = Dist restraint, set relevant bit of REF parameter in L5.
 C
 C--RETURNS SET EQUAL TO THE NUMBER OF RESTRAINTS UNLESS THERE IS
 C  AN ERROR
@@ -1454,6 +1518,8 @@ C
 \XAPK
 \XLISTI
 \XCONST
+\XFLAGS
+\XLST05
 C
 \QSTORE
 C
@@ -1539,6 +1605,12 @@ C--ATOM DEFINITION ERROR
       GOTO 2300
 C--CHECK THAT THERE ARE NO PARAMETERS SPECIFIED
 1850  CONTINUE
+C If this is a DIST/ANGLE or VIB restraint, the set the relevant REF bit.
+      IF ( KBFLAG .EQ. 1 ) THEN
+        ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(4) )
+      ELSE IF ( KBFLAG .EQ. 2 ) THEN
+        ISTORE(M5A+15) = IOR ( ISTORE(M5A+15), KBREFB(6) )
+      END IF
       IF(ISTORE(MCG+5))1800,1900,1800
 C--CHECK IF THIS IS THE FIRST ATOM
 1900  CONTINUE
