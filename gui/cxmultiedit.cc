@@ -72,7 +72,7 @@ void  CxMultiEdit::SetText( CcString cText )
       CClientDC cdc(this);
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
-      charheight = textMetric.tmHeight;
+      charheight = textMetric.tmHeight + textMetric.tmExternalLeading;
 
       ll = GetLineCount();
 #endif
@@ -116,7 +116,7 @@ void  CxMultiEdit::SetText( CcString cText )
 	//Now scroll the text so that the last line is at the bottom of the screen.
 	//i.e. so that the line at lastline-firstvisline is the first visible line.
 #ifdef __WINDOWS__
-	LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)((float)GetHeight() / (float)textMetric.tmHeight) + 1 );
+      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)((float)GetHeight() / (float)charheight) + 1 );
 #endif
 #ifdef __LINUX__
       ShowPosition ( GetLastPosition () );
@@ -545,3 +545,9 @@ void CxMultiEdit::Spew()
     }
 }
 
+void CxMultiEdit::SetOriginalSizes()
+{
+      mIdealHeight = GetHeight();
+      mIdealWidth  = GetWidth();
+      return;
+}
