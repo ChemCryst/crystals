@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2002/03/13 12:35:21  richard
+C Added extra argument to calls to KDIST1.
+C
 C Revision 1.10  2001/06/27 12:15:11  richard
 C Spelling error.
 C
@@ -285,16 +288,16 @@ C---- SET MULTIPLIER +VE FOR MORMAL MAP
       IF (NTYP .GT. IEMAP) GOTO 9920
 C--CLEAR THE CORE CONTROL FLAGS
       IF( (IFCALC .EQ. 0) .AND. (NTYP .LT. IPMAP) ) THEN
-            IF (KEXIST(33) .LE. 0) THEN
-      IF (ISSPRT .EQ. 0) WRITE(NCAWU, 1151)
-      WRITE(NCWU, 1151)
-      WRITE ( CMON ,1151)
-      CALL XPRVDU(NCVDU, 1,0)
-1151  FORMAT(' This option NOT available unless SFLS '
-     2 ,'have been performed in the past')
+         IF (KEXIST(33) .LE. 0) THEN
+            IF (ISSPRT .EQ. 0) WRITE(NCAWU, 1151)
+            WRITE(NCWU, 1151)
+            WRITE ( CMON ,1151)
+            CALL XPRVDU(NCVDU, 1,0)
+1151        FORMAT(' This option NOT available unless SFLS ',
+     2             'have been performed in the past')
             GOTO 9900
-            ENDIF
-            CALL XSFLSB(IFCALC)
+         ENDIF
+         CALL XSFLSB(IFCALC)
       ENDIF
       IF (IERFLG .LT. 0) GOTO 9900
       CALL XRSL
