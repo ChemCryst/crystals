@@ -463,7 +463,6 @@
 %      COPY 'NEXT'
 %    END LOOP
 %    IF ( DOWRITE .EQ. TRUE ) THEN
-Doing write.
 %      COPY 'WRITE OVERWRITE=OVERWRITE'
 %    END IF
 %    COPY 'END'
@@ -671,5 +670,4 @@ Doing write.
 %    COPY 'END'
 %    COPY '#SCRIPT XPRUNE'
 %  END IF
-
 %END SCRIPT
