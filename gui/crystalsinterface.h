@@ -3,6 +3,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2001/06/18 12:42:55  richard
+// Remove definition of __WXGTK__ as it is defined on the compiler command line.
+//
 // Revision 1.16  2001/06/17 14:50:00  richard
 // Bug in wx version of onchar macro.
 //
@@ -197,9 +200,9 @@ typedef bool Boolean;
 CcRect a##::CalcLayout(bool recalc)                                                            \
 {                                                                          \
   if(!recalc) return CcRect(0,0,m_InitHeight,m_InitWidth);                 \
-  if ( ptr_to_cxObject )                             \
+  if ( ptr_to_cxObject )  {                           \
   return CcRect(0,0,(int)(m_InitHeight=((##b*)ptr_to_cxObject)->GetIdealHeight()),  \
-                          m_InitWidth =((##b*)ptr_to_cxObject)->GetIdealWidth());   \
+                          m_InitWidth =((##b*)ptr_to_cxObject)->GetIdealWidth()); }  \
   return CcRect(0,0,0,0); \
 };
 
