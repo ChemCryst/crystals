@@ -20,6 +20,7 @@ class CcTokenList;
 class	CrChart : public CrGUIElement
 {
 	public:
+            void SysKey ( UINT nChar );
 		void Highlight(Boolean highlight);
 		void FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated = false);
 		void PolygonClosed();
@@ -39,6 +40,7 @@ class	CrChart : public CrGUIElement
 		void Display();
 		void DrawLine(int x1, int y1, int x2, int y2);
 		void CrFocus();
+            Boolean  mWantSysKeys;
 	// methods
 			CrChart( CrGUIElement * mParentPtr );
 			~CrChart();
