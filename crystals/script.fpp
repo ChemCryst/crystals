@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/01/14 10:22:39  rich
+C Remove unimplemented FLOOR intrinsic
+C
 C Revision 1.40  2002/11/06 10:57:02  rich
 C Updated FIRSTINT and FIRSTCHR to do an initial check for () in
 C an atom string. These take precedence over alpha-numeric analysis
@@ -6214,32 +6217,39 @@ C      -1          ERROR. VARIABLE NAME IS NOT KNOWN
 C      +1          SUCCESS
 C
 \XUNITS
+\UFILE
 \XIOBUF
-C
+
       DIMENSION IVALUE(ILGTH)
 
       CHARACTER*(*) CVARIB
       CHARACTER *64 CBUFF
-C
-C
-C
-C
-C -- CHECK WHETHER A VARIABLE NAME HAS BEEN GIVEN
-C
+
+
+
       KSCTRN = 1
-      IF ( CVARIB .EQ. ' ' ) RETURN
-C
+      IF ( CVARIB .EQ. ' ' ) RETURN    ! CHECK VARIABLE NAME HAS BEEN GIVEN
+      IF ( IRDSCR(IFLIND) .LE. 0 ) RETURN  ! CHECK SCRIPTS ARE RUNNING
+
+
 C -- FIND IDENTIFIER
-C
-C
+
       ISTAT = KSCIDN ( 2 , 3 , CVARIB , 1 , ITYPE , IDENT , ICVAL , -1 )
-      IF ( ISTAT .LE. 0 ) GO TO 9900
-C
+      IF ( ISTAT .LE. 0 ) THEN
+c        WRITE(CMON,'(2A)')'Variable not found: ',CVARIB
+c        CALL XPRVDU(NCVDU,1,0)
+        GO TO 9900
+      END IF
+
+c      WRITE(CMON,'(A,I4,1X,A,2I5)')
+c     1     'Val,C,IDIR,ITYP: ',IVALUE,CVARIB,IDIREC,ITYPE
+c          CALL XPRVDU(NCVDU,1,0)
+
+
 C -- TRANSFER DATA
-C
+
       IF ( IDIREC .EQ. 1 ) THEN
-        IF (ITYPE .EQ. 4) THEN
-C         A CHARACTER VARIABLE - CONVERT TO HOLLERITH
+        IF (ITYPE .EQ. 4) THEN  ! CHARACTER VARIABLE - CONVERT TO HOLLERITH
 C          WRITE (CBUFF, '(A4)') IVALUE
          DO J = 1, ILGTH
           WRITE (CBUFF((J*4)-3:(J*4)), '(A4)') IVALUE(J)
@@ -6250,10 +6260,12 @@ CDJW JUL 98 REPLACE CALL TO KSCSCD WITH CALL TO REPLACEMENT ROUTINE
          ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, JVALUE , -1)
         ELSE
           ISTAT = KSCIDN ( 1, 3, CVARIB, 1, ITYPE, IDENT, IVALUE(1), -1)
+c          WRITE(CMON,'(A,I4,1X,A)')
+c     1     'Variable transferred: ',IVALUE,CVARIB
+c          CALL XPRVDU(NCVDU,1,0)
         END IF
       ELSE
-        IF (ITYPE .EQ. 4) THEN
-C            A CHARACTER VARIABLE - RECOVER FROM HOLLERITH
+        IF (ITYPE .EQ. 4) THEN  ! CHARACTER VARIABLE - RECOVER FROM HOLLERITH
           ISTAT = KSCSDC (ICVAL, CBUFF, I )
           DO J=1,ILGTH
              READ (CBUFF((J*4)-3:(J*4)), '(A4)') IVALUE(J)
@@ -6262,15 +6274,14 @@ C            A CHARACTER VARIABLE - RECOVER FROM HOLLERITH
              CALL XMOVEI ( ICVAL , IVALUE(1) , 1 )
         ENDIF
       ENDIF
-C
       RETURN
-C
-C
+
+
 9900  CONTINUE
       KSCTRN = -1
-C
       RETURN
       END
+
 CODE FOR KSCREP
       FUNCTION KSCREP ( IDESC, CTEXT, LENG )
 C
