@@ -1,4 +1,8 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.29  2004/02/24 16:28:08  rich
+c Anna: Fix generation of potential pseudo-operators in space groups
+c containing lattice centerings.
+c
 c Revision 1.28  2004/02/24 14:41:14  rich
 c Anna: Bug fix. Compute correct translation vector for transformations during #MATCH.
 c
@@ -1164,8 +1168,15 @@ C 3) For each product, find the best match among all the generators,
 C    store the worst of the best matches so far.
 
           WORST = 9999999.0
+          AVERAGE = 0.0
+          NCOMPS = 0
 
           DO K1 = LSGT+MLTPLY*8,LSGT+(MLTPLY-1)*16,16  ! New generators
+
+            RWORST = 9999999.0
+            RAVERAGE = 0.0
+            NRCOMP = 0
+
 
             DO K2 = LSGT,LSGT+(MLTPLY-1)*16,16            ! All generators
 
@@ -1198,18 +1209,43 @@ C Do the comparison.
               CALL XPRVDU(NCVDU,1,0)
 
 
-              WORST = MIN(WORST,BEST)
+              WORST = MIN(WORST,BEST)   ! Worst of the best matches overall
+              RWORST = MIN(RWORST,BEST) ! Worst of the best for latest row
+              AVERAGE = AVERAGE + BEST  ! Average of best overall
+              NCOMPS = NCOMPS + 1
+              RAVERAGE = RAVERAGE + BEST  ! Average of best for latest row
+              NRCOMP = NRCOMP + 1
 
             END DO
-
           END DO
 
+
+          AVERAGE = AVERAGE / FLOAT(NCOMPS)
+          RAVERAGE = RAVERAGE / FLOAT(NRCOMP)
 
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
      1    CHAR(9),WORST
           CALL XCREMS(CPCH,CPCH,LENFIL)
 
-          WRITE(CMON,'(A,F9.4)')'Worst of the best matches: ',WORST
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
+     1    CHAR(9),AVERAGE
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
+     1    CHAR(9),RWORST
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
+     1    CHAR(9),RAVERAGE
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CMON,'(A,F9.4)')'Lowest of the best matches: ',WORST
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE(CMON,'(A,F9.4)')'Average of the best matches: ',AVERAGE
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE(CMON,'(A,F9.4)')'Lowest best match in last row: ',RWORST
+          CALL XPRVDU(NCVDU,1,0)
+          WRITE(CMON,'(A,F9.4)')'Average best in last row: ',RAVERAGE
           CALL XPRVDU(NCVDU,1,0)
 
          ENDIF
