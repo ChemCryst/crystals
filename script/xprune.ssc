@@ -1,8 +1,9 @@
 %SCRIPT XPRUNE
 % VARIABLE CHARACTER CLTYPE CPK CATOM CTYPE
-% VARIABLE LOGICAL CALLED 
+% VARIABLE LOGICAL CALLED QSONLY
 % VARIABLE INTEGER N29 NSEL
 % EVALUATE NSEL = 1
+% EVALUATE QSONLY = TRUE
 %%
 %%
 ^^WI WINDOW XPRUNE 'Peak results' KEEP SIZE MODAL
@@ -56,14 +57,16 @@
 ^^WI   }
 ^^WI   @ 4,2 TABCTRL _GRAPHORMODEL
 ^^WI   {
-^^WI      TAB _GOMTAB0 'Peak heights' GRID _GOMTG0 NROWS=2 NCOLS=1
+^^WI      TAB _GOMTAB0 'Peak heights' GRID _GOMTG0 NROWS=3 NCOLS=1
 ^^WI      {
 ^^WI         @ 1,1 PLOTWINDOW _VPARAM NROWS=20 NCOLS=64
 ^^WI           DEFINEPOPUPMENU POPS 'Graph'
-^^WI             ITEM _SDELA '&Remove peak _X' 'MRM_N_X'
-^^WI             ITEM _SDELA '&Remove all peaks <= _Y' 'PLRB_N_X'
+^^WI             ITEM _SDELA '&Remove _X' 'MRM_N_X'
+^^WI             ITEM _SDELA '&Remove all <= _Y' 'PLRB_N_X_N_Y'
 ^^WI           ENDDEFINEMENU
 ^^WI         @ 2,1 STATIC _T 'Right click bars for options'
+^^WI         @ 3,1 CHECKBOX PQS 'Include all atoms on graph'
+^^WI               INFORM=YES STATE=OFF
 ^^WI      }
 ^^WI      TAB _GOMTAB1 'Model'        GRID _GOMTG1 NROWS=2 NCOLS=1
 ^^WI      {
@@ -158,7 +161,11 @@
 ^^CR
 %    COPY '#edit'
 %    COPY 'monitor off'
-%    COPY 'select type eq q'
+%    IF ( QSONLY ) THEN
+%       COPY 'select type eq q'
+%    ELSE
+%       COPY 'dsort spare'
+%    END IF
 %    COPY 'graph of=spare'
 %    COPY 'exec'
 %    COPY 'quit'
@@ -170,7 +177,7 @@
 %%
 %%
 %%
-%    VERIFY XP_BOK XPRMS XPCHG XPRMB XPRAA XPRMA MRM GMRM CHT GCHT PLRB
+%    VERIFY XP_BOK XPRMS XPCHG XPRMB XPRAA XPRMA MRM GMRM CHT GCHT PLRB PQS
 %%
 %%
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
@@ -314,14 +321,33 @@
 %       COPY 'END'
 %      END BLOCK
 %      BLOCK     %Remove bar and all below
+%% In QSONLY mode: remove from clicked peak until LAST; when all atoms
+%% are present: remove all below clicked SPARE value.
 %       COPY '#EDIT'
 %       COPY 'monitor off'
-%       CLEAR
-%       INSERT 'DELETE '
-%       GET SILENT TEXT 'Atom?' 'ERROR'
-%       INSERT ' UNTIL LAST'
+%       IF QSONLY THEN
+%         CLEAR
+%         INSERT 'DELETE '
+%         GET SILENT TEXT 'Atom?' 'ERROR'
+%         GET SILENT NOSTORE TEXT 'Value?' 'ERROR'
+%         INSERT ' UNTIL LAST'
+%       ELSE
+%         CLEAR
+%         INSERT 'SELECT SPARE GT '
+%         GET SILENT NOSTORE TEXT 'Atom?' 'ERROR'
+%         GET SILENT TEXT 'Value?' 'ERROR'
+%       END IF
 %       SEND
 %       COPY 'END'
+%      END BLOCK
+%      BLOCK    % Show all atoms or just Q's in the plot.
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       IF VALUE .EQ. 1 THEN
+%          EVALUATE QSONLY = FALSE
+%       ELSE
+%          EVALUATE QSONLY = TRUE
+%       END IF
 %      END BLOCK
 %    END CASE
 %  END LOOP
