@@ -61,14 +61,15 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="C:\cygwin\home\Administrator\regexpp3;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\CodeLibrary\Headers&quot;;&quot;C:\Documents and Settings\djwgroup.CHEM\My Documents\Visual Studio Projects\SpaceGroup&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
@@ -254,9 +255,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\CodeLibrary\CPP\Timer.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\CodeLibrary\CPP\Trees.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\CodeLibrary\CPP\Wrappers.cpp">
