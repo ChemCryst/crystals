@@ -49,3 +49,4 @@ class Conditions:public MyObject
 
 std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions);
 #endif
+

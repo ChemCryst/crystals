@@ -41,6 +41,7 @@
 #include <string.h>
 #include <iostream.h>
 #include "Exceptions.h"
+#include <errno.h>
 #include <sys/stat.h>
      
 /**********************************/
@@ -222,3 +223,4 @@ int HKLData::numberOfReflections() const
 {
     return iReflectionList->length();
 }
+

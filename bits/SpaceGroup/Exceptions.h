@@ -74,3 +74,4 @@ class FileException: public MyException
 
 std::ostream& operator<<(std::ostream& pStream, MyException& pExc);
 #endif
+

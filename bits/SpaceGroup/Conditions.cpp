@@ -244,3 +244,4 @@ std::ostream& operator<<(std::ostream& pStream, Conditions& pConditions)
 {
     return pConditions.output(pStream);
 }
+
