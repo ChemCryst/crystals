@@ -81,6 +81,9 @@ int main (int argc, const char * argv[])
                 
              //   cout << tHeadings << "\n";
              //   cout << tConditions << "\n";
+                tTable->outputColumn(cout, 0, &tHeadings, &tConditions);
+                tTable->outputColumn(cout, 1, &tHeadings, &tConditions);
+                tTable->outputColumn(cout, 2, &tHeadings, &tConditions);
                 cout << tTables << "\n";
 
                 delete tReflections;
