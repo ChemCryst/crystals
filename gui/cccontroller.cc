@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.93  2004/06/28 13:26:56  rich
+// More Linux fixes, stl updates.
+//
 // Revision 1.92  2004/06/25 12:50:37  rich
 //
 // Removed Completing() series of functions and replaced with a
@@ -1095,15 +1098,14 @@ bool CcController::ParseInput( deque<string> & tokenList )
                       int tok;
                       while (true)
                       {
-                         tok = CcController::GetDescriptor( tokenList.front(), kInstructionClass );
-                         if ( tok == kTCloseGroup )
-                         {
-                            tokenList.pop_front();
-                            break;
-                         }
-                         else if ( tok == kTNoMoreToken )
+                         if ( tokenList.empty() )
                          {
                             LOGWARN( "CcController:ParseInput:SAFESET ran off end of input.");
+                            break;
+                         }
+                         else if ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTCloseGroup )
+                         {
+                            tokenList.pop_front();
                             break;
                          }
                          tokenList.pop_front();

@@ -6,6 +6,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.32  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.31  2004/04/16 12:43:44  rich
 //   Speed up for  OpenGL rendering: Use new lighting scheme, drop use of
 //   two sets of displaylists for rendering a 'low res' model while rotating -
@@ -328,14 +332,14 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       case kTSelectAtoms:
       {
         tokenList.pop_front(); //Remove the kTSelectAtoms token!
-        if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
+        if( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
         {
           tokenList.pop_front(); //Remove the kTAll token!
           bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
           tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->SelectAllAtoms(select);
         }
-        else if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTInvert)
+        else if( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTInvert)
         {
           tokenList.pop_front(); //Remove the kTInvert token!
           if(m_ModelDoc) m_ModelDoc->InvertSelection();
@@ -354,7 +358,7 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       {
         tokenList.pop_front(); //Remove the kTDisableAtoms token!
 
-        if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
+        if( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
         {
           tokenList.pop_front(); //Remove the kTAll token!
           bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
@@ -470,13 +474,13 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       {
         tokenList.pop_front();
         bool bRect = true;
-        if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectRect)
+        if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectRect)
         {
           tokenList.pop_front();
           if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXRECTSEL);
           else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
         }
-        else if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectPoly)
+        else if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectPoly)
         {
           tokenList.pop_front();
           if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->SelectTool(CXPOLYSEL);
@@ -499,14 +503,14 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       case kTZoomSelected:
       {
         tokenList.pop_front();
-        if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)
+        if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)
         {
           tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(true);
           (CcController::theController)->status.SetZoomedFlag(true);
           Update(true);
         }
-        else if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTNo)
+        else if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTNo)
         {
           tokenList.pop_front();
           if(m_ModelDoc) m_ModelDoc->ZoomAtoms(false);
@@ -525,12 +529,12 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         tokenList.pop_front();
         string atomname = string(tokenList.front());
         tokenList.pop_front();
-        if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)
+        if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)
         {
           tokenList.pop_front();
           SelectFrag(atomname,true);
         }
-        else if (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTNo)
+        else if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTNo)
         {
           tokenList.pop_front();
           SelectFrag(atomname,false);

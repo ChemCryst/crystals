@@ -52,7 +52,7 @@ CcParse CrBitmap::ParseInput( deque<string> &  tokenList )
        retVal = CrGUIElement::ParseInputNoText( tokenList );
        mSelfInitialised = true;
        LOGSTAT( "Created Bitmap " + mName );
-       if ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTransparent )
+       if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTransparent )
        {
          m_Trans = true;
          tokenList.pop_front(); // Remove that token!

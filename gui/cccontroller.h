@@ -7,7 +7,264 @@
 //   Filename:  CcController.h
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 15:02 Uhr
+
+#ifndef     __CcController_H__
+#define     __CcController_H__
+
+#ifdef __BOTHWX__
+#include <wx/app.h>
+#include <wx/thread.h>
+#include "ccthread.h"
+#endif
+
+#include    "ccstatus.h"
+#include    "ccrect.h"
+#include    "crystals.h"
+#include    <cstdio> //For FILE definition
+
+#ifdef __CR_WIN__
+#include <afxwin.h>
+#endif
+
+#include <vector>
+#include <deque>
+#include <list>
+
+class CcModelDoc;
+class CrWindow;
+class CrGUIElement;
+class CrButton;
+class CrEditBox;
+class CrTextOut;
+class CrProgress;
+
+class   CcController
+{
+  public:
+    CcController( const string & directory, const string & dscfile );
+    ~CcController();
+     
+    class MyException { public: MyException(){}; ~MyException(){}; };
+
+    void SendCommand( string command , bool jumpQueue = false);
+    bool GetCrystalsCommand( char * line );
+    void AddInterfaceCommand(const string &line, bool internal = false );
+
+    void Tokenize( const string & text );  // Called after GetInterfaceCommand
+    bool ParseInput( deque<string> & tokenList );  //Called by tokenize when input is complete.
+
+    CcModelDoc* CreateModelDoc(const string & name);  // Creates or clears a CcModelDoc object.
+    CcModelDoc* FindModelDoc(const string & name);
+
+    void AddDisableableWindow( CrWindow * aWindow );
+    void RemoveDisableableWindow ( CrWindow * aWindow );
+    void AddDisableableButton( CrButton * aButton );
+    void RemoveDisableableButton ( CrButton * aButton );
+
+    CrGUIElement* GetTextOutputPlace();
+    void SetTextOutputPlace(CrTextOut* outputPane);
+    void RemoveTextOutputPlace(CrTextOut* output);
+
+    CrGUIElement* GetProgressOutputPlace();
+    void RemoveProgressOutputPlace(CrProgress* output);
+    void SetProgressOutputPlace(CrProgress* outputPane);
+    void SetProgressText(const string & theText);
+
+    CrEditBox* GetInputPlace();
+    void RemoveInputPlace(CrEditBox* input);
+    void SetInputPlace(CrEditBox* inputPane);
+
+    void RemoveWindowFromList(CrWindow* window);
+
+    CrGUIElement* FindObject( const string & Name );
+
+    void ReLayout();
+    void FocusToInput(char theChar);
+
+    void LogError( string errString , int level);
+
+    static void MakeTokens( const string& str,
+                deque<string>& tokens,
+                const string& delimiters = " ,=\t\r\n",
+                const string& pairopen  = "<!\"'",
+                const string& pairclose = ">!\"'"  );
+
+    static int CcController::GetDescriptor( string &token, int descriptorClass );
+
+    void UpdateToolBars();
+    void ScriptsExited();
+
+    void StoreKey( string key, string value );
+    string GetKey( string key );
+    string GetRegKey( string key, string name );
+
+    string OpenFileDialog(const string & extensionFilter, const string & extensionDescription, bool titleOnly);
+    string SaveFileDialog(const string & defaultName, const string & extensionFilter, const string & extensionDescription);
+    string OpenDirDialog();
+    void ChooseFont();
+
+    void StartCrystalsThread();
+    void ProcessOutput(const string & theLine);
+
+    void ChangeDir (string newDir);
+
+    void   ReadStartUp( FILE * file, string & crysdir );
+    int    EnvVarCount( string & dir );
+    string EnvVarExtract ( string & dir, int i );
+
+    void TimerFired();
+    bool DoCommandTransferStuff();
+
+    void  endthread ( long theExitcode  );
+
+// attributes
+
+    CcStatus status;
+    static CcController* theController;
+    static int debugIndent;
+
+    CrWindow *      mCurrentWindow;
+    int m_ExitCode;
+
+#ifdef __CR_WIN__
+    static CWinThread *mCrystalsThread;
+    static CWinThread *mGUIThread;
+    static CFont* mp_font;
+    static CFont* mp_inputfont;
+#endif
+#ifdef __BOTHWX__
+    static CcThread *mCrystalsThread;
+    static wxFont* mp_inputfont;
+#endif
+
+
+
+  private:
+
+    void AddCrystalsCommand(const string &line , bool jumpQueue = false); // Called by SendCommand
+    bool GetInterfaceCommand( string & line );                    // Called by DoCommandTransferStuff
+    void GetValue (deque<string> & tokenlist);
+
+    deque<string>    mQuickTokenList;
+    deque<string>    mWindowTokenList;
+    deque<string>    mPlotTokenList;
+    deque<string>    mChartTokenList;
+    deque<string>    mModelTokenList;
+    deque<string>    mStatusTokenList;
+// Some pointers to those deqs:
+    deque<string> *  mTempTokenList;
+    deque<string> *  mCurTokenList;
+
+    bool mThisThreadisDead;
+    bool m_restart;
+    string m_newdir;
+    bool m_BatchMode;
+    int m_start_ticks;
+    FILE *  mErrorLog;
+
+    list<CrWindow*>  mWindowList;
+    list<CrTextOut*>  mTextOutputWindowList;
+    list<CrProgress*>  mProgressOutputWindowList;
+    list<CrEditBox*>  mInputWindowList;
+
+    list<CrWindow*> mDisableableWindowsList;
+    list<CrButton*> mDisableableButtonsList;
+
+    deque<string> mCrystalsCommandDeq;
+    deque<string> mInterfaceCommandDeq;
+
+};
+
+
+extern "C" {
+
+  // new style API for FORTRAN
+  // FORCALL() macro adds on _ to end of word for linux version.
+
+
+  void  FORCALL(cinextcommand)  (    long *theStatus,    char theLine[80]);
+  void  FORCALL(ciendthread)    (  long theExitcode                  );
+  void  FORCALL(newdata)        (    int isize,      int* id         );
+  void  FORCALL(datain)         ( int id, int *data, int offset, int nwords );
+  void  FORCALL(callccode)      (  char *theLine                     );
+  void  FORCALL(guexec)         (  char *theLine                     );
+
+  void crystals( void );
+
+}
+
+
+
+
+#define kSSysOpenFile      "SYSOPENFILE"
+#define kSSysSaveFile      "SYSSAVEFILE"
+#define kSSysGetDir        "SYSGETDIR"
+#define kSSysRestart       "RESTART"
+#define kSRestartFile      "NEWFILE"
+#define kSRedirectText     "SENDTEXTTO"
+#define kSRedirectProgress "SENDPROGRESSTO"
+#define kSRedirectInput    "GETINPUTFROM"
+#define kSCreateWindow     "WINDOW"
+#define kSDisposeWindow    "DISPOSE"
+#define kSSet          "SET"
+#define kSRenameObject     "RENAME"
+#define kSGetValue     "GETVALUE"
+#define kSTitleOnly    "TITLEONLY"
+#define kSGetRegValue      "GETREG"
+#define kSGetKeyValue      "GETKEY"
+#define kSSetKeyValue      "SETKEY"
+
+#define kSWindowSelector    "WI"
+#define kSChartSelector     "CH"
+#define kSPlotSelector      "PL"
+#define kSOneCommand        "CO"
+#define kSControlSelector   "CR"
+#define kSModelSelector     "GR"
+#define kSStatusSelector    "ST"
+#define kSQuerySelector     "??"
+#define kSWaitControlSelector "CW"
+
+#define kSFocus               "FOCUS"
+#define kSFontSet             "FONT"
+
+#define kSSafeSet             "SAFESET"
+#define kSOpenGroup           "["
+#define kSCloseGroup           "]"
+#define kSBatch               "BATCH"
+
+enum
+{
+ kTSysOpenFile = 400,
+ kTSysSaveFile,
+ kTSysGetDir,
+ kTSysRestart,
+ kTRestartFile,
+ kTRedirectText,
+ kTRedirectProgress,
+ kTRedirectInput,
+ kTCreateWindow,
+ kTDisposeWindow,
+ kTSet,
+ kTRenameObject,
+ kTGetValue,
+ kTTitleOnly,
+ kTGetKeyValue,
+ kTSetKeyValue,
+ kTFocus,
+ kTFontSet,
+ kTSafeSet,
+ kTOpenGroup,
+ kTBatch,
+ kTCloseGroup,
+ kTGetRegValue
+};
+#endif
+
+
 //   $Log: not supported by cvs2svn $
+//   Revision 1.39  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.38  2004/06/25 12:50:38  rich
 //
 //   Removed Completing() series of functions and replaced with a
@@ -127,271 +384,3 @@
 //   Layout code majorly overhauled.
 //
 
-#ifndef     __CcController_H__
-#define     __CcController_H__
-
-
-#ifdef __BOTHWX__
-#include <wx/app.h>
-#include <wx/thread.h>
-#include "ccthread.h"
-#endif
-
-#include    "ccstatus.h"
-#include    "ccrect.h"
-#include    "crystals.h"
-#include    <cstdio> //For FILE definition
-
-
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#endif
-
-#include <vector>
-#include <deque>
-#include <list>
-
-class CcPlotData;
-class CcChartDoc;
-class CcModelDoc;
-class CrWindow;
-class CrGUIElement;
-class CcMenuItem;
-class CcTool;
-class CrButton;
-class CrEditBox;
-class CrTextOut;
-class CrProgress;
-
-
-
-class   CcController
-{
-  public:
-    CcController( const string & directory, const string & dscfile );
-    ~CcController();
-     
-    class MyException {
-     public:
-      MyException(){};
-      ~MyException(){};
-    };
-
-    void SendCommand( string command , bool jumpQueue = false);
-    bool GetCrystalsCommand( char * line );
-    void AddInterfaceCommand(const string &line, bool internal = false );
-
-    void Tokenize( const string & text );  // Called after GetInterfaceCommand
-    bool ParseInput( deque<string> & tokenList );  //Called by tokenize when input is complete.
-
-    CcModelDoc* CreateModelDoc(const string & name);  // Creates or clears a CcModelDoc object.
-    CcModelDoc* FindModelDoc(const string & name);
-
-    void AddDisableableWindow( CrWindow * aWindow );
-    void RemoveDisableableWindow ( CrWindow * aWindow );
-    void AddDisableableButton( CrButton * aButton );
-    void RemoveDisableableButton ( CrButton * aButton );
-
-    CrGUIElement* GetTextOutputPlace();
-    void SetTextOutputPlace(CrTextOut* outputPane);
-    void RemoveTextOutputPlace(CrTextOut* output);
-
-    CrGUIElement* GetProgressOutputPlace();
-    void RemoveProgressOutputPlace(CrProgress* output);
-    void SetProgressOutputPlace(CrProgress* outputPane);
-    void SetProgressText(const string & theText);
-
-    CrEditBox* GetInputPlace();
-    void RemoveInputPlace(CrEditBox* input);
-    void SetInputPlace(CrEditBox* inputPane);
-
-    void RemoveWindowFromList(CrWindow* window);
-
-    CrGUIElement* FindObject( const string & Name );
-
-    void ReLayout();
-    void FocusToInput(char theChar);
-
-    void LogError( string errString , int level);
-
-    static void MakeTokens( const string& str,
-                deque<string>& tokens,
-                const string& delimiters = " ,=\t\r\n",
-                const string& pairopen  = "<!\"'",
-                const string& pairclose = ">!\"'"  );
-
-    static int CcController::GetDescriptor( string &token, int descriptorClass );
-
-    void UpdateToolBars();
-    void ScriptsExited();
-
-    void StoreKey( string key, string value );
-    string GetKey( string key );
-    string GetRegKey( string key, string name );
-
-    string OpenFileDialog(const string & extensionFilter, const string & extensionDescription, bool titleOnly);
-    string SaveFileDialog(const string & defaultName, const string & extensionFilter, const string & extensionDescription);
-    string OpenDirDialog();
-    void ChooseFont();
-
-    void StartCrystalsThread();
-    void ProcessOutput(const string & theLine);
-
-    void ChangeDir (string newDir);
-
-    void   ReadStartUp( FILE * file, string & crysdir );
-    int    EnvVarCount( string & dir );
-    string EnvVarExtract ( string & dir, int i );
-
-    void TimerFired();
-    bool DoCommandTransferStuff();
-
-    void  endthread ( long theExitcode  );
-
-// attributes
-
-    CcStatus status;
-    static CcController* theController;
-    static int debugIndent;
-
-    CrWindow *      mCurrentWindow;
-    int m_ExitCode;
-
-#ifdef __CR_WIN__
-    static CWinThread *mCrystalsThread;
-    static CWinThread *mGUIThread;
-    static CFont* mp_font;
-    static CFont* mp_inputfont;
-#endif
-#ifdef __BOTHWX__
-    static CcThread *mCrystalsThread;
-    static wxFont* mp_inputfont;
-#endif
-
-
-
-  private:
-
-    void AddCrystalsCommand(const string &line , bool jumpQueue = false); // Called by SendCommand
-    bool GetInterfaceCommand( string & line );                    // Called by DoCommandTransferStuff
-    void GetValue (deque<string> & tokenlist);
-
-    deque<string>    mQuickTokenList;
-    deque<string>    mWindowTokenList;
-    deque<string>    mPlotTokenList;
-    deque<string>    mChartTokenList;
-    deque<string>    mModelTokenList;
-    deque<string>    mStatusTokenList;
-// Some pointers to those deqs:
-    deque<string> *  mTempTokenList;
-    deque<string> *  mCurTokenList;
-
-    bool mThisThreadisDead;
-    bool m_restart;
-    string m_newdir;
-    bool m_Wait;
-    bool m_BatchMode;
-    int m_start_ticks;
-    FILE *  mErrorLog;
-
-    list<CrWindow*>  mWindowList;
-    list<CrTextOut*>  mTextOutputWindowList;
-    list<CrProgress*>  mProgressOutputWindowList;
-    list<CrEditBox*>  mInputWindowList;
-
-    list<CrWindow*> mDisableableWindowsList;
-    list<CrButton*> mDisableableButtonsList;
-
-    deque<string> mCrystalsCommandDeq;
-    deque<string> mInterfaceCommandDeq;
-
-};
-
-
-extern "C" {
-
-  // new style API for FORTRAN
-  // FORCALL() macro adds on _ to end of word for linux version.
-
-
-  void  FORCALL(cinextcommand)  (    long *theStatus,    char theLine[80]);
-  void  FORCALL(ciendthread)    (  long theExitcode                  );
-  void  FORCALL(newdata)        (    int isize,      int* id         );
-  void  FORCALL(datain)         ( int id, int *data, int offset, int nwords );
-  void  FORCALL(callccode)      (  char *theLine                     );
-  void  FORCALL(guexec)         (  char *theLine                     );
-
-  void crystals( void );
-
-}
-
-
-
-
-#define kSSysOpenFile      "SYSOPENFILE"
-#define kSSysSaveFile      "SYSSAVEFILE"
-#define kSSysGetDir        "SYSGETDIR"
-#define kSSysRestart       "RESTART"
-#define kSRestartFile      "NEWFILE"
-#define kSRedirectText     "SENDTEXTTO"
-#define kSRedirectProgress "SENDPROGRESSTO"
-#define kSRedirectInput    "GETINPUTFROM"
-#define kSCreateWindow     "WINDOW"
-#define kSDisposeWindow    "DISPOSE"
-#define kSSet          "SET"
-#define kSRenameObject     "RENAME"
-#define kSGetValue     "GETVALUE"
-#define kSTitleOnly    "TITLEONLY"
-#define kSGetRegValue      "GETREG"
-#define kSGetKeyValue      "GETKEY"
-#define kSSetKeyValue      "SETKEY"
-
-#define kSWindowSelector    "WI"
-#define kSChartSelector     "CH"
-#define kSPlotSelector      "PL"
-#define kSOneCommand        "CO"
-#define kSControlSelector   "CR"
-#define kSModelSelector     "GR"
-#define kSStatusSelector    "ST"
-#define kSQuerySelector     "??"
-#define kSWaitControlSelector "CW"
-
-#define kSFocus               "FOCUS"
-#define kSFontSet             "FONT"
-
-#define kSSafeSet             "SAFESET"
-#define kSOpenGroup           "["
-#define kSCloseGroup           "]"
-#define kSBatch               "BATCH"
-
-enum
-{
- kTSysOpenFile = 400,
- kTSysSaveFile,
- kTSysGetDir,
- kTSysRestart,
- kTRestartFile,
- kTRedirectText,
- kTRedirectProgress,
- kTRedirectInput,
- kTCreateWindow,
- kTDisposeWindow,
- kTSet,
- kTRenameObject,
- kTGetValue,
- kTTitleOnly,
- kTGetKeyValue,
- kTSetKeyValue,
- kTFocus,
- kTFontSet,
- kTSafeSet,
- kTOpenGroup,
- kTBatch,
- kTCloseGroup,
- kTGetRegValue
-};
-
-
-
-
-#endif

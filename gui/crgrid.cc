@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:59 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.27  2004/06/28 13:26:57  rich
+//   More Linux fixes, stl updates.
+//
 //   Revision 1.26  2004/06/24 09:12:01  rich
 //   Replaced home-made strings and lists with Standard
 //   Template Library versions.
@@ -273,7 +276,7 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
     }
   }
 
-  if ( tokenList.empty() || ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTNoMoreToken ) ) return true;
+  if ( tokenList.empty() ) return true;
 
 // This is either the end of this grid, the start of a new sub grid or
 // a sub element.

@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.12  2004/05/21 14:00:18  rich
 //   Implement LISTCTRL on Linux. Some extra functionality still missing,
 //   such as clicking column headers to sort.
@@ -179,7 +183,7 @@ CcParse CrListCtrl::ParseInput( deque<string> &  tokenList )
                   tokenList.pop_front(); //Remove that token!
                   int column = atoi ( tokenList.front().c_str() );
                   tokenList.pop_front();
-                  if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)  //Check for 'YES'
+                  if( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes)  //Check for 'YES'
                   {
                     tokenList.pop_front(); //If there, remove the kTYes token!
                     bSort = false;
@@ -194,14 +198,14 @@ CcParse CrListCtrl::ParseInput( deque<string> &  tokenList )
             case kTSelectAtoms:
             {
                 tokenList.pop_front(); //Remove the kTSelectAtoms token!
-                if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
+                if( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTAll)
                 {
                     tokenList.pop_front(); //Remove the kTAll token!
                     bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
                     tokenList.pop_front(); //Remove the kTYes/No token!
                     ((CxListCtrl *)ptr_to_cxObject)->SelectAll(select);
                 }
-                else if( CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTInvert)
+                else if( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTInvert)
                 {
                     tokenList.pop_front(); //Remove the kTInvert token!
                     ((CxListCtrl *)ptr_to_cxObject)->InvertSelection();

@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 20:46
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.7  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -155,7 +159,7 @@ CcParse CrTab::ParseInput( deque<string> & tokenList )
 
   }  // End of Init, now comes the general parser
 
-  if ( tokenList.empty() || ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTNoMoreToken ) ) return true;
+  if ( tokenList.empty() ) return true;
 
   hasTokenForMe = true;
 

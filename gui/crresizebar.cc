@@ -7,6 +7,10 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2004/06/24 09:12:01  rich
+//   Replaced home-made strings and lists with Standard
+//   Template Library versions.
+//
 //   Revision 1.9  2003/11/28 10:29:11  rich
 //   Replace min and max macros with CRMIN and CRMAX. These names are
 //   less likely to confuse gcc.
@@ -279,7 +283,7 @@ CcParse CrResizeBar::ParseInput( deque<string> & tokenList )
   }
 
 // Optional endgrid token used to line up syntax in scripts nicely.
-  if (CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTEndGrid)
+  if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTEndGrid)
                             tokenList.pop_front();
 
   return retVal;

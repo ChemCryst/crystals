@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.35  2004/06/28 15:13:50  rich
+//
+//   Remove write to STDERR.
+//
 //   Revision 1.34  2004/06/28 13:26:57  rich
 //   More Linux fixes, stl updates.
 //
@@ -321,7 +325,7 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
 
     // *** This check must be enhanced
    
-    if( tokenList.empty() || ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTNoMoreToken))  return true;
+    if( tokenList.empty() )  return true;
 
     // This is a creategrid instruction, or some window operation, or nothing.
     switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )

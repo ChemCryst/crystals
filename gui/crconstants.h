@@ -5,6 +5,10 @@
 //   Created:   22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2004/05/13 09:14:49  rich
+// Re-invigorate the MULTIEDIT control. Currently not used, but I have
+// something in mind for it.
+//
 // Revision 1.18  2002/09/27 14:51:36  rich
 // Move definition of ATTACH token into crconstants.
 //
@@ -201,7 +205,6 @@ enum {
 enum
 {
  kTUnknown = 0,
- kTNoMoreToken
 };
 
 #endif
