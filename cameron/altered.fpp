@@ -1055,7 +1055,7 @@ c     $                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT
       WRITE (NCWU,13000)
       ENDIF
       CALL ZMORE('The Equivalent Positions are:',0)
-      CALL ZMORE(' ',0)
+cdjwjan00      CALL ZMORE(' ',0)
 10000 FORMAT (1X,' Space Group ',10A1/
      $        '  The Space Group is ',A1,'Centric',6A4,
      $        '  Laue Symmetry ',2A4/
@@ -1101,7 +1101,7 @@ c     $                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,14000)
       ENDIF
-      CALL ZMORE(' ',0)
+cdjwjan00      CALL ZMORE(' ',0)
       RETURN
 14000 FORMAT (' ')
 15000 FORMAT (3(2X,3(1X,2A3)))

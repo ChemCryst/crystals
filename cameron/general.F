@@ -916,7 +916,7 @@ CODE FOR ZGTANS
 \XIOBUF
 
       READ (ISTIN,'(A)') ANS
-      CALL ZMORE(' ',-1)
+cdjwjan00      CALL ZMORE(' ',-1)
       RETURN
       END
  

@@ -712,7 +712,7 @@ C    Force execution of line
                   LLINE(ILINE) = ' '
                   CALL ZOBEY
 C   Clear the status line
-                  IF(.NOT.LCLOSE)CALL ZMORE1(' ',0)
+                  IF(.NOT.LCLOSE)CALL ZMORE1('temp! ',0)
 C    Clear buffer
                   CHRBUF = ' '
 C    Clear the input box.
@@ -1064,10 +1064,10 @@ C THIS IS DEVICE VGA
         ID = 1
         IF (IFIRST.EQ.1) RETURN
         IFIRST = 1
-        IF (IERR.EQ.1) THEN
+cdjwjan00        IF (IERR.EQ.1) THEN
           LEXIST = .FALSE.
-          GOTO 5
-        ENDIF
+cdjwjan00          GOTO 5
+cdjwjan00        ENDIF
       ENDIF
       RETURN
       END

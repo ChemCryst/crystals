@@ -1262,7 +1262,7 @@ C      WRITE (ISTOUT,*) 'FINISHED'
       ELSE
         WRITE (CLINE,11) SCALE/RES, SCALE,RES
       ENDIF
-      INLINE = 2
+cdjwjan00      INLINE = 2
       CALL ZMORE(CLINE,0)
       ENDIF
 11    FORMAT (' Scale is ',F7.2, ' (',2F7.2,')')
@@ -2513,8 +2513,8 @@ C IFF = 2 do atoms between IST and IFN only.
       INTEGER IARC(4)
       INTEGER IPPOS
       IF (ISTREO.EQ.0.AND.ICURS.NE.1.AND.IFF.EQ.0) THEN
-      CALL ZMORE('Calculating VIEW information',0)
-      CALL ZMORE(' ',0)
+cdjwjan00      CALL ZMORE('Calculating View information',0)
+cdjwjan00      CALL ZMORE(' ',0)
       ENDIF
       IPPOS = 0
       VECV(1) = 0.0

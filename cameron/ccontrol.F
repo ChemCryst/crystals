@@ -1,6 +1,10 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.5  1999/07/30 20:14:43  richard
+C RIC: Store the absolute value of covalent radius, so that it may be set
+C negative to flag a non-bonding dummy atom.
+C
 C Revision 1.4  1999/04/28 12:32:39  dosuser
 C RIC: Debugging statements for ellipses added as comments.
 C
@@ -302,7 +306,7 @@ C      ENDIF
         DO 60 I = 1,INSUB
           CALL ZMORE(CSUB(I),2)
           CALL ZMORE(CHELP(I),2)
-          CALL ZMORE(' ',2)
+cdjwjan00          CALL ZMORE(' ',2)
 60      CONTINUE
       ENDIF
       RETURN
@@ -476,7 +480,7 @@ C Do we expect a sub-command?
         ID = ICOMMD (ICPOS-1)
         CALL ZERRLD (ID,INSUB,2)
       ENDIF
-      CALL ZMORE(' ',2)
+cdjwjan00      CALL ZMORE(' ',2)
       GOTO 10
       END
  
@@ -1679,16 +1683,16 @@ C        = 6 we need a sub command to be added to the line
       IF (IEDIT.EQ.0) THEN
 C EDIT IS TURNED OFF
         CALL ZBEEP
-        CALL ZMORE('*** ERROR! AUTOMATIC ABANDON ***',0)
+        CALL ZMORE('ERROR. Re-enter command.',0)
         CALL ZMORE1('ERROR. Re-enter command. See main window',0)
         IERRH = 1
         RETURN
       ENDIF
 
 C PRINT OUT THE ERROR MESSAGE
-      CALL ZMORE(' ',0)
+cdjwjan00      CALL ZMORE(' ',0)
       CALL ZMORE(ERRTXT,0)
-      CALL ZMORE(' ',0)
+cdjwjan00      CALL ZMORE(' ',0)
 C PRINT OUT THE LINE HIGHLIGHTING THE ERROR
 C CHECK TO SEE IF WE HAVE MOVED ON A LINE
       IF (IBEG.EQ.-1) THEN
@@ -1814,9 +1818,9 @@ C LOOP OVER THE HEADER NAMES
       DO 30 I = ISHEAD , ISHEAD + (IHNUM-1)*IHMAX , IHMAX
         HELTIT = 'Commands dealing with : ' //
      +  CSTORE(NINT(RSTORE(I)))//CSTORE(NINT(RSTORE(I))+1)
-        CALL ZMORE(' ',2)
+cdjwjan00        CALL ZMORE(' ',2)
         CALL ZMORE(HELTIT,2)
-        CALL ZMORE(' ',2)
+cdjwjan00        CALL ZMORE(' ',2)
         NITEM = 1
         DO 40 J = 1 , NINT(RSTORE(I+1))
 C GET THE GROUP NUMBERS
