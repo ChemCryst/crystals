@@ -16,18 +16,18 @@
 ^^WI  }
 ^^WI  @ 3,2 GRID Q NROWS=2 NCOLS=3 {
 ^^WI     @ 1,1 STATIC RT_T3 'Show results with figure of merit less than'
-^^WI     @ 1,3 EDITBOX RT_FOM '0.1' CHARS=7 REAL
+^^WI     @ 1,3 EDITBOX RT_FOM '0.2' CHARS=7 REAL
 ^^WI  }
 ^^WI  @ 4,2 GRID S NROWS=6 NCOLS=6 {
 ^^WI     @ 1,1 STATIC RT_T5 'Reject at least'
-^^WI     @ 1,3 EDITBOX RT_MIN '5' CHARS=7 INTEGER
+^^WI     @ 1,3 EDITBOX RT_MIN '0' CHARS=7 INTEGER
 ^^WI     @ 1,5 STATIC RT_T6 'worst agreements.'
 ^^WI     @ 3,1 STATIC RT_T7 'Reject at most'
 ^^WI     @ 3,3 EDITBOX RT_MAX '15' CHARS=7 INTEGER
 ^^WI     @ 3,5 STATIC RT_T8 'worst agreements.'
 ^^WI     @ 3,6 STRETCH RT_STR1 HORIZONTAL
 ^^WI     @ 5,1 STATIC RT_T3 'Reject indices >'
-^^WI     @ 5,3 EDITBOX RT_OUT '4.0' CHARS=7 REAL
+^^WI     @ 5,3 EDITBOX RT_OUT '2.0' CHARS=7 REAL
 ^^WI     @ 5,5 STATIC RT_T4 'sigma from lattice points.'
 ^^WI  }
 ^^WI  @ 5,2 GRID B NROWS=2 NCOLS=5 {
@@ -165,7 +165,7 @@
 ^^WI        }
 ^^WI        @ 5,1 GRID GBC NROWS=1 NCOLS=5 {
 ^^WI           @ 1,1 STATIC RT_T4 'Overlap tolerance'
-^^WI           @ 1,3 EDITBOX RT_TT '0.01' CHARS=9 REAL
+^^WI           @ 1,3 EDITBOX RT_TT '0.001' CHARS=9 REAL
 ^^WI           @ 1,5 STATIC RT_T4 'Angstrom**-2'
 ^^WI        }
 ^^WI     }
