@@ -5,6 +5,8 @@
 
  * CIF listing of all data
 
+%    COPY "#BONDCALC FORCE"
+%    COPY "END"
 %    COPY "#STORE CSYS CIF 'publish.cif'"
 %    COPY '#APPEND PUNCH '
 %    COPY '#CIF '
