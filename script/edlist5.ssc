@@ -230,7 +230,7 @@
 %      BLOCK                                         %SORT%
 %        VERIFY   TYPE SERIAL
 %      GET FINAL NOSTORE ABBREVIATED 'Sort by TYPE or SERIAL only? ' 'SERIAL'
-%        EVALUATE CTYPE = CVALUE
+%        EVALUATE CTYPE = UPPERCASE ( CVALUE )
 %        IF ( CTYPE .EQ. 'TYPE' ) THEN
 %          ON ERROR REPEAT
 %          BLOCK
