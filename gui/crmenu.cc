@@ -11,11 +11,12 @@
 #include    "ccstring.h"
 #include    "crconstants.h"
 #include    "crmenu.h"
-#include    "CcMenuItem.h"
+#include    "ccmenuitem.h"
 #include    "cxmenu.h"
 #include    "ccrect.h"
 #include    "crwindow.h"
 #include    "cccontroller.h"    // for sending commands
+#include    "ccmodeldoc.h"
 
 
 CrMenu::CrMenu( CrGUIElement * mParentPtr, int menuType )
@@ -50,11 +51,14 @@ CrMenu::~CrMenu()
         theItem = (CcMenuItem*)mMenuList.GetItem();
     }
 
+#ifdef __CR_WIN__
+//for wx version, only delete the top level menu bar.
     if ( ptr_to_cxObject != nil )
     {
         delete (CxMenu*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
+#endif
 
 }
 
@@ -240,7 +244,7 @@ void CrMenu::Popup(int x, int y, void * window)
       ((CxMenu*)ptr_to_cxObject)->PopupMenuHere(x,y,window);
 }
 
-void CrMenu::Substitute(CcString atomname, int nSelected, CcString* atomNames)
+void CrMenu::Substitute(CcString atomname, CcModelDoc* model)
 {
 //Replace all occurences of _A in the command and text fields with the atomname.
 //Replace all occurences of _G in the command with a newline seperated list of atom names, followed by END.
@@ -251,7 +255,7 @@ void CrMenu::Substitute(CcString atomname, int nSelected, CcString* atomNames)
     {
         if (menuItem->type == CR_SUBMENU)
         {
-            menuItem->ptr->Substitute(atomname, nSelected, atomNames);
+            menuItem->ptr->Substitute(atomname, model);
             atext    = menuItem->originaltext;
             int i;
             for (i = 0; i < atext.Len()-1; i++)
@@ -285,12 +289,9 @@ void CrMenu::Substitute(CcString atomname, int nSelected, CcString* atomNames)
                 {
                     CcString firstPart = acommand.Chop(i+1,acommand.Len());
                     CcString lastPart  = acommand.Chop(1,i+2);
-                    acommand = firstPart;
-                    for (int k=0; k<nSelected; k++)
-                    {
-                        acommand += atomNames[k] + "_N";
-                    }
-                              acommand += lastPart;
+                    acommand =  firstPart;
+                    acommand += model->SelectedAsString("_N");
+                    acommand += lastPart;
                 }
             }
 
