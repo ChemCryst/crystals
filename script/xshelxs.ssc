@@ -108,7 +108,6 @@
 %      COPY 'END'
 %      COPY '#EDIT'
 %      COPY 'MON OFF'
-%      COPY 'REFORMAT ALL'
 %      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
 %      COPY 'MON MEDIUM'
 %      COPY 'END'
