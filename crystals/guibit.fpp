@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2003/01/21 12:54:11  rich
+C Commented out swathes of unused code in order to shrink
+C the executable a bit.
+C
 C Revision 1.52  2003/01/16 11:42:12  rich
 C Use new SAFESET instruction to update various GUI elements - if they
 C don't exist, the program ignores the instruction. Means you can now
@@ -480,6 +484,7 @@ c         loaded by the calling routine.
 \QGUIOV
 \XCONST 
 \XLST05
+\XLST04
 \XLST01
 \XLST02
 \XLST23
@@ -494,12 +499,17 @@ c         loaded by the calling routine.
       DIMENSION JDEV(4)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
+      character *80 ctext(4)
+      CHARACTER*5 CWT 
+      CHARACTER*22 CFM, CFMC ! 'Fo**2'
+      CHARACTER*35 CMOD
+      CHARACTER CBUF*80
       CHARACTER * 4 CNAME
       LOGICAL WEXIST, LSPARE
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
 
-      DIMENSION LST(7)
+      DIMENSION LST(8)
       DIMENSION ICLINF(400)
       DIMENSION TXYZ(9)
 
@@ -542,15 +552,16 @@ C
 
 
       IF ( IULN .EQ. 0 ) THEN ! decide what needs updating
-c         WRITE(CMON,'(a)')' XGUIUP: Setting 6 lists to be updated.'
+c         WRITE(CMON,'(a)')' XGUIUP: Setting 7 lists to be updated.'
 c         CALL XPRVDU (NCVDU,1,0)
-         NLST = 6
+         NLST = 7
          LST(1) = 1
          LST(2) = 2
          LST(3) = 5
          LST(4) = 23
          LST(5) = 29
          LST(6) = 30
+         LST(7) = 4
       ELSE
          NLST = 1
          LST(1) = ABS(IULN)
@@ -1404,9 +1415,259 @@ c             CALL XPRVDU(NCVDU, 1,0)
      1            STORE(L30RF+7),STORE(L30RF+8)
               CALL XPRVDU(NCVDU, 5, 0)
             ENDIF
-         ENDIF
-      END DO
+         ELSE IF ( ILST .EQ. 4 ) THEN   ! Weighting scheme
+            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
+               IF(KEXIST(4).LE.0) CYCLE
+               IF(KHUNTR(344,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+            ELSE
+               IF(KEXIST(4).LE.0) CYCLE
+               IF(KHUNTR(4,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL04
+            END IF
+            CALL XRLIND(4, L04SR, NFW, LL, IOW, NOS, ID)
+            IF ( L04SR.NE.ISERnn(4) )THEN
+              ISERnn(4)  = L04SR
 
+              ITYPE=ISTORE(L4C)
+              call xsum04(0,ctext)
+
+602   FORMAT ('^^WI SAFESET [ _MT_WGHT TEXT ''',2A,
+     1        ''' ]')
+603   FORMAT ('^^WI SAFESET [ _MT_WGHT TEXT ''',A,2A,F10.3,A,F10.3,
+     1        ''' ]')
+604   FORMAT ('^^WI SAFESET [ _MT_WGHT TEXT ''',A,2A,F10.3,
+     1        ''' ]')
+605   FORMAT ('^^WI SAFESET [ _MT_WGHT TEXT ''',A,2A,F10.3,A,F10.3,A,
+     1        ''' ]')
+606   FORMAT ('^^WI SAFESET [ _MT_WGHT TEXT ''',A,2A,A,4(F10.3,A),''' ]'
+     1     ,/,'^^WI SAFESET [ _MT_WGHT TEXT ''',A,2(F10.3,A),''' ]')
+607   FORMAT ('^^WI SAFESET [ _MT_WGHT TEXT ''',A,A,A,F10.3,A,
+     1        ''' ]')
+
+              WRITE (CMON,'(''^^WI SET _MT_WGHT EMPTY'')')
+              CALL XPRVDU(NCVDU,1,0)
+
+
+              JTYPE = ICON41
+              IF (JTYPE .EQ. 3) THEN 
+                IF (ISTORE(L23MN+1) .GE. 0) THEN 
+                  IF (  (ITYPE .EQ. 10) .OR. (ITYPE .EQ. 11) .OR.
+     1                  (ITYPE .EQ. 14) .OR. (ITYPE .EQ. 15) .OR.
+     1                  (ITYPE .EQ. 17) .OR. (ITYPE .EQ. 16) ) THEN
+                    JTYPE = 2
+                  ELSE
+                    JTYPE = 1
+                  ENDIF
+                ELSE
+                  JTYPE = 0
+                ENDIF
+              ENDIF
+
+              CMOD = ' '
+              IF ( JTYPE .EQ. 1 )
+     1              CMOD = '(1/4Fo**2) x '
+
+              CFM  = 'Fo'
+              CFMC = 'Fc'
+              IF ( JTYPE .EQ. 2 ) THEN
+                   CFM  = 'Fo**2'
+                   CFMC = 'Fc**2'
+              END IF
+
+              CWT = 'w = '
+              IF ( IROBUS .EQ. 1 ) THEN
+                 CWT = 'w` ='
+                 CMOD = ' '
+              END IF
+
+              IF ( IDUNIT .EQ. 1 ) THEN
+                 CWT = 'w` ='
+                 CMOD = ' '
+              END IF
+
+              LMOD = LEN_TRIM(CMOD) + 1
+              LFM  = LEN_TRIM(CFM) + 1
+
+              SELECT CASE (ITYPE)
+
+              CASE (1)
+                 WRITE(CMON,603) CWT,CMOD(1:LMOD),
+     1           '('//CFM(1:LFM)//'/',STORE(L4),
+     1           ')**2, if '//CFM(1:LFM)//' <= ',STORE(L4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,603) CWT,CMOD(1:LMOD),
+     1           '(',STORE(L4),
+     1           '/'//CFM(1:LFM)//')**2, if '//CFM(1:LFM)//' > ',
+     1           STORE(L4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (2)  
+                 WRITE(CMON,604) CWT, CMOD(1:LMOD),
+     1           '1 if '//CFM(1:LFM)//' <= ',STORE(L4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,603) CWT, CMOD(1:LMOD),
+     1           '(',STORE(L4),
+     2           '/'//CFM(1:LFM)//')**2, if '//CFM(1:LFM)//' > ',
+     3           STORE(L4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (3)
+                 WRITE(CMON,605) CWT, CMOD(1:LMOD),
+     1            '(1+[('//CFM(1:LFM)//' - ',
+     2            STORE(L4+1), ')/', STORE(L4),
+     3           ']**2)**-1'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (4)
+                 WRITE(CMON,2) CWT,CMOD(1:LMOD)//
+     1           '[P1 '//CFM(1:LFM)//') + '//
+     2           'P2 '//CFM(1:LFM)//'**2 + ...'//
+     3           ' + Pn '//CFM(1:LFM)//'**n]'
+     4           //'**-1'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'P1 -> Pn = ',
+     1           CTEXT(4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (5,6)
+                 WRITE(CMON,602) 'w = ', 'user supplied weights.'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (7)
+                 WRITE(CMON,602) CWT,
+     1            CMOD(1:LMOD)//'1/sigma('//CFM(1:LFM)//')'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (8)
+                 WRITE(CMON,602) CWT,CMOD(1:LMOD)//
+     1           '1/sigma**2('//CFM(1:LFM)//')'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (9)
+                 WRITE(CMON,602) CWT,CMOD(1:LMOD)//'1'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (11)
+                 WRITE(CMON,602) CWT,CMOD(1:LMOD)//
+     1           '[P0T0`(x) + P1T1`(x) + ... + Pn-1Tn-1`(x)]**-1'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'where Pi are the '//
+     5           'coefficients of a Chebychev series in '//
+     6           'ti(x), where x = ',CFM(1:LFM)//'/'//
+     7           CFM(1:LFM)//'max.'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'P0 - Pn-1 = ',
+     1           CTEXT(4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (12)
+                 WRITE(CMON,607) CWT,CMOD(1:LMOD),
+     1            '[(sin theta)/lambda]**(',STORE(L4),')'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (13)
+                 WRITE(CMON,605) 'w =',CMOD(1:LMOD),
+     1            '[old-weight] x '//
+     2            'e**[8 x pi**2 x (',STORE(L4),'/',STORE(L4+1),
+     3            ')x((sin theta)/(lambda))**2]'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (15)
+                 WRITE(CMON,602) 'w =',CMOD(1:LMOD)//
+     1           'w` x [1 - (Delta (F) / '//
+     2           '6 x Delta (F est))**2]**2'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'w` =',
+     1           '[P0T0`(x) + P1T1`(x) + ... + Pn-1Tn-1`(x)]**-1'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'where Pi are the '//
+     5           'coefficients of a Chebychev series in '//
+     6           'ti(x), where x = ',CFMC(1:LFM+1)//'/'//
+     7           CFMC(1:LFM+1)//'max.'
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'P0 - Pn-1 = ',
+     1           CTEXT(4)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              CASE (16)
+                 IF ( ABS(STORE(L4+2)).LT.ZERO ) THEN
+                    CBUF = '1/'
+                 ELSE IF (STORE(L4+2).GT.0) THEN
+                    WRITE (CBUF,'(A,F10.4,A)') 'e**[',STORE(L4+2),
+     1              ' x (sin(theta)/lambda)**2]'
+                 ELSE
+                    WRITE (CBUF,'(A,F10.4,A)') '1 - e**[',STORE(L4+2),
+     1              ' x (sin(theta)/lambda)**2]'
+                 END IF
+                 WRITE(CMON,606) CWT,CMOD(1:LMOD),
+     1            CBUF(1:LEN_TRIM(CBUF)),
+     1          '[sigma**2('//CFM(1:LFM)//') + (',
+     2          STORE(L4),' x P)**2 + ',STORE(L4+1),
+     3          ' x P + ', STORE(L4+3), ' + ', STORE(L4+4),
+     4          ' x sin theta]','P = ',STORE(L4+5),
+     5          ' x max('//CFM(1:LFM)//',0) + ', 1-STORE(L4+5),
+     6          ' x '//CFMC(1:LFM+1)
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XCREMS(CMON(2),CMON(2),NOCARE)
+                 CALL XPRVDU(NCVDU,2,0)
+              END SELECT
+
+              CMOD = ' '
+              IF ( JTYPE .EQ. 1 )
+     1              CMOD = '(1/4Fo**2) x '
+              LMOD = MAX(1,LEN_TRIM(CMOD))
+
+              IF ( ( IROBUS .EQ. 1 ) .AND. ( IDUNIT. EQ. 1 ) ) THEN
+                 WRITE(CMON,605) 'w" = ',
+     1            ' ',
+     2            'e**[8 x (',DUN01,'/',DUN02,
+     3            ')x(pi x sin(theta)/lambda)**2]'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,607) 'w* =',
+     1           '[1 - ','(Delta (F) / ',
+     2           ROBTOL,
+     3           ' x Delta (F est))**2]**2'
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'w =', CMOD(1:LMOD)//'w` x w" x w*'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              ELSE IF ( IROBUS .EQ. 1 ) THEN
+                 WRITE(CMON,607) 'w" =',
+     1           '[1 - ','(Delta(F) / ',
+     2           ROBTOL,' x Delta (F est))**2]**2'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'w =', CMOD(1:LMOD)//'w` x w"'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              ELSE IF ( IDUNIT .EQ. 1 ) THEN
+                 WRITE(CMON,605) 'w" = ',
+     1            '',
+     2            'e**[8 x (',DUN01,'/',DUN02,
+     3            ')x(pi sin(theta)/lambda)**2]'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+                 WRITE(CMON,602) 'w =', CMOD(1:LMOD)//'w` x w"'
+                 CALL XCREMS(CMON(1),CMON(1),NOCARE)
+                 CALL XPRVDU(NCVDU,1,0)
+              END IF
+              WRITE (CMON,'(''^^WI SET _MT_WGHT VIEWTOP'',/,''^^CR'')')
+              CALL XPRVDU(NCVDU,2,0)
+            END IF
+
+
+
+
+         END IF
+
+      END DO
       RETURN
 
 9900  CONTINUE
