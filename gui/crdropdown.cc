@@ -102,6 +102,7 @@ Boolean	CrDropDown::ParseInput( CcTokenList * tokenList )
 
 void	CrDropDown::SetGeometry( const CcRect * rect )
 {
+      TEXTOUT( "Drop: " + CcString(rect->mTop) + " " + CcString ( rect->mLeft ) );
 	((CxDropDown*)mWidgetPtr)->SetGeometry(	rect->mTop,
 											rect->mLeft,
 											rect->mBottom,
@@ -122,7 +123,7 @@ void	CrDropDown::CalcLayout()
 {
 	int w =  ((CxDropDown*)mWidgetPtr)->GetIdealWidth();
 	int h =  ((CxDropDown*)mWidgetPtr)->GetIdealHeight();
-	((CxDropDown*)mWidgetPtr)->SetGeometry(0,0,h,w);	
+      ((CxDropDown*)mWidgetPtr)->SetGeometry(-1,-1,h,w); 
 }
 
 void	CrDropDown::SetText( CcString item )
@@ -156,6 +157,7 @@ void	CrDropDown::GetValue(CcTokenList * tokenList)
 	}
 	else if (desc == kTQSelected )
 	{
+		tokenList->GetToken();
 		int value = ( (CxDropDown *)mWidgetPtr)->GetDropDownValue();
 		SendCommand( CcString( value ), true );
 	}
