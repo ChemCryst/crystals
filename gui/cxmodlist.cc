@@ -1233,6 +1233,11 @@ void CxModList::CxEnsureVisible(CcModelAtom* va)
        {
           if ( IDlist[id] == va->id ) break;
        }
+#ifdef __CR_WIN__
        EnsureVisible(id,false); //Call library function to ensure it is shown.
+#endif
+#ifdef __BOTHWX__
+       EnsureVisible(id); //Call library function to ensure it is shown.
+#endif
 }
 
