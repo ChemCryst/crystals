@@ -3,8 +3,9 @@
 %%
 %  VARIABLE INTEGER MD
 %  VARIABLE REAL UISOF
-%  VARIABLE LOGICAL OLDDSC
-%  EVALUATE OLDDSC = FALSE
+%  VARIABLE LOGICAL OLDDSC1 OLDDSC2
+%  EVALUATE OLDDSC1 = FALSE
+%  EVALUATE OLDDSC2 = FALSE
 %%
 %% LOOK FOR OLD DEFINTION OF U[ISO]
 % IF ( EXISTS  5 .EQ. 1 ) THEN
@@ -15,7 +16,7 @@
 %     ON EDITERROR TERMINATE
 %     COPY 'TRANSFER FROM OFFSET=3 TO UISOF'
 %     IF ( UISOF .GT. 0.001 ) .AND. ( UISOF .LT. 0.98 ) THEN
-%         EVALUATE OLDDSC = TRUE
+%         EVALUATE OLDDSC1 = TRUE
 %     END IF
 %     COPY 'NEXT'
 %  END LOOP
@@ -26,11 +27,11 @@
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
 %     IF ( MD .NE. 18 ) THEN
-%         EVALUATE OLDDSC = TRUE
+%         EVALUATE OLDDSC2 = TRUE
 %     END IF
 %  COPY 'END'
 %%
-%  IF ( OLDDSC ) THEN
+%  IF ( OLDDSC1 ) .OR. ( OLDDSC2 ) THEN
  
   +------------------------------------------------+
   |                                                |
@@ -71,12 +72,21 @@ automatically reformat LIST 5 for you?' 'YES'
  of CRYSTALS, then type '#USE OLDLIST5.DAT' when
  you start up CRYSTALS.
  
-%%  REINPUT OLD LIST 5 TO GET CORRECT NUMBER OF ATOM KEYS
-%    COPY '#USE OLDLIST5.DAT'
+% IF ( OLDDSC1 ) THEN
 %    COPY '#EDIT'
 %    COPY 'REFORMAT ALL'
 %    COPY 'END'
- 
+% END IF
+%%
+% IF ( OLDDSC2 ) THEN
+%%  REINPUT OLD LIST 5 TO GET CORRECT NUMBER OF ATOM KEYS
+%    COPY '#RELEASE PUNCH TMPLIST5.DAT'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+%    COPY '#RELEASE PUNCH CRFILE.PCH'
+%    COPY '#USE TMPLIST5.DAT'
+% END IF 
+%%
  Your present LIST 5 has been converted to the new
  format. You may now continue safely.
  
@@ -86,15 +96,15 @@ automatically reformat LIST 5 for you?' 'YES'
 %% NOW CHECK LIST 29!
 %%  LOOK FOR SHORT ATOM RECORDS
 % IF ( EXISTS  29 .EQ. 1 ) THEN
-%  EVALUATE OLDDSC = FALSE
+%  EVALUATE OLDDSC1 = FALSE
 %  COPY '#GENERALEDIT 29'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 2 TO MD '
 %     IF ( MD .NE. 8 ) THEN
-%         EVALUATE OLDDSC = TRUE
+%         EVALUATE OLDDSC1 = TRUE
 %     END IF
 %  COPY 'END'
-%  IF ( OLDDSC ) THEN
+%  IF ( OLDDSC1 ) THEN
   +----------------------------------------------------------------+
   |                                                                |
   | Your database knows nothing about colours schemes for elements.|
@@ -127,33 +137,33 @@ automatically reformat LIST 5 for you?' 'YES'
 %%  CHECK LIST 30
 %%  LOOK FOR SHORT CIF RECORDS
 % IF ( EXISTS  30 .EQ. 1 ) THEN
-%  EVALUATE OLDDSC = FALSE
+%  EVALUATE OLDDSC1 = FALSE
 %  COPY '#GENERALEDIT 30'
 %  CLEAR
 %  COPY 'TRANSHEAD FROM OFFSET = 34 TO MD '
 %     IF ( MD .NE. 19 ) THEN
-%         EVALUATE OLDDSC = TRUE
+%         EVALUATE OLDDSC1 = TRUE
 %     END IF
 %  COPY 'END'
-%  IF ( OLDDSC ) THEN
+%  IF ( OLDDSC1 ) THEN
   +----------------------------------------------------------------+
   |                                                                |
-  | You have old-style cif information.                            | 
+  | You have old-style cif information.                            |
   | CRYSTALS cannot continue safely.                               |
   |                                                                |
   +----------------------------------------------------------------+
-
+ 
 % VERIFY NO YES
   You have two options:
-
+ 
 1  Ignore this warning - Carry on working with this DSC file.
                          CRYSTALS will eventually crash.
-                        
+ 
 2  Delete the existing LIST 30, re-input any LIST 30 created by an
    X-ray data pre-processor (DIPIN, KCCDIN, RC93), manually update
    LIST 30 and then continue.
-
-
+ 
+ 
 %  GET NOSTORE FINAL ABBREVIATED 'Do you want to re-input list -
 30?' 'YES'
 %   IF VALUE .EQ. 2 THEN
