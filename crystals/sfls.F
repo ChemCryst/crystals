@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2002/07/15 11:58:14  richard
+C Update L30 R and Rw for refinement when doing a CALC. (A calc is done during
+C CIF production which ensures that these values are truly uptodate.)
+C
 C Revision 1.23  2002/06/07 16:06:06  richard
 C New MODE parameter for SFLSB, set to -1, when called from the CIF code, it
 C recalculates R-factors at either the L28 cutoff sigma value, or if there is no
@@ -434,7 +438,7 @@ C--SCALE FACTOR IS UNREASONABLE  -  RESET IT TO 1.0
 1420  FORMAT(10X,' The overall scale factor has been set to 1.0' )
         SCALE = 1.
         STORE(L5O)=1.
-        CALL XSTR05(5,0,-1)
+        CALL XSTR05(5,-1,-1)
       ENDIF
 C----- CHECK ON THE TYPE OF MATRIX TO USE
       JK = ISTORE( M33CD + 6)
@@ -873,7 +877,7 @@ C----- SAVE SOME WORK SPACE
 4420  CONTINUE
         NFL= J
 C
-      CALL XSTR05(LN5,0,-1)
+      CALL XSTR05(LN5,-1,-1)
       CALL XRSL
       CALL XCSAE
 C--PRINT THE TERMINATION MESSAGES
@@ -2360,8 +2364,17 @@ C--COMPUTE THE MODIFIED /FC/
       EXT3=EXT2/(EXT1**(1.25))
       FCEXT=FC*(EXT1**(-.25))
 C
-C--COMPUTE THE VALUE OF /FC/ AFTER THE SCALE FACTOR HAS BEEN APPLIED
 4200  CONTINUE
+
+C Check if unplaced electron density is to be included.
+
+C Get unplaced atoms occupancy and temperature factor.
+
+C Compute contribution to this reflection.
+
+C Add into FC.
+
+C--COMPUTE THE VALUE OF /FC/ AFTER THE SCALE FACTOR HAS BEEN APPLIED
       FCEXS=FCEXT*SCALEG
 C--CHECK IF THIS IS A TWINNED STRUCTURE
       IF(NB)4250,4300,4300
