@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.38  2003/06/27 11:59:04  rich
+C Globally replace FRAGMENT (slot in L5) and FRAGMENT(...) lexical keyword
+C with RESIDUE. This should reduce confusion about what it is, and as FRAGMENT
+C is only months old, no-one should notice the change anyway. So now it is
+C #EDIT
+C DELETE RESI(1) RESIDUE(2)
+C END
+C to delete residues 1 and 2.
+C
 C Revision 1.37  2003/06/20 13:38:23  rich
 C
 C Fix bug in #EDIT/DELETE when using the new PART,RESIDUE or TYPE
@@ -3059,8 +3068,7 @@ CDJWMAR99[
 100      FORMAT (2(9X,'Occ',4X,'x',5X,'y',5X,'z',7X,'U',3X))
 150      FORMAT (9X,'Occ',4X,'x',5X,'y',5X,'z',6X,'U11',3X,'U22',3X,'U33
      1',2X,'U23',2X,'U13',2X,'U12',4X,'Spare',2X,'Part'/
-     2 35X,'Uiso',2X,'Size',1X,'D
-     3 /100',1X,'A/100')
+     2 35X,'Uiso',2X,'Size',1X,'D/100',1X,'A/100')
       ELSE
 C
 C -- SELECT THE OPERATION THAT WILL BE PERFORMED
