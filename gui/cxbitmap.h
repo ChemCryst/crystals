@@ -32,7 +32,7 @@ class CxBitmap : public BASEBITMAP
                 static CxBitmap * CreateCxBitmap( CrBitmap * container, CxGrid * guiParent );
                         CxBitmap( CrBitmap * container );
                         ~CxBitmap();
-                void    LoadFile( CcString filename );
+                void    LoadFile( CcString filename, bool transp );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
         int GetTop();
         int GetLeft();
@@ -42,6 +42,7 @@ class CxBitmap : public BASEBITMAP
         int GetIdealHeight();
                 static int      AddBitmap();
                 static void     RemoveBitmap();
+        void ReplaceBackgroundColour(); 
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
