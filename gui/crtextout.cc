@@ -28,12 +28,12 @@ CrTextOut::CrTextOut( CrGUIElement * mParentPtr )
 
 CrTextOut::~CrTextOut()
 {
+    mControllerPtr->RemoveTextOutputPlace(this);
     if ( ptr_to_cxObject != nil )
     {
         ((CxTextOut*)ptr_to_cxObject)->DestroyWindow(); delete (CxTextOut*)ptr_to_cxObject;
         ptr_to_cxObject = nil;
     }
-      mControllerPtr->RemoveTextOutputPlace(this);
 }
 
 CRSETGEOMETRY(CrTextOut,CxTextOut)
