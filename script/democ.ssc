@@ -1,0 +1,139 @@
+%SCRIPT XCAM
+^^WI WINDOW _CAMWINDOW 'Cameron' KEEP SIZE MODAL CANCEL='END'
+%% The first grid splits the main area from the status bar.
+^^WI GRID SPLIT NROWS=2 NCOLS=1
+^^WI {
+%% The outer grid splits the left 'view' area from the right
+^^WI  @ 1,1 GRID OUTER NROWS=3 NCOLS=5
+^^WI  {
+^^WI   @ 2,2 CHARTWINDOW _CAMERONVIEW NROWS=30 NCOLS=90
+^^WI         INFORM=YES
+%% The inner grid splits the text output from the tools
+^^WI   @ 2,4 GRID INNER NROWS=4 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 MULTIEDIT _CAMTEXT '' NROWS=20 NCOLS=5
+^^WI          IGNORE FIXEDFONT=YES DISABLED=YES
+^^WI    @ 3,1 EDITBOX _CAMTEXTINPUT '' NCOLS=5
+^^WI          SENDONRETURN=YES INPUT
+^^WI    @ 4,1 GRID MAIN NROWS=12 NCOLS=3
+^^WI    {
+^^WI     @ 2,2 GRID MOVE NROWS=7 NCOLS=9
+^^WI                COMMAND='#SCRIPT xcrotate'
+^^WI     {
+^^WI      @ 2,2 BUTTON XROTP '+X'
+^^WI      @ 2,4 BUTTON XROTN '-X'
+^^WI      @ 4,2 BUTTON YROTP '+Y'
+^^WI      @ 4,4 BUTTON YROTN '-Y'
+^^WI      @ 6,2 BUTTON ZROTP '+Z'
+^^WI      @ 6,4 BUTTON ZROTN '-Z'
+^^WI      @ 2,6 BUTTON AXISA 'Axis a'
+^^WI      @ 2,8 BUTTON PLANE 'Plane'
+^^WI      @ 4,6 BUTTON AXISB 'Axis b'
+^^WI      @ 4,8 BUTTON HKL   'hkl'
+^^WI      @ 6,6 BUTTON AXISC 'Axis c'
+^^WI      @ 6,8 BUTTON CURSO 'Cursor'
+^^WI     }
+^^WI     @ 4,2 GRID STYLE NROWS=3 NCOLS=7
+^^WI                COMMAND='#SCRIPT xcstyle'
+^^WI     {
+^^WI      @ 2,2 DROPDOWN LSTYLE ADDTOLIST
+^^WI      'Spheres' 'Lines' 'Ellipses' 'NULL'
+^^WI      @ 2,4 DROPDOWN LCOLOR ADDTOLIST
+^^WI      'Normal' 'Publish' 'NULL'
+^^WI      @ 2,6 BUTTON BSTYLE 'Apply'
+^^WI     }
+^^WI     @ 6,2 GRID PACK NROWS=3 NCOLS=5
+^^WI                COMMAND='#SCRIPT xcpack'
+^^WI     {
+^^WI          @ 2,2 DROPDOWN LPACK ADDTOLIST
+^^WI      'Unpack' 'Complete' 'Centroid' 'Cut' 'NULL'
+^^WI      @ 2,4 BUTTON BPACK 'Apply'
+^^WI     }
+^^WI     @ 8,2 GRID STUFF NROWS=11 NCOLS=5 COMMAND='#SCRIPT xcalter'
+^^WI     {
+^^WI       @ 2,2 BUTTON SLABEL 'Show labels'
+^^WI       @ 2,4 BUTTON HHYDRO 'Hide H'
+^^WI       @ 4,2 BUTTON MLABEL 'Move labels'
+^^WI       @ 4,4 BUTTON SCELL  'Show cell'
+^^WI       @ 6,2 BUTTON INCAR  'Include area'
+^^WI       @ 6,4 BUTTON INCAL  'Show all'
+^^WI       @ 8,2 BUTTON EXCAR  'Exclude area'
+^^WI       @ 8,4 BUTTON OHCONT 'Find O---H'
+^^WI       @ 10,2 BUTTON HPEAK 'Hide Q'
+^^WI     }
+^^WI    }
+^^WI   }
+^^WI  }
+^^WI  @ 2,1 PROGRESS  _CAMPROG 'Initialising'
+^^WI }
+^^WI DEFINEMENU MAIN 'NULL'
+^^WI  MENU _FILE '&File'
+^^WI   ITEM _SAVE '&Save Image' '#SCRIPT XPOST'
+^^WI   SPLIT
+^^WI   ITEM _CLOSE '&Exit Cameron' 'END'
+^^WI  ENDMENU
+^^WI  MENU STYLE '&Style'
+^^WI   ITEM _ELLI '&Ellipse' 'ELLIPSE ALL VIEW _N'
+^^WI   ITEM _BALL '&Ball' 'BALL ALL VIEW _N'
+^^WI   ITEM _LINE '&Line' 'LINE ALL VIEW _N'
+^^WI   MENU _TYPE 'Ellipse &Types'
+^^WI    ITEM _ELL1 'Plain' 'ELLIPSE TYPE ALL 1 VIEW _N'
+^^WI    ITEM _ELL1 'Bounded' 'ELLIPSE TYPE ALL 2 VIEW _N'
+^^WI    ITEM _ELL1 'Axes' 'ELLIPSE TYPE ALL 3 VIEW _N'
+^^WI    ITEM _ELL1 'Shaded' 'ELLIPSE TYPE ALL 4 VIEW _N'
+^^WI   ENDMENU
+^^WI   SPLIT
+^^WI   ITEM _FILL '&Filled' 'FILL VIEW _N'
+^^WI   ITEM _FILL '&Empty' 'UNFILL VIEW _N'
+^^WI  ENDMENU
+^^WI  MENU VISI '&Visible'
+^^WI   ITEM _EXCH '&Hide hydrogen' '#SCRIPT XCALTER_NHHYDRO'
+^^WI   ITEM _INCH '&Show hydrogen' '#SCRIPT XCALTER_NSHYDRO'
+^^WI   ITEM _EXCQ '&Hide peaks'    '#SCRIPT XCALTER_NHPEAK'
+^^WI   ITEM _INCQ '&Show peaks'    '#SCRIPT XCALTER_NSPEAK'
+^^WI   SPLIT
+^^WI   ITEM _EXCL '&Show labels'    '#SCRIPT XCALTER_NSLABEL'
+^^WI   ITEM _INCL '&Hide labels'    '#SCRIPT XCALTER_NHLABEL'
+^^WI  ENDMENU
+^^WI  ITEM _ORIENT '&Orientation...' '#SCRIPT XORIENT'
+^^WI  MENU PACK '&Packing'
+^^WI   ITEM _COMP 'Com&plete' 'PACK CELL COMP VIEW _N'
+^^WI   ITEM _CENT '&Centroid' 'PACK CELL CENT VIEW _N'
+^^WI   ITEM _COMP 'Cu&t'      'PACK CELL CUT  VIEW _N'
+^^WI   SPLIT
+^^WI   ITEM _UNPK '&Unpack'   'UNPACK VIEW _N'
+^^WI   SPLIT
+^^WI   ITEM _SCELL '&Show cell' 'INCLUDE CELL VIEW _N'
+^^WI   ITEM _HCELL '&Hide cell' 'EXCLUDE CELL VIEW _N'
+^^WI  ENDMENU
+^^WI ENDDEFINEMENU
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO _CAMTEXT
+^^CR
+^^WI SENDPROGRESSTO _CAMPROG
+^^CR
+%%
+% COPY '#CAM'
+% COPY 'END'
+% COPY ' '
+% COPY 'BALL ALL PLANE ALL VIEW'
+% COPY ' '
+% COPY 'PACK CELL COMP VIEW'
+% COPY ' '
+% COPY 'ALONG AXIS A VIEW'
+% COPY ' '
+% copy '#pause 5'
+%
+% COPY 'ALONG AXIS B VIEW'
+% COPY ' '
+% copy '#pause 5'
+% COPY ' '
+% COPY 'UNPACK VIEW'
+% COPY ' '
+% COPY 'END'
+% COPY ' '
+^^WI DISPOSE _CAMWINDOW
+^^CR
+%          FINISH
+%END SCRIPT
