@@ -17,6 +17,9 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.38  2004/11/12 09:09:40  rich
+// Fix newly introduced bond label bug.
+//
 // Revision 1.37  2004/11/11 14:59:08  stefan
 // 1. Back to old version as I didn't mean to check these files in last time.
 //
@@ -533,36 +536,43 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
    nRes = CRMAX ( 4,  nRes );
    style->normal_res = nRes;
 
+#ifndef __WXMAC__
    if ( !feedback ) {
       glDeleteLists(ATOMLIST,1);
       glNewList( ATOMLIST, GL_COMPILE);
    }
+#endif
 
    retval |= RenderAtoms(style, feedback);
 
+#ifndef __WXMAC__
    if ( !feedback )
    {
       glEndList();
       glDeleteLists(BONDLIST,1);
       glNewList( BONDLIST, GL_COMPILE);
    }
+#endif
 
    retval |= RenderBonds(style, feedback);
 
+#ifndef __WXMAC__
    if ( !feedback )
    {
       glEndList();
       glDeleteLists(XOBJECTLIST,1);
       glNewList( XOBJECTLIST, GL_COMPILE);
    }
+#endif
 
    retval |= RenderExcluded(style, feedback);
 
+#ifndef __WXMAC__
    if ( !feedback )
    {
       glEndList();
    }
-
+#endif
    m_glIDsok = true;
 
    return retval;
