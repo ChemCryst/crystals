@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.25  2004/11/18 17:01:47  stefan
+C 1. Add code to output the normal matrix in a format which matlab will understand and read in.
+C
 C Revision 1.24  2004/10/06 09:23:07  rich
 C Fix non-g77 friendly FORMAT statements (Allen Oliver).
 C
@@ -19473,7 +19476,7 @@ C fileid - The file id to open the file under.
       filecount = 0
       file_exists = .true.
       do while (file_exists)
-         write(file_name, '(a i4 a)'), 'normal', filecount, '.m'
+         write(file_name, '(a, i4, a)'), 'normal', filecount, '.m'
          call xcras(file_name, i) 
          inquire(FILE=FILE_NAME(1:i), EXIST=file_exists)
          filecount = filecount + 1

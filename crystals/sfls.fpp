@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2004/11/24 11:28:20  stefan
+C 1. Removed a cpu_time and print statment for measuring the time it takes to run sflsc.
+C
 C Revision 1.38  2004/11/18 16:48:51  stefan
 C 1. Added code to create a paramlist from the bonded atoms.
 C 2. Added code to using the param list to accumerlat the paramlist
@@ -1841,7 +1844,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
  
             IF (ISTORE(L33CD+12).EQ.0) THEN    ! Just a normal accumulation.
                if (ISTORE(L33CD+13).EQ.0) THEN
-                  CALL PARM_PAIRS_XLHS(STORE(JO), JP-J0+1, STR11(L11), 
+                  CALL PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, STR11(L11), 
      1             N11, istore(l12b+1), iresults, nresults)
                else
                   CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
@@ -1849,8 +1852,9 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                end if
             ELSE                    ! No accumulation, compute leverages, Pii.
                if (ISTORE(L33CD+13).EQ.0) THEN
-                  write(CMON,
-     1                 'SPARSE IS NOT USED FOR LEVERAGE')
+                  write(CMON,'(A)')
+     1                 'SPARSE IS NOT USED FOR LEVERAGE'
+                  CALL XPRVDU(NCVDU, 1,0)
                end if
                Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
      1                    STR11(L11),N11,  STORE(JO),JP-JO+1,
