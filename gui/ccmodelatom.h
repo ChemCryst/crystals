@@ -5,8 +5,9 @@
 class CrModel;
 class CcTokenList;
 class CcModelDoc;
-//#include "crystalsinterface.h"
 #include "ccmodelobject.h"
+
+class CcModelStyle;
 
 
 class CcModelAtom : public CcModelObject
@@ -16,9 +17,10 @@ class CcModelAtom : public CcModelObject
     void Init();
     ~CcModelAtom();
 
-    void Render(CrModel* view, bool detailed);
+    void Render(CcModelStyle *style);
     void Select(bool select);
     void Disable(bool select);
+    void SendAtom(int style, Boolean output=false); 
 
     bool IsSelected();
     bool Select();
@@ -26,31 +28,21 @@ class CcModelAtom : public CcModelObject
     int Y();
     int Z();
     int R();
-    CcString Label();
     void ParseInput(CcTokenList* tokenList);
+
   public:
     bool spare;
 
-//    int mIndex;
-//    int ox, oy, oz;
     int x, y, z;
     int r, g, b;
     int id;
     int occ;
     int covrad, vdwrad, sparerad;
-//    int uflag;
     int x11, x12, x13, x21, x22, x23, x31, x32, x33;
-    CcString label;
     bool m_selected;
     bool m_disabled;
     bool m_IsADP;
     bool m_excluded;
-};
-
-class CcModelAtomPtr
-{
-  public:
-    CcModelAtom* atom;
 };
 
 #endif

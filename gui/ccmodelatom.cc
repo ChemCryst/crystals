@@ -6,6 +6,8 @@
 #include "cctokenlist.h"
 #include "ccmodeldoc.h"
 #include "crmodel.h"
+#include "creditbox.h"
+#include "cccontroller.h"
 
 CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
 {
@@ -15,6 +17,7 @@ CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
 
 void CcModelAtom::Init()
 {
+  type = CC_ATOM;
   x = y = z = 0;
   r = g = b = 0;
   id = 0;
@@ -27,6 +30,7 @@ void CcModelAtom::Init()
   m_IsADP = true;
   m_excluded = false;
   spare = false;
+  glID = 0;
 }
 
 CcModelAtom::~CcModelAtom()
@@ -84,10 +88,6 @@ int CcModelAtom::R()
 {
 	return covrad;
 }
-CcString CcModelAtom::Label()
-{
-	return label;
-}
 
 bool CcModelAtom::Select()
 {
@@ -113,21 +113,18 @@ bool CcModelAtom::IsSelected()
 	return m_selected;
 }
 
-void CcModelAtom::Render(CrModel* view, bool detailed)
+void CcModelAtom::Render(CcModelStyle *style)
 {
   glPushMatrix();
-  glPushAttrib(GL_POLYGON_BIT);
 
   GLUquadricObj* sphere = gluNewQuadric();
   gluQuadricDrawStyle(sphere,GLU_FILL);
   glTranslated(x,y,z);
   float extra = 0.0;
-  int detail = (detailed)? view->m_NormalRes  : view->m_QuickRes ;
+  int detail = (style->high_res)? style->normal_res  : style->quick_res ;
 
   if ( m_excluded )
   {
-    glPolygonMode(GL_FRONT, GL_POINT);
-    glPolygonMode(GL_BACK, GL_POINT);
     GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
     GLfloat Diffuse[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
     glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
@@ -145,57 +142,44 @@ void CcModelAtom::Render(CrModel* view, bool detailed)
         else            gre = g+128;
     }
     GLfloat Surface[] = { (float)red/255.0f,(float)gre/255.0f,(float)blu/255.0f, 1.0f };
-    GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
-    GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
     glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
     detail = 4;
     extra = 10.0;
   }
   else if ( m_disabled )  // disabled atom
   {
-    GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
     GLfloat Diffuse[] = { (float)r/512.0f,(float)g/512.0f,(float)b/512.0f, 1.0f };
-    GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
-    glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
     glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
     extra = 20.0;
   }
   else  // normal
   {
     GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
     GLfloat Diffuse[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-    GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
     glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
     glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
   }
 
-
-
-
-  if (view->RadiusType() == COVALENT)
+  if (style->radius_type == COVALENT)
   {
-    gluSphere(sphere, ((float)covrad + extra ) * view->RadiusScale(),detail,detail);
+    gluSphere(sphere, ((float)covrad + extra ) * style->radius_scale,detail,detail);
   }
-  else if(view->RadiusType() == VDW)
+  else if(style->radius_type == VDW)
   {
-    gluSphere(sphere, ((float)vdwrad + extra ) * view->RadiusScale(),detail,detail);
+    gluSphere(sphere, ((float)vdwrad + extra ) * style->radius_scale,detail,detail);
   }
-  else if(view->RadiusType() == SPARE)
+  else if(style->radius_type == SPARE)
   {
     if ( label.Length() && ( label.Sub(1,1) == "Q" ) )
     {
-      gluSphere(sphere, ((float)sparerad + extra ) * view->RadiusScale(),detail,detail);
+      gluSphere(sphere, ((float)sparerad + extra ) * style->radius_scale,detail,detail);
     }
     else
     {
-      gluSphere(sphere, ((float)covrad + extra ) * view->RadiusScale(),detail,detail);
+      gluSphere(sphere, ((float)covrad + extra ) * style->radius_scale,detail,detail);
     }
   }
-  else if(view->RadiusType() == THERMAL)
+  else if(style->radius_type == THERMAL)
   {
     if ( m_IsADP)
     {
@@ -256,7 +240,91 @@ void CcModelAtom::Render(CrModel* view, bool detailed)
 
   gluDeleteQuadric(sphere);
 
-  glPopAttrib();
+//  glPopAttrib();
   glPopMatrix();
 }
 
+void CcModelAtom::SendAtom(int style, Boolean output)
+{
+  style = (output) ? CR_SENDA : style;
+
+  if (m_disabled) return;
+
+  switch ( style )
+  {
+    case CR_SELECT:
+    {
+      Select();
+      mp_parent->DrawViews();
+      break;
+    }
+    case CR_APPEND:
+    {
+      ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+label+" ");
+      break;
+    }
+    case CR_SENDA:
+    {
+      (CcController::theController)->SendCommand(label);
+      break;
+    }
+    case CR_SENDB:
+    {
+      CcString element, number;
+      int pos1 = 1, pos2 = 1;
+      for (int i = 1; i < label.Length(); i++)
+      {
+        if ( label[i] == '(' )
+        {
+          pos1 = i+1;
+          element = label.Sub(1,pos1-1);
+        }
+        if ( label[i] == ')' )
+        {
+          pos2 = i+1;
+          number = label.Sub(pos1+1, pos2-1);
+        }
+      }
+      if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
+      {
+        (CcController::theController)->SendCommand(element + "_N" + number);
+      }
+      break;
+    }
+    case CR_SENDC:
+    {
+      (CcController::theController)->SendCommand("ATOM_N" + label);
+      break;
+    }
+    case CR_SENDD:
+    {
+      CcString element, number;
+      int pos1 = 1, pos2 = 1;
+      for (int i = 1; i < label.Length(); i++)
+      {
+        if ( label[i] == '(' )
+        {
+          pos1 = i+1;
+          element = label.Sub(1,pos1-1);
+        }
+        if ( label[i] == ')' )
+        {
+          pos2 = i+1;
+          number = label.Sub(pos1+1, pos2-1);
+        }
+      }
+      if ( ( pos1 != 1 ) && ( pos2 != 1 ) )
+      {
+        (CcController::theController)->SendCommand("ATOM_N" + element + "_N" + number);
+      }
+      break;
+    }
+    case CR_SENDC_AND_SELECT:
+    {
+      CcString cSet = (Select()) ? "SET" : "UNSET" ;
+      mp_parent->DrawViews();
+      (CcController::theController)->SendCommand("ATOM_N" + label + "_N" + cSet);
+      break;
+    }
+  }
+}
