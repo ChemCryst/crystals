@@ -53,16 +53,12 @@
 %%
 % BLOCK
 % LOOP
-^^WI SET _MAINTEXTOUTPUT NOECHO
-^^CR
 %   VERIFY BUTTONOK BUTTONXX LIST01
-%   GET FINAL FILL NOSTORE ABBREVIATED ' ' ' '
+%   GET FINAL FILL SILENT NOSTORE ABBREVIATED ' ' ' '
 %   CASE VALUE
 %       BLOCK                        %OK BUTTON%
-^^WI       SET _MAINTEXTOUTPUT NOECHO
-^^CR
 ^^??       LIST01 SELECTED
-%          GET NOSTORE INTEGER ' '
+%          GET NOSTORE SILENT INTEGER ' '
 %          CASE VALUE
 %           BLOCK                                         %SETTINGS%
 %             EVALUATE LSETUP = 1
@@ -106,10 +102,8 @@
 %          FINISH
 %       END BLOCK
 %       BLOCK                       %LIST CHANGED%
-^^WI            SET _MAINTEXTOUTPUT NOECHO
-^^CR
 %               VERIFY 1 2 3 4 5
-%               GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%               GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %               CASE VALUE
 % BLOCK
 ^^WI SET SHELP TEXT='Refine the co-ordinates of all atoms.' 
