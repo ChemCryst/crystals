@@ -7,4 +7,3 @@
  *
  */
 
-#define __DEBUG__
