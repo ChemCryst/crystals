@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2001/09/07 14:21:35  ckp2
+C Fiddled around with #DISK to allow time and date to be stored for each entry.
+C There is a year 2038 problems with the date format, it'll seem like 1970 again.
+C Also added a punch directive which will allow scripts to get hold of the DSC
+C info in a script readable format. Will write some scripts soon.
+C
 C Revision 1.3  2001/02/26 10:25:31  richard
 C Added changelog to top of file
 C
@@ -585,7 +591,7 @@ C
       ENDIF
       WRITE ( NCAWU,9910 ) NU , N
       WRITE ( CMON, 9910 ) NU, N
-      CALL XPRVDU(NCEROR, 1,0)
+      CALL XPRVDU(NCEROR, 2,0)
 9910  FORMAT ( 1X , 'Fatal read error on unit ' , I3 ,
      1 ' -- record ', I8, /, ' You may need to extend your DISC file')
       CALL XERIOM ( NU , IOS )
