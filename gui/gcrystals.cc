@@ -17,15 +17,15 @@
 #include "cccontroller.h"
 
 #ifdef __CR_WIN__
+
 #ifdef _DEBUG
 //#define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-#endif
+
 /////////////////////////////////////////////////////////////////////////////
 // CCrystalsApp
-#ifdef __CR_WIN__
 BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
     // Standard file based document commands
 //      ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
@@ -188,7 +188,6 @@ int CCrystalsApp::ExitInstance()
 
 #ifdef __BOTHWX__
 
-
 /////////////////////////////////////////////////////////////////////////////
 // The one and only CCrystalsApp object
 
@@ -199,7 +198,7 @@ IMPLEMENT_APP(CCrystalsApp)
 
 BEGIN_EVENT_TABLE( CCrystalsApp, wxApp )
       EVT_IDLE ( CCrystalsApp::OnIdle )
-          EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
+      EVT_TIMER ( 5241, CCrystalsApp::OnKickTimer )
 END_EVENT_TABLE()
 
 bool CCrystalsApp::OnInit()
@@ -211,8 +210,6 @@ bool CCrystalsApp::OnInit()
       kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.
       return true;
 }
-
-
 
 void CCrystalsApp::OnIdle(wxIdleEvent & event)
 {
