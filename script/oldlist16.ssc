@@ -1,0 +1,30 @@
+%SCRIPT LIST16
+  The geometric restraints, LIST 16
+%    VERIFY YES NO
+%    IF ( EXISTS 16 .EQ. 1 ) THEN
+%      VERIFY YES NO
+%      GET FINAL ABBREVIATED  -
+     'Do you want to see or edit LIST 16' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SUMMARY LIST 16'
+%        COPY 'END'
+  To modify LIST 16, you will need to use a system editor
+                                         use  END  to terminate input
+%        BLOCK
+%          ON END TERMINATE
+%          VERIFY MODIFY NEW
+%          GET FINAL ABBREVIATED -
+ 'Do you want to edit LIST 16 or input a new one' 'NEW'
+%          IF ( VALUE .EQ. 1 ) THEN
+%            COPY '#SCRIPT EDLIST16'
+%          ELSE
+%            COPY '#SCRIPT INLIST16'
+%          END IF
+%        END BLOCK
+%      ELSE
+%        COPY '#SCRIPT INLIST16'
+%      END IF
+%    ELSE
+%        COPY '#SCRIPT INLIST16'
+%    END IF
+%END SCRIPT

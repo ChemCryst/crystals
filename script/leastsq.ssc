@@ -83,7 +83,7 @@
 %      END BLOCK
 %%
 %      BLOCK                                         %RESTRAINTS%
-%        COPY '#SCRIPT LIST16'
+%        COPY '#SCRIPT OLDLIST16'
 %      END BLOCK
 %%
 %      BLOCK                                         %ANALYSE%
