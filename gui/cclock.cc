@@ -114,22 +114,37 @@ bool CcLock::IsLocked()
 }
 
 
-
-
-
-
 bool CcLock::Wait(int timeout_ms)
 {
-//    LOGSTAT ("++++Waiting for object." + string((int)this) + "\n");
-    if ( m_Locked > 0 ) m_Locked --;
+//    LOGSTAT ("++++Waiting for object.\n");
+//    if ( m_Locked > 0 ) m_Locked --;
 #ifdef __CR_WIN__
     bool ret = (WaitForSingleObject( m_EvMutex, timeout_ms?timeout_ms:INFINITE ) == WAIT_OBJECT_0 ) ;
     return ret;
 #endif
 #ifdef __BOTHWX__
-    if ( timeout_ms ) return m_EvMutex -> WaitTimeout( timeout_ms );
+    if ( timeout_ms ) {
+      wxSemaError result =  m_EvMutex -> WaitTimeout( timeout_ms );
+      if ( result == wxSEMA_TIMEOUT ) {
+//        LOGSTAT ("++++WaitTimeout timed out, no signal.\n");
+        return false;
+      } 
+      else if ( result == wxSEMA_NO_ERROR ) {
+//        LOGSTAT ("++++WaitTimeout no error, object was signalled.\n");
+        return true;
+      }
+     
+      if ( result == wxSEMA_INVALID ) {
+//        LOGSTAT ("++++WaitTimeout error: Invalid semaphore\n");
+        return false;
+      }
+      else if ( result == wxSEMA_MISC_ERROR ) {
+//        LOGSTAT ("++++WaitTimeout error. Miscellaneous error\n");
+        return false;
+      }
+    }
     m_EvMutex -> Wait();
-//    LOGSTAT ("++++Object was signalled." + string((int)this) + "\n");
+//    LOGSTAT ("++++Object was signalled.\n");
     return true;
 #endif
 
@@ -137,7 +152,7 @@ bool CcLock::Wait(int timeout_ms)
 
 void CcLock::Signal(bool all)
 {
-//  LOGSTAT ("++++Signalling object." + string(all?"True ":"False ") +  string((int)this) + "\n");
+//  LOGSTAT ("++++Signalling object." + string(all?"True ":"False "));
 #ifdef __CR_WIN__
        ReleaseSemaphore( m_EvMutex, 1, NULL );
 #endif
