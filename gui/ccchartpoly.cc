@@ -47,19 +47,6 @@ Boolean CcChartPoly::ParseInput(CcTokenList* tokenList)
 	return true;
 }
 
-Boolean CcChartPoly::FastInput(CcTokenList * tokenList)
-{
-	CcString theString;
-//read the number of vertices.
-	theString = tokenList->GetToken();
-	nVerts = atoi( theString.ToCString() );
-	theString = tokenList->GetToken();
-	int nID = atoi( theString.ToCString() );
-
-	verts = (CcController::theController)->mQuickData->RetrieveData(nID);
-
-	return true;
-}
 
 void CcChartPoly::Draw(CrChart* chartToDrawOn)
 {

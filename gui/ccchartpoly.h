@@ -14,7 +14,6 @@ class CcChartPoly : public CcChartObject
 		~CcChartPoly();
 		void Draw(CrChart* chartToDrawOn);
 		Boolean ParseInput(CcTokenList* tokenList);
-		Boolean FastInput(CcTokenList* tokenList);
 	private:
 		int nVerts;
 		int* verts;
