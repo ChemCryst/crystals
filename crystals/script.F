@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  1999/04/26 11:09:43  dosuser
+C RIC: Added an ABS() funtion in the SQRT to prevent crashes.
+C
 C Revision 1.9  1999/04/26 11:08:16  dosuser
 C RIC: Added a  SQRT (  ) function to scripts. Result and argument are
 C      real. Program crashes if the argument is less than zero. Perhaps
@@ -2287,7 +2290,16 @@ C
 CAPR99  1 NEW UNARY OPERATOR:
 C       REAL=SQRT(REAL)
 C
-      PARAMETER ( NOPER = 38 , NUBASE = 24 )
+CMAY99  3 NEW UNARY OPERATORS:
+C       CHAR=GETPATH(CHAR), CHAR=GETFILE(CHAR), CHAR=GETTITLE(CHAR)
+CMAY99  3 NEW UNARY OPERATORS:
+C        LOGICAL=FILEEXISTS(CHAR)
+C        LOGICAL=FILEDELETE(CHAR)
+C        LOGICAL=FILEISOPEN(CHAR)
+CMAY99  1 NEW UNARY OPERATOR:
+C       CHAR=GETEXTN(CHAR)
+C
+      PARAMETER ( NOPER = 45 , NUBASE = 24 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 13 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2329,7 +2341,7 @@ C
      3           6 , 7 , 11 , 11 ,
 CJAN99
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 , 12,
-     5          12 , 12,  4 /
+     5          12 , 12,  4 , 12 , 12 , 12 , 12 , 12 , 12 , 12 /
 C
       DATA NARGS  / 0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1 /
       DATA NRESLT / 0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1 /
@@ -2616,8 +2628,9 @@ C
       GO TO ( 5010 , 8000 , 5020 , 5030 , 8000 ,
      2        5040 , 5050 , 5060 , 5070 , 5080 ,
 CJAN99
-     3        5090 , 5100,  5110 , 5120 , 
-     4        9940 ) , IUOPER
+     3        5090 , 5100,  5110 , 5120 , 5130 ,
+     3        5140 , 5150,  5160 , 5170 , 5180 , 
+     4        5190 , 9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -2805,7 +2818,143 @@ C
 C
       GO TO 8000
 C
+5130  CONTINUE
 C
+C -- 'GETPATH'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+C Extract the directory from a full pathname.
+C e.g. GETPATH 'c:\structures\nket\crfile.dsc' will return
+C 'c:\structures\nket\'  e.g. everything up to the last slash.
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+      WRITE (99,*) 'GETPATH:',IECF,CWORK1(1:LEN1)
+      IF ( IECF .LE. 0 ) THEN
+            CWORK1 = ' '
+            IECF = 1
+      END IF
+      ISTAT = KSCSCD ( CWORK1(1:IECF) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
+5140  CONTINUE
+C
+C -- 'GETFILE'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+C Extract the filename from a full pathname.
+C e.g. GETFILE 'c:\structures\nket\crfile.dsc' will return
+C 'crfile.dsc'  e.g. everything after the last slash if there is one.
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+      WRITE (99,*) 'GETFILE:',IECF,CWORK1(1:LEN1)
+      IF ( IECF .LE. 0 ) THEN
+            IECF = 0
+      END IF
+      IECF = MIN ( IECF, LEN1 - 1 )
+      ISTAT = KSCSCD ( CWORK1(IECF+1:LEN1) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
+5150  CONTINUE
+C
+C -- 'GETTITLE'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+C Extract the filetitle from a full pathname.
+C e.g. GETTITLE 'c:\structures\nket\crfile.dsc' will return
+C 'crfile'  e.g. everything after the last slash if there is one,
+C up to the last dot.
+      IECF = KCLEQL(CWORK1(1:LEN1),'\')
+      IF ( IECF .LE. 0 ) THEN
+            IECF = 0
+      END IF
+      IECG = KCLEQL(CWORK1(1:LEN1),'.')
+      IF ( IECG .LE. IECF ) THEN
+            IECG=LEN1+1
+      ENDIF
+      IECG = MAX ( IECG, IECF+2 )
+      ISTAT = KSCSCD ( CWORK1(IECF+1:IECG-1) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
+5160  CONTINUE
+C
+C -- 'FILEEXISTS'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+      INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
+      IF ( LRESLT ) THEN
+          ICODE(JVALUE,IARG(1)) = 1
+      ELSE
+          ICODE(JVALUE,IARG(1)) = 0
+      ENDIF
+      ICODE(JVTYPE,IARG(1)) = 3
+C
+      GO TO 8000
+C
+5170  CONTINUE
+C
+C -- 'FILEDELETE'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+      INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
+      IF ( LRESLT ) THEN
+&GID          CALL XDETCH ('del ' // CWORK1(1:LEN1))
+&DOS          CALL XDETCH ('del ' // CWORK1(1:LEN1))
+&DVF          CALL XDETCH ('del ' // CWORK1(1:LEN1))
+&VAX          CALL XDETCH ('del ' // CWORK1(1:LEN1))
+&LNX          CALL XDETCH ('rm ' // CWORK1(1:LEN1))
+      ENDIF
+      INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
+      IF ( LRESLT ) THEN
+          ICODE(JVALUE,IARG(1)) = 0
+      ELSE
+          ICODE(JVALUE,IARG(1)) = 1
+      ENDIF
+      ICODE(JVTYPE,IARG(1)) = 3
+C
+      GO TO 8000
+C
+5180  CONTINUE
+C
+C -- 'FILEISOPEN'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+      INQUIRE(FILE=CWORK1(1:LEN1), OPENED=LRESLT)
+      IF ( LRESLT ) THEN
+          ICODE(JVALUE,IARG(1)) = 1
+      ELSE
+          ICODE(JVALUE,IARG(1)) = 0
+      ENDIF
+      ICODE(JVTYPE,IARG(1)) = 3
+C
+      GO TO 8000
+C
+5190  CONTINUE
+C
+C -- 'GETEXTN'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+C Extract the file extension from a full pathname.
+C e.g. GETEXTN 'c:\structures\nket\crfile.dsc' will return
+C 'dsc'  e.g. everything after the last dot if there is one.
+      IECG = KCLEQL(CWORK1(1:LEN1),'.')
+      IF ( IECG .LE. 0 ) THEN
+            CWORK1 = ' '
+            IECG=0
+      ENDIF
+      IECG = MIN ( IECG, LEN1-1 )
+      ISTAT = KSCSCD ( CWORK1(IECG+1:LEN1) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
+
+
 C
 8000  CONTINUE
 C
@@ -3056,7 +3205,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 22 )
 CJAN99
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 14 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 21 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -3096,7 +3245,9 @@ C
      9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',
 CJAN99
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',
-     1                'FIRSTINT','SQRT'                          /
+     1                'FIRSTINT','SQRT','GETPATH','GETFILE',
+     2                'GETTITLE','FILEEXISTS','FILEDELETE',
+     3                'FILEISOPEN','GETEXTN'                   /
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -3109,7 +3260,9 @@ C
      9                   40   ,   180   ,   180   ,   180   ,
 CJAN99
      *                  180   ,   180   ,   180   ,   180   ,
-     1                  180   ,   180                    /
+     1                  180   ,   180   ,   180   ,   180   ,
+     2                  180   ,   180   ,   180   ,   180   ,
+     3                  180    /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
