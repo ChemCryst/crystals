@@ -22,7 +22,7 @@ Command::Command()
 
 Command::Command(char* pCommand):String(pCommand)
 {
-    char tCommandRE[] = "(\"[[:alnum:]]+\")|([[:alnum:]]+)(.*)";
+    char tCommandRE[] = "((\"[[:alnum:]]+\")|([[:alnum:]]+))(.*)";
     if (gCommandRE ==NULL)
     {
         gCommandRE = new regex_t;
@@ -30,70 +30,103 @@ Command::Command(char* pCommand):String(pCommand)
     }
 }
 
-Command::Command(Command& pCommand):String((String&)pCommand)
+Command::Command(const Command& pCommand):String((String&)pCommand)
 {
-    
 }
 
-Command& Command::getCommand(int i)
+Command Command::getCommand(int i)	//returns an elemental part of a comand.
 {
-    regmatch_t tMatch[4];
+    regmatch_t tMatch[6];
+    char* tLast;
+    char* tUpto = iString;
     
-    bzero(tMatch, sizeof(regmatch_t)*4);
-    for (int j = 0; j < i; j++)
+    for (int j = 0; j < i+1; j++)
     {
-        if (regexec(gCommandRE, iString, 4, tMatch, 0))
+        bzero(tMatch, sizeof(regmatch_t)*6);
+        if (regexec(gCommandRE, tUpto, 6, tMatch, 0))
         {
-            throw MyException(kUnknownException, "Command has bad format.");
+            throw MyException(kUnknownException, "Command has bad format.\n");
         }
+        tLast = tUpto;
+        tUpto = (int)tMatch[1].rm_eo+tUpto;
     }
     Command tCommand;
+    tCommand.init(tLast, (long)tMatch[1].rm_so, (long)tMatch[1].rm_eo);
     return tCommand;
 }
 
-void InteractiveControl::printHelp()
+void InteractiveControl::helpCommand(Command& pCommand)
 {
-	std::cout << "Available commands.\n";
-    std::cout << "Q: To exit the interactive mode.\n";
-}
-
-
-bool InteractiveControl::handleCommand(Command& pCommand)	//Returns whether interactive mode should be exited.
-{
-    std::cout << "Commands: " << pCommand << "\n";
     try
     {
-        pCommand.getCommand(3);
+        std::cout << "This hasn't been implemented yet because I'm having a bad day.\n";
     }
     catch (MyException e)
     {
-        std::cout << "Badly formated command.";
+        std::cout << "Available commands.\n";
+        std::cout << "print: This is used to display diffrent pieces of information about the data used.\n";
+        std::cout << "output: This is used to output to a file diffrent pieces of information about the data used.\n";
+        std::cout << "quit: To exit.\n";
     }
-    pCommand.upcase();
-    if (pCommand.cmp("?") == 0)
+}
+
+void InteractiveControl::outputCommand(Command& pCommand)
+{
+    Command tCurrent = pCommand.getCommand(1);
+    throw MyException(kUnknownException, "Output: Command not yet implemented.\n");
+}
+
+void InteractiveControl::printCommand(Command& pCommand)
+{
+    Command tCurrent = pCommand.getCommand(1);
+    throw MyException(kUnknownException, "Print: Command not yet implemented.\n");
+}
+
+bool InteractiveControl::handleCommand(Command& pCommand)	//Returns whether interactive mode should be exited.
+{
+    try
     {
-        printHelp();
+        Command tFirstCommand = pCommand.getCommand(0);
+        tFirstCommand.upcase();
+        if (tFirstCommand.cmp("HELP") == 0)
+        {
+            helpCommand(pCommand);
+        }
+        else if (tFirstCommand.cmp("QUIT") == 0)
+        {
+            return true;
+        }
+        else if (tFirstCommand.cmp("OUTPUT") == 0)
+        {
+            outputCommand(pCommand);
+        }
+        else if (tFirstCommand.cmp("PRINT") == 0)
+        {
+            printCommand(pCommand);
+        }
+        else
+        {
+            throw MyException(kUnknownException, "Command not recognised.\n");
+        }
     }
-    else if (pCommand.cmp("QUIT") == 0)
+    catch (MyException e)
     {
-        return true;
-    }
-    else
-    {
-        std::cout << "Command not recognised.\n";
+        std::cout << e.what();
     }
     return false;
 }
 
 void InteractiveControl::goInteractive()
 {
-    Command tReply("");
+    char string[255];
+    
     bool tExit=false;
-    std::cout << "Interactive Mode. For help type (?)\n";
+    std::cout << "Interactive Mode. For help type (help)\n";
     while (!tExit)
     {
         std::cout << "-->";
-        std::cin >> tReply;
+        std::cin.getline(string, 255);
+        Command tReply(string);
         tExit = handleCommand(tReply);
     }
 }

@@ -24,8 +24,9 @@ class Command:public String
     public:
         Command();
 	Command(char* pCommand);
-        Command(Command& pCommand);
-        Command& getCommand(int i);
+        Command(const Command& pCommand);
+        Command getCommand(int i);
+        Command& operator=(Command& pCommand);
 };
 
 class InteractiveControl
@@ -34,8 +35,10 @@ class InteractiveControl
         Stats* iStats;
         RankedSpaceGroups* iRanking;
         Table* iTable;
-        void printHelp();
+        void helpCommand(Command& pCommand);
         bool handleCommand(Command& pCommand);
+        void printCommand(Command& pCommand);
+        void outputCommand(Command& pCommand);
     public:
         InteractiveControl(Stats* pStats, RankedSpaceGroups* pRankings, Table* pTable);
         void goInteractive();
