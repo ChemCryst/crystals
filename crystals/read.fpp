@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  1999/07/02 12:51:52  richard
+C RIC: Increase parameter NADR from 68 to 69
+C RIC: Increase NSSLEN from 13 to 14
+C RIC: Increase NSSCHR by 64 from 640 to 704
+C RIC: Add 'MAP' to list of values in CADDR.
+C RIC: Add 641 to list of pointers to stored information.(ITRADR)
+C RIC: Added 14 to end of ITRAD2 list.
+C RIC: Added 64 to list data lengths in ITRLEN.
+C
 C Revision 1.10  1999/06/22 12:51:00  dosuser
 C RIC: Added some more informative text for the status bar. It now
 C distinguishes between waiting for commands, directives or script input.
@@ -205,18 +214,23 @@ C If in script mode, set flag.
         INSTRC = .FALSE.
         IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
             INSTRC = .TRUE.
-&&GILGID          WRITE (CMON,1515) '''Script awaiting input...'''
-&&GILGID          CALL XPRVDU (NCVDU,1,0)
         END IF
 C Update status information for GUI.
         IF (ISSTML .EQ. 4) CALL MENUUP
       ENDIF
+
+&&GILGID      IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+&&GILGID          WRITE (CMON,1515) '''Script awaiting input...'''
+&&GILGID          CALL XPRVDU (NCVDU,1,0)
+&&GILGID      END IF
+
 C
       IF ( IRDFND(IFLIND) .GT. 0 ) THEN
         CALL XRDPOS ( NCRU , IRDREC(IFLIND) , IRDFND(IFLIND) )
       ENDIF
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
+
       IF ( ISTAT .LT. 0 ) GO TO 9910
       IF ( ISTAT .EQ. 0 ) GO TO 3000
 C
