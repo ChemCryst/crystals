@@ -24,8 +24,8 @@ The SCRIPT to help produce tables for publication
 %  LOOP
 %    ON ERROR TERMINATE ABANDONED
 %    CLEAR
-%    VERIFY END HELP XYZ ANISO REFLECTIONS DISTANCES SUMMARY ANALYSE -
-      GEOMETRY ARCHIVE
+%    VERIFY END HELP XYZ ANISO REFLECTIONS DISTANCES SUMMARY RESIDUALS -
+      GEOMETRY SAVE
 %    GET NOSTORE FINAL ABBREVIATED 'Next step' 'END'
 %    IF VALUE .GE. 3 .AND. PFLAG .LE. 0 THEN
 %      COPY '#RELEASE PUNCH PUBLISH.LIS'
@@ -44,9 +44,9 @@ The SCRIPT to help produce tables for publication
       REFLECTIONS Reflection listing
       DISTANCES   Distance-angle listing
       SUMMARY     A summary of all data stored
-      ANALYSE     A full analysis of residuals
+      RESIDUALS     A full analysis of residuals (Fo-Fc)
       GEOMETRY    The SCRIPT for evaluating molecular parameters.
-      ARCHIVE     A SCRIPT to save the best of the goodies.
+      SAVE        A SCRIPT to save the best of the goodies.
       DIRECT      Go to CRYSTALS direct command input.
 %%
 %      END BLOCK
@@ -72,7 +72,7 @@ The SCRIPT to help produce tables for publication
 %        COPY 'END'
 %      END BLOCK
 %%
-%      BLOCK                                         %ANALYSE%
+%      BLOCK                                         %RESIDUALS%
 %        COPY '#ANALYSE'
 %        COPY 'LIST LEVEL=HIGH'
 %        COPY 'END'
@@ -84,7 +84,7 @@ The SCRIPT to help produce tables for publication
 %      END BLOCK
 %%
 %%
-%      BLOCK                                         %ARCHIVE%
+%      BLOCK                                         %SAVE%
 %        COPY '#SCRIPT ARCHIVE'
 %        COPY 'END'
 %      END BLOCK
