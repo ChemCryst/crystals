@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/05/07 12:18:54  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.18  2003/03/25 19:41:05  djw
 C Label holes as QN
 C
@@ -540,6 +546,12 @@ C
           YAV = ( YSTAR + YEND ) / 2.0
           ZAV = ( ZSTAR + ZEND ) / 2.0
 
+
+          WRITE(cmon,'(a,3F15.5)')'Steps: ',XSTP,YSTP,ZSTP
+          call xprvdu(ncvdu,1,0)
+          WRITE(cmon,'(a,3F15.5)')'Start: ',XSTAR,YSTAR,ZSTAR
+          call xprvdu(ncvdu,1,0)
+
 C Get some store:
           MDBOX = 4
           LBOX = NFL
@@ -609,6 +621,11 @@ c          CALL XPRVDU(NCVDU, 1,0)
             NDIST = 0
           END IF
 
+          WRITE(cmon,'(a,i7,A,I7)')'Last value should be: ', 
+     1    19+JXTOT*JYTOT*JZTOT,' and it is: ',JPOINT
+          call xprvdu(ncvdu,1,0)
+
+
           WRITE (NCFPU1,REC=JPOINT+1) NDIST
           JPOINT = JPOINT + 2
 
@@ -622,8 +639,8 @@ c          CALL XPRVDU(NCVDU, 1,0)
             JPOINT = JPOINT + 2
 
 C Mapview assumes XY plane origin is 0,0, so offset.
-            WRITE ( NCFPU1,REC=JPOINT)   STORE(K+7) - XSTAR
-            WRITE ( NCFPU1,REC=JPOINT+1) STORE(K+8) - YSTAR
+            WRITE ( NCFPU1,REC=JPOINT)   STORE(K+7) ! - XSTAR
+            WRITE ( NCFPU1,REC=JPOINT+1) STORE(K+8) ! - YSTAR
             WRITE ( NCFPU1,REC=JPOINT+2) STORE(K+9)
 
             WRITE(CMON,'(a,3F15.4)') cseri(1:LSERI),(STORE(K+J+7),J=0,2)
@@ -1126,6 +1143,8 @@ C--CHECK THAT THE ORIENTATION PARAMETERS ARE VALID
 1150  CONTINUE
 C--INTERCHANGE THE LIST 14 DIRECTIVES
       CALL XFSWOP(STORE(L14),3*MD14,MD14,1,MD14)
+C--KEEP ORIGINAL CELL PARAMS
+      CALL XMOVE(STORE(L1P1),L1ORIG,6)
 C--SORT THE CELL PARAMETERS
       CALL XFSWOP(STORE(L1P1),6,1,3,2)
 C--SORT THE D/A CONTROL BLOCK
@@ -1510,7 +1529,7 @@ C WRITE THE M/T HEADER  DETAILS
           WRITE (NCFPU1,3751) 'TRAN'
           WRITE (NCFPU1,3752) (STORE(I), I=NFL,NFL+8),0.0,0.0,0.0
           WRITE (NCFPU1,3751) 'CELL'
-          WRITE (NCFPU1,3752) (STORE(I), I = L1P1, L1P1+5)
+          WRITE (NCFPU1,3752) (L1ORIG(I), I = 1, 6)
           WRITE (NCFPU1,3751) 'L14 '
           WRITE (NCFPU1,3752) ((STORE(J),J=I,I+3),I=L14,2*MD14+L14,MD14)
           WRITE (NCFPU1,3751) 'SIZE'
@@ -1556,6 +1575,12 @@ C TRANSFORMED CELL
           DO I = 3,5
             WRITE (NCFPU1,REC=I+7) STORE(L1P1+I) * RTD
           END DO
+
+          WRITE(cmon,'(a,3F15.5)')'Cell: ',(STORE(L1P1+I),I=0,2)
+          call xprvdu(ncvdu,1,0)
+          WRITE(cmon,'(a,3F15.5)')'      ',(STORE(L1P1+I)*RTD,I=3,5)
+          call xprvdu(ncvdu,1,0)
+
 C STARTX,Y,Z
           WRITE (NCFPU1,REC=13) STORE(L14)
           WRITE (NCFPU1,REC=14) STORE(L14+MD14) 
@@ -3471,3 +3496,388 @@ C
 C
       RETURN
       END
+
+
+
+CODE FOR XMASK
+      SUBROUTINE XMASK(INTERN)
+C
+C--
+      PARAMETER (NPROCS = 16)
+      DIMENSION PROCS(NPROCS)
+\STORE
+\QSTORE
+\ISTORE
+\XCONST
+\XLISTI
+\XUNITS
+\XTAPES
+\XSSVAL
+\XWORK
+\XCHARS
+\XLST01
+\XLST02
+\XLST05
+\XLST14
+\XLST12
+\ICOM12
+\XLST29
+\XDSTNC 
+\XLST42
+\XERVAL
+\XOPVAL
+\XIOBUF
+\TSSCHR
+\XSSCHR
+\UFILE
+\XPDS
+\XLIMIT
+      COMMON /XMASKD/ IMSKOP,ITYP05,ILIMIT,XMIN,XDIVS,XMAX,YMIN,
+     1 YDIVS,YMAX,ZMIN,ZDIVS,ZMAX,IATRAD,ATMULT,ATCNST,ATVOID
+      DIMENSION IDIVS(3)
+      DIMENSION IIND3(3)
+      DIMENSION STEPS(3)
+
+\ICOM42
+
+      EQUIVALENCE (IMSKOP, PROCS(1))
+\QLST42
+
+#HOL      DATA IPEAK/'Q   '/
+&HOL      DATA PEAK(1)/4HQ   /, IPEAK/'Q   '/
+
+
+\IDIM42
+
+
+C--INITIALISE THE TIMING FUNCTION
+      CALL XTIME1(1)
+
+C--READ THE DATA
+      ISTAT = KRDDPV ( PROCS, NPROCS)
+      IF ( ISTAT .LT. 0 ) GO TO 9910
+      CALL XRSL
+      CALL XCSAE
+
+C--LOAD LISTS ONE, TWO, FIVE, TWENTY-NINE AND FORTY
+
+      IF ( KEXIST(1) .LT. 1 ) GOTO 9900
+      IF ( KEXIST(2) .LT. 1 ) GOTO 9900
+      IF ( KEXIST(5) .LT. 1 ) GOTO 9900
+      IF ( KEXIST(29) .LT. 1 ) GOTO 9900
+      
+      IF (KHUNTR ( 1,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 5,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL05
+      IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      IF ( ( ILIMIT .EQ. -1 ) .AND. 
+     1  ( KEXIST(42) .GE. 1 ) )THEN ! Use existing L42.
+C -- Load existing list forty-two:
+        IF (KHUNTR (42,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL42
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+        WRITE(CMON,'(A)')'Loaded existing List 42'
+        CALL XPRVDU(NCVDU,1,0)
+        DO I = 0,2
+            WRITE(CMON,'(3(A,F8.3),A)')
+     1      'Limits are', STORE(L42L+I*3),
+     2      ' to ',STORE(L42L+I*3+2),
+     2      ' in ',STORE(L42L+I*3+1),' steps.'
+            CALL XPRVDU(NCVDU,1,0)
+            IDIVS(I+1) = NINT(STORE(L42L+I*3+1))
+          END DO
+      ELSE
+C -- C R E A T E   A   N E W   L I S T   4 2:
+        IRCZAP = -1
+        CALL XFILL (IRCZAP, ICOM42, IDIM42)
+        N42L = 1
+        N42M = 1            
+        N42V = 1
+        CALL XCELST ( 42, ICOM42, IDIM42 )
+
+        WRITE(CMON,'(A,2(/6I9))') 'ICOM42:',(ICOM42(I),I=1,12)
+        CALL XPRVDU(NCVDU,3,0)
+
+C -- Set limits
+        L42L = KCHLFL(MD42L) !Increase storage for L42L record
+
+        IF ( ILIMIT .EQ. 0 ) THEN
+          CALL XMOVE(PROCS(4), STORE(L42L), 9)
+          DO I = 0,2
+            WRITE(CMON,'(3(A,F8.3),A)')
+     1      'Limits are', STORE(L42L+I*3),
+     2      ' to ',STORE(L42L+I*3+2),
+     2      ' in ',STORE(L42L+I*3+1), ' steps.'
+            CALL XPRVDU(NCVDU,1,0)
+            IDIVS(I+1) = NINT(STORE(L42L+I*3+1))
+          END DO
+
+        ELSE
+          IF ( ILIMIT .EQ. -1 ) THEN
+            WRITE(CMON,'(A/A)')
+     1      'Could not load any existing mask data (L42)',
+     2      'Using Fourier limits (L14).'
+            CALL XPRVDU(NCVDU,2,0)
+          END IF
+
+          IF (KHUNTR ( 14,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL14
+          DO I = 0,2
+            STORE(L42L+I*3)   = STORE(L14+I*MD14)
+            STORE(L42L+I*3+2) = STORE(L14+I*MD14+2)
+            RANGE = ABS(STORE(L42L+I*3+2)-STORE(L42L+I*3))
+            ARANGE = STORE(L1P1+I)*RANGE
+            WRITE(CMON,'(A,2F9.3)') 'Range A=', ARANGE, RANGE
+            CALL XPRVDU(NCVDU,1,0)
+            STORE(L42L+I*3+1)=NINT(0.49999+(ARANGE/STORE(L14+I*MD14+1)))
+            WRITE(CMON,'(3(A,F8.3),A)')
+     1      'Limits are', STORE(L42L+I*3),
+     2      ' to ',STORE(L42L+I*3+2),
+     2      ' in ',STORE(L42L+I*3+1), ' steps.'
+            CALL XPRVDU(NCVDU,1,0)
+            IDIVS(I+1) = NINT(STORE(L42L+I*3+1))
+          END DO
+
+        ENDIF
+
+        N42M = IDIVS(1) * IDIVS(2) * IDIVS(3)
+        N42V = N42M
+
+        IF ( NFL + N42M + N42V .GT. LFL ) GOTO 9920
+
+        L42M = KCHLFL(N42M) !Increase storage for L42M records
+        L42V = KCHLFL(N42V) !Increase storage for L42V records
+
+        IRCZAP = -1
+        CALL XFILL (IRCZAP, ISTORE(L42M), N42M)
+
+
+        ISTAT = KHUNTR(42,101,IADDL,IADDR,IADDD,-1)
+        IF ( ISTAT.NE.0 ) GOTO 9900
+        ISTORE(IADDR+3) = L42L   ! Change header pointer to new data
+
+        ISTAT = KHUNTR(42,102,IADDL,IADDR,IADDD,-1)
+        IF ( ISTAT.NE.0 ) GOTO 9900
+        ISTORE(IADDR+3) = L42M   ! Change header pointer to new data
+
+        ISTAT = KHUNTR(42,103,IADDL,IADDR,IADDD,-1)
+        IF ( ISTAT.NE.0 ) GOTO 9900
+        ISTORE(IADDR+3) = L42V   ! Change header pointer to new data
+
+      ENDIF
+
+      DO I = 0,2
+       STEPS(I+1)= (STORE(L42L+I*3+2)-STORE(L42L+I*3))/STORE(L42L+I*3+1)
+      END DO
+C Set up matrix for mapping indices onto the MASK and VALUE arrays.
+      IIND3(1) = 1
+      IIND3(2) = IDIVS(1)
+      IIND3(3) = IDIVS(2) * IDIVS(1)
+
+      WRITE(CMON,'(A,3I8)') 'Divisions:',(IDIVS(I),I=1,3)
+      CALL XPRVDU(NCVDU,1,0)
+      WRITE(CMON,'(A,3I8)') 'Index matrix:',(IIND3(I),I=1,3)
+      CALL XPRVDU(NCVDU,1,0)
+      WRITE(CMON,'(A,3F15.8)') 'Steps:',(STEPS(I),I=1,3)
+      CALL XPRVDU(NCVDU,1,0)
+
+C Branch on type of operation (IMSKOP)
+C   0 - ACCESSIBLE  Mark 1 all solvent accessible areas. Assume all zeroes
+C                      and put ones where solvent might fit.
+C   1 - OUTSIDE     Mark 1 all areas outside molecules. Assume all ones
+C                      and put zeroes inside the atoms.
+C   2 - INSIDE      Mark 1 all areas inside molecules. Assume all zeroes
+C                      and put ones inside the atoms.
+C   3 - SHRINK      Change limits to trim any layers with all zeroes in MASK.
+
+      IF ( IMSKOP .LE. 2 ) THEN ! All masking cases start here.
+
+         MASKIN = 1
+         MASKOU = 0
+
+         IF ( IMSKOP .EQ. 1 ) THEN
+           MASKIN = 0
+           MASKOU = 1
+         END IF
+
+C Run through grid, mask areas as inside or outside the molecule, given
+C the tolerances supplied.
+
+         JU = NFL       ! Next free memory location
+         NFL = NFL + 5
+
+         JT=12
+         AT = 0.5
+         AC = 4.0
+         BT = 0.      ! NO ANGLES TO BE LOOKED FOR
+         BC = 0.    
+
+         IDIM12=40    ! USE A NULL LIST 12.
+         DO I=1,IDIM12
+          ICOM12(I)=NOWT
+         END DO
+         L12=-1
+         M12=-1
+
+
+         I29=L29 + (N29-1)*MD29
+         I5 = L5 + (N5-1)*MD5
+         DO M5=L5,I5,MD5       ! SCAN LIST 5 SETTING SPARE TO VDW/COV RADIUS
+           IFOUND = 0
+           DO M29= L29,I29,MD29
+             JZ=M29+IATRAD
+             IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
+               STORE(M5+13) = STORE(JZ)
+               IFOUND = 1
+             END IF
+           END DO
+           IF ( IFOUND .EQ. 0 ) THEN
+             IF ( ISTORE(M5) .EQ. IPEAK ) THEN
+               STORE(M5+13) = 0.0
+               WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+     2           ' ignored.'
+               CALL XPRVDU(NCVDU, 1,0)
+             ELSE IF ( IATRAD .EQ. 1 ) THEN
+               STORE(M5+13) = 0.77
+               WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+     2           ' not in LIST 29 - using COV radius of 0.77A'
+               CALL XPRVDU(NCVDU, 1,0)
+             ELSE
+               STORE(M5+13) = 1.78
+               WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+     2           ' not in LIST 29 - using VDW radius of 1.78A'
+               CALL XPRVDU(NCVDU, 1,0)
+             END IF
+           END IF
+         END DO
+
+
+         CALL XDIST2 ! LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
+
+C-------SET UP A FEW STACK CONSTANTS
+         JB=NFL
+         JC=JB+MD5
+         JD=JC+20
+         JE=JD+30
+         IF ( JE .GE. LFL ) GOTO 9930  ! CHECK THE STORE AREA
+
+         AO = AC        ! FIX THE RADII FOR 1-2 CONTACTS
+         AP = AC * AC
+
+         IABAT=NFL   ! SET THE TARGET ATOM ADDRESSES
+         M5A = IABAT
+         NFL=NFL+6
+         STORE(IABAT+2)=1.0
+         STORE(IABAT+3)=.05
+
+
+        CALL XFILL (MASKOU, ISTORE(L42M), N42M) !Outside by default
+
+
+C----- LOOP OVER ALL SECTIONS
+         DO IZSECT = 0, IDIVS(3)-1
+           STORE(IABAT+6) = STORE(L42L+6) + STEPS(3) * IZSECT
+           CALL SLIDER(IZSECT,IDIVS(3)-1)
+           DO IXSECT = 0, IDIVS(1)-1
+             STORE(IABAT+4) = STORE( L42L ) + STEPS(1) * IXSECT
+             DO IYSECT = 0, IDIVS(2)-1
+               STORE(IABAT+5) = STORE(L42L+3) + STEPS(2) * IYSECT
+C GET ADDRESS of THIS POINT in L42M array.
+               M42M=L42M+IIND3(1)*IXSECT+IIND3(2)*IYSECT+IIND3(3)*IZSECT
+                M5=L5  ! RESET THE CONTACT ATOM
+                NFL=JE ! RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
+                JFNVC = 0
+                ITRANS = 1
+                NDIST = KDIST1( N5, JL, JT, JFNVC, 0, ITRANS, 0, 4, 0)
+c                WRITE(CMON,'(A,3I4,A,I5)') 'Point ',
+c     1           IZSECT,IXSECT,IYSECT,' bonds: ',NDIST
+c                CALL XPRVDU(NCVDU,1,0)
+                NBONDS = NDIST
+                IF ( IMSKOP .NE. 0 ) THEN ! Simple inside/outside atom.
+                  DO K = JE, JE+(JT*(NBONDS-1)),JT
+                    IAD5 = ISTORE(K)
+                    IF ( ISTORE(IAD5) .NE. IPEAK ) THEN
+                      IF ( STORE(K+10) .LT.
+     1    STORE(ISTORE(K)+13) * ATMULT + ATCNST ) THEN   ! Inside molecule
+                        ISTORE(M42M) = MASKIN
+                        EXIT
+                      END IF
+                    END IF
+                  END DO
+                ELSE ! Solvent accessible region
+                  IACCES = 1
+                  DO K = JE, JE+(JT*(NBONDS-1)),JT
+                    IAD5 = ISTORE(K)
+                    IF ( ISTORE(IAD5) .NE. IPEAK ) THEN
+                      IF ( STORE(K+10) .LT.
+     1    STORE(ISTORE(K)+13) * ATMULT + ATCNST + ATVOID ) THEN   ! Inaccessible
+                        IACCES = 0
+                        EXIT
+                      END IF
+                    END IF
+                  END DO
+                  IF ( IACCES .EQ. 1 ) THEN ! Set surrounding points to MASKIN.
+C If we are doing accessible volume and no contacts to this point,
+C then need to set MASKOU for this point, and all points within a
+C radius of ATVOID
+C Work out steps equivalent to ATVOID in each axial direction.
+                    JXSTPS = NINT(.5+(ATVOID /(STORE(L1P1)*STEPS(1))))
+                    JYSTPS = NINT(.5+(ATVOID /(STORE(L1P1+1)*STEPS(2))))
+                    JZSTPS = NINT(.5+(ATVOID /(STORE(L1P1+2)*STEPS(3))))
+
+C                    JMIN = 
+C Truncate wrt edges of mask region.
+
+C For each included point test distance to central point vs ATVOID.
+                  END IF
+                END IF
+
+
+C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
+                NFL = JL
+                JK = JL - JT
+             END DO
+           END DO
+         END DO
+      ELSE
+
+C Shrink the storage.
+
+      END IF
+
+1111  CONTINUE
+
+      CALL XWLSTD (42,ICOM42,IDIM42,-1,-1)
+
+
+3350  CONTINUE
+      CALL XOPMSG (IOPBND, IOPEND, 201)
+      CALL XTIME2(1)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPBND , IOPABN , 0 )
+      GOTO 3350
+9910  CONTINUE
+C -- INPUT ERROR
+      CALL XOPMSG ( IOPBND , IOPCMI , 0 )
+      GO TO 9900
+9920  CONTINUE
+C -- NOT ENOUGH STORE
+      WRITE ( CMON, 9925 )
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+9925  FORMAT ( 1X ,
+     1'Not enough stack to allocate the resolution of mask specified' )
+      CALL XERHND ( IERERR )
+      GO TO 9900
+9930  CONTINUE
+C
+C-------INSUFFICIENT SPACE
+      CALL XOPMSG ( IOPHYD , IOPSPC , 0 )
+      GO TO 9900
+
+      END
+
