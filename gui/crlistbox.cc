@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 14:43 Uhr
 
 //  $Log: not supported by cvs2svn $
+//  Revision 1.11  2001/06/17 15:14:13  richard
+//  Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //  Revision 1.10  2001/03/28 09:17:07  richard
 //  Code to allow you to disable the listbox.
 //
@@ -206,10 +209,6 @@ void CrListBox::GetValue(CcTokenList * tokenList)
     {
         tokenList->GetToken();
             int index = atoi ((tokenList->GetToken()).ToCString());
-//            char theText[256];
-//TODO. Wrap this call with a CxListBox function, rather that this base class.
-//DONE.
-//            int textLen = ((CxListBox*)ptr_to_cxObject)->GetText(index - 1,&theText[0]);
             CcString theText = ((CxListBox*)ptr_to_cxObject)->GetListBoxText(index);
             SendCommand( theText, true );
     }
