@@ -3,6 +3,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.25  2003/05/07 12:18:57  rich
+//
+// RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+// using only free compilers and libraries. Hurrah, but it isn't very stable
+// yet (CRYSTALS, not the compilers...)
+//
 // Revision 1.24  2003/01/14 10:27:18  rich
 // Bring all sources up to date on Linux. Still not working: Plots, ModList, ListCtrl
 //
@@ -75,6 +81,8 @@
 
 #ifdef __LINUX__
 #define __BOTHWX__ 1
+#define max(a, b)  (((a) > (b)) ? (a) : (b))
+#define min(a, b)  (((a) < (b)) ? (a) : (b))
 #endif
 
 #ifdef __CR_WIN__
