@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  1999/04/26 11:08:16  dosuser
+C RIC: Added a  SQRT (  ) function to scripts. Result and argument are
+C      real. Program crashes if the argument is less than zero. Perhaps
+C      an ABS function in the code wouldn't go amiss.
+C
 C Revision 1.8  1999/03/24 17:51:54  dosuser
 C open/append changes
 C
@@ -2794,7 +2799,7 @@ C -- 'SQRT'
 C
 C Return the square root of the argument. 
 C
-        XCODE(JVALUE,IARG(1)) = SQRT ( XCODE(JVALUE,IARG(1)) )
+        XCODE(JVALUE,IARG(1)) = SQRT ( ABS ( XCODE(JVALUE,IARG(1)) ) )
         ICODE(JVTYPE,IARG(1)) = 2
 C
 C
