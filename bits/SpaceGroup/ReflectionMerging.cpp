@@ -163,7 +163,7 @@ LaueClassMatrices::~LaueClassMatrices()
     delete iMatrices;
 }
 
-char* gLaueGroup;
+char* gLaueGroup; //For outputing the current Laue Group when merging.
 
 static LaueClassMatrices gLaueMatrices;
 /*
