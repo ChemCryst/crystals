@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.2  2001/02/26 10:30:24  richard
+C Added changelog to top of file
+C
 C
 CODE FOR HTORS
       SUBROUTINE HTORS
@@ -306,10 +309,11 @@ C--ATOM APPEARS MORE THAN ONCE
 C
 C--TERMINATION OF THE PROCESSING
 2950  CONTINUE
+      IESD = 0
       IF (IPBFLG .EQ. 1) THEN
-        CALL XPRTDA (4,0,NCPU)
+        CALL XPRTDA (4,IESD,NCPU)
       ELSE  IF (IPBFLG .EQ. 2) THEN
-        CALL XPRTDA (14,0,NCPU)
+        CALL XPRTDA (14,IESD,NCPU)
       ENDIF
       CALL XOPMSG (IOPTOR, IOPEND, IVERSN)
       CALL XTIME2(2)
