@@ -1,11 +1,11 @@
-
+#if defined(_DOS_)
 C----------------------------------------------------------------------C
 C
       integer*4 function f_close()
 C ---- this call-back function routine cleans up when the
 C      Graphics Window is closed using the system menu
 
-\CAMWIN
+      INCLUDE 'CAMWIN.INC'
       call delete_tmp_files
 C      call EraseWindow(DialogHandle)
       f_close=0
@@ -14,7 +14,7 @@ C
 C----------------------------------------------------------------------C
 C
       subroutine CreateGraphicsWindow(ix,iy)
-\CAMWIN
+      INCLUDE 'CAMWIN.INC'
       COMMON /CAMBFF/ BUFFER
       CHARACTER*80 BUFFER(5)
       include <windows.ins>
@@ -111,7 +111,7 @@ C ---- updates the cursor for the graphics region
 C     icursor = 1 -> normal arrow cursor
 C     icursor = 2 -> cross-hair cursor
 C     icursor = 3 -> size-cursor
-\CAMWIN
+      INCLUDE 'CAMWIN.INC'
       Cursor$Number=icursor
       call window_update@(Cursor$Number)
       end
@@ -167,7 +167,7 @@ C
 
       integer*4 function mouseevent()
       include <windows.ins>
-\CAMWIN
+      INCLUDE 'CAMWIN.INC'
       LOGICAL BOUNCE
       SAVE    BOUNCE
 
@@ -209,4 +209,8 @@ C Shift buffer up.
 10    CONTINUE
 
       end      
-      
+
+#else
+      subroutine wincode_dummy()
+      end
+#endif

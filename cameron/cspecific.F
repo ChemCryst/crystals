@@ -7,29 +7,42 @@ CRYSTALS CODE FOR SPECIFIC.FOR
 CAMERON CODE FOR SPECIFIC
 CODE FOR ZCLRA
       SUBROUTINE ZCLRA (IX1,IY1,IX2,IY2,ICOL)
-&DOS\CAMWIN
-&&&GIDGILWXS\CAMPAR
-&&&GIDGILWXS\CAMCOL
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOL.INC'
+#endif
       INTEGER IX1,IY1,IX2,IY2,ICOL
 
-&DOS      INTEGER*2 IXX1,IYY1,IXX2,IYY2,ICOL1
-&DOS      ixx1 = nint(float(ix1)*scale_X)
-&DOS      iyy1 = nint(float(iy1)*scale_Y)
-&DOS      ixx2 = nint(float(ix2)*scale_X) - 1
-&DOS      iyy2 = nint(float(iy2)*scale_Y) - 1
-&DOS      ICOL1 = ICOL
-&DOS      CALL CLEAR_SCREEN_AREA@(IXX1,IYY1,IXX2,IYY2,ICOL1)
+#if defined(_DOS_) 
+      INTEGER*2 IXX1,IYY1,IXX2,IYY2,ICOL1
+      ixx1 = nint(float(ix1)*scale_X)
+      iyy1 = nint(float(iy1)*scale_Y)
+      ixx2 = nint(float(ix2)*scale_X) - 1
+      iyy2 = nint(float(iy2)*scale_Y) - 1
+      ICOL1 = ICOL
+      CALL CLEAR_SCREEN_AREA@(IXX1,IYY1,IXX2,IYY2,ICOL1)
 
 C&&GIDGIL      CHARACTER*80 CHARTC
-&&GIDGIL      INTEGER IPTS(8)
-&WXS      INTEGER IPTS(8)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IPTS(8)
+#endif
+#if defined(_WXS_) 
+      INTEGER IPTS(8)
 
 C &&GIDGIL      WRITE(CHARTC,1)'^^CH CLEAR'
 C &&GIDGIL1     FORMAT (A)
 C &&GIDGIL      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCLR
-&WXS              CALL FSTCLR
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCLR
+#endif
+#if defined(_WXS_) 
+              CALL FSTCLR
 
 C &&GIDGIL      WRITE(CHARTC,2)'^^CH RGB',
 C &&GIDGIL     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -37,56 +50,74 @@ C &&GIDGIL     2 NINT(4.05*IVGACL(2,ICOL+1)),
 C &&GIDGIL     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GIDGIL2     FORMAT (A,3(1X,I3))
 C &&GIDGIL      CALL ZMORE(CHARTC,0)
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GIDGIL      WRITE(CHARTC,3)'^^CH POLYF 4',IX1,IY1,IX1,IY2,
 C &&GIDGIL     1  IX2,IY2,IX2,IY1
 C &&GIDGIL3     FORMAT(A,8(1X,I5))
 C &&GIDGIL      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL      IPTS(1) = IX1
-&&GIDGIL      IPTS(2) = IY1
-&&GIDGIL      IPTS(3) = IX1
-&&GIDGIL      IPTS(4) = IY2
-&&GIDGIL      IPTS(5) = IX2
-&&GIDGIL      IPTS(6) = IY2
-&&GIDGIL      IPTS(7) = IX2
-&&GIDGIL      IPTS(8) = IY1
-&&GIDGIL      CALL FSTFPO(4,IPTS)
-&WXS      IPTS(1) = IX1
-&WXS      IPTS(2) = IY1
-&WXS      IPTS(3) = IX1
-&WXS      IPTS(4) = IY2
-&WXS      IPTS(5) = IX2
-&WXS      IPTS(6) = IY2
-&WXS      IPTS(7) = IX2
-&WXS      IPTS(8) = IY1
-&WXS      CALL FSTFPO(4,IPTS)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      IPTS(1) = IX1
+      IPTS(2) = IY1
+      IPTS(3) = IX1
+      IPTS(4) = IY2
+      IPTS(5) = IX2
+      IPTS(6) = IY2
+      IPTS(7) = IX2
+      IPTS(8) = IY1
+      CALL FSTFPO(4,IPTS)
+#endif
+#if defined(_WXS_) 
+      IPTS(1) = IX1
+      IPTS(2) = IY1
+      IPTS(3) = IX1
+      IPTS(4) = IY2
+      IPTS(5) = IX2
+      IPTS(6) = IY2
+      IPTS(7) = IX2
+      IPTS(8) = IY1
+      CALL FSTFPO(4,IPTS)
 
+#endif
       RETURN
       END
  
 CODE FOR ZDLINE
       SUBROUTINE ZDLINE (IX1,IY1,IX2,IY2,ICOL)
-&DOS\CAMWIN
-&&&GIDGILWXS\CAMPAR
-&&&GIDGILWXS\CAMCOL
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOL.INC'
+#endif
       INTEGER IX1,IY1,IX2,IY2,ICOL
-&DOS      INTEGER*2 IXX1,IYY1,IXX2,IYY2,ICOL1
-&DOS      ixx1 = nint(float(ix1)*scale_X)
-&DOS      iyy1 = nint(float(iy1)*scale_Y)
-&DOS      ixx2 = nint(float(ix2)*scale_X) 
-&DOS      iyy2 = nint(float(iy2)*scale_Y)
-&DOS      ICOL1 = ICOL
-&DOS      CALL DRAW_LINE@ (IXX1,IYY1,IXX2,IYY2,ICOL1)
+#if defined(_DOS_) 
+      INTEGER*2 IXX1,IYY1,IXX2,IYY2,ICOL1
+      ixx1 = nint(float(ix1)*scale_X)
+      iyy1 = nint(float(iy1)*scale_Y)
+      ixx2 = nint(float(ix2)*scale_X) 
+      iyy2 = nint(float(iy2)*scale_Y)
+      ICOL1 = ICOL
+      CALL DRAW_LINE@ (IXX1,IYY1,IXX2,IYY2,ICOL1)
 
-&&GILGID      CHARACTER*80 CHARTC
-&WXS      CHARACTER*80 CHARTC
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      CHARACTER*80 CHARTC
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -94,43 +125,59 @@ C &&GILGID     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 c
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH LINE',IX1,IY1,IX2,IY2
 C &&GILGID3     FORMAT(A,4(1X,I4))
 C &&GILGID      CALL ZMORE(CHARTC,0)
-&&GILGID      CALL FSTLIN( IX1, IY1, IX2, IY2 )
-&WXS      CALL FSTLIN( IX1, IY1, IX2, IY2 )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      CALL FSTLIN( IX1, IY1, IX2, IY2 )
+#endif
+#if defined(_WXS_) 
+      CALL FSTLIN( IX1, IY1, IX2, IY2 )
+#endif
       RETURN
       END
  
 CODE FOR ZDTEXT
       SUBROUTINE ZDTEXT (TEXT,IX,IY,ICOL)
-&DOS\CAMWIN
-&&GILGID\CAMPAR
-&&GILGID\CAMCOL
-&&GILGID\CAMGRP
-&WXS\CAMPAR
-&WXS\CAMCOL
-&WXS\CAMGRP
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMGRP.INC'
+#endif
+#if defined(_WXS_) 
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMGRP.INC'
+#endif
       CHARACTER*(*) TEXT
       INTEGER ICOL
-&DOS      INTEGER*2 ICOL1,IXX,IYY
-&DOS      increment=10
-&DOS      if(xwin .eq. 800)  increment=15
-&DOS      if(xwin .eq. 1024) increment=20
-&DOS      if(xwin .gt. 1024) increment=25
-&DOS      ixx = nint(float(ix)*scale_X)
-&DOS      iyy = nint(float(iy)*scale_Y) + increment
-&DOS      call set_text_attribute@(font,size,rotation,italic)
-&DOS      if(xwin .gt. 800) call BoldFont(1)
-&DOS      ICOL1 = ICOL
-&DOS      CALL DRAW_TEXT@( TEXT,IXX,IYY,ICOL1)
+#if defined(_DOS_) 
+      INTEGER*2 ICOL1,IXX,IYY
+      increment=10
+      if(xwin .eq. 800)  increment=15
+      if(xwin .eq. 1024) increment=20
+      if(xwin .gt. 1024) increment=25
+      ixx = nint(float(ix)*scale_X)
+      iyy = nint(float(iy)*scale_Y) + increment
+      call set_text_attribute@(font,size,rotation,italic)
+      if(xwin .gt. 800) call BoldFont(1)
+      ICOL1 = ICOL
+      CALL DRAW_TEXT@( TEXT,IXX,IYY,ICOL1)
 
 C &&GILGID      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
@@ -140,40 +187,58 @@ C &&GILGID     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH TEXT',IX,IY,'''',
 C &&GILGID     1 TEXT(1:LEN(TEXT)),''''
 C &&GILGID3     FORMAT(A,1X,2(I4,1X),3A)
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL      CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
-&WXS      CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
+#endif
+#if defined(_WXS_) 
+      CALL FSTEXT( IX, IY, TEXT(1:LEN(TEXT)), -IFONT )
 
+#endif
       RETURN
       END
  
 CODE FOR ZFILEL
       SUBROUTINE ZFILEL (IXC,IYC,IMAJ,IMIN,ICOL)
-&DOS\CAMWIN
-&&&GIDGILWXS\CAMPAR
-&&&GIDGILWXS\CAMCOL
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOL.INC'
+#endif
       INTEGER IMAJ,IMIN,ICOL
-&DOS      INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
-&DOS      ixc1  = nint(float(ixc)*scale_X)
-&DOS      iyc1  = nint(float(iyc)*scale_Y)
-&DOS      imaj1 = nint(float(imaj)*scale_X)
-&DOS      imin1 = nint(float(imin)*scale_Y)
-&DOS      ICOL1 = ICOL
-&DOS      CALL FILL_ELLIPSE@( IXC1,IYC1,IMAJ1,IMIN1,ICOL1)
+#if defined(_DOS_) 
+      INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
+      ixc1  = nint(float(ixc)*scale_X)
+      iyc1  = nint(float(iyc)*scale_Y)
+      imaj1 = nint(float(imaj)*scale_X)
+      imin1 = nint(float(imin)*scale_Y)
+      ICOL1 = ICOL
+      CALL FILL_ELLIPSE@( IXC1,IYC1,IMAJ1,IMIN1,ICOL1)
 
-&&GILGID      CHARACTER*80 CHARTC
-&WXS      CHARACTER*80 CHARTC
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      CHARACTER*80 CHARTC
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -181,20 +246,29 @@ C &&GILGID     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH ELLIF',IXC,IYC,IMAJ,IMIN
 C &&GILGID3     FORMAT(A,4(1X,I4))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
-&WXS              CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
+#endif
+#if defined(_WXS_) 
+              CALL FSTFEL ( IXC, IYC, IMAJ, IMIN )
             
+#endif
       RETURN
       END
  
@@ -203,48 +277,61 @@ CODE FOR ZPLINE
       SUBROUTINE ZPLINE (IX,IY,N,ICOL)
       INTEGER IX(N),IY(N),ICOL
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
-&DOS\CAMWIN
-&DOS      INTEGER*2 ICOL1
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+      INTEGER*2 ICOL1
 
 C &&GILGID      CHARACTER*80 CHARTC
-&&GILGID      INTEGER IPTS(2000)    
-&WXS      INTEGER IPTS(2000)    
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IPTS(2000)    
+#endif
+#if defined(_WXS_) 
+      INTEGER IPTS(2000)    
 
+#endif
       IF (N.GT.1000) N = 1000
 
       ICOL1 = MIN ( ICOL, 15 )
 
       DO 10 I = 1 , N
 
-&DOS        ixx2(i) = nint(float(ix(i))*scale_X)
-&DOS        iyy2(i) = nint(float(iy(i))*scale_Y)
-&&GILGID        IPTS(I*2 - 1) = IX(I)
-&&GILGID        IPTS(I*2    ) = IY(I)
-&WXS        IPTS(I*2 - 1) = IX(I)
-&WXS        IPTS(I*2    ) = IY(I)
+#if defined(_DOS_) 
+        ixx2(i) = nint(float(ix(i))*scale_X)
+        iyy2(i) = nint(float(iy(i))*scale_Y)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+        IPTS(I*2 - 1) = IX(I)
+        IPTS(I*2    ) = IY(I)
+#endif
+#if defined(_WXS_) 
+        IPTS(I*2 - 1) = IX(I)
+        IPTS(I*2    ) = IY(I)
 
+#endif
 10    CONTINUE
 
-&DOS      ICOL1 = ICOL
-&DOS      CALL POLYLINE@(IXX2,IYY2,N,ICOL1)
+#if defined(_DOS_) 
+      ICOL1 = ICOL
+      CALL POLYLINE@(IXX2,IYY2,N,ICOL1)
 
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -253,39 +340,57 @@ C &&GILGID     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL1+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL1+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL1+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL1+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL1+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL1+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH FPOLYE',N,ID
 C &&GILGID3     FORMAT(A,2(1X,I6))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTEPO ( N, IPTS )
-&WXS              CALL FSTEPO ( N, IPTS )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTEPO ( N, IPTS )
+#endif
+#if defined(_WXS_) 
+              CALL FSTEPO ( N, IPTS )
 
+#endif
       RETURN
       END
  
 CODE FOR ZVGAEL
       SUBROUTINE ZVGAEL (IXC,IYC,IMAJ,IMIN,ICOL)
       INTEGER IMAJ,IMIN,ICOL
-&DOS      INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
-&DOS\CAMWIN
-&&&GIDGILWXS\CAMPAR
-&&&GIDGILWXS\CAMCOL
-&DOS      ixc1  = nint(float(ixc)*scale_X)
-&DOS      iyc1  = nint(float(iyc)*scale_Y)
-&DOS      imaj1 = nint(float(imaj)*scale_X)
-&DOS      imin1 = nint(float(imin)*scale_X)
-&DOS      ICOL1 = ICOL
-&DOS      CALL ELLIPSE@( IXC1,IYC1,IMAJ1,IMIN1,ICOL1)
+#if defined(_DOS_) 
+      INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
+      INCLUDE 'CAMWIN.INC'
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOL.INC'
+#endif
+#if defined(_DOS_) 
+      ixc1  = nint(float(ixc)*scale_X)
+      iyc1  = nint(float(iyc)*scale_Y)
+      imaj1 = nint(float(imaj)*scale_X)
+      imin1 = nint(float(imin)*scale_X)
+      ICOL1 = ICOL
+      CALL ELLIPSE@( IXC1,IYC1,IMAJ1,IMIN1,ICOL1)
 
-&&GILGID      CHARACTER*80 CHARTC
-&WXS      CHARACTER*80 CHARTC
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      CHARACTER*80 CHARTC
+#endif
+#if defined(_WXS_) 
+      CHARACTER*80 CHARTC
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
 C &&GILGID     2 NINT(4.05*IVGACL(2,ICOL+1)),
@@ -293,20 +398,29 @@ C &&GILGID     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH ELLIE',IXC,IYC,IMAJ,IMIN
 C &&GILGID3     FORMAT(A,4(1X,I4))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
-&WXS              CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
+#endif
+#if defined(_WXS_) 
+              CALL FSTEEL ( IXC, IYC, IMAJ, IMIN )
 
+#endif
       RETURN
       END
  
@@ -314,7 +428,9 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
  
 CODE FOR ZBEEP
       SUBROUTINE ZBEEP
-&DOS      CALL BEEP@
+#if defined(_DOS_) 
+      CALL BEEP@
+#endif
       RETURN
       END
  
@@ -323,13 +439,15 @@ CODE FOR ZBEEP
 CODE FOR ZCOLCH
       SUBROUTINE ZCOLCH (IREG,IR,IG,IB)
       INTEGER IREG,IR,IG,IB
-&DOS      INTEGER*2 IRREG,IRR,IGG,IBB
-&DOS      IRREG = IREG
-&DOS      IRR = IR
-&DOS      IGG = IG
-&DOS      IBB = IB
-&DOS      CALL SET_VIDEO_DAC@(IRREG,IRR,IGG,IBB)
-&DOS      CALL SET_PALETTE@(IRREG,IRREG)
+#if defined(_DOS_) 
+      INTEGER*2 IRREG,IRR,IGG,IBB
+      IRREG = IREG
+      IRR = IR
+      IGG = IG
+      IBB = IB
+      CALL SET_VIDEO_DAC@(IRREG,IRR,IGG,IBB)
+      CALL SET_PALETTE@(IRREG,IRREG)
+#endif
       RETURN
       END
  
@@ -362,11 +480,14 @@ CDOS      CALL CISSUE(CTEXT,IFF)
 CODE FOR ZGTKEY
       SUBROUTINE ZGTKEY (KK)
       INTEGER KK
-&DOS      INTEGER*2 KKK,get_wkey@
-&DOS      kkk=0
-&DOS      kkk=get_wkey@()
-&DOS      KK = KKK
-#DOS      CALL ZMORE('Error: ZGTKEY called',0)
+#if defined(_DOS_) 
+      INTEGER*2 KKK,get_wkey@
+      kkk=0
+      kkk=get_wkey@()
+      KK = KKK
+#else
+      CALL ZMORE('Error: ZGTKEY called',0)
+#endif
       RETURN
       END
  
@@ -375,35 +496,37 @@ CODE FOR ZPRNT
       SUBROUTINE ZPRNT (CTEXT)
 C THIS PRINTS OUT ON THE SCREEN WITHOUT PUTTING A RETURN AT THE END
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       CHARACTER*(*) CTEXT
 CVAX      WRITE (IGOUT,'(A,$)') CTEXT
-&DOS      CALL COUA@(CTEXT)
+#if defined(_DOS_) 
+      CALL COUA@(CTEXT)
+#endif
       RETURN
       END
  
  
 CODE FOR ZINCH
       SUBROUTINE ZINCH (CL)
-\CAMPAR
-\CAMBLK
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMBLK.INC'
       CHARACTER*(ICLEN) CL
       CL = CHRBUF(1:ICLEN)
       RETURN
@@ -423,23 +546,23 @@ C NEGATIVE NUMBERS ARE RELATED TO THE ENVIRONMENT VARIABLE
 CNOV98 CRCAMER.
 C CRYSDIR.
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       CHARACTER*(*) FILEN
       CHARACTER*80 FILENM
@@ -456,12 +579,21 @@ C FILE OPEN
       IF (ITYPE.EQ.1) THEN
 C WE NEED TO CHECK WHETHER THE FILE EXISTS ALREADY
         OPEN (UNIT=ID,FILE=FILENM,
-#DOS     1         STATUS = 'OLD' ,
-&DOS     1         STATUS ='READONLY' ,
-&VAX     1         SHARED ,
-&VAX     1         READONLY ,
-&PPC     1         READONLY ,
-&&DVFGID     1         READONLY ,
+#if !defined(_DOS_) 
+     1         STATUS = 'OLD' ,
+#else
+     1         STATUS ='READONLY' ,
+#endif
+#if defined(_VAX_) 
+     1         SHARED ,
+     1         READONLY ,
+#endif
+#if defined(_PPC_) 
+     1         READONLY ,
+#endif
+#if defined(_DVF_) || defined(_GID_) 
+     1         READONLY ,
+#endif
      1 ERR=999)
       ELSE IF (ITYPE.EQ.2) THEN
         OPEN (UNIT=ID,FILE=FILENM,STATUS='UNKNOWN',
@@ -524,49 +656,64 @@ CODE FOR ZPOLGN
       SUBROUTINE ZPOLGN ( IX,IY,N,ICOL)
       INTEGER IX(N),IY(N),ICOL
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
-&DOS\CAMWIN
-&DOS      INTEGER*2 ICOL2,HANDLE,ERROR
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+      INTEGER*2 ICOL2,HANDLE,ERROR
 C &&GILGID      CHARACTER*80 CHARTC
-&&GILGID      INTEGER IPTS(2000)    
-&WXS      INTEGER IPTS(2000)    
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IPTS(2000)    
+#endif
+#if defined(_WXS_) 
+      INTEGER IPTS(2000)    
 
-&DOS      ICOL2 = ICOL
+#endif
+#if defined(_DOS_) 
+      ICOL2 = ICOL
 
 C&GIL      WRITE(6,*) 'ZPOLGN, N: ', N
 C&GIL      WRITE(6,*) 'ZPOLGN2, N: ', N
 
+#endif
       DO 10 I = 1 , N
-&DOS        ixx2(i) = nint(float(ix(i))*scale_X)
-&DOS        iyy2(i) = nint(float(iy(i))*scale_Y)
-&&GILGID        IPTS(I*2 - 1) = IX(I)
-&&GILGID        IPTS(I*2    ) = IY(I)
-&WXS        IPTS(I*2 - 1) = IX(I)
-&WXS        IPTS(I*2    ) = IY(I)
+#if defined(_DOS_) 
+        ixx2(i) = nint(float(ix(i))*scale_X)
+        iyy2(i) = nint(float(iy(i))*scale_Y)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+        IPTS(I*2 - 1) = IX(I)
+        IPTS(I*2    ) = IY(I)
+#endif
+#if defined(_WXS_) 
+        IPTS(I*2 - 1) = IX(I)
+        IPTS(I*2    ) = IY(I)
+#endif
 10    CONTINUE
 
 c&GIL      WRITE(6,*) 'ZPOLGN3, N: ', N
 
-&DOS      CALL CREATE_POLYGON@(IXX2,IYY2,N,HANDLE,ERROR)
-&DOS      CALL FILL_POLYGON@(HANDLE,ICOL2,ERROR)
-&DOS      CALL DELETE_POLYGON_DEFINITION@(HANDLE,ERROR)
+#if defined(_DOS_) 
+      CALL CREATE_POLYGON@(IXX2,IYY2,N,HANDLE,ERROR)
+      CALL FILL_POLYGON@(HANDLE,ICOL2,ERROR)
+      CALL DELETE_POLYGON_DEFINITION@(HANDLE,ERROR)
 
 C &&GILGID      WRITE(CHARTC,2)'^^CH RGB',
 C &&GILGID     1 NINT(4.05*IVGACL(1,ICOL+1)),
@@ -575,12 +722,16 @@ C &&GILGID     3 NINT(4.05*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
-&WXS              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(2,ICOL+1)),
-&WXS     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
+#endif
+#if defined(_WXS_) 
+              CALL FSTCOL ( NINT(4.05*IVGACL(1,ICOL+1)),
+     1                      NINT(4.05*IVGACL(2,ICOL+1)),
+     1                      NINT(4.05*IVGACL(3,ICOL+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH FPOLYF',N,ID
 C &&GILGID3     FORMAT(A,2(1X,I6))
@@ -588,9 +739,14 @@ C &&GILGID      CALL ZMORE(CHARTC,0)
 
 c&GIL      WRITE(6,*) 'ZPOLGN4, N: ', N
 
-&&GIDGIL              CALL FSTFPO ( N, IPTS )
-&WXS              CALL FSTFPO ( N, IPTS )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+              CALL FSTFPO ( N, IPTS )
+#endif
+#if defined(_WXS_) 
+              CALL FSTFPO ( N, IPTS )
 
+#endif
       RETURN
       END
 
@@ -600,311 +756,456 @@ CODE FOR ZGTARA
 C THIS SUBROUTINE GETS THE POLYGONAL AREA FOR THE INCLUDE/EXCLUDE
 C COMMANDS
       SUBROUTINE ZGTARA (IX,IY,N,IPPOS)
-&DOS\CAMWIN
-&DOS      INTEGER IX(N),IY(N)
-&DOS      INTEGER*4 IXX,IYY,IXPOS,IYPOS,IXOLD,IYOLD,IXINIT,IYINIT
-&DOS      INTEGER*4 IB
-&DOS      LOGICAL LCROSS
-&DOS      INTEGER IPPOS
-&DOS      IPPOS = -1
-&DOS
-&DOS      icol = 14
-&DOS      call SetGraphicsCursor(2)
-&DOS      call graphics_write_mode@(3)
-&DOS
-&DOSC NOW BEGIN TO LOOP
-&DOS      IXOLD = -1
-&DOS      IYOLD = -1
-&DOS      IXINIT = -1
-&DOS      IYINIT = -1
-&DOS      LCROSS = .TRUE.
-&DOS      IPPOS = 0
-&DOS30    CONTINUE
-&DOS
-&DOSC cljf
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+      INTEGER IX(N),IY(N)
+      INTEGER*4 IXX,IYY,IXPOS,IYPOS,IXOLD,IYOLD,IXINIT,IYINIT
+      INTEGER*4 IB
+      LOGICAL LCROSS
+      INTEGER IPPOS
+      IPPOS = -1
+
+      icol = 14
+      call SetGraphicsCursor(2)
+      call graphics_write_mode@(3)
+
+C NOW BEGIN TO LOOP
+      IXOLD = -1
+      IYOLD = -1
+      IXINIT = -1
+      IYINIT = -1
+      LCROSS = .TRUE.
+      IPPOS = 0
+30    CONTINUE
+
+C cljf
 C Check for keypresses
-&DOS      call zgtky1(kk)
-&DOS
+      call zgtky1(kk)
+
 C Check for mouse action
-&DOS      IB = KMSGET(JX,JY,JF)
-&DOS      JX = JX * SCALE_X
-&DOS      JY = JY * SCALE_Y
+      IB = KMSGET(JX,JY,JF)
+      JX = JX * SCALE_X
+      JY = JY * SCALE_Y
 C Case: Right mouse-click or return key pressed.
-&DOS      IF (((IB.EQ.0).and.(JF.LT.0)).or. KK.EQ.13) then
+      IF (((IB.EQ.0).and.(JF.LT.0)).or. KK.EQ.13) then
 C     Delete the polygon
-&DOS        IF (IXOLD.NE.-1) THEN
-&DOS          CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
-&DOS        ENDIF
-&DOS        IF (IPPOS.GT.1) THEN
-&DOS          DO 80 I = IPPOS-1, 1, -1
-&DOS            IXOLD = IX(I)
-&DOS            IYOLD = IY(I)
-&DOS            IXPOS = IX(I+1)
-&DOS            IYPOS = IY(I+1)
-&DOS            CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
-&DOS80        CONTINUE
-&DOS        ENDIF
-&DOS        IPPOS = 0
-&DOS        call SetGraphicsCursor(1)
-&DOS        call graphics_write_mode@(1)
-&DOS        call zmore1(' ',0)
-&DOS        return
-&DOS      ENDIF
+        IF (IXOLD.NE.-1) THEN
+          CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
+        ENDIF
+        IF (IPPOS.GT.1) THEN
+          DO 80 I = IPPOS-1, 1, -1
+            IXOLD = IX(I)
+            IYOLD = IY(I)
+            IXPOS = IX(I+1)
+            IYPOS = IY(I+1)
+            CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
+80        CONTINUE
+        ENDIF
+        IPPOS = 0
+        call SetGraphicsCursor(1)
+        call graphics_write_mode@(1)
+        call zmore1(' ',0)
+        return
+      ENDIF
 
 C Case: Left mouse-click.
-&DOS      IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
-&DOS        IXPOS = JX
-&DOS        IYPOS = JY
+      IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
+        IXPOS = JX
+        IYPOS = JY
 C     Store current pivot point in IXOLD,IYOLD
-&DOS        IXOLD = IXPOS
-&DOS        IYOLD = IYPOS
+        IXOLD = IXPOS
+        IYOLD = IYPOS
 C     Case: Initial point.
-&DOS        IF (IXINIT.EQ.-1) THEN
-&DOS          IXINIT = IXPOS
-&DOS          IYINIT = IYPOS
-&DOS        ENDIF
+        IF (IXINIT.EQ.-1) THEN
+          IXINIT = IXPOS
+          IYINIT = IYPOS
+        ENDIF
 C     Add point to list
-&DOS        IPPOS = IPPOS + 1
-&DOS        IX(IPPOS) = IXPOS
-&DOS        IY(IPPOS) = IYPOS
+        IPPOS = IPPOS + 1
+        IX(IPPOS) = IXPOS
+        IY(IPPOS) = IYPOS
 C     Check for click on initial point
-&DOS        IF (.NOT.LCROSS) THEN
+        IF (.NOT.LCROSS) THEN
 C     Set the first and last points equal
-&DOS          IX(IPPOS) = IX(1)
-&DOS          IY(IPPOS) = IY(1)
-&DOS          call SetGraphicsCursor(1)
+          IX(IPPOS) = IX(1)
+          IY(IPPOS) = IY(1)
+          call SetGraphicsCursor(1)
 C     Scale the values (window version)
-&DOS          do i=1,ippos
-&DOS             ix(i)=nint(float(ix(i))/scale_X)
-&DOS             iy(i)=nint(float(iy(i))/scale_Y)
-&DOS          enddo
-&DOS          call zmore1(' ',0)
-&DOS          call graphics_write_mode@(1)
-&DOS          RETURN
-&DOS        ENDIF
+          do i=1,ippos
+             ix(i)=nint(float(ix(i))/scale_X)
+             iy(i)=nint(float(iy(i))/scale_Y)
+          enddo
+          call zmore1(' ',0)
+          call graphics_write_mode@(1)
+          RETURN
+        ENDIF
 
 C     Case: No mouse click, initial point set already.
-&DOS      ELSE IF (IXOLD.NE.-1) THEN
-&DOS        IXX = JX
-&DOS        IYY = JY
+      ELSE IF (IXOLD.NE.-1) THEN
+        IXX = JX
+        IYY = JY
 C        The mouse has moved
-&DOS        IF (ABS(IXX-IXPOS).NE.0 .OR. ABS(IYY-IYPOS).NE.0) THEN
-&DOS          CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
+        IF (ABS(IXX-IXPOS).NE.0 .OR. ABS(IYY-IYPOS).NE.0) THEN
+          CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
 C          Update the mouse position variables
-&DOS          IXPOS = IXX
-&DOS          IYPOS = IYY
-&DOS          CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
-&DOS        ENDIF
-&DOSC DO WE NEED TO CHANGE THE CURSOR ?
-&DOS        IF (ABS(IXX-IXINIT).LT.4.AND.ABS(IYY-IYINIT).LT.4) THEN
-&DOS          IF (LCROSS) THEN
-&DOS            call SetGraphicsCursor(3)
-&DOS            LCROSS = .FALSE.
-&DOS          ENDIF
-&DOS        ELSE IF (.NOT.LCROSS) THEN
-&DOS            call SetGraphicsCursor(2)
-&DOS            LCROSS = .TRUE.
-&DOS        ENDIF
-&DOS      ENDIF
-&DOS      GOTO 30
+          IXPOS = IXX
+          IYPOS = IYY
+          CALL DRAW_LINE@(IXOLD,IYOLD,IXPOS,IYPOS,ICOL)
+        ENDIF
+C DO WE NEED TO CHANGE THE CURSOR ?
+        IF (ABS(IXX-IXINIT).LT.4.AND.ABS(IYY-IYINIT).LT.4) THEN
+          IF (LCROSS) THEN
+            call SetGraphicsCursor(3)
+            LCROSS = .FALSE.
+          ENDIF
+        ELSE IF (.NOT.LCROSS) THEN
+            call SetGraphicsCursor(2)
+            LCROSS = .TRUE.
+        ENDIF
+      ENDIF
+      GOTO 30
 
-&&&GILGIDWXS      INTEGER IX(N),IY(N)
-&&&GILGIDWXS      INTEGER IXPOS,IYPOS
-&&&GILGIDWXS      INTEGER IPPOS
-&&&GILGIDWXS      CHARACTER CLINE*80
-&&&GILGIDWXS      IUNIT = 5
-&&&GILGIDWXS      IPPOS = 0
-&&&GILGIDWXS      CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=YES',0)
-&&&GILGIDWXS100   CONTINUE   ! NOW BEGIN TO LOOP
-&&&GILGIDWXS      ISTAT = KRDLIN ( IUNIT, CLINE, LENUSE )
-&&&GILGIDWXS      IF (CLINE(1:6).NE.'LCLICK') THEN
-&&&GILGIDWXS        IF (CLINE(1:6).EQ.'CLOSED') THEN  !Closed the polygon.
-&&&GILGIDWXS          IPPOS = IPPOS + 1
-&&&GILGIDWXS          IX(IPPOS) = IX(1)
-&&&GILGIDWXS          IY(IPPOS) = IY(1)
-&&&GILGIDWXS          RETURN
-&&&GILGIDWXS        ELSE               !Cancelled the polygon.
-&&&GILGIDWXS          CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=NO',0)
-&&&GILGIDWXS          IPPOS = 0
-&&&GILGIDWXS          RETURN
-&&&GILGIDWXS        ENDIF
-&&&GILGIDWXS      ELSE                   !Get some coordinates.
-&&&GILGIDWXS            READ (CLINE(7:),*)IXPOS, IYPOS
-&&&GILGIDWXS            IPPOS = IPPOS + 1
-&&&GILGIDWXS            IX(IPPOS) = IXPOS
-&&&GILGIDWXS            IY(IPPOS) = IYPOS
-&&&GILGIDWXS      ENDIF
-&&&GILGIDWXS      GOTO 100
+#endif
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      INTEGER IX(N),IY(N)
+      INTEGER IXPOS,IYPOS
+      INTEGER IPPOS
+      CHARACTER CLINE*80
+      IUNIT = 5
+      IPPOS = 0
+      CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=YES',0)
+100   CONTINUE   ! NOW BEGIN TO LOOP
+      ISTAT = KRDLIN ( IUNIT, CLINE, LENUSE )
+      IF (CLINE(1:6).NE.'LCLICK') THEN
+        IF (CLINE(1:6).EQ.'CLOSED') THEN  !Closed the polygon.
+          IPPOS = IPPOS + 1
+          IX(IPPOS) = IX(1)
+          IY(IPPOS) = IY(1)
+          RETURN
+        ELSE               !Cancelled the polygon.
+          CALL ZMORE('^^CO SET _CAMERONVIEW GETAREA=NO',0)
+          IPPOS = 0
+          RETURN
+        ENDIF
+      ELSE                   !Get some coordinates.
+            READ (CLINE(7:),*)IXPOS, IYPOS
+            IPPOS = IPPOS + 1
+            IX(IPPOS) = IXPOS
+            IY(IPPOS) = IYPOS
+      ENDIF
+      GOTO 100
+#endif
       END
 
-&&&GILGIDWXS      SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTLINE (JX1, JY1, JX2, JY2)
-&GID          !DEC$ ATTRIBUTES C :: fastline
-&GID          !DEC$ ATTRIBUTES VALUE :: JX1
-&GID          !DEC$ ATTRIBUTES VALUE :: JY1
-&GID          !DEC$ ATTRIBUTES VALUE :: JX2
-&GID          !DEC$ ATTRIBUTES VALUE :: JY2
-&GID          INTEGER JX1, JY1, JX2, JY2
-&GID          END SUBROUTINE FASTLINE
-&GID      END INTERFACE
-&&GILGID      INTEGER IX1, IX2, IY1, IY2
-&WXS      INTEGER IX1, IX2, IY1, IY2
-&GIL      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
-&WXS      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
-&GID      CALL FASTLINE(IX1, IY1, IX2, IY2)
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      RETURN
-&WXS      END
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTLINE (JX1, JY1, JX2, JY2)
+          !DEC$ ATTRIBUTES C :: fastline
+          !DEC$ ATTRIBUTES VALUE :: JX1
+          !DEC$ ATTRIBUTES VALUE :: JY1
+          !DEC$ ATTRIBUTES VALUE :: JX2
+          !DEC$ ATTRIBUTES VALUE :: JY2
+          INTEGER JX1, JY1, JX2, JY2
+          END SUBROUTINE FASTLINE
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IX1, IX2, IY1, IY2
+#endif
+#if defined(_WXS_) 
+      INTEGER IX1, IX2, IY1, IY2
+#endif
+#if defined(_GIL_) 
+      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
+#endif
+#if defined(_WXS_) 
+      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
+#endif
+#if defined(_GID_) 
+      CALL FASTLINE(IX1, IY1, IX2, IY2)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTFEL(IX, IY, IW, IH)
-&WXS      SUBROUTINE FSTFEL(IX, IY, IW, IH)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTFELLI (JX, JY, JW, JH)
-&GID          !DEC$ ATTRIBUTES C :: fastfelli
-&GID          !DEC$ ATTRIBUTES VALUE :: JX
-&GID          !DEC$ ATTRIBUTES VALUE :: JY
-&GID          !DEC$ ATTRIBUTES VALUE :: JW
-&GID          !DEC$ ATTRIBUTES VALUE :: JH
-&GID          INTEGER JX, JY, JW, JH
-&GID          END SUBROUTINE FASTFELLI
-&GID      END INTERFACE
-&&GILGID      INTEGER IX, IY, IW, IH
-&WXS      INTEGER IX, IY, IW, IH
-&GIL      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-&WXS      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-&GID      CALL FASTFELLI(IX, IY, IW, IH)
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTFEL(IX, IY, IW, IH)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTFEL(IX, IY, IW, IH)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTFELLI (JX, JY, JW, JH)
+          !DEC$ ATTRIBUTES C :: fastfelli
+          !DEC$ ATTRIBUTES VALUE :: JX
+          !DEC$ ATTRIBUTES VALUE :: JY
+          !DEC$ ATTRIBUTES VALUE :: JW
+          !DEC$ ATTRIBUTES VALUE :: JH
+          INTEGER JX, JY, JW, JH
+          END SUBROUTINE FASTFELLI
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IX, IY, IW, IH
+#endif
+#if defined(_WXS_) 
+      INTEGER IX, IY, IW, IH
+#endif
+#if defined(_GIL_) 
+      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+#endif
+#if defined(_WXS_) 
+      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+#endif
+#if defined(_GID_) 
+      CALL FASTFELLI(IX, IY, IW, IH)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTEEL(IX, IY, IW, IH)
-&WXS      SUBROUTINE FSTEEL(IX, IY, IW, IH)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTEELLI (JX, JY, JW, JH)
-&GID          !DEC$ ATTRIBUTES C :: fasteelli
-&GID          !DEC$ ATTRIBUTES VALUE :: JX
-&GID          !DEC$ ATTRIBUTES VALUE :: JY
-&GID          !DEC$ ATTRIBUTES VALUE :: JW
-&GID          !DEC$ ATTRIBUTES VALUE :: JH
-&GID          INTEGER JX, JY, JW, JH
-&GID          END SUBROUTINE FASTEELLI
-&GID      END INTERFACE
-&&GILGID      INTEGER IX, IY, IW, IH
-&WXS      INTEGER IX, IY, IW, IH
-&GID      CALL FASTEELLI(IX, IY, IW, IH)
-&GIL      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTEEL(IX, IY, IW, IH)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTEEL(IX, IY, IW, IH)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTEELLI (JX, JY, JW, JH)
+          !DEC$ ATTRIBUTES C :: fasteelli
+          !DEC$ ATTRIBUTES VALUE :: JX
+          !DEC$ ATTRIBUTES VALUE :: JY
+          !DEC$ ATTRIBUTES VALUE :: JW
+          !DEC$ ATTRIBUTES VALUE :: JH
+          INTEGER JX, JY, JW, JH
+          END SUBROUTINE FASTEELLI
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IX, IY, IW, IH
+#endif
+#if defined(_WXS_) 
+      INTEGER IX, IY, IW, IH
+#endif
+#if defined(_GID_) 
+      CALL FASTEELLI(IX, IY, IW, IH)
+#endif
+#if defined(_GIL_) 
+      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTFPO(NV, IPTS)
-&WXS      SUBROUTINE FSTFPO(NV, IPTS)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTFPOLY (NV, IPTS)
-&GID          !DEC$ ATTRIBUTES C :: fastfpoly
-&GID          !DEC$ ATTRIBUTES VALUE :: NV
-&GID          !DEC$ ATTRIBUTES REFERENCE :: IPTS
-&GID          INTEGER NV, IPTS(2000)
-&GID          END SUBROUTINE FASTFPOLY
-&GID      END INTERFACE
-&&GILGID      INTEGER NV, IPTS(2000)
-&WXS      INTEGER NV, IPTS(2000)
-&GID      CALL FASTFPOLY(NV, IPTS)
-&GIL      CALL FASTFPOLY(%VAL(NV), IPTS)
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTFPOLY(%VAL(NV), IPTS)
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTFPO(NV, IPTS)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTFPO(NV, IPTS)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTFPOLY (NV, IPTS)
+          !DEC$ ATTRIBUTES C :: fastfpoly
+          !DEC$ ATTRIBUTES VALUE :: NV
+          !DEC$ ATTRIBUTES REFERENCE :: IPTS
+          INTEGER NV, IPTS(2000)
+          END SUBROUTINE FASTFPOLY
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER NV, IPTS(2000)
+#endif
+#if defined(_WXS_) 
+      INTEGER NV, IPTS(2000)
+#endif
+#if defined(_GID_) 
+      CALL FASTFPOLY(NV, IPTS)
+#endif
+#if defined(_GIL_) 
+      CALL FASTFPOLY(%VAL(NV), IPTS)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      CALL FASTFPOLY(%VAL(NV), IPTS)
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTEPO(NV, IPTS)
-&WXS      SUBROUTINE FSTEPO(NV, IPTS)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTEPOLY (NV, IPTS)
-&GID          !DEC$ ATTRIBUTES C :: fastepoly
-&GID          !DEC$ ATTRIBUTES VALUE :: NV
-&GID          !DEC$ ATTRIBUTES REFERENCE :: IPTS
-&GID          INTEGER NV, IPTS(2000)
-&GID          END SUBROUTINE FASTEPOLY
-&GID      END INTERFACE
-&&GILGID      INTEGER NV, IPTS(2000)
-&WXS      INTEGER NV, IPTS(2000)
-&GIL      CALL FASTEPOLY(%VAL(NV), IPTS)
-&WXS      CALL FASTEPOLY(%VAL(NV), IPTS)
-&GID      CALL FASTEPOLY(NV, IPTS)
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTEPO(NV, IPTS)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTEPO(NV, IPTS)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTEPOLY (NV, IPTS)
+          !DEC$ ATTRIBUTES C :: fastepoly
+          !DEC$ ATTRIBUTES VALUE :: NV
+          !DEC$ ATTRIBUTES REFERENCE :: IPTS
+          INTEGER NV, IPTS(2000)
+          END SUBROUTINE FASTEPOLY
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER NV, IPTS(2000)
+#endif
+#if defined(_WXS_) 
+      INTEGER NV, IPTS(2000)
+#endif
+#if defined(_GIL_) 
+      CALL FASTEPOLY(%VAL(NV), IPTS)
+#endif
+#if defined(_WXS_) 
+      CALL FASTEPOLY(%VAL(NV), IPTS)
+#endif
+#if defined(_GID_) 
+      CALL FASTEPOLY(NV, IPTS)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
-&WXS      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTTEXT (JX, JY, CALINE, JFS)
-&GID          !DEC$ ATTRIBUTES C :: fasttext
-&GID          !DEC$ ATTRIBUTES VALUE :: JX
-&GID          !DEC$ ATTRIBUTES VALUE :: JY
-&GID          !DEC$ ATTRIBUTES VALUE :: JFS
-&GID          !DEC$ ATTRIBUTES REFERENCE :: CALINE
-&GID          INTEGER JX,JY, JFS
-&GID          CHARACTER CALINE
-&GID          END SUBROUTINE FASTTEXT
-&GID      END INTERFACE
-&&GILGID      INTEGER IX, IY, IFSIZE
-&&GILGID      CHARACTER*(*) CTEXT
-&&GILGID      CHARACTER*80  NTEXT
-&&GILGID      NTEXT = CTEXT
-&GIL      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
-&WXS      INTEGER IX, IY, IFSIZE
-&WXS      CHARACTER*(*) CTEXT
-&WXS      CHARACTER*80  NTEXT
-&WXS      NTEXT = CTEXT
-&WXS      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
-&GID      CALL FASTTEXT(IX, IY, NTEXT, IFSIZE )
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTTEXT (JX, JY, CALINE, JFS)
+          !DEC$ ATTRIBUTES C :: fasttext
+          !DEC$ ATTRIBUTES VALUE :: JX
+          !DEC$ ATTRIBUTES VALUE :: JY
+          !DEC$ ATTRIBUTES VALUE :: JFS
+          !DEC$ ATTRIBUTES REFERENCE :: CALINE
+          INTEGER JX,JY, JFS
+          CHARACTER CALINE
+          END SUBROUTINE FASTTEXT
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IX, IY, IFSIZE
+      CHARACTER*(*) CTEXT
+      CHARACTER*80  NTEXT
+      NTEXT = CTEXT
+#endif
+#if defined(_GIL_) 
+      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
+#endif
+#if defined(_WXS_) 
+      INTEGER IX, IY, IFSIZE
+      CHARACTER*(*) CTEXT
+      CHARACTER*80  NTEXT
+      NTEXT = CTEXT
+      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
+#endif
+#if defined(_GID_) 
+      CALL FASTTEXT(IX, IY, NTEXT, IFSIZE )
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTCOL(IR, IG, IB)
-&WXS      SUBROUTINE FSTCOL(IR, IG, IB)
-&GID      INTERFACE
-&GID          SUBROUTINE FASTCOLOUR ( JR, JG, JB )
-&GID          !DEC$ ATTRIBUTES C :: fastcolour
-&GID          !DEC$ ATTRIBUTES VALUE :: JR
-&GID          !DEC$ ATTRIBUTES VALUE :: JG
-&GID          !DEC$ ATTRIBUTES VALUE :: JB
-&GID          INTEGER JR, JG, JB
-&GID          END SUBROUTINE FASTCOLOUR
-&GID      END INTERFACE
-&&GILGID      INTEGER IR, IG, IB
-&WXS      INTEGER IR, IG, IB
-&GIL      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
-&WXS      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
-&GID      CALL FASTCOLOUR(IR, IG, IB)
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTCOL(IR, IG, IB)
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTCOL(IR, IG, IB)
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTCOLOUR ( JR, JG, JB )
+          !DEC$ ATTRIBUTES C :: fastcolour
+          !DEC$ ATTRIBUTES VALUE :: JR
+          !DEC$ ATTRIBUTES VALUE :: JG
+          !DEC$ ATTRIBUTES VALUE :: JB
+          INTEGER JR, JG, JB
+          END SUBROUTINE FASTCOLOUR
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      INTEGER IR, IG, IB
+#endif
+#if defined(_WXS_) 
+      INTEGER IR, IG, IB
+#endif
+#if defined(_GIL_) 
+      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
+#endif
+#if defined(_WXS_) 
+      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
+#endif
+#if defined(_GID_) 
+      CALL FASTCOLOUR(IR, IG, IB)
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      RETURN
+      END
 
-&&GILGID      SUBROUTINE FSTCLR()
-&WXS      SUBROUTINE FSTCLR()
-&GID      INTERFACE
-&GID          SUBROUTINE FASTCLEAR ()
-&GID          !DEC$ ATTRIBUTES C :: fastclear
-&GID          END SUBROUTINE FASTCLEAR
-&GID      END INTERFACE
-&&GILGID      CALL FASTCLEAR()
-&&GILGID      RETURN
-&&GILGID      END
-&WXS      CALL FASTCLEAR()
-&WXS      RETURN
-&WXS      END
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      SUBROUTINE FSTCLR()
+#endif
+#if defined(_WXS_) 
+      SUBROUTINE FSTCLR()
+#endif
+#if defined(_GID_) 
+      INTERFACE
+          SUBROUTINE FASTCLEAR ()
+          !DEC$ ATTRIBUTES C :: fastclear
+          END SUBROUTINE FASTCLEAR
+      END INTERFACE
+#endif
+#if defined(_GID_) || defined(_GIL_) 
+      CALL FASTCLEAR()
+      RETURN
+      END
+#endif
+#if defined(_WXS_) 
+      CALL FASTCLEAR()
+      RETURN
+      END
 
 c&&GILGID      SUBROUTINE FSTSHW()
 c&WXS      SUBROUTINE FSTSHW()
@@ -922,10 +1223,13 @@ c&WXS      RETURN
 c&WXS      END
 
 
+#endif
       SUBROUTINE ZMORE1(text,iarg)
 C ---- updates text message in status bar - iarg is not used but kept
 C      for compatibility with CAMERON function ZMORE
-&DOS\CAMWIN
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+#endif
       character*(*) text
 C&&GILWXS      character*70 text
       CHARACTER*80 ntext
@@ -937,43 +1241,51 @@ c      WRITE(99,'(2A)')'zmore1n: ',ntext
 C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
 C&DOS      call window_update@(Status$Text)
-&&&GILGIDWXS      CALL XCTRIM(NTEXT,ITL)
-&&&GILGIDWXS      IF ( ITL .LE. 2 ) RETURN
-&&&GILGIDWXS      ITL = MIN ( ITL, 70 )
-&&&GILGIDWXS      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
-&&&GILGIDWXS      CALL ZMORE('^^WI '''//NTEXT(1:ITL)//'''',0)
-&&&GILGIDWXS      CALL ZMORE('^^CR',0)
+#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) 
+      CALL XCTRIM(NTEXT,ITL)
+      IF ( ITL .LE. 2 ) RETURN
+      ITL = MIN ( ITL, 70 )
+      CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
+      CALL ZMORE('^^WI '''//NTEXT(1:ITL)//'''',0)
+      CALL ZMORE('^^CR',0)
+#endif
       end
 
 CODE FOR ZGTKY1
       SUBROUTINE ZGTKY1 (KK)
       INTEGER KK
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
-&DOS      integer*2 kkk,get_wkey1@
-&DOS      kkk=0
-&DOS      kkk = get_wkey1@()
-&DOS      KK = KKK
+#if defined(_DOS_) 
+      integer*2 kkk,get_wkey1@
+      kkk=0
+      kkk = get_wkey1@()
+      KK = KKK
 CDJWNOV98
-&DOS      IF (KK .EQ. ICRET) CALL ZMORE1(' ',0)
-#DOS      KK = 0
-#DOS      CALL ZMORE('Error ZGTKY1 called',0)
+      IF (KK .EQ. ICRET) CALL ZMORE1(' ',0)
+#else
+      KK = 0
+#endif
+#if !defined(_DOS_) 
+      CALL ZMORE('Error ZGTKY1 called',0)
+#endif
       END
  
+

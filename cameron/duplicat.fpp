@@ -1,3 +1,14 @@
+
+C This whole file duplicates routines from the crystals sources, so it
+C is only required if Cameron is compiled as a separate application. (Rarely)
+C
+C From time to time it would be worth checking that these routines have
+C not been replaced or fixed in the crystals sources...
+C
+C e.g. the NAG routines are gone!
+C
+
+#if defined(_DOS_)
 CRYSTALS CODE FOR DUPLICAT.FOR                                                  
 CODE FOR F01AJF
       SUBROUTINE F01AJF(N, ATOL, A, IA, D, E, Z, IZ)
@@ -459,23 +470,23 @@ C LENNAM USEFUL LENGTH OF FILENAME
 C
 C      IMPLICIT NONE
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       INTEGER MAXLVL
       PARAMETER (MAXLVL=30)
@@ -660,23 +671,23 @@ C THIS IS ANOTHER DUMMY ROUTINE - THE PROPER ONE WILL BE LINKED
 C IN WITH CRYSTALS IF REQUIRED.
       SUBROUTINE XERHND (I)
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       WRITE (ISTOUT,*) 'Error - data files not found. Cannot continue.'
       WRITE (ISTOUT,*) 'Check the existence of the pointer CRYSDIR'
@@ -728,3 +739,4 @@ C -- SEARCH FOR LOWERCASE CHARACTERS AND CONVERT TO UPPERCASE
       END
 C
  
+#endif

@@ -4,60 +4,62 @@ CODE FOR ZCAMER
 C      SUBROUTINE ZCAMER ( ITYPE , RCRYST, NSTORE , IDEVIC)
       SUBROUTINE ZCAMER ( ITYPE , ICAMS, ICAMF, IDEVIC)
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-\CAMIMN
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'CAMIMN.INC'
 C      REAL RCRYST(NSTORE)
 CDJW99 this upsets FTN95      EXTERNAL ZBLOCK
       LOGICAL LEXIST
-&DOS\CAMWIN
-&DOS      character*80 caption
-&DOSC ---- some initialisation
-&DOS      ikeym(1)=0
-&DOS      ikeym(2)=0
-&DOS      ikeym(3)=0
-&DOS      ikeym(4)=0
-&DOS      font=1
-&DOS      italic=0.
-&DOS      rotation=0.
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+      character*80 caption
+C ---- some initialisation
+      ikeym(1)=0
+      ikeym(2)=0
+      ikeym(3)=0
+      ikeym(4)=0
+      font=1
+      italic=0.
+      rotation=0.
 C Not used anymore.
 C&DOS      Status$Text=' '
-&DOS      Cursor$Number=1
-&DOS      call GetWindowSize(xwin,ywin)
-&DOS      size=0.9*float(xwin)/640.
-&DOS      iy=ywin-65
-&DOSC ---- CAMERON still functions internally in the VGA graphics
-&DOSC      space of 640x480. scale_X/scale_Y are the scaling values
-&DOSC      corresponding to the current Windows resolution. The
-&DOSC      parameters for all graphics primitive are scaled up when
-&DOSC      drawing, conversely the reported coordinates from mouse
-&DOSC      clicks are scaled down when returned to program. This
-&DOSC      provides a simple but effective way of coping with
-&DOSC      different screen resolutions. The scaling is done in the
-&DOSC      routines in SPECIFIC.FOR
-&DOS      scale_X=float(iy)/480.
-&DOS      scale_Y=scale_X
-&DOS      ix=nint(640.0*scale_X)
-&DOSC ---- open I/O and graphics windows
-&DOS      caption='CAMERON Dialog Window'
-&DOSC      call CreateIOWindow(caption,DialogHandle)
-&DOS      call CreateGraphicsWindow(ix,iy)
+      Cursor$Number=1
+      call GetWindowSize(xwin,ywin)
+      size=0.9*float(xwin)/640.
+      iy=ywin-65
+C ---- CAMERON still functions internally in the VGA graphics
+C      space of 640x480. scale_X/scale_Y are the scaling values
+C      corresponding to the current Windows resolution. The
+C      parameters for all graphics primitive are scaled up when
+C      drawing, conversely the reported coordinates from mouse
+C      clicks are scaled down when returned to program. This
+C      provides a simple but effective way of coping with
+C      different screen resolutions. The scaling is done in the
+C      routines in SPECIFIC.FOR
+      scale_X=float(iy)/480.
+      scale_Y=scale_X
+      ix=nint(640.0*scale_X)
+C ---- open I/O and graphics windows
+      caption='CAMERON Dialog Window'
+C      call CreateIOWindow(caption,DialogHandle)
+      call CreateGraphicsWindow(ix,iy)
 
+#endif
       LINPMN = .FALSE.     
       ICAMER = ITYPE
       IF (ICAMER.LT.2) THEN
@@ -141,23 +143,23 @@ CODE FOR ZCANAL
 C THIS IS THE COMMAND ANALYSIS
       SUBROUTINE ZCANAL
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
 C IPROC = 1 - process so far
 C       = 0 - abandon line
@@ -513,25 +515,27 @@ C     IPROC is passed in so that its value can be altered to zero
 C     this causes all commands on the line to be abandoned after an
 C     error.
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 C
-&DOS\CAMWIN
+#if defined(_DOS_) 
+      INCLUDE 'CAMWIN.INC'
+#endif
       LOGICAL LFILES
       IF (ICNT.GE.ICPOS) RETURN
 10    ICC = INFCMD(ICNT)/100
@@ -634,8 +638,10 @@ C END WILL RETURN TO CRYSTALS
         ID = 920
         CALL ZCMD9(ID)
         ICAMER = -1
-&DOS      GraphicsHandle = 0
-&DOS      call window_update@(GraphicsHandle)
+#if defined(_DOS_) 
+      GraphicsHandle = 0
+      call window_update@(GraphicsHandle)
+#endif
         RETURN
       ELSE
         IF (IDEV.NE.-1) THEN
@@ -681,24 +687,24 @@ C LIST12
 CODE FOR ZCONTR
       SUBROUTINE ZCONTR
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
-\CAMIMN
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'CAMIMN.INC'
 C
 CC THIS ACTS UPON THE VALUE OF IMENCN
 CC = 0 keyboard input
@@ -751,7 +757,9 @@ C   Clear the status line
 C    Clear buffer
                CHRBUF = ' '
 C    Clear the input box.
-#GID               IF(.NOT.LCLOSE)CALL ZMNINP
+#if !defined(_GID_) 
+               IF(.NOT.LCLOSE)CALL ZMNINP
+#endif
             ENDIF
       ENDIF
 C
@@ -783,23 +791,23 @@ C This routine initialises the variables to their starting values.
 C NOTE THAT SOME OF THE COMMON BLOCKS ARE INITIALISED USING A BLOCK DATA
 C ROUTINE.
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       LOGICAL LFILES
 C OPEN THE SCRATCH FILE FOR THE LOG INFORMATION
@@ -1048,23 +1056,23 @@ CODE FOR ZTITLE
       SUBROUTINE ZTITLE
 C THIS LOADS IN AND OUTPUTS THE TITLE SCREEN
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       CHARACTER*80 CC
       LOGICAL LEXIST,LFILES
@@ -1113,23 +1121,23 @@ CODE FOR ZOBEY
       SUBROUTINE ZOBEY
 C This routine reads the OBEYed file and sends it to the XCANAL routine
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
       CHARACTER*(ICLEN) CTEMP
       CHARACTER*20 CC
@@ -1144,11 +1152,24 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
             II=LMOUSE(CC,MXPOS,MYPOS)
             CALL XCTRIM(CC,IIILEN)
             IF(IIILEN.GT.1) THEN
-&&GILGID              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
-&&GILGID     1 CC(1:IIILEN) // '''',0)
-&WXS              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
-&WXS     1 CC(1:IIILEN) // '''',0)
-&DOS              CALL ZMORE('Append atom '//CC(1:IIILEN),0)
+
+#if defined(_GID_) || defined(_GIL_)
+
+              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
+     1 CC(1:IIILEN) // '''',0)
+
+#endif
+
+#if defined(_WXS_)
+
+              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
+     1 CC(1:IIILEN) // '''',0)
+
+#endif
+
+#if defined(_DOS_)
+              CALL ZMORE('Append atom '//CC(1:IIILEN),0)
+#endif
             ENDIF
             LLINE(ILINE)=' '
             CTEMP=' '
@@ -1204,23 +1225,23 @@ C
 CODE FOR ZSMALL
       SUBROUTINE ZSMALL ( RCRYST, NSTORE, IDEVIC )
       
-\CAMPAR
-\CAMCOM
-\CAMANA
-\CAMDAT
-\CAMCAL
-\CAMMSE
-\CAMMEN
-\CAMCHR
-\CAMGRP
-\CAMCOL
-\CAMFLG
-\CAMSHR
-\CAMVER
-\CAMKEY
-\CAMBTN
-\CAMBLK
-\XIOBUF
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMCOM.INC'
+      INCLUDE 'CAMANA.INC'
+      INCLUDE 'CAMDAT.INC'
+      INCLUDE 'CAMCAL.INC'
+      INCLUDE 'CAMMSE.INC'
+      INCLUDE 'CAMMEN.INC'
+      INCLUDE 'CAMCHR.INC'
+      INCLUDE 'CAMGRP.INC'
+      INCLUDE 'CAMCOL.INC'
+      INCLUDE 'CAMFLG.INC'
+      INCLUDE 'CAMSHR.INC'
+      INCLUDE 'CAMVER.INC'
+      INCLUDE 'CAMKEY.INC'
+      INCLUDE 'CAMBTN.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
 
 C RCRYST IS THE STORE ARRAY PASSED DOWN FROM CRYSTALS.
       REAL RCRYST (NSTORE)
@@ -1341,3 +1362,4 @@ C      CALL ZGINPT
       END
  
  
+
