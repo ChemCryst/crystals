@@ -435,7 +435,7 @@ CcPoint CxChart::LogicalToDevice(CcPoint point)
 void CxChart::Display()
 {
 #ifdef __WINDOWS__
-      InvalidateRect(NULL,FALSE);
+      InvalidateRect(NULL,false);
 //      OnPaint();
 #endif
 #ifdef __LINUX__
@@ -631,24 +631,26 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
             memDC.Polygon( (LPPOINT) points, nVertices );
             memDC.SelectObject(oldBrush);
             memDC.SelectObject(oldpen);
-            delete points;
+            delete [] points;
 	}
       else
       {
 //NB: If the polygon isn't filled, then it shouldn't closed.
-            CPen   pen(PS_SOLID,1,mfgcolour);
-            CPen   *oldpen = memDC.SelectObject(&pen);
-            CBrush *oldBrush = (CBrush*)memDC.SelectStockObject(NULL_BRUSH);
+        CPen   pen(PS_SOLID,1,mfgcolour);
+        CPen   *oldpen = memDC.SelectObject(&pen);
+        CBrush *oldBrush = (CBrush*)memDC.SelectStockObject(NULL_BRUSH);
 
-            CcPoint*           points = new CcPoint[nVertices];
+        CcPoint*           points = new CcPoint[nVertices];
 		for ( int j = 0; j < nVertices*2 ; j+=2 )
 		{
 			points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
 		}
-            memDC.Polyline( (LPPOINT) points, nVertices );
+        
+		memDC.Polyline( (LPPOINT) points, nVertices );
 
-            memDC.SelectObject(oldBrush);
-            memDC.SelectObject(oldpen);
+        memDC.SelectObject(oldBrush);
+        memDC.SelectObject(oldpen);
+        delete [] points;
       }
 
       memDC.SelectObject(oldMemDCBitmap);
@@ -666,7 +668,7 @@ void CxChart::DrawPoly(int nVertices, int * vertices, Boolean fill)
             points[j/2] = DeviceToLogical( *(vertices+j), *(vertices+j+1) );
       }
       memDC.DrawPolygon(nVertices, (wxPoint*) points );
-      delete points;
+      delete [] points;
       memDC.SetPen( wxNullPen );
       memDC.SetBrush( wxNullBrush );
       memDC.SelectObject(wxNullBitmap);
@@ -759,7 +761,7 @@ void CxChart::OnLButtonUp( wxMouseEvent & event )
 		SetCursor(arrow);
 		((CrChart*)mWidget)->PolygonClosed();
 //            OnPaint();
-            InvalidateRect(NULL,FALSE);
+            InvalidateRect(NULL,false);
 #endif
 #ifdef __LINUX__
             wxCursor arrow ( wxCURSOR_ARROW );
