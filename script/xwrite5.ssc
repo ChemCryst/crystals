@@ -5,12 +5,13 @@
 %%
 %%   Local variables:
 %  VARIABLE INTEGER REFLAG HMODE ISER
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED
 %  VARIABLE CHARACTER CTYPE
 %  VARIABLE REAL SERIAL HFIRST CENTRO
+%  EVALUATE TWINNED = FALSE
 %%
 %%   Variables set by ASSESS 5
-%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT
+%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT DOTWIN
 %  VARIABLE INTEGER ADP
 %%
 %%   Variables set by or needed for XGETINFO/XPUTINFO
@@ -25,19 +26,37 @@
 %% XGuideR sets DOEXTNC to indicate that extinction should be refined.
 %% Assess5 resets DOEXTNC so that it indicates if ext is being refined.
 %% Therefore store it and if TRUE, restore it after the assess5 call.
+%%
 %  IF ( DOEXTNC ) THEN
 %    EVALUATE DKEXT = TRUE
 %  END IF
+%%
 %  COPY '#SCRIPT ASSESS5'
 %  IF ( DOSORT ) THEN
 {S * Re-ordering list 5, so that H atoms are at the end
 %    COPY '#SCRIPT HLAST'
 %    COPY '#SCRIPT ASSESS5'
 %  END IF
-%
+%%
 %  IF ( DKEXT ) THEN
 %    EVALUATE DOEXTNC = TRUE
 %  END IF
+%%
+%
+%  BLOCK
+%    VARIABLE INTEGER ITMP
+%    IF ( EXISTS 13 .NE. 0 ) THEN
+%      COPY '#GENERALEDIT 13'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
+%      IF ( ITMP .GE. 0 ) THEN
+%        EVALUATE TWINNED = TRUE
+%      ELSE
+%        EVALUATE TWINNED = FALSE
+%      END IF
+%      COPY 'END'
+%    END IF
+%  END BLOCK
 %%
 %  COPY '#SCRIPT XGETINFO'
 %%
@@ -81,7 +100,7 @@
 %% ^^WI           '&Override sticky settings for atoms' STATE=OFF
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
-^^WI   @ 2,1 GRID HR NROWS=5 NCOLS=1 OUTLINE='Hydrogens'
+^^WI   @ 2,1 GRID HR NROWS=6 NCOLS=1 OUTLINE='Hydrogens'
 ^^WI   {
 ^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix H atoms'
 % IF HRTYP .LE. 0 THEN
@@ -101,13 +120,19 @@
 % END IF
 ^^WI   }
 % END IF
-^^WI   @ 3,1 GRID XP NROWS=4 NCOLS=1 OUTLINE='Other parameters'
+^^WI   @ 3,1 GRID XP NROWS=6 NCOLS=1 OUTLINE='Other parameters'
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF
 % IF ( CENTRO .GT. 0.9 ) THEN
 ^^WI           DISABLED=YES
 % END IF
 ^^WI    @ 3,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF
+^^WI    @ 5,1 CHECKBOX TWINS 'Twin element scales (2 component)'
+% IF ( DOTWIN ) THEN
+^^WI     STATE = ON
+% ELSE
+^^WI     STATE = OFF
+% END IF
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,4 GRID R NROWS=3 NCOLS=1
@@ -143,6 +168,9 @@
 %  END IF
 %  IF ( DOEXTNC .EQ. TRUE ) THEN
 ^^CO SET EXTNC STATE=ON
+%  END IF
+%  IF ( TWINNED .EQ. FALSE ) THEN
+^^CO SET TWINS DISABLED=YES
 %  END IF
 %%
 %% Get OK and Cancel button press:
@@ -226,6 +254,15 @@
 %  IF ( VALUE .EQ. 1 ) THEN
 %    EVALUATE DOEXTNC = TRUE
 %  END IF
+^^?? TWINS STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%    IF ( DOTWIN .EQ. FALSE ) THEN
+%      COPY '#SCRIPT ADDTWIN'
+%      EVALUATE DOTWIN = TRUE
+%    END IF
+%  END IF
 %%
 %%
 ^^CO DISPOSE XRSETUP
@@ -307,15 +344,19 @@
 %  ELSE
 %    COPY '#LIST 12'
 %    CASE SETADP
-%      COPY "FULL X'S"
-%      COPY "FULL X'S, U[ISO]"
-%      COPY "FULL X'S, U'S"
+%      COPY "BLOCK SCALE X'S"
+%      COPY "BLOCK SCALE X'S, U[ISO]"
+%      COPY "BLOCK SCALE X'S, U'S"
 %    END CASE
 %    IF ( DOEXTNC ) THEN
 %      COPY 'CONT EXTPARAM'
 %    END IF
 %    IF ( DOFLACK ) THEN
 %      COPY 'CONT ENANTIO'
+%    END IF
+%    IF ( DOTWIN ) THEN
+%      COPY 'EQUIVALENCE ELEMENT SCALES'
+%      COPY 'WEIGHT -1 ELEMENT(1)'
 %    END IF
 %    IF ( HMODE .EQ. 1 ) THEN
 %      COPY '#USE RIDEDAT.12'
