@@ -15,16 +15,11 @@
 % END IF
 {R Done.
 
-
 {S * Recovering backed up reflection list from 'pretwin6.dat'.
 % IF FILEEXISTS 'pretwin6.dat' .EQ. TRUE THEN
 %    COPY '#USE pretwin6.dat'
 {R Done.
 % ELSE
-
-
-
-
 
 
 {E
@@ -40,8 +35,6 @@
 {R READ TYPE=COPY
 {R END
 {I Your original observations should be back in the /FO/ column.
-
-
 
 
 
@@ -72,5 +65,20 @@
 %   COPY 'END'
 %  END BLOCK
 {R Done.
+
+{S * Removing twin flag from list 13.
+%  VARIABLE INTEGER TWIN
+%  EVALUATE TWIN = - 1
+%  BLOCK
+%   ON EDITERROR TERMINATE
+%   COPY '#GENERALEDIT 13'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'LOCATE RECORD=101'
+%   COPY 'TRANSFER TO OFFSET=1 FROM TWIN'
+%   COPY 'WRITE'
+%   COPY 'END'
+%  END BLOCK
+{R Done.
+
 %END SCRIPT
 
