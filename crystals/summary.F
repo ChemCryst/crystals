@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.53  2003/12/10 09:12:40  rich
+C CDD: change to summary.src in new XSUM42 code to get it to compile on Linux.
+C
 C Revision 1.52  2003/12/02 11:54:40  rich
 C Code to output summary of LIST 42 figure field. (May produce
 C excessive output for high resolution fields).
@@ -1014,7 +1017,8 @@ CODE FOR XTHETA
       END
 C
 CODE FOR XTHLIM
-      SUBROUTINE XTHLIM (THMIN,THMAX,THMCMP,THBEST,THBCMP,IPLOT,IULN)
+      SUBROUTINE XTHLIM (THMIN,THMAX,THMCMP,THBEST,THBCMP,
+     c                                         IPLOT,IULN,IGLST)
 C
 C -- ROUTINE WORK OUT COMPLETENESS OF DATA
 C
@@ -1359,15 +1363,15 @@ C will not be optimised.
          THBEST = -STORE(L30CF+10)
 
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THBEST, THBCMP, THDUM,THDUM2,-1,IULN)
+     1            THBEST, THBCMP, THDUM,THDUM2,-1,IULN,IGLST)
          STORE(L30CF+11)=THBCMP
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THMAX, THMCMP, THDUM,THDUM2,IPLOT,IULN)
+     1            THMAX, THMCMP, THDUM,THDUM2,IPLOT,IULN,IGLST)
 
       ELSE
 
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THMAX, THMCMP, THBEST,THBCMP,IPLOT,IULN)
+     1            THMAX, THMCMP, THBEST,THBCMP,IPLOT,IULN,IGLST)
          STORE(L30CF+10)=THBEST
          STORE(L30CF+11)=THBCMP
 
@@ -1386,7 +1390,7 @@ C will not be optimised.
 
 CODE FOR XCOMPL
       SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
-     1              THMAX,THMCMP, THBEST,THBCMP, IPLOT, IULN )
+     1              THMAX,THMCMP, THBEST,THBCMP, IPLOT, IULN, IGLST )
 \ISTORE
 \STORE
 \XLST06
@@ -1429,6 +1433,10 @@ c      END DO
       NFOUND = 0
       IMISSI = 0
       
+      IF ( IGLST.GE.1 ) THEN
+        WRITE (CMON,'(A)') '^^WI SET LMISSING ADDTOLIST'
+        CALL XPRVDU(NCVDU,1,0)
+      END IF
 
 C Loop through ALL possible indices:
       DO IL = JNL, JXL
@@ -1482,6 +1490,12 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
                     IF ( IPLOT.GE.0 ) THEN
                       WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA(1)
                     END IF
+                    IF ( IGLST.GE.1 ) THEN
+                      WRITE (CMON,'(A,3I5,F8.3)')
+     c                 '^^WI ',IH,IK,IL,XTHETA(1)
+                      CALL XCREMS(CMON,CMON,LENF)
+                      CALL XPRVDU(NCVDU,1,0)
+                    END IF
                   END IF
                 END IF
               END IF
@@ -1489,6 +1503,12 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
           END DO
         END DO
       END DO
+
+      IF ( IGLST.GE.1 ) THEN
+        WRITE (CMON,'(A/A)') '^^WI NULL','^^CR'
+        CALL XPRVDU(NCVDU,2,0)
+      END IF
+
 
       IF ( IPLOT .GE. 0 ) THEN
         WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.74  2004/02/13 14:51:12  rich
+C Move TMIN calculation to before the place where it is used. Doh.
+C
 C Revision 1.73  2004/02/04 16:58:00  stefan
 C Changes for Mac command line version
 C
@@ -4874,8 +4877,9 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
         END IF
 
         INRIC = 0
+        IGLS  = 0
 
-        CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, INRIC, IULN)
+        CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,INRIC,IULN,IGLS)
 
         IF ( IPUNCH .EQ. 0 ) THEN
            CBUF(1:21)='_diffrn_reflns_theta_'

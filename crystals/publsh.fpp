@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2003/02/14 17:09:02  djw
+C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
+C recine have the parameter ityp06, which corresponds to the types
+C pickedip for lists 6 and 7  from the command file
+C
 C Revision 1.8  2002/11/12 15:14:12  rich
 C Extended plots from #SUM L 6 to include omitted reflections on the Fo vs Fc
 C graph. They appear in blue.
@@ -86,11 +91,12 @@ C
 
 CODE FOR XTHX
       SUBROUTINE XTHX
-      DIMENSION IPROCS(2)
+      DIMENSION IPROCS(3)
       CALL XCSAE
-      I = KRDDPV ( IPROCS , 2 )
+      I = KRDDPV ( IPROCS , 3 )
       IPLOT = IPROCS(1)
       IULN = KTYP06(IPROCS(2))
-      IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT,IULN)
+      IGLST = IPROCS(3)
+      IF (I.GE.0) CALL XTHLIM(RICA,RICB,RICC,RICD,RICE,IPLOT,IULN,IGLST)
       RETURN
       END

@@ -3615,9 +3615,11 @@ CIFOUT             1    0
 THLIM              2    3
    6    4096 CRYSTALSPUBLISH
     1    2   13
-   1.OUTPUT             1    1    0    0
-         3
+   1.OUTPUT             2    1    0    0
+         3    3
     .PLOT               1    0    1    2    0 NO
+     NO             YES
+    .GLIST              3    0    1    2    0 NO
      NO             YES
    2.THLIM              1    1    0    0
          1    
