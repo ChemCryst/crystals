@@ -12,7 +12,7 @@ CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
 	r = g = b = 0;
 	id = 0;
 	occ = 1;
-	covrad = vdwrad = 1000;
+      sparerad = covrad = vdwrad = 1000;
 	uflag = 0;
 //      u1 = u2 = u3 = u4 = u5 = u6 = 0;
       x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
@@ -27,7 +27,7 @@ CcModelAtom::CcModelAtom()
 	r = g = b = 0;
 	id = 0;
 	occ = 1;
-	covrad = vdwrad = 1000;
+      sparerad = covrad = vdwrad = 1000;
 	uflag = 0;
 //      u1 = u2 = u3 = u4 = u5 = u6 = 0;
       x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
@@ -46,7 +46,7 @@ void CcModelAtom::ParseInput(CcTokenList* tokenList)
 // IX, IY, IZ,
 // RED, GREEN, BLUE,
 // OCC*1000,
-// COVRAD, VDWRAD,
+// COVRAD, VDWRAD, SPARERAD
 // FLAG,
 // UISO or X11
 // X12, x13, x22, x23, x31, x32, x33
@@ -71,6 +71,8 @@ void CcModelAtom::ParseInput(CcTokenList* tokenList)
 	covrad = atoi ( theString.ToCString() );
 	theString = tokenList->GetToken();    //VDWRAD (scaled)
 	vdwrad = atoi ( theString.ToCString() );
+	theString = tokenList->GetToken();    //VDWRAD (scaled)
+      sparerad = atoi ( theString.ToCString() );
 	theString = tokenList->GetToken();    //UISO/U11 FLAG
 	uflag = atoi ( theString.ToCString() );
       theString = tokenList->GetToken();    //X11 or UISO * 1000
@@ -126,17 +128,6 @@ void CcModelAtom::Select(Boolean select)
 	if(m_selected != select)  //Counter in parent must only find out about change.
 		parent->Select(select); 
 	m_selected = select;
-}
-
-//void CcModelAtom::Highlight(CrModel * aView)
-//{
-//      if(m_selected)
-//            aView->HighlightAtom(this);
-//}
-
-int CcModelAtom::Vdw()
-{
-	return vdwrad;
 }
 
 Boolean CcModelAtom::IsSelected()
@@ -215,6 +206,17 @@ void CcModelAtom::Render(CrModel* view, Boolean detailed)
             else if(view->RadiusType() == VDW)
             {
                 gluSphere(sphere, ((float)vdwrad + extra ) * view->RadiusScale(),detail,detail);
+            }
+            else if(view->RadiusType() == SPARE)
+            {
+               if ( label.Length() && ( label.Sub(1,1) == "Q" ) )
+               {
+                   gluSphere(sphere, ((float)sparerad + extra ) * view->RadiusScale(),detail,detail);
+               }
+               else
+               {
+                   gluSphere(sphere, ((float)covrad + extra ) * view->RadiusScale(),detail,detail);
+               }
             }
             else if(view->RadiusType() == THERMAL)
             {

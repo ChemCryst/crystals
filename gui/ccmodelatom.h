@@ -14,7 +14,6 @@ class CcModelAtom : public CcModelObject
             void Render(CrModel* view, Boolean detailed);
 		void Select(Boolean select);
 		Boolean IsSelected();
-		int Vdw();
 		Boolean Select();
 		int X();
 		int Y();
@@ -33,7 +32,7 @@ class CcModelAtom : public CcModelObject
 		int r, g, b;
 		int id;
 		int occ;
-		int covrad, vdwrad;
+            int covrad, vdwrad, sparerad;
 		int uflag;
             int x11, x12, x13, x21, x22, x23, x31, x32, x33;
 		CcString label;
