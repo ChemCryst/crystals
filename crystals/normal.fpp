@@ -8,6 +8,7 @@ C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
 \XWILSO
 \XESTAT
 \XLST02
+\XLST03
 \XLST29
 \XLST01
 \ISTORE
@@ -16,15 +17,7 @@ C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
 \XCONST
 \XUNITS
 \XOPVAL
-      DIMENSION LETT(26),N(80),NA(8)
-
-      CHARACTER*4 CELEM
-      CHARACTER*26 CLETT
-
-      DATA LETT/1HA,1HB,1HC,1HD,1HE,1HF,1HG,1HH,1HI,1HJ,1HK,1HL,1HM,
-     1 1HN,1HO,1HP,1HQ,1HR,1HS,1HT,1HU,1HV,1HW,1HX,1HY,1HZ/
-      DATA CLETT/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
-      DATA KSP/1H /
+\XIOBUF
 
       DATA ICOMSZ / 3 /
       DATA IVERSN /100/
@@ -41,7 +34,29 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       CALL XZEROF (STORE(ICOMBF), ICOMSZ)
       I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF ( I .LT. 0 ) GO TO 9910
-       
+
+      IF (KEXIST(3).LE.0) THEN
+         WRITE(CMON,'(A)')'No list 3 (scattering factors) available'
+         CALL XPRVDU(NCVDU,1,0)
+         GOTO 9900
+      END IF
+      IF (KEXIST(6).LE.0) THEN
+         WRITE(CMON,'(A)')'No list 6 (observations) available'
+         CALL XPRVDU(NCVDU,1,0)
+         GOTO 9900
+      END IF
+      IF (KEXIST(29).LE.0) THEN
+        WRITE(CMON,'(A)')'No list 29 (for unit cell contents) available'
+        CALL XPRVDU(NCVDU,1,0)
+        GOTO 9900
+      END IF
+      IF (KEXIST(1).LE.0) THEN
+        WRITE(CMON,'(A)')'No list 1 (for unit cell) available'
+        CALL XPRVDU(NCVDU,1,0)
+        GOTO 9900
+      END IF
+
+
 C Store tolerance (only show fom's below this limit)
       IPLOTW = ISTORE(ICOMBF)
       IPLOTN = ISTORE(ICOMBF+1)
@@ -61,8 +76,6 @@ C Store tolerance (only show fom's below this limit)
       NB=0                                                              
       BT=0.0                                                            
       DO I=1,8                                                          
-        NW(I)=0                                                         
-        NO(I)=0                                                         
         SCAL(I)=0.0                                                     
       END DO
 
@@ -81,58 +94,50 @@ C Store tolerance (only show fom's below this limit)
       LATT = ISTORE(L2SG)
       CALL INSYM
 
+      CALL XFAL03
       CALL XFAL29
 
-      NK=0
-      DO M29=L29,L29+(N29-1)*MD29,MD29
-         NK=NK+1
-         WRITE(CELEM,'(A)') ISTORE(M29)
-         DO J=1,26
-           IF ( CELEM(1:1).EQ.CLETT(J:J) ) THEN
-             NW(NK)=J
-             EXIT
-           ENDIF
-         ENDDO
-         DO J=1,26
-           IF ( CELEM(2:2).EQ.CLETT(J:J) ) THEN
-             NW(NK)=NW(NK)*100 + J
-             EXIT
-           ENDIF
-         ENDDO
-         NA(NK) = T2*STORE(M29+4)
+      ICOMBF = KSTALL( ICOMSZ )
+
+      DO M3 = L3, L3+(N3-1)*MD3, MD3
+        STORE(M3+1) = 0.0 !Wipe out F' (list is not saved later)
+        STORE(M3+2) = 0.0 !Wipe out F'' (list is not saved later)
       END DO
 
-      CALL ATREC
-         
-
+C Into L3, put number of atoms in cell.
       NAT=0                                                             
-      DO  I=1,80                                                    
-         N(I)=KSP                                                          
+      DO M29=L29,L29+(N29-1)*MD29,MD29
+         DO M3 = L3, L3+(N3-1)*MD3, MD3
+           IF (ISTORE(M29) .EQ. ISTORE(M3)) THEN
+             STORE(M3+1) = T2*STORE(M29+4) ! Overwrite F' with atoms in cell
+             STORE(M3+2) = NINT ( STORE(M3+3) + STORE(M3+5)
+     1                + STORE(M3+7) + STORE(M3+9) + STORE(M3+11))
+             IF ( STORE(M3+2) .NE. 1 ) NAT = NAT + STORE(M3+1)
+             EXIT
+           END IF
+         END DO
       END DO
-      DO I=1,NK                                                    
-         K=NW(I)/100                                                       
-         J=NW(I)-100*K                                                     
-         IF (K.GT.0) N(I)=LETT(K)                                          
-         IF (J.GT.0) N(I+40)=LETT(J)                                       
-         NW(I)=NA(I)                                                       
-         NO(I)=INT(AL(I)+BL(I)+CL(I)+0.5)                                  
-         IF(NO(I).NE.1) NAT=NAT+NA(I)                                      
-      END DO
-      WRITE(NCWU,2820) (N(I),N(I+40),NA(I),NO(I),AL(I),AS(I),BL(I),
-     1                  BS(I),CL(I),I=1,NK)                                                    
+
+
+      WRITE(NCWU,2820) (ISTORE(M3),STORE(M3+1),STORE(M3+2),
+     1                  (STORE(M3+J),J=3,11),M3=L3,L3+(N3-1)*MD3,MD3)
  2820   FORMAT(//1H ,51X,18HUNIT CELL CONTENTS//                          
      1 1H ,4HATOM,4X,14HNUMBER IN CELL,4X,13HATOMIC NUMBER,4X,          
      2 27HSCATTERING FACTOR CONSTANTS,3X,                               
-     3 42H(F = AA*EXP(-A*RHO) + BB*EXP(-B*RHO) + CC)/                   
-     4 (1H ,1X,2A1,I14,I17,5F15.3))                                     
-C CALCULATE WILSON (GIW) SCATTERING FACTORS         
-      DO I=1,142                                                   
+     3 39H(f = SUM(n=1,4)[a(n)*EXP(-b(n)*RHO)]+c)/
+     4 (1H ,1X,A4,F12.0,F17.0,9F7.3))                                     
+C CALCULATE WILSON (GIW) SCATTERING FACTORS 
+      DO I=1,142
          T=0.01*FLOAT(I-1)                                                 
          TT=T*T                                                            
          GIW(I)=0.0                                                        
-         DO J=1,NK                                                    
-            FZ=AL(J)*EXP(-AS(J)*TT)+BL(J)*EXP(-BS(J)*TT)+CL(J)                
-            GIW(I)=GIW(I)+FZ*FZ*FLOAT(NW(J))
+         DO M3 = L3, L3+(N3-1)*MD3, MD3
+            FZ =   STORE(M3+3) * EXP( -STORE(M3+4) * TT )
+     1           + STORE(M3+5) * EXP( -STORE(M3+6) * TT )
+     1           + STORE(M3+7) * EXP( -STORE(M3+8) * TT )
+     1           + STORE(M3+9) * EXP( -STORE(M3+10) * TT )
+     1           + STORE(M3+11)
+            GIW(I)=GIW(I)+FZ*FZ*STORE(M3+1)
          END DO
       END DO
 
@@ -254,7 +259,7 @@ C READ GENERAL EQUIVALENT POSITIONS AS IN INTERNATIONAL TABLES AND
 C DETERMINE LATTICE MULTIPLICITY (PTS) AND CRYSTAL SYSTEM (KSYS)    
       SUBROUTINE INSYM    
 \XWISYM
-      DIMENSION N(80),KX(15),LTC(7),ICAP(2),LINE(21)
+      DIMENSION KX(15),LTC(7),ICAP(2),LINE(21)
 \STORE
 \ISTORE
 \QSTORE
@@ -324,65 +329,6 @@ C PRIMITIVE RHOMBOHEDRAL
   500 RETURN                                                            
       END                                                               
 
-C ------------------------------------------------------------------
-C INPUT INFORMATION ABOUT CELL CONTENTS AND MOLECULAR FRAGMENTS     
-C CALCULATE SPHERICAL SCATTERING FACTORS                            
-      SUBROUTINE ATREC                                                  
-C     INPUT/OUTPUT UNITS, TITLE, FLAGS                                  
-\XWSCAT
-      DIMENSION ALT(50),AST(50),BLT(50),BST(50),CLT(50),N1(50)
-      DATA N1/8,1209,205,2,3,14,15,6,1401,1307,112,1909,16,19,312,      
-     1 11,301,2009,22,318,1314,605,315,1409,321,2614,119,1905,218,      
-     2 1802,1918,2618,1315,1821,1808,1604,107,304,1914,1902,9,319,      
-     3 201,23,1519,1620,121,807,1602,209/                               
-C     ATOMIC SCATTERING FACTORS FOR ABOVE ATOM TYPES                    
-C         F = AL * EXP(-AS * RHO) + BL * EXP(-BS * RHO) + CL            
-      DATA ALT/0.388,1.560,1.261,1.207,2.112,3.188,4.197,5.155,7.488,   
-     1 7.426,7.276,6.988,6.509,5.967,5.557,9.544,10.25,11.69,12.50,     
-     2 13.67,14.17,15.01,15.84,16.69,17.88,18.32,18.62,18.48,18.18,     
-     3 17.27,17.95,18.21,18.38,19.56,20.42,20.02,22.37,23.74,25.20,     
-     4 25.41,25.51,25.57,26.03,36.53,36.50,36.08,36.22,37.13,38.75,     
-     5 39.16/                                                           
-      DATA AST/7.151,3.264,2.620,5.745,7.827,7.341,6.327,5.392,4.821,   
-     1 3.770,3.143,2.739,2.602,2.753,3.176,7.683,7.176,6.300,5.929,     
-     2 5.789,5.252,4.958,4.687,4.440,4.357,4.019,3.091,2.815,2.638,     
-     3 3.382,4.361,4.515,4.490,4.686,4.797,4.398,4.881,4.953,4.631,     
-     4 4.290,3.653,3.556,4.022,3.505,3.460,3.333,3.360,3.585,3.820,     
-     5 3.714/                                                           
-      DATA BLT/0.601,1.059,2.008,2.530,2.462,2.305,2.218,2.172,1.280,   
-     1 2.267,3.192,4.169,5.107,5.925,6.573,2.843,3.086,3.419,3.482,     
-     2 3.131,3.554,3.573,3.578,3.558,3.088,3.501,5.729,6.744,7.710,     
-     3 7.397,5.919,6.578,7.602,7.598,7.360,8.892,6.844,6.153,6.411,     
-     4 7.297,9.410,10.22,9.230,8.741,9.627,11.22,11.46,10.38,9.179,     
-     5 9.659/                                                           
-      DATA BST/30.18,108.3,54.77,38.23,31.65,26.84,22.83,19.61,96.71,   
-     1 69.72,55.67,43.28,34.46,28.44,24.26,53.75,79.64,62.92,57.74,     
-     2 46.70,49.62,46.50,43.88,41.79,35.63,38.46,35.40,30.87,27.32,     
-     3 28.90,44.38,42.30,30.85,28.20,27.65,20.92,26.38,32.06,40.81,     
-     4 39.07,33.09,31.70,38.86,33.47,29.80,23.06,22.12,25.33,33.99,     
-     5 35.23/                                                           
-      DATA CLT/0.008,0.3747,0.7163,1.243,1.412,1.498,1.578,1.668,2.216, 
-     1 2.291,2.491,2.801,3.343,4.073,4.839,6.494,6.616,6.846,6.966,     
-     2 7.147,7.226,7.375,7.541,7.712,7.986,8.136,8.601,8.727,9.070,     
-     3 12.09,13.92,15.06,15.88,16.72,17.11,17.04,17.69,18.02,18.30,     
-     4 18.22,18.02,18.93,20.42,28.57,29.71,30.56,31.19,32.35,33.92,     
-     5 34.06/                                                           
-      ITYPE=0
-      DO 150 I=1,NK                                                     
-C     CHECK ATOM TYPE                                                   
-      DO 120 J=1,50                                                     
-      IF(NW(I).NE.N1(J)) GO TO 120                                      
-      AS(I)=AST(J)                                                      
-      AL(I)=ALT(J)                                                      
-      BS(I)=BST(J)                                                      
-      BL(I)=BLT(J)                                                      
-      CL(I)=CLT(J)                                                      
-      ITYPE=ITYPE+1
-120    CONTINUE                                                         
-150    CONTINUE                                                         
-160   RETURN                                                         
-      END                                                               
-C ------------------------------------------------------------------
 C READ REFLEXIONS
       SUBROUTINE CARDIN
 \XWMISC
