@@ -968,21 +968,19 @@ C
 9005  FORMAT ( 1X , A , ' of group number ' , I3 , ' completed' , / )
       RETURN
 9800  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9801) NOLD,NATMD
-      ENDIF
-      WRITE (NCAWU,9801) NOLD,NATMD
-9801  FORMAT (36H The number of old atoms specified (  ,I3,
-     2 40H) is less than the number in the group (,I3,1H) )
+      WRITE(CMON,9801) NOLD
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+      WRITE (NCAWU,'(A)') CMON(1)
+9801  FORMAT ( ' Too few old atom positions have been given -',I5 )
       CALL XERHND(4)
       RETURN
 9810  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9811) NNEW,NATMD
-      ENDIF
-      WRITE (NCAWU,9811) NNEW,NATMD
-9811  FORMAT (36H The number of new atoms specified (  ,I3,
-     2 40H) is less than the number in the group ( ,I3,1H) )
+      WRITE(CMON,9811) NNEW
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+      WRITE (NCAWU,'(A)') CMON(1)
+9811  FORMAT ( ' Too few new atom positions have been given -',I5 )
       CALL XERHND(4)
       RETURN
 9900  CONTINUE
@@ -990,10 +988,10 @@ C
 C -- **** ERRORS ****
 C
       CALL XLINES
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9905 ) IGRPNO
-      ENDIF
-      WRITE ( NCAWU , 9905 ) IGRPNO
+      WRITE(CMON,9905) IGRPNO
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+      WRITE (NCAWU,'(A)') CMON(1)
 9905  FORMAT ( 1X , 'Calculation abandoned for group number ' , I3 )
       GO TO 9000
 C
@@ -1003,10 +1001,10 @@ C -- INTERNAL ERROR
       GO TO 9900
 C
 9920  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 )
-      ENDIF
-      WRITE ( NCAWU , 9925 )
+      WRITE(CMON,9925) 
+      CALL XPRVDU(NCVDU,1,0)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+      WRITE (NCAWU,'(A)') CMON(1)
 9925  FORMAT ( 1X , 'Attempt to change undefined coordinates' )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -1040,9 +1038,8 @@ C --
 \XIOBUF
 C --
 C --
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,1100)
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,1100)
+      WRITE (NCAWU,1100)
 1100  FORMAT ( 1X , 'Calculation of rotation-dilation matrix ' ,
      2 'and decomposition into component parts' , / )
 C --
@@ -1064,8 +1061,10 @@ C
      1 SQRT(1.-ROTDIL(1,2)*ROTDIL(1,2)-ROTDIL(1,3)*ROTDIL(1,3))
 C
       IF (ABS(ROTDIL(2,2)) .LE. 0.0001*NNEW) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,1300) ROTDIL(2,2)
-        WRITE(NCAWU, 1300) ROTDIL(2,2)
+        WRITE(CMON,1300) ROTDIL(2,2)
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 1300    FORMAT(1X, 'One group is almost colinear - sigma(Y**2) = '
      1  ,F12.8)
         ROTDIL(2,2)=SIGN( SQRT(1.-ROTDIL(2,1)*ROTDIL(2,1)-
@@ -1073,8 +1072,10 @@ C
       END IF
 C
       IF (ABS(ROTDIL(3,3)) .LE. 0.0001*NNEW) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,1200) ROTDIL(3,3)
-        WRITE(NCAWU, 1200) ROTDIL(3,3)
+        WRITE(CMON,1200) ROTDIL(3,3)
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 1200    FORMAT(1X, 'One group is almost coplanar - sigma(Z**2) = '
      1  ,F12.8)
         ROTDIL(3,3)= SQRT(1.-ROTDIL(3,1)*ROTDIL(3,1)-
@@ -1325,11 +1326,11 @@ C -- SET WEIGHT FOR THIS ATOM TO 1
       RETURN
 9500  CONTINUE
 C -- ERROR
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9510)
-      ENDIF
-      WRITE (NCAWU,9510)
-9510  FORMAT ( 45H Too many new atom positions have been given  )
+        WRITE(CMON,9510) NNEW
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
+9510  FORMAT ( ' Too many new atom positions have been given -',I5 )
       CALL XERHND(4)
       RETURN
       END
@@ -1362,9 +1363,6 @@ C -- ALLOCATE WORK SPACE FOR ATOM COORDINATES
       ITMP2=KSTALL(3)
       ITMP3=KSTALL(3)
 cdjw nov99
-ctest      atom(4) = 1.
-ctest      atom(8) = .05
-ctest      call xfill(0.0, atom(9),5)
       DO 4000 I=1,NATOMS
 C -- MOVE COORDINATES FOR EACH ATOM AND THEN CREATE THE ATOM
       INDEXF=IATOMS(I)
@@ -1580,18 +1578,18 @@ C -- RESTORE LIST 5
       L5=L5SAVE
       RETURN
 9800  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9801)
-      ENDIF
-      WRITE (NCAWU,9801)
+        WRITE(CMON,9801) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 9801  FORMAT (' Error -- not an valid atom specification')
       CALL XERHND(4)
       RETURN
 9810  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9811)
-      ENDIF
-      WRITE (NCAWU,9811)
+        WRITE(CMON,9811) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 9811  FORMAT (' Until specification mixes atoms in and not in list 5')
       CALL XERHND(4)
       RETURN
@@ -1600,42 +1598,43 @@ C -- RESTORE LIST 5
       CALL XERHND(4)
       RETURN
 9830  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9831)
-      ENDIF
-      WRITE (NCAWU,9831)
+        WRITE(CMON,9831) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 9831  FORMAT (' Atoms have different types')
       CALL XERHND(4)
       RETURN
 9840  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9841)
-      ENDIF
-      WRITE (NCAWU,9841)
+        WRITE(CMON,9841) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 9841  FORMAT (' Atoms appear to be out of sequence')
       CALL XERHND(4)
       RETURN
 9850  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9851)
-      ENDIF
-      WRITE (NCAWU,9851)
-9851  FORMAT (' Too many old atoms have been specified')
+        WRITE(CMON,9851) NOLD
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
+9851  FORMAT (' Too many old atoms have been given -',I6)
       CALL XERHND(4)
       RETURN
 9860  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9861)
-      ENDIF
-      WRITE (NCAWU,9861)
-9861  FORMAT (' An atom with this type and serial already given')
+        WRITE(CMON,9861)ISTORE(IADATM),STORE(IADATM+1)
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
+9861  FORMAT (' An atom with this type and serial already given - '
+     1 A4,I6)
       CALL XERHND(4)
       RETURN
 9870  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9871)
-      ENDIF
-      WRITE (NCAWU,9871)
+        WRITE(CMON,9871) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
 9871  FORMAT (' Error in applying symmetry operation')
       CALL XERHND(4)
       RETURN
@@ -1956,19 +1955,19 @@ C --
       IF ( IMETHD.GT.3 ) GO TO 9800
       RETURN
 9800  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9810)
-      ENDIF
-      WRITE (NCAWU,9810)
-9810  FORMAT ( 38H Method number is not in allowed range )
+        WRITE(CMON,9810) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
+9810  FORMAT ( ' Method number is not in allowed range ')
 9900  CONTINUE
 C -- SET DEFAULT METHOD NUMBER
       IMETHD = 1
-      WRITE (NCAWU,9910)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,9910)
-      ENDIF
-9910  FORMAT (28H Method set to default value)
+        WRITE(CMON,9910) 
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        WRITE (NCAWU,'(A)') CMON(1)
+9910  FORMAT (' Method set to default value')
       RETURN
       END
 C
