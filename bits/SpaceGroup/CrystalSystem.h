@@ -40,6 +40,7 @@
 #include "BaseTypes.h"
 #include "Collections.h"
 #include "SpaceGroups.h"
+#include "Wrappers.h"
 #include "HKLData.h"
 #include <fstream>
 
@@ -49,13 +50,13 @@ struct ElemStats;
 class Heading:public MyObject
 {
     private:
-        Matrix<float>* iMatrix;
+        Matrix<short>* iMatrix;
         char*	iName;
         int 	iID;
     public:
         Heading(char* pLines);
         ~Heading();
-        Matrix<float>* getMatrix();
+        Matrix<short>* getMatrix();
         char* getName();
         int getID();
         std::ostream& Heading::output(std::ostream& pStream);
@@ -68,7 +69,7 @@ class Headings:public MyObject
     public:
         Headings();
         ~Headings();
-        Matrix<float>* getMatrix(int pIndex);
+        Matrix<short>* getMatrix(int pIndex);
         char* getName(int pIndex);
         int getID(int pIndex);
         std::ostream& output(std::ostream& pStream);
@@ -83,7 +84,7 @@ std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
 class Condition:public MyObject
 {
     private:
-        Matrix<float>* iMatrix;
+        Matrix<short>* iMatrix;
         char* iName;
         int iID;
         float iMult;
@@ -91,7 +92,7 @@ class Condition:public MyObject
         Condition(char* pLine);
         ~Condition();
         char* getName();
-        Matrix<float>* getMatrix();
+        Matrix<short>* getMatrix();
         float getMult();
         int getID();
         std::ostream& output(std::ostream& pStream);
@@ -108,7 +109,7 @@ class Conditions:public MyObject
         ~Conditions();
         char* getName(int pIndex);
         float getMult(int pIndex);
-        Matrix<float>* getMatrix(int pIndex);
+        Matrix<short>* getMatrix(int pIndex);
         std::ostream& output(std::ostream& pStream);
         char* addCondition(char* pLine);
         void readFrom(filebuf& pFile);
@@ -234,30 +235,29 @@ class Stats;
 class RankedSpaceGroups:public MyObject
 {
     private:
-        typedef struct RowRating
+        class RowRating:public Float	//The value is the mean value;
         {
-            int iRowNum;	//The number of the row in the table.
-            int iTotNumVal;	//Total number of values include in these stats.
-            float iSumRat1;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-            float iSumRat2;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-            float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-            float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
-            float iMean;
-            bool iFiltered;
-        } RowRating;
+            private:
+                void addConditionRatings(Stats& pStats, Indexs* tIndexs,  Index* pHeadingIndex);
+                void addRating(const ElemStats* pStats);
+            public:
+                int iRowNum;	//The number of the row in the table.
+                int iTotNumVal;	//Total number of values include in these stats.
+                float iSumRat1;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+                float iSumRat2;	//Sum of rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+                float iSumSqrRat1;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+                float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
+                bool iFiltered;
+                RowRating(int pRow, Table& pTable, Stats& pStats);
+                RowRating& operator=(RowRating& pRowRating);
+        };
         
-        LList<RowRating> iRatingList;	//The order list of rows.
-        RowRating* iRatings;		//Space to store the ratings
+        MultiTree<RowRating> iSortedRatings;
         Table* iTable;			//The table which the rattings have been made for. Reference to the table. Table should never be released by this class.
         bool iChiral;
-        
-        static void calcRowRating(RowRating* pRating, int pRow, Table& pTable, Stats& pStats);
-        static void addConditionRatings(RowRating* pRating, Stats& pStats, Indexs* tIndexs,  Index* pHeadingIndex);
-        static void addRating(RowRating* pRating, const ElemStats* pStats);
-        void addToList(RowRating* pRating);
+        void addToList(RowRating& pRating);
     public:
         RankedSpaceGroups(Table& pTable, Stats& pStats, bool pChiral);
-        ~RankedSpaceGroups();
         std::ofstream& output(std::ofstream& pStream);
         std::ostream& output(std::ostream& pStream);
 };
