@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2002/01/08 12:40:34  ckpgroup
+// SH: Fixed memory leaks, fiddled with key text alignment.
+//
 // Revision 1.9  2001/12/12 16:02:24  ckpgroup
 // SH: Reorganised script to allow right-hand y axes.
 // Added floating key if required, some redraw problems.
@@ -318,7 +321,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 				break;
 			}
 
-			// set the series names, for a key (not yet present...)
+			// set the series names, for the key
 			case kTPlotSeriesName:
 			{
 				tokenList->GetToken();	// "NAME"
@@ -775,7 +778,7 @@ Boolean CcPlotAxes::CalculateDivisions()
 	Boolean tempyr = false;
 
 	// change axis limits for axes if required
-	for(int i=0; i<3; i++)
+	for(int i=0; i< 3; i++)
 	{
 		if(m_AxisData[i].m_AxisScaleType == Plot_AxisAuto)
 		{
@@ -831,7 +834,9 @@ Boolean CcPlotAxes::CalculateDivisions()
 		if(m_AxisData[Axis_YR].m_AxisLog) tempyr = m_AxisData[Axis_YR].CalculateLogDivisions();
 		else tempyr = m_AxisData[Axis_YR].CalculateLinearDivisions();
 
-	return (tempx & tempyl & tempyr);
+	if(m_NumberOfYAxes == 2)
+		return (tempx & tempyl & tempyr);
+	else return (tempx & tempyl);
 }
 
 // check a data item, change axis range if necessary
@@ -1060,6 +1065,6 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		attachedPlot->DrawText(1200, 2400-ygapbottom/6, m_AxisData[Axis_X].m_Title.ToCString(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
 		attachedPlot->DrawText(xgapleft/6, 1200, m_AxisData[Axis_YL].m_Title.ToCString(), TEXT_VERTICAL, 16);
 		if(m_NumberOfYAxes == 2)
-			attachedPlot->DrawText(2400-xgapright/3, 1200, m_AxisData[Axis_YR].m_Title.ToCString(), TEXT_VERTICALDOWN, 16);
+			attachedPlot->DrawText(2400-xgapright/6, 1200, m_AxisData[Axis_YR].m_Title.ToCString(), TEXT_VERTICALDOWN, 16);
 	}
 }

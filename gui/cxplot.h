@@ -9,6 +9,10 @@
 //   Created:   09.11.2001 23:09
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/12/13 16:20:34  ckpgroup
+//   SH: Cleaned up the key code. Now redraws correctly, although far too often.
+//   Some problems with mouse-move when key is enabled. Fine when disabled.
+//
 //   Revision 1.6  2001/12/12 16:02:27  ckpgroup
 //   SH: Reorganised script to allow right-hand y axes.
 //   Added floating key if required, some redraw problems.
@@ -162,6 +166,7 @@ class CxPlot : public BASEPlot
         CDC * m_memDC;
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+		afx_msg void OnSize(UINT nType, int cx, int cy);
         afx_msg void OnPaint();
 		afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 		afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

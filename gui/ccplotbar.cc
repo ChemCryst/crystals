@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2002/01/08 12:40:33  ckpgroup
+// SH: Fixed memory leaks, fiddled with key text alignment.
+//
 // Revision 1.10  2001/12/12 16:02:23  ckpgroup
 // SH: Reorganised script to allow right-hand y axes.
 // Added floating key if required, some redraw problems.
@@ -122,7 +125,7 @@ Boolean CcPlotBar::ParseInput( CcTokenList * tokenList )
 						}
 
 						// delete the previous memory area, point to the new one.
-						delete ((CcSeriesBar*)m_Series[i])->m_Data;
+						delete [] ((CcSeriesBar*)m_Series[i])->m_Data;
 						((CcSeriesBar*)m_Series[i])->m_Data = tempdata;
 					}
 
@@ -223,6 +226,10 @@ void CcPlotBar::DrawView()
 
 		// check the axis divisions have been calculated
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
+
+		// don't draw graph if no data present
+		if(m_NextItem == 0)
+			return;
 
 		// gap between division markers on x and y axes
 		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_AxisData[Axis_X].m_NumDiv);			
@@ -368,6 +375,9 @@ CcString CcPlotBar::GetDataFromPoint(CcPoint *point)
 						// need to : interpolate between xmin,xmax to get the label at that point,
 						int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
 						int axisheight = 2400 - m_YGapTop - m_YGapBottom;
+
+					//	int xrange = m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxesData[Axis_X].m_AxisMin;
+					//	int yrange = m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxesData[axis].m_AxisMin;
 		
 						// calculate x and y positions of the cursor
 						float y = m_Axes.m_AxisData[axis].m_AxisMax + (m_Axes.m_AxisData[axis].m_AxisMin-m_Axes.m_AxisData[axis].m_AxisMax)*(point->y - m_YGapTop) / axisheight;

@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2002/01/08 12:40:35  ckpgroup
+//   SH: Fixed memory leaks, fiddled with key text alignment.
+//
 //   Revision 1.10  2001/12/13 19:55:19  ckp2
 //   Fix: You can't use CClientDC inside an OnPaint handler - symptom continous
 //   flickering window. Use a CPaintDC instead...
@@ -78,7 +81,7 @@ CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
                                     );
 
     CxPlot *theStdPlot = new CxPlot(container);
-    theStdPlot->Create(wndClass,"Plot",WS_CHILD| WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
+    theStdPlot->Create(wndClass,"Plot",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, CRect(0,0,26,28), guiParent, mPlotCount++);
     theStdPlot->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theStdPlot->SetFont(CcController::mp_font);
 
@@ -218,20 +221,38 @@ void CxPlot::Display()
 #ifdef __CR_WIN__
 void CxPlot::OnPaint()
 {
-    CPaintDC dc(this); // device context for painting
+	RECT winsize;
+	if(m_Key) m_Key->GetWindowRect(&winsize);
+	
+	CPaintDC dc(this); // device context for painting
     CRect rect;
     GetClientRect (&rect);
+
+	// remove key area from drawing...
+	ValidateRect(&winsize);
+
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     dc.BitBlt(0,0,rect.Width(),rect.Height(),m_memDC,0,0,SRCCOPY);
     m_memDC->SelectObject(m_oldMemDCBitmap);
-	if(m_Key) 
+	if(m_Key)
 	{
 		m_Key->BringWindowToTop();
-		m_Key->InvalidateRect(NULL, 0);
+//		m_Key->Invalidate();
+//		m_Key->ShowWindow(SW_HIDE);
+//		m_Key->ShowWindow(SW_SHOW);
+	}
+}
+
+void CxPlot::OnSize(UINT nType, int cx, int cy)
+{
+	if(m_Key)
+	{
+		m_Key->BringWindowToTop();
 	}
 }
 
 #endif
+
 
 #ifdef __BOTHWX__
 void CxPlot::OnPaint(wxPaintEvent & event)
@@ -240,6 +261,7 @@ void CxPlot::OnPaint(wxPaintEvent & event)
       wxRect rect = GetRect();
       dc.Blit( 0,0,rect.GetWidth(),rect.GetHeight(),m_memDC,0,0,wxCOPY,false);
 }
+
 #endif
 
 
@@ -739,6 +761,7 @@ int CxPlot::GetIdealHeight()
 BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_CHAR()
     ON_WM_PAINT()
+	ON_WM_SIZE(nType,cx, cy)
     ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MOUSEMOVE()
@@ -860,7 +883,7 @@ void CxPlot::CreatePopup(CcString text, CcPoint point)
   dc.SelectObject(oldFont);
 
   m_TextPopup = new CStatic();
-  m_TextPopup->Create(text.ToCString(), SS_CENTER|WS_BORDER, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
+  m_TextPopup->Create(text.ToCString(), SS_CENTER|WS_BORDER|WS_CLIPSIBLINGS, CRect(CPoint(-size.cx-10,-size.cy-10),CSize(size.cx+4,size.cy+2)), this);
   m_TextPopup->SetFont(CcController::mp_font);
   m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
   m_TextPopup->ShowWindow(SW_SHOW);
@@ -953,7 +976,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 
 	const char* wClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
 	
-  Create(wClass, "Key", WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), parw,777);//m_Parent, 777);
+  Create(wClass, "Key", WS_VISIBLE|WS_CLIPSIBLINGS|WS_BORDER|WS_CAPTION|WS_CHILD, CRect(0,0,200,200), m_Parent, 777);
 
   SetFont(CcController::mp_font);
   ShowWindow(SW_SHOW);
@@ -977,6 +1000,8 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, CcString* names, int** col)
 	RECT windowsize;
 	GetClientRect(&clientsize);
 	GetWindowRect(&windowsize);
+
+	SetWindowPos( &wndTopMost , 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE);
 
 	// now calculate the required size (including title bar)
 	size.cy *= m_NumberOfSeries;

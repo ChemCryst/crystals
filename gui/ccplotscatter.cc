@@ -11,6 +11,10 @@
 //BIG NOTICE: PlotScatter is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2001/12/12 16:02:24  ckpgroup
+// SH: Reorganised script to allow right-hand y axes.
+// Added floating key if required, some redraw problems.
+//
 // Revision 1.7  2001/11/29 15:46:10  ckpgroup
 // SH: Update of script commands to support second y axis, general update.
 //
@@ -50,8 +54,6 @@
 #ifdef __BOTHWX__
 #include <wx/thread.h>
 #endif
-
-#define Axis_Y 1
 
 // set the graph type
 CcPlotScatter::CcPlotScatter( )
@@ -96,22 +98,22 @@ Boolean CcPlotScatter::ParseInput( CcTokenList * tokenList )
 
 						// allocate some new memory
 						tempdata[Axis_X] = new float[(int)(m_SeriesLength * 1.5)];
-						tempdata[Axis_Y] = new float[(int)(m_SeriesLength * 1.5)];
+						tempdata[Axis_YL] = new float[(int)(m_SeriesLength * 1.5)];
 
 						// transfer the data across
 						for(int j=0; j<m_SeriesLength; j++)
 						{
 							tempdata[Axis_X][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X][j];
-							tempdata[Axis_Y][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_Y][j];
+							tempdata[Axis_YL][j] = ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL][j];
 						}
 
 						// free the old memory
-						delete ((CcSeriesScatter*)m_Series)->m_Data[Axis_X];
-						delete ((CcSeriesScatter*)m_Series)->m_Data[Axis_Y];
+						delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X];
+						delete [] ((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL];
 
 						// and point to the new memory
-						((CcSeriesScatter*)m_Series)->m_Data[Axis_X] = tempdata[Axis_X];
-						((CcSeriesScatter*)m_Series)->m_Data[Axis_Y] = tempdata[Axis_Y];
+						((CcSeriesScatter*)m_Series[i])->m_Data[Axis_X] = tempdata[Axis_X];
+						((CcSeriesScatter*)m_Series[i])->m_Data[Axis_YL] = tempdata[Axis_YL];
 					}
 
 					// series has been extended...
@@ -189,6 +191,10 @@ void CcPlotScatter::DrawView()
 
 		// check the axis divisions have been calculated
 		if(!m_AxesOK) m_AxesOK = m_Axes.CalculateDivisions();
+
+		// don't draw the graph if no data is present
+		if(m_NextItem == 0)
+			return;
 		
 		// gap between division markers on x and y axes
 		int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_AxisData[Axis_X].m_NumDiv);			
@@ -202,7 +208,7 @@ void CcPlotScatter::DrawView()
 		int xseroffset = xdivoffset / m_NumberOfSeries;			
 
 		// take the axis height, work out where zero is...
-		int xorigin = (int)(m_XGapLeft + (axiswidth * (m_Axes.m_AxisData[Axis_X].m_AxisMin / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
+		int xorigin = (int)(m_XGapLeft - (axiswidth * (m_Axes.m_AxisData[Axis_X].m_AxisMin / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
 		int yorigin = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YL].m_AxisMin / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 
 		//this is the value of y at the origin (may be non-zero for span-graphs)
@@ -237,12 +243,13 @@ void CcPlotScatter::DrawView()
 			{
 				// draw this data series as a scatter graph
 				case Plot_SeriesScatter:
+				default:
 				{
 					// loop through the data members of this series
 					for(i=0; i<m_NextItem; i++)
 					{
 						x1 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-						y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_Y][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+						y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 						attachedPlot->DrawLine(2, x1-10, y1-10, x1+10, y1+10);
 						attachedPlot->DrawLine(2, x1-10, y1+10, x1+10, y1-10);
 					}
@@ -255,9 +262,9 @@ void CcPlotScatter::DrawView()
 					for(i=0; i<m_NextItem-1; i++)
 					{
 						x1 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-						y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_Y][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+						y1 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 						x2 = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i+1]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-						y2 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_Y][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+						y2 = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 
 						attachedPlot->DrawLine(1,x1,y1,x2,y2);
 					}
@@ -272,9 +279,9 @@ void CcPlotScatter::DrawView()
 					for(i=0; i<m_NextItem-1; i++)
 					{
 						vert[0] = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax- m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-						vert[1] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_Y][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+						vert[1] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax- m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 						vert[2] = (int)(xorigin + (axiswidth * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_X][i+1]) / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
-						vert[3] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_Y][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
+						vert[3] = (int)(yorigin - (axisheight * ((((CcSeriesScatter*)m_Series[j])->m_Data[Axis_YL][i+1] - yoriginvalue) / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
 
 						vert[4] = vert[2];
 						vert[5] = yorigin;
@@ -298,11 +305,13 @@ void CcPlotScatter::DrawView()
 CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 {
 	CcString ret = "error";
+	bool pointfound = false;
+//	if(m_NextItem > 100) return ret;
 
 	if((point->x < (2400 - m_XGapRight)) && (point->x > m_XGapLeft) && (point->y > m_YGapTop) && (point->y < (2400 - m_YGapBottom)))
 	{
 		// search through all data points to find the one the pointer is over
-		for(int i=0; i<m_NumberOfSeries; i++)
+		for(int i=0; (i<m_NumberOfSeries) && (pointfound == false); i++)
 		{
 			for(int j=0; j<m_SeriesLength; j++)
 			{
@@ -312,13 +321,19 @@ CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 				int axiswidth = 2400 - m_XGapLeft - m_XGapRight;
 				int axisheight = 2400 - m_YGapTop - m_YGapBottom;
 
-				// calculate x and y positions of the cursor
-				float y = m_Axes.m_AxisData[axis].m_AxisMax + (m_Axes.m_AxisData[axis].m_AxisMin-m_Axes.m_AxisData[axis].m_AxisMax)*(point->y - m_YGapTop) / axisheight;
-				float x = m_Axes.m_AxisData[Axis_X].m_AxisMax + (m_Axes.m_AxisData[Axis_X].m_AxisMin - m_Axes.m_AxisData[Axis_X].m_AxisMax)*(point->x - m_XGapLeft) / axiswidth;
+				int xrange = m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin;
+				int yrange = m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin;
 
-				if((y > ((CcSeriesScatter*)m_Series[i])->m_Data[0][j]-0.1) && (y < ((CcSeriesScatter*)m_Series[i])->m_Data[0][j]+0.1))
+				xrange /= 100;
+				yrange /= 100;
+
+				// calculate x and y positions of the cursor
+				float y = m_Axes.m_AxisData[axis].m_AxisMax   + (m_Axes.m_AxisData[axis].m_AxisMin   - m_Axes.m_AxisData[axis].m_AxisMax)  *(point->y - m_YGapTop) / axisheight;
+				float x = m_Axes.m_AxisData[Axis_X].m_AxisMax + (m_Axes.m_AxisData[Axis_X].m_AxisMin - m_Axes.m_AxisData[Axis_X].m_AxisMax)*(2400-point->x - m_XGapRight) / axiswidth;
+
+				if((x > ((CcSeriesScatter*)m_Series[i])->m_Data[0][j]-xrange) && (x < ((CcSeriesScatter*)m_Series[i])->m_Data[0][j]+xrange))
 				{
-					if((y > ((CcSeriesScatter*)m_Series[i])->m_Data[1][j]-0.1) && (y < ((CcSeriesScatter*)m_Series[i])->m_Data[1][j]+0.1))
+					if((y > ((CcSeriesScatter*)m_Series[i])->m_Data[1][j]-yrange) && (y < ((CcSeriesScatter*)m_Series[i])->m_Data[1][j]+yrange))
 					{
 						if(!(m_Series[i]->m_SeriesName == ""))
 						{
@@ -329,7 +344,8 @@ CcString CcPlotScatter::GetDataFromPoint(CcPoint *point)
 						ret += ((CcSeriesScatter*)m_Series[i])->m_Data[0][j];
 						ret += "; ";
 						ret += ((CcSeriesScatter*)m_Series[i])->m_Data[1][j];
-						i = m_NumberOfSeries;
+						
+						pointfound = true;
 
 						point->y = m_YGapTop;
 					}
@@ -397,7 +413,7 @@ void CcPlotScatter::AllocateMemory(int length)
 CcSeriesScatter::CcSeriesScatter()
 {
 	m_Data[Axis_X]	= 0;
-	m_Data[Axis_Y]	= 0;
+	m_Data[Axis_YL]	= 0;
 	m_DrawStyle		= Plot_SeriesScatter;	// draw a scatter graph unless specified
 }
 
@@ -405,10 +421,10 @@ CcSeriesScatter::CcSeriesScatter()
 CcSeriesScatter::~CcSeriesScatter()
 {
 	if(m_Data[Axis_X]) delete [] m_Data[Axis_X];
-	if(m_Data[Axis_Y]) delete [] m_Data[Axis_Y];
+	if(m_Data[Axis_YL]) delete [] m_Data[Axis_YL];
 
 	m_Data[Axis_X] = 0;
-	m_Data[Axis_Y] = 0;
+	m_Data[Axis_YL] = 0;
 }
 
 // parse any series input (not used at present)
@@ -436,11 +452,11 @@ Boolean CcSeriesScatter::ParseInput( CcTokenList * tokenList )
 void CcSeriesScatter::AllocateMemory(int length)
 {
 	m_Data[Axis_X] = new float[length];
-	m_Data[Axis_Y] = new float[length];
+	m_Data[Axis_YL] = new float[length];
 
 	for(int j=0; j<length; j++)
 	{
 		m_Data[Axis_X][j] = 0;
-		m_Data[Axis_Y][j] = 0;
+		m_Data[Axis_YL][j] = 0;
 	}
 }
