@@ -22,7 +22,7 @@
 #ifdef __LINUX__
 #include <wx/control.h>
 #include <wx/font.h>
-#define BASEGRID wxControl
+#define BASEGRID wxWindow
 #endif
 
 #include	"cxradiobutton.h"
