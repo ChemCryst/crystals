@@ -295,7 +295,7 @@ C----- LOOK FOR BLANK AFTER 'ALL'
           IF (KCOMP (5, IMAGE(J), KMOUSE(1), 1, 5) .GT. 0) THEN
               CALL XFILL (IB, IMAGE(J), 80-J+1)
               CALL XMOVEI ( IMAGE, LCMAGE, 80)
-#DVF             CALL XRDMSE (CMOUSE, NMOUSE)
+##DVFGID             CALL XRDMSE (CMOUSE, NMOUSE)
               IMOUSE = 1
           ENDIF
         ENDIF

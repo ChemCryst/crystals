@@ -240,6 +240,7 @@ C--WRITE THE PARAMETER FILE TYPE
 &VAX      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &DOS      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &DVF      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
+&GID      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &H-P      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
 &CYB      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )

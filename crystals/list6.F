@@ -1271,13 +1271,13 @@ C -- PRODUCE DISPLAY IF REQUIRED
 C
       IF ( DISPL6 ) THEN
         IF ( N6R .GE. (N6D-1) ) THEN
-CNOV98WIN32          WRITE ( CMON,1505)
-CNOV98WIN32          CALL XPRVDU(NCVDU, 1, 0)
-          WRITE(NCVDU,1505)
+&GID          WRITE ( CMON,1505)
+&GID          CALL XPRVDU(NCVDU, 1, 0)
+#GID          WRITE(NCVDU,1505)
 1505      FORMAT ( 15X , '0', 12X, 'Processing reflections ',
      2    11X , '100%')
           IF (ISSTML .EQ. 3 ) CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
-          WRITE(NCVDU,'(15X,''^'',$)')
+#GID          WRITE(NCVDU,'(15X,''^'',$)')
           NSTAR = 1
           NXTLVL = ( NSTAR * N6D ) / NINTER
         ELSE IF ( (N6D-N6R) .GE. NXTLVL ) THEN
