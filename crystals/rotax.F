@@ -465,14 +465,10 @@ c works out the rotation matrices (m2) for recip. vectors & tests bad refs
 \STORE
 \XUNITS
 \XIOBUF
-      real bad(30), bad2(30)
+      real bad(30)
       integer jp(1)
       real sigma, rej(3)
 
-
-
-      bad2 = bad**2
-      
 
       sigma = sqrt ( (sum(bad)) / 29. )
 
