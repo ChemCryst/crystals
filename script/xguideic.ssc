@@ -51,19 +51,19 @@
 %        END BLOCK
 %%
 %        BLOCK % 8
-%          COPY '#SCRIPT XCELLIN'
+%          COPY '#SCRIPT XINLIST6'
 %        END BLOCK
 %%
 %        BLOCK % 9
-%          COPY '#SCRIPT XINLIST3'
+%          COPY '#SCRIPT XCELLIN'
 %        END BLOCK
 %%
 %        BLOCK % 10
-%          COPY '#SCRIPT XSPACE'
+%          COPY '#SCRIPT XINLIST3'
 %        END BLOCK
 %%
 %        BLOCK % 11
-%          COPY '#SCRIPT XINLIST6'
+%          COPY '#SCRIPT XSPACE'
 %        END BLOCK
 %%
 %        BLOCK % 12

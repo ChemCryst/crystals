@@ -13,10 +13,10 @@
 %%  5 Import RC93 output
 %%  6 Import DIPIN output.
 %%  7 Import SHELX data.
-%%  8 Input cell
-%%  9 Input cell contents
-%%  10 Input space group.
-%%  11 Input reflection data.
+%%  8 Input reflection data.
+%%  9 Input cell
+%%  10 Input cell contents
+%%  11 Input space group.
 %%  12 Edit CIF type data
 %%  13 Read in CRYSTALS instructions.
 %%%
@@ -56,13 +56,13 @@
 ^^WI     'Use KCCDIN output'
 ^^WI     'Use RC93 output'
 ^^WI     'Use DIPIN output'
-^^WI     'Import SHELX data'
-^^WI     'Input cell'
-^^WI     'Input formula'
+^^WI     'Import SHELX data (ins,res)'
+^^WI     'Import reflections (hkl)'
+^^WI     'Input cell parameters'
+^^WI     'Input molecular formula'
 ^^WI     'Input spacegroup'
-^^WI     'Input reflections'
-^^WI     'Edit extra info'
-^^WI     'Read from file'
+^^WI     'Edit extra (CIF) info'
+^^WI     'Read from file (crystals)'
 ^^WI     NULL
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4
 ^^WI   {
@@ -76,22 +76,38 @@
 ^^WI SHOW
 ^^CR
 %  END IF
+%  EVALUATE KTDEFA = 1
 
 {I   Choose an option. The following data is still required:
 
 %% List missing data reqd before leaving IMPORT phase of GUIDE.
-% IF EXISTS ( 6 ) .LT. 1 THEN
-{I   Reflection data is still required.
+% IF FILEEXISTS ( 'kccd.ins' ) THEN
+{I   KCCDIN output file detected.
+%    EVALUATE KTDEFA = 4
 % ELSE IF EXISTS ( 1 ) .LT. 1 THEN
 {I   Cell dimension data is still required.
+% ELSE IF EXISTS ( 6 ) .LT. 1 THEN
+{I   Reflection data is still required.
+%    EVALUATE KTDEFA = 8
 % ELSE IF EXISTS ( 2 ) .LT. 1 THEN
+%    EVALUATE KTDEFA = 11
 {I   Spacegroup data is still required.
 % ELSE IF EXISTS ( 3 ) .LT. 1 THEN
+%    EVALUATE KTDEFA = 10
 {I   Cell contents (molecular formula) data is still required.
 % END IF
-% END SCRIPT
+%%
+%%
+% CLEAR
+% INSERT '^^CO SET _XG_LIST SELECTION='
+% STORE FORMAT /(I2)/ LENGTH 2 INTEGER KTDEFA
+% OUTPUT
+%END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.5  2001/04/03 09:52:17  richard
+%%  Changed name from 'Supervisor' to 'The GUIDE' for consistency.
+%%
 %%  Revision 1.4  2001/03/21 17:07:16  richard
 %%  Changed window layout and bitmap.
 %%
