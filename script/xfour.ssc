@@ -285,7 +285,6 @@
 %       END IF
 %       IF ( DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 ) THEN
 %         COPY '#SCRIPT XDELQ'
-%         COPY '#SCRIPT VALID12'
 %         IF ( MERGED ) THEN
 %           COPY '#SFLS'
 %         ELSE

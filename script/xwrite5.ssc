@@ -99,8 +99,8 @@
 %       FINISH
 %     END IF
 %    END IF
-%  ELSE
-%    COPY '#SCRIPT VALID12'
+%%%  ELSE
+%%%    COPY '#SCRIPT VALID12'
 %  END IF
 %%
 %%

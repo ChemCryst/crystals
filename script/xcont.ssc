@@ -276,7 +276,6 @@ view the generated sections.
 %           COPY 'SELECT TYPE NE QH'
 %           COPY 'SELECT TYPE NE QN'
 %           COPY 'END'
-%           COPY '#SCRIPT VALID12'
 %           IF DOSCALE .EQ. 1 THEN
 %             COPY '#SFLS'
 %             IF TWINNED .EQ. TRUE THEN

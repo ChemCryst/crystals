@@ -68,7 +68,6 @@
 %  COPY '#SCRIPT RFACTOR'
 %  IF RATIO .GE. 1.3 THEN
 {S * Need R-factor on a good scale. Recomputing scale factor and phases.
-%    COPY '#SCRIPT VALID12'
 %    COPY '#SFLS'
 %    COPY 'SCALE'
 %    COPY 'END'
@@ -287,6 +286,9 @@
 % END SCRIPT
 %%
 %%  $Log: not supported by cvs2svn $
+%%  Revision 1.10  2002/12/03 13:54:35  rich
+%%  Reduce output during assessment and refinement (GUIDE).
+%%
 %%  Revision 1.9  2002/03/21 17:56:19  richard
 %%  Enclose bitmaps in GRID object to stop them stretching.
 %%
