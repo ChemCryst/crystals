@@ -7,6 +7,11 @@
 //   Filename:  CrResizeBar.cc
 //   Author:    Richard Cooper
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2002/01/16 10:02:37  ckp2
+//   Fix bug where resizing panes makes whole 'resize-control' jump to top
+//   left of parent window. Never noticed before because in all cases the resize
+//   has been in the top left position anyway.
+//
 //   Revision 1.4  2001/08/14 10:20:35  ckp2
 //   Quirky new feature: Hold down CTRL and click on a resize-bar and the panes
 //   will swap sides. Hold down SHIFT and click, and the panes will rotate by 90
@@ -367,9 +372,12 @@ void CrResizeBar::MoveResizeBar(int offset)
    CcRect child    = GetGeometry();
    CcRect parent   = mParentElementPtr->GetGeometry();
    CcRect relative;
+
    relative.Set(child.Top()  - parent.Top(),
                 child.Left() - parent.Left(),
-                child.Height(),child.Width());
+                child.Bottom()-parent.Top(),
+                child.Right()- parent.Left());
+
    SetGeometry(&relative);
 
 // Force repaint of entire window.
