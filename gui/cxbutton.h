@@ -22,7 +22,7 @@ class LStdButton;
 #include	<LStdControl.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include <wx/button.h>
 #include <wx/event.h>
 #define BASEBUTTON wxButton
@@ -58,7 +58,7 @@ class CxButton : public BASEBUTTON
 		static int AddButton( void ) { mButtonCount++; return mButtonCount; };
 		static void RemoveButton( void ) { mButtonCount--; };
 		void	BroadcastValueMessage( void );
-		void SetDefault();
+		void SetDef();
 		
 		// attributes
 		CrGUIElement *	mWidget;
@@ -72,7 +72,7 @@ class CxButton : public BASEBUTTON
 		afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 		DECLARE_MESSAGE_MAP()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
             void ButtonClicked();
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()

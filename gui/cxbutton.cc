@@ -21,7 +21,7 @@
 #include	<afxwin.h>
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 #include    <wx/gdicmn.h>
 #include    <wx/event.h>
 #endif
@@ -35,7 +35,7 @@ CxButton *	CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
         theStdButton->Create("Button",WS_CHILD |WS_VISIBLE |BS_PUSHBUTTON, CRect(0,0,10,10), guiParent, mButtonCount++);
 	theStdButton->SetFont(CxGrid::mp_font);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10));
 #endif
 
@@ -46,7 +46,7 @@ CxButton::CxButton(CrButton* container)
 #ifdef __WINDOWS__
 	:CButton()
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       :wxButton()
 #endif
 {
@@ -71,7 +71,7 @@ void	CxButton::SetText( char * text )
 	c2pstr( reinterpret_cast<char *>(descriptor) );
 	SetDescriptor( descriptor );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetLabel(text);
 #endif
 #ifdef __WINDOWS__
@@ -84,8 +84,10 @@ void	CxButton::SetGeometry( int top, int left, int bottom, int right )
 #ifdef __WINDOWS__
 	MoveWindow(left,top,right-left,bottom-top,true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       SetSize(left,top,right-left,bottom-top);
+      LOGSTAT ("I am button " + CcString(GetLabel()) );
+      LOGSTAT ("My top coord is set to " + CcString(top) );
 #endif
 
 }
@@ -102,15 +104,16 @@ int	CxButton::GetTop()
 	}
 	return ( windowRect.top );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
-	if(parent != nil)
-	{
-            parentRect = parent->GetRect();
-            windowRect.y -= parentRect.y;
-	}
+//      cerr << "My uncorrected coord is " << CcString(windowRect.y) << "\n";
+//	if(parent != nil)
+//	{
+//            parentRect = parent->GetRect();
+//            windowRect.y -= parentRect.y;
+//	}
       return ( windowRect.y );
 #endif
 }
@@ -127,7 +130,7 @@ int	CxButton::GetLeft()
 	}
 	return ( windowRect.left );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -147,7 +150,7 @@ int	CxButton::GetWidth()
 	GetWindowRect(&windowRect);
 	return ( windowRect.Width() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetWidth() );
@@ -160,7 +163,7 @@ int	CxButton::GetHeight()
 	GetWindowRect(&windowRect);
       return ( windowRect.Height() );
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       wxRect windowRect;
       windowRect = GetRect();
       return ( windowRect.GetHeight() );
@@ -177,7 +180,7 @@ int	CxButton::GetIdealWidth()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
       return (size.cx+20); // optimum width for Windows buttons (only joking)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cx+20); // nice width for buttons
@@ -195,7 +198,7 @@ int	CxButton::GetIdealHeight()
 	GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
 	return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cy+5); // nice height for buttons
@@ -208,13 +211,13 @@ void CxButton::BroadcastValueMessage()
 	ButtonClicked();
 }
 
-void CxButton::SetDefault()
+void CxButton::SetDef()
 {
 // create the default outline
 #ifdef __WINDOWS__
        ModifyStyle(NULL,BS_DEFPUSHBUTTON,0);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
        SetDefault();
 #endif
 
@@ -233,7 +236,7 @@ BEGIN_MESSAGE_MAP(CxButton, CButton)
 END_MESSAGE_MAP()
 #endif
 
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxButton, wxButton)
       EVT_BUTTON( -1, CxButton::ButtonClicked ) 
@@ -271,7 +274,7 @@ void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 	}
 }
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 void CxButton::OnChar( wxKeyEvent & event )
 {
       switch(event.KeyCode())
@@ -304,7 +307,7 @@ void CxButton::Disable(Boolean disabled)
 	else
             EnableWindow(true);
 #endif
-#ifdef __LINUX__
+#ifdef __BOTHWX__
 	if(disabled)
             Enable(false);
 	else
