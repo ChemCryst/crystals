@@ -215,6 +215,7 @@ C  NY2     TWICE THE NUMBER OF POINTSACROSS THE PAGE
 C  NYNZM2  THE PRODUCT OF 'NY' AND 'NZ' MINUS 2.
 C
 C--
+      CHARACTER *10 CRADTP
 \ICOM30
 \FOURTP
 \ISTORE
@@ -231,6 +232,7 @@ C
 \XSSVAL
 \XNWPGE
 \XLST14
+\XLST13
 \XLST30
 \XTAPES
 \XERVAL
@@ -287,6 +289,14 @@ C--CLEAR THE CORE CONTROL FLAGS
 C----- INITIALISE THE MINIMUM DENSITY
       DENMIN =  100000.
       DENMAX =  -100000.
+CDJW99[
+C----- GET LIST 13 FOR THE RADIATION TYPE
+      IRADTP = -1
+      IF (KEXIST(13) .GE. 1) THEN
+            CALL XFAL13
+            IRADTP = ISTORE(L13DT+1)
+      ENDIF
+CDJW99]
 C--LOAD LIST 5 AND SET UP LIST 10
       CALL XFOURI
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -466,12 +476,18 @@ C----- NEGATED MAP
             DENMIN = DENMAX
             DENMAX = TMP
       ENDIF
-      IF (ISSPRT .EQ. 0) WRITE (NCWU,2610) DENMIN,DENMAX
-      WRITE (NCAWU,2610) DENMIN,DENMAX
-      WRITE ( CMON ,2610) DENMIN,DENMAX
+      IF (IRADTP .LE. -1) THEN
+            CRADTP = 'electrons '
+      ELSE
+            CRADTP = 'electrons '
+            CRADTP = '    barns '
+      ENDIF
+      WRITE ( CMON ,2610) DENMIN,DENMAX, CRADTP
       CALL XPRVDU(NCVDU, 2,0)
 2610  FORMAT(' The minimum and maximum',
-     1' map densities are ',2G10.3,' electrons')
+     1' map densities are ',2G10.3,A,'/A**3')
+      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON
+      WRITE (NCAWU,'(A)') CMON
 C----- STORE IN LIST30 IF DIFFERENCE MAP
       IF (NTYP .EQ. 3) THEN
         CALL XFAL30
