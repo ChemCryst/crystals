@@ -227,24 +227,17 @@ class CxModel : public BASEMODEL
 
     CcPoint m_ptLDown;       //  Last mouse position when rotating
     CcPoint m_ptMMove;       //  Last mouse position
-    bool m_RZoom;       //  Set if drag with right click, no menu then appears.
 
     CcList m_selectionPoints;
     CcRect m_selectRect;
     CcPoint m_movingPoint;
-
-    float m_fAmbient;
-    float m_fDiffuse;
-    float m_fSpecular;
-    float m_fSpotExp;
-    float m_fSpotCut;
 
     int m_mouseMode;
 
     void SetDrawStyle( int drawStyle );
     void SetAutoSize( bool size )  ;
     void SetHover( bool hover )    ;
-    void SetShading( float amb, float dif, float spec, float exp, float cut );
+    void SetShading( bool shade )  ;
 
     void SelectTool( int toolType );
 
@@ -262,11 +255,12 @@ class CxModel : public BASEMODEL
     int m_DrawStyle;         // Rendering style
     bool m_Autosize;      // Resize when rotating?
     bool m_Hover;         // Highlight atoms on hover?
+    bool m_Shading;       // Use fancy shading?
     bool m_bNeedReScale;
     bool m_bModelChanged;
     bool m_bOkToDraw;
     bool m_bFullListOk;
-//    bool m_bQuickListOk;
+    bool m_bQuickListOk;
     float m_stretchX ;
     float m_stretchY ;
     bool  m_bitmapok;

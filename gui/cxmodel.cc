@@ -120,6 +120,7 @@ CxModel::CxModel(CrModel* container)
   m_bNeedReScale = true;
   m_bModelChanged = true;
   m_bFullListOk = false;
+  m_bQuickListOk = false;
   m_bOkToDraw = false;
   m_fastrotate = false;
   m_LitObject = nil;
@@ -130,14 +131,6 @@ CxModel::CxModel(CrModel* container)
   m_stretchY = 1.0f ;
   m_fbsize = 2048;
   m_sbsize = 256;
-
-  m_fAmbient = 0.1f;
-  m_fDiffuse = 1.0f;
-  m_fSpecular = 1.0f;
-  m_fSpotExp = 0.0f;
-  m_fSpotCut = 180.0f;
-
-  m_RZoom = false;
 
   m_movingPoint.Set(-1,-1);
 
@@ -153,9 +146,9 @@ CxModel::CxModel(CrModel* container)
   m_xScale = 1.0f ;
 
   m_DrawStyle = MODELSMOOTH;
-  m_Autosize  = false;
-  (CcController::theController)->status.SetZoomedFlag ( !m_Autosize );
+  m_Autosize  = true;
   m_Hover     = false;
+  m_Shading   = true;
   m_TextPopup = nil;
   m_selectRect.Set(0,0,0,0);
   m_mouseMode = CXROTATE;
@@ -261,7 +254,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
     if (m_bModelChanged)
     {
 // re-render the full detail model.
-      TEXTOUT ( "Redrawing model from scratch" );
+//      TEXTOUT ( "Redrawing model from scratch" );
       DoDrawingLists();
       ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(true);
       m_bFullListOk = true;
@@ -269,7 +262,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 
     if ( ok_to_draw )
     {
-      TEXTOUT ( CcString((int)this) + " Displaying model" );
+//      TEXTOUT ( CcString((int)this) + " Displaying model" );
       if ( m_Autosize && m_bNeedReScale )
       {
         AutoScale();
@@ -283,35 +276,21 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glClearColor( GetRValue(col)/256.0f,
                     GetGValue(col)/256.0f,
                     GetBValue(col)/256.0f,  0.0f);
+//      glClearColor( 1.0f,1.0f,1.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       glMatrixMode ( GL_PROJECTION );
-
-    glEnable(GL_POINT_SMOOTH);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-//    glEnable(GL_BLEND);
-//    glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-    glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
-
       glLoadIdentity();
       CameraSetup();
       ModelSetup();
       ModelBackground();
 
-
-//RIC03: Remove 'fast' rendering.
-//      if ( m_fastrotate && !m_bModelChanged ) //If the model has changed, the QLISTS aren't ready yet.
-//      {
-//        glCallList( STYLIST );
-//        glCallList( QATOMLIST );
-//        glCallList( QBONDLIST );
-//      }
-//      else
+      if ( m_fastrotate && !m_bModelChanged ) //If the model has changed, the QLISTS aren't ready yet.
+      {
+        glCallList( STYLIST );
+        glCallList( QATOMLIST );
+        glCallList( QBONDLIST );
+      }
+      else
       {
         glCallList( STYLIST );
         glCallList( ATOMLIST );
@@ -333,14 +312,15 @@ void CxModel::OnPaint(wxPaintEvent &event)
       SwapBuffers();
 #endif
 
-//      if (m_bModelChanged)
-//      {
+      if (m_bModelChanged)
+      {
 // Now that the display is out of the way, render the quick
 // model to the quick display lists.
 //        TEXTOUT ( CcString((int)this) + " Redrawing quick model from scratch" );
-//        ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(false);
+        ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(false);
         m_bModelChanged = false;
-//      }
+        m_bQuickListOk = true;
+      }
 
       if ( m_selectionPoints.ListSize() > 0 )
       {
@@ -403,27 +383,23 @@ void CxModel::DoDrawingLists()
           glPolygonMode(GL_BACK, GL_POINT);
     }
 
-    GLfloat LightAmbient[] = { m_fAmbient, m_fAmbient, m_fAmbient, 1.0f };
-    GLfloat LightDiffuse[] = { m_fDiffuse, m_fDiffuse, m_fDiffuse, 1.0f };
-    GLfloat LightSpecular[] ={ m_fSpecular,m_fSpecular,m_fSpecular,1.0f };
-    GLfloat SpotExp[] = { m_fSpotExp };
-    GLfloat SpotCut[] = { m_fSpotCut };
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
-    glLightfv(GL_LIGHT0, GL_SPOT_EXPONENT, SpotExp);
-    glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, SpotCut);
-
+    if ( m_Shading )
+    {
+            GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
+            GLfloat LightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
+            glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
+            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
+            glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
+    }
+    else
+    {
+            GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
+            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
+    }
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POINT_SMOOTH);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
     glEndList();
 
@@ -699,7 +675,6 @@ LRESULT CxModel::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
   bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
-  bool rightDown = ( (nFlags & MK_RBUTTON) != 0 );
   bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
   CcPoint point(wpoint.x,wpoint.y);
 
@@ -713,12 +688,11 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
   int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
   nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
   bool leftDown = event.m_leftDown;
-  bool rightDown = event.m_rightDown;
   bool ctrlDown = event.m_controlDown;
 #endif
 
 #ifdef __CR_WIN__
-  // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
+    // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
   if(!m_bMouseLeaveInitialised)
   {
     TRACKMOUSEEVENT tme;
@@ -781,21 +755,6 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
 // Start rotating if the mouse moves after the l button goes down.
             if ( point != m_ptLDown ) m_fastrotate = true;
         }
-      }
-      else if ( rightDown )
-      {
-        m_RZoom = true;
-        SetAutoSize(false);
-        ChooseCursor(CURSORZOOMIN);
-        int winx = GetWidth();
-        int winy = GetHeight();
-        float hDrag = (m_ptMMove.y - point.y)/(float)winy;
-        m_xScale += hDrag;
-        m_xScale = max(0.01f,m_xScale);
-        m_xScale = min(100.0f,m_xScale);
-        NewSize(winx,winy);
-        NeedRedraw();
-        break;
       }
       else    //Lbutton not down, just mouse moving around.
       {
@@ -957,8 +916,6 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
   m_ptMMove = point;
 }
 
-
-
 #ifdef __CR_WIN__
 
 void CxModel::OnRButtonUp( UINT nFlags, CPoint wpoint )
@@ -994,14 +951,6 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
      return;
 
   }
-
-//Right click was used to drag to zoom, we don't want a popup menu.
-  if ( m_RZoom )
-  {
-     m_RZoom = false;
-     return;
-  }
-
 
   CcString atomname;
 
@@ -1073,25 +1022,25 @@ void CxModel::Setup()
    SetCurrent();
 
 #endif
-//            glEnable(GL_NORMALIZE);
+            glEnable(GL_NORMALIZE);
 
-//            glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-//            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-//            glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
-//            glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+            glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+            glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+            glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
 
 
-//            GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
-//            GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
-//            GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
+            GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
+            GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
+            GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
 
-//            glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
-//            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-//            glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
+            glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
+            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
+            glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
 //            glLightModelf( GL_LIGHT_MODEL_TWO_SIDE, 1.0);
 
-//            glEnable(GL_LIGHT0);
-//            glEnable(GL_LIGHTING);
+            glEnable(GL_LIGHT0);
+            glEnable(GL_LIGHTING);
 
 
 // This is for the PaintBannerInstead() function.
@@ -1478,13 +1427,12 @@ void CxModel::AutoScale()
      glMatrixMode ( GL_MODELVIEW );
      glLoadIdentity();
      glMultMatrixf ( mat );
-//RIC03: Remove 'fast' rendering.
-//     if ( m_bQuickListOk )
-//     {
-//       glCallList( QATOMLIST );
-//       glCallList( QBONDLIST );
-//     }
-//     else
+     if ( m_bQuickListOk )
+     {
+       glCallList( QATOMLIST );
+       glCallList( QBONDLIST );
+     }
+     else
      {
        glCallList( ATOMLIST );
        glCallList( BONDLIST );
@@ -1681,7 +1629,7 @@ void CxModel::ModelChanged(bool needrescale)
 //  TEXTOUT ( "Model " + CcString((int)this) + "changed" );
   m_bModelChanged = true;
   m_bFullListOk = false;
-//  m_bQuickListOk = false;
+  m_bQuickListOk = false;
   NeedRedraw(needrescale);
 }
 
@@ -1728,14 +1676,10 @@ void CxModel::SetHover( bool hover )
 {
       m_Hover = hover;
 }
-void CxModel::SetShading( float amb, float dif, float spec, float exp, float cut )
+void CxModel::SetShading( bool shade )
 {
-  m_fAmbient = amb;
-  m_fDiffuse = dif;
-  m_fSpecular = spec;
-  m_fSpotExp = exp;
-  m_fSpotCut = cut;
-  ModelChanged(false);
+      m_Shading = shade;
+      ModelChanged(false);
 }
 
 

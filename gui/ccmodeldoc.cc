@@ -653,16 +653,7 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 
       int nRes = (int) ( 1250.0 / mAtomList->ListSize() );
       nRes = min ( 15, nRes );
-      nRes = max ( 5,  nRes );
-
-    glEnable(GL_POINT_SMOOTH);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-
+      nRes = max ( 4,  nRes );
       int qRes = (int) ( 500.0 / mAtomList->ListSize() );
       qRes = min ( 5, qRes );
       qRes = max ( 3,  qRes );
@@ -680,15 +671,6 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         {
            glDeleteLists(ATOMLIST,1);
            glNewList( ATOMLIST, GL_COMPILE);
-
-    glEnable(GL_POINT_SMOOTH);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-
         }
         {
           GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -839,13 +821,6 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //High res normal bonds:
            glDeleteLists(BONDLIST,1);
            glNewList( BONDLIST, GL_COMPILE);
-    glEnable(GL_POINT_SMOOTH);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
         }
         {
           GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
@@ -903,8 +878,6 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
            glEndList();
         }
       }
-
-/*
       else
       {
 //Low res (non-excluded) atoms
@@ -1088,7 +1061,6 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
            glEndList();
         }
       }
-*/
 
       m_glIDsok = true;
       return true;
