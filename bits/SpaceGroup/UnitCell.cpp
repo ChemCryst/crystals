@@ -37,9 +37,11 @@
 //#include "stdafx.h"
 #include "UnitCell.h"
 #include "Exceptions.h"
+#include "Collections.h"
 #include <iostream.h>
 #include "MathFunctions.h"
 #include "StringClasses.h"
+#include "Wrappers.h"
 #if defined(_WIN32)
 #include <Boost/regex.h>
 #else
@@ -171,7 +173,7 @@ char* UnitCell::guessCrystalSystem()
 {
     float tAs[7];
     float tGs[6];
-    
+    TreeMap<Float, Integer> tResults;
     
     float temp = iAlpha - 90;
     tAs[0] = sqr(temp); 
@@ -201,6 +203,43 @@ char* UnitCell::guessCrystalSystem()
     temp = iB - iC;
     tGs[5] = sqr(temp); 
 
+    int tBestGuess = 1;
+
+    float tCurrentGuess;
+    if ((tCurrentGuess = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4) > tCurrentGuess)	//Monoclinic A
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4) > tCurrentGuess)	//Monoclinic B
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4) > tCurrentGuess)	//Monoclinic C
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[0] +  tAs[1] +  tAs[2])/3) > tCurrentGuess)	//Orthorhombic
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3])/4) > tCurrentGuess)	//Tetragonal
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4) > tCurrentGuess)	//Triconal or hex
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6) > tCurrentGuess)	//Trigonal rhom
+    {
+        tBestGuess = 1;
+    }
+    else if ((tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6) > tCurrentGuess)	//Cubic
+    {
+        tBestGuess = 9;
+    }
+    
+    
     float tMonoA = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4;
     float tMonoB = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4;
     float tMonoC = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4;
@@ -209,6 +248,7 @@ char* UnitCell::guessCrystalSystem()
     float tTriHexHex = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4;
     float tTriRho = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6;
     float tCubic = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6;
+    
     
 	std::cout << "tMonoA: " << tMonoA << "\n" <<
     "tMonoB: " << tMonoB <<  "\n" <<
@@ -266,11 +306,11 @@ int indexOfClass(String& pClass, String& pUnique)
 {
     pClass.upcase();
     pUnique.upcase();
-    if ("Triclinic")
+    if (pClass.cmp("TRICLINIC") == 0)
     {
         return 0;
     }
-    else if ("Monoclinic")
+    else if (pClass.cmp("MONOCLINIC") == 0)
     {
         if (pUnique.cmp("A") == 0)
         {
@@ -285,27 +325,27 @@ int indexOfClass(String& pClass, String& pUnique)
             return 2;
         }
     }
-    else if ("Orthorhombic")
+    else if (pClass.cmp("ORTHORHOMBIC") == 0)
     {
         return 4;
     }
-    else if ("Tetragonal")
+    else if (pClass.cmp("TETRAGONAL") == 0)
     {
         return 5;
     }
-    else if("Trigonal")
+    else if(pClass.cmp("TRIGONAL") == 0)
     {
         return 6;
     }
-    else if("Trigonal(Rhom)")
+    else if(pClass.cmp("TRIGONAL(RHOM)") == 0)
     {
         return 7;
     }
-    else if("Hexagonal")
+    else if(pClass.cmp("HEXAGONAL") == 0)
     {
         return 8;
     }
-    else if("Cubic")
+    else if(pClass.cmp("CUBIC") == 0)
     {
         return 9;
     }
@@ -349,33 +389,19 @@ char* crystalSystemConst(int pIndex)
     }
     return NULL;
 }
-
-UnitCell::UnitCell(char* pPath)
+UnitCell::UnitCell()
 {
-    readInUnitCell(pPath);
+    iAlpha = 0;
+    iBeta = 0;
+    iGamma = 0;
+    iA = 0;
+    iB = 0;
+    iC = 0;
 }
 
-/*void UnitCell::UnitCell(float pA, float pB, float pC, float pAlpha, float, pBeta, float pGamma)
+bool UnitCell::init(char* pLine)	//Reads in from the file provided
 {
-    
-}
-*/
-
-void UnitCell::readInUnitCell(char* pPath)	//Reads in from the file provided
-{
-    char tLine[255];
-    
     regex_t tAngles;
-    
-    /**************************************/
-    /*** Open File ready to be read in	***/
-    /**************************************/
-    FILE* tFile = fopen(pPath, "r");
-    if (tFile == NULL)
-    {
-        throw FileException(errno);
-    }
-    
     /**************************************/
     /*** Set up the regular expressions ***/
     /**************************************/
@@ -384,23 +410,35 @@ void UnitCell::readInUnitCell(char* pPath)	//Reads in from the file provided
       REG_EXTENDED);
     regmatch_t tMatch[13];
     
-    while (fgets(tLine, 255, tFile))
+    //Run line through regular expression
+    if (!regexec(&tAngles, pLine, 13, tMatch, 0))
     {
-        if (!regexec(&tAngles, tLine, 13, tMatch, 0))
-        {
-            String tAlpha(tLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
-            String tBeta(tLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
-            String tGamma(tLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
-            String tA(tLine, (int)tMatch[7].rm_so, (int)tMatch[7].rm_eo);
-            String tB(tLine, (int)tMatch[9].rm_so, (int)tMatch[9].rm_eo);
-            String tC(tLine, (int)tMatch[11].rm_so, (int)tMatch[11].rm_eo);
-            iAlpha = tAlpha.toDouble();
-            iBeta = tBeta.toDouble();
-            iGamma = tGamma.toDouble();
-            iA = tA.toDouble();
-            iB = tB.toDouble();
-            iC = tC.toDouble();
-        }
+        String tAlpha(pLine, (int)tMatch[1].rm_so, (int)tMatch[1].rm_eo);
+        String tBeta(pLine, (int)tMatch[3].rm_so, (int)tMatch[3].rm_eo);
+        String tGamma(pLine, (int)tMatch[5].rm_so, (int)tMatch[5].rm_eo);
+        String tA(pLine, (int)tMatch[7].rm_so, (int)tMatch[7].rm_eo);
+        String tB(pLine, (int)tMatch[9].rm_so, (int)tMatch[9].rm_eo);
+        String tC(pLine, (int)tMatch[11].rm_so, (int)tMatch[11].rm_eo);
+        iAlpha = tAlpha.toDouble();
+        iBeta = tBeta.toDouble();
+        iGamma = tGamma.toDouble();
+        iA = tA.toDouble();
+        iB = tB.toDouble();
+        iC = tC.toDouble();
+        return true;
     }
-    fclose(tFile);
+    //Return that the line didn't match the regular expression.
+    return false;
+}
+
+std::ostream& UnitCell::output(std::ostream& pStream)
+{
+    pStream << "Alpha = " << iAlpha <<  " Beta = " << iBeta << " Gamma = " << iGamma << "\n";
+    pStream << "a = " << iA << " b = " << iB << " c = " << iC;
+    return pStream;
+}
+
+std::ostream& operator<<(std::ostream& pStream, UnitCell& pUnitCell)
+{
+    return pUnitCell.output(pStream);
 }
