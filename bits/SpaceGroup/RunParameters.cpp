@@ -46,7 +46,7 @@ RunParameters::RunParameters()
     iRequestChirality = true;
     iChiral = false;
     iVerbose = false;
-    iInteractiveMode = false;
+   // iInteractiveMode = false;
     iMerge = true;
 }
 
