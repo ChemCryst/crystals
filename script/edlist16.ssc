@@ -17,14 +17,11 @@
 %  MESSAGE USER1 'CRYSTALS cannot find a LIST 16 to edit'
 %  ON ERROR TERMINATE USER1
 %  BLOCK
-%%    CLEAR
+%    CLEAR
 %%&VAX%INSERT '@CRPROC:SPAWNCMD "EDIT SCPLST16.DAT"'
 %%&VAX%EXTERNAL SEND
-%%    INSERT '#use crscp:\edlist16.dat'
-%%    SEND
-%    TRANSFER '^^MN RUNWAIT notepad.exe scplst16.dat' TO DISPLAY
-%    TRANSFER '^^DI NOECHO' TO DISPLAY
-%    GET NOSTORE TEXT 'Press any key to continue'
+%    INSERT '#use crysdir:\script\edlist16.dat'
+%    SEND
 %    COPY '#USE SCPLST16.DAT'
 %    COPY '#SUMMARY LIST 16'
 %    COPY 'END'

@@ -19,11 +19,8 @@ DOSYOU MUST HAVE SET 'COMSPACE' IN AUTOEXEC SUFFICIENTLY LARGE (500000)
 %    CLEAR
 %%&VAX%      INSERT '@CRPROC:SPAWNCMD "EDIT SCPLST5.DAT"'
 %%&VAX%      EXTERNAL SEND
-%%&DOS%      INSERT '#use crscp:\edlist5.dat'
-%%&DOS%      SEND
-%    TRANSFER '^^MN RUNWAIT notepad.exe scplst5.dat' TO DISPLAY
-%    TRANSFER '^^DI NOECHO' TO DISPLAY
-%    GET NOSTORE TEXT 'Press any key to continue'
+%    INSERT '#use crysdir:\script\edlist5.dat'
+%    SEND
 %    COPY '# Inputting new list5'
 %    COPY '#USE SCPLST5.DAT'
 %    COPY '#DISP'
