@@ -202,11 +202,91 @@ using namespace std;
     #include <X11/Xlib.h>
   #endif
 
+#if defined(__WXMAC__)
+#include <Carbon/Carbon.h>
+#include <stdlib.h>
+#include <iostream>
+
+const string macWorkingDir()
+{
+  NavDialogCreationOptions tDialogOptions;
+  NavDialogRef tDialog; 
+  NavReplyRecord tReply;
+
+  if (NavGetDefaultDialogCreationOptions(&tDialogOptions) == noErr)
+    {
+      tDialogOptions.windowTitle = CFSTR("Select Working Directory");
+      tDialogOptions.actionButtonLabel = CFSTR("Choose");
+
+      if (NavCreateChooseFolderDialog(&tDialogOptions, NULL, 
+				      NULL, NULL, &tDialog) == noErr)
+	{
+	  NavDialogRun(tDialog);
+	  NavUserAction tUserAction = NavDialogGetUserAction(tDialog);
+	  if (tUserAction != kNavUserActionCancel && 
+	      tUserAction != kNavUserActionNone)
+	    {
+	      NavDialogGetReply(tDialog, &tReply);
+	      SInt32 tCount;
+	      UInt8  tPath[PATH_MAX];
+	      if (tReply.validRecord && 
+		  AECountItems(&(tReply.selection), &tCount) == noErr && 
+		  tCount == 1)  //1 Directory was chosen 
+		{
+		  FSRef tFolder;
+		  DescType tType;
+		  AEKeyword tKeyWord;
+		  Size tSize;
+	      
+		  AEGetNthPtr(&(tReply.selection), 1, typeFSRef, &tKeyWord, &tType,
+			      (DescType*)&tFolder, sizeof(tFolder), &tSize); 
+		  FSRefMakePath(&tFolder, tPath, PATH_MAX);
+		}
+	      NavDisposeReply(&tReply);
+	      return string((char*)tPath);
+	    }
+	  exit(0);
+	}
+    }
+  std::cerr << "There was an error when setting up the working directly dialog.\n";
+  exit(0);
+  return string();
+}
+
+void macSetCRYSDIR(const char* pPath)
+{
+  string tResources = pPath;
+  tResources = "CRYSDIR=" + tResources + "/Crystals_Resources/";
+  putenv(tResources.c_str()); 
+}
+
+#endif    
+
   bool CCrystalsApp::OnInit()
   {
     string directory;
     string dscfile;
 
+#if defined(__WXMAC__)    
+    UInt8 tPath[PATH_MAX];
+    if (getenv("FINDER") != NULL)
+      {
+ 	directory = macWorkingDir();
+	directory += "/";
+      }
+    CFURLGetFileSystemRepresentation(CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle()), true, tPath, PATH_MAX); 
+    if (getenv("USECRYSDIR") == NULL)
+    {
+      macSetCRYSDIR((char*)tPath);
+    }
+    else
+      {
+	if (strcmp(getenv("USECRYSDIR"), "TRUE") != 0)
+	  {
+	    macSetCRYSDIR((char*)tPath);
+	  }
+      }
+#endif
     for ( int i = 1; i < argc; i++ )
     {
       string command = argv[i];
