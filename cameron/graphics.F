@@ -292,7 +292,7 @@ C FIND LENGTH
         D = SQRT (FLOAT((IX(1)-IX(2))**2 + (IY(1)-IY(2))**2))
         NSTEP = D/(0.2*SCALE)
         IRAD = NINT ( RTHICK * SCALE )
-&GID       IRAD = MAX ( 1, IRAD ) * 2
+&GID       IRAD = MAX ( 4, IRAD ) * 2
 C LOOP ALONG THE LINE
         DO 30 I = 0,NSTEP-1
           IXX(1) = IX(1) + (IX(2)-IX(1))*I/NSTEP
