@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  1999/05/07 15:29:12  dosuser
+C RIC: Added support for 'mouse label' in the GID version.
+C
 C Revision 1.3  1999/02/23 19:44:55  dosuser
 C RIC: The New Cameron Sources. Now we have one set of source code
 C      for the DOS (Salford) and GID (DF&VC++) versions.
@@ -233,7 +236,6 @@ C THIS ATOM IS NOT TO BE LABELLED
 
 C SALFORD DOS AND WIN32 CODE.
 &DOS      IB = KMSGET(IMX,IMY,JF)
-&DOS      IF ((IB.EQ.0).AND.(JF.GT.0)) THEN
 &DOS      IF ((IB.LT.0).AND.(JF.LE.0)) THEN
 C No mouse click, check for keypresses.
 &DOS        CALL ZGTKY1 (KK)
