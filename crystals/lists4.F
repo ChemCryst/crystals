@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/08/05 11:11:12  rich
+C Commented out unused routines - saves 50Kb off the executable.
+C
 C Revision 1.18  2003/05/13 15:35:39  djw
 C Raise SFLS cycle limit to 10, give warning and abandon if more
 C
@@ -2220,6 +2223,23 @@ C
 \IDIM41
 C--LOAD THE LIST
       CALL XLDLST(41,ICOM41,IDIM41,-1)
+      RETURN
+      END
+
+CODE FOR XFAL42
+      SUBROUTINE XFAL42
+C--ROUTINE TO LOAD LIST 42 FROM THE DISC
+C
+C--
+\ICOM42
+C
+\XLST42
+C
+\QLST42
+C
+\IDIM42
+C--LOAD THE LIST
+      CALL XLDLST(42,ICOM42,IDIM42,-1)
       RETURN
       END
 C
