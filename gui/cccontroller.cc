@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.73  2003/09/19 18:02:27  rich
+// Add code to allow inclusion of subsiduary files from the guimenu.srt
+// startup file. (Allows clear separation and structure of the GUI).
+//
 // Revision 1.72  2003/09/17 14:38:53  rich
 // On fatal CRYSTALS error jump into the debugger.
 //
@@ -608,7 +612,7 @@ CcController::CcController( CcString directory, CcString dscfile )
           Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
           Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
           Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
-          Tokenize("^^WI NROWS=20 IGNORE DISABLED=YES } @ 3,1 PROGRESS ");
+          Tokenize("^^WI NROWS=20 } @ 3,1 PROGRESS ");
           Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
           Tokenize("^^WI _MAINTEXTINPUT '' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
           Tokenize("^^CR  ");
