@@ -1,0 +1,179 @@
+%SCRIPT SG
+%%
+%% Script to determine a space group using external program
+%% 1) Get options from user.
+%% 2) Write a file
+%% 3) Fire up space group program
+%% 4) Read back, present, analyse and select result.
+%%
+%% Variables used by the script:
+%%
+% VARIABLE INTEGER   CLAS UNIQ CHIR
+% VARIABLE REAL A B C AL BE GA
+%%
+%% Do some initial checks that all data is present
+%%
+% IF ( EXISTS 1 .EQ. 0 ) THEN
+{E Missing unit cell
+{I The unit cell is required to determine the space group.
+%   FINISH
+% END IF
+% IF ( EXISTS 6 .EQ. 0 ) THEN
+{E Missing observations
+{I Reflections (hkl data) are required to determine the space group.
+%   FINISH
+% END IF
+%%
+%%
+%% STEP 1a - Display a dialog to the user
+%%
+^^WI WINDOW SG 'Space group determination' MODAL COMMIT='SGOK' CANCEL='SGXX'
+^^WI GRID 'top' NROWS=7 NCOLS=3 {
+^^WI    @ 2,2 GRID 'options' NROWS=1 NCOLS=7 {
+^^WI       @ 1,1 STATIC 'T' 'Crystal class:'
+^^WI       @ 1,3 DROPDOWN 'CLASS' INFORM=YES ADDTOLIST
+^^WI         'Triclinic' 'Monoclinic' 'Orthorhombic' 'Tetragonal'
+^^WI         'Rhombohedral' 'Hexagonal' 'Cubic' NULL
+^^WI       @ 1,5 STATIC 'T2' 'Unique axis:'
+^^WI       @ 1,7 DROPDOWN 'UNIQUE' DISABLED=YES ADDTOLIST
+^^WI         ' ' 'a' 'b' 'c' NULL
+^^WI    }
+^^WI
+^^WI    @ 4,2 CHECKBOX 'CHIRAL' 'Material is definitely chirally pure.'
+^^WI
+^^WI    @ 6,2 GRID 'buttons' NROWS=1 NCOLS=5 {
+^^WI       @ 1,1 BUTTON  'SGOK' '&Ok' DEFAULT
+^^WI       @ 1,3 BUTTON  'SGXX' '&Cancel'
+^^WI       @ 1,4 STRETCH 'SGH' HORIZONTAL
+^^WI       @ 1,5 BUTTON  'SGHELP' '&Help'
+^^WI    }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%% Step 1b - Read their responses.
+%%
+% LOOP
+%%
+%% Here are the four possible responses from the dialog:
+%%
+%   VERIFY SGXX SGHELP CLASS SGOK
+%%
+%% We read one, the variable VALUE is assigned its index in the Verify list:
+%%
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%%
+%% We switch on that value:
+%%
+%   CASE VALUE
+%     BLOCK     % SGXX - the user pressed cancel, kill window and exit script
+^^CO    DISPOSE SG
+%       FINISH
+%     END BLOCK
+%     BLOCK     % SGHELP - the user wants help.
+%       COPY '#SCRIPT XHELP1'
+
+ This dialog runs a program to help you to determine the space group
+ of a crystal by analysing the systematic absences in the data.
+
+ You must specify the crystal class, and optionally, if the
+ class requires it you can specify the unique axis.
+
+ If you KNOW that your material is chirally pure, you may check the
+ 'chirally pure' check box.
+%       COPY '#SCRIPT XHELP2'
+%     END BLOCK
+%     BLOCK     % CLASS - the class has been changed.
+%       GET SILENT NOSTORE INTEGER ' '
+%       CASE VALUE
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=YES' TO DISPLAY
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=NO' TO DISPLAY
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=YES' TO DISPLAY
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=NO' TO DISPLAY
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=NO' TO DISPLAY
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=NO' TO DISPLAY
+%TRANSFER '^^CO SET UNIQUE SELECTION=1 DISABLED=YES' TO DISPLAY
+%       END CASE
+%     END BLOCK
+%     BLOCK     % SGOK - user pressed OK, carry on.
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%     END BLOCK
+%   END CASE
+% END LOOP
+%%
+%% Step 1c -  Collect the responses and close the dialog.
+%%
+^^?? CLASS SELECTED
+% GET NOSTORE SILENT INTEGER ' '
+% EVALUATE CLAS = VALUE
+^^?? UNIQUE SELECTED
+% GET NOSTORE SILENT INTEGER ' '
+% EVALUATE UNIQ = VALUE
+^^?? CHIRAL STATE
+% VERIFY OFF ON
+% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+% EVALUATE CHIR = VALUE - 1
+%%
+%% Step 2 - WRITE A FILE
+%%
+% COPY '#RELEASE PUNCH sg.ini'
+%%
+%% The cell line:
+%%
+% COPY '#GENERALEDIT 1'
+% COPY 'LOCATE RECORD=101'
+% COPY 'TRANSFER FROM OFFSET=0 TO A'
+% COPY 'TRANSFER FROM OFFSET=1 TO B'
+% COPY 'TRANSFER FROM OFFSET=2 TO C'
+% COPY 'TRANSFER FROM OFFSET=3 TO AL'
+% COPY 'TRANSFER FROM OFFSET=4 TO BE'
+% COPY 'TRANSFER FROM OFFSET=5 TO GA'
+% COPY 'END'
+% EVALUATE AL = AL * 57.29578
+% EVALUATE BE = BE * 57.29578
+% EVALUATE GA = GA * 57.29578
+% TRANSFER 'CELL ' // CHARACTER A // ' ' // CHARACTER B // ' ' // -
+  CHARACTER C // ' ' // CHARACTER AL // ' ' // CHARACTER BE // ' ' // -
+  CHARACTER GA TO PUNCH
+%%
+%% The HKL line
+%%
+% TRANSFER 'HKL sg.hkl' TO PUNCH
+%%
+%% The CLASS line
+%%
+% CASE CLAS
+%   TRANSFER 'CLASS TRICLINIC' TO PUNCH
+%   TRANSFER 'CLASS MONOCLINIC' TO PUNCH
+%   TRANSFER 'CLASS ORTHORHOMBIC' TO PUNCH
+%   TRANSFER 'CLASS TETRAGONAL' TO PUNCH
+%   TRANSFER 'CLASS RHOMBOHEDRAL' TO PUNCH
+%   TRANSFER 'CLASS HEXAGONAL' TO PUNCH
+%   TRANSFER 'CLASS CUBIC' TO PUNCH
+% END CASE
+%%
+%% The UNIQUE line, if reqd
+%%
+% CASE UNIQ
+%   TRANSFER 'UNIQUE NONE/UNKNOWN' TO PUNCH
+%   TRANSFER 'UNIQUE A' TO PUNCH
+%   TRANSFER 'UNIQUE B' TO PUNCH
+%   TRANSFER 'UNIQUE C' TO PUNCH
+% END CASE
+%%
+%% The CHIRAL line:
+%%
+% IF ( CHIR .EQ. 0 ) THEN
+%   TRANSFER 'CHIRAL UNKNOWN' TO PUNCH
+% ELSE
+%   TRANSFER 'CHIRAL YES' TO PUNCH
+% END IF
+%% 
+%% The OUTPUT file:
+%%
+% TRANSFER 'OUTPUT sg.dat' TO PUNCH
+%%
+%% Close file.
+%%
+% COPY '#RELEASE PUNCH bfile.pch'
+%END SCRIPT
