@@ -282,11 +282,13 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
 
 	mProgramResizing = false;
 
+        if ( nType == SIZE_MINIMIZED ) return;
+
 	int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
 	int cH = GetSystemMetrics(SM_CYCAPTION);
 	int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
-	((CrWindow*)mWidget)->ResizeWindow(	cx + (2*bT),
-										cy + ( mN + cH + 2*bT ) );
+        ((CrWindow*)mWidget)->ResizeWindow( cx + (2*bT),
+                                            cy + ( mN + cH + 2*bT ) );
 
 	mProgramResizing = true;
 }
@@ -294,8 +296,12 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
 //Cosmetic: Stops the user being able to drag the frame smaller than the default window size.
 void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI) 
 {
-	int minHeight = ((CrWindow*)mWidget)->mMinHeight;
-	int minWidth  = ((CrWindow*)mWidget)->mMinWidth;
+	int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
+	int cH = GetSystemMetrics(SM_CYCAPTION);
+	int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
+
+        int minHeight = 15+( mN + cH + 2*bT );
+        int minWidth  = 30+(2*bT);
 
 	lpMMI->ptMinTrackSize.x = minWidth;
 	lpMMI->ptMinTrackSize.y = minHeight;
