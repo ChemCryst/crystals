@@ -148,6 +148,7 @@
 %  COPY '#SPAWN + "CRYSDIR:mogul.bat" -ins crystals.qf'
 {R * Done.
 ^^CO DISPOSE XMOGULGO
+%  FINISH
 % END BLOCK
 % BLOCK                                %ROP
 ^^CO DISPOSE XMOGULGO
