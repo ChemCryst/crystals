@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2003/01/14 10:19:05  rich
+C g77 spots missing comma in Format statement.
+C
 C Revision 1.10  2002/02/12 12:48:35  Administrator
 C reformat output to print new dates properly
 C
@@ -1756,7 +1759,8 @@ C -- CURRENT VERSION TO BE ALTERED. WARN USER, IF DELETE FLAG SET
 3005  FORMAT ( 1X , 'List type ' , I3 , ' with serial number ' , I5 ,
      2 ' is the current version. ' ,/
      3 ' You may still save this list with DELETE n ACTION=NO' )
-      CALL XERHND ( IERWRN )
+C RIC04: Don't issue warning, scares people.
+c      CALL XERHND ( IERWRN )
 3100  CONTINUE
       IOFF = 0
       INEWVL = IVALUE * IABS ( INDEXF(INDFIL) )
