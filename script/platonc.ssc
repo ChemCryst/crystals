@@ -40,8 +40,8 @@
 %%
 %%
 %  EVALUATE CDIR = GETPATH ( CFILE )
-%  TRANSFER '#spawn +copy ' // CDIR // 'check.def .' TO DISPLAY
-%  TRANSFER '#spawn +copy ' // CDIR // 'check.def .' TO CRYSTALS
+%  TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY
+%  TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS
 %  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO DISPLAY
 %  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO CRYSTALS
 %%
