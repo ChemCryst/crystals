@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2002/11/06 12:58:22  rich
+C If the theta_full value in L30 is negative, then the program will use its absolute
+C value as theta_full and compute the completeness, rather than trying to find
+C an optimum theta_full.
+C
 C Revision 1.42  2002/10/31 13:22:58  rich
 C Some indenting to try to work out esd code.
 C A DVF fix to fix compiler moan (consant passed as subroutine arg, then
@@ -3997,7 +4002,7 @@ C
          CALL XPCIF (' ')
          CALL XPCIF (' ')
 
-         CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP)
+         CALL XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, 0)
 
          CBUF(1:21)='_diffrn_reflns_theta_'
          WRITE (CLINE,'(A,''min '', F10.3)') CBUF(1:21), THMIN

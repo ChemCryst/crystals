@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.34  2002/11/06 12:58:22  rich
+C If the theta_full value in L30 is negative, then the program will use its absolute
+C value as theta_full and compute the completeness, rather than trying to find
+C an optimum theta_full.
+C
 C Revision 1.33  2002/08/30 14:36:15  richard
 C Added pressure to L30. Only appears in CIF if non-zero.
 C
@@ -934,7 +939,7 @@ CODE FOR XTHETA
       END
 C
 CODE FOR XTHLIM
-      SUBROUTINE XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP)
+      SUBROUTINE XTHLIM (THMIN,  THMAX,THMCMP,  THBEST,THBCMP, IPLOT)
 C
 C -- ROUTINE WORK OUT COMPLETENESS OF DATA
 C
@@ -979,6 +984,7 @@ C -- SCAN LIST 6 FOR ALL REFLECTIONS
 1100  CONTINUE
         ISTAT = KLDRNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
+        ISTAT = KSYSAB ( 2 )
         IMAXH = MAX( IMAXH, NINT (STORE(M6  )) )
         IMAXK = MAX( IMAXK, NINT (STORE(M6+1)) )
         IMAXL = MAX( IMAXL, NINT (STORE(M6+2)) )
@@ -1254,7 +1260,8 @@ C See if there is a lower possible IMINL
       END DO
 
 
-      ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
+c      ITRSZ = IHTOT + 3*IKTOT + 2*ILTOT
+      ITRSZ = IHTOT
 
 
 C If THBEST is -ve, its absolute value will be used, and it
@@ -1264,15 +1271,15 @@ C will not be optimised.
          STORE(L30CF+10)=MAX(STORE(L30CF+10),-THMAX)
          THBEST = -STORE(L30CF+10)
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THBEST, THBCMP, THDUM,THDUM2)
+     1            THBEST, THBCMP, THDUM,THDUM2,IPLOT)
          STORE(L30CF+11)=THBCMP
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THMAX, THMCMP, THDUM,THDUM2)
+     1            THMAX, THMCMP, THDUM,THDUM2,IPLOT)
 
       ELSE
 
          CALL XCOMPL(ITRSZ,IMINH,IMINK,IMINL,IMAXH,IMAXK,IMAXL,
-     1            THMAX, THMCMP, THBEST,THBCMP)
+     1            THMAX, THMCMP, THBEST,THBCMP,IPLOT)
          STORE(L30CF+10)=THBEST
          STORE(L30CF+11)=THBCMP
 
@@ -1290,7 +1297,7 @@ C will not be optimised.
 
 CODE FOR XCOMPL
       SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
-     1                    THMAX,THMCMP, THBEST,THBCMP )
+     1                    THMAX,THMCMP, THBEST,THBCMP, IPLOT )
 \ISTORE
 \STORE
 \XLST06
@@ -1299,7 +1306,7 @@ CODE FOR XCOMPL
 \XCONST
 \XIOBUF
 \QSTORE
-      DIMENSION IHKLTR ( ITRSZ )
+      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
 
@@ -1310,81 +1317,29 @@ CODE FOR XCOMPL
 
       CALL XFAL06(0)
 
-C Build a HKL tree (requires sorted data to work properly).
+      NHKL = 0
 
-      JP = 0
-      JLLP = -1
-      JLKP = -1
-      ILL = 99999
-      ILK = 99999
+      DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
+          NHKL = NHKL + 1
+          ISTAT = KSYSAB ( 2 )
+          DO I = 0,2
+            IHKLTR(I+1, NHKL) = STORE(M6+I)
+          END DO
+      END DO
 
-1100  CONTINUE
-        ISTAT = KLDRNR ( 0 )
-        IF ( ISTAT .LT. 0 ) GO TO 1200
+      CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
 
-        IF ( NINT(STORE(M6+2)) .NE. ILL ) THEN
-            ILK = NINT(STORE(M6+1))
-            ILL = NINT(STORE(M6+2))
-C Terminate the last K chain:
-            IF ( JLKP .GT. 0 ) IHKLTR(JLKP) = -512
-            JLKP = -1
-C Terminate H chain:
-            IF ( JP .GT. 0 ) IHKLTR(JP) = -512
-            JP = JP + 1
-C Store new L value:
-            IHKLTR(JP) = NINT(STORE(M6+2))
-            IF ( JLLP .GT. 0 ) IHKLTR(JLLP) = JP
-            JP = JP + 1
-C Store place for pointer to next L value:
-            JLLP = JP
-            JP = JP + 1
-C Store new K value:
-            IHKLTR(JP) = NINT(STORE(M6+1))
-            JP = JP + 1
-C Leave place for pointer to next K value:
-            JLKP = JP
-            JP = JP + 1
-C Store new H value:
-            IHKLTR(JP) = NINT(STORE(M6))
-            JP = JP + 1
-        ELSE IF ( NINT(STORE(M6+1)) .NE. ILK ) THEN
-            ILK = NINT(STORE(M6+1))
-C Terminate H chain:
-            IF ( JP .GT. 0 ) IHKLTR(JP) = -512
-            JP = JP + 1
-C Store new K value:
-            IHKLTR(JP) = NINT(STORE(M6+1))
-            IF ( JLKP .GT. 0 ) IHKLTR(JLKP) = JP
-            JP = JP + 1
-C Store place for pointer to next K value:
-            JLKP = JP
-            JP = JP + 1
-C Store new H value:
-            IHKLTR(JP) = NINT(STORE(M6))
-            JP = JP + 1
-         ELSE
-C Store next H value:
-            IHKLTR(JP) = NINT(STORE(M6))
-            JP = JP + 1
-         END IF
-      GO TO 1100
-1200  CONTINUE
-C Terminate all chains:
-      IHKLTR(JP) = -512
-      IHKLTR(JLKP) = -512
-      IHKLTR(JLLP) = -512
-
-
-c      DO I = 1, ITRSZ
-c        WRITE(99,'(I6,1X,I8)') I, IHKLTR(I)
+c      DO I = 1,NHKL
+c        WRITE(NCWU,'(3I4)') (IHKLTR(J,I),J=1,3)
 c      END DO
 
 
-c      WRITE(99,'(a,6I7)') 'min and maxs', JNH,JXH,JNK,JXK,JNL,JXL
-
       NALLWD = 0
       NFOUND = 0
+      IMISSI = 0
+      
 
+C Loop through ALL possible indices:
       DO IL = JNL, JXL
         DO IK = JNK, JXK
           DO IH = JNH, JXH
@@ -1407,35 +1362,33 @@ C Only consider 'allowed' if indices were not changed by KSYSAB:
                   ALLBIN(JID) = ALLBIN(JID) + 1.0
                   JP = 1
                   IFOUND = 0
-                  DO WHILE ( IHKLTR(JP) .NE. IL )
-                    JP = IHKLTR(JP+1)
-                    IF ( JP .GT. ITRSZ ) JP = -1
+
+                  DO WHILE ( IHKLTR(3,JP) .NE. IL )
+                    JP = JP + 1
+                    IF ( JP .GT. NHKL ) JP = -1
                     IF ( JP .LE. 0)  EXIT
                   END DO
                   IF ( JP .GT. 0 ) THEN
-                    JP = JP + 2
-                    DO WHILE ( IHKLTR(JP) .NE. IK )
-                      JP = IHKLTR(JP+1)
-                      IF ( JP .GT. ITRSZ ) JP = -1
-                      IF ( JP .LE. 0)  EXIT
-                    END DO
-                    IF ( JP .GT. 0 ) THEN
-                      JP = JP + 2
-                      DO WHILE ( IHKLTR(JP) .NE. IH )
-                        JP = JP + 1
-                        IF ( JP .GT. ITRSZ ) JP = -1
-                        IF ( IHKLTR(JP) .LE. -512 ) JP = -1
-                        IF ( JP .LE. 0)  EXIT
-                      END DO
-                      IF ( JP .GT. 0 ) THEN
-                        NFOUND = NFOUND + 1
-                        IFOUND = 1
-                        FNDBIN(JID) = FNDBIN(JID) + 1.0
+                    DO WHILE ( IHKLTR(3,JP) .EQ. IL )
+                      IF ( ( IHKLTR(1,JP) .EQ. IH ) .AND.
+     1                     ( IHKLTR(2,JP) .EQ. IK ) ) THEN
+                           NFOUND = NFOUND + 1
+                           IFOUND = 1
+                           FNDBIN(JID) = FNDBIN(JID) + 1.0
+                           EXIT
                       END IF
-                    END IF
+                      JP = JP + 1
+                      IF ( JP .GT. NHKL ) EXIT
+                    END DO
                   END IF
                   IF ( IFOUND .EQ. 0 ) THEN
-c               WRITE (99,'(A,3I5,F8.3)')'Missing: ',IH,IK,IL,XTHETA()
+                    IF ( IMISSI .EQ. 0 ) THEN
+                      WRITE (NCWU,'(A,F5.2,A/A)')
+     1 ' The following reflections ( < ',THMAX, ' theta ) are missing:',
+     2 '   H    K    L   Theta '
+                    END IF
+                    IMISSI = IMISSI + 1
+                    WRITE (NCWU,'(3I5,F8.3)') IH,IK,IL,XTHETA()
                   END IF
                 END IF
               END IF
@@ -1444,7 +1397,8 @@ c               WRITE (99,'(A,3I5,F8.3)')'Missing: ',IH,IK,IL,XTHETA()
         END DO
       END DO
 
-c      WRITE(99,'(A,2I9)') 'NALLWD, NFOUND: ', NALLWD, NFOUND
+      WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
+     1 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
 
       THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
 
@@ -1455,21 +1409,52 @@ c      WRITE(99,'(A,2I9)') 'NALLWD, NFOUND: ', NALLWD, NFOUND
 
       THBEST = 0.0
       THBCMP = 0.0
+      CMPMIN  = 1.0
 
+      WRITE(NCWU,'(A)') ' Theta  Completeness% Expected  Found '
       DO I = 1,100
-c        WRITE(99,'(A,2F10.4)')'Fnd,Tot: ',FNDBIN(I),ALLBIN(I)
         IF ( ALLBIN(I) .EQ. 0 ) THEN
-          FNDBIN(I) = 0
+          COMP = 0.0
         ELSE
-          FNDBIN(I) = FNDBIN(I) / ALLBIN(I)
+          COMP = FNDBIN(I) / ALLBIN(I)
+          CMPMIN = MIN (CMPMIN,COMP)
         END IF
-c        WRITE(99,'(30X,A,2F10.4)')'Cmp,tht: ',
-c     1     FNDBIN(I),THMAX*((I+300.0)/400.0)
-        IF ( (FNDBIN(I) .GE. THBCMP) .OR. (FNDBIN(I) .GT. 0.995) ) THEN
+
+        WRITE(NCWU,'(F6.2,F11.2,I11,I9)') THMAX*((I+300.0)/400.0),
+     1   COMP*100., NINT(ALLBIN(I)), NINT(FNDBIN(I))
+
+        IF ( (COMP .GE. THBCMP) .OR. (COMP .GT. 0.995) ) THEN
           THBEST = THMAX*((I+300.0)/400.0)                       
-          THBCMP = FNDBIN(I)
+          THBCMP = COMP
         END IF
       END DO
+
+        WRITE(NCWU,'(/F6.2,F11.2,A)') THBEST, THBCMP,
+     1   '< best theta_full'
+
+
+      IF ( IPLOT .EQ. 1 ) THEN
+        CMPMIN = 100.0 * MIN(0.99,CMPMIN)
+        WRITE(CMON,'(A/A,2F7.2,A/A,F7.2,A)')
+     1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL',
+     1  '^^PL XAXIS ZOOM ', .75*THMAX, THMAX,
+     1  ' TITLE Theta NSERIES=1 LENGTH=100',
+     1  '^^PL YAXIS ZOOM ', CMPMIN, ' 100 TITLE Completeness'
+        CALL XPRVDU(NCVDU, 3,0)
+
+        DO I = 1,100
+
+          WRITE(CMON,'(A,F10.3,A,2F10.5)')
+     1    '^^PL LABEL ', THMAX*((I+300.0)/400.0),
+     1    ' DATA ', THMAX*((I+300.0)/400.0),100.*FNDBIN(I)/ALLBIN(I)
+          CALL XPRVDU(NCVDU, 1,0)
+        END DO
+
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+
+      END IF
+
 
       RETURN
       END
