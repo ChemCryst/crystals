@@ -379,9 +379,9 @@ C THE DEVICE IS A RASTER ONE.
 C        CALL ZCPLGN(IX,IY,N,HANDLE,ERROR)
 C        CALL ZFPLGN(HANDLE,ICOL,ERROR)
 C        CALL ZDPLGN(HANDLE,ERROR)
-        IF ( IFILL .EQ. 0 ) THEN
+cdjw030804        IF ( IFILL .EQ. 0 ) THEN
          CALL ZPLINE(IX,IY,N,IFORE)
-        END IF
+cdjw030804        END IF
 
       ENDIF
       GOTO 9999
@@ -741,11 +741,15 @@ c      WRITE (IFOUT,'(7A)') 'setfont'
       END
  
 CODE FOR ZDRELL
-      SUBROUTINE ZDRELL (ITYPE,IXC,IYC,IMAJ,IMIN,ICOL,IFTYPE,IATNO)
+      SUBROUTINE ZDRELL (ITYPEI,IXC,IYC,IMAJ,IMIN,ICOL,IFTYPE,IATNO)
+cdjw040808  ITYPE 3 added to enable black outlines to atoms on
+c      VGA screens. 
+c
 C This routines draws an ELLIPSE with major/minor axes IMAJ/IMIN
 C in colour ICOL.
-C ITYPE = 1 - outline of ELLIPSE
-C ITYPE = 2 - solid ELLIPSE
+C ITYPEI = 1 - outline of ELLIPSE
+C ITYPEI = 2 - solid ELLIPSE
+C ITYPEI = 3 - VGA SOLID ELLIPSE WITH BLACK OUTLINE
 C IFTYPE = 2 -SMALL CIRCLE
 C IATNO = number of atom we are drawing
       
@@ -772,6 +776,13 @@ C IATNO = number of atom we are drawing
       INTEGER IX(91),IY(91)
       DATA HEX/'0','1','2','3','4','5','6','7','8','9','A',
      c 'B','C','D','E','F'/
+cdjw040804
+      if ((iscrn .ne. 1) .and. (itypei .eq. 3)) then
+             itype = 2
+      else
+             itype = itypei
+      endif
+cdjw040804
       GOTO (100,200,300,300,500,500,100,500) ISCRN
 100   CONTINUE
 C VGA
@@ -781,6 +792,12 @@ C VGA
       ELSE
         CALL ZFILEL(IXC+INT(XCEN+XOFF),IYC+INT(YCEN+YOFF)
      + ,IMAJ,IMIN,ICOL)
+cdjw040804
+        if (itype .eq. 3) then
+          CALL ZVGAEL(IXC+INT(XCEN+XOFF),IYC+INT(YCEN+YOFF)
+     +    ,IMAJ,IMIN,0)
+        endif
+cdjw040804
       ENDIF
       GOTO 9999
 200   CONTINUE
@@ -999,8 +1016,16 @@ C SCALE COORDINATES
       IX = NINT((X-XCP)*SCALE)
       IY = NINT((Y-YCP)*SCALE)
       IRAD = INT(R*SCALE)
-      IF (IFILL.GE.1) THEN
+      IF (IFILL.GE.1)  THEN
+cdjw040804
+       write(cline,'(a,i6)') 'irad= ', irad
+       call zmore (cline, 0)
+       if ((itype .ne. 2) .and. (irad .ge. 20))then
+         CALL ZDRELL(3,IX,IY,IRAD,IRAD,IDEVCL(ICOL+1),ITYPE,I)
+       else
          CALL ZDRELL(2,IX,IY,IRAD,IRAD,IDEVCL(ICOL+1),ITYPE,I)
+       endif
+cdjw040804
            IF (IDOT.EQ.1.AND.(ITYPE.EQ.1 .AND. IFILL .EQ. 1)) THEN
 C CALCULATE THE POSITION OF THE WHITE CIRCLE
            IXX(1) = IX + IRAD*0.4
