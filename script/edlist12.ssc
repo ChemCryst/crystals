@@ -1,30 +1,31 @@
 %SCRIPT EDLIST12
     This SCRIPT puts you into a system editor to modify the refinement
     instructions.
-%%YOU MUST HAVE SET 'COMSPACE' SUFFICIENTLY LARGE (500000)
 %%
-%  IF ( EXISTS 12 .EQ. 1 ) THEN
+%  IF ( EXISTS 12 .NE. 1 ) THEN
+%    COPY '#LIST 12'
+%    COPY 'FULL'
+%    COPY 'END'
+%  END IF
+%%
 %  COPY '#RELEASE PUNCH SCPLST12.DAT'
 %  ON ERROR CONTINUE
 %  BLOCK
 %    COPY '#PUNCH 12'
 %    COPY 'END'
 %  END BLOCK
-%%&VAX%  COPY '#RELEASE PUNCH'
 %  COPY '#RELEASE PUNCH crfile.pch'
-%  END IF
 %%
 %  MESSAGE USER1 'CRYSTALS cannot find a LIST 12 to edit'
 %  ON ERROR TERMINATE USER1
 %  BLOCK
 %    CLEAR
-%%&VAX%INSERT '@CRPROC:SPAWNCMD "EDIT SCPLST12.DAT"'
-%%&VAX%EXTERNAL SEND
 %    INSERT '#use crysdir:\script\edlist12.dat'
 %    SEND
 %    COPY '#USE SCPLST12.DAT'
 %    COPY '#SUMMARY LIST 12'
 %    COPY 'END'
+
+ * Done. List 12 updated.
 %  END BLOCK
-%%
 %END SCRIPT
