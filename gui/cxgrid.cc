@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.11  2001/11/14 10:30:40  ckp2
+//   Various changes to the painting of the background of Windows as some of the
+//   dialogs suddenly went white under XP.
+//
 //   Revision 1.10  2001/07/16 07:31:44  ckp2
 //   Process ON_CHAR messages - result in passing keypress to current input editbox. Now
 //   whole interface is much easier to start typing from.
@@ -184,6 +188,7 @@ BOOL CxGrid::OnEraseBkgnd(CDC* pDC)
   pDC->GetClipBox( &rect);
 
   COLORREF fillColor = GetSysColor(COLOR_3DFACE);
+// Use this to color unused space red: (for debugging)  COLORREF fillColor = RGB(255,0,0);
 
 // Create the bursh and select into DC
   CBrush brush ( fillColor );
