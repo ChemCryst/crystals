@@ -23,6 +23,8 @@ typedef struct ElemStats
     int tNumM;		//Number matched
     int tNumNonMLsInt;	//Number Int<3*sigma non-matched
     int tNumNonMGrInt;	//Number Int>=3*sigma non-matched
+	int tNumMLsInt;	//Number Int<3*sigma non-matched
+    int tNumMGrInt;	//Number Int>=3*sigma non-matched
     float tRating1;
     float tRating2; 
     bool iFiltered;
@@ -39,8 +41,8 @@ class Stats:public MyObject
         ElemStats* iStats;	//Cells of the stats.
         bool iFiltered;
         void outputRegions(std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums);
-        void outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums, const int pColumnWidth=12, const int pOtherColumns=8);
-        static float evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD);
+        void outputRow(int pRow, std::ostream& pStream, const signed char pColumnsToPrint[], const int pNumOfColums, const int pColumnWidth=13, const int pOtherColumns=8);
+        
         void handleFilteredData(int pColumns[], int pNumColumns);
         int numberOfOutElementValues() const;
         std::ostream& outputElementValue(std::ostream& pStream, ElemStats* pStats , int pValues);
@@ -50,12 +52,13 @@ class Stats:public MyObject
         ~Stats();
       //  bool filtered() const;
         void addReflectionRows(const int pColumn, Reflection* pReflection, Matrix<short> &pHKL);
-        void addReflection(Reflection* tReflection, JJLaueGroup &pLaueGroup);
-		void addReflections(HKLData &pHKLs, JJLaueGroup &pLaueGroup);
+        void addReflection(Reflection* tReflection, LaueGroup &pLaueGroup);
+		void addReflections(HKLData &pHKLs, LaueGroup &pLaueGroup);
         void calProbs();			//Calculates all the probabilites for all the cells.
         ElemStats* getElem(const int pHeadIndex, const int pCondIndex) const;
         std::ostream& output(std::ostream& pStream, const Table& pTable);
         std::ofstream& output(std::ofstream& pStream, const Table& pTable);
+		static float evaluationFunction(float pX, float AbsentM, float AbsentSD, float PresentM, float PresentSD);
 };
 
 #endif
