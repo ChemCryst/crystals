@@ -10,6 +10,12 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  1999/05/28 17:59:56  dosuser
+// RIC: Attempted world record for most number of files
+// checked in at once. Most changes are to do with adding
+// support for a LINUX windows library. Nothing has broken
+// in the windows version. As far as I can see.
+//
 // Revision 1.3  1999/04/28 13:59:06  dosuser
 // RIC: Added support for SetSelection to DropDown so that the SCRIPT
 //      writer can choose which item is selected.
@@ -99,11 +105,11 @@ void	CxDropDown::SetGeometry( const int top, const int left, const int bottom, c
 #ifdef __WINDOWS__
 	//If top or left are negative, this is a call from CalcLayout,
 	//therefore don't repaint the window.
-	RECT windowRect;
-	GetWindowRect(&windowRect);
-	SetItemHeight(-1, bottom-top); //The closed up height is set by this call, MoveWindow sets the dropped height.
+      SetItemHeight(-1, bottom-top); //The closed up height is set by this call, MoveWindow sets the dropped height.
 	if((top<0) || (left<0))
 	{
+            RECT windowRect;
+            GetWindowRect(&windowRect);
 		RECT parentRect;
 		CWnd* parent = GetParent();
 		if(parent != nil)
