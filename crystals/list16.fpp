@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2003/06/19 13:22:15  rich
+C
+C To List 16, the directive 'REM' has been added. Anything following
+C this directive is ignored, but it still stored in list 16.
+C
 C Revision 1.2  2001/02/26 10:28:01  richard
 C RIC: Added changelog to top of file
 C
@@ -240,7 +245,8 @@ C   1.DEFINE         2.RESTRAIN       3.DISTANCES      4.ANGLES
 C   5.VIBRATIONS     6.COMPILER       7.EXECUTION      8.NO
 C   9.FUNCTION      10.U(IJ)'S       11.TERM          12.EQUATE
 C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
-C  17.LIMIT         18.ENERGY        19.ORIGIN
+C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
+C  21.SAME
 C
 C----- ISTORE (LCG + 1) OPERATIONS
 C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4
@@ -254,6 +260,7 @@ C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
 \ISTORE
 C
       DIMENSION IEQU(10)
+      DIMENSION INMD(4)
 C
 \STORE
 \XLISTI
@@ -265,11 +272,14 @@ C
 \XLST05
 \XLST12
 \XCONST
+\XDSTNC 
 \XLST26
 \XERVAL
 \XOPVAL
 \XIOBUF
 C
+      CHARACTER *32 CATOM1, CATOM2, CATOM3
+
 \QSTORE
 C
       EQUIVALENCE (Z,MZ)
@@ -282,6 +292,8 @@ C
 C
       DATA IEQU(1)/'DIST'/,IEQU(2)/'ANGL'/,IEQU(3)/'FROM'/
       DATA IEQU(4)/'TO  '/,IEQU(5)/'FOR '/,IEQU(6)/'AND '/
+      DATA INMD(1)/'st  '/,INMD(2)/'nd  '/,INMD(3)/'rd  '/,
+     1     INMD(4)/'th  '/
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1(2)
@@ -299,10 +311,17 @@ C--SET UP THE REQUIRED LISTS FOR THE PARSING ROUTINES
       CALL XLSV
       IF ( IERFLG .LT. 0 ) GO TO 9900
 \IDIM05
-C--INDICATE THAT LIST 5 IS NOT IN CORE
-      DO 1050 I=1,IDIM05
-      ICOM05(I)=NOWT
-1050  CONTINUE
+cC--INDICATE THAT LIST 5 IS NOT IN CORE
+c      DO 1050 I=1,IDIM05
+c      ICOM05(I)=NOWT
+c1050  CONTINUE
+C Load list 5 into core (allows checking during processing).
+       CALL XFAL05
+C Grab some space for three atom list vectors (for SAME restraint).
+       MDATVC = 3
+       LATVC = KSTALL (N5*MDATVC)
+C Load list 41 into core (for SAME restraint).
+       CALL XFAL41
 \IDIM12
 C--INDICATE THAT LIST 12 IS NOT IN CORE
       DO 1100 I=1,IDIM12
@@ -334,8 +353,9 @@ C--RECORD THE NUMBER OF ERRORS SO FAR
       LSTLEF=LEF
       MZ=0
 C--JUMP ON THE FUNCTION OF THE CARD
-      GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,2300,2450,
-     2 4050,4550,5400,5650,5660,7000,7200,1150,1250) ,MG
+      GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
+     2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
+     3     1810,1250), MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -363,9 +383,9 @@ C--'DISTANCE' CARD
 1550  CONTINUE
       L=3
       M=5
-      I=KRCI(LN)
+      I=KRCI(LN)  ! Check for normal, mean, or distance format.
       IF(I)5850,1700,1650
-1650  CONTINUE
+1650  CONTINUE    ! A Diff or Mean distance.
       ISTORE(LCG+1)=ISTORE(LCG+1)+I
       I=1
 1700  CONTINUE
@@ -381,6 +401,500 @@ C--'ANGLE' CARD
       ISTORE(LCG+1)=6
       K=2
       GOTO 1550
+
+C
+C--'SAME' CARD
+1810  CONTINUE
+C This restraint is going to generate a lot of distance and
+C angle constraints.
+C The syntax is SAME At1 At2 At3 At4 and At5 At6 At7 At8 and ... etc
+C The 1,2 connectivity matrix for At1-4 is computed. The corresponding
+C distances in At5-8 and At9-12 etc are restrained.
+C Sim. for the 1,3 connectivity and Angles.
+C
+C We need to know in advance how many atoms are in each group. We need
+C to check at this time whether the number match (essential) and
+C whether the element types match (warn).
+C
+C      OME = ME ! Save the current lexical pointers.
+C      OMF = MF
+C
+
+      DISTW = 0.01
+      ANGLW = 0.1
+
+      I = KSYNUM(Z)
+      IF (I.GT.0) GOTO 2700
+      IF (I .EQ. 0 ) THEN
+        ME=ME-1
+        MF=MF+LK2
+        DISTW = Z       ! The weight for distance restraints.
+        IF(KOP(8).LT.0) THEN   ! CHECK FOR OPTIONAL ',' SIGN
+           WRITE(CMON,'(A)') 'End of SAME directive found too soon.'
+           CALL XPRVDU(NCVDU,1,0)
+           CALL XCFE    ! End of card found.
+           GOTO 5850
+        END IF
+        I = KSYNUM(Z)
+        IF (I.GT.0) THEN
+           WRITE(CMON,'(A)') 'Operator found instead of number.'
+           CALL XPRVDU(NCVDU,1,0)
+           GOTO 2700
+        END IF
+        IF (I.EQ.0) THEN
+          ME=ME-1
+          MF=MF+LK2
+          ANGLW = Z       ! The weight for angle restraints.
+        END IF
+      END IF
+
+      IF ( ( DISTW.LE.0.0 ) .OR. ( ANGLW.LE.0.0 ) ) THEN
+        CALL XPCLNN(LN)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,1815)
+        WRITE(NCAWU,1815)
+        WRITE ( CMON ,1815)
+        CALL XPRVDU(NCVDU, 1,0)
+1815    FORMAT(' Negative or zero e.s.d.')
+        LEF=LEF+1
+        GOTO 5850
+      END IF
+
+      IF(ISTORE(MF).LT.0)THEN   ! Remove optional 'FOR' argument.
+        IF(KCOMP(1,ISTORE(MF+2),IEQU(5),1,1).GT.0)THEN
+          ME=ME-1    ! UPDATE THE POINTERS AFTER A 'FOR'
+          MF=MF+LK2
+        END IF
+      END IF
+
+C Scan the whole line, work out number of groups, number of atoms, and
+C check that the number of atoms is constant across groups. Also check
+C that the element type is equivalent for the same index in each group.
+C Also fill in the include/exclude vector (LATVC) for KDIST4.
+      NATOMS = 0
+      JATOMS = 0
+      NGROUP = 1
+      IATD = LFL - 10*N5
+      JATD = IATD
+      CALL XFILL (-1, ISTORE(LATVC), N5*MDATVC) ! Exclude all by default.
+
+      DO WHILE (.TRUE.)
+        IF ( ME .LE. 0 ) EXIT
+        I = KCOMP (1, ISTORE(MF+2), IEQU(6), 1,1) ! CHECK FOR 'AND'
+        IF ( I .GT. 0 ) THEN    ! IT IS AN 'AND'
+          IF ( NGROUP .GT. 1 ) THEN   ! It is not the first group.
+            IF ( NATOMS .NE. JATOMS ) THEN  ! Check number atoms matches first group.
+              WRITE (CMON,'(A)') 'A group is different size from first'
+              CALL XPRVDU(NCVDU,1,0)
+              GOTO 5850
+            END IF
+          END IF
+          NATOMS = JATOMS ! Store the number of atoms in a group.
+          JATOMS = 0
+          NGROUP = NGROUP + 1
+          ME = ME - 1
+          MF = MF + LK2
+          CYCLE
+        END IF
+        MS=KATOMU(IRCZAP)
+        IF ( MS .LE. 0 ) THEN
+          WRITE (CMON,'(A)') 'Error reading atom from SAME directive.'
+          CALL XPRVDU(NCVDU,1,0)
+          GOTO 5850
+        END IF
+        INDATM = ( M5A - L5 ) / MD5
+        DO J = 0 , N5A-1
+          IF ( NGROUP .EQ. 1 ) THEN   ! It is the first group.
+C Fill in the distance/angle include vectors for this atom.
+            ISTORE(LATVC+(J+INDATM*MDATVC)) = 0
+            ISTORE(LATVC+(J+INDATM*MDATVC)+1) = 0
+            ISTORE(LATVC+(J+INDATM*MDATVC)+2) = 0
+          ELSE  ! It is another group.
+C Check types match.
+            IF ( ISTORE(M5A+J*MD5) .NE.
+     1           ISTORE(L5+MD5*ISTORE(JATD+(NGROUP-1)*NATOMS)) ) THEN
+              IATI = JATOMS + 1 + J
+              IATD = MIN(4,MOD(IATI,10))
+              CALL CATSTR(STORE(M5A+J*MD5),STORE(M5A+J*MD5+1),1,1,0,0,0,
+     2        CATOM1,LATOM1)
+              CALL CATSTR (STORE(L5+MD5*ISTORE(JATD+(NGROUP-1)*NATOMS)),
+     1        STORE(L5+MD5*ISTORE(JATD+(NGROUP-1)*NATOMS)+1),1,1,0,0,0,
+     2        CATOM2, LATOM2)
+              LATOM1 = MIN(10, LATOM1)
+              WRITE(CMON,'(A,I4,A3,A,I4,A3,A,/,4A)')
+     1         'SAME restraint error: the ',
+     1         IATI,INMD(IATD),'atom in the 1st and ',NGROUP,
+     1         INMD(MIN(4,MOD(NGROUP,10))),'fragments',
+     1         'have different element types: ',CATOM1(1:LATOM1),
+     1         ' and ', CATOM2(1:LATOM2)
+              CALL XPRVDU(NCVDU,2,0)
+              GOTO 5850
+            END IF
+          END IF
+C Store this result.
+          ISTORE(JATD) = INDATM+J
+          JATD = JATD - 1
+        END DO
+        JATOMS = JATOMS + N5A
+      END DO
+      IF ( NGROUP .LE. 1 ) THEN
+        WRITE (CMON,'(A)') 'Only one group given on SAME card.'
+        CALL XPRVDU(NCVDU,1,0)
+        GOTO 5850
+      END IF
+      IF ( NATOMS .NE. JATOMS ) THEN
+        WRITE (CMON,'(A)') 'Last group different size from first.'
+        CALL XPRVDU(NCVDU,1,0)
+        GOTO 5850
+      END IF
+C Get the distances and angles. One at a time.
+      M5A=L5
+      MATVCA = LATVC
+      JATVC = 1
+      JFNVC = -1
+      JT = 12 ! Number of words per returned distance
+
+      MAINLOOP: DO I=1,N5
+
+        IF ( I .GT. 1 ) THEN
+          M5A=M5A+MD5A
+          MFNVCA = MFNVCA + MDFNVC
+          MATVCA = MATVCA + MDATVC
+        END IF
+        IF (ISTORE(MATVCA).LE.-1) CYCLE MAINLOOP ! CAN WE USE THIS ATOM ?
+        M5=L5  ! Find each bond twice.
+        MATVC = LATVC
+
+        NFLORIG = NFL           ! SAVE THE NEXT FREE ADDRESS
+        NFLBAS = NFL + 10*N5*JT ! Keep well clear of the retraint chains.
+        NFL = NFLBAS            ! Temp change NFL.
+
+        K = KDIST4( JS, JT, JATVC, 0)
+
+        NFL = NFLORIG       ! RESET NFL 
+
+        IF ( K .LT. 0 ) THEN
+           WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+           CALL XPRVDU(NCVDU,1,0)
+           GOTO 5850
+        ELSE IF ( K .EQ. 0 ) THEN
+           CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+     2     CATOM1,LATOM1)
+           WRITE (CMON,'(3A)')'SAME restraint warning: Atom ',
+     2      CATOM1(1:LATOM1), ' has no bonded contacts.'
+           CALL XPRVDU(NCVDU,1,0)
+          CYCLE MAINLOOP
+        END IF
+
+C There is a stack at NFLBAS of all the bonded contacts around the
+C atom at M5A.
+
+C Find the pivot atom (M5A) in the first group.
+        IND1 = ( M5A - L5 ) / MD5
+        DO K = 1,NATOMS
+          INDC = ISTORE(JATD+K+(NGROUP-1)*NATOMS)
+          IF ( INDC .EQ. IND1 ) THEN
+             IND1 = - K
+             EXIT
+          END IF
+        END DO
+        IF ( IND1 .GE. 0 ) THEN
+          WRITE (CMON,'(A)') 'Programming error [1] in XPRC16.'
+          CALL XPRVDU(NCVDU,1,0)  
+          GOTO 5850
+        END IF
+        IND1 = -IND1 ! This are now index into the JATD vector.
+
+
+        DISTLOOP: DO J = NFLBAS, JS-JT, JT
+
+          L=ISTORE(J)  ! Get the address in L5 of this atom.
+
+C          IF ( L .GE. M5A ) THEN
+C            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+C     1      CATOM1,LATOM1)
+C            CALL CATSTR (STORE(L), STORE(L+1),
+C     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+C     2      ISTORE(J+6), CATOM2, LATOM2)
+C            LATOM1 = MIN(10, LATOM1)
+C            WRITE ( CMON ,2804) CATOM1(1:LATOM1),STORE(J+10),
+C     1      CATOM2(1:25)
+C            CALL XPRVDU(NCVDU, 1,0)
+C2804        FORMAT ( A,' ',F6.3,'A from ',A)
+C          END IF
+
+C Find the second atom in the first group.
+          IND2 = ( L - L5 ) / MD5
+          DO K = 1,NATOMS
+            INDC = ISTORE(JATD+K+(NGROUP-1)*NATOMS)
+            IF ( INDC .EQ. IND2 ) THEN
+               IND2 = - K
+               EXIT
+            END IF
+          END DO
+          IF ( IND2 .GE. 0 ) THEN
+            WRITE (CMON,'(A)') 'Programming error [2] in XPRC16.'
+            CALL XPRVDU(NCVDU,1,0)  
+            GOTO 5850
+          END IF
+          IND2 = -IND2 ! groups vectors at JATD.
+          IF ( L .GE. M5A ) THEN
+
+            ISTORE(LCG+1)=5     ! Mean
+            STORE(LCG+3)=1./(DISTW*DISTW)  ! Weight (1/variance)
+            STORE(LCG+4)=0.0    ! Target (difference).
+C The first group's atom1:
+            MQ=MCG ! Next free word (we'll store atom header here)
+            CALL XFILL(NOWT,ISTORE(MQ),17)
+            ISTORE(MQ+1) = 0    ! Length of entry
+            ISTORE(MQ+2) = ISTORE(M5A)    ! Type
+            ISTORE(MQ+3) = ISTORE(M5A+1)  ! Serial
+            ISTORE(MQ+5) = 0    ! Number of parameters
+            ISTORE(MQ+7) = 1    ! S
+            ISTORE(MQ+8) = 1    ! L
+            ISTORE(MQ+9) = 0    ! T
+            ISTORE(MQ+10) = 0   ! T
+            ISTORE(MQ+11) = 0   ! T
+            MS = MCG + 18 ! Next free address.
+            MDCG=MCG ! Last added parameter
+            IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+            ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+            MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+            ISTORE(MCA)=NOWT
+            IDUM=KPARIN(MQ,3,5,LFL)
+C The first group's atom2:
+            MQ=MCG ! Next free word (we'll store atom header here)
+            CALL XFILL(NOWT,ISTORE(MQ),17)
+            ISTORE(MQ+1) = 0    ! Length of entry
+            ISTORE(MQ+2) = ISTORE(L)    ! Type
+            ISTORE(MQ+3) = ISTORE(L+1)  ! Serial
+            ISTORE(MQ+5) = 0    ! Number of parameters
+            CALL XMOVEI(ISTORE(J+2),ISTORE(MQ+7),5)
+            MS = MCG + 18 ! Next free address.
+            MDCG=MCG ! Last added parameter
+            IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+            ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+            MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+            ISTORE(MCA)=NOWT
+            IDUM=KPARIN(MQ,3,5,LFL)
+
+            DO K = 0,NGROUP-2
+              M5P = L5 + MD5 * ISTORE(JATD+IND1+K*NATOMS)
+              M5Q = L5 + MD5 * ISTORE(JATD+IND2+K*NATOMS)
+C              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+C     1        CATOM1,LATOM1)
+C              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
+C     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+C     2        ISTORE(J+6), CATOM2, LATOM2)
+C              LATOM1 = MIN(10, LATOM1)
+C              WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
+C     2        CATOM2(1:25)
+C              CALL XPRVDU(NCVDU,1,0)
+
+              MQ=MCG ! Next free word (we'll store atom1 header here)
+              CALL XFILL(NOWT,ISTORE(MQ),17)
+              ISTORE(MQ+1) = 0    ! Length of entry
+              ISTORE(MQ+2) = ISTORE(M5P)    ! Type
+              ISTORE(MQ+3) = ISTORE(M5P+1)  ! Serial
+              ISTORE(MQ+5) = 0    ! Number of parameters
+              ISTORE(MQ+7) = 1    ! S
+              ISTORE(MQ+8) = 1    ! L
+              ISTORE(MQ+9) = 0    ! T
+              ISTORE(MQ+10) = 0   ! T
+              ISTORE(MQ+11) = 0   ! T
+              MS = MCG + 18 ! Next free address.
+              MDCG=MCG ! Last added parameter
+              IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+              ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+              MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+              ISTORE(MCA)=NOWT
+              IDUM=KPARIN(MQ,3,5,LFL)
+              MQ=MCG ! Next free word (we'll store atom2 header here)
+              CALL XFILL(NOWT,ISTORE(MQ),17)
+              ISTORE(MQ+1) = 0    ! Length of entry
+              ISTORE(MQ+2) = ISTORE(M5Q)    ! Type
+              ISTORE(MQ+3) = ISTORE(M5Q+1)  ! Serial
+              ISTORE(MQ+5) = 0    ! Number of parameters
+              CALL XMOVEI(ISTORE(J+2),ISTORE(MQ+7),5)
+              MS = MCG + 18 ! Next free address.
+              MDCG=MCG ! Last added parameter
+              IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+              ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+              MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+              ISTORE(MCA)=NOWT
+              IDUM=KPARIN(MQ,3,5,LFL)
+            END DO
+
+            MDCS = MDCS - NGROUP
+            ISTORE(LCG+2) = MDCS
+            CALL XOGCTD(KE)
+            CALL XSETCC
+            LSTLEF=LEF   ! RECORD THE NUMBER OF ERRORS SO FAR
+            MZ=0
+          END IF
+
+C Given this bond, loop through rest of atoms to make angles:
+          ANGLELOOP: DO JAN = J+JT, JS-JT, JT
+
+            LAN=ISTORE(JAN)
+C            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
+C     1      CATOM1,LATOM1)
+C            CALL CATSTR (STORE(L), STORE(L+1),
+C     1      ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+C     2      ISTORE(J+6), CATOM2, LATOM2)
+C            LATOM1 = MIN(10, LATOM1)
+C            LATOM2 = MIN(10, LATOM2)
+C            CALL CATSTR (STORE(LAN), STORE(LAN+1),
+C     1      ISTORE(JAN+2), ISTORE(JAN+3), ISTORE(JAN+4),
+C     2      ISTORE(JAN+5), ISTORE(JAN+6), CATOM3, LATOM3)
+C            WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
+C     1      CATOM3(1:25)
+C            CALL XPRVDU(NCVDU, 1,0)
+C2805        FORMAT ( A, ' to ', A, ' to ', A)
+C Find third atom of angle in the first group of SAME.
+            IND3 = ( LAN - L5 ) / MD5
+            DO K = 1,NATOMS
+              INDC = ISTORE(JATD+K+(NGROUP-1)*NATOMS)
+              IF ( INDC .EQ. IND3 ) THEN
+                 IND3 = - K
+                 EXIT
+              END IF
+            END DO
+            IF ( IND3 .GE. 0 ) THEN
+              WRITE (CMON,'(A)') 'Programming error [3] in XPRC16.'
+              CALL XPRVDU(NCVDU,1,0)  
+              GOTO 5850
+            END IF
+            IND3 = -IND3 ! Now index into the vector at JATD
+
+            ISTORE(LCG+1)=8     ! Mean
+            STORE(LCG+3)=1./(ANGLW*ANGLW)  ! Weight (1/variance)
+            STORE(LCG+4)=0.0    ! Target (difference).
+C The first group's atom2:
+            MQ=MCG ! Next free word (we'll store atom header here)
+            CALL XFILL(NOWT,ISTORE(MQ),17)
+            ISTORE(MQ+1) = 0    ! Length of entry
+            ISTORE(MQ+2) = ISTORE(L)    ! Type
+            ISTORE(MQ+3) = ISTORE(L+1)  ! Serial
+            ISTORE(MQ+5) = 0    ! Number of parameters
+            CALL XMOVEI(ISTORE(J+2),ISTORE(MQ+7),5)
+            MS = MCG + 18 ! Next free address.
+            MDCG=MCG ! Last added parameter
+            IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+            ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+            MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+            ISTORE(MCA)=NOWT
+            IDUM=KPARIN(MQ,3,5,LFL)
+C The first group's atom1:
+            MQ=MCG ! Next free word (we'll store atom header here)
+            CALL XFILL(NOWT,ISTORE(MQ),17)
+            ISTORE(MQ+1) = 0    ! Length of entry
+            ISTORE(MQ+2) = ISTORE(M5A)    ! Type
+            ISTORE(MQ+3) = ISTORE(M5A+1)  ! Serial
+            ISTORE(MQ+5) = 0    ! Number of parameters
+            ISTORE(MQ+7) = 1    ! S
+            ISTORE(MQ+8) = 1    ! L
+            ISTORE(MQ+9) = 0    ! T
+            ISTORE(MQ+10) = 0   ! T
+            ISTORE(MQ+11) = 0   ! T
+            MS = MCG + 18 ! Next free address.
+            MDCG=MCG ! Last added parameter
+            IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+            ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+            MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+            ISTORE(MCA)=NOWT
+            IDUM=KPARIN(MQ,3,5,LFL)
+C The first group's atom3:
+            MQ=MCG ! Next free word (we'll store atom header here)
+            CALL XFILL(NOWT,ISTORE(MQ),17)
+            ISTORE(MQ+1) = 0    ! Length of entry
+            ISTORE(MQ+2) = ISTORE(LAN)    ! Type
+            ISTORE(MQ+3) = ISTORE(LAN+1)  ! Serial
+            ISTORE(MQ+5) = 0    ! Number of parameters
+            CALL XMOVEI(ISTORE(JAN+2),ISTORE(MQ+7),5)
+            MS = MCG + 18 ! Next free address.
+            MDCG=MCG ! Last added parameter
+            IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+            ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+            MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+            ISTORE(MCA)=NOWT
+            IDUM=KPARIN(MQ,3,5,LFL)
+
+            DO K = 0,NGROUP-2
+              M5P = L5 + MD5 * ISTORE(JATD+IND1+K*NATOMS)
+              M5Q = L5 + MD5 * ISTORE(JATD+IND2+K*NATOMS)
+              M5R = L5 + MD5 * ISTORE(JATD+IND3+K*NATOMS)
+C              CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
+C     1        CATOM1,LATOM1)
+C              LATOM1 = MIN(10, LATOM1)
+C              CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
+C     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+C     2        ISTORE(J+6), CATOM2, LATOM2)
+C              LATOM2 = MIN(25, LATOM2)
+C              CALL CATSTR (STORE(M5R), STORE(M5R+1),
+C     1        ISTORE(J+2), ISTORE(J+3), ISTORE(J+4), ISTORE(J+5),
+C     2        ISTORE(J+6), CATOM3, LATOM3)
+C              WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
+C     1        CATOM3(1:25)
+C              CALL XPRVDU(NCVDU,1,0)
+
+              MQ=MCG ! Next free word (we'll store atom2 header here)
+              CALL XFILL(NOWT,ISTORE(MQ),17)
+              ISTORE(MQ+1) = 0    ! Length of entry
+              ISTORE(MQ+2) = ISTORE(M5Q)    ! Type
+              ISTORE(MQ+3) = ISTORE(M5Q+1)  ! Serial
+              ISTORE(MQ+5) = 0    ! Number of parameters
+              CALL XMOVEI(ISTORE(J+2),ISTORE(MQ+7),5)
+              MS = MCG + 18 ! Next free address.
+              MDCG=MCG ! Last added parameter
+              IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+              ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+              MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+              ISTORE(MCA)=NOWT
+              IDUM=KPARIN(MQ,3,5,LFL)
+              MQ=MCG ! Next free word (we'll store atom1 header here)
+              CALL XFILL(NOWT,ISTORE(MQ),17)
+              ISTORE(MQ+1) = 0    ! Length of entry
+              ISTORE(MQ+2) = ISTORE(M5P)    ! Type
+              ISTORE(MQ+3) = ISTORE(M5P+1)  ! Serial
+              ISTORE(MQ+5) = 0    ! Number of parameters
+              ISTORE(MQ+7) = 1    ! S
+              ISTORE(MQ+8) = 1    ! L
+              ISTORE(MQ+9) = 0    ! T
+              ISTORE(MQ+10) = 0   ! T
+              ISTORE(MQ+11) = 0   ! T
+              MS = MCG + 18 ! Next free address.
+              MDCG=MCG ! Last added parameter
+              IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+              ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+              MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+              ISTORE(MCA)=NOWT
+              IDUM=KPARIN(MQ,3,5,LFL)
+              MQ=MCG ! Next free word (we'll store atom3 header here)
+              CALL XFILL(NOWT,ISTORE(MQ),17)
+              ISTORE(MQ+1) = 0    ! Length of entry
+              ISTORE(MQ+2) = ISTORE(M5R)    ! Type
+              ISTORE(MQ+3) = ISTORE(M5R+1)  ! Serial
+              ISTORE(MQ+5) = 0    ! Number of parameters
+              CALL XMOVEI(ISTORE(JAN+2),ISTORE(MQ+7),5)
+              MS = MCG + 18 ! Next free address.
+              MDCG=MCG ! Last added parameter
+              IDUM=KPARCH(MCA,MS,LFL,NKA) ! ADD ATOM HEADER BLOCK ONTO CORRECT CHAIN
+              ISTORE(MCA+6)=NOWT          ! SET UP THE PARAMETER BLOCKS
+              MCA=MDCG                    ! UPDATE 'MCA' TO ITS TRUE VALUE
+              ISTORE(MCA)=NOWT
+              IDUM=KPARIN(MQ,3,5,LFL)
+            END DO
+            MDCS = MDCS - NGROUP
+            ISTORE(LCG+2) = MDCS
+            CALL XOGCTD(KE)
+            CALL XSETCC
+            LSTLEF=LEF   ! RECORD THE NUMBER OF ERRORS SO FAR
+            MZ=0
+          END DO ANGLELOOP
+        END DO DISTLOOP
+      END DO MAINLOOP
+
+      GOTO 1150
 C
 C--'VIBRATION' CARD
 1850  CONTINUE
@@ -737,6 +1251,8 @@ C--'ORIGIN' CARD
 7200  CONTINUE
       ISTORE(LCG+1) = 20
       GOTO 4600
+
+
 C--SUNDRY TERMINATION OPERATIONS FOR EACH CARD
 5700  CONTINUE
       CALL XOGCTD(KE)
@@ -933,6 +1449,7 @@ C
 \XLEXIC
 \XCNTRL
 \XUNITS
+\XIOBUF
 \XSSVAL
 \XAPK
 \XLISTI
