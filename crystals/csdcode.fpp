@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.5  1999/05/21 11:16:26  dosuser
+C RIC: Masses of changes to allow angle checks on the structure and
+C to bring code up to date with the test version. Still not linked from
+C the main crystals code. EMAP2D needs work to use the angle FOM to
+C make decisions. Code needs rationalising into subroutines.
+C
 C Revision 1.4  1999/05/10 19:48:21  dosuser
 C RIC: It turns out that LGUIL1 and LGUIL5 were a bit useless as they
 C     were only set when you call XWININ() from #SET TERM WIN. So I changed
@@ -305,7 +311,12 @@ C Remove spaces from CCODE.
 C Check for this bond type in the local database.
 C If it is present compare bond length to mean and stddev of data.
 C If it is not present write out a file for obtaining the data.
-            CFILEN = 'CRYSDIR:\SCRIPT\bonddata.cdb'
+&DOS            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&DVF            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&GID            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&VAX            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&LIN            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
+&GIL            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
             CALL MTRNLG(CFILEN,'OLD',ILENG)
             IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
      1        .LE. -1) GOTO 650
@@ -354,7 +365,12 @@ C Accumulate X and X squared for mean and stddev in one pass.
 		BMEAN  = SUMX / NUMX
 		BSTDEV = SQRT((NUMX*SUMX2 - SUMX**2)/(NUMX*(NUMX-1)))
 C Write this info to the cdb file for future use.
-            CFILEN = 'CRYSDIR:\SCRIPT\bonddata.cdb'
+&DOS            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&DVF            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&GID            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&VAX            CFILEN = 'CRYSDIR:\script\bonddata.cdb'
+&LIN            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
+&GIL            CFILEN = 'CRYSDIR:/script/bonddata.cdb'
             CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
             IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
      1        .LE. -1) GOTO 9920
@@ -836,7 +852,12 @@ C }Debugging
 C Check for this bond type in the local database.
 C If it is present compare bond length to mean and stddev of data.
 C If it is not present write out a file for obtaining the data.
-                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&DOS                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&DVF                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&GID                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&VAX                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&LIN                CFILEN = 'CRYSDIR:/script/angldata.cdb'
+&GIL                CFILEN = 'CRYSDIR:/script/angldata.cdb'
                 CALL MTRNLG(CFILEN,'OLD',ILENG)
                 IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSOLD, ISSREA,1)
      1              .LE. -1) GOTO 1650
@@ -938,7 +959,12 @@ C No results in .tab file.
                 CLOSE ( NCFPU1 )
 
 C Write this info to the cdb file for future use.
-                CFILEN = 'CRYSDIR:\SCRIPT\angldata.cdb'
+&DOS                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&DVF                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&GID                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&VAX                CFILEN = 'CRYSDIR:\script\angldata.cdb'
+&LIN                CFILEN = 'CRYSDIR:/script/angldata.cdb'
+&GIL                CFILEN = 'CRYSDIR:/script/angldata.cdb'
                 CALL MTRNLG(CFILEN,'UNKNOWN',ILENG)
                 IF (KFLOPN (NCFPU1, CFILEN(1:ILENG), ISSCIF, ISSWRI,1)
      1              .LE. -1) GOTO 9920
@@ -1417,7 +1443,12 @@ C Lookup Element type of CATTYP(1:2)
 80           CONTINUE
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
-             CFILEN = 'CRYSDIR:\SCRIPT\PROPWIN.DAT'
+&DOS             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&DVF             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&GID             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&VAX             CFILEN = 'CRYSDIR:\script\propwin.dat'
+&LIN             CFILEN = 'CRYSDIR:/script/propwin.dat'
+&GIL             CFILEN = 'CRYSDIR:/script/propwin.dat'
              CALL MTRNLG(CFILEN,'OLD',ILENG)
              INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
              IF(.NOT.WEXIST) THEN              !use default values
@@ -2417,6 +2448,13 @@ C Read the 'MATCH' line
 &DOS        READ (75,'(A)',END=511)CLINE
 &DOS        GOTO 510
 &DOS511     CONTINUE
+&LIN        OPEN (75,
+&LIN     1         FILE='GUESS.BEST',
+&LIN     1         STATUS='UNKNOWN')
+&LIN510     CONTINUE
+&LIN        READ (75,'(A)',END=511)CLINE
+&LIN        GOTO 510
+&LIN511     CONTINUE
 
 C Write header
         WRITE(75,'(A)') ' TRY  CFOM  BOND BADFOM NMATCH'
