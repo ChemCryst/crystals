@@ -10,6 +10,10 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  1999/04/30 16:56:49  dosuser
+// RIC: Added SetProgressText(CcString Text) to allow the model window to
+//      display atom names in the current progress/status bar.
+//
 
 #include	"crystalsinterface.h"
 #include	"crconstants.h"
@@ -326,7 +330,7 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				SendCommand(result);
 				break;
 			}
-			case kTSysSaveFile: //Display SaveFileDialog and send result back to the Script.
+                  case kTSysSaveFile: //Display SaveFileDialog and send result back to the Script.
 			{
 				tokenList->GetToken();    // remove that token
 				CcString result;
@@ -338,7 +342,14 @@ Boolean	CcController::ParseInput( CcTokenList * tokenList )
 				SendCommand(result);
 				break;
 			}
-
+                  case kTSysGetDir: //Display GetDirDialog and send result back to the Script.
+			{
+				tokenList->GetToken();    // remove that token
+				CcString result;
+                        mAppContext->OpenDirDialog(&result);
+				SendCommand(result);
+				break;
+			}
 			case kTRedirectText:
 			{
 				tokenList->GetToken();

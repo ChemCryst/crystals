@@ -6,6 +6,9 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  1999/05/07 16:02:29  dosuser
+// RIC: Added GetCursorKeys tokens.
+//
 // Revision 1.4  1999/04/28 13:57:29  dosuser
 // RIC: Added kS/kTSpew for multiedit.
 //      Added kS/kTThermal for cx / cr model as a new 'size' option.
@@ -23,6 +26,7 @@
 #define kSCreateWindow		"WINDOW"
 #define kSSysOpenFile		"SYSOPENFILE"
 #define kSSysSaveFile		"SYSSAVEFILE"
+#define kSSysGetDir         "SYSGETDIR"
 #define	kSRedirectText		"SENDTEXTTO"
 #define	kSRedirectProgress		"SENDPROGRESSTO"
 #define kSCreateListBox		"LISTBOX"
@@ -215,6 +219,7 @@ enum {
 	kTCreateButton	= 100,
 	kTCreateWindow,
 	kTCreateListCtrl,
+      kTSysGetDir,
 	kTSysOpenFile,
 	kTSysSaveFile,
 	kTRedirectText,
