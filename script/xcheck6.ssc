@@ -5,6 +5,12 @@
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'
 % EVALUATE ABSENT = FILEEXISTS 'absences.dat'
 %%
+% IF ( EXISTS 6 .NE. 1 ) THEN
+
+{E No reflections stored. Use "X-ray data->Input reflections".
+
+%   FINISH
+% END IF
 %%
 % EVALUATE I6DONE = TRUE
 % EVALUATE I6MASK = TRUE
