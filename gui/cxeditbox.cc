@@ -44,7 +44,7 @@ CxEditBox::CxEditBox( CrEditBox * container )
       :BASEEDITBOX()
 {
 	mWidget = container;      //This is the container (CrEditBox)
-	mCharsWidth = 5;          //This is the default width if none is specified.
+      mCharsWidth = 50;          //This is the default width if none is specified.
 	allowedInput = CXE_TEXT_STRING;  //This is the default allowed input. See header file for other types.
 }
 
@@ -196,17 +196,7 @@ int   CxEditBox::GetHeight()
 
 int	CxEditBox::GetIdealWidth()
 {
-#ifdef __WINDOWS__
-	CClientDC cdc(this);	//Get the device context for this window (edit box).
-	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font); //Select the standard font into the device context, save the old one for later.
-	TEXTMETRIC textMetric;
-	cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
-	cdc.SelectObject(oldFont);         //Select the old font back into the DC.
-	return mCharsWidth * textMetric.tmAveCharWidth;  //Work out the ideal width.
-#endif
-#ifdef __LINUX__
-      return mCharsWidth * GetCharWidth();
-#endif
+      return mCharsWidth;
 }
 
 int	CxEditBox::GetIdealHeight()
@@ -282,7 +272,17 @@ CcString CxEditBox::GetText()
 
 void	CxEditBox::SetVisibleChars( int count )
 {
-	mCharsWidth = count;   //Set the ideal width in characters.
+#ifdef __WINDOWS__
+	CClientDC cdc(this);	//Get the device context for this window (edit box).
+	CFont* oldFont = cdc.SelectObject(CxGrid::mp_font); //Select the standard font into the device context, save the old one for later.
+	TEXTMETRIC textMetric;
+	cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
+	cdc.SelectObject(oldFont);         //Select the old font back into the DC.
+      mCharsWidth = count * textMetric.tmAveCharWidth;  //Work out the ideal width.
+#endif
+#ifdef __LINUX__
+      mCharsWidth = count * GetCharWidth();
+#endif
 }
 
 void	CxEditBox::EditChanged()
@@ -293,7 +293,7 @@ void	CxEditBox::EditChanged()
 #ifdef __WINDOWS__
 BEGIN_MESSAGE_MAP(CxEditBox, CEdit)
 	ON_WM_CHAR()
-	ON_WM_KEYDOWN()
+        ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 #endif
 #ifdef __LINUX__
@@ -495,3 +495,9 @@ void CxEditBox::OnKeyDown ( wxKeyEvent & event )
             }
 }
 #endif
+
+void CxEditBox::SetOriginalSizes()
+{
+      mCharsWidth = GetWidth();
+
+}
