@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/02/27 18:15:52  CKP2
+C DJW move call to PRC17 from PP5CO to calling routine because of clash
+C with SELECT - probably due to incorrect use of STORE by something. List
+C 2 in memeory was corrupt
+C
 C Revision 1.10  2001/02/26 09:49:59  richard
 C Change log at top of file.
 C
@@ -2357,7 +2362,7 @@ C----- NUMBER OF ASYMMETRIC UNITS
           WRITE (NCWU,1560)
           WRITE(NCWU,1570)I,WEIGHT,DENS,ABSN
 1555      FORMAT(15X,'  molecular weight,',
-     1    '  calculated density,  absorption coefficient')
+     1    '  calculated density, absorption coefficient')
 1560      FORMAT(40X, '(gm/cm**3)                (cm-1)')
 1570      FORMAT(1X,' From LIST ',I4,3X,F12.3,7X,
      1    F12.3,10X,F12.3)
@@ -3513,7 +3518,6 @@ C----- NOTE - WE CANNOT USE THE CRYSTALS CHARACTER STRING
             WRITE (CMON,'(A)') 'Analytical absorption correction mandato
      1ry for Acta C'
          ELSE IF (TMIN.GT.1.0) THEN
-C         IF (IVAL .LE. 1) THEN
             WRITE (CMON,'(A,A)') 'A psi, empirical, multi-scan or analyt
      1ical absorption ','correction should be applied for Acta C'
          END IF
@@ -3523,7 +3527,7 @@ C         IF (IVAL .LE. 1) THEN
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
             CALL XPCIF('# '//CMON(1)(:))
          ENDIF
-         IVAL = MAX (IABSMX, IVAL + 1)
+         IVAL = MIN (IABSMX, IVAL + 1)
 C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA
 C   1    2         3        4      5      6        7
          IF (IVAL.EQ.1) THEN
@@ -3555,7 +3559,6 @@ C           AREA DETECTOR
          WRITE (CPAGE(IDATA+1,1)(:),'(A,5X,A)') 'Absorption type',
      1    CVALUE
 C 
-         IF ((J.GT.0).AND.(STORE(L30AB+1+J).GT.ZERO)) THEN
             CLINE=' '
             WRITE (CLINE,'( A, ''process_details '')') CBUF(1:15)
             CALL XPCIF (CLINE)
@@ -3567,6 +3570,7 @@ C
             CALL XPCIF (CLINE)
             CALL XPCIF (';')
 C
+         IF ((J.GT.0).AND.(STORE(L30AB+1+J).GT.ZERO)) THEN
             DO 1900 I=1,3,2
                WRITE (CLINE,'(A,''correction_T_'', A, F8.2)') CBUF(1:15)
      1          ,CSIZE(I),STORE(L30AB-1+J+(I+1)/2)/STORE(L30AB+1+J)*
