@@ -403,12 +403,18 @@ LaueGroups::~LaueGroups()
 
 void LaueGroups::mergeForAll(const HKLData& pHKLs, const bool pThrowRefl, const RunParameters& pRunParam)const
 {
+   // bool tMerged = false;
+    
     for (size_t i = 0; i < iGroups->size(); i++)
     {
         if ((*iGroups)[i]->unitCellGuessRating(pRunParam) < kGuessThreshHold)
         {
             (*iGroups)[i]->buildMergedData(pHKLs, pRunParam);
-            (*iGroups)[i]->getRFactor();
+            if ((*iGroups)[i]->getRFactor() == 0)
+            {
+           //     tMerged = true;
+                std::cout << "\tData already been merged at least for one laue group!\n\tWill merge for all the laue groups";
+            }
         }
     }
     MergedData::releaseReflections();
@@ -553,11 +559,12 @@ float MergedData::calculateRFactor()
 	static Matrix<short>* tCurHKL;
         static Array<float> tValues(23); //I don't think that this should need to be any greater then 23 elements long.
         tCurHKL = (*(gSortedReflections->begin()))->tHKL;
+        tValues.clear();
         tValues.add((*gSortedReflections->begin())->i);
         multiset<Reflection*, lsreflection>::iterator tIter = gSortedReflections->begin();
         float tSumSum = 0;
         float tMeanDiffSum = 0;
-        float tSum;
+        float tSum = 0;
         
         while (tIter != gSortedReflections->end()) //Run through all the reflections
         {
