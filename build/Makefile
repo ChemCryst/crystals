@@ -7,12 +7,17 @@ all : crysexe data scripts bits documentation
 	@echo .     To test this build of CRYSTALS: 
 	@echo .       export CRYSDIR=$(CURDIR)/
 	@echo .     and then start CRYSTALS from a command prompt:
-	@echo .       $(CURDIR)/crystals.exe
+	@echo .       $(CURDIR)/crystalsÂ$(SUFFIX)
 	@echo .
 	@echo .     To make an installer:
 	@echo .       $(MAKE) dist
 	@echo .     and to run the install:
+ifeq ($(COMPCODE),WXS)
 	@echo .       ../installer/crystals-*.exe
+endif
+ifneq ($(COMPCODE),WXS)
+	@echo .       rpm -i ../installer/crystals-*.rpm
+endif
 	@echo .
 
 crysexe : 
@@ -44,6 +49,7 @@ tidy :
 	$(MAKE) -f Makefile.bits tidy
 	$(MAKE) -f Makefile.manual tidy
 
+ifeq ($(COMPCODE),WXS)
 dist : ../installer crysexe data scripts bits documentation
 	$(MAKE) -f Makefile.script tidy
 	$(MAKE) -f Makefile.data tidy
@@ -55,7 +61,27 @@ dist : ../installer crysexe data scripts bits documentation
 	@echo "Running the setup compiler... (Inno Setup)"
 	/c/progra~1/innose~1/iscc.exe ../bin/crystals.iss
 	@echo "Setup compiler finished. Output .exe is in ../installer"
-	
+endif	
+
+ifneq ($(COMPCODE),WXS)
+dist : ../installer crystals crysexe data scripts bits documentation
+	$(MAKE) -f Makefile.script tidy
+	$(MAKE) -f Makefile.data tidy
+	$(MAKE) -f Makefile.crystals tidy
+	$(MAKE) -f Makefile.bits tidy
+	$(MAKE) -f Makefile.manual tidy
+	-rm -f crystals.pst cameron.pst
+	$(INSTALL) -d ../rpmbuild
+	$(INSTALL) -d ../rpmbuild/usr
+	$(INSTALL) -d ../rpmbuild/usr/bin
+	$(INSTALL) -d ../rpmbuild/usr/crystals
+	cp -R $(CURDIR)/* ../rpmbuild/usr/crystals
+	rm -Rf ../rpmbuild/usr/crystals/obj
+	rm -Rf ../rpmbuild/usr/crystals/dscbuild
+	rm -Rf `find ../rpmbuild/usr/crystals/ -name CVS`
+	$(INSTALL) ../bin/crystals.script ../rpmbuild/usr/bin/crystals
+	rpmbuild --rcfile /usr/lib/rpm/rpmrc:../bin/rpmrc -bb ../bin/crystals.spec --buildroot $(CURDIR)/../rpmbuild
+endif
 
 ../installer :
-	mkdir ../installer
+	mkdir $@
