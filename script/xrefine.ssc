@@ -1,10 +1,11 @@
 %SCRIPT XREFINE
 %%
 %%
-%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE
+%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE CONVRG
 %  VARIABLE INTEGER NCYCLE NFORCE
 %  VARIABLE REAL RMIN R
 %  EVALUATE SERR = TRUE
+%  EVALUATE CONVRG = FALSE
 %%
 %%
 %% If xrefine is set to true before calling, then ncycle and nforce should
@@ -16,6 +17,16 @@
 %%
 %    COPY '#SCRIPT CHECK3'
 %%
+^^CO GETKEY XREFINE_CONVERGE
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    IF CVALUE .EQ. '1' THEN
+%       EVALUATE CONVRG = TRUE
+%    END IF
+%%
+^^CO GETKEY XREFINE_CYCLES
+%    GET SILENT NOSTORE INTEGER '5' '5'
+%    EVALUATE NCYCLE = VALUE
+%%
 %%
 ^^WI WINDOW XREFINE 'Least Squares Refinement' MODAL
 ^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
@@ -26,10 +37,16 @@
 ^^WI   @ 1,1 GRID NCYC NROWS=1 NCOLS=3
 ^^WI   {
 ^^WI    @ 1,1 STATIC T1 'Maximum number of cycles of refinement'
-^^WI    @ 1,3 EDITBOX NC ' 5' CHARS=5 INTEGER
+^^WI    @ 1,3 EDITBOX NC
+%        TRANSFER "^^WI '  " // CHARACTER ( NCYCLE )  // "'" TO DISPLAY
+^^WI     CHARS=5 INTEGER
 ^^WI   }
-^^WI   @ 3,1 CHECKBOX NF
-^^WI         'Stop cycling if convergence is detected' STATE=ON
+^^WI   @ 3,1 CHECKBOX NF 'Stop cycling if convergence is detected'
+%    IF CONVRG THEN
+^^WI     STATE=ON
+%    ELSE
+^^WI     STATE=OFF
+%    END IF
 ^^WI   @ 5,1 GRID LED NROWS=1 NCOLS=3
 ^^WI   {
 ^^WI    @ 1,1 BUTTON RF_B12 'Edit directives'
@@ -79,12 +96,12 @@
 ^^?? NC TEXT
 %    GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
 %    EVALUATE NCYCLE = VALUE
+% TRANSFER "^^CO SETKEY XREFINE_CYCLES " // CHARACTER ( NCYCLE ) TO DISPLAY
 ^^?? NF STATE
 %    VERIFY ON OFF
 %    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
 %    EVALUATE NFORCE = VALUE
 ^^CO DISPOSE XREFINE
-%       
 %%
 %  END IF
 %  COPY '#SUM LIST 12'
@@ -123,6 +140,7 @@
 %% Do them in blocks of 5. Even if convergence is detected, we'll
 %% still have to do one from every block of 5.
 %%
+^^CO     SETKEY XREFINE_CONVERGE 1
 %        IF NCYCLE .GT. 5 THEN
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after at most 5 more cycles).'
@@ -167,6 +185,7 @@
 %%
 %% n forced cycles.
 %%
+^^CO SETKEY XREFINE_CONVERGE 0
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT } SHOW
@@ -200,7 +219,9 @@
 %  OUTPUT
 %  CLEAR
 %%
-%  IF R .GE. RMIN * 0.99 THEN
+%  IF R .GT. RMIN * 1.1 THEN
+{S * The R-factor is worse.
+%  ELSE IF R .GE. RMIN * 0.99 THEN
 {S * The refinement has probably converged.
 %  END IF
 %%
