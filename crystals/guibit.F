@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.42  2002/03/21 17:50:34  richard
+C Clear the error flag before doing bond calculations. (In case CRYSTALS had
+C an error last instruction).
+C
 C Revision 1.41  2002/03/13 12:46:26  richard
 C HUGE change. Re-written XGDBUP as XGUIUP - now called inbetween commands, so can load
 C lists without worrying about use of store. Atoms and bonds now passed through FAST interface.
@@ -447,6 +451,7 @@ c         loaded by the calling routine.
       DIMENSION JDEV(4)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
+      CHARACTER * 4 CNAME
       LOGICAL WEXIST
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
@@ -532,27 +537,27 @@ c      CALL XPRVDU (NCVDU,1,0)
 c               WRITE(CMON,'(a)')' XGUIUP: L5: Sneaky update.'
 c               CALL XPRVDU (NCVDU,1,0)
 
-               IF(KEXIST(1).LE.0) GOTO 9910
-               IF(KEXIST(2).LE.0) GOTO 9910
-               IF(KEXIST(5).LE.0) GOTO 9910
-               IF(KEXIST(29).LE.0) GOTO 9910
-               IF(KEXIST(41).LE.0) GOTO 9910
-               IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
-               IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
-               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
-               IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+               IF(KEXIST(1).LE.0) CYCLE
+               IF(KEXIST(2).LE.0) CYCLE
+               IF(KEXIST(5).LE.0) CYCLE
+               IF(KEXIST(29).LE.0) CYCLE
+               IF(KEXIST(41).LE.0) CYCLE
+               IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
+               IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
+               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
+               IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
 C In this mode, we can't run XBCALC so the existing 41 will have to do.
-               IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+               IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
 
             ELSE
 
 c               WRITE(CMON,'(a)')' XGUIUP: L5: Full update.'
 c               CALL XPRVDU (NCVDU,1,0)
 
-               IF(KEXIST(1).LE.0) GOTO 9915
-               IF(KEXIST(2).LE.0) GOTO 9915
-               IF(KEXIST(5).LE.0) GOTO 9915
-               IF(KEXIST(29).LE.0) GOTO 9915
+               IF(KEXIST(1).LE.0) CYCLE
+               IF(KEXIST(2).LE.0) CYCLE
+               IF(KEXIST(5).LE.0) CYCLE
+               IF(KEXIST(29).LE.0) CYCLE
 
 C Ensure list 41 dependencies are up to date:
                IF ( K41DEP() .LT. 0 ) THEN
@@ -589,7 +594,6 @@ C Set old list number to current list number.
             ISERnn(41) = L41SR
 
             QSINL5 = .FALSE.
-            LSPARE = .FALSE.
 
 
 C Calculate and store orthogonal coords....
@@ -612,7 +616,6 @@ C Calculate sum of x, y and z as we go.
               XMAX = MAX(XMAX,STR11(IPLACE))
               YMAX = MAX(YMAX,STR11(IPLACE+1))
               ZMAX = MAX(ZMAX,STR11(IPLACE+2))
-              IF ( STORE ( I + 13 ) .GT. 0.0001 ) LSPARE = .TRUE.
               IPLACE = IPLACE + 3
             END DO
 
@@ -661,9 +664,13 @@ c      CALL XPRVDU(NCVDU, 1,0)
 
 C Get atom type.
 
+               LSPARE = .FALSE.
                IATTYP = ISTORE(I5)
                WRITE(CATTYP,'(A4)')IATTYP
-               IF(CATTYP(1:1).EQ.'Q') QSINL5 = .TRUE.
+               IF(CATTYP(1:1).EQ.'Q') THEN
+                 QSINL5 = .TRUE.
+                 IF ( STORE (I5+13).GT.0.0001 ) LSPARE = .TRUE.
+               END IF
 
                KFNDPR = 0
 
@@ -854,12 +861,28 @@ C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
 
                IF ( LSPARE ) THEN
-                   ISPARE = NINT(1000 * STORE(I5+13))
+                  ISPARE = NINT(1000 * STORE(I5+13) )
+                  SPARE = 0.297 * (STORE(I5+13)**(1.0/3.0))
+                  AXES (1,1) = ( GSCALE * SPARE )
+                  AXES (2,2) = ( GSCALE * SPARE )
+                  AXES (3,3) = ( GSCALE * SPARE )
+                  AXES (1,2) = 0.0
+                  AXES (1,3) = 0.0
+                  AXES (2,1) = 0.0
+                  AXES (2,3) = 0.0
+                  AXES (3,1) = 0.0
+                  AXES (3,2) = 0.0
+                  STORE(I5+3) = 0.0
+
+c                  WRITE (CMON,'(3F15.8,I8,A4,I4)') SPARE, AXES(1,1),
+c     1                   STORE(I5+13), I5, ISTORE(I5),NINT(STORE(I5+1))
+c                  CALL XPRVDU(NCVDU,1,0)
+
                ELSE
                    ISPARE = NINT(COV*GSCALE)
                END IF
 
-96             FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,3(1X,I6),/,A,9(1X,I6))
+c96             FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,3(1X,I6),/,A,9(1X,I6))
 c               WRITE ( CMON,96 )
 c     1         '$$GR ATOM ',
 c     2         1,  CLAB(1:LLAB),
@@ -874,7 +897,7 @@ c     2         NINT(VDW*GSCALE),ISPARE,NINT(STORE(I5+3)),
 c     1         '$$GR',
 c     3         ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
 c               CALL XPRVDU(NCVDU, 4,0)
-C              WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
+c              WRITE(NCAWU,'(A)') (CMON(IDJW),IDJW=1,3)
 
 
                CALL FSTATM( LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
@@ -1137,10 +1160,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
          ELSE IF ( ILST .EQ. 1 ) THEN   ! cell params - update info tab.
 
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
-               IF(KEXIST(1).LE.0) GOTO 9910
+               IF(KEXIST(1).LE.0) CYCLE
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(1).LE.0) GOTO 9910
+               IF(KEXIST(1).LE.0) CYCLE
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
             END IF
             CALL XRLIND(1, L01SR, NFW, LL, IOW, NOS, ID)
@@ -1162,10 +1185,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
          ELSE IF ( ILST .EQ. 2 ) THEN   ! space group - update info tab.
 
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
-               IF(KEXIST(2).LE.0) GOTO 9910
+               IF(KEXIST(2).LE.0) CYCLE
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(2).LE.0) GOTO 9910
+               IF(KEXIST(2).LE.0) CYCLE
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
             END IF
             CALL XRLIND(2, L02SR, NFW, LL, IOW, NOS, ID)
@@ -1179,10 +1202,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
          ELSE IF ( ILST .EQ. 23 ) THEN   ! SFLS control - get F or F2.
 
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
-               IF(KEXIST(23).LE.0) GOTO 9910
+               IF(KEXIST(23).LE.0) CYCLE
                IF(KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(23).LE.0) GOTO 9910
+               IF(KEXIST(23).LE.0) CYCLE
                IF(KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL23
             END IF
             CALL XRLIND(23, L23SR, NFW, LL, IOW, NOS, ID)
@@ -1200,10 +1223,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
          ELSE IF ( ILST .EQ. 29 ) THEN   ! asymm unit - update info tab.
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
-               IF(KEXIST(29).LE.0) GOTO 9910
+               IF(KEXIST(29).LE.0) CYCLE
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(29).LE.0) GOTO 9910
+               IF(KEXIST(29).LE.0) CYCLE
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
             END IF
             CALL XRLIND(29, L29SR, NFW, LL, IOW, NOS, ID)
@@ -1236,10 +1259,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
             END IF
          ELSE IF ( ILST .EQ. 30 ) THEN   ! goodies - update info tab.
             IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
-               IF(KEXIST(30).LE.0) GOTO 9910
+               IF(KEXIST(30).LE.0) CYCLE
                IF(KHUNTR(30,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
             ELSE
-               IF(KEXIST(30).LE.0) GOTO 9910
+               IF(KEXIST(30).LE.0) CYCLE
                IF(KHUNTR(30,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL30
             END IF
             CALL XRLIND(30, L30SR, NFW, LL, IOW, NOS, ID)
