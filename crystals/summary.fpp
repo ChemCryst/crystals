@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2003/02/17 13:28:43  djw
+C Remove writes to .mon from FOURIER, save Rho and positions in LIST 30 CIFEXTRA (was in REFINEMENT), adjust output of 30
+C
 C Revision 1.38  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -431,7 +434,7 @@ C
         CALL XSUM41
       ENDIF
 C
-      IERFLG = 1
+c      IERFLG = 1
 C
 C
       KSUMLN = 1
