@@ -19,13 +19,14 @@
 ^^WI   }
 ^^WI   @ 1,2 GRID RIGHT NROWS=8 NCOLS=10
 ^^WI   {
-^^WI    @ 2,9 BUTTON BTNOK '&Ok' DISABLED=YES DEFAULT
+^^WI    @ 2,9 BUTTON BTNOK '&Ok' DEFAULT
 ^^WI    @ 4,9 BUTTON BTNXX '&Cancel'
+^^WI    @ 6,9 BUTTON BTNRR '&Run KCCDIN now'
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 GRID BOTTOM NROWS=2 NCOLS=5
 ^^WI  {
-^^WI   @ 1,2 EDITBOX E1 '' CHARS=50 INFORM=YES
+^^WI   @ 1,2 EDITBOX E1 'kccd' CHARS=50 INFORM=YES
 ^^WI   @ 1,4 BUTTON BROWSE '&Browse'
 ^^WI  }
 ^^WI }
@@ -34,7 +35,7 @@
 ^^CO FOCUS E1
 %%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LOOP
-%  VERIFY BTNOK BTNXX BROWSE E1
+%  VERIFY BTNOK BTNXX BTNRR BROWSE E1
 %  GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' ' '
 %  CASE VALUE
 %    BLOCK              %OK%
@@ -51,6 +52,12 @@
 ^^WI      DISPOSE XKCCDIN
 ^^CR
 %         FINISH
+%    END BLOCK
+%    BLOCK             %RUN KCCDIN%
+
+{S * Running KCCDIN.
+%      COPY '#SPAWN CRYSDIR:KCCDIN.BAT'
+{R   Done.
 %    END BLOCK
 %    BLOCK      %BROWSE%
 ^^WI SYSOPENFILE '*.hkl' 'Kccd generated file (*.hkl)' TITLEONLY

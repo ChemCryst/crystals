@@ -23,6 +23,7 @@
 ^^WI   {
 ^^WI    @ 2,9 BUTTON BTNOK '&Ok' DISABLED=YES DEFAULT COMMIT
 ^^WI    @ 4,9 BUTTON BTNXX '&Cancel'
+^^WI    @ 6,9 BUTTON BTNRR '&Run RC93 now'
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 GRID BOTTOM NROWS=2 NCOLS=5
@@ -36,7 +37,7 @@
 ^^CO FOCUS E1
 %%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LOOP
-%  VERIFY BTNOK BTNXX BROWSE E1
+%  VERIFY BTNOK BTNXX BTNRR BROWSE E1
 %  GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' ' '
 %  CASE VALUE
 %    BLOCK              %OK%
@@ -53,6 +54,12 @@
 ^^WI      DISPOSE XINRC93
 ^^CR
 %         FINISH
+%    END BLOCK
+%    BLOCK             %RUN RC93%
+{S * Running RC93.
+%      COPY '#SPAWN  +COMMAND.COM /e:2048 /c CRYSDIR:RC93.BAT'
+{R   Done.
+% copy '#type rc93.err'
 %    END BLOCK
 %    BLOCK      %BROWSE%
 ^^WI SYSOPENFILE '*.hkl' 'RC93 generated file (*.hkl)' TITLEONLY
