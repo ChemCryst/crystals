@@ -94,9 +94,9 @@ MatrixException::MatrixException(int pErrNum, char* pErrType):MyException(pErrNu
 {
 }
 
-MatrixReader::MatrixReader(char *pLine)
+MatrixReader& MatrixReader::initWith(char *pLine)
 {
-    initRegEx();	//Init the regular expression before using them later in the class.
+	initRegEx();	//Init the regular expression before using them later in the class.
     
     size_t tMatches = 6;
     regmatch_t tMatch[6];
@@ -114,6 +114,16 @@ MatrixReader::MatrixReader(char *pLine)
     fill(0);
     //Fill the matrix with the correct values
     fillMatrix(pLine);
+	return *this;
+}
+
+MatrixReader::MatrixReader()
+{
+}
+
+MatrixReader::MatrixReader(char *pLine)
+{
+   initWith(pLine);
 }
 
 MatrixReader::~MatrixReader()

@@ -101,7 +101,7 @@ class Matrix:public MyObject
             memcpy(iMatrix, pMatrix.iMatrix, pMatrix.iSize*sizeof(type));
         }
         
-	Matrix(const type pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
+		Matrix(const type pMatrix[], const size_t pXSize, const size_t pYSize):iXSize(pXSize), iYSize(pYSize), iSize(pXSize*pYSize)
         {
             iMatrix = new type[iSize];
             memcpy(iMatrix, pMatrix, iSize*sizeof(type));
@@ -721,7 +721,9 @@ class MatrixReader:public Matrix<short>
         void fillMatrix(char* pLine, int pX, int pY);
         void fillMatrix(char* pLine);
     public:
+		MatrixReader();
         MatrixReader(char *pMatrixLine);
+		MatrixReader& initWith(char *pMatrixLine);
         ~MatrixReader();
 };
 
