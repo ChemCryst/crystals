@@ -29,6 +29,7 @@ class CrMenu;
 class	CrModel : public CrGUIElement
 {
 	public:
+            void Reset();
 		void SendAtom(CcModelAtom* atom, Boolean output = false);
 		int m_AtomSelectAction;
 		int m_AtomGetAction;
