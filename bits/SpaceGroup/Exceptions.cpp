@@ -60,6 +60,15 @@ MyException::~MyException() throw()
     delete[] iErrStr;
 }
 
+void MyException::addError(char* pErrMsg)
+{
+    int tLen = strlen(iErrStr)+strlen(pErrMsg)+2;
+    char* tNewStr = new char[tLen];
+    sprintf(tNewStr, "%s\n%s", pErrMsg, iErrStr);
+    delete iErrStr;
+    iErrStr = tNewStr;
+}
+
 char* MyException::what()
 {
     return iErrStr;
