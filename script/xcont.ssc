@@ -75,9 +75,11 @@
 ^^WI  }
 ^^WI  @ 3,1 GRID VBOTTOM NROWS=2 NCOLS=7
 ^^WI  {
-^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON
 % IF FILEEXISTS 'c:\progra~1\marchi~1\marchi~1.exe' .EQ. TRUE THEN
-^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer'
+^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR'
+^^WI   @ 1,4 RADIOBUTTON XM 'Run 3D ELD Viewer' STATE=ON
+% ELSE
+^^WI   @ 1,2 RADIOBUTTON XC 'Run CONTOUR' STATE=ON
 % END IF
 ^^WI   @ 1,6 RADIOBUTTON XN 'Do not run viewer'
 ^^WI  }
@@ -155,8 +157,12 @@ view the generated sections.
 %       IF VALUE .EQ. 1 THEN
 %          EVALUATE RUNVIEWER = 1
 %       ELSE
-^^??       XM STATE
-%          VERIFY ON OFF
+%%
+%% Sorry about the logic here. We can't check XM because it might
+%% not exist.
+%%
+^^??       XN STATE
+%          VERIFY OFF ON
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %          IF VALUE .EQ. 1 THEN
 %             EVALUATE RUNVIEWER = 2
@@ -217,23 +223,20 @@ view the generated sections.
 %           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%%           INSERT ' 0.25'
 %           QUEUE SEND
 %           CLEAR
 %           INSERT 'ACROSS '
 %           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%%           INSERT ' 0.25'
 %           QUEUE SEND
 %           CLEAR
 %           INSERT 'SECTION '
-%           EVALUATE MINZ = - .25 * ZSECT
+%           EVALUATE MINZ = - 1.0 * RESOL * ZSECT
 %           EVALUATE STEPZ = 1.0 + 2.0 * ZSECT
 %           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL
-%%           INSERT ' 0.25'
 %           QUEUE SEND
 %         END BLOCK
 %         COPY '#SLANT'
