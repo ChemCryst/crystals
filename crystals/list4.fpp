@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2001/02/26 10:28:02  richard
+C RIC: Added changelog to top of file
+C
 C
 CODE FOR XAPP04
       SUBROUTINE XAPP04
@@ -793,7 +796,7 @@ C----- WARN OF MAXIMAL WEIGHTS
 C----- WARN OF OUTLIERS
       IF(JPRINT .GT. 0) THEN
             WRITE(CMON,5585) JPRINT
-            CALL XPRVDU(NCVDU, 1,0)
+            CALL XPRVDU(NCVDU, 2,0)
             WRITE(NCAWU,'(/A/) ') CMON(1)(:)
             IF (ISSPRT .EQ. 0) WRITE(NCWU ,'(/A/) ') CMON(1)(:)
 5585  FORMAT(1X,/, I6, ' Reflections down-weighted as Outliers',/)
