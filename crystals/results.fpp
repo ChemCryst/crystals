@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2001/02/26 09:49:59  richard
+C Change log at top of file.
+C
 C
 CODE FOR SPRT6P
       SUBROUTINE SPRT6P
@@ -642,6 +645,10 @@ C--LOAD A FEW LISTS
       CALL XFAL01
       CALL XFAL05
       CALL XFAL23
+cdjwfeb2001
+        toler = store(l23sp+5)
+        call xprc17 (0, 0, TOLER, -1)
+cdjwfeb2001
 C--FORM THE ABSOLUTE LIST 12
       JQ=0
       JS=1
@@ -892,7 +899,6 @@ C -- SET INITIAL VALUES.
 cdjw feb2001
         iupdat = istore(l23sp+1)
         toler = store(l23sp+5)
-        call xprc17 (0, 0, TOLER, -1)
 C
       IDSPHD = 0
       M5=L5
