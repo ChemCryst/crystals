@@ -32,7 +32,8 @@ enum {
 	kModelBase			=	53000,
 	kProgressBase		=	54000,
         kListCtrlBase           =       55000,
-        kTextOutBase            =       56000
+        kTextOutBase            =       56000,
+        kBitmapBase             =       57000
 };
 
 #define	kNoAlignment		0

@@ -32,6 +32,7 @@
 #include	"crwindow.h"
 #include	"ccrect.h"
 #include	"cxgroupbox.h"
+#include        "crbitmap.h"
 
 
 
@@ -333,6 +334,13 @@ Boolean	CrGrid::ParseInput( CcTokenList * tokenList )
 					CrModel * modelPtr = new CrModel( this );
 					if ( modelPtr != nil )
 						retVal = InitElement( modelPtr, tokenList, xpos, ypos );
+					break;
+				}
+                                case kTCreateBitmap:                                 // Create a Bitmap
+				{
+                                        CrBitmap * bitPtr = new CrBitmap( this );
+                                        if ( bitPtr != nil )
+                                                retVal = InitElement( bitPtr, tokenList, xpos, ypos );
 					break;
 				}
 				default:

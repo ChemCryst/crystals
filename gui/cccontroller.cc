@@ -11,6 +11,9 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2000/09/20 12:50:36  ckp2
+// Support for new TEXTOUT control.
+//
 // Revision 1.17  2000/07/04 14:41:21  ckp2
 // Gui changes since last year.
 // Mainly chart handling for multiple charts in one window.
@@ -1611,7 +1614,7 @@ void CcController::StoreKey( CcString key, CcString value )
          strcpy ( &filen[0]+icrysdir, "\\script\\winsizes.ini" ) ;
 #endif
 #ifdef __LINUX__
-         strcpy ( &filen[0]+icrysdir, "/guimenu.srt/winsizes.ini" ) ;
+         strcpy ( &filen[0]+icrysdir, "/script/winsizes.ini" ) ;
 #endif
       }
 

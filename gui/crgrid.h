@@ -86,6 +86,7 @@ class	CrGrid : public CrGUIElement
 #define kSAlignExpand		"EXPAND"
 #define kSAlignRight		"RIGHT"
 #define kSAlignBottom		"BOTTOM"
+#define kSCreateBitmap          "BITMAP"
 
 enum 
 {
@@ -109,8 +110,9 @@ enum
  kTOutline,	
  kTAlignExpand,	
  kTAlignRight,	
- kTAlignBottom
-}; 
+ kTAlignBottom,
+ kTCreateBitmap
+};
 
 
 
