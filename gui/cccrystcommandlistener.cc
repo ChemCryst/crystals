@@ -7,6 +7,10 @@
  */
  
  //   $Log: not supported by cvs2svn $
+ //   Revision 1.1  2005/02/04 17:21:40  stefan
+ //   1. A set of classes to extent CcSafeDeque to allow easy change notification.
+ //   2. A set of classese to more generalise CcSafeDeques uses.
+ //
  
 #include "crystalsinterface.h"
 #include "cccrystcommandlistener.h"
@@ -17,8 +21,11 @@ CcCrystalsCommandListener::CcCrystalsCommandListener(wxEvtHandler * pEventHandle
 CcCrystalsCommandListener::CcCrystalsCommandListener(CWinThread* pMessageHandler, const UINT pMessage):iMessageHandler(pMessageHandler), iMessage(pMessage)
 #endif
 {}
-
+#if defined(__BOTHWX__)
 CcCrystalsCommandListener::CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener):iEventHandler(pListener.iEventHandler), iEvent(pListener.iEvent)
+#else
+CcCrystalsCommandListener::CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener):iMessageHandler(pListener.iMessageHandler), iMessage(pListener.iMessage)
+#endif
 {}
 
 CcListener* CcCrystalsCommandListener::clone() const
@@ -32,6 +39,6 @@ void CcCrystalsCommandListener::perform(const void* pData)
 	wxCommandEvent tEvent(iEvent);
 	iEventHandler->AddPendingEvent(tEvent);
 #else
-	iMessageHandler->PostThreadMessage(iMessage, pData, 0);
+	iMessageHandler->PostThreadMessage(iMessage, (WPARAM)pData, 0);
 #endif
 }
