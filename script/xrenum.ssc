@@ -23,9 +23,9 @@
 ^^WI         @ 4,1 GRID OPTNS NROWS=3 NCOLS=1 OUTLINE='Remaining atoms'
 ^^WI         {
 ^^WI           @ 1,1 RADIOBUTTON RMND 'Delete' STATE=OFF
-^^WI           @ 2,1 RADIOBUTTON RMNN 'Number sequentially' STATE=ON
+^^WI           @ 2,1 RADIOBUTTON RMNN 'Number sequentially' STATE=OFF
 ^^WI           @ 3,1 RADIOBUTTON RMNS 'Leave alone (except clashes)'
-^^WI                                 STATE=OFF
+^^WI                                 STATE=ON
 ^^WI         }
 ^^WI      }
 ^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65
@@ -99,6 +99,10 @@
 %          COPY 'TRANSFER FROM OFFSET=0 TO CFIRST'
 %          COPY 'TRANSFER FROM OFFSET=1 TO RFIRST'
 %          COPY 'END'
+%%
+%          IF ( INEXTS .LT. 1 ) THEN
+%             EVALUATE INEXTS = 1
+%          END IF
 %%
 %          IF ( VALUE .EQ. 1 ) THEN
 %            COPY '#EDIT'
@@ -187,13 +191,5 @@
 %      COPY '#SCRIPT XHELP2'
 %    END BLOCK
 %   END CASE
-%%   IF ICOUNTER .EQ. N5 THEN
-%%     EVALUATE LOOPEND = LOOPCOUNTER
-%%^^CO DISPOSE XRENUM
-%% * Applying new numbering order
-%%%     COPY 'END'
-%%%     FINISH
-%%%   END IF
 %  END LOOP
 %END SCRIPT
-
