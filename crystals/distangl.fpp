@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2002/08/23 09:02:59  richard
+C Fix alldist=yes.
+C
 C Revision 1.28  2002/07/31 06:51:21  richard
 C
 C Be a little more careful with STORE allocation in XBCALC when called from #EDIT.
@@ -6048,7 +6051,7 @@ C -- Write new list back to disk, unless INTERN == 2, in which case
 C -- the list can be used as is.
 
       IF ( INTERN .NE. 2 ) THEN
-        CALL XWLSTD (41,ICOM41,IDIM41,0,1)
+        CALL XWLSTD (41,ICOM41,IDIM41,-1,-1)
       END IF
 
 
