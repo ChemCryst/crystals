@@ -193,9 +193,9 @@ Matrix<float> UnitCell::metricTensor()const
  */
 std::ostream& printCrystConst(std::ostream& pStream)
 {	
-	for (SystemID i = kTriclinicID; i < kUnknownID; ((uint)i)++)
+	for (unsigned int i = kTriclinicID; i < kUnknownID; i++)
 	{
-        pStream << i << ": " << crystalSystemConst(i) << "\n";
+        pStream << i << ": " << crystalSystemConst((SystemID)i) << "\n";
     }
     return pStream;
 }
