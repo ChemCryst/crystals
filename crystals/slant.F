@@ -1,3 +1,4 @@
+C $Log: not supported by cvs2svn $
 CODE FOR XTRIAL
       SUBROUTINE XTRIAL
 C--MOVE A MOLECULE AROUND AND PLOT SUM(FO*FC) AT EACH POINT
@@ -1091,4 +1092,477 @@ C -- SINGULAR MATRIX
       GO TO 9900
 C
 C
+      END
+
+
+CODE FOR XVSLANT
+      SUBROUTINE XVSLANT
+C--SLANT VOID SUBROUTINE
+C
+C  ITHRES PRINT 0 FOR ALL VALUES LESS THAN THIS
+C  SCALE  MAP SCALE FACTOR
+C
+C--USE OF VARIABLES :
+C
+C       TOLER   CURRENTLY A DUMMY
+C
+C       THE COMMON BLOCK /XWORKA/ IS USED :
+C
+C       JB  ADDRESS OF THE TEMP. STORAGE FOR ATOMS
+C       JC  ADDRESS OF THE ATOM HEADER FOR MOVING ATOMS FROM 'JB'
+C       JD  WORK SPACE FOR 'KATOMS'
+C       JE  START OF DISTANCE STACK.
+C       JF  NUMBER OF ATOMS LEFT TO SCAN
+C       JG  CURRENT LAST ENTRY IN LIST 5 OR 10
+C       JH  MD5-1
+C       JI  MD5+MD5
+C       JK  ADDRESS OF LAST ATOM ON PRINCIPAL DISTANCE STACK
+C       JL  NEXT FREE ADDRESS AFTER PRINCIPAL DISTANCE STACK
+C       JT  WORDS PER ENTRY IN THE STACK
+C       JU  5 WORD WORK AREA
+C       SX  DISTANCE NO BONDED CONTACT TO USE
+C
+C       THE FOLLOWING VARIABLES MUST BE SET ON ENTRY TO KDIST1:-
+C
+C       AT     MINIMUM ALLOWED DISTANCE FOR DISTANCES
+C       AC     MAXIMUM ALLOWED DISTANCE FOR DISTANCES
+C       BT     MINIMUM ALLOWED DISTANCE FOR ANGLES
+C       BC     MAXIMUM ALLOWED DISTANCE FOR ANGLES
+C       AO     MAXIMUM ALLOWED DISTANCE OVERALL
+C       AP     MAXIMUM ALLOWED DISTANCES SQUARED OVERALL
+C       BP     MINIMUM ALLOWED DISTANCE SQUARED OVERALL
+C       M5A    ADDRESS OF THE CURRENT TARGET ATOM IN LIST 5
+C       M5     ADDRESS OF THE FIRST ATOM TO MOVE AROUND IN LIST 5
+C
+C
+C       ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
+C       WHICH HAS THE FOLLOWING FORMAT :
+C
+C       0  ADDRESS OF THE ATOM IN LIST 5
+C       1  ACCEPTANCE FLAG
+C
+C          1  ACCEPTABLE TO NONE
+C          2  DISTANCES ONLY
+C          3  ANGLES ONLY
+C          4  ACCEPTABLE TO BOTH
+C
+C       2  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM
+C       3  NON-PRIMITIVE LATTICE INDICATOR
+C       4  T(X)
+C       5  T(Y)
+C       6  T(Z)
+C       7  TRANSFORMED X
+C       8  TRANSFORMED Y
+C       9  TRANSFORMED Z
+C      10  DISTANCE
+C      11  DISTANCE SQUARED
+C      12  ADDRESS IN LIST 12  (IF USED).
+C      13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
+C
+C
+C
+C--
+      PARAMETER (NPROCS = 28)
+      DIMENSION PROCS(NPROCS)
+      DIMENSION IPROCS(NPROCS)
+      DIMENSION A1(26)
+      DIMENSION AMIN(3)
+      CHARACTER*16 CMAPTP(5)
+      CHARACTER*8  WTED
+      DIMENSION KDEV(4)
+
+\STORE
+\QSTORE
+\ISTORE
+\XCONST
+\XLISTI
+\XUNITS
+\XTAPES
+\XSSVAL
+\XWORK
+\XWORKA
+\XCHARS
+\XLST01
+\XLST02
+\XLST05
+\XLST06
+\XLST12
+\ICOM12
+\XLST20
+\XLST29
+\XERVAL
+\XOPVAL
+\XIOBUF
+\XDSTNC
+\TSSCHR
+\XSSCHR
+\UFILE
+\XPDS
+
+      EQUIVALENCE (APD(1),PROCS(1))
+      EQUIVALENCE (IN,APD(10)),(ITHRES,APD(11)),(SCALE,APD(12))
+      EQUIVALENCE (IWT, APD(13))
+      EQUIVALENCE (A1(1),A)
+      EQUIVALENCE (PROCS(1), IPROCS(1))
+      EQUIVALENCE (IMODE, PROCS(27)), (IOUTAP, PROCS(26))
+      EQUIVALENCE (IOUFIL, PROCS(28))
+
+      DATA NCOL/28/
+      
+C----- MAXIMUM DISTANCE FOR A 1-3 CONTACT, AND ITS SQUARE
+      DATA D13 / 4.0 /, D13S / 9.0 /
+      DATA TOLER /0.6/, ITRANS / 0 /
+      DATA EDGES /2.0/
+
+C--INITIALISE THE TIMING FUNCTION
+      CALL XTIME1(1)
+
+      WRITE(NCAWU,'(A)') 'This is "Slanting" VOIDS'
+
+      JU = NFL
+      NFL = NFL + 5
+
+      JT=12
+      AT = 0.5
+      AC = D13
+
+C-------NO ANGLES TO BE LOOKED FOR
+      BT = 0.
+      BC = 0.
+
+
+C--USE A NULL LIST 12.
+      IDIM12=40
+      DO I=1,IDIM12
+          ICOM12(I)=NOWT
+      END DO
+      L12=-1
+      M12=-1
+
+
+C--READ THE DATA
+      ISTAT = KRDDPV ( PROCS, NPROCS)
+      IF ( ISTAT .LT. 0 ) GO TO 9910
+C--LOAD LISTS ONE, TWO, FIVE AND TWENTY
+      CALL XRSL
+      CALL XCSAE
+      CALL XFAL01
+      CALL XFAL05
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+      CALL XFAL20
+C----- CHECK IF WE USE THE MOLAX MATRIX -
+      IF (IMODE .GE. 1) THEN
+      CALL XMOVE (STORE(L20V+ IMODE * MD20V), PROCS(14), 3)
+C----- COPY AND TRANSPOSE
+      CALL XTRANS (STORE(L20M+ IMODE * MD20M), PROCS(1), 3, 3)
+      ENDIF
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+
+C--INVERT THE ROTATION MATRIX
+      LN=8
+      IREC=8001
+      L8RI=KCHLFL(9)
+      L8R=KCHLFL(9)
+      CALL XMOVE(PROCS(1),STORE(L8R),9)
+C----- LOOK FOR SOME SORT OF MATRIX
+      IF (ABS(XDETR3(PROCS(1))) .LE. ZERO) THEN
+        WRITE ( CMON , 1060) (PROCS(I), I = 1,9)
+        CALL XPRVDU(NCVDU, 4,0)
+        WRITE(NCAWU, '(A)') (CMON(II)(:),II=1,4)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,4)
+1060    FORMAT (' Your matrix is probably invalid ', 3(/3F9.3))
+        GOTO 9900
+      ENDIF
+      IF(KINV2(3,STORE(L8R),STORE(L8RI),9,0,APD(1),APD(1),9))9920 ,
+     1                                                1300 , 9920
+
+C--MOVE THE CENTROID AND STEPS IN X, Y AND THE Z HEIGHT
+1300  CONTINUE
+C----- SPACE FOR THE SECTION LIMITS
+      L8T= NFL
+      I = KCHNFL(12)
+      CALL XMOVE(PROCS(14),STORE(L8T),12)
+C----- FLOAT THE NUMBER  OF POINTS (THE INTEGER IS STILL IN ISTORE)
+      PROCS(18) = FLOAT( ISTORE(L8T+4))
+      PROCS(21) = FLOAT( ISTORE(L8T+7))
+      PROCS(24) = FLOAT( ISTORE(L8T+10))
+C
+C----- WRITE THE MAP FILE HEADER  DETAILS
+      IF (IOUFIL .GT. 0 ) THEN
+           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+           CALL XRDOPN(6, KDEV , CSSMAP, LSSMAP)
+1651       FORMAT(A)
+1652       FORMAT(F15.8)
+1653       FORMAT(I8)
+           WRITE (NCFPU1,1651) 'INFO  DOWN, ACROSS AND SECTION '
+           WRITE (NCFPU1,1651) 'TRAN'
+           WRITE (NCFPU1,1652) (STORE(I),I=L8R,l8R+8),(PROCS(I),I=14,16)
+           WRITE (NCFPU1,1651) 'CELL'
+           WRITE (NCFPU1,1652) (STORE(I), I = L1P1, L1P1+5)
+           WRITE (NCFPU1,1651) 'L14 '
+           WRITE (NCFPU1,1652)
+     1     (STORE(I),STORE(I+2),(STORE(I)+(ISTORE(I+1)-1)*STORE(I+2)),
+     1      1. , I = L8T+3, L8T+9, 3)
+           WRITE (NCFPU1,1651) 'SIZE'
+           WRITE (NCFPU1,1653)ISTORE(L8T+4),ISTORE(L8T+7),ISTORE(L8T+10)
+           NXNY = ISTORE(L8T+4) * ISTORE(L8T+7)
+      ENDIF
+C
+C--CHECK THAT THERE ARE SOME REASONABLE INTERVALS
+      IF(ABS(STORE(L8T+5))-0.0001)1400,1400,1350
+1350  CONTINUE
+      IF(ABS(STORE(L8T+8))-0.0001)1400,1400,1500
+C--INCORRECT INTERVALS
+1400  CONTINUE
+      WRITE ( CMON ,1450)
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU, '(/A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
+1450  FORMAT(' Illegal x or y divisions')
+      GOTO 9910
+
+1500  CONTINUE
+
+
+C----- LOAD LIST 29
+      CALL XFAL29
+C----- SCAN LIST 5 SETTING SPARE TO VDW RADIUS
+      I29=L29 + (N29-1)*MD29
+      I5 = L5 + (N5-1)*MD5
+      DO M5=L5,I5,MD5
+         IFOUND = 0
+         DO M29= L29,I29,MD29
+            JZ=M29+2
+            IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
+               STORE(M5+14) = STORE(JZ)
+               WRITE(CMON,'(3A,F7.3)')'Atom type: ',ISTORE(M5),
+     2           ' VDW radius set to ', STORE(M5+14)
+               CALL XPRVDU(NCVDU, 1,0)
+               IFOUND = 1
+            END IF
+         END DO
+         IF ( IFOUND .EQ. 0 ) THEN
+            STORE(M5+14) = 1.78
+            WRITE(CMON,'(3A)')'Atom type: ',ISTORE(M5),
+     2           ' not in LIST 29 - using carbon VDW of 1.78A'
+            CALL XPRVDU(NCVDU, 1,0)
+         END IF
+      END DO
+
+2801  FORMAT (A)
+2802  FORMAT (I8)
+2803  FORMAT (F15.8)
+
+C-------LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
+      CALL XDIST2
+
+C-------SET UP A FEW STACK CONSTANTS
+      JB=NFL
+      JC=JB+MD5
+      JD=JC+20
+      JE=JD+30
+C-------CHECK THE STORE AREA
+      IF ( JE .GE. LFL ) GOTO 9930
+
+C-------FIX THE RADII FOR 1-2 CONTACTS
+      AO = AC
+      AP = AC * AC
+
+C-------SET THE TARGET ATOM ADDRESSES
+      IABAT=NFL
+      M5A = IABAT
+      NFL=NFL+6
+
+      AXMN = 99.99
+      AYMN = 99.99
+      AZMN = 99.99
+      AXMX = -99.99  
+      AYMX = -99.99
+      AZMX = -99.99
+
+
+C----- START LOOPING OVER SECTIONS
+
+      DO IZSECT = 0, ISTORE(L8T+10)-1
+        ZCOORD=STORE(L8T+9) + STORE(L8T+11) * IZSECT
+        IF (IOUFIL .GT. 0) THEN
+          WRITE(NCFPU1,2801) 'BLOCK'
+          WRITE(NCFPU1,2802) NXNY
+        ENDIF
+        WRITE(NCAWU, '('' Section at z = '', F6.2)') ZCOORD
+        DO IXSECT = 0, ISTORE(L8T+4)-1
+          XCOORD=STORE(L8T+3) + STORE(L8T+5) * IXSECT
+          DO IYSECT = 0, ISTORE(L8T+7)-1
+            YCOORD=STORE(L8T+6) + STORE(L8T+8) * IYSECT
+
+C--CALCULATE THE COORDINATES OF THE POINT
+
+            AMIN(1)=STORE(L8T)  +STORE(L8RI)  *XCOORD
+     2                          +STORE(L8RI+1)*YCOORD
+     3                          +STORE(L8RI+2)*ZCOORD
+            AMIN(2)=STORE(L8T+1)+STORE(L8RI+3)*XCOORD
+     2                          +STORE(L8RI+4)*YCOORD
+     3                          +STORE(L8RI+5)*ZCOORD
+            AMIN(3)=STORE(L8T+2)+STORE(L8RI+6)*XCOORD
+     2                          +STORE(L8RI+7)*YCOORD
+     3                          +STORE(L8RI+8)*ZCOORD
+C
+C            WRITE(CMON,'(A,3F5.2)')'Points: ',AMIN
+C            CALL XPRVDU(NCVDU, 1,0)
+
+            AXMN = MIN(AMIN(1),AXMN)
+            AXMX = MAX(AMIN(1),AXMX)
+            AYMN = MIN(AMIN(2),AYMN)
+            AYMX = MAX(AMIN(2),AYMX)
+            AZMN = MIN(AMIN(3),AZMN)
+            AZMX = MAX(AMIN(3),AZMX)
+
+            STORE(IABAT+4)=AMIN(1)
+            STORE(IABAT+5)=AMIN(2)
+            STORE(IABAT+6)=AMIN(3)
+            STORE(IABAT+2)=1.0
+            STORE(IABAT+3)=.05
+C------ RESET THE CONTACT ATOM
+            M5=L5
+C------ RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
+            NFL=JE
+            JFNVC = -1
+C------ COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
+            NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
+            NBONDS = NDIST
+            DIST = AC
+            DO K = JE, JE+(JT*(NBONDS-1)),JT
+               DIST = MIN(DIST, STORE(K+10) - STORE(ISTORE(K)+14))
+            END DO
+
+C-------JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
+            NFL = JL
+            JK = JL - JT
+
+            IF (IOUFIL .GT. 0) THEN
+               WRITE(NCFPU1,2803) DIST
+            ENDIF
+          END DO
+        END DO
+      END DO
+
+
+
+      IF (IOUFIL .GT. 0) THEN
+        WRITE(NCFPU1,2801)'LIST5'
+
+C Get some store:
+        MDBOX = 4
+        LBOX = NFL
+        NBOX = 6
+        I = KCHNFL(28)
+C Centroid.
+        CALL XMOVE(STORE(L8T), STORE(LBOX), 3)
+
+C Calculate six enclosing planes.
+C NB dot product gives distance of plane from origin!
+C The **2 arises because the vector used for the
+C dot product is derived from the matrix used to
+C deorthogonalise the co-ordinates.
+CX
+        STORE(LBOX+4) =  STORE(L8RI)
+        STORE(LBOX+5) =  STORE(L8RI+3)
+        STORE(LBOX+6) =  STORE(L8RI+6)
+        STORE(LBOX+7) =  STORE(L8RI)**2    * -(STORE(L8T+3)-EDGES)
+     4                  + STORE(L8RI+3)**2 * -(STORE(L8T+3)-EDGES)
+     7                  + STORE(L8RI+6)**2 * -(STORE(L8T+3)-EDGES)
+C-X
+        STORE(LBOX+8)  = -STORE(LBOX+4)
+        STORE(LBOX+9)  = -STORE(LBOX+5)
+        STORE(LBOX+10) = -STORE(LBOX+6)
+        STORE(LBOX+11) = STORE(LBOX+7)
+C The D term does not change sign because the plane changes sign, and
+C the vector to the origin also changes sign.
+CY
+        STORE(LBOX+12) =  STORE(L8RI+1)
+        STORE(LBOX+13) =  STORE(L8RI+4)
+        STORE(LBOX+14) =  STORE(L8RI+7)
+        STORE(LBOX+15) =   STORE(L8RI+1)**2 * -(STORE(L8T+6)-EDGES)
+     4                  +  STORE(L8RI+4)**2 * -(STORE(L8T+6)-EDGES)
+     7                  +  STORE(L8RI+7)**2 * -(STORE(L8T+6)-EDGES)
+C-Y
+        STORE(LBOX+16) = -STORE(LBOX+12)
+        STORE(LBOX+17) = -STORE(LBOX+13)
+        STORE(LBOX+18) = -STORE(LBOX+14)
+        STORE(LBOX+19) = STORE(LBOX+15)
+CZ
+        STORE(LBOX+20) =  STORE(L8RI+2)
+        STORE(LBOX+21) =  STORE(L8RI+5)
+        STORE(LBOX+22) =  STORE(L8RI+8)
+        STORE(LBOX+23) =   STORE(L8RI+2)**2 * -(STORE(L8T+9)-EDGES)
+     4                   + STORE(L8RI+5)**2 * -(STORE(L8T+9)-EDGES)
+     7                   + STORE(L8RI+8)**2 * -(STORE(L8T+9)-EDGES)
+C-Z     
+        STORE(LBOX+24) = -STORE(LBOX+20)
+        STORE(LBOX+25) = -STORE(LBOX+21)
+        STORE(LBOX+26) = -STORE(LBOX+22)
+        STORE(LBOX+27) = STORE(LBOX+23)
+
+C-------LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
+        CALL XDIST3
+
+        BPD(4) = AXMN - 2.0 / STORE(L1P1)
+        BPD(5) = AYMN - 2.0 / STORE(L1P1+1)
+        BPD(6) = AZMN - 2.0 / STORE(L1P1+2)
+        BPD(7) = AXMX + 2.0 / STORE(L1P1)
+        BPD(8) = AYMX + 2.0 / STORE(L1P1+1)
+        BPD(9) = AZMX + 2.0 / STORE(L1P1+2)
+
+        JE=NFL
+        M5=L5
+        JFNVC = -1
+        ITRANS = 0 !Allow translation
+        NDIST = KDIST1( N5, JL, JT, JFNVC, TOLER, ITRANS)
+
+        WRITE(NCFPU1,2802)NDIST,MD5
+        DO K = JE, JE+(JT*(NDIST-1)),JT
+            M5 = ISTORE(K) 
+            WRITE(NCFPU1,2801) STORE(M5)
+            DO J = M5+1, M5+3
+                WRITE(NCFPU1,2803) STORE(J)
+            END DO
+            DO J = 0,2
+                WRITE(NCFPU1,2803) STORE(K+J+7)
+            END DO
+            DO J = M5+7, M5+MD5-1
+                WRITE(NCFPU1,2803) STORE(J)
+            END DO
+        END DO
+C Close the fourier.map file
+        CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+        CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
+      ENDIF
+C
+3350  CONTINUE
+      CALL XOPMSG (IOPSLA, IOPEND, 201)
+      CALL XTIME2(1)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
+      GOTO 3350
+9910  CONTINUE
+C -- INPUT ERROR
+      CALL XOPMSG ( IOPSLA , IOPCMI , 0 )
+      GO TO 9900
+9920  CONTINUE
+C -- SINGULAR MATRIX
+      WRITE ( CMON, 9925 )
+      CALL XPRVDU(NCVDU, 1,0)
+      WRITE(NCAWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+9925  FORMAT ( 1X , 'Rotation matrix is singular' )
+      CALL XERHND ( IERERR )
+      GO TO 9900
+9930  CONTINUE
+C
+C-------INSUFFICIENT SPACE
+      CALL XOPMSG ( IOPHYD , IOPSPC , 0 )
+      GO TO 9900
       END
