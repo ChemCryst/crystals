@@ -6,6 +6,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.30  2003/05/12 12:01:19  rich
+//   RIC: Oops; roll back some unintentional check-ins.
+//
 //   Revision 1.28  2003/05/07 12:18:57  rich
 //
 //   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -655,7 +658,7 @@ int CrModel::GetSelectionAction()
 bool CrModel::RenderModel(bool detailed, bool feedback)
 {
 //    TEXTOUT ( "RenderModel" );
-    m_style.high_res = detailed;
+    m_style.high_res = true;
     if(m_ModelDoc) return m_ModelDoc->RenderModel(&m_style,feedback);
     return false;
 }

@@ -120,7 +120,6 @@ CxModel::CxModel(CrModel* container)
   m_bNeedReScale = true;
   m_bModelChanged = true;
   m_bFullListOk = false;
-  m_bQuickListOk = false;
   m_bOkToDraw = false;
   m_fastrotate = false;
   m_LitObject = nil;
@@ -257,11 +256,12 @@ void CxModel::OnPaint(wxPaintEvent &event)
 //      TEXTOUT ( "Redrawing model from scratch" );
       DoDrawingLists();
       ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(true);
-      m_bFullListOk = true;
     }
 
     if ( ok_to_draw )
     {
+        m_bFullListOk = true;
+        m_bModelChanged = false;
 //      TEXTOUT ( CcString((int)this) + " Displaying model" );
       if ( m_Autosize && m_bNeedReScale )
       {
@@ -289,22 +289,16 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glMatrixMode ( GL_PROJECTION );
       glLoadIdentity();
       CameraSetup();
+
+      glCallList( STYLIST );
+
       ModelSetup();
       ModelBackground();
 
-      if ( m_fastrotate && !m_bModelChanged ) //If the model has changed, the QLISTS aren't ready yet.
-      {
-        glCallList( STYLIST );
-        glCallList( QATOMLIST );
-        glCallList( QBONDLIST );
-      }
-      else
-      {
-        glCallList( STYLIST );
-        glCallList( ATOMLIST );
-        glCallList( BONDLIST );
-        glCallList( XOBJECTLIST );
-      }
+      glCallList( ATOMLIST );
+      glCallList( BONDLIST );
+      glCallList( XOBJECTLIST );
+
       glMatrixMode ( GL_PROJECTION );
       glPopMatrix();
       glMatrixMode ( GL_MODELVIEW );
@@ -320,15 +314,6 @@ void CxModel::OnPaint(wxPaintEvent &event)
       SwapBuffers();
 #endif
 
-      if (m_bModelChanged)
-      {
-// Now that the display is out of the way, render the quick
-// model to the quick display lists.
-//        TEXTOUT ( CcString((int)this) + " Redrawing quick model from scratch" );
-        ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderModel(false);
-        m_bModelChanged = false;
-        m_bQuickListOk = true;
-      }
 
       if ( m_selectionPoints.ListSize() > 0 )
       {
@@ -391,22 +376,6 @@ void CxModel::DoDrawingLists()
           glPolygonMode(GL_BACK, GL_POINT);
     }
 
-    if ( m_Shading )
-    {
-            GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
-            GLfloat LightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-            GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
-            glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
-            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-            glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
-    }
-    else
-    {
-            GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
-            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-    }
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
 
     glEndList();
@@ -1036,25 +1005,31 @@ void CxModel::Setup()
    SetCurrent();
 
 #endif
-            glEnable(GL_NORMALIZE);
+   glEnable(GL_NORMALIZE);
 
-            glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-            glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
-            glHint(GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+   glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+   glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
+   GLfloat matDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+   GLfloat matSpecular[] ={ 0.8f, 0.8f, 0.8f, 1.0f };
+   GLfloat matShine[] = { 70.0f };
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, matShine);
 
-            GLfloat LightAmbient[] = { 0.1f, 0.1f, 0.1f, 0.1f };
-            GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 0.7f };
-            GLfloat LightSpecular[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
+   GLfloat lightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+   GLfloat lightAmbient[] ={ 0.0f, 0.0f, 0.0f, 1.0f };
+   GLfloat lightPos[] = { 5000.0f, 5000.0f, 20000.0f, 1.0f };
+   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+   glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-            glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
-            glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-            glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
-//            glLightModelf( GL_LIGHT_MODEL_TWO_SIDE, 1.0);
-
-            glEnable(GL_LIGHT0);
-            glEnable(GL_LIGHTING);
+   glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
+   glEnable ( GL_COLOR_MATERIAL ) ;
+   glEnable(GL_LIGHT0);
+   glEnable(GL_LIGHTING);
 
 
 // This is for the PaintBannerInstead() function.
@@ -1442,16 +1417,8 @@ void CxModel::AutoScale()
      glMatrixMode ( GL_MODELVIEW );
      glLoadIdentity();
      glMultMatrixf ( mat );
-     if ( m_bQuickListOk )
-     {
-       glCallList( QATOMLIST );
-       glCallList( QBONDLIST );
-     }
-     else
-     {
-       glCallList( ATOMLIST );
-       glCallList( BONDLIST );
-     }
+     glCallList( ATOMLIST );
+     glCallList( BONDLIST );
      glMatrixMode ( GL_PROJECTION );
      glMatrixMode ( GL_MODELVIEW );
 
@@ -1644,7 +1611,6 @@ void CxModel::ModelChanged(bool needrescale)
 //  TEXTOUT ( "Model " + CcString((int)this) + "changed" );
   m_bModelChanged = true;
   m_bFullListOk = false;
-  m_bQuickListOk = false;
   NeedRedraw(needrescale);
 }
 

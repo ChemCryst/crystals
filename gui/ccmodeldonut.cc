@@ -116,38 +116,31 @@ void CcModelDonut::Render(CcModelStyle *style, bool feedback)
   if ( m_excluded )
   {
     GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
-    GLfloat Diffuse[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
-    glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+    glColor4fv( Surface );
     extra = 20.0;
   }
   else if ( m_selected ) // highlighted
   {
-    int red = r;    int gre = g;    int blu = b;
-    if ( (  abs(r-g) < 20 ) && (abs (g-b) < 20) ) //black - grey - white
-    {
-        if ( r >= 128 ) red = r-128;
-        else            red = r+128;
-        if ( g >= 128 ) gre = g-128;
-        else            gre = g+128;
-    }
-    GLfloat Surface[] = { (float)red/255.0f,(float)gre/255.0f,(float)blu/255.0f, 1.0f };
-    glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-    detail = 4;
-    extra = 10.0;
+    GLfloat lightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat lightAmbient[] ={ 1.0f, 1.0f, 1.0f, 1.0f };
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
+    glEnable(GL_LIGHT1);
+
+    GLfloat Surface[] = { ((float)r+64)/319.0f,((float)g+64)/319.0f,((float)b+64)/319.0f, 1.0f };
+    glColor4fv( Surface );
+    extra = 10.0f;
   }
   else if ( m_disabled )  // disabled atom
   {
     GLfloat Diffuse[] = { (float)r/512.0f,(float)g/512.0f,(float)b/512.0f, 1.0f };
-    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-    extra = 20.0;
+    glColor4fv( Diffuse );
+    extra = 20.0f;
   }
   else  // normal
   {
     GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-    GLfloat Diffuse[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-    glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+    glColor4fv( Surface );
   }
 
   float innerrad = ( (float) rad - (float) covrad ) * style->radius_scale;
@@ -206,8 +199,11 @@ void CcModelDonut::Render(CcModelStyle *style, bool feedback)
            glEnd();
         }
 
+
   if (feedback)  glPassThrough(0.0);
   glPopMatrix();
+
+  glDisable(GL_LIGHT1);
 
 }
 

@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.29  2003/11/28 10:29:11  rich
+// Replace min and max macros with CRMIN and CRMAX. These names are
+// less likely to confuse gcc.
+//
 // Revision 1.28  2003/11/07 10:43:06  rich
 // Split the 'part' column in the atom list into 'assembly' and 'group'.
 //
@@ -667,25 +671,18 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
    if ( mAtomList->ListSize()   || mBondList->ListSize() ||
         mSphereList->ListSize() || mDonutList->ListSize()  )
    {
-      CcModelAtom* aitem;
-      CcModelBond* bitem;
-      CcModelSphere* sitem;
-      CcModelDonut* ditem;
-      GLuint glIDCount = 0;
+        CcModelAtom* aitem;
+        CcModelBond* bitem;
+        CcModelSphere* sitem;
+        CcModelDonut* ditem;
+        GLuint glIDCount = 0;
 
-      int nRes = (int) ( 1250.0 / mAtomList->ListSize() );
-      nRes = CRMIN ( 15, nRes );
-      nRes = CRMAX ( 4,  nRes );
-      int qRes = (int) ( 500.0 / mAtomList->ListSize() );
-      qRes = CRMIN ( 5, qRes );
-      qRes = CRMAX ( 3,  qRes );
+        int nRes = (int) ( 1250.0 / mAtomList->ListSize() );
+        nRes = CRMIN ( 15, nRes );
+        nRes = CRMAX ( 4,  nRes );
 
-      style->normal_res = nRes;
-      style->quick_res  = qRes;
+        style->normal_res = nRes;
 
-      if ( style->high_res )
-      {
-//High res normal atoms:
         mAtomList->Reset();
         mSphereList->Reset();
         mDonutList->Reset();
@@ -695,8 +692,8 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
            glNewList( ATOMLIST, GL_COMPILE);
         }
         {
-          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+//          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+//          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
         }
         while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
         {
@@ -743,10 +740,10 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         mSphereList->Reset();
         mDonutList->Reset();
         {
-          GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
-          GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
-          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+//          GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
+ //         GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
+//          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+ //         glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
         }
         while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
         {
@@ -793,10 +790,10 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         mSphereList->Reset();
         mDonutList->Reset();
         {
-          GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
-          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
-          glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+//          GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
+//          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+//          glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+//          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
         }
         while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
         {
@@ -845,12 +842,12 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
            glNewList( BONDLIST, GL_COMPILE);
         }
         {
-          GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
-          GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
-          GLfloat Shinine[] = {89.6f};
-          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-          glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+//          GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
+//          GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
+//          GLfloat Shinine[] = {89.6f};
+//          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+//          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+//          glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
         }
         mBondList->Reset();
         while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
@@ -899,193 +896,9 @@ bool CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         {
            glEndList();
         }
-      }
-      else
-      {
-//Low res (non-excluded) atoms
-        if ( !feedback )
-        {
-           glDeleteLists(QATOMLIST,1);
-           glNewList( QATOMLIST, GL_COMPILE);
-        }
-        mAtomList->Reset();
-        mSphereList->Reset();
-        mDonutList->Reset();
-        {
-          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-        }
-        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
-        {
-//not excluded, not selected, not disabled:
-          if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              aitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( aitem->m_glID );
-            aitem->Render(style);
-          }
-        }
-        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
-        {
-//not excluded, not selected, not disabled:
-          if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              sitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( sitem->m_glID );
-            sitem->Render(style);
-          }
-        }
-        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
-        {
-//not excluded, not selected, not disabled:
-          if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              ditem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( ditem->m_glID );
-            ditem->Render(style);
-          }
-        }
-        mAtomList->Reset();
-        mSphereList->Reset();
-        mDonutList->Reset();
-        {
-          GLfloat Diffuse[] = { 0.6f,0.6f,0.6f,1.0f };
-          GLfloat Specula[] = { 0.9f,0.9f,0.9f,1.0f };
-          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-        }
-        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
-        {
-//not excluded, selected:
-          if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
-          {
-            if ( !m_glIDsok )
-            {
-              aitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( aitem->m_glID );
-            aitem->Render(style);
-          }
-        }
-        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
-        {
-//not excluded, selected:
-          if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
-          {
-            if ( !m_glIDsok )
-            {
-              sitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( sitem->m_glID );
-            sitem->Render(style);
-          }
-        }
-        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
-        {
-//not excluded, selected:
-          if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
-          {
-            if ( !m_glIDsok )
-            {
-              ditem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( ditem->m_glID );
-            ditem->Render(style);
-          }
-        }
-        mAtomList->Reset();
-        mSphereList->Reset();
-        mDonutList->Reset();
-        {
-          GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
-          GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
-          glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-        }
-        while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
-        {
-//not excluded, not selected, disabled
-          if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              aitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( aitem->m_glID );
-            aitem->Render(style);
-          }
-        }
-        while ( (sitem = (CcModelSphere*)mSphereList->GetItemAndMove()) )
-        {
-//not excluded, not selected, disabled
-          if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              sitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( sitem->m_glID );
-            sitem->Render(style);
-          }
-        }
-        while ( (ditem = (CcModelDonut*)mDonutList->GetItemAndMove()) )
-        {
-//not excluded, not selected, disabled
-          if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
-          {
-            if ( !m_glIDsok )
-            {
-              ditem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( ditem->m_glID );
-            ditem->Render(style);
-          }
-        }
-        if ( !feedback )
-        {
-           glEndList();
-//Low res (non-excluded) bonds
-           glDeleteLists(QBONDLIST,1);
-           glNewList( QBONDLIST, GL_COMPILE);
-        }
-        {
-          GLfloat Diffuse[] = { 0.2f,0.2f,0.2f,1.0f };
-          GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
-          GLfloat Shinine[] = {89.6f};
-          glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
-          glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-          glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
-        }
-        mBondList->Reset();
-        while ( (bitem = (CcModelBond*)mBondList->GetItemAndMove()) )
-        {
-          if ( !(bitem->m_excluded) )
-          {
-            if ( !m_glIDsok )
-            {
-              bitem->m_glID = ++ glIDCount;
-            }
-            glLoadName ( bitem->m_glID );
-            bitem->Render(style);
-          }
-        }
-        if ( !feedback )
-        {
-           glEndList();
-        }
-      }
 
-      m_glIDsok = true;
-      return true;
+        m_glIDsok = true;
+        return true;
    }
    return false;
 }

@@ -140,14 +140,16 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
    if ( m_excluded )
    {
         GLfloat Surface[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };
-        GLfloat Diffuse[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };
-        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+//        GLfloat Diffuse[] = { 128.0f+(float)m_r/127.0f,128.0f+(float)m_g/127.0f,128.0f+(float)m_b/127.0f, 1.0f };
+//        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+//        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+        glColor4fv( Surface );
    }
    else
    {
         GLfloat Surface[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
-        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+//        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+        glColor4fv( Surface );
    }
 
    int bondrad = (int)((float)m_rad * style->radius_scale);

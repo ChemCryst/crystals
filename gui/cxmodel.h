@@ -7,6 +7,9 @@
 //   Filename:  CxModel.h
 //   Author:   Richard Cooper
 //  $Log: not supported by cvs2svn $
+//  Revision 1.33  2003/05/12 12:01:19  rich
+//  RIC: Oops; roll back some unintentional check-ins.
+//
 //  Revision 1.31  2003/05/07 12:18:58  rich
 //
 //  RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -260,7 +263,7 @@ class CxModel : public BASEMODEL
     bool m_bModelChanged;
     bool m_bOkToDraw;
     bool m_bFullListOk;
-    bool m_bQuickListOk;
+//    bool m_bQuickListOk;
     float m_stretchX ;
     float m_stretchY ;
     bool  m_bitmapok;
