@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2002/03/05 11:30:44  Administrator
+C FInal rendering of LIST 23 conditions
+C
 C Revision 1.13  2002/02/22 14:32:21  Administrator
 C Modify LIST 23 conditions, and improve termination messages
 C
@@ -667,7 +670,7 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
        WRITE(NCAWU,'(A)') CMON(1)
       ENDIF
       IF (J .GT. 0) THEN
-       WRITE(CMON,4350) CLST23(J)(:)
+       WRITE(CMON,4351) CLST23(J)(:)
 4351  FORMAT(' Forced termination after this cycle: ',
      3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)

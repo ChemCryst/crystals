@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2002/02/12 12:54:49  Administrator
+C Allow filtering of reflections in SFLS/CALC
+C
 C Revision 1.17  2002/02/01 14:41:30  Administrator
 C Enable CALC to get additional R factors and display them in SUMMARY
 C
@@ -468,9 +471,15 @@ C--UPDATE  -  INITIALISE THE COLLECTION
       CALL XIRTAC(8)
       CALL XIRTAC(9)
       GOTO 2350
-C--THIS IS A TWINNED REFINEMENT  -  SUPPRESS EXTINCTION CORRECTIONS
+c
 2000  CONTINUE
-      NA=-1
+C--THIS IS A TWINNED REFINEMENT  -  SUPPRESS EXTINCTION CORRECTIONS
+      write(cmon,'(a)') 
+     1'It is unwise to refine extinction for twinned data'
+      call xprvdu(ncvdu, 1,0)
+      if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)
+      write(ncawu,'(a)') cmon(1)
+cdjw0302      NA=-1
 C--SUPPRESS PARTIAL CONTRIBUTIONS
       NC=-1
       ND=-1
