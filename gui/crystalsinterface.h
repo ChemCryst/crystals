@@ -3,6 +3,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   27.2.1998 14:11 Uhr
 // $Log: not supported by cvs2svn $
+// Revision 1.21  2002/07/23 08:27:02  richard
+//
+// Extra parameter during GRID creation: "ISOLATE" - grid won't expand when the
+// window resizes, even if it contains objects which might like to expand.
+//
 // Revision 1.20  2002/07/03 14:23:21  richard
 // Replace as many old-style stream class header references with new style
 // e.g. <iostream.h> -> <iostream>. Couldn't change the ones in ccstring however, yet.
@@ -105,7 +110,8 @@ enum {
     kMenuBase           =   65000,
     kResizeBarBase      =   70000,
     kStretchBase        =   71000,
-    kPlotBase           =   72000
+    kPlotBase           =   72000,
+    kModListBase        =   73000
 };
 #define kNoAlignment        0
 #define kIsolate            1
