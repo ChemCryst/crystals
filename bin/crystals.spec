@@ -1,12 +1,11 @@
 Summary: CRYSTALS X-ray structure refinement and analysis.
 Name: crystals
-Version: 12.50
-Release: beta
+Version: 12.80
+Release: 1
 Group: Scientific
-Copyright: Copyright University of Oxford 2004
+Copyright: Copyright University of Oxford 2005
 URL: http://www.xtl.ox.ac.uk/crystals.html
-Packager: Richard I Cooper
-Buildroot: %_topdir/%{name}
+Packager: Richard I. Cooper
 BuildArch: i386
 
 %description
@@ -16,5 +15,5 @@ from single or twinned small-molecule crystal structures.
 
 %files
 %defattr(-,root,root)
-/usr/local/crystals
-/usr/local/bin/crystals
+/usr/crystals
+/usr/bin/crystals

@@ -2,13 +2,10 @@
 %distribution	CRYSTALS
 %vendor		University of Oxford
 
-%_topdir	%(echo $HOME)/RPMBUILD
-%_tmppath	%{_topdir}/tmp
-%_builddir	%{_tmppath}
-
-%_rpmtopdir	%{_topdir}/%{name}
-%_sourcedir	%{_rpmtopdir}
-%_specdir	%{_topdir}/SPECS
-%_rpmdir	%{_topdir}/RPMS
-%_srcrpmdir	%{_topdir}/SRPMS
+%_topdir	../rpmbuild
+%_tmppath	/usr/tmp
+%_builddir	/usr/tmp
+%_rpmtopdir	../rpmbuild
+%_sourcedir	../rpmbuild
+%_rpmdir	../installer
 %_rpmfilename	%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm

@@ -3,4 +3,4 @@ export LD_LIBRARY_PATH=/usr/lib
 export CRYSTALS_HOME=/usr/crystals
 export CRYSDIR=$HOME/.crystals/,$CRYSTALS_HOME/
 
-$CRYSTALS_HOME/crystals.exe $*
+$CRYSTALS_HOME/crystals $*
