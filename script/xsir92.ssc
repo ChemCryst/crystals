@@ -148,19 +148,41 @@
 ^^WI SHOW
 ^^CR
 ^^CO SENDTEXTTO XSIRTEXT
+
    If the structure will not solve:
    1) Be sure that the space group is correct.
    2) Click on 'View Log' and study the output of the
-      Sir92 program for reasons for failure.
-      a) If the Wilson Plot shows a weird B value, or the program crashes 
-         computing the plot, try uncommenting (remove the >) the %normal 
-         and BFAC lines.
-      b) If the volume per atom is not approximately 20, check the formula
-      c) If the first e-map looks hopeful, then deteriorates, inhibit 
-         cycling. (remove the > from the ncycle line)
+      Sir92 program for reasons for failure. Check these things:
+
+      a) If the Wilson Plot shows a weird B value, or the program crashes
+         computing the plot, try uncommenting (remove the '>') the %normal 
+         and BFAC lines. To do this choose 'Edit Sir92 file' in the initial
+         Sir92 dialog box.
+
+      b) If the volume per atom is not approximately 20, check and
+         correct the formula. Use 'Edit formula' from the 'X-ray Data' menu.
+
+      c) If the first e-map looks hopeful, then deteriorates, inhibit
+         cycling. Uncomment the following lines in sir92.ini by remomving
+         the leading '>' symbol. To do this, choose 'Edit Sir92 file' in
+         the initial Sir92 dialog box.
+          %normal
+          %seminv
+          %invariant
+          %phase
+            random
+          %fourier  
+            recycle n
+        Change the 'n' on the last line to a low value. 0 or 1 inhibits
+        cycling completely.
+
    3) Try one of the alternative Sir92 parameters options.
-   4) Read the Sir92 guide in SIR92/GUIDE92.TXT for help.
+
+   4) Guidance from the authors of Sir92 is available in
+      the file &{CRYSDIR:guide92.txt&{.
+
    5) Try SHELXS
+
    6) Obtain SIR97 or DIRDIF
 ^^CO SENDTEXTTO _MAINTEXTOUTPUT
 %          VERIFY CLOSE HELP
