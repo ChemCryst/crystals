@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2001/11/16 15:39:53  ckp2
+C Only output graphs when required. Extinction graph in ANALYSE <Fo>-<Fc> against
+C Fo range.
+C
 C Revision 1.23  2001/11/13 14:52:31  ckp2
 C Output reciprocal weights vs /FO/ from XAPP04.
 C
@@ -1017,6 +1021,11 @@ C--PRINT THE LINE FOR THIS /FO/
       WRITE(NCAWU,6630) EDW,WDW
       WRITE(CMON,6630) EDW,WDW
       CALL XPRVDU(NCVDU, 1,0)
+      IF ( IGUI4 .EQ. 1 ) THEN
+        WRITE(CMON,'(A,F7.2,A,F15.7)')'^^PL LABEL ',
+     2   EDW,' DATA ', WDW
+        CALL XPRVDU(NCVDU, 1,0)
+      ENDIF
 6700  CONTINUE
 6750  CONTINUE
       IF ( IGUI4 .EQ. 1 ) THEN
