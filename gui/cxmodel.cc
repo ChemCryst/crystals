@@ -1,7 +1,7 @@
+// $Log: not supported by cvs2svn $
+
 ////////////////////////////////////////////////////////////////////////
-
 //   CRYSTALS Interface      Class CxModel
-
 ////////////////////////////////////////////////////////////////////////
 
 #include	"crystalsinterface.h"
@@ -316,14 +316,13 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
          if(IsAtomClicked(point.x, point.y, &atomname, &atom))
          {
 		((CrModel*)mWidget)->SendAtom(atom);
-//            m_LitAtom=nil; //Get it to rehighlight properly.
             NeedRedraw();
          }
          else
          {
-         //We could rotate from here, but don't set m_fastrotate, in case,
-         //we don't. Otherwise the picture will flick to low detail and
-         //back every time we click an atom.
+            //We could rotate from here, but don't set m_fastrotate in case
+            //we don't. Otherwise the picture will flick to low detail and
+            //back every time we click an atom.
            m_ptLDown = point;
          }
       }
