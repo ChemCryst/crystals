@@ -8,6 +8,12 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 13:26 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.29  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.28  2003/02/27 13:42:01  rich
 //   If LARGE specified and window is the MAIN one, then use the desktop
 //   size to size to. Change guimenu.ssr to make the main CRYSTALS window LARGE!
@@ -88,6 +94,9 @@ CrWindow::CrWindow( )
 
 CrWindow::~CrWindow()
 {
+   
+    if (mName == "_MAIN") { LOGSTAT("Closing the main window"); }
+
     if ( m_Keep )
     {
 // Store the old size in a file...
