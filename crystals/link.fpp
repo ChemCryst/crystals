@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.36  2002/10/02 13:39:32  rich
+C MOL2 format support.
+C
 C Revision 1.35  2002/05/31 14:41:09  Administrator
 C Update SHELX SPECIAL output
 C
@@ -211,6 +214,7 @@ C
 \XLST13
 \XLST29
 \XLST31
+\XLST40
 \XLST41
 \XOPVAL
 \XERVAL
@@ -321,7 +325,7 @@ C            MULTAN, SIR88,   SIR92,
 C            SIR97,  PLATON,  CSD,   MOL2
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,
-     2       1900,   1860,    1870,  1880), ILINK
+     2       1900,   1860,    1870,  1880 ), ILINK
 C
 1600  CONTINUE
 C
@@ -794,12 +798,17 @@ C Allocate space for results of 100 atoms (overkill)
       TOPSER = 0
 
       DO I = 0,N5-1
+        M5A = L5+I*MD5
+        TOPSER = MAX(TOPSER,STORE(M5A+1))
+      END DO
+      TOPSER = TOPSER + 3
+
+      DO I = 0,N5-1
 
         M5A = L5+I*MD5
         M5 = L5
         JT = 14
 
-        TOPSER = MAX(TOPSER,STORE(M5A+1))
 
         JDISTS = JBASAT + JNEWAT*MD5 + 1400
         NFL = JDISTS
@@ -821,6 +830,8 @@ C Add entry to our "new L5 in memory".
 
               CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
               CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
+              STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
+              TOPSER=TOPSER+1
               JNEWAT = JNEWAT + 1
 
               WRITE ( CMON,'(2A,6I4,3F9.3)')'new atom (1) ',
@@ -833,6 +844,7 @@ C Add entry to our "new L5 in memory".
       END DO
 
       WRITE ( CMON,'(A)') 'Done.'
+      TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
 
       IF ( JNEWAT .GT. 0 ) THEN
 C Layer 1 of sym atoms complete. Start on layer 2.
@@ -840,18 +852,13 @@ C Layer 1 of sym atoms complete. Start on layer 2.
          WRITE ( CMON,'(A)') 'Seeking 2nd level bonds across sym ops.'
          CALL XPRVDU(NCVDU, 1,0)  
 
-C Copy existing L5 block to end of new atoms.
-         CALL XMOVE (STORE(L5),STORE(JBASAT+MD5*JNEWAT),N5*MD5)
+C Move new atoms and insert existing L5 block.
+         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
+         CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
          L5 = JBASAT
          N5 = N5+JNEWAT
          NFL = L5+MD5*N5
 
-         TOPSER = TOPSER + 10
-
-         DO I = 0,JNEWAT-1
-           STORE(L5+I*MD5+1) = TOPSER
-           TOPSER = TOPSER + 1
-         END DO
 
 
          WRITE ( CMON,'(A,3I5)') 'New atoms: N5, L5, MD5: ',N5,L5,MD5
@@ -884,6 +891,7 @@ C Recalculate bonds.
 
         DO LSY = 1,3
 
+        TOPSER = TOPSER + 3 !Leave a gap for debugging analysis
 C Call KDIST4 again, this time pivot/bonded atom vectors are required.
          MDATVC = 3
          NATVC = N5
@@ -957,6 +965,8 @@ C Add entry to our "new L5 in memory".
 
                    CALL XMOVE (STORE(I5), STORE(JBASAT+MD5*JNEWAT), MD5)
                    CALL XMOVE (STORE(J+7),STORE(JBASAT+MD5*JNEWAT+4), 3)
+                   STORE(JBASAT+1+MD5*JNEWAT)=TOPSER
+                   TOPSER=TOPSER+1
                    JNEWAT = JNEWAT + 1
 
                    WRITE ( CMON,'(A,I4,1X,A,6I4,3F9.3)')'new atom (2) ',
@@ -970,16 +980,12 @@ C Add entry to our "new L5 in memory".
            END DO
          END DO
 
-C Copy existing L5 block to end of new atoms.
-         CALL XMOVE (STORE(L5),STORE(JBASAT+MD5*JNEWAT),N5*MD5)
+C Move new atoms and insert existing L5 block.
+         CALL XMOVE (STORE(JBASAT),STORE(JBASAT+MD5*N5),JNEWAT*MD5)
+         CALL XMOVE (STORE(L5),STORE(JBASAT),N5*MD5)
          L5 = JBASAT
          N5 = N5+JNEWAT
          NFL = L5+MD5*N5
-
-         DO I = 0,JNEWAT-1
-           STORE(L5+I*MD5+1) = TOPSER
-           TOPSER = TOPSER + 1
-         END DO
 
          WRITE ( CMON,'(A,3I5)') 'N5, L5, MD5: ',N5,L5,MD5
          CALL XPRVDU(NCVDU, 1,0)
@@ -993,6 +999,11 @@ C Copy existing L5 block to end of new atoms.
            WRITE(CMON,'(A,3F8.4)')CLAB, (STORE(L5+I*MD5+J),J=4,6)
            CALL XPRVDU(NCVDU, 1,0)
          END DO
+
+         IF(LSY.EQ.3) THEN !Last time around - don't look for SYM atoms.
+             ISTORE(L40T+3) = 1
+         END IF
+        
 
          CALL XBCALC(2)
 
@@ -1057,9 +1068,6 @@ C Copy existing L5 block to end of new atoms.
       END DO
 
       GOTO 8000
-
-
-
 
 C
 1900  CONTINUE
