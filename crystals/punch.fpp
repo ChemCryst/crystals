@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2004/07/12 15:52:30  stefan
+C Fixed a problem where the new code for '#punch 12 B' would not compile on Mandrake or MacOS X.
+C Also does it in a nicer manner rather then the infinate loop with an if to break it.
+C
 C Revision 1.40  2004/07/09 12:28:16  rich
 C \punch 12 b  writes a easy to read version of list 22
 C to the punch file. It can't be read back in, of course.
@@ -292,6 +296,7 @@ C
 \XOPVAL
 C
 \QSTORE
+      data ihyd /'H   '/
 C
 C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
@@ -364,6 +369,9 @@ C--PUNCH EACH ATOM  -  ONE AT A TIME
         WRITE( CATNM (ITRIM:), '(I3)') J
       ENDIF
 
+      HFIX = 0.0
+      IF ( ISTORE(M5A) .EQ. IHYD ) HFIX = 10.0
+
 C--CHECK WHETHER ISO OR ANISO
 C-C-C-CHECK WHETHER ANISO OR ISO/SPHERE/LINE/RING
       IF(ABS(STORE(M5+3))-UISO)1250,1350,1350
@@ -371,14 +379,13 @@ C-C-C-ANISO
 1250  CONTINUE
       M5O=M5+7
       L5O=M5+12
-      WRITE(NCPU,1300)CATNM,ISTORE(M5),(STORE(K),K=L,M),
-     2 STORE(M5+2),(STORE(K),K=M5O,L5O)
+      WRITE(NCPU,1300)CATNM,ISTORE(M5),(STORE(K)+HFIX,K=L,M),
+     2 10.0+STORE(M5+2),(STORE(K),K=M5O,L5O)
 1300  FORMAT(A7,1X,I5,6F10.5,2H =/5X,4F10.5)
       GOTO 1400
 C-C-C-ISO/SPHERE/LINE/RING
 1350  CONTINUE
-      WRITE(NCPU,1300)CATNM,ISTORE(M5),(STORE(K),K=L,M),
-C     2 STORE(M5+2),STORE(M5+3)
+      WRITE(NCPU,1300)CATNM,ISTORE(M5),(STORE(K)+HFIX,K=L,M),
      2 10.+STORE(M5+2),STORE(M5+7)
 1400  CONTINUE
       M5=M5+MD5
