@@ -3143,7 +3143,11 @@ C-----------------FORTRAN CARRIAGE RETURN WITHOUT LINE FEED
 &DOSC------             SWITCH OFF LINE FEEDS
 &DOS                    JNL77 = 0
                         CFRMAT = '(A)'
-#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+Cdjw[      enable thermometer etc in non-vga mode
+#GID                WRITE(NCDEV ,'(A,$)') char(13)
+#GID                WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
+C#GID                        WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
+Cdjw99]
 &DOSC------             SWITCH ON LINE FEEDS
 &DOS                    JNL77 = 1
 &GIDC{
