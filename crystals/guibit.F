@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  1999/07/30 20:30:13  richard
+C RIC: If atoms have negative covalent radii, then don't bond them to
+C anything, but still use the absolute value for the radius.
+C
 C Revision 1.18  1999/07/21 18:11:06  richard
 C RIC: Remove defunct code. Fix setting of QSINL5 flag. (Don't set FALSE, if
 C not updating list.)
@@ -615,7 +619,7 @@ CODE FOR XGDBUP
 C----- UPDATE THE GRAPHICS DATA BASE
 C      PREPARE FOR GUI
       CHARACTER CTXT*(*)
-      LOGICAL LDOFOU
+      LOGICAL LDOFOU, LSPARE
       DIMENSION JDEV(4)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
 \ISTORE
@@ -678,6 +682,7 @@ C Check for valid pointers to lists.
 C Set old list number to current list number.
       ISERIA = ISERI
       QSINL5 = .FALSE.
+      LSPARE = .FALSE.
 C
 C Calculate and store orthogonal coords....
 C Calculate sum of x, y and z as we go.
@@ -703,6 +708,7 @@ C     1      TSTORE(IPLACE+1),TSTORE(IPLACE+2),'^^EN'
              XTOT = XTOT + TSTORE(IPLACE)
              YTOT = YTOT + TSTORE(IPLACE+1)
              ZTOT = ZTOT + TSTORE(IPLACE+2)
+             IF ( STORE ( J + IOFF + 9 ) .GT. 0.0001 ) LSPARE = .TRUE.
              IPLACE = IPLACE + 3
              J = J + MD5
 30       CONTINUE
@@ -915,8 +921,13 @@ C           WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 
 C           WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
+            IF ( LSPARE ) THEN
+                  ISPARE = NINT(GSCALE*STORE(J+IOFF+9)/50.0)
+            ELSE
+                  ISPARE = NINT(COV*GSCALE)
+            END IF
 
-96           FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,2(1X,I6),/,A,9(1X,I6))
+96           FORMAT (A,I4,1X,A,/,A,8(1X,I6),/,A,3(1X,I6),/,A,9(1X,I6))
              WRITE ( CMON,96 )
      1       '^^GR ATOM ',
      2       1,  CLAB,
@@ -927,7 +938,7 @@ C           WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
      7       NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
      8       NINT(1000*STORE(J+2)), NINT(COV*GSCALE),
      1       '^^GR',
-     2       NINT(VDW*GSCALE),1,
+     2       NINT(VDW*GSCALE),ISPARE,1,
      1       '^^GR',
 &SOO     3       ((NINT(AXES(KI,KJ)),KI=1,3),KJ=1,3)
 #SOO     3       0,0,0, 0,0,0, 0,0,0
@@ -966,8 +977,8 @@ C First atom is not to be bonded.
                IF (COV2 .LT. 0.00) GOTO 120
 C Second atom is not to be bonded.
 
-               REQDSX = (COV1 + COV2) * 1.3
-               REQDSN = (COV1 + COV2) * 0.7
+               REQDSX = (COV1 + COV2) * 1.2
+               REQDSN = (COV1 + COV2) * 0.8
                IF( (ACTDST.LT.REQDSX) .AND.
      1             (ACTDST.GT.REQDSN) ) THEN
                   XX   = GUMTRX(1) * STACK((J*5)-3)
