@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2002/07/23 10:02:09  richard
+C
+C INSERT NCONN and INSERT RELAX use L41 to work out bonding. L41 is dangerously
+C useless if L5 has been sorted in #EDIT. One can now call XBCALC(2) to recalculate
+C bonds. L5 is not reloaded in this mode.
+C
 C Revision 1.28  2002/07/22 08:11:15  richard
 C
 C Added new #EDIT directive: CLASH. MODE=REPORT, FIXLATTER or FIXFORMER. Either
@@ -314,17 +320,11 @@ C--INDICATE THAT LIST 12 IS NOT TO BE USED
 C
 C
 100   CONTINUE
-CDJWAPR99{
+
       IF (MONGUI.GE.2) THEN
-CDJWFEB97>
-C      NOTE - MOVE THIS INTO XMDMON IF YOU WISH TO TRAP INDIVIDUAL
-C      ATOM CHANGES
-CRICAUG98> This bit crashes if you delete two atoms in a row.
-CDJWAPR99 TRY TO FIX IT
-CRICAUG98<
-CDJWFEB97<
+        CALL XBCALC(2)    ! Re-calculate bonding
+        CALL XGUIUP (-5)  ! Update GUI model     
       END IF
-CDJWAPR99}
 C
 C -- **** MAIN INSTRUCTION LOOP ****
 C
@@ -369,23 +369,14 @@ CDJWJAN2001 SET A LIST TYPE JUST IN CASE FIRST COMMAND IS AN ERROR
 C -- LOAD LISTS
       CALL XFAL01
       CALL XFAL02
-C----- LOAD LIST 20 IF NOT ALREADY IN CORE
-      IF (KHUNTR(20,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL20
-      CALL XLDRO5 (LA)
-      IF (IERFLG.LT.0) GO TO 8200
-C----- SEE LIPSON & COCHRAN, EQN 302.3
-      STORE(NFL)=COS(STORE(L1P1+3))
-      STORE(NFL+1)=COS(STORE(L1P1+4))
-      STORE(NFL+2)=COS(STORE(L1P1+5))
-      STORE(NFL+3)=1.+2.*(STORE(NFL)*STORE(NFL+1)*STORE(NFL+2))-
-     1(STORE(NFL)*STORE(NFL)+STORE(NFL+1)*STORE(NFL+1)+STORE(NFL+2)*
-     2STORE(NFL+2))
-      STORE(NFL+3)=SQRT(STORE(NFL+3))
-      DANISO(1)=STORE(NFL+3)*STORE(L1P1)/SIN(STORE(L1P1+3))
-      DANISO(2)=STORE(NFL+3)*STORE(L1P1+1)/SIN(STORE(L1P1+4))
-      DANISO(3)=STORE(NFL+3)*STORE(L1P1+2)/SIN(STORE(L1P1+5))
-C
-C--- LOAD LIST 3 AND 29 INCASE WE NEED THEM LATER
+
+C--- LOAD LIST 3, 29 AND 41 INCASE WE NEED THEM LATER
+C RIC02 - Moved these calles to before XLDRO5, since all subsequent
+C code assumes that L5 is loaded last and will happily write over
+C anything above L5 in store. Previously this would have caused chain
+C breaks if you added an atom, then tried to, say, INSERT ELECTRON.
+C Now that XBCALC is called it was having the more serious effect
+C of creating huge invalid L41s.
       KLST(1)=-1
       KLST(2)=-1
       KLST(3)=-1
@@ -403,6 +394,27 @@ C--- LOAD LIST 3 AND 29 INCASE WE NEED THEM LATER
          KLST(3)=41
          KLST(4)=41
       END IF
+      IF (KEXIST(40).GT.0) THEN
+         IF (KHUNTR(40,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL40
+      END IF
+
+C----- LOAD LIST 20 IF NOT ALREADY IN CORE
+      IF (KHUNTR(20,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL20
+      CALL XLDRO5 (LA)
+      IF (IERFLG.LT.0) GO TO 8200
+
+C----- SEE LIPSON & COCHRAN, EQN 302.3
+      STORE(NFL)=COS(STORE(L1P1+3))
+      STORE(NFL+1)=COS(STORE(L1P1+4))
+      STORE(NFL+2)=COS(STORE(L1P1+5))
+      STORE(NFL+3)=1.+2.*(STORE(NFL)*STORE(NFL+1)*STORE(NFL+2))-
+     1(STORE(NFL)*STORE(NFL)+STORE(NFL+1)*STORE(NFL+1)+STORE(NFL+2)*
+     2STORE(NFL+2))
+      STORE(NFL+3)=SQRT(STORE(NFL+3))
+      DANISO(1)=STORE(NFL+3)*STORE(L1P1)/SIN(STORE(L1P1+3))
+      DANISO(2)=STORE(NFL+3)*STORE(L1P1+1)/SIN(STORE(L1P1+4))
+      DANISO(3)=STORE(NFL+3)*STORE(L1P1+2)/SIN(STORE(L1P1+5))
+C
 C -- SET CHANGE FLAG
       ICHNG=0
       IF (LA.NE.LB) ICHNG=1
