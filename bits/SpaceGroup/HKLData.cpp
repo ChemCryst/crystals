@@ -151,14 +151,19 @@ HKLData::HKLData(char* pPath)
     long tFileSize = fsize(pPath);
     
     tReflectionList = new ArrayList<Reflection>(tFileSize/34);
+    bool tHadZeros = false;
     while (fgets(tLine, 255, tFile))
     {
         Reflection* tReflection = new Reflection(tLine);
         if (tReflection->h == 0 && tReflection->k == 0 && tReflection->l == 0
         && tReflection->i == 0.0)	//reached the end of the file an we don't want any more.
         {
-            delete tReflection;
-            break;
+            if (tHadZeros)
+            {
+                delete tReflection;
+                break;
+            }
+            tHadZeros = true;;
         }
         tReflectionList->add(tReflection);
     }
