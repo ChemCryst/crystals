@@ -45,6 +45,7 @@
 
 #include "StringClasses.h"
 #include "MathFunctions.h"
+#include "Exceptions.h"
 #include <iomanip>
 #include "Stats.h"
 #include <fcntl.h>
@@ -103,7 +104,7 @@ void deinitRE()
     }
 }
 
-Heading::Heading(char* pLine):Matrix<short>(3, 3)
+Region::Region(char* pLine):Matrix<short>(3, 3)
 {
     const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
@@ -111,7 +112,7 @@ Heading::Heading(char* pLine):Matrix<short>(3, 3)
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
     if (regexec(iHeaderRE, pLine, tMatches, tMatch, 0))
     {
-        throw MyException(kUnknownException, "Heading had an invalid format!");
+        throw MyException(kUnknownException, "Region had an invalid format!");
     }
     iName = new char[(int)(tMatch[2].rm_eo - tMatch[2].rm_so +1)];
     iName[(int)(tMatch[2].rm_eo - tMatch[2].rm_so)] = 0;
@@ -129,89 +130,115 @@ Heading::Heading(char* pLine):Matrix<short>(3, 3)
     delete[] tTempString;
 }
 
-Heading::~Heading()
+Region::~Region()
 {
     delete[] iName;
 }
 
 
-char* Heading::getName()
+char* Region::getName()
 {
     return iName;
 }
-  
-int Heading::getID()
+
+int Region::getID()
 {
     return iID;
 }
 
-std::ostream& Heading::output(std::ostream& pStream)
+bool Region::contains(Matrix<short> &pHKL, JJLaueGroup &pLaueGroup, Matrix<short>& pResultMatrix)
+{
+	Matrix<short> tMatrixResult;
+	Matrix<short> tNewHKLResult;
+	Matrix<short> tWorkHKL(pHKL);
+	Matrix<short> tZero(1, 3, 0);
+	
+	uint tNumMat = pLaueGroup.numberOfMatrices();
+	
+	for (int i = 0; i < 2; i++)
+	{
+		for (uint i = 0; i < tNumMat; i++)
+		{ 
+			tNewHKLResult = pLaueGroup.getMatrix(i) * pHKL;
+			tMatrixResult = (*this) * tNewHKLResult;	//Multiply the two matrices to see if this reflection satisfy the condition
+			if (tMatrixResult == tNewHKLResult)
+			{
+				pResultMatrix = tNewHKLResult;
+				return true;
+			}
+		}
+		tZero.sub(pHKL, tWorkHKL);
+	}
+	return false;
+}
+
+std::ostream& Region::output(std::ostream& pStream)
 {
     pStream << iID << "\t" << iName << "\t" << (*(Matrix<short>*)this) << "\n";
     return pStream;
 }
 
-std::ostream& operator<<(std::ostream& pStream, Heading& pHeader)
+std::ostream& operator<<(std::ostream& pStream, Region& pHeader)
 {
     return pHeader.output(pStream);
 }
 
-Headings::Headings():vector<Heading*>()
+Regions::Regions():vector<Region*>()
 {}
 
-Headings::~Headings()
+Regions::~Regions()
 {
-	vector<Heading*>::iterator tIter;
+	vector<Region*>::iterator tIter;
 	
     for (tIter = begin(); tIter != end(); tIter++)
     {
-        Heading* tHeading = *tIter;
-		if (tHeading)
-			delete tHeading;
+        Region* tRegion = *tIter;
+		if (tRegion)
+			delete tRegion;
     }
 }
 
-Matrix<short>* Headings::getMatrix(int pIndex)
+Matrix<short>* Regions::getMatrix(int pIndex)
 {
-    Heading* tHeading = (*this)[pIndex];
-    if (!tHeading)
+    Region* tRegion = (*this)[pIndex];
+    if (!tRegion)
     {
-        throw MyException(kUnknownException, "Heading with that ID doesn't exist.");
+        throw MyException(kUnknownException, "Region with that ID doesn't exist.");
     }
-    return tHeading;
+    return tRegion;
 }
 
-char* Headings::getName(int pIndex)
+char* Regions::getName(int pIndex)
 {
-    Heading* tHeading = (*this)[pIndex];
+    Region* tRegion = (*this)[pIndex];
     
-    if (!tHeading)
+    if (!tRegion)
     {
-        throw MyException(kUnknownException, "Heading with that ID doesn't exist.");
+        throw MyException(kUnknownException, "Region with that ID doesn't exist.");
     }
-    return tHeading->getName();
+    return tRegion->getName();
 }
 
-int Headings::getID(int pIndex)
+int Regions::getID(int pIndex)
 {
-    Heading* tHeading = (*this)[pIndex];
+    Region* tRegion = (*this)[pIndex];
     
-    if (!tHeading)
+    if (!tRegion)
     {
-        throw MyException(kUnknownException, "Heading with that ID doesn't exist.");
+        throw MyException(kUnknownException, "Region with that ID doesn't exist.");
     }
-    return tHeading->getID();
+    return tRegion->getID();
 }
 
-std::ostream& Headings::output(std::ostream& pStream)
+std::ostream& Regions::output(std::ostream& pStream)
 {
     int tSize = size();
     for (int i = 0; i < tSize; i++)
     {
-        Heading* tHeading = (*this)[i];
-        if (tHeading)
+        Region* tRegion = (*this)[i];
+        if (tRegion)
         {
-            std::cout << *tHeading << "\n";
+            std::cout << *tRegion << "\n";
         }
         else
         {
@@ -221,39 +248,39 @@ std::ostream& Headings::output(std::ostream& pStream)
     return pStream;
 }
 
-char* Headings::addHeading(char* pLine)	//Returns the point which the line at the start of this string finishs
+char* Regions::addRegion(char* pLine)	//Returns the point which the line at the start of this string finishs
 {
     char* tNext = strchr(pLine, '\n');
-    Heading* tHeading = NULL;
+    Region* tRegion = NULL;
     if (tNext == NULL)
     {
-        tHeading = new Heading(pLine);
+        tRegion = new Region(pLine);
     }
     else
     {
         char *tString = new char[(int)(tNext-pLine)+1];
         tString[(int)(tNext-pLine)] = 0;
         strncpy(tString, pLine, (int)(tNext-pLine));
-        tHeading = new Heading(tString);
+        tRegion = new Region(tString);
         tNext++;
 		delete[] tString;
     }
-	if (size() < (size_t)tHeading->getID()+1)
+	if (size() < (size_t)tRegion->getID()+1)
 	{
-		resize(tHeading->getID()+1);
+		resize(tRegion->getID()+1);
 	}
-	if ((*this)[tHeading->getID()])
+	if ((*this)[tRegion->getID()])
 	{
-		delete tHeading;
+		delete tRegion;
 	}
 	else
 	{
-		(*this)[tHeading->getID()] = tHeading;
+		(*this)[tRegion->getID()] = tRegion;
 	}
     return tNext;
 }
 
-void Headings::readFrom(filebuf& pFile)
+void Regions::readFrom(filebuf& pFile)
 {
     char tHeaderLine[] = "ID	Name	Matrix";
     std::istream tFile(&pFile);
@@ -272,7 +299,7 @@ void Headings::readFrom(filebuf& pFile)
         try
         {
             if (tLine[0] != '\0')
-                addHeading(tLine);
+                addRegion(tLine);
         }
         catch (MyException eE)
         {
@@ -286,25 +313,25 @@ void Headings::readFrom(filebuf& pFile)
     while (!tFile.eof() && strlen(tLine)>0);
 }
 
-std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders)
+std::ostream& operator<<(std::ostream& pStream, Regions& pHeaders)
 {
     return pHeaders.output(pStream);
 }
 
 ConditionColumn::ConditionColumn()
 {
-    iHeadingConditions = new ArrayList<Index>(1);
+    iRegionConditions = new ArrayList<Index>(1);
     iConditions = new ArrayList<Indexs>(1);
 }
 
 ConditionColumn::~ConditionColumn()
 {
-    int tSize = iHeadingConditions->length();
+    int tSize = iRegionConditions->length();
     
     Index* tValue;
     for (int i = 0; i < tSize; i++)
     {
-        tValue = iHeadingConditions->remove(i);
+        tValue = iRegionConditions->remove(i);
         if (tValue !=NULL)
         {
             delete tValue;
@@ -321,12 +348,12 @@ ConditionColumn::~ConditionColumn()
         }
     }
     delete iConditions;
-    delete iHeadingConditions;
+    delete iRegionConditions;
 }
 
-void ConditionColumn::addHeading(signed char pIndex)
+void ConditionColumn::addRegion(signed char pIndex)
 {
-    iHeadingConditions->add(new Index(pIndex));
+    iRegionConditions->add(new Index(pIndex));
 }
 
 void ConditionColumn::addCondition(signed char pIndex, int pRow)
@@ -347,35 +374,35 @@ void ConditionColumn::addEmptyCondition(int pRow)
     iConditions->setWithAdd(NULL, pRow);
 }
 
-void ConditionColumn::setHeading(char* pHeading)
+void ConditionColumn::setRegion(char* pRegion)
 {
     int tOffset = 0;
     const size_t tMatches = 3;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*3);
-    while (!regexec(iFirstNumRE, pHeading+tOffset, tMatches, tMatch, 0))
+    while (!regexec(iFirstNumRE, pRegion+tOffset, tMatches, tMatch, 0))
     {
-        int pIndex = strtol(pHeading+tOffset, NULL, 10);
-        addHeading((signed char)pIndex);
+        int pIndex = strtol(pRegion+tOffset, NULL, 10);
+        addRegion((signed char)pIndex);
         tOffset += (int)tMatch[0].rm_eo;
         bzero(tMatch, sizeof(regmatch_t)*3);
     }
 }
 
-int ConditionColumn::getHeading(const int pIndex)
+int ConditionColumn::getRegion(const int pIndex)
 {
-    return iHeadingConditions->get(pIndex)->get();
+    return iRegionConditions->get(pIndex)->get();
 }
 
-ArrayList<Index>* ConditionColumn::getHeadings()
+ArrayList<Index>* ConditionColumn::getRegions()
 {
-    return iHeadingConditions;
+    return iRegionConditions;
 }
 
-int ConditionColumn::countHeadings()
+int ConditionColumn::countRegions()
 {
-    return iHeadingConditions->length();
+    return iRegionConditions->length();
 }
 
 int ConditionColumn::length()
@@ -388,14 +415,14 @@ Indexs* ConditionColumn::getConditions(int pIndex)
     return iConditions->get(pIndex);
 }
 
-std::ostream& ConditionColumn::output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions)
+std::ostream& ConditionColumn::output(std::ostream& pStream, Regions* pRegions, Conditions* pConditions)
 {
     int tNumConditions = iConditions->length();
-    int tNumHeader = iHeadingConditions->length();
+    int tNumHeader = iRegionConditions->length();
     
     for (int i = 0; i < tNumHeader; i++)
     {
-        pStream << pHeadings->getName(getHeading(i));
+        pStream << pRegions->getName(getRegion(i));
         if (i+1 != tNumHeader)
         {
             pStream << ", ";
@@ -492,12 +519,12 @@ std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs)
     return pIndexs.output(pStream);
 }
 
-Table::Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNumColumns, int pNumPointGroups)
+Table::Table(char* pName, Regions* pRegions, Conditions* pConditions, int pNumColumns, int pNumPointGroups)
 {
     iName = new char[strlen(pName)+1];	//Allocate enought space for the name
     strcpy(iName, pName);	//Copy the name into the classes storage
     String::upcase(iName);	//Make sure that the name is in upper case
-    iHeadings = pHeadings;	//Keep a reference to the headers
+    iRegions = pRegions;	//Keep a reference to the headers
     iConditions = pConditions;	//Keep a reference to the conditions
     iColumns = new ArrayList<ConditionColumn>(pNumColumns);	//Allocate the space for the condition columns of the table
     for (int i = 0; i < pNumColumns; i++)
@@ -537,22 +564,22 @@ Table::~Table()
     delete iSGColumn;  //Deallocate the arrays which stored the columns
 }
 
-void Table::columnHeadings(char* pHeadings, int pColumn)
+void Table::columnRegions(char* pRegions, int pColumn)
 {
     const size_t tMatches = 4;
     regmatch_t tMatch[tMatches];
     
     bzero(tMatch, sizeof(regmatch_t)*tMatches);
-    if (regexec(iFirstNSpRE, pHeadings, tMatches, tMatch, 0))
+    if (regexec(iFirstNSpRE, pRegions, tMatches, tMatch, 0))
     {
         return;
     }
     char* tString = new char[(int)(tMatch[1].rm_eo-tMatch[1].rm_so+1)];
     tString[(int)(tMatch[1].rm_eo-tMatch[1].rm_so)] = 0;
-    strncpy(tString, pHeadings+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//get the first element on the line
+    strncpy(tString, pRegions+(int)tMatch[1].rm_so, (int)tMatch[1].rm_eo-tMatch[1].rm_so);	//get the first element on the line
     if (pColumn < iColumns->length())
     {
-        iColumns->get(pColumn)->setHeading(tString);
+        iColumns->get(pColumn)->setRegion(tString);
     }
     else
     {
@@ -569,12 +596,12 @@ void Table::columnHeadings(char* pHeadings, int pColumn)
     {
         return;
     }
-    columnHeadings(pHeadings+tMatch[3].rm_so, pColumn+1);
+    columnRegions(pRegions+tMatch[3].rm_so, pColumn+1);
 }
 
-void Table::readColumnHeadings(char* pHeadings)
+void Table::readColumnRegions(char* pRegions)
 {
-    columnHeadings(pHeadings, 0);
+    columnRegions(pRegions, 0);
 }
 
 void Table::addLine(char* pLine, int pColumn)
@@ -674,9 +701,9 @@ SpaceGroups* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
     return NULL;
 }
 
-ArrayList<Index>* Table::getHeadings(int pI) const
+ArrayList<Index>* Table::getRegions(int pI) const
 {
-    return iColumns->get(pI)->getHeadings();
+    return iColumns->get(pI)->getRegions();
 }
         
 void Table::readFrom(filebuf& pFile)
@@ -836,10 +863,10 @@ std::ostream& Table::output(std::ostream& pStream)
     pStream << iName << "\n";
     for (int i = 0; i < tLengthConditions; i++)
     {
-        int tHeadingNumber = iColumns->get(i)->countHeadings();
-        for (int j = 0; j < tHeadingNumber; j ++)
+        int tRegionNumber = iColumns->get(i)->countRegions();
+        for (int j = 0; j < tRegionNumber; j ++)
         {
-            pStream << iColumns->get(i)->getHeading(j) << "\t";
+            pStream << iColumns->get(i)->getRegion(j) << "\t";
         }
     }
     for (int i = 0; i < tLengthSpaceGroup; i++)
@@ -904,7 +931,7 @@ int Table::dataUsed(signed char pIndices[], const int pMax) const
     
     for (int i = 0; i < tNumColumns; i++)
     {
-        ArrayList<Index>* tIndexs = iColumns->get(i)->getHeadings();
+        ArrayList<Index>* tIndexs = iColumns->get(i)->getRegions();
         int tNumIndex = tIndexs->length();
         for (int j = 0; j < tNumIndex; j ++)
         {
@@ -981,8 +1008,8 @@ Tables::Tables(char* pFileName):map<char*, Table*, ltstr>()
         throw FileException(errno);
     }
     iConditions = new Conditions();
-    iHeadings = new Headings();
-    iHeadings->readFrom(tFile);
+    iRegions = new Regions();
+    iRegions->readFrom(tFile);
     iConditions->readFrom(tFile);
     readFrom(tFile);
     tFile.close(); 
@@ -992,21 +1019,21 @@ Tables::~Tables()
 {	
 	while (!empty())
 	{
-		Table* tTable = (*end()).second;
-		erase(end());
+		Table* tTable = (*begin()).second;
+		erase(begin());
         if (tTable)
         {
             delete tTable;
         }
 	}
-    delete iHeadings;
+    delete iRegions;
     delete iConditions;
     deinitRE();
 }
 
-Headings* Tables::getHeadings()
+Regions* Tables::getRegions()
 {
-    return iHeadings;
+    return iRegions;
 }
 
 Conditions* Tables::getConditions()
@@ -1048,7 +1075,7 @@ void Tables::readFrom(filebuf& pFile)
             try
             {
                 tableAttributesLine(tLine, tSystemName, &tNumOfCondCols, &tNumOfSGCols);
-                tTable = new Table(tSystemName, iHeadings, iConditions, tNumOfCondCols, tNumOfSGCols); 
+                tTable = new Table(tSystemName, iRegions, iConditions, tNumOfCondCols, tNumOfSGCols); 
             }
             catch (MyException eE)
             {
@@ -1063,7 +1090,7 @@ void Tables::readFrom(filebuf& pFile)
             {
                 try
                 {
-                    tTable->readColumnHeadings(tLine);
+                    tTable->readColumnRegions(tLine);
                     tTable->readFrom(pFile);
                 }
                 catch (MyException eE)
@@ -1074,7 +1101,6 @@ void Tables::readFrom(filebuf& pFile)
                     throw eE;
                 }
             }
-			std::cout << "Read table: " << tTable->getName() << "\n";
             (*this)[tTable->getName()] = tTable;
         }
     }
@@ -1163,19 +1189,19 @@ RankedSpaceGroups::RowRating::RowRating(int pRow, Table& pTable, Stats& pStats):
     
     for (int i = 0; i < tCount; i++)
     {
-        ArrayList<Index>* tHeadings = pTable.getHeadings(i);
-        int tHCount = tHeadings->length();
+        ArrayList<Index>* tRegions = pTable.getRegions(i);
+        int tHCount = tRegions->length();
         for (int j =0; j < tHCount; j++)
         {
             Indexs* tIndexs = pTable.getConditions(pRow, i);
-            addConditionRatings(pStats, tIndexs, tHeadings->get(j));
+            addConditionRatings(pStats, tIndexs, tRegions->get(j));
         }
     }
     iValue = (iSumRat1+iSumRat2)/(2*iTotNumVal);
     iValue += iFiltered?1:0;
 }
 
-void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tIndexs, Index* pHeadingIndex)
+void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tIndexs, Index* pRegionIndex)
 {
     if (tIndexs)
     {
@@ -1183,7 +1209,7 @@ void RankedSpaceGroups::RowRating::addConditionRatings(Stats& pStats, Indexs* tI
         for (int i = 0; i < tCount; i++)
         {
             int tRow = tIndexs->getValue(i);
-            const ElemStats* tElement = pStats.getElem(pHeadingIndex->get(), tRow);
+            const ElemStats* tElement = pStats.getElem(pRegionIndex->get(), tRow);
             addRating(tElement);
         }
     }
