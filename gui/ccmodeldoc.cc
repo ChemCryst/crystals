@@ -17,6 +17,11 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.22  2002/07/23 08:25:43  richard
+//
+// Moved selected, disabled and excluded variables and functions into the base class.
+// Added ALL option to DISABLEATOM to enable/disable all atoms.
+//
 // Revision 1.21  2002/07/18 16:44:34  richard
 // Changes to ensure two CrModels can share the same CcModelDoc happily.
 //
@@ -113,6 +118,7 @@
 #include    "ccmodelobject.h"
 //insert your own code here.
 #include    "crmodel.h"
+#include    "crmodlist.h"
 //#include  "ccrect.h"
 #include    "cccoord.h"
 #include    "cccontroller.h"    // for sending commands
@@ -221,6 +227,7 @@ Boolean CcModelDoc::ParseInput( CcTokenList * tokenList )
                         item->ParseInput(tokenList);
                 mAtomList->AddItem(item);
                 m_nAtoms++;
+                item->id = m_nAtoms;
                 break;
             }
             case kTModelBond:
@@ -320,7 +327,13 @@ void CcModelDoc::Clear()
 void CcModelDoc::AddModelView(CrModel * aView)
 {
     attachedViews.AddItem(aView);
-      aView->Update(true);
+    aView->Update(true);
+}
+
+void CcModelDoc::AddModelView(CrModList * aView)
+{
+    attachedLists.AddItem(aView);
+    aView->Update(0);
 }
 
 void CcModelDoc::DrawViews(bool rescaled)
@@ -331,6 +344,12 @@ void CcModelDoc::DrawViews(bool rescaled)
     while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
     {
         aView->Update(rescaled);
+    }
+    attachedLists.Reset();
+    CrModList* lView;
+    while( ( lView = (CrModList*)attachedLists.GetItemAndMove() ) != nil)
+    {
+        lView->Update(mAtomList->ListSize());
     }
 }
 
@@ -487,6 +506,11 @@ void CcModelDoc::SelectAllAtoms(Boolean select)
 
 }
 
+int CcModelDoc::NumSelected()
+{
+    return nSelected;
+}
+
 CcString CcModelDoc::Compress(CcString atomname)
 {
     int leng = atomname.Length();
@@ -572,7 +596,34 @@ void CcModelDoc::InvertSelection()
     DrawViews();
 }
 
+void CcModelDoc::DocToList( CrModList* ml )
+{
+   if ( mAtomList->ListSize()  )
+   {
+      CcModelAtom* aitem;
+      CcString row[12];
+      mAtomList->Reset();
+      while ( (aitem = (CcModelAtom*)mAtomList->GetItemAndMove()) )
+      {
+          row[0] =  CcString(aitem->id);
+          row[1] =  aitem->m_elem;
+          row[2] =  CcString(aitem->m_serial);
+          row[3] =  CcString(aitem->frac_x);
+          row[4] =  CcString(aitem->frac_y);
+          row[5] =  CcString(aitem->frac_z);
+          row[6] =  CcString((float)aitem->occ/1000.0f);
+          row[7] =  aitem->m_IsADP ? CcString("Aniso"):CcString("Iso");
+          row[8] =  CcString(aitem->m_ueq);
+          row[9] =  CcString(aitem->m_refflag);
+          row[10] =  CcString(aitem->m_part);
+          row[11] =  CcString(aitem->m_spare);
 
+          ml -> AddRow(aitem->id,    &*row,
+                       aitem->IsSelected(),
+                       aitem->m_disabled || aitem->m_excluded);
+      }
+   }
+}
 
 Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 {
@@ -1313,15 +1364,23 @@ void CcModelDoc::FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
 }
 
 void CcModelDoc::FastAtom(CcString label,int x1,int y1,int z1, 
-                          int r, int g, int b, int occ,int cov, int vdw,
+                          int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
-                          int u1,int u2,int u3,int u4,int u5,
-                          int u6,int u7,int u8,int u9)
+                          float u1,float u2,float u3,float u4,float u5,
+                          float u6,float u7,float u8,float u9,
+                          float frac_x, float frac_y, float frac_z,
+                          CcString elem, int serial, int refflag,
+                          int part, float ueq, float fspare)
+
 {
     CcModelAtom* item = new CcModelAtom(label,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
-                          u1,u2,u3,u4,u5,u6,u7,u8,u9,this);
+                          u1,u2,u3,u4,u5,u6,u7,u8,u9,frac_x,
+                          frac_y,frac_z,elem,serial,refflag,
+                          part,ueq,fspare,this);
     mAtomList->AddItem(item);
+    m_nAtoms++;
+    item->id = m_nAtoms;
 }
 
 void CcModelDoc::FastSphere(CcString label,int x1,int y1,int z1, 
@@ -1361,16 +1420,18 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                 int np, int * ptrs, char label[80], char slabel[80] );
 #endif
 #ifdef __BOTHWIN__
-void fastatom  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
-                int u6,int u7,int u8,int u9);
+void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,float cov, int vdw,
+                int spare, int flag, float u1,float u2,float u3,float u4,float u5,
+                float u6,float u7,float u8,float u9, float fx, float fy, float fz,
+                int refflag, int part, float ueq, float fspare);
 #endif
 #ifdef __LINUX__
-void fastatom_  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
-                int u6,int u7,int u8,int u9);
+void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,float cov, int vdw,
+                int spare, int flag, float u1,float u2,float u3,float u4,float u5,
+                float u6,float u7,float u8,float u9, float fx, float fy, float fz,
+                int refflag, int part, float ueq, float fspare);
 #endif
 #ifdef __BOTHWIN__
 void fastsphere  (char* label,int x1,int y1,int z1, 
@@ -1416,24 +1477,28 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
 }
 
 #ifdef __BOTHWIN__
-void fastatom  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
-                int u6,int u7,int u8,int u9)
+void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,float cov, int vdw,
+                int spare, int flag, float u1,float u2,float u3,float u4,float u5,
+                float u6,float u7,float u8,float u9, float fx, float fy, float fz,
+                int refflag, int part, float ueq, float fspare)
 #endif
 #ifdef __LINUX__
-void fastatom_  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int u1,int u2,int u3,int u4,int u5,
-                int u6,int u7,int u8,int u9)
+void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,float cov, int vdw,
+                int spare, int flag, float u1,float u2,float u3,float u4,float u5,
+                float u6,float u7,float u8,float u9, float fx, float fy, float fz,
+                int refflag, int part, float ueq, float fspare)
 #endif
 {
       CcString clabel = label;
+      CcString celem  = elem;
       LOGSTAT ( "-----------Fastatom added:" + clabel );
       if ( CcModelDoc::sm_CurrentModelDoc )
             CcModelDoc::sm_CurrentModelDoc->FastAtom(clabel,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
-                          u1,u2,u3,u4,u5,u6,u7,u8,u9) ;
+                          u1,u2,u3,u4,u5,u6,u7,u8,u9,fx,fy,fz,
+                          celem,serial,refflag,part,ueq, fspare) ;
 
 }
 

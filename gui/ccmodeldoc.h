@@ -8,6 +8,11 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.15  2002/07/23 08:25:43  richard
+//
+//   Moved selected, disabled and excluded variables and functions into the base class.
+//   Added ALL option to DISABLEATOM to enable/disable all atoms.
+//
 //   Revision 1.14  2002/07/18 16:44:34  richard
 //   Changes to ensure two CrModels can share the same CcModelDoc happily.
 //
@@ -68,6 +73,7 @@
 #include "cclist.h" // added by classView
 class CcTokenList;
 class CrModel;
+class CrModList;
 class CcList;
 class CcModelAtom;
 class CcModelSphere;
@@ -81,6 +87,7 @@ class CcModelDoc
     public:
 
         Boolean RenderModel( CcModelStyle *style, bool feedback=false );
+        void DocToList( CrModList* ml );
         void InvertSelection();
         CcString Compress(CcString atomname);
         void SelectAllAtoms(Boolean select);
@@ -95,10 +102,13 @@ class CcModelDoc
                           int np, int * ptrs, CcString label, CcString cslabl);
 
         void FastAtom(CcString label,int x1,int y1,int z1, 
-                          int r, int g, int b, int occ,int cov, int vdw,
+                          int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
-                          int u1,int u2,int u3,int u4,int u5,
-                          int u6,int u7,int u8,int u9);
+                          float u1,float u2,float u3,float u4,float u5,
+                          float u6,float u7,float u8,float u9,
+                          float fx, float fy, float fz,
+                          CcString elem, int serial, int refflag,
+                          int part, float ueq, float fspare);
 
         void FastSphere(CcString label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,
@@ -127,14 +137,18 @@ class CcModelDoc
         void RemoveView(CrModel* aView);
         void DrawViews(bool rescaled = false);
         void AddModelView(CrModel* aView);
+        void AddModelView(CrModList* aView);
         void Clear();
         CcModelDoc();
         ~CcModelDoc();
         Boolean ParseInput( CcTokenList * tokenList );
 
 
+        int NumSelected();
+
         CcString mName;
         CcList attachedViews;
+        CcList attachedLists;
 
         static CcList  sm_ModelDocList;
         static CcModelDoc* sm_CurrentModelDoc;
