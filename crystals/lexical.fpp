@@ -1,4 +1,23 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.17  2003/02/27 11:49:50  rich
+C
+C Two BRAND NEW lexical things:
+C
+C  You can now use, wherever appropriate, FRAG(1,X's) syntax to
+C  select all atoms whose fragment number (slot 17 in L5) matches. This
+C  works in EDIT, LIST 12, DIST, REGULARISE etc.
+C
+C  You can now use, wherever appropriate, TYPE(H,X's) syntax to
+C  select all atoms whose type matches that given. This
+C  works in EDIT, LIST 12, DIST, REGULARISE etc. Main use I can think
+C  of is to quickly FIX all H positions (especially if using FRAG to specify
+C  bits to refine) or to special case a few heavy atoms: TYPE(AU,U'S).
+C
+C  If you say FULL U[ISO] TYPE(PB,U's) - it causes an error - this is better
+C  than going silently crazy I suppose, but It would be nice if it just
+C  overrode the iso setting, like FIX does: i.e. ALL(X'S) followed
+C  by FIX(H,X'S) works as expected.
+C
 C Revision 1.16  2003/01/15 14:03:52  rich
 C Remove debugging from PART processing.
 C
@@ -1016,7 +1035,7 @@ C-- CHECK FOR 'FIRST', 'LAST', 'PART', 'FRAG', 'TYPE'
       II=KCOMP(1,ISTORE(MF+2),IFIRST(1),5,1)
       IF ( ( II. EQ. 1 ) .OR. ( II .EQ. 2 ) ) THEN !This is First or Last
         KA = -1
-      ELSE IF ( ( II .GE. 3 ) .OR. ( II .LE. 5 ) ) THEN  !Part,Frag or Type
+      ELSE IF ( ( II .GE. 3 ) .AND. ( II .LE. 5 ) ) THEN  !Part,Frag or Type
         KB = 1
         IF ( II .EQ. 5 ) KBB = 1 ! We are looking for a char.
         OME=ME
