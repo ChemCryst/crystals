@@ -26,7 +26,7 @@ include .depend
 
 all: $(PROG)
 
-$(PROG): cpp_lib_obj c_lib_obj $(OBJECTS) 
+$(PROG): cpp_lib_obj c_lib_obj $(OBJECTS)
 	$(LD) $(LIBRARY_CPP_DIR)*.o $(LIBRARY_C_DIR)*.o $(OBJECTDIR)*.o -o build/$(PROG)
 
 %.o: %.cpp 
