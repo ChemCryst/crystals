@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.21  2000/10/04 16:57:46  CKP2
+C set benchmarking
+C
 C Revision 1.20  2000/09/20 12:42:24  ckp2
 C Allow shell commands to be processed immediately, even if script awaiting input.
 C Add "SCRIPTS - Awaiting action" to status bar, when appropriate.
@@ -1950,6 +1953,7 @@ C                          2      IMPLEMENT 'OPEN' INSTRUCTION
 C                          3      IMPLEMENT 'CLOSE' INSTRUCTION
 c                          4      IMPLEMENT 'APPEND' INSTRUCTION
 C
+C                        EQUIVALENT 'INTERNAL' CALLS
 C                          5      RELEASE SPECIFIED FILE AND DEVICE
 C                          6      OPEN SPECIFIED FILE AND DEVICE
 C                          7      CLOSE SPECIFIED FILE AND DEVICE
@@ -2202,14 +2206,14 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
       IF (LENNAM .EQ. 0) LENNAM = 1
       IF (( ISSFLM .GT. 0 ) .AND. ( JFUNC .LE. MAXFNC)) THEN
       WRITE ( CMON,2345) (KEYFIL(I,IFIND),I=1,LNAM),
-     2                          COPER(kFUNC), NEWFIL(1:LENNAM)
+     2                          COPER(KFUNC), NEWFIL(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
-     2    COPER(kFUNC), NEWFIL(:LENNAM)
+     2    COPER(KFUNC), NEWFIL(:LENNAM)
         ENDIF
         WRITE ( NCAWU , 2345 ) (KEYFIL(I,IFIND),I=1,LNAM),
-     2  COPER(kFUNC), NEWFIL(:LENNAM)
+     2  COPER(KFUNC), NEWFIL(:LENNAM)
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
       ENDIF
 CDJWMAR99]
