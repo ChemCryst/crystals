@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2004/07/08 15:25:33  rich
+C Updated \MASK code to include mask generation for solvent accessible volume.
+C (It wasn't finished before.) Mask is stored in list 42.
+C
 C Revision 1.21  2004/07/02 13:26:01  rich
 C Remove dependency on HARWELL and NAG libraries. Replaced with LAPACK
 C and BLAS code (and a home-made bessel function approximation).
@@ -754,13 +758,18 @@ C
      4 /' Minimisation function',E23.7,2E18.7
      5 /' Hamilton weighted R-value',F16.3,2F18.3)
 C
-      WRITE(CMON, 4451) I,M, J,K,L, A,B,C
-      CALL XPRVDU(NCVDU, 4,0)
-4451  FORMAT( ' Statistics for',I6,' least squares parameters,',
-     1 ' with',I6,' degrees of freedom',
-     2 / 38X,'X-rays',8X,'Restraints',9X,'All',
-     3 /' Number of observations   ',3I16,
-     5 /' Hamilton weighted R-value',3F16.3)
+      IF ( K .GT. 0 ) THEN   ! Only useful if there are restraints.
+        WRITE(CMON, 4451) J,K,L, A,B,C
+        CALL XPRVDU(NCVDU, 2,0)
+      END IF
+c4451  FORMAT( ' Statistics for',I6,' least squares parameters,',
+c     1 ' with',I6,' degrees of freedom',
+c     2 / 38X,'X-rays',8X,'Restraints',9X,'All',
+c     3 /' Number of observations   ',3I16,
+c     5 /' Hamilton weighted R-value',3F16.3)
+4451  FORMAT(5X,I7,' reflections + ',I7,' restraints = ',I7,
+     1           ' observations',/,
+     2 X,'Weighted-R:',1X,G10.4,12X,G10.4,12X,G10.4)
 C
 C>DJWSEP96
 C----- UPDATE LIST 30
@@ -836,14 +845,14 @@ C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
 C      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JD,MW),Z
       WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
       ENDIF
-      WRITE(CMON,'(''Shift Reversals'')')
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'(''Shift Reversals'')')
+c      CALL XPRVDU(NCVDU, 1,0)
       WRITE(CMON,4701)
-4701  FORMAT(' Scale  Occ U[iso]   X     Y     Z   U[11]',
+4701  FORMAT(' Shift     Scale  Occ U[iso]   X    Y    Z  U[11]',
      1 ' U[22] U[33] U[23] U[13] U[12]')
       CALL XPRVDU(NCVDU, 1,0)
       WRITE(CMON,4702)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
-4702  FORMAT(12F6.2)
+4702  FORMAT(' Reversals',3(X,F5.1),3(F5.1),6(X,F5.1))
       CALL XPRVDU(NCVDU, 1,0)
 C4750  FORMAT(/10H Reversals,12F9.2///
 C     2 44H Reversals is the percentage of shifts whose,
