@@ -43,6 +43,7 @@
 #include "Wrappers.h"
 #include "HKLData.h"
 #include "Conditions.h"
+#include "LaueClasses.h"
 #include <fstream>
 #include <vector>
 #include <map>
@@ -50,34 +51,35 @@
 using namespace std;
 struct ElemStats;
 
-class Heading:public Matrix<short>
+class Region:public Matrix<short>
 {
     private:
         char*	iName;
         int 	iID;
     public:
-        Heading(char* pLines);
-        ~Heading();
+        Region(char* pLines);
+        ~Region();
         char* getName();
         int getID();
-        std::ostream& Heading::output(std::ostream& pStream);
+		bool contains(Matrix<short> &pHKL, JJLaueGroup &pLaueGroup, Matrix<short>& pResultMatrix);
+        std::ostream& output(std::ostream& pStream);
 };
 
-class Headings:public vector<Heading*>
+class Regions:public vector<Region*>
 {
     public:
-        Headings();
-        ~Headings();
+        Regions();
+        ~Regions();
         Matrix<short>* getMatrix(int pIndex);
         char* getName(int pIndex);
         int getID(int pIndex);
         std::ostream& output(std::ostream& pStream);
-        char* addHeading(char* pLine);
+        char* addRegion(char* pLine);
         void readFrom(filebuf& pFile);
 };
 
-std::ostream& operator<<(std::ostream& pStream, Heading& pHeader);
-std::ostream& operator<<(std::ostream& pStream, Headings& pHeaders);
+std::ostream& operator<<(std::ostream& pStream, Region& pHeader);
+std::ostream& operator<<(std::ostream& pStream, Regions& pHeaders);
 
 //This is just my own rapper class for an integer type.
 class Index:public Number<signed char>
@@ -106,21 +108,21 @@ std::ostream& operator<<(std::ostream& pStream, Indexs& pIndexs);
 class ConditionColumn:virtual public Column
 {
     private:
-        ArrayList<Index>* iHeadingConditions;
+        ArrayList<Index>* iRegionConditions;
         ArrayList<Indexs>* iConditions;	
     public:
         ConditionColumn();
         ~ConditionColumn();
-        void addHeading(signed char pIndex);
-        void setHeading(char* pHeading);
-        int getHeading(const int pIndex);
-        ArrayList<Index>* getHeadings();
+        void addRegion(signed char pIndex);
+        void setRegion(char* pRegion);
+        int getRegion(const int pIndex);
+        ArrayList<Index>* getRegions();
         void addCondition(signed char pIndex, int pRow);
         void addEmptyCondition(int pRow);
         Indexs* getConditions(int pIndex);
         int length();
-        int countHeadings();
-        std::ostream& output(std::ostream& pStream, Headings* pHeadings, Conditions* pConditions);
+        int countRegions();
+        std::ostream& output(std::ostream& pStream, Regions* pRegions, Conditions* pConditions);
 };
 
 class Table:public MyObject
@@ -129,20 +131,20 @@ class Table:public MyObject
         char* iName;
         ArrayList<ConditionColumn>* iColumns;	//The conditions. Null means that there is no condition.
         ArrayList<SGColumn>* iSGColumn;	//Columns of space groups.
-        Headings* iHeadings;
+        Regions* iRegions;
         Conditions* iConditions;
-	void columnHeadings(char* pHeadings, int pColumn);
+	void columnRegions(char* pRegions, int pColumn);
         void addLine(char* pLine, int pColumn);
         void addCondition(char* pCondition, ConditionColumn* pColumn, int pRow);
         void addSpaceGroup(char* pSpaceGroup, SGColumn* pSGColumn, int pRow);
     public:
-        Table(char* pName, Headings* pHeadings, Conditions* pConditions, int pNumColumns, int pNumPointGroups);
+        Table(char* pName, Regions* pRegions, Conditions* pConditions, int pNumColumns, int pNumPointGroups);
         ~Table();
         void addLine(char* pLine);
-	void readColumnHeadings(char* pHeadings);
+	void readColumnRegions(char* pRegions);
         void readFrom(filebuf& pFile);
         char* getName();
-        ArrayList<Index>* getHeadings(int pI) const;
+        ArrayList<Index>* getRegions(int pI) const;
         int getNumPointGroups();	
         SpaceGroups* getSpaceGroup(int pLineNum, int pPointGroupNum);
         Indexs* getConditions(int pRow, int pColumn);
@@ -163,12 +165,12 @@ std::ostream& operator<<(std::ostream& pStream, Table& pTable);
 class Tables:public map<char*, Table*, ltstr>
 {
     private:
-        Headings* iHeadings;
+        Regions* iRegions;
         Conditions* iConditions;
     public:
         Tables(char* pFileName);
         ~Tables();
-        Headings* getHeadings();
+        Regions* getRegions();
 	    Conditions* getConditions();
         void readFrom(filebuf& pFile);
         Table* findTable(char* pName);
@@ -185,7 +187,7 @@ class RankedSpaceGroups:public MyObject
         class RowRating:public Float	//The value is the mean value;
         {
             private:
-                void addConditionRatings(Stats& pStats, Indexs* tIndexs,  Index* pHeadingIndex);
+                void addConditionRatings(Stats& pStats, Indexs* tIndexs,  Index* pRegionIndex);
                 void addRating(const ElemStats* pStats);
             public:
                 int iRowNum;	//The number of the row in the table.
@@ -209,25 +211,15 @@ class RankedSpaceGroups:public MyObject
         std::ostream& output(std::ostream& pStream);
 };
 
-//class CrystalSystem
-//{
-//	protected:
-//		//CrystalSystemID iID;
-//		string iName;
-//		list<LaueGroups*> iLaueGroups;
-//		Table* iTables;
-//	public:
-//		CrystalSystem(Table* pTable,   
-//		bool contains(LaueGroup* );
-//};
-//
-//class CrystalSystems:protected list<CrystalSystem*>
-//{
-//	public:
-//		CrystalSystems(char* pFileName);
-//		static CrystalSystems* defaultObject();
-//		CrystalSystem* crystalSystemForLaueGroup(LaueGroup*);
-//};
+/*class CrystalSystemID
+{
+	protected:
+		SystemID iID;
+		string iName;
+	public:
+		CrystalSystemID( pID);
+		SystemID systemID();
+};*/
 
 std::ostream& operator<<(std::ostream& pStream, RankedSpaceGroups& pRank);
 std::ofstream& operator<<(std::ofstream& pStream, RankedSpaceGroups& pRank);
