@@ -37,47 +37,28 @@ class CrModel;
 class CxGrid;
 class CcModelAtom;
 //End of user code.         
- 
-#define COVALENT	1
-#define VDW			2
-#define THERMAL  3
+
+#define CURSORNORMAL  0
+#define CURSORZOOMIN  1
+#define CURSORZOOMOUT 2
+#define MODELSMOOTH   0
+#define MODELLINE     2
+#define MODELPOINT    3
+
 
 class CxModel : public BASEMODEL
 {
 	public:
-            void Reset();
-            float ScaleToWindow();
-            float m_projratio;
-            Boolean m_moved;
-		void UpdateHighlights();
-		Boolean m_drawing;
-            void StartHighlights();
-            void FinishHighlights();
-		void HighlightAtom(CcModelAtom* theAtom, Boolean selected = TRUE);
-		Boolean IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAtom **atom);
-		void DrawBond(int x1, int y1, int z1, int x2, int y2, int z2, int r, int g, int b, int rad);
-		void DrawTri(int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int r, int g, int b, Boolean fill);
-		float m_radscale;
-		void SetRadiusScale(int scale);
-		void SetRadiusType(int radtype);
-		void Start();
-		void Setup();
-		void PaintBuffer();
-            void DrawAtom(CcModelAtom* anAtom, int style = 0);
-		int m_GLPixelIndex;									 //The pixel index member?
-		int m_radius;
-		Boolean m_fastrotate;
-		float*	matrix;								//Pointer to a rotation matrix used to rotate the coords before rendering. Set by dragging the mouse in the window.
-            CcPoint m_ptLDown;
+            void Update();
+            Boolean IsAtomClicked(int xPos, int yPos, CcString *atomname, CcModelAtom **atom);
+            void SetRadiusScale(int scale);
+            void SetRadiusType(int radtype);
+            void Setup();
+            void NeedRedraw();
+            void NewSize(int cx, int cy);
+            void ChooseCursor( int cursor );
 
-		int mIdealHeight;
-		int mIdealWidth;
-		void SetIdealWidth(int nCharsWide);
-		void SetIdealHeight(int nCharsHigh);
-		void Display();
-            CcPoint DeviceToLogical(int x, int y);
-            CcPoint LogicalToDevice(CcPoint point);
-		void Focus();
+// The usual functions:
 		static CxModel *	CreateCxModel( CrModel * container, CxGrid * guiParent );
 		CxModel(CrModel* container);
 		~CxModel();
@@ -89,15 +70,49 @@ class CxModel : public BASEMODEL
 		int	GetHeight();
 		int	GetIdealWidth();
 		int	GetIdealHeight();
-		static int AddModel( void ) { mModelCount++; return mModelCount; };
-		static void RemoveModel( void ) { mModelCount--; };
-		
+		int mIdealHeight;
+		int mIdealWidth;
+		void SetIdealWidth(int nCharsWide);
+		void SetIdealHeight(int nCharsHigh);
+		void Focus();
+            void AutoScale();
+
+
 		CrGUIElement *	mWidget;
 		static int mModelCount;
 
-		GLuint mNormal;
-		GLuint mHighlights;
-		GLuint mLitatom;
+
+//            GLuint mNormal;
+//            GLuint mHighlights;
+//            GLuint mLitatom;
+		int m_GLPixelIndex;									 //The pixel index member?
+
+            CcModelAtom* m_LitAtom;  //  Mouse is over this atom
+
+            float m_xTrans;          //
+            float m_yTrans;          //  Translation
+            float m_zTrans;          //
+
+            float m_xScale;          //  Scaling
+
+            float * mat;             //  Rotaion
+            float m_radscale;        //  Scales radius of all objects
+            int m_radius;            //  Type of raduis to display
+            Boolean m_fastrotate;    //  Detailed or quick drawing
+            CcPoint m_ptLDown;       //  Last mouse position when rotating
+
+            CcPoint m_ptMMove;       //  Last mouse position 
+
+
+            void SetDrawStyle( int drawStyle );
+            void SetAutoSize( Boolean size )  ;
+            void SetHover( Boolean hover )    ;
+            void SetShading( Boolean shade )  ;
+
+            int m_DrawStyle;         // Rendering style
+            Boolean m_Autosize;      // Resize when rotating?
+            Boolean m_Hover;         // Highlight atoms on hover?
+            Boolean m_Shading;       // Use fancy shading?
 
 #ifdef __WINDOWS__
 		HGLRC m_hGLContext;									 //The rendering context handle.
@@ -129,7 +144,5 @@ class CxModel : public BASEMODEL
             DECLARE_EVENT_TABLE()
 #endif
 
-private:
-            CcModelAtom* m_LitAtom;
 };
 #endif
