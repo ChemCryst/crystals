@@ -92,7 +92,7 @@ int MatrixReader::countNumberOfRows(char* pString)
 
 int MatrixReader::countNumberOfColumns(char** pString)	//Returns the place where it reached the end of the row
 {
-    char tRegExp[] = "^[[:space:]]*-?[[:digit:]]+(\\.[[:digit:]]+)?[[:space:]]*\\]?";	//Regular expression which checks to see if the matrix had the correct format.
+    char tRegExp[] = "^\\[?[[:space:]]*-?[[:digit:]]+(\\.[[:digit:]]+)?[[:space:]]*\\]?";	//Regular expression which checks to see if the matrix had the correct format.
     
     regex_t tRegEx;
     regcomp(&tRegEx, tRegExp, REG_EXTENDED);
