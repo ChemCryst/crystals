@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:38
 //   $Log: not supported by cvs2svn $
+//   Revision 1.3  2001/06/17 14:30:29  richard
+//
+//   wx support. CxDestroyWindow function.
+//
 //   Revision 1.2  2001/03/08 16:44:10  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -15,9 +19,9 @@
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
+#include    "cxtab.h"
 #include    "cccontroller.h"
 #include    "crtab.h"
-#include    "cxtab.h"
 #include    "crgrid.h"
 #include    "cxgrid.h"
 
@@ -70,12 +74,10 @@ END_MESSAGE_MAP()
 
 #ifdef __BOTHWX__
 //wx Message Map
-BEGIN_EVENT_TABLE(CxTab, wxTabCtrl)
-      EVT_TAB_SEL_CHANGED( -1, CxTab::OnSelChange )
+BEGIN_EVENT_TABLE(CxTab, wxNotebook)
+      EVT_NOTEBOOK_PAGE_CHANGED( -1, CxTab::OnSelChange )
 END_EVENT_TABLE()
 #endif
-
-
 
 CXSETGEOMETRY(CxTab)
 
@@ -92,16 +94,16 @@ int CxTab::GetIdealHeight()
     return (100);
 }
 
-void CxTab::AddTab(CcString tabtext)
+void CxTab::AddTab(CcTabData * tab)
 {
 #ifdef __CR_WIN__
-  TC_ITEM tab;
-  tab.mask = TCIF_TEXT;
-  tab.pszText = (char*) tabtext.ToCString();
-  InsertItem( m_tab++, &tab );
+  TC_ITEM tctab;
+  tctab.mask = TCIF_TEXT;
+  tctab.pszText = (char*) tab->tabText.ToCString();
+  InsertItem( m_tab++, &tctab );
 #endif
 #ifdef __BOTHWX__
-  InsertItem (m_tab++, tabtext.ToCString() );
+  AddPage ((wxWindow*)tab->tabGrid->GetWidget(), tab->tabText.ToCString() );
 #endif
   return;
 }
@@ -120,9 +122,7 @@ int CxTab::GetTabsHeight()
   return -work.top + 2;
 #endif
 #ifdef __BOTHWX__
-  wxRect rc;
-  GetItemRect(0,rc);
-  return rc.GetHeight() + 5;
+  return 10;
 #endif
 }
 
@@ -154,10 +154,10 @@ void CxTab::OnSelChange(NMHDR* pNMHDR, LRESULT* pResult)
 #endif
 
 #ifdef __BOTHWX__
-void CxTab::OnSelChange(wxTabEvent& tabevt)
+void CxTab::OnSelChange(wxNotebookEvent& tabevt)
 {
     int nTab = GetSelection();
-    ((CrTab*)ptr_to_crObject)->ChangeTab(nTab);
+//    ((CrTab*)ptr_to_crObject)->ChangeTab(nTab);
 }
 #endif
 
@@ -169,6 +169,5 @@ void CxTab::RedrawTabs()
 #ifdef __BOTHWX__
  Refresh();
 #endif
-
 
 }

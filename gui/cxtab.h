@@ -5,6 +5,10 @@
 //   Authors:   Richard Cooper
 //   Created:   23.1.2001 23:30
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/06/17 14:30:29  richard
+//
+//   wx support. CxDestroyWindow function.
+//
 //   Revision 1.1  2001/01/25 17:17:05  richard
 //   A new control for tabbed property sheets.
 //
@@ -21,13 +25,13 @@
 
 #ifdef __BOTHWX__
 #include <wx/control.h>
-#include <wx/tabctrl.h>
-#define BASETAB wxTabCtrl
+#include <wx/notebook.h>
+#define BASETAB wxNotebook
 #endif
 
 class CrTab;
-class CxTab;
 class CxGrid;
+class CcTabData;
 
 class CxTab : public BASETAB
 {
@@ -45,7 +49,7 @@ class CxTab : public BASETAB
         int GetIdealHeight();
         int GetTabsHeight();
         int GetTabsExtraVSpace();
-        void AddTab(CcString tabText);
+        void AddTab(CcTabData * tab);
         void RedrawTabs();
         void CxDestroyWindow();
         CrGUIElement *  ptr_to_crObject;
@@ -57,7 +61,7 @@ class CxTab : public BASETAB
         DECLARE_MESSAGE_MAP()
 #endif
 #ifdef __BOTHWX__
-        void OnSelChange ( wxTabEvent& tab );
+        void OnSelChange ( wxNotebookEvent& tab );
         DECLARE_EVENT_TABLE()
 #endif
 
