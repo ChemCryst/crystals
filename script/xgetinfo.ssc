@@ -12,7 +12,6 @@
 %%    Preferred H treatment       (HRTYP)
 %%    Last list 12 written        (L12SER)
 %%
-
 {S * Checking info stored in L39.
 %  IF EXISTS 39 .GE. 1 THEN
 %   COPY '#GENERALEDIT 39'
@@ -30,19 +29,15 @@
 %    IF CKEY .EQ. 'INFO' THEN
 %      IF HKEY .GT. 0 THEN
 %        EVALUATE HDONE = TRUE
-{R   All hydrogen atoms have been placed in the model.
 %      END IF
 %      IF EKEY .GT. 0 THEN
 %        EVALUATE EDONE = TRUE
-{R   Extinction has been checked.
 %      END IF
 %      IF WKEY .GT. 0 THEN
 %        EVALUATE WDONE = TRUE
-{R   Weights have been applied.
 %      END IF
 %      IF PKEY .GT. 0 THEN
 %        EVALUATE PDONE = TRUE
-{R   Old list 11 has been purged to save space.
 %      END IF
 %      EVALUATE HRTYP  = HRKEY
 %      EVALUATE L12SER = L12KEY
