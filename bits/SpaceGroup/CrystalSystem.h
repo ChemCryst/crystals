@@ -213,7 +213,7 @@ class RankedSpaceGroups:public MyObject
                 float iSumSqrRat2;	//Sum of square rating value using on (Averager intensity Non-matched / (Averager intensity Non-matched+Averager intensity matched))
                 bool iFiltered;
                 RowRating(int pRow, Table& pTable, Stats& pStats);
-                RowRating& operator=(RowRating& pRowRating);
+                RowRating& operator=(const RowRating& pRowRating);
         };
         
         MultiTree<RowRating> iSortedRatings;
