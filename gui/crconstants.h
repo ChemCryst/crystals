@@ -6,6 +6,10 @@
 //   Modified:  22.7.1998 10:41 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  1999/04/28 13:57:29  dosuser
+// RIC: Added kS/kTSpew for multiedit.
+//      Added kS/kTThermal for cx / cr model as a new 'size' option.
+//
 // Revision 1.3  1999/04/26 12:19:44  dosuser
 // RIC: Added kT/kSSetSelection for CrListBox to use.
 //
@@ -122,6 +126,7 @@
 #define kSWidth				"WIDTH"
 #define kSAppend			"APPEND"
 #define kSGetPolygonArea	"GETAREA"
+#define kSGetCursorKeys       "CURSORKEYS"
 #define kSIsoView			"ISO"
 #define kSNoEdge			"NOEDGE"
 #define	kSRadiusType		"RADTYPE"
@@ -269,7 +274,8 @@ enum {
 	kTChartW,
 	kTChartHighlight,	
 	kTGetPolygonArea,
-	kTIsoView,
+      kTGetCursorKeys,
+      kTIsoView,
 	kTAppend,
 	kTWantReturn,
 	kTSetCommitText,
