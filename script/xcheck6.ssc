@@ -50,7 +50,7 @@
 ^^WI      {
 ^^WI       @ 1,1 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64
 ^^WI        DEFINEPOPUPMENU POPUP 'Selection'
-^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L'
+^^WI        ITEM _SDELA '&Manually set theta full = _X' 'SIGFULL_N_X'
 ^^WI        ENDDEFINEMENU
 ^^WI      }
 ^^WI      ITEM GRID CR2 NROWS=3 NCOLS=1
