@@ -37,6 +37,7 @@
 %     FINISH
 %   END BLOCK
 %   BLOCK
+%     COPY '#SCRIPT XDELQ'
 ^^??  NC TEXT
 %     GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
 %     EVALUATE NCYCLE = VALUE
