@@ -1,0 +1,52 @@
+%SCRIPT PERIOD
+% VARIABLE CHARACTER PELEMN
+%% Display periodic table
+%%
+^^WI WINDOW PERIOD 'Periodic table' MODAL
+^^WI CANCEL='XX' COMMIT='XX'
+^^WI GRID VLARGE NROWS=8 NCOLS=20
+^^WI {
+^^WI  @ 2,2 BUTTON H H
+^^WI  @ 2,19 BUTTON He He
+^^WI  @ 3,2 BUTTON Li Li
+^^WI  @ 3,3 BUTTON Be Be
+^^WI  @ 3,14 BUTTON B B
+^^WI  @ 3,15 BUTTON C C
+^^WI  @ 3,16 BUTTON N N
+^^WI  @ 3,17 BUTTON O O
+^^WI  @ 3,18 BUTTON F F
+^^WI  @ 3,19 BUTTON Ne Ne
+^^WI  @ 4,2 BUTTON Na Na
+^^WI  @ 4,3 BUTTON Mg Mg
+^^WI  @ 4,14 BUTTON Al Al
+^^WI  @ 4,15 BUTTON Si Si
+^^WI  @ 4,16 BUTTON P P
+^^WI  @ 4,17 BUTTON S S
+^^WI  @ 4,18 BUTTON Cl Cl
+^^WI  @ 4,19 BUTTON Ar Ar
+^^WI  @ 5,2 BUTTON K K 
+^^WI  @ 5,3 BUTTON Ca Ca
+^^WI  @ 5,4 BUTTON Sc Sc
+^^WI  @ 5,5 BUTTON Ti Ti 
+^^WI  @ 5,6 BUTTON V V
+^^WI  @ 5,7 BUTTON Cr Cr
+^^WI  @ 5,8 BUTTON Mn Mn
+^^WI  @ 5,9 BUTTON Fe Fe
+^^WI  @ 5,10 BUTTON Co Co 
+^^WI  @ 5,11 BUTTON Ni Ni 
+^^WI  @ 5,12 BUTTON Cu Cu 
+^^WI  @ 5,13 BUTTON Zn Zn
+^^WI  @ 5,14 BUTTON Ga Ga
+^^WI  @ 5,15 BUTTON Ge Ge
+^^WI  @ 5,16 BUTTON As As
+^^WI  @ 5,17 BUTTON Se Se
+^^WI  @ 5,18 BUTTON Br Br
+^^WI  @ 5,19 BUTTON Kr KR
+^^WI }
+^^WI SHOW
+^^CR
+% GET SILENT NOSTORE TEXT ' ' ' '
+% EVALUATE PELEMN = CVALUE
+^^CO DISPOSE PERIOD
+%END SCRIPT
+
