@@ -262,22 +262,22 @@
 %             INSERT 'MATRIX'
 ^^??          M11 TEXT
 %             GET SILENT REAL ' ' '1.0'
-^^??          M12 TEXT
-%             GET SILENT REAL ' ' '0.0'
-^^??          M13 TEXT
-%             GET SILENT REAL ' ' '0.0'
 ^^??          M21 TEXT
-%             GET SILENT REAL ' ' '0.0'
-^^??          M22 TEXT
-%             GET SILENT REAL ' ' '1.0'
-%             QUEUE SEND
-%             CLEAR
-%             INSERT 'CONT'
-^^??          M23 TEXT
 %             GET SILENT REAL ' ' '0.0'
 ^^??          M31 TEXT
 %             GET SILENT REAL ' ' '0.0'
+^^??          M12 TEXT
+%             GET SILENT REAL ' ' '0.0'
+%             QUEUE SEND
+%             CLEAR
+%             INSERT 'CONT'
+^^??          M22 TEXT
+%             GET SILENT REAL ' ' '1.0'
 ^^??          M32 TEXT
+%             GET SILENT REAL ' ' '0.0'
+^^??          M13 TEXT
+%             GET SILENT REAL ' ' '0.0'
+^^??          M23 TEXT
 %             GET SILENT REAL ' ' '0.0'
 ^^??          M33 TEXT
 %             GET SILENT REAL ' ' '1.0'
@@ -413,6 +413,10 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.26  2003/07/07 14:24:29  rich
+%% If an hkl filename is passed in, then enable the OK button, or the hapless
+%% user will be stuck.
+%%
 %% Revision 1.25  2003/06/27 14:44:13  rich
 %% Added option to apply a transformation matrix to HKL data as it is read in.
 %%
