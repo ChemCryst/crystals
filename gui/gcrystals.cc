@@ -126,7 +126,12 @@ BOOL CCrystalsApp::InitInstance()
             }
        }
 
+
+      LoadStandardCursor(IDC_APPSTARTING);
+
       theCrApp = new CrApp(directory,dscfile);
+
+      LoadStandardCursor(IDC_ARROW);
 
       return true;
 }
@@ -143,7 +148,7 @@ BOOL CCrystalsApp::OnIdle(LONG lCount)
 
 	if (lCount > 10)
 	{
-		if(theCrApp->mController->GetInterfaceCommand(theLine))
+            if(theCrApp->mController->GetInterfaceCommand(theLine))
 		{
 			appret = true;
 			int theLength = 0;
