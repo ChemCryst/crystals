@@ -1,0 +1,89 @@
+%SCRIPT XLIST28
+% VARIABLE REAL LIMIT WORK1 WORK2 WORK3 WORK4 WORK5
+^^WI WINDOW XLIST28 'Reject reflections' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID LT NROWS=4 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 STATIC T0 'Reject relections whose'
+^^WI     @ 2,1 STATIC T1 'intesity is less than'
+^^WI     @ 3,1 GRID LEFT NROWS=3 NCOLS=3
+^^WI     {
+^^WI       @ 3,1 EDITBOX E2 '4.0' CHARS=9 REAL
+^^WI       @ 3,3 STATIC T3 'times greater'
+^^WI     }
+^^WI     @ 4,1 STATIC T4 'than their uncertainty'
+^^WI   }
+^^WI   @ 2,4 GRID RIGHT NROWS=5 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&OK' COMMIT DEFAULT
+^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 5,1 BUTTON BHH '&Help'
+^^WI   }
+^^WI }
+^^WI  SHOW
+^^CR  
+% LOOP
+%  VERIFY BXX BHH BOK
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  CASE VALUE
+%   BLOCK                      %BXX
+^^WI DISPOSE XLIST28
+^^CR
+%    FINISH
+%   END BLOCK
+%   BLOCK                      %BHH
+%    COPY '#SCRIPT XHELP1'
+
+This dialog allows unreliable data to be removed from the
+refinement.
+The measure of reliability used in this case is the ratio
+of I (intensity of a reflection) to sigma(I) (the estimated
+standard deviation of that reflection).
+
+When initial data is merged before refinement, reflections
+with a low I/s(I) are usually in very bad agreement (due to
+the fact that they are imprecisely measured). The level at
+which you choose to cut your data may be determined by a plot
+of merging R at various I/s(I) levels.
+
+Recommended levels are up to about 4.0
+
+Increasing the rejection limit will reduce the number of data,
+therefore decreasing the reflection:parameter ratio. Also because
+you are rejecting data that is inconsistent *with itself*, the
+R-factor will drop.
+
+CRYSTALS does not throw away the reflections that you reject, merely
+ignores them in the refinement. You may return to this dialog at
+any time and change the rejection limit.
+
+Setting the rejection limit to zero will reject reflections
+with a negative intensity. To remove all rejection criteria type:
+#LIST 28
+END
+
+%    COPY '#SCRIPT XHELP2'
+%   END BLOCK
+%   BLOCK                      %BOK
+^^?? E2 TEXT
+%    GET NOSTORE SILENT REAL 'Minima ratio' '4.0'
+%    EVALUATE LIMIT = VALUE
+^^WI DISPOSE XLIST28
+^^CR
+%    ON ERROR CONTINUE
+%    COPY '#LIST 28'
+%    CLEAR
+%    INSERT 'MINIMA RATIO='
+%    STORE FORMAT /(F15.8)/ LENGTH 15 REAL LIMIT
+%    SEND
+%    COPY 'END'
+
+ * Done. New List 28 created.
+
+%    FINISH
+%   END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT
