@@ -7,6 +7,9 @@
 //   Created:   10.11.2001 10:28
 
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2002/03/07 10:46:43  DJWgroup
+// SH: Change to fix reversed y axes; realign text labels.
+//
 // Revision 1.17  2002/02/21 15:23:11  DJWgroup
 // SH: 1) Allocate memory for series individually (saves wasted memory if eg. straight line on Fo/Fc plot has only 2 points). 2) Fiddled with axis labels. Hopefully neater now.
 //
@@ -376,7 +379,7 @@ void CcPlotBar::DrawView(bool print)
 						y1 = ysorig - (int)((axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i] - ysorigval) / (m_Axes.m_AxisData[justify].m_AxisMax- m_Axes.m_AxisData[justify].m_AxisMin))));
 						y2 = ysorig - (int)((axisheight * ((((CcSeriesBar*)m_Series[j])->m_Data[i+1] - ysorigval) / (m_Axes.m_AxisData[justify].m_AxisMax - m_Axes.m_AxisData[justify].m_AxisMin))));
 
-						attachedPlot->DrawLine(1, x1,y1,x2,y2);
+                                                attachedPlot->DrawLine(2, x1,y1,x2,y2);
 					}
 					break;
 				}
