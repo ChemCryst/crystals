@@ -57,7 +57,6 @@ bool containsOnly(char* pString, char* pChars)
 {
     int tStringLength = (int)strlen(pString);
     bool tValid = true;
-    
     for (int i = 0; i < tStringLength && tValid; i++)
     {
         tValid = strchr(pChars, pString[i]) != NULL;
@@ -71,19 +70,19 @@ bool containsOnly(char* pString, char* pChars)
         char tempString[10];
         
         tHKL = new Matrix<short>(1, 3);
-        if (containsOnly(pString, " 0123456789.-+"))
+        if (!containsOnly(pString, " 0123456789.-+\n"))
         {
             throw MyException(kBadlyFormatedStringN, kBadlyFormatedString);
         }
         strncpy(tempString, pString, 4);
         tempString[4] = 0;
-        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 0);
+        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 0); // H == 0
         strncpy(tempString, pString+4, 4);
         tempString[4] = 0;
-        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 1);
+        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 1); //K == 1
         strncpy(tempString, pString+8, 4);
         tempString[4] = 0;
-        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 2);
+        tHKL->setValue((short)strtol(tempString, &tEndPointer, 10), 2); //L == 2
         strncpy(tempString, pString+12, 8);
         tempString[8] = 0;
         i = strtod(tempString, &tEndPointer);
