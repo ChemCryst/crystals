@@ -156,9 +156,9 @@ HKLData::HKLData(char* pPath)
     {
         Reflection* tReflection = new Reflection(tLine);
         if (tReflection->h == 0 && tReflection->k == 0 && tReflection->l == 0
-        && tReflection->i == 0.0)	//reached the end of the file an we don't want any more.
+        && tReflection->i == 0.0)	//We might have already reached the end of the file.        	
         {
-            if (tHadZeros)
+            if (tHadZeros)	//We have reached the end of the file.
             {
                 delete tReflection;
                 break;
