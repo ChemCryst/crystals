@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.44  2003/02/20 16:01:48  rich
+C More changes than a stick can be shaken at. Main additions are application
+C of Dunitz-Seiler or Tukey type Robust-Resistant weight modifiers to any
+C other weighting scheme. Other changes are cosmetic - i.e. the code can
+C now be understood a lot more quickly.
+C
 C Revision 1.43  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -344,8 +350,6 @@ C--CHECK IF LIST 6 EXISTS
           END IF
 
         CASE (17) ! Work out parameters for SHELX scheme 16.
-        CALL XFAL06(IULN06, 1)
-        IF ( IERFLG .LT. 0 ) GO TO 9900
 
           CALL XFAL06(IULN06, 1)
           IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -898,10 +902,6 @@ C -- Convert weight back onto scale of FO:
           END IF
 
         END SELECT
-c
-c
-c
-c
 c
 
 
@@ -2157,7 +2157,7 @@ C--PRINT THE CURRENT INDEX TYPE
      1  CSHK(PKHKL),
      1  '^^PL XAXIS TITLE ''Layers by ',CH(I),' index ''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE <Fo-Fc>**2',
+     1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE "<Fo-Fc>**2"',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
@@ -2302,7 +2302,7 @@ c--PLCLS IS EITHER 0 (OFF), 1 (DELTA) OR 2 (RFAC). PLOT GRAPH IF 1 OR 2.
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS', CSHK(PKCLS),
      1  '^^PL XAXIS TITLE ''HKL Class''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE <Fo-Fc>**2',
+     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE "<Fo-Fc>**2"',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
@@ -2385,7 +2385,7 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A)')
      1 '^^PL PLOTDATA _PAR BARGRAPH ATTACH _VPAR', CSHK(PKPAR),
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
-     1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
+     1 '^^PL YAXIS LOG TITLE "<Fo-Fc>**2" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
@@ -2477,7 +2477,7 @@ C--- OUTPUT TO SCREEN
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PKFOR),
      1 '^^PL NSERIES=3 LENGTH=20 XAXIS TITLE',
      1 '^^PL  ''<- Weak           Fc Range            Strong ->''',
-     1 '^^PL YAXIS LOG TITLE <Fo-Fc>**2 ZOOM 0.01 100',
+     1 '^^PL YAXIS LOG TITLE "<Fo-Fc>**2" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
@@ -2648,7 +2648,7 @@ C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)')
      1'^^PL PLOTDATA _THETA BARGRAPH ATTACH _VSINT ', CSHK(PKTHE),
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
-     1'^^PL  <Fo-Fc>**2 LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
+     1'^^PL  "<Fo-Fc>**2" LOG NSERIES=3 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
