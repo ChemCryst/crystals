@@ -215,7 +215,7 @@ void CrMultiEdit::SetText ( CcString cText )
       {
 
 
-                   ((CxMultiEdit*)mWidgetPtr)->SetText(cText);
+                   ((CxMultiEdit*)mWidgetPtr)->SetText(cText+"\r\n");
 
 
 /*
