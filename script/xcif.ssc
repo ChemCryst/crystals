@@ -39,7 +39,6 @@
 %    EVALUATE BUTTXX = '&No'
 %    COPY '#SCRIPT XQUESTIO'
 %    IF ANSWER .EQ. TRUE THEN
-%      COPY '#SPAWN notepad publish.cif'
-%      COPY 'END'
+%      COPY '#SPAWN +notepad publish.cif'
 %    END IF
 %END SCRIPT
