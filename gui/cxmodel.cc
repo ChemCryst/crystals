@@ -1,4 +1,7 @@
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2000/10/31 15:46:36  ckp2
+// Fixed bug where atoms would get highlighted even if "highlighting" is turned off
+//
 
 ////////////////////////////////////////////////////////////////////////
 //   CRYSTALS Interface      Class CxModel
@@ -105,6 +108,7 @@ BEGIN_MESSAGE_MAP(CxModel, CWnd)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONUP()
 	ON_WM_MOUSEMOVE()
+        ON_WM_ERASEBKGND()
 	ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
 END_MESSAGE_MAP()
 #endif
@@ -1174,4 +1178,10 @@ void CxModel::PaintBannerInstead( CPaintDC * dc )
 
 
 }
+
+BOOL CxModel::OnEraseBkgnd( CDC* pDC )
+{
+ return FALSE; //prevent flicker
+}
+
 
