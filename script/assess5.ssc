@@ -1,7 +1,7 @@
 %SCRIPT ASSESS5
 %% A Script to determine the current state of the list 5 refinement.
-%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT
-%  VARIABLE INTEGER ADP ISER HCOUNT
+%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DOTWIN
+%  VARIABLE INTEGER ADP ISER HCOUNT NES
 %  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST 
 %  VARIABLE CHARACTER CTYPE
 %% Return values:
@@ -15,6 +15,9 @@
 %%    DOFLACK  TRUE Flack param is non-zero.
 %%
 %%    DOSORT   TRUE if H are mixed with non-H
+%%
+%%    DOTWIN   TRUE if there are two ELEMENTS defined in list 5.
+%%             ( a simple two component twin ).
 %%
 %%    HFIRST   serial number of first H found, or -1 if no H
 %% 
@@ -42,10 +45,19 @@
 %  IF ( FLACKP .GE. 0.001 ) .OR. ( FLACKP .LE. - 0.001 ) THEN
 %    EVALUATE DOFLACK = TRUE
 %  END IF
+%%
 %  COPY 'TRANSFER FROM OFFSET=5 TO EXTP'
 %  IF EXTP .GE. 0.001 THEN
 %    EVALUATE DOEXTNC = TRUE
 %  END IF
+%%
+%  COPY 'TRANSHEAD FROM OFFSET=22 TO NES'
+%  IF NES .GE. 2 THEN
+%    EVALUATE DOTWIN = TRUE
+%  ELSE
+%    EVALUATE DOTWIN = FALSE
+%  END IF
+%%
 %  COPY 'LOCATE RECORDTYPE=101'
 %  COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
 %  COPY 'TOP'
@@ -95,6 +107,11 @@
 %    CLEAR
 %    INSERT '  {R   Flack param has been refined to '
 %    STORE FORMAT /(F15.5)/ LENGTH 15 REAL FLACKP
+%    OUTPUT
+%  END IF
+%  IF ( DOTWIN .EQ. TRUE ) THEN
+%    CLEAR
+%    INSERT '  {R   There are two element parameters '
 %    OUTPUT
 %  END IF
 %  IF ( DOSORT .EQ. TRUE ) THEN
