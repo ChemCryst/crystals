@@ -34,7 +34,14 @@
  * 	function name	
  * };
 */
-//#include "stdafx.h"
+
+/*
+ *The unit cell class which stores the unit cell parameters.
+ *
+ */
+
+//#include "stdafx.h"    //This is need for compiling on windowz. Cannot put precomp if round it because M$ are a pain.
+
 #include "UnitCell.h"
 #include "Exceptions.h"
 #include "Collections.h"
@@ -172,11 +179,7 @@ float UnitCell::getSEGamma()
     return iSEGamma;
 }
 
-/*char UnitCell::getUnqueSide()
-{
-
-}*/
-
+/*
 char* UnitCell::guessCrystalSystem()
 {
     float tAs[7];
@@ -229,39 +232,15 @@ char* UnitCell::guessCrystalSystem()
     tResults.insert(pair<float, int>(tCurrentGuess, 7));
     tCurrentGuess = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6;
     tResults.insert(pair<float, int>(tCurrentGuess, 8));
-    
-   /* float tMonoA = (tAs[1] + tAs[2] + tGs[0] + tGs[2])/4;
-    float tMonoB = (tAs[0] + tAs[1] + tGs[0] + tGs[1])/4;
-    float tMonoC = (tAs[0] + tAs[2] + tGs[2] + tGs[1])/4;
-    float tOrth = (tAs[0] +  tAs[1] +  tAs[2])/3;
-    float tTetr = (tAs[0] + tAs[1] + tAs[2] + tGs[3])/4;
-    float tTriHexHex = (tAs[0] + tAs[2] + tAs[3] + tGs[3])/4;
-    float tTriRho = (tAs[4] + tAs[5] + tAs[6] + tGs[3] + tGs[4] + tGs[5])/6;
-    float tCubic = (tAs[0] + tAs[1] + tAs[2] + tGs[3] + tGs[4] + tGs[5])/6;
-    
-    
-	std::cout << "tMonoA: " << tMonoA << "\n" <<
-    "tMonoB: " << tMonoB <<  "\n" <<
-    "tMonoC: " << tMonoC <<  "\n" <<
-    "tOrth: " << tOrth <<  "\n" <<
-    "tTetr: " << tTetr << "\n" <<
-    "tTriHexHex: " << tTriHexHex << "\n" <<
-    "tTriRho: " << tTriRho <<  "\n" <<
-    "tCubic: " << tCubic << "\n";*/
-/*    
-"Triclinic"
-"MonoclinicB"
-"MonoclinicC"
-"MonoclinicA"
-"Orthorhombic"
-"Tetragonal"
-"Trigonal"
-"Hexagonal"
-"Cubic"
-*/
-    return NULL;
-}
 
+     TODO: do something with these results.
+    return NULL;
+}*/
+
+/*
+ * This output a list of the crystal systems with there 
+ * index next them
+ */
 std::ostream& printCrystConst(std::ostream& pStream)
 {
     int i = 0;
@@ -275,6 +254,9 @@ std::ostream& printCrystConst(std::ostream& pStream)
     return pStream;
 }
 
+/*
+ * Requests the user for a crystal system.
+ */
 char* getCrystalSystem()
 {
     char* iSelect = new char[255];
@@ -292,15 +274,19 @@ char* getCrystalSystem()
     return tString;
 }
 
-int indexOfClass(String& pClass, String& pUnique)
+/*
+ * Returns the index of the crystal system which is 
+ * passed in pSystem
+ */
+int indexOfSystem(String& pSystem, String& pUnique)
 {
-    pClass.upcase();
+    pSystem.upcase();
     pUnique.upcase();
-    if (pClass.cmp("TRICLINIC") == 0)
+    if (pSystem.cmp("TRICLINIC") == 0)
     {
         return 0;
     }
-    else if (pClass.cmp("MONOCLINIC") == 0)
+    else if (pSystem.cmp("MONOCLINIC") == 0)
     {
         if (pUnique.cmp("A") == 0)
         {
@@ -315,27 +301,27 @@ int indexOfClass(String& pClass, String& pUnique)
             return 2;
         }
     }
-    else if (pClass.cmp("ORTHORHOMBIC") == 0)
+    else if (pSystem.cmp("ORTHORHOMBIC") == 0)
     {
         return 4;
     }
-    else if (pClass.cmp("TETRAGONAL") == 0)
+    else if (pSystem.cmp("TETRAGONAL") == 0)
     {
         return 5;
     }
-    else if(pClass.cmp("TRIGONAL") == 0)
+    else if(pSystem.cmp("TRIGONAL") == 0)
     {
         return 6;
     }
-    else if(pClass.cmp("TRIGONAL(RHOM)") == 0)
+    else if(pSystem.cmp("TRIGONAL(RHOM)") == 0)
     {
         return 7;
     }
-    else if(pClass.cmp("HEXAGONAL") == 0)
+    else if(pSystem.cmp("HEXAGONAL") == 0)
     {
         return 8;
     }
-    else if(pClass.cmp("CUBIC") == 0)
+    else if(pSystem.cmp("CUBIC") == 0)
     {
         return 9;
     }
@@ -379,6 +365,7 @@ char* crystalSystemConst(int pIndex)
     }
     return NULL;
 }
+
 UnitCell::UnitCell()
 {
     iAlpha = 0;
@@ -389,7 +376,7 @@ UnitCell::UnitCell()
     iC = 0;
 }
 
-bool UnitCell::init(char* pLine)	//Reads in from the file provided
+bool UnitCell::init(char* pLine)	//This parases the line which it is passed. Initalising the feilds of the unit cell with it. If the line is not formated correctly then an false is returned.
 {
     regex_t tAngles;
     /**************************************/
@@ -432,3 +419,4 @@ std::ostream& operator<<(std::ostream& pStream, UnitCell& pUnitCell)
 {
     return pUnitCell.output(pStream);
 }
+
