@@ -121,10 +121,10 @@ std::ostream& operator<<(std::ostream& pStream, DataMerger& pMergerResults)
 
 MergedDataResult::MergedDataResult(const HKLData& pData, const LaueGroup& pForLaueGroup, const UnitCell& pUnitCell)
 {
-	const size_t tStrLen = strlen(pForLaueGroup.laueGroup())+1;
+	const size_t tStrLen = pForLaueGroup.length()+1;
 	
 	iLaueGroupSymmetry = new char[tStrLen];
-	strcpy(iLaueGroupSymmetry, pForLaueGroup.laueGroup());
+	strcpy(iLaueGroupSymmetry, pForLaueGroup.c_str());
 	pCrystalSystem = pForLaueGroup.crystalSystem();
 	std::cout << "Merging for " << pForLaueGroup << "\n";
 	MergedData tMergedData(pData, pForLaueGroup);
@@ -155,8 +155,10 @@ float MergedDataResult::rFactor()const
 /********************************************************/
 /* MergedData										    */
 /********************************************************/
-MergedReflections::MergedReflections(float pRFactor, LaueGroup* pLaueGroup):iLaueGroup(pLaueGroup), iRFactor(pRFactor)
-{}
+MergedReflections::MergedReflections(float pRFactor, LaueGroup* pLaueGroup, const Matrix<float>& pUnitCellTensor):iLaueGroup(pLaueGroup), iRFactor(pRFactor)
+{
+	iUnitCellTensor = pUnitCellTensor;
+}
 
 float MergedReflections::rFactor()
 {
@@ -201,7 +203,6 @@ void MergedData::mergeReflections(HKLData& pReflections) //Returns the merged re
 	register float tSUSum = 0;								//Total Standard uncertainty 
 	register long tCount = 0;
 	
-	
 	tCurHKL = (*iSortedReflections->begin())->tHKL; //Save the pointer to the current hkl value
 	for (tIter = iSortedReflections->begin(); tIter != iSortedReflections->end(); tIter++) //Run through all the reflections
 	{		
@@ -217,6 +218,10 @@ void MergedData::mergeReflections(HKLData& pReflections) //Returns the merged re
 		tSUSum += (*tIter)->iSE;
 		tCount ++;
 	}//Move on to the next reflection in the list.
+	if (tCount > 0)
+	{
+		pReflections.push_back(new Reflection((*tCurHKL), tIntSum/tCount, tSUSum/tCount));
+	}
 }
 
 MergedData::~MergedData()
@@ -246,22 +251,23 @@ float MergedData::rFactor()
 	static Matrix<short>* tCurHKL;
 	static Array<float> tValues(23);                //I don't think that this should need to be any greater then 23 elements long.
 	tValues.clear();                                //Clear the values from the last time they were used.
-	multiset<Reflection*, lsreflection>::iterator tIter = iSortedReflections->begin(); //Start at the first 
+	multiset<Reflection*, lsreflection>::iterator tIter;//Start at the first 
 	register float tSumSum = 0;                              //Make sure that every thing is set to 0
 	register float tMeanDiffSum = 0;
 	register float tSum = 0;
 	
 	size_t tNumMerged = 0, tNumResRef=0;
 	//cout << gLaueGroup << "\n";
+	tIter = iSortedReflections->begin();
 	tCurHKL = (*tIter)->tHKL; //Save the pointer to the current hkl value
-	do //Run through all the reflections
+	for (; tIter != iSortedReflections->end(); tIter++) // iterator through the list of reflections
 	{
 		if (  !((*(*tIter)->tHKL) == (*tCurHKL))) //If the HKL value has changed then 
 		{
 			if (tValues.size()>1) //As long as there are more then one reflection
 			{
 				tNumMerged += tValues.size();  
-				tSum = fabsf(sum(tValues.getPointer(), tValues.size()));
+				tSum = fabsf(sum(tValues.getPointer(), 0.0f, tValues.size()));
 				tSumSum += tSum;
 				tMeanDiffSum += JJsumdiff(tValues, tSum/tValues.size());
 			}
@@ -270,7 +276,7 @@ float MergedData::rFactor()
 			tNumResRef  ++;
 		}
 		tValues.add((*tIter)->i);  //Save the intensity
-	}while (++tIter != iSortedReflections->end());//Move on to the next reflection in the list.
+	}
 
 	if (tSumSum == 0)
 		iRFactor = 0;
