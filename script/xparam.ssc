@@ -245,7 +245,7 @@
 %        IF LPEE THEN
 ^^??       XPEE TEXT
 %          GET SILENT NOSTORE KEYWORD ' ' ' '
-%          EVALUATE CELE = CVALUE
+%          EVALUATE CELE = UPPERCASE CVALUE
 %          COPY 'TRANSFER TO OFFSET=0 FROM CELE'
  * Updated element type.
 %        END IF
