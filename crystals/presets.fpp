@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2002/02/27 19:24:55  ckp2
+C RIC: Increase store to 32Mb. (The released versions have had this much store
+C for over a year, I'd just never dared to check it in before.)
+C
 C Revision 1.32  2002/01/09 14:59:47  Administrator
 C bound shifts, abandon ill-conditioned problem
 C
@@ -111,12 +115,15 @@ C
 \XSCCHR
 \XSCGBL
 \XSCMSG
+\XERRRS
 C
 \XMENUI
 C
 \XDRIVE
 C
 \OUTCOL
+
+
 C LOAD THE LIST NAMES
 C      
        DATA CLISTS(1)     /'Cell parameters'/
@@ -1146,7 +1153,7 @@ C
 #H-P      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 0 /
 &H-P      DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 1 /
       DATA ISSSFI / 1 /, ISSTML /0/, ISSFLC /2/, ISSMSG /1/
-      DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /1/
+      DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/
 C
 C
 C -- THE FOLLOWING VARIABLES ARE USED TO STORE IN CHARACTER FORM CERTAIN
@@ -1383,6 +1390,9 @@ C -- SYMBOLIC CODES FOR MESSAGE TYPES
       DATA IOPABN / 1 / , IOPCMI / 2 / , IOPEND / 3 /
       DATA IOPPRC / 4 / , IOPSPC / 5 / , IOPLSP / 6 /
       DATA IOPINT / 7 / , IOPLSE / 8 / , IOPVER / 9 /
+C -- VALUES FOR ERRORS STORED IN LIST 39
+      DATA NXWAVE / 1 /
+
 C -- INITIAL VALUES FOR DIRECT ACCESS FILE CONTROL
       DATA IDAINI / 0 / , IDATOT / -1 / , IDAMAX / 0 /
       DATA IDAMIN / 5 / , IDAAUT / 1 / , IDAQUA / 5 /
@@ -2043,5 +2053,10 @@ C --- XGUIOV ---
       KSTAT6 = 0
       KSTATQ = 0
       KSTATI = 0
+
+      DO I = 1,50
+        ISERNN(I)=0
+      END DO
+
       RETURN
       END
