@@ -1,6 +1,6 @@
 ifeq ($(COMPCODE),MAC)
 
-    GUIFLAGS = -fno-inline 
+    GUIFLAGS = -fno-inline -Wl,-headerpad_max_install_names
     GUILIBRARIES = -framework OpenGL -lg2c `wx-config --libs --gl-libs` 
     CLFLAGS =  
     CLLIBRARIES = -lg2c
@@ -15,7 +15,7 @@ ifeq ($(COMPCODE),MAC)
     F77FLAGS = -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
 
-    INSTALL=/bin/install
+    INSTALL=/usr/bin/install
 
 else
  ifeq ($(COMPCODE),GIL)
