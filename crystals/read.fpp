@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2001/07/11 10:17:31  ckpgroup
+C Change Format statement in BENCH
+C
 C Revision 1.27  2001/06/18 12:23:38  richard
 C Change all script names to lower case before attempting to open the file.
 C This is the one place where mixed case would be very confusing - especially
@@ -2247,19 +2250,17 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
       ENDIF
 CRICFEB01[
-      IF ( ISSUPD .NE. 0 ) THEN
 2346    FORMAT ( '^^CO SET ', A , ' TEXT ''', A , '''' )
-        IF ( IDEV .EQ. NCPU ) THEN
-          WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
-          CALL XPRVDU ( NCVDU, 1, 0 )
-        ELSE IF ( IDEV .EQ. NCWU ) THEN
-          WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
-          CALL XPRVDU ( NCVDU, 1, 0 )
-        ELSE IF ( IDEV .EQ. NCLU ) THEN
-          WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
-          CALL XPRVDU ( NCVDU, 1, 0 )
-        ENDIF
-      END IF
+      IF ( IDEV .EQ. NCPU ) THEN
+        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ELSE IF ( IDEV .EQ. NCWU ) THEN
+        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ELSE IF ( IDEV .EQ. NCLU ) THEN
+        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
+        CALL XPRVDU ( NCVDU, 1, 0 )
+      ENDIF
 CRICFEB01]
 CDJWMAR99]
 C
