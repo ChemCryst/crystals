@@ -1,3 +1,4 @@
+C $Log: not supported by cvs2svn $
 CODE FOR KRDREC
       FUNCTION KRDREC(IN)
 C--READ THE NEXT RECORD, EITHER FROM THE INPUT STREAM OR FROM THE
@@ -1429,11 +1430,11 @@ C              CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
 C         WINDOWED OUTPUT
               CALL OUTCOL(1)
               CALL XWININ (IWNFLG)
-              IF (IWNFLG .EQ. 0) THEN
-                  LUPDAT = .FALSE.
-              ELSE
+c              IF (IWNFLG .EQ. 0) THEN
+c                  LUPDAT = .FALSE.
+c              ELSE
                   LUPDAT = .TRUE.
-              ENDIF
+c              ENDIF
         ELSE
               LUPDAT = .FALSE.
               ISSTML = 0
