@@ -73,7 +73,7 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
         LOGSTAT("*** Menu *** Initing...");
         mName = tokenList->GetToken();
         mText = tokenList->GetToken();
-        SetText(mText);
+//        SetText(mText);
         mSelfInitialised = true;
         LOGSTAT( "*** Created Menu      " + mName );
     }
@@ -211,7 +211,7 @@ CcParse CrMenu::ParseInput( CcTokenList * tokenList )
 
 void    CrMenu::SetText( CcString text )
 {
-
+//     ((CxMenu*)ptr_to_cxObject)->SetText(text);
 }
 
 void    CrMenu::SetGeometry( const CcRect * rect )

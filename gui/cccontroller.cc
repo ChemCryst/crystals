@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.74  2003/09/24 10:40:10  rich
+// Remove obsolete keywords from default window spec when no
+// guimenu.srt is found.
+//
 // Revision 1.73  2003/09/19 18:02:27  rich
 // Add code to allow inclusion of subsiduary files from the guimenu.srt
 // startup file. (Allows clear separation and structure of the GUI).
@@ -1014,6 +1018,15 @@ bool CcController::ParseInput( CcTokenList * tokenList )
                     if ( theChart )
                     {
                         theChart->ParseInput( tokenList );
+                        break;
+                    }
+
+                    CcMenuItem * theMenuItem = nil;
+
+                    theMenuItem = FindMenuItem ( name );
+                    if ( theMenuItem )
+                    {
+                        theMenuItem->ParseInput( tokenList );
                         break;
                     }
 

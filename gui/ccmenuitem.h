@@ -9,7 +9,7 @@
 #pragma once
 #endif
 
-class CrMenu;
+class CrMenu; class CcTokenList;
 class CcMenuItem  
 {
 public:
@@ -28,6 +28,6 @@ public:
         CrMenu* ptr;
         int disable;
         int enable;
+        bool ParseInput( CcTokenList * tokenList );
 };
-
 #endif 

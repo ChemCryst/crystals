@@ -53,3 +53,37 @@ void CcMenuItem::SetTitle(CcString theText)
     }
     text = theText;
 }
+
+
+bool CcMenuItem::ParseInput( CcTokenList * tokenList )
+{
+    bool retVal = true;
+    bool hasTokenForMe = true;
+
+    while ( hasTokenForMe )
+    {
+        switch ( tokenList->GetDescriptor(kAttributeClass) )
+        {
+            case kTTextSelector:
+            {
+                tokenList->GetToken(); // Remove that token!
+                SetText(tokenList->GetToken());
+                break;
+            }
+            
+            case kTSetCommandText:
+            {
+                tokenList->GetToken(); // Remove that token!
+                originalcommand = command = tokenList->GetToken();
+                break;
+            }
+            default:
+            {
+                hasTokenForMe = false;
+                break; // We leave the token in the list and exit the loop
+            }
+        }
+    }
+
+    return retVal;
+}
