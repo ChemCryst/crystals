@@ -97,7 +97,9 @@ std::ostream& operator<<(std::ostream& pStream, Index& pIndex);
 class Indexs:public vector<Index*>
 {
     public:
+		Indexs();
         Indexs(signed char pIndex);
+		Indexs(const Indexs& pIndexs);
         ~Indexs();
         void addIndex(signed char pIndex);
         signed char getValue(int pIndex);
@@ -110,7 +112,7 @@ class ConditionColumn:virtual public Column
 {
     private:
         vector<Index>* iRegionConditions;
-        ArrayList<Indexs>* iConditions;	
+        vector<Indexs*>* iConditions;	
     public:
         ConditionColumn();
         ~ConditionColumn();
