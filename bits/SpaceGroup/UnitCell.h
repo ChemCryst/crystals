@@ -76,4 +76,5 @@ public:
 
 char* getCrystalSystem();
 char* crystalSystemConst(int pIndex);
+int indexOfClass(String& pClass, String& pUnique);
 #endif
