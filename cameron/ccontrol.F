@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2000/12/13 19:14:07  richard
+C Linux support.
+C
 C Revision 1.12  2000/11/17 17:32:45  CKP2
 C Fix up 18 param per atom
 C
@@ -2395,6 +2398,7 @@ C        IPROC = 2
 CODE FOR ZINL5 [ READ IN LIST5 FILE ]
       SUBROUTINE ZINL5
       dimension djwtmp(6)      
+      dimension idjwtmp(6)      
 \CAMPAR
 \CAMCOM
 \CAMANA
@@ -2421,6 +2425,7 @@ CODE FOR ZINL5 [ READ IN LIST5 FILE ]
       REAL COORDS(11),MIN(3),MAX(3),TENSOR(3,3),AXES(3,3),AXESC(3,3)
       REAL EIGS(3),ELOR(3,3),ELORT(3,3)
       LOGICAL LOPEN
+      EQUIVALENCE (djwtmp(1), idjwtmp(1))
       DATA CELLAB /'0    ','a    ','     ','c     ','b     ','      ',
      c '      ','      '/
 C THIS ROUTINE READS IN INFO FROM A LIST 5 FILE - CONNECTED TO DEV 11
@@ -2527,12 +2532,14 @@ C READ IN THE COORDS ETC.
       READ (IINPT,30,ERR=9999) ATOMNM,(COORDS(J),J=1,5)
       READ (IINPT,31,ERR=9999) (COORDS(J),J=6,11)
 cnov2000
-      read (iinpt,31,err=9999) (djwtmp(j),j=1,5)
+      read (iinpt,32,err=9999) djwtmp(1),(idjwtmp(j),j=2,5)
+c      read (iinpt,32,err=9999) ( djwtmp(j),j=1,5 )
 30    FORMAT (5X,A9,7X,5F11.6)
 31    FORMAT (10X,6F11.6)
+32    FORMAT (10X,F11.6,4I11)
 c ATOM C       1.000000   1.000000   0.000000  -0.227446   0.085452   0.065982
 c CON U[11]=   0.047883   0.039787   0.042615   0.003707  -0.000464  -0.004190
-c CON SPARE=   0.000000   0.000000   0.000000   0.000000   0.000000
+c CON SPARE=   0.000000  000000000  000000000 -000000000  000000000
 C ANALYSE AND STORE THE DATA
       CALL ZELEM (ATOMNM,IELM,1)
       CSTORE ( I ) = ATOMNM
@@ -3056,6 +3063,9 @@ C only those atoms included in the current view will be output.
 \CAMBLK
 \XIOBUF
 
+      DIMENSION LSTORE(ITOT)
+      EQUIVALENCE (RSTORE(1),LSTORE(1))
+
       CHARACTER*60 FILENM
       CHARACTER*80 CDUMP
       CHARACTER*6 CELM
@@ -3192,8 +3202,8 @@ CNOV2000 OUTPUT 3 LINES
       WRITE (IFSTAR-1,90) T1(1,1), T1(2,2) , T1(3,3) , T1 (2,3)
      1 , T1(1,3), T1(1,2)
 90    FORMAT ('CON U[11]=',6F11.6)
-      WRITE(IFSTAR-1,95) (RSTORE(I+J),J=14,18)
-95    FORMAT ('CON SPARE=',6F11.6)
+      WRITE(IFSTAR-1,95) RSTORE(I+14),(LSTORE(I+J),J=15,18)
+95    FORMAT ('CON SPARE=',F11.6,5I11)
 50    CONTINUE
 C NOW LOOP OVER THE FINAL LINES OF THE FILE (IF ANY HAVE BEEN PREVIOUSLY
 C STORED.
