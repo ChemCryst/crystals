@@ -1,4 +1,7 @@
-CRYSTALS CODE FOR CONTROL.FOR                                                   
+CRYSTALS CODE FOR CCONTROL.FOR
+
+C $Log: not supported by cvs2svn $
+
 CAMERON CODE FOR CONTROL
 CODE FOR ZABAND [ ABANDON - RESET COMMAND FLAGS ]
       SUBROUTINE ZABAND(ITYPE)
@@ -2551,11 +2554,24 @@ C ORTHOGONALISE THE TENSOR
       TENSOR(2,1) = TENSOR(1,2)
       TENSOR(3,1) = TENSOR(1,3)
       TENSOR(3,2) = TENSOR(2,3)
+
+C      WRITE(99,'(A)') 'CAM: TENSOR, ORTHTENSOR, AXES, ELOR: '
+C      WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+
       CALL ZMATR3 (ELOR,TENSOR,TENSOR)
       CALL ZMATR3 (TENSOR,ELORT,TENSOR)
 C Now obtain the axes coordinates and eigenvalues
+
+C      WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+
+
       CALL ZANISO (TENSOR,AXES,EIGS,AXESC)
 C Store the results
+
+C      WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ),KI=1,3),KJ=1,3)
+
+C      WRITE(99,'(9(1X,F7.4))') ((ELOR(KI,KJ),KI=1,3),KJ=1,3)
+
       DO 90 L=1,3
         DO 90 J = 1,3
           RSTORE(K+IXYZO-1+L*3+J) = AXES(L,J)
