@@ -2261,7 +2261,7 @@ CONVERT            1    2
               5        10
     .CROSSTERMS         1    0    1    2    0 B[IJ]
      B[IJ]          2B[IJ]
-HYDROGENS         12    3
+HYDROGENS         13    3
    3    4096 CRYSTALSALTER5
     1    2    5
    1.DISTANCE           0 9999    0    0    0    0  101    5  155
@@ -2284,9 +2284,11 @@ HYDROGENS         12    3
          0    0    0    0    0    0    0    0    0    0
   10.H11                0 9999    0    0    0    0  110    5  155
          0    0    0    0    0    0    0    0    0    0
-  11.AFTER              0 9999    0    0    0    0  111    5  155
+  11.HBOND              0 9999    0    0    0    0  111    5  155
          0    0    0    0    0    0    0    0    0    0
-  12.HYDROGENS          2    1    0    0
+  12.AFTER              0 9999    0    0    0    0  112    5  155
+         0    0    0    0    0    0    0    0    0    0
+  13.HYDROGENS          2    1    0    0
          1    1
     .INPUTLIST         36    0    1    2    1         5
               5        10
