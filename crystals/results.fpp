@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2002/02/27 19:30:18  ckp2
+C RIC: Increase lengths of lots of strings to 256 chars to allow much longer paths.
+C RIC: Ensure consistent use of backslash after CRYSDIR:
+C
 C Revision 1.28  2002/01/14 12:11:45  Administrator
 C Correct format of FLACK parameter output
 C
@@ -2877,6 +2881,7 @@ CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       DIMENSION IVEC(16), ESD(6)
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
       CHARACTER CBUF*80,CTEMP*80,CLINE*80
+      character *80 ctext(4)
 C 
       CHARACTER*4 CTYPE
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
@@ -3988,9 +3993,14 @@ C
             ITYPE=ISTORE(L4C)
             IF (ITYPE.EQ.9) THEN
 C------ UNIT WEIGHTS
-               WRITE (CLINE,'(A)') '# WARNING. The IUCr will not accept 
-     1Unit Weights'
+               WRITE (CLINE,'(A)') 
+     1 '# WARNING. The IUCr will not accept Unit Weights'
                CALL XPCIF (CLINE)
+               CLINE=' '
+               WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
+               CALL XPCIF (CLINE)
+C            
+C
             ELSE IF ((ITYPE.EQ.5).OR.(ITYPE.EQ.6).OR.(ITYPE.EQ.7).OR.
      1       (ITYPE.EQ.8)) THEN
 C------ SIGMA WEIGHTS
@@ -3998,57 +4008,23 @@ C------ SIGMA WEIGHTS
                WRITE (CLINE,'(A, ''weighting_scheme sigma'')')
      1          CBUF(1:11)
                CALL XPCIF (CLINE)
-            ELSE IF (ITYPE.EQ.16) THEN
-C------ MODIFIED STASTISTICAL WEIGHTS
+C
+            ELSE 
                CLINE=' '
                WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
                CALL XPCIF (CLINE)
-               CLINE=' '
-               WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
-               CALL XPCIF (CLINE)
-               WRITE (NCFPU1,'('';'')')
-               IF (MD4.GT.0) THEN
-                  WRITE (CLINE,2450) STORE(L4),CTYPE,STORE(L4+1),CTYPE,
-     1             STORE(L4+2)
-2450              FORMAT ('w = 1/(',G8.3,'*',A,' +',G8.3,
-&DOS     1      '*\s^2^(',A,') + ', G8.3,')' )
-&DVF     1      '*\s^2^(',A,') + ', G8.3,')' )
-&GID     1      '*\s^2^(',A,') + ', G8.3,')' )
-&VAX     1      '*\s^2^(',A,') + ', G8.3,')' )
-&LIN     1      '*\\s^2^(',A,') + ', G8.3,')' )
-&GIL     1      '*\\s^2^(',A,') + ', G8.3,')' )
-               END IF
-               CALL XPCIF (CLINE)
-               WRITE (NCFPU1,'('';'')')
-            ELSE IF ((ITYPE.EQ.10).OR.(ITYPE.EQ.11).OR.(ITYPE.EQ.14).OR.
-     1       (ITYPE.EQ.15)) THEN
-C------ CHEBYCHEV WEIGHTS
-               CLINE=' '
-               WRITE (CLINE,'(A, ''weighting_scheme calc'')') CBUF(1:11)
-               CALL XPCIF (CLINE)
-               CLINE=' '
-               WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
-               CALL XPCIF (CLINE)
-               WRITE (NCFPU1,'('';'')')
-               WRITE (CLINE,'(A,I3,A)') 'Chebychev polynomial with ',
-     1          MD4,' parameters,  Carruthers & Watkin , 1979,'
-               CALL XPCIF (CLINE)
-               IF (MD4.GT.0) THEN
-                  M4=L4+MD4-1
-                  WRITE (NCFPU1,2500) (STORE(J),J=L4,M4)
-2500              FORMAT (8G9.3)
-                  WRITE (NCFPU1,'('';'')')
-               END IF
-            END IF
-            K=KHKIBM(CLINE)
-            CALL XCREMS (CLINE,CLINE,NCHAR)
-            CALL XCTRIM (CLINE,NCHAR)
-            K=MIN(26,NCHAR)
-            WRITE (CPAGE(IREF+6,1)(:),'(A,A)') 'Weights: ',CLINE(1:K)
-            IF (NCHAR.GE.27) THEN
-               K=MIN(61,NCHAR)
-               WRITE (CPAGE(IREF+6,2)(:),'(A)') CLINE(27:K)
-            END IF
+            ENDIF
+C
+            CLINE=' '
+            WRITE (CLINE,'(A, ''weighting_details '')') CBUF(1:11)
+            CALL XPCIF (CLINE)
+            WRITE (NCFPU1,'('';'')')
+          call xsum04(0,ctext)
+          call xpcif(ctext(1))
+          call xpcif(ctext(2))
+          call xpcif(ctext(3))
+          call xpcif(ctext(4))
+          write (ncfpu1,'('';'')')
          END IF
       END IF
 C 

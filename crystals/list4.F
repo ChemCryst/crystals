@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.31  2002/02/19 16:45:17  ckp2
+C Fix _FO graph output when no data in given bin.
+C
 C Revision 1.29  2002/01/14 12:21:37  ckpgroup
 C SH: Added Fo vs. Fc scatter graph (use xfovsfc.ssc).
 C
@@ -510,18 +513,8 @@ C--WEIGHTING SCHEME TYPE 7  -  1/SIGMA(/FO/)
       AW=RAW
       GOTO 4600
 3452  CONTINUE
-C----- SHELXTL WEIGHTS, W = 1/(SIGSQ+G*FSQ)
+C----- SHELXTL WEIGHTS
       sigma = aw
-c      CALL XSQRF(FSQ, STORE(L6+ITWIN), FABS, SIGSQ, STORE(L6+12) )
-c      FC = A * STORE(M6+5)
-c      IF (JTYPE .EQ.2) THEN
-c            FO = FSQ
-c            SIGMA = SIGSQ
-c            FC = FC * FC
-c      ELSE
-c            FO = FABS
-c            SIGMA = STORE(L6+12)
-c      ENDIF
       STHOLS = SNTHL2(L)
       STH = SQRT(STHOLS)*STORE(L13DC)
       Q = EXP (STORE(L4+2) * STHOLS)
@@ -534,8 +527,6 @@ c      ENDIF
       AW = Q /
      1 (SIGMA*SIGMA + (P*STORE(L4))*(P*STORE(L4)) +
      2  STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH)
-      write(ncawu,'(3f4.0,4f10.4)')store(l6),store(l6+1),store(l6+2),
-     1 fo, fc, sigma, 1./aw
       GOTO 4600
 C--WEIGHTING SCHEME TYPE 8  -  1/SIGMA(/FO/)**2
 3500  CONTINUE

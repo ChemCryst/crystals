@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2002/02/28 18:04:20  ckp2
+C New command #SIGMADIST for producing sigma distribution graph. It doesn't
+C do anything else.
+C
 C Revision 1.19  2002/02/18 15:17:16  DJWgroup
 C SH: Added y=x line to Fo vs. Fc plot.
 C
@@ -188,6 +192,7 @@ C
       PARAMETER (NLTYPE = 41)
       CHARACTER*32 CLTYPE(NLTYPE)
       DIMENSION LLTYPE(NLTYPE)
+      character*80 ctext(4)
 C
 \XLST01
 \XLST02
@@ -318,7 +323,7 @@ C
       ELSE IF ( LSTYPE .EQ. 3 ) THEN
         CALL XSUM03
       ELSE IF ( LSTYPE .EQ. 4 ) THEN
-        CALL XSUM04
+        CALL XSUM04(1,ctext)
       ELSE IF ( LSTYPE .EQ. 5 ) THEN
         CALL XSUM05 ( LSTYPE , LEVEL )
       ELSE IF ( LSTYPE .EQ. 6 ) THEN
@@ -604,10 +609,14 @@ C
 C
 C
 CODE FOR XSUM04
-      SUBROUTINE XSUM04
+      SUBROUTINE XSUM04(imode, ctext)
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 4
 C
+c
+c----- IMODE - 1 TO ENABLE PRINTING
+c----- CTEXT - TEXT AVAILABLE TO CALLING ROUTINE
+c
 C -- THE EXPRESSIONS FOR THE WEIGHTS ARE CONSTRUCTED FROM THE
 C    STRINGS CONTAINED IN 'CRESLT' AND 'CEXPRS' INDEXED BY
 C    'IRESLT' AND 'IEXPRS'.
@@ -616,6 +625,7 @@ C
       DIMENSION IEXPRS(2,MAXSCH)
       DIMENSION IRESLT(MAXSCH)
 C
+      character *(*)ctext(4)
       CHARACTER*32 CSNAME(MAXSCH)
       DIMENSION    LNNAME(MAXSCH)
 C
@@ -669,66 +679,81 @@ C
      2 15 , 1 ,
      3 1 , 1 , 1 , 16 ,
      4 24 , 24 ,
-     5 1, 21, 20, 20, 13 /
+     5 1, 21, 20, 20, 22 /
       DATA CEXPRS / 'expressions' /
       DATA LENEXP / 11 /
 C
 C
 C
+      ctext(1)=' '
+      ctext(2)=' '
+      ctext(3)=' '
+      ctext(4)=' '
 C
 C -- BEGIN OUTPUT
 C
       ITYPE = ISTORE(L4C)
       IFOTYP = ISTORE(L4C+1)
+      LENGTH = LENEXP
 C
-      IF (ISSPRT .EQ. 0)
+      write(ctext(1),1014) CSNAME(ITYPE)(2:LNNAME(ITYPE)-1)
+1014  format(1x,'Method=',a)
+      if (imode .GE.1) then
+       IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
-      WRITE ( NCAWU , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
-      WRITE ( CMON , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
-      CALL XPRVDU(NCVDU, 1,0)
+       WRITE ( NCAWU , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
+       WRITE ( CMON , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
+       CALL XPRVDU(NCVDU, 1,0)
 1015  FORMAT ( 1X , 'Weighting scheme type ' , I3 , 2X , A )
 C
-      LENGTH = LENEXP
-      IF ( IEXPRS(2,ITYPE) .LE. 0 ) LENGTH = LENGTH - 1
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1016 ) CEXPRS(1:LENGTH)
-      WRITE ( NCAWU , 1016 ) CEXPRS(1:LENGTH)
-      WRITE ( CMON  , 1016 ) CEXPRS(1:LENGTH)
-      CALL XPRVDU(NCVDU, 1,0)
+       IF ( IEXPRS(2,ITYPE) .LE. 0 ) LENGTH = LENGTH - 1
+       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1016 ) CEXPRS(1:LENGTH)
+       WRITE ( NCAWU , 1016 ) CEXPRS(1:LENGTH)
+       WRITE ( CMON  , 1016 ) CEXPRS(1:LENGTH)
+       CALL XPRVDU(NCVDU, 1,0)
 1016  FORMAT ( 1X , 'Weights are calculated from ' ,
      2 'the following ' , A , ' :-' )
+      endif
 C
       DO 1018 I = 1 , 2
         ITEXT = IEXPRS(I,ITYPE)
         IF ( ITEXT .GT. 0 ) THEN
+        if (imode .ge.1) then
           IF (ISSPRT .EQ. 0)
      1    WRITE ( NCWU , 1017 ) CRESLT(IRESLT(ITYPE)) , CFORMS(ITEXT)
           WRITE ( NCAWU , 1017 ) CRESLT(IRESLT(ITYPE)) , CFORMS(ITEXT)
           WRITE ( CMON , 1017 ) CRESLT(IRESLT(ITYPE)) , CFORMS(ITEXT)
           CALL XPRVDU(NCVDU, 1,0)
 1017      FORMAT ( 1X , A , ' = ' , A )
+        endif
+        WRITE (ctext(i+1), 1017 ) CRESLT(IRESLT(ITYPE)), CFORMS(ITEXT)
         ENDIF
 1018  CONTINUE
 C
       IF (MD4 .GT. 0) THEN
         M4 = L4 + MD4 -1
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1025 )
-        WRITE ( NCAWU , 1025 )
-        WRITE ( CMON , 1025 )
-        CALL XPRVDU(NCVDU, 1,0)
-1025    FORMAT ( 1X , 'Using parameters :- ')
-        IF (ISSPRT .EQ. 0) WRITE (NCWU, 1035) (STORE(J), J = L4, M4 )
-        WRITE ( NCAWU , 1035 ) ( STORE(J) , J = L4 , M4 )
-        WRITE ( CMON , 1035 ) ( STORE(J) , J = L4 , M4 )
-        CALL XPRVDU(NCVDU, 1,0)
-1035    FORMAT ( 5X , 6G12.3 )
-C
+        if (imode .ge.1) then
+         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1025 )
+         WRITE ( NCAWU , 1025 )
+         WRITE ( CMON , 1025 )
+         CALL XPRVDU(NCVDU, 1,0)
+1025     FORMAT ( 1X , 'Using parameters :- ')
+         IF (ISSPRT .EQ. 0) WRITE (NCWU, 1035) (STORE(J), J = L4, M4 )
+         WRITE ( NCAWU , 1035 ) ( STORE(J) , J = L4 , M4 )
+         WRITE ( CMON , 1035 ) ( STORE(J) , J = L4 , M4 )
+         CALL XPRVDU(NCVDU, 1,0)
+1035     FORMAT ( 5X , 6G12.3 )
+        endif
+        WRITE ( ctext(4) , 1035 ) ( STORE(J) , J = L4 , M4 )
       ENDIF
 C
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1045 ) STORE(L4F+1)
-      WRITE ( NCAWU , 1045 ) STORE(L4F+1)
-      WRITE ( CMON , 1045 ) STORE(L4F+1)
-      CALL XPRVDU(NCVDU, 1,0)
-1045  FORMAT ( 1X , 'The maximum weight is ' , G12.5 )
+      if (imode .ge.1) then
+       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1045 ) STORE(L4F+1)
+       WRITE ( NCAWU , 1045 ) STORE(L4F+1)
+       WRITE ( CMON , 1045 ) STORE(L4F+1)
+       CALL XPRVDU(NCVDU, 1,0)
+1045   FORMAT ( 1X , 'The maximum weight is ' , G12.5 )
+      endif
 C
       RETURN
       END
