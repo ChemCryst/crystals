@@ -105,7 +105,7 @@ c      WRITE ( NCWU , 3) NINT(REJ(2)),NINT(REJ(3)),REJ(1)
         WRITE(NCPU,'(f5.1,1X,I2)') PHID,PORI
       ENDIF
 
-1     FORMAT(3/A/A/A,2/)
+1     FORMAT(/,/,/,A,/,A,/,A,/,/)
 4     FORMAT(' Symmetry element tested: ',f5.1,' degree rotation')
 5     FORMAT(' Symmetry element tested: ',f5.1,' degree roto-inversion')
 
