@@ -98,8 +98,8 @@ Boolean CrGUIElement::ParseInput( CcTokenList * tokenList )
     if ( mText.Length() != 0 || mName.Length() != 0 )
         retVal = true;
 
-    LOGSTAT( "Setting identifier " + mName +
-             "Setting text "      + mText  );
+    LOGSTAT( "Identifier = " + mName +
+             ", text = "      + mText  );
 
     return retVal;
 }
@@ -113,7 +113,7 @@ Boolean CrGUIElement::ParseInputNoText( CcTokenList * tokenList )
     if ( mName.Length() != 0 )
         retVal = true;
 
-    LOGSTAT( "Setting identifier " + mName );
+    LOGSTAT( "Identifier = " + mName );
 
     return retVal;
 }
