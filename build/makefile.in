@@ -32,7 +32,23 @@ else
     F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
  else
-  ifeq ($(COMPCODE),LIN)
+  ifeq ($(COMPCODE),WXS)
+    GUIFLAGS = -fno-inline -fexceptions
+    GUILIBRARIES = -lg2c `wx-config --libs --gl-libs` 
+    CLFLAGS = 
+    CLLIBRARIES = -lg2c
+
+    CPPFLAGS = -s -fexceptions -I /usr/local/include `wx-config --cppflags`
+    CFLAGS = -s -I /usr/local/include 
+
+    CXX = g++
+    CC = gcc
+    LD = g++
+    F77 = g77
+    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    OPT = -O2
+  else
+   ifeq ($(COMPCODE),LIN)
     GUIFLAGS = -fno-inline -fexceptions
     GUILIBRARIES = -lg2c
     CLFLAGS =
@@ -47,10 +63,11 @@ else
     F77 = g77
     F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
     OPT = -O2
-  else
+   else
 
     $(error COMPCODE not specified)
 
+   endif
   endif
  endif
 endif
