@@ -93,10 +93,15 @@ void deinitRE()
 {
     if (iHeaderRE != NULL)
     {
+		regfree(iHeaderRE);
         delete iHeaderRE;
+		regfree(iFirstNumRE);
         delete iFirstNumRE;
+		regfree(iFirstNSpRE);
         delete iFirstNSpRE;
+		regfree(iTableRE);
         delete iTableRE;
+		regfree(iTableArgsRE);
         delete iTableArgsRE;
         iHeaderRE = NULL;
         iFirstNumRE = NULL;

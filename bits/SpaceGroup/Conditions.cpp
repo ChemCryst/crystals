@@ -33,6 +33,7 @@ void deleteConRegEx()
 {
     if (iCondRE)
     {
+		regfree(iCondRE);
         delete iCondRE;
         iCondRE = NULL;
     }

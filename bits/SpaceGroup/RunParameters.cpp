@@ -305,11 +305,16 @@ void RunParameters::readParamFile()
                 delete tClass;
             }
             tParamFile.close(); //Close the file.
+			regfree(tSymmetryFSO);
 			delete tSymmetryFSO;
+			regfree(tChiralFSO);
             delete tChiralFSO;
+			regfree(tOutputFSO);
             delete tOutputFSO;
+			regfree(tHKLFSO);
             delete tHKLFSO;
-	    delete tMergeSO;
+			regfree(tMergeSO);
+			delete tMergeSO;
         }
         catch(MyException e)
         {

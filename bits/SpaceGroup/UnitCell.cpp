@@ -415,6 +415,7 @@ bool UnitCell::init(char* pLine)	//This parases the line which it is passed. Ini
         iC = (float)tC.toDouble();
         return true;
     }
+	regfree(&tAngles);
     //Return that the line didn't match the regular expression.
     return false;
 }

@@ -78,9 +78,13 @@ void deinitRegEx()
 {
     if (iFirstLineRE != NULL)
     {
+		regfree(iFirstLineRE);
         delete iFirstLineRE;
+		regfree(iMatFormRE);
         delete iMatFormRE;
+		regfree(iFirstNumRE);
         delete iFirstNumRE;
+		regfree(iFirstNum2RE);
         delete iFirstNum2RE;
         iFirstLineRE= NULL;
         iMatFormRE= NULL;

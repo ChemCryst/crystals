@@ -21,7 +21,6 @@ CrystSymmetry::CrystSymmetry():string()
 {
 }
 
-
 CrystSymmetry::CrystSymmetry(string& pSymmetryDescription, size_t pIndex):string(pSymmetryDescription, pIndex)
 {
 	runCheck();
@@ -32,6 +31,8 @@ CrystSymmetry::CrystSymmetry(const string& pSymmetryDescription):string(pSymmetr
 	runCheck();
 }
 
+static regex_t *gSymFSO = NULL; //The compiled regualar expression. Using it this way because boost is really slow.
+
 void CrystSymmetry::runCheck()
 {
 	int tError;
@@ -41,12 +42,16 @@ void CrystSymmetry::runCheck()
 	string SymOp = "(" + ARot + "|" + Glides + "|d)";
 	string sym = "^(" + SymOp + SymOp + "?" + SymOp + "?)([[:space:]]rhom)?$"; //Rhom is a special case. I don't like doing this but I cannot be bothered doing properly
 	
-	regex_t symFSO;
-	regcomp(&symFSO, sym.c_str(), REG_EXTENDED | REG_NOSUB | REG_ICASE);
-	if (0 != (tError = regexec(&symFSO, c_str(), 0, NULL, 0)))
+	
+	if (gSymFSO == NULL)
+	{
+		gSymFSO = new regex_t;
+		regcomp(gSymFSO, sym.c_str(), REG_EXTENDED | REG_NOSUB | REG_ICASE);
+	}
+	if (0 != (tError = regexec(gSymFSO, string::c_str(), 0, NULL, 0)))
 	{
 		char tString[255];
-		regerror(tError, &symFSO, tString, 255);
+		regerror(tError, gSymFSO, tString, 255);
 		cerr << "\n" << tString << "\n";
 		cerr << (*this) << "\n";
 		throw MyException(0, "Symmetry was invalid");
@@ -59,6 +64,12 @@ CrystSymmetry::CrystSymmetry(const CrystSymmetry& pCrystSymmetry):string(pCrystS
 
 CrystSymmetry::~CrystSymmetry()
 {
+	if (gSymFSO)
+	{
+		regfree(gSymFSO);
+		delete gSymFSO;
+		gSymFSO = NULL;
+	}
 }
 
 Matrix<short>& CrystSymmetry::matrix(const size_t pIndex)const

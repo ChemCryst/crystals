@@ -128,6 +128,22 @@ SpaceGroups::SpaceGroups(char* pSpaceGroups):iBrackets(NULL)
     }
 }
 
+SpaceGroups::~SpaceGroups()
+{
+	if (gSpaceGroupsFSO)
+	{
+		regfree(gSpaceGroupsFSO);
+		delete gSpaceGroupsFSO;
+		gSpaceGroupsFSO = NULL;
+	}
+	if (gSGBraketsFSO)
+	{
+		regfree(gSGBraketsFSO);
+		delete gSGBraketsFSO;
+		gSGBraketsFSO = NULL;
+	}
+}
+
 void SpaceGroups::addSpaceGroups(char* pSpaceGroups)
 {
     if (regexec(gSpaceGroupsFSO, pSpaceGroups, gMatches, gMatch, 0))

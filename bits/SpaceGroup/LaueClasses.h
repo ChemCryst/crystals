@@ -79,7 +79,7 @@ class LaueClassMatrices:protected vector<MatrixReader>
  * @description Not yet documented.
  * @abstract
 */
-class LaueGroup:virtual public CrystSymmetry
+class LaueGroup: public CrystSymmetry
 {
 protected:	
 	SystemID iCrystalSystem;

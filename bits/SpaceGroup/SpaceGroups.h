@@ -66,6 +66,7 @@ class SpaceGroups:public vector<SpaceGroup>
         void addSpaceGroups(char* pSpaceGroups);
     public:
         SpaceGroups(char* pSpaceGroups);
+		~SpaceGroups();
 
         /*!
          * @function count 
