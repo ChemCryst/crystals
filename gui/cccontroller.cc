@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.83  2004/02/16 16:39:11  rich
+// After waiting for a spawned application, print a message "Done" to indicate
+// no longer waiting.
+//
 // Revision 1.82  2004/02/09 20:27:09  rich
 // Correct use of chdir and putenv on WXS target platform.
 // ----------------------------------------------------------------------
@@ -1849,6 +1853,7 @@ bool CcController::GetInterfaceCommand( char * line )
 #endif
     {
       LOGSTAT("The CRYSTALS thread has died.");
+      delete mCrystalsThread;
       if ( m_restart )
       {
         ChangeDir( m_newdir );
@@ -3993,10 +3998,11 @@ extern "C" {
         }
 
   #ifdef __CR_WIN__
-        AfxEndThread((UINT) theExitcode);
+        AfxEndThread((UINT) theExitcode, FALSE);
   #endif
   #ifdef __BOTHWX__
         (CcController::theController)->mCrystalsThread->CcEndThread( theExitcode );
+        mCrystalsThread = nil;
   #endif
   }
 
