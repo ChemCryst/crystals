@@ -9,6 +9,11 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.103  2004/11/12 11:22:01  rich
+// Tidied SPAWN code.
+// Fixed bug where failing script could leave pointers to deleted windows
+// in our modal window stack.
+//
 // Revision 1.102  2004/11/09 09:45:02  rich
 // Removed some old stuff. Don't use displaylists on the Mac version.
 //
@@ -595,8 +600,11 @@ wxFont* CcController::mp_inputfont = nil;
 #ifdef __CR_WIN__
 CFont* CcController::mp_font = nil;
 CFont* CcController::mp_inputfont = nil;
+#define bzero(a) memset(a,0,sizeof(a)) //easier -- shortcut
 #include <process.h>
 #endif
+
+bool bRedir = false;
 
 static CcLock m_Crystals_Commands_CS(true);
 static CcLock m_Interface_Commands_CS(true);
@@ -633,7 +641,7 @@ CcController::CcController( const string & directory, const string & dscfile )
 
     m_restart = false;
     mCrystalsThread = nil;
-
+    m_AllowThreadKill = true;
     m_BatchMode = false;
     m_ExitCode = 0;
 
@@ -1556,7 +1564,7 @@ void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 // 1. Close the main window. (Close the program).
       if( line.length() > 10 )
       {
-         if( line.substr(0,11) == "_MAIN CLOSE")
+         if( ( line.substr(0,11) == "_MAIN CLOSE" ) && m_AllowThreadKill )
          {
            LOGSTAT("---Closing main window.");
            AddInterfaceCommand("^^CO DISPOSE _MAIN ");
@@ -3175,15 +3183,14 @@ extern "C" {
     *(tempstr+262) = '\0';
     string line = string(tempstr);
 
-
     string::size_type strim = line.find_last_not_of(" "); //Remove trailing spaces
     if ( strim != string::npos )
         line = line.substr(0,strim+1);
     delete [] tempstr;
     tempstr = NULL;
+//  (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
 
-//    (CcController::theController)->AddInterfaceCommand( "Guexec: " + line );
-
+    bRedir = false;
     bool bWait = false;
     bool bRest = false;
     string::size_type sFirst,eFirst,sRest,eRest;
@@ -3194,6 +3201,13 @@ extern "C" {
     if ( line[sFirst] == '+' )                // Check for + symbol (signifies 'wait')
     {
        bWait = true;
+// Find next non space ( in case + is seperated from first word ).
+       sFirst = line.find_first_not_of(" ",sFirst+1);
+       if ( sFirst == string::npos ) sFirst = 0;
+    }
+    else if ( line[sFirst] == '%' )  // Check for % symbol (signifies 'redirect STDIN and OUT')
+    {
+       bRedir = true;
 // Find next non space ( in case + is seperated from first word ).
        sFirst = line.find_first_not_of(" ",sFirst+1);
        if ( sFirst == string::npos ) sFirst = 0;
@@ -3273,12 +3287,12 @@ extern "C" {
                                             "#SPAWN: Waiting",MB_OK);
  #endif
 
-        CcController::theController->ProcessOutput( " ");
-        CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
-        CcController::theController->ProcessOutput( " ");
+        CcController::theController->AddInterfaceCommand( " ");
+        CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+        CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
-        CcController::theController->ProcessOutput( "                                                               {0,2 ... Done");
-        CcController::theController->ProcessOutput( " ");
+        CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
+        CcController::theController->AddInterfaceCommand( " ");
 
       }
       else if ( (int)si.hInstApp <= 32 )
@@ -3286,7 +3300,7 @@ extern "C" {
 
 // Some other failure. Try another method of starting external programs.
 
-        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+        CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[257];
         memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
@@ -3309,7 +3323,7 @@ extern "C" {
         {
           ostringstream strstrm;
           strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
-          CcController::theController->ProcessOutput(strstrm.str());
+          CcController::theController->AddInterfaceCommand(strstrm.str());
           for (int ij = 7; ij>=0; ij--)
           {
              args[ij+2] = args[ij];
@@ -3336,15 +3350,123 @@ extern "C" {
       }
       else
       {
-        CcController::theController->ProcessOutput( " ");
-        CcController::theController->ProcessOutput( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
-        CcController::theController->ProcessOutput( " ");
+        CcController::theController->AddInterfaceCommand( " ");
+        CcController::theController->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+        CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
-        CcController::theController->ProcessOutput( "                                                               {0,2 ... Done");
-        CcController::theController->ProcessOutput( " ");
+        CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
+        CcController::theController->AddInterfaceCommand( " ");
       }
 
 
+    }
+    else if ( bRedir )
+    {
+      STARTUPINFO si;
+      SECURITY_ATTRIBUTES sa;
+      SECURITY_DESCRIPTOR sd;               //security information for pipes
+
+      if (IsWinNT())        //initialize security descriptor (Windows NT)
+      {
+        InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
+        SetSecurityDescriptorDacl(&sd, true, NULL, false);
+        sa.lpSecurityDescriptor = &sd;
+      }
+      else sa.lpSecurityDescriptor = NULL;
+      sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+      sa.bInheritHandle = true;         //allow inheritable handles
+
+
+      CcPipe inPipe(sa);
+      if ( ! inPipe.CreateOK ) {
+        CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
+        return;
+      }
+      CcPipe outPipe(sa);
+      if ( ! outPipe.CreateOK ) {
+        CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
+        return;
+      }
+
+      GetStartupInfo(&si);      //set startupinfo for the spawned process
+      si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
+      si.wShowWindow = SW_HIDE;
+      si.hStdOutput = outPipe.input;
+      si.hStdError = outPipe.input;     //set the new handles for the child process
+      si.hStdInput = inPipe.output;
+      CcProcessInfo pi(firstTok,si);
+      if (!pi.CreateOK)
+      {
+        CcController::theController->AddInterfaceCommand( "Error creating process.");
+        return;
+      }
+
+      unsigned long exit=0;  //process exit code
+      unsigned long bread;   //bytes read
+      unsigned long avail;   //bytes available
+
+// Disable all menus etc.
+      CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
+      CcController::theController->AddInterfaceCommand( "^^CR");
+      CcController::theController->m_AllowThreadKill = false;
+
+      char buf[1024];           //i/o buffer
+      bzero(buf);
+      for(;;)      //main program loop
+      {
+        PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+
+        while ( bread != 0 )
+        {
+          bzero(buf);
+          ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
+          string s(buf);
+          string::size_type i;
+          while ( ( i = s.find_first_of("\r") ) != string::npos ) {
+            s.erase(i,1);    //Remove \r
+          }
+
+          for(;;) {
+            string::size_type strim = s.find_first_of("\n");
+            if ( strim == string::npos )
+            {
+              CcController::theController->AddInterfaceCommand("{0,1 " + s);
+              break;
+            }
+            CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
+            s.erase(0,strim+1);
+          }
+          bzero(buf);
+          PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+        }
+
+        GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
+        if (exit != STILL_ACTIVE)  break;
+
+        bool wait = false;
+ 
+        (CcController::theController)->GetCrystalsCommand(*&buf,wait);
+        if ( wait ) {
+           string s(buf);
+           s.erase(s.find_last_not_of(" ")+1,s.length());
+           if ( s.substr(0,11) == "_MAIN CLOSE" )
+           {
+             UINT uexit=0;
+             TerminateProcess(pi.proc.hProcess, uexit);
+             CloseHandle(pi.proc.hThread);
+             CloseHandle(pi.proc.hProcess);
+             CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
+             break;
+           }
+           CcController::theController->AddInterfaceCommand("{0,1 " + s);
+           WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
+           WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
+        }
+      }
+// Reenable all menus
+      CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
+      CcController::theController->AddInterfaceCommand( "^^CR");
+      CcController::theController->m_AllowThreadKill = true;
     }
     else
     {
@@ -3361,8 +3483,6 @@ extern "C" {
             firstTok = buf;
          }
       }
-
-//      CcController::theController->ProcessOutput( "{I Starting " + firstTok + ", with args:" + restLine );
 
       HINSTANCE ex = ShellExecute( GetDesktopWindow(),
                                    "open",
@@ -3382,7 +3502,6 @@ extern "C" {
       else if ( (int)ex <= 32 )
       {
 // Some other failure. Try another method of starting external programs.
-//        CcController::theController->ProcessOutput( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
         extern int errno;
         char * str = new char[257];
         memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
@@ -3403,7 +3522,6 @@ extern "C" {
   
         if ( result == -1 )  //Start failed
         {
-//          CcController::theController->ProcessOutput( "{I Failed again to start " + firstTok + ", errno is:" + string(errno)+" trying a command shell.");
           for (int ij = 7; ij>=0; ij--)
           {
              args[ij+2] = args[ij];
@@ -3431,6 +3549,8 @@ extern "C" {
 // Check if this might be a filename, and if so find application to
 // open it with.
 
+
+
     wxString fullname(firstTok.c_str());
     wxString path, name, extension, command;
     ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
@@ -3452,6 +3572,7 @@ extern "C" {
     }
 
 
+
     extern int errno;
     char * cmd = new char[257];
     char * str = new char[257];
@@ -3469,34 +3590,124 @@ extern "C" {
       token = strtok( NULL, seps );
       args[i] = token;
     }
-    
-    pid_t pid = fork();
-    
-    if ( pid == 0 ) {          //We're in the child process.
-       std::cerr << "\n\nGUEXEC: Child. Execing...\n";
-       int err = execvp( args[0], args );
-       std::cerr << "\n\nGUEXEC: Something went wrong: " << err <<"\n";
-       std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
-       _exit(-1);
-    }
-// We're in the parent process
-
-    std::cerr << "\n\nGUEXEC: Parent.\n";
-
-    if ( bWait )
-    {
-        std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
-        waitpid(pid,NULL,0);
-
-        (CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
-
-    }
-
     delete [] str;
     delete [] cmd;
 
-    std::cerr << "\n\nGUEXEC: Done.\n";
 
+    if ( bRedir )
+    {
+
+      CcPipe inPipe(), outPipe();
+      pid_t pid = fork();
+
+      if ( pid == 0 ) {          //We're in the child process.
+       inPipe.CloseUnusedEnds(pid);
+       outPipe.CloseUnusedEnds(pid);
+       dup2(outPipe.fd[1],fileno(stdout));
+       dup2(inPipe.fd[1],fileno(stdin));
+       std::cerr << "\nGUEXEC: Child. Execing...\n";
+       int err = execvp( args[0], args );
+       std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
+       std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
+       _exit(-1);
+      }
+
+// We're in the parent process
+      inPipe.CloseUnusedEnds(pid);
+      outPipe.CloseUnusedEnds(pid);
+      std::cerr << "GUEXEC: Parent.\n";
+      unsigned long exit=0;  //process exit code
+      unsigned long bread;   //bytes read
+      unsigned long avail;   //bytes available
+
+// Disable all menus etc.
+      CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
+      CcController::theController->AddInterfaceCommand( "^^CR");
+      CcController::theController->m_AllowThreadKill = false;
+
+      char buf[1024];           //i/o buffer
+      bzero(buf);
+      for(;;)      //main program loop
+      {
+        int bread = 0;
+        while ( bread != 0 )
+        {
+          bzero(buf);
+          bread = read(outPipe.fd[0],buf,1023);  //read the stdout pipe
+          string s(buf);
+          string::size_type i;
+          while ( ( i = s.find_first_of("\r") ) != string::npos ) {
+            s.erase(i,1);    //Remove \r
+          }
+
+          for(;;) {
+            string::size_type strim = s.find_first_of("\n");
+            if ( strim == string::npos )
+            {
+              CcController::theController->AddInterfaceCommand("{0,1 " + s);
+              break;
+            }
+            CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
+            s.erase(0,strim+1);
+          }
+          bzero(buf);
+        }
+
+        int status;
+        if ( waitpid(pid, &status, WNOHANG) != 0 ) break;
+
+        bool wait = false;
+ 
+        (CcController::theController)->GetCrystalsCommand(*&buf,wait);
+        if ( wait ) {
+           string s(buf);
+           s.erase(s.find_last_not_of(" ")+1,s.length());
+           if ( s.substr(0,11) == "_MAIN CLOSE" )
+           {
+             UINT uexit=0;
+             kill(pid,9);
+             CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
+             break;
+           }
+           CcController::theController->AddInterfaceCommand("{0,1 " + s);
+           WriteFile(inPipe.fd[0],s.c_str(),s.length(),&bread,NULL); //send it to stdin
+           WriteFile(inPipe.fd[0],"\n",1,&bread,NULL); //send an extra newline char
+        }
+      }
+// Reenable all menus
+      CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
+      CcController::theController->AddInterfaceCommand( "^^CR");
+      CcController::theController->m_AllowThreadKill = true;
+    }
+    else
+    {
+
+      pid_t pid = fork();
+
+
+    
+      if ( pid == 0 ) {          //We're in the child process.
+       std::cerr << "\nGUEXEC: Child. Execing...\n";
+       int err = execvp( args[0], args );
+       std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
+       std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
+       _exit(-1);
+      }
+// We're in the parent process
+
+      std::cerr << "GUEXEC: Parent.\n";
+
+      if ( bWait )
+      {
+          std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
+          waitpid(pid,NULL,0);
+
+          (CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
+
+      }
+      std::cerr << "\n\nGUEXEC: Done.\n";
+
+    }
     return;
 
 #endif
@@ -3507,7 +3718,8 @@ extern "C" {
   {
       NOTUSED(theStatus);
 
-      if((CcController::theController)->GetCrystalsCommand( theLine ))
+      bool temp = true;
+      if((CcController::theController)->GetCrystalsCommand( theLine, temp ))
       {
           int ilen = strlen(theLine);
 
@@ -3548,6 +3760,7 @@ extern "C" {
 #endif
 
 
+
 } // end of C functions
 
 
@@ -3556,7 +3769,7 @@ extern "C" {
 
 
 
-bool CcController::GetCrystalsCommand( char * line )
+bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
 //-----------------------------------------------------
 {
 //This is where the Crystals thread will spend most of its time.
@@ -3566,8 +3779,17 @@ bool CcController::GetCrystalsCommand( char * line )
 
   if (mThisThreadisDead) return false;
 
-  m_Crystals_Command_Added.Wait(); // Wait until queue 
-                                   // is not empty
+  if ( bGuexec ) 
+     m_Crystals_Command_Added.Wait(); // Wait until queue is not empty
+  else {
+     if ( !m_Crystals_Command_Added.Wait(10) ) {  // Poll
+       bGuexec = false;
+       return true;
+     }
+     else {
+        bGuexec = true;
+     }
+  } 
 
   m_Crystals_Commands_CS.Enter();  // Enter queue CS.
 

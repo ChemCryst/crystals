@@ -47,7 +47,7 @@ class   CcController
     class MyException { public: MyException(){}; ~MyException(){}; };
 
     void SendCommand( string command , bool jumpQueue = false);
-    bool GetCrystalsCommand( char * line );
+    bool GetCrystalsCommand( char * line, bool & bWait);
     void AddInterfaceCommand(const string &line, bool internal = false );
 
     void Tokenize( const string & text );  // Called after GetInterfaceCommand
@@ -122,6 +122,7 @@ class   CcController
     CcStatus status;
     static CcController* theController;
     static int debugIndent;
+    bool m_AllowThreadKill;
 
     CrWindow *      mCurrentWindow;
     int m_ExitCode;
@@ -157,6 +158,7 @@ class   CcController
 
     bool mThisThreadisDead;
     bool m_restart;
+
     string m_newdir;
     bool m_BatchMode;
     int m_start_ticks;
@@ -196,6 +198,69 @@ extern "C" {
 
 }
 
+
+#ifdef __CR_WIN__
+class CcProcessInfo
+{
+   public:
+      CcProcessInfo(const string & app, STARTUPINFO & si){
+        CreateOK = CreateProcess(app.c_str(),NULL,NULL,NULL,
+                                 TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
+      };
+      ~CcProcessInfo() {
+         CloseHandle(proc.hThread);
+         CloseHandle(proc.hProcess);
+      };
+      PROCESS_INFORMATION proc;
+      int CreateOK;
+};
+
+class CcPipe {
+   public:
+     CcPipe(SECURITY_ATTRIBUTES &sa) {
+       CreateOK = CreatePipe(&output,&input,&sa,0);
+     };
+     ~CcPipe() {
+        CloseHandle(input);
+        CloseHandle(output);
+     };
+     HANDLE output;
+     HANDLE input;
+     int CreateOK;
+};
+
+
+#endif
+#if defined(__WXGTK__) || defined(__WXMAC__)
+
+class CcPipe {
+   public:
+     CcPipe() {
+        CreateOK = ( pipe(fd) > -1 );
+     };
+     ~CcPipe() {
+       if (CreateOK) {
+         if ( m_pid > 0 )
+           close ( fd[0] );
+         else
+           close ( fd[1] );
+       }
+     };
+     CloseUnusedEnds(int pid) {
+       if ( pid > 0 )
+         close (fd[1]);
+       else
+         close (fd[0]);
+       m_pid = pid;
+     };
+
+     int fd[2];
+     bool CreateOK;
+     int m_pid = 0;
+};
+
+
+#endif
 
 
 
@@ -265,6 +330,11 @@ enum
 
 
 //   $Log: not supported by cvs2svn $
+//   Revision 1.43  2004/11/12 11:22:01  rich
+//   Tidied SPAWN code.
+//   Fixed bug where failing script could leave pointers to deleted windows
+//   in our modal window stack.
+//
 //   Revision 1.42  2004/10/06 13:57:26  rich
 //   Fixes for WXS version.
 //
