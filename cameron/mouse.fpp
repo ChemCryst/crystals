@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2001/07/16 07:58:23  ckp2
+C Do Cameron window update the old fashioned way. Instead of calling FSTSHW to indicate
+C that the picture is ready to show, send the ^^CH SHOW command.
+C
 C Revision 1.7  1999/06/06 19:43:13  dosuser
 C RIC: Replaced "^^CH SHOW" commands with direct calls to FSTSHW().
 C
@@ -140,7 +144,7 @@ C      XMIN = (-0.9*XCEN)/SCALE + XCP
 C      XMAX = (0.9*XCEN)/SCALE + XCP
 C      YMIN = (-0.9*YCEN)/SCALE + YCP
 C      YMAX = (0.9*YCEN)/SCALE + YCP
-      TENPIX = REAL(ILSIZE)/SCALE
+      TENPIX = REAL(IFONT)*2.5/SCALE
       RSMALL = ( 2.0 / SCALE ) **2
 C CONVERT TO ANGSTROM COORDINATES
       X = (IMX-XCEN-XOFF)/SCALE + XCP
@@ -157,7 +161,7 @@ C CHECK FOR ATOM LABELLING
 C GET THE ATOM LABEL POSITION
         RLX = RSTORE(I+ILAB)
         RLY = RSTORE(I+ILAB+1)
-        RLL = RSTORE(I+ILAB+2)
+        RLL = MAX( RSTORE(I+ILAB+2), TENPIX*3.0)
 C CHECK FOR X COORD FIRST
         IF ((X.GE.RLX).AND.(X.LE.RLX+RLL)) THEN
 C NOW CHECK Y COORD
@@ -311,10 +315,10 @@ CODE FOR ZMBXCR
       INTEGER IBX(5),IBY(5),IX,IY,ICOL1,ICOL2
 C THIS ROUTINE DRAWS A CROSS OVER THE ATOM IN COLOUR ICOL1
 C AND A BOX AROUND THE LABEL IN COLOUR ICOL2
-      TENPIX = REAL(ILSIZE)/SCALE
+      TENPIX = REAL(IFONT)*2.5/SCALE
       RLX = RSTORE(ILNO+ILAB)
       RLY = RSTORE(ILNO+ILAB+1)
-      RLL = RSTORE(ILNO+ILAB+2)
+      RLL = MAX(RSTORE(ILNO+ILAB+2), 3.0*TENPIX)
       IX = NINT ((RSTORE(ILNO+IXYZO) - XCP)*SCALE + XCEN + XOFF)
       IY = NINT ((RSTORE(ILNO+IXYZO+1) - YCP)*SCALE + YCEN + YOFF)
       IBX(1) = IX
