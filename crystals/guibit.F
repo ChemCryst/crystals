@@ -764,7 +764,7 @@ C Get atom type.
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 C             WRITE(NCAWU,'(A)')'^^TXLoading properties^^EN'
-             CFILEN = 'CRSCP:PROPWIN.DAT'
+             CFILEN = 'CRYSDIR:\SCRIPT\PROPWIN.DAT'
              CALL MTRNLG(CFILEN,'OLD',ILENG)
              INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
              IF(.NOT.WEXIST) THEN              !use default values
@@ -790,7 +790,7 @@ C             OPEN (UNIT=87,FILE=CFILEN(1:ILENG),STATUS='OLD')
                   READ(WCLINE(13:16),'(F4.2)') COV
                   CLOSE(NCARU)
 C                  WRITE(6,'(A)')'^^TXLoading colours^^EN'
-                  CFILEN = 'CRCAMER:COLOUR.CMN'
+                  CFILEN = 'CRYSDIR:COLOUR.CMN'
                   CALL MTRNLG(CFILEN,'OLD',ILENG)
                   INQUIRE(FILE=CFILEN(1:ILENG),EXIST=WEXIST)
                   IF(.NOT.WEXIST) GOTO 89
