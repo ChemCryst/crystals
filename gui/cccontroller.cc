@@ -9,6 +9,10 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.79  2003/11/28 10:29:10  rich
+// Replace min and max macros with CRMIN and CRMAX. These names are
+// less likely to confuse gcc.
+//
 // Revision 1.78  2003/11/19 16:00:53  rich
 // Remove the XInitThreads call - seems to cause occasional deadlocks.
 // Change exit to _exit in guexec, so that if execvp call fails it
@@ -3856,14 +3860,18 @@ extern "C" {
 
 
     extern int errno;
+    char * cmd = new char[257];
     char * str = new char[257];
-    memcpy(str,line.Sub(sFirst+1,-1).ToCString(),256);
+    memcpy(cmd,firstTok.ToCString(),256);
+    memcpy(str,restLine.ToCString(),256);
     *(str+256) = '\0';
+    *(cmd+256) = '\0';
     char* args[10];       // This allows a maximum of 9 command line arguments
     char seps[] = " \t";
+    args[0] = cmd;
     char *token = strtok( str, seps );
-    args[0] = token;
-    for ( int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+    args[1] = token;
+    for ( int i = 2; (( token != NULL ) && ( i < 10 )); i++ )
     {
       token = strtok( NULL, seps );
       args[i] = token;
@@ -3874,7 +3882,8 @@ extern "C" {
     if ( pid == 0 ) {          //We're in the child process.
        std::cerr << "\n\nGUEXEC: Child. Execing...\n";
        int err = execvp( args[0], args );
-       std::cerr << "\n\nGUEXEC: Something went wrong.\n";
+       std::cerr << "\n\nGUEXEC: Something went wrong: " << err <<"\n";
+       std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
        _exit(-1);
     }
 // We're in the parent process
