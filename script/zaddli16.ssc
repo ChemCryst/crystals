@@ -11,7 +11,7 @@
 %%
 %% if they are present in the file. Otherwise they are added at the end.
 %%
-% VARIABLE LOGICAL ADD16BREAK
+% VARIABLE LOGICAL ADD16BREAK L
 % VARIABLE CHARACTER KEYBREAK
 % VARIABLE INTEGER BREAKSTART BREAKSTOP
 % EVALUATE BREAKSTART = 0
@@ -81,4 +81,7 @@
 % GET SILENT NOSTORE NOPROMPT TEXT ' ' ' '
 % COPY '#USE scplst16a.dat'
 % COPY 'END'
+% EVALUATE L = FILEDELETE ( 'new16bit.pch' )
+% EVALUATE L = FILEDELETE ( 'scplst16a.dat' )
+% EVALUATE L = FILEDELETE ( 'scplst16.dat' )
 %END SCRIPT
