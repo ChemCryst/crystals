@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2004/05/13 13:06:13  rich
+C Don't print merging histogram if MERGE/REF LIST=OFF/END is given.
+C
 C Revision 1.19  2004/05/11 13:15:08  rich
 C If merging or 'syst'ing a list 7, don't write new 'mergingr.dat' and 'absences.dat'
 C
@@ -256,7 +259,6 @@ C -- TERMINATION MESSAGES
       WRITE ( CMON , 2600) N6W, N
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
-      WRITE ( NCAWU , '(A)' ) CMON(1)(:)
 2600  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
@@ -277,14 +279,12 @@ C -- INPUT ERROR
       WRITE ( CMON ,9916)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
-      WRITE ( NCAWU , '(A)' ) CMON(1)(:)
 9916  FORMAT(1X, ' Precession geometry not supported')
 9920  CONTINUE
 C -- ILLEGAL DIFFRACTION GEOMETRY
       WRITE ( CMON, 9925) IT
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
-      WRITE ( NCAWU , '(A)' ) CMON(1)(:)
 9925  FORMAT ( 1X , 'Illegal diffraction geometry flag ' , I5 )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -497,7 +497,6 @@ C
 
       CALL XLINES
       IF (NABSNT .GT. 0) THEN
-       WRITE(NCAWU,1790) NABSNT , SUMI/NABSNT, SQRT(SUMSTN/NABSNT)
         IF (ISSPRT .EQ.0 )
      1  WRITE(NCWU,1790) NABSNT , SUMI/NABSNT, SQRT(SUMSTN/NABSNT)
 1790  FORMAT(I7,' absences, ',
@@ -522,7 +521,6 @@ C
       WRITE(CMON,1760) (RANGE(I),I=2,NTOT1-1),
      1 ATOT1, ITOT1,   (RANGE(I),I=2,NTOT1-1), ATOT2, ITOT2
       CALL XPRVDU(NCVDU, 9,0)
-      WRITE(NCAWU,'(A)') (CMON(I)(:),I=1,9)
       IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') (CMON(I)(:),I=1,9)
 1760  FORMAT(/
      1'Fo range       ', '     -ve', 5F8.3,  '  Remainder',/
@@ -536,7 +534,6 @@ C
       WRITE ( CMON , 1800 ) N6W , N
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU ,'(A)') CMON(1)(:)
-      WRITE ( NCAWU ,'(A)') CMON(1)(:)
 1800  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
@@ -821,9 +818,7 @@ C--SET UP THE CORE BUFFER FLAGS
 C--PRINT THE CAPTIONS
 1450  CONTINUE
       CALL XPRTCN
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
 1500  FORMAT(4X,'H',3X,'K',3X,'L',2X,'F-squared',4X,'rmsdev',4X,
      2 '<sigma>',7X,'F-squared',5X,'Sigma',5X,'Delta',3X,'E-param',4X,
      3 'Weight',3X,'JCODE',4X,'Serial'/)
@@ -1068,7 +1063,7 @@ C--AND NOW GENERATE THE OUTPUT FILE IF NECESSARY
 cdjwmay99
       call xswp06(iuln,medium)
 C--PRINT THE REFLECTION STATISTICS PROFILE
-      IF ( IPRINT .GE. 0 ) CALL WSTAT(N3SIG, PC3SIG)
+      CALL WSTAT(N3SIG, PC3SIG)
 C
 C
 C--PRINT THE REFLECTION TOTALS
@@ -1084,12 +1079,10 @@ C--PRINT THE REFLECTION TOTALS
      7 F5.1, 'e.s.ds' )
       WRITE ( CMON , 3905 ) N6W , N6DEAD
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
 3905  FORMAT ( 1X , I6 , ' merged reflections output' , 5X , I6 ,
      2 ' merged reflections rejected' )
       WRITE ( CMON , 4048) N3SIG, PC3SIG
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 4048  FORMAT(I6,' Reflections greater than 3 sigma(i),',
      1 F8.3, ' percent of data')
@@ -1109,7 +1102,6 @@ C
 C
       WRITE(CMON,4049) WORK(25),WORK(28)
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU,'(A)') (CMON(I)(:),I=1,2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (CMON(I)(:),I=1,2)
 4049  FORMAT(
      1 ' Rmerge = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  = '
@@ -1122,7 +1114,6 @@ C
 4100  CONTINUE
       WRITE(CMON, 4104) (RINT(I),I=1,3)
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU,'(A)') (CMON(I)(:),I=1,2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (CMON(I)(:),I=1,2)
 4104  FORMAT(
      1 ' Rmerge for I>10sigma,  10sigma>I>2sigma,    I<2sigma'/
@@ -1246,7 +1237,6 @@ C--GAUSSIAN WEIGHTING SCHEME
 C -- WRONG NO. OF PARAMS.
       WRITE ( CMON , 9915 ) NCT , NSCH
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 9915  FORMAT ( 1X , I5 , ' is the wrong number of parameters for ' ,
      1 'weighting scheme ' , I4 )
@@ -1607,59 +1597,59 @@ C
       NTOT = 0
 C
       DO 1050 J=1, NCHANL
-      ND=ND+ISTAT(J)
-      IAMAX=MAX0(IAMAX,ISTAT(J))
-      IF ( J .GT. NMONIT ) NTOT = NTOT + ISTAT(J)
-      JSTAT(J)=ND
+         ND=ND+ISTAT(J)
+         IAMAX=MAX0(IAMAX,ISTAT(J))
+         IF ( J .GT. NMONIT ) NTOT = NTOT + ISTAT(J)
+         JSTAT(J)=ND
 1050  CONTINUE
       IF (IAMAX .LE. 0) GOTO 1200
+
       ND=MAX0(ND,1)
       MONMAX = MAX0 ( IAMAX , NTOT )
 C----- ACCUMULATE 3 SIGMA DATA
-        N3SIG = ND - JSTAT(6)
-        PC3SIG= 100. * FLOAT(N3SIG)/ FLOAT(ND)
+      N3SIG = ND - JSTAT(6)
+      PC3SIG= 100. * FLOAT(N3SIG)/ FLOAT(ND)
 C
 C--PRINT THE HEADING
       CALL XPRTCN
       WRITE ( CMON ,1000)
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
+      IF ( IPRINT .GE. 0 ) CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 1000  FORMAT('Fsq/sigma(Fsq)  No.  %  Total',
      2 ' Remainder         Distribution of sigma levels.',A2)
 C
 C
-      DO 1100 J=1,100
-      X=0.5*FLOAT(J)
-      Y=X-0.5
-      K = ( (ISTAT(J)*LISWID) / IAMAX )  + 1
-      NZ=ND-JSTAT(J)
-      IPER=NINT(FLOAT(ISTAT(J))*100./FLOAT(ND))
+      DO J=1,100
+        X=0.5*FLOAT(J)
+        Y=X-0.5
+        K = ( (ISTAT(J)*LISWID) / IAMAX )  + 1
+        NZ=ND-JSTAT(J)
+        IPER=NINT(FLOAT(ISTAT(J))*100./FLOAT(ND))
 C
 C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1150)Y,X,ISTAT(J),IPER,JSTAT(J),NZ,(MINUS,L=1,K)
-      ENDIF
-      IF ( IMONIT .LE. 0 ) THEN
-      ELSE IF ( J .LE. NMONIT ) THEN
-        K = ( ( ISTAT(J) * MONWID ) / MONMAX ) + 1
-        WRITE ( CMON , 1150 ) Y , X , ISTAT(J) , IPER , JSTAT(J) ,
-     2 NZ , ( MINUS , L = 1 , K )
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
-      ELSE IF ( J .EQ. NCHANL ) THEN
-        Y = FLOAT ( NMONIT + 1 ) * 0.5
-        K = ( ( MONWID * NTOT ) / MONMAX ) + 1
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,1150)Y,X,ISTAT(J),IPER,JSTAT(J),NZ,(MINUS,L=1,K)
+        ENDIF
+        IF ( IPRINT .GE. 0 ) THEN
+          IF ( J .LE. NMONIT ) THEN
+            K = ( ( ISTAT(J) * MONWID ) / MONMAX ) + 1
+            WRITE ( CMON , 1150 ) Y , X , ISTAT(J) , IPER , JSTAT(J) ,
+     2      NZ , ( MINUS , L = 1 , K )
+            CALL XPRVDU(NCVDU, 1,0)
+          ELSE IF ( J .EQ. NCHANL ) THEN
+            Y = FLOAT ( NMONIT + 1 ) * 0.5
+            K = ( ( MONWID * NTOT ) / MONMAX ) + 1
 C
-        IREM = ND - JSTAT(J)
-        IPER = NINT(FLOAT(NTOT)*100./FLOAT(ND))
-        WRITE ( CMON , 1150 ) Y , X , NTOT ,     IPER , JSTAT(J),
-     2 IREM , ( MINUS , L = 1 , K )
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU,'(A)') CMON(1)(:)
-      ENDIF
-1150  FORMAT(1H ,F5.1,2H -,F5.1,I6,I3,2I6,1X,96A1)
-1100  CONTINUE
+            IREM = ND - JSTAT(J)
+            IPER = NINT(FLOAT(NTOT)*100./FLOAT(ND))
+            WRITE ( CMON , 1150 ) Y , X , NTOT ,     IPER , JSTAT(J),
+     2      IREM , ( MINUS , L = 1 , K )
+            CALL XPRVDU(NCVDU, 1,0)
+          ENDIF
+        ENDIF
+1150    FORMAT(1H ,F5.1,2H -,F5.1,I6,I3,2I6,1X,96A1)
+      END DO
+
 1200  CONTINUE
       CALL XLINES
       RETURN
