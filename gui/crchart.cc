@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.8  2001/06/17 15:14:12  richard
+//   Addition of CxDestroy function call in destructor to do away with their Cx counterpart properly.
+//
 //   Revision 1.7  2001/03/08 16:44:04  richard
 //   General changes - replaced common functions in all GUI classes by macros.
 //   Generally tidied up, added logs to top of all source files.
@@ -167,6 +170,20 @@ CcParse CrChart::ParseInput( CcTokenList * tokenList )
                 tokenList->GetToken();
                 Highlight(state);
                 ReDrawView();
+                break;
+            }
+            case kTChartSave:
+            {
+                tokenList->GetToken();
+                int w = atoi( tokenList->GetToken().ToCString() );
+                int h = atoi( tokenList->GetToken().ToCString() );
+                ((CxChart*)ptr_to_cxObject)->MakeMetaFile(w,h);
+                break;
+            }
+            case kTChartPrint:
+            {
+                tokenList->GetToken();
+                ((CxChart*)ptr_to_cxObject)->PrintPicture();
                 break;
             }
             default:
@@ -335,3 +352,4 @@ void CrChart::SysKey ( UINT nChar )
       }
    }
 }
+

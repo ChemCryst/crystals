@@ -8,6 +8,10 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   10.6.1998 13:06 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.5  2001/03/08 16:44:04  richard
+//   General changes - replaced common functions in all GUI classes by macros.
+//   Generally tidied up, added logs to top of all source files.
+//
 
 #ifndef     __CrChart_H__
 #define     __CrChart_H__
@@ -56,6 +60,8 @@ class   CrChart : public CrGUIElement
 #define kSGetCursorKeys         "CURSORKEYS"
 #define kSIsoView       "ISO"
 #define kSNoEdge        "NOEDGE"
+#define kSChartSave    "CHARTSAVE"
+#define kSChartPrint    "CHARTPRINT"
 
 enum
 {
@@ -63,7 +69,9 @@ enum
  kTGetPolygonArea,
  kTGetCursorKeys,
  kTIsoView,
- kTNoEdge
+ kTNoEdge,
+ kTChartSave,
+ kTChartPrint
 };
 
 #endif

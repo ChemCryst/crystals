@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.10  2001/10/10 12:44:51  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.9  2001/07/16 07:29:29  ckp2
 //   Really messed around with the creation of the memory device context in the wx version.
 //   Now it is deleted and recreated (along with it's bitmap) every time the window is
@@ -48,6 +51,8 @@ class LStdChart;
 #define BASECHART CWnd
 #endif
 
+#include "ccrect.h"
+
 class CrChart;
 class CxGrid;
 class CcPoint;
@@ -57,7 +62,6 @@ class CxChart : public BASECHART
 {
 // Public interface exposed to the CrClass:
     public:
-        void DrawMetafile ( );
         void NoEdge();
         void Invert(Boolean inverted);
         void FitText(int x1, int y1, int x2, int y2, CcString theText, Boolean rotated);
@@ -112,6 +116,10 @@ private:
         COLORREF mfgcolour;
         CBitmap *oldMemDCBitmap, *newMemDCBitmap;
         CDC * memDC;
+        CcRect m_client;
+
+        void MakeMetaFile(int w, int h);
+        void PrintPicture();
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg void OnPaint();

@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.14  2001/10/10 12:44:50  ckp2
+//   The PLOT classes!
+//
 //   Revision 1.13  2001/07/16 07:29:29  ckp2
 //   Really messed around with the creation of the memory device context in the wx version.
 //   Now it is deleted and recreated (along with it's bitmap) every time the window is
@@ -35,9 +38,14 @@
 #include    "cxgrid.h"
 #include    "cccontroller.h"
 #include    "cxwindow.h"
+#include    "ccrect.h"
 #include    "crchart.h"
 #include    "ccpoint.h"
-#include    "ccrect.h"
+#include <direct.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
 #ifdef __CR_WIN__
 #include    <afxwin.h>
 #endif
@@ -168,6 +176,7 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
      memDC->PatBlt(0, 0, right-left, bottom-top, WHITENESS);
      memDC->SelectObject(oldMemDCBitmap);
   }
+  m_client.Set(top,left,bottom,right);
   ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 #ifdef __BOTHWX__
@@ -187,18 +196,13 @@ void    CxChart::SetGeometry( int top, int left, int bottom, int right )
       memDC->SetPen( *wxBLACK_PEN );
       memDC->Clear();
 
+      m_client.Set(top,left,bottom,right);
       SetSize(left,top,right-left,bottom-top);
-
       ((CrChart*)ptr_to_crObject)->ReDrawView();
 #endif
 
 }
 
-
-void CxChart::DrawMetafile ( )
-{
-
-}
 
 CXGETGEOMETRIES(CxChart)
 
@@ -276,9 +280,9 @@ CcPoint CxChart::DeviceToLogical(int x, int y)
       float        aspectratio, windowratio;
 
 #ifdef __CR_WIN__
-      CRect       wwindowext;
-      GetClientRect(&wwindowext);
-      CcRect       windowext( wwindowext.top, wwindowext.left, wwindowext.bottom, wwindowext.right);
+//      CRect       wwindowext;
+//      GetClientRect(&wwindowext);
+      CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
 #ifdef __BOTHWX__
       wxRect wwindowext = GetRect();
@@ -373,12 +377,12 @@ void CxChart::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
 
-    CRect rect;
-    GetClientRect (&rect);
+//    CRect rect;
+//    GetClientRect (&rect);
 
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
 
-    dc.BitBlt(0,0,rect.Width(),rect.Height(),memDC,0,0,SRCCOPY);
+    dc.BitBlt(0,0,m_client.Width(),m_client.Height(),memDC,0,0,SRCCOPY);
 
     memDC->SelectObject(oldMemDCBitmap);
 
@@ -452,10 +456,10 @@ void CxChart::SetIdealWidth(int nCharsWide)
 void CxChart::Clear()
 {
 #ifdef __CR_WIN__
-    CRect rect;
-    GetClientRect (&rect);
+//    CRect rect;
+//    GetClientRect (&rect);
     oldMemDCBitmap = memDC->SelectObject(newMemDCBitmap);
-    memDC->PatBlt(0, 0, rect.Width(), rect.Height(), WHITENESS);
+    memDC->PatBlt(0, 0, m_client.Width(), m_client.Height(), WHITENESS);
     memDC->SelectObject(oldMemDCBitmap);
 #endif
 #ifdef __BOTHWX__
@@ -1052,3 +1056,94 @@ void CxChart::OnKeyDown( wxKeyEvent & event )
 
 }
 #endif
+
+void CxChart::MakeMetaFile(int w, int h)
+{
+    CDC * backup_memDC = memDC;
+    CcRect backup_m_client = m_client;
+
+    CcString result;
+    CcString defName = "cam_pic1.wmf";
+    CcString extension = "*.wmf";
+    CcString description = "Windows MetaFile (*.wmf)";
+    CcController::theController->SaveFileDialog(&result, defName, extension, description);
+
+    if ( ! ( result == "CANCEL" ) )
+    {
+        CMetaFileDC mdc;
+
+        mdc.Create((LPCTSTR)result.ToCString());
+
+        mdc.SetAttribDC( memDC->m_hAttribDC );
+
+        memDC = &mdc;
+        m_client.Set(0,0,w,h);
+
+        ((CrChart*)ptr_to_crObject)->ReDrawView();
+
+        mdc.Close();
+
+        CcController::theController->ProcessOutput( "File created: {&"+result+"{&");
+    }
+    else
+    {
+        CcController::theController->ProcessOutput( "Save file cancelled.");
+    }
+    memDC = backup_memDC;
+    m_client = backup_m_client;
+}
+
+void CxChart::PrintPicture() 
+{
+
+    CDC * backup_memDC = memDC;
+    CcRect backup_m_client = m_client;
+    char buffer[_MAX_PATH];
+    _getcwd( buffer, _MAX_PATH ); // Get the current working directory.
+
+ 
+    CDC printDC;
+    CPrintDialog printDlg(FALSE);
+
+    if (printDlg.DoModal() == IDOK)
+    {
+
+
+      printDC.Attach(printDlg.GetPrinterDC());
+      printDC.m_bPrinting = TRUE;
+
+      CString appName;
+      appName.LoadString(AFX_IDS_APP_TITLE);
+
+      DOCINFO di;
+      ::ZeroMemory (&di, sizeof (DOCINFO));
+      di.cbSize = sizeof (DOCINFO);
+      di.lpszDocName = appName;
+
+      printDC.StartDoc(&di);        // Begin print job.
+      printDC.StartPage();
+
+// Get the printing extents
+      m_client.Set(0,0, printDC.GetDeviceCaps(VERTRES),
+                        printDC.GetDeviceCaps(HORZRES)); 
+
+      memDC = &printDC;
+      ((CrChart*)ptr_to_crObject)->ReDrawView();
+      memDC = backup_memDC;
+      m_client = backup_m_client;
+
+      printDC.EndPage();
+      printDC.EndDoc();
+      printDC.Detach();
+    }
+
+
+//If the users saves to a file, it is possible for them to change
+//the Windows working directory. This will confuse CRYSTALS badly.
+//Therefore:
+
+    _chdir(buffer);
+
+    return;
+
+}
