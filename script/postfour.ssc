@@ -7,7 +7,16 @@
 %%
 %  COPY '#GENERALEDIT 13'
 %  COPY 'LOCATE RECORDTYPE=101'
+%% Check for twin laws. If present, restore L13 flag.
+%  IF ( EXISTS 25 .EQ. 1 ) THEN
+Found List 25 (twin laws), re-enabling twin flag after Fourier.
+%     EVALUATE ITMP = 0
+%     COPY 'TRANSFER TO OFFSET=1 FROM ITMP'
+%     COPY 'WRITE'
+%  END IF
+%% Check for Friedel flag before undoing.
 %  COPY 'TRANSFER FROM OFFSET=0 TO ITMP'
+%  COPY 'END'
 %  IF ( ITMP .LT. 0 ) THEN
 {I Removing temporary reflection storage.
 %    COPY '#DISK'
@@ -15,6 +24,4 @@
 %    COPY '#PURGE LIST=7 MON=LOW'
 %    COPY 'END'
 %  END IF
-%  COPY 'END'
 %END SCRIPT
-
