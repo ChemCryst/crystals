@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.50  2003/07/01 16:43:34  rich
+C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
+C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
+C data from CRYSTALS' store. The unprefixed versions take any type and return
+C the same type.
+C
 C Revision 1.49  2003/06/27 11:55:03  rich
 C
 C  If an angle involves a riding hydrogen atom, zero the esd to supress PLATON
@@ -1234,8 +1240,13 @@ C--SET UP THE ATOM STACK FOR THE PIVOT ATOM
           JB=JA
           CALL XFPCES( M12A, JB, NWS, IPART(1) )
           LHFIXD(1) = .FALSE.
-          IF ( ( ISTORE(JA) .LT. 0 ) .AND. ( ISTORE(M5P).EQ.KHYD))THEN
-            LHFIXD(1) = .TRUE.   
+C Check if it is a H
+          IF (ISTORE(M5P).EQ.KHYD)THEN
+C Check if the H is riding, or the esd happens to be zero.          
+            IF ( ( AND(ISTORE(M5A+15),KBREFB(3)).GT.0 ) .OR.
+     1                                   (ISTORE(JA) .LT. 0 ))THEN
+             LHFIXD(1) = .TRUE.   
+           ENDIF
           ENDIF
          END IF
 C----- INITIALIZE BUFFER
@@ -1318,8 +1329,13 @@ C--CALCULATE THE E.S.D.
 C--ADD THE SECOND ATOM INTO THE STACK
                 CALL XFPCES( ISTORE(J+12), JC, NWS, IPART(2) )
                 LHFIXD(2) = .FALSE.
-                IF ( (ISTORE(JB) .LT. 0) .AND. (ISTORE(L).EQ.KHYD)) THEN
+C Check if it is a H
+                IF (ISTORE(L).EQ.KHYD)THEN
+C Check if the H is riding, or the esd happens to be zero.          
+                 IF ( ( AND(ISTORE(L+15),KBREFB(3)).GT.0 ) .OR.
+     1                                   (ISTORE(JB) .LT. 0 ))THEN
                    LHFIXD(2) = .TRUE.
+                 ENDIF
                 ENDIF
 C--SET UP THE V/CV MATRIX AT 'JD'
                 CALL XCOVAR( JA, NWD, NWS, JD, JE, IPART, 2)
