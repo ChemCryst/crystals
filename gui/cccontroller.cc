@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.35  2001/09/11 09:31:27  ckp2
+// Improved locking of CRYSTALS queue when ^^?? querying GUI for info.
+//
 // Revision 1.34  2001/08/14 10:17:58  ckp2
 // The new facility for autoclosing windows when scripts crash out needs to
 // make sure the deleted window is not left as the mCurrentWindow.
@@ -1911,6 +1914,8 @@ CcString CcController::GetKey( CcString key )
   char buffer[256];
   CcString value;
 
+  key += " "; //ensure a space at the end of the key.
+
   CcString crysdir ( getenv("CRYSDIR") );
   if ( crysdir.Length() == 0 )
      cerr << "You must set CRYSDIR before running crystals.\n";
@@ -1949,7 +1954,7 @@ CcString CcController::GetKey( CcString key )
         {
           if ( key == ccbuf.Sub( 1, key.Length() ) )
           {
-            value = ccbuf.Chop(1,key.Length()+1);
+            value = ccbuf.Chop(1,key.Length());
 // NB value includes the new line, chop it off.
             value = value.Chop( value.Length(), value.Length() );
           }
