@@ -1,4 +1,9 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.24  2003/11/20 13:01:03  rich
+c Initialise variable in search for pseudo-symmetry to nonsense
+c value, rather than zero. Prevents incorrect diagnosis of pseudo-
+c symmetry.
+c
 c Revision 1.23  2003/11/11 15:08:01  rich
 c Added OUTPUT PUNCH=RESULTS option to #MATCH to output results in tab delimited
 c format to the PUNCH file.
@@ -244,6 +249,7 @@ C
 \XLISTI
 \XCARDS
 \XLST01
+\XLST02
 \XLST05
 \XLST12
 \XLST50
@@ -353,7 +359,14 @@ C -- SET UNIT MATRIX AND ZERO SHIFT
 C----- ALLOCATE SPACE FOR RENAMING
       MDRENM = 6
       LRENM = KSTALL(MDRENM*N5)
-c      CALL XZEROF(STORE(LRENM),MDRENM*N5)
+c     CALL XZEROF(STORE(LRENM),MDRENM*N5)
+C Allocate space for new space group closed set testing 
+      MLTPLY = 2 * N2 * N2P * ( IC + 1 ) ! Twice current multiplicity.
+C Space for upper triangle, each matrix has 16 entries. (N(N-1)/2 ops)
+      MSGT = 8*MLTPLY*(MLTPLY+1)
+      LSGT = KSTALL(MSGT)
+      CALL XZEROF(STORE(LSGT),MSGT)
+
 C -- ALLOCATE SPACE FOR A BUFFER FOR LEXICAL SCANNER
       LLXSPC = KSTALL(4000)
 C -- SET VALUES IN ATOM
@@ -731,7 +744,7 @@ C    THIS IS USED IN THIS SUBROUTINE TO SELECT ONE OF THE POSSIBLE
 C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
 C 
-      DIMENSION ITEMP(3), ATEMP(3)
+      DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3), OPM(4,4)
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       COMMON/REGTMP/ 
@@ -752,6 +765,7 @@ C
 \XUNITS
 \XSSVAL
 \XLST01
+\XLST02
 \XLST05
 \XRGCOM
 \XRGLST
@@ -831,9 +845,11 @@ Cdjwnov99      WRITE ( CMON , 2006 ) CENTO , CENTN
          CALL XPRVDU (NCVDU,2,0)
 200      FORMAT (1X,'Centroids of old and new groups ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
-        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+        IF (IPCHRE.GE.0)THEN
+         WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
      1   (CHAR(9),CENTO(I),I=1,3),(CHAR(9),CENTN(I),I=1,3)
-        CALL XCREMS(CPCH,CPCH,LENFIL)
+         CALL XCREMS(CPCH,CPCH,LENFIL)
+        END IF
 
 C 
 C -- CALCULATE THE BEST PLANE THROUGH THE ATOMS IN EACH GROUP
@@ -854,9 +870,11 @@ C-----
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') (CMON(II)(:),II=1,2)
 300      FORMAT (1X,'Principal moments of inertia of old and new groups'
      1    ,/1X,2(3F8.3,3X))
-         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
-     1   (CHAR(9),ROOTO(I),I=1,3),(CHAR(9),ROOTN(I),I=1,3)
-         CALL XCREMS(CPCH,CPCH,LENFIL)
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+     1    (CHAR(9),ROOTO(I),I=1,3),(CHAR(9),ROOTN(I),I=1,3)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
 
 C -- CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE
 C    AND BACK
@@ -980,24 +998,268 @@ C
          CALL XPRVDU (NCVDU,2,0)
 900      FORMAT (1X,'Average and difference of centroids ',
      1 '( in crystal fractions ) ',/,1X,2(3F8.4,3X))
-         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
-     1   (CHAR(9),AVCNT(I),I=1,3),(CHAR(9),DELCNT(I),I=1,3)
-         CALL XCREMS(CPCH,CPCH,LENFIL)
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+     1    (CHAR(9),AVCNT(I),I=1,3),(CHAR(9),DELCNT(I),I=1,3)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
 C 
          WRITE (NCAWU,950)
 950      FORMAT (/1X,'Tranformation matrix between new and old ',
      1 'coordinates',/' in crystal system'/)
          WRITE (NCAWU,1000) ((WSPAC3(I,J),I=1,3),J=1,3)
 1000     FORMAT (3(6X,3F10.6,/))
-         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(9(A,F9.4))')
-     1   ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
-         CALL XCREMS(CPCH,CPCH,LENFIL)
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(9(A,F9.4))')
+     1    ((CHAR(9),WSPAC3(I,J),I=1,3),J=1,3)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
+
 CDJWMAR2000
 C FIND PSEUDO OPERATOR - GIACOVAZZO, PAGE 43
 C      GET THE DETERMINANT AND TRACE
          DET=XDETR3(WSPAC3)
          TRACE=WSPAC3(1,1)+WSPAC3(2,2)+WSPAC3(3,3)
+C Output determinant and trace
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2(A,F7.4))')
+     1    CHAR(9),DET,CHAR(9),TRACE
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
          DETTRC=DET+TRACE
+
+         IF (IPCHRE.GE.0)THEN
+
+C Transform rotation matrix onto a primitive lattice.
+c
+c         DATA LTTYP /  1,  0,  0,    0,  1,  0,    0,  0,  1,   !P
+c     2               -.5, .5, .5,   .5,-.5, .5,   .5, .5,-.5,   !I
+c     4 .6667,-.3333,-.3333, .3333,.3333,-.6667, .3333,.3333,.3333, !R
+c     3                 0, .5, .5,   .5,  0, .5,   .5, .5,  0,   !F
+c     5                 1,  0,  0,    0, .5, .5,    0,-.5, .5,   !A
+c     6                 0, .5, .5,    1,  0,  0,    0,-.5, .5,   !B
+c     7                 0, .5, .5,    0,-.5, .5,    1,  0,  0    !C
+
+
+
+
+C Work out closeness to an ideal space group rotation.
+          CLOSEX =   ( WSPAC3(1,1)-NINT(WSPAC3(1,1)) )**2
+     3             + ( WSPAC3(1,2)-NINT(WSPAC3(1,2)) )**2
+     6             + ( WSPAC3(1,3)-NINT(WSPAC3(1,3)) )**2
+     9             + ( WSPAC3(2,1)-NINT(WSPAC3(2,1)) )**2
+     3             + ( WSPAC3(2,2)-NINT(WSPAC3(2,2)) )**2
+     6             + ( WSPAC3(2,3)-NINT(WSPAC3(2,3)) )**2
+     9             + ( WSPAC3(3,1)-NINT(WSPAC3(3,1)) )**2
+     3             + ( WSPAC3(3,2)-NINT(WSPAC3(3,2)) )**2
+     6             + ( WSPAC3(3,3)-NINT(WSPAC3(3,3)) )**2
+     
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.5)')
+     1    CHAR(9),SQRT(CLOSEX/9.0)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+C Work out closeness to a group operator.
+          CALL XMLTMM(WSPAC3,DELCNT,ATEMP,3,3,1)
+          CALL XADDR(DELCNT,ATEMP,ATEMP,3)
+C ATEMP should be some kind of unit translation.
+          CLOSEN = 0.0
+          DO IJ = 1,3
+           CLOSEN = CLOSEN + ( ATEMP(IJ) - NINT(ATEMP(IJ)))**2 
+          END DO
+          CLOSEN = SQRT(CLOSEN/3.0)
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.5)')
+     1    CHAR(9),CLOSEN
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+C Output the atemp vector for inspection:
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F8.3))')
+     1    (CHAR(9),ATEMP(IJ),IJ=1,3)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+C Combine both measures above
+          DO IJ = 1,3
+           CLOSEX = CLOSEX + (   ATEMP(IJ) - NINT( ATEMP(IJ) )   )**2
+          END DO
+           
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.5)')
+     1    CHAR(9),SQRT(CLOSEX/12.0)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+
+C THIS IS IT. See how well operator fits into current space group.
+C 1) Fill in the first half of the column of the array at LSGT
+C    with all the operators of the current space group.
+C
+C LSGT stores enough 4x4 operators to fit all the symmetry operators
+C of the current space group if an extra order 2 operator is added.
+C It is stored as a lower triangular array, the first element being
+C the unit matrix, and the first column listing each operator.
+C Lower triangle storage is sufficient to store all combinations of
+C these operators.
+C These formulae may come in handy:
+C
+C Amount of storage for a lower triangle of side N = N(N+1)/2
+C
+C Address of element Aij = i+(2n-j)(j-1)/2    ( j < i )
+C
+
+          MSGT = LSGT  ! Currect matrix to fill in.
+          MLTPLY = 2 * N2 * N2P * ( IC + 1 ) ! Twice current multiplicity.
+          NMATR = 0.5*MLTPLY*(MLTPLY+1)
+
+          DO K2=1,3
+            OPM(4,K2) = 0.0
+          END DO
+          OPM(4,4) = 1.0
+
+          DO M2 = L2,L2+MD2*(N2-1),MD2 ! Loop over each symmetry matrix
+C Get the matrix.
+            DO K4=0,3
+              CALL XMOVE(STORE(M2+3*K4),OPM(1,1+K4),3)
+            END DO
+
+            DO M2C = 0, IC                   ! IC is 1 for inversion centre.
+              IF ( M2C .EQ. 1 ) THEN         ! Apply inversion on second loop.
+                DO K3=1,4
+                 DO K2=1,3
+                  OPM(K2,K3) = - OPM(K2,K3)
+                 END DO
+                END DO
+              END IF
+
+              DO M2P = L2P,L2P+MD2P*(N2P-1),MD2P         ! Add in centerings
+                CALL XMOVE(OPM(1,1),STORE(MSGT),16)
+                CALL XADDR(STORE(MSGT+12),STORE(M2P),STORE(MSGT+12),3)
+                MSGT = MSGT + 16 ! Advance to next matrix.
+              END DO
+            END DO
+          END DO
+
+C Put the new found transformation into the next space.
+          DO K2 = 0,2
+            CALL XMOVE(WSPAC3(1,K2+1),STORE(MSGT+K2*4),3)
+          END DO
+          CALL XMOVE(DELCNT(1),STORE(MSGT+12),3)
+          DO K2 = 3,11,4
+            STORE(MSGT+K2) = 0.0
+          END DO
+          STORE(MSGT+15) = 1.0
+
+          NPWORS = MSGT
+
+          DO K1 = MLTPLY/2+1, MLTPLY     !Loop over remaining empty rows.
+
+C Add the transform that we've just found (no-op the 1st time round)
+            CALL XMOVE(STORE(NPWORS),STORE(MSGT),16)
+
+C Using the first column as untransformed operators (ie. 1,1 must be unit matrix)
+C generate all the other columns. (Note lower triangle storage). See KSGTEX
+C for a better explanation.
+
+            CALL KSGTEX(NMATR,STORE(LSGT))
+
+C Now find which operator in the last row added is most UNLIKE any other
+C operator in the set so far.
+C Compare each matrix in the ROW to every matrix so far,
+C store the best match each time. Then choose the worst of these 'best'
+C matches.
+            WORST = 9999999.0 
+            NPWORS = LSGT
+
+            DO K2 = 2,K1   ! Loop over that row (K1) from the 2nd column
+
+C For each new matrix in the new row.
+C Consider this matrix. At JSGT
+
+              JSGT = LSGT + 16*( (K1-1) + ((2*MLTPLY - K2) * (K2-1) /2))
+
+              WRITE(CMON,'(A,I4,A,I8)')
+     1         'Considering col ',K2,' at ',JSGT
+              CALL XPRVDU(NCVDU,1,0)
+
+      WRITE(CMON,'(/4(4F9.3/))') ((STORE(JSGT+J2+J3),J2=0,12,4),J3=0,3)
+      CALL XPRVDU(NCVDU,5,0)
+
+C Test it against all matrices so far and store the BEST
+C match.
+              BEST = -9999999.0
+              DO KRW = 1,K1-1
+                DO KCL = 1,KRW
+                  KSGT = LSGT + 16*((KRW-1)+((2*MLTPLY-KCL)*(KCL-1)/2))
+  
+      WRITE(CMON,'(/4(4F9.3/))') ((STORE(KSGT+J2+J3),J2=0,12,4),J3=0,3)
+      CALL XPRVDU(NCVDU,5,0)
+
+C Shift trans bits of matrix at KSGT so that they are as close as
+C poss to the entries at JSGT. (ie. All values are 0<t<1 to start with,
+C but 0.01 and 0.98 *should* be close)
+
+                  CALL XMOVE(STORE(KSGT),OPM(1,1),16)
+    
+                  DO K4 = 1,3
+                    DELTA = OPM(K4,4) - STORE(JSGT+11+K4)
+                    IF ( DELTA .LT. -0.5 ) THEN
+                      OPM(K4,4) = OPM(K4,4) + 1
+                    ELSE IF ( DELTA .GT. 0.5 ) THEN
+                      OPM(K4,4) = OPM(K4,4) - 1
+                    END IF
+                  END DO
+
+
+                  R = CMPMAT(STORE(JSGT),OPM(1,1),16)  ! Compare them
+                  WRITE(CMON,'(A,2I2,A,I2,A,F18.3)')
+     1            'R at:',K1,K2, ' with ',KRW,' 1 is ',R
+                  CALL XPRVDU(NCVDU,1,0)
+                  BEST = MAX(BEST, R)       ! The best found
+                END DO
+              END DO
+
+              WRITE(CMON,'(A,I4,A,F18.3)')
+     1         'Best col ',K2,' match is ',BEST
+              CALL XPRVDU(NCVDU,1,0)
+
+C Store the worst of the best matches, and the corresponding op.
+              IF ( WORST .GT. BEST ) THEN
+                WORST  =  BEST
+                NPWORS =  JSGT
+              END IF
+            END DO
+            WRITE(CMON,'(A,F15.3,A,I8)')
+     1         'Worst close match is ',WORST, ' at ', NPWORS
+            CALL XPRVDU(NCVDU,1,0)
+
+
+            MSGT = MSGT + 16
+
+          END DO
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
+     1    CHAR(9),WORST
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+
+         ENDIF
+
+         IF (IPCHRE.GE.0)THEN
+           IF ( (ABS(1.-ABS(DET)).LE..05) .AND.
+     1        (ABS(TRACE - NINT(TRACE)).LE..1)) THEN
+             I=1+NINT(ABS(DETTRC))
+             CSYM=' '
+             CSYM(2:2)=CELEMT(I:I)
+             IF ((NINT(TRACE).EQ.1).AND.(NINT(DET).EQ.-1)) THEN
+               CSYM=' m'
+             ELSE
+               IF (DET.LT.ZERO) CSYM(1:1)='-'
+             END IF
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1       CHAR(9),CSYM(1:2)
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+           ELSE
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1       CHAR(9),'none'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+           END IF
+         END IF
+
+
          IF (ABS(1.-ABS(DET)).LE..05) THEN
             I=1+NINT(ABS(DETTRC))
             CSYM=' '
@@ -1009,15 +1271,19 @@ C      GET THE DETERMINANT AND TRACE
             END IF
             WRITE (CMON,1050) CSYM(1:2)
             CALL XPRVDU (NCVDU,1,0)
-            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1      CHAR(9),CSYM(1:2)
-            CALL XCREMS(CPCH,CPCH,LENFIL)
+            IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1       CHAR(9),CSYM(1:2)
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+            END IF
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1050        FORMAT (' Pseudo-symmetry element ',A2,' detected')
          ELSE
-            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1      CHAR(9),'none'
-            CALL XCREMS(CPCH,CPCH,LENFIL)
+            IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1       CHAR(9),'none'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+            END IF
          END IF
 C 
          DO 1150 J=1,3
@@ -1040,17 +1306,45 @@ C
 1200        CONTINUE
             WRITE (CMON,1250) (ATEMP(J),CTEMP(J),J=1,3)
             CALL XPRVDU (NCVDU,1,0)
-            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),
+            IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),
      1       '(A,3(F6.2,A2,2X))') CHAR(9),(ATEMP(J),CTEMP(J),J=1,3)
-            CALL XCREMS(CPCH,CPCH,LENFIL)
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+            END IF
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
 1250        FORMAT (' Pseudo-symmetry operator of form :-  ',
      1       3(F6.2,A2,2X))
          ELSE
-            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
-     1      CHAR(9),'none'
-            CALL XCREMS(CPCH,CPCH,LENFIL)
+            IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(2A)')
+     1       CHAR(9),'none'
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+            END IF
          END IF
+
+C Output number of atoms.
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,I6)')
+     1    CHAR(9),NOLD
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
+
+C Output space group symbol.
+         IF (IPCHRE.GE.0)THEN
+          J  = L2SG + MD2SG - 1
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,4(1X,A4))')
+     1    CHAR(9),(ISTORE(I), I = L2SG, J)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
+
+C Output cell.
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(6(A,F9.4))')
+     1    (CHAR(9),ISTORE(I), I = L1P1, L1P1+5)
+          CALL XCREMS(CPCH,CPCH,LENFIL)
+         END IF
+
+
 C -- ROTATE COORDINATES BACK TO ORTHOGONAL SYSTEM DEFINED BY
 C    CRYSTAL
 C 
@@ -1313,8 +1607,12 @@ C
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
 1300    FORMAT(1X, 'One group is almost colinear - sigma(Y**2) = '
      1  ,F12.8)
-        ROTDIL(2,2)=SIGN( SQRT(1.-ROTDIL(2,1)*ROTDIL(2,1)-
-     1  ROTDIL(2,3)*ROTDIL(2,3)), ROTDIL(2,2))
+
+c        ROTDIL(2,2)=SIGN( SQRT(1.-ROTDIL(2,1)*ROTDIL(2,1)-
+c     1  ROTDIL(2,3)*ROTDIL(2,3)), ROTDIL(2,2))
+C Sqrt may be negative above, try this instead:
+        ROTDIL(2,2)=SIGN( SQRT(ABS(1.-ROTDIL(2,1)*ROTDIL(2,1)-
+     1  ROTDIL(2,3)*ROTDIL(2,3))), ROTDIL(2,2))
       END IF
 C
       IF (ABS(ROTDIL(3,3)) .LE. 0.0001*NNEW) THEN
@@ -1323,8 +1621,11 @@ C
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
 1200    FORMAT(1X, 'One group is almost coplanar - sigma(Z**2) = '
      1  ,F12.8)
-        ROTDIL(3,3)= SQRT(1.-ROTDIL(3,1)*ROTDIL(3,1)-
-     1  ROTDIL(3,2)*ROTDIL(3,2))
+c        ROTDIL(3,3)= SQRT(1.-ROTDIL(3,1)*ROTDIL(3,1)-
+c     1  ROTDIL(3,2)*ROTDIL(3,2))
+c Sqrt may be negative, try this:
+        ROTDIL(3,3)= SQRT(ABS(1.-ROTDIL(3,1)*ROTDIL(3,1)-
+     1  ROTDIL(3,2)*ROTDIL(3,2)))
         DETR = XDETR3(ROTDIL)
         IF ( SIGN(1., DET3*DETR) .LT. 0.) ROTDIL(3,3) = -ROTDIL(3,3)
       END IF
@@ -2152,9 +2453,11 @@ C
      4 1X , 'RMS deviations          ' , 3F8.3 ,
      5 2X , 'Mean' , F8.3 )
 
-            IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(8(A,F9.4))')
-     1      (CHAR(9),SUM(I),I=1,4),(CHAR(9),RMSDEV(I),I=1,4)
-            CALL XCREMS(CPCH,CPCH,LENFIL)
+            IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(8(A,F9.4))')
+     1       (CHAR(9),SUM(I),I=1,4),(CHAR(9),RMSDEV(I),I=1,4)
+             CALL XCREMS(CPCH,CPCH,LENFIL)
+            END IF
 C
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
@@ -2462,9 +2765,19 @@ C   I think this info is lost by now.)
          IOLD5 = L5 + (ISTORE(LONTO+I*MDATVC)) * MD5
          DISMIN=1000000.            !Initialise
          INDDIS=-1
+
+c         WRITE(CMON,'(A,A4,3I9)')'Old atom: ',ISTORE(IOLD5),
+c     1   NINT(STORE(IOLD5+1)),NINT(STORE(IOLD5+13)), LSPARE
+c          CALL XPRVDU(NCVDU,1,0)
+
          DO J=I,NNEW-1                      !Loop over unmatched new atoms.
            INDNEW=LNEW+MDNEW*J            !Address of XYZnew
            INEW5 = L5 + (ISTORE(LMAP+J*MDATVC)) * MD5
+
+c           WRITE(CMON,'(A,A4,2I9)')'New atom: ',ISTORE(INEW5),
+c     1   NINT(STORE(INEW5+1)),NINT(STORE(INEW5+13))
+c           CALL XPRVDU(NCVDU,1,0)
+
            DISTSQ=0.
 C Only consider atom if spare matches when LSPARE is one.
            IF ( (LSPARE.EQ.0) .OR. ( (LSPARE.EQ.1) .AND.
@@ -2474,6 +2787,11 @@ C Only consider atom if spare matches when LSPARE is one.
                DELTSQ=DELTA**2
                DISTSQ=DISTSQ+DELTSQ
              END DO
+
+c           WRITE(CMON,'(A,A4,2I9,F15.8)')'Match: ',ISTORE(INEW5),
+c     1   NINT(STORE(INEW5+1)), J, DISTSQ
+c           CALL XPRVDU(NCVDU,1,0)
+
              IF (DISTSQ.LT.DISMIN) THEN
                DISMIN=DISTSQ
                INDDIS=J
@@ -2512,7 +2830,7 @@ C Swap atoms at LRENM(I) and LRENM(J)
 
          ELSE
 
-          WRITE(CMON,'(A)') '{E Heinous error. No match found for:'
+          WRITE(CMON,'(A)') '{E Programming error. No match found for:'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'( A4,2F6.1)')
      1    STORE(IOLD5),STORE(IOLD5+1),STORE(IOLD5+13)
@@ -2854,12 +3172,8 @@ C          CALL XPRVDU(NCVDU,1,0)
       END DO              ! COMMAND INPUT COMPLETE. CHECK FOR ERRORS:
 
       IPCHRE = ISTORE(JCOMBF+2)
-      WRITE(CMON,'(A,I4)') ' IPCHRE = ', IPCHRE
-      CALL XPRVDU(NCVDU,1,0)
 
       IF ( LEF .GT. 0 ) GO TO 9910
-
-C      CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN) ! RELOCATE COMMONBLOCK DATA
 
       IF ( IEQATM .EQ. 0 ) THEN
         IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
@@ -2870,20 +3184,17 @@ C      CALL XMOVE( STORE(JCOMBF), PROCS(1),IDIMN) ! RELOCATE COMMONBLOCK DATA
       END IF
 
       CALL XRELAX      ! GET CARDINALITY OF ATOMS BASED ON BONDING NETWORK
-
-c      WRITE (CMON,'(A)') ' Atom Serial  MAP ONTO SPARE'
-c      CALL XPRVDU(NCVDU,1,0)
-
-      DO I = 0, N5-1       ! Copy CARDINALITY to 4th vector.
-
-        ISTORE(3+LATVC+I*MDATVC) = NINT(STORE(13+L5+I*MD5))
-
-c        WRITE(CMON,'(1X,A4,2X,I5,4X,I1,4X,I1,1X,I15)')
-c     1  ISTORE(L5+I*MD5),NINT(STORE(1+L5+I*MD5)),
-c     2  ISTORE(1+LATVC+I*MDATVC),ISTORE(2+LATVC+I*MDATVC),
-c     3  NINT(STORE(13+L5+I*MD5))
+       
+c        WRITE (CMON,'(A)') ' Atom Serial  MAP ONTO SPARE'
 c        CALL XPRVDU(NCVDU,1,0)
-
+  
+      DO I = 0, N5-1       ! Copy CARDINALITY to 4th vector.
+          ISTORE(3+LATVC+I*MDATVC) = NINT(STORE(13+L5+I*MD5))
+c          WRITE(CMON,'(1X,A4,2X,I5,4X,I1,4X,I1,1X,I15)')
+c     1    ISTORE(L5+I*MD5),NINT(STORE(1+L5+I*MD5)),
+c     2    ISTORE(1+LATVC+I*MDATVC),ISTORE(2+LATVC+I*MDATVC),
+c     3    NINT(STORE(13+L5+I*MD5))
+c        CALL XPRVDU(NCVDU,1,0)
       END DO
 
 C Generate a vector for each fragment.
@@ -2959,8 +3270,10 @@ C Ensure fragments are 2D identical.
       IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
         WRITE (CMON,'(A)') '{E Fragments are different sizes.'
         CALL XPRVDU(NCVDU,1,0)
-        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+        IF (IPCHRE.GE.0)THEN
+         WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Residues_different_sizes'
+        END IF
         GOTO 9900
       END IF
 
@@ -2977,8 +3290,10 @@ c        CALL XPRVDU(NCVDU,1,0)
      1      (ISTORE(4+LMAP+I*MDATVC).NE. ISTORE(4+LONTO+I*MDATVC)))THEN
           WRITE (CMON,'(A)') '{E Fragment bonding is different.'
           CALL XPRVDU(NCVDU,1,0)
-          IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+          IF (IPCHRE.GE.0)THEN
+           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Residues_bonding_different'
+          END IF
           GOTO 9900
         END IF
       END DO
@@ -2992,26 +3307,320 @@ c        CALL XPRVDU(NCVDU,1,0)
         IF ( KNONLN() .EQ. 1 ) THEN  ! They must be nonlinear?
           JOBDON = 1
           CALL XREGQK
+        ELSE IF (IPCHRE.GE.0)THEN
+           JOBDON = 1
+           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1     CHAR(9)//'Linear_matching_fragments'
         END IF
-      ELSE IF ( IDOUB .EQ. 1 ) THEN ! Try to break sym. Twice.
-        IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
-     1   CHAR(9)//'Internal_symmetry_2'
-        JOBDON = 0
+      END IF
 
-      ELSE IF ( ITRIP .EQ. 1 ) THEN ! Try to break sym. Three times.
+      IF ( JOBDON .EQ. 0 ) THEN
+
+       IF ( IDOUB .GE. 1 ) THEN ! Try to break sym. Twice.
+
+         IF (IPCHRE.GE.0)THEN
+          WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1    CHAR(9)//'Internal_symmetry_2'
+         END IF
+
+C Sort each set of atoms into index order.
+         CALL SSORTI(LMAP, NMAP, MDATVC,1)
+         CALL SSORTI(LONTO,NONTO,MDATVC,1)
+
+         IRS1AT = -1
+
+C Find first atom in residue 1 with uniqueness of 2.
+         IRS1AT = 0
+         DO I = 0, NMAP-1         ! Loop over all the residue 1 atoms
+
+           WRITE(CMON,'(A,5I6,A4,I6)')'1: ',
+     2     ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
+     2     ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
+     3     ISTORE(4+LMAP+I*MDATVC),
+     1     ISTORE(L5+MD5*ISTORE(LMAP+I*MDATVC)),
+     1     NINT(STORE(1+L5+MD5*ISTORE(LMAP+I*MDATVC)))
+           CALL XPRVDU(NCVDU,1,0)
+
+           IF (ISTORE(4+LMAP+I*MDATVC).EQ.2) THEN
+             IRS1AT = L5 + ISTORE(LMAP+I*MDATVC) * MD5
+             EXIT 
+           END IF
+         END DO
+
+         IF ( IRS1AT .EQ. -1 ) THEN
+           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1     CHAR(9)//'Uniqueness 2 in residue 1 not found'
+           GOTO 9900
+         END IF
+
+
+         CRDAT=STORE(13+IRS1AT)
+
+         WRITE(CMON,'(2A,I5)')'Boost one:',STORE(IRS1AT),
+     1    NINT(STORE(IRS1AT+1))
+         CALL XPRVDU(NCVDU,1,0)
+
+C Find two atoms in residue 2 with uniqueness of 2 of same CARDINALITY
+C as IRS1AT
+         IRS2A1 = -1
+         IRS2A2 = -1
+         DO I = 0, NONTO-1         ! Loop over all the residue 2 atoms.
+
+           WRITE(CMON,'(A,5I6,A4,I6)')'2: ' ,
+     2     ISTORE(LONTO+I*MDATVC),ISTORE(1+LONTO+I*MDATVC),
+     2     ISTORE(2+LONTO+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
+     3     ISTORE(4+LONTO+I*MDATVC),
+     1     ISTORE(L5+MD5*ISTORE(LONTO+I*MDATVC)),
+     1     NINT(STORE(1+L5+MD5*ISTORE(LONTO+I*MDATVC)))
+           CALL XPRVDU(NCVDU,1,0)
+
+
+           IF ((ISTORE(4+LONTO+I*MDATVC).EQ.2) .AND.
+     1         ( ABS( CRDAT -
+     2           STORE( 13+L5+MD5*ISTORE(LONTO+I*MDATVC) )
+     3          ).LT. ZERO )) THEN
+             IF ( IRS2A1 .GT. -1 ) THEN
+               IRS2A2 = L5 + ISTORE(LONTO+I*MDATVC) * MD5
+               EXIT
+             ELSE
+               IRS2A1 = L5 + ISTORE(LONTO+I*MDATVC) * MD5
+             END IF
+           END IF
+         END DO
+
+         IF ( IRS2A1 .EQ. -1 ) THEN
+           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1     CHAR(9)//'Uniqueness 2 in residue 2 not found'
+           GOTO 9900
+         END IF
+         IF ( IRS2A2 .EQ. -1 ) THEN
+           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1     CHAR(9)//'Second Uniqueness 2 in residue 2 not found'
+           GOTO 9900
+         END IF
+
+
+         DO ISYMBK = 1,2
+
+
+C Sort each set of atoms into index order.
+           CALL SSORTI(LMAP, NMAP, MDATVC,1)
+           CALL SSORTI(LONTO,NONTO,MDATVC,1)
+
+
+           IF ( IEQATM .EQ. 0 ) THEN
+             IF (KELECN().LT.0) GO TO 9900    ! Put electron count into SPARE
+           ELSE
+             DO I = 0,N5-1
+               STORE(L5+13+I*MD5) = 10
+             END DO
+           END IF
+
+
+C Triple the cardinality of the two found atoms.
+
+           STORE(13+IRS1AT) = STORE(13+IRS1AT) * 3.0
+           IF ( ISYMBK .EQ. 1 ) THEN
+             IRS2AT = IRS2A1
+           ELSE
+             IRS2AT = IRS2A2
+           END IF
+           STORE(13+IRS2AT) = STORE(13+IRS2AT) * 3.0
+
+c           DO I = 0, NMAP-1    
+c            WRITE(CMON,'(A,2(3X,5I5,1X,A4,I3,I6))')'111: ',
+c     2      ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
+c     2      ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
+c     3      ISTORE(4+LMAP+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LMAP+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     2      ISTORE(LONTO+I*MDATVC),ISTORE(1+LONTO+I*MDATVC),
+c     2      ISTORE(2+LONTO+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
+c     3      ISTORE(4+LONTO+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LONTO+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LONTO+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LONTO+I*MDATVC)))
+c            CALL XPRVDU(NCVDU,1,0)
+c           END DO
+c           WRITE(CMON,'(/)')
+c           CALL XPRVDU(NCVDU,1,0)
+
+
+           WRITE(CMON,'(2A,I5)')'Boost two:',STORE(IRS2AT),
+     1      NINT(STORE(IRS2AT+1))
+           CALL XPRVDU(NCVDU,1,0)
+
+           CALL XRELAX      ! GET CARDINALITY OF ATOMS BASED ON BONDING NETWORK
+
+           DO I = 0, NMAP-1       ! Copy CARDINALITY to 4th vector.
+             ISTORE(3+LMAP+I*MDATVC) =
+     1                NINT(STORE(13+L5+ISTORE(LMAP+I*MDATVC)*MD5))
+             ISTORE(3+LONTO+I*MDATVC) =
+     1                NINT(STORE(13+L5+ISTORE(LONTO+I*MDATVC)*MD5))
+           END DO
+
+c           DO I = 0, NMAP-1
+c            WRITE(CMON,'(A,2(3X,5I5,1X,A4,I3,I6))')'Pre: ',
+c     2      ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
+c     2      ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
+c     3      ISTORE(4+LMAP+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LMAP+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     2      ISTORE(LONTO+I*MDATVC),ISTORE(1+LONTO+I*MDATVC),
+c     2      ISTORE(2+LONTO+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
+c     3      ISTORE(4+LONTO+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LONTO+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LONTO+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LONTO+I*MDATVC)))
+c            CALL XPRVDU(NCVDU,1,0)
+c           END DO
+c           WRITE(CMON,'(/)')
+c           CALL XPRVDU(NCVDU,1,0)
+
+C Sort each set of atoms into order of cardinality.
+           CALL SSORTI(LMAP, NMAP, MDATVC,4)
+           CALL SSORTI(LONTO,NONTO,MDATVC,4)
+
+c           DO I = 0, NMAP-1
+c            WRITE(CMON,'(A,2(3X,5I5,1X,A4,I3,I6))')'Post:',
+c     2      ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
+c     2      ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
+c     3      ISTORE(4+LMAP+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LMAP+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     2      ISTORE(LONTO+I*MDATVC),ISTORE(1+LONTO+I*MDATVC),
+c     2      ISTORE(2+LONTO+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
+c     3      ISTORE(4+LONTO+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LONTO+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LONTO+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LONTO+I*MDATVC)))
+c            CALL XPRVDU(NCVDU,1,0)
+c           END DO
+c           WRITE(CMON,'(/)')
+c           CALL XPRVDU(NCVDU,1,0)
+
+C Count to work out the uniqueness of each atom and store in 5th vector.
+           ICUR = ISTORE(3+LATVC)
+           INUM = 0
+           IPREV= 0
+           IUNIQ= 0
+           IDOUB= 0
+           ITRIP= 0
+           IQUAD= 0
+
+           DO I = 0, NATVC-1         ! Loop over all the atoms
+            IF ( (I.EQ.NMAP).OR.(ISTORE(3+LATVC+I*MDATVC) .NE.ICUR))THEN  ! Cardinality changed.
+              DO J = I-1, IPREV, -1            ! Put uniqueness in 5th vector.
+                ISTORE(4+LATVC+J*MDATVC) = INUM
+              END DO
+              IF (( INUM.EQ.1 ).AND.(I.LE.NMAP)) IUNIQ = IUNIQ+1
+              IF (( INUM.EQ.2 ).AND.(I.LE.NMAP)) IDOUB = IDOUB+1
+              IF (( INUM.EQ.3 ).AND.(I.LE.NMAP)) ITRIP = ITRIP+1
+              IF (( INUM.EQ.4 ).AND.(I.LE.NMAP)) IQUAD = IQUAD+1
+              IPREV = I
+              ICUR = ISTORE(3+LATVC+I*MDATVC)
+              INUM = 0
+            END IF
+            INUM = INUM + 1
+           END DO
+
+           DO J = NATVC-1, IPREV, -1            ! Finish off. Put uniqueness in 5th vector.
+            ISTORE(4+LATVC+J*MDATVC) = INUM
+           END DO
+
+
+c           DO I = 0, NMAP-1
+c            WRITE(CMON,'(A,2(3X,5I5,1X,A4,I3,I6))')'Uniq:',
+c     2      ISTORE(LMAP+I*MDATVC),ISTORE(1+LMAP+I*MDATVC),
+c     2      ISTORE(2+LMAP+I*MDATVC),ISTORE(3+LMAP+I*MDATVC),
+c     3      ISTORE(4+LMAP+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LMAP+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LMAP+I*MDATVC))),
+c     2      ISTORE(LONTO+I*MDATVC),ISTORE(1+LONTO+I*MDATVC),
+c     2      ISTORE(2+LONTO+I*MDATVC),ISTORE(3+LONTO+I*MDATVC),
+c     3      ISTORE(4+LONTO+I*MDATVC),
+c     1      ISTORE(L5+MD5*ISTORE(LONTO+I*MDATVC)),
+c     1      NINT(STORE(1+L5+MD5*ISTORE(LONTO+I*MDATVC))),
+c     1      NINT(STORE(13+L5+MD5*ISTORE(LONTO+I*MDATVC)))
+c            CALL XPRVDU(NCVDU,1,0)
+c           END DO
+
+C Ensure fragments are 2D identical.
+           IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
+            WRITE (CMON,'(A)') '{E Fragments are different sizes.'
+            CALL XPRVDU(NCVDU,1,0)
+            IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1       CHAR(9)//'Residues_different_sizes'
+            END IF
+            GOTO 9900
+           END IF
+
+C Further ensure fragments are 2D identical.
+           DO I = 0, NMAP-1
+            IF((ISTORE(3+LMAP+I*MDATVC).NE.ISTORE(3+LONTO+I*MDATVC)).OR.
+     1        (ISTORE(4+LMAP+I*MDATVC).NE.ISTORE(4+LONTO+I*MDATVC)))THEN
+              WRITE (CMON,'(A)') '{E Fragment bonding is different.'
+              CALL XPRVDU(NCVDU,1,0)
+              IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1         CHAR(9)//'Residues_bonding_different'
+              GOTO 9900
+            END IF
+           END DO
+
+           WRITE (CMON,'(/A,I5)') 'Unique matches: ',IUNIQ
+           CALL XPRVDU(NCVDU,2,0)
+
+           JOBDON = 0
+    
+           IF ( IUNIQ .GE. 3 ) THEN   ! Need three matches to proceed simply.
+            IF ( KNONLN() .EQ. 1 ) THEN  ! They must be nonlinear?
+              JOBDON = 1
+              CALL XREGQK
+            ELSE IF (IPCHRE.GE.0)THEN
+              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1        CHAR(9)//'Linear_matching_fragments'
+              JOBDON = 1
+            END IF
+           ELSE IF (IPCHRE.GE.0)THEN
+             WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1       CHAR(9)//'Still_not_enough_unique_matches'
+           END IF
+
+           IF (JOBDON.EQ.0) THEN
+            IF ( IDOUB .GE. 1 ) THEN 
+               IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1         CHAR(9)//'More_Internal_symmetry_2'
+            ELSE IF ( ITRIP .GE. 1 ) THEN 
+               IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1         CHAR(9)//'More_Internal_symmetry_3'
+            ELSE IF ( IQUAD .GE. 1 ) THEN
+               IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1         CHAR(9)//'More_Internal_symmetry_4'
+            ELSE
+               IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
+     1         CHAR(9)//'Internal_symmetry_lots'
+            END IF
+           END IF
+         END DO
+
+       ELSE IF ( ITRIP .GE. 1 ) THEN ! Try to break sym. Three times.
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_3'
-        JOBDON = 0
 
-      ELSE IF ( IQUAD .EQ. 1 ) THEN ! Try to break sym. Four times.
+       ELSE IF ( IQUAD .GE. 1 ) THEN ! Try to break sym. Four times.
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_4'
-        JOBDON = 0
 
-      ELSE
+       ELSE
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_lots'
 
+       END IF
       END IF
 
 
@@ -3141,8 +3750,10 @@ C  A good initial value for SPARE would be the electron count.
 \XUNITS
 \XIOBUF
 
-      LTEMP=KSTALL(N5*2)                     ! Get some workspace
+      LTEMP=KSTALL(N5*3)                     ! Get some workspace
       LORIG=LTEMP+N5
+      LBEST=LTEMP+N5*2
+      MBEST = 0
 
       DO I = 0, N5-1    ! Copy original SPARE into STORE(LORIG)
         STORE(LORIG+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
@@ -3153,8 +3764,6 @@ C  A good initial value for SPARE would be the electron count.
       IMAXSP = 0
 
       DO WHILE ( .TRUE. )
-
-
 
         DO I = 0, N5-1    ! Copy existing SPARE into STORE(LTEMP)
           STORE(LTEMP+I) = REAL(NINT( STORE(L5+13+I*MD5) ))
@@ -3196,12 +3805,23 @@ c          CALL XPRVDU(NCVDU,1,0)
            NOIMPR = NOIMPR + 1 ! No improvement.
         ELSE
            NOIMPR = 0          ! Improvement.
+           IF ( IDCOUN .GT. MBEST ) THEN
+             MBEST = IDCOUN
+             DO I = 0, N5-1       ! Copy SPARE into BEST
+               ISTORE(LBEST+I) = NINT( STORE(L5+13+I*MD5) )
+             END DO
+           END IF
         END IF
 
-        IF ( NOIMPR .GE. 1 ) EXIT  ! If # unique unimproved twice then break.
+        IF ( NOIMPR .GE. 3 ) EXIT  ! If # unique unimproved twice then break.
 
         IDOCNT = MAX ( IDOCNT, IDCOUN ) ! Best # unique found so far.
       END DO
+
+      DO I = 0, N5-1       ! Copy BEST back into SPARE
+          STORE(L5+13+I*MD5) = ISTORE(LBEST+I)
+      END DO
+
       CALL XSTRLL (LTEMP)                   ! RETURN WORKSPACE
       RETURN
       END
@@ -3222,6 +3842,7 @@ C
 \XLISTI
 \XCARDS
 \XLST01
+\XLST02
 \XLST05
 \XLST12
 \XPDS
@@ -3274,6 +3895,13 @@ C -- SET UP BLOCKS
       LNEW=KSTALL(NMAP*MDNEW)
       LUIJ=KSTALL(NMAP*MDUIJ)
       LRENM = KSTALL(MDRENM*NMAP)  ! ALLOCATE SPACE FOR RENAMING
+C Allocate space for new space group closed set testing 
+      MLTPLY = 2 * N2 * N2P * ( IC + 1 ) ! Twice current multiplicity.
+C Space for upper triangle, each matrix has 16 entries. (N(N-1)/2 ops)
+      MSGT = 8*MLTPLY*(MLTPLY+1)
+      LSGT = KSTALL(MSGT)
+      CALL XZEROF(STORE(LSGT),MSGT)
+
 
 C     SAVE NFL and LFL
       IRNFL = NFL
@@ -3560,5 +4188,126 @@ C -- WRITE FINAL MESSAGE
 
 
 
+CODE FOR KSGTEX
+      SUBROUTINE KSGTEX(NMATS,ADDR)
+C
+C ADDR(16,NMATS)  - A lower triangular array of 4x4 matrices (column first).
+C NMATS - The number of matrices in ADDR.
+C
+C
+C The first matrix should always be the unit matrix.
+C
+C This subroutine takes the first column of matrix operators and
+C fills in the rest of the array by imagining that the first row
+C contains the same operators. Each filled in result is the
+C product of the operator in the first column of the same row and
+C the first row of the same column
+C
+C E.g. where each operator symbol below represents a 4x4 matrix:
+C
+C         1: 1
+C
+C         2: 21  5: 1
+C
+C         3: -1  6: m   8: 1
+C
+C         4: m   7: -1  9: 21  10: 1
+C
+C The first column is passed in, the rest is generated.
+
+C DEBUG only:
+\XIOBUF
+\XUNITS
+C END Debug
+
+      DIMENSION ADDR(16,NMATS)
+
+C Work out some properties of the matrix array
+      NROWS = (SQRT(1.+8.*MAX(0,NMATS))-1)/2  ! Just quadratic soln of N(N+1)/2
+
+      M = NROWS ! Address of current matrix (starting from 2nd column)
+
+      DO I = 2,NROWS ! Loop over each column except the first.
+        DO J = I,NROWS    ! Loop over each row that is stored.
+
+C Set this matrix to the product of the first matrix in row J and the
+C first matrix in row I (eqv to the 1st in column I)
+
+          M = M + 1      ! Address for this matrix
+          CALL XMLTMM(ADDR(1,J),ADDR(1,I),ADDR(1,M),4,4,4)
+
+        END DO   ! End of loop over columns
+      END DO   ! End of loop over rows
+
+      M = 0
+      DO I = 1, NROWS
+        WRITE(CMON,'(/A,I4)') 'Col: ',I
+        CALL XPRVDU(NCVDU,2,0)
+        DO J = I, NROWS
+          M = M + 1
+          WRITE(CMON,'(/4(4F9.3/))') ((ADDR(K+K2,M),K=0,12,4),K2=1,4)
+          CALL XPRVDU(NCVDU,5,0)
+        END DO
+      END DO
 
 
+C Set all translation components to be in the range 0<t<1
+
+      DO I = 1,NMATS
+        DO J = 1,3
+          ADDR(12+J,I) = MOD(ADDR(12+J,I),1.0)    ! Take remainder
+          IF ( ADDR(12+J,I) .LT. 0.0 ) THEN
+            ADDR(12+J,I) = ADDR(12+J,I) + 1       ! Add 1 if -ve
+          END IF
+        END DO
+      END DO
+
+
+      RETURN
+      END
+
+CODE FOR CMPMAT(A,B,N)
+      FUNCTION CMPMAT(A,B,N)
+      DIMENSION A(N)
+      DIMENSION B(N)
+C Compare how close two matrices are. For now use cross-correlation:
+C
+C r = SUMi [(Ai-<A>)(Bi-<B>)] / sqrt(SUMi[(Ai-<A>)^2]*SUMi[(Bi-<B>)^2])
+C
+C 1 = perfect match, less for non-perfect matches.
+
+
+C Get averages
+      AVA = 0.0
+      AVB = 0.0
+      DO I = 1,N
+        AVA = AVA + A(I)
+        AVB = AVB + B(I)
+      END DO
+      AVA = AVA / N
+      AVB = AVB / N
+
+C Do sum of prod of diffs
+      SUMAB = 0.0
+C and sum of diffs squared
+      SUMAA = 0.0
+      SUMBB = 0.0
+
+      DO I = 1,N
+        SUMAB = SUMAB + (A(I)-AVA) * (B(I)-AVB)
+        SUMAA = SUMAA + (A(I)-AVA)**2
+        SUMBB = SUMBB + (B(I)-AVB)**2
+      END DO
+
+      IF ( ABS(SUMAB) + ABS(SUMAA) + ABS(SUMBB) .LT. 0.00001 ) THEN
+C Perfect match. Answer tends to 1 as these numbers all tend to zero.
+        CMPMAT = 1.0
+      ELSE
+C Do the maths, but be mindful of divide by zero.
+        DENOM = MAX(0.00001,SQRT(SUMAA*SUMBB)) ! Ensure non-zero denominator
+        CMPMAT = SUMAB/DENOM
+      END IF
+      RETURN
+      END
+
+      
