@@ -20,7 +20,7 @@ class	CcRect
 	public:
 		// methods
 			CcRect();
-			CcRect( CcRect &inRect );
+                  CcRect( const CcRect & inRect );
 			CcRect( const int top, const int left, const int bottom, const int right );
 			~CcRect();
 		void	Set( const int top, const int left, const int bottom, const int right );
