@@ -17,6 +17,10 @@
 //            it has no graphical presence, nor a complimentary Cx- class
 
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2002/07/16 14:09:45  richard
+// Bug in atom selection fixed: if last digit of two or more character number
+// was also last character of the string it would be chopped off by accident.
+//
 // Revision 1.19  2002/07/04 13:04:44  richard
 //
 // glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
@@ -128,6 +132,8 @@ CcModelDoc::CcModelDoc( )
     nSelected = 0;
     sm_ModelDocList.AddItem(this);
     sm_CurrentModelDoc = this;
+    m_glIDsok = false;
+
 }
 
 CcModelDoc::~CcModelDoc()
@@ -316,11 +322,12 @@ void CcModelDoc::AddModelView(CrModel * aView)
 
 void CcModelDoc::DrawViews(bool rescaled)
 {
+    m_glIDsok = false;
     attachedViews.Reset();
     CrModel* aView;
     while( ( aView = (CrModel*)attachedViews.GetItemAndMove() ) != nil)
     {
-            aView->Update(rescaled);
+        aView->Update(rescaled);
     }
 }
 
@@ -541,6 +548,10 @@ void CcModelDoc::InvertSelection()
 
 Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 {
+
+//   if ( m_glIDsok ) { LOGERR ( "Rendering: glIDs OK" ); }
+//   else { LOGERR ( "Rendering: glIDs need reset" ); }
+
    if ( mAtomList->ListSize()   || mBondList->ListSize() ||
         mSphereList->ListSize() || mDonutList->ListSize()  )
    {
@@ -580,8 +591,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, not disabled:
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            aitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              aitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( aitem->m_glID );
             aitem->Render(style, feedback);
           }
         }
@@ -590,8 +604,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, not disabled:
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            sitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              sitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( sitem->m_glID );
             sitem->Render(style, feedback);
           }
         }
@@ -600,8 +617,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, not disabled:
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            ditem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              ditem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( ditem->m_glID );
             ditem->Render(style, feedback);
           }
         }
@@ -621,8 +641,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, selected:
           if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
           {
-            glLoadName ( ++ glIDCount );
-            aitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              aitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( aitem->m_glID );
             aitem->Render(style, feedback);
           }
         }
@@ -631,8 +654,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, selected:
           if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
           {
-            glLoadName ( ++ glIDCount );
-            sitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              sitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( sitem->m_glID );
             sitem->Render(style);
           }
         }
@@ -641,8 +667,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, selected:
           if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
           {
-            glLoadName ( ++ glIDCount );
-            ditem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              ditem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( ditem->m_glID );
             ditem->Render(style);
           }
         }
@@ -662,8 +691,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, disabled
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            aitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              aitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( aitem->m_glID );
             aitem->Render(style);
           }
         }
@@ -672,8 +704,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, disabled
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            sitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              sitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( sitem->m_glID );
             sitem->Render(style);
           }
         }
@@ -682,8 +717,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, disabled
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            ditem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              ditem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( ditem->m_glID );
             ditem->Render(style);
           }
         }
@@ -707,8 +745,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         {
           if ( !(bitem->m_excluded) )
           {
-            glLoadName ( ++ glIDCount );
-            bitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              bitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( bitem->m_glID );
             bitem->Render(style);
           }
         }
@@ -767,8 +808,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, not disabled:
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && !(aitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            aitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              aitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( aitem->m_glID );
             aitem->Render(style);
           }
         }
@@ -777,8 +821,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, not disabled:
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && !(sitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            sitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              sitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( sitem->m_glID );
             sitem->Render(style);
           }
         }
@@ -787,8 +834,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, not disabled:
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && !(ditem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            ditem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              ditem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( ditem->m_glID );
             ditem->Render(style);
           }
         }
@@ -806,8 +856,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, selected:
           if ( !(aitem->m_excluded) && (aitem->IsSelected()) )
           {
-            glLoadName ( ++ glIDCount );
-            aitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              aitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( aitem->m_glID );
             aitem->Render(style);
           }
         }
@@ -816,8 +869,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, selected:
           if ( !(sitem->m_excluded) && (sitem->IsSelected()) )
           {
-            glLoadName ( ++ glIDCount );
-            sitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              sitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( sitem->m_glID );
             sitem->Render(style);
           }
         }
@@ -826,8 +882,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, selected:
           if ( !(ditem->m_excluded) && (ditem->IsSelected()) )
           {
-            glLoadName ( ++ glIDCount );
-            ditem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              ditem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( ditem->m_glID );
             ditem->Render(style);
           }
         }
@@ -845,8 +904,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, disabled
           if ( !(aitem->m_excluded) && !(aitem->IsSelected()) && (aitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            aitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              aitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( aitem->m_glID );
             aitem->Render(style);
           }
         }
@@ -855,8 +917,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, disabled
           if ( !(sitem->m_excluded) && !(sitem->IsSelected()) && (sitem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            sitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              sitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( sitem->m_glID );
             sitem->Render(style);
           }
         }
@@ -865,8 +930,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
 //not excluded, not selected, disabled
           if ( !(ditem->m_excluded) && !(ditem->IsSelected()) && (ditem->m_disabled) )
           {
-            glLoadName ( ++ glIDCount );
-            ditem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              ditem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( ditem->m_glID );
             ditem->Render(style);
           }
         }
@@ -890,8 +958,11 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         {
           if ( !(bitem->m_excluded) )
           {
-            glLoadName ( ++ glIDCount );
-            bitem->m_glID = glIDCount;
+            if ( !m_glIDsok )
+            {
+              bitem->m_glID = ++ glIDCount;
+            }
+            glLoadName ( bitem->m_glID );
             bitem->Render(style);
           }
         }
@@ -901,6 +972,7 @@ Boolean CcModelDoc::RenderModel( CcModelStyle * style, bool feedback )
         }
       }
 
+      m_glIDsok = true;
       return true;
    }
    return false;

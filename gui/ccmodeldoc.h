@@ -8,6 +8,14 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2002/07/04 13:04:44  richard
+//
+//   glPassThrough was causing probs on Latitude notebook. Can only be called in feedback
+//   mode, which means that it can't be stuck into the display lists which are used
+//   for drawing aswell. Instead, added feedback logical parameter into all Render calls, when
+//   true it does a "feedback" render rather than a display list render. Will slow down polygon
+//   selection a negligble amount.
+//
 //   Revision 1.12  2002/06/28 10:09:53  richard
 //   Minor gui update enabling vague display of special shapes: ring and sphere.
 //
@@ -134,6 +142,7 @@ class CcModelDoc
         int m_TotX;
         int m_TotY;
         int m_TotZ;
+        bool m_glIDsok;
         CcList* mAtomList;
         CcList* mBondList;
         CcList* mSphereList;
