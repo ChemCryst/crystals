@@ -3,6 +3,8 @@
 %% The variables needed by XQUESTIO
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
+%% Variable returned by assess5
+% VARIABLE REAL HFIRST
 %%
 % VARIABLE LOGICAL TWINNED
 % EVALUATE TWINNED = FALSE
@@ -30,18 +32,22 @@
    and found (QH) atoms are displayed, and the model may be edited.
  * Finally, any peaks close to a calculated H atom are eliminated, and
    any remaining peaks deleted.
- 
-% EVALUATE QTITLE = 'Delete Hydrogen'
-% EVALUATE QLINE1 = 'Do you want to delete'
-% EVALUATE QLINE2 = 'existing hydrogen atoms?'
-% EVALUATE BUTTOK = '&No'
-% EVALUATE BUTTXX = '&Yes'
-% COPY '#SCRIPT XQUESTIO'
-% IF ANSWER .EQ. FALSE THEN
-%    COPY '#EDIT'
-%    COPY 'SELECT TYPE NE H'
-%    COPY 'END'
+
+% COPY '#SCRIPT ASSESS5'
+% IF ( HFIRST .GT. 0.0 ) THEN
+%   EVALUATE QTITLE = 'Delete Hydrogen'
+%   EVALUATE QLINE1 = 'Do you want to delete'
+%   EVALUATE QLINE2 = 'existing hydrogen atoms?'
+%   EVALUATE BUTTOK = '&No'
+%   EVALUATE BUTTXX = '&Yes'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ANSWER .EQ. FALSE THEN
+%      COPY '#EDIT'
+%      COPY 'SELECT TYPE NE H'
+%      COPY 'END'
+%   END IF
 % END IF
+%%
 % COPY '#SCRIPT VALID12'
 % COPY '#SFLS'
 % IF TWINNED .EQ. TRUE THEN
@@ -66,7 +72,7 @@
 % COPY 'TYPECHANGE TYPE EQ Q QH'
 % COPY 'END'
 %%
-^^WI WINDOW CONTINUE 'Continue' POSITION CENTRED '_MAIN'
+^^WI WINDOW CONTINUE 'Continue' POSITION CASCADE MODEL01
 ^^WI COMMIT='BOK' CANCEL='BXX' DISABLEIF='IN'
 ^^WI GRID MAIN NROWS=3 NCOLS=5
 ^^WI {
