@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.22  2000/11/01 09:19:05  ckp2
+C RIC: Changes to compile with DVF6.5
+C
 C Revision 1.21  2000/10/05 10:17:17  CKP2
 C  Fix SHELX output
 C
@@ -66,6 +69,8 @@ C
 C
 \STORE
 \XOPVAL
+\XUNITS
+\XIOBUF
 C
 \QSTORE
 C
@@ -78,6 +83,11 @@ CMAR98
 C
       ISTAT = KRDDPV( ISTORE(ICOMBF), ICOMSZ)
       IF ( ISTAT .LT. 0 ) GO TO 9910
+c^
+          WRITE ( CMON, '(a,2i5)' )'Input values=', 
+     1    istore(icombf),istore(icombf+1)
+          CALL XPRVDU(NCEROR, 1,0)
+c^
       ITYPE = ISTORE(ICOMBF + 1)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
@@ -116,6 +126,8 @@ C                                     4, PATTERSON
 C
 C           FOR SIR**        IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
+c           for cameron      iefort = 1, normal
+c                                     2, dont create new cameron files
 C
       PARAMETER (NLINK=8, NLIST=7)
 C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
@@ -288,6 +300,10 @@ C
 C************* THIS IS ONLY A PATCH ***********************************
 C----- LINK TO CAMERON -------------------------------------
 C
+cdjwjan2000
+          WRITE ( CMON, '(a,i)' ) 'iefort =', iefort
+          CALL XPRVDU(NCEROR, 1,0)
+      if (iefort .ne. 1) goto 8000
 C
       WRITE (NCFPU1, '( ''$DATA'')')
       WRITE ( NCFPU1 ,' (''CELL  '' , 3(F8.4,2X), 3(F8.3,2X ))' )
@@ -1163,7 +1179,6 @@ C
 C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
-
 C - Only GID, GIL and DOS support Cameron's graphics.
 ###GILGIDDOS        GOTO 9000 !Skip this Cameron part.
 
