@@ -37,9 +37,11 @@
 //#include "stdafx.h"
 #include "HKLData.h"
 #include "Collections.h"
+#include <iostream>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include "Exceptions.h"
 #include <errno.h>
 #include <sys/stat.h>
@@ -226,7 +228,7 @@ int HKLData::numberOfReflections() const
 
 float resipSphVol(float pAngRad, float pWaveLength)
 {
-    float tBragg = 2*sin(pAngRad)/pWaveLength;
+    float tBragg = 2.0f*sinf(pAngRad)/pWaveLength;
     tBragg = tBragg * tBragg * tBragg;
-    return 4.1888 * tBragg; // 4/3* PI = 4.1888
+    return 4.1888f * tBragg; // 4/3* PI = 4.1888
 }
