@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2004/05/13 15:26:21  rich
+C Make SFLS do a leverage plot if correct incantation is specified.
+C
 C Revision 1.32  2004/04/16 09:42:28  rich
 C Added code to compute leverages of individual reflections, instead of accummulating
 C a new normal matrix. (Requires matching inverted normal matrix from a previous cycle).
@@ -1409,12 +1412,17 @@ C----- INITIALISE THE SORT BUFFER
         CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,
      1    -1, DEF3)             ! Init
         JLEVER = 4              ! Sort on the fifth item (NB: offset)
+        REDMAX = 0.0
 
-        WRITE(CMON,'(A,/,A,/,A)')
+        WRITE(CMON,'(A,6(/,A))')
      1  '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP',
-     1  '^^PL XAXIS TITLE ''k x Fo'' NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE ''Leverage, Pii'' SERIES 1 TYPE SCATTER'
-        CALL XPRVDU(NCVDU, 3,0)
+     1  '^^PL XAXIS TITLE ''k x Fo'' NSERIES=2 LENGTH=2000',
+     1  '^^PL YAXIS TITLE ''Leverage, Pii'' ZOOM 0.0 1.0',
+     1  '^^PL YAXISRIGHT TITLE ''tij**2/(1+Pii)''',
+     1  '^^PL SERIES 1 TYPE SCATTER SERIESNAME ''Leverage''',
+     1  '^^PL SERIES 2 TYPE SCATTER',
+     2  '^^PL SERIESNAME ''Influence of remeasuring'' USERIGHTAXIS'
+        CALL XPRVDU(NCVDU, 7,0)
 
       END IF
 
@@ -2785,7 +2793,10 @@ C
         CALL XADLHS
       ELSE                   ! No accumulation, do leverages.
         Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
-     1                  STR11(L11),N11,  STORE(JO),JP-JO+1)
+     1                  STR11(L11),N11,  STORE(JO),JP-JO+1,
+     2                  ISTORE(L33CD+12), TIX, RED)
+
+         REDMAX = MAX ( REDMAX, RED )
 
 c        WRITE(CMON,'(A,3I4,2G18.8)')'Leverage',NINT(STORE(M6)),
 c     1                NINT(STORE(M6+1)),NINT(STORE(M6+2)),PII,XVALUL
@@ -2795,8 +2806,9 @@ c        CALL XPRVDU(NCVDU,1,0)
      1                                NINT(STORE(M6+1)), ',',
      2                                NINT(STORE(M6+2))
         CALL XCRAS(HKLLAB, IHKLLEN)
-        WRITE(CMON,'(3A,2F11.3)')
-     1   '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',FO,Pii
+        WRITE(CMON,'(3A,4F11.4)')
+     1   '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',FO,Pii,FO,
+     2   RED*1000000000.0
         CALL XPRVDU(NCVDU, 1,0)
 
 
@@ -2867,7 +2879,9 @@ C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 5850  CONTINUE
 
       IF (ISTORE(L33CD+12).NE.0) THEN    ! Leverage plot
-        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        WRITE(CMON,'(A,F18.14,A/A)')'^^PL YAXISRIGHT ZOOM 0.0 ',
+     1   REDMAX,' SHOW',
+     1   '^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
 
@@ -3845,15 +3859,18 @@ C-C-C-CALCULATE THE DERIVATIVE W.R.T. SPHERE-FACTOR FOR RADIUS
 
 
 CODE FOR PDOLEV
-      FUNCTION PDOLEV( L12, N12, MD12B, V, N11, DF, NDF )
-
+      FUNCTION PDOLEV( L12, N12, MD12B, V, N11, DF, NDF, JPNX, TIX, RED)
       DIMENSION L12(N12), V(N11), DF(NDF)
-
+C Work out leverage and some other things. See Prince, Mathematical
+c Techniques in Crystallography and Materials Science, 2nd Edition,
+c Springer-Verlag. pp120-123
 
 C  L12 is an array of size N12 containing information about the
 C  blocking of the array V.
 
 C  V is of size N11, but may be in blocks (see L12)
+
+C  DF is the current row of the design matrix. (Called A below).
 
 C  P = A.V.At
 c  where P is the projection (say hat) matrix.
@@ -3861,9 +3878,28 @@ c        A is the LHS
 c        V is the inverse normal matrix (must be already known).
 c  The leverages are the diagonal elements of the hat matrix, Pii.
 
+C Ti = Ai.Vn, then t^2ij/(1+Pii) is the amount by which a repeated
+c measurement of the ith reflection will reduce the variance of the
+c estimate of the jth parameter.
+
+C JPNX is the (one-based) index of the parameter of interest. E.g
+C 1 is usually the scale factor. See \PRINT 22 for indices.
+
+C For calculation of TIx, remember that the matrix V is packed into a
+C lower triangle so that each column starts from the diagonal. Thus we
+C accumulate TIx when either the row or column matches JPNX.
+
+C Return values:
+c      PDOLEV - (function return) the leverage value of this reflection
+c      TIX    - the value of ziVn for the selected parameter (JPNX)
+c      RED    - the amount by which repeated measurement of this
+c               reflection will reduce the JPNXth parameter's variance.
 
        M11 = 1
        PII = 0.0
+       TIx = 0.0
+       JPN = JPNX - 1
+
        DO I = 1,N12,MD12B        ! Loop over each block
          IBS = L12(I+1)             ! IBS:= Number of rows in block
          DO J = 0, IBS-1            ! Loop over each row
@@ -3871,10 +3907,17 @@ c  The leverages are the diagonal elements of the hat matrix, Pii.
              DOUB = 2.0                 ! Add in off-diagonals twice.
              IF ( K.EQ.0 ) DOUB = 1.0   ! Add on-diagonals once.
              PII = PII + DOUB * DF(1+J) * DF(1+J+K) * V(M11)
+             IF ( J .EQ. JPN ) THEN   ! This is the row of interest for Tij
+               TIx = TIx + DF(1+J) * V(M11)
+             ELSE IF ( K .EQ. JPN ) THEN   ! This is also the row of interest for Tij
+               TIx = TIx + DF(1+K) * V(M11)
+             END IF
              M11 = M11 + 1
            END DO
          END DO
        END DO
+
+       RED = (TIX**2)/(1.0+PII)
        PDOLEV = PII
        RETURN
       END
