@@ -371,14 +371,14 @@ std::ofstream& Stats::output(std::ofstream& pStream, const Table& pTable)
     pStream << "NREGIONS " << tColumnCount << "\n";
     for (int i = 0; i< tColumnCount; i++)
     {
-        pStream << (int)tColumns[i] << " ";
+        pStream << iHeadings->getID(tColumns[i]) << " ";
         outputMatrix(pStream, iHeadings->getMatrix(tColumns[i]));
         pStream << " " << iHeadings->getName(tColumns[i]) << "\n";
     }
     pStream << "NTESTS " << tCount << "\n";
     for (int i = 0; i < tCount; i++)
     {
-        pStream << (int)tConditions[i] << " ";
+        pStream << iConditions->getID(tConditions[i]) << " ";
         outputMatrix(pStream, iConditions->getMatrix(tConditions[i]));
         pStream << " " << iConditions->getMult(tConditions[i]) << " " << iConditions->getName(tConditions[i]) << "\n";
     }
