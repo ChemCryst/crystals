@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   09.11.2001 23:47
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:29  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:49  ckp2
 //   The PLOT classes!
 //
@@ -21,42 +24,79 @@ class CcList;
 class CrPlot;
 class CcPlotdata;
 class CcSeries;
-class CcPlotAxes;
+
+class CcPlotAxes
+{
+public:
+	CcPlotAxes();
+	virtual ~CcPlotAxes();
+
+	Boolean CalculateDivisions();
+
+	Boolean CalculateLinearDivisions(int axis);
+	Boolean CalculateLogDivisions(int axis);
+
+	void CheckData(int axis, float data);
+	void DrawAxes(CrPlot* attachedPlot);	// draw lines, markers and text
+
+	CcString*		m_Labels;		// one label per data item (only for bar graphs)
+	CcString		m_PlotTitle;	// graph title
+	CcString		m_XTitle;		// and the x and y labels
+	CcString		m_YTitle;
+
+	float	m_Max[2];				// maximum and minimum of the DATA
+	float	m_Min[2];
+
+	float	m_AxisMax[2];			// max and min of the axes (default to same as data range)
+	float	m_AxisMin[2];		
+
+	float	m_Delta[2];				// distance between divisions
+
+	int		m_NumDiv[2];			// number of divisions per axis
+
+	float *	m_AxisDivisions[2];		// storage for the division markers
+
+	int		m_AxisScaleType;		// either auto, span or zoom
+	bool	m_AxisLog[2];			// log if true, linear if false
+
+	int		m_GraphType;			//  bargraphs - only calculate axis divisions for y axis
+									//  scatter / line - calculate axis divisions for both axes
+};
 
 class CcPlotData
 {
-    public:
-        virtual void DrawView() = 0;
-        virtual void Clear() = 0;
-        virtual Boolean ParseInput( CcTokenList * tokenList );
-        CcPlotData();
-        virtual ~CcPlotData();
-        CcPlotData * FindObject( CcString Name );
-        static CcPlotData* CreatePlotData( CcTokenList * tokenList );
+public:
+    virtual void DrawView() = 0;
+    void Clear();
+    virtual Boolean ParseInput( CcTokenList * tokenList );
+    CcPlotData();
+    virtual ~CcPlotData();
+    CcPlotData * FindObject( CcString Name );
+    static CcPlotData* CreatePlotData( CcTokenList * tokenList );
 
-        static CcList  sm_PlotList;
-        static CcPlotData* sm_CurrentPlotData;
+    static CcList  sm_PlotList;
+    static CcPlotData* sm_CurrentPlotData;
 
-        CcSeries* m_Series;			// needs to be a pointer, since although only one it is derived to be ie CcSeriesBar
-		CcPlotAxes * m_Axes;
-		Boolean m_AxesOK;
-		CcString m_PlotTitle;		// graph title
-		CcString m_XTitle;			// and the x and y labels
-		CcString m_YTitle;
+	virtual void CreateSeries(int numser, int* type) = 0;
+	virtual void AllocateMemory(int length) = 0;
 
-    protected:
-        CcString mName;				// internal name
-        CrPlot* attachedPlot;
-    private:
-        Boolean mSelfInitialised;
+    CcSeries**		m_Series;		// array of series
+	int				m_SeriesLength; // length of the data series (NB all the same)
+	int				m_NextItem;		// number of data items added so far to each series
+	CcPlotAxes		m_Axes;
+	Boolean			m_AxesOK;
+
+	int				m_NumberOfSeries;// number of series in the list
+	int				m_Colour[3][6];	// sequence for colours
+
+protected:
+    CcString mName;					// internal name
+    CrPlot* attachedPlot;
+private:
+    Boolean mSelfInitialised;
 };
 
-enum
-{
-	Plot_SeriesBar,
-	Plot_SeriesScatter
-};
-
+// each series holds ONE data set.
 class CcSeries
 {
     public:
@@ -64,22 +104,18 @@ class CcSeries
 		virtual ~CcSeries();
         virtual Boolean ParseInput( CcTokenList * tokenList );
         CcString mName;
-		int	m_NumberOfSeries;
-		int m_Length;
-        int m_Next;
 
-		int m_Colour[3][6];		// sequence for colours
-		CcString*	m_SeriesName;					// one name per series
+		CcString	m_SeriesName;					// one name per series
 
-		virtual void CreateSeries(int numseries)=0;		// create data series
 		virtual void AllocateMemory(int length)=0;		// allocate space for 'length' bits of data per
 
     private:
 		int m_Type;	// type of series - bar / scatter (defined above)
-
 };
 
 
+// These are the script commands handled by the plot classes.
+// Any change here must also be made to cctokenlist.cpp
 #define kSPlotAttach       "ATTACH"
 #define kSPlotShow         "SHOW"
 #define kSPlotBarGraph     "BARGRAPH"
@@ -121,12 +157,29 @@ enum
  kTPlotYTitle
 };
 
+
+// series types (controls how series is drawn)
+enum
+{
+	Plot_SeriesBar,
+	Plot_SeriesScatter
+};
+
+// graph type
+enum 
+{
+	Plot_GraphBar,
+	Plot_GraphScatter
+};
+
+// axis identifiers
 enum
 {
 	Axis_X = 0,
 	Axis_Y
 };
 
+// how the axis is scaled
 enum 
 {
 	Plot_AxisAuto,
@@ -134,41 +187,11 @@ enum
 	Plot_AxisZoom
 };
 
+// axis scale type
 enum
 {
 	Plot_AxisLinear,
 	Plot_AxisLog
 };
-
-class CcPlotAxes
-{
-public:
-	CcPlotAxes();
-	virtual ~CcPlotAxes();
-
-	virtual Boolean CalculateDivisions() = 0;
-
-	virtual Boolean CalculateLinearDivisions(int axis);
-	virtual Boolean CalculateLogDivisions(int axis);
-
-	virtual	void CheckData(int axis, float data) = 0;
-
-	float m_Max[2];				// maximum and minimum of the DATA
-	float m_Min[2];
-
-	float m_AxisMax[2];			// max and min of the axes (default to same as data range)
-	float m_AxisMin[2];		
-
-	float m_Delta[2];			// distance between divisions
-
-	int m_NumDiv[2];			// number of divisions per axis
-
-	float *m_AxisDivisions[2];	// storage for the division markers
-
-	int m_AxisScaleType;		// either auto, span or zoom
-	bool m_AxisLog[2];			// log if true, linear if false
-
-};
-
 
 #endif

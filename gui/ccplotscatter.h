@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:15
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:29  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:50  ckp2
 //   The PLOT classes!
 //
@@ -27,10 +30,12 @@ class CcPlotScatter : public CcPlotData
 {
     public:
         void DrawView();
-        void Clear();
         Boolean ParseInput( CcTokenList * tokenList );
         CcPlotScatter();
         virtual ~CcPlotScatter();
+
+		void CreateSeries(int numser, int* type);
+		void AllocateMemory(int length);
 };
 
 class CcSeriesScatter : public CcSeries
@@ -41,19 +46,8 @@ public:
 	virtual ~CcSeriesScatter();
 
 	void AllocateMemory(int length);
-	void CreateSeries(int sernum);
 
-	float **	m_Data[2];
-};
-
-class CcPlotAxesScatter : public CcPlotAxes
-{
-public:
-	CcPlotAxesScatter();
-	virtual ~CcPlotAxesScatter();
-
-	Boolean CalculateDivisions();
-	void CheckData(int axis, float data);
+	float *		m_Data[2];					// pointer to a this series' data (x and y)
 };
 
 #endif

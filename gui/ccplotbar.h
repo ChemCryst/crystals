@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Steve Humphreys
 //   Created:   10.11.2001 10:19
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:28  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:49  ckp2
 //   The PLOT classes!
 //
@@ -26,10 +29,12 @@ class CcPlotBar : public CcPlotData
 {
     public:
         void DrawView();
-        void Clear();
         Boolean ParseInput( CcTokenList * tokenList );
         CcPlotBar();
         virtual ~CcPlotBar();
+
+		void CreateSeries(int numser, int* type);		// creates all data series (type is a block of numser series types)
+		void AllocateMemory(int length);				// calls AllocateMemory for each series.
 };
 
 class CcSeriesBar : public CcSeries
@@ -40,21 +45,8 @@ class CcSeriesBar : public CcSeries
 		virtual ~CcSeriesBar();
 
 		void AllocateMemory(int length);
-		void CreateSeries(int sernum);
 
-		CcString*	m_Labels;						// one label per data item
-		float **	m_Data;							// one number per data item, per series
+		float *		m_Data;							// one number per data item
 };
-
-class CcPlotAxesBar : public CcPlotAxes
-{
-	public:
-		CcPlotAxesBar();
-		virtual ~CcPlotAxesBar();
-
-		Boolean CalculateDivisions();
-		void CheckData(int axis, float data);
-};
-
 
 #endif

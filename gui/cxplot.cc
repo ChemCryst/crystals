@@ -9,6 +9,9 @@
 //   Created:   09.11.2001 22:48
 //
 //   $Log: not supported by cvs2svn $
+//   Revision 1.2  2001/11/12 16:24:31  ckpgroup
+//   SH: Graphical agreement analysis
+//
 //   Revision 1.1  2001/10/10 12:44:51  ckp2
 //   The PLOT classes!
 //
@@ -312,7 +315,7 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 	CFont* oldFont;
 	int thickness = 400;
 
-    char face[32] = "Arial";//"Times New Roman";
+    char face[32] = "Times New Roman";
 
 	if(param & TEXT_BOLD) thickness = 600;
 
@@ -323,11 +326,11 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 		CSize temp = m_memDC->GetTextExtent(text.ToCString(), text.Len());
 		CSize move;
 
-		move.cx = temp.cx/sqrt(2);
-		move.cy = temp.cx/sqrt(2);
+		move.cx = temp.cx/sqrt(2);			// must calculate effect of rotation manually. 45 deg -> 1/sqrt(2)
+		move.cy = temp.cx/sqrt(2);			//		for both sin and cos.
 
 		coord.x -= move.cx + temp.cy/2;
-		coord.y += move.cy; 
+		coord.y += move.cy + temp.cy/2; 
 	}
 	else
 	{
@@ -337,7 +340,8 @@ void CxPlot::DrawText(int x, int y, CcString text, int param, int fontsize)
 			oldFont = m_memDC->SelectObject(&theFont);
 			int len = text.Len();
 			CSize temp = m_memDC->GetTextExtent(text.ToCString(), len);
-			coord.y = coord.y + temp.cy*2;
+			coord.y = coord.y + temp.cx/2;		// nb swapping of cx and cy - GetTextEntent doesn't handle rotations
+			coord.x = coord.x - temp.cy/2;		//		90 degree so swap axes.
 		}
 		else
 		{
@@ -397,7 +401,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, CcString text, int param)
 	CSize size;
 	CFont theFont;
 	CFont* oldFont;
-    char face[32] = "Arial";//"Times New Roman";
+    char face[32] = "Times New Roman";
 
 	if(param & TEXT_ANGLE)
 	{
