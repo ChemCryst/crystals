@@ -51,7 +51,8 @@ CcList CrWindow::mModalWindowStack;
 	m_relativePosition = 0;
 	m_relativeWinPtr = nil;
       mWindowWantingSysKeys = nil;
-
+      mSafeClose=0;
+      
 }
 
 CrWindow::~CrWindow()
@@ -532,7 +533,15 @@ void CrWindow::Committed()
 }
 void CrWindow::Cancelled()
 {
+// What if the script has crashed out, and we can't close
+// the modal window?
+      if (mSafeClose > 6)
+      {
+            MessageBox(NULL,"Script not responding","Closing window",MB_OK);
+            SendCommand( "^^CO DISPOSE " + mName );
+      }
 	SendCommand(mCancelText);
+      mSafeClose ++;
 }
 
 void CrWindow::AddToTabGroup(CrGUIElement* tElement)
