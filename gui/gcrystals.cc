@@ -67,17 +67,28 @@ BOOL CCrystalsApp::InitInstance()
 	// Change the registry key under which our settings are stored.
 	// You should modify this string to be something appropriate
 	// such as the name of your company or organization.
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+//      SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	LoadStdProfileSettings(0);  // Load standard INI file options (including MRU)
+//      LoadStdProfileSettings(0);  // Load standard INI file options (including MRU)
 
-	// Register the application's document templates.  Document templates
-	//  serve as the connection between documents, frame windows and views.
+//First free the string allocated by MFC at CWinApp startup.
+//The string is allocated before InitInstance is called.
+      free((void*)m_pszProfileName);
+//Change the name of the .INI file.
+//The CWinApp destructor will free the memory.
 
-//
-	// Parse command line for standard shell commands, DDE, file open
-//	CCommandLineInfo cmdInfo;
-//	ParseCommandLine(cmdInfo);
+      char buffer[255];
+      GetWindowsDirectory( (LPTSTR) &buffer[0], 255 );
+      CcString inipath = buffer;
+      inipath += "\\WinCrys.ini";
+
+      m_pszProfileName=_tcsdup(_T(inipath.ToCString()));
+
+      CcString location =  (LPCTSTR)GetProfileString ( "Setup", "Location", NULL );
+
+      _putenv( ("CRYSDIR="+location+"\\").ToCString() );
+      
+
 
 	// Parse command line for standard shell commands, DDE, file open
       CCommandLineInfo cmdInfo;
