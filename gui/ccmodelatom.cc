@@ -18,6 +18,7 @@ CcModelAtom::CcModelAtom(CcModelDoc* parentptr)
       x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
 	label = "Err";
 	m_selected = false;
+        m_disabled = false;
 	parent = parentptr;
 }
 
@@ -33,6 +34,7 @@ CcModelAtom::CcModelAtom()
       x11 = x12 = x13 = x21 = x22 = x23 = x31 = x32 = x33 = 0;
 	label = "Err";
 	m_selected = false;
+        m_disabled = false;
 }
 
 CcModelAtom::~CcModelAtom()
@@ -130,6 +132,11 @@ void CcModelAtom::Select(Boolean select)
 	m_selected = select;
 }
 
+void CcModelAtom::Disable(Boolean select)
+{
+        m_disabled = select;
+}
+
 Boolean CcModelAtom::IsSelected()
 {
 	return m_selected;
@@ -145,12 +152,24 @@ void CcModelAtom::Render(CrModel* view, Boolean detailed)
             float extra = 0.0;
             int detail = (detailed)? view->m_NormalRes  : view->m_QuickRes ;
 
-            if ( view->LitAtom() == this ) // hover over
+/*            if ( view->LitAtom() == this ) // hover over
 		{
                   if ( m_selected )  // hover over a selected atom
                   {
                         GLfloat Surface[] = { 1.0f-(float)r/255.0f, 1.0f-(float)g/255.0f, 1.0f-(float)b/255.0f, 1.0f };
                         GLfloat Diffuse[] = { 0.9f,0.9f,0.9f,1.0f };
+                        GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
+                        GLfloat Shinine[] = {0.0f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 20.0;
+                  }
+                  else if ( m_disabled )  // hover over a disabled atom
+                  {
+                        GLfloat Diffuse[] = { 1.0f-(float)r/255.0f, 1.0f-(float)g/255.0f, 1.0f-(float)b/255.0f, 1.0f };
+                        GLfloat Surface[] = { 0.9f,0.9f,0.9f,1.0f };
                         GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
                         GLfloat Shinine[] = {0.0f};
                         glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
@@ -173,29 +192,42 @@ void CcModelAtom::Render(CrModel* view, Boolean detailed)
                   }
 		}
             else   // No hover over
-            {
+*/            {
                   if ( m_selected ) // highlighted
                   {
                         GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
                         GLfloat Diffuse[] = { 0.9f,0.9f,0.9f,1.0f };
-                        GLfloat Specula[] = { 0.2f,0.2f,0.2f,1.0f };
-                        GLfloat Shinine[] = {0.0f};
+                        GLfloat Specula[] = { 0.7f,0.7f,0.7f,1.0f };
+//                        GLfloat Shinine[] = {0.0f};
                         glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
                         glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
                         glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+//                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
                         extra = 10.0;
+                  }
+                  else if ( m_disabled )  // disabled atom
+                  {
+                        GLfloat Diffuse[] = { (float)r/512.0f,(float)g/512.0f,(float)b/512.0f, 1.0f };
+                        GLfloat Surface[] = { 0.0f,0.0f,0.0f,1.0f };
+                        GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+//                        GLfloat Shinine[] = {0.0f};
+                        glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
+//                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+                        extra = 20.0;
                   }
                   else  // normal
                   {
                         GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
-                        GLfloat Diffuse[] = { 0.4f,0.4f,0.4f,1.0f };
-                        GLfloat Specula[] = { 0.8f,0.8f,0.8f,1.0f };
-                        GLfloat Shinine[] = {89.6f};
+                        GLfloat Diffuse[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
+//                        GLfloat Diffuse[] = { 0.0f,0.0f,0.0f,1.0f };
+                        GLfloat Specula[] = { 0.0f,0.0f,0.0f,1.0f };
+//                        GLfloat Shinine[] = {0.0f};
                         glMaterialfv(GL_FRONT, GL_AMBIENT,  Surface);
                         glMaterialfv(GL_FRONT, GL_DIFFUSE,  Diffuse);
                         glMaterialfv(GL_FRONT, GL_SPECULAR, Specula);
-                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
+//                        glMaterialfv(GL_FRONT, GL_SHININESS,Shinine);
                   }
             }
 
