@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.43  2003/09/24 08:35:23  rich
+C Modified KDAOPN so that it will open direct-access scratch files.
+C
 C Revision 1.42  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -2043,14 +2046,12 @@ C
 &DOS      CALL CISSUE (COMMND, IFAIL)
 &DOS      IF (IFAIL .EQ. 0) RETURN
 
-&GID      CALL GDETCH(COMMND)
-&GID      RETURN
+&&&GIDGILWXS      CALL GDETCH(COMMND)
+&&&GIDGILWXS      RETURN
 &DVF      IFAIL = SYSTEM(COMMND)
 &DVF      IF (IFAIL .EQ. 0 ) RETURN
-&&LINGIL      CALL SYSTEM(COMMND,IFAIL)
-&&LINGIL      IF (IFAIL .EQ. 0 ) RETURN
-&WXS      CALL SYSTEM(COMMND,IFAIL)
-&WXS      IF (IFAIL .EQ. 0 ) RETURN
+&LIN      CALL SYSTEM(COMMND,IFAIL)
+&LIN      IF (IFAIL .EQ. 0 ) RETURN
 
 C
 &XXX      IF (ISSPRT .EQ. 0) THEN
@@ -3535,8 +3536,8 @@ C
       END
 
 
-&GIDCODE FOR GDETCH
-&GID      SUBROUTINE GDETCH(CLINE)
+&&&GIDGILWXSCODE FOR GDETCH
+&&&GIDGILWXS      SUBROUTINE GDETCH(CLINE)
 &GID      INTERFACE
 &GID                SUBROUTINE GUEXEC (CALINE)
 &GID                    !DEC$ ATTRIBUTES C :: GUEXEC
@@ -3544,11 +3545,13 @@ C
 &GID                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
 &GID                    END SUBROUTINE GUEXEC
 &GID      END INTERFACE
-&GID      CHARACTER*(*) CLINE
-&GID      CALL GUEXEC ( CLINE )
-&GID
-&GID      RETURN
-&GID      END
+&&&GIDGILWXS      CHARACTER*(*) CLINE
+&&&GIDGILWXS      CHARACTER*262 CEXTRA
+&&&GIDGILWXS      CEXTRA = ' '
+&&&GIDGILWXS      WRITE(CEXTRA,'(A)')CLINE
+&&&GIDGILWXS      CALL GUEXEC ( CEXTRA )
+&&&GIDGILWXS      RETURN
+&&&GIDGILWXS      END
 
 
 
