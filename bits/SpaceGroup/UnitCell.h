@@ -39,7 +39,6 @@
 #include "ComClasses.h"
 #include "StringClasses.h"
 #include "Matrices.h"
-//include "ReflectionMerging.h"
       
 class UnitCell:public MyObject
 {
