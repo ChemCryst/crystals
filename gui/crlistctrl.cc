@@ -9,6 +9,12 @@
 //   Authors:   Richard Cooper
 //   Created:   10.11.1998 16:36
 //   $Log: not supported by cvs2svn $
+//   Revision 1.9  2003/05/07 12:18:57  rich
+//
+//   RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+//   using only free compilers and libraries. Hurrah, but it isn't very stable
+//   yet (CRYSTALS, not the compilers...)
+//
 //   Revision 1.8  2003/03/27 16:10:45  rich
 //   Allow list control selection to be set from scripts.
 //
@@ -157,6 +163,23 @@ CcParse CrListCtrl::ParseInput( CcTokenList * tokenList )
                   ((CxListCtrl*)ptr_to_cxObject)->CxSetSelection(select);
                   break;
             }
+            case kTSortColumn:
+            {
+                  bool bSort = true;
+                  tokenList->GetToken(); //Remove that token!
+                  int column = atoi ( tokenList->GetToken().ToCString() );
+                  if( tokenList->GetDescriptor(kLogicalClass) == kTYes)
+                  {
+                    tokenList->GetToken(); //Remove the kTYes token!
+                    bSort = false;
+                  }
+                  ((CxListCtrl*)ptr_to_cxObject)->SortCol(column,bSort);
+
+
+                  break;
+            }
+
+
             case kTSelectAtoms:
             {
                 tokenList->GetToken(); //Remove the kTSelectAtoms token!

@@ -39,6 +39,7 @@ class CxListCtrl : public BASELISTCTRL
         void SelectAll(bool select);
         void AddRow ( CcString * rowOfStrings );
         void AddColumn( CcString colHeader);
+        void SortCol(int col, bool sort);
         void Focus();
         static CxListCtrl * CreateCxListCtrl( CrListCtrl * container, CxGrid * guiParent);
             CxListCtrl( CrListCtrl * container );

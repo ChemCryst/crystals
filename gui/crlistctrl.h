@@ -30,4 +30,12 @@ class   CrListCtrl : public CrGUIElement
         void    GetValue( CcTokenList * tokenList );
         void CrFocus();
 };
+
+#define kSSortColumn     "SORTCOL"
+
+enum
+{
+ kTSortColumn = 850
+};
+
 #endif

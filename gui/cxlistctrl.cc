@@ -549,6 +549,13 @@ void CxListCtrl::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
         *pResult = 0;
 }
 
+void CxListCtrl::SortCol(int col, bool sort)
+{
+    int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
+    if( col >= nColCount) return;
+    SortTextItems( m_colTypes[col], col, sort );
+}
+
 
 // SortTextItems        - Sort the list based on column text
 // Returns              - Returns true for success
