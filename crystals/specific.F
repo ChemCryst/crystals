@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.29  2001/03/15 11:02:36  richard
+C Comment out some old gui instructions fom XPRTDEV
+C
 C Revision 1.28  2001/03/08 14:40:43  richard
 C Split the random function up so that it is possible to obtain a random
 C number with uniform distribution for scripts. The original function gives
@@ -2904,8 +2907,8 @@ C----- CREATE NEW SEQUENCE
       IF (ISET .EQ. 0) THEN
 &XXX      STOP 'NO RANDOM No GENERATOR'
 
-1      V1 = 2. * SNGL(FRAND()) -1.
-       V2 = 2. * SNGL(FRAND()) -1.
+1      V1 = 2. * FRAND() -1.
+       V2 = 2. * FRAND() -1.
       R = V1**2 + V2**2
       IF (R .GE. 1.  .OR. R .EQ. 0. ) GOTO 1
       FAC = SQRT(-2. * LOG(R)/R)
