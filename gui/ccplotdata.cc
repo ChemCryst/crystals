@@ -11,6 +11,9 @@
 //BIG NOTICE: PlotData is not a CrGUIElement, it's just data to be
 //            drawn onto a CrPlot. You can attach it to a CrPlot.
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2002/04/11 11:08:07  DJWgroup
+// SH: Quick fix for dynamic graph scaling.
+//
 // Revision 1.18  2002/03/07 10:55:12  DJWgroup
 // SH: Change text label alignment again.
 //
@@ -258,7 +261,7 @@ Boolean CcPlotData::ParseInput( CcTokenList * tokenList )
 						m_Axes.m_AxisData[m_CurrentAxis].m_AxisScaleType = Plot_AxisAuto;
 				}
 				break;
-				m_AxisOK = false;
+                                m_AxesOK = false;
 			}
 
 			// uses axis scaling of min->max always.
