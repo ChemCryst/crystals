@@ -1,5 +1,6 @@
 %SCRIPT STRUCTURE
 %VARIABLE INTEGER SOLVEMETHOD
+%VARIABLE INTEGER ATOMSOUT
 % VARIABLE LOGICAL SCRIPTEXT
 % IF SCRIPTEXT .EQ. TRUE THEN
 ษ อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
@@ -20,12 +21,13 @@ A SCRIPT to initiate or input the results of Direct Methods computations
 %    FINISH
 %  END IF
 %
-%  IF EXISTS 5 .EQ. 1 THEN
+%  COPY '#SCRIPT NATOMS'
+%  IF ATOMSOUT .GE. 1 THEN
             You already have a model stored.
 %    VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
   'Are you SURE you want to continue? ' -
-         'NO'
+         'YES'
 %    IF VALUE .EQ. 2 THEN
 %      FINISH
 %    END IF
