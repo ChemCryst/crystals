@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/04/12 13:52:02  Administrator
+C Ensure refernce for absorption correction output
+C
 C Revision 1.31  2002/03/17 14:53:38  richard
 C RIC: If refine_diff_density min or max are both within 0.000001 of 0.0, then
 C replace with ? in the CIF file.
@@ -1046,6 +1049,10 @@ C----- J IS DUMMY
 C--CLEAR THE OUTPUT BUFFER
       CALL XMVSPD(IB,LINEA(1),118)
       J=IFIR
+CDJW0402 CONVERT ATOM NAME TO MIXED CASE
+      WRITE(CTEM,'(A4)') ISTORE(M5)
+      CALL XCCLWC (CTEM(2:), CTEM(2:))
+      READ (CTEM,'(A4)') ISTORE(M5)
 C--OUTPUT THE TYPE AND SERIAL NUMBER
       CALL SA41(J,ISTORE(M5),LINEA)
       IND=NINT(STORE(M5+1))
@@ -1221,6 +1228,7 @@ C      MATCH EVERY ATOM ( I.E. ALL BUT , '    ' WOULD PRINT NOTHING )
 C
       DIMENSION KDEV(4)
       CHARACTER *160 CLINE
+      CHARACTER *4 CTEM
 \TSSCHR
 \ISTORE
 C
@@ -1298,6 +1306,11 @@ C----- J IS DUMMY
       CALL XMVSPD(IB,LINEA(1),118)
 C--OUTPUT THE ATOM TYPE AND SERIAL NUMBER
       J=IFIR
+CDJW0402 CONVERT ATOM NAME TO MIXED CASE
+      WRITE(CTEM,'(A4)') ISTORE(M5)
+      CALL XCCLWC (CTEM(2:), CTEM(2:))
+      READ (CTEM,'(A4)') ISTORE(M5)
+C
       CALL SA41(J,ISTORE(M5),LINEA)
       IND=NINT(STORE(M5+1))
       CALL SUBZED(J,IND,LINEA, IPCHAN)
