@@ -754,6 +754,10 @@ Mogul reports error - setting dialog values to zero.
 %           COPY '#RELEASE PUNCH bfile.pch'
 {R * Done.
 {I * Running Mogul.
+^^WI WINDOW BLOCKMOGUL 'Waiting' MODAL CANCEL='^^CO DISPOSE BLOCKMOGUL'
+^^WI GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting Mogul...'
+^^WI @ 3,2 STATIC T1 'Close Mogul to continue.' } SHOW
+^^CR
 ^^CO GETREG "Software\CCDC\" "MogulLatestVersion"
 %GET SILENT NOSTORE TEXT 'Latest mogul?' ' '
 %TRANSFER '^^CO GETREG "Software\CCDC\Mogul\' // CVALUE // -
@@ -761,8 +765,8 @@ Mogul reports error - setting dialog values to zero.
 % GET SILENT NOSTORE TEXT 'Exec?' ' '
 % TRANSFER '#SPAWN + "' // CVALUE // '" -ins crystals.qf' TO CRYSTALS
 {R * Done.
-^^CO        DISPOSE MOGUL2
-%           FINISH
+^^CO        DISPOSE BLOCKMOGUL
+%           COPY '#OPEN SCPDATA mogul.stat'
 %         END BLOCK
 %         BLOCK        %%MR_BRR
 %           CASE NIN
