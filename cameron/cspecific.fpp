@@ -206,6 +206,8 @@ C &&GILGID      CHARACTER*80 CHARTC
 
 C &&GILGID      ID = KQUICKDATA(N*2)    
 
+      ICOL1 = MIN ( ICOL, 15 )
+
       DO 10 I = 1 , N
 
 &DOS        ixx2(i) = nint(float(ix(i))*scale_X)
@@ -227,9 +229,9 @@ C &&GILGID     3 NINT(4.04*IVGACL(3,ICOL+1))
 C &&GILGID2     FORMAT (A,3(1X,I3))
 C &&GILGID      CALL ZMORE(CHARTC,0)
 
-&&GIDGIL              CALL FSTCOL ( NINT(4.04*IVGACL(1,ICOL+1)),
-&&GIDGIL     1                      NINT(4.04*IVGACL(2,ICOL+1)),
-&&GIDGIL     1                      NINT(4.04*IVGACL(3,ICOL+1)) )
+&&GIDGIL              CALL FSTCOL ( NINT(4.04*IVGACL(1,ICOL1+1)),
+&&GIDGIL     1                      NINT(4.04*IVGACL(2,ICOL1+1)),
+&&GIDGIL     1                      NINT(4.04*IVGACL(3,ICOL1+1)) )
 
 C &&GILGID      WRITE(CHARTC,3)'^^CH FPOLYE',N,ID
 C &&GILGID3     FORMAT(A,2(1X,I6))
