@@ -32,7 +32,27 @@
 %%
 %%
 %  TRANSFER '#SPAWN ' // CFILE // ' -q  platon.res' TO CRYSTALS
-%  COPY '#SPAWN COMMAND.COM /C CRYSDIR:CONVPLAT'
+%%
+%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%   VARIABLE LOGICAL ANSWER
+%   BLOCK
+%      EVALUATE QTITLE = 'Squeeze has ended'
+%      EVALUATE QLINE1 = 'Do you want to apply the results'
+%      EVALUATE QLINE2 = ' '
+%      EVALUATE BUTTOK = '&Yes'
+%      EVALUATE BUTTXX = '&No'
+%      COPY '#SCRIPT XQUESTIO'
+%      IF ANSWER .EQ. FALSE THEN
+%          FINISH
+%      END IF
+%   END BLOCK
+%% use the results
+%  IF FILEEXISTS ( 'LIST6.ABC' ) .EQ. TRUE THEN
+Trying to delete old Squeeze files
+%     COPY '#SPAWN +DEL LIST6.ABC'
+Deleted old Squeeze files
+%  END IF
+%  COPY '#SPAWN +COMMAND.COM /C CRYSDIR:CONVPLAT'
 %  COPY '#USE LIST6.ABC'
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit
