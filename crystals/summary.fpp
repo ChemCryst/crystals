@@ -1445,10 +1445,10 @@ C
         WRITE ( NCAWU , 1015 )
         WRITE ( CMON , 1015 )
         CALL XPRVDU(NCVDU, 2,0)
-1015    FORMAT ( ' Type                 Radius              ' ,
-     2 '  Number        Mu      Atomic' /
-     3         1X , '      Covalent  Van der Waals     Ionic  ' ,
-     4 '                        weight' )
+1015    FORMAT ( ' Type              Radius              ' ,
+     2 '  Number     Mu    Atomic Colour' /
+     3         1X , '   Covalent  Van der Waals     Ionic  ' ,
+     4 '                   weight' )
 C
         DO 2000 I = L29 , M29 , MD29
         IF (ISSPRT .EQ. 0) THEN
@@ -1457,8 +1457,8 @@ C
           WRITE ( NCAWU , 1105 ) ( STORE(J) , J = I , I + MD29 - 1 )
           WRITE ( CMON , 1105 ) ( STORE(J) , J = I , I + MD29 - 1 )
           CALL XPRVDU(NCVDU, 1,0)
-1105      FORMAT ( 1X , A4 , 2X , F8.4 , 2X , F13.4 , 2X , F8.4 , 2X ,
-     2 F8.3 , 2X , F8.1 , 2X , F10.4 )
+1105      FORMAT ( 1X , A4 ,  F7.4 , 2X , F13.4 , 2X , F8.4 , 2X ,
+     2 F8.3 , F8.2 ,  F9.3,2X,A4 )
 2000    CONTINUE
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2005 )

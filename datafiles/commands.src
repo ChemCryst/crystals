@@ -1300,7 +1300,7 @@ LIST 29            2    0
          1    1    1    1    1    1    0    0    0    0
 The elements in the asymmetric unit
 (1H ,8(3X,12A1))
-(1H ,3X,A4,7F15.2,1X,A4)
+(1H ,3X,A4,6F15.2,11X,A4)
          3    2    2    2    2    2    2    3 
     .TYPE               0    0    1    0    0 NULL
     .COVALENT           0    0    1    0    0 0.8
@@ -1993,13 +1993,16 @@ DISK               8    0
      LOW            MEDIUM         HIGH
 PURGE              1    0
    4    4096 CRYSTALSFIDDLE
-   1.PURGE              4    1    0    0
-         5    1    3    1
-    .FILE               1    0    1    0    1 OLD
-    .INITIALSIZE        2    0    1    0    0         0
-    .LOG                3    0    1    2    0 OFF
+   1.PURGE              7    1    0    0
+         5    5    5    5    1    3    1
+    .FILE1              1    0    1    0    1 OLD
+    .FILE2              2    0    1    0    1 
+    .FILE3              3    0    1    0    1 
+    .FILE4              4    0    1    0    1 
+    .INITIALSIZE        5    0    1    0    0         0
+    .LOG                6    0    1    2    0 OFF
      OFF            ON
-    .LIST               4    0    1    0    0         0
+    .LIST               7    0    1    0    0         0
 SIMULATE          12    0
    6    4096 CRYSTALSFIDDLE
    1.ENVIRONMENT        1 9999    0    0
