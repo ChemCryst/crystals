@@ -20,11 +20,7 @@
 ^^WI   }
 ^^WI   @ 4,2 PLOTWINDOW _VFOFC NROWS=20 NCOLS=64
 ^^WI     DEFINEPOPUPMENU POPUP 'Selection'
-^^WI       ITEM _SDELA '&Delete _D' 'HELLO'
-^^WI	   ITEM _SSER 'Series _S' 'HELLO'
-^^WI	   ITEM _SXVAL 'XVal _X' 'HELLO'
-^^WI	   ITEM _SYVAL 'YVal _Y' 'HELLO'
-^^WI	   ITEM _SLAB 'Label _L' 'HELLO'
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
 ^^WI     ENDDEFINEMENU
 ^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
 ^^WI   {
@@ -36,11 +32,40 @@
 ^^WI SHOW
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
-%  COPY '#sum list 6 level=plot'
-%  COPY 'END'
-%  VERIFY EXT_BOK EXT_BXX HELLO
-%  GET SILENT NOSTORE FINAL ABBREVIATED -
- '?' 'EXT_BOK'
-^^CO DISPOSE xfovsfc
+%  LOOP
+%    COPY '#sum list 6 level=plot'
+%    COPY 'END'
+%    VERIFY EXT_BOK OMIT
+%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
+%    IF VALUE .EQ. 1 THEN
+^^CO    DISPOSE xfovsfc
+%       FINISH
+%    END IF
+%    BLOCK
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 28'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      COPY 'LOCATE RECORDTYPE = 104'
+%      COPY 'INSERT'
+%      CLEAR
+%      INSERT 'CHANGE 0 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 1 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 2 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      COPY 'WRITE'
+%      COPY 'END'
+%    END BLOCK
+%  END LOOP
 %END SCRIPT
 
