@@ -11,7 +11,6 @@
 %      COPY 'MON OFF'
 %      COPY 'REFORMAT ALL'
 %      COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
-%      COPY 'MON MEDIUM'
 %      COPY 'END'
 %      IF ( EXISTS ( 5 ) .NE. 1 ) THEN
 %        FINISH

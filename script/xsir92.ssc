@@ -3,8 +3,8 @@
 %   VARIABLE LOGICAL ANSWER
 %   VARIABLE INTEGER IRUN
 %   IF EXISTS 6 .LT. 1 THEN
-            You do not have any reflections stored.
-            It is impossible to proceed without data.
+{E            You do not have any reflections stored.
+{E            It is impossible to proceed without data.
 %       FINISH
 %   END IF
 %%
