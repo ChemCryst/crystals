@@ -29,12 +29,10 @@
       $errtext = "";
    }
 
-   %mail=(To=>'richard.cooper@chem.ox.ac.uk',
+   %mail=(To=>'richardiancooper@gmail.com,stefan.pantos@chem.ox.ac.uk,david.watkin@chem.ox.ac.uk',
           From=>'richard.cooper@chem.ox.ac.uk',
-          Subject=>"Crystals overnight build for $COMPCODE",
+          Subject=>"Failed overnight build for $COMPCODE on Galena",
           Message=>"Error description $descr\n".
-                   "CRYSSRC: $CRYSSRC\n".
-                   "CRYSBUILD: $CRYSBUILD\n".
                    "Last file $lastfile\n".
                    "Errors from $errfile :\n".
                    "\n\n$errtext\n");
