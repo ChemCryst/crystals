@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.47  2003/06/09 13:45:34  rich
+C Use correct module ID when generating errors in bond calculation
+C routines. IOPBND.
+C
 C Revision 1.46  2003/05/22 11:21:57  rich
 C In function MAKE41 (constructs a list of bonds from atom coords), add extra
 C logic so that any symmetry operation that is not I, and does not move an
@@ -485,7 +489,7 @@ C
       DATA INTRAD(1)/1/,INTRAD(2)/1/,INTRAD(3)/0/
       DATA INTRAD(4)/0/,INTRAD(5)/0/
 C----- MAXIMUM PARTS PER PARAMETER
-      DATA MXPPP /10/
+      DATA MXPPP /50/
 
       DATA KHYD /'H   '/
 
@@ -948,7 +952,7 @@ C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
         JA=NFL
         JD = JA + NWA * NWS * MXPPP
         NO=JD+NWAT*3-1
-        NZ=NWAT*NWAT
+        NZ=NWAT*NWAT    !NWAT normally 9, but 15 if CELL errors are used.
         JE=JD+NZ
         JF=JE+NZ
         JG=JF+NZ
@@ -1087,6 +1091,29 @@ C--CHECK IF ANY DISTANCES OR ANGLES HAVE BEEN FOUND AT THIS ATOM
            JPART = 0
            K = KDIST4( JS, JT, JATVC, 0)
          ENDIF
+
+C Distance stack has this structure:
+C   0  ADDRESS OF ATOM IN L5
+C   1  ACCEPTANCE FLAG
+C
+C      1  ACCEPTABLE TO NONE
+C      2  DISTANCES ONLY
+C      3  ANGLES ONLY
+C      4  ACCEPTABLE TO BOTH
+C
+C   2  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM.)
+C   3  NON-PRIMITIVE LATTICE INDICATOR
+C   4  T(X)
+C   5  T(Y)
+C   6  T(Z)
+C   7  TRANSFORMED X
+C   8  TRANSFORMED Y
+C   9  TRANSFORMED Z
+C  10  DISTANCE
+C  11  DISTANCE SQUARED
+C  12  ADDRESS IN LIST 12  (IF USED).
+C  13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
+
 
 c        DO MMMI=NFLBAS,NFLBAS+JT*(K-1),JT
 c         WRITE(CMON,'(A,A4,I4)')'Found bond to:',
@@ -1277,9 +1304,9 @@ C--APPLY THE SYMMETRY MATRIX AND STORE THE TRANSFORMATION MATRIX AT 'JF'
                 CALL XMD3B(JE,JG,JF,2,NWD)
 C--MOVE THE V/CV MATRIX TO DISTANCE V/CV AREA  (THIS WILL INCLUDE CELL)
                 CALL XMVCD(JD,NWD,JN,NWDT)
-C--CALCULATE 'DX','DY' AND 'DZ'
+C--CALCULATE 'DX','DY' AND 'DZ', store results in B(1 to 3)
                 CALL XSUBTR(STORE(M5A+4),STORE(J+7),B(1),3)
-C--CAL CULATE THE RECIPROCAL OF THE DISTANCE
+C--CALCULATE THE RECIPROCAL OF THE DISTANCE
                 F=1./STORE(J+10)
                 NY=JD
 C--CHECK IF THE CELL ERRORS ARE TO BE USED
@@ -1288,8 +1315,10 @@ C--CALCULATE THE CELL ERRORS
                   CALL XAPP31(NY)
                   NY=NY+6
                 END IF
-C--CALCULATE THE ERROR CONTRIBUTIONS FOR ATOM ONE
+C--CALCULATE THE ERROR CONTRIBUTIONS FOR ATOM ONE 
                 CALL XMULTR(B(1),F,B(1),3)
+C B(1) now is: Delta X / Distance
+C Multiply by metrix tensor
                 CALL XMLTMM(STORE(L1M1),B(1),BPD(4),3,3,1)
 C--APPLY THE DERIVATIVE VECTOR TO THE TRANSFORMATION MATRIX
                 J1=JF
@@ -3671,7 +3700,16 @@ C Calculate transformed co-ordinates
           STORE(JS+10)=STORE(M41B+13)
           STORE(JS+11)=STORE(M41B+13)**2
 
-          ISTORE(JS+12)=-1
+
+          IF ( L12 .GT. 0 ) THEN
+            M12 = L12
+            DO I = 1,J51
+              M12 = ISTORE(M12)
+            END DO
+          END IF
+
+
+          ISTORE(JS+12)=M12
           IF(JT.EQ.14) STORE(JS+13)=STORE(M41B+13)
 
           CALL CATSTR (STORE(I51),STORE(I51+1),
@@ -4498,9 +4536,9 @@ C----- COMPRES THE 'WEIGHTS' MATRIX TO A VECTOR IN COLUMN 1
       J = IWTS
       K = IWTS
       DO 1300 I = 1,NLS
-      STORE(J) = STORE(K)
-      J = J + 1
-      K = K + 1 + NLS
+        STORE(J) = STORE(K)
+        J = J + 1
+        K = K + 1 + NLS
 1300  CONTINUE
 C
 C----- SET UP THE PARTS-PER-PARAMETER VECTOR
@@ -4530,6 +4568,23 @@ C
 950   CONTINUE
 C----- ONE TO ONE CORRESPONDANCE BETWEEN PHYSICAL AND LS PARAMETERS
       CALL XGVCV ( LS, NS, NW, LF, JA)
+
+C For consistency with the multi-part route through this routine,
+C pre and post-multiply by weights (at JA) and then replace JA
+C with a unit matrix.
+
+C - Get some work space for the following calculation
+      IVCV = KSTALL(NS*NS)
+C - Premultiply VCV by multipliers.
+      CALL XMLTMM ( STORE(JA),   STORE(LF), STORE(IVCV), NS, NS, NS )
+C - Postmultiply VCV by multipliers.
+      CALL XMLTMM ( STORE(IVCV), STORE(JA), STORE(LF),   NS, NS, NS )
+C - Replace weights with unit matrix.
+      CALL XUNTM ( STORE(JA), NS )
+C - Hand back the work area.
+      CALL XSTRLL (IVCV)
+
+
       GOTO 9900
 C
 9000  CONTINUE
@@ -4602,6 +4657,38 @@ C
       ENDIF
 1300  CONTINUE
       RETURN
+
+
+C e.g. FIRST CALL
+c      DO 1300 I = 1, NLS
+c        LBASE = 0
+c        DO 1200 J = 1, NPHYS
+c          SUM = 0.0
+c          DO 1100 K = 1, NPARTS(J)
+c            L = 3 * (K-1)  + MOD (J-1, 3) + LBASE + 1
+c            SUM = SUM + V(L,I) * A(L)
+c1100      CONTINUE
+c          U(I,J) = SUM
+c          IF (MOD(J,3).EQ.0) LBASE=LBASE+3*NPARTS(J)
+c1200    CONTINUE
+c1300  CONTINUE
+c      RETURN
+c
+C e.g. SECOND CALL
+c      LBASE = 0
+c      DO 1300 I = 1, NPHYS
+c        DO 1200 J = 1,NPHYS
+c          SUM = 0.0
+c          DO 1100 K = 1, NPARTS(I)
+c            L = 3 * (K-1)  + MOD (I-1, 3) + LBASE + 1
+c            SUM = SUM + V(L,J) * A(L)
+c1100      CONTINUE
+c          U(I,J) = SUM
+c1200    CONTINUE
+c        IF (MOD(I,3).EQ.0) LBASE=LBASE+3*NPARTS(I)
+c1300  CONTINUE
+c      RETURN
+
       END
 C
 CODE FOR XFWM
@@ -4638,7 +4725,10 @@ C
              SUM = SUM + A(L) * A(L)
 1100         CONTINUE
 C
-      B(I,I) = SUM
+C      B(I,I) = SUM
+C RICHARD 2003 - I think this should be a unit matrix.
+C the weights have already been applied.
+      B(I,I) = 1.
       IF (MOD(INDEXF,NPAR).EQ.0) LBASE = LBASE + NPAR * NPARTS(INDEXF)
 1200  CONTINUE
       RETURN
