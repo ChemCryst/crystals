@@ -1,4 +1,15 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.8  2003/07/01 17:47:36  rich
+C
+C This is an odd one: Added two new directives to #MATRIX. SCR2A moves
+C script variables MATRIX:A11 - MATRIX:A33 into the A register. SCR2B
+C moves MATRIX:B11 - MATRIX:B33 into the B register. Upon any operation
+C that updates the accumulator, the result is stuffed into the script
+C variables MATRIX:M11 - MATRIX:M33.
+C
+C If a script is not running, or the variables are not defined everything
+C fails safe.
+C
 C Revision 1.7  2003/05/07 12:18:54  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -213,6 +224,7 @@ C  C(N,L)=A(L,N)'
 C-----INV     
 8     CONTINUE
       CALL MATINV(A,ACC,D)
+      ISTAT = KSCTRN ( 1 , 'MATRIX:DET' ,D, 1 )
       WRITE(CMON,'(A, F12.5)') 'Determinant = ', D
 &&&GIDGILWXS      CALL ZMORE(CMON,0)
       GOTO 101
