@@ -1497,7 +1497,7 @@ New CIF extensions
     .COMPLETENESS       0    0    1    0    1 0.
     .THETA-FULL         0    0    1    0    1 0.
     .COMPL-FULL         0    0    1    0    1 0.
-    .ZZ13               0    0    1    0    1 0.
+    .PRESSURE           0    0    1    0    1 0.
     .ZZ14               0    0    1    0    1 0.
     .ZZ15               0    0    1    0    1 0.
     .ZZ16               0    0    1    0    1 0.

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.39  2002/07/22 14:37:31  Administrator
+C Try to fix LIST 4 in cif
+C
 C Revision 1.38  2002/07/16 14:20:22  richard
 C Fix format overflow when cell is bigger than 10,000 cubic Angstroms
 C
@@ -3912,6 +3915,11 @@ C
 C 
          WRITE (NCFPU1,'(''_diffrn_ambient_temperature '',I10)')
      1    NINT(STORE(L30CD+6))
+
+         IF ( STORE(L30CF+12) .GT. 0.1 ) THEN
+           WRITE (NCFPU1,'(''_diffrn_ambient_pressure '',I10)')
+     1     NINT(STORE(L30CF+12))
+         END IF
 C 
          CBUF(1:15)='_diffrn_reflns_'
 C 

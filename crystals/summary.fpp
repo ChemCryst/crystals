@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.32  2002/07/29 13:01:41  richard
+C #THLIM calls completeness code, which inserts values into L30.
+C
 C Revision 1.31  2002/07/22 14:37:31  Administrator
 C Try to fix LIST 4 in cif
 C
@@ -2326,7 +2329,8 @@ C
       DATA (CKEY(I,9),I=1,MAXKEY)/ 
      1 'Sigma Calc', 'No. Calc', 'R Calc', 'Rw Calc',
      2 'Sigma All', 'No. All', 'R All', 'Rw All', 'Extn-su',
-     * 'Completeness' , 'Theta-full', 'Cmpltnss-full', 7*'*' /
+     4 'Completeness' , 'Theta-full', 'Cmpltnss-full', 'Pressure kPa',
+     5 6*'*' /
 C
 C
 C
