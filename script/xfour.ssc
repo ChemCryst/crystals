@@ -291,11 +291,19 @@
 %           COPY '#SFLS 7'
 %         END IF
 %         IF DOSCALE .EQ. 1 THEN
-%           COPY 'SCALE'
+%           IF TWINNED .EQ. TRUE THEN                                                     
+%             COPY 'SCALE /FO/=SCALED-/FOT/'                                              
+%           ELSE                                                                          
+%             COPY 'SCALE'
+%           END IF
 %           COPY 'END'
 %         END IF
 %         IF DOCALC .EQ. 1 THEN
-%           COPY 'CALC'
+%           IF TWINNED .EQ. TRUE THEN                                                     
+%             COPY 'CALC /FO/=SCALED-/FOT/'                                              
+%           ELSE                                                                          
+%             COPY 'CALC'
+%           END IF
 %           COPY 'END'
 %         END IF
 %       END IF

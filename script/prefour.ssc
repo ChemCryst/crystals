@@ -55,7 +55,11 @@
 %    COPY 'END'
 {I Calculating structure factors for temporary reflection list.
 %    COPY '#SFLS 7'
-%    COPY 'CALC'
+%    IF ( TWINNED ) THEN
+%      COPY 'CALC /FO/=SCALED-/FOT/'
+%    ELSE
+%      COPY 'CALC'
+%    END IF
 %    COPY 'END'
 {I Computing Fourier summation using temporary reflection list.
 %    COPY '#FOURIER 7'
