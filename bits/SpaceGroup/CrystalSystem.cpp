@@ -322,21 +322,16 @@ std::ostream& operator<<(std::ostream& pStream, Regions& pHeaders)
 ConditionColumn::ConditionColumn()
 {
     iRegionConditions = new vector<Index>();
-    iConditions = new ArrayList<Indexs>(1);
+    iConditions = new vector<Indexs*>();
 }
 
 ConditionColumn::~ConditionColumn()
 {
-	Indexs* tValue2;
-    int tSize = iConditions->length();
-    for (int i = 0; i < tSize; i++)
-    {
-        tValue2 = iConditions->remove(i);
-        if (tValue2!=NULL)
-        {
-            delete tValue2;
-        }
-    }
+	vector<Indexs*>::iterator tIter;
+	for (tIter = iConditions->begin(); tIter != iConditions->end(); tIter++)
+	{
+		delete (*tIter);
+	}   
     delete iConditions;
     delete iRegionConditions;
 }
@@ -349,20 +344,27 @@ void ConditionColumn::addRegion(signed char pIndex)
 
 void ConditionColumn::addCondition(signed char pIndex, int pRow)
 {
-    Indexs* tIndexs = iConditions->get(pRow);
-    if (tIndexs==NULL)
+	if (pRow+1 > iConditions->size())
+	{
+		iConditions->resize(pRow+1, NULL);
+	}
+    if (iConditions->at(pRow) ==NULL)
     {
-        iConditions->setWithAdd(new Indexs(pIndex), pRow);
+        iConditions->at(pRow) = new Indexs(pIndex);
     }
     else
     {
-        tIndexs->addIndex(pIndex);
+        iConditions->at(pRow)->addIndex(pIndex);
     }
 }
 
 void ConditionColumn::addEmptyCondition(int pRow)
 {
-    iConditions->setWithAdd(NULL, pRow);
+	if (pRow+1 > iConditions->size())
+	{
+		iConditions->resize(pRow+1, NULL);
+	}
+    iConditions->at(pRow) = NULL;
 }
 
 void ConditionColumn::setRegion(char* pRegion)
@@ -398,17 +400,17 @@ int ConditionColumn::countRegions()
 
 int ConditionColumn::length()
 {
-    return iConditions->length();
+    return iConditions->size();
 }
 
 Indexs* ConditionColumn::getConditions(int pIndex)
 {
-    return iConditions->get(pIndex);
+    return iConditions->at(pIndex);
 }
 
 std::ostream& ConditionColumn::output(std::ostream& pStream, Regions* pRegions, Conditions* pConditions)
 {
-    int tNumConditions = iConditions->length();
+    int tNumConditions = iConditions->size();
     int tNumHeader = iRegionConditions->size();
     
     for (int i = 0; i < tNumHeader; i++)
@@ -422,7 +424,7 @@ std::ostream& ConditionColumn::output(std::ostream& pStream, Regions* pRegions, 
     pStream << "\n\n";
     for (int i = 0; i <= tNumConditions; i++)
     {
-        Indexs*  tConditions = iConditions->get(i);
+        Indexs*  tConditions = iConditions->at(i);
         if (tConditions)
         {
             tConditions->output(pStream);
@@ -687,7 +689,7 @@ SpaceGroups* Table::getSpaceGroup(int pLineNum, int pPointGroupNum)
     SGColumn* tGroups = iSGColumn->get(pPointGroupNum);
     if (tGroups)
     {
-            return tGroups->get(pLineNum);
+            return tGroups->at(pLineNum);
     }
     return NULL;
 }
@@ -733,7 +735,7 @@ bool Table::hasSpaceGroupInColumns(vector<int>& pColumnNums, uint pRowNumber)
 	
 	for (tIter = pColumnNums.begin(); tIter != pColumnNums.end(); tIter++)
 	{
-		if (iSGColumn->get((*tIter))->get(pRowNumber)->count() > 0) 
+		if (iSGColumn->get((*tIter))->at(pRowNumber)->count() > 0) 
 		{
 			return true;
 		}
@@ -761,7 +763,7 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
         tNumSGs += tSpaceGroups->count();
     }
     pStream << "SPACEGROUPS " << tNumSGs << "\n";
@@ -769,7 +771,7 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream)
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
         if (tSpaceGroups->count() > 0)
             pStream << *(tSpaceGroups) << "\n";
     }
@@ -797,14 +799,14 @@ std::ofstream& Table::outputLine(int pLineNum, std::ofstream& pStream, set<int, 
     for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
         SGColumn* tSGColumn = iSGColumn->get((*tIter));
-        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
         tNumSGs += tSpaceGroups->count();
     }
     pStream << "SPACEGROUPS " << tNumSGs << "\n";
     for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
         SGColumn* tSGColumn = iSGColumn->get((*tIter));
-        SpaceGroups* tSpaceGroups = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroups = tSGColumn->at(pLineNum);
         if (tSpaceGroups->count() > 0)
             pStream << *(tSpaceGroups) << "+ \n";
     }
@@ -830,7 +832,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, int pColumn
     for (int i = 0; i < tLengthSpaceGroup; i++)
     {
         SGColumn* tSGColumn = iSGColumn->get(i);
-        SpaceGroups* tSpaceGroup = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroup = tSGColumn->at(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -857,7 +859,7 @@ std::ostream& Table::outputLine(int pLineNum, std::ostream& pStream, set<int, lt
     for (tIter = tPointGroups.begin(); tIter != tPointGroups.end(); tIter++)
     {
         SGColumn* tSGColumn = iSGColumn->get((*tIter));
-        SpaceGroups* tSpaceGroup = tSGColumn->get(pLineNum);
+        SpaceGroups* tSpaceGroup = tSGColumn->at(pLineNum);
         pStream << setw(pColumnSize) << *(tSpaceGroup) << " ";
     }
     pStream << "\n";
@@ -912,7 +914,7 @@ int Table::numberOfColumns()
 
 int Table::numberOfRows()
 {
-    return iSGColumn->get(0)->length();
+    return iSGColumn->get(0)->size();
 }
 
 set<int, ltint>& Table::columnsFor(LaueGroup& pLaueGroup,  set<int, ltint>& pColumnIndeces)
@@ -996,6 +998,7 @@ int Table::conditionsUsed(signed char pIndices[], const int pMax) const
 {
     int tNumColumns = iColumns->length();
     TreeSet<signed char> tIndices;
+//	multiset<signed char> tIndices;
     
     for (int i = 0; i < tNumColumns; i++)
     {
