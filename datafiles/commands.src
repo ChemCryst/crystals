@@ -935,7 +935,7 @@ PATTERSON DIVISIONS FOR EACH OF THE AXES
 (1H ,6F10.2)
 LIST 15            0    0
   15   40960 CRYSTALSINPUT
-LIST 16           20    0
+LIST 16           21    0
   16   40960 CRYSTALSINPUT
    1.DEFINE             0 9999    0    0    0    0  101    5   16
          0    0    0    0    0    0    0    0    0    0
@@ -976,6 +976,8 @@ LIST 16           20    0
   19.ORIGIN             0 9999    0    0    0    0  119    5   16
          0    0    0    0    0    0    0    0    0    0
   20.REM                0 9999    0    0    0    0  120    5   16
+         0    0    0    0    0    0    0    0    0    0
+  21.SAME               0 9999    0    0    0    0  121    5   16
          0    0    0    0    0    0    0    0    0    0
 LIST 17           19    0
   17   40960 CRYSTALSINPUT
@@ -1189,9 +1191,9 @@ THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT
          1    1    0    0    1    1    0    0    0    0
 THE INVERSE MATRICES FOR THE TWIN TRANSFORMATIONS
 (3(1H ,10X,3F10.3/))
-LIST 26            3    4
+LIST 26            3    5
    2    4096 CRYSTALSPROCESS
-    1    2   16   17
+    1    2    5   16   17
    1.DEPENDENCIES       4    0    0    0    4    2    1    5   26
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1
