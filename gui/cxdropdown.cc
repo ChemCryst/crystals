@@ -10,6 +10,9 @@
 //   Modified:  6.3.1998 10:10 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2000/11/03 10:47:56  csduser
+// Size dropdown list correctly.
+//
 // Revision 1.6  2000/07/04 14:41:54  ckp2
 // Gui changes since last year.
 // Mainly chart handling for multiple charts in one window.
@@ -263,7 +266,7 @@ int	CxDropDown::GetIdealHeight()
 	TEXTMETRIC textMetric;
 	cdc.GetTextMetrics(&textMetric);
 	cdc.SelectObject(oldFont);
-        return (mItems+1) * ( textMetric.tmHeight + 2 );
+        return (mItems+3) * ( textMetric.tmHeight + 4 );
 #endif
 #ifdef __LINUX__
       int cx,cy;
