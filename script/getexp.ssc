@@ -7,6 +7,13 @@
 %    EVALUATE EXPECTED = 0
 %    EVALUATE EXPECTALL = 0
 %%
+%    IF EXISTS 29 .NE. 1 THEN
+{E No list 29 present. CRYSTALS cannot determine how many atoms to keep.
+%      EVALUATE EXPECTED = 10000
+%      EVALUATE EXPECTALL = 10000
+%      FINISH
+%    END IF
+%%
 %%  Look at the list 29 to find the largest atom type present and the total
 %%  number of atoms to find
 %%
@@ -36,6 +43,12 @@
 %    OUTPUT
 %    CLEAR
 %    EVALUATE EXPECTED = TNATM
+%    IF EXPECTED .EQ. 0 THEN
+%       EVALUATE EXPECTED = 10000
+%    END IF
+%    IF EXPECTALL .EQ. 0 THEN
+%       EVALUATE EXPECTALL = 10000
+%    END IF
 %%
 %    COPY 'END'
 %END SCRIPT
