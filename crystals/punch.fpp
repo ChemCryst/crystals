@@ -419,10 +419,12 @@ CODE FOR XPCH6S
 C--PUNCH LIST 6 IN S.F.L.S. FORMAT
 C
 C--
+      DIMENSION JFOT(1), JFOO(1)
 \ISTORE
 C
 \STORE
 \XUNITS
+\XIOBUF
 \XSSVAL
 \XLST01
 \XUSLST
@@ -430,12 +432,34 @@ C
 \XOPVAL
 C
 \QSTORE
+      DATA JFOT(1)/10/
+      DATA JFOO(1)/3/
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IN)
       IF ( IERFLG .LT. 0 ) GO TO 9900
+c
+cdjwjan2001
+C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
+c
+      JNFO=KCOMP(1,JFOO+l6,ISTORE(L6DMP),MD6DMP,1)
+      JNFT=KCOMP(1,JFOT+l6,ISTORE(L6DMP),MD6DMP,1)
+      write(cmon,'(a,4i5)')'dmp',  jnfo, jnft, l6
+      call xprvdu(ncvdu, 1,0)
+      write(cmon,'(a,35i4)') 'dmp',(istore(izz)-l6,
+     1  izz=l6dmp,  l6dmp+md6dmp-1)
+      call xprvdu(ncvdu, 1,0)
+c
+c      DO 1900 I=L6DMP,M6DMP
+C---- SET POINTERS TO INFORMATION ON DISK
+c         IF ((ISTORE(I)-M6).EQ.JFOO(1)) IRFO=JFOO(1)
+c         IF ((ISTORE(I)-M6).EQ.JFOT(1)) IRFT=JFOT(1)
+c         ISTORE(I)=ISTORE(I)-M6+ISTORE(KX+1)
+c1900  CONTINUE
+
+cdjwjan2001
 C--PUNCH THE INITIAL HEADING
       CALL XPCHLH(LN6)
 C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS

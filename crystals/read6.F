@@ -296,10 +296,12 @@ Cdjwoct200
       IF ((INFT.GE.0).AND.(JNFT.LT.0)) THEN
          WRITE (CMON,'(a/a)') 'Twinned data input but not stored - ','Ch
      1eck the List 6 keys'
+         call outcol(3)
          CALL XPRVDU (NCVDU,2,0)
+         call outcol(1)
          WRITE (NCAWU,'(a)') CMON(1),CMON(2)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1),CMON(2)
-         GO TO 5450
+c         GO TO 5450
       END IF
 Cdjwoct2000
 C--CHECK IF THE PHASE AND THE BATCH NUMBER SHOULD BE PACKED
