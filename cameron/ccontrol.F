@@ -1,6 +1,9 @@
 CRYSTALS CODE FOR CCONTROL.FOR
 
 C $Log: not supported by cvs2svn $
+C Revision 1.15  2001/06/18 08:16:46  richard
+C Lowercase references to CAMERON.SRT
+C
 C Revision 1.14  2001/03/08 16:46:48  richard
 C Reads and writes new format list 5. (Ints at end).
 C
@@ -2144,7 +2147,7 @@ C LOOP TO READ THE DATA
 C STORE THE RESULT
       COLNAM(IPOS) = CNAME
       DO 20 I = 1 , 3
-        IVGACL(I,IPOS) = IVALS(I)*0.63
+        IVGACL(I,IPOS) = nint(float(IVALS(I))*0.63)
         IPSTCL(I,IPOS) = IVALS(I+3)
 20    CONTINUE
       IPOS = IPOS + 1
