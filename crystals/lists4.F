@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.20  2003/12/02 11:53:47  rich
+C Code to support LIST 42 (XFAL42).
+C Memory area to remember unpermuted cell in \FOURIER (L1ORIG).
+C Memory area to build output buffer in \REGULARISE (CPCH).
+C
 C Revision 1.19  2003/08/05 11:11:12  rich
 C Commented out unused routines - saves 50Kb off the executable.
 C
@@ -220,9 +225,8 @@ C--CALCULATE THE INVERSE ORTHOGONALISATION MATRIX
 C--THE REAL ORTHOGONALISATION MATRIX IS SINGULAR
 1450  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
-      WRITE(NCAWU,1500)
       WRITE ( CMON, 1500)
-      CALL XPRVDU(NCVDU, 1,0)
+      CALL XPRVDU(NCVDU, 2,0)
 1500  FORMAT(/,' Singular orthogonalisation matrix',/)
       GOTO 1750
 C--NOW TRANSPOSE THIS MATRIX SO THAT IT IS STORED BY ROWS
@@ -448,7 +452,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 6005 ) CAXIS(IUNIQU) , CREASN(ISPECI)
       ENDIF
-          WRITE ( NCAWU , 6005 ) CAXIS(IUNIQU) , CREASN(ISPECI)
           WRITE ( CMON, 6005 ) CAXIS(IUNIQU), CREASN(ISPECI)
           CALL XPRVDU(NCVDU, 1,0)
 6005      FORMAT (1X , 'The unique axis has been set to "' , A1 ,
@@ -514,7 +517,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9915 )
       ENDIF
-      WRITE ( NCAWU , 9915 )
       WRITE ( CMON, 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'The space group symbol is missing' )
@@ -523,7 +525,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 ) CSYMIN(1:MAXLEN)
       ENDIF
-      WRITE ( NCAWU , 9925 ) CSYMIN(1:MAXLEN)
       WRITE ( CMON, 9925 ) CSYMIN(1:MAXLEN)
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X, 'The symbol "', A, '" contains an illegal character')
@@ -532,26 +533,19 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9935 )
       ENDIF
-      WRITE ( NCAWU , 9935 )
       WRITE ( CMON, 9935 )
       CALL XPRVDU(NCVDU, 1,0)
 9935  FORMAT ( 1X , 'The symbol given is too short' )
       GO TO 9900
 C
 9940  CONTINUE
-      WRITE(NCAWU,9945)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9945 )
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9945 )
       WRITE ( CMON, 9945)
       CALL XPRVDU(NCVDU, 1,0)
 9945  FORMAT(' The parts of the symbol MUST be separated by spaces')
       GOTO 9900
 9950  CONTINUE
-      WRITE(NCAWU,9955) I
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9955 ) I
-      ENDIF
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9955 ) I
       WRITE ( CMON, 9955) I
       CALL XPRVDU(NCVDU, 1,0)
 9955  FORMAT(' Part',I5,' of the symbol contains too many characters')
@@ -747,18 +741,12 @@ C--END OF CARD  -  ADJUST THE VALUE
       NC=LASTCH
 C--WRITE THE POSITION OUT
 1850  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1900)(IB,I=1,NC),IA
-      ENDIF
-      WRITE(NCAWU,1901) (IB,I=1,NC),IA
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1900)(IB,I=1,NC),IA
       WRITE ( CMON, 1901) (IB,I=1,MIN(71,NC)),IA
       CALL XPRVDU(NCVDU, 1,0)
 1901  FORMAT(5X,82A1)
 1900  FORMAT(7X,82A1)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1950)
-      ENDIF
-      WRITE(NCAWU,1950)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1950)
       WRITE ( CMON, 1950)
       CALL XPRVDU(NCVDU, 1,0)
 1950  FORMAT(' Symmetry operator format error,',
@@ -841,10 +829,7 @@ C--INPUT OKAY  -  CALCULATE THE INVERSE MATRICES
      2 2850,2950,2850
 C--SINGULAR MATRIX
 2850  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2900)I
-      ENDIF
-      WRITE(NCAWU,2900) I
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,2900)I
       WRITE ( CMON, 2900) I
       CALL XPRVDU(NCVDU, 1,0)
 2900  FORMAT(' Matrix',I5,'  is singular')
@@ -1278,10 +1263,7 @@ C--CHECK THE INPUT VALUE
 C--TYPE IS ILLEGAL
 1000  CONTINUE
       CALL XERHDR(-1)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1050)IULN
-      ENDIF
-      WRITE(NCAWU,1050) IULN
+      IF (ISSPRT .EQ. 0)  WRITE(NCWU,1050)IULN
       WRITE ( CMON, 1050) IULN
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Illegal list 5 type selector ',I5)
@@ -1339,10 +1321,7 @@ C--CHECK THE REPLY
       IF(J)1100,1200,1200
 C--THIS ATOM TYPE IS NOT IN LIST 3
 1100  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1150)STORE(M5)
-      ENDIF
-      WRITE(NCAWU,1150) STORE(M5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1150)STORE(M5)
       WRITE ( CMON, 1150) STORE(M5)
       CALL XPRVDU(NCVDU, 1,0)
 1150  FORMAT(' Form factor not in list 3 : ',A4)
@@ -1766,10 +1745,7 @@ C--SOME TYPE OF SHIFT INFORMATION  -  CHECK FOR THE FIRST TIME
 C--NO CALCULATION OF ANY TYPE SO FAR  -  SHIFTS ARE NOT ALLOWED
 1750  CONTINUE
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1800)
-      ENDIF
-      WRITE(NCAWU,1800)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1800)
       WRITE ( CMON, 1800)
       CALL XPRVDU(NCVDU, 1,0)
 1800  FORMAT(' Shift information may only follow',
@@ -1980,10 +1956,7 @@ C -- ERRORS
       GO TO 9900
 9920  CONTINUE
 C -- NO CALCULATIONS INDICATED
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 )
-      ENDIF
-      WRITE ( NCAWU , 9925 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT ( 1X , 'No SFLS calculations indicated' )
@@ -1991,10 +1964,7 @@ C -- NO CALCULATIONS INDICATED
       GO TO 9900
 9940  CONTINUE
 C -- TOO MANY CALCULATIONS INDICATED
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9945 ) MCYCLE
-      ENDIF
-      WRITE ( NCAWU , 9945 ) MCYCLE
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9945 ) MCYCLE
       WRITE ( CMON, 9945 ) MCYCLE
       CALL XPRVDU(NCVDU, 1,0)
 9945  FORMAT ( 1X , 'Too many SFLS cycles indicated, ',
@@ -2078,7 +2048,6 @@ C--NOW THE DATA
       CALL XMOVE(STORE(M33IB+1),STORE(KA),L-1)
 C--ISSUE THE COMMAND
       WRITE(CIMAGE,CFORM) (STORE(IZ), IZ= KA, KA+KB-1)
-C      WRITE(NCAWU,CFORM) (STORE(IZ), IZ= KA, KA+KB-1)
       CALL XISRC (CIMAGE)
 C--UPDATE THE POINTER IN LIST 33
       ISTORE(L33CB)=ISTORE(L33CB)+1
@@ -2104,7 +2073,6 @@ C--RECORDS TO BE OUTPUT
 1200  CONTINUE
       IZZ = KS
       DO 1250 KR=1,KX
-C      WRITE(NCAWU ,CFMRQ) (ISTORE(IZ), IZ = IZZ, IZZ-1+KY)
       WRITE(CIMAGE,CFMRQ) (ISTORE(IZ), IZ = IZZ, IZZ-1+KY)
       CALL XISRC (CIMAGE)
       IZZ = IZZ + KY
@@ -2539,28 +2507,19 @@ C
       GO TO 1000
 9810  CONTINUE
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9815 )
-      ENDIF
-      WRITE ( NCAWU , 9815 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9815 )
       WRITE ( CMON, 9815 )
       CALL XPRVDU(NCVDU, 1,0)
 9815  FORMAT ( 1X, 'Illegal data card. ' )
       GO TO 9800
 9820  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9825 )
-      ENDIF
-      WRITE ( NCAWU ,9825 )
+      IF (ISSPRT .EQ. 0)   WRITE ( NCWU , 9825 )
       WRITE ( CMON, 9825 )
       CALL XPRVDU(NCVDU, 1,0)
 9825  FORMAT (' ERRORS during input')
       GOTO 9800
 9830  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9835 )
-      ENDIF
-      WRITE ( NCAWU , 9835 )
+      IF (ISSPRT .EQ. 0)  WRITE ( NCWU , 9835 )
       WRITE ( CMON, 9835 )
       CALL XPRVDU(NCVDU, 1,0)
 9835  FORMAT ( ' ERRORS during internal read/writes')
@@ -2861,13 +2820,12 @@ C-----  SPOT THE WAVELENGTH
         ENDIF
 5350  CONTINUE
       IF (DELMIN .GE. 0.01) THEN
-      WRITE ( CMON, 9701) WAVUSE, WAVE
-      CALL XPRVDU(NCVDU, 2,0)
-9701  FORMAT
+        WRITE ( CMON, 9701) WAVUSE, WAVE
+        CALL XPRVDU(NCVDU, 2,0)
+9701    FORMAT
      1 (' System files contain no entries for required wavelength'/
      2 F8.4, ' used in lieu of ',F8.4)
-      WRITE(NCAWU,'(A,A)') CMON(1),CMON(2)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') CMON(1),CMON(2)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') CMON(1),CMON(2)
       ENDIF
 C----- BEGIN PROCESSING FORMULA LIST
       DO 5500 J = IADDF, JADDF, NADDF
@@ -3084,7 +3042,6 @@ C
 9710  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9711) CLINE(1:ISIZE), CARG
-      WRITE(NCAWU,'(A)') CMON(1)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
       CALL XPRVDU(NCVDU, 1,0)
 9711  FORMAT (' End of file ', A, ' - item  "',A,'"  not found')
@@ -3092,13 +3049,11 @@ C
 9720  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9721) CLINE(1:ISIZE), CARG
-      WRITE(NCAWU,'(A)') CMON(1)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
       CALL XPRVDU(NCVDU, 1,0)
 9721  FORMAT (' Error in file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9730  CONTINUE
-      WRITE(NCAWU,9731)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9731) CLINE(1:ISIZE)
       WRITE ( CMON, 9731) CLINE(1:ISIZE)
       CALL XPRVDU(NCVDU, 1,0)
@@ -3108,55 +3063,42 @@ C
       GO TO 1000
 9810  CONTINUE
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9815 )
-      ENDIF
-      WRITE ( NCAWU , 9815 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9815 )
       WRITE ( CMON, 9815)
       CALL XPRVDU(NCVDU, 1,0)
 9815  FORMAT ( 1X, 'Illegal data card. ' )
       GO TO 9800
 9820  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9825 )
-      ENDIF
-      WRITE ( NCAWU ,9825 )
+      IF (ISSPRT .EQ. 0)   WRITE ( NCWU , 9825 )
       WRITE ( CMON, 9825 )
       CALL XPRVDU(NCVDU, 1,0)
 9825  FORMAT (' ERRORS during input')
       GOTO 9800
 9830  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9835 )
-      ENDIF
-      WRITE ( NCAWU , 9835 )
+      IF (ISSPRT .EQ. 0)   WRITE ( NCWU , 9835 )
       WRITE ( CMON, 9835 )
       CALL XPRVDU(NCVDU, 1,0)
 9835  FORMAT ( ' ERRORS during internal read/writes')
       GOTO 9800
 9840  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
-      WRITE(NCAWU,9841)  NCEXTR, CLINE(1:ISIZE)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9841)  NCEXTR, CLINE(1:ISIZE)
       WRITE ( CMON, 9841)  NCEXTR, CLINE(1:ISIZE)
       CALL XPRVDU(NCVDU, 1,0)
 9841  FORMAT( ' FILE open error, UNIT ', I6, ' ', A)
       GOTO 9900
 9850  CONTINUE
-      WRITE(NCAWU,9851)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9851)
       WRITE ( CMON, 9851)
       CALL XPRVDU(NCVDU, 1,0)
 9851  FORMAT ( ' ERROR in formula card')
       GOTO 9900
 9860  CONTINUE
-      WRITE(NCAWU,9861)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9861)
       WRITE ( CMON, 9861)
       CALL XPRVDU(NCVDU, 1,0)
 9861  FORMAT ( ' No data on formula card')
 9870  CONTINUE
-      WRITE (NCAWU,9871)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9871)
       WRITE ( CMON, 9871)
       CALL XPRVDU(NCVDU, 1,0)
