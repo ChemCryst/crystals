@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.30  2003/05/07 12:18:56  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.29  2002/02/27 19:40:10  ckp2
 C RIC: Increased input line length to 256 chars. HOWEVER - only a few modules know about
 C this extra length. In general the program continues to ignore everything beyond
@@ -154,6 +160,7 @@ C     41      GENERATION OF NEW PARAMETERS
 C     42      PRINTING OF LIST TYPE 22
 C     43      SCRIPT PROCESSOR
 C     44      SPACE GROUP INPUT
+C     47      BOND CALCULATION
 C
 C -- MESSAGE NUMBERS :-
 C
@@ -171,7 +178,7 @@ C      9      'VERSION' -
 C
 C
       CHARACTER*30 NAME
-      PARAMETER ( NFAC = 46 )
+      PARAMETER ( NFAC = 47 )
 C
       CHARACTER*30 FACNAM(NFAC)
       DIMENSION    IFACLN(NFAC)
@@ -229,6 +236,7 @@ C
       DATA FACNAM(44) / 'Space Group Symbol input      ' /
       DATA FACNAM(45) / 'Quick startup                 ' /
       DATA FACNAM(46) / 'Molecular formula input       ' /
+      DATA FACNAM(47) / 'Bond calculation              ' /
 C
 C -- SET LENGTHS OF FACILITY NAMES
       DATA IFACLN(1)  /  8 /      ,    IFACLN(2)  / 12 /
@@ -254,6 +262,7 @@ C -- SET LENGTHS OF FACILITY NAMES
       DATA IFACLN(41) / 28 /      ,    IFACLN(42) / 24 /
       DATA IFACLN(43) / 25 /      ,    IFACLN(44) / 24 /
       DATA IFACLN(45) / 13 /      ,    IFACLN(46) / 23 /
+      DATA IFACLN(47) / 16 / 
 C
 C -- SET NUMBER OF FACILITIES AND NUMBER OF MESSAGES
       DATA IFANUM / NFAC /
