@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.16  1999/09/16 17:00:31  ckp2
+C djw Add nonstandard comments to .ini files, and SIR97
+C
 C Revision 1.15  1999/08/23 13:24:48  dosuser
 C djw  Increase permitted number of atom types to 16 for SIR92
 C
@@ -941,17 +944,21 @@ cdjw1999
             CARROW = ' '
        ENDIF
        IF (IEFORT .EQ. 1) THEN
-      WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,CARROW
+      WRITE(NCFPU1,1941) CARROW,CARROW,CARROW,CARROW,CARROW,
+     1 CARROW,CARROW,CARROW,CARROW
 1941  FORMAT('>  rhomax 0.33'/
-     1 A,'%normal'/'>  pseudo'/'>   bfac 4'/A,'%seminv'/A,
-     2 '%invatiant'/A,'%phase'/'>  random'/A,'%fourier'/
-     3'>  recycle  n')
+     1 A,'%normal'/
+     2 A,'  pseudo'/
+     3 A,'  bfac 4.'/
+     4 A,'%seminv'/
+     5 A,'%invariant'/
+     6 A,'%phase'/
+     7 A,'  random'/
+     8 A,'%fourier'/
+     9 A,'  recycle  n')
       ELSE IF (IEFORT .EQ. 2) then 
-       WRITE(NCFPU1, 1942) CARROW,CARROW,CARROW,CARROW
-1942  FORMAT('>  rhomax 0.33'/
-     1 A,'%normal'/'>  pseudo'/'>   bfac 4'/A,'%seminv'/A,
-     2 '%invatiant'/'%phase'/'  random'/A,'%fourier'/
-     3'>  recycle  n')
+       WRITE(NCFPU1, 1941) ' ', ' ' ,CARROW,' ',
+     1 ' ',' ',' ',CARROW,CARROW
       ENDIF
       If (ilink . eq. 7) then
           write(ncfpu1,'(''%menu''/''  crystals sir97.cry'')')
