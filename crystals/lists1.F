@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2001/09/07 14:21:35  ckp2
+C Fiddled around with #DISK to allow time and date to be stored for each entry.
+C There is a year 2038 problems with the date format, it'll seem like 1970 again.
+C Also added a punch directive which will allow scripts to get hold of the DSC
+C info in a script readable format. Will write some scripts soon.
+C
 C Revision 1.5  2001/02/26 10:28:03  richard
 C RIC: Added changelog to top of file
 C
@@ -917,7 +923,7 @@ C Old style date format:
      2   ID(I+6) , ID(I+7) , CERROR(IERROR)(1:5), CDELET(IDELET)
         CALL XPRVDU(NCVDU, 1,0)
         IF ( IPUNCH .EQ. 1 )
-     2     WRITE ( NCPU,1454 ) ID(I),ID(I+1),ID(I+4),ID(I+5),
+     2     WRITE ( NCPU,1454 ) ABS(ID(I)),ABS(ID(I+1)),ID(I+4),ID(I+5),
      3                        IERROR-1,IDELET-1,ID(I+6),ID(I+7)
       ELSE
 C New style date format:
@@ -928,7 +934,7 @@ C New style date format:
      2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
         CALL XPRVDU(NCVDU, 1,0)
         IF ( IPUNCH .EQ. 1 )
-     2     WRITE ( NCPU,1455 ) ID(I),ID(I+1),ID(I+4),ID(I+5),
+     2     WRITE ( NCPU,1455 ) ABS(ID(I)),ABS(ID(I+1)),ID(I+4),ID(I+5),
      3                        IERROR-1,IDELET-1,CDT
       ENDIF
 1452    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5, 7X, 2A4,13X, A5, A20)
@@ -937,16 +943,16 @@ C New style date format:
 1455    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5,7X, I1, 1X, I1, 1X, A24)
 
 C NB Punch format has date at the end, and a 1 or 0 representation of
-C error and delete flags. This makes it easier to read with a script.
-C
-C
+C error and delete flags. This makes it easy to read with a script.
+
+
 1650  CONTINUE
-C
+
 C -- GET NEXT LIST
       I = I + IL
       GOTO 1150
-C
-C
+
+
 C--FETCH THE NEXT BLOCK OF INFORMATION
 1700  CONTINUE
       CALL XFCFI(I,(IL+1))
