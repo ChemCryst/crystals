@@ -3,7 +3,8 @@ include makefile.in
 
 VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
         ../bits/dipin   ../bits/hklf5    ../bits/kccdin  ../bits/rc93 \
-        ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92
+        ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92 \
+        ../bits/loader
 
 EXECS := cif2cry    convplat    csd2cry    delred \
          dipin      ctwin       kccdin     rc93   \
@@ -19,47 +20,55 @@ EXECS := $(EXECS) sir92
 endif
 endif
 
-LD = g77
+ifeq ($(COMPCODE),WXS)
+OBJS := $(OBJS) crysload.o
+EXECS := $(EXECS) crysload
+endif
+
+LD77 = g77
 
 all : $(EXECS) rc93.srt form.dat
 
 cif2cry : cif2cry.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 convplat : convplat.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 csd2cry : csd2cry.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 delred : delred.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 dipin : dipin.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 ctwin : ctwin.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 kccdin : kccdin.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 rc93 : rc93.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 reindex : reindex.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 shelxs : shelxs.o nobuf.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 sxtocry : sxtocry.o nobuf.o
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+
+crysload : crysload.o
 	$(LD) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
 
 ifneq ($(COMPCODE),GID)
 ifneq ($(COMPCODE),WXS)
 sir92 : sir92.o norm92.o sir92X11.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES)  $(NATIVEXLIBS) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES)  $(NATIVEXLIBS) $(OPT) -o $@ $^
 endif
 endif
 
