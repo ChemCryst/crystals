@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.13  2001/03/08 15:51:30  richard
+//   Limit number of characters if required.
+//
 
 #include    "crystalsinterface.h"
 #include    "ccstring.h"
@@ -54,6 +57,16 @@ CxEditBox::CxEditBox( CrEditBox * container )
 CxEditBox::~CxEditBox()
 {
     RemoveEditBox();
+}
+
+void CxEditBox::CxDestroyWindow()
+{
+  #ifdef __CR_WIN__
+DestroyWindow();
+#endif
+#ifdef __BOTHWX__
+Destroy();
+#endif
 }
 
 void  CxEditBox::SetText( CcString text )
@@ -428,13 +441,36 @@ void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 void CxEditBox::LimitChars(int limit)
 {
    m_Limit = limit;
+#ifdef __CR_WIN__
    SetLimitText(limit);
+#endif
+#ifdef __BOTHWX__
+//
+#endif
+
 }
 
 void CxEditBox::IsInputPlace()
 {
    if (CcController::mp_inputfont == nil)
    {
+#ifdef __BOTHWX__
+    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+#ifndef _WINNT
+    *pFont = wxSystemSettings::GetSystemFont( wxSYS_ANSI_FIXED_FONT );
+#else
+    *pFont = wxSystemSettings::GetSystemFont( wxDEVICE_DEFAULT_FONT );
+#endif  // !_WINNT
+    CcString temp;
+    temp = (CcController::theController)->GetKey( "MainFontHeight" );
+    if ( temp.Len() )
+          pFont->SetPointSize( max( 2, atoi( temp.ToCString() ) ) );
+    temp = (CcController::theController)->GetKey( "MainFontFace" );
+          pFont->SetFaceName( temp.ToCString() );
+
+    CcController::mp_inputfont = pFont;
+#endif
+#ifdef __CR_WIN__
      LOGFONT lf;
      ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
      CcString temp;
@@ -453,15 +489,26 @@ void CxEditBox::IsInputPlace()
        SetFont(CcController::mp_inputfont);
      else
        ASSERT(0);
-     }
+#endif
+   }
    else
    {
+#ifdef __CR_WIN__
      SetFont(CcController::mp_inputfont);
+#endif
+#ifdef __BOTHWX__
+     SetFont(*CcController::mp_inputfont);
+#endif
    }
    m_IsInput = true;
 }
 
 void CxEditBox::UpdateFont()
 {
-  SetFont(CcController::mp_inputfont);
+#ifdef __CR_WIN__
+     SetFont(CcController::mp_inputfont);
+#endif
+#ifdef __BOTHWX__
+     SetFont(*CcController::mp_inputfont);
+#endif
 }

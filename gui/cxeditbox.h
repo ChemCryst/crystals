@@ -8,6 +8,9 @@
 //   Authors:   Richard Cooper and Ludwig Macko
 //   Created:   22.2.1998 14:43 Uhr
 //   $Log: not supported by cvs2svn $
+//   Revision 1.7  2001/03/08 15:51:31  richard
+//   Limit number of characters if required.
+//
 
 #ifndef     __CxEditBox_H__
 #define     __CxEditBox_H__
@@ -56,6 +59,7 @@ class CxEditBox : public BASEEDITBOX
             void  AddText( CcString text );
             void  SetText( CcString text );
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
+        void CxDestroyWindow();
         int GetTop();
         int GetLeft();
         int GetWidth();
