@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.37  2003/01/16 11:42:13  rich
+C Use new SAFESET instruction to update various GUI elements - if they
+C don't exist, the program ignores the instruction. Means you can now
+C remove or rename guimenu.srt to drop to a really basic version of
+C CRYSTALS without getting lots of warnings.
+C
 C Revision 1.36  2003/01/15 15:26:38  rich
 C Removal of NCAWU calls throught the standard SFLS refinement instruction. If
 C anywhere will benefit from less IO, it's here.
@@ -612,23 +618,23 @@ C----- SPOT LINES BEGINNING WITH $, AND CONVERT TO # FUNCTIONS
         KRDLIN = 2
       END IF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-C This section is used to test the CSDCODE.
-C Typing '#BONDTY' generates a list of bonds and automatically assigns
-C their bond types.
-C----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
-      IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
-          LENUSE = 1
-          CLINE = ' '
-          CALL BONDTY(0)
-C Typing '#BONDCK' compares bond lengths and angles to the CSD data.
-C It writes quest files if the data is not available..
+cC This section is used to test the CSDCODE.
+cC Typing '#BONDTY' generates a list of bonds and automatically assigns
+cC their bond types.
+cC----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
+c      IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c          CALL BONDTY(0)
+cC Typing '#BONDCK' compares bond lengths and angles to the CSD data.
+cC It writes quest files if the data is not available..
 cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH               
-      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN                               
-          LENUSE = 1
-          CLINE = ' '
-        IDV4 = KBNDCH ( RDV,  IDV, RDV2,
-     1                  RDV3, IDV2, IDV3, RDV4,
-     1                  1,    RDV5 )
+c      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN                               
+c          LENUSE = 1
+c          CLINE = ' '
+c        IDV4 = KBNDCH ( RDV,  IDV, RDV2,
+c     1                  RDV3, IDV2, IDV3, RDV4,
+c     1                  1,    RDV5 )
 
 
 C '#EMAP2' is put in the SRQ by '#EMAP' so that we can come back
@@ -649,7 +655,7 @@ c          LENUSE = 1
 c          CLINE = ' '
 c        ICODE = 0
 c        CALL EMAP2D(ICODE)
-      ENDIF
+c      ENDIF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C -- CONVERT FIRST CHARACTER IF NECESSARY
       IPOS = INDEX ( CTRAN1 , CLINE(1:1) )

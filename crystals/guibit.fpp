@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2003/01/16 11:42:12  rich
+C Use new SAFESET instruction to update various GUI elements - if they
+C don't exist, the program ignores the instruction. Means you can now
+C remove or rename guimenu.srt to drop to a really basic version of
+C CRYSTALS without getting lots of warnings.
+C
 C Revision 1.51  2003/01/14 10:14:26  rich
 C g77 spots undeclared logical and doesn't support dynamic character arrays.
 C
@@ -1065,7 +1071,7 @@ C -- Centre with the rest of the molecule.
                END IF
 
 C See if this bond is in CSD list. If so, use it's deviation to colour it.
-               IF ( KBDDEV(IAT1P,IAT2P,DEVN) .GT. 0 )THEN
+c               IF ( KBDDEV(IAT1P,IAT2P,DEVN) .GT. 0 )THEN
 
 C As deviation goes positive, KB and KG should decrease giving a red colour
 C As deviation goes negative, KR and KG should decrease giving a blue colour
@@ -1073,10 +1079,10 @@ C i.e. +ve devn. KR 255, KB ->0  KG ->0
 C      -ve devn  KR ->0, KB 255  KG ->0
 C But, the deviation starts being coloured from 1.0, rather than 0.0
 C DEVN = DEVN - 1
-                  KR = MAX ( 0, MIN (255, NINT (383+128*DEVN) ) )
-                  KG = MAX ( 0, MIN (255, NINT (383-128*ABS(DEVN))))
-                  KB = MAX ( 0, MIN (255, NINT (383-128*DEVN) )  )
-               ENDIF
+c                  KR = MAX ( 0, MIN (255, NINT (383+128*DEVN) ) )
+c                  KG = MAX ( 0, MIN (255, NINT (383-128*ABS(DEVN))))
+c                  KB = MAX ( 0, MIN (255, NINT (383-128*DEVN) )  )
+c               ENDIF
 
                CALL CATSTR (STORE(IAT1P),STORE(IAT1P+1),
      1                       ISTORE(M41B+1),ISTORE(M41B+2),
@@ -1426,46 +1432,46 @@ c      CALL XPRVDU(NCVDU, 1,0)
 
 
 
-CODE FOR KBDDEV
-      FUNCTION KBDDEV ( IAT1P, IAT2P, DEVN )
-
-C Return bond type (1-9) if it is found in the list.
-C Return number of stdev's of actual value from mean.
-
-\STORE
-\ISTORE
-\QSTORE
-\TLST18                           
-
-      KBDDEV = 0
-      DEVN = 0.0
-
-      IAT1N = ISTORE(IAT1P)     
-      IAT1S = NINT(STORE(IAT1P+1))     
-      IAT2N = ISTORE(IAT2P)     
-      IAT2S = NINT(STORE(IAT2P+1))     
-      
-        DO 800 I = 1, NB18
-                        
-            JAT1N = IBLK(I,1)
-            JAT1S = NINT(BBLK(I,2))
-            JAT2N = IBLK(I,3)
-            JAT2S = NINT(BBLK(I,4))
-
-            IF( ( (IAT1N.EQ.JAT1N) .AND. (IAT1S.EQ.JAT1S) .AND.
-     1            (IAT2N.EQ.JAT2N) .AND. (IAT2S.EQ.JAT2S) ) .OR.
-     2          ( (IAT1N.EQ.JAT2N) .AND. (IAT1S.EQ.JAT2S) .AND.
-     3            (IAT2N.EQ.JAT1N) .AND. (IAT2S.EQ.JAT1S) ) ) THEN
-
-               BLEN = BBLK(I,5)
-               KBDDEV = NINT(BBLK(I,6))
-               DEVN = BBLK(I,8)
-               RETURN
-            END IF
-800   CONTINUE
-
-      RETURN
-      END
+cCODE FOR KBDDEV
+c      FUNCTION KBDDEV ( IAT1P, IAT2P, DEVN )
+c
+cC Return bond type (1-9) if it is found in the list.
+cC Return number of stdev's of actual value from mean.
+c
+c\STORE
+c\ISTORE
+c\QSTORE
+c\TLST18                           
+c
+c      KBDDEV = 0
+c      DEVN = 0.0
+c
+c      IAT1N = ISTORE(IAT1P)     
+c      IAT1S = NINT(STORE(IAT1P+1))     
+c      IAT2N = ISTORE(IAT2P)     
+c      IAT2S = NINT(STORE(IAT2P+1))     
+c      
+c        DO 800 I = 1, NB18
+c                        
+c            JAT1N = IBLK(I,1)
+c            JAT1S = NINT(BBLK(I,2))
+c            JAT2N = IBLK(I,3)
+c            JAT2S = NINT(BBLK(I,4))
+c
+c            IF( ( (IAT1N.EQ.JAT1N) .AND. (IAT1S.EQ.JAT1S) .AND.
+c     1            (IAT2N.EQ.JAT2N) .AND. (IAT2S.EQ.JAT2S) ) .OR.
+c     2          ( (IAT1N.EQ.JAT2N) .AND. (IAT1S.EQ.JAT2S) .AND.
+c     3            (IAT2N.EQ.JAT1N) .AND. (IAT2S.EQ.JAT1S) ) ) THEN
+c
+c               BLEN = BBLK(I,5)
+c               KBDDEV = NINT(BBLK(I,6))
+c               DEVN = BBLK(I,8)
+c               RETURN
+c            END IF
+c800   CONTINUE
+c
+c      RETURN
+c      END
 
 
 
