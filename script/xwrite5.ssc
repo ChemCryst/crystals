@@ -663,6 +663,7 @@
 %    SEND
 %    COPY '#PEAKS'
 %    COPY '#COLLECT'
+%    COPY 'SELECT TYPE = PEAKS'
 %    COPY 'END'
 %    COPY '#SCRIPT XPRUNE'
 %  END IF
