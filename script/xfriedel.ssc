@@ -1,6 +1,7 @@
 % SCRIPT XFRIEDEL
+% VARIABLE LOGICAL XQMERGE
 % VARIABLE INTEGER FMERGE 
-% VARIABLE REAL ZMAX WORK1 CENTRO WAVE
+% VARIABLE REAL ZMAX WORK1 FCENTRO WAVE
 % IF ( EXISTS ( 13 ) .NE. 1 ) THEN
 %   COPY '#LIST 13'
 %   COPY 'END'
@@ -35,13 +36,13 @@
 % ELSE
 %   COPY '#GENERALEDIT 2'
 %   COPY 'LOCATE RECORDTYPE=101'
-%   COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%   COPY 'TRANSFER FROM OFFSET=0 TO FCENTRO'
 %   COPY 'END'
 % END IF
 %%
 %%
 %%
-% IF ( CENTRO .GT. 0.9 ) THEN
+% IF ( FCENTRO .GT. 0.9 ) THEN
 
 {I Centro-symmetric space-group.
 {R * Friedel Pairs will be merged.
@@ -54,72 +55,105 @@
 %   FINISH
 % END IF
 %%
-^^WI WINDOW XFRIEDEL 'Merge Friedel Opposites?' MODAL
-^^WI COMMIT='MF_BOK' CANCEL='MF_BXX'
-^^WI GRID MAIN NROWS=16 NCOLS=3
+^^WI WINDOW XFRIEDEL 'Merge' MODAL COMMIT='MF_BOK' CANCEL='MF_BXX'
+^^WI GRID MAIN NROWS=6 NCOLS=3 
 ^^WI {
-^^WI  @ 5,2 STATIC MF1 'It is important NOT TO MERGE OPPOSITES for'
-^^WI  @ 6,2 STATIC MF1 'structures which have strong anomolous scatterers,'
-^^WI  @ 7,2 STATIC MF1 'since reflections related by Friedel`s law are not'
-^^WI  @ 8,2 STATIC MF1 'equivalent in these cases.'
+^^WI   @ 1,2 GRID SYMEQ NROWS=2 NCOLS=1
+^^WI   OUTLINE='Symmetry equivalent reflections'
+^^WI   {
+^^WI      @ 1,1 CHECKBOX CBMERGE 'Merge symmetry equivalent reflections'
+^^WI      STATE=ON INFORM=YES
+^^WI   }
+^^WI   @ 3,2 GRID FRIED NROWS=14 NCOLS=1 OUTLINE='Friedel Pairs (hkl,-h-k-l)'
+^^WI   {
+^^WI      @ 5,1 STATIC MF1 'It is important not to merge pairs for:'
+^^WI  @ 6,1 STATIC MF1 'a) determining the absolute structure parameter.'
+^^WI  @ 7,1 STATIC MF1 'b) structures with strong anomolous scatterers,'
+^^WI  @ 8,1 STATIC MF1 '   since pairs are not equivalent in these cases.'
+%%
 % IF ( ZMAX .GT. 29.0 )  THEN
-^^WI  @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' 
-^^WI  @ 3,2 RADIOBUTTON KUN 'Do not merge opposites' STATE=ON
-^^WI @ 10,2 STATIC MF2 'This structure has atoms heavier than Silicon, so'
-^^WI @ 11,2 STATIC MF2 'in the opinion of the IUCr, the Friedel pairs should'
-^^WI @ 12,2 STATIC MF2 'NOT be merged. However to determine the absolute'
-^^WI @ 13,2 STATIC MF2 'structure you must have observed a sufficient'
-^^WI @ 14,2 STATIC MF2 'number of Friedel pairs, e.g. > 50%.'
+%%
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs'
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge pairs' STATE=ON
+^^WI @ 10,1 STATIC MF2 'This structure has atoms heavier than Silicon, so'
+^^WI @ 11,1 STATIC MF2 'in the opinion of the IUCr, the Friedel pairs should'
+^^WI      @ 12,1 STATIC MF2 'NOT be merged. However to determine the absolute'
+^^WI      @ 13,1 STATIC MF2 'structure you must have observed a sufficient'
+^^WI      @ 14,1 STATIC MF2 'number of Friedel pairs, e.g. > 50%.'
+%%
 % ELSE IF ( WAVE .GT. 1.5 ) THEN
-^^WI  @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' STATE=ON
-^^WI  @ 3,2 RADIOBUTTON KUN 'Do not merge opposites'
-^^WI @ 10,2 STATIC MF2 'However, this is a light-atom structure so the'
-^^WI @ 11,2 STATIC MF2 'anomalous differences will be small. As you have'
-^^WI @ 12,2 STATIC MF2 'used Cu radiation, you may be able to determine'
-^^WI @ 13,2 STATIC MF2 'the absolute structure if you have collected'
-^^WI @ 14,2 STATIC MF2 'enough Friedel pairs. e.g. > 50%.'
+%%
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs' STATE=ON
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge pairs'
+^^WI      @ 10,1 STATIC MF2 'However, this is a light-atom structure so the'
+^^WI      @ 11,1 STATIC MF2 'anomalous differences will be small. As you have'
+^^WI      @ 12,1 STATIC MF2 'used Cu radiation, you may be able to determine'
+^^WI      @ 13,1 STATIC MF2 'the absolute structure if you have collected'
+^^WI      @ 14,1 STATIC MF2 'enough Friedel pairs. e.g. > 50%.'
+%%
 % ELSE
-^^WI @ 2,2 RADIOBUTTON MFO 'Merge Friedel Opposites' STATE=ON
-^^WI @ 3,2 RADIOBUTTON KUN 'Do not merge opposites'
-^^WI @ 10,2 STATIC MF2 'However, this is a light-atom structure so the'
-^^WI @ 11,2 STATIC MF2 'anomalous differences will be small. As you have'
-^^WI @ 12,2 STATIC MF2 'used Mo radiation, you will not be able to determine'
-^^WI @ 13,2 STATIC MF2 'the absolute structure, except under VERY special' 
-^^WI @ 14,2 STATIC MF2 'conditions. You should merge the Friedel pairs.'
+%%
+^^WI      @ 2,1 RADIOBUTTON MFO 'Merge Friedel pairs' STATE=ON
+^^WI      @ 3,1 RADIOBUTTON KUN 'Do not merge pairs'
+^^WI      @ 10,1 STATIC MF2 'However, this is a light-atom structure so the'
+^^WI      @ 11,1 STATIC MF2 'anomalous differences will be small. As you have'
+^^WI @ 12,1 STATIC MF2 'used Mo radiation, you will not be able to determine'
+^^WI @ 13,1 STATIC MF2 'the absolute structure, except under VERY special' 
+^^WI      @ 14,1 STATIC MF2 'conditions. You should merge the Friedel pairs.'
+%%
 % END IF
-^^WI  @ 16,2 GRID BTNS NROWS=3 NCOLS=4
-^^WI  {
-^^WI   @ 2,1 STRETCH MF_ST HORIZONTAL
-^^WI   @ 2,2 BUTTON MF_BOK '&OK' LENGTH='Cancel' DEFAULT COMMIT 
-^^WI   @ 2,4 BUTTON MF_BXX '&Cancel' CANCEL
-^^WI  }
+%%
+^^WI   }
+^^WI   @ 5,2 GRID BTNS NROWS=1 NCOLS=4
+^^WI   {
+^^WI     @ 1,1 STRETCH MF_ST HORIZONTAL
+^^WI     @ 1,2 BUTTON MF_BOK '&OK' LENGTH='Cancel' DEFAULT COMMIT 
+^^WI     @ 1,4 BUTTON MF_BXX '&Cancel' CANCEL
+^^WI   }
 ^^WI }
 ^^WI SHOW
 ^^CR
-% VERIFY MF_BOK MF_BXX
-% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-% IF ( VALUE .EQ. 2 ) THEN
+% LOOP
+%   VERIFY MF_BOK MF_BXX CBMERGE
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   IF ( VALUE .EQ. 2 ) THEN
 ^^CO  DISPOSE XFRIEDEL
 %     FINISH
-% END IF
+%   ELSE IF ( VALUE .EQ. 1 ) THEN
 %%
-%%
-^^?? MFO STATE
-% VERIFY OFF ON
-% GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-% EVALUATE FMERGE = VALUE - 2
+^^??  CBMERGE STATE
+%     VERIFY OFF ON
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%      EVALUATE XQMERGE = FALSE
+%      EVALUATE XQMERGE = TRUE
+%     END CASE
+^^??  MFO STATE
+%     VERIFY OFF ON
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%     EVALUATE FMERGE = VALUE - 2
 ^^CO  DISPOSE XFRIEDEL
 %%
 %%
-% IF ( EXISTS ( 13 ) .NE. 1 ) THEN
-%   COPY '#LIST 13'
-%   COPY 'END'
-% END IF
-% COPY '#GENERALEDIT 13'
-% COPY 'LOCATE RECORDTYPE=101'
-% COPY 'TRANSFER TO OFFSET=0 FROM FMERGE'
-% COPY 'WRITE'
-% COPY 'END'
+%     IF ( EXISTS ( 13 ) .NE. 1 ) THEN
+%       COPY '#LIST 13'
+%       COPY 'END'
+%     END IF
+%     COPY '#GENERALEDIT 13'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'TRANSFER TO OFFSET=0 FROM FMERGE'
+%     COPY 'WRITE'
+%     COPY 'END'
+%     FINISH
+%   END IF
 %%
+%   VERIFY OFF ON
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'
+%   IF VALUE .EQ. 1 THEN
+^^CO SET MFO DISABLED=YES SET KUN DISABLED=YES
+%   ELSE
+^^CO SET MFO DISABLED=NO SET KUN DISABLED=NO
+%   END IF
 %%
+% END LOOP
 % END SCRIPT

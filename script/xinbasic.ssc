@@ -1,6 +1,6 @@
 %SCRIPT XINBASIC
 %% Input of basic data needed for data reduction
-% VARIABLE LOGICAL SCRIPTEXT LCANCEL
+% VARIABLE LOGICAL SCRIPTEXT LCANCEL INITSETUP
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 % VARIABLE LOGICAL ANSWER
 % IF SCRIPTEXT .EQ. TRUE THEN
@@ -27,7 +27,13 @@
 %  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
      + EXISTS 29 + EXISTS 30 + EXISTS 31 .EQ. 8 ) THEN
    Mandatory LISTs are present.
-%    ON ERROR REPEAT
+%%
+%% Only ask next question if the user hasn't just input all this!
+%% INITSETUP indicates a call via XSHELXIN.
+%%
+%    IF ( .NOT. INITSETUP ) THEN
+%%
+%      ON ERROR REPEAT
 %      EVALUATE QTITLE = 'Before reading in data...'
 %      EVALUATE QLINE1 = 'Do you want to modify any existing data?'
 %      EVALUATE QLINE2 = 'e.g. cell, spacegroup, etc.'
@@ -40,7 +46,12 @@
 %      ELSE
 %        COPY '#SCRIPT INPUT'
 %      END IF
+%    ELSE
+%      EVALUATE INBASICS = 1
+%      FINISH
+%    END IF
 %  END IF
+%%
 %  CLEAR
 %  BLOCK
 %   LOOP
@@ -82,23 +93,17 @@
 %     COPY '#SCRIPT XINLIST3'
 %    END IF
 %%
+%% If running from inlist6, this question can be asked later to
+%% reduce F/F2 confusion.
+%%
 %    IF ( EXISTS 23 .NE. 1 ) THEN
      Structure Factor control list (LIST 23)  is missing
-%%     Put in a default LIST 23
-%      COPY '#LIST 23'
-%%
-%      EVALUATE QTITLE = 'Structure Factor Control List'
-%      EVALUATE QLINE1 = 'Do you want to refine against F-squared?'
-%      EVALUATE QLINE2 = ' '
-%      EVALUATE BUTTOK = '&No'
-%      EVALUATE BUTTXX = '&Yes'
-%      COPY '#SCRIPT XQUESTIO'
-%      IF ANSWER .EQ. TRUE THEN
-%         COPY 'MINIMISE F-SQ=NO'
-%      ELSE
-%         COPY 'MINIMISE F-SQ=YES'
+%      IF ( INITSETUP ) THEN
+     but we will get that later.
+%       ELSE
+%%       Put in a default LIST 23
+%        COPY '#SCRIPT XQCK23'
 %      END IF
-%      COPY 'END'
 %    END IF
 %%
 %    IF ( EXISTS 29 .NE. 1 ) THEN
@@ -112,10 +117,11 @@
 %    END IF
 %    CLEAR
 %% note that LISTS 30 & 31 are not mandatory.
-%    IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
-     + EXISTS 29 .NE. 6 ) THEN
+%    IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 -
+     + EXISTS 29 .NE. 5 ) THEN
   Something has gone wrong with the initial data input. Try again.
 %      EVALUATE INBASICS = 0
+%      EVALUATE  LOOPEND = LOOPCOUNTER
 %    ELSE
 %      EVALUATE INBASICS = 1
 %      EVALUATE  LOOPEND = LOOPCOUNTER

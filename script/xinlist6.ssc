@@ -1,18 +1,12 @@
 %SCRIPT XINLIST6
 %% CRYSTALS reflection input script
 %  VARIABLE CHARACTER INSTITLE HKLTITLE
-%  VARIABLE INTEGER INBASICS
-%  VARIABLE INTEGER FS NCOEF FMT
-%  VARIABLE LOGICAL LCANCEL
-%  VARIABLE LOGICAL XQMERGE
+%  VARIABLE INTEGER INBASICS FTYPE FS NCOEF FMT
+%  VARIABLE LOGICAL LCANCEL INITSETUP XQMERGE
 %  EVALUATE LCANCEL = FALSE
 %% variables used by the question box
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
 %  VARIABLE LOGICAL ANSWER
-
-
- Input reflection data from  file containing h,k,l Fo, sigma (HKLI file)
- ----- ---------- ---- ---------- ---------- ----- --- ----- -----------
 %%
 %% Initial checks. Is there any point proceeding.
 %  COPY '#SCRIPT XINBASIC'
@@ -249,8 +243,9 @@
 %         COPY '#SORT'
 %         COPY 'END'
 %         CLEAR
+%% This is now done in XFRIEDEL, using same XQMERGE variable
 %% Ask user if they want to merge reflections:
-%         COPY '#SCRIPT XQMERGE'
+%%         COPY '#SCRIPT XQMERGE'
 %         IF ( XQMERGE ) THEN
 {S * Merging equivalent reflections
 %           CLEAR
@@ -262,21 +257,37 @@
 %         COPY '#LIST 6'
 %         COPY 'READ TYPE = COPY'
 %         COPY 'END'
-
+%%
+%         IF ( EXISTS 23 .NE. 1 ) THEN
+{I Structure Factor control list (LIST 23)  is missing
+%            COPY '#SCRIPT XQCK23'
+%         ELSE
+List 23 already in place.
+%         END IF
+%
+%
 {S * Applying unit/quasi-unit weights
 %         COPY '#LIST 4'
 %         COPY 'END'
 %         COPY '#WEIGHT'
 %         COPY 'END'
-
-{I Give the minimum I/sigma(i) and [sin(theta)/lambda]^2 to be 
-{I used in refinement. They can be changed at any time later
-{I using the menu item "X-ray Data" -> "Filter Reflections".
-
-{R Recommended settings for F refinement:
-{R   Fo/sigma(Fo)              is at least 3.0    eliminates noise
-{R   [Sin theta / lambda] ** 2 is at least 0.01   eliminates beam stop
-
+%%
+%         COPY '#GENERALEDIT 23'
+%         COPY 'LOCATE RECORDTYPE=103'
+%         COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'
+%         COPY 'END'
+%%
+%         COPY '#LIST 28'
+%         CLEAR
+%         INSERT 'MINIMA '
+%         IF FTYPE .NE. 0 THEN
+{I For F refinement, a default I/u(I) minimum of 3.0 is recommended.
+%           INSERT 'RATIO=3.0 '
+%         END IF
+{I A default sin(theta)/lambda minimum of 0.01 is recommended.
+%         INSERT 'SINT=0.01'
+%         SEND
+%         COPY 'END'
 %         COPY '#SCRIPT XLIST28'
 %%
 %         IF ( EXISTS 23 .NE. 1 ) THEN
@@ -336,6 +347,9 @@ e.g. a file processed by RC93 will contain intensities.
 %END SCRIPT
 %%
 %% $Log: not supported by cvs2svn $
+%% Revision 1.23  2002/09/27 14:40:28  rich
+%% Message about applying unit weights.
+%%
 %% Revision 1.22  2002/07/08 11:34:08  richard
 %% If user selects F as data format, warn and give option to revert to F^2.
 %%
