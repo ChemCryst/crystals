@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.63  2004/06/28 12:30:35  rich
+C Fix bug in labels of reflections on normal probability plot (k&l were swapped).
+C
 C Revision 1.62  2004/06/18 15:27:56  rich
 C Fix completeness calculation so that theta_full is always > 25 provided
 C that theta_max is > 25. No account is currently made of radiation type
@@ -2701,6 +2704,13 @@ C----- PARAMETER 13 ON DIRECTIVE 6 IS A CHARACTER STRING
 C STRUCTURE SOLUTION
           IPARAM  = 13
           IDIR = 6
+          IVAL = ISTORE( L30 +IPARAM -1)
+          GOTO 3020
+        ELSE IF ( J .EQ. 9 ) THEN
+C----- PARAMETER 19 ON DIRECTIVE 9 IS A CHARACTER STRING
+C H TREATMENT
+          IPARAM  = 19
+          IDIR = 9
           IVAL = ISTORE( L30 +IPARAM -1)
           GOTO 3020
         ENDIF

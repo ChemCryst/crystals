@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.85  2004/06/17 10:30:01  rich
+C Comment out some unused routines.
+C
 C Revision 1.84  2004/06/10 16:15:10  djw
 C Change back to computing cell properties from L5, but include L29 values in CIF as comments
 C
@@ -3719,6 +3722,7 @@ C
 \XLST30
 \XLST31
 \XIOBUF
+\XFLAGS
 C 
 C 
 \QLST30
@@ -5468,9 +5472,48 @@ C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHARACTER STRING
      1      CBUF(1:11), CTYPE
            CALL XPCIF (CLINE)
            WRITE (NCFPU1,'(''_refine_ls_matrix_type '',T35,''full'')')
+
+c 0 UNKNOWN  1 MIXED   2 REFALL  3 REFXYZ  4 REFU  5 NOREF
+c 6 UNDEF    7 CONSTR  8 NONE    
+
+           IPARAM  = 19
+           IDIR = 9
+           IVAL = ISTORE(L30CF+IPARAM-1)
+           IF ( IVAL .EQ. 0 ) THEN  ! Work it out from L5 flags.
+              IHC = 0
+              DO I5 = L5, L5+ (N5-1)*MD5, MD5
+                IF ( ISTORE(I5) .EQ. 'H   ' ) THEN
+                   IHC = IHC + 1
+                   INEW = 5                                      !NoRef
+                   IF ( AND(ISTORE(I5+15),KBREFB(3)) .GT. 0) THEN
+                      INEW = 7                                   !Riding
+                   ELSE IF ( AND(ISTORE(I5+15),KBREFB(2)) .GT. 0) THEN
+                     INEW = 7                                    !RigidGroup
+                   ELSE IF ( AND(ISTORE(I5+15), KBREFU) .GT. 0) THEN  
+                     INEW = 4                                    !RefU
+                     IF ( AND(ISTORE(I5+15),KBREFX).GT.0) INEW=1 !Refall
+                   ELSE IF ( AND(ISTORE(I5+15),KBREFX) .GT. 0) THEN
+                     INEW = 3                                    !RefXYZ
+                   END IF
+
+                   IF ( IVAL .NE. INEW ) THEN
+                      IF ( IVAL .NE. 0 ) THEN
+                         IVAL = 1                                !Mixed
+                         EXIT                                    !Stop looping
+                      ENDIF
+                      IVAL = INEW
+                   END IF
+                END IF
+              END DO
+              IF ( IHC .EQ. 0 ) IVAL = 8                         !None
+           ENDIF
+           IZZZ= KGVAL(CINSTR, CDIR, CPARAM, CVALUE, CDEF,
+     1                     33, IDIR, IPARAM, IVAL,   JVAL, VAL, JTYPE)
+           CALL XCCLWC (CVALUE(1:), CVALUE(1:))
            WRITE (NCFPU1,'(''_refine_ls_hydrogen_treatment '',T35,
-     1 ''mixed    # none, undef, noref, refall,'',/,T35,
-     2 ''         # refxyz, refU, constr or mixed'')')
+     1              A,T50,''# none, undef, noref, refall,'',/,T50,
+     2                    ''# refxyz, refU, constr or mixed'')') CVALUE
+
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IREF,1)(:),'(A,A)') 'Refinement on ',CTYPE
         ELSE IF ( IPUNCH .EQ. 2 ) THEN

@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.12  2003/07/01 16:43:34  rich
+C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
+C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
+C data from CRYSTALS' store. The unprefixed versions take any type and return
+C the same type.
+C
 C Revision 1.11  2003/06/27 11:52:37  rich
 C
 C Set appropriate flags in L5's REF key depedning on what's being done to
@@ -1963,22 +1969,26 @@ CDJWOCT2000>
       MS=ISTORE(MQ+6)+MQ
 CRICJUN03 If it is an occupancy, X or U parameter, set the ref flags accordingly.
       IF ( MG .NE. 2 ) THEN
-        IF(ISTORE(MS+1).EQ.3)THEN
-          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
-        ELSE IF(ISTORE(MS+1).GE.7)THEN
-          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFU )
-        ELSE IF(ISTORE(MS+1).GE.4)THEN
-          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFX )
-        END IF
+        IRIC2 = MS
+        DO IRIC1 = 1,MR
+          IF(ISTORE(IRIC2+1).EQ.3)THEN
+            ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
+          ELSE IF(ISTORE(IRIC2+1).GE.8)THEN
+            ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFU )
+          ELSE IF(ISTORE(IRIC2+1).GE.5)THEN
+            ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFX )
+          END IF
+          IRIC2 = ISTORE(IRIC2)+MQ
+        END DO
       ELSE
 C 'FIX' If it is an occupancy, X or U parameter, set the ref flags accordingly.
-        IF(ISTORE(MS+1).EQ.3)THEN
-          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
-        ELSE IF(ISTORE(MS+1).GE.7)THEN
-          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFU )
-        ELSE IF(ISTORE(MS+1).GE.4)THEN
-          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFX )
-        END IF
+c        IF(ISTORE(MS+1).EQ.3)THEN
+c          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
+c        ELSE IF(ISTORE(MS+1).GE.8)THEN
+c          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFU )
+c        ELSE IF(ISTORE(MS+1).GE.5)THEN
+c          ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFX )
+c        END IF
       END IF
 
 c----- checking for extended parameter index

@@ -1551,8 +1551,9 @@ New CIF extensions
     .XMIN               0    0    1    0    1 0.
     .YMIN               0    0    1    0    1 0.
     .ZMIN               0    0    1    0    1 0.
-    .SPARE              0    0    1    2    0 UNKNOWN
-     UNKNOWN        KNOWN
+    .H-TREATMENT        0    0    1    9    0 UNKNOWN
+     UNKNOWN        MIXED          REFALL         REFXYZ         REFU
+     NOREF          UNDEF          CONSTR         NONE           
 LIST 31            3    0
   31   40960 CRYSTALSINPUT
    1.AMULT              1    1    0    0    1    1  101    1   31
