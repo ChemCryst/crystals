@@ -1,4 +1,7 @@
 c $Log: not supported by cvs2svn $
+c Revision 1.25  2004/02/11 09:04:14  rich
+c Output of stuff for anna. (Closed set testing).
+c
 c Revision 1.24  2003/11/20 13:01:03  rich
 c Initialise variable in search for pseudo-symmetry to nonsense
 c value, rather than zero. Prevents incorrect diagnosis of pseudo-
@@ -744,7 +747,8 @@ C    THIS IS USED IN THIS SUBROUTINE TO SELECT ONE OF THE POSSIBLE
 C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
 C 
-      DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3), OPM(4,4)
+      DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3)
+      DIMENSION OPM(4,4), OPN(4,4)
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       COMMON/REGTMP/ 
@@ -1030,19 +1034,6 @@ C Output determinant and trace
 
          IF (IPCHRE.GE.0)THEN
 
-C Transform rotation matrix onto a primitive lattice.
-c
-c         DATA LTTYP /  1,  0,  0,    0,  1,  0,    0,  0,  1,   !P
-c     2               -.5, .5, .5,   .5,-.5, .5,   .5, .5,-.5,   !I
-c     4 .6667,-.3333,-.3333, .3333,.3333,-.6667, .3333,.3333,.3333, !R
-c     3                 0, .5, .5,   .5,  0, .5,   .5, .5,  0,   !F
-c     5                 1,  0,  0,    0, .5, .5,    0,-.5, .5,   !A
-c     6                 0, .5, .5,    1,  0,  0,    0,-.5, .5,   !B
-c     7                 0, .5, .5,    0,-.5, .5,    1,  0,  0    !C
-
-
-
-
 C Work out closeness to an ideal space group rotation.
           CLOSEX =   ( WSPAC3(1,1)-NINT(WSPAC3(1,1)) )**2
      3             + ( WSPAC3(1,2)-NINT(WSPAC3(1,2)) )**2
@@ -1087,26 +1078,26 @@ C Combine both measures above
 
 
 C THIS IS IT. See how well operator fits into current space group.
-C 1) Fill in the first half of the column of the array at LSGT
+
+C 1) Fill in the first half of the  array at LSGT
 C    with all the operators of the current space group.
 C
-C LSGT stores enough 4x4 operators to fit all the symmetry operators
-C of the current space group if an extra order 2 operator is added.
-C It is stored as a lower triangular array, the first element being
-C the unit matrix, and the first column listing each operator.
-C Lower triangle storage is sufficient to store all combinations of
-C these operators.
-C These formulae may come in handy:
-C
-C Amount of storage for a lower triangle of side N = N(N+1)/2
-C
-C Address of element Aij = i+(2n-j)(j-1)/2    ( j < i )
-C
+C    Fill in the second half of the array with the current operators
+C    times the 'new' potential operator.
 
           MSGT = LSGT  ! Currect matrix to fill in.
           MLTPLY = 2 * N2 * N2P * ( IC + 1 ) ! Twice current multiplicity.
-          NMATR = 0.5*MLTPLY*(MLTPLY+1)
+          NMSGT = LSGT + MLTPLY * 8         ! Offset for 2nd half of array
 
+C Store potential new operator in OPN
+          DO K2 = 1,3
+            CALL XMOVE(WSPAC3(1,K2),OPN(1,K2),3)
+            OPN(4,K2) = 0.0
+          END DO
+          CALL XMOVE(DELCNT(1),OPN(1,4),3)
+          OPN(4,4) = 1.0
+
+C Use OPM for building existing ops
           DO K2=1,3
             OPM(4,K2) = 0.0
           END DO
@@ -1130,111 +1121,79 @@ C Get the matrix.
               DO M2P = L2P,L2P+MD2P*(N2P-1),MD2P         ! Add in centerings
                 CALL XMOVE(OPM(1,1),STORE(MSGT),16)
                 CALL XADDR(STORE(MSGT+12),STORE(M2P),STORE(MSGT+12),3)
-                MSGT = MSGT + 16 ! Advance to next matrix.
+C Multiply new op by old one, and store in 2nd half of LSGT array.
+                CALL XMLTMM(OPM(1,1),OPN(1,1),STORE(NMSGT),4,4,4)
+                MSGT =  MSGT + 16  ! Advance to next matrix.
+                NMSGT = NMSGT + 16 ! Advance to next matrix.
               END DO
             END DO
           END DO
 
-C Put the new found transformation into the next space.
-          DO K2 = 0,2
-            CALL XMOVE(WSPAC3(1,K2+1),STORE(MSGT+K2*4),3)
+
+C Debug: Print out the generators.
+
+
+          DO K1 = LSGT,LSGT+(MLTPLY-1)*16,16
+            WRITE(CMON,'(/4(4F9.3/))')
+     1          ((STORE(K1+J2+J3),J2=0,12,4),J3=0,3)
+            CALL XPRVDU(NCVDU,5,0)
           END DO
-          CALL XMOVE(DELCNT(1),STORE(MSGT+12),3)
-          DO K2 = 3,11,4
-            STORE(MSGT+K2) = 0.0
-          END DO
-          STORE(MSGT+15) = 1.0
 
-          NPWORS = MSGT
 
-          DO K1 = MLTPLY/2+1, MLTPLY     !Loop over remaining empty rows.
 
-C Add the transform that we've just found (no-op the 1st time round)
-            CALL XMOVE(STORE(NPWORS),STORE(MSGT),16)
+C 2) We now have N operators. We know that the first N/2, multiplied
+C    by themselves will give only existing ops, so they can be ignored.
+C    We loop through doing the product of all new generators with
+C    all generators.
+C 3) For each product, find the best match among all the generators,
+C    store the worst of the best matches so far.
 
-C Using the first column as untransformed operators (ie. 1,1 must be unit matrix)
-C generate all the other columns. (Note lower triangle storage). See KSGTEX
-C for a better explanation.
+          WORST = 9999999.0
 
-            CALL KSGTEX(NMATR,STORE(LSGT))
+          DO K1 = LSGT+MLTPLY*8,LSGT+(MLTPLY-1)*16,16  ! New generators
 
-C Now find which operator in the last row added is most UNLIKE any other
-C operator in the set so far.
-C Compare each matrix in the ROW to every matrix so far,
-C store the best match each time. Then choose the worst of these 'best'
-C matches.
-            WORST = 9999999.0 
-            NPWORS = LSGT
+            DO K2 = LSGT,LSGT+(MLTPLY-1)*16,16            ! All generators
 
-            DO K2 = 2,K1   ! Loop over that row (K1) from the 2nd column
+              CALL XMLTMM(STORE(K1),STORE(K2),OPM(1,1),4,4,4) ! Product
 
-C For each new matrix in the new row.
-C Consider this matrix. At JSGT
-
-              JSGT = LSGT + 16*( (K1-1) + ((2*MLTPLY - K2) * (K2-1) /2))
-
-              WRITE(CMON,'(A,I4,A,I8)')
-     1         'Considering col ',K2,' at ',JSGT
-              CALL XPRVDU(NCVDU,1,0)
-
-      WRITE(CMON,'(/4(4F9.3/))') ((STORE(JSGT+J2+J3),J2=0,12,4),J3=0,3)
-      CALL XPRVDU(NCVDU,5,0)
-
-C Test it against all matrices so far and store the BEST
-C match.
               BEST = -9999999.0
-              DO KRW = 1,K1-1
-                DO KCL = 1,KRW
-                  KSGT = LSGT + 16*((KRW-1)+((2*MLTPLY-KCL)*(KCL-1)/2))
-  
-      WRITE(CMON,'(/4(4F9.3/))') ((STORE(KSGT+J2+J3),J2=0,12,4),J3=0,3)
-      CALL XPRVDU(NCVDU,5,0)
 
-C Shift trans bits of matrix at KSGT so that they are as close as
-C poss to the entries at JSGT. (ie. All values are 0<t<1 to start with,
+              DO K3 = LSGT,LSGT+(MLTPLY-1)*16,16             ! All generators
+
+C Shift trans bits of matrix in OPM so that they are as close as
+C poss to the entries at K3. (e.g. All values are 0<t<1 to start with,
 C but 0.01 and 0.98 *should* be close)
 
-                  CALL XMOVE(STORE(KSGT),OPM(1,1),16)
-    
                   DO K4 = 1,3
-                    DELTA = OPM(K4,4) - STORE(JSGT+11+K4)
+                    DELTA = OPM(K4,4) - STORE(K3+11+K4)
                     IF ( DELTA .LT. -0.5 ) THEN
                       OPM(K4,4) = OPM(K4,4) + 1
                     ELSE IF ( DELTA .GT. 0.5 ) THEN
                       OPM(K4,4) = OPM(K4,4) - 1
                     END IF
                   END DO
-
-
-                  R = CMPMAT(STORE(JSGT),OPM(1,1),16)  ! Compare them
-                  WRITE(CMON,'(A,2I2,A,I2,A,F18.3)')
-     1            'R at:',K1,K2, ' with ',KRW,' 1 is ',R
-                  CALL XPRVDU(NCVDU,1,0)
-                  BEST = MAX(BEST, R)       ! The best found
-                END DO
+C Do the comparison.
+                  BEST = MAX(BEST,CMPMAT(STORE(K3),OPM(1,1),16)) 
               END DO
 
-              WRITE(CMON,'(A,I4,A,F18.3)')
-     1         'Best col ',K2,' match is ',BEST
+              WRITE(CMON,'(A,2I4,A,F9.4)')'Best match for ',
+     1        (K1-LSGT)/16,(K2-LSGT)/16,' is:',BEST
               CALL XPRVDU(NCVDU,1,0)
 
-C Store the worst of the best matches, and the corresponding op.
-              IF ( WORST .GT. BEST ) THEN
-                WORST  =  BEST
-                NPWORS =  JSGT
-              END IF
+
+              WORST = MIN(WORST,BEST)
+
             END DO
-            WRITE(CMON,'(A,F15.3,A,I8)')
-     1         'Worst close match is ',WORST, ' at ', NPWORS
-            CALL XPRVDU(NCVDU,1,0)
-
-
-            MSGT = MSGT + 16
 
           END DO
+
+
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A,F13.9)')
      1    CHAR(9),WORST
           CALL XCREMS(CPCH,CPCH,LENFIL)
+
+          WRITE(CMON,'(A,F9.4)')'Worst of the best matches: ',WORST
+          CALL XPRVDU(NCVDU,1,0)
 
          ENDIF
 
@@ -4188,83 +4147,6 @@ C -- WRITE FINAL MESSAGE
 
 
 
-CODE FOR KSGTEX
-      SUBROUTINE KSGTEX(NMATS,ADDR)
-C
-C ADDR(16,NMATS)  - A lower triangular array of 4x4 matrices (column first).
-C NMATS - The number of matrices in ADDR.
-C
-C
-C The first matrix should always be the unit matrix.
-C
-C This subroutine takes the first column of matrix operators and
-C fills in the rest of the array by imagining that the first row
-C contains the same operators. Each filled in result is the
-C product of the operator in the first column of the same row and
-C the first row of the same column
-C
-C E.g. where each operator symbol below represents a 4x4 matrix:
-C
-C         1: 1
-C
-C         2: 21  5: 1
-C
-C         3: -1  6: m   8: 1
-C
-C         4: m   7: -1  9: 21  10: 1
-C
-C The first column is passed in, the rest is generated.
-
-C DEBUG only:
-\XIOBUF
-\XUNITS
-C END Debug
-
-      DIMENSION ADDR(16,NMATS)
-
-C Work out some properties of the matrix array
-      NROWS = (SQRT(1.+8.*MAX(0,NMATS))-1)/2  ! Just quadratic soln of N(N+1)/2
-
-      M = NROWS ! Address of current matrix (starting from 2nd column)
-
-      DO I = 2,NROWS ! Loop over each column except the first.
-        DO J = I,NROWS    ! Loop over each row that is stored.
-
-C Set this matrix to the product of the first matrix in row J and the
-C first matrix in row I (eqv to the 1st in column I)
-
-          M = M + 1      ! Address for this matrix
-          CALL XMLTMM(ADDR(1,J),ADDR(1,I),ADDR(1,M),4,4,4)
-
-        END DO   ! End of loop over columns
-      END DO   ! End of loop over rows
-
-      M = 0
-      DO I = 1, NROWS
-        WRITE(CMON,'(/A,I4)') 'Col: ',I
-        CALL XPRVDU(NCVDU,2,0)
-        DO J = I, NROWS
-          M = M + 1
-          WRITE(CMON,'(/4(4F9.3/))') ((ADDR(K+K2,M),K=0,12,4),K2=1,4)
-          CALL XPRVDU(NCVDU,5,0)
-        END DO
-      END DO
-
-
-C Set all translation components to be in the range 0<t<1
-
-      DO I = 1,NMATS
-        DO J = 1,3
-          ADDR(12+J,I) = MOD(ADDR(12+J,I),1.0)    ! Take remainder
-          IF ( ADDR(12+J,I) .LT. 0.0 ) THEN
-            ADDR(12+J,I) = ADDR(12+J,I) + 1       ! Add 1 if -ve
-          END IF
-        END DO
-      END DO
-
-
-      RETURN
-      END
 
 CODE FOR CMPMAT(A,B,N)
       FUNCTION CMPMAT(A,B,N)
