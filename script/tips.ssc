@@ -1,14 +1,5 @@
 %SCRIPT TIPS
 %  VARIABLE INTEGER NTIPS CTIP ICHO
-%%
-%% Check if tips have been turned off.
-%%
-^^CO GETKEY TIPS
-% GET SILENT NOSTORE FINAL INTEGER ' ' '1'
-% IF VALUE .EQ. 0 THEN
-%    FINISH
-% END IF
-%%
 %% Display a "tip of the day" at start up.
 %%
 ^^WI WINDOW XTIP 'Tip of the day' MODAL
@@ -31,20 +22,17 @@
 ^^CR
 % LOOP
 %  EVALUATE NTIPS = 24
-%  IF VALUE .NE. - 1 THEN
-%    
 ^^CO  GETKEY TIP#
-%     GET SILENT NOSTORE FINAL INTEGER ' ' '1'
-%     EVALUATE CTIP = VALUE
-%  ELSE
-%     GET SILENT NOSTORE FINAL INTEGER ' ' '1'
-%     EVALUATE CTIP = 1
-%  END IF
+%  GET SILENT NOSTORE FINAL INTEGER '1' '1'
+%  EVALUATE CTIP = VALUE
 %  CASE CTIP
 %   BLOCK     %TIP1%
- Hold down CONTROL or SHIFT and click on the
- model with the left mouse button to zoom in
- and out.
+Did you know?
+To automatically renumber atoms so that adjacent atoms
+have adjacent serial numbers, type:
+#REGROUP
+SELECT SEQUENCE=YES
+END
 %   END BLOCK
 %   BLOCK     %TIP2%
  You don't need to click on the input line
@@ -165,12 +153,9 @@ EXTEND SIZE=100 TRIES=100
 END
 %   END BLOCK
 %   BLOCK     %TIP18%
-Did you know?
-To automatically renumber atoms so that adjacent atoms
-have adjacent serial numbers, type:
-#REGROUP
-SELECT SEQUENCE=YES
-END
+ Hold down CONTROL or SHIFT and click on the
+ model with the left mouse button to zoom in
+ and out.
 %   END BLOCK
 %   BLOCK     %TIP19%
 Use
