@@ -1,4 +1,13 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.13  2004/07/08 15:23:28  rich
+C Added H-treatment options to the end of L30's CIF block. The default is
+C UNKNOWN, and if left unchanged, this will cause the CIF generator to
+C actually work out the appropriate keyword. It does this using the REFINE
+C flag (Offset 15 in List 5), and can distinguish between NONE (no H present),
+C CONSTR (for riding and rigid group refinement), REFALL, REFU, REFXYZ (for
+C those types), MIXED (if any H differs from any other), and NOREF (for
+C no refinement of any H). Happy Acta'ing.
+C
 C Revision 1.12  2003/07/01 16:43:34  rich
 C Change IOR intrinsics to OR, similarly: IAND -> AND, INOT -> NOT. The "I"
 C prefix is for INTEGER*2 (16 bit) types only, so could overflow when fed
@@ -390,18 +399,14 @@ C-C-C-DISTINCTION BETWEEN DIFFERENT ATOM-TYPES
 C-C-C-ANISOTR., ISOTROPIC ATOMS (AND UNREASONABLY SET FLAGS)
           IF ((NINT(STORE(M5+3)) .LE. 1.0) .OR.
      2        (NINT(STORE(M5+3)) .GT. 4.0)) THEN
-           WRITE(NCAWU,522) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
-     2     1./FLOAT(MGM)
-           IF (ISSPRT .EQ. 0) THEN
+             IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,522) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
      2      1./FLOAT(MGM)
-           ENDIF
+             ENDIF
 522        FORMAT(1X,' Atom ', A4, I4, ',  Multiplicity =', I3,
      2     ',  Number of positions =', I3, ' Occ = ', F6.4)
 C-C-C-SURFACE OF A SPHERE
           ELSE IF (NINT(STORE(M5+3)) .EQ. 2.0) THEN
-           WRITE(NCAWU,523) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
-     2     1./FLOAT(MGM)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,523) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
      2      1./FLOAT(MGM)
@@ -410,8 +415,6 @@ C-C-C-SURFACE OF A SPHERE
      2     ',  Number of positions =', I3, ' Occ = ', F6.4)
 C-C-C-LINE
           ELSE IF (NINT(STORE(M5+3)) .EQ. 3.0) THEN
-           WRITE(NCAWU,524) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
-     2     1./FLOAT(MGM)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,524) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
      2      1./FLOAT(MGM)
@@ -420,8 +423,6 @@ C-C-C-LINE
      2     ',  Number of positions =', I3, ' Occ = ', F6.4)
 C-C-C-RING
           ELSE IF (NINT(STORE(M5+3)) .EQ. 4.0) THEN
-           WRITE(NCAWU,525) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
-     2     1./FLOAT(MGM)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,525) STORE(M5), NINT(STORE(M5+1)), MPOS, NGMULT,
      2      1./FLOAT(MGM)
@@ -433,8 +434,6 @@ C-C-C-DISTINCTION BETWEEN DIFFERENT ATOM-TYPES
 C-C-C-ANISOTROPIC ATOMS (AND UNREASONABLY SET FLAGS)
           IF ((NINT(STORE(M5+3)) .LE. 0.0) .OR.
      2        (NINT(STORE(M5+3)) .GT. 4.0)) THEN
-           WRITE(NCAWU,532)
-     2     (PLM(K1(IK)+2), PRE(K2(IK)+1), COORD(KEY(IK)+1) ,IK =1,9)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,532)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORD(KEY(IK)+1) ,IK =1,9)
@@ -442,8 +441,6 @@ C-C-C-ANISOTROPIC ATOMS (AND UNREASONABLY SET FLAGS)
 532        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-ISOTROPIC ATOMS
           ELSE IF (NINT(STORE(M5+3)) .EQ. 1.0) THEN
-           WRITE(NCAWU,533)
-     2     (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDIS(KEY(IK)+1) ,IK =1,9)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,533)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDIS(KEY(IK)+1) ,IK =1,9)
@@ -451,8 +448,6 @@ C-C-C-ISOTROPIC ATOMS
 533        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-SURFACE OF A SPHERE
           ELSE IF (NINT(STORE(M5+3)) .EQ. 2.0) THEN
-           WRITE(NCAWU,534)
-     2     (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDSS(KEY(IK)+1) ,IK =1,9)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,534)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDSS(KEY(IK)+1) ,IK =1,9)
@@ -461,8 +456,6 @@ C-C-C-SURFACE OF A SPHERE
 C-C-C-LINE OR RING
           ELSE IF ((NINT(STORE(M5+3)) .GE. 3.0) .AND.
      2        (NINT(STORE(M5+3)) .LE. 4.0)) THEN
-           WRITE(NCAWU,535)
-     2     (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDLR(KEY(IK)+1) ,IK =1,9)
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,535)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDLR(KEY(IK)+1) ,IK =1,9)
@@ -610,7 +603,6 @@ C--THERE IS  NO NUMBER TO BE USED AS THE WEIGHT
 1550  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1600)
-      WRITE(NCAWU,1600)
       WRITE ( CMON ,1600)
       CALL XPRVDU(NCVDU, 1,0)
 1600  FORMAT(' Missing number on ''WEIGHT'' card')
@@ -629,7 +621,6 @@ C--TOO MANY BLOCKS FOUND
 1700  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,1750) MAXBLK
-      WRITE(NCAWU,1750) MAXBLK
       WRITE ( CMON ,1750) MAXBLK
       CALL XPRVDU(NCVDU, 1,0)
 1750  FORMAT(' Too many blocks. (Max = ',I4,' )')
@@ -665,7 +656,6 @@ C--ERROR WHILE ADJUSTING THE OVERALL PARAMETERS FOR THE FIRST CARD
 1950  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2000)
-      WRITE(NCAWU,2000)
       WRITE ( CMON ,2000)
       CALL XPRVDU(NCVDU, 1,0)
 2000  FORMAT(' Error while setting overall parameters')
@@ -817,7 +807,6 @@ C  NO EQUIVALENCING TAKES PLACE BETWEEN DIFFERENT BLOCKS.
 C--EQUIVALENCING IN DIFFERENT BLOCKS
 3000  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3050)
-      WRITE(NCAWU,3050)
       WRITE ( CMON ,3050)
       CALL XPRVDU(NCVDU, 1,0)
 3050  FORMAT(' Equivalence of parameters in different blocks')
@@ -1065,7 +1054,6 @@ C----- POLARITY?
           IF ( (( LL .LE. L) .AND. (ISTORE(LL) .GT. 0)) .OR.
      1      (ISTORE(IL23F(4)+L23M) .GE. 0) )  THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5665)
-            WRITE(NCAWU,5665)
             WRITE ( CMON ,5665)
             CALL XPRVDU(NCVDU, 1,0)
 5665        FORMAT(' Polarity and enantiopole should not be',
@@ -1075,7 +1063,6 @@ C----- POLARITY?
 C>DJWSEP96
         IF (NINT(STORE(L2C)) .GT. 0) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5665)
-            WRITE(NCAWU,5666)
             WRITE ( CMON ,5666)
             CALL XPRVDU(NCVDU, 1,0)
 5666        FORMAT(' WARNING - it is dangerous to refine Polarity'
@@ -1091,7 +1078,6 @@ C----- ENANTIOPOLE?
 C>DJWSEP96
         IF (NINT(STORE(L2C)) .GT. 0) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,5667)
-            WRITE(NCAWU,5667)
             WRITE ( CMON ,5667)
             CALL XPRVDU(NCVDU, 1,0)
 5667        FORMAT(' You must not refine the chirality',
@@ -1160,8 +1146,6 @@ C
        WRITE ( NCWU , 5670 ) N12 , N22B , N
        WRITE ( NCWU , 5671 ) NRECS , NBLKS , NKBYTS
       ENDIF
-      WRITE ( NCAWU , 5670 ) N12 , N22B , N
-      WRITE ( NCAWU , 5671 ) NRECS , NBLKS , NKBYTS
       WRITE(CMON,5670) N12, N22B, N
       CALL XPRVDU(NCVDU, 1,0)
 5670  FORMAT ('Refining ',I5,' parameters in ',I4,' block :',I9,
@@ -1178,11 +1162,9 @@ C----- INDICATE NO CHANGES TO LIST 23 YET
 C----- CHECK IF WE NEED UPDATE LIST 23
         IF (NRESTR .GT. 0) THEN
           IF (ISSPRT .EQ. 0) WRITE(NCWU,560) NRESTR
-          WRITE(NCAWU,560) NRESTR
 560     FORMAT (I6, ' Symmetry restraints written to LIST 17')
 C----- UPDATE LIST 23 TO INDICATE THAT RESTRAINTS HAVE BEEN GENERATED
           IF (ISTORE(L23MN + 2) .NE. 0) THEN
-            WRITE(NCAWU,561)
             IF (ISSPRT .EQ. 0)WRITE(NCWU,561)
 561   FORMAT('LIST 23 updated to activate restraints')
             ISTORE(L23MN + 2) = 0
@@ -1210,39 +1192,39 @@ C----- ANY SPECIAL MODIFIERS REQUESTED (EXTINCTION,POLARITY,ENANTIOPOLE)
         ENDIF
         M = M / 2
 6100    CONTINUE
-C
+
 C        IF (MOD23 .NE. 0) STOP 'MOD23 ERROR IN PRC12'
         IF (MOD23 .NE. 0) CALL GUEXIT(2012)
 C----- ANY GROUPS?
-C
+
         IF(NGPDIR .GT. 0) THEN
-C
+
           IF (ISTORE(L23SP + 3) .NE. 0) THEN
             ISTORE(L23SP + 3) = 0
             IMOD23 = 2
           ENDIF
-C
+
         ELSE
-C
+
           IF (ISTORE(L23SP + 3) .NE. -1) THEN
             ISTORE(L23SP + 3) = -1
             IMOD23 = 2
           ENDIF
-C
+
         ENDIF
-C
+
       ENDIF
-C
+
         IF (IMOD23 .NE. 0) THEN
-C
+
           IF(IMOD23 .EQ. 2) THEN
-            WRITE(NCAWU,6150)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,6150)
 6150      FORMAT(' LIST 23 has been modified to match LIST 12')
           ENDIF
-C
+
           J = 23
-          WRITE ( NCAWU,'('' New LIST 23 written to disk'')')
+          IF (ISSPRT .EQ. 0)
+     1        WRITE ( NCWU,'('' New LIST 23 written to disk'')')
           CALL XWLSTD ( J, ICOM23, IDIM23, 1, -1)
         ENDIF
 C
@@ -1250,7 +1232,6 @@ C----- WAS LIST 5 MODIFIED?
 C
       IF (NUPDAT .GT. 0) THEN
           IF (ISSPRT .EQ. 0) WRITE(NCWU,580) NUPDAT
-          WRITE(NCAWU,580) NUPDAT
 580       FORMAT(1X,I6,' Atoms modified;',
      1 '   New  LIST 5 written to DISK')
 C-----    WRITE UPDATED LIST 5 TO DISK
@@ -1274,7 +1255,6 @@ C--ERRORS FOUND
 C
 9800  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU, 9801)
-      WRITE(NCAWU, 9801)
       WRITE ( CMON , 9801)
       CALL XPRVDU(NCVDU, 1,0)
 9801  FORMAT (' Error initialising special positions')
@@ -1405,7 +1385,6 @@ C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
      1          THEN
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CRST
-                WRITE(NCAWU,'(A)') CMON(1)(:)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 527   FORMAT(' Parameter  ',A4, I4,4X,  A,6X,' to be fixed by ', A)
                 NRESTR = NRESTR + 1
@@ -1414,7 +1393,6 @@ C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
 
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CCST
-                WRITE(NCAWU,'(A)') CMON(1)(:)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 C SET 'FIX' AND 'EXPLICIT'
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IO(2))
@@ -1478,7 +1456,6 @@ C INCREMENT THE RELATED PARAMETER COUNT
                         NRELP = NRELP + 1
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                  ,COORD(KS+1), CCST
-                        WRITE(NCAWU,'(A)') CMON(1)(:)
                         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
 528                     FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
      1                  ' related by ', A)
@@ -1486,7 +1463,6 @@ C INCREMENT THE RELATED PARAMETER COUNT
 C RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                    ,COORD(KS+1), CRST
-                          WRITE(NCAWU,'(A)') CMON(1)(:)
                         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
                         CALL XRESTL (KS, COEF(KS), XO(KS),
      1                   JS, COEF(JS), XO(JS), M5S)
@@ -1676,7 +1652,6 @@ C   Assumes you forgot ANDs:  shift (p1+p2+p3+p4)=0
         KA=KCORCH(IDWZAP)       ! CHECK FOR IMPLICIT PARAMETERS
         IF ( KA .NE. 0 ) THEN
           IF (ISSPRT .EQ. 0) WRITE(NCWU,1312)
-          WRITE(NCAWU,1312)
           WRITE( CMON ,1312)
           CALL XPRVDU(NCVDU, 1,0)
           GOTO 2050
@@ -1692,7 +1667,6 @@ C----- PARAMETERS SHOULD BE SPECIFIED
           MF=MF-LK2
           CALL XPCL12
           IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)ISTORE(MF+1)
-          WRITE(NCAWU,1500) ISTORE(MF+1)
           WRITE( CMON ,1500) ISTORE(MF+1)
           CALL XPRVDU(NCVDU, 1,0)
           LEF=LEF+1
@@ -1748,7 +1722,6 @@ C----- UPDATE DATA SET
 C----- NOW CHECK THAT 'AND' IS PERMITTED
       IF (ML .EQ. 2 .OR. ML .EQ. 3 .OR. ML .EQ. 5) GOTO 1213
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1212)
-      WRITE(NCAWU,1212)
       WRITE ( CMON ,1212)
       CALL XPRVDU(NCVDU, 1,0)
 1212  FORMAT(' AND not permitted with this directive')
@@ -1758,7 +1731,6 @@ C----- CHECK FOR TOO MANY 'AND'S ON COMBINE CARD
       IF (ML .EQ.  3) THEN
             IF (ISET .GT.  1) THEN
                   IF (ISSPRT .EQ. 0) WRITE(NCWU,1216)
-                  WRITE(NCAWU,1216)
                   WRITE ( CMON ,1216)
                   CALL XPRVDU(NCVDU, 1,0)
 1216  FORMAT(' Only one AND permitted on a COMBINE card')
@@ -1792,14 +1764,12 @@ C--INSERT THE OVERALL PARAMETER JUST FOUND
 C----- ARE THERE LINKED PARAMETERS?
       IF (ML .EQ. 1) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU,1252)
-         WRITE(NCAWU,1252)
          WRITE ( CMON ,1252)
          CALL XPRVDU(NCVDU, 1,0)
 1252     FORMAT(' RIDE not permitted with overall parameters')
          GOTO 2050
       ELSE IF (ML .EQ. 4) THEN
          IF (ISSPRT .EQ. 0) WRITE (NCWU,1253)
-         WRITE (NCAWU,1253)
          WRITE ( CMON ,1253)
          CALL XPRVDU(NCVDU, 1,0)
 1253     FORMAT( ' A GROUP may not contain OVERALL parameters')
@@ -1829,14 +1799,12 @@ CDJWOCT2000>
 C----- IMPLICIT PARAMETER NAMES
       IF (ML .EQ. 4) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU,1311)
-         WRITE(NCAWU,1311)
          WRITE( CMON ,1311)
          CALL XPRVDU(NCVDU, 1,0)
 1311     FORMAT (' GROUP may not be used with IMPLICIT paramters')
          GOTO 2050
       ELSE IF (ML .EQ. 5) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU,1311)
-         WRITE(NCAWU,1312)
          WRITE( CMON ,1312)
          CALL XPRVDU(NCVDU, 1,0)
 1312     FORMAT (' SUMFIX may not be used with IMPLICIT paramters')
@@ -1859,7 +1827,6 @@ C----- PARAMETERS SHOULD BE SPECIFIED
       MF=MF-LK2
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)ISTORE(MF+1)
-      WRITE(NCAWU,1500) ISTORE(MF+1)
       WRITE( CMON ,1500) ISTORE(MF+1)
       CALL XPRVDU(NCVDU, 1,0)
 1500  FORMAT(' No atomic parameters specified at about column',I5)
@@ -2053,7 +2020,6 @@ c-----  mixed aniso / special figure
 C----- RIDING MODEL - CHECK WE HAVE CORRECT NO OF PARAMETERS
             IF (MRI .NE. MR) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,1762)
-            WRITE(NCAWU,1762)
             WRITE( CMON ,1762)
             CALL XPRVDU(NCVDU, 1,0)
 1762  FORMAT(' Parameter incompatibility on RIDE card')
@@ -2085,7 +2051,6 @@ C----- SET INCREMENT FOR SUMFIX CARD
       IF (MO + IMR -1 - MAXEQ) 1790, 1790, 1780
 1780  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,1785)MAXEQ
-      WRITE(NCAWU,1785)MAXEQ
       WRITE( CMON ,1785)MAXEQ
       CALL XPRVDU(NCVDU, 1,0)
 1785  FORMAT('Too many COMPOSITE parameters, (max =',I5,')')
@@ -2131,7 +2096,6 @@ C----- CARD HAS AN 'AND' OPERATOR. CHECK NO OF ARGUMENTS
 2030  CONTINUE
       IF ( ML .EQ. 5 ) GOTO 2040 ! Number do not have to match for SUMFIX
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,2035)
-      WRITE(NCAWU,2035)
       WRITE( CMON ,2035)
       CALL XPRVDU(NCVDU, 1,0)
 2035  FORMAT(' Number of parameters before and after AND do not match')
@@ -2149,7 +2113,6 @@ C----- 'AND' REQUIRED
       IF(ISET) 2115, 2115, 2117
 2115  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,2116)
-      WRITE(NCAWU,2116)
       WRITE( CMON ,2116)
       CALL XPRVDU(NCVDU, 1,0)
 2116  FORMAT (' AND sequence missing')
@@ -2184,7 +2147,6 @@ C--UNREFINABLE PARAMETER  -  PRINT THE ERROR MESSAGE
 2350  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)
-      WRITE(NCAWU, 2400)
       WRITE( CMON , 2400)
       CALL XPRVDU(NCVDU, 1,0)
 2400  FORMAT(' Unrefinable atomic parameter')
@@ -2275,7 +2237,6 @@ C--ERROR BECAUSE AN UNREFINABLE PARAMETER
 1300  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1350)
-      WRITE(NCAWU,1350)
 1350  FORMAT(' Unrefinable overall parameter')
       LEF=LEF+1
 1400  CONTINUE
@@ -2291,7 +2252,6 @@ C--OVERALL PARAMETER THAT CANNOT BE REFINED
 1510  CONTINUE
 C----- SOME TYPE OF SCALE FACTOR
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1550)(KSCAL(I,ITYPE),I=1,2),KA
-      WRITE(NCAWU,1550)(KSCAL(I,ITYPE),I=1,2),KA
       WRITE( CMON ,1550)(KSCAL(I,ITYPE),I=1,2),KA
       CALL XPRVDU(NCVDU, 1,0)
 1550  FORMAT(1H ,2A4,' Scale factor number ',I3)
@@ -2300,7 +2260,6 @@ C----- SOME TYPE OF SCALE FACTOR
 C----- SOME TYPE OF SPECIAL PARAMETER
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,1570) (KSCAL(I,ITYPE),I = 1,2), KA
-      WRITE(NCAWU,1570) (KSCAL(I,ITYPE),I = 1,2), KA
       WRITE( CMON,1570) (KSCAL(I,ITYPE),I = 1,2), KA
       CALL XPRVDU(NCVDU, 1,0)
 1570  FORMAT(1X, 2A4, ' Parameter number ', I3)
@@ -2423,7 +2382,6 @@ C---------- CHECK THAT THERE ARE ENOUGH PARTS
 C----- ILLEGAL ML VALUE
          CALL XPCL12
          IF (ISSPRT .EQ. 0) WRITE(NCWU,900)
-         WRITE(NCAWU,900)
          WRITE( CMON ,900)
          CALL XPRVDU(NCVDU, 1,0)
 900      FORMAT(' Illegal request to KINSRT')
@@ -2461,7 +2419,6 @@ C--CHECK IF THE PARAMETER WAS ASSIGNED IN DIFFERENT BLOCK
 1200  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1250)
-      WRITE(NCAWU,1250)
       WRITE( CMON,1250)
       CALL XPRVDU(NCVDU, 1,0)
 1250  FORMAT(' Parameter already specified',
@@ -2479,7 +2436,6 @@ C--ERROR BECAUSE OF TWO INCOMPATIBLE DEFINITIONS OF A PARAMETER
 1450  CONTINUE
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
-      WRITE(NCAWU,1500)
       WRITE( CMON ,1500)
       CALL XPRVDU(NCVDU, 1,0)
 1500  FORMAT(' Parameter specified',
@@ -2522,7 +2478,6 @@ C----- THERE SHOULD BE NO WEIGHT SET YET
        IF (ABS (STORE(I+1)) - ZERO) 1730, 1730, 1710
 1710   CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1720)
-      WRITE(NCAWU,1720)
       WRITE( CMON ,1720)
       CALL XPRVDU(NCVDU, 1,0)
 1720   FORMAT(' A weight has previously been stored for a' ,
@@ -3545,7 +3500,6 @@ C--ALL ERRORS
 2400  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2450)
-      WRITE(NCAWU,2450)
       WRITE( CMON ,2450)
       CALL XPRVDU(NCVDU, 1,0)
 2450  FORMAT(' Mixed aniso/iso temperature factors',
@@ -3683,8 +3637,6 @@ C------ IS THERE A SECOND PART FOR THIS PARAMETER
        WRITE (NCWU,1550)KPARAM, STORE(L5A),NINT(STORE(L5A+1))
      1 ,COORD(N+1)
        ENDIF
-       WRITE (NCAWU,1550)KPARAM,STORE(L5A),NINT(STORE(L5A+1))
-     1 ,COORD(N+1)
        WRITE( CMON ,1550)KPARAM,STORE(L5A),NINT(STORE(L5A+1))
      1 ,COORD(N+1)
        CALL XPRVDU(NCVDU, 1,0)
@@ -3692,7 +3644,6 @@ C------ IS THERE A SECOND PART FOR THIS PARAMETER
        IF (ISSPRT .EQ. 0) THEN
        WRITE (NCWU,1500)   KPARAM, OVER(N+1)
        ENDIF
-       WRITE (NCAWU,1500)   KPARAM, OVER(N+1)
        WRITE( CMON ,1500)   KPARAM, OVER(N+1)
        CALL XPRVDU(NCVDU, 1,0)
       ENDIF
