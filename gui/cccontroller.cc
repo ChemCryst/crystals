@@ -11,6 +11,11 @@
 //   Modified:  30.3.1998 12:23 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.8  1999/06/03 14:35:49  dosuser
+// RIC: Changed ParseLine and ParseInput to use CcStrings rather than
+// char*'s. Same for ProcessOutput. Changed TRUE and FALSE to
+// true and false.
+//
 // Revision 1.7  1999/05/28 17:52:00  dosuser
 // RIC: Attempted world record for most number of files
 // checked in at once. Most changes are to do with adding
@@ -33,7 +38,9 @@
 //      display atom names in the current progress/status bar.
 //
 
-#include	"crystalsinterface.h"
+#include <iostream.h>
+#include <iomanip.h>
+#include    "crystalsinterface.h"
 #include	"crconstants.h"
 #include	"cccontroller.h"
 //insert your own code here.
@@ -587,6 +594,7 @@ Boolean     CcController::ParseLine( CcString text )
 
 		// add item to token list
             AppendToken(text.Sub(start,stop) );
+
 	}
 	return true; // *** for now
 //End of user code.         
@@ -615,7 +623,7 @@ void	CcController::Tokenize( char * text )
 	{
             if ( cText.Sub(j,j+1) == "^^" )
             {
-                  cText = cText.Sub(j,clen-1);
+                  cText = cText.Sub(j,clen);
                   j = clen;
             }
       }
@@ -744,6 +752,10 @@ void  CcController::AppendToken( CcString text  )
 // Add it to the tokenlist.
 
 	mCurTokenList->AddItem( theString );
+
+//DEBUG!
+//      if ( *theString == "XHELP" ) abort();
+
 }
 
 void	CcController::AddCrystalsCommand( char * line, Boolean jumpQueue)
