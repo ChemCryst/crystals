@@ -32,6 +32,7 @@ class	CrWindow : public CrGUIElement
 		void FocusToInput(char theChar);
 		Boolean mIsSizeable;
 		Boolean mIsModal;
+                Boolean mSetSize;
 		void MenuSelected(int id);
 		CrMenu* mMenuPtr;
 		void SetMainMenu(CrMenu* menu);

@@ -35,8 +35,9 @@ CcList CrWindow::mModalWindowStack;
 	mWidgetPtr = nil;
 	mGridPtr = nil;
 	mMenuPtr = nil;
-	mMinWidth = 10000000; // { Set to ridiculous +ve values as they
-	mMinHeight= 10000000; // { are set in a Min in CalcLayout.
+        mSetSize = false;
+        mMinWidth = 10000000; // { Set to ridiculous +ve values as they
+        mMinHeight= 10000000; // { are set in a Min in CalcLayout.
 	mTabGroup = new CcList();
 	mTabStop = false;
 	mIsModal = false;
@@ -389,12 +390,10 @@ Boolean	CrWindow::ParseInput( CcTokenList * tokenList )
 	}
 
 	return (retVal);
-//End of user code.         
 }
-// OPSignature: void CrWindow:SetGeometry( const CcRect *:rect ) 
+
 void	CrWindow::SetGeometry( const CcRect * rect )
 {
-//Insert your own code here.
 
 	CcRect tempRect;
 	tempRect.mTop		= rect->mTop;
@@ -407,24 +406,20 @@ void	CrWindow::SetGeometry( const CcRect * rect )
 											tempRect.mLeft,
 											tempRect.mBottom,
 											tempRect.mRight );
-//End of user code.         
 }
-// OPSignature: CcRect CrWindow:GetGeometry() 
+
 CcRect	CrWindow::GetGeometry()
 {
-//Insert your own code here.
 	CcRect retVal;
 	retVal.Set(	((CxWindow*)mWidgetPtr)->GetTop(), 
 				((CxWindow*)mWidgetPtr)->GetLeft(),
 				((CxWindow*)mWidgetPtr)->GetTop()+((CxWindow*)mWidgetPtr)->GetHeight(),
 				((CxWindow*)mWidgetPtr)->GetLeft()+((CxWindow*)mWidgetPtr)->GetWidth()   );
 	return retVal;
-//End of user code.         
 }
-// OPSignature: void CrWindow:CalcLayout() 
+
 void	CrWindow::CalcLayout()
 {
-//Insert your own code here.
 	if ( mGridPtr != nil )
 	{
 		// STEP1 Call calclayout for child grid.
@@ -440,27 +435,28 @@ void	CrWindow::CalcLayout()
 		theRect = GetGeometry();
 //These are only set the first time this function is called, as after that
 //the stored dimensions will always be smaller than the current ones.
-		mMinWidth = min(mMinWidth, theRect.Width());
-		mMinHeight= min(mMinHeight,theRect.Height());
+                if( ! mSetSize )
+                {
+                  mMinWidth = theRect.Width();
+                  mMinHeight= theRect.Height();
+                  mSetSize = true;
+                }
 	}
-//End of user code.         
 }
-// OPSignature: void CrWindow:SetText( CcString:item ) 
+
 void	CrWindow::SetText( CcString item )
 {
-//Insert your own code here.
 	char theText[256];
 	strcpy (theText, item.ToCString() );
 	if ( mWidgetPtr != nil )
 	{
 		((CxWindow*)mWidgetPtr)->SetText(theText);
 	}
-//End of user code.         
 }
-// OPSignature: void CrWindow:Show( Boolean:show ) 
+
 void	CrWindow::Show( Boolean show )
 {
-//Insert your own code here.
+
 	if( show )
 	{
 		((CxWindow*)mWidgetPtr)->CxShowWindow();
@@ -474,20 +470,17 @@ void	CrWindow::Show( Boolean show )
 //////		if(mIsModal)
 	//		((CxWindow*)mWidgetPtr)->EndModalState();
 	}
-//End of user code.         
 }
-// OPSignature: void CrWindow:Align() 
+
 void	CrWindow::Align()
 {
-//Insert your own code here.
+
 	if ( mGridPtr != nil )
 		mGridPtr->Align();
-//End of user code.         
 }
-// OPSignature: CrGUIElement * CrWindow:FindObject( CcString:Name ) 
+
 CrGUIElement *	CrWindow::FindObject( CcString Name )
 {
-//Insert your own code here.
 	CrGUIElement * theElement = nil;
 	
 	if (theElement = CrGUIElement::FindObject( Name )) //Assignment within conditional (OK)
@@ -501,26 +494,12 @@ CrGUIElement *	CrWindow::FindObject( CcString Name )
 
 	return nil;
 
-//End of user code.         
-}
-// OPSignature: CrGUIElement * CrWindow:GetRootWidget() 
-CrGUIElement *	CrWindow::GetRootWidget()
-{
-//Insert your own code here.
-	return this;
-//End of user code.         
 }
 
-/*void *	CrWindow::GetWidget()
+CrGUIElement *	CrWindow::GetRootWidget()
 {
-//Insert your own code here.
-//	if ( mWidgetPtr == nil )
-//		return mParentElementPtr->GetWidget();
-//	else
-		return mWidgetPtr;
-//End of user code.         
+	return this;
 }
-*/
 
 void CrWindow::CloseWindow()
 {
@@ -532,11 +511,12 @@ void CrWindow::ResizeWindow(int newWidth, int newHeight)
 //Check for minimum size (If the class library supports it,
 //the min size of the window should be fixed. If not it is
 //reset here anyway.)
-	if(mMinWidth  > 100000) return; // On the first call, 
- 	if(mMinHeight > 100000) return; // just return.
+        if (!mSetSize) return; 
+//        if(mMinWidth  > 100000) return; // On the first call,
+//        if(mMinHeight > 100000) return; // just return.
 
-	newWidth = max(newWidth, mMinWidth);
-	newHeight= max(newHeight,mMinHeight);
+//        newWidth = max(newWidth, mMinWidth);
+//        newHeight= max(newHeight,mMinHeight);
 
 //Set size of new child grid to this
 	if ( mGridPtr != nil )
