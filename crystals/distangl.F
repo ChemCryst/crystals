@@ -3881,7 +3881,7 @@ C-------MAIN TERMINATION ROUTINES
 2100  CONTINUE
 C(****CHANGE THIS****)
 2110  FORMAT ('Dist. of contacts is',F6.2/'Grid resolution is'
-     2,F6.2/'Contact are Q gt ',I2,',L lt ',I2,',else M atoms')
+     2,F6.2/'Contact are R gt ',I2,',L lt ',I2,',else M atoms')
       WRITE(NCAWU,2110) AC,RES,INCONT(1),INCONT(2)
 C
 C-------ASSYMETRIC UNIT DIMENSIONS
@@ -4016,7 +4016,7 @@ C-------WE NOT IN AN ATOM SO SAVE POINT IN SRQ
 C
             CSRQ = ' '
             IF (CONT.GE.INCONT(1)) THEN
-            WRITE(CSRQ,'(A7,I4,5F11.6)')'ATOM Q ',
+            WRITE(CSRQ,'(A7,I4,5F11.6)')'ATOM R ',
      2         IATOM, STORE(IABAT+2), STORE(IABAT+3),
      3         STORE(IABAT+4), STORE(IABAT+5), STORE(IABAT+6)
             ELSE IF (CONT.LE.INCONT(2)) THEN
