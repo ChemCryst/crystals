@@ -9,6 +9,9 @@
 //   Created:   22.2.1998 15:02 Uhr
 
 // $Log: not supported by cvs2svn $
+// Revision 1.49  2002/07/19 08:08:17  richard
+// Remove backwards incompatibilty of new std C++ library.
+//
 // Revision 1.48  2002/07/18 16:57:52  richard
 // Upgrade to use standard c++ library, rather than old C libraries.
 //
@@ -1372,10 +1375,10 @@ void  CcController::AddCrystalsCommand( CcString line, Boolean jumpQueue)
     m_Crystals_Commands_CS.Enter();
 
     mCrystalsCommandQueue.SetCommand( line, jumpQueue);
-    if (jumpQueue) {
-        LOGSTAT ( "Jumpqueue occured, unlocking output queue.");
-        ProcessingComplete();
-    }
+//    if (jumpQueue) {
+//        LOGSTAT ( "Jumpqueue occured, unlocking output queue.");
+//        ProcessingComplete();
+//    }
 
     m_Crystals_Commands_CS.Leave();
 
@@ -1407,7 +1410,7 @@ void  CcController::AddInterfaceCommand( CcString line )
   {
     if ( line[1] == '^' )
     {
-      chop = max(clen,5); 
+      chop = min(clen,5); 
       if ( line[0] == '^' )
       {
         chop = 4;
@@ -1420,7 +1423,7 @@ void  CcController::AddInterfaceCommand( CcString line )
           lock = true;
           CompleteProcessing();
 // Nothing can be read back from queue until this query is answered.
-          LOGSTAT ("-----------Queue will be locked before returning.");
+          LOGSTAT ("-----------Queue will be locked before returning: "+selector);
         }
       }
     }
