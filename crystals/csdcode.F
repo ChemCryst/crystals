@@ -1,5 +1,9 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2003/01/21 12:54:11  rich
+C Commented out swathes of unused code in order to shrink
+C the executable a bit.
+C
 C Revision 1.17  2002/06/26 10:30:08  richard
 C Remove debugging statement about unbalanced charge sums.
 C Suppress warning message if forced bond type is same as calculated
@@ -1484,6 +1488,11 @@ c      ENDDO
 
 Calculate bond types:
       CALL SAMABO
+
+c      DO I = 1,NATCRY
+c         I5 = L5+((I-1)*MD5)
+c         ISTORE(I5+16) = ISTORE(HYBR+I-1)
+c      END DO
 
 Check:
 c      DO I = 1,NATCRY
