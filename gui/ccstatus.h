@@ -72,4 +72,15 @@ class	CcStatus
 		int statusFlags;
 
 };
+
+#define kSSetStatus		"STATSET"
+#define kSUnSetStatus		"STATUNSET"
+
+enum
+{
+ kTSetStatus = 500,
+ kTUnSetStatus
+};
+
+
 #endif
