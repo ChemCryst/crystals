@@ -9,8 +9,6 @@
 #if !defined(__RUN_PARAMETERS_H__)
 #define __RUN_PARAMETERS_H__
 #if !defined(_WIN32)
-#define _TCHAR const char
-#define TCHAR char
 #define kDefaultTables "/Tables.txt"
 #else
 #define kDefaultTables "\\Tables.txt"
@@ -24,7 +22,7 @@ class RunParameters
     private:
         bool iRequestChirality;	//If this is true then the user will be asked if the file crystal is chiral.
         void readParamFile();
-        bool handleArg(int *pPos, int pMax, _TCHAR * argv[]);
+        bool handleArg(int *pPos, int pMax, const char * argv[]);
     public:
         Path iFileName;		//File name for the hkl data.
         Path iTablesFile;               //The file name of the tables file.
@@ -37,7 +35,7 @@ class RunParameters
         String iCrystalSys;	//Crystal System
         UnitCell iUnitCell;	//The unit cell
         RunParameters();
-        void handleArgs(int pArgc, _TCHAR* argv[]);
+        void handleArgs(int pArgc, const char* argv[]);
         void getParamsFromUser();
 };
 #endif
