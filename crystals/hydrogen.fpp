@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.19  2003/01/14 10:16:06  rich
+C Use XPROCC common block from macro file.
+C
 C Revision 1.18  2002/12/16 18:25:01  rich
 C Change call to KDIST1.
 C
@@ -2725,30 +2728,30 @@ C
       RETURN
       END
 C
-CODE FOR SPRV
-      SUBROUTINE SPRV(N)
-C
-\ISTORE
-C
-\STORE
-\XWORKA
-\XLISTI
-\XLST01
-\XLST05
-\XUNITS
-\XSSVAL
-C
-\QSTORE
-C
-      EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
-C
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)STORE(N),STORE(N+1),STORE(N+2)
-      ENDIF
-1000  FORMAT(10X,3F10.5)
-      RETURN
-      END
-C
+cCODE FOR SPRV
+c      SUBROUTINE SPRV(N)
+cC
+c\ISTORE
+cC
+c\STORE
+c\XWORKA
+c\XLISTI
+c\XLST01
+c\XLST05
+c\XUNITS
+c\XSSVAL
+cC
+c\QSTORE
+cC
+c      EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
+cC
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE(NCWU,1000)STORE(N),STORE(N+1),STORE(N+2)
+c      ENDIF
+c1000  FORMAT(10X,3F10.5)
+c      RETURN
+c      END
+
 CODE FOR SVET
       SUBROUTINE SVET(TN,TP)
 C--TRANSFER A VECTOR OF ORDER 3

@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.45  2003/07/16 21:59:39  rich
+C Zero L12 prior to KDIST4 call. (It may remain set from a previous
+C instruction, causing crashes).
+C
 C Revision 1.44  2003/06/09 13:47:03  rich
 C Preserve original bond types when expanding the network by symmetry (this is
 C a MOGUL issue.)
@@ -1723,204 +1727,204 @@ C   1410  FORMAT ('LIST5', /, 'SNOOPI.L5')
 C   -194
 C
 C
-CODE FOR XLNKCM
-      SUBROUTINE XLNKCM
-C
-C     THIS SUBROUTINE READS INFOMATION FROM LISTS 1,2 & 5
-C     AND PREPARES DATRA FOR CAMERON
-C----- FORMAT IN 'STORE' IS:
-C      0   NUMBER OF ITEMS IN HEADER
-C      1-6 CELL, ANGSTROM AND RADIANS
-C      7   CENTRED FLAG 0.0 = ACENTRIC
-C      8   No OF SYMMETRY MATRICES
-C      9   NO OF CENTRING VECTORS
-C      10  START OF ATOMS
-C      11  NO OF ATOMS
-C      12  NO OF ITEMS PER ATOM
-C
-C      ..      SYMMETRY MATRICES 3X4, BY COLUMNS
-C      ..      CENTRING VECTORS, AS ROWS
-C      ..      ATOMS (TYPE, SERIAL,OCC, UISO,X'S,U'S, SPARE)
-C
-      DIMENSION LISTS(3)
-C
-\ISTORE
-C
-\STORE
-\XUNITS
-\XSSVAL
-\XCONST
-\XLST01
-\XLST02
-\XLST05
-\XOPVAL
-\XERVAL
-\XIOBUF
-C
-\QSTORE
-C
-      DATA NLISTS / 3 /
-      DATA LISTS(1) / 1 / , LISTS(2) / 2 / , LISTS(3) / 5 /
-C
-C -- CHECK THAT OPERATION IS BEING PERFORMED IN INTERACTIVE MODE
-      IF ( IQUN .NE. JQUN ) GO TO 9920
-C
-C--FIND OUT WHICH LISTS EXIST
-      IERROR = 1
-      DO 1300 N=1 , NLISTS
-        LSTNUM = LISTS(N)
-        IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
-1200    CONTINUE
-        WRITE ( NCAWU , 1205 ) LSTNUM
-        IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
-        WRITE ( CMON, 1205 ) LSTNUM
-        CALL XPRVDU(NCVDU, 1,0)
-1205    FORMAT ( 1X , 'List ' , I2 , ' contains errors')
-        IERROR = -1
-        GOTO 1300
-1210    CONTINUE
-        WRITE ( NCAWU , 1215 ) LSTNUM
-        IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
-        WRITE ( CMON, 1215 ) LSTNUM
-        CALL XPRVDU(NCVDU, 1,0)
-1215    FORMAT ( 1X , 'List' , I2 , ' does not exist' )
-        IERROR = -1
-        GOTO 1300
-1220    CONTINUE
-1300  CONTINUE
-      IF ( IERROR .LE. 0 ) GOTO 9900
-C
-C
-C -- LOAD LISTS
-C
-      CALL XFAL01
-      CALL XFAL02
-C
-C----- NO OF ITMES IN HEADER
-      NITEM = 13
-      ISTART = KSTALL(NITEM)
-      STORE(ISTART) = FLOAT(NITEM)
-C----- CELL
-      CALL XMOVE (STORE(L1P1), STORE(ISTART+1), 6)
-C----- CONVERT TO DEGREES
-      STORE(ISTART+3) = RTD * STORE(ISTART+4)
-      STORE(ISTART+4) = RTD * STORE(ISTART+5)
-      STORE(ISTART+5) = RTD * STORE(ISTART+6)
-C----- CENTRIC/ACENTRIC
-      STORE(ISTART+7) = STORE(L2C)
-C----- NO OF MATRICES
-      STORE(ISTART+8) = N2
-C----- NO OF CENTRING VECTORS
-      STORE(ISTART+9) = N2P
-C
-C
-C----- THE SYMMETRY MATRICES AND VECTORS
-      M2 = L2 + (N2-1)*MD2
-      DO 1400 IND2=L2,M2,MD2
-      I = KSTALL(MD2)
-      CALL XMOVE (STORE(IND2), STORE(I), MD2)
-1400  CONTINUE
-C----- THE CENTRING VECTORS
-      DO 1500 IND1=L2P,M2P,3
-      I = KSTALL(3)
-      CALL XMOVE (STORE(IND1), STORE(I), 3)
-1500  CONTINUE
-C
-C----- LOAD LIST 5
-C      CALL XFAL05
-      LN5 = 1
-      LN5 = KTYP05(LN5)
-      CALL XLDR05(LN5)
-C
-      STORE(ISTART+10) = FLOAT (L5)
-      STORE(ISTART+11) = FLOAT (N5)
-      STORE(ISTART+12 ) = FLOAT (MD5)
-C
-C---- INITIALISATION
-      CALL XCAMER( 1, ISTART, IEND, -1)
-C----- REAL WORK
-      CALL XCAMER( 2, ISTART, IEND, -1)
-C
-C----- HAS CAMERON CHANGED THE ATOMS?
-      NN5 = NINT(STORE(ISTART+11))
-      IF (NN5 .LT. 0) THEN
-        N5 = -NN5
-        N = N5
-        NEW = 1
-        CALL XSTR05(LN5, 0, NEW)
-        IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1520) N5
-        WRITE ( NCAWU, 1520 ) N5
-        WRITE ( CMON, 1520 ) N5
-        CALL XPRVDU(NCVDU, 1,0)
-1520    FORMAT (' LIST 5 now contains ', I6, ' atoms')
-      ENDIF
-      RETURN
-C
-C
-9900  CONTINUE
-C -- ERRORS DETECTED
-      CALL XERHND ( IERWRN )
-      RETURN
-C
-9920  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 )
-      ENDIF
-      WRITE ( NCAWU , 9925 )
-      WRITE ( CMON, 9925 )
-      CALL XPRVDU(NCVDU, 1,0)
-9925  FORMAT ( 1X , 'CAMERON can only be used in interactive mode' )
-      GO TO 9900
-C
-      END
-C
-CODE FOR XCAMER
-      SUBROUTINE XCAMER( ICALL, ISTART, IEND, IDEV)
-\XUNITS
-\STORE
-\XIOBUF
-      IF (ICALL .GE. 2) RETURN
-C----- DUMMY ROUTINE FOR INTERNAL LINK TO CAMERON
-      WRITE ( CMON, '('' Test link to CAMERON - not used now '')')
-      CALL XPRVDU(NCEROR, 1,0)
-      WRITE (NCAWU, '(1X,6F8.2)') (STORE(I), I=ISTART,ISTART+5)
-      WRITE (NCAWU, '(1X,6I6)') (NINT(STORE(I)), I=ISTART+6, ISTART+11)
-C----- START OF GOODIES
-      IBASE = ISTART + NINT(STORE(ISTART))
-C----- SYMMETRY MATRICES
-      J = IBASE
-      L = 12
-      K = J+NINT(STORE(ISTART+8)-1) * L
-      WRITE(NCAWU,'(1X,'' Matrices '')')
-      DO 1000 I = J,K,L
-        WRITE(NCAWU,'(1X,3F8.2)') (STORE(M), M=I,I+L-1)
-        WRITE(NCAWU, '(1X)')
-1000  CONTINUE
-C
-C----- CENTRING VECTORS
-      J = J +12*NINT(STORE(ISTART+8))
-      L = 3
-      K = J+NINT(STORE(ISTART+9)-1) * L
-      WRITE(NCAWU,'(1X,'' Vectors '')')
-      DO 1100 I = J,K,L
-        WRITE(NCAWU,'(1X,3F8.2)') (STORE(M), M=I,I+L-1)
-        WRITE(NCAWU, '(1X)')
-1100  CONTINUE
-C
-C----- ATOMS
-      J = NINT(STORE(ISTART+10))
-      L = NINT(STORE(ISTART+12))
-      K = J+NINT(STORE(ISTART+11)-1) * L
-      WRITE(NCAWU,'(1X,I6, '' Atoms '')') NINT(STORE(ISTART+11))
-      DO 1200 I = J,K,L
-        WRITE(NCAWU,'(1X,A4,F8.0,5F8.4/13X,7F8.4)')
-     1 (STORE(M), M=I,I+L-1)
-1200  CONTINUE
-C^^^^^ a patch to test re-writing
-      STORE(ISTART+11) = -STORE(ISTART+11)
-      RETURN
-      END
-C
+cCODE FOR XLNKCM
+c      SUBROUTINE XLNKCM
+cC
+cC     THIS SUBROUTINE READS INFOMATION FROM LISTS 1,2 & 5
+cC     AND PREPARES DATRA FOR CAMERON
+cC----- FORMAT IN 'STORE' IS:
+cC      0   NUMBER OF ITEMS IN HEADER
+cC      1-6 CELL, ANGSTROM AND RADIANS
+cC      7   CENTRED FLAG 0.0 = ACENTRIC
+cC      8   No OF SYMMETRY MATRICES
+cC      9   NO OF CENTRING VECTORS
+cC      10  START OF ATOMS
+cC      11  NO OF ATOMS
+cC      12  NO OF ITEMS PER ATOM
+cC
+cC      ..      SYMMETRY MATRICES 3X4, BY COLUMNS
+cC      ..      CENTRING VECTORS, AS ROWS
+cC      ..      ATOMS (TYPE, SERIAL,OCC, UISO,X'S,U'S, SPARE)
+cC
+c      DIMENSION LISTS(3)
+cC
+c\ISTORE
+cC
+c\STORE
+c\XUNITS
+c\XSSVAL
+c\XCONST
+c\XLST01
+c\XLST02
+c\XLST05
+c\XOPVAL
+c\XERVAL
+c\XIOBUF
+cC
+c\QSTORE
+cC
+c      DATA NLISTS / 3 /
+c      DATA LISTS(1) / 1 / , LISTS(2) / 2 / , LISTS(3) / 5 /
+cC
+cC -- CHECK THAT OPERATION IS BEING PERFORMED IN INTERACTIVE MODE
+c      IF ( IQUN .NE. JQUN ) GO TO 9920
+cC
+cC--FIND OUT WHICH LISTS EXIST
+c      IERROR = 1
+c      DO 1300 N=1 , NLISTS
+c        LSTNUM = LISTS(N)
+c        IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
+c1200    CONTINUE
+c        WRITE ( NCAWU , 1205 ) LSTNUM
+c        IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
+c        WRITE ( CMON, 1205 ) LSTNUM
+c        CALL XPRVDU(NCVDU, 1,0)
+c1205    FORMAT ( 1X , 'List ' , I2 , ' contains errors')
+c        IERROR = -1
+c        GOTO 1300
+c1210    CONTINUE
+c        WRITE ( NCAWU , 1215 ) LSTNUM
+c        IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
+c        WRITE ( CMON, 1215 ) LSTNUM
+c        CALL XPRVDU(NCVDU, 1,0)
+c1215    FORMAT ( 1X , 'List' , I2 , ' does not exist' )
+c        IERROR = -1
+c        GOTO 1300
+c1220    CONTINUE
+c1300  CONTINUE
+c      IF ( IERROR .LE. 0 ) GOTO 9900
+cC
+cC
+cC -- LOAD LISTS
+cC
+c      CALL XFAL01
+c      CALL XFAL02
+cC
+cC----- NO OF ITMES IN HEADER
+c      NITEM = 13
+c      ISTART = KSTALL(NITEM)
+c      STORE(ISTART) = FLOAT(NITEM)
+cC----- CELL
+c      CALL XMOVE (STORE(L1P1), STORE(ISTART+1), 6)
+cC----- CONVERT TO DEGREES
+c      STORE(ISTART+3) = RTD * STORE(ISTART+4)
+c      STORE(ISTART+4) = RTD * STORE(ISTART+5)
+c      STORE(ISTART+5) = RTD * STORE(ISTART+6)
+cC----- CENTRIC/ACENTRIC
+c      STORE(ISTART+7) = STORE(L2C)
+cC----- NO OF MATRICES
+c      STORE(ISTART+8) = N2
+cC----- NO OF CENTRING VECTORS
+c      STORE(ISTART+9) = N2P
+cC
+cC
+cC----- THE SYMMETRY MATRICES AND VECTORS
+c      M2 = L2 + (N2-1)*MD2
+c      DO 1400 IND2=L2,M2,MD2
+c      I = KSTALL(MD2)
+c      CALL XMOVE (STORE(IND2), STORE(I), MD2)
+c1400  CONTINUE
+cC----- THE CENTRING VECTORS
+c      DO 1500 IND1=L2P,M2P,3
+c      I = KSTALL(3)
+c      CALL XMOVE (STORE(IND1), STORE(I), 3)
+c1500  CONTINUE
+cC
+cC----- LOAD LIST 5
+cC      CALL XFAL05
+c      LN5 = 1
+c      LN5 = KTYP05(LN5)
+c      CALL XLDR05(LN5)
+cC
+c      STORE(ISTART+10) = FLOAT (L5)
+c      STORE(ISTART+11) = FLOAT (N5)
+c      STORE(ISTART+12 ) = FLOAT (MD5)
+cC
+cC---- INITIALISATION
+c      CALL XCAMER( 1, ISTART, IEND, -1)
+cC----- REAL WORK
+c      CALL XCAMER( 2, ISTART, IEND, -1)
+cC
+cC----- HAS CAMERON CHANGED THE ATOMS?
+c      NN5 = NINT(STORE(ISTART+11))
+c      IF (NN5 .LT. 0) THEN
+c        N5 = -NN5
+c        N = N5
+c        NEW = 1
+c        CALL XSTR05(LN5, 0, NEW)
+c        IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1520) N5
+c        WRITE ( NCAWU, 1520 ) N5
+c        WRITE ( CMON, 1520 ) N5
+c        CALL XPRVDU(NCVDU, 1,0)
+c1520    FORMAT (' LIST 5 now contains ', I6, ' atoms')
+c      ENDIF
+c      RETURN
+cC
+cC
+c9900  CONTINUE
+cC -- ERRORS DETECTED
+c      CALL XERHND ( IERWRN )
+c      RETURN
+cC
+c9920  CONTINUE
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE ( NCWU , 9925 )
+c      ENDIF
+c      WRITE ( NCAWU , 9925 )
+c      WRITE ( CMON, 9925 )
+c      CALL XPRVDU(NCVDU, 1,0)
+c9925  FORMAT ( 1X , 'CAMERON can only be used in interactive mode' )
+c      GO TO 9900
+cC
+c      END
+
+cCODE FOR XCAMER
+c      SUBROUTINE XCAMER( ICALL, ISTART, IEND, IDEV)
+c\XUNITS
+c\STORE
+c\XIOBUF
+c      IF (ICALL .GE. 2) RETURN
+cC----- DUMMY ROUTINE FOR INTERNAL LINK TO CAMERON
+c      WRITE ( CMON, '('' Test link to CAMERON - not used now '')')
+c      CALL XPRVDU(NCEROR, 1,0)
+c      WRITE (NCAWU, '(1X,6F8.2)') (STORE(I), I=ISTART,ISTART+5)
+c      WRITE (NCAWU, '(1X,6I6)') (NINT(STORE(I)), I=ISTART+6, ISTART+11)
+cC----- START OF GOODIES
+c      IBASE = ISTART + NINT(STORE(ISTART))
+cC----- SYMMETRY MATRICES
+c      J = IBASE
+c      L = 12
+c      K = J+NINT(STORE(ISTART+8)-1) * L
+c      WRITE(NCAWU,'(1X,'' Matrices '')')
+c      DO 1000 I = J,K,L
+c        WRITE(NCAWU,'(1X,3F8.2)') (STORE(M), M=I,I+L-1)
+c        WRITE(NCAWU, '(1X)')
+c1000  CONTINUE
+cC
+cC----- CENTRING VECTORS
+c      J = J +12*NINT(STORE(ISTART+8))
+c      L = 3
+c      K = J+NINT(STORE(ISTART+9)-1) * L
+c      WRITE(NCAWU,'(1X,'' Vectors '')')
+c      DO 1100 I = J,K,L
+c        WRITE(NCAWU,'(1X,3F8.2)') (STORE(M), M=I,I+L-1)
+c        WRITE(NCAWU, '(1X)')
+c1100  CONTINUE
+cC
+cC----- ATOMS
+c      J = NINT(STORE(ISTART+10))
+c      L = NINT(STORE(ISTART+12))
+c      K = J+NINT(STORE(ISTART+11)-1) * L
+c      WRITE(NCAWU,'(1X,I6, '' Atoms '')') NINT(STORE(ISTART+11))
+c      DO 1200 I = J,K,L
+c        WRITE(NCAWU,'(1X,A4,F8.0,5F8.4/13X,7F8.4)')
+c     1 (STORE(M), M=I,I+L-1)
+c1200  CONTINUE
+cC^^^^^ a patch to test re-writing
+c      STORE(ISTART+11) = -STORE(ISTART+11)
+c      RETURN
+c      END
+
 C---- OLD LINK TO SHELX REMOVED
 C   *XLNKSX
 C

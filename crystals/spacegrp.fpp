@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2001/02/26 10:30:23  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XSPCGR
       SUBROUTINE XSPCGR
@@ -273,7 +276,6 @@ C----- LOAD LIST 14 FOR UPDATING
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU, 2400)
       ENDIF
-      WRITE(NCAWU, 2400)
 2400  FORMAT(/,1X, '   Fourier limits are :-')
 C----- STORE REAL CELL LIMITS
       M14 = L14
@@ -286,7 +288,6 @@ C----- STORE REAL CELL LIMITS
 c              write(ncwu, '(a)') ' testing'
               WRITE(NCWU,2410) XYZ(J), STORE(M14), STORE(M14+2)
       ENDIF
-              WRITE(NCAWU,2410) XYZ(J), STORE(M14), STORE(M14+2)
 2410  FORMAT(30X, A1, ' axis from ', F6.3, ' to ', F6.3)
             ENDIF
 2550    CONTINUE
@@ -316,7 +317,6 @@ C----- THE PATTERSON LIMITS - IN SAME ORDER AS REAL CELL
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU, 2420)
       ENDIF
-      WRITE(NCAWU, 2420)
 2420  FORMAT(/,1X, '  Patterson limits are :-')
 C
       M14P = L14P
@@ -328,7 +328,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,2410) XYZ(J), STORE(M14P), STORE(M14P+2)
       ENDIF
-              WRITE(NCAWU,2410) XYZ(J), STORE(M14P), STORE(M14P+2)
             ENDIF
 2700    CONTINUE
         M14P = M14P + MD14P
@@ -412,7 +411,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9815 )
       ENDIF
-      WRITE ( NCAWU , 9815 )
       WRITE ( CMON, 9815 )
       CALL XPRVDU(NCEROR, 1,0)
 9815  FORMAT ( 1X, 'Illegal space group card. ' ,
@@ -423,7 +421,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9825 )
       ENDIF
-      WRITE ( NCAWU , 9825 )
       WRITE ( CMON, 9825 )
       CALL XPRVDU(NCEROR, 1,0)
 9825  FORMAT ( 1X , 'Parameter type is illegal for XSPCGR' )
@@ -442,7 +439,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9945 )
       ENDIF
-      WRITE ( NCAWU , 9945 )
       WRITE ( CMON, 9945 )
       CALL XPRVDU(NCEROR, 1,0)
 9945  FORMAT ( 1X , 'One of the calculated matrices failed to invert' )
@@ -1794,8 +1790,6 @@ C
       WRITE (NCWU,10000) RT(5,2,N),RT(5,2,M2),TOTTR,IRX,
      2 IRY,IRZ,RT(5,1,N),RT(5,1,M2)
       ENDIF
-      WRITE (NCAWU,10000) RT(5,2,N),RT(5,2,M2),TOTTR,IRX,
-     2 IRY,IRZ,RT(5,1,N),RT(5,1,M2)
       WRITE ( CMON, 10000) RT(5,2,N),RT(5,2,M2),TOTTR,IRX,
      2                      IRY,IRZ,RT(5,1,N),RT(5,1,M2)
       CALL XPRVDU(NCEROR, 1,0)
@@ -1804,7 +1798,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,11000) M,N,M2
       ENDIF
-      WRITE (NCAWU,11000) M,N,M2
       WRITE ( CMON, 11000) M,N,M2
       CALL XPRVDU(NCEROR, 1,0)
 11000 FORMAT (1X,'Operator',I2,' generates matrix',I3,
@@ -1879,7 +1872,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,10000) SGP, CMESSG(IER+1)
       ENDIF
-      WRITE (NCAWU,10000) SGP, CMESSG(IER+1)
       WRITE ( CMON, 10000) SGP, CMESSG(IER+1)
       CALL XPRVDU(NCEROR, 2,0)
 10000 FORMAT (1X,'Error while processing space group symbol ',10A1,/,
@@ -1973,10 +1965,6 @@ C
      $                  SYST(1,LSYS),SYST(2,LSYS),SYST(3,LSYS),
      $                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT
       ENDIF
-      WRITE (NCAWU,10000) SPG,NC(NCENT + 1),
-     $                  LTYP(1,LCENT),LTYP(2,LCENT),LTYP(3,LCENT),
-     $                  SYST(1,LSYS),SYST(2,LSYS),SYST(3,LSYS),
-     $                  LAUE(1,LAUENO),LAUE(2,LAUENO),MULT
       WRITE ( CMON, 10000) SPG,NC(NCENT + 1),
      2                  LTYP(1,LCENT),LTYP(2,LCENT),LTYP(3,LCENT),
      3                  SYST(1,LSYS),SYST(2,LSYS),SYST(3,LSYS),
@@ -1986,7 +1974,6 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE (NCWU,11000) NAX(NAXIS)
       ENDIF
-        WRITE (NCAWU,11000) NAX(NAXIS)
          WRITE ( CMON, 11000) NAX(NAXIS)
          CALL XPRVDU(NCVDU, 1,1)
       ENDIF
@@ -1994,14 +1981,12 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE (NCWU,12000) POLAR(NPOL)
       ENDIF
-        WRITE (NCAWU,12000) POLAR(NPOL)
         WRITE ( CMON, 12000) POLAR(NPOL)
         CALL XPRVDU(NCVDU, 1,1)
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,13000)
       ENDIF
-      WRITE (NCAWU,13000)
       WRITE ( CMON, 13000)
       CALL XPRVDU(NCVDU, 2,0)
 10000 FORMAT (1X,' Space Group ',10A1/
@@ -2031,8 +2016,6 @@ C
         WRITE ( CMON, 15000)
      2        ((OUTL(I1,1,K),OUTL(I1,2,K),I1 = 1,3),K = 1,KL)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE (NCAWU,15000)
-     $        ((OUTL(I1,1,K),OUTL(I1,2,K),I1 = 1,3),K = 1,KL)
         KI = 1
   140   CONTINUE
       IF (LAUENO .EQ. 1) THEN
@@ -2043,15 +2026,12 @@ C
         WRITE ( CMON, 15000)
      2                   (OUTL(I,1,1),OUTL(I,2,1),I = 1,3)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE (NCAWU,15000)
-     $  (OUTL(I,1,1),OUTL(I,2,1),I = 1,3)
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,14000)
       ENDIF
       WRITE ( CMON, 14000)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE (NCAWU,14000)
 C----- SAVE THE CRYSTAL CLASS
       CLINE = SYST(1,LSYS)(1:4)//SYST(2,LSYS)(1:4)
      1 //SYST(3,LSYS)(1:4)

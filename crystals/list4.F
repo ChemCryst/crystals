@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.49  2003/07/03 10:39:07  rich
+C Spaces between data items passed to PLOT routine prevent crashes if the
+C format is overflowed.
+C
 C Revision 1.48  2003/06/17 18:12:42  djw
 C Fix ITYPE4 being overwritten when new list 4 created, fix printing of outliers and except for scheme 14/15 make Robust/R use observed sigma
 C
@@ -1358,199 +1362,200 @@ C
       END
 C
 C
-CODE FOR KHIST
-      FUNCTION KHIST( icall, val, point, pmin)
-c
-c      plot a histogram of val as a funtion of point
-c----- icall = 0 initialisation
-c              1 real data
-c              2 termination
-c              3 Evaluation of coefficients
-c      val      observed value
-c      point    point of observation or max for initialisation
-c      pmin
-c
-\TYPE11
-\ISTORE
-\ICOM04
-C
-\STORE
-\XSTR11
-\XUNITS
-\XCHARS
-\XCONST
-\XLST04
-\XLST11
-\XLST12
-\XERVAL
-\XOPVAL
-C
-      parameter (ncol = 80)
-      parameter (line = 50)
-      common /xhist1/ itot(line), sum(line), tval(line), scale
-\XSSVAL
-\XIOBUF
-C
-\QSTORE
-\QLST04
-\QSTR11
-c
-      KHIST = 1
-      if (icall .eq. 0) then
-c     initialisation
-c            ensure minimum value is 1, maximum is LINE
-             scale = float(line-1) / sqrt(point-pmin)
-             do 50 i = 1, line
-               itot(i) = 0
-               sum(i) = 0.0
-               tval(i) = 0.0
-               e = point
-50           continue
-c--set up a dummy list 12
-            ln=12
-            irec=8001
-            n12=md4
-            md12b=2
-            n12b=1
-            l12b=kchlfl(md12b)
-            istore(l12b)=1
-            istore(l12b+1)=md4
-c--set up the matrix area
-            iold=-1
-            call xset11 (iold,1,1)
-            if ( ierflg .lt. 0 ) go to 9900
-c--assign a few pointers
-            nr=l11
-            ns=l11r
-c--set up the answers area
-            ln=4
-            nt=kadd11(1001,md11,md4)
-            if ( ierflg .lt. 0 ) go to 9900
-c--set the partial derivative area
-            irec=1002
-            nu=nfl
-            nv=kchnfl(md4)-1
-      else if (icall .eq. 1) then
-c           real values
-            ibin = nint (scale * sqrt(point-pmin))  +1
-            if ((ibin .lt. 1) .or. (ibin .gt. line)) then
-                write ( CMON ,'(A)') ' Out of range'
-                CALL XPRVDU(NCVDU, 1,0)
-                IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)
-                WRITE(NCWU, '(A)') CMON(1)
-            endif
-            itot(ibin) = itot(ibin) + 1
-            sum(ibin) = sum(ibin) + val
-            tval(ibin) = tval(ibin) + point
-      else if (icall .eq. 2) then
-c           print and analysis
-      WRITE ( CMON,'(I6,2F10.2 )') (ITOT(I),SUM(I),TVAL(I),I=1,LINE)
-      CALL XPRVDU(NCVDU, 1,0)
-            write ( cMON ,60)
-            CALL XPRVDU(NCVDU, 1,0)
-60          format (1x,
-     1      '        Range      No         <Delta>     <Fvalue>')
-            do 100 i = 1, line
-            if (itot(i) .gt. 0) then
-              write ( cMON,'( f16.0, i6, 3f16.2)')
-     1        (float(i)/scale)**2, itot(i), sum(i)/itot(i),
-     2        tval(i)/itot(i)
-              CALL XPRVDU(NCVDU, 1,0)
-              B = sum(i)/itot(i)
-              b = b * b
-              fo = tval(i)/itot(i)
-              g=2.* fo /e-1.
-              store(nu)=1.
-              store(nu+1)=g
-              if(md4-2)3750,3750,3650
-c--accumulate terms higher than 2
-3650  continue
-                  nq=nu+2
-                  do 3700 l=3,md4
-                        store(nq)=2.*g*store(nq-1)-store(nq-2)
-                        nq=nq+1
-3700              continue
-c--compute the weights for this reflection
-3750          continue
-              w= itot(i)
-              nq=nr
-              np=ns
-c--accumulate the least squares matrix
-              do 3850 l=nu,nv
-c--the left hand side
-                  do 3800 m=l,nv
-                    str11(nq)=str11(nq)+store(l)*store(m)*w
-                    nq=nq+1
-3800              continue
-c--the right hand side
-                  str11(np)=str11(np)+store(l)*b*w
-                  np=np+1
-3850          continue
-            else
-                  write ( cMON,'(1x)')
-                  CALL XPRVDU(NCVDU, 1,0)
-            endif
-100         continue
-c--solve the chebyshev case
-            call xchols (md4,nr,nt)
-            call xsolve (md4,nr,ns,nt)
-c--clear the list entries
-c^            call xcsae
-c--reload list 4
-c^            call xfal04
-c--move the parameters to list 4
-            if (itype4.eq.17) then
-                       np=nt
-                       nq=l4
-                       do 2050 l=1,md4
-                                  store(nq)=str11(np)
-                                  np=np+1
-                                  nq=nq+1
-2050                   continue
-c--alter the scheme type to 18, and apply the parameters
-                 itype4=18
-            endif
-c----- now try computing deltas
-            do 200 i = 1, line
-            if (itot(i) .gt. 0) then
-              B = sum(i)/itot(i)
-              b = b * b
-              fo = tval(i)/itot(i)
-              g = 2.* fo / e-1.
-              a = 1.
-              c = g
-              delf = a * store(l4)
-c--check the number of terms involved
-              if(md4-2)6400,6350,6250
-6250  continue
-                  m = l4+2
-                  do 6300 l = 3, md4
-                  d =2.* g * c - a
-                  delf = delf + d * store(m)
-                  m = m + 1
-                  a = c
-                  c = d
-6300            continue
-6350            continue
-              delf =delf + g * store(l4+1)
-              write ( cMON,'( f16.0, i6, 4f16.2)')
-     1        (float(i)/scale)**2, itot(i), sum(i)/itot(i),
-     2        tval(i)/itot(i), delf, b
-              CALL XPRVDU(NCVDU, 1,0)
-            else
-                  write ( cMON,'(1x)')
-                  CALL XPRVDU(NCVDU, 1,0)
-            endif
-200         continue
-6400        continue
-      else if (icall .eq. 3) then
-c---- Just a dummy for the moment
-            val = 1.0
-      endif
-      return
-9900  KHIST = -1
-      RETURN
-      end
+cCODE FOR KHIST
+c      FUNCTION KHIST( icall, val, point, pmin)
+cc
+cc      plot a histogram of val as a funtion of point
+cc----- icall = 0 initialisation
+cc              1 real data
+cc              2 termination
+cc              3 Evaluation of coefficients
+cc      val      observed value
+cc      point    point of observation or max for initialisation
+cc      pmin
+cc
+c\TYPE11
+c\ISTORE
+c\ICOM04
+cC
+c\STORE
+c\XSTR11
+c\XUNITS
+c\XCHARS
+c\XCONST
+c\XLST04
+c\XLST11
+c\XLST12
+c\XERVAL
+c\XOPVAL
+cC
+c      parameter (ncol = 80)
+c      parameter (line = 50)
+c      common /xhist1/ itot(line), sum(line), tval(line), scale
+c\XSSVAL
+c\XIOBUF
+cC
+c\QSTORE
+c\QLST04
+c\QSTR11
+cc
+c      KHIST = 1
+c      if (icall .eq. 0) then
+cc     initialisation
+cc            ensure minimum value is 1, maximum is LINE
+c             scale = float(line-1) / sqrt(point-pmin)
+c             do 50 i = 1, line
+c               itot(i) = 0
+c               sum(i) = 0.0
+c               tval(i) = 0.0
+c               e = point
+c50           continue
+cc--set up a dummy list 12
+c            ln=12
+c            irec=8001
+c            n12=md4
+c            md12b=2
+c            n12b=1
+c            l12b=kchlfl(md12b)
+c            istore(l12b)=1
+c            istore(l12b+1)=md4
+cc--set up the matrix area
+c            iold=-1
+c            call xset11 (iold,1,1)
+c            if ( ierflg .lt. 0 ) go to 9900
+cc--assign a few pointers
+c            nr=l11
+c            ns=l11r
+cc--set up the answers area
+c            ln=4
+c            nt=kadd11(1001,md11,md4)
+c            if ( ierflg .lt. 0 ) go to 9900
+cc--set the partial derivative area
+c            irec=1002
+c            nu=nfl
+c            nv=kchnfl(md4)-1
+c      else if (icall .eq. 1) then
+cc           real values
+c            ibin = nint (scale * sqrt(point-pmin))  +1
+c            if ((ibin .lt. 1) .or. (ibin .gt. line)) then
+c                write ( CMON ,'(A)') ' Out of range'
+c                CALL XPRVDU(NCVDU, 1,0)
+c                IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)
+c                WRITE(NCWU, '(A)') CMON(1)
+c            endif
+c            itot(ibin) = itot(ibin) + 1
+c            sum(ibin) = sum(ibin) + val
+c            tval(ibin) = tval(ibin) + point
+c      else if (icall .eq. 2) then
+cc           print and analysis
+c      WRITE ( CMON,'(I6,2F10.2 )') (ITOT(I),SUM(I),TVAL(I),I=1,LINE)
+c      CALL XPRVDU(NCVDU, 1,0)
+c            write ( cMON ,60)
+c            CALL XPRVDU(NCVDU, 1,0)
+c60          format (1x,
+c     1      '        Range      No         <Delta>     <Fvalue>')
+c            do 100 i = 1, line
+c            if (itot(i) .gt. 0) then
+c              write ( cMON,'( f16.0, i6, 3f16.2)')
+c     1        (float(i)/scale)**2, itot(i), sum(i)/itot(i),
+c     2        tval(i)/itot(i)
+c              CALL XPRVDU(NCVDU, 1,0)
+c              B = sum(i)/itot(i)
+c              b = b * b
+c              fo = tval(i)/itot(i)
+c              g=2.* fo /e-1.
+c              store(nu)=1.
+c              store(nu+1)=g
+c              if(md4-2)3750,3750,3650
+cc--accumulate terms higher than 2
+c3650  continue
+c                  nq=nu+2
+c                  do 3700 l=3,md4
+c                        store(nq)=2.*g*store(nq-1)-store(nq-2)
+c                        nq=nq+1
+c3700              continue
+cc--compute the weights for this reflection
+c3750          continue
+c              w= itot(i)
+c              nq=nr
+c              np=ns
+cc--accumulate the least squares matrix
+c              do 3850 l=nu,nv
+cc--the left hand side
+c                  do 3800 m=l,nv
+c                    str11(nq)=str11(nq)+store(l)*store(m)*w
+c                    nq=nq+1
+c3800              continue
+cc--the right hand side
+c                  str11(np)=str11(np)+store(l)*b*w
+c                  np=np+1
+c3850          continue
+c            else
+c                  write ( cMON,'(1x)')
+c                  CALL XPRVDU(NCVDU, 1,0)
+c            endif
+c100         continue
+cc--solve the chebyshev case
+c            call xchols (md4,nr,nt)
+c            call xsolve (md4,nr,ns,nt)
+cc--clear the list entries
+cc^            call xcsae
+ccc--reload list 4
+cc^            call xfal04
+cc--move the parameters to list 4
+c            if (itype4.eq.17) then
+c                       np=nt
+c                       nq=l4
+c                       do 2050 l=1,md4
+c                                  store(nq)=str11(np)
+c                                  np=np+1
+c                                  nq=nq+1
+c2050                   continue
+cc--alter the scheme type to 18, and apply the parameters
+c                 itype4=18
+c            endif
+cc----- now try computing deltas
+c            do 200 i = 1, line
+c            if (itot(i) .gt. 0) then
+c              B = sum(i)/itot(i)
+c              b = b * b
+c              fo = tval(i)/itot(i)
+c              g = 2.* fo / e-1.
+c              a = 1.
+c              c = g
+c              delf = a * store(l4)
+cc--check the number of terms involved
+c              if(md4-2)6400,6350,6250
+c6250  continue
+c                  m = l4+2
+c                  do 6300 l = 3, md4
+c                  d =2.* g * c - a
+c                  delf = delf + d * store(m)
+c                  m = m + 1
+c                  a = c
+c                  c = d
+c6300            continue
+c6350            continue
+c              delf =delf + g * store(l4+1)
+c              write ( cMON,'( f16.0, i6, 4f16.2)')
+c     1        (float(i)/scale)**2, itot(i), sum(i)/itot(i),
+c     2        tval(i)/itot(i), delf, b
+c              CALL XPRVDU(NCVDU, 1,0)
+c            else
+c                  write ( cMON,'(1x)')
+c                  CALL XPRVDU(NCVDU, 1,0)
+c            endif
+c200         continue
+c6400        continue
+c      else if (icall .eq. 3) then
+cc---- Just a dummy for the moment
+c            val = 1.0
+c      endif
+c      return
+c9900  KHIST = -1
+c      RETURN
+c      end
+
 CODE FOR XMODWT
       SUBROUTINE XMODWT (DELF, DELEST, AWT, IPRINT, jtype, tolsq)
 C----- COMPUTE THE MODIFICATION TO BE APPLIED TO THE EXISTING WEIGHTS

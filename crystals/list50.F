@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.7  2003/01/16 11:32:33  rich
+C Output instructions as the DSC file is built.
+C
 C Revision 1.6  2002/01/17 17:03:03  Administrator
 C fix parameter type mismachs
 C
@@ -1819,203 +1822,203 @@ C
       RETURN
       END
 C
-CODE FOR KDLIS
-      FUNCTION KDLIS ( A)
+cCODE FOR KDLIS
+c      FUNCTION KDLIS ( A)
+cC
+cC----- RETURNS LIST OF POSSIBLE DIRECTIVES
+cC----- THE INSTRUCTION MUST HAVE BEEN LOADED (EG BY A CALL TO KIVAL)
+c\ISTORE
+cC
+c\STORE
+c\XLST50
+c\XUNITS
+c\XSSVAL
+c\XCONST
+c\XIOBUF
+cC
+c\QSTORE
+cC
+c      A = A
+c      MR60 = LR60
+c      WRITE ( CMON, 90 ) NR60
+c      CALL XPRVDU(NCVDU, 1,0)
+c90    FORMAT( ' Expecting ', I4, ' directives' )
+c      DO 200 K = 1, NR60
+cC----- CHECK ITS A USER DIRECTIVE
+c      IF (ISTORE(MR61+7) .NE. 0) THEN
+c        J = MR60 + MDR60-2
+c        WRITE(NCAWU, '(1X, I5, 2X, 12A1)')  K, (ISTORE(I+1),I=MR60,J)
+c        WRITE ( CMON, '(1X, I5, 2X, 12A1)')  K, (ISTORE(I+1),I=MR60,J)
+c        CALL XPRVDU(NCVDU, 1,0)
+c      ENDIF
+c      MR60 = MR60 + MDR60
+c200   CONTINUE
+c      KDLIS = 0
+c      RETURN
+c      END
 C
-C----- RETURNS LIST OF POSSIBLE DIRECTIVES
-C----- THE INSTRUCTION MUST HAVE BEEN LOADED (EG BY A CALL TO KIVAL)
-\ISTORE
 C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XCONST
-\XIOBUF
+cCODE FOR KPLIS
+c      FUNCTION KPLIS ( A)
+cC
+cC----- RETURNS LIST OF POSSIBLE PARAMETERS
+cC----- THE DIRECTIVE MUST HAVE BEEN LOADED (EG BY A CALL TO KDVAL)
+c\ISTORE
+cC
+c\STORE
+c\XLST50
+c\XUNITS
+c\XSSVAL
+c\XCONST
+c\XIOBUF
+cC
+c\QSTORE
+cC
+c      A = A
+c      JW = ISTORE(MR61+3)
+c      JS = ISTORE(MR61) + LR62
+c
+c      WRITE ( CMON, 90) JW
+c      CALL XPRVDU(NCVDU, 1,0)
+c90    FORMAT( ' Expecting ', I4, ' directives' )
+c      DO 200 JX = 1, JW
+c      JT = JS + ISTORE(MR61+1)
+c      JU = JT - 2
+c        WRITE(NCAWU, '(1X, I5, 2X, 12A1)')  JX, (ISTORE(I+1),I=JS,JU)
+c      WRITE ( CMON, '(1X, I5, 2X, 12A1)')  JX, (ISTORE(I+1),I=JS,JU)
+c      CALL XPRVDU(NCVDU, 1,0)
+c      JS = JS + ISTORE(MR61+2)
+c200   CONTINUE
+c      KPLIS = 0
+c      RETURN
+c      END
 C
-\QSTORE
 C
-      A = A
-      MR60 = LR60
-      WRITE ( CMON, 90 ) NR60
-      CALL XPRVDU(NCVDU, 1,0)
-90    FORMAT( ' Expecting ', I4, ' directives' )
-      DO 200 K = 1, NR60
-C----- CHECK ITS A USER DIRECTIVE
-      IF (ISTORE(MR61+7) .NE. 0) THEN
-        J = MR60 + MDR60-2
-        WRITE(NCAWU, '(1X, I5, 2X, 12A1)')  K, (ISTORE(I+1),I=MR60,J)
-        WRITE ( CMON, '(1X, I5, 2X, 12A1)')  K, (ISTORE(I+1),I=MR60,J)
-        CALL XPRVDU(NCVDU, 1,0)
-      ENDIF
-      MR60 = MR60 + MDR60
-200   CONTINUE
-      KDLIS = 0
-      RETURN
-      END
-C
-C
-CODE FOR KPLIS
-      FUNCTION KPLIS ( A)
-C
-C----- RETURNS LIST OF POSSIBLE PARAMETERS
-C----- THE DIRECTIVE MUST HAVE BEEN LOADED (EG BY A CALL TO KDVAL)
-\ISTORE
-C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XCONST
-\XIOBUF
-C
-\QSTORE
-C
-      A = A
-      JW = ISTORE(MR61+3)
-      JS = ISTORE(MR61) + LR62
+cCODE FOR KVLIS
+c      FUNCTION KVLIS ( A, LVAL, NVAL, MDVAL)
+cC
+cC----- RETURNS LIST OF POSSIBLE VALUES AND DEFAULT
+cC
+c\ISTORE
+cC
+c\STORE
+c\XLST50
+c\XUNITS
+c\XSSVAL
+c\XCONST
+c\XIOBUF
+cC
+c\QSTORE
+cC
+c      A = A
+c      DO 999 I = 1,  NVAL
+c      IADD = LVAL + (I - ISTORE(MR62D+6)) * MDVAL
+c      WRITE ( NCAWU , 1050 ) I, ( ISTORE(J) ,
+c     2 J = IADD+1,IADD+MDVAL-2 )
+c      WRITE ( CMON, 1050 ) I, (ISTORE(J),J = IADD+1,IADD+MDVAL-2 )
+c      CALL XPRVDU(NCVDU, 1,0)
+c1050  FORMAT ( 1X , 'value', I6, ' is : ' , 12A1 )
+cC
+c999   CONTINUE
+c      KVLIS = 0
+c      RETURN
+c      END
 
-      WRITE ( CMON, 90) JW
-      CALL XPRVDU(NCVDU, 1,0)
-90    FORMAT( ' Expecting ', I4, ' directives' )
-      DO 200 JX = 1, JW
-      JT = JS + ISTORE(MR61+1)
-      JU = JT - 2
-        WRITE(NCAWU, '(1X, I5, 2X, 12A1)')  JX, (ISTORE(I+1),I=JS,JU)
-      WRITE ( CMON, '(1X, I5, 2X, 12A1)')  JX, (ISTORE(I+1),I=JS,JU)
-      CALL XPRVDU(NCVDU, 1,0)
-      JS = JS + ISTORE(MR61+2)
-200   CONTINUE
-      KPLIS = 0
-      RETURN
-      END
-C
-C
-CODE FOR KVLIS
-      FUNCTION KVLIS ( A, LVAL, NVAL, MDVAL)
-C
-C----- RETURNS LIST OF POSSIBLE VALUES AND DEFAULT
-C
-\ISTORE
-C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XCONST
-\XIOBUF
-C
-\QSTORE
-C
-      A = A
-      DO 999 I = 1,  NVAL
-      IADD = LVAL + (I - ISTORE(MR62D+6)) * MDVAL
-      WRITE ( NCAWU , 1050 ) I, ( ISTORE(J) ,
-     2 J = IADD+1,IADD+MDVAL-2 )
-      WRITE ( CMON, 1050 ) I, (ISTORE(J),J = IADD+1,IADD+MDVAL-2 )
-      CALL XPRVDU(NCVDU, 1,0)
-1050  FORMAT ( 1X , 'value', I6, ' is : ' , 12A1 )
-C
-999   CONTINUE
-      KVLIS = 0
-      RETURN
-      END
-C
-CODE FOR K50TST
-      SUBROUTINE K50TST
-C
-C----- TEST THE LIST50 ACCESS ROUTINES
-\ISTORE
-      CHARACTER *13 CINST, CDIR, CPAR, CDEF, CVALUE
-C
-\STORE
-\XLST50
-\XUNITS
-\XSSVAL
-\XCONST
-\XIOBUF
-C
-\QSTORE
-C
-      WRITE(NCAWU,'(A)') ' ######## INSTRUCTIONS ################'
-      WRITE ( CMON, '(A39)') ' ######## INSTRUCTIONS ################'
-      CALL XPRVDU(NCVDU, 1,1)
-      LINST = 13
-      INST = 33
-      CINST(1:13) = '!!!!!!!!!!!!!'
-      WRITE ( CMON, '(A39)') ' ######### CALL BY VALUE ##############'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(2I4,A13,A1)') INST, LINST, CINST(1:LINST),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      I = KIVAL ( INST, CINST, LINST)
-      WRITE ( CMON, '(2I4,A13,A1)')  INST, LINST, CINST(1:LINST),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(A10)') ' KDLISTING'
-      CALL XPRVDU(NCVDU, 1,1)
-      A = 0.0
-      I =  KDLIS(A)
-      LINST = 7
-      INST = 0
-      CINST(1:7) = 'goodies'
-      WRITE ( CMON, '(A39)') ' ######### CALL BY NAME ###############'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(2I4,A7,A1)')  INST, LINST, CINST(1:LINST),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      I = KIVAL ( INST, CINST(1:7), LINST)
-      WRITE ( CMON, '(2I4,A7,A1)')  INST, LINST, CINST(1:LINST),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-C
-C
-      WRITE ( CMON, '(A39)') ' ######## DIRECTIVES ##################'
-      CALL XPRVDU(NCVDU, 1,1)
-      LINDIR = 13
-      IDIR = 4
-      CDIR(1:4) = '!!!!'
-      WRITE ( CMON, '(A39)') ' ######### CALL BY VALUE ##############'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(2I4,A13,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      I = KDVAL ( IDIR, CDIR(1:13), LINDIR)
-      WRITE ( CMON, '(2I4,A13,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      LINDIR = 11
-      IDIR = 0
-      CDIR(1:6) = 'refine'
-      WRITE ( CMON, '(A39)') ' ######### CALL BY NAME ###############'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(2I4,A11,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      I = KDVAL ( IDIR, CDIR(1:6), LINDIR)
-      WRITE ( CMON, '(2I4,A11,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(A10)') ' KPLISTING'
-      CALL XPRVDU(NCVDU, 1,1)
-      I =  KPLIS(A)
-      WRITE ( CMON, '(A39)') ' ######## PARAMETERS ##################'
-      CALL XPRVDU(NCVDU, 1,1)
-      LINPAR = 10
-      IPAR = 13
-      CPAR(1:10) = '!!!!!!!!!!!!!'
-      IVAL = NOWT
-      WRITE ( CMON, '(A39)') ' ######### CALL BY VALUE ##############'
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(2I4,A10,A1)')  IPAR, LINPAR, CPAR(1:LINPAR),'#'
-      CALL XPRVDU(NCVDU, 1,1)
-      I = KPVAL ( IPAR, CPAR, LINPAR, IVAL, JTYPE, IDEF, DEF,
-     1 CDEF, CVALUE )
-      WRITE ( CMON, '(A19,2I4,A2,A10)') 'IPAR, LINPAR, CPAR ',IPAR,
-     2 LINPAR,' |', CPAR
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(A23,4I4)') 'IVAL, JTYPE, IDEF, DEF ',
-     2 IVAL,JTYPE,IDEF,DEF
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(A6,A13)') ' CDEF ', CDEF
-      CALL XPRVDU(NCVDU, 1,1)
-      WRITE ( CMON, '(A8,A13)') ' CVALUE ',CVALUE
-      CALL XPRVDU(NCVDU, 1,0)
-      CALL XPAUSE (6000)
-12345 CONTINUE
-      RETURN
-      END
-C
-C
+cCODE FOR K50TST
+c      SUBROUTINE K50TST
+cC
+cC----- TEST THE LIST50 ACCESS ROUTINES
+c\ISTORE
+c      CHARACTER *13 CINST, CDIR, CPAR, CDEF, CVALUE
+cC
+c\STORE
+c\XLST50
+c\XUNITS
+c\XSSVAL
+c\XCONST
+c\XIOBUF
+cC
+c\QSTORE
+cC
+c      WRITE(NCAWU,'(A)') ' ######## INSTRUCTIONS ################'
+c      WRITE ( CMON, '(A39)') ' ######## INSTRUCTIONS ################'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      LINST = 13
+c      INST = 33
+c      CINST(1:13) = '!!!!!!!!!!!!!'
+c      WRITE ( CMON, '(A39)') ' ######### CALL BY VALUE ##############'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(2I4,A13,A1)') INST, LINST, CINST(1:LINST),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      I = KIVAL ( INST, CINST, LINST)
+c      WRITE ( CMON, '(2I4,A13,A1)')  INST, LINST, CINST(1:LINST),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(A10)') 'KDLISTING'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      A = 0.0
+c      I =  KDLIS(A)
+c      LINST = 7
+c      INST = 0
+c      CINST(1:7) = 'goodies'
+c      WRITE ( CMON, '(A39)') ' ######### CALL BY NAME ###############'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(2I4,A7,A1)')  INST, LINST, CINST(1:LINST),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      I = KIVAL ( INST, CINST(1:7), LINST)
+c      WRITE ( CMON, '(2I4,A7,A1)')  INST, LINST, CINST(1:LINST),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+cC
+cC
+c      WRITE ( CMON, '(A39)') ' ######## DIRECTIVES ##################'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      LINDIR = 13
+c      IDIR = 4
+c      CDIR(1:4) = '!!!!'
+c      WRITE ( CMON, '(A39)') ' ######### CALL BY VALUE ##############'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(2I4,A13,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      I = KDVAL ( IDIR, CDIR(1:13), LINDIR)
+c      WRITE ( CMON, '(2I4,A13,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      LINDIR = 11
+c      IDIR = 0
+c      CDIR(1:6) = 'refine'
+c      WRITE ( CMON, '(A39)') ' ######### CALL BY NAME ###############'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(2I4,A11,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      I = KDVAL ( IDIR, CDIR(1:6), LINDIR)
+c      WRITE ( CMON, '(2I4,A11,A1)')  IDIR, LINDIR, CDIR(1:LINDIR),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(A10)') ' KPLISTING'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      I =  KPLIS(A)
+c      WRITE ( CMON, '(A39)') ' ######## PARAMETERS ##################'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      LINPAR = 10
+c      IPAR = 13
+c      CPAR(1:10) = '!!!!!!!!!!!!!'
+c      IVAL = NOWT
+c      WRITE ( CMON, '(A39)') ' ######### CALL BY VALUE ##############'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(2I4,A10,A1)')  IPAR, LINPAR, CPAR(1:LINPAR),'#'
+c      CALL XPRVDU(NCVDU, 1,1)
+c      I = KPVAL ( IPAR, CPAR, LINPAR, IVAL, JTYPE, IDEF, DEF,
+c     1 CDEF, CVALUE )
+c      WRITE ( CMON, '(A19,2I4,A2,A10)') 'IPAR, LINPAR, CPAR ',IPAR,
+c     2 LINPAR,' |', CPAR
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(A23,4I4)') 'IVAL, JTYPE, IDEF, DEF ',
+c     2 IVAL,JTYPE,IDEF,DEF
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(A6,A13)') ' CDEF ', CDEF
+c      CALL XPRVDU(NCVDU, 1,1)
+c      WRITE ( CMON, '(A8,A13)') ' CVALUE ',CVALUE
+c      CALL XPRVDU(NCVDU, 1,0)
+c      CALL XPAUSE (6000)
+c12345 CONTINUE
+c      RETURN
+c      END
+cC
+cC

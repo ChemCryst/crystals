@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2003/07/09 16:58:49  rich
+C Shrink header printed on startup (less blank lines).
+C
 C Revision 1.32  2003/06/30 17:58:38  rich
 C On abandoning script due to CRYSTALS error, or due to a script syntax error,
 C print out the script source file line number where the failure occurred.
@@ -1919,206 +1922,206 @@ CODE FOR KCRCTB
       RETURN
       END
 
-CODE FOR XADDER
-      SUBROUTINE XADDER ( KERRNO, KREPT, KDATA )
-C  STORE AN 'ERRR' RECORD IN LIST39.
-C  KERRNO - NUMBER IDENTIFYING TYPE OF ERROR
-C  KREPT  = 0  DON'T REPEAT - OVERWRITE EXISTING KERRNO IF PRESENT
-C         = 1  REPEAT - ADD A NEW ERROR RECORD
-C  KDATA  - 9 WORDS OF ADDITIONAL (OPTIONAL) ERROR INFORMATION.
-C
-      DIMENSION KDATA(9)
-\ISTORE
-\STORE
-\UFILE
-\XSSVAL
-\QSTORE
-\XIOBUF
-\XUNITS
-\XLST39
-\ICOM39
-\QLST39
-      DATA ICER /'ERRR'/
-\IDIM39
+cCODE FOR XADDER
+c      SUBROUTINE XADDER ( KERRNO, KREPT, KDATA )
+cC  STORE AN 'ERRR' RECORD IN LIST39.
+cC  KERRNO - NUMBER IDENTIFYING TYPE OF ERROR
+cC  KREPT  = 0  DON'T REPEAT - OVERWRITE EXISTING KERRNO IF PRESENT
+cC         = 1  REPEAT - ADD A NEW ERROR RECORD
+cC  KDATA  - 9 WORDS OF ADDITIONAL (OPTIONAL) ERROR INFORMATION.
+cC
+c      DIMENSION KDATA(9)
+c\ISTORE
+c\STORE
+c\UFILE
+c\XSSVAL
+c\QSTORE
+c\XIOBUF
+c\XUNITS
+c\XLST39
+c\ICOM39
+c\QLST39
+c      DATA ICER /'ERRR'/
+c\IDIM39
+c
+cC -- If List 39 exists, load it.
+c      IF ( KEXIST(39) .GE. 1 ) THEN
+c         IF (KHUNTR (39,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL39
+c         IF ( IERFLG .LT. 0 ) GO TO 9900
+c      ELSE
+cC -- CREATE  A  NEW  LIST  THIRTY - NINE:
+c         IDWZAP = 0
+c         CALL XFILL (IDWZAP, ICOM39, IDIM39)
+c         N39O = 1
+c         N39I = 1
+c         N39F = 0
+c         CALL XCELST ( 39, ICOM439, IDIM39 )
+c         ISTORE(L39I) = ICER
+c         ISTORE(L39I+1) = KERRNO
+c         CALL XNDATE(ISTORE(L39I+2))
+c         CALL XMOVEI(KDATA(1),ISTORE(L39I+3),9)
+c         ISTORE(L39O)   = 1
+c         CALL XWLSTD ( 39, ICOM39, IDIM39, 0, 1)
+c         GOTO 9000
+c      ENDIF
+c
+cC -- If the repeat flag is 0, then we can overwrite this error:
+c      KOWEXS = 0
+c      IF ( KREPT .EQ. 0 ) THEN
+cC -- if it exists:
+c        DO M39I = L39I, L39I+(N39I-1)*MD39I, MD39I
+c          IF ((ICER.EQ.ISTORE(M39I)).AND.(KERRNO.EQ.ISTORE(M39I+1)))THEN
+c             KOWEXS = M39I
+c             EXIT
+c          ENDIF
+c        ENDDO
+c      END IF     
+c
+c      IF ( ( KREPT .EQ. 0 ) .AND. ( KOWEXS .GT. 0 ) ) THEN
+c        CALL XNDATE(ISTORE(M39I+2))
+c        CALL XMOVEI(KDATA(1),ISTORE(M39I+3),9)
+c      ELSE
+cC -- otherwise, need to extend the list.
+c        IF (KHUNTR (39,101,IADDL,IADDR,IADDD,-1) .NE. 0) GOTO 9900
+c        IF ( IERFLG .LT. 0 ) GO TO 9900
+c
+c        NEWL39 = KSTALL( (N39I+1) * MD39I )
+c        CALL XMOVEI(ISTORE(L39I),ISTORE(NEWL39),N39I*MD39I)
+c        M39I = NEWL39 + N39I * MD39I
+c        ISTORE(M39I) = ICER
+c        ISTORE(M39I+1) = KERRNO
+c        CALL XNDATE(ISTORE(M39I+2))
+c        CALL XMOVEI(KDATA(1),ISTORE(M39I+3),9)
+c        ISTORE(L39O)   = ISTORE(L39O)+1
+c        ISTORE(IADDR+3) = NEWL39  ! Change header pointer to new data
+c        N39I = N39I + 1
+c      ENDIF
+c
+cC -- Write data back to disk.
+c      CALL XWLSTD ( 39, ICOM39, IDIM39, 0, 1)
+c
+c9000  CONTINUE ! All ok
+c      RETURN
+c
+c9900  CONTINUE ! Something bad. (No list 39).
+c      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
+c      GOTO 9000
+c      
+c      END
 
-C -- If List 39 exists, load it.
-      IF ( KEXIST(39) .GE. 1 ) THEN
-         IF (KHUNTR (39,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL39
-         IF ( IERFLG .LT. 0 ) GO TO 9900
-      ELSE
-C -- CREATE  A  NEW  LIST  THIRTY - NINE:
-         IDWZAP = 0
-         CALL XFILL (IDWZAP, ICOM39, IDIM39)
-         N39O = 1
-         N39I = 1
-         N39F = 0
-         CALL XCELST ( 39, ICOM439, IDIM39 )
-         ISTORE(L39I) = ICER
-         ISTORE(L39I+1) = KERRNO
-         CALL XNDATE(ISTORE(L39I+2))
-         CALL XMOVEI(KDATA(1),ISTORE(L39I+3),9)
-         ISTORE(L39O)   = 1
-         CALL XWLSTD ( 39, ICOM39, IDIM39, 0, 1)
-         GOTO 9000
-      ENDIF
+cCODE FOR KGETER
+c      FUNCTION KGETER ( KERRNO, KNEXT, KDATE, KDATA )
+cC Retrieve error information from list 39.
+cC     KERRNO - set to the error type that you seek, or 0 for any error.
+cC              if set to zero, it will be set to the error type on return.
+cC     KNEXT - record index to start search from, when calling set to zero
+cC             initially, then afterwards to the return value of the previous
+cC             call.
+cC     KDATE - the number of seconds since 1970 when the error occurred.
+cC     KDATA - 9 words of extra error information (specific to the error).
+cC   RETURN VALUE index of next record. (Not necessarily an 'ERRR' card).
+c
+c      DIMENSION KDATA(9)
+c\ISTORE
+c\STORE
+c\UFILE
+c\XSSVAL
+c\QSTORE
+c\XIOBUF
+c\XUNITS
+c\XLST39
+c\ICOM39
+c\QLST39
+c      DATA ICER /'ERRR'/
+c\IDIM39
+c      KGETER = -1
+c
+c      IF ( KEXIST(39) .GE. 1 ) THEN
+c         IF (KHUNTR (39,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL39
+c         IF ( IERFLG .LT. 0 ) GO TO 9900
+c      ELSE
+c         RETURN
+c      END IF
+c
+c      IF ( ( KNEXT .LT. 0 ) .OR. ( KNEXT .GE. N39I ) ) THEN
+c         RETURN
+c      ENDIF
+c
+cC Find next error:
+c      KNE = 0
+c      DO J = KNEXT, N39I-1
+c      M39I = L39I + J*MD39I
+c        IF ((ICER.EQ.ISTORE(M39I)) .AND. 
+c     1      ((KERRNO.EQ.0) .OR. (KERRNO.EQ.ISTORE(M39I+1)))) THEN
+c           KNE = M39I
+c           KGETER = J + 1
+c           KERRNO = ISTORE(M39I+1)
+c           EXIT
+c        ENDIF
+c      ENDDO
+c
+c      IF ( KNE.EQ.0 ) RETURN
+c
+c      KDATE = ISTORE(KNE+2)
+c      CALL XMOVEI(ISTORE(KNE+3),KDATA(1),9)
+c
+c      RETURN
+c
+c9000  CONTINUE ! All ok
+c      RETURN
+c
+c9900  CONTINUE ! Something bad. (No list 39).
+c      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
+c      GOTO 9000
+c      END
 
-C -- If the repeat flag is 0, then we can overwrite this error:
-      KOWEXS = 0
-      IF ( KREPT .EQ. 0 ) THEN
-C -- if it exists:
-        DO M39I = L39I, L39I+(N39I-1)*MD39I, MD39I
-          IF ((ICER.EQ.ISTORE(M39I)).AND.(KERRNO.EQ.ISTORE(M39I+1)))THEN
-             KOWEXS = M39I
-             EXIT
-          ENDIF
-        ENDDO
-      END IF     
-
-      IF ( ( KREPT .EQ. 0 ) .AND. ( KOWEXS .GT. 0 ) ) THEN
-        CALL XNDATE(ISTORE(M39I+2))
-        CALL XMOVEI(KDATA(1),ISTORE(M39I+3),9)
-      ELSE
-C -- otherwise, need to extend the list.
-        IF (KHUNTR (39,101,IADDL,IADDR,IADDD,-1) .NE. 0) GOTO 9900
-        IF ( IERFLG .LT. 0 ) GO TO 9900
-
-        NEWL39 = KSTALL( (N39I+1) * MD39I )
-        CALL XMOVEI(ISTORE(L39I),ISTORE(NEWL39),N39I*MD39I)
-        M39I = NEWL39 + N39I * MD39I
-        ISTORE(M39I) = ICER
-        ISTORE(M39I+1) = KERRNO
-        CALL XNDATE(ISTORE(M39I+2))
-        CALL XMOVEI(KDATA(1),ISTORE(M39I+3),9)
-        ISTORE(L39O)   = ISTORE(L39O)+1
-        ISTORE(IADDR+3) = NEWL39  ! Change header pointer to new data
-        N39I = N39I + 1
-      ENDIF
-
-C -- Write data back to disk.
-      CALL XWLSTD ( 39, ICOM39, IDIM39, 0, 1)
-
-9000  CONTINUE ! All ok
-      RETURN
-
-9900  CONTINUE ! Something bad. (No list 39).
-      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
-      GOTO 9000
-      
-      END
-
-CODE FOR KGETER
-      FUNCTION KGETER ( KERRNO, KNEXT, KDATE, KDATA )
-C Retrieve error information from list 39.
-C     KERRNO - set to the error type that you seek, or 0 for any error.
-C              if set to zero, it will be set to the error type on return.
-C     KNEXT - record index to start search from, when calling set to zero
-C             initially, then afterwards to the return value of the previous
-C             call.
-C     KDATE - the number of seconds since 1970 when the error occurred.
-C     KDATA - 9 words of extra error information (specific to the error).
-C   RETURN VALUE index of next record. (Not necessarily an 'ERRR' card).
-
-      DIMENSION KDATA(9)
-\ISTORE
-\STORE
-\UFILE
-\XSSVAL
-\QSTORE
-\XIOBUF
-\XUNITS
-\XLST39
-\ICOM39
-\QLST39
-      DATA ICER /'ERRR'/
-\IDIM39
-      KGETER = -1
-
-      IF ( KEXIST(39) .GE. 1 ) THEN
-         IF (KHUNTR (39,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL39
-         IF ( IERFLG .LT. 0 ) GO TO 9900
-      ELSE
-         RETURN
-      END IF
-
-      IF ( ( KNEXT .LT. 0 ) .OR. ( KNEXT .GE. N39I ) ) THEN
-         RETURN
-      ENDIF
-
-C Find next error:
-      KNE = 0
-      DO J = KNEXT, N39I-1
-      M39I = L39I + J*MD39I
-        IF ((ICER.EQ.ISTORE(M39I)) .AND. 
-     1      ((KERRNO.EQ.0) .OR. (KERRNO.EQ.ISTORE(M39I+1)))) THEN
-           KNE = M39I
-           KGETER = J + 1
-           KERRNO = ISTORE(M39I+1)
-           EXIT
-        ENDIF
-      ENDDO
-
-      IF ( KNE.EQ.0 ) RETURN
-
-      KDATE = ISTORE(KNE+2)
-      CALL XMOVEI(ISTORE(KNE+3),KDATA(1),9)
-
-      RETURN
-
-9000  CONTINUE ! All ok
-      RETURN
-
-9900  CONTINUE ! Something bad. (No list 39).
-      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
-      GOTO 9000
-      END
-
-CODE FOR XCLRER
-      SUBROUTINE XCLRER ( KERRNO )
-C Clear error information from list 39.
-C     KERRNO - set to the error type that you seek, or 0 for all errors.
-\ISTORE
-\STORE
-\UFILE
-\XSSVAL
-\QSTORE
-\XIOBUF
-\XUNITS
-\XLST39
-\ICOM39
-\QLST39
-      DATA ICER /'ERRR'/
-\IDIM39
-      IF ( KEXIST(39) .GE. 1 ) THEN
-         IF (KHUNTR (39,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL39
-         IF ( IERFLG .LT. 0 ) GO TO 9900
-      ELSE
-         RETURN
-      END IF
-
-C Find next error:
-      NEWN = N39I
-      M39I = L39I
-      DO J = 0, N39I-1
-        IF ((ICER.EQ.ISTORE(M39I)) .AND. 
-     1      ((KERRNO.EQ.0) .OR. (KERRNO.EQ.ISTORE(M39I+1)))) THEN
-C Clear this error by moving rest of records down one.
-            NEWN = NEWN - 1
-            CALL XMOVEI(ISTORE(M39I+MD39I),ISTORE(M39I),(NEWN-J)*MD39I)
-        ELSE
-            M39I = M39I + MD39I
-        ENDIF
-      ENDDO
-      N39I = NEWN
-
-C -- Write data back to disk.
-      CALL XWLSTD ( 39, ICOM39, IDIM39, 0, 1)
-
-9000  CONTINUE ! All ok
-      RETURN
-
-9900  CONTINUE ! Something bad. (No list 39).
-      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
-      GOTO 9000
-      END
+cCODE FOR XCLRER
+c      SUBROUTINE XCLRER ( KERRNO )
+cC Clear error information from list 39.
+cC     KERRNO - set to the error type that you seek, or 0 for all errors.
+c\ISTORE
+c\STORE
+c\UFILE
+c\XSSVAL
+c\QSTORE
+c\XIOBUF
+c\XUNITS
+c\XLST39
+c\ICOM39
+c\QLST39
+c      DATA ICER /'ERRR'/
+c\IDIM39
+c      IF ( KEXIST(39) .GE. 1 ) THEN
+c         IF (KHUNTR (39,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL39
+c         IF ( IERFLG .LT. 0 ) GO TO 9900
+c      ELSE
+c         RETURN
+c      END IF
+c
+cC Find next error:
+c      NEWN = N39I
+c      M39I = L39I
+c      DO J = 0, N39I-1
+c        IF ((ICER.EQ.ISTORE(M39I)) .AND. 
+c     1      ((KERRNO.EQ.0) .OR. (KERRNO.EQ.ISTORE(M39I+1)))) THEN
+cC Clear this error by moving rest of records down one.
+c            NEWN = NEWN - 1
+c            CALL XMOVEI(ISTORE(M39I+MD39I),ISTORE(M39I),(NEWN-J)*MD39I)
+c        ELSE
+c            M39I = M39I + MD39I
+c        ENDIF
+c      ENDDO
+c      N39I = NEWN
+c
+cC -- Write data back to disk.
+c      CALL XWLSTD ( 39, ICOM39, IDIM39, 0, 1)
+c
+c9000  CONTINUE ! All ok
+c      RETURN
+c
+c9900  CONTINUE ! Something bad. (No list 39).
+c      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
+c      GOTO 9000
+c      END
 
 

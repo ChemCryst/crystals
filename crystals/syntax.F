@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.4  2001/02/26 10:30:24  richard
+C Added changelog to top of file
+C
 C
 CODE FOR XFCOLS
       SUBROUTINE XFCOLS(IULN)
@@ -618,7 +621,6 @@ C--BRANCH ON THE TYPE OF HEADER
 1750  CONTINUE
       WRITE ( CMON,1755)KA
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
 1755  FORMAT(' Illegal header type ',I10)
       CALL XERHND ( IERCAT )

@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.9  2003/07/08 10:05:25  rich
+C Upon inversion of a matrix in the #MATRIX command,
+C put the determinant in the script variable MATRIX:DET,
+C in case anyone wants it.
+C
 C Revision 1.8  2003/07/01 17:47:36  rich
 C
 C This is an odd one: Added two new directives to #MATRIX. SCR2A moves
@@ -571,19 +576,19 @@ C
       END
 C
 C
-CODE FOR XMTCEX
-      SUBROUTINE XMTCEX (A,B,K,L)
-C----- EXCHANGE ORDER OF COLUMNS OF MATRIX A(K,L)
-      DIMENSION  A(K,L), B(K,L)
-      N = L + 1
-      DO 200 J = 1, L
-      DO 100 I = 1, K
-      B(I,J) = A(I,N-J)
-100   CONTINUE
-200   CONTINUE
-      RETURN
-      END
-C
+cCODE FOR XMTCEX
+c      SUBROUTINE XMTCEX (A,B,K,L)
+cC----- EXCHANGE ORDER OF COLUMNS OF MATRIX A(K,L)
+c      DIMENSION  A(K,L), B(K,L)
+c      N = L + 1
+c      DO 200 J = 1, L
+c      DO 100 I = 1, K
+c      B(I,J) = A(I,N-J)
+c100   CONTINUE
+c200   CONTINUE
+c      RETURN
+c      END
+
 CODE FOR XMTREX
       SUBROUTINE XMTREX (A,B,K,L)
 C----- EXCHANGE ORDER OF ROWS OF MATRIX A(K,L)
@@ -1565,30 +1570,30 @@ C --
 C
 C --
 C
-CODE FOR XMXPRM
-      SUBROUTINE XMXPRM(RMAT)
-C -- PRINTS ROTATION MATRIX
-      DIMENSION RMAT(3,3)
-\XUNITS
-\XSSVAL
-C --
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,2010)
-      ENDIF
-2010  FORMAT (1X)
-      DO 3000 J=1,3
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,2020) (RMAT(I,J),I=1,3)
-      ENDIF
-2020  FORMAT (1X,3F10.5)
-3000  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE (NCWU,3010)
-      ENDIF
-3010  FORMAT (/)
-      RETURN
-      END
-C
+cCODE FOR XMXPRM
+c      SUBROUTINE XMXPRM(RMAT)
+cC -- PRINTS ROTATION MATRIX
+c      DIMENSION RMAT(3,3)
+c\XUNITS
+c\XSSVAL
+cC --
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE (NCWU,2010)
+c      ENDIF
+c2010  FORMAT (1X)
+c      DO 3000 J=1,3
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE (NCWU,2020) (RMAT(I,J),I=1,3)
+c      ENDIF
+c2020  FORMAT (1X,3F10.5)
+c3000  CONTINUE
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE (NCWU,3010)
+c      ENDIF
+c3010  FORMAT (/)
+c      RETURN
+c      END
+
 C --
 C
 CODE FOR XMXEGV

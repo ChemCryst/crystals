@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.41  2003/07/03 10:41:04  rich
+C Bug fixed: When top level scripts were called, the status bar shows them
+C as being called from the last top level script that was run. Fix: Clear
+C variables in between script runs.
+C
 C Revision 1.40  2003/05/07 12:18:56  rich
 C
 C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
@@ -76,7 +81,6 @@ C
       WRITE ( CMON,1015) IUNIT, IOS
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 ) IUNIT , IOS
-      WRITE ( NCAWU , 1015 ) IUNIT , IOS
 1015  FORMAT ( 1X , 'I/O error on unit ' , I5 ,
      2 ' with status code ' , I6 )
 1005  FORMAT ( 1X , 'Reason -- ' , A )
@@ -111,7 +115,6 @@ C
       WRITE ( CMON,1005) REASON(MSGST:MSGEND)
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
-      WRITE ( NCAWU , '(a)' ) cmon(1)
 C
       RETURN
       END
@@ -691,7 +694,6 @@ cdjwapr99
      2 ' )already exists and cannot be overwritten'
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
-      WRITE ( NCAWU , '(a)' ) cmon(1)
       goto 9910
       END
 C
@@ -777,7 +779,6 @@ C
           WRITE ( CMON,1005) ACTION(IMSG) , NAME(1:NCHARS)
           CALL XPRVDU(NCEROR, 2, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 1005 )ACTION(IMSG),NAME(1:NCHARS)
-          WRITE ( NCAWU , 1005 ) ACTION(IMSG) , NAME(1:NCHARS)
 1005      FORMAT ( 1X, 'The following file has been ' , A, ' :- ' , / ,
      2 11X , A )
         ENDIF
@@ -810,7 +811,6 @@ C
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-      WRITE ( NCAWU , 9915 )
 9915  FORMAT ( 1X , 'Attempt to close main control file' )
       RETURN
       END
@@ -1204,8 +1204,8 @@ C----- READ OTHER PARAMETERS OFF COMMAND LINE (DGV ONLY)
       END
 C
 CODE FOR XRDKEY
-      SUBROUTINE XRDKEY ( IKEY , CTEXT , LENGTH )
-      IMPLICIT INTEGER ( A - Z )
+&&VAXDGV      SUBROUTINE XRDKEY ( IKEY , CTEXT , LENGTH )
+&&VAXDGV      IMPLICIT INTEGER ( A - Z )
 C
 C -- READ DATA FROM CURRENT CLI.
 C
@@ -1221,13 +1221,11 @@ C      CTEXT       TEXT FOUND
 C      LENGTH      LENGTH OF TEXT FOUND
 C
 C
-      CHARACTER*(*) CTEXT
-C
-#DGVC
-#DGV      LENGTH = 0
-#DGV      CTEXT = ' '
-#DGVC
-&DGVC
+&&VAXDGV      CHARACTER*(*) CTEXT
+
+&VAX      LENGTH = 0
+&VAX      CTEXT = ' '
+
 &DGV      CHARACTER*80 CBUFFR
 &DGVC
 &DGV      INTEGER*4 ISYS_GTMES
@@ -1261,8 +1259,8 @@ C
 &DGV        LENGTH = INDEX ( CBUFFR , CHAR ( 0 ) ) - 1
 &DGV        CTEXT = CBUFFR(1:LENGTH)
 &DGV      ENDIF
-      RETURN
-      END
+&&VAXDGV      RETURN
+&&VAXDGV      END
 C
 CODE FOR XRDSUB
       SUBROUTINE XRDSUB ( CTEXT )
@@ -2176,14 +2174,14 @@ C
       RETURN
       END
 C
-CODE FOR EXCTLC
-      SUBROUTINE EXCTLC
-C
-C -- THIS ROUTINE HANDLES CONTROL-C INTERRUPTS ( VAX ONLY )
-C
-C    THIS ROUTINE IS NOT REQUIRED FOR THE OPERATION OF THE PROGRAM,AND
-C    CAN BE REPLACED BY A DUMMY.
-C
+&VAXCODE FOR EXCTLC
+&VAX      SUBROUTINE EXCTLC
+&VAXC
+&VAXC -- THIS ROUTINE HANDLES CONTROL-C INTERRUPTS ( VAX ONLY )
+&VAXC
+&VAXC    THIS ROUTINE IS NOT REQUIRED FOR THE OPERATION OF THE PROGRAM,AND
+&VAXC    CAN BE REPLACED BY A DUMMY.
+&VAXC
 &VAXC -- FOR A DESCRIPTION OF CONTROL-C HANDLING SEE THE
 &VAXC    ROUTINE 'STCTLC'
 &VAXC
@@ -2194,8 +2192,8 @@ C
 &VAX      DIMENSION ILIMIT(2)
 &VAXC
 &VAXC
-\XUNITS
-\XSSVAL
+&VAX\XUNITS
+&VAX\XSSVAL
 &VAXC
 &VAXC -- WORKING SET LIMITS ARE PURGED BEFORE 'SPAWN'
 &VAX      DATA ILIMIT(1) / 0 / , ILIMIT(2) / '7FFFFFFF'X /
@@ -2239,12 +2237,11 @@ C
 &VAXC
 &VAX      GO TO 1000
 C
-#VAX      RETURN
 C
-      END
+&VAX      END
 C
-CODE FOR XOUTPT
-      SUBROUTINE XOUTPT ( TEXT )
+&VAXCODE FOR XOUTPT
+&VAX      SUBROUTINE XOUTPT ( TEXT )
 C
 C -- THIS ROUTINE OUTPUTS TEXT FOR CONTROL-C HANDLING ( VAX ONLY )
 C
@@ -2276,8 +2273,8 @@ C
 &VAX      IF ( .NOT. ISTAT ) CALL LIB$SIGNAL ( %VAL(ISTAT) )
 &VAXC
 C
-      RETURN
-      END
+&VAX      RETURN
+&VAX      END
 C
 CODE FOR XMNINI
       SUBROUTINE XMNINI (JMNFLG)
@@ -2901,15 +2898,15 @@ CODE FOR KSTRLN
       END
 C
 CODE FOR MYDRIV
-      SUBROUTINE MYDRIV (B,NB,NCH,ACTION,IFAIL)
+&DOS      SUBROUTINE MYDRIV (B,NB,NCH,ACTION,IFAIL)
 &DOSC
 &DOSC                 CONTROL TERMINAL OUTPUT.
 &DOSC      THE BUFFER B, OF NB INTEGER*2 ITEMS, HOLDS NCH CHARACTERS
 &DOSC      IACTION IS THE TYPE OF CALL BEING MADE, AND IFAIL PASSES
 &DOSC      A KEY BACK TO THE IOSTAT
 &DOSC
-      INTEGER*2 B(NB), NCH, ACTION, IFAIL
-\XDRIVE
+&DOS      INTEGER*2 B(NB), NCH, ACTION, IFAIL
+&DOS\XDRIVE
 C
 C      LDRV77      CURRENT LINE ON PAGE. MUST BE SET BEFORE ENTRY
 C                  AND IS INCREMENTED OR SET TO ZERO BY MYDRIV
@@ -2917,7 +2914,7 @@ C      MDRV77      REQUIRED NUMBER OF LINES ON PAGE.
 C      JNL77       1 FOR CRLF, ELSE 0
 C      JPMT77      1 FOR PROMPT, ELSE 0
 C      ISSPAS, DWT77       WAIT TIME, SECONDS
-\XSSVAL
+&DOS\XSSVAL
 C
 &DOSC     Just return on open
 &DOS      IF(ACTION.EQ.6)RETURN
@@ -2928,7 +2925,7 @@ C
 &DOS        RETURN
 &DOS      ENDIF
 &DOSC
-      DWT77 = ISSPAS
+&DOS      DWT77 = ISSPAS
 &DOSC
 &DOSC----- PAGE FULL YET? - NOTE YOU CAN FORCE A PAUSE BY SETTING LDRV77
 &DOSC      .GE. MDRV77 BEFORE YOU DO THE WRITE.
@@ -2952,8 +2949,8 @@ C
 &DOS        CALL SOU@ (B, MCH )
 &DOS      END IF
 &DOS      LDRV77 = LDRV77 + 1
-      RETURN
-      END
+&DOS      RETURN
+&DOS      END
 C
 CODE FOR KORE
 #ICL      FUNCTION KORE(ISIZE)
@@ -2991,17 +2988,16 @@ C----- IN MONOLITHIC INPLEMENTATIONS THIS IS A DUMMY.
 #ICL      RETURN
 #ICL      END
 CODE FOR XRDMSE
-      SUBROUTINE XRDMSE (CMOUSE, NMOUSE)
+###DVFGIDWXS      SUBROUTINE XRDMSE (CMOUSE, NMOUSE)
 C----- GET A STRING OF ATOM NAMES FROM THE MOUSE
 C----- SHOULD BE REPLACED BY A MACHINE SPECIFIC ROUTINE
-&&&DVFGIDWXS      CALL GUEXIT(2027) 
 ###DVFGIDWXS      CHARACTER*(*) CMOUSE
 ###DVFGIDWXS      CMOUSE = ' FIRST UNTIL LAST '
 ###DVFGIDWXS      NMOUSE = 18
 ###DVFGIDWXS      LMOUSE = 1
 ###DVFGIDWXS      MMOUSE = 1
 ###DVFGIDWXS      RETURN
-      END
+###DVFGIDWXS      END
 
 CODE FOR FRAND
       FUNCTION FRAND()
@@ -3157,16 +3153,16 @@ C&GID      DATA CALINE(1:40) /'                                        '/
       END
 C
 
-CODE FOR GUWAIT
-      SUBROUTINE GUWAIT()
-&GID      INTERFACE
-&GID          SUBROUTINE COMPLETE ()
-&GID          !DEC$ ATTRIBUTES C :: complete
-&GID          END SUBROUTINE COMPLETE
-&GID      END INTERFACE
-&&GIDGIL      CALL COMPLETE()
-&WXS      CALL COMPLETE()
-      END
+cCODE FOR GUWAIT
+c      SUBROUTINE GUWAIT()
+c&GID      INTERFACE
+c&GID          SUBROUTINE COMPLETE ()
+c&GID          !DEC$ ATTRIBUTES C :: complete
+c&GID          END SUBROUTINE COMPLETE
+c&GID      END INTERFACE
+c&&GIDGIL      CALL COMPLETE()
+c&WXS      CALL COMPLETE()
+c      END
 
 
 CODE FOR GUEXIT
@@ -3229,126 +3225,126 @@ C----- CLOSE ALL THE FILES
 &WXS      RETURN
       END
 
-code for dumio (keep the program going while we test it)
-      subroutine dumio(cline)
-      CHARACTER *(*) CLINE
-\XUNITS
-      cline = ' '
-      read(5,'(a)')cline
-      return
-      end
-C
-CODE FOR FLBUFF
-      SUBROUTINE FLBUFF( IBFLEN, IBFBEH, IBFPRT )
-C -- IBFLEN is   0, if the length of the buffer is unknown
-C -- IBFBEH is   0, when normal jump on next line is expected
-C           is   1, when we continue the next output on the same line
-C           is   2, when we output at the beginning of the same line
-C           is  -1, when we don't want output on screen
-C -- IBFPRT is   0, when listing has to be done
-C           is   1, when listing is off
-C -- IBFOFF **** not currently used ****
-C           is > 0, if the output needs the buffer from
-C                         1 + IBFOFF
-C           is < 0, if the output needs the buffer until
-C                         IBFLEN - IBFOFF
-C           is   0, if no difference exists for monitor and listing
-\XUNITS
-C
-\XIOBUF
-C
-      INTEGER        IBFLEN,IBFBEH,I,IBFPRT
-      CHARACTER*10 CFRMAT
-C
-&PPC      IF ( IBFLEN .EQ. 0 ) THEN
-&PPC         I = 1
-&PPC      ELSE
-&PPC         IF ( IBFLEN .LE. 132 ) THEN
-&PPC            I = IBFLEN
-&PPC         ELSE
-&PPC            I = 132
-&PPC         ENDIF
-&PPC      ENDIF
-&PPC      IF ( IBFBEH .EQ. 0) THEN
-&PPC         IF ( I .GT. 130) I = 130
-&PPC         I = I + 2
-&PPC         CIOBUF(I-1:I-1) = CCRCHR(1:1)
-&PPC         CIOBUF(I:I)     = CCRCHR(2:2)
-&PPC      ENDIF
-&PPC      CALL NBACUR
-&PPC      IF ( IBFBEH .GE. 0 ) THEN
-&PPC         LINS = 0
-&PPC         DO 100 k=1,I
-&PPC           IF ( CIOBUF(K:K) .EQ. CHAR(13) ) LINS = LINS + 1
-&PPC100      CONTINUE
-&PPC         CALL FLUSHB(  I, CIOBUF, LINS )
-&PPC       ENDIF
-&PPC       IF ( IBFPRT .EQ. 0) THEN
-&PPC          WRITE ( NCWU , '(A)' ) CIOBUF(1:I)
-&PPC       ENDIF
-C
-&VAX       IF ( IBFBEH .EQ. 1 ) THEN
-&VAX          CFRMAT = '(A,$)'
-&VAX       ELSEIF ( IBFBEH .EQ. 2 ) THEN
-&VAX          CFRMAT = '(''+'',A)'
-&VAX       ELSE
-&VAX          CFRMAT = '(A)'
-&VAX       ENDIF
-&VAX      IF (IBFLEN .LE. 0) THEN
-&VAX        IBFLEN = LEN(CIOBUF)
-&VAX        CALL XCTRIM(CIOBUF, IBFLEN)
-&VAX      ENDIF
-&VAX      J = 1
-&VAX100   CONTINUE
-&VAX      DO 200 I = J, IBFLEN
-&VAX        IF (CIOBUF(I:I) .EQ. CCRCHR(1:1)) THEN
-&VAX          K = MAX(J,I-1)
-&VAX       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:K)
-&VAX       IF ( IOS .NE. 0 ) WRITE ( NCAWU , '(1X,A,I4)' )
-&VAX     1  '*** OUTPUT ERROR! IOS = ',IOS
-&VAX          J = K + 3
-&VAX          IF (J .LT. IBFLEN ) GOTO 100
-&VAX        ENDIF
-&VAX200   CONTINUE
-&VAX      IF (J .LE. IBFLEN)  THEN
-&VAX       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:IBFLEN)
-&VAX       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )
-&VAX     1  '*** OUTPUT ERROR! IOS = ',IOS
-&VAX      ENDIF
-&VAX      CIOBUF = ' '
-C
-&DOS       IF ( IBFBEH .EQ. 1 ) THEN
-&DOS          CFRMAT = '(A,$)'
-&DOS       ELSEIF ( IBFBEH .EQ. 2 ) THEN
-&DOS          CFRMAT = '(''+'',A)'
-&DOS       ELSE
-&DOS          CFRMAT = '(1X,A)'
-&DOS       ENDIF
-&DOS      IF (IBFLEN .LE. 0) THEN
-&DOS        IBFLEN = LEN(CIOBUF)
-&DOS        CALL XCTRIM(CIOBUF, IBFLEN)
-&DOS      ENDIF
-&DOS      J = 1
-&DOS100   CONTINUE
-&DOS      DO 200 I = J, IBFLEN
-&DOS        IF (CIOBUF(I:I) .EQ. CCRCHR(1:1)) THEN
-&DOS          K = MAX(J,I-1)
-&DOS       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:K)
-&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )             
-&DOS     1  '*** OUTPUT ERROR! IOS = ',IOS
-&DOS          J = K + 3
-&DOS          IF (J .LT. IBFLEN ) GOTO 100
-&DOS        ENDIF
-&DOS200   CONTINUE
-&DOS      IF (J .LE. IBFLEN)  THEN
-&DOS       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:IBFLEN)
-&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )
-&DOS     1  '*** OUTPUT ERROR! IOS = ',IOS
-&DOS      ENDIF
-&DOS      CIOBUF = ' '
-C
-      RETURN
-      END
+ccode for dumio (keep the program going while we test it)
+c      subroutine dumio(cline)
+c      CHARACTER *(*) CLINE
+c\XUNITS
+c      cline = ' '
+c      read(5,'(a)')cline
+c      return
+c      end
+cC
+cCODE FOR FLBUFF
+c      SUBROUTINE FLBUFF( IBFLEN, IBFBEH, IBFPRT )
+cC -- IBFLEN is   0, if the length of the buffer is unknown
+cC -- IBFBEH is   0, when normal jump on next line is expected
+cC           is   1, when we continue the next output on the same line
+cC           is   2, when we output at the beginning of the same line
+cC           is  -1, when we don't want output on screen
+cC -- IBFPRT is   0, when listing has to be done
+cC           is   1, when listing is off
+cC -- IBFOFF **** not currently used ****
+cC           is > 0, if the output needs the buffer from
+cC                         1 + IBFOFF
+cC           is < 0, if the output needs the buffer until
+cC                         IBFLEN - IBFOFF
+cC           is   0, if no difference exists for monitor and listing
+c\XUNITS
+cC
+c\XIOBUF
+cC
+c      INTEGER        IBFLEN,IBFBEH,I,IBFPRT
+c      CHARACTER*10 CFRMAT
+cC
+c&PPC      IF ( IBFLEN .EQ. 0 ) THEN
+c&PPC         I = 1
+c&PPC      ELSE
+c&PPC         IF ( IBFLEN .LE. 132 ) THEN
+c&PPC            I = IBFLEN
+c&PPC         ELSE
+c&PPC            I = 132
+c&PPC         ENDIF
+c&PPC      ENDIF
+c&PPC      IF ( IBFBEH .EQ. 0) THEN
+c&PPC         IF ( I .GT. 130) I = 130
+c&PPC         I = I + 2
+c&PPC         CIOBUF(I-1:I-1) = CCRCHR(1:1)
+c&PPC         CIOBUF(I:I)     = CCRCHR(2:2)
+c&PPC      ENDIF
+c&PPC      CALL NBACUR
+c&PPC      IF ( IBFBEH .GE. 0 ) THEN
+c&PPC         LINS = 0
+c&PPC         DO 100 k=1,I
+c&PPC           IF ( CIOBUF(K:K) .EQ. CHAR(13) ) LINS = LINS + 1
+c&PPC100      CONTINUE
+c&PPC         CALL FLUSHB(  I, CIOBUF, LINS )
+c&PPC       ENDIF
+c&PPC       IF ( IBFPRT .EQ. 0) THEN
+c&PPC          WRITE ( NCWU , '(A)' ) CIOBUF(1:I)
+c&PPC       ENDIF
+cC
+c&VAX       IF ( IBFBEH .EQ. 1 ) THEN
+c&VAX          CFRMAT = '(A,$)'
+c&VAX       ELSEIF ( IBFBEH .EQ. 2 ) THEN
+c&VAX          CFRMAT = '(''+'',A)'
+c&VAX       ELSE
+c&VAX          CFRMAT = '(A)'
+c&VAX       ENDIF
+c&VAX      IF (IBFLEN .LE. 0) THEN
+c&VAX        IBFLEN = LEN(CIOBUF)
+c&VAX        CALL XCTRIM(CIOBUF, IBFLEN)
+c&VAX      ENDIF
+c&VAX      J = 1
+c&VAX100   CONTINUE
+c&VAX      DO 200 I = J, IBFLEN
+c&VAX        IF (CIOBUF(I:I) .EQ. CCRCHR(1:1)) THEN
+c&VAX          K = MAX(J,I-1)
+c&VAX       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:K)
+c&VAX       IF ( IOS .NE. 0 ) WRITE ( NCAWU , '(1X,A,I4)' )
+c&VAX     1  '*** OUTPUT ERROR! IOS = ',IOS
+c&VAX          J = K + 3
+c&VAX          IF (J .LT. IBFLEN ) GOTO 100
+c&VAX        ENDIF
+c&VAX200   CONTINUE
+c&VAX      IF (J .LE. IBFLEN)  THEN
+c&VAX       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:IBFLEN)
+c&VAX       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )
+c&VAX     1  '*** OUTPUT ERROR! IOS = ',IOS
+c&VAX      ENDIF
+c&VAX      CIOBUF = ' '
+cC
+c&DOS       IF ( IBFBEH .EQ. 1 ) THEN
+c&DOS          CFRMAT = '(A,$)'
+c&DOS       ELSEIF ( IBFBEH .EQ. 2 ) THEN
+c&DOS          CFRMAT = '(''+'',A)'
+c&DOS       ELSE
+c&DOS          CFRMAT = '(1X,A)'
+c&DOS       ENDIF
+c&DOS      IF (IBFLEN .LE. 0) THEN
+c&DOS        IBFLEN = LEN(CIOBUF)
+c&DOS        CALL XCTRIM(CIOBUF, IBFLEN)
+c&DOS      ENDIF
+c&DOS      J = 1
+c&DOS100   CONTINUE
+c&DOS      DO 200 I = J, IBFLEN
+c&DOS        IF (CIOBUF(I:I) .EQ. CCRCHR(1:1)) THEN
+c&DOS          K = MAX(J,I-1)
+c&DOS       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:K)
+c&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )             
+c&DOS     1  '*** OUTPUT ERROR! IOS = ',IOS
+c&DOS          J = K + 3
+c&DOS          IF (J .LT. IBFLEN ) GOTO 100
+c&DOS        ENDIF
+c&DOS200   CONTINUE
+c&DOS      IF (J .LE. IBFLEN)  THEN
+c&DOS       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:IBFLEN)
+c&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )
+c&DOS     1  '*** OUTPUT ERROR! IOS = ',IOS
+c&DOS      ENDIF
+c&DOS      CIOBUF = ' '
+cC
+c      RETURN
+c      END
 C
 CODE FOR FBCINI
       SUBROUTINE FBCINI

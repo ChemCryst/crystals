@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.3  2001/07/19 11:57:58  ckp2
+C Pass a variable rather than a value. It seemed to cause problems.
+C
 C Revision 1.2  2001/02/26 10:30:24  richard
 C Added changelog to top of file
 C
@@ -63,14 +66,12 @@ C--PRINT THE INITIAL CAPTIONS
       CALL XPRTCN
       WRITE ( CMON,1100)
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU, '(A)') (CMON(II)(:),II=1,2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,2)
 1100  FORMAT(' A positive rotation is',
      2 ' clockwise from atom 1 to atom 4,',/
      3 ' when viewed from atom 2 to atom 3')
       WRITE ( CMON,1150)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(/A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
 1150  FORMAT(53X, ' Torsion angle in degrees')
 C--SET THE ERROR COUNTERS
@@ -115,7 +116,6 @@ C--NO ARGUMENTS FOUND
       CALL XPCLNN(LN)
       WRITE ( CMON,1550)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1550  FORMAT(' No arguments found')
       GOTO 1200
@@ -127,7 +127,6 @@ C--ARGUMENT IS OF THE WRONG TYPE
       CALL XPCLNN(LN)
       WRITE ( CMON,1700)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1700  FORMAT(' Only atoms may appear on an ''ATOM'' card')
       GOTO 2650
@@ -170,7 +169,6 @@ C--NOT ENOUGH ATOMS
       CALL XPCLNN(LN)
       WRITE ( CMON,2100)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 2100  FORMAT(' Not enough atoms provided')
       GOTO 2650
@@ -274,7 +272,6 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
      1 CBLANK(1: 15-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
      2 ,ANGLE
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON( 1)(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 2806  FORMAT (2A, ' to ', 2A, ' to ', 2A, ' to ', 2A, F8.3)
 C--CHECK IF THERE ARE MORE ATOMS
@@ -302,7 +299,6 @@ C--ATOM APPEARS MORE THAN ONCE
       CALL XPCLNN(LN)
       WRITE ( CMON,2900)
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 2900  FORMAT(' An atom has appeared more than once for an angle')
       GOTO 2650

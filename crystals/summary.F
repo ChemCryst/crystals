@@ -1,4 +1,12 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.48  2003/07/15 09:46:21  rich
+C New SGPLOT instruction. Takes a 3x3 matrix,A, to select reflection classes
+C (if h == Ah, then the reflection is selected). Takes a 3x1 vector, B, and
+C a value, N, to split the selected class into two conditions (if mod(B'h,N) is
+C zero the reflection is 'allowed' if it is non-zero the reflection is
+C 'dis-allowed'. These allowed and disallowed from the class are plotted as
+C two series of a bar graph showing frequency vs. sqrt(Fo).
+C
 C Revision 1.47  2003/07/09 11:34:23  rich
 C Ensure theta_full is always at least 3/4 of theta_max.
 C
@@ -422,7 +430,6 @@ C -- PRODUCE SUMMARY
 C
       IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1005 ) LSTYPE , CLTYPE(INTLTP)(1:LLTYPE(INTLTP))
-      WRITE ( NCAWU , 1005 ) LSTYPE , CLTYPE(INTLTP)(1:LLTYPE(INTLTP))
       WRITE ( CMON , 1005 ) LSTYPE , CLTYPE(INTLTP)(1:LLTYPE(INTLTP))
       CALL XPRVDU(NCVDU, 1,0)
 1005  FORMAT (' Summary of contents of list' , I3 ,
@@ -482,7 +489,6 @@ C
 C
 9900  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) LSTYPE
-      WRITE ( NCAWU , 9905 ) LSTYPE
       WRITE ( CMON , 9905 ) LSTYPE
       CALL XPRVDU(NCVDU, 1,0)
 9905  FORMAT (' Summary of list type' , I3 , ' abandoned' )
@@ -490,7 +496,6 @@ C
       RETURN
 9910  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) LSTYPE
-      WRITE ( NCAWU , 9915 ) LSTYPE
       WRITE ( CMON , 9915 ) LSTYPE
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT (' Illegal list number for summary - ' , I12 )
@@ -499,7 +504,6 @@ C
 9920  CONTINUE
 C -- NO PROVISON FOR SUMMARY OF THIS LIST
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 ) LSTYPE
-      WRITE ( NCAWU , 9925 ) LSTYPE
       WRITE ( CMON , 9925 ) LSTYPE
       CALL XPRVDU(NCVDU, 1,0)
 9925  FORMAT (' No summary of list type ' , I5 , ' is available' )
@@ -538,8 +542,6 @@ C
       CALL XMULTR ( STORE(L1P1+3) , RTD , STORE(L1P1+3) , 3 )
 C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU,1015) ( STORE(J),J = L1P1,L1P1+6)
-      WRITE ( NCAWU,1015) ( STORE(J),J = L1P1,L1P1+6)
-      WRITE ( NCAWU,1015) ( STORE(J),J = L1P1,L1P1+6)
       WRITE ( CMON, 1015) ( STORE(J),J = L1P1,L1P1+6)
       CALL XPRVDU(NCVDU, 2,0)
 1015  FORMAT (
@@ -616,7 +618,6 @@ C----- DISPLAY CRYSTAL CLASS
 2200  FORMAT('Crystal class is ', 1X, 4(A4))
       CALL XCTRIM (CLOW, ILAST)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2201) CLOW(1:ILAST)
-      WRITE(NCAWU,2201) CLOW(1:ILAST)
       WRITE ( CMON, 2201) CLOW(1:ILAST)
       CALL XPRVDU(NCVDU, 1,0)
 2201  FORMAT(1X,A)
@@ -627,7 +628,6 @@ C
 1035  FORMAT ('with ' , I3 , ' unique symmetry operators' )
       CALL XCTRIM (CLINE, ILAST)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2201) CLINE(1:ILAST)
-      WRITE(NCAWU,2201) CLINE(1:ILAST)
       WRITE ( CMON, 2201) CLINE(1:ILAST)
       CALL XPRVDU(NCVDU, 1,0)
 C
@@ -640,7 +640,6 @@ C
      1 WRITE(CLOW(40:),'(A,I2,A)') 'with',IORI, ' floating origins'
       CALL XCTRIM (CLOW, ILAST)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2201) CLOW(1:ILAST)
-      WRITE(NCAWU,2201) CLOW(1:ILAST)
       WRITE ( CMON, 2201) CLOW(1:ILAST)
       CALL XPRVDU(NCVDU, 1,0)
 C
@@ -653,7 +652,6 @@ C
         CALL XSUMOP ( STORE(I) , STORE(L2P) , CLINE , LENGTH, 0 )
         CALL XCCLWC(CLINE(1:LENGTH), OPERAT(1:LENGTH))
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1105 ) OPERAT(1:LENGTH)
-        WRITE ( NCAWU , 1105 ) OPERAT(1:LENGTH)
 1105    FORMAT ( 1X , A )
         LENGTH = MIN(19,LENGTH)
         IF (J .GT. 80) THEN
@@ -696,20 +694,17 @@ C -- BEGIN OUTPUT
 C
       IF ( N3 .GT. 0 ) THEN
         IF (ISSPRT .EQ. 0)WRITE ( NCWU , 1015 )
-        WRITE ( NCAWU , 1015 )
         WRITE ( CMON  , 1015 )
         CALL XPRVDU(NCVDU, 1,0)
 1015    FORMAT ( ' Scattering factors are known for :- ' )
 C
         IF (ISSPRT .EQ. 0)
      1  WRITE ( NCWU , 1025 ) ( STORE(J) , J = L3 , M3 , MD3 )
-        WRITE ( NCAWU , 1025 ) ( STORE(J) , J = L3 , M3 , MD3 )
         WRITE ( CMON  , 1025 ) ( STORE(J) , J = L3 , M3 , MD3 )
         CALL XPRVDU(NCVDU, 1,0)
 1025    FORMAT ( 1X , 19A4 )
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1035 )
-        WRITE ( NCAWU , 1035 )
         WRITE ( CMON , 1035 )
         CALL XPRVDU(NCVDU, 1,0)
 1035    FORMAT (' No scattering factors stored in list 3' )
@@ -822,14 +817,12 @@ C
       if (imode .GE.1) then
        IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
-       WRITE ( NCAWU , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
        WRITE ( CMON , 1015 ) ITYPE , CSNAME(ITYPE)(1:LNNAME(ITYPE))
        CALL XPRVDU(NCVDU, 1,0)
 1015  FORMAT ( 1X , 'Weighting scheme type ' , I3 , 2X , A )
 C
        IF ( IEXPRS(2,ITYPE) .LE. 0 ) LENGTH = LENGTH - 1
        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1016 ) CEXPRS(1:LENGTH)
-       WRITE ( NCAWU , 1016 ) CEXPRS(1:LENGTH)
        WRITE ( CMON  , 1016 ) CEXPRS(1:LENGTH)
        CALL XPRVDU(NCVDU, 1,0)
 1016  FORMAT ( 1X , 'Weights are calculated from ' ,
@@ -842,7 +835,6 @@ C
         if (imode .ge.1) then
           IF (ISSPRT .EQ. 0)
      1    WRITE ( NCWU , 1017 ) CRESLT(IRESLT(ITYPE)) , CFORMS(ITEXT)
-          WRITE ( NCAWU , 1017 ) CRESLT(IRESLT(ITYPE)) , CFORMS(ITEXT)
           WRITE ( CMON , 1017 ) CRESLT(IRESLT(ITYPE)) , CFORMS(ITEXT)
           CALL XPRVDU(NCVDU, 1,0)
 1017      FORMAT ( 1X , A , ' = ' , A )
@@ -855,12 +847,10 @@ C
         M4 = L4 + MD4 -1
         if (imode .ge.1) then
          IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1025 )
-         WRITE ( NCAWU , 1025 )
          WRITE ( CMON , 1025 )
          CALL XPRVDU(NCVDU, 1,0)
 1025     FORMAT ( 1X , 'Using parameters :- ')
          IF (ISSPRT .EQ. 0) WRITE (NCWU, 1035) (STORE(J), J = L4, M4 )
-         WRITE ( NCAWU , 1035 ) ( STORE(J) , J = L4 , M4 )
          WRITE ( CMON , 1035 ) ( STORE(J) , J = L4 , M4 )
          CALL XPRVDU(NCVDU, 1,0)
 1035     FORMAT ( 5X , 6G12.3 )
@@ -870,7 +860,6 @@ C
 C
       if (imode .ge.1) then
        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1045 ) STORE(L4F+1)
-       WRITE ( NCAWU , 1045 ) STORE(L4F+1)
        WRITE ( CMON , 1045 ) STORE(L4F+1)
        CALL XPRVDU(NCVDU, 1,0)
 1045   FORMAT ( 1X , 'The maximum weight is ' , G12.5 )
@@ -962,7 +951,6 @@ C    ARE NONE
      1 .LE. 0 ) THEN
         WRITE ( CMON , 1065 )
         CALL XPRVDU(NCVDU, 2,0)
-        WRITE(NCAWU, '(A)') (CMON(II)(:),II=1,2)
         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,2)
 1065    FORMAT ( 1X , 'There are no layer, element, or batch scales',/,
      1 1X, 'There are no special overall parameters' )
@@ -1628,7 +1616,6 @@ C--SETUP A GRAPH HERE
 C----- PRINT SOME OVER-ALL DETAILS
 C--PRINT THE DETAILS RECORD
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1550)
-      WRITE(NCAWU,1550)
       WRITE ( CMON ,1550)
       CALL XPRVDU(NCVDU, 1,0)
 1550  FORMAT(' Quantity',12X,'Minimum',8X,'Maximum')
@@ -1641,7 +1628,6 @@ C--CHECK IF THIS DETAIL IS SET
 C--NOT SET  -  PRINT THE CAPTION AND IGNORE IT
 1600  CONTINUE
       IF (ISSPRT .EQ. 0)WRITE(NCWU,1650) CNAME(I-1)
-      WRITE(NCAWU,1650) CNAME(I-1)
       WRITE ( CMON ,1650) CNAME(I-1)
       CALL XPRVDU(NCVDU, 1,0)
 1650  FORMAT(6X,A8, 4X,'No details available')
@@ -1651,7 +1637,6 @@ C--PRINT THE DETAILS
       K=M6DTL+MD6DTL-3
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,1750) CNAME(I-1), (STORE(J),J=M6DTL,K)
-      WRITE(NCAWU,1750) CNAME(I-1), (STORE(J),J=M6DTL,K)
       WRITE ( CMON ,1750) CNAME(I-1), (STORE(J),J=M6DTL,K)
       CALL XPRVDU(NCVDU, 1,0)
 1750  FORMAT(6X,A8,2X,6E15.6)
@@ -1756,7 +1741,6 @@ C----- COMPUTE AND STORE R-VALUES
       STORE(L6P+1) = RFACT
       STORE(L6P+2) = WRFAC
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) N6D , N6ACC
-      WRITE ( NCAWU , 1215 ) N6D, N6ACC
       WRITE ( CMON , 1215 ) N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
 1215  FORMAT ( 1X , 'List 6 contains ' , I5 , ' reflections' ,
@@ -1768,7 +1752,6 @@ C -- PRINT THE R VALUE ETC.
       M6P = L6P+2
       IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
-      WRITE ( NCAWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
       WRITE ( CMON , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
       CALL XPRVDU(NCVDU, 3,0)
 
@@ -1793,19 +1776,19 @@ C      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       RETURN
       END
 C
-CODE FOR FUNCT - USER FUNCTIONS FOR LEAST-SQUARES FITTING
-      FUNCTION FUNCT(K,X)
-      SELECT CASE(K)
-        CASE(:-1)
-          FUNCT = 0
-        CASE(0)
-          FUNCT = X**2
-        CASE(1)
-          FUNCT = X
-        CASE(2)
-          FUNCT = 0
-        END SELECT
-      END
+cCODE FOR FUNCT - USER FUNCTIONS FOR LEAST-SQUARES FITTING
+c      FUNCTION FUNCT(K,X)
+c      SELECT CASE(K)
+c        CASE(:-1)
+c          FUNCT = 0
+c        CASE(0)
+c          FUNCT = X**2
+c        CASE(1)
+c          FUNCT = X
+c        CASE(2)
+c          FUNCT = 0
+c        END SELECT
+c      END
 C
 C
 C
@@ -1847,7 +1830,6 @@ C
       DO 1100 I = 1 , NCRYST
         IF ( ISTORE(IND13) .GE. 0 ) THEN
           IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1025 ) CCRYST(I)
-          WRITE ( NCAWU , 1025 ) CCRYST(I)
           WRITE ( CMON , 1025 ) CCRYST(I)
           CALL XPRVDU(NCVDU, 1,0)
 1025      FORMAT ( 1X , A )
@@ -1856,14 +1838,11 @@ C
 1100  CONTINUE
 C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1105 ) CSPRED(ISTORE(L13CD+2))
-      WRITE ( NCAWU , 1105 ) CSPRED(ISTORE(L13CD+2))
       WRITE ( CMON , 1105 ) CSPRED(ISTORE(L13CD+2))
       CALL XPRVDU(NCVDU, 1,0)
 1105  FORMAT ( 1X , 'The mosaic spread is ' , A)
 C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1125 )
-     1 CGEOMY(ISTORE(L13DT)), CRADTN(ISTORE(L13DT+1)+2)
-      WRITE ( NCAWU , 1125 )
      1 CGEOMY(ISTORE(L13DT)), CRADTN(ISTORE(L13DT+1)+2)
       WRITE ( CMON , 1125 )
      1 CGEOMY(ISTORE(L13DT)), CRADTN(ISTORE(L13DT+1)+2)
@@ -1872,7 +1851,6 @@ C
      1 1X , 'Data was collected with ' , A )
 C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1145 ) STORE(L13DC)
-      WRITE ( NCAWU , 1145 ) STORE(L13DC)
       WRITE ( CMON , 1145 ) STORE(L13DC)
       CALL XPRVDU(NCVDU, 1,0)
 1145  FORMAT ( 1X , 'The wavelength is ' , F12.5 )
@@ -1917,8 +1895,6 @@ C
       IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1025 ) ( CDIREC(J) , CAXIS(ISTORE(L14O+J-1)) ,
      2                         J = 1 , NAXIS )
-      WRITE ( NCAWU , 1025 ) ( CDIREC(J) , CAXIS(ISTORE(L14O+J-1)) ,
-     2                         J = 1 , NAXIS )
       WRITE ( CMON , 1025 ) ( CDIREC(J) , CAXIS(ISTORE(L14O+J-1)) ,
      2                         J = 1 , NAXIS )
       CALL XPRVDU(NCVDU, 1,0)
@@ -1926,7 +1902,6 @@ C
      1 3 ( A , 1X , A , 2X ) )
 C
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1035 ) STORE(L14SC)
-      WRITE ( NCAWU , 1035 ) STORE(L14SC)
       WRITE ( CMON , 1035 ) STORE(L14SC)
       CALL XPRVDU(NCVDU, 1,0)
 1035  FORMAT (1X , 'The map scale factor is ' , F10.5  )
@@ -1943,8 +1918,6 @@ C
       IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1305 ) CAXIS(I), STORE(IND14), STORE(IND14+2),
      2                          STORE(IND14+1) , CDIVTP(IDIV)
-        WRITE ( NCAWU , 1305 ) CAXIS(I), STORE(IND14), STORE(IND14+2),
-     2                          STORE(IND14+1) , CDIVTP(IDIV)
       WRITE ( CMON , 1305 ) CAXIS(I), STORE(IND14), STORE(IND14+2),
      2                          STORE(IND14+1) , CDIVTP(IDIV)
       CALL XPRVDU(NCVDU, 1,0)
@@ -1954,7 +1927,6 @@ C
         IF ( IDIV .EQ. 2 ) THEN
             IF (ISSPRT .EQ. 0)
      1      WRITE ( NCWU , 1315 ) CAXIS(I) , STORE(IND14+3)
-          WRITE ( NCAWU , 1315 ) CAXIS(I) , STORE(IND14+3)
       WRITE ( CMON , 1315 ) CAXIS(I) , STORE(IND14+3)
       CALL XPRVDU(NCVDU, 1,0)
 1315      FORMAT ( 11X , 'The ' , A , ' axis is divided into ' ,
@@ -2015,14 +1987,12 @@ C
         IF ( ISTORE(IND23) .GE. 0 ) THEN
           IF ( .NOT. LHEADR ) THEN
             IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1105 )
-            WRITE ( NCAWU , 1105 )
             WRITE ( CMON , 1105 )
             CALL XPRVDU(NCVDU, 1,0)
 1105        FORMAT ( 1X, 'Modifications applied to /FO/ and /FC/ :-')
             LHEADR = .TRUE.
           ENDIF
           IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1115 ) CMODFC(I)
-          WRITE ( NCAWU , 1115 ) CMODFC(I)
           WRITE ( CMON , 1115 ) CMODFC(I)
           CALL XPRVDU(NCVDU, 1,0)
 1115      FORMAT ( 2X , A )
@@ -2032,11 +2002,9 @@ C
 C
       IF ( LHEADR ) THEN
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1125 )
-        WRITE ( NCAWU , 1125 )
 1125    FORMAT ( 1X )
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1135 )
-        WRITE ( NCAWU , 1135 )
         WRITE ( CMON , 1135 )
         CALL XPRVDU(NCVDU, 1,0)
 1135    FORMAT ( 1X , 'No modifications to /FO/ and /FC/')
@@ -2045,7 +2013,6 @@ C
       LHEADR = .FALSE.
 
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2000) ISTORE(L23MN)
-      WRITE(NCAWU,2000) ISTORE(L23MN)
       WRITE ( CMON ,2000) ISTORE(L23MN)
       CALL XPRVDU(NCVDU, 1,0)
 2000  FORMAT(1X,'Refinement terminated if more than ',I4,
@@ -2056,7 +2023,6 @@ C
         IF ( ISTORE(IND23) .GE. 0 ) THEN
           IF ( .NOT. LHEADR ) THEN
             IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2005 )
-            WRITE ( NCAWU , 2005 )
             WRITE ( CMON , 2005 )
             CALL XPRVDU(NCVDU, 1,0)
 2005        FORMAT ( 1X, 'Conditions applied to minimisation ' ,
@@ -2064,7 +2030,6 @@ C
             LHEADR = .TRUE.
           ENDIF
           IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1115 ) CMODMN(I)
-          WRITE ( NCAWU , 1115 ) CMODMN(I)
           WRITE ( CMON , 1115 ) CMODMN(I)
           CALL XPRVDU(NCVDU, 1,0)
         ENDIF
@@ -2073,11 +2038,9 @@ C
 C
       IF ( LHEADR ) THEN
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2105 )
-        WRITE ( NCAWU , 2105 )
 2105    FORMAT ( 1X )
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2115 )
-        WRITE ( NCAWU , 2115 )
         WRITE ( CMON , 2115 )
         CALL XPRVDU(NCVDU, 1,0)
 2115    FORMAT ( 1X , 'No conditions on minimisation function')
@@ -2091,7 +2054,6 @@ C----- THIS IS A NEW FORMAT LIST 23
 C
 C
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 3105 )
-        WRITE ( NCAWU , 3105 )
         WRITE ( CMON , 3105 )
         CALL XPRVDU(NCVDU, 1,0)
 3105    FORMAT ( 1X, 'Treatment of atoms on SPECIAL positions:-')
@@ -2100,21 +2062,18 @@ C
         DO 3000 I = 1, NMODSP
            J = ISTORE(IND23)+2
            IF (ISSPRT .EQ. 0) WRITE (NCWU, 3115 ) CHARSP(J,I), CSP1(I)
-           WRITE ( NCAWU , 3115 ) CHARSP(J,I), CSP1(I)
            WRITE ( CMON , 3115 ) CHARSP(J,I), CSP1(I)
            CALL XPRVDU(NCVDU, 1,0)
 3115       FORMAT ( 2X , A, A )
            IND23 = IND23+1
 3000    CONTINUE
         IF (ISSPRT .EQ. 0) WRITE(NCWU,3116) STORE(L23SP+5)
-        WRITE(NCAWU, 3116)  STORE(L23SP+5)
         WRITE ( CMON , 3116)  STORE(L23SP+5)
         CALL XPRVDU(NCVDU, 1,0)
 3116  FORMAT(' Tolerance for coincidence = ', G10.5)
 C
       ELSE
         IF (ISSPRT .EQ. 0) WRITE(NCWU,3120)
-        WRITE(NCAWU,3120)
         WRITE ( CMON ,3120)
         CALL XPRVDU(NCVDU, 1,0)
 3120    FORMAT(1X, 'This is an old format LIST 23 - Input a new one')
@@ -2223,7 +2182,6 @@ C -- BEGIN OUTPUT
       IF (MD28SK .GT. 1 ) THEN
         I = MD28SK-1
         IF (ISSPRT .EQ. 0) WRITE(NCWU,500) I, MD28SK
-        WRITE(NCAWU,500) I, MD28SK
         WRITE ( CMON ,500) I, MD28SK
         CALL XPRVDU(NCVDU, 1,0)
 500     FORMAT (1X,I4, ' out of ', I4,' reflections will be skipped')
@@ -2233,7 +2191,6 @@ C
 C
       IF ( LHEADR ) THEN
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 )
-        WRITE ( NCAWU , 1015 )
         WRITE ( CMON , 1015 )
         CALL XPRVDU(NCVDU, 1,0)
 1015    FORMAT ( 1X , 'Reflections are selected by the following ' ,
@@ -2246,8 +2203,6 @@ C
             WRITE ( NCWU , 1105 ) ( ISTORE(J) ,
      2      J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             ENDIF
-            WRITE ( NCAWU , 1105 ) ( ISTORE(J) ,
-     2      J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             WRITE ( CMON , 1105 ) ( ISTORE(J) ,
      2      J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             CALL XPRVDU(NCVDU, 1,0)
@@ -2263,8 +2218,6 @@ C
              WRITE ( NCWU , 1305 ) ( ISTORE(J) ,
      2       J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             ENDIF
-            WRITE ( NCAWU , 1305 ) ( ISTORE(J) ,
-     2       J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             WRITE ( CMON , 1305 ) ( ISTORE(J) ,
      2       J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             CALL XPRVDU(NCVDU, 1,0)
@@ -2279,14 +2232,12 @@ C
              IF (ISSPRT .EQ. 0) THEN
               WRITE ( NCWU , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
              ENDIF
-             WRITE ( NCAWU , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
              WRITE ( CMON , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
              CALL XPRVDU(NCVDU, 1,0)
             ELSE
              IF (ISSPRT .EQ. 0) THEN
               WRITE ( NCWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
              ENDIF
-             WRITE ( NCAWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
              WRITE ( CMON , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
              CALL XPRVDU(NCVDU, 1,0)
             END IF
@@ -2303,7 +2254,6 @@ C
           IF (ISSPRT .EQ. 0) THEN
             WRITE ( NCWU , 1855 ) ( STORE(J) , J = I , I + MD28CD - 1)
           ENDIF
-            WRITE ( NCAWU , 1855 ) ( STORE(J) , J = I , I + MD28CD - 1)
             WRITE ( CMON , 1855 ) ( STORE(J) , J = I , I + MD28CD - 1)
             CALL XPRVDU(NCVDU, 1,0)
 1855        FORMAT ( 2X , F6.2 , ' h + ' , F6.2 , ' k + ' ,
@@ -2322,7 +2272,6 @@ C
           IF (ISSPRT .EQ. 0) THEN
             WRITE ( NCWU , 1705 ) ( NINT(STORE(K)), K = I, I+MD28OM-1 )
           ENDIF
-            WRITE ( NCAWU, 1705 ) ( NINT(STORE(K)), K = I, I+MD28OM-1 )
 1705        FORMAT ( 11X , 'Reflection ' , 3I4 , '  omitted' )
          IF (J+INC .GE. 80) THEN
              CALL XPRVDU(NCVDU, 1,0)
@@ -2337,7 +2286,6 @@ C
 C
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2005 )
-        WRITE ( NCAWU , 2005 )
         WRITE ( CMON , 2005 )
         CALL XPRVDU(NCVDU, 1,0)
 2005    FORMAT ( 1X , 'Reflections are not subject to restrictions' )
@@ -2365,7 +2313,6 @@ C
 C
       IF ( N29 .GT. 0 ) THEN
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 )
-        WRITE ( NCAWU , 1015 )
         WRITE ( CMON , 1015 )
         CALL XPRVDU(NCVDU, 2,0)
 1015    FORMAT ( ' Type              Radius              ' ,
@@ -2377,7 +2324,6 @@ C
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 1105 ) ( STORE(J) , J = I , I + MD29 - 1 )
         ENDIF
-          WRITE ( NCAWU , 1105 ) ( STORE(J) , J = I , I + MD29 - 1 )
           WRITE ( CMON , 1105 ) ( STORE(J) , J = I , I + MD29 - 1 )
           CALL XPRVDU(NCVDU, 1,0)
 1105      FORMAT ( 1X , A4 ,  F7.4 , 2X , F13.4 , 2X , F8.4 , 2X ,
@@ -2385,7 +2331,6 @@ C
 2000    CONTINUE
       ELSE
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2005 )
-        WRITE ( NCAWU , 2005 )
         WRITE ( CMON , 2005 )
         CALL XPRVDU(NCVDU, 1,0)
 2005    FORMAT ( 1X , 'No element details stored in list 29' )
@@ -2488,7 +2433,6 @@ C----- THE ALL-TEXT ITEMS
               CALL XCCLWC ( CLINE(2:), CLOW(2:))
               CLOW(1:1) = CLINE(1:1)
               IF (ISSPRT .EQ. 0) WRITE(NCWU,1021) CLOW
-              WRITE(NCAWU, 1021) CLOW
               WRITE ( CMON , 1021) CLOW
               CALL XPRVDU(NCVDU, 1,0)
             ENDIF
@@ -2498,7 +2442,6 @@ C----- THE ALL-TEXT ITEMS
       MD30 = IPOINT(I+2)
       IF ( MD30 .GT. 0 ) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CTYPE(J)
-         WRITE(NCAWU, '(/A)') CTYPE(J)
          WRITE ( CMON , '(/A)') CTYPE(J)
          CALL XPRVDU(NCVDU, 2,0)
          M = 0
@@ -2530,7 +2473,6 @@ C----- EVEN ITEMS - DONT SAVE '*', BUT PRINT FIRST PART
               ENDIF
               IF ( M .EQ. 1) THEN
                 IF (ISSPRT .EQ. 0) WRITE (NCWU, '(A)') CLINE
-                WRITE (NCAWU, '(A)') CLINE
                 WRITE ( CMON, '(A)') CLINE
                 CALL XPRVDU(NCVDU, 1,0)
                 M = 0
@@ -2540,7 +2482,6 @@ C----- EVEN ITEMS - DONT SAVE '*', BUT PRINT FIRST PART
 C----- FINISHED ON AN ODD ITEM, SO MUST PRINT
         IF ((N .EQ. 1) .AND. ( M .EQ. 1)) THEN
             IF (ISSPRT .EQ. 0) WRITE (NCWU, '(A)') CLINE
-            WRITE (NCAWU, '(A)') CLINE
             WRITE ( CMON, '(A)') CLINE
             CALL XPRVDU(NCVDU, 1,0)
         ENDIF
@@ -2568,7 +2509,6 @@ C      TEXT ITEMS
         CALL XCCLWC ( CLINE(2:), CLOW(2:))
         CLOW(1:1) = CLINE(1:1)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1021) CLOW
-        WRITE(NCAWU, 1021) CLOW
         WRITE(CMON, 1021) CLOW
         CALL XPRVDU(NCVDU, 1,0)
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING
@@ -2608,7 +2548,6 @@ C STRUCTURE SOLUTION
         CALL XCCLWC ( CLINE(2:), CLOW(2:))
         CLOW(1:1) = CLINE(1:1)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1021) CLOW
-        WRITE(NCAWU, 1021) CLOW
         WRITE(CMON, 1021) CLOW
         CALL XPRVDU(NCVDU, 1,0)
 1020    FORMAT ( A, 3X,A)
@@ -2616,7 +2555,6 @@ C STRUCTURE SOLUTION
 3040    CONTINUE
       ELSE
           IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1000 ) CTYPE(J)
-          WRITE ( NCAWU , 1000 ) CTYPE(J)
           WRITE ( CMON , 1000 ) CTYPE(J)
           CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -3251,7 +3189,7 @@ C -- INPUT ERRORS
 
 CODE FOR XSPGPL
       SUBROUTINE XSPGPL
-      DIMENSION KSIGS(25,2), GM(3)
+      DIMENSION KSIGS(50,2), GM(3)
 \ISTORE
 \STORE
 \XLST06
@@ -3286,14 +3224,14 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
 
-      DO I = 1,25
+      DO I = 1,50
         KSIGS(I,1) = 0
         KSIGS(I,2) = 0
       END DO
 
-C Find max value of SQRT(Fo)
+C Find max value of Fo
 
-      RFOMAX = SQRT(STORE(L6DTL+3*MD6DTL+1))
+      RFOMAX =  STORE(L6DTL+3*MD6DTL+1)
 
 C SCAN LIST 6 FOR REFLECTIONS
 
@@ -3308,10 +3246,10 @@ C If indices are unchanged under op, then this ref is in the group.
         CALL VPROD(GM,GM,D)
         IF ( D .LT. ZERO ) THEN
 C Work out which bin.
-          RFO = SQRT(ABS(STORE(M6+3))) * SIGN (1.0,STORE(M6+3))
-          JSIGS = 6 + ( 20. * RFO / RFOMAX )
+          RFO = STORE(M6+3) / STORE(M6+12)
+          JSIGS = 6 + ( 45. * RFO / RFOMAX )
           JSIGS = MAX(JSIGS,1)
-          JSIGS = MIN(JSIGS,25)
+          JSIGS = MIN(JSIGS,50)
 C Work out whether inc or exc.
           CALL VPROD(STORE(ICOMBF+11),STORE(M6),D)
 
@@ -3331,14 +3269,14 @@ c          CALL XPRVDU(NCVDU,1,0)
       IF (IPLOT .EQ. 1) THEN
         WRITE(CMON,'(A,3(/A))')
      1  '^^PL PLOTDATA _XSPGA BARGRAPH ATTACH _SPGA',
-     1  '^^PL XAXIS TITLE ''sqrt(Fobs)'' NSERIES=2 LENGTH=25',
+     1  '^^PL XAXIS TITLE ''Fobs'' NSERIES=2 LENGTH=50',
      1  '^^PL YAXIS TITLE ''Number of observations''',
-     1  '^^PL SERIES 1 SERIESNAME ''Number of reflections with Fo '''
+     1 '^^PL SERIES 1 SERIESNAME ''Number of reflections with Fo eq'''
         CALL XPRVDU(NCVDU, 4,0)
 
-        DO I = 1, 25
+        DO I = 1, 50
           WRITE(CMON,'(A,1X,F9.5,1X,A,1X,I6,1X,I6)')
-     1    '^^PL LABEL',(I-6)*RFOMAX/20.0,'DATA',KSIGS(I,1),KSIGS(I,2)
+     1    '^^PL LABEL',(I-6)*RFOMAX/45.0,'DATA',KSIGS(I,1),KSIGS(I,2)
           CALL XPRVDU(NCVDU,1,0)
         END DO
 

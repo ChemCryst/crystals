@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.14  2003/07/01 16:46:09  rich
+C
+C If a call to #DISK/EXTEND does not require a DSC length extension,
+C (e.g. #DISK/EXTEND SIZE=0/END in the .srt file), then there is no
+C point in seeking the end of the file since it may take a long time.
+C
 C Revision 1.13  2003/02/20 16:02:26  rich
 C When list4 is read from disc, fiddle around with the common block.
 C
@@ -2602,38 +2608,38 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XDUMDR
-      SUBROUTINE XDUMDR(ICOMMN,IDIMN)
-C--DUMP DATA RECORDS THAT ARE HELD IN CORE
-C
-C  ICOMMN  THE CONTROLLING COMMON BLOCK.
-C  IDIMN    THE DIMENSION OF THE COMMON BLOCK.
-C
-C--
-C
-      DIMENSION ICOMMN(IDIMN)
-C
-\XUNITS
-\XSSVAL
-C
-C--WRITE THE COMMON BLOCK
-      CALL XLINES
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)ICOMMN
-      ENDIF
-1000  FORMAT(12I10)
-C--COMPUTE THE NUMBER OF DATA RECORDS
-      N=IDIMN/4
-      DO 1050 I=1,N
-      J=(I-1)*4+1
-      K=ICOMMN(J)
-      L=K+ICOMMN(J+2)*ICOMMN(J+3)-1
-      CALL XPRINT(K,L)
-1050  CONTINUE
-      CALL XLINES
-      RETURN
-      END
-C
+cCODE FOR XDUMDR
+c      SUBROUTINE XDUMDR(ICOMMN,IDIMN)
+cC--DUMP DATA RECORDS THAT ARE HELD IN CORE
+cC
+cC  ICOMMN  THE CONTROLLING COMMON BLOCK.
+cC  IDIMN    THE DIMENSION OF THE COMMON BLOCK.
+cC
+cC--
+cC
+c      DIMENSION ICOMMN(IDIMN)
+cC
+c\XUNITS
+c\XSSVAL
+cC
+cC--WRITE THE COMMON BLOCK
+c      CALL XLINES
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE(NCWU,1000)ICOMMN
+c      ENDIF
+c1000  FORMAT(12I10)
+cC--COMPUTE THE NUMBER OF DATA RECORDS
+c      N=IDIMN/4
+c      DO 1050 I=1,N
+c      J=(I-1)*4+1
+c      K=ICOMMN(J)
+c      L=K+ICOMMN(J+2)*ICOMMN(J+3)-1
+c      CALL XPRINT(K,L)
+c1050  CONTINUE
+c      CALL XLINES
+c      RETURN
+c      END
+
 CODE FOR KBITS
       FUNCTION KBITS(IF,IV)
 C--RETURNS SET TO THE VALUE OF THE BIT MONITORED

@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.18  2003/05/13 15:35:39  djw
+C Raise SFLS cycle limit to 10, give warning and abandon if more
+C
 C Revision 1.17  2003/02/14 17:09:02  djw
 C Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
 C recine have the parameter ityp06, which corresponds to the types
@@ -2170,22 +2173,22 @@ C--LOAD THE LIST
       RETURN
       END
 C
-CODE FOR XFAL39
-      SUBROUTINE XFAL39
-C--ROUTINE TO LOAD LIST 39 FROM THE DISC
-C
-C--
-\ICOM39
-C
-\XLST39
-C
-\QLST39
-C
-\IDIM39
-C--LOAD THE LIST
-      CALL XLDLST(39,ICOM39,IDIM39,-1)
-      RETURN
-      END
+cCODE FOR XFAL39
+c      SUBROUTINE XFAL39
+cC--ROUTINE TO LOAD LIST 39 FROM THE DISC
+cC
+cC--
+c\ICOM39
+cC
+c\XLST39
+cC
+c\QLST39
+cC
+c\IDIM39
+cC--LOAD THE LIST
+c      CALL XLDLST(39,ICOM39,IDIM39,-1)
+c      RETURN
+c      END
 C
 CODE FOR XFAL40
       SUBROUTINE XFAL40

@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.52  2003/07/16 16:02:58  rich
+C Added code to \REGROUP, so that if the MOVE parameter is -ve, then
+C a covalent radius vector is provided to KDIST1, and the absolute
+C value of MOVE is used as a TOLERANCE, such that bonds are formed
+C if D < COV1+COV2+TOLERANCE.
+C
 C Revision 1.51  2003/07/09 17:02:20  rich
 C Problem: New CIF script includes cell esd's in distance calculation, this
 C makes C-H distances for riding H's have a non-zero esd. (Correctly, I might
@@ -4991,24 +4997,25 @@ C
       RETURN
       END
 C
-CODE FOR XPRTA
-      SUBROUTINE XPRTA(A,L,M)
-C
-C
-      DIMENSION A(L,M)
-C
-\XUNITS
-\XSSVAL
-C
-      CALL XLINES
-      DO 1050 I=1,L
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)(A(I,J),J=1,M)
-      ENDIF
-1000  FORMAT(1X,9F13.9)
-1050  CONTINUE
-      RETURN
-      END
+cCODE FOR XPRTA
+c      SUBROUTINE XPRTA(A,L,M)
+cC
+cC
+c      DIMENSION A(L,M)
+cC
+c\XUNITS
+c\XSSVAL
+cC
+c      CALL XLINES
+c      DO 1050 I=1,L
+c      IF (ISSPRT .EQ. 0) THEN
+c      WRITE(NCWU,1000)(A(I,J),J=1,M)
+c      ENDIF
+c1000  FORMAT(1X,9F13.9)
+c1050  CONTINUE
+c      RETURN
+c      END
+
 CODE FOR XVOID
       SUBROUTINE XVOID
 C       CODE DEVISED AND PRODUCED BY ANDY BROWN AS A PART II PROJECT

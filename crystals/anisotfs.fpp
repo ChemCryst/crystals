@@ -1,4 +1,10 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.11  2003/05/07 12:18:53  rich
+C
+C RIC: Make a new platform target "WXS" for building CRYSTALS under Windows
+C using only free compilers and libraries. Hurrah, but it isn't very stable
+C yet (CRYSTALS, not the compilers...)
+C
 C Revision 1.10  2002/10/14 12:33:24  rich
 C Support for DVF command line version.
 C
@@ -1921,16 +1927,16 @@ C      EXPAND THE VECTOR A INTO THE TENSOR B
       B(9) = A(3)
       RETURN
       END
-CODE FOR XCOMPU
-      SUBROUTINE XCOMPU(B,A)
-C      COMPRESS THE TENSOR B INTO THE VECTOR A
-      DIMENSION A(6), B(9)
-      A(1) = B(1)
-      A(2) = B(5)
-      A(3) = B(9)
-      A(4) = B(8)
-      A(5) = B(7)
-      A(6) = B(5)
-      RETURN
-      END
+cCODE FOR XCOMPU
+c      SUBROUTINE XCOMPU(B,A)
+cC      COMPRESS THE TENSOR B INTO THE VECTOR A
+c      DIMENSION A(6), B(9)
+c      A(1) = B(1)
+c      A(2) = B(5)
+c      A(3) = B(9)
+c      A(4) = B(8)
+c      A(5) = B(7)
+c      A(6) = B(5)
+c      RETURN
+c      END
 C
